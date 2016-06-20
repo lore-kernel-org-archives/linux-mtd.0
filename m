@@ -1,20 +1,24 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bEzbD-0006HU-EO
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 13:50:49 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- "George Spelvin" <linux@sciencehorizons.net>
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] mtd: introduce the mtd_pairing_scheme concept
-Date: Mon, 20 Jun 2016 15:50:16 +0200
-Message-Id: <1466430618-9713-2-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1466430618-9713-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1466430618-9713-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail-qk0-x230.google.com ([2607:f8b0:400d:c09::230])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bF01s-0004Uk-AV
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 14:18:21 +0000
+Received: by mail-qk0-x230.google.com with SMTP id c73so163421832qkg.2
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jun 2016 07:17:59 -0700 (PDT)
+Subject: Re: [PATCH v5 0/2] MTK Smart Device Gen1 NAND Driver
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1465919451-1891-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <20160620135411.2ef381e0@bbrezillon>
+Cc: robh@kernel.org, computersforpeace@gmail.com, dwmw2@infradead.org,
+ matthias.bgg@gmail.com, linux-mtd@lists.infradead.org,
+ xiaolei.li@mediatek.com, linux-mediatek@lists.infradead.org,
+ erin.lo@mediatek.com, blogic@openwrt.org, daniel.thompson@linaro.org
+From: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
+Message-ID: <5767FB13.5070503@linaro.org>
+Date: Mon, 20 Jun 2016 10:17:55 -0400
+MIME-Version: 1.0
+In-Reply-To: <20160620135411.2ef381e0@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,290 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MLC and TLC NAND devices are using NAND cells exposing more than one bit,
-but instead of attaching all the bits in a given cell to a single NAND
-page, each bit is usually attached to a different page. This concept is
-called 'page pairing', and has significant impacts on the flash storage
-usage.
-The main problem showed by these devices is that interrupting a page
-program operation may not only corrupt the page we are programming
-but also the page it is paired with, hence the need to expose to MTD
-users the pairing scheme information.
+On 06/20/2016 07:54 AM, Boris Brezillon wrote:
+>> >Tests:
+>> >======
+>> >
+>> >* UBIFS support has been validated on 512MiB device (iozone, dd)
+>> >* All drivers/mtd/tests/* pass clean.
+>> >* Speed tests:
+>> >   eraseblock write speed:	7563 KiB/s
+>> >   eraseblock read speed:	10904 KiB/s
+>> >   page write speed:		7497 KiB/s
+>> >   page read speed:		10864 KiB/s
+>> >   2 page write speed:		7527 KiB/s
+>> >   2 page read speed:		10881 KiB/s
+>> >   erase speed:			103157 KiB/s
+>> >   2x multi-block erase speed:	357445 KiB/s
+>> >   4x multi-block erase speed:	362944 KiB/s
+>> >   8x multi-block erase speed:	363805 KiB/s
+>> >   16x multi-block erase speed:	364237 KiB/s
+>> >   32x multi-block erase speed:	364670 KiB/s
+>> >   64x multi-block erase speed:	365104 KiB/s
+> Applied after fixing a few coding style issues.
+>
 
-The pairing APIs allows one to query pairing information attached to a
-given page (here called wunit), or the other way around (the wunit
-pointed by pairing information).
-It also provides several helpers to help the conversion between absolute
-offsets and wunits, and query the number of pairing groups.
+Awesome.
+Thanks for all the reviews and these additional fixes!
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/mtdcore.c   |  94 ++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/mtdpart.c   |   1 +
- include/linux/mtd/mtd.h | 106 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 201 insertions(+)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index e3936b847c6b..decceb9fdf32 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -376,6 +376,100 @@ static int mtd_reboot_notifier(struct notifier_block *n, unsigned long state,
- }
- 
- /**
-+ * mtd_wunit_to_pairing_info - get pairing information of a wunit
-+ * @mtd: pointer to new MTD device info structure
-+ * @wunit: write unit we are interrested in
-+ * @info: pairing information struct
-+ *
-+ * Retrieve pairing information associated to the wunit.
-+ * This is mainly useful when dealing with MLC/TLC NANDs where pages can be
-+ * paired together, and where programming a page may influence the page it is
-+ * paired with.
-+ * The notion of page is replaced by the term wunit (write-unit) to stay
-+ * consistent with the ->writesize field.
-+ *
-+ * The @wunit argument can be extracted from an absolute offset using
-+ * mtd_offset_to_wunit(). @info is filled with the pairing information attached
-+ * to @wunit.
-+ *
-+ * From the pairing info the MTD user can find all the wunits paired with
-+ * @wunit using the following loop:
-+ *
-+ * for (i = 0; i < mtd_pairing_groups(mtd); i++) {
-+ *	info.pair = i;
-+ *	mtd_pairing_info_to_wunit(mtd, &info);
-+ *	...
-+ * }
-+ */
-+void mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
-+			       struct mtd_pairing_info *info)
-+{
-+	if (!mtd->pairing || !mtd->pairing->get_info) {
-+		info->group = 0;
-+		info->pair = wunit;
-+	} else {
-+		mtd->pairing->get_info(mtd, wunit, info);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(mtd_wunit_to_pairing_info);
-+
-+/**
-+ * mtd_wunit_to_pairing_info - get wunit from pairing information
-+ * @mtd: pointer to new MTD device info structure
-+ * @info: pairing information struct
-+ *
-+ * Returns a positive number representing the wunit associated to the info
-+ * struct, or a negative error code.
-+ *
-+ * This is the reverse of mtd_wunit_to_pairing_info(), and can help one to
-+ * iterate over all wunits of a given pair (see mtd_wunit_to_pairing_info()
-+ * doc).
-+ *
-+ * It can also be used to only program the first page of each pair (i.e.
-+ * page attached to group 0), which allows one to use an MLC NAND in
-+ * software-emulated SLC mode:
-+ *
-+ * info.group = 0;
-+ * for (info.pair = 0; info < mtd_wunit_per_eb(mtd); info.pair++) {
-+ *	wunit = mtd_pairing_info_to_wunit(mtd, &info);
-+ *	mtd_write(mtd, mtd_wunit_to_offset(mtd, blkoffs, wunit),
-+ *		  mtd->writesize, &retlen, buf + (i * mtd->writesize));
-+ * }
-+ */
-+int mtd_pairing_info_to_wunit(struct mtd_info *mtd,
-+			      const struct mtd_pairing_info *info)
-+{
-+	if (!mtd->pairing || !mtd->pairing->get_info) {
-+		if (info->group)
-+			return -EINVAL;
-+
-+		return info->pair;
-+	}
-+
-+	return mtd->pairing->get_wunit(mtd, info);
-+}
-+EXPORT_SYMBOL_GPL(mtd_pairing_info_to_wunit);
-+
-+/**
-+ * mtd_pairing_groups - get the number of pairing groups
-+ * @mtd: pointer to new MTD device info structure
-+ *
-+ * Returns the number of pairing groups.
-+ *
-+ * This number is usually equal to the number of bits exposed by a single
-+ * cell, and can be used in conjunction with mtd_pairing_info_to_wunit()
-+ * to iterate over all pages of a given pair.
-+ */
-+int mtd_pairing_groups(struct mtd_info *mtd)
-+{
-+	if (!mtd->pairing || !mtd->pairing->ngroups)
-+		return 1;
-+
-+	return mtd->pairing->ngroups;
-+}
-+EXPORT_SYMBOL_GPL(mtd_pairing_groups);
-+
-+/**
-  *	add_mtd_device - register an MTD device
-  *	@mtd: pointer to new MTD device info structure
-  *
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 1f13e32556f8..e32a0ac2298f 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -397,6 +397,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	slave->mtd.oobsize = master->oobsize;
- 	slave->mtd.oobavail = master->oobavail;
- 	slave->mtd.subpage_sft = master->subpage_sft;
-+	slave->mtd.pairing = master->pairing;
- 
- 	slave->mtd.name = name;
- 	slave->mtd.owner = master->owner;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 29a170612203..00bcacb16176 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -127,6 +127,81 @@ struct mtd_ooblayout_ops {
- 		    struct mtd_oob_region *oobfree);
- };
- 
-+/**
-+ * struct mtd_pairing_info - page pairing information
-+ *
-+ * @pair: pair id
-+ * @group: group id
-+ *
-+ * The pair word is used here, even though TLC NANDs might group pages by 3
-+ * (3 bits in a single cell). A pair should regroup all pages that are sharing
-+ * the same cell. Pairs are then indexed in ascending order.
-+ *
-+ * @group is defining the position of a page in a given pair. It can also be
-+ * seen as the bit position in the cell: page attached to bit 0 belongs to
-+ * group 0, page attached to bit 1 belongs to group 1, etc.
-+ *
-+ * Example:
-+ * The H27UCG8T2BTR-BC datasheet describes the following pairing scheme:
-+ *
-+ *		group-0		group-1
-+ *
-+ *  pair-0	page-0		page-4
-+ *  pair-1	page-1		page-5
-+ *  pair-2	page-2		page-8
-+ *  ...
-+ *  pair-127	page-251	page-255
-+ *
-+ *
-+ * Note that the "group" and "pair" terms were extracted from Samsung and
-+ * Hynix datasheets, and might be referenced under other names in other
-+ * datasheets (Micron is describing this concept as "shared pages").
-+ */
-+struct mtd_pairing_info {
-+	int pair;
-+	int group;
-+};
-+
-+/**
-+ * struct mtd_pairing_scheme - page pairing scheme description
-+ *
-+ * @ngroups: number of groups. Should be related to the number of bits
-+ *	     per cell.
-+ * @get_info: converts a write-unit (page number within an erase block) into
-+ *	      mtd_pairing information (pair + group). This function should
-+ *	      fill the info parameter based on the wunit index.
-+ * @get_wunit: converts pairing information into a write-unit (page) number.
-+ *	       This function should return the wunit index pointed by the
-+ *	       pairing information described in the info argument. It should
-+ *	       return -EINVAL, if there's no wunit corresponding to the
-+ *	       passed pairing information.
-+ *
-+ * See mtd_pairing_info documentation for a detailed explanation of the
-+ * pair and group concepts.
-+ *
-+ * The mtd_pairing_scheme structure provides a generic solution to represent
-+ * NAND page pairing scheme. Instead of exposing two big tables to do the
-+ * write-unit <-> (pair + group) conversions, we ask the MTD drivers to
-+ * implement the ->get_info() and ->get_wunit() functions.
-+ *
-+ * MTD users will then be able to query these information by using the
-+ * mtd_pairing_info_to_wunit() and mtd_wunit_to_pairing_info() helpers.
-+ *
-+ * @ngroups is here to help MTD users iterating over all the pages in a
-+ * given pair. This value can be retrieved by MTD users using the
-+ * mtd_pairing_groups() helper.
-+ *
-+ * Examples are given in the mtd_pairing_info_to_wunit() and
-+ * mtd_wunit_to_pairing_info() documentation.
-+ */
-+struct mtd_pairing_scheme {
-+	int ngroups;
-+	void (*get_info)(struct mtd_info *mtd, int wunit,
-+			 struct mtd_pairing_info *info);
-+	int (*get_wunit)(struct mtd_info *mtd,
-+			 const struct mtd_pairing_info *info);
-+};
-+
- struct module;	/* only needed for owner field in mtd_info */
- 
- struct mtd_info {
-@@ -188,6 +263,9 @@ struct mtd_info {
- 	/* OOB layout description */
- 	const struct mtd_ooblayout_ops *ooblayout;
- 
-+	/* NAND pairing scheme, only provided for MLC/TLC NANDs */
-+	const struct mtd_pairing_scheme *pairing;
-+
- 	/* the ecc step size. */
- 	unsigned int ecc_step_size;
- 
-@@ -296,6 +374,12 @@ static inline void mtd_set_ooblayout(struct mtd_info *mtd,
- 	mtd->ooblayout = ooblayout;
- }
- 
-+static inline void mtd_set_pairing_scheme(struct mtd_info *mtd,
-+				const struct mtd_pairing_scheme *pairing)
-+{
-+	mtd->pairing = pairing;
-+}
-+
- static inline void mtd_set_of_node(struct mtd_info *mtd,
- 				   struct device_node *np)
- {
-@@ -312,6 +396,11 @@ static inline int mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
- 	return ops->mode == MTD_OPS_AUTO_OOB ? mtd->oobavail : mtd->oobsize;
- }
- 
-+void mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
-+			       struct mtd_pairing_info *info);
-+int mtd_pairing_info_to_wunit(struct mtd_info *mtd,
-+			      const struct mtd_pairing_info *info);
-+int mtd_pairing_groups(struct mtd_info *mtd);
- int mtd_erase(struct mtd_info *mtd, struct erase_info *instr);
- int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	      void **virt, resource_size_t *phys);
-@@ -397,6 +486,23 @@ static inline uint32_t mtd_mod_by_ws(uint64_t sz, struct mtd_info *mtd)
- 	return do_div(sz, mtd->writesize);
- }
- 
-+static inline int mtd_wunit_per_eb(struct mtd_info *mtd)
-+{
-+	return mtd->erasesize / mtd->writesize;
-+}
-+
-+static inline int mtd_offset_to_wunit(struct mtd_info *mtd, loff_t offs)
-+{
-+	return mtd_div_by_ws(mtd_mod_by_eb(offs, mtd), mtd);
-+}
-+
-+static inline loff_t mtd_wunit_to_offset(struct mtd_info *mtd, loff_t base,
-+					 int wunit)
-+{
-+	return base + (wunit * mtd->writesize);
-+}
-+
-+
- static inline int mtd_has_oob(const struct mtd_info *mtd)
- {
- 	return mtd->_read_oob && mtd->_write_oob;
--- 
-2.7.4
+jorge
