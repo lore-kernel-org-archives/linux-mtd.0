@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEvUV-0003g3-6B
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 09:27:36 +0000
+ id 1bEvUV-0003gA-6F
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 09:27:37 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -10,10 +10,12 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Richard Weinberger <richard@nod.at>
 Cc: linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Aleksei Mamlin <mamlinav@gmail.com>, valdis.kletnieks@vt.edu
-Subject: [PATCH v3 00/16] mtd: nand: allow vendor specific
- detection/initialization
-Date: Mon, 20 Jun 2016 11:26:46 +0200
-Message-Id: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 02/16] mtd: nand: get rid of the mtd parameter in all
+ auto-detection functions
+Date: Mon, 20 Jun 2016 11:26:48 +0200
+Message-Id: <1466414822-18948-3-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,124 +25,186 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Now that struct nand_chip embeds an mtd_info object we can get rid of the
+mtd parameter and extract it from the chip parameter with the nand_to_mtd()
+helper.
 
-This patch series is a step forward in supporting vendor-specific
-functionalities.
-This series is mainly moving vendor-specific initialization or
-detection code out of the core, but also introduces an infrastructure
-allowing support for vendor-specific features.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 56 ++++++++++++++++++++++++--------------------
+ 1 file changed, 30 insertions(+), 26 deletions(-)
 
-While those features might seem useless to most users, some of them are
-actually required on modern MLC/TLC NANDs (this is the case of read-retry
-support, which AFAICT has not been standardized by the JEDEC consortium).
-
-Now, let's detail what's inside this patch-set.
-
-Patch 1 is fixing the nand_command_lp() implementation to allow reading
-the ID after the core has switched from nand_command() to
-nand_command_lp().
-
-Patches 2 to 5 are simple reworks simplifying auto-detection function
-prototypes, and clarifying their purpose.
-
-Patch 6 is introducing the vendor-specific initialization
-infrastructure.
-
-Patch 7 is removing the MTD_NAND_IDS Kconfig option to avoid creating
-a nand_ids.ko module when MTD_NAND is enabled as a module. This prevents
-a future cross-dependency between nand.ko where all vendor specific
-code will rely and nand_ids.ko which will reference vendor-specific ops
-in its manufacturer table, which in turn is referenced by the core code
-linked in nand.ko.
-
-Patches 8 to 13 are moving vendor-specific code into their respective
-nand_<vendor>.c files.
-
-Patch 14 is taking a patch proposed by Hans and adding support for ECC
-requirements extraction from the samsung extended IDs. It seems to apply
-to all Samsung MLCs, but even if it's not the case, the detection code
-should be improved to support the new formats.
-
-Patch 15 is adding support for advanced NAND ID decoding to the Hynix
-driver (OOB size, ECC and scrambling requirements extraction). Again
-this detection code might be incomplete, but I'd like people to extend
-it if required rather than adding new full-id entries in the nand_ids
-table.
-
-And finally, patch 16 is showing how useful this vendor-specific stuff
-can be by implementing read-retry support for Hynix 1x nm MLCs. And
-trust me, you don't want to try using such a NAND without read-retry
-support ;).
-
-As always, I'm open to any suggestion to improve this vendor-specific
-infrastructure, so please review the code :).
-
-Thanks,
-
-Boris
-
-Changes since v2:
-- Fix nand_command_lp() implementation to allow reading the ID
-  after switching from ->cmdfunc() from nand_command() to
-  nand_command_lp().
-- Include slab.h in hynix_nand.c
-- Avoid selecting/unselecting the NAND chip in Hynix ->init()
-  hook (the chip is already selected by the core)
-
-Changes since v1:
-- split detection and initialization steps to avoid keeping
-  information retrieved by nand_decode_ext_id() if it's not
-  appropriate (Aleksei reported a bug where NAND_BUSWIDTH_16
-  was set by nand_decode_ext_id() and not cleared by the
-  samsung ->init() function).
-  The new approach is to call ->detect() if it's provided and
-  fallback to nand_decode_ext_id() if it's not. ->detect()
-  implementation should can call nand_decode_ext_id() if needed.
-
-Boris Brezillon (15):
-  mtd: nand: Fix nand_command_lp() for 8bits opcodes
-  mtd: nand: get rid of the mtd parameter in all auto-detection
-    functions
-  mtd: nand: store nand ID in struct nand_chip
-  mtd: nand: get rid of busw parameter
-  mtd: nand: rename nand_get_flash_type() into nand_detect()
-  mtd: nand: add manufacturer specific initialization/detection steps
-  mtd: nand: kill the MTD_NAND_IDS Kconfig option
-  mtd: nand: move Samsung specific init/detection logic in
-    nand_samsung.c
-  mtd: nand: move Hynix specific init/detection logic in nand_hynix.c
-  mtd: nand: move Toshiba specific init/detection logic in
-    nand_toshiba.c
-  mtd: nand: move Micron specific init logic in nand_micron.c
-  mtd: nand: move AMD/Spansion specific init/detection logic in
-    nand_amd.c
-  mtd: nand: move Macronix specific initialization in nand_macronix.c
-  mtd: nand: hynix: rework NAND ID decoding to extract more information
-  mtd: nand: hynix: add read-retry support for 1x nm MLC NANDs
-
-Hans de Goede (1):
-  mtd: nand: samsung: retrieve ECC requirements from extended ID
-
- arch/cris/arch-v32/drivers/Kconfig |   1 -
- drivers/mtd/nand/Kconfig           |   4 -
- drivers/mtd/nand/Makefile          |   9 +-
- drivers/mtd/nand/nand_amd.c        |  48 +++
- drivers/mtd/nand/nand_base.c       | 402 +++++++++---------------
- drivers/mtd/nand/nand_hynix.c      | 628 +++++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/nand_ids.c        |  21 +-
- drivers/mtd/nand/nand_macronix.c   |  27 ++
- drivers/mtd/nand/nand_micron.c     |  84 +++++
- drivers/mtd/nand/nand_samsung.c    | 109 +++++++
- drivers/mtd/nand/nand_toshiba.c    |  48 +++
- include/linux/mtd/nand.h           |  69 ++--
- 12 files changed, 1157 insertions(+), 293 deletions(-)
- create mode 100644 drivers/mtd/nand/nand_amd.c
- create mode 100644 drivers/mtd/nand/nand_hynix.c
- create mode 100644 drivers/mtd/nand/nand_macronix.c
- create mode 100644 drivers/mtd/nand/nand_micron.c
- create mode 100644 drivers/mtd/nand/nand_samsung.c
- create mode 100644 drivers/mtd/nand/nand_toshiba.c
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c2f832360871..a0ce1b5c9df2 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3231,9 +3231,10 @@ static u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
+ }
+ 
+ /* Parse the Extended Parameter Page. */
+-static int nand_flash_detect_ext_param_page(struct mtd_info *mtd,
+-		struct nand_chip *chip, struct nand_onfi_params *p)
++static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
++					    struct nand_onfi_params *p)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct onfi_ext_param_page *ep;
+ 	struct onfi_ext_section *s;
+ 	struct onfi_ext_ecc_info *ecc;
+@@ -3328,9 +3329,9 @@ static void nand_onfi_detect_micron(struct nand_chip *chip,
+ /*
+  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+  */
+-static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+-					int *busw)
++static int nand_flash_detect_onfi(struct nand_chip *chip, int *busw)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct nand_onfi_params *p = &chip->onfi_params;
+ 	int i, j;
+ 	int val;
+@@ -3417,7 +3418,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 			chip->cmdfunc = nand_command_lp;
+ 
+ 		/* The Extended Parameter Page is supported since ONFI 2.1. */
+-		if (nand_flash_detect_ext_param_page(mtd, chip, p))
++		if (nand_flash_detect_ext_param_page(chip, p))
+ 			pr_warn("Failed to detect ONFI extended param page\n");
+ 	} else {
+ 		pr_warn("Could not retrieve ONFI ECC requirements\n");
+@@ -3432,9 +3433,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ /*
+  * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
+  */
+-static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
+-					int *busw)
++static int nand_flash_detect_jedec(struct nand_chip *chip, int *busw)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct nand_jedec_params *p = &chip->jedec_params;
+ 	struct jedec_ecc_info *ecc;
+ 	int val;
+@@ -3584,9 +3585,10 @@ static int nand_get_bits_per_cell(u8 cellinfo)
+  * chip. The rest of the parameters must be decoded according to generic or
+  * manufacturer-specific "extended ID" decoding patterns.
+  */
+-static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+-				u8 id_data[8], int *busw)
++static void nand_decode_ext_id(struct nand_chip *chip, u8 id_data[8],
++			       int *busw)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int extid, id_len;
+ 	/* The 3rd id byte holds MLC / multichip data */
+ 	chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
+@@ -3717,10 +3719,10 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+  * decodes a matching ID table entry and assigns the MTD size parameters for
+  * the chip.
+  */
+-static void nand_decode_id(struct mtd_info *mtd, struct nand_chip *chip,
+-				struct nand_flash_dev *type, u8 id_data[8],
+-				int *busw)
++static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type,
++			   u8 id_data[8], int *busw)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int maf_id = id_data[0];
+ 
+ 	mtd->erasesize = type->erasesize;
+@@ -3750,9 +3752,9 @@ static void nand_decode_id(struct mtd_info *mtd, struct nand_chip *chip,
+  * heuristic patterns using various detected parameters (e.g., manufacturer,
+  * page size, cell-type information).
+  */
+-static void nand_decode_bbm_options(struct mtd_info *mtd,
+-				    struct nand_chip *chip, u8 id_data[8])
++static void nand_decode_bbm_options(struct nand_chip *chip, u8 id_data[8])
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int maf_id = id_data[0];
+ 
+ 	/* Set the bad block position */
+@@ -3787,9 +3789,12 @@ static inline bool is_full_id_nand(struct nand_flash_dev *type)
+ 	return type->id_len;
+ }
+ 
+-static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+-		   struct nand_flash_dev *type, u8 *id_data, int *busw)
++static bool find_full_id_nand(struct nand_chip *chip,
++			      struct nand_flash_dev *type, u8 *id_data,
++			      int *busw)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
+ 	if (!strncmp(type->id, id_data, type->id_len)) {
+ 		mtd->writesize = type->pagesize;
+ 		mtd->erasesize = type->erasesize;
+@@ -3816,11 +3821,11 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+ /*
+  * Get the flash and manufacturer id and lookup if the type is supported.
+  */
+-static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+-						  struct nand_chip *chip,
++static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+ 						  int *maf_id, int *dev_id,
+ 						  struct nand_flash_dev *type)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int busw;
+ 	int i, maf_idx;
+ 	u8 id_data[8];
+@@ -3865,7 +3870,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 
+ 	for (; type->name != NULL; type++) {
+ 		if (is_full_id_nand(type)) {
+-			if (find_full_id_nand(mtd, chip, type, id_data, &busw))
++			if (find_full_id_nand(chip, type, id_data, &busw))
+ 				goto ident_done;
+ 		} else if (*dev_id == type->dev_id) {
+ 			break;
+@@ -3875,11 +3880,11 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 	chip->onfi_version = 0;
+ 	if (!type->name || !type->pagesize) {
+ 		/* Check if the chip is ONFI compliant */
+-		if (nand_flash_detect_onfi(mtd, chip, &busw))
++		if (nand_flash_detect_onfi(chip, &busw))
+ 			goto ident_done;
+ 
+ 		/* Check if the chip is JEDEC compliant */
+-		if (nand_flash_detect_jedec(mtd, chip, &busw))
++		if (nand_flash_detect_jedec(chip, &busw))
+ 			goto ident_done;
+ 	}
+ 
+@@ -3893,9 +3898,9 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 
+ 	if (!type->pagesize) {
+ 		/* Decode parameters from extended ID */
+-		nand_decode_ext_id(mtd, chip, id_data, &busw);
++		nand_decode_ext_id(chip, id_data, &busw);
+ 	} else {
+-		nand_decode_id(mtd, chip, type, id_data, &busw);
++		nand_decode_id(chip, type, id_data, &busw);
+ 	}
+ 	/* Get chip options */
+ 	chip->options |= type->options;
+@@ -3932,7 +3937,7 @@ ident_done:
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+-	nand_decode_bbm_options(mtd, chip, id_data);
++	nand_decode_bbm_options(chip, id_data);
+ 
+ 	/* Calculate the address shift from the page size */
+ 	chip->page_shift = ffs(mtd->writesize) - 1;
+@@ -4148,8 +4153,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	nand_set_defaults(chip, chip->options & NAND_BUSWIDTH_16);
+ 
+ 	/* Read the flash type */
+-	type = nand_get_flash_type(mtd, chip, &nand_maf_id,
+-				   &nand_dev_id, table);
++	type = nand_get_flash_type(chip, &nand_maf_id, &nand_dev_id, table);
+ 
+ 	if (IS_ERR(type)) {
+ 		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
 -- 
 2.7.4
