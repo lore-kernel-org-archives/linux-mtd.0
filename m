@@ -1,23 +1,17 @@
-Received: from mout.kundenserver.de ([212.227.126.135])
+Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF0nI-0005u9-19
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 15:07:21 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Richard Weinberger <richard@nod.at>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, Daniel Golle <daniel@makrotopia.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, mark.rutland@arm.com,
- devicetree@vger.kernel.org, dedekind1@gmail.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
-Date: Mon, 20 Jun 2016 17:08:51 +0200
-Message-ID: <4012191.NTCe8d2REM@wuerfel>
-In-Reply-To: <5767A8A3.4030004@nod.at>
-References: <20160619130514.GB820@makrotopia.org> <6411961.soYuJ4Ixfs@wuerfel>
- <5767A8A3.4030004@nod.at>
+ id 1bF2OY-0002NH-NB
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 16:49:56 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: [PATCH 0/9] mtd: spi-nor: parse SFDP tables as defined by JESD216B
+Date: Mon, 20 Jun 2016 18:49:59 +0200
+Message-ID: <cover.1466440540.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +21,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, June 20, 2016 10:26:11 AM CEST Richard Weinberger wrote:
-> Am 20.06.2016 um 10:09 schrieb Arnd Bergmann:
-> > A few more thoughts on various things that came up in the discussion
-> > so far (so I don't have to reply to each of them separately)
-> > 
-> > - The /chosen and /aliases nodes do configure the OS to some degree,
-> >   and historically we have used them to specify the device names that
-> >   show up in the kernel (e.g. on MacOS and AIX) as well as the rootfs
-> >   itself
-> > 
-> > - The device tree should give us enough information to identify the
-> >   root partition by a GUID from the kernel. This works on all block
-> >   devices (at least with MBR and EFI partition tables, probably many
-> >   of the lesser known ones as well) and it should really also work
-> >   on UBI.
-> 
-> It does.
-> 
-> > - MTD partitioning unfortunately does not seem to have a widely used
-> >   method for identifying partitions from what's stored on the flash,
-> >   unlike block devices, so whatever we normally have in the partition
-> >   table has to be stored in DT. This really sucks, but I don't know
-> >   what else to do about it.
-> 
-> Since blocks on a MTD can render bad you'd lose the table sooner or later.
-> That's why we cannot store it on the MTD directly.
-> Defining the table in DT is at least less ugly than using the mtdparts=
-> kernel parameter.
+Hi all,
 
-Right, there would be no benefit in using the kernel command line,
-it just moves the information to another place inside of the same DT
-(the /chosen property).
+This series of patches adds support SPI x-y-z protocols other than
+SPI 1-1-1, 1-1-2 and 1-1-4. When available, the Serial Flash Discoverable
+Parameter (SFDP) tables are parsed to dynamically configure the SPI
+protocols, op codes, number of dummy cycles or erase block size used
+during Fast Read, Page Program and Sector Erase operation.
+Otherwise, when SFDP tables are not available, the legacy settings are
+used: we only use SPI 1-1-1, 1-1-2 or 1-1-4 protocols.
 
-I think you can normally rely on the first block being readable
-on flash, in particular if you write it very rarely (when updating
-the partition information), so it would be technically possible to
-have a partition table in there, but in practice that's not how
-things are done, so the argument is useless.
+Also the 3rd parameter of spi_nor_scan() is changed so the caller can
+provide the spi-nor framework with a more accurate list of SPI protocols
+supported by the SPI controller. Using both this list and the SFDP
+settings, the spi-nor framework can now select the best match for SPI
+protocols supported by both the memory and the controller.
 
-> > - The UBI design was originally meant to cover the entire flash
-> >   device and provide the partitioning information inside. I have not
-> >   looked at UBI in a long time (actually not since before embedded
-> >   PPC moved to DT), but I would hope that this case works without
-> >   any DT magic.
-> 
-> Of course it works without DT magic.
-> 
-> So, I don't see a urge to have UBI DT bindings.
-> First I thought having an attach flag would be handy but it turned out
-> that this behavior can easily achieved by naming. i.e. you a kernel
-> command line such as "ubi.mtd=UBI" and name the to be attached MTD "UBI"
-> in your DT.
 
-Right. I think either way can work, and I see advantages in both.
-The downside of relying just on the name is that mounting the rootfs
-by GUID doesn't work until you specify another command line, which
-is a bit annoying but not a huge problem.
+This series of patches is based onto next-20160620.
+It was tested on a sama5d2 xplained board + Macronix mx25l25673g.
 
-	Arnd
+Best regards,
+
+Cyrille
+
+Cyrille Pitchen (9):
+  mtd: spi-nor: improve macronix_quad_enable()
+  mtd: spi-nor: add an alternative method to support memory >16MiB
+  Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
+  mtd: atmel-quadspi: add driver for Atmel QSPI controller
+  mtd: spi-nor: add support of SPI protocols like SPI 1-2-2 and SPI
+    1-4-4
+  mtd: spi-nor: remove unused set_quad_mode() function
+  mtd: m25p80: add support of dual and quad spi protocols to all
+    commands
+  mtd: spi-nor: parse Serial Flash Discoverable Parameters (SFDP) tables
+  mtd: spi-nor: parse SFDP 4-byte Address Instruction Table
+
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      |  32 +
+ drivers/mtd/devices/m25p80.c                       | 204 ++++-
+ drivers/mtd/devices/serial_flash_cmds.h            |   7 -
+ drivers/mtd/devices/st_spi_fsm.c                   |  28 +-
+ drivers/mtd/spi-nor/Kconfig                        |   9 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/atmel-quadspi.c                | 770 +++++++++++++++++
+ drivers/mtd/spi-nor/fsl-quadspi.c                  |   8 +-
+ drivers/mtd/spi-nor/mtk-quadspi.c                  |  16 +-
+ drivers/mtd/spi-nor/nxp-spifi.c                    |  21 +-
+ drivers/mtd/spi-nor/spi-nor.c                      | 962 +++++++++++++++++++--
+ include/linux/mtd/spi-nor.h                        | 159 +++-
+ 12 files changed, 2021 insertions(+), 196 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
+
+-- 
+1.8.2.2
