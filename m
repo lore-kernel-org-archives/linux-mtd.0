@@ -1,21 +1,18 @@
 Received: from hauke-m.de ([2001:41d0:8:b27b::1])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF6oE-0000S3-HI
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 21:32:44 +0000
+ id 1bF6oT-0000UF-Cp
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 21:32:58 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: boris.brezillon@free-electrons.com,
 	richard@nod.at
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, john@phrozen.org,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v5 2/8] mtd: nand: xway: convert to normal platform driver
-Date: Mon, 20 Jun 2016 23:32:08 +0200
-Message-Id: <1466458334-10830-3-git-send-email-hauke@hauke-m.de>
+Subject: [PATCH v5 8/8] mtd: nand: xway: add nandaddr to own struct
+Date: Mon, 20 Jun 2016 23:32:14 +0200
+Message-Id: <1466458334-10830-9-git-send-email-hauke@hauke-m.de>
 In-Reply-To: <1466458334-10830-1-git-send-email-hauke@hauke-m.de>
 References: <1466458334-10830-1-git-send-email-hauke@hauke-m.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,185 +22,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of hacking this into the plat_nand driver just make this a
-normal nand driver.
+Instead of using IO_ADDR_W and IO_ADDR_R use an own pointer to the NAND
+controller memory area.
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- drivers/mtd/nand/Kconfig     |   1 -
- drivers/mtd/nand/xway_nand.c | 116 +++++++++++++++++++++++++++++--------------
- 2 files changed, 80 insertions(+), 37 deletions(-)
+ drivers/mtd/nand/xway_nand.c | 30 ++++++++++++++----------------
+ 1 file changed, 14 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index f05e0e9..d7de2c97 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -539,7 +539,6 @@ config MTD_NAND_FSMC
- config MTD_NAND_XWAY
- 	tristate "Support for NAND on Lantiq XWAY SoC"
- 	depends on LANTIQ && SOC_TYPE_XWAY
--	select MTD_NAND_PLATFORM
- 	help
- 	  Enables support for NAND Flash chips on Lantiq XWAY SoCs. NAND is attached
- 	  to the External Bus Unit (EBU).
 diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index 2d74637..ec189e5 100644
+index 429ba02..1f2948c 100644
 --- a/drivers/mtd/nand/xway_nand.c
 +++ b/drivers/mtd/nand/xway_nand.c
-@@ -4,6 +4,7 @@
-  *  by the Free Software Foundation.
-  *
-  *  Copyright © 2012 John Crispin <blogic@openwrt.org>
-+ *  Copyright © 2016 Hauke Mehrtens <hauke@hauke-m.de>
-  */
+@@ -66,22 +66,23 @@
+ struct xway_nand_data {
+ 	struct nand_chip	chip;
+ 	unsigned long		csflags;
++	void __iomem		*nandaddr;
+ };
  
- #include <linux/mtd/nand.h>
-@@ -63,6 +64,10 @@
- #define NAND_CON_CSMUX		(1 << 1)
- #define NAND_CON_NANDM		1
- 
-+struct xway_nand_data {
-+	struct nand_chip	chip;
-+};
-+
- static void xway_reset_chip(struct nand_chip *chip)
+ static u8 xway_readb(struct mtd_info *mtd, int op)
  {
- 	unsigned long nandaddr = (unsigned long) chip->IO_ADDR_W;
-@@ -139,16 +144,51 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
- 	return ret;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	void __iomem *nandaddr = chip->IO_ADDR_R;
++	struct xway_nand_data *data = nand_get_controller_data(chip);
+ 
+-	return readb(nandaddr + op);
++	return readb(data->nandaddr + op);
  }
  
-+/*
-+ * Probe for the NAND device.
-+ */
- static int xway_nand_probe(struct platform_device *pdev)
+ static void xway_writeb(struct mtd_info *mtd, int op, u8 value)
  {
--	struct nand_chip *this = platform_get_drvdata(pdev);
--	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
--	const __be32 *cs = of_get_property(pdev->dev.of_node,
--					"lantiq,cs", NULL);
-+	struct xway_nand_data *data;
-+	struct mtd_info *mtd;
-+	struct resource *res;
-+	int err;
-+	void __iomem *nandaddr;
-+	u32 cs;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	void __iomem *nandaddr = chip->IO_ADDR_W;
++	struct xway_nand_data *data = nand_get_controller_data(chip);
+ 
+-	writeb(value, nandaddr + op);
++	writeb(value, data->nandaddr + op);
+ }
+ 
+ static void xway_select_chip(struct mtd_info *mtd, int select)
+@@ -154,7 +155,6 @@ static int xway_nand_probe(struct platform_device *pdev)
+ 	struct mtd_info *mtd;
+ 	struct resource *res;
+ 	int err;
+-	void __iomem *nandaddr;
+ 	u32 cs;
  	u32 cs_flag = 0;
  
-+	/* Allocate memory for the device structure (and zero it) */
-+	data = devm_kzalloc(&pdev->dev, sizeof(struct xway_nand_data),
-+			    GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	nandaddr = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(nandaddr))
-+		return PTR_ERR(nandaddr);
-+
-+	nand_set_flash_node(&data->chip, pdev->dev.of_node);
-+	mtd = nand_to_mtd(&data->chip);
-+	mtd->dev.parent = &pdev->dev;
-+
-+	data->chip.IO_ADDR_R = nandaddr;
-+	data->chip.IO_ADDR_W = nandaddr;
-+	data->chip.cmd_ctrl = xway_cmd_ctrl;
-+	data->chip.dev_ready = xway_dev_ready;
-+	data->chip.select_chip = xway_select_chip;
-+	data->chip.read_byte = xway_read_byte;
-+	data->chip.chip_delay = 30;
-+
-+	data->chip.ecc.mode = NAND_ECC_SOFT;
-+	data->chip.ecc.algo = NAND_ECC_HAMMING;
-+
-+	platform_set_drvdata(pdev, data);
-+	nand_set_controller_data(&data->chip, data);
-+
- 	/* load our CS from the DT. Either we find a valid 1 or default to 0 */
--	if (cs && (*cs == 1))
-+	err = of_property_read_u32(pdev->dev.of_node, "lantiq,cs", &cs);
-+	if (!err && cs == 1)
+@@ -165,16 +165,14 @@ static int xway_nand_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	nandaddr = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(nandaddr))
+-		return PTR_ERR(nandaddr);
++	data->nandaddr = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(data->nandaddr))
++		return PTR_ERR(data->nandaddr);
+ 
+ 	nand_set_flash_node(&data->chip, pdev->dev.of_node);
+ 	mtd = nand_to_mtd(&data->chip);
+ 	mtd->dev.parent = &pdev->dev;
+ 
+-	data->chip.IO_ADDR_R = nandaddr;
+-	data->chip.IO_ADDR_W = nandaddr;
+ 	data->chip.cmd_ctrl = xway_cmd_ctrl;
+ 	data->chip.dev_ready = xway_dev_ready;
+ 	data->chip.select_chip = xway_select_chip;
+@@ -195,16 +193,16 @@ static int xway_nand_probe(struct platform_device *pdev)
  		cs_flag = NAND_CON_IN_CS1 | NAND_CON_OUT_CS1;
  
  	/* setup the EBU to run in NAND mode on our base addr */
-@@ -164,43 +204,47 @@ static int xway_nand_probe(struct platform_device *pdev)
- 		| cs_flag, EBU_NAND_CON);
+-	ltq_ebu_w32(CPHYSADDR(nandaddr)
+-		| ADDSEL1_MASK(3) | ADDSEL1_REGEN, EBU_ADDSEL1);
++	ltq_ebu_w32(CPHYSADDR(data->nandaddr)
++		    | ADDSEL1_MASK(3) | ADDSEL1_REGEN, EBU_ADDSEL1);
  
- 	/* finish with a reset */
--	xway_reset_chip(this);
-+	xway_reset_chip(&data->chip);
+ 	ltq_ebu_w32(BUSCON1_SETUP | BUSCON1_BCGEN_RES | BUSCON1_WAITWRC2
+-		| BUSCON1_WAITRDC2 | BUSCON1_HOLDC1 | BUSCON1_RECOVC1
+-		| BUSCON1_CMULT4, LTQ_EBU_BUSCON1);
++		    | BUSCON1_WAITRDC2 | BUSCON1_HOLDC1 | BUSCON1_RECOVC1
++		    | BUSCON1_CMULT4, LTQ_EBU_BUSCON1);
  
--	return 0;
--}
-+	/* Scan to find existence of the device */
-+	err = nand_scan(mtd, 1);
-+	if (err)
-+		return err;
+ 	ltq_ebu_w32(NAND_CON_NANDM | NAND_CON_CSMUX | NAND_CON_CS_P
+-		| NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
+-		| cs_flag, EBU_NAND_CON);
++		    | NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
++		    | cs_flag, EBU_NAND_CON);
  
--static struct platform_nand_data xway_nand_data = {
--	.chip = {
--		.nr_chips		= 1,
--		.chip_delay		= 30,
--	},
--	.ctrl = {
--		.probe		= xway_nand_probe,
--		.cmd_ctrl	= xway_cmd_ctrl,
--		.dev_ready	= xway_dev_ready,
--		.select_chip	= xway_select_chip,
--		.read_byte	= xway_read_byte,
--	}
--};
-+	err = mtd_device_register(mtd, NULL, 0);
-+	if (err)
-+		nand_release(mtd);
-+
-+	return err;
-+}
- 
- /*
-- * Try to find the node inside the DT. If it is available attach out
-- * platform_nand_data
-+ * Remove a NAND device.
-  */
--static int __init xway_register_nand(void)
-+static int xway_nand_remove(struct platform_device *pdev)
- {
--	struct device_node *node;
--	struct platform_device *pdev;
--
--	node = of_find_compatible_node(NULL, NULL, "lantiq,nand-xway");
--	if (!node)
--		return -ENOENT;
--	pdev = of_find_device_by_node(node);
--	if (!pdev)
--		return -EINVAL;
--	pdev->dev.platform_data = &xway_nand_data;
--	of_node_put(node);
-+	struct xway_nand_data *data = platform_get_drvdata(pdev);
-+
-+	nand_release(nand_to_mtd(&data->chip));
-+
- 	return 0;
- }
- 
--subsys_initcall(xway_register_nand);
-+static const struct of_device_id xway_nand_match[] = {
-+	{ .compatible = "lantiq,nand-xway" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, xway_nand_match);
-+
-+static struct platform_driver xway_nand_driver = {
-+	.probe	= xway_nand_probe,
-+	.remove	= xway_nand_remove,
-+	.driver	= {
-+		.name		= "lantiq,nand-xway",
-+		.of_match_table = xway_nand_match,
-+	},
-+};
-+
-+module_platform_driver(xway_nand_driver);
-+
-+MODULE_LICENSE("GPL");
+ 	/* Scan to find existence of the device */
+ 	err = nand_scan(mtd, 1);
 -- 
 2.8.1
