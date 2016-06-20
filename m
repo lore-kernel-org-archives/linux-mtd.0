@@ -1,27 +1,26 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF2db-0007oH-CM
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 17:05:27 +0000
-Received: by mail-pa0-x22b.google.com with SMTP id hl6so52523153pac.2
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jun 2016 10:05:07 -0700 (PDT)
-Date: Mon, 20 Jun 2016 10:05:03 -0700
+ id 1bF2wg-0001KB-LY
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 17:25:11 +0000
+Received: by mail-pa0-x229.google.com with SMTP id wo6so16352615pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jun 2016 10:24:50 -0700 (PDT)
+Date: Mon, 20 Jun 2016 10:24:45 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, Daniel Golle <daniel@makrotopia.org>,
+Cc: Richard Weinberger <richard@nod.at>, Hauke Mehrtens <hauke@hauke-m.de>,
+ Daniel Golle <daniel@makrotopia.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  mark.rutland@arm.com, devicetree@vger.kernel.org,
- dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
- robh+dt@kernel.org, linux-mtd@lists.infradead.org, dwmw2@infradead.org
+ dedekind1@gmail.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
-Message-ID: <20160620170503.GA33122@google.com>
-References: <20160619130514.GB820@makrotopia.org>
- <20160619214820.GB1222@makrotopia.org>
- <c00ff150-9197-7bcf-8ea7-7ebba979d058@hauke-m.de>
- <6411961.soYuJ4Ixfs@wuerfel>
+Message-ID: <20160620172445.GB33752@google.com>
+References: <20160619130514.GB820@makrotopia.org> <6411961.soYuJ4Ixfs@wuerfel>
+ <5767A8A3.4030004@nod.at> <4012191.NTCe8d2REM@wuerfel>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6411961.soYuJ4Ixfs@wuerfel>
+In-Reply-To: <4012191.NTCe8d2REM@wuerfel>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +30,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, Jun 20, 2016 at 05:08:51PM +0200, Arnd Bergmann wrote:
+> On Monday, June 20, 2016 10:26:11 AM CEST Richard Weinberger wrote:
+> > Am 20.06.2016 um 10:09 schrieb Arnd Bergmann:
+> > > - MTD partitioning unfortunately does not seem to have a widely used
+> > >   method for identifying partitions from what's stored on the flash,
+> > >   unlike block devices, so whatever we normally have in the partition
+> > >   table has to be stored in DT. This really sucks, but I don't know
+> > >   what else to do about it.
+> > 
+> > Since blocks on a MTD can render bad you'd lose the table sooner or later.
+> > That's why we cannot store it on the MTD directly.
 
-I'll take a moment to hijack this and solicit comments on this old
-thread:
+That's assuming you're talking about NAND, and that no one has devised
+any clever partition scheme that is robust against bad blocks. I've seen
+attempts at the latter, but nothing widely used. And eventually, you're
+just reimplementing UBI anyway.
 
-On Mon, Jun 20, 2016 at 10:09:50AM +0200, Arnd Bergmann wrote:
-> - MTD partitioning unfortunately does not seem to have a widely used
->   method for identifying partitions from what's stored on the flash,
->   unlike block devices, so whatever we normally have in the partition
->   table has to be stored in DT. This really sucks, but I don't know
->   what else to do about it.
+About the former: some systems will still use a dual-flash system, where
+they get reliable partition information from a NOR flash to bootstrap
+getting the NAND up and running. So it's possible to avoid sticking all
+partitions in DT.
 
-I got sidetracked, but I have attempted previously to at least diminish
-the amount of MTD partitioning info that is stuck into DT:
+> > Defining the table in DT is at least less ugly than using the mtdparts=
+> > kernel parameter.
+> 
+> Right, there would be no benefit in using the kernel command line,
+> it just moves the information to another place inside of the same DT
+> (the /chosen property).
+> 
+> I think you can normally rely on the first block being readable
+> on flash, in particular if you write it very rarely (when updating
+> the partition information), so it would be technically possible to
+> have a partition table in there, but in practice that's not how
+> things are done, so the argument is useless.
 
-http://lists.infradead.org/pipermail/linux-mtd/2015-December/064076.html
-
-That series effectively accepts the fact that there isn't a single
-standard or widely used method for identifying partitions, but it does
-allow for a description that's at least more flexible than a static list
-of partitions. I'd appreciate any thoughts on that. The main factors
-that stalled that were that (a) there was some vague discomfort over the
-use of the "compatible" property (I could probably have argued my case
-better there) and (b) I didn't have more time to pursue that. I may pick
-this up again when I get some time, especially if there are constructive
-suggestions.
+It's not completely useless, but it's difficult for real technical
+reasons: many SoCs boot straight off address 0 of a flash (hopefully
+something reliable like NOR flash, but I've even seen that for NAND...),
+so you can't possibly put a partition table there. That doesn't preclude
+coming up with a decent non-0-address-based scheme, but nobody's really
+done that generically, although there are various vendor-specific
+attempts to just progressively scan all blocks on the flash -- see a few
+drivers/mtd/*part.c.
 
 Brian
