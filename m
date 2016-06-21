@@ -1,48 +1,21 @@
-Received: from mout.kundenserver.de ([212.227.126.134])
+Received: from mail-yw0-x243.google.com ([2607:f8b0:4002:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFN9p-0007kn-RJ
- for linux-mtd@lists.infradead.org; Tue, 21 Jun 2016 15:00:07 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: y2038@lists.linaro.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Deepa Dinamani <deepa.kernel@gmail.com>, Dave Kleikamp <shaggy@kernel.org>,
- jfs-discussion@lists.sourceforge.net,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Chris Mason <clm@fb.com>,
- "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>, buchino@cisco.com,
- Thomas Gleixner <tglx@linutronix.de>, "Yan, Zheng" <zyan@redhat.com>,
- jejb@linux.vnet.ibm.com, Paul Moore <paul@paul-moore.com>,
- Linux SCSI List <linux-scsi@vger.kernel.org>,
- Ilya Dryomov <idryomov@gmail.com>,
- "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
- Changman Lee <cm224.lee@samsung.com>, Mark Fasheh <mfasheh@suse.com>,
- sramars@cisco.com, John Stultz <john.stultz@linaro.org>,
- Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, ceph-devel <ceph-devel@vger.kernel.org>,
- Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
- Alex Elder <elder@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
- Sage Weil <sage@redhat.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Josef Bacik <jbacik@fb.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, hiralpat@cisco.com,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Eric Paris <eparis@redhat.com>, "Linux F2FS DEV,
- Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- Steve French <sfrench@samba.org>, linux-audit@redhat.com,
- ocfs2-devel@oss.oracle.com, Jan Kara <jack@suse.com>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, lustre-devel@lists.lustre.org,
- Anna Schumaker <anna.schumaker@netapp.com>,
- linux-btrfs <linux-btrfs@vger.kernel.org>, Joel Becker <jlbec@evilplan.org>
-Subject: Re: [Y2038] [PATCH v2 00/24] Delete CURRENT_TIME and CURRENT_TIME_SEC
- macros
-Date: Tue, 21 Jun 2016 17:00:37 +0200
-Message-ID: <4953017.3z0GqUlq8o@wuerfel>
-In-Reply-To: <CA+55aFzK2K-7UeQRsWR7ooNHMMbtMFRAF60byR1Gvmbf9XWhbA@mail.gmail.com>
-References: <1466382443-11063-1-git-send-email-deepa.kernel@gmail.com>
- <CA+55aFzK2K-7UeQRsWR7ooNHMMbtMFRAF60byR1Gvmbf9XWhbA@mail.gmail.com>
+ id 1bFNya-0003LX-S2
+ for linux-mtd@lists.infradead.org; Tue, 21 Jun 2016 15:52:33 +0000
+Received: by mail-yw0-x243.google.com with SMTP id f75so2276143ywb.3
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Jun 2016 08:52:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20160621164639.23fde5d6@bbrezillon>
+References: <1466519749-7729-1-git-send-email-s.hauer@pengutronix.de>
+ <20160621164639.23fde5d6@bbrezillon>
+From: Han Xu <xhnjupt@gmail.com>
+Date: Tue, 21 Jun 2016 10:52:09 -0500
+Message-ID: <CA+EcR21O9NZLKWiJXjXA4H9Lbo-gyKR3yiCNFBKUJwrYR1gSHg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: Fix ecc strength calculation
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Han Xu <han.xu@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -52,96 +25,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, June 20, 2016 11:03:01 AM CEST you wrote:
-> On Sun, Jun 19, 2016 at 5:26 PM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
-> > The series is aimed at getting rid of CURRENT_TIME and CURRENT_TIME_SEC macros.
+On Tue, Jun 21, 2016 at 9:46 AM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Tue, 21 Jun 2016 16:35:49 +0200
+> Sascha Hauer <s.hauer@pengutronix.de> wrote:
+>
+>> BCH ECC correction works in chunks of 512 bytes, so a 2k page size nand
+>> is divided into 4 chunks. Hardware requires that each chunk has a full
+>> number of bytes, so when we need 9 bits per chunk we must round up to
+>> two bytes. The current code misses that and calculates a ECC strength
+>> of 18 for a 2048+128 byte page size NAND. ECC strength of 18 requires
+>> 30 bytes per chunk, so a total of 4 * (512 + 30) + 10 = 2178 bytes when
+>> the device only has a page size of 2176 bytes.
+>
+> AFAIR, the GPMI/ECC engine operates at the bit level (which is a pain
+> to deal with BTW), and is only requiring a byte alignment on the total
+> number of ECC bits. So here, DIV_ROUND_UP(18 * 13 * 4, 8) = 117, which
+> fits in the 118 bytes (128 bytes - 10 bytes of 'metadata').
+>
+> Han, can you confirm that?
 
-> Gcc handles 8-byte structure returns (on most architectures) by
-> returning them as two 32-bit registers (%edx:%eax on x86). But once it
-> is timespec64, that will no longer be the case, and the calling
-> convention will end up using a pointer to the local stack instead.
+Correct, BCH module works at bit level, 18bit ECC won't exceed the oob size.
 
-I guess we already have that today, as the implementation of
-current_fs_time() is
+>
+>>
+>> Fix this by first calculating the number of bytes per chunk we have
+>> available for ECC which also makes it easier to follow the calculation.
+>>
+>> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+>> ---
+>>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 28 ++++++++--------------------
+>>  1 file changed, 8 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>> index 6e46156..95fb3dc 100644
+>> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>> @@ -119,32 +119,20 @@ static irqreturn_t bch_irq(int irq, void *cookie)
+>>       return IRQ_HANDLED;
+>>  }
+>>
+>> -/*
+>> - *  Calculate the ECC strength by hand:
+>> - *   E : The ECC strength.
+>> - *   G : the length of Galois Field.
+>> - *   N : The chunk count of per page.
+>> - *   O : the oobsize of the NAND chip.
+>> - *   M : the metasize of per page.
+>> - *
+>> - *   The formula is :
+>> - *           E * G * N
+>> - *         ------------ <= (O - M)
+>> - *                  8
+>> - *
+>> - *      So, we get E by:
+>> - *                    (O - M) * 8
+>> - *              E <= -------------
+>> - *                       G * N
+>> - */
+>>  static inline int get_ecc_strength(struct gpmi_nand_data *this)
+>>  {
+>>       struct bch_geometry *geo = &this->bch_geometry;
+>>       struct mtd_info *mtd = nand_to_mtd(&this->nand);
+>>       int ecc_strength;
+>> +     int n;
+>> +
+>> +     /* number of ecc bytes we have per chunk */
+>> +     n = (mtd->oobsize - geo->metadata_size) / geo->ecc_chunk_count;
+>> +
+>> +     /* in bits */
+>> +     n <<= 3;
+>>
+>> -     ecc_strength = ((mtd->oobsize - geo->metadata_size) * 8)
+>> -                     / (geo->gf_len * geo->ecc_chunk_count);
+>> +     ecc_strength = n / geo->gf_len;
+>>
+>>       /* We need the minor even number. */
+>>       return round_down(ecc_strength, 2);
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-static inline struct timespec64 tk_xtime(struct timekeeper *tk)
-{
-        struct timespec64 ts;
 
-        ts.tv_sec = tk->xtime_sec;
-        ts.tv_nsec = (long)(tk->tkr_mono.xtime_nsec >> tk->tkr_mono.shift);
-        return ts;
-}
-extern struct timespec64 current_kernel_time64(void);
-struct timespec64 current_kernel_time64(void)
-{
-        struct timekeeper *tk = &tk_core.timekeeper;
-        struct timespec64 now;
-        unsigned long seq;
 
-        do {
-                seq = read_seqcount_begin(&tk_core.seq);
+-- 
+Sincerely,
 
-                now = tk_xtime(tk);
-        } while (read_seqcount_retry(&tk_core.seq, seq));
-
-        return now;
-}
-static inline struct timespec current_kernel_time(void)
-{
-        struct timespec64 now = current_kernel_time64();
-
-        return timespec64_to_timespec(now);
-}
-extern struct timespec current_fs_time(struct super_block *sb);
-struct timespec current_fs_time(struct super_block *sb)
-{       
-        struct timespec now = current_kernel_time();
-        return timespec_trunc(now, sb->s_time_gran);
-}       
-
-We can surely do a little better than this, independent of the
-conversion in Deepa's patch set.
-
-> So for 32-bit code generation, we *may* want to introduce a new model of doing
-> 
->     set_inode_time(inode, ATTR_ATIME | ATTR_MTIME);
-> 
-> which basically just does
-> 
->     inode->i_atime = inode->i_mtime = current_time(inode);
-> 
-> but with a much easier calling convention on 32-bit architectures.
-> 
-> But that is entirely orthogonal to this patch-set, and should be seen
-> as a separate issue.
-
-I've played around with that, but found it hard to avoid going
-through memory other than going all the way to the tk_xtime()
-access to copy both tk->xtime_sec and the nanoseconds into
-the inode fields.
-
-Without that, the set_inode_time() implementation ends up
-being more expensive than
-inode->i_atime = inode->i_ctime = inode->i_mtime = current_time(inode);
-because we still copy through the stack but also have
-a couple of conditional branches that we don't have at the
-moment.
-
-At the moment, the triple assignment becomes (here on ARM)
-
-   c:   4668            mov     r0, sp
-  12:   f7ff fffe       bl      0 <current_kernel_time64>
-  3e:   f107 0520       add.w   r5, r7, #32
-                        12: R_ARM_THM_CALL      current_kernel_time64
-  16:   f106 0410       add.w   r4, r6, #16
-  1a:   e89d 000f       ldmia.w sp, {r0, r1, r2, r3} # load from stack
-  1e:   e885 000f       stmia.w r5, {r0, r1, r2, r3} # store into i_atime
-  22:   e884 000f       stmia.w r4, {r0, r1, r2, r3} #            i_ctime
-  26:   e886 000f       stmia.w r6, {r0, r1, r2, r3} #            i_mtime
-
-and a slightly more verbose version of the same thing on x86
-(storing only 12 bytes instead of 16 is cheaper there, while
-ARM does a store-multiple to copy the entire structure).
-
-        Arnd
+Han XU
