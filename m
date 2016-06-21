@@ -1,33 +1,15 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFLiV-0000rM-Nu
- for linux-mtd@lists.infradead.org; Tue, 21 Jun 2016 13:27:48 +0000
-Date: Tue, 21 Jun 2016 15:27:14 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, karlzhang@micron.com, beanhuo@micron.com,
- Jiancheng Xue <xuejiancheng@huawei.com>, Peter Pan
- <peterpandong@micron.com>
-Subject: Re: [PATCH 02/11] mtd: nand_bbt: introduce BBT related data structure
-Message-ID: <20160621152714.0ac4e8c3@bbrezillon>
-In-Reply-To: <CAAyFORLMRU+-=YfFJtLubxuwHSwz7xErBSe1eKJHzEWuxGkvwA@mail.gmail.com>
-References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
- <1457923684-13505-3-git-send-email-peterpandong@micron.com>
- <20160325093519.34c3f7fa@bbrezillon>
- <CAAyFORKJzXTSgXvHgNe=AtExs8_9sVNEYMRefYLXDqG7-u-yRg@mail.gmail.com>
- <20160418094444.152042ee@bbrezillon>
- <CAAyFORL_Pqz34-tgz7aBQ3au9RzZwJs6DA-8ROJxK0xtMZnp_Q@mail.gmail.com>
- <20160419093424.27cfc585@bbrezillon>
- <CAAyFORKWTKmBZNx22NaOwHUzH+FW34PNxMuEqejXvBSwru9FoA@mail.gmail.com>
- <20160504223309.2da46b02@bbrezillon>
- <CAAyFOR+-s-4-sMs70D5-NhNgjExXKv4KXLMBsRESQg1+YjvNig@mail.gmail.com>
- <CAAyFORLMRU+-=YfFJtLubxuwHSwz7xErBSe1eKJHzEWuxGkvwA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bFMmk-0000ER-Gl
+ for linux-mtd@lists.infradead.org; Tue, 21 Jun 2016 14:36:15 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Han Xu <han.xu@nxp.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] mtd: nand: gpmi: Fix ecc strength calculation
+Date: Tue, 21 Jun 2016 16:35:49 +0200
+Message-Id: <1466519749-7729-1-git-send-email-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,61 +19,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Jun 2016 10:38:27 +0800
-Peter Pan <peterpansjtu@gmail.com> wrote:
+BCH ECC correction works in chunks of 512 bytes, so a 2k page size nand
+is divided into 4 chunks. Hardware requires that each chunk has a full
+number of bytes, so when we need 9 bits per chunk we must round up to
+two bytes. The current code misses that and calculates a ECC strength
+of 18 for a 2048+128 byte page size NAND. ECC strength of 18 requires
+30 bytes per chunk, so a total of 4 * (512 + 30) + 10 = 2178 bytes when
+the device only has a page size of 2176 bytes.
 
-> >>
-> >> Again, I'm sorry that you had to be the one supporting this transition,
-> >> but I don't want to introduce any more quick-and-dirty hacks that we'll
-> >> have to maintain until someone decides to tackle the real problem.  
-> >
-> > No sorry needed. I'd like to do the contribution.  
-> 
-> I did test on your nand generic patches. And I found two error about nand helper
-> functions. Below is my fixing. After my fixing, BBT is functional on
-> my platform.
-> 
+Fix this by first calculating the number of bytes per chunk we have
+available for ECC which also makes it easier to follow the calculation.
 
-Thanks for testing it (and fixing the implementation). I'll try to send
-the series after the 4.8 merge window, unless you want to take care of
-it and send a version right now.
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 28 ++++++++--------------------
+ 1 file changed, 8 insertions(+), 20 deletions(-)
 
-> 
-> 
-> From 2162e8ece4ffa09bb00abe383714a95f4b74aad8 Mon Sep 17 00:00:00 2001
-> From: Peter Pan <peterpandong@micron.com>
-> Date: Fri, 17 Jun 2016 10:31:59 +0800
-> Subject: [PATCH] mtd: nand: fix nand helper function
-> 
-> nand_page_size() and nand_eraseblock_to_offs() return
-> fault value. Fix them.
-> 
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> ---
->  include/linux/mtd/nand.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 583eb40..ffee2a7 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -162,7 +162,7 @@ static inline size_t nand_pages_to_len(struct
-> nand_device *nand, int npages)
->   */
->  static inline size_t nand_page_size(struct nand_device *nand)
->  {
-> -    return nand->memorg.eraseblocksize;
-> +    return nand->memorg.pagesize;
->  }
-> 
->  /**
-> @@ -197,7 +197,7 @@ static inline size_t nand_eraseblock_size(struct
-> nand_device *nand)
->  static inline loff_t nand_eraseblock_to_offs(struct nand_device *nand,
->                           int block)
->  {
-> -    return (loff_t)nand->memorg.pagesize * block;
-> +    return (loff_t)nand->memorg.eraseblocksize * block;
->  }
-> 
->  /**
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 6e46156..95fb3dc 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -119,32 +119,20 @@ static irqreturn_t bch_irq(int irq, void *cookie)
+ 	return IRQ_HANDLED;
+ }
+ 
+-/*
+- *  Calculate the ECC strength by hand:
+- *	E : The ECC strength.
+- *	G : the length of Galois Field.
+- *	N : The chunk count of per page.
+- *	O : the oobsize of the NAND chip.
+- *	M : the metasize of per page.
+- *
+- *	The formula is :
+- *		E * G * N
+- *	      ------------ <= (O - M)
+- *                  8
+- *
+- *      So, we get E by:
+- *                    (O - M) * 8
+- *              E <= -------------
+- *                       G * N
+- */
+ static inline int get_ecc_strength(struct gpmi_nand_data *this)
+ {
+ 	struct bch_geometry *geo = &this->bch_geometry;
+ 	struct mtd_info	*mtd = nand_to_mtd(&this->nand);
+ 	int ecc_strength;
++	int n;
++
++	/* number of ecc bytes we have per chunk */
++	n = (mtd->oobsize - geo->metadata_size) / geo->ecc_chunk_count;
++
++	/* in bits */
++	n <<= 3;
+ 
+-	ecc_strength = ((mtd->oobsize - geo->metadata_size) * 8)
+-			/ (geo->gf_len * geo->ecc_chunk_count);
++	ecc_strength = n / geo->gf_len;
+ 
+ 	/* We need the minor even number. */
+ 	return round_down(ecc_strength, 2);
+-- 
+2.8.1
