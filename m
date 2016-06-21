@@ -1,17 +1,33 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF7jv-0000JE-9R
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 22:32:20 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: dedekind1@gmail.com, pfaehler@isse.de, Richard Weinberger <richard@nod.at>,
- stable@vger.kernel.org
-Subject: [PATCH v2] ubi: Make recover_peb power cut aware
-Date: Tue, 21 Jun 2016 00:31:50 +0200
-Message-Id: <1466461910-18858-1-git-send-email-richard@nod.at>
+ id 1bFLiV-0000rM-Nu
+ for linux-mtd@lists.infradead.org; Tue, 21 Jun 2016 13:27:48 +0000
+Date: Tue, 21 Jun 2016 15:27:14 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpansjtu@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, karlzhang@micron.com, beanhuo@micron.com,
+ Jiancheng Xue <xuejiancheng@huawei.com>, Peter Pan
+ <peterpandong@micron.com>
+Subject: Re: [PATCH 02/11] mtd: nand_bbt: introduce BBT related data structure
+Message-ID: <20160621152714.0ac4e8c3@bbrezillon>
+In-Reply-To: <CAAyFORLMRU+-=YfFJtLubxuwHSwz7xErBSe1eKJHzEWuxGkvwA@mail.gmail.com>
+References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
+ <1457923684-13505-3-git-send-email-peterpandong@micron.com>
+ <20160325093519.34c3f7fa@bbrezillon>
+ <CAAyFORKJzXTSgXvHgNe=AtExs8_9sVNEYMRefYLXDqG7-u-yRg@mail.gmail.com>
+ <20160418094444.152042ee@bbrezillon>
+ <CAAyFORL_Pqz34-tgz7aBQ3au9RzZwJs6DA-8ROJxK0xtMZnp_Q@mail.gmail.com>
+ <20160419093424.27cfc585@bbrezillon>
+ <CAAyFORKWTKmBZNx22NaOwHUzH+FW34PNxMuEqejXvBSwru9FoA@mail.gmail.com>
+ <20160504223309.2da46b02@bbrezillon>
+ <CAAyFOR+-s-4-sMs70D5-NhNgjExXKv4KXLMBsRESQg1+YjvNig@mail.gmail.com>
+ <CAAyFORLMRU+-=YfFJtLubxuwHSwz7xErBSe1eKJHzEWuxGkvwA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,72 +37,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-recover_peb() was never power cut aware,
-if a power cut happened right after writing the VID header
-upon next attach UBI would blindly use the new partial written
-PEB and all data from the old PEB is lost.
+On Fri, 17 Jun 2016 10:38:27 +0800
+Peter Pan <peterpansjtu@gmail.com> wrote:
 
-In order to make recover_peb() power cut aware, write the new
-VID with a proper crc and copy_flag set such that the UBI attach
-process will detect whether the new PEB is completely written
-or not.
-We cannot directly use ubi_eba_atomic_leb_change() since we'd
-have to unlock the LEB which is facing a write error.
+> >>
+> >> Again, I'm sorry that you had to be the one supporting this transition,
+> >> but I don't want to introduce any more quick-and-dirty hacks that we'll
+> >> have to maintain until someone decides to tackle the real problem.  
+> >
+> > No sorry needed. I'd like to do the contribution.  
+> 
+> I did test on your nand generic patches. And I found two error about nand helper
+> functions. Below is my fixing. After my fixing, BBT is functional on
+> my platform.
+> 
 
-Cc: stable@vger.kernel.org
-Reported-by: Jörg Pfähler <pfaehler@isse.de>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/eba.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+Thanks for testing it (and fixing the implementation). I'll try to send
+the series after the 4.8 merge window, unless you want to take care of
+it and send a version right now.
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 5780dd1..ebf5172 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -575,6 +575,7 @@ static int recover_peb(struct ubi_device *ubi, int pnum, int vol_id, int lnum,
- 	int err, idx = vol_id2idx(ubi, vol_id), new_pnum, data_size, tries = 0;
- 	struct ubi_volume *vol = ubi->volumes[idx];
- 	struct ubi_vid_hdr *vid_hdr;
-+	uint32_t crc;
- 
- 	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
- 	if (!vid_hdr)
-@@ -599,14 +600,8 @@ retry:
- 		goto out_put;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
--	err = ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
--	if (err) {
--		up_read(&ubi->fm_eba_sem);
--		goto write_error;
--	}
-+	ubi_assert(vid_hdr->vol_type == UBI_VID_DYNAMIC);
- 
--	data_size = offset + len;
- 	mutex_lock(&ubi->buf_mutex);
- 	memset(ubi->peb_buf + offset, 0xFF, len);
- 
-@@ -621,6 +616,19 @@ retry:
- 
- 	memcpy(ubi->peb_buf + offset, buf, len);
- 
-+	data_size = offset + len;
-+	crc = crc32(UBI_CRC32_INIT, ubi->peb_buf, data_size);
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
-+	vid_hdr->copy_flag = 1;
-+	vid_hdr->data_size = cpu_to_be32(data_size);
-+	vid_hdr->data_crc = cpu_to_be32(crc);
-+	err = ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
-+	if (err) {
-+		mutex_unlock(&ubi->buf_mutex);
-+		up_read(&ubi->fm_eba_sem);
-+		goto write_error;
-+	}
-+
- 	err = ubi_io_write_data(ubi, ubi->peb_buf, new_pnum, 0, data_size);
- 	if (err) {
- 		mutex_unlock(&ubi->buf_mutex);
--- 
-2.7.3
+> 
+> 
+> From 2162e8ece4ffa09bb00abe383714a95f4b74aad8 Mon Sep 17 00:00:00 2001
+> From: Peter Pan <peterpandong@micron.com>
+> Date: Fri, 17 Jun 2016 10:31:59 +0800
+> Subject: [PATCH] mtd: nand: fix nand helper function
+> 
+> nand_page_size() and nand_eraseblock_to_offs() return
+> fault value. Fix them.
+> 
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> ---
+>  include/linux/mtd/nand.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 583eb40..ffee2a7 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -162,7 +162,7 @@ static inline size_t nand_pages_to_len(struct
+> nand_device *nand, int npages)
+>   */
+>  static inline size_t nand_page_size(struct nand_device *nand)
+>  {
+> -    return nand->memorg.eraseblocksize;
+> +    return nand->memorg.pagesize;
+>  }
+> 
+>  /**
+> @@ -197,7 +197,7 @@ static inline size_t nand_eraseblock_size(struct
+> nand_device *nand)
+>  static inline loff_t nand_eraseblock_to_offs(struct nand_device *nand,
+>                           int block)
+>  {
+> -    return (loff_t)nand->memorg.pagesize * block;
+> +    return (loff_t)nand->memorg.eraseblocksize * block;
+>  }
+> 
+>  /**
