@@ -1,24 +1,16 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFiuN-0000E3-Sg
- for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 14:13:37 +0000
-Date: Wed, 22 Jun 2016 16:13:04 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Artem
- Bityutskiy <dedekind1@gmail.com>, Alexander Kaplan <alex@nextthing.co>,
- Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [RFC] Raising the UBI version
-Message-ID: <20160622161304.6a16da85@bbrezillon>
-In-Reply-To: <576A9B1D.3010201@nod.at>
-References: <57699356.4030802@nod.at> <20160622144344.07ba4d41@bbrezillon>
- <576A989A.6080502@nod.at> <20160622160118.28a4339a@bbrezillon>
- <576A9B1D.3010201@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from smtpbg128.qq.com ([183.60.2.224])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bFiyJ-0002RO-FZ
+ for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 14:17:40 +0000
+From: "=?gb18030?B?u9TJ2Q==?=" <wang502742203@qq.com>
+To: "=?gb18030?B?bGludXgtbXRk?=" <linux-mtd@lists.infradead.org>
+Subject: ubifs:questions about this filesystem
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="gb18030"
+Content-Transfer-Encoding: base64
+Date: Wed, 22 Jun 2016 22:13:30 +0800
+Message-ID: <tencent_7F3FDDEB204356DB76EC1298@qq.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +20,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 22 Jun 2016 16:05:17 +0200
-Richard Weinberger <richard@nod.at> wrote:
-
-> Am 22.06.2016 um 16:01 schrieb Boris Brezillon:
-> > On Wed, 22 Jun 2016 15:54:34 +0200
-> > Richard Weinberger <richard@nod.at> wrote:
-> >   
-> >> Am 22.06.2016 um 14:43 schrieb Boris Brezillon:  
-> >>> Why do we need to hardcode /sys/class/ubi/version to 1? We just need to
-> >>> update the mtd-utils to support version 2. Am I missing something?    
-> >>
-> >> We don't want to break existing userspace.
-> >> Why should ubimkvol or ubiattach fail on a system with SLC NAND and
-> >> CONFIG_MTD_UBI_CONSOLIDATE=y?  
-> > 
-> > But version won't be set to 2 in this case. If it's an SLC NAND we
-> > don't need to use UBI version 2, do we.  
-> 
-> /sys/class/ubi/version is the version of the UBI implementation,
-> not the version of the attached UBI image.
-> It will the here as soon you load the UBI module.
-
-Do we have /sys/class/ubi/ubiX/version for the UBI image version?
-This is still unclear to me why we need to version the
-user-space/kernel-space ABI, since it's supposed to be backward
-compatible, so adding new features requires adding new ioctls and
-keeping the old ones in a working state.
-
-What is /sys/class/ubi/version actually encoding? Isn't it encoding the
-fact that a specific UBI implementation is supporting all UBI on-flash
-formats up to format version X (that was my understanding)?
+SGksTVREIGxpc3RzCkkndmUgZ290IHR3byBxdWVzdGlvbnMgYWJvdXQgdWJpZnMgbGlzdGVk
+IGJlbG93LAoxLiBJZiBJIHdyaXRlIGEgZmlsZSB0byB0aGUgZmlsZXN5c3RlbSwgZG9zZSBp
+dCBnbyB0byBhIG5ldyBibG9jayBvciB0aGUgc2FtZSBibG9jayBsYXN0IHdyaXR0ZW4gZmls
+ZSBnb2VzPwoyLiBXaGF0J3MgdGhlIHByaW9yaXR5IG9mIEdDIHRocmVhZD8gSWYgR0MgdGhy
+ZWFkIGlzIHdvcmtpbmcgYmFja2dyb3VuZCwgd2hhdCBlZmZlY3Qgd2lsbCBpdCBicmluZyB0
+byBvdGhlciB3b3JraW5nIHRocmVhZHMgaW4gbXkgZW1iZWRkZWQgc3lzdGVtPyBDYW4gb3Ro
+ZXIgdGhyZWFkcyBiZSBibG9ja2VkPwoKQmVzdCBSZWdhcmRzLApBbmR5
