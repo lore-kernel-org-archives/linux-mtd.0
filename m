@@ -1,24 +1,22 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFhPh-0005oR-Mb
- for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 12:37:52 +0000
-Subject: Re: [RESEND PATCH v11] mtd: spi-nor: add hisilicon spi-nor flash
- controller driver
-To: Jiancheng Xue <xuejiancheng@hisilicon.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <jteki@openedev.com>, <ezequiel@vanguardiasur.com.ar>,
- <marek.vasut@gmail.com>, <robh+dt@kernel.org>
-References: <1465806112-1425-1-git-send-email-xuejiancheng@hisilicon.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <yanhaifeng@hisilicon.com>,
- <yanghongwei@hisilicon.com>, <linshunquan1@hisilicon.com>
-Message-ID: <576A8685.70808@atmel.com>
-Date: Wed, 22 Jun 2016 14:37:25 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bFhVo-0004I3-Ff
+ for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 12:44:10 +0000
+Date: Wed, 22 Jun 2016 14:43:44 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Artem
+ Bityutskiy <dedekind1@gmail.com>, Alexander Kaplan <alex@nextthing.co>,
+ Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [RFC] Raising the UBI version
+Message-ID: <20160622144344.07ba4d41@bbrezillon>
+In-Reply-To: <57699356.4030802@nod.at>
+References: <57699356.4030802@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <1465806112-1425-1-git-send-email-xuejiancheng@hisilicon.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,624 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jiancheng,
+On Tue, 21 Jun 2016 21:19:50 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-maybe a "depends on HAS_DMA" in the Kconfig may fix the kbuild test robot error.
-Otherwise your driver looks good now :)
+> Dear MTD folks,
+> 
+> For the emerging MLC NAND support we need to change the UBI on-flash format.
+> Of course existing UBI images will keep working and remain fully supported.
+> Our approach to deal with MLC (and basically TLC) NAND is LEB consolidation.
+> In this operation mode a single PEB can host multiple LEBs. In the MLC case 2,
+> for TLC 3. For more details please refer to my announcement[0].
+> Hosting multiple LEBs in a single PEB means that beside of a single EC header,
+> a PEB will carry multiple VID headers, one for each LEB it contains.
+> This change needs to be annotated in the EC header.
+> 
+> Both EC and VID headers have a version field. Currently it is set to 1. Our
+> original plan was just raising UBI_VERSION to 2, and, of course, accept
+> version 1 image as well. The first hassle was that UBI_VERSION is exported
+> in /sys/class/ubi/version and libubi refuses to work if the version is not 1.
+> Breaking existing userspace tools is not acceptable, so we need another
+> approach.
+> 
+> LEB consolidation is not really a completely new UBI implementation, it is
+> an addon feature. So we came up with the idea of having feature flags in
+> the EC header. Maybe we need later more flags, who knows?
+> 
+> Boris and I sat down and came up with two possible ways to implement such
+> flags:
+> 
+> i) Rename ->version in EC and VID headers to ->features. ->features will
+>    be evaluated at attach time and UBI has to figure whether it supports
+>    all request features. The field is one byte long, therefore we can encode
+>    8 features.
+>    As starter two features would be supported:
+>       UBI_FEAT_BASE	= 1
+>       UBI_FEAT_CONSO	= 2
+>    That means regular UBI images on SLC would only have set UBI_FEAT_BASE and
+>    nothing else. Existing UBI implementations would see ->features with
+>    UBI_FEAT_BASE set as ->version = 1, so we're safe. On MLC NAND we'd set
+>    UBI_FEAT_BASE and UBI_FEAT_CONSO which would be seen as ->version = 3 and
+>    rejected by UBI implementations which do not support LEB consolidation.
+>    To not break userspace tools /sys/class/ubi/version would be hardcoded to 1
+>    and the ->features field exported in /sys/class/ubi/features and
+>    /sys/class/ubi/ubiX/features_used. The features sysfs file denotes what
+>    features this UBI implementation supports and features_used shows what
+>    features the attached UBI image requested. If we change the UBI on-flash
+>    format in a major way, UBI_FEAT_BASE would not be set.
+> 
+> ii) Keep ->version in EC and VID headers and use padding bytes from both headers
+>     to add a new ->features field. If ->version is 1, ->features will remain 0
+>     and not evaluated. If ->features should be evaluated, ->version will be 2.
+>     So, on MLC NAND ->version will be 2 and ->features has UBI_FEAT_CONSO set.
+>     This approach is less complicated but we have to claim padding bytes.
+>     Of course we also have to hardcode /sys/class/ubi/version to 1 too and having
+>     a features file in sysfs.
 
-Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Why do we need to hardcode /sys/class/ubi/version to 1? We just need to
+update the mtd-utils to support version 2. Am I missing something?
 
-Best regards,
-
-Cyrille
-
-Le 13/06/2016 10:21, Jiancheng Xue a écrit :
-> Add hisilicon spi-nor flash controller driver
 > 
-> Signed-off-by: Binquan Peng <pengbinquan@hisilicon.com>
-> Signed-off-by: Jiancheng Xue <xuejiancheng@hisilicon.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> ---
-> change log
-> v11:
-> Fixed issues pointed by Brian Norris and Cyrille Pitchen.
-> 1)Changed hisi_spi_nor_read_reg()/write_reg() to configure registers
-> without sniffing the opcodes.
-> 2)Deleted hisi_spi_nor_erase() and used default implementation instead.
-> 3)Changed hisi_spi_nor_dma_transfer() to return a integer type value
-> instead of nothing.
-> 4)Simplified hisi_spi_nor_read()/write() as Brian suggested.
+> That said, we'd keep ->version and ->features between EC and VID headers in
+> sync. Supporting different versions of EC and VID headers at the same time
+> would complicate the code a lot.
 > 
-> v10:
-> Fixed issues pointed by Marek Vasut.
-> 1)Droped the underscores in the argument names of some macros' definition.
-> 2)Changed some varibles to correct type.
-> 3)Rewrote hisi_spi_nor_read/write for readability.
-> 4)Added new functions hisi_spi_nor_register/unregister_all
-> 5)Changed to dynamically allocation for spi_nor embeded in hifmc_host.
-> Fixed issues pointed by Brian Norris.
-> 1)Replaced some headers with more accurate ones.
-> v9:
-> Fixed issues pointed by Jagan Teki.
-> v8:
-> Fixed issues pointed by Ezequiel Garcia and Brian Norris.
-> Moved dts binding file to mtd directory.
-> Changed the compatible string more specific.
-> v7:
-> Rebased to v4.5-rc3.
-> Fixed issues pointed by Ezequiel Garcia.
-> v6:
-> Based on v4.5-rc2
-> Fixed issues pointed by Ezequiel Garcia.
-> v5:
-> Fixed a compile error.
-> v4:
-> Rebased to v4.5-rc1
-> v3:
-> Added a compatible string "hisilicon,hi3519-sfc".
-> v2:
-> Fixed some compiling warings.
+> Another thing to think about is storing the number of LEBs a PEB can contain
+> in the EC header. Usually this would be determined at runtime but maybe it
+> makes sense to store it also on-flash to detect misconfiguration,
+> like we do already for VID offset in the EC header.
 > 
->  .../bindings/mtd/hisilicon,fmc-spi-nor.txt         |  24 +
->  drivers/mtd/spi-nor/Kconfig                        |   7 +
->  drivers/mtd/spi-nor/Makefile                       |   1 +
->  drivers/mtd/spi-nor/hisi-sfc.c                     | 489 +++++++++++++++++++++
->  4 files changed, 521 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
->  create mode 100644 drivers/mtd/spi-nor/hisi-sfc.c
+> What do you think? I'm happy with either i) or ii), the biggest concern we have
+> is that we cut something into stone and break stuff or make trouble unavoidable.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt b/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
-> new file mode 100644
-> index 0000000..7498152
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
-> @@ -0,0 +1,24 @@
-> +HiSilicon SPI-NOR Flash Controller
-> +
-> +Required properties:
-> +- compatible : Should be "hisilicon,fmc-spi-nor" and one of the following strings:
-> +		"hisilicon,hi3519-spi-nor"
-> +- address-cells : Should be 1.
-> +- size-cells : Should be 0.
-> +- reg : Offset and length of the register set for the controller device.
-> +- reg-names : Must include the following two entries: "control", "memory".
-> +- clocks : handle to spi-nor flash controller clock.
-> +
-> +Example:
-> +spi-nor-controller@10000000 {
-> +	compatible = "hisilicon,hi3519-spi-nor", "hisilicon,fmc-spi-nor";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	reg = <0x10000000 0x1000>, <0x14000000 0x1000000>;
-> +	reg-names = "control", "memory";
-> +	clocks = <&clock HI3519_FMC_CLK>;
-> +	spi-nor@0 {
-> +		compatible = "jedec,spi-nor";
-> +		reg = <0>;
-> +	};
-> +};
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index d42c98e..b9ff675 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -38,6 +38,13 @@ config SPI_FSL_QUADSPI
->  	  This controller does not support generic SPI. It only supports
->  	  SPI NOR.
->  
-> +config SPI_HISI_SFC
-> +	tristate "Hisilicon SPI-NOR Flash Controller(SFC)"
-> +	depends on ARCH_HISI || COMPILE_TEST
-> +	depends on HAS_IOMEM
-> +	help
-> +	  This enables support for hisilicon SPI-NOR flash controller.
-> +
->  config SPI_NXP_SPIFI
->  	tristate "NXP SPI Flash Interface (SPIFI)"
->  	depends on OF && (ARCH_LPC18XX || COMPILE_TEST)
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 0bf3a7f8..8a6fa69 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,4 +1,5 @@
->  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
->  obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
-> +obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
->  obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
->  obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
-> diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
-> new file mode 100644
-> index 0000000..44664c3
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/hisi-sfc.c
-> @@ -0,0 +1,489 @@
-> +/*
-> + * HiSilicon SPI Nor Flash Controller Driver
-> + *
-> + * Copyright (c) 2015-2016 HiSilicon Technologies Co., Ltd.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +#include <linux/bitops.h>
-> +#include <linux/clk.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/module.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/spi-nor.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +/* Hardware register offsets and field definitions */
-> +#define FMC_CFG				0x00
-> +#define FMC_CFG_OP_MODE_MASK		BIT_MASK(0)
-> +#define FMC_CFG_OP_MODE_BOOT		0
-> +#define FMC_CFG_OP_MODE_NORMAL		1
-> +#define FMC_CFG_FLASH_SEL(type)		(((type) & 0x3) << 1)
-> +#define FMC_CFG_FLASH_SEL_MASK		0x6
-> +#define FMC_ECC_TYPE(type)		(((type) & 0x7) << 5)
-> +#define FMC_ECC_TYPE_MASK		GENMASK(7, 5)
-> +#define SPI_NOR_ADDR_MODE_MASK		BIT_MASK(10)
-> +#define SPI_NOR_ADDR_MODE_3BYTES	(0x0 << 10)
-> +#define SPI_NOR_ADDR_MODE_4BYTES	(0x1 << 10)
-> +#define FMC_GLOBAL_CFG			0x04
-> +#define FMC_GLOBAL_CFG_WP_ENABLE	BIT(6)
-> +#define FMC_SPI_TIMING_CFG		0x08
-> +#define TIMING_CFG_TCSH(nr)		(((nr) & 0xf) << 8)
-> +#define TIMING_CFG_TCSS(nr)		(((nr) & 0xf) << 4)
-> +#define TIMING_CFG_TSHSL(nr)		((nr) & 0xf)
-> +#define CS_HOLD_TIME			0x6
-> +#define CS_SETUP_TIME			0x6
-> +#define CS_DESELECT_TIME		0xf
-> +#define FMC_INT				0x18
-> +#define FMC_INT_OP_DONE			BIT(0)
-> +#define FMC_INT_CLR			0x20
-> +#define FMC_CMD				0x24
-> +#define FMC_CMD_CMD1(cmd)		((cmd) & 0xff)
-> +#define FMC_ADDRL			0x2c
-> +#define FMC_OP_CFG			0x30
-> +#define OP_CFG_FM_CS(cs)		((cs) << 11)
-> +#define OP_CFG_MEM_IF_TYPE(type)	(((type) & 0x7) << 7)
-> +#define OP_CFG_ADDR_NUM(addr)		(((addr) & 0x7) << 4)
-> +#define OP_CFG_DUMMY_NUM(dummy)		((dummy) & 0xf)
-> +#define FMC_DATA_NUM			0x38
-> +#define FMC_DATA_NUM_CNT(cnt)		((cnt) & GENMASK(13, 0))
-> +#define FMC_OP				0x3c
-> +#define FMC_OP_DUMMY_EN			BIT(8)
-> +#define FMC_OP_CMD1_EN			BIT(7)
-> +#define FMC_OP_ADDR_EN			BIT(6)
-> +#define FMC_OP_WRITE_DATA_EN		BIT(5)
-> +#define FMC_OP_READ_DATA_EN		BIT(2)
-> +#define FMC_OP_READ_STATUS_EN		BIT(1)
-> +#define FMC_OP_REG_OP_START		BIT(0)
-> +#define FMC_DMA_LEN			0x40
-> +#define FMC_DMA_LEN_SET(len)		((len) & GENMASK(27, 0))
-> +#define FMC_DMA_SADDR_D0		0x4c
-> +#define HIFMC_DMA_MAX_LEN		(4096)
-> +#define HIFMC_DMA_MASK			(HIFMC_DMA_MAX_LEN - 1)
-> +#define FMC_OP_DMA			0x68
-> +#define OP_CTRL_RD_OPCODE(code)		(((code) & 0xff) << 16)
-> +#define OP_CTRL_WR_OPCODE(code)		(((code) & 0xff) << 8)
-> +#define OP_CTRL_RW_OP(op)		((op) << 1)
-> +#define OP_CTRL_DMA_OP_READY		BIT(0)
-> +#define FMC_OP_READ			0x0
-> +#define FMC_OP_WRITE			0x1
-> +#define FMC_WAIT_TIMEOUT		1000000
-> +
-> +enum hifmc_iftype {
-> +	IF_TYPE_STD,
-> +	IF_TYPE_DUAL,
-> +	IF_TYPE_DIO,
-> +	IF_TYPE_QUAD,
-> +	IF_TYPE_QIO,
-> +};
-> +
-> +struct hifmc_priv {
-> +	u32 chipselect;
-> +	u32 clkrate;
-> +	struct hifmc_host *host;
-> +};
-> +
-> +#define HIFMC_MAX_CHIP_NUM		2
-> +struct hifmc_host {
-> +	struct device *dev;
-> +	struct mutex lock;
-> +
-> +	void __iomem *regbase;
-> +	void __iomem *iobase;
-> +	struct clk *clk;
-> +	void *buffer;
-> +	dma_addr_t dma_buffer;
-> +
-> +	struct spi_nor	*nor[HIFMC_MAX_CHIP_NUM];
-> +	u32 num_chip;
-> +};
-> +
-> +static inline int wait_op_finish(struct hifmc_host *host)
-> +{
-> +	u32 reg;
-> +
-> +	return readl_poll_timeout(host->regbase + FMC_INT, reg,
-> +		(reg & FMC_INT_OP_DONE), 0, FMC_WAIT_TIMEOUT);
-> +}
-> +
-> +static int get_if_type(enum read_mode flash_read)
-> +{
-> +	enum hifmc_iftype if_type;
-> +
-> +	switch (flash_read) {
-> +	case SPI_NOR_DUAL:
-> +		if_type = IF_TYPE_DUAL;
-> +		break;
-> +	case SPI_NOR_QUAD:
-> +		if_type = IF_TYPE_QUAD;
-> +		break;
-> +	case SPI_NOR_NORMAL:
-> +	case SPI_NOR_FAST:
-> +	default:
-> +		if_type = IF_TYPE_STD;
-> +		break;
-> +	}
-> +
-> +	return if_type;
-> +}
-> +
-> +static void hisi_spi_nor_init(struct hifmc_host *host)
-> +{
-> +	u32 reg;
-> +
-> +	reg = TIMING_CFG_TCSH(CS_HOLD_TIME)
-> +		| TIMING_CFG_TCSS(CS_SETUP_TIME)
-> +		| TIMING_CFG_TSHSL(CS_DESELECT_TIME);
-> +	writel(reg, host->regbase + FMC_SPI_TIMING_CFG);
-> +}
-> +
-> +static int hisi_spi_nor_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +	int ret;
-> +
-> +	mutex_lock(&host->lock);
-> +
-> +	ret = clk_set_rate(host->clk, priv->clkrate);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret = clk_prepare_enable(host->clk);
-> +	if (ret)
-> +		goto out;
-> +
-> +	return 0;
-> +
-> +out:
-> +	mutex_unlock(&host->lock);
-> +	return ret;
-> +}
-> +
-> +static void hisi_spi_nor_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +
-> +	clk_disable_unprepare(host->clk);
-> +	mutex_unlock(&host->lock);
-> +}
-> +
-> +static int hisi_spi_nor_op_reg(struct spi_nor *nor,
-> +				u8 opcode, int len, u8 optype)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +	u32 reg;
-> +
-> +	reg = FMC_CMD_CMD1(opcode);
-> +	writel(reg, host->regbase + FMC_CMD);
-> +
-> +	reg = FMC_DATA_NUM_CNT(len);
-> +	writel(reg, host->regbase + FMC_DATA_NUM);
-> +
-> +	reg = OP_CFG_FM_CS(priv->chipselect);
-> +	writel(reg, host->regbase + FMC_OP_CFG);
-> +
-> +	writel(0xff, host->regbase + FMC_INT_CLR);
-> +	reg = FMC_OP_CMD1_EN | FMC_OP_REG_OP_START | optype;
-> +	writel(reg, host->regbase + FMC_OP);
-> +
-> +	return wait_op_finish(host);
-> +}
-> +
-> +static int hisi_spi_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-> +		int len)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +	int ret;
-> +
-> +	ret = hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_READ_DATA_EN);
-> +	if (ret)
-> +		return ret;
-> +
-> +	memcpy_fromio(buf, host->iobase, len);
-> +	return 0;
-> +}
-> +
-> +static int hisi_spi_nor_write_reg(struct spi_nor *nor, u8 opcode,
-> +				u8 *buf, int len)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +
-> +	if (len)
-> +		memcpy_toio(host->iobase, buf, len);
-> +
-> +	return hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_WRITE_DATA_EN);
-> +}
-> +
-> +static int hisi_spi_nor_dma_transfer(struct spi_nor *nor, loff_t start_off,
-> +		dma_addr_t dma_buf, size_t len, u8 op_type)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +	u8 if_type = 0;
-> +	u32 reg;
-> +
-> +	reg = readl(host->regbase + FMC_CFG);
-> +	reg &= ~(FMC_CFG_OP_MODE_MASK | SPI_NOR_ADDR_MODE_MASK);
-> +	reg |= FMC_CFG_OP_MODE_NORMAL;
-> +	reg |= (nor->addr_width == 4) ? SPI_NOR_ADDR_MODE_4BYTES
-> +		: SPI_NOR_ADDR_MODE_3BYTES;
-> +	writel(reg, host->regbase + FMC_CFG);
-> +
-> +	writel(start_off, host->regbase + FMC_ADDRL);
-> +	writel(dma_buf, host->regbase + FMC_DMA_SADDR_D0);
-> +	writel(FMC_DMA_LEN_SET(len), host->regbase + FMC_DMA_LEN);
-> +
-> +	reg = OP_CFG_FM_CS(priv->chipselect);
-> +	if_type = get_if_type(nor->flash_read);
-> +	reg |= OP_CFG_MEM_IF_TYPE(if_type);
-> +	if (op_type == FMC_OP_READ)
-> +		reg |= OP_CFG_DUMMY_NUM(nor->read_dummy >> 3);
-> +	writel(reg, host->regbase + FMC_OP_CFG);
-> +
-> +	writel(0xff, host->regbase + FMC_INT_CLR);
-> +	reg = OP_CTRL_RW_OP(op_type) | OP_CTRL_DMA_OP_READY;
-> +	reg |= (op_type == FMC_OP_READ)
-> +		? OP_CTRL_RD_OPCODE(nor->read_opcode)
-> +		: OP_CTRL_WR_OPCODE(nor->program_opcode);
-> +	writel(reg, host->regbase + FMC_OP_DMA);
-> +
-> +	return wait_op_finish(host);
-> +}
-> +
-> +static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
-> +		size_t *retlen, u_char *read_buf)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +	size_t offset;
-> +	int ret;
-> +
-> +	for (offset = 0; offset < len; offset += HIFMC_DMA_MAX_LEN) {
-> +		size_t trans = min_t(size_t, HIFMC_DMA_MAX_LEN, len - offset);
-> +
-> +		ret = hisi_spi_nor_dma_transfer(nor,
-> +			from + offset, host->dma_buffer, trans, FMC_OP_READ);
-> +		if (ret) {
-> +			dev_warn(nor->dev, "DMA read timeout\n");
-> +			return ret;
-> +		}
-> +		memcpy(read_buf + offset, host->buffer, trans);
-> +		*retlen += trans;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
-> +			size_t len, size_t *retlen, const u_char *write_buf)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +	size_t offset;
-> +	int ret;
-> +
-> +	for (offset = 0; offset < len; offset += HIFMC_DMA_MAX_LEN) {
-> +		size_t trans = min_t(size_t, HIFMC_DMA_MAX_LEN, len - offset);
-> +
-> +		memcpy(host->buffer, write_buf + offset, trans);
-> +		ret = hisi_spi_nor_dma_transfer(nor,
-> +			to + offset, host->dma_buffer, trans, FMC_OP_WRITE);
-> +		if (ret) {
-> +			dev_warn(nor->dev, "DMA write timeout\n");
-> +			return;
-> +		}
-> +		*retlen += len;
-> +	}
-> +}
-> +
-> +/**
-> + * Get spi flash device information and register it as a mtd device.
-> + */
-> +static int hisi_spi_nor_register(struct device_node *np,
-> +				struct hifmc_host *host)
-> +{
-> +	struct device *dev = host->dev;
-> +	struct spi_nor *nor;
-> +	struct hifmc_priv *priv;
-> +	struct mtd_info *mtd;
-> +	int ret;
-> +
-> +	nor = devm_kzalloc(dev, sizeof(*nor), GFP_KERNEL);
-> +	if (!nor)
-> +		return -ENOMEM;
-> +
-> +	nor->dev = dev;
-> +	spi_nor_set_flash_node(nor, np);
-> +
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	ret = of_property_read_u32(np, "reg", &priv->chipselect);
-> +	if (ret) {
-> +		dev_err(dev, "There's no reg property for %s\n",
-> +			np->full_name);
-> +		return ret;
-> +	}
-> +
-> +	ret = of_property_read_u32(np, "spi-max-frequency",
-> +			&priv->clkrate);
-> +	if (ret) {
-> +		dev_err(dev, "There's no spi-max-frequency property for %s\n",
-> +			np->full_name);
-> +		return ret;
-> +	}
-> +	priv->host = host;
-> +	nor->priv = priv;
-> +
-> +	nor->prepare = hisi_spi_nor_prep;
-> +	nor->unprepare = hisi_spi_nor_unprep;
-> +	nor->read_reg = hisi_spi_nor_read_reg;
-> +	nor->write_reg = hisi_spi_nor_write_reg;
-> +	nor->read = hisi_spi_nor_read;
-> +	nor->write = hisi_spi_nor_write;
-> +	nor->erase = NULL;
-> +	ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> +	if (ret)
-> +		return ret;
-> +
-> +	mtd = &nor->mtd;
-> +	mtd->name = np->name;
-> +	ret = mtd_device_register(mtd, NULL, 0);
-> +	if (ret)
-> +		return ret;
-> +
-> +	host->nor[host->num_chip] = nor;
-> +	host->num_chip++;
-> +	return 0;
-> +}
-> +
-> +static void hisi_spi_nor_unregister_all(struct hifmc_host *host)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < host->num_chip; i++)
-> +		mtd_device_unregister(&host->nor[i]->mtd);
-> +}
-> +
-> +static int hisi_spi_nor_register_all(struct hifmc_host *host)
-> +{
-> +	struct device *dev = host->dev;
-> +	struct device_node *np;
-> +	int ret;
-> +
-> +	for_each_available_child_of_node(dev->of_node, np) {
-> +		ret = hisi_spi_nor_register(np, host);
-> +		if (ret)
-> +			goto fail;
-> +
-> +		if (host->num_chip == HIFMC_MAX_CHIP_NUM) {
-> +			dev_warn(dev, "Flash device number exceeds the maximum chipselect number\n");
-> +			break;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +
-> +fail:
-> +	hisi_spi_nor_unregister_all(host);
-> +	return ret;
-> +}
-> +
-> +static int hisi_spi_nor_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct resource *res;
-> +	struct hifmc_host *host;
-> +	int ret;
-> +
-> +	host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
-> +	if (!host)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, host);
-> +	host->dev = dev;
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "control");
-> +	host->regbase = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(host->regbase))
-> +		return PTR_ERR(host->regbase);
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "memory");
-> +	host->iobase = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(host->iobase))
-> +		return PTR_ERR(host->iobase);
-> +
-> +	host->clk = devm_clk_get(dev, NULL);
-> +	if (IS_ERR(host->clk))
-> +		return PTR_ERR(host->clk);
-> +
-> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
-> +	if (ret) {
-> +		dev_warn(dev, "Unable to set dma mask\n");
-> +		return ret;
-> +	}
-> +
-> +	host->buffer = dmam_alloc_coherent(dev, HIFMC_DMA_MAX_LEN,
-> +			&host->dma_buffer, GFP_KERNEL);
-> +	if (!host->buffer)
-> +		return -ENOMEM;
-> +
-> +	mutex_init(&host->lock);
-> +	clk_prepare_enable(host->clk);
-> +	hisi_spi_nor_init(host);
-> +	ret = hisi_spi_nor_register_all(host);
-> +	if (ret)
-> +		mutex_destroy(&host->lock);
-> +
-> +	clk_disable_unprepare(host->clk);
-> +	return ret;
-> +}
-> +
-> +static int hisi_spi_nor_remove(struct platform_device *pdev)
-> +{
-> +	struct hifmc_host *host = platform_get_drvdata(pdev);
-> +
-> +	hisi_spi_nor_unregister_all(host);
-> +	mutex_destroy(&host->lock);
-> +	clk_disable_unprepare(host->clk);
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id hisi_spi_nor_dt_ids[] = {
-> +	{ .compatible = "hisilicon,fmc-spi-nor"},
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, hisi_spi_nor_dt_ids);
-> +
-> +static struct platform_driver hisi_spi_nor_driver = {
-> +	.driver = {
-> +		.name	= "hisi-sfc",
-> +		.of_match_table = hisi_spi_nor_dt_ids,
-> +	},
-> +	.probe	= hisi_spi_nor_probe,
-> +	.remove	= hisi_spi_nor_remove,
-> +};
-> +module_platform_driver(hisi_spi_nor_driver);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("HiSilicon SPI Nor Flash Controller Driver");
+> Thanks,
+> //richard
 > 
+> [0] http://lists.infradead.org/pipermail/linux-mtd/2016-April/067322.html
