@@ -1,24 +1,21 @@
-Received: from mout.kundenserver.de ([217.72.192.75])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFiU2-0008KA-Hr
- for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 13:46:23 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, torvalds@linux-foundation.org, tytso@mit.edu,
- viro@zeniv.linux.org.uk, y2038@lists.linaro.org,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 07/24] fs: ubifs: Replace CURRENT_TIME_SEC with
- current_time
-Date: Wed, 22 Jun 2016 15:47:56 +0200
-Message-ID: <5694616.oYyysJP9uD@wuerfel>
-In-Reply-To: <1466382443-11063-8-git-send-email-deepa.kernel@gmail.com>
-References: <1466382443-11063-1-git-send-email-deepa.kernel@gmail.com>
- <1466382443-11063-8-git-send-email-deepa.kernel@gmail.com>
+ id 1bFicP-0002uZ-8W
+ for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 13:55:03 +0000
+Subject: Re: [RFC] Raising the UBI version
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <57699356.4030802@nod.at> <20160622144344.07ba4d41@bbrezillon>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Alexander Kaplan
+ <alex@nextthing.co>, Brian Norris <computersforpeace@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <576A989A.6080502@nod.at>
+Date: Wed, 22 Jun 2016 15:54:34 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20160622144344.07ba4d41@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday, June 19, 2016 5:27:06 PM CEST Deepa Dinamani wrote:
-> @@ -84,6 +84,8 @@ static int create_default_filesystem(struct ubifs_info *c)
->         int min_leb_cnt = UBIFS_MIN_LEB_CNT;
->         long long tmp64, main_bytes;
->         __le64 tmp_le64;
-> +       __le32 tmp_le32;
-> +       struct timespec ts;
->  
->         /* Some functions called from here depend on the @c->key_len filed */
->         c->key_len = UBIFS_SK_LEN;
-> @@ -297,13 +299,17 @@ static int create_default_filesystem(struct ubifs_info *c)
->         ino->ch.node_type = UBIFS_INO_NODE;
->         ino->creat_sqnum = cpu_to_le64(++c->max_sqnum);
->         ino->nlink = cpu_to_le32(2);
-> -       tmp_le64 = cpu_to_le64(CURRENT_TIME_SEC.tv_sec);
-> +
-> +       ktime_get_real_ts(&ts);
-> +       ts = timespec_trunc(ts, DEFAULT_TIME_GRAN);
-> +       tmp_le64 = cpu_to_le64(ts.tv_sec);
->         ino->atime_sec   = tmp_le64;
->         ino->ctime_sec   = tmp_le64;
->         ino->mtime_sec   = tmp_le64;
-> -       ino->atime_nsec  = 0;
-> -       ino->ctime_nsec  = 0;
-> -       ino->mtime_nsec  = 0;
-> +       tmp_le32 = cpu_to_le32(ts.tv_nsec);
-> +       ino->atime_nsec  = tmp_le32;
-> +       ino->ctime_nsec  = tmp_le32;
-> +       ino->mtime_nsec  = tmp_le32;
+Am 22.06.2016 um 14:43 schrieb Boris Brezillon:
+> Why do we need to hardcode /sys/class/ubi/version to 1? We just need to
+> update the mtd-utils to support version 2. Am I missing something?
 
-This part of the patch seems independent of the rest, as you don't actually
-use current_time() here, or assign the timespec to an inode.
+We don't want to break existing userspace.
+Why should ubimkvol or ubiattach fail on a system with SLC NAND and
+CONFIG_MTD_UBI_CONSOLIDATE=y?
 
-I'd suggest either leaving this part out of the patch series for now,
-or making it a separate patch that uses timespec64 directly.
+Especially since existing tools *will* work with CONFIG_MTD_UBI_CONSOLIDATE=y.
+Rasing /sys/class/ubi/version and breaking existing tools is only acceptable
+when we change all UBI ioctl() and sysfs files in a way such that version 1
+userspace cannot work. Which is not the case here.
 
-	Arnd
+This is a nice example why version numbers is bad and feature flags should be used.
+Currently UBI mixes the implementation version and the on-flash version.
+We're changing only the on-flash version. The user visible ABI stays and will only
+get extended.
+
+Thanks,
+//richard
