@@ -1,19 +1,26 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFoGo-0000zg-O5
- for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 19:57:08 +0000
-Subject: =?UTF-8?B?UmU6IOWbnuWkje+8mnViaWZzOnF1ZXN0aW9ucyBhYm91dCB0aGlzIGZp?=
- =?UTF-8?Q?lesystem?=
-To: =?UTF-8?B?6L6J5bCR?= <wang502742203@qq.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
-References: <tencent_47C8194435DAF0EA2221DA1E@qq.com>
+ id 1bFoJm-0001U2-Ja
+ for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 20:00:11 +0000
+Subject: Re: [RFC] Raising the UBI version
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <57699356.4030802@nod.at> <20160622144344.07ba4d41@bbrezillon>
+ <576A989A.6080502@nod.at> <20160622160118.28a4339a@bbrezillon>
+ <576A9B1D.3010201@nod.at> <20160622161304.6a16da85@bbrezillon>
+ <576A9EF0.9020007@nod.at> <20160622163947.36ac7f3e@bbrezillon>
+ <576AA425.8070705@nod.at> <20160622165212.76c17d0a@bbrezillon>
+ <576AA7E6.3040302@nod.at> <20160622170633.05321f15@bbrezillon>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Alexander Kaplan
+ <alex@nextthing.co>, Brian Norris <computersforpeace@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <576AED77.2070803@nod.at>
-Date: Wed, 22 Jun 2016 21:56:39 +0200
+Message-ID: <576AEE32.5000602@nod.at>
+Date: Wed, 22 Jun 2016 21:59:46 +0200
 MIME-Version: 1.0
-In-Reply-To: <tencent_47C8194435DAF0EA2221DA1E@qq.com>
-Content-Type: text/plain; charset=gb18030
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20160622170633.05321f15@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +30,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-
-Am 22.06.2016 um 17:26 schrieb »ÔÉÙ:
-> Thank you for kind reply.
+Am 22.06.2016 um 17:06 schrieb Boris Brezillon:
+> On Wed, 22 Jun 2016 16:59:50 +0200
+> Richard Weinberger <richard@nod.at> wrote:
 > 
-> 1. As you said just now"there is only a background thread to do many things",  dose "many things" include both GC and synchronizing data?
+>> Am 22.06.2016 um 16:52 schrieb Boris Brezillon:
+>>> So how about defining the following:
+>>> - /sys/class/ubi/version: user-space ABI version (should always be one)  
+>>
+>> Yes. To not break libubi.
+>>
+>>> - /sys/class/ubi/supported-on-flash-formats: either a bitfield or an
+>>>   integer representing the higher on-flash format version supported by
+>>>   the implementation (which implies that implementations have to
+>>>   support all on-flash formats up-to supported-on-flash-formats)  
+>>
+>> We can do that. But who will evaluate this file?
+> 
+> ubiformat may need that one to check if the provided ubi image is
+> supported by the implementation.
 
-I said GC can happen in many contexts. Also in the calling one.
-To figure what the background thread exactly does see function ubifs_bg_thread().
+What if someone wants to ubiformat (with MLC support) his mtd0 on an old
+kernel and then reboots into the new one with MLC support?
+I'm not sure if it is wise do forbid that use case since allowing it does not
+hurt.
 
-> 2. If I write a file(1 KB) to ubifs mounted in 34MiB mtd, can i write 34,000 times or 34000/4 times(the real disk usage of a 1KB file is 4KB)£¿
+Don't get me wrong, I just want to be sure that all new sysfs files we add
+have a clear defined use case and won't hurt us later.
 
-The minimal file size on UBIFS is 4KiB. You can also not use all 34MiB, since UBIFS needs some LEBs for the journal, free space accounting,
-master nodes, etc...
+>>
+>>> - /sys/class/ubi/supported-features: the features supported by the
+>>>   implementation (each bit is a specific feature or a set of features).
+>>>   The features may or may not be version dependent.
+>>> - /sys/class/ubi/ubiX/on-flash-format: the on-flash format used on the
+>>>   UBIX device
+>>> - /sys/class/ubi/ubiX/features: the features exposed by this UBIX
+>>>   device  
+>>
+>> I think we should make features depend on version = 2.
+>> IOW when we change the UBI format in a major way version will be 3 and
+>> we maybe use something else to expose features.
+> 
+> IIUC, we move to version 2 now, because we're using one of the padding
+> byte (word?) to expose the feature flags, correct?
+> It makes sense.
+
+I'm not absolutely sure but keeping ->version and adding ->features seems
+the most feasible solution so far.
 
 Thanks,
 //richard
