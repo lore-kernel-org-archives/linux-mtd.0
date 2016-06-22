@@ -1,24 +1,18 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from pinova.rz.uni-augsburg.de ([137.250.2.102])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFjO1-0006M4-RK
- for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 14:44:14 +0000
-Subject: Re: [RFC] Raising the UBI version
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <57699356.4030802@nod.at> <20160622144344.07ba4d41@bbrezillon>
- <576A989A.6080502@nod.at> <20160622160118.28a4339a@bbrezillon>
- <576A9B1D.3010201@nod.at> <20160622161304.6a16da85@bbrezillon>
- <576A9EF0.9020007@nod.at> <20160622163947.36ac7f3e@bbrezillon>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, Alexander Kaplan
- <alex@nextthing.co>, Brian Norris <computersforpeace@gmail.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <576AA425.8070705@nod.at>
-Date: Wed, 22 Jun 2016 16:43:49 +0200
+ id 1bFjOi-0006Ya-Tx
+ for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 14:44:58 +0000
+From: =?ISO-8859-1?Q?J=F6rg_Pf=E4hler?= <pfaehler@isse.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2] ubi: Make recover_peb power cut aware
+Date: Wed, 22 Jun 2016 16:44:40 +0200
+Message-ID: <2124396.xJgUrQUc0H@pfaehler-pc>
+In-Reply-To: <1466461910-18858-1-git-send-email-richard@nod.at>
+References: <1466461910-18858-1-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <20160622163947.36ac7f3e@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,88 +22,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 22.06.2016 um 16:39 schrieb Boris Brezillon:
-> On Wed, 22 Jun 2016 16:21:36 +0200
-> Richard Weinberger <richard@nod.at> wrote:
-> 
->> Am 22.06.2016 um 16:13 schrieb Boris Brezillon:
->>>> /sys/class/ubi/version is the version of the UBI implementation,
->>>> not the version of the attached UBI image.
->>>> It will the here as soon you load the UBI module.  
->>>
->>> Do we have /sys/class/ubi/ubiX/version for the UBI image version?  
->>
->> No. That's why I plan to add /sys/class/ubi/ubiX/features_used to
->> show which features the attached UBI image requested.
->> And having a /sys/class/ubi/ubi/features which denotes what features
->> the _implementation_ supports.
-> 
-> Still the version and features are encoding different things IMO.
-> Incrementing the on-flash version means that the on-flash format has
-> changed in an incompatible way, while features denotes the fact that
-> the existing format has been extended with new features but is backward
-> compatible.
+Reviewed-by: J=F6rg Pf=E4hler <pfaehler@isse.de>
 
-Yes. But now we have a mix of both. ;-\
+Am Dienstag, 21. Juni 2016, 00:31:50 CEST schrieb Richard Weinberger:
+> recover_peb() was never power cut aware,
+> if a power cut happened right after writing the VID header
+> upon next attach UBI would blindly use the new partial written
+> PEB and all data from the old PEB is lost.
+>=20
+> In order to make recover_peb() power cut aware, write the new
+> VID with a proper crc and copy_flag set such that the UBI attach
+> process will detect whether the new PEB is completely written
+> or not.
+> We cannot directly use ubi_eba_atomic_leb_change() since we'd
+> have to unlock the LEB which is facing a write error.
+>=20
+> Cc: stable@vger.kernel.org
+> Reported-by: J=F6rg Pf=E4hler <pfaehler@isse.de>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/ubi/eba.c | 22 +++++++++++++++-------
+>  1 file changed, 15 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+> index 5780dd1..ebf5172 100644
+> --- a/drivers/mtd/ubi/eba.c
+> +++ b/drivers/mtd/ubi/eba.c
+> @@ -575,6 +575,7 @@ static int recover_peb(struct ubi_device *ubi, int pn=
+um,
+> int vol_id, int lnum, int err, idx =3D vol_id2idx(ubi, vol_id), new_pnum,
+> data_size, tries =3D 0; struct ubi_volume *vol =3D ubi->volumes[idx];
+>  	struct ubi_vid_hdr *vid_hdr;
+> +	uint32_t crc;
+>=20
+>  	vid_hdr =3D ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
+>  	if (!vid_hdr)
+> @@ -599,14 +600,8 @@ retry:
+>  		goto out_put;
+>  	}
+>=20
+> -	vid_hdr->sqnum =3D cpu_to_be64(ubi_next_sqnum(ubi));
+> -	err =3D ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
+> -	if (err) {
+> -		up_read(&ubi->fm_eba_sem);
+> -		goto write_error;
+> -	}
+> +	ubi_assert(vid_hdr->vol_type =3D=3D UBI_VID_DYNAMIC);
+>=20
+> -	data_size =3D offset + len;
+>  	mutex_lock(&ubi->buf_mutex);
+>  	memset(ubi->peb_buf + offset, 0xFF, len);
+>=20
+> @@ -621,6 +616,19 @@ retry:
+>=20
+>  	memcpy(ubi->peb_buf + offset, buf, len);
+>=20
+> +	data_size =3D offset + len;
+> +	crc =3D crc32(UBI_CRC32_INIT, ubi->peb_buf, data_size);
+> +	vid_hdr->sqnum =3D cpu_to_be64(ubi_next_sqnum(ubi));
+> +	vid_hdr->copy_flag =3D 1;
+> +	vid_hdr->data_size =3D cpu_to_be32(data_size);
+> +	vid_hdr->data_crc =3D cpu_to_be32(crc);
+> +	err =3D ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
+> +	if (err) {
+> +		mutex_unlock(&ubi->buf_mutex);
+> +		up_read(&ubi->fm_eba_sem);
+> +		goto write_error;
+> +	}
+> +
+>  	err =3D ubi_io_write_data(ubi, ubi->peb_buf, new_pnum, 0, data_size);
+>  	if (err) {
+>  		mutex_unlock(&ubi->buf_mutex);
 
->>
->>> This is still unclear to me why we need to version the
->>> user-space/kernel-space ABI, since it's supposed to be backward
->>> compatible, so adding new features requires adding new ioctls and
->>> keeping the old ones in a working state.
->>>
->>> What is /sys/class/ubi/version actually encoding? Isn't it encoding the
->>> fact that a specific UBI implementation is supporting all UBI on-flash
->>> formats up to format version X (that was my understanding)?
->>>   
->>
->> Well, /sys/class/ubi/version exports UBI_VERSION from ubi-media.h.
->> It is (ab)used to encode the ABI version *and* the on-flash version.
-> 
-> The on-flash versions supported by the implementation is a useful
-> information.
-> 
->> The problem is that mtd-utils libubi will refuse to work with
->> /sys/class/ubi/version unequal 1.
->>
->> Here the gem from libubi:
->>         if (read_positive_int(lib->ubi_version, &version))
->>                 goto out_error;
->>         if (version != LIBUBI_UBI_VERSION) {
->>                 errmsg("this library was made for UBI version %d, but UBI "
->>                        "version %d is detected\n", LIBUBI_UBI_VERSION, version);
->>                 goto out_error;
->>         }
-> 
-> And this is where the problem is: libubi does not make proper use of
-> this information. We should either have
-> 
-> 	if (version >= LIBUBI_UBI_VERSION)
-> 
-> or, if we decide that version is a bitfield directly encoding which
-> versions are supported by the implementation
-> 
-> #define VERSION_SUPPORTED(version, x)	((version) & BIT((x)-1)))
-> 
-> 	if (VERSION_SUPPORTED(version, 1))
 
-Yep. But we cannot change already compiled and shipped code.
+=2D------------------------------------------------------------------------=
+=2D------------
+J=F6rg Pf=E4hler
+Lehrstuhl f=FCr Softwaretechnik
+Institut f=FCr Software and Systems Engineering
+Universit=E4t Augsburg
 
->>
->> This is why I want to hardcode it to 1.
->> Everything else will break existing user space in some way.
->> 10 years ago /sys/class/ubi/version seemed like a good idea
->> but now it hits us hard.
-> 
-> Yes, I understand that, but this also means /sys/class/ubi/version is
-> just a dummy file which only purpose is to make libubi happy :).
-
-That's the plan.
-
-> If this is the case, then I think we should have another file encoding
-> the supported on-flash formats...
-
-This is what /sys/class/ubi/features was supposed to do.
-
-Thanks,
-//richard
+Universit=E4tsstr. 6a, Raum 3014
+tel:      (+49) 821/598-2229
+e-mail:   pfaehler@isse.de<mailto:pfaehler@isse.de>
+=2D------------------------------------------------------------------------=
+=2D------------
