@@ -1,20 +1,24 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
+Received: from mout.kundenserver.de ([217.72.192.75])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFiNd-0000K0-5U
- for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 13:39:48 +0000
-Subject: Re: [PATCH 0/2] mtd: spi-nor: add driver for Atmel QSPI controller
-To: <computersforpeace@gmail.com>
-References: <cover.1465830154.git.cyrille.pitchen@atmel.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <linux-mtd@lists.infradead.org>, <nicolas.ferre@atmel.com>,
- <boris.brezillon@free-electrons.com>, <marex@denx.de>,
- <linux-kernel@vger.kernel.org>
-Message-ID: <576A950B.3010506@atmel.com>
-Date: Wed, 22 Jun 2016 15:39:23 +0200
+ id 1bFiU2-0008KA-Hr
+ for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 13:46:23 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, torvalds@linux-foundation.org, tytso@mit.edu,
+ viro@zeniv.linux.org.uk, y2038@lists.linaro.org,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 07/24] fs: ubifs: Replace CURRENT_TIME_SEC with
+ current_time
+Date: Wed, 22 Jun 2016 15:47:56 +0200
+Message-ID: <5694616.oYyysJP9uD@wuerfel>
+In-Reply-To: <1466382443-11063-8-git-send-email-deepa.kernel@gmail.com>
+References: <1466382443-11063-1-git-send-email-deepa.kernel@gmail.com>
+ <1466382443-11063-8-git-send-email-deepa.kernel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1465830154.git.cyrille.pitchen@atmel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,67 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Sunday, June 19, 2016 5:27:06 PM CEST Deepa Dinamani wrote:
+> @@ -84,6 +84,8 @@ static int create_default_filesystem(struct ubifs_info *c)
+>         int min_leb_cnt = UBIFS_MIN_LEB_CNT;
+>         long long tmp64, main_bytes;
+>         __le64 tmp_le64;
+> +       __le32 tmp_le32;
+> +       struct timespec ts;
+>  
+>         /* Some functions called from here depend on the @c->key_len filed */
+>         c->key_len = UBIFS_SK_LEN;
+> @@ -297,13 +299,17 @@ static int create_default_filesystem(struct ubifs_info *c)
+>         ino->ch.node_type = UBIFS_INO_NODE;
+>         ino->creat_sqnum = cpu_to_le64(++c->max_sqnum);
+>         ino->nlink = cpu_to_le32(2);
+> -       tmp_le64 = cpu_to_le64(CURRENT_TIME_SEC.tv_sec);
+> +
+> +       ktime_get_real_ts(&ts);
+> +       ts = timespec_trunc(ts, DEFAULT_TIME_GRAN);
+> +       tmp_le64 = cpu_to_le64(ts.tv_sec);
+>         ino->atime_sec   = tmp_le64;
+>         ino->ctime_sec   = tmp_le64;
+>         ino->mtime_sec   = tmp_le64;
+> -       ino->atime_nsec  = 0;
+> -       ino->ctime_nsec  = 0;
+> -       ino->mtime_nsec  = 0;
+> +       tmp_le32 = cpu_to_le32(ts.tv_nsec);
+> +       ino->atime_nsec  = tmp_le32;
+> +       ino->ctime_nsec  = tmp_le32;
+> +       ino->mtime_nsec  = tmp_le32;
 
-Almost a year has passed since the first publication of the driver for the
-Atmel Quad SPI controller:
-https://patchwork.kernel.org/patch/6808311/
+This part of the patch seems independent of the rest, as you don't actually
+use current_time() here, or assign the timespec to an inode.
 
-I totally understand the previous versions needed to be discussed as they were
-based on a deep rework of the spi-nor framework to enhance the support of Quad
-SPI protocols but this latest version does not require any modification of the
-spi-nor framework: now the driver only supports SPI 1-1-1 and 1-1-4 protocols
-like other spi-nor controller drivers already accepted.
+I'd suggest either leaving this part out of the patch series for now,
+or making it a separate patch that uses timespec64 directly.
 
-So I guess this time there is no reason not to integrate this version.
-
-I've also included this very same patch inside my latest series for Quad SPI
-protocols support and SFDP table parsing.
-Honestly the Atmel QSPI controller driver itself has nothing to do in this
-series dedicated to support of Quad SPI memories but the QSPI controller of
-the sama5d2 SoC is the only hardware I can use to test my patches.
-
-Also, since patch 5/9 "mtd: spi-nor: add support of SPI protocols like
-SPI 1-2-2 and SPI 1-4-4" updates all drivers calling spi_nor_scan(), including
-atmel-quadspi.c, I needed to include the Atmel QSPI controller driver first
-in the series before actually doing the core modifications of spi-nor.c.
-https://patchwork.ozlabs.org/patch/638138/
-
-I'm not trying to by-pass or short-cut the review process but I feel that
-there is currently no discussion or other feedbacks suggesting that the
-QSPI controller driver itself needs further modifications.
-
-Best regards,
-
-Cyrille
-
-
-Le 13/06/2016 17:10, Cyrille Pitchen a écrit :
-> Hi all,
-> 
-> this series of patches adds support to the Atmel QSPI controller.
-> It was tested on a sama5d2 xplained board + Macronix mx25l25673g QSPI
-> memory.
-> 
-> The driver limits its support of Quad SPI memories to the SPI 1-1-4
-> protocol for Fast Read operations and SPI 1-1-1 protocol for all other
-> commands.
-> 
-> The series is based on next-20160609
-> 
-> Best regards,
-> 
-> Cyrille
-> 
-> Cyrille Pitchen (2):
->   Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
->   mtd: atmel-quadspi: add driver for Atmel QSPI controller
-> 
->  .../devicetree/bindings/mtd/atmel-quadspi.txt      |  32 +
->  drivers/mtd/spi-nor/Kconfig                        |   9 +
->  drivers/mtd/spi-nor/Makefile                       |   1 +
->  drivers/mtd/spi-nor/atmel-quadspi.c                | 741 +++++++++++++++++++++
->  4 files changed, 783 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
->  create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
-> 
+	Arnd
