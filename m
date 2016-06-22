@@ -1,26 +1,19 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFoJm-0001U2-Ja
- for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 20:00:11 +0000
-Subject: Re: [RFC] Raising the UBI version
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <57699356.4030802@nod.at> <20160622144344.07ba4d41@bbrezillon>
- <576A989A.6080502@nod.at> <20160622160118.28a4339a@bbrezillon>
- <576A9B1D.3010201@nod.at> <20160622161304.6a16da85@bbrezillon>
- <576A9EF0.9020007@nod.at> <20160622163947.36ac7f3e@bbrezillon>
- <576AA425.8070705@nod.at> <20160622165212.76c17d0a@bbrezillon>
- <576AA7E6.3040302@nod.at> <20160622170633.05321f15@bbrezillon>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, Alexander Kaplan
- <alex@nextthing.co>, Brian Norris <computersforpeace@gmail.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+ id 1bFoOM-0003Ut-Q2
+ for linux-mtd@lists.infradead.org; Wed, 22 Jun 2016 20:04:55 +0000
+Subject: Re: [PATCH v2] ubi: Make recover_peb power cut aware
+To: =?UTF-8?B?SsO2cmcgUGbDpGhsZXI=?= <pfaehler@isse.de>
+References: <1466461910-18858-1-git-send-email-richard@nod.at>
+ <2124396.xJgUrQUc0H@pfaehler-pc>
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com, stable@vger.kernel.org
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <576AEE32.5000602@nod.at>
-Date: Wed, 22 Jun 2016 21:59:46 +0200
+Message-ID: <576AEF50.2090704@nod.at>
+Date: Wed, 22 Jun 2016 22:04:32 +0200
 MIME-Version: 1.0
-In-Reply-To: <20160622170633.05321f15@bbrezillon>
+In-Reply-To: <2124396.xJgUrQUc0H@pfaehler-pc>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,53 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 22.06.2016 um 17:06 schrieb Boris Brezillon:
-> On Wed, 22 Jun 2016 16:59:50 +0200
-> Richard Weinberger <richard@nod.at> wrote:
+Am 22.06.2016 um 16:44 schrieb Jörg Pfähler:
+> Reviewed-by: Jörg Pfähler <pfaehler@isse.de>
 > 
->> Am 22.06.2016 um 16:52 schrieb Boris Brezillon:
->>> So how about defining the following:
->>> - /sys/class/ubi/version: user-space ABI version (should always be one)  
+> Am Dienstag, 21. Juni 2016, 00:31:50 CEST schrieb Richard Weinberger:
+>> recover_peb() was never power cut aware,
+>> if a power cut happened right after writing the VID header
+>> upon next attach UBI would blindly use the new partial written
+>> PEB and all data from the old PEB is lost.
 >>
->> Yes. To not break libubi.
+>> In order to make recover_peb() power cut aware, write the new
+>> VID with a proper crc and copy_flag set such that the UBI attach
+>> process will detect whether the new PEB is completely written
+>> or not.
+>> We cannot directly use ubi_eba_atomic_leb_change() since we'd
+>> have to unlock the LEB which is facing a write error.
 >>
->>> - /sys/class/ubi/supported-on-flash-formats: either a bitfield or an
->>>   integer representing the higher on-flash format version supported by
->>>   the implementation (which implies that implementations have to
->>>   support all on-flash formats up-to supported-on-flash-formats)  
->>
->> We can do that. But who will evaluate this file?
-> 
-> ubiformat may need that one to check if the provided ubi image is
-> supported by the implementation.
+>> Cc: stable@vger.kernel.org
+>> Reported-by: Jörg Pfähler <pfaehler@isse.de>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-What if someone wants to ubiformat (with MLC support) his mtd0 on an old
-kernel and then reboots into the new one with MLC support?
-I'm not sure if it is wise do forbid that use case since allowing it does not
-hurt.
-
-Don't get me wrong, I just want to be sure that all new sysfs files we add
-have a clear defined use case and won't hurt us later.
-
->>
->>> - /sys/class/ubi/supported-features: the features supported by the
->>>   implementation (each bit is a specific feature or a set of features).
->>>   The features may or may not be version dependent.
->>> - /sys/class/ubi/ubiX/on-flash-format: the on-flash format used on the
->>>   UBIX device
->>> - /sys/class/ubi/ubiX/features: the features exposed by this UBIX
->>>   device  
->>
->> I think we should make features depend on version = 2.
->> IOW when we change the UBI format in a major way version will be 3 and
->> we maybe use something else to expose features.
-> 
-> IIUC, we move to version 2 now, because we're using one of the padding
-> byte (word?) to expose the feature flags, correct?
-> It makes sense.
-
-I'm not absolutely sure but keeping ->version and adding ->features seems
-the most feasible solution so far.
+Applied and pushed into linux-next.
 
 Thanks,
 //richard
