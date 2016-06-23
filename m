@@ -1,25 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGBWP-0006A2-QY
- for linux-mtd@lists.infradead.org; Thu, 23 Jun 2016 20:46:47 +0000
-Message-ID: <576C4A9B.8010708@denx.de>
-Date: Thu, 23 Jun 2016 22:46:19 +0200
-From: Marek Vasut <marex@denx.de>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bGBWV-0006Ab-0l
+ for linux-mtd@lists.infradead.org; Thu, 23 Jun 2016 20:46:52 +0000
+Date: Thu, 23 Jun 2016 22:46:28 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH] ubi: Make volume resize power cut aware
+Message-ID: <20160623224628.0495c565@bbrezillon>
+In-Reply-To: <1466703038-13044-1-git-send-email-richard@nod.at>
+References: <1466703038-13044-1-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-To: Michal Suchanek <hramrach@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- nicolas.ferre@atmel.com,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/9] mtd: m25p80: add support of dual and quad spi
- protocols to all commands
-References: <cover.1466440540.git.cyrille.pitchen@atmel.com>
- <0a3b22ec3bc41c26536f3acc8acfd98f9b3207ed.1466440540.git.cyrille.pitchen@atmel.com>
- <CAOMqctSuP6E55mJ7QrqASRQUpxSy=ZR-b7VPF=0vcw45B6S+Yg@mail.gmail.com>
-In-Reply-To: <CAOMqctSuP6E55mJ7QrqASRQUpxSy=ZR-b7VPF=0vcw45B6S+Yg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,66 +23,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/23/2016 10:35 PM, Michal Suchanek wrote:
-> Hello,
+On Thu, 23 Jun 2016 19:30:38 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-Hi,
+> When the volume resize operation shrinks a volume,
+> LEBs will be unmapped. Since unmapping will not erase these
+> LEBs immediately we have to wait for that operation to finish.
+> Otherwise in case of a power cut right after writing the new
+> volume table the UBI attach process can find more LEBs than the
+> volume table knows. This will render the UBI image unattachable.
+> 
+> Fix this issue by waiting for erase to complete and write the new volume table afterward.
+> 
+> Cc: <stable@vger.kernel.org>
+> Reported-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-> this patch is kind of awesome.
-> 
-> I have a few practical concerns however.
-> 
-> On 20 June 2016 at 18:50, Cyrille Pitchen <cyrille.pitchen@atmel.com> wrote:
->> Before this patch, m25p80_read() supported few SPI protocols:
->> - regular SPI 1-1-1
->> - SPI Dual Output 1-1-2
->> - SPI Quad Output 1-1-4
->> On the other hand, all other m25p80_*() hooks only supported SPI 1-1-1.
-> 
-> Under typical use my estimate is that huge majority of data is
-> transferred in _read() seconded by _write().
-> 
-> As I understand it the n-n-n means how many bits you transfer in
-> parallel when sending command-address-data.
-> 
-> In _read() the command and data overhead is negligible when you can
-> read kilobytes at once. So difference between 1-1-4 and 4-4-4 is not
-> meaningful performance-wise. Are there flash chips that support one
-> but not the other?
+I hope this change won't uncover another bug in case some of the
+UBI logic rely on the 'write vtbl record, then unmap unused LEBs'
+sequence. But AFAICT it seems safe.
 
-That's quite unlikely.
+You should probably wait for other reviews before taking the patch
+though.
 
-> For _write() the benefits are even harder to assess.
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-The page program usually works on 256B pages, so the math is rather easy.
-
-> You can
-> presumably write at n-n-4 or n-n-2 if your controller and flash
-> supports it transferring the page faster. And then spend possibly
-> large amount of time waiting for the flash to get ready again. If the
-> programming time is fixed transferring the page faster may or may not
-> have benefits. It may at least free the bus for other devices to use.
+> ---
+>  drivers/mtd/ubi/vmt.c | 25 ++++++++++++++++++-------
+>  1 file changed, 18 insertions(+), 7 deletions(-)
 > 
-> The _reg_ stuff is probably negligible altogether,
-> 
-> Lastly the faster transfers of address bytes seem to be achieved with
-> increasingly longer command codes given how much the maximum command
-> length increased. So even in a page write where the address is a few %
-> of the transfer the benefit of these extra modes is dubious.
-> 
-> Overall I wonder how much it is worthwhile to complicate the code to
-> get all these modes in every single function.
-
-In my opinion, 1-1-x makes sense as it is supported by most flashes,
-while n-m-x where n,m>1 does not make sense as it often requires some
-stateful change to non-volatile register with little gain.
-
-> Thanks
-> 
-> Michal
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+> diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+> index 10059df..0138f52 100644
+> --- a/drivers/mtd/ubi/vmt.c
+> +++ b/drivers/mtd/ubi/vmt.c
+> @@ -488,13 +488,6 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+>  		spin_unlock(&ubi->volumes_lock);
+>  	}
+>  
+> -	/* Change volume table record */
+> -	vtbl_rec = ubi->vtbl[vol_id];
+> -	vtbl_rec.reserved_pebs = cpu_to_be32(reserved_pebs);
+> -	err = ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
+> -	if (err)
+> -		goto out_acc;
+> -
+>  	if (pebs < 0) {
+>  		for (i = 0; i < -pebs; i++) {
+>  			err = ubi_eba_unmap_leb(ubi, vol, reserved_pebs + i);
+> @@ -512,6 +505,24 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+>  		spin_unlock(&ubi->volumes_lock);
+>  	}
+>  
+> +	/*
+> +	 * When we shrink a volume we have to flush all pending (erase) work.
+> +	 * Otherwise it can happen that upon next attach UBI finds a LEB with
+> +	 * lnum > highest_lnum and refuses to attach.
+> +	 */
+> +	if (pebs < 0) {
+> +		err = ubi_wl_flush(ubi, vol_id, UBI_ALL);
+> +		if (err)
+> +			goto out_acc;
+> +	}
+> +
+> +	/* Change volume table record */
+> +	vtbl_rec = ubi->vtbl[vol_id];
+> +	vtbl_rec.reserved_pebs = cpu_to_be32(reserved_pebs);
+> +	err = ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
+> +	if (err)
+> +		goto out_acc;
+> +
+>  	vol->reserved_pebs = reserved_pebs;
+>  	if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
+>  		vol->used_ebs = reserved_pebs;
