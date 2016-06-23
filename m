@@ -1,19 +1,19 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bG6Mm-0004Xp-B7
- for linux-mtd@lists.infradead.org; Thu, 23 Jun 2016 15:16:29 +0000
-Subject: Re: [PATCH] UBI: only read UBI_VID_HDR_SIZE when reading the vid_hdr
-To: Sascha Hauer <s.hauer@pengutronix.de>
-References: <1466688561-16103-1-git-send-email-s.hauer@pengutronix.de>
- <576BF461.2020108@nod.at> <20160623150631.GG20657@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <576BFD36.8090702@nod.at>
-Date: Thu, 23 Jun 2016 17:16:06 +0200
+Date: Thu, 23 Jun 2016 18:01:08 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Icenowy Zheng <icenowy@aosc.xyz>
+Cc: maxime.ripard@free-electrons.com, wens@csie.org, robh+dt@kernel.org,
+ richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 2/2] mtd: nand: sunxi: add reset line support
+Message-ID: <20160623180108.382bbaae@bbrezillon>
+In-Reply-To: <20160620044838.56904-2-icenowy@aosc.xyz>
+References: <20160620044838.56904-1-icenowy@aosc.xyz>
+ <20160620044838.56904-2-icenowy@aosc.xyz>
 MIME-Version: 1.0
-In-Reply-To: <20160623150631.GG20657@pengutronix.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +23,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 23.06.2016 um 17:06 schrieb Sascha Hauer:
->>>  	p = (char *)vid_hdr - ubi->vid_hdr_shift;
->>>  	read_err = ubi_io_read(ubi, p, pnum, ubi->vid_hdr_aloffset,
->>> -			  ubi->vid_hdr_alsize);
->>> +			  UBI_VID_HDR_SIZE);
->>
->> Hmm, I fear this will break as soon ubi->vid_hdr_shift is non-zero.
-> 
-> Ok, just tried and indeed it does break. Would it be an option to read
-> UBI_VID_HDR_SIZE + ubi->vid_hdr_shift bytes instead?
+On Mon, 20 Jun 2016 12:48:38 +0800
+Icenowy Zheng <icenowy@aosc.xyz> wrote:
 
-Well, you need to satisfy the trick UBI does.
-Please read the huge comment on it on top of io.c.
+> The NAND controller on some sun8i chips needs its reset line to be
+> deasserted before they can enter working state.
+>=20
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
+> ---
+>  =C2=A0Changes in v2:
+>  =C2=A0=C2=A0=C2=A0- Corrected the error checking code of reset line.
+>=20
+>  =C2=A0Changes in v3:
+>  =C2=A0=C2=A0=C2=A0- Corrected a more serious error brought in the "fix" =
+of v2.
+>=20
+>  =C2=A0Changes in v4:
+>  =C2=A0=C2=A0=C2=A0- Removed unneeded code block after "else".
+>=20
+>  =C2=A0Changes in v5:
+>  =C2=A0=C2=A0=C2=A0- Added reassertion code in case of initialization err=
+or and device
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0remove.
+>=20
+>   Changes in v6:
+>     - Fixed a resource leak by not using goto to exit in case of error.
+>=20
+>  drivers/mtd/nand/sunxi_nand.c | 28 +++++++++++++++++++++++++---
+>  1 file changed, 25 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index a83a690..08d5e88 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -39,6 +39,7 @@
+>  #include <linux/gpio.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/iopoll.h>
+> +#include <linux/reset.h>
+> =20
+>  #define NFC_REG_CTL		0x0000
+>  #define NFC_REG_ST		0x0004
+> @@ -269,6 +270,7 @@ struct sunxi_nfc {
+>  	void __iomem *regs;
+>  	struct clk *ahb_clk;
+>  	struct clk *mod_clk;
+> +	struct reset_control *reset;
+>  	unsigned long assigned_cs;
+>  	unsigned long clk_rate;
+>  	struct list_head chips;
+> @@ -1871,26 +1873,42 @@ static int sunxi_nfc_probe(struct platform_device=
+ *pdev)
+>  	if (ret)
+>  		goto out_ahb_clk_unprepare;
+> =20
+> +	nfc->reset =3D devm_reset_control_get_optional(dev, "ahb");
+> +
+> +	if (!IS_ERR(nfc->reset)) {
+> +		ret =3D reset_control_deassert(nfc->reset);
+> +		if (ret) {
+> +			dev_err(dev, "reset err %d\n", ret);
+> +			goto out_mod_clk_unprepare;
+> +		}
+> +	} else if (PTR_ERR(nfc->reset) !=3D -ENOENT) {
+> +		ret =3D PTR_ERR(nfc->reset);
 
-Since in most cases ubi->vid_hdr_shift is 0 we could also do a fast path.
-i.e.
-if (ubi->vid_hdr_shift)
-	read_len = ubi->vid_hdr_alsize
-else
-	read_len = UBI_VID_HDR_SIZE;
+You should return -EDEFER_PROBE here.
 
-But first I have to review a view call sites. :-)
+And can you please rebase this series on top of nand/next [1]?
 
-Can you tell a bit more on the NAND you're facing that speedup?
-I find it surprising that you gain a full second.
-
-Thanks,
-//richard
+[1]https://github.com/linux-nand/linux/tree/nand/next
