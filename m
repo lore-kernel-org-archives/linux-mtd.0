@@ -1,14 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from smtpbg325.qq.com ([14.17.32.36])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bG4hZ-0002Bf-AR
- for linux-mtd@lists.infradead.org; Thu, 23 Jun 2016 13:29:50 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] UBI: only read UBI_VID_HDR_SIZE when reading the vid_hdr
-Date: Thu, 23 Jun 2016 15:29:21 +0200
-Message-Id: <1466688561-16103-1-git-send-email-s.hauer@pengutronix.de>
+ id 1bG5Oi-0002zF-6l
+ for linux-mtd@lists.infradead.org; Thu, 23 Jun 2016 14:14:25 +0000
+From: "=?gb18030?B?u9TJ2Q==?=" <wang502742203@qq.com>
+To: "=?gb18030?B?UmljaGFyZCBXZWluYmVyZ2Vy?=" <richard.weinberger@gmail.com>
+Cc: "=?gb18030?B?bGludXgtbXRk?=" <linux-mtd@lists.infradead.org>
+Subject: =?gb18030?B?u9i4tKO6dWJpZnM6UXVlc3Rpb25zIEFib3V0IEdh?=
+ =?gb18030?B?cmJhZ2UgQ29sbGVjdGlvbg==?=
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="gb18030"
+Content-Transfer-Encoding: base64
+Date: Thu, 23 Jun 2016 22:10:14 +0800
+Message-ID: <tencent_2A36D08557C6C81100064B0E@qq.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,35 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When reading the vid hdr from the device UBI always reads a whole
-page. Instead, read only the data we actually need and speed up
-attachment of UBI devices by potentially making use of reading
-subpages.
-
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
-
-Please review carefully. It obviously works and speeds up UBI attachment
-from 3s to 2s here in one case and I have not found places where this patch
-makes problems, but there might be a reason I haven't seen why in case of
-the ec header only the header is read while in case of the vid header the
-whole page is read.
-
- drivers/mtd/ubi/io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 10cf3b5..31918a0 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -1019,7 +1019,7 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
- 
- 	p = (char *)vid_hdr - ubi->vid_hdr_shift;
- 	read_err = ubi_io_read(ubi, p, pnum, ubi->vid_hdr_aloffset,
--			  ubi->vid_hdr_alsize);
-+			  UBI_VID_HDR_SIZE);
- 	if (read_err && read_err != UBI_IO_BITFLIPS && !mtd_is_eccerr(read_err))
- 		return read_err;
- 
--- 
-2.8.1
+VGhhbmsgeW91IGZvciByZXBseS4KWW91IHNhaWQidGhlIGNhbGxlciAod2hlcmUgeW91IG1l
+YXN1cmUgdGhlIHRpbWUpIHdpbGwgYmUgYmxvY2tlZAp1bnRpbCBHQyBwcm9kdWNlIHNvbWUg
+c3BhY2UiLCBteSBxdWVzdGlvbiBpcyB0aGF0IHNpbmNlIEdDIHRocmVhZCBoYXMgZGVmYXVs
+dCBwcmlvcml0eSwgaG93IGNhbiB0aGUgY2FsbGVyIGJlIGJsb2NrZWQgd2l0aG91dCBjb250
+ZXh0IHN3aXRjaCB3aGVuIGFub3RoZXIgdGhyZWFkIGlzIHdvcmtpbmcgaW4gbXkgZW1iZWRk
+ZWQgc3lzdGVtPyBEb2VzIGJsb2NrIGhhcHBlbiBhcyBzeWNocm9uaXppbmcgZnVuY3Rpb24g
+aXMgYWx3YXlzIHRyaW5nIHRvIHN5bmNocm9uaXplIGRhdGEgdG8gZmxhc2ggdW50aWwgR0Mg
+dGhyZWFkIGZyZWVzIGVub3VnaCBzcGFjZSBpbiBzeW5jaHJvbmlzZWQgbW9kZT8KTWFueSBU
+aGFua3MsCkFuZHkKCi0tLdStyrzTyrz+LS0tCreivP7IyzogIlJpY2hhcmQgV2VpbmJlcmdl
+ciI8cmljaGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbT4Kt6LLzcqxvOQ6IDIwMTbE6jbUwjE5
+yNUgMjI6NTA6NTkKytW8/sjLOiAiu9TJ2SI8d2FuZzUwMjc0MjIwM0BxcS5jb20+OwqzrcvN
+OiAibGludXgtbXRkIjxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz47Ctb3zOI6IFJl
+OiB1YmlmczpRdWVzdGlvbnMgQWJvdXQgR2FyYmFnZSBDb2xsZWN0aW9uCgpIaSEKCk9uIFN1
+biwgSnVuIDE5LCAyMDE2IGF0IDM6NTYgUE0sILvUydkgPHdhbmc1MDI3NDIyMDNAcXEuY29t
+PiB3cm90ZToKPiBIaaOsTVREICBsaXN0cwo+IEkgbWVldCBzb21lIHByb2JsZW1zIHdoaWxl
+IHVzaW5nIFVCSSBmaWxlIHN5c3RlbSByZWNlbnRseS5JIG1ha2UgYW4gZXhwZXJpbWVudCBp
+biB3aGljaCBJIHdyaXRlIDIgZmlsZXMoMUtCIGVhY2gpIHRvIFVCSSBmcmVxdWVudGx5Lk5v
+cm1hbGx5IGl0IHRha2VzIG9ubHkgc2V2ZXJhbCBtaWxsc2Vjb25kcyB0byBmaW5pc2ggd3Jp
+dHRpbmcgMiBmaWxlcyBldmVyeSB0aW1lo6xidXQgd2hhdCBwdXp6bGVzIG1lIGlzIHRoYXQg
+aXQgdGFrZXMgYWJvdXQgNCBtaW51dGVzIHRvIHdyaXRlIG9uY2UgbmVhcmx5IGV2ZXJ5IDIw
+IHRvIDMwIG1pbnV0ZXMuSSBhbSB3b25kZXJpbmcgaG93IGNhbiB0aGlzIHByb2JsZW0gaGFw
+cGVuo79Eb2VzIEdhcmJhZ2UgQ29sbGVjdGlvbiBsZWFkIHRvIHRoaXM/IEkgbW91bnQgVUJJ
+RlMgdG8gYSAzM01pQiBNVEQgcGFydGlvbiB3aXRoICJvIC1zeW5jIiBvcHRpb24uQnkgdGhl
+IHdheSxpZiBVQkkgaXMgbW91bnRlZCBpbiBhc3luY2hyb25vdXMgbW9kZSwgdGhpcyBwcm9i
+bGVtIG5ldmVyIGhhcHBlbnMuIERvZXMgR0MoR2FyYmFnZSBDb2xsZWN0b24pIGRpZmZlciBp
+biBzeW5jaHJvbm91cyBtb2RlIGFuZGFzeW5jaHJvbm91cyBtb2RlPyAgV2hhdCBJJ3ZlIGxl
+YXJlZCBmcm9tIHNvbWUgZG9jdW1lbnRzIGlzIHRoYXQgR0MgdGhyZWFkIGlzIHNsZWVwaW5n
+IHdoaWxlIHdyaXR0aW5nIGZpbGVzIHdpdGhvdXQgaW50ZXJ2YWwgdW50aWwgVUJJRlMgaXMg
+ZnVsbCBpbiBzeW5jaHJvbm91cyBtb2RlIGFuZCBhdCB0aGF0IHBvaW50IHdyaXRpbmcgd2ls
+bCBiZWNvbWUgdmVyeSBzbG93LCBidXQgaW4gYXN5bmNocm9ub3VzIG1vZGUsIGJlZm9yZSBk
+YXRhIGlzICBtb3ZlZCBpbnRvIGZsYXNoIG1lZGlhLCBHQyB0aHJlYWQgd2lsbCB3b3JrIHdo
+ZW4gdGhlcmUgaXMgbm90IGVub3VnaCBmcmVlIHNwYWNlLCBhbSBJIHJpZ2h0PwoKWW91IG9i
+c2VydmUgdGhlIGlzc3VlIG9ubHkgaW4gc3luYyBtb2RlIGJlY2F1c2UgZXZlcnkgd3JpdGUg
+aXMgZG9uZQppbW1lZGlhdGVseSBhbmQgdGhlcmVmb3JlIHRoZSBnYXJiYWdlIGNvbGxlY3Rv
+ciBuZWVkcyB0bwpwcm9kdWNlIGVtcHR5IHNwYWNlLiBUaGlzIGNhbiB0YWtlIHNvbWUgdGlt
+ZSBhbmQgYXMgeW91IGFyZSBpbiBzeW5jCm1vZGUgdGhlIGNhbGxlciAod2hlcmUgeW91IG1l
+YXN1cmUgdGhlIHRpbWUpIHdpbGwgYmUgYmxvY2tlZAp1bnRpbCBHQyBwcm9kdWNlIHNvbWUg
+c3BhY2UuCkluIGFzeW5jaHJvbm91cyBtb2RlIHlvdSB3aWxsIGhhcmRseSBub3RpY2Ugc2lu
+Y2Ugd3JpdGluZyBkbyB0aGUgZmxhc2gKd2lsbCBiZSBkb25lIGluIGEgZGlmZmVyZW50IHRo
+cmVhZCBieSB0aGUgd3JpdGUgYmFjayBtZWNoYW5pc20uCgotLSAKVGhhbmtzLAovL3JpY2hh
+cmQ=
