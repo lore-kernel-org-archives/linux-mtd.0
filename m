@@ -1,19 +1,14 @@
-Date: Thu, 23 Jun 2016 18:01:08 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Icenowy Zheng <icenowy@aosc.xyz>
-Cc: maxime.ripard@free-electrons.com, wens@csie.org, robh+dt@kernel.org,
- richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-sunxi@googlegroups.com,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 2/2] mtd: nand: sunxi: add reset line support
-Message-ID: <20160623180108.382bbaae@bbrezillon>
-In-Reply-To: <20160620044838.56904-2-icenowy@aosc.xyz>
-References: <20160620044838.56904-1-icenowy@aosc.xyz>
- <20160620044838.56904-2-icenowy@aosc.xyz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bG8T7-00031O-Ef
+ for linux-mtd@lists.infradead.org; Thu, 23 Jun 2016 17:31:10 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, Richard Weinberger <richard@nod.at>,
+ stable@vger.kernel.org
+Subject: [PATCH] ubi: Make volume resize power cut aware
+Date: Thu, 23 Jun 2016 19:30:38 +0200
+Message-Id: <1466703038-13044-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +18,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 20 Jun 2016 12:48:38 +0800
-Icenowy Zheng <icenowy@aosc.xyz> wrote:
+When the volume resize operation shrinks a volume,
+LEBs will be unmapped. Since unmapping will not erase these
+LEBs immediately we have to wait for that operation to finish.
+Otherwise in case of a power cut right after writing the new
+volume table the UBI attach process can find more LEBs than the
+volume table knows. This will render the UBI image unattachable.
 
-> The NAND controller on some sun8i chips needs its reset line to be
-> deasserted before they can enter working state.
->=20
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
-> ---
->  =C2=A0Changes in v2:
->  =C2=A0=C2=A0=C2=A0- Corrected the error checking code of reset line.
->=20
->  =C2=A0Changes in v3:
->  =C2=A0=C2=A0=C2=A0- Corrected a more serious error brought in the "fix" =
-of v2.
->=20
->  =C2=A0Changes in v4:
->  =C2=A0=C2=A0=C2=A0- Removed unneeded code block after "else".
->=20
->  =C2=A0Changes in v5:
->  =C2=A0=C2=A0=C2=A0- Added reassertion code in case of initialization err=
-or and device
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0remove.
->=20
->   Changes in v6:
->     - Fixed a resource leak by not using goto to exit in case of error.
->=20
->  drivers/mtd/nand/sunxi_nand.c | 28 +++++++++++++++++++++++++---
->  1 file changed, 25 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index a83a690..08d5e88 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -39,6 +39,7 @@
->  #include <linux/gpio.h>
->  #include <linux/interrupt.h>
->  #include <linux/iopoll.h>
-> +#include <linux/reset.h>
-> =20
->  #define NFC_REG_CTL		0x0000
->  #define NFC_REG_ST		0x0004
-> @@ -269,6 +270,7 @@ struct sunxi_nfc {
->  	void __iomem *regs;
->  	struct clk *ahb_clk;
->  	struct clk *mod_clk;
-> +	struct reset_control *reset;
->  	unsigned long assigned_cs;
->  	unsigned long clk_rate;
->  	struct list_head chips;
-> @@ -1871,26 +1873,42 @@ static int sunxi_nfc_probe(struct platform_device=
- *pdev)
->  	if (ret)
->  		goto out_ahb_clk_unprepare;
-> =20
-> +	nfc->reset =3D devm_reset_control_get_optional(dev, "ahb");
-> +
-> +	if (!IS_ERR(nfc->reset)) {
-> +		ret =3D reset_control_deassert(nfc->reset);
-> +		if (ret) {
-> +			dev_err(dev, "reset err %d\n", ret);
-> +			goto out_mod_clk_unprepare;
-> +		}
-> +	} else if (PTR_ERR(nfc->reset) !=3D -ENOENT) {
-> +		ret =3D PTR_ERR(nfc->reset);
+Fix this issue by waiting for erase to complete and write the new volume table afterward.
 
-You should return -EDEFER_PROBE here.
+Cc: <stable@vger.kernel.org>
+Reported-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/vmt.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-And can you please rebase this series on top of nand/next [1]?
-
-[1]https://github.com/linux-nand/linux/tree/nand/next
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 10059df..0138f52 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -488,13 +488,6 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 		spin_unlock(&ubi->volumes_lock);
+ 	}
+ 
+-	/* Change volume table record */
+-	vtbl_rec = ubi->vtbl[vol_id];
+-	vtbl_rec.reserved_pebs = cpu_to_be32(reserved_pebs);
+-	err = ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
+-	if (err)
+-		goto out_acc;
+-
+ 	if (pebs < 0) {
+ 		for (i = 0; i < -pebs; i++) {
+ 			err = ubi_eba_unmap_leb(ubi, vol, reserved_pebs + i);
+@@ -512,6 +505,24 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 		spin_unlock(&ubi->volumes_lock);
+ 	}
+ 
++	/*
++	 * When we shrink a volume we have to flush all pending (erase) work.
++	 * Otherwise it can happen that upon next attach UBI finds a LEB with
++	 * lnum > highest_lnum and refuses to attach.
++	 */
++	if (pebs < 0) {
++		err = ubi_wl_flush(ubi, vol_id, UBI_ALL);
++		if (err)
++			goto out_acc;
++	}
++
++	/* Change volume table record */
++	vtbl_rec = ubi->vtbl[vol_id];
++	vtbl_rec.reserved_pebs = cpu_to_be32(reserved_pebs);
++	err = ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
++	if (err)
++		goto out_acc;
++
+ 	vol->reserved_pebs = reserved_pebs;
+ 	if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
+ 		vol->used_ebs = reserved_pebs;
+-- 
+2.7.3
