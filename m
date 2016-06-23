@@ -1,14 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bG8T7-00031O-Ef
- for linux-mtd@lists.infradead.org; Thu, 23 Jun 2016 17:31:10 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bG8Wy-0004Hp-Av
+ for linux-mtd@lists.infradead.org; Thu, 23 Jun 2016 17:35:09 +0000
+Subject: =?UTF-8?B?UmU6IOWbnuWkje+8mnViaWZzOlF1ZXN0aW9ucyBBYm91dCBHYXJiYWdl?=
+ =?UTF-8?Q?_Collection?=
+To: Michal Suchanek <hramrach@gmail.com>
+References: <tencent_6E3BACF519D6BE3A72292C36@qq.com>
+ <CAFLxGvxbmUqFAq7QS=S3n0_yO4tsUHdbbL3-Fq4bHuJTBmEpPA@mail.gmail.com>
+ <tencent_7ADEA65732A2B069166D1A41@qq.com> <5766D0CA.3090404@nod.at>
+ <CAOMqctT4Ftef-TTX+cC9HK5Fg4TTe9MDodGbSrJDBmsKBj_NWA@mail.gmail.com>
+Cc: =?UTF-8?B?6L6J5bCR?= <wang502742203@qq.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, Richard Weinberger <richard@nod.at>,
- stable@vger.kernel.org
-Subject: [PATCH] ubi: Make volume resize power cut aware
-Date: Thu, 23 Jun 2016 19:30:38 +0200
-Message-Id: <1466703038-13044-1-git-send-email-richard@nod.at>
+Message-ID: <576C1DB1.1080002@nod.at>
+Date: Thu, 23 Jun 2016 19:34:41 +0200
+MIME-Version: 1.0
+In-Reply-To: <CAOMqctT4Ftef-TTX+cC9HK5Fg4TTe9MDodGbSrJDBmsKBj_NWA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,64 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When the volume resize operation shrinks a volume,
-LEBs will be unmapped. Since unmapping will not erase these
-LEBs immediately we have to wait for that operation to finish.
-Otherwise in case of a power cut right after writing the new
-volume table the UBI attach process can find more LEBs than the
-volume table knows. This will render the UBI image unattachable.
+Am 23.06.2016 um 19:20 schrieb Michal Suchanek:
+> Hello,
+> 
+> On 19 June 2016 at 19:05, Richard Weinberger <richard@nod.at> wrote:
+>> Am 19.06.2016 um 18:14 schrieb 辉少:
+>>> Thanks for your kind reply！Do you mean that in synchronous/asynchronous mode GC is also finished in synchronous
+>>> /asynchronous way as writting is? A more question is，are all dirty spaces collected in the same time in synchronous mode(at this point the caller will be blocked for a long time) while in asynchronous mode dirty spaces will be collected little by little in asynchronous mode when i do not  notice？Thank you！
+>>
+>> Hmm, I don't fully understand your first question, can you elaborate?
+>> As for dirty space, GC will not collect all dirty space. UBIFS tells GC how much free space an operation
+>> will take. UBIFS calls this budget. The GC will try to produce as much free space as needed.
+>>
+> 
+> I guess the issue here is that UBIFS appears to do this
+> 
+>  1) write files while there is space
+>  2) when space is 0 perform a GC run as part of write operation
+> 
+> when writes are synchronous the GC run is timed as part of the write.
 
-Fix this issue by waiting for erase to complete and write the new volume table afterward.
+Exactly. :-)
 
-Cc: <stable@vger.kernel.org>
-Reported-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/vmt.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+> If GC was asynchronous it would not appear as part of the synchronous
+> write operation and would not cause as much write time jitter. When
+> mounting a filesystem synchronous having GC synchronous is likely not
+> what the user asked for. It's part of the internal fs bookkeeping and
+> not part of the operation the user wants to perform synchronously.
+> 
+> For GC to run asynchronously it would have to start before the
+> available space is 0 so writes can still happen.
 
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 10059df..0138f52 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -488,13 +488,6 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
- 		spin_unlock(&ubi->volumes_lock);
- 	}
- 
--	/* Change volume table record */
--	vtbl_rec = ubi->vtbl[vol_id];
--	vtbl_rec.reserved_pebs = cpu_to_be32(reserved_pebs);
--	err = ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
--	if (err)
--		goto out_acc;
--
- 	if (pebs < 0) {
- 		for (i = 0; i < -pebs; i++) {
- 			err = ubi_eba_unmap_leb(ubi, vol, reserved_pebs + i);
-@@ -512,6 +505,24 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
- 		spin_unlock(&ubi->volumes_lock);
- 	}
- 
-+	/*
-+	 * When we shrink a volume we have to flush all pending (erase) work.
-+	 * Otherwise it can happen that upon next attach UBI finds a LEB with
-+	 * lnum > highest_lnum and refuses to attach.
-+	 */
-+	if (pebs < 0) {
-+		err = ubi_wl_flush(ubi, vol_id, UBI_ALL);
-+		if (err)
-+			goto out_acc;
-+	}
-+
-+	/* Change volume table record */
-+	vtbl_rec = ubi->vtbl[vol_id];
-+	vtbl_rec.reserved_pebs = cpu_to_be32(reserved_pebs);
-+	err = ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
-+	if (err)
-+		goto out_acc;
-+
- 	vol->reserved_pebs = reserved_pebs;
- 	if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
- 		vol->used_ebs = reserved_pebs;
--- 
-2.7.3
+How would the GC know how much space you need in future?
+Sure, we would run the GC every X seconds/minutes/whatever but then the flash will wear out
+faster since GC will always run and not only when you really need space.
+
+> Is it possible to set a parameter somewhere that would make UBIFS do this?
+
+Do we really need this? If your application behaves
+correctly there is no need to mount the filesystem synchronous.
+
+Thanks,
+//richard
