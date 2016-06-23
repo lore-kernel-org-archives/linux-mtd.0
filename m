@@ -1,31 +1,24 @@
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGDgE-0002ZX-57
- for linux-mtd@lists.infradead.org; Thu, 23 Jun 2016 23:05:03 +0000
-Received: by mail-wm0-x232.google.com with SMTP id r201so3015299wme.1
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jun 2016 16:04:41 -0700 (PDT)
+From: Icenowy Zheng <icenowy@aosc.xyz>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: "maxime.ripard@free-electrons.com" <maxime.ripard@free-electrons.com>,
+ "wens@csie.org" <wens@csie.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "richard@nod.at" <richard@nod.at>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-sunxi@googlegroups.com" <linux-sunxi@googlegroups.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <20160623180108.382bbaae@bbrezillon>
+References: <20160620044838.56904-1-icenowy@aosc.xyz>
+ <20160620044838.56904-2-icenowy@aosc.xyz> <20160623180108.382bbaae@bbrezillon>
+Subject: Re: [PATCH v6 2/2] mtd: nand: sunxi: add reset line support
 MIME-Version: 1.0
-In-Reply-To: <576C67B4.60600@denx.de>
-References: <cover.1466440540.git.cyrille.pitchen@atmel.com>
- <0a3b22ec3bc41c26536f3acc8acfd98f9b3207ed.1466440540.git.cyrille.pitchen@atmel.com>
- <CAOMqctSuP6E55mJ7QrqASRQUpxSy=ZR-b7VPF=0vcw45B6S+Yg@mail.gmail.com>
- <576C4A9B.8010708@denx.de>
- <CAOMqctT_a2Zb1RArxB3jVQU0p1iZWKxsC9s4ZkqiEzxB-f3qHA@mail.gmail.com>
- <576C5F37.8020807@denx.de>
- <CAOMqctS63oJZhE3EFt3dpe1-SX87BKdWOtsDQ=xyDj5haaFETA@mail.gmail.com>
- <576C67B4.60600@denx.de>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Fri, 24 Jun 2016 01:04:00 +0200
-Message-ID: <CAOMqctRbhQ_3YtVfr__36e0ov20bsvvpK5VpknX48V_SdEfnog@mail.gmail.com>
-Subject: Re: [PATCH 7/9] mtd: m25p80: add support of dual and quad spi
- protocols to all commands
-To: Marek Vasut <marex@denx.de>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, nicolas.ferre@atmel.com,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Message-Id: <1284641466724038@web7h.yandex.ru>
+Date: Fri, 24 Jun 2016 07:20:38 +0800
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,91 +28,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24 June 2016 at 00:50, Marek Vasut <marex@denx.de> wrote:
-> On 06/24/2016 12:43 AM, Michal Suchanek wrote:
->> On 24 June 2016 at 00:14, Marek Vasut <marex@denx.de> wrote:
->>> On 06/23/2016 11:58 PM, Michal Suchanek wrote:
->>>> On 23 June 2016 at 22:46, Marek Vasut <marex@denx.de> wrote:
->>>>> On 06/23/2016 10:35 PM, Michal Suchanek wrote:
->>>>>> Hello,
->>>>>
->>>>> Hi,
->>>>>
->>>>>> this patch is kind of awesome.
->>>>>>
->>>>>> I have a few practical concerns however.
->>>>>>
->>>>>> On 20 June 2016 at 18:50, Cyrille Pitchen <cyrille.pitchen@atmel.com> wrote:
->>>>>>> Before this patch, m25p80_read() supported few SPI protocols:
->>>>>>> - regular SPI 1-1-1
->>>>>>> - SPI Dual Output 1-1-2
->>>>>>> - SPI Quad Output 1-1-4
->>>>>>> On the other hand, all other m25p80_*() hooks only supported SPI 1-1-1.
->>>>>>
->>>>>> Under typical use my estimate is that huge majority of data is
->>>>>> transferred in _read() seconded by _write().
->>>>>>
->>>>>> As I understand it the n-n-n means how many bits you transfer in
->>>>>> parallel when sending command-address-data.
->>>>>>
->>>>>> In _read() the command and data overhead is negligible when you can
->>>>>> read kilobytes at once. So difference between 1-1-4 and 4-4-4 is not
->>>>>> meaningful performance-wise. Are there flash chips that support one
->>>>>> but not the other?
->>>>>
->>>>> That's quite unlikely.
->>>>>
->>>>>> For _write() the benefits are even harder to assess.
->>>>>
->>>>> The page program usually works on 256B pages, so the math is rather easy.
->>>>>
->>>>>> You can
->>>>>> presumably write at n-n-4 or n-n-2 if your controller and flash
->>>>>> supports it transferring the page faster. And then spend possibly
->>>>>> large amount of time waiting for the flash to get ready again. If the
->>>>>> programming time is fixed transferring the page faster may or may not
->>>>>> have benefits. It may at least free the bus for other devices to use.
->>>>>>
->>>>>> The _reg_ stuff is probably negligible altogether,
->>>>>>
->>>>>> Lastly the faster transfers of address bytes seem to be achieved with
->>>>>> increasingly longer command codes given how much the maximum command
->>>>>> length increased. So even in a page write where the address is a few %
->>>>>> of the transfer the benefit of these extra modes is dubious.
->>>>>>
->>>>>> Overall I wonder how much it is worthwhile to complicate the code to
->>>>>> get all these modes in every single function.
->>>>>
->>>>> In my opinion, 1-1-x makes sense as it is supported by most flashes,
->>>>> while n-m-x where n,m>1 does not make sense as it often requires some
->>>>> stateful change to non-volatile register with little gain.
->>>>>
->>>>
->>>> There is actually one thing that x-x-x modes make easier. If I were to
->>>> implement dual mode switch on my SPI master controller it would be
->>>> probably set for whole message and would not change mid-transfer.
->>>
->>
->>>
->>>> Still you can probably simulate x-x-x with 1-1-x by scattering the
->>>> 1-1-x command bits across more bytes.
->>>
->>> That's not how you usually implement it. It's quite often a shift register.
->>>
->>
->> Checking the manual there is a bit in a register that switches the
->> master controller to dual mode receive (only). So the master
->> controller can do 1-1-2 read (only). I don't use that feature because
->> afaict there is no code in m25p80 which does the switch and as pointed
->> out the reg_read commands are done in 1-1-1.
+In my opinion, return directly PTR_ERR(nfc->reset) is OK here.
+If devm_reset_control_get_optional() return -EPROBE_DEFER, the code here will also return it. However, if we get other error, why should it return -EPROBE_DEFER again?
+
+24.06.2016, 00:01, "Boris Brezillon" <boris.brezillon@free-electrons.com>:
+> On Mon, 20 Jun 2016 12:48:38 +0800
+> Icenowy Zheng <icenowy@aosc.xyz> wrote:
 >
-> I don't think I understand. Are you talking about some specific
-> controller now ?
+>>  The NAND controller on some sun8i chips needs its reset line to be
+>>  deasserted before they can enter working state.
+>>
+>>  Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
+>>  ---
+>>    Changes in v2:
+>>      - Corrected the error checking code of reset line.
+>>
+>>    Changes in v3:
+>>      - Corrected a more serious error brought in the "fix" of v2.
+>>
+>>    Changes in v4:
+>>      - Removed unneeded code block after "else".
+>>
+>>    Changes in v5:
+>>      - Added reassertion code in case of initialization error and device
+>>        remove.
+>>
+>>    Changes in v6:
+>>      - Fixed a resource leak by not using goto to exit in case of error.
+>>
+>>   drivers/mtd/nand/sunxi_nand.c | 28 +++++++++++++++++++++++++---
+>>   1 file changed, 25 insertions(+), 3 deletions(-)
+>>
+>>  diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+>>  index a83a690..08d5e88 100644
+>>  --- a/drivers/mtd/nand/sunxi_nand.c
+>>  +++ b/drivers/mtd/nand/sunxi_nand.c
+>>  @@ -39,6 +39,7 @@
+>>   #include <linux/gpio.h>
+>>   #include <linux/interrupt.h>
+>>   #include <linux/iopoll.h>
+>>  +#include <linux/reset.h>
+>>
+>>   #define NFC_REG_CTL 0x0000
+>>   #define NFC_REG_ST 0x0004
+>>  @@ -269,6 +270,7 @@ struct sunxi_nfc {
+>>           void __iomem *regs;
+>>           struct clk *ahb_clk;
+>>           struct clk *mod_clk;
+>>  + struct reset_control *reset;
+>>           unsigned long assigned_cs;
+>>           unsigned long clk_rate;
+>>           struct list_head chips;
+>>  @@ -1871,26 +1873,42 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+>>           if (ret)
+>>                   goto out_ahb_clk_unprepare;
+>>
+>>  + nfc->reset = devm_reset_control_get_optional(dev, "ahb");
+>>  +
+>>  + if (!IS_ERR(nfc->reset)) {
+>>  + ret = reset_control_deassert(nfc->reset);
+>>  + if (ret) {
+>>  + dev_err(dev, "reset err %d\n", ret);
+>>  + goto out_mod_clk_unprepare;
+>>  + }
+>>  + } else if (PTR_ERR(nfc->reset) != -ENOENT) {
+>>  + ret = PTR_ERR(nfc->reset);
 >
-
-Yes, the sunxi spi controller can do dual read according to manual but
-not sure if anyone has tired that, At least the A31 variant can.
-
-Thanks
-
-Michal
+> You should return -EDEFER_PROBE here.
+>
+> And can you please rebase this series on top of nand/next [1]?
+>
+> [1]https://github.com/linux-nand/linux/tree/nand/next
