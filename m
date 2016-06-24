@@ -1,20 +1,19 @@
-Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGT9f-0005r1-VH
- for linux-mtd@lists.infradead.org; Fri, 24 Jun 2016 15:36:29 +0000
-Received: by mail-wm0-x22a.google.com with SMTP id r201so30485357wme.1
- for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2016 08:36:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20160624153307.13d1c850@crub>
-References: <20160624153307.13d1c850@crub>
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date: Fri, 24 Jun 2016 12:36:05 -0300
-Message-ID: <CAAEAJfAsqm3YJ+mKPyuqe6nZoXJ5LuV7Cv+1yNv9+JVXeJN9tQ@mail.gmail.com>
-Subject: Re: Is UBI volume update broken?
-To: Anatolij Gustschin <agust@denx.de>
+ id 1bGTgH-0004uG-Rn
+ for linux-mtd@lists.infradead.org; Fri, 24 Jun 2016 16:10:11 +0000
+Date: Fri, 24 Jun 2016 18:09:58 +0200
+From: Anatolij Gustschin <agust@denx.de>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: Is UBI volume update broken?
+Message-ID: <20160624180958.202fff24@crub>
+In-Reply-To: <CAAEAJfAsqm3YJ+mKPyuqe6nZoXJ5LuV7Cv+1yNv9+JVXeJN9tQ@mail.gmail.com>
+References: <20160624153307.13d1c850@crub>
+ <CAAEAJfAsqm3YJ+mKPyuqe6nZoXJ5LuV7Cv+1yNv9+JVXeJN9tQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Anatolij.
+Hi Ezequiel,
 
-On 24 June 2016 at 10:33, Anatolij Gustschin <agust@denx.de> wrote:
-[..]
+On Fri, 24 Jun 2016 12:36:05 -0300
+Ezequiel Garcia ezequiel@vanguardiasur.com.ar wrote:
+
+>Anatolij.
 >
-> # ubiupdatevol /dev/ubi0_0 data.ubi
-> # echo $?
-> 0
+>On 24 June 2016 at 10:33, Anatolij Gustschin <agust@denx.de> wrote:
+>[..]
+>>
+>> # ubiupdatevol /dev/ubi0_0 data.ubi
+>> # echo $?
+>> 0
+>>
 >
+>It seems you are you writing a UBI *volume*, with an image
+>prepared for a UBI *device*.
 
-It seems you are you writing a UBI *volume*, with an image
-prepared for a UBI *device*.
+yes, now I see it. Thanks for the pointer.
 
-> # mount -t ubifs ubi0:data /mnt
-> mount: mounting ubi0:data on /mnt failed: Invalid argument
+[...]
+>If you wrote down your exact steps, then it's clear this
+>is wrong:
 >
-> I think that the data.ubi image is okay because after formatting the
-> MTD partition with this very image mounting works:
->
-> # ubiformat /dev/mtd4 -f data.ubi
-> ubiformat: mtd4 (nor), size 16121856 bytes (15.4 MiB), 246 eraseblocks of=
- 65536 bytes (64.0 KiB), min. I/O size 1 bytes
-> libscan: scanning eraseblock 245 -- 100 % complete
-> ubiformat: 246 eraseblocks have valid erase counter, mean value is 5
-> ubiformat: flashing eraseblock 14 -- 100 % complete
-> ubiformat: formatting eraseblock 245 -- 100 % complete
->
+>ubiformat /dev/mtd4 -f data.ubi
+>ubiupdatevol /dev/ubi0_0 data.ubi
 
-If you wrote down your exact steps, then it's clear this
-is wrong:
+I extracted the commands from some old script and this script was
+obviously wrong.
 
-ubiformat /dev/mtd4 -f data.ubi
-ubiupdatevol /dev/ubi0_0 data.ubi
+>You probably want "ubiupdatevol /dev/ubi0_0 data.img".
 
-You probably want "ubiupdatevol /dev/ubi0_0 data.img".
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+Exactly! And that works as expected.
+
+Thanks,
+
+Anatolij
