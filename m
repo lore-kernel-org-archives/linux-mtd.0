@@ -1,16 +1,20 @@
-From: Icenowy Zheng <icenowy@aosc.xyz>
-To: maxime.ripard@free-electrons.com, wens@csie.org,
- boris.brezillon@free-electrons.com
-Cc: robh+dt@kernel.org, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
- Icenowy Zheng <icenowy@aosc.xyz>
-Subject: [PATCH v7 2/2] mtd: nand: sunxi: add reset line support
-Date: Fri, 24 Jun 2016 13:00:05 +0800
-Message-Id: <20160624050005.31186-2-icenowy@aosc.xyz>
-In-Reply-To: <20160624050005.31186-1-icenowy@aosc.xyz>
-References: <20160624050005.31186-1-icenowy@aosc.xyz>
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bGKKS-0006CD-GN
+ for linux-mtd@lists.infradead.org; Fri, 24 Jun 2016 06:11:01 +0000
+Date: Fri, 24 Jun 2016 08:10:37 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBI: only read UBI_VID_HDR_SIZE when reading the vid_hdr
+Message-ID: <20160624061037.GH20657@pengutronix.de>
+References: <1466688561-16103-1-git-send-email-s.hauer@pengutronix.de>
+ <576BF461.2020108@nod.at> <20160623150631.GG20657@pengutronix.de>
+ <576BFD36.8090702@nod.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <576BFD36.8090702@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,104 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND controller on some sun8i chips needs its reset line to be
-deasserted before they can enter working state.
+On Thu, Jun 23, 2016 at 05:16:06PM +0200, Richard Weinberger wrote:
+> Am 23.06.2016 um 17:06 schrieb Sascha Hauer:
+> >>>  	p = (char *)vid_hdr - ubi->vid_hdr_shift;
+> >>>  	read_err = ubi_io_read(ubi, p, pnum, ubi->vid_hdr_aloffset,
+> >>> -			  ubi->vid_hdr_alsize);
+> >>> +			  UBI_VID_HDR_SIZE);
+> >>
+> >> Hmm, I fear this will break as soon ubi->vid_hdr_shift is non-zero.
+> > 
+> > Ok, just tried and indeed it does break. Would it be an option to read
+> > UBI_VID_HDR_SIZE + ubi->vid_hdr_shift bytes instead?
+> 
+> Well, you need to satisfy the trick UBI does.
+> Please read the huge comment on it on top of io.c.
+> 
+> Since in most cases ubi->vid_hdr_shift is 0 we could also do a fast path.
+> i.e.
+> if (ubi->vid_hdr_shift)
+> 	read_len = ubi->vid_hdr_alsize
+> else
+> 	read_len = UBI_VID_HDR_SIZE;
 
-Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
----
-Changes in v2:
-  - Corrected the error checking code of reset line.
+Yes. I thought reading UBI_VID_HDR_SIZE + ubi->vid_hdr_shift has the
+advantage that even with vid_hdr_shift != 0 we can profit from reading
+subpages. I tested it with a vid hdr offset of 512 and it works ok.
 
-Changes in v3:
-  - Corrected a more serious error brought in the "fix" of v2.
+> 
+> But first I have to review a view call sites. :-)
 
-Changes in v4:
-  - Removed unneeded code block after "else".
+Yes, please. It lowers the chance that I break the kernel ;)
 
-Changes in v5:
-  - Added reassertion code in case of initialization error and device
-    remove.
+> 
+> Can you tell a bit more on the NAND you're facing that speedup?
+> I find it surprising that you gain a full second.
 
-Changes in v6:
-  - Fixed a resource leak by not using goto to exit in case of error.
+It's a Micron Nand with a page size of 8192+448. On an i.MX6 we only
+have to read 512 bytes when reading the vid header.
 
-Changes in v7:
-  - Rebased for nand/next branch.
+Sascha
 
- drivers/mtd/nand/sunxi_nand.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index f582fe4..77796da 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -39,6 +39,7 @@
- #include <linux/gpio.h>
- #include <linux/interrupt.h>
- #include <linux/iopoll.h>
-+#include <linux/reset.h>
- 
- #define NFC_REG_CTL		0x0000
- #define NFC_REG_ST		0x0004
-@@ -270,6 +271,7 @@ struct sunxi_nfc {
- 	void __iomem *regs;
- 	struct clk *ahb_clk;
- 	struct clk *mod_clk;
-+	struct reset_control *reset;
- 	unsigned long assigned_cs;
- 	unsigned long clk_rate;
- 	struct list_head chips;
-@@ -2209,15 +2211,28 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto out_ahb_clk_unprepare;
- 
-+	nfc->reset = devm_reset_control_get_optional(dev, "ahb");
-+
-+	if (!IS_ERR(nfc->reset)) {
-+		ret = reset_control_deassert(nfc->reset);
-+		if (ret) {
-+			dev_err(dev, "reset err %d\n", ret);
-+			goto out_mod_clk_unprepare;
-+		}
-+	} else if (PTR_ERR(nfc->reset) != -ENOENT) {
-+		ret = PTR_ERR(nfc->reset);
-+		goto out_mod_clk_unprepare;
-+	}
-+
- 	ret = sunxi_nfc_rst(nfc);
- 	if (ret)
--		goto out_mod_clk_unprepare;
-+		goto out_ahb_reset_reassert;
- 
- 	writel(0, nfc->regs + NFC_REG_INT);
- 	ret = devm_request_irq(dev, irq, sunxi_nfc_interrupt,
- 			       0, "sunxi-nand", nfc);
- 	if (ret)
--		goto out_mod_clk_unprepare;
-+		goto out_ahb_reset_reassert;
- 
- 	nfc->dmac = dma_request_slave_channel(dev, "rxtx");
- 	if (nfc->dmac) {
-@@ -2247,6 +2262,9 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- out_release_dmac:
- 	if (nfc->dmac)
- 		dma_release_channel(nfc->dmac);
-+out_ahb_reset_reassert:
-+	if (!IS_ERR(nfc->reset))
-+		reset_control_assert(nfc->reset);
- out_mod_clk_unprepare:
- 	clk_disable_unprepare(nfc->mod_clk);
- out_ahb_clk_unprepare:
-@@ -2262,6 +2280,10 @@ static int sunxi_nfc_remove(struct platform_device *pdev)
- 	sunxi_nand_chips_cleanup(nfc);
- 	if (nfc->dmac)
- 		dma_release_channel(nfc->dmac);
-+
-+	if (!IS_ERR(nfc->reset))
-+		reset_control_assert(nfc->reset);
-+
- 	clk_disable_unprepare(nfc->mod_clk);
- 	clk_disable_unprepare(nfc->ahb_clk);
- 
 -- 
-2.9.0
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
