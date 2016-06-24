@@ -1,19 +1,17 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGTgH-0004uG-Rn
- for linux-mtd@lists.infradead.org; Fri, 24 Jun 2016 16:10:11 +0000
-Date: Fri, 24 Jun 2016 18:09:58 +0200
-From: Anatolij Gustschin <agust@denx.de>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Is UBI volume update broken?
-Message-ID: <20160624180958.202fff24@crub>
-In-Reply-To: <CAAEAJfAsqm3YJ+mKPyuqe6nZoXJ5LuV7Cv+1yNv9+JVXeJN9tQ@mail.gmail.com>
-References: <20160624153307.13d1c850@crub>
- <CAAEAJfAsqm3YJ+mKPyuqe6nZoXJ5LuV7Cv+1yNv9+JVXeJN9tQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1bGV4A-0007xB-5a
+ for linux-mtd@lists.infradead.org; Fri, 24 Jun 2016 17:38:54 +0000
+Received: by mail-pf0-x242.google.com with SMTP id i123so9834123pfg.3
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2016 10:38:33 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Giorgio <giorgio.nicole@arcor.de>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH] mtd: spi-nor: fix wrong "fully unlocked" test
+Date: Fri, 24 Jun 2016 10:38:14 -0700
+Message-Id: <1466789894-17535-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+In stm_unlock(), the test to determine whether we've fully unlocked the
+flash checks for the lock length to be equal to the flash size. That is
+a typo/think-o -- the condition actually means the flash is completely
+*locked.* We should be using the inverse condition -- that the lock
+length is 0 (i.e., no protection).
 
-On Fri, 24 Jun 2016 12:36:05 -0300
-Ezequiel Garcia ezequiel@vanguardiasur.com.ar wrote:
+The result of this bug is that we never actually turn off the Status
+Register Write Disable bit, even if the flash is completely unlocked.
+Now we can.
 
->Anatolij.
->
->On 24 June 2016 at 10:33, Anatolij Gustschin <agust@denx.de> wrote:
->[..]
->>
->> # ubiupdatevol /dev/ubi0_0 data.ubi
->> # echo $?
->> 0
->>
->
->It seems you are you writing a UBI *volume*, with an image
->prepared for a UBI *device*.
+Fixes: 47b8edbf0d43 ("mtd: spi-nor: disallow further writes to SR if WP# is low")
+Reported-by: Giorgio <giorgio.nicole@arcor.de>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-yes, now I see it. Thanks for the pointer.
-
-[...]
->If you wrote down your exact steps, then it's clear this
->is wrong:
->
->ubiformat /dev/mtd4 -f data.ubi
->ubiupdatevol /dev/ubi0_0 data.ubi
-
-I extracted the commands from some old script and this script was
-obviously wrong.
-
->You probably want "ubiupdatevol /dev/ubi0_0 data.img".
-
-Exactly! And that works as expected.
-
-Thanks,
-
-Anatolij
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index a63922ed6385..14cf6ac8c0a5 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -661,7 +661,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	status_new = (status_old & ~mask & ~SR_TB) | val;
+ 
+ 	/* Don't protect status register if we're fully unlocked */
+-	if (lock_len == mtd->size)
++	if (lock_len == 0)
+ 		status_new &= ~SR_SRWD;
+ 
+ 	if (!use_top)
+-- 
+2.8.0.rc3.226.g39d4020
