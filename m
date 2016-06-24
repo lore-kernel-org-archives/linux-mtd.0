@@ -1,19 +1,15 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGLis-0003md-VE
- for linux-mtd@lists.infradead.org; Fri, 24 Jun 2016 07:40:22 +0000
-Date: Fri, 24 Jun 2016 09:39:57 +0200
+Date: Fri, 24 Jun 2016 11:37:38 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: only read UBI_VID_HDR_SIZE when reading the vid_hdr
-Message-ID: <20160624093957.528c48dc@bbrezillon>
-In-Reply-To: <20160624061037.GH20657@pengutronix.de>
-References: <1466688561-16103-1-git-send-email-s.hauer@pengutronix.de>
- <576BF461.2020108@nod.at> <20160623150631.GG20657@pengutronix.de>
- <576BFD36.8090702@nod.at> <20160624061037.GH20657@pengutronix.de>
+To: Icenowy Zheng <icenowy@aosc.xyz>
+Cc: maxime.ripard@free-electrons.com, wens@csie.org, robh+dt@kernel.org,
+ richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v7 1/2] mtd: nand: sunxi: update DT bindings
+Message-ID: <20160624113738.7968a19d@bbrezillon>
+In-Reply-To: <20160624050005.31186-1-icenowy@aosc.xyz>
+References: <20160624050005.31186-1-icenowy@aosc.xyz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,51 +22,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 24 Jun 2016 08:10:37 +0200
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+On Fri, 24 Jun 2016 13:00:04 +0800
+Icenowy Zheng <icenowy@aosc.xyz> wrote:
 
-> On Thu, Jun 23, 2016 at 05:16:06PM +0200, Richard Weinberger wrote:
-> > Am 23.06.2016 um 17:06 schrieb Sascha Hauer:  
-> > >>>  	p = (char *)vid_hdr - ubi->vid_hdr_shift;
-> > >>>  	read_err = ubi_io_read(ubi, p, pnum, ubi->vid_hdr_aloffset,
-> > >>> -			  ubi->vid_hdr_alsize);
-> > >>> +			  UBI_VID_HDR_SIZE);  
-> > >>
-> > >> Hmm, I fear this will break as soon ubi->vid_hdr_shift is non-zero.  
-> > > 
-> > > Ok, just tried and indeed it does break. Would it be an option to read
-> > > UBI_VID_HDR_SIZE + ubi->vid_hdr_shift bytes instead?  
-> > 
-> > Well, you need to satisfy the trick UBI does.
-> > Please read the huge comment on it on top of io.c.
-> > 
-> > Since in most cases ubi->vid_hdr_shift is 0 we could also do a fast path.
-> > i.e.
-> > if (ubi->vid_hdr_shift)
-> > 	read_len = ubi->vid_hdr_alsize
-> > else
-> > 	read_len = UBI_VID_HDR_SIZE;  
+> Document the reset lines
 > 
-> Yes. I thought reading UBI_VID_HDR_SIZE + ubi->vid_hdr_shift has the
-> advantage that even with vid_hdr_shift != 0 we can profit from reading
-> subpages. I tested it with a vid hdr offset of 512 and it works ok.
-> 
-> > 
-> > But first I have to review a view call sites. :-)  
-> 
-> Yes, please. It lowers the chance that I break the kernel ;)
-> 
-> > 
-> > Can you tell a bit more on the NAND you're facing that speedup?
-> > I find it surprising that you gain a full second.
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
 
-Not so surprising to me. I tried the same trick on a 16k page NAND a
-while a ago, and it drastically decreased the attach time (don't recall
-the exact numbers).
+Applied both.
 
+Thanks,
+
+Boris
+
+> ---
+> Changes in v7:
+>   - Rebased for nand/next branch.
+>   - Merged the two part of "Optional properties" of nand/next's document
+>     into one part.
 > 
-> It's a Micron Nand with a page size of 8192+448. On an i.MX6 we only
-> have to read 512 bytes when reading the vid header.
+>  Documentation/devicetree/bindings/mtd/sunxi-nand.txt | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> Sascha
-> 
+> diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+> index 6fdf8f6..b040ed4 100644
+> --- a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+> @@ -14,17 +14,17 @@ Required properties:
+>  Optional properties:
+>  - dmas : shall reference DMA channel associated to the NAND controller.
+>  - dma-names : shall be "rxtx".
+> -
+> -Optional children nodes:
+> -Children nodes represent the available nand chips.
+> -
+> -Optional properties:
+> +- reset : phandle + reset specifier pair
+> +- reset-names : shall be "ahb" if present
+>  - allwinner,rb : shall contain the native Ready/Busy ids.
+>   or
+>  - rb-gpios : shall contain the gpios used as R/B pins.
+>  - nand-ecc-mode : one of the supported ECC modes ("hw", "hw_syndrome", "soft",
+>    "soft_bch" or "none")
+>  
+> +Optional children nodes:
+> +Children nodes represent the available nand chips.
+> +
+>  see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
+>  
+>  
