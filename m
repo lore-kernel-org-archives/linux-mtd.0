@@ -1,19 +1,24 @@
-Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGVUI-0003jR-3t
- for linux-mtd@lists.infradead.org; Fri, 24 Jun 2016 18:05:55 +0000
-Received: by mail-wm0-x22b.google.com with SMTP id f126so31267216wma.1
- for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2016 11:05:33 -0700 (PDT)
+ id 1bGVqz-0004Zk-Cd
+ for linux-mtd@lists.infradead.org; Fri, 24 Jun 2016 18:29:22 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id a66so35981940wme.0
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2016 11:29:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1466703038-13044-1-git-send-email-richard@nod.at>
-References: <1466703038-13044-1-git-send-email-richard@nod.at>
+In-Reply-To: <48242f26-7812-6957-6bf5-c12989b875b4@hauke-m.de>
+References: <1466277476-14853-1-git-send-email-hauke@hauke-m.de>
+ <5765A14F.6020201@nod.at> <48242f26-7812-6957-6bf5-c12989b875b4@hauke-m.de>
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date: Fri, 24 Jun 2016 15:05:31 -0300
-Message-ID: <CAAEAJfC4jKniYR=Y609_O3vfufoQFFamrgRXc33UuW4jLaTE4g@mail.gmail.com>
-Subject: Re: [PATCH] ubi: Make volume resize power cut aware
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, stable@vger.kernel.org
+Date: Fri, 24 Jun 2016 15:28:58 -0300
+Message-ID: <CAAEAJfC8mYnohRxKg0b-onbGadk0vPDty=7Bh8emP92mazB=aA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,83 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi guys,
-
-I have a few questions.
-
-On 23 June 2016 at 14:30, Richard Weinberger <richard@nod.at> wrote:
-> When the volume resize operation shrinks a volume,
-> LEBs will be unmapped. Since unmapping will not erase these
-> LEBs immediately we have to wait for that operation to finish.
-> Otherwise in case of a power cut right after writing the new
-> volume table the UBI attach process can find more LEBs than the
-> volume table knows. This will render the UBI image unattachable.
+On 18 June 2016 at 16:35, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> On 06/18/2016 09:30 PM, Richard Weinberger wrote:
+>> Am 18.06.2016 um 21:17 schrieb Hauke Mehrtens:
+>>> This makes it possible to open a ubi layer in device tree, this is
+>>> helpful when the rootfs is on a ubi layer. It loops though all mtd
+>>> partitions and mounts the partition which is compatible with
+>>> "ubi,volume". The same was only possible with kernel command line
+>>> arguments before.
+>>>
+>>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>>> ---
+>>>  Documentation/devicetree/bindings/mtd/ubi.txt | 33 ++++++++++++++
+>>>  drivers/mtd/ubi/block.c                       | 63 +++++++++++++++++++=
+++++++++
+>>>  2 files changed, 96 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/mtd/ubi.txt
+>>
+>> Some time ago I thought about an UBI DT binding too, but
+>> I have been told that device tree is only for describing the hardware
+>> and nothing else.
+>> So I fear this will be rejected by DT folks.
 >
-> Fix this issue by waiting for erase to complete and write the new volume =
-table afterward.
->
-> Cc: <stable@vger.kernel.org>
-> Reported-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/mtd/ubi/vmt.c | 25 ++++++++++++++++++-------
->  1 file changed, 18 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-> index 10059df..0138f52 100644
-> --- a/drivers/mtd/ubi/vmt.c
-> +++ b/drivers/mtd/ubi/vmt.c
-> @@ -488,13 +488,6 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, =
-int reserved_pebs)
->                 spin_unlock(&ubi->volumes_lock);
->         }
->
-> -       /* Change volume table record */
-> -       vtbl_rec =3D ubi->vtbl[vol_id];
-> -       vtbl_rec.reserved_pebs =3D cpu_to_be32(reserved_pebs);
-> -       err =3D ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
-> -       if (err)
-> -               goto out_acc;
-> -
->         if (pebs < 0) {
->                 for (i =3D 0; i < -pebs; i++) {
->                         err =3D ubi_eba_unmap_leb(ubi, vol, reserved_pebs=
- + i);
-> @@ -512,6 +505,24 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, =
-int reserved_pebs)
->                 spin_unlock(&ubi->volumes_lock);
->         }
->
-> +       /*
-> +        * When we shrink a volume we have to flush all pending (erase) w=
-ork.
-> +        * Otherwise it can happen that upon next attach UBI finds a LEB =
-with
-> +        * lnum > highest_lnum and refuses to attach.
-> +        */
-> +       if (pebs < 0) {
-> +               err =3D ubi_wl_flush(ubi, vol_id, UBI_ALL);
-> +               if (err)
-> +                       goto out_acc;
-> +       }
-> +
+> There are some devices on the market that are storing the root file
+> system in an ubi layer.
+> To make this work there are currently two options.
+> 1. patch the kernel to specify which partitions to open in the code.
 
-What will happen if the power-cut happens right here,
-before the volume table is written?
+I wouldn't go as far as to claim this an option.
 
-> +       /* Change volume table record */
-> +       vtbl_rec =3D ubi->vtbl[vol_id];
-> +       vtbl_rec.reserved_pebs =3D cpu_to_be32(reserved_pebs);
-> +       err =3D ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
-> +       if (err)
-> +               goto out_acc;
-> +
->         vol->reserved_pebs =3D reserved_pebs;
->         if (vol->vol_type =3D=3D UBI_DYNAMIC_VOLUME) {
->                 vol->used_ebs =3D reserved_pebs;
+> 2. provide some kernel command line parameter which specifies what to ope=
+n.
+>
 
+There's another option: use an initramfs, where you can do whatever you wan=
+t
+to find your UBI and mount it.
 
-Also, should we have a similar change for ubi_remove_volume?
+Frankly, I don't see a real need for this in the devicetree, other than sol=
+ving
+someone's particular workflow/use case.
 --=20
 Ezequiel Garc=C3=ADa, VanguardiaSur
 www.vanguardiasur.com.ar
