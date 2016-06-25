@@ -1,22 +1,24 @@
-Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGiE9-0007iJ-CN
- for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 07:42:06 +0000
-Received: by mail-oi0-x22a.google.com with SMTP id r2so143568269oih.2
- for <linux-mtd@lists.infradead.org>; Sat, 25 Jun 2016 00:41:44 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <C80AB6F618D91B4E8F391CB202C12DFD11218919BD@LGEVEXMBHQSVC1.LGE.NET>
+Received: from lgeamrelo12.lge.com ([156.147.23.52])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bGj1M-00011U-Ol
+ for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 08:33:00 +0000
+From: =?utf-8?B?7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXIFBsYXRmb3JtKOyXsClB?=
+ =?utf-8?B?T1TtjIAoa2FyYW0ubGVlQGxnZS5jb20p?= <karam.lee@lge.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>,
+ =?utf-8?B?7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXIFBsYXRmb3JtKOyXsClB?=
+ =?utf-8?B?T1TtjIAoa2FyYW0ubGVlQGxnZS5jb20p?= <karam.lee@lge.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?utf-8?B?67CV7Iq57Zi4?= <seungho1.park@lge.com>
+Date: Sat, 25 Jun 2016 17:32:31 +0900
+Subject: RE: ubifs issue about ubifs_tnc_remove_ino when replay journal
+Message-ID: <C80AB6F618D91B4E8F391CB202C12DFD11218919C5@LGEVEXMBHQSVC1.LGE.NET>
 References: <C80AB6F618D91B4E8F391CB202C12DFD11218919BD@LGEVEXMBHQSVC1.LGE.NET>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sat, 25 Jun 2016 09:41:43 +0200
-Message-ID: <CAFLxGvxRtxSSRL5VOEmy1udbnWBYcVf0JDVaMdca0Ww1HTK74w@mail.gmail.com>
-Subject: Re: ubifs issue about ubifs_tnc_remove_ino when replay journal
-To: =?UTF-8?B?7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXIFBsYXRmb3JtKOyXsClBT1TtjIAoa2FyYW0u?=
- =?UTF-8?B?bGVlQGxnZS5jb20p?= <karam.lee@lge.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?67CV7Iq57Zi4?= <seungho1.park@lge.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ <CAFLxGvxRtxSSRL5VOEmy1udbnWBYcVf0JDVaMdca0Ww1HTK74w@mail.gmail.com>
+In-Reply-To: <CAFLxGvxRtxSSRL5VOEmy1udbnWBYcVf0JDVaMdca0Ww1HTK74w@mail.gmail.com>
+Content-Language: ko-KR
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,89 +28,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jun 25, 2016 at 8:08 AM, =EC=9D=B4=EA=B0=80=EB=9E=8C/=EC=A3=BC=EC=
-=9E=84=EC=97=B0=EA=B5=AC=EC=9B=90=E3=80=89SW
-Platform(=EC=97=B0)AOT=ED=8C=80(karam.lee@lge.com) <karam.lee@lge.com> wrot=
-e:
-> hi mtd-list
->
-> I've seen a problem on embedded board with UBIFS/UBI.
-> My environment is as follows:
->
-> kernel version : 3.10.49
-> flash : 512MB nand, 128KB PEB
->
-> If a power cut occurs when the system is operating
-> a problem occur in a journal replay at reboot.
->
-> ubifs_jnl_delete_inode or ubifs_jnl_delete_xattr remove
-> all nodes belonging to the extended attribute inode from TNC.
-> And it makes the journal to delete the information in flash.
-> The journal is applied to flash on reboot.
-> However, the GC delete the region before applying journal,
-> I guess that the problem occurs.
->
-> ------------------ kernel log -------------------------
-> [    3.637490]   No soundcard=EF=A3=B7[    3.644631] UBIFS-0: background =
-thread "ubifs_bgt0_0" started, PID 108
-> [    3.675468] UBIFS-0: recovery needed
-> [    4.323462] UBIFS-0 error (pid 1): ubifs_read_node: bad node type (192=
- but expected 3)
-> [    4.330341] UBIFS-0 error (pid 1): ubifs_read_node: bad node at LEB 63=
-5:58544, LEB mapping status 1
-> [    4.339388] Not a node, first 24 bytes:
-> [    4.343030] 00000000: 47 5f 49 44 45 4e 54 49 46 49 45 52 3d 6e 65 74 =
-6d 67 72 64 c0 05 fd 04                          G_IDENTIFIER=3Dnetmgrd....
-> [    4.356051] CPU: 0 PID: 1 Comm: swapper Tainted: G        W    3.10.49=
-+ #1
-> [    4.362923] [<c00143b8>] (unwind_backtrace+0x0/0xe0) from [<c00118a8>]=
- (show_stack+0x10/0x14)
-> [    4.371419] [<c00118a8>] (show_stack+0x10/0x14) from [<c01ba514>] (ubi=
-fs_read_node+0x240/0x27c)
-> [    4.380089] [<c01ba514>] (ubifs_read_node+0x240/0x27c) from [<c01d41a4=
->] (ubifs_tnc_read_node+0x48/0x130)
-> [    4.389651] [<c01d41a4>] (ubifs_tnc_read_node+0x48/0x130) from [<c01bb=
-2d4>] (tnc_read_node_nm+0xb4/0x1b8)
-> [    4.399196] [<c01bb2d4>] (tnc_read_node_nm+0xb4/0x1b8) from [<c01be624=
->] (ubifs_tnc_next_ent+0x144/0x18c)
-> [    4.408744] [<c01be624>] (ubifs_tnc_next_ent+0x144/0x18c) from [<c01be=
-6b0>] (ubifs_tnc_remove_ino+0x44/0x124)
-> [    4.418641] [<c01be6b0>] (ubifs_tnc_remove_ino+0x44/0x124) from [<c01c=
-0c9c>] (ubifs_replay_journal+0xbdc/0x1130)
-> [    4.428796] [<c01c0c9c>] (ubifs_replay_journal+0xbdc/0x1130) from [<c0=
-1b6a50>] (ubifs_mount+0xb80/0x1568)
-> [    4.438352] [<c01b6a50>] (ubifs_mount+0xb80/0x1568) from [<c00d9a40>] =
-(mount_fs+0x10/0xb4)
-> [    4.446593] [<c00d9a40>] (mount_fs+0x10/0xb4) from [<c00f11dc>] (vfs_k=
-ern_mount+0x48/0xc4)
-> [    4.454838] [<c00f11dc>] (vfs_kern_mount+0x48/0xc4) from [<c00f35d4>] =
-(do_mount+0x6a8/0x79c)
-> [    4.463258] [<c00f35d4>] (do_mount+0x6a8/0x79c) from [<c00f374c>] (SyS=
-_mount+0x84/0xb8)
-> [    4.471245] [<c00f374c>] (SyS_mount+0x84/0xb8) from [<c09cedd4>] (moun=
-t_block_root+0xf8/0x274)
-> [    4.479824] [<c09cedd4>] (mount_block_root+0xf8/0x274) from [<c09cf124=
->] (prepare_namespace+0x88/0x1b8)
-> [    4.489212] [<c09cf124>] (prepare_namespace+0x88/0x1b8) from [<c09ceb9=
-0>] (kernel_init_freeable+0x170/0x1b4)
-> [    4.499023] [<c09ceb90>] (kernel_init_freeable+0x170/0x1b4) from [<c06=
-b9c1c>] (kernel_init+0x8/0xe4)
-> [    4.508136] [<c06b9c1c>] (kernel_init+0x8/0xe4) from [<c000dc98>] (ret=
-_from_fork+0x14/0x3c)
-> [    4.517918] UBIFS-0: background thread "ubifs_bgt0_0" stops
-> ------------------ kernel log -------------------------
->
-> The following message has been reporting on the mailing list in the past.
-> This message is similar to my problem.
->
-> 2014 jul 12 ubifs issue about xattr node when replay journal :
-> -------------------------------------------
-> http://lists.infradead.org/pipermail/linux-mtd/2014-July/054620.html
-
-The author of this thread never answered our question whether Fastmap
-was in involved or not. Do you use Fastmap?
-Just to rule that possibility out.
-
---=20
-Thanks,
-//richard
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFJpY2hhcmQgV2VpbmJlcmdlciBbbWFp
+bHRvOnJpY2hhcmQud2VpbmJlcmdlckBnbWFpbC5jb21dIA0KU2VudDogU2F0dXJkYXksIEp1bmUg
+MjUsIDIwMTYgNDo0MiBQTQ0KVG86IOydtOqwgOuejC/so7zsnoTsl7Dqtazsm5DjgIlTVyBQbGF0
+Zm9ybSjsl7ApQU9U7YyAKGthcmFtLmxlZUBsZ2UuY29tKSA8a2FyYW0ubGVlQGxnZS5jb20+DQpD
+YzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IOuwleyKue2YuCA8c2V1bmdobzEucGFy
+a0BsZ2UuY29tPg0KU3ViamVjdDogUmU6IHViaWZzIGlzc3VlIGFib3V0IHViaWZzX3RuY19yZW1v
+dmVfaW5vIHdoZW4gcmVwbGF5IGpvdXJuYWwNCg0KT24gU2F0LCBKdW4gMjUsIDIwMTYgYXQgODow
+OCBBTSwg7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXDQpQbGF0Zm9ybSjsl7ApQU9U7YyA
+KGthcmFtLmxlZUBsZ2UuY29tKSA8a2FyYW0ubGVlQGxnZS5jb20+IHdyb3RlOg0KPiBoaSBtdGQt
+bGlzdA0KPg0KPiBJJ3ZlIHNlZW4gYSBwcm9ibGVtIG9uIGVtYmVkZGVkIGJvYXJkIHdpdGggVUJJ
+RlMvVUJJLg0KPiBNeSBlbnZpcm9ubWVudCBpcyBhcyBmb2xsb3dzOg0KPg0KPiBrZXJuZWwgdmVy
+c2lvbiA6IDMuMTAuNDkNCj4gZmxhc2ggOiA1MTJNQiBuYW5kLCAxMjhLQiBQRUINCj4NCj4gSWYg
+YSBwb3dlciBjdXQgb2NjdXJzIHdoZW4gdGhlIHN5c3RlbSBpcyBvcGVyYXRpbmcgYSBwcm9ibGVt
+IG9jY3VyIGluIA0KPiBhIGpvdXJuYWwgcmVwbGF5IGF0IHJlYm9vdC4NCj4NCj4gdWJpZnNfam5s
+X2RlbGV0ZV9pbm9kZSBvciB1Ymlmc19qbmxfZGVsZXRlX3hhdHRyIHJlbW92ZSBhbGwgbm9kZXMg
+DQo+IGJlbG9uZ2luZyB0byB0aGUgZXh0ZW5kZWQgYXR0cmlidXRlIGlub2RlIGZyb20gVE5DLg0K
+PiBBbmQgaXQgbWFrZXMgdGhlIGpvdXJuYWwgdG8gZGVsZXRlIHRoZSBpbmZvcm1hdGlvbiBpbiBm
+bGFzaC4NCj4gVGhlIGpvdXJuYWwgaXMgYXBwbGllZCB0byBmbGFzaCBvbiByZWJvb3QuDQo+IEhv
+d2V2ZXIsIHRoZSBHQyBkZWxldGUgdGhlIHJlZ2lvbiBiZWZvcmUgYXBwbHlpbmcgam91cm5hbCwg
+SSBndWVzcyANCj4gdGhhdCB0aGUgcHJvYmxlbSBvY2N1cnMuDQo+DQo+IC0tLS0tLS0tLS0tLS0t
+LS0tLSBrZXJuZWwgbG9nIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gWyAgICAzLjYzNzQ5
+MF0gICBObyBzb3VuZGNhcmTvo7dbICAgIDMuNjQ0NjMxXSBVQklGUy0wOiBiYWNrZ3JvdW5kIHRo
+cmVhZCAidWJpZnNfYmd0MF8wIiBzdGFydGVkLCBQSUQgMTA4DQo+IFsgICAgMy42NzU0NjhdIFVC
+SUZTLTA6IHJlY292ZXJ5IG5lZWRlZA0KPiBbICAgIDQuMzIzNDYyXSBVQklGUy0wIGVycm9yIChw
+aWQgMSk6IHViaWZzX3JlYWRfbm9kZTogYmFkIG5vZGUgdHlwZSAoMTkyIGJ1dCBleHBlY3RlZCAz
+KQ0KPiBbICAgIDQuMzMwMzQxXSBVQklGUy0wIGVycm9yIChwaWQgMSk6IHViaWZzX3JlYWRfbm9k
+ZTogYmFkIG5vZGUgYXQgTEVCIDYzNTo1ODU0NCwgTEVCIG1hcHBpbmcgc3RhdHVzIDENCj4gWyAg
+ICA0LjMzOTM4OF0gTm90IGEgbm9kZSwgZmlyc3QgMjQgYnl0ZXM6DQo+IFsgICAgNC4zNDMwMzBd
+IDAwMDAwMDAwOiA0NyA1ZiA0OSA0NCA0NSA0ZSA1NCA0OSA0NiA0OSA0NSA1MiAzZCA2ZSA2NSA3
+NCA2ZCA2NyA3MiA2NCBjMCAwNSBmZCAwNCAgICAgICAgICAgICAgICAgICAgICAgICAgR19JREVO
+VElGSUVSPW5ldG1ncmQuLi4uDQo+IFsgICAgNC4zNTYwNTFdIENQVTogMCBQSUQ6IDEgQ29tbTog
+c3dhcHBlciBUYWludGVkOiBHICAgICAgICBXICAgIDMuMTAuNDkrICMxDQo+IFsgICAgNC4zNjI5
+MjNdIFs8YzAwMTQzYjg+XSAodW53aW5kX2JhY2t0cmFjZSsweDAvMHhlMCkgZnJvbSBbPGMwMDEx
+OGE4Pl0gKHNob3dfc3RhY2srMHgxMC8weDE0KQ0KPiBbICAgIDQuMzcxNDE5XSBbPGMwMDExOGE4
+Pl0gKHNob3dfc3RhY2srMHgxMC8weDE0KSBmcm9tIFs8YzAxYmE1MTQ+XSAodWJpZnNfcmVhZF9u
+b2RlKzB4MjQwLzB4MjdjKQ0KPiBbICAgIDQuMzgwMDg5XSBbPGMwMWJhNTE0Pl0gKHViaWZzX3Jl
+YWRfbm9kZSsweDI0MC8weDI3YykgZnJvbSBbPGMwMWQ0MWE0Pl0gKHViaWZzX3RuY19yZWFkX25v
+ZGUrMHg0OC8weDEzMCkNCj4gWyAgICA0LjM4OTY1MV0gWzxjMDFkNDFhND5dICh1Ymlmc190bmNf
+cmVhZF9ub2RlKzB4NDgvMHgxMzApIGZyb20gWzxjMDFiYjJkND5dICh0bmNfcmVhZF9ub2RlX25t
+KzB4YjQvMHgxYjgpDQo+IFsgICAgNC4zOTkxOTZdIFs8YzAxYmIyZDQ+XSAodG5jX3JlYWRfbm9k
+ZV9ubSsweGI0LzB4MWI4KSBmcm9tIFs8YzAxYmU2MjQ+XSAodWJpZnNfdG5jX25leHRfZW50KzB4
+MTQ0LzB4MThjKQ0KPiBbICAgIDQuNDA4NzQ0XSBbPGMwMWJlNjI0Pl0gKHViaWZzX3RuY19uZXh0
+X2VudCsweDE0NC8weDE4YykgZnJvbSBbPGMwMWJlNmIwPl0gKHViaWZzX3RuY19yZW1vdmVfaW5v
+KzB4NDQvMHgxMjQpDQo+IFsgICAgNC40MTg2NDFdIFs8YzAxYmU2YjA+XSAodWJpZnNfdG5jX3Jl
+bW92ZV9pbm8rMHg0NC8weDEyNCkgZnJvbSBbPGMwMWMwYzljPl0gKHViaWZzX3JlcGxheV9qb3Vy
+bmFsKzB4YmRjLzB4MTEzMCkNCj4gWyAgICA0LjQyODc5Nl0gWzxjMDFjMGM5Yz5dICh1Ymlmc19y
+ZXBsYXlfam91cm5hbCsweGJkYy8weDExMzApIGZyb20gWzxjMDFiNmE1MD5dICh1Ymlmc19tb3Vu
+dCsweGI4MC8weDE1NjgpDQo+IFsgICAgNC40MzgzNTJdIFs8YzAxYjZhNTA+XSAodWJpZnNfbW91
+bnQrMHhiODAvMHgxNTY4KSBmcm9tIFs8YzAwZDlhNDA+XSAobW91bnRfZnMrMHgxMC8weGI0KQ0K
+PiBbICAgIDQuNDQ2NTkzXSBbPGMwMGQ5YTQwPl0gKG1vdW50X2ZzKzB4MTAvMHhiNCkgZnJvbSBb
+PGMwMGYxMWRjPl0gKHZmc19rZXJuX21vdW50KzB4NDgvMHhjNCkNCj4gWyAgICA0LjQ1NDgzOF0g
+WzxjMDBmMTFkYz5dICh2ZnNfa2Vybl9tb3VudCsweDQ4LzB4YzQpIGZyb20gWzxjMDBmMzVkND5d
+IChkb19tb3VudCsweDZhOC8weDc5YykNCj4gWyAgICA0LjQ2MzI1OF0gWzxjMDBmMzVkND5dIChk
+b19tb3VudCsweDZhOC8weDc5YykgZnJvbSBbPGMwMGYzNzRjPl0gKFN5U19tb3VudCsweDg0LzB4
+YjgpDQo+IFsgICAgNC40NzEyNDVdIFs8YzAwZjM3NGM+XSAoU3lTX21vdW50KzB4ODQvMHhiOCkg
+ZnJvbSBbPGMwOWNlZGQ0Pl0gKG1vdW50X2Jsb2NrX3Jvb3QrMHhmOC8weDI3NCkNCj4gWyAgICA0
+LjQ3OTgyNF0gWzxjMDljZWRkND5dIChtb3VudF9ibG9ja19yb290KzB4ZjgvMHgyNzQpIGZyb20g
+WzxjMDljZjEyND5dIChwcmVwYXJlX25hbWVzcGFjZSsweDg4LzB4MWI4KQ0KPiBbICAgIDQuNDg5
+MjEyXSBbPGMwOWNmMTI0Pl0gKHByZXBhcmVfbmFtZXNwYWNlKzB4ODgvMHgxYjgpIGZyb20gWzxj
+MDljZWI5MD5dIChrZXJuZWxfaW5pdF9mcmVlYWJsZSsweDE3MC8weDFiNCkNCj4gWyAgICA0LjQ5
+OTAyM10gWzxjMDljZWI5MD5dIChrZXJuZWxfaW5pdF9mcmVlYWJsZSsweDE3MC8weDFiNCkgZnJv
+bSBbPGMwNmI5YzFjPl0gKGtlcm5lbF9pbml0KzB4OC8weGU0KQ0KPiBbICAgIDQuNTA4MTM2XSBb
+PGMwNmI5YzFjPl0gKGtlcm5lbF9pbml0KzB4OC8weGU0KSBmcm9tIFs8YzAwMGRjOTg+XSAocmV0
+X2Zyb21fZm9yaysweDE0LzB4M2MpDQo+IFsgICAgNC41MTc5MThdIFVCSUZTLTA6IGJhY2tncm91
+bmQgdGhyZWFkICJ1Ymlmc19iZ3QwXzAiIHN0b3BzDQo+IC0tLS0tLS0tLS0tLS0tLS0tLSBrZXJu
+ZWwgbG9nIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4NCj4gVGhlIGZvbGxvd2luZyBtZXNz
+YWdlIGhhcyBiZWVuIHJlcG9ydGluZyBvbiB0aGUgbWFpbGluZyBsaXN0IGluIHRoZSBwYXN0Lg0K
+PiBUaGlzIG1lc3NhZ2UgaXMgc2ltaWxhciB0byBteSBwcm9ibGVtLg0KPg0KPiAyMDE0IGp1bCAx
+MiB1YmlmcyBpc3N1ZSBhYm91dCB4YXR0ciBub2RlIHdoZW4gcmVwbGF5IGpvdXJuYWwgOg0KPiAt
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IGh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxNC1KdWx5LzA1NDYyMC5odG1s
+DQoNClRoZSBhdXRob3Igb2YgdGhpcyB0aHJlYWQgbmV2ZXIgYW5zd2VyZWQgb3VyIHF1ZXN0aW9u
+IHdoZXRoZXIgRmFzdG1hcCB3YXMgaW4gaW52b2x2ZWQgb3Igbm90LiBEbyB5b3UgdXNlIEZhc3Rt
+YXA/DQpKdXN0IHRvIHJ1bGUgdGhhdCBwb3NzaWJpbGl0eSBvdXQuDQoNCnRoYW5rIHlvdSENCg0K
+SSBkbyBub3QgdXNlIGZhc3RtYXAuIA0KTXkgIi5jb25maWciIGlzICIjIENPTkZJR19NVERfVUJJ
+X0ZBU1RNQVAgaXMgbm90IHNldCINCg0KDQotLQ0KVGhhbmtzLA0KLy9yaWNoYXJkDQo=
