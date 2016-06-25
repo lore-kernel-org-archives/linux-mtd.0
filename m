@@ -1,18 +1,22 @@
-Received: from lgeamrelo12.lge.com ([156.147.23.52])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGgmS-0005x6-Ax
- for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 06:09:26 +0000
-From: =?utf-8?B?7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXIFBsYXRmb3JtKOyXsClB?=
- =?utf-8?B?T1TtjIAoa2FyYW0ubGVlQGxnZS5jb20p?= <karam.lee@lge.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: =?utf-8?B?67CV7Iq57Zi4?= <seungho1.park@lge.com>
-Date: Sat, 25 Jun 2016 15:08:57 +0900
-Subject: ubifs issue about ubifs_tnc_remove_ino when replay journal
-Message-ID: <C80AB6F618D91B4E8F391CB202C12DFD11218919BD@LGEVEXMBHQSVC1.LGE.NET>
-Content-Language: ko-KR
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bGiE9-0007iJ-CN
+ for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 07:42:06 +0000
+Received: by mail-oi0-x22a.google.com with SMTP id r2so143568269oih.2
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Jun 2016 00:41:44 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <C80AB6F618D91B4E8F391CB202C12DFD11218919BD@LGEVEXMBHQSVC1.LGE.NET>
+References: <C80AB6F618D91B4E8F391CB202C12DFD11218919BD@LGEVEXMBHQSVC1.LGE.NET>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sat, 25 Jun 2016 09:41:43 +0200
+Message-ID: <CAFLxGvxRtxSSRL5VOEmy1udbnWBYcVf0JDVaMdca0Ww1HTK74w@mail.gmail.com>
+Subject: Re: ubifs issue about ubifs_tnc_remove_ino when replay journal
+To: =?UTF-8?B?7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXIFBsYXRmb3JtKOyXsClBT1TtjIAoa2FyYW0u?=
+ =?UTF-8?B?bGVlQGxnZS5jb20p?= <karam.lee@lge.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?UTF-8?B?67CV7Iq57Zi4?= <seungho1.park@lge.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,123 +26,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-aGkgbXRkLWxpc3QNCg0KSSd2ZSBzZWVuIGEgcHJvYmxlbSBvbiBlbWJlZGRlZCBib2FyZCB3aXRo
-IFVCSUZTL1VCSS4NCk15IGVudmlyb25tZW50IGlzIGFzIGZvbGxvd3M6DQoNCmtlcm5lbCB2ZXJz
-aW9uIDogMy4xMC40OQ0KZmxhc2ggOiA1MTJNQiBuYW5kLCAxMjhLQiBQRUINCg0KSWYgYSBwb3dl
-ciBjdXQgb2NjdXJzIHdoZW4gdGhlIHN5c3RlbSBpcyBvcGVyYXRpbmcNCmEgcHJvYmxlbSBvY2N1
-ciBpbiBhIGpvdXJuYWwgcmVwbGF5IGF0IHJlYm9vdC4NCg0KdWJpZnNfam5sX2RlbGV0ZV9pbm9k
-ZSBvciB1Ymlmc19qbmxfZGVsZXRlX3hhdHRyIHJlbW92ZSANCmFsbCBub2RlcyBiZWxvbmdpbmcg
-dG8gdGhlIGV4dGVuZGVkIGF0dHJpYnV0ZSBpbm9kZSBmcm9tIFROQy4NCkFuZCBpdCBtYWtlcyB0
-aGUgam91cm5hbCB0byBkZWxldGUgdGhlIGluZm9ybWF0aW9uIGluIGZsYXNoLiANClRoZSBqb3Vy
-bmFsIGlzIGFwcGxpZWQgdG8gZmxhc2ggb24gcmVib290Lg0KSG93ZXZlciwgdGhlIEdDIGRlbGV0
-ZSB0aGUgcmVnaW9uIGJlZm9yZSBhcHBseWluZyBqb3VybmFsLA0KSSBndWVzcyB0aGF0IHRoZSBw
-cm9ibGVtIG9jY3Vycy4NCg0KLS0tLS0tLS0tLS0tLS0tLS0tIGtlcm5lbCBsb2cgLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQ0KWyAgICAzLjYzNzQ5MF0gICBObyBzb3VuZGNhcmTvo7dbICAgIDMu
-NjQ0NjMxXSBVQklGUy0wOiBiYWNrZ3JvdW5kIHRocmVhZCAidWJpZnNfYmd0MF8wIiBzdGFydGVk
-LCBQSUQgMTA4DQpbICAgIDMuNjc1NDY4XSBVQklGUy0wOiByZWNvdmVyeSBuZWVkZWQNClsgICAg
-NC4zMjM0NjJdIFVCSUZTLTAgZXJyb3IgKHBpZCAxKTogdWJpZnNfcmVhZF9ub2RlOiBiYWQgbm9k
-ZSB0eXBlICgxOTIgYnV0IGV4cGVjdGVkIDMpDQpbICAgIDQuMzMwMzQxXSBVQklGUy0wIGVycm9y
-IChwaWQgMSk6IHViaWZzX3JlYWRfbm9kZTogYmFkIG5vZGUgYXQgTEVCIDYzNTo1ODU0NCwgTEVC
-IG1hcHBpbmcgc3RhdHVzIDENClsgICAgNC4zMzkzODhdIE5vdCBhIG5vZGUsIGZpcnN0IDI0IGJ5
-dGVzOg0KWyAgICA0LjM0MzAzMF0gMDAwMDAwMDA6IDQ3IDVmIDQ5IDQ0IDQ1IDRlIDU0IDQ5IDQ2
-IDQ5IDQ1IDUyIDNkIDZlIDY1IDc0IDZkIDY3IDcyIDY0IGMwIDA1IGZkIDA0ICAgICAgICAgICAg
-ICAgICAgICAgICAgICBHX0lERU5USUZJRVI9bmV0bWdyZC4uLi4NClsgICAgNC4zNTYwNTFdIENQ
-VTogMCBQSUQ6IDEgQ29tbTogc3dhcHBlciBUYWludGVkOiBHICAgICAgICBXICAgIDMuMTAuNDkr
-ICMxDQpbICAgIDQuMzYyOTIzXSBbPGMwMDE0M2I4Pl0gKHVud2luZF9iYWNrdHJhY2UrMHgwLzB4
-ZTApIGZyb20gWzxjMDAxMThhOD5dIChzaG93X3N0YWNrKzB4MTAvMHgxNCkNClsgICAgNC4zNzE0
-MTldIFs8YzAwMTE4YTg+XSAoc2hvd19zdGFjaysweDEwLzB4MTQpIGZyb20gWzxjMDFiYTUxND5d
-ICh1Ymlmc19yZWFkX25vZGUrMHgyNDAvMHgyN2MpDQpbICAgIDQuMzgwMDg5XSBbPGMwMWJhNTE0
-Pl0gKHViaWZzX3JlYWRfbm9kZSsweDI0MC8weDI3YykgZnJvbSBbPGMwMWQ0MWE0Pl0gKHViaWZz
-X3RuY19yZWFkX25vZGUrMHg0OC8weDEzMCkNClsgICAgNC4zODk2NTFdIFs8YzAxZDQxYTQ+XSAo
-dWJpZnNfdG5jX3JlYWRfbm9kZSsweDQ4LzB4MTMwKSBmcm9tIFs8YzAxYmIyZDQ+XSAodG5jX3Jl
-YWRfbm9kZV9ubSsweGI0LzB4MWI4KQ0KWyAgICA0LjM5OTE5Nl0gWzxjMDFiYjJkND5dICh0bmNf
-cmVhZF9ub2RlX25tKzB4YjQvMHgxYjgpIGZyb20gWzxjMDFiZTYyND5dICh1Ymlmc190bmNfbmV4
-dF9lbnQrMHgxNDQvMHgxOGMpDQpbICAgIDQuNDA4NzQ0XSBbPGMwMWJlNjI0Pl0gKHViaWZzX3Ru
-Y19uZXh0X2VudCsweDE0NC8weDE4YykgZnJvbSBbPGMwMWJlNmIwPl0gKHViaWZzX3RuY19yZW1v
-dmVfaW5vKzB4NDQvMHgxMjQpDQpbICAgIDQuNDE4NjQxXSBbPGMwMWJlNmIwPl0gKHViaWZzX3Ru
-Y19yZW1vdmVfaW5vKzB4NDQvMHgxMjQpIGZyb20gWzxjMDFjMGM5Yz5dICh1Ymlmc19yZXBsYXlf
-am91cm5hbCsweGJkYy8weDExMzApDQpbICAgIDQuNDI4Nzk2XSBbPGMwMWMwYzljPl0gKHViaWZz
-X3JlcGxheV9qb3VybmFsKzB4YmRjLzB4MTEzMCkgZnJvbSBbPGMwMWI2YTUwPl0gKHViaWZzX21v
-dW50KzB4YjgwLzB4MTU2OCkNClsgICAgNC40MzgzNTJdIFs8YzAxYjZhNTA+XSAodWJpZnNfbW91
-bnQrMHhiODAvMHgxNTY4KSBmcm9tIFs8YzAwZDlhNDA+XSAobW91bnRfZnMrMHgxMC8weGI0KQ0K
-WyAgICA0LjQ0NjU5M10gWzxjMDBkOWE0MD5dIChtb3VudF9mcysweDEwLzB4YjQpIGZyb20gWzxj
-MDBmMTFkYz5dICh2ZnNfa2Vybl9tb3VudCsweDQ4LzB4YzQpDQpbICAgIDQuNDU0ODM4XSBbPGMw
-MGYxMWRjPl0gKHZmc19rZXJuX21vdW50KzB4NDgvMHhjNCkgZnJvbSBbPGMwMGYzNWQ0Pl0gKGRv
-X21vdW50KzB4NmE4LzB4NzljKQ0KWyAgICA0LjQ2MzI1OF0gWzxjMDBmMzVkND5dIChkb19tb3Vu
-dCsweDZhOC8weDc5YykgZnJvbSBbPGMwMGYzNzRjPl0gKFN5U19tb3VudCsweDg0LzB4YjgpDQpb
-ICAgIDQuNDcxMjQ1XSBbPGMwMGYzNzRjPl0gKFN5U19tb3VudCsweDg0LzB4YjgpIGZyb20gWzxj
-MDljZWRkND5dIChtb3VudF9ibG9ja19yb290KzB4ZjgvMHgyNzQpDQpbICAgIDQuNDc5ODI0XSBb
-PGMwOWNlZGQ0Pl0gKG1vdW50X2Jsb2NrX3Jvb3QrMHhmOC8weDI3NCkgZnJvbSBbPGMwOWNmMTI0
-Pl0gKHByZXBhcmVfbmFtZXNwYWNlKzB4ODgvMHgxYjgpDQpbICAgIDQuNDg5MjEyXSBbPGMwOWNm
-MTI0Pl0gKHByZXBhcmVfbmFtZXNwYWNlKzB4ODgvMHgxYjgpIGZyb20gWzxjMDljZWI5MD5dIChr
-ZXJuZWxfaW5pdF9mcmVlYWJsZSsweDE3MC8weDFiNCkNClsgICAgNC40OTkwMjNdIFs8YzA5Y2Vi
-OTA+XSAoa2VybmVsX2luaXRfZnJlZWFibGUrMHgxNzAvMHgxYjQpIGZyb20gWzxjMDZiOWMxYz5d
-IChrZXJuZWxfaW5pdCsweDgvMHhlNCkNClsgICAgNC41MDgxMzZdIFs8YzA2YjljMWM+XSAoa2Vy
-bmVsX2luaXQrMHg4LzB4ZTQpIGZyb20gWzxjMDAwZGM5OD5dIChyZXRfZnJvbV9mb3JrKzB4MTQv
-MHgzYykNClsgICAgNC41MTc5MThdIFVCSUZTLTA6IGJhY2tncm91bmQgdGhyZWFkICJ1Ymlmc19i
-Z3QwXzAiIHN0b3BzDQotLS0tLS0tLS0tLS0tLS0tLS0ga2VybmVsIGxvZyAtLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tDQoNClRoZSBmb2xsb3dpbmcgbWVzc2FnZSBoYXMgYmVlbiByZXBvcnRpbmcg
-b24gdGhlIG1haWxpbmcgbGlzdCBpbiB0aGUgcGFzdC4NClRoaXMgbWVzc2FnZSBpcyBzaW1pbGFy
-IHRvIG15IHByb2JsZW0uDQoNCjIwMTQganVsIDEyIHViaWZzIGlzc3VlIGFib3V0IHhhdHRyIG5v
-ZGUgd2hlbiByZXBsYXkgam91cm5hbCA6IA0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQ0KaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4
-LW10ZC8yMDE0LUp1bHkvMDU0NjIwLmh0bWwNCg0KSGkgYWxsLA0KDQpOb3cgd2UgdXNlIHhhdHRy
-IGJhc2VkIG9uIHViaWZzLCBhbmQgZmluZCBzb21lIGlzc3VlcyBhYm91dCBpdC4NClNpdHVhdGlv
-biBsaWtlIHRoYXQ6DQoxLnBvd2Vyb24gLT4yLmNyZWF0ZSBhIGZpbGUgLT4gMy5zZXQgeGF0dHIg
-LT4gNC5kZWxldGUgdGhlIGZpbGUgLT4gNS5wb3dlciBjdXQNCkFmdGVyIHNldmVyYWwgY3ljbGVz
-IHdpdGggYWJvdmUgc3RlcHMsIHdlIGNhbiBub3QgYm9vdCB1cCB0aGUgZGV2aWNlDQp3aXRoIHRo
-ZSBlcnJvciBiZWxvdy4NCg0KDQpBbmFseXNpczoNCndoZW4gZGVsZXRlIGEgZmlsZSwgdWJpZnMg
-d2lsbCByZW1vdmUgdGhlIHhlbnQgbm9kZSBmcm9tIHRuYywgaWYgZ2MNCmhhcHBlbmQsIGl0IHdp
-bGwgcmVtb3ZlIHRoZSB4ZW50IG5vZGUgZGF0YSBmcm9tIHRoZSBHQ2VkIExFQiBiZWNhdXNlDQpv
-ZiBpdCBoYXMgYmVlbiByZW1vdmVkIGZvcm0gdG5jICwNCnRoZW4gaWYgYSBwb3dlciBjdXQgaGFw
-cGVuLCB0aGUgam91cm5hbCByZXBsYXkgbWF5IGFsc28gdHJ5IHRvIHJlbW92ZQ0KdGhlIHJlbGF0
-ZWQgeGF0dHIgbm9kZSwgdGhlIGVycm9yIG9jY3VycmVkIGJlY2F1c2Ugb2YgaXQgaGFzIGJlZW4N
-CkdDZWQuDQoNCg0KTm93IEkgcnVuIGNvbW1pdCB3aGVuIHViaWZzX2pubF9kZWxldGVfaW5vZGUg
-Y2FsbGVkLCBhbmQgaXQncyBPSy4NCkRvZXMgYW55b25lIGhhdmUgYSBiZXR0ZXIgd2F5IGZvciB0
-aGUgaXNzdWU/DQoNCg0KLS0tLS0tLS0ga2VybmVsIDMuMTAgbG9nIC0tLS0tLS0tDQpbICAgNjQu
-OTE2NTMyXSBVQklGUzogYmFja2dyb3VuZCB0aHJlYWQgInViaWZzX2JndDBfMTYiIHN0YXJ0ZWQs
-IFBJRCA5Mg0KWyAgIDY0LjkyNjQxMV0gVUJJRlM6IHJlY292ZXJ5IG5lZWRlZA0KWyAgIDY1LjAx
-Mzc4Nl0gVUJJRlMgZXJyb3IgKHBpZCA5MSk6IHViaWZzX3JlYWRfbm9kZTogYmFkIG5vZGUgdHlw
-ZQ0KKDI1NSBidXQgZXhwZWN0ZWQgMykNClsgICA2NS4wMjE1OTVdIFVCSUZTIGVycm9yIChwaWQg
-OTEpOiB1Ymlmc19yZWFkX25vZGU6IGJhZCBub2RlIGF0IExFQg0KODg6Mzk2ODAsIExFQiBtYXBw
-aW5nIHN0YXR1cyAxDQpbICAgNjUuMDMwNDMxXSBOb3QgYSBub2RlLCBmaXJzdCAyNCBieXRlczoN
-ClsgICA2NS4wMzQwNzNdIDAwMDAwMDAwOiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
-ZiBmZiBmZiBmZiBmZg0KZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCi4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLg0KWyAgIDY1LjA0NzUyOV0gY3B1ZnJlcV9zY3gzNTogNjAwMDAwIC0tPiAxMDAw
-MDAwLCByZWFsPTEwMDAwMDAsIGluZGV4PTANClsgICA2NS4wNDc1NTddIENQVTogMCBQSUQ6IDkx
-IENvbW06IG1vdW50IE5vdCB0YWludGVkDQozLjEwLjE3LWczODkxOTA2LWRpcnR5ICM2Ni1UaXpl
-bg0KWyAgIDY1LjA0NzU5OF0gWzxjMDAxMzZjND5dICh1bndpbmRfYmFja3RyYWNlKzB4MC8weDEy
-MCkgZnJvbQ0KWzxjMDAxMWZkND5dIChzaG93X3N0YWNrKzB4MTAvMHgxNCkNClsgICA2NS4wNDc2
-MTddIFs8YzAwMTFmZDQ+XSAoc2hvd19zdGFjaysweDEwLzB4MTQpIGZyb20gWzxjMDE4OTg4MD5d
-DQoodWJpZnNfcmVhZF9ub2RlKzB4MmE0LzB4MmQwKQ0KWyAgIDY1LjA0NzYzNV0gWzxjMDE4OTg4
-MD5dICh1Ymlmc19yZWFkX25vZGUrMHgyYTQvMHgyZDApIGZyb20NCls8YzAxYThkNjA+XSAodWJp
-ZnNfdG5jX3JlYWRfbm9kZSsweDRjLzB4MWRjKQ0KWyAgIDY1LjA0NzY1MF0gWzxjMDFhOGQ2MD5d
-ICh1Ymlmc190bmNfcmVhZF9ub2RlKzB4NGMvMHgxZGMpIGZyb20NCls8YzAxOGFmNWM+XSAodG5j
-X3JlYWRfbm9kZV9ubSsweGI0LzB4MWI0KQ0KWyAgIDY1LjA0NzY2Nl0gWzxjMDE4YWY1Yz5dICh0
-bmNfcmVhZF9ub2RlX25tKzB4YjQvMHgxYjQpIGZyb20NCls8YzAxOGU2ZTA+XSAodWJpZnNfdG5j
-X25leHRfZW50KzB4MWVjLzB4MjQ0KQ0KWyAgIDY1LjA0NzY4MV0gWzxjMDE4ZTZlMD5dICh1Ymlm
-c190bmNfbmV4dF9lbnQrMHgxZWMvMHgyNDQpIGZyb20NCls8YzAxOGU3Yzg+XSAodWJpZnNfdG5j
-X3JlbW92ZV9pbm8rMHg5MC8weDFkYykNClsgICA2NS4wNDc2OThdIFs8YzAxOGU3Yzg+XSAodWJp
-ZnNfdG5jX3JlbW92ZV9pbm8rMHg5MC8weDFkYykgZnJvbQ0KWzxjMDE5MWJkYz5dICh1Ymlmc19y
-ZXBsYXlfam91cm5hbCsweDExNjQvMHgxNzNjKQ0KWyAgIDY1LjA0NzcxM10gWzxjMDE5MWJkYz5d
-ICh1Ymlmc19yZXBsYXlfam91cm5hbCsweDExNjQvMHgxNzNjKSBmcm9tDQpbPGMwMTg0YzA0Pl0g
-KHViaWZzX21vdW50KzB4MTE1OC8weDFlYWMpDQpbICAgNjUuMDQ3NzMzXSBbPGMwMTg0YzA0Pl0g
-KHViaWZzX21vdW50KzB4MTE1OC8weDFlYWMpIGZyb20NCls8YzAwYjQ0ZWM+XSAobW91bnRfZnMr
-MHgxMC8weGI0KQ0KWyAgIDY1LjA0Nzc1MF0gWzxjMDBiNDRlYz5dIChtb3VudF9mcysweDEwLzB4
-YjQpIGZyb20gWzxjMDBjYjRhMD5dDQoodmZzX2tlcm5fbW91bnQrMHg0Yy8weGMwKQ0KWyAgIDY1
-LjA0Nzc2NF0gWzxjMDBjYjRhMD5dICh2ZnNfa2Vybl9tb3VudCsweDRjLzB4YzApIGZyb20NCls8
-YzAwY2Q0Njg+XSAoZG9fbW91bnQrMHg2ZTAvMHg4MDApDQpbICAgNjUuMDQ3Nzc4XSBbPGMwMGNk
-NDY4Pl0gKGRvX21vdW50KzB4NmUwLzB4ODAwKSBmcm9tIFs8YzAwY2Q2MGM+XQ0KKFN5U19tb3Vu
-dCsweDg0LzB4YjgpDQpbICAgNjUuMDQ3Nzk0XSBbPGMwMGNkNjBjPl0gKFN5U19tb3VudCsweDg0
-LzB4YjgpIGZyb20gWzxjMDAwZjFjMD5dDQoocmV0X2Zhc3Rfc3lzY2FsbCsweDAvMHgzMCkNClsg
-ICA2NS4wNDgwMTldIFVCSUZTOiBiYWNrZ3JvdW5kIHRocmVhZCAidWJpZnNfYmd0MF8xNiIgc3Rv
-cHMNCg0KDQotLS0tZGVidWcgcGF0Y2ggdGVzdCBvay0tLS0NCg0KDQpkaWZmIC0tZ2l0IGEvZnMv
-dWJpZnMvam91cm5hbC5jIGIvZnMvdWJpZnMvam91cm5hbC5jDQppbmRleCBmNzU1YTI0Li5lYmE1
-NTVlIDEwMDc1NQ0KLS0tIGEvZnMvdWJpZnMvam91cm5hbC5jDQorKysgYi9mcy91Ymlmcy9qb3Vy
-bmFsLmMNCkBAIC05MDAsNiArOTAwLDkgQEAgaW50IHViaWZzX2pubF9kZWxldGVfaW5vZGUoc3Ry
-dWN0IHViaWZzX2luZm8gKmMsDQpjb25zdCBzdHJ1Y3QgaW5vZGUgKmlub2RlKQ0KICAgICAgICBl
-bHNlDQogICAgICAgICAgICAgICAgdWJpZnNfZGVsZXRlX29ycGhhbihjLCBpbm9kZS0+aV9pbm8p
-Ow0KICAgICAgICB1cF9yZWFkKCZjLT5jb21taXRfc2VtKTsNCisNCisgICAgICAgdWJpZnNfcnVu
-X2NvbW1pdChjKTsNCisNCiAgICAgICAgcmV0dXJuIGVycjsNCn0NCi0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KSXMgdGhlcmUgYW55IGluZm9ybWF0aW9uIHJl
-bGV2YW50IHRvIHRoZSBzb2x1dGlvbiBvZiB0aGlzIHByb2JsZW0/DQoNCg0KDQo=
+On Sat, Jun 25, 2016 at 8:08 AM, =EC=9D=B4=EA=B0=80=EB=9E=8C/=EC=A3=BC=EC=
+=9E=84=EC=97=B0=EA=B5=AC=EC=9B=90=E3=80=89SW
+Platform(=EC=97=B0)AOT=ED=8C=80(karam.lee@lge.com) <karam.lee@lge.com> wrot=
+e:
+> hi mtd-list
+>
+> I've seen a problem on embedded board with UBIFS/UBI.
+> My environment is as follows:
+>
+> kernel version : 3.10.49
+> flash : 512MB nand, 128KB PEB
+>
+> If a power cut occurs when the system is operating
+> a problem occur in a journal replay at reboot.
+>
+> ubifs_jnl_delete_inode or ubifs_jnl_delete_xattr remove
+> all nodes belonging to the extended attribute inode from TNC.
+> And it makes the journal to delete the information in flash.
+> The journal is applied to flash on reboot.
+> However, the GC delete the region before applying journal,
+> I guess that the problem occurs.
+>
+> ------------------ kernel log -------------------------
+> [    3.637490]   No soundcard=EF=A3=B7[    3.644631] UBIFS-0: background =
+thread "ubifs_bgt0_0" started, PID 108
+> [    3.675468] UBIFS-0: recovery needed
+> [    4.323462] UBIFS-0 error (pid 1): ubifs_read_node: bad node type (192=
+ but expected 3)
+> [    4.330341] UBIFS-0 error (pid 1): ubifs_read_node: bad node at LEB 63=
+5:58544, LEB mapping status 1
+> [    4.339388] Not a node, first 24 bytes:
+> [    4.343030] 00000000: 47 5f 49 44 45 4e 54 49 46 49 45 52 3d 6e 65 74 =
+6d 67 72 64 c0 05 fd 04                          G_IDENTIFIER=3Dnetmgrd....
+> [    4.356051] CPU: 0 PID: 1 Comm: swapper Tainted: G        W    3.10.49=
++ #1
+> [    4.362923] [<c00143b8>] (unwind_backtrace+0x0/0xe0) from [<c00118a8>]=
+ (show_stack+0x10/0x14)
+> [    4.371419] [<c00118a8>] (show_stack+0x10/0x14) from [<c01ba514>] (ubi=
+fs_read_node+0x240/0x27c)
+> [    4.380089] [<c01ba514>] (ubifs_read_node+0x240/0x27c) from [<c01d41a4=
+>] (ubifs_tnc_read_node+0x48/0x130)
+> [    4.389651] [<c01d41a4>] (ubifs_tnc_read_node+0x48/0x130) from [<c01bb=
+2d4>] (tnc_read_node_nm+0xb4/0x1b8)
+> [    4.399196] [<c01bb2d4>] (tnc_read_node_nm+0xb4/0x1b8) from [<c01be624=
+>] (ubifs_tnc_next_ent+0x144/0x18c)
+> [    4.408744] [<c01be624>] (ubifs_tnc_next_ent+0x144/0x18c) from [<c01be=
+6b0>] (ubifs_tnc_remove_ino+0x44/0x124)
+> [    4.418641] [<c01be6b0>] (ubifs_tnc_remove_ino+0x44/0x124) from [<c01c=
+0c9c>] (ubifs_replay_journal+0xbdc/0x1130)
+> [    4.428796] [<c01c0c9c>] (ubifs_replay_journal+0xbdc/0x1130) from [<c0=
+1b6a50>] (ubifs_mount+0xb80/0x1568)
+> [    4.438352] [<c01b6a50>] (ubifs_mount+0xb80/0x1568) from [<c00d9a40>] =
+(mount_fs+0x10/0xb4)
+> [    4.446593] [<c00d9a40>] (mount_fs+0x10/0xb4) from [<c00f11dc>] (vfs_k=
+ern_mount+0x48/0xc4)
+> [    4.454838] [<c00f11dc>] (vfs_kern_mount+0x48/0xc4) from [<c00f35d4>] =
+(do_mount+0x6a8/0x79c)
+> [    4.463258] [<c00f35d4>] (do_mount+0x6a8/0x79c) from [<c00f374c>] (SyS=
+_mount+0x84/0xb8)
+> [    4.471245] [<c00f374c>] (SyS_mount+0x84/0xb8) from [<c09cedd4>] (moun=
+t_block_root+0xf8/0x274)
+> [    4.479824] [<c09cedd4>] (mount_block_root+0xf8/0x274) from [<c09cf124=
+>] (prepare_namespace+0x88/0x1b8)
+> [    4.489212] [<c09cf124>] (prepare_namespace+0x88/0x1b8) from [<c09ceb9=
+0>] (kernel_init_freeable+0x170/0x1b4)
+> [    4.499023] [<c09ceb90>] (kernel_init_freeable+0x170/0x1b4) from [<c06=
+b9c1c>] (kernel_init+0x8/0xe4)
+> [    4.508136] [<c06b9c1c>] (kernel_init+0x8/0xe4) from [<c000dc98>] (ret=
+_from_fork+0x14/0x3c)
+> [    4.517918] UBIFS-0: background thread "ubifs_bgt0_0" stops
+> ------------------ kernel log -------------------------
+>
+> The following message has been reporting on the mailing list in the past.
+> This message is similar to my problem.
+>
+> 2014 jul 12 ubifs issue about xattr node when replay journal :
+> -------------------------------------------
+> http://lists.infradead.org/pipermail/linux-mtd/2014-July/054620.html
+
+The author of this thread never answered our question whether Fastmap
+was in involved or not. Do you use Fastmap?
+Just to rule that possibility out.
+
+--=20
+Thanks,
+//richard
