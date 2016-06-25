@@ -1,24 +1,16 @@
-Received: from lgeamrelo12.lge.com ([156.147.23.52])
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGj1M-00011U-Ol
- for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 08:33:00 +0000
-From: =?utf-8?B?7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXIFBsYXRmb3JtKOyXsClB?=
- =?utf-8?B?T1TtjIAoa2FyYW0ubGVlQGxnZS5jb20p?= <karam.lee@lge.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>,
- =?utf-8?B?7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXIFBsYXRmb3JtKOyXsClB?=
- =?utf-8?B?T1TtjIAoa2FyYW0ubGVlQGxnZS5jb20p?= <karam.lee@lge.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?67CV7Iq57Zi4?= <seungho1.park@lge.com>
-Date: Sat, 25 Jun 2016 17:32:31 +0900
-Subject: RE: ubifs issue about ubifs_tnc_remove_ino when replay journal
-Message-ID: <C80AB6F618D91B4E8F391CB202C12DFD11218919C5@LGEVEXMBHQSVC1.LGE.NET>
-References: <C80AB6F618D91B4E8F391CB202C12DFD11218919BD@LGEVEXMBHQSVC1.LGE.NET>
- <CAFLxGvxRtxSSRL5VOEmy1udbnWBYcVf0JDVaMdca0Ww1HTK74w@mail.gmail.com>
-In-Reply-To: <CAFLxGvxRtxSSRL5VOEmy1udbnWBYcVf0JDVaMdca0Ww1HTK74w@mail.gmail.com>
-Content-Language: ko-KR
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ id 1bGj8b-0003M6-92
+ for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 08:40:26 +0000
+From: Richard Weinberger <richard@nod.at>
+To: s.hauer@pengutronix.de
+Cc: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
+ dedekind1@gmail.com, Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ubi: Speedup ubi_io_read_vid_hdr()
+Date: Sat, 25 Jun 2016 10:39:51 +0200
+Message-Id: <1466843991-3423-1-git-send-email-richard@nod.at>
+In-Reply-To: <20160624093957.528c48dc@bbrezillon>
+References: <20160624093957.528c48dc@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,79 +20,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFJpY2hhcmQgV2VpbmJlcmdlciBbbWFp
-bHRvOnJpY2hhcmQud2VpbmJlcmdlckBnbWFpbC5jb21dIA0KU2VudDogU2F0dXJkYXksIEp1bmUg
-MjUsIDIwMTYgNDo0MiBQTQ0KVG86IOydtOqwgOuejC/so7zsnoTsl7Dqtazsm5DjgIlTVyBQbGF0
-Zm9ybSjsl7ApQU9U7YyAKGthcmFtLmxlZUBsZ2UuY29tKSA8a2FyYW0ubGVlQGxnZS5jb20+DQpD
-YzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IOuwleyKue2YuCA8c2V1bmdobzEucGFy
-a0BsZ2UuY29tPg0KU3ViamVjdDogUmU6IHViaWZzIGlzc3VlIGFib3V0IHViaWZzX3RuY19yZW1v
-dmVfaW5vIHdoZW4gcmVwbGF5IGpvdXJuYWwNCg0KT24gU2F0LCBKdW4gMjUsIDIwMTYgYXQgODow
-OCBBTSwg7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXDQpQbGF0Zm9ybSjsl7ApQU9U7YyA
-KGthcmFtLmxlZUBsZ2UuY29tKSA8a2FyYW0ubGVlQGxnZS5jb20+IHdyb3RlOg0KPiBoaSBtdGQt
-bGlzdA0KPg0KPiBJJ3ZlIHNlZW4gYSBwcm9ibGVtIG9uIGVtYmVkZGVkIGJvYXJkIHdpdGggVUJJ
-RlMvVUJJLg0KPiBNeSBlbnZpcm9ubWVudCBpcyBhcyBmb2xsb3dzOg0KPg0KPiBrZXJuZWwgdmVy
-c2lvbiA6IDMuMTAuNDkNCj4gZmxhc2ggOiA1MTJNQiBuYW5kLCAxMjhLQiBQRUINCj4NCj4gSWYg
-YSBwb3dlciBjdXQgb2NjdXJzIHdoZW4gdGhlIHN5c3RlbSBpcyBvcGVyYXRpbmcgYSBwcm9ibGVt
-IG9jY3VyIGluIA0KPiBhIGpvdXJuYWwgcmVwbGF5IGF0IHJlYm9vdC4NCj4NCj4gdWJpZnNfam5s
-X2RlbGV0ZV9pbm9kZSBvciB1Ymlmc19qbmxfZGVsZXRlX3hhdHRyIHJlbW92ZSBhbGwgbm9kZXMg
-DQo+IGJlbG9uZ2luZyB0byB0aGUgZXh0ZW5kZWQgYXR0cmlidXRlIGlub2RlIGZyb20gVE5DLg0K
-PiBBbmQgaXQgbWFrZXMgdGhlIGpvdXJuYWwgdG8gZGVsZXRlIHRoZSBpbmZvcm1hdGlvbiBpbiBm
-bGFzaC4NCj4gVGhlIGpvdXJuYWwgaXMgYXBwbGllZCB0byBmbGFzaCBvbiByZWJvb3QuDQo+IEhv
-d2V2ZXIsIHRoZSBHQyBkZWxldGUgdGhlIHJlZ2lvbiBiZWZvcmUgYXBwbHlpbmcgam91cm5hbCwg
-SSBndWVzcyANCj4gdGhhdCB0aGUgcHJvYmxlbSBvY2N1cnMuDQo+DQo+IC0tLS0tLS0tLS0tLS0t
-LS0tLSBrZXJuZWwgbG9nIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gWyAgICAzLjYzNzQ5
-MF0gICBObyBzb3VuZGNhcmTvo7dbICAgIDMuNjQ0NjMxXSBVQklGUy0wOiBiYWNrZ3JvdW5kIHRo
-cmVhZCAidWJpZnNfYmd0MF8wIiBzdGFydGVkLCBQSUQgMTA4DQo+IFsgICAgMy42NzU0NjhdIFVC
-SUZTLTA6IHJlY292ZXJ5IG5lZWRlZA0KPiBbICAgIDQuMzIzNDYyXSBVQklGUy0wIGVycm9yIChw
-aWQgMSk6IHViaWZzX3JlYWRfbm9kZTogYmFkIG5vZGUgdHlwZSAoMTkyIGJ1dCBleHBlY3RlZCAz
-KQ0KPiBbICAgIDQuMzMwMzQxXSBVQklGUy0wIGVycm9yIChwaWQgMSk6IHViaWZzX3JlYWRfbm9k
-ZTogYmFkIG5vZGUgYXQgTEVCIDYzNTo1ODU0NCwgTEVCIG1hcHBpbmcgc3RhdHVzIDENCj4gWyAg
-ICA0LjMzOTM4OF0gTm90IGEgbm9kZSwgZmlyc3QgMjQgYnl0ZXM6DQo+IFsgICAgNC4zNDMwMzBd
-IDAwMDAwMDAwOiA0NyA1ZiA0OSA0NCA0NSA0ZSA1NCA0OSA0NiA0OSA0NSA1MiAzZCA2ZSA2NSA3
-NCA2ZCA2NyA3MiA2NCBjMCAwNSBmZCAwNCAgICAgICAgICAgICAgICAgICAgICAgICAgR19JREVO
-VElGSUVSPW5ldG1ncmQuLi4uDQo+IFsgICAgNC4zNTYwNTFdIENQVTogMCBQSUQ6IDEgQ29tbTog
-c3dhcHBlciBUYWludGVkOiBHICAgICAgICBXICAgIDMuMTAuNDkrICMxDQo+IFsgICAgNC4zNjI5
-MjNdIFs8YzAwMTQzYjg+XSAodW53aW5kX2JhY2t0cmFjZSsweDAvMHhlMCkgZnJvbSBbPGMwMDEx
-OGE4Pl0gKHNob3dfc3RhY2srMHgxMC8weDE0KQ0KPiBbICAgIDQuMzcxNDE5XSBbPGMwMDExOGE4
-Pl0gKHNob3dfc3RhY2srMHgxMC8weDE0KSBmcm9tIFs8YzAxYmE1MTQ+XSAodWJpZnNfcmVhZF9u
-b2RlKzB4MjQwLzB4MjdjKQ0KPiBbICAgIDQuMzgwMDg5XSBbPGMwMWJhNTE0Pl0gKHViaWZzX3Jl
-YWRfbm9kZSsweDI0MC8weDI3YykgZnJvbSBbPGMwMWQ0MWE0Pl0gKHViaWZzX3RuY19yZWFkX25v
-ZGUrMHg0OC8weDEzMCkNCj4gWyAgICA0LjM4OTY1MV0gWzxjMDFkNDFhND5dICh1Ymlmc190bmNf
-cmVhZF9ub2RlKzB4NDgvMHgxMzApIGZyb20gWzxjMDFiYjJkND5dICh0bmNfcmVhZF9ub2RlX25t
-KzB4YjQvMHgxYjgpDQo+IFsgICAgNC4zOTkxOTZdIFs8YzAxYmIyZDQ+XSAodG5jX3JlYWRfbm9k
-ZV9ubSsweGI0LzB4MWI4KSBmcm9tIFs8YzAxYmU2MjQ+XSAodWJpZnNfdG5jX25leHRfZW50KzB4
-MTQ0LzB4MThjKQ0KPiBbICAgIDQuNDA4NzQ0XSBbPGMwMWJlNjI0Pl0gKHViaWZzX3RuY19uZXh0
-X2VudCsweDE0NC8weDE4YykgZnJvbSBbPGMwMWJlNmIwPl0gKHViaWZzX3RuY19yZW1vdmVfaW5v
-KzB4NDQvMHgxMjQpDQo+IFsgICAgNC40MTg2NDFdIFs8YzAxYmU2YjA+XSAodWJpZnNfdG5jX3Jl
-bW92ZV9pbm8rMHg0NC8weDEyNCkgZnJvbSBbPGMwMWMwYzljPl0gKHViaWZzX3JlcGxheV9qb3Vy
-bmFsKzB4YmRjLzB4MTEzMCkNCj4gWyAgICA0LjQyODc5Nl0gWzxjMDFjMGM5Yz5dICh1Ymlmc19y
-ZXBsYXlfam91cm5hbCsweGJkYy8weDExMzApIGZyb20gWzxjMDFiNmE1MD5dICh1Ymlmc19tb3Vu
-dCsweGI4MC8weDE1NjgpDQo+IFsgICAgNC40MzgzNTJdIFs8YzAxYjZhNTA+XSAodWJpZnNfbW91
-bnQrMHhiODAvMHgxNTY4KSBmcm9tIFs8YzAwZDlhNDA+XSAobW91bnRfZnMrMHgxMC8weGI0KQ0K
-PiBbICAgIDQuNDQ2NTkzXSBbPGMwMGQ5YTQwPl0gKG1vdW50X2ZzKzB4MTAvMHhiNCkgZnJvbSBb
-PGMwMGYxMWRjPl0gKHZmc19rZXJuX21vdW50KzB4NDgvMHhjNCkNCj4gWyAgICA0LjQ1NDgzOF0g
-WzxjMDBmMTFkYz5dICh2ZnNfa2Vybl9tb3VudCsweDQ4LzB4YzQpIGZyb20gWzxjMDBmMzVkND5d
-IChkb19tb3VudCsweDZhOC8weDc5YykNCj4gWyAgICA0LjQ2MzI1OF0gWzxjMDBmMzVkND5dIChk
-b19tb3VudCsweDZhOC8weDc5YykgZnJvbSBbPGMwMGYzNzRjPl0gKFN5U19tb3VudCsweDg0LzB4
-YjgpDQo+IFsgICAgNC40NzEyNDVdIFs8YzAwZjM3NGM+XSAoU3lTX21vdW50KzB4ODQvMHhiOCkg
-ZnJvbSBbPGMwOWNlZGQ0Pl0gKG1vdW50X2Jsb2NrX3Jvb3QrMHhmOC8weDI3NCkNCj4gWyAgICA0
-LjQ3OTgyNF0gWzxjMDljZWRkND5dIChtb3VudF9ibG9ja19yb290KzB4ZjgvMHgyNzQpIGZyb20g
-WzxjMDljZjEyND5dIChwcmVwYXJlX25hbWVzcGFjZSsweDg4LzB4MWI4KQ0KPiBbICAgIDQuNDg5
-MjEyXSBbPGMwOWNmMTI0Pl0gKHByZXBhcmVfbmFtZXNwYWNlKzB4ODgvMHgxYjgpIGZyb20gWzxj
-MDljZWI5MD5dIChrZXJuZWxfaW5pdF9mcmVlYWJsZSsweDE3MC8weDFiNCkNCj4gWyAgICA0LjQ5
-OTAyM10gWzxjMDljZWI5MD5dIChrZXJuZWxfaW5pdF9mcmVlYWJsZSsweDE3MC8weDFiNCkgZnJv
-bSBbPGMwNmI5YzFjPl0gKGtlcm5lbF9pbml0KzB4OC8weGU0KQ0KPiBbICAgIDQuNTA4MTM2XSBb
-PGMwNmI5YzFjPl0gKGtlcm5lbF9pbml0KzB4OC8weGU0KSBmcm9tIFs8YzAwMGRjOTg+XSAocmV0
-X2Zyb21fZm9yaysweDE0LzB4M2MpDQo+IFsgICAgNC41MTc5MThdIFVCSUZTLTA6IGJhY2tncm91
-bmQgdGhyZWFkICJ1Ymlmc19iZ3QwXzAiIHN0b3BzDQo+IC0tLS0tLS0tLS0tLS0tLS0tLSBrZXJu
-ZWwgbG9nIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4NCj4gVGhlIGZvbGxvd2luZyBtZXNz
-YWdlIGhhcyBiZWVuIHJlcG9ydGluZyBvbiB0aGUgbWFpbGluZyBsaXN0IGluIHRoZSBwYXN0Lg0K
-PiBUaGlzIG1lc3NhZ2UgaXMgc2ltaWxhciB0byBteSBwcm9ibGVtLg0KPg0KPiAyMDE0IGp1bCAx
-MiB1YmlmcyBpc3N1ZSBhYm91dCB4YXR0ciBub2RlIHdoZW4gcmVwbGF5IGpvdXJuYWwgOg0KPiAt
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IGh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxNC1KdWx5LzA1NDYyMC5odG1s
-DQoNClRoZSBhdXRob3Igb2YgdGhpcyB0aHJlYWQgbmV2ZXIgYW5zd2VyZWQgb3VyIHF1ZXN0aW9u
-IHdoZXRoZXIgRmFzdG1hcCB3YXMgaW4gaW52b2x2ZWQgb3Igbm90LiBEbyB5b3UgdXNlIEZhc3Rt
-YXA/DQpKdXN0IHRvIHJ1bGUgdGhhdCBwb3NzaWJpbGl0eSBvdXQuDQoNCnRoYW5rIHlvdSENCg0K
-SSBkbyBub3QgdXNlIGZhc3RtYXAuIA0KTXkgIi5jb25maWciIGlzICIjIENPTkZJR19NVERfVUJJ
-X0ZBU1RNQVAgaXMgbm90IHNldCINCg0KDQotLQ0KVGhhbmtzLA0KLy9yaWNoYXJkDQo=
+Currently we read a whole (sub)page from flash when reading
+the VID header.
+Sascha reported that reading only UBI_VID_HDR_SIZE instead
+gives him a decent speedup during a full scan.
+
+Since we have to obey shifted headers too we have to read
+ubi->vid_hdr_shift + UBI_VID_HDR_SIZE bytes.
+It is also important to set the buffer to 0xff bytes before
+reading as in ubi_io_write_vid_hdr() the whole (sub)page
+is written back to flash and we cannot risk leaking
+kernel memory into the storage medium.
+
+Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+Sascha,
+
+can you please this patch a try?
+
+Thanks,
+//richard
+---
+ drivers/mtd/ubi/io.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index 10cf3b5..803a22d 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -1018,8 +1018,9 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
+ 	ubi_assert(pnum >= 0 &&  pnum < ubi->peb_count);
+ 
+ 	p = (char *)vid_hdr - ubi->vid_hdr_shift;
++	memset(p, 0xff, ubi->vid_hdr_alsize);
+ 	read_err = ubi_io_read(ubi, p, pnum, ubi->vid_hdr_aloffset,
+-			  ubi->vid_hdr_alsize);
++			  ubi->vid_hdr_shift + UBI_VID_HDR_SIZE);
+ 	if (read_err && read_err != UBI_IO_BITFLIPS && !mtd_is_eccerr(read_err))
+ 		return read_err;
+ 
+-- 
+2.7.3
