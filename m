@@ -1,30 +1,21 @@
 Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGvHl-0005wm-Go
- for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 21:38:43 +0000
-Received: by mail-pa0-x244.google.com with SMTP id ts6so11972154pac.0
- for <linux-mtd@lists.infradead.org>; Sat, 25 Jun 2016 14:38:20 -0700 (PDT)
+ id 1bGvHu-0005xY-Vr
+ for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 21:38:52 +0000
+Received: by mail-pa0-x244.google.com with SMTP id us13so11944110pab.1
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Jun 2016 14:38:31 -0700 (PDT)
 From: Deepa Dinamani <deepa.kernel@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: arnd@arndb.de, tglx@linutronix.de, torvalds@linux-foundation.org,
  tytso@mit.edu, viro@zeniv.linux.org.uk, y2038@lists.linaro.org,
- adilger.kernel@dilger.ca, adrian.hunter@intel.com,
- anna.schumaker@netapp.com, ceph-devel@vger.kernel.org, clm@fb.com,
- cm224.lee@samsung.com, dedekind1@gmail.com, dsterba@suse.com,
- elder@kernel.org, eparis@redhat.com, gregkh@linuxfoundation.org,
- idryomov@gmail.com, jack@suse.com, jaegeuk@kernel.org, jbacik@fb.com,
- jfs-discussion@lists.sourceforge.net, jlbec@evilplan.org,
- john.stultz@linaro.org, linux-audit@redhat.com,
- linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- linux-nfs@vger.kernel.org, lustre-devel@lists.lustre.org, mfasheh@suse.com,
- ocfs2-devel@oss.oracle.com, paul@paul-moore.com, sage@redhat.com,
- sfrench@samba.org, shaggy@kernel.org, trond.myklebust@primarydata.com,
- zyan@redhat.com
-Subject: [PATCH v3 00/24] Delete CURRENT_TIME_SEC and replace current_fs_time()
-Date: Sat, 25 Jun 2016 14:37:24 -0700
-Message-Id: <1466890668-23400-1-git-send-email-deepa.kernel@gmail.com>
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH v3 08/24] fs: ubifs: Replace CURRENT_TIME_SEC with current_time
+Date: Sat, 25 Jun 2016 14:37:32 -0700
+Message-Id: <1466890668-23400-9-git-send-email-deepa.kernel@gmail.com>
+In-Reply-To: <1466890668-23400-1-git-send-email-deepa.kernel@gmail.com>
+References: <1466890668-23400-1-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,306 +25,240 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The series is aimed at getting rid of CURRENT_TIME, CURRENT_TIME_SEC macros
-and replacing current_fs_time() with current_time().
-The macros are not y2038 safe. There is no plan to transition them into being
-y2038 safe.
-ktime_get_* api's can be used in their place. And, these are y2038 safe.
+CURRENT_TIME_SEC is not y2038 safe. current_time() will
+be transitioned to use 64 bit time along with vfs in a
+separate patch.
+There is no plan to transition CURRENT_TIME_SEC to use
+y2038 safe time interfaces.
 
-CURRENT_TIME will be deleted after 4.8 rc1 as there is a dependency function
-time64_to_tm() for one of the CURRENT_TIME occurance.
+current_time() returns timestamps according to the
+granularities set in the inode's super_block.
+The granularity check to call current_fs_time() or
+CURRENT_TIME_SEC is not required.
 
-Thanks to Arnd Bergmann for all the guidance and discussions.
+Use current_time() directly to update inode timestamp.
+Use timespec_trunc during file system creation, before
+the first inode is created.
 
-Patches 3-5 were mostly generated using coccinelle.
+Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/ubifs/dir.c   | 10 +++++-----
+ fs/ubifs/file.c  | 12 ++++++------
+ fs/ubifs/ioctl.c |  2 +-
+ fs/ubifs/misc.h  | 10 ----------
+ fs/ubifs/sb.c    | 14 ++++++++++----
+ fs/ubifs/xattr.c |  6 +++---
+ 6 files changed, 25 insertions(+), 29 deletions(-)
 
-All filesystem timestamps use current_fs_time() for right granularity as
-mentioned in the respective commit texts of patches. This has a changed
-signature, renamed to current_time() and moved to the fs/inode.c.
-
-This series also serves as a preparatory series to transition vfs to 64 bit
-timestamps as outlined here: https://lkml.org/lkml/2016/2/12/104 .
-
-As per Linus's suggestion in https://lkml.org/lkml/2016/5/24/663 , all the
-inode timestamp changes have been squashed into a single patch. Also,
-current_time() now is used as a single generic vfs filesystem timestamp api.
-It also takes struct inode* as argument instead of struct super_block*.
-Posting all patches together in a bigger series so that the big picture is
-clear.
-
-As per the suggestion in https://lwn.net/Articles/672598/, CURRENT_TIME macro
-bug fixes are being handled in a series separate from transitioning vfs to use.
-
-Changes since v2:
-* Fix buildbot error for uninitalized sb in inode.
-* Minor fixes according to Arnd's comments.
-* Leave out the fnic and deletion of CURRENT_TIME to be submitted after 4.8 rc1.
-
-Deepa Dinamani (24):
-  vfs: Add current_time() api
-  fs: proc: Delete inode time initializations in proc_alloc_inode()
-  fs: Replace CURRENT_TIME with current_time() for inode timestamps
-  fs: Replace CURRENT_TIME_SEC with current_time() for inode timestamps
-  fs: Replace current_fs_time() with current_time()
-  fs: jfs: Replace CURRENT_TIME_SEC by current_time()
-  fs: ext4: Use current_time() for inode timestamps
-  fs: ubifs: Replace CURRENT_TIME_SEC with current_time
-  fs: btrfs: Use ktime_get_real_ts for root ctime
-  fs: udf: Replace CURRENT_TIME with current_time()
-  fs: cifs: Replace CURRENT_TIME by current_time()
-  fs: cifs: Replace CURRENT_TIME with ktime_get_real_ts()
-  fs: cifs: Replace CURRENT_TIME by get_seconds
-  fs: f2fs: Use ktime_get_real_seconds for sit_info times
-  drivers: staging: lustre: Replace CURRENT_TIME with current_time()
-  fs: ocfs2: Use time64_t to represent orphan scan times
-  fs: ocfs2: Replace CURRENT_TIME with ktime_get_real_seconds()
-  audit: Use timespec64 to represent audit timestamps
-  fs: nfs: Make nfs boot time y2038 safe
-  block: Replace CURRENT_TIME with ktime_get_real_ts
-  libceph: Replace CURRENT_TIME with ktime_get_real_ts
-  fs: ceph: Replace current_fs_time for request stamp
-  time: Delete current_fs_time() function
-  time: Delete CURRENT_TIME_SEC
-
- arch/powerpc/platforms/cell/spufs/inode.c          |  2 +-
- arch/s390/hypfs/inode.c                            |  4 +--
- drivers/block/rbd.c                                |  2 +-
- drivers/char/sonypi.c                              |  2 +-
- drivers/infiniband/hw/qib/qib_fs.c                 |  2 +-
- drivers/misc/ibmasm/ibmasmfs.c                     |  2 +-
- drivers/oprofile/oprofilefs.c                      |  2 +-
- drivers/platform/x86/sony-laptop.c                 |  2 +-
- drivers/staging/lustre/lustre/llite/llite_lib.c    | 16 ++++++------
- drivers/staging/lustre/lustre/llite/namei.c        |  4 +--
- drivers/staging/lustre/lustre/mdc/mdc_reint.c      |  6 ++---
- .../lustre/lustre/obdclass/linux/linux-obdo.c      |  6 ++---
- drivers/staging/lustre/lustre/obdclass/obdo.c      |  6 ++---
- drivers/staging/lustre/lustre/osc/osc_io.c         |  2 +-
- drivers/usb/core/devio.c                           | 18 +++++++-------
- drivers/usb/gadget/function/f_fs.c                 |  8 +++---
- drivers/usb/gadget/legacy/inode.c                  |  2 +-
- fs/9p/vfs_inode.c                                  |  2 +-
- fs/adfs/inode.c                                    |  2 +-
- fs/affs/amigaffs.c                                 |  6 ++---
- fs/affs/inode.c                                    |  2 +-
- fs/attr.c                                          |  2 +-
- fs/autofs4/inode.c                                 |  2 +-
- fs/autofs4/root.c                                  |  6 ++---
- fs/bad_inode.c                                     |  2 +-
- fs/bfs/dir.c                                       | 14 +++++------
- fs/binfmt_misc.c                                   |  2 +-
- fs/btrfs/file.c                                    |  6 ++---
- fs/btrfs/inode.c                                   | 22 ++++++++--------
- fs/btrfs/ioctl.c                                   |  8 +++---
- fs/btrfs/root-tree.c                               |  3 ++-
- fs/btrfs/transaction.c                             |  4 +--
- fs/btrfs/xattr.c                                   |  2 +-
- fs/ceph/file.c                                     |  4 +--
- fs/ceph/inode.c                                    |  2 +-
- fs/ceph/mds_client.c                               |  4 ++-
- fs/ceph/xattr.c                                    |  2 +-
- fs/cifs/cifsencrypt.c                              |  4 ++-
- fs/cifs/cifssmb.c                                  | 10 ++++----
- fs/cifs/file.c                                     |  4 +--
- fs/cifs/inode.c                                    | 28 +++++++++++----------
- fs/coda/dir.c                                      |  2 +-
- fs/coda/file.c                                     |  2 +-
- fs/coda/inode.c                                    |  2 +-
- fs/configfs/inode.c                                |  6 ++---
- fs/debugfs/inode.c                                 |  2 +-
- fs/devpts/inode.c                                  |  6 ++---
- fs/efivarfs/inode.c                                |  2 +-
- fs/exofs/dir.c                                     |  6 ++---
- fs/exofs/inode.c                                   |  4 +--
- fs/exofs/namei.c                                   |  6 ++---
- fs/ext2/acl.c                                      |  2 +-
- fs/ext2/dir.c                                      |  6 ++---
- fs/ext2/ialloc.c                                   |  2 +-
- fs/ext2/inode.c                                    |  4 +--
- fs/ext2/ioctl.c                                    |  4 +--
- fs/ext2/namei.c                                    |  6 ++---
- fs/ext2/super.c                                    |  2 +-
- fs/ext2/xattr.c                                    |  2 +-
- fs/ext4/acl.c                                      |  2 +-
- fs/ext4/ext4.h                                     |  6 -----
- fs/ext4/extents.c                                  | 10 ++++----
- fs/ext4/ialloc.c                                   |  2 +-
- fs/ext4/inline.c                                   |  4 +--
- fs/ext4/inode.c                                    |  6 ++---
- fs/ext4/ioctl.c                                    |  8 +++---
- fs/ext4/namei.c                                    | 24 ++++++++++--------
- fs/ext4/super.c                                    |  2 +-
- fs/ext4/xattr.c                                    |  2 +-
- fs/f2fs/dir.c                                      |  8 +++---
- fs/f2fs/file.c                                     |  8 +++---
- fs/f2fs/inline.c                                   |  2 +-
- fs/f2fs/namei.c                                    | 12 ++++-----
- fs/f2fs/segment.c                                  |  2 +-
- fs/f2fs/segment.h                                  |  5 ++--
- fs/f2fs/xattr.c                                    |  2 +-
- fs/fat/dir.c                                       |  2 +-
- fs/fat/file.c                                      |  6 ++---
- fs/fat/inode.c                                     |  2 +-
- fs/fat/namei_msdos.c                               | 12 ++++-----
- fs/fat/namei_vfat.c                                | 10 ++++----
- fs/fuse/control.c                                  |  2 +-
- fs/fuse/dir.c                                      |  2 +-
- fs/gfs2/bmap.c                                     |  8 +++---
- fs/gfs2/dir.c                                      | 12 ++++-----
- fs/gfs2/inode.c                                    |  8 +++---
- fs/gfs2/quota.c                                    |  2 +-
- fs/gfs2/xattr.c                                    |  8 +++---
- fs/hfs/catalog.c                                   |  8 +++---
- fs/hfs/dir.c                                       |  2 +-
- fs/hfs/inode.c                                     |  2 +-
- fs/hfsplus/catalog.c                               |  8 +++---
- fs/hfsplus/dir.c                                   |  6 ++---
- fs/hfsplus/inode.c                                 |  2 +-
- fs/hfsplus/ioctl.c                                 |  2 +-
- fs/hugetlbfs/inode.c                               | 10 ++++----
- fs/inode.c                                         | 29 +++++++++++++++++++---
- fs/jffs2/acl.c                                     |  2 +-
- fs/jffs2/fs.c                                      |  2 +-
- fs/jfs/acl.c                                       |  2 +-
- fs/jfs/inode.c                                     |  2 +-
- fs/jfs/ioctl.c                                     |  2 +-
- fs/jfs/jfs_inode.c                                 |  2 +-
- fs/jfs/namei.c                                     | 24 +++++++++---------
- fs/jfs/super.c                                     |  2 +-
- fs/jfs/xattr.c                                     |  2 +-
- fs/kernfs/inode.c                                  |  2 +-
- fs/libfs.c                                         | 14 +++++------
- fs/locks.c                                         |  2 +-
- fs/logfs/dir.c                                     |  6 ++---
- fs/logfs/file.c                                    |  2 +-
- fs/logfs/inode.c                                   |  4 +--
- fs/logfs/readwrite.c                               |  4 +--
- fs/minix/bitmap.c                                  |  2 +-
- fs/minix/dir.c                                     |  6 ++---
- fs/minix/itree_common.c                            |  4 +--
- fs/minix/namei.c                                   |  4 +--
- fs/nfs/client.c                                    |  2 +-
- fs/nfs/netns.h                                     |  2 +-
- fs/nfs/nfs4proc.c                                  | 10 +++++---
- fs/nfs/nfs4xdr.c                                   |  2 +-
- fs/nfsd/blocklayout.c                              |  2 +-
- fs/nilfs2/dir.c                                    |  6 ++---
- fs/nilfs2/inode.c                                  |  4 +--
- fs/nilfs2/ioctl.c                                  |  2 +-
- fs/nilfs2/namei.c                                  |  6 ++---
- fs/nsfs.c                                          |  2 +-
- fs/ntfs/inode.c                                    |  2 +-
- fs/ntfs/mft.c                                      |  2 +-
- fs/ocfs2/acl.c                                     |  2 +-
- fs/ocfs2/alloc.c                                   |  2 +-
- fs/ocfs2/aops.c                                    |  2 +-
- fs/ocfs2/cluster/heartbeat.c                       |  2 +-
- fs/ocfs2/dir.c                                     |  4 +--
- fs/ocfs2/dlmfs/dlmfs.c                             |  4 +--
- fs/ocfs2/file.c                                    | 12 ++++-----
- fs/ocfs2/inode.c                                   |  2 +-
- fs/ocfs2/journal.c                                 |  4 +--
- fs/ocfs2/move_extents.c                            |  2 +-
- fs/ocfs2/namei.c                                   | 16 ++++++------
- fs/ocfs2/ocfs2.h                                   |  2 +-
- fs/ocfs2/refcounttree.c                            |  4 +--
- fs/ocfs2/super.c                                   |  2 +-
- fs/ocfs2/xattr.c                                   |  2 +-
- fs/omfs/dir.c                                      |  4 +--
- fs/omfs/inode.c                                    |  2 +-
- fs/openpromfs/inode.c                              |  2 +-
- fs/orangefs/file.c                                 |  2 +-
- fs/orangefs/inode.c                                |  2 +-
- fs/orangefs/namei.c                                | 10 ++++----
- fs/pipe.c                                          |  2 +-
- fs/posix_acl.c                                     |  2 +-
- fs/proc/base.c                                     |  2 +-
- fs/proc/inode.c                                    |  3 +--
- fs/proc/proc_sysctl.c                              |  2 +-
- fs/proc/self.c                                     |  2 +-
- fs/proc/thread_self.c                              |  2 +-
- fs/pstore/inode.c                                  |  2 +-
- fs/ramfs/inode.c                                   |  6 ++---
- fs/reiserfs/inode.c                                |  2 +-
- fs/reiserfs/ioctl.c                                |  4 +--
- fs/reiserfs/namei.c                                | 12 ++++-----
- fs/reiserfs/stree.c                                |  8 +++---
- fs/reiserfs/super.c                                |  2 +-
- fs/reiserfs/xattr.c                                |  6 ++---
- fs/reiserfs/xattr_acl.c                            |  2 +-
- fs/sysv/dir.c                                      |  6 ++---
- fs/sysv/ialloc.c                                   |  2 +-
- fs/sysv/itree.c                                    |  4 +--
- fs/sysv/namei.c                                    |  4 +--
- fs/tracefs/inode.c                                 |  2 +-
- fs/ubifs/dir.c                                     | 10 ++++----
- fs/ubifs/file.c                                    | 12 ++++-----
- fs/ubifs/ioctl.c                                   |  2 +-
- fs/ubifs/misc.h                                    | 10 --------
- fs/ubifs/sb.c                                      | 14 ++++++++---
- fs/ubifs/xattr.c                                   |  6 ++---
- fs/udf/ialloc.c                                    |  2 +-
- fs/udf/inode.c                                     |  4 +--
- fs/udf/namei.c                                     | 20 +++++++--------
- fs/udf/super.c                                     |  9 ++++---
- fs/ufs/dir.c                                       |  6 ++---
- fs/ufs/ialloc.c                                    |  8 +++---
- fs/ufs/inode.c                                     |  6 ++---
- fs/ufs/namei.c                                     |  6 ++---
- fs/xfs/xfs_acl.c                                   |  2 +-
- fs/xfs/xfs_inode.c                                 |  2 +-
- fs/xfs/xfs_iops.c                                  |  2 +-
- fs/xfs/xfs_trans_inode.c                           |  2 +-
- include/linux/audit.h                              |  4 +--
- include/linux/fs.h                                 |  2 +-
- include/linux/time.h                               |  1 -
- ipc/mqueue.c                                       | 18 +++++++-------
- kernel/audit.c                                     | 10 ++++----
- kernel/audit.h                                     |  2 +-
- kernel/auditsc.c                                   |  6 ++---
- kernel/bpf/inode.c                                 |  2 +-
- kernel/time/time.c                                 | 14 -----------
- mm/shmem.c                                         | 20 +++++++--------
- net/ceph/messenger.c                               |  6 +++--
- net/ceph/osd_client.c                              |  4 +--
- net/sunrpc/rpc_pipe.c                              |  2 +-
- security/inode.c                                   |  2 +-
- security/selinux/selinuxfs.c                       |  2 +-
- 204 files changed, 536 insertions(+), 518 deletions(-)
-
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 4b86d3a..6e2dff9 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -106,7 +106,7 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
+ 
+ 	inode_init_owner(inode, dir, mode);
+ 	inode->i_mtime = inode->i_atime = inode->i_ctime =
+-			 ubifs_current_time(inode);
++			 current_time(inode);
+ 	inode->i_mapping->nrpages = 0;
+ 
+ 	switch (mode & S_IFMT) {
+@@ -529,7 +529,7 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+ 	lock_2_inodes(dir, inode);
+ 	inc_nlink(inode);
+ 	ihold(inode);
+-	inode->i_ctime = ubifs_current_time(inode);
++	inode->i_ctime = current_time(inode);
+ 	dir->i_size += sz_change;
+ 	dir_ui->ui_size = dir->i_size;
+ 	dir->i_mtime = dir->i_ctime = inode->i_ctime;
+@@ -586,7 +586,7 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
+ 	}
+ 
+ 	lock_2_inodes(dir, inode);
+-	inode->i_ctime = ubifs_current_time(dir);
++	inode->i_ctime = current_time(dir);
+ 	drop_nlink(inode);
+ 	dir->i_size -= sz_change;
+ 	dir_ui->ui_size = dir->i_size;
+@@ -675,7 +675,7 @@ static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
+ 	}
+ 
+ 	lock_2_inodes(dir, inode);
+-	inode->i_ctime = ubifs_current_time(dir);
++	inode->i_ctime = current_time(dir);
+ 	clear_nlink(inode);
+ 	drop_nlink(dir);
+ 	dir->i_size -= sz_change;
+@@ -1023,7 +1023,7 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	 * Like most other Unix systems, set the @i_ctime for inodes on a
+ 	 * rename.
+ 	 */
+-	time = ubifs_current_time(old_dir);
++	time = current_time(old_dir);
+ 	old_inode->i_ctime = time;
+ 
+ 	/* We must adjust parent link count when renaming directories */
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 7bbf420..45e3d71 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1182,7 +1182,7 @@ static int do_truncation(struct ubifs_info *c, struct inode *inode,
+ 	mutex_lock(&ui->ui_mutex);
+ 	ui->ui_size = inode->i_size;
+ 	/* Truncation changes inode [mc]time */
+-	inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
++	inode->i_mtime = inode->i_ctime = current_time(inode);
+ 	/* Other attributes may be changed at the same time as well */
+ 	do_attr_changes(inode, attr);
+ 	err = ubifs_jnl_truncate(c, inode, old_size, new_size);
+@@ -1229,7 +1229,7 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
+ 	mutex_lock(&ui->ui_mutex);
+ 	if (attr->ia_valid & ATTR_SIZE) {
+ 		/* Truncation changes inode [mc]time */
+-		inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
++		inode->i_mtime = inode->i_ctime = current_time(inode);
+ 		/* 'truncate_setsize()' changed @i_size, update @ui_size */
+ 		ui->ui_size = inode->i_size;
+ 	}
+@@ -1406,7 +1406,7 @@ int ubifs_update_time(struct inode *inode, struct timespec *time,
+  */
+ static int update_mctime(struct inode *inode)
+ {
+-	struct timespec now = ubifs_current_time(inode);
++	struct timespec now = current_time(inode);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+ 
+@@ -1420,7 +1420,7 @@ static int update_mctime(struct inode *inode)
+ 			return err;
+ 
+ 		mutex_lock(&ui->ui_mutex);
+-		inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
++		inode->i_mtime = inode->i_ctime = current_time(inode);
+ 		release = ui->dirty;
+ 		mark_inode_dirty_sync(inode);
+ 		mutex_unlock(&ui->ui_mutex);
+@@ -1498,7 +1498,7 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
+ 	struct page *page = vmf->page;
+ 	struct inode *inode = file_inode(vma->vm_file);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+-	struct timespec now = ubifs_current_time(inode);
++	struct timespec now = current_time(inode);
+ 	struct ubifs_budget_req req = { .new_page = 1 };
+ 	int err, update_time;
+ 
+@@ -1566,7 +1566,7 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
+ 		struct ubifs_inode *ui = ubifs_inode(inode);
+ 
+ 		mutex_lock(&ui->ui_mutex);
+-		inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
++		inode->i_mtime = inode->i_ctime = current_time(inode);
+ 		release = ui->dirty;
+ 		mark_inode_dirty_sync(inode);
+ 		mutex_unlock(&ui->ui_mutex);
+diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+index 3c7b29d..a81603d 100644
+--- a/fs/ubifs/ioctl.c
++++ b/fs/ubifs/ioctl.c
+@@ -126,7 +126,7 @@ static int setflags(struct inode *inode, int flags)
+ 
+ 	ui->flags = ioctl2ubifs(flags);
+ 	ubifs_set_inode_flags(inode);
+-	inode->i_ctime = ubifs_current_time(inode);
++	inode->i_ctime = current_time(inode);
+ 	release = ui->dirty;
+ 	mark_inode_dirty_sync(inode);
+ 	mutex_unlock(&ui->ui_mutex);
+diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
+index 8ece6ca..caf83d6 100644
+--- a/fs/ubifs/misc.h
++++ b/fs/ubifs/misc.h
+@@ -225,16 +225,6 @@ static inline void *ubifs_idx_key(const struct ubifs_info *c,
+ }
+ 
+ /**
+- * ubifs_current_time - round current time to time granularity.
+- * @inode: inode
+- */
+-static inline struct timespec ubifs_current_time(struct inode *inode)
+-{
+-	return (inode->i_sb->s_time_gran < NSEC_PER_SEC) ?
+-		current_fs_time(inode->i_sb) : CURRENT_TIME_SEC;
+-}
+-
+-/**
+  * ubifs_tnc_lookup - look up a file-system node.
+  * @c: UBIFS file-system description object
+  * @key: node key to lookup
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index 3cbb904..907bfff 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -84,6 +84,8 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	int min_leb_cnt = UBIFS_MIN_LEB_CNT;
+ 	long long tmp64, main_bytes;
+ 	__le64 tmp_le64;
++	__le32 tmp_le32;
++	struct timespec ts;
+ 
+ 	/* Some functions called from here depend on the @c->key_len filed */
+ 	c->key_len = UBIFS_SK_LEN;
+@@ -297,13 +299,17 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	ino->ch.node_type = UBIFS_INO_NODE;
+ 	ino->creat_sqnum = cpu_to_le64(++c->max_sqnum);
+ 	ino->nlink = cpu_to_le32(2);
+-	tmp_le64 = cpu_to_le64(CURRENT_TIME_SEC.tv_sec);
++
++	ktime_get_real_ts(&ts);
++	ts = timespec_trunc(ts, DEFAULT_TIME_GRAN);
++	tmp_le64 = cpu_to_le64(ts.tv_sec);
+ 	ino->atime_sec   = tmp_le64;
+ 	ino->ctime_sec   = tmp_le64;
+ 	ino->mtime_sec   = tmp_le64;
+-	ino->atime_nsec  = 0;
+-	ino->ctime_nsec  = 0;
+-	ino->mtime_nsec  = 0;
++	tmp_le32 = cpu_to_le32(ts.tv_nsec);
++	ino->atime_nsec  = tmp_le32;
++	ino->ctime_nsec  = tmp_le32;
++	ino->mtime_nsec  = tmp_le32;
+ 	ino->mode = cpu_to_le32(S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO);
+ 	ino->size = cpu_to_le64(UBIFS_INO_NODE_SZ);
+ 
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index b5fc279..c34f74e 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -152,7 +152,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
+ 	ui->data_len = size;
+ 
+ 	mutex_lock(&host_ui->ui_mutex);
+-	host->i_ctime = ubifs_current_time(host);
++	host->i_ctime = current_time(host);
+ 	host_ui->xattr_cnt += 1;
+ 	host_ui->xattr_size += CALC_DENT_SIZE(nm->len);
+ 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
+@@ -221,7 +221,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
+ 	mutex_unlock(&ui->ui_mutex);
+ 
+ 	mutex_lock(&host_ui->ui_mutex);
+-	host->i_ctime = ubifs_current_time(host);
++	host->i_ctime = current_time(host);
+ 	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
+ 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
+ 
+@@ -458,7 +458,7 @@ static int remove_xattr(struct ubifs_info *c, struct inode *host,
+ 		return err;
+ 
+ 	mutex_lock(&host_ui->ui_mutex);
+-	host->i_ctime = ubifs_current_time(host);
++	host->i_ctime = current_time(host);
+ 	host_ui->xattr_cnt -= 1;
+ 	host_ui->xattr_size -= CALC_DENT_SIZE(nm->len);
+ 	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
 -- 
 1.9.1
-
-Cc: adilger.kernel@dilger.ca
-Cc: adrian.hunter@intel.com
-Cc: anna.schumaker@netapp.com
-Cc: ceph-devel@vger.kernel.org
-Cc: clm@fb.com
-Cc: cm224.lee@samsung.com
-Cc: dedekind1@gmail.com
-Cc: dsterba@suse.com
-Cc: elder@kernel.org
-Cc: eparis@redhat.com
-Cc: gregkh@linuxfoundation.org
-Cc: idryomov@gmail.com
-Cc: jack@suse.com
-Cc: jaegeuk@kernel.org
-Cc: jbacik@fb.com
-Cc: jfs-discussion@lists.sourceforge.net
-Cc: jlbec@evilplan.org
-Cc: john.stultz@linaro.org
-Cc: linux-audit@redhat.com
-Cc: linux-btrfs@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-nfs@vger.kernel.org
-Cc: lustre-devel@lists.lustre.org
-Cc: mfasheh@suse.com
-Cc: ocfs2-devel@oss.oracle.com
-Cc: paul@paul-moore.com
-Cc: sage@redhat.com
-Cc: sfrench@samba.org
-Cc: shaggy@kernel.org
-Cc: trond.myklebust@primarydata.com
-Cc: zyan@redhat.com
