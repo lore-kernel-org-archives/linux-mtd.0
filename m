@@ -1,20 +1,25 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from hauke-m.de ([5.39.93.123])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGjUU-0003NU-2Z
- for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 09:03:02 +0000
-Subject: Re: [PATCH] ubi: Speedup ubi_io_read_vid_hdr()
-To: s.hauer@pengutronix.de
-References: <20160624093957.528c48dc@bbrezillon>
- <1466843991-3423-1-git-send-email-richard@nod.at>
-Cc: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
- dedekind1@gmail.com
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <576E48AF.1030105@nod.at>
-Date: Sat, 25 Jun 2016 11:02:39 +0200
+ id 1bGu4k-00034b-E2
+ for linux-mtd@lists.infradead.org; Sat, 25 Jun 2016 20:21:11 +0000
+Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+References: <1466277476-14853-1-git-send-email-hauke@hauke-m.de>
+ <5765A14F.6020201@nod.at> <48242f26-7812-6957-6bf5-c12989b875b4@hauke-m.de>
+ <CAAEAJfC8mYnohRxKg0b-onbGadk0vPDty=7Bh8emP92mazB=aA@mail.gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <aedd029f-858b-97f8-7fc7-f224999ed24c@hauke-m.de>
+Date: Sat, 25 Jun 2016 22:20:45 +0200
 MIME-Version: 1.0
-In-Reply-To: <1466843991-3423-1-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAAEAJfC8mYnohRxKg0b-onbGadk0vPDty=7Bh8emP92mazB=aA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 25.06.2016 um 10:39 schrieb Richard Weinberger:
-> Currently we read a whole (sub)page from flash when reading
-> the VID header.
-> Sascha reported that reading only UBI_VID_HDR_SIZE instead
-> gives him a decent speedup during a full scan.
+On 06/24/2016 08:28 PM, Ezequiel Garcia wrote:
+> On 18 June 2016 at 16:35, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+>> On 06/18/2016 09:30 PM, Richard Weinberger wrote:
+>>> Am 18.06.2016 um 21:17 schrieb Hauke Mehrtens:
+>>>> This makes it possible to open a ubi layer in device tree, this is
+>>>> helpful when the rootfs is on a ubi layer. It loops though all mtd
+>>>> partitions and mounts the partition which is compatible with
+>>>> "ubi,volume". The same was only possible with kernel command line
+>>>> arguments before.
+>>>>
+>>>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>>>> ---
+>>>>  Documentation/devicetree/bindings/mtd/ubi.txt | 33 ++++++++++++++
+>>>>  drivers/mtd/ubi/block.c                       | 63 +++++++++++++++++++++++++++
+>>>>  2 files changed, 96 insertions(+)
+>>>>  create mode 100644 Documentation/devicetree/bindings/mtd/ubi.txt
+>>>
+>>> Some time ago I thought about an UBI DT binding too, but
+>>> I have been told that device tree is only for describing the hardware
+>>> and nothing else.
+>>> So I fear this will be rejected by DT folks.
+>>
+>> There are some devices on the market that are storing the root file
+>> system in an ubi layer.
+>> To make this work there are currently two options.
+>> 1. patch the kernel to specify which partitions to open in the code.
 > 
-> Since we have to obey shifted headers too we have to read
-> ubi->vid_hdr_shift + UBI_VID_HDR_SIZE bytes.
-> It is also important to set the buffer to 0xff bytes before
-> reading as in ubi_io_write_vid_hdr() the whole (sub)page
-> is written back to flash and we cannot risk leaking
-> kernel memory into the storage medium.
-> 
-> Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
-> Sascha,
-> 
-> can you please this patch a try?
-> 
-> Thanks,
-> //richard
-> ---
->  drivers/mtd/ubi/io.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-> index 10cf3b5..803a22d 100644
-> --- a/drivers/mtd/ubi/io.c
-> +++ b/drivers/mtd/ubi/io.c
-> @@ -1018,8 +1018,9 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
->  	ubi_assert(pnum >= 0 &&  pnum < ubi->peb_count);
->  
->  	p = (char *)vid_hdr - ubi->vid_hdr_shift;
-> +	memset(p, 0xff, ubi->vid_hdr_alsize);
+> I wouldn't go as far as to claim this an option.
 
-Given a second thought on that, we can drop this memset().
+I would also not do this, but when you look into the Linux patches of
+"professional" embedded devices you see many strange things.
 
->  	read_err = ubi_io_read(ubi, p, pnum, ubi->vid_hdr_aloffset,
-> -			  ubi->vid_hdr_alsize);
-> +			  ubi->vid_hdr_shift + UBI_VID_HDR_SIZE);
->  	if (read_err && read_err != UBI_IO_BITFLIPS && !mtd_is_eccerr(read_err))
->  		return read_err;
+> 
+>> 2. provide some kernel command line parameter which specifies what to open.
+>>
+> 
+> There's another option: use an initramfs, where you can do whatever you want
+> to find your UBI and mount it.
 
-Thanks,
-//richard
+An initramfs probably needs some 10 to 100 KBytes of additional memory
+on the flash chip and we only have 4 MBytes on some devices for the
+bootloader, kernel and rootfs, adding 100 KBytes there is a significant
+amount of memory. Instead of adding a initramfs I would like to be able
+to define the rootfs somewhere in device tree and not by adding a
+bootargs line into device tree. These particular patches are probably
+the wrong way, but nobody told me how to do this in a better way.
+
+> Frankly, I don't see a real need for this in the devicetree, other than solving
+> someone's particular workflow/use case.
