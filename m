@@ -1,16 +1,16 @@
-Received: from mail-db3on0130.outbound.protection.outlook.com
- ([157.55.234.130] helo=emea01-db3-obe.outbound.protection.outlook.com)
+Received: from mail-db3on0120.outbound.protection.outlook.com
+ ([157.55.234.120] helo=emea01-db3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHTgi-0001TC-5z
- for linux-mtd@lists.infradead.org; Mon, 27 Jun 2016 10:22:45 +0000
+ id 1bHTgj-0001U9-P7
+ for linux-mtd@lists.infradead.org; Mon, 27 Jun 2016 10:22:47 +0000
 From: <marcin.krzeminski@nokia.com>
 To: <linux-mtd@lists.infradead.org>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <hramrach@gmail.com>, <jteki@openedev.com>, <cyrille.pitchen@atmel.com>,
  <rfsw-patches@mlist.nokia.com>, <pawel.lenkow@itlen.com>
-Subject: [RFC 2/3] mtd: spi-nor: Read Mode byte implementation
-Date: Mon, 27 Jun 2016 12:20:59 +0200
-Message-ID: <1467022860-17552-3-git-send-email-marcin.krzeminski@nokia.com>
+Subject: [RFC 1/3] mtd: spi-nor: DUAL I/O and QUAD I/O modes support
+Date: Mon, 27 Jun 2016 12:20:58 +0200
+Message-ID: <1467022860-17552-2-git-send-email-marcin.krzeminski@nokia.com>
 In-Reply-To: <1467022860-17552-1-git-send-email-marcin.krzeminski@nokia.com>
 References: <1467022860-17552-1-git-send-email-marcin.krzeminski@nokia.com>
 MIME-Version: 1.0
@@ -26,92 +26,163 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 
-DUAL/QUAD I/O modes often need an additional byte at first
-read command to configure flash in continuous read mode.
-Continuous read mode is not supported, but we need to send this
-byte to flash anyway.
+This commit adds support for DUAL/QUAD I/O modes.
+The work is based on Pawel Lenkow work for 3.18 kernel.
 
 Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 31 +++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h   |  9 +++++++++
- 2 files changed, 40 insertions(+)
+ drivers/mtd/spi-nor/Kconfig   |  8 +++++++
+ drivers/mtd/spi-nor/spi-nor.c | 54 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h   | 12 ++++++++++
+ 3 files changed, 74 insertions(+)
 
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index d42c98e..8975977 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -49,4 +49,12 @@ config SPI_NXP_SPIFI
+ 	  Flash. Enable this option if you have a device with a SPIFI
+ 	  controller and want to access the Flash as a mtd device.
+ 
++config DUAL_QUAD_IO
++	bool "Dual and Quad I/O support"
++	help
++	   Enable support for Dual I/O and Quad I/O read commands that are
++	   available in some Spansion and Macronix devices.
++	   In Spansion FS-S family you must enable this if you want to use
++	   Quad/Dual but not QPI mode.
++
+ endif # MTD_SPI_NOR
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 847db69..026544b 100644
+index a63922e..847db69 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -164,6 +164,34 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
- 	return 0;
- }
- 
+@@ -75,6 +75,10 @@ struct flash_info {
+ 					 * bit. Must be used with
+ 					 * SPI_NOR_HAS_LOCK.
+ 					 */
 +#ifdef CONFIG_DUAL_QUAD_IO
-+/*
-+ * Read mode option, allows to continue
-+ * fast reading without sending the command again.
-+ * Could be used by the driver or this framework
-+ * to speed up reading.
-+ */
-+static void spi_nor_read_mode(struct spi_nor *nor,
-+		const struct flash_info *info)
-+{
-+	nor->read_mode_size = 0;
-+	nor->read_mode_cmd = 0;
++#define	SPI_NOR_DUALIO_READ	BIT(10)	/* Flash supports Dual I/O Read */
++#define	SPI_NOR_QUADIO_READ	BIT(11)	/* Flash supports Quad I/O Read */
++#endif
+ };
+ 
+ #define JEDEC_MFR(info)	((info)->id[0])
+@@ -149,6 +153,10 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
+ 	case SPI_NOR_FAST:
+ 	case SPI_NOR_DUAL:
+ 	case SPI_NOR_QUAD:
++#ifdef CONFIG_DUAL_QUAD_IO
++	case SPI_NOR_DUALIO:
++	case SPI_NOR_QUADIO:
++#endif
+ 		return 8;
+ 	case SPI_NOR_NORMAL:
+ 		return 0;
+@@ -1415,7 +1423,37 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	/* Some devices cannot do fast-read, no matter what DT tells us */
+ 	if (info->flags & SPI_NOR_NO_FR)
+ 		nor->flash_read = SPI_NOR_NORMAL;
++#ifdef CONFIG_DUAL_QUAD_IO
++	/*
++	 * Quad/Dual-read mode takes precedence over fast/normal
++	 * and Quad/Dual I/O take precedence over Quad/Dual
++	 */
++	if (mode == SPI_NOR_QUADIO) {
++		if (info->flags & SPI_NOR_QUADIO_READ)
++			nor->flash_read = SPI_NOR_QUADIO;
++		else
++			mode = SPI_NOR_QUAD;
++	} else if (mode == SPI_NOR_DUALIO) {
++		if (info->flags & SPI_NOR_DUALIO_READ)
++			nor->flash_read = SPI_NOR_DUALIO;
++		else
++			mode = SPI_NOR_DUAL;
++	}
+ 
++	if (mode == SPI_NOR_QUAD && (info->flags & SPI_NOR_QUAD_READ))
++		nor->flash_read = SPI_NOR_QUAD;
++	else if (mode == SPI_NOR_DUAL && (info->flags & SPI_NOR_DUAL_READ))
++		nor->flash_read = SPI_NOR_DUAL;
 +
-+	if (nor->flash_read == SPI_NOR_QUADIO
-+		|| nor->flash_read == SPI_NOR_DUALIO) {
-+
-+		switch (JEDEC_MFR(info)) {
-+		case SNOR_MFR_SPANSION:
-+			nor->read_mode_size = 8;
-+			nor->read_mode_cmd = SPANSION_CONTINUOUS_READ_MODE;
-+		break;
-+		default:
-+			break;
++	if (nor->flash_read == SPI_NOR_QUAD
++			|| nor->flash_read == SPI_NOR_QUADIO) {
++		ret = set_quad_mode(nor, info);
++		if (ret) {
++			dev_err(dev, "quad mode not supported\n");
++			return ret;
 +		}
 +	}
-+}
-+#endif
-+
- /*
-  * Write status register 1 byte
-  * Returns negative if error occurred.
-@@ -1541,6 +1569,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 	}
- 
- 	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
++#else
+ 	/* Quad/Dual-read mode takes precedence over fast/normal */
+ 	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+ 		ret = set_quad_mode(nor, info);
+@@ -1442,6 +1480,14 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	case SPI_NOR_NORMAL:
+ 		nor->read_opcode = SPINOR_OP_READ;
+ 		break;
 +#ifdef CONFIG_DUAL_QUAD_IO
-+	spi_nor_read_mode(nor, info);
++	case SPI_NOR_DUALIO:
++		nor->read_opcode = SPINOR_OP_READ_1_2_2;
++		break;
++	case SPI_NOR_QUADIO:
++		nor->read_opcode = SPINOR_OP_READ_1_4_4;
++		break;
 +#endif
- 
- 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
- 			(long long)mtd->size >> 10);
+ 	default:
+ 		dev_err(dev, "No Read opcode defined\n");
+ 		return -EINVAL;
+@@ -1469,6 +1515,14 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 			case SPI_NOR_NORMAL:
+ 				nor->read_opcode = SPINOR_OP_READ4;
+ 				break;
++#ifdef CONFIG_DUAL_QUAD_IO
++			case SPI_NOR_DUALIO:
++				nor->read_opcode = SPINOR_OP_READ4_1_2_2;
++				break;
++			case SPI_NOR_QUADIO:
++				nor->read_opcode = SPINOR_OP_READ4_1_4_4;
++				break;
++#endif
+ 			}
+ 			nor->program_opcode = SPINOR_OP_PP_4B;
+ 			/* No small sector erase for 4-byte command set */
 diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 652a8d2..78196a8 100644
+index c425c7b..652a8d2 100644
 --- a/include/linux/mtd/spi-nor.h
 +++ b/include/linux/mtd/spi-nor.h
-@@ -108,6 +108,11 @@
- /* Configuration Register bits. */
- #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
- 
+@@ -45,6 +45,10 @@
+ #define SPINOR_OP_READ_FAST	0x0b	/* Read data bytes (high frequency) */
+ #define SPINOR_OP_READ_1_1_2	0x3b	/* Read data bytes (Dual SPI) */
+ #define SPINOR_OP_READ_1_1_4	0x6b	/* Read data bytes (Quad SPI) */
 +#ifdef CONFIG_DUAL_QUAD_IO
-+/* Spansion continuous read mode for Quad/Dual I/O reads */
-+#define SPANSION_CONTINUOUS_READ_MODE 0xA0
++#define SPINOR_OP_READ_1_2_2	0xbb	/* Read data bytes (DualIO SPI) */
++#define SPINOR_OP_READ_1_4_4	0xeb    /* Read data bytes (QuadIO SPI) */
 +#endif
-+
- enum read_mode {
- 	SPI_NOR_NORMAL = 0,
+ #define SPINOR_OP_PP		0x02	/* Page program (up to 256 bytes) */
+ #define SPINOR_OP_BE_4K		0x20	/* Erase 4KiB block */
+ #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
+@@ -60,6 +64,10 @@
+ #define SPINOR_OP_READ4_FAST	0x0c	/* Read data bytes (high frequency) */
+ #define SPINOR_OP_READ4_1_1_2	0x3c	/* Read data bytes (Dual SPI) */
+ #define SPINOR_OP_READ4_1_1_4	0x6c	/* Read data bytes (Quad SPI) */
++#ifdef CONFIG_DUAL_QUAD_IO
++#define SPINOR_OP_READ4_1_2_2	0xbc    /* Read data bytes (DualIO SPI) */
++#define SPINOR_OP_READ4_1_4_4	0xec    /* Read data bytes (QuadIO SPI) */
++#endif
+ #define SPINOR_OP_PP_4B		0x12	/* Page program (up to 256 bytes) */
+ #define SPINOR_OP_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
+ 
+@@ -105,6 +113,10 @@ enum read_mode {
  	SPI_NOR_FAST,
-@@ -179,6 +184,10 @@ struct spi_nor {
- 	bool			sst_write_second;
- 	u32			flags;
- 	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
+ 	SPI_NOR_DUAL,
+ 	SPI_NOR_QUAD,
 +#ifdef CONFIG_DUAL_QUAD_IO
-+	u32			read_mode_size; /*read mode command size in bits */
-+	u32			read_mode_cmd; /*read mode command */
++	SPI_NOR_DUALIO,
++	SPI_NOR_QUADIO,
 +#endif
+ };
  
- 	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
- 	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
+ #define SPI_NOR_MAX_CMD_SIZE	8
 -- 
 2.7.4
