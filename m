@@ -1,16 +1,16 @@
-Received: from mail-db3on0127.outbound.protection.outlook.com
- ([157.55.234.127] helo=emea01-db3-obe.outbound.protection.outlook.com)
+Received: from mail-db3on0130.outbound.protection.outlook.com
+ ([157.55.234.130] helo=emea01-db3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHTgh-0001Sy-Hv
- for linux-mtd@lists.infradead.org; Mon, 27 Jun 2016 10:22:44 +0000
+ id 1bHTgi-0001TC-5z
+ for linux-mtd@lists.infradead.org; Mon, 27 Jun 2016 10:22:45 +0000
 From: <marcin.krzeminski@nokia.com>
 To: <linux-mtd@lists.infradead.org>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <hramrach@gmail.com>, <jteki@openedev.com>, <cyrille.pitchen@atmel.com>,
  <rfsw-patches@mlist.nokia.com>, <pawel.lenkow@itlen.com>
-Subject: [RFC 3/3] mtd: spi-nor: Support for s25fs512s
-Date: Mon, 27 Jun 2016 12:21:00 +0200
-Message-ID: <1467022860-17552-4-git-send-email-marcin.krzeminski@nokia.com>
+Subject: [RFC 2/3] mtd: spi-nor: Read Mode byte implementation
+Date: Mon, 27 Jun 2016 12:20:59 +0200
+Message-ID: <1467022860-17552-3-git-send-email-marcin.krzeminski@nokia.com>
 In-Reply-To: <1467022860-17552-1-git-send-email-marcin.krzeminski@nokia.com>
 References: <1467022860-17552-1-git-send-email-marcin.krzeminski@nokia.com>
 MIME-Version: 1.0
@@ -26,44 +26,92 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 
-Add support for new Cypress flash. Difference between FS and FL family
-can be noticed at 5th JEDEC byte, so update s25fl512s device entry.
+DUAL/QUAD I/O modes often need an additional byte at first
+read command to configure flash in continuous read mode.
+Continuous read mode is not supported, but we need to send this
+byte to flash anyway.
 
 Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 31 +++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h   |  9 +++++++++
+ 2 files changed, 40 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 026544b..182762f 100644
+index 847db69..026544b 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -920,7 +920,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
- 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
- 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
- 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
-@@ -941,6 +941,9 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25fl164k",  INFO(0x014017,      0,  64 * 1024, 128, SECT_4K) },
- 	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ) },
+@@ -164,6 +164,34 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
+ 	return 0;
+ }
  
 +#ifdef CONFIG_DUAL_QUAD_IO
-+	{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256, SECT_4K | SPI_NOR_DUALIO_READ | SPI_NOR_QUADIO_READ) },
++/*
++ * Read mode option, allows to continue
++ * fast reading without sending the command again.
++ * Could be used by the driver or this framework
++ * to speed up reading.
++ */
++static void spi_nor_read_mode(struct spi_nor *nor,
++		const struct flash_info *info)
++{
++	nor->read_mode_size = 0;
++	nor->read_mode_cmd = 0;
++
++	if (nor->flash_read == SPI_NOR_QUADIO
++		|| nor->flash_read == SPI_NOR_DUALIO) {
++
++		switch (JEDEC_MFR(info)) {
++		case SNOR_MFR_SPANSION:
++			nor->read_mode_size = 8;
++			nor->read_mode_cmd = SPANSION_CONTINUOUS_READ_MODE;
++		break;
++		default:
++			break;
++		}
++	}
++}
 +#endif
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
- 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
- 	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
-@@ -1572,7 +1575,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- #ifdef CONFIG_DUAL_QUAD_IO
- 	spi_nor_read_mode(nor, info);
- #endif
--
++
+ /*
+  * Write status register 1 byte
+  * Returns negative if error occurred.
+@@ -1541,6 +1569,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	}
+ 
+ 	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
++#ifdef CONFIG_DUAL_QUAD_IO
++	spi_nor_read_mode(nor, info);
++#endif
+ 
  	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
  			(long long)mtd->size >> 10);
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 652a8d2..78196a8 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -108,6 +108,11 @@
+ /* Configuration Register bits. */
+ #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
  
++#ifdef CONFIG_DUAL_QUAD_IO
++/* Spansion continuous read mode for Quad/Dual I/O reads */
++#define SPANSION_CONTINUOUS_READ_MODE 0xA0
++#endif
++
+ enum read_mode {
+ 	SPI_NOR_NORMAL = 0,
+ 	SPI_NOR_FAST,
+@@ -179,6 +184,10 @@ struct spi_nor {
+ 	bool			sst_write_second;
+ 	u32			flags;
+ 	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
++#ifdef CONFIG_DUAL_QUAD_IO
++	u32			read_mode_size; /*read mode command size in bits */
++	u32			read_mode_cmd; /*read mode command */
++#endif
+ 
+ 	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
+ 	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
 -- 
 2.7.4
