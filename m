@@ -1,29 +1,21 @@
-Received: from mail-he1eur01on0106.outbound.protection.outlook.com
- ([104.47.0.106] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHntv-0004It-52
- for linux-mtd@lists.infradead.org; Tue, 28 Jun 2016 07:57:47 +0000
-From: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Michal Suchanek
- <hramrach@gmail.com>
-CC: Brian Norris <computersforpeace@gmail.com>, MTD Maling List
- <linux-mtd@lists.infradead.org>, =?utf-8?B?TWFyZWsgVmHFoXV0?=
- <marex@denx.de>, Boris Brezillon <boris.brezillon@free-electrons.com>,
- "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>, "Linux Kernel Mailing
- List" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 7/9] mtd: m25p80: add support of dual and quad spi
- protocols to all commands
-Date: Tue, 28 Jun 2016 07:57:19 +0000
-Message-ID: <AM4PR0701MB21306BC1A29027A53AB52961FE220@AM4PR0701MB2130.eurprd07.prod.outlook.com>
-References: <cover.1466440540.git.cyrille.pitchen@atmel.com>
- <0a3b22ec3bc41c26536f3acc8acfd98f9b3207ed.1466440540.git.cyrille.pitchen@atmel.com>
- <CAOMqctSuP6E55mJ7QrqASRQUpxSy=ZR-b7VPF=0vcw45B6S+Yg@mail.gmail.com>
- <5770F762.30809@atmel.com> <57711E0A.4000006@atmel.com>
-In-Reply-To: <57711E0A.4000006@atmel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1bHnxi-0007ma-T5
+ for linux-mtd@lists.infradead.org; Tue, 28 Jun 2016 08:01:43 +0000
+From: Jiancheng Xue <xuejiancheng@hisilicon.com>
+To: <computersforpeace@gmail.com>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <jteki@openedev.com>, <cyrille.pitchen@atmel.com>,
+ <robh+dt@kernel.org>, <yanhaifeng@hisilicon.com>,
+ <yanghongwei@hisilicon.com>, <linshunquan1@hisilicon.com>,
+ <xuejiancheng@hisilicon.com>, Binquan Peng <pengbinquan@hisilicon.com>
+Subject: [PATCH v12] mtd: spi-nor: add hisilicon spi-nor flash controller
+ driver
+Date: Tue, 28 Jun 2016 15:48:19 +0800
+Message-ID: <1467100099-6172-1-git-send-email-xuejiancheng@hisilicon.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,206 +25,618 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8sDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ3lyaWxsZSBQ
-aXRjaGVuIFttYWlsdG86Y3lyaWxsZS5waXRjaGVuQGF0bWVsLmNvbV0NCj4gU2VudDogTW9uZGF5
-LCBKdW5lIDI3LCAyMDE2IDI6MzggUE0NCj4gVG86IE1pY2hhbCBTdWNoYW5layA8aHJhbXJhY2hA
-Z21haWwuY29tPg0KPiBDYzogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5j
-b20+OyBNVEQgTWFsaW5nIExpc3QgPGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz47
-IE1hcmVrIFZhxaF1dCA8bWFyZXhAZGVueC5kZT47IEJvcmlzIEJyZXppbGxvbg0KPiA8Ym9yaXMu
-YnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbT47IG5pY29sYXMuZmVycmVAYXRtZWwuY29tOyBM
-aW51eA0KPiBLZXJuZWwgTWFpbGluZyBMaXN0IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-PjsgS3J6ZW1pbnNraSwgTWFyY2luDQo+IChOb2tpYSAtIFBML1dyb2NsYXcpIDxtYXJjaW4ua3J6
-ZW1pbnNraUBub2tpYS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggNy85XSBtdGQ6IG0yNXA4
-MDogYWRkIHN1cHBvcnQgb2YgZHVhbCBhbmQgcXVhZCBzcGkNCj4gcHJvdG9jb2xzIHRvIGFsbCBj
-b21tYW5kcw0KPiANCj4gSGkgYWxsLA0KPiANCj4gKyBNYXJjaW4sDQo+IA0KPiBBY2NvcmRpbmcg
-dG8gTWFyY2luJ3Mgc2VyaWVzIG9mIHBhdGNoZXMNCj4gIm10ZDogc3BpLW5vcjogRFVBTC9RVUFE
-IEkvTyByZWFkIG1vZGVzIGltcGxlbWVudGF0aW9uIg0KPiBhbmQgdGhlIFNwYW5zaW9uL0N5cHJl
-c3MgUzI1RlM1MTJTIGRhdGFzaGVldCwgbmV3IEN5cHJlc3MgUVNQSQ0KPiBtZW1vcmllcyBubyBs
-b25nZXIgc3VwcG9ydHMgRmFzdCBSZWFkIDEtMS0yIG9yIEZhc3QgUmVhZCAxLTEtNCBidXQgb25s
-eSBGYXN0DQo+IFJlYWQgeC0yLTIgYW5kIEZhc3QgUmVhZCB4LTQtNC4NCj4gDQo+IEhlbmNlIG9u
-ZSBtb3JlIGV4YW1wbGUgb2YgdGhlIG5lZWQgdG8gZXh0ZW5kIHRoZSBzcGktbm9yIGZyYW1ld29y
-ayB0bw0KPiBzdXBwb3J0IFFTUEkgbWVtb3JpZXMgY29ycmVjdGx5Lg0KPiANCj4gQWxzbywgbG9v
-a2luZyBhdCB0aGUgZGF0YXNoZWV0cyBvZiBzMjVmTDUxMnMgdnMgczI1ZlM1MTJzLCB0aGUgZGVm
-YXVsdCBmYWN0b3J5DQo+IHNldHRpbmdzIGZvciB0aGUgbnVtYmVyIG9mIChtb2RlICsgd2FpdCBz
-dGF0ZSkgY3ljbGVzIGhhcyBjaGFuZ2VkIGZvciBGYXN0DQo+IFJlYWQgMS00LTQgKEVCaCAvRUNo
-KS4NCj4gDQo+IGRlZmF1bHQgCW1vZGUgCXdhaXQgc3RhdGUNCj4gTDUxMnM6IAkJMgk0DQo+IFM1
-MTJzOgkJMgk4DQo+IA0KPiBUaG9zZSBmYWN0b3J5IGRlZmF1bHQgc2V0dGluZ3MgYXJlIHByb3Zp
-ZGVkIGJ5IHRoZSBCYXNpYyBGbGFzaCBQYXJhbWV0ZXINCj4gVGFibGUgZnJvbSB0aGUgU2VyaWFs
-IEZsYXNoIERpc2NvdmVyYWJsZSBQYXJhbWV0ZXJzIChKRVNEMjE2KS4gU0ZEUCB0YWJsZXMNCj4g
-c2VlbSB0byBiZSBzdXBwb3J0ZWQgYnkgYm90aCBmYW1pbGllcy4NCj4gDQpIZWxsbywNCg0KSXQg
-aXMgYWxzbyBwb3NzaWJsZSB0byByZWFkIG51bWJlciBvZiBkdW1teSBjeWNsZXMgKHdhaXQgc3Rh
-dGVzKSBmcm9tIHRoZSBmbGFzaCBpdHNlbGYuDQpPbiB0aGlzIFNwYW5zaW9uIGFuZCBNaWNyb25z
-KGVnLiBOMjVRNTEyKSB1c2VyIGNhbiBjaGFuZ2UgYW5kIHByb2dyYW0NCmR1bW15IGN5Y2xlcyBj
-b3VudC4gSWYgd2Ugd2lsbCB1c2UgZGVmYXVsdCAob3IgaGFyZGNvZGVkIHZhbHVlcyBsaWtlIGlu
-IHNwaS1ub3IpLA0Kd2Ugd2lsbCBmYWlsIGZhc3QgcmVhZHMgaW4gdGhpcyBjYXNlLiBJIHdpbGwg
-cHJvYmFibHkgaW1wbGVtZW50IHRoaXMgaW4gc3BpLW5vciBmb3IgU3BhbnNpb24sDQpzaW5jZSBJ
-IGhhdmUgdXNlIGNhc2Ugd2l0aCBsb3cgU1BJIGZyZXF1ZW5jeSwgYW5kIGR1bW15IGN5Y2xlcyBj
-b3VudCAgY291bGQgYmUgMC4NCg0KPiBIZW5jZSB0aGlzIHNlcmllcyBvZiBwYXRjaGVzIGFjdHVh
-bGx5IGFkZHMgc3VwcG9ydCB0byB0aGUgbmV3DQo+IFNwYW5zaW9uL0N5cHJlc3MgUVNQSSBtZW1v
-cmllcy4NCj4gDQo+IFdlIHdpbGwganVzdCBoYXZlIHRvIGNhcmUgYWJvdXQgc2V0dGluZyBhIHBy
-b3BlciB2YWx1ZSBpbiB0aGUgbW9kZSBjeWNsZXMgdG8NCj4gYXZvaWQgZW50ZXJpbmcgdGhlIGNv
-bnRpbnVvdXMgcmVhZCBtb2RlIGJ5IG1pc3Rha2UuDQo+IExvb2tpbmcgYXQgdGhlIEpFU0QyMTYg
-c3BlY2lmaWNhdGlvbiB0aGUgMHhmZiB2YWx1ZSBpcyBsaWtlbHkgdG8gYmUgYSBjb21tb24NCj4g
-dmFsdWUgZm9yIGFsbCBtYW51ZmFjdHVyZXJzIHRvIHRlbGwgdGhlIFFTUEkgbWVtb3J5IG5vdCB0
-byBlbnRlciAob3IgbGVhdmUpIGl0cw0KPiBjb250aW51b3VzIHJlYWQvcGVyZm9ybWFuY2UgZW5o
-YW5jZW1lbnQgbW9kZS4NCj4gDQo+IEVudGVyaW5nIHRoZSBjb250aW51b3VzIHJlYWQgbW9kZSB0
-ZWxscyB0aGUgUVNQSSBtZW1vcnkgdGhhdCB0aGUgb3AgY29kZQ0KPiB2YWx1ZSB3aWxsIGJlIGlt
-cGxpY2l0IGluIHRoZSBmb2xsb3dpbmcgY29tbWFuZCwgd2hpY2ggdGhlbiB3aWxsIHN0YXJ0IGZy
-b20gdGhlDQo+IGFkZHJlc3MgY3ljbGVzLiBUaGUgY29udGludW91cyBtb2RlIGlzIG1haW5seSAo
-b25seSA/KSB1c2UgZm9yIFhJUA0KPiBhcHBsaWNhdGlvbi4NCj4gDQo+IEFkZGluZyBzdXBwb3J0
-IHRvIHRoZSBjb250aW51b3VzIHJlYWQgbW9kZSBtaWdodCBiZSBpbnRlcmVzdGluZyBidXQgc2hv
-dWxkDQo+IGJlIGRpc2N1c3NlZCBpbiBhIGRlZGljYXRlZCB0aHJlYWQuDQo+IA0KPiBCZXN0IHJl
-Z2FyZHMsDQo+IA0KPiBDeXJpbGxlDQpUaGVyZSBpcyBvbmUgbW9yZSB0aGluayBpbiBmczUxMiBh
-bmQgZmw1MTIgZmFtaWx5LiBUaG9zZSBkZXZpY2VzIGNhbiBoYXZlIDh4NGtCDQpzZWN0b3JzICBh
-dCB0aGUgYmVnaW5uaW5nIG9yIGVuZCBvZiB0aGUgZmxhc2guIFRob3NlIHNlY3RvcnMgY2FuIG5v
-dCBiZSBlcmFzZWQgd2l0aA0KZXJhc2Ugc2VjdG9yIGNtZCgweGQ4KSwgYnV0IG5lZWQgdG8gYmUg
-ZXJhc2VkIHdpdGggZXJhc2VfNGsoMHgyMCkuDQpUbyBhbGxvdyBlcmFzaW5nIHRob3NlIHNlY3Rv
-ciBtdGQgZXJhc2VyZWdpb25zIGFyZSBuZWVkZWQuIEFjY29yZGluZyB0byBmczUxMnMNCmRhdGFz
-aGVldCBjb25mb3JtaW5nIHRvIEpFU0QyMTYgYWxsb3dzIHRvIHJlYWQgZmxhc2ggbWFwLCBzbyBp
-dCBjb3VsZA0KYmUgcG9zc2libGUgdG8gY3JlYXRlIHJlZ2lvbnMgYXV0b21hdGljYWxseS4gDQoN
-CkJlc3QgcmVnYXJkcywNCk1hcmNpbg0KPiANCj4gTGUgMjcvMDYvMjAxNiAxMTo1MiwgQ3lyaWxs
-ZSBQaXRjaGVuIGEgw6ljcml0IDoNCj4gPiBMZSAyMy8wNi8yMDE2IDIyOjM1LCBNaWNoYWwgU3Vj
-aGFuZWsgYSDDqWNyaXQgOg0KPiA+PiBIZWxsbywNCj4gPj4NCj4gPj4gdGhpcyBwYXRjaCBpcyBr
-aW5kIG9mIGF3ZXNvbWUuDQo+ID4+DQo+ID4+IEkgaGF2ZSBhIGZldyBwcmFjdGljYWwgY29uY2Vy
-bnMgaG93ZXZlci4NCj4gPj4NCj4gPj4gT24gMjAgSnVuZSAyMDE2IGF0IDE4OjUwLCBDeXJpbGxl
-IFBpdGNoZW4gPGN5cmlsbGUucGl0Y2hlbkBhdG1lbC5jb20+DQo+IHdyb3RlOg0KPiA+Pj4gQmVm
-b3JlIHRoaXMgcGF0Y2gsIG0yNXA4MF9yZWFkKCkgc3VwcG9ydGVkIGZldyBTUEkgcHJvdG9jb2xz
-Og0KPiA+Pj4gLSByZWd1bGFyIFNQSSAxLTEtMQ0KPiA+Pj4gLSBTUEkgRHVhbCBPdXRwdXQgMS0x
-LTINCj4gPj4+IC0gU1BJIFF1YWQgT3V0cHV0IDEtMS00DQo+ID4+PiBPbiB0aGUgb3RoZXIgaGFu
-ZCwgYWxsIG90aGVyIG0yNXA4MF8qKCkgaG9va3Mgb25seSBzdXBwb3J0ZWQgU1BJIDEtMS0xLg0K
-PiA+Pg0KPiA+PiBVbmRlciB0eXBpY2FsIHVzZSBteSBlc3RpbWF0ZSBpcyB0aGF0IGh1Z2UgbWFq
-b3JpdHkgb2YgZGF0YSBpcw0KPiA+PiB0cmFuc2ZlcnJlZCBpbiBfcmVhZCgpIHNlY29uZGVkIGJ5
-IF93cml0ZSgpLg0KPiA+Pg0KPiA+PiBBcyBJIHVuZGVyc3RhbmQgaXQgdGhlIG4tbi1uIG1lYW5z
-IGhvdyBtYW55IGJpdHMgeW91IHRyYW5zZmVyIGluDQo+ID4+IHBhcmFsbGVsIHdoZW4gc2VuZGlu
-ZyBjb21tYW5kLWFkZHJlc3MtZGF0YS4NCj4gPj4NCj4gPj4gSW4gX3JlYWQoKSB0aGUgY29tbWFu
-ZCBhbmQgZGF0YSBvdmVyaGVhZCBpcyBuZWdsaWdpYmxlIHdoZW4geW91IGNhbg0KPiA+PiByZWFk
-IGtpbG9ieXRlcyBhdCBvbmNlLiBTbyBkaWZmZXJlbmNlIGJldHdlZW4gMS0xLTQgYW5kIDQtNC00
-IGlzIG5vdA0KPiA+PiBtZWFuaW5nZnVsIHBlcmZvcm1hbmNlLXdpc2UuIEFyZSB0aGVyZSBmbGFz
-aCBjaGlwcyB0aGF0IHN1cHBvcnQgb25lDQo+ID4+IGJ1dCBub3QgdGhlIG90aGVyPw0KPiA+Pg0K
-PiA+PiBGb3IgX3dyaXRlKCkgdGhlIGJlbmVmaXRzIGFyZSBldmVuIGhhcmRlciB0byBhc3Nlc3Mu
-IFlvdSBjYW4NCj4gPj4gcHJlc3VtYWJseSB3cml0ZSBhdCBuLW4tNCBvciBuLW4tMiBpZiB5b3Vy
-IGNvbnRyb2xsZXIgYW5kIGZsYXNoDQo+ID4+IHN1cHBvcnRzIGl0IHRyYW5zZmVycmluZyB0aGUg
-cGFnZSBmYXN0ZXIuIEFuZCB0aGVuIHNwZW5kIHBvc3NpYmx5DQo+ID4+IGxhcmdlIGFtb3VudCBv
-ZiB0aW1lIHdhaXRpbmcgZm9yIHRoZSBmbGFzaCB0byBnZXQgcmVhZHkgYWdhaW4uIElmIHRoZQ0K
-PiA+PiBwcm9ncmFtbWluZyB0aW1lIGlzIGZpeGVkIHRyYW5zZmVycmluZyB0aGUgcGFnZSBmYXN0
-ZXIgbWF5IG9yIG1heSBub3QNCj4gPj4gaGF2ZSBiZW5lZml0cy4gSXQgbWF5IGF0IGxlYXN0IGZy
-ZWUgdGhlIGJ1cyBmb3Igb3RoZXIgZGV2aWNlcyB0byB1c2UuDQo+ID4+DQo+ID4NCj4gPiBUaGlz
-IHNlcmllcyBvZiBwYXRjaGVzIGlzIG5vdCBzdXBwb3NlZCB0byBpbXByb3ZlIHBlcmZvcm1hbmNl
-cy4gTGV0cw0KPiA+IHRha2UgYSBNYWNyb25peCBteDI1bDI1NjczZyBhcyBhbiBleGFtcGxlIHdp
-dGggYSA1MTItYnl0ZSByZWFkICgzLWJ5dGUNCj4gYWRkcmVzcyk6DQo+ID4NCj4gPiAxIC0gRmFz
-dCBSZWFkIDEtMS00ICgwIG1vZGUgY3ljbGUsIDggd2FpdCBzdGF0ZXMpDQo+ID4gY29tbWFuZDog
-OCBjeWNsZXMNCj4gPiBhZGRyZXNzL21vZGUvZHVtbXk6ICgzICogOCkgKyAwICsgOCA9IDMyIGN5
-Y2xlcw0KPiA+IGRhdGE6ICg1MTIgKiA4KSAvIDQgPSAxMDI0IGN5Y2xlcw0KPiA+IHRvdGFsOiA4
-ICsgMzIgKyAxMDI0ID0gMTA2NCBjeWNsZXMNCj4gPg0KPiA+IDIgLSBGYXN0IFJlYWQgMS00LTQg
-KDIgbW9kZSBjeWNsZXMsIDQgd2FpdCBzdGF0ZXMpDQo+ID4gY29tbWFuZDogOCBjeWNsZXMNCj4g
-PiBhZGRyZXNzL21vZGUvZHVtbXk6ICgzICogOCkgLyA0ICsgMiArIDQgPSAxMiBjeWNsZXMNCj4g
-PiBkYXRhOiAoNTEyICogOCkgLyA0ID0gMTAyNCBjeWNsZXMNCj4gPiB0b3RhbDogOCArIDEyICsg
-MTAyNCA9IDEwNDQgY3ljbGVzDQo+ID4NCj4gPiB0aGVvcmV0aWNhbCBiZW5lZml0OiA8IDIlDQo+
-ID4NCj4gPg0KPiA+IFRoZSByZWFsIHB1cnBvc2Ugb2YgdGhlIHdob2xlIHNlcmllcyBpcyB0byBw
-cm92aWRlIHNvbHV0aW9ucyB0byBzb21lDQo+ID4ga25vd24gaXNzdWVzLg0KPiA+DQo+ID4gQSAt
-IEN1cnJlbnRseSB0aGUgc3BpLW5vciBmb3JjZSB1c2UgdGhlIEI3aCBvcCBjb2RlIHRvIGVudGVy
-IHRoZQ0KPiA+IDQtYnl0ZSBhZGRyZXNzIG1vZGUgb2YgPiAxNk1CIG1lbW9yaWVzLiBUaGlzIG1v
-ZGUgaXMgc3RhdGUtZnVsbDsgaXQNCj4gPiBjaGFuZ2VzIHRoZSBpbnRlcm5hbCBzdGF0ZSBvZiB0
-aGUgU1BJIG1lbW9yeS4gT25jZSBpbiBpdHMgNC1ieXRlIG1vZGUsDQo+ID4gdGhlIHJlZ3VsYXIg
-My1ieXRlIEZhc3QgUmVhZCwgUGFnZSBQcm9ncmFtIGFuZCBTZWN0b3IgRXJhc2Ugb3AgY29kZXMN
-Cj4gPiBhcmUgZXhwZWN0ZWQgdG8gYmUgZm9sbG93ZWQgYnkgYSA0LWJ5dGUgYWRkcmVzcy4gVGhl
-biBpZiBhIHNwdXJpb3VzDQo+ID4gcmVzZXQgb2NjdXJzLCBzb21lIGJvb3Rsb2FkZXJzIG1pZ2h0
-IGJlIHN0dWNrIGFzIHRoZXkgc3RpbGwgZXhwZWN0IHRvIHVzZSAzLQ0KPiBieXRlIGFkZHJlc3Nl
-cy4NCj4gPg0KPiA+IE9uIHRoZSBvdGhlciBoYW5kLCB3aGVuIGF2YWlsYWJsZSwgdGhlIDQtYnl0
-ZSBhZGRyZXNzIGluc3RydWN0aW9uIHNldA0KPiA+IGlzIHN0YXRlbGVzcy4gU28gd2UnZCByYXRo
-ZXIgdXNlIGl0IHdoZW5ldmVyIHBvc3NpYmxlLiBJdCdzIHRoZQ0KPiA+IHB1cnBvc2Ugb2YgcGF0
-Y2ggMi4gSG93ZXZlciBhZGRpbmcgdGhlIFNQSV9OT1JfNEJfT1BDT0RFUyBvbiBzb21lDQo+ID4g
-bWVtb3J5IGVudHJ5IGlzIG5vdCBhbHdheXMgcG9zc2libGUuIEFnYWluLCBsZXQncyB0YWtlIHRo
-ZSBNYWNyb25peA0KPiBteDI1bDI1NjczZyBtZW1vcnkgYXMgYW4gZXhhbXBsZToNCj4gPiBpdCBz
-aGFyZXMgdGhlIHZlcnkgc2FtZSBKRURFQyBJRCB3aXRoIHRoZSBvbGRlciBteDI1bDI1NjM1ZS4g
-VGhlIDczZw0KPiA+IHN1cHBvcnRzIHRoZSA0LWJ5dGUgYWRkcmVzcyBpbnN0cnVjdGlvbiBzZXQg
-d2hlcmVhcyB0aGUgMzVlIGRvZXNuJ3QuDQo+ID4gSGVuY2Ugd2UgY2FuJ3QgYWRkIHRoZSBTUElf
-Tk9SXzRCX09QQ09ERVMgb24gdGhlIDM1ZSBlbnRyeSB3aXRob3V0DQo+IGludHJvZHVjaW5nIGEg
-YnVnLg0KPiA+DQo+ID4gTXkgZmlyc3QgYXBwcm9hY2ggd2FzIHRvIHBhdGNoIHRoZSBzcGktbm9y
-IGZyYW1ld29yayB0byBhbGxvdyB0d28gb3INCj4gPiBtb3JlIG1lbW9yeSBlbnRyaWVzIHRvIHNo
-YXJlIHRoZSBzYW1lIEpFREVDIElEIGFuZCB0byBzZWxlY3QgdGhlIHJpZ2h0DQo+ID4gZW50cnkg
-YWNjb3JkaW5nIHRvIHRoZSBjb21wYXRpYmxlIERUIHN0cmluZy4gVGhpcyBzb2x1dGlvbiB3YXMg
-cmVqZWN0ZWQuDQo+ID4NCj4gPiBUaGVuIG15IGxhdGVzdCBzb2x1dGlvbiBpcyB0byByZWx5IG9u
-IHRoZSBTRkRQIHRhYmxlczogdGhlIDczZw0KPiA+IHN1cHBvcnRzIHRoZSBvcHRpb25hbCA0LWJ5
-dGUgQWRkcmVzcyBJbnN0cnVjdGlvbiBUYWJsZSB3aGVyZWFzIHRoZSAzNWUNCj4gPiBkb2Vzbid0
-IHN1cHBvcnQgU0ZEUCB0YWJsZSBhdCBhbGwuIEhlbmNlLCB3aGVuIHRoaXMgdGFibGUgaXMNCj4g
-PiBzdWNjZXNzZnVsbHkgcGFyc2VkIG9uIHRoZSA3M2csIHdlIGtub3cgd2UgY2FuIHNhZmVseSB1
-c2UgdGhlIDQtYnl0ZQ0KPiA+IG9wIGNvZGVzLiBGb3IgdGhlIDM1ZSBjYXNlLCB3ZSBzdGlsbCBl
-bnRlciB0aGUgNC1ieXRlIGFkZHJlc3MgbW9kZSBhcw0KPiBiZWZvcmUgc2luY2UgdGhlcmUgaXMg
-bm8gb3RoZXIgc29sdXRpb24uLi4NCj4gPiBTbyB3aXRoIHRoaXMgc2VyaWVzIG9mIHBhdGNoZXMs
-IG5vIHJlZ3Jlc3Npb24gd2l0aCAzNWUgbWVtb3JpZXMgYnV0IGENCj4gPiBzb2x1dGlvbiB0byBw
-cm9wZXJseSB1c2UgNzNnIG1lbW9yaWVzIHdpdGhvdXQgY2hhbmdpbmcgdGhlaXIgaW50ZXJuYWwN
-Cj4gPiBzdGF0ZTogdGhlIGJvb3Rsb2FkZXIgaXMgbm93IGhhcHB5Lg0KPiA+DQo+ID4NCj4gPiBC
-IC0gU2V0dGluZyB0aGUgb2xkICdtb2RlJyBhcmd1bWVudCBvZiBzcGlfbm9yX3JlYWQoKSB0byBT
-UElfTk9SX1FVQUQNCj4gPiBqdXN0IHRvbGQgdGhlIFNQSSBjb250cm9sbGVyIHN1cHBvcnRzIEZh
-c3QgUmVhZCAxLTEtNCBidXQgbm90aGluZw0KPiA+IGFib3V0IHdoZXRoZXIgaXQgYWxzbyBzdXBw
-b3J0cyBQYWdlIFByb2dyYW0geC15LTQgY29tbWFuZHMuIEl0IGlzDQo+ID4gaW50ZXJlc3Rpbmcg
-dG8gbWFrZSB0aGUgZGlmZmVyZW5jZSBiZXR3ZWVuIHJlYWQgYW5kIHdyaXRlIGhhcmR3YXJlDQo+
-ID4gY2FwYWJpbGl0aWVzLiBJbmRlZWQgd2UgY2Fubm90IGFzc3VtZSB0aGF0IGlmIGEgY29udHJv
-bGxlciBjYW4gZG8gRmFzdA0KPiA+IFJlYWQgMS0xLTQgb3BlcmF0aW9ucyB0aGVuIGl0IGNhbiBh
-bHNvIHBlcmZvcm0gUGFnZSBQcm9ncmFtIDEtMS00LiBJJ20NCj4gPiBwcmV0dHkgc3VyZSB0aGlz
-IHN0YXRlbWVudCBpcyBmYWxzZS4gU28gbGV0J3MgdGhlIFNQSSBjb250cm9sbGVyIGV4cGxpY2l0
-bHkNCj4gZGVjbGFyZXMgaXRzIHJlYWQgYW5kIHdyaXRlIGhhcmR3YXJlIGNhcGFiaWxpdGllcy4N
-Cj4gPg0KPiA+IE9uY2UgYWdhaW4sIEknbSBub3QgdGFyZ2V0aW5nIHBlcmZvcm1hbmNlIGltcHJv
-dmVtZW50IHdpdGggUGFnZQ0KPiBQcm9ncmFtLg0KPiA+IEhvd2V2ZXIsIHVzaW5nIG90aGVyIFNQ
-SSBwcm90b2NvbHMgd2hlbiBhdmFpbGFibGUgaGVscHMgdG8gZGVhbCB3aXRoDQo+ID4gc29tZSBt
-ZW1vcnkgcXVpcmtzLg0KPiA+DQo+ID4gVGhpcyB0aW1lLCBsZXQncyB0YWtlIHRoZSBjYXNlIG9m
-IE1pY3JvbiBuMjVxNTEyKi4gVGhvc2UgbWVtb3J5IGFyZSA+DQo+ID4gMTZNQiBzbyB3ZSBmYWxs
-IGludG8gdGhlIHNhbWUgaXNzdWUgYXMgZGVzY3JpYmVkIGluIEEuDQo+ID4gRm9yIHRob3NlIE1p
-Y3JvbiBtZW1vcmllcywgZGVwZW5kaW5nIG9uIHRoZSBwYXJ0IG51bWJlciAodGVsbGluZyB1cw0K
-PiA+IHdoZXRoZXIgdGhlIFJlc2V0IHBpbiBpcyBhdmFpbGFibGUuLi4pIHRoZSAxMmggb3AgY29k
-ZSBzdGFuZHMgZm9yIHR3bw0KPiBkaWZmZXJlbnQgb3BlcmF0aW9uczoNCj4gPiAtIGVpdGhlciAz
-LWJ5dGUgYWRkcmVzcyBQYWdlIFByb2dyYW0geC00LTQgKHRoZSBzdGFuZGFyZCAzOGggb3AgY29k
-ZSBmb3INCj4gdGhpcw0KPiA+ICAgb3BlcmF0aW9uIGlzIG5vdCBhdmFpbGFibGUgYW5kIHRoZXJl
-IGlzIG5vIG9wIGNvZGUgZm9yIDQtYnl0ZSBQYWdlIFByb2dyYW0NCj4gPiAgIDEtMS0xKQ0KPiA+
-IC0gZWl0aGVyIDQtYnl0ZSBhZGRyZXNzIFBhZ2UgUHJvZ3JhbSAxLTEtMSAodGhlIHN0YW5kYXJk
-IGNvbW1hbmQNCj4gYXNzb2NpYXRlZCB0bw0KPiA+ICAgdGhlIDEyaCBvcCBjb2RlKQ0KPiA+DQo+
-ID4gU2luY2UgdGhleSBhcmUgZGlmZmVyZW50IHBhcnQgbnVtYmVycyBvZiB0aGUgc2FtZSBtZW1v
-cnkgZmFtaWx5LCBhbGwNCj4gPiB0aG9zZSBtZW1vcmllcyBvbmNlIGFnYWluIHNoYXJlIHRoZSB2
-ZXJ5IHNhbWUgSkVERUMgSUQgYW5kIHRoZXJlIG5vDQo+ID4gbWVhbiB0byBkeW5hbWljYWxseSBk
-aXNjb3ZlciB0aGUgYWN0dWFsIHBhcnQgbnVtYmVyIChvciBJIGRpZG4ndCBmaW5kIHN1Y2ggYQ0K
-PiBtZWFuIHlldCkuDQo+ID4gQW55d2F5LCBldmVuIGtub3dpbmcgdGhlIHBhcnQgbnVtYmVyLCBk
-ZXBlbmRpbmcgb24gdGhlIHJlc3VsdCwgdGhlDQo+ID4gNC1ieXRlIFBhZ2UgUHJvZ3JhbSAxLTEt
-MSBvcGVyYXRpb24gaXMgc2ltcGx5IG5vdCBzdXBwb3J0ZWQuDQo+ID4NCj4gPiBIb3BlZnVsbHks
-IGZvciBhbGwgcGFydCBudW1iZXJzLCA0LWJ5dGUgUGFnZSBQcm9ncmFtIDEtMS00IGlzIGFsd2F5
-cw0KPiA+IHN1cHBvcnRlZCBieSB0aGUgMzRoIG9wIGNvZGUsIHdoaWNoIGlzIHRoZSBzdGFuZGFy
-ZCBob3BlIGNvZGUgZm9yIHRoaXMNCj4gb3BlcmF0aW9uLg0KPiA+DQo+ID4gVGhlbiB3aXRoIFNQ
-SSBjb250cm9sbGVycyB3aGljaCBleHBsaWNpdGx5IHN1cHBvcnRzIFBhZ2UgUHJvZ3JhbQ0KPiA+
-IDEtMS00LCB3ZSBjb3VsZCBpbXBsZW1lbnQgc29tZXRoaW5nIHRvIGZpeCB0aGUgUGFnZSBQcm9n
-cmFtIG9wZXJhdGlvbg0KPiA+IG9uIE1pY3JvbiBtZW1vcnkgYWJvdmUgMTZNQi4gSGVuY2Ugd2Ug
-aGF2ZSBhIHNvbHV0aW9uIQ0KPiA+DQo+ID4gVGhlcmUgYXJlIGp1c3QgZXhhbXBsZXMsIEkgZ3Vl
-c3Mgd2UgY291bGQgZmluZCBvdGhlcnMuIE15IHBvaW50IGlzDQo+ID4gdGhhdCBjdXJyZW50bHkg
-d2UgY2FuJ3QgdXNlIHNvbWUgUVBTSSBtZW1vcmllcyBwcm9wZXJseSBhbmQgaXRzIGEgYmxvY2tp
-bmcNCj4gaXNzdWUuDQo+ID4gVGhlIHdob2xlIHNlcmllcyBzaG91bGQgYmUgc2VlIGFzIGEgYnVn
-IGZpeGVzIGVuYWJsZXIgcmF0aGVyIHRoYW4gYQ0KPiA+IHBlcmZvcm1hbmNlIGltcHJvdmVtZW50
-Lg0KPiA+DQo+ID4NCj4gPj4gVGhlIF9yZWdfIHN0dWZmIGlzIHByb2JhYmx5IG5lZ2xpZ2libGUg
-YWx0b2dldGhlciwNCj4gPj4NCj4gPj4gTGFzdGx5IHRoZSBmYXN0ZXIgdHJhbnNmZXJzIG9mIGFk
-ZHJlc3MgYnl0ZXMgc2VlbSB0byBiZSBhY2hpZXZlZCB3aXRoDQo+ID4+IGluY3JlYXNpbmdseSBs
-b25nZXIgY29tbWFuZCBjb2RlcyBnaXZlbiBob3cgbXVjaCB0aGUgbWF4aW11bQ0KPiBjb21tYW5k
-DQo+ID4+IGxlbmd0aCBpbmNyZWFzZWQuIFNvIGV2ZW4gaW4gYSBwYWdlIHdyaXRlIHdoZXJlIHRo
-ZSBhZGRyZXNzIGlzIGEgZmV3DQo+ID4+ICUgb2YgdGhlIHRyYW5zZmVyIHRoZSBiZW5lZml0IG9m
-IHRoZXNlIGV4dHJhIG1vZGVzIGlzIGR1YmlvdXMuDQo+ID4gSSdtIG5vdCBzdXJlIHRvIHVuZGVy
-c3RhbmQgdGhpcyBwb2ludCBidXQgSSBndWVzcyB5b3UgcmVmZXIgdG86DQo+ID4gLSNkZWZpbmUJ
-TUFYX0NNRF9TSVpFCQk2DQo+ID4gKyNkZWZpbmUJTUFYX0NNRF9TSVpFCQkxNg0KPiA+DQo+ID4g
-SWYgc28sIHRoZSBhY3R1YWwgY29tbWFuZCBzaXplIGRvZXNuJ3QgY2hhbmdlIGF0IGFsbCwgdGhl
-IGluY3JlYXNlIG9mDQo+ID4gdGhpcyBtYWNybyB2YWx1ZSBpcyBqdXN0aWZpZWQgYnkgYW5vdGhl
-ciByZWFzb24uIEluZGVlZCwgbGV0J3MgaGF2ZSBhDQo+ID4gbG9vayBpbnRvIHRoZSBtMjVwODBf
-cmVhZF9yZWcoKTogYmVmb3JlIHRoZSBwYXRjaCBpdCB3YXMgaW1wbGVtZW50ZWQNCj4gPiB1c2lu
-ZyBzcGlfd3JpdGVfdGhlbl9yZWFkKCkuIFRoaXMgbGF0ZXIgZnVuY3Rpb24gdXNlcyBhbiBpbnRl
-cm1lZGlhdGUNCj4gPiBidWZmZXIsIHdoaWNoIG1pZ2h0IGJlIGttYWxsb2MoKSBhbGxvY2F0ZWQs
-IHRvIHRyYW5zZmVyIGRhdGEgd2l0aA0KPiA+IHNwaV9zeW5jKCkgYW5kIGNhbGxzDQo+ID4gbWVt
-Y3B5KCkgdG8gY29weSBkYXRhIGZyb20vdG8gdGhpcyBpbXRlcm1lZGlhdGUgYnVmZmVyIHRvL2Zy
-b20gYnVmZmVycw0KPiA+IHByb3ZpZGVkIGFzIGZ1bmN0aW9uIHBhcmFtZXRlcnMgKHR4YnVmIGFu
-ZCByeGJ1ZikuDQo+ID4gQXMgdGhlIGNvbW1lbnQgc2F5cywgdGhlIHB1cnBvc2Ugb2YgdGhpcyBp
-bnRlcm1lZGlhdGUgYnVmZmVyIGlzIHRvIGJlDQo+ID4gIkRNQS1zYWZlIi4NCj4gPg0KPiA+IFRo
-ZW4sIGFmdGVyIHRoZSBwYXRjaCwgc3BpX3dyaXRlX3RoZW5fcmVhZCgpIGlzIG5vIGxvbmdlciB1
-c2VkIGJ1dCB3ZQ0KPiA+IHN0aWxsIG5lZWQgYSBETUEtc2FmZSBidWZmZXIgdG8gcGVyZm9ybSB0
-aGUgZGF0YSB0cmFuc2ZlciB3aXRoDQo+ID4gc3BpX3N5bmMoKS4gVGhpcyBjYW4gYmUgYWNoaWV2
-ZSB3aXRoIHRoZSBmbGFzaC0+Y29tbWFuZFtdIGJ1ZmZlcjsgd2UNCj4gPiBqdXN0IG5lZWQgdG8g
-aW5jcmVhc2UgaXRzIHNpemUgc29tZSBtb3JlIHNpbmNlIGl0IGlzIG5vdyBhbHNvIGZpbGxlZA0K
-PiA+IHdpdGggdGhlIHJlYWQgZGF0YSB3aGVyZWFzIGl0IHdhcyBvbmx5IGZpbGxlZCB3aXRoIHRo
-ZQ0KPiBjb21tYW5kL2FkZHJlc3MvZHVtbXkgZGF0YSBiZWZvcmUuDQo+ID4NCj4gPj4NCj4gPj4g
-T3ZlcmFsbCBJIHdvbmRlciBob3cgbXVjaCBpdCBpcyB3b3J0aHdoaWxlIHRvIGNvbXBsaWNhdGUg
-dGhlIGNvZGUgdG8NCj4gPj4gZ2V0IGFsbCB0aGVzZSBtb2RlcyBpbiBldmVyeSBzaW5nbGUgZnVu
-Y3Rpb24uDQo+ID4+DQo+ID4+IFRoYW5rcw0KPiA+Pg0KPiA+PiBNaWNoYWwNCj4gPj4NCj4gPg0K
-PiA+IEJlc3QgcmVnYXJkcywNCj4gPg0KPiA+IEN5cmlsbGUNCj4gPg0KDQo=
+Add hisilicon spi-nor flash controller driver
+
+Signed-off-by: Binquan Peng <pengbinquan@hisilicon.com>
+Signed-off-by: Jiancheng Xue <xuejiancheng@hisilicon.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Reviewed-by: Jagan Teki <jteki@openedev.com>
+Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+---
+change log
+v12:
+1)Made SPI_HISI_SFC depend on HAS_DMA to fix the kbuild test robot error.
+2)Added "Reviewed-by Cyrille Pitchen <cyrille.pitchen@atmel.com>" and 
+"Reviewed-by: Jagan Teki <jteki@openedev.com>" in the commit message.
+v11:
+Fixed issues pointed by Brian Norris and Cyrille Pitchen.
+1)Changed hisi_spi_nor_read_reg()/write_reg() to configure registers
+without sniffing the opcodes.
+2)Deleted hisi_spi_nor_erase() and used default implementation instead.
+3)Changed hisi_spi_nor_dma_transfer() to return a integer type value
+instead of nothing.
+4)Simplified hisi_spi_nor_read()/write() as Brian suggested.
+
+v10:
+Fixed issues pointed by Marek Vasut.
+1)Droped the underscores in the argument names of some macros' definition.
+2)Changed some varibles to correct type.
+3)Rewrote hisi_spi_nor_read/write for readability.
+4)Added new functions hisi_spi_nor_register/unregister_all
+5)Changed to dynamically allocation for spi_nor embeded in hifmc_host.
+Fixed issues pointed by Brian Norris.
+1)Replaced some headers with more accurate ones.
+v9:
+Fixed issues pointed by Jagan Teki.
+v8:
+Fixed issues pointed by Ezequiel Garcia and Brian Norris.
+Moved dts binding file to mtd directory.
+Changed the compatible string more specific.
+v7:
+Rebased to v4.5-rc3.
+Fixed issues pointed by Ezequiel Garcia.
+v6:
+Based on v4.5-rc2
+Fixed issues pointed by Ezequiel Garcia.
+v5:
+Fixed a compile error.
+v4:
+Rebased to v4.5-rc1
+v3:
+Added a compatible string "hisilicon,hi3519-sfc".
+v2:
+Fixed some compiling warings.
+ .../bindings/mtd/hisilicon,fmc-spi-nor.txt         |  24 +
+ drivers/mtd/spi-nor/Kconfig                        |   7 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/hisi-sfc.c                     | 489 +++++++++++++++++++++
+ 4 files changed, 521 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
+ create mode 100644 drivers/mtd/spi-nor/hisi-sfc.c
+
+diff --git a/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt b/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
+new file mode 100644
+index 0000000..7498152
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
+@@ -0,0 +1,24 @@
++HiSilicon SPI-NOR Flash Controller
++
++Required properties:
++- compatible : Should be "hisilicon,fmc-spi-nor" and one of the following strings:
++		"hisilicon,hi3519-spi-nor"
++- address-cells : Should be 1.
++- size-cells : Should be 0.
++- reg : Offset and length of the register set for the controller device.
++- reg-names : Must include the following two entries: "control", "memory".
++- clocks : handle to spi-nor flash controller clock.
++
++Example:
++spi-nor-controller@10000000 {
++	compatible = "hisilicon,hi3519-spi-nor", "hisilicon,fmc-spi-nor";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	reg = <0x10000000 0x1000>, <0x14000000 0x1000000>;
++	reg-names = "control", "memory";
++	clocks = <&clock HI3519_FMC_CLK>;
++	spi-nor@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++	};
++};
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index d42c98e..6f14f2b 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -38,6 +38,13 @@ config SPI_FSL_QUADSPI
+ 	  This controller does not support generic SPI. It only supports
+ 	  SPI NOR.
+ 
++config SPI_HISI_SFC
++	tristate "Hisilicon SPI-NOR Flash Controller(SFC)"
++	depends on ARCH_HISI || COMPILE_TEST
++	depends on HAS_IOMEM && HAS_DMA
++	help
++	  This enables support for hisilicon SPI-NOR flash controller.
++
+ config SPI_NXP_SPIFI
+ 	tristate "NXP SPI Flash Interface (SPIFI)"
+ 	depends on OF && (ARCH_LPC18XX || COMPILE_TEST)
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 0bf3a7f8..8a6fa69 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -1,4 +1,5 @@
+ obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+ obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
++obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
+ obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
+ obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
+diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
+new file mode 100644
+index 0000000..44664c3
+--- /dev/null
++++ b/drivers/mtd/spi-nor/hisi-sfc.c
+@@ -0,0 +1,489 @@
++/*
++ * HiSilicon SPI Nor Flash Controller Driver
++ *
++ * Copyright (c) 2015-2016 HiSilicon Technologies Co., Ltd.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++#include <linux/bitops.h>
++#include <linux/clk.h>
++#include <linux/dma-mapping.h>
++#include <linux/iopoll.h>
++#include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/spi-nor.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++/* Hardware register offsets and field definitions */
++#define FMC_CFG				0x00
++#define FMC_CFG_OP_MODE_MASK		BIT_MASK(0)
++#define FMC_CFG_OP_MODE_BOOT		0
++#define FMC_CFG_OP_MODE_NORMAL		1
++#define FMC_CFG_FLASH_SEL(type)		(((type) & 0x3) << 1)
++#define FMC_CFG_FLASH_SEL_MASK		0x6
++#define FMC_ECC_TYPE(type)		(((type) & 0x7) << 5)
++#define FMC_ECC_TYPE_MASK		GENMASK(7, 5)
++#define SPI_NOR_ADDR_MODE_MASK		BIT_MASK(10)
++#define SPI_NOR_ADDR_MODE_3BYTES	(0x0 << 10)
++#define SPI_NOR_ADDR_MODE_4BYTES	(0x1 << 10)
++#define FMC_GLOBAL_CFG			0x04
++#define FMC_GLOBAL_CFG_WP_ENABLE	BIT(6)
++#define FMC_SPI_TIMING_CFG		0x08
++#define TIMING_CFG_TCSH(nr)		(((nr) & 0xf) << 8)
++#define TIMING_CFG_TCSS(nr)		(((nr) & 0xf) << 4)
++#define TIMING_CFG_TSHSL(nr)		((nr) & 0xf)
++#define CS_HOLD_TIME			0x6
++#define CS_SETUP_TIME			0x6
++#define CS_DESELECT_TIME		0xf
++#define FMC_INT				0x18
++#define FMC_INT_OP_DONE			BIT(0)
++#define FMC_INT_CLR			0x20
++#define FMC_CMD				0x24
++#define FMC_CMD_CMD1(cmd)		((cmd) & 0xff)
++#define FMC_ADDRL			0x2c
++#define FMC_OP_CFG			0x30
++#define OP_CFG_FM_CS(cs)		((cs) << 11)
++#define OP_CFG_MEM_IF_TYPE(type)	(((type) & 0x7) << 7)
++#define OP_CFG_ADDR_NUM(addr)		(((addr) & 0x7) << 4)
++#define OP_CFG_DUMMY_NUM(dummy)		((dummy) & 0xf)
++#define FMC_DATA_NUM			0x38
++#define FMC_DATA_NUM_CNT(cnt)		((cnt) & GENMASK(13, 0))
++#define FMC_OP				0x3c
++#define FMC_OP_DUMMY_EN			BIT(8)
++#define FMC_OP_CMD1_EN			BIT(7)
++#define FMC_OP_ADDR_EN			BIT(6)
++#define FMC_OP_WRITE_DATA_EN		BIT(5)
++#define FMC_OP_READ_DATA_EN		BIT(2)
++#define FMC_OP_READ_STATUS_EN		BIT(1)
++#define FMC_OP_REG_OP_START		BIT(0)
++#define FMC_DMA_LEN			0x40
++#define FMC_DMA_LEN_SET(len)		((len) & GENMASK(27, 0))
++#define FMC_DMA_SADDR_D0		0x4c
++#define HIFMC_DMA_MAX_LEN		(4096)
++#define HIFMC_DMA_MASK			(HIFMC_DMA_MAX_LEN - 1)
++#define FMC_OP_DMA			0x68
++#define OP_CTRL_RD_OPCODE(code)		(((code) & 0xff) << 16)
++#define OP_CTRL_WR_OPCODE(code)		(((code) & 0xff) << 8)
++#define OP_CTRL_RW_OP(op)		((op) << 1)
++#define OP_CTRL_DMA_OP_READY		BIT(0)
++#define FMC_OP_READ			0x0
++#define FMC_OP_WRITE			0x1
++#define FMC_WAIT_TIMEOUT		1000000
++
++enum hifmc_iftype {
++	IF_TYPE_STD,
++	IF_TYPE_DUAL,
++	IF_TYPE_DIO,
++	IF_TYPE_QUAD,
++	IF_TYPE_QIO,
++};
++
++struct hifmc_priv {
++	u32 chipselect;
++	u32 clkrate;
++	struct hifmc_host *host;
++};
++
++#define HIFMC_MAX_CHIP_NUM		2
++struct hifmc_host {
++	struct device *dev;
++	struct mutex lock;
++
++	void __iomem *regbase;
++	void __iomem *iobase;
++	struct clk *clk;
++	void *buffer;
++	dma_addr_t dma_buffer;
++
++	struct spi_nor	*nor[HIFMC_MAX_CHIP_NUM];
++	u32 num_chip;
++};
++
++static inline int wait_op_finish(struct hifmc_host *host)
++{
++	u32 reg;
++
++	return readl_poll_timeout(host->regbase + FMC_INT, reg,
++		(reg & FMC_INT_OP_DONE), 0, FMC_WAIT_TIMEOUT);
++}
++
++static int get_if_type(enum read_mode flash_read)
++{
++	enum hifmc_iftype if_type;
++
++	switch (flash_read) {
++	case SPI_NOR_DUAL:
++		if_type = IF_TYPE_DUAL;
++		break;
++	case SPI_NOR_QUAD:
++		if_type = IF_TYPE_QUAD;
++		break;
++	case SPI_NOR_NORMAL:
++	case SPI_NOR_FAST:
++	default:
++		if_type = IF_TYPE_STD;
++		break;
++	}
++
++	return if_type;
++}
++
++static void hisi_spi_nor_init(struct hifmc_host *host)
++{
++	u32 reg;
++
++	reg = TIMING_CFG_TCSH(CS_HOLD_TIME)
++		| TIMING_CFG_TCSS(CS_SETUP_TIME)
++		| TIMING_CFG_TSHSL(CS_DESELECT_TIME);
++	writel(reg, host->regbase + FMC_SPI_TIMING_CFG);
++}
++
++static int hisi_spi_nor_prep(struct spi_nor *nor, enum spi_nor_ops ops)
++{
++	struct hifmc_priv *priv = nor->priv;
++	struct hifmc_host *host = priv->host;
++	int ret;
++
++	mutex_lock(&host->lock);
++
++	ret = clk_set_rate(host->clk, priv->clkrate);
++	if (ret)
++		goto out;
++
++	ret = clk_prepare_enable(host->clk);
++	if (ret)
++		goto out;
++
++	return 0;
++
++out:
++	mutex_unlock(&host->lock);
++	return ret;
++}
++
++static void hisi_spi_nor_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
++{
++	struct hifmc_priv *priv = nor->priv;
++	struct hifmc_host *host = priv->host;
++
++	clk_disable_unprepare(host->clk);
++	mutex_unlock(&host->lock);
++}
++
++static int hisi_spi_nor_op_reg(struct spi_nor *nor,
++				u8 opcode, int len, u8 optype)
++{
++	struct hifmc_priv *priv = nor->priv;
++	struct hifmc_host *host = priv->host;
++	u32 reg;
++
++	reg = FMC_CMD_CMD1(opcode);
++	writel(reg, host->regbase + FMC_CMD);
++
++	reg = FMC_DATA_NUM_CNT(len);
++	writel(reg, host->regbase + FMC_DATA_NUM);
++
++	reg = OP_CFG_FM_CS(priv->chipselect);
++	writel(reg, host->regbase + FMC_OP_CFG);
++
++	writel(0xff, host->regbase + FMC_INT_CLR);
++	reg = FMC_OP_CMD1_EN | FMC_OP_REG_OP_START | optype;
++	writel(reg, host->regbase + FMC_OP);
++
++	return wait_op_finish(host);
++}
++
++static int hisi_spi_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
++		int len)
++{
++	struct hifmc_priv *priv = nor->priv;
++	struct hifmc_host *host = priv->host;
++	int ret;
++
++	ret = hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_READ_DATA_EN);
++	if (ret)
++		return ret;
++
++	memcpy_fromio(buf, host->iobase, len);
++	return 0;
++}
++
++static int hisi_spi_nor_write_reg(struct spi_nor *nor, u8 opcode,
++				u8 *buf, int len)
++{
++	struct hifmc_priv *priv = nor->priv;
++	struct hifmc_host *host = priv->host;
++
++	if (len)
++		memcpy_toio(host->iobase, buf, len);
++
++	return hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_WRITE_DATA_EN);
++}
++
++static int hisi_spi_nor_dma_transfer(struct spi_nor *nor, loff_t start_off,
++		dma_addr_t dma_buf, size_t len, u8 op_type)
++{
++	struct hifmc_priv *priv = nor->priv;
++	struct hifmc_host *host = priv->host;
++	u8 if_type = 0;
++	u32 reg;
++
++	reg = readl(host->regbase + FMC_CFG);
++	reg &= ~(FMC_CFG_OP_MODE_MASK | SPI_NOR_ADDR_MODE_MASK);
++	reg |= FMC_CFG_OP_MODE_NORMAL;
++	reg |= (nor->addr_width == 4) ? SPI_NOR_ADDR_MODE_4BYTES
++		: SPI_NOR_ADDR_MODE_3BYTES;
++	writel(reg, host->regbase + FMC_CFG);
++
++	writel(start_off, host->regbase + FMC_ADDRL);
++	writel(dma_buf, host->regbase + FMC_DMA_SADDR_D0);
++	writel(FMC_DMA_LEN_SET(len), host->regbase + FMC_DMA_LEN);
++
++	reg = OP_CFG_FM_CS(priv->chipselect);
++	if_type = get_if_type(nor->flash_read);
++	reg |= OP_CFG_MEM_IF_TYPE(if_type);
++	if (op_type == FMC_OP_READ)
++		reg |= OP_CFG_DUMMY_NUM(nor->read_dummy >> 3);
++	writel(reg, host->regbase + FMC_OP_CFG);
++
++	writel(0xff, host->regbase + FMC_INT_CLR);
++	reg = OP_CTRL_RW_OP(op_type) | OP_CTRL_DMA_OP_READY;
++	reg |= (op_type == FMC_OP_READ)
++		? OP_CTRL_RD_OPCODE(nor->read_opcode)
++		: OP_CTRL_WR_OPCODE(nor->program_opcode);
++	writel(reg, host->regbase + FMC_OP_DMA);
++
++	return wait_op_finish(host);
++}
++
++static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
++		size_t *retlen, u_char *read_buf)
++{
++	struct hifmc_priv *priv = nor->priv;
++	struct hifmc_host *host = priv->host;
++	size_t offset;
++	int ret;
++
++	for (offset = 0; offset < len; offset += HIFMC_DMA_MAX_LEN) {
++		size_t trans = min_t(size_t, HIFMC_DMA_MAX_LEN, len - offset);
++
++		ret = hisi_spi_nor_dma_transfer(nor,
++			from + offset, host->dma_buffer, trans, FMC_OP_READ);
++		if (ret) {
++			dev_warn(nor->dev, "DMA read timeout\n");
++			return ret;
++		}
++		memcpy(read_buf + offset, host->buffer, trans);
++		*retlen += trans;
++	}
++
++	return 0;
++}
++
++static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
++			size_t len, size_t *retlen, const u_char *write_buf)
++{
++	struct hifmc_priv *priv = nor->priv;
++	struct hifmc_host *host = priv->host;
++	size_t offset;
++	int ret;
++
++	for (offset = 0; offset < len; offset += HIFMC_DMA_MAX_LEN) {
++		size_t trans = min_t(size_t, HIFMC_DMA_MAX_LEN, len - offset);
++
++		memcpy(host->buffer, write_buf + offset, trans);
++		ret = hisi_spi_nor_dma_transfer(nor,
++			to + offset, host->dma_buffer, trans, FMC_OP_WRITE);
++		if (ret) {
++			dev_warn(nor->dev, "DMA write timeout\n");
++			return;
++		}
++		*retlen += len;
++	}
++}
++
++/**
++ * Get spi flash device information and register it as a mtd device.
++ */
++static int hisi_spi_nor_register(struct device_node *np,
++				struct hifmc_host *host)
++{
++	struct device *dev = host->dev;
++	struct spi_nor *nor;
++	struct hifmc_priv *priv;
++	struct mtd_info *mtd;
++	int ret;
++
++	nor = devm_kzalloc(dev, sizeof(*nor), GFP_KERNEL);
++	if (!nor)
++		return -ENOMEM;
++
++	nor->dev = dev;
++	spi_nor_set_flash_node(nor, np);
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	ret = of_property_read_u32(np, "reg", &priv->chipselect);
++	if (ret) {
++		dev_err(dev, "There's no reg property for %s\n",
++			np->full_name);
++		return ret;
++	}
++
++	ret = of_property_read_u32(np, "spi-max-frequency",
++			&priv->clkrate);
++	if (ret) {
++		dev_err(dev, "There's no spi-max-frequency property for %s\n",
++			np->full_name);
++		return ret;
++	}
++	priv->host = host;
++	nor->priv = priv;
++
++	nor->prepare = hisi_spi_nor_prep;
++	nor->unprepare = hisi_spi_nor_unprep;
++	nor->read_reg = hisi_spi_nor_read_reg;
++	nor->write_reg = hisi_spi_nor_write_reg;
++	nor->read = hisi_spi_nor_read;
++	nor->write = hisi_spi_nor_write;
++	nor->erase = NULL;
++	ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
++	if (ret)
++		return ret;
++
++	mtd = &nor->mtd;
++	mtd->name = np->name;
++	ret = mtd_device_register(mtd, NULL, 0);
++	if (ret)
++		return ret;
++
++	host->nor[host->num_chip] = nor;
++	host->num_chip++;
++	return 0;
++}
++
++static void hisi_spi_nor_unregister_all(struct hifmc_host *host)
++{
++	int i;
++
++	for (i = 0; i < host->num_chip; i++)
++		mtd_device_unregister(&host->nor[i]->mtd);
++}
++
++static int hisi_spi_nor_register_all(struct hifmc_host *host)
++{
++	struct device *dev = host->dev;
++	struct device_node *np;
++	int ret;
++
++	for_each_available_child_of_node(dev->of_node, np) {
++		ret = hisi_spi_nor_register(np, host);
++		if (ret)
++			goto fail;
++
++		if (host->num_chip == HIFMC_MAX_CHIP_NUM) {
++			dev_warn(dev, "Flash device number exceeds the maximum chipselect number\n");
++			break;
++		}
++	}
++
++	return 0;
++
++fail:
++	hisi_spi_nor_unregister_all(host);
++	return ret;
++}
++
++static int hisi_spi_nor_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct resource *res;
++	struct hifmc_host *host;
++	int ret;
++
++	host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
++	if (!host)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, host);
++	host->dev = dev;
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "control");
++	host->regbase = devm_ioremap_resource(dev, res);
++	if (IS_ERR(host->regbase))
++		return PTR_ERR(host->regbase);
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "memory");
++	host->iobase = devm_ioremap_resource(dev, res);
++	if (IS_ERR(host->iobase))
++		return PTR_ERR(host->iobase);
++
++	host->clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(host->clk))
++		return PTR_ERR(host->clk);
++
++	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
++	if (ret) {
++		dev_warn(dev, "Unable to set dma mask\n");
++		return ret;
++	}
++
++	host->buffer = dmam_alloc_coherent(dev, HIFMC_DMA_MAX_LEN,
++			&host->dma_buffer, GFP_KERNEL);
++	if (!host->buffer)
++		return -ENOMEM;
++
++	mutex_init(&host->lock);
++	clk_prepare_enable(host->clk);
++	hisi_spi_nor_init(host);
++	ret = hisi_spi_nor_register_all(host);
++	if (ret)
++		mutex_destroy(&host->lock);
++
++	clk_disable_unprepare(host->clk);
++	return ret;
++}
++
++static int hisi_spi_nor_remove(struct platform_device *pdev)
++{
++	struct hifmc_host *host = platform_get_drvdata(pdev);
++
++	hisi_spi_nor_unregister_all(host);
++	mutex_destroy(&host->lock);
++	clk_disable_unprepare(host->clk);
++	return 0;
++}
++
++static const struct of_device_id hisi_spi_nor_dt_ids[] = {
++	{ .compatible = "hisilicon,fmc-spi-nor"},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, hisi_spi_nor_dt_ids);
++
++static struct platform_driver hisi_spi_nor_driver = {
++	.driver = {
++		.name	= "hisi-sfc",
++		.of_match_table = hisi_spi_nor_dt_ids,
++	},
++	.probe	= hisi_spi_nor_probe,
++	.remove	= hisi_spi_nor_remove,
++};
++module_platform_driver(hisi_spi_nor_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("HiSilicon SPI Nor Flash Controller Driver");
+-- 
+1.9.1
