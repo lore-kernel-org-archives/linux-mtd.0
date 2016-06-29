@@ -1,37 +1,33 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mout.kundenserver.de ([212.227.17.10])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIJLz-0005j8-OI
- for linux-mtd@lists.infradead.org; Wed, 29 Jun 2016 17:32:48 +0000
-Received: by mail-pf0-x241.google.com with SMTP id i123so5022990pfg.3
- for <linux-mtd@lists.infradead.org>; Wed, 29 Jun 2016 10:32:27 -0700 (PDT)
-Date: Wed, 29 Jun 2016 10:32:23 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Raghav Dogra <raghav.dogra@nxp.com>
-Cc: Leo Li <pku.leo@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Yang-Leo Li <leoyang.li@nxp.com>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- Scott Wood <oss@buserror.net>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- Raghav Dogra <raghav@freescale.com>,
- Jaiprakash Singh <b44839@freescale.com>
-Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
-Message-ID: <20160629173223.GA47625@google.com>
-References: <20160406175254.GC5243@localhost>
- <AM2PR04MB0770036256E58407BD045C5A8F9F0@AM2PR04MB0770.eurprd04.prod.outlook.com>
- <20160408024507.69fb4fc1@bbrezillon>
- <CADRPPNRXj_00GF-h_5yHtKPMU=U1C8PXQLZqEVzQvJZobmM7dg@mail.gmail.com>
- <20160525223412.086e45e9@bbrezillon>
- <CADRPPNSeQsOZZ9XRR4BOfZvewoB9RoEy0KzPrRzoDm21LtacnQ@mail.gmail.com>
- <20160527224401.4b776ad4@bbrezillon>
- <20160527211247.GA123214@google.com>
- <CADRPPNR5NXuug7Nig=s8be0yEOB4RKg9zj53t00fdSffo5s72A@mail.gmail.com>
- <DB4PR04MB346C1FA9FCC3906B906E7C589230@DB4PR04MB346.eurprd04.prod.outlook.com>
+ id 1bILRe-0004uA-Px
+ for linux-mtd@lists.infradead.org; Wed, 29 Jun 2016 19:46:47 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: y2038@lists.linaro.org
+Cc: Deepa Dinamani <deepa.kernel@gmail.com>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, shaggy@kernel.org,
+ jfs-discussion@lists.sourceforge.net, trond.myklebust@primarydata.com,
+ clm@fb.com, adilger.kernel@dilger.ca, tglx@linutronix.de, zyan@redhat.com,
+ paul@paul-moore.com, sage@redhat.com, idryomov@gmail.com,
+ linux-ext4@vger.kernel.org, cm224.lee@samsung.com, mfasheh@suse.com,
+ john.stultz@linaro.org, viro@zeniv.linux.org.uk, dsterba@suse.com,
+ jaegeuk@kernel.org, ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+ elder@kernel.org, tytso@mit.edu, dedekind1@gmail.com, jbacik@fb.com,
+ gregkh@linuxfoundation.org, adrian.hunter@intel.com, eparis@redhat.com,
+ linux-f2fs-devel@lists.sourceforge.net, sfrench@samba.org,
+ linux-audit@redhat.com, ocfs2-devel@oss.oracle.com, jack@suse.com,
+ linux-mtd@lists.infradead.org, lustre-devel@lists.lustre.org,
+ torvalds@linux-foundation.org, anna.schumaker@netapp.com,
+ linux-btrfs@vger.kernel.org, jlbec@evilplan.org
+Subject: Re: [Y2038] [PATCH v3 00/24] Delete CURRENT_TIME_SEC and replace
+ current_fs_time()
+Date: Wed, 29 Jun 2016 21:48:02 +0200
+Message-ID: <4878160.cRxJJ9CCsj@wuerfel>
+In-Reply-To: <1466890668-23400-1-git-send-email-deepa.kernel@gmail.com>
+References: <1466890668-23400-1-git-send-email-deepa.kernel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB4PR04MB346C1FA9FCC3906B906E7C589230@DB4PR04MB346.eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,67 +37,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Wed, Jun 29, 2016 at 02:53:03PM +0000, Raghav Dogra wrote:
+On Saturday, June 25, 2016 2:37:24 PM CEST Deepa Dinamani wrote:
+> The series is aimed at getting rid of CURRENT_TIME, CURRENT_TIME_SEC macros
+> and replacing current_fs_time() with current_time().
+> The macros are not y2038 safe. There is no plan to transition them into being
+> y2038 safe.
+> ktime_get_* api's can be used in their place. And, these are y2038 safe.
 > 
+> CURRENT_TIME will be deleted after 4.8 rc1 as there is a dependency function
+> time64_to_tm() for one of the CURRENT_TIME occurance.
 > 
-> > -----Original Message-----
-> > From: Leo Li [mailto:pku.leo@gmail.com]
-> > Sent: Saturday, May 28, 2016 3:34 AM
-
-1 month delay? So much for the rush...
-
-> > To: Brian Norris <computersforpeace@gmail.com>; Raghav Dogra
-> > <raghav.dogra@nxp.com>
-> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>; Yang-Leo Li
-> > <leoyang.li@nxp.com>; Prabhakar Kushwaha
-> > <prabhakar.kushwaha@nxp.com>; Scott Wood <oss@buserror.net>; linux-
-> > mtd@lists.infradead.org; linuxppc-dev <linuxppc-dev@lists.ozlabs.org>;
-> > Raghav Dogra <raghav@freescale.com>; Jaiprakash Singh
-> > <b44839@freescale.com>
-> > Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
-> > 
-> > On Fri, May 27, 2016 at 4:12 PM, Brian Norris
-> > <computersforpeace@gmail.com> wrote:
-> > > On Fri, May 27, 2016 at 10:44:01PM +0200, Boris Brezillon wrote:
-> > >> On Fri, 27 May 2016 15:15:00 -0500
-> > >> Leo Li <pku.leo@gmail.com> wrote:
-> > >> >
-> > >> > The pull request does have patch "mtd/ifc: Add support for IFC
-> > >> > controller version 2.0", but it doesn't have another patch
-> > >> > "driver/memory: Update dependency of IFC for
-> > >> > Layerscape"(https://patchwork.ozlabs.org/patch/557389/) needed to
-> > >> > make the driver selectable on new hardware.
-> > >
-[...]
-
-> > >> BTW, in the patch description you say you're only modifying a Kconfig
-> > >> dependency, but you're actually doing more than that: you're removing
-> > >> an asm header inclusion and manually include several other headers
-> > >> (which I guess were previously included by asm/prom.h).
-> > >
-> > > Please resend this patch with a more complete commit description; I'd
-> > > like it to get actual review (and time in linux-next) before it gets
-> > > merged, so at best, it'll wait a few -rc's. I also suspect the patch
-> > > isn't optimal. I believe Scott has suggested [1] that we didn't need
-> > > the FSL_SOC dependency on the LBC driver. I think IFC looks like a
-> > > similar case?
+> Thanks to Arnd Bergmann for all the guidance and discussions.
 > 
-> Hi Brian,
+> Patches 3-5 were mostly generated using coccinelle.
 > 
-> The patch being talked about does not add a FSL_SOC dependency on the IFC driver.
-> It uses a generic ARCH_LAYERSCAPE macro to enable IFC. This should be Ok? 
+> All filesystem timestamps use current_fs_time() for right granularity as
+> mentioned in the respective commit texts of patches. This has a changed
+> signature, renamed to current_time() and moved to the fs/inode.c.
+> 
+> This series also serves as a preparatory series to transition vfs to 64 bit
+> timestamps as outlined here: https://lkml.org/lkml/2016/2/12/104 .
+> 
+> As per Linus's suggestion in https://lkml.org/lkml/2016/5/24/663 , all the
+> inode timestamp changes have been squashed into a single patch. Also,
+> current_time() now is used as a single generic vfs filesystem timestamp api.
+> It also takes struct inode* as argument instead of struct super_block*.
+> Posting all patches together in a bigger series so that the big picture is
+> clear.
+> 
+> As per the suggestion in https://lwn.net/Articles/672598/, CURRENT_TIME macro
+> bug fixes are being handled in a series separate from transitioning vfs to use.
+> 
 
-Maybe... but if we know that this driver doesn't actually have an
-FSL_SOC dependency, and the FSL maintainers don't really want it in the
-first place, then a simpler patch is to just remove the FSL_SOC
-dependency, rather than making the deps more complicated.
+Everything in this version looks good to me. Please add
 
-But anyway, if you resend with the comments addresses (e.g., better
-commit description), then we can consider applying it. If the FSL folks
-have nothing to contribute here, then I don't see why we wouldn't take
-your patch.
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-Regards,
-Brian
+and send a pull request to Al Viro, based on the latest linux-4.7-rc release.
+
+	Arnd
