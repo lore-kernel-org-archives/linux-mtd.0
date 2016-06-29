@@ -1,35 +1,37 @@
-Received: from mail-am1on0076.outbound.protection.outlook.com ([157.56.112.76]
- helo=emea01-am1-obe.outbound.protection.outlook.com)
- by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIGs1-0003lB-9z
- for linux-mtd@lists.infradead.org; Wed, 29 Jun 2016 14:53:43 +0000
-From: Raghav Dogra <raghav.dogra@nxp.com>
-To: Leo Li <pku.leo@gmail.com>, Brian Norris <computersforpeace@gmail.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Yang-Leo Li
- <leoyang.li@nxp.com>, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, "Scott
- Wood" <oss@buserror.net>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, linuxppc-dev
- <linuxppc-dev@lists.ozlabs.org>, Raghav Dogra <raghav@freescale.com>,
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bIJLz-0005j8-OI
+ for linux-mtd@lists.infradead.org; Wed, 29 Jun 2016 17:32:48 +0000
+Received: by mail-pf0-x241.google.com with SMTP id i123so5022990pfg.3
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Jun 2016 10:32:27 -0700 (PDT)
+Date: Wed, 29 Jun 2016 10:32:23 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Raghav Dogra <raghav.dogra@nxp.com>
+Cc: Leo Li <pku.leo@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Yang-Leo Li <leoyang.li@nxp.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ Scott Wood <oss@buserror.net>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Raghav Dogra <raghav@freescale.com>,
  Jaiprakash Singh <b44839@freescale.com>
-Subject: RE: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
-Date: Wed, 29 Jun 2016 14:53:03 +0000
-Message-ID: <DB4PR04MB346C1FA9FCC3906B906E7C589230@DB4PR04MB346.eurprd04.prod.outlook.com>
-References: <CADRPPNS1i1XgtpyiT_=rDuDXBDn=ehNY32=RKTC9hdKXhWWq8A@mail.gmail.com>
- <1455840434.2463.97.camel@buserror.net>
- <CADRPPNTauz=T9oWCeZy8G8s0vo9fmieRhn=Gd3jVqqJJEHV_ag@mail.gmail.com>
- <20160406175254.GC5243@localhost>
+Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
+Message-ID: <20160629173223.GA47625@google.com>
+References: <20160406175254.GC5243@localhost>
  <AM2PR04MB0770036256E58407BD045C5A8F9F0@AM2PR04MB0770.eurprd04.prod.outlook.com>
  <20160408024507.69fb4fc1@bbrezillon>
  <CADRPPNRXj_00GF-h_5yHtKPMU=U1C8PXQLZqEVzQvJZobmM7dg@mail.gmail.com>
  <20160525223412.086e45e9@bbrezillon>
  <CADRPPNSeQsOZZ9XRR4BOfZvewoB9RoEy0KzPrRzoDm21LtacnQ@mail.gmail.com>
- <20160527224401.4b776ad4@bbrezillon>	<20160527211247.GA123214@google.com>
+ <20160527224401.4b776ad4@bbrezillon>
+ <20160527211247.GA123214@google.com>
  <CADRPPNR5NXuug7Nig=s8be0yEOB4RKg9zj53t00fdSffo5s72A@mail.gmail.com>
-In-Reply-To: <CADRPPNR5NXuug7Nig=s8be0yEOB4RKg9zj53t00fdSffo5s72A@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <DB4PR04MB346C1FA9FCC3906B906E7C589230@DB4PR04MB346.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DB4PR04MB346C1FA9FCC3906B906E7C589230@DB4PR04MB346.eurprd04.prod.outlook.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,71 +41,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGVvIExpIFttYWlsdG86
-cGt1Lmxlb0BnbWFpbC5jb21dDQo+IFNlbnQ6IFNhdHVyZGF5LCBNYXkgMjgsIDIwMTYgMzozNCBB
-TQ0KPiBUbzogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+OyBSYWdo
-YXYgRG9ncmENCj4gPHJhZ2hhdi5kb2dyYUBueHAuY29tPg0KPiBDYzogQm9yaXMgQnJlemlsbG9u
-IDxib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tPjsgWWFuZy1MZW8gTGkNCj4gPGxl
-b3lhbmcubGlAbnhwLmNvbT47IFByYWJoYWthciBLdXNod2FoYQ0KPiA8cHJhYmhha2FyLmt1c2h3
-YWhhQG54cC5jb20+OyBTY290dCBXb29kIDxvc3NAYnVzZXJyb3IubmV0PjsgbGludXgtDQo+IG10
-ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eHBwYy1kZXYgPGxpbnV4cHBjLWRldkBsaXN0cy5v
-emxhYnMub3JnPjsNCj4gUmFnaGF2IERvZ3JhIDxyYWdoYXZAZnJlZXNjYWxlLmNvbT47IEphaXBy
-YWthc2ggU2luZ2gNCj4gPGI0NDgzOUBmcmVlc2NhbGUuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BB
-VENIXVt2M10gbXRkL2lmYzogQWRkIHN1cHBvcnQgZm9yIElGQyBjb250cm9sbGVyIHZlcnNpb24g
-Mi4wDQo+IA0KPiBPbiBGcmksIE1heSAyNywgMjAxNiBhdCA0OjEyIFBNLCBCcmlhbiBOb3JyaXMN
-Cj4gPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT4gd3JvdGU6DQo+ID4gSGkgTGVvLA0KPiA+
-DQo+ID4gT24gRnJpLCBNYXkgMjcsIDIwMTYgYXQgMTA6NDQ6MDFQTSArMDIwMCwgQm9yaXMgQnJl
-emlsbG9uIHdyb3RlOg0KPiA+PiBPbiBGcmksIDI3IE1heSAyMDE2IDE1OjE1OjAwIC0wNTAwDQo+
-ID4+IExlbyBMaSA8cGt1Lmxlb0BnbWFpbC5jb20+IHdyb3RlOg0KPiA+PiA+IE9uIFdlZCwgTWF5
-IDI1LCAyMDE2IGF0IDM6MzQgUE0sIEJvcmlzIEJyZXppbGxvbg0KPiA+PiA+IDxib3Jpcy5icmV6
-aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tPiB3cm90ZToNCj4gPj4gPiA+IE9uIFdlZCwgMjUgTWF5
-IDIwMTYgMTQ6MTg6NDMgLTA1MDAgTGVvIExpIDxwa3UubGVvQGdtYWlsLmNvbT4NCj4gPj4gPiA+
-IHdyb3RlOg0KPiA+PiA+ID4+IEl0IHNlZW1zIHRoYXQgdGhlIHBhdGNoIGF0DQo+ID4+ID4gPj4g
-aHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wYXRjaC81NTczODkvDQo+ID4+ID4gPj4gbWVu
-dGlvbmVkIGFib3ZlIHdhcyBub3QgaW4gdHJlZSBmb3IgNC43LiAgQ2FuIHlvdSByZXZpZXcgYW5k
-DQo+ID4+ID4gPj4gYXBwbHkgdGhhdCBwYXRjaCB0b28/DQo+ID4+ID4gPg0KPiA+PiA+ID4gSSBz
-ZWUgaXQgaW4gdGhlIFBSIEJyaWFuIHNlbnQgMiBkYXlzIGFnbyBbMV0sIHNvIGl0IHNob3VsZCBh
-cHBlYXINCj4gPj4gPiA+IGluIExpbnVzIHRyZWUgc29vbi4NCj4gPj4gPiA+DQo+ID4+ID4gPiBS
-ZWdhcmRzLA0KPiA+PiA+ID4NCj4gPj4gPiA+IEJvcmlzDQo+ID4+ID4gPg0KPiA+PiA+ID4gWzFd
-aHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMTYvNS8yNC85DQo+ID4+ID4NCj4gPj4gPg0KPiA+PiA+
-IFRoZSBwdWxsIHJlcXVlc3QgZG9lcyBoYXZlIHBhdGNoICJtdGQvaWZjOiBBZGQgc3VwcG9ydCBm
-b3IgSUZDDQo+ID4+ID4gY29udHJvbGxlciB2ZXJzaW9uIDIuMCIsIGJ1dCBpdCBkb2Vzbid0IGhh
-dmUgYW5vdGhlciBwYXRjaA0KPiA+PiA+ICJkcml2ZXIvbWVtb3J5OiBVcGRhdGUgZGVwZW5kZW5j
-eSBvZiBJRkMgZm9yDQo+ID4+ID4gTGF5ZXJzY2FwZSIoaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJz
-Lm9yZy9wYXRjaC81NTczODkvKSBuZWVkZWQgdG8NCj4gPj4gPiBtYWtlIHRoZSBkcml2ZXIgc2Vs
-ZWN0YWJsZSBvbiBuZXcgaGFyZHdhcmUuDQo+ID4NCj4gPiBZb3VyIHBhdGNoZXMgc2VlbSB0byBo
-YXZlIGJyb2tlbiB0aHJlYWRpbmcuIE9yIGF0IGxlYXN0LCBpbiBteQ0KPiA+IG1haWxib3gsIEkg
-aGF2ZSB0aGF0IHBhdGNoLCBidXQgSSBjYW4ndCBlYXNpbHkgZmluZCBbUEFUQ0ggMS8zXSBvciBb
-UEFUQ0gNCj4gMy8zXS4NCj4gPiBQbGVhc2UgZml4IHlvdXIgdGhyZWFkaW5nIG5leHQgdGltZSwg
-dG8gaGVscCBlbnN1cmUgdGhpbmdzIGdldCBoYW5kbGVkDQo+ID4gdG9nZXRoZXIuDQo+ID4NCj4g
-PiAoSXQgYWxzbyBoZWxwcyB3aGVuIHlvdSByZXBseSB0byB0aGUgcGF0Y2ggeW91J3JlIGFza2lu
-ZyBhYm91dCwgYW5kDQo+ID4gbm90IHRvIGEgZGlmZmVyZW50IHBhdGNoLikNCj4gPg0KPiA+PiBT
-b3JyeSwgSSBvdmVybG9va2VkIHRoYXQgcGFydCBpbiB5b3VyIGRpZmZlcmVudCBlbWFpbHMgKGV2
-ZW4gdGhvdWdoDQo+ID4+IHlvdSBjbGVhcmx5IHN0YXRlZCB0aGF0IHlvdSBuZWVkZWQgYm90aCBw
-YXRjaGVzKS4NCj4gPj4NCj4gPj4gRm9yIG15IGRlZmVuc2UsIEkgaGF2ZW4ndCBmb2xsb3dlZCB0
-aGUgcGF0Y2ggc2VyaWVzIGZyb20gdGhlDQo+ID4+IGJlZ2lubmluZywgYW5kIG9ubHkgdG9vayB0
-aGUgcGF0Y2ggYmVjYXVzZSBCcmlhbiBzdWdnZXN0ZWQgdG8gZG8gc28NCj4gPj4gKGFuZCB0aGUg
-Y2hhbmdlcyBzZWVtZWQgb2spLg0KPiA+PiBJdCB3b3VsZCBoYXZlIGJlZW4gY2xlYXJlciBpZiB0
-aGUgZGlmZmVyZW50IHBhdGNoZXMgd2VyZSBwYXJ0IG9mIHRoZQ0KPiA+PiBzYW1lIHNlcmllcy4N
-Cj4gPg0KPiA+ICsxIHRvIHRoZSBsYXN0IHNlbnRlbmNlLg0KPiA+DQo+ID4+IEFueXdheSwgQnJp
-YW4sIGNhbiB5b3UgdGFrZSBpdCBpbnRvIHlvdXIgdHJlZSBhbmQgbWFrZSBpdCBhcHBlYXIgaW4N
-Cj4gPj4gLXJjMSAob3IgZWFybGllciBpZiBpdCdzIHN0aWxsIHBvc3NpYmxlKT8NCj4gPg0KPiA+
-IE5vdCBzdXJlIGhvdyBJIGNvdWxkIGdldCBpdCBhbnkgImVhcmxpZXIiPyBJdCdzIG5vdCBtYWtp
-bmcgLXJjMSBhdA0KPiA+IHRoaXMgcG9pbnQuDQo+ID4NCj4gPj4gQlRXLCBpbiB0aGUgcGF0Y2gg
-ZGVzY3JpcHRpb24geW91IHNheSB5b3UncmUgb25seSBtb2RpZnlpbmcgYSBLY29uZmlnDQo+ID4+
-IGRlcGVuZGVuY3ksIGJ1dCB5b3UncmUgYWN0dWFsbHkgZG9pbmcgbW9yZSB0aGFuIHRoYXQ6IHlv
-dSdyZSByZW1vdmluZw0KPiA+PiBhbiBhc20gaGVhZGVyIGluY2x1c2lvbiBhbmQgbWFudWFsbHkg
-aW5jbHVkZSBzZXZlcmFsIG90aGVyIGhlYWRlcnMNCj4gPj4gKHdoaWNoIEkgZ3Vlc3Mgd2VyZSBw
-cmV2aW91c2x5IGluY2x1ZGVkIGJ5IGFzbS9wcm9tLmgpLg0KPiA+DQo+ID4gUGxlYXNlIHJlc2Vu
-ZCB0aGlzIHBhdGNoIHdpdGggYSBtb3JlIGNvbXBsZXRlIGNvbW1pdCBkZXNjcmlwdGlvbjsgSSdk
-DQo+ID4gbGlrZSBpdCB0byBnZXQgYWN0dWFsIHJldmlldyAoYW5kIHRpbWUgaW4gbGludXgtbmV4
-dCkgYmVmb3JlIGl0IGdldHMNCj4gPiBtZXJnZWQsIHNvIGF0IGJlc3QsIGl0J2xsIHdhaXQgYSBm
-ZXcgLXJjJ3MuIEkgYWxzbyBzdXNwZWN0IHRoZSBwYXRjaA0KPiA+IGlzbid0IG9wdGltYWwuIEkg
-YmVsaWV2ZSBTY290dCBoYXMgc3VnZ2VzdGVkIFsxXSB0aGF0IHdlIGRpZG4ndCBuZWVkDQo+ID4g
-dGhlIEZTTF9TT0MgZGVwZW5kZW5jeSBvbiB0aGUgTEJDIGRyaXZlci4gSSB0aGluayBJRkMgbG9v
-a3MgbGlrZSBhDQo+ID4gc2ltaWxhciBjYXNlPw0KDQpIaSBCcmlhbiwNCg0KVGhlIHBhdGNoIGJl
-aW5nIHRhbGtlZCBhYm91dCBkb2VzIG5vdCBhZGQgYSBGU0xfU09DIGRlcGVuZGVuY3kgb24gdGhl
-IElGQyBkcml2ZXIuDQpJdCB1c2VzIGEgZ2VuZXJpYyBBUkNIX0xBWUVSU0NBUEUgbWFjcm8gdG8g
-ZW5hYmxlIElGQy4gVGhpcyBzaG91bGQgYmUgT2s/IA0KDQpSZWdhcmRzLA0KUmFnaGF2DQo+IA0K
-PiBUaGFua3MgQnJpYW4uDQo+IA0KPiBSYWdoYXYsIENhbiB5b3UgZG8gdGhhdCBhcyBzb29uIGFz
-IHBvc3NpYmxlPw0KPiANCj4gUmVnYXJkcywNCj4gTGVvDQo=
+Hi,
+
+On Wed, Jun 29, 2016 at 02:53:03PM +0000, Raghav Dogra wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Leo Li [mailto:pku.leo@gmail.com]
+> > Sent: Saturday, May 28, 2016 3:34 AM
+
+1 month delay? So much for the rush...
+
+> > To: Brian Norris <computersforpeace@gmail.com>; Raghav Dogra
+> > <raghav.dogra@nxp.com>
+> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>; Yang-Leo Li
+> > <leoyang.li@nxp.com>; Prabhakar Kushwaha
+> > <prabhakar.kushwaha@nxp.com>; Scott Wood <oss@buserror.net>; linux-
+> > mtd@lists.infradead.org; linuxppc-dev <linuxppc-dev@lists.ozlabs.org>;
+> > Raghav Dogra <raghav@freescale.com>; Jaiprakash Singh
+> > <b44839@freescale.com>
+> > Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
+> > 
+> > On Fri, May 27, 2016 at 4:12 PM, Brian Norris
+> > <computersforpeace@gmail.com> wrote:
+> > > On Fri, May 27, 2016 at 10:44:01PM +0200, Boris Brezillon wrote:
+> > >> On Fri, 27 May 2016 15:15:00 -0500
+> > >> Leo Li <pku.leo@gmail.com> wrote:
+> > >> >
+> > >> > The pull request does have patch "mtd/ifc: Add support for IFC
+> > >> > controller version 2.0", but it doesn't have another patch
+> > >> > "driver/memory: Update dependency of IFC for
+> > >> > Layerscape"(https://patchwork.ozlabs.org/patch/557389/) needed to
+> > >> > make the driver selectable on new hardware.
+> > >
+[...]
+
+> > >> BTW, in the patch description you say you're only modifying a Kconfig
+> > >> dependency, but you're actually doing more than that: you're removing
+> > >> an asm header inclusion and manually include several other headers
+> > >> (which I guess were previously included by asm/prom.h).
+> > >
+> > > Please resend this patch with a more complete commit description; I'd
+> > > like it to get actual review (and time in linux-next) before it gets
+> > > merged, so at best, it'll wait a few -rc's. I also suspect the patch
+> > > isn't optimal. I believe Scott has suggested [1] that we didn't need
+> > > the FSL_SOC dependency on the LBC driver. I think IFC looks like a
+> > > similar case?
+> 
+> Hi Brian,
+> 
+> The patch being talked about does not add a FSL_SOC dependency on the IFC driver.
+> It uses a generic ARCH_LAYERSCAPE macro to enable IFC. This should be Ok? 
+
+Maybe... but if we know that this driver doesn't actually have an
+FSL_SOC dependency, and the FSL maintainers don't really want it in the
+first place, then a simpler patch is to just remove the FSL_SOC
+dependency, rather than making the deps more complicated.
+
+But anyway, if you resend with the comments addresses (e.g., better
+commit description), then we can consider applying it. If the FSL folks
+have nothing to contribute here, then I don't see why we wouldn't take
+your patch.
+
+Regards,
+Brian
