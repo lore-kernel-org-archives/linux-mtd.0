@@ -1,20 +1,23 @@
-From: Yunhui Cui <yunhui.cui@nxp.com>
-To: Yunhui Cui <B56489@freescale.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
-Subject: RE: [PATCH v2 1/9] mtd:fsl-quadspi:use the property fields of SPI-NOR
-Date: Thu, 30 Jun 2016 01:54:14 +0000
-Message-ID: <DB5PR0401MB191200E18A336E0BE5318D1694240@DB5PR0401MB1912.eurprd04.prod.outlook.com>
-References: <1461307192-866-1-git-send-email-B56489@freescale.com>
-In-Reply-To: <1461307192-866-1-git-send-email-B56489@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+From: Fam Zheng <famz@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Jens Axboe <axboe@kernel.dk>,
+ "Ed L. Cashin" <ed.cashin@acm.org>, Jiri Kosina <jikos@kernel.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+ Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+ Shaohua Li <shli@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Keith Busch <keith.busch@intel.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-block@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+ Christoph Hellwig <hch@infradead.org>, famz@redhat.com
+Subject: [PATCH v2 00/12] gendisk: Generate uevent after attribute available
+Date: Thu, 30 Jun 2016 09:59:41 +0800
+Message-Id: <20160630015953.6888-1-famz@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,108 +27,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian and Han,
-Could you please give me some comments about this patch set v2 ?
+The race condition is noticed between disk_add() and disk attributes, on
+virtio-blk hotplug.
 
-Thanks
+Userspace listens to the KOBJ_ADD uevent generated in add_disk(). At that
+point we haven't created the serial attribute file, therefore depending
+on how fast udev reacts, the /dev/disk/by-id/ entry doesn't always get
+created.
 
-> -----Original Message-----
-> From: Yunhui Cui [mailto:B56489@freescale.com]
-> Sent: Friday, April 22, 2016 2:40 PM
-> To: dwmw2@infradead.org; computersforpeace@gmail.com;
-> han.xu@freescale.com
-> Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; linux-
-> arm-kernel@lists.infradead.org; Yao Yuan; Yunhui Cui
-> Subject: [PATCH v2 1/9] mtd:fsl-quadspi:use the property fields of SPI-
-> NOR
->=20
-> We can get the read/write/erase opcode from the spi nor framework
-> directly. This patch uses the information stored in the SPI-NOR to remove
-> the hardcode in the fsl_qspi_init_lut().
->=20
-> Signed-off-by: Yunhui Cui <B56489@freescale.com>
-> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 40 ++++++++++++---------------------
-> ------
->  1 file changed, 12 insertions(+), 28 deletions(-)
->=20
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-
-> quadspi.c
-> index 9ab2b51..517ffe2 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -373,9 +373,13 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	void __iomem *base =3D q->iobase;
->  	int rxfifo =3D q->devtype_data->rxfifo;
->  	u32 lut_base;
-> -	u8 cmd, addrlen, dummy;
->  	int i;
->=20
-> +	struct spi_nor *nor =3D &q->nor[0];
-> +	u8 addrlen =3D (nor->addr_width =3D=3D 3) ? ADDR24BIT : ADDR32BIT;
-> +	u8 read_op =3D nor->read_opcode;
-> +	u8 read_dm =3D nor->read_dummy;
-> +
->  	fsl_qspi_unlock_lut(q);
->=20
->  	/* Clear all the LUT table */
-> @@ -385,20 +389,10 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	/* Quad Read */
->  	lut_base =3D SEQID_QUAD_READ * 4;
->=20
-> -	if (q->nor_size <=3D SZ_16M) {
-> -		cmd =3D SPINOR_OP_READ_1_1_4;
-> -		addrlen =3D ADDR24BIT;
-> -		dummy =3D 8;
-> -	} else {
-> -		/* use the 4-byte address */
-> -		cmd =3D SPINOR_OP_READ_1_1_4;
-> -		addrlen =3D ADDR32BIT;
-> -		dummy =3D 8;
-> -	}
-> -
-> -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-> +	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
->  			base + QUADSPI_LUT(lut_base));
-> -	qspi_writel(q, LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4,
-> rxfifo),
-> +	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
-> +		    LUT1(FSL_READ, PAD4, rxfifo),
->  			base + QUADSPI_LUT(lut_base + 1));
->=20
->  	/* Write enable */
-> @@ -409,16 +403,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	/* Page Program */
->  	lut_base =3D SEQID_PP * 4;
->=20
-> -	if (q->nor_size <=3D SZ_16M) {
-> -		cmd =3D SPINOR_OP_PP;
-> -		addrlen =3D ADDR24BIT;
-> -	} else {
-> -		/* use the 4-byte address */
-> -		cmd =3D SPINOR_OP_PP;
-> -		addrlen =3D ADDR32BIT;
-> -	}
-> -
-> -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-> +	qspi_writel(q, LUT0(CMD, PAD1, nor->program_opcode) |
-> +		    LUT1(ADDR, PAD1, addrlen),
->  			base + QUADSPI_LUT(lut_base));
->  	qspi_writel(q, LUT0(FSL_WRITE, PAD1, 0),
->  			base + QUADSPI_LUT(lut_base + 1));
-> @@ -432,10 +418,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	/* Erase a sector */
->  	lut_base =3D SEQID_SE * 4;
->=20
-> -	cmd =3D q->nor[0].erase_opcode;
-> -	addrlen =3D q->nor_size <=3D SZ_16M ? ADDR24BIT : ADDR32BIT;
-> -
-> -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-> +	qspi_writel(q, LUT0(CMD, PAD1, nor->erase_opcode) |
-> +		    LUT1(ADDR, PAD1, addrlen),
->  			base + QUADSPI_LUT(lut_base));
->=20
->  	/* Erase the whole chip */
-> --
-> 2.1.0.27.g96db324
+As pointed out by Christoph Hellwig in the specific fix [1], virtio-blk is not
+the only driver that suffers from this, so we cannot count on every driver to
+send events manually. Moreover as suggested in uevent documentation, it is
+advised to defer the KOBJ_ADD event until all attributes are ready:
+
+Documentation/kobject.txt:
+> Use the KOBJ_ADD action for when the kobject is first added to the kernel.
+> This should be done only after any attributes or children of the kobject
+> have been initialized properly, as userspace will instantly start to look
+> for them when this call happens.
+
+Unfortunately it seems impossible to fix this generally without touching the
+offending callers.  The approach I'm proposing here is adding a flag to
+suppress uevent in add_disk(), which is patch 1, then in later patches, convert
+any caller to only trigger the uevent when attributes are added.
+
+[1] https://lkml.org/lkml/2016/6/28/550
+
+Fam Zheng (12):
+  genhd: Add "gen_uevent" parameter to add_disk
+  genhd: Honor gen_uevent and add disk_gen_uevents
+  virtio-blk: Generate uevent after attribute available
+  axonrom: Generate uevent after attribute available
+  aoeblk: Generate uevent after attribute available
+  mtip32xx: Generate uevent after attribute available
+  pktcdvd: Generate uevent after attribute available
+  zram: Generate uevent after attribute available
+  md: Generate uevent after attribute available
+  mmc: Generate uevent after attribute available
+  mtd: Generate uevent after attribute available
+  nvme: Generate uevent after attribute available
+
+ arch/m68k/emu/nfblock.c                     |  2 +-
+ arch/powerpc/sysdev/axonram.c               |  3 ++-
+ arch/um/drivers/ubd_kern.c                  |  2 +-
+ arch/xtensa/platforms/iss/simdisk.c         |  2 +-
+ block/genhd.c                               | 26 +++++++++++++++++++++-----
+ drivers/block/DAC960.c                      |  2 +-
+ drivers/block/amiflop.c                     |  2 +-
+ drivers/block/aoe/aoeblk.c                  |  3 ++-
+ drivers/block/ataflop.c                     |  2 +-
+ drivers/block/brd.c                         |  4 ++--
+ drivers/block/cciss.c                       |  2 +-
+ drivers/block/drbd/drbd_main.c              |  2 +-
+ drivers/block/floppy.c                      |  2 +-
+ drivers/block/hd.c                          |  2 +-
+ drivers/block/loop.c                        |  2 +-
+ drivers/block/mg_disk.c                     |  2 +-
+ drivers/block/mtip32xx/mtip32xx.c           |  3 ++-
+ drivers/block/nbd.c                         |  2 +-
+ drivers/block/null_blk.c                    |  2 +-
+ drivers/block/osdblk.c                      |  2 +-
+ drivers/block/paride/pcd.c                  |  2 +-
+ drivers/block/paride/pd.c                   |  2 +-
+ drivers/block/paride/pf.c                   |  2 +-
+ drivers/block/pktcdvd.c                     |  4 +++-
+ drivers/block/ps3disk.c                     |  2 +-
+ drivers/block/ps3vram.c                     |  2 +-
+ drivers/block/rbd.c                         |  2 +-
+ drivers/block/rsxx/dev.c                    |  2 +-
+ drivers/block/skd_main.c                    |  2 +-
+ drivers/block/sunvdc.c                      |  2 +-
+ drivers/block/swim.c                        |  2 +-
+ drivers/block/swim3.c                       |  2 +-
+ drivers/block/sx8.c                         |  2 +-
+ drivers/block/umem.c                        |  2 +-
+ drivers/block/virtio_blk.c                  |  3 ++-
+ drivers/block/xen-blkfront.c                |  2 +-
+ drivers/block/xsysace.c                     |  2 +-
+ drivers/block/z2ram.c                       |  2 +-
+ drivers/block/zram/zram_drv.c               |  3 ++-
+ drivers/cdrom/gdrom.c                       |  2 +-
+ drivers/ide/ide-cd.c                        |  2 +-
+ drivers/ide/ide-gd.c                        |  2 +-
+ drivers/lightnvm/core.c                     |  2 +-
+ drivers/md/bcache/super.c                   |  4 ++--
+ drivers/md/dm.c                             |  2 +-
+ drivers/md/md.c                             |  3 ++-
+ drivers/memstick/core/ms_block.c            |  2 +-
+ drivers/memstick/core/mspro_block.c         |  2 +-
+ drivers/mmc/card/block.c                    |  3 ++-
+ drivers/mtd/mtd_blkdevs.c                   |  3 ++-
+ drivers/mtd/ubi/block.c                     |  2 +-
+ drivers/nvdimm/blk.c                        |  2 +-
+ drivers/nvdimm/btt.c                        |  2 +-
+ drivers/nvdimm/pmem.c                       |  2 +-
+ drivers/nvme/host/core.c                    |  3 ++-
+ drivers/s390/block/dasd_genhd.c             |  2 +-
+ drivers/s390/block/dcssblk.c                |  2 +-
+ drivers/s390/block/scm_blk.c                |  2 +-
+ drivers/s390/block/xpram.c                  |  2 +-
+ drivers/sbus/char/jsflash.c                 |  2 +-
+ drivers/scsi/sd.c                           |  2 +-
+ drivers/scsi/sr.c                           |  2 +-
+ drivers/staging/lustre/lustre/llite/lloop.c |  2 +-
+ include/linux/genhd.h                       |  3 ++-
+ 64 files changed, 98 insertions(+), 70 deletions(-)
+
+-- 
+2.9.0
