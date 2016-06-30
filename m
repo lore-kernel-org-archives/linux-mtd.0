@@ -1,18 +1,32 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIeEU-0006rW-Iw
- for linux-mtd@lists.infradead.org; Thu, 30 Jun 2016 15:50:27 +0000
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-CC: Harvey Hunt <harvey.hunt@imgtec.com>, Harvey Hunt
- <harveyhuntnexus@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mtd: nand: jz4780: Update MODULE_AUTHOR email address
-Date: Thu, 30 Jun 2016 16:49:49 +0100
-Message-ID: <20160630154949.14684-1-harvey.hunt@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20160630015953.6888-5-famz@redhat.com>
+References: <20160630015953.6888-1-famz@redhat.com>
+ <20160630015953.6888-5-famz@redhat.com>
+From: Dan Williams <dan.j.williams@gmail.com>
+Date: Thu, 30 Jun 2016 15:10:06 -0700
+Message-ID: <CAA9_cmf0cKZXdQ2N3iSbwVqgLDGJ7TMvVYuZTqjVE-7EqHHcdg@mail.gmail.com>
+Subject: Re: [PATCH v2 04/12] axonrom: Generate uevent after attribute
+ available
+To: Fam Zheng <famz@redhat.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Jens Axboe <axboe@kernel.dk>,
+ "Ed L. Cashin" <ed.cashin@acm.org>,
+ Jiri Kosina <jikos@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+ Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+ Shaohua Li <shli@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Keith Busch <keith.busch@intel.com>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ linux-block@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ linux-raid <linux-raid@vger.kernel.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org,
+ linux-nvme@lists.infradead.org, Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +36,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Emails will bounce from my imgtec address, so update it to a new one.
+On Wed, Jun 29, 2016 at 6:59 PM, Fam Zheng <famz@redhat.com> wrote:
+> It is documented that KOBJ_ADD should be generated after the object's
+> attributes and children are ready.  We can achieve this with the new
+> disk_gen_uevents interface.
+>
+> Signed-off-by: Fam Zheng <famz@redhat.com>
+> ---
+>  arch/powerpc/sysdev/axonram.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/sysdev/axonram.c b/arch/powerpc/sysdev/axonram.c
+> index 4efd69b..27e7175 100644
+> --- a/arch/powerpc/sysdev/axonram.c
+> +++ b/arch/powerpc/sysdev/axonram.c
+> @@ -238,7 +238,7 @@ static int axon_ram_probe(struct platform_device *device)
+>         set_capacity(bank->disk, bank->size >> AXON_RAM_SECTOR_SHIFT);
+>         blk_queue_make_request(bank->disk->queue, axon_ram_make_request);
+>         blk_queue_logical_block_size(bank->disk->queue, AXON_RAM_SECTOR_SIZE);
+> -       add_disk(bank->disk, true);
+> +       add_disk(bank->disk, false);
+>
+>         bank->irq_id = irq_of_parse_and_map(device->dev.of_node, 0);
+>         if (bank->irq_id == NO_IRQ) {
+> @@ -262,6 +262,7 @@ static int axon_ram_probe(struct platform_device *device)
+>                 rc = -EFAULT;
+>                 goto failed;
+>         }
+> +       disk_gen_uevents(bank->disk);
 
-Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
-Cc: linux-mtd@lists.infradead.org 
-Cc: linux-kernel@vger.kernel.org 
----
- drivers/mtd/nand/jz4780_bch.c  | 2 +-
- drivers/mtd/nand/jz4780_nand.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I assume you are doing this after:
 
-diff --git a/drivers/mtd/nand/jz4780_bch.c b/drivers/mtd/nand/jz4780_bch.c
-index d74f4ba..731c605 100644
---- a/drivers/mtd/nand/jz4780_bch.c
-+++ b/drivers/mtd/nand/jz4780_bch.c
-@@ -375,6 +375,6 @@ static struct platform_driver jz4780_bch_driver = {
- module_platform_driver(jz4780_bch_driver);
- 
- MODULE_AUTHOR("Alex Smith <alex@alex-smith.me.uk>");
--MODULE_AUTHOR("Harvey Hunt <harvey.hunt@imgtec.com>");
-+MODULE_AUTHOR("Harvey Hunt <harveyhuntnexus@gmail.com>");
- MODULE_DESCRIPTION("Ingenic JZ4780 BCH error correction driver");
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
-index daf3c42..175f67d 100644
---- a/drivers/mtd/nand/jz4780_nand.c
-+++ b/drivers/mtd/nand/jz4780_nand.c
-@@ -412,6 +412,6 @@ static struct platform_driver jz4780_nand_driver = {
- module_platform_driver(jz4780_nand_driver);
- 
- MODULE_AUTHOR("Alex Smith <alex@alex-smith.me.uk>");
--MODULE_AUTHOR("Harvey Hunt <harvey.hunt@imgtec.com>");
-+MODULE_AUTHOR("Harvey Hunt <harveyhuntnexus@gmail.com>");
- MODULE_DESCRIPTION("Ingenic JZ4780 NAND driver");
- MODULE_LICENSE("GPL v2");
--- 
-2.9.0
+   rc = device_create_file(&device->dev, &dev_attr_ecc);
+
+...so that userspace gets notified of the new attribute, but this
+attribute is on the parent device, not the disk itself.  Instead I
+think this attribute should simply be registered before the call to
+add_disk().  Then the KOBJ_ADD event for the disk comes after the
+attribute is available.  It's still not a clean fit, because userspace
+should not be expecting a child device uevent to signal new attributes
+available on the parent.
