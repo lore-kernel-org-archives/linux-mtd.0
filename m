@@ -1,16 +1,13 @@
-Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95])
- by bombadil.infradead.org with smtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bImms-00080M-AH
- for linux-mtd@lists.infradead.org; Fri, 01 Jul 2016 00:58:31 +0000
-Subject: Re: [PATCH v2 05/12] aoeblk: Generate uevent after attribute available
-To: Fam Zheng <famz@redhat.com>, linux-kernel@vger.kernel.org
-References: <20160630015953.6888-1-famz@redhat.com>
- <20160630015953.6888-6-famz@redhat.com>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Jens Axboe <axboe@kernel.dk>, Jiri Kosina <jikos@kernel.org>,
- "Michael S. Tsirkin" <mst@redhat.com>, Minchan Kim <minchan@kernel.org>,
- Nitin Gupta <ngupta@vflare.org>,
+Date: Fri, 1 Jul 2016 09:01:13 +0800
+From: Fam Zheng <famz@redhat.com>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-kernel@vger.kernel.org,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Jens Axboe <axboe@kernel.dk>,
+ "Ed L. Cashin" <ed.cashin@acm.org>, Jiri Kosina <jikos@kernel.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
  Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
  Shaohua Li <shli@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
  David Woodhouse <dwmw2@infradead.org>,
@@ -19,14 +16,18 @@ Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
  linux-block@vger.kernel.org, virtualization@lists.linux-foundation.org,
  linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
- Christoph Hellwig <hch@infradead.org>
-From: Ed Cashin <ed.cashin@acm.org>
-Message-ID: <5775C009.3010000@acm.org>
-Date: Thu, 30 Jun 2016 20:57:45 -0400
+ dan.j.williams@intel.com, famz@redhat.com
+Subject: Re: [PATCH v2 00/12] gendisk: Generate uevent after attribute
+ available
+Message-ID: <20160701010113.GB10122@ad.usersys.redhat.com>
+References: <20160630015953.6888-1-famz@redhat.com>
+ <20160630062442.GA19761@infradead.org>
+ <20160630063554.GE23296@ad.usersys.redhat.com>
+ <20160630063839.GA17205@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20160630015953.6888-6-famz@redhat.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160630063839.GA17205@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,12 +37,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/29/2016 09:59 PM, Fam Zheng wrote:
-> It is documented that KOBJ_ADD should be generated after the object's
-> attributes and children are ready.  We can achieve this with the new
-> disk_gen_uevents interface.
+On Wed, 06/29 23:38, Christoph Hellwig wrote:
+> On Thu, Jun 30, 2016 at 02:35:54PM +0800, Fam Zheng wrote:
+> > also more code and less flexible IMO.  For example, we need at least two
+> > variants, for attribute_group and device_attribute separately, right?
+> 
+> Yes, or maybe just a calling convention that just passes both.
 
-Looks like an improvement, thanks!
+OK, I can look into that, but I'm not sure about the error handling. Currently
+add_disk returns void, do you have any plan on that too? should I change it in
+v3 (to at least return the attribute creation failure)?
 
--- 
-   Ed
+Fam
