@@ -1,36 +1,18 @@
+Received: from mail-by2nam01on0050.outbound.protection.outlook.com
+ ([104.47.34.50] helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bIudg-0003XZ-75
+ for linux-mtd@lists.infradead.org; Fri, 01 Jul 2016 09:21:32 +0000
+From: Raghav Dogra <raghav.dogra@nxp.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>,
+ <leoyang.li@nxp.com>, <oss@buserror.net>, <prabhakar.kushwaha@nxp.com>,
+ Raghav Dogra <raghav.dogra@nxp.com>
+Subject: [PATCH][v2] driver/memory: Update dependency of IFC for Layerscape
+Date: Fri, 1 Jul 2016 21:32:30 +0530
+Message-ID: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
 MIME-Version: 1.0
-Sender: dan.j.williams@gmail.com
-In-Reply-To: <20160701010113.GB10122@ad.usersys.redhat.com>
-References: <20160630015953.6888-1-famz@redhat.com>
- <20160630062442.GA19761@infradead.org>
- <20160630063554.GE23296@ad.usersys.redhat.com>
- <20160630063839.GA17205@infradead.org>
- <20160701010113.GB10122@ad.usersys.redhat.com>
-From: Dan Williams <dan.j.williams@intel.com>
-Date: Thu, 30 Jun 2016 18:29:31 -0700
-Message-ID: <CAA9_cmeb99S+UoZ7A-4HHmT_rFRgnSaBX=YszEk8+4_=n9cOnA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] gendisk: Generate uevent after attribute
- available
-To: Fam Zheng <famz@redhat.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>,
- Michael Ellerman <mpe@ellerman.id.au>, Jens Axboe <axboe@kernel.dk>,
- "Ed L. Cashin" <ed.cashin@acm.org>,
- Jiri Kosina <jikos@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
- Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
- Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
- Shaohua Li <shli@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Keith Busch <keith.busch@intel.com>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- linux-block@vger.kernel.org, virtualization@lists.linux-foundation.org,
- linux-raid <linux-raid@vger.kernel.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,33 +22,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 30, 2016 at 6:01 PM, Fam Zheng <famz@redhat.com> wrote:
-> On Wed, 06/29 23:38, Christoph Hellwig wrote:
->> On Thu, Jun 30, 2016 at 02:35:54PM +0800, Fam Zheng wrote:
->> > also more code and less flexible IMO.  For example, we need at least two
->> > variants, for attribute_group and device_attribute separately, right?
->>
->> Yes, or maybe just a calling convention that just passes both.
->
-> OK, I can look into that, but I'm not sure about the error handling. Currently
-> add_disk returns void, do you have any plan on that too? should I change it in
-> v3 (to at least return the attribute creation failure)?
+This patch enables IFC NAND support on ARM layerscape platform.
+It fixes the dependency to enable NAND. The include files are being modified
+to ensure complilation for both PowerPC and ARM architectures.
 
-I think we should only support a "groups" interface to
-device_add_disk() and convert all the drivers that currently do
-device_create_file() after add_disk() to pass in a group list instead.
-That way we follow the expectation that the only way to get an
-attribute for a device to show up before KOBJ_ADD, is to define a
-group:
+Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
+---
+Applicable to git://git.infradead.org/l2-mtd.git
 
->From Documentation/driver-model/device.txt:
-    As explained in Documentation/kobject.txt, device attributes must be be
-    created before the KOBJ_ADD uevent is generated. The only way to realize
-    that is by defining an attribute group.
+Changes for v2: updated commit description
 
-Let's defer the return value fixing for now.
+ drivers/memory/Kconfig   | 2 +-
+ drivers/memory/fsl_ifc.c | 4 +++-
+ drivers/mtd/nand/Kconfig | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-You can find the pending device_add_disk() patches in the nvdimm
-patchwork starting with "block: introduce device_add_disk()"
-
-https://patchwork.kernel.org/project/linux-nvdimm/list/
+diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+index 81ddb17..5645705 100644
+--- a/drivers/memory/Kconfig
++++ b/drivers/memory/Kconfig
+@@ -104,7 +104,7 @@ config FSL_CORENET_CF
+ 
+ config FSL_IFC
+ 	bool
+-	depends on FSL_SOC
++	depends on FSL_SOC || ARCH_LAYERSCAPE
+ 
+ config JZ4780_NEMC
+ 	bool "Ingenic JZ4780 SoC NEMC driver"
+diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+index 904b4af..1b182b1 100644
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -31,7 +31,9 @@
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/fsl_ifc.h>
+-#include <asm/prom.h>
++#include <linux/irqdomain.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
+ 
+ struct fsl_ifc_ctrl *fsl_ifc_ctrl_dev;
+ EXPORT_SYMBOL(fsl_ifc_ctrl_dev);
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index f05e0e9..eace3ef 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -438,7 +438,7 @@ config MTD_NAND_FSL_ELBC
+ 
+ config MTD_NAND_FSL_IFC
+ 	tristate "NAND support for Freescale IFC controller"
+-	depends on MTD_NAND && FSL_SOC
++	depends on MTD_NAND && (FSL_SOC || ARCH_LAYERSCAPE)
+ 	select FSL_IFC
+ 	select MEMORY
+ 	help
+-- 
+1.9.1
