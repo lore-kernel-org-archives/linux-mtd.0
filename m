@@ -1,16 +1,20 @@
-Received: from smtpbg64.qq.com ([103.7.28.238])
+Received: from mail-oi0-x231.google.com ([2607:f8b0:4003:c06::231])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIyqg-0007p9-NP
- for linux-mtd@lists.infradead.org; Fri, 01 Jul 2016 13:51:19 +0000
-From: "=?gb18030?B?u9TJ2Q==?=" <wang502742203@qq.com>
-To: "=?gb18030?B?bGludXgtbXRk?=" <linux-mtd@lists.infradead.org>
-Subject: UBIFS: FileSystem Background Thread
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb18030"
-Content-Transfer-Encoding: base64
-Date: Fri, 1 Jul 2016 21:50:10 +0800
-Message-ID: <tencent_7C5FA3D5550624063EA45DF9@qq.com>
+ id 1bIzCU-0003dA-CD
+ for linux-mtd@lists.infradead.org; Fri, 01 Jul 2016 14:13:48 +0000
+Received: by mail-oi0-x231.google.com with SMTP id u201so112089903oie.0
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Jul 2016 07:13:25 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <tencent_7C5FA3D5550624063EA45DF9@qq.com>
+References: <tencent_7C5FA3D5550624063EA45DF9@qq.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 1 Jul 2016 16:13:24 +0200
+Message-ID: <CAFLxGvzhnqB2peyJh4fcvCV8v7_3tTLdYhPTf4EY=dFeMNdYgg@mail.gmail.com>
+Subject: Re: UBIFS: FileSystem Background Thread
+To: =?UTF-8?B?6L6J5bCR?= <wang502742203@qq.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,16 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksTVREIGxpc3RzCkkndmUgZ290IHNvbWUgcXVlc3Rpb25zIGFib3V0IHViaSBmaWxlIHN5
-c3RlbSBiYWNrZ3JvdW5kIHRocmVhZCByZWNlbnRseSBsaXN0ZWQgYmVsb3c6CjEuIElmIEkg
-bW91dCB1YmlmcyBhZ2FpbiB3aGVuIGl0J3MgYWxyZWFkeSBtb3VudGVkLCB3aWxsIHRoZSBi
-YWNrZ3JvdW5kIHRocmVhZCBiZSBjcmVhdGVkIGFnYWluPwoyLiBJcyBmaWxlIHdyaXR0ZW4g
-dG8gdGhlIHdyaXRlLWJ1ZmZlciB0aGVuIHN5bmNocm9uaXplZCB0byBmbGFzaCBtZWRpYSBi
-eSBiYWNrZ3JvdW5kIHRocmVhZCBpbiBib3RoIHN5bmMgbW9kZSBhbmQgYXN5bmMgbW9kZT8g
-CjMuIFdoZW4gSSBtb251dCB1YmlmcyBpbiBzeW5jIG1vZGUgYW5kIHdyaXRlIGZpbGVzIHRv
-IGl0LCBpdCB3aWxsIHRha2Ugc2V2ZXJhbCBtaW51dGVzIHRvIGZpbmlzaCBhIHdyaXR0aW5n
-IG9wZXJhdGlvbiBhdCBzb21lIHBvaW50IGFzIGdhcmJhZ2UgY29sbGVjdGlvbiwgYXQgdGhh
-dCBwb2ludCwgb3RoZXIgdGhyZWFkcyBhcmUgYmxvY2tlZCBieSB1YmlmcyBiYWNrZ3JvdWQg
-dGhyZWFkLkJ1dCBpbiBhc3luYyBtb2RlLCB0aGF0IGlzc3VlIG5ldmVyIGFwcGVhcnMuIEhv
-dyBjYW4gYmFja2dyb3VuZCB0aHJlYWQgYmxvY2sgb3RoZXIgdGhyZWFkcyBpbiBzeW5jIG1v
-ZGU/IERvZXNuJ3QgY29udGV4dCBzd2l0Y2ggaGFwcGVuPw==
+On Fri, Jul 1, 2016 at 3:50 PM, =E8=BE=89=E5=B0=91 <wang502742203@qq.com> w=
+rote:
+> Hi,MTD lists
+> I've got some questions about ubi file system background thread recently =
+listed below:
+> 1. If I mout ubifs again when it's already mounted, will the background t=
+hread be created again?
+
+There is one thread per UBIFS instance.
+
+> 2. Is file written to the write-buffer then synchronized to flash media b=
+y background thread in both sync mode and async mode?
+
+No, write back is a generic Linux mechanism.
+
+> 3. When I monut ubifs in sync mode and write files to it, it will take se=
+veral minutes to finish a writting operation at some point as garbage colle=
+ction, at that point, other threads are blocked by ubifs backgroud thread.B=
+ut in async mode, that issue never appears. How can background thread block=
+ other threads in sync mode? Doesn't context switch happen?
+
+As I wrote in an earlier mail, this should not take minutes. Please
+instrument the code to figure
+where it spends so much time.
+In sync mode the calling thread is blocked, i.e. your write() syscall.
+
+--=20
+Thanks,
+//richard
