@@ -1,17 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bJzzg-0005Ye-68
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 09:16:45 +0000
-Date: Mon, 4 Jul 2016 11:16:12 +0200
+ id 1bK0Fr-0000wj-9P
+ for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 09:33:27 +0000
+Date: Mon, 4 Jul 2016 11:29:26 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>
-Subject: Re: Race-free NAND device removal
-Message-ID: <20160704111612.43cd6339@bbrezillon>
-In-Reply-To: <57791562.2020703@nod.at>
-References: <57791562.2020703@nod.at>
+To: Raghav Dogra <raghav.dogra@nxp.com>, Benjamin Herrenschmidt
+ <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael
+ Ellerman <mpe@ellerman.id.au>
+Cc: <linux-mtd@lists.infradead.org>, prabhakar.kushwaha@nxp.com,
+ leoyang.li@nxp.com, oss@buserror.net, computersforpeace@gmail.com,
+ linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH][v2] driver/memory: Update dependency of IFC for Layerscape
+Message-ID: <20160704112926.351aebf4@bbrezillon>
+In-Reply-To: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
+References: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,97 +27,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 3 Jul 2016 15:38:42 +0200
-Richard Weinberger <richard@nod.at> wrote:
++PPC maintainers.
 
-> Hi!
-> 
-> While working on nandsim I realized that nand_release() ignores the return
-> value from mtd_device_unregister().
-> 
-> That means NAND devices cannot removed in a race-free manner.
-> Consider a NAND driver that registers ->_get_device() and ->_put_device()
-> callbacks for refcounting. In its removal function it will return -EBUSY
-> whenever the refcount is > 0.
-> But when device is claimed while removing it, it can happen that the refcount
-> increments after the check.
-> MTD can deal with that and mtd_device_unregister() will return EBUSY.
-> But nand_release() won't notice and the NAND driver continues with the tear down
-> process.
+Hi Raghav,
 
-Yes, I already noticed that, and apparently all NAND controller drivers
-seem to assume that nand_release() always succeed. It's definitely a
-bug, since the MTD device will still be exposed, but the underlying
-NAND structure (and the associated data + implementation) will be
-gone :-/.
+Since you're touching powerpc drivers, the least you could do is add
+ppc maintainers in Cc, so that they can ack/review your patch...
+
+On Fri, 1 Jul 2016 21:32:30 +0530
+Raghav Dogra <raghav.dogra@nxp.com> wrote:
+
+> This patch enables IFC NAND support on ARM layerscape platform.
+> It fixes the dependency to enable NAND. The include files are being modified
+> to ensure complilation for both PowerPC and ARM architectures.
+
+Still think this could be separated in 2 commits:
+- the first one getting rid of the asm/prom.h inclusion
+- the second one changing the Kconfig dependency
 
 > 
-> Would be a change like the following one acceptable or is a NAND driver
-> allowed to call mtd_device_unregister() itself?
-> AFAICT the additional call to mtd_device_unregister() in nand_release() would
-> be an nop then.
-
-This patch looks good, but NAND controller drivers will keep ignoring
-the nand_release() return code and release their own private data, so
-implementations are still buggy ;).
-
-This whole NAND dev registration/deregistration is unsafe, and I plan
-to rework it when moving to a controller <-> chips infrastructure.
-
-Are you fixing a real bug or just a potential one? Cause I'm not sure
-doing that is any safer if we don't patch all the NAND controller
-drivers...
-
+> Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
+> ---
+> Applicable to git://git.infradead.org/l2-mtd.git
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 0b0dc29..dc76bc6 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4604,16 +4604,19 @@ EXPORT_SYMBOL(nand_scan);
->   * nand_release - [NAND Interface] Free resources held by the NAND device
->   * @mtd: MTD device structure
->   */
-> -void nand_release(struct mtd_info *mtd)
-> +int nand_release(struct mtd_info *mtd)
->  {
-> +	int ret;
->  	struct nand_chip *chip = mtd_to_nand(mtd);
+> Changes for v2: updated commit description
 > 
-> +	ret = mtd_device_unregister(mtd);
-> +	if (ret)
-> +		return ret;
-> +
->  	if (chip->ecc.mode == NAND_ECC_SOFT &&
->  	    chip->ecc.algo == NAND_ECC_BCH)
->  		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
+>  drivers/memory/Kconfig   | 2 +-
+>  drivers/memory/fsl_ifc.c | 4 +++-
+>  drivers/mtd/nand/Kconfig | 2 +-
+>  3 files changed, 5 insertions(+), 3 deletions(-)
 > 
-> -	mtd_device_unregister(mtd);
-> -
->  	/* Free bad block table memory */
->  	kfree(chip->bbt);
->  	if (!(chip->options & NAND_OWN_BUFFERS))
-> @@ -4623,6 +4626,8 @@ void nand_release(struct mtd_info *mtd)
->  	if (chip->badblock_pattern && chip->badblock_pattern->options
->  			& NAND_BBT_DYNAMICSTRUCT)
->  		kfree(chip->badblock_pattern);
-> +
-> +	return 0;
->  }
->  EXPORT_SYMBOL_GPL(nand_release);
-> 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index fbe8e16..c15b1c4 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -39,7 +39,7 @@ extern int nand_scan_ident(struct mtd_info *mtd, int max_chips,
->  extern int nand_scan_tail(struct mtd_info *mtd);
-> 
->  /* Free resources held by the NAND device */
-> -extern void nand_release(struct mtd_info *mtd);
-> +extern int nand_release(struct mtd_info *mtd);
-> 
->  /* Internal helper for board drivers which need to override command function */
->  extern void nand_wait_ready(struct mtd_info *mtd);
-> 
-> Thanks,
-> //richard
+> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+> index 81ddb17..5645705 100644
+> --- a/drivers/memory/Kconfig
+> +++ b/drivers/memory/Kconfig
+> @@ -104,7 +104,7 @@ config FSL_CORENET_CF
+>  
+>  config FSL_IFC
+>  	bool
+> -	depends on FSL_SOC
+> +	depends on FSL_SOC || ARCH_LAYERSCAPE
+>  
+>  config JZ4780_NEMC
+>  	bool "Ingenic JZ4780 SoC NEMC driver"
+> diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+> index 904b4af..1b182b1 100644
+> --- a/drivers/memory/fsl_ifc.c
+> +++ b/drivers/memory/fsl_ifc.c
+> @@ -31,7 +31,9 @@
+>  #include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/fsl_ifc.h>
+> -#include <asm/prom.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_irq.h>
+>  
+>  struct fsl_ifc_ctrl *fsl_ifc_ctrl_dev;
+>  EXPORT_SYMBOL(fsl_ifc_ctrl_dev);
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index f05e0e9..eace3ef 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -438,7 +438,7 @@ config MTD_NAND_FSL_ELBC
+>  
+>  config MTD_NAND_FSL_IFC
+>  	tristate "NAND support for Freescale IFC controller"
+> -	depends on MTD_NAND && FSL_SOC
+> +	depends on MTD_NAND && (FSL_SOC || ARCH_LAYERSCAPE)
+>  	select FSL_IFC
+>  	select MEMORY
+>  	help
