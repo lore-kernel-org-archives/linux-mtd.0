@@ -1,20 +1,17 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bK0Fr-0000wj-9P
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 09:33:27 +0000
-Date: Mon, 4 Jul 2016 11:29:26 +0200
+ id 1bK0Io-0002ni-B8
+ for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 09:36:30 +0000
+Date: Mon, 4 Jul 2016 11:35:58 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Raghav Dogra <raghav.dogra@nxp.com>, Benjamin Herrenschmidt
- <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael
- Ellerman <mpe@ellerman.id.au>
-Cc: <linux-mtd@lists.infradead.org>, prabhakar.kushwaha@nxp.com,
- leoyang.li@nxp.com, oss@buserror.net, computersforpeace@gmail.com,
- linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH][v2] driver/memory: Update dependency of IFC for Layerscape
-Message-ID: <20160704112926.351aebf4@bbrezillon>
-In-Reply-To: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
-References: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtdpart: propagate _get/put_device()
+Message-ID: <20160704113558.0daab438@bbrezillon>
+In-Reply-To: <1467231263-3974-1-git-send-email-richard@nod.at>
+References: <1467231263-3974-1-git-send-email-richard@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,74 +24,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+PPC maintainers.
+On Wed, 29 Jun 2016 22:14:23 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-Hi Raghav,
-
-Since you're touching powerpc drivers, the least you could do is add
-ppc maintainers in Cc, so that they can ack/review your patch...
-
-On Fri, 1 Jul 2016 21:32:30 +0530
-Raghav Dogra <raghav.dogra@nxp.com> wrote:
-
-> This patch enables IFC NAND support on ARM layerscape platform.
-> It fixes the dependency to enable NAND. The include files are being modified
-> to ensure complilation for both PowerPC and ARM architectures.
-
-Still think this could be separated in 2 commits:
-- the first one getting rid of the asm/prom.h inclusion
-- the second one changing the Kconfig dependency
-
+> If the master device has callbacks for _get/put_device()
+> and this MTD has slaves a get_mtd_device() call on paritions
+> will never issue the registered callbacks.
+> Fix this by propergating _get/put_device() down.
 > 
-> Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+
+Nit below, otherwise it looks good to me:
+
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
 > ---
-> Applicable to git://git.infradead.org/l2-mtd.git
+> Hi!
 > 
-> Changes for v2: updated commit description
+> I've found this issue while heavily reworking nandsim.
+> With my changes applied you can add/remove MTD's during
+> runtime. I figured that nandsim's refcounting goes nuts.
+> After tracking down the root cause I figured that
+> _get/put_device() has no effect on MTD slaves.
 > 
->  drivers/memory/Kconfig   | 2 +-
->  drivers/memory/fsl_ifc.c | 4 +++-
->  drivers/mtd/nand/Kconfig | 2 +-
->  3 files changed, 5 insertions(+), 3 deletions(-)
+> Thanks,
+> //richard
 > 
-> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-> index 81ddb17..5645705 100644
-> --- a/drivers/memory/Kconfig
-> +++ b/drivers/memory/Kconfig
-> @@ -104,7 +104,7 @@ config FSL_CORENET_CF
+> ---
+>  drivers/mtd/mtdpart.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 1f13e32..938dbeb 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -317,6 +317,19 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
+>  	return res;
+>  }
 >  
->  config FSL_IFC
->  	bool
-> -	depends on FSL_SOC
-> +	depends on FSL_SOC || ARCH_LAYERSCAPE
->  
->  config JZ4780_NEMC
->  	bool "Ingenic JZ4780 SoC NEMC driver"
-> diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-> index 904b4af..1b182b1 100644
-> --- a/drivers/memory/fsl_ifc.c
-> +++ b/drivers/memory/fsl_ifc.c
-> @@ -31,7 +31,9 @@
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/fsl_ifc.h>
-> -#include <asm/prom.h>
-> +#include <linux/irqdomain.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_irq.h>
->  
->  struct fsl_ifc_ctrl *fsl_ifc_ctrl_dev;
->  EXPORT_SYMBOL(fsl_ifc_ctrl_dev);
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index f05e0e9..eace3ef 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -438,7 +438,7 @@ config MTD_NAND_FSL_ELBC
->  
->  config MTD_NAND_FSL_IFC
->  	tristate "NAND support for Freescale IFC controller"
-> -	depends on MTD_NAND && FSL_SOC
-> +	depends on MTD_NAND && (FSL_SOC || ARCH_LAYERSCAPE)
->  	select FSL_IFC
->  	select MEMORY
->  	help
+> +static int part_get_device(struct mtd_info *mtd)
+> +{
+> +	struct mtd_part *part = mtd_to_part(mtd);
+> +	return part->master->_get_device(part->master);
+> +}
+> +
+> +static void part_put_device(struct mtd_info *mtd)
+> +{
+> +	struct mtd_part *part = mtd_to_part(mtd);
+> +	part->master->_put_device(part->master);
+> +}
+> +
+> +
+
+Extra blank line here.
+
+>  static int part_ooblayout_ecc(struct mtd_info *mtd, int section,
+>  			      struct mtd_oob_region *oobregion)
+>  {
+> @@ -463,6 +476,12 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+>  		slave->mtd._block_isbad = part_block_isbad;
+>  	if (master->_block_markbad)
+>  		slave->mtd._block_markbad = part_block_markbad;
+> +
+> +	if (master->_get_device)
+> +		slave->mtd._get_device = part_get_device;
+> +	if (master->_put_device)
+> +		slave->mtd._put_device = part_put_device;
+> +
+>  	slave->mtd._erase = part_erase;
+>  	slave->master = master;
+>  	slave->offset = part->offset;
