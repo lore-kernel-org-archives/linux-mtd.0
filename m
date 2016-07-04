@@ -1,25 +1,14 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bK4P8-0004Xr-JQ
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 13:59:19 +0000
-Date: Mon, 4 Jul 2016 15:58:46 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
- <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/6] mtd: nand: gpmi: correct bitflip for erased NAND
- page
-Message-ID: <20160704155846.0b0b4c8f@bbrezillon>
-In-Reply-To: <1466804411-19874-5-git-send-email-han.xu@nxp.com>
-References: <1466804411-19874-1-git-send-email-han.xu@nxp.com>
- <1466804411-19874-5-git-send-email-han.xu@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1bKA9L-0002gF-D4
+ for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 20:07:24 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
+ dedekind1@gmail.com
+Subject: [PATCH 1/2] ubi: gluebi: Fix double refcounting
+Date: Mon,  4 Jul 2016 22:06:50 +0200
+Message-Id: <1467662811-7463-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,147 +18,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 24 Jun 2016 16:40:09 -0500
-Han Xu <han.xu@nxp.com> wrote:
+There is no need to call get/put on the module
+reference in gluebi_get/put_device() callbacks.
+Since mtd->owner is the gluebi module itself
+mtdcore.c will take care of proper refcounting
+in __get/put_mtd_device() before executing the
+callbacks.
 
-> i.MX6QP and i.MX7D BCH module integrated a new feature to detect the
-> bitflip number for erased NAND page. So for these two platform, set the
-> erase threshold to ecc_strength and if bitflip detected, GPMI driver
-> will correct the data to all 0xFF.
-> 
-> Signed-off-by: Han Xu <han.xu@nxp.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/bch-regs.h  | 10 +++++++++
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  5 +++++
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 37 +++++++++++++++++++++++++++++++---
->  3 files changed, 49 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> index 228142c..2c44b88 100644
-> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> @@ -30,7 +30,13 @@
->  #define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
->  
->  #define HW_BCH_STATUS0				0x00000010
-> +
->  #define HW_BCH_MODE				0x00000020
-> +#define BP_BCH_MODE_ERASE_THRESHOLD		0
-> +#define BM_BCH_MODE_ERASE_THRESHOLD	(0xff << BP_BCH_MODE_ERASE_THRESHOLD)
-> +#define BF_BCH_MODE_ERASE_THRESHOLD(v)		\
-> +	(((v) << BP_BCH_MODE_ERASE_THRESHOLD) & BM_BCH_MODE_ERASE_THRESHOLD)
-> +
->  #define HW_BCH_ENCODEPTR			0x00000030
->  #define HW_BCH_DATAPTR				0x00000040
->  #define HW_BCH_METAPTR				0x00000050
-> @@ -125,4 +131,8 @@
->  	)
->  
->  #define HW_BCH_VERSION				0x00000160
-> +#define HW_BCH_DEBUG1				0x00000170
-> +#define BP_BCH_DEBUG1_ERASED_ZERO_COUNT	0
-> +#define BM_BCH_DEBUG1_ERASED_ZERO_COUNT		\
-> +		(0x1ff << BP_BCH_DEBUG1_ERASED_ZERO_COUNT)
->  #endif
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index 358ff5d..0b5666a 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -298,6 +298,11 @@ int bch_set_geometry(struct gpmi_nand_data *this)
->  			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
->  			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
->  
-> +	/* Set erase threshold to ecc_strength for mx6qp and mx7 */
-> +	if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
-> +		writel(BF_BCH_MODE_ERASE_THRESHOLD(ecc_strength),
-> +			r->bch_regs + HW_BCH_MODE);
-> +
->  	/* Set *all* chip selects to use layout 0. */
->  	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
->  
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index aedaff3..db8e546 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1043,11 +1043,12 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  {
->  	struct gpmi_nand_data *this = nand_get_controller_data(chip);
->  	struct bch_geometry *nfc_geo = &this->bch_geometry;
-> +	void __iomem *bch_regs = this->resources.bch_regs;
->  	void          *payload_virt;
->  	dma_addr_t    payload_phys;
->  	void          *auxiliary_virt;
->  	dma_addr_t    auxiliary_phys;
-> -	unsigned int  i;
-> +	unsigned int  i, j;
->  	unsigned char *status;
->  	unsigned int  max_bitflips = 0;
->  	int           ret;
-> @@ -1087,9 +1088,14 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  			   nfc_geo->payload_size,
->  			   payload_virt, payload_phys);
->  
-> -	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
-> -		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
-> +	for (i = 0, j = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
-> +		if (*status == STATUS_GOOD)
-> +			continue;
-> +		if (*status == STATUS_ERASED) {
-> +			/* count the number of erased chunks */
-> +			j++;
->  			continue;
-> +		}
->  
->  		if (*status == STATUS_UNCORRECTABLE) {
->  			int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
-> @@ -1098,6 +1104,12 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  			int eccbytes;
->  			int flips;
->  
-> +			/* shortcut for i.MX7 and i.MX6QP */
-> +			if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this)) {
-> +				mtd->ecc_stats.failed++;
-> +				continue;
-> +			}
-> +
->  			/* Read ECC bytes into our internal raw_buffer */
->  			offset = nfc_geo->metadata_size * 8;
->  			offset += ((8 * nfc_geo->ecc_chunk_size) + eccbits) * (i + 1);
-> @@ -1167,6 +1179,25 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  		max_bitflips = max_t(unsigned int, max_bitflips, *status);
->  	}
->  
-> +	/*
-> +	 * i.MX6QP and i.MX7 have dedicate register to check bitflips in the
-> +	 * page, while it cannot tell in which chunk bitflips locate, memset
-> +	 * all the data if bitflips exist and all chunks are erased.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/gluebi.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Hm, that's a big problem: how can we decide if the number of bitflips
-per ECC chunk exceed the bitflips threshold?
-
-> +	 */
-> +	if (j == nfc_geo->ecc_chunk_count &&
-> +		(GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))) {
-> +		int flips;
-> +
-> +		flips = readl(bch_regs + HW_BCH_DEBUG1);
-> +		if (flips) {
-> +			max_bitflips = max_t(unsigned int, max_bitflips,
-> +					flips);
-
-max_bitflips is supposed to contain the maximum number of bitflips per
-ECC chunk not per page, so nand_base might return -EUCLEAN while it
-should have returned zero in some cases.
-
-Given this new information I'm not sure the HW solution to count
-bitflips in erased pages is appropriate.
-
-> +			memset(buf, ~0, nfc_geo->payload_size);
-> +			memset(chip->oob_poi, ~0, mtd->oobsize);
-> +			mtd->ecc_stats.corrected += flips;
-> +		}
-> +	}
-> +
->  	if (oob_required) {
->  		/*
->  		 * It's time to deliver the OOB bytes. See gpmi_ecc_read_oob()
+diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
+index cb7c075..ea1016f 100644
+--- a/drivers/mtd/ubi/gluebi.c
++++ b/drivers/mtd/ubi/gluebi.c
+@@ -99,9 +99,6 @@ static int gluebi_get_device(struct mtd_info *mtd)
+ 	struct gluebi_device *gluebi;
+ 	int ubi_mode = UBI_READONLY;
+ 
+-	if (!try_module_get(THIS_MODULE))
+-		return -ENODEV;
+-
+ 	if (mtd->flags & MTD_WRITEABLE)
+ 		ubi_mode = UBI_READWRITE;
+ 
+@@ -153,7 +150,6 @@ static void gluebi_put_device(struct mtd_info *mtd)
+ 	gluebi->refcnt -= 1;
+ 	if (gluebi->refcnt == 0)
+ 		ubi_close_volume(gluebi->desc);
+-	module_put(THIS_MODULE);
+ 	mutex_unlock(&devices_mutex);
+ }
+ 
+-- 
+2.7.3
