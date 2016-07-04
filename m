@@ -1,14 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bKC0w-0003h4-UZ
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 22:06:51 +0000
+ id 1bKC0w-0003h9-Ua
+ for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 22:06:52 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Subject: MTD life cycle fixes
-Date: Tue,  5 Jul 2016 00:06:18 +0200
-Message-Id: <1467669983-12105-1-git-send-email-richard@nod.at>
+ dwmw2@infradead.org, Richard Weinberger <richard@nod.at>
+Subject: [PATCH 3/5] mtd: Don't unconditionally unregister reboot notifier
+Date: Tue,  5 Jul 2016 00:06:21 +0200
+Message-Id: <1467669983-12105-4-git-send-email-richard@nod.at>
+In-Reply-To: <1467669983-12105-1-git-send-email-richard@nod.at>
+References: <1467669983-12105-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,11 +20,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-While working on a nandsim feature to add/remove NAND devices
-on the fly I noticed some odds. This series intends to fix them.
-My initial plan was submitting them as part of my nandsim series
-but it turned out to be five patches and I fear they need a good
-review as they're all touching MTD core code.
+del_mtd_device() is allowed to fail.
+i.e. when the MTD is busy.
+Unregister the reboot notifier only when we're really
+about to delete the MTD.
 
-Thanks,
-//richard
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/mtdcore.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index e3936b8..36e5fb0 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -654,17 +654,22 @@ int mtd_device_unregister(struct mtd_info *master)
+ {
+ 	int err;
+ 
+-	if (master->_reboot)
+-		unregister_reboot_notifier(&master->reboot_notifier);
+-
+ 	err = del_mtd_partitions(master);
+ 	if (err)
+ 		return err;
+ 
+ 	if (!device_is_registered(&master->dev))
+-		return 0;
++		goto unregister;
+ 
+-	return del_mtd_device(master);
++	err = del_mtd_device(master);
++	if (err)
++		return err;
++
++unregister:
++	if (master->_reboot)
++		unregister_reboot_notifier(&master->reboot_notifier);
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(mtd_device_unregister);
+ 
+-- 
+2.7.3
