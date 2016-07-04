@@ -1,18 +1,17 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bK0Mt-0005K0-9h
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 09:40:44 +0000
-Subject: Re: [PATCH] mtdpart: propagate _get/put_device()
+ id 1bK0QU-0007AG-Ml
+ for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 09:44:27 +0000
+Subject: Re: Race-free NAND device removal
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1467231263-3974-1-git-send-email-richard@nod.at>
- <20160704113558.0daab438@bbrezillon>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+References: <57791562.2020703@nod.at> <20160704111612.43cd6339@bbrezillon>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <577A2F00.2060008@nod.at>
-Date: Mon, 4 Jul 2016 11:40:16 +0200
+Message-ID: <577A2FE3.3030304@nod.at>
+Date: Mon, 4 Jul 2016 11:44:03 +0200
 MIME-Version: 1.0
-In-Reply-To: <20160704113558.0daab438@bbrezillon>
+In-Reply-To: <20160704111612.43cd6339@bbrezillon>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,25 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris,
 
-Am 04.07.2016 um 11:35 schrieb Boris Brezillon:
-> On Wed, 29 Jun 2016 22:14:23 +0200
+
+Am 04.07.2016 um 11:16 schrieb Boris Brezillon:
+> On Sun, 3 Jul 2016 15:38:42 +0200
 > Richard Weinberger <richard@nod.at> wrote:
 > 
->> If the master device has callbacks for _get/put_device()
->> and this MTD has slaves a get_mtd_device() call on paritions
->> will never issue the registered callbacks.
->> Fix this by propergating _get/put_device() down.
+>> Hi!
 >>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
+>> While working on nandsim I realized that nand_release() ignores the return
+>> value from mtd_device_unregister().
+>>
+>> That means NAND devices cannot removed in a race-free manner.
+>> Consider a NAND driver that registers ->_get_device() and ->_put_device()
+>> callbacks for refcounting. In its removal function it will return -EBUSY
+>> whenever the refcount is > 0.
+>> But when device is claimed while removing it, it can happen that the refcount
+>> increments after the check.
+>> MTD can deal with that and mtd_device_unregister() will return EBUSY.
+>> But nand_release() won't notice and the NAND driver continues with the tear down
+>> process.
 > 
-> Nit below, otherwise it looks good to me:
-> 
-> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Yes, I already noticed that, and apparently all NAND controller drivers
+> seem to assume that nand_release() always succeed. It's definitely a
+> bug, since the MTD device will still be exposed, but the underlying
+> NAND structure (and the associated data + implementation) will be
+> gone :-/.
 
-Will send a v2 without the extra blank line and the typo
-in the commit message. :)
+Well, in most cases it will work since the module refcounting kicks in.
+And no NAND drivers create/remove MTDs during runtime.
+
+>>
+>> Would be a change like the following one acceptable or is a NAND driver
+>> allowed to call mtd_device_unregister() itself?
+>> AFAICT the additional call to mtd_device_unregister() in nand_release() would
+>> be an nop then.
+> 
+> This patch looks good, but NAND controller drivers will keep ignoring
+> the nand_release() return code and release their own private data, so
+> implementations are still buggy ;).
+> 
+> This whole NAND dev registration/deregistration is unsafe, and I plan
+> to rework it when moving to a controller <-> chips infrastructure.
+> 
+> Are you fixing a real bug or just a potential one? Cause I'm not sure
+> doing that is any safer if we don't patch all the NAND controller
+> drivers...
+
+I'm facing a real issue on nandsim.
+Currently I'm heavily reworking nandsim.
+One of the new features is that you can add/remove NAND MTDs during runtime
+using a userspace tool. It works like losetup.
+
+$ nandsimctl --backend file /home/rw/work/XXX/broken_mtd.raw --id-bytes 0x....
+
+While getting this race free I found that issue.
 
 Thanks,
 //richard
