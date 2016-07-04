@@ -1,23 +1,28 @@
-Received: from gate.crashing.org ([63.228.1.57])
+Received: from mail-eopbgr20079.outbound.protection.outlook.com ([40.107.2.79]
+ helo=EUR02-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bK0W4-00027q-6T
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 09:50:16 +0000
-Message-ID: <1467625765.13965.4.camel@kernel.crashing.org>
-Subject: Re: [PATCH][v2] driver/memory: Update dependency of IFC for Layerscape
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Raghav Dogra
- <raghav.dogra@nxp.com>, Paul Mackerras <paulus@samba.org>, Michael Ellerman
- <mpe@ellerman.id.au>, Scott Wood <scottwood@freescale.com>
-Cc: linux-mtd@lists.infradead.org, prabhakar.kushwaha@nxp.com,
- leoyang.li@nxp.com, oss@buserror.net, computersforpeace@gmail.com,
- linuxppc-dev@lists.ozlabs.org
-Date: Mon, 04 Jul 2016 19:49:25 +1000
-In-Reply-To: <20160704112926.351aebf4@bbrezillon>
+ id 1bK0ZH-0004g6-CC
+ for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 09:53:32 +0000
+From: Raghav Dogra <raghav.dogra@nxp.com>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Paul Mackerras <paulus@samba.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Scott Wood <scottwood@freescale.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "Prabhakar Kushwaha" <prabhakar.kushwaha@nxp.com>, Yang-Leo Li
+ <leoyang.li@nxp.com>, "oss@buserror.net" <oss@buserror.net>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: RE: [PATCH][v2] driver/memory: Update dependency of IFC for Layerscape
+Date: Mon, 4 Jul 2016 09:53:07 +0000
+Message-ID: <DB4PR04MB346D83FDC23C2AC47881DBE89380@DB4PR04MB346.eurprd04.prod.outlook.com>
 References: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
  <20160704112926.351aebf4@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <1467625765.13965.4.camel@kernel.crashing.org>
+In-Reply-To: <1467625765.13965.4.camel@kernel.crashing.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,78 +32,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2016-07-04 at 11:29 +0200, Boris Brezillon wrote:
-> +PPC maintainers.
-
-+ Scott for FSL stuff
-
-> Hi Raghav,
->
-> Since you're touching powerpc drivers, the least you could do is add
-> ppc maintainers in Cc, so that they can ack/review your patch...
-> 
-> On Fri, 1 Jul 2016 21:32:30 +0530
-> Raghav Dogra <raghav.dogra@nxp.com> wrote:
-> 
-> > This patch enables IFC NAND support on ARM layerscape platform.
-> > It fixes the dependency to enable NAND. The include files are being
-> > modified
-> > to ensure complilation for both PowerPC and ARM architectures.
-> 
-> Still think this could be separated in 2 commits:
-> - the first one getting rid of the asm/prom.h inclusion
-> - the second one changing the Kconfig dependency
-> 
-> > 
-> > Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
-> > ---
-> > Applicable to git://git.infradead.org/l2-mtd.git
-> > 
-> > Changes for v2: updated commit description
-> > 
-> >  drivers/memory/Kconfig   | 2 +-
-> >  drivers/memory/fsl_ifc.c | 4 +++-
-> >  drivers/mtd/nand/Kconfig | 2 +-
-> >  3 files changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-> > index 81ddb17..5645705 100644
-> > --- a/drivers/memory/Kconfig
-> > +++ b/drivers/memory/Kconfig
-> > @@ -104,7 +104,7 @@ config FSL_CORENET_CF
-> >  
-> >  config FSL_IFC
-> >  	bool
-> > -	depends on FSL_SOC
-> > +	depends on FSL_SOC || ARCH_LAYERSCAPE
-> >  
-> >  config JZ4780_NEMC
-> >  	bool "Ingenic JZ4780 SoC NEMC driver"
-> > diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-> > index 904b4af..1b182b1 100644
-> > --- a/drivers/memory/fsl_ifc.c
-> > +++ b/drivers/memory/fsl_ifc.c
-> > @@ -31,7 +31,9 @@
-> >  #include <linux/of_device.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/fsl_ifc.h>
-> > -#include <asm/prom.h>
-> > +#include <linux/irqdomain.h>
-> > +#include <linux/of_address.h>
-> > +#include <linux/of_irq.h>
-> >  
-> >  struct fsl_ifc_ctrl *fsl_ifc_ctrl_dev;
-> >  EXPORT_SYMBOL(fsl_ifc_ctrl_dev);
-> > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> > index f05e0e9..eace3ef 100644
-> > --- a/drivers/mtd/nand/Kconfig
-> > +++ b/drivers/mtd/nand/Kconfig
-> > @@ -438,7 +438,7 @@ config MTD_NAND_FSL_ELBC
-> >  
-> >  config MTD_NAND_FSL_IFC
-> >  	tristate "NAND support for Freescale IFC controller"
-> > -	depends on MTD_NAND && FSL_SOC
-> > +	depends on MTD_NAND && (FSL_SOC || ARCH_LAYERSCAPE)
-> >  	select FSL_IFC
-> >  	select MEMORY
-> >  	help
+U2NvdHQgdXNlcyB0aGUgdXBkYXRlZCBlbWFpbCBpZCA8b3NzQGJ1c2Vycm9yLm5ldD4gYW5kIGlz
+IGFscmVhZHkgYWRkZWQuDQoNClJlZ2FyZHMsDQpSYWdoYXYgDQoNCj4gLS0tLS1PcmlnaW5hbCBN
+ZXNzYWdlLS0tLS0NCj4gRnJvbTogQmVuamFtaW4gSGVycmVuc2NobWlkdCBbbWFpbHRvOmJlbmhA
+a2VybmVsLmNyYXNoaW5nLm9yZ10NCj4gU2VudDogTW9uZGF5LCBKdWx5IDA0LCAyMDE2IDM6MTkg
+UE0NCj4gVG86IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25z
+LmNvbT47IFJhZ2hhdiBEb2dyYQ0KPiA8cmFnaGF2LmRvZ3JhQG54cC5jb20+OyBQYXVsIE1hY2tl
+cnJhcyA8cGF1bHVzQHNhbWJhLm9yZz47IE1pY2hhZWwNCj4gRWxsZXJtYW4gPG1wZUBlbGxlcm1h
+bi5pZC5hdT47IFNjb3R0IFdvb2QgPHNjb3R0d29vZEBmcmVlc2NhbGUuY29tPg0KPiBDYzogbGlu
+dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IFByYWJoYWthciBLdXNod2FoYQ0KPiA8cHJhYmhh
+a2FyLmt1c2h3YWhhQG54cC5jb20+OyBZYW5nLUxlbyBMaSA8bGVveWFuZy5saUBueHAuY29tPjsN
+Cj4gb3NzQGJ1c2Vycm9yLm5ldDsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOyBsaW51eHBw
+Yy0NCj4gZGV2QGxpc3RzLm96bGFicy5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF1bdjJdIGRy
+aXZlci9tZW1vcnk6IFVwZGF0ZSBkZXBlbmRlbmN5IG9mIElGQyBmb3INCj4gTGF5ZXJzY2FwZQ0K
+PiANCj4gT24gTW9uLCAyMDE2LTA3LTA0IGF0IDExOjI5ICswMjAwLCBCb3JpcyBCcmV6aWxsb24g
+d3JvdGU6DQo+ID4gK1BQQyBtYWludGFpbmVycy4NCj4gDQo+ICsgU2NvdHQgZm9yIEZTTCBzdHVm
+Zg0KPiANCj4gPiBIaSBSYWdoYXYsDQo+ID4NCj4gPiBTaW5jZSB5b3UncmUgdG91Y2hpbmcgcG93
+ZXJwYyBkcml2ZXJzLCB0aGUgbGVhc3QgeW91IGNvdWxkIGRvIGlzIGFkZA0KPiA+IHBwYyBtYWlu
+dGFpbmVycyBpbiBDYywgc28gdGhhdCB0aGV5IGNhbiBhY2svcmV2aWV3IHlvdXIgcGF0Y2guLi4N
+Cj4gPg0KPiA+IE9uIEZyaSwgMSBKdWwgMjAxNiAyMTozMjozMCArMDUzMA0KPiA+IFJhZ2hhdiBE
+b2dyYSA8cmFnaGF2LmRvZ3JhQG54cC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gPiBUaGlzIHBhdGNo
+IGVuYWJsZXMgSUZDIE5BTkQgc3VwcG9ydCBvbiBBUk0gbGF5ZXJzY2FwZSBwbGF0Zm9ybS4NCj4g
+PiA+IEl0IGZpeGVzIHRoZSBkZXBlbmRlbmN5IHRvIGVuYWJsZSBOQU5ELiBUaGUgaW5jbHVkZSBm
+aWxlcyBhcmUgYmVpbmcNCj4gPiA+IG1vZGlmaWVkIHRvIGVuc3VyZSBjb21wbGlsYXRpb24gZm9y
+IGJvdGggUG93ZXJQQyBhbmQgQVJNDQo+ID4gPiBhcmNoaXRlY3R1cmVzLg0KPiA+DQo+ID4gU3Rp
+bGwgdGhpbmsgdGhpcyBjb3VsZCBiZSBzZXBhcmF0ZWQgaW4gMiBjb21taXRzOg0KPiA+IC0gdGhl
+IGZpcnN0IG9uZSBnZXR0aW5nIHJpZCBvZiB0aGUgYXNtL3Byb20uaCBpbmNsdXNpb24NCj4gPiAt
+IHRoZSBzZWNvbmQgb25lIGNoYW5naW5nIHRoZSBLY29uZmlnIGRlcGVuZGVuY3kNCj4gPg0KPiA+
+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IFJhZ2hhdiBEb2dyYSA8cmFnaGF2LmRvZ3JhQG54cC5j
+b20+DQo+ID4gPiAtLS0NCj4gPiA+IEFwcGxpY2FibGUgdG8gZ2l0Oi8vZ2l0LmluZnJhZGVhZC5v
+cmcvbDItbXRkLmdpdA0KPiA+ID4NCj4gPiA+IENoYW5nZXMgZm9yIHYyOiB1cGRhdGVkIGNvbW1p
+dCBkZXNjcmlwdGlvbg0KPiA+ID4NCj4gPiA+IMKgZHJpdmVycy9tZW1vcnkvS2NvbmZpZ8KgwqDC
+oHwgMiArLQ0KPiA+ID4gwqBkcml2ZXJzL21lbW9yeS9mc2xfaWZjLmMgfCA0ICsrKy0NCj4gPiA+
+IMKgZHJpdmVycy9tdGQvbmFuZC9LY29uZmlnIHwgMiArLQ0KPiA+ID4gwqAzIGZpbGVzIGNoYW5n
+ZWQsIDUgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gPiA+DQo+ID4gPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9tZW1vcnkvS2NvbmZpZyBiL2RyaXZlcnMvbWVtb3J5L0tjb25maWcgaW5k
+ZXgNCj4gPiA+IDgxZGRiMTcuLjU2NDU3MDUgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL21l
+bW9yeS9LY29uZmlnDQo+ID4gPiArKysgYi9kcml2ZXJzL21lbW9yeS9LY29uZmlnDQo+ID4gPiBA
+QCAtMTA0LDcgKzEwNCw3IEBAIGNvbmZpZyBGU0xfQ09SRU5FVF9DRg0KPiA+ID4NCj4gPiA+IMKg
+Y29uZmlnIEZTTF9JRkMNCj4gPiA+IMKgCWJvb2wNCj4gPiA+IC0JZGVwZW5kcyBvbiBGU0xfU09D
+DQo+ID4gPiArCWRlcGVuZHMgb24gRlNMX1NPQyB8fCBBUkNIX0xBWUVSU0NBUEUNCj4gPiA+DQo+
+ID4gPiDCoGNvbmZpZyBKWjQ3ODBfTkVNQw0KPiA+ID4gwqAJYm9vbCAiSW5nZW5pYyBKWjQ3ODAg
+U29DIE5FTUMgZHJpdmVyIg0KPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVtb3J5L2ZzbF9p
+ZmMuYyBiL2RyaXZlcnMvbWVtb3J5L2ZzbF9pZmMuYw0KPiA+ID4gaW5kZXggOTA0YjRhZi4uMWIx
+ODJiMSAxMDA2NDQNCj4gPiA+IC0tLSBhL2RyaXZlcnMvbWVtb3J5L2ZzbF9pZmMuYw0KPiA+ID4g
+KysrIGIvZHJpdmVycy9tZW1vcnkvZnNsX2lmYy5jDQo+ID4gPiBAQCAtMzEsNyArMzEsOSBAQA0K
+PiA+ID4gwqAjaW5jbHVkZSA8bGludXgvb2ZfZGV2aWNlLmg+DQo+ID4gPiDCoCNpbmNsdWRlIDxs
+aW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4gPiA+IMKgI2luY2x1ZGUgPGxpbnV4L2ZzbF9pZmMu
+aD4NCj4gPiA+IC0jaW5jbHVkZSA8YXNtL3Byb20uaD4NCj4gPiA+ICsjaW5jbHVkZSA8bGludXgv
+aXJxZG9tYWluLmg+DQo+ID4gPiArI2luY2x1ZGUgPGxpbnV4L29mX2FkZHJlc3MuaD4NCj4gPiA+
+ICsjaW5jbHVkZSA8bGludXgvb2ZfaXJxLmg+DQo+ID4gPg0KPiA+ID4gwqBzdHJ1Y3QgZnNsX2lm
+Y19jdHJsICpmc2xfaWZjX2N0cmxfZGV2Ow0KPiA+ID4gwqBFWFBPUlRfU1lNQk9MKGZzbF9pZmNf
+Y3RybF9kZXYpOw0KPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvS2NvbmZpZyBi
+L2RyaXZlcnMvbXRkL25hbmQvS2NvbmZpZw0KPiA+ID4gaW5kZXggZjA1ZTBlOS4uZWFjZTNlZiAx
+MDA2NDQNCj4gPiA+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvS2NvbmZpZw0KPiA+ID4gKysrIGIv
+ZHJpdmVycy9tdGQvbmFuZC9LY29uZmlnDQo+ID4gPiBAQCAtNDM4LDcgKzQzOCw3IEBAIGNvbmZp
+ZyBNVERfTkFORF9GU0xfRUxCQw0KPiA+ID4NCj4gPiA+IMKgY29uZmlnIE1URF9OQU5EX0ZTTF9J
+RkMNCj4gPiA+IMKgCXRyaXN0YXRlICJOQU5EIHN1cHBvcnQgZm9yIEZyZWVzY2FsZSBJRkMgY29u
+dHJvbGxlciINCj4gPiA+IC0JZGVwZW5kcyBvbiBNVERfTkFORCAmJiBGU0xfU09DDQo+ID4gPiAr
+CWRlcGVuZHMgb24gTVREX05BTkQgJiYgKEZTTF9TT0MgfHwgQVJDSF9MQVlFUlNDQVBFKQ0KPiA+
+ID4gwqAJc2VsZWN0IEZTTF9JRkMNCj4gPiA+IMKgCXNlbGVjdCBNRU1PUlkNCj4gPiA+IMKgCWhl
+bHANCg==
