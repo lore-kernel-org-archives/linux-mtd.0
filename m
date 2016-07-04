@@ -1,20 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bK0mM-00049M-Gx
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 10:07:03 +0000
-Date: Mon, 4 Jul 2016 12:06:30 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bK1el-0007La-8O
+ for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 11:03:16 +0000
 Subject: Re: Race-free NAND device removal
-Message-ID: <20160704120630.075af531@bbrezillon>
-In-Reply-To: <577A2FE3.3030304@nod.at>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 References: <57791562.2020703@nod.at> <20160704111612.43cd6339@bbrezillon>
- <577A2FE3.3030304@nod.at>
+ <577A2FE3.3030304@nod.at> <20160704120630.075af531@bbrezillon>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <577A425B.5080706@nod.at>
+Date: Mon, 4 Jul 2016 13:02:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160704120630.075af531@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,66 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 4 Jul 2016 11:44:03 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Am 04.07.2016 um 12:06 schrieb Boris Brezillon:
+>> $ nandsimctl --backend file /home/rw/work/XXX/broken_mtd.raw --id-bytes 0x....
+>>
+>> While getting this race free I found that issue.
+> 
+> Okay, so you modified nandsim code to check nand_release() return code,
+> right? Maybe you can send this change in your nandsim rework series
+> then.
 
-> Am 04.07.2016 um 11:16 schrieb Boris Brezillon:
-> > On Sun, 3 Jul 2016 15:38:42 +0200
-> > Richard Weinberger <richard@nod.at> wrote:
-> >   
-> >> Hi!
-> >>
-> >> While working on nandsim I realized that nand_release() ignores the return
-> >> value from mtd_device_unregister().
-> >>
-> >> That means NAND devices cannot removed in a race-free manner.
-> >> Consider a NAND driver that registers ->_get_device() and ->_put_device()
-> >> callbacks for refcounting. In its removal function it will return -EBUSY
-> >> whenever the refcount is > 0.
-> >> But when device is claimed while removing it, it can happen that the refcount
-> >> increments after the check.
-> >> MTD can deal with that and mtd_device_unregister() will return EBUSY.
-> >> But nand_release() won't notice and the NAND driver continues with the tear down
-> >> process.  
-> > 
-> > Yes, I already noticed that, and apparently all NAND controller drivers
-> > seem to assume that nand_release() always succeed. It's definitely a
-> > bug, since the MTD device will still be exposed, but the underlying
-> > NAND structure (and the associated data + implementation) will be
-> > gone :-/.  
-> 
-> Well, in most cases it will work since the module refcounting kicks in.
-> And no NAND drivers create/remove MTDs during runtime.
+Yep. My code checks the result of nand_release().
+I'll carry it in my series.
 
-Yep.
+BTW: There is more fun:
+When we look into mtdcore.c
+int mtd_device_unregister(struct mtd_info *master)
+{
+        int err;
 
-> 
-> >>
-> >> Would be a change like the following one acceptable or is a NAND driver
-> >> allowed to call mtd_device_unregister() itself?
-> >> AFAICT the additional call to mtd_device_unregister() in nand_release() would
-> >> be an nop then.  
-> > 
-> > This patch looks good, but NAND controller drivers will keep ignoring
-> > the nand_release() return code and release their own private data, so
-> > implementations are still buggy ;).
-> > 
-> > This whole NAND dev registration/deregistration is unsafe, and I plan
-> > to rework it when moving to a controller <-> chips infrastructure.
-> > 
-> > Are you fixing a real bug or just a potential one? Cause I'm not sure
-> > doing that is any safer if we don't patch all the NAND controller
-> > drivers...  
-> 
-> I'm facing a real issue on nandsim.
-> Currently I'm heavily reworking nandsim.
-> One of the new features is that you can add/remove NAND MTDs during runtime
-> using a userspace tool. It works like losetup.
-> 
-> $ nandsimctl --backend file /home/rw/work/XXX/broken_mtd.raw --id-bytes 0x....
-> 
-> While getting this race free I found that issue.
+        if (master->_reboot)
+                unregister_reboot_notifier(&master->reboot_notifier);
 
-Okay, so you modified nandsim code to check nand_release() return code,
-right? Maybe you can send this change in your nandsim rework series
-then.
+        err = del_mtd_partitions(master);
+        if (err)
+                return err;
+
+        if (!device_is_registered(&master->dev))
+                return 0;
+
+        return del_mtd_device(master);
+}
+EXPORT_SYMBOL_GPL(mtd_device_unregister);
+
+Either del_mtd_partitions() or del_mtd_device() will notice that the MTD usage count is > 0 and
+return -EBUSY.
+But at this stage we've already executed the reboot notifier. Bug or feature? ;-)
+
+I'm also not sure about the printk in del_mtd_device():
+        if (mtd->usecount) {
+                printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
+                       mtd->index, mtd->name, mtd->usecount);
+                ret = -EBUSY;
+        } else {
+
+Why do you have to warn the user? Is this 100% a legit use case or is the printk here to warn
+that a driver is buggy?
+At least with the existing UBI glubi driver you can hit this code path.
+Same for the upcoming nandsim changes.
+
+Thanks,
+//richard
