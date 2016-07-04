@@ -1,18 +1,23 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bK3W1-0001lB-R1
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 13:02:22 +0000
-Date: Mon, 4 Jul 2016 15:01:59 +0200
+ id 1bK4JB-00019R-Ky
+ for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 13:53:10 +0000
+Date: Mon, 4 Jul 2016 15:52:37 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Teresa Remmet <t.remmet@phytec.de>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, tony@atomide.com, Roger Quadros
- <rogerq@ti.com>, computersforpeace@gmail.com
-Subject: Re: mtd: nand: omap2: check for elm_id removed
-Message-ID: <20160704150159.0af47ad5@bbrezillon>
-In-Reply-To: <1467636717.4618.19.camel@lws-tremmet.phytec.de>
-References: <1467636717.4618.19.camel@lws-tremmet.phytec.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Sascha Hauer
+ <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org, Richard Weinberger
+ <richard@nod.at>
+Subject: Re: [PATCH v2] UBI: only read necessary size when reading the VID
+ header
+Message-ID: <20160704155237.2c05e72f@bbrezillon>
+In-Reply-To: <20160628174638.GB80724@google.com>
+References: <1467114667-30548-1-git-send-email-s.hauer@pengutronix.de>
+ <1467118829.2456.40.camel@gmail.com>
+ <20160628140500.GN20657@pengutronix.de>
+ <1467125648.2456.57.camel@gmail.com>
+ <20160628174638.GB80724@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,34 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 04 Jul 2016 14:51:57 +0200
-Teresa Remmet <t.remmet@phytec.de> wrote:
+On Tue, 28 Jun 2016 10:46:38 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-> Hello,
+> Hi,
 > 
-> with commit c9711ec5250b22fd94e9b34c17c095e001a90e66
-> ("mtd: nand: omap: Clean up device tree support")
-> the old "elm_id" property check has been removed. So only "ti,elm-id" is
-> valid now.
-> I noticed that the old property is still used by 3 boards:
+> On Tue, Jun 28, 2016 at 05:54:08PM +0300, Artem Bityutskiy wrote:
+> > On Tue, 2016-06-28 at 16:05 +0200, Sascha Hauer wrote:  
+> > > The gpmi NAND driver allows reading subpages (NAND_SUBPAGE_READ is
+> > > set), but
+> > > it does not allow writing subpages (NAND_NO_SUBPAGE_WRITE is also
+> > > set).  
+> > 
+> > OK. In the generic code (nand_base.c) though you can find that if the
+> > read request is for entire page or subpage, then the data is transfared
+> > from the chip to the supplied buffer, ECC is verified, and the data are
+> > returned. If the read request is for a fraction of a page or subpage,
+> > then the data are transferred from the chip to an internal buffer, ECC
+> > is verified, and then the required piece of data are copied from the
+> > internal buffer to the supplied buffer. I.e., more memory copy
+> > operations.
+> > 
+> > The code is very twisted, but I think the logic is in
+> > 'nand_do_read_ops()', you'll notice that in the "not aligned" case the
+> > special 'chip->buffers->databuf' is used, otherwise the buffer supplied
+> > by UBI is used.  
 > 
-> git grep elm_id arch/arm/boot/dts/*
-> arch/arm/boot/dts/am335x-baltos.dtsi:           elm_id = <&elm>;
-> arch/arm/boot/dts/am335x-igep0033.dtsi:         elm_id = <&elm>;
-> arch/arm/boot/dts/am335x-phycore-som.dtsi:              elm_id = <&elm>;
-> 
-> I wonder if the right way would be to patch the device trees, or to add
-> the check again and to keep backward compatibility?
+> Note that "not aligned" means "not aligned to mtd->writesize", and that
+> writesize is NOT the subpage size. So if some controller+flash+driver
+> actually supports subpage writes (there are few of these), then UBI
+> might already be requesting sub-page reads, and those reads are still
+> memcpy()'d in nand_do_read_ops(). This doesn't change the argument too
+> much, I suppose; it just means we have a bug in nand_do_read_ops() I
+> guess.
 
-We should probably do both, though backward compat is usually dependent
-on the platform maintainer (some accept to break DT backward compat).
-
-Anyway, all DTs should be patched to use the new binding, so you can at
-least send a patch doing that.
-
-> 
-> I may provide a patch then.
-> 
-> Regards,
-> Teresa
-> 
+Is this really a bug, or just a sub-optimal implementation?
