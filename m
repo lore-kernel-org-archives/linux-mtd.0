@@ -1,21 +1,18 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bK2aO-0004tk-T9
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 12:02:49 +0000
-Date: Mon, 4 Jul 2016 14:02:26 +0200
+ id 1bK3CN-0005jr-8i
+ for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 12:42:03 +0000
+Date: Mon, 4 Jul 2016 14:41:41 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Brian Norris
- <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: Race-free NAND device removal
-Message-ID: <20160704140226.0646bd73@bbrezillon>
-In-Reply-To: <CAFLxGvzOgisiSbvSSjWmbMvZ=tU180iMzdV2HZD_FShCvo9sgA@mail.gmail.com>
-References: <57791562.2020703@nod.at> <20160704111612.43cd6339@bbrezillon>
- <577A2FE3.3030304@nod.at> <20160704120630.075af531@bbrezillon>
- <577A425B.5080706@nod.at>
- <CAFLxGvzOgisiSbvSSjWmbMvZ=tU180iMzdV2HZD_FShCvo9sgA@mail.gmail.com>
+To: Harvey Hunt <harvey.hunt@imgtec.com>
+Cc: <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: nand: jz4780: Update MODULE_AUTHOR email address
+Message-ID: <20160704144141.7daedb14@bbrezillon>
+In-Reply-To: <20160630154949.14684-1-harvey.hunt@imgtec.com>
+References: <20160630154949.14684-1-harvey.hunt@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,69 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 4 Jul 2016 13:11:09 +0200
-Richard Weinberger <richard.weinberger@gmail.com> wrote:
+On Thu, 30 Jun 2016 16:49:49 +0100
+Harvey Hunt <harvey.hunt@imgtec.com> wrote:
 
-> On Mon, Jul 4, 2016 at 1:02 PM, Richard Weinberger <richard@nod.at> wrote:
-> > Am 04.07.2016 um 12:06 schrieb Boris Brezillon:  
-> >>> $ nandsimctl --backend file /home/rw/work/XXX/broken_mtd.raw --id-bytes 0x....
-> >>>
-> >>> While getting this race free I found that issue.  
-> >>
-> >> Okay, so you modified nandsim code to check nand_release() return code,
-> >> right? Maybe you can send this change in your nandsim rework series
-> >> then.  
-> >
-> > Yep. My code checks the result of nand_release().
-> > I'll carry it in my series.
-> >
-> > BTW: There is more fun:
-> > When we look into mtdcore.c
-> > int mtd_device_unregister(struct mtd_info *master)
-> > {
-> >         int err;
-> >
-> >         if (master->_reboot)
-> >                 unregister_reboot_notifier(&master->reboot_notifier);
-> >
-> >         err = del_mtd_partitions(master);
-> >         if (err)
-> >                 return err;
-> >
-> >         if (!device_is_registered(&master->dev))
-> >                 return 0;
-> >
-> >         return del_mtd_device(master);
-> > }
-> > EXPORT_SYMBOL_GPL(mtd_device_unregister);
-> >
-> > Either del_mtd_partitions() or del_mtd_device() will notice that the MTD usage count is > 0 and
-> > return -EBUSY.
-> > But at this stage we've already executed the reboot notifier. Bug or feature? ;-)  
+> Emails will bounce from my imgtec address, so update it to a new one.
 > 
-> Should be read removed the...
+> Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
 
-Probably a bug.
+Applied.
 
+BTW, would you mind adding an entry for this driver in MAINTAINERS :)?
+
+Thanks,
+
+Boris
+
+> Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
+> Cc: linux-mtd@lists.infradead.org 
+> Cc: linux-kernel@vger.kernel.org 
+> ---
+>  drivers/mtd/nand/jz4780_bch.c  | 2 +-
+>  drivers/mtd/nand/jz4780_nand.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> > I'm also not sure about the printk in del_mtd_device():
-> >         if (mtd->usecount) {
-> >                 printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
-> >                        mtd->index, mtd->name, mtd->usecount);
-> >                 ret = -EBUSY;
-> >         } else {
-> >
-> > Why do you have to warn the user? Is this 100% a legit use case or is the printk here to warn
-> > that a driver is buggy?
-> > At least with the existing UBI glubi driver you can hit this code path.
-> > Same for the upcoming nandsim changes.
-> >
-> > Thanks,
-> > //richard
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/  
-> 
-> 
-> 
+> diff --git a/drivers/mtd/nand/jz4780_bch.c b/drivers/mtd/nand/jz4780_bch.c
+> index d74f4ba..731c605 100644
+> --- a/drivers/mtd/nand/jz4780_bch.c
+> +++ b/drivers/mtd/nand/jz4780_bch.c
+> @@ -375,6 +375,6 @@ static struct platform_driver jz4780_bch_driver = {
+>  module_platform_driver(jz4780_bch_driver);
+>  
+>  MODULE_AUTHOR("Alex Smith <alex@alex-smith.me.uk>");
+> -MODULE_AUTHOR("Harvey Hunt <harvey.hunt@imgtec.com>");
+> +MODULE_AUTHOR("Harvey Hunt <harveyhuntnexus@gmail.com>");
+>  MODULE_DESCRIPTION("Ingenic JZ4780 BCH error correction driver");
+>  MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+> index daf3c42..175f67d 100644
+> --- a/drivers/mtd/nand/jz4780_nand.c
+> +++ b/drivers/mtd/nand/jz4780_nand.c
+> @@ -412,6 +412,6 @@ static struct platform_driver jz4780_nand_driver = {
+>  module_platform_driver(jz4780_nand_driver);
+>  
+>  MODULE_AUTHOR("Alex Smith <alex@alex-smith.me.uk>");
+> -MODULE_AUTHOR("Harvey Hunt <harvey.hunt@imgtec.com>");
+> +MODULE_AUTHOR("Harvey Hunt <harveyhuntnexus@gmail.com>");
+>  MODULE_DESCRIPTION("Ingenic JZ4780 NAND driver");
+>  MODULE_LICENSE("GPL v2");
