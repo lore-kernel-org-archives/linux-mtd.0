@@ -1,23 +1,24 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bKCIZ-0003KU-6v
- for linux-mtd@lists.infradead.org; Mon, 04 Jul 2016 22:25:04 +0000
-Subject: Re: [PATCH v2] UBI: only read necessary size when reading the VID
- header
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-References: <1467114667-30548-1-git-send-email-s.hauer@pengutronix.de>
- <1467118829.2456.40.camel@gmail.com> <20160628174304.GA80724@google.com>
- <1467172188.2456.64.camel@gmail.com> <20160704113835.7853d77d@bbrezillon>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <577AE227.6070504@nod.at>
-Date: Tue, 5 Jul 2016 00:24:39 +0200
+ id 1bKLwP-0007rD-MJ
+ for linux-mtd@lists.infradead.org; Tue, 05 Jul 2016 08:42:51 +0000
+Received: by mail-oi0-x22e.google.com with SMTP id s66so220429330oif.1
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Jul 2016 01:42:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160704113835.7853d77d@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <C80AB6F618D91B4E8F391CB202C12DFD11218919C5@LGEVEXMBHQSVC1.LGE.NET>
+References: <C80AB6F618D91B4E8F391CB202C12DFD11218919BD@LGEVEXMBHQSVC1.LGE.NET>
+ <CAFLxGvxRtxSSRL5VOEmy1udbnWBYcVf0JDVaMdca0Ww1HTK74w@mail.gmail.com>
+ <C80AB6F618D91B4E8F391CB202C12DFD11218919C5@LGEVEXMBHQSVC1.LGE.NET>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 5 Jul 2016 10:42:28 +0200
+Message-ID: <CAFLxGvwhmTjXRMpPGBX6LO9f_7NrKsTXvSBQLcLFFWWh1h4rGA@mail.gmail.com>
+Subject: Re: ubifs issue about ubifs_tnc_remove_ino when replay journal
+To: =?UTF-8?B?7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXIFBsYXRmb3JtKOyXsClBT1TtjIAoa2FyYW0u?=
+ =?UTF-8?B?bGVlQGxnZS5jb20p?= <karam.lee@lge.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?UTF-8?B?67CV7Iq57Zi4?= <seungho1.park@lge.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 04.07.2016 um 11:38 schrieb Boris Brezillon:
-> On Wed, 29 Jun 2016 06:49:48 +0300
-> Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> 
->> On Tue, 2016-06-28 at 10:43 -0700, Brian Norris wrote:
->>> Hi Artem,
->>>
->>> I'll comment on the other branches of this thread, but one thing
->>> here:
->>>
->>> On Tue, Jun 28, 2016 at 04:00:29PM +0300, Artem Bityutskiy wrote:  
->>>> Therefore, unless I misunderstood this patch - it introduces a
->>>> regression to those old setups at least (forces MTD to use an
->>>> intermediate buffer rather than copy data from NAND directly to the
->>>> buffer supplied by UBI)  
->>>
->>> It's really a balance between speed of the flash and speed of the
->>> memcpy().  
->>
->> Sure.
->>
->>>  I believe Boris may have benchmarked some of this recently,
->>> but I'm really inclined to believe that reading several times as much
->>> as
->>> you need from flash is much worse than doing some extra memcpy().  
->>
->> That's probably true.
->>
->>>  So
->>> even if we introduce an extra memcpy(), it might still be worth it to
->>> save the extra wait-for-flash time.  
->>
->> Right.
->>
->>> Intuitively, I expect that these days, the I/O time is much more
->>> significant than any memcpy().  
->>
->> All good points. Besides indeed in case of the subpage the memcpy() is
->> present anyway for (for unexpected reasons).
->>
->> So yeah, I think the concern I rose is a non-issue and we could proceed
->> with Sascha's patch. Thanks!
-> 
-> I see I don't have to convince you with real numbers, but, as pointed
-> by Brian, memcpy() is indeed way faster than NAND I/Os (and ECC
-> correction steps).
+On Sat, Jun 25, 2016 at 10:32 AM, =EC=9D=B4=EA=B0=80=EB=9E=8C/=EC=A3=BC=EC=
+=9E=84=EC=97=B0=EA=B5=AC=EC=9B=90=E3=80=89SW
+Platform(=EC=97=B0)AOT=ED=8C=80(karam.lee@lge.com) <karam.lee@lge.com> wrot=
+e:
+> thank you!
+>
+> I do not use fastmap.
+> My ".config" is "# CONFIG_MTD_UBI_FASTMAP is not set"
 
-Thanks for all the input! :-)
-I'll merge this patch in 4.8.
+Okay, good. This issue is still on my TODO.
+Is is possible to share a nanddump with me?
 
+I think I know what is going on, but I'm not sure.
+
+--=20
 Thanks,
 //richard
