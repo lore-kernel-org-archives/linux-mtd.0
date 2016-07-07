@@ -1,22 +1,22 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLETO-0000y5-3F
- for linux-mtd@lists.infradead.org; Thu, 07 Jul 2016 18:56:30 +0000
-Subject: Re: [PATCH 5/5] mtd: Don't print a scary message when trying to
- remove a busy MTD
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1467669983-12105-1-git-send-email-richard@nod.at>
- <1467669983-12105-6-git-send-email-richard@nod.at>
- <20160707165805.636d1b47@bbrezillon> <577EA408.4000406@nod.at>
- <20160707205326.2e525525@bbrezillon>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bLEVt-0001Lg-58
+ for linux-mtd@lists.infradead.org; Thu, 07 Jul 2016 18:59:05 +0000
+Date: Thu, 7 Jul 2016 20:58:32 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Richard Weinberger <richard@nod.at>
 Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
  dwmw2@infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <577EA5C7.8030102@nod.at>
-Date: Thu, 7 Jul 2016 20:56:07 +0200
+Subject: Re: [PATCH 2/5] mtd: nand: Propagate mtd_device_unregister() return
+ value in tear down
+Message-ID: <20160707205832.2065efad@bbrezillon>
+In-Reply-To: <577E9F84.3000108@nod.at>
+References: <1467669983-12105-1-git-send-email-richard@nod.at>
+ <1467669983-12105-3-git-send-email-richard@nod.at>
+ <20160706153406.64822eb4@bbrezillon> <577E9F84.3000108@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <20160707205326.2e525525@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,27 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris,
+On Thu, 7 Jul 2016 20:29:24 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-Am 07.07.2016 um 20:53 schrieb Boris Brezillon:
->>> Nit: can you keep the brackets around the if (mtd->usecount) block (we
->>> usually only drop them when both the 'if' and 'else' blocks contain
->>> a single instruction)?
->>>   
->>
->> As discussed on IRC, the current kernel coding style is fine with that.
+> Boris,
 > 
-> That's not what's described in Documentation/CodingStyle [1], but for
-> reason checkpatch is not complaining (I thought it was, but maybe this
-> rule has been relaxed).
+> Am 06.07.2016 um 15:34 schrieb Boris Brezillon:
+> >>  /**
+> >> - * nand_release - [NAND Interface] Free resources held by the NAND device
+> >> + * __nand_release - [NAND Interface] Free resources held by the NAND device
+> >>   * @mtd: MTD device structure
+> >>   */
+> >> -void nand_release(struct mtd_info *mtd)
+> >> +int __nand_release(struct mtd_info *mtd)  
+> > 
+> > Can we find a better name? nand_release_safe()?  
 > 
-> I still find it clearer to have brackets in this case, but I'll let
-> Brian decide.
+> Sure. Let's pick nand_release_safe().
 > 
-> [1]http://lxr.free-electrons.com/source/Documentation/CodingStyle#L168
+> >>  {
+> >> +	int ret;
+> >>  	struct nand_chip *chip = mtd_to_nand(mtd);
+> >>  
+> >> +	ret = mtd_device_unregister(mtd);
+> >> +	if (ret)
+> >> +		return ret;
+> >> +  
+> > 
+> > The question is, should we unregister the MTD device in nand_release().
+> > It feels a bit odd to have nand_scan_xxx() functions only doing the
+> > nand_chip initialization and letting the NAND controller driver
+> > register the MTD device, and have nand_release() unregister the MTD
+> > device for us.
+> > 
+> > Maybe we should export a nand_cleanup() function that would just
+> > release nand_chip resources and let NAND controller drivers that
+> > really care about mtd_device_unregister() return code call it
+> > themselves before calling nand_cleanup() (instead of calling
+> > nand_release()).  
+> 
+> You mean renaming nand_release() to nand_cleanup() and the driver
+> has to issue mtd_device_unregister() itself before it is allowed to
+> do nand_cleanup(). Yes, that is also an option.
+> The only downside is that we have to touch a lot of drivers then.
+> But the conversion should be almost trivial.
 
-I don't care much, if you prefer it the other way I'll happily change it.
-So, please await v2. :-)
-
-Thanks,
-//richard
+No, I meant adding nand_cleanup() and then patching nand_release() to
+first calling mtd_device_unregister() and then nand_cleanup(). This way
+you get rid of __nand_release() and use mtd_device_unregister() +
+nand_cleanup() in drivers that really care about
+mtd_device_unregister() return code.
