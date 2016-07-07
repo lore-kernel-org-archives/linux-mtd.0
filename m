@@ -1,20 +1,21 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLAmK-0006Nh-PJ
- for linux-mtd@lists.infradead.org; Thu, 07 Jul 2016 14:59:49 +0000
-Date: Thu, 7 Jul 2016 16:59:17 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bLE3c-0004LM-UU
+ for linux-mtd@lists.infradead.org; Thu, 07 Jul 2016 18:29:54 +0000
+Subject: Re: [PATCH 2/5] mtd: nand: Propagate mtd_device_unregister() return
+ value in tear down
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1467669983-12105-1-git-send-email-richard@nod.at>
+ <1467669983-12105-3-git-send-email-richard@nod.at>
+ <20160706153406.64822eb4@bbrezillon>
 Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
  dwmw2@infradead.org
-Subject: Re: [PATCH 4/5] mtd: Don't unconditionally execute remove notifiers
-Message-ID: <20160707165917.596dc758@bbrezillon>
-In-Reply-To: <1467669983-12105-5-git-send-email-richard@nod.at>
-References: <1467669983-12105-1-git-send-email-richard@nod.at>
- <1467669983-12105-5-git-send-email-richard@nod.at>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <577E9F84.3000108@nod.at>
+Date: Thu, 7 Jul 2016 20:29:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160706153406.64822eb4@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,42 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  5 Jul 2016 00:06:22 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Boris,
 
-> Only call them when we're really removing the MTD.
+Am 06.07.2016 um 15:34 schrieb Boris Brezillon:
+>>  /**
+>> - * nand_release - [NAND Interface] Free resources held by the NAND device
+>> + * __nand_release - [NAND Interface] Free resources held by the NAND device
+>>   * @mtd: MTD device structure
+>>   */
+>> -void nand_release(struct mtd_info *mtd)
+>> +int __nand_release(struct mtd_info *mtd)
 > 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Can we find a better name? nand_release_safe()?
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Sure. Let's pick nand_release_safe().
 
-> ---
->  drivers/mtd/mtdcore.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>>  {
+>> +	int ret;
+>>  	struct nand_chip *chip = mtd_to_nand(mtd);
+>>  
+>> +	ret = mtd_device_unregister(mtd);
+>> +	if (ret)
+>> +		return ret;
+>> +
 > 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 36e5fb0..f49e103 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -499,16 +499,16 @@ int del_mtd_device(struct mtd_info *mtd)
->  		goto out_error;
->  	}
->  
-> -	/* No need to get a refcount on the module containing
-> -		the notifier, since we hold the mtd_table_mutex */
-> -	list_for_each_entry(not, &mtd_notifiers, list)
-> -		not->remove(mtd);
-> -
->  	if (mtd->usecount) {
->  		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
->  		       mtd->index, mtd->name, mtd->usecount);
->  		ret = -EBUSY;
->  	} else {
-> +		/* No need to get a refcount on the module containing
-> +			the notifier, since we hold the mtd_table_mutex */
-> +		list_for_each_entry(not, &mtd_notifiers, list)
-> +			not->remove(mtd);
-> +
->  		device_unregister(&mtd->dev);
->  
->  		idr_remove(&mtd_idr, mtd->index);
+> The question is, should we unregister the MTD device in nand_release().
+> It feels a bit odd to have nand_scan_xxx() functions only doing the
+> nand_chip initialization and letting the NAND controller driver
+> register the MTD device, and have nand_release() unregister the MTD
+> device for us.
+> 
+> Maybe we should export a nand_cleanup() function that would just
+> release nand_chip resources and let NAND controller drivers that
+> really care about mtd_device_unregister() return code call it
+> themselves before calling nand_cleanup() (instead of calling
+> nand_release()).
+
+You mean renaming nand_release() to nand_cleanup() and the driver
+has to issue mtd_device_unregister() itself before it is allowed to
+do nand_cleanup(). Yes, that is also an option.
+The only downside is that we have to touch a lot of drivers then.
+But the conversion should be almost trivial.
+
+Thanks,
+//richard
