@@ -1,23 +1,19 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLEVt-0001Lg-58
- for linux-mtd@lists.infradead.org; Thu, 07 Jul 2016 18:59:05 +0000
-Date: Thu, 7 Jul 2016 20:58:32 +0200
+ id 1bLTSG-00024y-Vb
+ for linux-mtd@lists.infradead.org; Fri, 08 Jul 2016 10:56:22 +0000
+Date: Fri, 8 Jul 2016 12:55:48 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Subject: Re: [PATCH 2/5] mtd: nand: Propagate mtd_device_unregister() return
- value in tear down
-Message-ID: <20160707205832.2065efad@bbrezillon>
-In-Reply-To: <577E9F84.3000108@nod.at>
-References: <1467669983-12105-1-git-send-email-richard@nod.at>
- <1467669983-12105-3-git-send-email-richard@nod.at>
- <20160706153406.64822eb4@bbrezillon> <577E9F84.3000108@nod.at>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: [PULL] mtd: nand: Changes for 4.8
+Message-ID: <20160708125548.6992b5d2@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,53 +23,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 7 Jul 2016 20:29:24 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Hi Brian,
 
-> Boris,
-> 
-> Am 06.07.2016 um 15:34 schrieb Boris Brezillon:
-> >>  /**
-> >> - * nand_release - [NAND Interface] Free resources held by the NAND device
-> >> + * __nand_release - [NAND Interface] Free resources held by the NAND device
-> >>   * @mtd: MTD device structure
-> >>   */
-> >> -void nand_release(struct mtd_info *mtd)
-> >> +int __nand_release(struct mtd_info *mtd)  
-> > 
-> > Can we find a better name? nand_release_safe()?  
-> 
-> Sure. Let's pick nand_release_safe().
-> 
-> >>  {
-> >> +	int ret;
-> >>  	struct nand_chip *chip = mtd_to_nand(mtd);
-> >>  
-> >> +	ret = mtd_device_unregister(mtd);
-> >> +	if (ret)
-> >> +		return ret;
-> >> +  
-> > 
-> > The question is, should we unregister the MTD device in nand_release().
-> > It feels a bit odd to have nand_scan_xxx() functions only doing the
-> > nand_chip initialization and letting the NAND controller driver
-> > register the MTD device, and have nand_release() unregister the MTD
-> > device for us.
-> > 
-> > Maybe we should export a nand_cleanup() function that would just
-> > release nand_chip resources and let NAND controller drivers that
-> > really care about mtd_device_unregister() return code call it
-> > themselves before calling nand_cleanup() (instead of calling
-> > nand_release()).  
-> 
-> You mean renaming nand_release() to nand_cleanup() and the driver
-> has to issue mtd_device_unregister() itself before it is allowed to
-> do nand_cleanup(). Yes, that is also an option.
-> The only downside is that we have to touch a lot of drivers then.
-> But the conversion should be almost trivial.
+Here is a first PR for 4.8. I may send another one before the merge
+window ends: I'd like to get the pairing scheme stuff in 4.8, but
+I'm still waiting for your review on my v2. Anyway, I'm not sure yet,
+so let's see how it goes.
 
-No, I meant adding nand_cleanup() and then patching nand_release() to
-first calling mtd_device_unregister() and then nand_cleanup(). This way
-you get rid of __nand_release() and use mtd_device_unregister() +
-nand_cleanup() in drivers that really care about
-mtd_device_unregister() return code.
+As usual, let me know if I did something wrong in this PR.
+
+Thanks,
+
+Boris
+
+The following changes since commit 1a695a905c18548062509178b98bc91e67510864:
+
+  Linux 4.7-rc1 (2016-05-29 09:29:24 -0700)
+
+are available in the git repository at:
+
+  git@github.com:linux-nand/linux.git tags/nand/for-4.8
+
+for you to fetch changes up to fff358dd9d7a8f1bc72c5b0caf02190c0033d1f7:
+
+  mtd: nand: jz4780: Update MODULE_AUTHOR email address (2016-07-04 11:21:0=
+0 +0200)
+
+----------------------------------------------------------------
+This pull request contains only one notable change:
+* Addition of the MTK NAND controller driver
+
+* introduction of the ECC algo concept to extend the ECC mode one
+* replacement of the nand_ecclayout infrastructure by something more
+  future-proof.
+* addition of an mtd-activity led trigger to replace the nand-activity
+  one
+
+And a bunch of specific NAND driver improvements/fixes. Here are the
+changes that are worth mentioning:
+* A few fixes/improvements for the xway NAND controller driver
+* A few fixes for the sunxi NAND controller driver
+* Support for DMA in the sunxi NAND driver
+* Support for the sunxi NAND controller IP embedded in A23/A33 SoCs
+* Addition for bitflips detection in erased pages to the brcmnand driver
+* Support for new brcmnand IPs
+* Update of the OMAP-GPMC binding to support DMA channel description
+
+----------------------------------------------------------------
+Boris Brezillon (6):
+      mtd: nand: sunxi: add support for DMA assisted operations
+      mtd: nand: sunxi: update DT bindings
+      mtd: nand: sunxi: Fix OOB bytes retrieval in read_chunks_dma()
+      mtd: nand: sunxi: prefer 1k ECC blocks when applicable
+      mtd: nand: sunxi: check ecc->size values
+      mtd: nand: sunxi: fix subpage write
+
+Cooper Jr., Franklin (2):
+      mtd: nand: omap2: Support parsing dma channel information from DT
+      ARM: OMAP2+: Update GPMC and NAND DT binding documentation
+
+Dan Carpenter (1):
+      mtd: nand: sunxi: prevent a small memory leak
+
+Florian Fainelli (1):
+      mtd: brcmnand: Add v7.2 controller support
+
+Harvey Hunt (1):
+      mtd: nand: jz4780: Update MODULE_AUTHOR email address
+
+Hauke Mehrtens (6):
+      mtd: nand: xway: add some more documentation
+      mtd: nand: xway: convert to normal platform driver
+      mtd: nand: xway: remove manual reset
+      mtd: nand: xway: extract read and write function
+      mtd: nand: xway: add missing write_buf and read_buf to nand driver
+      mtd: nand: xway: add nandaddr to own struct
+
+Icenowy Zheng (2):
+      mtd: nand: sunxi: update DT bindings
+      mtd: nand: sunxi: add reset line support
+
+Iwo Mergler (1):
+      mtd: nandbiterrs: Support for NAND biterrors test on platforms withou=
+t raw write
+
+John Crispin (2):
+      mtd: nand: xway: Avoid messing up with IO_ADDR_W in ->cmd_ctrl()
+      mtd: nand: xway: fix nand locking
+
+Jorge Ramirez-Ortiz (2):
+      mtd: mediatek: device tree bindings for MTK
+      mtd: mediatek: driver for MTK Smart Device
+
+Kamal Dasu (2):
+      mtd: brcmnand: Add check for erased page bitflips
+      mtd: brcmnand: Detect sticky ucorr ecc error on dma reads
+
+Rafa=C5=82 Mi=C5=82ecki (1):
+      mtd: nand: add ESMT manufacturer
+
+Wei Yongjun (1):
+      mtd: nand: sunxi: fix return value check in sunxi_nfc_dma_op_prepare()
+
+ .../bindings/memory-controllers/omap-gpmc.txt      |    7 +-
+ .../devicetree/bindings/mtd/brcm,brcmnand.txt      |    1 +
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |    2 +-
+ Documentation/devicetree/bindings/mtd/mtk-nand.txt |  160 ++
+ .../devicetree/bindings/mtd/sunxi-nand.txt         |    6 +
+ drivers/mtd/nand/Kconfig                           |    8 +-
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/brcmnand/brcmnand.c               |  171 ++-
+ drivers/mtd/nand/jz4780_bch.c                      |    2 +-
+ drivers/mtd/nand/jz4780_nand.c                     |    2 +-
+ drivers/mtd/nand/mtk_ecc.c                         |  530 +++++++
+ drivers/mtd/nand/mtk_ecc.h                         |   50 +
+ drivers/mtd/nand/mtk_nand.c                        | 1526 ++++++++++++++++=
+++++
+ drivers/mtd/nand/nand_ids.c                        |    1 +
+ drivers/mtd/nand/omap2.c                           |    7 +-
+ drivers/mtd/nand/sunxi_nand.c                      |  397 ++++-
+ drivers/mtd/nand/xway_nand.c                       |  231 +--
+ drivers/mtd/tests/nandbiterrs.c                    |    2 +-
+ include/linux/mtd/nand.h                           |    1 +
+ 19 files changed, 2981 insertions(+), 124 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
+ create mode 100644 drivers/mtd/nand/mtk_ecc.c
+ create mode 100644 drivers/mtd/nand/mtk_ecc.h=09
