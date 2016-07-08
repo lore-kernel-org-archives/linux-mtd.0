@@ -1,19 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from web01.bitlogic.nl ([31.3.103.18])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLTSG-00024y-Vb
- for linux-mtd@lists.infradead.org; Fri, 08 Jul 2016 10:56:22 +0000
-Date: Fri, 8 Jul 2016 12:55:48 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: [PULL] mtd: nand: Changes for 4.8
-Message-ID: <20160708125548.6992b5d2@bbrezillon>
+ id 1bLTvD-0007hB-NL
+ for linux-mtd@lists.infradead.org; Fri, 08 Jul 2016 11:26:16 +0000
+Received: from admin (92.41.24.70.threembb.co.uk [92.41.24.70])
+ by web01.bitlogic.nl (Postfix) with ESMTPA id D8BBA26132
+ for <linux-mtd@lists.infradead.org>; Fri,  8 Jul 2016 11:35:40 +0200 (CEST)
+From: "GLOBAL PARTNERSHIP & INVESTMENTS"
+ <project.business.investor@asia-mail.com>
+Subject: Partnership INVESTMENT
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Reply-To: info@hk-financial.com
+Date: Fri, 8 Jul 2016 10:31:40 +0100
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <20160708111855.EAA9A3DCA4@web01.bitlogic.nl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,129 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+The Chief Executive Officer,
+Managing Director=20
+Chief Financial Director,
 
-Here is a first PR for 4.8. I may send another one before the merge
-window ends: I'd like to get the pairing scheme stuff in 4.8, but
-I'm still waiting for your review on my v2. Anyway, I'm not sure yet,
-so let's see how it goes.
+A CALL FOR BUSINESS & PROJECT FACILITATORS
 
-As usual, let me know if I did something wrong in this PR.
+WE ARE A BUSINESS DEVELOPMENT INVESTOR working on expanding its portfo=
+lio globally in Financing and Developing Projects. We are active Inves=
+tors and Financiers in sectors and geographies that hold potential and=
+ tangible returns, working in partnership with a number of world-class=
+ organizations with a combined International pool of nearly Half a Tri=
+llion in available Liquidity.
 
-Thanks,
+We have a confirmed Cash Backed Financial Facility ready to be investe=
+d only in your country as part of a Scheme; Social Investment Funds (S=
+IFs) to provide loans to our companies and individuals, to help sustai=
+n and grow already proven solutions to poverty. Our fund providers and=
+ investors include foundations aiming to align assets with mission, re=
+ligious pension funds striving for community impact, development banks=
+ seeking catalytic impact investment opportunities and accredited indi=
+vidual investors. This is a 100% Project and Business Development Inve=
+stment facility and is absolutely =93FLEXIBLE PROCEDURE=94 for deliver=
+y via Bank-to-Bank only and facility is up to 30 years. We would be ha=
+ppy to partner with you if you have any viable business or project and=
+ our areas of interest are any viable project such as Real Estate Proj=
+ects, Business Start-up and Expansion Projects, Oil/Gas Projects, Mini=
+ng Projects, Government/Municipal Projects, Motion Picture/Entertainme=
+nt Projects, and many other types of projects, to name a few.
 
-Boris
+Do contact me with your Serious Inquiries Only for further details and=
+ information at your earliest convenience. We look forward to receivin=
+g your reply to my personal email address: info@hk-financial.com=20
 
-The following changes since commit 1a695a905c18548062509178b98bc91e67510864:
-
-  Linux 4.7-rc1 (2016-05-29 09:29:24 -0700)
-
-are available in the git repository at:
-
-  git@github.com:linux-nand/linux.git tags/nand/for-4.8
-
-for you to fetch changes up to fff358dd9d7a8f1bc72c5b0caf02190c0033d1f7:
-
-  mtd: nand: jz4780: Update MODULE_AUTHOR email address (2016-07-04 11:21:0=
-0 +0200)
-
-----------------------------------------------------------------
-This pull request contains only one notable change:
-* Addition of the MTK NAND controller driver
-
-* introduction of the ECC algo concept to extend the ECC mode one
-* replacement of the nand_ecclayout infrastructure by something more
-  future-proof.
-* addition of an mtd-activity led trigger to replace the nand-activity
-  one
-
-And a bunch of specific NAND driver improvements/fixes. Here are the
-changes that are worth mentioning:
-* A few fixes/improvements for the xway NAND controller driver
-* A few fixes for the sunxi NAND controller driver
-* Support for DMA in the sunxi NAND driver
-* Support for the sunxi NAND controller IP embedded in A23/A33 SoCs
-* Addition for bitflips detection in erased pages to the brcmnand driver
-* Support for new brcmnand IPs
-* Update of the OMAP-GPMC binding to support DMA channel description
-
-----------------------------------------------------------------
-Boris Brezillon (6):
-      mtd: nand: sunxi: add support for DMA assisted operations
-      mtd: nand: sunxi: update DT bindings
-      mtd: nand: sunxi: Fix OOB bytes retrieval in read_chunks_dma()
-      mtd: nand: sunxi: prefer 1k ECC blocks when applicable
-      mtd: nand: sunxi: check ecc->size values
-      mtd: nand: sunxi: fix subpage write
-
-Cooper Jr., Franklin (2):
-      mtd: nand: omap2: Support parsing dma channel information from DT
-      ARM: OMAP2+: Update GPMC and NAND DT binding documentation
-
-Dan Carpenter (1):
-      mtd: nand: sunxi: prevent a small memory leak
-
-Florian Fainelli (1):
-      mtd: brcmnand: Add v7.2 controller support
-
-Harvey Hunt (1):
-      mtd: nand: jz4780: Update MODULE_AUTHOR email address
-
-Hauke Mehrtens (6):
-      mtd: nand: xway: add some more documentation
-      mtd: nand: xway: convert to normal platform driver
-      mtd: nand: xway: remove manual reset
-      mtd: nand: xway: extract read and write function
-      mtd: nand: xway: add missing write_buf and read_buf to nand driver
-      mtd: nand: xway: add nandaddr to own struct
-
-Icenowy Zheng (2):
-      mtd: nand: sunxi: update DT bindings
-      mtd: nand: sunxi: add reset line support
-
-Iwo Mergler (1):
-      mtd: nandbiterrs: Support for NAND biterrors test on platforms withou=
-t raw write
-
-John Crispin (2):
-      mtd: nand: xway: Avoid messing up with IO_ADDR_W in ->cmd_ctrl()
-      mtd: nand: xway: fix nand locking
-
-Jorge Ramirez-Ortiz (2):
-      mtd: mediatek: device tree bindings for MTK
-      mtd: mediatek: driver for MTK Smart Device
-
-Kamal Dasu (2):
-      mtd: brcmnand: Add check for erased page bitflips
-      mtd: brcmnand: Detect sticky ucorr ecc error on dma reads
-
-Rafa=C5=82 Mi=C5=82ecki (1):
-      mtd: nand: add ESMT manufacturer
-
-Wei Yongjun (1):
-      mtd: nand: sunxi: fix return value check in sunxi_nfc_dma_op_prepare()
-
- .../bindings/memory-controllers/omap-gpmc.txt      |    7 +-
- .../devicetree/bindings/mtd/brcm,brcmnand.txt      |    1 +
- .../devicetree/bindings/mtd/gpmc-nand.txt          |    2 +-
- Documentation/devicetree/bindings/mtd/mtk-nand.txt |  160 ++
- .../devicetree/bindings/mtd/sunxi-nand.txt         |    6 +
- drivers/mtd/nand/Kconfig                           |    8 +-
- drivers/mtd/nand/Makefile                          |    1 +
- drivers/mtd/nand/brcmnand/brcmnand.c               |  171 ++-
- drivers/mtd/nand/jz4780_bch.c                      |    2 +-
- drivers/mtd/nand/jz4780_nand.c                     |    2 +-
- drivers/mtd/nand/mtk_ecc.c                         |  530 +++++++
- drivers/mtd/nand/mtk_ecc.h                         |   50 +
- drivers/mtd/nand/mtk_nand.c                        | 1526 ++++++++++++++++=
-++++
- drivers/mtd/nand/nand_ids.c                        |    1 +
- drivers/mtd/nand/omap2.c                           |    7 +-
- drivers/mtd/nand/sunxi_nand.c                      |  397 ++++-
- drivers/mtd/nand/xway_nand.c                       |  231 +--
- drivers/mtd/tests/nandbiterrs.c                    |    2 +-
- include/linux/mtd/nand.h                           |    1 +
- 19 files changed, 2981 insertions(+), 124 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
- create mode 100644 drivers/mtd/nand/mtk_ecc.c
- create mode 100644 drivers/mtd/nand/mtk_ecc.h=09
+HK FINANCIAL FIDUCIARY
+Suite 811 Tsimshatsui Centre,=20
+East Wing, 66 Mody Road,
+Tsimshatsui East, Kowloon, Hong Kong
+Email: info@hk-financial.com =20
+Hong Kong Office: +85 281 929 504
+Skype: benjamin.jones10010
