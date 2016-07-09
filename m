@@ -1,21 +1,19 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from host.buserror.net ([209.198.135.123])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLZi3-0002gI-B4
- for linux-mtd@lists.infradead.org; Fri, 08 Jul 2016 17:37:03 +0000
-Received: by mail-pf0-x243.google.com with SMTP id i123so8889902pfg.3
- for <linux-mtd@lists.infradead.org>; Fri, 08 Jul 2016 10:36:43 -0700 (PDT)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM STB NAND FLASH
- DRIVER), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] mtd: nand: brcmnand: Change BUG_ON in brcmnand_send_cmd
-Date: Fri,  8 Jul 2016 10:36:39 -0700
-Message-Id: <1467999399-22288-1-git-send-email-f.fainelli@gmail.com>
+ id 1bLgh6-0002G7-4v
+ for linux-mtd@lists.infradead.org; Sat, 09 Jul 2016 01:04:32 +0000
+Message-ID: <1468026245.32358.75.camel@buserror.net>
+From: Scott Wood <oss@buserror.net>
+To: Raghav Dogra <raghav.dogra@nxp.com>, linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ leoyang.li@nxp.com, prabhakar.kushwaha@nxp.com
+Date: Fri, 08 Jul 2016 20:04:05 -0500
+In-Reply-To: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
+References: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH][v2] driver/memory: Update dependency of IFC for Layerscape
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Change the BUG_ON() condition in brcmnand_send_cmd() which checks for
-the interrupt status "controller ready" bit to a WARN_ON.
+On Fri, 2016-07-01 at 21:32 +0530, Raghav Dogra wrote:
+> This patch enables IFC NAND support on ARM layerscape platform.
+> It fixes the dependency to enable NAND. The include files are being modified
+> to ensure complilation for both PowerPC and ARM architectures.
+> 
+> Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
+> ---
+> Applicable to git://git.infradead.org/l2-mtd.git
+> 
+> Changes for v2: updated commit description
+> 
+>  drivers/memory/Kconfig   | 2 +-
+>  drivers/memory/fsl_ifc.c | 4 +++-
+>  drivers/mtd/nand/Kconfig | 2 +-
+>  3 files changed, 5 insertions(+), 3 deletions(-)
 
-There is no good reason to kill the system when this condition occur
-because we could have systems which listed the NAND controller as
-available (e.g: from Device Tree), but the NAND chip could be
-malfunctioning and not responding.
+Acked-by: Scott Wood <oss@buserror.net>
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Note that I even hesitated to remove that completely, but there is
-some value in knowing about this condition since it helps figuring
-out what could be wrong.
-
- drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index b6062a2f3dfd..72bdc283778d 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -1165,7 +1165,7 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
- 	ctrl->cmd_pending = cmd;
- 
- 	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
--	BUG_ON(!(intfc & INTFC_CTLR_READY));
-+	WARN_ON(!(intfc & INTFC_CTLR_READY));
- 
- 	mb(); /* flush previous writes */
- 	brcmnand_write_reg(ctrl, BRCMNAND_CMD_START,
--- 
-2.7.4
+-Scott
