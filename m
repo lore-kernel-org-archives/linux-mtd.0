@@ -1,19 +1,17 @@
-Received: from host.buserror.net ([209.198.135.123])
+Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLgh6-0002G7-4v
- for linux-mtd@lists.infradead.org; Sat, 09 Jul 2016 01:04:32 +0000
-Message-ID: <1468026245.32358.75.camel@buserror.net>
-From: Scott Wood <oss@buserror.net>
-To: Raghav Dogra <raghav.dogra@nxp.com>, linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- leoyang.li@nxp.com, prabhakar.kushwaha@nxp.com
-Date: Fri, 08 Jul 2016 20:04:05 -0500
-In-Reply-To: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
-References: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][v2] driver/memory: Update dependency of IFC for Layerscape
+ id 1bM184-0000J7-1h
+ for linux-mtd@lists.infradead.org; Sat, 09 Jul 2016 22:53:45 +0000
+Received: by mail-oi0-x243.google.com with SMTP id u68so1899030oie.3
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Jul 2016 15:53:23 -0700 (PDT)
+MIME-Version: 1.0
+Reply-To: Meiritbaby@hotmail.com
+From: Meirit Leeba <thiagorqw@gmail.com>
+Date: Sat, 9 Jul 2016 22:53:21 +0000
+Message-ID: <CANmaO8LtPYLJq7QLBR6cWZUxoBtKfhj5ROCVU17eM4LRWXwaww@mail.gmail.com>
+Subject: Hello....
+To: undisclosed-recipients:;
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +21,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2016-07-01 at 21:32 +0530, Raghav Dogra wrote:
-> This patch enables IFC NAND support on ARM layerscape platform.
-> It fixes the dependency to enable NAND. The include files are being modified
-> to ensure complilation for both PowerPC and ARM architectures.
-> 
-> Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
-> ---
-> Applicable to git://git.infradead.org/l2-mtd.git
-> 
-> Changes for v2: updated commit description
-> 
->  drivers/memory/Kconfig   | 2 +-
->  drivers/memory/fsl_ifc.c | 4 +++-
->  drivers/mtd/nand/Kconfig | 2 +-
->  3 files changed, 5 insertions(+), 3 deletions(-)
-
-Acked-by: Scott Wood <oss@buserror.net>
-
--Scott
+-- 
+Hello,
+Can i talk with you..?
