@@ -1,22 +1,25 @@
-Date: Sat, 9 Jul 2016 17:56:14 -0700
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bM3Zq-0004JB-FQ
+ for linux-mtd@lists.infradead.org; Sun, 10 Jul 2016 01:30:35 +0000
+Received: by mail-pf0-x242.google.com with SMTP id g202so276126pfb.1
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Jul 2016 18:30:14 -0700 (PDT)
+Date: Sat, 9 Jul 2016 18:30:10 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Teresa Remmet <t.remmet@phytec.de>
-Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org,
- =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
- Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH 2/2] mtd: nand: omap2: Add check for old elm binding
-Message-ID: <20160710005614.GB29572@localhost>
-References: <1467711150-23356-1-git-send-email-t.remmet@phytec.de>
- <1467711150-23356-2-git-send-email-t.remmet@phytec.de>
+ "open list:BROADCOM STB NAND FLASH DRIVER"
+ <bcm-kernel-feedback-list@broadcom.com>,
+ open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: nand: brcmnand: Change BUG_ON in brcmnand_send_cmd
+Message-ID: <20160710013010.GA12327@localhost>
+References: <1467999399-22288-1-git-send-email-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1467711150-23356-2-git-send-email-t.remmet@phytec.de>
+In-Reply-To: <1467999399-22288-1-git-send-email-f.fainelli@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 05, 2016 at 11:32:30AM +0200, Teresa Remmet wrote:
-> commit c9711ec5250b ("mtd: nand: omap: Clean up device tree support")
-> removes the check for the old elm phandle binding.
-
-That seems like a silly breakage of backwards compatibility. Must have
-overlooked that one, sorry.
-
-> Add it again to keep backward compatibility.
+On Fri, Jul 08, 2016 at 10:36:39AM -0700, Florian Fainelli wrote:
+> Change the BUG_ON() condition in brcmnand_send_cmd() which checks for
+> the interrupt status "controller ready" bit to a WARN_ON.
 > 
-> Signed-off-by: Teresa Remmet <t.remmet@phytec.de>
+> There is no good reason to kill the system when this condition occur
+> because we could have systems which listed the NAND controller as
+> available (e.g: from Device Tree), but the NAND chip could be
+> malfunctioning and not responding.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-I think we should probably take this for v4.7, since the breaking commit
-was only merged in v4.7-rc1. OMAP folks, any comment?
-
-Brian
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 
 > ---
->  drivers/mtd/nand/omap2.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Note that I even hesitated to remove that completely, but there is
+> some value in knowing about this condition since it helps figuring
+> out what could be wrong.
 > 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 08e1588..d788663 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1658,7 +1658,9 @@ static int omap_get_dt_info(struct device *dev, struct omap_nand_info *info)
->  	/* detect availability of ELM module. Won't be present pre-OMAP4 */
->  	info->elm_of_node = of_parse_phandle(child, "ti,elm-id", 0);
->  	if (!info->elm_of_node)
-> -		dev_dbg(dev, "ti,elm-id not in DT\n");
-> +		info->elm_of_node = of_parse_phandle(child, "elm_id", 0);
-> +		if (!info->elm_of_node)
-> +			dev_dbg(dev, "ti,elm-id not in DT\n");
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index b6062a2f3dfd..72bdc283778d 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -1165,7 +1165,7 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
+>  	ctrl->cmd_pending = cmd;
 >  
->  	/* select ecc-scheme for NAND */
->  	if (of_property_read_string(child, "ti,nand-ecc-opt", &s)) {
+>  	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+> -	BUG_ON(!(intfc & INTFC_CTLR_READY));
+> +	WARN_ON(!(intfc & INTFC_CTLR_READY));
+>  
+>  	mb(); /* flush previous writes */
+>  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_START,
 > -- 
-> 1.9.1
+> 2.7.4
 > 
