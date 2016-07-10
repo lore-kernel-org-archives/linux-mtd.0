@@ -1,25 +1,22 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bM3Zq-0004JB-FQ
- for linux-mtd@lists.infradead.org; Sun, 10 Jul 2016 01:30:35 +0000
-Received: by mail-pf0-x242.google.com with SMTP id g202so276126pfb.1
- for <linux-mtd@lists.infradead.org>; Sat, 09 Jul 2016 18:30:14 -0700 (PDT)
-Date: Sat, 9 Jul 2016 18:30:10 -0700
+ id 1bM3tD-0002DF-9m
+ for linux-mtd@lists.infradead.org; Sun, 10 Jul 2016 01:50:36 +0000
+Received: by mail-pa0-x235.google.com with SMTP id dx3so23544327pab.2
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Jul 2016 18:50:13 -0700 (PDT)
+Date: Sat, 9 Jul 2016 18:50:08 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- "open list:BROADCOM STB NAND FLASH DRIVER"
- <bcm-kernel-feedback-list@broadcom.com>,
- open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: nand: brcmnand: Change BUG_ON in brcmnand_send_cmd
-Message-ID: <20160710013010.GA12327@localhost>
-References: <1467999399-22288-1-git-send-email-f.fainelli@gmail.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: Re: [patch] mtd: silence some uninitialized variable warnings
+Message-ID: <20160710015008.GA7547@localhost>
+References: <20160413064234.GE8092@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1467999399-22288-1-git-send-email-f.fainelli@gmail.com>
+In-Reply-To: <20160413064234.GE8092@mwanda>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 08, 2016 at 10:36:39AM -0700, Florian Fainelli wrote:
-> Change the BUG_ON() condition in brcmnand_send_cmd() which checks for
-> the interrupt status "controller ready" bit to a WARN_ON.
+On Wed, Apr 13, 2016 at 09:42:34AM +0300, Dan Carpenter wrote:
+> The "tmp_retlen" variable can be uninitialized if action() fails.  It's
+> harmless except for the static checker warning.  I have moved the error
+> handling earlier to fix it.
 > 
-> There is no good reason to kill the system when this condition occur
-> because we could have systems which listed the NAND controller as
-> available (e.g: from Device Tree), but the NAND chip could be
-> malfunctioning and not responding.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
-
-> ---
-> Note that I even hesitated to remove that completely, but there is
-> some value in knowing about this condition since it helps figuring
-> out what could be wrong.
-> 
->  drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index b6062a2f3dfd..72bdc283778d 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -1165,7 +1165,7 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
->  	ctrl->cmd_pending = cmd;
->  
->  	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
-> -	BUG_ON(!(intfc & INTFC_CTLR_READY));
-> +	WARN_ON(!(intfc & INTFC_CTLR_READY));
->  
->  	mb(); /* flush previous writes */
->  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_START,
-> -- 
-> 2.7.4
-> 
+Applied to l2-mtd.git
