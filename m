@@ -1,15 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bMGAw-0002P8-QX
- for linux-mtd@lists.infradead.org; Sun, 10 Jul 2016 14:57:43 +0000
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-To: linux-mtd@lists.infradead.org,
-	David.Woodhouse@intel.com
-Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [RESEND PATCH] mtd-utils: Fix return status in mtd_torture test
- function
-Date: Sun, 10 Jul 2016 16:54:02 +0200
-Message-Id: <20160710145402.2974-1-david.oberhollenzer@sigma-star.at>
+Received: from mail-pa0-x241.google.com ([2607:f8b0:400e:c03::241])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bMTPB-0005qV-4Q
+ for linux-mtd@lists.infradead.org; Mon, 11 Jul 2016 05:05:17 +0000
+Received: by mail-pa0-x241.google.com with SMTP id ib6so12208004pad.3
+ for <linux-mtd@lists.infradead.org>; Sun, 10 Jul 2016 22:04:56 -0700 (PDT)
+Date: Sun, 10 Jul 2016 22:04:52 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
+ f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [V3, 2/2] mtd: brcmnand: Detect sticky ucorr ecc error on dma
+ reads
+Message-ID: <20160711050452.GA12083@localhost>
+References: <1465507075-9447-1-git-send-email-kdasu.kdev@gmail.com>
+ <1465507075-9447-2-git-send-email-kdasu.kdev@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1465507075-9447-2-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,70 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes the return status of the mtd_torture function
-in libmtd.
+Hi,
 
-The torture test function is currently only used by the ubiformat
-utilitiy to check if a block is bad after a write fails (blocks are
-marked bad if the function returns an error status). However, the
-way the function was written, it ALWAYS returns an error value
-irregardless of whether it failed or not.
+Looking through Boris's pull request, I noticed an issue:
 
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
----
- lib/libmtd.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+On Thu, Jun 09, 2016 at 05:17:55PM -0400, Kamal Dasu wrote:
+> This change provides a fix for controller bug where nand
+> controller could have a possible sticky error after a PIO
+> followed by a DMA read. The fix retries a read if we see
+> a uncorr_ecc after read to detect such sticky errors.
+> The fix applies to only controller version 7.0 and 7.1.
+> 
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+> V3 changes 
+>  none
+> V2 Changes 
+>  Restrict controller bug workaround to version 7.0 and 7.1
+> ---
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index 7ee9617..1156495 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -1602,9 +1602,11 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+>  	struct brcmnand_controller *ctrl = host->ctrl;
+>  	u64 err_addr = 0;
+>  	int err;
+> +	static bool retry = true;
 
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index bf6d71f..1717468 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -939,7 +939,7 @@ static uint8_t patterns[] = {0xa5, 0x5a, 0x0};
-  * @patt: the pattern to check
-  * @size: buffer size in bytes
-  *
-- * This function returns %1 in there are only @patt bytes in @buf, and %0 if
-+ * This function returns %0 if there are only @patt bytes in @buf, and %-1 if
-  * something else was also found.
-  */
- static int check_pattern(const void *buf, uint8_t patt, int size)
-@@ -948,8 +948,8 @@ static int check_pattern(const void *buf, uint8_t patt, int size)
- 
- 	for (i = 0; i < size; i++)
- 		if (((const uint8_t *)buf)[i] != patt)
--			return 0;
--	return 1;
-+			return -1;
-+	return 0;
- }
- 
- int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
-@@ -973,7 +973,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
- 			goto out;
- 
- 		err = check_pattern(buf, 0xFF, mtd->eb_size);
--		if (err == 0) {
-+		if (err) {
- 			errmsg("erased PEB %d, but a non-0xFF byte found", eb);
- 			errno = EIO;
- 			goto out;
-@@ -992,7 +992,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
- 			goto out;
- 
- 		err = check_pattern(buf, patterns[i], mtd->eb_size);
--		if (err == 0) {
-+		if (err) {
- 			errmsg("pattern %x checking failed for PEB %d",
- 				patterns[i], eb);
- 			errno = EIO;
-@@ -1005,7 +1005,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
- 
- out:
- 	free(buf);
--	return -1;
-+	return err;
- }
- 
- int mtd_is_bad(const struct mtd_dev_info *mtd, int fd, int eb)
--- 
-2.9.0
+Is this intentionally static? That means your retry will only be
+performed exactly once *ever*. Probably not what you expected?
+
+Boris, if this is indeed unintended, would you rather fix this up in the
+original patch and send me a new pull request? Or have my apply the
+trivial fixup (i.e., s/static//) as a separate patch on top?
+
+Brian
+
+>  
+>  	dev_dbg(ctrl->dev, "read %llx -> %p\n", (unsigned long long)addr, buf);
+>  
+> +try_dmaread:
+>  	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_COUNT, 0);
+>  
+>  	if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
+> @@ -1626,6 +1628,22 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  	if (mtd_is_eccerr(err)) {
+>  		/*
+> +		 * On controller version and 7.0, 7.1 , DMA read after a
+> +		 * prior PIO read that reported uncorrectable error,
+> +		 * the DMA engine captures this error following DMA read
+> +		 * cleared only on subsequent DMA read, so just retry once
+> +		 * to clear a possible false error reported for current DMA
+> +		 * read
+> +		 */
+> +		if ((ctrl->nand_version == 0x0700) ||
+> +		    (ctrl->nand_version == 0x0701)) {
+> +			if (retry) {
+> +				retry = false;
+> +				goto try_dmaread;
+> +			}
+> +		}
+> +
+> +		/*
+>  		 * Controller version 7.2 has hw encoder to detect erased page
+>  		 * bitflips, apply sw verification for older controllers only
+>  		 */
+> -- 
+> 1.9.1
+> 
