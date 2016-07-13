@@ -1,21 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNJyn-00037v-2H
- for linux-mtd@lists.infradead.org; Wed, 13 Jul 2016 13:13:37 +0000
-Message-ID: <1468415589.18533.46.camel@gmail.com>
-Subject: Re: Cached NAND reads and UBIFS
+ id 1bNMus-0000BX-Ca
+ for linux-mtd@lists.infradead.org; Wed, 13 Jul 2016 16:21:42 +0000
+Message-ID: <1468426862.18533.55.camel@gmail.com>
+Subject: Re: UBIFS orphans and ro-mounts
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Wed, 13 Jul 2016 16:13:09 +0300
-In-Reply-To: <20160713144318.38f809f7@bbrezillon>
-References: <57863449.4070108@nod.at> <20160713144318.38f809f7@bbrezillon>
+To: Richard Weinberger <richard@sigma-star.at>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 13 Jul 2016 19:21:02 +0300
+In-Reply-To: <57863A51.6030205@sigma-star.at>
+References: <57863442.1000303@sigma-star.at>
+ <1468414098.18533.34.camel@gmail.com> <57863A51.6030205@sigma-star.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,87 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2016-07-13 at 14:43 +0200, Boris Brezillon wrote:
-> On Wed, 13 Jul 2016 14:30:01 +0200
-> Richard Weinberger <richard@nod.at> wrote:
-> 
-> > Hi!
-> > 
-> > As discussed on IRC, Boris and I figured that on our target UBIFS
-> > is sometimes
-> > very slow.
-> > i.e. deleting a 1GiB file right after a reboot takes more than 30
-> > seconds.
-> > 
-> > When deleting a file with a cold TNC UBIFS has to lookup a lot of
-> > znodes
-> > on the flash.
-> > For every single znode lookup UBIFS requests a few bytes from the
-> > flash.
-> > This is slow.
-> > 
-> > After some investigation we found out that the NAND read cache is
-> > disabled
-> > when the NAND driver supports reading subpages.
-> > So we removed the NAND_SUBPAGE_READ flag from the driver and
-> > suddenly
-> > lookups were fast. Really fast. Deleting a 1GiB took less than 5
-> > seconds.
-> > Since on our MLC NAND a page is 16KiB many znodes can be read very
-> > fast
-> > directly out of the NAND read cache.
-> > The read cache helps here a lot because in the regular case UBIFS'
-> > index
-> > nodes are linearly stored in a LEB.
-> > 
-> > The TNC seems to assume that it can do a lot of short reads since
-> > the NAND
-> > read cache will help.
-> > But as soon subpage reads are possible this assumption is no longer
-> > true.
-> > 
-> > Now we're not sure what do do, should we implement bulk reading in
-> > the TNC
-> > code or improve NAND read caching?
-> 
-> Hm, NAND page caching is something I'd like to get rid of at some
-> point, and this for several reasons:
-> 
-> 1/ it brings some confusion in NAND controller drivers, where those
-> don't know when they are allowed to use chip->buffer, and what to do
-> with ->pagebuf in this case
+On Wed, 2016-07-13 at 14:55 +0200, Richard Weinberger wrote:
+> A new mount option is an option, true.
+> That said, the real solution is that u-boot (and other bootloaders)
+> should not mount UBIFS and use static volumes.
+> But currently the opposite is happening on most systems I get my
+> hands on. :(
 
-Yes, it adds complexity because it is not a separate caching layer but
-rather "built-in" into the logic, sprinkled around.
-
-> 2/ caching is already implemented at the FS level, so I'm not sure we
-> really need another level of caching at the MTD/NAND level (except
-> for
-> those specific use cases where the MTD user relies on this caching to
-> improve accesses to small contiguous chunks)
-
-Well, FS is caching stuff, but device level caching is still useful.
-E.g., UBI decides to move things around, things get cached, and when
-UBIFS reads the things, it picks them from the cache.
-
-Disk blocks are also cached in Linux separately from the FS level
-cache.
-
-> 3/ it hides the real number of bitflips in a given page: say someone
-> is
-> reading over and over the same page, the MTD user will never be able
-> to
-> detect when the number of bitflips exceed the threshold. This should
-> not be a problem in real world, because MTD users are unlikely to
-> always
-> read the same page without reading other pages in the meantime, but
-> still, I think it adds some confusion, especially if one wants to
-> write
-> a test that reads over and over the same page to see the impact of
-> read-disturb.
-
-Well, I think this is not a blocker problem, more of a complication
-that caching introduces. Indeed, I was working with different kind of
-caches, e.g., implementing my own custom caching for my custom user-
-space scripts, and caches always introduces extra complexity. That's
-the price to pay.
+May be orphans could be handled in background? 
