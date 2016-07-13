@@ -1,4 +1,4 @@
-Date: Wed, 13 Jul 2016 10:13:03 -0700
+Date: Wed, 13 Jul 2016 10:14:07 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Teresa Remmet <t.remmet@phytec.de>
 Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
@@ -9,15 +9,13 @@ Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH 2/2] mtd: nand: omap2: Add check for old elm binding
-Message-ID: <20160713171303.GA136972@google.com>
+Subject: Re: [PATCH 1/2] ARM: dts: am335x: Update elm phandle binding
+Message-ID: <20160713171407.GB136972@google.com>
 References: <1467711150-23356-1-git-send-email-t.remmet@phytec.de>
- <1467711150-23356-2-git-send-email-t.remmet@phytec.de>
- <20160710005614.GB29572@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160710005614.GB29572@localhost>
+In-Reply-To: <1467711150-23356-1-git-send-email-t.remmet@phytec.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jul 09, 2016 at 05:56:14PM -0700, Brian Norris wrote:
-> On Tue, Jul 05, 2016 at 11:32:30AM +0200, Teresa Remmet wrote:
-> > commit c9711ec5250b ("mtd: nand: omap: Clean up device tree support")
-> > removes the check for the old elm phandle binding.
-> 
-> That seems like a silly breakage of backwards compatibility. Must have
-> overlooked that one, sorry.
-> 
-> > Add it again to keep backward compatibility.
-> > 
-> > Signed-off-by: Teresa Remmet <t.remmet@phytec.de>
-> 
-> I think we should probably take this for v4.7, since the breaking commit
-> was only merged in v4.7-rc1. OMAP folks, any comment?
+On Tue, Jul 05, 2016 at 11:32:29AM +0200, Teresa Remmet wrote:
+> The check for the "elm_id" binding had been removed.
+> This causes nand boot to fail on boards still using
+> the old binding. Update the bindings on those boards.
 
-Applied to linux-mtd.git. I plan to send this to Linus for v4.7, since
-it's a DT regression, unless someone has a good reason not to.
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-Brian
+We're fixing the backward compatibility issue anyway, but might as well
+"upgrade" the device tree.
+
+> Signed-off-by: Teresa Remmet <t.remmet@phytec.de>
+> ---
+>  arch/arm/boot/dts/am335x-baltos.dtsi      | 2 +-
+>  arch/arm/boot/dts/am335x-igep0033.dtsi    | 2 +-
+>  arch/arm/boot/dts/am335x-phycore-som.dtsi | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/am335x-baltos.dtsi b/arch/arm/boot/dts/am335x-baltos.dtsi
+> index c8609d8..b689172 100644
+> --- a/arch/arm/boot/dts/am335x-baltos.dtsi
+> +++ b/arch/arm/boot/dts/am335x-baltos.dtsi
+> @@ -226,7 +226,7 @@
+>  
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+> -		elm_id = <&elm>;
+> +		ti,elm-id = <&elm>;
+>  	};
+>  };
+>  
+> diff --git a/arch/arm/boot/dts/am335x-igep0033.dtsi b/arch/arm/boot/dts/am335x-igep0033.dtsi
+> index df63484..e7d9ca1 100644
+> --- a/arch/arm/boot/dts/am335x-igep0033.dtsi
+> +++ b/arch/arm/boot/dts/am335x-igep0033.dtsi
+> @@ -161,7 +161,7 @@
+>  
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+> -		elm_id = <&elm>;
+> +		ti,elm-id = <&elm>;
+>  
+>  		/* MTD partition table */
+>  		partition@0 {
+> diff --git a/arch/arm/boot/dts/am335x-phycore-som.dtsi b/arch/arm/boot/dts/am335x-phycore-som.dtsi
+> index 86f7731..1263c9d 100644
+> --- a/arch/arm/boot/dts/am335x-phycore-som.dtsi
+> +++ b/arch/arm/boot/dts/am335x-phycore-som.dtsi
+> @@ -197,7 +197,7 @@
+>  		gpmc,wr-access-ns = <30>;
+>  		gpmc,wr-data-mux-bus-ns = <0>;
+>  
+> -		elm_id = <&elm>;
+> +		ti,elm-id = <&elm>;
+>  
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+> -- 
+> 1.9.1
+> 
