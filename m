@@ -1,18 +1,21 @@
-Received: from userp1040.oracle.com ([156.151.31.81])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNe9V-0004kS-1M
- for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 10:45:57 +0000
-Date: Thu, 14 Jul 2016 13:44:56 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Marc St-Jean <stjeanma@pmc-sierra.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [patch] mtd: pmcmsp-flash: Allocating too much in init_msp_flash()
-Message-ID: <20160714104456.GG18175@mwanda>
+Received: from m12-17.163.com ([220.181.12.17])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bNfQv-0008DP-DI
+ for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 12:08:02 +0000
+From: weiyj_lk@163.com
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "Cooper Jr., Franklin" <fcooper@ti.com>
+Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH -next] mtd: nand: omap2: fix return value check in
+ omap_nand_probe()
+Date: Thu, 14 Jul 2016 12:06:45 +0000
+Message-Id: <1468498005-10664-1-git-send-email-weiyj_lk@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is a cut and paste issue here.  The bug is that we are allocating
-more memory than necessary for msp_maps.  We should be allocating enough
-space for a map_info struct (144 bytes) but we instead allocate enough
-for an mtd_info struct (1840 bytes).  It's a small waste.
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-The other part of this is not harmful but when we allocated msp_flash
-then we allocated enough space fro a map_info pointer instead of an
-mtd_info pointer.  But since pointers are the same size it works out
-fine.
+In case of error, the function dma_request_chan() returns ERR_PTR() and
+never returns NULL. The NULL test in the return value check should be
+replaced with IS_ERR().
 
-Anyway, I decided to clean up all three allocations a bit to make them
-a bit more consistent and clear.
-
-Fixes: 68aa0fa87f6d ('[MTD] PMC MSP71xx flash/rootfs mappings')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: aa7abd312c11 ('mtd: nand: omap2: Support parsing dma channel
+information from DT')
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 ---
-Not tested!!
+ drivers/mtd/nand/omap2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
-index 744ca5c..f9fa3fa 100644
---- a/drivers/mtd/maps/pmcmsp-flash.c
-+++ b/drivers/mtd/maps/pmcmsp-flash.c
-@@ -75,15 +75,15 @@ static int __init init_msp_flash(void)
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index a36ad3d..26fbe29 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1922,9 +1922,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		dma_cap_set(DMA_SLAVE, mask);
+ 		info->dma = dma_request_chan(pdev->dev.parent, "rxtx");
  
- 	printk(KERN_NOTICE "Found %d PMC flash devices\n", fcnt);
- 
--	msp_flash = kmalloc(fcnt * sizeof(struct map_info *), GFP_KERNEL);
-+	msp_flash = kcalloc(fcnt, sizeof(*msp_flash), GFP_KERNEL);
- 	if (!msp_flash)
- 		return -ENOMEM;
- 
--	msp_parts = kmalloc(fcnt * sizeof(struct mtd_partition *), GFP_KERNEL);
-+	msp_parts = kcalloc(fcnt, sizeof(*msp_parts), GFP_KERNEL);
- 	if (!msp_parts)
- 		goto free_msp_flash;
- 
--	msp_maps = kcalloc(fcnt, sizeof(struct mtd_info), GFP_KERNEL);
-+	msp_maps = kcalloc(fcnt, sizeof(*msp_maps), GFP_KERNEL);
- 	if (!msp_maps)
- 		goto free_msp_parts;
- 
+-		if (!info->dma) {
++		if (IS_ERR(info->dma)) {
+ 			dev_err(&pdev->dev, "DMA engine request failed\n");
+-			err = -ENXIO;
++			err = PTR_ERR(info->dma);
+ 			goto return_error;
+ 		} else {
+ 			struct dma_slave_config cfg;
