@@ -1,31 +1,22 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNUcn-00039B-39
- for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 00:35:33 +0000
-Received: by mail-pf0-x244.google.com with SMTP id i6so3597636pfe.0
- for <linux-mtd@lists.infradead.org>; Wed, 13 Jul 2016 17:35:11 -0700 (PDT)
-Date: Wed, 13 Jul 2016 17:35:08 -0700
+ id 1bNUeP-0003P6-Bb
+ for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 00:37:13 +0000
+Received: by mail-pf0-x229.google.com with SMTP id c2so23886790pfa.2
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Jul 2016 17:36:53 -0700 (PDT)
+Date: Wed, 13 Jul 2016 17:36:50 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: P L Sai Krishna <lakshmi.sai.krishna.potthuri@xilinx.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Ezequiel =?iso-8859-1?Q?Garc=EDa?= <ezequiel@vanguardiasur.com.ar>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
- Furquan Shaikh <furquan@google.com>,
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>,
  =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Michal Simek <michals@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
- Harini Katakam <harinik@xilinx.com>, Anirudha Sarangi <anirudh@xilinx.com>,
- P L Sai Krishna <lakshmis@xilinx.com>
-Subject: Re: [LINUX PATCH] mtd: spi-nor: Added support for n25q00a.
-Message-ID: <20160714003508.GC54628@google.com>
-References: <1467985615-35153-1-git-send-email-lakshmis@xilinx.com>
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH] mtd: spi-nor: support dual, quad, and WP for Gigadevice
+Message-ID: <20160714003650.GD54628@google.com>
+References: <1467411916-110528-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1467985615-35153-1-git-send-email-lakshmis@xilinx.com>
+In-Reply-To: <1467411916-110528-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,13 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 08, 2016 at 07:16:55PM +0530, P L Sai Krishna wrote:
-> Add Micron (n25q00a) 1Gbit NOR Flash in the list of supported
-> devices.
-> This part is different from n25q00 in Memory Type.
-> Memory Type for n25q00 - BAh
-> Memory Type for n25q00a - BBh
+On Fri, Jul 01, 2016 at 03:25:16PM -0700, Brian Norris wrote:
+> Gigadevice flash support BP{0,1,2,3,4} bits, where BP3 means the same as
+> the existing supported TB (Top/Bottom), and BP4 means the same as the
+> not-yet-supported 4K bit used on other flash (e.g., Winbond). Let's
+> support lock/unlock with the same feature flags as w25q32dw/w25q64dw.
 > 
-> Signed-off-by: P L Sai Krishna <lakshmis@xilinx.com>
+> Tested on gd25lq64c, but I checked datasheets for the other 3, to make
+> sure.
+> 
+> While I was at it, I noticed that these all support dual and quad as
+> well. I noted them, but can't test them at the moment, since my test
+> system only supports standard 1x SPI.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
 Applied to l2-mtd.git
