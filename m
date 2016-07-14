@@ -1,20 +1,19 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNbXi-0000w1-Fy
- for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 07:58:47 +0000
-Date: Thu, 14 Jul 2016 09:58:09 +0200
+ id 1bNc5P-0006rg-16
+ for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 08:33:36 +0000
+Date: Thu, 14 Jul 2016 10:33:01 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org\"
- <linux-mtd@lists.infradead.org>"@mail.free-electrons.com
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
+ <dedekind1@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
 Subject: Re: Cached NAND reads and UBIFS
-Message-ID: <20160714095809.7bb73be4@bbrezillon>
-In-Reply-To: <1468415589.18533.46.camel@gmail.com>
-References: <57863449.4070108@nod.at> <20160713144318.38f809f7@bbrezillon>
- <1468415589.18533.46.camel@gmail.com>
+Message-ID: <20160714103301.4b01b0ce@bbrezillon>
+In-Reply-To: <20160713165422.GA130613@google.com>
+References: <57863449.4070108@nod.at>
+	<20160713165422.GA130613@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,114 +26,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 13 Jul 2016 16:13:09 +0300
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
+On Wed, 13 Jul 2016 09:54:22 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-> On Wed, 2016-07-13 at 14:43 +0200, Boris Brezillon wrote:
-> > On Wed, 13 Jul 2016 14:30:01 +0200
-> > Richard Weinberger <richard@nod.at> wrote:
-> >   
-> > > Hi!
-> > > 
-> > > As discussed on IRC, Boris and I figured that on our target UBIFS
-> > > is sometimes
-> > > very slow.
-> > > i.e. deleting a 1GiB file right after a reboot takes more than 30
-> > > seconds.
-> > > 
-> > > When deleting a file with a cold TNC UBIFS has to lookup a lot of
-> > > znodes
-> > > on the flash.
-> > > For every single znode lookup UBIFS requests a few bytes from the
-> > > flash.
-> > > This is slow.
-> > > 
-> > > After some investigation we found out that the NAND read cache is
-> > > disabled
-> > > when the NAND driver supports reading subpages.
-> > > So we removed the NAND_SUBPAGE_READ flag from the driver and
-> > > suddenly
-> > > lookups were fast. Really fast. Deleting a 1GiB took less than 5
-> > > seconds.
-> > > Since on our MLC NAND a page is 16KiB many znodes can be read very
-> > > fast
-> > > directly out of the NAND read cache.
-> > > The read cache helps here a lot because in the regular case UBIFS'
-> > > index
-> > > nodes are linearly stored in a LEB.
-> > > 
-> > > The TNC seems to assume that it can do a lot of short reads since
-> > > the NAND
-> > > read cache will help.
-> > > But as soon subpage reads are possible this assumption is no longer
-> > > true.
-> > > 
-> > > Now we're not sure what do do, should we implement bulk reading in
-> > > the TNC
-> > > code or improve NAND read caching?  
-> > 
-> > Hm, NAND page caching is something I'd like to get rid of at some
-> > point, and this for several reasons:
-> > 
-> > 1/ it brings some confusion in NAND controller drivers, where those
-> > don't know when they are allowed to use chip->buffer, and what to do
-> > with ->pagebuf in this case  
+> On Wed, Jul 13, 2016 at 02:30:01PM +0200, Richard Weinberger wrote:
+> > The TNC seems to assume that it can do a lot of short reads since the NAND
+> > read cache will help.  
 > 
-> Yes, it adds complexity because it is not a separate caching layer but
-> rather "built-in" into the logic, sprinkled around.
+> For my info: by "short reads" are you talking page-size/aligned?
+> Subpage-sized/aligned? Or none of the above?
 
-Yep.
+None of them. IIRC, the size was around 200bytes and not necessarily
+page or ECC-chunk aligned.
 
 > 
-> > 2/ caching is already implemented at the FS level, so I'm not sure we
-> > really need another level of caching at the MTD/NAND level (except
-> > for
-> > those specific use cases where the MTD user relies on this caching to
-> > improve accesses to small contiguous chunks)  
+> > But as soon subpage reads are possible this assumption is no longer true.  
 > 
-> Well, FS is caching stuff, but device level caching is still useful.
-> E.g., UBI decides to move things around, things get cached, and when
-> UBIFS reads the things, it picks them from the cache.
+> This sounds similar to the problem we were just discussing, about a
+> bug/oversight/suboptimality in nand_do_read_ops()'s use of an extra
+> buffer + memcpy(). I guess the difference here is that a sub-page read
+> can't fill the cache as-is (we have no way to mark the cache as
+> partially valid), so we just skip it. To "fixup" the cache
+> for subpages, I guess we'd have to split it into subpages...
 
-Yes, I don't deny the usefulness of caches in general, but with the MTD
-stack, it's not clear who is caching what, and I fear that we'll end up
-with different layers caching the same thing, this increasing the
-memory consumption
+Well, it's not exactly the same problem. For the EC/VID headers we know
+that we'll only need to read 64 bytes from the whole page. Here, we
+don't know: the code might well read the whole page in small chunks,
+and using subpage read in this case is inefficient: each time you have
+to issue a READ command to store the page in the internal NAND cache,
+and then I/Os + ECC calculation for the ECC chunk (note that modern
+NAND controllers are able to pipeline I/Os and ECC calculation, thus
+making full-page read more efficient than partial ones especially when
+you end-up reading the whole page).
 
-> 
-> Disk blocks are also cached in Linux separately from the FS level
-> cache.
-
-That's true, except they both use the same mechanism ("Page Cache"). I
-don't know it very well, but I thought a page cached at the block
-device level could be reused by the FS for it's own cache if it needs
-to point to the same data.
-
-Anyway, letting each MTD component implement its own caching logic is
-not a good solution IMO, so maybe we should consider this mtdcache
-layer you were suggesting on IRC...
+This is why this decision to use full-page vs ECC-chunk (AKA subpage)
+reads can only be done at the MTD user level (in this particular case,
+only UBIFS can predict whether we are likely to need the whole page
+content or only a sub-part of it).
 
 > 
-> > 3/ it hides the real number of bitflips in a given page: say someone
-> > is
-> > reading over and over the same page, the MTD user will never be able
-> > to
-> > detect when the number of bitflips exceed the threshold. This should
-> > not be a problem in real world, because MTD users are unlikely to
-> > always
-> > read the same page without reading other pages in the meantime, but
-> > still, I think it adds some confusion, especially if one wants to
-> > write
-> > a test that reads over and over the same page to see the impact of
-> > read-disturb.  
+> > Now we're not sure what do do, should we implement bulk reading in the TNC
+> > code or improve NAND read caching?  
 > 
-> Well, I think this is not a blocker problem, more of a complication
-> that caching introduces. Indeed, I was working with different kind of
-> caches, e.g., implementing my own custom caching for my custom user-
-> space scripts, and caches always introduces extra complexity. That's
-> the price to pay.
+> Seems like we should improve the caching, either in a layer above, or
+> just in the NAND layer.
 
-Well, having a way to bypass the cache would be clearer than having to
-know which page is cached (or if we decide to enhance MTD/NAND caching,
-which pages are cached) and making sure this page is replaced by
-another one in the cache before reading it again.
+I think we all agree on that one :).
+
+> 
+> But, we haven't really figured out how to advertise the minimum
+> (optimal) read size to the MTD user, right? We have at best
+> 
+>   writesize >> subpage_sft
+> 
+> but that's really the minimum write size, not read size, right?
+
+Correct, the minimum write-size (when the controller supports
+individual ECC chunk read) is an ECC chunk (usually 512 or 1024 bytes).
+
+But again, the minimum read size is not necessarily the most optimal one
+(see my explanation above), this means we'll have to differentiate the
+minimum read size from the optimal read size (the one providing the
+best throughput).
+
+> So even
+> if we're trying to shore up the read cacheability, we should better
+> define the constraints first, so that we know what we can guarantee an
+> MTD user, and what we can't. e.g., we will cache on size/alignment FOO,
+> and anything not aligned to that is not guaranteed.
+
+The read request will be ECC chunk (or page) aligned anyway, and the
+core will use an intermediate buffer when the user request does not
+match this constraint, so we'll always end-up with aligned content that
+we can store in the cache.
+
+> 
+> On a potentially conflicting note, I think nand_do_read_ops() is too
+> complicated. I think Boris expressed a similar sentiment. So if we can
+> find a good way to factor the caching code to be less entangled with the
+> mechanics of reading, that'd be a win for me.
+
+I fully agree, and I'm not even sure this caching mechanism should be
+implemented in the NAND layer.
+
+Regards,
+
+Boris
