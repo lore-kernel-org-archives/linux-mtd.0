@@ -1,25 +1,24 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNVDw-0000UN-0M
- for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 01:13:56 +0000
-Received: by mail-pf0-x241.google.com with SMTP id t190so3961722pfb.2
- for <linux-mtd@lists.infradead.org>; Wed, 13 Jul 2016 18:13:34 -0700 (PDT)
-Date: Wed, 13 Jul 2016 18:13:31 -0700
+ id 1bNVGu-0002NC-H6
+ for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 01:17:01 +0000
+Received: by mail-pf0-x242.google.com with SMTP id g202so3989767pfb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Jul 2016 18:16:40 -0700 (PDT)
+Date: Wed, 13 Jul 2016 18:16:37 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Jiancheng Xue <xuejiancheng@hisilicon.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
- jteki@openedev.com, cyrille.pitchen@atmel.com, robh+dt@kernel.org,
- yanhaifeng@hisilicon.com, yanghongwei@hisilicon.com,
- linshunquan1@hisilicon.com, Binquan Peng <pengbinquan@hisilicon.com>
-Subject: Re: [PATCH v12] mtd: spi-nor: add hisilicon spi-nor flash controller
- driver
-Message-ID: <20160714011331.GE54628@google.com>
-References: <1467100099-6172-1-git-send-email-xuejiancheng@hisilicon.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-mtd@lists.infradead.org, nicolas.ferre@atmel.com,
+ boris.brezillon@free-electrons.com, marex@denx.de,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] Documentation: atmel-quadspi: add binding file for
+ Atmel QSPI driver
+Message-ID: <20160714011637.GF54628@google.com>
+References: <cover.1465830154.git.cyrille.pitchen@atmel.com>
+ <dee7a0e8e6b6fec134a79432a9bcb1553c056ad8.1465830154.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1467100099-6172-1-git-send-email-xuejiancheng@hisilicon.com>
+In-Reply-To: <dee7a0e8e6b6fec134a79432a9bcb1553c056ad8.1465830154.git.cyrille.pitchen@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,119 +28,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 28, 2016 at 03:48:19PM +0800, Jiancheng Xue wrote:
-> Add hisilicon spi-nor flash controller driver
+On Mon, Jun 13, 2016 at 05:10:25PM +0200, Cyrille Pitchen wrote:
+> This patch documents the DT bindings for the driver of the Atmel QSPI
+> controller embedded inside sama5d2x SoCs.
 > 
-> Signed-off-by: Binquan Peng <pengbinquan@hisilicon.com>
-> Signed-off-by: Jiancheng Xue <xuejiancheng@hisilicon.com>
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 > Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> Reviewed-by: Jagan Teki <jteki@openedev.com>
-> Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> ---
-> change log
-> v12:
-> 1)Made SPI_HISI_SFC depend on HAS_DMA to fix the kbuild test robot error.
-> 2)Added "Reviewed-by Cyrille Pitchen <cyrille.pitchen@atmel.com>" and 
-> "Reviewed-by: Jagan Teki <jteki@openedev.com>" in the commit message.
-> v11:
-> Fixed issues pointed by Brian Norris and Cyrille Pitchen.
-> 1)Changed hisi_spi_nor_read_reg()/write_reg() to configure registers
-> without sniffing the opcodes.
-> 2)Deleted hisi_spi_nor_erase() and used default implementation instead.
-> 3)Changed hisi_spi_nor_dma_transfer() to return a integer type value
-> instead of nothing.
-> 4)Simplified hisi_spi_nor_read()/write() as Brian suggested.
-> 
-> v10:
-> Fixed issues pointed by Marek Vasut.
-> 1)Droped the underscores in the argument names of some macros' definition.
-> 2)Changed some varibles to correct type.
-> 3)Rewrote hisi_spi_nor_read/write for readability.
-> 4)Added new functions hisi_spi_nor_register/unregister_all
-> 5)Changed to dynamically allocation for spi_nor embeded in hifmc_host.
-> Fixed issues pointed by Brian Norris.
-> 1)Replaced some headers with more accurate ones.
-> v9:
-> Fixed issues pointed by Jagan Teki.
-> v8:
-> Fixed issues pointed by Ezequiel Garcia and Brian Norris.
-> Moved dts binding file to mtd directory.
-> Changed the compatible string more specific.
-> v7:
-> Rebased to v4.5-rc3.
-> Fixed issues pointed by Ezequiel Garcia.
-> v6:
-> Based on v4.5-rc2
-> Fixed issues pointed by Ezequiel Garcia.
-> v5:
-> Fixed a compile error.
-> v4:
-> Rebased to v4.5-rc1
-> v3:
-> Added a compatible string "hisilicon,hi3519-sfc".
-> v2:
-> Fixed some compiling warings.
->  .../bindings/mtd/hisilicon,fmc-spi-nor.txt         |  24 +
->  drivers/mtd/spi-nor/Kconfig                        |   7 +
->  drivers/mtd/spi-nor/Makefile                       |   1 +
->  drivers/mtd/spi-nor/hisi-sfc.c                     | 489 +++++++++++++++++++++
->  4 files changed, 521 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
->  create mode 100644 drivers/mtd/spi-nor/hisi-sfc.c
+> Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-Pushed to l2-mtd.git, with the following diff due to API changes. Please
-review to be sure it looks OK to you.
-
-Also, please base changes on l2-mtd.git or linux-next.git in the future.
-
-Regards,
-Brian
-
-diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
-index 44664c3fc5ff..20378b0d55e9 100644
---- a/drivers/mtd/spi-nor/hisi-sfc.c
-+++ b/drivers/mtd/spi-nor/hisi-sfc.c
-@@ -269,8 +269,8 @@ static int hisi_spi_nor_dma_transfer(struct spi_nor *nor, loff_t start_off,
- 	return wait_op_finish(host);
- }
- 
--static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
--		size_t *retlen, u_char *read_buf)
-+static ssize_t hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
-+		u_char *read_buf)
- {
- 	struct hifmc_priv *priv = nor->priv;
- 	struct hifmc_host *host = priv->host;
-@@ -287,14 +287,13 @@ static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
- 			return ret;
- 		}
- 		memcpy(read_buf + offset, host->buffer, trans);
--		*retlen += trans;
- 	}
- 
--	return 0;
-+	return len;
- }
- 
--static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
--			size_t len, size_t *retlen, const u_char *write_buf)
-+static ssize_t hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
-+			size_t len, const u_char *write_buf)
- {
- 	struct hifmc_priv *priv = nor->priv;
- 	struct hifmc_host *host = priv->host;
-@@ -309,10 +308,11 @@ static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
- 			to + offset, host->dma_buffer, trans, FMC_OP_WRITE);
- 		if (ret) {
- 			dev_warn(nor->dev, "DMA write timeout\n");
--			return;
-+			return ret;
- 		}
--		*retlen += len;
- 	}
-+
-+	return len;
- }
- 
- /**
+Pushed this patch to l2-mtd.git. Comments on the other.
