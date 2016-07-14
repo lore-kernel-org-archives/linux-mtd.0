@@ -1,21 +1,25 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-pa0-x241.google.com ([2607:f8b0:400e:c03::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNgME-0000hR-SF
- for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 13:07:16 +0000
-Subject: Re: Cached NAND reads and UBIFS
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <57863449.4070108@nod.at> <20160713165422.GA130613@google.com>
- <20160714103301.4b01b0ce@bbrezillon>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <57878E68.30901@nod.at>
-Date: Thu, 14 Jul 2016 15:06:48 +0200
+ id 1bNj2k-0005qY-GS
+ for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 15:59:19 +0000
+Received: by mail-pa0-x241.google.com with SMTP id q2so4772539pap.0
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Jul 2016 08:58:58 -0700 (PDT)
+Date: Thu, 14 Jul 2016 08:58:49 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Teresa Remmet <t.remmet@phytec.de>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+ "Cooper Jr., Franklin" <fcooper@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: omap2: add missing braces
+Message-ID: <20160714155849.GA120073@google.com>
+References: <20160714095416.739127-1-arnd@arndb.de>
 MIME-Version: 1.0
-In-Reply-To: <20160714103301.4b01b0ce@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160714095416.739127-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 14.07.2016 um 10:33 schrieb Boris Brezillon:
->>> Now we're not sure what do do, should we implement bulk reading in the TNC
->>> code or improve NAND read caching?  
->>
->> Seems like we should improve the caching, either in a layer above, or
->> just in the NAND layer.
+On Thu, Jul 14, 2016 at 11:53:48AM +0200, Arnd Bergmann wrote:
+> A bug fix just introduced incorrect behavior in the omap2 nand driver, as
+> found by gcc-6.1:
 > 
-> I think we all agree on that one :).
+> drivers/mtd/nand/omap2.c: In function 'omap_get_dt_info':
+> drivers/mtd/nand/omap2.c:1658:2: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+>   if (!info->elm_of_node)
+>   ^~
+> drivers/mtd/nand/omap2.c:1660:3: note: ...this statement, but the latter is misleadingly indented as if it is guarded by the 'if'
+>    if (!info->elm_of_node)
+>    ^~
+> 
+> We clearly need to put the indented code into { } braces to get the intended
+> behavior.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: 3bbca2c54f86 ("mtd: nand: omap2: Add check for old elm binding")
 
-Today I found some time to implement a PoC of a single page cache directly
-in UBI.
-IMHO UBI is the right layer for that. NAND is too low and UBIFS too high
-level.
-With a few lines of case I was able to speedup UBIFS TNC lookups a lot,
-in fact it gave me the same speed up as caching in the NAND layer does.
-
-As next step I'll tidy the code, add a debugfs interface to expose cache hit/miss
-counters such that we can experiment with different workloads and users ontop
-of UBIFS. /me thinks of squashfs+ubiblock which is also rather common these days.
-
-Maybe caching more than one page helps too.
+Wow, can't believe I missed that. Squashed into the original patch.
 
 Thanks,
-//richard
+Brian
