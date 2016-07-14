@@ -1,24 +1,24 @@
-Received: from mail-pa0-x241.google.com ([2607:f8b0:400e:c03::241])
+Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNSIW-0005Mq-O1
- for linux-mtd@lists.infradead.org; Wed, 13 Jul 2016 22:06:33 +0000
-Received: by mail-pa0-x241.google.com with SMTP id ez1so206897pab.3
- for <linux-mtd@lists.infradead.org>; Wed, 13 Jul 2016 15:06:07 -0700 (PDT)
-Date: Wed, 13 Jul 2016 15:06:04 -0700
+ id 1bNUa3-0001m2-Eh
+ for linux-mtd@lists.infradead.org; Thu, 14 Jul 2016 00:32:43 +0000
+Received: by mail-pa0-x243.google.com with SMTP id q2so3767079pap.0
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Jul 2016 17:32:22 -0700 (PDT)
+Date: Wed, 13 Jul 2016 17:32:18 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, david.oberhollenzer@sigma-star.at,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 1/8] mtd-utils: Fix return status in mtd_torture test
- function
-Message-ID: <20160713220604.GA54628@google.com>
-References: <1461622409-14970-1-git-send-email-richard@nod.at>
- <1461622409-14970-2-git-send-email-richard@nod.at>
- <20160713173024.GA10487@google.com> <5786B9A4.4090609@nod.at>
+To: Scott Wood <oss@buserror.net>
+Cc: Raghav Dogra <raghav.dogra@nxp.com>, linux-mtd@lists.infradead.org,
+ boris.brezillon@free-electrons.com, leoyang.li@nxp.com,
+ prabhakar.kushwaha@nxp.com
+Subject: Re: [PATCH][v2] driver/memory: Update dependency of IFC for Layerscape
+Message-ID: <20160714003218.GB54628@google.com>
+References: <1467388950-4895-1-git-send-email-raghav.dogra@nxp.com>
+ <1468026245.32358.75.camel@buserror.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5786B9A4.4090609@nod.at>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1468026245.32358.75.camel@buserror.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 13, 2016 at 11:59:00PM +0200, Richard Weinberger wrote:
-> But I'm still a bit unsure how the mtd-utils release cycle
-> works.
-> In fact, I fear there is none. ;-)
+On Fri, Jul 08, 2016 at 08:04:05PM -0500, Scott Wood wrote:
+> On Fri, 2016-07-01 at 21:32 +0530, Raghav Dogra wrote:
+> > This patch enables IFC NAND support on ARM layerscape platform.
+> > It fixes the dependency to enable NAND. The include files are being modified
+> > to ensure complilation for both PowerPC and ARM architectures.
+> > 
+> > Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
+> > ---
+> > Applicable to git://git.infradead.org/l2-mtd.git
+> > 
+> > Changes for v2: updated commit description
+> > 
+> >  drivers/memory/Kconfig   | 2 +-
+> >  drivers/memory/fsl_ifc.c | 4 +++-
+> >  drivers/mtd/nand/Kconfig | 2 +-
+> >  3 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> Acked-by: Scott Wood <oss@buserror.net>
 
-Yep, that's about correct. We can try to establish one if that'd help.
-Previously, I think it was "whenever Artem decided there were enough
-new things (fixes or features)".
-
-> David was so kind and went through linux-mtd@ to located old but not merged
-> mtd-utils packages.
-> I'm currently rebasing them to 1.5.2 and would push them later into a temporary
-> branch.
-
-Cool.
-
-Brian
+Applied to l2-mtd.git.
