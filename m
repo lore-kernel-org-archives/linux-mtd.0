@@ -1,27 +1,24 @@
-Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNsl1-0001gJ-4O
- for linux-mtd@lists.infradead.org; Fri, 15 Jul 2016 02:21:39 +0000
-Received: by mail-pa0-x243.google.com with SMTP id hh10so5399980pac.1
- for <linux-mtd@lists.infradead.org>; Thu, 14 Jul 2016 19:21:18 -0700 (PDT)
-Date: Thu, 14 Jul 2016 19:21:13 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Jiancheng Xue <xuejiancheng@hisilicon.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, ezequiel@vanguardiasur.com.ar,
- jteki@openedev.com, cyrille.pitchen@atmel.com, robh+dt@kernel.org,
- yanhaifeng@hisilicon.com, yanghongwei@hisilicon.com,
- linshunquan1@hisilicon.com, Binquan Peng <pengbinquan@hisilicon.com>
-Subject: Re: [PATCH v12] mtd: spi-nor: add hisilicon spi-nor flash controller
- driver
-Message-ID: <20160715022113.GA144623@google.com>
-References: <1467100099-6172-1-git-send-email-xuejiancheng@hisilicon.com>
- <20160714011331.GE54628@google.com>
- <57883BC5.7060600@hisilicon.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bNxmJ-0008Ow-SR
+ for linux-mtd@lists.infradead.org; Fri, 15 Jul 2016 07:43:21 +0000
+Date: Fri, 15 Jul 2016 09:42:56 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: weiyj_lk@163.com, Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, "Cooper Jr., Franklin" <fcooper@ti.com>, Wei Yongjun
+ <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mtd: nand: omap2: fix return value check in
+ omap_nand_probe()
+Message-ID: <20160715094256.54c10642@bbrezillon>
+In-Reply-To: <20160714160539.GB120073@google.com>
+References: <1468498005-10664-1-git-send-email-weiyj_lk@163.com>
+ <20160714160539.GB120073@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57883BC5.7060600@hisilicon.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,34 +28,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 15, 2016 at 09:26:29AM +0800, Jiancheng Xue wrote:
-> On 2016/7/14 9:13, Brian Norris wrote:
-> > Pushed to l2-mtd.git, with the following diff due to API changes. Please
-> > review to be sure it looks OK to you.
+On Thu, 14 Jul 2016 09:05:39 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> On Thu, Jul 14, 2016 at 12:06:45PM +0000, weiyj_lk@163.com wrote:
+> > From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 > > 
-> 
-> The changes are OK to me. Thanks!
-
-Thanks for double checking.
-
-> > Also, please base changes on l2-mtd.git or linux-next.git in the future.
+> > In case of error, the function dma_request_chan() returns ERR_PTR() and
+> > never returns NULL. The NULL test in the return value check should be
+> > replaced with IS_ERR().
 > > 
+> > Fixes: aa7abd312c11 ('mtd: nand: omap2: Support parsing dma channel
+> > information from DT')
+> > Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>  
 > 
-> The l2-mtd.git can't be accessed through http protocol now. The git protocol
-> is forbidden in our office.
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
+> 
+> Boris,
+> 
+> The affected commit is in your pull request, which I might review/pull
+> today. I'll just plan on applying this on top, unless you'd prefer to
+> fixup and resend.
 
-Hmm, that's too bad. I could probably bug the infradead.org admin to
-change that...
+Nope, you can apply it directly on top of my pull request (unless you
+find other things to fix and want me to send a v3).
 
-At worst, you can at least check out the gitweb. e.g.:
+Thanks,
 
-http://git.infradead.org/l2-mtd.git/commitdiff/e523f11141bdc24f65775f0b1fa4a7ed404e68cc
-
-> I will generate patch based on linux-next.git.
-
-That will usually work just fine too. Although there can be some small
-delay between linux-next updates (ranging from about a day, up to a week
-or two (?) around the merge window).
-
-Regards,
-Brian
+Boris
