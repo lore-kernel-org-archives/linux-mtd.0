@@ -1,21 +1,19 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNxmJ-0008Ow-SR
- for linux-mtd@lists.infradead.org; Fri, 15 Jul 2016 07:43:21 +0000
-Date: Fri, 15 Jul 2016 09:42:56 +0200
+ id 1bNyWy-0001AO-Do
+ for linux-mtd@lists.infradead.org; Fri, 15 Jul 2016 08:31:33 +0000
+Date: Fri, 15 Jul 2016 10:30:57 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: weiyj_lk@163.com, Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, "Cooper Jr., Franklin" <fcooper@ti.com>, Wei Yongjun
- <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mtd: nand: omap2: fix return value check in
- omap_nand_probe()
-Message-ID: <20160715094256.54c10642@bbrezillon>
-In-Reply-To: <20160714160539.GB120073@google.com>
-References: <1468498005-10664-1-git-send-email-weiyj_lk@163.com>
- <20160714160539.GB120073@google.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Brian Norris <computersforpeace@gmail.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: Cached NAND reads and UBIFS
+Message-ID: <20160715103057.691c320f@bbrezillon>
+In-Reply-To: <57878E68.30901@nod.at>
+References: <57863449.4070108@nod.at> <20160713165422.GA130613@google.com>
+ <20160714103301.4b01b0ce@bbrezillon> <57878E68.30901@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,31 +26,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 14 Jul 2016 09:05:39 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+Hi Richard,
 
-> On Thu, Jul 14, 2016 at 12:06:45PM +0000, weiyj_lk@163.com wrote:
-> > From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+On Thu, 14 Jul 2016 15:06:48 +0200
+Richard Weinberger <richard@nod.at> wrote:
+
+> Am 14.07.2016 um 10:33 schrieb Boris Brezillon:
+> >>> Now we're not sure what do do, should we implement bulk reading in the TNC
+> >>> code or improve NAND read caching?    
+> >>
+> >> Seems like we should improve the caching, either in a layer above, or
+> >> just in the NAND layer.  
 > > 
-> > In case of error, the function dma_request_chan() returns ERR_PTR() and
-> > never returns NULL. The NULL test in the return value check should be
-> > replaced with IS_ERR().
-> > 
-> > Fixes: aa7abd312c11 ('mtd: nand: omap2: Support parsing dma channel
-> > information from DT')
-> > Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>  
+> > I think we all agree on that one :).  
 > 
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
-> 
-> Boris,
-> 
-> The affected commit is in your pull request, which I might review/pull
-> today. I'll just plan on applying this on top, unless you'd prefer to
-> fixup and resend.
+> Today I found some time to implement a PoC of a single page cache directly
+> in UBI.
 
-Nope, you can apply it directly on top of my pull request (unless you
-find other things to fix and want me to send a v3).
+Oh, that was fast. I'm looking forward to seeing this implementation.
 
-Thanks,
+> IMHO UBI is the right layer for that. NAND is too low and UBIFS too high
+> level.
+> With a few lines of case I was able to speedup UBIFS TNC lookups a lot,
+> in fact it gave me the same speed up as caching in the NAND layer does.
+
+As explained in a previous answer, assuming the user will always need
+the content of a full page is not necessarily the good option, even if,
+as seen with the UBIFS example, it's usually what we want.
+In our use case, only UBIFS can know/guess how much data will be needed
+in each page.
+
+The good thing is that caching at the UBI level allows you to use
+sub-page reads for EC/VID headers.
+
+> 
+> As next step I'll tidy the code, add a debugfs interface to expose cache hit/miss
+> counters such that we can experiment with different workloads and users ontop
+> of UBIFS. /me thinks of squashfs+ubiblock which is also rather common these days.
+
+Yep, it might help, especially if the squashfs 'block size' is less
+than the NAND page size.
+
+> 
+> Maybe caching more than one page helps too.
+
+That would also help, though IMO it requires using the 'page cache'
+mechanism so that the system can reclaim cached pages when it is under
+memory pressure.
+
+Anyway, thanks for investigating this option, let's see what Artem and
+Brian think about this approach.
+
+Regards,
 
 Boris
