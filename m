@@ -1,24 +1,18 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPF21-0007U4-F3
- for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 20:20:49 +0000
-Received: by mail-pf0-x242.google.com with SMTP id i6so12271000pfe.0
- for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2016 13:20:29 -0700 (PDT)
-Date: Mon, 18 Jul 2016 13:20:26 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: kbuild-all@01.org, linux-mtd@lists.infradead.org,
- Graham Moore <grmoore@opensource.altera.com>,
- Marek Vasut <marex@denx.de>, linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [mtd-next:master 30/33]
- drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of
- function 'readsl'
-Message-ID: <20160718202026.GB137880@google.com>
-References: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
+ id 1bPH0V-0007ND-K4
+ for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 22:27:24 +0000
+Date: Tue, 19 Jul 2016 00:26:55 +0200
+From: Daniel Golle <daniel@makrotopia.org>
+To: linux-mtd@lists.infradead.org
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>
+Subject: [PATCH for-4.8] ubifs: silence early error messages if MS_SILENT is
+ set
+Message-ID: <20160718222649.GA17394@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +22,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 19, 2016 at 03:43:17AM +0800, kbuild test robot wrote:
-> tree:   git://git.infradead.org/linux-mtd-next.git master
-> head:   f78921b9020c510ed222a6c2402e2aa126432415
-> commit: 140623410536905fa6ab737b625decfde6c64a72 [30/33] mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller
-> config: x86_64-allmodconfig (attached as .config)
-> compiler: gcc-6 (Debian 6.1.1-1) 6.1.1 20160430
-> reproduce:
->         git checkout 140623410536905fa6ab737b625decfde6c64a72
->         # save the attached .config to linux build tree
->         make ARCH=x86_64 
-> 
-> All errors (new ones prefixed by >>):
-> 
->    drivers/mtd/spi-nor/cadence-quadspi.c: In function 'cqspi_indirect_read_execute':
-> >> drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of function 'readsl' [-Werror=implicit-function-declaration]
->        readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
->        ^~~~~~
->    drivers/mtd/spi-nor/cadence-quadspi.c: In function 'cqspi_indirect_write_execute':
-> >> drivers/mtd/spi-nor/cadence-quadspi.c:613:3: error: implicit declaration of function 'writesl' [-Werror=implicit-function-declaration]
->       writesl(cqspi->ahb_base, txbuf, DIV_ROUND_UP(write_bytes, 4));
->       ^~~~~~~
->    cc1: some warnings being treated as errors
+Probe-mounting a volume too small for UBIFS results in kernel log
+polution which might irritate users.
+Address this by silencing errors which may happen during boot if the
+rootfs is e.g. squashfs (and thus rather small) stored on a UBI volume.
+This commit should be seen in context with
+commit 65fb47721925628bf85ec08c4302ac5e7224a66a
+and
+commit 90bea5a3f0bf680b87b90516f3c231997f4b8f3b
 
-Hmm, does x86 not define readsl()/writesl()? I can never tell what
-accessors are supposed to be "standard" across architectures.
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ fs/ubifs/super.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Either we need to drop the COMPILE_TEST or maybe make it (!X86 &&
-COMPILE_TEST).
-
-Brian
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 736dd58..4ec0510 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -520,19 +520,19 @@ static int init_constants_early(struct ubifs_info *c)
+ 	c->max_write_shift = fls(c->max_write_size) - 1;
+ 
+ 	if (c->leb_size < UBIFS_MIN_LEB_SZ) {
+-		ubifs_err(c, "too small LEBs (%d bytes), min. is %d bytes",
+-			  c->leb_size, UBIFS_MIN_LEB_SZ);
++		ubifs_errc(c, "too small LEBs (%d bytes), min. is %d bytes",
++			   c->leb_size, UBIFS_MIN_LEB_SZ);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (c->leb_cnt < UBIFS_MIN_LEB_CNT) {
+-		ubifs_err(c, "too few LEBs (%d), min. is %d",
+-			  c->leb_cnt, UBIFS_MIN_LEB_CNT);
++		ubifs_errc(c, "too few LEBs (%d), min. is %d",
++			   c->leb_cnt, UBIFS_MIN_LEB_CNT);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (!is_power_of_2(c->min_io_size)) {
+-		ubifs_err(c, "bad min. I/O size %d", c->min_io_size);
++		ubifs_errc(c, "bad min. I/O size %d", c->min_io_size);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -543,8 +543,8 @@ static int init_constants_early(struct ubifs_info *c)
+ 	if (c->max_write_size < c->min_io_size ||
+ 	    c->max_write_size % c->min_io_size ||
+ 	    !is_power_of_2(c->max_write_size)) {
+-		ubifs_err(c, "bad write buffer size %d for %d min. I/O unit",
+-			  c->max_write_size, c->min_io_size);
++		ubifs_errc(c, "bad write buffer size %d for %d min. I/O unit",
++			   c->max_write_size, c->min_io_size);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.9.0
