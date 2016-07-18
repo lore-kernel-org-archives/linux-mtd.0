@@ -1,29 +1,23 @@
-Received: from mail-pf0-x232.google.com ([2607:f8b0:400e:c00::232])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPCda-0006n4-9C
- for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 17:47:34 +0000
-Received: by mail-pf0-x232.google.com with SMTP id x72so7786827pfd.2
- for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2016 10:47:06 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mtd: brcmnand: iProc big endian and ONFI support
-To: Markus Mayer <markus.mayer@broadcom.com>
-References: <1468863377-31862-1-git-send-email-ray.jui@broadcom.com>
- <1468863377-31862-2-git-send-email-ray.jui@broadcom.com>
- <CAGt4E5tyANE-fiRNp=qZHLJLp+XCd0i74E0n2vgedQC5Rb46+g@mail.gmail.com>
+ id 1bPDKx-000391-7O
+ for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 18:32:16 +0000
+Subject: Re: [PATCH mtd-utils] nanddump: check write function result for errors
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+References: <1468833493-28311-1-git-send-email-zajec5@gmail.com>
+ <CAFLxGvxpB-sAS4tsZu4fFVp4OxGdg1nccip-y6fh-V1ffdXQdQ@mail.gmail.com>
+ <CACna6ry-AdRH9Yk02piJoc0N4VSWom=_N4dE9_-NDjV4gQQi4g@mail.gmail.com>
+ <578CE371.9090604@nod.at>
+ <CACna6rxNhDMxbE3fnbiko8eKJXWAQ+5GsXPZYdE8iT1LFJV_fQ@mail.gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>,
- Prafulla Kota <prafulla.kota@broadcom.com>
-From: Ray Jui <ray.jui@broadcom.com>
-Message-ID: <02461aa0-687b-f640-e06a-677bf7608673@broadcom.com>
-Date: Mon, 18 Jul 2016 10:47:01 -0700
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <578D2096.9030901@nod.at>
+Date: Mon, 18 Jul 2016 20:31:50 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAGt4E5tyANE-fiRNp=qZHLJLp+XCd0i74E0n2vgedQC5Rb46+g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CACna6rxNhDMxbE3fnbiko8eKJXWAQ+5GsXPZYdE8iT1LFJV_fQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,58 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Markus,
+Rafał,
 
-On 7/18/2016 10:41 AM, Markus Mayer wrote:
-> On 18 July 2016 at 10:36, Ray Jui <ray.jui@broadcom.com> wrote:
->> This patch adds big endian and ONFI support for various iProc based
->> SoCs that use the core brcmstb NAND controller
+Am 18.07.2016 um 16:51 schrieb Rafał Miłecki:
+> On 18 July 2016 at 16:10, Richard Weinberger <richard@nod.at> wrote:
+>> My patch too since it uses mtd-util's logging functions.
+>> sys_errmsg(...)
 >>
->> This patch was originally implemented by Prafulla Kota
->> <prafulla.kota@broadcom.com> and fully tested on iProc based NS2 SVK
->>
->> Signed-off-by: Prafulla Kota <prafulla.kota@broadcom.com>
->> Signed-off-by: Ray Jui <ray.jui@broadcom.com>
->> ---
->>  drivers/mtd/nand/brcmnand/brcmnand.c   | 12 ++++++------
->>  drivers/mtd/nand/brcmnand/brcmnand.h   | 13 ++++++++-----
->>  drivers/mtd/nand/brcmnand/iproc_nand.c | 17 +++++++++++++----
->>  3 files changed, 27 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
->> index b76ad7c..12a1585 100644
->> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
->> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+>> Could you please merge both patches and resend?
+> 
+> Oh, I didn't realize sys_errmsg does that. I assumed it logs into
+> system log (which seemed like a weird idea to do). A bit confusing
+> name. Thanks, I'll send V2.
+> 
 
-...
-...
-
->> +       /*
->> +        * In the case of BE or when dealing with NAND data, alway configure
->> +        * the APB bus to LE mode before accessing the FIFO and back to BE mode
->> +        * after the access is done
->> +        */
->> +       if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) || !is_param) {
->> +               if (prepare)
->> +                       val |= IPROC_NAND_APB_LE_MODE;
->> +               else
->> +                       val &= ~IPROC_NAND_APB_LE_MODE;
->> +       } else /* when in LE accessing the parameter page, keep APB in BE */
->
-> The coding guidelines state that if you need braces around one branch
-> of an if/else combination, you must use them on the other branch,
-> also, even if the other branch is just one line.
->
-
-Yes, I will add braces around in the next revision of this patch.
-
->>                 val &= ~IPROC_NAND_APB_LE_MODE;
->>
->>         brcmnand_writel(val, mmio);
->> --
->> 2.1.4
->>
+The sys_ prefix denotes that this function is used for syscall
+errors. :-)
 
 Thanks,
-
-Ray
+//richard
