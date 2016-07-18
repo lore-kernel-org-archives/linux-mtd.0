@@ -1,23 +1,22 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mout.kundenserver.de ([212.227.126.131])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPDKx-000391-7O
- for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 18:32:16 +0000
-Subject: Re: [PATCH mtd-utils] nanddump: check write function result for errors
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-References: <1468833493-28311-1-git-send-email-zajec5@gmail.com>
- <CAFLxGvxpB-sAS4tsZu4fFVp4OxGdg1nccip-y6fh-V1ffdXQdQ@mail.gmail.com>
- <CACna6ry-AdRH9Yk02piJoc0N4VSWom=_N4dE9_-NDjV4gQQi4g@mail.gmail.com>
- <578CE371.9090604@nod.at>
- <CACna6rxNhDMxbE3fnbiko8eKJXWAQ+5GsXPZYdE8iT1LFJV_fQ@mail.gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <578D2096.9030901@nod.at>
-Date: Mon, 18 Jul 2016 20:31:50 +0200
+ id 1bPEKm-0007qF-9s
+ for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 19:36:09 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com, marex@denx.de,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mtd: atmel-quadspi: add driver for Atmel QSPI
+ controller
+Date: Mon, 18 Jul 2016 21:35:39 +0200
+Message-ID: <3482823.TCe8doMvLu@wuerfel>
+In-Reply-To: <20160716004507.GD76613@google.com>
+References: <cover.1465830154.git.cyrille.pitchen@atmel.com>
+ <20160714013242.GG54628@google.com> <20160716004507.GD76613@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CACna6rxNhDMxbE3fnbiko8eKJXWAQ+5GsXPZYdE8iT1LFJV_fQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rafał,
+On Friday, July 15, 2016 5:45:07 PM CEST Brian Norris wrote:
+> Applied to l2-mtd.git with that fixup.
 
-Am 18.07.2016 um 16:51 schrieb Rafał Miłecki:
-> On 18 July 2016 at 16:10, Richard Weinberger <richard@nod.at> wrote:
->> My patch too since it uses mtd-util's logging functions.
->> sys_errmsg(...)
->>
->> Could you please merge both patches and resend?
-> 
-> Oh, I didn't realize sys_errmsg does that. I assumed it logs into
-> system log (which seemed like a weird idea to do). A bit confusing
-> name. Thanks, I'll send V2.
-> 
+I'm getting this build error now on a randconfig build:
 
-The sys_ prefix denotes that this function is used for syscall
-errors. :-)
+drivers/mtd/built-in.o: In function `atmel_qspi_run_command':
+:(.text+0x1ee3c): undefined reference to `_memcpy_toio'
+:(.text+0x1ee48): undefined reference to `_memcpy_fromio'
 
-Thanks,
-//richard
+On ARCH_EBSA, which doesn't build the file that contains the two
+functions. I don't see any other driver on ARM using those two
+functions directly. What is the specific reason for using them
+here? Do you require byte-wise accesses, or could you use
+the normal memcpy_toio/memcpy_fromio that turn into aligned
+32-bit word accesses instead? If you have to use the non-portable
+functions, maybe we can just make the driver depend on !ARCH_EBSA?
+
+	Arnd
