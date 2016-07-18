@@ -1,21 +1,21 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bP5Sh-0006JS-E7
- for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 10:07:44 +0000
-Received: by mail-lf0-x243.google.com with SMTP id 33so11002214lfw.3
- for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2016 03:07:23 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Ben Hutchings <ben@decadent.org.uk>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
- linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] mtd: update description of MTD_BCM47XXSFLASH symbol
-Date: Mon, 18 Jul 2016 12:07:03 +0200
-Message-Id: <1468836426-27688-1-git-send-email-zajec5@gmail.com>
+ id 1bP6nr-0003bV-6B
+ for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 11:33:40 +0000
+Received: by mail-oi0-x243.google.com with SMTP id l9so15691411oih.0
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2016 04:33:18 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1468833493-28311-1-git-send-email-zajec5@gmail.com>
+References: <1468833493-28311-1-git-send-email-zajec5@gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 18 Jul 2016 13:33:17 +0200
+Message-ID: <CAFLxGvxpB-sAS4tsZu4fFVp4OxGdg1nccip-y6fh-V1ffdXQdQ@mail.gmail.com>
+Subject: Re: [PATCH mtd-utils] nanddump: check write function result for errors
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For years now we support writing to BCMA SoC serial flash, so don't
-describe this driver as providing read-only support anymore.
+On Mon, Jul 18, 2016 at 11:18 AM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com=
+> wrote:
+> Errors may happen, it's e.g. easy on embedded devices to run out of space
+> when dumping big partitions. This patch adds a helper function for
+> writing. It deals with partial writes and just returns 0 on success or
+> error number.
+>
+> The old code didn't check for errors at all which could result in
+> incomplete dumps without exiting with an error.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/devices/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Is this patch different from my version, does it fix more?
+http://lists.infradead.org/pipermail/linux-mtd/2016-April/067234.html
 
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 5a1d0dc..bf8238f 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -113,12 +113,12 @@ config MTD_SST25L
- 	  if you want to specify device partitioning.
- 
- config MTD_BCM47XXSFLASH
--	tristate "R/O support for serial flash on BCMA bus"
-+	tristate "Support for serial flash on BCMA bus"
- 	depends on BCMA_SFLASH
- 	help
- 	  BCMA bus can have various flash memories attached, they are
- 	  registered by bcma as platform devices. This enables driver for
--	  serial flash memories (only read-only mode is implemented).
-+	  serial flash memories.
- 
- config MTD_SLRAM
- 	tristate "Uncached system RAM"
--- 
-1.8.4.5
+Brian, if this is fine with you I'd apply one of these patches.
+
+--=20
+Thanks,
+//richard
