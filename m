@@ -1,19 +1,16 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.206])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bP3Yb-0004DN-SP
- for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 08:05:43 +0000
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Subject: Re: [RFC][PATCH] ubi: Implement a read cache
-From: David Gstir <david@sigma-star.at>
-In-Reply-To: <1468587454-7590-1-git-send-email-richard@nod.at>
-Date: Mon, 18 Jul 2016 10:05:18 +0200
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com,
- computersforpeace@gmail.com
-Content-Transfer-Encoding: 7bit
-Message-Id: <EE3158AD-DBBB-489A-8075-8DD32BC5AAF0@sigma-star.at>
-References: <1468587454-7590-1-git-send-email-richard@nod.at>
-To: Richard Weinberger <richard@nod.at>
+ id 1bP45m-0000d8-KC
+ for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 08:40:00 +0000
+From: Hector Palacios <hector.palacios@digi.com>
+To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
+ <oss@buserror.net>, <stable@vger.kernel.org>, <hector.palacios@digi.com>
+Subject: [PATCH] mtd: nand: fix bug writing 1 byte less than page size
+Date: Mon, 18 Jul 2016 10:39:18 +0200
+Message-ID: <1468831158-6172-1-git-send-email-hector.palacios@digi.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+nand_do_write_ops() determines if it is writing a partial page with the
+formula:
+	part_pagewr = (column || writelen < (mtd->writesize - 1))
 
-> On 15.07.2016, at 14:57, Richard Weinberger <richard@nod.at> wrote:
+When 'writelen' is exactly 1 byte less than the NAND page size the formula
+equates to zero, so the code doesn't process it as a partial write,
+although it should.
+As a consequence the function remains in the while(1) loop with 'writelen'
+becoming 0xffffffff and iterating endlessly.
 
-<snip>
+The bug may not be easy to reproduce in Linux since user space tools
+usually force the padding or round-up the write size to a page-size
+multiple.
+This was discovered in U-Boot where the issue can be reproduced by
+writing any size that is 1 byte less than a page-size multiple.
+For example, on a NAND with 2K page (0x800):
+	=> nand erase.part <partition>
+	=> nand write $loadaddr <partition> 7ff
 
-> +static int read_cache_init(struct ubi_device *ubi)
-> +{
-> +	int i;
-> +	struct ubi_read_cache_line *line;
-> +	struct ubi_read_cache *read_cache = kzalloc(sizeof(*read_cache),
-> +						    GFP_KERNEL);
-> +
-> +	if (!read_cache)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < UBI_READ_CACHE_LINES; i++) {
-> +		line = &read_cache->lines[i];
-> +
-> +		mutex_init(&line->line_lock);
-> +		line->buf = kmalloc(ubi->mtd->writesize, GFP_KERNEL);
-> +		line->pnum = line->offset = -1;
-> +		if (!line->buf)
-> +			goto err_nomem;
-> +	}
-> +
-> +	read_cache->buflen = ubi->mtd->writesize;
-> +
-> +	ubi->read_cache = read_cache;
-> +
-> +	return 0;
-> +
-> +err_nomem:
-> +	for (i = 0; i < UBI_READ_CACHE_LINES; i++) {
-> +		line = &read_cache->lines[i];
-> +		kfree(line->buf);
-> +	}
+Signed-off-by: Hector Palacios <hector.palacios@digi.com>
+---
+ drivers/mtd/nand/nand_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You're missing a kfree(read_cache); here. :)
-
-> +
-> +	return -ENOMEM;
-> +}
-> 
-
-Will test the patch today.
-
--David
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 0b0dc29d2af7..77533f7f2429 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2610,7 +2610,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 		int cached = writelen > bytes && page != blockmask;
+ 		uint8_t *wbuf = buf;
+ 		int use_bufpoi;
+-		int part_pagewr = (column || writelen < (mtd->writesize - 1));
++		int part_pagewr = (column || writelen < mtd->writesize);
+ 
+ 		if (part_pagewr)
+ 			use_bufpoi = 1;
