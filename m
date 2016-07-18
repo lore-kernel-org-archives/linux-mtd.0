@@ -1,22 +1,24 @@
-Received: from mout.kundenserver.de ([212.227.17.13])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPEiI-0005nc-9p
- for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 20:00:27 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com, marex@denx.de,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mtd: atmel-quadspi: add driver for Atmel QSPI
- controller
-Date: Mon, 18 Jul 2016 21:59:56 +0200
-Message-ID: <1715321.52KD2CMTqu@wuerfel>
-In-Reply-To: <20160718195511.GA137880@google.com>
-References: <cover.1465830154.git.cyrille.pitchen@atmel.com>
- <3482823.TCe8doMvLu@wuerfel> <20160718195511.GA137880@google.com>
+ id 1bPF21-0007U4-F3
+ for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 20:20:49 +0000
+Received: by mail-pf0-x242.google.com with SMTP id i6so12271000pfe.0
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2016 13:20:29 -0700 (PDT)
+Date: Mon, 18 Jul 2016 13:20:26 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: kbuild-all@01.org, linux-mtd@lists.infradead.org,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Marek Vasut <marex@denx.de>, linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [mtd-next:master 30/33]
+ drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of
+ function 'readsl'
+Message-ID: <20160718202026.GB137880@google.com>
+References: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, July 18, 2016 12:55:11 PM CEST Brian Norris wrote:
-> On Mon, Jul 18, 2016 at 09:35:39PM +0200, Arnd Bergmann wrote:
-> > On Friday, July 15, 2016 5:45:07 PM CEST Brian Norris wrote:
-> > > Applied to l2-mtd.git with that fixup.
-> > 
-> > I'm getting this build error now on a randconfig build:
-> > 
-> > drivers/mtd/built-in.o: In function `atmel_qspi_run_command':
-> > :(.text+0x1ee3c): undefined reference to `_memcpy_toio'
-> > :(.text+0x1ee48): undefined reference to `_memcpy_fromio'
+On Tue, Jul 19, 2016 at 03:43:17AM +0800, kbuild test robot wrote:
+> tree:   git://git.infradead.org/linux-mtd-next.git master
+> head:   f78921b9020c510ed222a6c2402e2aa126432415
+> commit: 140623410536905fa6ab737b625decfde6c64a72 [30/33] mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller
+> config: x86_64-allmodconfig (attached as .config)
+> compiler: gcc-6 (Debian 6.1.1-1) 6.1.1 20160430
+> reproduce:
+>         git checkout 140623410536905fa6ab737b625decfde6c64a72
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
 > 
-> Whoops, I noticed those during review, but I don't know why I forgot to
-> mention them nor fix them up before applying.
+> All errors (new ones prefixed by >>):
 > 
-> > On ARCH_EBSA, which doesn't build the file that contains the two
-> > functions. I don't see any other driver on ARM using those two
-> > functions directly. What is the specific reason for using them
-> > here? Do you require byte-wise accesses, or could you use
-> > the normal memcpy_toio/memcpy_fromio that turn into aligned
-> > 32-bit word accesses instead?
-> 
-> Good questions. I would suspect that aligned 32-bit accesses are what
-> they're looking for, but I'm not absolutely sure.
+>    drivers/mtd/spi-nor/cadence-quadspi.c: In function 'cqspi_indirect_read_execute':
+> >> drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of function 'readsl' [-Werror=implicit-function-declaration]
+>        readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
+>        ^~~~~~
+>    drivers/mtd/spi-nor/cadence-quadspi.c: In function 'cqspi_indirect_write_execute':
+> >> drivers/mtd/spi-nor/cadence-quadspi.c:613:3: error: implicit declaration of function 'writesl' [-Werror=implicit-function-declaration]
+>       writesl(cqspi->ahb_base, txbuf, DIV_ROUND_UP(write_bytes, 4));
+>       ^~~~~~~
+>    cc1: some warnings being treated as errors
 
-Ok, so we should look at that first. If the driver supports 32-bit
-access, using the regular accessors will also make the transfers
-much faster.
+Hmm, does x86 not define readsl()/writesl()? I can never tell what
+accessors are supposed to be "standard" across architectures.
 
-> > If you have to use the non-portable
-> > functions, maybe we can just make the driver depend on !ARCH_EBSA?
-> 
-> I don't see an ARCH_EBSA. Did you mean ARCH_EBSA110?
+Either we need to drop the COMPILE_TEST or maybe make it (!X86 &&
+COMPILE_TEST).
 
-Yes, sorry for the typo.
-
-> Or we could just drop the '|| (ARM && COMPILE_TEST)' clause for now:
-> 
->         depends on ARCH_AT91 || (ARM && COMPILE_TEST)
-
-I'd prefer to keep the COMPILE_TEST option, after all it's how
-I found the problem. On a related note, what is the ARM dependency
-for? Is that just for the _memcpy_toio/_memcpy_fromio? Maybe we
-can drop too if we find the right architecture-independent
-replacement for those two calls.
-
-	Arnd
+Brian
