@@ -1,21 +1,18 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bP4Tv-0003xx-34
- for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 09:04:55 +0000
-Date: Mon, 18 Jul 2016 11:04:32 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Hector Palacios <hector.palacios@digi.com>
-Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <richard@nod.at>, <oss@buserror.net>, <stable@vger.kernel.org>, Brian
- Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: fix bug writing 1 byte less than page size
-Message-ID: <20160718110432.003b52ea@bbrezillon>
-In-Reply-To: <1468831158-6172-1-git-send-email-hector.palacios@digi.com>
-References: <1468831158-6172-1-git-send-email-hector.palacios@digi.com>
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bP4hP-0003tu-Bj
+ for linux-mtd@lists.infradead.org; Mon, 18 Jul 2016 09:18:59 +0000
+Received: by mail-lf0-x242.google.com with SMTP id l69so6409236lfg.1
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2016 02:18:30 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Subject: [PATCH mtd-utils] nanddump: check write function result for errors
+Date: Mon, 18 Jul 2016 11:18:13 +0200
+Message-Id: <1468833493-28311-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +22,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 18 Jul 2016 10:39:18 +0200
-Hector Palacios <hector.palacios@digi.com> wrote:
+Errors may happen, it's e.g. easy on embedded devices to run out of space
+when dumping big partitions. This patch adds a helper function for
+writing. It deals with partial writes and just returns 0 on success or
+error number.
 
-> nand_do_write_ops() determines if it is writing a partial page with the
-> formula:
-> 	part_pagewr = (column || writelen < (mtd->writesize - 1))
-> 
-> When 'writelen' is exactly 1 byte less than the NAND page size the formula
-> equates to zero, so the code doesn't process it as a partial write,
-> although it should.
-> As a consequence the function remains in the while(1) loop with 'writelen'
-> becoming 0xffffffff and iterating endlessly.
-> 
-> The bug may not be easy to reproduce in Linux since user space tools
-> usually force the padding or round-up the write size to a page-size
-> multiple.
-> This was discovered in U-Boot where the issue can be reproduced by
-> writing any size that is 1 byte less than a page-size multiple.
-> For example, on a NAND with 2K page (0x800):
-> 	=> nand erase.part <partition>
-> 	=> nand write $loadaddr <partition> 7ff  
-> 
-> Signed-off-by: Hector Palacios <hector.palacios@digi.com>
+The old code didn't check for errors at all which could result in
+incomplete dumps without exiting with an error.
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ nand-utils/nanddump.c | 50 ++++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 44 insertions(+), 6 deletions(-)
 
-Brian, can you take this patch in your tree.
-
-As usual, I'm unsure whether we should Cc stable or not, but we
-should at least add
-
-Fixes: 66507c7bc8895 ("mtd: nand: Add support to use nand_base poi databuf as bounce buffer")
-
-> ---
->  drivers/mtd/nand/nand_base.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 0b0dc29d2af7..77533f7f2429 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2610,7 +2610,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
->  		int cached = writelen > bytes && page != blockmask;
->  		uint8_t *wbuf = buf;
->  		int use_bufpoi;
-> -		int part_pagewr = (column || writelen < (mtd->writesize - 1));
-> +		int part_pagewr = (column || writelen < mtd->writesize);
->  
->  		if (part_pagewr)
->  			use_bufpoi = 1;
+diff --git a/nand-utils/nanddump.c b/nand-utils/nanddump.c
+index 4ee7ed4..0bbc97f 100644
+--- a/nand-utils/nanddump.c
++++ b/nand-utils/nanddump.c
+@@ -293,6 +293,25 @@ nil:
+ 	linebuf[lx++] = '\0';
+ }
+ 
++/**
++ * ofd_write - writes whole buffer to the file associated with a descriptor
++ *
++ * On failure an error (negative number) is returned. Otherwise 0 is returned.
++ */
++static int ofd_write(int ofd, const unsigned char *buf, size_t nbyte)
++{
++	ssize_t bytes;
++
++	while (nbyte) {
++		bytes = write(ofd, buf, nbyte);
++		if (bytes < 0)
++			return -errno;
++		buf += bytes;
++		nbyte -= bytes;
++	}
++
++	return 0;
++}
+ 
+ /*
+  * Main program
+@@ -309,6 +328,7 @@ int main(int argc, char * const argv[])
+ 	bool eccstats = false;
+ 	unsigned char *readbuf = NULL, *oobbuf = NULL;
+ 	libmtd_t mtd_desc;
++	int err;
+ 
+ 	process_options(argc, argv);
+ 
+@@ -443,10 +463,19 @@ int main(int argc, char * const argv[])
+ 			for (i = 0; i < bs; i += PRETTY_ROW_SIZE) {
+ 				pretty_dump_to_buffer(readbuf + i, PRETTY_ROW_SIZE,
+ 						pretty_buf, PRETTY_BUF_LEN, true, canonical, ofs + i);
+-				write(ofd, pretty_buf, strlen(pretty_buf));
++				err = write(ofd, pretty_buf, strlen(pretty_buf));
++				if (err) {
++					errmsg("ofd_write: %s\n", strerror(-err));
++					goto closeall;
++				}
+ 			}
+-		} else
+-			write(ofd, readbuf, bs);
++		} else {
++			err = ofd_write(ofd, readbuf, bs);
++			if (err) {
++				errmsg("ofd_write: %d %s\n", err, strerror(-err));
++				goto closeall;
++			}
++		}
+ 
+ 		if (omitoob)
+ 			continue;
+@@ -466,10 +495,19 @@ int main(int argc, char * const argv[])
+ 			for (i = 0; i < mtd.oob_size; i += PRETTY_ROW_SIZE) {
+ 				pretty_dump_to_buffer(oobbuf + i, mtd.oob_size - i,
+ 						pretty_buf, PRETTY_BUF_LEN, false, canonical, 0);
+-				write(ofd, pretty_buf, strlen(pretty_buf));
++				err = write(ofd, pretty_buf, strlen(pretty_buf));
++				if (err) {
++					errmsg("ofd_write: %s\n", strerror(-err));
++					goto closeall;
++				}
+ 			}
+-		} else
+-			write(ofd, oobbuf, mtd.oob_size);
++		} else {
++			err = ofd_write(ofd, oobbuf, mtd.oob_size);
++			if (err) {
++				errmsg("ofd_write: %d %s\n", err, strerror(-err));
++				goto closeall;
++			}
++		}
+ 	}
+ 
+ 	/* Close the output file and MTD device, free memory */
+-- 
+1.8.4.5
