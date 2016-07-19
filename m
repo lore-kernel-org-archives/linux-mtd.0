@@ -1,18 +1,24 @@
-Subject: Re: [ath6kl:pending 14/24] drivers/mtd/devices/bcm47xxsflash.c:299:2:
- error: implicit declaration of function 'ioremap_cache'
-To: kbuild test robot <fengguang.wu@intel.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <201607190916.c8xDOxpA%fengguang.wu@intel.com>
-Cc: kbuild-all@01.org, ath10k@lists.infradead.org,
- Kalle Valo <kvalo@adurom.com>, linux-mtd@lists.infradead.org,
- linux-wireless@vger.kernel.org
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <b1bcfe6c-6875-b01b-7d10-ea8d1e00adfc@gmail.com>
-Date: Tue, 19 Jul 2016 07:56:06 +0200
+Received: from mx1.mailbox.org ([80.241.60.212])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bPO7t-00029s-Jd
+ for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 06:03:30 +0000
+Subject: Re: [mtd-next:master 30/33]
+ drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of
+ function 'readsl'
+To: Brian Norris <computersforpeace@gmail.com>,
+ kbuild test robot <fengguang.wu@intel.com>
+References: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
+ <20160718202026.GB137880@google.com>
+Cc: Marek Vasut <marex@denx.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kbuild-all@01.org, Graham Moore <grmoore@opensource.altera.com>
+From: Stefan Roese <sr@denx.de>
+Message-ID: <578DC294.5090605@denx.de>
+Date: Tue, 19 Jul 2016 08:03:00 +0200
 MIME-Version: 1.0
-In-Reply-To: <201607190916.c8xDOxpA%fengguang.wu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20160718202026.GB137880@google.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,80 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Resending reply with proper To/Cc.
-
-On 07/19/2016 03:14 AM, kbuild test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-> head:   7a1b79bd39dda1f12b9f6708583250f40354c981
-> commit: 57d8f7dd2132df3ac21044e93a8ecdc9744b4459 [14/24] bcma: allow enabling serial flash support on non-MIPS SoCs
-> config: cris-allmodconfig (attached as .config)
-> compiler: cris-linux-gcc (GCC) 4.6.3
-> reproduce:
->         wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout 57d8f7dd2132df3ac21044e93a8ecdc9744b4459
->         # save the attached .config to linux build tree
->         make.cross ARCH=cris
+On 18.07.2016 22:20, Brian Norris wrote:
+> On Tue, Jul 19, 2016 at 03:43:17AM +0800, kbuild test robot wrote:
+>> tree:   git://git.infradead.org/linux-mtd-next.git master
+>> head:   f78921b9020c510ed222a6c2402e2aa126432415
+>> commit: 140623410536905fa6ab737b625decfde6c64a72 [30/33] mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller
+>> config: x86_64-allmodconfig (attached as .config)
+>> compiler: gcc-6 (Debian 6.1.1-1) 6.1.1 20160430
+>> reproduce:
+>>          git checkout 140623410536905fa6ab737b625decfde6c64a72
+>>          # save the attached .config to linux build tree
+>>          make ARCH=x86_64
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     drivers/mtd/spi-nor/cadence-quadspi.c: In function 'cqspi_indirect_read_execute':
+>>>> drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of function 'readsl' [-Werror=implicit-function-declaration]
+>>         readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
+>>         ^~~~~~
+>>     drivers/mtd/spi-nor/cadence-quadspi.c: In function 'cqspi_indirect_write_execute':
+>>>> drivers/mtd/spi-nor/cadence-quadspi.c:613:3: error: implicit declaration of function 'writesl' [-Werror=implicit-function-declaration]
+>>        writesl(cqspi->ahb_base, txbuf, DIV_ROUND_UP(write_bytes, 4));
+>>        ^~~~~~~
+>>     cc1: some warnings being treated as errors
 >
-> All error/warnings (new ones prefixed by >>):
+> Hmm, does x86 not define readsl()/writesl()? I can never tell what
+> accessors are supposed to be "standard" across architectures.
 >
->    drivers/mtd/devices/bcm47xxsflash.c: In function 'bcm47xxsflash_bcma_probe':
->>> drivers/mtd/devices/bcm47xxsflash.c:299:2: error: implicit declaration of function 'ioremap_cache' [-Werror=implicit-function-declaration]
->>> drivers/mtd/devices/bcm47xxsflash.c:299:15: warning: assignment makes pointer from integer without a cast [enabled by default]
->    cc1: some warnings being treated as errors
+> Either we need to drop the COMPILE_TEST or maybe make it (!X86 &&
+> COMPILE_TEST).
 
-Oh, great :( With commit:
-5651d6aaf489 ("mtd: bcm47xxsflash: use ioremap_cache() instead of KSEG0ADDR()")
-we believed to make this driver compilable on all architectures. It seems that
-ioremap_cache is available only on arm, arm64, ia64, mips, sh, x86 and xtensa.
+iowrite32_rep() etc should work for x86 as well.
 
-I noticed that kernel/memremap.c implements ioremap_cache on its own for archs
-that don't provide it. There is a comment in this file:
-/* temporary while we convert existing ioremap_cache users to memremap */
-
-Should we use memremap? I don't understand this function well, it seems I could
-call it with with MEMREMAP_WB flag (and trigger ioremap_cache call), but is it a
-correct thing to do?
-
-Or should we simply make some symbol (CONFIG_MTD_BCM47XXSFLASH?) depend on
-ARM || MIPS?
-
-
-> vim +/ioremap_cache +299 drivers/mtd/devices/bcm47xxsflash.c
->
-> 5fe42d5bf Rafał Miłecki 2012-09-17  283
-> 5651d6aaf Brian Norris  2016-02-26  284  	b47s = devm_kzalloc(dev, sizeof(*b47s), GFP_KERNEL);
-> d2b1bd142 Libo Chen     2013-05-30  285  	if (!b47s)
-> d2b1bd142 Libo Chen     2013-05-30  286  		return -ENOMEM;
-> a2f74a7da Rafał Miłecki 2013-01-06  287  	sflash->priv = b47s;
-> a2f74a7da Rafał Miłecki 2013-01-06  288
-> 5651d6aaf Brian Norris  2016-02-26  289  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> 5651d6aaf Brian Norris  2016-02-26  290  	if (!res) {
-> 5651d6aaf Brian Norris  2016-02-26  291  		dev_err(dev, "invalid resource\n");
-> 5651d6aaf Brian Norris  2016-02-26  292  		return -EINVAL;
-> 5651d6aaf Brian Norris  2016-02-26  293  	}
-> 5651d6aaf Brian Norris  2016-02-26  294  	if (!devm_request_mem_region(dev, res->start, resource_size(res),
-> 5651d6aaf Brian Norris  2016-02-26  295  				     res->name)) {
-> 5651d6aaf Brian Norris  2016-02-26  296  		dev_err(dev, "can't request region for resource %pR\n", res);
-> 5651d6aaf Brian Norris  2016-02-26  297  		return -EBUSY;
-> 5651d6aaf Brian Norris  2016-02-26  298  	}
-> 5651d6aaf Brian Norris  2016-02-26 @299  	b47s->window = ioremap_cache(res->start, resource_size(res));
-> 5651d6aaf Brian Norris  2016-02-26  300  	if (!b47s->window) {
-> 5651d6aaf Brian Norris  2016-02-26  301  		dev_err(dev, "ioremap failed for resource %pR\n", res);
-> 5651d6aaf Brian Norris  2016-02-26  302  		return -ENOMEM;
-> 5651d6aaf Brian Norris  2016-02-26  303  	}
-> 5651d6aaf Brian Norris  2016-02-26  304
-> 41c81536e Rafał Miłecki 2013-03-06  305  	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
-> 265dfbd9a Rafał Miłecki 2013-03-24  306  	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
-> 265dfbd9a Rafał Miłecki 2013-03-24  307  	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
->
-> :::::: The code at line 299 was first introduced by commit
-> :::::: 5651d6aaf489d1db48c253cf884b40214e91c2c5 mtd: bcm47xxsflash: use ioremap_cache() instead of KSEG0ADDR()
->
-> :::::: TO: Brian Norris <computersforpeace@gmail.com>
-> :::::: CC: Brian Norris <computersforpeace@gmail.com>
->
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
->
+Thanks,
+Stefan
