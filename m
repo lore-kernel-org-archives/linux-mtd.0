@@ -1,22 +1,21 @@
-Received: from mout.kundenserver.de ([212.227.126.134])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPSUZ-0000vi-C1
- for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 10:43:15 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com, marex@denx.de,
+Received: from m12-15.163.com ([220.181.12.15])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bPTNB-0005ch-H1
+ for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 11:39:38 +0000
+From: Wei Yongjun <weiyj_lk@163.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mtd: atmel-quadspi: add driver for Atmel QSPI
- controller
-Date: Tue, 19 Jul 2016 12:42:42 +0200
-Message-ID: <3594494.0P5B8Rztl3@wuerfel>
-In-Reply-To: <512741bf-9dce-90f3-d969-3d3cb167fe25@atmel.com>
-References: <cover.1465830154.git.cyrille.pitchen@atmel.com>
- <1715321.52KD2CMTqu@wuerfel> <512741bf-9dce-90f3-d969-3d3cb167fe25@atmel.com>
+Subject: [PATCH -next] mtd: atmel-quadspi: remove redundant dev_err call in
+ atmel_qspi_probe()
+Date: Tue, 19 Jul 2016 11:38:28 +0000
+Message-Id: <1468928308-5543-1-git-send-email-weiyj_lk@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, July 19, 2016 12:03:11 PM CEST Cyrille Pitchen wrote:
-> 
-> Indeed I added the ARM dependency for the COMPILE_TEST case only for
-> _memcpy_toio() and _memcpy_fromio(). I thought it would be enough.
-> 
-> Also, I use _memcpy_toio() and _memcpy_fromio() on purpose as opposed to
-> memcpy_toio() and mempcy_fromio(). I've tested the two latest functions quite
-> a long time ago and it didn't work. If I remember, on our architecture,
-> memcpy_toio() and memcpy_fromio() are simply implemented with the regular
-> memcpy().
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-They are implemented using "mmiocpy" when CONFIG_BIG_ENDIAN is not set.
-mmiocpy is an alias for the out-of-line memcpy() implementation, but it's
-different from calling memcpy() as the compiler can decide to replace
-small memcpy with a pointer dereference, and that can be unaligned on
-ARMv7 for non-MMIO pointers.
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-> The additional memory barriers inserted by readb() and writeb() seems to be
-> needed to guarantee the IO accesses are not reordered on the system bus.
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ drivers/mtd/spi-nor/atmel-quadspi.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Those barriers should not be needed at all, I've never seen an I/O bus
-that reorders consecutive reads to the same address range.
- 
-> In the atmel-quadspi.c driver, there is a comment on the use of memcpy():
-> /* Then fallback to a PIO transfer (memcpy() DOES NOT work!) */
-
-Please try again, I think this was fixed with
-
-commit 1bd46782d08b01b73df0085b51ea1021b19b44fd
-Author: Russell King <rmk+kernel@arm.linux.org.uk>
-Date:   Fri Jul 3 15:22:54 2015 +0100
-
-    ARM: avoid unwanted GCC memset()/memcpy() optimisations for IO variants
-    
-    We don't want GCC optimising our memset_io(), memcpy_fromio() or
-    memcpy_toio() variants, so we must not call one of the standard
-    functions.  Provide a separate name for our assembly memcpy() and
-    memset() functions, and use that instead, thereby bypassing GCC's
-    ability to optimise these operations.
-    
-    GCCs optimisation may introduce unaligned accesses which are invalid
-    for device mappings.
-    
-    Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
-
-	Arnd
+diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
+index 47937d9..f0c04bb 100644
+--- a/drivers/mtd/spi-nor/atmel-quadspi.c
++++ b/drivers/mtd/spi-nor/atmel-quadspi.c
+@@ -615,7 +615,6 @@ static int atmel_qspi_probe(struct platform_device *pdev)
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "qspi_base");
+ 	aq->regs = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(aq->regs)) {
+-		dev_err(&pdev->dev, "missing registers\n");
+ 		err = PTR_ERR(aq->regs);
+ 		goto exit;
+ 	}
+@@ -624,7 +623,6 @@ static int atmel_qspi_probe(struct platform_device *pdev)
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "qspi_mmap");
+ 	aq->mem = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(aq->mem)) {
+-		dev_err(&pdev->dev, "missing AHB memory\n");
+ 		err = PTR_ERR(aq->mem);
+ 		goto exit;
+ 	}
