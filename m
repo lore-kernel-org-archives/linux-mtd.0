@@ -1,20 +1,30 @@
-Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPUGx-00049R-EL
- for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 12:37:16 +0000
-Date: Tue, 19 Jul 2016 14:36:52 +0200
-From: Daniel Golle <daniel@makrotopia.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH for-4.8] ubifs: silence early error messages if MS_SILENT
- is set
-Message-ID: <20160719123651.GB1716@makrotopia.org>
-References: <20160718222649.GA17394@makrotopia.org> <578DBCD4.6070305@nod.at>
- <20160719122000.GA1716@makrotopia.org> <578E1D02.3000109@nod.at>
+ id 1bPViA-0001BJ-PB
+ for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 14:09:31 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+To: =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ linux-next <linux-next@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the
+ wireless-drivers-next tree
+References: <20160719160831.79c0303f@canb.auug.org.au>
+ <8760s2w369.fsf@kamboji.qca.qualcomm.com>
+ <CACna6rxVFD1MpAEYP_Zd4W8CvgnxSQpa0wJs83jwDJ5v11gZ=Q@mail.gmail.com>
+ <871t2qw1cz.fsf@kamboji.qca.qualcomm.com>
+ <CACna6ry6QgrbUoHuJacmr1EhHZyrwqsXfr51gENvY-0zM9L+3Q@mail.gmail.com>
+Date: Tue, 19 Jul 2016 17:08:59 +0300
+In-Reply-To: <CACna6ry6QgrbUoHuJacmr1EhHZyrwqsXfr51gENvY-0zM9L+3Q@mail.gmail.com>
+ (=?utf-8?Q?=22Rafa=C5=82_Mi=C5=82ecki=22's?= message of "Tue, 19 Jul 2016
+ 09:11:11 +0200")
+Message-ID: <87h9blvhxg.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <578E1D02.3000109@nod.at>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +34,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> writes:
 
-On Tue, Jul 19, 2016 at 02:28:50PM +0200, Richard Weinberger wrote:
-> ...
-> >> The diff makes sense but not the commit message.
-> > 
-> > More brief? Less reasoning? Please elaborate, so I know what to
-> > improve.
-> 
-> It confused me a bit. :-)
+> On 19 July 2016 at 09:09, Kalle Valo <kvalo@codeaurora.org> wrote:
+>> Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> writes:
+>>
+>>> On 19 July 2016 at 08:30, Kalle Valo <kvalo@codeaurora.org> wrote:
+>>>> Stephen Rothwell <sfr@canb.auug.org.au> writes:
+>>>>
+>>>>> After merging the wireless-drivers-next tree, today's linux-next build
+>>>>> (powerpc allyesconfig) failed like this:
+>>>>>
+>>>>> drivers/mtd/devices/bcm47xxsflash.c: In function 'bcm47xxsflash_bcma_=
+probe':
+>>>>> drivers/mtd/devices/bcm47xxsflash.c:299:17: error: implicit declarati=
+on of function 'ioremap_cache' [-Werror=3Dimplicit-function-declaration]
+>>>>>   b47s->window =3D ioremap_cache(res->start, resource_size(res));
+>>>>>                  ^
+>>>>> drivers/mtd/devices/bcm47xxsflash.c:299:15: warning: assignment makes=
+ pointer from integer without a cast [-Wint-conversion]
+>>>>>   b47s->window =3D ioremap_cache(res->start, resource_size(res));
+>>>>>                ^
+>>>>>
+>>>>> Caused by commit
+>>>>>
+>>>>>   57d8f7dd2132 ("bcma: allow enabling serial flash support on non-MIP=
+S SoCs")
+>>>>>
+>>>>> I have reverted that commit for today.
+>>>>
+>>>> Thanks, kbuild bot also notified about this.
+>>>>
+>>>> Rafa=C5=82, as the merge window is getting really close I would like to
+>>>> revert this for now and we can reapply it once we the problem is fully
+>>>> solved. And we can use my pending branch for build testing the patch
+>>>> with kbuild bot. What do you think?
+>>>
+>>> The simplest fix sounds pretty much as simple as the revert.
+>>
+>> The problem is that I don't have much time, I need to send the pull
+>> request to Dave within next few days. The fix might create other
+>> problems so I'm not enthusiastic about iterating with this patch at the
+>> moment. I think it can wait for 4.9.
+>
+> I sent a patch seconds ago, you may just take a look at it. If you
+> still prefer to revert my commit, go ahead.
 
-Feel free to change it or let me know if I should reword it and
-resend the patch.
+Ok, let's try your fix. We still have few days. I applied the patch[1]
+to the pending branch this morning and if I don't see any errors I apply
+it later tonight and hopefully it will be in tomorrow's linux-next
+build. Thanks for the quick fix, very much appreciated.
 
-> 
-> >> Why would you mount a squashfs on top of UBI as UBIFS?
-> >> We have rootfstype= for this.
-> > 
-> > However, in OpenWrt/LEDE users may choose the fstype (UBIFS and
-> > squashfs) used for rootfs and the kernel should auto-probe just like
-> > it does for block or MTD devices (we support JFFS2 and squashfs
-> > on NOR and SPI flashes). In the case of squashfs being a read-only
-> > filesystem, an overlayfs is automatically created and used.
-> > Changing kernel command line parameters or anything which would
-> > require bootloader access is not an option for most of our users, due
-> > to the bootloaders being locked or because not everyone is into hooking
-> > up a serial console.
-> > Also, many stock bootloaders append stuff to the cmdline unwanted
-> > when using vanilla or OpenWrt's kernel. Thus, we often times ignore
-> > the bootloader's bootargs.
-> > The strategy of probe-mounting is working well as filesystems can
-> > easily be identified. The reason for this patch is that some users are
-> > getting confused about lines in in their bootlog indicating an error
-> > eventhough there wasn't anything bad happening.
-> 
-> Ah that kind of kludges again...
-> 
-> Anyway, patch looks good to me.
-> 
-> BTW: We should rename ubifs_errc(), commit 235c362bd (UBIFS: extend debug/message capabilities)
-> added the UBIFS context object to all logging functions.
+[1] "mtd: add arch dependency for MTD_BCM47XXSFLASH symbol"
+    https://patchwork.kernel.org/patch/9236053/
 
-... or at least the just comment above the macro definition.
-'c' could stand for 'conditional' ;)
-
-
-Cheers
-
-
-Daniel
+--=20
+Kalle Valo
