@@ -1,27 +1,26 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bParn-0007qY-IW
- for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 19:39:44 +0000
-Received: by mail-pf0-x244.google.com with SMTP id y134so1913814pfg.3
- for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2016 12:39:23 -0700 (PDT)
-Date: Tue, 19 Jul 2016 12:39:18 -0700
+ id 1bPawH-0001YW-B9
+ for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 19:44:21 +0000
+Received: by mail-pa0-x244.google.com with SMTP id cf3so1833525pad.2
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2016 12:44:01 -0700 (PDT)
+Date: Tue, 19 Jul 2016 12:43:58 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Andrey Smirnov <andrew.smirnov@gmail.com>, linux-mtd@lists.infradead.org,
+Cc: Andrey Smirnov <andrew.smirnov@gmail.com>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
  David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: nand: BUG_ON in case of no select_chip and
- cmd_ctrl
-Message-ID: <20160719193918.GA143334@google.com>
+Subject: Re: [PATCH 2/2] mtd: nand: Get rid of needless 'goto'
+Message-ID: <20160719194358.GB143334@google.com>
 References: <1468942904-26464-1-git-send-email-andrew.smirnov@gmail.com>
- <578E4AF0.7090507@nod.at> <20160719175912.11277116@bbrezillon>
- <578E4F13.1070100@nod.at> <20160719181248.2a71b5a7@bbrezillon>
- <20160719181916.GA85399@google.com>
- <20160719204703.3a2a19da@bbrezillon>
+ <1468942904-26464-2-git-send-email-andrew.smirnov@gmail.com>
+ <20160719183047.GC85399@google.com>
+ <CAHQ1cqHJK-EYB_P4Vzeze8x7hHGfb6mzHrBWqSu1HOhj0KmBvQ@mail.gmail.com>
+ <20160719205521.3a816b19@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160719204703.3a2a19da@bbrezillon>
+In-Reply-To: <20160719205521.3a816b19@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,102 +32,83 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On Tue, Jul 19, 2016 at 08:47:03PM +0200, Boris Brezillon wrote:
-> On Tue, 19 Jul 2016 11:19:16 -0700
-> Brian Norris <computersforpeace@gmail.com> wrote:
+On Tue, Jul 19, 2016 at 08:55:21PM +0200, Boris Brezillon wrote:
+> On Tue, 19 Jul 2016 11:48:04 -0700
+> Andrey Smirnov <andrew.smirnov@gmail.com> wrote:
 > 
-> > On Tue, Jul 19, 2016 at 06:12:48PM +0200, Boris Brezillon wrote:
-> > > On Tue, 19 Jul 2016 18:02:27 +0200
-> > > Richard Weinberger <richard@nod.at> wrote:  
-> > > > Am 19.07.2016 um 17:59 schrieb Boris Brezillon:  
-> > > > > On Tue, 19 Jul 2016 17:44:48 +0200
-> > > > > Richard Weinberger <richard@nod.at> wrote:  
-> > > > >> Am 19.07.2016 um 17:41 schrieb Andrey Smirnov:    
-> > > > >>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > > > >>> index ce7b2ca..57043a6 100644
-> > > > >>> --- a/drivers/mtd/nand/nand_base.c
-> > > > >>> +++ b/drivers/mtd/nand/nand_base.c
-> > > > >>> @@ -3128,8 +3128,10 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
-> > > > >>>  	if (chip->waitfunc == NULL)
-> > > > >>>  		chip->waitfunc = nand_wait;
-> > > > >>>  
-> > > > >>> -	if (!chip->select_chip)
-> > > > >>> +	if (!chip->select_chip) {
-> > > > >>> +		BUG_ON(!chip->cmd_ctrl);      
-> > > > >>
-> > > > >> Please don't add new BUG_ON() calls. WARN_ON() is good enough to raise the driver developer's
-> > > > >> attention and won't kill the machine.    
-> > > > > 
-> > > > > Not sure a BUG_ON() is worst than a NULL-pointer exception ;-).    
-> > > > 
-> > > > When this really just triggers a NULL-pointer exception, we don't need a BUG_ON or WARN_ON at
-> > > > all since the kernel can tell anyway what went wrong.  
-> > > 
-> > > Hm, that's not entirely true, depending on your debug options you don't
-> > > have all the information to guess which line triggered the NULL pointer
-> > > exception, and this makes it harder to debug.
-> > > And I agree with Andrey here, it's better to complain at registration
-> > > time than letting the controller register all its NAND devices and
-> > > generate exceptions when the NAND is really used.  
+> > On Tue, Jul 19, 2016 at 11:30 AM, Brian Norris
+> > <computersforpeace@gmail.com> wrote:
+> > > On Tue, Jul 19, 2016 at 08:41:44AM -0700, Andrey Smirnov wrote:  
+> > >> Using "goto" in that "switch" statement only makes it harder to follow
+> > >> control flow and doesn't bring any advantages. Rewrite the code to avoid
+> > >> using "goto".
+> > >>
+> > >> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+> > >> ---
+> > >>  drivers/mtd/nand/nand_base.c | 13 +++++--------
+> > >>  1 file changed, 5 insertions(+), 8 deletions(-)
+> > >>
+> > >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > >> index 57043a6..8fa5536 100644
+> > >> --- a/drivers/mtd/nand/nand_base.c
+> > >> +++ b/drivers/mtd/nand/nand_base.c
+> > >> @@ -2139,18 +2139,15 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+> > >>       case MTD_OPS_PLACE_OOB:
+> > >>       case MTD_OPS_AUTO_OOB:
+> > >>       case MTD_OPS_RAW:
+> > >> +             if (!ops->datbuf)
+> > >> +                     ret = nand_do_read_oob(mtd, from, ops);
+> > >> +             else
+> > >> +                     ret = nand_do_read_ops(mtd, from, ops);
+> > >>               break;
+> > >> -
+> > >>       default:
+> > >> -             goto out;
+> > >> +             break;
+> > >>       }
+> > >>
+> > >> -     if (!ops->datbuf)
+> > >> -             ret = nand_do_read_oob(mtd, from, ops);
+> > >> -     else
+> > >> -             ret = nand_do_read_ops(mtd, from, ops);
+> > >> -
+> > >> -out:
+> > >>       nand_release_device(mtd);
+> > >>       return ret;
+> > >>  }  
+> > >
+> > > The default case is really just a catch-all error case. We don't
+> > > actually even need the nand_get_device() call for that... can we just
+> > > do this instead?  
 > > 
-> > Yes, definitely better to complain at registration. But complaining
-> > doesn't have to be BUG_ON().
+> > Sure, although, if you don't mind, I'd rather you used:
 > > 
-> > > BTW, I don't quite understand the rational behind BUG_ON() eradication.
-> > > I agree that they should not be used when the driver can recover from a
-> > > specific failure, but that's not really the case here (some NAND
-> > > controller drivers don't check nand_scan_tail() or nand_scan() return
-> > > code).  
-> > 
-> > It's really not helpful to anyone to have a single picky/buggy/whatever
-> > driver crash the entire system (e.g., on an early prototype board; or
-> > while somebody is tinkering and forgets something) when we could
-> > perfectly easily just fail to register the driver. There are plenty of
-> > other subsystems that do this, and the world hasn't caught fire yet.
+> > if (ops->mode != MTD_OPS_PLACE_OOB &&
+> >     ops->mode != MTD_OPS_AUTO_OOB &&
+> >     ops->mode != MTD_OPS_RAW)
+> >        return -ENOTSUPP;
 > 
-> Hey, I'm already convinced that properly handling error codes in all
-> drivers and core code is the best approach, but we should also patch
-> all the code that does not follow this rule and not only framework code.
-
-OK.
-
-> > And regarding the "drivers don't check ... return code": I'm pretty
-> > tired of that excuse. I don't want to gate any more correct error
-> > handling on the fact that drivers are s**t.
+> Or just
 > 
-> That's a bit unfair. I'm trying to improve things in the NAND framework
-> (and will keep doing so as much as I can), but last time I suggested to
+> 	if (ops->mode < MTD_OPS_PLACE_OOB || ops->mode > MTD_OPS_RAW)
 
-Sorry if I was unfair there. Wasn't intending to blame you (you didn't
-write 90%+ of the code); just suggesting different priorities.
+ops->mode is unsigned. And this seems a little more fragile, assuming
+the enum layout.
 
-> patch a driver to properly handle nand_scan_tail() return code instead
-> of ignoring it you said it was not required [1].
-
-I believe I suggested that it was not required as a dependency for
-returning errors in the core code. Not that such patches to fix drivers
-were unwanted.
-
-> You'll say that these drivers have already been used/tested by the
-> people who submitted them, and that they're known to work fine as is,
-> but keeping these old drivers in an unclean state just encourages new
-> comers to submit code reproducing the same mistake, so let's tackle the
-> problem and patch all offenders.
-
-Patching all offenders is a great goal. Reviewing new drivers to avoid
-repeating mistakes is good too. And the former can affect the latter,
-certainly. I just don't want the poor drivers to be an excuse for doing
-things poorly in the core.
-
-> > > The best solution would probably be to patch all those drivers and then
-> > > return an error when one of the mandatory hooks is missing, but in the
-> > > meantime I don't see any problem in adding BUG_ON() calls.  
-> > 
-> > I do.
+> 		return -ENOTSUPP;
 > 
-> I'm not against dropping all BUG_ON()/BUG() usage in the NAND/MTD
-> framework, but we should also patch all the offending drivers.
+> Anyway, I'm fine with all different versions as long as you don't take
+> the nand lock if the mode is incorrect, so I'll let Brian decide.
 
-Yes, we're in agreement on that point then.
+Whatever Andrey prefers is his choice to send, and I don't have much
+more preference than the above comment. I'd take either mine or Andrey's
+second solution above.
 
 Brian
+
+> > 
+> > instead of the switch statement, IMHO, this way it is more obvious
+> > that this codepath is just arguments correctness checking.
+> > 
+> > Andrey
+> 
