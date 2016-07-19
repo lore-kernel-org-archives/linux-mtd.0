@@ -1,23 +1,28 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPP9o-0005tv-5o
- for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 07:09:34 +0000
-Received: by mail-lf0-x241.google.com with SMTP id l89so520879lfi.2
- for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2016 00:09:11 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Kalle Valo <kvalo@codeaurora.org>,
-	linux-wireless@vger.kernel.org
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org (open list:MEMORY TECHNOLOGY DEVICES (MTD)),
- linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] mtd: add arch dependency for MTD_BCM47XXSFLASH symbol
-Date: Tue, 19 Jul 2016 09:08:32 +0200
-Message-Id: <1468912123-14899-1-git-send-email-zajec5@gmail.com>
+ id 1bPP9z-00061L-Pw
+ for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 07:09:50 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+To: =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ linux-next <linux-next@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the
+ wireless-drivers-next tree
+References: <20160719160831.79c0303f@canb.auug.org.au>
+ <8760s2w369.fsf@kamboji.qca.qualcomm.com>
+ <CACna6rxVFD1MpAEYP_Zd4W8CvgnxSQpa0wJs83jwDJ5v11gZ=Q@mail.gmail.com>
+Date: Tue, 19 Jul 2016 10:09:16 +0300
+In-Reply-To: <CACna6rxVFD1MpAEYP_Zd4W8CvgnxSQpa0wJs83jwDJ5v11gZ=Q@mail.gmail.com>
+ (=?utf-8?Q?=22Rafa=C5=82_Mi=C5=82ecki=22's?= message of "Tue, 19 Jul 2016
+ 08:51:48 +0200")
+Message-ID: <871t2qw1cz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +32,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We dropped strict MIPS dependency for bcm47xxsflash driver in:
-commit 5651d6aaf489 ("mtd: bcm47xxsflash: use ioremap_cache() instead of
-KSEG0ADDR()") but using ioremap_cache still limits building it to few
-selected architectures only.
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> writes:
 
-A recent commit 57d8f7dd2132 ("bcma: allow enabling serial flash support
-on non-MIPS SoCs") automatically dropped MIPS dependency for
-MTD_BCM47XXSFLASH which broke building e.g. on powerpc and cris.
+> On 19 July 2016 at 08:30, Kalle Valo <kvalo@codeaurora.org> wrote:
+>> Stephen Rothwell <sfr@canb.auug.org.au> writes:
+>>
+>>> After merging the wireless-drivers-next tree, today's linux-next build
+>>> (powerpc allyesconfig) failed like this:
+>>>
+>>> drivers/mtd/devices/bcm47xxsflash.c: In function 'bcm47xxsflash_bcma_pr=
+obe':
+>>> drivers/mtd/devices/bcm47xxsflash.c:299:17: error: implicit declaration=
+ of function 'ioremap_cache' [-Werror=3Dimplicit-function-declaration]
+>>>   b47s->window =3D ioremap_cache(res->start, resource_size(res));
+>>>                  ^
+>>> drivers/mtd/devices/bcm47xxsflash.c:299:15: warning: assignment makes p=
+ointer from integer without a cast [-Wint-conversion]
+>>>   b47s->window =3D ioremap_cache(res->start, resource_size(res));
+>>>                ^
+>>>
+>>> Caused by commit
+>>>
+>>>   57d8f7dd2132 ("bcma: allow enabling serial flash support on non-MIPS =
+SoCs")
+>>>
+>>> I have reverted that commit for today.
+>>
+>> Thanks, kbuild bot also notified about this.
+>>
+>> Rafa=C5=82, as the merge window is getting really close I would like to
+>> revert this for now and we can reapply it once we the problem is fully
+>> solved. And we can use my pending branch for build testing the patch
+>> with kbuild bot. What do you think?
+>
+> The simplest fix sounds pretty much as simple as the revert.
 
-The bcma change is alright as it doesn't break building bcma code in any
-way. MTD_BCM47XXSFLASH on the other hand should be limited to archs
-which need it and can build it (by providing ioremap_cache).
+The problem is that I don't have much time, I need to send the pull
+request to Dave within next few days. The fix might create other
+problems so I'm not enthusiastic about iterating with this patch at the
+moment. I think it can wait for 4.9.
 
-Fixes: 57d8f7dd2132 ("bcma: allow enabling serial flash support on non-MIPS SoCs")
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
----
-That bcma commit breaking building landed in the wireless-drivers-next.
-Is that possible to get this patch through the same tree?
----
- drivers/mtd/devices/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index f73c416..64a2485 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -114,7 +114,7 @@ config MTD_SST25L
- 
- config MTD_BCM47XXSFLASH
- 	tristate "R/O support for serial flash on BCMA bus"
--	depends on BCMA_SFLASH
-+	depends on BCMA_SFLASH && (MIPS || ARM)
- 	help
- 	  BCMA bus can have various flash memories attached, they are
- 	  registered by bcma as platform devices. This enables driver for
--- 
-1.8.4.5
+--=20
+Kalle Valo
