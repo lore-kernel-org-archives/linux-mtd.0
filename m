@@ -1,17 +1,20 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPbzO-0004oS-Cz
- for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 20:51:39 +0000
-Received: by mail-lf0-x242.google.com with SMTP id l89so2212522lfi.2
- for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2016 13:51:17 -0700 (PDT)
+ id 1bPc0M-0004zK-OA
+ for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 20:52:40 +0000
+Received: by mail-lf0-x241.google.com with SMTP id 33so2218297lfw.3
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2016 13:52:18 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/2] mtd: add support for partition parsers
-Date: Tue, 19 Jul 2016 22:51:01 +0200
-Message-Id: <1468961462-18082-1-git-send-email-zajec5@gmail.com>
+Subject: [PATCH 2/2] mtd: extract TRX parser out of bcm47xxpart into separated
+ module
+Date: Tue, 19 Jul 2016 22:51:02 +0200
+Message-Id: <1468961462-18082-2-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1468961462-18082-1-git-send-email-zajec5@gmail.com>
+References: <1468961462-18082-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -24,114 +27,285 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This extends MTD subsystem by adding a support for partition parsers
-that should be used for creating subpartitions. There are some types of
-partitions that require splitting, like firmware containers.
-It's common some home routers that a single firmware image gets flashed
-to predefined partition and then we need to parse it dynamically.
-
-The reason for having such parsers is to share code. Right now we have
-e.g. TRX parsing implemented in bcm47xxpart but this could be used in
-more cases (e.g. on ramips which doesn't use bcm47xxpart or with DT).
-
-This implementation requires marking partition as requiring parsing with
-a specific parser. This can be used right away with some parsers like
-bcm47xxpart, in future we will hopefully also find a solution for doing
-it with ofpart ("fixed-partitions").
+This makes TRX parsing code reusable with other platforms and parsers.
+There is still some place for improvement (e.g. working on some smarter
+method of checking rootfs format), for now we simply move the code as it
+is.
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
-One thing I'm not proud of in this patch is struct mtd_partition casting
-in order to be able to modify partition offset. It's marked as const so
-it was the only way I could think of. Any better ideas? Currently parser
-gets a single MTD and it doesn't have to deal with its offset, which I
-kind of like as it simplifies things.
----
- drivers/mtd/mtdpart.c          | 34 +++++++++++++++++++++++++++++++++-
- include/linux/mtd/partitions.h |  5 +++++
- 2 files changed, 38 insertions(+), 1 deletion(-)
+ drivers/mtd/Kconfig              |   4 ++
+ drivers/mtd/Makefile             |   1 +
+ drivers/mtd/bcm47xxpart.c        |  63 +--------------------
+ drivers/mtd/parsers/Kconfig      |   8 +++
+ drivers/mtd/parsers/Makefile     |   1 +
+ drivers/mtd/parsers/parser_trx.c | 119 +++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 136 insertions(+), 60 deletions(-)
+ create mode 100644 drivers/mtd/parsers/Kconfig
+ create mode 100644 drivers/mtd/parsers/Makefile
+ create mode 100644 drivers/mtd/parsers/parser_trx.c
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 1f13e32..0203e21 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -663,6 +663,34 @@ int mtd_del_partition(struct mtd_info *master, int partno)
- }
- EXPORT_SYMBOL_GPL(mtd_del_partition);
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index e83a279..5a2d717 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -155,6 +155,10 @@ config MTD_BCM47XX_PARTS
+ 	  This provides partitions parser for devices based on BCM47xx
+ 	  boards.
  
-+static int mtd_parse_part(struct mtd_part *slave, const char *parser)
++menu "Partition parsers"
++source "drivers/mtd/parsers/Kconfig"
++endmenu
++
+ comment "User Modules And Translation Layers"
+ 
+ #
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 99bb9a1..151d60df 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
+ obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
+ obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
+ obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
++obj-y				+= parsers/
+ 
+ # 'Users' - code which presents functionality to userspace.
+ obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
+diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+index 845dd27..61a6f45 100644
+--- a/drivers/mtd/bcm47xxpart.c
++++ b/drivers/mtd/bcm47xxpart.c
+@@ -42,7 +42,6 @@
+ #define ML_MAGIC2			0x26594131
+ #define TRX_MAGIC			0x30524448
+ #define SHSQ_MAGIC			0x71736873	/* shsq (weird ZTE H218N endianness) */
+-#define UBI_EC_MAGIC			0x23494255	/* UBI# */
+ 
+ struct trx_header {
+ 	uint32_t magic;
+@@ -61,28 +60,6 @@ static void bcm47xxpart_add_part(struct mtd_partition *part, const char *name,
+ 	part->mask_flags = mask_flags;
+ }
+ 
+-static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
+-						  size_t offset)
+-{
+-	uint32_t buf;
+-	size_t bytes_read;
+-	int err;
+-
+-	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
+-			(uint8_t *)&buf);
+-	if (err && !mtd_is_bitflip(err)) {
+-		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
+-			offset, err);
+-		goto out_default;
+-	}
+-
+-	if (buf == UBI_EC_MAGIC)
+-		return "ubi";
+-
+-out_default:
+-	return "rootfs";
+-}
+-
+ static int bcm47xxpart_parse(struct mtd_info *master,
+ 			     const struct mtd_partition **pparts,
+ 			     struct mtd_part_parser_data *data)
+@@ -190,44 +167,10 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 			trx = (struct trx_header *)buf;
+ 
+ 			trx_part = curr_part;
+-			bcm47xxpart_add_part(&parts[curr_part++], "firmware",
++			bcm47xxpart_add_part(&parts[curr_part], "firmware",
+ 					     offset, 0);
+-
+-			i = 0;
+-			/* We have LZMA loader if offset[2] points to sth */
+-			if (trx->offset[2]) {
+-				bcm47xxpart_add_part(&parts[curr_part++],
+-						     "loader",
+-						     offset + trx->offset[i],
+-						     0);
+-				i++;
+-			}
+-
+-			if (trx->offset[i]) {
+-				bcm47xxpart_add_part(&parts[curr_part++],
+-						     "linux",
+-						     offset + trx->offset[i],
+-						     0);
+-				i++;
+-			}
+-
+-			/*
+-			 * Pure rootfs size is known and can be calculated as:
+-			 * trx->length - trx->offset[i]. We don't fill it as
+-			 * we want to have jffs2 (overlay) in the same mtd.
+-			 */
+-			if (trx->offset[i]) {
+-				const char *name;
+-
+-				name = bcm47xxpart_trx_data_part_name(master, offset + trx->offset[i]);
+-				bcm47xxpart_add_part(&parts[curr_part++],
+-						     name,
+-						     offset + trx->offset[i],
+-						     0);
+-				i++;
+-			}
+-
+-			last_trx_part = curr_part - 1;
++			parts[curr_part].parser = "trx";
++			curr_part++;
+ 
+ 			/*
+ 			 * We have whole TRX scanned, skip to the next part. Use
+diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
+new file mode 100644
+index 0000000..3114276
+--- /dev/null
++++ b/drivers/mtd/parsers/Kconfig
+@@ -0,0 +1,8 @@
++config MTD_PARSER_TRX
++	tristate "Parser for TRX format partitions"
++	depends on MTD && (BCM47XX || ARCH_BCM_5301X)
++	help
++	  TRX is a firmware format used by Broadcom on their devices. It
++	  may contain up to 3/4 partitions (depending on the version).
++	  This driver will parse partitions marked as TRX ones and on
++	  success it will at least two partitions: kernel and rootfs.
+diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
+new file mode 100644
+index 0000000..4d9024e
+--- /dev/null
++++ b/drivers/mtd/parsers/Makefile
+@@ -0,0 +1 @@
++obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
+diff --git a/drivers/mtd/parsers/parser_trx.c b/drivers/mtd/parsers/parser_trx.c
+new file mode 100644
+index 0000000..f571d3c
+--- /dev/null
++++ b/drivers/mtd/parsers/parser_trx.c
+@@ -0,0 +1,119 @@
++/*
++ * Parser for TRX format partitions
++ *
++ * Copyright (C) 2016 Rafał Miłecki <rafal.milecki@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++
++#define TRX_PARSER_MAX_PARTS		4
++
++/* Magics */
++#define UBI_EC_MAGIC			0x23494255	/* UBI# */
++
++struct trx_header {
++	uint32_t magic;
++	uint32_t length;
++	uint32_t crc32;
++	uint16_t flags;
++	uint16_t version;
++	uint32_t offset[3];
++} __packed;
++
++static const char *parser_trx_data_part_name(struct mtd_info *master,
++						  size_t offset)
 +{
-+	static const char *probes[2] = { NULL, NULL };
-+	struct mtd_partitions parsed = { 0 };
-+	int i;
++	uint32_t buf;
++	size_t bytes_read;
 +	int err;
 +
-+	probes[0] = parser;
-+	err = parse_mtd_partitions(&slave->mtd, probes, &parsed, NULL);
-+
-+	if (err)
-+		return err;
-+	else if (!parsed.nr_parts)
-+		return -ENOENT;
-+
-+	for (i = 0; i < parsed.nr_parts; i++) {
-+		struct mtd_partition *part;
-+
-+		part = (struct mtd_partition *)&parsed.parts[i];
-+		part->offset += slave->offset;
++	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
++			(uint8_t *)&buf);
++	if (err && !mtd_is_bitflip(err)) {
++		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
++			offset, err);
++		goto out_default;
 +	}
-+	err = add_mtd_partitions(slave->master, parsed.parts, parsed.nr_parts);
 +
-+	if (parsed.parser)
-+		kfree(parsed.parts);
-+	return err;
++	if (buf == UBI_EC_MAGIC)
++		return "ubi";
++
++out_default:
++	return "rootfs";
 +}
 +
- /*
-  * This function, given a master MTD object and a partition table, creates
-  * and registers slave MTD objects which are bound to the master according to
-@@ -683,7 +711,9 @@ int add_mtd_partitions(struct mtd_info *master,
- 	printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", nbparts, master->name);
- 
- 	for (i = 0; i < nbparts; i++) {
--		slave = allocate_partition(master, parts + i, i, cur_offset);
-+		const struct mtd_partition *part = parts + i;
++static int parser_trx_parse(struct mtd_info *mtd,
++			    const struct mtd_partition **pparts,
++			    struct mtd_part_parser_data *data)
++{
++	struct mtd_partition *parts;
++	struct mtd_partition *part;
++	struct trx_header trx;
++	size_t bytes_read;
++	uint8_t curr_part = 0, i = 0;
++	int err;
 +
-+		slave = allocate_partition(master, part, i, cur_offset);
- 		if (IS_ERR(slave)) {
- 			del_mtd_partitions(master);
- 			return PTR_ERR(slave);
-@@ -695,6 +725,8 @@ int add_mtd_partitions(struct mtd_info *master,
- 
- 		add_mtd_device(&slave->mtd);
- 		mtd_add_partition_attrs(slave);
-+		if (part->parser)
-+			mtd_parse_part(slave, part->parser);
- 
- 		cur_offset = slave->offset + slave->mtd.size;
- 	}
-diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index 70736e1..c6da77f9 100644
---- a/include/linux/mtd/partitions.h
-+++ b/include/linux/mtd/partitions.h
-@@ -20,6 +20,10 @@
-  *
-  * For each partition, these fields are available:
-  * name: string that will be used to label the partition's MTD device.
-+ * parser: some partitions may require specific handling like splitting them
-+ *	into subpartitions (e.g. firmware partition may contain partitions
-+ *	table, kernel image and rootfs). This field may contain a name of parser
-+ *	than can handle specific type.
-  * size: the partition size; if defined as MTDPART_SIZ_FULL, the partition
-  * 	will extend to the end of the master MTD device.
-  * offset: absolute starting position within the master MTD device; if
-@@ -38,6 +42,7 @@
- 
- struct mtd_partition {
- 	const char *name;		/* identifier string */
-+	const char *parser;		/* parser name */
- 	uint64_t size;			/* partition size */
- 	uint64_t offset;		/* offset within the master MTD space */
- 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
++	parts = kzalloc(sizeof(struct mtd_partition) * TRX_PARSER_MAX_PARTS,
++			GFP_KERNEL);
++	if (!parts)
++		return -ENOMEM;
++
++	err = mtd_read(mtd, 0, sizeof(trx), &bytes_read, (uint8_t *)&trx);
++	if (err) {
++		pr_err("MTD reading error: %d\n", err);
++		return err;
++	}
++
++	/* We have LZMA loader if offset[2] points to sth */
++	if (trx.offset[2]) {
++		part = &parts[curr_part++];
++		part->name = "loader";
++		part->offset = trx.offset[i];
++		i++;
++	}
++
++	if (trx.offset[i]) {
++		part = &parts[curr_part++];
++		part->name = "linux";
++		part->offset = trx.offset[i];
++		i++;
++	}
++
++	if (trx.offset[i]) {
++		part = &parts[curr_part++];
++		part->name = parser_trx_data_part_name(mtd, trx.offset[i]);
++		part->offset = trx.offset[i];
++		i++;
++	}
++
++	/*
++	 * Assume that every partition ends at the beginning of the one it is
++	 * followed by.
++	 */
++	for (i = 0; i < curr_part; i++) {
++		u64 next_part_offset = (i < curr_part - 1) ?
++				       parts[i + 1].offset : mtd->size;
++
++		parts[i].size = next_part_offset - parts[i].offset;
++	}
++
++	*pparts = parts;
++	return i;
++};
++
++static struct mtd_part_parser mtd_parser_trx = {
++	.parse_fn = parser_trx_parse,
++	.name = "trx",
++};
++module_mtd_part_parser(mtd_parser_trx);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Parser for TRX format partitions");
 -- 
 1.8.4.5
