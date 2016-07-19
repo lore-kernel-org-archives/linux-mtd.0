@@ -1,23 +1,29 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from ozlabs.org ([103.22.144.67])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPc0M-0004zK-OA
- for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 20:52:40 +0000
-Received: by mail-lf0-x241.google.com with SMTP id 33so2218297lfw.3
- for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2016 13:52:18 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] mtd: extract TRX parser out of bcm47xxpart into separated
- module
-Date: Tue, 19 Jul 2016 22:51:02 +0200
-Message-Id: <1468961462-18082-2-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1468961462-18082-1-git-send-email-zajec5@gmail.com>
-References: <1468961462-18082-1-git-send-email-zajec5@gmail.com>
+ id 1bPeZX-00048h-I4
+ for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 23:37:08 +0000
+Date: Wed, 20 Jul 2016 09:36:41 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-wireless@vger.kernel.org"
+ <linux-wireless@vger.kernel.org>, linux-next <linux-next@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the
+ wireless-drivers-next tree
+Message-ID: <20160720093641.2dbb1f83@canb.auug.org.au>
+In-Reply-To: <20160719183913.GA88186@google.com>
+References: <20160719160831.79c0303f@canb.auug.org.au>
+ <8760s2w369.fsf@kamboji.qca.qualcomm.com>
+ <CACna6rxVFD1MpAEYP_Zd4W8CvgnxSQpa0wJs83jwDJ5v11gZ=Q@mail.gmail.com>
+ <871t2qw1cz.fsf@kamboji.qca.qualcomm.com>
+ <CACna6ry6QgrbUoHuJacmr1EhHZyrwqsXfr51gENvY-0zM9L+3Q@mail.gmail.com>
+ <87h9blvhxg.fsf@kamboji.qca.qualcomm.com>
+ <20160719183913.GA88186@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,285 +33,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This makes TRX parsing code reusable with other platforms and parsers.
-There is still some place for improvement (e.g. working on some smarter
-method of checking rootfs format), for now we simply move the code as it
-is.
+Hi Brian,
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/Kconfig              |   4 ++
- drivers/mtd/Makefile             |   1 +
- drivers/mtd/bcm47xxpart.c        |  63 +--------------------
- drivers/mtd/parsers/Kconfig      |   8 +++
- drivers/mtd/parsers/Makefile     |   1 +
- drivers/mtd/parsers/parser_trx.c | 119 +++++++++++++++++++++++++++++++++++++++
- 6 files changed, 136 insertions(+), 60 deletions(-)
- create mode 100644 drivers/mtd/parsers/Kconfig
- create mode 100644 drivers/mtd/parsers/Makefile
- create mode 100644 drivers/mtd/parsers/parser_trx.c
+On Tue, 19 Jul 2016 11:39:13 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+>
+> I applied a trivial change to this same Kconfig entry:
+> 
+> Subject: mtd: update description of MTD_BCM47XXSFLASH symbol
+> http://git.infradead.org/l2-mtd.git/commitdiff/0a526341fee054c1e2b9f0e4b2b424ae81707d4c
+> 
+> It's a trivial conflict, so should we just let Linus work it out? I can
+> note it my MTD pull request, if wireless lands first.
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index e83a279..5a2d717 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -155,6 +155,10 @@ config MTD_BCM47XX_PARTS
- 	  This provides partitions parser for devices based on BCM47xx
- 	  boards.
- 
-+menu "Partition parsers"
-+source "drivers/mtd/parsers/Kconfig"
-+endmenu
-+
- comment "User Modules And Translation Layers"
- 
- #
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 99bb9a1..151d60df 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
- obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
- obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
- obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
-+obj-y				+= parsers/
- 
- # 'Users' - code which presents functionality to userspace.
- obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 845dd27..61a6f45 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -42,7 +42,6 @@
- #define ML_MAGIC2			0x26594131
- #define TRX_MAGIC			0x30524448
- #define SHSQ_MAGIC			0x71736873	/* shsq (weird ZTE H218N endianness) */
--#define UBI_EC_MAGIC			0x23494255	/* UBI# */
- 
- struct trx_header {
- 	uint32_t magic;
-@@ -61,28 +60,6 @@ static void bcm47xxpart_add_part(struct mtd_partition *part, const char *name,
- 	part->mask_flags = mask_flags;
- }
- 
--static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
--						  size_t offset)
--{
--	uint32_t buf;
--	size_t bytes_read;
--	int err;
--
--	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
--			(uint8_t *)&buf);
--	if (err && !mtd_is_bitflip(err)) {
--		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
--			offset, err);
--		goto out_default;
--	}
--
--	if (buf == UBI_EC_MAGIC)
--		return "ubi";
--
--out_default:
--	return "rootfs";
--}
--
- static int bcm47xxpart_parse(struct mtd_info *master,
- 			     const struct mtd_partition **pparts,
- 			     struct mtd_part_parser_data *data)
-@@ -190,44 +167,10 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 			trx = (struct trx_header *)buf;
- 
- 			trx_part = curr_part;
--			bcm47xxpart_add_part(&parts[curr_part++], "firmware",
-+			bcm47xxpart_add_part(&parts[curr_part], "firmware",
- 					     offset, 0);
--
--			i = 0;
--			/* We have LZMA loader if offset[2] points to sth */
--			if (trx->offset[2]) {
--				bcm47xxpart_add_part(&parts[curr_part++],
--						     "loader",
--						     offset + trx->offset[i],
--						     0);
--				i++;
--			}
--
--			if (trx->offset[i]) {
--				bcm47xxpart_add_part(&parts[curr_part++],
--						     "linux",
--						     offset + trx->offset[i],
--						     0);
--				i++;
--			}
--
--			/*
--			 * Pure rootfs size is known and can be calculated as:
--			 * trx->length - trx->offset[i]. We don't fill it as
--			 * we want to have jffs2 (overlay) in the same mtd.
--			 */
--			if (trx->offset[i]) {
--				const char *name;
--
--				name = bcm47xxpart_trx_data_part_name(master, offset + trx->offset[i]);
--				bcm47xxpart_add_part(&parts[curr_part++],
--						     name,
--						     offset + trx->offset[i],
--						     0);
--				i++;
--			}
--
--			last_trx_part = curr_part - 1;
-+			parts[curr_part].parser = "trx";
-+			curr_part++;
- 
- 			/*
- 			 * We have whole TRX scanned, skip to the next part. Use
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-new file mode 100644
-index 0000000..3114276
---- /dev/null
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -0,0 +1,8 @@
-+config MTD_PARSER_TRX
-+	tristate "Parser for TRX format partitions"
-+	depends on MTD && (BCM47XX || ARCH_BCM_5301X)
-+	help
-+	  TRX is a firmware format used by Broadcom on their devices. It
-+	  may contain up to 3/4 partitions (depending on the version).
-+	  This driver will parse partitions marked as TRX ones and on
-+	  success it will at least two partitions: kernel and rootfs.
-diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-new file mode 100644
-index 0000000..4d9024e
---- /dev/null
-+++ b/drivers/mtd/parsers/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
-diff --git a/drivers/mtd/parsers/parser_trx.c b/drivers/mtd/parsers/parser_trx.c
-new file mode 100644
-index 0000000..f571d3c
---- /dev/null
-+++ b/drivers/mtd/parsers/parser_trx.c
-@@ -0,0 +1,119 @@
-+/*
-+ * Parser for TRX format partitions
-+ *
-+ * Copyright (C) 2016 Rafał Miłecki <rafal.milecki@gmail.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+
-+#define TRX_PARSER_MAX_PARTS		4
-+
-+/* Magics */
-+#define UBI_EC_MAGIC			0x23494255	/* UBI# */
-+
-+struct trx_header {
-+	uint32_t magic;
-+	uint32_t length;
-+	uint32_t crc32;
-+	uint16_t flags;
-+	uint16_t version;
-+	uint32_t offset[3];
-+} __packed;
-+
-+static const char *parser_trx_data_part_name(struct mtd_info *master,
-+						  size_t offset)
-+{
-+	uint32_t buf;
-+	size_t bytes_read;
-+	int err;
-+
-+	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
-+			(uint8_t *)&buf);
-+	if (err && !mtd_is_bitflip(err)) {
-+		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
-+			offset, err);
-+		goto out_default;
-+	}
-+
-+	if (buf == UBI_EC_MAGIC)
-+		return "ubi";
-+
-+out_default:
-+	return "rootfs";
-+}
-+
-+static int parser_trx_parse(struct mtd_info *mtd,
-+			    const struct mtd_partition **pparts,
-+			    struct mtd_part_parser_data *data)
-+{
-+	struct mtd_partition *parts;
-+	struct mtd_partition *part;
-+	struct trx_header trx;
-+	size_t bytes_read;
-+	uint8_t curr_part = 0, i = 0;
-+	int err;
-+
-+	parts = kzalloc(sizeof(struct mtd_partition) * TRX_PARSER_MAX_PARTS,
-+			GFP_KERNEL);
-+	if (!parts)
-+		return -ENOMEM;
-+
-+	err = mtd_read(mtd, 0, sizeof(trx), &bytes_read, (uint8_t *)&trx);
-+	if (err) {
-+		pr_err("MTD reading error: %d\n", err);
-+		return err;
-+	}
-+
-+	/* We have LZMA loader if offset[2] points to sth */
-+	if (trx.offset[2]) {
-+		part = &parts[curr_part++];
-+		part->name = "loader";
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	if (trx.offset[i]) {
-+		part = &parts[curr_part++];
-+		part->name = "linux";
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	if (trx.offset[i]) {
-+		part = &parts[curr_part++];
-+		part->name = parser_trx_data_part_name(mtd, trx.offset[i]);
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	/*
-+	 * Assume that every partition ends at the beginning of the one it is
-+	 * followed by.
-+	 */
-+	for (i = 0; i < curr_part; i++) {
-+		u64 next_part_offset = (i < curr_part - 1) ?
-+				       parts[i + 1].offset : mtd->size;
-+
-+		parts[i].size = next_part_offset - parts[i].offset;
-+	}
-+
-+	*pparts = parts;
-+	return i;
-+};
-+
-+static struct mtd_part_parser mtd_parser_trx = {
-+	.parse_fn = parser_trx_parse,
-+	.name = "trx",
-+};
-+module_mtd_part_parser(mtd_parser_trx);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Parser for TRX format partitions");
+Linus and I should be able to cope.  I will send my usual notification today.
+
 -- 
-1.8.4.5
+Cheers,
+Stephen Rothwell
