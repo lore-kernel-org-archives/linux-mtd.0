@@ -1,28 +1,24 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPZgR-00051O-5m
- for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 18:24:09 +0000
-Received: by mail-pf0-x242.google.com with SMTP id i6so1824062pfe.0
- for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2016 11:23:33 -0700 (PDT)
-Date: Tue, 19 Jul 2016 11:23:28 -0700
+ id 1bPZnT-0003Qr-Qy
+ for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 18:31:12 +0000
+Received: by mail-pa0-x242.google.com with SMTP id q2so1758981pap.0
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2016 11:30:50 -0700 (PDT)
+Date: Tue, 19 Jul 2016 11:30:47 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Andrey Smirnov <andrew.smirnov@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+To: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
  David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: nand: BUG_ON in case of no select_chip and
- cmd_ctrl
-Message-ID: <20160719182328.GB85399@google.com>
+Subject: Re: [PATCH 2/2] mtd: nand: Get rid of needless 'goto'
+Message-ID: <20160719183047.GC85399@google.com>
 References: <1468942904-26464-1-git-send-email-andrew.smirnov@gmail.com>
- <578E4AF0.7090507@nod.at> <20160719175912.11277116@bbrezillon>
- <578E4F13.1070100@nod.at> <20160719181248.2a71b5a7@bbrezillon>
- <578E53DD.806@nod.at>
- <CAHQ1cqGN6fbbXoqZaFpDG856EsHAve-Or0M_HT8Zpb-BodC3sA@mail.gmail.com>
- <20160719201611.277dfbff@bbrezillon>
+ <1468942904-26464-2-git-send-email-andrew.smirnov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160719201611.277dfbff@bbrezillon>
+In-Reply-To: <1468942904-26464-2-git-send-email-andrew.smirnov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,66 +28,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 19, 2016 at 08:16:11PM +0200, Boris Brezillon wrote:
-> On Tue, 19 Jul 2016 11:11:54 -0700
-> Andrey Smirnov <andrew.smirnov@gmail.com> wrote:
+On Tue, Jul 19, 2016 at 08:41:44AM -0700, Andrey Smirnov wrote:
+> Using "goto" in that "switch" statement only makes it harder to follow
+> control flow and doesn't bring any advantages. Rewrite the code to avoid
+> using "goto".
 > 
-> > On Tue, Jul 19, 2016 at 9:22 AM, Richard Weinberger <richard@nod.at> wrote:
-> > > Am 19.07.2016 um 18:12 schrieb Boris Brezillon:  
-> > >>>> Not sure a BUG_ON() is worst than a NULL-pointer exception ;-).  
-> > >>>
-> > >>> When this really just triggers a NULL-pointer exception, we don't need a BUG_ON or WARN_ON at
-> > >>> all since the kernel can tell anyway what went wrong.  
-> > >>
-> > >> Hm, that's not entirely true, depending on your debug options you don't
-> > >> have all the information to guess which line triggered the NULL pointer
-> > >> exception, and this makes it harder to debug.
-> > >> And I agree with Andrey here, it's better to complain at registration
-> > >> time than letting the controller register all its NAND devices and
-> > >> generate exceptions when the NAND is really used.
-> > >>
-> > >> BTW, I don't quite understand the rational behind BUG_ON() eradication.
-> > >> I agree that they should not be used when the driver can recover from a
-> > >> specific failure, but that's not really the case here (some NAND
-> > >> controller drivers don't check nand_scan_tail() or nand_scan() return
-> > >> code).  
-> > >
-> > > I've been told that new code (except core code) should not BUG()/_ON().
-> > >  
-> > >> The best solution would probably be to patch all those drivers and then
-> > >> return an error when one of the mandatory hooks is missing, but in the
-> > >> meantime I don't see any problem in adding BUG_ON() calls.  
-> > >
-> > > Yes, definitely.  
-> > 
-> > I don't have any preferences as far BUG_ON/WARN_ON are concerned and
-> > am more than happy to change one for another.
-> > 
-> > The reason I came up with that patch is that I stumbled on that
-> > segfault (by not providing custom select_chip() and not setting up
-> > cmd_ctrl()) and it took me good 20 minutes to figure out the nature of
-> > the problem, whereas, IMHO, having a BUG/WARN statement at the would
-> > have been more self-documenting/explanatory.
+> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 13 +++++--------
+>  1 file changed, 5 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 57043a6..8fa5536 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2139,18 +2139,15 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+>  	case MTD_OPS_PLACE_OOB:
+>  	case MTD_OPS_AUTO_OOB:
+>  	case MTD_OPS_RAW:
+> +		if (!ops->datbuf)
+> +			ret = nand_do_read_oob(mtd, from, ops);
+> +		else
+> +			ret = nand_do_read_ops(mtd, from, ops);
+>  		break;
+> -
+>  	default:
+> -		goto out;
+> +		break;
+>  	}
+>  
+> -	if (!ops->datbuf)
+> -		ret = nand_do_read_oob(mtd, from, ops);
+> -	else
+> -		ret = nand_do_read_ops(mtd, from, ops);
+> -
+> -out:
+>  	nand_release_device(mtd);
+>  	return ret;
+>  }
 
-Would a normal print statement and error return have helped, like most
-sane drivers? Like:
+The default case is really just a catch-all error case. We don't
+actually even need the nand_get_device() call for that... can we just
+do this instead?
 
-	if (!chip->cmd_ctrl) {
-		pr_err("No cmd_ctrl() provided\n");
+static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+			 struct mtd_oob_ops *ops)
+{
+	int ret;
+	 
+	ops->retlen = 0; 
+
+	/* Do not allow reads past end of device */
+	if (ops->datbuf && (from + ops->len) > mtd->size) {
+		pr_debug("%s: attempt to read beyond end of device\n",
+				__func__);
 		return -EINVAL;
 	}
 
-> > What if I modify the patch to change nand_set_default's signature to
-> > return a error code, add corresponding checking in
-> > nand_get_flash_type()/nand_scan_ident() and replace BUG_ON with
-> > WARN_ON? Would it be more agreeable solution?
+	switch (ops->mode) {
+	case MTD_OPS_PLACE_OOB:
+	case MTD_OPS_AUTO_OOB:
+	case MTD_OPS_RAW:
+		break;
 
-Sounds better to me, though I still don't see why even WARN_ON() is
-necessary. I guess we are infected by plenty of those already anyway,
-since I guess that's easier than writing a descriptive error message...
+	default:
+		return -ENOTSUPP;
+	}
 
-> Agreed.
+	nand_get_device(mtd, FL_READING);
 
-Glad we're on mostly the same page.
+	if (!ops->datbuf)
+		ret = nand_do_read_oob(mtd, from, ops);
+	else
+		ret = nand_do_read_ops(mtd, from, ops);
 
-Brian
+	nand_release_device(mtd);
+	return ret;
+}
+
+i.e., this diff:
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 77533f7f2429..881dbd495466 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2162,7 +2162,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+ 			 struct mtd_oob_ops *ops)
+ {
+-	int ret = -ENOTSUPP;
++	int ret;
+ 
+ 	ops->retlen = 0;
+ 
+@@ -2173,8 +2173,6 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+ 		return -EINVAL;
+ 	}
+ 
+-	nand_get_device(mtd, FL_READING);
+-
+ 	switch (ops->mode) {
+ 	case MTD_OPS_PLACE_OOB:
+ 	case MTD_OPS_AUTO_OOB:
+@@ -2182,15 +2180,16 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+ 		break;
+ 
+ 	default:
+-		goto out;
++		return -ENOTSUPP;
+ 	}
+ 
++	nand_get_device(mtd, FL_READING);
++
+ 	if (!ops->datbuf)
+ 		ret = nand_do_read_oob(mtd, from, ops);
+ 	else
+ 		ret = nand_do_read_ops(mtd, from, ops);
+ 
+-out:
+ 	nand_release_device(mtd);
+ 	return ret;
+ }
