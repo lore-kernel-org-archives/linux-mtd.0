@@ -1,24 +1,27 @@
-Received: from mx1.mailbox.org ([80.241.60.212])
+Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPO7t-00029s-Jd
- for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 06:03:30 +0000
-Subject: Re: [mtd-next:master 30/33]
- drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of
- function 'readsl'
-To: Brian Norris <computersforpeace@gmail.com>,
- kbuild test robot <fengguang.wu@intel.com>
-References: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
- <20160718202026.GB137880@google.com>
-Cc: Marek Vasut <marex@denx.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- kbuild-all@01.org, Graham Moore <grmoore@opensource.altera.com>
-From: Stefan Roese <sr@denx.de>
-Message-ID: <578DC294.5090605@denx.de>
-Date: Tue, 19 Jul 2016 08:03:00 +0200
+ id 1bPOsz-0004YA-PS
+ for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 06:52:10 +0000
+Received: by mail-oi0-x244.google.com with SMTP id d204so927180oig.3
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2016 23:51:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160718202026.GB137880@google.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <8760s2w369.fsf@kamboji.qca.qualcomm.com>
+References: <20160719160831.79c0303f@canb.auug.org.au>
+ <8760s2w369.fsf@kamboji.qca.qualcomm.com>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date: Tue, 19 Jul 2016 08:51:48 +0200
+Message-ID: <CACna6rxVFD1MpAEYP_Zd4W8CvgnxSQpa0wJs83jwDJ5v11gZ=Q@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the wireless-drivers-next
+ tree
+To: Kalle Valo <kvalo@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+ "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ linux-next <linux-next@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,37 +31,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18.07.2016 22:20, Brian Norris wrote:
-> On Tue, Jul 19, 2016 at 03:43:17AM +0800, kbuild test robot wrote:
->> tree:   git://git.infradead.org/linux-mtd-next.git master
->> head:   f78921b9020c510ed222a6c2402e2aa126432415
->> commit: 140623410536905fa6ab737b625decfde6c64a72 [30/33] mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller
->> config: x86_64-allmodconfig (attached as .config)
->> compiler: gcc-6 (Debian 6.1.1-1) 6.1.1 20160430
->> reproduce:
->>          git checkout 140623410536905fa6ab737b625decfde6c64a72
->>          # save the attached .config to linux build tree
->>          make ARCH=x86_64
->>
->> All errors (new ones prefixed by >>):
->>
->>     drivers/mtd/spi-nor/cadence-quadspi.c: In function 'cqspi_indirect_read_execute':
->>>> drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of function 'readsl' [-Werror=implicit-function-declaration]
->>         readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
->>         ^~~~~~
->>     drivers/mtd/spi-nor/cadence-quadspi.c: In function 'cqspi_indirect_write_execute':
->>>> drivers/mtd/spi-nor/cadence-quadspi.c:613:3: error: implicit declaration of function 'writesl' [-Werror=implicit-function-declaration]
->>        writesl(cqspi->ahb_base, txbuf, DIV_ROUND_UP(write_bytes, 4));
->>        ^~~~~~~
->>     cc1: some warnings being treated as errors
+On 19 July 2016 at 08:30, Kalle Valo <kvalo@codeaurora.org> wrote:
+> Stephen Rothwell <sfr@canb.auug.org.au> writes:
 >
-> Hmm, does x86 not define readsl()/writesl()? I can never tell what
-> accessors are supposed to be "standard" across architectures.
+>> After merging the wireless-drivers-next tree, today's linux-next build
+>> (powerpc allyesconfig) failed like this:
+>>
+>> drivers/mtd/devices/bcm47xxsflash.c: In function 'bcm47xxsflash_bcma_pro=
+be':
+>> drivers/mtd/devices/bcm47xxsflash.c:299:17: error: implicit declaration =
+of function 'ioremap_cache' [-Werror=3Dimplicit-function-declaration]
+>>   b47s->window =3D ioremap_cache(res->start, resource_size(res));
+>>                  ^
+>> drivers/mtd/devices/bcm47xxsflash.c:299:15: warning: assignment makes po=
+inter from integer without a cast [-Wint-conversion]
+>>   b47s->window =3D ioremap_cache(res->start, resource_size(res));
+>>                ^
+>>
+>> Caused by commit
+>>
+>>   57d8f7dd2132 ("bcma: allow enabling serial flash support on non-MIPS S=
+oCs")
+>>
+>> I have reverted that commit for today.
 >
-> Either we need to drop the COMPILE_TEST or maybe make it (!X86 &&
-> COMPILE_TEST).
+> Thanks, kbuild bot also notified about this.
+>
+> Rafa=C5=82, as the merge window is getting really close I would like to
+> revert this for now and we can reapply it once we the problem is fully
+> solved. And we can use my pending branch for build testing the patch
+> with kbuild bot. What do you think?
 
-iowrite32_rep() etc should work for x86 as well.
+The simplest fix sounds pretty much as simple as the revert. In the
+seconds thread I was considering two fixes: switching to memremap and
+adding depends on.
 
-Thanks,
-Stefan
+What about trying a simple "depends on"?
+
+--=20
+Rafa=C5=82
