@@ -1,22 +1,34 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPzRp-0006M8-LH
- for linux-mtd@lists.infradead.org; Wed, 20 Jul 2016 21:54:35 +0000
-Received: by mail-pa0-x22d.google.com with SMTP id fi15so21978198pac.1
- for <linux-mtd@lists.infradead.org>; Wed, 20 Jul 2016 14:54:13 -0700 (PDT)
-From: Ray Jui <ray.jui@broadcom.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Cc: bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Prafulla Kota <prafulla.kota@broadcom.com>, Ray Jui <ray.jui@broadcom.com>
-Subject: [PATCH v2 2/2] arm64: dts: Updated NAND DT properties for NS2 SVK
-Date: Wed, 20 Jul 2016 14:53:51 -0700
-Message-Id: <1469051631-7896-3-git-send-email-ray.jui@broadcom.com>
-In-Reply-To: <1469051631-7896-1-git-send-email-ray.jui@broadcom.com>
-References: <1469051631-7896-1-git-send-email-ray.jui@broadcom.com>
+ id 1bPzyu-0003bH-JP
+ for linux-mtd@lists.infradead.org; Wed, 20 Jul 2016 22:28:45 +0000
+Received: by mail-wm0-x242.google.com with SMTP id q128so194613wma.1
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Jul 2016 15:28:23 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20160720125201.GA52079@ubuntu-hedt>
+References: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
+ <1461699396-33000-19-git-send-email-seth.forshee@canonical.com>
+ <CA+2rt426_pshAauQizcxkfAq16vmEpB4sJ4genW_ucosH3j=zQ@mail.gmail.com>
+ <20160720125201.GA52079@ubuntu-hedt>
+From: Sheng Yang <sheng@yasker.org>
+Date: Wed, 20 Jul 2016 15:28:21 -0700
+Message-ID: <CA+2rt423x-EiF=9x2zRTM35hzWOv=rH1urifRTCdpE_p=GO9FQ@mail.gmail.com>
+Subject: Re: [PATCH v4 18/21] fuse: Add support for pid namespaces
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Miklos Szeredi <miklos@szeredi.hu>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <mszeredi@redhat.com>,
+ Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+ kernel list <linux-kernel@vger.kernel.org>, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
+ selinux@tycho.nsa.gov, cgroups@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +38,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds NAND DT properties for NS2 SVK to configure the bus
-width width and OOB sector size
+On Wed, Jul 20, 2016 at 5:52 AM, Seth Forshee
+<seth.forshee@canonical.com> wrote:
+> On Tue, Jul 19, 2016 at 07:44:11PM -0700, Sheng Yang wrote:
+>> On Tue, Apr 26, 2016 at 12:36 PM, Seth Forshee
+>> <seth.forshee@canonical.com> wrote:
+>> > When the userspace process servicing fuse requests is running in
+>> > a pid namespace then pids passed via the fuse fd are not being
+>> > translated into that process' namespace. Translation is necessary
+>> > for the pid to be useful to that process.
+>> >
+>> > Since no use case currently exists for changing namespaces all
+>> > translations can be done relative to the pid namespace in use
+>> > when fuse_conn_init() is called. For fuse this translates to
+>> > mount time, and for cuse this is when /dev/cuse is opened. IO for
+>> > this connection from another namespace will return errors.
+>> >
+>> > Requests from processes whose pid cannot be translated into the
+>> > target namespace are not permitted, except for requests
+>> > allocated via fuse_get_req_nofail_nopages. For no-fail requests
+>> > in.h.pid will be 0 if the pid translation fails.
+>>
+>> Hi Seth,
+>>
+>> This patch caused a regression in our major container use case with
+>> FUSE in Ubuntu 16.04, as patch was checked in as Ubuntu Sauce in
+>> Ubuntu 4.4.0-6.21 kernel.
+>>
+>> The use case is:
+>> 1. Create a Docker container.
+>> 2. Inside the container, start the FUSE backend, and mounted fs.
+>> 3. Following step 2 in the container, create a loopback device to map
+>> a file in the mounted fuse to create a block device, which will be
+>> available to the whole system.
+>>
+>> It works well before this commit.
+>>
+>> The use case is broken because no matter which namespace losetup runs,
+>> the real request from loopback device seems always come from init ns,
+>> thus it will be in different ns running fuse backend. So the request
+>> will got denied, because the ns running fuse won't able to see the
+>> things from higher level(level 0 in fact) pid namespace.
+>>
+>> I think since init pid ns has ability to access any process in the
+>> system, it should able to access the fuse mounted by any pid namespace
+>> process as well.
+>>
+>> What you think?
+>
+> It sounds like we need to remove the restriction on accessing the
+> filesystem from a different pid namespace. I don't think this poses a
+> security problem. However there's no pid mapping that is usable by the
+> userspace fuse process, so what do we put in the fuse request? Probably
+> the only candidates are 0 and 0xffffffff.
 
-Signed-off-by: Prafulla Kota <prafulla.kota@broadcom.com>
-Signed-off-by: Ray Jui <ray.jui@broadcom.com>
----
- arch/arm64/boot/dts/broadcom/ns2-svk.dts | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks Seth, I don't think it will be a security problem either, if we
+remove the restriction.
 
-diff --git a/arch/arm64/boot/dts/broadcom/ns2-svk.dts b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-index 54ca40c..5ef0407 100644
---- a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-+++ b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-@@ -128,6 +128,8 @@
- 		nand-ecc-mode = "hw";
- 		nand-ecc-strength = <8>;
- 		nand-ecc-step-size = <512>;
-+		nand-bus-width = <16>;
-+		brcm,nand-oob-sector-size = <16>;
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 	};
--- 
-2.1.4
+>
+> So a question for the fuse developers - is one value or the other
+> preferrable for fuse_in_header.pid when the pid cannot be mapped, and is
+> this going to cause problems for any fuse filesystems? I suspect that
+> few filesystems actually look at the pid anyway, and already for a
+> filesystem mounted in a pid namespace the values being given to
+> userspace won't be correct for the namespace of the fuse process.
+>
+
+At least in our system we're not looking into the pid at all.
+
+--Sheng
+
+> Seth
+>
