@@ -1,35 +1,22 @@
-Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
+Received: from mail-yw0-x243.google.com ([2607:f8b0:4002:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPqzA-0006qc-PN
- for linux-mtd@lists.infradead.org; Wed, 20 Jul 2016 12:52:25 +0000
-Received: by mail-oi0-x236.google.com with SMTP id j185so69623121oih.0
- for <linux-mtd@lists.infradead.org>; Wed, 20 Jul 2016 05:52:03 -0700 (PDT)
-Date: Wed, 20 Jul 2016 07:52:01 -0500
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Sheng Yang <sheng@yasker.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Miklos Szeredi <miklos@szeredi.hu>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
- kernel list <linux-kernel@vger.kernel.org>,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH v4 18/21] fuse: Add support for pid namespaces
-Message-ID: <20160720125201.GA52079@ubuntu-hedt>
-References: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
- <1461699396-33000-19-git-send-email-seth.forshee@canonical.com>
- <CA+2rt426_pshAauQizcxkfAq16vmEpB4sJ4genW_ucosH3j=zQ@mail.gmail.com>
+ id 1bPv1H-0003wE-Ks
+ for linux-mtd@lists.infradead.org; Wed, 20 Jul 2016 17:11:08 +0000
+Received: by mail-yw0-x243.google.com with SMTP id c13so3798402ywh.2
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Jul 2016 10:10:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+2rt426_pshAauQizcxkfAq16vmEpB4sJ4genW_ucosH3j=zQ@mail.gmail.com>
+In-Reply-To: <20160720084403.0a6e185b@bbrezillon>
+References: <1468992838-23474-1-git-send-email-andrew.smirnov@gmail.com>
+ <20160720084403.0a6e185b@bbrezillon>
+From: Andrey Smirnov <andrew.smirnov@gmail.com>
+Date: Wed, 20 Jul 2016 10:10:29 -0700
+Message-ID: <CAHQ1cqE5asXhm5PTFOO9knruoUkezGdNjHyH6Ai=E+=zDUUxEg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mtd: nand: Error out if cmd_ctrl() is missing
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,63 +26,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 19, 2016 at 07:44:11PM -0700, Sheng Yang wrote:
-> On Tue, Apr 26, 2016 at 12:36 PM, Seth Forshee
-> <seth.forshee@canonical.com> wrote:
-> > When the userspace process servicing fuse requests is running in
-> > a pid namespace then pids passed via the fuse fd are not being
-> > translated into that process' namespace. Translation is necessary
-> > for the pid to be useful to that process.
-> >
-> > Since no use case currently exists for changing namespaces all
-> > translations can be done relative to the pid namespace in use
-> > when fuse_conn_init() is called. For fuse this translates to
-> > mount time, and for cuse this is when /dev/cuse is opened. IO for
-> > this connection from another namespace will return errors.
-> >
-> > Requests from processes whose pid cannot be translated into the
-> > target namespace are not permitted, except for requests
-> > allocated via fuse_get_req_nofail_nopages. For no-fail requests
-> > in.h.pid will be 0 if the pid translation fails.
-> 
-> Hi Seth,
-> 
-> This patch caused a regression in our major container use case with
-> FUSE in Ubuntu 16.04, as patch was checked in as Ubuntu Sauce in
-> Ubuntu 4.4.0-6.21 kernel.
-> 
-> The use case is:
-> 1. Create a Docker container.
-> 2. Inside the container, start the FUSE backend, and mounted fs.
-> 3. Following step 2 in the container, create a loopback device to map
-> a file in the mounted fuse to create a block device, which will be
-> available to the whole system.
-> 
-> It works well before this commit.
-> 
-> The use case is broken because no matter which namespace losetup runs,
-> the real request from loopback device seems always come from init ns,
-> thus it will be in different ns running fuse backend. So the request
-> will got denied, because the ns running fuse won't able to see the
-> things from higher level(level 0 in fact) pid namespace.
-> 
-> I think since init pid ns has ability to access any process in the
-> system, it should able to access the fuse mounted by any pid namespace
-> process as well.
-> 
-> What you think?
+On Tue, Jul 19, 2016 at 11:44 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Tue, 19 Jul 2016 22:33:57 -0700
+> Andrey Smirnov <andrew.smirnov@gmail.com> wrote:
+>
+>> If no user specified chip->select_chip() function is provided, code in
+>> nand_base.c will automatically set this hook to nand_select_chip(),
+>> which in turn depends on chip->cmd_ctrl() hook being valid. Not
+>> providing both of those functions in NAND controller driver (for example
+>> by mistake) will result in a bit cryptic segfault. Same is true for
+>> chip->cmdfunc().
+>>
+>> To avoid the above scenario change the prototype of nand_set_defaults()
+>> to return error code, all the callers to check for it and error out if
+>> cmd_ctrl() is not provided.
+>>
+>> Suggested-by: Brian Norris <computersforpeace@gmail.com>
+>> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+>> ---
+>>  drivers/mtd/nand/nand_base.c | 29 ++++++++++++++++++++++++-----
+>>  1 file changed, 24 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index ce7b2ca..bee480f 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -3114,22 +3114,30 @@ static void nand_shutdown(struct mtd_info *mtd)
+>>  }
+>>
+>>  /* Set default functions */
+>> -static void nand_set_defaults(struct nand_chip *chip, int busw)
+>> +static int nand_set_defaults(struct nand_chip *chip, int busw)
+>>  {
+>>       /* check for proper chip_delay setup, set 20us if not */
+>>       if (!chip->chip_delay)
+>>               chip->chip_delay = 20;
+>>
+>>       /* check, if a user supplied command function given */
+>> -     if (chip->cmdfunc == NULL)
+>> +     if (chip->cmdfunc == NULL) {
+>> +             if (!chip->cmd_ctrl)
+>> +                     goto no_cmd_ctrl;
+>> +
+>>               chip->cmdfunc = nand_command;
+>> +     }
+>>
+>>       /* check, if a user supplied wait function given */
+>>       if (chip->waitfunc == NULL)
+>>               chip->waitfunc = nand_wait;
+>>
+>> -     if (!chip->select_chip)
+>> +     if (!chip->select_chip) {
+>> +             if (!chip->cmd_ctrl)
+>> +                     goto no_cmd_ctrl;
+>> +
+>>               chip->select_chip = nand_select_chip;
+>> +     }
+>>
+>>       /* set for ONFI nand */
+>>       if (!chip->onfi_set_features)
+>> @@ -3161,6 +3169,11 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
+>>               init_waitqueue_head(&chip->controller->wq);
+>>       }
+>>
+>> +     return 0;
+>> +
+>> +no_cmd_ctrl:
+>> +     pr_err("chip.cmd_ctrl() callback is not provided\n");
+>> +     return -EINVAL;
+>>  }
+>>
+>>  /* Sanitize ONFI strings so we can safely print them */
+>> @@ -3878,9 +3891,13 @@ ident_done:
+>>       }
+>>
+>>       if (chip->options & NAND_BUSWIDTH_AUTO) {
+>> +             int ret;
+>> +
+>>               WARN_ON(chip->options & NAND_BUSWIDTH_16);
+>>               chip->options |= busw;
+>> -             nand_set_defaults(chip, busw);
+>> +             ret = nand_set_defaults(chip, busw);
+>
+> I realize this one will actually never fail because it has already been
+> checked in nand_scan_ident(). Maybe we should leave the
+> nand_set_defaults() as a void function and check for missing
+> ->cmd_ctrl() directly in nand_scan_ident().
 
-It sounds like we need to remove the restriction on accessing the
-filesystem from a different pid namespace. I don't think this poses a
-security problem. However there's no pid mapping that is usable by the
-userspace fuse process, so what do we put in the fuse request? Probably
-the only candidates are 0 and 0xffffffff.
+Sure, will change in v3, this would also allow me to have only a
+single check instead of two and those ugly gotos.
 
-So a question for the fuse developers - is one value or the other
-preferrable for fuse_in_header.pid when the pid cannot be mapped, and is
-this going to cause problems for any fuse filesystems? I suspect that
-few filesystems actually look at the pid anyway, and already for a
-filesystem mounted in a pid namespace the values being given to
-userspace won't be correct for the namespace of the fuse process.
-
-Seth
+Andrey
