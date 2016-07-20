@@ -1,25 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPkab-0008Vv-LT
- for linux-mtd@lists.infradead.org; Wed, 20 Jul 2016 06:02:50 +0000
-Subject: Re: [PATCH] mtd: spi-nor: don't build Cadence QuadSPI on non-ARM
-To: Brian Norris <computersforpeace@gmail.com>
-References: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
- <20160718202026.GB137880@google.com> <578DC294.5090605@denx.de>
- <20160719200541.GA854@google.com>
- <3a769a42-f856-5b48-dd18-ef76a7bf4c91@denx.de>
- <20160720025027.GA131957@google.com>
- <eaf864ab-d154-994f-dc3d-9505b48705f3@denx.de>
- <20160720032501.GA35298@google.com>
-Cc: Stefan Roese <sr@denx.de>, kbuild test robot <fengguang.wu@intel.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- kbuild-all@01.org, Graham Moore <grmoore@opensource.altera.com>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <d72cbf7d-918f-944f-b441-7a67a1870ce6@denx.de>
-Date: Wed, 20 Jul 2016 07:59:25 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bPlF6-0006hw-Ul
+ for linux-mtd@lists.infradead.org; Wed, 20 Jul 2016 06:44:29 +0000
+Date: Wed, 20 Jul 2016 08:44:03 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mtd: nand: Error out if cmd_ctrl() is missing
+Message-ID: <20160720084403.0a6e185b@bbrezillon>
+In-Reply-To: <1468992838-23474-1-git-send-email-andrew.smirnov@gmail.com>
+References: <1468992838-23474-1-git-send-email-andrew.smirnov@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160720032501.GA35298@google.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,68 +25,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/20/2016 05:25 AM, Brian Norris wrote:
-> On Wed, Jul 20, 2016 at 04:58:08AM +0200, Marek Vasut wrote:
->> On 07/20/2016 04:50 AM, Brian Norris wrote:
->>> On Wed, Jul 20, 2016 at 03:50:27AM +0200, Marek Vasut wrote:
->>>> On 07/19/2016 10:05 PM, Brian Norris wrote:
->>>>> On Tue, Jul 19, 2016 at 08:03:00AM +0200, Stefan Roese wrote:
->>>>>> On 18.07.2016 22:20, Brian Norris wrote:
->>>>>>> Hmm, does x86 not define readsl()/writesl()? I can never tell what
->>>>>>> accessors are supposed to be "standard" across architectures.
->>>>>>>
->>>>>>> Either we need to drop the COMPILE_TEST or maybe make it (!X86 &&
->>>>>>> COMPILE_TEST).
->>>>>>
->>>>>> iowrite32_rep() etc should work for x86 as well.
->>>>>
->>>>> Looks like it might. I'm not sure the original submitter can retest
->>>>> right now (travel), so I'd probably rather just take the easy fix for
->>>>> now, and we can widen to COMPILE_TEST later if desired.
->>>>
->>>> Isn't there a generic readsl() and writesl() implementation in
->>>> include/asm-generic/io.h ?
->>>
->>> Yes, but somehow x86 has managed to avoid that. I guess it's optional
->>> for arch/<foo>/include/asm/io.h to include <asm-generic/io.h>? At any
->>> rate, I double-checked myself by adding '#error "blah"' to
->>> include/asm-generic/io.h, and x86 still seemed to build fine (at least
->>> for the modules I was checking, like cadence-quadspi.o).
->>
->> Yep, I just checked the same and it's not included from
->> arch/x86/include/asm/io.h for whatever reason. Maybe this needs to be
->> fixed on x86 level?
+On Tue, 19 Jul 2016 22:33:57 -0700
+Andrey Smirnov <andrew.smirnov@gmail.com> wrote:
+
+> If no user specified chip->select_chip() function is provided, code in
+> nand_base.c will automatically set this hook to nand_select_chip(),
+> which in turn depends on chip->cmd_ctrl() hook being valid. Not
+> providing both of those functions in NAND controller driver (for example
+> by mistake) will result in a bit cryptic segfault. Same is true for
+> chip->cmdfunc().
 > 
-> Maybe. That's why I added the x86 maintainers. Maybe they'd respond
-> better^Wmore loudly if I just sent a patch to do that :)
+> To avoid the above scenario change the prototype of nand_set_defaults()
+> to return error code, all the callers to check for it and error out if
+> cmd_ctrl() is not provided.
 > 
-> But seriously, doing the above really breaks things, even if I stick the
-> include at the end of asm/io.h. There's plenty of stuff that the
-> asm-generic version includes based on #ifndef some_accessor, except x86
-> uses a static inline for their definition. So it seems it's not trivial
-> to get an architecture to fall back gracefully to asm-generic; you have
-> to put in some work. It also may not be all that desirable to have some
-> allegedly generic version generate something that may not be safe on a
-> given architecture (and I don't purport to understand the x86 memory
-> model).
+> Suggested-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 29 ++++++++++++++++++++++++-----
+>  1 file changed, 24 insertions(+), 5 deletions(-)
 > 
-> Additionally, it looks like asm-generic/io.h is actually only included
-> in 14 of 33 arch'es, so it seems like that's really not a designated
-> goal. It does make it awfully difficult to figure out what I/O accessors
-> are *actually* portable though...
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index ce7b2ca..bee480f 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3114,22 +3114,30 @@ static void nand_shutdown(struct mtd_info *mtd)
+>  }
+>  
+>  /* Set default functions */
+> -static void nand_set_defaults(struct nand_chip *chip, int busw)
+> +static int nand_set_defaults(struct nand_chip *chip, int busw)
+>  {
+>  	/* check for proper chip_delay setup, set 20us if not */
+>  	if (!chip->chip_delay)
+>  		chip->chip_delay = 20;
+>  
+>  	/* check, if a user supplied command function given */
+> -	if (chip->cmdfunc == NULL)
+> +	if (chip->cmdfunc == NULL) {
+> +		if (!chip->cmd_ctrl)
+> +			goto no_cmd_ctrl;
+> +
+>  		chip->cmdfunc = nand_command;
+> +	}
+>  
+>  	/* check, if a user supplied wait function given */
+>  	if (chip->waitfunc == NULL)
+>  		chip->waitfunc = nand_wait;
+>  
+> -	if (!chip->select_chip)
+> +	if (!chip->select_chip) {
+> +		if (!chip->cmd_ctrl)
+> +			goto no_cmd_ctrl;
+> +
+>  		chip->select_chip = nand_select_chip;
+> +	}
+>  
+>  	/* set for ONFI nand */
+>  	if (!chip->onfi_set_features)
+> @@ -3161,6 +3169,11 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
+>  		init_waitqueue_head(&chip->controller->wq);
+>  	}
+>  
+> +	return 0;
+> +
+> +no_cmd_ctrl:
+> +	pr_err("chip.cmd_ctrl() callback is not provided\n");
+> +	return -EINVAL;
+>  }
+>  
+>  /* Sanitize ONFI strings so we can safely print them */
+> @@ -3878,9 +3891,13 @@ ident_done:
+>  	}
+>  
+>  	if (chip->options & NAND_BUSWIDTH_AUTO) {
+> +		int ret;
+> +
+>  		WARN_ON(chip->options & NAND_BUSWIDTH_16);
+>  		chip->options |= busw;
+> -		nand_set_defaults(chip, busw);
+> +		ret = nand_set_defaults(chip, busw);
 
-Ouch :-( Maybe this is an opportunity for cleanup then ?
+I realize this one will actually never fail because it has already been
+checked in nand_scan_ident(). Maybe we should leave the
+nand_set_defaults() as a void function and check for missing
+->cmd_ctrl() directly in nand_scan_ident().
 
-I think disabling the compile test for now is good, but we should
-revisit this once I'm back and capable of digging in properly. Thus
-far, I am mostly handling my mails on the bullet trains (which are
-awesome here in Japan, I tell you that ;-) ), so I'm really not able
-to give this as much attention as it requires.
-
-> Brian
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+> +		if (ret < 0)
+> +			return ERR_PTR(ret);
+>  	} else if (busw != (chip->options & NAND_BUSWIDTH_16)) {
+>  		/*
+>  		 * Check, if buswidth is correct. Hardware drivers should set
+> @@ -3998,7 +4015,9 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+>  		mtd->name = dev_name(mtd->dev.parent);
+>  
+>  	/* Set the default functions */
+> -	nand_set_defaults(chip, chip->options & NAND_BUSWIDTH_16);
+> +	ret = nand_set_defaults(chip, chip->options & NAND_BUSWIDTH_16);
+> +	if (ret < 0)
+> +		return ret;
+>  
+>  	/* Read the flash type */
+>  	type = nand_get_flash_type(mtd, chip, &nand_maf_id,
