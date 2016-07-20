@@ -1,28 +1,21 @@
-Received: from ozlabs.org ([103.22.144.67])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPeZX-00048h-I4
- for linux-mtd@lists.infradead.org; Tue, 19 Jul 2016 23:37:08 +0000
-Date: Wed, 20 Jul 2016 09:36:41 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-wireless@vger.kernel.org"
- <linux-wireless@vger.kernel.org>, linux-next <linux-next@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the
- wireless-drivers-next tree
-Message-ID: <20160720093641.2dbb1f83@canb.auug.org.au>
-In-Reply-To: <20160719183913.GA88186@google.com>
-References: <20160719160831.79c0303f@canb.auug.org.au>
- <8760s2w369.fsf@kamboji.qca.qualcomm.com>
- <CACna6rxVFD1MpAEYP_Zd4W8CvgnxSQpa0wJs83jwDJ5v11gZ=Q@mail.gmail.com>
- <871t2qw1cz.fsf@kamboji.qca.qualcomm.com>
- <CACna6ry6QgrbUoHuJacmr1EhHZyrwqsXfr51gENvY-0zM9L+3Q@mail.gmail.com>
- <87h9blvhxg.fsf@kamboji.qca.qualcomm.com>
- <20160719183913.GA88186@google.com>
+ id 1bPgli-0005zK-2h
+ for linux-mtd@lists.infradead.org; Wed, 20 Jul 2016 01:57:51 +0000
+Subject: Re: [PATCH] mtd: spi-nor: don't build Cadence QuadSPI on non-ARM
+To: Brian Norris <computersforpeace@gmail.com>, Stefan Roese <sr@denx.de>
+References: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
+ <20160718202026.GB137880@google.com> <578DC294.5090605@denx.de>
+ <20160719200541.GA854@google.com>
+Cc: kbuild test robot <fengguang.wu@intel.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kbuild-all@01.org, Graham Moore <grmoore@opensource.altera.com>
+From: Marek Vasut <marex@denx.de>
+Message-ID: <3a769a42-f856-5b48-dd18-ef76a7bf4c91@denx.de>
+Date: Wed, 20 Jul 2016 03:50:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160719200541.GA854@google.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,20 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-On Tue, 19 Jul 2016 11:39:13 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
->
-> I applied a trivial change to this same Kconfig entry:
+On 07/19/2016 10:05 PM, Brian Norris wrote:
+> On Tue, Jul 19, 2016 at 08:03:00AM +0200, Stefan Roese wrote:
+>> On 18.07.2016 22:20, Brian Norris wrote:
+>>> Hmm, does x86 not define readsl()/writesl()? I can never tell what
+>>> accessors are supposed to be "standard" across architectures.
+>>>
+>>> Either we need to drop the COMPILE_TEST or maybe make it (!X86 &&
+>>> COMPILE_TEST).
+>>
+>> iowrite32_rep() etc should work for x86 as well.
 > 
-> Subject: mtd: update description of MTD_BCM47XXSFLASH symbol
-> http://git.infradead.org/l2-mtd.git/commitdiff/0a526341fee054c1e2b9f0e4b2b424ae81707d4c
-> 
-> It's a trivial conflict, so should we just let Linus work it out? I can
-> note it my MTD pull request, if wireless lands first.
+> Looks like it might. I'm not sure the original submitter can retest
+> right now (travel), so I'd probably rather just take the easy fix for
+> now, and we can widen to COMPILE_TEST later if desired.
 
-Linus and I should be able to cope.  I will send my usual notification today.
+Isn't there a generic readsl() and writesl() implementation in
+include/asm-generic/io.h ?
+
+> If I could get an ack on something like this, I'll apply it soon:
+
+This is fine, I am making a note to revisit this.
+
+> ---8<---
+> From: Brian Norris <computersforpeace@gmail.com>
+> Date: Tue, 19 Jul 2016 13:02:40 -0700
+> Subject: [PATCH] mtd: spi-nor: don't build Cadence QuadSPI on non-ARM
+> 
+> This controller driver is used only on ARM but is mostly written
+> portably so it can build on other arch'es. Unfortunately, at least x86
+> doesn't provibe readsl()/writesl() accessors. We could possibly fix this
+> issue in the future by using io{read,write}32_rep() instead, but let's
+> just drop the architectures we aren't using for now.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index 1e6f037923d9..4a682ee0f632 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -40,7 +40,7 @@ config SPI_ATMEL_QUADSPI
+>  
+>  config SPI_CADENCE_QUADSPI
+>  	tristate "Cadence Quad SPI controller"
+> -	depends on OF && (ARM || COMPILE_TEST)
+> +	depends on OF && ARM
+>  	help
+>  	  Enable support for the Cadence Quad SPI Flash controller.
+>  
+> 
+
 
 -- 
-Cheers,
-Stephen Rothwell
+Best regards,
+Marek Vasut
