@@ -1,22 +1,23 @@
-Date: Thu, 21 Jul 2016 10:09:55 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Yunhui Cui <yunhui.cui@nxp.com>
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "han.xu@freescale.com" <han.xu@freescale.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Yao Yuan <yao.yuan@nxp.com>, Yang-Leo Li <leoyang.li@nxp.com>,
- Stuart Yoder <stuart.yoder@nxp.com>, york sun <york.sun@nxp.com>
-Subject: Re: [PATCH v2 1/9] mtd:fsl-quadspi:use the property fields of SPI-NOR
-Message-ID: <20160721170955.GA91127@google.com>
+MIME-Version: 1.0
+In-Reply-To: <20160721170955.GA91127@google.com>
 References: <1461307192-866-1-git-send-email-B56489@freescale.com>
  <DB5PR0401MB191200E18A336E0BE5318D1694240@DB5PR0401MB1912.eurprd04.prod.outlook.com>
  <VI1PR0401MB26403FE955617EFEB3DD809294090@VI1PR0401MB2640.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VI1PR0401MB26403FE955617EFEB3DD809294090@VI1PR0401MB2640.eurprd04.prod.outlook.com>
+ <20160721170955.GA91127@google.com>
+From: Han Xu <xhnjupt@gmail.com>
+Date: Thu, 21 Jul 2016 14:34:42 -0500
+Message-ID: <CA+EcR23zC=9542Ds5-7KJ69F1MuQmJEcoVzmNgb-9wHbSyfWdw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] mtd:fsl-quadspi:use the property fields of SPI-NOR
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Yunhui Cui <yunhui.cui@nxp.com>, Stuart Yoder <stuart.yoder@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Yang-Leo Li <leoyang.li@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Yao Yuan <yao.yuan@nxp.com>,
+ york sun <york.sun@nxp.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "han.xu@freescale.com" <han.xu@freescale.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 21, 2016 at 05:58:48AM +0000, Yunhui Cui wrote:
-> Could you please help to review this patch set.
-> This patch set is very importmant for fsl-quadspi driver. 
+On Thu, Jul 21, 2016 at 12:09 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Thu, Jul 21, 2016 at 05:58:48AM +0000, Yunhui Cui wrote:
+>> Could you please help to review this patch set.
+>> This patch set is very importmant for fsl-quadspi driver.
+>
+> I didn't want this to be my only comment, but since you're pinging
+> again...
+>
+> Your patchset doesn't build on the latest. You need to refresh.
+>
+> Also, has Han Xu reviewed this?
 
-I didn't want this to be my only comment, but since you're pinging
-again...
+I sent comments for v1 in [PATCH 6/9] mtd: spi-nor: Support R/W for
+S25FS-S family flash,
+but nothing changed in v2. Brian, could you please check my comment
+which related to spi-nor
+driver.
 
-Your patchset doesn't build on the latest. You need to refresh.
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-Also, has Han Xu reviewed this?
+
+
+-- 
+Sincerely,
+
+Han XU
