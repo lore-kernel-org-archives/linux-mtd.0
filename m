@@ -1,17 +1,19 @@
-Received: from mail.sonicwall.com ([67.115.118.12] helo=es8300.sonicwall.com)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat
- Linux)) id 1bQ3RJ-0004IU-1W
- for linux-mtd@lists.infradead.org; Thu, 21 Jul 2016 02:10:17 +0000
-Received: from es8300.sonicwall.com (127.0.0.1) id hi0ngi0171sd for
- <linux-mtd@lists.infradead.org>;
- Wed, 20 Jul 2016 19:07:56 -0700 (envelope-from <iharutyunov@SonicWALL.com>)
-From: Iosif Harutyunov <iharutyunov@SonicWALL.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: Iosif Harutyunov <iharutyunov@SonicWALL.com>
-Subject: [PATCH] mtd: ubi: Fix race condition between ubi device creation
- and udev
-Date: Thu, 21 Jul 2016 02:07:55 +0000
-Message-ID: <1AA17CE09ACFBD499BB5F503A7513F5B43ADFB03@us0exc08.us.sonicwall.com>
+From: Yunhui Cui <yunhui.cui@nxp.com>
+To: Yunhui Cui <yunhui.cui@nxp.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>,
+ "Yang-Leo Li" <leoyang.li@nxp.com>, Stuart Yoder <stuart.yoder@nxp.com>, york
+ sun <york.sun@nxp.com>
+Subject: RE: [PATCH v2 1/9] mtd:fsl-quadspi:use the property fields of SPI-NOR
+Date: Thu, 21 Jul 2016 05:58:48 +0000
+Message-ID: <VI1PR0401MB26403FE955617EFEB3DD809294090@VI1PR0401MB2640.eurprd04.prod.outlook.com>
+References: <1461307192-866-1-git-send-email-B56489@freescale.com>
+ <DB5PR0401MB191200E18A336E0BE5318D1694240@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+In-Reply-To: <DB5PR0401MB191200E18A336E0BE5318D1694240@DB5PR0401MB1912.eurprd04.prod.outlook.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -25,65 +27,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi David,
 
-While implementing udev rules for UBI device I ran into the problem when ud=
-ev would
-ignore UBI rules I created to process attachment of volume. Interestingly, =
-when I trigger
-udev ubi subsystem "change" event manually after the attachment, rules woul=
-d work just fine.
-
-I traced problem down to UBI sysfs processing, which turned out to be racin=
-g condition.
-See patch below to address the problem.
+Could you please help to review this patch set.
+This patch set is very importmant for fsl-quadspi driver.=20
 
 Thanks.
-Iosif,_
 
-Signed-off-by: Iosif Harutyunov <iharutyunov@sonicwall.com>
----
-Once ubi is attached, make sure ubi_devices[] is initialized early before b=
-eing
-used in the dev_attribute_show().
 
-This is to prevent race condition between udev ubi rules processing and ubi=
- device
-creation, which manifests itself ignoring udev ATTR rules.
-
----
- drivers/mtd/ubi/build.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index ef36182..e6117d7 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -986,6 +986,8 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_nu=
-m,
- 		goto out_free;
- 	}
-=20
-+	ubi_devices[ubi_num] =3D ubi;
-+
- 	if (ubi->autoresize_vol_id !=3D -1) {
- 		err =3D autoresize(ubi, ubi->autoresize_vol_id);
- 		if (err)
-@@ -1036,7 +1038,6 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_=
-num,
- 	wake_up_process(ubi->bgt_thread);
- 	spin_unlock(&ubi->wl_lock);
-=20
--	ubi_devices[ubi_num] =3D ubi;
- 	ubi_notify_all(ubi, UBI_VOLUME_ADDED, NULL);
- 	return ubi_num;
-=20
-@@ -1047,6 +1048,7 @@ out_uif:
- 	ubi_assert(ref);
- 	uif_close(ubi);
- out_detach:
-+	ubi_devices[ubi_num] =3D NULL;
- 	ubi_wl_close(ubi);
- 	ubi_free_internal_volumes(ubi);
- 	vfree(ubi->vtbl);
---=20
-1.7.7.6
+Thursday, June 30, 2016 9:54 AM Yunhui Cui wrote:
+> Hi Brian and Han,
+> Could you please give me some comments about this patch set v2 ?
+>=20
+> Thanks
+>=20
+> > -----Original Message-----
+> > From: Yunhui Cui [mailto:B56489@freescale.com]
+> > Sent: Friday, April 22, 2016 2:40 PM
+> > To: dwmw2@infradead.org; computersforpeace@gmail.com;
+> > han.xu@freescale.com
+> > Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org;
+> > linux- arm-kernel@lists.infradead.org; Yao Yuan; Yunhui Cui
+> > Subject: [PATCH v2 1/9] mtd:fsl-quadspi:use the property fields of
+> > SPI- NOR
+> >
+> > We can get the read/write/erase opcode from the spi nor framework
+> > directly. This patch uses the information stored in the SPI-NOR to
+> > remove the hardcode in the fsl_qspi_init_lut().
+> >
+> > Signed-off-by: Yunhui Cui <B56489@freescale.com>
+> > Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
+> > ---
+> >  drivers/mtd/spi-nor/fsl-quadspi.c | 40
+> > ++++++++++++---------------------
+> > ------
+> >  1 file changed, 12 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c
+> > b/drivers/mtd/spi-nor/fsl- quadspi.c index 9ab2b51..517ffe2 100644
+> > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> > @@ -373,9 +373,13 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+> >  	void __iomem *base =3D q->iobase;
+> >  	int rxfifo =3D q->devtype_data->rxfifo;
+> >  	u32 lut_base;
+> > -	u8 cmd, addrlen, dummy;
+> >  	int i;
+> >
+> > +	struct spi_nor *nor =3D &q->nor[0];
+> > +	u8 addrlen =3D (nor->addr_width =3D=3D 3) ? ADDR24BIT : ADDR32BIT;
+> > +	u8 read_op =3D nor->read_opcode;
+> > +	u8 read_dm =3D nor->read_dummy;
+> > +
+> >  	fsl_qspi_unlock_lut(q);
+> >
+> >  	/* Clear all the LUT table */
+> > @@ -385,20 +389,10 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+> >  	/* Quad Read */
+> >  	lut_base =3D SEQID_QUAD_READ * 4;
+> >
+> > -	if (q->nor_size <=3D SZ_16M) {
+> > -		cmd =3D SPINOR_OP_READ_1_1_4;
+> > -		addrlen =3D ADDR24BIT;
+> > -		dummy =3D 8;
+> > -	} else {
+> > -		/* use the 4-byte address */
+> > -		cmd =3D SPINOR_OP_READ_1_1_4;
+> > -		addrlen =3D ADDR32BIT;
+> > -		dummy =3D 8;
+> > -	}
+> > -
+> > -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+> > +	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
+> >  			base + QUADSPI_LUT(lut_base));
+> > -	qspi_writel(q, LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4,
+> > rxfifo),
+> > +	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+> > +		    LUT1(FSL_READ, PAD4, rxfifo),
+> >  			base + QUADSPI_LUT(lut_base + 1));
+> >
+> >  	/* Write enable */
+> > @@ -409,16 +403,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+> >  	/* Page Program */
+> >  	lut_base =3D SEQID_PP * 4;
+> >
+> > -	if (q->nor_size <=3D SZ_16M) {
+> > -		cmd =3D SPINOR_OP_PP;
+> > -		addrlen =3D ADDR24BIT;
+> > -	} else {
+> > -		/* use the 4-byte address */
+> > -		cmd =3D SPINOR_OP_PP;
+> > -		addrlen =3D ADDR32BIT;
+> > -	}
+> > -
+> > -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+> > +	qspi_writel(q, LUT0(CMD, PAD1, nor->program_opcode) |
+> > +		    LUT1(ADDR, PAD1, addrlen),
+> >  			base + QUADSPI_LUT(lut_base));
+> >  	qspi_writel(q, LUT0(FSL_WRITE, PAD1, 0),
+> >  			base + QUADSPI_LUT(lut_base + 1)); @@ -432,10 +418,8 @@
+> static
+> > void fsl_qspi_init_lut(struct fsl_qspi *q)
+> >  	/* Erase a sector */
+> >  	lut_base =3D SEQID_SE * 4;
+> >
+> > -	cmd =3D q->nor[0].erase_opcode;
+> > -	addrlen =3D q->nor_size <=3D SZ_16M ? ADDR24BIT : ADDR32BIT;
+> > -
+> > -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+> > +	qspi_writel(q, LUT0(CMD, PAD1, nor->erase_opcode) |
+> > +		    LUT1(ADDR, PAD1, addrlen),
+> >  			base + QUADSPI_LUT(lut_base));
+> >
+> >  	/* Erase the whole chip */
+> > --
+> > 2.1.0.27.g96db324
