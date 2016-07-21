@@ -1,23 +1,32 @@
-From: Yunhui Cui <yunhui.cui@nxp.com>
-To: Yunhui Cui <yunhui.cui@nxp.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>,
- "Yang-Leo Li" <leoyang.li@nxp.com>, Stuart Yoder <stuart.yoder@nxp.com>, york
- sun <york.sun@nxp.com>
-Subject: RE: [PATCH v2 1/9] mtd:fsl-quadspi:use the property fields of SPI-NOR
-Date: Thu, 21 Jul 2016 05:58:48 +0000
-Message-ID: <VI1PR0401MB26403FE955617EFEB3DD809294090@VI1PR0401MB2640.eurprd04.prod.outlook.com>
-References: <1461307192-866-1-git-send-email-B56489@freescale.com>
- <DB5PR0401MB191200E18A336E0BE5318D1694240@DB5PR0401MB1912.eurprd04.prod.outlook.com>
-In-Reply-To: <DB5PR0401MB191200E18A336E0BE5318D1694240@DB5PR0401MB1912.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-lf0-f52.google.com ([209.85.215.52])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bQ8MX-0001YK-JV
+ for linux-mtd@lists.infradead.org; Thu, 21 Jul 2016 07:25:42 +0000
+Received: by mail-lf0-f52.google.com with SMTP id f93so54017658lfi.2
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Jul 2016 00:25:19 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20160720125201.GA52079@ubuntu-hedt>
+References: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
+ <1461699396-33000-19-git-send-email-seth.forshee@canonical.com>
+ <CA+2rt426_pshAauQizcxkfAq16vmEpB4sJ4genW_ucosH3j=zQ@mail.gmail.com>
+ <20160720125201.GA52079@ubuntu-hedt>
+From: Miklos Szeredi <mszeredi@redhat.com>
+Date: Thu, 21 Jul 2016 09:25:17 +0200
+Message-ID: <CAOssrKfJrQuf_exBVGtn-EBOBnRhhNWe+2P=VkEqtp3qmGYiFA@mail.gmail.com>
+Subject: Re: [PATCH v4 18/21] fuse: Add support for pid namespaces
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: Sheng Yang <sheng@yasker.org>, "Eric W. Biederman" <ebiederm@xmission.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+ kernel list <linux-kernel@vger.kernel.org>,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
+ selinux@tycho.nsa.gov, cgroups@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,118 +36,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+On Wed, Jul 20, 2016 at 2:52 PM, Seth Forshee
+<seth.forshee@canonical.com> wrote:
 
-Could you please help to review this patch set.
-This patch set is very importmant for fsl-quadspi driver.=20
+> It sounds like we need to remove the restriction on accessing the
+> filesystem from a different pid namespace. I don't think this poses a
+> security problem. However there's no pid mapping that is usable by the
+> userspace fuse process, so what do we put in the fuse request? Probably
+> the only candidates are 0 and 0xffffffff.
+>
+> So a question for the fuse developers - is one value or the other
+> preferrable for fuse_in_header.pid when the pid cannot be mapped, and is
+> this going to cause problems for any fuse filesystems? I suspect that
+> few filesystems actually look at the pid anyway, and already for a
+> filesystem mounted in a pid namespace the values being given to
+> userspace won't be correct for the namespace of the fuse process.
 
-Thanks.
+pid = 0 sounds good.
 
+The pid from the request is used for example to get the auxiliary
+group list by libfuse (fuse_req_getgroups()).   That's not used by all
+filesystems and it will return an error in case it can't find the proc
+entry (which it won't for pid == 0).
 
-Thursday, June 30, 2016 9:54 AM Yunhui Cui wrote:
-> Hi Brian and Han,
-> Could you please give me some comments about this patch set v2 ?
->=20
-> Thanks
->=20
-> > -----Original Message-----
-> > From: Yunhui Cui [mailto:B56489@freescale.com]
-> > Sent: Friday, April 22, 2016 2:40 PM
-> > To: dwmw2@infradead.org; computersforpeace@gmail.com;
-> > han.xu@freescale.com
-> > Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org;
-> > linux- arm-kernel@lists.infradead.org; Yao Yuan; Yunhui Cui
-> > Subject: [PATCH v2 1/9] mtd:fsl-quadspi:use the property fields of
-> > SPI- NOR
-> >
-> > We can get the read/write/erase opcode from the spi nor framework
-> > directly. This patch uses the information stored in the SPI-NOR to
-> > remove the hardcode in the fsl_qspi_init_lut().
-> >
-> > Signed-off-by: Yunhui Cui <B56489@freescale.com>
-> > Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
-> > ---
-> >  drivers/mtd/spi-nor/fsl-quadspi.c | 40
-> > ++++++++++++---------------------
-> > ------
-> >  1 file changed, 12 insertions(+), 28 deletions(-)
-> >
-> > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c
-> > b/drivers/mtd/spi-nor/fsl- quadspi.c index 9ab2b51..517ffe2 100644
-> > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > @@ -373,9 +373,13 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
-> >  	void __iomem *base =3D q->iobase;
-> >  	int rxfifo =3D q->devtype_data->rxfifo;
-> >  	u32 lut_base;
-> > -	u8 cmd, addrlen, dummy;
-> >  	int i;
-> >
-> > +	struct spi_nor *nor =3D &q->nor[0];
-> > +	u8 addrlen =3D (nor->addr_width =3D=3D 3) ? ADDR24BIT : ADDR32BIT;
-> > +	u8 read_op =3D nor->read_opcode;
-> > +	u8 read_dm =3D nor->read_dummy;
-> > +
-> >  	fsl_qspi_unlock_lut(q);
-> >
-> >  	/* Clear all the LUT table */
-> > @@ -385,20 +389,10 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
-> >  	/* Quad Read */
-> >  	lut_base =3D SEQID_QUAD_READ * 4;
-> >
-> > -	if (q->nor_size <=3D SZ_16M) {
-> > -		cmd =3D SPINOR_OP_READ_1_1_4;
-> > -		addrlen =3D ADDR24BIT;
-> > -		dummy =3D 8;
-> > -	} else {
-> > -		/* use the 4-byte address */
-> > -		cmd =3D SPINOR_OP_READ_1_1_4;
-> > -		addrlen =3D ADDR32BIT;
-> > -		dummy =3D 8;
-> > -	}
-> > -
-> > -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-> > +	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
-> >  			base + QUADSPI_LUT(lut_base));
-> > -	qspi_writel(q, LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4,
-> > rxfifo),
-> > +	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
-> > +		    LUT1(FSL_READ, PAD4, rxfifo),
-> >  			base + QUADSPI_LUT(lut_base + 1));
-> >
-> >  	/* Write enable */
-> > @@ -409,16 +403,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
-> >  	/* Page Program */
-> >  	lut_base =3D SEQID_PP * 4;
-> >
-> > -	if (q->nor_size <=3D SZ_16M) {
-> > -		cmd =3D SPINOR_OP_PP;
-> > -		addrlen =3D ADDR24BIT;
-> > -	} else {
-> > -		/* use the 4-byte address */
-> > -		cmd =3D SPINOR_OP_PP;
-> > -		addrlen =3D ADDR32BIT;
-> > -	}
-> > -
-> > -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-> > +	qspi_writel(q, LUT0(CMD, PAD1, nor->program_opcode) |
-> > +		    LUT1(ADDR, PAD1, addrlen),
-> >  			base + QUADSPI_LUT(lut_base));
-> >  	qspi_writel(q, LUT0(FSL_WRITE, PAD1, 0),
-> >  			base + QUADSPI_LUT(lut_base + 1)); @@ -432,10 +418,8 @@
-> static
-> > void fsl_qspi_init_lut(struct fsl_qspi *q)
-> >  	/* Erase a sector */
-> >  	lut_base =3D SEQID_SE * 4;
-> >
-> > -	cmd =3D q->nor[0].erase_opcode;
-> > -	addrlen =3D q->nor_size <=3D SZ_16M ? ADDR24BIT : ADDR32BIT;
-> > -
-> > -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-> > +	qspi_writel(q, LUT0(CMD, PAD1, nor->erase_opcode) |
-> > +		    LUT1(ADDR, PAD1, addrlen),
-> >  			base + QUADSPI_LUT(lut_base));
-> >
-> >  	/* Erase the whole chip */
-> > --
-> > 2.1.0.27.g96db324
+It would be nice if we could transfer the group list through the
+userspace/kernel protocol, since then it wouldn't depend on proc and
+on being in the same pid namespace.  But that's another story.
+
+Thanks,
+Miklos
