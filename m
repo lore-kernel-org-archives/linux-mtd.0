@@ -1,34 +1,21 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPzyu-0003bH-JP
- for linux-mtd@lists.infradead.org; Wed, 20 Jul 2016 22:28:45 +0000
-Received: by mail-wm0-x242.google.com with SMTP id q128so194613wma.1
- for <linux-mtd@lists.infradead.org>; Wed, 20 Jul 2016 15:28:23 -0700 (PDT)
+Received: from mail.sonicwall.com ([67.115.118.12] helo=es8300.sonicwall.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat
+ Linux)) id 1bQ3RJ-0004IU-1W
+ for linux-mtd@lists.infradead.org; Thu, 21 Jul 2016 02:10:17 +0000
+Received: from es8300.sonicwall.com (127.0.0.1) id hi0ngi0171sd for
+ <linux-mtd@lists.infradead.org>;
+ Wed, 20 Jul 2016 19:07:56 -0700 (envelope-from <iharutyunov@SonicWALL.com>)
+From: Iosif Harutyunov <iharutyunov@SonicWALL.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: Iosif Harutyunov <iharutyunov@SonicWALL.com>
+Subject: [PATCH] mtd: ubi: Fix race condition between ubi device creation
+ and udev
+Date: Thu, 21 Jul 2016 02:07:55 +0000
+Message-ID: <1AA17CE09ACFBD499BB5F503A7513F5B43ADFB03@us0exc08.us.sonicwall.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20160720125201.GA52079@ubuntu-hedt>
-References: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
- <1461699396-33000-19-git-send-email-seth.forshee@canonical.com>
- <CA+2rt426_pshAauQizcxkfAq16vmEpB4sJ4genW_ucosH3j=zQ@mail.gmail.com>
- <20160720125201.GA52079@ubuntu-hedt>
-From: Sheng Yang <sheng@yasker.org>
-Date: Wed, 20 Jul 2016 15:28:21 -0700
-Message-ID: <CA+2rt423x-EiF=9x2zRTM35hzWOv=rH1urifRTCdpE_p=GO9FQ@mail.gmail.com>
-Subject: Re: [PATCH v4 18/21] fuse: Add support for pid namespaces
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Miklos Szeredi <miklos@szeredi.hu>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
- kernel list <linux-kernel@vger.kernel.org>, linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
- selinux@tycho.nsa.gov, cgroups@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,75 +25,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 20, 2016 at 5:52 AM, Seth Forshee
-<seth.forshee@canonical.com> wrote:
-> On Tue, Jul 19, 2016 at 07:44:11PM -0700, Sheng Yang wrote:
->> On Tue, Apr 26, 2016 at 12:36 PM, Seth Forshee
->> <seth.forshee@canonical.com> wrote:
->> > When the userspace process servicing fuse requests is running in
->> > a pid namespace then pids passed via the fuse fd are not being
->> > translated into that process' namespace. Translation is necessary
->> > for the pid to be useful to that process.
->> >
->> > Since no use case currently exists for changing namespaces all
->> > translations can be done relative to the pid namespace in use
->> > when fuse_conn_init() is called. For fuse this translates to
->> > mount time, and for cuse this is when /dev/cuse is opened. IO for
->> > this connection from another namespace will return errors.
->> >
->> > Requests from processes whose pid cannot be translated into the
->> > target namespace are not permitted, except for requests
->> > allocated via fuse_get_req_nofail_nopages. For no-fail requests
->> > in.h.pid will be 0 if the pid translation fails.
->>
->> Hi Seth,
->>
->> This patch caused a regression in our major container use case with
->> FUSE in Ubuntu 16.04, as patch was checked in as Ubuntu Sauce in
->> Ubuntu 4.4.0-6.21 kernel.
->>
->> The use case is:
->> 1. Create a Docker container.
->> 2. Inside the container, start the FUSE backend, and mounted fs.
->> 3. Following step 2 in the container, create a loopback device to map
->> a file in the mounted fuse to create a block device, which will be
->> available to the whole system.
->>
->> It works well before this commit.
->>
->> The use case is broken because no matter which namespace losetup runs,
->> the real request from loopback device seems always come from init ns,
->> thus it will be in different ns running fuse backend. So the request
->> will got denied, because the ns running fuse won't able to see the
->> things from higher level(level 0 in fact) pid namespace.
->>
->> I think since init pid ns has ability to access any process in the
->> system, it should able to access the fuse mounted by any pid namespace
->> process as well.
->>
->> What you think?
->
-> It sounds like we need to remove the restriction on accessing the
-> filesystem from a different pid namespace. I don't think this poses a
-> security problem. However there's no pid mapping that is usable by the
-> userspace fuse process, so what do we put in the fuse request? Probably
-> the only candidates are 0 and 0xffffffff.
 
-Thanks Seth, I don't think it will be a security problem either, if we
-remove the restriction.
+While implementing udev rules for UBI device I ran into the problem when ud=
+ev would
+ignore UBI rules I created to process attachment of volume. Interestingly, =
+when I trigger
+udev ubi subsystem "change" event manually after the attachment, rules woul=
+d work just fine.
 
->
-> So a question for the fuse developers - is one value or the other
-> preferrable for fuse_in_header.pid when the pid cannot be mapped, and is
-> this going to cause problems for any fuse filesystems? I suspect that
-> few filesystems actually look at the pid anyway, and already for a
-> filesystem mounted in a pid namespace the values being given to
-> userspace won't be correct for the namespace of the fuse process.
->
+I traced problem down to UBI sysfs processing, which turned out to be racin=
+g condition.
+See patch below to address the problem.
 
-At least in our system we're not looking into the pid at all.
+Thanks.
+Iosif,_
 
---Sheng
+Signed-off-by: Iosif Harutyunov <iharutyunov@sonicwall.com>
+---
+Once ubi is attached, make sure ubi_devices[] is initialized early before b=
+eing
+used in the dev_attribute_show().
 
-> Seth
->
+This is to prevent race condition between udev ubi rules processing and ubi=
+ device
+creation, which manifests itself ignoring udev ATTR rules.
+
+---
+ drivers/mtd/ubi/build.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index ef36182..e6117d7 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -986,6 +986,8 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_nu=
+m,
+ 		goto out_free;
+ 	}
+=20
++	ubi_devices[ubi_num] =3D ubi;
++
+ 	if (ubi->autoresize_vol_id !=3D -1) {
+ 		err =3D autoresize(ubi, ubi->autoresize_vol_id);
+ 		if (err)
+@@ -1036,7 +1038,6 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_=
+num,
+ 	wake_up_process(ubi->bgt_thread);
+ 	spin_unlock(&ubi->wl_lock);
+=20
+-	ubi_devices[ubi_num] =3D ubi;
+ 	ubi_notify_all(ubi, UBI_VOLUME_ADDED, NULL);
+ 	return ubi_num;
+=20
+@@ -1047,6 +1048,7 @@ out_uif:
+ 	ubi_assert(ref);
+ 	uif_close(ubi);
+ out_detach:
++	ubi_devices[ubi_num] =3D NULL;
+ 	ubi_wl_close(ubi);
+ 	ubi_free_internal_volumes(ubi);
+ 	vfree(ubi->vtbl);
+--=20
+1.7.7.6
