@@ -1,20 +1,22 @@
-Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bQCNu-0003FP-56
- for linux-mtd@lists.infradead.org; Thu, 21 Jul 2016 11:43:22 +0000
-Received: by mail-oi0-x242.google.com with SMTP id d204so7444772oig.3
- for <linux-mtd@lists.infradead.org>; Thu, 21 Jul 2016 04:43:01 -0700 (PDT)
+Date: Thu, 21 Jul 2016 10:09:55 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Yunhui Cui <yunhui.cui@nxp.com>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "han.xu@freescale.com" <han.xu@freescale.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Yao Yuan <yao.yuan@nxp.com>, Yang-Leo Li <leoyang.li@nxp.com>,
+ Stuart Yoder <stuart.yoder@nxp.com>, york sun <york.sun@nxp.com>
+Subject: Re: [PATCH v2 1/9] mtd:fsl-quadspi:use the property fields of SPI-NOR
+Message-ID: <20160721170955.GA91127@google.com>
+References: <1461307192-866-1-git-send-email-B56489@freescale.com>
+ <DB5PR0401MB191200E18A336E0BE5318D1694240@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+ <VI1PR0401MB26403FE955617EFEB3DD809294090@VI1PR0401MB2640.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <1AA17CE09ACFBD499BB5F503A7513F5B43ADFB03@us0exc08.us.sonicwall.com>
-References: <1AA17CE09ACFBD499BB5F503A7513F5B43ADFB03@us0exc08.us.sonicwall.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 21 Jul 2016 13:42:59 +0200
-Message-ID: <CAFLxGvySC1f-rN9UKTh-sdZDvCW6M5-FdU3Qepg-8N3JDrTaJA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: ubi: Fix race condition between ubi device creation
- and udev
-To: Iosif Harutyunov <iharutyunov@sonicwall.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VI1PR0401MB26403FE955617EFEB3DD809294090@VI1PR0401MB2640.eurprd04.prod.outlook.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Iosif,
+On Thu, Jul 21, 2016 at 05:58:48AM +0000, Yunhui Cui wrote:
+> Could you please help to review this patch set.
+> This patch set is very importmant for fsl-quadspi driver. 
 
-On Thu, Jul 21, 2016 at 4:07 AM, Iosif Harutyunov
-<iharutyunov@sonicwall.com> wrote:
->
-> While implementing udev rules for UBI device I ran into the problem when udev would
-> ignore UBI rules I created to process attachment of volume. Interestingly, when I trigger
-> udev ubi subsystem "change" event manually after the attachment, rules would work just fine.
->
-> I traced problem down to UBI sysfs processing, which turned out to be racing condition.
-> See patch below to address the problem.
+I didn't want this to be my only comment, but since you're pinging
+again...
 
-The symptom is that /dev/ubiX_Y appeared, udev got a notification but
-reading sysfs
-attributes always failed with -ENODEV?
+Your patchset doesn't build on the latest. You need to refresh.
 
-How did you debug this? Sounds like a painful issue to debug. ;-\
-
-> Thanks.
-> Iosif,_
->
-> Signed-off-by: Iosif Harutyunov <iharutyunov@sonicwall.com>
-> ---
-> Once ubi is attached, make sure ubi_devices[] is initialized early before being
-> used in the dev_attribute_show().
->
-> This is to prevent race condition between udev ubi rules processing and ubi device
-> creation, which manifests itself ignoring udev ATTR rules.
->
-> ---
->  drivers/mtd/ubi/build.c |    4 +++-
->  1 files changed, 3 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> index ef36182..e6117d7 100644
-> --- a/drivers/mtd/ubi/build.c
-> +++ b/drivers/mtd/ubi/build.c
-> @@ -986,6 +986,8 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
->                 goto out_free;
->         }
->
-> +       ubi_devices[ubi_num] = ubi;
-> +
-
-Okay, the fix is to make sure that ubi_devices[ubi_num] is set before
-we init sysfs.
-Why do you add this before the autoresize code?
-I'd expect it right before uif_init().
-
--- 
-Thanks,
-//richard
+Also, has Han Xu reviewed this?
