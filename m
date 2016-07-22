@@ -1,20 +1,25 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail.sonicwall.com ([67.115.118.12]
+ helo=escorpra2.sonicwall.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bQM0s-0000HH-GL
- for linux-mtd@lists.infradead.org; Thu, 21 Jul 2016 22:00:15 +0000
-Received: by mail-pf0-x244.google.com with SMTP id h186so6071354pfg.2
- for <linux-mtd@lists.infradead.org>; Thu, 21 Jul 2016 14:59:54 -0700 (PDT)
-From: Andrey Smirnov <andrew.smirnov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Andrey Smirnov <andrew.smirnov@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] mtd: nand: Get rid of needless 'goto'
-Date: Thu, 21 Jul 2016 14:59:21 -0700
-Message-Id: <1469138361-14173-4-git-send-email-andrew.smirnov@gmail.com>
-In-Reply-To: <1469138361-14173-1-git-send-email-andrew.smirnov@gmail.com>
-References: <1469138361-14173-1-git-send-email-andrew.smirnov@gmail.com>
+ id 1bQOOO-0001cW-8k
+ for linux-mtd@lists.infradead.org; Fri, 22 Jul 2016 00:32:41 +0000
+Received: from escorpra2.sonicwall.com (127.0.0.1) id hi5kqg0171s3 for
+ <linux-mtd@lists.infradead.org>;
+ Thu, 21 Jul 2016 17:32:18 -0700 (envelope-from <iharutyunov@SonicWALL.com>)
+From: Iosif Harutyunov <iharutyunov@SonicWALL.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH] mtd: ubi: Fix race condition between ubi device
+ creation and udev
+Date: Fri, 22 Jul 2016 00:32:15 +0000
+Message-ID: <1AA17CE09ACFBD499BB5F503A7513F5B43AE06B1@us0exc08.us.sonicwall.com>
+References: <1AA17CE09ACFBD499BB5F503A7513F5B43ADFB03@us0exc08.us.sonicwall.com>
+ <CAFLxGvySC1f-rN9UKTh-sdZDvCW6M5-FdU3Qepg-8N3JDrTaJA@mail.gmail.com>
+In-Reply-To: <CAFLxGvySC1f-rN9UKTh-sdZDvCW6M5-FdU3Qepg-8N3JDrTaJA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using "goto" and "switch" statement only makes it harder to follow
-control flow and doesn't bring any advantages. Rewrite the code to avoid
-using "goto".
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
----
-
-No changes since v2.
-
- drivers/mtd/nand/nand_base.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 93f5432..777152b 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2122,7 +2122,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- static int nand_read_oob(struct mtd_info *mtd, loff_t from,
- 			 struct mtd_oob_ops *ops)
- {
--	int ret = -ENOTSUPP;
-+	int ret;
- 
- 	ops->retlen = 0;
- 
-@@ -2133,24 +2133,18 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
- 		return -EINVAL;
- 	}
- 
--	nand_get_device(mtd, FL_READING);
--
--	switch (ops->mode) {
--	case MTD_OPS_PLACE_OOB:
--	case MTD_OPS_AUTO_OOB:
--	case MTD_OPS_RAW:
--		break;
-+	if (ops->mode != MTD_OPS_PLACE_OOB &&
-+	    ops->mode != MTD_OPS_AUTO_OOB &&
-+	    ops->mode != MTD_OPS_RAW)
-+		return -ENOTSUPP;
- 
--	default:
--		goto out;
--	}
-+	nand_get_device(mtd, FL_READING);
- 
- 	if (!ops->datbuf)
- 		ret = nand_do_read_oob(mtd, from, ops);
- 	else
- 		ret = nand_do_read_ops(mtd, from, ops);
- 
--out:
- 	nand_release_device(mtd);
- 	return ret;
- }
--- 
-2.5.5
+PiBPbiBUaHUsIEp1bCAyMSwgMjAxNiBhdCA0OjA3IEFNLCBJb3NpZiBIYXJ1dHl1bm92DQo+IDxp
+aGFydXR5dW5vdkBzb25pY3dhbGwuY29tPiB3cm90ZToNCj4gPg0KPiA+IFdoaWxlIGltcGxlbWVu
+dGluZyB1ZGV2IHJ1bGVzIGZvciBVQkkgZGV2aWNlIEkgcmFuIGludG8gdGhlIHByb2JsZW0NCj4g
+PiB3aGVuIHVkZXYgd291bGQgaWdub3JlIFVCSSBydWxlcyBJIGNyZWF0ZWQgdG8gcHJvY2VzcyBh
+dHRhY2htZW50IG9mDQo+ID4gdm9sdW1lLiBJbnRlcmVzdGluZ2x5LCB3aGVuIEkgdHJpZ2dlciB1
+ZGV2IHViaSBzdWJzeXN0ZW0gImNoYW5nZSIgZXZlbnQNCj4gbWFudWFsbHkgYWZ0ZXIgdGhlIGF0
+dGFjaG1lbnQsIHJ1bGVzIHdvdWxkIHdvcmsganVzdCBmaW5lLg0KPiA+DQo+ID4gSSB0cmFjZWQg
+cHJvYmxlbSBkb3duIHRvIFVCSSBzeXNmcyBwcm9jZXNzaW5nLCB3aGljaCB0dXJuZWQgb3V0IHRv
+IGJlDQo+IHJhY2luZyBjb25kaXRpb24uDQo+ID4gU2VlIHBhdGNoIGJlbG93IHRvIGFkZHJlc3Mg
+dGhlIHByb2JsZW0uDQo+IA0KPiBUaGUgc3ltcHRvbSBpcyB0aGF0IC9kZXYvdWJpWF9ZIGFwcGVh
+cmVkLCB1ZGV2IGdvdCBhIG5vdGlmaWNhdGlvbiBidXQNCj4gcmVhZGluZyBzeXNmcyBhdHRyaWJ1
+dGVzIGFsd2F5cyBmYWlsZWQgd2l0aCAtRU5PREVWPw0KPiANCj4gSG93IGRpZCB5b3UgZGVidWcg
+dGhpcz8gU291bmRzIGxpa2UgYSBwYWluZnVsIGlzc3VlIHRvIGRlYnVnLiA7LVwNCg0KWWVzIGl0
+IHdhcyBzb21ld2hhdCB0cmlja3kuIEkgYWN0dWFsbHkgZm91bmQgYW5kIGRlYnVnZ2VkIHRoZSBw
+cm9ibGVtIG9uDQprZXJuZWwgMy4xMCwgYnV0IHdoZW4gSSBpc29sYXRlZCB0aGUgaXNzdWUsIGl0
+IGJlY2FtZSBvYnZpb3VzIHRoYXQgbGF0ZQ0KaW5pdGlhbGl6YXRpb24gb2YgdWJpX2RldmljZXNb
+XSBpcyB0aGUgcHJvYmxlbS4NCg0KSSBpbnN0cnVtZW50ZWQgdm9sX2F0dHJpYnV0ZV9zaG93IGF0
+dHIoKSBwcm9jZXNzaW5nIGNvZGUgd2l0aCBsb2cgbWVzc2FnZXMgYW5kDQpmb3VuZCB0aGF0IHdo
+ZW4gdWRldiByZWFkcyBhdHRyaWJ1dGVzIGZyb20gc3lzZnMsIGl0IHJldHVybnMgRU5PREVWIGFm
+dGVyIGNhbGxpbmcNCnViaV9nZXRfZGV2aWNlKHZvbC0+dWJpLT51YmlfbnVtKSB0byBvYnRhaW4g
+dWJpIGRlc2NyaXB0b3IgZnJvbSBnaXZlbiBkZXZpY2UNCm51bWJlci4gVGhpcyBpcyB3aGVyZSBJ
+IGZvdW5kIHRoYXQgdWJpX2RldmljZXMgIGFycmF5IGVsZW1lbnQgY29ycmVzcG9uZGluZyB0bw0K
+dWJpIG51bWJlciBpcyBub3QgaW5pdGlhbGl6ZWQsIHdoaWNoIGJyb3VnaHQgbWUgdG8gdGhlIHVi
+aV9hdHRhY2hfbXRkX2RldigpDQpmdW5jdGlvbi4NCg0KSSBhbSBzdXJwcmlzZWQgdGhhdCB0aGlz
+IGhhc24ndCBiZWVuIGNhdWdodCBiZWZvcmUsIGJ1dCBtb3N0IGxpa2VseSBub3QgYWxsIHBsYXRm
+b3JtDQppbXBsZW1lbnRhdGlvbnMgaW5kdWNlIHRoaXMgcmFjaW5nIGNvbmRpdGlvbiBiZXR3ZWVu
+IGtlcm5lbCBhbmQgdWRldiBldmVudA0KcHJvY2Vzc2luZy4gSSBteSBjYXNlIHBsYXRmb3JtIGlz
+IE9jdGVvbiBNSVBTNjQuDQoNCj4gDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBJb3NpZiBIYXJ1
+dHl1bm92IDxpaGFydXR5dW5vdkBzb25pY3dhbGwuY29tPg0KPiA+IC0tLQ0KPiA+IE9uY2UgdWJp
+IGlzIGF0dGFjaGVkLCBtYWtlIHN1cmUgdWJpX2RldmljZXNbXSBpcyBpbml0aWFsaXplZCBlYXJs
+eQ0KPiA+IGJlZm9yZSBiZWluZyB1c2VkIGluIHRoZSBkZXZfYXR0cmlidXRlX3Nob3coKS4NCj4g
+Pg0KPiA+IFRoaXMgaXMgdG8gcHJldmVudCByYWNlIGNvbmRpdGlvbiBiZXR3ZWVuIHVkZXYgdWJp
+IHJ1bGVzIHByb2Nlc3NpbmcNCj4gPiBhbmQgdWJpIGRldmljZSBjcmVhdGlvbiwgd2hpY2ggbWFu
+aWZlc3RzIGl0c2VsZiBpZ25vcmluZyB1ZGV2IEFUVFIgcnVsZXMuDQo+ID4NCj4gPiAtLS0NCj4g
+PiAgZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMgfCAgICA0ICsrKy0NCj4gPiAgMSBmaWxlcyBjaGFu
+Z2VkLCAzIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMgYi9kcml2ZXJzL210ZC91YmkvYnVpbGQuYyBpbmRl
+eA0KPiA+IGVmMzYxODIuLmU2MTE3ZDcgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9tdGQvdWJp
+L2J1aWxkLmMNCj4gPiArKysgYi9kcml2ZXJzL210ZC91YmkvYnVpbGQuYw0KPiA+IEBAIC05ODYs
+NiArOTg2LDggQEAgaW50IHViaV9hdHRhY2hfbXRkX2RldihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwg
+aW50DQo+IHViaV9udW0sDQo+ID4gICAgICAgICAgICAgICAgIGdvdG8gb3V0X2ZyZWU7DQo+ID4g
+ICAgICAgICB9DQo+ID4NCj4gPiArICAgICAgIHViaV9kZXZpY2VzW3ViaV9udW1dID0gdWJpOw0K
+PiA+ICsNCj4gDQo+IE9rYXksIHRoZSBmaXggaXMgdG8gbWFrZSBzdXJlIHRoYXQgdWJpX2Rldmlj
+ZXNbdWJpX251bV0gaXMgc2V0IGJlZm9yZSB3ZSBpbml0DQo+IHN5c2ZzLg0KPiBXaHkgZG8geW91
+IGFkZCB0aGlzIGJlZm9yZSB0aGUgYXV0b3Jlc2l6ZSBjb2RlPw0KPiBJJ2QgZXhwZWN0IGl0IHJp
+Z2h0IGJlZm9yZSB1aWZfaW5pdCgpLg0KDQpZb3UgYXJlIHJpZ2h0LiBJIHRoaW5rIEkgd2FzIGp1
+c3QgYmVpbmcgcGFyYW5vaWQgdG8gaW5pdGlhbGl6ZSB1YmlfZGV2aWNlcyBhcyBlYXJseQ0KYXMg
+cG9zc2libGUgYWZ0ZXIgYXR0YWNobWVudHMgaXMgbWFkZSBpbiBjYXNlIGlmIGFueWJvZHkgZWxz
+ZSBpcyB1c2luZyBpdC4NCkFncmVlIHdpdGggeW91IHRoYXQgaXQgc2hvdWxkIGJlIHJpZ2h0IGJl
+Zm9yZSB1aWZfaW5pdCgpLg0KDQpJb3NpZixfDQoNCg==
