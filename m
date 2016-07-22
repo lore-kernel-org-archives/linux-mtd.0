@@ -1,20 +1,25 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bQW5t-0006b1-8x
- for linux-mtd@lists.infradead.org; Fri, 22 Jul 2016 08:46:05 +0000
-Message-ID: <1469177141.2405.137.camel@gmail.com>
-Subject: Re: [PATCH] mtd: ubi: Fix race condition between ubi device
- creation and udev
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Iosif Harutyunov <iharutyunov@SonicWALL.com>,
+Received: from mail.sonicwall.com ([67.115.118.12] helo=es8300.sonicwall.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat
+ Linux)) id 1bQjoZ-0002e1-22
+ for linux-mtd@lists.infradead.org; Fri, 22 Jul 2016 23:25:08 +0000
+Received: from es8300.sonicwall.com (127.0.0.1) id hiall60171sk for
+ <linux-mtd@lists.infradead.org>;
+ Fri, 22 Jul 2016 16:22:44 -0700 (envelope-from <iharutyunov@SonicWALL.com>)
+From: "Harutyunov, Iosif" <iharutyunov@SonicWALL.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Fri, 22 Jul 2016 11:45:41 +0300
-In-Reply-To: <1AA17CE09ACFBD499BB5F503A7513F5B43ADFB03@us0exc08.us.sonicwall.com>
+CC: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: RE: [PATCH] mtd: ubi: Fix race condition between ubi device
+ creation and udev
+Date: Fri, 22 Jul 2016 23:22:42 +0000
+Message-ID: <1AA17CE09ACFBD499BB5F503A7513F5B43AE1771@us0exc08.us.sonicwall.com>
 References: <1AA17CE09ACFBD499BB5F503A7513F5B43ADFB03@us0exc08.us.sonicwall.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ <1469177141.2405.137.camel@gmail.com>
+In-Reply-To: <1469177141.2405.137.camel@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +29,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2016-07-21 at 02:07 +0000, Iosif Harutyunov wrote:
-> While implementing udev rules for UBI device I ran into the problem
-> when udev would
-> ignore UBI rules I created to process attachment of volume.
-> Interestingly, when I trigger
-> udev ubi subsystem "change" event manually after the attachment,
-> rules would work just fine.
-> 
-> I traced problem down to UBI sysfs processing, which turned out to be
-> racing condition.
-> See patch below to address the problem.
-> 
-> Thanks.
-> Iosif,_
-> 
-> Signed-off-by: Iosif Harutyunov <iharutyunov@sonicwall.com>
-> ---
-> Once ubi is attached, make sure ubi_devices[] is initialized early
-> before being
-> used in the dev_attribute_show().
-> 
-> This is to prevent race condition between udev ubi rules processing
-> and ubi device
-> creation, which manifests itself ignoring udev ATTR rules.
-
-Good catch!
-
-Quick feedback: this patch will probably work fine, we could apply the
-following logic and select a better place for that line of code. Here
-it is:
-
-1. Initialize the device, make it usable. Do not make it available to
-anyone before that. This is the code before the 'uif_init()'
-invocation. BTW, "uif" means "user interfaces" in this case.
-
-2. Make the device "available" (or "visible") by adding it to the
-'ubi_devices' array.
-
-3. Initialize user interfaces, done by 'uif_init()'.
-
-IOW, it put that line just before 'uif_init()'.
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBPbiBUaHUsIDIwMTYtMDctMjEgYXQgMDI6
+MDcgKzAwMDAsIElvc2lmIEhhcnV0eXVub3Ygd3JvdGU6DQo+ID4gV2hpbGUgaW1wbGVtZW50aW5n
+IHVkZXYgcnVsZXMgZm9yIFVCSSBkZXZpY2UgSSByYW4gaW50byB0aGUgcHJvYmxlbQ0KPiA+IHdo
+ZW4gdWRldiB3b3VsZCBpZ25vcmUgVUJJIHJ1bGVzIEkgY3JlYXRlZCB0byBwcm9jZXNzIGF0dGFj
+aG1lbnQgb2YNCj4gPiB2b2x1bWUuDQo+ID4gSW50ZXJlc3RpbmdseSwgd2hlbiBJIHRyaWdnZXIN
+Cj4gPiB1ZGV2IHViaSBzdWJzeXN0ZW0gImNoYW5nZSIgZXZlbnQgbWFudWFsbHkgYWZ0ZXIgdGhl
+IGF0dGFjaG1lbnQsIHJ1bGVzDQo+ID4gd291bGQgd29yayBqdXN0IGZpbmUuDQo+ID4NCj4gPiBJ
+IHRyYWNlZCBwcm9ibGVtIGRvd24gdG8gVUJJIHN5c2ZzIHByb2Nlc3NpbmcsIHdoaWNoIHR1cm5l
+ZCBvdXQgdG8gYmUNCj4gPiByYWNpbmcgY29uZGl0aW9uLg0KPiA+IFNlZSBwYXRjaCBiZWxvdyB0
+byBhZGRyZXNzIHRoZSBwcm9ibGVtLg0KPiA+DQo+ID4gVGhhbmtzLg0KPiA+IElvc2lmLF8NCj4g
+Pg0KPiA+IFNpZ25lZC1vZmYtYnk6IElvc2lmIEhhcnV0eXVub3YgPGloYXJ1dHl1bm92QHNvbmlj
+d2FsbC5jb20+DQo+ID4gLS0tDQo+ID4gT25jZSB1YmkgaXMgYXR0YWNoZWQsIG1ha2Ugc3VyZSB1
+YmlfZGV2aWNlc1tdIGlzIGluaXRpYWxpemVkIGVhcmx5DQo+ID4gYmVmb3JlIGJlaW5nIHVzZWQg
+aW4gdGhlIGRldl9hdHRyaWJ1dGVfc2hvdygpLg0KPiA+DQo+ID4gVGhpcyBpcyB0byBwcmV2ZW50
+IHJhY2UgY29uZGl0aW9uIGJldHdlZW4gdWRldiB1YmkgcnVsZXMgcHJvY2Vzc2luZw0KPiA+IGFu
+ZCB1YmkgZGV2aWNlIGNyZWF0aW9uLCB3aGljaCBtYW5pZmVzdHMgaXRzZWxmIGlnbm9yaW5nIHVk
+ZXYgQVRUUg0KPiA+IHJ1bGVzLg0KPiANCj4gR29vZCBjYXRjaCENCj4gDQo+IFF1aWNrIGZlZWRi
+YWNrOiB0aGlzIHBhdGNoIHdpbGwgcHJvYmFibHkgd29yayBmaW5lLCB3ZSBjb3VsZCBhcHBseSB0
+aGUNCj4gZm9sbG93aW5nIGxvZ2ljIGFuZCBzZWxlY3QgYSBiZXR0ZXIgcGxhY2UgZm9yIHRoYXQg
+bGluZSBvZiBjb2RlLiBIZXJlIGl0IGlzOg0KPiANCj4gMS4gSW5pdGlhbGl6ZSB0aGUgZGV2aWNl
+LCBtYWtlIGl0IHVzYWJsZS4gRG8gbm90IG1ha2UgaXQgYXZhaWxhYmxlIHRvIGFueW9uZQ0KPiBi
+ZWZvcmUgdGhhdC4gVGhpcyBpcyB0aGUgY29kZSBiZWZvcmUgdGhlICd1aWZfaW5pdCgpJw0KPiBp
+bnZvY2F0aW9uLiBCVFcsICJ1aWYiIG1lYW5zICJ1c2VyIGludGVyZmFjZXMiIGluIHRoaXMgY2Fz
+ZS4NCj4gDQo+IDIuIE1ha2UgdGhlIGRldmljZSAiYXZhaWxhYmxlIiAob3IgInZpc2libGUiKSBi
+eSBhZGRpbmcgaXQgdG8gdGhlICd1YmlfZGV2aWNlcycNCj4gYXJyYXkuDQo+IA0KPiAzLiBJbml0
+aWFsaXplIHVzZXIgaW50ZXJmYWNlcywgZG9uZSBieSAndWlmX2luaXQoKScuDQo+IA0KPiBJT1cs
+IGl0IHB1dCB0aGF0IGxpbmUganVzdCBiZWZvcmUgJ3VpZl9pbml0KCknLg0KDQpTb3VuZHMgZ29v
+ZC4gVGhhbmtzIGZvciBmZWVkYmFjay4gSSBoYXZlIHJldmlzZWQgcGF0Y2ggYmFzZWQgb24geW91
+ciBhbmQNClJpY2hhcmQncyBpbnB1dC4gUGxlYXNlIGZpbmQgaXQgYmVsb3cuDQoNClJlZ2FyZHMu
+DQpJb3NpZixfDQoNClNpZ25lZC1vZmYtYnk6IElvc2lmIEhhcnV0eXVub3YgPGloYXJ1dHl1bm92
+QHNvbmljd2FsbC5jb20+DQotLS0NCkZpeCByYWNlIGNvbmRpdGlvbiBiZXR3ZWVuIHViaSBkZXZp
+Y2UgYW5kIHVkZXY6IG1ha2Ugc3VyZSB1YmlfZGV2aWNlc1tdDQppcyBpbml0aWFsaXplZCBiZWZv
+cmUgZGV2aWNlIGJlY29tZXMgYWNjZXNzaWJsZSB0byB1c2VycyB2aWEgc3lzZnMuDQotLS0NCmRy
+aXZlcnMvbXRkL3ViaS9idWlsZC5jIHwgICAgNSArKysrLQ0KIDEgZmlsZXMgY2hhbmdlZCwgNCBp
+bnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
+dWJpL2J1aWxkLmMgYi9kcml2ZXJzL210ZC91YmkvYnVpbGQuYw0KaW5kZXggZWYzNjE4Mi4uNWQ1
+MjRhMCAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jDQorKysgYi9kcml2ZXJz
+L210ZC91YmkvYnVpbGQuYw0KQEAgLTk5Miw2ICs5OTIsOSBAQCBpbnQgdWJpX2F0dGFjaF9tdGRf
+ZGV2KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgdWJpX251bSwNCiAgICAgICAgICAgICAgICAg
+ICAgICAgIGdvdG8gb3V0X2RldGFjaDsNCiAgICAgICAgfQ0KIA0KKyAgICAgICAvKiBNYWtlIGRl
+dmljZSAiYXZhaWxhYmxlIiBiZWZvcmUgaXQgYmVjb21lcyBhY2Nlc3NpYmxlIHZpYSBzeXNmcyAq
+Lw0KKyAgICAgICB1YmlfZGV2aWNlc1t1YmlfbnVtXSA9IHViaTsNCisNCiAgICAgICAgZXJyID0g
+dWlmX2luaXQodWJpLCAmcmVmKTsNCiAgICAgICAgaWYgKGVycikNCiAgICAgICAgICAgICAgICBn
+b3RvIG91dF9kZXRhY2g7DQpAQCAtMTAzNiw3ICsxMDM5LDYgQEAgaW50IHViaV9hdHRhY2hfbXRk
+X2RldihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IHViaV9udW0sDQogICAgICAgIHdha2VfdXBf
+cHJvY2Vzcyh1YmktPmJndF90aHJlYWQpOw0KICAgICAgICBzcGluX3VubG9jaygmdWJpLT53bF9s
+b2NrKTsNCiANCi0gICAgICAgdWJpX2RldmljZXNbdWJpX251bV0gPSB1Ymk7DQogICAgICAgIHVi
+aV9ub3RpZnlfYWxsKHViaSwgVUJJX1ZPTFVNRV9BRERFRCwgTlVMTCk7DQogICAgICAgIHJldHVy
+biB1YmlfbnVtOw0KIA0KQEAgLTEwNDcsNiArMTA0OSw3IEBAIG91dF91aWY6DQogICAgICAgIHVi
+aV9hc3NlcnQocmVmKTsNCiAgICAgICAgdWlmX2Nsb3NlKHViaSk7DQogb3V0X2RldGFjaDoNCisg
+ICAgICAgdWJpX2RldmljZXNbdWJpX251bV0gPSBOVUxMOw0KICAgICAgICB1Ymlfd2xfY2xvc2Uo
+dWJpKTsNCiAgICAgICAgdWJpX2ZyZWVfaW50ZXJuYWxfdm9sdW1lcyh1YmkpOw0KICAgICAgICB2
+ZnJlZSh1YmktPnZ0YmwpOw0KLS0NCjEuNy43LjYNCg0K
