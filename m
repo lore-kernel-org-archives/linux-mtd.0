@@ -1,22 +1,14 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bRfCb-00082A-8h
- for linux-mtd@lists.infradead.org; Mon, 25 Jul 2016 12:41:46 +0000
-Date: Mon, 25 Jul 2016 14:41:22 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, "George Spelvin" <linux@sciencehorizons.net>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] mtd: add support for pairing scheme description
-Message-ID: <20160725144122.3bec34aa@bbrezillon>
-In-Reply-To: <1466430618-9713-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1466430618-9713-1-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1bRhQ5-0006vz-ER
+ for linux-mtd@lists.infradead.org; Mon, 25 Jul 2016 15:03:50 +0000
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Cc: richard@nod.at,
+	computersforpeace@gmail.com
+Subject: mtd-utils: Swtich to autotools based build system
+Date: Mon, 25 Jul 2016 17:02:29 +0200
+Message-Id: <20160725150234.5276-1-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,78 +18,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian, Georges,
+This patch series is based on Richards RFC to replace the hand
+written Makefiles with an autoconf/automake based build system
+to gain all the advantages of having an _actual_ build system
+that is high level, widely used, well known and mature/stable.
 
-It's already too late for 4.8, but I'd like to get this sorted out
-quickly, so I can apply the patches on my nand/next branch and get it
-tested in linux-next.
+Switching to the GNU buildsystem should make it a lot easier for
+people to [cross] compile the mtd-utils and integrating them into
+existing, automated [cross] build toolchains, as the autotools are
+very widely used/known, effectively representing a pseudo-standard
+that people are familiar with and that a lot of tools have been
+adapted to.
 
-Note that there's nothing risky in there: we're only introducing a
-new in-kernel API that is not used yet, so even if we get it wrong
-we'll be able to fix it without impacting MTD users.
+The GNU build system also had a few more decades time and a _lot_
+more testing to mature in regards to cross compilation setups and
+toolchains than the previous mtd-utils build system that would have
+to be further supported and maintained in its entirety.
 
-Meanwhile, we'll be able to rebase our UBI/MLC work on top of these
-changes, and let people test more easily (only a single series to
-apply instead of 2).
+The proposed autotools based build system should also be easier to
+maintain than a hurdle of makefiles. The automake files are more
+high level and only contain a list of input files for each program.
+Generating the makefiles with precise dependencies and build steps
+is done by the build system.
 
-To sum-up, can you review this v2 and let me know if you see other
-things to fix.
-
-Thanks,
-
-Boris
-
-On Mon, 20 Jun 2016 15:50:15 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> Hi,
-> 
-> This series is the first step towards reliable MLC/TLC NAND support.
-> Those patches allows the NAND layer to expose page pairing information
-> to MTD users.
-> The plan is to teach UBI about those constraints and let UBI code take
-> the appropriate precautions when dealing with those multi-level cells
-> NANDs. The way we'll handle this "paired pages" constraint will be
-> described soon in a series adapting the UBI layer, so stay tune ;).
-> 
-> Note that this implementation only allows page pairing scheme description
-> when the NAND has a full-id entry in the nand_ids table.
-> This should be addressed in some way for ONFI and JEDEC NANDs, though
-> I'm not sure how to handle this yet.
-> 
-> Brian, I tried document a bit more the structures and helpers added in
-> the first patch, but I'm not sure my descriptions are understandable.
-> 
-> Georges, I took most of your suggestions into account, except for the
-> struct mtd_pairing_info to unsigned int migration. I'm really unsure
-> we need this level of optimization right now, and that's still
-> something we'll be able to change afterwards (I don't expect to see a
-> lot of users for this API).
-> 
-> Best Regards,
-> 
-> Boris
-> 
-> Changes since v1:
-> - document the paring scheme concepts and the associate structures and
->   helpers
-> - rework the dist3 and dist6 implementation according to George
->   comments
-> - introduce the mtd_set_pairing_scheme() helper to avoid directly
->   manipulating the mtd->pairing field
-> - drop the patch assigning dist6 pairing scheme to the H27UCG8T2ATR
->   NAND (in the light of George comment I'm not longer sure this scheme
->   is suitable for this NAND, and I can't test it)
-> 
-> Boris Brezillon (3):
->   mtd: introduce the mtd_pairing_scheme concept
->   mtd: nand: implement two pairing scheme
->   mtd: nand: add a pairing field to nand_flash_dev
-> 
->  drivers/mtd/mtdcore.c        |  94 ++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/mtdpart.c        |   1 +
->  drivers/mtd/nand/nand_base.c |  98 +++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/mtd.h      | 106 +++++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/nand.h     |   5 ++
->  5 files changed, 304 insertions(+)
-> 
+Furthermore, files like the test scripts can fairly easily be
+processed with autoconf at compile time to (for instance) replace
+file locations with the actual path where a program is configured
+to be installed.
