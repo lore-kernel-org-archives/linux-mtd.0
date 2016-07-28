@@ -1,18 +1,18 @@
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from mail-ve1eur01on0111.outbound.protection.outlook.com
+ ([104.47.1.111] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bSZt4-0002m9-6L
- for linux-mtd@lists.infradead.org; Thu, 28 Jul 2016 01:13:22 +0000
-Received: by mail-wm0-x230.google.com with SMTP id q128so232399762wma.1
- for <linux-mtd@lists.infradead.org>; Wed, 27 Jul 2016 18:13:01 -0700 (PDT)
-MIME-Version: 1.0
-From: Alison Chaiken <alison@peloton-tech.com>
-Date: Wed, 27 Jul 2016 18:12:59 -0700
-Message-ID: <CAOuSAjewVko+eLcYutzFgsarCPBsWS_AbwLnTmo-hAW9HYVPzg@mail.gmail.com>
-Subject: 4KB LEB's on QSPI and ubifs
-To: beanhuo@micron.com, linux-mtd@lists.infradead.org
-Cc: bsistani@micron.com, John.Parker@lucyautomation.co.uk
-Content-Type: text/plain; charset=UTF-8
+ id 1bSexH-0007WF-ED
+ for linux-mtd@lists.infradead.org; Thu, 28 Jul 2016 06:38:04 +0000
+From: "Zhou, John (Nokia - CN/Hangzhou)" <john.zhou@nokia.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: how to create one ubifs image support both for different page size
+ and sector size?
+Date: Thu, 28 Jul 2016 06:37:37 +0000
+Message-ID: <DB4PR07MB062499D49F50F0923E2DE33BF2000@DB4PR07MB0624.eurprd07.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm helping to bring up a board that contains a Micron n25q512ax3 Quad
-SPI-NOR.    As discussed previously at linux-mtd,
+Dear Experts
 
-               http://lists.infradead.org/pipermail/linux-mtd/2013-July/047=
-665.html
+I am facing a problem about one flash image support for both spansion and m=
+icron flash chip which has different page/sector size.
 
-ubifs won't work with the 4 kB erase sectors like those used by this
-chip, as it fails with
+What means if I create the flash image from spansion chip , it can't be use=
+d on micron chip, vice versa.
 
-              UBIFS error (ubi0:0 pid 3289): init_constants_early: too
-small LEBs (3968 bytes), min. is 15360 bytes
+Do you know how to solve this problem?
 
-We are using a 4.1 PREEMPT_RT_FULL kernel, but as far as I can tell,
-the relevant code in spi-nor.c and ubifs/super.c is unchanged in
-recent 4.7.    Therefore, with SECT_4K  as a configuration for this
-device, ubifs still will not work.
+Many thanks for your help!
 
-What is the best alternative?
-
-0. Create a UBI volume, but mount a different kind of flash filesystem
-on it.   Perhaps a different filesystem is a better choice for QSPI?
-ubiattach and ubimkvol work fine with the device.  Our use case
-involves a set of files that will likely only ever be written at
-system installation time.
-
-1. Remove SECT_4K from the entry in spi_nor_ids[] for the device and
-use ubifs.   As I understand 548cd3a "mtd: spi-nor: Add quad I/O
-support for Micron SPI NOR" that added SECT_4K, this removal will make
-the device slower, but not otherwise cause problems.    The device's
-datasheet reads,
-
-                =E2=80=93 Subsector erase 4KB uniform granularity blocks
-                =E2=80=93 Sector erase 64KB uniform granularity blocks
-
-which suggests that removing SECT_4K from spi_nor_ids[] will result in
-64KB sector erase blocks rather than 4KB subsector ones that ubiattach
-detects now.
-
-2. Something else entirely?
-
-Thanks for your suggestions,
-Alison Chaiken
-Peloton Technology
+Brs
+John
