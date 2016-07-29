@@ -1,9 +1,9 @@
 Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bTG2r-0006f9-7d
- for linux-mtd@lists.infradead.org; Fri, 29 Jul 2016 22:14:18 +0000
-Received: by mail-pf0-x244.google.com with SMTP id h186so6041161pfg.2
- for <linux-mtd@lists.infradead.org>; Fri, 29 Jul 2016 15:13:57 -0700 (PDT)
+ id 1bTG2r-0006g9-7F
+ for linux-mtd@lists.infradead.org; Fri, 29 Jul 2016 22:14:19 +0000
+Received: by mail-pf0-x244.google.com with SMTP id y134so6058934pfg.3
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Jul 2016 15:14:01 -0700 (PDT)
 From: Kamal Dasu <kdasu.kdev@gmail.com>
 To: broonie@kernel.org, linux-spi@vger.kernel.org,
  linux-mtd@lists.infradead.org, vigneshr@ti.com, f.fainelli@gmail.com
@@ -11,9 +11,9 @@ Cc: bcm-kernel-feedback-list@broadcom.com, vikram.prakash@broadcom.com,
  andy.fung@broadcom.com, jon.mason@broadcom.com, jchandra@broadcom.com,
  Kamal Dasu <kdasu.kdev@gmail.com>,
  Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
-Subject: [PATCH v5 6/8] arm: dts: Add bcm-nsp and bcm958625k support
-Date: Fri, 29 Jul 2016 18:13:11 -0400
-Message-Id: <1469830393-13295-7-git-send-email-kdasu.kdev@gmail.com>
+Subject: [PATCH v5 7/8] arm64: dts: Add ns2 SoC support
+Date: Fri, 29 Jul 2016 18:13:12 -0400
+Message-Id: <1469830393-13295-8-git-send-email-kdasu.kdev@gmail.com>
 In-Reply-To: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
 References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,75 +26,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Adding qspi node compatible with the new spi-bcm-qspi
-driver for the broadcom's northstar SoC.
+driver for the broadcom's northstar2 SoC.
 
 Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 Signed-off-by: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
 ---
- arch/arm/boot/dts/bcm-nsp.dtsi   | 33 +++++++++++++++++++++++++++++----
- arch/arm/boot/dts/bcm958625k.dts | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/broadcom/ns2-svk.dts | 34 ++++++++++++++++++++++++++++----
+ arch/arm64/boot/dts/broadcom/ns2.dtsi    | 19 ++++++++++++++++++
+ 2 files changed, 49 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
-index 6a40ed7..26c863e 100644
---- a/arch/arm/boot/dts/bcm-nsp.dtsi
-+++ b/arch/arm/boot/dts/bcm-nsp.dtsi
-@@ -160,7 +160,7 @@
- 
- 	axi {
- 		compatible = "simple-bus";
--		ranges = <0x00000000 0x18000000 0x0011ba08>;
-+		ranges = <0x00000000 0x18000000 0x0011c40a>;
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 
-@@ -206,9 +206,34 @@
- 			brcm,nand-has-wp;
- 		};
- 
--		rng: rng@33000 {
--			compatible = "brcm,bcm-nsp-rng";
--			reg = <0x33000 0x14>;
-+		qspi: qspi@27200 {
-+			compatible = "brcm,spi-bcm-qspi";
-+			reg = <0x027200 0x184>,
-+			      <0x027000 0x124>,
-+			      <0x11c408 0x004>,
-+			      <0x0273a0 0x01c>;
-+			reg-names = "mspi", "bspi", "intr_regs",
-+				    "intr_status_reg";
-+			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "spi_lr_fullness_reached",
-+					  "spi_lr_session_aborted",
-+					  "spi_lr_impatient",
-+					  "spi_lr_session_done",
-+					  "spi_lr_overhead",
-+					  "mspi_done",
-+					  "mspi_halted";
-+			clocks = <&iprocmed>;
-+			clock-names = "iprocmed";
-+			clock-frequency = <12500000>;
-+			num-cs = <2>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
- 		};
- 
- 		ccbtimer0: timer@34000 {
-diff --git a/arch/arm/boot/dts/bcm958625k.dts b/arch/arm/boot/dts/bcm958625k.dts
-index 2d84226..ab7ba8f 100644
---- a/arch/arm/boot/dts/bcm958625k.dts
-+++ b/arch/arm/boot/dts/bcm958625k.dts
-@@ -126,3 +126,37 @@
- 		groups = "nand_grp";
+diff --git a/arch/arm64/boot/dts/broadcom/ns2-svk.dts b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
+index ea5603f..a40d3f5 100644
+--- a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
++++ b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
+@@ -141,10 +141,36 @@
  	};
  };
-+
+ 
+-&mdio_mux_iproc {
+-	mdio@10 {
+-		gphy0: eth-phy@10 {
+-			reg = <0x10>;
 +&qspi {
 +	bspi-sel = <0>;
 +	flash: m25p80@0 {
@@ -125,8 +77,37 @@ index 2d84226..ab7ba8f 100644
 +		partition@3 {
 +			label = "rootfs";
 +			reg = <0x00700000 0x01900000>;
+ 		};
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/broadcom/ns2.dtsi b/arch/arm64/boot/dts/broadcom/ns2.dtsi
+index 46b78fa..efc5d50 100644
+--- a/arch/arm64/boot/dts/broadcom/ns2.dtsi
++++ b/arch/arm64/boot/dts/broadcom/ns2.dtsi
+@@ -438,5 +438,24 @@
+ 
+ 			brcm,nand-has-wp;
+ 		};
++
++		qspi: spi@66470200 {
++			compatible = "brcm,spi-bcm-qspi";
++			reg = <0x66470200 0x184>,
++				<0x66470000 0x124>,
++				<0x67017408 0x004>,
++				<0x664703a0 0x01c>;
++			reg-names = "mspi", "bspi", "intr_regs",
++				"intr_status_reg";
++			interrupts = <GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "spi_l1_intr";
++			clocks = <&iprocmed>;
++			clock-names = "iprocmed";
++			clock-frequency = <12500000>;
++			num-cs = <2>;
++			#address-cells = <1>;
++			#size-cells = <0>;
 +		};
-+	};
-+};
++
+ 	};
+ };
 -- 
 1.9.1
