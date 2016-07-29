@@ -1,24 +1,18 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bTCTC-0004XC-1q
- for linux-mtd@lists.infradead.org; Fri, 29 Jul 2016 18:25:14 +0000
-Received: by mail-pf0-x244.google.com with SMTP id y134so5829385pfg.3
- for <linux-mtd@lists.infradead.org>; Fri, 29 Jul 2016 11:24:53 -0700 (PDT)
-Date: Fri, 29 Jul 2016 11:24:49 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Rajeev Kumar <rajeev_kumar@mentor.com>, dwmw2@infradead.org,
- dedekind1@gmail.com, linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] ubi: attach: do not return -EINVAL if the
- mtd->numeraseregions is 1
-Message-ID: <20160729182449.GA124841@google.com>
-References: <1469440019-29358-1-git-send-email-rajeev_kumar@mentor.com>
- <1469440019-29358-2-git-send-email-rajeev_kumar@mentor.com>
- <5795EA8B.2040209@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5795EA8B.2040209@nod.at>
+ id 1bTG1Z-0006F8-Me
+ for linux-mtd@lists.infradead.org; Fri, 29 Jul 2016 22:12:58 +0000
+Received: by mail-pa0-x22e.google.com with SMTP id pp5so34626342pac.3
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Jul 2016 15:12:36 -0700 (PDT)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: broonie@kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, vigneshr@ti.com, f.fainelli@gmail.com
+Cc: bcm-kernel-feedback-list@broadcom.com, vikram.prakash@broadcom.com,
+ andy.fung@broadcom.com, jon.mason@broadcom.com, jchandra@broadcom.com,
+ Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH v5 0/8]  Broadcom stb, nsp, ns2, cygnus QSPI driver
+Date: Fri, 29 Jul 2016 18:12:13 -0400
+Message-Id: <1469830341-13244-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,68 +22,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Artem, any opinions, since you had the most opinion last time this came
-up?)
+This is V5 changes for common spi driver for the brcmstb, nsp, ns2, cygnus
+SoCs. Changes include driver for  standard MSPI and accelerated BSPI blocks.
+The Brodcom STB uses l2-intc where as the SoC specific interrupt handling
+code has been separated in a new  driver. In case of NS and NS2 SoCs it does
+not have a dedicated l2 controller and the interrupts are specific to the 
+spi core. The drivers are organized in the follwoing way:
+ 
+ drivers/spi/spi-bcm-qspi.c      - Common MSPI, BSPI driver
 
-On Mon, Jul 25, 2016 at 12:31:39PM +0200, Richard Weinberger wrote:
-> Am 25.07.2016 um 11:46 schrieb Rajeev Kumar:
-> > If the master mtd does not have any slave mtd partitions,
-> > and its numeraseregions is one(only has one erease block), and
-> > we attach the master mtd with : ubiattach -m 0 -d 0
-> > 
-> > We will meet the error:
-> > -------------------------------------------------------
-> > root ~$ ubiattach /dev/ubi_ctrl -m 0 -d 0
-> > UBI: attaching mtd0 to ubi0
-> > UBI error: io_init: multiple regions, not implemented
-> > ubiattach: error!: cannot attach mtd0
-> >            error 22 (Invalid argument)
-> > -------------------------------------------------------
-> > 
-> > In fact, if there is only one "erase block", we should not
-> > prevent the attach.
-> > 
-> > This patch is tested against 3.14 kernel and only build test is
-> > performed against current upstream master branch.
-> 
-> The more interesting question is, why is ->numeraseregions not 0?
-> 
-> The comment in the header says:
->         /* Data for variable erase regions. If numeraseregions is zero,
->          * it means that the whole device has erasesize as given above.
->          */
-> 
-> So, if your MTD erase regions with the same size, it should be 0.
-> 
-> IIRC we had such a discussion already on linux-mtd and it was not clear
-> whether numeraseregions of 0 and 1 are equal or not.
+ drivers/spi/spi-bcm-qspi.h      - Common header 
 
-I think 0 and 1 are essentially equal. But there's some potential room
-for error (e.g., if the driver doesn't configure mtd->erasesize ==
-mtd->eraseregions[0].erasesize, and similar). Also, I see some
-problematic code like this in cfi_cmdset_0001.c:
+ drivers/spi/spi-brcmstb-qspi.c  - SoC specific wth brcm,spi-brcmstb-qspi 
+                                   compatibility, does not have anything 
+                                   specific for stb SoC
 
-	mtd->numeraseregions = cfi->cfiq->NumEraseRegions * cfi->numchips;
+ drivers/spi/spi-nsp-qspi.c      - Implements the interrupt hooks used by 
+                                   the common driver with "brcm,spi-nsp-qspi"
+                                   compatibility
+Changes in V5:
+ - Added additional description in the binding documentation non MSPI and BSPI SoC IP
+ - Split commits for MSPI spi driver and accelarated BSPI driver used for accelerated
+   flash reads
+ - Removed any parsing of transfer structures for commands
+ - Other code cleanup for readability
+ - Kept the interrupt handling code in separate driver, since hardware abstraction and l2
+   controller driver in software do not exisit certain SoCs
 
-So, if there are two chips, but both have a single erase region, with
-the same erasesize, we'll still end up with ->numeraseregions == 2. We
-can't hack all MTD users to start searching the eraseregions[] array to
-see if the device is actually uniform, even if it reports
-numeraseregions > 0.
+Kamal Dasu (8):
+  Documentation: dt: spi: Add BRCMSTB SoC bindings
+  spi: bcm-qspi: Add Broadcom MSPI driver
+  spi: bcm-qspi: Add BSPI spi-nor flash controller driver
+  mtd: m25p80: Let m25p80_read() fallback to spi transfer
+  Documentation: dt: spi: Add Broadcom NSP, NS2 SoC bindings
+  arm: dts: Add bcm-nsp and bcm958625k support
+  arm64: dts: Add ns2 SoC support
+  spi: nsp-qspi: Add Broadcom NSP, NS2, Cygnus SoC support
 
-I'm inclined, then, to outlaw numeraseregions == 1 (to make it simpler for MTD
-users to handle), and put code either in drivers or in mtdcore.c to be slightly
-more intelligent (e.g., if the driver left numeraseregions == 1, then just do
-some sanity checking and re-set numeraseregions to 0). It might be good to move
-code like this from cfi_cmdset_0001.c into mtdcore.c at the same time too:
+ .../devicetree/bindings/spi/brcm,spi-bcm-qspi.txt  |  235 ++++
+ arch/arm/boot/dts/bcm-nsp.dtsi                     |   33 +-
+ arch/arm/boot/dts/bcm958625k.dts                   |   34 +
+ arch/arm64/boot/dts/broadcom/ns2-svk.dts           |   34 +-
+ arch/arm64/boot/dts/broadcom/ns2.dtsi              |   19 +
+ drivers/mtd/devices/m25p80.c                       |    7 +-
+ drivers/spi/Kconfig                                |   10 +
+ drivers/spi/Makefile                               |    1 +
+ drivers/spi/spi-bcm-qspi.c                         | 1440 ++++++++++++++++++++
+ drivers/spi/spi-bcm-qspi.h                         |  112 ++
+ drivers/spi/spi-brcmstb-qspi.c                     |   53 +
+ drivers/spi/spi-nsp-qspi.c                         |  158 +++
+ 12 files changed, 2126 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt
+ create mode 100644 drivers/spi/spi-bcm-qspi.c
+ create mode 100644 drivers/spi/spi-bcm-qspi.h
+ create mode 100644 drivers/spi/spi-brcmstb-qspi.c
+ create mode 100644 drivers/spi/spi-nsp-qspi.c
 
-	if (offset != devsize) {
-		/* Argh */
-		printk(KERN_WARNING "Sum of regions (%lx) != total size of set of interleaved chips (%lx)\n", offset, devsize);
-		goto setup_err;
-	}
-
-BTW, Rajeev, what devices are you testing? Just curious.
-
-Regards,
-Brian
+-- 
+1.9.1
