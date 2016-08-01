@@ -1,23 +1,27 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUEdI-0007Zp-1l
- for linux-mtd@lists.infradead.org; Mon, 01 Aug 2016 14:56:00 +0000
-Subject: Re: mtd-utils: Swtich to autotools based build system
-To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-References: <20160725150234.5276-1-david.oberhollenzer@sigma-star.at>
- <579A737A.6090308@nod.at>
-Cc: computersforpeace@gmail.com,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- gustavo@zacarias.com.ar, otavio@debian.org, riku.voipio@linaro.org,
- pascal.bleser@opensuse.org, mpluskal@suse.com,
- David Woodhouse <dwmw2@infradead.org>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <392235d6-4615-d8e6-c5d7-be7207cb53e4@sigma-star.at>
-Date: Mon, 1 Aug 2016 16:55:00 +0200
+Received: from mail-vk0-x241.google.com ([2607:f8b0:400c:c05::241])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bUEr1-0005Nz-V3
+ for linux-mtd@lists.infradead.org; Mon, 01 Aug 2016 15:10:09 +0000
+Received: by mail-vk0-x241.google.com with SMTP id r135so5833607vkf.3
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Aug 2016 08:09:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <579A737A.6090308@nod.at>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1469830393-13295-7-git-send-email-kdasu.kdev@gmail.com>
+References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
+ <1469830393-13295-7-git-send-email-kdasu.kdev@gmail.com>
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Mon, 1 Aug 2016 17:09:26 +0200
+Message-ID: <CAOiHx=n8a64d-2LGGFHuyBQBg3Cz=ALVXEbvPRHxTyzFjWRMXA@mail.gmail.com>
+Subject: Re: [PATCH v5 6/8] arm: dts: Add bcm-nsp and bcm958625k support
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ MTD Maling List <linux-mtd@lists.infradead.org>, vigneshr@ti.com,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ vikram.prakash@broadcom.com,
+ andy.fung@broadcom.com, jon.mason@broadcom.com,
+ Jayachandran C <jchandra@broadcom.com>,
+ Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +31,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/28/2016 11:04 PM, Richard Weinberger wrote:
-> You can find the whole series on:
-> https://github.com/sigma-star/mtd-utils.git autoconf_25072016
-> 
+Hi,
 
-Unfortunately, the branch that this URL points to, has a slightly older version
-of my patch series applied, i.e. not the one I sent to the mailinglist.
+On 30 July 2016 at 00:13, Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+> Adding qspi node compatible with the new spi-bcm-qspi
+> driver for the broadcom's northstar SoC.
+>
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Signed-off-by: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
+> ---
+>  arch/arm/boot/dts/bcm-nsp.dtsi   | 33 +++++++++++++++++++++++++++++----
+>  arch/arm/boot/dts/bcm958625k.dts | 34 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 63 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
+> index 6a40ed7..26c863e 100644
+> --- a/arch/arm/boot/dts/bcm-nsp.dtsi
+> +++ b/arch/arm/boot/dts/bcm-nsp.dtsi
+> @@ -160,7 +160,7 @@
+>
+>         axi {
+>                 compatible = "simple-bus";
+> -               ranges = <0x00000000 0x18000000 0x0011ba08>;
+> +               ranges = <0x00000000 0x18000000 0x0011c40a>;
+>                 #address-cells = <1>;
+>                 #size-cells = <1>;
+>
+> @@ -206,9 +206,34 @@
+>                         brcm,nand-has-wp;
+>                 };
+>
+> -               rng: rng@33000 {
+> -                       compatible = "brcm,bcm-nsp-rng";
+> -                       reg = <0x33000 0x14>;
 
-I pushed the current patchset to the branch autoconf_01082016
+You remove the rng node, is this intentional?
+
+> +               qspi: qspi@27200 {
+> +                       compatible = "brcm,spi-bcm-qspi";
+> +                       reg = <0x027200 0x184>,
+> +                             <0x027000 0x124>,
+> +                             <0x11c408 0x004>,
+> +                             <0x0273a0 0x01c>;
+> +                       reg-names = "mspi", "bspi", "intr_regs",
+> +                                   "intr_status_reg";
+> +                       interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
+> +                       interrupt-names = "spi_lr_fullness_reached",
+> +                                         "spi_lr_session_aborted",
+> +                                         "spi_lr_impatient",
+> +                                         "spi_lr_session_done",
+> +                                         "spi_lr_overhead",
+> +                                         "mspi_done",
+> +                                         "mspi_halted";
+> +                       clocks = <&iprocmed>;
+> +                       clock-names = "iprocmed";
+> +                       clock-frequency = <12500000>;
+> +                       num-cs = <2>;
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+>                 };
+>
+>                 ccbtimer0: timer@34000 {
+> diff --git a/arch/arm/boot/dts/bcm958625k.dts b/arch/arm/boot/dts/bcm958625k.dts
+> index 2d84226..ab7ba8f 100644
+> --- a/arch/arm/boot/dts/bcm958625k.dts
+> +++ b/arch/arm/boot/dts/bcm958625k.dts
+> @@ -126,3 +126,37 @@
+>                 groups = "nand_grp";
+>         };
+>  };
+> +
+> +&qspi {
+> +       bspi-sel = <0>;
+> +       flash: m25p80@0 {
+> +               #address-cells = <1>;
+> +               #size-cells = <1>;
+> +               compatible = "m25p80";
+> +               reg = <0x0>;
+> +               spi-max-frequency = <12500000>;
+> +               m25p,fast-read;
+> +               spi-cpol;
+> +               spi-cpha;
+> +
+> +               partition@0 {
+> +                       label = "boot";
+> +                       reg = <0x00000000 0x000a0000>;
+> +               };
+
+these should be enclosed by a partitions node with compatible
+"fixed-partitions", see
+Documentation/devicetree/bindings/mtd/partition.txt.
+
+> +
+> +               partition@1 {
+
+The address is 0xa0000 so this should be partition@a0000.
+
+> +                       label = "env";
+> +                       reg = <0x000a0000 0x00060000>;
+> +               };
+> +
+> +               partition@2 {
+
+likewise.
+
+> +                       label = "system";
+> +                       reg = <0x00100000 0x00600000>;
+> +               };
+> +
+> +               partition@3 {
+
+etc.
+
+> +                       label = "rootfs";
+> +                       reg = <0x00700000 0x01900000>;
+> +               };
+> +       };
+> +};
 
 
-I discovered this while doublechecking the automake files after I saw that there
-were files missing in the bundle generated by make dist (using the changes from
-this patch series). That would have to be fixed in a v2 of this patch series.
-
-
-David
+Regards
+Jonas
