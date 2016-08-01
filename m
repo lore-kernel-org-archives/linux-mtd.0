@@ -1,25 +1,23 @@
-Received: from mail-oi0-x22d.google.com ([2607:f8b0:4003:c06::22d])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bTy15-00087f-9L
- for linux-mtd@lists.infradead.org; Sun, 31 Jul 2016 21:11:24 +0000
-Received: by mail-oi0-x22d.google.com with SMTP id j185so169444713oih.0
- for <linux-mtd@lists.infradead.org>; Sun, 31 Jul 2016 14:11:02 -0700 (PDT)
+ id 1bU8xC-000654-MD
+ for linux-mtd@lists.infradead.org; Mon, 01 Aug 2016 08:52:07 +0000
+Received: by mail-wm0-x243.google.com with SMTP id q128so25211199wma.1
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Aug 2016 01:51:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvwhmTjXRMpPGBX6LO9f_7NrKsTXvSBQLcLFFWWh1h4rGA@mail.gmail.com>
-References: <C80AB6F618D91B4E8F391CB202C12DFD11218919BD@LGEVEXMBHQSVC1.LGE.NET>
- <CAFLxGvxRtxSSRL5VOEmy1udbnWBYcVf0JDVaMdca0Ww1HTK74w@mail.gmail.com>
- <C80AB6F618D91B4E8F391CB202C12DFD11218919C5@LGEVEXMBHQSVC1.LGE.NET>
- <CAFLxGvwhmTjXRMpPGBX6LO9f_7NrKsTXvSBQLcLFFWWh1h4rGA@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 31 Jul 2016 23:11:01 +0200
-Message-ID: <CAFLxGvwBnXmQ28NW4KsnhmaWZkNNARPL1MGOzJ5RBwLuKM+BXw@mail.gmail.com>
-Subject: Re: ubifs issue about ubifs_tnc_remove_ino when replay journal
-To: =?UTF-8?B?7J206rCA656ML+yjvOyehOyXsOq1rOybkOOAiVNXIFBsYXRmb3JtKOyXsClBT1TtjIAoa2FyYW0u?=
- =?UTF-8?B?bGVlQGxnZS5jb20p?= <karam.lee@lge.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?67CV7Iq57Zi4?= <seungho1.park@lge.com>
+In-Reply-To: <1469994143-13977-1-git-send-email-richard@nod.at>
+References: <1469994143-13977-1-git-send-email-richard@nod.at>
+From: =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date: Mon, 1 Aug 2016 10:51:44 +0200
+Message-ID: <CAHpGcMK9181WG9SzWYmPsh1ZdY-hMjga+4YG2D9sRS+7ywDp7A@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: Fix xattr generic handler usage
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, stable@vger.kernel.org,
+ Andreas Gruenbacher <agruenba@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 5, 2016 at 10:42 AM, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
-> On Sat, Jun 25, 2016 at 10:32 AM, =EC=9D=B4=EA=B0=80=EB=9E=8C/=EC=A3=BC=
-=EC=9E=84=EC=97=B0=EA=B5=AC=EC=9B=90=E3=80=89SW
-> Platform(=EC=97=B0)AOT=ED=8C=80(karam.lee@lge.com) <karam.lee@lge.com> wr=
-ote:
->> thank you!
->>
->> I do not use fastmap.
->> My ".config" is "# CONFIG_MTD_UBI_FASTMAP is not set"
+2016-07-31 21:42 GMT+02:00 Richard Weinberger <richard@nod.at>:
+> UBIFS uses full names to work with xattrs, therefore we have to use
+> xattr_full_name() to obtain the xattr prefix as string.
 >
-> Okay, good. This issue is still on my TODO.
-> Is is possible to share a nanddump with me?
+> Cc: <stable@vger.kernel.org>
+> Cc: Andreas Gruenbacher <agruenba@redhat.com>
+> Fixes: 2b88fc21ca ("ubifs: Switch to generic xattr handlers")
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+
+Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
+
+> ---
+>  fs/ubifs/xattr.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> I think I know what is going on, but I'm not sure.
-
-ping?
-
---=20
-Thanks,
-//richard
+> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+> index b5fc279..c63710f 100644
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -575,7 +575,8 @@ static int ubifs_xattr_get(const struct xattr_handler *handler,
+>         dbg_gen("xattr '%s', ino %lu ('%pd'), buf size %zd", name,
+>                 inode->i_ino, dentry, size);
+>
+> -       return  __ubifs_getxattr(inode, name, buffer, size);
+> +       name = xattr_full_name(handler, name);
+> +       return __ubifs_getxattr(inode, name, buffer, size);
+>  }
+>
+>  static int ubifs_xattr_set(const struct xattr_handler *handler,
+> @@ -586,6 +587,8 @@ static int ubifs_xattr_set(const struct xattr_handler *handler,
+>         dbg_gen("xattr '%s', host ino %lu ('%pd'), size %zd",
+>                 name, inode->i_ino, dentry, size);
+>
+> +       name = xattr_full_name(handler, name);
+> +
+>         if (value)
+>                 return __ubifs_setxattr(inode, name, value, size, flags);
+>         else
+> --
+> 2.7.3
+>
