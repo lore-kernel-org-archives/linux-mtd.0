@@ -1,23 +1,22 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bU8xC-000654-MD
- for linux-mtd@lists.infradead.org; Mon, 01 Aug 2016 08:52:07 +0000
-Received: by mail-wm0-x243.google.com with SMTP id q128so25211199wma.1
- for <linux-mtd@lists.infradead.org>; Mon, 01 Aug 2016 01:51:46 -0700 (PDT)
+Subject: Re: [PATCH 2/2] mtd: nand: omap2: Add check for old elm binding
+To: Brian Norris <computersforpeace@gmail.com>, Teresa Remmet
+ <t.remmet@phytec.de>
+References: <1467711150-23356-1-git-send-email-t.remmet@phytec.de>
+ <1467711150-23356-2-git-send-email-t.remmet@phytec.de>
+ <20160710005614.GB29572@localhost> <20160713171303.GA136972@google.com>
+CC: <linux-omap@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?=
+ <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <1cb6e1f9-b4b5-9097-5b02-96ac9559e8ae@ti.com>
+Date: Mon, 1 Aug 2016 12:22:42 +0300
 MIME-Version: 1.0
-In-Reply-To: <1469994143-13977-1-git-send-email-richard@nod.at>
-References: <1469994143-13977-1-git-send-email-richard@nod.at>
-From: =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date: Mon, 1 Aug 2016 10:51:44 +0200
-Message-ID: <CAHpGcMK9181WG9SzWYmPsh1ZdY-hMjga+4YG2D9sRS+7ywDp7A@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: Fix xattr generic handler usage
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, stable@vger.kernel.org,
- Andreas Gruenbacher <agruenba@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20160713171303.GA136972@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2016-07-31 21:42 GMT+02:00 Richard Weinberger <richard@nod.at>:
-> UBIFS uses full names to work with xattrs, therefore we have to use
-> xattr_full_name() to obtain the xattr prefix as string.
->
-> Cc: <stable@vger.kernel.org>
-> Cc: Andreas Gruenbacher <agruenba@redhat.com>
-> Fixes: 2b88fc21ca ("ubifs: Switch to generic xattr handlers")
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+On 13/07/16 20:13, Brian Norris wrote:
+> On Sat, Jul 09, 2016 at 05:56:14PM -0700, Brian Norris wrote:
+>> On Tue, Jul 05, 2016 at 11:32:30AM +0200, Teresa Remmet wrote:
+>>> commit c9711ec5250b ("mtd: nand: omap: Clean up device tree support")
+>>> removes the check for the old elm phandle binding.
+>>
+>> That seems like a silly breakage of backwards compatibility. Must have
+>> overlooked that one, sorry.
+>>
+>>> Add it again to keep backward compatibility.
+>>>
+>>> Signed-off-by: Teresa Remmet <t.remmet@phytec.de>
+>>
+>> I think we should probably take this for v4.7, since the breaking commit
+>> was only merged in v4.7-rc1. OMAP folks, any comment?
+> 
+> Applied to linux-mtd.git. I plan to send this to Linus for v4.7, since
+> it's a DT regression, unless someone has a good reason not to.
+> 
 
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
+Sorry for the late reply as I was on vacation.
+Thanks for the patch Teresa and thank you Brian for taking it into v4.7 :).
 
-> ---
->  fs/ubifs/xattr.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-> index b5fc279..c63710f 100644
-> --- a/fs/ubifs/xattr.c
-> +++ b/fs/ubifs/xattr.c
-> @@ -575,7 +575,8 @@ static int ubifs_xattr_get(const struct xattr_handler *handler,
->         dbg_gen("xattr '%s', ino %lu ('%pd'), buf size %zd", name,
->                 inode->i_ino, dentry, size);
->
-> -       return  __ubifs_getxattr(inode, name, buffer, size);
-> +       name = xattr_full_name(handler, name);
-> +       return __ubifs_getxattr(inode, name, buffer, size);
->  }
->
->  static int ubifs_xattr_set(const struct xattr_handler *handler,
-> @@ -586,6 +587,8 @@ static int ubifs_xattr_set(const struct xattr_handler *handler,
->         dbg_gen("xattr '%s', host ino %lu ('%pd'), size %zd",
->                 name, inode->i_ino, dentry, size);
->
-> +       name = xattr_full_name(handler, name);
-> +
->         if (value)
->                 return __ubifs_setxattr(inode, name, value, size, flags);
->         else
-> --
-> 2.7.3
->
+cheers,
+-roger
