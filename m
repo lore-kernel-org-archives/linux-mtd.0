@@ -1,19 +1,24 @@
 Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUZTt-0003q4-3W
- for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 13:11:38 +0000
+ id 1bUZyE-0000CJ-RP
+ for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 13:43:00 +0000
+Subject: Re: [mtd-next:master 30/33]
+ drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of
+ function 'readsl'
+To: Stefan Roese <sr@denx.de>, Brian Norris <computersforpeace@gmail.com>,
+ kbuild test robot <fengguang.wu@intel.com>
+References: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
+ <20160718202026.GB137880@google.com> <578DC294.5090605@denx.de>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, kbuild-all@01.org,
+ Graham Moore <grmoore@opensource.altera.com>
 From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Cc: Marek Vasut <marex@denx.de>, Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Graham Moore <grmoore@opensource.altera.com>, Vignesh R <vigneshr@ti.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>
-Subject: [PATCH] mtd: spi-nor: cqspi: Fix build on arches missing
- readsl/writesl
-Date: Tue,  2 Aug 2016 15:10:47 +0200
-Message-Id: <1470143447-11351-1-git-send-email-marex@denx.de>
+Message-ID: <a73e745b-06c0-fb83-b058-b59c645323fe@denx.de>
+Date: Tue, 2 Aug 2016 14:54:54 +0200
+MIME-Version: 1.0
+In-Reply-To: <578DC294.5090605@denx.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The x86-64 and some other architectures are missing readsl/writesl
-functions, so this driver won't build on them. Use a more portable
-ioread32_rep()/iowrite32_rep() instead.
+On 07/19/2016 08:03 AM, Stefan Roese wrote:
+> On 18.07.2016 22:20, Brian Norris wrote:
+>> On Tue, Jul 19, 2016 at 03:43:17AM +0800, kbuild test robot wrote:
+>>> tree:   git://git.infradead.org/linux-mtd-next.git master
+>>> head:   f78921b9020c510ed222a6c2402e2aa126432415
+>>> commit: 140623410536905fa6ab737b625decfde6c64a72 [30/33] mtd:
+>>> spi-nor: Add driver for Cadence Quad SPI Flash Controller
+>>> config: x86_64-allmodconfig (attached as .config)
+>>> compiler: gcc-6 (Debian 6.1.1-1) 6.1.1 20160430
+>>> reproduce:
+>>>          git checkout 140623410536905fa6ab737b625decfde6c64a72
+>>>          # save the attached .config to linux build tree
+>>>          make ARCH=x86_64
+>>>
+>>> All errors (new ones prefixed by >>):
+>>>
+>>>     drivers/mtd/spi-nor/cadence-quadspi.c: In function
+>>> 'cqspi_indirect_read_execute':
+>>>>> drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit
+>>>>> declaration of function 'readsl'
+>>>>> [-Werror=implicit-function-declaration]
+>>>         readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
+>>>         ^~~~~~
+>>>     drivers/mtd/spi-nor/cadence-quadspi.c: In function
+>>> 'cqspi_indirect_write_execute':
+>>>>> drivers/mtd/spi-nor/cadence-quadspi.c:613:3: error: implicit
+>>>>> declaration of function 'writesl'
+>>>>> [-Werror=implicit-function-declaration]
+>>>        writesl(cqspi->ahb_base, txbuf, DIV_ROUND_UP(write_bytes, 4));
+>>>        ^~~~~~~
+>>>     cc1: some warnings being treated as errors
+>>
+>> Hmm, does x86 not define readsl()/writesl()? I can never tell what
+>> accessors are supposed to be "standard" across architectures.
+>>
+>> Either we need to drop the COMPILE_TEST or maybe make it (!X86 &&
+>> COMPILE_TEST).
+> 
+> iowrite32_rep() etc should work for x86 as well.
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Alan Tull <atull@opensource.altera.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
-Cc: Graham Moore <grmoore@opensource.altera.com>
-Cc: Vignesh R <vigneshr@ti.com>
-Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
-Suggested-by: Stefan Roese <sr@denx.de>
----
- drivers/mtd/spi-nor/Kconfig           | 2 +-
- drivers/mtd/spi-nor/cadence-quadspi.c | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+Indeed, they should and they were used to fix other drivers too.
+I'll send a patch in a bit.
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 4a682ee..1e6f037 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -40,7 +40,7 @@ config SPI_ATMEL_QUADSPI
- 
- config SPI_CADENCE_QUADSPI
- 	tristate "Cadence Quad SPI controller"
--	depends on OF && ARM
-+	depends on OF && (ARM || COMPILE_TEST)
- 	help
- 	  Enable support for the Cadence Quad SPI Flash controller.
- 
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index d403ba7..08c9483 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -526,7 +526,8 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor,
- 			bytes_to_read *= cqspi->fifo_width;
- 			bytes_to_read = bytes_to_read > remaining ?
- 					remaining : bytes_to_read;
--			readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
-+			ioread32_rep(ahb_base, rxbuf,
-+				     DIV_ROUND_UP(bytes_to_read, 4));
- 			rxbuf += bytes_to_read;
- 			remaining -= bytes_to_read;
- 			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
-@@ -610,7 +611,8 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
- 
- 	while (remaining > 0) {
- 		write_bytes = remaining > page_size ? page_size : remaining;
--		writesl(cqspi->ahb_base, txbuf, DIV_ROUND_UP(write_bytes, 4));
-+		iowrite32_rep(cqspi->ahb_base, txbuf,
-+			      DIV_ROUND_UP(write_bytes, 4));
- 
- 		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
- 						  msecs_to_jiffies
 -- 
-2.8.1
+Best regards,
+Marek Vasut
