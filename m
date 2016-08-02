@@ -1,24 +1,18 @@
-Received: from mail-he1eur01on0107.outbound.protection.outlook.com
- ([104.47.0.107] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUTn6-0008Bg-8Z
- for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 07:07:05 +0000
-From: "Zhou, John (Nokia - CN/Hangzhou)" <john.zhou@nokia.com>
-To: Richard Weinberger <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: how to create one ubifs image support both for different page
- size and sector size?
-Date: Tue, 2 Aug 2016 07:06:40 +0000
-Message-ID: <AM3PR07MB0758263689E84587F5EDCED2F2050@AM3PR07MB0758.eurprd07.prod.outlook.com>
-References: <DB4PR07MB062499D49F50F0923E2DE33BF2000@DB4PR07MB0624.eurprd07.prod.outlook.com>
- <CAFLxGvz+5rKiK5si4XtPKkHtJwJ=nub6xDMxOyMfYqQZrdzRLA@mail.gmail.com>
- <AM3PR07MB075848DCD6F716812516B216F2050@AM3PR07MB0758.eurprd07.prod.outlook.com>
- <57A045CA.8070302@nod.at>
-In-Reply-To: <57A045CA.8070302@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from mga14.intel.com ([192.55.52.115])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bUYbs-0002gK-9g
+ for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 12:15:48 +0000
+From: Baole Ni <baolex.ni@intel.com>
+To: joern@lazybastard.org, dwmw2@infradead.org, computersforpeace@gmail.com,
+ mchehab@redhat.com, m.chehab@samsung.com, pawel@osciak.com,
+ m.szyprowski@samsung.com, kyungmin.park@samsung.com,
+ k.kozlowski@samsung.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ chuansheng.liu@intel.com, baolex.ni@intel.com, grundler@chromium.org,
+ lporzio@micron.com
+Subject: [PATCH 0698/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 19:37:47 +0800
+Message-Id: <20160802113747.28593-1-baolex.ni@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-WWVzICwgdGhpcyBpcyBhIHByb2JsZW0gdG8gZmFjdG9yeSBndXlzIGZvciBwcm9kdWN0aW9uLg0K
-DQpXaGVuIHRoZXkgaGF2ZSBvbmUgZmxhc2ggaW4gaGFuZCwgdGhleSBjYW4ndCBmaWd1cmUgb3V0
-IHdoaWNoIGZsYXNoIGl0IGlzLCBpdCdzIGFsbCBhdXRvbWF0aWNhbGx5Lg0KU28gdGhleSBkb24n
-dCBrbm93IHdoaWNoIGltYWdlIGlzIHN1aXRhYmxlIGZvciBzcGVjaWZpYyBmbGFzaC4NCg0KQnJz
-DQpKb2huDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFJpY2hhcmQgV2Vp
-bmJlcmdlciBbbWFpbHRvOnJpY2hhcmRAbm9kLmF0XSANClNlbnQ6IFR1ZXNkYXksIEF1Z3VzdCAw
-MiwgMjAxNiAzOjA0IFBNDQpUbzogWmhvdSwgSm9obiAoTm9raWEgLSBDTi9IYW5nemhvdSkgPGpv
-aG4uemhvdUBub2tpYS5jb20+DQpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1
-YmplY3Q6IFJlOiBob3cgdG8gY3JlYXRlIG9uZSB1YmlmcyBpbWFnZSBzdXBwb3J0IGJvdGggZm9y
-IGRpZmZlcmVudCBwYWdlIHNpemUgYW5kIHNlY3RvciBzaXplPw0KDQpKb2huLA0KDQpBbSAwMi4w
-OC4yMDE2IHVtIDA4OjM1IHNjaHJpZWIgWmhvdSwgSm9obiAoTm9raWEgLSBDTi9IYW5nemhvdSk6
-DQo+IEhvdyBvdGhlciB1c2VycyB0byBzb2x2ZSBzdWNoIHByb2JsZW0/IFdoZW4gd2UgbmVlZCBz
-dXBwb3J0IGZvciB0d28gZGlmZmVyZW50IGZsYXNoPw0KPiBUd28gaW1hZ2VzIGlzIHRoZSBvbmx5
-IHBhdGg/DQoNClRoaXMgaXMgY29ycmVjdC4gSXMgdGhpcyBzdWNoIGEgYmlnIHByb2JsZW0/DQpB
-bm90aGVyIGFwcHJvYWNoIGlzIGJvb3RpbmcgTGludXggYW5kIGNyZWF0ZSBVQkkvRlMgb24gdGhl
-IGZseS4uLg0KDQpUaGFua3MsDQovL3JpY2hhcmQNCg==
+I find that the developers often just specified the numeric value
+when calling a macro which is defined with a parameter for access permission.
+As we know, these numeric value for access permission have had the corresponding macro,
+and that using macro can improve the robustness and readability of the code,
+thus, I suggest replacing the numeric parameter with the macro.
+
+Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
+Signed-off-by: Baole Ni <baolex.ni@intel.com>
+---
+ drivers/mtd/devices/block2mtd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index 7c887f1..31e2b0b 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -458,7 +458,7 @@ static int block2mtd_setup(const char *val, struct kernel_param *kp)
+ }
+ 
+ 
+-module_param_call(block2mtd, block2mtd_setup, NULL, NULL, 0200);
++module_param_call(block2mtd, block2mtd_setup, NULL, NULL, S_IWUSR);
+ MODULE_PARM_DESC(block2mtd, "Device to use. \"block2mtd=<dev>[,<erasesize>]\"");
+ 
+ static int __init block2mtd_init(void)
+-- 
+2.9.2
