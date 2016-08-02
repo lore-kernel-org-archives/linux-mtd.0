@@ -1,28 +1,16 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUfj3-0000PP-8e
- for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 19:51:42 +0000
-Received: by mail-wm0-x241.google.com with SMTP id q128so32660470wma.1
- for <linux-mtd@lists.infradead.org>; Tue, 02 Aug 2016 12:51:20 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAOiHx=n8a64d-2LGGFHuyBQBg3Cz=ALVXEbvPRHxTyzFjWRMXA@mail.gmail.com>
-References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
- <1469830393-13295-7-git-send-email-kdasu.kdev@gmail.com>
- <CAOiHx=n8a64d-2LGGFHuyBQBg3Cz=ALVXEbvPRHxTyzFjWRMXA@mail.gmail.com>
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-Date: Tue, 2 Aug 2016 15:51:17 -0400
-Message-ID: <CAC=U0a2wmmo19WfFWPm1YRAT8QVt8OKg5KzSzVhgP6uyydHi9A@mail.gmail.com>
-Subject: Re: [PATCH v5 6/8] arm: dts: Add bcm-nsp and bcm958625k support
-To: Jonas Gorski <jonas.gorski@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- MTD Maling List <linux-mtd@lists.infradead.org>, vigneshr@ti.com,
- Florian Fainelli <f.fainelli@gmail.com>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Vikram Prakash <vikram.prakash@broadcom.com>,
- Andy Fung <andy.fung@broadcom.com>,
- Jon Mason <jon.mason@broadcom.com>, Jayachandran C <jchandra@broadcom.com>,
- Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
+ id 1bUfsZ-0003lP-La
+ for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 20:01:32 +0000
+From: Kyle Roeschley <kyle.roeschley@ni.com>
+To: boris.brezillon@free-electrons.com, richard@nod.at
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, beanhuo@micron.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nathan.sullivan@ni.com, xander.huff@ni.com, peterpansjtu@gmail.com
+Subject: [RESEND v5] mtd: nand_bbt: scan for next free bbt block if writing
+ bbt fails
+Date: Tue, 2 Aug 2016 15:01:50 -0500
+Message-Id: <1470168110-20233-1-git-send-email-kyle.roeschley@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,146 +20,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jonas,
+If erasing or writing the BBT fails, we should mark the current BBT
+block as bad and use the BBT descriptor to scan for the next available
+unused block in the BBT. We should only return a failure if there isn't
+any space left.
 
-"You remove the rng node, is this intentional?"
+Based on original code implemented by Jeff Westfahl
+<jeff.westfahl@ni.com>.
 
-Not intentional,  was a bad rebase merge to the latest sources, will
-fix this in next version of the patch.
+Signed-off-by: Kyle Roeschley <kyle.roeschley@ni.com>
+Suggested-by: Jeff Westfahl <jeff.westfahl@ni.com>
+---
+v5: De-duplicate bad block handling
 
-"The address is 0xa0000 so this should be partition@a0000.
- etc."
+v4: Don't ignore write protection while marking bad BBT blocks
+    Correctly call block_markbad
+    Minor cleanups
 
-Will fix this as well.
+v3: Don't overload mtd->priv
+    Keep nand_erase_nand from erroring on protected BBT blocks
 
-Thanks
-Kamal
+v2: Mark OOB area in each block as well as BBT
+    Avoid marking read-only, bad address, or known bad blocks as bad
 
-On Mon, Aug 1, 2016 at 11:09 AM, Jonas Gorski <jonas.gorski@gmail.com> wrote:
-> Hi,
->
-> On 30 July 2016 at 00:13, Kamal Dasu <kdasu.kdev@gmail.com> wrote:
->> Adding qspi node compatible with the new spi-bcm-qspi
->> driver for the broadcom's northstar SoC.
->>
->> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->> Signed-off-by: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
->> ---
->>  arch/arm/boot/dts/bcm-nsp.dtsi   | 33 +++++++++++++++++++++++++++++----
->>  arch/arm/boot/dts/bcm958625k.dts | 34 ++++++++++++++++++++++++++++++++++
->>  2 files changed, 63 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
->> index 6a40ed7..26c863e 100644
->> --- a/arch/arm/boot/dts/bcm-nsp.dtsi
->> +++ b/arch/arm/boot/dts/bcm-nsp.dtsi
->> @@ -160,7 +160,7 @@
->>
->>         axi {
->>                 compatible = "simple-bus";
->> -               ranges = <0x00000000 0x18000000 0x0011ba08>;
->> +               ranges = <0x00000000 0x18000000 0x0011c40a>;
->>                 #address-cells = <1>;
->>                 #size-cells = <1>;
->>
->> @@ -206,9 +206,34 @@
->>                         brcm,nand-has-wp;
->>                 };
->>
->> -               rng: rng@33000 {
->> -                       compatible = "brcm,bcm-nsp-rng";
->> -                       reg = <0x33000 0x14>;
->
-> You remove the rng node, is this intentional?
->
->> +               qspi: qspi@27200 {
->> +                       compatible = "brcm,spi-bcm-qspi";
->> +                       reg = <0x027200 0x184>,
->> +                             <0x027000 0x124>,
->> +                             <0x11c408 0x004>,
->> +                             <0x0273a0 0x01c>;
->> +                       reg-names = "mspi", "bspi", "intr_regs",
->> +                                   "intr_status_reg";
->> +                       interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
->> +                                    <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
->> +                                    <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
->> +                                    <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
->> +                                    <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
->> +                                    <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
->> +                                    <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
->> +                       interrupt-names = "spi_lr_fullness_reached",
->> +                                         "spi_lr_session_aborted",
->> +                                         "spi_lr_impatient",
->> +                                         "spi_lr_session_done",
->> +                                         "spi_lr_overhead",
->> +                                         "mspi_done",
->> +                                         "mspi_halted";
->> +                       clocks = <&iprocmed>;
->> +                       clock-names = "iprocmed";
->> +                       clock-frequency = <12500000>;
->> +                       num-cs = <2>;
->> +                       #address-cells = <1>;
->> +                       #size-cells = <0>;
->>                 };
->>
->>                 ccbtimer0: timer@34000 {
->> diff --git a/arch/arm/boot/dts/bcm958625k.dts b/arch/arm/boot/dts/bcm958625k.dts
->> index 2d84226..ab7ba8f 100644
->> --- a/arch/arm/boot/dts/bcm958625k.dts
->> +++ b/arch/arm/boot/dts/bcm958625k.dts
->> @@ -126,3 +126,37 @@
->>                 groups = "nand_grp";
->>         };
->>  };
->> +
->> +&qspi {
->> +       bspi-sel = <0>;
->> +       flash: m25p80@0 {
->> +               #address-cells = <1>;
->> +               #size-cells = <1>;
->> +               compatible = "m25p80";
->> +               reg = <0x0>;
->> +               spi-max-frequency = <12500000>;
->> +               m25p,fast-read;
->> +               spi-cpol;
->> +               spi-cpha;
->> +
->> +               partition@0 {
->> +                       label = "boot";
->> +                       reg = <0x00000000 0x000a0000>;
->> +               };
->
-> these should be enclosed by a partitions node with compatible
-> "fixed-partitions", see
-> Documentation/devicetree/bindings/mtd/partition.txt.
->
->> +
->> +               partition@1 {
->
-> The address is 0xa0000 so this should be partition@a0000.
->
->> +                       label = "env";
->> +                       reg = <0x000a0000 0x00060000>;
->> +               };
->> +
->> +               partition@2 {
->
-> likewise.
->
->> +                       label = "system";
->> +                       reg = <0x00100000 0x00600000>;
->> +               };
->> +
->> +               partition@3 {
->
-> etc.
->
->> +                       label = "rootfs";
->> +                       reg = <0x00700000 0x01900000>;
->> +               };
->> +       };
->> +};
->
->
-> Regards
-> Jonas
+ drivers/mtd/nand/nand_bbt.c | 40 ++++++++++++++++++++++++++++++++++------
+ 1 file changed, 34 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2fbb523..c9255f8 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -620,7 +620,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ {
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+ 	struct erase_info einfo;
+-	int i, res, chip = 0;
++	int i, res, chip = 0, found_bad_block = 0;
+ 	int bits, startblock, dir, page, offs, numblocks, sft, sftmsk;
+ 	int nrchips, pageoffs, ooboffs;
+ 	uint8_t msk[4];
+@@ -663,6 +663,27 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			goto write;
+ 		}
+ 
++next:
++		if (found_bad_block) {
++			/*
++			 * We found a bad block on the last loop iteration.
++			 * Mark it as such and see if there's another block
++			 * available in the BBT area.
++			 */
++			int block = page >>
++				    (this->bbt_erase_shift - this->page_shift);
++			pr_info("nand_bbt: failed to erase block %d when writing BBT\n",
++				block);
++			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++
++			res = this->block_markbad(mtd, to);
++			if (res)
++				pr_warn("nand_bbt: error %d while marking block %d bad\n",
++					res, block);
++			td->pages[chip] = -1;
++			found_bad_block = 0;
++		}
++
+ 		/*
+ 		 * Automatic placement of the bad block table. Search direction
+ 		 * top -> down?
+@@ -787,14 +808,21 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		einfo.addr = to;
+ 		einfo.len = 1 << this->bbt_erase_shift;
+ 		res = nand_erase_nand(mtd, &einfo, 1);
+-		if (res < 0)
++		if (res == -EIO) {
++			found_bad_block = 1;
++			goto next;
++		} else if (res) {
+ 			goto outerr;
++		}
+ 
+-		res = scan_write_bbt(mtd, to, len, buf,
+-				td->options & NAND_BBT_NO_OOB ? NULL :
+-				&buf[len]);
+-		if (res < 0)
++		res = scan_write_bbt(mtd, to, len, buf, td->options &
++				     NAND_BBT_NO_OOB ? NULL : &buf[len]);
++		if (res == -EIO) {
++			found_bad_block = 1;
++			goto next;
++		} else if (res) {
+ 			goto outerr;
++		}
+ 
+ 		pr_info("Bad block table written to 0x%012llx, version 0x%02X\n",
+ 			 (unsigned long long)to, td->version[chip]);
+-- 
+2.8.1
