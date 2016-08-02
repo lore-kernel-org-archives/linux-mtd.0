@@ -1,24 +1,28 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUZyE-0000CJ-RP
- for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 13:43:00 +0000
-Subject: Re: [mtd-next:master 30/33]
- drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit declaration of
- function 'readsl'
-To: Stefan Roese <sr@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- kbuild test robot <fengguang.wu@intel.com>
-References: <201607190315.0nkQuD2W%fengguang.wu@intel.com>
- <20160718202026.GB137880@google.com> <578DC294.5090605@denx.de>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, kbuild-all@01.org,
- Graham Moore <grmoore@opensource.altera.com>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <a73e745b-06c0-fb83-b058-b59c645323fe@denx.de>
-Date: Tue, 2 Aug 2016 14:54:54 +0200
+ id 1bUfj3-0000PP-8e
+ for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 19:51:42 +0000
+Received: by mail-wm0-x241.google.com with SMTP id q128so32660470wma.1
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Aug 2016 12:51:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <578DC294.5090605@denx.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAOiHx=n8a64d-2LGGFHuyBQBg3Cz=ALVXEbvPRHxTyzFjWRMXA@mail.gmail.com>
+References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
+ <1469830393-13295-7-git-send-email-kdasu.kdev@gmail.com>
+ <CAOiHx=n8a64d-2LGGFHuyBQBg3Cz=ALVXEbvPRHxTyzFjWRMXA@mail.gmail.com>
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+Date: Tue, 2 Aug 2016 15:51:17 -0400
+Message-ID: <CAC=U0a2wmmo19WfFWPm1YRAT8QVt8OKg5KzSzVhgP6uyydHi9A@mail.gmail.com>
+Subject: Re: [PATCH v5 6/8] arm: dts: Add bcm-nsp and bcm958625k support
+To: Jonas Gorski <jonas.gorski@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ MTD Maling List <linux-mtd@lists.infradead.org>, vigneshr@ti.com,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Vikram Prakash <vikram.prakash@broadcom.com>,
+ Andy Fung <andy.fung@broadcom.com>,
+ Jon Mason <jon.mason@broadcom.com>, Jayachandran C <jchandra@broadcom.com>,
+ Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +32,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/19/2016 08:03 AM, Stefan Roese wrote:
-> On 18.07.2016 22:20, Brian Norris wrote:
->> On Tue, Jul 19, 2016 at 03:43:17AM +0800, kbuild test robot wrote:
->>> tree:   git://git.infradead.org/linux-mtd-next.git master
->>> head:   f78921b9020c510ed222a6c2402e2aa126432415
->>> commit: 140623410536905fa6ab737b625decfde6c64a72 [30/33] mtd:
->>> spi-nor: Add driver for Cadence Quad SPI Flash Controller
->>> config: x86_64-allmodconfig (attached as .config)
->>> compiler: gcc-6 (Debian 6.1.1-1) 6.1.1 20160430
->>> reproduce:
->>>          git checkout 140623410536905fa6ab737b625decfde6c64a72
->>>          # save the attached .config to linux build tree
->>>          make ARCH=x86_64
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>     drivers/mtd/spi-nor/cadence-quadspi.c: In function
->>> 'cqspi_indirect_read_execute':
->>>>> drivers/mtd/spi-nor/cadence-quadspi.c:529:4: error: implicit
->>>>> declaration of function 'readsl'
->>>>> [-Werror=implicit-function-declaration]
->>>         readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
->>>         ^~~~~~
->>>     drivers/mtd/spi-nor/cadence-quadspi.c: In function
->>> 'cqspi_indirect_write_execute':
->>>>> drivers/mtd/spi-nor/cadence-quadspi.c:613:3: error: implicit
->>>>> declaration of function 'writesl'
->>>>> [-Werror=implicit-function-declaration]
->>>        writesl(cqspi->ahb_base, txbuf, DIV_ROUND_UP(write_bytes, 4));
->>>        ^~~~~~~
->>>     cc1: some warnings being treated as errors
->>
->> Hmm, does x86 not define readsl()/writesl()? I can never tell what
->> accessors are supposed to be "standard" across architectures.
->>
->> Either we need to drop the COMPILE_TEST or maybe make it (!X86 &&
->> COMPILE_TEST).
-> 
-> iowrite32_rep() etc should work for x86 as well.
+Jonas,
 
-Indeed, they should and they were used to fix other drivers too.
-I'll send a patch in a bit.
+"You remove the rng node, is this intentional?"
 
--- 
-Best regards,
-Marek Vasut
+Not intentional,  was a bad rebase merge to the latest sources, will
+fix this in next version of the patch.
+
+"The address is 0xa0000 so this should be partition@a0000.
+ etc."
+
+Will fix this as well.
+
+Thanks
+Kamal
+
+On Mon, Aug 1, 2016 at 11:09 AM, Jonas Gorski <jonas.gorski@gmail.com> wrote:
+> Hi,
+>
+> On 30 July 2016 at 00:13, Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+>> Adding qspi node compatible with the new spi-bcm-qspi
+>> driver for the broadcom's northstar SoC.
+>>
+>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+>> Signed-off-by: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
+>> ---
+>>  arch/arm/boot/dts/bcm-nsp.dtsi   | 33 +++++++++++++++++++++++++++++----
+>>  arch/arm/boot/dts/bcm958625k.dts | 34 ++++++++++++++++++++++++++++++++++
+>>  2 files changed, 63 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
+>> index 6a40ed7..26c863e 100644
+>> --- a/arch/arm/boot/dts/bcm-nsp.dtsi
+>> +++ b/arch/arm/boot/dts/bcm-nsp.dtsi
+>> @@ -160,7 +160,7 @@
+>>
+>>         axi {
+>>                 compatible = "simple-bus";
+>> -               ranges = <0x00000000 0x18000000 0x0011ba08>;
+>> +               ranges = <0x00000000 0x18000000 0x0011c40a>;
+>>                 #address-cells = <1>;
+>>                 #size-cells = <1>;
+>>
+>> @@ -206,9 +206,34 @@
+>>                         brcm,nand-has-wp;
+>>                 };
+>>
+>> -               rng: rng@33000 {
+>> -                       compatible = "brcm,bcm-nsp-rng";
+>> -                       reg = <0x33000 0x14>;
+>
+> You remove the rng node, is this intentional?
+>
+>> +               qspi: qspi@27200 {
+>> +                       compatible = "brcm,spi-bcm-qspi";
+>> +                       reg = <0x027200 0x184>,
+>> +                             <0x027000 0x124>,
+>> +                             <0x11c408 0x004>,
+>> +                             <0x0273a0 0x01c>;
+>> +                       reg-names = "mspi", "bspi", "intr_regs",
+>> +                                   "intr_status_reg";
+>> +                       interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
+>> +                                    <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
+>> +                                    <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
+>> +                                    <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
+>> +                                    <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
+>> +                                    <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
+>> +                                    <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
+>> +                       interrupt-names = "spi_lr_fullness_reached",
+>> +                                         "spi_lr_session_aborted",
+>> +                                         "spi_lr_impatient",
+>> +                                         "spi_lr_session_done",
+>> +                                         "spi_lr_overhead",
+>> +                                         "mspi_done",
+>> +                                         "mspi_halted";
+>> +                       clocks = <&iprocmed>;
+>> +                       clock-names = "iprocmed";
+>> +                       clock-frequency = <12500000>;
+>> +                       num-cs = <2>;
+>> +                       #address-cells = <1>;
+>> +                       #size-cells = <0>;
+>>                 };
+>>
+>>                 ccbtimer0: timer@34000 {
+>> diff --git a/arch/arm/boot/dts/bcm958625k.dts b/arch/arm/boot/dts/bcm958625k.dts
+>> index 2d84226..ab7ba8f 100644
+>> --- a/arch/arm/boot/dts/bcm958625k.dts
+>> +++ b/arch/arm/boot/dts/bcm958625k.dts
+>> @@ -126,3 +126,37 @@
+>>                 groups = "nand_grp";
+>>         };
+>>  };
+>> +
+>> +&qspi {
+>> +       bspi-sel = <0>;
+>> +       flash: m25p80@0 {
+>> +               #address-cells = <1>;
+>> +               #size-cells = <1>;
+>> +               compatible = "m25p80";
+>> +               reg = <0x0>;
+>> +               spi-max-frequency = <12500000>;
+>> +               m25p,fast-read;
+>> +               spi-cpol;
+>> +               spi-cpha;
+>> +
+>> +               partition@0 {
+>> +                       label = "boot";
+>> +                       reg = <0x00000000 0x000a0000>;
+>> +               };
+>
+> these should be enclosed by a partitions node with compatible
+> "fixed-partitions", see
+> Documentation/devicetree/bindings/mtd/partition.txt.
+>
+>> +
+>> +               partition@1 {
+>
+> The address is 0xa0000 so this should be partition@a0000.
+>
+>> +                       label = "env";
+>> +                       reg = <0x000a0000 0x00060000>;
+>> +               };
+>> +
+>> +               partition@2 {
+>
+> likewise.
+>
+>> +                       label = "system";
+>> +                       reg = <0x00100000 0x00600000>;
+>> +               };
+>> +
+>> +               partition@3 {
+>
+> etc.
+>
+>> +                       label = "rootfs";
+>> +                       reg = <0x00700000 0x01900000>;
+>> +               };
+>> +       };
+>> +};
+>
+>
+> Regards
+> Jonas
