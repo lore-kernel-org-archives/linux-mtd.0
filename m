@@ -1,17 +1,19 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUYcy-0002vL-QF
- for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 12:16:58 +0000
-From: Baole Ni <baolex.ni@intel.com>
-To: kyungmin.park@samsung.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, m.chehab@samsung.com, pawel@osciak.com,
- m.szyprowski@samsung.com, k.kozlowski@samsung.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- chuansheng.liu@intel.com, baolex.ni@intel.com, grundler@chromium.org,
- lporzio@micron.com
-Subject: [PATCH 0705/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 19:38:24 +0800
-Message-Id: <20160802113824.29055-1-baolex.ni@intel.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bUZTt-0003q4-3W
+ for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 13:11:38 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marex@denx.de>, Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Graham Moore <grmoore@opensource.altera.com>, Vignesh R <vigneshr@ti.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>
+Subject: [PATCH] mtd: spi-nor: cqspi: Fix build on arches missing
+ readsl/writesl
+Date: Tue,  2 Aug 2016 15:10:47 +0200
+Message-Id: <1470143447-11351-1-git-send-email-marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I find that the developers often just specified the numeric value
-when calling a macro which is defined with a parameter for access permission.
-As we know, these numeric value for access permission have had the corresponding macro,
-and that using macro can improve the robustness and readability of the code,
-thus, I suggest replacing the numeric parameter with the macro.
+The x86-64 and some other architectures are missing readsl/writesl
+functions, so this driver won't build on them. Use a more portable
+ioread32_rep()/iowrite32_rep() instead.
 
-Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
-Signed-off-by: Baole Ni <baolex.ni@intel.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alan Tull <atull@opensource.altera.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
+Cc: Graham Moore <grmoore@opensource.altera.com>
+Cc: Vignesh R <vigneshr@ti.com>
+Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
+Suggested-by: Stefan Roese <sr@denx.de>
 ---
- drivers/mtd/onenand/onenand_base.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/Kconfig           | 2 +-
+ drivers/mtd/spi-nor/cadence-quadspi.c | 6 ++++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index a4b029a..7f944e6 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -44,7 +44,7 @@
- /* Default Flex-OneNAND boundary and lock respectively */
- static int flex_bdry[MAX_DIES * 2] = { -1, 0, -1, 0 };
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 4a682ee..1e6f037 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -40,7 +40,7 @@ config SPI_ATMEL_QUADSPI
  
--module_param_array(flex_bdry, int, NULL, 0400);
-+module_param_array(flex_bdry, int, NULL, S_IRUSR);
- MODULE_PARM_DESC(flex_bdry,	"SLC Boundary information for Flex-OneNAND"
- 				"Syntax:flex_bdry=DIE_BDRY,LOCK,..."
- 				"DIE_BDRY: SLC boundary of the die"
-@@ -55,7 +55,7 @@ MODULE_PARM_DESC(flex_bdry,	"SLC Boundary information for Flex-OneNAND"
- /* Default OneNAND/Flex-OneNAND OTP options*/
- static int otp;
+ config SPI_CADENCE_QUADSPI
+ 	tristate "Cadence Quad SPI controller"
+-	depends on OF && ARM
++	depends on OF && (ARM || COMPILE_TEST)
+ 	help
+ 	  Enable support for the Cadence Quad SPI Flash controller.
  
--module_param(otp, int, 0400);
-+module_param(otp, int, S_IRUSR);
- MODULE_PARM_DESC(otp,	"Corresponding behaviour of OneNAND in OTP"
- 			"Syntax : otp=LOCK_TYPE"
- 			"LOCK_TYPE : Keys issued, for specific OTP Lock type"
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index d403ba7..08c9483 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -526,7 +526,8 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor,
+ 			bytes_to_read *= cqspi->fifo_width;
+ 			bytes_to_read = bytes_to_read > remaining ?
+ 					remaining : bytes_to_read;
+-			readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
++			ioread32_rep(ahb_base, rxbuf,
++				     DIV_ROUND_UP(bytes_to_read, 4));
+ 			rxbuf += bytes_to_read;
+ 			remaining -= bytes_to_read;
+ 			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+@@ -610,7 +611,8 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
+ 
+ 	while (remaining > 0) {
+ 		write_bytes = remaining > page_size ? page_size : remaining;
+-		writesl(cqspi->ahb_base, txbuf, DIV_ROUND_UP(write_bytes, 4));
++		iowrite32_rep(cqspi->ahb_base, txbuf,
++			      DIV_ROUND_UP(write_bytes, 4));
+ 
+ 		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+ 						  msecs_to_jiffies
 -- 
-2.9.2
+2.8.1
