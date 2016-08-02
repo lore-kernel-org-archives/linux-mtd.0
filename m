@@ -1,27 +1,23 @@
-Received: from mail-vk0-x241.google.com ([2607:f8b0:400c:c05::241])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUEr1-0005Nz-V3
- for linux-mtd@lists.infradead.org; Mon, 01 Aug 2016 15:10:09 +0000
-Received: by mail-vk0-x241.google.com with SMTP id r135so5833607vkf.3
- for <linux-mtd@lists.infradead.org>; Mon, 01 Aug 2016 08:09:47 -0700 (PDT)
+ id 1bUOip-0006th-Dl
+ for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 01:42:20 +0000
+Received: by mail-pf0-x241.google.com with SMTP id h186so11333377pfg.2
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Aug 2016 18:41:58 -0700 (PDT)
+Date: Mon, 1 Aug 2016 18:41:54 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] MTD updates for v4.8-rc1
+Message-ID: <20160802014154.GA80262@google.com>
 MIME-Version: 1.0
-In-Reply-To: <1469830393-13295-7-git-send-email-kdasu.kdev@gmail.com>
-References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
- <1469830393-13295-7-git-send-email-kdasu.kdev@gmail.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Mon, 1 Aug 2016 17:09:26 +0200
-Message-ID: <CAOiHx=n8a64d-2LGGFHuyBQBg3Cz=ALVXEbvPRHxTyzFjWRMXA@mail.gmail.com>
-Subject: Re: [PATCH v5 6/8] arm: dts: Add bcm-nsp and bcm958625k support
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- MTD Maling List <linux-mtd@lists.infradead.org>, vigneshr@ti.com,
- Florian Fainelli <f.fainelli@gmail.com>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- vikram.prakash@broadcom.com,
- andy.fung@broadcom.com, jon.mason@broadcom.com,
- Jayachandran C <jchandra@broadcom.com>,
- Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,130 +27,236 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Linus,
 
-On 30 July 2016 at 00:13, Kamal Dasu <kdasu.kdev@gmail.com> wrote:
-> Adding qspi node compatible with the new spi-bcm-qspi
-> driver for the broadcom's northstar SoC.
->
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> Signed-off-by: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
-> ---
->  arch/arm/boot/dts/bcm-nsp.dtsi   | 33 +++++++++++++++++++++++++++++----
->  arch/arm/boot/dts/bcm958625k.dts | 34 ++++++++++++++++++++++++++++++++++
->  2 files changed, 63 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
-> index 6a40ed7..26c863e 100644
-> --- a/arch/arm/boot/dts/bcm-nsp.dtsi
-> +++ b/arch/arm/boot/dts/bcm-nsp.dtsi
-> @@ -160,7 +160,7 @@
->
->         axi {
->                 compatible = "simple-bus";
-> -               ranges = <0x00000000 0x18000000 0x0011ba08>;
-> +               ranges = <0x00000000 0x18000000 0x0011c40a>;
->                 #address-cells = <1>;
->                 #size-cells = <1>;
->
-> @@ -206,9 +206,34 @@
->                         brcm,nand-has-wp;
->                 };
->
-> -               rng: rng@33000 {
-> -                       compatible = "brcm,bcm-nsp-rng";
-> -                       reg = <0x33000 0x14>;
+The following changes since commit 1a695a905c18548062509178b98bc91e67510864:
 
-You remove the rng node, is this intentional?
+  Linux 4.7-rc1 (2016-05-29 09:29:24 -0700)
 
-> +               qspi: qspi@27200 {
-> +                       compatible = "brcm,spi-bcm-qspi";
-> +                       reg = <0x027200 0x184>,
-> +                             <0x027000 0x124>,
-> +                             <0x11c408 0x004>,
-> +                             <0x0273a0 0x01c>;
-> +                       reg-names = "mspi", "bspi", "intr_regs",
-> +                                   "intr_status_reg";
-> +                       interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "spi_lr_fullness_reached",
-> +                                         "spi_lr_session_aborted",
-> +                                         "spi_lr_impatient",
-> +                                         "spi_lr_session_done",
-> +                                         "spi_lr_overhead",
-> +                                         "mspi_done",
-> +                                         "mspi_halted";
-> +                       clocks = <&iprocmed>;
-> +                       clock-names = "iprocmed";
-> +                       clock-frequency = <12500000>;
-> +                       num-cs = <2>;
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
->                 };
->
->                 ccbtimer0: timer@34000 {
-> diff --git a/arch/arm/boot/dts/bcm958625k.dts b/arch/arm/boot/dts/bcm958625k.dts
-> index 2d84226..ab7ba8f 100644
-> --- a/arch/arm/boot/dts/bcm958625k.dts
-> +++ b/arch/arm/boot/dts/bcm958625k.dts
-> @@ -126,3 +126,37 @@
->                 groups = "nand_grp";
->         };
->  };
-> +
-> +&qspi {
-> +       bspi-sel = <0>;
-> +       flash: m25p80@0 {
-> +               #address-cells = <1>;
-> +               #size-cells = <1>;
-> +               compatible = "m25p80";
-> +               reg = <0x0>;
-> +               spi-max-frequency = <12500000>;
-> +               m25p,fast-read;
-> +               spi-cpol;
-> +               spi-cpha;
-> +
-> +               partition@0 {
-> +                       label = "boot";
-> +                       reg = <0x00000000 0x000a0000>;
-> +               };
+are available in the git repository at:
 
-these should be enclosed by a partitions node with compatible
-"fixed-partitions", see
-Documentation/devicetree/bindings/mtd/partition.txt.
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20160801
 
-> +
-> +               partition@1 {
+for you to fetch changes up to 1dcff2e4ae728a36876bdb108173f4cbcae128bf:
 
-The address is 0xa0000 so this should be partition@a0000.
+  mtd: spi-nor: don't build Cadence QuadSPI on non-ARM (2016-07-19 19:48:48 -0700)
 
-> +                       label = "env";
-> +                       reg = <0x000a0000 0x00060000>;
-> +               };
-> +
-> +               partition@2 {
+Please note that there is a small conflict with the net-wireless tree,
+because a small BCMA Kconfig change that was taken there (to fix up some
+build issues) conflics with another small description change in this
+pull request. The resolution should be trivial, but I can provide a
+resolution if you'd like.
 
-likewise.
+----------------------------------------------------------------
+MTD updates for v4.8:
 
-> +                       label = "system";
-> +                       reg = <0x00100000 0x00600000>;
-> +               };
-> +
-> +               partition@3 {
+NAND:
 
-etc.
+  Updates from Boris:
 
-> +                       label = "rootfs";
-> +                       reg = <0x00700000 0x01900000>;
-> +               };
-> +       };
-> +};
+    """
+    This pull request contains only one notable change:
+    * Addition of the MTK NAND controller driver
 
+    And a bunch of specific NAND driver improvements/fixes. Here are the
+    changes that are worth mentioning:
+    * A few fixes/improvements for the xway NAND controller driver
+    * A few fixes for the sunxi NAND controller driver
+    * Support for DMA in the sunxi NAND driver
+    * Support for the sunxi NAND controller IP embedded in A23/A33 SoCs
+    * Addition for bitflips detection in erased pages to the brcmnand driver
+    * Support for new brcmnand IPs
+    * Update of the OMAP-GPMC binding to support DMA channel description
+    """
 
-Regards
-Jonas
+  In addition, some small fixes around error handling, etc., as well as one
+  long-standing corner case issue (2.6.20, I think?) with writing 1 byte less
+  than a page.
+
+NOR:
+
+ * Rework some error handling on reads and writes, so we can better handle (for
+   instance) SPI controllers which have limitations on their maximum transfer size
+
+ * Add new Cadence Quad SPI flash controller driver
+
+ * Add new Atmel QSPI flash controller driver
+
+ * Add new Hisilicon SPI flash controller driver
+
+ * Support a few new flash, and update supported features on others
+
+ * Fix the logic used for detecting a fully-unlocked flash
+
+And other miscellaneous small fixes.
+
+----------------------------------------------------------------
+Amitoj Kaur Chawla (1):
+      mtd: Replace if and BUG with BUG_ON
+
+Ben Hutchings (1):
+      mtd: Remove unused symbol CONFIG_MTDRAM_ABS_POS
+
+Boris Brezillon (6):
+      mtd: nand: sunxi: add support for DMA assisted operations
+      mtd: nand: sunxi: update DT bindings
+      mtd: nand: sunxi: Fix OOB bytes retrieval in read_chunks_dma()
+      mtd: nand: sunxi: prefer 1k ECC blocks when applicable
+      mtd: nand: sunxi: check ecc->size values
+      mtd: nand: sunxi: fix subpage write
+
+Brian Norris (7):
+      mtd: mtk-quadspi: return amount of data transferred or error in read/write
+      mtd: nxp-spifi: return amount of data transferred or error in read/write
+      mtd: physmap_of: fix set but unused warning
+      mtd: spi-nor: fix wrong "fully unlocked" test
+      mtd: spi-nor: support dual, quad, and WP for Gigadevice
+      Merge tag 'nand/for-4.8' of github.com:linux-nand/linux into mtd
+      mtd: spi-nor: don't build Cadence QuadSPI on non-ARM
+
+Cooper Jr., Franklin (2):
+      mtd: nand: omap2: Support parsing dma channel information from DT
+      ARM: OMAP2+: Update GPMC and NAND DT binding documentation
+
+Cyrille Pitchen (2):
+      Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
+      mtd: atmel-quadspi: add driver for Atmel QSPI controller
+
+Dan Carpenter (4):
+      mtd: silence some uninitialized variable warnings
+      mtd: nand: sunxi: prevent a small memory leak
+      mtd: maps: sa1100-flash: potential NULL dereference
+      mtd: pmcmsp-flash: Allocating too much in init_msp_flash()
+
+Denys Vlasenko (1):
+      mtd: cfi_cmdset_0020: Deinline do_write_buffer, save 5316 bytes
+
+Florian Fainelli (2):
+      mtd: brcmnand: Add v7.2 controller support
+      mtd: nand: brcmnand: Change BUG_ON in brcmnand_send_cmd
+
+Geert Uytterhoeven (1):
+      MAINTAINERS: Add file patterns for mtd device tree bindings
+
+Graham Moore (2):
+      mtd: spi-nor: Bindings for Cadence Quad SPI Flash Controller driver
+      mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller
+
+Harvey Hunt (1):
+      mtd: nand: jz4780: Update MODULE_AUTHOR email address
+
+Hauke Mehrtens (6):
+      mtd: nand: xway: add some more documentation
+      mtd: nand: xway: convert to normal platform driver
+      mtd: nand: xway: remove manual reset
+      mtd: nand: xway: extract read and write function
+      mtd: nand: xway: add missing write_buf and read_buf to nand driver
+      mtd: nand: xway: add nandaddr to own struct
+
+Hector Palacios (1):
+      mtd: nand: fix bug writing 1 byte less than page size
+
+Icenowy Zheng (2):
+      mtd: nand: sunxi: update DT bindings
+      mtd: nand: sunxi: add reset line support
+
+Iwo Mergler (1):
+      mtd: nandbiterrs: Support for NAND biterrors test on platforms without raw write
+
+Jiancheng Xue (1):
+      mtd: spi-nor: add hisilicon spi-nor flash controller driver
+
+John Crispin (2):
+      mtd: nand: xway: Avoid messing up with IO_ADDR_W in ->cmd_ctrl()
+      mtd: nand: xway: fix nand locking
+
+Jorge Ramirez-Ortiz (2):
+      mtd: mediatek: device tree bindings for MTK
+      mtd: mediatek: driver for MTK Smart Device
+
+Kamal Dasu (2):
+      mtd: brcmnand: Add check for erased page bitflips
+      mtd: brcmnand: Detect sticky ucorr ecc error on dma reads
+
+Michal Suchanek (8):
+      mtd: spi-nor: change return value of read/write
+      mtd: m25p80: return amount of data transferred or error in read/write
+      mtd: fsl-quadspi: return amount of data read/written or error
+      mtd: spi-nor: check return value from write
+      mtd: spi-nor: stop passing around retlen
+      mtd: spi-nor: simplify write loop
+      mtd: spi-nor: add read loop
+      mtd: m25p80: read in spi_max_transfer_size chunks
+
+P L Sai Krishna (1):
+      mtd: spi-nor: Added support for n25q00a.
+
+Rafał Miłecki (2):
+      mtd: nand: add ESMT manufacturer
+      mtd: update description of MTD_BCM47XXSFLASH symbol
+
+Raghav Dogra (1):
+      memory: Update dependency of IFC for Layerscape
+
+Wei Yongjun (3):
+      mtd: nand: sunxi: fix return value check in sunxi_nfc_dma_op_prepare()
+      mtd: nand: omap2: fix return value check in omap_nand_probe()
+      mtd: mtk-nor: remove duplicated include from mtk-quadspi.c
+
+ .../bindings/memory-controllers/omap-gpmc.txt      |    7 +-
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      |   32 +
+ .../devicetree/bindings/mtd/brcm,brcmnand.txt      |    1 +
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    |   56 +
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |    2 +-
+ .../bindings/mtd/hisilicon,fmc-spi-nor.txt         |   24 +
+ Documentation/devicetree/bindings/mtd/mtk-nand.txt |  160 ++
+ .../devicetree/bindings/mtd/sunxi-nand.txt         |    6 +
+ MAINTAINERS                                        |    1 +
+ arch/cris/arch-v10/drivers/axisflashmap.c          |    2 +-
+ arch/cris/arch-v32/drivers/axisflashmap.c          |    2 +-
+ drivers/memory/Kconfig                             |    2 +-
+ drivers/memory/fsl_ifc.c                           |    4 +-
+ drivers/mtd/chips/cfi_cmdset_0020.c                |    2 +-
+ drivers/mtd/devices/Kconfig                        |   16 +-
+ drivers/mtd/devices/m25p80.c                       |   37 +-
+ drivers/mtd/maps/physmap_of.c                      |    2 +-
+ drivers/mtd/maps/pmcmsp-flash.c                    |    6 +-
+ drivers/mtd/maps/sa1100-flash.c                    |    4 +-
+ drivers/mtd/nand/Kconfig                           |   10 +-
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/brcmnand/brcmnand.c               |  173 ++-
+ drivers/mtd/nand/jz4780_bch.c                      |    2 +-
+ drivers/mtd/nand/jz4780_nand.c                     |    2 +-
+ drivers/mtd/nand/mtk_ecc.c                         |  530 +++++++
+ drivers/mtd/nand/mtk_ecc.h                         |   50 +
+ drivers/mtd/nand/mtk_nand.c                        | 1526 ++++++++++++++++++++
+ drivers/mtd/nand/nand_base.c                       |    2 +-
+ drivers/mtd/nand/nand_ids.c                        |    1 +
+ drivers/mtd/nand/omap2.c                           |   11 +-
+ drivers/mtd/nand/sunxi_nand.c                      |  397 ++++-
+ drivers/mtd/nand/xway_nand.c                       |  231 +--
+ drivers/mtd/onenand/onenand_base.c                 |    4 +-
+ drivers/mtd/spi-nor/Kconfig                        |   27 +
+ drivers/mtd/spi-nor/Makefile                       |    3 +
+ drivers/mtd/spi-nor/atmel-quadspi.c                |  732 ++++++++++
+ drivers/mtd/spi-nor/cadence-quadspi.c              | 1299 +++++++++++++++++
+ drivers/mtd/spi-nor/fsl-quadspi.c                  |   29 +-
+ drivers/mtd/spi-nor/hisi-sfc.c                     |  489 +++++++
+ drivers/mtd/spi-nor/mtk-quadspi.c                  |   43 +-
+ drivers/mtd/spi-nor/nxp-spifi.c                    |   25 +-
+ drivers/mtd/spi-nor/spi-nor.c                      |  127 +-
+ drivers/mtd/ssfdc.c                                |    3 +-
+ drivers/mtd/tests/nandbiterrs.c                    |    2 +-
+ include/linux/mtd/nand.h                           |    1 +
+ include/linux/mtd/spi-nor.h                        |    8 +-
+ 46 files changed, 5838 insertions(+), 256 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
+ create mode 100644 drivers/mtd/nand/mtk_ecc.c
+ create mode 100644 drivers/mtd/nand/mtk_ecc.h
+ create mode 100644 drivers/mtd/nand/mtk_nand.c
+ create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
+ create mode 100644 drivers/mtd/spi-nor/cadence-quadspi.c
+ create mode 100644 drivers/mtd/spi-nor/hisi-sfc.c
