@@ -1,17 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUYc2-0002hS-3O
- for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 12:15:58 +0000
+ id 1bUYc9-0002hp-SC
+ for linux-mtd@lists.infradead.org; Tue, 02 Aug 2016 12:16:06 +0000
 From: Baole Ni <baolex.ni@intel.com>
-To: dwmw2@infradead.org, computersforpeace@gmail.com, mchehab@redhat.com,
+To: computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
  m.chehab@samsung.com, pawel@osciak.com, m.szyprowski@samsung.com,
  kyungmin.park@samsung.com, k.kozlowski@samsung.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- chuansheng.liu@intel.com, baolex.ni@intel.com, grundler@chromium.org,
- lporzio@micron.com
-Subject: [PATCH 0700/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 19:37:56 +0800
-Message-Id: <20160802113756.28725-1-baolex.ni@intel.com>
+Cc: linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-kernel@vger.kernel.org, chuansheng.liu@intel.com,
+ baolex.ni@intel.com, grundler@chromium.org, lporzio@micron.com
+Subject: [PATCH 0701/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 19:38:03 +0800
+Message-Id: <20160802113803.28791-1-baolex.ni@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +31,21 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- drivers/mtd/mtdswap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index cb06bdd..741b9e0 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -180,17 +180,17 @@ enum {
- #define MTDSWAP_MBD_TO_MTDSWAP(dev) ((struct mtdswap_dev *)dev->priv)
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index b76ad7c..22db277 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -47,7 +47,7 @@
+  * 2: NAND_WP is always cleared
+  */
+ static int wp_on = 1;
+-module_param(wp_on, int, 0444);
++module_param(wp_on, int, S_IRUSR | S_IRGRP | S_IROTH);
  
- static char partitions[128] = "";
--module_param_string(partitions, partitions, sizeof(partitions), 0444);
-+module_param_string(partitions, partitions, sizeof(partitions), S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(partitions, "MTD partition numbers to use as swap "
- 		"partitions=\"1,3,5\"");
- 
- static unsigned int spare_eblocks = 10;
--module_param(spare_eblocks, uint, 0444);
-+module_param(spare_eblocks, uint, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(spare_eblocks, "Percentage of spare erase blocks for "
- 		"garbage collection (default 10%)");
- 
- static bool header; /* false */
--module_param(header, bool, 0444);
-+module_param(header, bool, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(header,
- 		"Include builtin swap header (default 0, without header)");
- 
+ /***********************************************************************
+  * Definitions
 -- 
 2.9.2
