@@ -1,24 +1,25 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bVPsD-00017T-9B
- for linux-mtd@lists.infradead.org; Thu, 04 Aug 2016 21:08:13 +0000
-Date: Thu, 4 Aug 2016 22:07:47 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- vigneshr@ti.com, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, vikram.prakash@broadcom.com,
- andy.fung@broadcom.com, jon.mason@broadcom.com, jchandra@broadcom.com
-Message-ID: <20160804210747.GN10383@sirena.org.uk>
+ id 1bVR0L-0002RR-EM
+ for linux-mtd@lists.infradead.org; Thu, 04 Aug 2016 22:20:42 +0000
+Received: by mail-pf0-x242.google.com with SMTP id g202so19009648pfb.1
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Aug 2016 15:20:20 -0700 (PDT)
+Subject: Re: [PATCH v5 1/8] Documentation: dt: spi: Add BRCMSTB SoC bindings
+To: Mark Brown <broonie@kernel.org>, Kamal Dasu <kdasu.kdev@gmail.com>
 References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
- <1469830393-13295-5-git-send-email-kdasu.kdev@gmail.com>
+ <1469830393-13295-2-git-send-email-kdasu.kdev@gmail.com>
+ <20160804210634.GM10383@sirena.org.uk>
+Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ vigneshr@ti.com, bcm-kernel-feedback-list@broadcom.com,
+ vikram.prakash@broadcom.com, andy.fung@broadcom.com, jon.mason@broadcom.com,
+ jchandra@broadcom.com
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1fddf72d-cbc1-225f-b482-d6ba99dab823@gmail.com>
+Date: Thu, 4 Aug 2016 15:20:17 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="BHMq0+oGliEfCAkH"
-Content-Disposition: inline
-In-Reply-To: <1469830393-13295-5-git-send-email-kdasu.kdev@gmail.com>
-Subject: Re: [PATCH v5 4/8] mtd: m25p80: Let m25p80_read() fallback to spi
- transfer
+In-Reply-To: <20160804210634.GM10383@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +29,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 08/04/2016 02:06 PM, Mark Brown wrote:
+> On Fri, Jul 29, 2016 at 06:13:06PM -0400, Kamal Dasu wrote:
+>> Added device tree bindings documentation for SoCs supported by the
+>> new spi-bcm-qspi, spi-brcmstb-qspi driver.
+> 
+> Please submit patches using subject lines reflecting the style for the
+> subsystem.  This makes it easier for people to identify relevant
+> patches.  Look at what existing commits in the area you're changing are
+> doing and make sure your subject lines visually resemble what they're
+> doing.
 
---BHMq0+oGliEfCAkH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+What's wrong with the subjects being used here? It's not like there is a
+consistent subject for DT bindings, is spi/dt what you would expect here?
 
-On Fri, Jul 29, 2016 at 06:13:09PM -0400, Kamal Dasu wrote:
-> In m25p80_read() even though spi_flash_read() is supported
-> by some drivers, under certain circumstances like unaligned
-> buffer, address or address range limitations on certain SoCs
-> let it fallback to core spi reads. Such drivers are expected
-> to return -EAGAIN so that the m25p80_read() uses standard
-> spi transfer.
-
-You need to send this to the MTD maintainers, I see you've CCed the list
-but not Brian and any comaintainers he has AFAICT.
-
---BHMq0+oGliEfCAkH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXo66iAAoJECTWi3JdVIfQ7e0H/1YN54yTzY0FzVXL4YZI2kU1
-K0pS+1xT3YiD6dG5U7i97KS9BqBJpwd1geLL0Q1ZBnPti/e9/+JNEOQD1LPE8xhH
-5S/OAbUKwzuMWErXpAZroneEWR/NFqnigkj+kY7ivuc36DDFNe2+CRjsTuJFLyk7
-t1O6mJEnQvwiMaNEjrCeGt3ySCF4Ekl6paOvqZNDNTEMrw7CLmvrUOkPFmkTXq8a
-36qWzOFtEu0/fZTVyLCPLBA0NUG1ZNg9CcbEkD1/K0LSALx3xwUzuuK7qHR2u21x
-/zM28rxxQnmtnQFzyCTf9M1CXH/I35gaDRSZL/VAK8o1KZO7KhgxE297Fj4NQMU=
-=IcZO
------END PGP SIGNATURE-----
-
---BHMq0+oGliEfCAkH--
+Can we save Kamal another round of patches and provide feedback on the
+patch contents (as well as their form)?
+-- 
+Florian
