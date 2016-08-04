@@ -1,15 +1,14 @@
 Received: from relay1.mentorg.com ([192.94.38.131])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bVJTJ-0001Rc-Be
- for linux-mtd@lists.infradead.org; Thu, 04 Aug 2016 14:18:06 +0000
+ id 1bVJTT-0001SV-Au
+ for linux-mtd@lists.infradead.org; Thu, 04 Aug 2016 14:18:16 +0000
 From: Sandeep Jain <Sandeep_Jain@mentor.com>
 To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Vladimir
- Zapolskiy <vladimir_zapolskiy@mentor.com>, Sandeep Jain
- <Sandeep_Jain@mentor.com>
-Subject: [PATCH v1 1/2] mtd: m25p80: lock module while used
-Date: Thu, 4 Aug 2016 19:46:33 +0530
-Message-ID: <1470320194-9602-2-git-send-email-Sandeep_Jain@mentor.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Jim
+ Baxter <jim_baxter@mentor.com>, Sandeep Jain <Sandeep_Jain@mentor.com>
+Subject: [PATCH v1 2/2] mtd: Add hooks to call get and put on mtd devices.
+Date: Thu, 4 Aug 2016 19:46:34 +0530
+Message-ID: <1470320194-9602-3-git-send-email-Sandeep_Jain@mentor.com>
 In-Reply-To: <1470320194-9602-1-git-send-email-Sandeep_Jain@mentor.com>
 References: <Sandeep Jain <Sandeep_Jain@mentor.com>
  <1470320194-9602-1-git-send-email-Sandeep_Jain@mentor.com>
@@ -24,58 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+From: Jim Baxter <jim_baxter@mentor.com>
 
-The change controls module users counter, which prevents to get
-accidental oops on module unload while it is in use by mtd subsystem:
+Add hooks to mtdpart to call _get_device and _put_device,
+this allows the mtd devices to perform internal
+reference counting if required.
 
-% dd if=/dev/mtd0 of=/dev/null &
-% rmmod m25p80
-
-Removing MTD device #0 (spi32766.0) with use count 1
-Unable to handle kernel paging request at virtual address 7f4fb7f8
-pgd = bd094000
-[7f4fb7f8] *pgd=4cb66811, *pte=00000000, *ppte=00000000
-Internal error: Oops: 80000007 [#1] PREEMPT SMP ARM
-
-Signed-off-by: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
 Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
 ---
- drivers/mtd/devices/m25p80.c |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/mtd/mtdpart.c |   18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 9cf7fcd..2eb1530 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -185,6 +185,19 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	return ret;
- }
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 1f13e32..adbb1fd 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -338,6 +338,20 @@ static const struct mtd_ooblayout_ops part_ooblayout_ops = {
+ 	.free = part_ooblayout_free,
+ };
  
-+static void m25p80_put(struct mtd_info *mtd)
++static int part_get_device(struct mtd_info *mtd)
 +{
-+	module_put(THIS_MODULE);
++	struct mtd_part *part = mtd_to_part(mtd);
++
++	return part->master->_get_device(part->master);
 +}
 +
-+static int m25p80_get(struct mtd_info *mtd)
++static void part_put_device(struct mtd_info *mtd)
 +{
-+	if (!try_module_get(THIS_MODULE))
-+		return -ENODEV;
++	struct mtd_part *part = mtd_to_part(mtd);
 +
-+	return 0;
++	part->master->_put_device(part->master);
 +}
 +
- /*
-  * board specific setup should have ensured the SPI clock used here
-  * matches what the READ command supports, at least until this driver
-@@ -212,6 +225,8 @@ static int m25p_probe(struct spi_device *spi)
- 	nor->write = m25p80_write;
- 	nor->write_reg = m25p80_write_reg;
- 	nor->read_reg = m25p80_read_reg;
-+	nor->mtd._put_device = m25p80_put;
-+	nor->mtd._get_device = m25p80_get;
- 
- 	nor->dev = &spi->dev;
- 	spi_nor_set_flash_node(nor, spi->dev.of_node);
+ static inline void free_partition(struct mtd_part *p)
+ {
+ 	kfree(p->mtd.name);
+@@ -463,6 +477,10 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 		slave->mtd._block_isbad = part_block_isbad;
+ 	if (master->_block_markbad)
+ 		slave->mtd._block_markbad = part_block_markbad;
++	if (master->_get_device)
++		slave->mtd._get_device = part_get_device;
++	if (master->_put_device)
++		slave->mtd._put_device = part_put_device;
+ 	slave->mtd._erase = part_erase;
+ 	slave->master = master;
+ 	slave->offset = part->offset;
 -- 
 1.7.9.5
