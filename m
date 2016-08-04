@@ -1,34 +1,24 @@
-Received: from mx1.redhat.com ([209.132.183.28])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bVBVE-00005U-Tm
- for linux-mtd@lists.infradead.org; Thu, 04 Aug 2016 05:47:33 +0000
-Subject: Re: [PATCH 37/45] drivers: use req op accessor
-To: Shaun Tancheff <shaun.tancheff@seagate.com>
-References: <1465155145-10812-1-git-send-email-mchristi@redhat.com>
- <1465155145-10812-38-git-send-email-mchristi@redhat.com>
- <CAOxpaSUMsgfTYsL0bL6VCnwxz7bpgpKO-ZfC5J8dFG9PN-hzvg@mail.gmail.com>
- <87fbe31f-27b3-ff7a-e381-34fc1aad337e@redhat.com>
- <CAJVOszAd9Eu88P2=QoNVArd0jwDH7KRe=OB82tCNMpjfv9B4KA@mail.gmail.com>
-Cc: Ross Zwisler <zwisler@gmail.com>,
- Ross Zwisler <ross.zwisler@linux.intel.com>,
- Dave Chinner <david@fromorbit.com>, Jens Axboe <axboe@fb.com>,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-ext4 <linux-ext4@vger.kernel.org>, konrad.wilk@oracle.com,
- drbd-dev@lists.linbit.com, philipp.reisner@linbit.com,
- lars.ellenberg@linbit.com, linux-raid@vger.kernel.org,
- dm-devel@redhat.com, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>, linux-scsi@vger.kernel.org,
- linux-mtd@lists.infradead.org, target-devel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, osd-dev@open-osd.org,
- XFS Developers <xfs@oss.sgi.com>, ocfs2-devel@oss.oracle.com
-From: Mike Christie <mchristi@redhat.com>
-Message-ID: <57A2D6D7.8040807@redhat.com>
-Date: Thu, 4 Aug 2016 00:47:03 -0500
-MIME-Version: 1.0
-In-Reply-To: <CAJVOszAd9Eu88P2=QoNVArd0jwDH7KRe=OB82tCNMpjfv9B4KA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bVCBZ-0006Mw-4Q
+ for linux-mtd@lists.infradead.org; Thu, 04 Aug 2016 06:31:17 +0000
+Message-ID: <1470292252.2311.48.camel@gmail.com>
+Subject: Re: [PATCH 2/2] ubi: attach: do not return -EINVAL if the
+ mtd->numeraseregions is 1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
+ <richard@nod.at>
+Cc: Rajeev Kumar <rajeev_kumar@mentor.com>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Date: Thu, 04 Aug 2016 09:30:52 +0300
+In-Reply-To: <20160729182449.GA124841@google.com>
+References: <1469440019-29358-1-git-send-email-rajeev_kumar@mentor.com>
+ <1469440019-29358-2-git-send-email-rajeev_kumar@mentor.com>
+ <5795EA8B.2040209@nod.at> <20160729182449.GA124841@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,83 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/03/2016 07:30 PM, Shaun Tancheff wrote:
-> On Wed, Aug 3, 2016 at 6:47 PM, Mike Christie <mchristi@redhat.com> wrote:
->> On 08/03/2016 05:33 PM, Ross Zwisler wrote:
->>> On Sun, Jun 5, 2016 at 1:32 PM,  <mchristi@redhat.com> wrote:
->>>> From: Mike Christie <mchristi@redhat.com>
->>>>
->>>> The req operation REQ_OP is separated from the rq_flag_bits
->>>> definition. This converts the block layer drivers to
->>>> use req_op to get the op from the request struct.
->>>>
->>>> Signed-off-by: Mike Christie <mchristi@redhat.com>
->>>> ---
->>>>  drivers/block/loop.c              |  6 +++---
->>>>  drivers/block/mtip32xx/mtip32xx.c |  2 +-
->>>>  drivers/block/nbd.c               |  2 +-
->>>>  drivers/block/rbd.c               |  4 ++--
->>>>  drivers/block/xen-blkfront.c      |  8 +++++---
->>>>  drivers/ide/ide-floppy.c          |  2 +-
->>>>  drivers/md/dm.c                   |  2 +-
->>>>  drivers/mmc/card/block.c          |  7 +++----
->>>>  drivers/mmc/card/queue.c          |  6 ++----
->>>
->>> Dave Chinner reported a deadlock with XFS + DAX, which I reproduced
->>> and bisected to this commit:
->>>
->>> commit c2df40dfb8c015211ec55f4b1dd0587f875c7b34
->>> Author: Mike Christie <mchristi@redhat.com>
->>> Date:   Sun Jun 5 14:32:17 2016 -0500
->>> drivers: use req op accessor
->>>
->>> Here are the steps to reproduce the deadlock with a BRD ramdisk:
->>>
->>> mkfs.xfs -f /dev/ram0
->>> mount -o dax /dev/ram0 /mnt/scratch
->>
->> When using ramdisks, we need the attached patch like in your other bug
->> report. I think it will fix some hangs people are seeing.
->>
->> I do not think that it should cause the failure to run issue you saw
->> when doing generic/008 and ext2.
->>
-> 
-> I think the translation in loop.c is suspicious here:
-> 
->     "if use DIO && not (a flush_flag or discard_flag)"
-> should translate to:
->     "if use DIO && not ((a flush_flag) || op == discard)"
-> 
-> But in the patch I read:
->     "if use DIO && ((not a flush_flag) || op == discard)
-> 
-> Which would have DIO && discards follow the AIO path?
-> 
-> So I would humbly suggest something like the following
->     (on top of commit c2df40dfb8c015211ec55f4b1dd0587f875c7b34):
-> [Please excuse the messed up patch format ... gmail eats tabs]
-> 
-> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-> index b9b737c..0754d83 100644
-> --- a/drivers/block/loop.c
-> +++ b/drivers/block/loop.c
-> @@ -1659,8 +1659,9 @@ static int loop_queue_rq(struct blk_mq_hw_ctx *hctx,
->         if (lo->lo_state != Lo_bound)
->                 return -EIO;
-> 
-> -       if (lo->use_dio && (!(cmd->rq->cmd_flags & REQ_FLUSH) ||
-> -           req_op(cmd->rq) == REQ_OP_DISCARD))
-> +       if (lo->use_dio && !(
-> +           (cmd->rq->cmd_flags & REQ_FLUSH) ||
-> +            req_op(cmd->rq) == REQ_OP_DISCARD))
->                 cmd->use_aio = true;
->         else
->                 cmd->use_aio = false;
-> 
+On Fri, 2016-07-29 at 11:24 -0700, Brian Norris wrote:
+> (Artem, any opinions, since you had the most opinion last time this
+> came
+> up?)
 
-You are right. The translation was bad and your code above is correct.
+Hi Brian, 
 
-I think we need my patch in the other mail though too, because for the
-rw_page user case if WB_SYNC_ALL is set, then the IO gets sent down as a
-read instead of a write.
+well, I do not have strong opinion. That UBI translates to "I do not
+know how to deal with multiple regions", nothing else.
+
+I think this was my understanding of numeraseregions
+
+1. numaraseregions=0: no regions, just uniform flash.
+
+2. numeraseregions=1: basically same as above, but friendlier to the
+region-aware software. Indeed, if I care about regions, I do not want
+to handle the special case of numerasereions=0, I want a common case
+with numerasereionts>0.
+
+Or to put it this way, from the drivers' writer POW:
+
+numaraseregions=0 - do not know anything about regions, do not care.
+Also pre-regions dirivers, old stuff
+
+numeraseregions=1 - I want my driver to be ideal. Non-aware SW won't
+look to the regions stuff, the aware SW will work nicely.
+
+So my take is: ban numeraseregions=1 if you feel like, but I recommend
+to just document the 0 (don't care/legacy) and 1 (same as 0, but care)
+and allow for both.
+
+Artem.
