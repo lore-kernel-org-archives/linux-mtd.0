@@ -1,26 +1,20 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bVe18-0006sH-LO
- for linux-mtd@lists.infradead.org; Fri, 05 Aug 2016 12:14:24 +0000
-Subject: Re: [PATCH v1 2/2] mtd: Add hooks to call get and put on mtd devices.
-To: "Baxter, Jim" <jim_baxter@mentor.com>
-References: <Sandeep_Jain@mentor.com>
- <1470320194-9602-1-git-send-email-Sandeep_Jain@mentor.com>
- <1470320194-9602-3-git-send-email-Sandeep_Jain@mentor.com>
- <CAFLxGvx7X=uQoDQp7HJNOWvfo-sGa+TmWM+q4VNPLF4KSS4+aQ@mail.gmail.com>
- <91745308-1747-e7f5-46d0-83482e218a02@mentor.com>
-Cc: Sandeep Jain <Sandeep_Jain@mentor.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <57A48302.30708@nod.at>
-Date: Fri, 5 Aug 2016 14:13:54 +0200
 MIME-Version: 1.0
-In-Reply-To: <91745308-1747-e7f5-46d0-83482e218a02@mentor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1461307192-866-6-git-send-email-B56489@freescale.com>
+References: <1461307192-866-1-git-send-email-B56489@freescale.com>
+ <1461307192-866-6-git-send-email-B56489@freescale.com>
+From: Jagan Teki <jagannadh.teki@gmail.com>
+Date: Sat, 6 Aug 2016 19:57:27 +0530
+Message-ID: <CAD6G_RQGMV5zxuC9dNa3TYa-Zxv4drDB7K1PpNdfzauBCeVmdA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
+To: Yunhui Cui <B56489@freescale.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Han Xu <han.xu@freescale.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ yao.yuan@nxp.com, Yunhui Cui <yunhui.cui@nxp.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +24,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 05.08.2016 um 13:54 schrieb Baxter, Jim:
->> On Thu, Aug 4, 2016 at 4:16 PM, Sandeep Jain <Sandeep_Jain@mentor.com> wrote:
->>> From: Jim Baxter <jim_baxter@mentor.com>
->>>
->>> Add hooks to mtdpart to call _get_device and _put_device,
->>> this allows the mtd devices to perform internal
->>> reference counting if required.
->>>
->>> Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
->>> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
->>
->> I sent the same patch some time ago:
->> https://patchwork.ozlabs.org/patch/644422/
+On 22 April 2016 at 12:09, Yunhui Cui <B56489@freescale.com> wrote:
+> From: Yunhui Cui <yunhui.cui@nxp.com>
+>
+> With the physical sectors combination, S25FS-S family flash
+> requires some special operations for read/write functions.
+>
+> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 59 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 157841d..91ee920 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -39,6 +39,10 @@
+>
+>  #define SPI_NOR_MAX_ID_LEN     6
+>  #define SPI_NOR_MAX_ADDR_WIDTH 4
+> +/* Added for S25FS-S family flash */
+> +#define SPINOR_CONFIG_REG3_OFFSET      0x800004
+> +#define CR3V_4KB_ERASE_UNABLE  0x8
+> +#define SPINOR_S25FS_FAMILY_ID 0x81
+>
+>  struct flash_info {
+>         char            *name;
+> @@ -78,6 +82,7 @@ struct flash_info {
+>  };
+>
+>  #define JEDEC_MFR(info)        ((info)->id[0])
+> +#define EXT_ID(info)   ((info)->id[5])
 
-Brian, can you please pickup my patch for 4.8-rcX?
-The patch fixes a real problem and another patch from
-Mentor folks depends on it.
+I don't think 5th only the ext and usually last 3 bytes are called as
+ext_jedec if the id length is 6 bytes.
 
-Thanks,
-//richard
+>
+>  static const struct flash_info *spi_nor_match_id(const char *name);
+>
+> @@ -881,6 +886,7 @@ static const struct flash_info spi_nor_ids[] = {
+>          */
+>         { "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>         { "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> +       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512, 0)},
+>         { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
+>         { "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>         { "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> @@ -1018,6 +1024,53 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+>         return ERR_PTR(-ENODEV);
+>  }
+>
+> +/*
+> + * The S25FS-S family physical sectors may be configured as a
+> + * hybrid combination of eight 4-kB parameter sectors
+> + * at the top or bottom of the address space with all
+> + * but one of the remaining sectors being uniform size.
+> + * The Parameter Sector Erase commands (20h or 21h) must
+> + * be used to erase the 4-kB parameter sectors individually.
+> + * The Sector (uniform sector) Erase commands (D8h or DCh)
+> + * must be used to erase any of the remaining
+> + * sectors, including the portion of highest or lowest address
+> + * sector that is not overlaid by the parameter sectors.
+> + * The uniform sector erase command has no effect on parameter sectors.
+> + */
+> +static int spansion_s25fs_disable_4kb_erase(struct spi_nor *nor)
+> +{
+> +       struct fsl_qspi *q;
+> +       u32 cr3v_addr  = SPINOR_CONFIG_REG3_OFFSET;
+> +       u8 cr3v = 0x0;
+> +       int ret = 0x0;
+> +
+> +       q = nor->priv;
+
+Why this q?
+
+-- 
+Jagan.
