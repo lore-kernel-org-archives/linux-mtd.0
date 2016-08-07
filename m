@@ -1,20 +1,19 @@
-MIME-Version: 1.0
-In-Reply-To: <1461307192-866-6-git-send-email-B56489@freescale.com>
-References: <1461307192-866-1-git-send-email-B56489@freescale.com>
- <1461307192-866-6-git-send-email-B56489@freescale.com>
-From: Jagan Teki <jagannadh.teki@gmail.com>
-Date: Sat, 6 Aug 2016 19:57:27 +0530
-Message-ID: <CAD6G_RQGMV5zxuC9dNa3TYa-Zxv4drDB7K1PpNdfzauBCeVmdA@mail.gmail.com>
-Subject: Re: [PATCH v2 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
-To: Yunhui Cui <B56489@freescale.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+Received: from mail-pa0-f68.google.com ([209.85.220.68])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bWTF8-0003N7-TQ
+ for linux-mtd@lists.infradead.org; Sun, 07 Aug 2016 18:56:16 +0000
+Received: by mail-pa0-f68.google.com with SMTP id cf3so22556070pad.2
+ for <linux-mtd@lists.infradead.org>; Sun, 07 Aug 2016 11:55:54 -0700 (PDT)
+From: Jagan Teki <jteki@openedev.com>
+To: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Jagan Teki <jteki@openedev.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Han Xu <han.xu@freescale.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- yao.yuan@nxp.com, Yunhui Cui <yunhui.cui@nxp.com>
-Content-Type: text/plain; charset=UTF-8
+ Yunhui Cui <yunhui.cui@nxp.com>,
+ Michael Trimarchi <michael@amarulasolutions.com>
+Subject: [PATCH] mtd: spi-nor: Add s25fs256s1 spi-nor flash support
+Date: Mon,  8 Aug 2016 00:24:48 +0530
+Message-Id: <1470596088-8172-1-git-send-email-jteki@openedev.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,79 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 22 April 2016 at 12:09, Yunhui Cui <B56489@freescale.com> wrote:
-> From: Yunhui Cui <yunhui.cui@nxp.com>
->
-> With the physical sectors combination, S25FS-S family flash
-> requires some special operations for read/write functions.
->
-> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 59 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 157841d..91ee920 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -39,6 +39,10 @@
->
->  #define SPI_NOR_MAX_ID_LEN     6
->  #define SPI_NOR_MAX_ADDR_WIDTH 4
-> +/* Added for S25FS-S family flash */
-> +#define SPINOR_CONFIG_REG3_OFFSET      0x800004
-> +#define CR3V_4KB_ERASE_UNABLE  0x8
-> +#define SPINOR_S25FS_FAMILY_ID 0x81
->
->  struct flash_info {
->         char            *name;
-> @@ -78,6 +82,7 @@ struct flash_info {
->  };
->
->  #define JEDEC_MFR(info)        ((info)->id[0])
-> +#define EXT_ID(info)   ((info)->id[5])
+Add Atmel s25fs256s1 spi-nor flash to the list of spi_nor_ids.
 
-I don't think 5th only the ext and usually last 3 bytes are called as
-ext_jedec if the id length is 6 bytes.
+In spansion S25FS-S family the physical sectors are grouped as
+normal and parameter sectors. Parameter sectors are 4kB in size
+with 8 set located at the bottom or top address of a device.
+Normal sectors are similar to other flash family with sizes of
+64kB or 32 kB.
 
->
->  static const struct flash_info *spi_nor_match_id(const char *name);
->
-> @@ -881,6 +886,7 @@ static const struct flash_info spi_nor_ids[] = {
->          */
->         { "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->         { "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512, 0)},
->         { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
->         { "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->         { "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> @@ -1018,6 +1024,53 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->         return ERR_PTR(-ENODEV);
->  }
->
-> +/*
-> + * The S25FS-S family physical sectors may be configured as a
-> + * hybrid combination of eight 4-kB parameter sectors
-> + * at the top or bottom of the address space with all
-> + * but one of the remaining sectors being uniform size.
-> + * The Parameter Sector Erase commands (20h or 21h) must
-> + * be used to erase the 4-kB parameter sectors individually.
-> + * The Sector (uniform sector) Erase commands (D8h or DCh)
-> + * must be used to erase any of the remaining
-> + * sectors, including the portion of highest or lowest address
-> + * sector that is not overlaid by the parameter sectors.
-> + * The uniform sector erase command has no effect on parameter sectors.
-> + */
-> +static int spansion_s25fs_disable_4kb_erase(struct spi_nor *nor)
-> +{
-> +       struct fsl_qspi *q;
-> +       u32 cr3v_addr  = SPINOR_CONFIG_REG3_OFFSET;
-> +       u8 cr3v = 0x0;
-> +       int ret = 0x0;
-> +
-> +       q = nor->priv;
+To erase whole flash using sector erase(D8h or DCh) won't effect
+the parameter sectors, so in order to erase these we must use 4K
+sector erase commands (20h or 21h) separately.
 
-Why this q?
+So better to erase the whole flash using 4K sector erase instead
+of detecting these family parts again and do two different erase
+operations.
 
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Yunhui Cui <yunhui.cui@nxp.com>
+Cc: Michael Trimarchi <michael@amarulasolutions.com>
+Signed-off-by: Jagan Teki <jteki@openedev.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..6ad7779 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -901,6 +901,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
+ 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512, SECT_4K) },
+ 	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
 -- 
-Jagan.
+2.7.4
