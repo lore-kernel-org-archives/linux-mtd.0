@@ -1,19 +1,20 @@
-Received: from mail-pf0-f195.google.com ([209.85.192.195])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bWTfZ-0005SY-AH
- for linux-mtd@lists.infradead.org; Sun, 07 Aug 2016 19:23:34 +0000
-Received: by mail-pf0-f195.google.com with SMTP id i6so23642074pfe.0
- for <linux-mtd@lists.infradead.org>; Sun, 07 Aug 2016 12:23:12 -0700 (PDT)
-From: Jagan Teki <jteki@openedev.com>
-To: linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- Jagan Teki <jteki@openedev.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Yunhui Cui <yunhui.cui@nxp.com>,
- Michael Trimarchi <michael@amarulasolutions.com>
-Subject: [PATCH v2] mtd: spi-nor: Add s25fs256s1 spi-nor flash support
-Date: Mon,  8 Aug 2016 00:52:10 +0530
-Message-Id: <1470597730-10400-1-git-send-email-jteki@openedev.com>
+ id 1bWU5B-0004eP-2X
+ for linux-mtd@lists.infradead.org; Sun, 07 Aug 2016 19:50:01 +0000
+Received: by mail-wm0-x244.google.com with SMTP id i5so11987928wmg.2
+ for <linux-mtd@lists.infradead.org>; Sun, 07 Aug 2016 12:49:40 -0700 (PDT)
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH 0/3] spi: introduce max message size and use it in the
+ fsl-espi driver
+To: Mark Brown <broonie@kernel.org>, Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Message-ID: <01d94235-a874-9331-e7ad-b326fb78271d@gmail.com>
+Date: Sun, 7 Aug 2016 21:46:52 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Spansion s25fs256s1 spi-nor flash to the list of spi_nor_ids.
+Recently a maximum transfer size was was introduced in struct spi_master.
+However there are also spi controllers with a maximum message size, e.g.
+fsl-espi has a max message size of 64KB.
+As there are no (known) spi controller with differing size limits for
+transfer and message, introduce a flag in spi_master to indicate that
+the max transfer size is also the maximum message size.
 
-In spansion S25FS-S family the physical sectors are grouped as
-normal and parameter sectors. Parameter sectors are 4kB in size
-with 8 set located at the bottom or top address of a device.
-Normal sectors are similar to other flash family with sizes of
-64kB or 32 kB.
+Then use this flag in the m25p80 driver to calculate proper read chunks
+for such controllers.
 
-To erase whole flash using sector erase(D8h or DCh) won't effect
-the parameter sectors, so in order to erase these we must use 4K
-sector erase commands (20h or 21h) separately.
+Eventually this new feature allows to significantly simplify the
+fsl-espi driver.
 
-So better to erase the whole flash using 4K sector erase instead
-of detecting these family parts again and do two different erase
-operations.
+Heiner Kallweit (3):
+  spi: introduce max message size flag in spi_master
+  mtd: m25p80: consider max message size in m25p80_read
+  spi: fsl-espi: eliminate spi nor flash read loop
 
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Yunhui Cui <yunhui.cui@nxp.com>
-Cc: Michael Trimarchi <michael@amarulasolutions.com>
-Signed-off-by: Jagan Teki <jteki@openedev.com>
----
-Changes for v2:
-	- Fix wrong vendor name in commit message
+ drivers/mtd/devices/m25p80.c |  7 +++-
+ drivers/spi/spi-fsl-espi.c   | 88 ++++++++++----------------------------------
+ include/linux/spi/spi.h      |  4 ++
+ 3 files changed, 30 insertions(+), 69 deletions(-)
 
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d0fc165..6ad7779 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -901,6 +901,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
- 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512, SECT_4K) },
- 	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
- 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
 -- 
-2.7.4
+2.9.2
