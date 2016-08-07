@@ -1,9 +1,9 @@
-Received: from mail-pa0-f68.google.com ([209.85.220.68])
+Received: from mail-pf0-f195.google.com ([209.85.192.195])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bWTF8-0003N7-TQ
- for linux-mtd@lists.infradead.org; Sun, 07 Aug 2016 18:56:16 +0000
-Received: by mail-pa0-f68.google.com with SMTP id cf3so22556070pad.2
- for <linux-mtd@lists.infradead.org>; Sun, 07 Aug 2016 11:55:54 -0700 (PDT)
+ id 1bWTfZ-0005SY-AH
+ for linux-mtd@lists.infradead.org; Sun, 07 Aug 2016 19:23:34 +0000
+Received: by mail-pf0-f195.google.com with SMTP id i6so23642074pfe.0
+ for <linux-mtd@lists.infradead.org>; Sun, 07 Aug 2016 12:23:12 -0700 (PDT)
 From: Jagan Teki <jteki@openedev.com>
 To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
@@ -11,9 +11,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Yunhui Cui <yunhui.cui@nxp.com>,
  Michael Trimarchi <michael@amarulasolutions.com>
-Subject: [PATCH] mtd: spi-nor: Add s25fs256s1 spi-nor flash support
-Date: Mon,  8 Aug 2016 00:24:48 +0530
-Message-Id: <1470596088-8172-1-git-send-email-jteki@openedev.com>
+Subject: [PATCH v2] mtd: spi-nor: Add s25fs256s1 spi-nor flash support
+Date: Mon,  8 Aug 2016 00:52:10 +0530
+Message-Id: <1470597730-10400-1-git-send-email-jteki@openedev.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,7 +23,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Atmel s25fs256s1 spi-nor flash to the list of spi_nor_ids.
+Add Spansion s25fs256s1 spi-nor flash to the list of spi_nor_ids.
 
 In spansion S25FS-S family the physical sectors are grouped as
 normal and parameter sectors. Parameter sectors are 4kB in size
@@ -44,6 +44,9 @@ Cc: Yunhui Cui <yunhui.cui@nxp.com>
 Cc: Michael Trimarchi <michael@amarulasolutions.com>
 Signed-off-by: Jagan Teki <jteki@openedev.com>
 ---
+Changes for v2:
+	- Fix wrong vendor name in commit message
+
  drivers/mtd/spi-nor/spi-nor.c | 1 +
  1 file changed, 1 insertion(+)
 
