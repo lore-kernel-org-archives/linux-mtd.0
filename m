@@ -1,18 +1,22 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bWU5C-0004ev-E7
- for linux-mtd@lists.infradead.org; Sun, 07 Aug 2016 19:50:04 +0000
-Received: by mail-wm0-x242.google.com with SMTP id x83so11953104wma.3
- for <linux-mtd@lists.infradead.org>; Sun, 07 Aug 2016 12:49:44 -0700 (PDT)
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH 3/3] spi: fsl-espi: eliminate spi nor flash read loop
-To: Mark Brown <broonie@kernel.org>, Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Message-ID: <64289061-b779-1dcf-abd7-274a23e91b49@gmail.com>
-Date: Sun, 7 Aug 2016 21:49:30 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bWlMU-0005VK-JF
+ for linux-mtd@lists.infradead.org; Mon, 08 Aug 2016 14:17:03 +0000
+Date: Mon, 8 Aug 2016 16:16:39 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Kyle Roeschley <kyle.roeschley@ni.com>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ beanhuo@micron.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, nathan.sullivan@ni.com, xander.huff@ni.com,
+ peterpansjtu@gmail.com
+Subject: Re: [RESEND v5] mtd: nand_bbt: scan for next free bbt block if
+ writing bbt fails
+Message-ID: <20160808161639.6f21b52c@bbrezillon>
+In-Reply-To: <1470168110-20233-1-git-send-email-kyle.roeschley@ni.com>
+References: <1470168110-20233-1-git-send-email-kyle.roeschley@ni.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,142 +27,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The fsl-espi driver contains a read loop that implicitely assumes that
-the device to read from is a m25p80 SPI NOR flash (bytes 2 - 4 of the
-first write transfer are interpreted as 3 byte flash address).
+Hi Kyle,
 
-Now that we have such a read loop in the spi-nor driver and are able
-to correctly indicate the message size limit of the controller, the
-read loop can be removed from the fsl-espi driver.
+On Tue, 2 Aug 2016 15:01:50 -0500
+Kyle Roeschley <kyle.roeschley@ni.com> wrote:
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
- drivers/spi/spi-fsl-espi.c | 88 +++++++++++-----------------------------------
- 1 file changed, 20 insertions(+), 68 deletions(-)
+> If erasing or writing the BBT fails, we should mark the current BBT
+> block as bad and use the BBT descriptor to scan for the next available
+> unused block in the BBT. We should only return a failure if there isn't
+> any space left.
+> 
+> Based on original code implemented by Jeff Westfahl
+> <jeff.westfahl@ni.com>.
+> 
+> Signed-off-by: Kyle Roeschley <kyle.roeschley@ni.com>
+> Suggested-by: Jeff Westfahl <jeff.westfahl@ni.com>
+> ---
+> v5: De-duplicate bad block handling
+> 
+> v4: Don't ignore write protection while marking bad BBT blocks
+>     Correctly call block_markbad
+>     Minor cleanups
+> 
+> v3: Don't overload mtd->priv
+>     Keep nand_erase_nand from erroring on protected BBT blocks
+> 
+> v2: Mark OOB area in each block as well as BBT
+>     Avoid marking read-only, bad address, or known bad blocks as bad
+> 
+>  drivers/mtd/nand/nand_bbt.c | 40 ++++++++++++++++++++++++++++++++++------
+>  1 file changed, 34 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index 2fbb523..c9255f8 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -620,7 +620,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+>  {
+>  	struct nand_chip *this = mtd_to_nand(mtd);
+>  	struct erase_info einfo;
+> -	int i, res, chip = 0;
+> +	int i, res, chip = 0, found_bad_block = 0;
+>  	int bits, startblock, dir, page, offs, numblocks, sft, sftmsk;
+>  	int nrchips, pageoffs, ooboffs;
+>  	uint8_t msk[4];
+> @@ -663,6 +663,27 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+>  			goto write;
+>  		}
+>  
+> +next:
+> +		if (found_bad_block) {
+> +			/*
+> +			 * We found a bad block on the last loop iteration.
+> +			 * Mark it as such and see if there's another block
+> +			 * available in the BBT area.
+> +			 */
+> +			int block = page >>
+> +				    (this->bbt_erase_shift - this->page_shift);
+> +			pr_info("nand_bbt: failed to erase block %d when writing BBT\n",
+> +				block);
+> +			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
+> +
+> +			res = this->block_markbad(mtd, to);
+> +			if (res)
+> +				pr_warn("nand_bbt: error %d while marking block %d bad\n",
+> +					res, block);
+> +			td->pages[chip] = -1;
+> +			found_bad_block = 0;
+> +		}
+> +
 
-diff --git a/drivers/spi/spi-fsl-espi.c b/drivers/spi/spi-fsl-espi.c
-index 8d85a3c..f3ff65f 100644
---- a/drivers/spi/spi-fsl-espi.c
-+++ b/drivers/spi/spi-fsl-espi.c
-@@ -258,23 +258,6 @@ static int fsl_espi_bufs(struct spi_device *spi, struct spi_transfer *t)
- 	return mpc8xxx_spi->count;
- }
- 
--static inline void fsl_espi_addr2cmd(unsigned int addr, u8 *cmd)
--{
--	if (cmd) {
--		cmd[1] = (u8)(addr >> 16);
--		cmd[2] = (u8)(addr >> 8);
--		cmd[3] = (u8)(addr >> 0);
--	}
--}
--
--static inline unsigned int fsl_espi_cmd2addr(u8 *cmd)
--{
--	if (cmd)
--		return cmd[1] << 16 | cmd[2] << 8 | cmd[3] << 0;
--
--	return 0;
--}
--
- static void fsl_espi_do_trans(struct spi_message *m,
- 				struct fsl_espi_transfer *tr)
- {
-@@ -366,68 +349,36 @@ static void fsl_espi_cmd_trans(struct spi_message *m,
- static void fsl_espi_rw_trans(struct spi_message *m,
- 				struct fsl_espi_transfer *trans, u8 *rx_buff)
- {
--	struct fsl_espi_transfer *espi_trans = trans;
--	unsigned int total_len = espi_trans->len;
- 	struct spi_transfer *t;
- 	u8 *local_buf;
--	u8 *rx_buf = rx_buff;
--	unsigned int trans_len;
--	unsigned int addr;
--	unsigned int tx_only;
--	unsigned int rx_pos = 0;
--	unsigned int pos;
--	int i, loop;
-+	unsigned int tx_only = 0;
-+	int i = 0;
- 
- 	local_buf = kzalloc(SPCOM_TRANLEN_MAX, GFP_KERNEL);
- 	if (!local_buf) {
--		espi_trans->status = -ENOMEM;
-+		trans->status = -ENOMEM;
- 		return;
- 	}
- 
--	for (pos = 0, loop = 0; pos < total_len; pos += trans_len, loop++) {
--		trans_len = total_len - pos;
--
--		i = 0;
--		tx_only = 0;
--		list_for_each_entry(t, &m->transfers, transfer_list) {
--			if (t->tx_buf) {
--				memcpy(local_buf + i, t->tx_buf, t->len);
--				i += t->len;
--				if (!t->rx_buf)
--					tx_only += t->len;
--			}
--		}
--
--		/* Add additional TX bytes to compensate SPCOM_TRANLEN_MAX */
--		if (loop > 0)
--			trans_len += tx_only;
--
--		if (trans_len > SPCOM_TRANLEN_MAX)
--			trans_len = SPCOM_TRANLEN_MAX;
--
--		/* Update device offset */
--		if (pos > 0) {
--			addr = fsl_espi_cmd2addr(local_buf);
--			addr += rx_pos;
--			fsl_espi_addr2cmd(addr, local_buf);
-+	list_for_each_entry(t, &m->transfers, transfer_list) {
-+		if (t->tx_buf) {
-+			memcpy(local_buf + i, t->tx_buf, t->len);
-+			i += t->len;
-+			if (!t->rx_buf)
-+				tx_only += t->len;
- 		}
-+	}
- 
--		espi_trans->len = trans_len;
--		espi_trans->tx_buf = local_buf;
--		espi_trans->rx_buf = local_buf;
--		fsl_espi_do_trans(m, espi_trans);
--
--		/* If there is at least one RX byte then copy it to rx_buf */
--		if (tx_only < SPCOM_TRANLEN_MAX)
--			memcpy(rx_buf + rx_pos, espi_trans->rx_buf + tx_only,
--					trans_len - tx_only);
--
--		rx_pos += trans_len - tx_only;
-+	trans->tx_buf = local_buf;
-+	trans->rx_buf = local_buf;
-+	fsl_espi_do_trans(m, trans);
- 
--		if (loop > 0)
--			espi_trans->actual_length += espi_trans->len - tx_only;
--		else
--			espi_trans->actual_length += espi_trans->len;
-+	if (!trans->status) {
-+		/* If there is at least one RX byte then copy it to rx_buff */
-+		if (trans->len > tx_only)
-+			memcpy(rx_buff, trans->rx_buf + tx_only,
-+			       trans->len - tx_only);
-+		trans->actual_length += trans->len;
- 	}
- 
- 	kfree(local_buf);
-@@ -696,6 +647,7 @@ static struct spi_master * fsl_espi_probe(struct device *dev,
- 	master->transfer_one_message = fsl_espi_do_one_msg;
- 	master->auto_runtime_pm = true;
- 	master->max_transfer_size = fsl_espi_max_transfer_size;
-+	master->max_message_size_flag = true;
- 
- 	mpc8xxx_spi = spi_master_get_devdata(master);
- 
--- 
-2.9.2
+Yet another label in this already non-trivial function. Can we do
+something like that [1][2] instead?
+
+Regards,
+
+Boris
+
+>  		/*
+>  		 * Automatic placement of the bad block table. Search direction
+>  		 * top -> down?
+> @@ -787,14 +808,21 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+>  		einfo.addr = to;
+>  		einfo.len = 1 << this->bbt_erase_shift;
+>  		res = nand_erase_nand(mtd, &einfo, 1);
+> -		if (res < 0)
+> +		if (res == -EIO) {
+> +			found_bad_block = 1;
+> +			goto next;
+> +		} else if (res) {
+>  			goto outerr;
+> +		}
+>  
+> -		res = scan_write_bbt(mtd, to, len, buf,
+> -				td->options & NAND_BBT_NO_OOB ? NULL :
+> -				&buf[len]);
+> -		if (res < 0)
+> +		res = scan_write_bbt(mtd, to, len, buf, td->options &
+> +				     NAND_BBT_NO_OOB ? NULL : &buf[len]);
+> +		if (res == -EIO) {
+> +			found_bad_block = 1;
+> +			goto next;
+> +		} else if (res) {
+>  			goto outerr;
+> +		}
+>  
+>  		pr_info("Bad block table written to 0x%012llx, version 0x%02X\n",
+>  			 (unsigned long long)to, td->version[chip]);
+
+[1]http://code.bulix.org/3xbnwr-104986
+[2]http://code.bulix.org/e16nvo-104988
