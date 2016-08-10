@@ -1,20 +1,16 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bXTsP-000403-HR
- for linux-mtd@lists.infradead.org; Wed, 10 Aug 2016 13:48:59 +0000
-Date: Wed, 10 Aug 2016 15:48:34 +0200
+Date: Wed, 10 Aug 2016 16:24:38 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>,
- <yongjun_wei@trendmicro.com.cn>, "Cooper Jr., Franklin" <fcooper@ti.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [bug report] mtd: nand: omap2: fix return value check in
- omap_nand_probe()
-Message-ID: <20160810154834.5bd3c1f9@bbrezillon>
-In-Reply-To: <bd02b812-5dc7-e431-bd8e-94b3edc706b1@ti.com>
-References: <20160803123218.GA19033@mwanda>
- <bd02b812-5dc7-e431-bd8e-94b3edc706b1@ti.com>
+To: Ray Jui <ray.jui@broadcom.com>, Brian Norris
+ <computersforpeace@gmail.com>, Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Prafulla Kota <prafulla.kota@broadcom.com>,
+ bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/2] mtd: brcmnand: iProc big endian and ONFI support
+Message-ID: <20160810162438.4c6cffd3@bbrezillon>
+In-Reply-To: <1469051631-7896-2-git-send-email-ray.jui@broadcom.com>
+References: <1469051631-7896-1-git-send-email-ray.jui@broadcom.com>
+ <1469051631-7896-2-git-send-email-ray.jui@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,69 +23,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 20 Jul 2016 14:53:50 -0700
+Ray Jui <ray.jui@broadcom.com> wrote:
 
-On Thu, 4 Aug 2016 10:05:09 +0300
-Roger Quadros <rogerq@ti.com> wrote:
+> This patch adds big endian and ONFI support for various iProc based
+> SoCs that use the core brcmstb NAND controller
 
-> +Franklin
+Brian, Kamal, can you review this patch?
+
 > 
-> On 03/08/16 15:32, Dan Carpenter wrote:
-> > Hello Wei Yongjun,
-> > 
-> > The patch de3bfc4a1616: "mtd: nand: omap2: fix return value check in
-> > omap_nand_probe()" from Jul 14, 2016, leads to the following static
-> > checker warning:
-> > 
-> > 	drivers/mtd/nand/omap2.c:2173 omap_nand_probe()
-> > 	error: 'info->dma' dereferencing possible ERR_PTR()
-> > 
-> > drivers/mtd/nand/omap2.c
-> >   1921          case NAND_OMAP_PREFETCH_DMA:
-> >   1922                  dma_cap_zero(mask);
-> >   1923                  dma_cap_set(DMA_SLAVE, mask);
-> >   1924                  info->dma = dma_request_chan(pdev->dev.parent, "rxtx");
-> >   1925  
-> >   1926                  if (IS_ERR(info->dma)) {
-> >                                    ^^^^^^^^^
-> >   1927                          dev_err(&pdev->dev, "DMA engine request failed\n");
-> >   1928                          err = PTR_ERR(info->dma);
-> >   1929                          goto return_error;
-> >   1930                  } else {
-> >   1931                          struct dma_slave_config cfg;
-> >   1932  
-> >   1933                          memset(&cfg, 0, sizeof(cfg));
-> >   1934                          cfg.src_addr = info->phys_base;
-> >   1935                          cfg.dst_addr = info->phys_base;
-> >   1936                          cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> >   1937                          cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> >   1938                          cfg.src_maxburst = 16;
-> >   1939                          cfg.dst_maxburst = 16;
-> >   1940                          err = dmaengine_slave_config(info->dma, &cfg);
-> >   1941                          if (err) {
-> >   1942                                  dev_err(&pdev->dev, "DMA engine slave config failed: %d\n",
-> >   1943                                          err);
-> >   1944                                  goto return_error;
-> >   1945                          }
-> >   1946                          nand_chip->read_buf   = omap_read_buf_dma_pref;
-> >   1947                          nand_chip->write_buf  = omap_write_buf_dma_pref;
-> >   1948                  }
-> >   1949                  break;
-> >   1950  
-> > 
-> > [ snip ]
-> > 
-> >   2170  
-> >   2171  return_error:
-> >   2172          if (info->dma)
-> >   2173                  dma_release_channel(info->dma);
-> >                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > We can't pass error pointers to dma_release_channel().  I can't compile
-> > this code though, so I'm not going to patch it.
-
-		if (!IS_ERR_OR_NULL(info->dma))
-			dma_release_channel(info->dma);
-
-Should do the trick.
-
-Franklin, Roger, can you check if I'm right and send a fix?
+> This patch was originally implemented by Prafulla Kota
+> <prafulla.kota@broadcom.com> and fully tested on iProc based NS2 SVK
+> 
+> Signed-off-by: Prafulla Kota <prafulla.kota@broadcom.com>
+> Signed-off-by: Ray Jui <ray.jui@broadcom.com>
+> ---
+>  drivers/mtd/nand/brcmnand/brcmnand.c   | 12 ++++++------
+>  drivers/mtd/nand/brcmnand/brcmnand.h   | 13 ++++++++-----
+>  drivers/mtd/nand/brcmnand/iproc_nand.c | 18 ++++++++++++++----
+>  3 files changed, 28 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index b76ad7c..12a1585 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -1279,7 +1279,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+>  		u32 *flash_cache = (u32 *)ctrl->flash_cache;
+>  		int i;
+>  
+> -		brcmnand_soc_data_bus_prepare(ctrl->soc);
+> +		brcmnand_soc_data_bus_prepare(ctrl->soc, true);
+>  
+>  		/*
+>  		 * Must cache the FLASH_CACHE now, since changes in
+> @@ -1292,7 +1292,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+>  			 */
+>  			flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
+>  
+> -		brcmnand_soc_data_bus_unprepare(ctrl->soc);
+> +		brcmnand_soc_data_bus_unprepare(ctrl->soc, true);
+>  
+>  		/* Cleanup from HW quirk: restore SECTOR_SIZE_1K */
+>  		if (host->hwcfg.sector_size_1k)
+> @@ -1508,12 +1508,12 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+>  		brcmnand_waitfunc(mtd, chip);
+>  
+>  		if (likely(buf)) {
+> -			brcmnand_soc_data_bus_prepare(ctrl->soc);
+> +			brcmnand_soc_data_bus_prepare(ctrl->soc, false);
+>  
+>  			for (j = 0; j < FC_WORDS; j++, buf++)
+>  				*buf = brcmnand_read_fc(ctrl, j);
+>  
+> -			brcmnand_soc_data_bus_unprepare(ctrl->soc);
+> +			brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
+>  		}
+>  
+>  		if (oob)
+> @@ -1678,12 +1678,12 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
+>  		(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+>  
+>  		if (buf) {
+> -			brcmnand_soc_data_bus_prepare(ctrl->soc);
+> +			brcmnand_soc_data_bus_prepare(ctrl->soc, false);
+>  
+>  			for (j = 0; j < FC_WORDS; j++, buf++)
+>  				brcmnand_write_fc(ctrl, j, *buf);
+>  
+> -			brcmnand_soc_data_bus_unprepare(ctrl->soc);
+> +			brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
+>  		} else if (oob) {
+>  			for (j = 0; j < FC_WORDS; j++)
+>  				brcmnand_write_fc(ctrl, j, 0xffffffff);
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
+> index ef5eabb..5c44cd4 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.h
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.h
+> @@ -23,19 +23,22 @@ struct dev_pm_ops;
+>  struct brcmnand_soc {
+>  	bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
+>  	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
+> -	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
+> +	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
+> +				 bool is_param);
+>  };
+>  
+> -static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
+> +static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc,
+> +						 bool is_param)
+>  {
+>  	if (soc && soc->prepare_data_bus)
+> -		soc->prepare_data_bus(soc, true);
+> +		soc->prepare_data_bus(soc, true, is_param);
+>  }
+>  
+> -static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc)
+> +static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc,
+> +						   bool is_param)
+>  {
+>  	if (soc && soc->prepare_data_bus)
+> -		soc->prepare_data_bus(soc, false);
+> +		soc->prepare_data_bus(soc, false, is_param);
+>  }
+>  
+>  static inline u32 brcmnand_readl(void __iomem *addr)
+> diff --git a/drivers/mtd/nand/brcmnand/iproc_nand.c b/drivers/mtd/nand/brcmnand/iproc_nand.c
+> index 585596c..4c6ae11 100644
+> --- a/drivers/mtd/nand/brcmnand/iproc_nand.c
+> +++ b/drivers/mtd/nand/brcmnand/iproc_nand.c
+> @@ -74,7 +74,8 @@ static void iproc_nand_intc_set(struct brcmnand_soc *soc, bool en)
+>  	spin_unlock_irqrestore(&priv->idm_lock, flags);
+>  }
+>  
+> -static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
+> +static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare,
+> +				  bool is_param)
+>  {
+>  	struct iproc_nand_soc *priv =
+>  			container_of(soc, struct iproc_nand_soc, soc);
+> @@ -86,10 +87,19 @@ static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
+>  
+>  	val = brcmnand_readl(mmio);
+>  
+> -	if (prepare)
+> -		val |= IPROC_NAND_APB_LE_MODE;
+> -	else
+> +	/*
+> +	 * In the case of BE or when dealing with NAND data, alway configure
+> +	 * the APB bus to LE mode before accessing the FIFO and back to BE mode
+> +	 * after the access is done
+> +	 */
+> +	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) || !is_param) {
+> +		if (prepare)
+> +			val |= IPROC_NAND_APB_LE_MODE;
+> +		else
+> +			val &= ~IPROC_NAND_APB_LE_MODE;
+> +	} else { /* when in LE accessing the parameter page, keep APB in BE */
+>  		val &= ~IPROC_NAND_APB_LE_MODE;
+> +	}
+>  
+>  	brcmnand_writel(val, mmio);
+>  
