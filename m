@@ -1,20 +1,16 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bYEZH-0001mT-FE
- for linux-mtd@lists.infradead.org; Fri, 12 Aug 2016 15:40:19 +0000
-Message-ID: <1471016396.29184.11.camel@linux.intel.com>
-Subject: Re: [PATCH] UBIFS: fix assertion in layout_in_gaps()
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Reply-To: artem.bityutskiy@linux.intel.com
-To: Vincent =?ISO-8859-1?Q?Stehl=E9?= <vincent.stehle@intel.com>,
- linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Date: Fri, 12 Aug 2016 18:39:56 +0300
-In-Reply-To: <1471008390-19227-1-git-send-email-vincent.stehle@intel.com>
-References: <1471008390-19227-1-git-send-email-vincent.stehle@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bYGf9-0002g2-GV
+ for linux-mtd@lists.infradead.org; Fri, 12 Aug 2016 17:54:32 +0000
+From: Kyle Roeschley <kyle.roeschley@ni.com>
+To: boris.brezillon@free-electrons.com, richard@nod.at
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, beanhuo@micron.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nathan.sullivan@ni.com, xander.huff@ni.com, peterpansjtu@gmail.com
+Subject: [PATCH v6 1/2] mtd: nand_bbt: Move BBT block selection logic out of
+ write_bbt()
+Date: Fri, 12 Aug 2016 12:54:49 -0500
+Message-Id: <1471024490-32348-1-git-send-email-kyle.roeschley@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +20,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2016-08-12 at 15:26 +0200, Vincent Stehlé wrote:
-> An assertion in layout_in_gaps() verifies that the gap_lebs pointer
-> is
-> below the maximum bound. When computing this maximum bound the
-> idx_lebs
-> count is multiplied by sizeof(int), while C pointers arithmetic does
-> take
-> into account the size of the pointed elements implicitly already.
-> Remove
-> the multiplication to fix the assertion.
-> 
-> Fixes: 1e51764a3c2ac05a ("UBIFS: add new flash file system")
-> Signed-off-by: Vincent Stehlé <vincent.stehle@intel.com>
-> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+This clarifies the write_bbt() by removing the write label and clarifying
+the error/exit path.
 
-Thanks!
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+v6: Split functionality of write_bbt out into new functions
 
--- 
-Best Regards,
-Artem Bityutskiy
+v5: De-duplicate bad block handling
+
+v4: Don't ignore write protection while marking bad BBT blocks
+    Correctly call block_markbad
+    Minor cleanups
+
+v3: Don't overload mtd->priv
+    Keep nand_erase_nand from erroring on protected BBT blocks
+
+v2: Mark OOB area in each block as well as BBT
+    Avoid marking read-only, bad address, or known bad blocks as bad
+
+ drivers/mtd/nand/nand_bbt.c | 108 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 70 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2fbb523..19f97e9 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -605,6 +605,69 @@ static void search_read_bbts(struct mtd_info *mtd, uint8_t *buf,
+ }
+ 
+ /**
++ * get_bbt_block - Get the first valid eraseblock suitable to store a BBT
++ * @this: the NAND device
++ * @td: the BBT description
++ * @md: the mirror BBT descriptor
++ * @chip: the CHIP selector
++ *
++ * This functions returns a positive block number pointing a valid eraseblock
++ * suitable to store a BBT (i.e. in the range reserved for BBT), or -ENOSPC if
++ * all blocks are already used of marked bad. If td->pages[chip] was already
++ * pointing to a valid block we re-use it, otherwise we search for the next
++ * valid one.
++ */
++static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
++			 struct nand_bbt_descr *md, int chip)
++{
++	int startblock, dir, page, numblocks, i;
++
++	/*
++	 * There was already a version of the table, reuse the page. This
++	 * applies for absolute placement too, as we have the page number in
++	 * td->pages.
++	 */
++	if (td->pages[chip] != -1)
++		return td->pages[chip] >>
++				(this->bbt_erase_shift - this->page_shift);
++
++	numblocks = (int)(this->chipsize >> this->bbt_erase_shift);
++	if (!(td->options & NAND_BBT_PERCHIP))
++		numblocks *= this->numchips;
++
++	/*
++	 * Automatic placement of the bad block table. Search direction
++	 * top -> down?
++	 */
++	if (td->options & NAND_BBT_LASTBLOCK) {
++		startblock = numblocks * (chip + 1) - 1;
++		dir = -1;
++	} else {
++		startblock = chip * numblocks;
++		dir = 1;
++	}
++
++	for (i = 0; i < td->maxblocks; i++) {
++		int block = startblock + dir * i;
++
++		/* Check, if the block is bad */
++		switch (bbt_get_entry(this, block)) {
++		case BBT_BLOCK_WORN:
++		case BBT_BLOCK_FACTORY_BAD:
++			continue;
++		}
++
++		page = block <<	(this->bbt_erase_shift - this->page_shift);
++
++		/* Check, if the block is used by the mirror table */
++		if (!md || md->pages[chip] != page)
++			return block;
++	}
++
++	return -ENOSPC;
++}
++
++/**
+  * write_bbt - [GENERIC] (Re)write the bad block table
+  * @mtd: MTD device structure
+  * @buf: temporary buffer
+@@ -621,7 +684,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+ 	struct erase_info einfo;
+ 	int i, res, chip = 0;
+-	int bits, startblock, dir, page, offs, numblocks, sft, sftmsk;
++	int bits, page, offs, numblocks, sft, sftmsk;
+ 	int nrchips, pageoffs, ooboffs;
+ 	uint8_t msk[4];
+ 	uint8_t rcode = td->reserved_block_code;
+@@ -653,45 +716,14 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 
+ 	/* Loop through the chips */
+ 	for (; chip < nrchips; chip++) {
+-		/*
+-		 * There was already a version of the table, reuse the page
+-		 * This applies for absolute placement too, as we have the
+-		 * page nr. in td->pages.
+-		 */
+-		if (td->pages[chip] != -1) {
+-			page = td->pages[chip];
+-			goto write;
+-		}
+-
+-		/*
+-		 * Automatic placement of the bad block table. Search direction
+-		 * top -> down?
+-		 */
+-		if (td->options & NAND_BBT_LASTBLOCK) {
+-			startblock = numblocks * (chip + 1) - 1;
+-			dir = -1;
+-		} else {
+-			startblock = chip * numblocks;
+-			dir = 1;
+-		}
++		int block;
+ 
+-		for (i = 0; i < td->maxblocks; i++) {
+-			int block = startblock + dir * i;
+-			/* Check, if the block is bad */
+-			switch (bbt_get_entry(this, block)) {
+-			case BBT_BLOCK_WORN:
+-			case BBT_BLOCK_FACTORY_BAD:
+-				continue;
+-			}
+-			page = block <<
+-				(this->bbt_erase_shift - this->page_shift);
+-			/* Check, if the block is used by the mirror table */
+-			if (!md || md->pages[chip] != page)
+-				goto write;
++		block = get_bbt_block(this, td, md, chip);
++		if (block < 0) {
++			pr_err("No space left to write bad block table\n");
++			res = block;
++			goto outerr;
+ 		}
+-		pr_err("No space left to write bad block table\n");
+-		return -ENOSPC;
+-	write:
+ 
+ 		/* Set up shift count and masks for the flash table */
+ 		bits = td->options & NAND_BBT_NRBITS_MSK;
+-- 
+2.8.1
