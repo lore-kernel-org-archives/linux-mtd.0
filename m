@@ -1,26 +1,18 @@
-Date: Thu, 11 Aug 2016 15:32:13 +0200
-From: Daniel Golle <daniel@makrotopia.org>
-To: J Mo <jmomo@jmomo.net>
-Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- lede-dev@lists.infradead.org, Gabor Juhos <juhosg@openwrt.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- John Crispin <john@phrozen.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- openwrt-devel@lists.openwrt.org
-Subject: Re: [LEDE-DEV] Older u-boot mangles UBI from ubinize 1.5.2
-Message-ID: <20160811133213.GJ1644@makrotopia.org>
+Subject: Re: [U-Boot] Older u-boot mangles UBI from ubinize 1.5.2
+To: Richard Weinberger <richard.weinberger@gmail.com>
 References: <3e1a26f3-5539-01c5-0755-aea07c95d08a@jmomo.net>
  <CAFLxGvyfLdS3cBqoicS02NymT+BAq8B3tKsFzte7Am_4AW0qQA@mail.gmail.com>
- <20160811104049.GB1644@makrotopia.org>
- <477c00a0-fcdb-b302-d81f-42a58f401b29@jmomo.net>
- <6797ac7a-5eda-2844-e538-163a8e2e665f@jmomo.net>
- <20160811123126.GE1644@makrotopia.org>
- <420605a7-61ea-b4c8-65be-6f113a510d94@jmomo.net>
+Cc: J Mo <jmomo@jmomo.net>, "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ lede-dev@lists.infradead.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: hs@denx.de
+From: Heiko Schocher <hs@denx.de>
+Message-ID: <57AD51FC.9090603@denx.de>
+Date: Fri, 12 Aug 2016 06:35:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <420605a7-61ea-b4c8-65be-6f113a510d94@jmomo.net>
+In-Reply-To: <CAFLxGvyfLdS3cBqoicS02NymT+BAq8B3tKsFzte7Am_4AW0qQA@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,48 +22,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi J,
+Hello Richard,
 
-On Thu, Aug 11, 2016 at 06:15:32AM -0700, J Mo wrote:
-> 
-> 
-> On 08/11/2016 05:31 AM, Daniel Golle wrote:
-> > That's what I told you in the previous mail, removing the rootfs=
-> > parameter from the dts should do the trick, because you just cannot
-> > mount a ubi device (which is a character device in Linux) with a
-> > block-based filesystem (like squashfs). This cannot and won't ever
-> > work and you could either leave it to OpenWrt/LEDE's auto-probing to
-> > figure out what to do based on the rootfs type (non-ubifs vs. ubifs)
-> > or append even more board- and filesystem-specific crap to your cmdline
-> > such as ubiblock=... root=/dev/ubiblock0_1 (however, that then won't
-> > work for ubifs, thus the auto-probing patches).
-> 
-> ... OH!
-> 
-> Well, I needed some extra intellectual clubbing to catch on.
-> 
-> NOW I remember reading the UBI docs, about glubi, the fact that volumes are
-> char devices, and I even seem to remember some ALL CAPS red size-20+ text at
-> the top of the page saying something about it.
-> 
-> Tomorrow I'll go read the docs again, because I know I remember reading that
-> you could put a RO-squashfs in a UBI volume.  I just need to have it mounted
-> the right way.
+Am 11.08.2016 um 11:51 schrieb Richard Weinberger:
+> Hi!
+>
+> On Thu, Aug 11, 2016 at 4:26 AM, J Mo <jmomo@jmomo.net> wrote:
+>> I tried re-flashing my UBI and tftpbooting my kernel before u-boot could
+>> ever get a chance to mangle it, and now I get much further, though I'm still
+>> not able to mount my rootfs for unknown reasons:
+>>
+>>      [    3.772502] ubi0: attaching mtd11
+>>      [    3.826477] UBI: EOF marker found, PEBs from 40 will be erased
+>
+> WTF is this?
+> Reading the corresponding patch makes me very sad.
+>
+>>      [    3.826638] ubi0: scanning is finished
+>>      [    3.872936] ubi0: volume 2 ("rootfs_data") re-sized from 9 to 430
+>> LEBs
+>>      [    3.873734] ubi0: attached mtd11 (name "rootfs", size 64 MiB)
+>>      [    3.878347] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976
+>> bytes
+>>      [    3.884234] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size
+>> 2048
+>>      [    3.890936] ubi0: VID header offset: 2048 (aligned 2048), data
+>> offset: 4096
+>>      [    3.897849] ubi0: good PEBs: 512, bad PEBs: 0, corrupted PEBs: 0
+>>      [    3.904627] ubi0: user volume: 3, internal volumes: 1, max. volumes
+>> count: 128
+>>      [    3.910815] ubi0: max/mean erase counter: 1/0, WL threshold: 4096,
+>> image sequence number: 2142265782
+>>      [    3.917902] ubi0: available PEBs: 0, total reserved PEBs: 512, PEBs
+>> reserved for bad PEB handling: 40
+>>      [    3.927275] ubi0: background thread "ubi_bgt0d" started, PID 54
+>>      [    3.937007] block ubiblock0_1: created from ubi0:1(rootfs)
+>>      [    3.942096] hctosys: unable to open rtc device (rtc0)
+>>      [    3.956528] VFS: Cannot open root device "ubi0:rootfs" or
+>> unknown-block(31,11): error -2
+>>      [    3.956556] Please append a correct "root=" boot option; here are the
+>> available partitions:
+>>
+>>
+>>
+>> Any advice on this? Any background information that I can read up on? My
+>> google searches have not come up with much. Ram knew about this, but I don't
+>> know if it's otherwise a known issue.
+>>
+>> The process works fine on the OEM system, so I assume this is some ubinize
+>> format change which is incompatible with the older u-boot. Or, the newer
+>> kernel code doesn't know how to deal with the UBI once the older u-boot has
+>> mangled/attached it.
+>>
+>> Seems like a backwards incompatibility issue.
+>
+> Since OpenWRT/LEDE folks did more or less a hard fork of UBI I'm
+> ignoring this issue.
 
-Exactly. However, this makes mounting a UBIFS volume entirely different
-from mounting a volume with any other (read-only) filesystem which
-needs a ubiblock device (gluebi has been deprecated in favour of
-ubiblock) to be created and subsequently mounted.
-The idea of the auto-probing patches [1] was to keep things filesystem-
-agnostic, ie. allow for either a single read-write UBIFS rootfs or any
-read-only filesystem (e.g. squashfs) which needs ubiblock and have a
-UBIFS read-write overlay on top.
-In this way, all you have to take care of is *not* to have any rootfs=
-or ubi* parameters in your kernel cmdline and all the rest should
-happen automagically.
+Ufff.... thanks for this info!
 
+> If you encounter something like that using vanilla UBI I'm all ears.
+>
+> That said, I kind of understand that you, OpenWRT/LEDE, have a pile of
+> patches for auto probing rootfs
+> and other runtime stuff but touching the UBI on-flash format is beyond funny.
+> Doing so opens a can of worms and is painful for all parties. There
+> are customers which build their
+> products using OpenWrt and when they change the kernel at some point
+> it will get nasty.
+>
+> This situation needs to be improved now. I invite you to discuss this
+> changes here on linux-mtd.
+> Especially the stuff where you change the on-flash format.
+> If UBI, or MTD in general, can do a better job in some areas, please
+> tell such that a decent solution can be found.
+> But your ad-hoc hacks need to stop.
 
-Cheers
+Full Ack.
 
-
-Daniel
+bye,
+Heiko
+-- 
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
