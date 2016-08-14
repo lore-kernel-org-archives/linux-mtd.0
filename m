@@ -1,21 +1,20 @@
-Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bYhkS-0007Tb-0U
- for linux-mtd@lists.infradead.org; Sat, 13 Aug 2016 22:49:49 +0000
-Received: by mail-pa0-x242.google.com with SMTP id ez1so1387010pab.3
- for <linux-mtd@lists.infradead.org>; Sat, 13 Aug 2016 15:49:27 -0700 (PDT)
-From: Deepa Dinamani <deepa.kernel@gmail.com>
-To: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: arnd@arndb.de, tglx@linutronix.de, torvalds@linux-foundation.org,
- tytso@mit.edu, viro@zeniv.linux.org.uk, y2038@lists.linaro.org,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH v4 09/26] fs: ubifs: Replace CURRENT_TIME_SEC with current_time
-Date: Sat, 13 Aug 2016 15:48:21 -0700
-Message-Id: <1471128518-24075-10-git-send-email-deepa.kernel@gmail.com>
-In-Reply-To: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
-References: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bYrDt-0005ke-St
+ for linux-mtd@lists.infradead.org; Sun, 14 Aug 2016 08:56:51 +0000
+Date: Sun, 14 Aug 2016 10:56:14 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, Richard Weinberger
+ <richard@nod.at>, Mason <slash.tmp@free.fr>
+Subject: Re: [PATCH] mtd: nand: import nand_hw_control_init()
+Message-ID: <20160814105614.05ebffd6@bbrezillon>
+In-Reply-To: <57987DA8.4010002@sigmadesigns.com>
+References: <57987DA8.4010002@sigmadesigns.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,241 +24,239 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CURRENT_TIME_SEC is not y2038 safe. current_time() will
-be transitioned to use 64 bit time along with vfs in a
-separate patch.
-There is no plan to transition CURRENT_TIME_SEC to use
-y2038 safe time interfaces.
+On Wed, 27 Jul 2016 11:23:52 +0200
+Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
 
-current_time() returns timestamps according to the
-granularities set in the inode's super_block.
-The granularity check to call current_fs_time() or
-CURRENT_TIME_SEC is not required.
+> The code to initialize a struct nand_hw_control is duplicated across
+> several drivers. Factorize it using an inline function.
+> 
+> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
 
-Use current_time() directly to update inode timestamp.
-Use timespec_trunc during file system creation, before
-the first inode is created.
+Applied.
 
-Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: linux-mtd@lists.infradead.org
----
- fs/ubifs/dir.c   | 10 +++++-----
- fs/ubifs/file.c  | 12 ++++++------
- fs/ubifs/ioctl.c |  2 +-
- fs/ubifs/misc.h  | 10 ----------
- fs/ubifs/sb.c    | 14 ++++++++++----
- fs/ubifs/xattr.c |  6 +++---
- 6 files changed, 25 insertions(+), 29 deletions(-)
+Thanks,
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 4b86d3a..6e2dff9 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -106,7 +106,7 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
- 
- 	inode_init_owner(inode, dir, mode);
- 	inode->i_mtime = inode->i_atime = inode->i_ctime =
--			 ubifs_current_time(inode);
-+			 current_time(inode);
- 	inode->i_mapping->nrpages = 0;
- 
- 	switch (mode & S_IFMT) {
-@@ -529,7 +529,7 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 	lock_2_inodes(dir, inode);
- 	inc_nlink(inode);
- 	ihold(inode);
--	inode->i_ctime = ubifs_current_time(inode);
-+	inode->i_ctime = current_time(inode);
- 	dir->i_size += sz_change;
- 	dir_ui->ui_size = dir->i_size;
- 	dir->i_mtime = dir->i_ctime = inode->i_ctime;
-@@ -586,7 +586,7 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
- 	}
- 
- 	lock_2_inodes(dir, inode);
--	inode->i_ctime = ubifs_current_time(dir);
-+	inode->i_ctime = current_time(dir);
- 	drop_nlink(inode);
- 	dir->i_size -= sz_change;
- 	dir_ui->ui_size = dir->i_size;
-@@ -675,7 +675,7 @@ static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
- 	}
- 
- 	lock_2_inodes(dir, inode);
--	inode->i_ctime = ubifs_current_time(dir);
-+	inode->i_ctime = current_time(dir);
- 	clear_nlink(inode);
- 	drop_nlink(dir);
- 	dir->i_size -= sz_change;
-@@ -1023,7 +1023,7 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	 * Like most other Unix systems, set the @i_ctime for inodes on a
- 	 * rename.
- 	 */
--	time = ubifs_current_time(old_dir);
-+	time = current_time(old_dir);
- 	old_inode->i_ctime = time;
- 
- 	/* We must adjust parent link count when renaming directories */
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 7bbf420..45e3d71 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1182,7 +1182,7 @@ static int do_truncation(struct ubifs_info *c, struct inode *inode,
- 	mutex_lock(&ui->ui_mutex);
- 	ui->ui_size = inode->i_size;
- 	/* Truncation changes inode [mc]time */
--	inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
-+	inode->i_mtime = inode->i_ctime = current_time(inode);
- 	/* Other attributes may be changed at the same time as well */
- 	do_attr_changes(inode, attr);
- 	err = ubifs_jnl_truncate(c, inode, old_size, new_size);
-@@ -1229,7 +1229,7 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
- 	mutex_lock(&ui->ui_mutex);
- 	if (attr->ia_valid & ATTR_SIZE) {
- 		/* Truncation changes inode [mc]time */
--		inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
-+		inode->i_mtime = inode->i_ctime = current_time(inode);
- 		/* 'truncate_setsize()' changed @i_size, update @ui_size */
- 		ui->ui_size = inode->i_size;
- 	}
-@@ -1406,7 +1406,7 @@ int ubifs_update_time(struct inode *inode, struct timespec *time,
-  */
- static int update_mctime(struct inode *inode)
- {
--	struct timespec now = ubifs_current_time(inode);
-+	struct timespec now = current_time(inode);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 
-@@ -1420,7 +1420,7 @@ static int update_mctime(struct inode *inode)
- 			return err;
- 
- 		mutex_lock(&ui->ui_mutex);
--		inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
-+		inode->i_mtime = inode->i_ctime = current_time(inode);
- 		release = ui->dirty;
- 		mark_inode_dirty_sync(inode);
- 		mutex_unlock(&ui->ui_mutex);
-@@ -1498,7 +1498,7 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
- 	struct page *page = vmf->page;
- 	struct inode *inode = file_inode(vma->vm_file);
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
--	struct timespec now = ubifs_current_time(inode);
-+	struct timespec now = current_time(inode);
- 	struct ubifs_budget_req req = { .new_page = 1 };
- 	int err, update_time;
- 
-@@ -1566,7 +1566,7 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
- 		struct ubifs_inode *ui = ubifs_inode(inode);
- 
- 		mutex_lock(&ui->ui_mutex);
--		inode->i_mtime = inode->i_ctime = ubifs_current_time(inode);
-+		inode->i_mtime = inode->i_ctime = current_time(inode);
- 		release = ui->dirty;
- 		mark_inode_dirty_sync(inode);
- 		mutex_unlock(&ui->ui_mutex);
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 3c7b29d..a81603d 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -126,7 +126,7 @@ static int setflags(struct inode *inode, int flags)
- 
- 	ui->flags = ioctl2ubifs(flags);
- 	ubifs_set_inode_flags(inode);
--	inode->i_ctime = ubifs_current_time(inode);
-+	inode->i_ctime = current_time(inode);
- 	release = ui->dirty;
- 	mark_inode_dirty_sync(inode);
- 	mutex_unlock(&ui->ui_mutex);
-diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
-index 8ece6ca..caf83d6 100644
---- a/fs/ubifs/misc.h
-+++ b/fs/ubifs/misc.h
-@@ -225,16 +225,6 @@ static inline void *ubifs_idx_key(const struct ubifs_info *c,
- }
- 
- /**
-- * ubifs_current_time - round current time to time granularity.
-- * @inode: inode
-- */
--static inline struct timespec ubifs_current_time(struct inode *inode)
--{
--	return (inode->i_sb->s_time_gran < NSEC_PER_SEC) ?
--		current_fs_time(inode->i_sb) : CURRENT_TIME_SEC;
--}
--
--/**
-  * ubifs_tnc_lookup - look up a file-system node.
-  * @c: UBIFS file-system description object
-  * @key: node key to lookup
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index 3cbb904..907bfff 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -84,6 +84,8 @@ static int create_default_filesystem(struct ubifs_info *c)
- 	int min_leb_cnt = UBIFS_MIN_LEB_CNT;
- 	long long tmp64, main_bytes;
- 	__le64 tmp_le64;
-+	__le32 tmp_le32;
-+	struct timespec ts;
- 
- 	/* Some functions called from here depend on the @c->key_len filed */
- 	c->key_len = UBIFS_SK_LEN;
-@@ -297,13 +299,17 @@ static int create_default_filesystem(struct ubifs_info *c)
- 	ino->ch.node_type = UBIFS_INO_NODE;
- 	ino->creat_sqnum = cpu_to_le64(++c->max_sqnum);
- 	ino->nlink = cpu_to_le32(2);
--	tmp_le64 = cpu_to_le64(CURRENT_TIME_SEC.tv_sec);
-+
-+	ktime_get_real_ts(&ts);
-+	ts = timespec_trunc(ts, DEFAULT_TIME_GRAN);
-+	tmp_le64 = cpu_to_le64(ts.tv_sec);
- 	ino->atime_sec   = tmp_le64;
- 	ino->ctime_sec   = tmp_le64;
- 	ino->mtime_sec   = tmp_le64;
--	ino->atime_nsec  = 0;
--	ino->ctime_nsec  = 0;
--	ino->mtime_nsec  = 0;
-+	tmp_le32 = cpu_to_le32(ts.tv_nsec);
-+	ino->atime_nsec  = tmp_le32;
-+	ino->ctime_nsec  = tmp_le32;
-+	ino->mtime_nsec  = tmp_le32;
- 	ino->mode = cpu_to_le32(S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO);
- 	ino->size = cpu_to_le64(UBIFS_INO_NODE_SZ);
- 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index e237811..60b407b 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -152,7 +152,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
- 	ui->data_len = size;
- 
- 	mutex_lock(&host_ui->ui_mutex);
--	host->i_ctime = ubifs_current_time(host);
-+	host->i_ctime = current_time(host);
- 	host_ui->xattr_cnt += 1;
- 	host_ui->xattr_size += CALC_DENT_SIZE(nm->len);
- 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
-@@ -221,7 +221,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 	mutex_unlock(&ui->ui_mutex);
- 
- 	mutex_lock(&host_ui->ui_mutex);
--	host->i_ctime = ubifs_current_time(host);
-+	host->i_ctime = current_time(host);
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
- 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
- 
-@@ -458,7 +458,7 @@ static int remove_xattr(struct ubifs_info *c, struct inode *host,
- 		return err;
- 
- 	mutex_lock(&host_ui->ui_mutex);
--	host->i_ctime = ubifs_current_time(host);
-+	host->i_ctime = current_time(host);
- 	host_ui->xattr_cnt -= 1;
- 	host_ui->xattr_size -= CALC_DENT_SIZE(nm->len);
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
--- 
-1.9.1
+Boris
+
+> ---
+> I hacked drivers/mtd/nand/Makefile to forcefully compile the modified
+> drivers, but some have dependencies. I'd be grateful if anyone could
+> compile-test this change.
+> ---
+>  drivers/mtd/nand/bf5xx_nand.c        | 3 +--
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 3 +--
+>  drivers/mtd/nand/docg4.c             | 3 +--
+>  drivers/mtd/nand/fsl_elbc_nand.c     | 3 +--
+>  drivers/mtd/nand/fsl_ifc_nand.c      | 3 +--
+>  drivers/mtd/nand/jz4780_nand.c       | 3 +--
+>  drivers/mtd/nand/nand_base.c         | 3 +--
+>  drivers/mtd/nand/ndfc.c              | 3 +--
+>  drivers/mtd/nand/pxa3xx_nand.c       | 3 +--
+>  drivers/mtd/nand/qcom_nandc.c        | 3 +--
+>  drivers/mtd/nand/s3c2410.c           | 3 +--
+>  drivers/mtd/nand/sunxi_nand.c        | 3 +--
+>  drivers/mtd/nand/txx9ndfmc.c         | 3 +--
+>  include/linux/mtd/nand.h             | 7 +++++++
+>  14 files changed, 20 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+> index 37da4236ab90..3962f55bd034 100644
+> --- a/drivers/mtd/nand/bf5xx_nand.c
+> +++ b/drivers/mtd/nand/bf5xx_nand.c
+> @@ -761,8 +761,7 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, info);
+>  
+> -	spin_lock_init(&info->controller.lock);
+> -	init_waitqueue_head(&info->controller.wq);
+> +	nand_hw_control_init(&info->controller);
+>  
+>  	info->device     = &pdev->dev;
+>  	info->platform   = plat;
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index b76ad7c0144f..a1a588604fe5 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -2227,8 +2227,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+>  
+>  	init_completion(&ctrl->done);
+>  	init_completion(&ctrl->dma_done);
+> -	spin_lock_init(&ctrl->controller.lock);
+> -	init_waitqueue_head(&ctrl->controller.wq);
+> +	nand_hw_control_init(&ctrl->controller);
+>  	INIT_LIST_HEAD(&ctrl->host_list);
+>  
+>  	/* NAND register range */
+> diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+> index 47316998017f..7af2a3cd949e 100644
+> --- a/drivers/mtd/nand/docg4.c
+> +++ b/drivers/mtd/nand/docg4.c
+> @@ -1249,8 +1249,7 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
+>  	nand->options = NAND_BUSWIDTH_16 | NAND_NO_SUBPAGE_WRITE;
+>  	nand->IO_ADDR_R = nand->IO_ADDR_W = doc->virtadr + DOC_IOSPACE_DATA;
+>  	nand->controller = &nand->hwcontrol;
+> -	spin_lock_init(&nand->controller->lock);
+> -	init_waitqueue_head(&nand->controller->wq);
+> +	nand_hw_control_init(nand->controller);
+>  
+>  	/* methods */
+>  	nand->cmdfunc = docg4_command;
+> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+> index 60a88f24c6b3..113f76e59937 100644
+> --- a/drivers/mtd/nand/fsl_elbc_nand.c
+> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
+> @@ -879,8 +879,7 @@ static int fsl_elbc_nand_probe(struct platform_device *pdev)
+>  		}
+>  		elbc_fcm_ctrl->counter++;
+>  
+> -		spin_lock_init(&elbc_fcm_ctrl->controller.lock);
+> -		init_waitqueue_head(&elbc_fcm_ctrl->controller.wq);
+> +		nand_hw_control_init(&elbc_fcm_ctrl->controller);
+>  		fsl_lbc_ctrl_dev->nand = elbc_fcm_ctrl;
+>  	} else {
+>  		elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
+> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+> index 4e9e5fd8faf3..0a177b1bfe3e 100644
+> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> @@ -987,8 +987,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+>  		ifc_nand_ctrl->addr = NULL;
+>  		fsl_ifc_ctrl_dev->nand = ifc_nand_ctrl;
+>  
+> -		spin_lock_init(&ifc_nand_ctrl->controller.lock);
+> -		init_waitqueue_head(&ifc_nand_ctrl->controller.wq);
+> +		nand_hw_control_init(&ifc_nand_ctrl->controller);
+>  	} else {
+>  		ifc_nand_ctrl = fsl_ifc_ctrl_dev->nand;
+>  	}
+> diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+> index daf3c4217f4d..b2c3dd2ac6fc 100644
+> --- a/drivers/mtd/nand/jz4780_nand.c
+> +++ b/drivers/mtd/nand/jz4780_nand.c
+> @@ -368,9 +368,8 @@ static int jz4780_nand_probe(struct platform_device *pdev)
+>  	nfc->dev = dev;
+>  	nfc->num_banks = num_banks;
+>  
+> -	spin_lock_init(&nfc->controller.lock);
+> +	nand_hw_control_init(&nfc->controller);
+>  	INIT_LIST_HEAD(&nfc->chips);
+> -	init_waitqueue_head(&nfc->controller.wq);
+>  
+>  	ret = jz4780_nand_init_chips(nfc, pdev);
+>  	if (ret) {
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 0b0dc29d2af7..518b5039a4c3 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3191,8 +3191,7 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
+>  
+>  	if (!chip->controller) {
+>  		chip->controller = &chip->hwcontrol;
+> -		spin_lock_init(&chip->controller->lock);
+> -		init_waitqueue_head(&chip->controller->wq);
+> +		nand_hw_control_init(chip->controller);
+>  	}
+>  
+>  }
+> diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+> index 218c789ca7ab..28e6118362f7 100644
+> --- a/drivers/mtd/nand/ndfc.c
+> +++ b/drivers/mtd/nand/ndfc.c
+> @@ -218,8 +218,7 @@ static int ndfc_probe(struct platform_device *ofdev)
+>  	ndfc = &ndfc_ctrl[cs];
+>  	ndfc->chip_select = cs;
+>  
+> -	spin_lock_init(&ndfc->ndfc_control.lock);
+> -	init_waitqueue_head(&ndfc->ndfc_control.wq);
+> +	nand_hw_control_init(&ndfc->ndfc_control);
+>  	ndfc->ofdev = ofdev;
+>  	dev_set_drvdata(&ofdev->dev, ndfc);
+>  
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 436dd6dc11f4..b121bf4ed73a 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -1810,8 +1810,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+>  		chip->cmdfunc		= nand_cmdfunc;
+>  	}
+>  
+> -	spin_lock_init(&chip->controller->lock);
+> -	init_waitqueue_head(&chip->controller->wq);
+> +	nand_hw_control_init(chip->controller);
+>  	info->clk = devm_clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(info->clk)) {
+>  		dev_err(&pdev->dev, "failed to get nand clock\n");
+> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+> index de7d28e62d4e..57d483ac5765 100644
+> --- a/drivers/mtd/nand/qcom_nandc.c
+> +++ b/drivers/mtd/nand/qcom_nandc.c
+> @@ -1957,8 +1957,7 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
+>  	INIT_LIST_HEAD(&nandc->desc_list);
+>  	INIT_LIST_HEAD(&nandc->host_list);
+>  
+> -	spin_lock_init(&nandc->controller.lock);
+> -	init_waitqueue_head(&nandc->controller.wq);
+> +	nand_hw_control_init(&nandc->controller);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> index d9309cf0ce2e..b1734d76cbc1 100644
+> --- a/drivers/mtd/nand/s3c2410.c
+> +++ b/drivers/mtd/nand/s3c2410.c
+> @@ -977,8 +977,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, info);
+>  
+> -	spin_lock_init(&info->controller.lock);
+> -	init_waitqueue_head(&info->controller.wq);
+> +	nand_hw_control_init(&info->controller);
+>  
+>  	/* get the clock source and enable it */
+>  
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index a83a690688b4..5c9de7357a33 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -1835,8 +1835,7 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  
+>  	nfc->dev = dev;
+> -	spin_lock_init(&nfc->controller.lock);
+> -	init_waitqueue_head(&nfc->controller.wq);
+> +	nand_hw_control_init(&nfc->controller);
+>  	INIT_LIST_HEAD(&nfc->chips);
+>  
+>  	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
+> index 04d63f56baa4..0a14fda2e41b 100644
+> --- a/drivers/mtd/nand/txx9ndfmc.c
+> +++ b/drivers/mtd/nand/txx9ndfmc.c
+> @@ -303,8 +303,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+>  	dev_info(&dev->dev, "CLK:%ldMHz HOLD:%d SPW:%d\n",
+>  		 (gbusclk + 500000) / 1000000, hold, spw);
+>  
+> -	spin_lock_init(&drvdata->hw_control.lock);
+> -	init_waitqueue_head(&drvdata->hw_control.wq);
+> +	nand_hw_control_init(&drvdata->hw_control);
+>  
+>  	platform_set_drvdata(dev, drvdata);
+>  	txx9ndfmc_initialize(dev);
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index fbe8e164a4ee..d36ac491877f 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -460,6 +460,13 @@ struct nand_hw_control {
+>  	wait_queue_head_t wq;
+>  };
+>  
+> +static inline void nand_hw_control_init(struct nand_hw_control *nfc)
+> +{
+> +	nfc->active = NULL;
+> +	spin_lock_init(&nfc->lock);
+> +	init_waitqueue_head(&nfc->wq);
+> +}
+> +
+>  /**
+>   * struct nand_ecc_ctrl - Control structure for ECC
+>   * @mode:	ECC mode
