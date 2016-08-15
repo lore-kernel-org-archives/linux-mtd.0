@@ -1,22 +1,38 @@
-Date: Mon, 15 Aug 2016 09:02:20 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Teresa Remmet <t.remmet@phytec.de>, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/2] ARM: dts: am335x: Update elm phandle binding
-Message-ID: <20160815160220.GP28140@atomide.com>
-References: <1467711150-23356-1-git-send-email-t.remmet@phytec.de>
- <20160713171407.GB136972@google.com>
- <9354c50f-f851-f473-a8af-0a84c951453e@ti.com>
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZKfb-0000Hs-0w
+ for linux-mtd@lists.infradead.org; Mon, 15 Aug 2016 16:23:23 +0000
+Date: Mon, 15 Aug 2016 18:23:12 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ arnd@arndb.de, tglx@linutronix.de, torvalds@linux-foundation.org,
+ tytso@mit.edu, viro@zeniv.linux.org.uk, y2038@lists.linaro.org,
+ adilger.kernel@dilger.ca, adrian.hunter@intel.com,
+ anna.schumaker@netapp.com, buchino@cisco.com,
+ ceph-devel@vger.kernel.org, clm@fb.com, cm224.lee@samsung.com,
+ dedekind1@gmail.com, dsterba@suse.com, dushistov@mail.ru,
+ elder@kernel.org, eparis@redhat.com, hiralpat@cisco.com,
+ idryomov@gmail.com, jack@suse.com, jaegeuk@kernel.org,
+ jbacik@fb.com, jejb@linux.vnet.ibm.com,
+ jfs-discussion@lists.sourceforge.net, jlbec@evilplan.org,
+ john.stultz@linaro.org, linux-audit@redhat.com,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+ linux-scsi@vger.kernel.org, lustre-devel@lists.lustre.org,
+ martin.petersen@oracle.com, mfasheh@suse.com,
+ ocfs2-devel@oss.oracle.com, paul@paul-moore.com, sage@redhat.com,
+ sfrench@samba.org, shaggy@kernel.org, sramars@cisco.com,
+ trond.myklebust@primarydata.com, zyan@redhat.com
+Subject: Re: [GIT PULL] [PATCH v4 00/26] Delete CURRENT_TIME and
+ CURRENT_TIME_SEC macros
+Message-ID: <20160815162312.GA19794@kroah.com>
+References: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9354c50f-f851-f473-a8af-0a84c951453e@ti.com>
+In-Reply-To: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +42,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [160801 02:25]:
-> On 13/07/16 20:14, Brian Norris wrote:
-> > On Tue, Jul 05, 2016 at 11:32:29AM +0200, Teresa Remmet wrote:
-> >> The check for the "elm_id" binding had been removed.
-> >> This causes nand boot to fail on boards still using
-> >> the old binding. Update the bindings on those boards.
-> > 
-> > Acked-by: Brian Norris <computersforpeace@gmail.com>
-> > 
-> > We're fixing the backward compatibility issue anyway, but might as well
-> > "upgrade" the device tree.
-> > 
-> >> Signed-off-by: Teresa Remmet <t.remmet@phytec.de>
-> 
-> Acked-by: Roger Quadros <rogerq@ti.com>
-> 
-> Tony,
-> 
-> Please take this one via your OMAP DT tree. Thanks.
+On Sat, Aug 13, 2016 at 03:48:12PM -0700, Deepa Dinamani wrote:
+> The series is aimed at getting rid of CURRENT_TIME and CURRENT_TIME_SEC macros.
+> The macros are not y2038 safe. There is no plan to transition them into being
+> y2038 safe.
+> ktime_get_* api's can be used in their place. And, these are y2038 safe.
 
-Applying to omap-for-v4.8/fixes finally thanks. Sorry for
-the delay.
+Who are you execting to pull this huge patch series?
 
-Regards,
+Why not just introduce the new api call, wait for that to be merged, and
+then push the individual patches through the different subsystems?
+After half of those get ignored, then provide a single set of patches
+that can go through Andrew or my trees.
 
-Tony
+thanks,
+
+greg k-h
