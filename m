@@ -1,24 +1,24 @@
-Received: from mail-by2nam03on0094.outbound.protection.outlook.com
- ([104.47.42.94] helo=NAM03-BY2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZJAD-0005Jh-Mo
- for linux-mtd@lists.infradead.org; Mon, 15 Aug 2016 14:46:54 +0000
-Date: Mon, 15 Aug 2016 09:47:40 -0500
-From: Kyle Roeschley <kyle.roeschley@ni.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <beanhuo@micron.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <nathan.sullivan@ni.com>,
- <xander.huff@ni.com>, <peterpansjtu@gmail.com>
-Subject: Re: [PATCH v7 1/2] mtd: nand_bbt: Move BBT block selection logic out
- of write_bbt()
-Message-ID: <20160815144740.GA7067@senary>
-References: <1471039103-6745-1-git-send-email-kyle.roeschley@ni.com>
- <20160813003703.4e86c042@bbrezillon>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZJeQ-0003DW-9d
+ for linux-mtd@lists.infradead.org; Mon, 15 Aug 2016 15:18:07 +0000
+Date: Mon, 15 Aug 2016 17:17:42 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>
+Cc: linux-kernel@vger.kernel.org, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Robert Jarzmik
+ <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 1/2] mtd: nand: timings: Fix tADL_min for ONFI 4.0 chips
+Message-ID: <20160815171742.3b5d1fb6@bbrezillon>
+In-Reply-To: <1465914067-29736-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1465914067-29736-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20160813003703.4e86c042@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +28,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 13, 2016 at 12:37:03AM +0200, Boris Brezillon wrote:
-> On Fri, 12 Aug 2016 16:58:22 -0500
-> Kyle Roeschley <kyle.roeschley@ni.com> wrote:
-> 
-[...]
-> > +	while (chip < nrchips) {
-> 
-> I'm probably missing something, but why are you turning the for loop
-> into a while loop in this patch? The commit message does not mention
-> that, and I don't see why you need it before you actually start
-> reworking the code to recover from BBT write failures (which is done in
-> patch 2).
-> 
+On Tue, 14 Jun 2016 16:21:06 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-You had changed it in patch 2 (http://code.bulix.org/e16nvo-104988) and I just
-shuffled it to the first patch since it seemed to make sense as additional code
-cleanup. I'll go ahead and drop it though if you don't want it in.
+> ONFI 4.0 spec defines different values for the tADL_min timing.
+> Since we don't want to have different timings depending on the ONFI
+> version, we just set tADL_min to the maximum value (the one specified
+> in the ONFI 4.0 spec).
 
--- 
-Kyle Roeschley
-Software Engineer
-National Instruments
+Applied both.
+
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_timings.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+> index e81470a..c0941d5 100644
+> --- a/drivers/mtd/nand/nand_timings.c
+> +++ b/drivers/mtd/nand/nand_timings.c
+> @@ -16,7 +16,7 @@
+>  static const struct nand_sdr_timings onfi_sdr_timings[] = {
+>  	/* Mode 0 */
+>  	{
+> -		.tADL_min = 200000,
+> +		.tADL_min = 400000,
+>  		.tALH_min = 20000,
+>  		.tALS_min = 50000,
+>  		.tAR_min = 25000,
+> @@ -53,7 +53,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
+>  	},
+>  	/* Mode 1 */
+>  	{
+> -		.tADL_min = 100000,
+> +		.tADL_min = 400000,
+>  		.tALH_min = 10000,
+>  		.tALS_min = 25000,
+>  		.tAR_min = 10000,
+> @@ -90,7 +90,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
+>  	},
+>  	/* Mode 2 */
+>  	{
+> -		.tADL_min = 100000,
+> +		.tADL_min = 400000,
+>  		.tALH_min = 10000,
+>  		.tALS_min = 15000,
+>  		.tAR_min = 10000,
+> @@ -127,7 +127,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
+>  	},
+>  	/* Mode 3 */
+>  	{
+> -		.tADL_min = 100000,
+> +		.tADL_min = 400000,
+>  		.tALH_min = 5000,
+>  		.tALS_min = 10000,
+>  		.tAR_min = 10000,
+> @@ -164,7 +164,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
+>  	},
+>  	/* Mode 4 */
+>  	{
+> -		.tADL_min = 70000,
+> +		.tADL_min = 400000,
+>  		.tALH_min = 5000,
+>  		.tALS_min = 10000,
+>  		.tAR_min = 10000,
+> @@ -201,7 +201,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
+>  	},
+>  	/* Mode 5 */
+>  	{
+> -		.tADL_min = 70000,
+> +		.tADL_min = 400000,
+>  		.tALH_min = 5000,
+>  		.tALS_min = 10000,
+>  		.tAR_min = 10000,
