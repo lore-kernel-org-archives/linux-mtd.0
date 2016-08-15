@@ -1,38 +1,18 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZKfb-0000Hs-0w
- for linux-mtd@lists.infradead.org; Mon, 15 Aug 2016 16:23:23 +0000
-Date: Mon, 15 Aug 2016 18:23:12 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- arnd@arndb.de, tglx@linutronix.de, torvalds@linux-foundation.org,
- tytso@mit.edu, viro@zeniv.linux.org.uk, y2038@lists.linaro.org,
- adilger.kernel@dilger.ca, adrian.hunter@intel.com,
- anna.schumaker@netapp.com, buchino@cisco.com,
- ceph-devel@vger.kernel.org, clm@fb.com, cm224.lee@samsung.com,
- dedekind1@gmail.com, dsterba@suse.com, dushistov@mail.ru,
- elder@kernel.org, eparis@redhat.com, hiralpat@cisco.com,
- idryomov@gmail.com, jack@suse.com, jaegeuk@kernel.org,
- jbacik@fb.com, jejb@linux.vnet.ibm.com,
- jfs-discussion@lists.sourceforge.net, jlbec@evilplan.org,
- john.stultz@linaro.org, linux-audit@redhat.com,
- linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
- linux-scsi@vger.kernel.org, lustre-devel@lists.lustre.org,
- martin.petersen@oracle.com, mfasheh@suse.com,
- ocfs2-devel@oss.oracle.com, paul@paul-moore.com, sage@redhat.com,
- sfrench@samba.org, shaggy@kernel.org, sramars@cisco.com,
- trond.myklebust@primarydata.com, zyan@redhat.com
-Subject: Re: [GIT PULL] [PATCH v4 00/26] Delete CURRENT_TIME and
- CURRENT_TIME_SEC macros
-Message-ID: <20160815162312.GA19794@kroah.com>
-References: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
+ id 1bZL2K-0003J7-6z
+ for linux-mtd@lists.infradead.org; Mon, 15 Aug 2016 16:47:03 +0000
+Received: by mail-wm0-x241.google.com with SMTP id o80so12064751wme.0
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Aug 2016 09:46:30 -0700 (PDT)
+To: Brian Norris <computersforpeace@gmail.com>,
+ MTD Mailing List <linux-mtd@lists.infradead.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH] spi-nor: add dual read support for s25fl128s
+Message-ID: <4d3db993-d030-3659-2f62-94c373f57038@gmail.com>
+Date: Mon, 15 Aug 2016 18:46:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,19 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 13, 2016 at 03:48:12PM -0700, Deepa Dinamani wrote:
-> The series is aimed at getting rid of CURRENT_TIME and CURRENT_TIME_SEC macros.
-> The macros are not y2038 safe. There is no plan to transition them into being
-> y2038 safe.
-> ktime_get_* api's can be used in their place. And, these are y2038 safe.
+The Spansion S25FL128S also supports the dual read mode.
 
-Who are you execting to pull this huge patch series?
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Why not just introduce the new api call, wait for that to be merged, and
-then push the individual patches through the different subsystems?
-After half of those get ignored, then provide a single set of patches
-that can go through Andrew or my trees.
-
-thanks,
-
-greg k-h
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..4f8e488 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -905,7 +905,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+-	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SECT_4K | SPI_NOR_QUAD_READ) },
++	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
+-- 
+2.9.2
