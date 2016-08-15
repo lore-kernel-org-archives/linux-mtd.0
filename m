@@ -1,20 +1,16 @@
-MIME-Version: 1.0
-Sender: pku.leo@gmail.com
-In-Reply-To: <1461307192-866-6-git-send-email-B56489@freescale.com>
-References: <1461307192-866-1-git-send-email-B56489@freescale.com>
- <1461307192-866-6-git-send-email-B56489@freescale.com>
-From: Li Yang <leoli@freescale.com>
-Date: Mon, 15 Aug 2016 13:02:56 -0500
-Message-ID: <CADRPPNS91-y1BRa8sDUZb1PrrrxbfPgnfLd-AByAVKx1vrC7fw@mail.gmail.com>
-Subject: Re: [PATCH v2 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
-To: Yunhui Cui <B56489@freescale.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- han.xu@freescale.com, lkml <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Yao Yuan <yao.yuan@nxp.com>, Yunhui Cui <yunhui.cui@nxp.com>
-Content-Type: text/plain; charset=UTF-8
+Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZRCH-0007Ch-86
+ for linux-mtd@lists.infradead.org; Mon, 15 Aug 2016 23:21:34 +0000
+From: Kyle Roeschley <kyle.roeschley@ni.com>
+To: boris.brezillon@free-electrons.com, richard@nod.at
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, beanhuo@micron.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nathan.sullivan@ni.com, xander.huff@ni.com, peterpansjtu@gmail.com
+Subject: [PATCH v8 1/2] mtd: nand_bbt: Move BBT block selection logic out of
+ write_bbt()
+Date: Mon, 15 Aug 2016 18:22:01 -0500
+Message-Id: <1471303322-2479-1-git-send-email-kyle.roeschley@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,92 +20,176 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 22, 2016 at 1:39 AM, Yunhui Cui <B56489@freescale.com> wrote:
-> From: Yunhui Cui <yunhui.cui@nxp.com>
->
-> With the physical sectors combination, S25FS-S family flash
-> requires some special operations for read/write functions.
->
-> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 59 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 157841d..91ee920 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -39,6 +39,10 @@
->
->  #define SPI_NOR_MAX_ID_LEN     6
->  #define SPI_NOR_MAX_ADDR_WIDTH 4
-> +/* Added for S25FS-S family flash */
-> +#define SPINOR_CONFIG_REG3_OFFSET      0x800004
-> +#define CR3V_4KB_ERASE_UNABLE  0x8
-> +#define SPINOR_S25FS_FAMILY_ID 0x81
->
->  struct flash_info {
->         char            *name;
-> @@ -78,6 +82,7 @@ struct flash_info {
->  };
->
->  #define JEDEC_MFR(info)        ((info)->id[0])
-> +#define EXT_ID(info)   ((info)->id[5])
->
->  static const struct flash_info *spi_nor_match_id(const char *name);
->
-> @@ -881,6 +886,7 @@ static const struct flash_info spi_nor_ids[] = {
->          */
->         { "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->         { "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512, 0)},
->         { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
->         { "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->         { "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> @@ -1018,6 +1024,53 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->         return ERR_PTR(-ENODEV);
->  }
->
-> +/*
-> + * The S25FS-S family physical sectors may be configured as a
-> + * hybrid combination of eight 4-kB parameter sectors
-> + * at the top or bottom of the address space with all
-> + * but one of the remaining sectors being uniform size.
-> + * The Parameter Sector Erase commands (20h or 21h) must
-> + * be used to erase the 4-kB parameter sectors individually.
-> + * The Sector (uniform sector) Erase commands (D8h or DCh)
-> + * must be used to erase any of the remaining
-> + * sectors, including the portion of highest or lowest address
-> + * sector that is not overlaid by the parameter sectors.
-> + * The uniform sector erase command has no effect on parameter sectors.
-> + */
-> +static int spansion_s25fs_disable_4kb_erase(struct spi_nor *nor)
-> +{
-> +       struct fsl_qspi *q;
-> +       u32 cr3v_addr  = SPINOR_CONFIG_REG3_OFFSET;
-> +       u8 cr3v = 0x0;
-> +       int ret = 0x0;
-> +
-> +       q = nor->priv;
-> +
-> +       nor->cmd_buf[2] = cr3v_addr >> 16;
-> +       nor->cmd_buf[1] = cr3v_addr >> 8;
-> +       nor->cmd_buf[0] = cr3v_addr >> 0;
-> +
-> +       ret = nor->read_reg(nor, SPINOR_OP_SPANSION_RDAR, &cr3v, 1);
-> +       if (ret)
-> +               return ret;
-> +       if (cr3v & CR3V_4KB_ERASE_UNABLE)
-> +               return 0;
-> +       ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
-> +       if (ret)
-> +               return ret;
-> +       cr3v = CR3V_4KB_ERASE_UNABLE;
-> +       nor->program_opcode = SPINOR_OP_SPANSION_WRAR;
-> +       nor->write(nor, cr3v_addr, 1, NULL, &cr3v);
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-The patch need to be re-spined due to the parameter change of write()
-in v4.8-rc.  Otherwise it can not pass build.
+This clarifies the write_bbt() by removing the write label and
+clarifying the error/exit path.
 
-Regards,
-Leo
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Tested-by: Kyle Roeschley <kyle.roeschley@ni.com>
+---
+v8: Move the chip indexing change back into patch 2
+
+v7: Move all code cleanup into first patch
+    Correct documentation of mark_bbt_block_bad
+    Make pr_warn messages consistent
+    Add Tested-bys
+
+v6: Split functionality of write_bbt out into new functions
+
+v5: De-duplicate bad block handling
+
+v4: Don't ignore write protection while marking bad BBT blocks
+    Correctly call block_markbad
+    Minor cleanups
+
+v3: Don't overload mtd->priv
+    Keep nand_erase_nand from erroring on protected BBT blocks
+
+v2: Mark OOB area in each block as well as BBT
+    Avoid marking read-only, bad address, or known bad blocks as bad
+
+ drivers/mtd/nand/nand_bbt.c | 110 +++++++++++++++++++++++++++++---------------
+ 1 file changed, 74 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2fbb523..9fbd664 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -605,6 +605,69 @@ static void search_read_bbts(struct mtd_info *mtd, uint8_t *buf,
+ }
+ 
+ /**
++ * get_bbt_block - Get the first valid eraseblock suitable to store a BBT
++ * @this: the NAND device
++ * @td: the BBT description
++ * @md: the mirror BBT descriptor
++ * @chip: the CHIP selector
++ *
++ * This functions returns a positive block number pointing a valid eraseblock
++ * suitable to store a BBT (i.e. in the range reserved for BBT), or -ENOSPC if
++ * all blocks are already used of marked bad. If td->pages[chip] was already
++ * pointing to a valid block we re-use it, otherwise we search for the next
++ * valid one.
++ */
++static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
++			 struct nand_bbt_descr *md, int chip)
++{
++	int startblock, dir, page, numblocks, i;
++
++	/*
++	 * There was already a version of the table, reuse the page. This
++	 * applies for absolute placement too, as we have the page number in
++	 * td->pages.
++	 */
++	if (td->pages[chip] != -1)
++		return td->pages[chip] >>
++				(this->bbt_erase_shift - this->page_shift);
++
++	numblocks = (int)(this->chipsize >> this->bbt_erase_shift);
++	if (!(td->options & NAND_BBT_PERCHIP))
++		numblocks *= this->numchips;
++
++	/*
++	 * Automatic placement of the bad block table. Search direction
++	 * top -> down?
++	 */
++	if (td->options & NAND_BBT_LASTBLOCK) {
++		startblock = numblocks * (chip + 1) - 1;
++		dir = -1;
++	} else {
++		startblock = chip * numblocks;
++		dir = 1;
++	}
++
++	for (i = 0; i < td->maxblocks; i++) {
++		int block = startblock + dir * i;
++
++		/* Check, if the block is bad */
++		switch (bbt_get_entry(this, block)) {
++		case BBT_BLOCK_WORN:
++		case BBT_BLOCK_FACTORY_BAD:
++			continue;
++		}
++
++		page = block << (this->bbt_erase_shift - this->page_shift);
++
++		/* Check, if the block is used by the mirror table */
++		if (!md || md->pages[chip] != page)
++			return block;
++	}
++
++	return -ENOSPC;
++}
++
++/**
+  * write_bbt - [GENERIC] (Re)write the bad block table
+  * @mtd: MTD device structure
+  * @buf: temporary buffer
+@@ -621,7 +684,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+ 	struct erase_info einfo;
+ 	int i, res, chip = 0;
+-	int bits, startblock, dir, page, offs, numblocks, sft, sftmsk;
++	int bits, page, offs, numblocks, sft, sftmsk;
+ 	int nrchips, pageoffs, ooboffs;
+ 	uint8_t msk[4];
+ 	uint8_t rcode = td->reserved_block_code;
+@@ -653,45 +716,20 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 
+ 	/* Loop through the chips */
+ 	for (; chip < nrchips; chip++) {
+-		/*
+-		 * There was already a version of the table, reuse the page
+-		 * This applies for absolute placement too, as we have the
+-		 * page nr. in td->pages.
+-		 */
+-		if (td->pages[chip] != -1) {
+-			page = td->pages[chip];
+-			goto write;
++		int block;
++
++		block = get_bbt_block(this, td, md, chip);
++		if (block < 0) {
++			pr_err("No space left to write bad block table\n");
++			res = block;
++			goto outerr;
+ 		}
+ 
+ 		/*
+-		 * Automatic placement of the bad block table. Search direction
+-		 * top -> down?
++		 * get_bbt_block() returns a block number, shift the value to
++		 * get a page number.
+ 		 */
+-		if (td->options & NAND_BBT_LASTBLOCK) {
+-			startblock = numblocks * (chip + 1) - 1;
+-			dir = -1;
+-		} else {
+-			startblock = chip * numblocks;
+-			dir = 1;
+-		}
+-
+-		for (i = 0; i < td->maxblocks; i++) {
+-			int block = startblock + dir * i;
+-			/* Check, if the block is bad */
+-			switch (bbt_get_entry(this, block)) {
+-			case BBT_BLOCK_WORN:
+-			case BBT_BLOCK_FACTORY_BAD:
+-				continue;
+-			}
+-			page = block <<
+-				(this->bbt_erase_shift - this->page_shift);
+-			/* Check, if the block is used by the mirror table */
+-			if (!md || md->pages[chip] != page)
+-				goto write;
+-		}
+-		pr_err("No space left to write bad block table\n");
+-		return -ENOSPC;
+-	write:
++		page = block << (this->bbt_erase_shift - this->page_shift);
+ 
+ 		/* Set up shift count and masks for the flash table */
+ 		bits = td->options & NAND_BBT_NRBITS_MSK;
+-- 
+2.8.1
