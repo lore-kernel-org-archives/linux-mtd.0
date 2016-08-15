@@ -1,21 +1,19 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZJeQ-0003DW-9d
- for linux-mtd@lists.infradead.org; Mon, 15 Aug 2016 15:18:07 +0000
-Date: Mon, 15 Aug 2016 17:17:42 +0200
+ id 1bZJiX-0005AO-TT
+ for linux-mtd@lists.infradead.org; Mon, 15 Aug 2016 15:22:22 +0000
+Date: Mon, 15 Aug 2016 17:22:00 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>
-Cc: linux-kernel@vger.kernel.org, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Robert Jarzmik
- <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 1/2] mtd: nand: timings: Fix tADL_min for ONFI 4.0 chips
-Message-ID: <20160815171742.3b5d1fb6@bbrezillon>
-In-Reply-To: <1465914067-29736-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1465914067-29736-1-git-send-email-boris.brezillon@free-electrons.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: <dan.carpenter@oracle.com>, <richard@nod.at>,
+ <computersforpeace@gmail.com>, <fcooper@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: nand: omap2: Don't call dma_release_channel() if
+ dma_request_chan() failed
+Message-ID: <20160815172200.11b9860c@bbrezillon>
+In-Reply-To: <1471247259-27107-1-git-send-email-rogerq@ti.com>
+References: <1471247259-27107-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,77 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 14 Jun 2016 16:21:06 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Mon, 15 Aug 2016 10:47:39 +0300
+Roger Quadros <rogerq@ti.com> wrote:
 
-> ONFI 4.0 spec defines different values for the tADL_min timing.
-> Since we don't want to have different timings depending on the ONFI
-> version, we just set tADL_min to the maximum value (the one specified
-> in the ONFI 4.0 spec).
-
-Applied both.
-
+> dma_request_chan() can fail returning an error pointer. In this case
+> prevent calling dma_release_channel() to prevent a ERR_PTR() dereference.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> As error path can be called even with no DMA configuration, info->dma can
+> be NULL so don't call dma_release_channel() for that case either.
+> 
+> Fixes: de3bfc4a1616: ("mtd: nand: omap2: fix return value check in omap_nand_probe()")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Brian, can you apply this fix directly?
+
 > ---
->  drivers/mtd/nand/nand_timings.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  drivers/mtd/nand/omap2.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-> index e81470a..c0941d5 100644
-> --- a/drivers/mtd/nand/nand_timings.c
-> +++ b/drivers/mtd/nand/nand_timings.c
-> @@ -16,7 +16,7 @@
->  static const struct nand_sdr_timings onfi_sdr_timings[] = {
->  	/* Mode 0 */
->  	{
-> -		.tADL_min = 200000,
-> +		.tADL_min = 400000,
->  		.tALH_min = 20000,
->  		.tALS_min = 50000,
->  		.tAR_min = 25000,
-> @@ -53,7 +53,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
->  	},
->  	/* Mode 1 */
->  	{
-> -		.tADL_min = 100000,
-> +		.tADL_min = 400000,
->  		.tALH_min = 10000,
->  		.tALS_min = 25000,
->  		.tAR_min = 10000,
-> @@ -90,7 +90,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
->  	},
->  	/* Mode 2 */
->  	{
-> -		.tADL_min = 100000,
-> +		.tADL_min = 400000,
->  		.tALH_min = 10000,
->  		.tALS_min = 15000,
->  		.tAR_min = 10000,
-> @@ -127,7 +127,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
->  	},
->  	/* Mode 3 */
->  	{
-> -		.tADL_min = 100000,
-> +		.tADL_min = 400000,
->  		.tALH_min = 5000,
->  		.tALS_min = 10000,
->  		.tAR_min = 10000,
-> @@ -164,7 +164,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
->  	},
->  	/* Mode 4 */
->  	{
-> -		.tADL_min = 70000,
-> +		.tADL_min = 400000,
->  		.tALH_min = 5000,
->  		.tALS_min = 10000,
->  		.tAR_min = 10000,
-> @@ -201,7 +201,7 @@ static const struct nand_sdr_timings onfi_sdr_timings[] = {
->  	},
->  	/* Mode 5 */
->  	{
-> -		.tADL_min = 70000,
-> +		.tADL_min = 400000,
->  		.tALH_min = 5000,
->  		.tALS_min = 10000,
->  		.tAR_min = 10000,
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index a59361c..5513bfd9 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -2169,7 +2169,7 @@ scan_tail:
+>  	return 0;
+>  
+>  return_error:
+> -	if (info->dma)
+> +	if (!IS_ERR_OR_NULL(info->dma))
+>  		dma_release_channel(info->dma);
+>  	if (nand_chip->ecc.priv) {
+>  		nand_bch_free(nand_chip->ecc.priv);
