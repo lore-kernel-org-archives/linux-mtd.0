@@ -1,21 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZYsp-0002vC-LE
- for linux-mtd@lists.infradead.org; Tue, 16 Aug 2016 07:34:02 +0000
-Date: Tue, 16 Aug 2016 09:33:36 +0200
-From: Vincent =?iso-8859-1?Q?Stehl=E9?= <vincent.stehle@intel.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: Re: [PATCH] UBIFS: fix assertion in layout_in_gaps()
-Message-ID: <20160816073336.GA24318@jazz.nc.intel.com>
-References: <1471008390-19227-1-git-send-email-vincent.stehle@intel.com>
- <CAFLxGvwqvLpUUzqc_5=iTB03NdU_mYvrmPqRjTZ6O-x+mzTTeA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFLxGvwqvLpUUzqc_5=iTB03NdU_mYvrmPqRjTZ6O-x+mzTTeA@mail.gmail.com>
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZdvV-0002La-US
+ for linux-mtd@lists.infradead.org; Tue, 16 Aug 2016 12:57:07 +0000
+Received: by mail-wm0-x243.google.com with SMTP id o80so16322898wme.0
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Aug 2016 05:56:45 -0700 (PDT)
+From: LABBE Corentin <clabbe.montjoie@gmail.com>
+To: computersforpeace@gmail.com,
+	dwmw2@infradead.org,
+	han.xu@nxp.com
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ LABBE Corentin <clabbe.montjoie@gmail.com>
+Subject: [PATCH] mtd: spi-nor: constify fsl_qspi_devtype_data
+Date: Tue, 16 Aug 2016 14:56:38 +0200
+Message-Id: <1471352198-7327-1-git-send-email-clabbe.montjoie@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Aug 14, 2016 at 11:00:33AM +0200, Richard Weinberger wrote:
-..
-> Good catch! Did you hit this assertion or was it found by review?
-> I bet the latter since it is here since ever and given the wrongness
-> it is unlikely to trigger.
+All fsl_qspi_devtype_data structures are never modified.
+This patch constify them.
 
-Dear Richard,
+Signed-off-by: LABBE Corentin <clabbe.montjoie@gmail.com>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-It was found with a static checker and later review to confirm.
-
-Best regards,
-
-Vincent.
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 5c82e4e..b4d8953 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -224,7 +224,7 @@ struct fsl_qspi_devtype_data {
+ 	int driver_data;
+ };
+ 
+-static struct fsl_qspi_devtype_data vybrid_data = {
++static const struct fsl_qspi_devtype_data vybrid_data = {
+ 	.devtype = FSL_QUADSPI_VYBRID,
+ 	.rxfifo = 128,
+ 	.txfifo = 64,
+@@ -232,7 +232,7 @@ static struct fsl_qspi_devtype_data vybrid_data = {
+ 	.driver_data = QUADSPI_QUIRK_SWAP_ENDIAN,
+ };
+ 
+-static struct fsl_qspi_devtype_data imx6sx_data = {
++static const struct fsl_qspi_devtype_data imx6sx_data = {
+ 	.devtype = FSL_QUADSPI_IMX6SX,
+ 	.rxfifo = 128,
+ 	.txfifo = 512,
+@@ -241,7 +241,7 @@ static struct fsl_qspi_devtype_data imx6sx_data = {
+ 		       | QUADSPI_QUIRK_TKT245618,
+ };
+ 
+-static struct fsl_qspi_devtype_data imx7d_data = {
++static const struct fsl_qspi_devtype_data imx7d_data = {
+ 	.devtype = FSL_QUADSPI_IMX7D,
+ 	.rxfifo = 512,
+ 	.txfifo = 512,
+@@ -250,7 +250,7 @@ static struct fsl_qspi_devtype_data imx7d_data = {
+ 		       | QUADSPI_QUIRK_4X_INT_CLK,
+ };
+ 
+-static struct fsl_qspi_devtype_data imx6ul_data = {
++static const struct fsl_qspi_devtype_data imx6ul_data = {
+ 	.devtype = FSL_QUADSPI_IMX6UL,
+ 	.rxfifo = 128,
+ 	.txfifo = 512,
+-- 
+2.7.3
