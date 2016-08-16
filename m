@@ -1,24 +1,53 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZiuG-00029H-CF
- for linux-mtd@lists.infradead.org; Tue, 16 Aug 2016 18:16:09 +0000
-Date: Tue, 16 Aug 2016 19:15:36 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- vigneshr@ti.com, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, vikram.prakash@broadcom.com,
- andy.fung@broadcom.com, jon.mason@broadcom.com, jchandra@broadcom.com,
- Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
-Message-ID: <20160816181536.GX9347@sirena.org.uk>
-References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
- <1469830393-13295-3-git-send-email-kdasu.kdev@gmail.com>
+ id 1bZixG-0002g3-Eb
+ for linux-mtd@lists.infradead.org; Tue, 16 Aug 2016 18:19:15 +0000
+Received: by mail-it0-x241.google.com with SMTP id d65so6053689ith.0
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Aug 2016 11:18:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="KG+zyBxh8BrwB1om"
-Content-Disposition: inline
-In-Reply-To: <1469830393-13295-3-git-send-email-kdasu.kdev@gmail.com>
-Subject: Re: [PATCH v5 2/8] spi: bcm-qspi: Add Broadcom MSPI driver
+In-Reply-To: <20160815162312.GA19794@kroah.com>
+References: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
+ <20160815162312.GA19794@kroah.com>
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+Date: Tue, 16 Aug 2016 11:18:52 -0700
+Message-ID: <CABeXuvp027DZR0=zQPp86oGdi2B+Gh16z8_FyoY5UDUdHXAngA@mail.gmail.com>
+Subject: Re: [GIT PULL] [PATCH v4 00/26] Delete CURRENT_TIME and
+ CURRENT_TIME_SEC macros
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ "Theodore Ts'o" <tytso@mit.edu>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ y2038 Mailman List <y2038@lists.linaro.org>,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ Brian Uchino <buchino@cisco.com>, ceph-devel <ceph-devel@vger.kernel.org>,
+ Chris Mason <clm@fb.com>,
+ Changman Lee <cm224.lee@samsung.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Sterba <dsterba@suse.com>, Evgeniy Dushistov <dushistov@mail.ru>,
+ Alex Elder <elder@kernel.org>,
+ Eric Paris <eparis@redhat.com>, Hiral Patel <hiralpat@cisco.com>,
+ Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>,
+ Josef Bacik <jbacik@fb.com>, "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ jfs-discussion@lists.sourceforge.net, Joel Becker <jlbec@evilplan.org>,
+ John Stultz <john.stultz@linaro.org>, linux-audit@redhat.com,
+ linux-btrfs <linux-btrfs@vger.kernel.org>, linux-ext4@vger.kernel.org,
+ "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ Linux SCSI List <linux-scsi@vger.kernel.org>,
+ lustre-devel@lists.lustre.org,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Mark Fasheh <mfasheh@suse.com>,
+ ocfs2-devel@oss.oracle.com, Paul Moore <paul@paul-moore.com>,
+ Sage Weil <sage@redhat.com>, Steve French <sfrench@samba.org>,
+ Dave Kleikamp <shaggy@kernel.org>, Suma Ramars <sramars@cisco.com>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ "Yan, Zheng" <zyan@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,74 +57,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Thank you for the suggestion.
 
---KG+zyBxh8BrwB1om
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Who are you execting to pull this huge patch series?
 
-On Fri, Jul 29, 2016 at 06:13:07PM -0400, Kamal Dasu wrote:
+The last pull request was addressed to Al as per Arnd's suggestion.
+I'm not completely sure who should it be addressed to.
 
-> +static int bcm_qspi_transfer_one(struct spi_master *master,
+> Why not just introduce the new api call, wait for that to be merged, and
+> then push the individual patches through the different subsystems?
+> After half of those get ignored, then provide a single set of patches
+> that can go through Andrew or my trees.
 
-> +		if (qspi->next_udelay) {
-> +			udelay(qspi->next_udelay);
-> +			qspi->next_udelay = 0;
-> +		}
+Arnd and I tried to do this a few ways.
 
-Why is the driver manually implementing delays in a transfer_one()
-function?  The core will add any required delays between transfers, this
-will result in us delaying twice.
+We can try to introduce the api first like you suggest.
 
-> +		read_from_hw(qspi, slots);
-> +		if (qspi->cs_change) {
-> +			usleep_range(10, 20);
-> +			qspi->cs_change = 0;
-> +		}
+There are a few Acks already on the patches.
+And, patches 2-5 also need to be merged through some common tree like
+yours or Andrew's as you suggest.
 
-Similarly here, the core will do chip select changes.
+So, if everyone is ok, I could do the following:
 
-> +	if (spi_transfer_is_last(master, trans))
-> +		hw_stop(qspi);
+1. Post patches 1-5 for rc-2.
+2. Post all other patches to respective maintainers after rc-2
+3. Then after patches get ignored or merged, post remaining as a
+series for you or Andrew to pick up.
 
-The only thing I can see that looks like it might make a difference here
-is this hw_stop() operation but all that does is update an internal
-state machine so there's no limitation on it needing to be done before
-the above operations that I can see.
-
-> +	ret = clk_prepare_enable(qspi->clk);
-> +	if (ret) {
-> +		dev_err(dev, "failed to prepare clock\n");
-> +		goto err2;
-
-Please use named labels rather than numbered, it makes life a lot easier
-if anything gets changed.
-
-> +EXPORT_SYMBOL_GPL(bcm_qspi_probe);
-
-This needs some explanation or to be added along with the user.
-
-> diff --git a/drivers/spi/spi-brcmstb-qspi.c b/drivers/spi/spi-brcmstb-qspi.c
-> new file mode 100644
-> index 0000000..c7df92e
-> --- /dev/null
-> +++ b/drivers/spi/spi-brcmstb-qspi.c
-
-This should really be a separate patch, it's a separate driver and very
-surprising to find it here.
-
---KG+zyBxh8BrwB1om
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXs1hHAAoJECTWi3JdVIfQInEH/3EUS1oTuq6t2M3JOjf59Bmt
-ZoDUGOiL41sBtjo74JG1LEUB4ue3Zqjxzkz0t7P9hmXv9Qqq8Y3baPFHELLbkhe5
-OsTLDJnuvrrkdN9i+OCUizW7FSb9qLPpvE+b2UOHLxyitzSwie7kSbFCb0DwbA4G
-WvRT2LdPuHVRSfCW/ai/n4NWU51NEQLiZZBEUd1vB7QQGofJSiSiW5XH5jX8U6gl
-Wh/daHQNIplLcziHfAFWEPDAYxIDvULMp/5URVbJR2LTjt7wlPVRlmIP1CtlVpmF
-8PY5Av5nbmtLi+mwxiGUmCvn0eQbfNDkBKyMQ2vJoi+0dnN/NmeYicfdz7NTpus=
-=N3sm
------END PGP SIGNATURE-----
-
---KG+zyBxh8BrwB1om--
+-Deepa
