@@ -1,24 +1,54 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZjIG-0003eQ-9g
- for linux-mtd@lists.infradead.org; Tue, 16 Aug 2016 18:40:56 +0000
-Date: Tue, 16 Aug 2016 19:40:30 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- vigneshr@ti.com, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, vikram.prakash@broadcom.com,
- andy.fung@broadcom.com, jon.mason@broadcom.com, jchandra@broadcom.com
-Message-ID: <20160816184030.GB9347@sirena.org.uk>
-References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
- <1469830393-13295-9-git-send-email-kdasu.kdev@gmail.com>
+ id 1bZjUR-0006uC-DM
+ for linux-mtd@lists.infradead.org; Tue, 16 Aug 2016 18:53:32 +0000
+Date: Tue, 16 Aug 2016 20:53:20 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Theodore Ts'o <tytso@mit.edu>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ y2038 Mailman List <y2038@lists.linaro.org>,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ Brian Uchino <buchino@cisco.com>,
+ ceph-devel <ceph-devel@vger.kernel.org>, Chris Mason <clm@fb.com>,
+ Changman Lee <cm224.lee@samsung.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, David Sterba <dsterba@suse.com>,
+ Evgeniy Dushistov <dushistov@mail.ru>,
+ Alex Elder <elder@kernel.org>, Eric Paris <eparis@redhat.com>,
+ Hiral Patel <hiralpat@cisco.com>, Ilya Dryomov <idryomov@gmail.com>,
+ Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Josef Bacik <jbacik@fb.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ jfs-discussion@lists.sourceforge.net, Joel Becker <jlbec@evilplan.org>,
+ John Stultz <john.stultz@linaro.org>, linux-audit@redhat.com,
+ linux-btrfs <linux-btrfs@vger.kernel.org>, linux-ext4@vger.kernel.org,
+ "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ Linux SCSI List <linux-scsi@vger.kernel.org>,
+ lustre-devel@lists.lustre.org,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Mark Fasheh <mfasheh@suse.com>, ocfs2-devel@oss.oracle.com,
+ Paul Moore <paul@paul-moore.com>, Sage Weil <sage@redhat.com>,
+ Steve French <sfrench@samba.org>, Dave Kleikamp <shaggy@kernel.org>,
+ Suma Ramars <sramars@cisco.com>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ "Yan, Zheng" <zyan@redhat.com>
+Subject: Re: [GIT PULL] [PATCH v4 00/26] Delete CURRENT_TIME and
+ CURRENT_TIME_SEC macros
+Message-ID: <20160816185320.GB6513@kroah.com>
+References: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
+ <20160815162312.GA19794@kroah.com>
+ <CABeXuvp027DZR0=zQPp86oGdi2B+Gh16z8_FyoY5UDUdHXAngA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="dWDJ72qfEa57oDWE"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1469830393-13295-9-git-send-email-kdasu.kdev@gmail.com>
-Subject: Re: [PATCH v5 8/8] spi: nsp-qspi: Add Broadcom NSP, NS2, Cygnus SoC
- support
+In-Reply-To: <CABeXuvp027DZR0=zQPp86oGdi2B+Gh16z8_FyoY5UDUdHXAngA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +58,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Aug 16, 2016 at 11:18:52AM -0700, Deepa Dinamani wrote:
+> Thank you for the suggestion.
+> 
+> > Who are you execting to pull this huge patch series?
+> 
+> The last pull request was addressed to Al as per Arnd's suggestion.
+> I'm not completely sure who should it be addressed to.
+> 
+> > Why not just introduce the new api call, wait for that to be merged, and
+> > then push the individual patches through the different subsystems?
+> > After half of those get ignored, then provide a single set of patches
+> > that can go through Andrew or my trees.
+> 
+> Arnd and I tried to do this a few ways.
+> 
+> We can try to introduce the api first like you suggest.
+> 
+> There are a few Acks already on the patches.
+> And, patches 2-5 also need to be merged through some common tree like
+> yours or Andrew's as you suggest.
+> 
+> So, if everyone is ok, I could do the following:
+> 
+> 1. Post patches 1-5 for rc-2.
 
---dWDJ72qfEa57oDWE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-rc2 is already released, and we aren't adding new apis this late in the
+release cycle, sorry.
 
-On Fri, Jul 29, 2016 at 06:13:13PM -0400, Kamal Dasu wrote:
+> 2. Post all other patches to respective maintainers after rc-2
+> 3. Then after patches get ignored or merged, post remaining as a
+> series for you or Andrew to pick up.
 
-> -		irq = platform_get_irq_byname(pdev, name);
-> +		if (soc && qspi_irq_tab[val].irq_source == MUXED_L1) {
-> +			/* all mspi, bspi intrs muxed to one L1 intr */
-> +			irq = platform_get_irq(pdev, 0);
-> +			of_property_read_string(dev->of_node,
-> +						"interrupt-names",
-> +						&name);
-> +		}
+The apis need to be aimed for 4.9-rc1, it's too late for 4.8, sorry.
 
-I am confused why we are parsing the interrupt-names property here?
-
-> +	/*
-> +	 * Some SoCs integrate spi controller (e.g., its interrupt bits)
-> +	 * in specific ways
-> +	 */
-> +	if (soc) {
-> +		qspi->soc = soc;
-> +		soc->bcm_qspi_int_set(soc, MSPI_DONE, true);
-> +	} else {
-> +		qspi->soc = NULL;
-> +	}
-
-The variable name "soc" here doesn't seem hugely descriptive when it's
-just for the interrupt controller.
-
---dWDJ72qfEa57oDWE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXs14cAAoJECTWi3JdVIfQkvgH/2wU7JcMsOOSEDDIujt9dxW1
-Mt5c5K0rpzMG7Q1IXKTqBdGRpq4i1ocmxqgbblp3YEjDLRrygwe5gqXHnxdGtpSj
-byNmPopxss8+q+0Sd3MCfOsJD8TTMfRpUrC/rhL05pfr256omQvfKxj/VXYBBIn9
-17kjxqlZkCBP2LPQ7bhYNzay0tUpi1a8JxWuV1FxKSSOOFovNdH87wRfrAYvNZOl
-CVjur9GEl5a1403lO2F1o0EN2vRwQi7vKXw5qPcTK4/3cg/QuAfBEXspDsmAWIPB
-A2FENTootM4StSBno1Jj03DYFl+APv3i7ahQWzFubnz7QY+lDmMC3uqj840BH6A=
-=SOBc
------END PGP SIGNATURE-----
-
---dWDJ72qfEa57oDWE--
+greg k-h
