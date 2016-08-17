@@ -1,23 +1,46 @@
-Received: from mail-db5eur01on0049.outbound.protection.outlook.com
- ([104.47.2.49] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
+ helo=mx0a-001b2d01.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZwfd-0006Ys-Q5
- for linux-mtd@lists.infradead.org; Wed, 17 Aug 2016 08:58:00 +0000
-From: Yunhui Cui <yunhui.cui@nxp.com>
-To: Jagan Teki <jteki@openedev.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-CC: David Woodhouse <dwmw2@infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
- Michael Trimarchi <michael@amarulasolutions.com>
-Subject: RE: [PATCH v2] mtd: spi-nor: Add s25fs256s1 spi-nor flash support
-Date: Wed, 17 Aug 2016 08:57:29 +0000
-Message-ID: <VI1PR0401MB2640FF70F5770AEB32F7449E94140@VI1PR0401MB2640.eurprd04.prod.outlook.com>
-References: <1470597730-10400-1-git-send-email-jteki@openedev.com>
-In-Reply-To: <1470597730-10400-1-git-send-email-jteki@openedev.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1bZwof-0005BO-7q
+ for linux-mtd@lists.infradead.org; Wed, 17 Aug 2016 09:07:18 +0000
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+ by mx0b-001b2d01.pphosted.com (8.16.0.11/8.16.0.11) with SMTP id
+ u7H96o1b039226
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Aug 2016 05:06:55 -0400
+Received: from e06smtp06.uk.ibm.com (e06smtp06.uk.ibm.com [195.75.94.102])
+ by mx0b-001b2d01.pphosted.com with ESMTP id 24vfthb1hp-1
+ (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Aug 2016 05:06:54 -0400
+Received: from localhost
+ by e06smtp06.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <cornelia.huck@de.ibm.com>;
+ Wed, 17 Aug 2016 10:06:51 +0100
+Date: Wed, 17 Aug 2016 11:06:45 +0200
+From: Cornelia Huck <cornelia.huck@de.ibm.com>
+To: Fam Zheng <famz@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+ linux-block@vger.kernel.org, Sergey Senozhatsky
+ <sergey.senozhatsky.work@gmail.com>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ virtualization@lists.linux-foundation.org,
+ linux-nvme@lists.infradead.org, "Ed L. Cashin" <ed.cashin@acm.org>,
+ Keith Busch <keith.busch@intel.com>, Minchan Kim <minchan@kernel.org>,
+ Paul Mackerras <paulus@samba.org>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ linuxppc-dev@lists.ozlabs.org, David Woodhouse <dwmw2@infradead.org>, Nitin
+ Gupta <ngupta@vflare.org>
+Subject: Re: [PATCH 06/15] genhd: Add return code to device_add_disk
+In-Reply-To: <20160817084823.GB19326@al.usersys.redhat.com>
+References: <1471418115-3654-1-git-send-email-famz@redhat.com>
+ <1471418115-3654-7-git-send-email-famz@redhat.com>
+ <20160817104914.37087cb3.cornelia.huck@de.ibm.com>
+ <20160817084823.GB19326@al.usersys.redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Message-Id: <20160817110645.45370f57.cornelia.huck@de.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,58 +50,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 17 Aug 2016 16:48:23 +0800
+Fam Zheng <famz@redhat.com> wrote:
 
-On Monday, August 08, 2016 3:22 AM, Jagan Teki wrote:
+> On Wed, 08/17 10:49, Cornelia Huck wrote:
+> > On Wed, 17 Aug 2016 15:15:06 +0800
+> > Fam Zheng <famz@redhat.com> wrote:
+> > 
+> > > @@ -613,10 +614,8 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
+> > >  	disk->flags |= GENHD_FL_UP;
+> > > 
+> > >  	retval = blk_alloc_devt(&disk->part0, &devt);
+> > > -	if (retval) {
+> > > -		WARN_ON(1);
+> > > -		return;
+> > > -	}
+> > > +	if (retval)
+> > > +		goto fail;
+> > >  	disk_to_dev(disk)->devt = devt;
+> > > 
+> > >  	/* ->major and ->first_minor aren't supposed to be
+> > > @@ -625,16 +624,26 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
+> > >  	disk->major = MAJOR(devt);
+> > >  	disk->first_minor = MINOR(devt);
+> > > 
+> > > -	disk_alloc_events(disk);
+> > > +	retval = disk_alloc_events(disk);
+> > > +	if (retval)
+> > > +		goto fail;
+> > > 
+> > >  	/* Register BDI before referencing it from bdev */
+> > >  	bdi = &disk->queue->backing_dev_info;
+> > > -	bdi_register_owner(bdi, disk_to_dev(disk));
+> > > +	retval = bdi_register_owner(bdi, disk_to_dev(disk));
+> > > +	if (retval)
+> > > +		goto fail;
+> > > 
+> > > -	blk_register_region(disk_devt(disk), disk->minors, NULL,
+> > > -			    exact_match, exact_lock, disk);
+> > > -	register_disk(parent, disk);
+> > > -	blk_register_queue(disk);
+> > > +	retval = blk_register_region(disk_devt(disk), disk->minors, NULL,
+> > > +				     exact_match, exact_lock, disk);
+> > > +	if (retval)
+> > > +		goto fail;
+> > > +	retval = register_disk(parent, disk);
+> > > +	if (retval)
+> > > +		goto fail;
+> > > +	retval = blk_register_queue(disk);
+> > > +	if (retval)
+> > > +		goto fail;
+> > > 
+> > >  	/*
+> > >  	 * Take an extra ref on queue which will be put on disk_release()
+> > > @@ -644,10 +653,20 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
+> > > 
+> > >  	retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
+> > >  				   "bdi");
+> > > +	if (retval)
+> > > +		goto fail;
+> > > +
+> > > +	retval = disk_add_events(disk);
+> > > +	if (retval)
+> > > +		goto fail;
+> > > +
+> > > +	retval = blk_integrity_add(disk);
+> > > +	if (retval)
+> > > +		goto fail;
+> > > +	return 0;
+> > > +fail:
+> > >  	WARN_ON(retval);
+> > > -
+> > > -	disk_add_events(disk);
+> > > -	blk_integrity_add(disk);
+> > > +	return retval;
+> > >  }
+> > 
+> > Noticed this when trying to figure out whether the error handling in
+> > virtio_blk was correct:
+> > 
+> > Shouldn't you try to cleanup/rewind so that any structures are in a
+> > sane state after failure? The caller doesn't know where device_add_disk
+> > failed, and calling del_gendisk unconditionally like virtio_blk does is
+> > probably not the right thing to do (at the very least, I don't think
+> > unregistering a device that has not been registered is likely to work).
+> > 
+> 
+> Yes, I think all callers need to be reviewed before device_add_disk do the
+> clean up on error. For this patchset I wanted to keep the change small.
 
-> Add Spansion s25fs256s1 spi-nor flash to the list of spi_nor_ids.
->=20
-> In spansion S25FS-S family the physical sectors are grouped as normal and
-> parameter sectors. Parameter sectors are 4kB in size with 8 set located
-> at the bottom or top address of a device.
-> Normal sectors are similar to other flash family with sizes of 64kB or 32
-> kB.
->=20
-> To erase whole flash using sector erase(D8h or DCh) won't effect the
-> parameter sectors, so in order to erase these we must use 4K sector erase
-> commands (20h or 21h) separately.
->=20
-> So better to erase the whole flash using 4K sector erase instead of
-> detecting these family parts again and do two different erase operations.
->=20
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Yunhui Cui <yunhui.cui@nxp.com>
-> Cc: Michael Trimarchi <michael@amarulasolutions.com>
-> Signed-off-by: Jagan Teki <jteki@openedev.com>
-> ---
-> Changes for v2:
-> 	- Fix wrong vendor name in commit message
+But do the callers even have a chance to do this correctly right now?
+They will either clean up too much, or too little. ('Too little' is
+probably the more common case, given that you just added error
+propagation...)
 
-[Yunhui] Actually, This flash is belongs to S25FS-S Family, besides,
-S25FS128S 128 Mbit (16 Mbyte)
-S25FS256S 256 Mbit (32 Mbyte)
-S25FS512S 512 Mbit (64 Mbyte)
-They need some specific operations, not the Spansion S25FL128S Family. Than=
-ks
-
->=20
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-
-> nor.c index d0fc165..6ad7779 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -901,6 +901,7 @@ static const struct flash_info spi_nor_ids[] =3D {
->  	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128,
-> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
->  	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512,
-> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512,
-> SECT_4K) },
->  	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256,
-> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
->  	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
-> --
-> 2.7.4
+Can you make del_gendisk handle devices partially setup via
+device_add_disk in all cases? Then you could mandate pairing
+device_add_disk with del_gendisk in all cases, error or not, and you
+should have a better chance on avoiding introducing new errors.
