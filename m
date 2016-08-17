@@ -1,14 +1,19 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZreA-0007Zu-0q
- for linux-mtd@lists.infradead.org; Wed, 17 Aug 2016 03:36:09 +0000
-To: <linux-mtd@lists.infradead.org>, <richard@nod.at>, <dedekind1@gmail.com>
-From: Wang Fangpeng <wangfangpeng1@huawei.com>
-Subject: =?UTF-8?Q?Coverity_Scan=ef=bc=9adead_code_on_ubi?=
-Message-ID: <57B3DB5B.3040406@huawei.com>
-Date: Wed, 17 Aug 2016 11:34:51 +0800
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020409060707050806040701"
+From: Fam Zheng <famz@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-nvme@lists.infradead.org, Keith Busch <keith.busch@intel.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ linuxppc-dev@lists.ozlabs.org, "Michael S. Tsirkin" <mst@redhat.com>,
+ linux-block@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Paul Mackerras <paulus@samba.org>, linux-mtd@lists.infradead.org,
+ "Ed L. Cashin" <ed.cashin@acm.org>, Jens Axboe <axboe@kernel.dk>,
+ Minchan Kim <minchan@kernel.org>,
+ virtualization@lists.linux-foundation.org,
+ Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+ Nitin Gupta <ngupta@vflare.org>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 00/15] Fix issue with KOBJ_ADD uevent versus disk attributes
+Date: Wed, 17 Aug 2016 15:15:00 +0800
+Message-Id: <1471418115-3654-1-git-send-email-famz@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,60 +23,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---------------020409060707050806040701
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+This is an attempt to fix the issue that some disks' sysfs attributes are not
+ready at the time its KOBJ_ADD event is sent.
 
-Hi, folks,
+The symptom is during device hotplug, udev may fail to find certain attributes,
+such as serial or wwn, of the disk. As a result the /dev/disk/by-id entries are
+not created.
 
-Coverity Scan reports dead code on Linux/drivers/mtd/ubi/io.c:956-957 (kernel-4.7)
+The cause is device_add_disk emits the uevent before returning, and the callers
+have to create sysfs entries after that.
 
-945                 if (data_size == 0) {
-946                         ubi_err(ubi, "zero data_size");
-947                         goto bad;
-948                 }
-949                 if (lnum < used_ebs - 1) {
-950                         if (data_size != usable_leb_size) {
-951                                 ubi_err(ubi, "bad data_size");
-952                                 goto bad;
-953                         }
-954                 } else if (lnum == used_ebs - 1) {
-955                         if (data_size == 0) {
-956                                 ubi_err(ubi, "bad data_size at last LEB");
-957                                 goto bad;
-958                         }
-959                 } else {
-960                         ubi_err(ubi, "too high lnum");
-961                         goto bad;
-962                 }
+The fix here is to pass attr_groups from callers to device_add_disk, so it can
+be added before KOBJ_ADD.
 
-The data_size argument has been checked(data_size == 0) at line 945 and goto bad if true.
-At line 955, check it again. but the value of "data_size" must be at least 1, cannot be
-equal to 0.  So, execution cannot reach line 956-957. it is dead code.
+Also add basic error handling around device_add_disk code, (or add FIXME
+comment where work is left).
 
-Can we fix this situation by the attach patch?
+Fam Zheng (15):
+  disk: Drop add_disk in favor of device_add_disk
+  genhd: Return error from register_disk()
+  genhd: Return error from blk_register_region
+  block: Return error from blk_integrity_add
+  genhd: Return error from disk_{add,alloc}_events
+  genhd: Add return code to device_add_disk
+  genhd: Add attribute group parameter to device_add_disk
+  nvme: Pass attribute group to device_add_disk
+  virtio-blk: Pass attribute group to device_add_disk
+  mtd: Pass attribute group to device_add_disk
+  zram: Pass attribute group to device_add_disk
+  mtip: Pass attribute group to device_add_disk
+  aoeblk: Pass attribute group to device_add_disk
+  axonram: Pass attribute group to device_add_disk
+  block: Add FIXME comment to handle device_add_disk error
 
---------------020409060707050806040701
-Content-Type: text/plain; charset="UTF-8";
-	name="0001-fix-dead-code-at-drivers-mtd-ubi-io.c.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="0001-fix-dead-code-at-drivers-mtd-ubi-io.c.patch"
+ arch/m68k/emu/nfblock.c             |   3 +-
+ arch/powerpc/sysdev/axonram.c       |  23 +++++---
+ arch/um/drivers/ubd_kern.c          |   3 +-
+ arch/xtensa/platforms/iss/simdisk.c |   3 +-
+ block/blk-integrity.c               |  12 ++--
+ block/genhd.c                       | 112 +++++++++++++++++++++++++-----------
+ drivers/block/DAC960.c              |   3 +-
+ drivers/block/amiflop.c             |   3 +-
+ drivers/block/aoe/aoeblk.c          |  13 ++---
+ drivers/block/ataflop.c             |   3 +-
+ drivers/block/brd.c                 |   6 +-
+ drivers/block/cciss.c               |   3 +-
+ drivers/block/drbd/drbd_main.c      |   3 +-
+ drivers/block/floppy.c              |   5 +-
+ drivers/block/hd.c                  |   3 +-
+ drivers/block/loop.c                |   3 +-
+ drivers/block/mg_disk.c             |   3 +-
+ drivers/block/mtip32xx/mtip32xx.c   |  39 +++----------
+ drivers/block/nbd.c                 |   3 +-
+ drivers/block/null_blk.c            |   3 +-
+ drivers/block/osdblk.c              |   3 +-
+ drivers/block/paride/pcd.c          |   3 +-
+ drivers/block/paride/pd.c           |   3 +-
+ drivers/block/paride/pf.c           |   3 +-
+ drivers/block/pktcdvd.c             |   3 +-
+ drivers/block/ps3disk.c             |   3 +-
+ drivers/block/ps3vram.c             |   3 +-
+ drivers/block/rbd.c                 |   3 +-
+ drivers/block/rsxx/dev.c            |   3 +-
+ drivers/block/skd_main.c            |   5 +-
+ drivers/block/sunvdc.c              |   3 +-
+ drivers/block/swim.c                |   3 +-
+ drivers/block/swim3.c               |   3 +-
+ drivers/block/sx8.c                 |   3 +-
+ drivers/block/umem.c                |   3 +-
+ drivers/block/virtio_blk.c          |  38 ++++++++----
+ drivers/block/xen-blkfront.c        |   3 +-
+ drivers/block/xsysace.c             |   3 +-
+ drivers/block/z2ram.c               |   3 +-
+ drivers/block/zram/zram_drv.c       |   7 +--
+ drivers/cdrom/gdrom.c               |   3 +-
+ drivers/ide/ide-cd.c                |   3 +-
+ drivers/ide/ide-gd.c                |   3 +-
+ drivers/lightnvm/gennvm.c           |   3 +-
+ drivers/md/bcache/super.c           |   6 +-
+ drivers/md/dm.c                     |   3 +-
+ drivers/md/md.c                     |   5 +-
+ drivers/memstick/core/ms_block.c    |   3 +-
+ drivers/memstick/core/mspro_block.c |   3 +-
+ drivers/mmc/card/block.c            |   3 +-
+ drivers/mtd/mtd_blkdevs.c           |   9 +--
+ drivers/mtd/ubi/block.c             |   3 +-
+ drivers/nvdimm/blk.c                |   3 +-
+ drivers/nvdimm/btt.c                |   3 +-
+ drivers/nvdimm/pmem.c               |   3 +-
+ drivers/nvme/host/core.c            |   7 +--
+ drivers/s390/block/dasd_genhd.c     |   3 +-
+ drivers/s390/block/dcssblk.c        |   3 +-
+ drivers/s390/block/scm_blk.c        |   3 +-
+ drivers/s390/block/xpram.c          |   3 +-
+ drivers/sbus/char/jsflash.c         |   3 +-
+ drivers/scsi/sd.c                   |   3 +-
+ drivers/scsi/sr.c                   |   5 +-
+ drivers/scsi/st.c                   |   4 +-
+ fs/block_dev.c                      |   2 +-
+ include/linux/genhd.h               |  21 +++----
+ 66 files changed, 277 insertions(+), 186 deletions(-)
 
-RnJvbSAwYWQyNTBlNGJlNGExYmQ0NDZlYzUyN2UyMDFhYWRjNjEzMjU0MTQxIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiB3YW5nZmFnbnBlbmcgPHdhbmdmYW5ncGVuZzFAaHVh
-d2VpLmNvbT4KRGF0ZTogV2VkLCAxNyBBdWcgMjAxNiAxMTozNjo1NSArMDgwMApTdWJqZWN0
-OiBbUEFUQ0hdIGZpeCBkZWFkIGNvZGUgYXQgZHJpdmVycy9tdGQvdWJpL2lvLmMKCi0tLQog
-ZHJpdmVycy9tdGQvdWJpL2lvLmMgfCAgICA3ICstLS0tLS0KIDEgZmlsZXMgY2hhbmdlZCwg
-MSBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-bXRkL3ViaS9pby5jIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMKaW5kZXggYmY3OWRlZi4uNWQ2
-YzQxNiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvdWJpL2lvLmMKKysrIGIvZHJpdmVycy9t
-dGQvdWJpL2lvLmMKQEAgLTk1MSwxMiArOTUxLDcgQEAgc3RhdGljIGludCB2YWxpZGF0ZV92
-aWRfaGRyKGNvbnN0IHN0cnVjdCB1YmlfZGV2aWNlICp1YmksCiAJCQkJdWJpX2VycigiYmFk
-IGRhdGFfc2l6ZSIpOwogCQkJCWdvdG8gYmFkOwogCQkJfQotCQl9IGVsc2UgaWYgKGxudW0g
-PT0gdXNlZF9lYnMgLSAxKSB7Ci0JCQlpZiAoZGF0YV9zaXplID09IDApIHsKLQkJCQl1Ymlf
-ZXJyKCJiYWQgZGF0YV9zaXplIGF0IGxhc3QgTEVCIik7Ci0JCQkJZ290byBiYWQ7Ci0JCQl9
-Ci0JCX0gZWxzZSB7CisJCX0gZWxzZSBpZiAobG51bSA+IHVzZWRfZWJzIC0gMSkgewogCQkJ
-dWJpX2VycigidG9vIGhpZ2ggbG51bSIpOwogCQkJZ290byBiYWQ7CiAJCX0KLS0gCjEuNy43
-Cgo=
---------------020409060707050806040701--
+-- 
+2.7.4
