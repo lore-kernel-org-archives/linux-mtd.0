@@ -1,54 +1,14 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZjUR-0006uC-DM
- for linux-mtd@lists.infradead.org; Tue, 16 Aug 2016 18:53:32 +0000
-Date: Tue, 16 Aug 2016 20:53:20 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Theodore Ts'o <tytso@mit.edu>, Alexander Viro <viro@zeniv.linux.org.uk>,
- y2038 Mailman List <y2038@lists.linaro.org>,
- Andreas Dilger <adilger.kernel@dilger.ca>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Anna Schumaker <anna.schumaker@netapp.com>,
- Brian Uchino <buchino@cisco.com>,
- ceph-devel <ceph-devel@vger.kernel.org>, Chris Mason <clm@fb.com>,
- Changman Lee <cm224.lee@samsung.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, David Sterba <dsterba@suse.com>,
- Evgeniy Dushistov <dushistov@mail.ru>,
- Alex Elder <elder@kernel.org>, Eric Paris <eparis@redhat.com>,
- Hiral Patel <hiralpat@cisco.com>, Ilya Dryomov <idryomov@gmail.com>,
- Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
- Josef Bacik <jbacik@fb.com>,
- "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
- jfs-discussion@lists.sourceforge.net, Joel Becker <jlbec@evilplan.org>,
- John Stultz <john.stultz@linaro.org>, linux-audit@redhat.com,
- linux-btrfs <linux-btrfs@vger.kernel.org>, linux-ext4@vger.kernel.org,
- "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
- Linux SCSI List <linux-scsi@vger.kernel.org>,
- lustre-devel@lists.lustre.org,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Mark Fasheh <mfasheh@suse.com>, ocfs2-devel@oss.oracle.com,
- Paul Moore <paul@paul-moore.com>, Sage Weil <sage@redhat.com>,
- Steve French <sfrench@samba.org>, Dave Kleikamp <shaggy@kernel.org>,
- Suma Ramars <sramars@cisco.com>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- "Yan, Zheng" <zyan@redhat.com>
-Subject: Re: [GIT PULL] [PATCH v4 00/26] Delete CURRENT_TIME and
- CURRENT_TIME_SEC macros
-Message-ID: <20160816185320.GB6513@kroah.com>
-References: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
- <20160815162312.GA19794@kroah.com>
- <CABeXuvp027DZR0=zQPp86oGdi2B+Gh16z8_FyoY5UDUdHXAngA@mail.gmail.com>
+ id 1bZreA-0007Zu-0q
+ for linux-mtd@lists.infradead.org; Wed, 17 Aug 2016 03:36:09 +0000
+To: <linux-mtd@lists.infradead.org>, <richard@nod.at>, <dedekind1@gmail.com>
+From: Wang Fangpeng <wangfangpeng1@huawei.com>
+Subject: =?UTF-8?Q?Coverity_Scan=ef=bc=9adead_code_on_ubi?=
+Message-ID: <57B3DB5B.3040406@huawei.com>
+Date: Wed, 17 Aug 2016 11:34:51 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABeXuvp027DZR0=zQPp86oGdi2B+Gh16z8_FyoY5UDUdHXAngA@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="------------020409060707050806040701"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -58,38 +18,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 16, 2016 at 11:18:52AM -0700, Deepa Dinamani wrote:
-> Thank you for the suggestion.
-> 
-> > Who are you execting to pull this huge patch series?
-> 
-> The last pull request was addressed to Al as per Arnd's suggestion.
-> I'm not completely sure who should it be addressed to.
-> 
-> > Why not just introduce the new api call, wait for that to be merged, and
-> > then push the individual patches through the different subsystems?
-> > After half of those get ignored, then provide a single set of patches
-> > that can go through Andrew or my trees.
-> 
-> Arnd and I tried to do this a few ways.
-> 
-> We can try to introduce the api first like you suggest.
-> 
-> There are a few Acks already on the patches.
-> And, patches 2-5 also need to be merged through some common tree like
-> yours or Andrew's as you suggest.
-> 
-> So, if everyone is ok, I could do the following:
-> 
-> 1. Post patches 1-5 for rc-2.
+--------------020409060707050806040701
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
--rc2 is already released, and we aren't adding new apis this late in the
-release cycle, sorry.
+Hi, folks,
 
-> 2. Post all other patches to respective maintainers after rc-2
-> 3. Then after patches get ignored or merged, post remaining as a
-> series for you or Andrew to pick up.
+Coverity Scan reports dead code on Linux/drivers/mtd/ubi/io.c:956-957 (kernel-4.7)
 
-The apis need to be aimed for 4.9-rc1, it's too late for 4.8, sorry.
+945                 if (data_size == 0) {
+946                         ubi_err(ubi, "zero data_size");
+947                         goto bad;
+948                 }
+949                 if (lnum < used_ebs - 1) {
+950                         if (data_size != usable_leb_size) {
+951                                 ubi_err(ubi, "bad data_size");
+952                                 goto bad;
+953                         }
+954                 } else if (lnum == used_ebs - 1) {
+955                         if (data_size == 0) {
+956                                 ubi_err(ubi, "bad data_size at last LEB");
+957                                 goto bad;
+958                         }
+959                 } else {
+960                         ubi_err(ubi, "too high lnum");
+961                         goto bad;
+962                 }
 
-greg k-h
+The data_size argument has been checked(data_size == 0) at line 945 and goto bad if true.
+At line 955, check it again. but the value of "data_size" must be at least 1, cannot be
+equal to 0.  So, execution cannot reach line 956-957. it is dead code.
+
+Can we fix this situation by the attach patch?
+
+--------------020409060707050806040701
+Content-Type: text/plain; charset="UTF-8";
+	name="0001-fix-dead-code-at-drivers-mtd-ubi-io.c.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="0001-fix-dead-code-at-drivers-mtd-ubi-io.c.patch"
+
+RnJvbSAwYWQyNTBlNGJlNGExYmQ0NDZlYzUyN2UyMDFhYWRjNjEzMjU0MTQxIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiB3YW5nZmFnbnBlbmcgPHdhbmdmYW5ncGVuZzFAaHVh
+d2VpLmNvbT4KRGF0ZTogV2VkLCAxNyBBdWcgMjAxNiAxMTozNjo1NSArMDgwMApTdWJqZWN0
+OiBbUEFUQ0hdIGZpeCBkZWFkIGNvZGUgYXQgZHJpdmVycy9tdGQvdWJpL2lvLmMKCi0tLQog
+ZHJpdmVycy9tdGQvdWJpL2lvLmMgfCAgICA3ICstLS0tLS0KIDEgZmlsZXMgY2hhbmdlZCwg
+MSBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bXRkL3ViaS9pby5jIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMKaW5kZXggYmY3OWRlZi4uNWQ2
+YzQxNiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvdWJpL2lvLmMKKysrIGIvZHJpdmVycy9t
+dGQvdWJpL2lvLmMKQEAgLTk1MSwxMiArOTUxLDcgQEAgc3RhdGljIGludCB2YWxpZGF0ZV92
+aWRfaGRyKGNvbnN0IHN0cnVjdCB1YmlfZGV2aWNlICp1YmksCiAJCQkJdWJpX2VycigiYmFk
+IGRhdGFfc2l6ZSIpOwogCQkJCWdvdG8gYmFkOwogCQkJfQotCQl9IGVsc2UgaWYgKGxudW0g
+PT0gdXNlZF9lYnMgLSAxKSB7Ci0JCQlpZiAoZGF0YV9zaXplID09IDApIHsKLQkJCQl1Ymlf
+ZXJyKCJiYWQgZGF0YV9zaXplIGF0IGxhc3QgTEVCIik7Ci0JCQkJZ290byBiYWQ7Ci0JCQl9
+Ci0JCX0gZWxzZSB7CisJCX0gZWxzZSBpZiAobG51bSA+IHVzZWRfZWJzIC0gMSkgewogCQkJ
+dWJpX2VycigidG9vIGhpZ2ggbG51bSIpOwogCQkJZ290byBiYWQ7CiAJCX0KLS0gCjEuNy43
+Cgo=
+--------------020409060707050806040701--
