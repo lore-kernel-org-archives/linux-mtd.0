@@ -1,30 +1,20 @@
-Date: Wed, 17 Aug 2016 17:14:22 +0800
-From: Fam Zheng <famz@redhat.com>
-To: Cornelia Huck <cornelia.huck@de.ibm.com>
-Cc: linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
- linux-block@vger.kernel.org,
- Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- virtualization@lists.linux-foundation.org,
- linux-nvme@lists.infradead.org, "Ed L. Cashin" <ed.cashin@acm.org>,
- Keith Busch <keith.busch@intel.com>, Minchan Kim <minchan@kernel.org>,
- Paul Mackerras <paulus@samba.org>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- linuxppc-dev@lists.ozlabs.org, David Woodhouse <dwmw2@infradead.org>,
- Nitin Gupta <ngupta@vflare.org>
-Subject: Re: [PATCH 06/15] genhd: Add return code to device_add_disk
-Message-ID: <20160817091422.GE19326@al.usersys.redhat.com>
-References: <1471418115-3654-1-git-send-email-famz@redhat.com>
- <1471418115-3654-7-git-send-email-famz@redhat.com>
- <20160817104914.37087cb3.cornelia.huck@de.ibm.com>
- <20160817084823.GB19326@al.usersys.redhat.com>
- <20160817110645.45370f57.cornelia.huck@de.ibm.com>
+Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZzct-0001sE-Rq
+ for linux-mtd@lists.infradead.org; Wed, 17 Aug 2016 12:07:23 +0000
+Received: by mail-pa0-x242.google.com with SMTP id ez1so7039397pab.3
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Aug 2016 05:06:59 -0700 (PDT)
+Subject: Re: [PATCH] ubifs: Fix xattr generic handler usage
+To: Richard Weinberger <richard@nod.at>
+References: <1469994143-13977-1-git-send-email-richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+From: Dongsheng Yang <dongsheng081251@gmail.com>
+Message-ID: <57B4535C.1020201@gmail.com>
+Date: Wed, 17 Aug 2016 20:06:52 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160817110645.45370f57.cornelia.huck@de.ibm.com>
+In-Reply-To: <1469994143-13977-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,112 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 08/17 11:06, Cornelia Huck wrote:
-> On Wed, 17 Aug 2016 16:48:23 +0800
-> Fam Zheng <famz@redhat.com> wrote:
-> 
-> > On Wed, 08/17 10:49, Cornelia Huck wrote:
-> > > On Wed, 17 Aug 2016 15:15:06 +0800
-> > > Fam Zheng <famz@redhat.com> wrote:
-> > > 
-> > > > @@ -613,10 +614,8 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
-> > > >  	disk->flags |= GENHD_FL_UP;
-> > > > 
-> > > >  	retval = blk_alloc_devt(&disk->part0, &devt);
-> > > > -	if (retval) {
-> > > > -		WARN_ON(1);
-> > > > -		return;
-> > > > -	}
-> > > > +	if (retval)
-> > > > +		goto fail;
-> > > >  	disk_to_dev(disk)->devt = devt;
-> > > > 
-> > > >  	/* ->major and ->first_minor aren't supposed to be
-> > > > @@ -625,16 +624,26 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
-> > > >  	disk->major = MAJOR(devt);
-> > > >  	disk->first_minor = MINOR(devt);
-> > > > 
-> > > > -	disk_alloc_events(disk);
-> > > > +	retval = disk_alloc_events(disk);
-> > > > +	if (retval)
-> > > > +		goto fail;
-> > > > 
-> > > >  	/* Register BDI before referencing it from bdev */
-> > > >  	bdi = &disk->queue->backing_dev_info;
-> > > > -	bdi_register_owner(bdi, disk_to_dev(disk));
-> > > > +	retval = bdi_register_owner(bdi, disk_to_dev(disk));
-> > > > +	if (retval)
-> > > > +		goto fail;
-> > > > 
-> > > > -	blk_register_region(disk_devt(disk), disk->minors, NULL,
-> > > > -			    exact_match, exact_lock, disk);
-> > > > -	register_disk(parent, disk);
-> > > > -	blk_register_queue(disk);
-> > > > +	retval = blk_register_region(disk_devt(disk), disk->minors, NULL,
-> > > > +				     exact_match, exact_lock, disk);
-> > > > +	if (retval)
-> > > > +		goto fail;
-> > > > +	retval = register_disk(parent, disk);
-> > > > +	if (retval)
-> > > > +		goto fail;
-> > > > +	retval = blk_register_queue(disk);
-> > > > +	if (retval)
-> > > > +		goto fail;
-> > > > 
-> > > >  	/*
-> > > >  	 * Take an extra ref on queue which will be put on disk_release()
-> > > > @@ -644,10 +653,20 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
-> > > > 
-> > > >  	retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
-> > > >  				   "bdi");
-> > > > +	if (retval)
-> > > > +		goto fail;
-> > > > +
-> > > > +	retval = disk_add_events(disk);
-> > > > +	if (retval)
-> > > > +		goto fail;
-> > > > +
-> > > > +	retval = blk_integrity_add(disk);
-> > > > +	if (retval)
-> > > > +		goto fail;
-> > > > +	return 0;
-> > > > +fail:
-> > > >  	WARN_ON(retval);
-> > > > -
-> > > > -	disk_add_events(disk);
-> > > > -	blk_integrity_add(disk);
-> > > > +	return retval;
-> > > >  }
-> > > 
-> > > Noticed this when trying to figure out whether the error handling in
-> > > virtio_blk was correct:
-> > > 
-> > > Shouldn't you try to cleanup/rewind so that any structures are in a
-> > > sane state after failure? The caller doesn't know where device_add_disk
-> > > failed, and calling del_gendisk unconditionally like virtio_blk does is
-> > > probably not the right thing to do (at the very least, I don't think
-> > > unregistering a device that has not been registered is likely to work).
-> > > 
-> > 
-> > Yes, I think all callers need to be reviewed before device_add_disk do the
-> > clean up on error. For this patchset I wanted to keep the change small.
-> 
-> But do the callers even have a chance to do this correctly right now?
-> They will either clean up too much, or too little. ('Too little' is
-> probably the more common case, given that you just added error
-> propagation...)
+On 08/01/2016 03:42 AM, Richard Weinberger wrote:
+> UBIFS uses full names to work with xattrs, therefore we have to use
+> xattr_full_name() to obtain the xattr prefix as string.
+>
+> Cc: <stable@vger.kernel.org>
+> Cc: Andreas Gruenbacher <agruenba@redhat.com>
+> Fixes: 2b88fc21ca ("ubifs: Switch to generic xattr handlers")
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+Tested-by: Dongsheng Yang <dongsheng081251@gmail.com>
 
-Right, which is pre-exising.
+It make ubifs passes generic/020 in xfstests.
 
-> 
-> Can you make del_gendisk handle devices partially setup via
-> device_add_disk in all cases? Then you could mandate pairing
-> device_add_disk with del_gendisk in all cases, error or not, and you
-> should have a better chance on avoiding introducing new errors.
-> 
-
-Of course, the plan is to write patches on top. I'm not cleaning up anything
-here because I'm concerned callers may double free (and I didn't look hard into
-that).
-
-Fam
+Yang
+> ---
+>   fs/ubifs/xattr.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+> index b5fc279..c63710f 100644
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -575,7 +575,8 @@ static int ubifs_xattr_get(const struct xattr_handler *handler,
+>   	dbg_gen("xattr '%s', ino %lu ('%pd'), buf size %zd", name,
+>   		inode->i_ino, dentry, size);
+>   
+> -	return  __ubifs_getxattr(inode, name, buffer, size);
+> +	name = xattr_full_name(handler, name);
+> +	return __ubifs_getxattr(inode, name, buffer, size);
+>   }
+>   
+>   static int ubifs_xattr_set(const struct xattr_handler *handler,
+> @@ -586,6 +587,8 @@ static int ubifs_xattr_set(const struct xattr_handler *handler,
+>   	dbg_gen("xattr '%s', host ino %lu ('%pd'), size %zd",
+>   		name, inode->i_ino, dentry, size);
+>   
+> +	name = xattr_full_name(handler, name);
+> +
+>   	if (value)
+>   		return __ubifs_setxattr(inode, name, value, size, flags);
+>   	else
