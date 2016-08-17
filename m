@@ -1,46 +1,21 @@
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZwof-0005BO-7q
- for linux-mtd@lists.infradead.org; Wed, 17 Aug 2016 09:07:18 +0000
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.16.0.11/8.16.0.11) with SMTP id
- u7H96o1b039226
- for <linux-mtd@lists.infradead.org>; Wed, 17 Aug 2016 05:06:55 -0400
-Received: from e06smtp06.uk.ibm.com (e06smtp06.uk.ibm.com [195.75.94.102])
- by mx0b-001b2d01.pphosted.com with ESMTP id 24vfthb1hp-1
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Wed, 17 Aug 2016 05:06:54 -0400
-Received: from localhost
- by e06smtp06.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <cornelia.huck@de.ibm.com>;
- Wed, 17 Aug 2016 10:06:51 +0100
-Date: Wed, 17 Aug 2016 11:06:45 +0200
-From: Cornelia Huck <cornelia.huck@de.ibm.com>
-To: Fam Zheng <famz@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
- linux-block@vger.kernel.org, Sergey Senozhatsky
- <sergey.senozhatsky.work@gmail.com>, "Michael S. Tsirkin" <mst@redhat.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- virtualization@lists.linux-foundation.org,
- linux-nvme@lists.infradead.org, "Ed L. Cashin" <ed.cashin@acm.org>,
- Keith Busch <keith.busch@intel.com>, Minchan Kim <minchan@kernel.org>,
- Paul Mackerras <paulus@samba.org>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- linuxppc-dev@lists.ozlabs.org, David Woodhouse <dwmw2@infradead.org>, Nitin
- Gupta <ngupta@vflare.org>
-Subject: Re: [PATCH 06/15] genhd: Add return code to device_add_disk
-In-Reply-To: <20160817084823.GB19326@al.usersys.redhat.com>
-References: <1471418115-3654-1-git-send-email-famz@redhat.com>
- <1471418115-3654-7-git-send-email-famz@redhat.com>
- <20160817104914.37087cb3.cornelia.huck@de.ibm.com>
- <20160817084823.GB19326@al.usersys.redhat.com>
+From: Yunhui Cui <yunhui.cui@nxp.com>
+To: Li Yang <leoli@freescale.com>, Yunhui Cui <B56489@freescale.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>,
+ lkml <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
+Subject: RE: [PATCH v2 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
+Date: Wed, 17 Aug 2016 09:07:36 +0000
+Message-ID: <VI1PR0401MB2640E76EADBBDE9003DE885694140@VI1PR0401MB2640.eurprd04.prod.outlook.com>
+References: <1461307192-866-1-git-send-email-B56489@freescale.com>
+ <1461307192-866-6-git-send-email-B56489@freescale.com>
+ <CADRPPNS91-y1BRa8sDUZb1PrrrxbfPgnfLd-AByAVKx1vrC7fw@mail.gmail.com>
+In-Reply-To: <CADRPPNS91-y1BRa8sDUZb1PrrrxbfPgnfLd-AByAVKx1vrC7fw@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Message-Id: <20160817110645.45370f57.cornelia.huck@de.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -50,101 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 17 Aug 2016 16:48:23 +0800
-Fam Zheng <famz@redhat.com> wrote:
-
-> On Wed, 08/17 10:49, Cornelia Huck wrote:
-> > On Wed, 17 Aug 2016 15:15:06 +0800
-> > Fam Zheng <famz@redhat.com> wrote:
-> > 
-> > > @@ -613,10 +614,8 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
-> > >  	disk->flags |= GENHD_FL_UP;
-> > > 
-> > >  	retval = blk_alloc_devt(&disk->part0, &devt);
-> > > -	if (retval) {
-> > > -		WARN_ON(1);
-> > > -		return;
-> > > -	}
-> > > +	if (retval)
-> > > +		goto fail;
-> > >  	disk_to_dev(disk)->devt = devt;
-> > > 
-> > >  	/* ->major and ->first_minor aren't supposed to be
-> > > @@ -625,16 +624,26 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
-> > >  	disk->major = MAJOR(devt);
-> > >  	disk->first_minor = MINOR(devt);
-> > > 
-> > > -	disk_alloc_events(disk);
-> > > +	retval = disk_alloc_events(disk);
-> > > +	if (retval)
-> > > +		goto fail;
-> > > 
-> > >  	/* Register BDI before referencing it from bdev */
-> > >  	bdi = &disk->queue->backing_dev_info;
-> > > -	bdi_register_owner(bdi, disk_to_dev(disk));
-> > > +	retval = bdi_register_owner(bdi, disk_to_dev(disk));
-> > > +	if (retval)
-> > > +		goto fail;
-> > > 
-> > > -	blk_register_region(disk_devt(disk), disk->minors, NULL,
-> > > -			    exact_match, exact_lock, disk);
-> > > -	register_disk(parent, disk);
-> > > -	blk_register_queue(disk);
-> > > +	retval = blk_register_region(disk_devt(disk), disk->minors, NULL,
-> > > +				     exact_match, exact_lock, disk);
-> > > +	if (retval)
-> > > +		goto fail;
-> > > +	retval = register_disk(parent, disk);
-> > > +	if (retval)
-> > > +		goto fail;
-> > > +	retval = blk_register_queue(disk);
-> > > +	if (retval)
-> > > +		goto fail;
-> > > 
-> > >  	/*
-> > >  	 * Take an extra ref on queue which will be put on disk_release()
-> > > @@ -644,10 +653,20 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
-> > > 
-> > >  	retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
-> > >  				   "bdi");
-> > > +	if (retval)
-> > > +		goto fail;
-> > > +
-> > > +	retval = disk_add_events(disk);
-> > > +	if (retval)
-> > > +		goto fail;
-> > > +
-> > > +	retval = blk_integrity_add(disk);
-> > > +	if (retval)
-> > > +		goto fail;
-> > > +	return 0;
-> > > +fail:
-> > >  	WARN_ON(retval);
-> > > -
-> > > -	disk_add_events(disk);
-> > > -	blk_integrity_add(disk);
-> > > +	return retval;
-> > >  }
-> > 
-> > Noticed this when trying to figure out whether the error handling in
-> > virtio_blk was correct:
-> > 
-> > Shouldn't you try to cleanup/rewind so that any structures are in a
-> > sane state after failure? The caller doesn't know where device_add_disk
-> > failed, and calling del_gendisk unconditionally like virtio_blk does is
-> > probably not the right thing to do (at the very least, I don't think
-> > unregistering a device that has not been registered is likely to work).
-> > 
-> 
-> Yes, I think all callers need to be reviewed before device_add_disk do the
-> clean up on error. For this patchset I wanted to keep the change small.
-
-But do the callers even have a chance to do this correctly right now?
-They will either clean up too much, or too little. ('Too little' is
-probably the more common case, given that you just added error
-propagation...)
-
-Can you make del_gendisk handle devices partially setup via
-device_add_disk in all cases? Then you could mandate pairing
-device_add_disk with del_gendisk in all cases, error or not, and you
-should have a better chance on avoiding introducing new errors.
+T24gQXVndXN0IDE2LCAyMDE2IDI6MDMgQU0sIExlbyB3cm90ZToNCg0KPiBPbiBGcmksIEFwciAy
+MiwgMjAxNiBhdCAxOjM5IEFNLCBZdW5odWkgQ3VpIDxCNTY0ODlAZnJlZXNjYWxlLmNvbT4gd3Jv
+dGU6DQo+ID4gRnJvbTogWXVuaHVpIEN1aSA8eXVuaHVpLmN1aUBueHAuY29tPg0KPiA+DQo+ID4g
+V2l0aCB0aGUgcGh5c2ljYWwgc2VjdG9ycyBjb21iaW5hdGlvbiwgUzI1RlMtUyBmYW1pbHkgZmxh
+c2ggcmVxdWlyZXMNCj4gPiBzb21lIHNwZWNpYWwgb3BlcmF0aW9ucyBmb3IgcmVhZC93cml0ZSBm
+dW5jdGlvbnMuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZdW5odWkgQ3VpIDx5dW5odWkuY3Vp
+QG54cC5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwg
+NTkNCj4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4g
+IDEgZmlsZSBjaGFuZ2VkLCA1OSBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPiBiL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
+c3BpLW5vci5jIGluZGV4IDE1Nzg0MWQuLjkxZWU5MjAgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVy
+cy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3Nw
+aS1ub3IuYw0KPiA+IEBAIC0zOSw2ICszOSwxMCBAQA0KPiA+DQo+ID4gICNkZWZpbmUgU1BJX05P
+Ul9NQVhfSURfTEVOICAgICA2DQo+ID4gICNkZWZpbmUgU1BJX05PUl9NQVhfQUREUl9XSURUSCA0
+DQo+ID4gKy8qIEFkZGVkIGZvciBTMjVGUy1TIGZhbWlseSBmbGFzaCAqLw0KPiA+ICsjZGVmaW5l
+IFNQSU5PUl9DT05GSUdfUkVHM19PRkZTRVQgICAgICAweDgwMDAwNA0KPiA+ICsjZGVmaW5lIENS
+M1ZfNEtCX0VSQVNFX1VOQUJMRSAgMHg4DQo+ID4gKyNkZWZpbmUgU1BJTk9SX1MyNUZTX0ZBTUlM
+WV9JRCAweDgxDQo+ID4NCj4gPiAgc3RydWN0IGZsYXNoX2luZm8gew0KPiA+ICAgICAgICAgY2hh
+ciAgICAgICAgICAgICpuYW1lOw0KPiA+IEBAIC03OCw2ICs4Miw3IEBAIHN0cnVjdCBmbGFzaF9p
+bmZvIHsNCj4gPiAgfTsNCj4gPg0KPiA+ICAjZGVmaW5lIEpFREVDX01GUihpbmZvKSAgICAgICAg
+KChpbmZvKS0+aWRbMF0pDQo+ID4gKyNkZWZpbmUgRVhUX0lEKGluZm8pICAgKChpbmZvKS0+aWRb
+NV0pDQo+ID4NCj4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICpzcGlfbm9yX21h
+dGNoX2lkKGNvbnN0IGNoYXIgKm5hbWUpOw0KPiA+DQo+ID4gQEAgLTg4MSw2ICs4ODYsNyBAQCBz
+dGF0aWMgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8gc3BpX25vcl9pZHNbXSA9IHsNCj4gPiAgICAg
+ICAgICAqLw0KPiA+ICAgICAgICAgeyAiczI1c2wwMzJwIiwgIElORk8oMHgwMTAyMTUsIDB4NGQw
+MCwgIDY0ICogMTAyNCwgIDY0LA0KPiBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVBRF9S
+RUFEKSB9LA0KPiA+ICAgICAgICAgeyAiczI1c2wwNjRwIiwgIElORk8oMHgwMTAyMTYsIDB4NGQw
+MCwgIDY0ICogMTAyNCwgMTI4LA0KPiA+IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFE
+X1JFQUQpIH0sDQo+ID4gKyAgICAgICB7ICJzMjVmczI1NnMxIiwgSU5GTzYoMHgwMTAyMTksIDB4
+NGQwMTgxLCA2NCAqIDEwMjQsIDUxMiwgMCl9LA0KPiA+ICAgICAgICAgeyAiczI1ZmwyNTZzMCIs
+IElORk8oMHgwMTAyMTksIDB4NGQwMCwgMjU2ICogMTAyNCwgMTI4LCAwKSB9LA0KPiA+ICAgICAg
+ICAgeyAiczI1ZmwyNTZzMSIsIElORk8oMHgwMTAyMTksIDB4NGQwMSwgIDY0ICogMTAyNCwgNTEy
+LA0KPiBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+ICAgICAg
+ICAgeyAiczI1Zmw1MTJzIiwgIElORk8oMHgwMTAyMjAsIDB4NGQwMCwgMjU2ICogMTAyNCwgMjU2
+LA0KPiA+IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sIEBAIC0xMDE4
+LDYgKzEwMjQsNTMgQEAgc3RhdGljDQo+IGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICpzcGlfbm9y
+X3JlYWRfaWQoc3RydWN0IHNwaV9ub3IgKm5vcikNCj4gPiAgICAgICAgIHJldHVybiBFUlJfUFRS
+KC1FTk9ERVYpOw0KPiA+ICB9DQo+ID4NCj4gPiArLyoNCj4gPiArICogVGhlIFMyNUZTLVMgZmFt
+aWx5IHBoeXNpY2FsIHNlY3RvcnMgbWF5IGJlIGNvbmZpZ3VyZWQgYXMgYQ0KPiA+ICsgKiBoeWJy
+aWQgY29tYmluYXRpb24gb2YgZWlnaHQgNC1rQiBwYXJhbWV0ZXIgc2VjdG9ycw0KPiA+ICsgKiBh
+dCB0aGUgdG9wIG9yIGJvdHRvbSBvZiB0aGUgYWRkcmVzcyBzcGFjZSB3aXRoIGFsbA0KPiA+ICsg
+KiBidXQgb25lIG9mIHRoZSByZW1haW5pbmcgc2VjdG9ycyBiZWluZyB1bmlmb3JtIHNpemUuDQo+
+ID4gKyAqIFRoZSBQYXJhbWV0ZXIgU2VjdG9yIEVyYXNlIGNvbW1hbmRzICgyMGggb3IgMjFoKSBt
+dXN0DQo+ID4gKyAqIGJlIHVzZWQgdG8gZXJhc2UgdGhlIDQta0IgcGFyYW1ldGVyIHNlY3RvcnMg
+aW5kaXZpZHVhbGx5Lg0KPiA+ICsgKiBUaGUgU2VjdG9yICh1bmlmb3JtIHNlY3RvcikgRXJhc2Ug
+Y29tbWFuZHMgKEQ4aCBvciBEQ2gpDQo+ID4gKyAqIG11c3QgYmUgdXNlZCB0byBlcmFzZSBhbnkg
+b2YgdGhlIHJlbWFpbmluZw0KPiA+ICsgKiBzZWN0b3JzLCBpbmNsdWRpbmcgdGhlIHBvcnRpb24g
+b2YgaGlnaGVzdCBvciBsb3dlc3QgYWRkcmVzcw0KPiA+ICsgKiBzZWN0b3IgdGhhdCBpcyBub3Qg
+b3ZlcmxhaWQgYnkgdGhlIHBhcmFtZXRlciBzZWN0b3JzLg0KPiA+ICsgKiBUaGUgdW5pZm9ybSBz
+ZWN0b3IgZXJhc2UgY29tbWFuZCBoYXMgbm8gZWZmZWN0IG9uIHBhcmFtZXRlciBzZWN0b3JzLg0K
+PiA+ICsgKi8NCj4gPiArc3RhdGljIGludCBzcGFuc2lvbl9zMjVmc19kaXNhYmxlXzRrYl9lcmFz
+ZShzdHJ1Y3Qgc3BpX25vciAqbm9yKSB7DQo+ID4gKyAgICAgICBzdHJ1Y3QgZnNsX3FzcGkgKnE7
+DQo+ID4gKyAgICAgICB1MzIgY3Izdl9hZGRyICA9IFNQSU5PUl9DT05GSUdfUkVHM19PRkZTRVQ7
+DQo+ID4gKyAgICAgICB1OCBjcjN2ID0gMHgwOw0KPiA+ICsgICAgICAgaW50IHJldCA9IDB4MDsN
+Cj4gPiArDQo+ID4gKyAgICAgICBxID0gbm9yLT5wcml2Ow0KPiA+ICsNCj4gPiArICAgICAgIG5v
+ci0+Y21kX2J1ZlsyXSA9IGNyM3ZfYWRkciA+PiAxNjsNCj4gPiArICAgICAgIG5vci0+Y21kX2J1
+ZlsxXSA9IGNyM3ZfYWRkciA+PiA4Ow0KPiA+ICsgICAgICAgbm9yLT5jbWRfYnVmWzBdID0gY3Iz
+dl9hZGRyID4+IDA7DQo+ID4gKw0KPiA+ICsgICAgICAgcmV0ID0gbm9yLT5yZWFkX3JlZyhub3Is
+IFNQSU5PUl9PUF9TUEFOU0lPTl9SREFSLCAmY3IzdiwgMSk7DQo+ID4gKyAgICAgICBpZiAocmV0
+KQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gcmV0Ow0KPiA+ICsgICAgICAgaWYgKGNyM3Yg
+JiBDUjNWXzRLQl9FUkFTRV9VTkFCTEUpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAwOw0K
+PiA+ICsgICAgICAgcmV0ID0gbm9yLT53cml0ZV9yZWcobm9yLCBTUElOT1JfT1BfV1JFTiwgTlVM
+TCwgMCk7DQo+ID4gKyAgICAgICBpZiAocmV0KQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4g
+cmV0Ow0KPiA+ICsgICAgICAgY3IzdiA9IENSM1ZfNEtCX0VSQVNFX1VOQUJMRTsNCj4gPiArICAg
+ICAgIG5vci0+cHJvZ3JhbV9vcGNvZGUgPSBTUElOT1JfT1BfU1BBTlNJT05fV1JBUjsNCj4gPiAr
+ICAgICAgIG5vci0+d3JpdGUobm9yLCBjcjN2X2FkZHIsIDEsIE5VTEwsICZjcjN2KTsNCj4gDQo+
+IFRoZSBwYXRjaCBuZWVkIHRvIGJlIHJlLXNwaW5lZCBkdWUgdG8gdGhlIHBhcmFtZXRlciBjaGFu
+Z2Ugb2Ygd3JpdGUoKSBpbg0KPiB2NC44LXJjLiAgT3RoZXJ3aXNlIGl0IGNhbiBub3QgcGFzcyBi
+dWlsZC4NCj4gDQoNCltZdW5odWldVGhhbmtzIGZvciB5b3VyIHJlbWluZGVyLCBJIHdpbGwgY2hl
+Y2sgYW5kIHVwZGF0ZSBpdCAuDQoNCj4gUmVnYXJkcywNCj4gTGVvDQo=
