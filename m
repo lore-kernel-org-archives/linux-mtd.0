@@ -1,21 +1,22 @@
+Received: from mail-db5eur01on0049.outbound.protection.outlook.com
+ ([104.47.2.49] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZwfd-0006Ys-Q5
+ for linux-mtd@lists.infradead.org; Wed, 17 Aug 2016 08:58:00 +0000
 From: Yunhui Cui <yunhui.cui@nxp.com>
-To: Jagan Teki <jagannadh.teki@gmail.com>, Yunhui Cui <B56489@freescale.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
-Subject: RE: [PATCH v2 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
-Date: Wed, 17 Aug 2016 08:57:22 +0000
-Message-ID: <VI1PR0401MB26400B7243668C3BDF2C593194140@VI1PR0401MB2640.eurprd04.prod.outlook.com>
-References: <1461307192-866-1-git-send-email-B56489@freescale.com>
- <1461307192-866-6-git-send-email-B56489@freescale.com>
- <CAD6G_RQGMV5zxuC9dNa3TYa-Zxv4drDB7K1PpNdfzauBCeVmdA@mail.gmail.com>
-In-Reply-To: <CAD6G_RQGMV5zxuC9dNa3TYa-Zxv4drDB7K1PpNdfzauBCeVmdA@mail.gmail.com>
+To: Jagan Teki <jteki@openedev.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: David Woodhouse <dwmw2@infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ Michael Trimarchi <michael@amarulasolutions.com>
+Subject: RE: [PATCH v2] mtd: spi-nor: Add s25fs256s1 spi-nor flash support
+Date: Wed, 17 Aug 2016 08:57:29 +0000
+Message-ID: <VI1PR0401MB2640FF70F5770AEB32F7449E94140@VI1PR0401MB2640.eurprd04.prod.outlook.com>
+References: <1470597730-10400-1-git-send-email-jteki@openedev.com>
+In-Reply-To: <1470597730-10400-1-git-send-email-jteki@openedev.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,64 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIEF1Z3VzdCAwNiwgMjAxNiAxMDoyNyBQTSwgSmFnYW4gVGVraSB3cm90ZToNCg0KPiBP
-biAyMiBBcHJpbCAyMDE2IGF0IDEyOjA5LCBZdW5odWkgQ3VpIDxCNTY0ODlAZnJlZXNjYWxlLmNv
-bT4gd3JvdGU6DQo+ID4gRnJvbTogWXVuaHVpIEN1aSA8eXVuaHVpLmN1aUBueHAuY29tPg0KPiA+
-DQo+ID4gV2l0aCB0aGUgcGh5c2ljYWwgc2VjdG9ycyBjb21iaW5hdGlvbiwgUzI1RlMtUyBmYW1p
-bHkgZmxhc2ggcmVxdWlyZXMNCj4gPiBzb21lIHNwZWNpYWwgb3BlcmF0aW9ucyBmb3IgcmVhZC93
-cml0ZSBmdW5jdGlvbnMuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZdW5odWkgQ3VpIDx5dW5o
-dWkuY3VpQG54cC5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
-ci5jIHwgNTkNCj4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA1OSBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPiBiL2RyaXZlcnMvbXRkL3Nw
-aS1ub3Ivc3BpLW5vci5jIGluZGV4IDE1Nzg0MWQuLjkxZWU5MjAgMTAwNjQ0DQo+ID4gLS0tIGEv
-ZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPiArKysgYi9kcml2ZXJzL210ZC9zcGkt
-bm9yL3NwaS1ub3IuYw0KPiA+IEBAIC0zOSw2ICszOSwxMCBAQA0KPiA+DQo+ID4gICNkZWZpbmUg
-U1BJX05PUl9NQVhfSURfTEVOICAgICA2DQo+ID4gICNkZWZpbmUgU1BJX05PUl9NQVhfQUREUl9X
-SURUSCA0DQo+ID4gKy8qIEFkZGVkIGZvciBTMjVGUy1TIGZhbWlseSBmbGFzaCAqLw0KPiA+ICsj
-ZGVmaW5lIFNQSU5PUl9DT05GSUdfUkVHM19PRkZTRVQgICAgICAweDgwMDAwNA0KPiA+ICsjZGVm
-aW5lIENSM1ZfNEtCX0VSQVNFX1VOQUJMRSAgMHg4DQo+ID4gKyNkZWZpbmUgU1BJTk9SX1MyNUZT
-X0ZBTUlMWV9JRCAweDgxDQo+ID4NCj4gPiAgc3RydWN0IGZsYXNoX2luZm8gew0KPiA+ICAgICAg
-ICAgY2hhciAgICAgICAgICAgICpuYW1lOw0KPiA+IEBAIC03OCw2ICs4Miw3IEBAIHN0cnVjdCBm
-bGFzaF9pbmZvIHsNCj4gPiAgfTsNCj4gPg0KPiA+ICAjZGVmaW5lIEpFREVDX01GUihpbmZvKSAg
-ICAgICAgKChpbmZvKS0+aWRbMF0pDQo+ID4gKyNkZWZpbmUgRVhUX0lEKGluZm8pICAgKChpbmZv
-KS0+aWRbNV0pDQo+IA0KPiBJIGRvbid0IHRoaW5rIDV0aCBvbmx5IHRoZSBleHQgYW5kIHVzdWFs
-bHkgbGFzdCAzIGJ5dGVzIGFyZSBjYWxsZWQgYXMNCj4gZXh0X2plZGVjIGlmIHRoZSBpZCBsZW5n
-dGggaXMgNiBieXRlcy4NCg0KW1l1bmh1aV0gb2ssIEkgd2lsbCB1cGRhdGUgaXQgaW4gbmV4dCB2
-ZXJzaW9uLg0KDQo+IA0KPiA+DQo+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyAq
-c3BpX25vcl9tYXRjaF9pZChjb25zdCBjaGFyICpuYW1lKTsNCj4gPg0KPiA+IEBAIC04ODEsNiAr
-ODg2LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIHNwaV9ub3JfaWRzW10gPSB7
-DQo+ID4gICAgICAgICAgKi8NCj4gPiAgICAgICAgIHsgInMyNXNsMDMycCIsICBJTkZPKDB4MDEw
-MjE1LCAweDRkMDAsICA2NCAqIDEwMjQsICA2NCwNCj4gU1BJX05PUl9EVUFMX1JFQUQgfCBTUElf
-Tk9SX1FVQURfUkVBRCkgfSwNCj4gPiAgICAgICAgIHsgInMyNXNsMDY0cCIsICBJTkZPKDB4MDEw
-MjE2LCAweDRkMDAsICA2NCAqIDEwMjQsIDEyOCwNCj4gPiBTUElfTk9SX0RVQUxfUkVBRCB8IFNQ
-SV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+ICsgICAgICAgeyAiczI1ZnMyNTZzMSIsIElORk82KDB4
-MDEwMjE5LCAweDRkMDE4MSwgNjQgKiAxMDI0LCA1MTIsIDApfSwNCj4gPiAgICAgICAgIHsgInMy
-NWZsMjU2czAiLCBJTkZPKDB4MDEwMjE5LCAweDRkMDAsIDI1NiAqIDEwMjQsIDEyOCwgMCkgfSwN
-Cj4gPiAgICAgICAgIHsgInMyNWZsMjU2czEiLCBJTkZPKDB4MDEwMjE5LCAweDRkMDEsICA2NCAq
-IDEwMjQsIDUxMiwNCj4gU1BJX05PUl9EVUFMX1JFQUQgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwN
-Cj4gPiAgICAgICAgIHsgInMyNWZsNTEycyIsICBJTkZPKDB4MDEwMjIwLCAweDRkMDAsIDI1NiAq
-IDEwMjQsIDI1NiwNCj4gPiBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9
-LCBAQCAtMTAxOCw2ICsxMDI0LDUzIEBAIHN0YXRpYw0KPiBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5m
-byAqc3BpX25vcl9yZWFkX2lkKHN0cnVjdCBzcGlfbm9yICpub3IpDQo+ID4gICAgICAgICByZXR1
-cm4gRVJSX1BUUigtRU5PREVWKTsNCj4gPiAgfQ0KPiA+DQo+ID4gKy8qDQo+ID4gKyAqIFRoZSBT
-MjVGUy1TIGZhbWlseSBwaHlzaWNhbCBzZWN0b3JzIG1heSBiZSBjb25maWd1cmVkIGFzIGENCj4g
-PiArICogaHlicmlkIGNvbWJpbmF0aW9uIG9mIGVpZ2h0IDQta0IgcGFyYW1ldGVyIHNlY3RvcnMN
-Cj4gPiArICogYXQgdGhlIHRvcCBvciBib3R0b20gb2YgdGhlIGFkZHJlc3Mgc3BhY2Ugd2l0aCBh
-bGwNCj4gPiArICogYnV0IG9uZSBvZiB0aGUgcmVtYWluaW5nIHNlY3RvcnMgYmVpbmcgdW5pZm9y
-bSBzaXplLg0KPiA+ICsgKiBUaGUgUGFyYW1ldGVyIFNlY3RvciBFcmFzZSBjb21tYW5kcyAoMjBo
-IG9yIDIxaCkgbXVzdA0KPiA+ICsgKiBiZSB1c2VkIHRvIGVyYXNlIHRoZSA0LWtCIHBhcmFtZXRl
-ciBzZWN0b3JzIGluZGl2aWR1YWxseS4NCj4gPiArICogVGhlIFNlY3RvciAodW5pZm9ybSBzZWN0
-b3IpIEVyYXNlIGNvbW1hbmRzIChEOGggb3IgRENoKQ0KPiA+ICsgKiBtdXN0IGJlIHVzZWQgdG8g
-ZXJhc2UgYW55IG9mIHRoZSByZW1haW5pbmcNCj4gPiArICogc2VjdG9ycywgaW5jbHVkaW5nIHRo
-ZSBwb3J0aW9uIG9mIGhpZ2hlc3Qgb3IgbG93ZXN0IGFkZHJlc3MNCj4gPiArICogc2VjdG9yIHRo
-YXQgaXMgbm90IG92ZXJsYWlkIGJ5IHRoZSBwYXJhbWV0ZXIgc2VjdG9ycy4NCj4gPiArICogVGhl
-IHVuaWZvcm0gc2VjdG9yIGVyYXNlIGNvbW1hbmQgaGFzIG5vIGVmZmVjdCBvbiBwYXJhbWV0ZXIg
-c2VjdG9ycy4NCj4gPiArICovDQo+ID4gK3N0YXRpYyBpbnQgc3BhbnNpb25fczI1ZnNfZGlzYWJs
-ZV80a2JfZXJhc2Uoc3RydWN0IHNwaV9ub3IgKm5vcikgew0KPiA+ICsgICAgICAgc3RydWN0IGZz
-bF9xc3BpICpxOw0KPiA+ICsgICAgICAgdTMyIGNyM3ZfYWRkciAgPSBTUElOT1JfQ09ORklHX1JF
-RzNfT0ZGU0VUOw0KPiA+ICsgICAgICAgdTggY3IzdiA9IDB4MDsNCj4gPiArICAgICAgIGludCBy
-ZXQgPSAweDA7DQo+ID4gKw0KPiA+ICsgICAgICAgcSA9IG5vci0+cHJpdjsNCj4gDQo+IFdoeSB0
-aGlzIHE/DQoNCltZdW5odWldIG9rLCBJdCBzZWVtcyB0aGF0ICdxJyBpcyB1c2VsZXNzIGluIHRo
-ZSBmdW5jdGlvbi4gSSB3aWxsIHVwZGF0ZSBpdCBpbiBuZXh0IHZlcnNpb24gLCB0aGFua3MuDQoN
-Cj4gDQo+IC0tDQo+IEphZ2FuLg0K
+
+On Monday, August 08, 2016 3:22 AM, Jagan Teki wrote:
+
+> Add Spansion s25fs256s1 spi-nor flash to the list of spi_nor_ids.
+>=20
+> In spansion S25FS-S family the physical sectors are grouped as normal and
+> parameter sectors. Parameter sectors are 4kB in size with 8 set located
+> at the bottom or top address of a device.
+> Normal sectors are similar to other flash family with sizes of 64kB or 32
+> kB.
+>=20
+> To erase whole flash using sector erase(D8h or DCh) won't effect the
+> parameter sectors, so in order to erase these we must use 4K sector erase
+> commands (20h or 21h) separately.
+>=20
+> So better to erase the whole flash using 4K sector erase instead of
+> detecting these family parts again and do two different erase operations.
+>=20
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Yunhui Cui <yunhui.cui@nxp.com>
+> Cc: Michael Trimarchi <michael@amarulasolutions.com>
+> Signed-off-by: Jagan Teki <jteki@openedev.com>
+> ---
+> Changes for v2:
+> 	- Fix wrong vendor name in commit message
+
+[Yunhui] Actually, This flash is belongs to S25FS-S Family, besides,
+S25FS128S 128 Mbit (16 Mbyte)
+S25FS256S 256 Mbit (32 Mbyte)
+S25FS512S 512 Mbit (64 Mbyte)
+They need some specific operations, not the Spansion S25FL128S Family. Than=
+ks
+
+>=20
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-
+> nor.c index d0fc165..6ad7779 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -901,6 +901,7 @@ static const struct flash_info spi_nor_ids[] =3D {
+>  	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128,
+> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
+>  	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512,
+> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> +	{ "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512,
+> SECT_4K) },
+>  	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256,
+> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+>  	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+> --
+> 2.7.4
