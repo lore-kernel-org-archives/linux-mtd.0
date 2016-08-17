@@ -1,18 +1,18 @@
 Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1ba6G9-0000xG-UA
- for linux-mtd@lists.infradead.org; Wed, 17 Aug 2016 19:12:19 +0000
-Received: by mail-wm0-x242.google.com with SMTP id i138so122902wmf.3
- for <linux-mtd@lists.infradead.org>; Wed, 17 Aug 2016 12:11:57 -0700 (PDT)
+ id 1ba6G9-0000xH-U8
+ for linux-mtd@lists.infradead.org; Wed, 17 Aug 2016 19:12:20 +0000
+Received: by mail-wm0-x242.google.com with SMTP id o80so169076wme.0
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Aug 2016 12:11:58 -0700 (PDT)
 From: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH v2 1/3] spi: introduce max_message_size hook in spi_master
+Subject: [PATCH v2 2/3] mtd: m25p80: consider max message size in m25p80_read
 To: Mark Brown <broonie@kernel.org>, Brian Norris <computersforpeace@gmail.com>
 References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
  <20160816164204.GV9347@sirena.org.uk>
 Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
  MTD Maling List <linux-mtd@lists.infradead.org>
-Message-ID: <69c4ce26-7b41-222e-07b2-92818cedd05f@gmail.com>
-Date: Wed, 17 Aug 2016 21:08:01 +0200
+Message-ID: <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
+Date: Wed, 17 Aug 2016 21:09:48 +0200
 MIME-Version: 1.0
 In-Reply-To: <20160816164204.GV9347@sirena.org.uk>
 Content-Type: text/plain; charset=windows-1252
@@ -26,78 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Recently a maximum transfer size was was introduced in struct spi_master.
-However there are also spi controllers with a maximum message size, e.g.
-fsl-espi has a max message size of 64KB.
-Introduce a hook max_message_size to deal with such limitations.
-
-Also make sure that spi_max_transfer_size doesn't return greater values
-than spi_max_message_size, even if hook max_transfer_size is not set.
+Consider a message size limit when calculating the maximum amount
+of data that can be read.
 
 Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 ---
 v2:
-- replace the flag with a hook that allows to define a message size
-  limit independednt of a potential transfer size limit
+- use the new function spi_max_message_size
 ---
- include/linux/spi/spi.h | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ drivers/mtd/devices/m25p80.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 072cb2a..f2d3960 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -312,6 +312,8 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
-  * @flags: other constraints relevant to this driver
-  * @max_transfer_size: function that returns the max transfer size for
-  *	a &spi_device; may be %NULL, so the default %SIZE_MAX will be used.
-+ * @max_message_size: function that returns the max message size for
-+ *	a &spi_device; may be %NULL, so the default %SIZE_MAX will be used.
-  * @io_mutex: mutex for physical bus access
-  * @bus_lock_spinlock: spinlock for SPI bus locking
-  * @bus_lock_mutex: mutex for exclusion of multiple callers
-@@ -442,10 +444,11 @@ struct spi_master {
- #define SPI_MASTER_MUST_TX      BIT(4)		/* requires tx */
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 9cf7fcd..16a7df2 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -172,7 +172,8 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
  
- 	/*
--	 * on some hardware transfer size may be constrained
-+	 * on some hardware transfer / message size may be constrained
- 	 * the limit may depend on device transfer settings
- 	 */
- 	size_t (*max_transfer_size)(struct spi_device *spi);
-+	size_t (*max_message_size)(struct spi_device *spi);
+ 	t[1].rx_buf = buf;
+ 	t[1].rx_nbits = m25p80_rx_nbits(nor);
+-	t[1].len = min(len, spi_max_transfer_size(spi));
++	t[1].len = min3(len, spi_max_transfer_size(spi),
++			spi_max_message_size(spi) - t[0].len);
+ 	spi_message_add_tail(&t[1], &m);
  
- 	/* I/O mutex */
- 	struct mutex		io_mutex;
-@@ -905,12 +908,26 @@ extern int spi_async_locked(struct spi_device *spi,
- 			    struct spi_message *message);
- 
- static inline size_t
--spi_max_transfer_size(struct spi_device *spi)
-+spi_max_message_size(struct spi_device *spi)
- {
- 	struct spi_master *master = spi->master;
--	if (!master->max_transfer_size)
-+	if (!master->max_message_size)
- 		return SIZE_MAX;
--	return master->max_transfer_size(spi);
-+	return master->max_message_size(spi);
-+}
-+
-+static inline size_t
-+spi_max_transfer_size(struct spi_device *spi)
-+{
-+	struct spi_master *master = spi->master;
-+	size_t tr_max = SIZE_MAX;
-+	size_t msg_max = spi_max_message_size(spi);
-+
-+	if (master->max_transfer_size)
-+		tr_max = master->max_transfer_size(spi);
-+
-+	/* transfer size limit must not be greater than messsage size limit */
-+	return min(tr_max, msg_max);
- }
- 
- /*---------------------------------------------------------------------------*/
+ 	ret = spi_sync(spi, &m);
 -- 
 2.9.2
