@@ -1,23 +1,18 @@
 Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1baKOC-0005SP-PZ
- for linux-mtd@lists.infradead.org; Thu, 18 Aug 2016 10:17:35 +0000
-Date: Thu, 18 Aug 2016 11:17:00 +0100
+ id 1baKOp-0005hy-47
+ for linux-mtd@lists.infradead.org; Thu, 18 Aug 2016 10:18:12 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
+Cc: Mark Brown <broonie@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
  MTD Maling List <linux-mtd@lists.infradead.org>
-Message-ID: <20160818101700.GO9347@sirena.org.uk>
-References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
- <20160816164204.GV9347@sirena.org.uk>
- <69c4ce26-7b41-222e-07b2-92818cedd05f@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="rHXT7wjifYJhd5Y1"
-Content-Disposition: inline
 In-Reply-To: <69c4ce26-7b41-222e-07b2-92818cedd05f@gmail.com>
-Subject: Re: [PATCH v2 1/3] spi: introduce max_message_size hook in spi_master
+Message-Id: <E1baKOP-0002Ab-9s@debutante>
+Date: Thu, 18 Aug 2016 11:17:45 +0100
+Subject: Applied "spi: introduce max_message_size hook in spi_master" to the
+ spi tree
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +22,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The patch
 
---rHXT7wjifYJhd5Y1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   spi: introduce max_message_size hook in spi_master
 
-On Wed, Aug 17, 2016 at 09:08:01PM +0200, Heiner Kallweit wrote:
-> Recently a maximum transfer size was was introduced in struct spi_master.
-> However there are also spi controllers with a maximum message size, e.g.
-> fsl-espi has a max message size of 64KB.
-> Introduce a hook max_message_size to deal with such limitations.
+has been applied to the spi tree at
 
-This can be pulled as:
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
 
-The following changes since commit 29b4817d4018df78086157ea3a55c1d9424a7cfc:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-  Linux 4.8-rc1 (2016-08-07 18:18:00 -0700)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-are available in the git repository at:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-max-msg-size
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-for you to fetch changes up to 5090cc6ae2f79ee779e5faf7c8a28edf42b7d738:
+Thanks,
+Mark
 
-  spi: introduce max_message_size hook in spi_master (2016-08-18 11:14:48 +0100)
+>From 5090cc6ae2f79ee779e5faf7c8a28edf42b7d738 Mon Sep 17 00:00:00 2001
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Date: Wed, 17 Aug 2016 21:08:01 +0200
+Subject: [PATCH] spi: introduce max_message_size hook in spi_master
 
-----------------------------------------------------------------
-spi: Add a maximum message size operation
+Recently a maximum transfer size was was introduced in struct spi_master.
+However there are also spi controllers with a maximum message size, e.g.
+fsl-espi has a max message size of 64KB.
+Introduce a hook max_message_size to deal with such limitations.
 
-Some controllers handle entire messages themselves and have limits on
-the maximum message size, provide a way for clients to query this.
+Also make sure that spi_max_transfer_size doesn't return greater values
+than spi_max_message_size, even if hook max_transfer_size is not set.
 
-----------------------------------------------------------------
-Heiner Kallweit (1):
-      spi: introduce max_message_size hook in spi_master
-
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
  include/linux/spi/spi.h | 25 +++++++++++++++++++++----
  1 file changed, 21 insertions(+), 4 deletions(-)
 
---rHXT7wjifYJhd5Y1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXtYsbAAoJECTWi3JdVIfQ7VQH/ixXICsFpnjrcmjp4U59iNTb
-N03PQWNgt0Rt7u1A3K3KrIoWA0EJF7uTrmeRtTUyChX3OPQQoKxUFFDOtv9/f9He
-BvGSKt/OlNS+Ne2Q3z07ttjM/GGnmf1tNJInbGm7Xpa7Olny2SSRRuEGp0gt+odW
-gU55hhehrB5hAUONxeZavdYTYiHVfiu2ecJX7lLyQKTpXy3yIYbZui8brvqpsvuJ
-VIb4qxlnFp1asVO5zcIIHmFQDnxdunwIhgtxQOrco5Gi95R6zuh/X1/4Gfw30Leb
-DED5kwOwWu7JaXQGOSDqsbj701JovZCQm+9U8FP9M6AxtHNXdm3DifAvnFK5ZwY=
-=9OjD
------END PGP SIGNATURE-----
-
---rHXT7wjifYJhd5Y1--
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 072cb2aa2413..f2d3960cc3c3 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -312,6 +312,8 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+  * @flags: other constraints relevant to this driver
+  * @max_transfer_size: function that returns the max transfer size for
+  *	a &spi_device; may be %NULL, so the default %SIZE_MAX will be used.
++ * @max_message_size: function that returns the max message size for
++ *	a &spi_device; may be %NULL, so the default %SIZE_MAX will be used.
+  * @io_mutex: mutex for physical bus access
+  * @bus_lock_spinlock: spinlock for SPI bus locking
+  * @bus_lock_mutex: mutex for exclusion of multiple callers
+@@ -442,10 +444,11 @@ struct spi_master {
+ #define SPI_MASTER_MUST_TX      BIT(4)		/* requires tx */
+ 
+ 	/*
+-	 * on some hardware transfer size may be constrained
++	 * on some hardware transfer / message size may be constrained
+ 	 * the limit may depend on device transfer settings
+ 	 */
+ 	size_t (*max_transfer_size)(struct spi_device *spi);
++	size_t (*max_message_size)(struct spi_device *spi);
+ 
+ 	/* I/O mutex */
+ 	struct mutex		io_mutex;
+@@ -905,12 +908,26 @@ extern int spi_async_locked(struct spi_device *spi,
+ 			    struct spi_message *message);
+ 
+ static inline size_t
+-spi_max_transfer_size(struct spi_device *spi)
++spi_max_message_size(struct spi_device *spi)
+ {
+ 	struct spi_master *master = spi->master;
+-	if (!master->max_transfer_size)
++	if (!master->max_message_size)
+ 		return SIZE_MAX;
+-	return master->max_transfer_size(spi);
++	return master->max_message_size(spi);
++}
++
++static inline size_t
++spi_max_transfer_size(struct spi_device *spi)
++{
++	struct spi_master *master = spi->master;
++	size_t tr_max = SIZE_MAX;
++	size_t msg_max = spi_max_message_size(spi);
++
++	if (master->max_transfer_size)
++		tr_max = master->max_transfer_size(spi);
++
++	/* transfer size limit must not be greater than messsage size limit */
++	return min(tr_max, msg_max);
+ }
+ 
+ /*---------------------------------------------------------------------------*/
+-- 
+2.8.1
