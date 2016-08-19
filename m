@@ -1,28 +1,29 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1baiP0-0006zB-Ax
- for linux-mtd@lists.infradead.org; Fri, 19 Aug 2016 11:56:02 +0000
-Date: Fri, 19 Aug 2016 13:55:36 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?5p2o5Lic5Y2H?= <dongsheng.yang@easystack.cn>
-Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
- fabf@skynet.be, jesper.nilsson@axis.com, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>, linux-cris-kernel@axis.com,
- shengyong1@huawei.com, Ard Biesheuvel <ard.biesheuvel@linaro.org>,
- Dongsheng Yang <dongsheng081251@gmail.com>, dmitry.torokhov@gmail.com,
- dooooongsheng.yang@gmail.com, jschultz@xes-inc.com, starvik@axis.com,
- mtownsend1973@gmail.com, linux-mtd@lists.infradead.org, Colin King
- <colin.king@canonical.com>, asierra@xes-inc.com, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: MTD RAID
-Message-ID: <20160819135536.1ed9e374@bbrezillon>
-In-Reply-To: <AL*AZwAyAecQSM1UjjjNxao0.3.1471605640762.Hmail.dongsheng.yang@easystack.cn>
-References: <57B6E1BD.1060707@easystack.cn>
- <AL*AZwAyAecQSM1UjjjNxao0.3.1471605640762.Hmail.dongsheng.yang@easystack.cn>
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1balHG-0004aq-IA
+ for linux-mtd@lists.infradead.org; Fri, 19 Aug 2016 15:00:11 +0000
+Received: by mail-wm0-x243.google.com with SMTP id i138so3737619wmf.3
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Aug 2016 07:59:49 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20160804210747.GN10383@sirena.org.uk>
+References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
+ <1469830393-13295-5-git-send-email-kdasu.kdev@gmail.com>
+ <20160804210747.GN10383@sirena.org.uk>
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+Date: Fri, 19 Aug 2016 10:59:47 -0400
+Message-ID: <CAC=U0a3sDaiwRhAEZW0u_itaD7o3oUTRAEdDi_O3r9yZSr+cjA@mail.gmail.com>
+Subject: Re: [PATCH v5 4/8] mtd: m25p80: Let m25p80_read() fallback to spi
+ transfer
+To: Mark Brown <broonie@kernel.org>, Brian Norris <computersforpeace@gmail.com>
+Cc: linux-spi@vger.kernel.org, MTD Maling List <linux-mtd@lists.infradead.org>,
+ vigneshr@ti.com, Florian Fainelli <f.fainelli@gmail.com>,
+ "Jayachandran C <jchandra@broadcom.com>,
+ bcm-kernel-feedback-list" <bcm-kernel-feedback-list@broadcom.com>,
+ Vikram Prakash <vikram.prakash@broadcom.com>,
+ Andy Fung <andy.fung@broadcom.com>, Jon Mason <jon.mason@broadcom.com>,
+ "Jayachandran C <jchandra@broadcom.com>,
+ bcm-kernel-feedback-list" <jchandra@broadcom.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,86 +33,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 Aug 2016 19:20:40 +0800 (GMT+08:00)
-=E6=9D=A8=E4=B8=9C=E5=8D=87 <dongsheng.yang@easystack.cn> wrote:
+Adding Brian for this particular patch since its in the mtd domain. I
+will specifically  add him as well in the next  patch set.  I do have
+Vignesh in the list who added the spi_flash_read() in the list.
 
-> Hi guys,Sorry I think i did not express myself clearly. From this referen=
-ce:=20
->=20
->=20
-> https://linas.org/linux/Software-RAID/Software-RAID.txt
->=20
->=20
-> we can see, RAID stands for "Redundant Array of Inexpensive Disks"
-> and is meant to be a way of creating a fast and reliable
-> disk-drive subsystem out of individual disks. In the PC
-> world, "I" has come to stand for "Independent".
->=20
->=20
-> There are two benifets in RAID, "fast" and "reliable".=20
-> So I=E3=80=80introduce the RAID framework in MTD world. and implement
-> 3 types of RAID currently.
->=20
->=20
-> (1) single: I reuse this work same with what it is in BTRFS.
-> It's not a standard RAID level. But just concat the devices.
->=20
->=20
-> (2) RAID0: also known as Striping mode. This can make device faster.
-> From what I show in my first email, we can see we can get 51.1 MB/s in dd
-> although the original device is only 14.0 MB/s.=20
+Kamal
 
-Some comments on your results. It's all theoretical (based on nandsim),
-and assuming your NAND chips are connected to the same NAND controller
-you would just get the same perf as in 'single' mode (accesses through
-the NAND controller are currently serialized, that's something I'm
-trying to change but it's not here yet).
-
-So yes, in an ideal word, sequential accesses would be improved, but
-we're not here yet. BTW, did you run this test on a real HW?
-
->=20
->=20
-> (3) RAID1: also known as Mirroring mode. This can make device more reliab=
-le.=20
-> Yes, Boris pointed out that there could be some problems if we are using =
-NAND flash.
-> But I think these all are possible to be solved. And I don't think this i=
-s the problem of=20
-> MTD RAID, but the problem of the special use case of NAND. I am glad to m=
-ake the
-> MTD RAID working better on MLC and TLC.
-
-It's not only an MLC/TLC problem, it's just that you're more likely to
-see it on MLC/TLC NANDs. The fact that you're not regularly
-reading/refreshing some blocks of the mirror MTD is a real problem, and
-this lead to the safety illusion I was mentioning in my previous answer.
-
-That's why I think implementing RAID on top of raw MTD devices is a bad
-idea.
-
->=20
->=20
-> In addition, there are some more RAID levels, such as RAID10, RAID4/5/6. =
-All of them are
-> useful for "fast" and "reliable".
-
-I'm not saying RAID is useless, I'm just saying it's a pain to
-implement on top of MTD devices.
-
->=20
->=20
-> I hope this mail helps to express my idea here.=20
+On Thu, Aug 4, 2016 at 5:07 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Jul 29, 2016 at 06:13:09PM -0400, Kamal Dasu wrote:
+>> In m25p80_read() even though spi_flash_read() is supported
+>> by some drivers, under certain circumstances like unaligned
+>> buffer, address or address range limitations on certain SoCs
+>> let it fallback to core spi reads. Such drivers are expected
+>> to return -EAGAIN so that the m25p80_read() uses standard
+>> spi transfer.
 >
-
-I think I got the main idea, and I already explained why I think it's
-not a good idea. If you still want to go this road then you'll have to
-convince me that your implementation is safe (which is not the case
-yet).
-
-BTW, think about that: if you use an SSD in a RAID setting, the SSD's
-FTL is taking care of the NAND unreliability problems. Here you're just
-ignoring these problems and are assuming doing RAID on a NAND is just
-as safe as doing RAID on an SSD, which is wrong.
-If you want to be in a 'similar' setting, then the RAID array has to
-operate on top of the FTL/WL layer (in this specific case, UBI).
+> You need to send this to the MTD maintainers, I see you've CCed the list
+> but not Brian and any comaintainers he has AFAICT.
