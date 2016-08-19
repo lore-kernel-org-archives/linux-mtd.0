@@ -1,31 +1,21 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bamsv-0001TX-5a
- for linux-mtd@lists.infradead.org; Fri, 19 Aug 2016 16:43:10 +0000
-Date: Fri, 19 Aug 2016 17:42:34 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: linux-spi@vger.kernel.org,
- MTD Maling List <linux-mtd@lists.infradead.org>, vigneshr@ti.com,
- Florian Fainelli <f.fainelli@gmail.com>,
- "Jayachandran C <jchandra@broadcom.com>,
- bcm-kernel-feedback-list" <bcm-kernel-feedback-list@broadcom.com>,
- Vikram Prakash <vikram.prakash@broadcom.com>,
- Andy Fung <andy.fung@broadcom.com>, Jon Mason <jon.mason@broadcom.com>,
- "Jayachandran C <jchandra@broadcom.com>,
- bcm-kernel-feedback-list" <jchandra@broadcom.com>
-Message-ID: <20160819164234.GC22076@sirena.org.uk>
-References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
- <1469830393-13295-9-git-send-email-kdasu.kdev@gmail.com>
- <20160816184030.GB9347@sirena.org.uk>
- <CAC=U0a31LOphD=21-tBtiCxN-JqxSArxqhQ4_=fXwH-vEKnbHA@mail.gmail.com>
+ id 1baoGf-0006eN-Mu
+ for linux-mtd@lists.infradead.org; Fri, 19 Aug 2016 18:11:46 +0000
+Received: by mail-pf0-x244.google.com with SMTP id y134so1795480pfg.3
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Aug 2016 11:11:25 -0700 (PDT)
+Date: Sat, 20 Aug 2016 02:01:31 +0800
+From: Han Xu <xhnjupt@gmail.com>
+To: LABBE Corentin <clabbe.montjoie@gmail.com>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, han.xu@nxp.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: constify fsl_qspi_devtype_data
+Message-ID: <20160819180131.GA729@shlinux2>
+References: <1471352198-7327-1-git-send-email-clabbe.montjoie@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="E13BgyNx05feLLmH"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAC=U0a31LOphD=21-tBtiCxN-JqxSArxqhQ4_=fXwH-vEKnbHA@mail.gmail.com>
-Subject: Re: [PATCH v5 8/8] spi: nsp-qspi: Add Broadcom NSP, NS2, Cygnus SoC
- support
+In-Reply-To: <1471352198-7327-1-git-send-email-clabbe.montjoie@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,57 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---E13BgyNx05feLLmH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Aug 19, 2016 at 11:43:24AM -0400, Kamal Dasu wrote:
-> On Tue, Aug 16, 2016 at 2:40 PM, Mark Brown <broonie@kernel.org> wrote:
-
-> > I am confused why we are parsing the interrupt-names property here?
-
-> For Muxed L1 single source interrupt, there is only one irq, and  SoCs
-> could use a different different name wanted to use that name. But I
-> could force a name as well.
-
-Either don't use names or force a name, trying to mix the two is just
-messy.
-
-> >> +     /*
-> >> +      * Some SoCs integrate spi controller (e.g., its interrupt bits)
-> >> +      * in specific ways
-> >> +      */
-> >> +     if (soc) {
-> >> +             qspi->soc = soc;
-> >> +             soc->bcm_qspi_int_set(soc, MSPI_DONE, true);
-> >> +     } else {
-> >> +             qspi->soc = NULL;
-> >> +     }
-
-> > The variable name "soc" here doesn't seem hugely descriptive when it's
-> > just for the interrupt controller.
-
-> Named it that way since it could potentially have other SoC specific
-> settings for spi master bus needed in future.
-
-But then that'll break this code - if it's going to be a feature flag
-bitmask or something like that it should have an appropriate name and be
-used in a way that reflects this.
-
---E13BgyNx05feLLmH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXtzb5AAoJECTWi3JdVIfQ6qQH/iuV9ZWjAeEx1DG8Fth3fC5i
-8/J6X96M+MDGjvCbSBTzmiH58BwIbd3jkq9PJxhUxttaeqFxnmUXqy8lN3TqTa1H
-pd4H9m3spKdMgWnbfgXKW6tnuCTYposZ6OsRkSGQUzl5a0pK7Z90F+cCQB7IIbiR
-0+5SwDzGrUzSzo8uCClh8RGX7HhjCgldxEAMsMEye1eIElrj01b3FNdnKT/bj25Y
-IaX8DqG6zHcklreSZZ5+VEOsy+BsZz66J2+ZMYIc8gXGB+pZSd5yA0npJw+LUHTo
-3gbHOn3nTiS3cuYEij8eM8Yk9pjOeM2E2Xios6v7VKFjJ87/orrZho86b3Shl28=
-=Wq9s
------END PGP SIGNATURE-----
-
---E13BgyNx05feLLmH--
+On Tue, Aug 16, 2016 at 02:56:38PM +0200, LABBE Corentin wrote:
+> All fsl_qspi_devtype_data structures are never modified.
+> This patch constify them.
+> 
+> Signed-off-by: LABBE Corentin <clabbe.montjoie@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 5c82e4e..b4d8953 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -224,7 +224,7 @@ struct fsl_qspi_devtype_data {
+>  	int driver_data;
+>  };
+>  
+> -static struct fsl_qspi_devtype_data vybrid_data = {
+> +static const struct fsl_qspi_devtype_data vybrid_data = {
+>  	.devtype = FSL_QUADSPI_VYBRID,
+>  	.rxfifo = 128,
+>  	.txfifo = 64,
+> @@ -232,7 +232,7 @@ static struct fsl_qspi_devtype_data vybrid_data = {
+>  	.driver_data = QUADSPI_QUIRK_SWAP_ENDIAN,
+>  };
+>  
+> -static struct fsl_qspi_devtype_data imx6sx_data = {
+> +static const struct fsl_qspi_devtype_data imx6sx_data = {
+>  	.devtype = FSL_QUADSPI_IMX6SX,
+>  	.rxfifo = 128,
+>  	.txfifo = 512,
+> @@ -241,7 +241,7 @@ static struct fsl_qspi_devtype_data imx6sx_data = {
+>  		       | QUADSPI_QUIRK_TKT245618,
+>  };
+>  
+> -static struct fsl_qspi_devtype_data imx7d_data = {
+> +static const struct fsl_qspi_devtype_data imx7d_data = {
+>  	.devtype = FSL_QUADSPI_IMX7D,
+>  	.rxfifo = 512,
+>  	.txfifo = 512,
+> @@ -250,7 +250,7 @@ static struct fsl_qspi_devtype_data imx7d_data = {
+>  		       | QUADSPI_QUIRK_4X_INT_CLK,
+>  };
+>  
+> -static struct fsl_qspi_devtype_data imx6ul_data = {
+> +static const struct fsl_qspi_devtype_data imx6ul_data = {
+>  	.devtype = FSL_QUADSPI_IMX6UL,
+>  	.rxfifo = 128,
+>  	.txfifo = 512,
+> -- 
+> 2.7.3
+> 
+Acked-by: Han Xu <han.xu@nxp.com>
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
