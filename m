@@ -1,20 +1,28 @@
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1balau-0004bX-DI
+ for linux-mtd@lists.infradead.org; Fri, 19 Aug 2016 15:20:29 +0000
+Received: by mail-wm0-x243.google.com with SMTP id i5so3825125wmg.2
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Aug 2016 08:20:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160810162438.4c6cffd3@bbrezillon>
-References: <1469051631-7896-1-git-send-email-ray.jui@broadcom.com>
- <1469051631-7896-2-git-send-email-ray.jui@broadcom.com>
- <20160810162438.4c6cffd3@bbrezillon>
+In-Reply-To: <20160816181536.GX9347@sirena.org.uk>
+References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
+ <1469830393-13295-3-git-send-email-kdasu.kdev@gmail.com>
+ <20160816181536.GX9347@sirena.org.uk>
 From: Kamal Dasu <kdasu.kdev@gmail.com>
-Date: Fri, 19 Aug 2016 11:14:17 -0400
-Message-ID: <CAC=U0a2fA=aYbfDdhcdRPATFuPEWd8qmdajwdn4UAFn=R4rUsQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: brcmnand: iProc big endian and ONFI support
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Ray Jui <ray.jui@broadcom.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Prafulla Kota <prafulla.kota@broadcom.com>,
+Date: Fri, 19 Aug 2016 11:20:05 -0400
+Message-ID: <CAC=U0a1uW3pB0MA1Hmw9_pKTrBhnHKmz7gquih2r5zSUO_SAoA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/8] spi: bcm-qspi: Add Broadcom MSPI driver
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org, MTD Maling List <linux-mtd@lists.infradead.org>,
+ vigneshr@ti.com, Florian Fainelli <f.fainelli@gmail.com>,
  "Jayachandran C <jchandra@broadcom.com>,
  bcm-kernel-feedback-list" <bcm-kernel-feedback-list@broadcom.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+ Vikram Prakash <vikram.prakash@broadcom.com>,
+ Andy Fung <andy.fung@broadcom.com>, Jon Mason <jon.mason@broadcom.com>,
+ "Jayachandran C <jchandra@broadcom.com>,
+ bcm-kernel-feedback-list" <jchandra@broadcom.com>,
+ Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,155 +33,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris
-
-This change  looks good to me.
-
-
-On Wed, Aug 10, 2016 at 10:24 AM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Wed, 20 Jul 2016 14:53:50 -0700
-> Ray Jui <ray.jui@broadcom.com> wrote:
+On Tue, Aug 16, 2016 at 2:15 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Jul 29, 2016 at 06:13:07PM -0400, Kamal Dasu wrote:
 >
->> This patch adds big endian and ONFI support for various iProc based
->> SoCs that use the core brcmstb NAND controller
+>> +static int bcm_qspi_transfer_one(struct spi_master *master,
 >
-> Brian, Kamal, can you review this patch?
+>> +             if (qspi->next_udelay) {
+>> +                     udelay(qspi->next_udelay);
+>> +                     qspi->next_udelay = 0;
+>> +             }
 >
->>
->> This patch was originally implemented by Prafulla Kota
->> <prafulla.kota@broadcom.com> and fully tested on iProc based NS2 SVK
->>
->> Signed-off-by: Prafulla Kota <prafulla.kota@broadcom.com>
->> Signed-off-by: Ray Jui <ray.jui@broadcom.com>
+> Why is the driver manually implementing delays in a transfer_one()
+> function?  The core will add any required delays between transfers, this
+> will result in us delaying twice.
+>
+>> +             read_from_hw(qspi, slots);
+>> +             if (qspi->cs_change) {
+>> +                     usleep_range(10, 20);
+>> +                     qspi->cs_change = 0;
+>> +             }
+>
+> Similarly here, the core will do chip select changes.
+>
+>> +     if (spi_transfer_is_last(master, trans))
+>> +             hw_stop(qspi);
+>
+> The only thing I can see that looks like it might make a difference here
+> is this hw_stop() operation but all that does is update an internal
+> state machine so there's no limitation on it needing to be done before
+> the above operations that I can see.
 
-Reviewed-by: Kamal Dasu <kdasu.kdev@gmail.com>
 
->> ---
->>  drivers/mtd/nand/brcmnand/brcmnand.c   | 12 ++++++------
->>  drivers/mtd/nand/brcmnand/brcmnand.h   | 13 ++++++++-----
->>  drivers/mtd/nand/brcmnand/iproc_nand.c | 18 ++++++++++++++----
->>  3 files changed, 28 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
->> index b76ad7c..12a1585 100644
->> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
->> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
->> @@ -1279,7 +1279,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
->>               u32 *flash_cache = (u32 *)ctrl->flash_cache;
->>               int i;
->>
->> -             brcmnand_soc_data_bus_prepare(ctrl->soc);
->> +             brcmnand_soc_data_bus_prepare(ctrl->soc, true);
->>
->>               /*
->>                * Must cache the FLASH_CACHE now, since changes in
->> @@ -1292,7 +1292,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
->>                        */
->>                       flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
->>
->> -             brcmnand_soc_data_bus_unprepare(ctrl->soc);
->> +             brcmnand_soc_data_bus_unprepare(ctrl->soc, true);
->>
->>               /* Cleanup from HW quirk: restore SECTOR_SIZE_1K */
->>               if (host->hwcfg.sector_size_1k)
->> @@ -1508,12 +1508,12 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
->>               brcmnand_waitfunc(mtd, chip);
->>
->>               if (likely(buf)) {
->> -                     brcmnand_soc_data_bus_prepare(ctrl->soc);
->> +                     brcmnand_soc_data_bus_prepare(ctrl->soc, false);
->>
->>                       for (j = 0; j < FC_WORDS; j++, buf++)
->>                               *buf = brcmnand_read_fc(ctrl, j);
->>
->> -                     brcmnand_soc_data_bus_unprepare(ctrl->soc);
->> +                     brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
->>               }
->>
->>               if (oob)
->> @@ -1678,12 +1678,12 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
->>               (void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
->>
->>               if (buf) {
->> -                     brcmnand_soc_data_bus_prepare(ctrl->soc);
->> +                     brcmnand_soc_data_bus_prepare(ctrl->soc, false);
->>
->>                       for (j = 0; j < FC_WORDS; j++, buf++)
->>                               brcmnand_write_fc(ctrl, j, *buf);
->>
->> -                     brcmnand_soc_data_bus_unprepare(ctrl->soc);
->> +                     brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
->>               } else if (oob) {
->>                       for (j = 0; j < FC_WORDS; j++)
->>                               brcmnand_write_fc(ctrl, j, 0xffffffff);
->> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
->> index ef5eabb..5c44cd4 100644
->> --- a/drivers/mtd/nand/brcmnand/brcmnand.h
->> +++ b/drivers/mtd/nand/brcmnand/brcmnand.h
->> @@ -23,19 +23,22 @@ struct dev_pm_ops;
->>  struct brcmnand_soc {
->>       bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
->>       void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
->> -     void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
->> +     void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
->> +                              bool is_param);
->>  };
->>
->> -static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
->> +static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc,
->> +                                              bool is_param)
->>  {
->>       if (soc && soc->prepare_data_bus)
->> -             soc->prepare_data_bus(soc, true);
->> +             soc->prepare_data_bus(soc, true, is_param);
->>  }
->>
->> -static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc)
->> +static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc,
->> +                                                bool is_param)
->>  {
->>       if (soc && soc->prepare_data_bus)
->> -             soc->prepare_data_bus(soc, false);
->> +             soc->prepare_data_bus(soc, false, is_param);
->>  }
->>
->>  static inline u32 brcmnand_readl(void __iomem *addr)
->> diff --git a/drivers/mtd/nand/brcmnand/iproc_nand.c b/drivers/mtd/nand/brcmnand/iproc_nand.c
->> index 585596c..4c6ae11 100644
->> --- a/drivers/mtd/nand/brcmnand/iproc_nand.c
->> +++ b/drivers/mtd/nand/brcmnand/iproc_nand.c
->> @@ -74,7 +74,8 @@ static void iproc_nand_intc_set(struct brcmnand_soc *soc, bool en)
->>       spin_unlock_irqrestore(&priv->idm_lock, flags);
->>  }
->>
->> -static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
->> +static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare,
->> +                               bool is_param)
->>  {
->>       struct iproc_nand_soc *priv =
->>                       container_of(soc, struct iproc_nand_soc, soc);
->> @@ -86,10 +87,19 @@ static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
->>
->>       val = brcmnand_readl(mmio);
->>
->> -     if (prepare)
->> -             val |= IPROC_NAND_APB_LE_MODE;
->> -     else
->> +     /*
->> +      * In the case of BE or when dealing with NAND data, alway configure
->> +      * the APB bus to LE mode before accessing the FIFO and back to BE mode
->> +      * after the access is done
->> +      */
->> +     if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) || !is_param) {
->> +             if (prepare)
->> +                     val |= IPROC_NAND_APB_LE_MODE;
->> +             else
->> +                     val &= ~IPROC_NAND_APB_LE_MODE;
->> +     } else { /* when in LE accessing the parameter page, keep APB in BE */
->>               val &= ~IPROC_NAND_APB_LE_MODE;
->> +     }
->>
->>       brcmnand_writel(val, mmio);
->>
+I will cleanup  above 3 areas of redundant code.
+
+>> +     ret = clk_prepare_enable(qspi->clk);
+>> +     if (ret) {
+>> +             dev_err(dev, "failed to prepare clock\n");
+>> +             goto err2;
 >
+> Please use named labels rather than numbered, it makes life a lot easier
+> if anything gets changed.
+>
+
+Ok will make this change as well
+
+>> +EXPORT_SYMBOL_GPL(bcm_qspi_probe);
+>
+> This needs some explanation or to be added along with the user.
+>
+
+Will add appropriate comments for the user.
+
+>> diff --git a/drivers/spi/spi-brcmstb-qspi.c b/drivers/spi/spi-brcmstb-qspi.c
+>> new file mode 100644
+>> index 0000000..c7df92e
+>> --- /dev/null
+>> +++ b/drivers/spi/spi-brcmstb-qspi.c
+>
+> This should really be a separate patch, it's a separate driver and very
+> surprising to find it here.
+
+Its very specific to the spi-block and hence is here, I will separate the patch,
+
+Kamal
