@@ -1,18 +1,19 @@
 Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1balau-0004bX-DI
- for linux-mtd@lists.infradead.org; Fri, 19 Aug 2016 15:20:29 +0000
-Received: by mail-wm0-x243.google.com with SMTP id i5so3825125wmg.2
- for <linux-mtd@lists.infradead.org>; Fri, 19 Aug 2016 08:20:08 -0700 (PDT)
+ id 1balnP-0002jq-L4
+ for linux-mtd@lists.infradead.org; Fri, 19 Aug 2016 15:33:24 +0000
+Received: by mail-wm0-x243.google.com with SMTP id o80so3882125wme.0
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Aug 2016 08:33:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160816181536.GX9347@sirena.org.uk>
+In-Reply-To: <20160816183148.GZ9347@sirena.org.uk>
 References: <1469830393-13295-1-git-send-email-kdasu.kdev@gmail.com>
- <1469830393-13295-3-git-send-email-kdasu.kdev@gmail.com>
- <20160816181536.GX9347@sirena.org.uk>
+ <1469830393-13295-4-git-send-email-kdasu.kdev@gmail.com>
+ <20160816183148.GZ9347@sirena.org.uk>
 From: Kamal Dasu <kdasu.kdev@gmail.com>
-Date: Fri, 19 Aug 2016 11:20:05 -0400
-Message-ID: <CAC=U0a1uW3pB0MA1Hmw9_pKTrBhnHKmz7gquih2r5zSUO_SAoA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/8] spi: bcm-qspi: Add Broadcom MSPI driver
+Date: Fri, 19 Aug 2016 11:33:01 -0400
+Message-ID: <CAC=U0a0NkjUQ1gAGNCsLycUhU_x0k=munc4bPTZW1YEW6OY1yw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/8] spi: bcm-qspi: Add BSPI spi-nor flash controller
+ driver
 To: Mark Brown <broonie@kernel.org>
 Cc: linux-spi@vger.kernel.org, MTD Maling List <linux-mtd@lists.infradead.org>,
  vigneshr@ti.com, Florian Fainelli <f.fainelli@gmail.com>,
@@ -33,66 +34,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 16, 2016 at 2:15 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Jul 29, 2016 at 06:13:07PM -0400, Kamal Dasu wrote:
+On Tue, Aug 16, 2016 at 2:31 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Jul 29, 2016 at 06:13:08PM -0400, Kamal Dasu wrote:
 >
->> +static int bcm_qspi_transfer_one(struct spi_master *master,
+>> +     bcm_qspi_bspi_lr_start(qspi);
+>> +     /* Must flush previous writes before starting BSPI operation */
+>> +     mb();
+>> +     if (!wait_for_completion_timeout(&qspi->bspi_done, timeo)) {
 >
->> +             if (qspi->next_udelay) {
->> +                     udelay(qspi->next_udelay);
->> +                     qspi->next_udelay = 0;
->> +             }
->
-> Why is the driver manually implementing delays in a transfer_one()
-> function?  The core will add any required delays between transfers, this
-> will result in us delaying twice.
->
->> +             read_from_hw(qspi, slots);
->> +             if (qspi->cs_change) {
->> +                     usleep_range(10, 20);
->> +                     qspi->cs_change = 0;
->> +             }
->
-> Similarly here, the core will do chip select changes.
->
->> +     if (spi_transfer_is_last(master, trans))
->> +             hw_stop(qspi);
->
-> The only thing I can see that looks like it might make a difference here
-> is this hw_stop() operation but all that does is update an internal
-> state machine so there's no limitation on it needing to be done before
-> the above operations that I can see.
-
-
-I will cleanup  above 3 areas of redundant code.
-
->> +     ret = clk_prepare_enable(qspi->clk);
->> +     if (ret) {
->> +             dev_err(dev, "failed to prepare clock\n");
->> +             goto err2;
->
-> Please use named labels rather than numbered, it makes life a lot easier
-> if anything gets changed.
+> The comment suggests that the memory barrier is misplaced or that
+> there's something missing?
 >
 
-Ok will make this change as well
+Yes it got misplaced during refactoring the code. will move it to the
+right place.
 
->> +EXPORT_SYMBOL_GPL(bcm_qspi_probe);
+>> +             if (retry--)
+>> +                     goto retry;
 >
-> This needs some explanation or to be added along with the user.
+> Please write loops using normal C looping constructs rather than goto
+> statements, it makes life a lot easier.  I'm not convinced that the loop
+> is safe as is with the completion reinitializaiton and so on, we should
+> at least be turning off the hardware before we reinitialize the
+> completion to avoid races with slow hardware.
 >
 
-Will add appropriate comments for the user.
+Actually will get rid of the retry logic.
 
->> diff --git a/drivers/spi/spi-brcmstb-qspi.c b/drivers/spi/spi-brcmstb-qspi.c
->> new file mode 100644
->> index 0000000..c7df92e
->> --- /dev/null
->> +++ b/drivers/spi/spi-brcmstb-qspi.c
+>> +     io_width = msg->data_nbits ? msg->data_nbits : SPI_NBITS_SINGLE;
 >
-> This should really be a separate patch, it's a separate driver and very
-> surprising to find it here.
+> Normal if statements please.
+>
 
-Its very specific to the spi-block and hence is here, I will separate the patch,
+Ok will fix this.
+
+>> +static irqreturn_t bcm_qspi_bspi_lr_err_l2_isr(int irq, void *dev_id)
+>> +{
+>> +     struct bcm_qspi_dev_id *qspi_dev_id = dev_id;
+>> +     struct bcm_qspi *qspi = qspi_dev_id->dev;
+>> +
+>> +     dev_dbg(&qspi->pdev->dev, "BSPI INT error status %x\n",
+>> +             qspi_dev_id->irqp->mask);
+>
+> I'd expect this to be dev_err() or something, but then the message
+> claims this an error status and it doesn't seem to actually read that
+> from the hardware.
+>
+
+Agreed will change this.
+
+>> +#ifdef  QSPI_INT_DEBUG
+>> +     /* this interrupt is for debug purposes only, dont request irq */
+>> +     {
+>> +             .irq_name = "spi_lr_overread",
+>> +             .irq_handler = bcm_qspi_bspi_lr_err_l2_isr,
+>> +             .mask = INTR_BSPI_LR_OVERREAD_MASK,
+>> +     },
+>> +#endif
+>
+> Why not?
+
+Is there in the HW block but will never get triggered,  will never get
+triggered in the current driver. But kept it for completeness.
 
 Kamal
