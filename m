@@ -1,25 +1,27 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mr213138.mail.yeah.net ([223.252.213.138])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1badcc-0008D3-N4
- for linux-mtd@lists.infradead.org; Fri, 19 Aug 2016 06:49:43 +0000
-Date: Fri, 19 Aug 2016 08:49:08 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Dongsheng Yang <dongsheng081251@gmail.com>
-Cc: linux-mtd@lists.infradead.org, dmitry.torokhov@gmail.com, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>, shengyong1@huawei.com, starvik@axis.com,
- richard <richard@nod.at>, linux-cris-kernel@axis.com, Colin King
- <colin.king@canonical.com>, jschultz@xes-inc.com, Ard Biesheuvel
- <ard.biesheuvel@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
- asierra@xes-inc.com, jesper.nilsson@axis.com, fabf@skynet.be,
- dooooongsheng.yang@gmail.com, Brian Norris <computersforpeace@gmail.com>,
- mtownsend1973@gmail.com
+ id 1badvP-0007uz-Am
+ for linux-mtd@lists.infradead.org; Fri, 19 Aug 2016 07:09:13 +0000
 Subject: Re: MTD RAID
-Message-ID: <20160819084908.4955c629@bbrezillon>
-In-Reply-To: <CA+qeAOpuZ0CXZP8tCWdhoVvTEKAw26gtz63-UJmQ4XLSXAd=Yg@mail.gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Dongsheng Yang <dongsheng081251@gmail.com>
 References: <CA+qeAOpuZ0CXZP8tCWdhoVvTEKAw26gtz63-UJmQ4XLSXAd=Yg@mail.gmail.com>
+ <20160819084908.4955c629@bbrezillon>
+Cc: fabf@skynet.be, jesper.nilsson@axis.com,
+ Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, linux-cris-kernel@axis.com,
+ shengyong1@huawei.com, Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+ richard <richard@nod.at>, dmitry.torokhov@gmail.com,
+ dooooongsheng.yang@gmail.com, jschultz@xes-inc.com, starvik@axis.com,
+ mtownsend1973@gmail.com, linux-mtd@lists.infradead.org,
+ Colin King <colin.king@canonical.com>, asierra@xes-inc.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+From: Dongsheng Yang <dongsheng.yang@easystack.cn>
+Message-ID: <57B6B073.9060404@easystack.cn>
+Date: Fri, 19 Aug 2016 15:08:35 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160819084908.4955c629@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,22 +32,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Dongsheng,
 
-On Fri, 19 Aug 2016 14:34:54 +0800
-Dongsheng Yang <dongsheng081251@gmail.com> wrote:
 
-> Hi guys,
->     This is a email about MTD RAID.
-> 
-> *Code:*
->     kernel:
-> https://github.com/yangdongsheng/linux/tree/mtd_raid_v2-for-4.7
+On 08/19/2016 02:49 PM, Boris Brezillon wrote:
+> Hi Dongsheng,
+>
+> On Fri, 19 Aug 2016 14:34:54 +0800
+> Dongsheng Yang <dongsheng081251@gmail.com> wrote:
+>
+>> Hi guys,
+>>      This is a email about MTD RAID.
+>>
+>> *Code:*
+>>      kernel:
+>> https://github.com/yangdongsheng/linux/tree/mtd_raid_v2-for-4.7
+> Just had a quick look at the code, and I see at least one major problem
+> in your RAID-1 implementation: you're ignoring the fact that NAND blocks
+> can be or become bad. What's the plan for that?
 
-Just had a quick look at the code, and I see at least one major problem
-in your RAID-1 implementation: you're ignoring the fact that NAND blocks
-can be or become bad. What's the plan for that?
+Hi Boris,
+     Thanx for your quick reply.
 
-Regards,
+     When you are using RAID-1, it would erase the all mirrored blockes 
+when you are erasing.
+if there is a bad block in them, mtd_raid_erase will return an error and 
+the userspace tool
+or ubi will mark this block as bad, that means, the 
+mtd_raid_block_markbad() will mark the all
+  mirrored blocks as bad, although some of it are good.
 
-Boris
+In addition, when you have data in flash with RAID-1, if one block 
+become bad. For example,
+when the mtd0 and mtd1 are used to build a RAID-1 device mtd2. When you 
+are using mtd2
+and you found there is a block become bad. Don't worry about data 
+losing, the data is still
+saved in the good one mirror. you can replace the bad one device with 
+another new mtd device.
+
+My plan about this feature is all on the userspace tool.
+(1). mtd_raid scan mtd2 <---- this will show the status of RAID device 
+and each member of it.
+(2). mtd_raid replace mtd2 --old mtd1 --new mtd3.   <---- this will 
+replace the bad one mtd1 with mtd3.
+
+What about this idea?
+
+Yang
+>
+> Regards,
+>
+> Boris
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
