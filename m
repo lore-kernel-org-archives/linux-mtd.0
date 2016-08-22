@@ -1,12 +1,7 @@
-Received: from mga06.intel.com ([134.134.136.31])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bbqcS-0003lA-Tt
- for linux-mtd@lists.infradead.org; Mon, 22 Aug 2016 14:54:34 +0000
-Message-ID: <1471877646.15722.61.camel@gmail.com>
+Message-ID: <1471879824.61594.505.camel@infradead.org>
 Subject: Re: MTD RAID
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <dooooongsheng.yang@gmail.com>
+From: David Woodhouse <dwmw2@infradead.org>
+To: dedekind1@gmail.com, Dongsheng Yang <dooooongsheng.yang@gmail.com>
 Cc: Dongsheng Yang <dongsheng.yang@easystack.cn>, Boris Brezillon
  <boris.brezillon@free-electrons.com>, starvik@axis.com,
  jesper.nilsson@axis.com,  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
@@ -15,18 +10,19 @@ Cc: Dongsheng Yang <dongsheng.yang@easystack.cn>, Boris Brezillon
  Biesheuvel <ard.biesheuvel@linaro.org>, jschultz@xes-inc.com,
  fabf@skynet.be, mtownsend1973@gmail.com,  linux-mtd@lists.infradead.org,
  Colin King <colin.king@canonical.com>,  asierra@xes-inc.com,
- dmitry.torokhov@gmail.com, Dongsheng Yang <dongsheng081251@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 22 Aug 2016 17:54:06 +0300
-In-Reply-To: <CAAp9bSh-geStbHpA6+vYdLfNLcinWkfVLOGmX4kdRbja+d2MdA@mail.gmail.com>
+ dmitry.torokhov@gmail.com, Dongsheng Yang <dongsheng081251@gmail.com>
+Date: Mon, 22 Aug 2016 16:30:24 +0100
+In-Reply-To: <1471877646.15722.61.camel@gmail.com>
 References: <57B6E1BD.1060707@easystack.cn>
  <AL*AZwAyAecQSM1UjjjNxao0.3.1471605640762.Hmail.dongsheng.yang@easystack.cn>
  <20160819135536.1ed9e374@bbrezillon> <57BA6FFA.6000601@easystack.cn>
  <1471850841.15722.13.camel@gmail.com>
  <CAAp9bSh-geStbHpA6+vYdLfNLcinWkfVLOGmX4kdRbja+d2MdA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+ <1471877646.15722.61.camel@gmail.com>
+Content-Type: multipart/signed; micalg="sha-256";
+ protocol="application/x-pkcs7-signature";
+ boundary="=-AL6MskVmN2hHQLXlmFom"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,89 +32,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2016-08-22 at 18:55 +0800, Dongsheng Yang wrote:
-> 
-> 
-> On Mon, Aug 22, 2016 at 3:27 PM, Artem Bityutskiy <dedekind1@gmail.co
-> m> wrote:
-> > On Mon, 2016-08-22 at 11:22 +0800, Dongsheng Yang wrote:
-> > > As I explained above, MTD RAID is not just a solution for
-> > reliability
-> > > problem for MLC/TLC. 
-> > 
-> > Could you please answer these questions.
-> > 
-> > 1. Does MTD raid work on MLC or is it SLC-only?
-> 
-> Good question. No, it is based on MTD layer, so it should be fine for
-> any MTD devices in theory, although we are using nand flash in our
-> production.
-> > 
-> > 2. If I am building RAID-0, I have 2 flash chips, one has every
-> > even
-> > block bad, the other has every odd block bad. What happens?
-> 
->  All blocks would be marked as bad. Because we are combining the
-> striping related blocks as a larger block, so if one of the blocks is
-> bad, we will
-> mark the virtual large block as bad. Example as RAID0 in my first
-> email, I build a RAID0 device by 4 devices with block size of 16K.
-> then the block
-> size of the new RAID0 device is 64K. I am combining these 4 devices
-> and do a striping on the new/larger block, for a better performance. 
-> > 
-> > 3. Same question, but for RAID-1.
-> 
-> Same result but with different reason, In RAID1, we don't need to
-> enlarge the block size. But we should make the blockes mirrored. If
-> block of the
-> master or mirror is bad, then the block for the RAID1 device should
-> be marked as bad, because we can't promise requested number of copies
-> of data in this case. 
-> > 
-> > 4. Suppose I have RAID-1 like in this picture:
-> > 
-> > https://en.wikipedia.org/wiki/Standard_RAID_levels#/media/File:RAID
-> > _1.svg
-> > 
-> > Just assume we have flash chips, not disks, and eraseblocks, not
-> > sectors.
-> > 
-> > Suppose eraseblock A1 goes bad. What happens next?
-> 
-> If A1 in disk0 goes bad, the data will be read out from disk1. But
-> there would be a warning about this problem. Then we should noticed
-> that our
-> data in this section is not safe enough now. Then there are different
-> scenario. 
 
-> (1) you are using ubi on this device, I mentioned once last week, we
-> can enhance ubi to notice this kind of problem, then do a data
-> migration. 
+--=-AL6MskVmN2hHQLXlmFom
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-So to make my data become mirrored again, MTD RAID needs help from
-upper layers.
+On Mon, 2016-08-22 at 17:54 +0300, Artem Bityutskiy wrote:
+>=20
+> If this was on top of UBI, the RAID would probably be a closer match,
+> because then you could assume you are on top of a "reliable" media.
 
-In case of RAID, you do not need this kind of help. All you need is
-change the disk when it starts getting bad sectors.
+I think implementing RAUD within UBI makes a lot of sense. Virtual
+eraseblocks could then be either duplicated across different physical
+regions (like RAID1) but without having to worry about being in
+precisely the same locations on each underlying device.
 
-I mean, this is a bit like: here is our MTD RAID which is not a RAID
-unless it works with special SW like UBI on top of it.
+Mirroring and even RAID5-like configurations could also be handled. And
+the user just gets a simple UBI volume that they can use as normal.
 
-Are you sure you want to call this MTD RAID?
+--=20
+dwmw2
+--=-AL6MskVmN2hHQLXlmFom
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-If this was on top of UBI, the RAID would probably be a closer match,
-because then you could assume you are on top of a "reliable" media.
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEeAw
+ggXiMIIDyqADAgECAhBrp4p9CteI1lEK+Vnk57ThMA0GCSqGSIb3DQEBCwUAMH0xCzAJBgNVBAYT
+AklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0
+aWZpY2F0ZSBTaWduaW5nMSkwJwYDVQQDEyBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0
+eTAeFw0xNTEyMTYwMTAwMDVaFw0zMDEyMTYwMTAwMDVaMHUxCzAJBgNVBAYTAklMMRYwFAYDVQQK
+Ew1TdGFydENvbSBMdGQuMSkwJwYDVQQLEyBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0
+eTEjMCEGA1UEAxMaU3RhcnRDb20gQ2xhc3MgMSBDbGllbnQgQ0EwggEiMA0GCSqGSIb3DQEBAQUA
+A4IBDwAwggEKAoIBAQC9fdr3w6J9g/Zbgv3bW1+uHht1wLUZr5gkrLtXedg17AkefMyUGwrQdvwO
+bhajcVmnKVxhrUwkZPXRAwZZosRHfEIi5FH7x6SV/8Sp5lZEuiMnvMFG2MzLA84J6Ws5T4NfXZ0q
+n4TPgnr3X2vPVS51M7Ua9nIJgn8jvTra4eyyQzxvuA/GZwKg7VQfDCmCS+kICslYYWgXOMt2xlsS
+slxLce0CGWRsT8EpMyt1iDflSjXZIsE7m1uTyHaKZspMLyIyz6mySu8j8BWWHpChNNeTrFuhVfrO
+AyDPFJVUvKZCLKBhibTLloyy+LatoWELrjdI4a8StZY8+dIR9t4APXGzAgMBAAGjggFkMIIBYDAO
+BgNVHQ8BAf8EBAMCAQYwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQI
+MAYBAf8CAQAwMgYDVR0fBCswKTAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5jb20vc2ZzY2Eu
+Y3JsMGYGCCsGAQUFBwEBBFowWDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3Auc3RhcnRzc2wuY29t
+MDAGCCsGAQUFBzAChiRodHRwOi8vYWlhLnN0YXJ0c3NsLmNvbS9jZXJ0cy9jYS5jcnQwHQYDVR0O
+BBYEFCSBbDlhvkkPj7cbRivJKLUnSG1oMB8GA1UdIwQYMBaAFE4L7xqkQFulF2mHMMo0aEPQQa7y
+MD8GA1UdIAQ4MDYwNAYEVR0gADAsMCoGCCsGAQUFBwIBFh5odHRwOi8vd3d3LnN0YXJ0c3NsLmNv
+bS9wb2xpY3kwDQYJKoZIhvcNAQELBQADggIBAIvj94fsAYuErQ8BAluc4SMnIwS9NPBwAm5SH9uh
+2NCXTq7im61g7F1LIiNI/+wq37fUuaMbz4g7VarKQTgf8ubs0p7NZWcIe7Bvem2AWaXBsxsaRTYw
+5kG3DN8pd1hSEUuFoTa7DmNeFe8tiK1BrL3rbA/m48jp4AiFXgvxprJrW7izsyetOrRHPbkW4Y07
+v29MdhaPv3u1JELyszXqOzjIYo4sWlC8iDQXwgSW/ntvWy2n4LuiaozlCfXl149tKeqvwlvrla2Y
+klue/quWp9j9ou4T/OY0CXMuY+B8wNK0ohd2D4ShgFlMSjzAFRoHGKF81snTr2d1A7Ew02oF6UQy
+CkC2aNNsK5cWOojBar5c7HplX9aHYUCZouxIeU28SONJAxnATgR4cJ2jrpmYSz/kliUJ46S6UpVD
+o/ebn9c6PaM/XtDYCCaM/7XX6wc3s++sbQ7CtCn1Ax7df6ufQbwyO0V+oFa9H0KAsjHMzcwk3EV2
+B2NLatidKE/m7G+rB9m+FlVgIiSp0mGlg43QO9Kh1+JqvTCIzv2bJJkmPMLQJNuKKwHNL8F4GGp6
+jbAV+WL+LDeGfVcq8DHS3LrD+xyYEXQBiqZEdiPVOMxLDSUCXsDO0uCWpaNQ8j6y6S9p0xE/Ga0p
+eVLadVHhqf9nXqKaxnr358VgfrxzUIrvOaOjMIIF+TCCBOGgAwIBAgIQaRjuleoVgt0XsPAUByve
+JDANBgkqhkiG9w0BAQsFADB1MQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEp
+MCcGA1UECxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxIzAhBgNVBAMTGlN0YXJ0
+Q29tIENsYXNzIDEgQ2xpZW50IENBMB4XDTE2MDMxMjE2MjEyNVoXDTE3MDMxMjE2MjEyNVowQjEc
+MBoGA1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFk
+ZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBANBDAiGnoeOIQJ/Aolutct4z
+x6Yt3dOUI5d0YnydAMNOiyVLXzHuuuVjUpk/6nRxg1FN3e0i3TWe5MjSTD98760qWoAuF2g5BGU+
+tN/GUsyws26ZWOt82w7xhn4dcI8EhmASUtwDTZs5ZXPQzSkuNs6uX5SY0eKPlBNHkAtMf39hNc4m
+liy6WRDKApZxA1vCbiHsJQZdNEBYO35022bu8PZBe6LSAFKoncoGMHl1xNEkN6kfOJFYnLqBYeXO
+2mDA8KZ4h15EnQyyHGSghN92OUTc9stAWEt9a+q6TCtyW5zNgYTaaOtE41t5x2xDAgsnNU7sVM8f
+wSR3tYeW9IqTgU6eDUllb1a9FK7es3+j9UDg7OxNv9rnXIda6TdXlGWYfFltujF7FMwTofq3UG7t
+w68Ugk0MMfpZadhPhjYLI/qXiEDgQi8Xr+eWSo5P0ygaLvAz8OPcWAt8RG5Y8Id9hpb5neW1HTAR
+Q+k8lbpkx2wDPHZEft0ITROOupf76f9CNF4jYcyCKZNnjSsKeJv69VX1TsVaeqT1LJUEudXLa/BK
+FSb7x5M1KF4z46yImJrnagI19Nk/ufWn1usBXqXh8pY8cVN/I7C+TDPBY5SqIceTq7DaHZp19JQU
+IIWlyRsm2d4UoVcgIdTjX57Odap4Pjzrfp2RmC6hvkW2hQ5EreIPAgMBAAGjggG2MIIBsjAOBgNV
+HQ8BAf8EBAMCBLAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMAkGA1UdEwQCMAAwHQYD
+VR0OBBYEFBDmK2IjZJ7MKmBK0A7J/tKaSIdoMB8GA1UdIwQYMBaAFCSBbDlhvkkPj7cbRivJKLUn
+SG1oMG8GCCsGAQUFBwEBBGMwYTAkBggrBgEFBQcwAYYYaHR0cDovL29jc3Auc3RhcnRzc2wuY29t
+MDkGCCsGAQUFBzAChi1odHRwOi8vYWlhLnN0YXJ0c3NsLmNvbS9jZXJ0cy9zY2EuY2xpZW50MS5j
+cnQwOAYDVR0fBDEwLzAtoCugKYYnaHR0cDovL2NybC5zdGFydHNzbC5jb20vc2NhLWNsaWVudDEu
+Y3JsMB4GA1UdEQQXMBWBE2R3bXcyQGluZnJhZGVhZC5vcmcwIwYDVR0SBBwwGoYYaHR0cDovL3d3
+dy5zdGFydHNzbC5jb20vMEYGA1UdIAQ/MD0wOwYLKwYBBAGBtTcBAgQwLDAqBggrBgEFBQcCARYe
+aHR0cDovL3d3dy5zdGFydHNzbC5jb20vcG9saWN5MA0GCSqGSIb3DQEBCwUAA4IBAQAn5wvdgC0V
+kS226sFKAbqPnmVhc9jgrbsiXUcpdtYEzv6EZonARIeRC1UlIzK7jzZFRe95W5y4/qlcPQDoAeZL
+cSsbpW3AYPFFWdRgVp/eIR3iy9C5KEcAbkJES2lRUZWyRqAceW1Gur9kfvjM5H0kM6BBwJfCtoqo
+WragTXfsIXGNsF0F+60mUYYsKFPZzPmyz9J0Dr0xx9Lcp4fbD6UckDWCNJt2AJAiEPt/vPiiBzU8
+edaRzkYhzxd9f3pZAzhlzIf2CgTrGtKSL2X1bS/b3siREjQLhVrlGw4qxqllqER3APrDzyijLFuc
+CWpS8hxjTmYcNZSibv+3Oy6uU+wqMIIF+TCCBOGgAwIBAgIQaRjuleoVgt0XsPAUByveJDANBgkq
+hkiG9w0BAQsFADB1MQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEpMCcGA1UE
+CxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxIzAhBgNVBAMTGlN0YXJ0Q29tIENs
+YXNzIDEgQ2xpZW50IENBMB4XDTE2MDMxMjE2MjEyNVoXDTE3MDMxMjE2MjEyNVowQjEcMBoGA1UE
+AwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBANBDAiGnoeOIQJ/Aolutct4zx6Yt3dOU
+I5d0YnydAMNOiyVLXzHuuuVjUpk/6nRxg1FN3e0i3TWe5MjSTD98760qWoAuF2g5BGU+tN/GUsyw
+s26ZWOt82w7xhn4dcI8EhmASUtwDTZs5ZXPQzSkuNs6uX5SY0eKPlBNHkAtMf39hNc4mliy6WRDK
+ApZxA1vCbiHsJQZdNEBYO35022bu8PZBe6LSAFKoncoGMHl1xNEkN6kfOJFYnLqBYeXO2mDA8KZ4
+h15EnQyyHGSghN92OUTc9stAWEt9a+q6TCtyW5zNgYTaaOtE41t5x2xDAgsnNU7sVM8fwSR3tYeW
+9IqTgU6eDUllb1a9FK7es3+j9UDg7OxNv9rnXIda6TdXlGWYfFltujF7FMwTofq3UG7tw68Ugk0M
+MfpZadhPhjYLI/qXiEDgQi8Xr+eWSo5P0ygaLvAz8OPcWAt8RG5Y8Id9hpb5neW1HTARQ+k8lbpk
+x2wDPHZEft0ITROOupf76f9CNF4jYcyCKZNnjSsKeJv69VX1TsVaeqT1LJUEudXLa/BKFSb7x5M1
+KF4z46yImJrnagI19Nk/ufWn1usBXqXh8pY8cVN/I7C+TDPBY5SqIceTq7DaHZp19JQUIIWlyRsm
+2d4UoVcgIdTjX57Odap4Pjzrfp2RmC6hvkW2hQ5EreIPAgMBAAGjggG2MIIBsjAOBgNVHQ8BAf8E
+BAMCBLAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMAkGA1UdEwQCMAAwHQYDVR0OBBYE
+FBDmK2IjZJ7MKmBK0A7J/tKaSIdoMB8GA1UdIwQYMBaAFCSBbDlhvkkPj7cbRivJKLUnSG1oMG8G
+CCsGAQUFBwEBBGMwYTAkBggrBgEFBQcwAYYYaHR0cDovL29jc3Auc3RhcnRzc2wuY29tMDkGCCsG
+AQUFBzAChi1odHRwOi8vYWlhLnN0YXJ0c3NsLmNvbS9jZXJ0cy9zY2EuY2xpZW50MS5jcnQwOAYD
+VR0fBDEwLzAtoCugKYYnaHR0cDovL2NybC5zdGFydHNzbC5jb20vc2NhLWNsaWVudDEuY3JsMB4G
+A1UdEQQXMBWBE2R3bXcyQGluZnJhZGVhZC5vcmcwIwYDVR0SBBwwGoYYaHR0cDovL3d3dy5zdGFy
+dHNzbC5jb20vMEYGA1UdIAQ/MD0wOwYLKwYBBAGBtTcBAgQwLDAqBggrBgEFBQcCARYeaHR0cDov
+L3d3dy5zdGFydHNzbC5jb20vcG9saWN5MA0GCSqGSIb3DQEBCwUAA4IBAQAn5wvdgC0VkS226sFK
+AbqPnmVhc9jgrbsiXUcpdtYEzv6EZonARIeRC1UlIzK7jzZFRe95W5y4/qlcPQDoAeZLcSsbpW3A
+YPFFWdRgVp/eIR3iy9C5KEcAbkJES2lRUZWyRqAceW1Gur9kfvjM5H0kM6BBwJfCtoqoWragTXfs
+IXGNsF0F+60mUYYsKFPZzPmyz9J0Dr0xx9Lcp4fbD6UckDWCNJt2AJAiEPt/vPiiBzU8edaRzkYh
+zxd9f3pZAzhlzIf2CgTrGtKSL2X1bS/b3siREjQLhVrlGw4qxqllqER3APrDzyijLFucCWpS8hxj
+TmYcNZSibv+3Oy6uU+wqMYIEXjCCBFoCAQEwgYkwdTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0
+YXJ0Q29tIEx0ZC4xKTAnBgNVBAsTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MSMw
+IQYDVQQDExpTdGFydENvbSBDbGFzcyAxIENsaWVudCBDQQIQaRjuleoVgt0XsPAUByveJDANBglg
+hkgBZQMEAgEFAKCCAaUwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcN
+MTYwODIyMTUzMDI0WjAvBgkqhkiG9w0BCQQxIgQgPOKX28kEDGPBvfU0L9WFrrD2F06Hh9cCfdOv
+MpC54UwwgZoGCSsGAQQBgjcQBDGBjDCBiTB1MQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
+b20gTHRkLjEpMCcGA1UECxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxIzAhBgNV
+BAMTGlN0YXJ0Q29tIENsYXNzIDEgQ2xpZW50IENBAhBpGO6V6hWC3Rew8BQHK94kMIGcBgsqhkiG
+9w0BCRACCzGBjKCBiTB1MQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEpMCcG
+A1UECxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxIzAhBgNVBAMTGlN0YXJ0Q29t
+IENsYXNzIDEgQ2xpZW50IENBAhBpGO6V6hWC3Rew8BQHK94kMA0GCSqGSIb3DQEBAQUABIICABax
++FLGX4DHrb6Nf8OphroTmqCtwZanmTG0ocsGC0ED0TMqBDCjNGlk+WKZzZQIsDVu4V3R/mRUVDl3
+WW3WCGpK9JMGdIFL33HF7S9m/mLkV4E8TpKsWtKef07kyrxm3vPLo3DemQk5JQVItG7NcwHPSuLH
+JW1q50TQeXeOXHX+I/3/+s8Pekw7FtZUYwYU7bSgqWhcuyFZlCh3N6GH20TIu19Lf2dMj73ySsHu
+8DyscWyeJ2lag1bNPuLefBa4HZD5Q2ChSTklxPj88rkxAxZlgTYB567ZG3AxDTJLewe1g2ppT93R
+YaA8mMtg8sOVhk2du7W2Aq2hLNZw6G6g61nGChOOACFUUY+CRFJAHwrecZJYxnyJfe6XJCK8kXgo
+ZfFAzWqO++Bt4V7hhLxtcCLBdzuYt/I+3SYCnbmZxgIJ2obdKf/iFUkeI4avAkJe1n+lgkVgEJuw
+c6oZXdWaSrBRmr/zQDDs/zZ5/cddkwcCeohCJ7WQ84R92keF3bWI3ZvYzsD1eKwRvKZfOLmRsB9F
+H611jL4vxCDsYCprY6xJe03uYVY2+hOTiVagygW5R1I2ylnlVPnpU3F/5xwUEjtaZIHfITli/4i1
+QsF712umCOJDQH/9H9IZUKJosSyy0rIRyRxXIEjVg0VrY2IVFnstUCELInQ7SvHV8bti+Z9ZAAAA
+AAAA
 
-Note, I am not insisting, just asking.
 
-> (2) you are using some other application on this device, Then you can
-> check the status of this MTD RAID device now by "mtd_raid scan <dev>"
-> if this command report there is some blocks are bad, you can do a
-> "mtd_raid replace <>" to replace the bad one.
-
-How will the replacement work. What gets replaced - the entire flash
-chip? Probably not, because bad blocks are natural for raw NAND. Then
-how do you replace the blocks if there is an FS on top?
-
-Artem.
+--=-AL6MskVmN2hHQLXlmFom--
