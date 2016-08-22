@@ -1,28 +1,21 @@
-Message-ID: <1471879824.61594.505.camel@infradead.org>
-Subject: Re: MTD RAID
-From: David Woodhouse <dwmw2@infradead.org>
-To: dedekind1@gmail.com, Dongsheng Yang <dooooongsheng.yang@gmail.com>
-Cc: Dongsheng Yang <dongsheng.yang@easystack.cn>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, starvik@axis.com,
- jesper.nilsson@axis.com,  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- shengyong1@huawei.com, linux-cris-kernel@axis.com, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, Ard
- Biesheuvel <ard.biesheuvel@linaro.org>, jschultz@xes-inc.com,
- fabf@skynet.be, mtownsend1973@gmail.com,  linux-mtd@lists.infradead.org,
- Colin King <colin.king@canonical.com>,  asierra@xes-inc.com,
- dmitry.torokhov@gmail.com, Dongsheng Yang <dongsheng081251@gmail.com>
-Date: Mon, 22 Aug 2016 16:30:24 +0100
-In-Reply-To: <1471877646.15722.61.camel@gmail.com>
-References: <57B6E1BD.1060707@easystack.cn>
- <AL*AZwAyAecQSM1UjjjNxao0.3.1471605640762.Hmail.dongsheng.yang@easystack.cn>
- <20160819135536.1ed9e374@bbrezillon> <57BA6FFA.6000601@easystack.cn>
- <1471850841.15722.13.camel@gmail.com>
- <CAAp9bSh-geStbHpA6+vYdLfNLcinWkfVLOGmX4kdRbja+d2MdA@mail.gmail.com>
- <1471877646.15722.61.camel@gmail.com>
-Content-Type: multipart/signed; micalg="sha-256";
- protocol="application/x-pkcs7-signature";
- boundary="=-AL6MskVmN2hHQLXlmFom"
-Mime-Version: 1.0
+MIME-Version: 1.0
+In-Reply-To: <20160810162438.4c6cffd3@bbrezillon>
+References: <1469051631-7896-1-git-send-email-ray.jui@broadcom.com>
+ <1469051631-7896-2-git-send-email-ray.jui@broadcom.com>
+ <20160810162438.4c6cffd3@bbrezillon>
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+Date: Mon, 22 Aug 2016 11:42:55 -0400
+Message-ID: <CAC=U0a27YcmxWCbfOmRje40_eeJ4mZm2bwWzrrviF4ooKBtoRA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mtd: brcmnand: iProc big endian and ONFI support
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Ray Jui <ray.jui@broadcom.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Prafulla Kota <prafulla.kota@broadcom.com>,
+ "Jayachandran C <jchandra@broadcom.com>,
+ bcm-kernel-feedback-list" <bcm-kernel-feedback-list@broadcom.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,133 +25,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Aug 10, 2016 at 10:24 AM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Wed, 20 Jul 2016 14:53:50 -0700
+> Ray Jui <ray.jui@broadcom.com> wrote:
+>
+>> This patch adds big endian and ONFI support for various iProc based
+>> SoCs that use the core brcmstb NAND controller
+>
+> Brian, Kamal, can you review this patch?
+>
+>>
+>> This patch was originally implemented by Prafulla Kota
+>> <prafulla.kota@broadcom.com> and fully tested on iProc based NS2 SVK
+>>
+>> Signed-off-by: Prafulla Kota <prafulla.kota@broadcom.com>
+>> Signed-off-by: Ray Jui <ray.jui@broadcom.com>
 
---=-AL6MskVmN2hHQLXlmFom
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Kamal Dasu <kdasu.kdev@gmail.com>
 
-On Mon, 2016-08-22 at 17:54 +0300, Artem Bityutskiy wrote:
->=20
-> If this was on top of UBI, the RAID would probably be a closer match,
-> because then you could assume you are on top of a "reliable" media.
-
-I think implementing RAUD within UBI makes a lot of sense. Virtual
-eraseblocks could then be either duplicated across different physical
-regions (like RAID1) but without having to worry about being in
-precisely the same locations on each underlying device.
-
-Mirroring and even RAID5-like configurations could also be handled. And
-the user just gets a simple UBI volume that they can use as normal.
-
---=20
-dwmw2
---=-AL6MskVmN2hHQLXlmFom
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEeAw
-ggXiMIIDyqADAgECAhBrp4p9CteI1lEK+Vnk57ThMA0GCSqGSIb3DQEBCwUAMH0xCzAJBgNVBAYT
-AklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0
-aWZpY2F0ZSBTaWduaW5nMSkwJwYDVQQDEyBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0
-eTAeFw0xNTEyMTYwMTAwMDVaFw0zMDEyMTYwMTAwMDVaMHUxCzAJBgNVBAYTAklMMRYwFAYDVQQK
-Ew1TdGFydENvbSBMdGQuMSkwJwYDVQQLEyBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0
-eTEjMCEGA1UEAxMaU3RhcnRDb20gQ2xhc3MgMSBDbGllbnQgQ0EwggEiMA0GCSqGSIb3DQEBAQUA
-A4IBDwAwggEKAoIBAQC9fdr3w6J9g/Zbgv3bW1+uHht1wLUZr5gkrLtXedg17AkefMyUGwrQdvwO
-bhajcVmnKVxhrUwkZPXRAwZZosRHfEIi5FH7x6SV/8Sp5lZEuiMnvMFG2MzLA84J6Ws5T4NfXZ0q
-n4TPgnr3X2vPVS51M7Ua9nIJgn8jvTra4eyyQzxvuA/GZwKg7VQfDCmCS+kICslYYWgXOMt2xlsS
-slxLce0CGWRsT8EpMyt1iDflSjXZIsE7m1uTyHaKZspMLyIyz6mySu8j8BWWHpChNNeTrFuhVfrO
-AyDPFJVUvKZCLKBhibTLloyy+LatoWELrjdI4a8StZY8+dIR9t4APXGzAgMBAAGjggFkMIIBYDAO
-BgNVHQ8BAf8EBAMCAQYwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQI
-MAYBAf8CAQAwMgYDVR0fBCswKTAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5jb20vc2ZzY2Eu
-Y3JsMGYGCCsGAQUFBwEBBFowWDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3Auc3RhcnRzc2wuY29t
-MDAGCCsGAQUFBzAChiRodHRwOi8vYWlhLnN0YXJ0c3NsLmNvbS9jZXJ0cy9jYS5jcnQwHQYDVR0O
-BBYEFCSBbDlhvkkPj7cbRivJKLUnSG1oMB8GA1UdIwQYMBaAFE4L7xqkQFulF2mHMMo0aEPQQa7y
-MD8GA1UdIAQ4MDYwNAYEVR0gADAsMCoGCCsGAQUFBwIBFh5odHRwOi8vd3d3LnN0YXJ0c3NsLmNv
-bS9wb2xpY3kwDQYJKoZIhvcNAQELBQADggIBAIvj94fsAYuErQ8BAluc4SMnIwS9NPBwAm5SH9uh
-2NCXTq7im61g7F1LIiNI/+wq37fUuaMbz4g7VarKQTgf8ubs0p7NZWcIe7Bvem2AWaXBsxsaRTYw
-5kG3DN8pd1hSEUuFoTa7DmNeFe8tiK1BrL3rbA/m48jp4AiFXgvxprJrW7izsyetOrRHPbkW4Y07
-v29MdhaPv3u1JELyszXqOzjIYo4sWlC8iDQXwgSW/ntvWy2n4LuiaozlCfXl149tKeqvwlvrla2Y
-klue/quWp9j9ou4T/OY0CXMuY+B8wNK0ohd2D4ShgFlMSjzAFRoHGKF81snTr2d1A7Ew02oF6UQy
-CkC2aNNsK5cWOojBar5c7HplX9aHYUCZouxIeU28SONJAxnATgR4cJ2jrpmYSz/kliUJ46S6UpVD
-o/ebn9c6PaM/XtDYCCaM/7XX6wc3s++sbQ7CtCn1Ax7df6ufQbwyO0V+oFa9H0KAsjHMzcwk3EV2
-B2NLatidKE/m7G+rB9m+FlVgIiSp0mGlg43QO9Kh1+JqvTCIzv2bJJkmPMLQJNuKKwHNL8F4GGp6
-jbAV+WL+LDeGfVcq8DHS3LrD+xyYEXQBiqZEdiPVOMxLDSUCXsDO0uCWpaNQ8j6y6S9p0xE/Ga0p
-eVLadVHhqf9nXqKaxnr358VgfrxzUIrvOaOjMIIF+TCCBOGgAwIBAgIQaRjuleoVgt0XsPAUByve
-JDANBgkqhkiG9w0BAQsFADB1MQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEp
-MCcGA1UECxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxIzAhBgNVBAMTGlN0YXJ0
-Q29tIENsYXNzIDEgQ2xpZW50IENBMB4XDTE2MDMxMjE2MjEyNVoXDTE3MDMxMjE2MjEyNVowQjEc
-MBoGA1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFk
-ZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBANBDAiGnoeOIQJ/Aolutct4z
-x6Yt3dOUI5d0YnydAMNOiyVLXzHuuuVjUpk/6nRxg1FN3e0i3TWe5MjSTD98760qWoAuF2g5BGU+
-tN/GUsyws26ZWOt82w7xhn4dcI8EhmASUtwDTZs5ZXPQzSkuNs6uX5SY0eKPlBNHkAtMf39hNc4m
-liy6WRDKApZxA1vCbiHsJQZdNEBYO35022bu8PZBe6LSAFKoncoGMHl1xNEkN6kfOJFYnLqBYeXO
-2mDA8KZ4h15EnQyyHGSghN92OUTc9stAWEt9a+q6TCtyW5zNgYTaaOtE41t5x2xDAgsnNU7sVM8f
-wSR3tYeW9IqTgU6eDUllb1a9FK7es3+j9UDg7OxNv9rnXIda6TdXlGWYfFltujF7FMwTofq3UG7t
-w68Ugk0MMfpZadhPhjYLI/qXiEDgQi8Xr+eWSo5P0ygaLvAz8OPcWAt8RG5Y8Id9hpb5neW1HTAR
-Q+k8lbpkx2wDPHZEft0ITROOupf76f9CNF4jYcyCKZNnjSsKeJv69VX1TsVaeqT1LJUEudXLa/BK
-FSb7x5M1KF4z46yImJrnagI19Nk/ufWn1usBXqXh8pY8cVN/I7C+TDPBY5SqIceTq7DaHZp19JQU
-IIWlyRsm2d4UoVcgIdTjX57Odap4Pjzrfp2RmC6hvkW2hQ5EreIPAgMBAAGjggG2MIIBsjAOBgNV
-HQ8BAf8EBAMCBLAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMAkGA1UdEwQCMAAwHQYD
-VR0OBBYEFBDmK2IjZJ7MKmBK0A7J/tKaSIdoMB8GA1UdIwQYMBaAFCSBbDlhvkkPj7cbRivJKLUn
-SG1oMG8GCCsGAQUFBwEBBGMwYTAkBggrBgEFBQcwAYYYaHR0cDovL29jc3Auc3RhcnRzc2wuY29t
-MDkGCCsGAQUFBzAChi1odHRwOi8vYWlhLnN0YXJ0c3NsLmNvbS9jZXJ0cy9zY2EuY2xpZW50MS5j
-cnQwOAYDVR0fBDEwLzAtoCugKYYnaHR0cDovL2NybC5zdGFydHNzbC5jb20vc2NhLWNsaWVudDEu
-Y3JsMB4GA1UdEQQXMBWBE2R3bXcyQGluZnJhZGVhZC5vcmcwIwYDVR0SBBwwGoYYaHR0cDovL3d3
-dy5zdGFydHNzbC5jb20vMEYGA1UdIAQ/MD0wOwYLKwYBBAGBtTcBAgQwLDAqBggrBgEFBQcCARYe
-aHR0cDovL3d3dy5zdGFydHNzbC5jb20vcG9saWN5MA0GCSqGSIb3DQEBCwUAA4IBAQAn5wvdgC0V
-kS226sFKAbqPnmVhc9jgrbsiXUcpdtYEzv6EZonARIeRC1UlIzK7jzZFRe95W5y4/qlcPQDoAeZL
-cSsbpW3AYPFFWdRgVp/eIR3iy9C5KEcAbkJES2lRUZWyRqAceW1Gur9kfvjM5H0kM6BBwJfCtoqo
-WragTXfsIXGNsF0F+60mUYYsKFPZzPmyz9J0Dr0xx9Lcp4fbD6UckDWCNJt2AJAiEPt/vPiiBzU8
-edaRzkYhzxd9f3pZAzhlzIf2CgTrGtKSL2X1bS/b3siREjQLhVrlGw4qxqllqER3APrDzyijLFuc
-CWpS8hxjTmYcNZSibv+3Oy6uU+wqMIIF+TCCBOGgAwIBAgIQaRjuleoVgt0XsPAUByveJDANBgkq
-hkiG9w0BAQsFADB1MQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEpMCcGA1UE
-CxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxIzAhBgNVBAMTGlN0YXJ0Q29tIENs
-YXNzIDEgQ2xpZW50IENBMB4XDTE2MDMxMjE2MjEyNVoXDTE3MDMxMjE2MjEyNVowQjEcMBoGA1UE
-AwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBANBDAiGnoeOIQJ/Aolutct4zx6Yt3dOU
-I5d0YnydAMNOiyVLXzHuuuVjUpk/6nRxg1FN3e0i3TWe5MjSTD98760qWoAuF2g5BGU+tN/GUsyw
-s26ZWOt82w7xhn4dcI8EhmASUtwDTZs5ZXPQzSkuNs6uX5SY0eKPlBNHkAtMf39hNc4mliy6WRDK
-ApZxA1vCbiHsJQZdNEBYO35022bu8PZBe6LSAFKoncoGMHl1xNEkN6kfOJFYnLqBYeXO2mDA8KZ4
-h15EnQyyHGSghN92OUTc9stAWEt9a+q6TCtyW5zNgYTaaOtE41t5x2xDAgsnNU7sVM8fwSR3tYeW
-9IqTgU6eDUllb1a9FK7es3+j9UDg7OxNv9rnXIda6TdXlGWYfFltujF7FMwTofq3UG7tw68Ugk0M
-MfpZadhPhjYLI/qXiEDgQi8Xr+eWSo5P0ygaLvAz8OPcWAt8RG5Y8Id9hpb5neW1HTARQ+k8lbpk
-x2wDPHZEft0ITROOupf76f9CNF4jYcyCKZNnjSsKeJv69VX1TsVaeqT1LJUEudXLa/BKFSb7x5M1
-KF4z46yImJrnagI19Nk/ufWn1usBXqXh8pY8cVN/I7C+TDPBY5SqIceTq7DaHZp19JQUIIWlyRsm
-2d4UoVcgIdTjX57Odap4Pjzrfp2RmC6hvkW2hQ5EreIPAgMBAAGjggG2MIIBsjAOBgNVHQ8BAf8E
-BAMCBLAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMAkGA1UdEwQCMAAwHQYDVR0OBBYE
-FBDmK2IjZJ7MKmBK0A7J/tKaSIdoMB8GA1UdIwQYMBaAFCSBbDlhvkkPj7cbRivJKLUnSG1oMG8G
-CCsGAQUFBwEBBGMwYTAkBggrBgEFBQcwAYYYaHR0cDovL29jc3Auc3RhcnRzc2wuY29tMDkGCCsG
-AQUFBzAChi1odHRwOi8vYWlhLnN0YXJ0c3NsLmNvbS9jZXJ0cy9zY2EuY2xpZW50MS5jcnQwOAYD
-VR0fBDEwLzAtoCugKYYnaHR0cDovL2NybC5zdGFydHNzbC5jb20vc2NhLWNsaWVudDEuY3JsMB4G
-A1UdEQQXMBWBE2R3bXcyQGluZnJhZGVhZC5vcmcwIwYDVR0SBBwwGoYYaHR0cDovL3d3dy5zdGFy
-dHNzbC5jb20vMEYGA1UdIAQ/MD0wOwYLKwYBBAGBtTcBAgQwLDAqBggrBgEFBQcCARYeaHR0cDov
-L3d3dy5zdGFydHNzbC5jb20vcG9saWN5MA0GCSqGSIb3DQEBCwUAA4IBAQAn5wvdgC0VkS226sFK
-AbqPnmVhc9jgrbsiXUcpdtYEzv6EZonARIeRC1UlIzK7jzZFRe95W5y4/qlcPQDoAeZLcSsbpW3A
-YPFFWdRgVp/eIR3iy9C5KEcAbkJES2lRUZWyRqAceW1Gur9kfvjM5H0kM6BBwJfCtoqoWragTXfs
-IXGNsF0F+60mUYYsKFPZzPmyz9J0Dr0xx9Lcp4fbD6UckDWCNJt2AJAiEPt/vPiiBzU8edaRzkYh
-zxd9f3pZAzhlzIf2CgTrGtKSL2X1bS/b3siREjQLhVrlGw4qxqllqER3APrDzyijLFucCWpS8hxj
-TmYcNZSibv+3Oy6uU+wqMYIEXjCCBFoCAQEwgYkwdTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0
-YXJ0Q29tIEx0ZC4xKTAnBgNVBAsTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MSMw
-IQYDVQQDExpTdGFydENvbSBDbGFzcyAxIENsaWVudCBDQQIQaRjuleoVgt0XsPAUByveJDANBglg
-hkgBZQMEAgEFAKCCAaUwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcN
-MTYwODIyMTUzMDI0WjAvBgkqhkiG9w0BCQQxIgQgPOKX28kEDGPBvfU0L9WFrrD2F06Hh9cCfdOv
-MpC54UwwgZoGCSsGAQQBgjcQBDGBjDCBiTB1MQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
-b20gTHRkLjEpMCcGA1UECxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxIzAhBgNV
-BAMTGlN0YXJ0Q29tIENsYXNzIDEgQ2xpZW50IENBAhBpGO6V6hWC3Rew8BQHK94kMIGcBgsqhkiG
-9w0BCRACCzGBjKCBiTB1MQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEpMCcG
-A1UECxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxIzAhBgNVBAMTGlN0YXJ0Q29t
-IENsYXNzIDEgQ2xpZW50IENBAhBpGO6V6hWC3Rew8BQHK94kMA0GCSqGSIb3DQEBAQUABIICABax
-+FLGX4DHrb6Nf8OphroTmqCtwZanmTG0ocsGC0ED0TMqBDCjNGlk+WKZzZQIsDVu4V3R/mRUVDl3
-WW3WCGpK9JMGdIFL33HF7S9m/mLkV4E8TpKsWtKef07kyrxm3vPLo3DemQk5JQVItG7NcwHPSuLH
-JW1q50TQeXeOXHX+I/3/+s8Pekw7FtZUYwYU7bSgqWhcuyFZlCh3N6GH20TIu19Lf2dMj73ySsHu
-8DyscWyeJ2lag1bNPuLefBa4HZD5Q2ChSTklxPj88rkxAxZlgTYB567ZG3AxDTJLewe1g2ppT93R
-YaA8mMtg8sOVhk2du7W2Aq2hLNZw6G6g61nGChOOACFUUY+CRFJAHwrecZJYxnyJfe6XJCK8kXgo
-ZfFAzWqO++Bt4V7hhLxtcCLBdzuYt/I+3SYCnbmZxgIJ2obdKf/iFUkeI4avAkJe1n+lgkVgEJuw
-c6oZXdWaSrBRmr/zQDDs/zZ5/cddkwcCeohCJ7WQ84R92keF3bWI3ZvYzsD1eKwRvKZfOLmRsB9F
-H611jL4vxCDsYCprY6xJe03uYVY2+hOTiVagygW5R1I2ylnlVPnpU3F/5xwUEjtaZIHfITli/4i1
-QsF712umCOJDQH/9H9IZUKJosSyy0rIRyRxXIEjVg0VrY2IVFnstUCELInQ7SvHV8bti+Z9ZAAAA
-AAAA
-
-
---=-AL6MskVmN2hHQLXlmFom--
+>> ---
+>>  drivers/mtd/nand/brcmnand/brcmnand.c   | 12 ++++++------
+>>  drivers/mtd/nand/brcmnand/brcmnand.h   | 13 ++++++++-----
+>>  drivers/mtd/nand/brcmnand/iproc_nand.c | 18 ++++++++++++++----
+>>  3 files changed, 28 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+>> index b76ad7c..12a1585 100644
+>> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+>> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+>> @@ -1279,7 +1279,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+>>               u32 *flash_cache = (u32 *)ctrl->flash_cache;
+>>               int i;
+>>
+>> -             brcmnand_soc_data_bus_prepare(ctrl->soc);
+>> +             brcmnand_soc_data_bus_prepare(ctrl->soc, true);
+>>
+>>               /*
+>>                * Must cache the FLASH_CACHE now, since changes in
+>> @@ -1292,7 +1292,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+>>                        */
+>>                       flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
+>>
+>> -             brcmnand_soc_data_bus_unprepare(ctrl->soc);
+>> +             brcmnand_soc_data_bus_unprepare(ctrl->soc, true);
+>>
+>>               /* Cleanup from HW quirk: restore SECTOR_SIZE_1K */
+>>               if (host->hwcfg.sector_size_1k)
+>> @@ -1508,12 +1508,12 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+>>               brcmnand_waitfunc(mtd, chip);
+>>
+>>               if (likely(buf)) {
+>> -                     brcmnand_soc_data_bus_prepare(ctrl->soc);
+>> +                     brcmnand_soc_data_bus_prepare(ctrl->soc, false);
+>>
+>>                       for (j = 0; j < FC_WORDS; j++, buf++)
+>>                               *buf = brcmnand_read_fc(ctrl, j);
+>>
+>> -                     brcmnand_soc_data_bus_unprepare(ctrl->soc);
+>> +                     brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
+>>               }
+>>
+>>               if (oob)
+>> @@ -1678,12 +1678,12 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
+>>               (void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+>>
+>>               if (buf) {
+>> -                     brcmnand_soc_data_bus_prepare(ctrl->soc);
+>> +                     brcmnand_soc_data_bus_prepare(ctrl->soc, false);
+>>
+>>                       for (j = 0; j < FC_WORDS; j++, buf++)
+>>                               brcmnand_write_fc(ctrl, j, *buf);
+>>
+>> -                     brcmnand_soc_data_bus_unprepare(ctrl->soc);
+>> +                     brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
+>>               } else if (oob) {
+>>                       for (j = 0; j < FC_WORDS; j++)
+>>                               brcmnand_write_fc(ctrl, j, 0xffffffff);
+>> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
+>> index ef5eabb..5c44cd4 100644
+>> --- a/drivers/mtd/nand/brcmnand/brcmnand.h
+>> +++ b/drivers/mtd/nand/brcmnand/brcmnand.h
+>> @@ -23,19 +23,22 @@ struct dev_pm_ops;
+>>  struct brcmnand_soc {
+>>       bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
+>>       void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
+>> -     void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
+>> +     void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
+>> +                              bool is_param);
+>>  };
+>>
+>> -static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
+>> +static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc,
+>> +                                              bool is_param)
+>>  {
+>>       if (soc && soc->prepare_data_bus)
+>> -             soc->prepare_data_bus(soc, true);
+>> +             soc->prepare_data_bus(soc, true, is_param);
+>>  }
+>>
+>> -static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc)
+>> +static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc,
+>> +                                                bool is_param)
+>>  {
+>>       if (soc && soc->prepare_data_bus)
+>> -             soc->prepare_data_bus(soc, false);
+>> +             soc->prepare_data_bus(soc, false, is_param);
+>>  }
+>>
+>>  static inline u32 brcmnand_readl(void __iomem *addr)
+>> diff --git a/drivers/mtd/nand/brcmnand/iproc_nand.c b/drivers/mtd/nand/brcmnand/iproc_nand.c
+>> index 585596c..4c6ae11 100644
+>> --- a/drivers/mtd/nand/brcmnand/iproc_nand.c
+>> +++ b/drivers/mtd/nand/brcmnand/iproc_nand.c
+>> @@ -74,7 +74,8 @@ static void iproc_nand_intc_set(struct brcmnand_soc *soc, bool en)
+>>       spin_unlock_irqrestore(&priv->idm_lock, flags);
+>>  }
+>>
+>> -static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
+>> +static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare,
+>> +                               bool is_param)
+>>  {
+>>       struct iproc_nand_soc *priv =
+>>                       container_of(soc, struct iproc_nand_soc, soc);
+>> @@ -86,10 +87,19 @@ static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
+>>
+>>       val = brcmnand_readl(mmio);
+>>
+>> -     if (prepare)
+>> -             val |= IPROC_NAND_APB_LE_MODE;
+>> -     else
+>> +     /*
+>> +      * In the case of BE or when dealing with NAND data, alway configure
+>> +      * the APB bus to LE mode before accessing the FIFO and back to BE mode
+>> +      * after the access is done
+>> +      */
+>> +     if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) || !is_param) {
+>> +             if (prepare)
+>> +                     val |= IPROC_NAND_APB_LE_MODE;
+>> +             else
+>> +                     val &= ~IPROC_NAND_APB_LE_MODE;
+>> +     } else { /* when in LE accessing the parameter page, keep APB in BE */
+>>               val &= ~IPROC_NAND_APB_LE_MODE;
+>> +     }
+>>
+>>       brcmnand_writel(val, mmio);
+>>
+>
