@@ -1,23 +1,34 @@
-Date: Mon, 22 Aug 2016 09:44:37 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: Prafulla Kota <prafulla.kota@broadcom.com>,
- linux-kernel@vger.kernel.org, Ray Jui <ray.jui@broadcom.com>, "Jayachandran
- C <jchandra@broadcom.com>, bcm-kernel-feedback-list"
- <bcm-kernel-feedback-list@broadcom.com>, MTD Maling List
- <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] mtd: brcmnand: iProc big endian and ONFI support
-Message-ID: <20160822094437.4e9fec83@bbrezillon>
-In-Reply-To: <CAC=U0a2fA=aYbfDdhcdRPATFuPEWd8qmdajwdn4UAFn=R4rUsQ@mail.gmail.com>
-References: <1469051631-7896-1-git-send-email-ray.jui@broadcom.com>
- <1469051631-7896-2-git-send-email-ray.jui@broadcom.com>
- <20160810162438.4c6cffd3@bbrezillon>
- <CAC=U0a2fA=aYbfDdhcdRPATFuPEWd8qmdajwdn4UAFn=R4rUsQ@mail.gmail.com>
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bbnGi-00043F-Sh
+ for linux-mtd@lists.infradead.org; Mon, 22 Aug 2016 11:19:57 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by bastet.se.axis.com (Postfix) with ESMTP id 1C96C18091
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:23 +0200 (CEST)
+Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id 0T1XutNg1Tvl for <linux-mtd@lists.infradead.org>;
+ Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bastet.se.axis.com (Postfix) with ESMTP id 8893818059
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id 632B418FA
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
+Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
+ by boulder.se.axis.com (Postfix) with ESMTP id 587B21779
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
+Received: from XBOX03.axis.com (xbox03.axis.com [10.0.5.17])
+ by thoth.se.axis.com (Postfix) with ESMTP id 56F39304
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
+Date: Mon, 22 Aug 2016 13:19:17 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Trivial (?) question about nand_command_[lp]()
+Message-ID: <alpine.DEB.2.02.1608221313050.6821@lnxricardw1.se.axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,165 +38,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 Aug 2016 11:14:17 -0400
-Kamal Dasu <kdasu.kdev@gmail.com> wrote:
 
-> Boris
-> 
-> This change  looks good to me.
+I'm having a close look at nand_base.c:nand_command(), and there's 
+something I can't get my head around: According to the code, when the 
+command to be sent is NAND_CMD_SEQIN (0x80), used for programming a page, 
+first a read command (READ0, READ1 or READOOB depending on the column 
+address) is sent to the flash, followed by the SEQIN proper. Are there 
+flashes which require a read command to be sent (with no 
+address or data bytes) immediately before Page Program?
 
-Is this an Acked-by or a Reviewed-by? :)
+A related issue is a difference versus nand_command_lp(). In the latter, 
+NAND_NCE is set for every command towards the flash, which makes sense, as 
+the chip enable should be active throughout the whole sequence. However, 
+in nand_command(), NAND_NCE is only set when neither NAND_ALE nor NAND_CLE 
+are set. Is this an older convention in the code that CE is implied for 
+small-page flashes when ALE or CLE is set, but not for the large-page 
+case?
 
-> 
-> 
-> On Wed, Aug 10, 2016 at 10:24 AM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > On Wed, 20 Jul 2016 14:53:50 -0700
-> > Ray Jui <ray.jui@broadcom.com> wrote:
-> >  
-> >> This patch adds big endian and ONFI support for various iProc based
-> >> SoCs that use the core brcmstb NAND controller  
-> >
-> > Brian, Kamal, can you review this patch?
-> >  
-> >>
-> >> This patch was originally implemented by Prafulla Kota
-> >> <prafulla.kota@broadcom.com> and fully tested on iProc based NS2 SVK
-> >>
-> >> Signed-off-by: Prafulla Kota <prafulla.kota@broadcom.com>
-> >> Signed-off-by: Ray Jui <ray.jui@broadcom.com>  
-> 
-> Reviewed-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> 
-> >> ---
-> >>  drivers/mtd/nand/brcmnand/brcmnand.c   | 12 ++++++------
-> >>  drivers/mtd/nand/brcmnand/brcmnand.h   | 13 ++++++++-----
-> >>  drivers/mtd/nand/brcmnand/iproc_nand.c | 18 ++++++++++++++----
-> >>  3 files changed, 28 insertions(+), 15 deletions(-)
-> >>
-> >> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> >> index b76ad7c..12a1585 100644
-> >> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> >> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> >> @@ -1279,7 +1279,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
-> >>               u32 *flash_cache = (u32 *)ctrl->flash_cache;
-> >>               int i;
-> >>
-> >> -             brcmnand_soc_data_bus_prepare(ctrl->soc);
-> >> +             brcmnand_soc_data_bus_prepare(ctrl->soc, true);
-> >>
-> >>               /*
-> >>                * Must cache the FLASH_CACHE now, since changes in
-> >> @@ -1292,7 +1292,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
-> >>                        */
-> >>                       flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
-> >>
-> >> -             brcmnand_soc_data_bus_unprepare(ctrl->soc);
-> >> +             brcmnand_soc_data_bus_unprepare(ctrl->soc, true);
-> >>
-> >>               /* Cleanup from HW quirk: restore SECTOR_SIZE_1K */
-> >>               if (host->hwcfg.sector_size_1k)
-> >> @@ -1508,12 +1508,12 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
-> >>               brcmnand_waitfunc(mtd, chip);
-> >>
-> >>               if (likely(buf)) {
-> >> -                     brcmnand_soc_data_bus_prepare(ctrl->soc);
-> >> +                     brcmnand_soc_data_bus_prepare(ctrl->soc, false);
-> >>
-> >>                       for (j = 0; j < FC_WORDS; j++, buf++)
-> >>                               *buf = brcmnand_read_fc(ctrl, j);
-> >>
-> >> -                     brcmnand_soc_data_bus_unprepare(ctrl->soc);
-> >> +                     brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
-> >>               }
-> >>
-> >>               if (oob)
-> >> @@ -1678,12 +1678,12 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
-> >>               (void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
-> >>
-> >>               if (buf) {
-> >> -                     brcmnand_soc_data_bus_prepare(ctrl->soc);
-> >> +                     brcmnand_soc_data_bus_prepare(ctrl->soc, false);
-> >>
-> >>                       for (j = 0; j < FC_WORDS; j++, buf++)
-> >>                               brcmnand_write_fc(ctrl, j, *buf);
-> >>
-> >> -                     brcmnand_soc_data_bus_unprepare(ctrl->soc);
-> >> +                     brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
-> >>               } else if (oob) {
-> >>                       for (j = 0; j < FC_WORDS; j++)
-> >>                               brcmnand_write_fc(ctrl, j, 0xffffffff);
-> >> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
-> >> index ef5eabb..5c44cd4 100644
-> >> --- a/drivers/mtd/nand/brcmnand/brcmnand.h
-> >> +++ b/drivers/mtd/nand/brcmnand/brcmnand.h
-> >> @@ -23,19 +23,22 @@ struct dev_pm_ops;
-> >>  struct brcmnand_soc {
-> >>       bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
-> >>       void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
-> >> -     void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
-> >> +     void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
-> >> +                              bool is_param);
-> >>  };
-> >>
-> >> -static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
-> >> +static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc,
-> >> +                                              bool is_param)
-> >>  {
-> >>       if (soc && soc->prepare_data_bus)
-> >> -             soc->prepare_data_bus(soc, true);
-> >> +             soc->prepare_data_bus(soc, true, is_param);
-> >>  }
-> >>
-> >> -static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc)
-> >> +static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc,
-> >> +                                                bool is_param)
-> >>  {
-> >>       if (soc && soc->prepare_data_bus)
-> >> -             soc->prepare_data_bus(soc, false);
-> >> +             soc->prepare_data_bus(soc, false, is_param);
-> >>  }
-> >>
-> >>  static inline u32 brcmnand_readl(void __iomem *addr)
-> >> diff --git a/drivers/mtd/nand/brcmnand/iproc_nand.c b/drivers/mtd/nand/brcmnand/iproc_nand.c
-> >> index 585596c..4c6ae11 100644
-> >> --- a/drivers/mtd/nand/brcmnand/iproc_nand.c
-> >> +++ b/drivers/mtd/nand/brcmnand/iproc_nand.c
-> >> @@ -74,7 +74,8 @@ static void iproc_nand_intc_set(struct brcmnand_soc *soc, bool en)
-> >>       spin_unlock_irqrestore(&priv->idm_lock, flags);
-> >>  }
-> >>
-> >> -static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
-> >> +static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare,
-> >> +                               bool is_param)
-> >>  {
-> >>       struct iproc_nand_soc *priv =
-> >>                       container_of(soc, struct iproc_nand_soc, soc);
-> >> @@ -86,10 +87,19 @@ static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
-> >>
-> >>       val = brcmnand_readl(mmio);
-> >>
-> >> -     if (prepare)
-> >> -             val |= IPROC_NAND_APB_LE_MODE;
-> >> -     else
-> >> +     /*
-> >> +      * In the case of BE or when dealing with NAND data, alway configure
-> >> +      * the APB bus to LE mode before accessing the FIFO and back to BE mode
-> >> +      * after the access is done
-> >> +      */
-> >> +     if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) || !is_param) {
-> >> +             if (prepare)
-> >> +                     val |= IPROC_NAND_APB_LE_MODE;
-> >> +             else
-> >> +                     val &= ~IPROC_NAND_APB_LE_MODE;
-> >> +     } else { /* when in LE accessing the parameter page, keep APB in BE */
-> >>               val &= ~IPROC_NAND_APB_LE_MODE;
-> >> +     }
-> >>
-> >>       brcmnand_writel(val, mmio);
-> >>  
-> >  
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
