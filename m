@@ -1,34 +1,32 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bbnGi-00043F-Sh
- for linux-mtd@lists.infradead.org; Mon, 22 Aug 2016 11:19:57 +0000
-Received: from localhost (localhost [127.0.0.1])
- by bastet.se.axis.com (Postfix) with ESMTP id 1C96C18091
- for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:23 +0200 (CEST)
-Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
- by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id 0T1XutNg1Tvl for <linux-mtd@lists.infradead.org>;
- Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
-Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
- by bastet.se.axis.com (Postfix) with ESMTP id 8893818059
- for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
-Received: from boulder.se.axis.com (localhost [127.0.0.1])
- by postfix.imss71 (Postfix) with ESMTP id 632B418FA
- for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
- by boulder.se.axis.com (Postfix) with ESMTP id 587B21779
- for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
-Received: from XBOX03.axis.com (xbox03.axis.com [10.0.5.17])
- by thoth.se.axis.com (Postfix) with ESMTP id 56F39304
- for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2016 13:19:22 +0200 (CEST)
-Date: Mon, 22 Aug 2016 13:19:17 +0200
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Trivial (?) question about nand_command_[lp]()
-Message-ID: <alpine.DEB.2.02.1608221313050.6821@lnxricardw1.se.axis.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
+Received: from mga06.intel.com ([134.134.136.31])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bbqcS-0003lA-Tt
+ for linux-mtd@lists.infradead.org; Mon, 22 Aug 2016 14:54:34 +0000
+Message-ID: <1471877646.15722.61.camel@gmail.com>
+Subject: Re: MTD RAID
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Dongsheng Yang <dooooongsheng.yang@gmail.com>
+Cc: Dongsheng Yang <dongsheng.yang@easystack.cn>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, starvik@axis.com,
+ jesper.nilsson@axis.com,  Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
+ shengyong1@huawei.com, linux-cris-kernel@axis.com, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, Ard
+ Biesheuvel <ard.biesheuvel@linaro.org>, jschultz@xes-inc.com,
+ fabf@skynet.be, mtownsend1973@gmail.com,  linux-mtd@lists.infradead.org,
+ Colin King <colin.king@canonical.com>,  asierra@xes-inc.com,
+ dmitry.torokhov@gmail.com, Dongsheng Yang <dongsheng081251@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Date: Mon, 22 Aug 2016 17:54:06 +0300
+In-Reply-To: <CAAp9bSh-geStbHpA6+vYdLfNLcinWkfVLOGmX4kdRbja+d2MdA@mail.gmail.com>
+References: <57B6E1BD.1060707@easystack.cn>
+ <AL*AZwAyAecQSM1UjjjNxao0.3.1471605640762.Hmail.dongsheng.yang@easystack.cn>
+ <20160819135536.1ed9e374@bbrezillon> <57BA6FFA.6000601@easystack.cn>
+ <1471850841.15722.13.camel@gmail.com>
+ <CAAp9bSh-geStbHpA6+vYdLfNLcinWkfVLOGmX4kdRbja+d2MdA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,25 +36,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2016-08-22 at 18:55 +0800, Dongsheng Yang wrote:
+> 
+> 
+> On Mon, Aug 22, 2016 at 3:27 PM, Artem Bityutskiy <dedekind1@gmail.co
+> m> wrote:
+> > On Mon, 2016-08-22 at 11:22 +0800, Dongsheng Yang wrote:
+> > > As I explained above, MTD RAID is not just a solution for
+> > reliability
+> > > problem for MLC/TLC. 
+> > 
+> > Could you please answer these questions.
+> > 
+> > 1. Does MTD raid work on MLC or is it SLC-only?
+> 
+> Good question. No, it is based on MTD layer, so it should be fine for
+> any MTD devices in theory, although we are using nand flash in our
+> production.
+> > 
+> > 2. If I am building RAID-0, I have 2 flash chips, one has every
+> > even
+> > block bad, the other has every odd block bad. What happens?
+> 
+>  All blocks would be marked as bad. Because we are combining the
+> striping related blocks as a larger block, so if one of the blocks is
+> bad, we will
+> mark the virtual large block as bad. Example as RAID0 in my first
+> email, I build a RAID0 device by 4 devices with block size of 16K.
+> then the block
+> size of the new RAID0 device is 64K. I am combining these 4 devices
+> and do a striping on the new/larger block, for a better performance. 
+> > 
+> > 3. Same question, but for RAID-1.
+> 
+> Same result but with different reason, In RAID1, we don't need to
+> enlarge the block size. But we should make the blockes mirrored. If
+> block of the
+> master or mirror is bad, then the block for the RAID1 device should
+> be marked as bad, because we can't promise requested number of copies
+> of data in this case. 
+> > 
+> > 4. Suppose I have RAID-1 like in this picture:
+> > 
+> > https://en.wikipedia.org/wiki/Standard_RAID_levels#/media/File:RAID
+> > _1.svg
+> > 
+> > Just assume we have flash chips, not disks, and eraseblocks, not
+> > sectors.
+> > 
+> > Suppose eraseblock A1 goes bad. What happens next?
+> 
+> If A1 in disk0 goes bad, the data will be read out from disk1. But
+> there would be a warning about this problem. Then we should noticed
+> that our
+> data in this section is not safe enough now. Then there are different
+> scenario. 
 
-I'm having a close look at nand_base.c:nand_command(), and there's 
-something I can't get my head around: According to the code, when the 
-command to be sent is NAND_CMD_SEQIN (0x80), used for programming a page, 
-first a read command (READ0, READ1 or READOOB depending on the column 
-address) is sent to the flash, followed by the SEQIN proper. Are there 
-flashes which require a read command to be sent (with no 
-address or data bytes) immediately before Page Program?
+> (1) you are using ubi on this device, I mentioned once last week, we
+> can enhance ubi to notice this kind of problem, then do a data
+> migration. 
 
-A related issue is a difference versus nand_command_lp(). In the latter, 
-NAND_NCE is set for every command towards the flash, which makes sense, as 
-the chip enable should be active throughout the whole sequence. However, 
-in nand_command(), NAND_NCE is only set when neither NAND_ALE nor NAND_CLE 
-are set. Is this an older convention in the code that CE is implied for 
-small-page flashes when ALE or CLE is set, but not for the large-page 
-case?
+So to make my data become mirrored again, MTD RAID needs help from
+upper layers.
 
-/Ricard
--- 
-Ricard Wolf Wanderl�f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+In case of RAID, you do not need this kind of help. All you need is
+change the disk when it starts getting bad sectors.
+
+I mean, this is a bit like: here is our MTD RAID which is not a RAID
+unless it works with special SW like UBI on top of it.
+
+Are you sure you want to call this MTD RAID?
+
+If this was on top of UBI, the RAID would probably be a closer match,
+because then you could assume you are on top of a "reliable" media.
+
+Note, I am not insisting, just asking.
+
+> (2) you are using some other application on this device, Then you can
+> check the status of this MTD RAID device now by "mtd_raid scan <dev>"
+> if this command report there is some blocks are bad, you can do a
+> "mtd_raid replace <>" to replace the bad one.
+
+How will the replacement work. What gets replaced - the entire flash
+chip? Probably not, because bad blocks are natural for raw NAND. Then
+how do you replace the blocks if there is an FS on top?
+
+Artem.
