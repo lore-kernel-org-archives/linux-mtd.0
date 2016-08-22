@@ -1,30 +1,23 @@
-Received: from mga06.intel.com ([134.134.136.31])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bbjjF-0007J8-Gh
- for linux-mtd@lists.infradead.org; Mon, 22 Aug 2016 07:33:06 +0000
-Message-ID: <1471850841.15722.13.camel@gmail.com>
-Subject: Re: MTD RAID
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <dongsheng.yang@easystack.cn>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-Cc: starvik@axis.com, jesper.nilsson@axis.com, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>, shengyong1@huawei.com,
- linux-cris-kernel@axis.com,  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Ard Biesheuvel
- <ard.biesheuvel@linaro.org>, dooooongsheng.yang@gmail.com,
- jschultz@xes-inc.com,  fabf@skynet.be, mtownsend1973@gmail.com,
- linux-mtd@lists.infradead.org, Colin King <colin.king@canonical.com>,
- asierra@xes-inc.com, dmitry.torokhov@gmail.com,  Dongsheng Yang
- <dongsheng081251@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 22 Aug 2016 10:27:21 +0300
-In-Reply-To: <57BA6FFA.6000601@easystack.cn>
-References: <57B6E1BD.1060707@easystack.cn>
- <AL*AZwAyAecQSM1UjjjNxao0.3.1471605640762.Hmail.dongsheng.yang@easystack.cn>
- <20160819135536.1ed9e374@bbrezillon> <57BA6FFA.6000601@easystack.cn>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date: Mon, 22 Aug 2016 09:44:37 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: Prafulla Kota <prafulla.kota@broadcom.com>,
+ linux-kernel@vger.kernel.org, Ray Jui <ray.jui@broadcom.com>, "Jayachandran
+ C <jchandra@broadcom.com>, bcm-kernel-feedback-list"
+ <bcm-kernel-feedback-list@broadcom.com>, MTD Maling List
+ <linux-mtd@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/2] mtd: brcmnand: iProc big endian and ONFI support
+Message-ID: <20160822094437.4e9fec83@bbrezillon>
+In-Reply-To: <CAC=U0a2fA=aYbfDdhcdRPATFuPEWd8qmdajwdn4UAFn=R4rUsQ@mail.gmail.com>
+References: <1469051631-7896-1-git-send-email-ray.jui@broadcom.com>
+ <1469051631-7896-2-git-send-email-ray.jui@broadcom.com>
+ <20160810162438.4c6cffd3@bbrezillon>
+ <CAC=U0a2fA=aYbfDdhcdRPATFuPEWd8qmdajwdn4UAFn=R4rUsQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,35 +27,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2016-08-22 at 11:22 +0800, Dongsheng Yang wrote:
-> As I explained above, MTD RAID is not just a solution for reliability
-> problem for MLC/TLC. 
+On Fri, 19 Aug 2016 11:14:17 -0400
+Kamal Dasu <kdasu.kdev@gmail.com> wrote:
 
-Could you please answer these questions.
+> Boris
+> 
+> This change  looks good to me.
 
-1. Does MTD raid work on MLC or is it SLC-only?
+Is this an Acked-by or a Reviewed-by? :)
 
-2. If I am building RAID-0, I have 2 flash chips, one has every even
-block bad, the other has every odd block bad. What happens?
-
-3. Same question, but for RAID-1.
-
-4. Suppose I have RAID-1 like in this picture:
-
-https://en.wikipedia.org/wiki/Standard_RAID_levels#/media/File:RAID_1.svg
-
-Just assume we have flash chips, not disks, and eraseblocks, not
-sectors.
-
-Suppose eraseblock A1 goes bad. What happens next?
-
-
-5. Suppose I have RAID-0 like here:
-
-https://en.wikipedia.org/wiki/Standard_RAID_levels#/media/File:RAID_0.svg
-
-Again, we are talking about chips and eraseblocks here.
-
-What happens if A1 goes bad.
-
-Thanks!
+> 
+> 
+> On Wed, Aug 10, 2016 at 10:24 AM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > On Wed, 20 Jul 2016 14:53:50 -0700
+> > Ray Jui <ray.jui@broadcom.com> wrote:
+> >  
+> >> This patch adds big endian and ONFI support for various iProc based
+> >> SoCs that use the core brcmstb NAND controller  
+> >
+> > Brian, Kamal, can you review this patch?
+> >  
+> >>
+> >> This patch was originally implemented by Prafulla Kota
+> >> <prafulla.kota@broadcom.com> and fully tested on iProc based NS2 SVK
+> >>
+> >> Signed-off-by: Prafulla Kota <prafulla.kota@broadcom.com>
+> >> Signed-off-by: Ray Jui <ray.jui@broadcom.com>  
+> 
+> Reviewed-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> 
+> >> ---
+> >>  drivers/mtd/nand/brcmnand/brcmnand.c   | 12 ++++++------
+> >>  drivers/mtd/nand/brcmnand/brcmnand.h   | 13 ++++++++-----
+> >>  drivers/mtd/nand/brcmnand/iproc_nand.c | 18 ++++++++++++++----
+> >>  3 files changed, 28 insertions(+), 15 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> >> index b76ad7c..12a1585 100644
+> >> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> >> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> >> @@ -1279,7 +1279,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+> >>               u32 *flash_cache = (u32 *)ctrl->flash_cache;
+> >>               int i;
+> >>
+> >> -             brcmnand_soc_data_bus_prepare(ctrl->soc);
+> >> +             brcmnand_soc_data_bus_prepare(ctrl->soc, true);
+> >>
+> >>               /*
+> >>                * Must cache the FLASH_CACHE now, since changes in
+> >> @@ -1292,7 +1292,7 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+> >>                        */
+> >>                       flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
+> >>
+> >> -             brcmnand_soc_data_bus_unprepare(ctrl->soc);
+> >> +             brcmnand_soc_data_bus_unprepare(ctrl->soc, true);
+> >>
+> >>               /* Cleanup from HW quirk: restore SECTOR_SIZE_1K */
+> >>               if (host->hwcfg.sector_size_1k)
+> >> @@ -1508,12 +1508,12 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+> >>               brcmnand_waitfunc(mtd, chip);
+> >>
+> >>               if (likely(buf)) {
+> >> -                     brcmnand_soc_data_bus_prepare(ctrl->soc);
+> >> +                     brcmnand_soc_data_bus_prepare(ctrl->soc, false);
+> >>
+> >>                       for (j = 0; j < FC_WORDS; j++, buf++)
+> >>                               *buf = brcmnand_read_fc(ctrl, j);
+> >>
+> >> -                     brcmnand_soc_data_bus_unprepare(ctrl->soc);
+> >> +                     brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
+> >>               }
+> >>
+> >>               if (oob)
+> >> @@ -1678,12 +1678,12 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
+> >>               (void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+> >>
+> >>               if (buf) {
+> >> -                     brcmnand_soc_data_bus_prepare(ctrl->soc);
+> >> +                     brcmnand_soc_data_bus_prepare(ctrl->soc, false);
+> >>
+> >>                       for (j = 0; j < FC_WORDS; j++, buf++)
+> >>                               brcmnand_write_fc(ctrl, j, *buf);
+> >>
+> >> -                     brcmnand_soc_data_bus_unprepare(ctrl->soc);
+> >> +                     brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
+> >>               } else if (oob) {
+> >>                       for (j = 0; j < FC_WORDS; j++)
+> >>                               brcmnand_write_fc(ctrl, j, 0xffffffff);
+> >> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
+> >> index ef5eabb..5c44cd4 100644
+> >> --- a/drivers/mtd/nand/brcmnand/brcmnand.h
+> >> +++ b/drivers/mtd/nand/brcmnand/brcmnand.h
+> >> @@ -23,19 +23,22 @@ struct dev_pm_ops;
+> >>  struct brcmnand_soc {
+> >>       bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
+> >>       void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
+> >> -     void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
+> >> +     void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
+> >> +                              bool is_param);
+> >>  };
+> >>
+> >> -static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
+> >> +static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc,
+> >> +                                              bool is_param)
+> >>  {
+> >>       if (soc && soc->prepare_data_bus)
+> >> -             soc->prepare_data_bus(soc, true);
+> >> +             soc->prepare_data_bus(soc, true, is_param);
+> >>  }
+> >>
+> >> -static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc)
+> >> +static inline void brcmnand_soc_data_bus_unprepare(struct brcmnand_soc *soc,
+> >> +                                                bool is_param)
+> >>  {
+> >>       if (soc && soc->prepare_data_bus)
+> >> -             soc->prepare_data_bus(soc, false);
+> >> +             soc->prepare_data_bus(soc, false, is_param);
+> >>  }
+> >>
+> >>  static inline u32 brcmnand_readl(void __iomem *addr)
+> >> diff --git a/drivers/mtd/nand/brcmnand/iproc_nand.c b/drivers/mtd/nand/brcmnand/iproc_nand.c
+> >> index 585596c..4c6ae11 100644
+> >> --- a/drivers/mtd/nand/brcmnand/iproc_nand.c
+> >> +++ b/drivers/mtd/nand/brcmnand/iproc_nand.c
+> >> @@ -74,7 +74,8 @@ static void iproc_nand_intc_set(struct brcmnand_soc *soc, bool en)
+> >>       spin_unlock_irqrestore(&priv->idm_lock, flags);
+> >>  }
+> >>
+> >> -static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
+> >> +static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare,
+> >> +                               bool is_param)
+> >>  {
+> >>       struct iproc_nand_soc *priv =
+> >>                       container_of(soc, struct iproc_nand_soc, soc);
+> >> @@ -86,10 +87,19 @@ static void iproc_nand_apb_access(struct brcmnand_soc *soc, bool prepare)
+> >>
+> >>       val = brcmnand_readl(mmio);
+> >>
+> >> -     if (prepare)
+> >> -             val |= IPROC_NAND_APB_LE_MODE;
+> >> -     else
+> >> +     /*
+> >> +      * In the case of BE or when dealing with NAND data, alway configure
+> >> +      * the APB bus to LE mode before accessing the FIFO and back to BE mode
+> >> +      * after the access is done
+> >> +      */
+> >> +     if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) || !is_param) {
+> >> +             if (prepare)
+> >> +                     val |= IPROC_NAND_APB_LE_MODE;
+> >> +             else
+> >> +                     val &= ~IPROC_NAND_APB_LE_MODE;
+> >> +     } else { /* when in LE accessing the parameter page, keep APB in BE */
+> >>               val &= ~IPROC_NAND_APB_LE_MODE;
+> >> +     }
+> >>
+> >>       brcmnand_writel(val, mmio);
+> >>  
+> >  
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
