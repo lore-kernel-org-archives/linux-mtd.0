@@ -1,17 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bc6Cz-0003sp-R1
- for linux-mtd@lists.infradead.org; Tue, 23 Aug 2016 07:33:19 +0000
+ id 1bc6Cz-0003sq-Rz
+ for linux-mtd@lists.infradead.org; Tue, 23 Aug 2016 07:33:20 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 0/7] UBI: various cleanup/fixes
-Date: Tue, 23 Aug 2016 09:32:47 +0200
-Message-Id: <1471937574-8045-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 1/7] UBI: fastmap: use ubi_find_volume() instead of open
+ coding it
+Date: Tue, 23 Aug 2016 09:32:48 +0200
+Message-Id: <1471937574-8045-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1471937574-8045-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1471937574-8045-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+process_pool_aeb() re-implements the logic found in ubi_find_volume().
+Call ubi_find_volume() to avoid this duplication.
 
-Here is a set of cleanup patches (+one fix in patch 3 for a bug that
-is unlikely to happen).
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/ubi/fastmap.c | 23 +++--------------------
+ 1 file changed, 3 insertions(+), 20 deletions(-)
 
-Note that I'm not doing that for fun. I'm currently trying to patch UBI
-to support the 'LEB consolidation' concept (which is the solution we're
-heading to for reliable MLC NAND support), and the duplication of
-similar code blocks makes this transition harder to code/review.
-
-This is just the beginning (more cleanup patches will come), but since
-the patches are simple and self-contained I thought it would be good to
-submit them early.
-
-Regards,
-
-Boris
-
-Boris Brezillon (7):
-  UBI: fastmap: use ubi_find_volume() instead of open coding it
-  UBI: fastmap: avoid multiple be32_to_cpu() when unneccesary
-  UBI: fastmap: scrub PEB when bitflips are detected in a free PEB EC
-    header
-  UBI: factorize code used to manipulate volumes at attach time
-  UBI: factorize destroy_av() and ubi_remove_av() code
-  UBI: fastmap: use ubi_rb_for_each_entry() in unmap_peb()
-  UBI: provide helpers to allocate and free aeb elements
-
- drivers/mtd/ubi/attach.c  | 242 ++++++++++++++++++++++++++++++++--------------
- drivers/mtd/ubi/fastmap.c |  99 +++++--------------
- drivers/mtd/ubi/ubi.h     |   4 +
- drivers/mtd/ubi/vtbl.c    |   4 +-
- 4 files changed, 200 insertions(+), 149 deletions(-)
-
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 48eb55f344eb..a26dcc9d7703 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -370,9 +370,7 @@ static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 			    struct ubi_vid_hdr *new_vh,
+ 			    struct ubi_ainf_peb *new_aeb)
+ {
+-	struct ubi_ainf_volume *av, *tmp_av = NULL;
+-	struct rb_node **p = &ai->volumes.rb_node, *parent = NULL;
+-	int found = 0;
++	struct ubi_ainf_volume *av;
+ 
+ 	if (be32_to_cpu(new_vh->vol_id) == UBI_FM_SB_VOLUME_ID ||
+ 		be32_to_cpu(new_vh->vol_id) == UBI_FM_DATA_VOLUME_ID) {
+@@ -382,23 +380,8 @@ static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	}
+ 
+ 	/* Find the volume this SEB belongs to */
+-	while (*p) {
+-		parent = *p;
+-		tmp_av = rb_entry(parent, struct ubi_ainf_volume, rb);
+-
+-		if (be32_to_cpu(new_vh->vol_id) > tmp_av->vol_id)
+-			p = &(*p)->rb_left;
+-		else if (be32_to_cpu(new_vh->vol_id) < tmp_av->vol_id)
+-			p = &(*p)->rb_right;
+-		else {
+-			found = 1;
+-			break;
+-		}
+-	}
+-
+-	if (found)
+-		av = tmp_av;
+-	else {
++	av = ubi_find_av(ai, be32_to_cpu(new_vh->vol_id));
++	if (!av) {
+ 		ubi_err(ubi, "orphaned volume in fastmap pool!");
+ 		kmem_cache_free(ai->aeb_slab_cache, new_aeb);
+ 		return UBI_BAD_FASTMAP;
 -- 
 2.7.4
