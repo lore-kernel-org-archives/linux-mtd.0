@@ -1,15 +1,36 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mout.kundenserver.de ([212.227.126.131])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bc92X-0004sa-3d
- for linux-mtd@lists.infradead.org; Tue, 23 Aug 2016 10:34:42 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- kernel@pengutronix.de, <linux-arm-kernel@lists.infradead.org>,
- Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] mtd: mxc_nand: Set timing for v2 controllers
-Date: Tue, 23 Aug 2016 12:34:05 +0200
-Message-Id: <1471948445-29936-1-git-send-email-s.hauer@pengutronix.de>
+ id 1bcD4x-00028h-AU
+ for linux-mtd@lists.infradead.org; Tue, 23 Aug 2016 14:53:33 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Deepa Dinamani <deepa.kernel@gmail.com>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tglx@linutronix.de,
+ torvalds@linux-foundation.org, tytso@mit.edu, viro@zeniv.linux.org.uk,
+ y2038@lists.linaro.org, adilger.kernel@dilger.ca, adrian.hunter@intel.com,
+ anna.schumaker@netapp.com, buchino@cisco.com, ceph-devel@vger.kernel.org,
+ clm@fb.com, cm224.lee@samsung.com, dedekind1@gmail.com, dsterba@suse.com,
+ dushistov@mail.ru, elder@kernel.org, eparis@redhat.com, hiralpat@cisco.com,
+ idryomov@gmail.com, jack@suse.com, jaegeuk@kernel.org, jbacik@fb.com,
+ jejb@linux.vnet.ibm.com, jfs-discussion@lists.sourceforge.net,
+ jlbec@evilplan.org, john.stultz@linaro.org, linux-audit@redhat.com,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-nfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+ lustre-devel@lists.lustre.org, martin.petersen@oracle.com, mfasheh@suse.com,
+ ocfs2-devel@oss.oracle.com, paul@paul-moore.com, sage@redhat.com,
+ sfrench@samba.org, shaggy@kernel.org, sramars@cisco.com,
+ trond.myklebust@primarydata.com, zyan@redhat.com
+Subject: Re: [GIT PULL] [PATCH v4 00/26] Delete CURRENT_TIME and
+ CURRENT_TIME_SEC macros
+Date: Tue, 23 Aug 2016 16:51:39 +0200
+Message-ID: <2295046.g7jOF3qsLW@wuerfel>
+In-Reply-To: <20160815162312.GA19794@kroah.com>
+References: <1471128518-24075-1-git-send-email-deepa.kernel@gmail.com>
+ <20160815162312.GA19794@kroah.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,77 +40,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-So far we relied on reset default or the bootloader to configure a
-suitable clk rate for the Nand controller. This works but we can
-optimize the timing for better performance. This sets the clk rate for
-v2 controllers (i.MX25/35) based on the timing mode read from the ONFI
-parameter page. This may also enable the symmetric mode (aks EDO mode)
-if necessary which reads one word per clock cycle.
-Tested on an i.MX25 with a Micron MT29F4G08ABBDAHC attached.
+On Monday, August 15, 2016 6:23:12 PM CEST Greg KH wrote:
+> On Sat, Aug 13, 2016 at 03:48:12PM -0700, Deepa Dinamani wrote:
+> > The series is aimed at getting rid of CURRENT_TIME and CURRENT_TIME_SEC macros.
+> > The macros are not y2038 safe. There is no plan to transition them into being
+> > y2038 safe.
+> > ktime_get_* api's can be used in their place. And, these are y2038 safe.
+> 
+> Who are you execting to pull this huge patch series?
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/mxc_nand.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+Dave Chinner suggested to have Al Viro pick up the whole series.
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 5173fad..725223c 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1012,6 +1012,45 @@ static void preset_v1(struct mtd_info *mtd)
- 	writew(0x4, NFC_V1_V2_WRPROT);
- }
- 
-+static void mxc_nand_v2_set_timing(struct mtd_info *mtd, uint16_t *config1)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	struct mxc_nand_host *host = nand_chip->priv;
-+	int mode, ret, tRC_min_ns;
-+	unsigned long rate;
-+	const struct nand_sdr_timings *timings;
-+
-+	mode = onfi_get_async_timing_mode(nand_chip);
-+	if (mode == ONFI_TIMING_MODE_UNKNOWN)
-+		return;
-+
-+	mode = fls(mode) - 1;
-+	if (mode < 0)
-+		mode = 0;
-+
-+	timings = onfi_async_timing_mode_to_sdr_timings(mode);
-+	if (IS_ERR(timings))
-+		return;
-+
-+	tRC_min_ns = timings->tRC_min / 1000;
-+	rate = 1000000000 / tRC_min_ns;
-+
-+	if (clk_round_rate(host->clk, rate) > 33333333)
-+		/*
-+		 * If tRC is smaller than 30ns (that is, the rate is higher
-+		 * than 33.333MHz) we have to use EDO timing.
-+		 */
-+		*config1 |= NFC_V2_CONFIG1_ONE_CYCLE;
-+	else
-+		/* Otherwise we have two clock cycles per access. */
-+		rate *= 2;
-+
-+	ret = clk_set_rate(host->clk, rate);
-+	if (ret)
-+		/* Don't worry, continue with old rate */
-+		dev_err(host->dev, "failed to set clk rate: %d\n", ret);
-+}
-+
- static void preset_v2(struct mtd_info *mtd)
- {
- 	struct nand_chip *nand_chip = mtd_to_nand(mtd);
-@@ -1020,6 +1059,8 @@ static void preset_v2(struct mtd_info *mtd)
- 
- 	config1 |= NFC_V2_CONFIG1_FP_INT;
- 
-+	mxc_nand_v2_set_timing(mtd, &config1);
-+
- 	if (!host->devtype_data->irqpending_quirk)
- 		config1 |= NFC_V1_V2_CONFIG1_INT_MSK;
- 
--- 
-2.8.1
+> Why not just introduce the new api call, wait for that to be merged, and
+> then push the individual patches through the different subsystems?
+> After half of those get ignored, then provide a single set of patches
+> that can go through Andrew or my trees.
+
+That was the original approach for v4.7, but (along with requesting
+a number of reworks that Deepa incorporated), Linus preferred doing
+the API change done in one chunk, see
+https://patchwork.kernel.org/patch/9134249/
+
+	Arnd
