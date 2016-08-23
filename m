@@ -1,19 +1,15 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bc6DL-0004FQ-Lb
- for linux-mtd@lists.infradead.org; Tue, 23 Aug 2016 07:33:43 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 7/7] UBI: provide helpers to allocate and free aeb elements
-Date: Tue, 23 Aug 2016 09:32:54 +0200
-Message-Id: <1471937574-8045-8-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1471937574-8045-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1471937574-8045-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bc92X-0004sa-3d
+ for linux-mtd@lists.infradead.org; Tue, 23 Aug 2016 10:34:42 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ kernel@pengutronix.de, <linux-arm-kernel@lists.infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] mtd: mxc_nand: Set timing for v2 controllers
+Date: Tue, 23 Aug 2016 12:34:05 +0200
+Message-Id: <1471948445-29936-1-git-send-email-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,312 +19,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This not only hides the aeb allocation internals (which is always good in
-case we ever want to change the allocation system), but also helps us
-factorize the initialization of some common fields (ec and pnum).
+So far we relied on reset default or the bootloader to configure a
+suitable clk rate for the Nand controller. This works but we can
+optimize the timing for better performance. This sets the clk rate for
+v2 controllers (i.MX25/35) based on the timing mode read from the ONFI
+parameter page. This may also enable the symmetric mode (aks EDO mode)
+if necessary which reads one word per clock cycle.
+Tested on an i.MX25 with a Micron MT29F4G08ABBDAHC attached.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/ubi/attach.c  | 68 ++++++++++++++++++++++++++++++++++-------------
- drivers/mtd/ubi/fastmap.c | 28 +++++++------------
- drivers/mtd/ubi/ubi.h     |  3 +++
- drivers/mtd/ubi/vtbl.c    |  4 +--
- 4 files changed, 65 insertions(+), 38 deletions(-)
+ drivers/mtd/nand/mxc_nand.c | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index be83c17d742b..ba88ff582f1a 100644
---- a/drivers/mtd/ubi/attach.c
-+++ b/drivers/mtd/ubi/attach.c
-@@ -182,6 +182,46 @@ static struct ubi_ainf_volume *ubi_find_or_add_av(struct ubi_attach_info *ai,
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 5173fad..725223c 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1012,6 +1012,45 @@ static void preset_v1(struct mtd_info *mtd)
+ 	writew(0x4, NFC_V1_V2_WRPROT);
  }
  
- /**
-+ * ubi_alloc_aeb - allocate an aeb element
-+ * @ai: attaching information
-+ * @aeb: the element to free
-+ *
-+ * Allocate an aeb object and initialize the pnum and ec information.
-+ * vol_id and lnum are set to UBI_UNKNOWN, and the other fields are
-+ * initialized to zero.
-+ * Note that the element is not added in any list or RB tree.
-+ */
-+struct ubi_ainf_peb *ubi_alloc_aeb(struct ubi_attach_info *ai, int pnum,
-+				   int ec)
++static void mxc_nand_v2_set_timing(struct mtd_info *mtd, uint16_t *config1)
 +{
-+	struct ubi_ainf_peb *aeb;
++	struct nand_chip *nand_chip = mtd->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
++	int mode, ret, tRC_min_ns;
++	unsigned long rate;
++	const struct nand_sdr_timings *timings;
 +
-+	aeb = kmem_cache_zalloc(ai->aeb_slab_cache, GFP_KERNEL);
-+	if (!aeb)
-+		return NULL;
++	mode = onfi_get_async_timing_mode(nand_chip);
++	if (mode == ONFI_TIMING_MODE_UNKNOWN)
++		return;
 +
-+	aeb->pnum = pnum;
-+	aeb->ec = ec;
-+	aeb->vol_id = UBI_UNKNOWN;
-+	aeb->lnum = UBI_UNKNOWN;
++	mode = fls(mode) - 1;
++	if (mode < 0)
++		mode = 0;
 +
-+	return aeb;
++	timings = onfi_async_timing_mode_to_sdr_timings(mode);
++	if (IS_ERR(timings))
++		return;
++
++	tRC_min_ns = timings->tRC_min / 1000;
++	rate = 1000000000 / tRC_min_ns;
++
++	if (clk_round_rate(host->clk, rate) > 33333333)
++		/*
++		 * If tRC is smaller than 30ns (that is, the rate is higher
++		 * than 33.333MHz) we have to use EDO timing.
++		 */
++		*config1 |= NFC_V2_CONFIG1_ONE_CYCLE;
++	else
++		/* Otherwise we have two clock cycles per access. */
++		rate *= 2;
++
++	ret = clk_set_rate(host->clk, rate);
++	if (ret)
++		/* Don't worry, continue with old rate */
++		dev_err(host->dev, "failed to set clk rate: %d\n", ret);
 +}
 +
-+/**
-+ * ubi_free_aeb - free an aeb element
-+ * @ai: attaching information
-+ * @aeb: the element to free
-+ *
-+ * Free an aeb object. The caller must have removed the element from any list
-+ * or RB tree.
-+ */
-+void ubi_free_aeb(struct ubi_attach_info *ai, struct ubi_ainf_peb *aeb)
-+{
-+	kmem_cache_free(ai->aeb_slab_cache, aeb);
-+}
+ static void preset_v2(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+@@ -1020,6 +1059,8 @@ static void preset_v2(struct mtd_info *mtd)
+ 
+ 	config1 |= NFC_V2_CONFIG1_FP_INT;
+ 
++	mxc_nand_v2_set_timing(mtd, &config1);
 +
-+/**
-  * add_to_list - add physical eraseblock to a list.
-  * @ai: attaching information
-  * @pnum: physical eraseblock number to add
-@@ -217,14 +257,12 @@ static int add_to_list(struct ubi_attach_info *ai, int pnum, int vol_id,
- 	} else
- 		BUG();
+ 	if (!host->devtype_data->irqpending_quirk)
+ 		config1 |= NFC_V1_V2_CONFIG1_INT_MSK;
  
--	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
-+	aeb = ubi_alloc_aeb(ai, pnum, ec);
- 	if (!aeb)
- 		return -ENOMEM;
- 
--	aeb->pnum = pnum;
- 	aeb->vol_id = vol_id;
- 	aeb->lnum = lnum;
--	aeb->ec = ec;
- 	if (to_head)
- 		list_add(&aeb->u.list, list);
- 	else
-@@ -249,13 +287,11 @@ static int add_corrupted(struct ubi_attach_info *ai, int pnum, int ec)
- 
- 	dbg_bld("add to corrupted: PEB %d, EC %d", pnum, ec);
- 
--	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
-+	aeb = ubi_alloc_aeb(ai, pnum, ec);
- 	if (!aeb)
- 		return -ENOMEM;
- 
- 	ai->corr_peb_count += 1;
--	aeb->pnum = pnum;
--	aeb->ec = ec;
- 	list_add(&aeb->u.list, &ai->corr);
- 	return 0;
- }
-@@ -278,14 +314,12 @@ static int add_fastmap(struct ubi_attach_info *ai, int pnum,
- {
- 	struct ubi_ainf_peb *aeb;
- 
--	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
-+	aeb = ubi_alloc_aeb(ai, pnum, ec);
- 	if (!aeb)
- 		return -ENOMEM;
- 
--	aeb->pnum = pnum;
- 	aeb->vol_id = be32_to_cpu(vidh->vol_id);
- 	aeb->sqnum = be64_to_cpu(vidh->sqnum);
--	aeb->ec = ec;
- 	list_add(&aeb->u.list, &ai->fastmap);
- 
- 	dbg_bld("add to fastmap list: PEB %d, vol_id %d, sqnum: %llu", pnum,
-@@ -667,12 +701,10 @@ int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
- 	if (err)
- 		return err;
- 
--	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
-+	aeb = ubi_alloc_aeb(ai, pnum, ec);
- 	if (!aeb)
- 		return -ENOMEM;
- 
--	aeb->ec = ec;
--	aeb->pnum = pnum;
- 	aeb->vol_id = vol_id;
- 	aeb->lnum = lnum;
- 	aeb->scrub = bitflips;
-@@ -1278,7 +1310,7 @@ static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av,
- 			if (list)
- 				list_add_tail(&aeb->u.list, list);
- 			else
--				kmem_cache_free(ai->aeb_slab_cache, aeb);
-+				ubi_free_aeb(ai, aeb);
- 		}
- 	}
- 	kfree(av);
-@@ -1296,23 +1328,23 @@ static void destroy_ai(struct ubi_attach_info *ai)
- 
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->alien, u.list) {
- 		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+		ubi_free_aeb(ai, aeb);
- 	}
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->erase, u.list) {
- 		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+		ubi_free_aeb(ai, aeb);
- 	}
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->corr, u.list) {
- 		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+		ubi_free_aeb(ai, aeb);
- 	}
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->free, u.list) {
- 		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+		ubi_free_aeb(ai, aeb);
- 	}
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->fastmap, u.list) {
- 		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+		ubi_free_aeb(ai, aeb);
- 	}
- 
- 	/* Destroy the volume RB-tree */
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 1bfb4aeb67d4..7d6032c6af22 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -145,12 +145,10 @@ static int add_aeb(struct ubi_attach_info *ai, struct list_head *list,
- {
- 	struct ubi_ainf_peb *aeb;
- 
--	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
-+	aeb = ubi_alloc_aeb(ai, pnum, ec);
- 	if (!aeb)
- 		return -ENOMEM;
- 
--	aeb->pnum = pnum;
--	aeb->ec = ec;
- 	aeb->lnum = -1;
- 	aeb->scrub = scrub;
- 	aeb->copy_flag = aeb->sqnum = 0;
-@@ -276,7 +274,7 @@ static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		 */
- 		if (aeb->pnum == new_aeb->pnum) {
- 			ubi_assert(aeb->lnum == new_aeb->lnum);
--			kmem_cache_free(ai->aeb_slab_cache, new_aeb);
-+			ubi_free_aeb(ai, new_aeb);
- 
- 			return 0;
- 		}
-@@ -287,13 +285,10 @@ static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 
- 		/* new_aeb is newer */
- 		if (cmp_res & 1) {
--			victim = kmem_cache_alloc(ai->aeb_slab_cache,
--				GFP_KERNEL);
-+			victim = ubi_alloc_aeb(ai, aeb->ec, aeb->pnum);
- 			if (!victim)
- 				return -ENOMEM;
- 
--			victim->ec = aeb->ec;
--			victim->pnum = aeb->pnum;
- 			list_add_tail(&victim->u.list, &ai->erase);
- 
- 			if (av->highest_lnum == be32_to_cpu(new_vh->lnum))
-@@ -307,7 +302,7 @@ static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 			aeb->pnum = new_aeb->pnum;
- 			aeb->copy_flag = new_vh->copy_flag;
- 			aeb->scrub = new_aeb->scrub;
--			kmem_cache_free(ai->aeb_slab_cache, new_aeb);
-+			ubi_free_aeb(ai, new_aeb);
- 
- 		/* new_aeb is older */
- 		} else {
-@@ -353,7 +348,7 @@ static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	struct ubi_ainf_volume *av;
- 
- 	if (vol_id == UBI_FM_SB_VOLUME_ID || vol_id == UBI_FM_DATA_VOLUME_ID) {
--		kmem_cache_free(ai->aeb_slab_cache, new_aeb);
-+		ubi_free_aeb(ai, new_aeb);
- 
- 		return 0;
- 	}
-@@ -362,7 +357,7 @@ static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	av = ubi_find_av(ai, vol_id);
- 	if (!av) {
- 		ubi_err(ubi, "orphaned volume in fastmap pool!");
--		kmem_cache_free(ai->aeb_slab_cache, new_aeb);
-+		ubi_free_aeb(ai, new_aeb);
- 		return UBI_BAD_FASTMAP;
- 	}
- 
-@@ -390,7 +385,7 @@ static void unmap_peb(struct ubi_attach_info *ai, int pnum)
- 			if (aeb->pnum == pnum) {
- 				rb_erase(&aeb->u.rb, &av->root);
- 				av->leb_count--;
--				kmem_cache_free(ai->aeb_slab_cache, aeb);
-+				ubi_free_aeb(ai, aeb);
- 				return;
- 			}
- 		}
-@@ -485,15 +480,12 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 			if (err == UBI_IO_BITFLIPS)
- 				scrub = 1;
- 
--			new_aeb = kmem_cache_alloc(ai->aeb_slab_cache,
--						   GFP_KERNEL);
-+			new_aeb = ubi_alloc_aeb(ai, pnum, be64_to_cpu(ech->ec));
- 			if (!new_aeb) {
- 				ret = -ENOMEM;
- 				goto out;
- 			}
- 
--			new_aeb->ec = be64_to_cpu(ech->ec);
--			new_aeb->pnum = pnum;
- 			new_aeb->lnum = be32_to_cpu(vh->lnum);
- 			new_aeb->sqnum = be64_to_cpu(vh->sqnum);
- 			new_aeb->copy_flag = vh->copy_flag;
-@@ -800,11 +792,11 @@ fail_bad:
- fail:
- 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list) {
- 		list_del(&tmp_aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
-+		ubi_free_aeb(ai, tmp_aeb);
- 	}
- 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
- 		list_del(&tmp_aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
-+		ubi_free_aeb(ai, tmp_aeb);
- 	}
- 
- 	return ret;
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index fce142666bf3..f22c6c2e980f 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -792,6 +792,9 @@ extern struct mutex ubi_devices_mutex;
- extern struct blocking_notifier_head ubi_notifiers;
- 
- /* attach.c */
-+struct ubi_ainf_peb *ubi_alloc_aeb(struct ubi_attach_info *ai, int pnum,
-+				   int ec);
-+void ubi_free_aeb(struct ubi_attach_info *ai, struct ubi_ainf_peb *aeb);
- int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
- 		  int ec, const struct ubi_vid_hdr *vid_hdr, int bitflips);
- struct ubi_ainf_volume *ubi_add_av(struct ubi_attach_info *ai, int vol_id);
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index d85c19762160..9e1457708cbf 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -338,7 +338,7 @@ retry:
- 	 * of this LEB as it will be deleted and freed in 'ubi_add_to_av()'.
- 	 */
- 	err = ubi_add_to_av(ubi, ai, new_aeb->pnum, new_aeb->ec, vid_hdr, 0);
--	kmem_cache_free(ai->aeb_slab_cache, new_aeb);
-+	ubi_free_aeb(ai, new_aeb);
- 	ubi_free_vid_hdr(ubi, vid_hdr);
- 	return err;
- 
-@@ -351,7 +351,7 @@ write_error:
- 		list_add(&new_aeb->u.list, &ai->erase);
- 		goto retry;
- 	}
--	kmem_cache_free(ai->aeb_slab_cache, new_aeb);
-+	ubi_free_aeb(ai, new_aeb);
- out_free:
- 	ubi_free_vid_hdr(ubi, vid_hdr);
- 	return err;
 -- 
-2.7.4
+2.8.1
