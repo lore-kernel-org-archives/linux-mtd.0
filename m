@@ -1,17 +1,18 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bcf6f-0004fh-9C
- for linux-mtd@lists.infradead.org; Wed, 24 Aug 2016 20:49:06 +0000
-Subject: Re: issue with ubi_wl_put_peb
-To: Nikhilesh Reddy <reddyn@codeaurora.org>, linux-mtd@lists.infradead.org
-References: <57BC9C1D.4010402@codeaurora.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <19dc6d1c-30fb-737e-7d7e-da503a25e9f4@nod.at>
-Date: Wed, 24 Aug 2016 22:48:29 +0200
-MIME-Version: 1.0
-In-Reply-To: <57BC9C1D.4010402@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+ id 1bcgII-0003RY-3K
+ for linux-mtd@lists.infradead.org; Wed, 24 Aug 2016 22:05:10 +0000
+Received: by mail-pa0-x243.google.com with SMTP id ez1so1877161pab.3
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Aug 2016 15:04:49 -0700 (PDT)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: broonie@kernel.org, linux-spi@vger.kernel.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, vigneshr@ti.com, f.fainelli@gmail.com,
+ yendapally.reddy@broadcom.com
+Cc: bcm-kernel-feedback-list@broadcom.com, jon.mason@broadcom.com,
+ Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH v6, 0/8] Broadcom stb, and iProc SoC QSPI driver
+Date: Wed, 24 Aug 2016 18:04:21 -0400
+Message-Id: <1472076269-4731-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +22,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nikhilesh Reddy,
+This is v6 changes for common spi driver for the brcmstb, nsp, ns2, cygnus
+iProc SoCs. Changes include driver for standard MSPI and accelerated BSPI
+blocks.The Brodcom STB uses l2-intc where as the SoC specific interrupt 
+handling code has been separated in a new  driver. In case iProc SoCs it does
+not have a dedicated l2 controller and the interrupts are specific to the 
+spi core. The drivers are organized in the following way:
+ 
+ drivers/spi/spi-bcm-qspi.c      - Common MSPI, BSPI driver
 
-On 23.08.2016 20:55, Nikhilesh Reddy wrote:
-> Hi
-> 
-> 
-> I am currently running into a hard to reproduce issue( takes upto a week to reproduce) with ubi_wl_put_peb.
-> 
-> I would appreciate any help you can give me.
-> 
-> In the following stack
-> -000|__list_del_entry()
-> -001|list_del()
-> -002|prot_queue_del()
-> -003|ubi_wl_put_peb()
-> -004|ubi_eba_unmap_leb()
-> -005|ubifs_leb_unmap()
-> -006|ubifs_gc_start_commit()
-> -007|do_commit()
-> -008|run_bg_commit(inline)
-> -008|ubifs_bg_thread()
-> -009|kthread()
-> 
-> This issue was seen with CONFIG_DEBUG_LIST=y
-> 
-> What we see is that the wl entry that is being put is not in the protection queue but seems to be in free/used trees.
+ drivers/spi/spi-bcm-qspi.h      - Common header 
 
-So, you trigger a list assert?
-Please share the kernel log.
+ drivers/spi/spi-brcmstb-qspi.c  - SoC specific wth brcm,spi-brcmstb-qspi 
+                                   compatibility, does not have anything 
+                                   specific for stb SoC
 
-> In the code  below:
-> http://git.infradead.org/linux-ubifs.git/blob/HEAD:/drivers/mtd/ubi/wl.c#l1231
-> 
-> We see that the the wl_entry is checked to be in used/scrub and erroneous trees .. and then it simply assumes that it is in the protection queue if it is not in any of the rb trees.
-> 
-> There appears to be a race where the  wl_entry is being put before it actually has a chance to be inserted into the protection queue.
-> 
-> This seems to occur when ubi_io_write_vid_hdr takes long to write the VID header.
-> 
-> 
-> I noticed that a check for a similar situation is http://git.infradead.org/linux-ubifs.git/blob/HEAD:/drivers/mtd/ubi/wl.c#l761
-> 
-> Is the same check needed in the case of ubi_wl_put_peb as well?
-> 
-> Can you please tell me if this sounds like a known issue?
-> 
-> I am a little lost on when |ubi_eba_unmap_leb would be called before the PEB has a chance to be inserted into a another tree from the free tree.
-> 
-> I would be grateful any pointers that you can give me so i can get to the root cause.
+ drivers/spi/spi-iproc-qspi.c      - Implements the interrupt hooks used by 
+                                   the common driver with "brcm,spi-nsp-qspi"
+                                   compatibility
 
-Hmmmm, is Fastmap involved?
+V6 Changes 
+----------
 
-Thanks,
-//richard
+Bindings Documentation:
+- Changed subject to spi:
+- Squashed all SoCs bindings in one commit 
+- Removed clock-frequency redundant parameter from main spi node
+
+spi-bcm-qspi 
+- Removed redundant transfer delays, let core handle it
+- Removed chip select changes, let core handle it
+- Use of named labels in probe function
+- Add comments for the exported symbols for probe, remove, pm_ops
+  suspend/resume, to be called by the SoC platform driver
+- Remove redundant clock-frequency parsing
+- Removed retry logic code from BSPI
+- Use of big_endian as input parameter to the r/w inline function
+- Suspend/resume uses spi core msg queue suspend and resume calls
+- Other code cleanup to remove unused code
+
+spi-brcmstb-qspi
+-Separated just separated the commit
+
+spi-iproc-qspi
+- Changes name to spi-iproc-qspi
+- Read the dt native endian locally and stored in soc structure
+  to pass to r/w macro
+
+mtd/devices/m25p80 
+- Made a change to be able to fallback to normal spi read
+  when the accelarated read function does not get aligned 
+  buffers, feature used by the BSPI spi_flash_read() method
+
+Kamal Dasu (8):
+  spi: Broadcom BRCMSTB, NSP, NS2 SoC bindings
+  spi: bcm-qspi: Add Broadcom MSPI driver
+  spi: brcmstb-qspi: Broadcom settop platform driver
+  spi: bcm-qspi: Add BSPI spi-nor flash controller driver
+  mtd: m25p80: Let m25p80_read() fallback to spi transfer
+  arm: dts: Add bcm-nsp and bcm958625k support
+  arm64: dts: Add ns2 SoC support
+  spi: iproc-qspi: Add Broadcom iProc SoCs support
+
+ .../devicetree/bindings/spi/brcm,spi-bcm-qspi.txt  |  233 ++++
+ arch/arm/boot/dts/bcm-nsp.dtsi                     |   31 +-
+ arch/arm/boot/dts/bcm958625k.dts                   |   34 +
+ arch/arm64/boot/dts/broadcom/ns2-svk.dts           |   34 +
+ arch/arm64/boot/dts/broadcom/ns2.dtsi              |   18 +
+ drivers/mtd/devices/m25p80.c                       |   11 +-
+ drivers/spi/Kconfig                                |   10 +
+ drivers/spi/Makefile                               |    1 +
+ drivers/spi/spi-bcm-qspi.c                         | 1400 ++++++++++++++++++++
+ drivers/spi/spi-bcm-qspi.h                         |  115 ++
+ drivers/spi/spi-brcmstb-qspi.c                     |   53 +
+ drivers/spi/spi-iproc-qspi.c                       |  163 +++
+ 12 files changed, 2100 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt
+ create mode 100644 drivers/spi/spi-bcm-qspi.c
+ create mode 100644 drivers/spi/spi-bcm-qspi.h
+ create mode 100644 drivers/spi/spi-brcmstb-qspi.c
+ create mode 100644 drivers/spi/spi-iproc-qspi.c
+
+-- 
+1.9.1
