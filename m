@@ -1,16 +1,16 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bceC1-0007sJ-Gh
- for linux-mtd@lists.infradead.org; Wed, 24 Aug 2016 19:50:35 +0000
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+ id 1bcf6f-0004fh-9C
+ for linux-mtd@lists.infradead.org; Wed, 24 Aug 2016 20:49:06 +0000
+Subject: Re: issue with ubi_wl_put_peb
+To: Nikhilesh Reddy <reddyn@codeaurora.org>, linux-mtd@lists.infradead.org
+References: <57BC9C1D.4010402@codeaurora.org>
 From: Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] UBI/UBIFS fixes for 4.8-rc4
-Message-ID: <fdbae72c-e9da-4bee-2452-11ae3e1ea28a@nod.at>
-Date: Wed, 24 Aug 2016 21:49:56 +0200
+Message-ID: <19dc6d1c-30fb-737e-7d7e-da503a25e9f4@nod.at>
+Date: Wed, 24 Aug 2016 22:48:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <57BC9C1D.4010402@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,32 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
+Nikhilesh Reddy,
 
-The following changes since commit 7a1dcf6adaa7cc4b8cd93a3883267497a77b1051:
+On 23.08.2016 20:55, Nikhilesh Reddy wrote:
+> Hi
+> 
+> 
+> I am currently running into a hard to reproduce issue( takes upto a week to reproduce) with ubi_wl_put_peb.
+> 
+> I would appreciate any help you can give me.
+> 
+> In the following stack
+> -000|__list_del_entry()
+> -001|list_del()
+> -002|prot_queue_del()
+> -003|ubi_wl_put_peb()
+> -004|ubi_eba_unmap_leb()
+> -005|ubifs_leb_unmap()
+> -006|ubifs_gc_start_commit()
+> -007|do_commit()
+> -008|run_bg_commit(inline)
+> -008|ubifs_bg_thread()
+> -009|kthread()
+> 
+> This issue was seen with CONFIG_DEBUG_LIST=y
+> 
+> What we see is that the wl entry that is being put is not in the protection queue but seems to be in free/used trees.
 
-  Merge tag 'usercopy-v4.8-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux (2016-08-23 14:32:38 -0400)
+So, you trigger a list assert?
+Please share the kernel log.
 
-are available in the git repository at:
+> In the code  below:
+> http://git.infradead.org/linux-ubifs.git/blob/HEAD:/drivers/mtd/ubi/wl.c#l1231
+> 
+> We see that the the wl_entry is checked to be in used/scrub and erroneous trees .. and then it simply assumes that it is in the protection queue if it is not in any of the rb trees.
+> 
+> There appears to be a race where the  wl_entry is being put before it actually has a chance to be inserted into the protection queue.
+> 
+> This seems to occur when ubi_io_write_vid_hdr takes long to write the VID header.
+> 
+> 
+> I noticed that a check for a similar situation is http://git.infradead.org/linux-ubifs.git/blob/HEAD:/drivers/mtd/ubi/wl.c#l761
+> 
+> Is the same check needed in the case of ubi_wl_put_peb as well?
+> 
+> Can you please tell me if this sounds like a known issue?
+> 
+> I am a little lost on when |ubi_eba_unmap_leb would be called before the PEB has a chance to be inserted into a another tree from the free tree.
+> 
+> I would be grateful any pointers that you can give me so i can get to the root cause.
 
-  git://git.infradead.org/linux-ubifs.git tags/upstream-4.8-rc4
+Hmmmm, is Fastmap involved?
 
-for you to fetch changes up to 17ce1eb0b64eb27d4f9180daae7495fa022c7b0d:
-
-  ubifs: Fix xattr generic handler usage (2016-08-23 23:02:52 +0200)
-
-----------------------------------------------------------------
-This pull requests contains fixes for two issues in UBI and UBIFS:
-1. Wrong UBIFS assertion.
-2. A UBIFS xattr regression.
-
-----------------------------------------------------------------
-Richard Weinberger (1):
-      ubifs: Fix xattr generic handler usage
-
-Vincent Stehlé (1):
-      ubifs: Fix assertion in layout_in_gaps()
-
- fs/ubifs/tnc_commit.c | 2 +-
- fs/ubifs/xattr.c      | 5 ++++-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+Thanks,
+//richard
