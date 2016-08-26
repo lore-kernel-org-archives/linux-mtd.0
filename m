@@ -1,15 +1,15 @@
-Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bcz5K-0005I5-CJ
- for linux-mtd@lists.infradead.org; Thu, 25 Aug 2016 18:09:03 +0000
-Received: by mail-oi0-x244.google.com with SMTP id t127so5202548oie.1
- for <linux-mtd@lists.infradead.org>; Thu, 25 Aug 2016 11:08:41 -0700 (PDT)
-From: "L. D. Pinney" <ldpinney@gmail.com>
-To: Linux MTD development <linux-mtd@lists.infradead.org>
-Cc: "L . D . Pinney" <ldpinney@gmail.com>
-Subject: [PATCH] mtd: spi-nor: add support for ESMT_f25l32qa and ESMT_f25l64qa
-Date: Thu, 25 Aug 2016 13:07:56 -0500
-Message-Id: <1472148476-12467-1-git-send-email-ldpinney@gmail.com>
+Date: Fri, 26 Aug 2016 09:46:53 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] mtd: mxc_nand: Set timing for v2 controllers
+Message-ID: <20160826094653.762be9fb@bbrezillon>
+In-Reply-To: <1471948445-29936-1-git-send-email-s.hauer@pengutronix.de>
+References: <1471948445-29936-1-git-send-email-s.hauer@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +19,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Support for the ESMT_F25L32QA and ESMT_F25L64QA
-These are 4MB and 8MB SPI NOR Chips from Elite Semiconductor Memory Technology
+Hi Sascha,
 
-Signed-off-by: L. D. Pinney <ldpinney@gmail.com>
----
+On Tue, 23 Aug 2016 12:34:05 +0200
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
- drivers/mtd/spi-nor/spi-nor.c | 2 ++
- 1 file changed, 2 insertions(+)
+> So far we relied on reset default or the bootloader to configure a
+> suitable clk rate for the Nand controller. This works but we can
+> optimize the timing for better performance. This sets the clk rate for
+> v2 controllers (i.MX25/35) based on the timing mode read from the ONFI
+> parameter page. This may also enable the symmetric mode (aks EDO mode)
+> if necessary which reads one word per clock cycle.
+> Tested on an i.MX25 with a Micron MT29F4G08ABBDAHC attached.
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/mtd/nand/mxc_nand.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index 5173fad..725223c 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -1012,6 +1012,45 @@ static void preset_v1(struct mtd_info *mtd)
+>  	writew(0x4, NFC_V1_V2_WRPROT);
+>  }
+>  
+> +static void mxc_nand_v2_set_timing(struct mtd_info *mtd, uint16_t *config1)
+> +{
+> +	struct nand_chip *nand_chip = mtd->priv;
+> +	struct mxc_nand_host *host = nand_chip->priv;
+> +	int mode, ret, tRC_min_ns;
+> +	unsigned long rate;
+> +	const struct nand_sdr_timings *timings;
+> +
+> +	mode = onfi_get_async_timing_mode(nand_chip);
+> +	if (mode == ONFI_TIMING_MODE_UNKNOWN)
+> +		return;
+> +
+> +	mode = fls(mode) - 1;
+> +	if (mode < 0)
+> +		mode = 0;
+> +
+> +	timings = onfi_async_timing_mode_to_sdr_timings(mode);
+> +	if (IS_ERR(timings))
+> +		return;
+> +
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d0fc165..8f213ec 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -821,6 +821,8 @@ static const struct flash_info spi_nor_ids[] = {
- 
- 	/* ESMT */
- 	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
-+	{ "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64, SECT_4K) },
-+	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128, SECT_4K) },
- 
- 	/* Everspin */
- 	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+AFAIR, you should apply the new mode on the NAND side
+(ONFI_FEATURE_ADDR_TIMING_MODE) before applying the new config to the
+controller.
+
+See what's done here [1].
+
+Note that on all the NANDs I tested, it seems to work even if you don't
+set ONFI_FEATURE_ADDR_TIMING_MODE, but the ONFI Spec describes the
+procedure as:
+
+1/ detect supported modes
+2/ select one
+3/ apply it to the NAND using set(ONFI_FEATURE_ADDR_TIMING_MODE)
+4/ release the CS
+5/ adjust the controller setting to match the new config
+
+On a side note, I really think we should handle this timing selection in
+the core, and only ask the NAND controller drivers to adapt the
+controller settings.
+
+Thanks,
+
+Boris
+
+> +	tRC_min_ns = timings->tRC_min / 1000;
+> +	rate = 1000000000 / tRC_min_ns;
+> +
+> +	if (clk_round_rate(host->clk, rate) > 33333333)
+> +		/*
+> +		 * If tRC is smaller than 30ns (that is, the rate is higher
+> +		 * than 33.333MHz) we have to use EDO timing.
+> +		 */
+> +		*config1 |= NFC_V2_CONFIG1_ONE_CYCLE;
+> +	else
+> +		/* Otherwise we have two clock cycles per access. */
+> +		rate *= 2;
+> +
+> +	ret = clk_set_rate(host->clk, rate);
+> +	if (ret)
+> +		/* Don't worry, continue with old rate */
+> +		dev_err(host->dev, "failed to set clk rate: %d\n", ret);
+> +}
+> +
+>  static void preset_v2(struct mtd_info *mtd)
+>  {
+>  	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+> @@ -1020,6 +1059,8 @@ static void preset_v2(struct mtd_info *mtd)
+>  
+>  	config1 |= NFC_V2_CONFIG1_FP_INT;
+>  
+> +	mxc_nand_v2_set_timing(mtd, &config1);
+> +
+>  	if (!host->devtype_data->irqpending_quirk)
+>  		config1 |= NFC_V1_V2_CONFIG1_INT_MSK;
+>  
+
+[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/sunxi_nand.c#L1406
