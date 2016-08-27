@@ -1,17 +1,15 @@
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bdUkL-00075Y-3b
- for linux-mtd@lists.infradead.org; Sat, 27 Aug 2016 03:57:30 +0000
-Message-Id: <AZNGQTTD-X7N7-LOW8-6M0V-P7G3GKQQBAU3@mymail-inbox.com>
-Mime-Version: 1.0
-From: Shiny ZelDrian <e.contactsuncity@mymail-inbox.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: arianazelada@riomail-br.com
-Subject: [PR] Aug 26 2016  "PFYU HLP"
-Date: Sat, 27 Aug 2016 05:58:07 +0200
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Date: Sat, 27 Aug 2016 21:43:34 +0200
+From: Daniel Golle <daniel@makrotopia.org>
+To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>,
+ Ralph Sennhauser <ralph.sennhauser@gmail.com>,
+ Zoltan HERPAI <wigyori@uid0.hu>, Hauke Mehrtens <hauke@hauke-m.de>,
+ lede-dev@lists.infradead.org, openwrt-devel@lists.openwrt.org
+Subject: [PATCH/RFC 0/3] UBI: unify mouting rootfs based on cmdline parameter
+Message-ID: <20160827194326.GA1817@makrotopia.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,43 +19,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Friend=2E
+Hi!
 
-May I first and foremost appeal to your understanding if you find my email =
-intrusive=2E
-It is out of desperation that I have chosen to contact you=2E
+In an attempts to fix the flaws of the current set of UBI-related
+patches we are carrying in OpenWrt, I re-wrote the way mounting the
+rootfs from UBI in OpenWrt/LEDE works. The main requirement I face
+which cannot be easily addressed using other means which are already
+available in the kernel is the fact that UBIFS and squashfs-on-UBI
+require different parameters to be set on the cmdline, e.g.
+for UBIFS: ubi.mtd=ubi root=ubi0:rootfs rootfstype=ubifs
+for squashfs: ubi.mtd=ubi ubiblock=0,1 root=/dev/ubiblock0_1 rootfstype=squashfs
 
-My name is ADRIANA MARIA ACCIOLY ZELADA=2E I am a native of Brazil=2E
-I do not know you neither have I met you before=2E I simply found your cont=
-act information from Brazilian Local Data Base Archives=2E Before I go furt=
-her with my intention of contacting  you, The following information is nece=
-ssary for my identification=2E
+The idea behind this patchset is to provide a single syntax which
+allows mouting rootfs in both cases. To achieve that, the parsing of
+the volume name string from UBIFS is moved to UBI, so it can be
+reused by other in-kernel users. This is then used by init/do_mounts.c
+to create a ubiblock device if the filesystem on the device is
+non-UBIFS. To actually set this device to be ROOT_DEV, ubiblock_create
+is extended to allow passing-back the created ubiblock device.
 
-I was married to JORGE LUIZ ZELADA until July 2 2015, when he was arrested =
-by the Rio Special Police on accusation of corruption=2E
-My husband arrest  was nothing but a political witch hunt because of his cr=
-iticism of the current deposed president of Brazil, DILMA ROUSSEFF=2E
-My husband was the International Director/Chief Executive of Petrobras betw=
-een 2008 to 2012=2EYou can read more about his situation on the BBC website=
-:
+With those changes, a single set of cmdline parameters is
+sufficient to mount either UBIFS or any other block filesystem
+by creating a ubiblock device:
+ubi.mtd=ubi root=ubi0:rootfs rootfstype=ubifs,squashfs
 
-http://www=2Ebbc=2Ecom/news/world-latin-america-35467529
+Please comment on the code, which is to considered a loose draft hacked
+up during this evening -- it's untested and certainly still has a lot
+of flaws. Yet, I felt it'd be good to discuss the general direction at
+this early stage.
 
-I am contacting you privately and secrely to seek your assistance in helpin=
-g us receive, accommodate and possibly invest the sum of 15=2E5 M US which =
-my husband managed to safely hold in the shore of Europe under my name as t=
-he Trustee=2E
-The information of the existence of this sum was secretly exposed to me by =
-my husband lawyer=2E
+Cheers
 
-Please I humbly seek your assistance to help us because life is difficult f=
-or us at the moment=2E After my husbands arrest, the Justice Ministry of Ri=
-o De  Janeiro ordered for confiscation of our properties, homes and seizure=
- of my bank account=2E Our traveling documents( Passports) was also taken a=
-way from us=2E
+Daniel
 
-I am ready to work with you once I heard from you=2E
 
-Thank you
-ADRIANA MARIA ACCIOLY ZELADA                      August  17  2016
-Rio De Janerio Brazil=2E
+Daniel Golle (3):
+  UBIFS, UBI: move volume string parser from UBIFS to UBI
+  mtd: ubiblock: introduce ubiblock_create_dev
+  init: auto-create ubiblock device for non-UBIFS rootfs on UBI
+
+ drivers/mtd/ubi/block.c | 11 ++++++++-
+ drivers/mtd/ubi/kapi.c  | 65 +++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/ubi.h   |  2 ++
+ fs/ubifs/super.c        | 64 +-----------------------------------------------
+ include/linux/mtd/ubi.h | 17 +++++++++++++
+ init/do_mounts.c        | 62 ++++++++++++++++++++++++++++++++++++++++------
+ 6 files changed, 150 insertions(+), 71 deletions(-)
+
+-- 
+2.9.3
