@@ -1,19 +1,17 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bdJ9u-0001Ue-VZ
- for linux-mtd@lists.infradead.org; Fri, 26 Aug 2016 15:35:08 +0000
-Date: Fri, 26 Aug 2016 17:34:35 +0200
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Re: Trivial (?) question about nand_command_[lp]()
-In-Reply-To: <20160826113804.10857051@bbrezillon>
-Message-ID: <alpine.DEB.2.02.1608261726540.6821@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1608221313050.6821@lnxricardw1.se.axis.com>
- <20160826113804.10857051@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bdUkL-00075Y-3b
+ for linux-mtd@lists.infradead.org; Sat, 27 Aug 2016 03:57:30 +0000
+Message-Id: <AZNGQTTD-X7N7-LOW8-6M0V-P7G3GKQQBAU3@mymail-inbox.com>
+Mime-Version: 1.0
+From: Shiny ZelDrian <e.contactsuncity@mymail-inbox.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: arianazelada@riomail-br.com
+Subject: [PR] Aug 26 2016  "PFYU HLP"
+Date: Sat, 27 Aug 2016 05:58:07 +0200
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Friend=2E
 
-On Fri, 26 Aug 2016, Boris Brezillon wrote:
+May I first and foremost appeal to your understanding if you find my email =
+intrusive=2E
+It is out of desperation that I have chosen to contact you=2E
 
-> Please Cc the NAND and MTD maintainers when sending NAND related
-> questions.
+My name is ADRIANA MARIA ACCIOLY ZELADA=2E I am a native of Brazil=2E
+I do not know you neither have I met you before=2E I simply found your cont=
+act information from Brazilian Local Data Base Archives=2E Before I go furt=
+her with my intention of contacting  you, The following information is nece=
+ssary for my identification=2E
 
-Ok, will do.
+I was married to JORGE LUIZ ZELADA until July 2 2015, when he was arrested =
+by the Rio Special Police on accusation of corruption=2E
+My husband arrest  was nothing but a political witch hunt because of his cr=
+iticism of the current deposed president of Brazil, DILMA ROUSSEFF=2E
+My husband was the International Director/Chief Executive of Petrobras betw=
+een 2008 to 2012=2EYou can read more about his situation on the BBC website=
+:
 
-> Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
-> 
-> > I'm having a close look at nand_base.c:nand_command(), and there's 
-> > something I can't get my head around: According to the code, when the 
-> > command to be sent is NAND_CMD_SEQIN (0x80), used for programming a page, 
-> > first a read command (READ0, READ1 or READOOB depending on the column 
-> > address) is sent to the flash, followed by the SEQIN proper. Are there 
-> > flashes which require a read command to be sent (with no 
-> > address or data bytes) immediately before Page Program?
-> 
-> No, it's probably a bug. Should be
-> 
-> 	if (command == NAND_CMD_RNDOUT) {
-> 		...
-> 	} else {
-> 		chip->cmd_ctrl(mtd, command, ctrl);
-> 	}
-> 
-> instead of
-> 
-> 	if (command == NAND_CMD_SEQIN) {
-> 		...
-> 	}
-> 	chip->cmd_ctrl(mtd, command, ctrl);
-> 
-> Not sure we have a lot of people testing this code (it's only used
-> when interacting with really old NANDs).
-> 
-> > 
-> > A related issue is a difference versus nand_command_lp(). In the latter, 
-> > NAND_NCE is set for every command towards the flash, which makes sense, as 
-> > the chip enable should be active throughout the whole sequence. However, 
-> > in nand_command(), NAND_NCE is only set when neither NAND_ALE nor NAND_CLE 
-> > are set. Is this an older convention in the code that CE is implied for 
-> > small-page flashes when ALE or CLE is set, but not for the large-page 
-> > case?
-> 
-> No, again, it's probably a bug.
-> 
-> Feel free to send fixes. BTW, do you have a way to test the changes?
+http://www=2Ebbc=2Ecom/news/world-latin-america-35467529
 
-I might be able to find some combination of hardware platform here which 
-has a byte-banged NAND interface, on which we still support recent 
-kernels, and a board which has a socket into which I can put a 256 Mbit 
-flash or similar. I know I have flash chips lying around.
+I am contacting you privately and secrely to seek your assistance in helpin=
+g us receive, accommodate and possibly invest the sum of 15=2E5 M US which =
+my husband managed to safely hold in the shore of Europe under my name as t=
+he Trustee=2E
+The information of the existence of this sum was secretly exposed to me by =
+my husband lawyer=2E
 
-Right now I'm back on the Evatronix driver, so I'll see if I can have a 
-look at the above when that's finished.
+Please I humbly seek your assistance to help us because life is difficult f=
+or us at the moment=2E After my husbands arrest, the Justice Ministry of Ri=
+o De  Janeiro ordered for confiscation of our properties, homes and seizure=
+ of my bank account=2E Our traveling documents( Passports) was also taken a=
+way from us=2E
 
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+I am ready to work with you once I heard from you=2E
+
+Thank you
+ADRIANA MARIA ACCIOLY ZELADA                      August  17  2016
+Rio De Janerio Brazil=2E
