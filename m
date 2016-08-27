@@ -1,12 +1,12 @@
-Date: Sat, 27 Aug 2016 21:43:34 +0200
+Date: Sat, 27 Aug 2016 21:43:53 +0200
 From: Daniel Golle <daniel@makrotopia.org>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
  Ralph Sennhauser <ralph.sennhauser@gmail.com>,
  Zoltan HERPAI <wigyori@uid0.hu>, Hauke Mehrtens <hauke@hauke-m.de>,
  lede-dev@lists.infradead.org, openwrt-devel@lists.openwrt.org
-Subject: [PATCH/RFC 0/3] UBI: unify mouting rootfs based on cmdline parameter
-Message-ID: <20160827194326.GA1817@makrotopia.org>
+Subject: [PATCH 1/3] UBIFS, UBI: move volume string parser from UBIFS to UBI
+Message-ID: <20160827194346.GA17551@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -19,52 +19,196 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-
-In an attempts to fix the flaws of the current set of UBI-related
-patches we are carrying in OpenWrt, I re-wrote the way mounting the
-rootfs from UBI in OpenWrt/LEDE works. The main requirement I face
-which cannot be easily addressed using other means which are already
-available in the kernel is the fact that UBIFS and squashfs-on-UBI
-require different parameters to be set on the cmdline, e.g.
-for UBIFS: ubi.mtd=ubi root=ubi0:rootfs rootfstype=ubifs
-for squashfs: ubi.mtd=ubi ubiblock=0,1 root=/dev/ubiblock0_1 rootfstype=squashfs
-
-The idea behind this patchset is to provide a single syntax which
-allows mouting rootfs in both cases. To achieve that, the parsing of
-the volume name string from UBIFS is moved to UBI, so it can be
-reused by other in-kernel users. This is then used by init/do_mounts.c
-to create a ubiblock device if the filesystem on the device is
-non-UBIFS. To actually set this device to be ROOT_DEV, ubiblock_create
-is extended to allow passing-back the created ubiblock device.
-
-With those changes, a single set of cmdline parameters is
-sufficient to mount either UBIFS or any other block filesystem
-by creating a ubiblock device:
-ubi.mtd=ubi root=ubi0:rootfs rootfstype=ubifs,squashfs
-
-Please comment on the code, which is to considered a loose draft hacked
-up during this evening -- it's untested and certainly still has a lot
-of flaws. Yet, I felt it'd be good to discuss the general direction at
-this early stage.
-
-Cheers
-
-Daniel
-
-
-Daniel Golle (3):
-  UBIFS, UBI: move volume string parser from UBIFS to UBI
-  mtd: ubiblock: introduce ubiblock_create_dev
-  init: auto-create ubiblock device for non-UBIFS rootfs on UBI
-
- drivers/mtd/ubi/block.c | 11 ++++++++-
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
  drivers/mtd/ubi/kapi.c  | 65 +++++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/ubi/ubi.h   |  2 ++
  fs/ubifs/super.c        | 64 +-----------------------------------------------
- include/linux/mtd/ubi.h | 17 +++++++++++++
- init/do_mounts.c        | 62 ++++++++++++++++++++++++++++++++++++++++------
- 6 files changed, 150 insertions(+), 71 deletions(-)
+ include/linux/mtd/ubi.h |  1 +
+ 3 files changed, 67 insertions(+), 63 deletions(-)
 
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index e844887..3dda9c3 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -20,6 +20,7 @@
+ 
+ /* This file mostly implements UBI kernel API functions */
+ 
++#include <linux/ctype.h>
+ #include <linux/module.h>
+ #include <linux/err.h>
+ #include <linux/slab.h>
+@@ -329,6 +330,69 @@ struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode)
+ EXPORT_SYMBOL_GPL(ubi_open_volume_path);
+ 
+ /**
++ * ubi_open_volume_str - parse UBI device name string and open the UBI device.
++ * @name: UBI volume name
++ * @mode: UBI volume open mode
++ *
++ * The primary method of mounting UBIFS is by specifying the UBI volume
++ * character device node path. However, UBIFS may also be mounted withoug any
++ * character device node using one of the following methods:
++ *
++ * o ubiX_Y    - mount UBI device number X, volume Y;
++ * o ubiY      - mount UBI device number 0, volume Y;
++ * o ubiX:NAME - mount UBI device X, volume with name NAME;
++ * o ubi:NAME  - mount UBI device 0, volume with name NAME.
++ *
++ * Alternative '!' separator may be used instead of ':' (because some shells
++ * like busybox may interpret ':' as an NFS host name separator). This function
++ * returns UBI volume description object in case of success and a negative
++ * error code in case of failure.
++ */
++struct ubi_volume_desc *ubi_open_volume_str(const char *name, int mode)
++{
++	struct ubi_volume_desc *ubi;
++	int dev, vol;
++	char *endptr;
++
++	/* First, try to open using the device node path method */
++	ubi = ubi_open_volume_path(name, mode);
++	if (!IS_ERR(ubi))
++		return ubi;
++
++	/* Try the "nodev" method */
++	if (name[0] != 'u' || name[1] != 'b' || name[2] != 'i')
++		return ERR_PTR(-EINVAL);
++
++	/* ubi:NAME method */
++	if ((name[3] == ':' || name[3] == '!') && name[4] != '\0')
++		return ubi_open_volume_nm(0, name + 4, mode);
++
++	if (!isdigit(name[3]))
++		return ERR_PTR(-EINVAL);
++
++	dev = simple_strtoul(name + 3, &endptr, 0);
++
++	/* ubiY method */
++	if (*endptr == '\0')
++		return ubi_open_volume(0, dev, mode);
++
++	/* ubiX_Y method */
++	if (*endptr == '_' && isdigit(endptr[1])) {
++		vol = simple_strtoul(endptr + 1, &endptr, 0);
++		if (*endptr != '\0')
++			return ERR_PTR(-EINVAL);
++		return ubi_open_volume(dev, vol, mode);
++	}
++
++	/* ubiX:NAME method */
++	if ((*endptr == ':' || *endptr == '!') && endptr[1] != '\0')
++		return ubi_open_volume_nm(dev, ++endptr, mode);
++
++	return ERR_PTR(-EINVAL);
++}
++EXPORT_SYMBOL_GPL(ubi_open_volume_str);
++
++/**
+  * ubi_close_volume - close UBI volume.
+  * @desc: volume descriptor
+  */
+@@ -365,6 +429,7 @@ void ubi_close_volume(struct ubi_volume_desc *desc)
+ }
+ EXPORT_SYMBOL_GPL(ubi_close_volume);
+ 
++
+ /**
+  * leb_read_sanity_check - does sanity checks on read requests.
+  * @desc: volume descriptor
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 1fd90c0..a59fa2f 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1887,68 +1887,6 @@ const struct super_operations ubifs_super_operations = {
+ 	.sync_fs       = ubifs_sync_fs,
+ };
+ 
+-/**
+- * open_ubi - parse UBI device name string and open the UBI device.
+- * @name: UBI volume name
+- * @mode: UBI volume open mode
+- *
+- * The primary method of mounting UBIFS is by specifying the UBI volume
+- * character device node path. However, UBIFS may also be mounted withoug any
+- * character device node using one of the following methods:
+- *
+- * o ubiX_Y    - mount UBI device number X, volume Y;
+- * o ubiY      - mount UBI device number 0, volume Y;
+- * o ubiX:NAME - mount UBI device X, volume with name NAME;
+- * o ubi:NAME  - mount UBI device 0, volume with name NAME.
+- *
+- * Alternative '!' separator may be used instead of ':' (because some shells
+- * like busybox may interpret ':' as an NFS host name separator). This function
+- * returns UBI volume description object in case of success and a negative
+- * error code in case of failure.
+- */
+-static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+-{
+-	struct ubi_volume_desc *ubi;
+-	int dev, vol;
+-	char *endptr;
+-
+-	/* First, try to open using the device node path method */
+-	ubi = ubi_open_volume_path(name, mode);
+-	if (!IS_ERR(ubi))
+-		return ubi;
+-
+-	/* Try the "nodev" method */
+-	if (name[0] != 'u' || name[1] != 'b' || name[2] != 'i')
+-		return ERR_PTR(-EINVAL);
+-
+-	/* ubi:NAME method */
+-	if ((name[3] == ':' || name[3] == '!') && name[4] != '\0')
+-		return ubi_open_volume_nm(0, name + 4, mode);
+-
+-	if (!isdigit(name[3]))
+-		return ERR_PTR(-EINVAL);
+-
+-	dev = simple_strtoul(name + 3, &endptr, 0);
+-
+-	/* ubiY method */
+-	if (*endptr == '\0')
+-		return ubi_open_volume(0, dev, mode);
+-
+-	/* ubiX_Y method */
+-	if (*endptr == '_' && isdigit(endptr[1])) {
+-		vol = simple_strtoul(endptr + 1, &endptr, 0);
+-		if (*endptr != '\0')
+-			return ERR_PTR(-EINVAL);
+-		return ubi_open_volume(dev, vol, mode);
+-	}
+-
+-	/* ubiX:NAME method */
+-	if ((*endptr == ':' || *endptr == '!') && endptr[1] != '\0')
+-		return ubi_open_volume_nm(dev, ++endptr, mode);
+-
+-	return ERR_PTR(-EINVAL);
+-}
+-
+ static struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi)
+ {
+ 	struct ubifs_info *c;
+@@ -2105,7 +2043,7 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
+ 	 * because this might be a new mount point, and UBI allows only one
+ 	 * read-write user at a time.
+ 	 */
+-	ubi = open_ubi(name, UBI_READONLY);
++	ubi = ubi_open_volume_str(name, UBI_READONLY);
+ 	if (IS_ERR(ubi)) {
+ 		pr_err("UBIFS error (pid: %d): cannot open \"%s\", error %d",
+ 		       current->pid, name, (int)PTR_ERR(ubi));
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index 1e271cb..0b92aa5 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -241,6 +241,7 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode);
+ struct ubi_volume_desc *ubi_open_volume_nm(int ubi_num, const char *name,
+ 					   int mode);
+ struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode);
++struct ubi_volume_desc *ubi_open_volume_str(const char *pathname, int mode);
+ 
+ int ubi_register_volume_notifier(struct notifier_block *nb,
+ 				 int ignore_existing);
 -- 
 2.9.3
