@@ -1,16 +1,22 @@
-Message-ID: <1472443093.27061.4.camel@mtkswgap22>
-Subject: [Patch] mtd: fix writing incorrect ECC parity data in OOB region.
-From: mtk04561 <rogercc.lin@mediatek.com>
-To: <boris.brezillon@free-electrons.com>
-CC: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
- <computersforpeace@gmail.com>, <daniel.thompson@linaro.org>,
- <linux-mtd@lists.infradead.org>, <matthias.bgg@gmail.com>,
- <linux-mediatek@lists.infradead.org>, <dwmw2@infradead.org>,
- <blogic@openwrt.org>
-Date: Mon, 29 Aug 2016 11:58:13 +0800
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1beGjW-0000yZ-4H
+ for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 07:11:50 +0000
+Date: Mon, 29 Aug 2016 10:11:25 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ Lee Jones <lee.jones@linaro.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Lee Jones <lee.jones@linaro.org>, Peter Tyser <ptyser@xes-inc.com>,
+ key.seong.lim@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] spi-nor: Add support for Intel SPI serial flash
+ controller
+Message-ID: <20160829071125.GX1812@lahna.fi.intel.com>
+References: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,98 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Mon, Aug 15, 2016 at 10:10:41AM +0300, Mika Westerberg wrote:
+> Hi,
+> 
+> This is third version of the series. Previous versions can be found:
+> 
+>   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
+>   v1: https://lkml.org/lkml/2016/6/14/269
+> 
+> This series adds support for the Intel SPI serial flash controller found on
+> many recent Intel CPUs including Baytrail and Braswell. This driver makes
+> it possible to access the BIOS and other platform data which is stored on
+> the SPI serial flash. It is also possible to upgrade the BIOS using this
+> driver if it has not been protected by special hardware bits.
+> 
+> The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
+> MAX.
+> 
+> Since poking the SPI serial flash can brick the machine, this driver can
+> only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
+> unless instructed othwerwise by module parameter.
+> 
+> Lee can you ACK/NACK the MFD parts so that we can merge the whole series
+> through the MTD tree?
 
-I found a problem in current Mediatek upstream NAND driver (of nand/next
-branch). When testing the upstream driver with UBIFS file system, it has
-some chance to create incorrect ECC data in the second subpage, this
-makes UBIFS failed to mount. Below patch fixes this problem. Please help
-to review the patch and upstream. Thank you.
+Hi,
 
-Best regards,
-Roger
+Any comments on this series? It missed v4.8 already so it would be nice
+to get it merged for v4.9.
 
-
-
-Description:
-When mtk_ecc_encode() is writing the ECC parity data to the OOB region,
-because each register is 4 bytes in length, but the len's unit is in
-bytes, the operation in the for loop will cross the ECC's boundary.
-
-And when mtk_nfc_do_write_page() comparing the sector number, because
-the sector number field is at the 12th-bit position of NFI_BYTELEN
-register, the masked register should be shifted 12 bits before being
-compared. The result of this bug may cause the second subpage has
-incomplete ECC parity bytes.
-
-Test:
-The patch passed the test of UBIFS file-system read/write on Mediatek's
-RFB. The tested driver is checked-out from LEDE OpenWRT project's
-upstream driver, which is pretty much same as nand/next branch upstream
-driver(git clone https://git.lede-project.org/source.git). 
-
-
-Signed-off-by: RogerCC Lin <rogercc.lin@mediatek.com>
----
-diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-index 25a4fbd..0a7ce8d 100644
---- a/drivers/mtd/nand/mtk_ecc.c
-+++ b/drivers/mtd/nand/mtk_ecc.c
-@@ -366,7 +366,8 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct
-mtk_ecc_config *config,
-                   u8 *data, u32 bytes)
- {
-        dma_addr_t addr;
--       u32 *p, len, i;
-+       u8 *p;
-+       u32 len, i, val;
-        int ret = 0;
-
-        addr = dma_map_single(ecc->dev, data, bytes, DMA_TO_DEVICE);
-@@ -395,8 +396,11 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct
-mtk_ecc_config *config,
-        p = (u32 *)(data + bytes);
-
-        /* write the parity bytes generated by the ECC back to the OOB
-region */
--       for (i = 0; i < len; i++)
--               p[i] = readl(ecc->regs + ECC_ENCPAR(i));
-+       for (i = 0; i < len; i++) {
-+               if ((i % 4) == 0)
-+                       val = readl(ecc->regs + ECC_ENCPAR(i >> 2));
-+               p[i] = *((u8 *)&val + (i % 4));
-+       }
- timeout:
-
-        dma_unmap_single(ecc->dev, addr, bytes, DMA_TO_DEVICE);
-diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-index ddaa2ac..9c49121 100644
---- a/drivers/mtd/nand/mtk_nand.c
-+++ b/drivers/mtd/nand/mtk_nand.c
-@@ -699,8 +699,8 @@ static int mtk_nfc_do_write_page(struct mtd_info
-*mtd, struct nand_chip *chip,
-        }
-
-        ret = readl_poll_timeout_atomic(nfc->regs + NFI_ADDRCNTR, reg,
--                                       (reg & CNTR_MASK) >=
-chip->ecc.steps,
--                                       10, MTK_TIMEOUT);
-+                                       ((reg & CNTR_MASK) >> 12) >=
-+                                       chip->ecc.steps, 10,
-MTK_TIMEOUT);
-        if (ret)
-                dev_err(dev, "hwecc write timeout\n");
-
-@@ -902,8 +902,8 @@ static int mtk_nfc_read_subpage(struct mtd_info
-*mtd, struct nand_chip *chip,
-                dev_warn(nfc->dev, "read ahb/dma done timeout\n");
-
-        rc = readl_poll_timeout_atomic(nfc->regs + NFI_BYTELEN, reg,
--                                      (reg & CNTR_MASK) >= sectors, 10,
--                                      MTK_TIMEOUT);
-+                                      ((reg & CNTR_MASK) >> 12) >=
-sectors,
-+                                      10, MTK_TIMEOUT);
-        if (rc < 0) {
-                dev_err(nfc->dev, "subpage done timeout\n");
-                bitflips = -EIO;
+Thanks.
