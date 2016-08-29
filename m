@@ -1,23 +1,21 @@
-Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1beMYV-00038k-Ut
- for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 13:24:54 +0000
-Received: by mail-lf0-x233.google.com with SMTP id f93so100730584lfi.2
- for <linux-mtd@lists.infradead.org>; Mon, 29 Aug 2016 06:24:31 -0700 (PDT)
+ id 1beMYy-0003LN-Fs
+ for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 13:25:21 +0000
+Received: by mail-lf0-x243.google.com with SMTP id 33so6963530lfw.3
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Aug 2016 06:24:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <VI1PR0401MB2640FF70F5770AEB32F7449E94140@VI1PR0401MB2640.eurprd04.prod.outlook.com>
-References: <1470597730-10400-1-git-send-email-jteki@openedev.com>
- <VI1PR0401MB2640FF70F5770AEB32F7449E94140@VI1PR0401MB2640.eurprd04.prod.outlook.com>
+In-Reply-To: <1470775225-19787-1-git-send-email-jteki@openedev.com>
+References: <1470775225-19787-1-git-send-email-jteki@openedev.com>
 From: Jagan Teki <jagannadh.teki@gmail.com>
-Date: Mon, 29 Aug 2016 18:54:28 +0530
-Message-ID: <CAD6G_RQmTJrT0AneZp1h+4Vc5f5d83Lp=be-6SSB7fAoweZg1A@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: Add s25fs256s1 spi-nor flash support
-To: Yunhui Cui <yunhui.cui@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Michael Trimarchi <michael@amarulasolutions.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date: Mon, 29 Aug 2016 18:54:57 +0530
+Message-ID: <CAD6G_RRHP+pKJOAMO0UtNNtSnpSmE_FrKU5=o8FUAkKjP_fSyQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mtd: spi-nor: Add quad page program support
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jagan Teki <jteki@openedev.com>,
+ Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,41 +26,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 17, 2016 at 2:27 PM, Yunhui Cui <yunhui.cui@nxp.com> wrote:
+On Wed, Aug 10, 2016 at 2:10 AM, Jagan Teki <jteki@openedev.com> wrote:
+> Add quad page program support with the use of nor->flags
+> and then controller will use 4 lines for data transmission
+> which is quite faster than page program(02h)
 >
-> On Monday, August 08, 2016 3:22 AM, Jagan Teki wrote:
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Jagan Teki <jteki@openedev.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 13 +++++++++++++
+>  include/linux/mtd/spi-nor.h   |  2 ++
+>  2 files changed, 15 insertions(+)
 >
->> Add Spansion s25fs256s1 spi-nor flash to the list of spi_nor_ids.
->>
->> In spansion S25FS-S family the physical sectors are grouped as normal and
->> parameter sectors. Parameter sectors are 4kB in size with 8 set located
->> at the bottom or top address of a device.
->> Normal sectors are similar to other flash family with sizes of 64kB or 32
->> kB.
->>
->> To erase whole flash using sector erase(D8h or DCh) won't effect the
->> parameter sectors, so in order to erase these we must use 4K sector erase
->> commands (20h or 21h) separately.
->>
->> So better to erase the whole flash using 4K sector erase instead of
->> detecting these family parts again and do two different erase operations.
->>
->> Cc: Brian Norris <computersforpeace@gmail.com>
->> Cc: Yunhui Cui <yunhui.cui@nxp.com>
->> Cc: Michael Trimarchi <michael@amarulasolutions.com>
->> Signed-off-by: Jagan Teki <jteki@openedev.com>
->> ---
->> Changes for v2:
->>       - Fix wrong vendor name in commit message
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d0fc165..f88bd7e 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -75,6 +75,7 @@ struct flash_info {
+>                                          * bit. Must be used with
+>                                          * SPI_NOR_HAS_LOCK.
+>                                          */
+> +#define SPI_NOR_QUAD_WRITE     BIT(10) /* Flash supports Quad Write */
+>  };
 >
-> [Yunhui] Actually, This flash is belongs to S25FS-S Family, besides,
-> S25FS128S 128 Mbit (16 Mbyte)
-> S25FS256S 256 Mbit (32 Mbyte)
-> S25FS512S 512 Mbit (64 Mbyte)
-> They need some specific operations, not the Spansion S25FL128S Family.
+>  #define JEDEC_MFR(info)        ((info)->id[0])
+> @@ -1306,6 +1307,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>         struct device *dev = nor->dev;
+>         struct mtd_info *mtd = &nor->mtd;
+>         struct device_node *np = spi_nor_get_flash_node(nor);
+> +       bool need_quad = false;
+>         int ret;
+>         int i;
+>
+> @@ -1441,6 +1443,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>                         return ret;
+>                 }
+>                 nor->flash_read = SPI_NOR_QUAD;
+> +               need_quad = true;
+>         } else if (mode == SPI_NOR_DUAL && info->flags & SPI_NOR_DUAL_READ) {
+>                 nor->flash_read = SPI_NOR_DUAL;
+>         }
+> @@ -1465,6 +1468,16 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>         }
+>
+>         nor->program_opcode = SPINOR_OP_PP;
+> +       if (nor->flags == SNOR_F_USE_QPP && info->flags & SPI_NOR_QUAD_WRITE) {
+> +               if (!need_quad)
+> +                       ret = set_quad_mode(nor, info);
+> +                       if (ret) {
+> +                               dev_err(dev, "quad mode not supported\n");
+> +                               return ret;
+> +                       }
+> +               }
+> +               nor->program_opcode = SPINOR_OP_QPP;
+> +       }
+>
+>         if (info->addr_width)
+>                 nor->addr_width = info->addr_width;
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index c425c7b..aa0e6cd 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -46,6 +46,7 @@
+>  #define SPINOR_OP_READ_1_1_2   0x3b    /* Read data bytes (Dual SPI) */
+>  #define SPINOR_OP_READ_1_1_4   0x6b    /* Read data bytes (Quad SPI) */
+>  #define SPINOR_OP_PP           0x02    /* Page program (up to 256 bytes) */
+> +#define SPINOR_OP_QPP          0x32    /* Quad Page program */
+>  #define SPINOR_OP_BE_4K                0x20    /* Erase 4KiB block */
+>  #define SPINOR_OP_BE_4K_PMC    0xd7    /* Erase 4KiB block on PMC chips */
+>  #define SPINOR_OP_BE_32K       0x52    /* Erase 32KiB block */
+> @@ -119,6 +120,7 @@ enum spi_nor_ops {
+>  enum spi_nor_option_flags {
+>         SNOR_F_USE_FSR          = BIT(0),
+>         SNOR_F_HAS_SR_TB        = BIT(1),
+> +       SNOR_F_USE_QPP          = BIT(2),
+>  };
+>
+>  /**
+> --
+> 2.7.4
+>
 
-Please point what exactly the specific ops? because I observed S25FL
-vs S25FS have change in a way that they erase the whole flash.
+Ping!
 
 -- 
-Jagan Teki.
+Jagan Teki
