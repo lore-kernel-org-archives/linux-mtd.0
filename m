@@ -1,15 +1,24 @@
-Received: from mail02.prevas.se ([62.95.78.10])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1beJ81-00053y-G6
- for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 09:45:18 +0000
-From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-To: <linux-mtd@lists.infradead.org>
-CC: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-Subject: [PATCH] mtd: spi-nor: Added support for s25fl208k
-Date: Mon, 29 Aug 2016 11:44:27 +0200
-Message-ID: <20160829094427.5395-1-sean.nyekjaer@prevas.dk>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1beJM8-0006kC-LN
+ for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 09:59:53 +0000
+Date: Mon, 29 Aug 2016 11:59:30 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Karl Beldan <kbeldan@baylibre.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Richard
+ Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Sekhar
+ Nori <nsekhar@ti.com>, Kevin Hilman <khilman@baylibre.com>, Karl Beldan
+ <karl.beldan+oss@gmail.com>
+Subject: Re: [PATCH] mtd: nand: davinci: Reinitialize the HW ECC engine in
+ 4bit hwctl
+Message-ID: <20160829115930.517a133e@bbrezillon>
+In-Reply-To: <20160829074550.29247-1-kbeldan@baylibre.com>
+References: <20160829074550.29247-1-kbeldan@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,22 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
----
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+On Mon, 29 Aug 2016 07:45:49 +0000
+Karl Beldan <kbeldan@baylibre.com> wrote:
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d0fc165..80e7968 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -921,6 +921,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, SECT_4K) },
- 	{ "s25fl164k",  INFO(0x014017,      0,  64 * 1024, 128, SECT_4K) },
- 	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ) },
-+	{ "s25fl208k",  INFO(0x014014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ) },
- 
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
- 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
--- 
-2.9.3
+> This fixes subpage writes when using 4-bit HW ECC.
+> 
+> There has been numerous reports about ECC errors with devices using this
+> driver for a while.  Also the 4-bit ECC has been reported as broken with
+> subpages in [1] and with 16 bits NANDs in the driver and in mach* board
+> files both in mainline and in the vendor BSPs.
+> 
+> What I saw with 4-bit ECC on a 16bits NAND (on an LCDK) which got me to
+> try reinitializing the ECC engine:
+> - R/W on whole pages properly generates/checks RS code
+> - try writing the 1st subpage only of a blank page, the subpage is well
+>   written and the RS code properly generated, re-reading the same page
+>   the HW detects some ECC error, reading the same page again no ECC
+>   error is detected
+> 
+> Note that the ECC engine is already reinitialized in the 1-bit case.
+> 
+> Tested on my LCDK with UBI+UBIFS using subpages.
+> This could potentially get rid of the issue workarounded in [1].
+> 
+> [1] 28c015a9daab ("mtd: davinci-nand: disable subpage write for keystone-nand")
+> 
+> Signed-off-by: Karl Beldan <kbeldan@baylibre.com>
+
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Brian, can you take this patch directly in your tree. If that's not
+possible, let me know, I'll add the Fixes and Cc:stable tags and take
+it for 4.9.
+
+Thanks,
+
+Boris
+
+> ---
+>  drivers/mtd/nand/davinci_nand.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+> index cc07ba0..27fa8b8 100644
+> --- a/drivers/mtd/nand/davinci_nand.c
+> +++ b/drivers/mtd/nand/davinci_nand.c
+> @@ -240,6 +240,9 @@ static void nand_davinci_hwctl_4bit(struct mtd_info *mtd, int mode)
+>  	unsigned long flags;
+>  	u32 val;
+>  
+> +	/* Reset ECC hardware */
+> +	davinci_nand_readl(info, NAND_4BIT_ECC1_OFFSET);
+> +
+>  	spin_lock_irqsave(&davinci_nand_lock, flags);
+>  
+>  	/* Start 4-bit ECC calculation for read/write */
