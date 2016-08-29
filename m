@@ -1,21 +1,18 @@
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1beHGB-0000oC-Gx
- for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 07:45:36 +0000
-Received: by mail-wm0-x236.google.com with SMTP id o80so77477449wme.1
- for <linux-mtd@lists.infradead.org>; Mon, 29 Aug 2016 00:45:14 -0700 (PDT)
-From: Karl Beldan <kbeldan@baylibre.com>
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Sekhar Nori <nsekhar@ti.com>,
- Kevin Hilman <khilman@baylibre.com>,
- Karl Beldan <karl.beldan+oss@gmail.com>, Karl Beldan <kbeldan@baylibre.com>
-Subject: [PATCH] mtd: nand: davinci: Reinitialize the HW ECC engine in 4bit
- hwctl
-Date: Mon, 29 Aug 2016 07:45:49 +0000
-Message-Id: <20160829074550.29247-1-kbeldan@baylibre.com>
+Date: Mon, 29 Aug 2016 10:10:06 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: mtk04561 <rogercc.lin@mediatek.com>
+Cc: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
+ <computersforpeace@gmail.com>, <daniel.thompson@linaro.org>,
+ <linux-mtd@lists.infradead.org>, <matthias.bgg@gmail.com>,
+ <linux-mediatek@lists.infradead.org>, <dwmw2@infradead.org>,
+ <blogic@openwrt.org>, Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+Subject: Re: [Patch] mtd: fix writing incorrect ECC parity data in OOB region.
+Message-ID: <20160829101006.2b200e0a@bbrezillon>
+In-Reply-To: <1472443093.27061.4.camel@mtkswgap22>
+References: <1472443093.27061.4.camel@mtkswgap22>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +22,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes subpage writes when using 4-bit HW ECC.
++Jorge
 
-There has been numerous reports about ECC errors with devices using this
-driver for a while.  Also the 4-bit ECC has been reported as broken with
-subpages in [1] and with 16 bits NANDs in the driver and in mach* board
-files both in mainline and in the vendor BSPs.
+Hi Roger,
 
-What I saw with 4-bit ECC on a 16bits NAND (on an LCDK) which got me to
-try reinitializing the ECC engine:
-- R/W on whole pages properly generates/checks RS code
-- try writing the 1st subpage only of a blank page, the subpage is well
-  written and the RS code properly generated, re-reading the same page
-  the HW detects some ECC error, reading the same page again no ECC
-  error is detected
+On Mon, 29 Aug 2016 11:58:13 +0800
+mtk04561 <rogercc.lin@mediatek.com> wrote:
 
-Note that the ECC engine is already reinitialized in the 1-bit case.
+> Hi Boris,
+> 
+> I found a problem in current Mediatek upstream NAND driver (of nand/next
+> branch). When testing the upstream driver with UBIFS file system, it has
+> some chance to create incorrect ECC data in the second subpage, this
+> makes UBIFS failed to mount. Below patch fixes this problem. Please help
+> to review the patch and upstream. Thank you.
+> 
+> Best regards,
+> Roger
 
-Tested on my LCDK with UBI+UBIFS using subpages.
-This could potentially get rid of the issue workarounded in [1].
+Can you put this message after the '---' (below your SoB), so that it
+does not appear when applying the patch.
 
-[1] 28c015a9daab ("mtd: davinci-nand: disable subpage write for keystone-nand")
+> 
+> 
+> 
+> Description:
 
-Signed-off-by: Karl Beldan <kbeldan@baylibre.com>
----
- drivers/mtd/nand/davinci_nand.c | 3 +++
- 1 file changed, 3 insertions(+)
+Drop the 'Description:' line.
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index cc07ba0..27fa8b8 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -240,6 +240,9 @@ static void nand_davinci_hwctl_4bit(struct mtd_info *mtd, int mode)
- 	unsigned long flags;
- 	u32 val;
- 
-+	/* Reset ECC hardware */
-+	davinci_nand_readl(info, NAND_4BIT_ECC1_OFFSET);
-+
- 	spin_lock_irqsave(&davinci_nand_lock, flags);
- 
- 	/* Start 4-bit ECC calculation for read/write */
--- 
-2.9.2
+> When mtk_ecc_encode() is writing the ECC parity data to the OOB region,
+> because each register is 4 bytes in length, but the len's unit is in
+> bytes, the operation in the for loop will cross the ECC's boundary.
+> 
+> And when mtk_nfc_do_write_page() comparing the sector number, because
+> the sector number field is at the 12th-bit position of NFI_BYTELEN
+> register, the masked register should be shifted 12 bits before being
+> compared. The result of this bug may cause the second subpage has
+> incomplete ECC parity bytes.
+
+Maybe you could split those changes in 2 patches (not a strong
+requirement).
+
+> 
+> Test:
+
+Drop the 'Test:' line.
+
+> The patch passed the test of UBIFS file-system read/write on Mediatek's
+> RFB. The tested driver is checked-out from LEDE OpenWRT project's
+> upstream driver, which is pretty much same as nand/next branch upstream
+> driver(git clone https://git.lede-project.org/source.git). 
+> 
+> 
+> Signed-off-by: RogerCC Lin <rogercc.lin@mediatek.com>
+> ---
+> diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
+> index 25a4fbd..0a7ce8d 100644
+> --- a/drivers/mtd/nand/mtk_ecc.c
+> +++ b/drivers/mtd/nand/mtk_ecc.c
+> @@ -366,7 +366,8 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct
+> mtk_ecc_config *config,
+>                    u8 *data, u32 bytes)
+>  {
+>         dma_addr_t addr;
+> -       u32 *p, len, i;
+> +       u8 *p;
+> +       u32 len, i, val;
+>         int ret = 0;
+> 
+>         addr = dma_map_single(ecc->dev, data, bytes, DMA_TO_DEVICE);
+> @@ -395,8 +396,11 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct
+> mtk_ecc_config *config,
+>         p = (u32 *)(data + bytes);
+
+Hm, you should now do:
+
+	p = data + bytes;
+
+> 
+>         /* write the parity bytes generated by the ECC back to the OOB
+> region */
+> -       for (i = 0; i < len; i++)
+> -               p[i] = readl(ecc->regs + ECC_ENCPAR(i));
+> +       for (i = 0; i < len; i++) {
+> +               if ((i % 4) == 0)
+> +                       val = readl(ecc->regs + ECC_ENCPAR(i >> 2));
+> +               p[i] = *((u8 *)&val + (i % 4));
+
+Please, use a shift operator here:
+
+		p[i] = (val >> ((i % 4) * 8)) & 0xff;
+
+Otherwise you're exposed to endianness conversion problems (this works
+fine in your case because you're using a little-endian kernel).
+
+> +       }
+>  timeout:
+> 
+>         dma_unmap_single(ecc->dev, addr, bytes, DMA_TO_DEVICE);
+> diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
+> index ddaa2ac..9c49121 100644
+> --- a/drivers/mtd/nand/mtk_nand.c
+> +++ b/drivers/mtd/nand/mtk_nand.c
+> @@ -699,8 +699,8 @@ static int mtk_nfc_do_write_page(struct mtd_info
+> *mtd, struct nand_chip *chip,
+>         }
+> 
+>         ret = readl_poll_timeout_atomic(nfc->regs + NFI_ADDRCNTR, reg,
+> -                                       (reg & CNTR_MASK) >=
+> chip->ecc.steps,
+> -                                       10, MTK_TIMEOUT);
+> +                                       ((reg & CNTR_MASK) >> 12) >=
+> +                                       chip->ecc.steps, 10,
+
+Please keep '((reg & CNTR_MASK) >> 12) >= chip->ecc.steps' on the same
+line.
+
+If you want to comply with the 80 char lines, you can do:
+
+	ret = readl_poll_timeout_atomic(nfc->regs + NFI_ADDRCNTR, reg,
+				((reg & CNTR_MASK) >> 12) >= chip->ecc.steps,
+				10, MTK_TIMEOUT);
+
+
+>         if (ret)
+>                 dev_err(dev, "hwecc write timeout\n");
+> 
+> @@ -902,8 +902,8 @@ static int mtk_nfc_read_subpage(struct mtd_info
+> *mtd, struct nand_chip *chip,
+>                 dev_warn(nfc->dev, "read ahb/dma done timeout\n");
+> 
+>         rc = readl_poll_timeout_atomic(nfc->regs + NFI_BYTELEN, reg,
+> -                                      (reg & CNTR_MASK) >= sectors, 10,
+> -                                      MTK_TIMEOUT);
+> +                                      ((reg & CNTR_MASK) >> 12) >=
+> sectors,
+> +                                      10, MTK_TIMEOUT);
+>         if (rc < 0) {
+>                 dev_err(nfc->dev, "subpage done timeout\n");
+>                 bitflips = -EIO;
+> 
+> 
