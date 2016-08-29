@@ -1,20 +1,24 @@
-Message-ID: <1472471610.11041.10.camel@mtkswgap22>
-Subject: Re: [PATCH v2 0/2] mtd: nand: fix writing incorrect ECC parity data
- in OOB region.
-From: RogerCC.Lin <rogercc.lin@mediatek.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
- <computersforpeace@gmail.com>, <daniel.thompson@linaro.org>,
- <linux-mtd@lists.infradead.org>, <matthias.bgg@gmail.com>,
- <linux-mediatek@lists.infradead.org>, <dwmw2@infradead.org>,
- <blogic@openwrt.org>, Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Date: Mon, 29 Aug 2016 19:53:30 +0800
-In-Reply-To: <1472470803.11041.4.camel@mtkswgap22>
-References: <1472443093.27061.4.camel@mtkswgap22>
- <20160829101006.2b200e0a@bbrezillon> <1472470803.11041.4.camel@mtkswgap22>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1beMYV-00038k-Ut
+ for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 13:24:54 +0000
+Received: by mail-lf0-x233.google.com with SMTP id f93so100730584lfi.2
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Aug 2016 06:24:31 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <VI1PR0401MB2640FF70F5770AEB32F7449E94140@VI1PR0401MB2640.eurprd04.prod.outlook.com>
+References: <1470597730-10400-1-git-send-email-jteki@openedev.com>
+ <VI1PR0401MB2640FF70F5770AEB32F7449E94140@VI1PR0401MB2640.eurprd04.prod.outlook.com>
+From: Jagan Teki <jagannadh.teki@gmail.com>
+Date: Mon, 29 Aug 2016 18:54:28 +0530
+Message-ID: <CAD6G_RQmTJrT0AneZp1h+4Vc5f5d83Lp=be-6SSB7fAoweZg1A@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: Add s25fs256s1 spi-nor flash support
+To: Yunhui Cui <yunhui.cui@nxp.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Michael Trimarchi <michael@amarulasolutions.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,10 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris and all,
+On Wed, Aug 17, 2016 at 2:27 PM, Yunhui Cui <yunhui.cui@nxp.com> wrote:
+>
+> On Monday, August 08, 2016 3:22 AM, Jagan Teki wrote:
+>
+>> Add Spansion s25fs256s1 spi-nor flash to the list of spi_nor_ids.
+>>
+>> In spansion S25FS-S family the physical sectors are grouped as normal and
+>> parameter sectors. Parameter sectors are 4kB in size with 8 set located
+>> at the bottom or top address of a device.
+>> Normal sectors are similar to other flash family with sizes of 64kB or 32
+>> kB.
+>>
+>> To erase whole flash using sector erase(D8h or DCh) won't effect the
+>> parameter sectors, so in order to erase these we must use 4K sector erase
+>> commands (20h or 21h) separately.
+>>
+>> So better to erase the whole flash using 4K sector erase instead of
+>> detecting these family parts again and do two different erase operations.
+>>
+>> Cc: Brian Norris <computersforpeace@gmail.com>
+>> Cc: Yunhui Cui <yunhui.cui@nxp.com>
+>> Cc: Michael Trimarchi <michael@amarulasolutions.com>
+>> Signed-off-by: Jagan Teki <jteki@openedev.com>
+>> ---
+>> Changes for v2:
+>>       - Fix wrong vendor name in commit message
+>
+> [Yunhui] Actually, This flash is belongs to S25FS-S Family, besides,
+> S25FS128S 128 Mbit (16 Mbyte)
+> S25FS256S 256 Mbit (32 Mbyte)
+> S25FS512S 512 Mbit (64 Mbyte)
+> They need some specific operations, not the Spansion S25FL128S Family.
 
-I am sorry that though I have change the sender name in the email, but
-It seems the patchwork still show the wrong name, I will check what
-wrong with my email, sorry for the inconvenience.
+Please point what exactly the specific ops? because I observed S25FL
+vs S25FS have change in a way that they erase the whole flash.
 
-Roger
+-- 
+Jagan Teki.
