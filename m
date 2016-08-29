@@ -1,25 +1,15 @@
-Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+Received: from mail02.prevas.se ([62.95.78.10])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1beIMr-00062X-CP
- for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 08:56:34 +0000
-Received: by mail-wm0-x22e.google.com with SMTP id o80so80395726wme.1
- for <linux-mtd@lists.infradead.org>; Mon, 29 Aug 2016 01:56:12 -0700 (PDT)
-Subject: Re: [Patch] mtd: fix writing incorrect ECC parity data in OOB region.
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- mtk04561 <rogercc.lin@mediatek.com>
-References: <1472443093.27061.4.camel@mtkswgap22>
- <20160829101006.2b200e0a@bbrezillon>
-Cc: xiaolei.li@mediatek.com, steven.liu@mediatek.com, robh@kernel.org,
- computersforpeace@gmail.com, daniel.thompson@linaro.org,
- linux-mtd@lists.infradead.org, matthias.bgg@gmail.com,
- linux-mediatek@lists.infradead.org, dwmw2@infradead.org, blogic@openwrt.org
-From: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
-Message-ID: <95823b9f-3c66-6d7c-4132-0deceba0de58@linaro.org>
-Date: Mon, 29 Aug 2016 10:56:08 +0200
+ id 1beJ81-00053y-G6
+ for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 09:45:18 +0000
+From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+To: <linux-mtd@lists.infradead.org>
+CC: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+Subject: [PATCH] mtd: spi-nor: Added support for s25fl208k
+Date: Mon, 29 Aug 2016 11:44:27 +0200
+Message-ID: <20160829094427.5395-1-sean.nyekjaer@prevas.dk>
 MIME-Version: 1.0
-In-Reply-To: <20160829101006.2b200e0a@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,7 +19,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/29/2016 10:10 AM, Boris Brezillon wrote:
-> +Jorge
+Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks Boris. Xiaolei is looking into this - he is aware of the patch.
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..80e7968 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -921,6 +921,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, SECT_4K) },
+ 	{ "s25fl164k",  INFO(0x014017,      0,  64 * 1024, 128, SECT_4K) },
+ 	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ) },
++	{ "s25fl208k",  INFO(0x014014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ) },
+ 
+ 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
+ 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+-- 
+2.9.3
