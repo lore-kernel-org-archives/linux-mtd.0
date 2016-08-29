@@ -1,22 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1beGjW-0000yZ-4H
- for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 07:11:50 +0000
-Date: Mon, 29 Aug 2016 10:11:25 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- Lee Jones <lee.jones@linaro.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Lee Jones <lee.jones@linaro.org>, Peter Tyser <ptyser@xes-inc.com>,
- key.seong.lim@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] spi-nor: Add support for Intel SPI serial flash
- controller
-Message-ID: <20160829071125.GX1812@lahna.fi.intel.com>
-References: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
+ id 1beHGB-0000oC-Gx
+ for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 07:45:36 +0000
+Received: by mail-wm0-x236.google.com with SMTP id o80so77477449wme.1
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Aug 2016 00:45:14 -0700 (PDT)
+From: Karl Beldan <kbeldan@baylibre.com>
+To: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Sekhar Nori <nsekhar@ti.com>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Karl Beldan <karl.beldan+oss@gmail.com>, Karl Beldan <kbeldan@baylibre.com>
+Subject: [PATCH] mtd: nand: davinci: Reinitialize the HW ECC engine in 4bit
+ hwctl
+Date: Mon, 29 Aug 2016 07:45:49 +0000
+Message-Id: <20160829074550.29247-1-kbeldan@baylibre.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 15, 2016 at 10:10:41AM +0300, Mika Westerberg wrote:
-> Hi,
-> 
-> This is third version of the series. Previous versions can be found:
-> 
->   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
->   v1: https://lkml.org/lkml/2016/6/14/269
-> 
-> This series adds support for the Intel SPI serial flash controller found on
-> many recent Intel CPUs including Baytrail and Braswell. This driver makes
-> it possible to access the BIOS and other platform data which is stored on
-> the SPI serial flash. It is also possible to upgrade the BIOS using this
-> driver if it has not been protected by special hardware bits.
-> 
-> The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
-> MAX.
-> 
-> Since poking the SPI serial flash can brick the machine, this driver can
-> only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
-> unless instructed othwerwise by module parameter.
-> 
-> Lee can you ACK/NACK the MFD parts so that we can merge the whole series
-> through the MTD tree?
+This fixes subpage writes when using 4-bit HW ECC.
 
-Hi,
+There has been numerous reports about ECC errors with devices using this
+driver for a while.  Also the 4-bit ECC has been reported as broken with
+subpages in [1] and with 16 bits NANDs in the driver and in mach* board
+files both in mainline and in the vendor BSPs.
 
-Any comments on this series? It missed v4.8 already so it would be nice
-to get it merged for v4.9.
+What I saw with 4-bit ECC on a 16bits NAND (on an LCDK) which got me to
+try reinitializing the ECC engine:
+- R/W on whole pages properly generates/checks RS code
+- try writing the 1st subpage only of a blank page, the subpage is well
+  written and the RS code properly generated, re-reading the same page
+  the HW detects some ECC error, reading the same page again no ECC
+  error is detected
 
-Thanks.
+Note that the ECC engine is already reinitialized in the 1-bit case.
+
+Tested on my LCDK with UBI+UBIFS using subpages.
+This could potentially get rid of the issue workarounded in [1].
+
+[1] 28c015a9daab ("mtd: davinci-nand: disable subpage write for keystone-nand")
+
+Signed-off-by: Karl Beldan <kbeldan@baylibre.com>
+---
+ drivers/mtd/nand/davinci_nand.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index cc07ba0..27fa8b8 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -240,6 +240,9 @@ static void nand_davinci_hwctl_4bit(struct mtd_info *mtd, int mode)
+ 	unsigned long flags;
+ 	u32 val;
+ 
++	/* Reset ECC hardware */
++	davinci_nand_readl(info, NAND_4BIT_ECC1_OFFSET);
++
+ 	spin_lock_irqsave(&davinci_nand_lock, flags);
+ 
+ 	/* Start 4-bit ECC calculation for read/write */
+-- 
+2.9.2
