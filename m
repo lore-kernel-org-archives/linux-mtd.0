@@ -1,6 +1,6 @@
-Message-ID: <1472470809.11041.6.camel@mtkswgap22>
-Subject: [PATCH v2 2/2] mtd: nand: fix chances to create incomplete ECC data
- when writing.
+Message-ID: <1472471610.11041.10.camel@mtkswgap22>
+Subject: Re: [PATCH v2 0/2] mtd: nand: fix writing incorrect ECC parity data
+ in OOB region.
 From: RogerCC.Lin <rogercc.lin@mediatek.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 CC: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
@@ -8,10 +8,10 @@ CC: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
  <linux-mtd@lists.infradead.org>, <matthias.bgg@gmail.com>,
  <linux-mediatek@lists.infradead.org>, <dwmw2@infradead.org>,
  <blogic@openwrt.org>, Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Date: Mon, 29 Aug 2016 19:40:09 +0800
-In-Reply-To: <20160829101006.2b200e0a@bbrezillon>
+Date: Mon, 29 Aug 2016 19:53:30 +0800
+In-Reply-To: <1472470803.11041.4.camel@mtkswgap22>
 References: <1472443093.27061.4.camel@mtkswgap22>
- <20160829101006.2b200e0a@bbrezillon>
+ <20160829101006.2b200e0a@bbrezillon> <1472470803.11041.4.camel@mtkswgap22>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
@@ -24,44 +24,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When mtk_nfc_do_write_page() comparing the sector number,because the
-sector number field is at the 12th-bit position of NFI_BYTELEN
-register,the masked register should be shifted 12 bits before being
-compared.The result of this bug may cause the second subpage has
-incomplete ECC parity bytes.
+Hi Boris and all,
 
-Signed-off-by: RogerCC Lin <rogercc.lin@mediatek.com>
----
- drivers/mtd/nand/mtk_nand.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+I am sorry that though I have change the sender name in the email, but
+It seems the patchwork still show the wrong name, I will check what
+wrong with my email, sorry for the inconvenience.
 
-diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-index ddaa2ac..5e0727c 100644
---- a/drivers/mtd/nand/mtk_nand.c
-+++ b/drivers/mtd/nand/mtk_nand.c
-@@ -699,8 +699,8 @@ static int mtk_nfc_do_write_page(struct mtd_info
-*mtd, struct nand_chip *chip,
- 	}
- 
- 	ret = readl_poll_timeout_atomic(nfc->regs + NFI_ADDRCNTR, reg,
--					(reg & CNTR_MASK) >= chip->ecc.steps,
--					10, MTK_TIMEOUT);
-+			  ((reg & CNTR_MASK) >> 12) >= chip->ecc.steps,
-+			  10, MTK_TIMEOUT);
- 	if (ret)
- 		dev_err(dev, "hwecc write timeout\n");
- 
-@@ -902,8 +902,8 @@ static int mtk_nfc_read_subpage(struct mtd_info
-*mtd, struct nand_chip *chip,
- 		dev_warn(nfc->dev, "read ahb/dma done timeout\n");
- 
- 	rc = readl_poll_timeout_atomic(nfc->regs + NFI_BYTELEN, reg,
--				       (reg & CNTR_MASK) >= sectors, 10,
--				       MTK_TIMEOUT);
-+				       ((reg & CNTR_MASK) >> 12) >= sectors, 
-+				       10, MTK_TIMEOUT);
- 	if (rc < 0) {
- 		dev_err(nfc->dev, "subpage done timeout\n");
- 		bitflips = -EIO;
---
-1.7.0.4
+Roger
