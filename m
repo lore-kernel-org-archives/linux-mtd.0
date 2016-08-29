@@ -1,18 +1,20 @@
-Date: Mon, 29 Aug 2016 10:10:06 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: mtk04561 <rogercc.lin@mediatek.com>
-Cc: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
- <computersforpeace@gmail.com>, <daniel.thompson@linaro.org>,
- <linux-mtd@lists.infradead.org>, <matthias.bgg@gmail.com>,
- <linux-mediatek@lists.infradead.org>, <dwmw2@infradead.org>,
- <blogic@openwrt.org>, Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Subject: Re: [Patch] mtd: fix writing incorrect ECC parity data in OOB region.
-Message-ID: <20160829101006.2b200e0a@bbrezillon>
-In-Reply-To: <1472443093.27061.4.camel@mtkswgap22>
-References: <1472443093.27061.4.camel@mtkswgap22>
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1beI3I-00041w-HU
+ for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 08:36:21 +0000
+Date: Mon, 29 Aug 2016 10:35:58 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: mxc_nand: Set timing for v2 controllers
+Message-ID: <20160829083558.gfydmebh7bx3wdxz@pengutronix.de>
+References: <1471948445-29936-1-git-send-email-s.hauer@pengutronix.de>
+ <20160826094653.762be9fb@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160826094653.762be9fb@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,144 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Jorge
+Hi Boris,
 
-Hi Roger,
-
-On Mon, 29 Aug 2016 11:58:13 +0800
-mtk04561 <rogercc.lin@mediatek.com> wrote:
-
-> Hi Boris,
+On Fri, Aug 26, 2016 at 09:46:53AM +0200, Boris Brezillon wrote:
+> Hi Sascha,
 > 
-> I found a problem in current Mediatek upstream NAND driver (of nand/next
-> branch). When testing the upstream driver with UBIFS file system, it has
-> some chance to create incorrect ECC data in the second subpage, this
-> makes UBIFS failed to mount. Below patch fixes this problem. Please help
-> to review the patch and upstream. Thank you.
+> On Tue, 23 Aug 2016 12:34:05 +0200
+> Sascha Hauer <s.hauer@pengutronix.de> wrote:
 > 
-> Best regards,
-> Roger
-
-Can you put this message after the '---' (below your SoB), so that it
-does not appear when applying the patch.
-
+> AFAIR, you should apply the new mode on the NAND side
+> (ONFI_FEATURE_ADDR_TIMING_MODE) before applying the new config to the
+> controller.
 > 
+> See what's done here [1].
 > 
-> 
-> Description:
+> Note that on all the NANDs I tested, it seems to work even if you don't
+> set ONFI_FEATURE_ADDR_TIMING_MODE, but the ONFI Spec describes the
+> procedure as:
 
-Drop the 'Description:' line.
-
-> When mtk_ecc_encode() is writing the ECC parity data to the OOB region,
-> because each register is 4 bytes in length, but the len's unit is in
-> bytes, the operation in the for loop will cross the ECC's boundary.
-> 
-> And when mtk_nfc_do_write_page() comparing the sector number, because
-> the sector number field is at the 12th-bit position of NFI_BYTELEN
-> register, the masked register should be shifted 12 bits before being
-> compared. The result of this bug may cause the second subpage has
-> incomplete ECC parity bytes.
-
-Maybe you could split those changes in 2 patches (not a strong
-requirement).
+Indeed, works here without notifying the NAND chip aswell. I wasn't even
+aware that there is a possibility to notify the NAND chip.
 
 > 
-> Test:
-
-Drop the 'Test:' line.
-
-> The patch passed the test of UBIFS file-system read/write on Mediatek's
-> RFB. The tested driver is checked-out from LEDE OpenWRT project's
-> upstream driver, which is pretty much same as nand/next branch upstream
-> driver(git clone https://git.lede-project.org/source.git). 
+> 1/ detect supported modes
+> 2/ select one
+> 3/ apply it to the NAND using set(ONFI_FEATURE_ADDR_TIMING_MODE)
+> 4/ release the CS
+> 5/ adjust the controller setting to match the new config
 > 
-> 
-> Signed-off-by: RogerCC Lin <rogercc.lin@mediatek.com>
-> ---
-> diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-> index 25a4fbd..0a7ce8d 100644
-> --- a/drivers/mtd/nand/mtk_ecc.c
-> +++ b/drivers/mtd/nand/mtk_ecc.c
-> @@ -366,7 +366,8 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct
-> mtk_ecc_config *config,
->                    u8 *data, u32 bytes)
->  {
->         dma_addr_t addr;
-> -       u32 *p, len, i;
-> +       u8 *p;
-> +       u32 len, i, val;
->         int ret = 0;
-> 
->         addr = dma_map_single(ecc->dev, data, bytes, DMA_TO_DEVICE);
-> @@ -395,8 +396,11 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct
-> mtk_ecc_config *config,
->         p = (u32 *)(data + bytes);
+> On a side note, I really think we should handle this timing selection in
+> the core, and only ask the NAND controller drivers to adapt the
+> controller settings.
 
-Hm, you should now do:
+I agree that the core should do this. Do you already have any thoughts
+how the API could could look like? The Nand drivers probably have to
+propagate somehow which modes they support, maybe we add a onfi_modes
+field to struct nand_chip. Then if onfi_modes is nonzero we call a
+nand_chip->set_onfi_mode() function?
 
-	p = data + bytes;
+Sascha
 
-> 
->         /* write the parity bytes generated by the ECC back to the OOB
-> region */
-> -       for (i = 0; i < len; i++)
-> -               p[i] = readl(ecc->regs + ECC_ENCPAR(i));
-> +       for (i = 0; i < len; i++) {
-> +               if ((i % 4) == 0)
-> +                       val = readl(ecc->regs + ECC_ENCPAR(i >> 2));
-> +               p[i] = *((u8 *)&val + (i % 4));
-
-Please, use a shift operator here:
-
-		p[i] = (val >> ((i % 4) * 8)) & 0xff;
-
-Otherwise you're exposed to endianness conversion problems (this works
-fine in your case because you're using a little-endian kernel).
-
-> +       }
->  timeout:
-> 
->         dma_unmap_single(ecc->dev, addr, bytes, DMA_TO_DEVICE);
-> diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-> index ddaa2ac..9c49121 100644
-> --- a/drivers/mtd/nand/mtk_nand.c
-> +++ b/drivers/mtd/nand/mtk_nand.c
-> @@ -699,8 +699,8 @@ static int mtk_nfc_do_write_page(struct mtd_info
-> *mtd, struct nand_chip *chip,
->         }
-> 
->         ret = readl_poll_timeout_atomic(nfc->regs + NFI_ADDRCNTR, reg,
-> -                                       (reg & CNTR_MASK) >=
-> chip->ecc.steps,
-> -                                       10, MTK_TIMEOUT);
-> +                                       ((reg & CNTR_MASK) >> 12) >=
-> +                                       chip->ecc.steps, 10,
-
-Please keep '((reg & CNTR_MASK) >> 12) >= chip->ecc.steps' on the same
-line.
-
-If you want to comply with the 80 char lines, you can do:
-
-	ret = readl_poll_timeout_atomic(nfc->regs + NFI_ADDRCNTR, reg,
-				((reg & CNTR_MASK) >> 12) >= chip->ecc.steps,
-				10, MTK_TIMEOUT);
-
-
->         if (ret)
->                 dev_err(dev, "hwecc write timeout\n");
-> 
-> @@ -902,8 +902,8 @@ static int mtk_nfc_read_subpage(struct mtd_info
-> *mtd, struct nand_chip *chip,
->                 dev_warn(nfc->dev, "read ahb/dma done timeout\n");
-> 
->         rc = readl_poll_timeout_atomic(nfc->regs + NFI_BYTELEN, reg,
-> -                                      (reg & CNTR_MASK) >= sectors, 10,
-> -                                      MTK_TIMEOUT);
-> +                                      ((reg & CNTR_MASK) >> 12) >=
-> sectors,
-> +                                      10, MTK_TIMEOUT);
->         if (rc < 0) {
->                 dev_err(nfc->dev, "subpage done timeout\n");
->                 bitflips = -EIO;
-> 
-> 
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
