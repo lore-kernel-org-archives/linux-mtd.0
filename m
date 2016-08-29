@@ -1,23 +1,26 @@
-Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1beSmG-0002bx-SN
- for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 20:03:29 +0000
-Received: by mail-pa0-x243.google.com with SMTP id vy10so9417680pac.0
- for <linux-mtd@lists.infradead.org>; Mon, 29 Aug 2016 13:03:07 -0700 (PDT)
-Date: Mon, 29 Aug 2016 12:57:45 -0700
+ id 1beTLu-0002t8-HA
+ for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 20:40:19 +0000
+Received: by mail-pf0-x243.google.com with SMTP id g202so9860684pfb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Aug 2016 13:39:57 -0700 (PDT)
+Date: Mon, 29 Aug 2016 13:38:47 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Roger Quadros <rogerq@ti.com>, dan.carpenter@oracle.com, richard@nod.at,
- fcooper@ti.com, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: omap2: Don't call dma_release_channel() if
- dma_request_chan() failed
-Message-ID: <20160829195745.GA99752@google.com>
-References: <1471247259-27107-1-git-send-email-rogerq@ti.com>
- <20160815172200.11b9860c@bbrezillon>
+Cc: Karl Beldan <kbeldan@baylibre.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Sekhar Nori <nsekhar@ti.com>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Karl Beldan <karl.beldan+oss@gmail.com>
+Subject: Re: [PATCH] mtd: nand: davinci: Reinitialize the HW ECC engine in
+ 4bit hwctl
+Message-ID: <20160829203847.GA102453@google.com>
+References: <20160829074550.29247-1-kbeldan@baylibre.com>
+ <20160829115930.517a133e@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160815172200.11b9860c@bbrezillon>
+In-Reply-To: <20160829115930.517a133e@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 15, 2016 at 05:22:00PM +0200, Boris Brezillon wrote:
-> On Mon, 15 Aug 2016 10:47:39 +0300
-> Roger Quadros <rogerq@ti.com> wrote:
+On Mon, Aug 29, 2016 at 11:59:30AM +0200, Boris Brezillon wrote:
+> On Mon, 29 Aug 2016 07:45:49 +0000
+> Karl Beldan <kbeldan@baylibre.com> wrote:
 > 
-> > dma_request_chan() can fail returning an error pointer. In this case
-> > prevent calling dma_release_channel() to prevent a ERR_PTR() dereference.
+> > This fixes subpage writes when using 4-bit HW ECC.
 > > 
-> > As error path can be called even with no DMA configuration, info->dma can
-> > be NULL so don't call dma_release_channel() for that case either.
+> > There has been numerous reports about ECC errors with devices using this
+> > driver for a while.  Also the 4-bit ECC has been reported as broken with
+> > subpages in [1] and with 16 bits NANDs in the driver and in mach* board
+> > files both in mainline and in the vendor BSPs.
 > > 
-> > Fixes: de3bfc4a1616: ("mtd: nand: omap2: fix return value check in omap_nand_probe()")
-> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Roger Quadros <rogerq@ti.com>
+> > What I saw with 4-bit ECC on a 16bits NAND (on an LCDK) which got me to
+> > try reinitializing the ECC engine:
+> > - R/W on whole pages properly generates/checks RS code
+> > - try writing the 1st subpage only of a blank page, the subpage is well
+> >   written and the RS code properly generated, re-reading the same page
+> >   the HW detects some ECC error, reading the same page again no ECC
+> >   error is detected
+> > 
+> > Note that the ECC engine is already reinitialized in the 1-bit case.
+> > 
+> > Tested on my LCDK with UBI+UBIFS using subpages.
+> > This could potentially get rid of the issue workarounded in [1].
+> > 
+> > [1] 28c015a9daab ("mtd: davinci-nand: disable subpage write for keystone-nand")
+> > 
+> > Signed-off-by: Karl Beldan <kbeldan@baylibre.com>
 > 
 > Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > 
-> Brian, can you apply this fix directly?
+> Brian, can you take this patch directly in your tree. If that's not
+> possible, let me know, I'll add the Fixes and Cc:stable tags and take
+> it for 4.9.
 
-Applied to linux-mtd.git
+Would this be correct?
+
+Fixes: 6a4123e581b3 ("mtd: nand: davinci_nand, 4-bit ECC for smallpage")
+
+Brian
