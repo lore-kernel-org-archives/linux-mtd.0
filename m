@@ -1,19 +1,19 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bejwv-0006fB-Ph
- for linux-mtd@lists.infradead.org; Tue, 30 Aug 2016 14:23:41 +0000
-Received: by mail-wm0-x241.google.com with SMTP id i5so3410318wmg.2
- for <linux-mtd@lists.infradead.org>; Tue, 30 Aug 2016 07:23:16 -0700 (PDT)
-From: Harvey Hunt <harveyhuntnexus@gmail.com>
-To: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com
-Cc: Harvey Hunt <harveyhuntnexus@gmail.com>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add maintainer entry for Ingenic JZ4780 NAND
- driver
-Date: Tue, 30 Aug 2016 15:22:55 +0100
-Message-Id: <20160830142255.23468-1-harveyhuntnexus@gmail.com>
+ id 1benEo-0001YR-Vn
+ for linux-mtd@lists.infradead.org; Tue, 30 Aug 2016 17:54:19 +0000
+Message-ID: <57C5C835.6080900@codeaurora.org>
+Date: Tue, 30 Aug 2016 10:53:57 -0700
+From: Nikhilesh Reddy <reddyn@codeaurora.org>
+MIME-Version: 1.0
+To: Richard Weinberger <richard@nod.at>
+CC: linux-mtd@lists.infradead.org
+Subject: Re: issue with ubi_wl_put_peb
+References: <57BC9C1D.4010402@codeaurora.org>
+ <19dc6d1c-30fb-737e-7d7e-da503a25e9f4@nod.at>
+In-Reply-To: <19dc6d1c-30fb-737e-7d7e-da503a25e9f4@nod.at>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +23,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Harvey Hunt <harveyhuntnexus@gmail.com>
-Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Wed 24 Aug 2016 01:48:29 PM PDT, Richard Weinberger wrote:
+> Nikhilesh Reddy,
+>
+> On 23.08.2016 20:55, Nikhilesh Reddy wrote:
+>> Hi
+>>
+>>
+>> I am currently running into a hard to reproduce issue( takes upto a week to reproduce) with ubi_wl_put_peb.
+>>
+>> I would appreciate any help you can give me.
+>>
+>> In the following stack
+>> -000|__list_del_entry()
+>> -001|list_del()
+>> -002|prot_queue_del()
+>> -003|ubi_wl_put_peb()
+>> -004|ubi_eba_unmap_leb()
+>> -005|ubifs_leb_unmap()
+>> -006|ubifs_gc_start_commit()
+>> -007|do_commit()
+>> -008|run_bg_commit(inline)
+>> -008|ubifs_bg_thread()
+>> -009|kthread()
+>>
+>> This issue was seen with CONFIG_DEBUG_LIST=y
+>>
+>> What we see is that the wl entry that is being put is not in the protection queue but seems to be in free/used trees.
+>
+> So, you trigger a list assert?
+> Please share the kernel log.
+>
+>> In the code  below:
+>> http://git.infradead.org/linux-ubifs.git/blob/HEAD:/drivers/mtd/ubi/wl.c#l1231
+>>
+>> We see that the the wl_entry is checked to be in used/scrub and erroneous trees .. and then it simply assumes that it is in the protection queue if it is not in any of the rb trees.
+>>
+>> There appears to be a race where the  wl_entry is being put before it actually has a chance to be inserted into the protection queue.
+>>
+>> This seems to occur when ubi_io_write_vid_hdr takes long to write the VID header.
+>>
+>>
+>> I noticed that a check for a similar situation is http://git.infradead.org/linux-ubifs.git/blob/HEAD:/drivers/mtd/ubi/wl.c#l761
+>>
+>> Is the same check needed in the case of ubi_wl_put_peb as well?
+>>
+>> Can you please tell me if this sounds like a known issue?
+>>
+>> I am a little lost on when |ubi_eba_unmap_leb would be called before the PEB has a chance to be inserted into a another tree from the free tree.
+>>
+>> I would be grateful any pointers that you can give me so i can get to the root cause.
+>
+> Hmmmm, is Fastmap involved?
+>
+> Thanks,
+> //richard
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 71aa5da..28d2d5f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5992,6 +5992,12 @@ M:	Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
- S:	Maintained
- F:	drivers/dma/dma-jz4780.c
- 
-+INGENIC JZ4780 NAND DRIVER
-+M:	Harvey Hunt <harveyhuntnexus@gmail.com>
-+L:	linux-mtd@lists.infradead.org
-+S:	Maintained
-+F:	drivers/mtd/nand/jz4780_*
-+
- INTEGRITY MEASUREMENT ARCHITECTURE (IMA)
- M:	Mimi Zohar <zohar@linux.vnet.ibm.com>
- M:	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
--- 
-2.9.3
+Hi
+Actually  FASTMAP was not involved.
+This issue is pretty hard to reproduce ... just had reports of one 
+instance where this occured.
+If i see it again i will try to get all the logs.
+
+Thanks So much for your help
+
+--
+Thanks
+Nikhilesh Reddy
+
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project.
