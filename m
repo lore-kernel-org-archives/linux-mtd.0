@@ -1,21 +1,25 @@
-Date: Tue, 30 Aug 2016 09:52:10 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: <rogercc.lin@mediatek.com>
-Cc: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
- <computersforpeace@gmail.com>, <jorge.ramirez-ortiz@linaro.org>,
- <daniel.thompson@linaro.org>, <linux-mtd@lists.infradead.org>,
- <matthias.bgg@gmail.com>, <srv_heupstream@mediatek.com>,
- <linux-mediatek@lists.infradead.org>, <dwmw2@infradead.org>,
- <blogic@openwrt.org>
-Subject: Re: [PATCH v3 2/2] mtd: nand: fix chances to create incomplete ECC
- data when writing
-Message-ID: <20160830095210.13fc2612@bbrezillon>
-In-Reply-To: <1472526132-12049-3-git-send-email-rogercc.lin@mediatek.com>
-References: <1472526132-12049-1-git-send-email-rogercc.lin@mediatek.com>
- <1472526132-12049-3-git-send-email-rogercc.lin@mediatek.com>
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bef0a-0005AB-Ne
+ for linux-mtd@lists.infradead.org; Tue, 30 Aug 2016 09:07:05 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id o80so24154329wme.1
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Aug 2016 02:06:43 -0700 (PDT)
+Date: Tue, 30 Aug 2016 10:08:30 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
+Message-ID: <20160830090830.GF1661@dell>
+References: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
+ <1471245044-12767-4-git-send-email-mika.westerberg@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1471245044-12767-4-git-send-email-mika.westerberg@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +29,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 Aug 2016 11:02:12 +0800
-<rogercc.lin@mediatek.com> wrote:
+On Mon, 15 Aug 2016, Mika Westerberg wrote:
 
-> From: RogerCC Lin <rogercc.lin@mediatek.com>
+> Intel Apollo Lake SoC exposes serial SPI flash through the LPC device. The
+> SPI flash host controller is not discoverable through PCI config cycles
+> because P2SB (function 0 of the device 13) is hidden by the BIOS. We unhide
+> the device briefly in order to read BAR 0 of the SPI host controller.
 > 
-> When mtk_nfc_do_write_page() comparing the sector number,because the
-> sector number field is at the 12th-bit position of NFI_BYTELEN
-> register,the masked register should be shifted 12 bits before being
-> compared.The result of this bug may cause the second subpage has
-> incomplete ECC parity bytes.
-> 
-> Signed-off-by: RogerCC Lin <rogercc.lin@mediatek.com>
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 > ---
->  drivers/mtd/nand/mtk_nand.c |    9 +++++----
->  1 files changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-> index ddaa2ac..260bd20 100644
-> --- a/drivers/mtd/nand/mtk_nand.c
-> +++ b/drivers/mtd/nand/mtk_nand.c
-> @@ -93,6 +93,7 @@
->  #define		NFI_FSM_MASK		(0xf << 16)
->  #define NFI_ADDRCNTR		(0x70)
->  #define		CNTR_MASK		GENMASK(16, 12)
-> +#define		ADDRCNTR_SEC_SHIFT	(12)
+>  drivers/mfd/lpc_ich.c | 39 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
 
-While you're at it, define
+For my own reference:
+  Acked-by: Lee Jones <lee.jones@linaro.org>
 
-#define			ADDRCNTR_SEC(val)	\
-			(((val) & CNTR_MASK) >> ADDRCNTR_SEC_SHIFT)
-
->  #define NFI_STRADDR		(0x80)
->  #define NFI_BYTELEN		(0x84)
->  #define NFI_CSEL		(0x90)
-> @@ -699,8 +700,8 @@ static int mtk_nfc_do_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+> diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+> index 56a0e98a5f89..b1013b3f4dee 100644
+> --- a/drivers/mfd/lpc_ich.c
+> +++ b/drivers/mfd/lpc_ich.c
+> @@ -56,6 +56,7 @@
+>   *	document number TBD : Wildcat Point-LP
+>   *	document number TBD : 9 Series
+>   *	document number TBD : Lewisburg
+> + *	document number TBD : Apollo Lake SoC
+>   */
+>  
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> @@ -92,6 +93,8 @@
+>  #define BCR			0xdc
+>  #define BCR_WPD			BIT(0)
+>  
+> +#define SPIBASE_APL_SZ		4096
+> +
+>  #define GPIOBASE_ICH0		0x58
+>  #define GPIOCTRL_ICH0		0x5C
+>  #define GPIOBASE_ICH6		0x48
+> @@ -239,6 +242,7 @@ enum lpc_chipsets {
+>  	LPC_BRASWELL,	/* Braswell SoC */
+>  	LPC_LEWISBURG,	/* Lewisburg */
+>  	LPC_9S,		/* 9 Series */
+> +	LPC_APL,	/* Apollo Lake SoC */
+>  };
+>  
+>  static struct lpc_ich_info lpc_chipset_info[] = {
+> @@ -559,6 +563,10 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+>  		.name = "9 Series",
+>  		.iTCO_version = 2,
+>  	},
+> +	[LPC_APL] = {
+> +		.name = "Apollo Lake SoC",
+> +		.spi_type = INTEL_SPI_BXT,
+> +	},
+>  };
+>  
+>  /*
+> @@ -707,6 +715,7 @@ static const struct pci_device_id lpc_ich_ids[] = {
+>  	{ PCI_VDEVICE(INTEL, 0x3b14), LPC_3420},
+>  	{ PCI_VDEVICE(INTEL, 0x3b16), LPC_3450},
+>  	{ PCI_VDEVICE(INTEL, 0x5031), LPC_EP80579},
+> +	{ PCI_VDEVICE(INTEL, 0x5ae8), LPC_APL},
+>  	{ PCI_VDEVICE(INTEL, 0x8c40), LPC_LPT},
+>  	{ PCI_VDEVICE(INTEL, 0x8c41), LPC_LPT},
+>  	{ PCI_VDEVICE(INTEL, 0x8c42), LPC_LPT},
+> @@ -1122,6 +1131,36 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+>  		}
+>  		break;
+>  
+> +	case INTEL_SPI_BXT: {
+> +		unsigned int p2sb = PCI_DEVFN(13, 0);
+> +		unsigned int spi = PCI_DEVFN(13, 2);
+> +		struct pci_bus *bus = dev->bus;
+> +
+> +		/*
+> +		 * The P2SB is hidden by BIOS and we need to unhide it in
+> +		 * order to read BAR of the SPI flash device. Once that is
+> +		 * done we hide it again.
+> +		 */
+> +		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x0);
+> +		pci_bus_read_config_dword(bus, spi, PCI_BASE_ADDRESS_0,
+> +					  &spi_base);
+> +		if (spi_base != ~0) {
+> +			res->start = spi_base & 0xfffffff0;
+> +			res->end = res->start + SPIBASE_APL_SZ - 1;
+> +
+> +			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
+> +			if (!(bcr & BCR_WPD)) {
+> +				bcr |= BCR_WPD;
+> +				pci_bus_write_config_dword(bus, spi, BCR, bcr);
+> +				pci_bus_read_config_dword(bus, spi, BCR, &bcr);
+> +			}
+> +			info->writeable = !!(bcr & BCR_WPD);
+> +		}
+> +
+> +		pci_bus_write_config_byte(dev->bus, p2sb, 0xe1, 0x1);
+> +		break;
+> +	}
+> +
+>  	default:
+>  		return -EINVAL;
 >  	}
->  
->  	ret = readl_poll_timeout_atomic(nfc->regs + NFI_ADDRCNTR, reg,
-> -					(reg & CNTR_MASK) >= chip->ecc.steps,
-> -					10, MTK_TIMEOUT);
-> +		((reg & CNTR_MASK) >> ADDRCNTR_SEC_SHIFT) >= chip->ecc.steps,
 
-and use it here
-				ADDRCNTR_SEC(reg) >= chip->ecc.steps
-
-> +		10, MTK_TIMEOUT);
->  	if (ret)
->  		dev_err(dev, "hwecc write timeout\n");
->  
-> @@ -902,8 +903,8 @@ static int mtk_nfc_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
->  		dev_warn(nfc->dev, "read ahb/dma done timeout\n");
->  
->  	rc = readl_poll_timeout_atomic(nfc->regs + NFI_BYTELEN, reg,
-> -				       (reg & CNTR_MASK) >= sectors, 10,
-> -				       MTK_TIMEOUT);
-> +		((reg & CNTR_MASK) >> ADDRCNTR_SEC_SHIFT) >= sectors,
-> +		10, MTK_TIMEOUT);
->  	if (rc < 0) {
->  		dev_err(nfc->dev, "subpage done timeout\n");
->  		bitflips = -EIO;
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
