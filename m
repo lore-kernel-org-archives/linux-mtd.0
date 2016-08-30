@@ -1,26 +1,26 @@
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bef4L-00071D-5Q
- for linux-mtd@lists.infradead.org; Tue, 30 Aug 2016 09:10:58 +0000
-Received: by mail-wm0-x232.google.com with SMTP id f65so111163505wmi.0
- for <linux-mtd@lists.infradead.org>; Tue, 30 Aug 2016 02:10:36 -0700 (PDT)
-Date: Tue, 30 Aug 2016 10:12:22 +0100
+ id 1bef5R-0007bd-Eo
+ for linux-mtd@lists.infradead.org; Tue, 30 Aug 2016 09:12:07 +0000
+Received: by mail-wm0-x233.google.com with SMTP id i5so24462002wmg.0
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Aug 2016 02:11:44 -0700 (PDT)
+Date: Tue, 30 Aug 2016 10:13:30 +0100
 From: Lee Jones <lee.jones@linaro.org>
 To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>,
  Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] mfd: lpc_ich: Add support for SPI serial flash
- host controller
-Message-ID: <20160830091222.GG1661@dell>
+Subject: Re: [PATCH v3 0/3] spi-nor: Add support for Intel SPI serial flash
+ controller
+Message-ID: <20160830091330.GH1661@dell>
 References: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
- <1471245044-12767-3-git-send-email-mika.westerberg@linux.intel.com>
+ <20160829071125.GX1812@lahna.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1471245044-12767-3-git-send-email-mika.westerberg@linux.intel.com>
+In-Reply-To: <20160829071125.GX1812@lahna.fi.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,206 +30,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 15 Aug 2016, Mika Westerberg wrote:
+On Mon, 29 Aug 2016, Mika Westerberg wrote:
 
-> Many Intel CPUs including Haswell, Broadwell and Baytrail have SPI serial
-> flash host controller as part of the LPC device. This will populate an MFD
-> cell suitable for the SPI host controller driver if we know that the LPC
-> device has one.
+> On Mon, Aug 15, 2016 at 10:10:41AM +0300, Mika Westerberg wrote:
+> > Hi,
+> > 
+> > This is third version of the series. Previous versions can be found:
+> > 
+> >   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
+> >   v1: https://lkml.org/lkml/2016/6/14/269
+> > 
+> > This series adds support for the Intel SPI serial flash controller found on
+> > many recent Intel CPUs including Baytrail and Braswell. This driver makes
+> > it possible to access the BIOS and other platform data which is stored on
+> > the SPI serial flash. It is also possible to upgrade the BIOS using this
+> > driver if it has not been protected by special hardware bits.
+> > 
+> > The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
+> > MAX.
+> > 
+> > Since poking the SPI serial flash can brick the machine, this driver can
+> > only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
+> > unless instructed othwerwise by module parameter.
+> > 
+> > Lee can you ACK/NACK the MFD parts so that we can merge the whole series
+> > through the MTD tree?
+
+Why does it need to go into the MTD tree?  What are the *build*
+dependencies?
+
+> Hi,
 > 
-> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> ---
->  drivers/mfd/lpc_ich.c       | 92 +++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/mfd/lpc_ich.h |  3 ++
->  2 files changed, 95 insertions(+)
-
-Looks reasonable.  Although I must confess that I'm not that au fait
-with the inner workings of PCI.
-
-For my own reference:
-  Acked-by: Lee Jones <lee.jones@linaro.org>
-
-> diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-> index bd3aa4578346..56a0e98a5f89 100644
-> --- a/drivers/mfd/lpc_ich.c
-> +++ b/drivers/mfd/lpc_ich.c
-> @@ -83,6 +83,15 @@
->  #define ACPIBASE_GCS_OFF	0x3410
->  #define ACPIBASE_GCS_END	0x3414
->  
-> +#define SPIBASE_BYT		0x54
-> +#define SPIBASE_BYT_SZ		512
-> +#define SPIBASE_BYT_EN		BIT(1)
-> +
-> +#define SPIBASE_LPT		0x3800
-> +#define SPIBASE_LPT_SZ		512
-> +#define BCR			0xdc
-> +#define BCR_WPD			BIT(0)
-> +
->  #define GPIOBASE_ICH0		0x58
->  #define GPIOCTRL_ICH0		0x5C
->  #define GPIOBASE_ICH6		0x48
-> @@ -133,6 +142,12 @@ static struct resource gpio_ich_res[] = {
->  	},
->  };
->  
-> +static struct resource intel_spi_res[] = {
-> +	{
-> +		.flags = IORESOURCE_MEM,
-> +	}
-> +};
-> +
->  static struct mfd_cell lpc_ich_wdt_cell = {
->  	.name = "iTCO_wdt",
->  	.num_resources = ARRAY_SIZE(wdt_ich_res),
-> @@ -147,6 +162,14 @@ static struct mfd_cell lpc_ich_gpio_cell = {
->  	.ignore_resource_conflicts = true,
->  };
->  
-> +
-> +static struct mfd_cell lpc_ich_spi_cell = {
-> +	.name = "intel-spi",
-> +	.num_resources = ARRAY_SIZE(intel_spi_res),
-> +	.resources = intel_spi_res,
-> +	.ignore_resource_conflicts = true,
-> +};
-> +
->  /* chipset related info */
->  enum lpc_chipsets {
->  	LPC_ICH = 0,	/* ICH */
-> @@ -493,10 +516,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
->  	[LPC_LPT] = {
->  		.name = "Lynx Point",
->  		.iTCO_version = 2,
-> +		.spi_type = INTEL_SPI_LPT,
->  	},
->  	[LPC_LPT_LP] = {
->  		.name = "Lynx Point_LP",
->  		.iTCO_version = 2,
-> +		.spi_type = INTEL_SPI_LPT,
->  	},
->  	[LPC_WBG] = {
->  		.name = "Wellsburg",
-> @@ -510,6 +535,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
->  	[LPC_BAYTRAIL] = {
->  		.name = "Bay Trail SoC",
->  		.iTCO_version = 3,
-> +		.spi_type = INTEL_SPI_BYT,
->  	},
->  	[LPC_COLETO] = {
->  		.name = "Coleto Creek",
-> @@ -518,10 +544,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
->  	[LPC_WPT_LP] = {
->  		.name = "Wildcat Point_LP",
->  		.iTCO_version = 2,
-> +		.spi_type = INTEL_SPI_LPT,
->  	},
->  	[LPC_BRASWELL] = {
->  		.name = "Braswell SoC",
->  		.iTCO_version = 3,
-> +		.spi_type = INTEL_SPI_BYT,
->  	},
->  	[LPC_LEWISBURG] = {
->  		.name = "Lewisburg",
-> @@ -1050,6 +1078,64 @@ wdt_done:
->  	return ret;
->  }
->  
-> +static int lpc_ich_init_spi(struct pci_dev *dev)
-> +{
-> +	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
-> +	struct resource *res = &intel_spi_res[0];
-> +	struct intel_spi_boardinfo *info;
-> +	u32 spi_base, rcba, bcr;
-> +
-> +	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
-> +	if (!info)
-> +		return -ENOMEM;
-> +
-> +	info->type = lpc_chipset_info[priv->chipset].spi_type;
-> +
-> +	switch (info->type) {
-> +	case INTEL_SPI_BYT:
-> +		pci_read_config_dword(dev, SPIBASE_BYT, &spi_base);
-> +		if (spi_base & SPIBASE_BYT_EN) {
-> +			res->start = spi_base & ~(SPIBASE_BYT_SZ - 1);
-> +			res->end = res->start + SPIBASE_BYT_SZ - 1;
-> +		}
-> +		break;
-> +
-> +	case INTEL_SPI_LPT:
-> +		pci_read_config_dword(dev, RCBABASE, &rcba);
-> +		if (rcba & 1) {
-> +			spi_base = rcba & ~(SPIBASE_LPT_SZ - 1);
-> +			res->start = spi_base + SPIBASE_LPT;
-> +			res->end = res->start + SPIBASE_LPT_SZ - 1;
-> +
-> +			/*
-> +			 * Try to make the flash chip writeable now by
-> +			 * setting BCR_WPD. It it fails we tell the driver
-> +			 * that it can only read the chip.
-> +			 */
-> +			pci_read_config_dword(dev, BCR, &bcr);
-> +			if (!(bcr & BCR_WPD)) {
-> +				bcr |= BCR_WPD;
-> +				pci_write_config_dword(dev, BCR, bcr);
-> +				pci_read_config_dword(dev, BCR, &bcr);
-> +			}
-> +			info->writeable = !!(bcr & BCR_WPD);
-> +		}
-> +		break;
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!res->start)
-> +		return -ENODEV;
-> +
-> +	lpc_ich_spi_cell.platform_data = info;
-> +	lpc_ich_spi_cell.pdata_size = sizeof(*info);
-> +
-> +	return mfd_add_devices(&dev->dev, PLATFORM_DEVID_NONE,
-> +			       &lpc_ich_spi_cell, 1, NULL, 0, NULL);
-> +}
-> +
->  static int lpc_ich_probe(struct pci_dev *dev,
->  				const struct pci_device_id *id)
->  {
-> @@ -1093,6 +1179,12 @@ static int lpc_ich_probe(struct pci_dev *dev,
->  			cell_added = true;
->  	}
->  
-> +	if (lpc_chipset_info[priv->chipset].spi_type) {
-> +		ret = lpc_ich_init_spi(dev);
-> +		if (!ret)
-> +			cell_added = true;
-> +	}
-> +
->  	/*
->  	 * We only care if at least one or none of the cells registered
->  	 * successfully.
-> diff --git a/include/linux/mfd/lpc_ich.h b/include/linux/mfd/lpc_ich.h
-> index 2b300b44f994..fba8fcb54f8c 100644
-> --- a/include/linux/mfd/lpc_ich.h
-> +++ b/include/linux/mfd/lpc_ich.h
-> @@ -20,6 +20,8 @@
->  #ifndef LPC_ICH_H
->  #define LPC_ICH_H
->  
-> +#include <linux/platform_data/intel-spi.h>
-> +
->  /* GPIO resources */
->  #define ICH_RES_GPIO	0
->  #define ICH_RES_GPE0	1
-> @@ -40,6 +42,7 @@ struct lpc_ich_info {
->  	char name[32];
->  	unsigned int iTCO_version;
->  	unsigned int gpio_version;
-> +	enum intel_spi_type spi_type;
->  	u8 use_gpio;
->  };
->  
+> Any comments on this series? It missed v4.8 already so it would be nice
+> to get it merged for v4.9.
+> 
+> Thanks.
 
 -- 
 Lee Jones
