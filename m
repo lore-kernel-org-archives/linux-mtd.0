@@ -1,28 +1,19 @@
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1begYe-0003tp-Q9
- for linux-mtd@lists.infradead.org; Tue, 30 Aug 2016 10:46:21 +0000
-Received: by mail-wm0-x22f.google.com with SMTP id f65so114615905wmi.0
- for <linux-mtd@lists.infradead.org>; Tue, 30 Aug 2016 03:46:00 -0700 (PDT)
-Date: Tue, 30 Aug 2016 11:47:43 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] spi-nor: Add support for Intel SPI serial flash
- controller
-Message-ID: <20160830104743.GD10121@dell>
-References: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
- <20160829071125.GX1812@lahna.fi.intel.com>
- <20160830091330.GH1661@dell>
- <20160830092803.GH1709@lahna.fi.intel.com>
+From: RogerCC Lin <rogercc.lin@mediatek.com>
+To: <boris.brezillon@free-electrons.com>
+CC: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
+ <computersforpeace@gmail.com>, <jorge.ramirez-ortiz@linaro.org>,
+ <daniel.thompson@linaro.org>, <linux-mtd@lists.infradead.org>,
+ <matthias.bgg@gmail.com>, <srv_heupstream@mediatek.com>,
+ <linux-mediatek@lists.infradead.org>, <dwmw2@infradead.org>,
+ <blogic@openwrt.org>, RogerCC Lin <rogercc.lin@mediatek.com>
+Subject: [PATCH v4 1/2] mtd: nand: fix generating over-boundary ECC data when
+ writing
+Date: Tue, 30 Aug 2016 20:35:47 +0800
+Message-ID: <1472560548-30567-2-git-send-email-rogercc.lin@mediatek.com>
+In-Reply-To: <1472560548-30567-1-git-send-email-rogercc.lin@mediatek.com>
+References: <1472560548-30567-1-git-send-email-rogercc.lin@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20160830092803.GH1709@lahna.fi.intel.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,48 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 Aug 2016, Mika Westerberg wrote:
+From: RogerCC Lin <rogercc.lin@mediatek.com>
 
-> On Tue, Aug 30, 2016 at 10:13:30AM +0100, Lee Jones wrote:
-> > On Mon, 29 Aug 2016, Mika Westerberg wrote:
-> > 
-> > > On Mon, Aug 15, 2016 at 10:10:41AM +0300, Mika Westerberg wrote:
-> > > > Hi,
-> > > > 
-> > > > This is third version of the series. Previous versions can be found:
-> > > > 
-> > > >   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
-> > > >   v1: https://lkml.org/lkml/2016/6/14/269
-> > > > 
-> > > > This series adds support for the Intel SPI serial flash controller found on
-> > > > many recent Intel CPUs including Baytrail and Braswell. This driver makes
-> > > > it possible to access the BIOS and other platform data which is stored on
-> > > > the SPI serial flash. It is also possible to upgrade the BIOS using this
-> > > > driver if it has not been protected by special hardware bits.
-> > > > 
-> > > > The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
-> > > > MAX.
-> > > > 
-> > > > Since poking the SPI serial flash can brick the machine, this driver can
-> > > > only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
-> > > > unless instructed othwerwise by module parameter.
-> > > > 
-> > > > Lee can you ACK/NACK the MFD parts so that we can merge the whole series
-> > > > through the MTD tree?
-> > 
-> > Why does it need to go into the MTD tree?  What are the *build*
-> > dependencies?
-> 
-> The first patch adds include/linux/platform_data/intel-spi.h which is
-> needed by the second patch to fill in the platform data structure.
+When mtk_ecc_encode() is writing the ECC parity data to the OOB
+region,because each register is 4 bytes in length,but the len's unit is
+in bytes,the operation in the for loop will cross the ECC's boundary.
 
-That's reasonable.
+Signed-off-by: RogerCC Lin <rogercc.lin@mediatek.com>
+---
+ drivers/mtd/nand/mtk_ecc.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
-I'm happy for the set to be routed via MTD.  I do require a tagged
-immutable branch (with only these patches on) to pull from though.
-
+diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
+index 25a4fbd..495538e 100644
+--- a/drivers/mtd/nand/mtk_ecc.c
++++ b/drivers/mtd/nand/mtk_ecc.c
+@@ -366,7 +366,8 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
+ 		   u8 *data, u32 bytes)
+ {
+ 	dma_addr_t addr;
+-	u32 *p, len, i;
++	u8 *p;
++	u32 len, i, val;
+ 	int ret = 0;
+ 
+ 	addr = dma_map_single(ecc->dev, data, bytes, DMA_TO_DEVICE);
+@@ -392,11 +393,14 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
+ 
+ 	/* Program ECC bytes to OOB: per sector oob = FDM + ECC + SPARE */
+ 	len = (config->strength * ECC_PARITY_BITS + 7) >> 3;
+-	p = (u32 *)(data + bytes);
++	p = data + bytes;
+ 
+ 	/* write the parity bytes generated by the ECC back to the OOB region */
+-	for (i = 0; i < len; i++)
+-		p[i] = readl(ecc->regs + ECC_ENCPAR(i));
++	for (i = 0; i < len; i++) {
++		if ((i % 4) == 0)
++			val = readl(ecc->regs + ECC_ENCPAR(i >> 2));
++		p[i] = (val >> ((i % 4) * 8)) & 0xff;
++	}
+ timeout:
+ 
+ 	dma_unmap_single(ecc->dev, addr, bytes, DMA_TO_DEVICE);
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+1.7.0.4
