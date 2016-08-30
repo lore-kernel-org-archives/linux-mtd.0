@@ -1,25 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1beTRe-0007dm-9L
- for linux-mtd@lists.infradead.org; Mon, 29 Aug 2016 20:46:15 +0000
-Date: Mon, 29 Aug 2016 22:45:41 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Karl Beldan <kbeldan@baylibre.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Sekhar Nori <nsekhar@ti.com>, Kevin Hilman
- <khilman@baylibre.com>, Karl Beldan <karl.beldan+oss@gmail.com>
-Subject: Re: [PATCH] mtd: nand: davinci: Reinitialize the HW ECC engine in
- 4bit hwctl
-Message-ID: <20160829224541.545f622d@bbrezillon>
-In-Reply-To: <20160829203847.GA102453@google.com>
-References: <20160829074550.29247-1-kbeldan@baylibre.com>
- <20160829115930.517a133e@bbrezillon>
- <20160829203847.GA102453@google.com>
+From: <rogercc.lin@mediatek.com>
+To: <boris.brezillon@free-electrons.com>
+CC: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
+ <computersforpeace@gmail.com>, <jorge.ramirez-ortiz@linaro.org>,
+ <daniel.thompson@linaro.org>, <linux-mtd@lists.infradead.org>,
+ <matthias.bgg@gmail.com>, <srv_heupstream@mediatek.com>,
+ <linux-mediatek@lists.infradead.org>, <dwmw2@infradead.org>,
+ <blogic@openwrt.org>, RogerCC Lin <rogercc.lin@mediatek.com>
+Subject: [PATCH v3 2/2] mtd: nand: fix chances to create incomplete ECC data
+ when writing
+Date: Tue, 30 Aug 2016 11:02:12 +0800
+Message-ID: <1472526132-12049-3-git-send-email-rogercc.lin@mediatek.com>
+In-Reply-To: <1472526132-12049-1-git-send-email-rogercc.lin@mediatek.com>
+References: <1472526132-12049-1-git-send-email-rogercc.lin@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,49 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 29 Aug 2016 13:38:47 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+From: RogerCC Lin <rogercc.lin@mediatek.com>
 
-> On Mon, Aug 29, 2016 at 11:59:30AM +0200, Boris Brezillon wrote:
-> > On Mon, 29 Aug 2016 07:45:49 +0000
-> > Karl Beldan <kbeldan@baylibre.com> wrote:
-> >   
-> > > This fixes subpage writes when using 4-bit HW ECC.
-> > > 
-> > > There has been numerous reports about ECC errors with devices using this
-> > > driver for a while.  Also the 4-bit ECC has been reported as broken with
-> > > subpages in [1] and with 16 bits NANDs in the driver and in mach* board
-> > > files both in mainline and in the vendor BSPs.
-> > > 
-> > > What I saw with 4-bit ECC on a 16bits NAND (on an LCDK) which got me to
-> > > try reinitializing the ECC engine:
-> > > - R/W on whole pages properly generates/checks RS code
-> > > - try writing the 1st subpage only of a blank page, the subpage is well
-> > >   written and the RS code properly generated, re-reading the same page
-> > >   the HW detects some ECC error, reading the same page again no ECC
-> > >   error is detected
-> > > 
-> > > Note that the ECC engine is already reinitialized in the 1-bit case.
-> > > 
-> > > Tested on my LCDK with UBI+UBIFS using subpages.
-> > > This could potentially get rid of the issue workarounded in [1].
-> > > 
-> > > [1] 28c015a9daab ("mtd: davinci-nand: disable subpage write for keystone-nand")
-> > > 
-> > > Signed-off-by: Karl Beldan <kbeldan@baylibre.com>  
-> > 
-> > Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > 
-> > Brian, can you take this patch directly in your tree. If that's not
-> > possible, let me know, I'll add the Fixes and Cc:stable tags and take
-> > it for 4.9.  
-> 
-> Would this be correct?
-> 
-> Fixes: 6a4123e581b3 ("mtd: nand: davinci_nand, 4-bit ECC for smallpage")
+When mtk_nfc_do_write_page() comparing the sector number,because the
+sector number field is at the 12th-bit position of NFI_BYTELEN
+register,the masked register should be shifted 12 bits before being
+compared.The result of this bug may cause the second subpage has
+incomplete ECC parity bytes.
 
-I'd say so. At least this is where nand_davinci_hwctl_4bit() was
-introduced, and it did not contain this 'reset' step.
+Signed-off-by: RogerCC Lin <rogercc.lin@mediatek.com>
+---
+ drivers/mtd/nand/mtk_nand.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
 
-> 
-> Brian
+diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
+index ddaa2ac..260bd20 100644
+--- a/drivers/mtd/nand/mtk_nand.c
++++ b/drivers/mtd/nand/mtk_nand.c
+@@ -93,6 +93,7 @@
+ #define		NFI_FSM_MASK		(0xf << 16)
+ #define NFI_ADDRCNTR		(0x70)
+ #define		CNTR_MASK		GENMASK(16, 12)
++#define		ADDRCNTR_SEC_SHIFT	(12)
+ #define NFI_STRADDR		(0x80)
+ #define NFI_BYTELEN		(0x84)
+ #define NFI_CSEL		(0x90)
+@@ -699,8 +700,8 @@ static int mtk_nfc_do_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	}
+ 
+ 	ret = readl_poll_timeout_atomic(nfc->regs + NFI_ADDRCNTR, reg,
+-					(reg & CNTR_MASK) >= chip->ecc.steps,
+-					10, MTK_TIMEOUT);
++		((reg & CNTR_MASK) >> ADDRCNTR_SEC_SHIFT) >= chip->ecc.steps,
++		10, MTK_TIMEOUT);
+ 	if (ret)
+ 		dev_err(dev, "hwecc write timeout\n");
+ 
+@@ -902,8 +903,8 @@ static int mtk_nfc_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ 		dev_warn(nfc->dev, "read ahb/dma done timeout\n");
+ 
+ 	rc = readl_poll_timeout_atomic(nfc->regs + NFI_BYTELEN, reg,
+-				       (reg & CNTR_MASK) >= sectors, 10,
+-				       MTK_TIMEOUT);
++		((reg & CNTR_MASK) >> ADDRCNTR_SEC_SHIFT) >= sectors,
++		10, MTK_TIMEOUT);
+ 	if (rc < 0) {
+ 		dev_err(nfc->dev, "subpage done timeout\n");
+ 		bitflips = -EIO;
+-- 
+1.7.0.4
