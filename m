@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyD-0004tD-Jb
- for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:08 +0000
+ id 1bezyF-0004sh-6q
+ for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:11 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 18/46] mtd: nandsim: Add basic support for a file backend
-Date: Wed, 31 Aug 2016 09:28:25 +0200
-Message-Id: <20160831072853.27822-19-dwalter@sigma-star.at>
+Subject: [PATCH 19/46] mtd: nandsim: UAPI v1
+Date: Wed, 31 Aug 2016 09:28:26 +0200
+Message-Id: <20160831072853.27822-20-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,234 +22,121 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-This is the first step to allow using a file as
-backing store. Such that it is possible to directly
-use nanddump images in nandsim.
-The current file cache mode is not desiged for this
-since it maintains an in memory list of erased block
-to skipt 0xff reads/writes. Further more it utilizes
-the page cache to be fast and caching only.
+expose UAPI for nandsim
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c  | 143 ++++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nandsim.h |   1 +
- 2 files changed, 144 insertions(+)
+ include/uapi/mtd/nandsim-user.h | 102 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 102 insertions(+)
+ create mode 100644 include/uapi/mtd/nandsim-user.h
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 21a6e1a..2e3c08e 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -49,6 +49,7 @@
- #include <linux/miscdevice.h>
- #include <linux/major.h>
- #include <linux/mutex.h>
-+#include <linux/file.h>
- 
- /* Default simulator parameters values */
- #if !defined(CONFIG_NANDSIM_FIRST_ID_BYTE)  || \
-@@ -316,6 +317,12 @@ struct ns_cachefile_data {
- 	int held_cnt;
- };
- 
-+struct ns_file_data {
-+	struct file *file;
-+	void *file_buf;
-+	bool ro;
+diff --git a/include/uapi/mtd/nandsim-user.h b/include/uapi/mtd/nandsim-user.h
+new file mode 100644
+index 0000000..14ab42a
+--- /dev/null
++++ b/include/uapi/mtd/nandsim-user.h
+@@ -0,0 +1,102 @@
++#ifndef __NANDSIM_USER_H__
++#define __NANDSIM_USER_H__
++
++#include <linux/types.h>
++
++#define NANDSIM_IOC_MAGIC 'n'
++
++#define NANDSIM_IOC_NEW_INSTANCE _IOW(NANDSIM_IOC_MAGIC, 0, struct ns_new_instance_req)
++#define NANDSIM_IOC_DESTROY_INSTANCE _IOW(NANDSIM_IOC_MAGIC, 1, struct ns_destroy_instance_req)
++
++#define NANDSIM_MAX_DEVICES 32
++#define NANDSIM_MAX_PARTS 32
++
++enum ns_backend_type {
++	NANDSIM_BACKEND_RAM = 0,
++	NANDSIM_BACKEND_CACHEFILE = 1,
++	NANDSIM_BACKEND_FILE = 2,
++	NANDSIM_BACKEND_MAX,
 +};
 +
- /*
-  * The structure which describes all the internal simulator data.
-  */
-@@ -671,6 +678,59 @@ err_close:
- 	return err;
- }
- 
-+static int ns_file_init(struct nandsim *ns, struct nandsim_params *nsparam)
-+{
-+	int ret;
-+	struct file *file;
-+	struct inode *inode;
-+	struct ns_file_data *data = kzalloc(sizeof(*data), GFP_KERNEL);
++/**
++ * struct ns_new_instance_req - Create a new nandsim instance.
++ *
++ * @id_bytes: NAND ID of the simulated NAND chip
++ * @bus_width: bus width to emulate, either 8 or 16
++ * @bbt_mode: bad block table mode, 0 OOB, 1 BBT with marker in OOB,
++ *            2 BBT with marker in data area
++ * @no_oob: backing file contains no OOB data
++ * @bch_strength: instead of hamming ECC use BCH with given strength
++ * @parts_num: number of MTD partitions to create
++ * @parts: partition sizes in physical erase blocks, used then @parts_num > 0
++ * @backend: backend type, see @ns_backend_type
++ * @file_fd: file describtor of backend, only for @NANDSIM_BACKEND_CACHEFILE
++ *           and @NANDSIM_BACKEND_FILE.
++ * @bitflips: maximum number of random bit flips per page
++ * @overridesize: specifies the NAND size overriding the ID bytes
++ * @access_delay: initial page access delay (microseconds)
++ * @program_delay: page programm delay (microseconds)
++ * @erase_delay: sector erase delay (milliseconds)
++ * @output_cycle: word output, from flash, time (nanoseconds)
++ * @input_cycle: word input, to flash, time (nanoseconds)
++ * @simelem_num: number of simulation elements appened to this
++ *               data structure. see @ns_simelement_prop
++ *
++ * This struct is used with the @NANDSIM_IOC_NEW_INSTANCE ioctl command.
++ * It creates a new nandsim instance from the given parameter.
++ * The ioctl command returns in case of success the nandsim id of the new
++ * instance, in case of error a negative value.
++ *
++ * Not all fields in the struct have to be filled, if nandsim should
++ * use a default ignore the value, fill with 0.
++ * The only mandatory fields are @id_bytes and @bus_width.
++ * When @no_oob is non-zero @bch_strength cannot be used since
++ * @no_oob implies that no ECC is used.
++ */
++struct ns_new_instance_req {
++	__s8 id_bytes[8];
 +
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
++	__s8 bus_width;
++	__s8 bbt_mode;
++	__s8 no_oob;
++	__s32 bch_strength;
 +
-+	file = fget(nsparam->file_fd);
-+	if (!file) {
-+		ret = -EBADF;
-+		goto out_free;
-+	}
++	__s8 parts_num;
++	__s32 parts[NANDSIM_MAX_PARTS];
 +
-+	inode = file->f_mapping->host;
-+	if (!S_ISREG(inode->i_mode) && !S_ISBLK(inode->i_mode)) {
-+		NS_ERR("alloc_device: Backend file is not a regular file nor a block device\n");
-+		ret = -EINVAL;
-+		goto out_put;
-+	}
++	__s8 backend;
++	__s32 file_fd;
 +
-+	if (!(file->f_mode & FMODE_WRITE)) {
-+		NS_ERR("alloc_device: Backend file is not writeable\n");
-+		ret = -EINVAL;
-+		goto out_put;
-+	}
++	__s32 bitflips;
++	__s32 overridesize;
++	__s32 access_delay;
++	__s32 program_delay;
++	__s32 erase_delay;
++	__s32 output_cycle;
++	__s32 input_cycle;
 +
-+	data->file = file;
++	__s32 padding[4];
 +
-+	data->file_buf = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
-+	if (!data->file_buf) {
-+		NS_ERR("alloc_device: unable to allocate file buf\n");
-+		ret = -ENOMEM;
-+		goto out_put;
-+	}
++	__s32 simelem_num;
++} __packed;
 +
-+	ns->backend_data = data;
-+	ret = 0;
-+
-+	return ret;
-+
-+out_put:
-+	fput(file);
-+out_free:
-+	kfree(data);
-+out:
-+	return ret;
-+}
-+
- struct nandsim_geom *nandsim_get_geom(struct nandsim *ns)
- {
- 	return &ns->geom;
-@@ -725,6 +785,15 @@ static void ns_cachefile_destroy(struct nandsim *ns)
- 	filp_close(data->cfile, NULL);
- }
- 
-+static void ns_file_destroy(struct nandsim *ns)
-+{
-+	struct ns_file_data *data = ns->backend_data;
-+
-+	kfree(data->file_buf);
-+	fput(data->file);
-+	kfree(data);
-+}
-+
- static char *get_partition_name(struct nandsim *ns, int i)
- {
- 	return kasprintf(GFP_KERNEL, "nandsim%d_%d", ns->index, i);
-@@ -1587,6 +1656,22 @@ static void ns_cachefile_read_page(struct nandsim *ns, int num)
- 	}
- }
- 
-+static void ns_file_read_page(struct nandsim *ns, int num)
-+{
-+	struct ns_file_data *data = ns->backend_data;
-+	loff_t pos;
-+	ssize_t tx;
-+
-+	NS_DBG("read_page: page %d written, reading from %d\n",
-+		ns->regs.row, ns->regs.column + ns->regs.off);
-+	pos = (loff_t)NS_RAW_OFFSET(ns) + ns->regs.off;
-+	tx = kernel_read(data->file, pos, ns->buf.byte, num);
-+	if (tx == 0)
-+		memset(ns->buf.byte, 0xff, num);
-+	else if (tx != num)
-+		NS_ERR("read_page: read error for page %d ret %ld\n", ns->regs.row, (long)tx);
-+}
-+
- static void ns_ram_erase_sector(struct nandsim *ns)
- {
- 	union ns_mem *mypage;
-@@ -1617,6 +1702,24 @@ static void ns_cachefile_erase_sector(struct nandsim *ns)
- 	}
- }
- 
-+static void ns_file_erase_sector(struct nandsim *ns)
-+{
-+	int i;
-+	loff_t pos;
-+	ssize_t tx;
-+	struct ns_file_data *data = ns->backend_data;
-+
-+	memset(data->file_buf, 0xff, ns->geom.pgszoob);
-+
-+	for (i = 0; i < ns->geom.pgsec; i++) {
-+		pos = (loff_t)(ns->regs.row + i) * ns->geom.pgszoob;
-+		tx = kernel_write(data->file, data->file_buf, ns->geom.pgszoob, pos);
-+		if (tx != ns->geom.pgszoob) {
-+			NS_ERR("prog_page: write error for page %d ret %ld\n", ns->regs.row, (long)tx);
-+		}
-+	}
-+}
-+
- static int ns_ram_prog_page(struct nandsim *ns, int num)
- {
- 	int i;
-@@ -1690,6 +1793,39 @@ static int ns_cachefile_prog_page(struct nandsim *ns, int num)
- 	return 0;
- }
- 
-+static int ns_file_prog_page(struct nandsim *ns, int num)
-+{
-+	int i;
-+	loff_t off;
-+	ssize_t tx;
-+	u_char *pg_off;
-+	struct ns_file_data *data = ns->backend_data;
-+
-+	NS_DBG("prog_page: writing page %d\n", ns->regs.row);
-+
-+	pg_off = data->file_buf + ns->regs.column + ns->regs.off;
-+	off = (loff_t)NS_RAW_OFFSET(ns) + ns->regs.off;
-+
-+	tx = kernel_read(data->file, off, pg_off, num);
-+	if (tx == 0)
-+		memset(pg_off, 0xff, num);
-+	else if (tx != num) {
-+		NS_ERR("prog_page: read error for page %d ret %ld\n", ns->regs.row, (long)tx);
-+		return -1;
-+	}
-+
-+	for (i = 0; i < num; i++)
-+		pg_off[i] &= ns->buf.byte[i];
-+
-+	tx = kernel_write(data->file, pg_off, num, off);
-+	if (tx != num) {
-+		NS_ERR("prog_page: write error for page %d ret %ld\n", ns->regs.row, (long)tx);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
- static struct ns_backend_ops ns_ram_bops = {
- 	.erase_sector = ns_ram_erase_sector,
- 	.prog_page = ns_ram_prog_page,
-@@ -1706,6 +1842,13 @@ static struct ns_backend_ops ns_cachefile_bops = {
- 	.destroy = ns_cachefile_destroy,
- };
- 
-+static struct ns_backend_ops ns_file_bops = {
-+	.erase_sector = ns_file_erase_sector,
-+	.prog_page = ns_file_prog_page,
-+	.read_page = ns_file_read_page,
-+	.init = ns_file_init,
-+	.destroy = ns_file_destroy,
++enum {
++	NANDSIM_SIMELEM_BADBLOCK = 0,
++	NANDSIM_SIMELEM_WEAKBLOCK,
++	NANDSIM_SIMELEM_WEAKPAGE,
++	NANDSIM_SIMELEM_GRAVEPAGE,
 +};
- 
- /*
-  * If state has any action bit, perform this action.
-diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
-index 2d596ad..e3d2c9f 100644
---- a/include/linux/mtd/nandsim.h
-+++ b/include/linux/mtd/nandsim.h
-@@ -23,6 +23,7 @@ struct nandsim_params {
- 	unsigned int bbt;
- 	unsigned int bch;
- 	unsigned char *id_bytes;
-+	unsigned int file_fd;
- 	struct ns_backend_ops *bops;
- };
- 
++
++struct ns_simelement_prop {
++	__s8 elem_type;
++	__s32 elem_id;
++	__s32 elem_attr;
++	__s8 padding[7];
++} __packed;
++
++struct ns_destroy_instance_req {
++	__s8 id;
++	__s8 padding[7];
++} __packed;
++
++#endif /* __NANDSIM_USER_H__ */
 -- 
 2.8.3
