@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyO-0004sj-1m
- for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:19 +0000
+ id 1bezyR-0004t4-4L
+ for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:20 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 37/46] mtd: nandsim: Turn parts[] into a integer
-Date: Wed, 31 Aug 2016 09:28:44 +0200
-Message-Id: <20160831072853.27822-38-dwalter@sigma-star.at>
+Subject: [PATCH 40/46] mtd: nandsim: Expose BBT, delays, etc.. to userspace
+Date: Wed, 31 Aug 2016 09:28:47 +0200
+Message-Id: <20160831072853.27822-41-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,51 +22,92 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-The parts array denotes how many erase blocks each partition
-has. Therefore a plain integer can also do it.
-If someone shows me a NAND with more than 2^32 erase blocks we can
-turn it back into a long. ;)
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c  | 4 ++--
- include/linux/mtd/nandsim.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/nandsim.c  | 43 ++++++++++++++++++++++++++++++++++++-------
+ include/linux/mtd/nandsim.h |  2 +-
+ 2 files changed, 37 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 0176271..584fc72 100644
+index 027b15d..222b2b8 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -73,7 +73,7 @@ static uint output_cycle   = NANDSIM_OUTPUT_CYCLE;
- static uint input_cycle    = NANDSIM_INPUT_CYCLE;
- static uint bus_width      = NANDSIM_BUS_WIDTH;
- static uint do_delays      = NANDSIM_DO_DELAYS;
--static unsigned long parts[NANDSIM_MAX_PARTS];
-+static unsigned int parts[NANDSIM_MAX_PARTS];
- static unsigned int parts_num;
- static char *badblocks = NULL;
- static char *weakblocks = NULL;
-@@ -105,7 +105,7 @@ module_param(output_cycle,   uint, 0400);
- module_param(input_cycle,    uint, 0400);
- module_param(bus_width,      uint, 0400);
- module_param(do_delays,      uint, 0400);
--module_param_array(parts, ulong, &parts_num, 0400);
-+module_param_array(parts,    uint, &parts_num, 0400);
- module_param(badblocks,      charp, 0400);
- module_param(weakblocks,     charp, 0400);
- module_param(weakpages,      charp, 0400);
+@@ -2593,11 +2593,37 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
+ 	nsparam->bus_width = req->bus_width;
+ 	nsparam->file_fd = req->file_fd;
+ 	nsparam->no_oob = !!req->no_oob;
+-
+-	if (req->parts_num > NANDSIM_MAX_PARTS || req->parts_num < 0) {
+-		kfree(nsparam);
+-		return -EINVAL;
+-	}
++	nsparam->bbt = req->bbt_mode;
++	nsparam->bch = req->bch_strength;
++	nsparam->bitflips = req->bitflips;
++	nsparam->overridesize = req->overridesize;
++
++	if (req->bch_strength && req->no_oob)
++		goto err_inval;
++
++	if (req->access_delay && req->program_delay && req->erase_delay &&
++	    req->output_cycle && req->input_cycle) {
++		if (req->access_delay > MAX_UDELAY_MS * 1000)
++			goto err_inval;
++		if (req->program_delay > MAX_UDELAY_MS * 1000)
++			goto err_inval;
++		if (req->erase_delay > 1000)
++			goto err_inval;
++		if (req->output_cycle > MAX_UDELAY_MS * 1000)
++			goto err_inval;
++		if (req->input_cycle > MAX_UDELAY_MS * 1000)
++			goto err_inval;
++
++		nsparam->access_delay = req->access_delay;
++		nsparam->program_delay = req->program_delay;
++		nsparam->erase_delay = req->erase_delay;
++		nsparam->output_cycle = req->output_cycle;
++		nsparam->input_cycle = req->input_cycle;
++		nsparam->do_delays = true;
++	}
++
++	if (req->parts_num > NANDSIM_MAX_PARTS || req->parts_num < 0)
++		goto err_inval;
+ 
+ 	if (req->parts_num > 0) {
+ 		nsparam->parts_num = req->parts_num;
+@@ -2618,8 +2644,7 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
+ 		break;
+ 
+ 		default:
+-			kfree(nsparam);
+-			return -EINVAL;
++			goto err_inval;
+ 	}
+ 
+ 	nsmtd = ns_new_instance(nsparam);
+@@ -2632,6 +2657,10 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
+ 	ns = nand_get_controller_data(chip);
+ 
+ 	return ns->index;
++
++err_inval:
++	kfree(nsparam);
++	return -EINVAL;
+ }
+ 
+ static int ns_ctrl_destroy_instance(struct ns_destroy_instance_req *req)
 diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
-index 85d4d7e..61ff5dd 100644
+index 07d32a9..880c0b1 100644
 --- a/include/linux/mtd/nandsim.h
 +++ b/include/linux/mtd/nandsim.h
-@@ -12,7 +12,7 @@ struct nandsim_params {
+@@ -11,7 +11,7 @@ struct nandsim_params {
+ 	unsigned int output_cycle;
  	unsigned int input_cycle;
  	unsigned int bus_width;
- 	unsigned int do_delays;
--	unsigned long *parts;
-+	unsigned int *parts;
+-	unsigned int do_delays;
++	bool do_delays;
+ 	unsigned int parts[NANDSIM_MAX_PARTS];
  	unsigned int parts_num;
  	char *badblocks;
- 	char *weakblocks;
 -- 
 2.8.3
