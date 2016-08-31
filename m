@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyR-0004t4-4L
+ id 1bezyN-0004sk-IC
  for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:20 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 40/46] mtd: nandsim: Expose BBT, delays, etc.. to userspace
-Date: Wed, 31 Aug 2016 09:28:47 +0200
-Message-Id: <20160831072853.27822-41-dwalter@sigma-star.at>
+Subject: [PATCH 36/46] mtd: nandsim: Cleanup constants
+Date: Wed, 31 Aug 2016 09:28:43 +0200
+Message-Id: <20160831072853.27822-37-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,92 +22,113 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
+Rename CONFIG_NANDSIM_* to NANDSIM_* since these
+constants are not exposed to kconfig.
+
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c  | 43 ++++++++++++++++++++++++++++++++++++-------
- include/linux/mtd/nandsim.h |  2 +-
- 2 files changed, 37 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/nandsim.c | 74 ++++++++++++++++------------------------------
+ 1 file changed, 25 insertions(+), 49 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 027b15d..222b2b8 100644
+index 8bc8015..0176271 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -2593,11 +2593,37 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
- 	nsparam->bus_width = req->bus_width;
- 	nsparam->file_fd = req->file_fd;
- 	nsparam->no_oob = !!req->no_oob;
+@@ -54,50 +54,26 @@
+ #include <linux/mutex.h>
+ #include <linux/file.h>
+ 
+-/* Default simulator parameters values */
+-#if !defined(CONFIG_NANDSIM_FIRST_ID_BYTE)  || \
+-    !defined(CONFIG_NANDSIM_SECOND_ID_BYTE) || \
+-    !defined(CONFIG_NANDSIM_THIRD_ID_BYTE)  || \
+-    !defined(CONFIG_NANDSIM_FOURTH_ID_BYTE)
+-#define CONFIG_NANDSIM_FIRST_ID_BYTE  0x98
+-#define CONFIG_NANDSIM_SECOND_ID_BYTE 0x39
+-#define CONFIG_NANDSIM_THIRD_ID_BYTE  0xFF /* No byte */
+-#define CONFIG_NANDSIM_FOURTH_ID_BYTE 0xFF /* No byte */
+-#endif
 -
--	if (req->parts_num > NANDSIM_MAX_PARTS || req->parts_num < 0) {
--		kfree(nsparam);
--		return -EINVAL;
--	}
-+	nsparam->bbt = req->bbt_mode;
-+	nsparam->bch = req->bch_strength;
-+	nsparam->bitflips = req->bitflips;
-+	nsparam->overridesize = req->overridesize;
+-#ifndef CONFIG_NANDSIM_ACCESS_DELAY
+-#define CONFIG_NANDSIM_ACCESS_DELAY 25
+-#endif
+-#ifndef CONFIG_NANDSIM_PROGRAMM_DELAY
+-#define CONFIG_NANDSIM_PROGRAMM_DELAY 200
+-#endif
+-#ifndef CONFIG_NANDSIM_ERASE_DELAY
+-#define CONFIG_NANDSIM_ERASE_DELAY 2
+-#endif
+-#ifndef CONFIG_NANDSIM_OUTPUT_CYCLE
+-#define CONFIG_NANDSIM_OUTPUT_CYCLE 40
+-#endif
+-#ifndef CONFIG_NANDSIM_INPUT_CYCLE
+-#define CONFIG_NANDSIM_INPUT_CYCLE  50
+-#endif
+-#ifndef CONFIG_NANDSIM_BUS_WIDTH
+-#define CONFIG_NANDSIM_BUS_WIDTH  8
+-#endif
+-#ifndef CONFIG_NANDSIM_DO_DELAYS
+-#define CONFIG_NANDSIM_DO_DELAYS  0
+-#endif
+-#ifndef CONFIG_NANDSIM_MAX_PARTS
+-#define CONFIG_NANDSIM_MAX_PARTS  32
+-#endif
+-
+-static uint access_delay   = CONFIG_NANDSIM_ACCESS_DELAY;
+-static uint programm_delay = CONFIG_NANDSIM_PROGRAMM_DELAY;
+-static uint erase_delay    = CONFIG_NANDSIM_ERASE_DELAY;
+-static uint output_cycle   = CONFIG_NANDSIM_OUTPUT_CYCLE;
+-static uint input_cycle    = CONFIG_NANDSIM_INPUT_CYCLE;
+-static uint bus_width      = CONFIG_NANDSIM_BUS_WIDTH;
+-static uint do_delays      = CONFIG_NANDSIM_DO_DELAYS;
+-static unsigned long parts[CONFIG_NANDSIM_MAX_PARTS];
++#define NANDSIM_FIRST_ID_BYTE  0x98
++#define NANDSIM_SECOND_ID_BYTE 0x39
++#define NANDSIM_THIRD_ID_BYTE  0xFF /* No byte */
++#define NANDSIM_FOURTH_ID_BYTE 0xFF /* No byte */
++#define NANDSIM_ACCESS_DELAY 25
++#define NANDSIM_PROGRAMM_DELAY 200
++#define NANDSIM_ERASE_DELAY 2
++#define NANDSIM_OUTPUT_CYCLE 40
++#define NANDSIM_INPUT_CYCLE  50
++#define NANDSIM_BUS_WIDTH  8
++#define NANDSIM_DO_DELAYS  0
 +
-+	if (req->bch_strength && req->no_oob)
-+		goto err_inval;
-+
-+	if (req->access_delay && req->program_delay && req->erase_delay &&
-+	    req->output_cycle && req->input_cycle) {
-+		if (req->access_delay > MAX_UDELAY_MS * 1000)
-+			goto err_inval;
-+		if (req->program_delay > MAX_UDELAY_MS * 1000)
-+			goto err_inval;
-+		if (req->erase_delay > 1000)
-+			goto err_inval;
-+		if (req->output_cycle > MAX_UDELAY_MS * 1000)
-+			goto err_inval;
-+		if (req->input_cycle > MAX_UDELAY_MS * 1000)
-+			goto err_inval;
-+
-+		nsparam->access_delay = req->access_delay;
-+		nsparam->program_delay = req->program_delay;
-+		nsparam->erase_delay = req->erase_delay;
-+		nsparam->output_cycle = req->output_cycle;
-+		nsparam->input_cycle = req->input_cycle;
-+		nsparam->do_delays = true;
-+	}
-+
-+	if (req->parts_num > NANDSIM_MAX_PARTS || req->parts_num < 0)
-+		goto err_inval;
++static uint access_delay   = NANDSIM_ACCESS_DELAY;
++static uint programm_delay = NANDSIM_PROGRAMM_DELAY;
++static uint erase_delay    = NANDSIM_ERASE_DELAY;
++static uint output_cycle   = NANDSIM_OUTPUT_CYCLE;
++static uint input_cycle    = NANDSIM_INPUT_CYCLE;
++static uint bus_width      = NANDSIM_BUS_WIDTH;
++static uint do_delays      = NANDSIM_DO_DELAYS;
++static unsigned long parts[NANDSIM_MAX_PARTS];
+ static unsigned int parts_num;
+ static char *badblocks = NULL;
+ static char *weakblocks = NULL;
+@@ -109,10 +85,10 @@ static char *cache_file = NULL;
+ static unsigned int bbt;
+ static unsigned int bch;
+ static u_char id_bytes[8] = {
+-	[0] = CONFIG_NANDSIM_FIRST_ID_BYTE,
+-	[1] = CONFIG_NANDSIM_SECOND_ID_BYTE,
+-	[2] = CONFIG_NANDSIM_THIRD_ID_BYTE,
+-	[3] = CONFIG_NANDSIM_FOURTH_ID_BYTE,
++	[0] = NANDSIM_FIRST_ID_BYTE,
++	[1] = NANDSIM_SECOND_ID_BYTE,
++	[2] = NANDSIM_THIRD_ID_BYTE,
++	[3] = NANDSIM_FOURTH_ID_BYTE,
+ 	[4 ... 7] = 0xFF,
+ };
+ static bool defaults = true;
+@@ -304,8 +280,8 @@ struct nandsim {
+ 	unsigned int index;
+ 	unsigned int refcnt;
+ 	spinlock_t refcnt_lock;
+-	struct mtd_partition partitions[CONFIG_NANDSIM_MAX_PARTS];
+ 	bool destroying;
++	struct mtd_partition partitions[NANDSIM_MAX_PARTS];
+ 	unsigned int nbparts;
  
- 	if (req->parts_num > 0) {
- 		nsparam->parts_num = req->parts_num;
-@@ -2618,8 +2644,7 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
- 		break;
- 
- 		default:
--			kfree(nsparam);
--			return -EINVAL;
-+			goto err_inval;
- 	}
- 
- 	nsmtd = ns_new_instance(nsparam);
-@@ -2632,6 +2657,10 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
- 	ns = nand_get_controller_data(chip);
- 
- 	return ns->index;
-+
-+err_inval:
-+	kfree(nsparam);
-+	return -EINVAL;
- }
- 
- static int ns_ctrl_destroy_instance(struct ns_destroy_instance_req *req)
-diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
-index 07d32a9..880c0b1 100644
---- a/include/linux/mtd/nandsim.h
-+++ b/include/linux/mtd/nandsim.h
-@@ -11,7 +11,7 @@ struct nandsim_params {
- 	unsigned int output_cycle;
- 	unsigned int input_cycle;
- 	unsigned int bus_width;
--	unsigned int do_delays;
-+	bool do_delays;
- 	unsigned int parts[NANDSIM_MAX_PARTS];
- 	unsigned int parts_num;
- 	char *badblocks;
+ 	uint busw;              /* flash chip bus width (8 or 16) */
 -- 
 2.8.3
