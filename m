@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezxp-0004pZ-OV
- for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:29:39 +0000
+ id 1bezxp-0004ph-Qk
+ for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:29:40 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 01/46] mtdpart: Propagate _get/put_device()
-Date: Wed, 31 Aug 2016 09:28:08 +0200
-Message-Id: <20160831072853.27822-2-dwalter@sigma-star.at>
+Subject: [PATCH 04/46] mtd: Don't unconditionally execute remove notifiers
+Date: Wed, 31 Aug 2016 09:28:11 +0200
+Message-Id: <20160831072853.27822-5-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,52 +22,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-If the master device has callbacks for _get/put_device()
-and this MTD has slaves a get_mtd_device() call on paritions
-will never issue the registered callbacks.
-Fix this by propagating _get/put_device() down.
+Only call them when we're really removing the MTD.
 
 Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/mtdpart.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/mtd/mtdcore.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 1f13e32..ec852fa 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -317,6 +317,18 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	return res;
- }
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 36e5fb0..b8205ec 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -499,16 +499,17 @@ int del_mtd_device(struct mtd_info *mtd)
+ 		goto out_error;
+ 	}
  
-+static int part_get_device(struct mtd_info *mtd)
-+{
-+	struct mtd_part *part = mtd_to_part(mtd);
-+	return part->master->_get_device(part->master);
-+}
+-	/* No need to get a refcount on the module containing
+-		the notifier, since we hold the mtd_table_mutex */
+-	list_for_each_entry(not, &mtd_notifiers, list)
+-		not->remove(mtd);
+-
+ 	if (mtd->usecount) {
+ 		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
+ 		       mtd->index, mtd->name, mtd->usecount);
+ 		ret = -EBUSY;
+ 	} else {
++		/* No need to get a refcount on the module containing
++		 * the notifier, since we hold the mtd_table_mutex
++		 */
++		list_for_each_entry(not, &mtd_notifiers, list)
++			not->remove(mtd);
 +
-+static void part_put_device(struct mtd_info *mtd)
-+{
-+	struct mtd_part *part = mtd_to_part(mtd);
-+	part->master->_put_device(part->master);
-+}
-+
- static int part_ooblayout_ecc(struct mtd_info *mtd, int section,
- 			      struct mtd_oob_region *oobregion)
- {
-@@ -463,6 +475,12 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 		slave->mtd._block_isbad = part_block_isbad;
- 	if (master->_block_markbad)
- 		slave->mtd._block_markbad = part_block_markbad;
-+
-+	if (master->_get_device)
-+		slave->mtd._get_device = part_get_device;
-+	if (master->_put_device)
-+		slave->mtd._put_device = part_put_device;
-+
- 	slave->mtd._erase = part_erase;
- 	slave->master = master;
- 	slave->offset = part->offset;
+ 		device_unregister(&mtd->dev);
+ 
+ 		idr_remove(&mtd_idr, mtd->index);
 -- 
 2.8.3
