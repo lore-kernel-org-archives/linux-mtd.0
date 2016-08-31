@@ -1,14 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyb-0008WH-9t
+ id 1bezyb-0008WK-9x
  for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:27 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 25/46] mtd: nandsim: Print backend name
-Date: Wed, 31 Aug 2016 09:28:32 +0200
-Message-Id: <20160831072853.27822-26-dwalter@sigma-star.at>
+Subject: [PATCH 34/46] mtd: nandsim: Support bitflip and read error emulation
+ in file backend
+Date: Wed, 31 Aug 2016 09:28:41 +0200
+Message-Id: <20160831072853.27822-35-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,61 +23,104 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-...useful to figure what backend is currently in use.
+Since we don't track the empty state we have to check
+whether the buffer is full with 0xff bytes or not.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c  | 4 ++++
- include/linux/mtd/nandsim.h | 1 +
- 2 files changed, 5 insertions(+)
+ drivers/mtd/nand/nandsim.c | 34 ++++++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 47d8d41..838e5de 100644
+index 75bf45a74..812b97f 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -976,6 +976,7 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
+@@ -1602,11 +1602,26 @@ static inline u_char *NS_PAGE_BYTE_OFF(struct nandsim *ns)
+ 	return NS_GET_PAGE(ns)->byte + ns->regs.column + ns->regs.off;
+ }
  
- 	ns->bops = nsparam->bops;
+-static int do_read_error(struct nandsim *ns, int num)
++static bool buffer_is_ff(struct nandsim *ns, int num)
++{
++	int i;
++
++	for (i = 0; i < num; i++) {
++		if (ns->buf.byte[i] != 0xff)
++			return false;
++	}
++
++	return true;
++}
++
++static int do_read_error(struct nandsim *ns, int num, bool check_ff)
+ {
+ 	unsigned int page_no = ns->regs.row;
  
-+	NS_INFO("Using backend: %s\n", ns->bops->name);
- 	if ((ret = ns->bops->init(ns, nsparam)) != 0) {
- 		NS_ERR("Unable to initialize simulator backend: %i\n", ret);
- 		return ret;
-@@ -1880,6 +1881,7 @@ static struct ns_backend_ops ns_ram_bops = {
- 	.read_page = ns_ram_read_page,
- 	.init = ns_ram_init,
- 	.destroy = ns_ram_destroy,
-+	.name = "ram",
- };
+ 	if (read_error(ns, page_no)) {
++		if (check_ff && buffer_is_ff(ns, num))
++			return 0;
++
+ 		prandom_bytes(ns->buf.byte, num);
+ 		pr_warn("simulating read error in page %u\n", page_no);
+ 		return 1;
+@@ -1614,12 +1629,16 @@ static int do_read_error(struct nandsim *ns, int num)
+ 	return 0;
+ }
  
- static struct ns_backend_ops ns_cachefile_bops = {
-@@ -1888,6 +1890,7 @@ static struct ns_backend_ops ns_cachefile_bops = {
- 	.read_page = ns_cachefile_read_page,
- 	.init = ns_cachefile_init,
- 	.destroy = ns_cachefile_destroy,
-+	.name = "cache_file",
- };
+-static void do_bit_flips(struct nandsim *ns, int num)
++static void do_bit_flips(struct nandsim *ns, int num, bool check_ff)
+ {
+ 	struct mtd_info *nsmtd = ns_to_mtd(ns);
  
- static struct ns_backend_ops ns_file_bops = {
-@@ -1896,6 +1899,7 @@ static struct ns_backend_ops ns_file_bops = {
- 	.read_page = ns_file_read_page,
- 	.init = ns_file_init,
- 	.destroy = ns_file_destroy,
-+	.name = "file",
- };
+ 	if (ns->bitflips && prandom_u32() < (1 << 22)) {
+ 		int flips = 1;
++
++		if (check_ff && buffer_is_ff(ns, num))
++			return;
++
+ 		if (ns->bitflips > 1)
+ 			flips = (prandom_u32() % (int)ns->bitflips) + 1;
+ 		while (flips--) {
+@@ -1644,10 +1663,10 @@ static void ns_ram_read_page(struct nandsim *ns, int num)
+ 	} else {
+ 		pr_debug("page %d allocated, reading from %d\n",
+ 			ns->regs.row, ns->regs.column + ns->regs.off);
+-		if (do_read_error(ns, num))
++		if (do_read_error(ns, num, false))
+ 			return;
+ 		memcpy(ns->buf.byte, NS_PAGE_BYTE_OFF(ns), num);
+-		do_bit_flips(ns, num);
++		do_bit_flips(ns, num, false);
+ 	}
+ }
  
- /*
-diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
-index a0ca0fb..d71a02f 100644
---- a/include/linux/mtd/nandsim.h
-+++ b/include/linux/mtd/nandsim.h
-@@ -72,6 +72,7 @@ struct ns_backend_ops {
- 	void (*read_page)(struct nandsim *ns, int num);
- 	int (*init)(struct nandsim *ns, struct nandsim_params *nsparam);
- 	void (*destroy)(struct nandsim *ns);
-+	char *name;
- };
+@@ -1664,7 +1683,7 @@ static void ns_cachefile_read_page(struct nandsim *ns, int num)
  
- struct mtd_info *ns_new_instance(struct nandsim_params *nsparam);
+ 		pr_debug("page %d written, reading from %d\n",
+ 			ns->regs.row, ns->regs.column + ns->regs.off);
+-		if (do_read_error(ns, num))
++		if (do_read_error(ns, num, false))
+ 			return;
+ 		pos = (loff_t)NS_RAW_OFFSET(ns) + ns->regs.off;
+ 		tx = read_file(ns, data->cfile, ns->buf.byte, num, pos);
+@@ -1672,7 +1691,7 @@ static void ns_cachefile_read_page(struct nandsim *ns, int num)
+ 			pr_err("read error for page %d ret %ld\n", ns->regs.row, (long)tx);
+ 			return;
+ 		}
+-		do_bit_flips(ns, num);
++		do_bit_flips(ns, num, false);
+ 	}
+ }
+ 
+@@ -1710,6 +1729,9 @@ void __ns_file_read_page(struct nandsim *ns, int num,
+ 		memset(ns->buf.byte, 0xff, num);
+ 	else if (tx != num)
+ 		pr_err("read error for page %d ret %ld\n", ns->regs.row, (long)tx);
++
++	do_read_error(ns, num, true);
++	do_bit_flips(ns, num, true);
+ }
+ EXPORT_SYMBOL_GPL(__ns_file_read_page);
+ 
 -- 
 2.8.3
