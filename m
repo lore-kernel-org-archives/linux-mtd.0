@@ -1,15 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyN-0004si-KE
- for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:17 +0000
+ id 1bezyO-0004sj-1m
+ for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:19 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 38/46] mtd: nandsim: Expose partition creation logic to user
- space
-Date: Wed, 31 Aug 2016 09:28:45 +0200
-Message-Id: <20160831072853.27822-39-dwalter@sigma-star.at>
+Subject: [PATCH 37/46] mtd: nandsim: Turn parts[] into a integer
+Date: Wed, 31 Aug 2016 09:28:44 +0200
+Message-Id: <20160831072853.27822-38-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,52 +22,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
+The parts array denotes how many erase blocks each partition
+has. Therefore a plain integer can also do it.
+If someone shows me a NAND with more than 2^32 erase blocks we can
+turn it back into a long. ;)
+
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c  | 12 +++++++++++-
- include/linux/mtd/nandsim.h |  2 +-
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/nandsim.c  | 4 ++--
+ include/linux/mtd/nandsim.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 584fc72..05a3088 100644
+index 0176271..584fc72 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -2585,6 +2585,16 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
- 	nsparam->file_fd = req->file_fd;
- 	nsparam->no_oob = !!req->no_oob;
- 
-+	if (req->parts_num > NANDSIM_MAX_PARTS || req->parts_num < 0) {
-+		kfree(nsparam);
-+		return -EINVAL;
-+	}
-+
-+	if (req->parts_num > 0) {
-+		nsparam->parts_num = req->parts_num;
-+		memcpy(nsparam->parts, req->parts, sizeof(nsparam->parts));
-+	}
-+
- 	switch (req->backend) {
- 		case NANDSIM_BACKEND_RAM:
- 			nsparam->bops = &ns_ram_bops;
-@@ -2978,7 +2988,7 @@ static int __init ns_init_default(void)
- 	nsparam->input_cycle = input_cycle;
- 	nsparam->bus_width = bus_width;
- 	nsparam->do_delays = do_delays;
--	nsparam->parts = parts;
-+	memcpy(nsparam->parts, parts, sizeof(nsparam->parts));
- 	nsparam->parts_num = parts_num;
- 	nsparam->badblocks = badblocks;
- 	nsparam->weakblocks = weakblocks;
+@@ -73,7 +73,7 @@ static uint output_cycle   = NANDSIM_OUTPUT_CYCLE;
+ static uint input_cycle    = NANDSIM_INPUT_CYCLE;
+ static uint bus_width      = NANDSIM_BUS_WIDTH;
+ static uint do_delays      = NANDSIM_DO_DELAYS;
+-static unsigned long parts[NANDSIM_MAX_PARTS];
++static unsigned int parts[NANDSIM_MAX_PARTS];
+ static unsigned int parts_num;
+ static char *badblocks = NULL;
+ static char *weakblocks = NULL;
+@@ -105,7 +105,7 @@ module_param(output_cycle,   uint, 0400);
+ module_param(input_cycle,    uint, 0400);
+ module_param(bus_width,      uint, 0400);
+ module_param(do_delays,      uint, 0400);
+-module_param_array(parts, ulong, &parts_num, 0400);
++module_param_array(parts,    uint, &parts_num, 0400);
+ module_param(badblocks,      charp, 0400);
+ module_param(weakblocks,     charp, 0400);
+ module_param(weakpages,      charp, 0400);
 diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
-index 61ff5dd..07d32a9 100644
+index 85d4d7e..61ff5dd 100644
 --- a/include/linux/mtd/nandsim.h
 +++ b/include/linux/mtd/nandsim.h
 @@ -12,7 +12,7 @@ struct nandsim_params {
  	unsigned int input_cycle;
  	unsigned int bus_width;
  	unsigned int do_delays;
--	unsigned int *parts;
-+	unsigned int parts[NANDSIM_MAX_PARTS];
+-	unsigned long *parts;
++	unsigned int *parts;
  	unsigned int parts_num;
  	char *badblocks;
  	char *weakblocks;
