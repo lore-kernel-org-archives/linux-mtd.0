@@ -1,19 +1,16 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1benEo-0001YR-Vn
- for linux-mtd@lists.infradead.org; Tue, 30 Aug 2016 17:54:19 +0000
-Message-ID: <57C5C835.6080900@codeaurora.org>
-Date: Tue, 30 Aug 2016 10:53:57 -0700
-From: Nikhilesh Reddy <reddyn@codeaurora.org>
-MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: issue with ubi_wl_put_peb
-References: <57BC9C1D.4010402@codeaurora.org>
- <19dc6d1c-30fb-737e-7d7e-da503a25e9f4@nod.at>
-In-Reply-To: <19dc6d1c-30fb-737e-7d7e-da503a25e9f4@nod.at>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bezxp-0004pf-Oc
+ for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:29:39 +0000
+From: Daniel Walter <dwalter@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 03/46] mtd: Don't unconditionally unregister reboot notifier
+Date: Wed, 31 Aug 2016 09:28:10 +0200
+Message-Id: <20160831072853.27822-4-dwalter@sigma-star.at>
+In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
+References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,75 +20,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 24 Aug 2016 01:48:29 PM PDT, Richard Weinberger wrote:
-> Nikhilesh Reddy,
->
-> On 23.08.2016 20:55, Nikhilesh Reddy wrote:
->> Hi
->>
->>
->> I am currently running into a hard to reproduce issue( takes upto a week to reproduce) with ubi_wl_put_peb.
->>
->> I would appreciate any help you can give me.
->>
->> In the following stack
->> -000|__list_del_entry()
->> -001|list_del()
->> -002|prot_queue_del()
->> -003|ubi_wl_put_peb()
->> -004|ubi_eba_unmap_leb()
->> -005|ubifs_leb_unmap()
->> -006|ubifs_gc_start_commit()
->> -007|do_commit()
->> -008|run_bg_commit(inline)
->> -008|ubifs_bg_thread()
->> -009|kthread()
->>
->> This issue was seen with CONFIG_DEBUG_LIST=y
->>
->> What we see is that the wl entry that is being put is not in the protection queue but seems to be in free/used trees.
->
-> So, you trigger a list assert?
-> Please share the kernel log.
->
->> In the code  below:
->> http://git.infradead.org/linux-ubifs.git/blob/HEAD:/drivers/mtd/ubi/wl.c#l1231
->>
->> We see that the the wl_entry is checked to be in used/scrub and erroneous trees .. and then it simply assumes that it is in the protection queue if it is not in any of the rb trees.
->>
->> There appears to be a race where the  wl_entry is being put before it actually has a chance to be inserted into the protection queue.
->>
->> This seems to occur when ubi_io_write_vid_hdr takes long to write the VID header.
->>
->>
->> I noticed that a check for a similar situation is http://git.infradead.org/linux-ubifs.git/blob/HEAD:/drivers/mtd/ubi/wl.c#l761
->>
->> Is the same check needed in the case of ubi_wl_put_peb as well?
->>
->> Can you please tell me if this sounds like a known issue?
->>
->> I am a little lost on when |ubi_eba_unmap_leb would be called before the PEB has a chance to be inserted into a another tree from the free tree.
->>
->> I would be grateful any pointers that you can give me so i can get to the root cause.
->
-> Hmmmm, is Fastmap involved?
->
-> Thanks,
-> //richard
+From: Richard Weinberger <richard@nod.at>
 
-Hi
-Actually  FASTMAP was not involved.
-This issue is pretty hard to reproduce ... just had reports of one 
-instance where this occured.
-If i see it again i will try to get all the logs.
+del_mtd_device() is allowed to fail.
+i.e. when the MTD is busy.
+Unregister the reboot notifier only when we're really
+about to delete the MTD.
 
-Thanks So much for your help
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/mtdcore.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
---
-Thanks
-Nikhilesh Reddy
-
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index e3936b8..36e5fb0 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -654,17 +654,22 @@ int mtd_device_unregister(struct mtd_info *master)
+ {
+ 	int err;
+ 
+-	if (master->_reboot)
+-		unregister_reboot_notifier(&master->reboot_notifier);
+-
+ 	err = del_mtd_partitions(master);
+ 	if (err)
+ 		return err;
+ 
+ 	if (!device_is_registered(&master->dev))
+-		return 0;
++		goto unregister;
+ 
+-	return del_mtd_device(master);
++	err = del_mtd_device(master);
++	if (err)
++		return err;
++
++unregister:
++	if (master->_reboot)
++		unregister_reboot_notifier(&master->reboot_notifier);
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(mtd_device_unregister);
+ 
+-- 
+2.8.3
