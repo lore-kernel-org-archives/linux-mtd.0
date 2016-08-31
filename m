@@ -1,14 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezxp-0004ph-Qk
+ id 1bezxp-0004pd-Ol
  for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:29:40 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 04/46] mtd: Don't unconditionally execute remove notifiers
-Date: Wed, 31 Aug 2016 09:28:11 +0200
-Message-Id: <20160831072853.27822-5-dwalter@sigma-star.at>
+Subject: [PATCH 02/46] mtd: nand: TODO Propagate mtd_device_unregister()
+ return value in tear down
+Date: Wed, 31 Aug 2016 09:28:09 +0200
+Message-Id: <20160831072853.27822-3-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,40 +23,89 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Only call them when we're really removing the MTD.
+Provide a __nand_release() function for drivers which can deal
+with a failing nand release operation.
+Most drivers should be safe since they rely on module refcounting.
+To catch outliers implement a nand_release() with a WARN_ON().
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/mtdcore.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/nand_base.c | 15 ++++++++++-----
+ include/linux/mtd/nand.h     | 12 +++++++++++-
+ 2 files changed, 21 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 36e5fb0..b8205ec 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -499,16 +499,17 @@ int del_mtd_device(struct mtd_info *mtd)
- 		goto out_error;
- 	}
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 77533f7..d5608dd 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4601,19 +4601,22 @@ int nand_scan(struct mtd_info *mtd, int maxchips)
+ EXPORT_SYMBOL(nand_scan);
  
--	/* No need to get a refcount on the module containing
--		the notifier, since we hold the mtd_table_mutex */
--	list_for_each_entry(not, &mtd_notifiers, list)
--		not->remove(mtd);
--
- 	if (mtd->usecount) {
- 		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
- 		       mtd->index, mtd->name, mtd->usecount);
- 		ret = -EBUSY;
- 	} else {
-+		/* No need to get a refcount on the module containing
-+		 * the notifier, since we hold the mtd_table_mutex
-+		 */
-+		list_for_each_entry(not, &mtd_notifiers, list)
-+			not->remove(mtd);
+ /**
+- * nand_release - [NAND Interface] Free resources held by the NAND device
++ * __nand_release - [NAND Interface] Free resources held by the NAND device
+  * @mtd: MTD device structure
+  */
+-void nand_release(struct mtd_info *mtd)
++int __nand_release(struct mtd_info *mtd)
+ {
++	int ret;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 
++	ret = mtd_device_unregister(mtd);
++	if (ret)
++		return ret;
 +
- 		device_unregister(&mtd->dev);
+ 	if (chip->ecc.mode == NAND_ECC_SOFT &&
+ 	    chip->ecc.algo == NAND_ECC_BCH)
+ 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
  
- 		idr_remove(&mtd_idr, mtd->index);
+-	mtd_device_unregister(mtd);
+-
+ 	/* Free bad block table memory */
+ 	kfree(chip->bbt);
+ 	if (!(chip->options & NAND_OWN_BUFFERS))
+@@ -4623,8 +4626,10 @@ void nand_release(struct mtd_info *mtd)
+ 	if (chip->badblock_pattern && chip->badblock_pattern->options
+ 			& NAND_BBT_DYNAMICSTRUCT)
+ 		kfree(chip->badblock_pattern);
++
++	return 0;
+ }
+-EXPORT_SYMBOL_GPL(nand_release);
++EXPORT_SYMBOL_GPL(__nand_release);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Steven J. Hill <sjhill@realitydiluted.com>");
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 8dd6e01..06be25e 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -39,7 +39,7 @@ extern int nand_scan_ident(struct mtd_info *mtd, int max_chips,
+ extern int nand_scan_tail(struct mtd_info *mtd);
+ 
+ /* Free resources held by the NAND device */
+-extern void nand_release(struct mtd_info *mtd);
++extern int __nand_release(struct mtd_info *mtd);
+ 
+ /* Internal helper for board drivers which need to override command function */
+ extern void nand_wait_ready(struct mtd_info *mtd);
+@@ -1023,6 +1023,16 @@ static inline int jedec_feature(struct nand_chip *chip)
+ 		: 0;
+ }
+ 
++static inline void nand_release(struct mtd_info *mtd)
++{
++	/*
++	 * If you face this warning your driver is doing something bad.
++	 * Don't issue nand_release() when your MTD is in use.
++	 * Use __nand_release() and handle the error correctly.
++	 */
++	WARN_ON(__nand_release(mtd) != 0);
++}
++
+ /*
+  * struct nand_sdr_timings - SDR NAND chip timings
+  *
 -- 
 2.8.3
