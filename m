@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyB-0004sk-Pj
+ id 1bezyB-0004si-Pn
  for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:03 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 08/46] mtd: nandsim: Kill global nsmtd
-Date: Wed, 31 Aug 2016 09:28:15 +0200
-Message-Id: <20160831072853.27822-9-dwalter@sigma-star.at>
+Subject: [PATCH 06/46] mtd: nandsim: Add basic control file support
+Date: Wed, 31 Aug 2016 09:28:13 +0200
+Message-Id: <20160831072853.27822-7-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,68 +22,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Do it like UBI and support in future up to 32 instances.
-For now we still keep a single instance and allow more when
-all global state has been removed.
+/dev/nandsim_ctrl accept ioctl() commands such that userspace
+can configure nandsim.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/nandsim.c | 66 +++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 56 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index c49999d..e24ef8c 100644
+index 1eb9344..0abbc88 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -448,8 +448,10 @@ struct grave_page {
- 	unsigned int reads_done;
- };
+@@ -44,6 +44,9 @@
+ #include <linux/pagemap.h>
+ #include <linux/seq_file.h>
+ #include <linux/debugfs.h>
++#include <linux/compat.h>
++#include <linux/miscdevice.h>
++#include <linux/major.h>
  
-+#define NS_MAX_DEVICES 32
+ /* Default simulator parameters values */
+ #if !defined(CONFIG_NANDSIM_FIRST_ID_BYTE)  || \
+@@ -2226,10 +2229,41 @@ static void ns_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ 	return;
+ }
+ 
+-/*
+- * Module initialization function
+- */
+-static int __init ns_init_module(void)
++static long ns_ctrl_ioctl(struct file *file, unsigned int cmd,
++			  unsigned long arg)
++{
++	if (!capable(CAP_SYS_RESOURCE))
++		return -EPERM;
 +
- /* MTD structure for NAND controller */
--static struct mtd_info *nsmtd;
-+static struct mtd_info *ns_mtds[NS_MAX_DEVICES];
- 
- static int nandsim_debugfs_show(struct seq_file *m, void *private)
- {
-@@ -1451,6 +1453,9 @@ static int do_read_error(struct nandsim *ns, int num)
- 
- static void do_bit_flips(struct nandsim *ns, int num)
- {
-+	struct nand_chip *chip = ((struct nand_chip *)ns - 1);
-+	struct mtd_info *nsmtd = nand_to_mtd(chip);
++	return -ENOTTY;
++}
 +
- 	if (bitflips && prandom_u32() < (1 << 22)) {
- 		int flips = 1;
- 		if (bitflips > 1)
-@@ -2268,6 +2273,7 @@ static int __init ns_init_default(void)
++#ifdef CONFIG_COMPAT
++static long ns_ctrl_compat_ioctl(struct file *file, unsigned int cmd,
++				 unsigned long arg)
++{
++	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
++
++	return ns_ctrl_ioctl(file, cmd, translated_arg);
++}
++#else
++#define ns_ctrl_compat_ioctl NULL
++#endif
++
++static const struct file_operations nansim_ctrl_fops = {
++	.owner          = THIS_MODULE,
++	.unlocked_ioctl = ns_ctrl_ioctl,
++	.compat_ioctl   = ns_ctrl_compat_ioctl,
++	.llseek         = no_llseek,
++};
++
++static struct miscdevice nandsim_ctrl_cdev = {
++	.minor = MISC_DYNAMIC_MINOR,
++	.name = "nandsim_ctrl",
++	.fops = &nansim_ctrl_fops,
++};
++
++static int __init ns_init_default(void)
  {
  	struct nand_chip *chip;
  	struct nandsim *nand;
-+	struct mtd_info *nsmtd;
- 	int retval = -ENOMEM, i;
+@@ -2404,12 +2438,7 @@ error:
+ 	return retval;
+ }
  
- 	if (bus_width != 8 && bus_width != 16) {
-@@ -2283,8 +2289,9 @@ static int __init ns_init_default(void)
- 		return -ENOMEM;
- 	}
- 
--	nsmtd       = nand_to_mtd(chip);
--	nand        = (struct nandsim *)(chip + 1);
-+	WARN_ON(ns_mtds[0]);
-+	nsmtd = ns_mtds[0] = nand_to_mtd(chip);
-+	nand = (struct nandsim *)(chip + 1);
- 	nand_set_controller_data(chip, (void *)nand);
- 
- 	INIT_LIST_HEAD(&nand->weak_blocks);
-@@ -2447,6 +2454,7 @@ error:
- 
- static void __exit ns_cleanup_default(void)
+-module_init(ns_init_module);
+-
+-/*
+- * Module clean-up function
+- */
+-static void __exit ns_cleanup_module(void)
++static void __exit ns_cleanup_default(void)
  {
-+	struct mtd_info *nsmtd = ns_mtds[0];
  	struct nand_chip *chip = mtd_to_nand(nsmtd);
  	struct nandsim *ns = nand_get_controller_data(chip);
- 	int i;
+@@ -2424,6 +2453,23 @@ static void __exit ns_cleanup_module(void)
+ 	free_lists();
+ }
+ 
++static int __init ns_init_module(void)
++{
++	int ret;
++
++	ret = ns_init_default();
++	if (ret)
++		return ret;
++
++	return misc_register(&nandsim_ctrl_cdev);
++}
++module_init(ns_init_module);
++
++static void __exit ns_cleanup_module(void)
++{
++	ns_cleanup_default();
++	misc_deregister(&nandsim_ctrl_cdev);
++}
+ module_exit(ns_cleanup_module);
+ 
+ MODULE_LICENSE ("GPL");
 -- 
 2.8.3
