@@ -1,17 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezxp-0004pd-Ol
- for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:29:40 +0000
+ id 1bezxq-0004pR-5Z
+ for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:29:41 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>,
+Cc: Daniel Walter <dwalter@sigma-star.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 02/46] mtd: nand: TODO Propagate mtd_device_unregister()
- return value in tear down
-Date: Wed, 31 Aug 2016 09:28:09 +0200
-Message-Id: <20160831072853.27822-3-dwalter@sigma-star.at>
-In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
-References: <20160831072853.27822-1-dwalter@sigma-star.at>
+Subject: [PATCH 00/46] Nandsim facelift (part I of II)
+Date: Wed, 31 Aug 2016 09:28:07 +0200
+Message-Id: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,91 +18,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Richard Weinberger <richard@nod.at>
+Over a decade ago nandsim was introduced to Linux. The main purpose is having a software implementation of a NAND chip for rapid prototyping systems such as UBI on top of it. On
+the other hand is it also heavily used to load and inspect dumps from real NAND flashes. The current design allows only having a single chip and all parameters are passed as
+modules parameters. Another draw back is that it emulates all NAND chip internals including command parsing, this makes it slow and error prone wrt. changes in nand_base.c since
+the emulated chip is not really ONFI compliant.
 
-Provide a __nand_release() function for drivers which can deal
-with a failing nand release operation.
-Most drivers should be safe since they rely on module refcounting.
-To catch outliers implement a nand_release() with a WARN_ON().
+This series addresses the singleton property of nandsim. It allows having multiple instances which can be controlled by a new userspace tool, nandsimctl. Nandsimctl works like
+losetup. You can add and remove instances with different settings.
+To allow multiple instances nandsim offers an ioctl() interface via a new device file, /dev/nandsimctl, to userspace.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/nand/nand_base.c | 15 ++++++++++-----
- include/linux/mtd/nand.h     | 12 +++++++++++-
- 2 files changed, 21 insertions(+), 6 deletions(-)
+Currently nandsim has two backends, ram and cache. In the default backend mode, ram, all data you change is stored in main memory. For smaller chips this works well but becomes
+problematic when modern multi-gigabyte chips are emulated. Cache mode addresses this drawback and redirects program commands to a local file. Using the cache_file module parameter
+the path of the backing file can be set. When nandsim is not a module passing a file name to it can lead to unexpected behavior since during kernel bootup the real root filesystem
+might not be ready and nandsim will populate the cache file on the initial root filesysem which is either tmpfs or worse a ramfs.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 77533f7..d5608dd 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4601,19 +4601,22 @@ int nand_scan(struct mtd_info *mtd, int maxchips)
- EXPORT_SYMBOL(nand_scan);
- 
- /**
-- * nand_release - [NAND Interface] Free resources held by the NAND device
-+ * __nand_release - [NAND Interface] Free resources held by the NAND device
-  * @mtd: MTD device structure
-  */
--void nand_release(struct mtd_info *mtd)
-+int __nand_release(struct mtd_info *mtd)
- {
-+	int ret;
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
-+	ret = mtd_device_unregister(mtd);
-+	if (ret)
-+		return ret;
-+
- 	if (chip->ecc.mode == NAND_ECC_SOFT &&
- 	    chip->ecc.algo == NAND_ECC_BCH)
- 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
- 
--	mtd_device_unregister(mtd);
--
- 	/* Free bad block table memory */
- 	kfree(chip->bbt);
- 	if (!(chip->options & NAND_OWN_BUFFERS))
-@@ -4623,8 +4626,10 @@ void nand_release(struct mtd_info *mtd)
- 	if (chip->badblock_pattern && chip->badblock_pattern->options
- 			& NAND_BBT_DYNAMICSTRUCT)
- 		kfree(chip->badblock_pattern);
-+
-+	return 0;
- }
--EXPORT_SYMBOL_GPL(nand_release);
-+EXPORT_SYMBOL_GPL(__nand_release);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Steven J. Hill <sjhill@realitydiluted.com>");
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 8dd6e01..06be25e 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -39,7 +39,7 @@ extern int nand_scan_ident(struct mtd_info *mtd, int max_chips,
- extern int nand_scan_tail(struct mtd_info *mtd);
- 
- /* Free resources held by the NAND device */
--extern void nand_release(struct mtd_info *mtd);
-+extern int __nand_release(struct mtd_info *mtd);
- 
- /* Internal helper for board drivers which need to override command function */
- extern void nand_wait_ready(struct mtd_info *mtd);
-@@ -1023,6 +1023,16 @@ static inline int jedec_feature(struct nand_chip *chip)
- 		: 0;
- }
- 
-+static inline void nand_release(struct mtd_info *mtd)
-+{
-+	/*
-+	 * If you face this warning your driver is doing something bad.
-+	 * Don't issue nand_release() when your MTD is in use.
-+	 * Use __nand_release() and handle the error correctly.
-+	 */
-+	WARN_ON(__nand_release(mtd) != 0);
-+}
-+
- /*
-  * struct nand_sdr_timings - SDR NAND chip timings
-  *
+Via the new ioctl() interface a third backend mode can be used, file mode. File mode works like cache file but all data (including erases and OOB data) are stored on a local file.
+This file can also also be reused later. It is also possible to operate nandsim in a mode to omit existing OOB data and masquerade OOB bytes to 0xFF. This allows using a nanddump
+(without OOB) from a real NAND chip directly in nandsim using the file backend. That way you don't have to use nandwrite or other tools to write the dump into yout MTD before using
+it. You can directly attach the dump in a losetup alike way.
+
+The ioctl() accepts all existing nandsim parameters except that in cache mode you pass a file descriptor instead of a file name to nandsim. This allows utilizing O_TMPFILE.
+To preserve existing behavior and no breaking any users of nandsim it is still possible to specify all parameters using module parameters but these parameters will only affect the
+first nandsim instance which will be automatically created upon module loading. If you don't have to have a default instance and explicitly create nandsim instances using
+nandsimctl pass defaults=n to the module.
+
+There will be an additional patch series for mtd-utils containing nandsimctl.
+
+A side effect of heavily reworking nandsim's backend internals it is now also possible to create custom backends. A custom backed was added to UserModeLinux. It allows directly
+booting from a nanddump using UML such that UBIFS as rootfs can be tested nicely on virtual machines.
+On step ahead for MTD testing.
+
+The series itself is less straight forward than I wanted it to be, mostly because while adding new features it was needed to cleanup some parts, over and over.
+
+Part II of that series will address the chip emulation nature of nandsim. It will add a second emulation mode. By default NAND chip emulation will be used but to allow arbitrary
+sized MTDs a more simple mode will be added which just allocates a MTD with the expected sizes instead of mocking nand_base.c.
+
+
+
+Daniel Walter (1):
+  mtd/nandsim: Add ioctl for info
+
+Mathias Kresin (1):
+  mtd: nandsim: use the existing output macros
+
+Richard Weinberger (44):
+  mtdpart: Propagate _get/put_device()
+  mtd: nand: TODO Propagate mtd_device_unregister() return value in tear
+    down
+  mtd: Don't unconditionally unregister reboot notifier
+  mtd: Don't unconditionally execute remove notifiers
+  mtd: Don't print a scary message when trying to remove a busy MTD
+  mtd: nandsim: Add basic control file support
+  mtd: nandsim: Begin with removal of global state
+  mtd: nandsim: Kill global nsmtd
+  mtd: nandsim: Don't directly use module parameters
+  mtd: nandsim: Add helper functions for pointer magic
+  mtd: nandsim: Factor out nandsim parameters
+  mtd: nandsim: Make debugfs logic multi instance capable
+  mtd: nandsim: Add final logic for multiple instances
+  mtd: nandsim: Add simulator id to MTD parition name
+  mtd: nandsim: Introduce backend operations
+  mtd: nandsim: Print error when backend init failed
+  mtd: nandsim: Allow external backends
+  mtd: nandsim: Add basic support for a file backend
+  mtd: nandsim: UAPI v1
+  mtd: nandsim: Implement preliminary constructor function
+  mtd: nandsim: Implement preliminary destructor function
+  mtd: nandsim: Cleanup destroy handlers
+  mtd: nandsim: Unify file backend init logic
+  mtd: nandsim: Wire up NANDSIM_MODE_CACHEFILE ioctl mode
+  mtd: nandsim: Print backend name
+  mtd: nandsim: Add no_oob mode
+  mtd: nandsim: Refine exports
+  um: Add nandsim backend driver
+  mtd: nandsim: Use pr_ style logging
+  mtd: nandsim: Remove NS_RAW_OFFSET_OOB
+  mtd: nandsim: Remove NS_IS_INITIALIZED
+  mtd: nandsim: Relax page size restrictions
+  mtd: nandsim: Support bitflip and read error emulation in file backend
+  mtd: nandsim: Make NANDSIM_MAX_DEVICES part of uapi
+  mtd: nandsim: Cleanup constants
+  mtd: nandsim: Turn parts[] into a integer
+  mtd: nandsim: Expose partition creation logic to user space
+  mtd: nandsim: Rework init error paths
+  mtd: nandsim: Expose BBT, delays, etc.. to userspace
+  mtd: nandsim: Expose support for weakpages/blocks to userspace
+  mtd: nandsim: Don't printk on ENOMEM
+  mtd: nandsim: Wire up NANDSIM_IOC_NEW_INSTANCE
+  mtd: nandsim: Wire up NANDSIM_IOC_DESTROY_INSTANCE
+  mtd: nandsim: Always answer all 8 bytes from NAND_CMD_READID
+
+ arch/um/Kconfig.um              |    6 +
+ arch/um/drivers/Makefile        |    2 +
+ arch/um/drivers/nand_kern.c     |  159 +++
+ drivers/mtd/mtdcore.c           |   28 +-
+ drivers/mtd/mtdpart.c           |   18 +
+ drivers/mtd/nand/nand_base.c    |   15 +-
+ drivers/mtd/nand/nandsim.c      | 2138 ++++++++++++++++++++++++++++-----------
+ include/linux/mtd/nand.h        |   12 +-
+ include/linux/mtd/nandsim.h     |   79 ++
+ include/uapi/mtd/nandsim-user.h |  113 +++
+ 10 files changed, 1966 insertions(+), 604 deletions(-)
+ create mode 100644 arch/um/drivers/nand_kern.c
+ create mode 100644 include/linux/mtd/nandsim.h
+ create mode 100644 include/uapi/mtd/nandsim-user.h
+
 -- 
 2.8.3
