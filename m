@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
- by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyb-0008WI-9t
- for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:30 +0000
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bezyX-00051H-Vs
+ for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:32 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 27/46] mtd: nandsim: Add no_oob mode
-Date: Wed, 31 Aug 2016 09:28:34 +0200
-Message-Id: <20160831072853.27822-28-dwalter@sigma-star.at>
+Subject: [PATCH 17/46] mtd: nandsim: Allow external backends
+Date: Wed, 31 Aug 2016 09:28:24 +0200
+Message-Id: <20160831072853.27822-18-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,180 +22,333 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-This allows using a nanddump image directly as file backend.
-The use case is dumping without OOB from a real device,
-startup nandsim with the same NAND ID an use the file.
-
-That way NAND dumps can loaded into nandsim much faster
-since no nandwrite is needed and, of course, less RAM is
-consumed.
-
-no_oob tells nandsim to not write nor read OOB data
-from the backing file. If OOB data is requested it simply
-returns 0xff.
-This also means that no ECC is performed.
+This turns nandsim into a mini framework to allow
+backends implemented in different drivers.
+i.e. virtio or usermodelinux.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c  | 66 ++++++++++++++++++++++++++++++++++++++-------
- include/linux/mtd/nandsim.h |  1 +
- 2 files changed, 58 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/nandsim.c  | 124 +++++++++++++++++---------------------------
+ include/linux/mtd/nandsim.h |  83 +++++++++++++++++++++++++++++
+ 2 files changed, 130 insertions(+), 77 deletions(-)
+ create mode 100644 include/linux/mtd/nandsim.h
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 116b1d1..f5aa0c4 100644
+index e333c5c..21a6e1a 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -221,7 +221,7 @@ MODULE_PARM_DESC(defaults,	 "Register a MTD during module load using default val
+@@ -36,6 +36,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/nand_bch.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/mtd/nandsim.h>
+ #include <linux/delay.h>
+ #include <linux/list.h>
+ #include <linux/random.h>
+@@ -294,42 +295,11 @@ MODULE_PARM_DESC(defaults,	 "Register a MTD during module load using default val
+ /* Maximum page cache pages needed to read or write a NAND page to the cache_file */
+ #define NS_MAX_HELD_PAGES 16
  
- /* Calculate the page offset in flash RAM image by (row, column) address */
- #define NS_RAW_OFFSET(ns) \
--	(((ns)->regs.row * (ns)->geom.pgszoob) + (ns)->regs.column)
-+	(((ns)->regs.row * ((ns)->no_oob ? (ns)->geom.pgsz : (ns)->geom.pgszoob)) + (ns)->regs.column)
- 
- /* Calculate the OOB offset in flash RAM image by (row, column) address */
- #define NS_RAW_OFFSET_OOB(ns) (NS_RAW_OFFSET(ns) + ns->geom.pgsz)
-@@ -360,6 +360,7 @@ struct nandsim {
-                 int wp;  /* write Protect */
-         } lines;
- 
-+	bool no_oob;
- 	struct ns_backend_ops *bops;
- 	void *backend_data;
- 
-@@ -1713,6 +1714,25 @@ static void ns_file_read_page(struct nandsim *ns, int num)
- 
- 	NS_DBG("read_page: page %d written, reading from %d\n",
- 		ns->regs.row, ns->regs.column + ns->regs.off);
-+
-+	if (ns->no_oob) {
-+		loff_t pg_read_end = ns->regs.column + ns->regs.off + num;
-+
-+		/* direct read from OOB */
-+		if (ns->regs.column + ns->regs.off >= ns->geom.pgsz) {
-+			memset(ns->buf.byte, 0xff, num);
-+			return;
-+		}
-+
-+		/* read overlapps into OOB, needs fixup */
-+		if (pg_read_end > ns->geom.pgsz) {
-+			loff_t oob_part = pg_read_end - ns->geom.pgsz;
-+
-+			memset(ns->buf.byte + pg_read_end - oob_part, 0xff, oob_part);
-+			num -= oob_part;
-+		}
-+	}
-+
- 	pos = (loff_t)NS_RAW_OFFSET(ns) + ns->regs.off;
- 	tx = kernel_read(data->file, pos, ns->buf.byte, num);
- 	if (tx == 0)
-@@ -1756,14 +1776,15 @@ static void ns_file_erase_sector(struct nandsim *ns)
- 	int i;
- 	loff_t pos;
- 	ssize_t tx;
-+	unsigned int pagesz = ns->no_oob ? ns->geom.pgsz : ns->geom.pgszoob;
- 	struct ns_file_data *data = ns->backend_data;
- 
--	memset(data->file_buf, 0xff, ns->geom.pgszoob);
-+	memset(data->file_buf, 0xff, pagesz);
- 
- 	for (i = 0; i < ns->geom.pgsec; i++) {
--		pos = (loff_t)(ns->regs.row + i) * ns->geom.pgszoob;
--		tx = kernel_write(data->file, data->file_buf, ns->geom.pgszoob, pos);
--		if (tx != ns->geom.pgszoob) {
-+		pos = (loff_t)(ns->regs.row + i) * pagesz;
-+		tx = kernel_write(data->file, data->file_buf, pagesz, pos);
-+		if (tx != pagesz) {
- 			NS_ERR("prog_page: write error for page %d ret %ld\n", ns->regs.row, (long)tx);
- 		}
- 	}
-@@ -1852,6 +1873,18 @@ static int ns_file_prog_page(struct nandsim *ns, int num)
- 
- 	NS_DBG("prog_page: writing page %d\n", ns->regs.row);
- 
-+	if (ns->no_oob) {
-+		loff_t pg_write_end = ns->regs.column + ns->regs.off + num;
-+
-+		/* direct write into oob */
-+		if (ns->regs.column + ns->regs.off >= ns->geom.pgsz)
-+			return 0;
-+
-+		/* write overlapps into OOB, needs fixup */
-+		if (pg_write_end > ns->geom.pgsz)
-+			num -= pg_write_end - ns->geom.pgsz;
-+	}
-+
- 	pg_off = data->file_buf + ns->regs.column + ns->regs.off;
- 	off = (loff_t)NS_RAW_OFFSET(ns) + ns->regs.off;
- 
-@@ -2001,7 +2034,11 @@ static int do_state_action(struct nandsim *ns, uint32_t action)
- 			return -1;
- 		}
- 
--		num = ns->geom.pgszoob - ns->regs.off - ns->regs.column;
-+		if (ns->no_oob)
-+			num = ns->geom.pgsz - ns->regs.off - ns->regs.column;
-+		else
-+			num = ns->geom.pgszoob - ns->regs.off - ns->regs.column;
-+
- 		if (num != ns->regs.count) {
- 			NS_ERR("do_state_action: too few bytes were input (%d instead of %d)\n",
- 					ns->regs.count, num);
-@@ -2535,6 +2572,7 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
- 	memcpy(nsparam->id_bytes, req->id_bytes, sizeof(nsparam->id_bytes));
- 	nsparam->bus_width = req->bus_width;
- 	nsparam->file_fd = req->file_fd;
-+	nsparam->no_oob = !!req->no_oob;
- 
- 	switch (req->backend) {
- 		case NANDSIM_BACKEND_RAM:
-@@ -2716,8 +2754,6 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 	chip->write_buf  = ns_nand_write_buf;
- 	chip->read_buf   = ns_nand_read_buf;
- 	chip->read_word  = ns_nand_read_word;
--	chip->ecc.mode   = NAND_ECC_SOFT;
--	chip->ecc.algo   = NAND_ECC_HAMMING;
- 	/* The NAND_SKIP_BBTSCAN option is necessary for 'overridesize' */
- 	/* and 'badblocks' parameters to work */
- 	chip->options   |= NAND_SKIP_BBTSCAN;
-@@ -2784,7 +2820,16 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 		goto error;
- 	}
- 
--	if (nsparam->bch) {
-+	if (nsparam->no_oob) {
-+		if (nsparam->bch) {
-+			NS_ERR("Cannot use ECC without OOB\n");
-+			retval = -EINVAL;
-+			goto error;
-+		}
-+
-+		chip->ecc.mode = NAND_ECC_NONE;
-+		nand->no_oob = true;
-+	} else if (nsparam->bch) {
- 		unsigned int eccsteps, eccbytes;
- 		if (!mtd_nand_has_bch()) {
- 			NS_ERR("BCH ECC support is disabled\n");
-@@ -2811,6 +2856,9 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 		chip->ecc.strength = nsparam->bch;
- 		chip->ecc.bytes = eccbytes;
- 		NS_INFO("using %u-bit/%u bytes BCH ECC\n", nsparam->bch, chip->ecc.size);
-+	} else {
-+		chip->ecc.mode = NAND_ECC_SOFT;
-+		chip->ecc.algo = NAND_ECC_HAMMING;
- 	}
- 
- 	retval = nand_scan_tail(nsmtd);
-diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
-index d71a02f..05ac7e3 100644
---- a/include/linux/mtd/nandsim.h
-+++ b/include/linux/mtd/nandsim.h
-@@ -25,6 +25,7 @@ struct nandsim_params {
- 	unsigned int bch;
- 	unsigned char id_bytes[8];
- 	unsigned int file_fd;
-+	bool no_oob;
- 	struct ns_backend_ops *bops;
+-struct nandsim_params {
+-	unsigned int access_delay;
+-	unsigned int program_delay;
+-	unsigned int erase_delay;
+-	unsigned int output_cycle;
+-	unsigned int input_cycle;
+-	unsigned int bus_width;
+-	unsigned int do_delays;
+-	unsigned long *parts;
+-	unsigned int parts_num;
+-	char *badblocks;
+-	char *weakblocks;
+-	char *weakpages;
+-	unsigned int bitflips;
+-	char *gravepages;
+-	unsigned int overridesize;
+-	char *cache_file;
+-	unsigned int bbt;
+-	unsigned int bch;
+-	unsigned char *id_bytes;
+-	struct ns_backend_ops *bops;
+-};
+-
+ struct nandsim_debug_info {
+ 	struct dentry *dfs_root;
+ 	struct dentry *dfs_wear_report;
  };
  
+-/*
+- * A union to represent flash memory contents and flash buffer.
+- */
+-union ns_mem {
+-	u_char *byte;    /* for byte access */
+-	uint16_t *word;  /* for 16-bit word access */
+-};
+-
+ struct ns_ram_data {
+ 	/* The simulated NAND flash pages array */
+ 	union ns_mem *pages;
+@@ -367,35 +337,8 @@ struct nandsim {
+ 
+ 	/* Internal buffer of page + OOB size bytes */
+ 	union ns_mem buf;
+-
+-	/* NAND flash "geometry" */
+-	struct {
+-		uint64_t totsz;     /* total flash size, bytes */
+-		uint32_t secsz;     /* flash sector (erase block) size, bytes */
+-		uint pgsz;          /* NAND flash page size, bytes */
+-		uint oobsz;         /* page OOB area size, bytes */
+-		uint64_t totszoob;  /* total flash size including OOB, bytes */
+-		uint pgszoob;       /* page size including OOB , bytes*/
+-		uint secszoob;      /* sector size including OOB, bytes */
+-		uint pgnum;         /* total number of pages */
+-		uint pgsec;         /* number of pages per sector */
+-		uint secshift;      /* bits number in sector size */
+-		uint pgshift;       /* bits number in page size */
+-		uint pgaddrbytes;   /* bytes per page address */
+-		uint secaddrbytes;  /* bytes per sector address */
+-		uint idbytes;       /* the number ID bytes that this chip outputs */
+-	} geom;
+-
+-	/* NAND flash internal registers */
+-	struct {
+-		unsigned command; /* the command register */
+-		u_char   status;  /* the status register */
+-		uint     row;     /* the page number */
+-		uint     column;  /* the offset within page */
+-		uint     count;   /* internal counter */
+-		uint     num;     /* number of bytes which must be processed */
+-		uint     off;     /* fixed page offset */
+-	} regs;
++	struct nandsim_geom geom;
++	struct nandsim_regs regs;
+ 
+ 	/* NAND flash lines state */
+         struct {
+@@ -427,14 +370,6 @@ struct nandsim {
+ 	struct nandsim_debug_info dbg;
+ };
+ 
+-struct ns_backend_ops {
+-	void (*erase_sector)(struct nandsim *ns);
+-	int (*prog_page)(struct nandsim *ns, int num);
+-	void (*read_page)(struct nandsim *ns, int num);
+-	int (*init)(struct nandsim *ns, struct nandsim_params *nsparam);
+-	void (*destroy)(struct nandsim *ns);
+-};
+-
+ static struct ns_backend_ops ns_ram_bops;
+ static struct ns_backend_ops ns_cachefile_bops;
+ 
+@@ -736,6 +671,36 @@ err_close:
+ 	return err;
+ }
+ 
++struct nandsim_geom *nandsim_get_geom(struct nandsim *ns)
++{
++	return &ns->geom;
++}
++EXPORT_SYMBOL_GPL(nandsim_get_geom);
++
++struct nandsim_regs *nandsim_get_regs(struct nandsim *ns)
++{
++	return &ns->regs;
++}
++EXPORT_SYMBOL_GPL(nandsim_get_regs);
++
++void nandsim_set_backend_data(struct nandsim *ns, void *data)
++{
++	ns->backend_data = data;
++}
++EXPORT_SYMBOL_GPL(nandsim_set_backend_data);
++
++void *nandsim_get_backend_data(struct nandsim *ns)
++{
++	return ns->backend_data;
++}
++EXPORT_SYMBOL_GPL(nandsim_get_backend_data);
++
++union ns_mem *nandsim_get_buf(struct nandsim *ns)
++{
++	return &ns->buf;
++}
++EXPORT_SYMBOL_GPL(nandsim_get_buf);
++
+ static void ns_ram_destroy(struct nandsim *ns)
+ {
+ 	struct ns_ram_data *data = ns->backend_data;
+@@ -2396,7 +2361,7 @@ static struct miscdevice nandsim_ctrl_cdev = {
+ 	.fops = &nansim_ctrl_fops,
+ };
+ 
+-static int ns_new_instance(struct nandsim_params *nsparam)
++struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
+ {
+ 	struct nand_chip *chip;
+ 	struct nandsim *nand;
+@@ -2406,7 +2371,7 @@ static int ns_new_instance(struct nandsim_params *nsparam)
+ 
+ 	if (nsparam->bus_width != 8 && nsparam->bus_width != 16) {
+ 		NS_ERR("wrong bus width (%d), use only 8 or 16\n", nsparam->bus_width);
+-		return -EINVAL;
++		return ERR_PTR(-EINVAL);
+ 	}
+ 
+ 	/* Allocate and initialize mtd_info, nand_chip and nandsim structures */
+@@ -2414,7 +2379,7 @@ static int ns_new_instance(struct nandsim_params *nsparam)
+ 		       GFP_KERNEL);
+ 	if (!chip) {
+ 		NS_ERR("unable to allocate core structures.\n");
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 	}
+ 
+ 	mutex_lock(&ns_mtd_mutex);
+@@ -2588,7 +2553,7 @@ static int ns_new_instance(struct nandsim_params *nsparam)
+ 	if (retval != 0)
+ 		goto err_exit;
+ 
+-        return 0;
++	return nsmtd;
+ 
+ err_exit:
+ 	free_nandsim(nand);
+@@ -2599,10 +2564,11 @@ error:
+ 	free_lists(nand);
+ 	kfree(chip);
+ 
+-	return retval;
++	return ERR_PTR(retval);
+ }
++EXPORT_SYMBOL_GPL(ns_new_instance);
+ 
+-static void ns_destroy_instance(struct mtd_info *nsmtd)
++void ns_destroy_instance(struct mtd_info *nsmtd)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(nsmtd);
+ 	struct nandsim *ns = nand_get_controller_data(chip);
+@@ -2616,6 +2582,7 @@ static void ns_destroy_instance(struct mtd_info *nsmtd)
+ 		kfree(ns->partitions[i].name);
+ 	kfree(mtd_to_nand(nsmtd));        /* Free other structures */
+ }
++EXPORT_SYMBOL_GPL(ns_destroy_instance);
+ 
+ static void ns_destroy_all(void)
+ {
+@@ -2630,7 +2597,7 @@ static void ns_destroy_all(void)
+ 
+ static int __init ns_init_default(void)
+ {
+-	int ret;
++	struct mtd_info *nsmtd;
+ 	struct nandsim_params *nsparam = kzalloc(sizeof(*nsparam), GFP_KERNEL);
+ 
+ 	if (!nsparam)
+@@ -2661,10 +2628,13 @@ static int __init ns_init_default(void)
+ 	else
+ 		nsparam->bops = &ns_cachefile_bops;
+ 
+-	ret = ns_new_instance(nsparam);
++	nsmtd = ns_new_instance(nsparam);
+ 	kfree(nsparam);
+ 
+-	return ret;
++	if (IS_ERR(nsmtd))
++		return PTR_ERR(nsmtd);
++
++	return 0;
+ }
+ 
+ static int __init ns_init_module(void)
+diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
+new file mode 100644
+index 0000000..2d596ad
+--- /dev/null
++++ b/include/linux/mtd/nandsim.h
+@@ -0,0 +1,83 @@
++#ifndef __LINUX_NANDSIM_H__
++#define __LINUX_NANDSIM_H__
++
++#include <linux/mtd/mtd.h>
++
++struct nandsim_params {
++	unsigned int access_delay;
++	unsigned int program_delay;
++	unsigned int erase_delay;
++	unsigned int output_cycle;
++	unsigned int input_cycle;
++	unsigned int bus_width;
++	unsigned int do_delays;
++	unsigned long *parts;
++	unsigned int parts_num;
++	char *badblocks;
++	char *weakblocks;
++	char *weakpages;
++	unsigned int bitflips;
++	char *gravepages;
++	unsigned int overridesize;
++	char *cache_file;
++	unsigned int bbt;
++	unsigned int bch;
++	unsigned char *id_bytes;
++	struct ns_backend_ops *bops;
++};
++
++/* NAND flash "geometry" */
++struct nandsim_geom {
++	uint64_t totsz;     /* total flash size, bytes */
++	uint32_t secsz;     /* flash sector (erase block) size, bytes */
++	uint pgsz;          /* NAND flash page size, bytes */
++	uint oobsz;         /* page OOB area size, bytes */
++	uint64_t totszoob;  /* total flash size including OOB, bytes */
++	uint pgszoob;       /* page size including OOB , bytes*/
++	uint secszoob;      /* sector size including OOB, bytes */
++	uint pgnum;         /* total number of pages */
++	uint pgsec;         /* number of pages per sector */
++	uint secshift;      /* bits number in sector size */
++	uint pgshift;       /* bits number in page size */
++	uint pgaddrbytes;   /* bytes per page address */
++	uint secaddrbytes;  /* bytes per sector address */
++	uint idbytes;       /* the number ID bytes that this chip outputs */
++};
++
++/* NAND flash internal registers */
++struct nandsim_regs {
++	unsigned command; /* the command register */
++	u_char   status;  /* the status register */
++	uint     row;     /* the page number */
++	uint     column;  /* the offset within page */
++	uint     count;   /* internal counter */
++	uint     num;     /* number of bytes which must be processed */
++	uint     off;     /* fixed page offset */
++};
++
++/*
++ * A union to represent flash memory contents and flash buffer.
++ */
++union ns_mem {
++	u_char *byte;    /* for byte access */
++	uint16_t *word;  /* for 16-bit word access */
++};
++
++struct nandsim;
++struct ns_backend_ops {
++	void (*erase_sector)(struct nandsim *ns);
++	int (*prog_page)(struct nandsim *ns, int num);
++	void (*read_page)(struct nandsim *ns, int num);
++	int (*init)(struct nandsim *ns, struct nandsim_params *nsparam);
++	void (*destroy)(struct nandsim *ns);
++};
++
++struct mtd_info *ns_new_instance(struct nandsim_params *nsparam);
++void ns_destroy_instance(struct mtd_info *nsmtd);
++struct nandsim_geom *nandsim_get_geom(struct nandsim *ns);
++struct nandsim_regs *nandsim_get_regs(struct nandsim *ns);
++void nandsim_set_backend_data(struct nandsim *ns, void *data);
++void *nandsim_get_backend_data(struct nandsim *ns);
++union ns_mem *nandsim_get_buf(struct nandsim *ns);
++
++#endif /* __LINUX_NANDSIM_H__ */
 -- 
 2.8.3
