@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyb-0008WF-CJ
+ id 1bezyb-0008WG-CJ
  for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:28 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 21/46] mtd: nandsim: Implement preliminary destructor function
-Date: Wed, 31 Aug 2016 09:28:28 +0200
-Message-Id: <20160831072853.27822-22-dwalter@sigma-star.at>
+Subject: [PATCH 23/46] mtd: nandsim: Unify file backend init logic
+Date: Wed, 31 Aug 2016 09:28:30 +0200
+Message-Id: <20160831072853.27822-24-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,177 +22,186 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-This function will be used via ioctl() to remove nandsim instances.
+file and cache file backend do more or less the same,
+so share some code.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c  | 80 +++++++++++++++++++++++++++++++++++++++++++--
- include/linux/mtd/nandsim.h |  2 +-
- 2 files changed, 78 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/nandsim.c | 102 ++++++++++++++++++++++++++++++---------------
+ 1 file changed, 68 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 344f5c4..f8b9e76 100644
+index 78c3ee4..f936157 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -39,6 +39,7 @@
- #include <linux/mtd/nandsim.h>
- #include <linux/delay.h>
- #include <linux/list.h>
-+#include <linux/spinlock.h>
- #include <linux/random.h>
- #include <linux/sched.h>
- #include <linux/fs.h>
-@@ -328,7 +329,10 @@ struct ns_file_data {
-  */
- struct nandsim {
- 	unsigned int index;
-+	unsigned int refcnt;
-+	spinlock_t refcnt_lock;
- 	struct mtd_partition partitions[CONFIG_NANDSIM_MAX_PARTS];
-+	bool destroying;
- 	unsigned int nbparts;
+@@ -312,6 +312,7 @@ struct ns_ram_data {
  
- 	uint busw;              /* flash chip bus width (8 or 16) */
-@@ -2509,6 +2513,41 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
- 	return ns->index;
+ struct ns_cachefile_data {
+ 	struct file *cfile; /* Open file */
++	bool file_opened; /* False when we operate on an already opened file */
+ 	unsigned long *pages_written; /* Which pages have been written */
+ 	void *file_buf;
+ 	struct page *held_pages[NS_MAX_HELD_PAGES];
+@@ -637,25 +638,70 @@ static int ns_ram_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ 	return 0;
  }
  
-+static int ns_ctrl_destroy_instance(struct ns_destroy_instance_req *req)
-+{
-+	struct mtd_info *nsmtd;
-+	int id = req->id, ret = 0;
-+	struct nand_chip *chip;
-+	struct nandsim *ns;
+-static int ns_cachefile_init(struct nandsim *ns, struct nandsim_params *nsparam)
++static struct file *get_file_from_nsparam(struct nandsim_params *nsparam, bool *opened)
+ {
+-	struct file *cfile;
+ 	int err;
+-	struct ns_cachefile_data *data = kzalloc(sizeof(*data), GFP_KERNEL);
++	struct file *file;
++	struct inode *inode;
+ 
+-	cfile = filp_open(nsparam->cache_file, O_CREAT | O_RDWR | O_LARGEFILE, 0600);
+-	if (IS_ERR(cfile))
+-		return PTR_ERR(cfile);
+-	if (!(cfile->f_mode & FMODE_CAN_READ)) {
++	if (nsparam->cache_file) {
++		file = filp_open(nsparam->cache_file, O_CREAT | O_RDWR | O_LARGEFILE, 0600);
++		if (IS_ERR(file))
++			return file;
 +
-+	if (id < 0 || id >= NS_MAX_DEVICES)
-+		return -EINVAL;
++		*opened = true;
++	} else {
++		file = fget(nsparam->file_fd);
++		if (!file)
++			return ERR_PTR(-EBADF);
 +
-+	mutex_lock(&ns_mtd_mutex);
-+	nsmtd = ns_mtds[id];
-+	if (nsmtd) {
-+		chip = mtd_to_nand(nsmtd);
-+		ns = nand_get_controller_data(chip);
-+		spin_lock(&ns->refcnt_lock);
-+		if (ns->refcnt > 0) {
-+			ret = -EBUSY;
-+			spin_unlock(&ns->refcnt_lock);
-+			goto out;
-+		}
-+		ns->destroying = true;
-+		spin_unlock(&ns->refcnt_lock);
-+		ret = ns_destroy_instance(nsmtd);
-+		if (ret)
-+			goto out;
-+		ns_mtds[id] = NULL;
++		*opened = false;
 +	}
 +
++	inode = file->f_mapping->host;
++	if (!S_ISREG(inode->i_mode) && !S_ISBLK(inode->i_mode)) {
++		NS_ERR("alloc_device: Backend file is not a regular file nor a block device\n");
++		err = -EINVAL;
++		goto out;
++	}
++
++	if (!(file->f_mode & FMODE_CAN_READ)) {
+ 		NS_ERR("alloc_device: cache file not readable\n");
+ 		err = -EINVAL;
+-		goto err_close;
++		goto out;
+ 	}
+-	if (!(cfile->f_mode & FMODE_CAN_WRITE)) {
++
++	if (!(file->f_mode & FMODE_CAN_WRITE)) {
+ 		NS_ERR("alloc_device: cache file not writeable\n");
+ 		err = -EINVAL;
+-		goto err_close;
++		goto out;
+ 	}
++
++	return file;
++
 +out:
-+	mutex_unlock(&ns_mtd_mutex);
-+
-+	return ret;
-+}
-+
- static long ns_ctrl_ioctl(struct file *file, unsigned int cmd,
- 			  unsigned long arg)
- {
-@@ -2543,6 +2582,32 @@ static struct miscdevice nandsim_ctrl_cdev = {
- 	.fops = &nansim_ctrl_fops,
- };
- 
-+static void ns_put_device(struct mtd_info *mtd)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nandsim *ns = nand_get_controller_data(chip);
-+
-+	spin_lock(&ns->refcnt_lock);
-+	ns->refcnt -= 1;
-+	spin_unlock(&ns->refcnt_lock);
-+}
-+
-+static int ns_get_device(struct mtd_info *mtd)
-+{
-+	int ret = 0;
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nandsim *ns = nand_get_controller_data(chip);
-+
-+	spin_lock(&ns->refcnt_lock);
-+	if (ns->destroying)
-+		ret = -EBUSY;
++	if (*opened)
++		filp_close(file, NULL);
 +	else
-+		ns->refcnt += 1;
-+	spin_unlock(&ns->refcnt_lock);
++		fput(file);
 +
-+	return ret;
++	return ERR_PTR(err);
 +}
 +
- struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- {
- 	struct nand_chip *chip;
-@@ -2587,6 +2652,7 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 	INIT_LIST_HEAD(&nand->grave_pages);
- 	INIT_LIST_HEAD(&nand->weak_pages);
- 	INIT_LIST_HEAD(&nand->weak_blocks);
-+	spin_lock_init(&nand->refcnt_lock);
++static int ns_cachefile_init(struct nandsim *ns, struct nandsim_params *nsparam)
++{
++	int err;
++	struct ns_cachefile_data *data = kzalloc(sizeof(*data), GFP_KERNEL);
++
++	if (!data)
++		return -ENOMEM;
++
++	data->cfile = get_file_from_nsparam(nsparam, &data->file_opened);
++	if (IS_ERR(data->cfile)) {
++		err = PTR_ERR(data->cfile);
++		goto out;
++	}
++
+ 	data->pages_written = vzalloc(BITS_TO_LONGS(ns->geom.pgnum) *
+ 				    sizeof(unsigned long));
+ 	if (!data->pages_written) {
+@@ -669,7 +715,6 @@ static int ns_cachefile_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ 		err = -ENOMEM;
+ 		goto err_free;
+ 	}
+-	data->cfile = cfile;
  
- 	/*
- 	 * Register simulator's callbacks.
-@@ -2637,6 +2703,8 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
+ 	ns->backend_data = data;
+ 
+@@ -678,15 +723,16 @@ static int ns_cachefile_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ err_free:
+ 	vfree(data->pages_written);
+ err_close:
+-	filp_close(cfile, NULL);
++	filp_close(data->cfile, NULL);
++out:
++	kfree(data);
+ 	return err;
+ }
+ 
+ static int ns_file_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ {
+ 	int ret;
+-	struct file *file;
+-	struct inode *inode;
++	bool dummy;
+ 	struct ns_file_data *data = kzalloc(sizeof(*data), GFP_KERNEL);
+ 
+ 	if (!data) {
+@@ -694,27 +740,12 @@ static int ns_file_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ 		goto out;
  	}
  
- 	nsmtd->owner = THIS_MODULE;
-+	nsmtd->_get_device = ns_get_device;
-+	nsmtd->_put_device = ns_put_device;
+-	file = fget(nsparam->file_fd);
+-	if (!file) {
+-		ret = -EBADF;
++	data->file = get_file_from_nsparam(nsparam, &dummy);
++	if (IS_ERR(data->file)) {
++		ret = PTR_ERR(data->file);
+ 		goto out_free;
+ 	}
  
- 	if ((retval = parse_weakblocks(nand, nsparam->weakblocks)) != 0)
- 		goto error;
-@@ -2750,11 +2818,15 @@ error:
+-	inode = file->f_mapping->host;
+-	if (!S_ISREG(inode->i_mode) && !S_ISBLK(inode->i_mode)) {
+-		NS_ERR("alloc_device: Backend file is not a regular file nor a block device\n");
+-		ret = -EINVAL;
+-		goto out_put;
+-	}
+-
+-	if (!(file->f_mode & FMODE_WRITE)) {
+-		NS_ERR("alloc_device: Backend file is not writeable\n");
+-		ret = -EINVAL;
+-		goto out_put;
+-	}
+-
+-	data->file = file;
+-
+ 	data->file_buf = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
+ 	if (!data->file_buf) {
+ 		NS_ERR("alloc_device: unable to allocate file buf\n");
+@@ -728,7 +759,7 @@ static int ns_file_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ 	return ret;
+ 
+ out_put:
+-	fput(file);
++	fput(data->file);
+ out_free:
+ 	kfree(data);
+ out:
+@@ -792,7 +823,10 @@ static void ns_cachefile_destroy(struct nandsim *ns)
+ 
+ 	kfree(data->file_buf);
+ 	vfree(data->pages_written);
+-	filp_close(data->cfile, NULL);
++	if (data->file_opened)
++		filp_close(data->cfile, NULL);
++	else
++		fput(data->cfile);
+ 	kfree(data);
  }
- EXPORT_SYMBOL_GPL(ns_new_instance);
  
--void ns_destroy_instance(struct mtd_info *nsmtd)
-+int ns_destroy_instance(struct mtd_info *nsmtd)
- {
-+	int i, ret;
- 	struct nand_chip *chip = mtd_to_nand(nsmtd);
- 	struct nandsim *ns = nand_get_controller_data(chip);
--	int i;
-+
-+	ret = __nand_release(nsmtd);
-+	if (ret)
-+		return ret;
- 
- 	nandsim_debugfs_remove(ns);
- 	free_lists(ns);
-@@ -2763,6 +2835,8 @@ void ns_destroy_instance(struct mtd_info *nsmtd)
- 	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
- 		kfree(ns->partitions[i].name);
- 	kfree(mtd_to_nand(nsmtd));        /* Free other structures */
-+
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(ns_destroy_instance);
- 
-@@ -2773,7 +2847,7 @@ static void ns_destroy_all(void)
- 	mutex_lock(&ns_mtd_mutex);
- 	for (i = 0; i < NS_MAX_DEVICES; i++)
- 		if (ns_mtds[i])
--			ns_destroy_instance(ns_mtds[i]);
-+			WARN_ON(ns_destroy_instance(ns_mtds[i]) != 0);
- 	mutex_unlock(&ns_mtd_mutex);
- }
- 
-diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
-index 6e3b4a2..a0ca0fb 100644
---- a/include/linux/mtd/nandsim.h
-+++ b/include/linux/mtd/nandsim.h
-@@ -75,7 +75,7 @@ struct ns_backend_ops {
- };
- 
- struct mtd_info *ns_new_instance(struct nandsim_params *nsparam);
--void ns_destroy_instance(struct mtd_info *nsmtd);
-+int ns_destroy_instance(struct mtd_info *nsmtd);
- struct nandsim_geom *nandsim_get_geom(struct nandsim *ns);
- struct nandsim_regs *nandsim_get_regs(struct nandsim *ns);
- void nandsim_set_backend_data(struct nandsim *ns, void *data);
 -- 
 2.8.3
