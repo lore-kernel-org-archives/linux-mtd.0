@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyF-0004sh-6q
+ id 1bezyG-0004si-0n
  for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:11 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 19/46] mtd: nandsim: UAPI v1
-Date: Wed, 31 Aug 2016 09:28:26 +0200
-Message-Id: <20160831072853.27822-20-dwalter@sigma-star.at>
+Subject: [PATCH 22/46] mtd: nandsim: Cleanup destroy handlers
+Date: Wed, 31 Aug 2016 09:28:29 +0200
+Message-Id: <20160831072853.27822-23-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,121 +22,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-expose UAPI for nandsim
+Make sure that we free stuff only after it has been
+initialized.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- include/uapi/mtd/nandsim-user.h | 102 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
- create mode 100644 include/uapi/mtd/nandsim-user.h
+ drivers/mtd/nand/nandsim.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/include/uapi/mtd/nandsim-user.h b/include/uapi/mtd/nandsim-user.h
-new file mode 100644
-index 0000000..14ab42a
---- /dev/null
-+++ b/include/uapi/mtd/nandsim-user.h
-@@ -0,0 +1,102 @@
-+#ifndef __NANDSIM_USER_H__
-+#define __NANDSIM_USER_H__
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index f8b9e76..78c3ee4 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -770,6 +770,9 @@ static void ns_ram_destroy(struct nandsim *ns)
+ 	struct ns_ram_data *data = ns->backend_data;
+ 	int i;
+ 
++	if (!data)
++		return;
 +
-+#include <linux/types.h>
+ 	for (i = 0; i < ns->geom.pgnum; i++) {
+ 		if (data->pages[i].byte)
+ 			kmem_cache_free(data->nand_pages_slab,
+@@ -784,15 +787,22 @@ static void ns_cachefile_destroy(struct nandsim *ns)
+ {
+ 	struct ns_cachefile_data *data = ns->backend_data;
+ 
++	if (!data)
++		return;
 +
-+#define NANDSIM_IOC_MAGIC 'n'
+ 	kfree(data->file_buf);
+ 	vfree(data->pages_written);
+ 	filp_close(data->cfile, NULL);
++	kfree(data);
+ }
+ 
+ static void ns_file_destroy(struct nandsim *ns)
+ {
+ 	struct ns_file_data *data = ns->backend_data;
+ 
++	if (!data)
++		return;
 +
-+#define NANDSIM_IOC_NEW_INSTANCE _IOW(NANDSIM_IOC_MAGIC, 0, struct ns_new_instance_req)
-+#define NANDSIM_IOC_DESTROY_INSTANCE _IOW(NANDSIM_IOC_MAGIC, 1, struct ns_destroy_instance_req)
-+
-+#define NANDSIM_MAX_DEVICES 32
-+#define NANDSIM_MAX_PARTS 32
-+
-+enum ns_backend_type {
-+	NANDSIM_BACKEND_RAM = 0,
-+	NANDSIM_BACKEND_CACHEFILE = 1,
-+	NANDSIM_BACKEND_FILE = 2,
-+	NANDSIM_BACKEND_MAX,
-+};
-+
-+/**
-+ * struct ns_new_instance_req - Create a new nandsim instance.
-+ *
-+ * @id_bytes: NAND ID of the simulated NAND chip
-+ * @bus_width: bus width to emulate, either 8 or 16
-+ * @bbt_mode: bad block table mode, 0 OOB, 1 BBT with marker in OOB,
-+ *            2 BBT with marker in data area
-+ * @no_oob: backing file contains no OOB data
-+ * @bch_strength: instead of hamming ECC use BCH with given strength
-+ * @parts_num: number of MTD partitions to create
-+ * @parts: partition sizes in physical erase blocks, used then @parts_num > 0
-+ * @backend: backend type, see @ns_backend_type
-+ * @file_fd: file describtor of backend, only for @NANDSIM_BACKEND_CACHEFILE
-+ *           and @NANDSIM_BACKEND_FILE.
-+ * @bitflips: maximum number of random bit flips per page
-+ * @overridesize: specifies the NAND size overriding the ID bytes
-+ * @access_delay: initial page access delay (microseconds)
-+ * @program_delay: page programm delay (microseconds)
-+ * @erase_delay: sector erase delay (milliseconds)
-+ * @output_cycle: word output, from flash, time (nanoseconds)
-+ * @input_cycle: word input, to flash, time (nanoseconds)
-+ * @simelem_num: number of simulation elements appened to this
-+ *               data structure. see @ns_simelement_prop
-+ *
-+ * This struct is used with the @NANDSIM_IOC_NEW_INSTANCE ioctl command.
-+ * It creates a new nandsim instance from the given parameter.
-+ * The ioctl command returns in case of success the nandsim id of the new
-+ * instance, in case of error a negative value.
-+ *
-+ * Not all fields in the struct have to be filled, if nandsim should
-+ * use a default ignore the value, fill with 0.
-+ * The only mandatory fields are @id_bytes and @bus_width.
-+ * When @no_oob is non-zero @bch_strength cannot be used since
-+ * @no_oob implies that no ECC is used.
-+ */
-+struct ns_new_instance_req {
-+	__s8 id_bytes[8];
-+
-+	__s8 bus_width;
-+	__s8 bbt_mode;
-+	__s8 no_oob;
-+	__s32 bch_strength;
-+
-+	__s8 parts_num;
-+	__s32 parts[NANDSIM_MAX_PARTS];
-+
-+	__s8 backend;
-+	__s32 file_fd;
-+
-+	__s32 bitflips;
-+	__s32 overridesize;
-+	__s32 access_delay;
-+	__s32 program_delay;
-+	__s32 erase_delay;
-+	__s32 output_cycle;
-+	__s32 input_cycle;
-+
-+	__s32 padding[4];
-+
-+	__s32 simelem_num;
-+} __packed;
-+
-+enum {
-+	NANDSIM_SIMELEM_BADBLOCK = 0,
-+	NANDSIM_SIMELEM_WEAKBLOCK,
-+	NANDSIM_SIMELEM_WEAKPAGE,
-+	NANDSIM_SIMELEM_GRAVEPAGE,
-+};
-+
-+struct ns_simelement_prop {
-+	__s8 elem_type;
-+	__s32 elem_id;
-+	__s32 elem_attr;
-+	__s8 padding[7];
-+} __packed;
-+
-+struct ns_destroy_instance_req {
-+	__s8 id;
-+	__s8 padding[7];
-+} __packed;
-+
-+#endif /* __NANDSIM_USER_H__ */
+ 	kfree(data->file_buf);
+ 	fput(data->file);
+ 	kfree(data);
 -- 
 2.8.3
