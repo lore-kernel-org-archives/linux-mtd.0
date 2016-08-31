@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyQ-0004tE-BH
- for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:22 +0000
+ id 1bezyW-0004sj-2E
+ for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:25 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>,
+Cc: Daniel Walter <dwalter@sigma-star.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 39/46] mtd: nandsim: Rework init error paths
-Date: Wed, 31 Aug 2016 09:28:46 +0200
-Message-Id: <20160831072853.27822-40-dwalter@sigma-star.at>
+Subject: [PATCH 46/46] mtd/nandsim: Add ioctl for info
+Date: Wed, 31 Aug 2016 09:28:53 +0200
+Message-Id: <20160831072853.27822-47-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,270 +20,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Richard Weinberger <richard@nod.at>
+Add a ioctl() call for nandsim information.
+This information includes, nand id, backend type
+and path to the file if the file backend is used
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Daniel Walter <dwalter@sigma-star.at>
 ---
- drivers/mtd/nand/nandsim.c | 97 +++++++++++++++++++++++++++-------------------
- 1 file changed, 57 insertions(+), 40 deletions(-)
+ drivers/mtd/nand/nandsim.c      | 65 +++++++++++++++++++++++++++++++++++++++++
+ include/uapi/mtd/nandsim-user.h | 11 +++++++
+ 2 files changed, 76 insertions(+)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 05a3088..027b15d 100644
+index b50568f..e544d94 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -871,12 +871,14 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
- 
- 		if (!part_sz || part_sz > remains) {
- 			pr_err("bad partition size.\n");
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto err_names;
- 		}
- 		ns->partitions[i].name = get_partition_name(ns, i);
- 		if (!ns->partitions[i].name) {
- 			pr_err("unable to allocate memory.\n");
--			return -ENOMEM;
-+			ret = -ENOMEM;
-+			goto err_names;
- 		}
- 		ns->partitions[i].offset = next_offset;
- 		ns->partitions[i].size   = part_sz;
-@@ -887,12 +889,14 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
- 	if (remains) {
- 		if (nsparam->parts_num + 1 > ARRAY_SIZE(ns->partitions)) {
- 			pr_err("too many partitions.\n");
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto err_names;
- 		}
- 		ns->partitions[i].name = get_partition_name(ns, i);
- 		if (!ns->partitions[i].name) {
- 			pr_err("unable to allocate memory.\n");
--			return -ENOMEM;
-+			ret = -ENOMEM;
-+			goto err_names;
- 		}
- 		ns->partitions[i].offset = next_offset;
- 		ns->partitions[i].size   = remains;
-@@ -921,22 +925,24 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
- 
- 	ns->bops = nsparam->bops;
- 
--	pr_info("Using backend: %s\n", ns->bops->name);
--	if ((ret = ns->bops->init(ns, nsparam)) != 0) {
--		pr_err("Unable to initialize simulator backend: %i\n", ret);
--		return ret;
--	}
--
- 	/* Allocate / initialize the internal buffer */
- 	ns->buf.byte = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
- 	if (!ns->buf.byte) {
- 		pr_err("unable to allocate %u bytes for the internal buffer\n",
- 			ns->geom.pgszoob);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto err_buf;
- 	}
- 	memset(ns->buf.byte, 0xFF, ns->geom.pgszoob);
- 
- 	return 0;
-+
-+err_buf:
-+	kfree(ns->buf.byte);
-+err_names:
-+	for (i = 0; i < ARRAY_SIZE(ns->partitions); i++)
-+		kfree(ns->partitions[i].name);
-+	return ret;
+@@ -2893,6 +2893,56 @@ out:
+ 	return ret;
  }
  
- /*
-@@ -944,8 +950,11 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
-  */
- static void free_nandsim(struct nandsim *ns)
- {
-+	int i;
++static void ns_put_device(struct mtd_info *);
++static int ns_get_device(struct mtd_info *);
 +
-+	for (i = 0; i < ARRAY_SIZE(ns->partitions); i++)
-+		kfree(ns->partitions[i].name);
- 	kfree(ns->buf.byte);
--	ns->bops->destroy(ns);
- }
- 
- static int parse_badblocks(struct nandsim *ns, struct mtd_info *mtd,
-@@ -2751,7 +2760,7 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 		pr_err("Cannot allocate more than %i instances!\n", NANDSIM_MAX_DEVICES);
- 		retval = -ENFILE;
- 		mutex_unlock(&ns_mtd_mutex);
--		goto error;
-+		goto err_chip;
- 	}
- 
- 	nsmtd = ns_mtds[i] = nand_to_mtd(chip);
-@@ -2789,7 +2798,7 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 	default:
- 		pr_err("bbt has to be 0..2\n");
- 		retval = -EINVAL;
--		goto error;
-+		goto err_mtds;
- 	}
- 	/*
- 	 * Perform minimum nandsim structure initialization to handle
-@@ -2817,13 +2826,13 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 	nsmtd->_put_device = ns_put_device;
- 
- 	if ((retval = parse_weakblocks(nand, nsparam->weakblocks)) != 0)
--		goto error;
-+		goto err_lists;
- 
- 	if ((retval = parse_weakpages(nand, nsparam->weakpages)) != 0)
--		goto error;
-+		goto err_lists;
- 
- 	if ((retval = parse_gravepages(nand, nsparam->gravepages)) != 0)
--		goto error;
-+		goto err_lists;
- 
- 	nand->do_delays = nsparam->do_delays;
- 	nand->access_delay = nsparam->access_delay;
-@@ -2838,14 +2847,14 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 		pr_err("cannot scan NAND Simulator device\n");
- 		if (retval > 0)
- 			retval = -ENXIO;
--		goto error;
-+		goto err_lists;
- 	}
- 
- 	if (nsparam->no_oob) {
- 		if (nsparam->bch) {
- 			pr_err("Cannot use ECC without OOB\n");
- 			retval = -EINVAL;
--			goto error;
-+			goto err_lists;
- 		}
- 
- 		chip->ecc.mode = NAND_ECC_NONE;
-@@ -2855,7 +2864,7 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 		if (!mtd_nand_has_bch()) {
- 			pr_err("BCH ECC support is disabled\n");
- 			retval = -EINVAL;
--			goto error;
-+			goto err_lists;
- 		}
- 		/* use 512-byte ecc blocks */
- 		eccsteps = nsmtd->writesize/512;
-@@ -2864,12 +2873,12 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 		if ((nsmtd->oobsize < 64) || !eccsteps) {
- 			pr_err("bch not available on small page devices\n");
- 			retval = -EINVAL;
--			goto error;
-+			goto err_lists;
- 		}
- 		if ((eccbytes*eccsteps+2) > nsmtd->oobsize) {
- 			pr_err("invalid bch value %u\n", nsparam->bch);
- 			retval = -EINVAL;
--			goto error;
-+			goto err_lists;
- 		}
- 		chip->ecc.mode = NAND_ECC_SOFT;
- 		chip->ecc.algo = NAND_ECC_BCH;
-@@ -2887,7 +2896,7 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 		pr_err("can't register NAND Simulator\n");
- 		if (retval > 0)
- 			retval = -ENXIO;
--		goto error;
-+		goto err_lists;
- 	}
- 
- 	if (nsparam->overridesize) {
-@@ -2895,7 +2904,7 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 		if (new_size >> nsparam->overridesize != nsmtd->erasesize) {
- 			pr_err("overridesize is too big\n");
- 			retval = -EINVAL;
--			goto err_exit;
-+			goto err_nand;
- 		}
- 		/* N.B. This relies on nand_scan not doing anything with the size before we change it */
- 		nsmtd->size = new_size;
-@@ -2905,35 +2914,45 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 	}
- 
- 	if ((retval = setup_wear_reporting(nsmtd)) != 0)
--		goto err_exit;
-+		goto err_nand;
- 
- 	if ((retval = nandsim_debugfs_create(nand)) != 0)
--		goto err_exit;
-+		goto err_nand;
- 
- 	if ((retval = init_nandsim(nsmtd, nsparam)) != 0)
--		goto err_exit;
-+		goto err_debugfs;
++static int ns_ctrl_info_instance(struct ns_info_instance_req *req)
++{
++	struct mtd_info *nsmtd;
++	int id = req->id, ret = 0;
++	struct nand_chip *chip;
++	struct nandsim *ns;
++	struct ns_file_data *file_data;
++	char buf[NANDSIM_FILENAME_SIZE];
++	char *tmp;
 +
-+	pr_info("Using backend: %s\n", nand->bops->name);
-+	if ((retval = nand->bops->init(nand, nsparam)) != 0) {
-+		pr_err("Unable to initialize simulator backend: %i\n", retval);
-+		goto err_nandsim;
++	if (id < 0 || id >= NANDSIM_MAX_DEVICES)
++		return -EINVAL;
++
++	mutex_lock(&ns_mtd_mutex);
++	nsmtd = ns_mtds[id];
++	if (nsmtd) {
++		ret = ns_get_device(nsmtd);
++		if (ret)
++			goto out;
++		chip = mtd_to_nand(nsmtd);
++		ns = nand_get_controller_data(chip);
++		req->no_oob = ns->no_oob;
++		memcpy(req->id_bytes, ns->ids, 8);
++		req->parts_num = ns->nbparts;
++		if (ns->bops == &ns_cachefile_bops) {
++			req->backend = NANDSIM_BACKEND_CACHEFILE;
++		} else if (ns->bops == &ns_file_bops) {
++			req->backend = NANDSIM_BACKEND_FILE;
++			file_data = ns->backend_data;
++			tmp = d_path(&file_data->file->f_path, buf, NANDSIM_FILENAME_SIZE);
++			memcpy(req->filename, tmp, NANDSIM_FILENAME_SIZE);
++		} else if (ns->bops == &ns_ram_bops) {
++			req->backend = NANDSIM_BACKEND_RAM;
++		} else {
++			req->backend = -1;
++		}
++
++		ns_put_device(nsmtd);
++	} else {
++		ret = -EINVAL;
 +	}
- 
- 	if ((retval = chip->scan_bbt(nsmtd)) != 0)
--		goto err_exit;
-+		goto err_nandsim;
- 
- 	if ((retval = parse_badblocks(nand, nsmtd, nsparam->badblocks)) != 0)
--		goto err_exit;
-+		goto err_nandsim;
- 
- 	/* Register NAND partitions */
- 	retval = mtd_device_register(nsmtd, &nand->partitions[0],
- 				     nand->nbparts);
- 	if (retval != 0)
--		goto err_exit;
-+		goto err_nandsim;
- 
- 	return nsmtd;
- 
--err_exit:
-+err_nandsim:
- 	free_nandsim(nand);
-+err_debugfs:
-+	nandsim_debugfs_remove(nand);
-+err_nand:
- 	nand_release(nsmtd);
--	for (i = 0;i < ARRAY_SIZE(nand->partitions); ++i)
--		kfree(nand->partitions[i].name);
--error:
-+err_lists:
- 	free_lists(nand);
-+err_mtds:
-+	ns_mtds[nand->index] = NULL;
-+err_chip:
- 	kfree(chip);
- 
- 	return ERR_PTR(retval);
-@@ -2942,7 +2961,7 @@ EXPORT_SYMBOL_GPL(ns_new_instance);
- 
- int ns_destroy_instance(struct mtd_info *nsmtd)
++out:
++	mutex_unlock(&ns_mtd_mutex);
++	return ret;
++
++}
++
+ static long ns_ctrl_ioctl(struct file *file, unsigned int cmd,
+ 			  unsigned long arg)
  {
--	int i, ret;
-+	int ret;
- 	struct nand_chip *chip = mtd_to_nand(nsmtd);
- 	struct nandsim *ns = nand_get_controller_data(chip);
+@@ -2931,6 +2981,21 @@ static long ns_ctrl_ioctl(struct file *file, unsigned int cmd,
+ 			ret = ns_ctrl_destroy_instance(&req);
+ 			break;
+ 		}
++		case NANDSIM_IOC_INFO_INSTANCE:
++		{
++			struct ns_info_instance_req req;
++
++			ret = copy_from_user(&req, argp, sizeof(struct ns_info_instance_req));
++			if (ret) {
++				ret = -EFAULT;
++				goto out;
++			}
++			ret = ns_ctrl_info_instance(&req);
++			if (ret)
++				goto out;
++			ret = copy_to_user(argp, &req, sizeof(struct ns_info_instance_req));
++			break;
++		}
  
-@@ -2951,12 +2970,10 @@ int ns_destroy_instance(struct mtd_info *nsmtd)
- 		return ret;
+ 		default:
+ 			ret = -ENOTTY;
+diff --git a/include/uapi/mtd/nandsim-user.h b/include/uapi/mtd/nandsim-user.h
+index 14ab42a..2351124 100644
+--- a/include/uapi/mtd/nandsim-user.h
++++ b/include/uapi/mtd/nandsim-user.h
+@@ -7,9 +7,11 @@
  
- 	nandsim_debugfs_remove(ns);
-+	ns->bops->destroy(ns);
-+	free_nandsim(ns);
- 	free_lists(ns);
--	free_nandsim(ns);    /* Free nandsim private resources */
--	nand_release(nsmtd); /* Unregister driver */
--	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
--		kfree(ns->partitions[i].name);
--	kfree(mtd_to_nand(nsmtd));        /* Free other structures */
-+	kfree(chip);
+ #define NANDSIM_IOC_NEW_INSTANCE _IOW(NANDSIM_IOC_MAGIC, 0, struct ns_new_instance_req)
+ #define NANDSIM_IOC_DESTROY_INSTANCE _IOW(NANDSIM_IOC_MAGIC, 1, struct ns_destroy_instance_req)
++#define NANDSIM_IOC_INFO_INSTANCE _IOW(NANDSIM_IOC_MAGIC, 2, struct ns_info_instance_req)
  
- 	return 0;
- }
+ #define NANDSIM_MAX_DEVICES 32
+ #define NANDSIM_MAX_PARTS 32
++#define NANDSIM_FILENAME_SIZE 64
+ 
+ enum ns_backend_type {
+ 	NANDSIM_BACKEND_RAM = 0,
+@@ -99,4 +101,13 @@ struct ns_destroy_instance_req {
+ 	__s8 padding[7];
+ } __packed;
+ 
++struct ns_info_instance_req {
++	__s8 id;
++	__s8 no_oob;
++	__s8 id_bytes[8];
++	__s8 parts_num;
++	__s8 backend;
++	__u8 filename[NANDSIM_FILENAME_SIZE];
++} __packed;
++
+ #endif /* __NANDSIM_USER_H__ */
 -- 
 2.8.3
