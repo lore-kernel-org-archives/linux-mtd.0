@@ -1,15 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezyU-0004si-AG
- for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:24 +0000
+ by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bezyb-0008WH-9t
+ for linux-mtd@lists.infradead.org; Wed, 31 Aug 2016 07:30:27 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 45/46] mtd: nandsim: Always answer all 8 bytes from
- NAND_CMD_READID
-Date: Wed, 31 Aug 2016 09:28:52 +0200
-Message-Id: <20160831072853.27822-46-dwalter@sigma-star.at>
+Subject: [PATCH 25/46] mtd: nandsim: Print backend name
+Date: Wed, 31 Aug 2016 09:28:32 +0200
+Message-Id: <20160831072853.27822-26-dwalter@sigma-star.at>
 In-Reply-To: <20160831072853.27822-1-dwalter@sigma-star.at>
 References: <20160831072853.27822-1-dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,59 +22,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-nand base reads the full 8 byte NAND ID, no matter
-how many id bytes we have configured.
-
-So, instead of getting confused return all bytes
-even when they are not configured (0xff).
-
-Fixes error messages such as:
-nandsim: unexpected data output cycle, state is STATE_READY return 0x0
+...useful to figure what backend is currently in use.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/nandsim.c  | 4 ++++
+ include/linux/mtd/nandsim.h | 1 +
+ 2 files changed, 5 insertions(+)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 8a63812..b50568f 100644
+index 47d8d41..838e5de 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -56,8 +56,6 @@
+@@ -976,6 +976,7 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
  
- #define NANDSIM_FIRST_ID_BYTE  0x98
- #define NANDSIM_SECOND_ID_BYTE 0x39
--#define NANDSIM_THIRD_ID_BYTE  0xFF /* No byte */
--#define NANDSIM_FOURTH_ID_BYTE 0xFF /* No byte */
- #define NANDSIM_ACCESS_DELAY 25
- #define NANDSIM_PROGRAMM_DELAY 200
- #define NANDSIM_ERASE_DELAY 2
-@@ -87,9 +85,7 @@ static unsigned int bch;
- static u_char id_bytes[8] = {
- 	[0] = NANDSIM_FIRST_ID_BYTE,
- 	[1] = NANDSIM_SECOND_ID_BYTE,
--	[2] = NANDSIM_THIRD_ID_BYTE,
--	[3] = NANDSIM_FOURTH_ID_BYTE,
--	[4 ... 7] = 0xFF,
-+	[2 ... 7] = 0xFF,
+ 	ns->bops = nsparam->bops;
+ 
++	NS_INFO("Using backend: %s\n", ns->bops->name);
+ 	if ((ret = ns->bops->init(ns, nsparam)) != 0) {
+ 		NS_ERR("Unable to initialize simulator backend: %i\n", ret);
+ 		return ret;
+@@ -1880,6 +1881,7 @@ static struct ns_backend_ops ns_ram_bops = {
+ 	.read_page = ns_ram_read_page,
+ 	.init = ns_ram_init,
+ 	.destroy = ns_ram_destroy,
++	.name = "ram",
  };
- static bool defaults = true;
  
-@@ -3064,14 +3060,7 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 	 * Perform minimum nandsim structure initialization to handle
- 	 * the initial ID read command correctly
- 	 */
--	if (id_bytes[6] != 0xFF || id_bytes[7] != 0xFF)
--		nand->geom.idbytes = 8;
--	else if (id_bytes[4] != 0xFF || id_bytes[5] != 0xFF)
--		nand->geom.idbytes = 6;
--	else if (id_bytes[2] != 0xFF || id_bytes[3] != 0xFF)
--		nand->geom.idbytes = 4;
--	else
--		nand->geom.idbytes = 2;
-+	nand->geom.idbytes = sizeof(id_bytes);
- 	nand->regs.status = NS_STATUS_OK(nand);
- 	nand->nxstate = STATE_UNKNOWN;
- 	nand->options |= OPT_PAGE512; /* temporary value */
+ static struct ns_backend_ops ns_cachefile_bops = {
+@@ -1888,6 +1890,7 @@ static struct ns_backend_ops ns_cachefile_bops = {
+ 	.read_page = ns_cachefile_read_page,
+ 	.init = ns_cachefile_init,
+ 	.destroy = ns_cachefile_destroy,
++	.name = "cache_file",
+ };
+ 
+ static struct ns_backend_ops ns_file_bops = {
+@@ -1896,6 +1899,7 @@ static struct ns_backend_ops ns_file_bops = {
+ 	.read_page = ns_file_read_page,
+ 	.init = ns_file_init,
+ 	.destroy = ns_file_destroy,
++	.name = "file",
+ };
+ 
+ /*
+diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
+index a0ca0fb..d71a02f 100644
+--- a/include/linux/mtd/nandsim.h
++++ b/include/linux/mtd/nandsim.h
+@@ -72,6 +72,7 @@ struct ns_backend_ops {
+ 	void (*read_page)(struct nandsim *ns, int num);
+ 	int (*init)(struct nandsim *ns, struct nandsim_params *nsparam);
+ 	void (*destroy)(struct nandsim *ns);
++	char *name;
+ };
+ 
+ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam);
 -- 
 2.8.3
