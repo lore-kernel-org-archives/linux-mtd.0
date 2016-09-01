@@ -1,20 +1,24 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bfO4f-0000OC-GF
- for linux-mtd@lists.infradead.org; Thu, 01 Sep 2016 09:14:20 +0000
-Subject: Re: issue with ubi_wl_put_peb
-To: Nikhilesh Reddy <reddyn@codeaurora.org>
-References: <57BC9C1D.4010402@codeaurora.org>
- <19dc6d1c-30fb-737e-7d7e-da503a25e9f4@nod.at>
- <57C5C835.6080900@codeaurora.org>
-Cc: linux-mtd@lists.infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <839efbc5-fdfa-a4c9-a3ee-bdfd41511f56@nod.at>
-Date: Thu, 1 Sep 2016 11:13:25 +0200
+Received: from aec1.model-fx.com ([195.210.43.243])
+ by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bfOPX-0006j2-G1
+ for linux-mtd@lists.infradead.org; Thu, 01 Sep 2016 09:35:55 +0000
+Received: from debaec.aec1.model-fx.com (debaec.aec1.model-fx.com
+ [195.210.43.227])
+ by aec1.model-fx.com (Postfix) with ESMTP id 6704B5FA328
+ for <linux-mtd@lists.infradead.org>; Thu,  1 Sep 2016 11:34:39 +0200 (CEST)
+Received: from www-data by debaec.aec1.model-fx.com with local (Exim 4.69)
+ (envelope-from <saemail@sina.cn>) id 1bfOOL-0001I1-3U
+ for linux-mtd@lists.infradead.org; Thu, 01 Sep 2016 11:34:38 +0200
+To: linux-mtd@lists.infradead.org
+Subject: =?UTF-8?B?5r6z6Zeo6YeR5rKZ6ZuG5Zui77yM5rOo5YaM5pyJ5oOK5Zac77yM57qi5Yip?=
+ =?UTF-8?B?5peg5LiK6ZmQ77yBKEFEKQ==?=
+Date: Thu, 01 Sep 2016 11:34:37 +0200
+From: xiawenzhu <saemail@sina.cn>
 MIME-Version: 1.0
-In-Reply-To: <57C5C835.6080900@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Message-Id: <E1bfOOL-0001I1-3U@debaec.aec1.model-fx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nikhilesh Reddy,
 
-On 30.08.2016 19:53, Nikhilesh Reddy wrote:
-> Hi
-> Actually  FASTMAP was not involved.
+Ce message vous a été envoyé parce que "xiawenzhu <saemail@sina.cn>" pense que vous trouverez la page "L'incubateur" www.aecom.org intéressante.
 
-So, CONFIG_MTD_UBI_FASTMAP=n?
+Lien vers la page:
+http://www.aecom.org/Les-projets-missions-actions-operationnelles-menees-par-l-agence-regional-du-numerique/Incubateur
 
-> This issue is pretty hard to reproduce ... just had reports of one instance where this occured.
-> If i see it again i will try to get all the logs.
-
-Always collect logs. :-)
-At least the kernel trace/oops.
-
-Thanks,
-//richard
+Commentaire par "xiawenzhu <saemail@sina.cn>":
+9年前，澳门金沙集团迎来第一位用户，9年来，澳门金沙集团用户不断增长，诚信铸就了今天！
+【澳门金沙集团】天天返水1.2％大额无忧：http://www.834516.com/?linux-mtd@lists.infradead.org
+怕黑庄，请上澳门金沙集团，一家正规博彩公司。
+------------------------------------------
+                    当深爱一个人的时候，心会被爱塞满，很难容下别的。所以更要学会跳出来换个角度看看外面的世界。别人不见得用你的方式爱着对方，但是也不一定就是敌人，甚至可能也在用别的方式支持着，疼爱着。
