@@ -1,25 +1,25 @@
-Date: Sun, 4 Sep 2016 07:18:22 +0300
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Fam Zheng <famz@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
- Keith Busch <keith.busch@intel.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- linuxppc-dev@lists.ozlabs.org, linux-block@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- Paul Mackerras <paulus@samba.org>, linux-mtd@lists.infradead.org,
- "Ed L. Cashin" <ed.cashin@acm.org>, Jens Axboe <axboe@kernel.dk>,
- Minchan Kim <minchan@kernel.org>,
- virtualization@lists.linux-foundation.org,
- Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
- Nitin Gupta <ngupta@vflare.org>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 09/15] virtio-blk: Pass attribute group to device_add_disk
-Message-ID: <20160904041822.wxab7bsq4pnj4spr@redhat.com>
-References: <1471418115-3654-1-git-send-email-famz@redhat.com>
- <1471418115-3654-10-git-send-email-famz@redhat.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bgckZ-0000EC-8x
+ for linux-mtd@lists.infradead.org; Sun, 04 Sep 2016 19:06:40 +0000
+Date: Sun, 4 Sep 2016 21:06:15 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, George Spelvin <linux@sciencehorizons.net>,
+ Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 1/3] mtd: introduce the mtd_pairing_scheme concept
+Message-ID: <20160904210615.4837825b@bbrezillon>
+In-Reply-To: <20160901181524.GA22366@localhost>
+References: <1466430618-9713-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1466430618-9713-2-git-send-email-boris.brezillon@free-electrons.com>
+ <20160804043751.GA914@localhost>
+ <20160809004218.672bc924@bbrezillon>
+ <20160901181524.GA22366@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1471418115-3654-10-git-send-email-famz@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,103 +29,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 17, 2016 at 03:15:09PM +0800, Fam Zheng wrote:
-> Previously after device_add_disk returns, the KOBJ_ADD uevent is already
-> emitted. Adding attributes after that is a poor usage of kobject, and
-> in practice may result in race conditions with userspace, for
-> example udev checks availability of certain attributes and initializes
-> /dev entries conditionally.
-> 
-> device_add_disk can handle adding attribute group better, so use it.
-> 
-> Meanwhile, handle error of device_add_disk.
-> 
-> Signed-off-by: Fam Zheng <famz@redhat.com>
+On Thu, 1 Sep 2016 11:15:24 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-Feel free to merge this with the rest of patchset
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-
-
-
-> ---
->  drivers/block/virtio_blk.c | 38 +++++++++++++++++++++++++++-----------
->  1 file changed, 27 insertions(+), 11 deletions(-)
+> Hi,
 > 
-> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> index 4564df5..ff60d82 100644
-> --- a/drivers/block/virtio_blk.c
-> +++ b/drivers/block/virtio_blk.c
-> @@ -522,10 +522,10 @@ virtblk_cache_type_show(struct device *dev, struct device_attribute *attr,
->  	return snprintf(buf, 40, "%s\n", virtblk_cache_types[writeback]);
->  }
->  
-> -static const struct device_attribute dev_attr_cache_type_ro =
-> +static struct device_attribute dev_attr_cache_type_ro =
->  	__ATTR(cache_type, S_IRUGO,
->  	       virtblk_cache_type_show, NULL);
-> -static const struct device_attribute dev_attr_cache_type_rw =
-> +static struct device_attribute dev_attr_cache_type_rw =
->  	__ATTR(cache_type, S_IRUGO|S_IWUSR,
->  	       virtblk_cache_type_show, virtblk_cache_type_store);
->  
-> @@ -550,6 +550,26 @@ static struct blk_mq_ops virtio_mq_ops = {
->  static unsigned int virtblk_queue_depth;
->  module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
->  
-> +static struct attribute *virtblk_attrs_ro[] = {
-> +	&dev_attr_serial.attr,
-> +	&dev_attr_cache_type_ro.attr,
-> +	NULL
-> +};
-> +
-> +static struct attribute *virtblk_attrs_rw[] = {
-> +	&dev_attr_serial.attr,
-> +	&dev_attr_cache_type_rw.attr,
-> +	NULL
-> +};
-> +
-> +static struct attribute_group virtblk_attr_group_ro = {
-> +	.attrs		= virtblk_attrs_ro,
-> +};
-> +
-> +static struct attribute_group virtblk_attr_group_rw = {
-> +	.attrs		= virtblk_attrs_rw,
-> +};
-> +
->  static int virtblk_probe(struct virtio_device *vdev)
->  {
->  	struct virtio_blk *vblk;
-> @@ -560,6 +580,7 @@ static int virtblk_probe(struct virtio_device *vdev)
->  	u32 v, blk_size, sg_elems, opt_io_size;
->  	u16 min_io_size;
->  	u8 physical_block_exp, alignment_offset;
-> +	struct attribute_group *attr_group;
->  
->  	if (!vdev->config->get) {
->  		dev_err(&vdev->dev, "%s failure: config access disabled\n",
-> @@ -719,19 +740,14 @@ static int virtblk_probe(struct virtio_device *vdev)
->  
->  	virtio_device_ready(vdev);
->  
-> -	device_add_disk(&vdev->dev, vblk->disk, NULL);
-> -	err = device_create_file(disk_to_dev(vblk->disk), &dev_attr_serial);
-> -	if (err)
-> -		goto out_del_disk;
-> -
->  	if (virtio_has_feature(vdev, VIRTIO_BLK_F_CONFIG_WCE))
-> -		err = device_create_file(disk_to_dev(vblk->disk),
-> -					 &dev_attr_cache_type_rw);
-> +		attr_group = &virtblk_attr_group_rw;
->  	else
-> -		err = device_create_file(disk_to_dev(vblk->disk),
-> -					 &dev_attr_cache_type_ro);
-> +		attr_group = &virtblk_attr_group_ro;
-> +	err = device_add_disk(&vdev->dev, vblk->disk, attr_group);
->  	if (err)
->  		goto out_del_disk;
-> +
->  	return 0;
->  
->  out_del_disk:
-> -- 
-> 2.7.4
+> I've had this on my plate to respond to for a while now, and I haven't
+> brought myself to actually care that much about the choice. So I'll
+> respond now to keep from leaving you hanging, but I'm not sure I'm that
+> helpful :(
+
+No problem. Actually, I've been busy with other problems too.
+
+> 
+> On Tue, Aug 09, 2016 at 12:42:18AM +0200, Boris Brezillon wrote:
+> > On Thu, 4 Aug 2016 12:37:51 +0800
+> > Brian Norris <computersforpeace@gmail.com> wrote:  
+> > > On Mon, Jun 20, 2016 at 03:50:16PM +0200, Boris Brezillon wrote:  
+> >   
+> > >   
+> > > > + * (3 bits in a single cell). A pair should regroup all pages that are sharing
+> > > > + * the same cell. Pairs are then indexed in ascending order.
+> > > > + *
+> > > > + * @group is defining the position of a page in a given pair. It can also be
+> > > > + * seen as the bit position in the cell: page attached to bit 0 belongs to
+> > > > + * group 0, page attached to bit 1 belongs to group 1, etc.
+> > > > + *
+> > > > + * Example:
+> > > > + * The H27UCG8T2BTR-BC datasheet describes the following pairing scheme:
+> > > > + *
+> > > > + *		group-0		group-1
+> > > > + *
+> > > > + *  pair-0	page-0		page-4
+> > > > + *  pair-1	page-1		page-5
+> > > > + *  pair-2	page-2		page-8
+> > > > + *  ...
+> > > > + *  pair-127	page-251	page-255
+> > > > + *
+> > > > + *
+> > > > + * Note that the "group" and "pair" terms were extracted from Samsung and
+> > > > + * Hynix datasheets, and might be referenced under other names in other
+> > > > + * datasheets (Micron is describing this concept as "shared pages").    
+> > > 
+> > > Very, very helpful (to me, even though I'm moderately familiar with the
+> > > concepts, but hopefully moreso for others who want to read and
+> > > understand this). Thanks for writing this up.  
+> > 
+> > Actually, the more I think about it, the more I doubt those terms are
+> > appropriate (even if they are widely used in technical documents).
+> > 
+> > How about using the following names instead:
+> > 
+> > struct mtd_cell_sharing_scheme {
+> > 	...
+> > };
+> > 
+> > struct mtd_cell_sharing_info {
+> > 	/* the bit position in the cell */
+> > 	int bitpos;
+> > 	/*
+> > 	 * What was previously known as 'pair': an id representing a  
+> 
+> Wait, so you're replacing the literature's "pair" term with "group", but
+> the literature already used "group" to mean something else? That seems
+> to be an unwise choice. (Or I'm misreading you.)
+> 
+> > 	 * group of cells forming a 'pair of pages'.
+> > 	 * I can't find a good description/word for this concept. Do
+> > 	 * you have better ideas?
+> > 	 */
+> > 	int group;
+> > };
+> > 
+> > What do you think?  
+> 
+> I think there's something to be said for matching the literature out
+> there, and I personally thought that simply providing a little bit of
+> clarifying explanation in the comments was sufficient. But if you feel
+> like choosing a more generic name is better, then that's probably OK
+> too. So other than the above comment (don't overload terms too freely!),
+> I'd use your judgment.
+> 
+> FWIW, it still takes me a while to parse what the "pair" and "group" (or
+> "bitpos" and "group" -- although "bitpos" is actually quite clear, so I
+> guess I like that) actually mean, so I tend to refer back to these
+> comments every time I'm reading it.
+
+Let's stick to my first proposal. I'll address you comment and send a
+new version. If you're happy with it, I'll create a branch that we can
+share and ask you to pull it.
+
+Thanks,
+
+Boris
