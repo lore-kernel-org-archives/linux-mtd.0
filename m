@@ -1,17 +1,25 @@
-Date: Fri, 2 Sep 2016 16:17:05 +0200
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Boris Brezillon
- <boris.brezillon@free-electrons.com>, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] mtd: mxc_nand: Set timing for v2 controllers
-Message-ID: <20160902161705.043eb3a5@ipc1.ka-ro>
-In-Reply-To: <1472820149-24241-3-git-send-email-s.hauer@pengutronix.de>
-References: <1472820149-24241-1-git-send-email-s.hauer@pengutronix.de>
- <1472820149-24241-3-git-send-email-s.hauer@pengutronix.de>
+Date: Sun, 4 Sep 2016 07:18:22 +0300
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Fam Zheng <famz@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+ Keith Busch <keith.busch@intel.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ linuxppc-dev@lists.ozlabs.org, linux-block@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Paul Mackerras <paulus@samba.org>, linux-mtd@lists.infradead.org,
+ "Ed L. Cashin" <ed.cashin@acm.org>, Jens Axboe <axboe@kernel.dk>,
+ Minchan Kim <minchan@kernel.org>,
+ virtualization@lists.linux-foundation.org,
+ Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+ Nitin Gupta <ngupta@vflare.org>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 09/15] virtio-blk: Pass attribute group to device_add_disk
+Message-ID: <20160904041822.wxab7bsq4pnj4spr@redhat.com>
+References: <1471418115-3654-1-git-send-email-famz@redhat.com>
+ <1471418115-3654-10-git-send-email-famz@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1471418115-3654-10-git-send-email-famz@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,113 +29,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, Aug 17, 2016 at 03:15:09PM +0800, Fam Zheng wrote:
+> Previously after device_add_disk returns, the KOBJ_ADD uevent is already
+> emitted. Adding attributes after that is a poor usage of kobject, and
+> in practice may result in race conditions with userspace, for
+> example udev checks availability of certain attributes and initializes
+> /dev entries conditionally.
+> 
+> device_add_disk can handle adding attribute group better, so use it.
+> 
+> Meanwhile, handle error of device_add_disk.
+> 
+> Signed-off-by: Fam Zheng <famz@redhat.com>
 
-On Fri,  2 Sep 2016 14:42:29 +0200 Sascha Hauer wrote:
-> So far we relied on reset default or the bootloader to configure a
-> suitable clk rate for the Nand controller. This works but we can
-> optimize the timing for better performance. This sets the clk rate for
-> v2 controllers (i.MX25/35) based on the timing mode read from the ONFI
-> parameter page. This may also enable the symmetric mode (aks EDO mode)
-> if necessary which reads one word per clock cycle.
-> Tested on an i.MX25 with a Micron MT29F4G08ABBDAHC attached.
->=20
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Feel free to merge this with the rest of patchset
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+
+
 > ---
->  drivers/mtd/nand/mxc_nand.c | 80 +++++++++++++++++++++++++++++++++++++++=
-++++++
->  1 file changed, 80 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 5173fad..3cd2696 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -152,6 +152,9 @@ struct mxc_nand_devtype_data {
->  	void (*select_chip)(struct mtd_info *mtd, int chip);
->  	int (*correct_data)(struct mtd_info *mtd, u_char *dat,
->  			u_char *read_ecc, u_char *calc_ecc);
-> +	int (*setup_data_interface)(struct mtd_info *mtd,
-> +			  const struct nand_data_interface *conf,
-> +			  bool check_only);
-> =20
-<nit>
-indentation inconsistent with the preceding line.
-(<TAB><SPACE><SPACE> vs. <TABs> only)
-</nit>
-
->  	/*
->  	 * On i.MX21 the CONFIG2:INT bit cannot be read if interrupts are masked
-> @@ -1012,6 +1015,80 @@ static void preset_v1(struct mtd_info *mtd)
->  	writew(0x4, NFC_V1_V2_WRPROT);
+>  drivers/block/virtio_blk.c | 38 +++++++++++++++++++++++++++-----------
+>  1 file changed, 27 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index 4564df5..ff60d82 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -522,10 +522,10 @@ virtblk_cache_type_show(struct device *dev, struct device_attribute *attr,
+>  	return snprintf(buf, 40, "%s\n", virtblk_cache_types[writeback]);
 >  }
-> =20
-> +static int mxc_nand_v2_setup_data_interface(struct mtd_info *mtd,
-> +					    const struct nand_data_interface *conf,
-> +					    bool check_only)
-> +{
-> +	struct nand_chip *nand_chip =3D mtd_to_nand(mtd);
-> +	struct mxc_nand_host *host =3D nand_get_controller_data(nand_chip);
-> +	int tRC_min_ns, tRC_ps, ret;
-> +	unsigned long rate, rate_round;
-> +	const struct nand_sdr_timings *timings;
-> +	uint16_t config1;
+>  
+> -static const struct device_attribute dev_attr_cache_type_ro =
+> +static struct device_attribute dev_attr_cache_type_ro =
+>  	__ATTR(cache_type, S_IRUGO,
+>  	       virtblk_cache_type_show, NULL);
+> -static const struct device_attribute dev_attr_cache_type_rw =
+> +static struct device_attribute dev_attr_cache_type_rw =
+>  	__ATTR(cache_type, S_IRUGO|S_IWUSR,
+>  	       virtblk_cache_type_show, virtblk_cache_type_store);
+>  
+> @@ -550,6 +550,26 @@ static struct blk_mq_ops virtio_mq_ops = {
+>  static unsigned int virtblk_queue_depth;
+>  module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
+>  
+> +static struct attribute *virtblk_attrs_ro[] = {
+> +	&dev_attr_serial.attr,
+> +	&dev_attr_cache_type_ro.attr,
+> +	NULL
+> +};
 > +
-> +	if (conf->type !=3D NAND_SDR_IFACE)
-> +		return -ENOTSUPP;
+> +static struct attribute *virtblk_attrs_rw[] = {
+> +	&dev_attr_serial.attr,
+> +	&dev_attr_cache_type_rw.attr,
+> +	NULL
+> +};
 > +
-> +	config1 =3D readw(NFC_V1_V2_CONFIG1);
+> +static struct attribute_group virtblk_attr_group_ro = {
+> +	.attrs		= virtblk_attrs_ro,
+> +};
 > +
-> +	timings =3D &conf->timings.sdr;
+> +static struct attribute_group virtblk_attr_group_rw = {
+> +	.attrs		= virtblk_attrs_rw,
+> +};
 > +
-> +	tRC_min_ns =3D timings->tRC_min / 1000;
-> +	rate =3D 1000000000 / tRC_min_ns;
+>  static int virtblk_probe(struct virtio_device *vdev)
+>  {
+>  	struct virtio_blk *vblk;
+> @@ -560,6 +580,7 @@ static int virtblk_probe(struct virtio_device *vdev)
+>  	u32 v, blk_size, sg_elems, opt_io_size;
+>  	u16 min_io_size;
+>  	u8 physical_block_exp, alignment_offset;
+> +	struct attribute_group *attr_group;
+>  
+>  	if (!vdev->config->get) {
+>  		dev_err(&vdev->dev, "%s failure: config access disabled\n",
+> @@ -719,19 +740,14 @@ static int virtblk_probe(struct virtio_device *vdev)
+>  
+>  	virtio_device_ready(vdev);
+>  
+> -	device_add_disk(&vdev->dev, vblk->disk, NULL);
+> -	err = device_create_file(disk_to_dev(vblk->disk), &dev_attr_serial);
+> -	if (err)
+> -		goto out_del_disk;
+> -
+>  	if (virtio_has_feature(vdev, VIRTIO_BLK_F_CONFIG_WCE))
+> -		err = device_create_file(disk_to_dev(vblk->disk),
+> -					 &dev_attr_cache_type_rw);
+> +		attr_group = &virtblk_attr_group_rw;
+>  	else
+> -		err = device_create_file(disk_to_dev(vblk->disk),
+> -					 &dev_attr_cache_type_ro);
+> +		attr_group = &virtblk_attr_group_ro;
+> +	err = device_add_disk(&vdev->dev, vblk->disk, attr_group);
+>  	if (err)
+>  		goto out_del_disk;
 > +
-> +	/*
-> +	 * For tRC < 30ns we have to use EDO mode. In this case the controller
-> +	 * does one access per clock cycle. Otherwise the controller does one
-> +	 * access in two clock cycles, thus we have to double the rate to the
-> +	 * controller.
-> +	 */
-> +	if (tRC_min_ns < 30) {
-> +		rate_round =3D clk_round_rate(host->clk, rate);
-> +		config1 |=3D NFC_V2_CONFIG1_ONE_CYCLE;
-> +		tRC_ps =3D 1000000000 / (rate_round / 1000);
-> +	} else {
-> +		rate_round =3D clk_round_rate(host->clk, rate * 2);
-> +		config1 &=3D ~NFC_V2_CONFIG1_ONE_CYCLE;
-> +		tRC_ps =3D 1000000000 / (rate_round / 1000 / 2);
-> +		rate *=3D 2;
->
-You could save an extra lsl by doing the *2 first:
-		rate *=3D 2;
-		rate_round =3D clk_round_rate(host->clk, rate);
-[...]
-
-> +	/*
-> +	 * The timing values compared against are from the i.MX25 Automotive
-> +	 * datasheet, Table 50. NFC Timing Parameters
-> +	 */
-> +	if (timings->tCLS_min > tRC_ps - 1000 ||
-> +	    timings->tCLH_min > tRC_ps - 2000 ||
-> +	    timings->tCS_min > tRC_ps - 1000 ||
-> +	    timings->tCH_min > tRC_ps - 2000 ||
-> +	    timings->tWP_min > tRC_ps - 1500 ||
-> +	    timings->tALS_min > tRC_ps ||
-> +	    timings->tALH_min > tRC_ps - 3000 ||
-> +	    timings->tDS_min > tRC_ps ||
-> +	    timings->tDH_min > tRC_ps - 5000 ||
-> +	    timings->tWC_min > 2 * tRC_ps ||
-> +	    timings->tWH_min > tRC_ps - 2500 ||
-> +	    timings->tRR_min > 6 * tRC_ps ||
-> +	    timings->tRP_min > 3 * tRC_ps / 2 ||
-> +	    timings->tRC_min > 2 * tRC_ps ||
-> +	    timings->tREH_min > (tRC_ps / 2) - 2500) {
-> +		dev_dbg(host->dev, "Timing out of bounds\n");
->
-Since it is an error which prevents the driver from being loaded, the
-message deserves to be printed with dev_err(), so that the user can see
-why the driver failed (without having to recompile the kernel with
-'#define DEBUG' added to the driver source).
-
-
-Lothar Wa=C3=9Fmann
+>  	return 0;
+>  
+>  out_del_disk:
+> -- 
+> 2.7.4
