@@ -1,21 +1,21 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgzGp-0003Dd-S3
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 19:09:28 +0000
-Received: by mail-lf0-x242.google.com with SMTP id l131so3306565lfl.0
- for <linux-mtd@lists.infradead.org>; Mon, 05 Sep 2016 12:09:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <089ee0ab-89ca-4c88-6e8c-f070e0a8ee57@gmail.com>
+ id 1bh0uw-0007RG-OH
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 20:54:59 +0000
+Received: by mail-wm0-x242.google.com with SMTP id w12so5790157wmf.1
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Sep 2016 13:54:37 -0700 (PDT)
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH v3] spi-nor: fix flags for s25fl128s
+To: Brian Norris <computersforpeace@gmail.com>
 References: <4d3db993-d030-3659-2f62-94c373f57038@gmail.com>
- <089ee0ab-89ca-4c88-6e8c-f070e0a8ee57@gmail.com>
-From: Jagan Teki <jagannadh.teki@gmail.com>
-Date: Tue, 6 Sep 2016 00:39:04 +0530
-Message-ID: <CAD6G_RQwCYKcZ_wLgNJEK41QUABtZyDkyTjvBb+ekiv-Wum1vg@mail.gmail.com>
-Subject: Re: [PATCH v2] spi-nor: fix flags for s25fl128s
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- MTD Mailing List <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Cc: MTD Mailing List <linux-mtd@lists.infradead.org>,
+ Jagan Teki <jteki@openedev.com>
+Message-ID: <808bf727-f562-79d4-a60f-5e437cc15da6@gmail.com>
+Date: Mon, 5 Sep 2016 22:54:29 +0200
+MIME-Version: 1.0
+In-Reply-To: <4d3db993-d030-3659-2f62-94c373f57038@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 5, 2016 at 11:09 AM, Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> The Spansion S25FL128S also supports dual read mode.
->
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> ---
-> v2:
-> - In addition remove SECT_4K flag. 4K erases are supported,
->   but not uniformly.
+The Spansion S25FL128S also supports dual read mode.
+In addition remove flag SECT_4K. 4K erases are supported,
+but not uniformly.
 
-Better to mention this on to commit body as well.
-
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 Reviewed-by: Jagan Teki <jteki@openedev.com>
+---
+v2:
+- In addition remove SECT_4K flag. 4K erases are supported,
+  but not uniformly.
+v3:
+- mention removal of SECT_4K also in actual commit message
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks!
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..4f8e488 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -905,7 +905,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+-	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SECT_4K | SPI_NOR_QUAD_READ) },
++	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
 -- 
-Jagan Teki
-Free Software Engineer | www.openedev.com
-U-Boot, Linux | Upstream Maintainer
-Hyderabad, India.
+2.9.2
