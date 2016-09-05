@@ -1,21 +1,23 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgrml-0008CN-0M
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 11:09:56 +0000
-Date: Mon, 5 Sep 2016 13:09:32 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- kernel@pengutronix.de
-Subject: Re: [PATCH 1/2] mtd: nand: automate NAND timings selection
-Message-ID: <20160905110932.jkt3ixxrsqj5emzu@pengutronix.de>
-References: <1472820149-24241-1-git-send-email-s.hauer@pengutronix.de>
- <1472820149-24241-2-git-send-email-s.hauer@pengutronix.de>
- <20160905085146.239129bd@bbrezillon>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bgrsS-0004Mm-N5
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 11:15:50 +0000
+Date: Mon, 5 Sep 2016 13:15:16 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Mason <slash.tmp@free.fr>
+Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>, linux-mtd
+ <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
+ Sebastian Frias <sf84@laposte.net>, Jean-Baptiste Lescher
+ <jblescher@gmail.com>, Thibaud Cornic <thibaud_cornic@sigmadesigns.com>
+Subject: Re: [PATCH v1] mtd: nand: tango: import driver for tango controller
+Message-ID: <20160905131516.0acb8145@bbrezillon>
+In-Reply-To: <57CD4672.1010504@free.fr>
+References: <57C94E33.6070304@sigmadesigns.com>
+ <20160905091450.017e4aa3@bbrezillon> <57CD4672.1010504@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160905085146.239129bd@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +27,190 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 05, 2016 at 08:51:46AM +0200, Boris Brezillon wrote:
-> Hi Sascha,
-> 
-> It feels weird to review his own patch, but I have a few comments. :)
+On Mon, 5 Sep 2016 12:18:26 +0200
+Mason <slash.tmp@free.fr> wrote:
 
-I know this feeling. Suddenly you have to criticise code you previously
-hoped to get through with ;)
+> On 05/09/2016 09:14, Boris Brezillon wrote:
+>=20
+> > Marc Gonzalez wrote:
+> >  =20
+> >> +/* ERROR_REPORT values */
+> >> +#define DECODE_ERR_ON_PKT_0(v)	(~v & BIT(7))
+> >> +#define DECODE_ERR_ON_PKT_N(v)	(~v & BIT(15)) =20
+> >=20
+> > Is this really packet N? I'd say it's packet 1. =20
+>=20
+> NB: "packet_0" and "packet_n" are terms used in the controller's
+> documentation (which is not publicly available AFAIU).
+>=20
+> I didn't want to change the names, for fear of confusing a
+> future (internal) maintainer of the code. But in my mind,
+> ERR_ON_FIRST_PKT and ERR_ON_OTHER_PKT are clearer. Perhaps
+> I can use these identifiers, with a comment mentioning the
+> "internal" names.
 
-> 
-> On Fri,  2 Sep 2016 14:42:28 +0200
-> Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> 
-> > From: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > 
-> > The NAND framework provides several helpers to query timing modes supported
-> > by a NAND chip, but this implies that all NAND controller drivers have
-> > to implement the same timings selection dance.
-> > 
-> > Provide a common logic to select the best timings based on ONFI or
-> > ->onfi_timing_mode_default information.  
-> > NAND controller willing to support timings adjustment should just
-> > implement the ->setup_data_interface() method.
-> 
-> Now I remember one of the reason I did not post a v2 (apart from not
-> having the time).
-> 
-> If understand the ONFI spec correctly, when you reset the NAND chip,
-> you get back to SDR+timing-mode0. In the core we do not control when
-> the reset command (0xff) is issued, and this prevents us from
-> re-applying the correct timing mode after a reset.
-> 
-> Maybe we should provide a nand_reset() helper to hide this complexity,
-> and patch all ->cmdfunc(NAND_CMD_RESET) callers to call nand_reset()
-> instead.
-> 
-> Note that the interface+timing-mode config is not necessarily the only
-> thing we'll have to re-apply after a reset (especially on MLC NANDs), so
-> having place where we can put all operations that should be done after
-> a reset is a good thing.
+Or do it the other way around: keep the datasheet wording and add a
+comment explaining what it means in your code.
 
-Ouch, there are indeed some things wrong in this patch. We iterate over
-all chips and set the timing mode for each:
+>=20
+> DECODE_ERR_ON_PKT_N(v) actually means:
+> "decode error on packet N, for N > 0"
+> (The HW supports splitting a page in 1 to 16 packets.)
+>=20
+> > #define DECODE_ERR_ON_PKT(pkt, v)	(~(v) & BIT(((pkt) * 8) + 7)) =20
+>=20
+> Byte 0 is the report for packet 0.
+> Byte 1 is the report for other packets.
+>=20
+> >> +#define ERR_COUNT_PKT_0(v)	((v >> 0) & 0x3f)
+> >> +#define ERR_COUNT_PKT_N(v)	((v >> 8) & 0x3f) =20
+>=20
+> There are only two bytes in the error report.
+> ERR_COUNT_PKT_N(v) returns the max error count for N > 1
 
-+		if (modes != ONFI_TIMING_MODE_UNKNOWN) {
-+			/*
-+			 * FIXME: should we really set the timing mode on all
-+			 * dies?
-+			 */
-+			for (i = 0; i < chip->numchips; i++) {
-+				chip->select_chip(mtd, i);
-+				ret = chip->onfi_set_features(mtd, chip,
-+						ONFI_FEATURE_ADDR_TIMING_MODE,
-+						tmode_param);
-+			}
-+			chip->select_chip(mtd, -1);
-+		}
-+
+Okay, then again, explain that in a comment.
 
-Afterwards the code in nand_scan_ident() resets all chips while checking
-for a chip array, reverting the effect of the above code. Looking closer
-at it the above code has no effect anyway since it's executed when
-chip->numchips is not yet initialized and still 0.
+>=20
+> >> +struct tango_chip {
+> >> +	struct nand_chip chip;
+> >> +	void __iomem *base; =20
+> >=20
+> > I think it better to encode the CS id, and calculate the __iomem offset
+> > based on that at run-time. Especially if you want to support multi-CS
+> > (multi dies) chips, which you don't seem to support here. =20
+>=20
+> To support multi-CS chips, I would have to define a
+> select_chip callback, where I save the requested CS
+> inside the struct tango_chip and use that to compute
+> the offset later?
 
-I think providing a nand_reset() function is a good idea. I'll implement
-one and see what I end up with.
+Yes, that's a solution.
 
-Sascha
+>=20
+>=20
+> >> +	u32 timing1, timing2, xfer_cfg, pkt_0_cfg, pkt_n_cfg, bb_cfg; =20
+> >=20
+> > Please, one field per line in struct definitions. =20
+>=20
+> OK.
+>=20
+>=20
+> >> +#define NFC_BUSY(base) (readl_relaxed(base + NFC_STATUS_REG) & 0xf) =
+=20
+> >=20
+> > I'd turn that one into an inline function taking a nand_chip pointer in
+> > parameter. Or drop it completely, since you only have one user. =20
+>=20
+> OK.
+>=20
+>=20
+> > And please document why you use this 0xf mask? I guess there's one bit
+> > per CS, so masking with 0xf is not necessarily a good idea... =20
+>=20
+> There's a 4-bit status code, 0 means idle, non-0 means busy.
+> I'll document the mask.
+>=20
+>=20
+> >> +	res =3D readl_relaxed(nfc->mem_base + ERROR_REPORT);
+> >> +
+> >> +	if (DECODE_ERR_ON_PKT_0(res) || DECODE_ERR_ON_PKT_N(res))
+> >> +		return -EBADMSG; =20
+> >=20
+> > Hm, you're assuming you'll always have 2 packets in your layout, is
+> > this true? Don't you have layouts where you only have one packet (2k
+> > pages with 2k packets) ? =20
+>=20
+> The legacy driver hard-codes packet size to 1024.
+> Thus 2 packets for 2k pages, 4 packets for 4k pages.
+> Are there recent NAND chips with 1k pages?
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Nope. Actually I didn't understand the meaning of PKT_N(). Now that you
+clarified the situation (it returns the max value for packet > 0), I
+fine with your implementation.
+
+>=20
+>=20
+> >> +	writel_relaxed(MODE_MLC, nfc->pbus_base + PBUS_PAD_MODE); =20
+> >=20
+> > Not sure I understand what MLC means here? Can you give more detail? =20
+>=20
+> I'll rename it to MODE_NFC (for "NAND Flash Controller").
+>=20
+> Basically, either we access NAND chips directly in "raw" mode,
+> or we go through the NAND Flash Controller.
+>=20
+> My driver uses "raw" mode for everything except read_page and
+> write_page (because they require DMA and HW ECC).
+
+Okay, then yes, please choose a better name.
+
+>=20
+>=20
+> >> +	ecc_bits =3D p->chip.ecc.strength * FIELD_ORDER; =20
+> >=20
+> > Are you sure the field order is always 15? I thought the ECC controller
+> > was adapting it depending on the packet size (512 bytes packets =3D> 13,
+> > 1024 bytes =3D> 14, 2k =3D> 15), but maybe I'm wrong. =20
+>=20
+> If I'm reading the doc right, it's always 15.
+
+Okay, so, no matter what packet size you choose, the number of ECC
+bytes for a given strength will always be the same, right?
+
+=46rom a storage PoV, that means you'd better choose the biggest packet
+size, but I understand that you want to support existing layouts, and
+this may also have an impact if you want to support subpage I/Os.
+
+>=20
+>=20
+> >> +static int tango_nand_probe(struct platform_device *pdev)
+> >> +{
+> >> +	int i, kHz;
+> >> +	struct resource *res;
+> >> +	void __iomem *addr[3];
+> >> +	struct tango_nfc *nfc;
+> >> +	struct device_node *np;
+> >> +
+> >> +	struct clk *clk =3D clk_get(&pdev->dev, NULL);
+> >> +	if (IS_ERR(clk))
+> >> +		return PTR_ERR(clk);
+> >> +
+> >> +	nfc =3D devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
+> >> +	if (!nfc)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	for (i =3D 0; i < 3; ++i) {
+> >> +		res =3D platform_get_resource(pdev, IORESOURCE_MEM, i);
+> >> +		addr[i] =3D devm_ioremap_resource(&pdev->dev, res);
+> >> +		if (IS_ERR(addr[i]))
+> >> +			return PTR_ERR(addr[i]);
+> >> +	}
+> >> +
+> >> +	platform_set_drvdata(pdev, nfc);
+> >> +	nand_hw_control_init(&nfc->hw);
+> >> +	kHz =3D clk_get_rate(clk) / 1000;
+> >> +
+> >> +	nfc->reg_base	=3D addr[0];
+> >> +	nfc->mem_base	=3D addr[1];
+> >> +	nfc->pbus_base	=3D addr[2]; =20
+> >=20
+> > Why not doing
+> >=20
+> > 	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > 	nfc->reg_base =3D devm_ioremap_resource(&pdev->dev, res);
+> >=20
+> > 	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+I meant=20
+
+	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 1);
+
+> > 	nfc->mem_base =3D devm_ioremap_resource(&pdev->dev, res); =20
+>=20
+> Do you mean why do I have a loop for the 3 ioremaps?
+> IIUC, you'd prefer that I unroll the loop?
+
+Having a loop would be appropriate if you were filling an nfc->iomems[]
+array, but here you're just putting the values in a temporary table to
+then assign each entry to a different field in your NFC struct.
+It's not really useful in my opinion.
