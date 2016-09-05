@@ -1,17 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgm1C-0005vC-Qn
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 05:00:28 +0000
-From: Heiko Schocher <hs@denx.de>
-To: linux-mtd@lists.infradead.org
-Cc: Heiko Schocher <hs@denx.de>, Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] ubifs: compress lines for immediate return
-Date: Mon,  5 Sep 2016 06:59:57 +0200
-Message-Id: <1473051597-30078-1-git-send-email-hs@denx.de>
+ id 1bgmdv-0006eQ-Rd
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 05:40:29 +0000
+Received: by mail-wm0-x242.google.com with SMTP id w12so2050998wmf.1
+ for <linux-mtd@lists.infradead.org>; Sun, 04 Sep 2016 22:40:04 -0700 (PDT)
+Subject: [PATCH v2] spi-nor: fix flags for s25fl128s
+To: Brian Norris <computersforpeace@gmail.com>,
+ MTD Mailing List <linux-mtd@lists.infradead.org>
+References: <4d3db993-d030-3659-2f62-94c373f57038@gmail.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <089ee0ab-89ca-4c88-6e8c-f070e0a8ee57@gmail.com>
+Date: Mon, 5 Sep 2016 07:39:57 +0200
+MIME-Version: 1.0
+In-Reply-To: <4d3db993-d030-3659-2f62-94c373f57038@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,82 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fix the following code:
+The Spansion S25FL128S also supports dual read mode.
 
--ret = expression;
--if (ret)
--        return ret;
--return 0;
-+return expression;
-
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-posted on the U-Boot mailinglist.
-
-Signed-off-by: Heiko Schocher <hs@denx.de>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 ---
+v2:
+- In addition remove SECT_4K flag. 4K erases are supported,
+  but not uniformly.
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- fs/ubifs/budget.c     | 7 ++-----
- fs/ubifs/gc.c         | 6 ++----
- fs/ubifs/lpt_commit.c | 5 +----
- 3 files changed, 5 insertions(+), 13 deletions(-)
-
-diff --git a/fs/ubifs/budget.c b/fs/ubifs/budget.c
-index 11a11b3..48d6851 100644
---- a/fs/ubifs/budget.c
-+++ b/fs/ubifs/budget.c
-@@ -77,7 +77,7 @@ static void shrink_liability(struct ubifs_info *c, int nr_to_write)
-  */
- static int run_gc(struct ubifs_info *c)
- {
--	int err, lnum;
-+	int lnum;
- 
- 	/* Make some free space by garbage-collecting dirty space */
- 	down_read(&c->commit_sem);
-@@ -88,10 +88,7 @@ static int run_gc(struct ubifs_info *c)
- 
- 	/* GC freed one LEB, return it to lprops */
- 	dbg_budg("GC freed LEB %d", lnum);
--	err = ubifs_return_leb(c, lnum);
--	if (err)
--		return err;
--	return 0;
-+	return = ubifs_return_leb(c, lnum);
- }
- 
- /**
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 821b348..88cd61d 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -297,10 +297,8 @@ static int sort_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 	err = dbg_check_data_nodes_order(c, &sleb->nodes);
- 	if (err)
- 		return err;
--	err = dbg_check_nondata_nodes_order(c, nondata);
--	if (err)
--		return err;
--	return 0;
-+
-+	return dbg_check_nondata_nodes_order(c, nondata);
- }
- 
- /**
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index ce89bdc..79a8e96 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -313,10 +313,7 @@ static int layout_cnodes(struct ubifs_info *c)
- 	alen = ALIGN(offs, c->min_io_size);
- 	upd_ltab(c, lnum, c->leb_size - alen, alen - offs);
- 	dbg_chk_lpt_sz(c, 4, alen - offs);
--	err = dbg_chk_lpt_sz(c, 3, alen);
--	if (err)
--		return err;
--	return 0;
-+	return dbg_chk_lpt_sz(c, 3, alen);
- 
- no_space:
- 	ubifs_err(c, "LPT out of space at LEB %d:%d needing %d, done_ltab %d, done_lsave %d",
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..4f8e488 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -905,7 +905,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+-	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SECT_4K | SPI_NOR_QUAD_READ) },
++	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
 -- 
-2.5.5
+2.9.2
