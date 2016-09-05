@@ -1,18 +1,18 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgvT7-0008DA-2G
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:05:55 +0000
+ id 1bgvT7-0008DY-2F
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:05:57 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v2 07/17] UBI: fastmap: use ubi_rb_for_each_entry() in
- unmap_peb()
-Date: Mon,  5 Sep 2016 17:04:58 +0200
-Message-Id: <1473087908-27862-8-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 14/17] UBI: provide an helper to check whether a LEB is
+ mapped or not
+Date: Mon,  5 Sep 2016 17:05:05 +0200
+Message-Id: <1473087908-27862-15-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,31 +24,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the ubi_rb_for_each_entry() macro instead of open-coding it.
+This is part of the process of hiding UBI EBA's internal to other part of
+the UBI implementation, so that we can add new information to the EBA
+table without having to patch different places in the UBI code.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/ubi/fastmap.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/mtd/ubi/eba.c  | 12 ++++++++++++
+ drivers/mtd/ubi/kapi.c |  4 ++--
+ drivers/mtd/ubi/ubi.h  |  1 +
+ 3 files changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index bae80699c2f2..1bfb4aeb67d4 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -385,12 +385,8 @@ static void unmap_peb(struct ubi_attach_info *ai, int pnum)
- 	struct rb_node *node, *node2;
- 	struct ubi_ainf_peb *aeb;
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 9242b90489d0..60233a6169ab 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -312,6 +312,18 @@ static void leb_write_unlock(struct ubi_device *ubi, int vol_id, int lnum)
+ }
  
--	for (node = rb_first(&ai->volumes); node; node = rb_next(node)) {
--		av = rb_entry(node, struct ubi_ainf_volume, rb);
--
--		for (node2 = rb_first(&av->root); node2;
--		     node2 = rb_next(node2)) {
--			aeb = rb_entry(node2, struct ubi_ainf_peb, u.rb);
-+	ubi_rb_for_each_entry(node, av, &ai->volumes, rb) {
-+		ubi_rb_for_each_entry(node2, aeb, &av->root, u.rb) {
- 			if (aeb->pnum == pnum) {
- 				rb_erase(&aeb->u.rb, &av->root);
- 				av->leb_count--;
+ /**
++ * ubi_eba_is_mapped - check if a LEB is mapped.
++ * @vol: volume description object
++ * @lnum: logical eraseblock number
++ *
++ * This function returns true if the LEB is mapped, false otherwise.
++ */
++bool ubi_eba_is_mapped(struct ubi_volume *vol, int lnum)
++{
++	return vol->eba_tbl[lnum] >= 0;
++}
++
++/**
+  * ubi_eba_unmap_leb - un-map logical eraseblock.
+  * @ubi: UBI device description object
+  * @vol: volume description object
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index cec7f65beb9e..88b1897aeb40 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -722,7 +722,7 @@ int ubi_leb_map(struct ubi_volume_desc *desc, int lnum)
+ 	if (vol->upd_marker)
+ 		return -EBADF;
+ 
+-	if (vol->eba_tbl[lnum] >= 0)
++	if (ubi_eba_is_mapped(vol, lnum))
+ 		return -EBADMSG;
+ 
+ 	return ubi_eba_write_leb(ubi, vol, lnum, NULL, 0, 0);
+@@ -757,7 +757,7 @@ int ubi_is_mapped(struct ubi_volume_desc *desc, int lnum)
+ 	if (vol->upd_marker)
+ 		return -EBADF;
+ 
+-	return vol->eba_tbl[lnum] >= 0;
++	return ubi_eba_is_mapped(vol, lnum);
+ }
+ EXPORT_SYMBOL_GPL(ubi_is_mapped);
+ 
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 23c902e204aa..37469805591d 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -849,6 +849,7 @@ static inline bool ubi_leb_valid(struct ubi_volume *vol, int lnum)
+ }
+ 
+ /* eba.c */
++bool ubi_eba_is_mapped(struct ubi_volume *vol, int lnum);
+ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		      int lnum);
+ int ubi_eba_read_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
 -- 
 2.7.4
