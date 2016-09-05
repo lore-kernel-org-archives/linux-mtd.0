@@ -1,17 +1,18 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgvT9-0008DB-Ub
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:06:03 +0000
+ id 1bgvT7-0008DR-29
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:06:04 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v2 15/17] UBI: provide an helper to query LEB information
-Date: Mon,  5 Sep 2016 17:05:06 +0200
-Message-Id: <1473087908-27862-16-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 09/17] UBI: provide helpers to allocate and free aeb
+ elements
+Date: Mon,  5 Sep 2016 17:05:00 +0200
+Message-Id: <1473087908-27862-10-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,100 +24,313 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is part of our attempt to hide EBA internals from other part of the
-implementation in order to easily adapt it to the MLC needs.
-
-Here we are creating an ubi_eba_leb_desc struct to hide the way we keep
-track of the LEB to PEB mapping.
+This not only hides the aeb allocation internals (which is always good in
+case we ever want to change the allocation system), but also helps us
+factorize the initialization of some common fields (ec and pnum).
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/ubi/eba.c     | 17 +++++++++++++++++
- drivers/mtd/ubi/fastmap.c |  8 ++++++--
- drivers/mtd/ubi/ubi.h     | 17 +++++++++++++++++
- 3 files changed, 40 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/attach.c  | 69 ++++++++++++++++++++++++++++++++++-------------
+ drivers/mtd/ubi/fastmap.c | 28 +++++++------------
+ drivers/mtd/ubi/ubi.h     |  3 +++
+ drivers/mtd/ubi/vtbl.c    |  4 +--
+ 4 files changed, 66 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 60233a6169ab..bdb9bf5d4e3f 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -84,6 +84,23 @@ static int ubi_get_compat(const struct ubi_device *ubi, int vol_id)
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 5692b4ce0d9c..82b30c959a28 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -182,6 +182,47 @@ static struct ubi_ainf_volume *ubi_find_or_add_av(struct ubi_attach_info *ai,
  }
  
  /**
-+ * ubi_eba_get_ldesc - get information about a LEB
-+ * @vol: volume description object
-+ * @lnum: logical eraseblock number
-+ * @ldesc: the LEB descriptor to fill
++ * ubi_alloc_aeb - allocate an aeb element
++ * @ai: attaching information
++ * @pnum: physical eraseblock number
++ * @ec: erase counter of the physical eraseblock
 + *
-+ * Used to query information about a specific LEB.
-+ * It is currently only returning the physical position of the LEB, but will be
-+ * extended to provide more information.
++ * Allocate an aeb object and initialize the pnum and ec information.
++ * vol_id and lnum are set to UBI_UNKNOWN, and the other fields are
++ * initialized to zero.
++ * Note that the element is not added in any list or RB tree.
 + */
-+void ubi_eba_get_ldesc(struct ubi_volume *vol, int lnum,
-+		       struct ubi_eba_leb_desc *ldesc)
++struct ubi_ainf_peb *ubi_alloc_aeb(struct ubi_attach_info *ai, int pnum,
++				   int ec)
 +{
-+	ldesc->lnum = lnum;
-+	ldesc->pnum = vol->eba_tbl[lnum];
++	struct ubi_ainf_peb *aeb;
++
++	aeb = kmem_cache_zalloc(ai->aeb_slab_cache, GFP_KERNEL);
++	if (!aeb)
++		return NULL;
++
++	aeb->pnum = pnum;
++	aeb->ec = ec;
++	aeb->vol_id = UBI_UNKNOWN;
++	aeb->lnum = UBI_UNKNOWN;
++
++	return aeb;
 +}
 +
 +/**
-  * ltree_lookup - look up the lock tree.
-  * @ubi: UBI device description object
-  * @vol_id: volume ID
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 25e80a749a52..27a94f28819b 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1257,8 +1257,12 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- 		fm_pos += sizeof(*feba) + (sizeof(__be32) * vol->reserved_pebs);
- 		ubi_assert(fm_pos <= ubi->fm_size);
- 
--		for (j = 0; j < vol->reserved_pebs; j++)
--			feba->pnum[j] = cpu_to_be32(vol->eba_tbl[j]);
-+		for (j = 0; j < vol->reserved_pebs; j++) {
-+			struct ubi_eba_leb_desc ldesc;
-+
-+			ubi_eba_get_ldesc(vol, j, &ldesc);
-+			feba->pnum[j] = cpu_to_be32(ldesc.pnum);
-+		}
- 
- 		feba->reserved_pebs = cpu_to_be32(j);
- 		feba->magic = cpu_to_be32(UBI_FM_EBA_MAGIC);
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 37469805591d..c14b8e71d388 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -267,6 +267,21 @@ struct ubi_fm_pool {
- };
- 
- /**
-+ * struct ubi_eba_leb_desc - EBA logical eraseblock descriptor
-+ * @lnum: the logical eraseblock number
-+ * @pnum: the physical eraseblock where the LEB can be found
++ * ubi_free_aeb - free an aeb element
++ * @ai: attaching information
++ * @aeb: the element to free
 + *
-+ * This structure is here to hide EBA's internal from other part of the
-+ * UBI implementation.
-+ *
-+ * One can query the position of a LEB by calling
++ * Free an aeb object. The caller must have removed the element from any list
++ * or RB tree.
 + */
-+struct ubi_eba_leb_desc {
-+	int lnum;
-+	int pnum;
-+};
++void ubi_free_aeb(struct ubi_attach_info *ai, struct ubi_ainf_peb *aeb)
++{
++	kmem_cache_free(ai->aeb_slab_cache, aeb);
++}
 +
 +/**
-  * struct ubi_volume - UBI volume description data structure.
-  * @dev: device object to make use of the the Linux device model
-  * @cdev: character device object to create character device
-@@ -849,6 +864,8 @@ static inline bool ubi_leb_valid(struct ubi_volume *vol, int lnum)
- }
+  * add_to_list - add physical eraseblock to a list.
+  * @ai: attaching information
+  * @pnum: physical eraseblock number to add
+@@ -217,14 +258,12 @@ static int add_to_list(struct ubi_attach_info *ai, int pnum, int vol_id,
+ 	} else
+ 		BUG();
  
- /* eba.c */
-+void ubi_eba_get_ldesc(struct ubi_volume *vol, int lnum,
-+		       struct ubi_eba_leb_desc *ldesc);
- bool ubi_eba_is_mapped(struct ubi_volume *vol, int lnum);
- int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
- 		      int lnum);
+-	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
++	aeb = ubi_alloc_aeb(ai, pnum, ec);
+ 	if (!aeb)
+ 		return -ENOMEM;
+ 
+-	aeb->pnum = pnum;
+ 	aeb->vol_id = vol_id;
+ 	aeb->lnum = lnum;
+-	aeb->ec = ec;
+ 	if (to_head)
+ 		list_add(&aeb->u.list, list);
+ 	else
+@@ -249,13 +288,11 @@ static int add_corrupted(struct ubi_attach_info *ai, int pnum, int ec)
+ 
+ 	dbg_bld("add to corrupted: PEB %d, EC %d", pnum, ec);
+ 
+-	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
++	aeb = ubi_alloc_aeb(ai, pnum, ec);
+ 	if (!aeb)
+ 		return -ENOMEM;
+ 
+ 	ai->corr_peb_count += 1;
+-	aeb->pnum = pnum;
+-	aeb->ec = ec;
+ 	list_add(&aeb->u.list, &ai->corr);
+ 	return 0;
+ }
+@@ -278,14 +315,12 @@ static int add_fastmap(struct ubi_attach_info *ai, int pnum,
+ {
+ 	struct ubi_ainf_peb *aeb;
+ 
+-	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
++	aeb = ubi_alloc_aeb(ai, pnum, ec);
+ 	if (!aeb)
+ 		return -ENOMEM;
+ 
+-	aeb->pnum = pnum;
+ 	aeb->vol_id = be32_to_cpu(vid_hdr->vol_id);
+ 	aeb->sqnum = be64_to_cpu(vid_hdr->sqnum);
+-	aeb->ec = ec;
+ 	list_add(&aeb->u.list, &ai->fastmap);
+ 
+ 	dbg_bld("add to fastmap list: PEB %d, vol_id %d, sqnum: %llu", pnum,
+@@ -667,12 +702,10 @@ int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
+ 	if (err)
+ 		return err;
+ 
+-	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
++	aeb = ubi_alloc_aeb(ai, pnum, ec);
+ 	if (!aeb)
+ 		return -ENOMEM;
+ 
+-	aeb->ec = ec;
+-	aeb->pnum = pnum;
+ 	aeb->vol_id = vol_id;
+ 	aeb->lnum = lnum;
+ 	aeb->scrub = bitflips;
+@@ -1278,7 +1311,7 @@ static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av,
+ 			if (list)
+ 				list_add_tail(&aeb->u.list, list);
+ 			else
+-				kmem_cache_free(ai->aeb_slab_cache, aeb);
++				ubi_free_aeb(ai, aeb);
+ 		}
+ 	}
+ 	kfree(av);
+@@ -1296,23 +1329,23 @@ static void destroy_ai(struct ubi_attach_info *ai)
+ 
+ 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->alien, u.list) {
+ 		list_del(&aeb->u.list);
+-		kmem_cache_free(ai->aeb_slab_cache, aeb);
++		ubi_free_aeb(ai, aeb);
+ 	}
+ 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->erase, u.list) {
+ 		list_del(&aeb->u.list);
+-		kmem_cache_free(ai->aeb_slab_cache, aeb);
++		ubi_free_aeb(ai, aeb);
+ 	}
+ 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->corr, u.list) {
+ 		list_del(&aeb->u.list);
+-		kmem_cache_free(ai->aeb_slab_cache, aeb);
++		ubi_free_aeb(ai, aeb);
+ 	}
+ 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->free, u.list) {
+ 		list_del(&aeb->u.list);
+-		kmem_cache_free(ai->aeb_slab_cache, aeb);
++		ubi_free_aeb(ai, aeb);
+ 	}
+ 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->fastmap, u.list) {
+ 		list_del(&aeb->u.list);
+-		kmem_cache_free(ai->aeb_slab_cache, aeb);
++		ubi_free_aeb(ai, aeb);
+ 	}
+ 
+ 	/* Destroy the volume RB-tree */
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 7a07b8b53081..25e80a749a52 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -145,12 +145,10 @@ static int add_aeb(struct ubi_attach_info *ai, struct list_head *list,
+ {
+ 	struct ubi_ainf_peb *aeb;
+ 
+-	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
++	aeb = ubi_alloc_aeb(ai, pnum, ec);
+ 	if (!aeb)
+ 		return -ENOMEM;
+ 
+-	aeb->pnum = pnum;
+-	aeb->ec = ec;
+ 	aeb->lnum = -1;
+ 	aeb->scrub = scrub;
+ 	aeb->copy_flag = aeb->sqnum = 0;
+@@ -276,7 +274,7 @@ static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 		 */
+ 		if (aeb->pnum == new_aeb->pnum) {
+ 			ubi_assert(aeb->lnum == new_aeb->lnum);
+-			kmem_cache_free(ai->aeb_slab_cache, new_aeb);
++			ubi_free_aeb(ai, new_aeb);
+ 
+ 			return 0;
+ 		}
+@@ -287,13 +285,10 @@ static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 
+ 		/* new_aeb is newer */
+ 		if (cmp_res & 1) {
+-			victim = kmem_cache_alloc(ai->aeb_slab_cache,
+-				GFP_KERNEL);
++			victim = ubi_alloc_aeb(ai, aeb->ec, aeb->pnum);
+ 			if (!victim)
+ 				return -ENOMEM;
+ 
+-			victim->ec = aeb->ec;
+-			victim->pnum = aeb->pnum;
+ 			list_add_tail(&victim->u.list, &ai->erase);
+ 
+ 			if (av->highest_lnum == be32_to_cpu(new_vh->lnum))
+@@ -307,7 +302,7 @@ static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 			aeb->pnum = new_aeb->pnum;
+ 			aeb->copy_flag = new_vh->copy_flag;
+ 			aeb->scrub = new_aeb->scrub;
+-			kmem_cache_free(ai->aeb_slab_cache, new_aeb);
++			ubi_free_aeb(ai, new_aeb);
+ 
+ 		/* new_aeb is older */
+ 		} else {
+@@ -353,7 +348,7 @@ static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	struct ubi_ainf_volume *av;
+ 
+ 	if (vol_id == UBI_FM_SB_VOLUME_ID || vol_id == UBI_FM_DATA_VOLUME_ID) {
+-		kmem_cache_free(ai->aeb_slab_cache, new_aeb);
++		ubi_free_aeb(ai, new_aeb);
+ 
+ 		return 0;
+ 	}
+@@ -362,7 +357,7 @@ static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	av = ubi_find_av(ai, vol_id);
+ 	if (!av) {
+ 		ubi_err(ubi, "orphaned volume in fastmap pool!");
+-		kmem_cache_free(ai->aeb_slab_cache, new_aeb);
++		ubi_free_aeb(ai, new_aeb);
+ 		return UBI_BAD_FASTMAP;
+ 	}
+ 
+@@ -390,7 +385,7 @@ static void unmap_peb(struct ubi_attach_info *ai, int pnum)
+ 			if (aeb->pnum == pnum) {
+ 				rb_erase(&aeb->u.rb, &av->root);
+ 				av->leb_count--;
+-				kmem_cache_free(ai->aeb_slab_cache, aeb);
++				ubi_free_aeb(ai, aeb);
+ 				return;
+ 			}
+ 		}
+@@ -485,15 +480,12 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 			if (err == UBI_IO_BITFLIPS)
+ 				scrub = 1;
+ 
+-			new_aeb = kmem_cache_alloc(ai->aeb_slab_cache,
+-						   GFP_KERNEL);
++			new_aeb = ubi_alloc_aeb(ai, pnum, be64_to_cpu(ech->ec));
+ 			if (!new_aeb) {
+ 				ret = -ENOMEM;
+ 				goto out;
+ 			}
+ 
+-			new_aeb->ec = be64_to_cpu(ech->ec);
+-			new_aeb->pnum = pnum;
+ 			new_aeb->lnum = be32_to_cpu(vh->lnum);
+ 			new_aeb->sqnum = be64_to_cpu(vh->sqnum);
+ 			new_aeb->copy_flag = vh->copy_flag;
+@@ -800,11 +792,11 @@ fail_bad:
+ fail:
+ 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list) {
+ 		list_del(&tmp_aeb->u.list);
+-		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
++		ubi_free_aeb(ai, tmp_aeb);
+ 	}
+ 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
+ 		list_del(&tmp_aeb->u.list);
+-		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
++		ubi_free_aeb(ai, tmp_aeb);
+ 	}
+ 
+ 	return ret;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index fce142666bf3..f22c6c2e980f 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -792,6 +792,9 @@ extern struct mutex ubi_devices_mutex;
+ extern struct blocking_notifier_head ubi_notifiers;
+ 
+ /* attach.c */
++struct ubi_ainf_peb *ubi_alloc_aeb(struct ubi_attach_info *ai, int pnum,
++				   int ec);
++void ubi_free_aeb(struct ubi_attach_info *ai, struct ubi_ainf_peb *aeb);
+ int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
+ 		  int ec, const struct ubi_vid_hdr *vid_hdr, int bitflips);
+ struct ubi_ainf_volume *ubi_add_av(struct ubi_attach_info *ai, int vol_id);
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index d85c19762160..9e1457708cbf 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -338,7 +338,7 @@ retry:
+ 	 * of this LEB as it will be deleted and freed in 'ubi_add_to_av()'.
+ 	 */
+ 	err = ubi_add_to_av(ubi, ai, new_aeb->pnum, new_aeb->ec, vid_hdr, 0);
+-	kmem_cache_free(ai->aeb_slab_cache, new_aeb);
++	ubi_free_aeb(ai, new_aeb);
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
+ 	return err;
+ 
+@@ -351,7 +351,7 @@ write_error:
+ 		list_add(&new_aeb->u.list, &ai->erase);
+ 		goto retry;
+ 	}
+-	kmem_cache_free(ai->aeb_slab_cache, new_aeb);
++	ubi_free_aeb(ai, new_aeb);
+ out_free:
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
+ 	return err;
 -- 
 2.7.4
