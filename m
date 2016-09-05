@@ -1,19 +1,19 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgmdv-0006eQ-Rd
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 05:40:29 +0000
-Received: by mail-wm0-x242.google.com with SMTP id w12so2050998wmf.1
- for <linux-mtd@lists.infradead.org>; Sun, 04 Sep 2016 22:40:04 -0700 (PDT)
-Subject: [PATCH v2] spi-nor: fix flags for s25fl128s
-To: Brian Norris <computersforpeace@gmail.com>,
- MTD Mailing List <linux-mtd@lists.infradead.org>
-References: <4d3db993-d030-3659-2f62-94c373f57038@gmail.com>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <089ee0ab-89ca-4c88-6e8c-f070e0a8ee57@gmail.com>
-Date: Mon, 5 Sep 2016 07:39:57 +0200
+ id 1bgnOx-0006s4-Hi
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 06:29:04 +0000
+Subject: Re: [PATCH] ubifs: compress lines for immediate return
+To: Heiko Schocher <hs@denx.de>, linux-mtd@lists.infradead.org
+References: <1473051597-30078-1-git-send-email-hs@denx.de>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <94271caf-4852-1d08-c6a0-102aac22ab65@nod.at>
+Date: Mon, 5 Sep 2016 08:28:05 +0200
 MIME-Version: 1.0
-In-Reply-To: <4d3db993-d030-3659-2f62-94c373f57038@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1473051597-30078-1-git-send-email-hs@denx.de>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,29 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Spansion S25FL128S also supports dual read mode.
+Heiko,
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
-v2:
-- In addition remove SECT_4K flag. 4K erases are supported,
-  but not uniformly.
----
- drivers/mtd/spi-nor/spi-nor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 05.09.2016 06:59, Heiko Schocher wrote:
+> fix the following code:
+> 
+> -ret = expression;
+> -if (ret)
+> -        return ret;
+> -return 0;
+> +return expression;
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d0fc165..4f8e488 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -905,7 +905,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
- 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
- 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
--	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SECT_4K | SPI_NOR_QUAD_READ) },
-+	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
--- 
-2.9.2
+"Fix"? ;-)
+What was broken?
+
+I agree that we can write the expression in a different way, but is it really worth it?
+Is this part of a tree-wide cleanup?
+
+Thanks,
+//richard
