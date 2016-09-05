@@ -1,17 +1,17 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgvT7-0008DV-2C
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:06:01 +0000
+ id 1bgvT9-0008DB-Ub
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:06:03 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v2 11/17] UBI: simplify recover_peb() code
-Date: Mon,  5 Sep 2016 17:05:02 +0200
-Message-Id: <1473087908-27862-12-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 15/17] UBI: provide an helper to query LEB information
+Date: Mon,  5 Sep 2016 17:05:06 +0200
+Message-Id: <1473087908-27862-16-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,196 +23,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-recover_peb() is using a convoluted retry/exit path. Add try_recover_peb()
-to simplify the retry logic and make sure we have a single exit path
-instead of manually releasing the resource in each error path.
+This is part of our attempt to hide EBA internals from other part of the
+implementation in order to easily adapt it to the MLC needs.
+
+Here we are creating an ubi_eba_leb_desc struct to hide the way we keep
+track of the LEB to PEB mapping.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/ubi/eba.c | 123 ++++++++++++++++++++++++++++----------------------
- 1 file changed, 69 insertions(+), 54 deletions(-)
+ drivers/mtd/ubi/eba.c     | 17 +++++++++++++++++
+ drivers/mtd/ubi/fastmap.c |  8 ++++++--
+ drivers/mtd/ubi/ubi.h     | 17 +++++++++++++++++
+ 3 files changed, 40 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index ebf517271d29..0a5fa519b8dd 100644
+index 60233a6169ab..bdb9bf5d4e3f 100644
 --- a/drivers/mtd/ubi/eba.c
 +++ b/drivers/mtd/ubi/eba.c
-@@ -554,39 +554,32 @@ int ubi_eba_read_leb_sg(struct ubi_device *ubi, struct ubi_volume *vol,
+@@ -84,6 +84,23 @@ static int ubi_get_compat(const struct ubi_device *ubi, int vol_id)
  }
  
  /**
-- * recover_peb - recover from write failure.
-- * @ubi: UBI device description object
-+ * try_recover_peb - try to recover from write failure.
++ * ubi_eba_get_ldesc - get information about a LEB
 + * @vol: volume description object
-  * @pnum: the physical eraseblock to recover
-- * @vol_id: volume ID
-  * @lnum: logical eraseblock number
-  * @buf: data which was not written because of the write failure
-  * @offset: offset of the failed write
-  * @len: how many bytes should have been written
-+ * @vid: VID header
-  *
-  * This function is called in case of a write failure and moves all good data
-  * from the potentially bad physical eraseblock to a good physical eraseblock.
-  * This function also writes the data which was not written due to the failure.
-- * Returns new physical eraseblock number in case of success, and a negative
-- * error code in case of failure.
-+ * Returns 0 in case of success, and a negative error code in case of failure.
-  */
--static int recover_peb(struct ubi_device *ubi, int pnum, int vol_id, int lnum,
--		       const void *buf, int offset, int len)
-+static int try_recover_peb(struct ubi_volume *vol, int pnum, int lnum,
-+			   const void *buf, int offset, int len,
-+			   struct ubi_vid_hdr *vid_hdr)
- {
--	int err, idx = vol_id2idx(ubi, vol_id), new_pnum, data_size, tries = 0;
--	struct ubi_volume *vol = ubi->volumes[idx];
--	struct ubi_vid_hdr *vid_hdr;
-+	struct ubi_device *ubi = vol->ubi;
-+	int new_pnum, err, vol_id = vol->vol_id, data_size;
- 	uint32_t crc;
- 
--	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
--	if (!vid_hdr)
--		return -ENOMEM;
--
--retry:
- 	new_pnum = ubi_wl_get_peb(ubi);
- 	if (new_pnum < 0) {
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		up_read(&ubi->fm_eba_sem);
--		return new_pnum;
-+		err = new_pnum;
-+		goto out_put;
- 	}
- 
- 	ubi_msg(ubi, "recover PEB %d, move data to PEB %d",
-@@ -596,7 +589,6 @@ retry:
- 	if (err && err != UBI_IO_BITFLIPS) {
- 		if (err > 0)
- 			err = -EIO;
--		up_read(&ubi->fm_eba_sem);
- 		goto out_put;
- 	}
- 
-@@ -608,10 +600,8 @@ retry:
- 	/* Read everything before the area where the write failure happened */
- 	if (offset > 0) {
- 		err = ubi_io_read_data(ubi, ubi->peb_buf, pnum, 0, offset);
--		if (err && err != UBI_IO_BITFLIPS) {
--			up_read(&ubi->fm_eba_sem);
-+		if (err && err != UBI_IO_BITFLIPS)
- 			goto out_unlock;
--		}
- 	}
- 
- 	memcpy(ubi->peb_buf + offset, buf, len);
-@@ -623,49 +613,74 @@ retry:
- 	vid_hdr->data_size = cpu_to_be32(data_size);
- 	vid_hdr->data_crc = cpu_to_be32(crc);
- 	err = ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
--	if (err) {
--		mutex_unlock(&ubi->buf_mutex);
--		up_read(&ubi->fm_eba_sem);
--		goto write_error;
--	}
-+	if (err)
-+		goto out_unlock;
- 
- 	err = ubi_io_write_data(ubi, ubi->peb_buf, new_pnum, 0, data_size);
--	if (err) {
--		mutex_unlock(&ubi->buf_mutex);
--		up_read(&ubi->fm_eba_sem);
--		goto write_error;
--	}
- 
-+out_unlock:
- 	mutex_unlock(&ubi->buf_mutex);
--	ubi_free_vid_hdr(ubi, vid_hdr);
- 
--	vol->eba_tbl[lnum] = new_pnum;
-+	if (!err)
-+		vol->eba_tbl[lnum] = new_pnum;
-+
-+out_put:
- 	up_read(&ubi->fm_eba_sem);
--	ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
- 
--	ubi_msg(ubi, "data was successfully recovered");
--	return 0;
-+	if (!err) {
-+		ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
-+		ubi_msg(ubi, "data was successfully recovered");
-+	} else if (new_pnum >= 0) {
-+		/*
-+		 * Bad luck? This physical eraseblock is bad too? Crud. Let's
-+		 * try to get another one.
-+		 */
-+		ubi_wl_put_peb(ubi, vol_id, lnum, new_pnum, 1);
-+		ubi_warn(ubi, "failed to write to PEB %d", new_pnum);
-+	}
- 
--out_unlock:
--	mutex_unlock(&ubi->buf_mutex);
--out_put:
--	ubi_wl_put_peb(ubi, vol_id, lnum, new_pnum, 1);
--	ubi_free_vid_hdr(ubi, vid_hdr);
- 	return err;
-+}
- 
--write_error:
--	/*
--	 * Bad luck? This physical eraseblock is bad too? Crud. Let's try to
--	 * get another one.
--	 */
--	ubi_warn(ubi, "failed to write to PEB %d", new_pnum);
--	ubi_wl_put_peb(ubi, vol_id, lnum, new_pnum, 1);
--	if (++tries > UBI_IO_RETRIES) {
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		return err;
-+/**
-+ * recover_peb - recover from write failure.
-+ * @ubi: UBI device description object
-+ * @pnum: the physical eraseblock to recover
-+ * @vol_id: volume ID
 + * @lnum: logical eraseblock number
-+ * @buf: data which was not written because of the write failure
-+ * @offset: offset of the failed write
-+ * @len: how many bytes should have been written
++ * @ldesc: the LEB descriptor to fill
 + *
-+ * This function is called in case of a write failure and moves all good data
-+ * from the potentially bad physical eraseblock to a good physical eraseblock.
-+ * This function also writes the data which was not written due to the failure.
-+ * Returns 0 in case of success, and a negative error code in case of failure.
-+ * This function tries %UBI_IO_RETRIES before giving up.
++ * Used to query information about a specific LEB.
++ * It is currently only returning the physical position of the LEB, but will be
++ * extended to provide more information.
 + */
-+static int recover_peb(struct ubi_device *ubi, int pnum, int vol_id, int lnum,
-+		       const void *buf, int offset, int len)
++void ubi_eba_get_ldesc(struct ubi_volume *vol, int lnum,
++		       struct ubi_eba_leb_desc *ldesc)
 +{
-+	int err, idx = vol_id2idx(ubi, vol_id), tries;
-+	struct ubi_volume *vol = ubi->volumes[idx];
-+	struct ubi_vid_hdr *vid_hdr;
++	ldesc->lnum = lnum;
++	ldesc->pnum = vol->eba_tbl[lnum];
++}
 +
-+	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
-+	if (!vid_hdr)
-+		return -ENOMEM;
++/**
+  * ltree_lookup - look up the lock tree.
+  * @ubi: UBI device description object
+  * @vol_id: volume ID
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 25e80a749a52..27a94f28819b 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -1257,8 +1257,12 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 		fm_pos += sizeof(*feba) + (sizeof(__be32) * vol->reserved_pebs);
+ 		ubi_assert(fm_pos <= ubi->fm_size);
+ 
+-		for (j = 0; j < vol->reserved_pebs; j++)
+-			feba->pnum[j] = cpu_to_be32(vol->eba_tbl[j]);
++		for (j = 0; j < vol->reserved_pebs; j++) {
++			struct ubi_eba_leb_desc ldesc;
 +
-+	for (tries = 0; tries <= UBI_IO_RETRIES; tries++) {
-+		err = try_recover_peb(vol, pnum, lnum, buf, offset, len,
-+				      vid_hdr);
-+		if (!err || err == -ENOSPC)
-+			break;
-+
-+		ubi_msg(ubi, "try again");
- 	}
--	ubi_msg(ubi, "try again");
--	goto retry;
-+
-+	ubi_free_vid_hdr(ubi, vid_hdr);
-+
-+	return err;
- }
++			ubi_eba_get_ldesc(vol, j, &ldesc);
++			feba->pnum[j] = cpu_to_be32(ldesc.pnum);
++		}
+ 
+ 		feba->reserved_pebs = cpu_to_be32(j);
+ 		feba->magic = cpu_to_be32(UBI_FM_EBA_MAGIC);
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 37469805591d..c14b8e71d388 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -267,6 +267,21 @@ struct ubi_fm_pool {
+ };
  
  /**
++ * struct ubi_eba_leb_desc - EBA logical eraseblock descriptor
++ * @lnum: the logical eraseblock number
++ * @pnum: the physical eraseblock where the LEB can be found
++ *
++ * This structure is here to hide EBA's internal from other part of the
++ * UBI implementation.
++ *
++ * One can query the position of a LEB by calling
++ */
++struct ubi_eba_leb_desc {
++	int lnum;
++	int pnum;
++};
++
++/**
+  * struct ubi_volume - UBI volume description data structure.
+  * @dev: device object to make use of the the Linux device model
+  * @cdev: character device object to create character device
+@@ -849,6 +864,8 @@ static inline bool ubi_leb_valid(struct ubi_volume *vol, int lnum)
+ }
+ 
+ /* eba.c */
++void ubi_eba_get_ldesc(struct ubi_volume *vol, int lnum,
++		       struct ubi_eba_leb_desc *ldesc);
+ bool ubi_eba_is_mapped(struct ubi_volume *vol, int lnum);
+ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		      int lnum);
 -- 
 2.7.4
