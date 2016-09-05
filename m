@@ -1,17 +1,17 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgvT7-0008D9-2E
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:05:58 +0000
+ id 1bgvT7-0008DX-28
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:05:59 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v2 06/17] UBI: factorize destroy_av() and ubi_remove_av() code
-Date: Mon,  5 Sep 2016 17:04:57 +0200
-Message-Id: <1473087908-27862-7-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 13/17] UBI: add an helper to check lnum validity
+Date: Mon,  5 Sep 2016 17:05:04 +0200
+Message-Id: <1473087908-27862-14-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,86 +23,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Those functions are pretty much doing the same thing, except
-ubi_remove_av() is putting the aeb elements attached to the volume into
-the ai->erase list and the destroy_av() is freeing them.
-
-Rework destroy_av() to handle both cases.
+ubi_leb_valid() is here to replace the
+lnum < 0 || lnum >= vol->reserved_pebs checks.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/ubi/attach.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ drivers/mtd/ubi/cdev.c |  4 ++--
+ drivers/mtd/ubi/kapi.c | 12 ++++++------
+ drivers/mtd/ubi/ubi.h  |  5 +++++
+ 3 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index 6d34cd7b0263..5692b4ce0d9c 100644
---- a/drivers/mtd/ubi/attach.c
-+++ b/drivers/mtd/ubi/attach.c
-@@ -722,6 +722,9 @@ struct ubi_ainf_volume *ubi_find_av(const struct ubi_attach_info *ai,
- 			      &created);
- }
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index ee2b74d1d1b5..72ba84af6698 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -454,7 +454,7 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
  
-+static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av,
-+		       struct list_head *list);
+ 		/* Validate the request */
+ 		err = -EINVAL;
+-		if (req.lnum < 0 || req.lnum >= vol->reserved_pebs ||
++		if (!ubi_leb_valid(vol, req.lnum) ||
+ 		    req.bytes < 0 || req.bytes > vol->usable_leb_size)
+ 			break;
+ 
+@@ -485,7 +485,7 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
+ 			break;
+ 		}
+ 
+-		if (lnum < 0 || lnum >= vol->reserved_pebs) {
++		if (!ubi_leb_valid(vol, lnum)) {
+ 			err = -EINVAL;
+ 			break;
+ 		}
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index a9e2cef7c95c..cec7f65beb9e 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -538,7 +538,7 @@ int ubi_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
+ 	if (desc->mode == UBI_READONLY || vol->vol_type == UBI_STATIC_VOLUME)
+ 		return -EROFS;
+ 
+-	if (lnum < 0 || lnum >= vol->reserved_pebs || offset < 0 || len < 0 ||
++	if (!ubi_leb_valid(vol, lnum) || offset < 0 || len < 0 ||
+ 	    offset + len > vol->usable_leb_size ||
+ 	    offset & (ubi->min_io_size - 1) || len & (ubi->min_io_size - 1))
+ 		return -EINVAL;
+@@ -583,7 +583,7 @@ int ubi_leb_change(struct ubi_volume_desc *desc, int lnum, const void *buf,
+ 	if (desc->mode == UBI_READONLY || vol->vol_type == UBI_STATIC_VOLUME)
+ 		return -EROFS;
+ 
+-	if (lnum < 0 || lnum >= vol->reserved_pebs || len < 0 ||
++	if (!ubi_leb_valid(vol, lnum) || len < 0 ||
+ 	    len > vol->usable_leb_size || len & (ubi->min_io_size - 1))
+ 		return -EINVAL;
+ 
+@@ -620,7 +620,7 @@ int ubi_leb_erase(struct ubi_volume_desc *desc, int lnum)
+ 	if (desc->mode == UBI_READONLY || vol->vol_type == UBI_STATIC_VOLUME)
+ 		return -EROFS;
+ 
+-	if (lnum < 0 || lnum >= vol->reserved_pebs)
++	if (!ubi_leb_valid(vol, lnum))
+ 		return -EINVAL;
+ 
+ 	if (vol->upd_marker)
+@@ -680,7 +680,7 @@ int ubi_leb_unmap(struct ubi_volume_desc *desc, int lnum)
+ 	if (desc->mode == UBI_READONLY || vol->vol_type == UBI_STATIC_VOLUME)
+ 		return -EROFS;
+ 
+-	if (lnum < 0 || lnum >= vol->reserved_pebs)
++	if (!ubi_leb_valid(vol, lnum))
+ 		return -EINVAL;
+ 
+ 	if (vol->upd_marker)
+@@ -716,7 +716,7 @@ int ubi_leb_map(struct ubi_volume_desc *desc, int lnum)
+ 	if (desc->mode == UBI_READONLY || vol->vol_type == UBI_STATIC_VOLUME)
+ 		return -EROFS;
+ 
+-	if (lnum < 0 || lnum >= vol->reserved_pebs)
++	if (!ubi_leb_valid(vol, lnum))
+ 		return -EINVAL;
+ 
+ 	if (vol->upd_marker)
+@@ -751,7 +751,7 @@ int ubi_is_mapped(struct ubi_volume_desc *desc, int lnum)
+ 
+ 	dbg_gen("test LEB %d:%d", vol->vol_id, lnum);
+ 
+-	if (lnum < 0 || lnum >= vol->reserved_pebs)
++	if (!ubi_leb_valid(vol, lnum))
+ 		return -EINVAL;
+ 
+ 	if (vol->upd_marker)
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index b51d398f2356..23c902e204aa 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -843,6 +843,11 @@ void ubi_update_reserved(struct ubi_device *ubi);
+ void ubi_calculate_reserved(struct ubi_device *ubi);
+ int ubi_check_pattern(const void *buf, uint8_t patt, int size);
+ 
++static inline bool ubi_leb_valid(struct ubi_volume *vol, int lnum)
++{
++	return lnum >= 0 && lnum < vol->reserved_pebs;
++}
 +
- /**
-  * ubi_remove_av - delete attaching information about a volume.
-  * @ai: attaching information
-@@ -729,19 +732,10 @@ struct ubi_ainf_volume *ubi_find_av(const struct ubi_attach_info *ai,
-  */
- void ubi_remove_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
- {
--	struct rb_node *rb;
--	struct ubi_ainf_peb *aeb;
--
- 	dbg_bld("remove attaching information about volume %d", av->vol_id);
- 
--	while ((rb = rb_first(&av->root))) {
--		aeb = rb_entry(rb, struct ubi_ainf_peb, u.rb);
--		rb_erase(&aeb->u.rb, &av->root);
--		list_add_tail(&aeb->u.list, &ai->erase);
--	}
--
- 	rb_erase(&av->rb, &ai->volumes);
--	kfree(av);
-+	destroy_av(ai, av, &ai->erase);
- 	ai->vols_found -= 1;
- }
- 
-@@ -1256,10 +1250,12 @@ static int late_analysis(struct ubi_device *ubi, struct ubi_attach_info *ai)
-  * destroy_av - free volume attaching information.
-  * @av: volume attaching information
-  * @ai: attaching information
-+ * @list: put the aeb elements in there if !NULL, otherwise free them
-  *
-  * This function destroys the volume attaching information.
-  */
--static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
-+static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av,
-+		       struct list_head *list)
- {
- 	struct ubi_ainf_peb *aeb;
- 	struct rb_node *this = av->root.rb_node;
-@@ -1279,7 +1275,10 @@ static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
- 					this->rb_right = NULL;
- 			}
- 
--			kmem_cache_free(ai->aeb_slab_cache, aeb);
-+			if (list)
-+				list_add_tail(&aeb->u.list, list);
-+			else
-+				kmem_cache_free(ai->aeb_slab_cache, aeb);
- 		}
- 	}
- 	kfree(av);
-@@ -1334,7 +1333,7 @@ static void destroy_ai(struct ubi_attach_info *ai)
- 					rb->rb_right = NULL;
- 			}
- 
--			destroy_av(ai, av);
-+			destroy_av(ai, av, NULL);
- 		}
- 	}
- 
+ /* eba.c */
+ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		      int lnum);
 -- 
 2.7.4
