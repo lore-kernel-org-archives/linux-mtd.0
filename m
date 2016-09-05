@@ -1,22 +1,20 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgu1Y-00073w-QT
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 13:33:32 +0000
-Subject: Re: [PATCH v2] ubifs: compress lines for immediate return
-To: hs@denx.de, Masahiro Yamada <yamada.masahiro@socionext.com>
-References: <1473058466-10831-1-git-send-email-hs@denx.de>
- <CAK7LNARnJVjwDaLGpSUUwvMWSXdXvkaF0H5yV2Dtr=pgpZZwOw@mail.gmail.com>
- <57CD6D9F.20502@denx.de>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <0af5ebac-22d6-9a12-5cff-09f5f53d9b77@nod.at>
-Date: Mon, 5 Sep 2016 15:32:27 +0200
-MIME-Version: 1.0
-In-Reply-To: <57CD6D9F.20502@denx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bgvSl-0007qr-D7
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:05:32 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 02/17] UBI: fix add_fastmap() to use the vid_hdr passed in
+ argument
+Date: Mon,  5 Sep 2016 17:04:53 +0200
+Message-Id: <1473087908-27862-3-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05.09.2016 15:05, Heiko Schocher wrote:
-> @Richard: Should we just forget this patch?
+add_fastmap() is passed a ubi_vid_hdr pointer in argument, but is
+referencing the global vidh pointer.
+Even if this is correct from a functional point of view (vidh and vid_hdr
+point to the same object), it is confusing.
 
-Let's drop it for now.
-It caused already a way more churn than a trivial style cleanup
-patch should...
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/ubi/attach.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-//richard
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 903becd31410..95138ae2062f 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -197,8 +197,8 @@ static int add_fastmap(struct ubi_attach_info *ai, int pnum,
+ 		return -ENOMEM;
+ 
+ 	aeb->pnum = pnum;
+-	aeb->vol_id = be32_to_cpu(vidh->vol_id);
+-	aeb->sqnum = be64_to_cpu(vidh->sqnum);
++	aeb->vol_id = be32_to_cpu(vid_hdr->vol_id);
++	aeb->sqnum = be64_to_cpu(vid_hdr->sqnum);
+ 	aeb->ec = ec;
+ 	list_add(&aeb->u.list, &ai->fastmap);
+ 
+-- 
+2.7.4
