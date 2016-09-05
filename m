@@ -1,17 +1,17 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgvsD-00060W-Ug
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:31:53 +0000
+ id 1bgvsD-00060O-Ue
+ for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 15:31:54 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 4/6] UBI: introduce per-volume leb_size
-Date: Mon,  5 Sep 2016 17:31:25 +0200
-Message-Id: <1473089487-29285-5-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 2/6] UBI: rework the on-flash format versioning logic
+Date: Mon,  5 Sep 2016 17:31:23 +0200
+Message-Id: <1473089487-29285-3-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1473089487-29285-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1473089487-29285-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,179 +23,239 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The LEB size is currently common to all volumes attached to a UBI device,
-but the introduction of MLC NAND support and 'MLC safe' dynamic volumes
-forces us to tweak the LEB size per volume.
-In case of 'MLC safe' volumes, the LEB size should be set to
+Currently, the UBI implementation only supports a single on-flash format
+version (version 1).
 
-   (peb_size / bits_per_cells) - ec_and_vid_align_size
+Rework the version checking/initialization logic to allow the same
+implementation to support several on-flash version.
 
-This commit only adds a leb_size field to struct ubi_volume and makes use
-of it where appropriate.
+If an empty device is detected, the core picks the latest version
+supported by the UBI implementation.
+
+Note that we have moved the version validation code in its own function
+so that it can be re-used by both VID and EC header validation.
+
+We also dropped the ech->version check done in scan_peb() since it's
+already done when ubi_io_read_ec_hdr() is called.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/ubi/eba.c  | 14 +++++++-------
- drivers/mtd/ubi/ubi.h  |  2 ++
- drivers/mtd/ubi/upd.c  |  2 +-
- drivers/mtd/ubi/vmt.c  | 21 ++++++++++++++-------
- drivers/mtd/ubi/vtbl.c |  8 +++++---
- 5 files changed, 29 insertions(+), 18 deletions(-)
+ drivers/mtd/ubi/attach.c    | 37 +++++++++++++++++++++++++++------
+ drivers/mtd/ubi/build.c     |  3 +++
+ drivers/mtd/ubi/io.c        | 50 ++++++++++++++++++++++++++++++++++++++++-----
+ drivers/mtd/ubi/ubi-media.h |  8 ++++++--
+ drivers/mtd/ubi/ubi.h       |  1 +
+ 5 files changed, 86 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index dd270aebe9a1..71c35149175f 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -1205,13 +1205,6 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 93ceea4f27d5..48b6f3f8eb40 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -959,6 +959,7 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	struct ubi_vid_hdr *vidh = ubi_get_vid_hdr(vidb);
+ 	long long ec;
+ 	int err, bitflips = 0, vol_id = -1, ec_err = 0;
++	int version = -1;
  
- 	dbg_wl("copy LEB %d:%d, PEB %d to PEB %d", vol_id, lnum, from, to);
+ 	dbg_bld("scan PEB %d", pnum);
  
--	if (vid_hdr->vol_type == UBI_VID_STATIC) {
--		data_size = be32_to_cpu(vid_hdr->data_size);
--		aldata_size = ALIGN(data_size, ubi->min_io_size);
--	} else
--		data_size = aldata_size =
--			    ubi->leb_size - be32_to_cpu(vid_hdr->data_pad);
--
- 	idx = vol_id2idx(ubi, vol_id);
- 	spin_lock(&ubi->volumes_lock);
- 	/*
-@@ -1261,6 +1254,13 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- 		goto out_unlock_leb;
+@@ -1008,12 +1009,8 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	if (!ec_err) {
+ 		int image_seq;
+ 
+-		/* Make sure UBI version is OK */
+-		if (ech->version != UBI_VERSION) {
+-			ubi_err(ubi, "this UBI version is %d, image version is %d",
+-				UBI_VERSION, (int)ech->version);
+-			return -EINVAL;
+-		}
++		/* Initialize the version value to the EC header one. */
++		version = ech->version;
+ 
+ 		ec = be64_to_cpu(ech->ec);
+ 		if (ec > UBI_MAX_ERASECOUNTER) {
+@@ -1142,6 +1139,27 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 		return -EINVAL;
  	}
- 
-+	if (vid_hdr->vol_type == UBI_VID_STATIC) {
-+		data_size = be32_to_cpu(vid_hdr->data_size);
-+		aldata_size = ALIGN(data_size, ubi->min_io_size);
-+	} else
-+		data_size = aldata_size =
-+			    vol->leb_size - be32_to_cpu(vid_hdr->data_pad);
-+
- 	/*
- 	 * OK, now the LEB is locked and we can safely start moving it. Since
- 	 * this function utilizes the @ubi->peb_buf buffer which is shared
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 1377e300a118..160cdfd5442f 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -306,6 +306,7 @@ struct ubi_eba_leb_desc {
-  *
-  * @reserved_pebs: how many physical eraseblocks are reserved for this volume
-  * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
-+ * @leb_size: logical eraseblock size
-  * @usable_leb_size: logical eraseblock size without padding
-  * @used_ebs: how many logical eraseblocks in this volume contain data
-  * @last_eb_bytes: how many bytes are stored in the last logical eraseblock
-@@ -355,6 +356,7 @@ struct ubi_volume {
- 
- 	int reserved_pebs;
- 	int vol_type;
-+	int leb_size;
- 	int usable_leb_size;
- 	int used_ebs;
- 	int last_eb_bytes;
-diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
-index 0134ba32a057..03fd6ff912cf 100644
---- a/drivers/mtd/ubi/upd.c
-+++ b/drivers/mtd/ubi/upd.c
-@@ -133,7 +133,7 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
- 	ubi_assert(!vol->updating && !vol->changing_leb);
- 	vol->updating = 1;
- 
--	vol->upd_buf = vmalloc(ubi->leb_size);
-+	vol->upd_buf = vmalloc(vol->leb_size);
- 	if (!vol->upd_buf)
- 		return -ENOMEM;
- 
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 21b8c5aca2da..ac703d4631e1 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -207,8 +207,17 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 			goto out_unlock;
- 		}
  
 +	/*
-+	 * Volume LEB size is currently PEB size - (size reserved for the EC
-+	 * and VID headers). This will change with MLC/TLC NAND support and
-+	 * the LEB consolidation concept.
++	 * version might be < 0 if the EC header is corrupted. In this case,
++	 * pick the version found in the VID header.
 +	 */
-+	vol->leb_size = ubi->leb_size;
++	if (version < 0)
++		version = vidh->version;
 +
- 	/* Calculate how many eraseblocks are requested */
--	vol->usable_leb_size = ubi->leb_size - ubi->leb_size % req->alignment;
-+	vol->alignment = req->alignment;
-+	vol->data_pad  = vol->leb_size % vol->alignment;
-+	vol->usable_leb_size = vol->leb_size - vol->data_pad;
- 	vol->reserved_pebs = div_u64(req->bytes + vol->usable_leb_size - 1,
- 				     vol->usable_leb_size);
++	/* Make sure both VID header and EC header version value match. */
++	if (vidh->version != version) {
++		ubi_err(ubi,
++			"version in VID and EC headers do not match (%d %d)",
++			(int)vidh->version, (int)version);
++	}
++
++	/*
++	 * Initialize the UBI device version if it's the first valid PEB we are
++	 * scanning.
++	 */
++	if (ubi->version < 0)
++		ubi->version = version;
++
+ 	vol_id = be32_to_cpu(vidh->vol_id);
+ 	if (vol_id > UBI_MAX_VOLUMES && !vol_ignored(vol_id)) {
+ 		int lnum = be32_to_cpu(vidh->lnum);
+@@ -1268,6 +1286,13 @@ static int late_analysis(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 			ubi_msg(ubi, "empty MTD device detected");
+ 			get_random_bytes(&ubi->image_seq,
+ 					 sizeof(ubi->image_seq));
++
++			/*
++			 * Initialize the version to the last supported
++			 * version.
++			 */
++			if (ubi->version < 0)
++				ubi->version = UBI_CURRENT_VERSION;
+ 		} else {
+ 			ubi_err(ubi, "MTD device is not UBI-formatted and possibly contains non-UBI data - refusing it");
+ 			return -EINVAL;
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 914fcf07b573..5b12fa92a695 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -926,6 +926,9 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 	ubi->vid_hdr_offset = vid_hdr_offset;
+ 	ubi->autoresize_vol_id = -1;
  
-@@ -227,8 +236,6 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	spin_unlock(&ubi->volumes_lock);
++	/* Initialize the version to -1 to let UBI detect it at attach time. */
++	ubi->version = -1;
++
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+ 	ubi->fm_pool.used = ubi->fm_pool.size = 0;
+ 	ubi->fm_wl_pool.used = ubi->fm_wl_pool.size = 0;
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index b6fb8f945c21..6676c21c406b 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -662,6 +662,42 @@ int ubi_io_mark_bad(const struct ubi_device *ubi, int pnum)
+ }
  
- 	vol->vol_id    = vol_id;
--	vol->alignment = req->alignment;
--	vol->data_pad  = ubi->leb_size % vol->alignment;
- 	vol->vol_type  = req->vol_type;
- 	vol->name_len  = req->name_len;
- 	memcpy(vol->name, req->name, vol->name_len);
-@@ -675,7 +682,7 @@ static int self_check_volume(struct ubi_device *ubi, int vol_id)
- 		ubi_err(ubi, "negative values");
- 		goto fail;
- 	}
--	if (vol->alignment > ubi->leb_size || vol->alignment == 0) {
-+	if (vol->alignment > vol->leb_size || vol->alignment == 0) {
- 		ubi_err(ubi, "bad alignment");
- 		goto fail;
- 	}
-@@ -686,7 +693,7 @@ static int self_check_volume(struct ubi_device *ubi, int vol_id)
- 		goto fail;
+ /**
++ * validate_version - validate the version number found in the EC or VID
++ *		      header.
++ * @ubi: UBI device description object
++ * @version: version number to check
++ *
++ * This function returns zero if the version is supported by the UBI
++ * implementation and is consistent with previous version numbers found
++ * in other headers.
++ */
++static int validate_version(const struct ubi_device *ubi, int version)
++{
++	if (!UBI_VERSION_IS_SUPPORTED(version)) {
++		unsigned long supports = UBI_SUPPORTED_VERSIONS;
++		int i;
++
++		ubi_err(ubi, "node with incompatible UBI version found");
++		ubi_err(ubi, "\tversion version is %d", version);
++		ubi_err(ubi, "\tthis implementation supports:");
++		for_each_set_bit(i, &supports, 8)
++			ubi_err(ubi, "\t\t%d", i);
++
++		return -EINVAL;
++	}
++
++	if (ubi->version >= 0 && version != ubi->version) {
++		ubi_err(ubi, "node with inconsistent UBI version found");
++		ubi_err(ubi, "\tdevice version is %d", ubi->version);
++		ubi_err(ubi, "\theader version is %d", version);
++
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++/**
+  * validate_ec_hdr - validate an erase counter header.
+  * @ubi: UBI device description object
+  * @ec_hdr: the erase counter header to check
+@@ -679,9 +715,8 @@ static int validate_ec_hdr(const struct ubi_device *ubi,
+ 	vid_hdr_offset = be32_to_cpu(ec_hdr->vid_hdr_offset);
+ 	leb_start = be32_to_cpu(ec_hdr->data_offset);
+ 
+-	if (ec_hdr->version != UBI_VERSION) {
+-		ubi_err(ubi, "node with incompatible UBI version found: this UBI version is %d, image version is %d",
+-			UBI_VERSION, (int)ec_hdr->version);
++	if (validate_version(ubi, ec_hdr->version)) {
++		ubi_err(ubi, "bad version in EC header");
+ 		goto bad;
  	}
  
--	n = ubi->leb_size % vol->alignment;
-+	n = vol->leb_size % vol->alignment;
- 	if (vol->data_pad != n) {
- 		ubi_err(ubi, "bad data_pad, has to be %lld", n);
- 		goto fail;
-@@ -708,8 +715,8 @@ static int self_check_volume(struct ubi_device *ubi, int vol_id)
- 		goto fail;
- 	}
+@@ -852,7 +887,7 @@ int ubi_io_write_ec_hdr(struct ubi_device *ubi, int pnum,
+ 	ubi_assert(pnum >= 0 &&  pnum < ubi->peb_count);
  
--	n = ubi->leb_size - vol->data_pad;
--	if (vol->usable_leb_size != ubi->leb_size - vol->data_pad) {
-+	n = vol->leb_size - vol->data_pad;
-+	if (vol->usable_leb_size != n) {
- 		ubi_err(ubi, "bad usable_leb_size, has to be %lld", n);
- 		goto fail;
- 	}
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 263743e7b741..4ed75a03e363 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -555,7 +555,8 @@ static int init_volumes(struct ubi_device *ubi,
- 		vol->vol_type = vtbl[i].vol_type == UBI_VID_DYNAMIC ?
- 					UBI_DYNAMIC_VOLUME : UBI_STATIC_VOLUME;
- 		vol->name_len = be16_to_cpu(vtbl[i].name_len);
--		vol->usable_leb_size = ubi->leb_size - vol->data_pad;
-+		vol->leb_size = ubi->leb_size;
-+		vol->usable_leb_size = vol->leb_size - vol->data_pad;
- 		memcpy(vol->name, vtbl[i].name, vol->name_len);
- 		vol->name[vol->name_len] = '\0';
- 		vol->vol_id = i;
-@@ -632,11 +633,12 @@ static int init_volumes(struct ubi_device *ubi,
- 	vol->vol_type = UBI_DYNAMIC_VOLUME;
- 	vol->name_len = sizeof(UBI_LAYOUT_VOLUME_NAME) - 1;
- 	memcpy(vol->name, UBI_LAYOUT_VOLUME_NAME, vol->name_len + 1);
--	vol->usable_leb_size = ubi->leb_size;
- 	vol->used_ebs = vol->reserved_pebs;
- 	vol->last_eb_bytes = vol->reserved_pebs;
-+	vol->leb_size = ubi->leb_size;
-+	vol->usable_leb_size = vol->leb_size;
- 	vol->used_bytes =
--		(long long)vol->used_ebs * (ubi->leb_size - vol->data_pad);
-+		(long long)vol->used_ebs * (vol->leb_size - vol->data_pad);
- 	vol->vol_id = UBI_LAYOUT_VOLUME_ID;
- 	vol->ref_count = 1;
+ 	ec_hdr->magic = cpu_to_be32(UBI_EC_HDR_MAGIC);
+-	ec_hdr->version = UBI_VERSION;
++	ec_hdr->version = ubi->version;
+ 	ec_hdr->vid_hdr_offset = cpu_to_be32(ubi->vid_hdr_offset);
+ 	ec_hdr->data_offset = cpu_to_be32(ubi->leb_start);
+ 	ec_hdr->image_seq = cpu_to_be32(ubi->image_seq);
+@@ -892,6 +927,11 @@ static int validate_vid_hdr(const struct ubi_device *ubi,
+ 	int data_crc = be32_to_cpu(vid_hdr->data_crc);
+ 	int usable_leb_size = ubi->leb_size - data_pad;
  
++	if (validate_version(ubi, vid_hdr->version)) {
++		ubi_err(ubi, "bad version in VID header");
++		goto bad;
++	}
++
+ 	if (copy_flag != 0 && copy_flag != 1) {
+ 		ubi_err(ubi, "bad copy_flag");
+ 		goto bad;
+@@ -1110,7 +1150,7 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
+ 		return err;
+ 
+ 	vid_hdr->magic = cpu_to_be32(UBI_VID_HDR_MAGIC);
+-	vid_hdr->version = UBI_VERSION;
++	vid_hdr->version = ubi->version;
+ 	crc = crc32(UBI_CRC32_INIT, vid_hdr, UBI_VID_HDR_SIZE_CRC);
+ 	vid_hdr->hdr_crc = cpu_to_be32(crc);
+ 
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index 22ed3f627506..a536e482b954 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -33,7 +33,10 @@
+ #include <asm/byteorder.h>
+ 
+ /* The version of UBI images supported by this implementation */
+-#define UBI_VERSION 1
++#define UBI_CURRENT_VERSION		1
++#define UBI_SUPPORTS_VERSION(x)		BIT(x)
++#define UBI_SUPPORTED_VERSIONS		(UBI_SUPPORTS_VERSION(1))
++#define UBI_VERSION_IS_SUPPORTED(x)	(BIT((x)) & UBI_SUPPORTED_VERSIONS)
+ 
+ /* The highest erase counter value supported by this implementation */
+ #define UBI_MAX_ERASECOUNTER 0x7FFFFFFF
+@@ -170,7 +173,8 @@ struct ubi_ec_hdr {
+  * struct ubi_vid_hdr - on-flash UBI volume identifier header.
+  * @magic: volume identifier header magic number (%UBI_VID_HDR_MAGIC)
+  * @version: UBI implementation version which is supposed to accept this UBI
+- *           image (%UBI_VERSION)
++ *           image (see %UBI_SUPPORTED_VERSIONS for the currently supported
++ *           versions)
+  * @vol_type: volume type (%UBI_VID_DYNAMIC or %UBI_VID_STATIC)
+  * @copy_flag: if this logical eraseblock was copied from another physical
+  *             eraseblock (for wear-leveling reasons)
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index a5c509434061..1377e300a118 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -567,6 +567,7 @@ struct ubi_device {
+ 	spinlock_t volumes_lock;
+ 	int ref_count;
+ 	int image_seq;
++	int version;
+ 
+ 	int rsvd_pebs;
+ 	int avail_pebs;
 -- 
 2.7.4
