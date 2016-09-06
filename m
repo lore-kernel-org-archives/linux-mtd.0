@@ -1,23 +1,22 @@
+Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
+ by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bhJ3z-0000Vk-JW
+ for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 16:17:32 +0000
+Received: by mail-oi0-x244.google.com with SMTP id 2so15492234oif.2
+ for <linux-mtd@lists.infradead.org>; Tue, 06 Sep 2016 09:17:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACna6rzJi37CYg86YgT+age8ebWX6BtpoEbz7uM18-QiWFvDxQ@mail.gmail.com>
-References: <58c7c482-9a51-73d1-7694-e1928f3bedb0@gmail.com>
- <d56ee9a9-5246-a609-b8ca-1c8dee322f46@nod.at>
- <CAJfpegt_Rw0O7mmP4scNPObAokwiNGs7m9ez1-tmjndOZDMXBg@mail.gmail.com>
- <CACna6rzJi37CYg86YgT+age8ebWX6BtpoEbz7uM18-QiWFvDxQ@mail.gmail.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Tue, 6 Sep 2016 17:53:08 +0200
-Message-ID: <CACna6rwSGU6WLZwVnd+x1iOjHOoNmhrBOCcvS-b1KDXs9gVF0Q@mail.gmail.com>
-Subject: Re: overlayfs + ubifs: power cut results in "failed to create
- directory /overlay/work/work (errno: 17); mounting read-only"
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
+In-Reply-To: <40ec1dc1-210a-77fb-89d5-779b930c3764@opensource.altera.com>
+References: <1438886294.23233.6.camel@mramach3-lnx001>
+ <40ec1dc1-210a-77fb-89d5-779b930c3764@opensource.altera.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 6 Sep 2016 18:17:08 +0200
+Message-ID: <CAFLxGvzeLSP8_FpruSOJ72LCanBumGZTZqwDouZWwEz=Ku-oNg@mail.gmail.com>
+Subject: Re: [PATCH] mtd-utils: Support jffs2 flash-erase for large OOB (>32b)
+To: Graham Moore <grmoore@opensource.altera.com>
+Cc: Manikandan Ramachandran <crmanik@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LEDE Development List <lede-dev@lists.infradead.org>
+ David Oberhollenzer <goliath@sigma-star.at>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6 September 2016 at 14:56, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wr=
-ote:
-> On 6 September 2016 at 14:50, Miklos Szeredi <miklos@szeredi.hu> wrote:
->> On Tue, Sep 6, 2016 at 1:59 PM, Richard Weinberger <richard@nod.at> wrot=
-e:
->>> overlayfs does not issue a recursive rm on workdir, AFAICT you are supp=
-osed to cleanup
->>> workdir yourself before mounting.
->>> Miklos?
+On Tue, Sep 6, 2016 at 5:22 PM, Graham Moore
+<grmoore@opensource.altera.com> wrote:
+> On 08/06/2015 01:38 PM, Manikandan Ramachandran wrote:
 >>
->> Fixed in 4.8-rc5 by
+>> "flash_erase" fails on nand flash with JFFS2 that has OOB size greater
+>> than
+>> 32 bytes. "flash_erase" uses "MEMGETOOSEL" to determine OOB size. This
+>> ioctl
+>> call is obsolete and returns error if OOB size is more than 32 bytes.
 >>
->> eea2fb4851e9 ("ovl: proper cleanup of workdir")
+>> This patch fixes this issue by using "mtd_write" to update clean-marker
+>> instead of mtd_oob_write. This fix is based on the discussion:
+>> http://lists.infradead.org/pipermail/linux-mtd/2011-September/037958.html.
 >>
->> I think it's better if kernel does the cleanup, but if it's easier to
->> upgrade userspace, then that's a valid workaround.
 >
-> Oh, this should solve my problem! It seems it didn't git stable
-> kernels yet, but I can backport it on my own for now.
+> Hi Manikandan,
+>
+> I'd like to use this patch in our Angstrom/Yocto builds, but our company
+> policy doesn't allow patches that aren't signed off.
+>
+> I wonder if you could re-post this with your sign-off?  I'd really
+> appreciate it.
 
-I tried backporting it to 4.4, but it appears it won't be that
-trivial. Your patch ("ovl: proper cleanup of workdir") uses e.g.
-inode_lock_nested which is available in 4.5+. Commit that added this
-function: 5955102c9984f ("wrappers for ->i_mutex access") wasn't
-marked for stable, so I guess your patch won't go into 4.4 at all.
+Not needed, I can do that myself.
+Let's get this reviewed and merged. :-)
 
-I don't expect any magic solution for this, just saying, leaving a
-note for reference.
-
---=20
-Rafa=C5=82
+-- 
+Thanks,
+//richard
