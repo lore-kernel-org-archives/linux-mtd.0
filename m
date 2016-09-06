@@ -1,24 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bh88n-0008IC-4V
- for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 04:37:46 +0000
-Reply-To: hs@denx.de
-Subject: Re: [PATCH v2] ubifs: compress lines for immediate return
-References: <1473058466-10831-1-git-send-email-hs@denx.de>
- <CAK7LNARnJVjwDaLGpSUUwvMWSXdXvkaF0H5yV2Dtr=pgpZZwOw@mail.gmail.com>
- <57CD6D9F.20502@denx.de> <0af5ebac-22d6-9a12-5cff-09f5f53d9b77@nod.at>
-To: Richard Weinberger <richard@nod.at>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From: Heiko Schocher <hs@denx.de>
-Message-ID: <57CE47F6.1010402@denx.de>
-Date: Tue, 6 Sep 2016 06:37:10 +0200
+ id 1bhBfB-0005px-TX
+ for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 08:23:29 +0000
+Date: Tue, 6 Sep 2016 10:23:02 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de
+Subject: Re: [PATCH 1/2] mtd: nand: automate NAND timings selection
+Message-ID: <20160906082302.4itzqv4ldd3foazu@pengutronix.de>
+References: <1472820149-24241-1-git-send-email-s.hauer@pengutronix.de>
+ <1472820149-24241-2-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <0af5ebac-22d6-9a12-5cff-09f5f53d9b77@nod.at>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1472820149-24241-2-git-send-email-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Richard,
+Hi Boris,
 
-Am 05.09.2016 um 15:32 schrieb Richard Weinberger:
-> On 05.09.2016 15:05, Heiko Schocher wrote:
->> @Richard: Should we just forget this patch?
->
-> Let's drop it for now.
-> It caused already a way more churn than a trivial style cleanup
-> patch should...
+On Fri, Sep 02, 2016 at 02:42:28PM +0200, Sascha Hauer wrote:
+> +static int nand_configure_data_interface(struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct nand_data_interface *conf;
+> +	int modes, mode, ret = -EINVAL;
+> +	uint8_t tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = { };
+> +	int i;
+> +
+> +	conf = kzalloc(sizeof(*conf), GFP_KERNEL);
+> +	if (!conf)
+> +		return -ENOMEM;
+> +
+> +	/* TODO: support DDR interfaces */
+> +	conf->type = NAND_SDR_IFACE;
+> +
+> +	/*
+> +	 * First try to identify the best timings from ONFI parameters and
+> +	 * if the NAND does not support ONFI, fallback to the default ONFI
+> +	 * timing mode.
+> +	 */
+> +	modes = onfi_get_async_timing_mode(chip);
+> +	if (modes == ONFI_TIMING_MODE_UNKNOWN) {
+> +		mode = chip->onfi_timing_mode_default;
+> +		conf->timings.sdr =
+> +				*onfi_async_timing_mode_to_sdr_timings(mode);
+> +
+> +		ret = nand_check_data_interface(mtd, conf);
+> +	} else {
+> +		for (mode = fls(modes) - 1; mode >= 0; mode--) {
+> +			conf->timings.sdr =
+> +				*onfi_async_timing_mode_to_sdr_timings(mode);
+> +
+> +			ret = nand_check_data_interface(mtd, conf);
+> +			if (!ret)
+> +				break;
+> +		}
+> +	}
 
-Yes! It was a too fast shoot ... sorry for the noise!
+I wonder if this works good for non ONFI NANDs. In the ONFI case we
+iterate over all modes supported by the NAND until we find one that also
+suits the driver. By doing so we inherently assume that not all drivers
+support all modes. In the non ONFI case instead we hardcode a single
+timing into the nand_id table, what if the driver does not support this
+timing? It will fail in this case without ever trying slower timings.
+Shouldn't we encode the mode bitmask into the nand_id table rather than
+a single timing?
+I cannot find a chip in the nand_id table which actually sets
+onfi_timing_mode_default, but since you introduced the field in the
+nand_id table with commit 57a94e24bc92 you can probably tell me more.
 
-bye,
-Heiko
+Sascha
+
 -- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
