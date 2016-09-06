@@ -1,22 +1,14 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bhCiZ-0004Qc-Tz
- for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 09:31:04 +0000
-Date: Tue, 6 Sep 2016 11:30:36 +0200
+ id 1bhDn1-0000W2-61
+ for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 10:39:40 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de
-Subject: Re: [PATCH 1/2] mtd: nand: automate NAND timings selection
-Message-ID: <20160906093036.32uka4klt2x2ottt@pengutronix.de>
-References: <1472820149-24241-1-git-send-email-s.hauer@pengutronix.de>
- <1472820149-24241-2-git-send-email-s.hauer@pengutronix.de>
- <20160906082302.4itzqv4ldd3foazu@pengutronix.de>
- <20160906104130.61605fa4@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160906104130.61605fa4@bbrezillon>
+To: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2] mtd: nand: automate NAND timings selection
+Date: Tue,  6 Sep 2016 12:39:08 +0200
+Message-Id: <1473158355-22451-1-git-send-email-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,87 +18,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 06, 2016 at 10:41:30AM +0200, Boris Brezillon wrote:
-> On Tue, 6 Sep 2016 10:23:02 +0200
-> Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> 
-> > Hi Boris,
-> > 
-> > On Fri, Sep 02, 2016 at 02:42:28PM +0200, Sascha Hauer wrote:
-> > > +static int nand_configure_data_interface(struct mtd_info *mtd)
-> > > +{
-> > > +	struct nand_chip *chip = mtd_to_nand(mtd);
-> > > +	struct nand_data_interface *conf;
-> > > +	int modes, mode, ret = -EINVAL;
-> > > +	uint8_t tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = { };
-> > > +	int i;
-> > > +
-> > > +	conf = kzalloc(sizeof(*conf), GFP_KERNEL);
-> > > +	if (!conf)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	/* TODO: support DDR interfaces */
-> > > +	conf->type = NAND_SDR_IFACE;
-> > > +
-> > > +	/*
-> > > +	 * First try to identify the best timings from ONFI parameters and
-> > > +	 * if the NAND does not support ONFI, fallback to the default ONFI
-> > > +	 * timing mode.
-> > > +	 */
-> > > +	modes = onfi_get_async_timing_mode(chip);
-> > > +	if (modes == ONFI_TIMING_MODE_UNKNOWN) {
-> > > +		mode = chip->onfi_timing_mode_default;
-> > > +		conf->timings.sdr =
-> > > +				*onfi_async_timing_mode_to_sdr_timings(mode);
-> > > +
-> > > +		ret = nand_check_data_interface(mtd, conf);
-> > > +	} else {
-> > > +		for (mode = fls(modes) - 1; mode >= 0; mode--) {
-> > > +			conf->timings.sdr =
-> > > +				*onfi_async_timing_mode_to_sdr_timings(mode);
-> > > +
-> > > +			ret = nand_check_data_interface(mtd, conf);
-> > > +			if (!ret)
-> > > +				break;
-> > > +		}
-> > > +	}  
-> > 
-> > I wonder if this works good for non ONFI NANDs. In the ONFI case we
-> > iterate over all modes supported by the NAND until we find one that also
-> > suits the driver. By doing so we inherently assume that not all drivers
-> > support all modes. In the non ONFI case instead we hardcode a single
-> > timing into the nand_id table, what if the driver does not support this
-> > timing? It will fail in this case without ever trying slower timings.
-> > Shouldn't we encode the mode bitmask into the nand_id table rather than
-> > a single timing?
-> 
-> IIRC, this is what I proposed in my first patch (having a bitmask
-> encoding supported modes), but Brian suggested to directly put the
-> highest supported mode.
-> 
-> Anyway, I don't think a NAND can support higher modes without
-> supporting lower ones, so extracting the supported modes info from the
-> default_onfi_timing_mode should be pretty easy:
-> 
-> 	supported_modes = GENMASK(default_onfi_timing_mode, 0);
+This series aims at automating the NAND timings selection which is
+currently supposed to be done in each NAND controller driver, thus
+simplifying drivers implementation.
 
-Ok, if you think we can assume this then I'll do it like that.
+As suggested by Boris this version of the series introduces a nand_reset()
+function which replaces the several open coded NAND_CMD_RESET commands
+in the code. This makes sure we can apply the timing each time after
+after reset.
 
-> 
-> > I cannot find a chip in the nand_id table which actually sets
-> > onfi_timing_mode_default, but since you introduced the field in the
-> > nand_id table with commit 57a94e24bc92 you can probably tell me more.
-> 
-> Hm, this one [1] is defining timing mode 4.
-> 
-> [1]http://lxr.free-electrons.com/source/drivers/mtd/nand/nand_ids.c#L51
-
-Uh, yes. I'm so glad we have C99 initializers mostly nowadays :)
+Also I have brought back the conversion patch for teh sunxi driver whic
+was part of Boris initial posting. It's untested due to the lack of hardware,
+so please test before applying.
 
 Sascha
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Changes since v1:
+- create a nand_reset() function to create a single place to reset NAND
+  chips and to apply timings
+- Add patch to convert sunxi driver for automated timing setup
+- split into more patches
+
+Changes since the initial posting from Boris:
+
+- Integrate Feedback from Ezequiel Garcia
+- When iterating over the chips calling onfi_set_features() for each
+  bail out when any of the calls fail, not only the last one.
+- When one of the onfi_set_features() calls fail then reset the chipi
+  afterwards.
+- Drop Sunxi example, add patch for the mxc_nand controller instead.
