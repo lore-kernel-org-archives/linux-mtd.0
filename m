@@ -1,23 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bhH48-00027q-EQ
- for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 14:09:38 +0000
-Date: Tue, 6 Sep 2016 16:09:10 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Tue, 6 Sep 2016 16:50:04 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
 Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/7] mtd: nand: Introduce nand_data_interface
-Message-ID: <20160906140910.esm7p4tggik72vzr@pengutronix.de>
+Subject: Re: [PATCH 4/7] mtd: nand: automate NAND timings selection
+Message-ID: <20160906165004.5566fb29@bbrezillon>
+In-Reply-To: <20160906140817.dil5noauumhfbtd3@pengutronix.de>
 References: <1473158355-22451-1-git-send-email-s.hauer@pengutronix.de>
- <1473158355-22451-3-git-send-email-s.hauer@pengutronix.de>
- <20160906132118.17e2e8f8@bbrezillon>
- <20160906133444.7rwncblrgqsfw7ee@pengutronix.de>
- <20160906154622.7ec5f281@bbrezillon>
+ <1473158355-22451-5-git-send-email-s.hauer@pengutronix.de>
+ <20160906135807.29257d00@bbrezillon>
+ <20160906140817.dil5noauumhfbtd3@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160906154622.7ec5f281@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,105 +22,241 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 06, 2016 at 03:46:22PM +0200, Boris Brezillon wrote:
-> On Tue, 6 Sep 2016 15:34:44 +0200
-> Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> 
-> > On Tue, Sep 06, 2016 at 01:21:18PM +0200, Boris Brezillon wrote:
-> > > On Tue,  6 Sep 2016 12:39:10 +0200
-> > > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > >   
-> > > > Currently we have no data structure to fully describe a NAND timing.
-> > > > We only have struct nand_sdr_timings for NAND timings in SDR mode,
-> > > > but nothing for DDR mode and also no container to store both types
-> > > > of timing.
-> > > > This patch adds struct nand_data_interface which stores the timing
-> > > > type and a union of different timings. This can be used to pass to
-> > > > drivers in order to configure the timing.
-> > > > 
-> > > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > > > ---
-> > > >  include/linux/mtd/nand.h | 109 ++++++++++++++++++++++++++---------------------
-> > > >  1 file changed, 60 insertions(+), 49 deletions(-)
-> > > > 
-> > > > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> > > > index 9af9575..19c73ef 100644
-> > > > --- a/include/linux/mtd/nand.h
-> > > > +++ b/include/linux/mtd/nand.h
-> > > > @@ -568,6 +568,66 @@ struct nand_buffers {
-> > > >  	uint8_t *databuf;
-> > > >  };
-> > > >  
-> > > > +/*
-> > > > + * struct nand_sdr_timings - SDR NAND chip timings
-> > > > + *
-> > > > + * This struct defines the timing requirements of a SDR NAND chip.
-> > > > + * These information can be found in every NAND datasheets and the timings
-> > > > + * meaning are described in the ONFI specifications:
-> > > > + * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf (chapter 4.15 Timing
-> > > > + * Parameters)
-> > > > + *
-> > > > + * All these timings are expressed in picoseconds.
-> > > > + */
-> > > > +
-> > > > +struct nand_sdr_timings {
-> > > > +	u32 tALH_min;
-> > > > +	u32 tADL_min;
-> > > > +	u32 tALS_min;
-> > > > +	u32 tAR_min;
-> > > > +	u32 tCEA_max;
-> > > > +	u32 tCEH_min;
-> > > > +	u32 tCH_min;
-> > > > +	u32 tCHZ_max;
-> > > > +	u32 tCLH_min;
-> > > > +	u32 tCLR_min;
-> > > > +	u32 tCLS_min;
-> > > > +	u32 tCOH_min;
-> > > > +	u32 tCS_min;
-> > > > +	u32 tDH_min;
-> > > > +	u32 tDS_min;
-> > > > +	u32 tFEAT_max;
-> > > > +	u32 tIR_min;
-> > > > +	u32 tITC_max;
-> > > > +	u32 tRC_min;
-> > > > +	u32 tREA_max;
-> > > > +	u32 tREH_min;
-> > > > +	u32 tRHOH_min;
-> > > > +	u32 tRHW_min;
-> > > > +	u32 tRHZ_max;
-> > > > +	u32 tRLOH_min;
-> > > > +	u32 tRP_min;
-> > > > +	u32 tRR_min;
-> > > > +	u64 tRST_max;
-> > > > +	u32 tWB_max;
-> > > > +	u32 tWC_min;
-> > > > +	u32 tWH_min;
-> > > > +	u32 tWHR_min;
-> > > > +	u32 tWP_min;
-> > > > +	u32 tWW_min;
-> > > > +};
-> > > > +
-> > > > +enum nand_data_interface_type {
-> > > > +	NAND_SDR_IFACE,
-> > > > +};
-> > > > +  
+On Tue, 6 Sep 2016 16:08:17 +0200
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
+
+> On Tue, Sep 06, 2016 at 01:58:07PM +0200, Boris Brezillon wrote:
+> > On Tue,  6 Sep 2016 12:39:12 +0200
+> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >   
+> > > From: Boris Brezillon <boris.brezillon@free-electrons.com>
 > > > 
-> > > I know this is my code, and I'm the one to blame here, but can you
-> > > document the nand_data_interface fields (kerneldoc format)?  
+> > > The NAND framework provides several helpers to query timing modes supported
+> > > by a NAND chip, but this implies that all NAND controller drivers have
+> > > to implement the same timings selection dance. Also currently NAND
+> > > devices can be resetted at arbitrary places which also resets the timing
+> > > for ONFI chips to timing mode 0.
+> > > 
+> > > Provide a common logic to select the best timings based on ONFI or  
+> > > ->onfi_timing_mode_default information. Hook this into nand_reset()    
+> > > to make sure the new timing is applied each time during a reset.
+> > > 
+> > > NAND controller willing to support timings adjustment should just
+> > > implement the ->setup_data_interface() method.
+> > > 
+> > > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > ---
+> > >  drivers/mtd/nand/nand_base.c | 112 +++++++++++++++++++++++++++++++++++++++++++
+> > >  include/linux/mtd/nand.h     |  14 ++++--
+> > >  2 files changed, 122 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > > index 20151fc..37852e9 100644
+> > > --- a/drivers/mtd/nand/nand_base.c
+> > > +++ b/drivers/mtd/nand/nand_base.c
+> > > @@ -955,8 +955,63 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+> > >   */
+> > >  int nand_reset(struct mtd_info *mtd)
+> > >  {
+> > > +	struct nand_chip *chip = mtd_to_nand(mtd);
+> > > +	int ret;
+> > > +
+> > > +	if (chip->setup_data_interface) {
+> > > +		struct nand_data_interface conf = {
+> > > +			.type = NAND_SDR_IFACE,
+> > > +			.timings.sdr = *onfi_async_timing_mode_to_sdr_timings(0),
+> > > +		};
+> > > +  
 > > 
-> > Sure, can do. Do you know what tCEH is? This one is not documented in
-> > the ONFI spec.
+> > Let's try to avoid putting such a huge structure on the stack.  
 > 
-> Maybe you're not looking at the latest ONFI spec ;). Anyway, I was not
-> asking you to document the nand_sdr_timings fields (pointing to the
-> spec should be enough), just the nand_data_interface ones.
+> I could do that by doing
+> 
+> 	const struct nand_data_interface *conf = onfi_async_timing_mode_to_data_interface(0);
+> 
+> But you just discussed this function away ;)
+> 
+> I need two different timings, first the ONFI timing mode 0 and then the
+> real timing. I wanted to avoid re-initializing the same timing struct
+> instance multiple times (twice in nand_reset() and two times again for
+> each additional chip in an array).
+> 
+> >   
+> > > +		/*
+> > > +		 * The ONFI specification says:
+> > > +		 * "
+> > > +		 * To transition from NV-DDR or NV-DDR2 to the SDR data
+> > > +		 * interface, the host shall use the Reset (FFh) command
+> > > +		 * using SDR timing mode 0. A device in any timing mode is
+> > > +		 * required to recognize Reset (FFh) command issued in SDR
+> > > +		 * timing mode 0.
+> > > +		 * "
+> > > +		 *
+> > > +		 * Configure the data interface in SDR mode and set the
+> > > +		 * timings to timing mode 0.
+> > > +		 */
+> > > +
+> > > +		ret = chip->setup_data_interface(mtd, &conf, false);
+> > > +		if (ret) {
+> > > +			pr_err("Failed to configure data interface to SDR timing mode 0\n");
+> > > +			return ret;
+> > > +		}
+> > > +	}  
+> > 
+> > Can you put this code in a separate function? I'd like to keep the
+> > nand_reset() function as small as possible.
+> > 
+> > How about nand_reset_data_interface()?  
+> 
+> Yes, can do. In that case I would move the test if setting the data
+> interface is supported to that function aswell. Are you okay with that?
 
-I realized that when writing the last mail, but I already added it ;)
+Sure.
 
-Sascha
+> 
+> 
+> >   
+> > > +
+> > >  	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+> > >  
+> > > +	/*
+> > > +	 * Setup the NAND interface (interface type + timings).
+> > > +	 */
+> > > +	if (chip->data_iface) {
+> > > +		uint8_t tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = {
+> > > +			chip->onfi_timing_mode_default,
+> > > +		};
+> > > +
+> > > +		/*
+> > > +		 * Ensure the timing mode has be changed on the chip side  
+> > 					      ^ been  
+> > > +		 * before changing timings on the controller side.
+> > > +		 */
+> > > +		if (chip->onfi_version) {
+> > > +			ret = chip->onfi_set_features(mtd, chip,
+> > > +					ONFI_FEATURE_ADDR_TIMING_MODE,
+> > > +					tmode_param);
+> > > +			if (ret)
+> > > +				return ret;
+> > > +		}
+> > > +
+> > > +		ret = chip->setup_data_interface(mtd, chip->data_iface, false);
+> > > +		if (ret)
+> > > +			return ret;
+> > > +	}
+> > > +  
+> > 
+> > Ditto: nand_setup_data_interface()?
+> >   
+> > >  	return 0;
+> > >  }
+> > >  
+> > > @@ -3335,6 +3390,54 @@ static void nand_onfi_detect_micron(struct nand_chip *chip,
+> > >  	chip->setup_read_retry = nand_setup_read_retry_micron;
+> > >  }
+> > >  
+> > > +/**
+> > > + * nand_find_data_interface - Find the best data interface and timings
+> > > + * @mtd: MTD device structure
+> > > + *
+> > > + * Try to find the best data interface and NAND timings supported by the
+> > > + * chip and the driver.
+> > > + * First tries to retrieve supported timing modes from ONFI information,
+> > > + * and if the NAND chip does not support ONFI, relies on the
+> > > + * ->onfi_timing_mode_default specified in the nand_ids table.
+> > > + *
+> > > + * Returns 0 for success or negative error code otherwise.
+> > > + */
+> > > +static int nand_find_data_interface(struct mtd_info *mtd)  
+> > 
+> > How about nand_init_data_interface() or nand_init_data_iface_config()?
+> >   
+> > > +{
+> > > +	struct nand_chip *chip = mtd_to_nand(mtd);
+> > > +	int modes, mode, ret;
+> > > +	const struct nand_data_interface *conf;
+> > > +
+> > > +	/*
+> > > +	 * First try to identify the best timings from ONFI parameters and
+> > > +	 * if the NAND does not support ONFI, fallback to the default ONFI
+> > > +	 * timing mode.
+> > > +	 */
+> > > +	modes = onfi_get_async_timing_mode(chip);
+> > > +	if (modes == ONFI_TIMING_MODE_UNKNOWN)
+> > > +		modes = GENMASK(chip->onfi_timing_mode_default, 0);
+> > > +
+> > > +	ret = -EINVAL;
+> > > +	for (mode = fls(modes) - 1; mode >= 0; mode--) {
+> > > +		conf = onfi_async_timing_mode_to_data_interface(mode);  
+> > 
+> > I'd still prefer to have conf allocated at the beginning of the
+> > function and timings copied from
+> > onfi_async_timing_mode_to_sdr_timings(mode), but maybe you can convince
+> > me otherwise.  
+> 
+> Let me ask the other way round: If we need struct nand_data_interface to
+> fully describe a timing, why don't we keep an array of these in the
+> kernel? Having an array of struct nand_sdr_timings() means we always
+> have to copy it to a bigger struct to make it usable.
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Actually, the plan is to let vendor specific code tweak the timings if
+needed.
+Some NANDs that do not support ONFI have to pick timing mode 0 because
+one of their timing is not matching the ONFI spec. I'd like to let
+the door to fined-grained timing tweaking open, and this is only
+possible if the chip has its own nand_data_interface object (not the
+const one defined in nand_timings.c).
+
+Also note that some timings are not statically defined (like tPROG),
+and are extracted from another ONFI field, and I'd like to add them to
+the nand_sdr_timings struct, which again, is only possible if the
+nand_chip has its own nand_data_interface instance.
+
+> 
+> > > @@ -759,6 +759,10 @@ struct nand_chip {
+> > >  	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
+> > >  			int feature_addr, uint8_t *subfeature_para);
+> > >  	int (*setup_read_retry)(struct mtd_info *mtd, int retry_mode);
+> > > +	int (*setup_data_interface)(struct mtd_info *mtd,
+> > > +				    const struct nand_data_interface *conf,
+> > > +				    bool check_only);
+> > > +
+> > >  
+> > >  	int chip_delay;
+> > >  	unsigned int options;
+> > > @@ -788,6 +792,8 @@ struct nand_chip {
+> > >  		struct nand_jedec_params jedec_params;
+> > >  	};
+> > >  
+> > > +	const struct nand_data_interface *data_iface;
+> > > +  
+> > 
+> > How about making this field non-const so that you only allocate it once
+> > and modify it when you switch from one mode to another.  
+> 
+> As said above, I need two different timings. If we modify this
+> nand_data_interface instance twice during reset there's not much point
+> in storing it in struct nand_chip at all. That was one variant I tried:
+> Always calculcate the timing from the supported ONFI modes when we need
+> it in nand_reset(). I stepped away from this variant because of the
+> overhead.
+
+Yes, your device will be configured twice (first mode 0, then the
+highest supported timing mode), but that does not mean you need to have
+2 instances of nand_data_interface.
+
+->data_iface should always be assigned to the current data interface
+config. If you reset the chip and go back to timing 0, then
+chip->data_iface should be set to sdr mode timing zero, and once a
+new timing mode is applied, it should be updated.
+
+And yes, there's a small overhead (copying the nand_sdr_timings data
+twice), but I'm pretty sure it's negligible compared to the whole NAND
+chip init overhead.
+And it's not like nand_reset() is called so regularly that it's useful
+to optimize this kind of things.
+
+> 
+> Sascha
+> 
