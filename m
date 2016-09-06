@@ -1,19 +1,18 @@
-Date: Tue, 6 Sep 2016 17:15:46 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/7] mtd: nand: automate NAND timings selection
-Message-ID: <20160906171546.1c0e2a51@bbrezillon>
-In-Reply-To: <20160906150458.hg32bkozupz3mvhu@pengutronix.de>
-References: <1473158355-22451-1-git-send-email-s.hauer@pengutronix.de>
- <1473158355-22451-5-git-send-email-s.hauer@pengutronix.de>
- <20160906135807.29257d00@bbrezillon>
- <20160906140817.dil5noauumhfbtd3@pengutronix.de>
- <20160906165004.5566fb29@bbrezillon>
- <20160906150458.hg32bkozupz3mvhu@pengutronix.de>
+Received: from mail-cys01nam02on0085.outbound.protection.outlook.com
+ ([104.47.37.85] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bhIHz-0005Hb-5m
+ for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 15:27:59 +0000
+Subject: Re: [PATCH] mtd-utils: Support jffs2 flash-erase for large OOB (>32b)
+To: Manikandan Ramachandran <crmanik@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+References: <1438886294.23233.6.camel@mramach3-lnx001>
+From: Graham Moore <grmoore@opensource.altera.com>
+Message-ID: <40ec1dc1-210a-77fb-89d5-779b930c3764@opensource.altera.com>
+Date: Tue, 6 Sep 2016 10:22:02 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1438886294.23233.6.camel@mramach3-lnx001>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,114 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 6 Sep 2016 17:04:58 +0200
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+On 08/06/2015 01:38 PM, Manikandan Ramachandran wrote:
+> "flash_erase" fails on nand flash with JFFS2 that has OOB size greater than
+> 32 bytes. "flash_erase" uses "MEMGETOOSEL" to determine OOB size. This ioctl
+> call is obsolete and returns error if OOB size is more than 32 bytes.
+>
+> This patch fixes this issue by using "mtd_write" to update clean-marker
+> instead of mtd_oob_write. This fix is based on the discussion:
+> http://lists.infradead.org/pipermail/linux-mtd/2011-September/037958.html.
+>
 
+Hi Manikandan,
 
-> > > >     
-> > > > > +{
-> > > > > +	struct nand_chip *chip = mtd_to_nand(mtd);
-> > > > > +	int modes, mode, ret;
-> > > > > +	const struct nand_data_interface *conf;
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * First try to identify the best timings from ONFI parameters and
-> > > > > +	 * if the NAND does not support ONFI, fallback to the default ONFI
-> > > > > +	 * timing mode.
-> > > > > +	 */
-> > > > > +	modes = onfi_get_async_timing_mode(chip);
-> > > > > +	if (modes == ONFI_TIMING_MODE_UNKNOWN)
-> > > > > +		modes = GENMASK(chip->onfi_timing_mode_default, 0);
-> > > > > +
-> > > > > +	ret = -EINVAL;
-> > > > > +	for (mode = fls(modes) - 1; mode >= 0; mode--) {
-> > > > > +		conf = onfi_async_timing_mode_to_data_interface(mode);    
-> > > > 
-> > > > I'd still prefer to have conf allocated at the beginning of the
-> > > > function and timings copied from
-> > > > onfi_async_timing_mode_to_sdr_timings(mode), but maybe you can convince
-> > > > me otherwise.    
-> > > 
-> > > Let me ask the other way round: If we need struct nand_data_interface to
-> > > fully describe a timing, why don't we keep an array of these in the
-> > > kernel? Having an array of struct nand_sdr_timings() means we always
-> > > have to copy it to a bigger struct to make it usable.  
-> > 
-> > Actually, the plan is to let vendor specific code tweak the timings if
-> > needed.
-> > Some NANDs that do not support ONFI have to pick timing mode 0 because
-> > one of their timing is not matching the ONFI spec. I'd like to let
-> > the door to fined-grained timing tweaking open, and this is only
-> > possible if the chip has its own nand_data_interface object (not the
-> > const one defined in nand_timings.c).
-> > 
-> > Also note that some timings are not statically defined (like tPROG),
-> > and are extracted from another ONFI field, and I'd like to add them to
-> > the nand_sdr_timings struct, which again, is only possible if the
-> > nand_chip has its own nand_data_interface instance.  
-> 
-> Hm, in the current series the nand_chip has it's own nand_data_interface
-> instance, it's allocated in nand_find_data_interface().
+I'd like to use this patch in our Angstrom/Yocto builds, but our company 
+policy doesn't allow patches that aren't signed off.
 
-Yes, but I thought you were suggesting to drop the allocation and
-directly point to the static declaration returned by
-onfi_async_timing_mode_to_data_interface().
+I wonder if you could re-post this with your sign-off?  I'd really 
+appreciate it.
 
-> 
-> >   
-> > >   
-> > > > > @@ -759,6 +759,10 @@ struct nand_chip {
-> > > > >  	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
-> > > > >  			int feature_addr, uint8_t *subfeature_para);
-> > > > >  	int (*setup_read_retry)(struct mtd_info *mtd, int retry_mode);
-> > > > > +	int (*setup_data_interface)(struct mtd_info *mtd,
-> > > > > +				    const struct nand_data_interface *conf,
-> > > > > +				    bool check_only);
-> > > > > +
-> > > > >  
-> > > > >  	int chip_delay;
-> > > > >  	unsigned int options;
-> > > > > @@ -788,6 +792,8 @@ struct nand_chip {
-> > > > >  		struct nand_jedec_params jedec_params;
-> > > > >  	};
-> > > > >  
-> > > > > +	const struct nand_data_interface *data_iface;
-> > > > > +    
-> > > > 
-> > > > How about making this field non-const so that you only allocate it once
-> > > > and modify it when you switch from one mode to another.    
-> > > 
-> > > As said above, I need two different timings. If we modify this
-> > > nand_data_interface instance twice during reset there's not much point
-> > > in storing it in struct nand_chip at all. That was one variant I tried:
-> > > Always calculcate the timing from the supported ONFI modes when we need
-> > > it in nand_reset(). I stepped away from this variant because of the
-> > > overhead.  
-> > 
-> > Yes, your device will be configured twice (first mode 0, then the
-> > highest supported timing mode), but that does not mean you need to have
-> > 2 instances of nand_data_interface.
-> >   
-> > ->data_iface should always be assigned to the current data interface  
-> > config. If you reset the chip and go back to timing 0, then
-> > chip->data_iface should be set to sdr mode timing zero, and once a
-> > new timing mode is applied, it should be updated.
-> > 
-> > And yes, there's a small overhead (copying the nand_sdr_timings data
-> > twice), but I'm pretty sure it's negligible compared to the whole NAND
-> > chip init overhead.
-> > And it's not like nand_reset() is called so regularly that it's useful
-> > to optimize this kind of things.  
-> 
-> I haven't really thought about overhead in terms of burnt CPU cycles but
-> more about how easy it is to follow the code.
-
-Ok.
-
-> Anyway, I do as you wish, expect a new series tomorrow ;)
-
-Let's see how it looks like.
-
-Thanks,
-
-Boris
+Thanks!
+Graham Moore
