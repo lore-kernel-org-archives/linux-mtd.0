@@ -1,13 +1,13 @@
-Date: Tue, 6 Sep 2016 13:18:51 +0200
+Date: Tue, 6 Sep 2016 13:21:18 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Sascha Hauer <s.hauer@pengutronix.de>
 Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/7] mtd: nand: Create a NAND reset function
-Message-ID: <20160906131851.34fa77a9@bbrezillon>
-In-Reply-To: <1473158355-22451-2-git-send-email-s.hauer@pengutronix.de>
+Subject: Re: [PATCH 2/7] mtd: nand: Introduce nand_data_interface
+Message-ID: <20160906132118.17e2e8f8@bbrezillon>
+In-Reply-To: <1473158355-22451-3-git-send-email-s.hauer@pengutronix.de>
 References: <1473158355-22451-1-git-send-email-s.hauer@pengutronix.de>
- <1473158355-22451-2-git-send-email-s.hauer@pengutronix.de>
+ <1473158355-22451-3-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -20,111 +20,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  6 Sep 2016 12:39:09 +0200
+On Tue,  6 Sep 2016 12:39:10 +0200
 Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-> When NAND devices are resetted some initialization may have to be done,
-> like for example they have to be configured for the timing mode that
-> shall be used. To get a common place where this initialization can be
-> implemented create a nand_reset() function. This currently only issues
-> a NAND_CMD_RESET to the NAND device. The places issuing this command
-> manually are replaced with a call to nand_reset().
+> Currently we have no data structure to fully describe a NAND timing.
+> We only have struct nand_sdr_timings for NAND timings in SDR mode,
+> but nothing for DDR mode and also no container to store both types
+> of timing.
+> This patch adds struct nand_data_interface which stores the timing
+> type and a union of different timings. This can be used to pass to
+> drivers in order to configure the timing.
 > 
 > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
->  drivers/mtd/nand/nand_base.c | 23 ++++++++++++++++++-----
->  include/linux/mtd/nand.h     |  3 +++
->  2 files changed, 21 insertions(+), 5 deletions(-)
+>  include/linux/mtd/nand.h | 109 ++++++++++++++++++++++++++---------------------
+>  1 file changed, 60 insertions(+), 49 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 77533f7..20151fc 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -948,6 +948,19 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
->  }
->  
->  /**
-> + * nand_reset - Reset and initialize a NAND device
-> + * @mtd: mtd info
-> + *
-> + * Returns 0 for success or negative error code otherwise
-> + */
-> +int nand_reset(struct mtd_info *mtd)
-
-Can we pass a struct nand_chip * here?
-
-> +{
-> +	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-
-You miss the chip variable.
-
-> +
-> +	return 0;
-> +}
-> +
-> +/**
->   * __nand_unlock - [REPLACEABLE] unlocks specified locked blocks
->   * @mtd: mtd info
->   * @ofs: offset to start unlock from
-> @@ -1025,7 +1038,7 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  	 * some operation can also clear the bit 7 of status register
->  	 * eg. erase/program a locked block
->  	 */
-> -	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> +	nand_reset(mtd);
->  
->  	/* Check, if it is write protected */
->  	if (nand_check_wp(mtd)) {
-> @@ -1084,7 +1097,7 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  	 * some operation can also clear the bit 7 of status register
->  	 * eg. erase/program a locked block
->  	 */
-> -	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> +	nand_reset(mtd);
->  
->  	/* Check, if it is write protected */
->  	if (nand_check_wp(mtd)) {
-> @@ -2788,7 +2801,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
->  	 * if we don't do this. I have no clue why, but I seem to have 'fixed'
->  	 * it in the doc2000 driver in August 1999.  dwmw2.
->  	 */
-> -	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> +	nand_reset(mtd);
->  
->  	/* Check, if it is write protected */
->  	if (nand_check_wp(mtd)) {
-> @@ -3829,7 +3842,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
->  	 * Reset the chip, required by some chips (e.g. Micron MT29FxGxxxxx)
->  	 * after power-up.
->  	 */
-> -	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> +	nand_reset(mtd);
->  
->  	/* Send the command for reading device ID */
->  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
-> @@ -4161,7 +4174,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
->  	for (i = 1; i < maxchips; i++) {
->  		chip->select_chip(mtd, i);
->  		/* See comment in nand_get_flash_type for reset */
-> -		chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> +		nand_reset(mtd);
->  		/* Send the command for reading device ID */
->  		chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
->  		/* Read manufacturer and device IDs */
 > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 8dd6e01..9af9575 100644
+> index 9af9575..19c73ef 100644
 > --- a/include/linux/mtd/nand.h
 > +++ b/include/linux/mtd/nand.h
-> @@ -50,6 +50,9 @@ extern int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
->  /* unlocks specified locked blocks */
->  extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+> @@ -568,6 +568,66 @@ struct nand_buffers {
+>  	uint8_t *databuf;
+>  };
 >  
-> +/* Reset and initialize a NAND device */
-> +extern int nand_reset(struct mtd_info *mtd);
-
-The extern keyword is not needed here.
-
+> +/*
+> + * struct nand_sdr_timings - SDR NAND chip timings
+> + *
+> + * This struct defines the timing requirements of a SDR NAND chip.
+> + * These information can be found in every NAND datasheets and the timings
+> + * meaning are described in the ONFI specifications:
+> + * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf (chapter 4.15 Timing
+> + * Parameters)
+> + *
+> + * All these timings are expressed in picoseconds.
+> + */
 > +
->  /* The maximum number of NAND chips in an array */
->  #define NAND_MAX_CHIPS		8
+> +struct nand_sdr_timings {
+> +	u32 tALH_min;
+> +	u32 tADL_min;
+> +	u32 tALS_min;
+> +	u32 tAR_min;
+> +	u32 tCEA_max;
+> +	u32 tCEH_min;
+> +	u32 tCH_min;
+> +	u32 tCHZ_max;
+> +	u32 tCLH_min;
+> +	u32 tCLR_min;
+> +	u32 tCLS_min;
+> +	u32 tCOH_min;
+> +	u32 tCS_min;
+> +	u32 tDH_min;
+> +	u32 tDS_min;
+> +	u32 tFEAT_max;
+> +	u32 tIR_min;
+> +	u32 tITC_max;
+> +	u32 tRC_min;
+> +	u32 tREA_max;
+> +	u32 tREH_min;
+> +	u32 tRHOH_min;
+> +	u32 tRHW_min;
+> +	u32 tRHZ_max;
+> +	u32 tRLOH_min;
+> +	u32 tRP_min;
+> +	u32 tRR_min;
+> +	u64 tRST_max;
+> +	u32 tWB_max;
+> +	u32 tWC_min;
+> +	u32 tWH_min;
+> +	u32 tWHR_min;
+> +	u32 tWP_min;
+> +	u32 tWW_min;
+> +};
+> +
+> +enum nand_data_interface_type {
+> +	NAND_SDR_IFACE,
+> +};
+> +
+
+I know this is my code, and I'm the one to blame here, but can you
+document the nand_data_interface fields (kerneldoc format)?
+
+> +struct nand_data_interface {
+> +	enum nand_data_interface_type type;
+> +	union {
+> +		struct nand_sdr_timings sdr;
+> +	} timings;
+> +};
+> +
+>  /**
+>   * struct nand_chip - NAND Private Flash Chip Data
+>   * @mtd:		MTD device registered to the MTD framework
+> @@ -1026,55 +1086,6 @@ static inline int jedec_feature(struct nand_chip *chip)
+>  		: 0;
+>  }
+>  
+> -/*
+> - * struct nand_sdr_timings - SDR NAND chip timings
+> - *
+> - * This struct defines the timing requirements of a SDR NAND chip.
+> - * These informations can be found in every NAND datasheets and the timings
+> - * meaning are described in the ONFI specifications:
+> - * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf (chapter 4.15 Timing
+> - * Parameters)
+> - *
+> - * All these timings are expressed in picoseconds.
+> - */
+> -
+> -struct nand_sdr_timings {
+> -	u32 tALH_min;
+> -	u32 tADL_min;
+> -	u32 tALS_min;
+> -	u32 tAR_min;
+> -	u32 tCEA_max;
+> -	u32 tCEH_min;
+> -	u32 tCH_min;
+> -	u32 tCHZ_max;
+> -	u32 tCLH_min;
+> -	u32 tCLR_min;
+> -	u32 tCLS_min;
+> -	u32 tCOH_min;
+> -	u32 tCS_min;
+> -	u32 tDH_min;
+> -	u32 tDS_min;
+> -	u32 tFEAT_max;
+> -	u32 tIR_min;
+> -	u32 tITC_max;
+> -	u32 tRC_min;
+> -	u32 tREA_max;
+> -	u32 tREH_min;
+> -	u32 tRHOH_min;
+> -	u32 tRHW_min;
+> -	u32 tRHZ_max;
+> -	u32 tRLOH_min;
+> -	u32 tRP_min;
+> -	u32 tRR_min;
+> -	u64 tRST_max;
+> -	u32 tWB_max;
+> -	u32 tWC_min;
+> -	u32 tWH_min;
+> -	u32 tWHR_min;
+> -	u32 tWP_min;
+> -	u32 tWW_min;
+> -};
+> -
+>  /* get timing characteristics from ONFI timing mode. */
+>  const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
 >  
