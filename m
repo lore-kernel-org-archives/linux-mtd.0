@@ -1,26 +1,18 @@
-Received: from mail-oi0-x230.google.com ([2607:f8b0:4003:c06::230])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bhFqP-0000vC-0A
- for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 12:51:19 +0000
-Received: by mail-oi0-x230.google.com with SMTP id m11so161516519oif.1
- for <linux-mtd@lists.infradead.org>; Tue, 06 Sep 2016 05:50:55 -0700 (PDT)
+Date: Tue, 6 Sep 2016 14:52:37 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 6/7] mtd: nand: mxc: implement onfi get/set features
+Message-ID: <20160906145237.0d2c936b@bbrezillon>
+In-Reply-To: <20160906124714.5bidphcpp2oa5yxn@pengutronix.de>
+References: <1473158355-22451-1-git-send-email-s.hauer@pengutronix.de>
+ <1473158355-22451-7-git-send-email-s.hauer@pengutronix.de>
+ <20160906140521.508a2861@bbrezillon>
+ <20160906124714.5bidphcpp2oa5yxn@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <d56ee9a9-5246-a609-b8ca-1c8dee322f46@nod.at>
-References: <58c7c482-9a51-73d1-7694-e1928f3bedb0@gmail.com>
- <d56ee9a9-5246-a609-b8ca-1c8dee322f46@nod.at>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Tue, 6 Sep 2016 14:50:54 +0200
-Message-ID: <CAJfpegt_Rw0O7mmP4scNPObAokwiNGs7m9ez1-tmjndOZDMXBg@mail.gmail.com>
-Subject: Re: overlayfs + ubifs: power cut results in "failed to create
- directory /overlay/work/work (errno: 17); mounting read-only"
-To: Richard Weinberger <richard@nod.at>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- lede-dev@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,79 +22,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 6, 2016 at 1:59 PM, Richard Weinberger <richard@nod.at> wrote:
-> Rafa=C5=82,
->
-> On 06.09.2016 12:46, Rafa=C5=82 Mi=C5=82ecki wrote:
->> Hi,
->>
->> In LEDE/OpenWrt we use UBI with two volumes: "rootfs" and "rootfs_data".=
- With
->> rootfs mounted at / we mount rootfs_data volume at /overlay and then use
->> overlayfs to combine these two.
->>
->> 1) Before:
->> /dev/root on / type squashfs (ro,relatime)
->> /dev/ubi0_1 on /overlay type ubifs (rw,noatime)
->>
->> 2) Mounting overlayfs
->> mount("overlayfs:/overlay", "/mnt", "overlay", MS_NOATIME, "lowerdir=3D/=
-,upperdir=3D/overlay/upper,workdir=3D/overlay/work")
->>
->> 3) After:
->> /dev/root on / type squashfs (ro,relatime)
->> /dev/ubi0_1 on /overlay type ubifs (rw,noatime)
->> overlayfs:/overlay on /mnt type overlay (ro,noatime,lowerdir=3D/,upperdi=
-r=3D/overlay/upper,workdir=3D/overlay/work)
->>
->> It works fine as long as there aren't unexpected power cuts. I can easil=
-y break
->> it in a well-reproducible way by doing:
->> date > bar.txt && rm foo.sh
->> sleep 2s
->> [power cut]
->>
->> On the next boot LEDE/OpenWrt script calls the same mount function but i=
-t
->> results in:
->> [   10.017235] overlayfs: failed to create directory /overlay/work/work =
-(errno: 17); mounting read-only
->>
->> I tracked that error and got a following forward trace for it:
->> ovl_fill_super
->> ovl_workdir_create
->> ovl_cleanup
->> vfs_rmdir
->> ubifs_rmdir
->> check_dir_empty
->>
->> In other words mounting overlayfs fails because ubifs refuses to remove
->> work/work as this directory is not empty. On a clean boot /overlay/work/=
-work is
->> empty and everything works fine but after a power cut I can see
->> /overlay/work/work/#c752f2a8 file.
->>
->> I don't really know anything about overlayfs and its workdir, I just exp=
-ected
->> overlayfs to recover from such situation on its own. FWIW after a power =
-cut and
->> reboot my bar.txt is an empty file and foo.sh still exists.
->>
->> Does it sound like an overlayfs issue to you? Can you think of some way =
-of
->> fixing this?
->
-> overlayfs does not issue a recursive rm on workdir, AFAICT you are suppos=
-ed to cleanup
-> workdir yourself before mounting.
-> Miklos?
+On Tue, 6 Sep 2016 14:47:14 +0200
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-Fixed in 4.8-rc5 by
+> On Tue, Sep 06, 2016 at 02:05:21PM +0200, Boris Brezillon wrote:
+> > On Tue,  6 Sep 2016 12:39:14 +0200
+> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >   
+> > > To be able to support different ONFI timing modes we have to implement
+> > > the onfi_set_features and onfi_get_features. Tested on an i.MX25 SoC.
+> > > 
+> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > ---
+> > >  drivers/mtd/nand/mxc_nand.c | 53 +++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 53 insertions(+)
+> > > 
+> > > diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> > > index 5173fad..1db8299 100644
+> > > --- a/drivers/mtd/nand/mxc_nand.c
+> > > +++ b/drivers/mtd/nand/mxc_nand.c
+> > > @@ -1239,6 +1239,57 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+> > >  	}
+> > >  }
+> > >  
+> > > +static int mxc_nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+> > > +			int addr, uint8_t *subfeature_param)
+> > > +{
+> > > +	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+> > > +	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
+> > > +	int i;
+> > > +
+> > > +	if (!chip->onfi_version ||
+> > > +	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+> > > +	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+> > > +		return -EINVAL;
+> > > +
+> > > +	host->buf_start = 0;
+> > > +
+> > > +	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
+> > > +		chip->write_byte(mtd, subfeature_param[i]);
+> > > +
+> > > +	memcpy32_toio(host->main_area0, host->data_buf, mtd->writesize);
+> > > +	host->devtype_data->send_cmd(host, NAND_CMD_SET_FEATURES, false);
+> > > +	mxc_do_addr_cycle(mtd, addr, -1);
+> > > +	host->devtype_data->send_page(mtd, NFC_INPUT);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int mxc_nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
+> > > +			int addr, uint8_t *subfeature_param)
+> > > +{
+> > > +	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+> > > +	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
+> > > +	int i;
+> > > +
+> > > +	if (!chip->onfi_version ||
+> > > +	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+> > > +	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+> > > +		return -EINVAL;
+> > > +
+> > > +	*(uint32_t *)host->main_area0 = 0xdeadbeef;  
+> 
+> This line should be removed by the way.
+> 
+> > > +
+> > > +	host->devtype_data->send_cmd(host, NAND_CMD_GET_FEATURES, false);
+> > > +	mxc_do_addr_cycle(mtd, addr, -1);
+> > > +	host->devtype_data->send_page(mtd, NFC_OUTPUT);
+> > > +	memcpy32_fromio(host->data_buf, host->main_area0, 512);
+> > > +	host->buf_start = 0;
+> > > +
+> > > +	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
+> > > +		*subfeature_param++ = chip->read_byte(mtd);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > >  /*
+> > >   * The generic flash bbt decriptors overlap with our ecc
+> > >   * hardware, so define some i.MX specific ones.
+> > > @@ -1513,6 +1564,8 @@ static int mxcnd_probe(struct platform_device *pdev)
+> > >  	this->read_word = mxc_nand_read_word;
+> > >  	this->write_buf = mxc_nand_write_buf;
+> > >  	this->read_buf = mxc_nand_read_buf;
+> > > +	this->onfi_set_features = mxc_nand_onfi_set_features;
+> > > +	this->onfi_get_features = mxc_nand_onfi_get_features;  
+> > 
+> > Do you really have to re-implement ->onfi_{set,get}_features()?
+> > How about adding support for this command in your ->cmdfunc()
+> > implementation and relying on the default ->onfi_{set,get}_features()
+> > provided by the core?  
+> 
+> I probably could. The problem is that the generic
+> nand_onfi_set_features() first sends the command then afterwards uses
+> chip->write_byte to actually send the data. This is not how the mxc_nand
+> controller works. On mxc_nand I first need the data before I can issue
+> the command.
+> I could implement it in the ->cmdfunc() like: When NAND_CMD_SET_FEATURES
+> is issued, track that information. Then I have to count how many times
+> ->write_byte() has been called and when I reach  
+> ONFI_SUBFEATURE_PARAM_LEN I have to send the command. While that would
+> probably work I was glad that I could avoid that. It's one of the
+> places where one realizes that the nand core layer is built around the
+> nand controllers of the late nineties.
 
-eea2fb4851e9 ("ovl: proper cleanup of workdir")
-
-I think it's better if kernel does the cleanup, but if it's easier to
-upgrade userspace, then that's a valid workaround.
-
-Thanks,
-Miklos
+Okay. Actually I have some plans for these problems, but let's stick to
+mxc_nand_onfi_{set,get}_features() for now.
