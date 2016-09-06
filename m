@@ -1,13 +1,13 @@
-Date: Tue, 6 Sep 2016 13:21:18 +0200
+Date: Tue, 6 Sep 2016 13:27:08 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Sascha Hauer <s.hauer@pengutronix.de>
 Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/7] mtd: nand: Introduce nand_data_interface
-Message-ID: <20160906132118.17e2e8f8@bbrezillon>
-In-Reply-To: <1473158355-22451-3-git-send-email-s.hauer@pengutronix.de>
+Subject: Re: [PATCH 3/7] mtd: nand: convert ONFI mode into data interface
+Message-ID: <20160906132708.172a6475@bbrezillon>
+In-Reply-To: <1473158355-22451-4-git-send-email-s.hauer@pengutronix.de>
 References: <1473158355-22451-1-git-send-email-s.hauer@pengutronix.de>
- <1473158355-22451-3-git-send-email-s.hauer@pengutronix.de>
+ <1473158355-22451-4-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -20,150 +20,512 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  6 Sep 2016 12:39:10 +0200
+On Tue,  6 Sep 2016 12:39:11 +0200
 Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-> Currently we have no data structure to fully describe a NAND timing.
-> We only have struct nand_sdr_timings for NAND timings in SDR mode,
-> but nothing for DDR mode and also no container to store both types
-> of timing.
-> This patch adds struct nand_data_interface which stores the timing
-> type and a union of different timings. This can be used to pass to
-> drivers in order to configure the timing.
+> struct nand_data_interface is the designated type to pass to
+> the NAND drivers to configure the timing. To simplify this introduce
+> onfi_async_timing_mode_to_data_interface() to convert a ONFI
+> mode into a nand_data_interface.
 > 
 > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
->  include/linux/mtd/nand.h | 109 ++++++++++++++++++++++++++---------------------
->  1 file changed, 60 insertions(+), 49 deletions(-)
+>  drivers/mtd/nand/nand_timings.c | 444 +++++++++++++++++++++-------------------
+>  include/linux/mtd/nand.h        |   2 +
+>  2 files changed, 240 insertions(+), 206 deletions(-)
 > 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 9af9575..19c73ef 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -568,6 +568,66 @@ struct nand_buffers {
->  	uint8_t *databuf;
+> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+> index e81470a..260b074 100644
+> --- a/drivers/mtd/nand/nand_timings.c
+> +++ b/drivers/mtd/nand/nand_timings.c
+> @@ -13,228 +13,246 @@
+>  #include <linux/export.h>
+>  #include <linux/mtd/nand.h>
+>  
+> -static const struct nand_sdr_timings onfi_sdr_timings[] = {
+> +static const struct nand_data_interface onfi_sdr_timings[] = {
+
+Do you have a good reason to turn onfi_sdr_timings into an array of
+struct nand_data_interface?
+
+>  	/* Mode 0 */
+>  	{
+> -		.tADL_min = 200000,
+> -		.tALH_min = 20000,
+> -		.tALS_min = 50000,
+> -		.tAR_min = 25000,
+> -		.tCEA_max = 100000,
+> -		.tCEH_min = 20000,
+> -		.tCH_min = 20000,
+> -		.tCHZ_max = 100000,
+> -		.tCLH_min = 20000,
+> -		.tCLR_min = 20000,
+> -		.tCLS_min = 50000,
+> -		.tCOH_min = 0,
+> -		.tCS_min = 70000,
+> -		.tDH_min = 20000,
+> -		.tDS_min = 40000,
+> -		.tFEAT_max = 1000000,
+> -		.tIR_min = 10000,
+> -		.tITC_max = 1000000,
+> -		.tRC_min = 100000,
+> -		.tREA_max = 40000,
+> -		.tREH_min = 30000,
+> -		.tRHOH_min = 0,
+> -		.tRHW_min = 200000,
+> -		.tRHZ_max = 200000,
+> -		.tRLOH_min = 0,
+> -		.tRP_min = 50000,
+> -		.tRST_max = 250000000000ULL,
+> -		.tWB_max = 200000,
+> -		.tRR_min = 40000,
+> -		.tWC_min = 100000,
+> -		.tWH_min = 30000,
+> -		.tWHR_min = 120000,
+> -		.tWP_min = 50000,
+> -		.tWW_min = 100000,
+> +		.type = NAND_SDR_IFACE,
+> +		.timings.sdr = {
+> +			.tADL_min = 200000,
+> +			.tALH_min = 20000,
+> +			.tALS_min = 50000,
+> +			.tAR_min = 25000,
+> +			.tCEA_max = 100000,
+> +			.tCEH_min = 20000,
+> +			.tCH_min = 20000,
+> +			.tCHZ_max = 100000,
+> +			.tCLH_min = 20000,
+> +			.tCLR_min = 20000,
+> +			.tCLS_min = 50000,
+> +			.tCOH_min = 0,
+> +			.tCS_min = 70000,
+> +			.tDH_min = 20000,
+> +			.tDS_min = 40000,
+> +			.tFEAT_max = 1000000,
+> +			.tIR_min = 10000,
+> +			.tITC_max = 1000000,
+> +			.tRC_min = 100000,
+> +			.tREA_max = 40000,
+> +			.tREH_min = 30000,
+> +			.tRHOH_min = 0,
+> +			.tRHW_min = 200000,
+> +			.tRHZ_max = 200000,
+> +			.tRLOH_min = 0,
+> +			.tRP_min = 50000,
+> +			.tRST_max = 250000000000ULL,
+> +			.tWB_max = 200000,
+> +			.tRR_min = 40000,
+> +			.tWC_min = 100000,
+> +			.tWH_min = 30000,
+> +			.tWHR_min = 120000,
+> +			.tWP_min = 50000,
+> +			.tWW_min = 100000,
+> +		},
+>  	},
+>  	/* Mode 1 */
+>  	{
+> -		.tADL_min = 100000,
+> -		.tALH_min = 10000,
+> -		.tALS_min = 25000,
+> -		.tAR_min = 10000,
+> -		.tCEA_max = 45000,
+> -		.tCEH_min = 20000,
+> -		.tCH_min = 10000,
+> -		.tCHZ_max = 50000,
+> -		.tCLH_min = 10000,
+> -		.tCLR_min = 10000,
+> -		.tCLS_min = 25000,
+> -		.tCOH_min = 15000,
+> -		.tCS_min = 35000,
+> -		.tDH_min = 10000,
+> -		.tDS_min = 20000,
+> -		.tFEAT_max = 1000000,
+> -		.tIR_min = 0,
+> -		.tITC_max = 1000000,
+> -		.tRC_min = 50000,
+> -		.tREA_max = 30000,
+> -		.tREH_min = 15000,
+> -		.tRHOH_min = 15000,
+> -		.tRHW_min = 100000,
+> -		.tRHZ_max = 100000,
+> -		.tRLOH_min = 0,
+> -		.tRP_min = 25000,
+> -		.tRR_min = 20000,
+> -		.tRST_max = 500000000,
+> -		.tWB_max = 100000,
+> -		.tWC_min = 45000,
+> -		.tWH_min = 15000,
+> -		.tWHR_min = 80000,
+> -		.tWP_min = 25000,
+> -		.tWW_min = 100000,
+> +		.type = NAND_SDR_IFACE,
+> +		.timings.sdr = {
+> +			.tADL_min = 100000,
+> +			.tALH_min = 10000,
+> +			.tALS_min = 25000,
+> +			.tAR_min = 10000,
+> +			.tCEA_max = 45000,
+> +			.tCEH_min = 20000,
+> +			.tCH_min = 10000,
+> +			.tCHZ_max = 50000,
+> +			.tCLH_min = 10000,
+> +			.tCLR_min = 10000,
+> +			.tCLS_min = 25000,
+> +			.tCOH_min = 15000,
+> +			.tCS_min = 35000,
+> +			.tDH_min = 10000,
+> +			.tDS_min = 20000,
+> +			.tFEAT_max = 1000000,
+> +			.tIR_min = 0,
+> +			.tITC_max = 1000000,
+> +			.tRC_min = 50000,
+> +			.tREA_max = 30000,
+> +			.tREH_min = 15000,
+> +			.tRHOH_min = 15000,
+> +			.tRHW_min = 100000,
+> +			.tRHZ_max = 100000,
+> +			.tRLOH_min = 0,
+> +			.tRP_min = 25000,
+> +			.tRR_min = 20000,
+> +			.tRST_max = 500000000,
+> +			.tWB_max = 100000,
+> +			.tWC_min = 45000,
+> +			.tWH_min = 15000,
+> +			.tWHR_min = 80000,
+> +			.tWP_min = 25000,
+> +			.tWW_min = 100000,
+> +		},
+>  	},
+>  	/* Mode 2 */
+>  	{
+> -		.tADL_min = 100000,
+> -		.tALH_min = 10000,
+> -		.tALS_min = 15000,
+> -		.tAR_min = 10000,
+> -		.tCEA_max = 30000,
+> -		.tCEH_min = 20000,
+> -		.tCH_min = 10000,
+> -		.tCHZ_max = 50000,
+> -		.tCLH_min = 10000,
+> -		.tCLR_min = 10000,
+> -		.tCLS_min = 15000,
+> -		.tCOH_min = 15000,
+> -		.tCS_min = 25000,
+> -		.tDH_min = 5000,
+> -		.tDS_min = 15000,
+> -		.tFEAT_max = 1000000,
+> -		.tIR_min = 0,
+> -		.tITC_max = 1000000,
+> -		.tRC_min = 35000,
+> -		.tREA_max = 25000,
+> -		.tREH_min = 15000,
+> -		.tRHOH_min = 15000,
+> -		.tRHW_min = 100000,
+> -		.tRHZ_max = 100000,
+> -		.tRLOH_min = 0,
+> -		.tRR_min = 20000,
+> -		.tRST_max = 500000000,
+> -		.tWB_max = 100000,
+> -		.tRP_min = 17000,
+> -		.tWC_min = 35000,
+> -		.tWH_min = 15000,
+> -		.tWHR_min = 80000,
+> -		.tWP_min = 17000,
+> -		.tWW_min = 100000,
+> +		.type = NAND_SDR_IFACE,
+> +		.timings.sdr = {
+> +			.tADL_min = 100000,
+> +			.tALH_min = 10000,
+> +			.tALS_min = 15000,
+> +			.tAR_min = 10000,
+> +			.tCEA_max = 30000,
+> +			.tCEH_min = 20000,
+> +			.tCH_min = 10000,
+> +			.tCHZ_max = 50000,
+> +			.tCLH_min = 10000,
+> +			.tCLR_min = 10000,
+> +			.tCLS_min = 15000,
+> +			.tCOH_min = 15000,
+> +			.tCS_min = 25000,
+> +			.tDH_min = 5000,
+> +			.tDS_min = 15000,
+> +			.tFEAT_max = 1000000,
+> +			.tIR_min = 0,
+> +			.tITC_max = 1000000,
+> +			.tRC_min = 35000,
+> +			.tREA_max = 25000,
+> +			.tREH_min = 15000,
+> +			.tRHOH_min = 15000,
+> +			.tRHW_min = 100000,
+> +			.tRHZ_max = 100000,
+> +			.tRLOH_min = 0,
+> +			.tRR_min = 20000,
+> +			.tRST_max = 500000000,
+> +			.tWB_max = 100000,
+> +			.tRP_min = 17000,
+> +			.tWC_min = 35000,
+> +			.tWH_min = 15000,
+> +			.tWHR_min = 80000,
+> +			.tWP_min = 17000,
+> +			.tWW_min = 100000,
+> +		},
+>  	},
+>  	/* Mode 3 */
+>  	{
+> -		.tADL_min = 100000,
+> -		.tALH_min = 5000,
+> -		.tALS_min = 10000,
+> -		.tAR_min = 10000,
+> -		.tCEA_max = 25000,
+> -		.tCEH_min = 20000,
+> -		.tCH_min = 5000,
+> -		.tCHZ_max = 50000,
+> -		.tCLH_min = 5000,
+> -		.tCLR_min = 10000,
+> -		.tCLS_min = 10000,
+> -		.tCOH_min = 15000,
+> -		.tCS_min = 25000,
+> -		.tDH_min = 5000,
+> -		.tDS_min = 10000,
+> -		.tFEAT_max = 1000000,
+> -		.tIR_min = 0,
+> -		.tITC_max = 1000000,
+> -		.tRC_min = 30000,
+> -		.tREA_max = 20000,
+> -		.tREH_min = 10000,
+> -		.tRHOH_min = 15000,
+> -		.tRHW_min = 100000,
+> -		.tRHZ_max = 100000,
+> -		.tRLOH_min = 0,
+> -		.tRP_min = 15000,
+> -		.tRR_min = 20000,
+> -		.tRST_max = 500000000,
+> -		.tWB_max = 100000,
+> -		.tWC_min = 30000,
+> -		.tWH_min = 10000,
+> -		.tWHR_min = 80000,
+> -		.tWP_min = 15000,
+> -		.tWW_min = 100000,
+> +		.type = NAND_SDR_IFACE,
+> +		.timings.sdr = {
+> +			.tADL_min = 100000,
+> +			.tALH_min = 5000,
+> +			.tALS_min = 10000,
+> +			.tAR_min = 10000,
+> +			.tCEA_max = 25000,
+> +			.tCEH_min = 20000,
+> +			.tCH_min = 5000,
+> +			.tCHZ_max = 50000,
+> +			.tCLH_min = 5000,
+> +			.tCLR_min = 10000,
+> +			.tCLS_min = 10000,
+> +			.tCOH_min = 15000,
+> +			.tCS_min = 25000,
+> +			.tDH_min = 5000,
+> +			.tDS_min = 10000,
+> +			.tFEAT_max = 1000000,
+> +			.tIR_min = 0,
+> +			.tITC_max = 1000000,
+> +			.tRC_min = 30000,
+> +			.tREA_max = 20000,
+> +			.tREH_min = 10000,
+> +			.tRHOH_min = 15000,
+> +			.tRHW_min = 100000,
+> +			.tRHZ_max = 100000,
+> +			.tRLOH_min = 0,
+> +			.tRP_min = 15000,
+> +			.tRR_min = 20000,
+> +			.tRST_max = 500000000,
+> +			.tWB_max = 100000,
+> +			.tWC_min = 30000,
+> +			.tWH_min = 10000,
+> +			.tWHR_min = 80000,
+> +			.tWP_min = 15000,
+> +			.tWW_min = 100000,
+> +		},
+>  	},
+>  	/* Mode 4 */
+>  	{
+> -		.tADL_min = 70000,
+> -		.tALH_min = 5000,
+> -		.tALS_min = 10000,
+> -		.tAR_min = 10000,
+> -		.tCEA_max = 25000,
+> -		.tCEH_min = 20000,
+> -		.tCH_min = 5000,
+> -		.tCHZ_max = 30000,
+> -		.tCLH_min = 5000,
+> -		.tCLR_min = 10000,
+> -		.tCLS_min = 10000,
+> -		.tCOH_min = 15000,
+> -		.tCS_min = 20000,
+> -		.tDH_min = 5000,
+> -		.tDS_min = 10000,
+> -		.tFEAT_max = 1000000,
+> -		.tIR_min = 0,
+> -		.tITC_max = 1000000,
+> -		.tRC_min = 25000,
+> -		.tREA_max = 20000,
+> -		.tREH_min = 10000,
+> -		.tRHOH_min = 15000,
+> -		.tRHW_min = 100000,
+> -		.tRHZ_max = 100000,
+> -		.tRLOH_min = 5000,
+> -		.tRP_min = 12000,
+> -		.tRR_min = 20000,
+> -		.tRST_max = 500000000,
+> -		.tWB_max = 100000,
+> -		.tWC_min = 25000,
+> -		.tWH_min = 10000,
+> -		.tWHR_min = 80000,
+> -		.tWP_min = 12000,
+> -		.tWW_min = 100000,
+> +		.type = NAND_SDR_IFACE,
+> +		.timings.sdr = {
+> +			.tADL_min = 70000,
+> +			.tALH_min = 5000,
+> +			.tALS_min = 10000,
+> +			.tAR_min = 10000,
+> +			.tCEA_max = 25000,
+> +			.tCEH_min = 20000,
+> +			.tCH_min = 5000,
+> +			.tCHZ_max = 30000,
+> +			.tCLH_min = 5000,
+> +			.tCLR_min = 10000,
+> +			.tCLS_min = 10000,
+> +			.tCOH_min = 15000,
+> +			.tCS_min = 20000,
+> +			.tDH_min = 5000,
+> +			.tDS_min = 10000,
+> +			.tFEAT_max = 1000000,
+> +			.tIR_min = 0,
+> +			.tITC_max = 1000000,
+> +			.tRC_min = 25000,
+> +			.tREA_max = 20000,
+> +			.tREH_min = 10000,
+> +			.tRHOH_min = 15000,
+> +			.tRHW_min = 100000,
+> +			.tRHZ_max = 100000,
+> +			.tRLOH_min = 5000,
+> +			.tRP_min = 12000,
+> +			.tRR_min = 20000,
+> +			.tRST_max = 500000000,
+> +			.tWB_max = 100000,
+> +			.tWC_min = 25000,
+> +			.tWH_min = 10000,
+> +			.tWHR_min = 80000,
+> +			.tWP_min = 12000,
+> +			.tWW_min = 100000,
+> +		},
+>  	},
+>  	/* Mode 5 */
+>  	{
+> -		.tADL_min = 70000,
+> -		.tALH_min = 5000,
+> -		.tALS_min = 10000,
+> -		.tAR_min = 10000,
+> -		.tCEA_max = 25000,
+> -		.tCEH_min = 20000,
+> -		.tCH_min = 5000,
+> -		.tCHZ_max = 30000,
+> -		.tCLH_min = 5000,
+> -		.tCLR_min = 10000,
+> -		.tCLS_min = 10000,
+> -		.tCOH_min = 15000,
+> -		.tCS_min = 15000,
+> -		.tDH_min = 5000,
+> -		.tDS_min = 7000,
+> -		.tFEAT_max = 1000000,
+> -		.tIR_min = 0,
+> -		.tITC_max = 1000000,
+> -		.tRC_min = 20000,
+> -		.tREA_max = 16000,
+> -		.tREH_min = 7000,
+> -		.tRHOH_min = 15000,
+> -		.tRHW_min = 100000,
+> -		.tRHZ_max = 100000,
+> -		.tRLOH_min = 5000,
+> -		.tRP_min = 10000,
+> -		.tRR_min = 20000,
+> -		.tRST_max = 500000000,
+> -		.tWB_max = 100000,
+> -		.tWC_min = 20000,
+> -		.tWH_min = 7000,
+> -		.tWHR_min = 80000,
+> -		.tWP_min = 10000,
+> -		.tWW_min = 100000,
+> +		.type = NAND_SDR_IFACE,
+> +		.timings.sdr = {
+> +			.tADL_min = 70000,
+> +			.tALH_min = 5000,
+> +			.tALS_min = 10000,
+> +			.tAR_min = 10000,
+> +			.tCEA_max = 25000,
+> +			.tCEH_min = 20000,
+> +			.tCH_min = 5000,
+> +			.tCHZ_max = 30000,
+> +			.tCLH_min = 5000,
+> +			.tCLR_min = 10000,
+> +			.tCLS_min = 10000,
+> +			.tCOH_min = 15000,
+> +			.tCS_min = 15000,
+> +			.tDH_min = 5000,
+> +			.tDS_min = 7000,
+> +			.tFEAT_max = 1000000,
+> +			.tIR_min = 0,
+> +			.tITC_max = 1000000,
+> +			.tRC_min = 20000,
+> +			.tREA_max = 16000,
+> +			.tREH_min = 7000,
+> +			.tRHOH_min = 15000,
+> +			.tRHW_min = 100000,
+> +			.tRHZ_max = 100000,
+> +			.tRLOH_min = 5000,
+> +			.tRP_min = 10000,
+> +			.tRR_min = 20000,
+> +			.tRST_max = 500000000,
+> +			.tWB_max = 100000,
+> +			.tWC_min = 20000,
+> +			.tWH_min = 7000,
+> +			.tWHR_min = 80000,
+> +			.tWP_min = 10000,
+> +			.tWW_min = 100000,
+> +		},
+>  	},
 >  };
 >  
-> +/*
-> + * struct nand_sdr_timings - SDR NAND chip timings
-> + *
-> + * This struct defines the timing requirements of a SDR NAND chip.
-> + * These information can be found in every NAND datasheets and the timings
-> + * meaning are described in the ONFI specifications:
-> + * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf (chapter 4.15 Timing
-> + * Parameters)
-> + *
-> + * All these timings are expressed in picoseconds.
-> + */
-> +
-> +struct nand_sdr_timings {
-> +	u32 tALH_min;
-> +	u32 tADL_min;
-> +	u32 tALS_min;
-> +	u32 tAR_min;
-> +	u32 tCEA_max;
-> +	u32 tCEH_min;
-> +	u32 tCH_min;
-> +	u32 tCHZ_max;
-> +	u32 tCLH_min;
-> +	u32 tCLR_min;
-> +	u32 tCLS_min;
-> +	u32 tCOH_min;
-> +	u32 tCS_min;
-> +	u32 tDH_min;
-> +	u32 tDS_min;
-> +	u32 tFEAT_max;
-> +	u32 tIR_min;
-> +	u32 tITC_max;
-> +	u32 tRC_min;
-> +	u32 tREA_max;
-> +	u32 tREH_min;
-> +	u32 tRHOH_min;
-> +	u32 tRHW_min;
-> +	u32 tRHZ_max;
-> +	u32 tRLOH_min;
-> +	u32 tRP_min;
-> +	u32 tRR_min;
-> +	u64 tRST_max;
-> +	u32 tWB_max;
-> +	u32 tWC_min;
-> +	u32 tWH_min;
-> +	u32 tWHR_min;
-> +	u32 tWP_min;
-> +	u32 tWW_min;
-> +};
-> +
-> +enum nand_data_interface_type {
-> +	NAND_SDR_IFACE,
-> +};
-> +
-
-I know this is my code, and I'm the one to blame here, but can you
-document the nand_data_interface fields (kerneldoc format)?
-
-> +struct nand_data_interface {
-> +	enum nand_data_interface_type type;
-> +	union {
-> +		struct nand_sdr_timings sdr;
-> +	} timings;
-> +};
-> +
->  /**
->   * struct nand_chip - NAND Private Flash Chip Data
->   * @mtd:		MTD device registered to the MTD framework
-> @@ -1026,55 +1086,6 @@ static inline int jedec_feature(struct nand_chip *chip)
->  		: 0;
->  }
+> @@ -248,6 +266,20 @@ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode)
+>  	if (mode < 0 || mode >= ARRAY_SIZE(onfi_sdr_timings))
+>  		return ERR_PTR(-EINVAL);
 >  
-> -/*
-> - * struct nand_sdr_timings - SDR NAND chip timings
-> - *
-> - * This struct defines the timing requirements of a SDR NAND chip.
-> - * These informations can be found in every NAND datasheets and the timings
-> - * meaning are described in the ONFI specifications:
-> - * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf (chapter 4.15 Timing
-> - * Parameters)
-> - *
-> - * All these timings are expressed in picoseconds.
-> - */
-> -
-> -struct nand_sdr_timings {
-> -	u32 tALH_min;
-> -	u32 tADL_min;
-> -	u32 tALS_min;
-> -	u32 tAR_min;
-> -	u32 tCEA_max;
-> -	u32 tCEH_min;
-> -	u32 tCH_min;
-> -	u32 tCHZ_max;
-> -	u32 tCLH_min;
-> -	u32 tCLR_min;
-> -	u32 tCLS_min;
-> -	u32 tCOH_min;
-> -	u32 tCS_min;
-> -	u32 tDH_min;
-> -	u32 tDS_min;
-> -	u32 tFEAT_max;
-> -	u32 tIR_min;
-> -	u32 tITC_max;
-> -	u32 tRC_min;
-> -	u32 tREA_max;
-> -	u32 tREH_min;
-> -	u32 tRHOH_min;
-> -	u32 tRHW_min;
-> -	u32 tRHZ_max;
-> -	u32 tRLOH_min;
-> -	u32 tRP_min;
-> -	u32 tRR_min;
-> -	u64 tRST_max;
-> -	u32 tWB_max;
-> -	u32 tWC_min;
-> -	u32 tWH_min;
-> -	u32 tWHR_min;
-> -	u32 tWP_min;
-> -	u32 tWW_min;
-> -};
-> -
+> -	return &onfi_sdr_timings[mode];
+> +	return &onfi_sdr_timings[mode].timings.sdr;
+>  }
+>  EXPORT_SYMBOL(onfi_async_timing_mode_to_sdr_timings);
+> +
+> +/**
+> + * onfi_async_timing_mode_to_data_interface - [NAND Interface] Retrieve NAND
+> + * data interface according to the given ONFI timing mode
+> + * @mode: ONFI timing mode
+> + */
+> +const struct nand_data_interface *onfi_async_timing_mode_to_data_interface(int mode)
+> +{
+> +	if (mode < 0 || mode >= ARRAY_SIZE(onfi_sdr_timings))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	return &onfi_sdr_timings[mode];
+> +}
+> +EXPORT_SYMBOL(onfi_async_timing_mode_to_data_interface);
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 19c73ef..a8bdf6c 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -1088,6 +1088,8 @@ static inline int jedec_feature(struct nand_chip *chip)
+>  
 >  /* get timing characteristics from ONFI timing mode. */
 >  const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
+> +/* get data interface from ONFI timing mode. */
+> +const struct nand_data_interface *onfi_async_timing_mode_to_data_interface(int mode);
 >  
+>  int nand_check_erased_ecc_chunk(void *data, int datalen,
+>  				void *ecc, int ecclen,
