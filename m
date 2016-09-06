@@ -1,22 +1,21 @@
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bhG1p-0008VT-NU
+ for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 13:03:14 +0000
+Date: Tue, 6 Sep 2016 15:02:43 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/7] mtd: nand: Create a NAND reset function
+Message-ID: <20160906130243.33si26g2jy54grvx@pengutronix.de>
+References: <1473158355-22451-1-git-send-email-s.hauer@pengutronix.de>
+ <1473158355-22451-2-git-send-email-s.hauer@pengutronix.de>
+ <20160906131851.34fa77a9@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <CAJfpegt_Rw0O7mmP4scNPObAokwiNGs7m9ez1-tmjndOZDMXBg@mail.gmail.com>
-References: <58c7c482-9a51-73d1-7694-e1928f3bedb0@gmail.com>
- <d56ee9a9-5246-a609-b8ca-1c8dee322f46@nod.at>
- <CAJfpegt_Rw0O7mmP4scNPObAokwiNGs7m9ez1-tmjndOZDMXBg@mail.gmail.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Tue, 6 Sep 2016 14:56:44 +0200
-Message-ID: <CACna6rzJi37CYg86YgT+age8ebWX6BtpoEbz7uM18-QiWFvDxQ@mail.gmail.com>
-Subject: Re: overlayfs + ubifs: power cut results in "failed to create
- directory /overlay/work/work (errno: 17); mounting read-only"
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LEDE Development List <lede-dev@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160906131851.34fa77a9@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,95 +25,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6 September 2016 at 14:50, Miklos Szeredi <miklos@szeredi.hu> wrote:
-> On Tue, Sep 6, 2016 at 1:59 PM, Richard Weinberger <richard@nod.at> wrote=
-:
->> Rafa=C5=82,
->>
->> On 06.09.2016 12:46, Rafa=C5=82 Mi=C5=82ecki wrote:
->>> Hi,
->>>
->>> In LEDE/OpenWrt we use UBI with two volumes: "rootfs" and "rootfs_data"=
-. With
->>> rootfs mounted at / we mount rootfs_data volume at /overlay and then us=
-e
->>> overlayfs to combine these two.
->>>
->>> 1) Before:
->>> /dev/root on / type squashfs (ro,relatime)
->>> /dev/ubi0_1 on /overlay type ubifs (rw,noatime)
->>>
->>> 2) Mounting overlayfs
->>> mount("overlayfs:/overlay", "/mnt", "overlay", MS_NOATIME, "lowerdir=3D=
-/,upperdir=3D/overlay/upper,workdir=3D/overlay/work")
->>>
->>> 3) After:
->>> /dev/root on / type squashfs (ro,relatime)
->>> /dev/ubi0_1 on /overlay type ubifs (rw,noatime)
->>> overlayfs:/overlay on /mnt type overlay (ro,noatime,lowerdir=3D/,upperd=
-ir=3D/overlay/upper,workdir=3D/overlay/work)
->>>
->>> It works fine as long as there aren't unexpected power cuts. I can easi=
-ly break
->>> it in a well-reproducible way by doing:
->>> date > bar.txt && rm foo.sh
->>> sleep 2s
->>> [power cut]
->>>
->>> On the next boot LEDE/OpenWrt script calls the same mount function but =
-it
->>> results in:
->>> [   10.017235] overlayfs: failed to create directory /overlay/work/work=
- (errno: 17); mounting read-only
->>>
->>> I tracked that error and got a following forward trace for it:
->>> ovl_fill_super
->>> ovl_workdir_create
->>> ovl_cleanup
->>> vfs_rmdir
->>> ubifs_rmdir
->>> check_dir_empty
->>>
->>> In other words mounting overlayfs fails because ubifs refuses to remove
->>> work/work as this directory is not empty. On a clean boot /overlay/work=
-/work is
->>> empty and everything works fine but after a power cut I can see
->>> /overlay/work/work/#c752f2a8 file.
->>>
->>> I don't really know anything about overlayfs and its workdir, I just ex=
-pected
->>> overlayfs to recover from such situation on its own. FWIW after a power=
- cut and
->>> reboot my bar.txt is an empty file and foo.sh still exists.
->>>
->>> Does it sound like an overlayfs issue to you? Can you think of some way=
- of
->>> fixing this?
->>
->> overlayfs does not issue a recursive rm on workdir, AFAICT you are suppo=
-sed to cleanup
->> workdir yourself before mounting.
->> Miklos?
->
-> Fixed in 4.8-rc5 by
->
-> eea2fb4851e9 ("ovl: proper cleanup of workdir")
->
-> I think it's better if kernel does the cleanup, but if it's easier to
-> upgrade userspace, then that's a valid workaround.
+On Tue, Sep 06, 2016 at 01:18:51PM +0200, Boris Brezillon wrote:
+> On Tue,  6 Sep 2016 12:39:09 +0200
+> Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> 
+> > When NAND devices are resetted some initialization may have to be done,
+> > like for example they have to be configured for the timing mode that
+> > shall be used. To get a common place where this initialization can be
+> > implemented create a nand_reset() function. This currently only issues
+> > a NAND_CMD_RESET to the NAND device. The places issuing this command
+> > manually are replaced with a call to nand_reset().
+> > 
+> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > ---
+> >  drivers/mtd/nand/nand_base.c | 23 ++++++++++++++++++-----
+> >  include/linux/mtd/nand.h     |  3 +++
+> >  2 files changed, 21 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index 77533f7..20151fc 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -948,6 +948,19 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+> >  }
+> >  
+> >  /**
+> > + * nand_reset - Reset and initialize a NAND device
+> > + * @mtd: mtd info
+> > + *
+> > + * Returns 0 for success or negative error code otherwise
+> > + */
+> > +int nand_reset(struct mtd_info *mtd)
+> 
+> Can we pass a struct nand_chip * here?
 
-Oh, this should solve my problem! It seems it didn't git stable
-kernels yet, but I can backport it on my own for now.
+Instead of or additionally to truct mtd_info *? One should be enough,
+although most functions take both.
 
-Thanks!
+> 
+> > +{
+> > +	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+> 
+> You miss the chip variable.
 
-P.S.
-Interesting part:
-> While this has never been reported, it is possible to get a non-empty
-> "work" dir from a previous mount of overlayfs in case of crash in the
-> middle of an operation using the work directory.
-Funny to hit never-reported problem right after someone (Miklos) fixed it ;=
-)
+Yeah, the missing hunk is probably in one of the other patches ;) Will
+fix.
 
---=20
-Rafa=C5=82
+> >  extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+> >  
+> > +/* Reset and initialize a NAND device */
+> > +extern int nand_reset(struct mtd_info *mtd);
+> 
+> The extern keyword is not needed here.
+
+Nope, just added it because the other functions have it aswell. Do we care
+to remove the extern from the other function declarations?
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
