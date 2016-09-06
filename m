@@ -1,19 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bh16k-0005yE-P8
- for linux-mtd@lists.infradead.org; Mon, 05 Sep 2016 21:07:11 +0000
-Date: Mon, 5 Sep 2016 23:06:39 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Received: from mail-out.m-online.net ([212.18.0.10])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bh88n-0008IC-4V
+ for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 04:37:46 +0000
+Reply-To: hs@denx.de
+Subject: Re: [PATCH v2] ubifs: compress lines for immediate return
+References: <1473058466-10831-1-git-send-email-hs@denx.de>
+ <CAK7LNARnJVjwDaLGpSUUwvMWSXdXvkaF0H5yV2Dtr=pgpZZwOw@mail.gmail.com>
+ <57CD6D9F.20502@denx.de> <0af5ebac-22d6-9a12-5cff-09f5f53d9b77@nod.at>
 To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: Re: [PATCH 3/3] ubi: Fix Fastmap's update_vol()
-Message-ID: <20160905230639.42fe2a94@bbrezillon>
-In-Reply-To: <1472042175-8655-3-git-send-email-richard@nod.at>
-References: <1472042175-8655-1-git-send-email-richard@nod.at>
- <1472042175-8655-3-git-send-email-richard@nod.at>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From: Heiko Schocher <hs@denx.de>
+Message-ID: <57CE47F6.1010402@denx.de>
+Date: Tue, 6 Sep 2016 06:37:10 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <0af5ebac-22d6-9a12-5cff-09f5f53d9b77@nod.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,42 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 24 Aug 2016 14:36:15 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Hello Richard,
 
-> Usually Fastmap is free to consider every PEB in one of the pools
-> as newer than the existing PEB. Since PEBs in a pool are by definition
-> newer than everything else.
-> But update_vol() missed the case that a pool can contain more than
-> one candidate.
+Am 05.09.2016 um 15:32 schrieb Richard Weinberger:
+> On 05.09.2016 15:05, Heiko Schocher wrote:
+>> @Richard: Should we just forget this patch?
+>
+> Let's drop it for now.
+> It caused already a way more churn than a trivial style cleanup
+> patch should...
 
-Hm, it's not really that update_vol() was not taking this case into
-account (actually it is comparing 2 LEBs and picking the latest
-version), it's just that it's not updating ->sqnum as it should be. Or,
-am I missing something?
+Yes! It was a too fast shoot ... sorry for the noise!
 
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: dbb7d2a88d ("UBI: Add fastmap core")
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-
-Anyway, apart from the commit message,
-
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-> ---
->  drivers/mtd/ubi/fastmap.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> index da33100..ccb3ceb 100644
-> --- a/drivers/mtd/ubi/fastmap.c
-> +++ b/drivers/mtd/ubi/fastmap.c
-> @@ -328,6 +328,7 @@ static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
->  			aeb->pnum = new_aeb->pnum;
->  			aeb->copy_flag = new_vh->copy_flag;
->  			aeb->scrub = new_aeb->scrub;
-> +			aeb->sqnum = new_aeb->sqnum;
->  			kmem_cache_free(ai->aeb_slab_cache, new_aeb);
->  
->  		/* new_aeb is older */
+bye,
+Heiko
+-- 
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
