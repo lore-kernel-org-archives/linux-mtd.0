@@ -1,16 +1,22 @@
-Date: Tue, 6 Sep 2016 13:58:07 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/7] mtd: nand: automate NAND timings selection
-Message-ID: <20160906135807.29257d00@bbrezillon>
-In-Reply-To: <1473158355-22451-5-git-send-email-s.hauer@pengutronix.de>
-References: <1473158355-22451-1-git-send-email-s.hauer@pengutronix.de>
- <1473158355-22451-5-git-send-email-s.hauer@pengutronix.de>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bhF2u-0001ai-Hm
+ for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 12:00:10 +0000
+Subject: Re: overlayfs + ubifs: power cut results in "failed to create
+ directory /overlay/work/work (errno: 17); mounting read-only"
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
+References: <58c7c482-9a51-73d1-7694-e1928f3bedb0@gmail.com>
+Cc: lede-dev@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <d56ee9a9-5246-a609-b8ca-1c8dee322f46@nod.at>
+Date: Tue, 6 Sep 2016 13:59:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <58c7c482-9a51-73d1-7694-e1928f3bedb0@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,249 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  6 Sep 2016 12:39:12 +0200
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+Rafał,
 
-> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+On 06.09.2016 12:46, Rafał Miłecki wrote:
+> Hi,
 > 
-> The NAND framework provides several helpers to query timing modes supported
-> by a NAND chip, but this implies that all NAND controller drivers have
-> to implement the same timings selection dance. Also currently NAND
-> devices can be resetted at arbitrary places which also resets the timing
-> for ONFI chips to timing mode 0.
+> In LEDE/OpenWrt we use UBI with two volumes: "rootfs" and "rootfs_data". With
+> rootfs mounted at / we mount rootfs_data volume at /overlay and then use
+> overlayfs to combine these two.
 > 
-> Provide a common logic to select the best timings based on ONFI or
-> ->onfi_timing_mode_default information. Hook this into nand_reset()  
-> to make sure the new timing is applied each time during a reset.
+> 1) Before:
+> /dev/root on / type squashfs (ro,relatime)
+> /dev/ubi0_1 on /overlay type ubifs (rw,noatime)
 > 
-> NAND controller willing to support timings adjustment should just
-> implement the ->setup_data_interface() method.
+> 2) Mounting overlayfs
+> mount("overlayfs:/overlay", "/mnt", "overlay", MS_NOATIME, "lowerdir=/,upperdir=/overlay/upper,workdir=/overlay/work")
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/mtd/nand/nand_base.c | 112 +++++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/nand.h     |  14 ++++--
->  2 files changed, 122 insertions(+), 4 deletions(-)
+> 3) After:
+> /dev/root on / type squashfs (ro,relatime)
+> /dev/ubi0_1 on /overlay type ubifs (rw,noatime)
+> overlayfs:/overlay on /mnt type overlay (ro,noatime,lowerdir=/,upperdir=/overlay/upper,workdir=/overlay/work)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 20151fc..37852e9 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -955,8 +955,63 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
->   */
->  int nand_reset(struct mtd_info *mtd)
->  {
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	int ret;
-> +
-> +	if (chip->setup_data_interface) {
-> +		struct nand_data_interface conf = {
-> +			.type = NAND_SDR_IFACE,
-> +			.timings.sdr = *onfi_async_timing_mode_to_sdr_timings(0),
-> +		};
-> +
+> It works fine as long as there aren't unexpected power cuts. I can easily break
+> it in a well-reproducible way by doing:
+> date > bar.txt && rm foo.sh
+> sleep 2s
+> [power cut]
+> 
+> On the next boot LEDE/OpenWrt script calls the same mount function but it
+> results in:
+> [   10.017235] overlayfs: failed to create directory /overlay/work/work (errno: 17); mounting read-only
+> 
+> I tracked that error and got a following forward trace for it:
+> ovl_fill_super
+> ovl_workdir_create
+> ovl_cleanup
+> vfs_rmdir
+> ubifs_rmdir
+> check_dir_empty
+> 
+> In other words mounting overlayfs fails because ubifs refuses to remove
+> work/work as this directory is not empty. On a clean boot /overlay/work/work is
+> empty and everything works fine but after a power cut I can see
+> /overlay/work/work/#c752f2a8 file.
+> 
+> I don't really know anything about overlayfs and its workdir, I just expected
+> overlayfs to recover from such situation on its own. FWIW after a power cut and
+> reboot my bar.txt is an empty file and foo.sh still exists.
+> 
+> Does it sound like an overlayfs issue to you? Can you think of some way of
+> fixing this?
 
-Let's try to avoid putting such a huge structure on the stack.
+overlayfs does not issue a recursive rm on workdir, AFAICT you are supposed to cleanup
+workdir yourself before mounting.
+Miklos?
 
-> +		/*
-> +		 * The ONFI specification says:
-> +		 * "
-> +		 * To transition from NV-DDR or NV-DDR2 to the SDR data
-> +		 * interface, the host shall use the Reset (FFh) command
-> +		 * using SDR timing mode 0. A device in any timing mode is
-> +		 * required to recognize Reset (FFh) command issued in SDR
-> +		 * timing mode 0.
-> +		 * "
-> +		 *
-> +		 * Configure the data interface in SDR mode and set the
-> +		 * timings to timing mode 0.
-> +		 */
-> +
-> +		ret = chip->setup_data_interface(mtd, &conf, false);
-> +		if (ret) {
-> +			pr_err("Failed to configure data interface to SDR timing mode 0\n");
-> +			return ret;
-> +		}
-> +	}
-
-Can you put this code in a separate function? I'd like to keep the
-nand_reset() function as small as possible.
-
-How about nand_reset_data_interface()?
-
-> +
->  	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
->  
-> +	/*
-> +	 * Setup the NAND interface (interface type + timings).
-> +	 */
-> +	if (chip->data_iface) {
-> +		uint8_t tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = {
-> +			chip->onfi_timing_mode_default,
-> +		};
-> +
-> +		/*
-> +		 * Ensure the timing mode has be changed on the chip side
-					      ^ been
-> +		 * before changing timings on the controller side.
-> +		 */
-> +		if (chip->onfi_version) {
-> +			ret = chip->onfi_set_features(mtd, chip,
-> +					ONFI_FEATURE_ADDR_TIMING_MODE,
-> +					tmode_param);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +
-> +		ret = chip->setup_data_interface(mtd, chip->data_iface, false);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-
-Ditto: nand_setup_data_interface()?
-
->  	return 0;
->  }
->  
-> @@ -3335,6 +3390,54 @@ static void nand_onfi_detect_micron(struct nand_chip *chip,
->  	chip->setup_read_retry = nand_setup_read_retry_micron;
->  }
->  
-> +/**
-> + * nand_find_data_interface - Find the best data interface and timings
-> + * @mtd: MTD device structure
-> + *
-> + * Try to find the best data interface and NAND timings supported by the
-> + * chip and the driver.
-> + * First tries to retrieve supported timing modes from ONFI information,
-> + * and if the NAND chip does not support ONFI, relies on the
-> + * ->onfi_timing_mode_default specified in the nand_ids table.
-> + *
-> + * Returns 0 for success or negative error code otherwise.
-> + */
-> +static int nand_find_data_interface(struct mtd_info *mtd)
-
-How about nand_init_data_interface() or nand_init_data_iface_config()?
-
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	int modes, mode, ret;
-> +	const struct nand_data_interface *conf;
-> +
-> +	/*
-> +	 * First try to identify the best timings from ONFI parameters and
-> +	 * if the NAND does not support ONFI, fallback to the default ONFI
-> +	 * timing mode.
-> +	 */
-> +	modes = onfi_get_async_timing_mode(chip);
-> +	if (modes == ONFI_TIMING_MODE_UNKNOWN)
-> +		modes = GENMASK(chip->onfi_timing_mode_default, 0);
-> +
-> +	ret = -EINVAL;
-> +	for (mode = fls(modes) - 1; mode >= 0; mode--) {
-> +		conf = onfi_async_timing_mode_to_data_interface(mode);
-
-I'd still prefer to have conf allocated at the beginning of the
-function and timings copied from
-onfi_async_timing_mode_to_sdr_timings(mode), but maybe you can convince
-me otherwise.
-
-> +
-> +		ret = chip->setup_data_interface(mtd, conf, true);
-> +		if (!ret) {
-> +			chip->onfi_timing_mode_default = mode;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	chip->data_iface = kmemdup(conf, sizeof(*conf), GFP_KERNEL);
-> +	if (!chip->data_iface)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
->   */
-> @@ -4168,6 +4271,12 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
->  		return PTR_ERR(type);
->  	}
->  
-> +	if (chip->setup_data_interface) {
-> +		ret = nand_find_data_interface(mtd);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	chip->select_chip(mtd, -1);
->  
->  	/* Check for a chip array */
-> @@ -4627,6 +4736,9 @@ void nand_release(struct mtd_info *mtd)
->  
->  	mtd_device_unregister(mtd);
->  
-> +	/* Free interface config struct */
-> +	kfree(chip->data_iface);
-> +
-
-Can we hide that in an helper as well? nand_cleanup_data_interface()?
-
->  	/* Free bad block table memory */
->  	kfree(chip->bbt);
->  	if (!(chip->options & NAND_OWN_BUFFERS))
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index a8bdf6c..5269357 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -690,10 +690,9 @@ struct nand_data_interface {
->   *                      also from the datasheet. It is the recommended ECC step
->   *			size, if known; if unknown, set to zero.
->   * @onfi_timing_mode_default: [INTERN] default ONFI timing mode. This field is
-> - *			      either deduced from the datasheet if the NAND
-> - *			      chip is not ONFI compliant or set to 0 if it is
-> - *			      (an ONFI chip is always configured in mode 0
-> - *			      after a NAND reset)
-> + * 			      set to the actually used ONFI mode if the chip is
-> + * 			      ONFI compliant or deduced from the datasheet if
-> + * 			      the NAND chip is not ONFI compliant.
->   * @numchips:		[INTERN] number of physical chips
->   * @chipsize:		[INTERN] the size of one chip for multichip arrays
->   * @pagemask:		[INTERN] page number mask = number of (pages / chip) - 1
-> @@ -713,6 +712,7 @@ struct nand_data_interface {
->   * @read_retries:	[INTERN] the number of read retry modes supported
->   * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
->   * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
-> + * @setup_data_interface: [OPTIONAL] setup the data interface and timing
->   * @bbt:		[INTERN] bad block table pointer
->   * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
->   *			lookup.
-> @@ -759,6 +759,10 @@ struct nand_chip {
->  	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
->  			int feature_addr, uint8_t *subfeature_para);
->  	int (*setup_read_retry)(struct mtd_info *mtd, int retry_mode);
-> +	int (*setup_data_interface)(struct mtd_info *mtd,
-> +				    const struct nand_data_interface *conf,
-> +				    bool check_only);
-> +
->  
->  	int chip_delay;
->  	unsigned int options;
-> @@ -788,6 +792,8 @@ struct nand_chip {
->  		struct nand_jedec_params jedec_params;
->  	};
->  
-> +	const struct nand_data_interface *data_iface;
-> +
-
-How about making this field non-const so that you only allocate it once
-and modify it when you switch from one mode to another.
-
->  	int read_retries;
->  
->  	flstate_t state;
+Thanks,
+//richard
