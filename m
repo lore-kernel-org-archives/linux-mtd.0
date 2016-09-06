@@ -1,22 +1,17 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bhF2u-0001ai-Hm
- for linux-mtd@lists.infradead.org; Tue, 06 Sep 2016 12:00:10 +0000
-Subject: Re: overlayfs + ubifs: power cut results in "failed to create
- directory /overlay/work/work (errno: 17); mounting read-only"
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
-References: <58c7c482-9a51-73d1-7694-e1928f3bedb0@gmail.com>
-Cc: lede-dev@lists.infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <d56ee9a9-5246-a609-b8ca-1c8dee322f46@nod.at>
-Date: Tue, 6 Sep 2016 13:59:11 +0200
+Date: Tue, 6 Sep 2016 14:01:24 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 5/7] mtd: nand: sunxi: switch from manual to automated
+ timing config
+Message-ID: <20160906140124.6414c855@bbrezillon>
+In-Reply-To: <1473158355-22451-6-git-send-email-s.hauer@pengutronix.de>
+References: <1473158355-22451-1-git-send-email-s.hauer@pengutronix.de>
+ <1473158355-22451-6-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <58c7c482-9a51-73d1-7694-e1928f3bedb0@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +21,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rafał,
+On Tue,  6 Sep 2016 12:39:13 +0200
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-On 06.09.2016 12:46, Rafał Miłecki wrote:
-> Hi,
+> The NAND framework is now able to select the best NAND timings for us.
+> All we have to do is implement a ->setup_data_interface() function to
+> apply those timings and remove the timing selection code from the sunxi
+> driver.
 > 
-> In LEDE/OpenWrt we use UBI with two volumes: "rootfs" and "rootfs_data". With
-> rootfs mounted at / we mount rootfs_data volume at /overlay and then use
-> overlayfs to combine these two.
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 77 +++++++++----------------------------------
+>  1 file changed, 15 insertions(+), 62 deletions(-)
 > 
-> 1) Before:
-> /dev/root on / type squashfs (ro,relatime)
-> /dev/ubi0_1 on /overlay type ubifs (rw,noatime)
-> 
-> 2) Mounting overlayfs
-> mount("overlayfs:/overlay", "/mnt", "overlay", MS_NOATIME, "lowerdir=/,upperdir=/overlay/upper,workdir=/overlay/work")
-> 
-> 3) After:
-> /dev/root on / type squashfs (ro,relatime)
-> /dev/ubi0_1 on /overlay type ubifs (rw,noatime)
-> overlayfs:/overlay on /mnt type overlay (ro,noatime,lowerdir=/,upperdir=/overlay/upper,workdir=/overlay/work)
-> 
-> It works fine as long as there aren't unexpected power cuts. I can easily break
-> it in a well-reproducible way by doing:
-> date > bar.txt && rm foo.sh
-> sleep 2s
-> [power cut]
-> 
-> On the next boot LEDE/OpenWrt script calls the same mount function but it
-> results in:
-> [   10.017235] overlayfs: failed to create directory /overlay/work/work (errno: 17); mounting read-only
-> 
-> I tracked that error and got a following forward trace for it:
-> ovl_fill_super
-> ovl_workdir_create
-> ovl_cleanup
-> vfs_rmdir
-> ubifs_rmdir
-> check_dir_empty
-> 
-> In other words mounting overlayfs fails because ubifs refuses to remove
-> work/work as this directory is not empty. On a clean boot /overlay/work/work is
-> empty and everything works fine but after a power cut I can see
-> /overlay/work/work/#c752f2a8 file.
-> 
-> I don't really know anything about overlayfs and its workdir, I just expected
-> overlayfs to recover from such situation on its own. FWIW after a power cut and
-> reboot my bar.txt is an empty file and foo.sh still exists.
-> 
-> Does it sound like an overlayfs issue to you? Can you think of some way of
-> fixing this?
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index e414b31..ee42b8c 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -1572,14 +1572,23 @@ static int _sunxi_nand_lookup_timing(const s32 *lut, int lut_size, u32 duration,
+>  #define sunxi_nand_lookup_timing(l, p, c) \
+>  			_sunxi_nand_lookup_timing(l, ARRAY_SIZE(l), p, c)
+>  
+> -static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+> -				       const struct nand_sdr_timings *timings)
+> +static int sunxi_nfc_setup_data_interface(struct mtd_info *mtd,
+> +					    const struct nand_data_interface *conf,
+> +					    bool check_only)
+>  {
+> +	struct nand_chip *nand = mtd_to_nand(mtd);
+> +	struct sunxi_nand_chip *chip = to_sunxi_nand(nand);
+>  	struct sunxi_nfc *nfc = to_sunxi_nfc(chip->nand.controller);
+> +	const struct nand_sdr_timings *timings;
+>  	u32 min_clk_period = 0;
+>  	s32 tWB, tADL, tWHR, tRHW, tCAD;
+>  	long real_clk_rate;
+>  
+> +	if (conf->type != NAND_SDR_IFACE)
+> +		return -ENOTSUPP;
+> +
+> +	timings = &conf->timings.sdr;
 
-overlayfs does not issue a recursive rm on workdir, AFAICT you are supposed to cleanup
-workdir yourself before mounting.
-Miklos?
+Can we hide this behind an accessor (nand_get_sdr_timings())? I know I'm
+picky, but I've had so many drivers to patch in the past because of
+internal reorganization, and I'd like to avoid that in the future.
 
-Thanks,
-//richard
+> +
+>  	/* T1 <=> tCLS */
+>  	if (timings->tCLS_min > min_clk_period)
+>  		min_clk_period = timings->tCLS_min;
+> @@ -1679,6 +1688,9 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+>  		return tRHW;
+>  	}
+>  
+> +	if (check_only)
+> +		return 0;
+> +
+>  	/*
+>  	 * TODO: according to ONFI specs this value only applies for DDR NAND,
+>  	 * but Allwinner seems to set this to 0x7. Mimic them for now.
+> @@ -1712,44 +1724,6 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+>  	return 0;
+>  }
+>  
+> -static int sunxi_nand_chip_init_timings(struct sunxi_nand_chip *chip,
+> -					struct device_node *np)
+> -{
+> -	struct mtd_info *mtd = nand_to_mtd(&chip->nand);
+> -	const struct nand_sdr_timings *timings;
+> -	int ret;
+> -	int mode;
+> -
+> -	mode = onfi_get_async_timing_mode(&chip->nand);
+> -	if (mode == ONFI_TIMING_MODE_UNKNOWN) {
+> -		mode = chip->nand.onfi_timing_mode_default;
+> -	} else {
+> -		uint8_t feature[ONFI_SUBFEATURE_PARAM_LEN] = {};
+> -		int i;
+> -
+> -		mode = fls(mode) - 1;
+> -		if (mode < 0)
+> -			mode = 0;
+> -
+> -		feature[0] = mode;
+> -		for (i = 0; i < chip->nsels; i++) {
+> -			chip->nand.select_chip(mtd, i);
+> -			ret = chip->nand.onfi_set_features(mtd,	&chip->nand,
+> -						ONFI_FEATURE_ADDR_TIMING_MODE,
+> -						feature);
+> -			chip->nand.select_chip(mtd, -1);
+> -			if (ret)
+> -				return ret;
+> -		}
+> -	}
+> -
+> -	timings = onfi_async_timing_mode_to_sdr_timings(mode);
+> -	if (IS_ERR(timings))
+> -		return PTR_ERR(timings);
+> -
+> -	return sunxi_nand_chip_set_timings(chip, timings);
+> -}
+> -
+>  static int sunxi_nand_ooblayout_ecc(struct mtd_info *mtd, int section,
+>  				    struct mtd_oob_region *oobregion)
+>  {
+> @@ -1975,7 +1949,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+>  static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+>  				struct device_node *np)
+>  {
+> -	const struct nand_sdr_timings *timings;
+>  	struct sunxi_nand_chip *chip;
+>  	struct mtd_info *mtd;
+>  	struct nand_chip *nand;
+> @@ -2065,25 +2038,11 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+>  	nand->read_buf = sunxi_nfc_read_buf;
+>  	nand->write_buf = sunxi_nfc_write_buf;
+>  	nand->read_byte = sunxi_nfc_read_byte;
+> +	nand->setup_data_interface = sunxi_nfc_setup_data_interface;
+>  
+>  	mtd = nand_to_mtd(nand);
+>  	mtd->dev.parent = dev;
+>  
+> -	timings = onfi_async_timing_mode_to_sdr_timings(0);
+> -	if (IS_ERR(timings)) {
+> -		ret = PTR_ERR(timings);
+> -		dev_err(dev,
+> -			"could not retrieve timings for ONFI mode 0: %d\n",
+> -			ret);
+> -		return ret;
+> -	}
+> -
+> -	ret = sunxi_nand_chip_set_timings(chip, timings);
+> -	if (ret) {
+> -		dev_err(dev, "could not configure chip timings: %d\n", ret);
+> -		return ret;
+> -	}
+> -
+>  	ret = nand_scan_ident(mtd, nsels, NULL);
+>  	if (ret)
+>  		return ret;
+> @@ -2096,12 +2055,6 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+>  
+>  	nand->options |= NAND_SUBPAGE_READ;
+>  
+> -	ret = sunxi_nand_chip_init_timings(chip, np);
+> -	if (ret) {
+> -		dev_err(dev, "could not configure chip timings: %d\n", ret);
+> -		return ret;
+> -	}
+> -
+>  	ret = sunxi_nand_ecc_init(mtd, &nand->ecc, np);
+>  	if (ret) {
+>  		dev_err(dev, "ECC init failed: %d\n", ret);
