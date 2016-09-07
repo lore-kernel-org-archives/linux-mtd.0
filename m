@@ -1,17 +1,20 @@
-Date: Wed, 7 Sep 2016 21:29:30 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 7/7] mtd: nand: remove unnecessary 'extern' from
- function declarations
-Message-ID: <20160907212930.66310fa5@bbrezillon>
-In-Reply-To: <1473250902-31139-8-git-send-email-s.hauer@pengutronix.de>
-References: <1473250902-31139-1-git-send-email-s.hauer@pengutronix.de>
- <1473250902-31139-8-git-send-email-s.hauer@pengutronix.de>
+Received: from mail-oi0-x233.google.com ([2607:f8b0:4003:c06::233])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bhj1Z-0002m6-AH
+ for linux-mtd@lists.infradead.org; Wed, 07 Sep 2016 20:00:45 +0000
+Received: by mail-oi0-x233.google.com with SMTP id m11so41735167oif.1
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Sep 2016 13:00:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAKODt8xsX-ze7n_kvwTxbDRFN19FaOwbcKwRQn6ifoAXZbC7Yg@mail.gmail.com>
+References: <CAKODt8xsX-ze7n_kvwTxbDRFN19FaOwbcKwRQn6ifoAXZbC7Yg@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 7 Sep 2016 22:00:23 +0200
+Message-ID: <CAFLxGvxF=7u3CL39_Ka3zZ8KT9XLyVjeKMV==fAYDnPoaxrthQ@mail.gmail.com>
+Subject: Re: How does ubiupdatevol deals with corrupted state
+To: Pierre Mallard <mallard.pierre@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,83 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  7 Sep 2016 14:21:42 +0200
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+Pierre,
 
-> 'extern' is not necessary for function declarations. To prevent
-> people from adding the keyword to new declarations remove the
-> existing ones.
-> 
+On Wed, Sep 7, 2016 at 6:13 PM, Pierre Mallard <mallard.pierre@gmail.com> w=
+rote:
+> I have a question on ubiupdatevol expected behavior. Indeed, from
+> times to times it happens that after a call to ubiupdatevol on a
+> static volume, the volume is marked as corrupted by ubi driver, but
+> ubiupdatevol return always success.
+>
+> In those case, kernel print following messages :
+>
+> 1970-01-01T02:42:09.660119+00:00 | kernel | - | UBI warning:
+> ubi_eba_read_leb: CRC error: calculated 0xa1327885, must be 0x3745d28a
+> 1970-01-01T02:42:09.660178+00:00 | kernel | - | UBI warning:
+> vol_cdev_write: volume 5 on UBI device 0 is corrupted
 
-Applied.
+This must not happen.
 
+> After a few search in latest kernel master and mtd-utils git sources,
+> it appears that :
+>
+> =C2=B7 A write to /dev/ubix_y=E2=80=A6 will not always lead to a returned=
+ error
+> from driver but rather may only mark the volume as corrupted if
+> failure is detected (vol_cdev_write function, when successive write
+> succeeded and ubi_check_volume returned 1 for ecc error)
+> =C2=B7 ubiupdatevol does not check for corrupt flag after update if write
+> is successful and therefore does not return an error if volume is
+> corrupted.
+>
+> My first question is whether what happened to me, can happen : i.e.
+> can the volume get corrupted without a write error reported by driver
+> ? (I would suspect therefore a problem in nand driver  - pl353 from
+> Xilinx for this case - )
+
+Please verify your driver. i.e. run ubi tests. They are part of the mtd-uti=
+ls
+source package.
+
+> In the eventuality where this is part of a standard =E2=80=9Cdegraded=E2=
+=80=9D
+> behavior, what is the reason for not checking for corruption in
+> ubiupdatevol ?
+>
+> Is this only a static volume problem ? i.e. any chance to encounter
+> same problem in dynamic volume.
+
+With static volumes you notice because they offer data checksumming.
+Maybe your driver has an issue and updating static volumes is just the
+most visible symptom.
+
+--=20
 Thanks,
-
-Boris
-
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  include/linux/mtd/nand.h | 30 +++++++++++++++---------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 9f3d7be..7989178 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -29,26 +29,26 @@ struct nand_flash_dev;
->  struct device_node;
->  
->  /* Scan and identify a NAND device */
-> -extern int nand_scan(struct mtd_info *mtd, int max_chips);
-> +int nand_scan(struct mtd_info *mtd, int max_chips);
->  /*
->   * Separate phases of nand_scan(), allowing board driver to intervene
->   * and override command or ECC setup according to flash type.
->   */
-> -extern int nand_scan_ident(struct mtd_info *mtd, int max_chips,
-> +int nand_scan_ident(struct mtd_info *mtd, int max_chips,
->  			   struct nand_flash_dev *table);
-> -extern int nand_scan_tail(struct mtd_info *mtd);
-> +int nand_scan_tail(struct mtd_info *mtd);
->  
->  /* Free resources held by the NAND device */
-> -extern void nand_release(struct mtd_info *mtd);
-> +void nand_release(struct mtd_info *mtd);
->  
->  /* Internal helper for board drivers which need to override command function */
-> -extern void nand_wait_ready(struct mtd_info *mtd);
-> +void nand_wait_ready(struct mtd_info *mtd);
->  
->  /* locks all blocks present in the device */
-> -extern int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-> +int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
->  
->  /* unlocks specified locked blocks */
-> -extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-> +int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
->  
->  /* The maximum number of NAND chips in an array */
->  #define NAND_MAX_CHIPS		8
-> @@ -1013,14 +1013,14 @@ struct nand_manufacturers {
->  extern struct nand_flash_dev nand_flash_ids[];
->  extern struct nand_manufacturers nand_manuf_ids[];
->  
-> -extern int nand_default_bbt(struct mtd_info *mtd);
-> -extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
-> -extern int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
-> -extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
-> -extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
-> -			   int allowbbt);
-> -extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
-> -			size_t *retlen, uint8_t *buf);
-> +int nand_default_bbt(struct mtd_info *mtd);
-> +int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
-> +int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
-> +int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
-> +int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
-> +		    int allowbbt);
-> +int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
-> +		 size_t *retlen, uint8_t *buf);
->  
->  /**
->   * struct platform_nand_chip - chip level device structure
+//richard
