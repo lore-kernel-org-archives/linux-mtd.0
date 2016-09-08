@@ -1,16 +1,23 @@
-Received: from mail-it0-x22f.google.com ([2607:f8b0:4001:c0b::22f])
+Received: from a.mx.sdesigns.eu ([78.31.43.6])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bi2Gt-0002Ao-HO
- for linux-mtd@lists.infradead.org; Thu, 08 Sep 2016 16:33:52 +0000
-Received: by mail-it0-x22f.google.com with SMTP id i184so267127017itf.1
- for <linux-mtd@lists.infradead.org>; Thu, 08 Sep 2016 09:33:30 -0700 (PDT)
+ id 1bi2Kh-0004CX-Go
+ for linux-mtd@lists.infradead.org; Thu, 08 Sep 2016 16:37:48 +0000
+Subject: Re: [PATCH v2] mtd: nand: tango: import driver for tango chips
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Richard Weinberger <richard@nod.at>, Sebastian Frias <sf84@laposte.net>,
+ Jean-Baptiste Lescher <jblescher@gmail.com>,
+ Thibaud Cornic <thibaud_cornic@sigmadesigns.com>, Mason <slash.tmp@free.fr>
+References: <57C94E33.6070304@sigmadesigns.com>
+ <20160905091450.017e4aa3@bbrezillon> <57CD4672.1010504@free.fr>
+ <20160905131516.0acb8145@bbrezillon> <57D189E1.3020508@sigmadesigns.com>
+From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Message-ID: <57D193C5.8040004@sigmadesigns.com>
+Date: Thu, 8 Sep 2016 18:37:25 +0200
 MIME-Version: 1.0
-From: Philippe Reynes <tremyfr@gmail.com>
-Date: Thu, 8 Sep 2016 18:33:29 +0200
-Message-ID: <CAC=8w93R_8Tymub9fz+mDa3W-=qPGAzLUFfbOuh_NVG+Ac=vwg@mail.gmail.com>
-Subject: question about spi nor locking
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <57D189E1.3020508@sigmadesigns.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On 08/09/2016 17:55, Marc Gonzalez wrote:
 
-We plan to work on spi nor locking, but, not only use the lock by
-block with BP{0,1,2}.
+> +static int decode_error_report(struct tango_nfc *nfc)
+> +{
+> +	u32 status, res;
+> +
+> +	status = readl_relaxed(nfc->reg_base + NFC_XFER_STATUS);
+> +	if (status & PAGE_IS_EMPTY)
+> +		return 0;
+> +
+> +	res = readl_relaxed(nfc->mem_base + ERROR_REPORT);
+> +
+> +	if (DECODE_ERR_ON_PKT_0(res) || DECODE_ERR_ON_PKT_N(res))
+> +		return -EBADMSG;
+> +
+> +	return max(ERR_COUNT_PKT_0(res), ERR_COUNT_PKT_N(res));
+> +}
 
-We also plan to use advanced features. For example allow the user to
-choose the "mode"
-of lock by block : volatile (the lock disapear after a reboot),
-non-volatile (the lock stay
-after a reboot), otp (the lock can't be changed or removed). Another
-example is to lock
-the spi nor sector by sector.
+This is probably an incorrect implementation. Boris mentioned that
+we shouldn't return -EBADMSG?
 
-Do you (the mtd community/subsystem) interrested by integrate those
-kind of feature in the kernel please ?
-If yes, may be someone is already working on it, are you aware of such
-development please ?
+# time insmod mtd/mtd_nandbiterrs.ko dev=1
+[   19.498729] 
+[   19.501435] ==================================================
+[   19.508199] mtd_nandbiterrs: MTD device: 1
+[   19.512372] mtd_nandbiterrs: MTD device size 536870912, eraseblock=131072, page=2048, oob=64
+[   19.520893] mtd_nandbiterrs: Device uses 2 subpages of 1024 bytes
+[   19.527034] mtd_nandbiterrs: Using page=0, offset=0, eraseblock=0
+[   19.533986] mtd_nandbiterrs: incremental biterrors test
+[   19.539297] mtd_nandbiterrs: write_page
+[   19.543413] mtd_nandbiterrs: rewrite page
+[   19.547766] mtd_nandbiterrs: read_page
+[   19.551746] mtd_nandbiterrs: error: read failed at 0x0
+[   19.556924] mtd_nandbiterrs: After 0 biterrors per subpage, read reported error -74
+[   19.565432] mtd_nandbiterrs: finished successfully.
+[   19.570343] ==================================================
 
-Regards,
-Philippe
+It says "finished successfully", should I believe that?
+
+Regards.
