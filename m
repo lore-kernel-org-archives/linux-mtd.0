@@ -1,15 +1,16 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1biKYr-0000WX-EN
- for linux-mtd@lists.infradead.org; Fri, 09 Sep 2016 12:05:42 +0000
+ id 1biKYu-00017j-O5
+ for linux-mtd@lists.infradead.org; Fri, 09 Sep 2016 12:05:43 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 2/9] mtd: nand: Introduce nand_data_interface
-Date: Fri,  9 Sep 2016 14:05:05 +0200
-Message-Id: <1473422712-12359-3-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 4/9] mtd: nand: Add function to convert ONFI mode to
+ data_interface
+Date: Fri,  9 Sep 2016 14:05:07 +0200
+Message-Id: <1473422712-12359-5-git-send-email-s.hauer@pengutronix.de>
 In-Reply-To: <1473422712-12359-1-git-send-email-s.hauer@pengutronix.de>
 References: <1473422712-12359-1-git-send-email-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,202 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently we have no data structure to fully describe a NAND timing.
-We only have struct nand_sdr_timings for NAND timings in SDR mode,
-but nothing for DDR mode and also no container to store both types
-of timing.
-This patch adds struct nand_data_interface which stores the timing
-type and a union of different timings. This can be used to pass to
-drivers in order to configure the timing.
-Add kerneldoc for struct nand_sdr_timings while touching it anyway.
+onfi_init_data_interface() initializes a data interface with
+values from a given ONFI mode.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- include/linux/mtd/nand.h | 165 +++++++++++++++++++++++++++++++++--------------
- 1 file changed, 116 insertions(+), 49 deletions(-)
+ drivers/mtd/nand/nand_timings.c | 16 ++++++++++++++++
+ include/linux/mtd/nand.h        |  2 ++
+ 2 files changed, 18 insertions(+)
 
+diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+index 9af2ebc..ece4ff2 100644
+--- a/drivers/mtd/nand/nand_timings.c
++++ b/drivers/mtd/nand/nand_timings.c
+@@ -269,3 +269,19 @@ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode)
+ 	return &onfi_sdr_timings[mode].timings.sdr;
+ }
+ EXPORT_SYMBOL(onfi_async_timing_mode_to_sdr_timings);
++
++/**
++ * onfi_init_data_interface - [NAND Interface] Initialize a data interface from
++ * given ONFI mode
++ * @iface: The data interface to be initialized
++ * @mode: The ONFI timing mode
++ */
++int onfi_init_data_interface(struct nand_data_interface *iface, int mode)
++{
++	if (mode < 0 || mode >= ARRAY_SIZE(onfi_sdr_timings))
++		return -EINVAL;
++
++	*iface = onfi_sdr_timings[mode];
++
++	return 0;
++}
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 9890df2..f305bed 100644
+index f305bed..0044fac 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -566,6 +566,122 @@ struct nand_buffers {
- };
- 
- /**
-+ * struct nand_sdr_timings - SDR NAND chip timings
-+ *
-+ * This struct defines the timing requirements of a SDR NAND chip.
-+ * These information can be found in every NAND datasheets and the timings
-+ * meaning are described in the ONFI specifications:
-+ * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf (chapter 4.15 Timing
-+ * Parameters)
-+ *
-+ * All these timings are expressed in picoseconds.
-+ *
-+ * @tALH_min: ALE hold time
-+ * @tADL_min: ALE to data loading time
-+ * @tALS_min: ALE setup time
-+ * @tAR_min: ALE to RE# delay
-+ * @tCEA_max: CE# access time
-+ * @tCEH_min:
-+ * @tCH_min:  CE# hold time
-+ * @tCHZ_max: CE# high to output hi-Z
-+ * @tCLH_min: CLE hold time
-+ * @tCLR_min: CLE to RE# delay
-+ * @tCLS_min: CLE setup time
-+ * @tCOH_min: CE# high to output hold
-+ * @tCS_min: CE# setup time
-+ * @tDH_min: Data hold time
-+ * @tDS_min: Data setup time
-+ * @tFEAT_max: Busy time for Set Features and Get Features
-+ * @tIR_min: Output hi-Z to RE# low
-+ * @tITC_max: Interface and Timing Mode Change time
-+ * @tRC_min: RE# cycle time
-+ * @tREA_max: RE# access time
-+ * @tREH_min: RE# high hold time
-+ * @tRHOH_min: RE# high to output hold
-+ * @tRHW_min: RE# high to WE# low
-+ * @tRHZ_max: RE# high to output hi-Z
-+ * @tRLOH_min: RE# low to output hold
-+ * @tRP_min: RE# pulse width
-+ * @tRR_min: Ready to RE# low (data only)
-+ * @tRST_max: Device reset time, measured from the falling edge of R/B# to the rising edge of R/B#.
-+ * @tWB_max: WE# high to SR[6] low
-+ * @tWC_min: WE# cycle time
-+ * @tWH_min: WE# high hold time
-+ * @tWHR_min: WE# high to RE# low
-+ * @tWP_min: WE# pulse width
-+ * @tWW_min: WP# transition to WE# low
-+ */
-+struct nand_sdr_timings {
-+	u32 tALH_min;
-+	u32 tADL_min;
-+	u32 tALS_min;
-+	u32 tAR_min;
-+	u32 tCEA_max;
-+	u32 tCEH_min;
-+	u32 tCH_min;
-+	u32 tCHZ_max;
-+	u32 tCLH_min;
-+	u32 tCLR_min;
-+	u32 tCLS_min;
-+	u32 tCOH_min;
-+	u32 tCS_min;
-+	u32 tDH_min;
-+	u32 tDS_min;
-+	u32 tFEAT_max;
-+	u32 tIR_min;
-+	u32 tITC_max;
-+	u32 tRC_min;
-+	u32 tREA_max;
-+	u32 tREH_min;
-+	u32 tRHOH_min;
-+	u32 tRHW_min;
-+	u32 tRHZ_max;
-+	u32 tRLOH_min;
-+	u32 tRP_min;
-+	u32 tRR_min;
-+	u64 tRST_max;
-+	u32 tWB_max;
-+	u32 tWC_min;
-+	u32 tWH_min;
-+	u32 tWHR_min;
-+	u32 tWP_min;
-+	u32 tWW_min;
-+};
-+
-+/**
-+ * enum nand_data_interface_type - NAND interface timing type
-+ * @NAND_SDR_IFACE:	Single Data Rate interface
-+ */
-+enum nand_data_interface_type {
-+	NAND_SDR_IFACE,
-+};
-+
-+/**
-+ * struct nand_data_interface - NAND interface timing
-+ * @type:	type of the timing
-+ * @timings:	The timing, type according to @type
-+ */
-+struct nand_data_interface {
-+	enum nand_data_interface_type type;
-+	union {
-+		struct nand_sdr_timings sdr;
-+	} timings;
-+};
-+
-+/**
-+ * nand_get_sdr_timings - get SDR timing from data interface
-+ * @conf:	The data interface
-+ */
-+static inline const struct nand_sdr_timings *
-+nand_get_sdr_timings(const struct nand_data_interface *conf)
-+{
-+	if (conf->type != NAND_SDR_IFACE)
-+		return ERR_PTR(-EINVAL);
-+
-+	return &conf->timings.sdr;
-+}
-+
-+/**
-  * struct nand_chip - NAND Private Flash Chip Data
-  * @mtd:		MTD device registered to the MTD framework
-  * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
-@@ -1023,55 +1139,6 @@ static inline int jedec_feature(struct nand_chip *chip)
- 		: 0;
+@@ -1104,6 +1104,8 @@ static inline int onfi_get_sync_timing_mode(struct nand_chip *chip)
+ 	return le16_to_cpu(chip->onfi_params.src_sync_timing_mode);
  }
  
--/*
-- * struct nand_sdr_timings - SDR NAND chip timings
-- *
-- * This struct defines the timing requirements of a SDR NAND chip.
-- * These informations can be found in every NAND datasheets and the timings
-- * meaning are described in the ONFI specifications:
-- * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf (chapter 4.15 Timing
-- * Parameters)
-- *
-- * All these timings are expressed in picoseconds.
-- */
--
--struct nand_sdr_timings {
--	u32 tALH_min;
--	u32 tADL_min;
--	u32 tALS_min;
--	u32 tAR_min;
--	u32 tCEA_max;
--	u32 tCEH_min;
--	u32 tCH_min;
--	u32 tCHZ_max;
--	u32 tCLH_min;
--	u32 tCLR_min;
--	u32 tCLS_min;
--	u32 tCOH_min;
--	u32 tCS_min;
--	u32 tDH_min;
--	u32 tDS_min;
--	u32 tFEAT_max;
--	u32 tIR_min;
--	u32 tITC_max;
--	u32 tRC_min;
--	u32 tREA_max;
--	u32 tREH_min;
--	u32 tRHOH_min;
--	u32 tRHW_min;
--	u32 tRHZ_max;
--	u32 tRLOH_min;
--	u32 tRP_min;
--	u32 tRR_min;
--	u64 tRST_max;
--	u32 tWB_max;
--	u32 tWC_min;
--	u32 tWH_min;
--	u32 tWHR_min;
--	u32 tWP_min;
--	u32 tWW_min;
--};
--
- /* get timing characteristics from ONFI timing mode. */
- const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
- 
++int onfi_init_data_interface(struct nand_data_interface *iface, int onfi_mode);
++
+ /*
+  * Check if it is a SLC nand.
+  * The !nand_is_slc() can be used to check the MLC/TLC nand chips.
 -- 
 2.8.1
