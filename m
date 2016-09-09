@@ -1,17 +1,18 @@
-Date: Fri, 9 Sep 2016 14:35:22 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- kernel@pengutronix.de
-Subject: Re: [PATCH 4/9] mtd: nand: Add function to convert ONFI mode to
- data_interface
-Message-ID: <20160909143522.6a3b6975@bbrezillon>
-In-Reply-To: <1473422712-12359-5-git-send-email-s.hauer@pengutronix.de>
-References: <1473422712-12359-1-git-send-email-s.hauer@pengutronix.de>
- <1473422712-12359-5-git-send-email-s.hauer@pengutronix.de>
+From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: linux-arm-kernel@lists.infradead.org
+Cc: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM),
+ linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH BUGFIX] mtd: nand: mxc: fix obiwan error in
+ mxc_nand_v[12]_ooblayout_free() functions
+Date: Fri,  9 Sep 2016 16:44:11 +0200
+Message-Id: <1473432251-24728-1-git-send-email-LW@KARO-electronics.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +22,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  9 Sep 2016 14:05:07 +0200
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+commit a894cf6c5a82 ("mtd: nand: mxc: switch to mtd_ooblayout_ops")
+introduced a regression accessing the OOB area from the mxc_nand
+driver due to an Obiwan error in the mxc_nand_v[12]_ooblayout_free()
+functions. They report a bogus oobregion { 64, 7 } which leads to
+errors accessing bogus data when reading the oob area.
 
-> onfi_init_data_interface() initializes a data interface with
-> values from a given ONFI mode.
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/mtd/nand/nand_timings.c | 16 ++++++++++++++++
->  include/linux/mtd/nand.h        |  2 ++
->  2 files changed, 18 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-> index 9af2ebc..ece4ff2 100644
-> --- a/drivers/mtd/nand/nand_timings.c
-> +++ b/drivers/mtd/nand/nand_timings.c
-> @@ -269,3 +269,19 @@ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode)
->  	return &onfi_sdr_timings[mode].timings.sdr;
->  }
->  EXPORT_SYMBOL(onfi_async_timing_mode_to_sdr_timings);
-> +
-> +/**
-> + * onfi_init_data_interface - [NAND Interface] Initialize a data interface from
-> + * given ONFI mode
-> + * @iface: The data interface to be initialized
-> + * @mode: The ONFI timing mode
-> + */
-> +int onfi_init_data_interface(struct nand_data_interface *iface, int mode)
+Prior to the commit the mtd-oobtest module could be run without any
+errors. With the offending commit, this test fails with results like:
+|Running mtd-oobtest
+|
+|=================================================
+|mtd_oobtest: MTD device: 5
+|mtd_oobtest: MTD device size 524288, eraseblock size 131072, page size 2048, count of eraseblocks 4, pages per eraseblock 64, OOB size 64
+|mtd_test: scanning for bad eraseblocks
+|mtd_test: scanned 4 eraseblocks, 0 are bad
+|mtd_oobtest: test 1 of 5
+|mtd_oobtest: writing OOBs of whole device
+|mtd_oobtest: written up to eraseblock 0
+|mtd_oobtest: written 4 eraseblocks
+|mtd_oobtest: verifying all eraseblocks
+|mtd_oobtest: error @addr[0x0:0x19] 0x9a -> 0x78 diff 0xe2
+|mtd_oobtest: error @addr[0x0:0x1a] 0xcc -> 0x0 diff 0xcc
+|mtd_oobtest: error @addr[0x0:0x1b] 0xe0 -> 0x85 diff 0x65
+|mtd_oobtest: error @addr[0x0:0x1c] 0x60 -> 0x62 diff 0x2
+|mtd_oobtest: error @addr[0x0:0x1d] 0x69 -> 0x45 diff 0x2c
+|mtd_oobtest: error @addr[0x0:0x1e] 0xcd -> 0xa0 diff 0x6d
+|mtd_oobtest: error @addr[0x0:0x1f] 0xf2 -> 0x60 diff 0x92
+|mtd_oobtest: error: verify failed at 0x0
+[...]
 
-Can we choose a more future proof prototype (like the one I suggested)
-for this function. Passing the nand_chip will later allow to extract
-extended timings (tR, tPROG, tCCS, ...) from the param page, and
-passing the interface type makes it compatible with DDR mode.
+Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
+---
+ drivers/mtd/nand/mxc_nand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> +{
-> +	if (mode < 0 || mode >= ARRAY_SIZE(onfi_sdr_timings))
-> +		return -EINVAL;
-> +
-> +	*iface = onfi_sdr_timings[mode];
-> +
-> +	return 0;
-> +}
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index f305bed..0044fac 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -1104,6 +1104,8 @@ static inline int onfi_get_sync_timing_mode(struct nand_chip *chip)
->  	return le16_to_cpu(chip->onfi_params.src_sync_timing_mode);
->  }
->  
-> +int onfi_init_data_interface(struct nand_data_interface *iface, int onfi_mode);
-> +
->  /*
->   * Check if it is a SLC nand.
->   * The !nand_is_slc() can be used to check the MLC/TLC nand chips.
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 5173fad..fdee907 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -893,7 +893,7 @@ static int mxc_v1_ooblayout_free(struct mtd_info *mtd, int section,
+ {
+ 	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+ 
+-	if (section > nand_chip->ecc.steps)
++	if (section >= nand_chip->ecc.steps)
+ 		return -ERANGE;
+ 
+ 	if (!section) {
+@@ -943,7 +943,7 @@ static int mxc_v2_ooblayout_free(struct mtd_info *mtd, int section,
+ 	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+ 	int stepsize = nand_chip->ecc.bytes == 9 ? 16 : 26;
+ 
+-	if (section > nand_chip->ecc.steps)
++	if (section >= nand_chip->ecc.steps)
+ 		return -ERANGE;
+ 
+ 	if (!section) {
+-- 
+2.1.4
