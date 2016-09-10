@@ -1,28 +1,20 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1biYgM-0000uX-KP
- for linux-mtd@lists.infradead.org; Sat, 10 Sep 2016 03:10:19 +0000
-Received: by mail-pf0-x242.google.com with SMTP id 128so4820277pfb.0
- for <linux-mtd@lists.infradead.org>; Fri, 09 Sep 2016 20:09:57 -0700 (PDT)
-Date: Fri, 9 Sep 2016 20:09:30 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Karl Beldan <kbeldan@baylibre.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Sekhar Nori <nsekhar@ti.com>,
- Kevin Hilman <khilman@baylibre.com>,
- Karl Beldan <karl.beldan+oss@gmail.com>
-Subject: Re: [PATCH] mtd: nand: davinci: Reinitialize the HW ECC engine in
- 4bit hwctl
-Message-ID: <20160910024133.GA15644@localhost>
-References: <20160829074550.29247-1-kbeldan@baylibre.com>
- <20160829115930.517a133e@bbrezillon>
- <20160829203847.GA102453@google.com>
- <20160829224541.545f622d@bbrezillon>
+Received: from smtp.ing.unlp.edu.ar ([163.10.11.64])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bie48-0003ha-IC
+ for linux-mtd@lists.infradead.org; Sat, 10 Sep 2016 08:55:13 +0000
+Message-ID: <20160910055231.15983qlfydyicdlb@webmail.ing.unlp.edu.ar>
+Date: Sat, 10 Sep 2016 05:52:31 -0300
+From: "Shougang Group Ltd" <ana.cendoya@ing.unlp.edu.ar>
+Reply-to: zhujimin06@gmail.com
+To: undisclosed-recipients:;
+Subject: Company Payment Agent Needed
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
 Content-Disposition: inline
-In-Reply-To: <20160829224541.545f622d@bbrezillon>
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,23 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 29, 2016 at 10:45:41PM +0200, Boris Brezillon wrote:
-> On Mon, 29 Aug 2016 13:38:47 -0700
-> Brian Norris <computersforpeace@gmail.com> wrote:
-> 
-> > On Mon, Aug 29, 2016 at 11:59:30AM +0200, Boris Brezillon wrote:
-> > > Brian, can you take this patch directly in your tree. If that's not
-> > > possible, let me know, I'll add the Fixes and Cc:stable tags and take
-> > > it for 4.9.  
-> > 
-> > Would this be correct?
-> > 
-> > Fixes: 6a4123e581b3 ("mtd: nand: davinci_nand, 4-bit ECC for smallpage")
-> 
-> I'd say so. At least this is where nand_davinci_hwctl_4bit() was
-> introduced, and it did not contain this 'reset' step.
 
-Sorry, didn't notice your reply until now. Very busy... (more about that
-later)
 
-Applied to linux-mtd.git, with the Fixes and stable tags.
+--=20
+Shougang Group
+45 Huagong Road Xinji City,
+Hebei Province China.
+webpage: www.shougang.com.cn
+
+
+This is an official request for Professional/consultants who will stand as
+our regional representative to run logistics on behalf of Shougang Group.
+We are only looking for individual or company from USA and Canada. You
+will be entitle to ten percent (10%) of every payment you receive from our
+customers in your region on behalf of the company.
+
+NOTE: You are not require to travel, all communications with our customers
+will be through email or phone. All fees, including taxes will be handled
+by us.
+
+You can apply for this position by filling the information below and send
+back to us;
+
+Full Name:
+Residencial or office address:
+Town:
+State:
+Zipcode:
+Country:
+Current Job:
+If you own a company, please state the company name:
+Prefered Email:
+Gender:
+Age:
+Telephone:
+
+If you have a current job, you can still be part of our business, as
+services for us will not bother with your hours of work.
+
+Respectfully,
+Mr. Zhu Jimin (Chief Executive Officer)
+Shougang Group
