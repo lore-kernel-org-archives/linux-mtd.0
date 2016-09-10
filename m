@@ -1,20 +1,15 @@
-Received: from smtp.ing.unlp.edu.ar ([163.10.11.64])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bie48-0003ha-IC
- for linux-mtd@lists.infradead.org; Sat, 10 Sep 2016 08:55:13 +0000
-Message-ID: <20160910055231.15983qlfydyicdlb@webmail.ing.unlp.edu.ar>
-Date: Sat, 10 Sep 2016 05:52:31 -0300
-From: "Shougang Group Ltd" <ana.cendoya@ing.unlp.edu.ar>
-Reply-to: zhujimin06@gmail.com
-To: undisclosed-recipients:;
-Subject: Company Payment Agent Needed
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Received: from mout.kundenserver.de ([212.227.126.133])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bioPq-0006cv-B6
+ for linux-mtd@lists.infradead.org; Sat, 10 Sep 2016 19:58:19 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: kernel-build-reports@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: pmcmsp: use kstrndup instead of kmalloc+strncpy
+Date: Sat, 10 Sep 2016 21:57:35 +0200
+Message-Id: <20160910195748.1360407-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +19,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+kernelci.org reports a warning for this driver, as it copies a local
+variable into a 'const char *' string:
 
+    drivers/mtd/maps/pmcmsp-flash.c:149:30: warning: passing argument 1 of 'strncpy' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
 
---=20
-Shougang Group
-45 Huagong Road Xinji City,
-Hebei Province China.
-webpage: www.shougang.com.cn
+Using kstrndup() simplifies the code and avoids the warning.
 
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/maps/pmcmsp-flash.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-This is an official request for Professional/consultants who will stand as
-our regional representative to run logistics on behalf of Shougang Group.
-We are only looking for individual or company from USA and Canada. You
-will be entitle to ten percent (10%) of every payment you receive from our
-customers in your region on behalf of the company.
-
-NOTE: You are not require to travel, all communications with our customers
-will be through email or phone. All fees, including taxes will be handled
-by us.
-
-You can apply for this position by filling the information below and send
-back to us;
-
-Full Name:
-Residencial or office address:
-Town:
-State:
-Zipcode:
-Country:
-Current Job:
-If you own a company, please state the company name:
-Prefered Email:
-Gender:
-Age:
-Telephone:
-
-If you have a current job, you can still be part of our business, as
-services for us will not bother with your hours of work.
-
-Respectfully,
-Mr. Zhu Jimin (Chief Executive Officer)
-Shougang Group
+diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
+index 744ca5cacc9b..cf54420f943d 100644
+--- a/drivers/mtd/maps/pmcmsp-flash.c
++++ b/drivers/mtd/maps/pmcmsp-flash.c
+@@ -139,15 +139,13 @@ static int __init init_msp_flash(void)
+ 		}
+ 
+ 		msp_maps[i].bankwidth = 1;
+-		msp_maps[i].name = kmalloc(7, GFP_KERNEL);
++		msp_maps[i].name = kstrndup(flash_name, 7, GFP_KERNEL);
+ 		if (!msp_maps[i].name) {
+ 			iounmap(msp_maps[i].virt);
+ 			kfree(msp_parts[i]);
+ 			goto cleanup_loop;
+ 		}
+ 
+-		msp_maps[i].name = strncpy(msp_maps[i].name, flash_name, 7);
+-
+ 		for (j = 0; j < pcnt; j++) {
+ 			part_name[5] = '0' + i;
+ 			part_name[7] = '0' + j;
+-- 
+2.9.0
