@@ -1,17 +1,17 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail.kidscompany.org ([173.160.239.181])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bjXWJ-0002MY-DS
- for linux-mtd@lists.infradead.org; Mon, 12 Sep 2016 20:08:00 +0000
-Received: by mail-pf0-x241.google.com with SMTP id 128so8529847pfb.0
- for <linux-mtd@lists.infradead.org>; Mon, 12 Sep 2016 13:07:38 -0700 (PDT)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-spi@vger.kernel.org, f.fainelli@gmail.com,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com
-Cc: bcm-kernel-feedback-list@broadcom.com,
-	Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH v2, 1/1] mtd: devices: m25p80: Add PM suspend resume support
-Date: Mon, 12 Sep 2016 16:01:34 -0400
-Message-Id: <1473710494-4084-1-git-send-email-kdasu.kdev@gmail.com>
+ id 1bjZrG-0004Zp-Pa
+ for linux-mtd@lists.infradead.org; Mon, 12 Sep 2016 22:37:47 +0000
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Scheduled Maintenance & Upgrade
+To: <linux-mtd@lists.infradead.org>
+From: Help Desk <gerlezaj@kidscompany.org>
+Date: Tue, 13 Sep 2016 06:37:16 +0800
+Reply-To: <help.desk.team00016@tech-center.com>
+Message-ID: <337b745b-81e1-423b-9314-fb41104c705b@ECA-SRV.ECA.lan>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,133 +21,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adding PM support so as to be able to probe spi-nor flash
-on resume. There are vendor specific commands to setup
-the transfer mode and enable read/write as part of
-spi_nor_scan(), done on initial probe and needed on resume().
-The spi-nor structure is private to the m25p driver and hence
-is the only place this can be done without having to duplicate
-code in controller driver.
+Help Desk
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/mtd/devices/m25p80.c | 68 +++++++++++++++++++++++++++++++-------------
- 1 file changed, 48 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 9cf7fcd..48c3f64 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -186,6 +186,39 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- }
- 
- /*
-+ * scan for spi nor flash vendor parts and setup
-+ * read/write mode
-+ */
-+static int m25p_nor_flash_scan(struct device *dev)
-+{
-+	struct m25p *flash = dev_get_drvdata(dev);
-+	struct flash_platform_data	*data;
-+	char *flash_name = NULL;
-+	enum read_mode mode = SPI_NOR_NORMAL;
-+
-+	data = dev_get_platdata(dev);
-+
-+	/* For some (historical?) reason many platforms provide two different
-+	 * names in flash_platform_data: "name" and "type". Quite often name is
-+	 * set to "m25p80" and then "type" provides a real chip name.
-+	 * If that's the case, respect "type" and ignore a "name".
-+	 */
-+	if (data && data->type)
-+		flash_name = data->type;
-+	else if (!strcmp(flash->spi->modalias, "spi-nor"))
-+		flash_name = NULL; /* auto-detect */
-+	else
-+		flash_name = flash->spi->modalias;
-+
-+	if (flash->spi->mode & SPI_RX_QUAD)
-+		mode = SPI_NOR_QUAD;
-+	else if (flash->spi->mode & SPI_RX_DUAL)
-+		mode = SPI_NOR_DUAL;
-+
-+	return spi_nor_scan(&flash->spi_nor, flash_name, mode);
-+}
-+
-+/*
-  * board specific setup should have ensured the SPI clock used here
-  * matches what the READ command supports, at least until this driver
-  * understands FAST_READ (for clocks over 25 MHz).
-@@ -195,8 +228,6 @@ static int m25p_probe(struct spi_device *spi)
- 	struct flash_platform_data	*data;
- 	struct m25p *flash;
- 	struct spi_nor *nor;
--	enum read_mode mode = SPI_NOR_NORMAL;
--	char *flash_name;
- 	int ret;
- 
- 	data = dev_get_platdata(&spi->dev);
-@@ -220,27 +251,11 @@ static int m25p_probe(struct spi_device *spi)
- 	spi_set_drvdata(spi, flash);
- 	flash->spi = spi;
- 
--	if (spi->mode & SPI_RX_QUAD)
--		mode = SPI_NOR_QUAD;
--	else if (spi->mode & SPI_RX_DUAL)
--		mode = SPI_NOR_DUAL;
--
- 	if (data && data->name)
- 		nor->mtd.name = data->name;
- 
--	/* For some (historical?) reason many platforms provide two different
--	 * names in flash_platform_data: "name" and "type". Quite often name is
--	 * set to "m25p80" and then "type" provides a real chip name.
--	 * If that's the case, respect "type" and ignore a "name".
--	 */
--	if (data && data->type)
--		flash_name = data->type;
--	else if (!strcmp(spi->modalias, "spi-nor"))
--		flash_name = NULL; /* auto-detect */
--	else
--		flash_name = spi->modalias;
-+	ret = m25p_nor_flash_scan(nor->dev);
- 
--	ret = spi_nor_scan(nor, flash_name, mode);
- 	if (ret)
- 		return ret;
- 
-@@ -248,7 +263,6 @@ static int m25p_probe(struct spi_device *spi)
- 				   data ? data->nr_parts : 0);
- }
- 
--
- static int m25p_remove(struct spi_device *spi)
- {
- 	struct m25p	*flash = spi_get_drvdata(spi);
-@@ -319,10 +333,24 @@ static const struct of_device_id m25p_of_table[] = {
- };
- MODULE_DEVICE_TABLE(of, m25p_of_table);
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int m25p_suspend(struct device *dev)
-+{
-+	return 0;
-+}
-+
-+static int m25p_resume(struct device *dev)
-+{
-+	return m25p_nor_flash_scan(dev);
-+}
-+#endif
-+static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
-+
- static struct spi_driver m25p80_driver = {
- 	.driver = {
- 		.name	= "m25p80",
- 		.of_match_table = m25p_of_table,
-+		.pm	= &m25p_pm_ops,
- 	},
- 	.id_table	= m25p_ids,
- 	.probe	= m25p_probe,
--- 
-1.9.1
+Scheduled Maintenance & Upgrade
+
+Your account is in the process of being upgraded to a newest  =
+
+Windows-based servers and an enhanced online email interface inline with in=
+ternet infrastructure Maintenance. The new servers will provide better anti=
+-spam and anti-virus functions, along with IMAP Support for mobile devices =
+to enhance your usage.
+
+To ensure that your account is not disrupted but active during and after th=
+is upgrade, you are required to kindly confirm your account by stating the =
+details below:
+
+* Domain\user name: =
+
+* Password: =
+
+
+This will prompt the upgrade of your account.
+
+Failure to acknowledge the receipt of this notification, might result to a =
+temporary deactivation of your account from our database. Your account shal=
+l remain active upon your confirmation of your login details.
+
+During this maintenance window, there may be periods of interruption to ema=
+il services.  This will include sending and receiving email in Outlook, on =
+webmail, and on mobile devices. Also, if you leave your Mailbox open during=
+ the maintenance period, you may be prompted to close and reopen. =
+
+
+We appreciate your patience as this maintenance is performed and we do apol=
+ogize for any inconveniences caused.
+
+Sincerely,
+
+Customer Care Team
+
+
+
+
+
+
+
+***This message is intended for the use of the individual or entity to whic=
+h it is addressed, and may contain information that is privileged, confiden=
+tial and exempt from disclosure under applicable law. If the reader of this=
+ message is not the intended recipient, or the employee or agent responsibl=
+e for delivering the message to the intended recipient, you are hereby noti=
+fied that any dissemination, distribution or copying of this communication =
+is strictly prohibited.
