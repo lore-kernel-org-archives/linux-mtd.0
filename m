@@ -1,22 +1,25 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bjKq5-0000P7-QT
- for linux-mtd@lists.infradead.org; Mon, 12 Sep 2016 06:35:34 +0000
-Date: Mon, 12 Sep 2016 08:35:11 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- kernel@pengutronix.de
-Subject: Re: [PATCH 4/9] mtd: nand: Add function to convert ONFI mode to
- data_interface
-Message-ID: <20160912063511.flb3se54dy4itlru@pengutronix.de>
-References: <1473422712-12359-1-git-send-email-s.hauer@pengutronix.de>
- <1473422712-12359-5-git-send-email-s.hauer@pengutronix.de>
- <20160909143522.6a3b6975@bbrezillon>
+ id 1bjMr6-0000OO-LY
+ for linux-mtd@lists.infradead.org; Mon, 12 Sep 2016 08:44:45 +0000
+Date: Mon, 12 Sep 2016 11:35:37 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Lee Jones <lee.jones@linaro.org>, David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, Peter Tyser <ptyser@xes-inc.com>,
+ key.seong.lim@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] spi-nor: Add support for Intel SPI serial flash
+ controller
+Message-ID: <20160912083537.GA1811@lahna.fi.intel.com>
+References: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
+ <20160829071125.GX1812@lahna.fi.intel.com>
+ <20160830091330.GH1661@dell>
+ <20160830092803.GH1709@lahna.fi.intel.com>
+ <20160830104743.GD10121@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160909143522.6a3b6975@bbrezillon>
+In-Reply-To: <20160830104743.GD10121@dell>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,54 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 09, 2016 at 02:35:22PM +0200, Boris Brezillon wrote:
-> On Fri,  9 Sep 2016 14:05:07 +0200
-> Sascha Hauer <s.hauer@pengutronix.de> wrote:
+On Tue, Aug 30, 2016 at 11:47:43AM +0100, Lee Jones wrote:
+> On Tue, 30 Aug 2016, Mika Westerberg wrote:
 > 
-> > onfi_init_data_interface() initializes a data interface with
-> > values from a given ONFI mode.
+> > On Tue, Aug 30, 2016 at 10:13:30AM +0100, Lee Jones wrote:
+> > > On Mon, 29 Aug 2016, Mika Westerberg wrote:
+> > > 
+> > > > On Mon, Aug 15, 2016 at 10:10:41AM +0300, Mika Westerberg wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > This is third version of the series. Previous versions can be found:
+> > > > > 
+> > > > >   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
+> > > > >   v1: https://lkml.org/lkml/2016/6/14/269
+> > > > > 
+> > > > > This series adds support for the Intel SPI serial flash controller found on
+> > > > > many recent Intel CPUs including Baytrail and Braswell. This driver makes
+> > > > > it possible to access the BIOS and other platform data which is stored on
+> > > > > the SPI serial flash. It is also possible to upgrade the BIOS using this
+> > > > > driver if it has not been protected by special hardware bits.
+> > > > > 
+> > > > > The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
+> > > > > MAX.
+> > > > > 
+> > > > > Since poking the SPI serial flash can brick the machine, this driver can
+> > > > > only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
+> > > > > unless instructed othwerwise by module parameter.
+> > > > > 
+> > > > > Lee can you ACK/NACK the MFD parts so that we can merge the whole series
+> > > > > through the MTD tree?
+> > > 
+> > > Why does it need to go into the MTD tree?  What are the *build*
+> > > dependencies?
 > > 
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> >  drivers/mtd/nand/nand_timings.c | 16 ++++++++++++++++
-> >  include/linux/mtd/nand.h        |  2 ++
-> >  2 files changed, 18 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-> > index 9af2ebc..ece4ff2 100644
-> > --- a/drivers/mtd/nand/nand_timings.c
-> > +++ b/drivers/mtd/nand/nand_timings.c
-> > @@ -269,3 +269,19 @@ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode)
-> >  	return &onfi_sdr_timings[mode].timings.sdr;
-> >  }
-> >  EXPORT_SYMBOL(onfi_async_timing_mode_to_sdr_timings);
-> > +
-> > +/**
-> > + * onfi_init_data_interface - [NAND Interface] Initialize a data interface from
-> > + * given ONFI mode
-> > + * @iface: The data interface to be initialized
-> > + * @mode: The ONFI timing mode
-> > + */
-> > +int onfi_init_data_interface(struct nand_data_interface *iface, int mode)
+> > The first patch adds include/linux/platform_data/intel-spi.h which is
+> > needed by the second patch to fill in the platform data structure.
 > 
-> Can we choose a more future proof prototype (like the one I suggested)
-> for this function. Passing the nand_chip will later allow to extract
-> extended timings (tR, tPROG, tCCS, ...) from the param page, and
-> passing the interface type makes it compatible with DDR mode.
+> That's reasonable.
+> 
+> I'm happy for the set to be routed via MTD.  I do require a tagged
+> immutable branch (with only these patches on) to pull from though.
 
-Ok, will change as you suggested to:
+Hmm, still nothing from Brian and we are already in -rc6.
 
-int onfi_init_data_interface(struct nand_chip *chip,
-                             struct nand_data_interface *iface,
-                             enum nand_data_interface_type type,
-                             int timing_mode)
-
-Before I send another round: Are the other patches ok?
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+David, you are also listed as MTD maintainer would you be able pick the
+driver up to your linux-mtd tree and provide Lee an immutable branch?
