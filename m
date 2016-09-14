@@ -1,18 +1,19 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkDoG-0002wR-NI
- for linux-mtd@lists.infradead.org; Wed, 14 Sep 2016 17:17:22 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>,
- Mark Brown <broonie@kernel.org>, broonie@kernel.org, linux-spi@vger.kernel.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- f.fainelli@gmail.com, yendapally.reddy@broadcom.com,
- bcm-kernel-feedback-list@broadcom.com, jon.mason@broadcom.com
-In-Reply-To: <1472076269-4731-2-git-send-email-kdasu.kdev@gmail.com>
-Message-Id: <E1bkDnr-00020Y-9P@debutante>
-Date: Wed, 14 Sep 2016 18:16:55 +0100
-Subject: Applied "spi: Broadcom BRCMSTB, NSP, NS2 SoC bindings" to the spi tree
+MIME-Version: 1.0
+In-Reply-To: <1471505884-33996-1-git-send-email-B56489@freescale.com>
+References: <1471505884-33996-1-git-send-email-B56489@freescale.com>
+From: Han Xu <xhnjupt@gmail.com>
+Date: Wed, 14 Sep 2016 14:44:36 -0500
+Message-ID: <CA+EcR20F2Gd7yXKGXZmjHj6EZr8MxgnWG9ODx25wOVm5JZneLw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/9] mtd:fsl-quadspi:use the property fields of SPI-NOR
+To: Yunhui Cui <B56489@freescale.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "han.xu@freescale.com" <han.xu@freescale.com>, jagannadh.teki@gmail.com,
+ Yunhui Cui <yunhui.cui@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Yao Yuan <yao.yuan@nxp.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,287 +23,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch
+On Thu, Aug 18, 2016 at 2:37 AM, Yunhui Cui <B56489@freescale.com> wrote:
+> We can get the read/write/erase opcode from the spi nor framework
+> directly. This patch uses the information stored in the SPI-NOR to
+> remove the hardcode in the fsl_qspi_init_lut().
+>
+> Signed-off-by: Yunhui Cui <B56489@freescale.com>
+> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
+> ---
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 40 ++++++++++++---------------------------
+>  1 file changed, 12 insertions(+), 28 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 5c82e4e..5ad6402 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -373,9 +373,13 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>         void __iomem *base = q->iobase;
+>         int rxfifo = q->devtype_data->rxfifo;
+>         u32 lut_base;
+> -       u8 cmd, addrlen, dummy;
+>         int i;
+>
+> +       struct spi_nor *nor = &q->nor[0];
+> +       u8 addrlen = (nor->addr_width == 3) ? ADDR24BIT : ADDR32BIT;
+> +       u8 read_op = nor->read_opcode;
+> +       u8 read_dm = nor->read_dummy;
+> +
+>         fsl_qspi_unlock_lut(q);
+>
+>         /* Clear all the LUT table */
+> @@ -385,20 +389,10 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>         /* Quad Read */
+>         lut_base = SEQID_QUAD_READ * 4;
+>
+> -       if (q->nor_size <= SZ_16M) {
+> -               cmd = SPINOR_OP_READ_1_1_4;
+> -               addrlen = ADDR24BIT;
+> -               dummy = 8;
+> -       } else {
+> -               /* use the 4-byte address */
+> -               cmd = SPINOR_OP_READ_1_1_4;
+> -               addrlen = ADDR32BIT;
+> -               dummy = 8;
+> -       }
+> -
+> -       qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+> +       qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
+>                         base + QUADSPI_LUT(lut_base));
+> -       qspi_writel(q, LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4, rxfifo),
+> +       qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+> +                   LUT1(FSL_READ, PAD4, rxfifo),
+>                         base + QUADSPI_LUT(lut_base + 1));
+>
+>         /* Write enable */
+> @@ -409,16 +403,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>         /* Page Program */
+>         lut_base = SEQID_PP * 4;
+>
+> -       if (q->nor_size <= SZ_16M) {
+> -               cmd = SPINOR_OP_PP;
+> -               addrlen = ADDR24BIT;
+> -       } else {
+> -               /* use the 4-byte address */
+> -               cmd = SPINOR_OP_PP;
+> -               addrlen = ADDR32BIT;
+> -       }
+> -
+> -       qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+> +       qspi_writel(q, LUT0(CMD, PAD1, nor->program_opcode) |
+> +                   LUT1(ADDR, PAD1, addrlen),
+>                         base + QUADSPI_LUT(lut_base));
+>         qspi_writel(q, LUT0(FSL_WRITE, PAD1, 0),
+>                         base + QUADSPI_LUT(lut_base + 1));
+> @@ -432,10 +418,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>         /* Erase a sector */
+>         lut_base = SEQID_SE * 4;
+>
+> -       cmd = q->nor[0].erase_opcode;
+> -       addrlen = q->nor_size <= SZ_16M ? ADDR24BIT : ADDR32BIT;
+> -
+> -       qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+> +       qspi_writel(q, LUT0(CMD, PAD1, nor->erase_opcode) |
+> +                   LUT1(ADDR, PAD1, addrlen),
+>                         base + QUADSPI_LUT(lut_base));
+>
+>         /* Erase the whole chip */
+> --
+> 2.1.0.27.g96db324
+>
+>
+Acked-by: Han xu <han.xu@nxp.com>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-   spi: Broadcom BRCMSTB, NSP, NS2 SoC bindings
 
-has been applied to the spi tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 5fc78f4c842aadb5bbe9d7033930e5b3afdffda6 Mon Sep 17 00:00:00 2001
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-Date: Wed, 24 Aug 2016 18:04:22 -0400
-Subject: [PATCH] spi: Broadcom BRCMSTB, NSP, NS2 SoC bindings
-
-Added device tree bindings documentation for BRCMSTB, NSP, NS2 iProc
-SoCs supported by spi-bcm-qspi, spi-brcmstb-qspi and spi-iproc-qspi driver.
-
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-Signed-off-by: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../devicetree/bindings/spi/brcm,spi-bcm-qspi.txt  | 233 +++++++++++++++++++++
- 1 file changed, 233 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt
-
-diff --git a/Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt b/Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt
-new file mode 100644
-index 000000000000..ad7ac80a3841
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt
-@@ -0,0 +1,233 @@
-+Broadcom SPI controller
-+
-+The Broadcom SPI controller is a SPI master found on various SOCs, including
-+BRCMSTB (BCM7XXX), Cygnus, NSP and NS2. The Broadcom Master SPI hw IP consits
-+of :
-+ MSPI : SPI master controller can read and write to a SPI slave device
-+ BSPI : Broadcom SPI in combination with the MSPI hw IP provides acceleration
-+	for flash reads and be configured to do single, double, quad lane
-+	io with 3-byte and 4-byte addressing support.
-+
-+ Supported Broadcom SoCs have one instance of MSPI+BSPI controller IP.
-+ MSPI master can be used wihout BSPI. BRCMSTB SoCs have an additional instance
-+ of a MSPI master without the BSPI to use with non flash slave devices that
-+ use SPI protocol.
-+
-+Required properties:
-+
-+- #address-cells:
-+    Must be <1>, as required by generic SPI binding.
-+
-+- #size-cells:
-+    Must be <0>, also as required by generic SPI binding.
-+
-+- compatible:
-+    Must be one of :
-+    "brcm,spi-bcm-qspi", "brcm,spi-brcmstb-qspi" : MSPI+BSPI on BRCMSTB SoCs
-+    "brcm,spi-bcm-qspi", "brcm,spi-brcmstb-mspi" : Second Instance of MSPI
-+						   BRCMSTB  SoCs
-+    "brcm,spi-bcm-qspi", "brcm,spi-nsp-qspi"     : MSPI+BSPI on Cygnus, NSP
-+    "brcm,spi-bcm-qspi", "brcm,spi-ns2-qspi"     : NS2 SoCs
-+
-+- reg:
-+    Define the bases and ranges of the associated I/O address spaces.
-+    The required range is MSPI controller registers.
-+
-+- reg-names:
-+    First name does not matter, but must be reserved for the MSPI controller
-+    register range as mentioned in 'reg' above, and will typically contain
-+    - "bspi_regs": BSPI register range, not required with compatible
-+		   "spi-brcmstb-mspi"
-+    - "mspi_regs": MSPI register range is required for compatible strings
-+    - "intr_regs", "intr_status_reg" : Interrupt and status register for
-+      NSP, NS2, Cygnus SoC
-+
-+- interrupts
-+    The interrupts used by the MSPI and/or BSPI controller.
-+
-+- interrupt-names:
-+    Names of interrupts associated with MSPI
-+    - "mspi_halted" :
-+    - "mspi_done": Indicates that the requested SPI operation is complete.
-+    - "spi_lr_fullness_reached" : Linear read BSPI pipe full
-+    - "spi_lr_session_aborted"  : Linear read BSPI pipe aborted
-+    - "spi_lr_impatient" : Linear read BSPI requested when pipe empty
-+    - "spi_lr_session_done" : Linear read BSPI session done
-+
-+- clocks:
-+    A phandle to the reference clock for this block.
-+
-+Optional properties:
-+
-+
-+- native-endian
-+    Defined when using BE SoC and device uses BE register read/write
-+
-+Recommended optional m25p80 properties:
-+- spi-rx-bus-width: Definition as per
-+                    Documentation/devicetree/bindings/spi/spi-bus.txt
-+
-+Examples:
-+
-+BRCMSTB SoC Example:
-+
-+  SPI Master (MSPI+BSPI) for SPI-NOR access:
-+
-+    spi@f03e3400 {
-+		#address-cells = <0x1>;
-+		#size-cells = <0x0>;
-+		compatible = "brcm,spi-brcmstb-qspi", "brcm,spi-brcmstb-qspi";
-+		reg = <0xf03e0920 0x4 0xf03e3400 0x188 0xf03e3200 0x50>;
-+		reg-names = "cs_reg", "mspi", "bspi";
-+		interrupts = <0x6 0x5 0x4 0x3 0x2 0x1 0x0>;
-+		interrupt-parent = <0x1c>;
-+		interrupt-names = "mspi_halted",
-+				  "mspi_done",
-+				  "spi_lr_overread",
-+				  "spi_lr_session_done",
-+				  "spi_lr_impatient",
-+				  "spi_lr_session_aborted",
-+				  "spi_lr_fullness_reached";
-+
-+		clocks = <&hif_spi>;
-+		clock-names = "sw_spi";
-+
-+		m25p80@0 {
-+			#size-cells = <0x2>;
-+			#address-cells = <0x2>;
-+			compatible = "m25p80";
-+			reg = <0x0>;
-+			spi-max-frequency = <0x2625a00>;
-+			spi-cpol;
-+			spi-cpha;
-+			m25p,fast-read;
-+
-+			flash0.bolt@0 {
-+				reg = <0x0 0x0 0x0 0x100000>;
-+			};
-+
-+			flash0.macadr@100000 {
-+				reg = <0x0 0x100000 0x0 0x10000>;
-+			};
-+
-+			flash0.nvram@110000 {
-+				reg = <0x0 0x110000 0x0 0x10000>;
-+			};
-+
-+			flash0.kernel@120000 {
-+				reg = <0x0 0x120000 0x0 0x400000>;
-+			};
-+
-+			flash0.devtree@520000 {
-+				reg = <0x0 0x520000 0x0 0x10000>;
-+			};
-+
-+			flash0.splash@530000 {
-+				reg = <0x0 0x530000 0x0 0x80000>;
-+			};
-+
-+			flash0@0 {
-+				reg = <0x0 0x0 0x0 0x4000000>;
-+			};
-+		};
-+	};
-+
-+
-+    MSPI master for any SPI device :
-+
-+	spi@f0416000 {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		clocks = <&upg_fixed>;
-+		compatible = "brcm,spi-brcmstb-qspi", "brcm,spi-brcmstb-mspi";
-+		reg = <0xf0416000 0x180>;
-+		reg-names = "mspi";
-+		interrupts = <0x14>;
-+		interrupt-parent = <&irq0_aon_intc>;
-+		interrupt-names = "mspi_done";
-+	};
-+
-+iProc SoC Example:
-+
-+    qspi: spi@18027200 {
-+	compatible = "brcm,spi-bcm-qspi", "brcm,spi-nsp-qspi";
-+	reg = <0x18027200 0x184>,
-+	      <0x18027000 0x124>,
-+	      <0x1811c408 0x004>,
-+	      <0x180273a0 0x01c>;
-+	reg-names = "mspi_regs", "bspi_regs", "intr_regs", "intr_status_reg";
-+	interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
-+	interrupt-names =
-+		     "spi_lr_fullness_reached",
-+		     "spi_lr_session_aborted",
-+		     "spi_lr_impatient",
-+		     "spi_lr_session_done",
-+		     "mspi_done",
-+		     "mspi_halted";
-+	clocks = <&iprocmed>;
-+	clock-names = "iprocmed";
-+	num-cs = <2>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+    };
-+
-+
-+ NS2 SoC Example:
-+
-+	       qspi: spi@66470200 {
-+		       compatible = "brcm,spi-bcm-qspi", "brcm,spi-ns2-qspi";
-+		       reg = <0x66470200 0x184>,
-+			     <0x66470000 0x124>,
-+			     <0x67017408 0x004>,
-+			     <0x664703a0 0x01c>;
-+		       reg-names = "mspi", "bspi", "intr_regs",
-+			"intr_status_reg";
-+		       interrupts = <GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH>;
-+		       interrupt-names = "spi_l1_intr";
-+			clocks = <&iprocmed>;
-+			clock-names = "iprocmed";
-+			num-cs = <2>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+	       };
-+
-+
-+ m25p80 node for NSP, NS2
-+
-+	 &qspi {
-+		      flash: m25p80@0 {
-+		      #address-cells = <1>;
-+		      #size-cells = <1>;
-+		      compatible = "m25p80";
-+		      reg = <0x0>;
-+		      spi-max-frequency = <12500000>;
-+		      m25p,fast-read;
-+		      spi-cpol;
-+		      spi-cpha;
-+
-+		      partition@0 {
-+				  label = "boot";
-+				  reg = <0x00000000 0x000a0000>;
-+		      };
-+
-+		      partition@a0000 {
-+				  label = "env";
-+				  reg = <0x000a0000 0x00060000>;
-+		      };
-+
-+		      partition@100000 {
-+				  label = "system";
-+				  reg = <0x00100000 0x00600000>;
-+		      };
-+
-+		      partition@700000 {
-+				  label = "rootfs";
-+				  reg = <0x00700000 0x01900000>;
-+		      };
-+	};
 -- 
-2.8.1
+Sincerely,
+
+Han XU
