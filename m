@@ -1,23 +1,17 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkGtl-0002JC-2m
- for linux-mtd@lists.infradead.org; Wed, 14 Sep 2016 20:35:13 +0000
-Received: by mail-pf0-x244.google.com with SMTP id g202so1234625pfb.1
- for <linux-mtd@lists.infradead.org>; Wed, 14 Sep 2016 13:34:52 -0700 (PDT)
-Subject: Re: [PATCH v6, 7/8] arm64: dts: Add ns2 SoC support
-To: Kamal Dasu <kdasu.kdev@gmail.com>, broonie@kernel.org,
- linux-spi@vger.kernel.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, vigneshr@ti.com, f.fainelli@gmail.com,
- yendapally.reddy@broadcom.com
-References: <1472076269-4731-1-git-send-email-kdasu.kdev@gmail.com>
- <1472076269-4731-8-git-send-email-kdasu.kdev@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com, jon.mason@broadcom.com
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <0efaedcd-5fe5-4a82-521e-066201477e89@gmail.com>
-Date: Wed, 14 Sep 2016 13:34:50 -0700
+ id 1bkHus-0006PF-4H
+ for linux-mtd@lists.infradead.org; Wed, 14 Sep 2016 21:40:28 +0000
+Subject: Re: UBIFS - strange behaviour after enabling chk_index
+To: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <AM4PR0701MB213063EE7BE9DDE08ADAB177FEF10@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <adef444f-b333-4b2c-49d1-1bc08697a587@nod.at>
+Date: Wed, 14 Sep 2016 23:39:21 +0200
 MIME-Version: 1.0
-In-Reply-To: <1472076269-4731-8-git-send-email-kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <AM4PR0701MB213063EE7BE9DDE08ADAB177FEF10@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,14 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/24/2016 03:04 PM, Kamal Dasu wrote:
-> Adding qspi node compatible with the new spi-bcm-qspi
-> driver for the Broadcom's northstar2 SoC.
-> 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> Signed-off-by: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
+Marcin,
 
-Applied to devicetree-arm64/next with small tweaks to the subject,
-thanks Kamal!
--- 
-Florian
+On 14.09.2016 10:28, Krzeminski, Marcin (Nokia - PL/Wroclaw) wrote:
+> (Plain text now)
+> 
+> Hi Richard, list
+> 
+> During some power-cut tests I accidently came across strange case.
+> The test script is here (I could attach it this in thread later).
+> 
+> http://pastebin.com/daNrf6yG
+> 
+> Result of running this on HW and Qemu is the same, and it ends like below (logs from Qemu).
+> 
+> It does not reproduce if I use flash with 256KiB sectors (both Qemu and HW),
+> or do not enable index integrity checks.
+> Could it be real life case?
+
+Is this the SPI-NOR device you talked about on IRC?
+Maybe the check is broken, maybe it uncovers a hard to hit issue
+on your flash. Both could be.
+
+Do you emulate exactly the same device in qemu?
+
+Thanks,
+//richard
