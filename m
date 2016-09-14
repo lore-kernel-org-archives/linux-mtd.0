@@ -1,23 +1,23 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bk7Na-0002cX-FX
- for linux-mtd@lists.infradead.org; Wed, 14 Sep 2016 10:25:25 +0000
-Received: by mail-lf0-x241.google.com with SMTP id s29so434431lfg.3
- for <linux-mtd@lists.infradead.org>; Wed, 14 Sep 2016 03:25:00 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 2/2] ubifs: use dirty_writeback_interval value for wbuf timer
-Date: Wed, 14 Sep 2016 12:24:35 +0200
-Message-Id: <20160914102435.22312-3-zajec5@gmail.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bkC3Z-0006f2-Gt
+ for linux-mtd@lists.infradead.org; Wed, 14 Sep 2016 15:25:02 +0000
+Date: Wed, 14 Sep 2016 17:24:28 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
+ <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] ubifs: drop softlimit and delta fields from struct
+ ubifs_wbuf
+Message-ID: <20160914172428.3893ff2f@bbrezillon>
 In-Reply-To: <20160914102435.22312-2-zajec5@gmail.com>
 References: <20160914102435.22312-2-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +27,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Wed, 14 Sep 2016 12:24:34 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-Right now wbuf timer has hardcoded timeouts and there is no place for
-manual adjustments. Some projects / cases many need that though. Few
-file systems allow doing that by respecting dirty_writeback_interval
-that can be set using sysctl (dirty_writeback_centisecs).
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> Values of these fields are set during init and never modified. They are
+> used (read) in a single function only. There isn't really any reason to
+> keep them in a struct. It only makes struct just a bit bigger without
+> any clear gain.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> ---
+>  fs/ubifs/io.c    | 18 ++++++++++--------
+>  fs/ubifs/ubifs.h |  5 -----
+>  2 files changed, 10 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+> index 97be412..4d6ce4a 100644
+> --- a/fs/ubifs/io.c
+> +++ b/fs/ubifs/io.c
+> @@ -452,16 +452,22 @@ static enum hrtimer_restart wbuf_timer_callback_nol=
+ock(struct hrtimer *timer)
+>   */
+>  static void new_wbuf_timer_nolock(struct ubifs_wbuf *wbuf)
+>  {
+> +	ktime_t softlimit =3D ktime_set(WBUF_TIMEOUT_SOFTLIMIT, 0);
+> +	unsigned long long delta;
+> +
+> +	delta =3D WBUF_TIMEOUT_HARDLIMIT - WBUF_TIMEOUT_SOFTLIMIT;
+> +	delta *=3D 1000000000ULL;
+> +
+>  	ubifs_assert(!hrtimer_active(&wbuf->timer));
+> +	ubifs_assert(delta <=3D ULONG_MAX);
 
-Lowering dirty_writeback_interval could be some way of dealing with user
-space apps lacking proper fsyncs. This is definitely *not* a perfect
-solution but we don't have ideal (user space) world. There were already
-advanced discussions on this matter, mostly when ext4 was introduced and
-it wasn't behaving as ext3. Anyway, the final decision was to add some
-hacks to the ext4, as trying to fix whole user space or adding new API
-was pointless.
+Hm, do we really want to recalculate delta each time we reschedule the
+wbuf timer?
 
-We can't (and shouldn't?) just follow ext4. We can't e.g. sync on close
-as this would cause too many commits and flash wearing. On the other
-hand we still should allow some trade-off between -o sync and default
-wbuf timeout. Respecting dirty_writeback_interval should allow some sane
-cutomizations if used warily.
+How about making the softlimit and delta variables static and
+initializing them once?
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- fs/ubifs/io.c    | 7 ++-----
- fs/ubifs/ubifs.h | 4 ----
- 2 files changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 4d6ce4a..aced6ee 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -452,11 +452,8 @@ static enum hrtimer_restart wbuf_timer_callback_nolock(struct hrtimer *timer)
-  */
- static void new_wbuf_timer_nolock(struct ubifs_wbuf *wbuf)
- {
--	ktime_t softlimit = ktime_set(WBUF_TIMEOUT_SOFTLIMIT, 0);
--	unsigned long long delta;
--
--	delta = WBUF_TIMEOUT_HARDLIMIT - WBUF_TIMEOUT_SOFTLIMIT;
--	delta *= 1000000000ULL;
-+	ktime_t softlimit = ms_to_ktime(dirty_writeback_interval * 10);
-+	unsigned long long delta = dirty_writeback_interval; /* 10% delta */
- 
- 	ubifs_assert(!hrtimer_active(&wbuf->timer));
- 	ubifs_assert(delta <= ULONG_MAX);
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 11bc8fa..26e6340 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -83,10 +83,6 @@
-  */
- #define BGT_NAME_PATTERN "ubifs_bgt%d_%d"
- 
--/* Write-buffer synchronization timeout interval in seconds */
--#define WBUF_TIMEOUT_SOFTLIMIT 3
--#define WBUF_TIMEOUT_HARDLIMIT 5
--
- /* Maximum possible inode number (only 32-bit inodes are supported now) */
- #define MAX_INUM 0xFFFFFFFF
- 
--- 
-2.9.3
+> =20
+>  	if (wbuf->no_timer)
+>  		return;
+>  	dbg_io("set timer for jhead %s, %llu-%llu millisecs",
+>  	       dbg_jhead(wbuf->jhead),
+> -	       div_u64(ktime_to_ns(wbuf->softlimit), USEC_PER_SEC),
+> -	       div_u64(ktime_to_ns(wbuf->softlimit) + wbuf->delta,
+> -		       USEC_PER_SEC));
+> -	hrtimer_start_range_ns(&wbuf->timer, wbuf->softlimit, wbuf->delta,
+> +	       div_u64(ktime_to_ns(softlimit), USEC_PER_SEC),
+> +	       div_u64(ktime_to_ns(softlimit) + delta, USEC_PER_SEC));
+> +	hrtimer_start_range_ns(&wbuf->timer, softlimit, delta,
+>  			       HRTIMER_MODE_REL);
+>  }
+> =20
+> @@ -1059,10 +1065,6 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct u=
+bifs_wbuf *wbuf)
+> =20
+>  	hrtimer_init(&wbuf->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+>  	wbuf->timer.function =3D wbuf_timer_callback_nolock;
+> -	wbuf->softlimit =3D ktime_set(WBUF_TIMEOUT_SOFTLIMIT, 0);
+> -	wbuf->delta =3D WBUF_TIMEOUT_HARDLIMIT - WBUF_TIMEOUT_SOFTLIMIT;
+> -	wbuf->delta *=3D 1000000000ULL;
+> -	ubifs_assert(wbuf->delta <=3D ULONG_MAX);
+>  	return 0;
+>  }
+> =20
+> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+> index 4617d45..11bc8fa 100644
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -644,9 +644,6 @@ typedef int (*ubifs_lpt_scan_callback)(struct ubifs_i=
+nfo *c,
+>   * @io_mutex: serializes write-buffer I/O
+>   * @lock: serializes @buf, @lnum, @offs, @avail, @used, @next_ino and @i=
+nodes
+>   *        fields
+> - * @softlimit: soft write-buffer timeout interval
+> - * @delta: hard and soft timeouts delta (the timer expire interval is @s=
+oftlimit
+> - *         and @softlimit + @delta)
+>   * @timer: write-buffer timer
+>   * @no_timer: non-zero if this write-buffer does not have a timer
+>   * @need_sync: non-zero if the timer expired and the wbuf needs sync'ing
+> @@ -675,8 +672,6 @@ struct ubifs_wbuf {
+>  	int (*sync_callback)(struct ubifs_info *c, int lnum, int free, int pad);
+>  	struct mutex io_mutex;
+>  	spinlock_t lock;
+> -	ktime_t softlimit;
+> -	unsigned long long delta;
+>  	struct hrtimer timer;
+>  	unsigned int no_timer:1;
+>  	unsigned int need_sync:1;
