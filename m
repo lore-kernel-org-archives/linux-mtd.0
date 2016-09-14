@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkGoq-00082A-LJ
- for linux-mtd@lists.infradead.org; Wed, 14 Sep 2016 20:30:10 +0000
+ id 1bkGoq-000827-L3
+ for linux-mtd@lists.infradead.org; Wed, 14 Sep 2016 20:30:11 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, richard@nod.at, dedekind1@gmail.com,
  adrian.hunter@intel.com, nbd@nbd.name
-Subject: [PATCH 4/4] ubifs: Use move variable in ubifs_rename()
-Date: Wed, 14 Sep 2016 22:28:52 +0200
-Message-Id: <1473884932-23689-5-git-send-email-richard@nod.at>
+Subject: [PATCH 1/4] ubifs: Implement O_TMPFILE
+Date: Wed, 14 Sep 2016 22:28:49 +0200
+Message-Id: <1473884932-23689-2-git-send-email-richard@nod.at>
 In-Reply-To: <1473884932-23689-1-git-send-email-richard@nod.at>
 References: <1473884932-23689-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,35 +20,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-...to make the code more consistent since we use
-move already in other places.
+This patchs adds O_TMPFILE support to UBIFS.
+A temp file is a reference to an unlinked inode, a user
+holding the reference can use it. As soon it is being closed
+all data vanishes.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/journal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ubifs/dir.c | 71 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 8e07f13..91bc76dc 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1100,7 +1100,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	aligned_dlen1 = ALIGN(dlen1, 8);
- 	aligned_dlen2 = ALIGN(dlen2, 8);
- 	len = aligned_dlen1 + aligned_dlen2 + ALIGN(ilen, 8) + ALIGN(plen, 8);
--	if (old_dir != new_dir)
-+	if (move)
- 		len += plen;
- 	dent = kmalloc(len, GFP_NOFS);
- 	if (!dent)
-@@ -1216,7 +1216,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	if (err)
- 		goto out_ro;
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 4b86d3a..8460f48 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -301,6 +301,76 @@ out_budg:
+ 	return err;
+ }
  
--	if (old_dir != new_dir) {
-+	if (move) {
- 		offs += ALIGN(plen, 8);
- 		ino_key_init(c, &key, new_dir->i_ino);
- 		err = ubifs_tnc_add(c, &key, lnum, offs, plen);
++static int ubifs_tmpfile(struct inode *dir, struct dentry *dentry,
++			 umode_t mode)
++{
++	struct inode *inode;
++	struct ubifs_info *c = dir->i_sb->s_fs_info;
++	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1};
++	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
++	struct ubifs_inode *ui, *dir_ui = ubifs_inode(dir);
++	int err, instantiated = 0;
++
++	/*
++	 * Budget request settings: new dirty inode, new direntry,
++	 * budget for dirtied inode will be released via writeback.
++	 */
++
++	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
++		dentry, mode, dir->i_ino);
++
++	err = ubifs_budget_space(c, &req);
++	if (err)
++		return err;
++
++	err = ubifs_budget_space(c, &ino_req);
++	if (err) {
++		ubifs_release_budget(c, &req);
++		return err;
++	}
++
++	inode = ubifs_new_inode(c, dir, mode);
++	if (IS_ERR(inode)) {
++		err = PTR_ERR(inode);
++		goto out_budg;
++	}
++	ui = ubifs_inode(inode);
++
++	err = ubifs_init_security(dir, inode, &dentry->d_name);
++	if (err)
++		goto out_inode;
++
++	mutex_lock(&ui->ui_mutex);
++	insert_inode_hash(inode);
++	d_tmpfile(dentry, inode);
++	ubifs_assert(ui->dirty);
++	instantiated = 1;
++	mutex_unlock(&ui->ui_mutex);
++
++	mutex_lock(&dir_ui->ui_mutex);
++	err = ubifs_jnl_update(c, dir, &dentry->d_name, inode, 1, 0);
++	if (err)
++		goto out_cancel;
++	mutex_unlock(&dir_ui->ui_mutex);
++
++	ubifs_release_budget(c, &req);
++
++	return 0;
++
++out_cancel:
++	mutex_unlock(&dir_ui->ui_mutex);
++out_inode:
++	make_bad_inode(inode);
++	if (!instantiated)
++		iput(inode);
++out_budg:
++	ubifs_release_budget(c, &req);
++	if (!instantiated)
++		ubifs_release_budget(c, &ino_req);
++	ubifs_err(c, "cannot create temporary file, error %d", err);
++	return err;
++}
++
+ /**
+  * vfs_dent_type - get VFS directory entry type.
+  * @type: UBIFS directory entry type
+@@ -1189,6 +1259,7 @@ const struct inode_operations ubifs_dir_inode_operations = {
+ #ifdef CONFIG_UBIFS_ATIME_SUPPORT
+ 	.update_time = ubifs_update_time,
+ #endif
++	.tmpfile     = ubifs_tmpfile,
+ };
+ 
+ const struct file_operations ubifs_dir_operations = {
 -- 
 2.7.3
