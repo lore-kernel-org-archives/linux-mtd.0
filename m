@@ -1,23 +1,16 @@
-Received: from mail-qk0-x234.google.com ([2607:f8b0:400d:c09::234])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkZ12-0003Ab-QG
- for linux-mtd@lists.infradead.org; Thu, 15 Sep 2016 15:56:00 +0000
-Received: by mail-qk0-x234.google.com with SMTP id w204so57911224qka.0
- for <linux-mtd@lists.infradead.org>; Thu, 15 Sep 2016 08:55:36 -0700 (PDT)
+Date: Thu, 15 Sep 2016 18:06:05 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+Cc: linux-arm-kernel@lists.infradead.org, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org (open
+ list:NAND FLASH SUBSYSTEM), linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH BUGFIX] mtd: nand: mxc: fix obiwan error in
+ mxc_nand_v[12]_ooblayout_free() functions
+Message-ID: <20160915180605.4aed48d3@bbrezillon>
+In-Reply-To: <1473432251-24728-1-git-send-email-LW@KARO-electronics.de>
+References: <1473432251-24728-1-git-send-email-LW@KARO-electronics.de>
 MIME-Version: 1.0
-In-Reply-To: <20160915154139.3003332-1-arnd@arndb.de>
-References: <20160915154139.3003332-1-arnd@arndb.de>
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date: Thu, 15 Sep 2016 12:55:34 -0300
-Message-ID: <CAAEAJfBuPRqudNdDv_BWcDi7vtDFWM4L4NzGJkPtLss_BtUTzg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: don't include linux/mtd/cfi.h from header
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,61 +22,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15 September 2016 at 12:41, Arnd Bergmann <arnd@arndb.de> wrote:
-> The newly added broadcom qspi driver in drivers/spi produces a build
-> warning when CONFIG_MTD is disabled:
->
-> include/linux/mtd/cfi.h:76:2: #warning No CONFIG_MTD_CFI_Ix selected. No =
-NOR chip support can work. [-Werror=3Dcpp]
->
-> Since drivers like this one don't actually need the cfi.h header,
-> we can just remove it from the spi-nor.h file and add it to
-> the only place that actually needs it.
->
+Hi Lothar,
 
-AFAICS, the mtd/cfi.h header is needed only for CFI_MFR_xxx,
-which are defined in the spi-nor.h header.
+On Fri,  9 Sep 2016 16:44:11 +0200
+Lothar Wa=C3=9Fmann <LW@KARO-electronics.de> wrote:
 
-Maybe we are better moving those to spi-nor.c as well.
-
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Fixes: fa236a7ef240 ("spi: bcm-qspi: Add Broadcom MSPI driver")
+> commit a894cf6c5a82 ("mtd: nand: mxc: switch to mtd_ooblayout_ops")
+> introduced a regression accessing the OOB area from the mxc_nand
+> driver due to an Obiwan error in the mxc_nand_v[12]_ooblayout_free()
+> functions. They report a bogus oobregion { 64, 7 } which leads to
+> errors accessing bogus data when reading the oob area.
+>=20
+> Prior to the commit the mtd-oobtest module could be run without any
+> errors. With the offending commit, this test fails with results like:
+> |Running mtd-oobtest
+> |
+> |=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> |mtd_oobtest: MTD device: 5
+> |mtd_oobtest: MTD device size 524288, eraseblock size 131072, page size 2=
+048, count of eraseblocks 4, pages per eraseblock 64, OOB size 64
+> |mtd_test: scanning for bad eraseblocks
+> |mtd_test: scanned 4 eraseblocks, 0 are bad
+> |mtd_oobtest: test 1 of 5
+> |mtd_oobtest: writing OOBs of whole device
+> |mtd_oobtest: written up to eraseblock 0
+> |mtd_oobtest: written 4 eraseblocks
+> |mtd_oobtest: verifying all eraseblocks
+> |mtd_oobtest: error @addr[0x0:0x19] 0x9a -> 0x78 diff 0xe2
+> |mtd_oobtest: error @addr[0x0:0x1a] 0xcc -> 0x0 diff 0xcc
+> |mtd_oobtest: error @addr[0x0:0x1b] 0xe0 -> 0x85 diff 0x65
+> |mtd_oobtest: error @addr[0x0:0x1c] 0x60 -> 0x62 diff 0x2
+> |mtd_oobtest: error @addr[0x0:0x1d] 0x69 -> 0x45 diff 0x2c
+> |mtd_oobtest: error @addr[0x0:0x1e] 0xcd -> 0xa0 diff 0x6d
+> |mtd_oobtest: error @addr[0x0:0x1f] 0xf2 -> 0x60 diff 0x92
+> |mtd_oobtest: error: verify failed at 0x0
+> [...]
+>=20
+> Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  include/linux/mtd/spi-nor.h   | 1 -
->  2 files changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.=
-c
-> index d0fc165d7d66..94afcb9fdaf7 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -21,6 +21,7 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/of_platform.h>
->  #include <linux/spi/flash.h>
-> +#include <linux/mtd/cfi.h>
->  #include <linux/mtd/spi-nor.h>
->
->  /* Define max times to check status register before we give up. */
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index c425c7b4c2a0..60ef29565743 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -11,7 +11,6 @@
->  #define __LINUX_MTD_SPI_NOR_H
->
->  #include <linux/bitops.h>
-> -#include <linux/mtd/cfi.h>
->  #include <linux/mtd/mtd.h>
->
->  /*
-> --
-> 2.9.0
->
+>  drivers/mtd/nand/mxc_nand.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index 5173fad..fdee907 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -893,7 +893,7 @@ static int mxc_v1_ooblayout_free(struct mtd_info *mtd=
+, int section,
+>  {
+>  	struct nand_chip *nand_chip =3D mtd_to_nand(mtd);
+> =20
+> -	if (section > nand_chip->ecc.steps)
+> +	if (section >=3D nand_chip->ecc.steps)
+>  		return -ERANGE;
 
+Hm, looking at the commit you're pointing to, it seems that this test
+is correct (we have X + 1 free sections, where X is the number of ECC
+steps).
 
+> =20
+>  	if (!section) {
+> @@ -943,7 +943,7 @@ static int mxc_v2_ooblayout_free(struct mtd_info *mtd=
+, int section,
+>  	struct nand_chip *nand_chip =3D mtd_to_nand(mtd);
+>  	int stepsize =3D nand_chip->ecc.bytes =3D=3D 9 ? 16 : 26;
+> =20
+> -	if (section > nand_chip->ecc.steps)
+> +	if (section >=3D nand_chip->ecc.steps)
+>  		return -ERANGE;
 
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+Yep, this one is a real bug.
+
+> =20
+>  	if (!section) {
