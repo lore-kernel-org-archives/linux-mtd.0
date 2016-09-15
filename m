@@ -1,14 +1,17 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkS6n-0001tY-Ov
- for linux-mtd@lists.infradead.org; Thu, 15 Sep 2016 08:33:27 +0000
+ id 1bkS6n-0001t6-Ou
+ for linux-mtd@lists.infradead.org; Thu, 15 Sep 2016 08:33:29 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- kernel@pengutronix.de, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v4] mtd: nand: automate NAND timings selection
-Date: Thu, 15 Sep 2016 10:32:44 +0200
-Message-Id: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
+ kernel@pengutronix.de, <linux-arm-kernel@lists.infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 5/9] mtd: nand: Expose data interface for ONFI mode 0
+Date: Thu, 15 Sep 2016 10:32:49 +0200
+Message-Id: <1473928373-8680-6-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
+References: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,72 +21,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The nand layer will need ONFI mode 0 to use it as timing mode
+before and right after reset.
 
-This series aims at automating the NAND timings selection which is
-currently supposed to be done in each NAND controller driver, thus
-simplifying drivers implementation.
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/nand_timings.c | 11 +++++++++++
+ include/linux/mtd/nand.h        |  2 ++
+ 2 files changed, 13 insertions(+)
 
-As suggested by Boris this version of the series introduces a nand_reset()
-function which replaces the several open coded NAND_CMD_RESET commands
-in the code. This makes sure we can apply the timing each time after
-after reset.
-
-Also I have brought back the conversion patch for teh sunxi driver whic
-was part of Boris initial posting. It's untested due to the lack of hardware,
-so please test before applying.
-
-Sascha
-
-Changes since v4:
-- Change onfi_init_data_interface() prototype to be more future proof as
-  requested by Boris
-
-Changes since v3:
-- Bring back patch dropped in v3
-- Use statically allocated default timing for all chips and store one
-  optimized timing in struct nand_chip
-
-Changes since v2:
-- Add accessor function to get the SDR timing from struct nand_data_interface
-- Change nand_reset() argument to struct nand_chip
-- Drop conversion of nand_timing array to struct nand_data_interface
-- Recalculate timing whenever needed instead of storing a pointer in struct
-  nand_chip
-- some more refactoring
-
-Changes since v1:
-- create a nand_reset() function to create a single place to reset NAND
-  chips and to apply timings
-- Add patch to convert sunxi driver for automated timing setup
-- split into more patches
-
-Changes since the initial posting from Boris:
-
-- Integrate Feedback from Ezequiel Garcia
-- When iterating over the chips calling onfi_set_features() for each
-  bail out when any of the calls fail, not only the last one.
-- When one of the onfi_set_features() calls fail then reset the chipi
-  afterwards.
-- Drop Sunxi example, add patch for the mxc_nand controller instead.
-
-----------------------------------------------------------------
-
-Boris Brezillon (1):
-      mtd: nand: automate NAND timings selection
-
-Sascha Hauer (8):
-      mtd: nand: Create a NAND reset function
-      mtd: nand: Introduce nand_data_interface
-      mtd: nand: convert ONFI mode into data interface
-      mtd: nand: Add function to convert ONFI mode to data_interface
-      mtd: nand: Expose data interface for ONFI mode 0
-      mtd: nand: sunxi: switch from manual to automated timing config
-      mtd: nand: mxc: implement onfi get/set features
-      mtd: nand: mxc: Add timing setup for v2 controllers
-
- drivers/mtd/nand/mxc_nand.c     | 133 ++++++++++++
- drivers/mtd/nand/nand_base.c    | 179 ++++++++++++++-
- drivers/mtd/nand/nand_timings.c | 469 ++++++++++++++++++++++------------------
- drivers/mtd/nand/sunxi_nand.c   |  76 ++-----
- include/linux/mtd/nand.h        | 190 +++++++++++-----
- 5 files changed, 721 insertions(+), 326 deletions(-)
+diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+index 608d098..9cdbc16 100644
+--- a/drivers/mtd/nand/nand_timings.c
++++ b/drivers/mtd/nand/nand_timings.c
+@@ -297,3 +297,14 @@ int onfi_init_data_interface(struct nand_chip *chip,
+ 
+ 	return 0;
+ }
++
++/**
++ * nand_get_default_data_interface - [NAND Interface] Retrieve NAND
++ * data interface for mode 0. This is used as default timing after
++ * reset.
++ */
++const struct nand_data_interface *nand_get_default_data_interface(void)
++{
++	return &onfi_sdr_timings[0];
++}
++EXPORT_SYMBOL(nand_get_default_data_interface);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 7216f54..29ae324 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -1146,6 +1146,8 @@ static inline int jedec_feature(struct nand_chip *chip)
+ 
+ /* get timing characteristics from ONFI timing mode. */
+ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
++/* get data interface from ONFI timing mode 0, used after reset. */
++const struct nand_data_interface *nand_get_default_data_interface(void);
+ 
+ int nand_check_erased_ecc_chunk(void *data, int datalen,
+ 				void *ecc, int ecclen,
+-- 
+2.8.1
