@@ -1,20 +1,23 @@
-Date: Thu, 15 Sep 2016 18:20:46 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: RogerCC Lin <rogercc.lin@mediatek.com>
-Cc: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>, <robh@kernel.org>,
- <computersforpeace@gmail.com>, <jorge.ramirez-ortiz@linaro.org>,
- <daniel.thompson@linaro.org>, <linux-mtd@lists.infradead.org>,
- <matthias.bgg@gmail.com>, <srv_heupstream@mediatek.com>,
- <linux-mediatek@lists.infradead.org>, <dwmw2@infradead.org>,
- <blogic@openwrt.org>
-Subject: Re: [PATCH v4 2/2] mtd: nand: fix chances to create incomplete ECC
- data when writing
-Message-ID: <20160915182046.7b017b2b@bbrezillon>
-In-Reply-To: <1472560548-30567-3-git-send-email-rogercc.lin@mediatek.com>
-References: <1472560548-30567-1-git-send-email-rogercc.lin@mediatek.com>
- <1472560548-30567-3-git-send-email-rogercc.lin@mediatek.com>
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bkaYW-0003hl-LR
+ for linux-mtd@lists.infradead.org; Thu, 15 Sep 2016 17:34:37 +0000
+Received: by mail-pf0-x244.google.com with SMTP id n24so2473221pfb.3
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Sep 2016 10:34:16 -0700 (PDT)
+Subject: Re: [PATCH v6, 8/8] spi: iproc-qspi: Add Broadcom iProc SoCs support
+To: Kamal Dasu <kdasu.kdev@gmail.com>, broonie@kernel.org,
+ linux-spi@vger.kernel.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, vigneshr@ti.com, f.fainelli@gmail.com,
+ yendapally.reddy@broadcom.com
+References: <1472076269-4731-1-git-send-email-kdasu.kdev@gmail.com>
+ <1472076269-4731-9-git-send-email-kdasu.kdev@gmail.com>
+Cc: bcm-kernel-feedback-list@broadcom.com, jon.mason@broadcom.com
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <8e2f7aaa-3563-1b46-1e2d-7c98ce6f5559@gmail.com>
+Date: Thu, 15 Sep 2016 10:34:12 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1472076269-4731-9-git-send-email-kdasu.kdev@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,54 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 Aug 2016 20:35:48 +0800
-RogerCC Lin <rogercc.lin@mediatek.com> wrote:
+Hi Mark,
 
-> From: RogerCC Lin <rogercc.lin@mediatek.com>
+On 08/24/2016 03:04 PM, Kamal Dasu wrote:
+> This spi driver uses the common spi-bcm-qspi driver and implements iProc
+> SoCs specific interrupt controller. The common driver now calls the SoC
+> handlers when present. Adding support for both muxed l1 and unmuxed interrupt
+> sources.
 > 
-> When mtk_nfc_do_write_page() comparing the sector number,because the
-> sector number field is at the 12th-bit position of NFI_BYTELEN
-> register,the masked register should be shifted 12 bits before being
-> compared.The result of this bug may cause the second subpage has
-> incomplete ECC parity bytes.
-> 
-> Signed-off-by: RogerCC Lin <rogercc.lin@mediatek.com>
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Signed-off-by: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-> ---
->  drivers/mtd/nand/mtk_nand.c |    7 +++++--
->  1 files changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-> index ddaa2ac..5223a21 100644
-> --- a/drivers/mtd/nand/mtk_nand.c
-> +++ b/drivers/mtd/nand/mtk_nand.c
-> @@ -93,6 +93,9 @@
->  #define		NFI_FSM_MASK		(0xf << 16)
->  #define NFI_ADDRCNTR		(0x70)
->  #define		CNTR_MASK		GENMASK(16, 12)
-> +#define		ADDRCNTR_SEC_SHIFT	(12)
-> +#define		ADDRCNTR_SEC(val) \
-> +		(((val) & CNTR_MASK) >> ADDRCNTR_SEC_SHIFT)
->  #define NFI_STRADDR		(0x80)
->  #define NFI_BYTELEN		(0x84)
->  #define NFI_CSEL		(0x90)
-> @@ -699,7 +702,7 @@ static int mtk_nfc_do_write_page(struct mtd_info *mtd, struct nand_chip *chip,
->  	}
->  
->  	ret = readl_poll_timeout_atomic(nfc->regs + NFI_ADDRCNTR, reg,
-> -					(reg & CNTR_MASK) >= chip->ecc.steps,
-> +					ADDRCNTR_SEC(reg) >= chip->ecc.steps,
->  					10, MTK_TIMEOUT);
->  	if (ret)
->  		dev_err(dev, "hwecc write timeout\n");
-> @@ -902,7 +905,7 @@ static int mtk_nfc_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
->  		dev_warn(nfc->dev, "read ahb/dma done timeout\n");
->  
->  	rc = readl_poll_timeout_atomic(nfc->regs + NFI_BYTELEN, reg,
-> -				       (reg & CNTR_MASK) >= sectors, 10,
-> +				       ADDRCNTR_SEC(reg) >= sectors, 10,
->  				       MTK_TIMEOUT);
->  	if (rc < 0) {
->  		dev_err(nfc->dev, "subpage done timeout\n");
+I think this patch should be applied by you as well, since it touches
+the SPI driver exclusively. If you are still reviewing it, sorry for the
+nag.
+-- 
+Florian
