@@ -1,15 +1,16 @@
-Received: from mx1.sjusd.org ([143.254.0.14])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkU96-0003aR-OF
- for linux-mtd@lists.infradead.org; Thu, 15 Sep 2016 10:43:57 +0000
-From: "Marshall, Jim" <jmarshall@sjusd.org>
-Subject: Important message
-Date: Thu, 15 Sep 2016 10:39:33 +0000
-Message-ID: <22027e9938be43b88e0483af76bf9990@xmail-mbx3.sjusd.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Date: Thu, 15 Sep 2016 14:56:25 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 5/9] mtd: nand: Expose data interface for ONFI mode 0
+Message-ID: <20160915145625.15e81012@bbrezillon>
+In-Reply-To: <1473928373-8680-6-git-send-email-s.hauer@pengutronix.de>
+References: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
+ <1473928373-8680-6-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,13 +20,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=0A=
-=0A=
-You have reached your mailbox folder's limit.=0A=
-=0A=
-Please remodify by clicking on the link below otherwise you will be blocked=
- from sending and receiving email.=0A=
-=0A=
-http://auth-websupport.tk=0A=
-=0A=
-System Admin=0A=
+On Thu, 15 Sep 2016 10:32:49 +0200
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
+
+> The nand layer will need ONFI mode 0 to use it as timing mode
+> before and right after reset.
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/mtd/nand/nand_timings.c | 11 +++++++++++
+>  include/linux/mtd/nand.h        |  2 ++
+>  2 files changed, 13 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+> index 608d098..9cdbc16 100644
+> --- a/drivers/mtd/nand/nand_timings.c
+> +++ b/drivers/mtd/nand/nand_timings.c
+> @@ -297,3 +297,14 @@ int onfi_init_data_interface(struct nand_chip *chip,
+>  
+>  	return 0;
+>  }
+> +
+> +/**
+> + * nand_get_default_data_interface - [NAND Interface] Retrieve NAND
+> + * data interface for mode 0. This is used as default timing after
+> + * reset.
+> + */
+> +const struct nand_data_interface *nand_get_default_data_interface(void)
+> +{
+> +	return &onfi_sdr_timings[0];
+> +}
+> +EXPORT_SYMBOL(nand_get_default_data_interface);
+
+You export nand_get_default_data_interface() here, but you don't export
+onfi_init_data_interface().
+None of these functions should be called from NAND controller drivers,
+so they don't need to be exported. ITOH, the prototypes are public
+(defined in nand.h), so nothing prevents a driver from calling these
+functions.
+
+I don't know what's the best solution here:
+1/ Export both nand_get_default_data_interface() and
+   onfi_init_data_interface()
+2/ Do not export them, but keep their prototypes in nand.h with a
+   comment saying that they should not be directly called by NAND
+   controller drivers
+3/ Removing the prototypes from nand.h and defining them in nand_base.c
+   (or in a private header).
+
+Brian, Richard, Sascha, any comments?
+
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 7216f54..29ae324 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -1146,6 +1146,8 @@ static inline int jedec_feature(struct nand_chip *chip)
+>  
+>  /* get timing characteristics from ONFI timing mode. */
+>  const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
+> +/* get data interface from ONFI timing mode 0, used after reset. */
+> +const struct nand_data_interface *nand_get_default_data_interface(void);
+>  
+>  int nand_check_erased_ecc_chunk(void *data, int datalen,
+>  				void *ecc, int ecclen,
