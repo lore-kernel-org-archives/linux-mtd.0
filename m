@@ -1,21 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkt0U-0007wK-AD
- for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 13:16:47 +0000
-Date: Fri, 16 Sep 2016 15:16:20 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: Fix nand_command_lp() for 8bits opcodes
-Message-ID: <20160916151620.0572d21d@bbrezillon>
-In-Reply-To: <1465988991-1220-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1465988991-1220-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bkt8B-0003IB-Mu
+ for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 13:24:42 +0000
+Subject: Re: [PATCH v2 11/17] UBI: simplify recover_peb() code
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1473087908-27862-12-git-send-email-boris.brezillon@free-electrons.com>
+ <bfcc6841-b5a7-8e40-5a6b-9e64f42390d7@nod.at>
+ <20160916132355.22c354f8@bbrezillon>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <bca2db4f-8bef-8a62-dee7-267e9947c521@nod.at>
+Date: Fri, 16 Sep 2016 15:23:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160916132355.22c354f8@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,33 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 15 Jun 2016 13:09:51 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Boris,
 
-> 8 bits opcodes should be followed by a single address cycle. Make the
-> 2nd address cycle dependent of !nand_opcode_8bits(command).
-
-Applied.
-
+On 16.09.2016 13:23, Boris Brezillon wrote:
+> On Fri, 16 Sep 2016 12:14:04 +0200
+> Richard Weinberger <richard@nod.at> wrote:
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>> Boris,
+>>
+>> On 05.09.2016 17:05, Boris Brezillon wrote:
+>>> + * This function is called in case of a write failure and moves all good data
+>>> + * from the potentially bad physical eraseblock to a good physical eraseblock.
+>>> + * This function also writes the data which was not written due to the failure.
+>>> + * Returns 0 in case of success, and a negative error code in case of failure.
+>>> + * This function tries %UBI_IO_RETRIES before giving up.
+>>> + */
+>>> +static int recover_peb(struct ubi_device *ubi, int pnum, int vol_id, int lnum,
+>>> +		       const void *buf, int offset, int len)
+>>> +{
+>>> +	int err, idx = vol_id2idx(ubi, vol_id), tries;
+>>> +	struct ubi_volume *vol = ubi->volumes[idx];
+>>> +	struct ubi_vid_hdr *vid_hdr;
+>>> +
+>>> +	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
+>>> +	if (!vid_hdr)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	for (tries = 0; tries <= UBI_IO_RETRIES; tries++) {
+>>> +		err = try_recover_peb(vol, pnum, lnum, buf, offset, len,
+>>> +				      vid_hdr);
+>>> +		if (!err || err == -ENOSPC)
+>>> +			break;  
+>>
+>> Why do you handle ENOSPC as fatal error? Since the loop is bound by UBI_IO_RETRIES
+>> IMHO we can retry also upon ENOSPC.
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 0b0dc29..c2f83236 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -745,7 +745,10 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
->  				column >>= 1;
->  			chip->cmd_ctrl(mtd, column, ctrl);
->  			ctrl &= ~NAND_CTRL_CHANGE;
-> -			chip->cmd_ctrl(mtd, column >> 8, ctrl);
-> +
-> +			/* Only ouput a single addr cycle for 8bits opcodes. */
-> +			if (!nand_opcode_8bits(command))
-> +				chip->cmd_ctrl(mtd, column >> 8, ctrl);
->  		}
->  		if (page_addr != -1) {
->  			chip->cmd_ctrl(mtd, page_addr, ctrl);
+> I was just trying to mimic the existing behavior: if ubi_wl_get_peb()
+> fails to return a free PEB it returns -ENOSPC, and the current
+> implementation does not retry in this case.
+
+Whoops. I thought the current code does retry upon -ENOSPC.
+
+> I also realize that we should not retry if the error happened when
+> reading from the source PEB.
+> 
+> Maybe we should have an extra 'bool *retry' parameter to let
+> recover_peb() know whether the operation should be retried or not.
+> What do you think?
+
+Since your change does not change the current behaviour, let's keep it as-is.
+
+Thanks,
+//richard
