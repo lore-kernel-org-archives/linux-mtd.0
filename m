@@ -1,22 +1,22 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkt8B-0003IB-Mu
- for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 13:24:42 +0000
-Subject: Re: [PATCH v2 11/17] UBI: simplify recover_peb() code
+ id 1bkt97-0004XT-6R
+ for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 13:25:41 +0000
+Subject: Re: [PATCH v2 16/17] UBI: hide EBA internals
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
- <1473087908-27862-12-git-send-email-boris.brezillon@free-electrons.com>
- <bfcc6841-b5a7-8e40-5a6b-9e64f42390d7@nod.at>
- <20160916132355.22c354f8@bbrezillon>
+ <1473087908-27862-17-git-send-email-boris.brezillon@free-electrons.com>
+ <646e09d9-d148-b21b-d411-75ebb05dd121@nod.at>
+ <20160916133808.1dd5db40@bbrezillon>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <bca2db4f-8bef-8a62-dee7-267e9947c521@nod.at>
-Date: Fri, 16 Sep 2016 15:23:31 +0200
+Message-ID: <96f3926d-72f3-65f6-0692-342ee9ab5b14@nod.at>
+Date: Fri, 16 Sep 2016 15:24:31 +0200
 MIME-Version: 1.0
-In-Reply-To: <20160916132355.22c354f8@bbrezillon>
+In-Reply-To: <20160916133808.1dd5db40@bbrezillon>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,53 +30,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Boris,
 
-On 16.09.2016 13:23, Boris Brezillon wrote:
-> On Fri, 16 Sep 2016 12:14:04 +0200
-> Richard Weinberger <richard@nod.at> wrote:
+On 16.09.2016 13:38, Boris Brezillon wrote:
+> ubi_eba_destroy_table() was only exported (made non-static) to let vmt
+> code free an EBA table if the resize operation fails in the middle
+> (between ubi_eba_create_table() and ubi_eba_set_table() calls).
 > 
->> Boris,
+>> I'm also not really happy with the name ubi_eba_set_table() because it does
+>> more the setting the table. It destroys also the old one.
+> 
+> I can definitely rename the function. How about ubi_eba_replace_table().
+
+Reads much better (to me). :-)
+
 >>
->> On 05.09.2016 17:05, Boris Brezillon wrote:
->>> + * This function is called in case of a write failure and moves all good data
->>> + * from the potentially bad physical eraseblock to a good physical eraseblock.
->>> + * This function also writes the data which was not written due to the failure.
->>> + * Returns 0 in case of success, and a negative error code in case of failure.
->>> + * This function tries %UBI_IO_RETRIES before giving up.
->>> + */
->>> +static int recover_peb(struct ubi_device *ubi, int pnum, int vol_id, int lnum,
->>> +		       const void *buf, int offset, int len)
->>> +{
->>> +	int err, idx = vol_id2idx(ubi, vol_id), tries;
->>> +	struct ubi_volume *vol = ubi->volumes[idx];
->>> +	struct ubi_vid_hdr *vid_hdr;
->>> +
->>> +	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
->>> +	if (!vid_hdr)
->>> +		return -ENOMEM;
->>> +
->>> +	for (tries = 0; tries <= UBI_IO_RETRIES; tries++) {
->>> +		err = try_recover_peb(vol, pnum, lnum, buf, offset, len,
->>> +				      vid_hdr);
->>> +		if (!err || err == -ENOSPC)
->>> +			break;  
->>
->> Why do you handle ENOSPC as fatal error? Since the loop is bound by UBI_IO_RETRIES
->> IMHO we can retry also upon ENOSPC.
+>> What I'm trying to say is, when we bite the bullet and introduce lots of new wrapper
+>> functions to hide internals I want very clear and describing names for them.
 > 
-> I was just trying to mimic the existing behavior: if ubi_wl_get_peb()
-> fails to return a free PEB it returns -ENOSPC, and the current
-> implementation does not retry in this case.
-
-Whoops. I thought the current code does retry upon -ENOSPC.
-
-> I also realize that we should not retry if the error happened when
-> reading from the source PEB.
-> 
-> Maybe we should have an extra 'bool *retry' parameter to let
-> recover_peb() know whether the operation should be retried or not.
-> What do you think?
-
-Since your change does not change the current behaviour, let's keep it as-is.
+> I understand and I agree.
+> I thought ubi_eba_set_table() was accurately describing the function
+> purpose: assigning an EBA table to a volume. The fact that the old
+> table (if any) is freed when the new one is assigned is just an
+> internal detail, and that should not impact the user behavior.
+> But I'm perfectly fine renaming this function.
 
 Thanks,
 //richard
