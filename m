@@ -1,25 +1,21 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bktBC-0004sI-1z
- for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 13:27:47 +0000
-Date: Fri, 16 Sep 2016 15:27:24 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/17] UBI: simplify recover_peb() code
-Message-ID: <20160916152724.5af02c43@bbrezillon>
-In-Reply-To: <bca2db4f-8bef-8a62-dee7-267e9947c521@nod.at>
-References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
- <1473087908-27862-12-git-send-email-boris.brezillon@free-electrons.com>
- <bfcc6841-b5a7-8e40-5a6b-9e64f42390d7@nod.at>
- <20160916132355.22c354f8@bbrezillon>
- <bca2db4f-8bef-8a62-dee7-267e9947c521@nod.at>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bktaw-0007bM-51
+ for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 13:54:23 +0000
+Subject: Re: [PATCH 0/2] ubifs: respect dirty_writeback_interval
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+References: <20160914102151.21722-1-zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Boris Brezillon <boris.brezillon@free-electrons.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <b496ab60-564b-249a-b421-8a59fc3a71ab@nod.at>
+Date: Fri, 16 Sep 2016 15:53:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160914102151.21722-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,62 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 16 Sep 2016 15:23:31 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Rafał,
 
-> Boris,
+On 14.09.2016 12:21, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> On 16.09.2016 13:23, Boris Brezillon wrote:
-> > On Fri, 16 Sep 2016 12:14:04 +0200
-> > Richard Weinberger <richard@nod.at> wrote:
-> >   
-> >> Boris,
-> >>
-> >> On 05.09.2016 17:05, Boris Brezillon wrote:  
-> >>> + * This function is called in case of a write failure and moves all good data
-> >>> + * from the potentially bad physical eraseblock to a good physical eraseblock.
-> >>> + * This function also writes the data which was not written due to the failure.
-> >>> + * Returns 0 in case of success, and a negative error code in case of failure.
-> >>> + * This function tries %UBI_IO_RETRIES before giving up.
-> >>> + */
-> >>> +static int recover_peb(struct ubi_device *ubi, int pnum, int vol_id, int lnum,
-> >>> +		       const void *buf, int offset, int len)
-> >>> +{
-> >>> +	int err, idx = vol_id2idx(ubi, vol_id), tries;
-> >>> +	struct ubi_volume *vol = ubi->volumes[idx];
-> >>> +	struct ubi_vid_hdr *vid_hdr;
-> >>> +
-> >>> +	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
-> >>> +	if (!vid_hdr)
-> >>> +		return -ENOMEM;
-> >>> +
-> >>> +	for (tries = 0; tries <= UBI_IO_RETRIES; tries++) {
-> >>> +		err = try_recover_peb(vol, pnum, lnum, buf, offset, len,
-> >>> +				      vid_hdr);
-> >>> +		if (!err || err == -ENOSPC)
-> >>> +			break;    
-> >>
-> >> Why do you handle ENOSPC as fatal error? Since the loop is bound by UBI_IO_RETRIES
-> >> IMHO we can retry also upon ENOSPC.  
-> > 
-> > I was just trying to mimic the existing behavior: if ubi_wl_get_peb()
-> > fails to return a free PEB it returns -ENOSPC, and the current
-> > implementation does not retry in this case.  
+> Hi,
 > 
-> Whoops. I thought the current code does retry upon -ENOSPC.
+> This patchset allows some ubifs adjustments that we realized we needed
+> in LEDE project.
 > 
-> > I also realize that we should not retry if the error happened when
-> > reading from the source PEB.
-> > 
-> > Maybe we should have an extra 'bool *retry' parameter to let
-> > recover_peb() know whether the operation should be retried or not.
-> > What do you think?  
+> LEDE can be unstable on power cuts when installed on NAND devices (with
+> ubifs). This is caused by the default high value of wbuf timeout used by
+> ubifs. Any write that isn't followed by fsync (this may happen with
+> buggy user space app or just shell script) may be lost if power cut
+> happens in less than 5 seconds.
 > 
-> Since your change does not change the current behaviour, let's keep it as-is.
+> One idea for fixing this (without modifying kernel at all) is to mount
+> ubifs with -o sync. This could affect NAND performance however, so I'm
+> looking for a better solution.
+> 
+> During IRC discussion MTD guys suggested lowering wbuf timeout and I
+> decided to give it a try. The simplest way to do that seems to be making
+> ubifs respect dirty_writeback_interval. This parameter can be easily set
+> with sysctl and is already used in some older file systems.
+> 
+> What do you think about this? I gave it a try with a simple
+> uci commit foo; sleep 1s; POWER_CUT
+> and it works as expected.
 
-Actually it does. Now I'm retrying even when we have errors on the
-reads :-(.
+I think it is correct to tie the wbuf timeout to dirty_writeback_interval.
+Especially since jffs2 does the same.
+Please address the comments Boris raised. Then we can get this merged.
 
-> 
-> Thanks,
-> //richard
+On the other hand, IMHO you will abuse this feature.
+If your uci tool does not correctly fsync()/fdatasync() it is just broken and
+needs fixing. Full stop.
+Lowering the wbut timeout reduces the chance to lose unsynced data but it
+won't fix the root cause. Users that face random power cuts will still have a
+chance to lose data. Boris also pointed that out on IRC.
+
+Thanks,
+//richard
