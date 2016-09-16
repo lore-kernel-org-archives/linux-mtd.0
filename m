@@ -1,20 +1,12 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkrWe-0003NO-1F
- for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 11:41:48 +0000
-Date: Fri, 16 Sep 2016 13:41:16 +0200
+Date: Fri, 16 Sep 2016 14:19:18 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 17/17] UBI: introduce the VID buffer concept
-Message-ID: <20160916134116.6cde2723@bbrezillon>
-In-Reply-To: <d371d725-8bde-5347-445c-5849c22b5b7a@nod.at>
-References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
- <1473087908-27862-18-git-send-email-boris.brezillon@free-electrons.com>
- <d371d725-8bde-5347-445c-5849c22b5b7a@nod.at>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4] mtd: nand: automate NAND timings selection
+Message-ID: <20160916141918.0353f65f@bbrezillon>
+In-Reply-To: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
+References: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,31 +19,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 16 Sep 2016 13:38:27 +0200
-Richard Weinberger <richard@nod.at> wrote:
+On Thu, 15 Sep 2016 10:32:44 +0200
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-> Boris,
+> This series aims at automating the NAND timings selection which is
+> currently supposed to be done in each NAND controller driver, thus
+> simplifying drivers implementation.
 > 
-> On 05.09.2016 17:05, Boris Brezillon wrote:
-> > +/**
-> > + * ubi_get_vid_hdr - Get the VID header attached to a VID buffer
-> > + * @vidb: the VID buffer to free  
+> As suggested by Boris this version of the series introduces a nand_reset()
+> function which replaces the several open coded NAND_CMD_RESET commands
+> in the code. This makes sure we can apply the timing each time after
+> after reset.
 > 
-> Copy paste error?
+> Also I have brought back the conversion patch for teh sunxi driver whic
+> was part of Boris initial posting. It's untested due to the lack of hardware,
+> so please test before applying.
 
-Yep. Will fix that.
+Applied after fixing a few coding style issues (to make checkpatch
+happy), and exporting the onfi_init_data_interface() function (not sure
+it's the best solution, but at least, it's consistent with the other
+functions defined in nand_timings.c).
+
+Thanks,
+
+Boris
 
 > 
-> > + */
-> > +static inline struct ubi_vid_hdr *ubi_get_vid_hdr(struct ubi_vid_io_buf *vidb)
-> > +{
-> > +	return vidb->hdr;  
+> Sascha
 > 
-> I guess in future there will be a second parameter to return the nth header located
-> on the buffer?
-
-Exactly.
-
+> Changes since v4:
+> - Change onfi_init_data_interface() prototype to be more future proof as
+>   requested by Boris
 > 
-> Thanks,
-> //richard
+> Changes since v3:
+> - Bring back patch dropped in v3
+> - Use statically allocated default timing for all chips and store one
+>   optimized timing in struct nand_chip
+> 
+> Changes since v2:
+> - Add accessor function to get the SDR timing from struct nand_data_interface
+> - Change nand_reset() argument to struct nand_chip
+> - Drop conversion of nand_timing array to struct nand_data_interface
+> - Recalculate timing whenever needed instead of storing a pointer in struct
+>   nand_chip
+> - some more refactoring
+> 
+> Changes since v1:
+> - create a nand_reset() function to create a single place to reset NAND
+>   chips and to apply timings
+> - Add patch to convert sunxi driver for automated timing setup
+> - split into more patches
+> 
+> Changes since the initial posting from Boris:
+> 
+> - Integrate Feedback from Ezequiel Garcia
+> - When iterating over the chips calling onfi_set_features() for each
+>   bail out when any of the calls fail, not only the last one.
+> - When one of the onfi_set_features() calls fail then reset the chipi
+>   afterwards.
+> - Drop Sunxi example, add patch for the mxc_nand controller instead.
+> 
+> ----------------------------------------------------------------
+> 
+> Boris Brezillon (1):
+>       mtd: nand: automate NAND timings selection
+> 
+> Sascha Hauer (8):
+>       mtd: nand: Create a NAND reset function
+>       mtd: nand: Introduce nand_data_interface
+>       mtd: nand: convert ONFI mode into data interface
+>       mtd: nand: Add function to convert ONFI mode to data_interface
+>       mtd: nand: Expose data interface for ONFI mode 0
+>       mtd: nand: sunxi: switch from manual to automated timing config
+>       mtd: nand: mxc: implement onfi get/set features
+>       mtd: nand: mxc: Add timing setup for v2 controllers
+> 
+>  drivers/mtd/nand/mxc_nand.c     | 133 ++++++++++++
+>  drivers/mtd/nand/nand_base.c    | 179 ++++++++++++++-
+>  drivers/mtd/nand/nand_timings.c | 469 ++++++++++++++++++++++------------------
+>  drivers/mtd/nand/sunxi_nand.c   |  76 ++-----
+>  include/linux/mtd/nand.h        | 190 +++++++++++-----
+>  5 files changed, 721 insertions(+), 326 deletions(-)
