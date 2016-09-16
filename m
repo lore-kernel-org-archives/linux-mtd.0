@@ -1,17 +1,17 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkuce-0006xP-2h
- for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 15:00:26 +0000
+ id 1bkud0-0007a9-My
+ for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 15:00:37 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v3 13/18] UBI: simplify LEB write and atomic LEB change code
-Date: Fri, 16 Sep 2016 16:59:21 +0200
-Message-Id: <1474037966-5524-14-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 16/18] UBI: provide an helper to query LEB information
+Date: Fri, 16 Sep 2016 16:59:24 +0200
+Message-Id: <1474037966-5524-17-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1474037966-5524-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1474037966-5524-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,399 +23,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubi_eba_write_leb(), ubi_eba_write_leb_st() and
-ubi_eba_atomic_leb_change() are using a convoluted retry/exit path.
-Add the try_write_vid_and_data() function to simplify the retry logic
-and make sure we have a single exit path instead of manually releasing
-the resources in each error path.
+This is part of our attempt to hide EBA internals from other part of the
+implementation in order to easily adapt it to the MLC needs.
+
+Here we are creating an ubi_eba_leb_desc struct to hide the way we keep
+track of the LEB to PEB mapping.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/ubi/eba.c | 285 ++++++++++++++++++++------------------------------
- 1 file changed, 115 insertions(+), 170 deletions(-)
+ drivers/mtd/ubi/eba.c     | 17 +++++++++++++++++
+ drivers/mtd/ubi/fastmap.c |  8 ++++++--
+ drivers/mtd/ubi/ubi.h     | 17 +++++++++++++++++
+ 3 files changed, 40 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index be59cfb81934..180eb006e966 100644
+index 32045dd3d1db..f3ff8604b5e5 100644
 --- a/drivers/mtd/ubi/eba.c
 +++ b/drivers/mtd/ubi/eba.c
-@@ -693,6 +693,69 @@ static int recover_peb(struct ubi_device *ubi, int pnum, int vol_id, int lnum,
+@@ -84,6 +84,23 @@ static int ubi_get_compat(const struct ubi_device *ubi, int vol_id)
  }
  
  /**
-+ * try_write_vid_and_data - try to write VID header and data to a new PEB.
++ * ubi_eba_get_ldesc - get information about a LEB
 + * @vol: volume description object
 + * @lnum: logical eraseblock number
-+ * @vid_hdr: VID header to write
-+ * @buf: buffer containing the data
-+ * @offset: where to start writing data
-+ * @len: how many bytes should be written
++ * @ldesc: the LEB descriptor to fill
 + *
-+ * This function tries to write VID header and data belonging to logical
-+ * eraseblock @lnum of volume @vol to a new physical eraseblock. Returns zero
-+ * in case of success and a negative error code in case of failure.
-+ * In case of error, it is possible that something was still written to the
-+ * flash media, but may be some garbage.
++ * Used to query information about a specific LEB.
++ * It is currently only returning the physical position of the LEB, but will be
++ * extended to provide more information.
 + */
-+static int try_write_vid_and_data(struct ubi_volume *vol, int lnum,
-+				  struct ubi_vid_hdr *vid_hdr, const void *buf,
-+				  int offset, int len)
++void ubi_eba_get_ldesc(struct ubi_volume *vol, int lnum,
++		       struct ubi_eba_leb_desc *ldesc)
 +{
-+	struct ubi_device *ubi = vol->ubi;
-+	int pnum, opnum, err, vol_id = vol->vol_id;
-+
-+	pnum = ubi_wl_get_peb(ubi);
-+	if (pnum < 0) {
-+		err = pnum;
-+		goto out_put;
-+	}
-+
-+	opnum = vol->eba_tbl[lnum];
-+
-+	dbg_eba("write VID hdr and %d bytes at offset %d of LEB %d:%d, PEB %d",
-+		len, offset, vol_id, lnum, pnum);
-+
-+	err = ubi_io_write_vid_hdr(ubi, pnum, vid_hdr);
-+	if (err) {
-+		ubi_warn(ubi, "failed to write VID header to LEB %d:%d, PEB %d",
-+			 vol_id, lnum, pnum);
-+		goto out_put;
-+	}
-+
-+	if (len) {
-+		err = ubi_io_write_data(ubi, buf, pnum, offset, len);
-+		if (err) {
-+			ubi_warn(ubi,
-+				 "failed to write %d bytes at offset %d of LEB %d:%d, PEB %d",
-+				 len, offset, vol_id, lnum, pnum);
-+			goto out_put;
-+		}
-+	}
-+
-+	vol->eba_tbl[lnum] = pnum;
-+
-+out_put:
-+	up_read(&ubi->fm_eba_sem);
-+
-+	if (err && pnum >= 0)
-+		err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
-+	else if (!err && opnum >= 0)
-+		err = ubi_wl_put_peb(ubi, vol_id, lnum, opnum, 0);
-+
-+	return err;
++	ldesc->lnum = lnum;
++	ldesc->pnum = vol->eba_tbl[lnum];
 +}
 +
 +/**
-  * ubi_eba_write_leb - write data to dynamic volume.
+  * ltree_lookup - look up the lock tree.
   * @ubi: UBI device description object
-  * @vol: volume description object
-@@ -705,11 +768,12 @@ static int recover_peb(struct ubi_device *ubi, int pnum, int vol_id, int lnum,
-  * @vol. Returns zero in case of success and a negative error code in case
-  * of failure. In case of error, it is possible that something was still
-  * written to the flash media, but may be some garbage.
-+ * This function retries %UBI_IO_RETRIES times before giving up.
-  */
- int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
- 		      const void *buf, int offset, int len)
- {
--	int err, pnum, tries = 0, vol_id = vol->vol_id;
-+	int err, pnum, tries, vol_id = vol->vol_id;
- 	struct ubi_vid_hdr *vid_hdr;
+  * @vol_id: volume ID
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 25e80a749a52..27a94f28819b 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -1257,8 +1257,12 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+ 		fm_pos += sizeof(*feba) + (sizeof(__be32) * vol->reserved_pebs);
+ 		ubi_assert(fm_pos <= ubi->fm_size);
  
- 	if (ubi->ro_mode)
-@@ -730,11 +794,9 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
- 			if (err == -EIO && ubi->bad_allowed)
- 				err = recover_peb(ubi, pnum, vol_id, lnum, buf,
- 						  offset, len);
--			if (err)
--				ubi_ro_mode(ubi);
- 		}
--		leb_write_unlock(ubi, vol_id, lnum);
--		return err;
+-		for (j = 0; j < vol->reserved_pebs; j++)
+-			feba->pnum[j] = cpu_to_be32(vol->eba_tbl[j]);
++		for (j = 0; j < vol->reserved_pebs; j++) {
++			struct ubi_eba_leb_desc ldesc;
 +
-+		goto out;
- 	}
++			ubi_eba_get_ldesc(vol, j, &ldesc);
++			feba->pnum[j] = cpu_to_be32(ldesc.pnum);
++		}
  
- 	/*
-@@ -754,67 +816,31 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
- 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
- 	vid_hdr->data_pad = cpu_to_be32(vol->data_pad);
- 
--retry:
--	pnum = ubi_wl_get_peb(ubi);
--	if (pnum < 0) {
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		leb_write_unlock(ubi, vol_id, lnum);
--		up_read(&ubi->fm_eba_sem);
--		return pnum;
--	}
--
--	dbg_eba("write VID hdr and %d bytes at offset %d of LEB %d:%d, PEB %d",
--		len, offset, vol_id, lnum, pnum);
--
--	err = ubi_io_write_vid_hdr(ubi, pnum, vid_hdr);
--	if (err) {
--		ubi_warn(ubi, "failed to write VID header to LEB %d:%d, PEB %d",
--			 vol_id, lnum, pnum);
--		up_read(&ubi->fm_eba_sem);
--		goto write_error;
--	}
-+	for (tries = 0; tries <= UBI_IO_RETRIES; tries++) {
-+		err = try_write_vid_and_data(vol, lnum, vid_hdr, buf, offset,
-+					     len);
-+		if (err != -EIO || !ubi->bad_allowed)
-+			break;
- 
--	if (len) {
--		err = ubi_io_write_data(ubi, buf, pnum, offset, len);
--		if (err) {
--			ubi_warn(ubi, "failed to write %d bytes at offset %d of LEB %d:%d, PEB %d",
--				 len, offset, vol_id, lnum, pnum);
--			up_read(&ubi->fm_eba_sem);
--			goto write_error;
--		}
-+		/*
-+		 * Fortunately, this is the first write operation to this
-+		 * physical eraseblock, so just put it and request a new one.
-+		 * We assume that if this physical eraseblock went bad, the
-+		 * erase code will handle that.
-+		 */
-+		vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
-+		ubi_msg(ubi, "try another PEB");
- 	}
- 
--	vol->eba_tbl[lnum] = pnum;
--	up_read(&ubi->fm_eba_sem);
--
--	leb_write_unlock(ubi, vol_id, lnum);
- 	ubi_free_vid_hdr(ubi, vid_hdr);
--	return 0;
- 
--write_error:
--	if (err != -EIO || !ubi->bad_allowed) {
-+out:
-+	if (err)
- 		ubi_ro_mode(ubi);
--		leb_write_unlock(ubi, vol_id, lnum);
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		return err;
--	}
- 
--	/*
--	 * Fortunately, this is the first write operation to this physical
--	 * eraseblock, so just put it and request a new one. We assume that if
--	 * this physical eraseblock went bad, the erase code will handle that.
--	 */
--	err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
--	if (err || ++tries > UBI_IO_RETRIES) {
--		ubi_ro_mode(ubi);
--		leb_write_unlock(ubi, vol_id, lnum);
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		return err;
--	}
-+	leb_write_unlock(ubi, vol_id, lnum);
- 
--	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
--	ubi_msg(ubi, "try another PEB");
--	goto retry;
-+	return err;
- }
+ 		feba->reserved_pebs = cpu_to_be32(j);
+ 		feba->magic = cpu_to_be32(UBI_FM_EBA_MAGIC);
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 37469805591d..98e5dac677ee 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -267,6 +267,21 @@ struct ubi_fm_pool {
+ };
  
  /**
-@@ -842,7 +868,7 @@ write_error:
- int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
- 			 int lnum, const void *buf, int len, int used_ebs)
- {
--	int err, pnum, tries = 0, data_size = len, vol_id = vol->vol_id;
-+	int err, tries, data_size = len, vol_id = vol->vol_id;
- 	struct ubi_vid_hdr *vid_hdr;
- 	uint32_t crc;
- 
-@@ -860,10 +886,8 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
- 		return -ENOMEM;
- 
- 	err = leb_write_lock(ubi, vol_id, lnum);
--	if (err) {
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		return err;
--	}
-+	if (err)
-+		goto out;
- 
- 	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	vid_hdr->vol_id = cpu_to_be32(vol_id);
-@@ -877,66 +901,26 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
- 	vid_hdr->used_ebs = cpu_to_be32(used_ebs);
- 	vid_hdr->data_crc = cpu_to_be32(crc);
- 
--retry:
--	pnum = ubi_wl_get_peb(ubi);
--	if (pnum < 0) {
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		leb_write_unlock(ubi, vol_id, lnum);
--		up_read(&ubi->fm_eba_sem);
--		return pnum;
--	}
--
--	dbg_eba("write VID hdr and %d bytes at LEB %d:%d, PEB %d, used_ebs %d",
--		len, vol_id, lnum, pnum, used_ebs);
-+	ubi_assert(vol->eba_tbl[lnum] < 0);
- 
--	err = ubi_io_write_vid_hdr(ubi, pnum, vid_hdr);
--	if (err) {
--		ubi_warn(ubi, "failed to write VID header to LEB %d:%d, PEB %d",
--			 vol_id, lnum, pnum);
--		up_read(&ubi->fm_eba_sem);
--		goto write_error;
--	}
-+	for (tries = 0; tries <= UBI_IO_RETRIES; tries++) {
-+		err = try_write_vid_and_data(vol, lnum, vid_hdr, buf, 0, len);
-+		if (err != -EIO || !ubi->bad_allowed)
-+			break;
- 
--	err = ubi_io_write_data(ubi, buf, pnum, 0, len);
--	if (err) {
--		ubi_warn(ubi, "failed to write %d bytes of data to PEB %d",
--			 len, pnum);
--		up_read(&ubi->fm_eba_sem);
--		goto write_error;
-+		vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
-+		ubi_msg(ubi, "try another PEB");
- 	}
- 
--	ubi_assert(vol->eba_tbl[lnum] < 0);
--	vol->eba_tbl[lnum] = pnum;
--	up_read(&ubi->fm_eba_sem);
-+	if (err)
-+		ubi_ro_mode(ubi);
- 
- 	leb_write_unlock(ubi, vol_id, lnum);
--	ubi_free_vid_hdr(ubi, vid_hdr);
--	return 0;
--
--write_error:
--	if (err != -EIO || !ubi->bad_allowed) {
--		/*
--		 * This flash device does not admit of bad eraseblocks or
--		 * something nasty and unexpected happened. Switch to read-only
--		 * mode just in case.
--		 */
--		ubi_ro_mode(ubi);
--		leb_write_unlock(ubi, vol_id, lnum);
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		return err;
--	}
- 
--	err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
--	if (err || ++tries > UBI_IO_RETRIES) {
--		ubi_ro_mode(ubi);
--		leb_write_unlock(ubi, vol_id, lnum);
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		return err;
--	}
-+out:
-+	ubi_free_vid_hdr(ubi, vid_hdr);
- 
--	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
--	ubi_msg(ubi, "try another PEB");
--	goto retry;
-+	return err;
- }
- 
- /*
-@@ -959,7 +943,7 @@ write_error:
- int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
- 			      int lnum, const void *buf, int len)
- {
--	int err, pnum, old_pnum, tries = 0, vol_id = vol->vol_id;
-+	int err, tries, vol_id = vol->vol_id;
- 	struct ubi_vid_hdr *vid_hdr;
- 	uint32_t crc;
- 
-@@ -998,70 +982,31 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
- 	vid_hdr->copy_flag = 1;
- 	vid_hdr->data_crc = cpu_to_be32(crc);
- 
--retry:
--	pnum = ubi_wl_get_peb(ubi);
--	if (pnum < 0) {
--		err = pnum;
--		up_read(&ubi->fm_eba_sem);
--		goto out_leb_unlock;
--	}
--
--	dbg_eba("change LEB %d:%d, PEB %d, write VID hdr to PEB %d",
--		vol_id, lnum, vol->eba_tbl[lnum], pnum);
-+	dbg_eba("change LEB %d:%d", vol_id, lnum);
- 
--	err = ubi_io_write_vid_hdr(ubi, pnum, vid_hdr);
--	if (err) {
--		ubi_warn(ubi, "failed to write VID header to LEB %d:%d, PEB %d",
--			 vol_id, lnum, pnum);
--		up_read(&ubi->fm_eba_sem);
--		goto write_error;
--	}
-+	for (tries = 0; tries <= UBI_IO_RETRIES; tries++) {
-+		err = try_write_vid_and_data(vol, lnum, vid_hdr, buf, 0, len);
-+		if (err != -EIO || !ubi->bad_allowed)
-+			break;
- 
--	err = ubi_io_write_data(ubi, buf, pnum, 0, len);
--	if (err) {
--		ubi_warn(ubi, "failed to write %d bytes of data to PEB %d",
--			 len, pnum);
--		up_read(&ubi->fm_eba_sem);
--		goto write_error;
-+		vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
-+		ubi_msg(ubi, "try another PEB");
- 	}
- 
--	old_pnum = vol->eba_tbl[lnum];
--	vol->eba_tbl[lnum] = pnum;
--	up_read(&ubi->fm_eba_sem);
--
--	if (old_pnum >= 0) {
--		err = ubi_wl_put_peb(ubi, vol_id, lnum, old_pnum, 0);
--		if (err)
--			goto out_leb_unlock;
--	}
-+	/*
-+	 * This flash device does not admit of bad eraseblocks or
-+	 * something nasty and unexpected happened. Switch to read-only
-+	 * mode just in case.
-+	 */
-+	if (err)
-+		ubi_ro_mode(ubi);
- 
--out_leb_unlock:
- 	leb_write_unlock(ubi, vol_id, lnum);
++ * struct ubi_eba_leb_desc - EBA logical eraseblock descriptor
++ * @lnum: the logical eraseblock number
++ * @pnum: the physical eraseblock where the LEB can be found
++ *
++ * This structure is here to hide EBA's internal from other part of the
++ * UBI implementation.
++ *
++ * One can query the position of a LEB by calling ubi_eba_get_ldesc().
++ */
++struct ubi_eba_leb_desc {
++	int lnum;
++	int pnum;
++};
 +
- out_mutex:
- 	mutex_unlock(&ubi->alc_mutex);
- 	ubi_free_vid_hdr(ubi, vid_hdr);
- 	return err;
--
--write_error:
--	if (err != -EIO || !ubi->bad_allowed) {
--		/*
--		 * This flash device does not admit of bad eraseblocks or
--		 * something nasty and unexpected happened. Switch to read-only
--		 * mode just in case.
--		 */
--		ubi_ro_mode(ubi);
--		goto out_leb_unlock;
--	}
--
--	err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
--	if (err || ++tries > UBI_IO_RETRIES) {
--		ubi_ro_mode(ubi);
--		goto out_leb_unlock;
--	}
--
--	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
--	ubi_msg(ubi, "try another PEB");
--	goto retry;
++/**
+  * struct ubi_volume - UBI volume description data structure.
+  * @dev: device object to make use of the the Linux device model
+  * @cdev: character device object to create character device
+@@ -849,6 +864,8 @@ static inline bool ubi_leb_valid(struct ubi_volume *vol, int lnum)
  }
  
- /**
+ /* eba.c */
++void ubi_eba_get_ldesc(struct ubi_volume *vol, int lnum,
++		       struct ubi_eba_leb_desc *ldesc);
+ bool ubi_eba_is_mapped(struct ubi_volume *vol, int lnum);
+ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		      int lnum);
 -- 
 2.7.4
