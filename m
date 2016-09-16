@@ -1,16 +1,19 @@
-Received: from secvs01.rockwellcollins.com ([205.175.225.240])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkdYt-0001jj-6F
- for linux-mtd@lists.infradead.org; Thu, 15 Sep 2016 20:47:12 +0000
-From: Matt Weber <matthew.weber@rockwellcollins.com>
-To: linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com,
- Matt Weber <matthew.weber@rockwellcollins.com>,
- Senthilganapathy Paramasivam
- <senthilganapathy.paramasivam@rockwellcollins.com>
-Subject: [PATCH] mtd cfi cmdset: intel panic_write for mtdoops
-Date: Thu, 15 Sep 2016 15:46:46 -0500
-Message-Id: <1473972406-27412-1-git-send-email-matthew.weber@rockwellcollins.com>
+Date: Fri, 16 Sep 2016 10:09:25 +0200
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-arm-kernel@lists.infradead.org, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org (open
+ list:NAND FLASH SUBSYSTEM), linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH BUGFIX] mtd: nand: mxc: fix obiwan error in
+ mxc_nand_v[12]_ooblayout_free() functions
+Message-ID: <20160916100925.1a4d1af7@ipc1.ka-ro>
+In-Reply-To: <20160915180605.4aed48d3@bbrezillon>
+References: <1473432251-24728-1-git-send-email-LW@KARO-electronics.de>
+ <20160915180605.4aed48d3@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,199 +23,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added panic write handler for devices using Intel Extended
-Vendor Command Set (ID 0x0001).
+Hi,
 
-Signed-off-by: Senthilganapathy Paramasivam <senthilganapathy.paramasivam@rockwellcollins.com>
-Signed-off-by: Matthew Weber <matthew.weber@rockwellcollins.com>
----
- drivers/mtd/chips/cfi_cmdset_0001.c | 160 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 160 insertions(+)
+On Thu, 15 Sep 2016 18:06:05 +0200 Boris Brezillon wrote:
+> Hi Lothar,
+>=20
+> On Fri,  9 Sep 2016 16:44:11 +0200
+> Lothar Wa=C3=9Fmann <LW@KARO-electronics.de> wrote:
+>=20
+> > commit a894cf6c5a82 ("mtd: nand: mxc: switch to mtd_ooblayout_ops")
+> > introduced a regression accessing the OOB area from the mxc_nand
+> > driver due to an Obiwan error in the mxc_nand_v[12]_ooblayout_free()
+> > functions. They report a bogus oobregion { 64, 7 } which leads to
+> > errors accessing bogus data when reading the oob area.
+> >=20
+> > Prior to the commit the mtd-oobtest module could be run without any
+> > errors. With the offending commit, this test fails with results like:
+> > |Running mtd-oobtest
+> > |
+> > |=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> > |mtd_oobtest: MTD device: 5
+> > |mtd_oobtest: MTD device size 524288, eraseblock size 131072, page size=
+ 2048, count of eraseblocks 4, pages per eraseblock 64, OOB size 64
+> > |mtd_test: scanning for bad eraseblocks
+> > |mtd_test: scanned 4 eraseblocks, 0 are bad
+> > |mtd_oobtest: test 1 of 5
+> > |mtd_oobtest: writing OOBs of whole device
+> > |mtd_oobtest: written up to eraseblock 0
+> > |mtd_oobtest: written 4 eraseblocks
+> > |mtd_oobtest: verifying all eraseblocks
+> > |mtd_oobtest: error @addr[0x0:0x19] 0x9a -> 0x78 diff 0xe2
+> > |mtd_oobtest: error @addr[0x0:0x1a] 0xcc -> 0x0 diff 0xcc
+> > |mtd_oobtest: error @addr[0x0:0x1b] 0xe0 -> 0x85 diff 0x65
+> > |mtd_oobtest: error @addr[0x0:0x1c] 0x60 -> 0x62 diff 0x2
+> > |mtd_oobtest: error @addr[0x0:0x1d] 0x69 -> 0x45 diff 0x2c
+> > |mtd_oobtest: error @addr[0x0:0x1e] 0xcd -> 0xa0 diff 0x6d
+> > |mtd_oobtest: error @addr[0x0:0x1f] 0xf2 -> 0x60 diff 0x92
+> > |mtd_oobtest: error: verify failed at 0x0
+> > [...]
+> >=20
+> > Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
+> > ---
+> >  drivers/mtd/nand/mxc_nand.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> > index 5173fad..fdee907 100644
+> > --- a/drivers/mtd/nand/mxc_nand.c
+> > +++ b/drivers/mtd/nand/mxc_nand.c
+> > @@ -893,7 +893,7 @@ static int mxc_v1_ooblayout_free(struct mtd_info *m=
+td, int section,
+> >  {
+> >  	struct nand_chip *nand_chip =3D mtd_to_nand(mtd);
+> > =20
+> > -	if (section > nand_chip->ecc.steps)
+> > +	if (section >=3D nand_chip->ecc.steps)
+> >  		return -ERANGE;
+>=20
+> Hm, looking at the commit you're pointing to, it seems that this test
+> is correct (we have X + 1 free sections, where X is the number of ECC
+> steps).
+>=20
+You are right. I didn't verify the v1 case (for which I have no HW here
+any more).
+I'll send a corrected patch.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 5e1b68c..3f0f9f1 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -62,6 +62,7 @@ static int cfi_intelext_read (struct mtd_info *, loff_t, size_t, size_t *, u_cha
- static int cfi_intelext_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
- static int cfi_intelext_write_buffers(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
- static int cfi_intelext_writev(struct mtd_info *, const struct kvec *, unsigned long, loff_t, size_t *);
-+static int cfi_intelext_panic_write(struct mtd_info *mtd, loff_t to , size_t len, size_t *retlen, const u_char *buf);
- static int cfi_intelext_erase_varsize(struct mtd_info *, struct erase_info *);
- static void cfi_intelext_sync (struct mtd_info *);
- static int cfi_intelext_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-@@ -491,6 +492,7 @@ struct mtd_info *cfi_cmdset_0001(struct map_info *map, int primary)
- 	mtd->writesize = 1;
- 	mtd->writebufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
- 
-+       mtd->_panic_write   = cfi_intelext_panic_write;
- 	mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
- 
- 	if (cfi->cfi_mode == CFI_MODE_CFI) {
-@@ -1903,6 +1905,164 @@ static int cfi_intelext_write_buffers (struct mtd_info *mtd, loff_t to,
- 	return cfi_intelext_writev(mtd, &vec, 1, to, retlen);
- }
- 
-+
-+/*
-+ * Write out one word of data to a single flash chip during a kernel panic
-+ *
-+ * This is only called during the panic_write() path. When panic_write()
-+ * is called, the kernel is in the process of a panic, and will soon be
-+ * dead. Therefore we don't take any locks, and attempt to get access
-+ * to the chip as soon as possible.
-+ *
-+ * The implementation of this routine is intentionally similar to
-+ * do_write_oneword(), in order to ease code maintenance.
-+ */
-+static int  do_panic_write_oneword(struct map_info *map, struct flchip *chip,
-+				   unsigned long adr, map_word datum)
-+{
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	map_word status, write_cmd;
-+	int ret=0;
-+
-+	adr += chip->start;
-+
-+	write_cmd = (cfi->cfiq->P_ID != P_ID_INTEL_PERFORMANCE) ? CMD(0x40) : CMD(0x41);
-+
-+	pr_debug("MTD %s(): PANIC WRITE 0x%.8lx(0x%.8lx)\n",__func__, adr, datum.x[0]);
-+
-+	ENABLE_VPP(map);
-+
-+	map_write(map, write_cmd, adr);
-+	map_write(map, datum, adr);
-+
-+	if (ret) {
-+		printk(KERN_ERR "%s: word write error (status timeout)\n", map->name);
-+		goto out;
-+	}
-+
-+	/* check for errors */
-+	status = map_read(map, adr);
-+	if (map_word_bitsset(map, status, CMD(0x1a))) {
-+		unsigned long chipstatus = MERGESTATUS(status);
-+
-+		/* reset status */
-+		map_write(map, CMD(0x50), adr);
-+		map_write(map, CMD(0x70), adr);
-+
-+		if (chipstatus & 0x02) {
-+			ret = -EROFS;
-+		} else if (chipstatus & 0x08) {
-+			printk(KERN_ERR "%s: word write error (bad VPP)\n", map->name);
-+			ret = -EIO;
-+		} else {
-+			printk(KERN_ERR "%s: word write error (status 0x%lx)\n", map->name, chipstatus);
-+			ret = -EINVAL;
-+		}
-+		goto out;
-+	}
-+ out:
-+        DISABLE_VPP(map);
-+        return ret;
-+}
-+
-+/*
-+ * Write out some data during a kernel panic
-+ *
-+ * This is used by the mtdoops driver to save the dying messages from a
-+ * kernel which has panic'd.
-+ *
-+ * This routine ignores all of the locking used throughout the rest of the
-+ * driver, in order to ensure that the data gets written out no matter what
-+ * state this driver (and the flash chip itself) was in when the kernel crashed.
-+ *
-+ * The implementation of this routine is intentionally similar to
-+ * cfi_intelext_write_words(), in order to ease code maintenance.
-+ */
-+static int cfi_intelext_panic_write(struct mtd_info *mtd, loff_t to , size_t len,
-+                                     size_t *retlen, const u_char *buf)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	int ret = 0;
-+	int chipnum;
-+	unsigned long ofs;
-+
-+	chipnum = to >> cfi->chipshift;
-+	ofs = to - (chipnum << cfi->chipshift);
-+
-+	/* If it's not bus-aligned, do the first byte write */
-+	if (ofs & (map_bankwidth(map)-1)) {
-+		unsigned long bus_ofs = ofs & ~(map_bankwidth(map)-1);
-+		int gap = ofs - bus_ofs;
-+		int n;
-+		map_word datum;
-+
-+		n = min_t(int, len, map_bankwidth(map)-gap);
-+		datum = map_word_ff(map);
-+		datum = map_word_load_partial(map, datum, buf, gap, n);
-+
-+		ret = do_panic_write_oneword(map, &cfi->chips[chipnum],
-+						bus_ofs, datum);
-+		if (ret)
-+			return ret;
-+
-+		len -= n;
-+		ofs += n;
-+		buf += n;
-+		(*retlen) += n;
-+
-+		if (ofs >> cfi->chipshift) {
-+			chipnum ++;
-+			ofs = 0;
-+			if (chipnum == cfi->numchips)
-+				return 0;
-+		}
-+	}
-+
-+	/* We are now aligned, write as much as possible */
-+	while(len >= map_bankwidth(map)) {
-+		map_word datum = map_word_load(map, buf);
-+
-+		/* Significamt delay is required, between two write cycles.
-+		   300 micro seconds delay is arrived by trial and error.*/
-+		udelay(300);
-+
-+		ret = do_panic_write_oneword(map, &cfi->chips[chipnum],
-+						ofs, datum);
-+		if (ret)
-+			return ret;
-+
-+		ofs += map_bankwidth(map);
-+		buf += map_bankwidth(map);
-+		(*retlen) += map_bankwidth(map);
-+		len -= map_bankwidth(map);
-+
-+		if (ofs >> cfi->chipshift) {
-+			chipnum ++;
-+			ofs = 0;
-+			if (chipnum == cfi->numchips)
-+				return 0;
-+		}
-+	}
-+
-+	/* Write the trailing bytes if any */
-+	if (len & (map_bankwidth(map)-1)) {
-+		map_word datum;
-+
-+		datum = map_word_ff(map);
-+		datum = map_word_load_partial(map, datum, buf, 0, len);
-+
-+		ret = do_panic_write_oneword(map, &cfi->chips[chipnum],
-+						ofs, datum);
-+		if (ret)
-+			return ret;
-+
-+		(*retlen) += len;
-+	}
-+
-+	return 0;
-+}
-+
- static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 				      unsigned long adr, int len, void *thunk)
- {
--- 
-1.9.1
+
+Lothar Wa=C3=9Fmann
