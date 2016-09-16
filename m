@@ -1,22 +1,19 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkt97-0004XT-6R
- for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 13:25:41 +0000
-Subject: Re: [PATCH v2 16/17] UBI: hide EBA internals
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
+ id 1bktAa-0004mw-4q
+ for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 13:27:12 +0000
+Subject: Re: [PATCH v2 00/21] UBI: various rework/cleanup/fixes
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 References: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
- <1473087908-27862-17-git-send-email-boris.brezillon@free-electrons.com>
- <646e09d9-d148-b21b-d411-75ebb05dd121@nod.at>
- <20160916133808.1dd5db40@bbrezillon>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <96f3926d-72f3-65f6-0692-342ee9ab5b14@nod.at>
-Date: Fri, 16 Sep 2016 15:24:31 +0200
+Message-ID: <2b3593fb-7402-2718-b83c-33510fb6d1a9@nod.at>
+Date: Fri, 16 Sep 2016 15:26:01 +0200
 MIME-Version: 1.0
-In-Reply-To: <20160916133808.1dd5db40@bbrezillon>
+In-Reply-To: <1473087908-27862-1-git-send-email-boris.brezillon@free-electrons.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,28 +27,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Boris,
 
-On 16.09.2016 13:38, Boris Brezillon wrote:
-> ubi_eba_destroy_table() was only exported (made non-static) to let vmt
-> code free an EBA table if the resize operation fails in the middle
-> (between ubi_eba_create_table() and ubi_eba_set_table() calls).
+On 05.09.2016 17:04, Boris Brezillon wrote:
+> Hi,
 > 
->> I'm also not really happy with the name ubi_eba_set_table() because it does
->> more the setting the table. It destroys also the old one.
+> Here is a set of cleanup patches (+one fix in patch 4 for a bug that
+> is unlikely to happen).
 > 
-> I can definitely rename the function. How about ubi_eba_replace_table().
+> Note that I'm not doing that for fun. I'm currently trying to patch UBI
+> to support the 'LEB consolidation' concept (which is the solution we're
+> heading to for reliable MLC NAND support), and the duplication of
+> similar code blocks makes this transition harder to code/review.
+> 
+> If you want to see the big picture, here is my development branch [1].
+> It contains the current state of MLC support in UBI. It's not finished
+> yet, but should give a good idea why the cleanup changes are needed. 
 
-Reads much better (to me). :-)
-
->>
->> What I'm trying to say is, when we bite the bullet and introduce lots of new wrapper
->> functions to hide internals I want very clear and describing names for them.
-> 
-> I understand and I agree.
-> I thought ubi_eba_set_table() was accurately describing the function
-> purpose: assigning an EBA table to a volume. The fact that the old
-> table (if any) is freed when the new one is assigned is just an
-> internal detail, and that should not impact the user behavior.
-> But I'm perfectly fine renaming this function.
+Thanks for this cleanup. Beside of some minor things, see other mails,
+I like this series a lot and will merge it in 4.9.
 
 Thanks,
 //richard
