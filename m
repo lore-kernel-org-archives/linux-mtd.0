@@ -1,25 +1,31 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkyab-00047X-L9
- for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 19:14:22 +0000
-Received: by mail-wm0-x242.google.com with SMTP id l132so3920222wmf.1
- for <linux-mtd@lists.infradead.org>; Fri, 16 Sep 2016 12:13:58 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] mtd: m25p80: consider max message size in
- m25p80_read
-To: Brian Norris <computersforpeace@gmail.com>
-References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
- <20160816164204.GV9347@sirena.org.uk>
- <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
-Date: Fri, 16 Sep 2016 21:13:43 +0200
+ id 1bkypw-0000F1-6w
+ for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 19:30:12 +0000
+Received: by mail-wm0-x235.google.com with SMTP id l132so54426015wmf.0
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Sep 2016 12:29:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <2911e5b9-281e-b603-0739-b6afb827055a@atmel.com>
+References: <1468527505-22767-1-git-send-email-ricardo.ribalda@gmail.com>
+ <2911e5b9-281e-b603-0739-b6afb827055a@atmel.com>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Fri, 16 Sep 2016 21:29:29 +0200
+Message-ID: <CAPybu_2CuX2mC4ensJFLz0ydicLV3b3ypNEruO3Z4s3fSyo5+Q@mail.gmail.com>
+Subject: Re: [PATCH v4] mtd: spi-nor: Add support for S3AN spi-nor devices
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Stephen Warren <swarren@nvidia.com>,
+ Jagan Teki <jteki@openedev.com>, Vignesh R <vigneshr@ti.com>,
+ Marek Vasut <marex@denx.de>,
+ =?UTF-8?Q?Ezequiel_Garc=C3=ADa?= <ezequiel@vanguardiasur.com.ar>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Furquan Shaikh <furquan@google.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +35,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 17.08.2016 um 21:09 schrieb Heiner Kallweit:
-> Consider a message size limit when calculating the maximum amount
-> of data that can be read.
-> 
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> ---
-> v2:
-> - use the new function spi_max_message_size
-> ---
->  drivers/mtd/devices/m25p80.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 9cf7fcd..16a7df2 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -172,7 +172,8 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  
->  	t[1].rx_buf = buf;
->  	t[1].rx_nbits = m25p80_rx_nbits(nor);
-> -	t[1].len = min(len, spi_max_transfer_size(spi));
-> +	t[1].len = min3(len, spi_max_transfer_size(spi),
-> +			spi_max_message_size(spi) - t[0].len);
->  	spi_message_add_tail(&t[1], &m);
->  
->  	ret = spi_sync(spi, &m);
-> 
-Can we still get this into 4.9 ?
-The other two patches of the series have been applied by Mark already
-and there's a dependency for messages >64k on fsl-espi.
+Hi Cyrille
+
+Thanks for your comments. I am sending v5 with all of them (hopefully) fixed.
+
+On Fri, Sep 16, 2016 at 6:33 PM, Cyrille Pitchen
+<cyrille.pitchen@atmel.com> wrote:
+>> +             else {
+>> +                     uint64_t aux = to;
+> what about i ?
+do_div explicitly requires uint64_t on some arches, I got some errors
+from the autobuilder if I just used i.
+
+
+Thanks for your comments!
