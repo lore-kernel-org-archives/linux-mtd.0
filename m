@@ -1,12 +1,22 @@
-Date: Fri, 16 Sep 2016 14:19:18 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bkstD-0004IY-KP
+ for linux-mtd@lists.infradead.org; Fri, 16 Sep 2016 13:09:15 +0000
+Date: Fri, 16 Sep 2016 15:08:49 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v4] mtd: nand: automate NAND timings selection
-Message-ID: <20160916141918.0353f65f@bbrezillon>
-In-Reply-To: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
-References: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 0/3] mtd: nand: standardize ECC maximization
+Message-ID: <20160916150849.4a3ca0bb@bbrezillon>
+In-Reply-To: <1465398264-8202-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1465398264-8202-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -19,84 +29,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 15 Sep 2016 10:32:44 +0200
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+On Wed,  8 Jun 2016 17:04:21 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> This series aims at automating the NAND timings selection which is
-> currently supposed to be done in each NAND controller driver, thus
-> simplifying drivers implementation.
+> Hello,
 > 
-> As suggested by Boris this version of the series introduces a nand_reset()
-> function which replaces the several open coded NAND_CMD_RESET commands
-> in the code. This makes sure we can apply the timing each time after
-> after reset.
+> Sorry for the noise, but I forgot to add DT maintainers in Cc.
 > 
-> Also I have brought back the conversion patch for teh sunxi driver whic
-> was part of Boris initial posting. It's untested due to the lack of hardware,
-> so please test before applying.
+> This series aims at standardizing a feature already supported by
+> some NAND controller drivers: setting the maximum ECC strength
+> based on the OOB area size instead of using the ECC strength/step_size
+> information retrieved from the DT or NAND detection code.
+> 
+> This is particularly useful when the NAND device is used in by a
+> FS/wear-leveling layer that is not using the OOB area at all (this is
+> the case of UBI).
+> 
+> Note that drivers already implementing this kind of logic are not
+> converted to the new approach (because of backward compatibility
+> concern), but new drivers or drivers that do not already implement
+> this 'ECC maximization' logic are encouraged to do it.
 
-Applied after fixing a few coding style issues (to make checkpatch
-happy), and exporting the onfi_init_data_interface() function (not sure
-it's the best solution, but at least, it's consistent with the other
-functions defined in nand_timings.c).
-
-Thanks,
-
-Boris
+Applied.
 
 > 
-> Sascha
+> Regards,
 > 
-> Changes since v4:
-> - Change onfi_init_data_interface() prototype to be more future proof as
->   requested by Boris
+> Boris
 > 
-> Changes since v3:
-> - Bring back patch dropped in v3
-> - Use statically allocated default timing for all chips and store one
->   optimized timing in struct nand_chip
+> Boris Brezillon (3):
+>   mtd: nand: Add an option to maximize the ECC strength
+>   mtd: nand: Support maximizing ECC when using software BCH
+>   mtd: nand: sunxi: Support ECC maximization
 > 
-> Changes since v2:
-> - Add accessor function to get the SDR timing from struct nand_data_interface
-> - Change nand_reset() argument to struct nand_chip
-> - Drop conversion of nand_timing array to struct nand_data_interface
-> - Recalculate timing whenever needed instead of storing a pointer in struct
->   nand_chip
-> - some more refactoring
+>  Documentation/devicetree/bindings/mtd/nand.txt |  9 ++++++++
+>  drivers/mtd/nand/nand_base.c                   | 23 ++++++++++++++++++++
+>  drivers/mtd/nand/sunxi_nand.c                  | 29 ++++++++++++++++++++++++++
+>  include/linux/mtd/nand.h                       |  1 +
+>  4 files changed, 62 insertions(+)
 > 
-> Changes since v1:
-> - create a nand_reset() function to create a single place to reset NAND
->   chips and to apply timings
-> - Add patch to convert sunxi driver for automated timing setup
-> - split into more patches
-> 
-> Changes since the initial posting from Boris:
-> 
-> - Integrate Feedback from Ezequiel Garcia
-> - When iterating over the chips calling onfi_set_features() for each
->   bail out when any of the calls fail, not only the last one.
-> - When one of the onfi_set_features() calls fail then reset the chipi
->   afterwards.
-> - Drop Sunxi example, add patch for the mxc_nand controller instead.
-> 
-> ----------------------------------------------------------------
-> 
-> Boris Brezillon (1):
->       mtd: nand: automate NAND timings selection
-> 
-> Sascha Hauer (8):
->       mtd: nand: Create a NAND reset function
->       mtd: nand: Introduce nand_data_interface
->       mtd: nand: convert ONFI mode into data interface
->       mtd: nand: Add function to convert ONFI mode to data_interface
->       mtd: nand: Expose data interface for ONFI mode 0
->       mtd: nand: sunxi: switch from manual to automated timing config
->       mtd: nand: mxc: implement onfi get/set features
->       mtd: nand: mxc: Add timing setup for v2 controllers
-> 
->  drivers/mtd/nand/mxc_nand.c     | 133 ++++++++++++
->  drivers/mtd/nand/nand_base.c    | 179 ++++++++++++++-
->  drivers/mtd/nand/nand_timings.c | 469 ++++++++++++++++++++++------------------
->  drivers/mtd/nand/sunxi_nand.c   |  76 ++-----
->  include/linux/mtd/nand.h        | 190 +++++++++++-----
->  5 files changed, 721 insertions(+), 326 deletions(-)
