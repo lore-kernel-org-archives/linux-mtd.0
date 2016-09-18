@@ -1,24 +1,17 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from smtp107.biz.mail.bf1.yahoo.com ([98.139.244.55])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1blYID-000483-TF
- for linux-mtd@lists.infradead.org; Sun, 18 Sep 2016 09:21:46 +0000
-Subject: Re: [PATCH 2/2] mtd: Kill the OF_MTD Kconfig option
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-References: <1474135031-29443-1-git-send-email-boris.brezillon@free-electrons.com>
- <1474135031-29443-2-git-send-email-boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1bdb0d00-c28c-81dc-e458-07919cd73d96@nod.at>
-Date: Sun, 18 Sep 2016 11:20:40 +0200
+ id 1bljle-0003Xx-Id
+ for linux-mtd@lists.infradead.org; Sun, 18 Sep 2016 21:36:55 +0000
+Message-ID: <381310.24451.qm@smtp107.biz.mail.bf1.yahoo.com>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <1474135031-29443-2-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Enquiry.
+To: Recipients <wanggroup3@acrystal.biz>
+From: wanggroup3@acrystal.biz
+Date: Sun, 18 Sep 2016 21:36:13 +0000
+Reply-To: transmegawang@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,14 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17.09.2016 19:57, Boris Brezillon wrote:
-> Commit d48f62b9a0a0 ("mtd: nand: move of_get_nand_xxx() helpers into
-> nand_base.c") removed the drivers/of/of_mtd.c file but did not remove
-> the associated OF_MTD Kconfig option.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Dear Sir.
 
-Reviewed-by: Richard Weinberger <richard@nod.at>
+We are interested in purchasing your products and
+we sincerely hope to establish a long-term business relation with your =
 
-Thanks,
-//richard
+esteemed company, We deal on super markets and also whole salers on general=
+ marchandise for 4 years,  Base in Manila Phillipines have branch in Dakar =
+Senegal.
+
+Please kindly send me your latest catalog. Also,
+
+inform me about the Minimum Order Quantity, Delivery time or FOB, and payme=
+nt terms warranty. Please contact us via
+
+transmegawang@gmail.com
+  =
+
+Your early reply will be highly appreciated.
+
+Best Regards,
+Anthony Wang
+(Purchasing Manager)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Trans Mega Wang Holdings Limited, =
+
+
+Address: Sta. Elena St. | Binondo, =
+
+Manila, Luzon, Philippines
+Phone Number: +63 2 247 7796
+Email: transmegawang@gmail.com
