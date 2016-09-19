@@ -1,17 +1,19 @@
-From: RogerCC Lin <rogercc.lin@mediatek.com>
-To: <boris.brezillon@free-electrons.com>
-CC: <xiaolei.li@mediatek.com>, <steven.liu@mediatek.com>,
- <rogercc.lin@mediatek.com>, <robh@kernel.org>, <computersforpeace@gmail.com>,
- <jorge.ramirez-ortiz@linaro.org>, <daniel.thompson@linaro.org>,
- <linux-mtd@lists.infradead.org>, <matthias.bgg@gmail.com>,
- <srv_heupstream@mediatek.com>, <linux-mediatek@lists.infradead.org>,
- <dwmw2@infradead.org>, <blogic@openwrt.org>
-Subject: [PATCH v5 0/2] mtd: nand: fix writing incorrect ECC parity data in
- OOB region
-Date: Mon, 19 Sep 2016 10:53:24 +0800
-Message-ID: <1474253606-9965-1-git-send-email-rogercc.lin@mediatek.com>
+Received: from smtp4.nedap.com ([213.160.213.85] helo=smtp.nedap.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1blrzS-00031R-47
+ for linux-mtd@lists.infradead.org; Mon, 19 Sep 2016 06:23:43 +0000
+Subject: Re: Nandflash lifetime calculation
+To: Richard Weinberger <richard.weinberger@gmail.com>
+References: <c763ec82-85e9-172b-2bf3-62859b24d9f0@nedap.com>
+ <CAFLxGvyN8N=xVbNz5WBQKTS0ZMv_vZzzD13uzkDiZY=tP31WAA@mail.gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Jaap de Jong <jaap.dejong@nedap.com>
+Message-ID: <776afb60-6669-3400-b9c1-485fcdf534e5@nedap.com>
+Date: Mon, 19 Sep 2016 08:22:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAFLxGvyN8N=xVbNz5WBQKTS0ZMv_vZzzD13uzkDiZY=tP31WAA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: RogerCC Lin <rogercc.lin@mediatek.com>
+Hi Richard
 
-This series fix chances to write incorrect ECC data which may cause uncorrectable ECC error when reading.
+thanks for the reply!
 
-change since v4:
-- use (i / 4) instead of (i >> 2) to make code more clear.
+Sure, there are many other circumstances that influences the lifespan,
 
-changes since v3:
-- use macro for function arguments.
+but my main interest here was the number of program/erase cycles.
 
-changes since v2:
-- use macro for shift operation.
-
-changes since v1:
-- separate patches into 2.
-- use shift operator with byte access to avoid endianness conversion problems.
-- follow linux coding style.
-
-The patch passed the test of UBIFS file-system read/write on Mediatek's RFB. The tested driver is checked-out from LEDE OpenWRT project's upstream driver, which is pretty much same as nand/next branch upstream driver(git clone https://git.lede-project.org/source.git).
+Jaap
 
 
-RogerCC Lin (2):
-  mtd: nand: fix generating over-boundary ECC data when writing
-  mtd: nand: fix chances to create incomplete ECC data when writing
 
- drivers/mtd/nand/mtk_ecc.c  |   12 ++++++++----
- drivers/mtd/nand/mtk_nand.c |    7 +++++--
- 2 files changed, 13 insertions(+), 6 deletions(-)
+On 16-09-16 16:20, Richard Weinberger wrote:
+> Jaap,
+>
+> On Fri, Sep 16, 2016 at 1:34 PM, Jaap de Jong <jaap.dejong@nedap.com> wrote:
+>> Hi All!
+>>
+>> I'm wondering if my expected nandflash lifetime calculation is, well at
+>> least, a bit accurate.
+>>
+>> So I have this nandflash and about half of it is occupied by static files.
+>> It will not change.
+>> The other half will be used by logs and databases, the dynamic part of this
+>> UBI filesystem.
+>> Their length will not change because they sort of act as circular buffers.
+>> Let's say this system ran a year and the maximum erase counter is now at
+>> 1.000.
+>> The nandflash is specified at 100.000 cycles and is 512MB in size.
+>> I added a factor of 0.7 for overhead.
+>>
+>> So I have a few assumptions, please correct me when and where I'm wrong:
+>>
+>>      1 - total space available for writing such a nandflash = 0.7 * 100.000 *
+>> 512MB before it reaches
+>>          its maximum if wear levelling is across the full device (global,
+>> which UBI claims)
+>>          --> 35840 GB
+>>
+>>      2 - when the maximum erase counter is at 1.000 in 1 year and 256MB is
+>> being used for that,
+>>          a total of about 1.000 * 256MB is written in 1 year
+>>          --> 256 GB
+>>
+>>      3 - the expected lifetime of this nandflash with this usage then would
+>> be 35840 / 256
+>>          --> 140 yr
+>>
+>> Would that make any sense? (Except that it is far too long to even get close
+>> to that....)
+> Well, your calculation considers only one factor, the maximum number of P/E
+> cycles.
+> Please also keep read disturb and data retention in mind.
+> And the environment also matters, mostly temperature.
+>
