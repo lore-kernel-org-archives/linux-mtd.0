@@ -1,19 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1blulj-00060K-SN
- for linux-mtd@lists.infradead.org; Mon, 19 Sep 2016 09:21:45 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de
-Subject: [PATCH] mtd: nand: pxa3xx_nand: write exactly one message on probe
- failure
-Date: Mon, 19 Sep 2016 11:21:18 +0200
-Message-Id: <1474276878-1021-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Date: Mon, 19 Sep 2016 11:34:59 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+Cc: linux-arm-kernel@lists.infradead.org, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org (open
+ list:NAND FLASH SUBSYSTEM), linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH BUGFIX] mtd: nand: mxc: fix obiwan error in
+ mxc_nand_v[12]_ooblayout_free() functions
+Message-ID: <20160919113459.4a5b7e6e@bbrezillon>
+In-Reply-To: <20160916100925.1a4d1af7@ipc1.ka-ro>
+References: <1473432251-24728-1-git-send-email-LW@KARO-electronics.de>
+ <20160915180605.4aed48d3@bbrezillon>
+ <20160916100925.1a4d1af7@ipc1.ka-ro>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +24,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For some error paths alloc_nand_resource() emitted an error message, for
-others it didn't. Make it consistently print a message including the
-error code where it's not constant and drop the hardly helpful
-additional message printed by the caller of alloc_nand_resource.
+On Fri, 16 Sep 2016 10:09:25 +0200
+Lothar Wa=C3=9Fmann <LW@KARO-electronics.de> wrote:
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/mtd/nand/pxa3xx_nand.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+> Hi,
+>=20
+> On Thu, 15 Sep 2016 18:06:05 +0200 Boris Brezillon wrote:
+> > Hi Lothar,
+> >=20
+> > On Fri,  9 Sep 2016 16:44:11 +0200
+> > Lothar Wa=C3=9Fmann <LW@KARO-electronics.de> wrote:
+> >  =20
+> > > commit a894cf6c5a82 ("mtd: nand: mxc: switch to mtd_ooblayout_ops")
+> > > introduced a regression accessing the OOB area from the mxc_nand
+> > > driver due to an Obiwan error in the mxc_nand_v[12]_ooblayout_free()
+> > > functions. They report a bogus oobregion { 64, 7 } which leads to
+> > > errors accessing bogus data when reading the oob area.
+> > >=20
+> > > Prior to the commit the mtd-oobtest module could be run without any
+> > > errors. With the offending commit, this test fails with results like:
+> > > |Running mtd-oobtest
+> > > |
+> > > |=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> > > |mtd_oobtest: MTD device: 5
+> > > |mtd_oobtest: MTD device size 524288, eraseblock size 131072, page si=
+ze 2048, count of eraseblocks 4, pages per eraseblock 64, OOB size 64
+> > > |mtd_test: scanning for bad eraseblocks
+> > > |mtd_test: scanned 4 eraseblocks, 0 are bad
+> > > |mtd_oobtest: test 1 of 5
+> > > |mtd_oobtest: writing OOBs of whole device
+> > > |mtd_oobtest: written up to eraseblock 0
+> > > |mtd_oobtest: written 4 eraseblocks
+> > > |mtd_oobtest: verifying all eraseblocks
+> > > |mtd_oobtest: error @addr[0x0:0x19] 0x9a -> 0x78 diff 0xe2
+> > > |mtd_oobtest: error @addr[0x0:0x1a] 0xcc -> 0x0 diff 0xcc
+> > > |mtd_oobtest: error @addr[0x0:0x1b] 0xe0 -> 0x85 diff 0x65
+> > > |mtd_oobtest: error @addr[0x0:0x1c] 0x60 -> 0x62 diff 0x2
+> > > |mtd_oobtest: error @addr[0x0:0x1d] 0x69 -> 0x45 diff 0x2c
+> > > |mtd_oobtest: error @addr[0x0:0x1e] 0xcd -> 0xa0 diff 0x6d
+> > > |mtd_oobtest: error @addr[0x0:0x1f] 0xf2 -> 0x60 diff 0x92
+> > > |mtd_oobtest: error: verify failed at 0x0
+> > > [...]
+> > >=20
+> > > Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
+> > > ---
+> > >  drivers/mtd/nand/mxc_nand.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> > > index 5173fad..fdee907 100644
+> > > --- a/drivers/mtd/nand/mxc_nand.c
+> > > +++ b/drivers/mtd/nand/mxc_nand.c
+> > > @@ -893,7 +893,7 @@ static int mxc_v1_ooblayout_free(struct mtd_info =
+*mtd, int section,
+> > >  {
+> > >  	struct nand_chip *nand_chip =3D mtd_to_nand(mtd);
+> > > =20
+> > > -	if (section > nand_chip->ecc.steps)
+> > > +	if (section >=3D nand_chip->ecc.steps)
+> > >  		return -ERANGE; =20
+> >=20
+> > Hm, looking at the commit you're pointing to, it seems that this test
+> > is correct (we have X + 1 free sections, where X is the number of ECC
+> > steps).
+> >  =20
+> You are right. I didn't verify the v1 case (for which I have no HW here
+> any more).
+> I'll send a corrected patch.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 436dd6dc11f4..052e9725cf12 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1774,8 +1774,11 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 	int ret, irq, cs;
- 
- 	pdata = dev_get_platdata(&pdev->dev);
--	if (pdata->num_cs <= 0)
-+	if (pdata->num_cs <= 0) {
-+		dev_err(&pdev->dev, "broken number of chip selects\n");
- 		return -ENODEV;
-+	}
-+
- 	info = devm_kzalloc(&pdev->dev,
- 			    sizeof(*info) + sizeof(*host) * pdata->num_cs,
- 			    GFP_KERNEL);
-@@ -1814,8 +1817,9 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 	init_waitqueue_head(&chip->controller->wq);
- 	info->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(info->clk)) {
--		dev_err(&pdev->dev, "failed to get nand clock\n");
--		return PTR_ERR(info->clk);
-+		ret = PTR_ERR(info->clk);
-+		dev_err(&pdev->dev, "failed to get nand clock (%d)\n", ret);
-+		return ret;
- 	}
- 	ret = clk_prepare_enable(info->clk);
- 	if (ret < 0)
-@@ -1843,6 +1847,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 	info->mmio_base = devm_ioremap_resource(&pdev->dev, r);
- 	if (IS_ERR(info->mmio_base)) {
- 		ret = PTR_ERR(info->mmio_base);
-+		dev_err(&pdev->dev, "failed to map register space (%d)\n", ret);
- 		goto fail_disable_clk;
- 	}
- 	info->mmio_phys = r->start;
-@@ -1862,7 +1867,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 				   pxa3xx_nand_irq_thread, IRQF_ONESHOT,
- 				   pdev->name, info);
- 	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to request IRQ\n");
-+		dev_err(&pdev->dev, "failed to request IRQ (%d)\n", ret);
- 		goto fail_free_buf;
- 	}
- 
-@@ -1961,10 +1966,8 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = alloc_nand_resource(pdev);
--	if (ret) {
--		dev_err(&pdev->dev, "alloc nand resource failed\n");
-+	if (ret)
- 		return ret;
--	}
- 
- 	info = platform_get_drvdata(pdev);
- 	probe_success = 0;
--- 
-2.8.1
+No need to resend, I fixed it locally.
+
+Thanks,
+
+Boris
