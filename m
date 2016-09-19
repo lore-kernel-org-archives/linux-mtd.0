@@ -1,19 +1,19 @@
-Date: Mon, 19 Sep 2016 10:11:55 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Sergio Prado <sergio.prado@e-labworks.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, robh+dt@kernel.org,
- kgene@kernel.org, k.kozlowski@samsung.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH] mtd: s3c2410: add device tree support
-Message-ID: <20160919091155.GB11118@leverpostej>
-References: <1474125760-28168-1-git-send-email-sergio.prado@e-labworks.com>
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1blulj-00060K-SN
+ for linux-mtd@lists.infradead.org; Mon, 19 Sep 2016 09:21:45 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de
+Subject: [PATCH] mtd: nand: pxa3xx_nand: write exactly one message on probe
+ failure
+Date: Mon, 19 Sep 2016 11:21:18 +0200
+Message-Id: <1474276878-1021-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1474125760-28168-1-git-send-email-sergio.prado@e-labworks.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,89 +23,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Sep 17, 2016 at 12:22:40PM -0300, Sergio Prado wrote:
-> Tested on FriendlyARM Mini2440
-> 
-> Signed-off-by: Sergio Prado <sergio.prado@e-labworks.com>
-> ---
->  .../devicetree/bindings/mtd/samsung-s3c2410.txt    |  70 +++++++++++
->  drivers/mtd/nand/s3c2410.c                         | 129 ++++++++++++++++++++-
->  include/linux/platform_data/mtd-nand-s3c2410.h     |   1 +
->  3 files changed, 195 insertions(+), 5 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt b/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
-> new file mode 100644
-> index 000000000000..1c39f6cf483b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
-> @@ -0,0 +1,70 @@
-> +* Samsung S3C2410 and compatible NAND flash controller
-> +
-> +Required properties:
-> +- compatible : The possible values are:
-> +	"samsung,s3c2410-nand"
-> +	"samsung,s3c2412-nand"
-> +	"samsung,s3c2440-nand"
-> +	"samsung,s3c6400-nand"
-> +- reg : register's location and length.
-> +- #address-cells, #size-cells : see nand.txt
-> +- clocks : phandle to the nand controller clock
-> +- clock-names : must contain "nand"
+For some error paths alloc_nand_resource() emitted an error message, for
+others it didn't. Make it consistently print a message including the
+error code where it's not constant and drop the hardly helpful
+additional message printed by the caller of alloc_nand_resource.
 
-Is there only one clock feeding into the NAND block? Is it actually
-called "nand", or does the datasheet not give the input a nme?
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-> +
-> +Optional properties:
-> +- samsung,tacls : time for active CLE/ALE to nWE/nOE
-> +- samsung,twrph0 : active time for nWE/nOE
-> +- samsung,twrph1 : time for release CLE/ALE from nWE/nOE inactive
-
-If these are necessary, what units are these in?
-
-> +- samsung,ignore_unset_ecc : boolean to ignore error when we have
-> +                             0xff,0xff,0xff read ECC, on the
-> +                             assumption that it is an un-eccd page
-
-s/_/-/ in property names, please.
-
-That said, this name reads like policy rather than a HW description.
-Why/when is this necessary to set?
-
-[...]
-
-> +	of_property_read_u32(np, "samsung,tacls",  &pdata->tacls);
-> +	of_property_read_u32(np, "samsung,twrph0", &pdata->twrph0);
-> +	of_property_read_u32(np, "samsung,twrph1", &pdata->twrph1);
-
-Are all values in the range [0, 0xffffffff] valid for these? If not, it
-would be a good idea to sanity-check the values.
-
-> +	if (of_get_property(np, "samsung,ignore_unset_ecc", NULL))
-> +		pdata->ignore_unset_ecc = 1;
-
-Use of_property_read_bool();
-
-[...]
-
-> +	for_each_available_child_of_node(np, child) {
-> +
-> +		sets->name = (char *)child->name;
-> +		sets->of_node = child;
-
-Strictly speaking, you should increment the child node refcount here, as
-you maintain a reference to it and its name field.
-
-> +		sets->nr_chips = 1;
-> +
-> +		if (!of_property_match_string(child, "nand-ecc-mode", "none"))
-> +			sets->disable_ecc = 1;
-> +
-> +		if (of_get_property(child, "nand-on-flash-bbt", NULL))
-> +			sets->flash_bbt = 1;
-
-Use of_property_read_bool().
-
-Thanks,
-Mark.
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 436dd6dc11f4..052e9725cf12 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1774,8 +1774,11 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	int ret, irq, cs;
+ 
+ 	pdata = dev_get_platdata(&pdev->dev);
+-	if (pdata->num_cs <= 0)
++	if (pdata->num_cs <= 0) {
++		dev_err(&pdev->dev, "broken number of chip selects\n");
+ 		return -ENODEV;
++	}
++
+ 	info = devm_kzalloc(&pdev->dev,
+ 			    sizeof(*info) + sizeof(*host) * pdata->num_cs,
+ 			    GFP_KERNEL);
+@@ -1814,8 +1817,9 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	init_waitqueue_head(&chip->controller->wq);
+ 	info->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(info->clk)) {
+-		dev_err(&pdev->dev, "failed to get nand clock\n");
+-		return PTR_ERR(info->clk);
++		ret = PTR_ERR(info->clk);
++		dev_err(&pdev->dev, "failed to get nand clock (%d)\n", ret);
++		return ret;
+ 	}
+ 	ret = clk_prepare_enable(info->clk);
+ 	if (ret < 0)
+@@ -1843,6 +1847,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	info->mmio_base = devm_ioremap_resource(&pdev->dev, r);
+ 	if (IS_ERR(info->mmio_base)) {
+ 		ret = PTR_ERR(info->mmio_base);
++		dev_err(&pdev->dev, "failed to map register space (%d)\n", ret);
+ 		goto fail_disable_clk;
+ 	}
+ 	info->mmio_phys = r->start;
+@@ -1862,7 +1867,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 				   pxa3xx_nand_irq_thread, IRQF_ONESHOT,
+ 				   pdev->name, info);
+ 	if (ret < 0) {
+-		dev_err(&pdev->dev, "failed to request IRQ\n");
++		dev_err(&pdev->dev, "failed to request IRQ (%d)\n", ret);
+ 		goto fail_free_buf;
+ 	}
+ 
+@@ -1961,10 +1966,8 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = alloc_nand_resource(pdev);
+-	if (ret) {
+-		dev_err(&pdev->dev, "alloc nand resource failed\n");
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	info = platform_get_drvdata(pdev);
+ 	probe_success = 0;
+-- 
+2.8.1
