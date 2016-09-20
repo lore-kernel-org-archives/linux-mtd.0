@@ -1,27 +1,25 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmJ7A-0005OU-D0
- for linux-mtd@lists.infradead.org; Tue, 20 Sep 2016 11:21:29 +0000
-Date: Tue, 20 Sep 2016 13:21:04 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Javier
- Martinez Canillas <javier@osg.samsung.com>, Stephen Warren
- <swarren@nvidia.com>, Jagan Teki <jteki@openedev.com>, Vignesh R
- <vigneshr@ti.com>, Marek Vasut <marex@denx.de>, Ezequiel =?UTF-8?B?R2Fy?=
- =?UTF-8?B?Y8OtYQ==?= <ezequiel@vanguardiasur.com.ar>, =?UTF-8?B?UmFmYcWC?=
- =?UTF-8?B?IE1pxYJlY2tp?= <zajec5@gmail.com>, Furquan Shaikh
- <furquan@google.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] mtd: spi-nor: Add support for S3AN spi-nor devices
-Message-ID: <20160920132104.1159d960@bbrezillon>
-In-Reply-To: <1474054432-29124-1-git-send-email-ricardo.ribalda@gmail.com>
-References: <1474054432-29124-1-git-send-email-ricardo.ribalda@gmail.com>
+Received: from mail-oi0-x231.google.com ([2607:f8b0:4003:c06::231])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmMtb-0008NA-5a
+ for linux-mtd@lists.infradead.org; Tue, 20 Sep 2016 15:23:44 +0000
+Received: by mail-oi0-x231.google.com with SMTP id w11so25680652oia.2
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Sep 2016 08:23:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <3806eb18-1939-567d-6006-ae02ecbf14a4@nod.at>
+References: <EB1698FB-FF63-4FC1-A706-A81DB9E655DD@gmail.com>
+ <CAFLxGvzmRPaNFqzYubCo2_mB9W4inja_J9YM7rUay_9TpJBmCA@mail.gmail.com>
+ <CB87F86A-3E14-4091-B669-6C325085F397@gmail.com>
+ <3806eb18-1939-567d-6006-ae02ecbf14a4@nod.at>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 20 Sep 2016 17:23:21 +0200
+Message-ID: <CAFLxGvxCcPJz0zY=AT2fKUwA1nC2fpfGXXaqVOmiC67qE34LgQ@mail.gmail.com>
+Subject: Re: Micron qspi nor flash and UBIFS
+To: Richard Weinberger <richard@nod.at>
+Cc: Andras Szemzo <szemzo.andras@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ cyrille.pitchen@atmel.com, Michal Suchanek <hramrach@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,138 +29,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ricardo,
+Ping?
 
-On Fri, 16 Sep 2016 21:33:52 +0200
-Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+On Thu, Sep 1, 2016 at 12:23 PM, Richard Weinberger <richard@nod.at> wrote:
+> Andras,
+>
+> On 01.09.2016 11:37, Andras Szemzo wrote:
+>> UBIFS (ubi0:0): background thread "ubifs_bgt0_0" started, PID 47
+>> ------------[ cut here ]------------
+>> WARNING: CPU: 0 PID: 1 at drivers/mtd/spi-nor/spi-nor.c:1177 spi_nor_write+0x57/0xea
+>> Writing at offset 128 into a NOR page. Writing partial pages may decrease reliability and increase wear of NOR flash.
+>> Modules linked in:
+>> CPU: 0 PID: 1 Comm: swapper Not tainted 4.8.0-rc2 #49
+>> Hardware name: Atmel SAMx7
+>> [<7000c5d9>] (unwind_backtrace) from [<7000b3ab>] (show_stack+0xb/0xc)
+>> [<7000b3ab>] (show_stack) from [<7000f095>] (__warn+0x89/0xb0)
+>> [<7000f095>] (__warn) from [<7000f0db>] (warn_slowpath_fmt+0x1f/0x28)
+>> [<7000f0db>] (warn_slowpath_fmt) from [<70127e8d>] (spi_nor_write+0x57/0xea)
+>> [<70127e8d>] (spi_nor_write) from [<70124593>] (part_write+0x27/0x2a)
+>> [<70124593>] (part_write) from [<70122717>] (mtd_write+0x53/0x68)
+>> [<70122717>] (mtd_write) from [<701301f3>] (ubi_io_write+0x23f/0x410)
+>> [<701301f3>] (ubi_io_write) from [<7012e0f7>] (ubi_eba_write_leb+0x77/0x5fc)
+>> [<7012e0f7>] (ubi_eba_write_leb) from [<7012d4c1>] (ubi_leb_write+0x71/0x8a)
+>> [<7012d4c1>] (ubi_leb_write) from [<7009dd9d>] (ubifs_leb_write+0x65/0xb4)
+>> [<7009dd9d>] (ubifs_leb_write) from [<7009edf3>] (ubifs_write_node+0xf7/0x124)
+>> [<7009edf3>] (ubifs_write_node) from [<700a2945>] (ubifs_write_master+0x91/0xc8)
+>> [<700a2945>] (ubifs_write_master) from [<7009c64f>] (ubifs_mount+0xebf/0x1020)
+>> [<7009c64f>] (ubifs_mount) from [<700555e9>] (mount_fs+0x9/0x60)
+>> [<700555e9>] (mount_fs) from [<7006427b>] (vfs_kern_mount+0x33/0xc0)
+>> [<7006427b>] (vfs_kern_mount) from [<700664c9>] (do_mount+0x599/0x788)
+>> [<700664c9>] (do_mount) from [<7006682b>] (SyS_mount+0x4f/0x6a)
+>> [<7006682b>] (SyS_mount) from [<702cd8d1>] (mount_block_root+0xa9/0x1e8)
+>> [<702cd8d1>] (mount_block_root) from [<702cdab1>] (prepare_namespace+0x4d/0xf0)
+>> [<702cdab1>] (prepare_namespace) from [<702cd731>] (kernel_init_freeable+0x105/0x14c)
+>> [<702cd731>] (kernel_init_freeable) from [<701c67db>] (kernel_init+0x7/0xa0)
+>> [<701c67db>] (kernel_init) from [<70009c49>] (ret_from_fork+0x11/0x28)
+>
+> This proves my assumption.
+> spi-nor.c warns as soon you write with an offset to a page.
+> So, it will warn for *every* non-trivial user.
+>
+> The warning is also rather new, CC'ing patch authors.
+>
+> commit e5d05cbd6d8b01f08c95c427a36c66aac769af4f
+> Author: Michal Suchanek <hramrach@gmail.com>
+> Date:   Thu May 5 17:31:54 2016 -0700
+>
+>     mtd: spi-nor: simplify write loop
+>
+>     The spi-nor write loop assumes that what is passed to the hardware
+>     driver write() is what gets written.
+>
+>     When write() writes less than page size at once data is dropped on the
+>     floor. Check the amount of data writen and exit if it does not match
+>     requested amount.
+>
+>     Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+>     Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+>     Tested-by Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>     Acked-by: Michal Suchanek <hramrach@gmail.com>
+>     Tested-by: Michal Suchanek <hramrach@gmail.com>
+>
+>
+> Guys, this patch is odd in multiple ways.
+> 1. Patch description does not match the code. It does *not* just simplify the write loop.
+>    It also introduces a new scary WARN_ON_ONCE(). Unless I miss something it will trigger
+>    for every write with an offset. So, you rule out any filesystem on top of SPI-NOR.
+>    What's the deal?
+> 2. The SOB chain is strange. Michal, you authored this patch, right?
+>    Why did you add an Acked-by and Tested-by tag too?
+>
+> Thanks,
+> //richard
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-> Xilinx Spartan-3AN FPGAs contain an In-System Flash where they keep
-> their configuration data and (optionally) some user data.
-> 
-> The protocol of this flash follows most of the spi-nor standard. With
-> the following differences:
-> 
-> - Page size might not be a power of two.
-> - The address calculation (default addressing mode).
-> - The spi nor commands used.
-> 
-> Protocol is described on Xilinx User Guide UG333
-> 
-> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-> ---
-> v5:
-> -Rebase on top of l2-mtd/master
-> Suggested by: Cyrille Pitchen <cyrille.pitchen@atmel.com>:
-> -Fix to+1 bug
-> -Move all address conversions to spi-nor
-> -Replace pr_dev with dev_err
-> 
-> v4:
-> -Rebase on top of l2-mtd/master
-> 
-> v3:
-> -Rebase on top of mtd-next
-> -Rename ADDR_NATIVE to ADDR_DEFAULT to follow UG333 naming
-> -Fix bug on probe
-> 
-> v2: Suggested by Brian Norris <computersforpeace@gmail.com>
-> 
-> -Remove inline qualifier
-> -Improve documentation of Default Addressing Mode
-> -Convert function callbacks into SNOR_F_
-> -Fix missmatch braces
-> -Improve documentation of SPI_S3AN flag
->  drivers/mtd/spi-nor/spi-nor.c | 122 ++++++++++++++++++++++++++++++++++++++++--
->  include/linux/mtd/spi-nor.h   |  12 +++++
->  2 files changed, 129 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d0fc165d7d66..94c5fd870058 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -75,6 +75,12 @@ struct flash_info {
->  					 * bit. Must be used with
->  					 * SPI_NOR_HAS_LOCK.
->  					 */
-> +#define	SPI_S3AN		BIT(10)	/*
-> +					 * Xilinx Spartan 3AN In-System Flash
-> +					 * (MFR cannot be used for probing
-> +					 * because it has the same value as
-> +					 * ATMEL flashes)
-> +					*/
->  };
->  
->  #define JEDEC_MFR(info)	((info)->id[0])
-> @@ -217,6 +223,21 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
->  		return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1);
->  	}
->  }
-> +
-> +static int s3an_sr_ready(struct spi_nor *nor)
-> +{
-> +	int ret;
-> +	u8 val;
-> +
-> +	ret = nor->read_reg(nor, SPINOR_OP_XRDSR, &val, 1);
-> +	if (ret < 0) {
-> +		dev_err(nor->dev, "error %d reading XRDSR\n", (int) ret);
-> +		return ret;
-> +	}
-> +
-> +	return !!(val & XSR_RDY);
-> +}
-> +
->  static inline int spi_nor_sr_ready(struct spi_nor *nor)
->  {
->  	int sr = read_sr(nor);
-> @@ -238,7 +259,9 @@ static inline int spi_nor_fsr_ready(struct spi_nor *nor)
->  static int spi_nor_ready(struct spi_nor *nor)
->  {
->  	int sr, fsr;
-> -	sr = spi_nor_sr_ready(nor);
-> +
-> +	sr = nor->flags & SNOR_F_READY_XSR_RDY ? s3an_sr_ready(nor) :
-> +						 spi_nor_sr_ready(nor);
 
-Nit: I find
 
-	if (nor->flags & SNOR_F_READY_XSR_RDY)
-		sr = s3an_sr_ready(nor);
-	else
-		sr = spi_nor_sr_ready(nor);
-
-more readable.
-
->  	if (sr < 0)
->  		return sr;
->  	fsr = nor->flags & SNOR_F_USE_FSR ? spi_nor_fsr_ready(nor) : 1;
-> @@ -320,6 +343,22 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
->  }
->  
->  /*
-> + * This code converts an address to the Default Address Mode, that has non
-> + * power of two page sizes. We must support this mode because it is the default
-> + * mode supported by Xilinx tools, it can access the whole flash area and
-> + * changing over to the Power-of-two mode is irreversible and corrupts the
-> + * original data.
-> + */
-> +static loff_t spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
-> +{
-> +	unsigned int offset;
-> +
-> +	offset = (nor->page_size == 264) ? (addr % 264) : (addr % 528);
-
-Why not just
-	
-	offset = addr % nor->page_size;
-
-> +
-> +	return ((addr - offset) << 1) | offset;
-> +}
-> +
-
-Sorry for this useless review :-).
-
-Regards,
-
-Boris
+-- 
+Thanks,
+//richard
