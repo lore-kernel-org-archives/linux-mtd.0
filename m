@@ -1,27 +1,25 @@
-Received: from smtp2-g21.free.fr ([2a01:e0c:1:1599::11])
+Received: from mail-yw0-x241.google.com ([2607:f8b0:4002:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bm7CB-0000TT-LX
- for linux-mtd@lists.infradead.org; Mon, 19 Sep 2016 22:37:59 +0000
-Subject: Re: [PATCH v5] mtd: nand: tango: import driver for tango chips
+ id 1bmAUZ-0005Du-7A
+ for linux-mtd@lists.infradead.org; Tue, 20 Sep 2016 02:09:05 +0000
+Received: by mail-yw0-x241.google.com with SMTP id v2so158040ywg.3
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Sep 2016 19:08:41 -0700 (PDT)
+Date: Mon, 19 Sep 2016 23:08:28 -0300
+From: Sergio Prado <sergio.prado@e-labworks.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, Sebastian Frias <sf84@laposte.net>,
- Jean-Baptiste Lescher <jblescher@gmail.com>,
- Thibaud Cornic <thibaud_cornic@sigmadesigns.com>
-References: <57C94E33.6070304@sigmadesigns.com>
- <20160905091450.017e4aa3@bbrezillon> <57CD4672.1010504@free.fr>
- <20160905131516.0acb8145@bbrezillon> <57D189E1.3020508@sigmadesigns.com>
- <57D193C5.8040004@sigmadesigns.com> <57D2DF96.7060705@sigmadesigns.com>
- <57D5530B.2060209@free.fr> <20160912210810.79ac23c9@bbrezillon>
- <57DFE444.3000003@sigmadesigns.com> <20160919190623.3b9d7842@bbrezillon>
-From: Mason <slash.tmp@free.fr>
-Message-ID: <57E06892.6010008@free.fr>
-Date: Tue, 20 Sep 2016 00:37:06 +0200
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, kgene@kernel.org, k.kozlowski@samsung.com,
+ richard@nod.at, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH] mtd: s3c2410: add device tree support
+Message-ID: <20160920020827.GA11294@n1>
+References: <1474125760-28168-1-git-send-email-sergio.prado@e-labworks.com>
+ <20160917193123.762587d0@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <20160919190623.3b9d7842@bbrezillon>
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160917193123.762587d0@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,513 +29,393 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19/09/2016 19:06, Boris Brezillon wrote:
-
-> Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+On Sat, Sep 17, 2016 at 07:31:23PM +0200, Boris Brezillon wrote:
+> Hi Sergio,
 > 
->> This driver supports the NAND Flash controller embedded in recent
->> Tango chips, such as SMP8758 and SMP8759.
+> On Sat, 17 Sep 2016 12:22:40 -0300
+> Sergio Prado <sergio.prado@e-labworks.com> wrote:
 > 
-> Please send another patch to document the DT bindings, and Cc the DT
-> maintainers.
-
-OK.
-
-
->> +struct tango_chip {
->> +	struct nand_chip chip;
->> +	void __iomem *base;
+> > Tested on FriendlyARM Mini2440
+> > 
+> > Signed-off-by: Sergio Prado <sergio.prado@e-labworks.com>
+> > ---
+> >  .../devicetree/bindings/mtd/samsung-s3c2410.txt    |  70 +++++++++++
 > 
-> I'm still not convinced this is needed (->base can be calculated where
-> needed based on the chip->cs and nfc->reg_base values), but if you want
-> to keep it, let's keep it.
+> DT maintainers usually ask people to keep the DT bindings doc in a
+> separate patch.
 
-I thought it was bad form to duplicate the code computing
-chip->base, especially if I need to update that function.
+Right. I'll send the DT bindings doc in a separate patch.
 
-
->> +static void tango_select_chip(struct mtd_info *mtd, int idx)
->> +{
->> +	struct nand_chip *nand = mtd_to_nand(mtd);
->> +	struct tango_nfc *nfc = to_tango_nfc(nand->controller);
->> +	struct tango_chip *chip = to_tango_chip(nand);
->> +
->> +	if (idx < 0) {
->> +		chip->base = NULL;
->> +		return;
->> +	}
->> +
->> +	chip->base = nfc->pbus_base + (chip->cs * 256);
 > 
-> You support only one CS per chip, so this is something you can
-> configure at init time.
+> >  drivers/mtd/nand/s3c2410.c                         | 129 ++++++++++++++++++++-
+> >  include/linux/platform_data/mtd-nand-s3c2410.h     |   1 +
+> >  3 files changed, 195 insertions(+), 5 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt b/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
+> > new file mode 100644
+> > index 000000000000..1c39f6cf483b
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
+> > @@ -0,0 +1,70 @@
+> > +* Samsung S3C2410 and compatible NAND flash controller
+> > +
+> > +Required properties:
+> > +- compatible : The possible values are:
+> > +	"samsung,s3c2410-nand"
+> > +	"samsung,s3c2412-nand"
+> > +	"samsung,s3c2440-nand"
+> > +	"samsung,s3c6400-nand"
+> > +- reg : register's location and length.
+> > +- #address-cells, #size-cells : see nand.txt
+> > +- clocks : phandle to the nand controller clock
+> > +- clock-names : must contain "nand"
+> > +
+> > +Optional properties:
+> > +- samsung,tacls : time for active CLE/ALE to nWE/nOE
+> > +- samsung,twrph0 : active time for nWE/nOE
+> > +- samsung,twrph1 : time for release CLE/ALE from nWE/nOE inactive
 > 
-> When I asked you to remove the chip->base field, I had multi-CS chips
-> in mind, but given this implementation, there's no need to set/reset
-> the chip->base field each time ->select_chip() is called.
+> Can you try to extract these information from the nand_sdr_timings
+> struct instead of passing it in your DT?
 
-OK. I'll set chip->cs and chip->base in the probe function.
-Just to be sure, I'll ask internally whether we want to
-support multi-CS chips right now, or if this can be added
-later on.
+OK. Looks like it is possible to extract the timings from
+nand_sdr_timings. I'll try to do it.
 
-
->> +	writel_relaxed(chip->timing1,	nfc->reg_base + NFC_TIMING1);
->> +	writel_relaxed(chip->timing2,	nfc->reg_base + NFC_TIMING2);
->> +	writel_relaxed(chip->xfer_cfg,	nfc->reg_base + NFC_XFER_CFG);
->> +	writel_relaxed(chip->pkt_0_cfg,	nfc->reg_base + NFC_PKT_0_CFG);
->> +	writel_relaxed(chip->pkt_n_cfg,	nfc->reg_base + NFC_PKT_N_CFG);
->> +	writel_relaxed(chip->bb_cfg,	nfc->reg_base + NFC_BB_CFG);
 > 
-> Nit: can you avoid these weird alignments. Use a single space after the
-> comma.
-
-I was trying to highlight the fact that all these writes are
-within the reg_base area. I'll do as you ask, since you are
-the gatekeeper.
-
-
->> +static int do_dma(struct tango_nfc *nfc, int dir, int cmd,
->> +		const void *buf, int len, int page)
->> +{
->> +	struct dma_async_tx_descriptor *desc;
->> +	struct scatterlist sg;
->> +	struct completion tx_done;
->> +	int err = -EIO;
->> +	u32 res, val;
->> +
->> +	sg_init_one(&sg, buf, len);
->> +	if (dma_map_sg(nfc->chan->device->dev, &sg, 1, dir) != 1)
->> +		goto leave;
+> > +- samsung,ignore_unset_ecc : boolean to ignore error when we have
+> > +                             0xff,0xff,0xff read ECC, on the
+> > +                             assumption that it is an un-eccd page
+> > +
+> > +Optional children nodes:
+> > +Children nodes representing the available nand chips.
+> > +
+> > +Optional children properties:
+> > +- nand-ecc-mode : see nand.txt
+> > +- nand-on-flash-bbt : see nand.txt
+> > +
+> > +Each children device node may optionally contain a 'partitions' sub-node,
+> > +which further contains sub-nodes describing the flash partition mapping.
+> > +See partition.txt for more detail.
+> > +
+> > +Example:
+> > +
+> > +nand@4e000000 {
 > 
-> Return -EIO directly instead of creating this 'leave' label.
+> s/nand/nand-controller/
 
-OK. I wasn't sure it was good form to make the first test
-special, especially if someone adds a new alloc before this
-one later on. But I don't care either way.
+Ops. My bad.
 
-
->> +
->> +	desc = dmaengine_prep_slave_sg(nfc->chan, &sg, 1, dir, DMA_PREP_INTERRUPT);
 > 
-> Put DMA_PREP_INTERRUPT on a second line to avoid >80 char lines.
-
-I was told some maintainers don't enforce the >80 char line rule.
-Am I to understand you're not one of them? :-)
-
-
->> +	if (!desc)
->> +		goto dma_unmap;
->> +
->> +	desc->callback = tango_dma_callback;
->> +	desc->callback_param = &tx_done;
->> +	init_completion(&tx_done);
->> +
->> +	writel_relaxed(MODE_NFC, nfc->pbus_base + PBUS_PAD_MODE);
->> +
->> +	writel_relaxed(page, nfc->reg_base + NFC_ADDR_PAGE);
->> +	writel_relaxed(   0, nfc->reg_base + NFC_ADDR_OFFSET);
->> +	writel_relaxed( cmd, nfc->reg_base + NFC_FLASH_CMD);
->> +
->> +	dmaengine_submit(desc);
->> +	dma_async_issue_pending(nfc->chan);
->> +
->> +	res = wait_for_completion_timeout(&tx_done, HZ);
->> +	if (res > 0) {
->> +		void __iomem *addr = nfc->reg_base + NFC_STATUS;
->> +		err = readl_poll_timeout(addr, val, val & CMD_READY, 0, 1000);
+> > +	compatible = "samsung,s3c2440-nand";
+> > +	reg = <0x4e000000 0x40>;
+> > +
+> > +	#address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +	clocks = <&clocks HCLK_NAND>;
+> > +	clock-names = "nand";
+> > +
+> > +	samsung,tacls = <0>;
+> > +	samsung,twrph0 = <25>;
+> > +	samsung,twrph1 = <15>;
 > 
-> Why do you need this local variable?
+> As said above, I think these timings can be extracted from the
+> nand_sdr_timings struct, which is know automatically attached to
+> nand_chip at detection time.
+
+Right.
+
 > 
-> 		err = readl_poll_timeout(nfc->reg_base + NFC_STATUS,
-> 					 val, val & CMD_READY, 0, 1000);
-
-I find it hard to read when function arguments are split
-over multiple lines. So if there is a hard "80 char" limit,
-I prefer using temp variables for "long" arguments.
-
-
->> +	}
->> +
->> +	writel_relaxed(MODE_RAW, nfc->pbus_base + PBUS_PAD_MODE);
+> > +	samsung,ignore_unset_ecc;
 > 
-> Add an extra blank line here.
-
-OK.
-
-
->> +static int tango_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->> +		uint8_t *buf, int oob_required, int page)
->> +{
->> +	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
->> +	int err, res, len = mtd->writesize;
->> +
->> +	err = do_dma(nfc, DMA_FROM_DEVICE, NFC_READ, buf, len, page);
->> +	if (err)
->> +		return err;
->> +
->> +	if (oob_required)
->> +		chip->ecc.read_oob(mtd, chip, page);
->> +
->> +	res = decode_error_report(nfc);
->> +	if (res >= 0)
->> +		return res;
->> +
->> +	chip->ecc.read_oob(mtd, chip, page);
+> Just discovered this ->ignore_unset_ecc property, and I don't
+> understand why it's here for...
+> Either you don't want to have ECC, and in this case you should set
+> NAND_ECC_NONE, or you want to have ECC calculated, and in this case,
+> the only valid situation where ECC bytes are 0xff is when the page is
+> erased.
 > 
-> There's no different in your case, but it should be read in raw mode.
-> How about calling ecc.read_oob_raw() so that you're safe even if you
-> want to differentiate the read_oob() and read_oob_raw() cases at some
-> point (IIUC, the METADATA section is ECC protected).
+> If I'm right, please fix the driver instead of adding this DT property.
+> If I'm wrong, could you explain in more detail when you have ECC bytes
+> set to 0xff?
 
-OK.
+That's what I initially thought, but I must confess I just focused on
+keeping the same interface. I'll try to understand better if this check is
+really necessary.
 
-
->> +	res = nand_check_erased_ecc_chunk(buf, len, chip->oob_poi, mtd->oobsize,
->> +			NULL, 0, chip->ecc.strength);
 > 
-> You should check each ECC packet/chunk independently, because ECC
-> strength is referring to an ECC packet not a full page.
-
-Because of our weird physical layout, accessing data chunks is
-really awkward. We are willing to sacrifice a few bad pages
-by using a sub-optimal check (allowing only "strength" bitflips
-over the entire page, instead of over individual packets).
-
-
->> +static int tango_write_page(struct mtd_info *mtd, struct nand_chip *chip,
->> +		const uint8_t *buf, int oob_required, int page)
->> +{
->> +	struct tango_nfc *nfc = to_tango_nfc(chip->controller);
->> +	int err, len = mtd->writesize;
->> +
->> +	writel_relaxed(0xffffffff, nfc->mem_base + METADATA);
->> +	err = do_dma(nfc, DMA_TO_DEVICE, NFC_WRITE, buf, len, page);
->> +	if (err)
->> +		return err;
->> +
->> +	if (oob_required)
->> +		chip->ecc.write_oob(mtd, chip, page);
-
-I suppose we should use write_oob_raw here?
-
-
->> +enum { OP_SKIP, OP_READ, OP_WRITE };
->> +
->> +static void raw_aux(struct mtd_info *mtd, u8 **buf, int len, int op, int *lim)
+> > +
+> > +	nand@0 {
 > 
-> Nit: please pass struct nand_chip *chip in first argument, and extract
-> the mtd using nand_to_mtd(). I know it's just a detail, but I'd like to
-> avoid passing mtd pointers, especially in internal functions.
-
-OK.
-
-
->> +{
->> +	struct nand_chip *chip = mtd_to_nand(mtd);
->> +	int pos = mtd->writesize - *lim;
->> +
->> +	if (op == OP_SKIP)
->> +		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, pos + len, -1);
+> @0 implies having a reg property. I don't see any in your example, and
+> it's not document in the required property list.
 > 
-> Okay, we already discussed that one, and I already showed that this was
-> not working: NAND_CMD_RNDOUT is only valid for read accesses.
+> Is your controller able to connect to different CS?
+
+No, it is not necessary. I'll remove @0.
+
 > 
-> And I told you I'd like to avoid the const to non-const cast in write
-> accessors.
-
-Note: I don't use SKIP for writes, therefore there's no need
-to implement that code.
-
-
->> +	else if (op == OP_READ)
->> +		tango_read_buf(mtd, *buf, len);
->> +	else if (op == OP_WRITE)
->> +		tango_write_buf(mtd, *buf, len);
->> +
->> +	*lim -= len;
->> +	*buf += len;
->> +}
+> > +		nand-ecc-mode = "soft";
+> > +		nand-on-flash-bbt;
+> > +
+> > +		partitions {
+> > +			compatible = "fixed-partitions";
+> > +			#address-cells = <1>;
+> > +			#size-cells = <1>;
+> > +
+> > +			partition@0 {
+> > +				label = "u-boot";
+> > +				reg = <0 0x040000>;
+> > +			};
+> > +
+> > +			partition@40000 {
+> > +				label = "kernel";
+> > +				reg = <0x040000 0x500000>;
+> > +			};
+> > +		};
+> > +	};
+> > +};
+> > diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> > index d9309cf0ce2e..ecbb9c9c1e9a 100644
+> > --- a/drivers/mtd/nand/s3c2410.c
+> > +++ b/drivers/mtd/nand/s3c2410.c
+> > @@ -39,6 +39,8 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/clk.h>
+> >  #include <linux/cpufreq.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_device.h>
+> >  
+> >  #include <linux/mtd/mtd.h>
+> >  #include <linux/mtd/nand.h>
+> > @@ -185,6 +187,26 @@ struct s3c2410_nand_info {
+> >  #endif
+> >  };
+> >  
+> > +struct s3c24XX_nand_devtype_data {
+> > +	enum s3c_cpu_type type;
+> > +};
+> > +
+> > +struct s3c24XX_nand_devtype_data s3c2410_nand_devtype_data = {
+> > +	.type = TYPE_S3C2410,
+> > +};
+> > +
+> > +struct s3c24XX_nand_devtype_data s3c2412_nand_devtype_data = {
+> > +	.type = TYPE_S3C2412,
+> > +};
+> > +
+> > +struct s3c24XX_nand_devtype_data s3c2440_nand_devtype_data = {
+> > +	.type = TYPE_S3C2440,
+> > +};
+> > +
+> > +struct s3c24XX_nand_devtype_data s3c6400_nand_devtype_data = {
+> > +	.type = TYPE_S3C2412,
+> > +};
+> > +
+> >  /* conversion functions */
+> >  
+> >  static struct s3c2410_nand_mtd *s3c2410_nand_mtd_toours(struct mtd_info *mtd)
+> > @@ -813,6 +835,8 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+> >  	struct nand_chip *chip = &nmtd->chip;
+> >  	void __iomem *regs = info->regs;
+> >  
+> > +	nand_set_flash_node(chip, set->of_node);
+> > +
+> >  	chip->write_buf    = s3c2410_nand_write_buf;
+> >  	chip->read_buf     = s3c2410_nand_read_buf;
+> >  	chip->select_chip  = s3c2410_nand_select_chip;
+> > @@ -947,6 +971,96 @@ static void s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
+> >  	}
+> >  }
+> >  
+> > +#ifdef CONFIG_OF_MTD
 > 
-> I'm not sure factorizing this code is really important, but since you
-> insist, how about doing the following instead:
-
-If the code is not factorized, then it must be duplicated for
-read/write_raw and read/write_oob, I think (i.e. 4 times).
-
-> enum tango_raw_op { OP_READ, OP_WRITE };
+> Hm, I thought this symbol had been dropped, but apparently I forgot to
+> remove it. You should make it dependent on CONFIG_OF, not CONFIG_OF_MTD.
 > 
-> union tango_raw_buffer {
-> 	void *in;
-> 	const void *out;
-> };
+> Anyway, I'm not even sure this ifdef is needed. Just test if
+> pdev->dev.of_node is NULL in s3c24xx_nand_probe_dt() and return -1 in
+> this case.
+
+Right. I'll remove this ifdef.
+
 > 
-> struct tango_raw_access {
-> 	enum tango_raw_op op;
-> 	union tango_raw_buffer *buf;
-> 	int pos;
-> };
+> > +static const struct of_device_id s3c24xx_nand_dt_ids[] = {
+> > +	{
+> > +		.compatible = "samsung,s3c2410-nand",
+> > +		.data = &s3c2410_nand_devtype_data,
+> > +	}, {
+> > +		.compatible = "samsung,s3c2412-nand",
+> > +		.data = &s3c2412_nand_devtype_data,
+> > +	}, {
+> > +		.compatible = "samsung,s3c2440-nand",
+> > +		.data = &s3c2440_nand_devtype_data,
+> > +	}, {
+> > +		.compatible = "samsung,s3c6400-nand",
+> > +		.data = &s3c6400_nand_devtype_data,
+> > +	},
+> > +	{ /* sentinel */ }
+> > +};
+> > +MODULE_DEVICE_TABLE(of, s3c24xx_nand_dt_ids);
+> > +
+> > +static int s3c24xx_nand_probe_dt(struct platform_device *pdev)
+> > +{
+> > +	const struct s3c24XX_nand_devtype_data *devtype_data;
+> > +	struct s3c2410_platform_nand *pdata;
+> > +	struct s3c2410_nand_info *info = platform_get_drvdata(pdev);
+> > +	struct device_node *np = pdev->dev.of_node, *child;
+> > +	const struct of_device_id *of_id;
+> > +	struct s3c2410_nand_set *sets;
+> > +
+> > +	of_id = of_match_device(s3c24xx_nand_dt_ids, &pdev->dev);
+> > +	if (!of_id)
+> > +		return 1;
+> > +
+> > +	devtype_data = of_id->data;
+> > +	info->cpu_type = devtype_data->type;
+> > +
+> > +	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+> > +	if (!pdata)
+> > +		return -ENOMEM;
+> > +
+> > +	pdev->dev.platform_data = pdata;
+> > +
+> > +	of_property_read_u32(np, "samsung,tacls",  &pdata->tacls);
+> > +	of_property_read_u32(np, "samsung,twrph0", &pdata->twrph0);
+> > +	of_property_read_u32(np, "samsung,twrph1", &pdata->twrph1);
+> > +
+> > +	if (of_get_property(np, "samsung,ignore_unset_ecc", NULL))
+> > +		pdata->ignore_unset_ecc = 1;
+> > +
+> > +	pdata->nr_sets = of_get_child_count(np);
+> > +	if (!pdata->nr_sets)
+> > +		return 0;
+> > +
+> > +	sets = devm_kzalloc(&pdev->dev, sizeof(*sets) * pdata->nr_sets,
+> > +			   GFP_KERNEL);
+> > +	if (!sets)
+> > +		return -ENOMEM;
+> > +
+> > +	pdata->sets = sets;
+> > +
+> > +	for_each_available_child_of_node(np, child) {
+> > +
+> > +		sets->name = (char *)child->name;
+> > +		sets->of_node = child;
+> > +		sets->nr_chips = 1;
+> > +
+> > +		if (!of_property_match_string(child, "nand-ecc-mode", "none"))
+> > +			sets->disable_ecc = 1;
+> > +
+> > +		if (of_get_property(child, "nand-on-flash-bbt", NULL))
+> > +			sets->flash_bbt = 1;
+> > +
 > 
-> static void raw_aux(struct nand_chip *chip,
-> 		    struct tango_raw_access *info,
-> 		    union tango_raw_buffer *buf, int len)
-> {
-> 	struct mtd_info *mtd = nand_to_mtd(chip);
+> These properties are automatically extracted in nand_scan_ident(), why
+> do you need to parse them twice?
+
+Looks like the driver uses this properties before they are extracted in
+nand_scan_ident(). But I'll try to understand better what the driver is
+doing and prevent from parsing these properties twice.
+
 > 
-> 	if (!buf) {
-> 		if (info->op == OP_READ)
-> 			cmd = NAND_CMD_RNDOUT;
-> 		else
-> 			cmd = NAND_CMD_SEQIN;
+> > +		sets++;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +#else
+> > +static int s3c24xx_nand_probe_dt(struct platform_device *pdev)
+> > +{
+> > +	return 1;
+> > +}
+> > +#endif
+> > +
+> > +static void s3c24xx_nand_probe_pdata(struct platform_device *pdev)
+> > +{
+> > +	struct s3c2410_nand_info *info = platform_get_drvdata(pdev);
+> > +
+> > +	info->cpu_type = platform_get_device_id(pdev)->driver_data;
+> > +}
+> > +
+> >  /* s3c24xx_nand_probe
+> >   *
+> >   * called by device layer when it finds a device matching
+> > @@ -956,8 +1070,7 @@ static void s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
+> >  */
+> >  static int s3c24xx_nand_probe(struct platform_device *pdev)
+> >  {
+> > -	struct s3c2410_platform_nand *plat = to_nand_plat(pdev);
+> > -	enum s3c_cpu_type cpu_type;
+> > +	struct s3c2410_platform_nand *plat;
+> >  	struct s3c2410_nand_info *info;
+> >  	struct s3c2410_nand_mtd *nmtd;
+> >  	struct s3c2410_nand_set *sets;
+> > @@ -967,8 +1080,6 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+> >  	int nr_sets;
+> >  	int setno;
+> >  
+> > -	cpu_type = platform_get_device_id(pdev)->driver_data;
+> > -
+> >  	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+> >  	if (info == NULL) {
+> >  		err = -ENOMEM;
+> > @@ -991,6 +1102,14 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+> >  
+> >  	s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
+> >  
+> > +	err = s3c24xx_nand_probe_dt(pdev);
+> > +	if (err > 0)
+> > +		s3c24xx_nand_probe_pdata(pdev);
+> > +	else if (err < 0)
+> > +		goto exit_error;
+> > +
+> > +	plat = to_nand_plat(pdev);
+> > +
+> >  	/* allocate and map the resource */
+> >  
+> >  	/* currently we assume we have the one resource */
+> > @@ -999,7 +1118,6 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+> >  
+> >  	info->device	= &pdev->dev;
+> >  	info->platform	= plat;
+> > -	info->cpu_type	= cpu_type;
+> >  
+> >  	info->regs = devm_ioremap_resource(&pdev->dev, res);
+> >  	if (IS_ERR(info->regs)) {
+> > @@ -1156,6 +1274,7 @@ static struct platform_driver s3c24xx_nand_driver = {
+> >  	.id_table	= s3c24xx_driver_ids,
+> >  	.driver		= {
+> >  		.name	= "s3c24xx-nand",
+> > +		.of_match_table = s3c24xx_nand_dt_ids,
 > 
-> 		chip->cmdfunc(mtd, cmd, info->pos + len, -1);
-> 	} else {
-> 		if (info->op == OP_READ)
-> 			tango_read_buf(mtd, buf->out, len);
-> 		else
-> 			tango_write_buf(mtd, buf->in, len);
+> If you keep the #ifdef CONFIG_OF section
 > 
-> 		buf->in += len;
-> 	}
+> 		.of_match_table = of_match_ptr(s3c24xx_nand_dt_ids),
+
+I'll remove the ifdef.
+
 > 
-> 	info->pos += len;
-> }
-
-I'll take a closer look tomorrow.
-
-
->> +static int raw_access(struct mtd_info *mtd, uint8_t *buf, uint8_t *oob, int op)
->> +{
->> +	struct nand_chip *chip = mtd_to_nand(mtd);
->> +	int pkt_size = chip->ecc.size;
->> +	int ecc_size = chip->ecc.bytes;
->> +	int buf_op = buf ? op : OP_SKIP;
->> +	int oob_op = oob ? op : OP_SKIP;
->> +	int rem, lim = mtd->writesize;
->> +	u8 *oob_orig = oob;
->> +
->> +	oob += BBM_SIZE;
->> +	raw_aux(mtd, &oob, METADATA_SIZE, oob_op, &lim);
->> +
->> +	while (lim > pkt_size)
->> +	{
->> +		raw_aux(mtd, &buf, pkt_size, buf_op, &lim);
->> +		raw_aux(mtd, &oob, ecc_size, oob_op, &lim);
->> +	}
->> +
->> +	rem = pkt_size - lim;
->> +	raw_aux(mtd, &buf, lim, buf_op, &lim);
->> +	raw_aux(mtd, &oob_orig, BBM_SIZE, oob_op, &lim);
->> +	raw_aux(mtd, &buf, rem, buf_op, &lim);
->> +	raw_aux(mtd, &oob, ecc_size, oob_op, &lim);
->> +
->> +	return 0;
->> +}
+> >  	},
+> >  };
+> >  
+> > diff --git a/include/linux/platform_data/mtd-nand-s3c2410.h b/include/linux/platform_data/mtd-nand-s3c2410.h
+> > index c55e42ee57fa..9d20871e4bbd 100644
+> > --- a/include/linux/platform_data/mtd-nand-s3c2410.h
+> > +++ b/include/linux/platform_data/mtd-nand-s3c2410.h
+> > @@ -40,6 +40,7 @@ struct s3c2410_nand_set {
+> >  	char			*name;
+> >  	int			*nr_map;
+> >  	struct mtd_partition	*partitions;
+> > +	struct device_node	*of_node;
+> >  };
+> >  
+> >  struct s3c2410_platform_nand {
 > 
-> With the above changes this gives:
-> 
-> static int raw_access(struct nand_chip *chip,
-> 		      union tango_raw_buffer *buf,
-> 		      union tango_raw_buffer *oob,
-> 		      int op)
-> {
-> 	struct mtd_info *mtd = nand_to_mtd(chip);
-> 	int pkt_size = chip->ecc.size;
-> 	int ecc_size = chip->ecc.bytes;
-> 	int steps = 0, rem = 0;
-> 	struct tango_raw_access info = {
-> 		.op = op,
-> 		.pos = 0,
-> 	};
-> 	union tango_raw_buffer oob_orig;
-> 
-> 	if (oob) {
-> 		oob->in = chip->oob_poi + BBM_SIZE;
-> 		oob_orig.in = chip->oob_poi;
-> 	}
-> 
-> 	raw_aux(chip, &info, oob, METADATA_SIZE);
-> 
-> 	while (info.pos + pkt_size + ecc_size <= mtd->writesize) {
-> 		raw_aux(chip, &info, buf, pkt_size);
-> 		raw_aux(mtd, &info, oob, ecc_size);
-> 		steps++;
-> 	}
-> 
-> 	if (steps < chip->ecc.steps)
-> 		rem = pkt_size - (mtd->writesize - info.pos);
-> 		raw_aux(mtd, &info, buf, mtd->writesize - info.pos);
-> 	}
 
-I don't think we need the 'steps' variable (I didn't need one).
-
-> 	raw_aux(mtd, &info, oob ? &oob_orig : NULL, BBM_SIZE);
-> 	raw_aux(mtd, &info, buf, rem);
-> 
-> 	rem = mtd->writesize + mtd->oobsize - info.pos;
-> 	raw_aux(mtd, &info, oob, rem);
-> 
-> 	return 0;
-> }
-
-I'll take a closer look tomorrow.
-
-
->> +static u32 to_ticks(int kHz, int ps)
->> +{
->> +	return DIV_ROUND_UP_ULL((u64)kHz * ps, NSEC_PER_SEC);
->> +}
->> +
->> +static int set_timings(struct tango_chip *p, int kHz)
->> +{
->> +	u32 Trdy, Textw, Twc, Twpw, Tacc, Thold, Trpw, Textr;
->> +	const struct nand_sdr_timings *sdr;
->> +	int mode = onfi_get_async_timing_mode(&p->chip);
->> +
->> +	if (mode & ONFI_TIMING_MODE_UNKNOWN)
->> +		return -ENODEV;
->> +
->> +	sdr = onfi_async_timing_mode_to_sdr_timings(fls(mode) - 1);
-> 
-> We recently introduced a generic interface to automate nand timings
-> configuration [1].
-> Can you make use of it (the patches are in my nand/next branch [2], you
-> can rebase your patch series on top of this branch).
-
-I'll take a look. I still need to have this driver working
-on 4.7 for the time being...
-
-
->> +
->> +	Trdy	= to_ticks(kHz, sdr->tCEA_max - sdr->tREA_max);
->> +	Textw	= to_ticks(kHz, sdr->tWB_max);
->> +	Twc	= to_ticks(kHz, sdr->tWC_min);
->> +	Twpw	= to_ticks(kHz, sdr->tWC_min - sdr->tWP_min);
->> +
->> +	Tacc	= to_ticks(kHz, sdr->tREA_max);
->> +	Thold	= to_ticks(kHz, sdr->tREH_min);
->> +	Trpw	= to_ticks(kHz, sdr->tRC_min - sdr->tREH_min);
->> +	Textr	= to_ticks(kHz, sdr->tRHZ_max);
-> 
-> Can you please be consistent in your indentation?
-> You're using spaces before '=' almost everywhere except in a few
-> places (like here).
-
-When initializing fields of a struct, most code I've seen
-uses tabs to align the equal signs. I thought it should be
-the same when assigning the fields of a struct, or assigning
-several variables of the same nature (such as above).
-
-Are you saying you prefer
-
-  Trdy = to_ticks(kHz, sdr->tCEA_max - sdr->tREA_max);
-  Textw = to_ticks(kHz, sdr->tWB_max);
-  Twc = to_ticks(kHz, sdr->tWC_min);
-
-Thus the to_ticks calls are not aligned, and it's less obvious
-that the first argument is always the same.
-
-
->> +static int chip_init(struct device *dev, struct device_node *np, int kHz)
->> +{
->> +	int err;
->> +	u32 cs, ecc_bits;
->> +	struct nand_ecc_ctrl *ecc;
->> +	struct tango_nfc *nfc = dev_get_drvdata(dev);
->> +	struct tango_chip *p = devm_kzalloc(dev, sizeof(*p), GFP_KERNEL);
->> +	if (!p)
->> +		return -ENOMEM;
->> +
->> +	err = of_property_read_u32_index(np, "reg", 0, &cs);
->> +	if (err)
->> +		return err;
->> +
-> 
-> Can you please check that you only have a single value in reg? Just to
-> make sure the user doesn't try to define a multi-CS chip.
-
-OK.
-
-
->> +	if (cs >= MAX_CS)
->> +		return -ERANGE;
->> +
->> +	p->chip.read_byte	= tango_read_byte;
->> +	p->chip.read_buf	= tango_read_buf;
->> +	p->chip.select_chip	= tango_select_chip;
->> +	p->chip.cmd_ctrl	= tango_cmd_ctrl;
->> +	p->chip.dev_ready	= tango_dev_ready;
->> +	p->chip.options		= NAND_USE_BOUNCE_BUFFER | NAND_NO_SUBPAGE_WRITE;
->> +	p->chip.controller	= &nfc->hw;
-> 
-> Again, be consistent in you coding style: use spaces.
-
-OK. I'll take another look at the sunxi driver.
-
-It makes no sense to me that we should tab-align when using
-struct initialization with named fields, but space-align
-when using assignment.
-
-
->> +
->> +	ecc			= &p->chip.ecc;
->> +	ecc->mode		= NAND_ECC_HW;
->> +	ecc->algo		= NAND_ECC_BCH;
->> +	ecc->read_page_raw	= tango_read_page_raw;
->> +	ecc->write_page_raw	= tango_write_page_raw;
->> +	ecc->read_page		= tango_read_page;
->> +	ecc->write_page		= tango_write_page;
->> +	ecc->read_oob		= tango_read_oob;
->> +	ecc->write_oob		= tango_write_oob;
-> 
-> Can you move this part after nand_scan_ident(). I'd also suggest to
-> support software ECC (it's just taking a few more lines), but that's up
-> to you.
-
-OK. What does it mean to support SW ECC?
-
->> +
->> +	nand_set_flash_node(&p->chip, np);
->> +	mtd_set_ooblayout(&p->chip.mtd, &tango_nand_ooblayout_ops);
->> +	err = nand_scan_ident(&p->chip.mtd, 1, NULL);
->> +	if (err)
->> +		return err;
->> +
->> +	ecc_bits = ecc->strength * FIELD_ORDER;
->> +	p->chip.ecc.bytes = DIV_ROUND_UP(ecc_bits, BITS_PER_BYTE);
->> +	set_timings(p, kHz);
-> 
-> You won't need that one if you implement the
-> chip->setup_data_interface() method.
-
-I'll take a closer look.
-
-
->> +	p->xfer_cfg	= XFER_CFG(cs, 1, ecc->steps, METADATA_SIZE);
->> +	p->pkt_0_cfg	= PKT_CFG(ecc->size + METADATA_SIZE, ecc->strength);
->> +	p->pkt_n_cfg	= PKT_CFG(ecc->size, ecc->strength);
->> +	p->bb_cfg	= BB_CFG(p->chip.mtd.writesize, BBM_SIZE);
-> 
-> This should go before nand_scan_tail(), because, as soon as you call
-> mtd_device_register(), someone might use your NAND device.
-> 
->> +	p->cs		= cs;
-> 
-> And this one should go before nand_scan_ident().
-
-OK to both.
-
-
->> +	for_each_child_of_node(pdev->dev.of_node, np) {
->> +		int err = chip_init(&pdev->dev, np, kHz);
->> +		if (err)
->> +			return err;
-> 
-> You should unregister all NAND/MTD devices before returning an error.
-
-Good catch. I was used to devm_* wrappers for everything in
-some frameworks. I'll call tango_nand_remove on error.
-
-Thanks for the detailed review.
-
-Regards.
+-- 
+Sergio Prado
+Embedded Labworks
+Office: +55 11 2628-3461
+Mobile: +55 11 97123-3420
