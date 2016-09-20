@@ -1,26 +1,27 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmHjB-00067r-3V
- for linux-mtd@lists.infradead.org; Tue, 20 Sep 2016 09:52:39 +0000
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmJ7A-0005OU-D0
+ for linux-mtd@lists.infradead.org; Tue, 20 Sep 2016 11:21:29 +0000
+Date: Tue, 20 Sep 2016 13:21:04 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Javier
+ Martinez Canillas <javier@osg.samsung.com>, Stephen Warren
+ <swarren@nvidia.com>, Jagan Teki <jteki@openedev.com>, Vignesh R
+ <vigneshr@ti.com>, Marek Vasut <marex@denx.de>, Ezequiel =?UTF-8?B?R2Fy?=
+ =?UTF-8?B?Y8OtYQ==?= <ezequiel@vanguardiasur.com.ar>, =?UTF-8?B?UmFmYcWC?=
+ =?UTF-8?B?IE1pxYJlY2tp?= <zajec5@gmail.com>, Furquan Shaikh
+ <furquan@google.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v5] mtd: spi-nor: Add support for S3AN spi-nor devices
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "Javier
- Martinez Canillas" <javier@osg.samsung.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Stephen Warren <swarren@nvidia.com>,
- Jagan Teki <jteki@openedev.com>, Vignesh R <vigneshr@ti.com>, Marek Vasut
- <marex@denx.de>, =?UTF-8?Q?Ezequiel_Garc=c3=ada?=
- <ezequiel@vanguardiasur.com.ar>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Furquan Shaikh <furquan@google.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-References: <1474054432-29124-1-git-send-email-ricardo.ribalda@gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <98605ab9-6ece-605f-ca2a-56b8c826c4ad@atmel.com>
-Date: Tue, 20 Sep 2016 11:52:13 +0200
-MIME-Version: 1.0
+Message-ID: <20160920132104.1159d960@bbrezillon>
 In-Reply-To: <1474054432-29124-1-git-send-email-ricardo.ribalda@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+References: <1474054432-29124-1-git-send-email-ricardo.ribalda@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,7 +33,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Ricardo,
 
-Le 16/09/2016 à 21:33, Ricardo Ribalda Delgado a écrit :
+On Fri, 16 Sep 2016 21:33:52 +0200
+Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+
 > Xilinx Spartan-3AN FPGAs contain an In-System Flash where they keep
 > their configuration data and (optionally) some user data.
 > 
@@ -46,7 +49,6 @@ Le 16/09/2016 à 21:33, Ricardo Ribalda Delgado a écrit :
 > Protocol is described on Xilinx User Guide UG333
 > 
 > Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 > ---
 > v5:
 > -Rebase on top of l2-mtd/master
@@ -121,6 +123,16 @@ Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 > +
 > +	sr = nor->flags & SNOR_F_READY_XSR_RDY ? s3an_sr_ready(nor) :
 > +						 spi_nor_sr_ready(nor);
+
+Nit: I find
+
+	if (nor->flags & SNOR_F_READY_XSR_RDY)
+		sr = s3an_sr_ready(nor);
+	else
+		sr = spi_nor_sr_ready(nor);
+
+more readable.
+
 >  	if (sr < 0)
 >  		return sr;
 >  	fsr = nor->flags & SNOR_F_USE_FSR ? spi_nor_fsr_ready(nor) : 1;
@@ -139,188 +151,18 @@ Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 > +	unsigned int offset;
 > +
 > +	offset = (nor->page_size == 264) ? (addr % 264) : (addr % 528);
+
+Why not just
+	
+	offset = addr % nor->page_size;
+
 > +
 > +	return ((addr - offset) << 1) | offset;
 > +}
 > +
-> +/*
->   * Initiate the erasure of a single sector
->   */
->  static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
-> @@ -327,6 +366,9 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
->  	u8 buf[SPI_NOR_MAX_ADDR_WIDTH];
->  	int i;
->  
-> +	if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
-> +		addr = spi_nor_s3an_addr_convert(nor, addr);
-> +
->  	if (nor->erase)
->  		return nor->erase(nor, addr);
->  
-> @@ -368,7 +410,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
->  		return ret;
->  
->  	/* whole-chip erase? */
-> -	if (len == mtd->size) {
-> +	if (len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
->  		unsigned long timeout;
->  
->  		write_enable(nor);
-> @@ -782,6 +824,19 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  		.addr_width = (_addr_width),				\
->  		.flags = (_flags),
->  
-> +#define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
-> +		.id = {							\
-> +			((_jedec_id) >> 16) & 0xff,			\
-> +			((_jedec_id) >> 8) & 0xff,			\
-> +			(_jedec_id) & 0xff				\
-> +			},						\
-> +		.id_len = 3,						\
-> +		.sector_size = (8*_page_size),				\
-> +		.n_sectors = (_n_sectors),				\
-> +		.page_size = _page_size,				\
-> +		.addr_width = 3,					\
-> +		.flags = SPI_NOR_NO_FR | SPI_S3AN,
-> +
->  /* NOTE: double check command sets and memory organization when you add
->   * more nor chips.  This current list focusses on newer chips, which
->   * have been converging on command sets which including JEDEC ID.
-> @@ -1009,6 +1064,13 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "cat25c09", CAT25_INFO( 128, 8, 32, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
->  	{ "cat25c17", CAT25_INFO( 256, 8, 32, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
->  	{ "cat25128", CAT25_INFO(2048, 8, 64, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> +
-> +	/* Xilinx S3AN Internal Flash */
-> +	{ "3S50AN", S3AN_INFO(0x1f2200, 64, 264) },
-> +	{ "3S200AN", S3AN_INFO(0x1f2400, 256, 264) },
-> +	{ "3S400AN", S3AN_INFO(0x1f2400, 256, 264) },
-> +	{ "3S700AN", S3AN_INFO(0x1f2500, 512, 264) },
-> +	{ "3S1400AN", S3AN_INFO(0x1f2600, 512, 528) },
->  	{ },
->  };
->  
-> @@ -1049,7 +1111,12 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
->  		return ret;
->  
->  	while (len) {
-> -		ret = nor->read(nor, from, len, buf);
-> +		loff_t addr = from;
-> +
-> +		if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
-> +			addr = spi_nor_s3an_addr_convert(nor, addr);
-> +
-> +		ret = nor->read(nor, addr, len, buf);
->  		if (ret == 0) {
->  			/* We shouldn't see 0-length reads */
->  			ret = -EIO;
-> @@ -1170,8 +1237,15 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  
->  	for (i = 0; i < len; ) {
->  		ssize_t written;
-> +		loff_t addr = to + i;
->  
-> -		page_offset = (to + i) & (nor->page_size - 1);
-> +		if (hweight32(nor->page_size) == 1) {
-> +			page_offset = addr & (nor->page_size - 1);
-> +		} else {
-> +			uint64_t aux = addr;
-> +
-> +			page_offset = do_div(aux, nor->page_size);
-> +		}
->  		WARN_ONCE(page_offset,
->  			  "Writing at offset %zu into a NOR page. Writing partial pages may decrease reliability and increase wear of NOR flash.",
->  			  page_offset);
-> @@ -1179,8 +1253,11 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  		page_remain = min_t(size_t,
->  				    nor->page_size - page_offset, len - i);
->  
-> +		if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
-> +			addr = spi_nor_s3an_addr_convert(nor, addr);
-> +
->  		write_enable(nor);
-> -		ret = nor->write(nor, to + i, page_remain, buf + i);
-> +		ret = nor->write(nor, addr, page_remain, buf + i);
->  		if (ret < 0)
->  			goto write_err;
->  		written = ret;
-> @@ -1300,6 +1377,35 @@ static int spi_nor_check(struct spi_nor *nor)
->  	return 0;
->  }
->  
-> +static int s3an_nor_scan(const struct flash_info *info, struct spi_nor *nor)
-> +{
-> +	int ret;
-> +	u8 val;
-> +
-> +	ret = nor->read_reg(nor, SPINOR_OP_XRDSR, &val, 1);
-> +	if (ret < 0) {
-> +		dev_err(nor->dev, "error %d reading XRDSR\n", (int) ret);
-> +		return ret;
-> +	}
-> +
-> +	nor->erase_opcode = SPINOR_OP_XSE;
-> +	nor->program_opcode = SPINOR_OP_XPP;
-> +	nor->read_opcode = SPINOR_OP_READ;
-> +	nor->flags |= SNOR_F_NO_OP_CHIP_ERASE | SNOR_F_READY_XSR_RDY;
-> +
-> +	/* Flash in Power of 2 mode */
-> +	if (val & XSR_PAGESIZE) {
-> +		nor->page_size = (nor->page_size == 264) ? 256 : 512;
-> +		nor->mtd.writebufsize = nor->page_size;
-> +		nor->mtd.size = 8 * nor->page_size * info->n_sectors;
-> +		nor->mtd.erasesize = 8 * nor->page_size;
-> +	} else {
-> +		nor->flags |= SNOR_F_S3AN_ADDR_DEFAULT;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  {
->  	const struct flash_info *info = NULL;
-> @@ -1505,6 +1611,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  
->  	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
->  
-> +	if (info->flags & SPI_S3AN) {
-> +		ret = s3an_nor_scan(info, nor);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
->  			(long long)mtd->size >> 10);
->  
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index c425c7b4c2a0..4950b2ef08c0 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -68,6 +68,15 @@
->  #define SPINOR_OP_WRDI		0x04	/* Write disable */
->  #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
->  
-> +/* Used for S3AN flashes only */
-> +#define SPINOR_OP_XSE		0x50	/* Sector erase */
-> +#define SPINOR_OP_XPP		0x82	/* Page program */
-> +#define SPINOR_OP_XRDSR		0xd7	/* Read status register */
-> +
-> +#define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
-> +#define XSR_RDY			BIT(7)	/* Ready */
-> +
-> +
->  /* Used for Macronix and Winbond flashes. */
->  #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
->  #define SPINOR_OP_EX4B		0xe9	/* Exit 4-byte mode */
-> @@ -119,6 +128,9 @@ enum spi_nor_ops {
->  enum spi_nor_option_flags {
->  	SNOR_F_USE_FSR		= BIT(0),
->  	SNOR_F_HAS_SR_TB	= BIT(1),
-> +	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
-> +	SNOR_F_S3AN_ADDR_DEFAULT = BIT(3),
-> +	SNOR_F_READY_XSR_RDY	= BIT(4),
->  };
->  
->  /**
-> 
+
+Sorry for this useless review :-).
+
+Regards,
+
+Boris
