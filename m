@@ -1,9 +1,9 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmGXl-0004gw-9o
- for linux-mtd@lists.infradead.org; Tue, 20 Sep 2016 08:36:48 +0000
-Received: by mail-lf0-x241.google.com with SMTP id l131so522085lfl.0
- for <linux-mtd@lists.infradead.org>; Tue, 20 Sep 2016 01:36:23 -0700 (PDT)
+ id 1bmGXm-0004hh-S3
+ for linux-mtd@lists.infradead.org; Tue, 20 Sep 2016 08:36:51 +0000
+Received: by mail-lf0-x243.google.com with SMTP id k12so520003lfb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Sep 2016 01:36:26 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Richard Weinberger <richard@nod.at>,
  Artem Bityutskiy <dedekind1@gmail.com>,
@@ -11,12 +11,13 @@ To: Richard Weinberger <richard@nod.at>,
 Cc: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2 1/2] ubifs: drop softlimit and delta fields from struct
- ubifs_wbuf
-Date: Tue, 20 Sep 2016 10:36:14 +0200
-Message-Id: <20160920083615.31099-1-zajec5@gmail.com>
-In-Reply-To: <20160914102151.21722-1-zajec5@gmail.com>
+Subject: [PATCH V2 2/2] ubifs: use dirty_writeback_interval value for wbuf
+ timer
+Date: Tue, 20 Sep 2016 10:36:15 +0200
+Message-Id: <20160920083615.31099-2-zajec5@gmail.com>
+In-Reply-To: <20160920083615.31099-1-zajec5@gmail.com>
 References: <20160914102151.21722-1-zajec5@gmail.com>
+ <20160920083615.31099-1-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -31,82 +32,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-Values of these fields are set during init and never modified. They are
-used (read) in a single function only. There isn't really any reason to
-keep them in a struct. It only makes struct just a bit bigger without
-any visible gain.
+Right now wbuf timer has hardcoded timeouts and there is no place for
+manual adjustments. Some projects / cases many need that though. Few
+file systems allow doing that by respecting dirty_writeback_interval
+that can be set using sysctl (dirty_writeback_centisecs).
+
+Lowering dirty_writeback_interval could be some way of dealing with user
+space apps lacking proper fsyncs. This is definitely *not* a perfect
+solution but we don't have ideal (user space) world. There were already
+advanced discussions on this matter, mostly when ext4 was introduced and
+it wasn't behaving as ext3. Anyway, the final decision was to add some
+hacks to the ext4, as trying to fix whole user space or adding new API
+was pointless.
+
+We can't (and shouldn't?) just follow ext4. We can't e.g. sync on close
+as this would cause too many commits and flash wearing. On the other
+hand we still should allow some trade-off between -o sync and default
+wbuf timeout. Respecting dirty_writeback_interval should allow some sane
+cutomizations if used warily.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- fs/ubifs/io.c    | 18 ++++++++++--------
- fs/ubifs/ubifs.h |  5 -----
- 2 files changed, 10 insertions(+), 13 deletions(-)
+V2: Fix delta calculation and make it more clear. Thanks Boris.
+---
+ fs/ubifs/io.c    | 8 ++++----
+ fs/ubifs/ubifs.h | 4 ----
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 97be412..4d6ce4a 100644
+index 4d6ce4a..3be2890 100644
 --- a/fs/ubifs/io.c
 +++ b/fs/ubifs/io.c
-@@ -452,16 +452,22 @@ static enum hrtimer_restart wbuf_timer_callback_nolock(struct hrtimer *timer)
+@@ -452,11 +452,11 @@ static enum hrtimer_restart wbuf_timer_callback_nolock(struct hrtimer *timer)
   */
  static void new_wbuf_timer_nolock(struct ubifs_wbuf *wbuf)
  {
-+	ktime_t softlimit = ktime_set(WBUF_TIMEOUT_SOFTLIMIT, 0);
-+	unsigned long long delta;
-+
-+	delta = WBUF_TIMEOUT_HARDLIMIT - WBUF_TIMEOUT_SOFTLIMIT;
-+	delta *= 1000000000ULL;
-+
+-	ktime_t softlimit = ktime_set(WBUF_TIMEOUT_SOFTLIMIT, 0);
+-	unsigned long long delta;
++	ktime_t softlimit = ms_to_ktime(dirty_writeback_interval * 10);
++	unsigned long long delta = dirty_writeback_interval;
+ 
+-	delta = WBUF_TIMEOUT_HARDLIMIT - WBUF_TIMEOUT_SOFTLIMIT;
+-	delta *= 1000000000ULL;
++	/* centi to milli, milli to nano, then 10% */
++	delta *= 10ULL * NSEC_PER_MSEC / 10ULL;
+ 
  	ubifs_assert(!hrtimer_active(&wbuf->timer));
-+	ubifs_assert(delta <= ULONG_MAX);
- 
- 	if (wbuf->no_timer)
- 		return;
- 	dbg_io("set timer for jhead %s, %llu-%llu millisecs",
- 	       dbg_jhead(wbuf->jhead),
--	       div_u64(ktime_to_ns(wbuf->softlimit), USEC_PER_SEC),
--	       div_u64(ktime_to_ns(wbuf->softlimit) + wbuf->delta,
--		       USEC_PER_SEC));
--	hrtimer_start_range_ns(&wbuf->timer, wbuf->softlimit, wbuf->delta,
-+	       div_u64(ktime_to_ns(softlimit), USEC_PER_SEC),
-+	       div_u64(ktime_to_ns(softlimit) + delta, USEC_PER_SEC));
-+	hrtimer_start_range_ns(&wbuf->timer, softlimit, delta,
- 			       HRTIMER_MODE_REL);
- }
- 
-@@ -1059,10 +1065,6 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
- 
- 	hrtimer_init(&wbuf->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
- 	wbuf->timer.function = wbuf_timer_callback_nolock;
--	wbuf->softlimit = ktime_set(WBUF_TIMEOUT_SOFTLIMIT, 0);
--	wbuf->delta = WBUF_TIMEOUT_HARDLIMIT - WBUF_TIMEOUT_SOFTLIMIT;
--	wbuf->delta *= 1000000000ULL;
--	ubifs_assert(wbuf->delta <= ULONG_MAX);
- 	return 0;
- }
- 
+ 	ubifs_assert(delta <= ULONG_MAX);
 diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 4617d45..11bc8fa 100644
+index 11bc8fa..26e6340 100644
 --- a/fs/ubifs/ubifs.h
 +++ b/fs/ubifs/ubifs.h
-@@ -644,9 +644,6 @@ typedef int (*ubifs_lpt_scan_callback)(struct ubifs_info *c,
-  * @io_mutex: serializes write-buffer I/O
-  * @lock: serializes @buf, @lnum, @offs, @avail, @used, @next_ino and @inodes
-  *        fields
-- * @softlimit: soft write-buffer timeout interval
-- * @delta: hard and soft timeouts delta (the timer expire interval is @softlimit
-- *         and @softlimit + @delta)
-  * @timer: write-buffer timer
-  * @no_timer: non-zero if this write-buffer does not have a timer
-  * @need_sync: non-zero if the timer expired and the wbuf needs sync'ing
-@@ -675,8 +672,6 @@ struct ubifs_wbuf {
- 	int (*sync_callback)(struct ubifs_info *c, int lnum, int free, int pad);
- 	struct mutex io_mutex;
- 	spinlock_t lock;
--	ktime_t softlimit;
--	unsigned long long delta;
- 	struct hrtimer timer;
- 	unsigned int no_timer:1;
- 	unsigned int need_sync:1;
+@@ -83,10 +83,6 @@
+  */
+ #define BGT_NAME_PATTERN "ubifs_bgt%d_%d"
+ 
+-/* Write-buffer synchronization timeout interval in seconds */
+-#define WBUF_TIMEOUT_SOFTLIMIT 3
+-#define WBUF_TIMEOUT_HARDLIMIT 5
+-
+ /* Maximum possible inode number (only 32-bit inodes are supported now) */
+ #define MAX_INUM 0xFFFFFFFF
+ 
 -- 
 2.9.3
