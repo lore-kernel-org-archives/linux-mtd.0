@@ -1,22 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmeIj-00081H-Bj
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:59:04 +0000
-Date: Wed, 21 Sep 2016 11:58:26 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Daniel Walter <dwalter@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- computersforpeace@gmail.com, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v2 02/46] mtd: nand: Provide nand_cleanup() function to
- free NAND related resources
-Message-ID: <20160921115826.6750f670@bbrezillon>
-In-Reply-To: <8b9dd116b40fb7965a29fe0d051bd8b85e3f036b.1474450295.git.dwalter@sigma-star.at>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmeG0-00070i-GI
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:56:01 +0000
+From: Daniel Walter <dwalter@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, boris.brezillon@free-electrons.com,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH v2 36/46] mtd: nandsim: Cleanup constants
+Date: Wed, 21 Sep 2016 11:55:42 +0200
+Message-Id: <a98f8f3e87c3b5bdffcce2746f7326c93e685f2a.1474450296.git.dwalter@sigma-star.at>
+In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
- <8b9dd116b40fb7965a29fe0d051bd8b85e3f036b.1474450295.git.dwalter@sigma-star.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,93 +21,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 21 Sep 2016 11:44:41 +0200
-Daniel Walter <dwalter@sigma-star.at> wrote:
+From: Richard Weinberger <richard@nod.at>
 
-> From: Richard Weinberger <richard@nod.at>
-> 
-> Provide a nand_cleanup() function to free all nand related resources
-> without unregistering the mtd device.
-> This should allow drivers to call mtd_device_unregister() and handle
-> its return value and still being able to cleanup all nand related
-> resources.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> Signed-off-by: Daniel Walter <dwalter@sigma-star.at>
-> ---
->  drivers/mtd/nand/nand_base.c | 18 +++++++++++++-----
->  include/linux/mtd/nand.h     |  1 +
->  2 files changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 77533f7..e743052 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4601,10 +4601,10 @@ int nand_scan(struct mtd_info *mtd, int maxchips)
->  EXPORT_SYMBOL(nand_scan);
->  
->  /**
-> - * nand_release - [NAND Interface] Free resources held by the NAND device
-> - * @mtd: MTD device structure
-> + * nand_cleanup - [NAND Interface] Free resources held by the NAND device
-> + * @mts: MTD device structure
+Rename CONFIG_NANDSIM_* to NANDSIM_* since these
+constants are not exposed to kconfig.
 
-      ^ @mtd.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/nand/nandsim.c | 74 ++++++++++++++++------------------------------
+ 1 file changed, 25 insertions(+), 49 deletions(-)
 
->   */
-> -void nand_release(struct mtd_info *mtd)
-> +void nand_cleanup(struct mtd_info *mtd)
-
-Can we pass a pointer to a nand_chip here.
-
->  {
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  
-> @@ -4612,8 +4612,6 @@ void nand_release(struct mtd_info *mtd)
->  	    chip->ecc.algo == NAND_ECC_BCH)
->  		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
->  
-> -	mtd_device_unregister(mtd);
-> -
->  	/* Free bad block table memory */
->  	kfree(chip->bbt);
->  	if (!(chip->options & NAND_OWN_BUFFERS))
-> @@ -4624,6 +4622,16 @@ void nand_release(struct mtd_info *mtd)
->  			& NAND_BBT_DYNAMICSTRUCT)
->  		kfree(chip->badblock_pattern);
->  }
-> +
-> +/**
-> + * nand_release - [NAND Interface] Free resources held by the NAND device
-
-Unregister the MTD device and free resources...
-
-> + * @mtd: MTD device structure
-> + */
-> +void nand_release(struct mtd_info *mtd)
-> +{
-> +	mtd_device_unregister(mtd);
-> +	nand_cleanup(mtd);
-> +}
->  EXPORT_SYMBOL_GPL(nand_release);
->  
->  MODULE_LICENSE("GPL");
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 8dd6e01..c692c06 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -39,6 +39,7 @@ extern int nand_scan_ident(struct mtd_info *mtd, int max_chips,
->  extern int nand_scan_tail(struct mtd_info *mtd);
->  
->  /* Free resources held by the NAND device */
-> +extern void nand_cleanup(struct mtd_info *mtd);
-
-The extern keyword is unneeded here. Actually all extern qualifiers
-have been removed recently.
-
-BTW, no need to resend the patch. I'll fix the problems when applying
-it (I'd like to have this function in 4.9).
-
->  extern void nand_release(struct mtd_info *mtd);
->  
->  /* Internal helper for board drivers which need to override command function */
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 31a9f89..d46eb18 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -54,50 +54,26 @@
+ #include <linux/mutex.h>
+ #include <linux/file.h>
+ 
+-/* Default simulator parameters values */
+-#if !defined(CONFIG_NANDSIM_FIRST_ID_BYTE)  || \
+-    !defined(CONFIG_NANDSIM_SECOND_ID_BYTE) || \
+-    !defined(CONFIG_NANDSIM_THIRD_ID_BYTE)  || \
+-    !defined(CONFIG_NANDSIM_FOURTH_ID_BYTE)
+-#define CONFIG_NANDSIM_FIRST_ID_BYTE  0x98
+-#define CONFIG_NANDSIM_SECOND_ID_BYTE 0x39
+-#define CONFIG_NANDSIM_THIRD_ID_BYTE  0xFF /* No byte */
+-#define CONFIG_NANDSIM_FOURTH_ID_BYTE 0xFF /* No byte */
+-#endif
+-
+-#ifndef CONFIG_NANDSIM_ACCESS_DELAY
+-#define CONFIG_NANDSIM_ACCESS_DELAY 25
+-#endif
+-#ifndef CONFIG_NANDSIM_PROGRAMM_DELAY
+-#define CONFIG_NANDSIM_PROGRAMM_DELAY 200
+-#endif
+-#ifndef CONFIG_NANDSIM_ERASE_DELAY
+-#define CONFIG_NANDSIM_ERASE_DELAY 2
+-#endif
+-#ifndef CONFIG_NANDSIM_OUTPUT_CYCLE
+-#define CONFIG_NANDSIM_OUTPUT_CYCLE 40
+-#endif
+-#ifndef CONFIG_NANDSIM_INPUT_CYCLE
+-#define CONFIG_NANDSIM_INPUT_CYCLE  50
+-#endif
+-#ifndef CONFIG_NANDSIM_BUS_WIDTH
+-#define CONFIG_NANDSIM_BUS_WIDTH  8
+-#endif
+-#ifndef CONFIG_NANDSIM_DO_DELAYS
+-#define CONFIG_NANDSIM_DO_DELAYS  0
+-#endif
+-#ifndef CONFIG_NANDSIM_MAX_PARTS
+-#define CONFIG_NANDSIM_MAX_PARTS  32
+-#endif
+-
+-static uint access_delay   = CONFIG_NANDSIM_ACCESS_DELAY;
+-static uint programm_delay = CONFIG_NANDSIM_PROGRAMM_DELAY;
+-static uint erase_delay    = CONFIG_NANDSIM_ERASE_DELAY;
+-static uint output_cycle   = CONFIG_NANDSIM_OUTPUT_CYCLE;
+-static uint input_cycle    = CONFIG_NANDSIM_INPUT_CYCLE;
+-static uint bus_width      = CONFIG_NANDSIM_BUS_WIDTH;
+-static uint do_delays      = CONFIG_NANDSIM_DO_DELAYS;
+-static unsigned long parts[CONFIG_NANDSIM_MAX_PARTS];
++#define NANDSIM_FIRST_ID_BYTE  0x98
++#define NANDSIM_SECOND_ID_BYTE 0x39
++#define NANDSIM_THIRD_ID_BYTE  0xFF /* No byte */
++#define NANDSIM_FOURTH_ID_BYTE 0xFF /* No byte */
++#define NANDSIM_ACCESS_DELAY 25
++#define NANDSIM_PROGRAMM_DELAY 200
++#define NANDSIM_ERASE_DELAY 2
++#define NANDSIM_OUTPUT_CYCLE 40
++#define NANDSIM_INPUT_CYCLE  50
++#define NANDSIM_BUS_WIDTH  8
++#define NANDSIM_DO_DELAYS  0
++
++static uint access_delay   = NANDSIM_ACCESS_DELAY;
++static uint programm_delay = NANDSIM_PROGRAMM_DELAY;
++static uint erase_delay    = NANDSIM_ERASE_DELAY;
++static uint output_cycle   = NANDSIM_OUTPUT_CYCLE;
++static uint input_cycle    = NANDSIM_INPUT_CYCLE;
++static uint bus_width      = NANDSIM_BUS_WIDTH;
++static uint do_delays      = NANDSIM_DO_DELAYS;
++static unsigned long parts[NANDSIM_MAX_PARTS];
+ static unsigned int parts_num;
+ static char *badblocks = NULL;
+ static char *weakblocks = NULL;
+@@ -109,10 +85,10 @@ static char *cache_file = NULL;
+ static unsigned int bbt;
+ static unsigned int bch;
+ static u_char id_bytes[8] = {
+-	[0] = CONFIG_NANDSIM_FIRST_ID_BYTE,
+-	[1] = CONFIG_NANDSIM_SECOND_ID_BYTE,
+-	[2] = CONFIG_NANDSIM_THIRD_ID_BYTE,
+-	[3] = CONFIG_NANDSIM_FOURTH_ID_BYTE,
++	[0] = NANDSIM_FIRST_ID_BYTE,
++	[1] = NANDSIM_SECOND_ID_BYTE,
++	[2] = NANDSIM_THIRD_ID_BYTE,
++	[3] = NANDSIM_FOURTH_ID_BYTE,
+ 	[4 ... 7] = 0xFF,
+ };
+ static bool defaults = true;
+@@ -304,8 +280,8 @@ struct nandsim {
+ 	unsigned int index;
+ 	unsigned int refcnt;
+ 	spinlock_t refcnt_lock;
+-	struct mtd_partition partitions[CONFIG_NANDSIM_MAX_PARTS];
+ 	bool destroying;
++	struct mtd_partition partitions[NANDSIM_MAX_PARTS];
+ 	unsigned int nbparts;
+ 
+ 	uint busw;              /* flash chip bus width (8 or 16) */
+-- 
+2.8.3
