@@ -1,14 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmeBH-0006fT-Qt
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:51:08 +0000
+ id 1bme9E-0006Wn-GX
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:49:01 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 19/46] mtd: nandsim: UAPI v1
-Date: Wed, 21 Sep 2016 11:50:45 +0200
-Message-Id: <d7d9e926ff122be5801b6788b96adb8d24289ceb.1474450296.git.dwalter@sigma-star.at>
+ dwmw2@infradead.org, boris.brezillon@free-electrons.com,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH v2 12/46] mtd: nandsim: Make debugfs logic multi instance
+ capable
+Date: Wed, 21 Sep 2016 11:48:39 +0200
+Message-Id: <f1f5facb46ca3f3bcda9567023ab84eec0455038.1474450296.git.dwalter@sigma-star.at>
 In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,122 +24,109 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Expose nandsim creation and delete functions
-to user-space
+Instead of creating our files in <debugfs>/nandsim/,
+create one directory per instance.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- include/uapi/mtd/nandsim-user.h | 102 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
- create mode 100644 include/uapi/mtd/nandsim-user.h
+ drivers/mtd/nand/nandsim.c | 36 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 34 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/mtd/nandsim-user.h b/include/uapi/mtd/nandsim-user.h
-new file mode 100644
-index 0000000..b52d620
---- /dev/null
-+++ b/include/uapi/mtd/nandsim-user.h
-@@ -0,0 +1,102 @@
-+#ifndef __NANDSIM_USER_H__
-+#define __NANDSIM_USER_H__
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index ab4859d..057cc7a 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -328,6 +328,7 @@ union ns_mem {
+  * The structure which describes all the internal simulator data.
+  */
+ struct nandsim {
++	unsigned int index;
+ 	struct mtd_partition partitions[CONFIG_NANDSIM_MAX_PARTS];
+ 	unsigned int nbparts;
+ 
+@@ -483,6 +484,8 @@ struct grave_page {
+ /* MTD structure for NAND controller */
+ static struct mtd_info *ns_mtds[NS_MAX_DEVICES];
+ 
++static struct dentry *dfs_root;
 +
-+#include <linux/types.h>
+ static inline struct nandsim *chip_to_ns(struct nand_chip *chip)
+ {
+ 	return (struct nandsim *)(chip + 1);
+@@ -560,6 +563,23 @@ static const struct file_operations dfs_fops = {
+ 	.release	= single_release,
+ };
+ 
++static int nandsim_debugfs_init(void)
++{
++	if (!IS_ENABLED(CONFIG_DEBUG_FS))
++		return 0;
 +
-+#define NANDSIM_IOC_MAGIC 'n'
++	dfs_root = debugfs_create_dir("nandsim", NULL);
++	if (IS_ERR_OR_NULL(dfs_root)) {
++		int err = dfs_root ? -ENODEV : PTR_ERR(dfs_root);
 +
-+#define NANDSIM_IOC_NEW_INSTANCE _IOW(NANDSIM_IOC_MAGIC, 0, struct ns_new_instance_req)
-+#define NANDSIM_IOC_DESTROY_INSTANCE _IOW(NANDSIM_IOC_MAGIC, 1, struct ns_destroy_instance_req)
++		NS_ERR("cannot create \"nandsim\" debugfs directory, err %d\n",
++			err);
++		return err;
++	}
 +
-+#define NANDSIM_MAX_DEVICES 32
-+#define NANDSIM_MAX_PARTS 32
++	return 0;
++}
 +
-+enum ns_backend_type {
-+	NANDSIM_BACKEND_RAM = 0,
-+	NANDSIM_BACKEND_CACHEFILE = 1,
-+	NANDSIM_BACKEND_FILE = 2,
-+	NANDSIM_BACKEND_MAX,
-+};
+ /**
+  * nandsim_debugfs_create - initialize debugfs
+  * @dev: nandsim device description object
+@@ -572,15 +592,21 @@ static int nandsim_debugfs_create(struct nandsim *dev)
+ 	struct nandsim_debug_info *dbg = &dev->dbg;
+ 	struct dentry *dent;
+ 	int err;
++	char *dirname;
+ 
+ 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
+ 		return 0;
+ 
+-	dent = debugfs_create_dir("nandsim", NULL);
++	dirname = kasprintf(GFP_KERNEL, "nandsim%i", dev->index);
++	if (!dirname)
++		return -ENOMEM;
 +
-+/**
-+ * struct ns_new_instance_req - Create a new nandsim instance.
-+ *
-+ * @id_bytes: NAND ID of the simulated NAND chip
-+ * @bus_width: bus width to emulate, either 8 or 16
-+ * @bbt_mode: bad block table mode, 0 OOB, 1 BBT with marker in OOB,
-+ *            2 BBT with marker in data area
-+ * @no_oob: backing file contains no OOB data
-+ * @bch_strength: instead of hamming ECC use BCH with given strength
-+ * @parts_num: number of MTD partitions to create
-+ * @parts: partition sizes in physical erase blocks, used then @parts_num > 0
-+ * @backend: backend type, see @ns_backend_type
-+ * @file_fd: file describtor of backend, only for @NANDSIM_BACKEND_CACHEFILE
-+ *           and @NANDSIM_BACKEND_FILE.
-+ * @bitflips: maximum number of random bit flips per page
-+ * @overridesize: specifies the NAND size overriding the ID bytes
-+ * @access_delay: initial page access delay (microseconds)
-+ * @program_delay: page program delay (microseconds)
-+ * @erase_delay: sector erase delay (milliseconds)
-+ * @output_cycle: word output, from flash, time (nanoseconds)
-+ * @input_cycle: word input, to flash, time (nanoseconds)
-+ * @simelem_num: number of simulation elements appened to this
-+ *               data structure. see @ns_simelement_prop
-+ *
-+ * This struct is used with the @NANDSIM_IOC_NEW_INSTANCE ioctl command.
-+ * It creates a new nandsim instance from the given parameter.
-+ * The ioctl command returns in case of success the nandsim id of the new
-+ * instance, in case of error a negative value.
-+ *
-+ * Not all fields in the struct have to be filled, if nandsim should
-+ * use a default ignore the value, fill with 0.
-+ * The only mandatory fields are @id_bytes and @bus_width.
-+ * When @no_oob is non-zero @bch_strength cannot be used since
-+ * @no_oob implies that no ECC is used.
-+ */
-+struct ns_new_instance_req {
-+	__s8 id_bytes[8];
++	dent = debugfs_create_dir(dirname, dfs_root);
++	kfree(dirname);
+ 	if (IS_ERR_OR_NULL(dent)) {
+ 		int err = dent ? -ENODEV : PTR_ERR(dent);
+ 
+-		NS_ERR("cannot create \"nandsim\" debugfs directory, err %d\n",
++		NS_ERR("cannot create nandsim debugfs sub-directory, err %d\n",
+ 			err);
+ 		return err;
+ 	}
+@@ -2336,6 +2362,7 @@ static int ns_new_instance(struct nandsim_params *nsparam)
+ 	nsmtd = ns_mtds[0] = nand_to_mtd(chip);
+ 	nand = chip_to_ns(chip);
+ 	nand_set_controller_data(chip, (void *)nand);
++	nand->index = 0;
+ 
+ 	INIT_LIST_HEAD(&nand->weak_blocks);
+ 	INIT_LIST_HEAD(&nand->grave_pages);
+@@ -2557,6 +2584,10 @@ static int __init ns_init_module(void)
+ {
+ 	int ret;
+ 
++	ret = nandsim_debugfs_init();
++	if (ret)
++		return ret;
 +
-+	__s8 bus_width;
-+	__s8 bbt_mode;
-+	__s8 no_oob;
-+	__s32 bch_strength;
-+
-+	__s8 parts_num;
-+	__s32 parts[NANDSIM_MAX_PARTS];
-+
-+	__s8 backend;
-+	__s32 file_fd;
-+
-+	__s32 bitflips;
-+	__s32 overridesize;
-+	__s32 access_delay;
-+	__s32 program_delay;
-+	__s32 erase_delay;
-+	__s32 output_cycle;
-+	__s32 input_cycle;
-+
-+	__s32 padding[4];
-+
-+	__s32 simelem_num;
-+} __packed;
-+
-+enum {
-+	NANDSIM_SIMELEM_BADBLOCK = 0,
-+	NANDSIM_SIMELEM_WEAKBLOCK,
-+	NANDSIM_SIMELEM_WEAKPAGE,
-+	NANDSIM_SIMELEM_GRAVEPAGE,
-+};
-+
-+struct ns_simelement_prop {
-+	__s8 elem_type;
-+	__s32 elem_id;
-+	__s32 elem_attr;
-+	__s8 padding[7];
-+} __packed;
-+
-+struct ns_destroy_instance_req {
-+	__s8 id;
-+	__s8 padding[7];
-+} __packed;
-+
-+#endif /* __NANDSIM_USER_H__ */
+ 	ret = ns_init_default();
+ 	if (ret)
+ 		return ret;
+@@ -2569,6 +2600,7 @@ static void __exit ns_cleanup_module(void)
+ {
+ 	ns_cleanup_default();
+ 	misc_deregister(&nandsim_ctrl_cdev);
++	debugfs_remove_recursive(dfs_root);
+ }
+ module_exit(ns_cleanup_module);
+ 
 -- 
 2.8.3
