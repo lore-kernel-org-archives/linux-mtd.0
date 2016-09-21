@@ -1,22 +1,26 @@
-Received: from mail-sn1nam01on0108.outbound.protection.outlook.com
- ([104.47.32.108] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
+Received: from a.mx.sdesigns.eu ([78.31.43.6])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmjkU-0000dD-Kd
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 15:47:52 +0000
-Date: Wed, 21 Sep 2016 10:47:23 -0500
-From: Zach Brown <zach.brown@ni.com>
-To: Richard Weinberger <richard@nod.at>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] UBI: add debugfs file for tracking PEB state
-Message-ID: <20160921154723.GA16843@zach-desktop>
-References: <1474404339-9524-1-git-send-email-zach.brown@ni.com>
- <c7a01872-7d8e-d2e7-3241-14bab9ed55f3@nod.at>
+ id 1bmkf3-00041p-18
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 16:46:17 +0000
+Subject: Re: [PATCH v5] mtd: nand: tango: import driver for tango chips
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>, Sebastian Frias <sf84@laposte.net>,
+ Jean-Baptiste Lescher <jblescher@gmail.com>,
+ Thibaud Cornic <thibaud_cornic@sigmadesigns.com>, Mason <slash.tmp@free.fr>
+References: <57C94E33.6070304@sigmadesigns.com>
+ <20160905091450.017e4aa3@bbrezillon> <57CD4672.1010504@free.fr>
+ <20160905131516.0acb8145@bbrezillon> <57D189E1.3020508@sigmadesigns.com>
+ <57D193C5.8040004@sigmadesigns.com> <57D2DF96.7060705@sigmadesigns.com>
+ <57D5530B.2060209@free.fr> <20160912210810.79ac23c9@bbrezillon>
+ <57DFE444.3000003@sigmadesigns.com>
+From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Message-ID: <57E2B941.5010301@sigmadesigns.com>
+Date: Wed, 21 Sep 2016 18:45:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <c7a01872-7d8e-d2e7-3241-14bab9ed55f3@nod.at>
+In-Reply-To: <57DFE444.3000003@sigmadesigns.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,57 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 21, 2016 at 01:13:29PM +0200, Richard Weinberger wrote:
-> Zach,
->
-> On 20.09.2016 22:45, Zach Brown wrote:
-> > From: Ben Shelton <ben.shelton@ni.com>
-> >
-> > Add a file under debugfs to allow easy access to the erase count for
-> > each physical erase block on an UBI device.  This is useful when
-> > debugging data integrity issues with UBIFS on NAND flash devices.
-> >
-> > Signed-off-by: Ben Shelton <ben.shelton@ni.com>
-> > Signed-off-by: Zach Brown <zach.brown@ni.com>
-> > ---
-> > v2
-> >  * Cast pointer in unsigned long instead of int to avoid build warning
-> >  * Use ubi->lookuptbl[] to get erase counter instead of reading from flash
-> >
-> >
->
-> [...]
->
-> > +enum block_status {
-> > +	BLOCK_STATUS_OK,
-> > +	BLOCK_STATUS_BAD_BLOCK,
-> > +	BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX
-> > +};
->
-> Do you plan to add more states?
-> In UBI a block can have much more states.
-> I'd like to see all states, free, in protection, used, bad, corrupted, scrub, etc...
->
+On 19/09/2016 15:12, Marc Gonzalez wrote:
 
-Adding more states sounds like a good idea, but I'm not sure how to get that
-information. If I made the in_wl_tree function accessible I could use that to
-get the information, but I'd have to check each RB Tree. Do you have a
-suggestion?
+> +static int chip_init(struct device *dev, struct device_node *np, int kHz)
+> +{
+> +	int err;
+> +	u32 cs, ecc_bits;
+> +	struct nand_ecc_ctrl *ecc;
+> +	struct tango_nfc *nfc = dev_get_drvdata(dev);
+> +	struct tango_chip *p = devm_kzalloc(dev, sizeof(*p), GFP_KERNEL);
 
-> AFAIK BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX is also unreachable since UBI aborts before that.
->
-Do you mean that the block would've have already been marked as bad? So there's
-no point checking?
+As pointed out by Boris on IRC, every chip needs a pointer back
+to the parent device.
 
+	p->chip.mtd.dev.parent = dev;
 
-> What about locking? :-)
-> This is racy.
-> You need at least wl_lock. Otherwise wl might disappear under you.
-> And ->lookuptbl[] can return a NULL object too.
->
-Do you know what ->lookuptbl[] returning NULL would signify about the state of
-the block? Currently I'm thinking of treating as a bad read status and letting
-the show function move on.
-
-> Thanks,
-> //richard
+http://lxr.free-electrons.com/source/drivers/mtd/nand/sunxi_nand.c#L1729
