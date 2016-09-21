@@ -1,15 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bme6p-0006HW-Qv
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:46:35 +0000
+ id 1bme7O-0006Up-Rv
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:47:07 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 05/46] mtd: Don't print a scary message when trying to
- remove a busy MTD
-Date: Wed, 21 Sep 2016 11:46:05 +0200
-Message-Id: <9a91cf325bae6b29b2e3fe38f8c33c93abf933af.1474450295.git.dwalter@sigma-star.at>
+ dwmw2@infradead.org, boris.brezillon@free-electrons.com,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH v2 06/46] mtd: nandsim: Add basic control file support
+Date: Wed, 21 Sep 2016 11:46:42 +0200
+Message-Id: <074879ccf1f983362e478983f6fbd50b0bfe9059.1474450295.git.dwalter@sigma-star.at>
 In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,25 +23,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Just return -EBUSY and everything is fine.
+/dev/nandsim_ctrl accept ioctl() commands such that userspace
+can configure nandsim.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/mtdcore.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/nand/nandsim.c | 66 +++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 56 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index b8205ec..32f1088 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -500,8 +500,6 @@ int del_mtd_device(struct mtd_info *mtd)
- 	}
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 1eb9344..0abbc88 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -44,6 +44,9 @@
+ #include <linux/pagemap.h>
+ #include <linux/seq_file.h>
+ #include <linux/debugfs.h>
++#include <linux/compat.h>
++#include <linux/miscdevice.h>
++#include <linux/major.h>
  
- 	if (mtd->usecount) {
--		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
--		       mtd->index, mtd->name, mtd->usecount);
- 		ret = -EBUSY;
- 	} else {
- 		/* No need to get a refcount on the module containing
+ /* Default simulator parameters values */
+ #if !defined(CONFIG_NANDSIM_FIRST_ID_BYTE)  || \
+@@ -2226,10 +2229,41 @@ static void ns_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ 	return;
+ }
+ 
+-/*
+- * Module initialization function
+- */
+-static int __init ns_init_module(void)
++static long ns_ctrl_ioctl(struct file *file, unsigned int cmd,
++			  unsigned long arg)
++{
++	if (!capable(CAP_SYS_RESOURCE))
++		return -EPERM;
++
++	return -ENOTTY;
++}
++
++#ifdef CONFIG_COMPAT
++static long ns_ctrl_compat_ioctl(struct file *file, unsigned int cmd,
++				 unsigned long arg)
++{
++	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
++
++	return ns_ctrl_ioctl(file, cmd, translated_arg);
++}
++#else
++#define ns_ctrl_compat_ioctl NULL
++#endif
++
++static const struct file_operations nansim_ctrl_fops = {
++	.owner          = THIS_MODULE,
++	.unlocked_ioctl = ns_ctrl_ioctl,
++	.compat_ioctl   = ns_ctrl_compat_ioctl,
++	.llseek         = no_llseek,
++};
++
++static struct miscdevice nandsim_ctrl_cdev = {
++	.minor = MISC_DYNAMIC_MINOR,
++	.name = "nandsim_ctrl",
++	.fops = &nansim_ctrl_fops,
++};
++
++static int __init ns_init_default(void)
+ {
+ 	struct nand_chip *chip;
+ 	struct nandsim *nand;
+@@ -2404,12 +2438,7 @@ error:
+ 	return retval;
+ }
+ 
+-module_init(ns_init_module);
+-
+-/*
+- * Module clean-up function
+- */
+-static void __exit ns_cleanup_module(void)
++static void __exit ns_cleanup_default(void)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(nsmtd);
+ 	struct nandsim *ns = nand_get_controller_data(chip);
+@@ -2424,6 +2453,23 @@ static void __exit ns_cleanup_module(void)
+ 	free_lists();
+ }
+ 
++static int __init ns_init_module(void)
++{
++	int ret;
++
++	ret = ns_init_default();
++	if (ret)
++		return ret;
++
++	return misc_register(&nandsim_ctrl_cdev);
++}
++module_init(ns_init_module);
++
++static void __exit ns_cleanup_module(void)
++{
++	ns_cleanup_default();
++	misc_deregister(&nandsim_ctrl_cdev);
++}
+ module_exit(ns_cleanup_module);
+ 
+ MODULE_LICENSE ("GPL");
 -- 
 2.8.3
