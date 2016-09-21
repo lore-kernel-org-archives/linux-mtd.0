@@ -1,15 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmeFN-0004sY-TZ
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:56:02 +0000
+ id 1bmeGH-0006ez-W4
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:56:51 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
  dwmw2@infradead.org, boris.brezillon@free-electrons.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 33/46] mtd: nandsim: Relax page size restrictions
-Date: Wed, 21 Sep 2016 11:55:03 +0200
-Message-Id: <9a23a7a5c34f10253e4e333bf547524a5e5a59ab.1474450296.git.dwalter@sigma-star.at>
+Subject: [PATCH v2 37/46] mtd: nandsim: Turn parts[] into a integer
+Date: Wed, 21 Sep 2016 11:55:51 +0200
+Message-Id: <9b1907c9bfcf080da8412ab6b0aa46c31f17a0e1.1474450296.git.dwalter@sigma-star.at>
 In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,65 +23,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Allow any page size as long it is a power of two and less
-than KMALLOC_MAX_SIZE.
+The parts array denotes how many erase blocks each partition
+has. Therefore a plain integer can also do it.
+If someone shows me a NAND with more than 2^32 erase blocks we can
+turn it back into a long. ;)
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/nandsim.c  | 4 ++--
+ include/linux/mtd/nandsim.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 971f7b4..8cfdfea 100644
+index d46eb18..615dde3 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -176,9 +176,6 @@ MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
- MODULE_PARM_DESC(defaults,	 "Register a MTD during module load using default values and module parametes. "
- 				 "Set to N if you want to use the nandsimctl user space tool to setup nandsim.");
- 
--/* The largest possible page size */
--#define NS_LARGEST_PAGE_SIZE	4096
--
- /* Busy-wait delay macros (microseconds, milliseconds) */
- #define NS_UDELAY(ns, us) \
- 	do { if (ns->do_delays) udelay(us); } while (0)
-@@ -247,10 +244,8 @@ MODULE_PARM_DESC(defaults,	 "Register a MTD during module load using default val
- 
- #define OPT_ANY          0xFFFFFFFF /* any chip supports this operation */
- #define OPT_PAGE512      0x00000002 /* 512-byte  page chips */
--#define OPT_PAGE2048     0x00000008 /* 2048-byte page chips */
-+#define OPT_LARGEPAGE    0x00000008 /* >= 2048-byte page chips */
- #define OPT_PAGE512_8BIT 0x00000040 /* 512-byte page chips with 8-bit bus width */
--#define OPT_PAGE4096     0x00000080 /* 4096-byte page chips */
--#define OPT_LARGEPAGE    (OPT_PAGE2048 | OPT_PAGE4096) /* 2048 & 4096-byte page chips */
- #define OPT_SMALLPAGE    (OPT_PAGE512) /* 512-byte page chips */
- 
- /* Remove action bits from state */
-@@ -858,13 +853,18 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
- 		ns->options |= OPT_PAGE512;
- 		if (ns->busw == 8)
- 			ns->options |= OPT_PAGE512_8BIT;
--	} else if (ns->geom.pgsz == 2048) {
--		ns->options |= OPT_PAGE2048;
--	} else if (ns->geom.pgsz == 4096) {
--		ns->options |= OPT_PAGE4096;
--	} else {
--		pr_err("unknown page size %u\n", ns->geom.pgsz);
--		return -EIO;
-+	} else if (ns->geom.pgsz >= 2048) {
-+		ns->options |= OPT_LARGEPAGE;
-+	}
-+
-+	if (!is_power_of_2(ns->geom.pgsz)) {
-+		pr_err("page size is not a power of two.\n");
-+		return -EINVAL;
-+	}
-+
-+	if (ns->geom.pgszoob > KMALLOC_MAX_SIZE) {
-+		pr_err("page size plus oob too large: %u.\n", ns->geom.pgszoob);
-+		return -EINVAL;
- 	}
- 
- 	if (ns->options & OPT_SMALLPAGE) {
+@@ -73,7 +73,7 @@ static uint output_cycle   = NANDSIM_OUTPUT_CYCLE;
+ static uint input_cycle    = NANDSIM_INPUT_CYCLE;
+ static uint bus_width      = NANDSIM_BUS_WIDTH;
+ static uint do_delays      = NANDSIM_DO_DELAYS;
+-static unsigned long parts[NANDSIM_MAX_PARTS];
++static unsigned int parts[NANDSIM_MAX_PARTS];
+ static unsigned int parts_num;
+ static char *badblocks = NULL;
+ static char *weakblocks = NULL;
+@@ -105,7 +105,7 @@ module_param(output_cycle,   uint, 0400);
+ module_param(input_cycle,    uint, 0400);
+ module_param(bus_width,      uint, 0400);
+ module_param(do_delays,      uint, 0400);
+-module_param_array(parts, ulong, &parts_num, 0400);
++module_param_array(parts,    uint, &parts_num, 0400);
+ module_param(badblocks,      charp, 0400);
+ module_param(weakblocks,     charp, 0400);
+ module_param(weakpages,      charp, 0400);
+diff --git a/include/linux/mtd/nandsim.h b/include/linux/mtd/nandsim.h
+index 85d4d7e..61ff5dd 100644
+--- a/include/linux/mtd/nandsim.h
++++ b/include/linux/mtd/nandsim.h
+@@ -12,7 +12,7 @@ struct nandsim_params {
+ 	unsigned int input_cycle;
+ 	unsigned int bus_width;
+ 	unsigned int do_delays;
+-	unsigned long *parts;
++	unsigned int *parts;
+ 	unsigned int parts_num;
+ 	char *badblocks;
+ 	char *weakblocks;
 -- 
 2.8.3
