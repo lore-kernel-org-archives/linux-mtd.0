@@ -1,15 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmeH4-0006vI-5j
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:57:22 +0000
+ id 1bmeHd-0007QM-FC
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:57:43 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
  dwmw2@infradead.org, boris.brezillon@free-electrons.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 42/46] mtd: nandsim: Don't printk on ENOMEM
-Date: Wed, 21 Sep 2016 11:57:02 +0200
-Message-Id: <e67761c92228fbb1f1c5417a6a8a8940cebff9b0.1474450296.git.dwalter@sigma-star.at>
+Subject: [PATCH v2 43/46] mtd: nandsim: Wire up NANDSIM_IOC_NEW_INSTANCE
+Date: Wed, 21 Sep 2016 11:57:17 +0200
+Message-Id: <7c19d07912a8c93d2ea7fd9c7e3b08d704241b3c.1474450296.git.dwalter@sigma-star.at>
 In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,157 +23,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Memory allocation failures are tabu, we don't talk
-about them.
+Since we have now all what we need we can arm NANDSIM_IOC_NEW_INSTANCE.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c | 37 +++++++++----------------------------
- 1 file changed, 9 insertions(+), 28 deletions(-)
+ drivers/mtd/nand/nandsim.c | 31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index b58d1348..d0cc24d 100644
+index d0cc24d..bb30763 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -579,7 +579,6 @@ static int ns_ram_init(struct nandsim *ns, struct nandsim_params *nsparam)
- 	data->pages = vmalloc(ns->geom.pgnum * sizeof(union ns_mem));
- 	if (!data->pages) {
- 		kfree(data);
--		pr_err("unable to allocate page array\n");
- 		return -ENOMEM;
- 	}
- 	for (i = 0; i < ns->geom.pgnum; i++) {
-@@ -591,7 +590,6 @@ static int ns_ram_init(struct nandsim *ns, struct nandsim_params *nsparam)
- 	if (!data->nand_pages_slab) {
- 		vfree(data->pages);
- 		kfree(data);
--		pr_err("unable to create kmem_cache\n");
- 		return -ENOMEM;
- 	}
- 
-@@ -667,13 +665,11 @@ static int ns_cachefile_init(struct nandsim *ns, struct nandsim_params *nsparam)
- 	data->pages_written = vzalloc(BITS_TO_LONGS(ns->geom.pgnum) *
- 				    sizeof(unsigned long));
- 	if (!data->pages_written) {
--		pr_err("unable to allocate pages written array\n");
- 		err = -ENOMEM;
- 		goto err_close;
- 	}
- 	data->file_buf = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
- 	if (!data->file_buf) {
--		pr_err("unable to allocate file buf\n");
- 		err = -ENOMEM;
- 		goto err_free;
- 	}
-@@ -710,7 +706,6 @@ static int ns_file_init(struct nandsim *ns, struct nandsim_params *nsparam)
- 
- 	data->file_buf = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
- 	if (!data->file_buf) {
--		pr_err("unable to allocate file buf\n");
- 		ret = -ENOMEM;
- 		goto out_put;
- 	}
-@@ -881,7 +876,6 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
- 		}
- 		ns->partitions[i].name = get_partition_name(ns, i);
- 		if (!ns->partitions[i].name) {
--			pr_err("unable to allocate memory.\n");
- 			ret = -ENOMEM;
- 			goto err_names;
- 		}
-@@ -899,7 +893,6 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
- 		}
- 		ns->partitions[i].name = get_partition_name(ns, i);
- 		if (!ns->partitions[i].name) {
--			pr_err("unable to allocate memory.\n");
- 			ret = -ENOMEM;
- 			goto err_names;
- 		}
-@@ -933,8 +926,6 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
- 	/* Allocate / initialize the internal buffer */
- 	ns->buf.byte = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
- 	if (!ns->buf.byte) {
--		pr_err("unable to allocate %u bytes for the internal buffer\n",
--			ns->geom.pgszoob);
- 		ret = -ENOMEM;
- 		goto err_buf;
- 	}
-@@ -1057,7 +1048,6 @@ static int parse_weakblocks(struct nandsim_params *nsparam,
- 			w += 1;
- 		wb = kzalloc(sizeof(*wb), GFP_KERNEL);
- 		if (!wb) {
--			pr_err("unable to allocate memory.\n");
- 			return -ENOMEM;
- 		}
- 		wb->erase_block_no = erase_block_no;
-@@ -1114,10 +1104,9 @@ static int parse_weakpages(struct nandsim_params *nsparam,
- 		if (*w == ',')
- 			w += 1;
- 		wp = kzalloc(sizeof(*wp), GFP_KERNEL);
--		if (!wp) {
--			pr_err("unable to allocate memory.\n");
-+		if (!wp)
- 			return -ENOMEM;
--		}
+@@ -2900,10 +2900,35 @@ out:
+ static long ns_ctrl_ioctl(struct file *file, unsigned int cmd,
+ 			  unsigned long arg)
+ {
+-	if (!capable(CAP_SYS_RESOURCE))
+-		return -EPERM;
++	int ret;
++	void __user *argp = (void __user *)arg;
 +
- 		wp->page_no = page_no;
- 		wp->max_writes = max_writes;
- 		list_add(&wp->list, nsparam->weak_pages);
-@@ -1171,10 +1160,9 @@ static int parse_gravepages(struct nandsim_params *nsparam, unsigned char *grave
- 		if (*g == ',')
- 			g += 1;
- 		gp = kzalloc(sizeof(*gp), GFP_KERNEL);
--		if (!gp) {
--			pr_err("unable to allocate memory.\n");
-+		if (!gp)
- 			return -ENOMEM;
--		}
++	if (!capable(CAP_SYS_RESOURCE)) {
++		ret = -EPERM;
++		goto out;
++	}
 +
- 		gp->page_no = page_no;
- 		gp->max_reads = max_reads;
- 		list_add(&gp->list, nsparam->grave_pages);
-@@ -1236,15 +1224,11 @@ static int setup_wear_reporting(struct mtd_info *mtd)
++	switch (cmd) {
++		case NANDSIM_IOC_NEW_INSTANCE:
++		{
++			struct ns_new_instance_req req;
++
++			ret = copy_from_user(&req, argp, sizeof(struct ns_new_instance_req));
++			if (ret) {
++				ret = -EFAULT;
++				goto out;
++			}
  
- 	ns->wear_eb_count = div_u64(mtd->size, mtd->erasesize);
- 	mem = ns->wear_eb_count * sizeof(unsigned long);
--	if (mem / sizeof(unsigned long) != ns->wear_eb_count) {
--		pr_err("Too many erase blocks for wear reporting\n");
-+	if (mem / sizeof(unsigned long) != ns->wear_eb_count)
- 		return -ENOMEM;
--	}
- 	ns->erase_block_wear = kzalloc(mem, GFP_KERNEL);
--	if (!ns->erase_block_wear) {
--		pr_err("Too many erase blocks for wear reporting\n");
-+	if (!ns->erase_block_wear)
- 		return -ENOMEM;
--	}
- 	return 0;
+-	return -ENOTTY;
++			ret = ns_ctrl_new_instance(&req, argp + sizeof(req));
++			break;
++		}
++
++		default:
++			ret = -ENOTTY;
++	}
++
++out:
++	return ret;
  }
  
-@@ -1886,10 +1870,9 @@ static int ns_ram_prog_page(struct nandsim *ns, int num)
- 		 * again and deadlocks. This was seen in practice.
- 		 */
- 		mypage->byte = kmem_cache_alloc(data->nand_pages_slab, GFP_NOFS);
--		if (mypage->byte == NULL) {
--			pr_err("error allocating memory for page %d\n", ns->regs.row);
-+		if (mypage->byte == NULL)
- 			return -1;
--		}
-+
- 		memset(mypage->byte, 0xFF, ns->geom.pgszoob);
- 	}
- 
-@@ -2990,10 +2973,8 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
- 	/* Allocate and initialize mtd_info, nand_chip and nandsim structures */
- 	chip = kzalloc(sizeof(struct nand_chip) + sizeof(struct nandsim),
- 		       GFP_KERNEL);
--	if (!chip) {
--		pr_err("unable to allocate core structures.\n");
-+	if (!chip)
- 		return ERR_PTR(-ENOMEM);
--	}
- 
- 	mutex_lock(&ns_mtd_mutex);
- 	for (i = 0; i < NANDSIM_MAX_DEVICES; i++) {
+ #ifdef CONFIG_COMPAT
 -- 
 2.8.3
