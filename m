@@ -1,15 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmeBx-0001nS-1X
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:52:06 +0000
+ id 1bmeC9-0001gc-4H
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:52:50 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
  dwmw2@infradead.org, boris.brezillon@free-electrons.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 22/46] mtd: nandsim: Cleanup destroy handlers
-Date: Wed, 21 Sep 2016 11:51:27 +0200
-Message-Id: <c86843eafe250251a4d55fd403c9b541c27b0081.1474450296.git.dwalter@sigma-star.at>
+Subject: [PATCH v2 24/46] mtd: nandsim: Wire up NANDSIM_MODE_CACHEFILE ioctl
+ mode
+Date: Wed, 21 Sep 2016 11:51:57 +0200
+Message-Id: <37e36b3fc2c97ae93d729c07a260dfb020facce2.1474450296.git.dwalter@sigma-star.at>
 In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,50 +24,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Make sure that we free stuff only after it has been
-initialized.
+Allow the userspace control tool also to setup a cache file.
+In contrast to the cache_file module parameter the ioctl() only
+accepts a fd. So, userspace should hand in an fd pointing to
+a temp file.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/mtd/nand/nandsim.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index bac3fde..816d795 100644
+index 56a2904..0e8574e 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -770,6 +770,9 @@ static void ns_ram_destroy(struct nandsim *ns)
- 	struct ns_ram_data *data = ns->backend_data;
- 	int i;
- 
-+	if (!data)
-+		return;
+@@ -2536,10 +2536,15 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
+ 		case NANDSIM_BACKEND_RAM:
+ 			nsparam->bops = &ns_ram_bops;
+ 		break;
 +
- 	for (i = 0; i < ns->geom.pgnum; i++) {
- 		if (data->pages[i].byte)
- 			kmem_cache_free(data->nand_pages_slab,
-@@ -784,15 +787,22 @@ static void ns_cachefile_destroy(struct nandsim *ns)
- {
- 	struct ns_cachefile_data *data = ns->backend_data;
+ 		case NANDSIM_BACKEND_FILE:
+ 			nsparam->bops = &ns_file_bops;
+ 		break;
  
-+	if (!data)
-+		return;
++		case NANDSIM_BACKEND_CACHEFILE:
++			nsparam->bops = &ns_cachefile_bops;
++		break;
 +
- 	kfree(data->file_buf);
- 	vfree(data->pages_written);
- 	filp_close(data->cfile, NULL);
-+	kfree(data);
- }
- 
- static void ns_file_destroy(struct nandsim *ns)
- {
- 	struct ns_file_data *data = ns->backend_data;
- 
-+	if (!data)
-+		return;
-+
- 	kfree(data->file_buf);
- 	fput(data->file);
- 	kfree(data);
+ 		default:
+ 			kfree(nsparam);
+ 			return -EINVAL;
 -- 
 2.8.3
