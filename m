@@ -1,16 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
- by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bme9E-0006Wn-GX
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:49:01 +0000
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmeFr-0004GE-E7
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:55:51 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
  dwmw2@infradead.org, boris.brezillon@free-electrons.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 12/46] mtd: nandsim: Make debugfs logic multi instance
- capable
-Date: Wed, 21 Sep 2016 11:48:39 +0200
-Message-Id: <f1f5facb46ca3f3bcda9567023ab84eec0455038.1474450296.git.dwalter@sigma-star.at>
+Subject: [PATCH v2 35/46] mtd: nandsim: Make NANDSIM_MAX_DEVICES part of uapi
+Date: Wed, 21 Sep 2016 11:55:27 +0200
+Message-Id: <56bd5362ab035957676ff97306346657d482ed26.1474450296.git.dwalter@sigma-star.at>
 In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,109 +23,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Instead of creating our files in <debugfs>/nandsim/,
-create one directory per instance.
+...such that userspace very easy remove all nandsim instances.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c | 36 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 34 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/nandsim.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index ab4859d..057cc7a 100644
+index 185ca4d..31a9f89 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -328,6 +328,7 @@ union ns_mem {
-  * The structure which describes all the internal simulator data.
-  */
- struct nandsim {
-+	unsigned int index;
- 	struct mtd_partition partitions[CONFIG_NANDSIM_MAX_PARTS];
- 	unsigned int nbparts;
- 
-@@ -483,6 +484,8 @@ struct grave_page {
- /* MTD structure for NAND controller */
- static struct mtd_info *ns_mtds[NS_MAX_DEVICES];
- 
-+static struct dentry *dfs_root;
-+
- static inline struct nandsim *chip_to_ns(struct nand_chip *chip)
- {
- 	return (struct nandsim *)(chip + 1);
-@@ -560,6 +563,23 @@ static const struct file_operations dfs_fops = {
- 	.release	= single_release,
+@@ -432,10 +432,8 @@ struct grave_page {
+ 	unsigned int reads_done;
  };
  
-+static int nandsim_debugfs_init(void)
-+{
-+	if (!IS_ENABLED(CONFIG_DEBUG_FS))
-+		return 0;
-+
-+	dfs_root = debugfs_create_dir("nandsim", NULL);
-+	if (IS_ERR_OR_NULL(dfs_root)) {
-+		int err = dfs_root ? -ENODEV : PTR_ERR(dfs_root);
-+
-+		NS_ERR("cannot create \"nandsim\" debugfs directory, err %d\n",
-+			err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * nandsim_debugfs_create - initialize debugfs
-  * @dev: nandsim device description object
-@@ -572,15 +592,21 @@ static int nandsim_debugfs_create(struct nandsim *dev)
- 	struct nandsim_debug_info *dbg = &dev->dbg;
- 	struct dentry *dent;
- 	int err;
-+	char *dirname;
+-#define NS_MAX_DEVICES 32
+-
+ /* MTD structure for NAND controller */
+-static struct mtd_info *ns_mtds[NS_MAX_DEVICES];
++static struct mtd_info *ns_mtds[NANDSIM_MAX_DEVICES];
+ static DEFINE_MUTEX(ns_mtd_mutex);
  
- 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
- 		return 0;
+ static struct dentry *dfs_root;
+@@ -2648,7 +2646,7 @@ static int ns_ctrl_destroy_instance(struct ns_destroy_instance_req *req)
+ 	struct nand_chip *chip;
+ 	struct nandsim *ns;
  
--	dent = debugfs_create_dir("nandsim", NULL);
-+	dirname = kasprintf(GFP_KERNEL, "nandsim%i", dev->index);
-+	if (!dirname)
-+		return -ENOMEM;
-+
-+	dent = debugfs_create_dir(dirname, dfs_root);
-+	kfree(dirname);
- 	if (IS_ERR_OR_NULL(dent)) {
- 		int err = dent ? -ENODEV : PTR_ERR(dent);
+-	if (id < 0 || id >= NS_MAX_DEVICES)
++	if (id < 0 || id >= NANDSIM_MAX_DEVICES)
+ 		return -EINVAL;
  
--		NS_ERR("cannot create \"nandsim\" debugfs directory, err %d\n",
-+		NS_ERR("cannot create nandsim debugfs sub-directory, err %d\n",
- 			err);
- 		return err;
+ 	mutex_lock(&ns_mtd_mutex);
+@@ -2758,13 +2756,13 @@ struct mtd_info *ns_new_instance(struct nandsim_params *nsparam)
  	}
-@@ -2336,6 +2362,7 @@ static int ns_new_instance(struct nandsim_params *nsparam)
- 	nsmtd = ns_mtds[0] = nand_to_mtd(chip);
- 	nand = chip_to_ns(chip);
- 	nand_set_controller_data(chip, (void *)nand);
-+	nand->index = 0;
  
- 	INIT_LIST_HEAD(&nand->weak_blocks);
- 	INIT_LIST_HEAD(&nand->grave_pages);
-@@ -2557,6 +2584,10 @@ static int __init ns_init_module(void)
- {
- 	int ret;
+ 	mutex_lock(&ns_mtd_mutex);
+-	for (i = 0; i < NS_MAX_DEVICES; i++) {
++	for (i = 0; i < NANDSIM_MAX_DEVICES; i++) {
+ 		if (!ns_mtds[i])
+ 			break;
+ 	}
  
-+	ret = nandsim_debugfs_init();
-+	if (ret)
-+		return ret;
-+
- 	ret = ns_init_default();
- 	if (ret)
- 		return ret;
-@@ -2569,6 +2600,7 @@ static void __exit ns_cleanup_module(void)
- {
- 	ns_cleanup_default();
- 	misc_deregister(&nandsim_ctrl_cdev);
-+	debugfs_remove_recursive(dfs_root);
- }
- module_exit(ns_cleanup_module);
+-	if (i == NS_MAX_DEVICES) {
+-		pr_err("Cannot allocate more than %i instances!\n", NS_MAX_DEVICES);
++	if (i == NANDSIM_MAX_DEVICES) {
++		pr_err("Cannot allocate more than %i instances!\n", NANDSIM_MAX_DEVICES);
+ 		retval = -ENFILE;
+ 		mutex_unlock(&ns_mtd_mutex);
+ 		goto error;
+@@ -2984,7 +2982,7 @@ static void ns_destroy_all(void)
+ 	int i;
  
+ 	mutex_lock(&ns_mtd_mutex);
+-	for (i = 0; i < NS_MAX_DEVICES; i++)
++	for (i = 0; i < NANDSIM_MAX_DEVICES; i++)
+ 		if (ns_mtds[i])
+ 			WARN_ON(ns_destroy_instance(ns_mtds[i]) != 0);
+ 	mutex_unlock(&ns_mtd_mutex);
 -- 
 2.8.3
