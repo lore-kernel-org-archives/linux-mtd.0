@@ -1,17 +1,22 @@
-Received: from mail-qt0-x22e.google.com ([2607:f8b0:400d:c0d::22e])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmiCG-0001vb-67
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 14:08:27 +0000
-Received: by mail-qt0-x22e.google.com with SMTP id 93so22820018qtg.2
- for <linux-mtd@lists.infradead.org>; Wed, 21 Sep 2016 07:08:02 -0700 (PDT)
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmiT1-0001ow-5e
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 14:25:47 +0000
+Date: Wed, 21 Sep 2016 16:25:21 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Daniel Walter <dwalter@sigma-star.at>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 02/46] mtd: nand: Provide nand_cleanup() function to
+ free NAND related resources
+Message-ID: <20160921162521.4b9f83d7@bbrezillon>
+In-Reply-To: <8b9dd116b40fb7965a29fe0d051bd8b85e3f036b.1474450295.git.dwalter@sigma-star.at>
+References: <cover.1474450295.git.dwalter@sigma-star.at>
+ <8b9dd116b40fb7965a29fe0d051bd8b85e3f036b.1474450295.git.dwalter@sigma-star.at>
 MIME-Version: 1.0
-From: =?UTF-8?Q?Tomas_=C5=BDukauskas?= <tomaszonline@gmail.com>
-Date: Wed, 21 Sep 2016 17:08:00 +0300
-Message-ID: <CA+0YsZrSAF4-fy=e4+tU+PSPVhZ6DraD1_tEy1RWEPzL6_2aOA@mail.gmail.com>
-Subject: denali nand: reading fails with error: timeout occurred, status =
- 0x4, mask = 0x3
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +26,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Daniel, Richard,
 
-I have problem reading from MT29F8G08ADADAH4 NAND flash.
-Reading the nand flash fails with error:  "timeout occurred, status =
-0x4, mask = 0x3"
-Writing and erasing works fine.
+On Wed, 21 Sep 2016 11:44:41 +0200
+Daniel Walter <dwalter@sigma-star.at> wrote:
 
-System info: Altera CycloneV SOCFPGA, ARM v7 (custom board)
-Kernel: longterm 4.4.21 (same problem with 4.1.13 kernel)
-Driver: denali
+> From: Richard Weinberger <richard@nod.at>
+> 
+> Provide a nand_cleanup() function to free all nand related resources
+> without unregistering the mtd device.
+> This should allow drivers to call mtd_device_unregister() and handle
+> its return value and still being able to cleanup all nand related
+> resources.
+> 
 
-driver messages at boot:
-[    0.714460] denali-nand-dt ff900000.nand: Dump timing register values:
-[    0.714460] acc_clks: 4, re_2_we: 20, re_2_re: 20
-[    0.714460] we_2_re: 12, addr_2_data: 14, rdwr_en_lo_cnt: 2
-[    0.714460] rdwr_en_hi_cnt: 2, cs_setup_cnt: 2
-[    0.736767] nand: Could not find valid ONFI parameter page; aborting
-[    0.743306] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xd3
-[    0.749661] nand: Micron NAND 1GiB 3,3V 8-bit
-[    0.754030] nand: 1024 MiB, SLC, erase size: 128 KiB, page size:
-2048, OOB size: 64
+Can you check this version?
 
-dt configuration:
-        nand: nand@ff900000 {
-            #address-cells = <1>;
-            #size-cells = <1>;
-            compatible = "denali,denali-nand-dt";
-            reg = <0xff900000 0x100000>, <0xffb80000 0x10000>;
-            reg-names = "nand_data", "denali_reg";
-            interrupts = <0 144 4>;
-            dma-mask = <0xffffffff>;
-            clocks = <&nand_clk>;
-            have-hw-ecc-fixup;
-            status = "okay";
-
-            partition@nand-boot {
-                /* 8MB for raw data. */
-                label = "NAND Flash Boot Area 16MB";
-                reg = <0x0 0x01000000>;
-            };
-        };
-
-I found same problem reported with no solution on:
-https://lists.rocketboards.org/pipermail/rfi/2016-May/003416.html
-
-Any suggestions?
+--->8---
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 0cd663040a9c..9ee50189f98a 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4798,19 +4798,15 @@ int nand_scan(struct mtd_info *mtd, int maxchips)
+ EXPORT_SYMBOL(nand_scan);
+ 
+ /**
+- * nand_release - [NAND Interface] Free resources held by the NAND device
+- * @mtd: MTD device structure
++ * nand_cleanup - [NAND Interface] Free resources held by the NAND device
++ * @chip: NAND chip object
+  */
+-void nand_release(struct mtd_info *mtd)
++void nand_cleanup(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-
+ 	if (chip->ecc.mode == NAND_ECC_SOFT &&
+ 	    chip->ecc.algo == NAND_ECC_BCH)
+ 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
+ 
+-	mtd_device_unregister(mtd);
+-
+ 	nand_release_data_interface(chip);
+ 
+ 	/* Free bad block table memory */
+@@ -4823,6 +4819,18 @@ void nand_release(struct mtd_info *mtd)
+ 			& NAND_BBT_DYNAMICSTRUCT)
+ 		kfree(chip->badblock_pattern);
+ }
++EXPORT_SYMBOL_GPL(nand_cleanup);
++
++/**
++ * nand_release - [NAND Interface] Unregister the MTD device and free resources
++ *		  held by the NAND device
++ * @mtd: MTD device structure
++ */
++void nand_release(struct mtd_info *mtd)
++{
++	mtd_device_unregister(mtd);
++	nand_cleanup(mtd_to_nand(mtd));
++}
+ EXPORT_SYMBOL_GPL(nand_release);
+ 
+ MODULE_LICENSE("GPL");
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 331caf987b16..c5d3d5024fc8 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -38,7 +38,7 @@ int nand_scan_ident(struct mtd_info *mtd, int max_chips,
+ 			   struct nand_flash_dev *table);
+ int nand_scan_tail(struct mtd_info *mtd);
+ 
+-/* Free resources held by the NAND device */
++/* Unregister the MTD device and free resources held by the NAND device */
+ void nand_release(struct mtd_info *mtd);
+ 
+ /* Internal helper for board drivers which need to override command function */
+@@ -1186,4 +1186,7 @@ int nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ /* Reset and initialize a NAND device */
+ int nand_reset(struct nand_chip *chip);
+ 
++/* Free resources held by the NAND device */
++void nand_cleanup(struct nand_chip *chip);
++
+ #endif /* __LINUX_MTD_NAND_H */
