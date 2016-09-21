@@ -1,15 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bme8H-0006p7-0N
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:48:01 +0000
+ id 1bme8W-0006wb-0p
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:48:17 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
  dwmw2@infradead.org, boris.brezillon@free-electrons.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 08/46] mtd: nandsim: Kill global nsmtd
-Date: Wed, 21 Sep 2016 11:47:37 +0200
-Message-Id: <a402928896ff304dfbc36195c29e383f33e66cee.1474450295.git.dwalter@sigma-star.at>
+Subject: [PATCH v2 09/46] mtd: nandsim: Don't directly use module parameters
+Date: Wed, 21 Sep 2016 11:47:54 +0200
+Message-Id: <b3fcf580cd713141e85019fc5455abe4c2dd0c45.1474450295.git.dwalter@sigma-star.at>
 In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,68 +23,165 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Do it like UBI and support in future up to 32 instances.
-For now we still keep a single instance and allow more when
-all global state has been removed.
+Move simulator related module params into struct nandsim
+such that each instance can later use different parameters.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/nandsim.c | 57 ++++++++++++++++++++++++++++++----------------
+ 1 file changed, 37 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index c49999d..e24ef8c 100644
+index e24ef8c..fda670b 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -448,8 +448,10 @@ struct grave_page {
- 	unsigned int reads_done;
+@@ -197,10 +197,10 @@ MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
+ 	do { printk(KERN_INFO NS_OUTPUT_PREFIX " " args); } while(0)
+ 
+ /* Busy-wait delay macros (microseconds, milliseconds) */
+-#define NS_UDELAY(us) \
+-        do { if (do_delays) udelay(us); } while(0)
+-#define NS_MDELAY(us) \
+-        do { if (do_delays) mdelay(us); } while(0)
++#define NS_UDELAY(ns, us) \
++	do { if (ns->do_delays) udelay(us); } while (0)
++#define NS_MDELAY(ns, us) \
++	do { if (ns->do_delays) mdelay(us); } while (0)
+ 
+ /* Is the nandsim structure initialized ? */
+ #define NS_IS_INITIALIZED(ns) ((ns)->geom.totsz != 0)
+@@ -381,6 +381,14 @@ struct nandsim {
+ 	unsigned int wear_eb_count;
+ 	unsigned long total_wear;
+ 
++	bool do_delays;
++	unsigned int access_delay;
++	unsigned int program_delay;
++	unsigned int erase_delay;
++	unsigned int output_cycle;
++	unsigned int input_cycle;
++	unsigned int bitflips;
++
+ 	struct nandsim_debug_info dbg;
  };
  
-+#define NS_MAX_DEVICES 32
-+
- /* MTD structure for NAND controller */
--static struct mtd_info *nsmtd;
-+static struct mtd_info *ns_mtds[NS_MAX_DEVICES];
+@@ -816,7 +824,8 @@ static void free_nandsim(struct nandsim *ns)
+ 	return;
+ }
  
- static int nandsim_debugfs_show(struct seq_file *m, void *private)
+-static int parse_badblocks(struct nandsim *ns, struct mtd_info *mtd)
++static int parse_badblocks(struct nandsim *ns, struct mtd_info *mtd,
++			   unsigned char *badblocks)
  {
-@@ -1451,6 +1453,9 @@ static int do_read_error(struct nandsim *ns, int num)
+ 	char *w;
+ 	int zero_ok;
+@@ -844,7 +853,7 @@ static int parse_badblocks(struct nandsim *ns, struct mtd_info *mtd)
+ 	return 0;
+ }
  
- static void do_bit_flips(struct nandsim *ns, int num)
+-static int parse_weakblocks(struct nandsim *ns)
++static int parse_weakblocks(struct nandsim *ns, unsigned char *weakblocks)
  {
-+	struct nand_chip *chip = ((struct nand_chip *)ns - 1);
-+	struct mtd_info *nsmtd = nand_to_mtd(chip);
-+
- 	if (bitflips && prandom_u32() < (1 << 22)) {
+ 	char *w;
+ 	int zero_ok;
+@@ -895,7 +904,7 @@ static int erase_error(struct nandsim *ns, unsigned int erase_block_no)
+ 	return 0;
+ }
+ 
+-static int parse_weakpages(struct nandsim *ns)
++static int parse_weakpages(struct nandsim *ns, unsigned char *weakpages)
+ {
+ 	char *w;
+ 	int zero_ok;
+@@ -946,7 +955,7 @@ static int write_error(struct nandsim *ns, unsigned int page_no)
+ 	return 0;
+ }
+ 
+-static int parse_gravepages(struct nandsim *ns)
++static int parse_gravepages(struct nandsim *ns, unsigned char *gravepages)
+ {
+ 	char *g;
+ 	int zero_ok;
+@@ -1456,10 +1465,10 @@ static void do_bit_flips(struct nandsim *ns, int num)
+ 	struct nand_chip *chip = ((struct nand_chip *)ns - 1);
+ 	struct mtd_info *nsmtd = nand_to_mtd(chip);
+ 
+-	if (bitflips && prandom_u32() < (1 << 22)) {
++	if (ns->bitflips && prandom_u32() < (1 << 22)) {
  		int flips = 1;
- 		if (bitflips > 1)
-@@ -2268,6 +2273,7 @@ static int __init ns_init_default(void)
- {
- 	struct nand_chip *chip;
- 	struct nandsim *nand;
-+	struct mtd_info *nsmtd;
- 	int retval = -ENOMEM, i;
+-		if (bitflips > 1)
+-			flips = (prandom_u32() % (int) bitflips) + 1;
++		if (ns->bitflips > 1)
++			flips = (prandom_u32() % (int)ns->bitflips) + 1;
+ 		while (flips--) {
+ 			int pos = prandom_u32() % (num * 8);
+ 			ns->buf.byte[pos / 8] ^= (1 << (pos % 8));
+@@ -1659,8 +1668,8 @@ static int do_state_action(struct nandsim *ns, uint32_t action)
+ 		else
+ 			NS_LOG("read OOB of page %d\n", ns->regs.row);
  
- 	if (bus_width != 8 && bus_width != 16) {
-@@ -2283,8 +2289,9 @@ static int __init ns_init_default(void)
- 		return -ENOMEM;
- 	}
+-		NS_UDELAY(access_delay);
+-		NS_UDELAY(input_cycle * ns->geom.pgsz / 1000 / busdiv);
++		NS_UDELAY(ns, ns->access_delay);
++		NS_UDELAY(ns, ns->input_cycle * ns->geom.pgsz / 1000 / busdiv);
  
--	nsmtd       = nand_to_mtd(chip);
--	nand        = (struct nandsim *)(chip + 1);
-+	WARN_ON(ns_mtds[0]);
-+	nsmtd = ns_mtds[0] = nand_to_mtd(chip);
-+	nand = (struct nandsim *)(chip + 1);
- 	nand_set_controller_data(chip, (void *)nand);
+ 		break;
  
- 	INIT_LIST_HEAD(&nand->weak_blocks);
-@@ -2447,6 +2454,7 @@ error:
+@@ -1692,7 +1701,7 @@ static int do_state_action(struct nandsim *ns, uint32_t action)
  
- static void __exit ns_cleanup_default(void)
- {
-+	struct mtd_info *nsmtd = ns_mtds[0];
- 	struct nand_chip *chip = mtd_to_nand(nsmtd);
- 	struct nandsim *ns = nand_get_controller_data(chip);
- 	int i;
+ 		erase_sector(ns);
+ 
+-		NS_MDELAY(erase_delay);
++		NS_MDELAY(ns, ns->erase_delay);
+ 
+ 		if (ns->erase_block_wear)
+ 			update_wear(ns, erase_block_no);
+@@ -1730,8 +1739,8 @@ static int do_state_action(struct nandsim *ns, uint32_t action)
+ 			num, ns->regs.row, ns->regs.column, NS_RAW_OFFSET(ns) + ns->regs.off);
+ 		NS_LOG("programm page %d\n", ns->regs.row);
+ 
+-		NS_UDELAY(programm_delay);
+-		NS_UDELAY(output_cycle * ns->geom.pgsz / 1000 / busdiv);
++		NS_UDELAY(ns, ns->program_delay);
++		NS_UDELAY(ns, ns->output_cycle * ns->geom.pgsz / 1000 / busdiv);
+ 
+ 		if (write_error(ns, page_no)) {
+ 			NS_WARN("simulating write failure in page %u\n", page_no);
+@@ -2349,15 +2358,23 @@ static int __init ns_init_default(void)
+ 
+ 	nsmtd->owner = THIS_MODULE;
+ 
+-	if ((retval = parse_weakblocks(nand)) != 0)
++	if ((retval = parse_weakblocks(nand, weakblocks)) != 0)
+ 		goto error;
+ 
+-	if ((retval = parse_weakpages(nand)) != 0)
++	if ((retval = parse_weakpages(nand, weakpages)) != 0)
+ 		goto error;
+ 
+-	if ((retval = parse_gravepages(nand)) != 0)
++	if ((retval = parse_gravepages(nand, gravepages)) != 0)
+ 		goto error;
+ 
++	nand->do_delays = do_delays;
++	nand->access_delay = access_delay;
++	nand->program_delay = programm_delay;
++	nand->erase_delay = erase_delay;
++	nand->output_cycle = output_cycle;
++	nand->input_cycle = input_cycle;
++	nand->bitflips = bitflips;
++
+ 	retval = nand_scan_ident(nsmtd, 1, NULL);
+ 	if (retval) {
+ 		NS_ERR("cannot scan NAND Simulator device\n");
+@@ -2429,7 +2446,7 @@ static int __init ns_init_default(void)
+ 	if ((retval = chip->scan_bbt(nsmtd)) != 0)
+ 		goto err_exit;
+ 
+-	if ((retval = parse_badblocks(nand, nsmtd)) != 0)
++	if ((retval = parse_badblocks(nand, nsmtd, badblocks)) != 0)
+ 		goto err_exit;
+ 
+ 	/* Register NAND partitions */
 -- 
 2.8.3
