@@ -1,19 +1,19 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmiT1-0001ow-5e
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 14:25:47 +0000
-Date: Wed, 21 Sep 2016 16:25:21 +0200
+ id 1bmiYo-0005WV-Tc
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 14:31:45 +0000
+Date: Wed, 21 Sep 2016 16:31:20 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Daniel Walter <dwalter@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v2 02/46] mtd: nand: Provide nand_cleanup() function to
- free NAND related resources
-Message-ID: <20160921162521.4b9f83d7@bbrezillon>
-In-Reply-To: <8b9dd116b40fb7965a29fe0d051bd8b85e3f036b.1474450295.git.dwalter@sigma-star.at>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ computersforpeace@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/46] mtd: Don't unconditionally unregister reboot
+ notifier
+Message-ID: <20160921163120.7d7e7fca@bbrezillon>
+In-Reply-To: <f83b7dd1edbee967b352aa3c2dab676bafd63a56.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
- <8b9dd116b40fb7965a29fe0d051bd8b85e3f036b.1474450295.git.dwalter@sigma-star.at>
+ <f83b7dd1edbee967b352aa3c2dab676bafd63a56.1474450295.git.dwalter@sigma-star.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,87 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Daniel, Richard,
-
-On Wed, 21 Sep 2016 11:44:41 +0200
+On Wed, 21 Sep 2016 11:45:12 +0200
 Daniel Walter <dwalter@sigma-star.at> wrote:
 
 > From: Richard Weinberger <richard@nod.at>
 > 
-> Provide a nand_cleanup() function to free all nand related resources
-> without unregistering the mtd device.
-> This should allow drivers to call mtd_device_unregister() and handle
-> its return value and still being able to cleanup all nand related
-> resources.
+> del_mtd_device() is allowed to fail.
+> i.e. when the MTD is busy.
+> Unregister the reboot notifier only when we're really
+> about to delete the MTD.
 > 
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/mtdcore.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index e3936b8..36e5fb0 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -654,17 +654,22 @@ int mtd_device_unregister(struct mtd_info *master)
+>  {
+>  	int err;
+>  
+> -	if (master->_reboot)
+> -		unregister_reboot_notifier(&master->reboot_notifier);
+> -
+>  	err = del_mtd_partitions(master);
+>  	if (err)
+>  		return err;
+>  
+>  	if (!device_is_registered(&master->dev))
+> -		return 0;
+> +		goto unregister;
+>  
+> -	return del_mtd_device(master);
+> +	err = del_mtd_device(master);
+> +	if (err)
+> +		return err;
+> +
+> +unregister:
+> +	if (master->_reboot)
+> +		unregister_reboot_notifier(&master->reboot_notifier);
+> +
+> +	return 0;
 
-Can you check this version?
+How about:
 
---->8---
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 0cd663040a9c..9ee50189f98a 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4798,19 +4798,15 @@ int nand_scan(struct mtd_info *mtd, int maxchips)
- EXPORT_SYMBOL(nand_scan);
- 
- /**
-- * nand_release - [NAND Interface] Free resources held by the NAND device
-- * @mtd: MTD device structure
-+ * nand_cleanup - [NAND Interface] Free resources held by the NAND device
-+ * @chip: NAND chip object
-  */
--void nand_release(struct mtd_info *mtd)
-+void nand_cleanup(struct nand_chip *chip)
- {
--	struct nand_chip *chip = mtd_to_nand(mtd);
--
- 	if (chip->ecc.mode == NAND_ECC_SOFT &&
- 	    chip->ecc.algo == NAND_ECC_BCH)
- 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
- 
--	mtd_device_unregister(mtd);
--
- 	nand_release_data_interface(chip);
- 
- 	/* Free bad block table memory */
-@@ -4823,6 +4819,18 @@ void nand_release(struct mtd_info *mtd)
- 			& NAND_BBT_DYNAMICSTRUCT)
- 		kfree(chip->badblock_pattern);
- }
-+EXPORT_SYMBOL_GPL(nand_cleanup);
-+
-+/**
-+ * nand_release - [NAND Interface] Unregister the MTD device and free resources
-+ *		  held by the NAND device
-+ * @mtd: MTD device structure
-+ */
-+void nand_release(struct mtd_info *mtd)
-+{
-+	mtd_device_unregister(mtd);
-+	nand_cleanup(mtd_to_nand(mtd));
-+}
- EXPORT_SYMBOL_GPL(nand_release);
- 
- MODULE_LICENSE("GPL");
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 331caf987b16..c5d3d5024fc8 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -38,7 +38,7 @@ int nand_scan_ident(struct mtd_info *mtd, int max_chips,
- 			   struct nand_flash_dev *table);
- int nand_scan_tail(struct mtd_info *mtd);
- 
--/* Free resources held by the NAND device */
-+/* Unregister the MTD device and free resources held by the NAND device */
- void nand_release(struct mtd_info *mtd);
- 
- /* Internal helper for board drivers which need to override command function */
-@@ -1186,4 +1186,7 @@ int nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
- /* Reset and initialize a NAND device */
- int nand_reset(struct nand_chip *chip);
- 
-+/* Free resources held by the NAND device */
-+void nand_cleanup(struct nand_chip *chip);
-+
- #endif /* __LINUX_MTD_NAND_H */
+	if (device_is_registered(&master->dev)) {
+		err = del_mtd_device(master);
+		if (err)
+			return err;
+	}
+
+	if (master->_reboot)
+		unregister_reboot_notifier(&master->reboot_notifier);
+
+	return 0;
+
+This way you get rid of the unregister label, which IMHO improves
+readability.
+
+>  }
+>  EXPORT_SYMBOL_GPL(mtd_device_unregister);
+>  
