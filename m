@@ -1,16 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmeC9-0001gc-4H
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:52:50 +0000
+ id 1bmeCC-00022e-1Y
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:52:58 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
  dwmw2@infradead.org, boris.brezillon@free-electrons.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 24/46] mtd: nandsim: Wire up NANDSIM_MODE_CACHEFILE ioctl
- mode
-Date: Wed, 21 Sep 2016 11:51:57 +0200
-Message-Id: <37e36b3fc2c97ae93d729c07a260dfb020facce2.1474450296.git.dwalter@sigma-star.at>
+Subject: [PATCH v2 23/46] mtd: nandsim: Unify file backend init logic
+Date: Wed, 21 Sep 2016 11:51:42 +0200
+Message-Id: <e99cacb165395631be40e9f8994dc086327ce7e5.1474450296.git.dwalter@sigma-star.at>
 In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,35 +23,186 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-Allow the userspace control tool also to setup a cache file.
-In contrast to the cache_file module parameter the ioctl() only
-accepts a fd. So, userspace should hand in an fd pointing to
-a temp file.
+file and cache file backend do more or less the same,
+so share some code.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/nand/nandsim.c | 102 ++++++++++++++++++++++++++++++---------------
+ 1 file changed, 68 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 56a2904..0e8574e 100644
+index 816d795..56a2904 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -2536,10 +2536,15 @@ static int ns_ctrl_new_instance(struct ns_new_instance_req *req)
- 		case NANDSIM_BACKEND_RAM:
- 			nsparam->bops = &ns_ram_bops;
- 		break;
-+
- 		case NANDSIM_BACKEND_FILE:
- 			nsparam->bops = &ns_file_bops;
- 		break;
+@@ -312,6 +312,7 @@ struct ns_ram_data {
  
-+		case NANDSIM_BACKEND_CACHEFILE:
-+			nsparam->bops = &ns_cachefile_bops;
-+		break;
+ struct ns_cachefile_data {
+ 	struct file *cfile; /* Open file */
++	bool file_opened; /* False when we operate on an already opened file */
+ 	unsigned long *pages_written; /* Which pages have been written */
+ 	void *file_buf;
+ 	struct page *held_pages[NS_MAX_HELD_PAGES];
+@@ -637,25 +638,70 @@ static int ns_ram_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ 	return 0;
+ }
+ 
+-static int ns_cachefile_init(struct nandsim *ns, struct nandsim_params *nsparam)
++static struct file *get_file_from_nsparam(struct nandsim_params *nsparam, bool *opened)
+ {
+-	struct file *cfile;
+ 	int err;
+-	struct ns_cachefile_data *data = kzalloc(sizeof(*data), GFP_KERNEL);
++	struct file *file;
++	struct inode *inode;
+ 
+-	cfile = filp_open(nsparam->cache_file, O_CREAT | O_RDWR | O_LARGEFILE, 0600);
+-	if (IS_ERR(cfile))
+-		return PTR_ERR(cfile);
+-	if (!(cfile->f_mode & FMODE_CAN_READ)) {
++	if (nsparam->cache_file) {
++		file = filp_open(nsparam->cache_file, O_CREAT | O_RDWR | O_LARGEFILE, 0600);
++		if (IS_ERR(file))
++			return file;
 +
- 		default:
- 			kfree(nsparam);
- 			return -EINVAL;
++		*opened = true;
++	} else {
++		file = fget(nsparam->file_fd);
++		if (!file)
++			return ERR_PTR(-EBADF);
++
++		*opened = false;
++	}
++
++	inode = file->f_mapping->host;
++	if (!S_ISREG(inode->i_mode) && !S_ISBLK(inode->i_mode)) {
++		NS_ERR("alloc_device: Backend file is not a regular file nor a block device\n");
++		err = -EINVAL;
++		goto out;
++	}
++
++	if (!(file->f_mode & FMODE_CAN_READ)) {
+ 		NS_ERR("alloc_device: cache file not readable\n");
+ 		err = -EINVAL;
+-		goto err_close;
++		goto out;
+ 	}
+-	if (!(cfile->f_mode & FMODE_CAN_WRITE)) {
++
++	if (!(file->f_mode & FMODE_CAN_WRITE)) {
+ 		NS_ERR("alloc_device: cache file not writeable\n");
+ 		err = -EINVAL;
+-		goto err_close;
++		goto out;
+ 	}
++
++	return file;
++
++out:
++	if (*opened)
++		filp_close(file, NULL);
++	else
++		fput(file);
++
++	return ERR_PTR(err);
++}
++
++static int ns_cachefile_init(struct nandsim *ns, struct nandsim_params *nsparam)
++{
++	int err;
++	struct ns_cachefile_data *data = kzalloc(sizeof(*data), GFP_KERNEL);
++
++	if (!data)
++		return -ENOMEM;
++
++	data->cfile = get_file_from_nsparam(nsparam, &data->file_opened);
++	if (IS_ERR(data->cfile)) {
++		err = PTR_ERR(data->cfile);
++		goto out;
++	}
++
+ 	data->pages_written = vzalloc(BITS_TO_LONGS(ns->geom.pgnum) *
+ 				    sizeof(unsigned long));
+ 	if (!data->pages_written) {
+@@ -669,7 +715,6 @@ static int ns_cachefile_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ 		err = -ENOMEM;
+ 		goto err_free;
+ 	}
+-	data->cfile = cfile;
+ 
+ 	ns->backend_data = data;
+ 
+@@ -678,15 +723,16 @@ static int ns_cachefile_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ err_free:
+ 	vfree(data->pages_written);
+ err_close:
+-	filp_close(cfile, NULL);
++	filp_close(data->cfile, NULL);
++out:
++	kfree(data);
+ 	return err;
+ }
+ 
+ static int ns_file_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ {
+ 	int ret;
+-	struct file *file;
+-	struct inode *inode;
++	bool dummy;
+ 	struct ns_file_data *data = kzalloc(sizeof(*data), GFP_KERNEL);
+ 
+ 	if (!data) {
+@@ -694,27 +740,12 @@ static int ns_file_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ 		goto out;
+ 	}
+ 
+-	file = fget(nsparam->file_fd);
+-	if (!file) {
+-		ret = -EBADF;
++	data->file = get_file_from_nsparam(nsparam, &dummy);
++	if (IS_ERR(data->file)) {
++		ret = PTR_ERR(data->file);
+ 		goto out_free;
+ 	}
+ 
+-	inode = file->f_mapping->host;
+-	if (!S_ISREG(inode->i_mode) && !S_ISBLK(inode->i_mode)) {
+-		NS_ERR("alloc_device: Backend file is not a regular file nor a block device\n");
+-		ret = -EINVAL;
+-		goto out_put;
+-	}
+-
+-	if (!(file->f_mode & FMODE_WRITE)) {
+-		NS_ERR("alloc_device: Backend file is not writeable\n");
+-		ret = -EINVAL;
+-		goto out_put;
+-	}
+-
+-	data->file = file;
+-
+ 	data->file_buf = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
+ 	if (!data->file_buf) {
+ 		NS_ERR("alloc_device: unable to allocate file buf\n");
+@@ -728,7 +759,7 @@ static int ns_file_init(struct nandsim *ns, struct nandsim_params *nsparam)
+ 	return ret;
+ 
+ out_put:
+-	fput(file);
++	fput(data->file);
+ out_free:
+ 	kfree(data);
+ out:
+@@ -792,7 +823,10 @@ static void ns_cachefile_destroy(struct nandsim *ns)
+ 
+ 	kfree(data->file_buf);
+ 	vfree(data->pages_written);
+-	filp_close(data->cfile, NULL);
++	if (data->file_opened)
++		filp_close(data->cfile, NULL);
++	else
++		fput(data->cfile);
+ 	kfree(data);
+ }
+ 
 -- 
 2.8.3
