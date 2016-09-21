@@ -1,26 +1,19 @@
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmen7-0005Zg-90
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 10:30:17 +0000
-Received: by mail-wm0-x236.google.com with SMTP id l132so83227129wmf.1
- for <linux-mtd@lists.infradead.org>; Wed, 21 Sep 2016 03:29:51 -0700 (PDT)
+ id 1bmfUA-0007qS-1V
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 11:14:43 +0000
+Subject: Re: [PATCH v2] UBI: add debugfs file for tracking PEB state
+To: Zach Brown <zach.brown@ni.com>, dwmw2@infradead.org
+References: <1474404339-9524-1-git-send-email-zach.brown@ni.com>
+Cc: computersforpeace@gmail.com, dedekind1@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <c7a01872-7d8e-d2e7-3241-14bab9ed55f3@nod.at>
+Date: Wed, 21 Sep 2016 13:13:29 +0200
+MIME-Version: 1.0
+In-Reply-To: <1474404339-9524-1-git-send-email-zach.brown@ni.com>
 Content-Type: text/plain; charset=windows-1252
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Subject: Re: Micron qspi nor flash and UBIFS
-From: Andras Szemzo <szemzo.andras@gmail.com>
-In-Reply-To: <7a29bdfc-3722-2869-54fc-6cf79c2e1af5@atmel.com>
-Date: Wed, 21 Sep 2016 12:29:48 +0200
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- hramrach@gmail.com, computersforpeace@gmail.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D6EC608B-7C9E-41CE-9CDC-BB0A123E8234@gmail.com>
-References: <EB1698FB-FF63-4FC1-A706-A81DB9E655DD@gmail.com>
- <CAFLxGvzmRPaNFqzYubCo2_mB9W4inja_J9YM7rUay_9TpJBmCA@mail.gmail.com>
- <CB87F86A-3E14-4091-B669-6C325085F397@gmail.com>
- <3806eb18-1939-567d-6006-ae02ecbf14a4@nod.at>
- <7a29bdfc-3722-2869-54fc-6cf79c2e1af5@atmel.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,13 +23,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Zach,
 
-> Richard, Andras, would it be ok for you?
+On 20.09.2016 22:45, Zach Brown wrote:
+> From: Ben Shelton <ben.shelton@ni.com>
+> 
+> Add a file under debugfs to allow easy access to the erase count for
+> each physical erase block on an UBI device.  This is useful when
+> debugging data integrity issues with UBIFS on NAND flash devices.
+> 
+> Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+> Signed-off-by: Zach Brown <zach.brown@ni.com>
+> ---
+> v2
+>  * Cast pointer in unsigned long instead of int to avoid build warning
+>  * Use ubi->lookuptbl[] to get erase counter instead of reading from flash
+> 
+> 
 
-I=92m using it with the WARN_ONCE() removed, without issues since a few =
-days,
-so ok.
+[...]
 
-Regards,
-Andras=20=
+> +enum block_status {
+> +	BLOCK_STATUS_OK,
+> +	BLOCK_STATUS_BAD_BLOCK,
+> +	BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX
+> +};
+
+Do you plan to add more states?
+In UBI a block can have much more states.
+I'd like to see all states, free, in protection, used, bad, corrupted, scrub, etc...
+
+AFAIK BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX is also unreachable since UBI aborts before that.
+
+> +static char const *block_status_names[] = {"OK", "marked_bad",
+> +					   "erase_count_beyond_max"};
+> +
+> +enum read_status {
+> +	READ_STATUS_OK,
+> +	READ_STATUS_ERR_READING_BLOCK,
+> +	READ_STATUS_ERR_READING_ERASE_COUNT
+> +};
+>
+
+READ_STATUS_ERR_READING_ERASE_COUNT is now no longer needed, right?
+
+> +static char const *read_status_names[] = {"OK", "err_reading_block",
+> +					  "err_reading_erase_count"};
+> +
+> +static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
+> +{
+> +	struct ubi_device *ubi = s->private;
+> +	struct ubi_wl_entry *wl;
+> +	int *block_number = iter;
+> +	int erase_count = -1;
+> +	enum block_status b_sts = BLOCK_STATUS_OK;
+> +	enum read_status r_sts = READ_STATUS_OK;
+> +	int err;
+> +
+> +	/* If this is the start, print a header */
+> +	if (iter == SEQ_START_TOKEN) {
+> +		seq_puts(s,
+> +			 "physical_block_number\terase_count\tblock_status\tread_status\n");
+> +		return 0;
+> +	}
+> +
+> +	err = ubi_io_is_bad(ubi, *block_number);
+> +	if (err) {
+> +		if (err < 0)
+> +			r_sts = READ_STATUS_ERR_READING_BLOCK;
+> +		else
+> +			b_sts = BLOCK_STATUS_BAD_BLOCK;
+> +	} else {
+> +		wl = ubi->lookuptbl[*block_number];
+> +		erase_count = wl->ec;
+
+What about locking? :-)
+This is racy.
+You need at least wl_lock. Otherwise wl might disappear under you.
+And ->lookuptbl[] can return a NULL object too.
+
+Thanks,
+//richard
