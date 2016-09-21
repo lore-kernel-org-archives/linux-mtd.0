@@ -1,25 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmi2P-0006FR-U8
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 13:58:14 +0000
-Date: Wed, 21 Sep 2016 15:57:50 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, Rob Herring
- <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
- Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: nand: mxc: Test CONFIG_OF instead of
- CONFIG_OF_MTD
-Message-ID: <20160921155750.4b5939fb@bbrezillon>
-In-Reply-To: <1474135031-29443-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1474135031-29443-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail-qt0-x22e.google.com ([2607:f8b0:400d:c0d::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmiCG-0001vb-67
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 14:08:27 +0000
+Received: by mail-qt0-x22e.google.com with SMTP id 93so22820018qtg.2
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Sep 2016 07:08:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: =?UTF-8?Q?Tomas_=C5=BDukauskas?= <tomaszonline@gmail.com>
+Date: Wed, 21 Sep 2016 17:08:00 +0300
+Message-ID: <CA+0YsZrSAF4-fy=e4+tU+PSPVhZ6DraD1_tEy1RWEPzL6_2aOA@mail.gmail.com>
+Subject: denali nand: reading fails with error: timeout occurred, status =
+ 0x4, mask = 0x3
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 17 Sep 2016 19:57:10 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Hi,
 
-> We are about to drop the OF_MTD Kconfig option. Test CONFIG_OF
-> activation instead of CONFIG_OF_MTD.
+I have problem reading from MT29F8G08ADADAH4 NAND flash.
+Reading the nand flash fails with error:  "timeout occurred, status =
+0x4, mask = 0x3"
+Writing and erasing works fine.
 
-Applied both.
+System info: Altera CycloneV SOCFPGA, ARM v7 (custom board)
+Kernel: longterm 4.4.21 (same problem with 4.1.13 kernel)
+Driver: denali
 
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/mxc_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 75c0c0eb52ae..d68314c8c399 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -1565,7 +1565,7 @@ static const struct platform_device_id mxcnd_devtype[] = {
->  };
->  MODULE_DEVICE_TABLE(platform, mxcnd_devtype);
->  
-> -#ifdef CONFIG_OF_MTD
-> +#ifdef CONFIG_OF
->  static const struct of_device_id mxcnd_dt_ids[] = {
->  	{
->  		.compatible = "fsl,imx21-nand",
+driver messages at boot:
+[    0.714460] denali-nand-dt ff900000.nand: Dump timing register values:
+[    0.714460] acc_clks: 4, re_2_we: 20, re_2_re: 20
+[    0.714460] we_2_re: 12, addr_2_data: 14, rdwr_en_lo_cnt: 2
+[    0.714460] rdwr_en_hi_cnt: 2, cs_setup_cnt: 2
+[    0.736767] nand: Could not find valid ONFI parameter page; aborting
+[    0.743306] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xd3
+[    0.749661] nand: Micron NAND 1GiB 3,3V 8-bit
+[    0.754030] nand: 1024 MiB, SLC, erase size: 128 KiB, page size:
+2048, OOB size: 64
+
+dt configuration:
+        nand: nand@ff900000 {
+            #address-cells = <1>;
+            #size-cells = <1>;
+            compatible = "denali,denali-nand-dt";
+            reg = <0xff900000 0x100000>, <0xffb80000 0x10000>;
+            reg-names = "nand_data", "denali_reg";
+            interrupts = <0 144 4>;
+            dma-mask = <0xffffffff>;
+            clocks = <&nand_clk>;
+            have-hw-ecc-fixup;
+            status = "okay";
+
+            partition@nand-boot {
+                /* 8MB for raw data. */
+                label = "NAND Flash Boot Area 16MB";
+                reg = <0x0 0x01000000>;
+            };
+        };
+
+I found same problem reported with no solution on:
+https://lists.rocketboards.org/pipermail/rfi/2016-May/003416.html
+
+Any suggestions?
