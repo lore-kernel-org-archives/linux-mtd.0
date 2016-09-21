@@ -1,15 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmeFI-0004cP-TS
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:55:56 +0000
+ id 1bmeFN-0004sY-TZ
+ for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 09:56:02 +0000
 From: Daniel Walter <dwalter@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
  dwmw2@infradead.org, boris.brezillon@free-electrons.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v2 32/46] mtd: nandsim: Remove NS_IS_INITIALIZED
-Date: Wed, 21 Sep 2016 11:54:53 +0200
-Message-Id: <7887f7677742e88e61c84db5b6e29f2eb268b68a.1474450296.git.dwalter@sigma-star.at>
+Subject: [PATCH v2 33/46] mtd: nandsim: Relax page size restrictions
+Date: Wed, 21 Sep 2016 11:55:03 +0200
+Message-Id: <9a23a7a5c34f10253e4e333bf547524a5e5a59ab.1474450296.git.dwalter@sigma-star.at>
 In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
 References: <cover.1474450295.git.dwalter@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,39 +23,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Richard Weinberger <richard@nod.at>
 
-init_nandsim() has exactly one caller, the construction
-function. So, checking for this condition makes no sense.
+Allow any page size as long it is a power of two and less
+than KMALLOC_MAX_SIZE.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/nandsim.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/mtd/nand/nandsim.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 915e3bb..971f7b4 100644
+index 971f7b4..8cfdfea 100644
 --- a/drivers/mtd/nand/nandsim.c
 +++ b/drivers/mtd/nand/nandsim.c
-@@ -185,9 +185,6 @@ MODULE_PARM_DESC(defaults,	 "Register a MTD during module load using default val
- #define NS_MDELAY(ns, us) \
- 	do { if (ns->do_delays) mdelay(us); } while (0)
+@@ -176,9 +176,6 @@ MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
+ MODULE_PARM_DESC(defaults,	 "Register a MTD during module load using default values and module parametes. "
+ 				 "Set to N if you want to use the nandsimctl user space tool to setup nandsim.");
  
--/* Is the nandsim structure initialized ? */
--#define NS_IS_INITIALIZED(ns) ((ns)->geom.totsz != 0)
+-/* The largest possible page size */
+-#define NS_LARGEST_PAGE_SIZE	4096
 -
- /* Good operation completion status */
- #define NS_STATUS_OK(ns) (NAND_STATUS_READY | (NAND_STATUS_WP * ((ns)->lines.wp == 0)))
+ /* Busy-wait delay macros (microseconds, milliseconds) */
+ #define NS_UDELAY(ns, us) \
+ 	do { if (ns->do_delays) udelay(us); } while (0)
+@@ -247,10 +244,8 @@ MODULE_PARM_DESC(defaults,	 "Register a MTD during module load using default val
  
-@@ -839,11 +836,6 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
- 	uint64_t remains;
- 	uint64_t next_offset;
+ #define OPT_ANY          0xFFFFFFFF /* any chip supports this operation */
+ #define OPT_PAGE512      0x00000002 /* 512-byte  page chips */
+-#define OPT_PAGE2048     0x00000008 /* 2048-byte page chips */
++#define OPT_LARGEPAGE    0x00000008 /* >= 2048-byte page chips */
+ #define OPT_PAGE512_8BIT 0x00000040 /* 512-byte page chips with 8-bit bus width */
+-#define OPT_PAGE4096     0x00000080 /* 4096-byte page chips */
+-#define OPT_LARGEPAGE    (OPT_PAGE2048 | OPT_PAGE4096) /* 2048 & 4096-byte page chips */
+ #define OPT_SMALLPAGE    (OPT_PAGE512) /* 512-byte page chips */
  
--	if (NS_IS_INITIALIZED(ns)) {
--		pr_err("init_nandsim: nandsim is already initialized\n");
+ /* Remove action bits from state */
+@@ -858,13 +853,18 @@ static int init_nandsim(struct mtd_info *mtd, struct nandsim_params *nsparam)
+ 		ns->options |= OPT_PAGE512;
+ 		if (ns->busw == 8)
+ 			ns->options |= OPT_PAGE512_8BIT;
+-	} else if (ns->geom.pgsz == 2048) {
+-		ns->options |= OPT_PAGE2048;
+-	} else if (ns->geom.pgsz == 4096) {
+-		ns->options |= OPT_PAGE4096;
+-	} else {
+-		pr_err("unknown page size %u\n", ns->geom.pgsz);
 -		return -EIO;
--	}
--
- 	/* Force mtd to not do delays */
- 	chip->chip_delay = 0;
++	} else if (ns->geom.pgsz >= 2048) {
++		ns->options |= OPT_LARGEPAGE;
++	}
++
++	if (!is_power_of_2(ns->geom.pgsz)) {
++		pr_err("page size is not a power of two.\n");
++		return -EINVAL;
++	}
++
++	if (ns->geom.pgszoob > KMALLOC_MAX_SIZE) {
++		pr_err("page size plus oob too large: %u.\n", ns->geom.pgszoob);
++		return -EINVAL;
+ 	}
  
+ 	if (ns->options & OPT_SMALLPAGE) {
 -- 
 2.8.3
