@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bn10O-000248-Be
- for linux-mtd@lists.infradead.org; Thu, 22 Sep 2016 10:13:55 +0000
+ id 1bn10k-00026G-He
+ for linux-mtd@lists.infradead.org; Thu, 22 Sep 2016 10:14:02 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -10,14 +10,11 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Peter Pan <peterpansjtu@gmail.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: [RFC PATCH 1/7] mtd: nand: Rename nand.h into rawnand.h
-Date: Thu, 22 Sep 2016 12:12:54 +0200
-Message-Id: <1474539180-5863-2-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [RFC PATCH 6/7] mtd: nand: rawnand: make BBT code more generic
+Date: Thu, 22 Sep 2016 12:12:59 +0200
+Message-Id: <1474539180-5863-7-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=a
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,4065 +24,1495 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We are planning to share more code between different NAND based
-devices (SPI NAND, OneNAND and raw NANDs), but before doing that
-we need to move the existing include/linux/mtd/nand.h file into
-include/linux/mtd/rawnand.h so we can later create a nand.h header
-containing all common stucture and function prototypes.
+BBT support is currently tightly tied to raw NAND, though this is the kind
+of code we could share across all NAND based devices, no matter what
+physical interface is to communicate with the NAND chip.
+
+Make BBT code interface agnostic by replacing all occurrence of
+struct nand_chip by struct nand_device, and move functions that are
+specific to raw NANDs to drivers/mtd/nand/rawnand/nand_base.c.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- Documentation/DocBook/mtdnand.tmpl              |    2 +-
- arch/arm/mach-davinci/board-da850-evm.c         |    2 +-
- arch/arm/mach-davinci/board-dm355-evm.c         |    2 +-
- arch/arm/mach-davinci/board-dm355-leopard.c     |    2 +-
- arch/arm/mach-davinci/board-dm365-evm.c         |    2 +-
- arch/arm/mach-davinci/board-dm644x-evm.c        |    2 +-
- arch/arm/mach-davinci/board-dm646x-evm.c        |    2 +-
- arch/arm/mach-davinci/board-sffsdr.c            |    2 +-
- arch/arm/mach-dove/dove-db-setup.c              |    2 +-
- arch/arm/mach-ep93xx/snappercl15.c              |    2 +-
- arch/arm/mach-ep93xx/ts72xx.c                   |    2 +-
- arch/arm/mach-imx/mach-qong.c                   |    2 +-
- arch/arm/mach-ixp4xx/ixdp425-setup.c            |    2 +-
- arch/arm/mach-mmp/aspenite.c                    |    2 +-
- arch/arm/mach-omap1/board-fsample.c             |    2 +-
- arch/arm/mach-omap1/board-h2.c                  |    2 +-
- arch/arm/mach-omap1/board-h3.c                  |    2 +-
- arch/arm/mach-omap1/board-nand.c                |    2 +-
- arch/arm/mach-omap1/board-perseus2.c            |    2 +-
- arch/arm/mach-omap2/gpmc-nand.c                 |    2 +-
- arch/arm/mach-orion5x/db88f5281-setup.c         |    2 +-
- arch/arm/mach-orion5x/kurobox_pro-setup.c       |    2 +-
- arch/arm/mach-orion5x/ts209-setup.c             |    2 +-
- arch/arm/mach-orion5x/ts78xx-setup.c            |    2 +-
- arch/arm/mach-pxa/balloon3.c                    |    2 +-
- arch/arm/mach-pxa/em-x270.c                     |    2 +-
- arch/arm/mach-pxa/eseries.c                     |    2 +-
- arch/arm/mach-pxa/palmtx.c                      |    2 +-
- arch/arm/mach-pxa/tosa.c                        |    2 +-
- arch/arm/mach-s3c24xx/common-smdk.c             |    2 +-
- arch/arm/mach-s3c24xx/mach-anubis.c             |    2 +-
- arch/arm/mach-s3c24xx/mach-at2440evb.c          |    2 +-
- arch/arm/mach-s3c24xx/mach-bast.c               |    2 +-
- arch/arm/mach-s3c24xx/mach-gta02.c              |    2 +-
- arch/arm/mach-s3c24xx/mach-jive.c               |    2 +-
- arch/arm/mach-s3c24xx/mach-mini2440.c           |    2 +-
- arch/arm/mach-s3c24xx/mach-osiris.c             |    2 +-
- arch/arm/mach-s3c24xx/mach-qt2410.c             |    2 +-
- arch/arm/mach-s3c24xx/mach-rx3715.c             |    2 +-
- arch/arm/mach-s3c24xx/mach-vstms.c              |    2 +-
- arch/blackfin/mach-bf537/boards/dnp5370.c       |    2 +-
- arch/blackfin/mach-bf537/boards/stamp.c         |    2 +-
- arch/blackfin/mach-bf561/boards/acvilon.c       |    2 +-
- arch/cris/arch-v32/drivers/mach-a3/nandflash.c  |    2 +-
- arch/cris/arch-v32/drivers/mach-fs/nandflash.c  |    2 +-
- arch/mips/alchemy/devboards/db1200.c            |    2 +-
- arch/mips/alchemy/devboards/db1300.c            |    2 +-
- arch/mips/alchemy/devboards/db1550.c            |    2 +-
- arch/mips/include/asm/mach-jz4740/jz4740_nand.h |    2 +-
- arch/mips/netlogic/xlr/platform-flash.c         |    2 +-
- arch/mips/pnx833x/common/platform.c             |    2 +-
- arch/mips/rb532/devices.c                       |    2 +-
- arch/sh/boards/mach-migor/setup.c               |    2 +-
- drivers/mtd/inftlcore.c                         |    2 +-
- drivers/mtd/nand/ams-delta.c                    |    2 +-
- drivers/mtd/nand/atmel_nand.c                   |    2 +-
- drivers/mtd/nand/au1550nd.c                     |    2 +-
- drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h  |    2 +-
- drivers/mtd/nand/bf5xx_nand.c                   |    2 +-
- drivers/mtd/nand/brcmnand/brcmnand.c            |    2 +-
- drivers/mtd/nand/cafe_nand.c                    |    2 +-
- drivers/mtd/nand/cmx270_nand.c                  |    2 +-
- drivers/mtd/nand/cs553x_nand.c                  |    2 +-
- drivers/mtd/nand/davinci_nand.c                 |    2 +-
- drivers/mtd/nand/denali.h                       |    2 +-
- drivers/mtd/nand/diskonchip.c                   |    2 +-
- drivers/mtd/nand/docg4.c                        |    2 +-
- drivers/mtd/nand/fsl_elbc_nand.c                |    2 +-
- drivers/mtd/nand/fsl_ifc_nand.c                 |    2 +-
- drivers/mtd/nand/fsl_upm.c                      |    2 +-
- drivers/mtd/nand/fsmc_nand.c                    |    2 +-
- drivers/mtd/nand/gpio.c                         |    2 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h          |    2 +-
- drivers/mtd/nand/hisi504_nand.c                 |    2 +-
- drivers/mtd/nand/jz4740_nand.c                  |    2 +-
- drivers/mtd/nand/jz4780_nand.c                  |    2 +-
- drivers/mtd/nand/lpc32xx_mlc.c                  |    2 +-
- drivers/mtd/nand/lpc32xx_slc.c                  |    2 +-
- drivers/mtd/nand/mpc5121_nfc.c                  |    2 +-
- drivers/mtd/nand/mtk_nand.c                     |    2 +-
- drivers/mtd/nand/mxc_nand.c                     |    2 +-
- drivers/mtd/nand/nand_base.c                    |    2 +-
- drivers/mtd/nand/nand_bbt.c                     |    2 +-
- drivers/mtd/nand/nand_bch.c                     |    2 +-
- drivers/mtd/nand/nand_ecc.c                     |    2 +-
- drivers/mtd/nand/nand_ids.c                     |    2 +-
- drivers/mtd/nand/nand_timings.c                 |    2 +-
- drivers/mtd/nand/nandsim.c                      |    2 +-
- drivers/mtd/nand/ndfc.c                         |    2 +-
- drivers/mtd/nand/nuc900_nand.c                  |    2 +-
- drivers/mtd/nand/omap2.c                        |    2 +-
- drivers/mtd/nand/orion_nand.c                   |    2 +-
- drivers/mtd/nand/pasemi_nand.c                  |    2 +-
- drivers/mtd/nand/plat_nand.c                    |    2 +-
- drivers/mtd/nand/pxa3xx_nand.c                  |    2 +-
- drivers/mtd/nand/qcom_nandc.c                   |    2 +-
- drivers/mtd/nand/r852.h                         |    2 +-
- drivers/mtd/nand/s3c2410.c                      |    2 +-
- drivers/mtd/nand/sh_flctl.c                     |    2 +-
- drivers/mtd/nand/sharpsl.c                      |    2 +-
- drivers/mtd/nand/sm_common.c                    |    2 +-
- drivers/mtd/nand/socrates_nand.c                |    2 +-
- drivers/mtd/nand/sunxi_nand.c                   |    2 +-
- drivers/mtd/nand/tmio_nand.c                    |    2 +-
- drivers/mtd/nand/txx9ndfmc.c                    |    2 +-
- drivers/mtd/nand/vf610_nfc.c                    |    2 +-
- drivers/mtd/nand/xway_nand.c                    |    2 +-
- drivers/mtd/nftlcore.c                          |    2 +-
- drivers/mtd/nftlmount.c                         |    2 +-
- drivers/mtd/ssfdc.c                             |    2 +-
- drivers/mtd/tests/nandbiterrs.c                 |    2 +-
- drivers/staging/mt29f_spinand/mt29f_spinand.c   |    2 +-
- fs/jffs2/wbuf.c                                 |    2 +-
- include/linux/mtd/nand-gpio.h                   |    2 +-
- include/linux/mtd/nand.h                        | 1192 -----------------------
- include/linux/mtd/rawnand.h                     | 1190 ++++++++++++++++++++++
- include/linux/mtd/sh_flctl.h                    |    2 +-
- include/linux/mtd/sharpsl.h                     |    2 +-
- include/linux/platform_data/atmel.h             |    2 +-
- include/linux/platform_data/mtd-davinci.h       |    2 +-
- 120 files changed, 1308 insertions(+), 1310 deletions(-)
- delete mode 100644 include/linux/mtd/nand.h
- create mode 100644 include/linux/mtd/rawnand.h
+ drivers/mtd/nand/rawnand/nand_base.c |  78 ++++-
+ drivers/mtd/nand/rawnand/nand_bbt.c  | 609 ++++++++++++++++-------------------
+ include/linux/mtd/nand.h             |   8 +
+ include/linux/mtd/rawnand.h          |   4 -
+ 4 files changed, 361 insertions(+), 338 deletions(-)
 
-diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
-index b442921bca54..35ec7155faa3 100644
---- a/Documentation/DocBook/mtdnand.tmpl
-+++ b/Documentation/DocBook/mtdnand.tmpl
-@@ -1239,7 +1239,7 @@ in this page</entry>
-      struct member has a short description which is marked with an [XXX] identifier.
-      See the chapter "Documentation hints" for an explanation.
-      </para>
--!Iinclude/linux/mtd/nand.h
-+!Iinclude/linux/mtd/rawnand.h
-   </chapter>
+diff --git a/drivers/mtd/nand/rawnand/nand_base.c b/drivers/mtd/nand/rawnand/nand_base.c
+index 2eb04d1b9f98..f90adf8e91e1 100644
+--- a/drivers/mtd/nand/rawnand/nand_base.c
++++ b/drivers/mtd/nand/rawnand/nand_base.c
+@@ -471,7 +471,7 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
  
-   <chapter id="pubfunctions">
-diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
-index 8e4539f69fdc..02ec0add04e0 100644
---- a/arch/arm/mach-davinci/board-da850-evm.c
-+++ b/arch/arm/mach-davinci/board-da850-evm.c
-@@ -24,7 +24,7 @@
- #include <linux/input/tps6507x-ts.h>
- #include <linux/mfd/tps6507x.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/platform_device.h>
-diff --git a/arch/arm/mach-davinci/board-dm355-evm.c b/arch/arm/mach-davinci/board-dm355-evm.c
-index 18296a99c4d2..62e7bc3018f0 100644
---- a/arch/arm/mach-davinci/board-dm355-evm.c
-+++ b/arch/arm/mach-davinci/board-dm355-evm.c
-@@ -14,7 +14,7 @@
- #include <linux/platform_device.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/i2c.h>
- #include <linux/gpio.h>
- #include <linux/clk.h>
-diff --git a/arch/arm/mach-davinci/board-dm355-leopard.c b/arch/arm/mach-davinci/board-dm355-leopard.c
-index 284ff27c1b32..be997243447b 100644
---- a/arch/arm/mach-davinci/board-dm355-leopard.c
-+++ b/arch/arm/mach-davinci/board-dm355-leopard.c
-@@ -13,7 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/i2c.h>
- #include <linux/gpio.h>
- #include <linux/clk.h>
-diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
-index 0464999b7137..e75741fb2c1d 100644
---- a/arch/arm/mach-davinci/board-dm365-evm.c
-+++ b/arch/arm/mach-davinci/board-dm365-evm.c
-@@ -23,7 +23,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/input.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/eeprom.h>
-diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
-index 521e40977265..15a2476057e4 100644
---- a/arch/arm/mach-davinci/board-dm644x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm644x-evm.c
-@@ -17,7 +17,7 @@
- #include <linux/i2c/pcf857x.h>
- #include <linux/platform_data/at24.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/phy.h>
-diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
-index f702d4fc8eb8..9b8864c66619 100644
---- a/arch/arm/mach-davinci/board-dm646x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm646x-evm.c
-@@ -29,7 +29,7 @@
- #include <media/i2c/adv7343.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/export.h>
-diff --git a/arch/arm/mach-davinci/board-sffsdr.c b/arch/arm/mach-davinci/board-sffsdr.c
-index 41c7c9615791..d85accf7f760 100644
---- a/arch/arm/mach-davinci/board-sffsdr.c
-+++ b/arch/arm/mach-davinci/board-sffsdr.c
-@@ -28,7 +28,7 @@
- #include <linux/i2c.h>
- #include <linux/platform_data/at24.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/mach-types.h>
-diff --git a/arch/arm/mach-dove/dove-db-setup.c b/arch/arm/mach-dove/dove-db-setup.c
-index bcb678fd2415..8971c3c0f0fe 100644
---- a/arch/arm/mach-dove/dove-db-setup.c
-+++ b/arch/arm/mach-dove/dove-db-setup.c
-@@ -13,7 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/irq.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/timer.h>
- #include <linux/ata_platform.h>
- #include <linux/mv643xx_eth.h>
-diff --git a/arch/arm/mach-ep93xx/snappercl15.c b/arch/arm/mach-ep93xx/snappercl15.c
-index b2db791b3b38..8b29398f4dc7 100644
---- a/arch/arm/mach-ep93xx/snappercl15.c
-+++ b/arch/arm/mach-ep93xx/snappercl15.c
-@@ -25,7 +25,7 @@
- #include <linux/fb.h>
- 
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- #include <mach/hardware.h>
- #include <linux/platform_data/video-ep93xx.h>
-diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
-index 3b39ea353d30..9def3b98945e 100644
---- a/arch/arm/mach-ep93xx/ts72xx.c
-+++ b/arch/arm/mach-ep93xx/ts72xx.c
-@@ -17,7 +17,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/platform_data/rtc-m48t86.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <mach/hardware.h>
-diff --git a/arch/arm/mach-imx/mach-qong.c b/arch/arm/mach-imx/mach-qong.c
-index 34df64f133ed..9658e49577af 100644
---- a/arch/arm/mach-imx/mach-qong.c
-+++ b/arch/arm/mach-imx/mach-qong.c
-@@ -18,7 +18,7 @@
- #include <linux/memory.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/gpio.h>
- 
- #include <asm/mach-types.h>
-diff --git a/arch/arm/mach-ixp4xx/ixdp425-setup.c b/arch/arm/mach-ixp4xx/ixdp425-setup.c
-index 508c2d7786e2..93b89291c06b 100644
---- a/arch/arm/mach-ixp4xx/ixdp425-setup.c
-+++ b/arch/arm/mach-ixp4xx/ixdp425-setup.c
-@@ -17,7 +17,7 @@
- #include <linux/i2c-gpio.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/delay.h>
- #include <linux/gpio.h>
-diff --git a/arch/arm/mach-mmp/aspenite.c b/arch/arm/mach-mmp/aspenite.c
-index 5db0edf716dd..d2283009a5ff 100644
---- a/arch/arm/mach-mmp/aspenite.c
-+++ b/arch/arm/mach-mmp/aspenite.c
-@@ -16,7 +16,7 @@
- #include <linux/smc91x.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/interrupt.h>
- #include <linux/platform_data/mv_usb.h>
- 
-diff --git a/arch/arm/mach-omap1/board-fsample.c b/arch/arm/mach-omap1/board-fsample.c
-index fad95b74bb65..b93ad58b0a63 100644
---- a/arch/arm/mach-omap1/board-fsample.c
-+++ b/arch/arm/mach-omap1/board-fsample.c
-@@ -16,7 +16,7 @@
- #include <linux/platform_device.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-omap1/board-h2.c b/arch/arm/mach-omap1/board-h2.c
-index cd146ed0538d..93f99035c941 100644
---- a/arch/arm/mach-omap1/board-h2.c
-+++ b/arch/arm/mach-omap1/board-h2.c
-@@ -24,7 +24,7 @@
- #include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-omap1/board-h3.c b/arch/arm/mach-omap1/board-h3.c
-index f7c8c63dd532..b0107d749f94 100644
---- a/arch/arm/mach-omap1/board-h3.c
-+++ b/arch/arm/mach-omap1/board-h3.c
-@@ -23,7 +23,7 @@
- #include <linux/workqueue.h>
- #include <linux/i2c.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-omap1/board-nand.c b/arch/arm/mach-omap1/board-nand.c
-index 7684f9203474..1bffbb4e050f 100644
---- a/arch/arm/mach-omap1/board-nand.c
-+++ b/arch/arm/mach-omap1/board-nand.c
-@@ -16,7 +16,7 @@
- #include <linux/kernel.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/board-perseus2.c b/arch/arm/mach-omap1/board-perseus2.c
-index 150b57ba42bf..e994a78bdd09 100644
---- a/arch/arm/mach-omap1/board-perseus2.c
-+++ b/arch/arm/mach-omap1/board-perseus2.c
-@@ -16,7 +16,7 @@
- #include <linux/platform_device.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
-index f6ac027f3c3b..250ae0173402 100644
---- a/arch/arm/mach-omap2/gpmc-nand.c
-+++ b/arch/arm/mach-omap2/gpmc-nand.c
-@@ -13,7 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/omap-gpmc.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/platform_data/mtd-nand-omap2.h>
- 
- #include <asm/mach/flash.h>
-diff --git a/arch/arm/mach-orion5x/db88f5281-setup.c b/arch/arm/mach-orion5x/db88f5281-setup.c
-index 12f74b46e2ff..3f5863de766a 100644
---- a/arch/arm/mach-orion5x/db88f5281-setup.c
-+++ b/arch/arm/mach-orion5x/db88f5281-setup.c
-@@ -16,7 +16,7 @@
- #include <linux/pci.h>
- #include <linux/irq.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/timer.h>
- #include <linux/mv643xx_eth.h>
- #include <linux/i2c.h>
-diff --git a/arch/arm/mach-orion5x/kurobox_pro-setup.c b/arch/arm/mach-orion5x/kurobox_pro-setup.c
-index 9dc3f59bed9c..83d43cff4bd7 100644
---- a/arch/arm/mach-orion5x/kurobox_pro-setup.c
-+++ b/arch/arm/mach-orion5x/kurobox_pro-setup.c
-@@ -15,7 +15,7 @@
- #include <linux/irq.h>
- #include <linux/delay.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mv643xx_eth.h>
- #include <linux/i2c.h>
- #include <linux/serial_reg.h>
-diff --git a/arch/arm/mach-orion5x/ts209-setup.c b/arch/arm/mach-orion5x/ts209-setup.c
-index 7bd671b2854c..0c315515dd2d 100644
---- a/arch/arm/mach-orion5x/ts209-setup.c
-+++ b/arch/arm/mach-orion5x/ts209-setup.c
-@@ -15,7 +15,7 @@
- #include <linux/pci.h>
- #include <linux/irq.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mv643xx_eth.h>
- #include <linux/gpio_keys.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-orion5x/ts78xx-setup.c b/arch/arm/mach-orion5x/ts78xx-setup.c
-index 8d597267d0c4..4632e674e9c5 100644
---- a/arch/arm/mach-orion5x/ts78xx-setup.c
-+++ b/arch/arm/mach-orion5x/ts78xx-setup.c
-@@ -17,7 +17,7 @@
- #include <linux/mv643xx_eth.h>
- #include <linux/ata_platform.h>
- #include <linux/platform_data/rtc-m48t86.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/timeriomem-rng.h>
- #include <asm/mach-types.h>
-diff --git a/arch/arm/mach-pxa/balloon3.c b/arch/arm/mach-pxa/balloon3.c
-index 8a3c409294bf..38afb6fa1dcf 100644
---- a/arch/arm/mach-pxa/balloon3.c
-+++ b/arch/arm/mach-pxa/balloon3.c
-@@ -28,7 +28,7 @@
- #include <linux/types.h>
- #include <linux/i2c/pcf857x.h>
- #include <linux/i2c/pxa-i2c.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/physmap.h>
- #include <linux/regulator/max1586.h>
- 
-diff --git a/arch/arm/mach-pxa/em-x270.c b/arch/arm/mach-pxa/em-x270.c
-index 03354c21e1f2..a6c5f5b96e47 100644
---- a/arch/arm/mach-pxa/em-x270.c
-+++ b/arch/arm/mach-pxa/em-x270.c
-@@ -15,7 +15,7 @@
- 
- #include <linux/dm9000.h>
- #include <linux/platform_data/rtc-v3020.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-pxa/eseries.c b/arch/arm/mach-pxa/eseries.c
-index fa9d71d194f0..91f7c3e40065 100644
---- a/arch/arm/mach-pxa/eseries.c
-+++ b/arch/arm/mach-pxa/eseries.c
-@@ -20,7 +20,7 @@
- #include <linux/mfd/tc6387xb.h>
- #include <linux/mfd/tc6393xb.h>
- #include <linux/mfd/t7l66xb.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/usb/gpio_vbus.h>
- #include <linux/memblock.h>
-diff --git a/arch/arm/mach-pxa/palmtx.c b/arch/arm/mach-pxa/palmtx.c
-index 36646975b5d2..47e3e38e9bec 100644
---- a/arch/arm/mach-pxa/palmtx.c
-+++ b/arch/arm/mach-pxa/palmtx.c
-@@ -28,7 +28,7 @@
- #include <linux/wm97xx.h>
- #include <linux/power_supply.h>
- #include <linux/usb/gpio_vbus.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/physmap.h>
-diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
-index 13de6602966f..6a386fd6363e 100644
---- a/arch/arm/mach-pxa/tosa.c
-+++ b/arch/arm/mach-pxa/tosa.c
-@@ -24,7 +24,7 @@
- #include <linux/mmc/host.h>
- #include <linux/mfd/tc6393xb.h>
- #include <linux/mfd/tmio.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/pm.h>
-diff --git a/arch/arm/mach-s3c24xx/common-smdk.c b/arch/arm/mach-s3c24xx/common-smdk.c
-index e9fbcc91c5c0..a39d9667eb14 100644
---- a/arch/arm/mach-s3c24xx/common-smdk.c
-+++ b/arch/arm/mach-s3c24xx/common-smdk.c
-@@ -23,7 +23,7 @@
- #include <linux/platform_device.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-anubis.c b/arch/arm/mach-s3c24xx/mach-anubis.c
-index d03df0df01fa..357f24e3fd80 100644
---- a/arch/arm/mach-s3c24xx/mach-anubis.c
-+++ b/arch/arm/mach-s3c24xx/mach-anubis.c
-@@ -40,7 +40,7 @@
- #include <linux/platform_data/i2c-s3c2410.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-at2440evb.c b/arch/arm/mach-s3c24xx/mach-at2440evb.c
-index 9ae170fef2a7..8cb1c26e5809 100644
---- a/arch/arm/mach-s3c24xx/mach-at2440evb.c
-+++ b/arch/arm/mach-s3c24xx/mach-at2440evb.c
-@@ -41,7 +41,7 @@
- #include <linux/platform_data/i2c-s3c2410.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-bast.c b/arch/arm/mach-s3c24xx/mach-bast.c
-index ed07cf392d4b..c895050afe07 100644
---- a/arch/arm/mach-s3c24xx/mach-bast.c
-+++ b/arch/arm/mach-s3c24xx/mach-bast.c
-@@ -28,7 +28,7 @@
- #include <linux/serial_8250.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-gta02.c b/arch/arm/mach-s3c24xx/mach-gta02.c
-index 27ae6877550f..21de3ceb98a1 100644
---- a/arch/arm/mach-s3c24xx/mach-gta02.c
-+++ b/arch/arm/mach-s3c24xx/mach-gta02.c
-@@ -50,7 +50,7 @@
- #include <linux/mfd/pcf50633/pmic.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-jive.c b/arch/arm/mach-s3c24xx/mach-jive.c
-index 7d99fe8f6157..1e95d1528860 100644
---- a/arch/arm/mach-s3c24xx/mach-jive.c
-+++ b/arch/arm/mach-s3c24xx/mach-jive.c
-@@ -43,7 +43,7 @@
- #include <asm/mach-types.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-mini2440.c b/arch/arm/mach-s3c24xx/mach-mini2440.c
-index a8521684a7f5..5e1de597bb91 100644
---- a/arch/arm/mach-s3c24xx/mach-mini2440.c
-+++ b/arch/arm/mach-s3c24xx/mach-mini2440.c
-@@ -49,7 +49,7 @@
- #include <linux/platform_data/usb-s3c2410_udc.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-osiris.c b/arch/arm/mach-s3c24xx/mach-osiris.c
-index 2f6fdc326835..0cf4f222f222 100644
---- a/arch/arm/mach-s3c24xx/mach-osiris.c
-+++ b/arch/arm/mach-s3c24xx/mach-osiris.c
-@@ -36,7 +36,7 @@
- #include <linux/platform_data/i2c-s3c2410.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-qt2410.c b/arch/arm/mach-s3c24xx/mach-qt2410.c
-index 984516e8307a..86d7ffd8c511 100644
---- a/arch/arm/mach-s3c24xx/mach-qt2410.c
-+++ b/arch/arm/mach-s3c24xx/mach-qt2410.c
-@@ -36,7 +36,7 @@
- #include <linux/spi/spi_gpio.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-rx3715.c b/arch/arm/mach-s3c24xx/mach-rx3715.c
-index cf55196f89ca..b6fdd088987a 100644
---- a/arch/arm/mach-s3c24xx/mach-rx3715.c
-+++ b/arch/arm/mach-s3c24xx/mach-rx3715.c
-@@ -27,7 +27,7 @@
- #include <linux/serial.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-vstms.c b/arch/arm/mach-s3c24xx/mach-vstms.c
-index b4460d5f7011..67adb4c5f327 100644
---- a/arch/arm/mach-s3c24xx/mach-vstms.c
-+++ b/arch/arm/mach-s3c24xx/mach-vstms.c
-@@ -20,7 +20,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/memblock.h>
-diff --git a/arch/blackfin/mach-bf537/boards/dnp5370.c b/arch/blackfin/mach-bf537/boards/dnp5370.c
-index e79b3b810c39..c4a8ffb15417 100644
---- a/arch/blackfin/mach-bf537/boards/dnp5370.c
-+++ b/arch/blackfin/mach-bf537/boards/dnp5370.c
-@@ -17,7 +17,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/plat-ram.h>
- #include <linux/mtd/physmap.h>
-diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
-index eaec7b4832a2..ab3034fd1c5b 100644
---- a/arch/blackfin/mach-bf537/boards/stamp.c
-+++ b/arch/blackfin/mach-bf537/boards/stamp.c
-@@ -12,7 +12,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/plat-ram.h>
- #include <linux/mtd/physmap.h>
-diff --git a/arch/blackfin/mach-bf561/boards/acvilon.c b/arch/blackfin/mach-bf561/boards/acvilon.c
-index 37f8f25a1347..696cc9d7820a 100644
---- a/arch/blackfin/mach-bf561/boards/acvilon.c
-+++ b/arch/blackfin/mach-bf561/boards/acvilon.c
-@@ -38,7 +38,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/plat-ram.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
-diff --git a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-index 3f646c787e58..925a98eb6d68 100644
---- a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-+++ b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-@@ -16,7 +16,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <arch/memmap.h>
- #include <hwregs/reg_map.h>
-diff --git a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-index a74540514bdb..53b56a429dde 100644
---- a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-+++ b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-@@ -16,7 +16,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <arch/memmap.h>
- #include <hwregs/reg_map.h>
-diff --git a/arch/mips/alchemy/devboards/db1200.c b/arch/mips/alchemy/devboards/db1200.c
-index 992442a03d8b..83831002c832 100644
---- a/arch/mips/alchemy/devboards/db1200.c
-+++ b/arch/mips/alchemy/devboards/db1200.c
-@@ -29,7 +29,7 @@
- #include <linux/leds.h>
- #include <linux/mmc/host.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/platform_device.h>
- #include <linux/serial_8250.h>
-diff --git a/arch/mips/alchemy/devboards/db1300.c b/arch/mips/alchemy/devboards/db1300.c
-index d3c087f59f1a..06c18a80a129 100644
---- a/arch/mips/alchemy/devboards/db1300.c
-+++ b/arch/mips/alchemy/devboards/db1300.c
-@@ -17,7 +17,7 @@
- #include <linux/mmc/host.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/platform_device.h>
- #include <linux/smsc911x.h>
-diff --git a/arch/mips/alchemy/devboards/db1550.c b/arch/mips/alchemy/devboards/db1550.c
-index 1c01d6eadb08..421bd5793f7e 100644
---- a/arch/mips/alchemy/devboards/db1550.c
-+++ b/arch/mips/alchemy/devboards/db1550.c
-@@ -12,7 +12,7 @@
- #include <linux/io.h>
- #include <linux/interrupt.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
-diff --git a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-index 7f7b0fc554da..f381d465e768 100644
---- a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-+++ b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-@@ -16,7 +16,7 @@
- #ifndef __ASM_MACH_JZ4740_JZ4740_NAND_H__
- #define __ASM_MACH_JZ4740_JZ4740_NAND_H__
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #define JZ_NAND_NUM_BANKS 4
-diff --git a/arch/mips/netlogic/xlr/platform-flash.c b/arch/mips/netlogic/xlr/platform-flash.c
-index f03131fec41d..4d1b4c003376 100644
---- a/arch/mips/netlogic/xlr/platform-flash.c
-+++ b/arch/mips/netlogic/xlr/platform-flash.c
-@@ -19,7 +19,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/netlogic/haldefs.h>
-diff --git a/arch/mips/pnx833x/common/platform.c b/arch/mips/pnx833x/common/platform.c
-index 3cd357737a26..9b0f2a9a50f7 100644
---- a/arch/mips/pnx833x/common/platform.c
-+++ b/arch/mips/pnx833x/common/platform.c
-@@ -30,7 +30,7 @@
- #include <linux/resource.h>
- #include <linux/serial.h>
- #include <linux/serial_pnx8xxx.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <irq.h>
-diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-index 0966adccf520..32ea3e6731d6 100644
---- a/arch/mips/rb532/devices.c
-+++ b/arch/mips/rb532/devices.c
-@@ -20,7 +20,7 @@
- #include <linux/ctype.h>
- #include <linux/string.h>
- #include <linux/platform_device.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/gpio.h>
-diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migor/setup.c
-index 5de60a77eaa1..0bcbe58b11e9 100644
---- a/arch/sh/boards/mach-migor/setup.c
-+++ b/arch/sh/boards/mach-migor/setup.c
-@@ -15,7 +15,7 @@
- #include <linux/mmc/host.h>
- #include <linux/mtd/physmap.h>
- #include <linux/mfd/tmio.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/i2c.h>
- #include <linux/regulator/fixed.h>
- #include <linux/regulator/machine.h>
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index b66b541877f0..6373ccba8bb8 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -33,7 +33,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nftl.h>
- #include <linux/mtd/inftl.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <asm/uaccess.h>
- #include <asm/errno.h>
- #include <asm/io.h>
-diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-index 78e12cc8bac2..0972493b6cd2 100644
---- a/drivers/mtd/nand/ams-delta.c
-+++ b/drivers/mtd/nand/ams-delta.c
-@@ -20,7 +20,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/gpio.h>
- #include <linux/platform_data/gpio-omap.h>
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 68b9160108c9..fbb7e5da2541 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -37,7 +37,7 @@
- #include <linux/of_device.h>
- #include <linux/of_gpio.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <linux/delay.h>
-diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
-index 9bf6d9915694..9d4a28fa6b73 100644
---- a/drivers/mtd/nand/au1550nd.c
-+++ b/drivers/mtd/nand/au1550nd.c
-@@ -14,7 +14,7 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/platform_device.h>
- #include <asm/io.h>
-diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-index 8ea75710a854..c8834767ab6d 100644
---- a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-+++ b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-@@ -6,7 +6,7 @@
- #endif
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- struct bcm47xxnflash {
- 	struct bcma_drv_cc *cc;
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 3962f55bd034..5655dca6ce43 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -49,7 +49,7 @@
- #include <linux/bitops.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 9d2424bfdbf5..98453816a0a2 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -29,7 +29,7 @@
- #include <linux/bitops.h>
- #include <linux/mm.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of.h>
- #include <linux/of_platform.h>
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index 0b0c93702abb..93880171740a 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -13,7 +13,7 @@
- #include <linux/device.h>
- #undef DEBUG
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/rslib.h>
- #include <linux/pci.h>
-diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
-index 49133783ca53..2efe6a56557f 100644
---- a/drivers/mtd/nand/cmx270_nand.c
-+++ b/drivers/mtd/nand/cmx270_nand.c
-@@ -18,7 +18,7 @@
-  *   CM-X270 board.
+ 	/* Mark block bad in BBT */
+ 	if (chip->bbt) {
+-		res = nand_markbad_bbt(mtd, ofs);
++		res = nand_markbad_bbt(mtd_to_nand(mtd), ofs);
+ 		if (!ret)
+ 			ret = res;
+ 	}
+@@ -511,12 +511,12 @@ static int nand_check_wp(struct mtd_info *mtd)
   */
+ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+ {
+-	struct nand_chip *chip = mtd_to_nandc(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
  
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
- #include <linux/gpio.h>
-diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/cs553x_nand.c
-index a65e4e0f57a1..8fafb4b4488d 100644
---- a/drivers/mtd/nand/cs553x_nand.c
-+++ b/drivers/mtd/nand/cs553x_nand.c
-@@ -24,7 +24,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
+-	if (!chip->bbt)
++	if (!nand->bbt.bbt)
+ 		return 0;
+ 	/* Return info from the table */
+-	return nand_isreserved_bbt(mtd, ofs);
++	return nand_isreserved_bbt(nand, ofs);
+ }
  
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index cc07ba0f044d..fcc533261c06 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -29,7 +29,7 @@
- #include <linux/err.h>
- #include <linux/clk.h>
- #include <linux/io.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
- #include <linux/of_device.h>
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index e7ab4866a5da..37618b532317 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -20,7 +20,7 @@
- #ifndef __DENALI_H__
- #define __DENALI_H__
+ /**
+@@ -530,13 +530,14 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+  */
+ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
+ {
++	struct nand_device *nand = mtd_to_nand(mtd);
+ 	struct nand_chip *chip = mtd_to_nandc(mtd);
  
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
+-	if (!chip->bbt)
++	if (!nand->bbt.bbt)
+ 		return chip->block_bad(mtd, ofs);
  
- #define DEVICE_RESET				0x0
- #define     DEVICE_RESET__BANK0				0x0001
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index a023ab9e9cbf..c3aa53caab5c 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -27,7 +27,7 @@
- #include <linux/io.h>
+ 	/* Return info from the table */
+-	return nand_isbad_bbt(mtd, ofs, allowbbt);
++	return nand_isbad_bbt(nand, ofs, allowbbt);
+ }
  
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/doc2000.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/inftl.h>
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index 7af2a3cd949e..e038130b7206 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -41,7 +41,7 @@
- #include <linux/bitops.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/bch.h>
- #include <linux/bitrev.h>
- #include <linux/jiffies.h>
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 113f76e59937..7d8453eb4d0f 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -34,7 +34,7 @@
- #include <linux/interrupt.h>
+ /**
+@@ -3310,6 +3311,71 @@ static void nand_shutdown(struct mtd_info *mtd)
+ 	nand_get_device(mtd, FL_PM_SUSPENDED);
+ }
  
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
++/*
++ * Define some generic bad / good block scan pattern which are used
++ * while scanning a device for factory marked good / bad blocks.
++ */
++static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
++
++#define BADBLOCK_SCAN_MASK (~NAND_BBT_NO_OOB)
++
++/**
++ * nand_create_badblock_pattern - [INTERN] Creates a BBT descriptor structure
++ * @this: NAND chip to create descriptor for
++ *
++ * This function allocates and initializes a nand_bbt_descr for BBM detection
++ * based on the properties of @this. The new descriptor is stored in
++ * this->badblock_pattern. Thus, this->badblock_pattern should be NULL when
++ * passed to this function.
++ */
++static int nand_create_badblock_pattern(struct nand_chip *chip)
++{
++	struct nand_device *this = &chip->base.base;
++	struct nand_bbt_descr *bd;
++	if (this->bbt.bbp) {
++		pr_warn("Bad block pattern already allocated; not replacing\n");
++		return -EINVAL;
++	}
++	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
++	if (!bd)
++		return -ENOMEM;
++	bd->options = this->bbt.options & BADBLOCK_SCAN_MASK;
++	bd->offs = chip->badblockpos;
++	bd->len = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
++	bd->pattern = scan_ff_pattern;
++	bd->options |= NAND_BBT_DYNAMICSTRUCT;
++	this->bbt.bbp = bd;
++	return 0;
++}
++
++/**
++ * nand_default_bbt - [NAND Interface] Select a default bad block table for the device
++ * @mtd: MTD device structure
++ *
++ * This function selects the default bad block table support for the device and
++ * calls the nand_scan_bbt function.
++ */
++static int nand_default_bbt(struct mtd_info *mtd)
++{
++	struct nand_device *this = mtd_to_nand(mtd);
++	struct nand_chip *chip = mtd_to_nandc(mtd);
++	int ret;
++
++	/* Initialize BBT config from nand_chip info */
++	this->bbt.options = chip->bbt_options;
++	this->bbt.td = chip->bbt_td;
++	this->bbt.md = chip->bbt_md;
++	this->bbt.bbp = chip->badblock_pattern;
++
++	if (!this->bbt.bbp) {
++		ret = nand_create_badblock_pattern(chip);
++		if (ret)
++			return ret;
++	}
++
++	return nand_scan_bbt(this);
++}
++
+ /* Set default functions */
+ static void nand_set_defaults(struct nand_chip *chip, int busw)
+ {
+diff --git a/drivers/mtd/nand/rawnand/nand_bbt.c b/drivers/mtd/nand/rawnand/nand_bbt.c
+index 3f2e785f4bfb..0ad2c43adbd3 100644
+--- a/drivers/mtd/nand/rawnand/nand_bbt.c
++++ b/drivers/mtd/nand/rawnand/nand_bbt.c
+@@ -76,20 +76,18 @@
+ #define BBT_ENTRY_MASK		0x03
+ #define BBT_ENTRY_SHIFT		2
  
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 0a177b1bfe3e..bcf7f0b8abf9 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -26,7 +26,7 @@
- #include <linux/of_address.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/fsl_ifc.h>
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index d85fa2555b68..a88e2cf66e0f 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -14,7 +14,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/delay.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index d4f454a4b35e..5c08694aa153 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -28,7 +28,7 @@
- #include <linux/sched.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 6317f6836022..21b19efe1ac7 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -26,7 +26,7 @@
- #include <linux/gpio.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/nand-gpio.h>
- #include <linux/of.h>
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 4e49a1f5fa27..d7625cad6493 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -17,7 +17,7 @@
- #ifndef __DRIVERS_MTD_NAND_GPMI_NAND_H
- #define __DRIVERS_MTD_NAND_GPMI_NAND_H
+-static int nand_update_bbt(struct mtd_info *mtd, loff_t offs);
+-
+-static inline uint8_t bbt_get_entry(struct nand_chip *chip, int block)
++static inline uint8_t bbt_get_entry(struct nand_device *chip, int block)
+ {
+-	uint8_t entry = chip->bbt[block >> BBT_ENTRY_SHIFT];
++	uint8_t entry = chip->bbt.bbt[block >> BBT_ENTRY_SHIFT];
+ 	entry >>= (block & BBT_ENTRY_MASK) * 2;
+ 	return entry & BBT_ENTRY_MASK;
+ }
  
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/platform_device.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
-diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
-index 9432546f4cd4..a287d73bb17e 100644
---- a/drivers/mtd/nand/hisi504_nand.c
-+++ b/drivers/mtd/nand/hisi504_nand.c
-@@ -26,7 +26,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/interrupt.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/dma-mapping.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/partitions.h>
-diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-index 5551c36adbdf..e813ec11ee84 100644
---- a/drivers/mtd/nand/jz4740_nand.c
-+++ b/drivers/mtd/nand/jz4740_nand.c
-@@ -20,7 +20,7 @@
- #include <linux/slab.h>
+-static inline void bbt_mark_entry(struct nand_chip *chip, int block,
++static inline void bbt_mark_entry(struct nand_device *chip, int block,
+ 		uint8_t mark)
+ {
+ 	uint8_t msk = (mark & BBT_ENTRY_MASK) << ((block & BBT_ENTRY_MASK) * 2);
+-	chip->bbt[block >> BBT_ENTRY_SHIFT] |= msk;
++	chip->bbt.bbt[block >> BBT_ENTRY_SHIFT] |= msk;
+ }
  
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
+ static int check_pattern_no_oob(uint8_t *buf, struct nand_bbt_descr *td)
+@@ -159,7 +157,7 @@ static u32 add_marker_len(struct nand_bbt_descr *td)
  
- #include <linux/gpio.h>
-diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
-index a39bb70175ee..2f725bd83de8 100644
---- a/drivers/mtd/nand/jz4780_nand.c
-+++ b/drivers/mtd/nand/jz4780_nand.c
-@@ -20,7 +20,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <linux/jz4780-nemc.h>
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-index 852388171f20..b212bb0fd902 100644
---- a/drivers/mtd/nand/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -27,7 +27,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/err.h>
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index 8d3edc34958e..018d783d37cd 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -23,7 +23,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/err.h>
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index 7eacb2f545f5..2a1fa86fd123 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -33,7 +33,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of_address.h>
- #include <linux/of_device.h>
-diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-index ddaa2acb9dd7..65156b8fe839 100644
---- a/drivers/mtd/nand/mtk_nand.c
-+++ b/drivers/mtd/nand/mtk_nand.c
-@@ -19,7 +19,7 @@
- #include <linux/interrupt.h>
- #include <linux/delay.h>
- #include <linux/clk.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/mtd.h>
- #include <linux/module.h>
- #include <linux/iopoll.h>
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index d68314c8c399..379e11be6e0b 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -22,7 +22,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/interrupt.h>
- #include <linux/device.h>
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 7a00245ebada..56b08a897115 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -38,7 +38,7 @@
- #include <linux/mm.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/nand_bch.h>
- #include <linux/interrupt.h>
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 7695efea65f2..2915b6739bf8 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -61,7 +61,7 @@
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/bbm.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/bitops.h>
- #include <linux/delay.h>
- #include <linux/vmalloc.h>
-diff --git a/drivers/mtd/nand/nand_bch.c b/drivers/mtd/nand/nand_bch.c
-index 44763f87eae4..505441c9373b 100644
---- a/drivers/mtd/nand/nand_bch.c
-+++ b/drivers/mtd/nand/nand_bch.c
-@@ -25,7 +25,7 @@
- #include <linux/slab.h>
- #include <linux/bitops.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_bch.h>
- #include <linux/bch.h>
- 
-diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
-index d1770b066396..7613a0388044 100644
---- a/drivers/mtd/nand/nand_ecc.c
-+++ b/drivers/mtd/nand/nand_ecc.c
-@@ -43,7 +43,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <asm/byteorder.h>
- #else
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 2af9869a115e..80550dbf9467 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -7,7 +7,7 @@
+ /**
+  * read_bbt - [GENERIC] Read the bad block table starting from page
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @page: the starting page
+  * @num: the number of bbt descriptors to read
+@@ -168,11 +166,11 @@ static u32 add_marker_len(struct nand_bbt_descr *td)
   *
+  * Read the bad block table starting from page.
   */
- #include <linux/module.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/sizes.h>
+-static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+-		struct nand_bbt_descr *td, int offs)
++static int read_bbt(struct nand_device *this, uint8_t *buf, int page, int num,
++		    struct nand_bbt_descr *td, int offs)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	int res, ret = 0, i, j, act = 0;
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+ 	size_t retlen, len, totlen;
+ 	loff_t from;
+ 	int bits = td->options & NAND_BBT_NRBITS_MSK;
+@@ -182,10 +180,10 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
  
- #define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
-diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-index 13a587407be3..5cf237268284 100644
---- a/drivers/mtd/nand/nand_timings.c
-+++ b/drivers/mtd/nand/nand_timings.c
-@@ -11,7 +11,7 @@
- #include <linux/kernel.h>
- #include <linux/err.h>
- #include <linux/export.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
+ 	totlen = (num * bits) >> 3;
+ 	marker_len = add_marker_len(td);
+-	from = ((loff_t)page) << this->page_shift;
++	from = nand_page_to_offs(this, page);
  
- static const struct nand_data_interface onfi_sdr_timings[] = {
- 	/* Mode 0 */
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 1eb934414eb5..9c16635b5338 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -33,7 +33,7 @@
- #include <linux/errno.h>
- #include <linux/string.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_bch.h>
- #include <linux/mtd/partitions.h>
- #include <linux/delay.h>
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-index 28e6118362f7..d8a806894937 100644
---- a/drivers/mtd/nand/ndfc.c
-+++ b/drivers/mtd/nand/ndfc.c
-@@ -22,7 +22,7 @@
+ 	while (totlen) {
+-		len = min(totlen, (size_t)(1 << this->bbt_erase_shift));
++		len = min(totlen, nand_eraseblock_size(this));
+ 		if (marker_len) {
+ 			/*
+ 			 * In case the BBT marker is not in the OOB area it
+@@ -199,11 +197,11 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 		if (res < 0) {
+ 			if (mtd_is_eccerr(res)) {
+ 				pr_info("nand_bbt: ECC error in BBT at 0x%012llx\n",
+-					from & ~mtd->writesize);
++					from & ~nand_page_size(this));
+ 				return res;
+ 			} else if (mtd_is_bitflip(res)) {
+ 				pr_info("nand_bbt: corrected error in BBT at 0x%012llx\n",
+-					from & ~mtd->writesize);
++					from & ~nand_page_size(this));
+ 				ret = res;
+ 			} else {
+ 				pr_info("nand_bbt: error reading BBT\n");
+@@ -220,8 +218,8 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 					continue;
+ 				if (reserved_block_code && (tmp == reserved_block_code)) {
+ 					pr_info("nand_read_bbt: reserved block at 0x%012llx\n",
+-						 (loff_t)(offs + act) <<
+-						 this->bbt_erase_shift);
++						nand_eraseblock_to_offs(this,
++								offs + act));
+ 					bbt_mark_entry(this, offs + act,
+ 							BBT_BLOCK_RESERVED);
+ 					mtd->ecc_stats.bbtblocks++;
+@@ -232,8 +230,8 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 				 * move this message to pr_debug.
+ 				 */
+ 				pr_info("nand_read_bbt: bad block at 0x%012llx\n",
+-					 (loff_t)(offs + act) <<
+-					 this->bbt_erase_shift);
++					nand_eraseblock_to_offs(this,
++								offs + act));
+ 				/* Factory marked bad or worn out? */
+ 				if (tmp == 0)
+ 					bbt_mark_entry(this, offs + act,
+@@ -252,7 +250,7 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 
+ /**
+  * read_abs_bbt - [GENERIC] Read the bad block table starting at a given page
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
+  * @chip: read the table for a specific chip, -1 read all chips; applies only if
+@@ -261,25 +259,26 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+  * Read the bad block table for all chips starting at a given page. We assume
+  * that the bbt bits are in consecutive order.
+  */
+-static int read_abs_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr *td, int chip)
++static int read_abs_bbt(struct nand_device *this, uint8_t *buf,
++			struct nand_bbt_descr *td, int chip)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
++	int ndies = nand_ndies(this);
+ 	int res = 0, i;
+ 
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		int offs = 0;
+-		for (i = 0; i < this->numchips; i++) {
++		int offs = 0, nbbd = nand_eraseblocks_per_die(this);
++		for (i = 0; i < ndies; i++) {
+ 			if (chip == -1 || chip == i)
+-				res = read_bbt(mtd, buf, td->pages[i],
+-					this->chipsize >> this->bbt_erase_shift,
+-					td, offs);
++				res = read_bbt(this, buf, td->pages[i], nbbd,
++					       td, offs);
+ 			if (res)
+ 				return res;
+-			offs += this->chipsize >> this->bbt_erase_shift;
++
++			offs += nbbd;
+ 		}
+ 	} else {
+-		res = read_bbt(mtd, buf, td->pages[0],
+-				mtd->size >> this->bbt_erase_shift, td, 0);
++		res = read_bbt(this, buf, td->pages[0],
++			       nand_neraseblocks(this), td, 0);
+ 		if (res)
+ 			return res;
+ 	}
+@@ -287,9 +286,10 @@ static int read_abs_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ }
+ 
+ /* BBT marker is in the first page, no OOB */
+-static int scan_read_data(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+-			 struct nand_bbt_descr *td)
++static int scan_read_data(struct nand_device *this, uint8_t *buf, loff_t offs,
++			  struct nand_bbt_descr *td)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	size_t retlen;
+ 	size_t len;
+ 
+@@ -302,7 +302,7 @@ static int scan_read_data(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+ 
+ /**
+  * scan_read_oob - [GENERIC] Scan data+OOB region to buffer
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @offs: offset at which to scan
+  * @len: length of data region to read
+@@ -311,19 +311,20 @@ static int scan_read_data(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+  * page,OOB,page,OOB,... in buf. Completes transfer and returns the "strongest"
+  * ECC condition (error or bitflip). May quit on the first (non-ECC) error.
+  */
+-static int scan_read_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
++static int scan_read_oob(struct nand_device *this, uint8_t *buf, loff_t offs,
+ 			 size_t len)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	struct mtd_oob_ops ops;
+ 	int res, ret = 0;
+ 
+ 	ops.mode = MTD_OPS_PLACE_OOB;
+ 	ops.ooboffs = 0;
+-	ops.ooblen = mtd->oobsize;
++	ops.ooblen = nand_per_page_oobsize(this);
+ 
+ 	while (len > 0) {
+ 		ops.datbuf = buf;
+-		ops.len = min(len, (size_t)mtd->writesize);
++		ops.len = min(len, nand_page_size(this));
+ 		ops.oobbuf = buf + ops.len;
+ 
+ 		res = mtd_read_oob(mtd, offs, &ops);
+@@ -334,31 +335,32 @@ static int scan_read_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+ 				ret = res;
+ 		}
+ 
+-		buf += mtd->oobsize + mtd->writesize;
+-		len -= mtd->writesize;
+-		offs += mtd->writesize;
++		buf += nand_per_page_oobsize(this) + nand_page_size(this);
++		len -= nand_page_size(this);
++		offs += nand_page_size(this);
+ 	}
+ 	return ret;
+ }
+ 
+-static int scan_read(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+-			 size_t len, struct nand_bbt_descr *td)
++static int scan_read(struct nand_device *this, uint8_t *buf, loff_t offs,
++		     size_t len, struct nand_bbt_descr *td)
+ {
+ 	if (td->options & NAND_BBT_NO_OOB)
+-		return scan_read_data(mtd, buf, offs, td);
++		return scan_read_data(this, buf, offs, td);
+ 	else
+-		return scan_read_oob(mtd, buf, offs, len);
++		return scan_read_oob(this, buf, offs, len);
+ }
+ 
+ /* Scan write data with oob to flash */
+-static int scan_write_bbt(struct mtd_info *mtd, loff_t offs, size_t len,
++static int scan_write_bbt(struct nand_device *this, loff_t offs, size_t len,
+ 			  uint8_t *buf, uint8_t *oob)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	struct mtd_oob_ops ops;
+ 
+ 	ops.mode = MTD_OPS_PLACE_OOB;
+ 	ops.ooboffs = 0;
+-	ops.ooblen = mtd->oobsize;
++	ops.ooblen = nand_per_page_oobsize(this);
+ 	ops.datbuf = buf;
+ 	ops.oobbuf = oob;
+ 	ops.len = len;
+@@ -366,18 +368,19 @@ static int scan_write_bbt(struct mtd_info *mtd, loff_t offs, size_t len,
+ 	return mtd_write_oob(mtd, offs, &ops);
+ }
+ 
+-static u32 bbt_get_ver_offs(struct mtd_info *mtd, struct nand_bbt_descr *td)
++static u32 bbt_get_ver_offs(struct nand_device *this,
++			    struct nand_bbt_descr *td)
+ {
+ 	u32 ver_offs = td->veroffs;
+ 
+ 	if (!(td->options & NAND_BBT_NO_OOB))
+-		ver_offs += mtd->writesize;
++		ver_offs += nand_page_size(this);
+ 	return ver_offs;
+ }
+ 
+ /**
+  * read_abs_bbts - [GENERIC] Read the bad block table(s) for all chips starting at a given page
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
+  * @md:	descriptor for the bad block table mirror
+@@ -385,38 +388,37 @@ static u32 bbt_get_ver_offs(struct mtd_info *mtd, struct nand_bbt_descr *td)
+  * Read the bad block table(s) for all chips starting at a given page. We
+  * assume that the bbt bits are in consecutive order.
+  */
+-static void read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
++static void read_abs_bbts(struct nand_device *this, uint8_t *buf,
+ 			  struct nand_bbt_descr *td, struct nand_bbt_descr *md)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+-
+ 	/* Read the primary version, if available */
+ 	if (td->options & NAND_BBT_VERSION) {
+-		scan_read(mtd, buf, (loff_t)td->pages[0] << this->page_shift,
+-			      mtd->writesize, td);
+-		td->version[0] = buf[bbt_get_ver_offs(mtd, td)];
++		scan_read(this, buf, nand_page_to_offs(this, td->pages[0]),
++			  nand_page_size(this), td);
++		td->version[0] = buf[bbt_get_ver_offs(this, td)];
+ 		pr_info("Bad block table at page %d, version 0x%02X\n",
+ 			 td->pages[0], td->version[0]);
+ 	}
+ 
+ 	/* Read the mirror version, if available */
+ 	if (md && (md->options & NAND_BBT_VERSION)) {
+-		scan_read(mtd, buf, (loff_t)md->pages[0] << this->page_shift,
+-			      mtd->writesize, md);
+-		md->version[0] = buf[bbt_get_ver_offs(mtd, md)];
++		scan_read(this, buf, nand_page_to_offs(this, td->pages[0]),
++			  nand_page_size(this), md);
++		md->version[0] = buf[bbt_get_ver_offs(this, md)];
+ 		pr_info("Bad block table at page %d, version 0x%02X\n",
+ 			 md->pages[0], md->version[0]);
+ 	}
+ }
+ 
+ /* Scan a given block partially */
+-static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
++static int scan_block_fast(struct nand_device *this, struct nand_bbt_descr *bd,
+ 			   loff_t offs, uint8_t *buf, int numpages)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	struct mtd_oob_ops ops;
+ 	int j, ret;
+ 
+-	ops.ooblen = mtd->oobsize;
++	ops.ooblen = nand_per_page_oobsize(this);
+ 	ops.oobbuf = buf;
+ 	ops.ooboffs = 0;
+ 	ops.datbuf = NULL;
+@@ -435,14 +437,14 @@ static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+ 		if (check_short_pattern(buf, bd))
+ 			return 1;
+ 
+-		offs += mtd->writesize;
++		offs += nand_page_size(this);
+ 	}
+ 	return 0;
+ }
+ 
+ /**
+  * create_bbt - [GENERIC] Create a bad block table by scanning the device
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @bd: descriptor for the good/bad block search pattern
+  * @chip: create the table for a specific chip, -1 read all chips; applies only
+@@ -451,10 +453,10 @@ static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+  * Create a bad block table by scanning the device for the given good/bad block
+  * identify pattern.
+  */
+-static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+-	struct nand_bbt_descr *bd, int chip)
++static int create_bbt(struct nand_device *this, uint8_t *buf,
++		      struct nand_bbt_descr *bd, int chip)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	int i, numblocks, numpages;
+ 	int startblock;
+ 	loff_t from;
+@@ -467,30 +469,31 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		numpages = 1;
+ 
+ 	if (chip == -1) {
+-		numblocks = mtd->size >> this->bbt_erase_shift;
++		numblocks = nand_neraseblocks(this);
+ 		startblock = 0;
+ 		from = 0;
+ 	} else {
+-		if (chip >= this->numchips) {
++		if (chip >= nand_ndies(this)) {
+ 			pr_warn("create_bbt(): chipnr (%d) > available chips (%d)\n",
+-			       chip + 1, this->numchips);
++			       chip + 1, nand_ndies(this));
+ 			return -EINVAL;
+ 		}
+-		numblocks = this->chipsize >> this->bbt_erase_shift;
++		numblocks = nand_eraseblocks_per_die(this);
+ 		startblock = chip * numblocks;
+ 		numblocks += startblock;
+-		from = (loff_t)startblock << this->bbt_erase_shift;
++		from = nand_eraseblock_to_offs(this, startblock);
+ 	}
+ 
+-	if (this->bbt_options & NAND_BBT_SCANLASTPAGE)
+-		from += mtd->erasesize - (mtd->writesize * numpages);
++	if (this->bbt.options & NAND_BBT_SCANLASTPAGE)
++		from += nand_eraseblock_size(this) -
++			(nand_page_size(this) * numpages);
+ 
+ 	for (i = startblock; i < numblocks; i++) {
+ 		int ret;
+ 
+ 		BUG_ON(bd->options & NAND_BBT_NO_OOB);
+ 
+-		ret = scan_block_fast(mtd, bd, from, buf, numpages);
++		ret = scan_block_fast(this, bd, from, buf, numpages);
+ 		if (ret < 0)
+ 			return ret;
+ 
+@@ -501,14 +504,14 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			mtd->ecc_stats.badblocks++;
+ 		}
+ 
+-		from += (1 << this->bbt_erase_shift);
++		from += nand_eraseblock_size(this);
+ 	}
+ 	return 0;
+ }
+ 
+ /**
+  * search_bbt - [GENERIC] scan the device for a specific bad block table
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
   *
+@@ -521,18 +524,17 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+  *
+  * The bbt ident pattern resides in the oob area of the first page in a block.
   */
- #include <linux/module.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/ndfc.h>
-diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/nuc900_nand.c
-index 8f64011d32ef..7bb4d2ea9342 100644
---- a/drivers/mtd/nand/nuc900_nand.c
-+++ b/drivers/mtd/nand/nuc900_nand.c
-@@ -19,7 +19,7 @@
- #include <linux/err.h>
+-static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr *td)
++static int search_bbt(struct nand_device *this, uint8_t *buf,
++		      struct nand_bbt_descr *td)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+ 	int i, chips;
+ 	int startblock, block, dir;
+-	int scanlen = mtd->writesize + mtd->oobsize;
++	int scanlen = nand_page_size(this) + nand_per_page_oobsize(this);
+ 	int bbtblocks;
+-	int blocktopage = this->bbt_erase_shift - this->page_shift;
  
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
+ 	/* Search direction top -> down? */
+ 	if (td->options & NAND_BBT_LASTBLOCK) {
+-		startblock = (mtd->size >> this->bbt_erase_shift) - 1;
++		startblock = nand_neraseblocks(this) - 1;
+ 		dir = -1;
+ 	} else {
+ 		startblock = 0;
+@@ -541,12 +543,12 @@ static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
  
- #define REG_FMICSR   	0x00
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index a59361c36f40..ebfa1751051d 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -18,7 +18,7 @@
- #include <linux/jiffies.h>
- #include <linux/sched.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/omap-dma.h>
- #include <linux/io.h>
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index 40a7c4a2cf0d..e68c4231e8b7 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -15,7 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/err.h>
-diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
-index 5de7591b0510..372b9736ac02 100644
---- a/drivers/mtd/nand/pasemi_nand.c
-+++ b/drivers/mtd/nand/pasemi_nand.c
-@@ -25,7 +25,7 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 415a53a0deeb..d5c3c894c60d 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -15,7 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
+ 	/* Do we have a bbt per chip? */
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		chips = this->numchips;
+-		bbtblocks = this->chipsize >> this->bbt_erase_shift;
++		chips = nand_ndies(this);
++		bbtblocks = nand_eraseblocks_per_die(this);
+ 		startblock &= bbtblocks - 1;
+ 	} else {
+ 		chips = 1;
+-		bbtblocks = mtd->size >> this->bbt_erase_shift;
++		bbtblocks = nand_neraseblocks(this);
+ 	}
  
- struct plat_nand_data {
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index b121bf4ed73a..4feec4ea3082 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -21,7 +21,7 @@
- #include <linux/delay.h>
- #include <linux/clk.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 57d483ac5765..a77c66f4d8bc 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -17,7 +17,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
- #include <linux/module.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/r852.h
-index d042ddb71a8b..8713c57f6207 100644
---- a/drivers/mtd/nand/r852.h
-+++ b/drivers/mtd/nand/r852.h
-@@ -10,7 +10,7 @@
- #include <linux/pci.h>
- #include <linux/completion.h>
- #include <linux/workqueue.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/spinlock.h>
+ 	for (i = 0; i < chips; i++) {
+@@ -557,20 +559,21 @@ static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
+ 		for (block = 0; block < td->maxblocks; block++) {
  
+ 			int actblock = startblock + dir * block;
+-			loff_t offs = (loff_t)actblock << this->bbt_erase_shift;
++			loff_t offs = nand_eraseblock_to_offs(this, actblock);
  
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index d459c19d78de..6ce9f867a123 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -41,7 +41,7 @@
- #include <linux/cpufreq.h>
+ 			/* Read first page */
+-			scan_read(mtd, buf, offs, mtd->writesize, td);
+-			if (!check_pattern(buf, scanlen, mtd->writesize, td)) {
+-				td->pages[i] = actblock << blocktopage;
++			scan_read(this, buf, offs, nand_page_size(this), td);
++			if (!check_pattern(buf, scanlen, nand_page_size(this), td)) {
++				td->pages[i] = nand_eraseblock_to_page(this,
++								  actblock);
+ 				if (td->options & NAND_BBT_VERSION) {
+-					offs = bbt_get_ver_offs(mtd, td);
++					offs = bbt_get_ver_offs(this, td);
+ 					td->version[i] = buf[offs];
+ 				}
+ 				break;
+ 			}
+ 		}
+-		startblock += this->chipsize >> this->bbt_erase_shift;
++		startblock += nand_eraseblocks_per_die(this);
+ 	}
+ 	/* Check, if we found a bbt for each requested chip */
+ 	for (i = 0; i < chips; i++) {
+@@ -585,23 +588,23 @@ static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
  
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 442ce619b3b6..492705fb23f2 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -38,7 +38,7 @@
- #include <linux/string.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/sh_flctl.h>
- 
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-index 064ca1757589..737efe83cd36 100644
---- a/drivers/mtd/nand/sharpsl.c
-+++ b/drivers/mtd/nand/sharpsl.c
-@@ -17,7 +17,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/sharpsl.h>
-diff --git a/drivers/mtd/nand/sm_common.c b/drivers/mtd/nand/sm_common.c
-index 5939dff253c2..c378705c6e2b 100644
---- a/drivers/mtd/nand/sm_common.c
-+++ b/drivers/mtd/nand/sm_common.c
-@@ -7,7 +7,7 @@
-  * published by the Free Software Foundation.
+ /**
+  * search_read_bbts - [GENERIC] scan the device for bad block table(s)
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
+  * @md: descriptor for the bad block table mirror
+  *
+  * Search and read the bad block table(s).
   */
- #include <linux/kernel.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/module.h>
- #include <linux/sizes.h>
- #include "sm_common.h"
-diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
-index 888fd314c62a..f5a3e7252b82 100644
---- a/drivers/mtd/nand/socrates_nand.c
-+++ b/drivers/mtd/nand/socrates_nand.c
-@@ -13,7 +13,7 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 8b8470c4e6d0..ccccc7ab9023 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -31,7 +31,7 @@
- #include <linux/of_device.h>
- #include <linux/of_gpio.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index 08b30549ec0a..e599ada12cd0 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -34,7 +34,7 @@
- #include <linux/interrupt.h>
- #include <linux/ioport.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index 0a14fda2e41b..b567d212fe7d 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -16,7 +16,7 @@
- #include <linux/platform_device.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
-diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-index 3ad514c44dcb..c497b157d56a 100644
---- a/drivers/mtd/nand/vf610_nfc.c
-+++ b/drivers/mtd/nand/vf610_nfc.c
-@@ -31,7 +31,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
-diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index 1f2948c0c458..3e7353e76264 100644
---- a/drivers/mtd/nand/xway_nand.c
-+++ b/drivers/mtd/nand/xway_nand.c
-@@ -7,7 +7,7 @@
-  *  Copyright © 2016 Hauke Mehrtens <hauke@hauke-m.de>
+-static void search_read_bbts(struct mtd_info *mtd, uint8_t *buf,
++static void search_read_bbts(struct nand_device *this, uint8_t *buf,
+ 			     struct nand_bbt_descr *td,
+ 			     struct nand_bbt_descr *md)
+ {
+ 	/* Search the primary table */
+-	search_bbt(mtd, buf, td);
++	search_bbt(this, buf, td);
+ 
+ 	/* Search the mirror table */
+ 	if (md)
+-		search_bbt(mtd, buf, md);
++		search_bbt(this, buf, md);
+ }
+ 
+ /**
+@@ -617,7 +620,7 @@ static void search_read_bbts(struct mtd_info *mtd, uint8_t *buf,
+  * pointing to a valid block we re-use it, otherwise we search for the next
+  * valid one.
   */
+-static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
++static int get_bbt_block(struct nand_device *this, struct nand_bbt_descr *td,
+ 			 struct nand_bbt_descr *md, int chip)
+ {
+ 	int startblock, dir, page, numblocks, i;
+@@ -628,12 +631,11 @@ static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
+ 	 * td->pages.
+ 	 */
+ 	if (td->pages[chip] != -1)
+-		return td->pages[chip] >>
+-				(this->bbt_erase_shift - this->page_shift);
++		return nand_page_to_eraseblock(this, td->pages[chip]);
  
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/of_gpio.h>
- #include <linux/of_platform.h>
+-	numblocks = (int)(this->chipsize >> this->bbt_erase_shift);
++	numblocks = nand_eraseblocks_per_die(this);
+ 	if (!(td->options & NAND_BBT_PERCHIP))
+-		numblocks *= this->numchips;
++		numblocks *= nand_ndies(this);
  
-diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
-index 46f27de018c3..2a1dd0049a45 100644
---- a/drivers/mtd/nftlcore.c
-+++ b/drivers/mtd/nftlcore.c
-@@ -34,7 +34,7 @@
+ 	/*
+ 	 * Automatic placement of the bad block table. Search direction
+@@ -657,7 +659,7 @@ static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
+ 			continue;
+ 		}
  
- #include <linux/kmod.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nftl.h>
- #include <linux/mtd/blktrans.h>
+-		page = block << (this->bbt_erase_shift - this->page_shift);
++		page = nand_eraseblock_to_page(this, block);
  
-diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-index a5dfbfbebfca..184c8fbfe465 100644
---- a/drivers/mtd/nftlmount.c
-+++ b/drivers/mtd/nftlmount.c
-@@ -25,7 +25,7 @@
- #include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nftl.h>
+ 		/* Check, if the block is used by the mirror table */
+ 		if (!md || md->pages[chip] != page)
+@@ -679,18 +681,15 @@ static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
+  * block as bad using a bad block marker and invalidating the associated
+  * td->pages[] entry.
+  */
+-static void mark_bbt_block_bad(struct nand_chip *this,
++static void mark_bbt_block_bad(struct nand_device *this,
+ 			       struct nand_bbt_descr *td,
+ 			       int chip, int block)
+ {
+-	struct mtd_info *mtd = nandc_to_mtd(this);
+-	loff_t to;
+ 	int res;
  
- #define SECTORSIZE 512
-diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-index 41b13d1cdcc4..95f0bf95f095 100644
---- a/drivers/mtd/ssfdc.c
-+++ b/drivers/mtd/ssfdc.c
-@@ -16,7 +16,7 @@
- #include <linux/slab.h>
- #include <linux/hdreg.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/blktrans.h>
+ 	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
  
- struct ssfdcr_record {
-diff --git a/drivers/mtd/tests/nandbiterrs.c b/drivers/mtd/tests/nandbiterrs.c
-index f26dec896afa..5f03b8c885a9 100644
---- a/drivers/mtd/tests/nandbiterrs.c
-+++ b/drivers/mtd/tests/nandbiterrs.c
-@@ -47,7 +47,7 @@
- #include <linux/moduleparam.h>
- #include <linux/mtd/mtd.h>
- #include <linux/err.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/slab.h>
- #include "mtd_test.h"
+-	to = (loff_t)block << this->bbt_erase_shift;
+-	res = this->block_markbad(mtd, to);
++	res = nand_markbad(this, block);
+ 	if (res)
+ 		pr_warn("nand_bbt: error %d while marking block %d bad\n",
+ 			res, block);
+@@ -700,7 +699,7 @@ static void mark_bbt_block_bad(struct nand_chip *this,
  
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index e389009fca42..f7f6edf2dda1 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -18,7 +18,7 @@
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/spi/spi.h>
+ /**
+  * write_bbt - [GENERIC] (Re)write the bad block table
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
+  * @md: descriptor for the bad block table mirror
+@@ -708,11 +707,11 @@ static void mark_bbt_block_bad(struct nand_chip *this,
+  *
+  * (Re)write the bad block table.
+  */
+-static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
++static int write_bbt(struct nand_device *this, uint8_t *buf,
+ 		     struct nand_bbt_descr *td, struct nand_bbt_descr *md,
+ 		     int chipsel)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	struct erase_info einfo;
+ 	int i, res, chip = 0;
+ 	int bits, page, offs, numblocks, sft, sftmsk;
+@@ -723,7 +722,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	loff_t to;
+ 	struct mtd_oob_ops ops;
  
- #include "mt29f_spinand.h"
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index b25d28a21212..48d9522e209c 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -17,7 +17,7 @@
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
- #include <linux/crc32.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/jiffies.h>
- #include <linux/sched.h>
- #include <linux/writeback.h>
-diff --git a/include/linux/mtd/nand-gpio.h b/include/linux/mtd/nand-gpio.h
-index 51534e50f7fc..be4f45d89be2 100644
---- a/include/linux/mtd/nand-gpio.h
-+++ b/include/linux/mtd/nand-gpio.h
-@@ -1,7 +1,7 @@
- #ifndef __LINUX_MTD_NAND_GPIO_H
- #define __LINUX_MTD_NAND_GPIO_H
+-	ops.ooblen = mtd->oobsize;
++	ops.ooblen = nand_per_page_oobsize(this);
+ 	ops.ooboffs = 0;
+ 	ops.datbuf = NULL;
+ 	ops.mode = MTD_OPS_PLACE_OOB;
+@@ -732,16 +731,16 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		rcode = 0xff;
+ 	/* Write bad block table per chip rather than per device? */
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		numblocks = (int)(this->chipsize >> this->bbt_erase_shift);
++		numblocks = nand_eraseblocks_per_die(this);
+ 		/* Full device write or specific chip? */
+ 		if (chipsel == -1) {
+-			nrchips = this->numchips;
++			nrchips = nand_ndies(this);
+ 		} else {
+ 			nrchips = chipsel + 1;
+ 			chip = chipsel;
+ 		}
+ 	} else {
+-		numblocks = (int)(mtd->size >> this->bbt_erase_shift);
++		numblocks = nand_neraseblocks(this);
+ 		nrchips = 1;
+ 	}
  
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
+@@ -760,7 +759,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		 * get_bbt_block() returns a block number, shift the value to
+ 		 * get a page number.
+ 		 */
+-		page = block << (this->bbt_erase_shift - this->page_shift);
++		nand_eraseblock_to_page(this, block);
  
- struct gpio_nand_platdata {
- 	int	gpio_nce;
+ 		/* Set up shift count and masks for the flash table */
+ 		bits = td->options & NAND_BBT_NRBITS_MSK;
+@@ -781,13 +780,14 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		default: return -EINVAL;
+ 		}
+ 
+-		to = ((loff_t)page) << this->page_shift;
++		to = nand_page_to_offs(this, page);
+ 
+ 		/* Must we save the block contents? */
+ 		if (td->options & NAND_BBT_SAVECONTENT) {
+ 			/* Make it block aligned */
+-			to &= ~(((loff_t)1 << this->bbt_erase_shift) - 1);
+-			len = 1 << this->bbt_erase_shift;
++			to = nand_eraseblock_to_offs(this,
++					nand_page_to_eraseblock(this, page));
++			len = nand_eraseblock_size(this);
+ 			res = mtd_read(mtd, to, len, &retlen, buf);
+ 			if (res < 0) {
+ 				if (retlen != len) {
+@@ -797,18 +797,19 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 				pr_warn("nand_bbt: ECC error while reading block for writing bad block table\n");
+ 			}
+ 			/* Read oob data */
+-			ops.ooblen = (len >> this->page_shift) * mtd->oobsize;
++			ops.ooblen = nand_len_to_pages(this, len) *
++				     nand_per_page_oobsize(this);
+ 			ops.oobbuf = &buf[len];
+-			res = mtd_read_oob(mtd, to + mtd->writesize, &ops);
++			res = mtd_read_oob(mtd, to + nand_page_size(this), &ops);
+ 			if (res < 0 || ops.oobretlen != ops.ooblen)
+ 				goto outerr;
+ 
+ 			/* Calc the byte offset in the buffer */
+-			pageoffs = page - (int)(to >> this->page_shift);
+-			offs = pageoffs << this->page_shift;
++			pageoffs = page - nand_offs_to_page(this, to);
++			offs = nand_page_to_offs(this, pageoffs);
+ 			/* Preset the bbt area with 0xff */
+ 			memset(&buf[offs], 0xff, (size_t)(numblocks >> sft));
+-			ooboffs = len + (pageoffs * mtd->oobsize);
++			ooboffs = len + (pageoffs * nand_per_page_oobsize(this));
+ 
+ 		} else if (td->options & NAND_BBT_NO_OOB) {
+ 			ooboffs = 0;
+@@ -820,7 +821,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			len = (size_t)(numblocks >> sft);
+ 			len += offs;
+ 			/* Make it page aligned! */
+-			len = ALIGN(len, mtd->writesize);
++			len = ALIGN(len, nand_page_size(this));
+ 			/* Preset the buffer with 0xff */
+ 			memset(buf, 0xff, len);
+ 			/* Pattern is located at the begin of first page */
+@@ -829,10 +830,11 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			/* Calc length */
+ 			len = (size_t)(numblocks >> sft);
+ 			/* Make it page aligned! */
+-			len = ALIGN(len, mtd->writesize);
++			len = ALIGN(len, nand_page_size(this));
+ 			/* Preset the buffer with 0xff */
+ 			memset(buf, 0xff, len +
+-			       (len >> this->page_shift)* mtd->oobsize);
++					  (nand_len_to_pages(this, len) *
++					   nand_per_page_oobsize(this)));
+ 			offs = 0;
+ 			ooboffs = len;
+ 			/* Pattern is located in oob area of first page */
+@@ -854,8 +856,8 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		memset(&einfo, 0, sizeof(einfo));
+ 		einfo.mtd = mtd;
+ 		einfo.addr = to;
+-		einfo.len = 1 << this->bbt_erase_shift;
+-		res = nand_erase_nand(mtd, &einfo, 1);
++		einfo.len = nand_eraseblock_size(this);
++		res = nand_erase(this, &einfo, 1);
+ 		if (res < 0) {
+ 			pr_warn("nand_bbt: error while erasing BBT block %d\n",
+ 				res);
+@@ -863,9 +865,9 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			continue;
+ 		}
+ 
+-		res = scan_write_bbt(mtd, to, len, buf,
+-				td->options & NAND_BBT_NO_OOB ? NULL :
+-				&buf[len]);
++		res = scan_write_bbt(this, to, len, buf,
++				     td->options & NAND_BBT_NO_OOB ? NULL :
++				     &buf[len]);
+ 		if (res < 0) {
+ 			pr_warn("nand_bbt: error while writing BBT block %d\n",
+ 				res);
+@@ -888,22 +890,31 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 
+ /**
+  * nand_memory_bbt - [GENERIC] create a memory based bad block table
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @bd: descriptor for the good/bad block search pattern
+  *
+  * The function creates a memory based bbt by scanning the device for
+  * manufacturer / software marked good / bad blocks.
+  */
+-static inline int nand_memory_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
++static inline int nand_memory_bbt(struct nand_device *this,
++				  struct nand_bbt_descr *bd)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
++	void *buffer;
++	int ret;
+ 
+-	return create_bbt(mtd, this->buffers->databuf, bd, -1);
++	buffer = kmalloc(nand_page_size(this), GFP_KERNEL);
++	if (!buffer)
++		return -ENOMEM;
++
++	ret = create_bbt(this, buffer, bd, -1);
++	kfree(buffer);
++
++	return ret;
+ }
+ 
+ /**
+  * check_create - [GENERIC] create and write bbt(s) if necessary
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @bd: descriptor for the good/bad block search pattern
+  *
+@@ -912,17 +923,17 @@ static inline int nand_memory_bbt(struct mtd_info *mtd, struct nand_bbt_descr *b
+  * for the chip/device. Update is necessary if one of the tables is missing or
+  * the version nr. of one table is less than the other.
+  */
+-static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr *bd)
++static int check_create(struct nand_device *this, uint8_t *buf,
++			struct nand_bbt_descr *bd)
+ {
+ 	int i, chips, writeops, create, chipsel, res, res2;
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+-	struct nand_bbt_descr *td = this->bbt_td;
+-	struct nand_bbt_descr *md = this->bbt_md;
++	struct nand_bbt_descr *td = this->bbt.td;
++	struct nand_bbt_descr *md = this->bbt.md;
+ 	struct nand_bbt_descr *rd, *rd2;
+ 
+ 	/* Do we have a bbt per chip? */
+ 	if (td->options & NAND_BBT_PERCHIP)
+-		chips = this->numchips;
++		chips = nand_ndies(this);
+ 	else
+ 		chips = 1;
+ 
+@@ -971,8 +982,8 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 				continue;
+ 
+ 			/* Create the table in memory by scanning the chip(s) */
+-			if (!(this->bbt_options & NAND_BBT_CREATE_EMPTY))
+-				create_bbt(mtd, buf, bd, chipsel);
++			if (!(this->bbt.options & NAND_BBT_CREATE_EMPTY))
++				create_bbt(this, buf, bd, chipsel);
+ 
+ 			td->version[i] = 1;
+ 			if (md)
+@@ -981,7 +992,7 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 
+ 		/* Read back first? */
+ 		if (rd) {
+-			res = read_abs_bbt(mtd, buf, rd, chipsel);
++			res = read_abs_bbt(this, buf, rd, chipsel);
+ 			if (mtd_is_eccerr(res)) {
+ 				/* Mark table as invalid */
+ 				rd->pages[i] = -1;
+@@ -992,7 +1003,7 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 		}
+ 		/* If they weren't versioned, read both */
+ 		if (rd2) {
+-			res2 = read_abs_bbt(mtd, buf, rd2, chipsel);
++			res2 = read_abs_bbt(this, buf, rd2, chipsel);
+ 			if (mtd_is_eccerr(res2)) {
+ 				/* Mark table as invalid */
+ 				rd2->pages[i] = -1;
+@@ -1014,14 +1025,14 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 
+ 		/* Write the bad block table to the device? */
+ 		if ((writeops & 0x01) && (td->options & NAND_BBT_WRITE)) {
+-			res = write_bbt(mtd, buf, td, md, chipsel);
++			res = write_bbt(this, buf, td, md, chipsel);
+ 			if (res < 0)
+ 				return res;
+ 		}
+ 
+ 		/* Write the mirror bad block table to the device? */
+ 		if ((writeops & 0x02) && md && (md->options & NAND_BBT_WRITE)) {
+-			res = write_bbt(mtd, buf, md, td, chipsel);
++			res = write_bbt(this, buf, md, td, chipsel);
+ 			if (res < 0)
+ 				return res;
+ 		}
+@@ -1031,25 +1042,26 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 
+ /**
+  * mark_bbt_regions - [GENERIC] mark the bad block table regions
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @td: bad block table descriptor
+  *
+  * The bad block table regions are marked as "bad" to prevent accidental
+  * erasures / writes. The regions are identified by the mark 0x02.
+  */
+-static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
++static void mark_bbt_region(struct nand_device *this,
++			    struct nand_bbt_descr *td)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+ 	int i, j, chips, block, nrblocks, update;
+ 	uint8_t oldval;
++	loff_t offs;
+ 
+ 	/* Do we have a bbt per chip? */
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		chips = this->numchips;
+-		nrblocks = (int)(this->chipsize >> this->bbt_erase_shift);
++		chips = nand_ndies(this);
++		nrblocks = nand_eraseblocks_per_die(this);
+ 	} else {
+ 		chips = 1;
+-		nrblocks = (int)(mtd->size >> this->bbt_erase_shift);
++		nrblocks = nand_neraseblocks(this);
+ 	}
+ 
+ 	for (i = 0; i < chips; i++) {
+@@ -1057,13 +1069,14 @@ static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
+ 		    !(td->options & NAND_BBT_WRITE)) {
+ 			if (td->pages[i] == -1)
+ 				continue;
+-			block = td->pages[i] >> (this->bbt_erase_shift - this->page_shift);
++			block = nand_page_to_eraseblock(this, td->pages[i]);
+ 			oldval = bbt_get_entry(this, block);
+ 			bbt_mark_entry(this, block, BBT_BLOCK_RESERVED);
+ 			if ((oldval != BBT_BLOCK_RESERVED) &&
+-					td->reserved_block_code)
+-				nand_update_bbt(mtd, (loff_t)block <<
+-						this->bbt_erase_shift);
++			    td->reserved_block_code) {
++				offs = nand_eraseblock_to_offs(this, block);
++				nand_update_bbt(this, offs);
++			}
+ 			continue;
+ 		}
+ 		update = 0;
+@@ -1083,23 +1096,23 @@ static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
+ 		 * new ones have been marked, then we need to update the stored
+ 		 * bbts.  This should only happen once.
+ 		 */
+-		if (update && td->reserved_block_code)
+-			nand_update_bbt(mtd, (loff_t)(block - 1) <<
+-					this->bbt_erase_shift);
++		if (update && td->reserved_block_code) {
++			offs = nand_eraseblock_to_offs(this, block - 1);
++			nand_update_bbt(this, offs);
++		}
+ 	}
+ }
+ 
+ /**
+  * verify_bbt_descr - verify the bad block description
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @bd: the table to verify
+  *
+  * This functions performs a few sanity checks on the bad block description
+  * table.
+  */
+-static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
++static void verify_bbt_descr(struct nand_device *this, struct nand_bbt_descr *bd)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+ 	u32 pattern_len;
+ 	u32 bits;
+ 	u32 table_size;
+@@ -1110,16 +1123,16 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	pattern_len = bd->len;
+ 	bits = bd->options & NAND_BBT_NRBITS_MSK;
+ 
+-	BUG_ON((this->bbt_options & NAND_BBT_NO_OOB) &&
+-			!(this->bbt_options & NAND_BBT_USE_FLASH));
++	BUG_ON((this->bbt.options & NAND_BBT_NO_OOB) &&
++		!(this->bbt.options & NAND_BBT_USE_FLASH));
+ 	BUG_ON(!bits);
+ 
+ 	if (bd->options & NAND_BBT_VERSION)
+ 		pattern_len++;
+ 
+ 	if (bd->options & NAND_BBT_NO_OOB) {
+-		BUG_ON(!(this->bbt_options & NAND_BBT_USE_FLASH));
+-		BUG_ON(!(this->bbt_options & NAND_BBT_NO_OOB));
++		BUG_ON(!(this->bbt.options & NAND_BBT_USE_FLASH));
++		BUG_ON(!(this->bbt.options & NAND_BBT_NO_OOB));
+ 		BUG_ON(bd->offs);
+ 		if (bd->options & NAND_BBT_VERSION)
+ 			BUG_ON(bd->veroffs != bd->len);
+@@ -1127,19 +1140,63 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	}
+ 
+ 	if (bd->options & NAND_BBT_PERCHIP)
+-		table_size = this->chipsize >> this->bbt_erase_shift;
++		table_size = nand_eraseblocks_per_die(this);
+ 	else
+-		table_size = mtd->size >> this->bbt_erase_shift;
++		table_size = nand_neraseblocks(this);
+ 	table_size >>= 3;
+ 	table_size *= bits;
+ 	if (bd->options & NAND_BBT_NO_OOB)
+ 		table_size += pattern_len;
+-	BUG_ON(table_size > (1 << this->bbt_erase_shift));
++	BUG_ON(table_size > nand_eraseblock_size(this));
+ }
+ 
++/* Generic flash bbt descriptors */
++static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
++static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
++
++static struct nand_bbt_descr bbt_main_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
++	.offs =	8,
++	.len = 4,
++	.veroffs = 12,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = bbt_pattern
++};
++
++static struct nand_bbt_descr bbt_mirror_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
++	.offs =	8,
++	.len = 4,
++	.veroffs = 12,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = mirror_pattern
++};
++
++static struct nand_bbt_descr bbt_main_no_oob_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
++		| NAND_BBT_NO_OOB,
++	.len = 4,
++	.veroffs = 4,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = bbt_pattern
++};
++
++static struct nand_bbt_descr bbt_mirror_no_oob_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
++		| NAND_BBT_NO_OOB,
++	.len = 4,
++	.veroffs = 4,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = mirror_pattern
++};
++
+ /**
+  * nand_scan_bbt - [NAND Interface] scan, find, read and maybe create bad block table(s)
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @bd: descriptor for the good/bad block search pattern
+  *
+  * The function checks, if a bad block table(s) is/are already available. If
+@@ -1149,21 +1206,40 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+  * The bad block table memory is allocated here. It must be freed by calling
+  * the nand_free_bbt function.
+  */
+-static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
++int nand_scan_bbt(struct nand_device *this)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+ 	int len, res;
+ 	uint8_t *buf;
+-	struct nand_bbt_descr *td = this->bbt_td;
+-	struct nand_bbt_descr *md = this->bbt_md;
++	struct nand_bbt_descr *td, *md, *bd;
++
++	/* Is a flash based bad block table requested? */
++	if (this->bbt.options & NAND_BBT_USE_FLASH) {
++		/* Use the default pattern descriptors */
++		if (!this->bbt.td) {
++			if (this->bbt.options & NAND_BBT_NO_OOB) {
++				this->bbt.td = &bbt_main_no_oob_descr;
++				this->bbt.md = &bbt_mirror_no_oob_descr;
++			} else {
++				this->bbt.td = &bbt_main_descr;
++				this->bbt.md = &bbt_mirror_descr;
++			}
++		}
++	} else {
++		this->bbt.td = NULL;
++		this->bbt.md = NULL;
++	}
++
++	td = this->bbt.td;
++	md = this->bbt.md;
++	bd = this->bbt.bbp;
+ 
+-	len = (mtd->size >> (this->bbt_erase_shift + 2)) ? : 1;
+ 	/*
+ 	 * Allocate memory (2bit per block) and clear the memory bad block
+ 	 * table.
+ 	 */
+-	this->bbt = kzalloc(len, GFP_KERNEL);
+-	if (!this->bbt)
++	len = DIV_ROUND_UP(nand_neraseblocks(this) * 2, 8);
++	this->bbt.bbt = kzalloc(len, GFP_KERNEL);
++	if (!this->bbt.bbt)
+ 		return -ENOMEM;
+ 
+ 	/*
+@@ -1171,18 +1247,17 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	 * memory based bad block table.
+ 	 */
+ 	if (!td) {
+-		if ((res = nand_memory_bbt(mtd, bd))) {
++		if ((res = nand_memory_bbt(this, bd))) {
+ 			pr_err("nand_bbt: can't scan flash and build the RAM-based BBT\n");
+ 			goto err;
+ 		}
+ 		return 0;
+ 	}
+-	verify_bbt_descr(mtd, td);
+-	verify_bbt_descr(mtd, md);
++	verify_bbt_descr(this, td);
++	verify_bbt_descr(this, md);
+ 
+ 	/* Allocate a temporary buffer for one eraseblock incl. oob */
+-	len = (1 << this->bbt_erase_shift);
+-	len += (len >> this->page_shift) * mtd->oobsize;
++	len = nand_eraseblock_size(this) + nand_per_eraseblock_oobsize(this);
+ 	buf = vmalloc(len);
+ 	if (!buf) {
+ 		res = -ENOMEM;
+@@ -1191,63 +1266,61 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 
+ 	/* Is the bbt at a given page? */
+ 	if (td->options & NAND_BBT_ABSPAGE) {
+-		read_abs_bbts(mtd, buf, td, md);
++		read_abs_bbts(this, buf, td, md);
+ 	} else {
+ 		/* Search the bad block table using a pattern in oob */
+-		search_read_bbts(mtd, buf, td, md);
++		search_read_bbts(this, buf, td, md);
+ 	}
+ 
+-	res = check_create(mtd, buf, bd);
++	res = check_create(this, buf, bd);
+ 	if (res)
+ 		goto err;
+ 
+ 	/* Prevent the bbt regions from erasing / writing */
+-	mark_bbt_region(mtd, td);
++	mark_bbt_region(this, td);
+ 	if (md)
+-		mark_bbt_region(mtd, md);
++		mark_bbt_region(this, md);
+ 
+ 	vfree(buf);
+ 	return 0;
+ 
+ err:
+-	kfree(this->bbt);
+-	this->bbt = NULL;
++	kfree(this->bbt.bbt);
++	this->bbt.bbt = NULL;
+ 	return res;
+ }
+ 
+ /**
+  * nand_update_bbt - update bad block table(s)
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @offs: the offset of the newly marked block
+  *
+  * The function updates the bad block table(s).
+  */
+-static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
++int nand_update_bbt(struct nand_device *this, loff_t offs)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+ 	int len, res = 0;
+ 	int chip, chipsel;
+ 	uint8_t *buf;
+-	struct nand_bbt_descr *td = this->bbt_td;
+-	struct nand_bbt_descr *md = this->bbt_md;
++	struct nand_bbt_descr *td = this->bbt.td;
++	struct nand_bbt_descr *md = this->bbt.md;
+ 
+-	if (!this->bbt || !td)
++	if (!this->bbt.bbt || !td)
+ 		return -EINVAL;
+ 
+ 	/* Allocate a temporary buffer for one eraseblock incl. oob */
+-	len = (1 << this->bbt_erase_shift);
+-	len += (len >> this->page_shift) * mtd->oobsize;
++	len = nand_eraseblock_size(this) + nand_per_eraseblock_oobsize(this);
+ 	buf = kmalloc(len, GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+ 	/* Do we have a bbt per chip? */
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		chip = (int)(offs >> this->chip_shift);
++		chip = nand_offs_to_die(this, offs);
+ 		chipsel = chip;
+ 	} else {
+ 		chip = 0;
+-		chipsel = -1;
++		chipsel = -1 ;
+ 	}
+ 
+ 	td->version[chip]++;
+@@ -1256,13 +1329,13 @@ static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+ 
+ 	/* Write the bad block table to the device? */
+ 	if (td->options & NAND_BBT_WRITE) {
+-		res = write_bbt(mtd, buf, td, md, chipsel);
++		res = write_bbt(this, buf, td, md, chipsel);
+ 		if (res < 0)
+ 			goto out;
+ 	}
+ 	/* Write the mirror bad block table to the device? */
+ 	if (md && (md->options & NAND_BBT_WRITE)) {
+-		res = write_bbt(mtd, buf, md, td, chipsel);
++		res = write_bbt(this, buf, md, td, chipsel);
+ 	}
+ 
+  out:
+@@ -1270,149 +1343,30 @@ static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+ 	return res;
+ }
+ 
+-/*
+- * Define some generic bad / good block scan pattern which are used
+- * while scanning a device for factory marked good / bad blocks.
+- */
+-static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
+-
+-/* Generic flash bbt descriptors */
+-static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
+-static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
+-
+-static struct nand_bbt_descr bbt_main_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
+-	.pattern = bbt_pattern
+-};
+-
+-static struct nand_bbt_descr bbt_mirror_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
+-	.pattern = mirror_pattern
+-};
+-
+-static struct nand_bbt_descr bbt_main_no_oob_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
+-		| NAND_BBT_NO_OOB,
+-	.len = 4,
+-	.veroffs = 4,
+-	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
+-	.pattern = bbt_pattern
+-};
+-
+-static struct nand_bbt_descr bbt_mirror_no_oob_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
+-		| NAND_BBT_NO_OOB,
+-	.len = 4,
+-	.veroffs = 4,
+-	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
+-	.pattern = mirror_pattern
+-};
+-
+-#define BADBLOCK_SCAN_MASK (~NAND_BBT_NO_OOB)
+-/**
+- * nand_create_badblock_pattern - [INTERN] Creates a BBT descriptor structure
+- * @this: NAND chip to create descriptor for
+- *
+- * This function allocates and initializes a nand_bbt_descr for BBM detection
+- * based on the properties of @this. The new descriptor is stored in
+- * this->badblock_pattern. Thus, this->badblock_pattern should be NULL when
+- * passed to this function.
+- */
+-static int nand_create_badblock_pattern(struct nand_chip *this)
+-{
+-	struct nand_bbt_descr *bd;
+-	if (this->badblock_pattern) {
+-		pr_warn("Bad block pattern already allocated; not replacing\n");
+-		return -EINVAL;
+-	}
+-	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
+-	if (!bd)
+-		return -ENOMEM;
+-	bd->options = this->bbt_options & BADBLOCK_SCAN_MASK;
+-	bd->offs = this->badblockpos;
+-	bd->len = (this->options & NAND_BUSWIDTH_16) ? 2 : 1;
+-	bd->pattern = scan_ff_pattern;
+-	bd->options |= NAND_BBT_DYNAMICSTRUCT;
+-	this->badblock_pattern = bd;
+-	return 0;
+-}
+-
+-/**
+- * nand_default_bbt - [NAND Interface] Select a default bad block table for the device
+- * @mtd: MTD device structure
+- *
+- * This function selects the default bad block table support for the device and
+- * calls the nand_scan_bbt function.
+- */
+-int nand_default_bbt(struct mtd_info *mtd)
+-{
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+-	int ret;
+-
+-	/* Is a flash based bad block table requested? */
+-	if (this->bbt_options & NAND_BBT_USE_FLASH) {
+-		/* Use the default pattern descriptors */
+-		if (!this->bbt_td) {
+-			if (this->bbt_options & NAND_BBT_NO_OOB) {
+-				this->bbt_td = &bbt_main_no_oob_descr;
+-				this->bbt_md = &bbt_mirror_no_oob_descr;
+-			} else {
+-				this->bbt_td = &bbt_main_descr;
+-				this->bbt_md = &bbt_mirror_descr;
+-			}
+-		}
+-	} else {
+-		this->bbt_td = NULL;
+-		this->bbt_md = NULL;
+-	}
+-
+-	if (!this->badblock_pattern) {
+-		ret = nand_create_badblock_pattern(this);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	return nand_scan_bbt(mtd, this->badblock_pattern);
+-}
+-
+ /**
+  * nand_isreserved_bbt - [NAND Interface] Check if a block is reserved
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @offs: offset in the device
+  */
+-int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs)
++int nand_isreserved_bbt(struct nand_device *this, loff_t offs)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+ 	int block;
+ 
+-	block = (int)(offs >> this->bbt_erase_shift);
++	block = nand_offs_to_eraseblock(this, offs);
+ 	return bbt_get_entry(this, block) == BBT_BLOCK_RESERVED;
+ }
+ 
+ /**
+  * nand_isbad_bbt - [NAND Interface] Check if a block is bad
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @offs: offset in the device
+  * @allowbbt: allow access to bad block table region
+  */
+-int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
++int nand_isbad_bbt(struct nand_device *this, loff_t offs, int allowbbt)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+ 	int block, res;
+ 
+-	block = (int)(offs >> this->bbt_erase_shift);
++	block = nand_offs_to_eraseblock(this, offs);
+ 	res = bbt_get_entry(this, block);
+ 
+ 	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
+@@ -1431,22 +1385,21 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
+ 
+ /**
+  * nand_markbad_bbt - [NAND Interface] Mark a block bad in the BBT
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @offs: offset of the bad block
+  */
+-int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
++int nand_markbad_bbt(struct nand_device *this, loff_t offs)
+ {
+-	struct nand_chip *this = mtd_to_nandc(mtd);
+ 	int block, ret = 0;
+ 
+-	block = (int)(offs >> this->bbt_erase_shift);
++	block = nand_offs_to_eraseblock(this, offs);
+ 
+ 	/* Mark bad block in memory */
+ 	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
+ 
+ 	/* Update flash-based bad block table */
+-	if (this->bbt_options & NAND_BBT_USE_FLASH)
+-		ret = nand_update_bbt(mtd, offs);
++	if (this->bbt.options & NAND_BBT_USE_FLASH)
++		ret = nand_update_bbt(this, offs);
+ 
+ 	return ret;
+ }
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-deleted file mode 100644
-index c5d3d5024fc8..000000000000
+index f8021f004524..0bc7e573ecfa 100644
 --- a/include/linux/mtd/nand.h
-+++ /dev/null
-@@ -1,1192 +0,0 @@
--/*
-- *  linux/include/linux/mtd/nand.h
-- *
-- *  Copyright © 2000-2010 David Woodhouse <dwmw2@infradead.org>
-- *                        Steven J. Hill <sjhill@realitydiluted.com>
-- *		          Thomas Gleixner <tglx@linutronix.de>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- * Info:
-- *	Contains standard defines and IDs for NAND flash devices
-- *
-- * Changelog:
-- *	See git changelog.
-- */
--#ifndef __LINUX_MTD_NAND_H
--#define __LINUX_MTD_NAND_H
--
--#include <linux/wait.h>
--#include <linux/spinlock.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/flashchip.h>
--#include <linux/mtd/bbm.h>
--
--struct mtd_info;
--struct nand_flash_dev;
--struct device_node;
--
--/* Scan and identify a NAND device */
--int nand_scan(struct mtd_info *mtd, int max_chips);
--/*
-- * Separate phases of nand_scan(), allowing board driver to intervene
-- * and override command or ECC setup according to flash type.
-- */
--int nand_scan_ident(struct mtd_info *mtd, int max_chips,
--			   struct nand_flash_dev *table);
--int nand_scan_tail(struct mtd_info *mtd);
--
--/* Unregister the MTD device and free resources held by the NAND device */
--void nand_release(struct mtd_info *mtd);
--
--/* Internal helper for board drivers which need to override command function */
--void nand_wait_ready(struct mtd_info *mtd);
--
--/* locks all blocks present in the device */
--int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
--
--/* unlocks specified locked blocks */
--int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
--
--/* The maximum number of NAND chips in an array */
--#define NAND_MAX_CHIPS		8
--
--/*
-- * Constants for hardware specific CLE/ALE/NCE function
-- *
-- * These are bits which can be or'ed to set/clear multiple
-- * bits in one go.
-- */
--/* Select the chip by setting nCE to low */
--#define NAND_NCE		0x01
--/* Select the command latch by setting CLE to high */
--#define NAND_CLE		0x02
--/* Select the address latch by setting ALE to high */
--#define NAND_ALE		0x04
--
--#define NAND_CTRL_CLE		(NAND_NCE | NAND_CLE)
--#define NAND_CTRL_ALE		(NAND_NCE | NAND_ALE)
--#define NAND_CTRL_CHANGE	0x80
--
--/*
-- * Standard NAND flash commands
-- */
--#define NAND_CMD_READ0		0
--#define NAND_CMD_READ1		1
--#define NAND_CMD_RNDOUT		5
--#define NAND_CMD_PAGEPROG	0x10
--#define NAND_CMD_READOOB	0x50
--#define NAND_CMD_ERASE1		0x60
--#define NAND_CMD_STATUS		0x70
--#define NAND_CMD_SEQIN		0x80
--#define NAND_CMD_RNDIN		0x85
--#define NAND_CMD_READID		0x90
--#define NAND_CMD_ERASE2		0xd0
--#define NAND_CMD_PARAM		0xec
--#define NAND_CMD_GET_FEATURES	0xee
--#define NAND_CMD_SET_FEATURES	0xef
--#define NAND_CMD_RESET		0xff
--
--#define NAND_CMD_LOCK		0x2a
--#define NAND_CMD_UNLOCK1	0x23
--#define NAND_CMD_UNLOCK2	0x24
--
--/* Extended commands for large page devices */
--#define NAND_CMD_READSTART	0x30
--#define NAND_CMD_RNDOUTSTART	0xE0
--#define NAND_CMD_CACHEDPROG	0x15
--
--#define NAND_CMD_NONE		-1
--
--/* Status bits */
--#define NAND_STATUS_FAIL	0x01
--#define NAND_STATUS_FAIL_N1	0x02
--#define NAND_STATUS_TRUE_READY	0x20
--#define NAND_STATUS_READY	0x40
--#define NAND_STATUS_WP		0x80
--
--/*
-- * Constants for ECC_MODES
-- */
--typedef enum {
--	NAND_ECC_NONE,
--	NAND_ECC_SOFT,
--	NAND_ECC_HW,
--	NAND_ECC_HW_SYNDROME,
--	NAND_ECC_HW_OOB_FIRST,
--} nand_ecc_modes_t;
--
--enum nand_ecc_algo {
--	NAND_ECC_UNKNOWN,
--	NAND_ECC_HAMMING,
--	NAND_ECC_BCH,
--};
--
--/*
-- * Constants for Hardware ECC
-- */
--/* Reset Hardware ECC for read */
--#define NAND_ECC_READ		0
--/* Reset Hardware ECC for write */
--#define NAND_ECC_WRITE		1
--/* Enable Hardware ECC before syndrome is read back from flash */
--#define NAND_ECC_READSYN	2
--
--/*
-- * Enable generic NAND 'page erased' check. This check is only done when
-- * ecc.correct() returns -EBADMSG.
-- * Set this flag if your implementation does not fix bitflips in erased
-- * pages and you want to rely on the default implementation.
-- */
--#define NAND_ECC_GENERIC_ERASED_CHECK	BIT(0)
--#define NAND_ECC_MAXIMIZE		BIT(1)
--
--/* Bit mask for flags passed to do_nand_read_ecc */
--#define NAND_GET_DEVICE		0x80
--
--
--/*
-- * Option constants for bizarre disfunctionality and real
-- * features.
-- */
--/* Buswidth is 16 bit */
--#define NAND_BUSWIDTH_16	0x00000002
--/* Chip has cache program function */
--#define NAND_CACHEPRG		0x00000008
--/*
-- * Chip requires ready check on read (for auto-incremented sequential read).
-- * True only for small page devices; large page devices do not support
-- * autoincrement.
-- */
--#define NAND_NEED_READRDY	0x00000100
--
--/* Chip does not allow subpage writes */
--#define NAND_NO_SUBPAGE_WRITE	0x00000200
--
--/* Device is one of 'new' xD cards that expose fake nand command set */
--#define NAND_BROKEN_XD		0x00000400
--
--/* Device behaves just like nand, but is readonly */
--#define NAND_ROM		0x00000800
--
--/* Device supports subpage reads */
--#define NAND_SUBPAGE_READ	0x00001000
--
--/*
-- * Some MLC NANDs need data scrambling to limit bitflips caused by repeated
-- * patterns.
-- */
--#define NAND_NEED_SCRAMBLING	0x00002000
--
--/* Options valid for Samsung large page devices */
--#define NAND_SAMSUNG_LP_OPTIONS NAND_CACHEPRG
--
--/* Macros to identify the above */
--#define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
--#define NAND_HAS_SUBPAGE_READ(chip) ((chip->options & NAND_SUBPAGE_READ))
--
--/* Non chip related options */
--/* This option skips the bbt scan during initialization. */
--#define NAND_SKIP_BBTSCAN	0x00010000
--/*
-- * This option is defined if the board driver allocates its own buffers
-- * (e.g. because it needs them DMA-coherent).
-- */
--#define NAND_OWN_BUFFERS	0x00020000
--/* Chip may not exist, so silence any errors in scan */
--#define NAND_SCAN_SILENT_NODEV	0x00040000
--/*
-- * Autodetect nand buswidth with readid/onfi.
-- * This suppose the driver will configure the hardware in 8 bits mode
-- * when calling nand_scan_ident, and update its configuration
-- * before calling nand_scan_tail.
-- */
--#define NAND_BUSWIDTH_AUTO      0x00080000
--/*
-- * This option could be defined by controller drivers to protect against
-- * kmap'ed, vmalloc'ed highmem buffers being passed from upper layers
-- */
--#define NAND_USE_BOUNCE_BUFFER	0x00100000
--
--/* Options set by nand scan */
--/* Nand scan has allocated controller struct */
--#define NAND_CONTROLLER_ALLOC	0x80000000
--
--/* Cell info constants */
--#define NAND_CI_CHIPNR_MSK	0x03
--#define NAND_CI_CELLTYPE_MSK	0x0C
--#define NAND_CI_CELLTYPE_SHIFT	2
--
--/* Keep gcc happy */
--struct nand_chip;
--
--/* ONFI features */
--#define ONFI_FEATURE_16_BIT_BUS		(1 << 0)
--#define ONFI_FEATURE_EXT_PARAM_PAGE	(1 << 7)
--
--/* ONFI timing mode, used in both asynchronous and synchronous mode */
--#define ONFI_TIMING_MODE_0		(1 << 0)
--#define ONFI_TIMING_MODE_1		(1 << 1)
--#define ONFI_TIMING_MODE_2		(1 << 2)
--#define ONFI_TIMING_MODE_3		(1 << 3)
--#define ONFI_TIMING_MODE_4		(1 << 4)
--#define ONFI_TIMING_MODE_5		(1 << 5)
--#define ONFI_TIMING_MODE_UNKNOWN	(1 << 6)
--
--/* ONFI feature address */
--#define ONFI_FEATURE_ADDR_TIMING_MODE	0x1
--
--/* Vendor-specific feature address (Micron) */
--#define ONFI_FEATURE_ADDR_READ_RETRY	0x89
--
--/* ONFI subfeature parameters length */
--#define ONFI_SUBFEATURE_PARAM_LEN	4
--
--/* ONFI optional commands SET/GET FEATURES supported? */
--#define ONFI_OPT_CMD_SET_GET_FEATURES	(1 << 2)
--
--struct nand_onfi_params {
--	/* rev info and features block */
--	/* 'O' 'N' 'F' 'I'  */
--	u8 sig[4];
--	__le16 revision;
--	__le16 features;
--	__le16 opt_cmd;
--	u8 reserved0[2];
--	__le16 ext_param_page_length; /* since ONFI 2.1 */
--	u8 num_of_param_pages;        /* since ONFI 2.1 */
--	u8 reserved1[17];
--
--	/* manufacturer information block */
--	char manufacturer[12];
--	char model[20];
--	u8 jedec_id;
--	__le16 date_code;
--	u8 reserved2[13];
--
--	/* memory organization block */
--	__le32 byte_per_page;
--	__le16 spare_bytes_per_page;
--	__le32 data_bytes_per_ppage;
--	__le16 spare_bytes_per_ppage;
--	__le32 pages_per_block;
--	__le32 blocks_per_lun;
--	u8 lun_count;
--	u8 addr_cycles;
--	u8 bits_per_cell;
--	__le16 bb_per_lun;
--	__le16 block_endurance;
--	u8 guaranteed_good_blocks;
--	__le16 guaranteed_block_endurance;
--	u8 programs_per_page;
--	u8 ppage_attr;
--	u8 ecc_bits;
--	u8 interleaved_bits;
--	u8 interleaved_ops;
--	u8 reserved3[13];
--
--	/* electrical parameter block */
--	u8 io_pin_capacitance_max;
--	__le16 async_timing_mode;
--	__le16 program_cache_timing_mode;
--	__le16 t_prog;
--	__le16 t_bers;
--	__le16 t_r;
--	__le16 t_ccs;
--	__le16 src_sync_timing_mode;
--	u8 src_ssync_features;
--	__le16 clk_pin_capacitance_typ;
--	__le16 io_pin_capacitance_typ;
--	__le16 input_pin_capacitance_typ;
--	u8 input_pin_capacitance_max;
--	u8 driver_strength_support;
--	__le16 t_int_r;
--	__le16 t_adl;
--	u8 reserved4[8];
--
--	/* vendor */
--	__le16 vendor_revision;
--	u8 vendor[88];
--
--	__le16 crc;
--} __packed;
--
--#define ONFI_CRC_BASE	0x4F4E
--
--/* Extended ECC information Block Definition (since ONFI 2.1) */
--struct onfi_ext_ecc_info {
--	u8 ecc_bits;
--	u8 codeword_size;
--	__le16 bb_per_lun;
--	__le16 block_endurance;
--	u8 reserved[2];
--} __packed;
--
--#define ONFI_SECTION_TYPE_0	0	/* Unused section. */
--#define ONFI_SECTION_TYPE_1	1	/* for additional sections. */
--#define ONFI_SECTION_TYPE_2	2	/* for ECC information. */
--struct onfi_ext_section {
--	u8 type;
--	u8 length;
--} __packed;
--
--#define ONFI_EXT_SECTION_MAX 8
--
--/* Extended Parameter Page Definition (since ONFI 2.1) */
--struct onfi_ext_param_page {
--	__le16 crc;
--	u8 sig[4];             /* 'E' 'P' 'P' 'S' */
--	u8 reserved0[10];
--	struct onfi_ext_section sections[ONFI_EXT_SECTION_MAX];
--
--	/*
--	 * The actual size of the Extended Parameter Page is in
--	 * @ext_param_page_length of nand_onfi_params{}.
--	 * The following are the variable length sections.
--	 * So we do not add any fields below. Please see the ONFI spec.
--	 */
--} __packed;
--
--struct nand_onfi_vendor_micron {
--	u8 two_plane_read;
--	u8 read_cache;
--	u8 read_unique_id;
--	u8 dq_imped;
--	u8 dq_imped_num_settings;
--	u8 dq_imped_feat_addr;
--	u8 rb_pulldown_strength;
--	u8 rb_pulldown_strength_feat_addr;
--	u8 rb_pulldown_strength_num_settings;
--	u8 otp_mode;
--	u8 otp_page_start;
--	u8 otp_data_prot_addr;
--	u8 otp_num_pages;
--	u8 otp_feat_addr;
--	u8 read_retry_options;
--	u8 reserved[72];
--	u8 param_revision;
--} __packed;
--
--struct jedec_ecc_info {
--	u8 ecc_bits;
--	u8 codeword_size;
--	__le16 bb_per_lun;
--	__le16 block_endurance;
--	u8 reserved[2];
--} __packed;
--
--/* JEDEC features */
--#define JEDEC_FEATURE_16_BIT_BUS	(1 << 0)
--
--struct nand_jedec_params {
--	/* rev info and features block */
--	/* 'J' 'E' 'S' 'D'  */
--	u8 sig[4];
--	__le16 revision;
--	__le16 features;
--	u8 opt_cmd[3];
--	__le16 sec_cmd;
--	u8 num_of_param_pages;
--	u8 reserved0[18];
--
--	/* manufacturer information block */
--	char manufacturer[12];
--	char model[20];
--	u8 jedec_id[6];
--	u8 reserved1[10];
--
--	/* memory organization block */
--	__le32 byte_per_page;
--	__le16 spare_bytes_per_page;
--	u8 reserved2[6];
--	__le32 pages_per_block;
--	__le32 blocks_per_lun;
--	u8 lun_count;
--	u8 addr_cycles;
--	u8 bits_per_cell;
--	u8 programs_per_page;
--	u8 multi_plane_addr;
--	u8 multi_plane_op_attr;
--	u8 reserved3[38];
--
--	/* electrical parameter block */
--	__le16 async_sdr_speed_grade;
--	__le16 toggle_ddr_speed_grade;
--	__le16 sync_ddr_speed_grade;
--	u8 async_sdr_features;
--	u8 toggle_ddr_features;
--	u8 sync_ddr_features;
--	__le16 t_prog;
--	__le16 t_bers;
--	__le16 t_r;
--	__le16 t_r_multi_plane;
--	__le16 t_ccs;
--	__le16 io_pin_capacitance_typ;
--	__le16 input_pin_capacitance_typ;
--	__le16 clk_pin_capacitance_typ;
--	u8 driver_strength_support;
--	__le16 t_adl;
--	u8 reserved4[36];
--
--	/* ECC and endurance block */
--	u8 guaranteed_good_blocks;
--	__le16 guaranteed_block_endurance;
--	struct jedec_ecc_info ecc_info[4];
--	u8 reserved5[29];
--
--	/* reserved */
--	u8 reserved6[148];
--
--	/* vendor */
--	__le16 vendor_rev_num;
--	u8 reserved7[88];
--
--	/* CRC for Parameter Page */
--	__le16 crc;
--} __packed;
--
--/**
-- * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
-- * @lock:               protection lock
-- * @active:		the mtd device which holds the controller currently
-- * @wq:			wait queue to sleep on if a NAND operation is in
-- *			progress used instead of the per chip wait queue
-- *			when a hw controller is available.
-- */
--struct nand_hw_control {
--	spinlock_t lock;
--	struct nand_chip *active;
--	wait_queue_head_t wq;
--};
--
--static inline void nand_hw_control_init(struct nand_hw_control *nfc)
--{
--	nfc->active = NULL;
--	spin_lock_init(&nfc->lock);
--	init_waitqueue_head(&nfc->wq);
--}
--
--/**
-- * struct nand_ecc_ctrl - Control structure for ECC
-- * @mode:	ECC mode
-- * @algo:	ECC algorithm
-- * @steps:	number of ECC steps per page
-- * @size:	data bytes per ECC step
-- * @bytes:	ECC bytes per step
-- * @strength:	max number of correctible bits per ECC step
-- * @total:	total number of ECC bytes per page
-- * @prepad:	padding information for syndrome based ECC generators
-- * @postpad:	padding information for syndrome based ECC generators
-- * @options:	ECC specific options (see NAND_ECC_XXX flags defined above)
-- * @priv:	pointer to private ECC control data
-- * @hwctl:	function to control hardware ECC generator. Must only
-- *		be provided if an hardware ECC is available
-- * @calculate:	function for ECC calculation or readback from ECC hardware
-- * @correct:	function for ECC correction, matching to ECC generator (sw/hw).
-- *		Should return a positive number representing the number of
-- *		corrected bitflips, -EBADMSG if the number of bitflips exceed
-- *		ECC strength, or any other error code if the error is not
-- *		directly related to correction.
-- *		If -EBADMSG is returned the input buffers should be left
-- *		untouched.
-- * @read_page_raw:	function to read a raw page without ECC. This function
-- *			should hide the specific layout used by the ECC
-- *			controller and always return contiguous in-band and
-- *			out-of-band data even if they're not stored
-- *			contiguously on the NAND chip (e.g.
-- *			NAND_ECC_HW_SYNDROME interleaves in-band and
-- *			out-of-band data).
-- * @write_page_raw:	function to write a raw page without ECC. This function
-- *			should hide the specific layout used by the ECC
-- *			controller and consider the passed data as contiguous
-- *			in-band and out-of-band data. ECC controller is
-- *			responsible for doing the appropriate transformations
-- *			to adapt to its specific layout (e.g.
-- *			NAND_ECC_HW_SYNDROME interleaves in-band and
-- *			out-of-band data).
-- * @read_page:	function to read a page according to the ECC generator
-- *		requirements; returns maximum number of bitflips corrected in
-- *		any single ECC step, 0 if bitflips uncorrectable, -EIO hw error
-- * @read_subpage:	function to read parts of the page covered by ECC;
-- *			returns same as read_page()
-- * @write_subpage:	function to write parts of the page covered by ECC.
-- * @write_page:	function to write a page according to the ECC generator
-- *		requirements.
-- * @write_oob_raw:	function to write chip OOB data without ECC
-- * @read_oob_raw:	function to read chip OOB data without ECC
-- * @read_oob:	function to read chip OOB data
-- * @write_oob:	function to write chip OOB data
-- */
--struct nand_ecc_ctrl {
--	nand_ecc_modes_t mode;
--	enum nand_ecc_algo algo;
--	int steps;
--	int size;
--	int bytes;
--	int total;
--	int strength;
--	int prepad;
--	int postpad;
--	unsigned int options;
--	void *priv;
--	void (*hwctl)(struct mtd_info *mtd, int mode);
--	int (*calculate)(struct mtd_info *mtd, const uint8_t *dat,
--			uint8_t *ecc_code);
--	int (*correct)(struct mtd_info *mtd, uint8_t *dat, uint8_t *read_ecc,
--			uint8_t *calc_ecc);
--	int (*read_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
--			uint8_t *buf, int oob_required, int page);
--	int (*write_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
--			const uint8_t *buf, int oob_required, int page);
--	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
--			uint8_t *buf, int oob_required, int page);
--	int (*read_subpage)(struct mtd_info *mtd, struct nand_chip *chip,
--			uint32_t offs, uint32_t len, uint8_t *buf, int page);
--	int (*write_subpage)(struct mtd_info *mtd, struct nand_chip *chip,
--			uint32_t offset, uint32_t data_len,
--			const uint8_t *data_buf, int oob_required, int page);
--	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
--			const uint8_t *buf, int oob_required, int page);
--	int (*write_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
--			int page);
--	int (*read_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
--			int page);
--	int (*read_oob)(struct mtd_info *mtd, struct nand_chip *chip, int page);
--	int (*write_oob)(struct mtd_info *mtd, struct nand_chip *chip,
--			int page);
--};
--
--/**
-- * struct nand_buffers - buffer structure for read/write
-- * @ecccalc:	buffer pointer for calculated ECC, size is oobsize.
-- * @ecccode:	buffer pointer for ECC read from flash, size is oobsize.
-- * @databuf:	buffer pointer for data, size is (page size + oobsize).
-- *
-- * Do not change the order of buffers. databuf and oobrbuf must be in
-- * consecutive order.
-- */
--struct nand_buffers {
--	uint8_t	*ecccalc;
--	uint8_t	*ecccode;
--	uint8_t *databuf;
--};
--
--/**
-- * struct nand_sdr_timings - SDR NAND chip timings
-- *
-- * This struct defines the timing requirements of a SDR NAND chip.
-- * These information can be found in every NAND datasheets and the timings
-- * meaning are described in the ONFI specifications:
-- * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf (chapter 4.15 Timing
-- * Parameters)
-- *
-- * All these timings are expressed in picoseconds.
-- *
-- * @tALH_min: ALE hold time
-- * @tADL_min: ALE to data loading time
-- * @tALS_min: ALE setup time
-- * @tAR_min: ALE to RE# delay
-- * @tCEA_max: CE# access time
-- * @tCEH_min:
-- * @tCH_min:  CE# hold time
-- * @tCHZ_max: CE# high to output hi-Z
-- * @tCLH_min: CLE hold time
-- * @tCLR_min: CLE to RE# delay
-- * @tCLS_min: CLE setup time
-- * @tCOH_min: CE# high to output hold
-- * @tCS_min: CE# setup time
-- * @tDH_min: Data hold time
-- * @tDS_min: Data setup time
-- * @tFEAT_max: Busy time for Set Features and Get Features
-- * @tIR_min: Output hi-Z to RE# low
-- * @tITC_max: Interface and Timing Mode Change time
-- * @tRC_min: RE# cycle time
-- * @tREA_max: RE# access time
-- * @tREH_min: RE# high hold time
-- * @tRHOH_min: RE# high to output hold
-- * @tRHW_min: RE# high to WE# low
-- * @tRHZ_max: RE# high to output hi-Z
-- * @tRLOH_min: RE# low to output hold
-- * @tRP_min: RE# pulse width
-- * @tRR_min: Ready to RE# low (data only)
-- * @tRST_max: Device reset time, measured from the falling edge of R/B# to the
-- *	      rising edge of R/B#.
-- * @tWB_max: WE# high to SR[6] low
-- * @tWC_min: WE# cycle time
-- * @tWH_min: WE# high hold time
-- * @tWHR_min: WE# high to RE# low
-- * @tWP_min: WE# pulse width
-- * @tWW_min: WP# transition to WE# low
-- */
--struct nand_sdr_timings {
--	u32 tALH_min;
--	u32 tADL_min;
--	u32 tALS_min;
--	u32 tAR_min;
--	u32 tCEA_max;
--	u32 tCEH_min;
--	u32 tCH_min;
--	u32 tCHZ_max;
--	u32 tCLH_min;
--	u32 tCLR_min;
--	u32 tCLS_min;
--	u32 tCOH_min;
--	u32 tCS_min;
--	u32 tDH_min;
--	u32 tDS_min;
--	u32 tFEAT_max;
--	u32 tIR_min;
--	u32 tITC_max;
--	u32 tRC_min;
--	u32 tREA_max;
--	u32 tREH_min;
--	u32 tRHOH_min;
--	u32 tRHW_min;
--	u32 tRHZ_max;
--	u32 tRLOH_min;
--	u32 tRP_min;
--	u32 tRR_min;
--	u64 tRST_max;
--	u32 tWB_max;
--	u32 tWC_min;
--	u32 tWH_min;
--	u32 tWHR_min;
--	u32 tWP_min;
--	u32 tWW_min;
--};
--
--/**
-- * enum nand_data_interface_type - NAND interface timing type
-- * @NAND_SDR_IFACE:	Single Data Rate interface
-- */
--enum nand_data_interface_type {
--	NAND_SDR_IFACE,
--};
--
--/**
-- * struct nand_data_interface - NAND interface timing
-- * @type:	type of the timing
-- * @timings:	The timing, type according to @type
-- */
--struct nand_data_interface {
--	enum nand_data_interface_type type;
--	union {
--		struct nand_sdr_timings sdr;
--	} timings;
--};
--
--/**
-- * nand_get_sdr_timings - get SDR timing from data interface
-- * @conf:	The data interface
-- */
--static inline const struct nand_sdr_timings *
--nand_get_sdr_timings(const struct nand_data_interface *conf)
--{
--	if (conf->type != NAND_SDR_IFACE)
--		return ERR_PTR(-EINVAL);
--
--	return &conf->timings.sdr;
--}
--
--/**
-- * struct nand_chip - NAND Private Flash Chip Data
-- * @mtd:		MTD device registered to the MTD framework
-- * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
-- *			flash device
-- * @IO_ADDR_W:		[BOARDSPECIFIC] address to write the 8 I/O lines of the
-- *			flash device.
-- * @read_byte:		[REPLACEABLE] read one byte from the chip
-- * @read_word:		[REPLACEABLE] read one word from the chip
-- * @write_byte:		[REPLACEABLE] write a single byte to the chip on the
-- *			low 8 I/O lines
-- * @write_buf:		[REPLACEABLE] write data from the buffer to the chip
-- * @read_buf:		[REPLACEABLE] read data from the chip into the buffer
-- * @select_chip:	[REPLACEABLE] select chip nr
-- * @block_bad:		[REPLACEABLE] check if a block is bad, using OOB markers
-- * @block_markbad:	[REPLACEABLE] mark a block bad
-- * @cmd_ctrl:		[BOARDSPECIFIC] hardwarespecific function for controlling
-- *			ALE/CLE/nCE. Also used to write command and address
-- * @dev_ready:		[BOARDSPECIFIC] hardwarespecific function for accessing
-- *			device ready/busy line. If set to NULL no access to
-- *			ready/busy is available and the ready/busy information
-- *			is read from the chip status register.
-- * @cmdfunc:		[REPLACEABLE] hardwarespecific function for writing
-- *			commands to the chip.
-- * @waitfunc:		[REPLACEABLE] hardwarespecific function for wait on
-- *			ready.
-- * @setup_read_retry:	[FLASHSPECIFIC] flash (vendor) specific function for
-- *			setting the read-retry mode. Mostly needed for MLC NAND.
-- * @ecc:		[BOARDSPECIFIC] ECC control structure
-- * @buffers:		buffer structure for read/write
-- * @hwcontrol:		platform-specific hardware control structure
-- * @erase:		[REPLACEABLE] erase function
-- * @scan_bbt:		[REPLACEABLE] function to scan bad block table
-- * @chip_delay:		[BOARDSPECIFIC] chip dependent delay for transferring
-- *			data from array to read regs (tR).
-- * @state:		[INTERN] the current state of the NAND device
-- * @oob_poi:		"poison value buffer," used for laying out OOB data
-- *			before writing
-- * @page_shift:		[INTERN] number of address bits in a page (column
-- *			address bits).
-- * @phys_erase_shift:	[INTERN] number of address bits in a physical eraseblock
-- * @bbt_erase_shift:	[INTERN] number of address bits in a bbt entry
-- * @chip_shift:		[INTERN] number of address bits in one chip
-- * @options:		[BOARDSPECIFIC] various chip options. They can partly
-- *			be set to inform nand_scan about special functionality.
-- *			See the defines for further explanation.
-- * @bbt_options:	[INTERN] bad block specific options. All options used
-- *			here must come from bbm.h. By default, these options
-- *			will be copied to the appropriate nand_bbt_descr's.
-- * @badblockpos:	[INTERN] position of the bad block marker in the oob
-- *			area.
-- * @badblockbits:	[INTERN] minimum number of set bits in a good block's
-- *			bad block marker position; i.e., BBM == 11110111b is
-- *			not bad when badblockbits == 7
-- * @bits_per_cell:	[INTERN] number of bits per cell. i.e., 1 means SLC.
-- * @ecc_strength_ds:	[INTERN] ECC correctability from the datasheet.
-- *			Minimum amount of bit errors per @ecc_step_ds guaranteed
-- *			to be correctable. If unknown, set to zero.
-- * @ecc_step_ds:	[INTERN] ECC step required by the @ecc_strength_ds,
-- *                      also from the datasheet. It is the recommended ECC step
-- *			size, if known; if unknown, set to zero.
-- * @onfi_timing_mode_default: [INTERN] default ONFI timing mode. This field is
-- *			      set to the actually used ONFI mode if the chip is
-- *			      ONFI compliant or deduced from the datasheet if
-- *			      the NAND chip is not ONFI compliant.
-- * @numchips:		[INTERN] number of physical chips
-- * @chipsize:		[INTERN] the size of one chip for multichip arrays
-- * @pagemask:		[INTERN] page number mask = number of (pages / chip) - 1
-- * @pagebuf:		[INTERN] holds the pagenumber which is currently in
-- *			data_buf.
-- * @pagebuf_bitflips:	[INTERN] holds the bitflip count for the page which is
-- *			currently in data_buf.
-- * @subpagesize:	[INTERN] holds the subpagesize
-- * @onfi_version:	[INTERN] holds the chip ONFI version (BCD encoded),
-- *			non 0 if ONFI supported.
-- * @jedec_version:	[INTERN] holds the chip JEDEC version (BCD encoded),
-- *			non 0 if JEDEC supported.
-- * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
-- *			supported, 0 otherwise.
-- * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
-- *			supported, 0 otherwise.
-- * @read_retries:	[INTERN] the number of read retry modes supported
-- * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
-- * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
-- * @setup_data_interface: [OPTIONAL] setup the data interface and timing
-- * @bbt:		[INTERN] bad block table pointer
-- * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
-- *			lookup.
-- * @bbt_md:		[REPLACEABLE] bad block table mirror descriptor
-- * @badblock_pattern:	[REPLACEABLE] bad block scan pattern used for initial
-- *			bad block scan.
-- * @controller:		[REPLACEABLE] a pointer to a hardware controller
-- *			structure which is shared among multiple independent
-- *			devices.
-- * @priv:		[OPTIONAL] pointer to private chip data
-- * @errstat:		[OPTIONAL] hardware specific function to perform
-- *			additional error status checks (determine if errors are
-- *			correctable).
-- * @write_page:		[REPLACEABLE] High-level page write function
-- */
--
--struct nand_chip {
--	struct mtd_info mtd;
--	void __iomem *IO_ADDR_R;
--	void __iomem *IO_ADDR_W;
--
--	uint8_t (*read_byte)(struct mtd_info *mtd);
--	u16 (*read_word)(struct mtd_info *mtd);
--	void (*write_byte)(struct mtd_info *mtd, uint8_t byte);
--	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
--	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
--	void (*select_chip)(struct mtd_info *mtd, int chip);
--	int (*block_bad)(struct mtd_info *mtd, loff_t ofs);
--	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
--	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
--	int (*dev_ready)(struct mtd_info *mtd);
--	void (*cmdfunc)(struct mtd_info *mtd, unsigned command, int column,
--			int page_addr);
--	int(*waitfunc)(struct mtd_info *mtd, struct nand_chip *this);
--	int (*erase)(struct mtd_info *mtd, int page);
--	int (*scan_bbt)(struct mtd_info *mtd);
--	int (*errstat)(struct mtd_info *mtd, struct nand_chip *this, int state,
--			int status, int page);
--	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
--			uint32_t offset, int data_len, const uint8_t *buf,
--			int oob_required, int page, int cached, int raw);
--	int (*onfi_set_features)(struct mtd_info *mtd, struct nand_chip *chip,
--			int feature_addr, uint8_t *subfeature_para);
--	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
--			int feature_addr, uint8_t *subfeature_para);
--	int (*setup_read_retry)(struct mtd_info *mtd, int retry_mode);
--	int (*setup_data_interface)(struct mtd_info *mtd,
--				    const struct nand_data_interface *conf,
--				    bool check_only);
--
--
--	int chip_delay;
--	unsigned int options;
--	unsigned int bbt_options;
--
--	int page_shift;
--	int phys_erase_shift;
--	int bbt_erase_shift;
--	int chip_shift;
--	int numchips;
--	uint64_t chipsize;
--	int pagemask;
--	int pagebuf;
--	unsigned int pagebuf_bitflips;
--	int subpagesize;
--	uint8_t bits_per_cell;
--	uint16_t ecc_strength_ds;
--	uint16_t ecc_step_ds;
--	int onfi_timing_mode_default;
--	int badblockpos;
--	int badblockbits;
--
--	int onfi_version;
--	int jedec_version;
--	union {
--		struct nand_onfi_params	onfi_params;
--		struct nand_jedec_params jedec_params;
--	};
--
--	struct nand_data_interface *data_interface;
--
--	int read_retries;
--
--	flstate_t state;
--
--	uint8_t *oob_poi;
--	struct nand_hw_control *controller;
--
--	struct nand_ecc_ctrl ecc;
--	struct nand_buffers *buffers;
--	struct nand_hw_control hwcontrol;
--
--	uint8_t *bbt;
--	struct nand_bbt_descr *bbt_td;
--	struct nand_bbt_descr *bbt_md;
--
--	struct nand_bbt_descr *badblock_pattern;
--
--	void *priv;
--};
--
--extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
--extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
--
--static inline void nand_set_flash_node(struct nand_chip *chip,
--				       struct device_node *np)
--{
--	mtd_set_of_node(&chip->mtd, np);
--}
--
--static inline struct device_node *nand_get_flash_node(struct nand_chip *chip)
--{
--	return mtd_get_of_node(&chip->mtd);
--}
--
--static inline struct nand_chip *mtd_to_nand(struct mtd_info *mtd)
--{
--	return container_of(mtd, struct nand_chip, mtd);
--}
--
--static inline struct mtd_info *nand_to_mtd(struct nand_chip *chip)
--{
--	return &chip->mtd;
--}
--
--static inline void *nand_get_controller_data(struct nand_chip *chip)
--{
--	return chip->priv;
--}
--
--static inline void nand_set_controller_data(struct nand_chip *chip, void *priv)
--{
--	chip->priv = priv;
--}
--
--/*
-- * NAND Flash Manufacturer ID Codes
-- */
--#define NAND_MFR_TOSHIBA	0x98
--#define NAND_MFR_ESMT		0xc8
--#define NAND_MFR_SAMSUNG	0xec
--#define NAND_MFR_FUJITSU	0x04
--#define NAND_MFR_NATIONAL	0x8f
--#define NAND_MFR_RENESAS	0x07
--#define NAND_MFR_STMICRO	0x20
--#define NAND_MFR_HYNIX		0xad
--#define NAND_MFR_MICRON		0x2c
--#define NAND_MFR_AMD		0x01
--#define NAND_MFR_MACRONIX	0xc2
--#define NAND_MFR_EON		0x92
--#define NAND_MFR_SANDISK	0x45
--#define NAND_MFR_INTEL		0x89
--#define NAND_MFR_ATO		0x9b
--
--/* The maximum expected count of bytes in the NAND ID sequence */
--#define NAND_MAX_ID_LEN 8
--
--/*
-- * A helper for defining older NAND chips where the second ID byte fully
-- * defined the chip, including the geometry (chip size, eraseblock size, page
-- * size). All these chips have 512 bytes NAND page size.
-- */
--#define LEGACY_ID_NAND(nm, devid, chipsz, erasesz, opts)          \
--	{ .name = (nm), {{ .dev_id = (devid) }}, .pagesize = 512, \
--	  .chipsize = (chipsz), .erasesize = (erasesz), .options = (opts) }
--
--/*
-- * A helper for defining newer chips which report their page size and
-- * eraseblock size via the extended ID bytes.
-- *
-- * The real difference between LEGACY_ID_NAND and EXTENDED_ID_NAND is that with
-- * EXTENDED_ID_NAND, manufacturers overloaded the same device ID so that the
-- * device ID now only represented a particular total chip size (and voltage,
-- * buswidth), and the page size, eraseblock size, and OOB size could vary while
-- * using the same device ID.
-- */
--#define EXTENDED_ID_NAND(nm, devid, chipsz, opts)                      \
--	{ .name = (nm), {{ .dev_id = (devid) }}, .chipsize = (chipsz), \
--	  .options = (opts) }
--
--#define NAND_ECC_INFO(_strength, _step)	\
--			{ .strength_ds = (_strength), .step_ds = (_step) }
--#define NAND_ECC_STRENGTH(type)		((type)->ecc.strength_ds)
--#define NAND_ECC_STEP(type)		((type)->ecc.step_ds)
--
--/**
-- * struct nand_flash_dev - NAND Flash Device ID Structure
-- * @name: a human-readable name of the NAND chip
-- * @dev_id: the device ID (the second byte of the full chip ID array)
-- * @mfr_id: manufecturer ID part of the full chip ID array (refers the same
-- *          memory address as @id[0])
-- * @dev_id: device ID part of the full chip ID array (refers the same memory
-- *          address as @id[1])
-- * @id: full device ID array
-- * @pagesize: size of the NAND page in bytes; if 0, then the real page size (as
-- *            well as the eraseblock size) is determined from the extended NAND
-- *            chip ID array)
-- * @chipsize: total chip size in MiB
-- * @erasesize: eraseblock size in bytes (determined from the extended ID if 0)
-- * @options: stores various chip bit options
-- * @id_len: The valid length of the @id.
-- * @oobsize: OOB size
-- * @ecc: ECC correctability and step information from the datasheet.
-- * @ecc.strength_ds: The ECC correctability from the datasheet, same as the
-- *                   @ecc_strength_ds in nand_chip{}.
-- * @ecc.step_ds: The ECC step required by the @ecc.strength_ds, same as the
-- *               @ecc_step_ds in nand_chip{}, also from the datasheet.
-- *               For example, the "4bit ECC for each 512Byte" can be set with
-- *               NAND_ECC_INFO(4, 512).
-- * @onfi_timing_mode_default: the default ONFI timing mode entered after a NAND
-- *			      reset. Should be deduced from timings described
-- *			      in the datasheet.
-- *
-- */
--struct nand_flash_dev {
--	char *name;
--	union {
--		struct {
--			uint8_t mfr_id;
--			uint8_t dev_id;
--		};
--		uint8_t id[NAND_MAX_ID_LEN];
--	};
--	unsigned int pagesize;
--	unsigned int chipsize;
--	unsigned int erasesize;
--	unsigned int options;
--	uint16_t id_len;
--	uint16_t oobsize;
--	struct {
--		uint16_t strength_ds;
--		uint16_t step_ds;
--	} ecc;
--	int onfi_timing_mode_default;
--};
--
--/**
-- * struct nand_manufacturers - NAND Flash Manufacturer ID Structure
-- * @name:	Manufacturer name
-- * @id:		manufacturer ID code of device.
--*/
--struct nand_manufacturers {
--	int id;
--	char *name;
--};
--
--extern struct nand_flash_dev nand_flash_ids[];
--extern struct nand_manufacturers nand_manuf_ids[];
--
++++ b/include/linux/mtd/nand.h
+@@ -479,4 +479,12 @@ static inline struct device_node *nand_get_of_node(struct nand_device *nand)
+ {
+ 	return mtd_get_of_node(&nand->mtd);
+ }
++
++/* BBT related functions */
++int nand_scan_bbt(struct nand_device *this);
++int nand_update_bbt(struct nand_device *this, loff_t offs);
++int nand_isreserved_bbt(struct nand_device *this, loff_t offs);
++int nand_isbad_bbt(struct nand_device *this, loff_t offs, int allowbbt);
++int nand_markbad_bbt(struct nand_device *this, loff_t offs);
++
+ #endif /* __LINUX_MTD_NAND_H */
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 8efff12604ad..8a2ff41af588 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1036,10 +1036,6 @@ struct nand_manufacturers {
+ extern struct nand_flash_dev nand_flash_ids[];
+ extern struct nand_manufacturers nand_manuf_ids[];
+ 
 -int nand_default_bbt(struct mtd_info *mtd);
 -int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
 -int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
 -int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
--int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
--		    int allowbbt);
--int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
--		 size_t *retlen, uint8_t *buf);
--
--/**
-- * struct platform_nand_chip - chip level device structure
-- * @nr_chips:		max. number of chips to scan for
-- * @chip_offset:	chip number offset
-- * @nr_partitions:	number of partitions pointed to by partitions (or zero)
-- * @partitions:		mtd partition list
-- * @chip_delay:		R/B delay value in us
-- * @options:		Option flags, e.g. 16bit buswidth
-- * @bbt_options:	BBT option flags, e.g. NAND_BBT_USE_FLASH
-- * @part_probe_types:	NULL-terminated array of probe types
-- */
--struct platform_nand_chip {
--	int nr_chips;
--	int chip_offset;
--	int nr_partitions;
--	struct mtd_partition *partitions;
--	int chip_delay;
--	unsigned int options;
--	unsigned int bbt_options;
--	const char **part_probe_types;
--};
--
--/* Keep gcc happy */
--struct platform_device;
--
--/**
-- * struct platform_nand_ctrl - controller level device structure
-- * @probe:		platform specific function to probe/setup hardware
-- * @remove:		platform specific function to remove/teardown hardware
-- * @hwcontrol:		platform specific hardware control structure
-- * @dev_ready:		platform specific function to read ready/busy pin
-- * @select_chip:	platform specific chip select function
-- * @cmd_ctrl:		platform specific function for controlling
-- *			ALE/CLE/nCE. Also used to write command and address
-- * @write_buf:		platform specific function for write buffer
-- * @read_buf:		platform specific function for read buffer
-- * @read_byte:		platform specific function to read one byte from chip
-- * @priv:		private data to transport driver specific settings
-- *
-- * All fields are optional and depend on the hardware driver requirements
-- */
--struct platform_nand_ctrl {
--	int (*probe)(struct platform_device *pdev);
--	void (*remove)(struct platform_device *pdev);
--	void (*hwcontrol)(struct mtd_info *mtd, int cmd);
--	int (*dev_ready)(struct mtd_info *mtd);
--	void (*select_chip)(struct mtd_info *mtd, int chip);
--	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
--	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
--	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
--	unsigned char (*read_byte)(struct mtd_info *mtd);
--	void *priv;
--};
--
--/**
-- * struct platform_nand_data - container structure for platform-specific data
-- * @chip:		chip level chip structure
-- * @ctrl:		controller level device structure
-- */
--struct platform_nand_data {
--	struct platform_nand_chip chip;
--	struct platform_nand_ctrl ctrl;
--};
--
--/* return the supported features. */
--static inline int onfi_feature(struct nand_chip *chip)
--{
--	return chip->onfi_version ? le16_to_cpu(chip->onfi_params.features) : 0;
--}
--
--/* return the supported asynchronous timing mode. */
--static inline int onfi_get_async_timing_mode(struct nand_chip *chip)
--{
--	if (!chip->onfi_version)
--		return ONFI_TIMING_MODE_UNKNOWN;
--	return le16_to_cpu(chip->onfi_params.async_timing_mode);
--}
--
--/* return the supported synchronous timing mode. */
--static inline int onfi_get_sync_timing_mode(struct nand_chip *chip)
--{
--	if (!chip->onfi_version)
--		return ONFI_TIMING_MODE_UNKNOWN;
--	return le16_to_cpu(chip->onfi_params.src_sync_timing_mode);
--}
--
--int onfi_init_data_interface(struct nand_chip *chip,
--			     struct nand_data_interface *iface,
--			     enum nand_data_interface_type type,
--			     int timing_mode);
--
--/*
-- * Check if it is a SLC nand.
-- * The !nand_is_slc() can be used to check the MLC/TLC nand chips.
-- * We do not distinguish the MLC and TLC now.
-- */
--static inline bool nand_is_slc(struct nand_chip *chip)
--{
--	return chip->bits_per_cell == 1;
--}
--
--/**
-- * Check if the opcode's address should be sent only on the lower 8 bits
-- * @command: opcode to check
-- */
--static inline int nand_opcode_8bits(unsigned int command)
--{
--	switch (command) {
--	case NAND_CMD_READID:
--	case NAND_CMD_PARAM:
--	case NAND_CMD_GET_FEATURES:
--	case NAND_CMD_SET_FEATURES:
--		return 1;
--	default:
--		break;
--	}
--	return 0;
--}
--
--/* return the supported JEDEC features. */
--static inline int jedec_feature(struct nand_chip *chip)
--{
--	return chip->jedec_version ? le16_to_cpu(chip->jedec_params.features)
--		: 0;
--}
--
--/* get timing characteristics from ONFI timing mode. */
--const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
--/* get data interface from ONFI timing mode 0, used after reset. */
--const struct nand_data_interface *nand_get_default_data_interface(void);
--
--int nand_check_erased_ecc_chunk(void *data, int datalen,
--				void *ecc, int ecclen,
--				void *extraoob, int extraooblen,
--				int threshold);
--
--/* Default write_oob implementation */
--int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
--
--/* Default write_oob syndrome implementation */
--int nand_write_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
--			    int page);
--
--/* Default read_oob implementation */
--int nand_read_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
--
--/* Default read_oob syndrome implementation */
--int nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
--			   int page);
--
--/* Reset and initialize a NAND device */
--int nand_reset(struct nand_chip *chip);
--
--/* Free resources held by the NAND device */
--void nand_cleanup(struct nand_chip *chip);
--
--#endif /* __LINUX_MTD_NAND_H */
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-new file mode 100644
-index 000000000000..fecfd05a585a
---- /dev/null
-+++ b/include/linux/mtd/rawnand.h
-@@ -0,0 +1,1190 @@
-+/*
-+ *  Copyright © 2000-2010 David Woodhouse <dwmw2@infradead.org>
-+ *                        Steven J. Hill <sjhill@realitydiluted.com>
-+ *		          Thomas Gleixner <tglx@linutronix.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * Info:
-+ *	Contains standard defines and IDs for NAND flash devices
-+ *
-+ * Changelog:
-+ *	See git changelog.
-+ */
-+#ifndef __LINUX_MTD_RAWNAND_H
-+#define __LINUX_MTD_RAWNAND_H
-+
-+#include <linux/wait.h>
-+#include <linux/spinlock.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/flashchip.h>
-+#include <linux/mtd/bbm.h>
-+
-+struct mtd_info;
-+struct nand_flash_dev;
-+struct device_node;
-+
-+/* Scan and identify a NAND device */
-+int nand_scan(struct mtd_info *mtd, int max_chips);
-+/*
-+ * Separate phases of nand_scan(), allowing board driver to intervene
-+ * and override command or ECC setup according to flash type.
-+ */
-+int nand_scan_ident(struct mtd_info *mtd, int max_chips,
-+			   struct nand_flash_dev *table);
-+int nand_scan_tail(struct mtd_info *mtd);
-+
-+/* Unregister the MTD device and free resources held by the NAND device */
-+void nand_release(struct mtd_info *mtd);
-+
-+/* Internal helper for board drivers which need to override command function */
-+void nand_wait_ready(struct mtd_info *mtd);
-+
-+/* locks all blocks present in the device */
-+int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-+
-+/* unlocks specified locked blocks */
-+int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-+
-+/* The maximum number of NAND chips in an array */
-+#define NAND_MAX_CHIPS		8
-+
-+/*
-+ * Constants for hardware specific CLE/ALE/NCE function
-+ *
-+ * These are bits which can be or'ed to set/clear multiple
-+ * bits in one go.
-+ */
-+/* Select the chip by setting nCE to low */
-+#define NAND_NCE		0x01
-+/* Select the command latch by setting CLE to high */
-+#define NAND_CLE		0x02
-+/* Select the address latch by setting ALE to high */
-+#define NAND_ALE		0x04
-+
-+#define NAND_CTRL_CLE		(NAND_NCE | NAND_CLE)
-+#define NAND_CTRL_ALE		(NAND_NCE | NAND_ALE)
-+#define NAND_CTRL_CHANGE	0x80
-+
-+/*
-+ * Standard NAND flash commands
-+ */
-+#define NAND_CMD_READ0		0
-+#define NAND_CMD_READ1		1
-+#define NAND_CMD_RNDOUT		5
-+#define NAND_CMD_PAGEPROG	0x10
-+#define NAND_CMD_READOOB	0x50
-+#define NAND_CMD_ERASE1		0x60
-+#define NAND_CMD_STATUS		0x70
-+#define NAND_CMD_SEQIN		0x80
-+#define NAND_CMD_RNDIN		0x85
-+#define NAND_CMD_READID		0x90
-+#define NAND_CMD_ERASE2		0xd0
-+#define NAND_CMD_PARAM		0xec
-+#define NAND_CMD_GET_FEATURES	0xee
-+#define NAND_CMD_SET_FEATURES	0xef
-+#define NAND_CMD_RESET		0xff
-+
-+#define NAND_CMD_LOCK		0x2a
-+#define NAND_CMD_UNLOCK1	0x23
-+#define NAND_CMD_UNLOCK2	0x24
-+
-+/* Extended commands for large page devices */
-+#define NAND_CMD_READSTART	0x30
-+#define NAND_CMD_RNDOUTSTART	0xE0
-+#define NAND_CMD_CACHEDPROG	0x15
-+
-+#define NAND_CMD_NONE		-1
-+
-+/* Status bits */
-+#define NAND_STATUS_FAIL	0x01
-+#define NAND_STATUS_FAIL_N1	0x02
-+#define NAND_STATUS_TRUE_READY	0x20
-+#define NAND_STATUS_READY	0x40
-+#define NAND_STATUS_WP		0x80
-+
-+/*
-+ * Constants for ECC_MODES
-+ */
-+typedef enum {
-+	NAND_ECC_NONE,
-+	NAND_ECC_SOFT,
-+	NAND_ECC_HW,
-+	NAND_ECC_HW_SYNDROME,
-+	NAND_ECC_HW_OOB_FIRST,
-+} nand_ecc_modes_t;
-+
-+enum nand_ecc_algo {
-+	NAND_ECC_UNKNOWN,
-+	NAND_ECC_HAMMING,
-+	NAND_ECC_BCH,
-+};
-+
-+/*
-+ * Constants for Hardware ECC
-+ */
-+/* Reset Hardware ECC for read */
-+#define NAND_ECC_READ		0
-+/* Reset Hardware ECC for write */
-+#define NAND_ECC_WRITE		1
-+/* Enable Hardware ECC before syndrome is read back from flash */
-+#define NAND_ECC_READSYN	2
-+
-+/*
-+ * Enable generic NAND 'page erased' check. This check is only done when
-+ * ecc.correct() returns -EBADMSG.
-+ * Set this flag if your implementation does not fix bitflips in erased
-+ * pages and you want to rely on the default implementation.
-+ */
-+#define NAND_ECC_GENERIC_ERASED_CHECK	BIT(0)
-+#define NAND_ECC_MAXIMIZE		BIT(1)
-+
-+/* Bit mask for flags passed to do_nand_read_ecc */
-+#define NAND_GET_DEVICE		0x80
-+
-+
-+/*
-+ * Option constants for bizarre disfunctionality and real
-+ * features.
-+ */
-+/* Buswidth is 16 bit */
-+#define NAND_BUSWIDTH_16	0x00000002
-+/* Chip has cache program function */
-+#define NAND_CACHEPRG		0x00000008
-+/*
-+ * Chip requires ready check on read (for auto-incremented sequential read).
-+ * True only for small page devices; large page devices do not support
-+ * autoincrement.
-+ */
-+#define NAND_NEED_READRDY	0x00000100
-+
-+/* Chip does not allow subpage writes */
-+#define NAND_NO_SUBPAGE_WRITE	0x00000200
-+
-+/* Device is one of 'new' xD cards that expose fake nand command set */
-+#define NAND_BROKEN_XD		0x00000400
-+
-+/* Device behaves just like nand, but is readonly */
-+#define NAND_ROM		0x00000800
-+
-+/* Device supports subpage reads */
-+#define NAND_SUBPAGE_READ	0x00001000
-+
-+/*
-+ * Some MLC NANDs need data scrambling to limit bitflips caused by repeated
-+ * patterns.
-+ */
-+#define NAND_NEED_SCRAMBLING	0x00002000
-+
-+/* Options valid for Samsung large page devices */
-+#define NAND_SAMSUNG_LP_OPTIONS NAND_CACHEPRG
-+
-+/* Macros to identify the above */
-+#define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
-+#define NAND_HAS_SUBPAGE_READ(chip) ((chip->options & NAND_SUBPAGE_READ))
-+
-+/* Non chip related options */
-+/* This option skips the bbt scan during initialization. */
-+#define NAND_SKIP_BBTSCAN	0x00010000
-+/*
-+ * This option is defined if the board driver allocates its own buffers
-+ * (e.g. because it needs them DMA-coherent).
-+ */
-+#define NAND_OWN_BUFFERS	0x00020000
-+/* Chip may not exist, so silence any errors in scan */
-+#define NAND_SCAN_SILENT_NODEV	0x00040000
-+/*
-+ * Autodetect nand buswidth with readid/onfi.
-+ * This suppose the driver will configure the hardware in 8 bits mode
-+ * when calling nand_scan_ident, and update its configuration
-+ * before calling nand_scan_tail.
-+ */
-+#define NAND_BUSWIDTH_AUTO      0x00080000
-+/*
-+ * This option could be defined by controller drivers to protect against
-+ * kmap'ed, vmalloc'ed highmem buffers being passed from upper layers
-+ */
-+#define NAND_USE_BOUNCE_BUFFER	0x00100000
-+
-+/* Options set by nand scan */
-+/* Nand scan has allocated controller struct */
-+#define NAND_CONTROLLER_ALLOC	0x80000000
-+
-+/* Cell info constants */
-+#define NAND_CI_CHIPNR_MSK	0x03
-+#define NAND_CI_CELLTYPE_MSK	0x0C
-+#define NAND_CI_CELLTYPE_SHIFT	2
-+
-+/* Keep gcc happy */
-+struct nand_chip;
-+
-+/* ONFI features */
-+#define ONFI_FEATURE_16_BIT_BUS		(1 << 0)
-+#define ONFI_FEATURE_EXT_PARAM_PAGE	(1 << 7)
-+
-+/* ONFI timing mode, used in both asynchronous and synchronous mode */
-+#define ONFI_TIMING_MODE_0		(1 << 0)
-+#define ONFI_TIMING_MODE_1		(1 << 1)
-+#define ONFI_TIMING_MODE_2		(1 << 2)
-+#define ONFI_TIMING_MODE_3		(1 << 3)
-+#define ONFI_TIMING_MODE_4		(1 << 4)
-+#define ONFI_TIMING_MODE_5		(1 << 5)
-+#define ONFI_TIMING_MODE_UNKNOWN	(1 << 6)
-+
-+/* ONFI feature address */
-+#define ONFI_FEATURE_ADDR_TIMING_MODE	0x1
-+
-+/* Vendor-specific feature address (Micron) */
-+#define ONFI_FEATURE_ADDR_READ_RETRY	0x89
-+
-+/* ONFI subfeature parameters length */
-+#define ONFI_SUBFEATURE_PARAM_LEN	4
-+
-+/* ONFI optional commands SET/GET FEATURES supported? */
-+#define ONFI_OPT_CMD_SET_GET_FEATURES	(1 << 2)
-+
-+struct nand_onfi_params {
-+	/* rev info and features block */
-+	/* 'O' 'N' 'F' 'I'  */
-+	u8 sig[4];
-+	__le16 revision;
-+	__le16 features;
-+	__le16 opt_cmd;
-+	u8 reserved0[2];
-+	__le16 ext_param_page_length; /* since ONFI 2.1 */
-+	u8 num_of_param_pages;        /* since ONFI 2.1 */
-+	u8 reserved1[17];
-+
-+	/* manufacturer information block */
-+	char manufacturer[12];
-+	char model[20];
-+	u8 jedec_id;
-+	__le16 date_code;
-+	u8 reserved2[13];
-+
-+	/* memory organization block */
-+	__le32 byte_per_page;
-+	__le16 spare_bytes_per_page;
-+	__le32 data_bytes_per_ppage;
-+	__le16 spare_bytes_per_ppage;
-+	__le32 pages_per_block;
-+	__le32 blocks_per_lun;
-+	u8 lun_count;
-+	u8 addr_cycles;
-+	u8 bits_per_cell;
-+	__le16 bb_per_lun;
-+	__le16 block_endurance;
-+	u8 guaranteed_good_blocks;
-+	__le16 guaranteed_block_endurance;
-+	u8 programs_per_page;
-+	u8 ppage_attr;
-+	u8 ecc_bits;
-+	u8 interleaved_bits;
-+	u8 interleaved_ops;
-+	u8 reserved3[13];
-+
-+	/* electrical parameter block */
-+	u8 io_pin_capacitance_max;
-+	__le16 async_timing_mode;
-+	__le16 program_cache_timing_mode;
-+	__le16 t_prog;
-+	__le16 t_bers;
-+	__le16 t_r;
-+	__le16 t_ccs;
-+	__le16 src_sync_timing_mode;
-+	u8 src_ssync_features;
-+	__le16 clk_pin_capacitance_typ;
-+	__le16 io_pin_capacitance_typ;
-+	__le16 input_pin_capacitance_typ;
-+	u8 input_pin_capacitance_max;
-+	u8 driver_strength_support;
-+	__le16 t_int_r;
-+	__le16 t_adl;
-+	u8 reserved4[8];
-+
-+	/* vendor */
-+	__le16 vendor_revision;
-+	u8 vendor[88];
-+
-+	__le16 crc;
-+} __packed;
-+
-+#define ONFI_CRC_BASE	0x4F4E
-+
-+/* Extended ECC information Block Definition (since ONFI 2.1) */
-+struct onfi_ext_ecc_info {
-+	u8 ecc_bits;
-+	u8 codeword_size;
-+	__le16 bb_per_lun;
-+	__le16 block_endurance;
-+	u8 reserved[2];
-+} __packed;
-+
-+#define ONFI_SECTION_TYPE_0	0	/* Unused section. */
-+#define ONFI_SECTION_TYPE_1	1	/* for additional sections. */
-+#define ONFI_SECTION_TYPE_2	2	/* for ECC information. */
-+struct onfi_ext_section {
-+	u8 type;
-+	u8 length;
-+} __packed;
-+
-+#define ONFI_EXT_SECTION_MAX 8
-+
-+/* Extended Parameter Page Definition (since ONFI 2.1) */
-+struct onfi_ext_param_page {
-+	__le16 crc;
-+	u8 sig[4];             /* 'E' 'P' 'P' 'S' */
-+	u8 reserved0[10];
-+	struct onfi_ext_section sections[ONFI_EXT_SECTION_MAX];
-+
-+	/*
-+	 * The actual size of the Extended Parameter Page is in
-+	 * @ext_param_page_length of nand_onfi_params{}.
-+	 * The following are the variable length sections.
-+	 * So we do not add any fields below. Please see the ONFI spec.
-+	 */
-+} __packed;
-+
-+struct nand_onfi_vendor_micron {
-+	u8 two_plane_read;
-+	u8 read_cache;
-+	u8 read_unique_id;
-+	u8 dq_imped;
-+	u8 dq_imped_num_settings;
-+	u8 dq_imped_feat_addr;
-+	u8 rb_pulldown_strength;
-+	u8 rb_pulldown_strength_feat_addr;
-+	u8 rb_pulldown_strength_num_settings;
-+	u8 otp_mode;
-+	u8 otp_page_start;
-+	u8 otp_data_prot_addr;
-+	u8 otp_num_pages;
-+	u8 otp_feat_addr;
-+	u8 read_retry_options;
-+	u8 reserved[72];
-+	u8 param_revision;
-+} __packed;
-+
-+struct jedec_ecc_info {
-+	u8 ecc_bits;
-+	u8 codeword_size;
-+	__le16 bb_per_lun;
-+	__le16 block_endurance;
-+	u8 reserved[2];
-+} __packed;
-+
-+/* JEDEC features */
-+#define JEDEC_FEATURE_16_BIT_BUS	(1 << 0)
-+
-+struct nand_jedec_params {
-+	/* rev info and features block */
-+	/* 'J' 'E' 'S' 'D'  */
-+	u8 sig[4];
-+	__le16 revision;
-+	__le16 features;
-+	u8 opt_cmd[3];
-+	__le16 sec_cmd;
-+	u8 num_of_param_pages;
-+	u8 reserved0[18];
-+
-+	/* manufacturer information block */
-+	char manufacturer[12];
-+	char model[20];
-+	u8 jedec_id[6];
-+	u8 reserved1[10];
-+
-+	/* memory organization block */
-+	__le32 byte_per_page;
-+	__le16 spare_bytes_per_page;
-+	u8 reserved2[6];
-+	__le32 pages_per_block;
-+	__le32 blocks_per_lun;
-+	u8 lun_count;
-+	u8 addr_cycles;
-+	u8 bits_per_cell;
-+	u8 programs_per_page;
-+	u8 multi_plane_addr;
-+	u8 multi_plane_op_attr;
-+	u8 reserved3[38];
-+
-+	/* electrical parameter block */
-+	__le16 async_sdr_speed_grade;
-+	__le16 toggle_ddr_speed_grade;
-+	__le16 sync_ddr_speed_grade;
-+	u8 async_sdr_features;
-+	u8 toggle_ddr_features;
-+	u8 sync_ddr_features;
-+	__le16 t_prog;
-+	__le16 t_bers;
-+	__le16 t_r;
-+	__le16 t_r_multi_plane;
-+	__le16 t_ccs;
-+	__le16 io_pin_capacitance_typ;
-+	__le16 input_pin_capacitance_typ;
-+	__le16 clk_pin_capacitance_typ;
-+	u8 driver_strength_support;
-+	__le16 t_adl;
-+	u8 reserved4[36];
-+
-+	/* ECC and endurance block */
-+	u8 guaranteed_good_blocks;
-+	__le16 guaranteed_block_endurance;
-+	struct jedec_ecc_info ecc_info[4];
-+	u8 reserved5[29];
-+
-+	/* reserved */
-+	u8 reserved6[148];
-+
-+	/* vendor */
-+	__le16 vendor_rev_num;
-+	u8 reserved7[88];
-+
-+	/* CRC for Parameter Page */
-+	__le16 crc;
-+} __packed;
-+
-+/**
-+ * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
-+ * @lock:               protection lock
-+ * @active:		the mtd device which holds the controller currently
-+ * @wq:			wait queue to sleep on if a NAND operation is in
-+ *			progress used instead of the per chip wait queue
-+ *			when a hw controller is available.
-+ */
-+struct nand_hw_control {
-+	spinlock_t lock;
-+	struct nand_chip *active;
-+	wait_queue_head_t wq;
-+};
-+
-+static inline void nand_hw_control_init(struct nand_hw_control *nfc)
-+{
-+	nfc->active = NULL;
-+	spin_lock_init(&nfc->lock);
-+	init_waitqueue_head(&nfc->wq);
-+}
-+
-+/**
-+ * struct nand_ecc_ctrl - Control structure for ECC
-+ * @mode:	ECC mode
-+ * @algo:	ECC algorithm
-+ * @steps:	number of ECC steps per page
-+ * @size:	data bytes per ECC step
-+ * @bytes:	ECC bytes per step
-+ * @strength:	max number of correctible bits per ECC step
-+ * @total:	total number of ECC bytes per page
-+ * @prepad:	padding information for syndrome based ECC generators
-+ * @postpad:	padding information for syndrome based ECC generators
-+ * @options:	ECC specific options (see NAND_ECC_XXX flags defined above)
-+ * @priv:	pointer to private ECC control data
-+ * @hwctl:	function to control hardware ECC generator. Must only
-+ *		be provided if an hardware ECC is available
-+ * @calculate:	function for ECC calculation or readback from ECC hardware
-+ * @correct:	function for ECC correction, matching to ECC generator (sw/hw).
-+ *		Should return a positive number representing the number of
-+ *		corrected bitflips, -EBADMSG if the number of bitflips exceed
-+ *		ECC strength, or any other error code if the error is not
-+ *		directly related to correction.
-+ *		If -EBADMSG is returned the input buffers should be left
-+ *		untouched.
-+ * @read_page_raw:	function to read a raw page without ECC. This function
-+ *			should hide the specific layout used by the ECC
-+ *			controller and always return contiguous in-band and
-+ *			out-of-band data even if they're not stored
-+ *			contiguously on the NAND chip (e.g.
-+ *			NAND_ECC_HW_SYNDROME interleaves in-band and
-+ *			out-of-band data).
-+ * @write_page_raw:	function to write a raw page without ECC. This function
-+ *			should hide the specific layout used by the ECC
-+ *			controller and consider the passed data as contiguous
-+ *			in-band and out-of-band data. ECC controller is
-+ *			responsible for doing the appropriate transformations
-+ *			to adapt to its specific layout (e.g.
-+ *			NAND_ECC_HW_SYNDROME interleaves in-band and
-+ *			out-of-band data).
-+ * @read_page:	function to read a page according to the ECC generator
-+ *		requirements; returns maximum number of bitflips corrected in
-+ *		any single ECC step, 0 if bitflips uncorrectable, -EIO hw error
-+ * @read_subpage:	function to read parts of the page covered by ECC;
-+ *			returns same as read_page()
-+ * @write_subpage:	function to write parts of the page covered by ECC.
-+ * @write_page:	function to write a page according to the ECC generator
-+ *		requirements.
-+ * @write_oob_raw:	function to write chip OOB data without ECC
-+ * @read_oob_raw:	function to read chip OOB data without ECC
-+ * @read_oob:	function to read chip OOB data
-+ * @write_oob:	function to write chip OOB data
-+ */
-+struct nand_ecc_ctrl {
-+	nand_ecc_modes_t mode;
-+	enum nand_ecc_algo algo;
-+	int steps;
-+	int size;
-+	int bytes;
-+	int total;
-+	int strength;
-+	int prepad;
-+	int postpad;
-+	unsigned int options;
-+	void *priv;
-+	void (*hwctl)(struct mtd_info *mtd, int mode);
-+	int (*calculate)(struct mtd_info *mtd, const uint8_t *dat,
-+			uint8_t *ecc_code);
-+	int (*correct)(struct mtd_info *mtd, uint8_t *dat, uint8_t *read_ecc,
-+			uint8_t *calc_ecc);
-+	int (*read_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
-+			uint8_t *buf, int oob_required, int page);
-+	int (*write_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
-+			const uint8_t *buf, int oob_required, int page);
-+	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
-+			uint8_t *buf, int oob_required, int page);
-+	int (*read_subpage)(struct mtd_info *mtd, struct nand_chip *chip,
-+			uint32_t offs, uint32_t len, uint8_t *buf, int page);
-+	int (*write_subpage)(struct mtd_info *mtd, struct nand_chip *chip,
-+			uint32_t offset, uint32_t data_len,
-+			const uint8_t *data_buf, int oob_required, int page);
-+	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
-+			const uint8_t *buf, int oob_required, int page);
-+	int (*write_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
-+			int page);
-+	int (*read_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
-+			int page);
-+	int (*read_oob)(struct mtd_info *mtd, struct nand_chip *chip, int page);
-+	int (*write_oob)(struct mtd_info *mtd, struct nand_chip *chip,
-+			int page);
-+};
-+
-+/**
-+ * struct nand_buffers - buffer structure for read/write
-+ * @ecccalc:	buffer pointer for calculated ECC, size is oobsize.
-+ * @ecccode:	buffer pointer for ECC read from flash, size is oobsize.
-+ * @databuf:	buffer pointer for data, size is (page size + oobsize).
-+ *
-+ * Do not change the order of buffers. databuf and oobrbuf must be in
-+ * consecutive order.
-+ */
-+struct nand_buffers {
-+	uint8_t	*ecccalc;
-+	uint8_t	*ecccode;
-+	uint8_t *databuf;
-+};
-+
-+/**
-+ * struct nand_sdr_timings - SDR NAND chip timings
-+ *
-+ * This struct defines the timing requirements of a SDR NAND chip.
-+ * These information can be found in every NAND datasheets and the timings
-+ * meaning are described in the ONFI specifications:
-+ * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf (chapter 4.15 Timing
-+ * Parameters)
-+ *
-+ * All these timings are expressed in picoseconds.
-+ *
-+ * @tALH_min: ALE hold time
-+ * @tADL_min: ALE to data loading time
-+ * @tALS_min: ALE setup time
-+ * @tAR_min: ALE to RE# delay
-+ * @tCEA_max: CE# access time
-+ * @tCEH_min:
-+ * @tCH_min:  CE# hold time
-+ * @tCHZ_max: CE# high to output hi-Z
-+ * @tCLH_min: CLE hold time
-+ * @tCLR_min: CLE to RE# delay
-+ * @tCLS_min: CLE setup time
-+ * @tCOH_min: CE# high to output hold
-+ * @tCS_min: CE# setup time
-+ * @tDH_min: Data hold time
-+ * @tDS_min: Data setup time
-+ * @tFEAT_max: Busy time for Set Features and Get Features
-+ * @tIR_min: Output hi-Z to RE# low
-+ * @tITC_max: Interface and Timing Mode Change time
-+ * @tRC_min: RE# cycle time
-+ * @tREA_max: RE# access time
-+ * @tREH_min: RE# high hold time
-+ * @tRHOH_min: RE# high to output hold
-+ * @tRHW_min: RE# high to WE# low
-+ * @tRHZ_max: RE# high to output hi-Z
-+ * @tRLOH_min: RE# low to output hold
-+ * @tRP_min: RE# pulse width
-+ * @tRR_min: Ready to RE# low (data only)
-+ * @tRST_max: Device reset time, measured from the falling edge of R/B# to the
-+ *	      rising edge of R/B#.
-+ * @tWB_max: WE# high to SR[6] low
-+ * @tWC_min: WE# cycle time
-+ * @tWH_min: WE# high hold time
-+ * @tWHR_min: WE# high to RE# low
-+ * @tWP_min: WE# pulse width
-+ * @tWW_min: WP# transition to WE# low
-+ */
-+struct nand_sdr_timings {
-+	u32 tALH_min;
-+	u32 tADL_min;
-+	u32 tALS_min;
-+	u32 tAR_min;
-+	u32 tCEA_max;
-+	u32 tCEH_min;
-+	u32 tCH_min;
-+	u32 tCHZ_max;
-+	u32 tCLH_min;
-+	u32 tCLR_min;
-+	u32 tCLS_min;
-+	u32 tCOH_min;
-+	u32 tCS_min;
-+	u32 tDH_min;
-+	u32 tDS_min;
-+	u32 tFEAT_max;
-+	u32 tIR_min;
-+	u32 tITC_max;
-+	u32 tRC_min;
-+	u32 tREA_max;
-+	u32 tREH_min;
-+	u32 tRHOH_min;
-+	u32 tRHW_min;
-+	u32 tRHZ_max;
-+	u32 tRLOH_min;
-+	u32 tRP_min;
-+	u32 tRR_min;
-+	u64 tRST_max;
-+	u32 tWB_max;
-+	u32 tWC_min;
-+	u32 tWH_min;
-+	u32 tWHR_min;
-+	u32 tWP_min;
-+	u32 tWW_min;
-+};
-+
-+/**
-+ * enum nand_data_interface_type - NAND interface timing type
-+ * @NAND_SDR_IFACE:	Single Data Rate interface
-+ */
-+enum nand_data_interface_type {
-+	NAND_SDR_IFACE,
-+};
-+
-+/**
-+ * struct nand_data_interface - NAND interface timing
-+ * @type:	type of the timing
-+ * @timings:	The timing, type according to @type
-+ */
-+struct nand_data_interface {
-+	enum nand_data_interface_type type;
-+	union {
-+		struct nand_sdr_timings sdr;
-+	} timings;
-+};
-+
-+/**
-+ * nand_get_sdr_timings - get SDR timing from data interface
-+ * @conf:	The data interface
-+ */
-+static inline const struct nand_sdr_timings *
-+nand_get_sdr_timings(const struct nand_data_interface *conf)
-+{
-+	if (conf->type != NAND_SDR_IFACE)
-+		return ERR_PTR(-EINVAL);
-+
-+	return &conf->timings.sdr;
-+}
-+
-+/**
-+ * struct nand_chip - NAND Private Flash Chip Data
-+ * @mtd:		MTD device registered to the MTD framework
-+ * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
-+ *			flash device
-+ * @IO_ADDR_W:		[BOARDSPECIFIC] address to write the 8 I/O lines of the
-+ *			flash device.
-+ * @read_byte:		[REPLACEABLE] read one byte from the chip
-+ * @read_word:		[REPLACEABLE] read one word from the chip
-+ * @write_byte:		[REPLACEABLE] write a single byte to the chip on the
-+ *			low 8 I/O lines
-+ * @write_buf:		[REPLACEABLE] write data from the buffer to the chip
-+ * @read_buf:		[REPLACEABLE] read data from the chip into the buffer
-+ * @select_chip:	[REPLACEABLE] select chip nr
-+ * @block_bad:		[REPLACEABLE] check if a block is bad, using OOB markers
-+ * @block_markbad:	[REPLACEABLE] mark a block bad
-+ * @cmd_ctrl:		[BOARDSPECIFIC] hardwarespecific function for controlling
-+ *			ALE/CLE/nCE. Also used to write command and address
-+ * @dev_ready:		[BOARDSPECIFIC] hardwarespecific function for accessing
-+ *			device ready/busy line. If set to NULL no access to
-+ *			ready/busy is available and the ready/busy information
-+ *			is read from the chip status register.
-+ * @cmdfunc:		[REPLACEABLE] hardwarespecific function for writing
-+ *			commands to the chip.
-+ * @waitfunc:		[REPLACEABLE] hardwarespecific function for wait on
-+ *			ready.
-+ * @setup_read_retry:	[FLASHSPECIFIC] flash (vendor) specific function for
-+ *			setting the read-retry mode. Mostly needed for MLC NAND.
-+ * @ecc:		[BOARDSPECIFIC] ECC control structure
-+ * @buffers:		buffer structure for read/write
-+ * @hwcontrol:		platform-specific hardware control structure
-+ * @erase:		[REPLACEABLE] erase function
-+ * @scan_bbt:		[REPLACEABLE] function to scan bad block table
-+ * @chip_delay:		[BOARDSPECIFIC] chip dependent delay for transferring
-+ *			data from array to read regs (tR).
-+ * @state:		[INTERN] the current state of the NAND device
-+ * @oob_poi:		"poison value buffer," used for laying out OOB data
-+ *			before writing
-+ * @page_shift:		[INTERN] number of address bits in a page (column
-+ *			address bits).
-+ * @phys_erase_shift:	[INTERN] number of address bits in a physical eraseblock
-+ * @bbt_erase_shift:	[INTERN] number of address bits in a bbt entry
-+ * @chip_shift:		[INTERN] number of address bits in one chip
-+ * @options:		[BOARDSPECIFIC] various chip options. They can partly
-+ *			be set to inform nand_scan about special functionality.
-+ *			See the defines for further explanation.
-+ * @bbt_options:	[INTERN] bad block specific options. All options used
-+ *			here must come from bbm.h. By default, these options
-+ *			will be copied to the appropriate nand_bbt_descr's.
-+ * @badblockpos:	[INTERN] position of the bad block marker in the oob
-+ *			area.
-+ * @badblockbits:	[INTERN] minimum number of set bits in a good block's
-+ *			bad block marker position; i.e., BBM == 11110111b is
-+ *			not bad when badblockbits == 7
-+ * @bits_per_cell:	[INTERN] number of bits per cell. i.e., 1 means SLC.
-+ * @ecc_strength_ds:	[INTERN] ECC correctability from the datasheet.
-+ *			Minimum amount of bit errors per @ecc_step_ds guaranteed
-+ *			to be correctable. If unknown, set to zero.
-+ * @ecc_step_ds:	[INTERN] ECC step required by the @ecc_strength_ds,
-+ *                      also from the datasheet. It is the recommended ECC step
-+ *			size, if known; if unknown, set to zero.
-+ * @onfi_timing_mode_default: [INTERN] default ONFI timing mode. This field is
-+ *			      set to the actually used ONFI mode if the chip is
-+ *			      ONFI compliant or deduced from the datasheet if
-+ *			      the NAND chip is not ONFI compliant.
-+ * @numchips:		[INTERN] number of physical chips
-+ * @chipsize:		[INTERN] the size of one chip for multichip arrays
-+ * @pagemask:		[INTERN] page number mask = number of (pages / chip) - 1
-+ * @pagebuf:		[INTERN] holds the pagenumber which is currently in
-+ *			data_buf.
-+ * @pagebuf_bitflips:	[INTERN] holds the bitflip count for the page which is
-+ *			currently in data_buf.
-+ * @subpagesize:	[INTERN] holds the subpagesize
-+ * @onfi_version:	[INTERN] holds the chip ONFI version (BCD encoded),
-+ *			non 0 if ONFI supported.
-+ * @jedec_version:	[INTERN] holds the chip JEDEC version (BCD encoded),
-+ *			non 0 if JEDEC supported.
-+ * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
-+ *			supported, 0 otherwise.
-+ * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
-+ *			supported, 0 otherwise.
-+ * @read_retries:	[INTERN] the number of read retry modes supported
-+ * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
-+ * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
-+ * @setup_data_interface: [OPTIONAL] setup the data interface and timing
-+ * @bbt:		[INTERN] bad block table pointer
-+ * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
-+ *			lookup.
-+ * @bbt_md:		[REPLACEABLE] bad block table mirror descriptor
-+ * @badblock_pattern:	[REPLACEABLE] bad block scan pattern used for initial
-+ *			bad block scan.
-+ * @controller:		[REPLACEABLE] a pointer to a hardware controller
-+ *			structure which is shared among multiple independent
-+ *			devices.
-+ * @priv:		[OPTIONAL] pointer to private chip data
-+ * @errstat:		[OPTIONAL] hardware specific function to perform
-+ *			additional error status checks (determine if errors are
-+ *			correctable).
-+ * @write_page:		[REPLACEABLE] High-level page write function
-+ */
-+
-+struct nand_chip {
-+	struct mtd_info mtd;
-+	void __iomem *IO_ADDR_R;
-+	void __iomem *IO_ADDR_W;
-+
-+	uint8_t (*read_byte)(struct mtd_info *mtd);
-+	u16 (*read_word)(struct mtd_info *mtd);
-+	void (*write_byte)(struct mtd_info *mtd, uint8_t byte);
-+	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
-+	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
-+	void (*select_chip)(struct mtd_info *mtd, int chip);
-+	int (*block_bad)(struct mtd_info *mtd, loff_t ofs);
-+	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
-+	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
-+	int (*dev_ready)(struct mtd_info *mtd);
-+	void (*cmdfunc)(struct mtd_info *mtd, unsigned command, int column,
-+			int page_addr);
-+	int(*waitfunc)(struct mtd_info *mtd, struct nand_chip *this);
-+	int (*erase)(struct mtd_info *mtd, int page);
-+	int (*scan_bbt)(struct mtd_info *mtd);
-+	int (*errstat)(struct mtd_info *mtd, struct nand_chip *this, int state,
-+			int status, int page);
-+	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
-+			uint32_t offset, int data_len, const uint8_t *buf,
-+			int oob_required, int page, int cached, int raw);
-+	int (*onfi_set_features)(struct mtd_info *mtd, struct nand_chip *chip,
-+			int feature_addr, uint8_t *subfeature_para);
-+	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
-+			int feature_addr, uint8_t *subfeature_para);
-+	int (*setup_read_retry)(struct mtd_info *mtd, int retry_mode);
-+	int (*setup_data_interface)(struct mtd_info *mtd,
-+				    const struct nand_data_interface *conf,
-+				    bool check_only);
-+
-+
-+	int chip_delay;
-+	unsigned int options;
-+	unsigned int bbt_options;
-+
-+	int page_shift;
-+	int phys_erase_shift;
-+	int bbt_erase_shift;
-+	int chip_shift;
-+	int numchips;
-+	uint64_t chipsize;
-+	int pagemask;
-+	int pagebuf;
-+	unsigned int pagebuf_bitflips;
-+	int subpagesize;
-+	uint8_t bits_per_cell;
-+	uint16_t ecc_strength_ds;
-+	uint16_t ecc_step_ds;
-+	int onfi_timing_mode_default;
-+	int badblockpos;
-+	int badblockbits;
-+
-+	int onfi_version;
-+	int jedec_version;
-+	union {
-+		struct nand_onfi_params	onfi_params;
-+		struct nand_jedec_params jedec_params;
-+	};
-+
-+	struct nand_data_interface *data_interface;
-+
-+	int read_retries;
-+
-+	flstate_t state;
-+
-+	uint8_t *oob_poi;
-+	struct nand_hw_control *controller;
-+
-+	struct nand_ecc_ctrl ecc;
-+	struct nand_buffers *buffers;
-+	struct nand_hw_control hwcontrol;
-+
-+	uint8_t *bbt;
-+	struct nand_bbt_descr *bbt_td;
-+	struct nand_bbt_descr *bbt_md;
-+
-+	struct nand_bbt_descr *badblock_pattern;
-+
-+	void *priv;
-+};
-+
-+extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
-+extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
-+
-+static inline void nand_set_flash_node(struct nand_chip *chip,
-+				       struct device_node *np)
-+{
-+	mtd_set_of_node(&chip->mtd, np);
-+}
-+
-+static inline struct device_node *nand_get_flash_node(struct nand_chip *chip)
-+{
-+	return mtd_get_of_node(&chip->mtd);
-+}
-+
-+static inline struct nand_chip *mtd_to_nand(struct mtd_info *mtd)
-+{
-+	return container_of(mtd, struct nand_chip, mtd);
-+}
-+
-+static inline struct mtd_info *nand_to_mtd(struct nand_chip *chip)
-+{
-+	return &chip->mtd;
-+}
-+
-+static inline void *nand_get_controller_data(struct nand_chip *chip)
-+{
-+	return chip->priv;
-+}
-+
-+static inline void nand_set_controller_data(struct nand_chip *chip, void *priv)
-+{
-+	chip->priv = priv;
-+}
-+
-+/*
-+ * NAND Flash Manufacturer ID Codes
-+ */
-+#define NAND_MFR_TOSHIBA	0x98
-+#define NAND_MFR_ESMT		0xc8
-+#define NAND_MFR_SAMSUNG	0xec
-+#define NAND_MFR_FUJITSU	0x04
-+#define NAND_MFR_NATIONAL	0x8f
-+#define NAND_MFR_RENESAS	0x07
-+#define NAND_MFR_STMICRO	0x20
-+#define NAND_MFR_HYNIX		0xad
-+#define NAND_MFR_MICRON		0x2c
-+#define NAND_MFR_AMD		0x01
-+#define NAND_MFR_MACRONIX	0xc2
-+#define NAND_MFR_EON		0x92
-+#define NAND_MFR_SANDISK	0x45
-+#define NAND_MFR_INTEL		0x89
-+#define NAND_MFR_ATO		0x9b
-+
-+/* The maximum expected count of bytes in the NAND ID sequence */
-+#define NAND_MAX_ID_LEN 8
-+
-+/*
-+ * A helper for defining older NAND chips where the second ID byte fully
-+ * defined the chip, including the geometry (chip size, eraseblock size, page
-+ * size). All these chips have 512 bytes NAND page size.
-+ */
-+#define LEGACY_ID_NAND(nm, devid, chipsz, erasesz, opts)          \
-+	{ .name = (nm), {{ .dev_id = (devid) }}, .pagesize = 512, \
-+	  .chipsize = (chipsz), .erasesize = (erasesz), .options = (opts) }
-+
-+/*
-+ * A helper for defining newer chips which report their page size and
-+ * eraseblock size via the extended ID bytes.
-+ *
-+ * The real difference between LEGACY_ID_NAND and EXTENDED_ID_NAND is that with
-+ * EXTENDED_ID_NAND, manufacturers overloaded the same device ID so that the
-+ * device ID now only represented a particular total chip size (and voltage,
-+ * buswidth), and the page size, eraseblock size, and OOB size could vary while
-+ * using the same device ID.
-+ */
-+#define EXTENDED_ID_NAND(nm, devid, chipsz, opts)                      \
-+	{ .name = (nm), {{ .dev_id = (devid) }}, .chipsize = (chipsz), \
-+	  .options = (opts) }
-+
-+#define NAND_ECC_INFO(_strength, _step)	\
-+			{ .strength_ds = (_strength), .step_ds = (_step) }
-+#define NAND_ECC_STRENGTH(type)		((type)->ecc.strength_ds)
-+#define NAND_ECC_STEP(type)		((type)->ecc.step_ds)
-+
-+/**
-+ * struct nand_flash_dev - NAND Flash Device ID Structure
-+ * @name: a human-readable name of the NAND chip
-+ * @dev_id: the device ID (the second byte of the full chip ID array)
-+ * @mfr_id: manufecturer ID part of the full chip ID array (refers the same
-+ *          memory address as @id[0])
-+ * @dev_id: device ID part of the full chip ID array (refers the same memory
-+ *          address as @id[1])
-+ * @id: full device ID array
-+ * @pagesize: size of the NAND page in bytes; if 0, then the real page size (as
-+ *            well as the eraseblock size) is determined from the extended NAND
-+ *            chip ID array)
-+ * @chipsize: total chip size in MiB
-+ * @erasesize: eraseblock size in bytes (determined from the extended ID if 0)
-+ * @options: stores various chip bit options
-+ * @id_len: The valid length of the @id.
-+ * @oobsize: OOB size
-+ * @ecc: ECC correctability and step information from the datasheet.
-+ * @ecc.strength_ds: The ECC correctability from the datasheet, same as the
-+ *                   @ecc_strength_ds in nand_chip{}.
-+ * @ecc.step_ds: The ECC step required by the @ecc.strength_ds, same as the
-+ *               @ecc_step_ds in nand_chip{}, also from the datasheet.
-+ *               For example, the "4bit ECC for each 512Byte" can be set with
-+ *               NAND_ECC_INFO(4, 512).
-+ * @onfi_timing_mode_default: the default ONFI timing mode entered after a NAND
-+ *			      reset. Should be deduced from timings described
-+ *			      in the datasheet.
-+ *
-+ */
-+struct nand_flash_dev {
-+	char *name;
-+	union {
-+		struct {
-+			uint8_t mfr_id;
-+			uint8_t dev_id;
-+		};
-+		uint8_t id[NAND_MAX_ID_LEN];
-+	};
-+	unsigned int pagesize;
-+	unsigned int chipsize;
-+	unsigned int erasesize;
-+	unsigned int options;
-+	uint16_t id_len;
-+	uint16_t oobsize;
-+	struct {
-+		uint16_t strength_ds;
-+		uint16_t step_ds;
-+	} ecc;
-+	int onfi_timing_mode_default;
-+};
-+
-+/**
-+ * struct nand_manufacturers - NAND Flash Manufacturer ID Structure
-+ * @name:	Manufacturer name
-+ * @id:		manufacturer ID code of device.
-+*/
-+struct nand_manufacturers {
-+	int id;
-+	char *name;
-+};
-+
-+extern struct nand_flash_dev nand_flash_ids[];
-+extern struct nand_manufacturers nand_manuf_ids[];
-+
-+int nand_default_bbt(struct mtd_info *mtd);
-+int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
-+int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
-+int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
-+int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
-+		    int allowbbt);
-+int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
-+		 size_t *retlen, uint8_t *buf);
-+
-+/**
-+ * struct platform_nand_chip - chip level device structure
-+ * @nr_chips:		max. number of chips to scan for
-+ * @chip_offset:	chip number offset
-+ * @nr_partitions:	number of partitions pointed to by partitions (or zero)
-+ * @partitions:		mtd partition list
-+ * @chip_delay:		R/B delay value in us
-+ * @options:		Option flags, e.g. 16bit buswidth
-+ * @bbt_options:	BBT option flags, e.g. NAND_BBT_USE_FLASH
-+ * @part_probe_types:	NULL-terminated array of probe types
-+ */
-+struct platform_nand_chip {
-+	int nr_chips;
-+	int chip_offset;
-+	int nr_partitions;
-+	struct mtd_partition *partitions;
-+	int chip_delay;
-+	unsigned int options;
-+	unsigned int bbt_options;
-+	const char **part_probe_types;
-+};
-+
-+/* Keep gcc happy */
-+struct platform_device;
-+
-+/**
-+ * struct platform_nand_ctrl - controller level device structure
-+ * @probe:		platform specific function to probe/setup hardware
-+ * @remove:		platform specific function to remove/teardown hardware
-+ * @hwcontrol:		platform specific hardware control structure
-+ * @dev_ready:		platform specific function to read ready/busy pin
-+ * @select_chip:	platform specific chip select function
-+ * @cmd_ctrl:		platform specific function for controlling
-+ *			ALE/CLE/nCE. Also used to write command and address
-+ * @write_buf:		platform specific function for write buffer
-+ * @read_buf:		platform specific function for read buffer
-+ * @read_byte:		platform specific function to read one byte from chip
-+ * @priv:		private data to transport driver specific settings
-+ *
-+ * All fields are optional and depend on the hardware driver requirements
-+ */
-+struct platform_nand_ctrl {
-+	int (*probe)(struct platform_device *pdev);
-+	void (*remove)(struct platform_device *pdev);
-+	void (*hwcontrol)(struct mtd_info *mtd, int cmd);
-+	int (*dev_ready)(struct mtd_info *mtd);
-+	void (*select_chip)(struct mtd_info *mtd, int chip);
-+	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
-+	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
-+	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
-+	unsigned char (*read_byte)(struct mtd_info *mtd);
-+	void *priv;
-+};
-+
-+/**
-+ * struct platform_nand_data - container structure for platform-specific data
-+ * @chip:		chip level chip structure
-+ * @ctrl:		controller level device structure
-+ */
-+struct platform_nand_data {
-+	struct platform_nand_chip chip;
-+	struct platform_nand_ctrl ctrl;
-+};
-+
-+/* return the supported features. */
-+static inline int onfi_feature(struct nand_chip *chip)
-+{
-+	return chip->onfi_version ? le16_to_cpu(chip->onfi_params.features) : 0;
-+}
-+
-+/* return the supported asynchronous timing mode. */
-+static inline int onfi_get_async_timing_mode(struct nand_chip *chip)
-+{
-+	if (!chip->onfi_version)
-+		return ONFI_TIMING_MODE_UNKNOWN;
-+	return le16_to_cpu(chip->onfi_params.async_timing_mode);
-+}
-+
-+/* return the supported synchronous timing mode. */
-+static inline int onfi_get_sync_timing_mode(struct nand_chip *chip)
-+{
-+	if (!chip->onfi_version)
-+		return ONFI_TIMING_MODE_UNKNOWN;
-+	return le16_to_cpu(chip->onfi_params.src_sync_timing_mode);
-+}
-+
-+int onfi_init_data_interface(struct nand_chip *chip,
-+			     struct nand_data_interface *iface,
-+			     enum nand_data_interface_type type,
-+			     int timing_mode);
-+
-+/*
-+ * Check if it is a SLC nand.
-+ * The !nand_is_slc() can be used to check the MLC/TLC nand chips.
-+ * We do not distinguish the MLC and TLC now.
-+ */
-+static inline bool nand_is_slc(struct nand_chip *chip)
-+{
-+	return chip->bits_per_cell == 1;
-+}
-+
-+/**
-+ * Check if the opcode's address should be sent only on the lower 8 bits
-+ * @command: opcode to check
-+ */
-+static inline int nand_opcode_8bits(unsigned int command)
-+{
-+	switch (command) {
-+	case NAND_CMD_READID:
-+	case NAND_CMD_PARAM:
-+	case NAND_CMD_GET_FEATURES:
-+	case NAND_CMD_SET_FEATURES:
-+		return 1;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+/* return the supported JEDEC features. */
-+static inline int jedec_feature(struct nand_chip *chip)
-+{
-+	return chip->jedec_version ? le16_to_cpu(chip->jedec_params.features)
-+		: 0;
-+}
-+
-+/* get timing characteristics from ONFI timing mode. */
-+const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
-+/* get data interface from ONFI timing mode 0, used after reset. */
-+const struct nand_data_interface *nand_get_default_data_interface(void);
-+
-+int nand_check_erased_ecc_chunk(void *data, int datalen,
-+				void *ecc, int ecclen,
-+				void *extraoob, int extraooblen,
-+				int threshold);
-+
-+/* Default write_oob implementation */
-+int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
-+
-+/* Default write_oob syndrome implementation */
-+int nand_write_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
-+			    int page);
-+
-+/* Default read_oob implementation */
-+int nand_read_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
-+
-+/* Default read_oob syndrome implementation */
-+int nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
-+			   int page);
-+
-+/* Reset and initialize a NAND device */
-+int nand_reset(struct nand_chip *chip);
-+
-+/* Free resources held by the NAND device */
-+void nand_cleanup(struct nand_chip *chip);
-+
-+#endif /* __LINUX_MTD_RAWNAND_H */
-diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index 2251add65fa7..c759d403cbc0 100644
---- a/include/linux/mtd/sh_flctl.h
-+++ b/include/linux/mtd/sh_flctl.h
-@@ -22,7 +22,7 @@
- 
- #include <linux/completion.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/pm_qos.h>
- 
-diff --git a/include/linux/mtd/sharpsl.h b/include/linux/mtd/sharpsl.h
-index 65e91d0fa981..72a79c7d0e08 100644
---- a/include/linux/mtd/sharpsl.h
-+++ b/include/linux/mtd/sharpsl.h
-@@ -8,7 +8,7 @@
-  * published by the Free Software Foundation.
-  */
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/include/linux/platform_data/atmel.h b/include/linux/platform_data/atmel.h
-index 3c8825b67298..d9d886fbc259 100644
---- a/include/linux/platform_data/atmel.h
-+++ b/include/linux/platform_data/atmel.h
-@@ -7,7 +7,7 @@
- #ifndef __ATMEL_H__
- #define __ATMEL_H__
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/serial.h>
- 
-diff --git a/include/linux/platform_data/mtd-davinci.h b/include/linux/platform_data/mtd-davinci.h
-index 1cf555aef896..f1a2cf655bdb 100644
---- a/include/linux/platform_data/mtd-davinci.h
-+++ b/include/linux/platform_data/mtd-davinci.h
-@@ -28,7 +28,7 @@
- #ifndef __ARCH_ARM_DAVINCI_NAND_H
- #define __ARCH_ARM_DAVINCI_NAND_H
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- #define NANDFCR_OFFSET		0x60
- #define NANDFSR_OFFSET		0x64
+ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 		    int allowbbt);
+ int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
 -- 
 2.7.4
