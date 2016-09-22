@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bn10O-00024T-Bf
- for linux-mtd@lists.infradead.org; Thu, 22 Sep 2016 10:13:27 +0000
+ id 1bn10O-000244-Be
+ for linux-mtd@lists.infradead.org; Thu, 22 Sep 2016 10:13:30 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -10,15 +10,9 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Peter Pan <peterpansjtu@gmail.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: [RFC PATCH 3/7] mtd: nand: add a nand.h file to expose basic NAND
- stuff
-Date: Thu, 22 Sep 2016 12:12:56 +0200
-Message-Id: <1474539180-5863-4-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=a
-Content-Transfer-Encoding: 8bit
+Subject: [RFC PATCH 0/7] mtd: nand: Abstract away the NAND interface type
+Date: Thu, 22 Sep 2016 12:12:53 +0200
+Message-Id: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,502 +22,439 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that raw NAND header has been moved to rawnand.h, we can add a new
-nand.h file and define the common nand stuff in there.
+Hi,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- include/linux/mtd/nand.h | 482 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 482 insertions(+)
- create mode 100644 include/linux/mtd/nand.h
+This series is aiming at providing a generic NAND layer to share code
+between different NAND based devices.
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-new file mode 100644
-index 000000000000..f8021f004524
---- /dev/null
-+++ b/include/linux/mtd/nand.h
-@@ -0,0 +1,482 @@
-+/*
-+ *  Copyright © 2016 - Boris Brezillon <boris.brezillon@free-electrons.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __LINUX_MTD_NAND_H
-+#define __LINUX_MTD_NAND_H
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/bbm.h>
-+/**
-+ * struct nand_memory_organization - memory organization structure
-+ * @pagesize: page size
-+ * @oobsize: OOB area size
-+ * @eraseblocksize: erase block size
-+ * @planesize: plane size
-+ * @nplanes: number of planes embedded in a die
-+ * @diesize: die size
-+ * @ndies: number of dies embedded in the device
-+ */
-+struct nand_memory_organization {
-+	int pagesize;
-+	int oobsize;
-+	int eraseblocksize;
-+	size_t planesize;
-+	int nplanes;
-+	u64 diesize;
-+	int ndies;
-+};
-+
-+/**
-+ * struct nand_bbt - bad block table structure
-+ * @options: bad block specific options
-+ * @td: bad block table descriptor for flash lookup.
-+ * @md: bad block table mirror descriptor
-+ * @bbp: bad block pattern
-+ * @bbt: in memory BBT
-+ */
-+struct nand_bbt {
-+	unsigned int options;
-+	/*
-+	 * Discourage new custom usages here; suggest usage of the
-+	 * relevant NAND_BBT_* options instead
-+	 */
-+	struct nand_bbt_descr *td;
-+	struct nand_bbt_descr *md;
-+	struct nand_bbt_descr *bbp;
-+	u8 *bbt;
-+};
-+
-+struct nand_device;
-+
-+
-+
-+/**
-+ * struct nand_ops - NAND operations
-+ * @erase: erase the blocks covered by the erase_info description
-+ */
-+struct nand_ops {
-+	int (*erase)(struct nand_device *nand, struct erase_info *einfo);
-+	int (*markbad)(struct nand_device *mtd, int block);
-+};
-+
-+/**
-+ * struct nand_device - NAND device
-+ * @mtd: MTD instance attached to the NAND device
-+ * @memorg: memory layout
-+ * @bbt: bad block table info
-+ * @ops: NAND operations attached to the NAND device
-+ */
-+struct nand_device {
-+	struct mtd_info mtd;
-+	struct nand_memory_organization memorg;
-+	struct nand_bbt bbt;
-+
-+	const struct nand_ops *ops;
-+};
-+
-+/**
-+ * mtd_to_nand - Get the NAND device attached to the MTD instance
-+ * @mtd: MTD instance
-+ *
-+ * Returns the NAND device attached to @mtd.
-+ */
-+static inline struct nand_device *mtd_to_nand(struct mtd_info *mtd)
-+{
-+	return container_of(mtd, struct nand_device, mtd);
-+}
-+
-+/**
-+ * nand_to_mtd - Get the MTD device attached to a NAND device
-+ * @nand: NAND device
-+ *
-+ * Returns the MTD device attached to @nand.
-+ */
-+static inline struct mtd_info *nand_to_mtd(struct nand_device *nand)
-+{
-+	return &nand->mtd;
-+}
-+
-+/**
-+ * nand_page_to_offs - Convert a page number to an absolute offset
-+ * @nand: NAND device
-+ * @page: page number
-+ *
-+ * Returns the offset pointing to the beginning of @page.
-+ */
-+static inline loff_t nand_page_to_offs(struct nand_device *nand, int page)
-+{
-+	return (loff_t)nand->memorg.pagesize * page;
-+}
-+
-+/**
-+ * nand_offs_to_page - Convert an absolute offset to a page offset
-+ * @nand: NAND device
-+ * @offs: absolute offset
-+ *
-+ * Returns the page number containing @offs.
-+ */
-+static inline int nand_offs_to_page(struct nand_device *nand, loff_t offs)
-+{
-+	u64 page = offs;
-+
-+	do_div(page, nand->memorg.pagesize);
-+
-+	return page;
-+}
-+
-+/**
-+ * nand_len_to_pages - Convert a length into a number of pages
-+ * @nand: NAND device
-+ * @len: length in bytes
-+ *
-+ * Returns the number of pages required to store @len bytes.
-+ * This functions assumes your storing those data at a page-aligned offset.
-+ */
-+static inline int nand_len_to_pages(struct nand_device *nand, size_t len)
-+{
-+	return DIV_ROUND_UP(len, nand->memorg.pagesize);
-+}
-+
-+/**
-+ * nand_pages_to_len - Convert a number of pages into a length expressed in
-+ *		       bytes
-+ * @nand: NAND device
-+ * @npages: number of pages
-+ *
-+ * Returns the size taken by @npages pages.
-+ */
-+static inline size_t nand_pages_to_len(struct nand_device *nand, int npages)
-+{
-+	return (size_t)npages * nand->memorg.pagesize;
-+}
-+
-+/**
-+ * nand_page_size - Get NAND page size
-+ * @nand: NAND device
-+ *
-+ * Returns the page size.
-+ */
-+static inline size_t nand_page_size(struct nand_device *nand)
-+{
-+	return nand->memorg.pagesize;
-+}
-+
-+/**
-+ * nand_per_page_oobsize - Get NAND OOB size
-+ * @nand: NAND device
-+ *
-+ * Returns the OOB size.
-+ */
-+static inline int nand_per_page_oobsize(struct nand_device *nand)
-+{
-+	return nand->memorg.oobsize;
-+}
-+
-+/**
-+ * nand_per_page_oobsize - Get NAND erase block size
-+ * @nand: NAND device
-+ *
-+ * Returns the erase block size.
-+ */
-+static inline size_t nand_eraseblock_size(struct nand_device *nand)
-+{
-+	return nand->memorg.eraseblocksize;
-+}
-+
-+/**
-+ * nand_page_to_offs - Convert an eraseblock number to an absolute offset
-+ * @nand: NAND device
-+ * @block: eraseblock number
-+ *
-+ * Returns the offset pointing to the beginning of @block.
-+ */
-+static inline loff_t nand_eraseblock_to_offs(struct nand_device *nand,
-+					     int block)
-+{
-+	return (loff_t)nand->memorg.eraseblocksize * block;
-+}
-+
-+/**
-+ * nand_offs_to_eraseblock - Convert an absolute offset to an eraseblock offset
-+ * @nand: NAND device
-+ * @offs: absolute offset
-+ *
-+ * Returns the eraseblock number containing @offs.
-+ */
-+static inline int nand_offs_to_eraseblock(struct nand_device *nand, loff_t offs)
-+{
-+	u64 block = offs;
-+
-+	do_div(block, nand->memorg.eraseblocksize);
-+
-+	return block;
-+}
-+
-+/**
-+ * nand_len_to_eraseblocks - Convert a length into a number of erablocks
-+ * @nand: NAND device
-+ * @len: length in bytes
-+ *
-+ * Returns the number of eraseblocks required to store @len bytes.
-+ * This functions assumes your storing those data at an eraseblock-aligned
-+ * offset.
-+ */
-+static inline int nand_len_to_eraseblocks(struct nand_device *nand, size_t len)
-+{
-+	return DIV_ROUND_UP(len, nand->memorg.eraseblocksize);
-+}
-+
-+/**
-+ * nand_eraseblocks_to_len - Convert a number of eraseblocks into a length
-+ *			     expressed in bytes
-+ * @nand: NAND device
-+ * @nblocks: number of eraseblocks
-+ *
-+ * Returns the size taken by @nblock pages.
-+ */
-+static inline size_t nand_eraseblocks_to_len(struct nand_device *nand, int nblocks)
-+{
-+	return (size_t)nblocks * nand->memorg.eraseblocksize;
-+}
-+
-+/**
-+ * nand_per_eraseblock_oobsize - Get the amount of OOB bytes in an eraseblock
-+ * @nand: NAND device
-+ *
-+ * Returns the OOB size per eraseblock.
-+ */
-+static inline int nand_per_eraseblock_oobsize(struct nand_device *nand)
-+{
-+	int pagesperblock = nand->memorg.eraseblocksize /
-+			    nand->memorg.pagesize;
-+
-+	return nand->memorg.oobsize * pagesperblock;
-+}
-+
-+/**
-+ * nand_eraseblock_to_page - Convert an eraseblock number to a page number
-+ * @nand: NAND device
-+ * @block: eraseblock number
-+ *
-+ * Returns the page number assigned to the first page of @block eraseblock.
-+ */
-+static inline int nand_eraseblock_to_page(struct nand_device *nand, int block)
-+{
-+	int pagesperblock = nand->memorg.eraseblocksize /
-+			    nand->memorg.pagesize;
-+
-+	return block * pagesperblock;
-+}
-+
-+/**
-+ * nand_page_to_eraseblock - Convert a page number to an eraseblock number
-+ * @nand: NAND device
-+ * @page: page number
-+ *
-+ * Returns the eraseblock number containing @page.
-+ */
-+static inline int nand_page_to_eraseblock(struct nand_device *nand, int page)
-+{
-+	int pagesperblock = nand->memorg.eraseblocksize /
-+			    nand->memorg.pagesize;
-+
-+	return page / pagesperblock;
-+}
-+
-+/**
-+ * nand_eraseblocks_per_die - Get the number of eraseblocks per die
-+ * @nand: NAND device
-+ *
-+ * Returns the number of eraseblocks per die.
-+ */
-+static inline int nand_eraseblocks_per_die(struct nand_device *nand)
-+{
-+	u64 nblocks = nand->memorg.diesize;
-+
-+	do_div(nblocks, nand->memorg.eraseblocksize);
-+
-+	return nblocks;
-+}
-+
-+/**
-+ * nand_eraseblocks_per_die - Get the number of eraseblocks per die
-+ * @nand: NAND device
-+ *
-+ * Returns the number of eraseblocks per die.
-+ */
-+static inline u64 nand_diesize(struct nand_device *nand)
-+{
-+	return nand->memorg.diesize;
-+}
-+
-+/**
-+ * nand_ndies - Get the total of dies
-+ * @nand: NAND device
-+ *
-+ * Returns the number of dies exposed by @nand.
-+ */
-+static inline int nand_ndies(struct nand_device *nand)
-+{
-+	return nand->memorg.ndies;
-+}
-+
-+/**
-+ * nand_die_to_offs - Convert a die number to an absolute offset
-+ * @nand: NAND device
-+ * @die: die number
-+ *
-+ * Returns the offset pointing to the beginning of @die.
-+ */
-+static inline loff_t nand_die_to_offs(struct nand_device *nand, int die)
-+{
-+	return (loff_t)nand->memorg.diesize * die;
-+}
-+
-+/**
-+ * nand_offs_to_die - Convert an absolute offset to a die number
-+ * @nand: NAND device
-+ * @offs: absolute offset
-+ *
-+ * Returns the die number containing @offs.
-+ */
-+static inline int nand_offs_to_die(struct nand_device *nand, loff_t offs)
-+{
-+	u64 die = offs;
-+
-+	do_div(die, nand->memorg.diesize);
-+
-+	return die;
-+}
-+
-+/**
-+ * nand_ndies - Get the total number of erasablocks
-+ * @nand: NAND device
-+ *
-+ * Returns the number of eraseblocks exposed by @nand.
-+ */
-+static inline int nand_neraseblocks(struct nand_device *nand)
-+{
-+	u64 nblocks = nand->memorg.ndies * nand->memorg.diesize;
-+
-+	do_div(nblocks, nand->memorg.eraseblocksize);
-+
-+	return nblocks;
-+}
-+
-+/**
-+ * nand_register - Register a NAND device
-+ * @nand: NAND device
-+ *
-+ * Register a NAND device.
-+ * This function is just a wrapper around mtd_device_register()
-+ * registering the MTD device attached to @nand.
-+ */
-+static inline int nand_register(struct nand_device *nand)
-+{
-+	return mtd_device_register(&nand->mtd, NULL, 0);
-+}
-+
-+/**
-+ * nand_unregister - Unregister a NAND device
-+ * @nand: NAND device
-+ *
-+ * Unregister a NAND device.
-+ * This function is just a wrapper around mtd_device_unregister()
-+ * unregistering the MTD device attached to @nand.
-+ */
-+static inline void nand_unregister(struct nand_device *nand)
-+{
-+	mtd_device_unregister(&nand->mtd);
-+}
-+
-+/**
-+ * nand_read - Read data from NAND
-+ * @nand: NAND device
-+ * @offs: offset you want to read data from
-+ * @ops: options describing what you want to read (in-band/out-of-band data)
-+ *	 and how (raw or normal mode)
-+ *
-+ * Read data from NAND.
-+ */
-+static inline int nand_read(struct nand_device *nand, loff_t offs,
-+			    struct mtd_oob_ops *ops)
-+{
-+	return mtd_read_oob(&nand->mtd, offs, ops);
-+}
-+
-+/**
-+ * nand_write - Write data to NAND
-+ * @nand: NAND device
-+ * @offs: offset you want to write data to
-+ * @ops: options describing what you want to write (in-band/out-of-band data)
-+ *	 and how (raw or normal mode)
-+ *
-+ * Read data from NAND.
-+ */
-+static inline int nand_write(struct nand_device *nand, loff_t offs,
-+			     struct mtd_oob_ops *ops)
-+{
-+	return mtd_write_oob(&nand->mtd, offs, ops);
-+}
-+
-+/**
-+ * nand_erase - Erase a NAND portion
-+ * @nand: NAND device
-+ * @einfo: erase information
-+ * @force: whether bad or protected blocks should be erased or not
-+ *
-+ * Erase the NAND portion described by @einfo. If @force is passed, bad and
-+ * reserved block checking is bypassed and the implementation is asked to
-+ * force the erasure.
-+ */
-+static inline int nand_erase(struct nand_device *nand,
-+			     struct erase_info *einfo,
-+			     bool force)
-+{
-+	if (!force)
-+		return mtd_erase(&nand->mtd, einfo);
-+
-+	return nand->ops->erase(nand, einfo);
-+}
-+
-+/**
-+ * nand_markbad - Write a bad block marker to a block
-+ * @nand: NAND device
-+ * @block: block to mark bad
-+ *
-+ * Mark a block bad. This function is not using the BBT.
-+ */
-+static inline int nand_markbad(struct nand_device *nand, int block)
-+{
-+	return nand->ops->markbad(nand, block);
-+}
-+
-+/**
-+ * nand_set_of_node - Attach a DT node to a NAND device
-+ * @nand: NAND device
-+ * @np: DT node
-+ *
-+ * Attach a DT node to a NAND device.
-+ */
-+static inline void nand_set_of_node(struct nand_device *nand,
-+				    struct device_node *np)
-+{
-+	mtd_set_of_node(&nand->mtd, np);
-+}
-+
-+/**
-+ * nand_get_of_node - Retrieve the DT node attached a NAND device
-+ * @nand: NAND device
-+ *
-+ * Returns the DT node attached to @nand.
-+ */
-+static inline struct device_node *nand_get_of_node(struct nand_device *nand)
-+{
-+	return mtd_get_of_node(&nand->mtd);
-+}
-+#endif /* __LINUX_MTD_NAND_H */
+We currently have 3 different interfaces to interact with NANDs:
+- Raw NANDs
+- OneNANDs
+- SPI NANDs
+
+Apart from the way these NAND devices are accessed they have a lot
+in common, like the way the memory is organized, or their constraints.
+This is usually a good sign that some work should be done to factorize
+the code.
+
+This work has been started by Peter who wanted to re-use the BBT
+code for its SPI-NAND driver. But I think we can push it further
+other stuff (the software ECC implementation, or the way offsets are
+converted to block/page number).
+
+Before I continue in this direction, I'd like to get some feedback
+from Peter and those who reviewed his initial submission (Brian,
+Ezequiel) [1], or anyone who is interested in this topic.
+
+Thanks,
+
+Boris
+
+[1]http://lists.infradead.org/pipermail/linux-mtd/2015-September/062084.html
+
+Boris Brezillon (7):
+  mtd: nand: Rename nand.h into rawnand.h
+  mtd: nand: move code to rawnand/ subdir
+  mtd: nand: add a nand.h file to expose basic NAND stuff
+  mtd: nand: rawnand: prefix conflicting names with nandc instead of
+    nand
+  mtd: nand: rawnand: create struct rawnand_device
+  mtd: nand: rawnand: make BBT code more generic
+  mtd: nand: rawnand: move BBT code to drivers/mtd/nand/
+
+ Documentation/DocBook/mtdnand.tmpl                 |   12 +-
+ arch/arm/mach-davinci/board-da850-evm.c            |    2 +-
+ arch/arm/mach-davinci/board-dm355-evm.c            |    2 +-
+ arch/arm/mach-davinci/board-dm355-leopard.c        |    2 +-
+ arch/arm/mach-davinci/board-dm365-evm.c            |    2 +-
+ arch/arm/mach-davinci/board-dm644x-evm.c           |    2 +-
+ arch/arm/mach-davinci/board-dm646x-evm.c           |    2 +-
+ arch/arm/mach-davinci/board-sffsdr.c               |    2 +-
+ arch/arm/mach-dove/dove-db-setup.c                 |    2 +-
+ arch/arm/mach-ep93xx/snappercl15.c                 |    6 +-
+ arch/arm/mach-ep93xx/ts72xx.c                      |    6 +-
+ arch/arm/mach-imx/mach-qong.c                      |    4 +-
+ arch/arm/mach-ixp4xx/ixdp425-setup.c               |    4 +-
+ arch/arm/mach-mmp/aspenite.c                       |    2 +-
+ arch/arm/mach-omap1/board-fsample.c                |    2 +-
+ arch/arm/mach-omap1/board-h2.c                     |    2 +-
+ arch/arm/mach-omap1/board-h3.c                     |    2 +-
+ arch/arm/mach-omap1/board-nand.c                   |    4 +-
+ arch/arm/mach-omap1/board-perseus2.c               |    2 +-
+ arch/arm/mach-omap2/gpmc-nand.c                    |    2 +-
+ arch/arm/mach-orion5x/db88f5281-setup.c            |    2 +-
+ arch/arm/mach-orion5x/kurobox_pro-setup.c          |    2 +-
+ arch/arm/mach-orion5x/ts209-setup.c                |    2 +-
+ arch/arm/mach-orion5x/ts78xx-setup.c               |    8 +-
+ arch/arm/mach-pxa/balloon3.c                       |    4 +-
+ arch/arm/mach-pxa/em-x270.c                        |    4 +-
+ arch/arm/mach-pxa/eseries.c                        |    2 +-
+ arch/arm/mach-pxa/palmtx.c                         |    4 +-
+ arch/arm/mach-pxa/tosa.c                           |    2 +-
+ arch/arm/mach-s3c24xx/common-smdk.c                |    2 +-
+ arch/arm/mach-s3c24xx/mach-anubis.c                |    2 +-
+ arch/arm/mach-s3c24xx/mach-at2440evb.c             |    2 +-
+ arch/arm/mach-s3c24xx/mach-bast.c                  |    2 +-
+ arch/arm/mach-s3c24xx/mach-gta02.c                 |    2 +-
+ arch/arm/mach-s3c24xx/mach-jive.c                  |    2 +-
+ arch/arm/mach-s3c24xx/mach-mini2440.c              |    2 +-
+ arch/arm/mach-s3c24xx/mach-osiris.c                |    2 +-
+ arch/arm/mach-s3c24xx/mach-qt2410.c                |    2 +-
+ arch/arm/mach-s3c24xx/mach-rx3715.c                |    2 +-
+ arch/arm/mach-s3c24xx/mach-vstms.c                 |    2 +-
+ arch/blackfin/mach-bf537/boards/dnp5370.c          |    2 +-
+ arch/blackfin/mach-bf537/boards/stamp.c            |    4 +-
+ arch/blackfin/mach-bf561/boards/acvilon.c          |    4 +-
+ arch/cris/arch-v32/drivers/mach-a3/nandflash.c     |    6 +-
+ arch/cris/arch-v32/drivers/mach-fs/nandflash.c     |    6 +-
+ arch/mips/alchemy/devboards/db1200.c               |    4 +-
+ arch/mips/alchemy/devboards/db1300.c               |    4 +-
+ arch/mips/alchemy/devboards/db1550.c               |    4 +-
+ arch/mips/include/asm/mach-jz4740/jz4740_nand.h    |    2 +-
+ arch/mips/jz4740/board-qi_lb60.c                   |    2 +-
+ arch/mips/netlogic/xlr/platform-flash.c            |    2 +-
+ arch/mips/pnx833x/common/platform.c                |    4 +-
+ arch/mips/rb532/devices.c                          |    4 +-
+ arch/sh/boards/mach-migor/setup.c                  |    4 +-
+ drivers/mtd/inftlcore.c                            |    2 +-
+ drivers/mtd/nand/Kconfig                           |  572 +--
+ drivers/mtd/nand/Makefile                          |   63 +-
+ drivers/mtd/nand/ams-delta.c                       |  291 --
+ drivers/mtd/nand/atmel_nand.c                      | 2481 ----------
+ drivers/mtd/nand/atmel_nand_ecc.h                  |  163 -
+ drivers/mtd/nand/atmel_nand_nfc.h                  |  103 -
+ drivers/mtd/nand/au1550nd.c                        |  518 --
+ drivers/mtd/nand/bbt.c                             | 1410 ++++++
+ drivers/mtd/nand/bcm47xxnflash/Makefile            |    4 -
+ drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h     |   25 -
+ drivers/mtd/nand/bcm47xxnflash/main.c              |   81 -
+ drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c       |  454 --
+ drivers/mtd/nand/bf5xx_nand.c                      |  860 ----
+ drivers/mtd/nand/brcmnand/Makefile                 |    7 -
+ drivers/mtd/nand/brcmnand/bcm63138_nand.c          |  109 -
+ drivers/mtd/nand/brcmnand/bcm6368_nand.c           |  142 -
+ drivers/mtd/nand/brcmnand/brcmnand.c               | 2561 ----------
+ drivers/mtd/nand/brcmnand/brcmnand.h               |   74 -
+ drivers/mtd/nand/brcmnand/brcmstb_nand.c           |   44 -
+ drivers/mtd/nand/brcmnand/iproc_nand.c             |  160 -
+ drivers/mtd/nand/cafe_nand.c                       |  898 ----
+ drivers/mtd/nand/cmx270_nand.c                     |  246 -
+ drivers/mtd/nand/cs553x_nand.c                     |  358 --
+ drivers/mtd/nand/davinci_nand.c                    |  862 ----
+ drivers/mtd/nand/denali.c                          | 1663 -------
+ drivers/mtd/nand/denali.h                          |  484 --
+ drivers/mtd/nand/denali_dt.c                       |  131 -
+ drivers/mtd/nand/denali_pci.c                      |  121 -
+ drivers/mtd/nand/diskonchip.c                      | 1712 -------
+ drivers/mtd/nand/docg4.c                           | 1410 ------
+ drivers/mtd/nand/fsl_elbc_nand.c                   |  977 ----
+ drivers/mtd/nand/fsl_ifc_nand.c                    | 1095 -----
+ drivers/mtd/nand/fsl_upm.c                         |  363 --
+ drivers/mtd/nand/fsmc_nand.c                       | 1100 -----
+ drivers/mtd/nand/gpio.c                            |  322 --
+ drivers/mtd/nand/gpmi-nand/Makefile                |    3 -
+ drivers/mtd/nand/gpmi-nand/bch-regs.h              |  128 -
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c              | 1508 ------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 2193 ---------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |  310 --
+ drivers/mtd/nand/gpmi-nand/gpmi-regs.h             |  187 -
+ drivers/mtd/nand/hisi504_nand.c                    |  898 ----
+ drivers/mtd/nand/jz4740_nand.c                     |  557 ---
+ drivers/mtd/nand/jz4780_bch.c                      |  380 --
+ drivers/mtd/nand/jz4780_bch.h                      |   43 -
+ drivers/mtd/nand/jz4780_nand.c                     |  416 --
+ drivers/mtd/nand/lpc32xx_mlc.c                     |  902 ----
+ drivers/mtd/nand/lpc32xx_slc.c                     | 1041 ----
+ drivers/mtd/nand/mpc5121_nfc.c                     |  855 ----
+ drivers/mtd/nand/mtk_ecc.c                         |  530 ---
+ drivers/mtd/nand/mtk_ecc.h                         |   50 -
+ drivers/mtd/nand/mtk_nand.c                        | 1526 ------
+ drivers/mtd/nand/mxc_nand.c                        | 1857 --------
+ drivers/mtd/nand/nand_base.c                       | 4840 -------------------
+ drivers/mtd/nand/nand_bbt.c                        | 1452 ------
+ drivers/mtd/nand/nand_bch.c                        |  234 -
+ drivers/mtd/nand/nand_ecc.c                        |  533 ---
+ drivers/mtd/nand/nand_ids.c                        |  193 -
+ drivers/mtd/nand/nand_timings.c                    |  311 --
+ drivers/mtd/nand/nandsim.c                         | 2431 ----------
+ drivers/mtd/nand/ndfc.c                            |  286 --
+ drivers/mtd/nand/nuc900_nand.c                     |  306 --
+ drivers/mtd/nand/omap2.c                           | 2214 ---------
+ drivers/mtd/nand/omap_elm.c                        |  578 ---
+ drivers/mtd/nand/orion_nand.c                      |  218 -
+ drivers/mtd/nand/pasemi_nand.c                     |  233 -
+ drivers/mtd/nand/plat_nand.c                       |  145 -
+ drivers/mtd/nand/pxa3xx_nand.c                     | 2067 --------
+ drivers/mtd/nand/qcom_nandc.c                      | 2208 ---------
+ drivers/mtd/nand/r852.c                            | 1082 -----
+ drivers/mtd/nand/r852.h                            |  160 -
+ drivers/mtd/nand/rawnand/Kconfig                   |  573 +++
+ drivers/mtd/nand/rawnand/Makefile                  |   62 +
+ drivers/mtd/nand/rawnand/ams-delta.c               |  291 ++
+ drivers/mtd/nand/rawnand/atmel_nand.c              | 2481 ++++++++++
+ drivers/mtd/nand/rawnand/atmel_nand_ecc.h          |  163 +
+ drivers/mtd/nand/rawnand/atmel_nand_nfc.h          |  103 +
+ drivers/mtd/nand/rawnand/au1550nd.c                |  518 ++
+ drivers/mtd/nand/rawnand/bcm47xxnflash/Makefile    |    4 +
+ .../mtd/nand/rawnand/bcm47xxnflash/bcm47xxnflash.h |   25 +
+ drivers/mtd/nand/rawnand/bcm47xxnflash/main.c      |   81 +
+ .../mtd/nand/rawnand/bcm47xxnflash/ops_bcm4706.c   |  454 ++
+ drivers/mtd/nand/rawnand/bf5xx_nand.c              |  860 ++++
+ drivers/mtd/nand/rawnand/brcmnand/Makefile         |    7 +
+ drivers/mtd/nand/rawnand/brcmnand/bcm63138_nand.c  |  109 +
+ drivers/mtd/nand/rawnand/brcmnand/bcm6368_nand.c   |  142 +
+ drivers/mtd/nand/rawnand/brcmnand/brcmnand.c       | 2561 ++++++++++
+ drivers/mtd/nand/rawnand/brcmnand/brcmnand.h       |   74 +
+ drivers/mtd/nand/rawnand/brcmnand/brcmstb_nand.c   |   44 +
+ drivers/mtd/nand/rawnand/brcmnand/iproc_nand.c     |  160 +
+ drivers/mtd/nand/rawnand/cafe_nand.c               |  898 ++++
+ drivers/mtd/nand/rawnand/cmx270_nand.c             |  246 +
+ drivers/mtd/nand/rawnand/cs553x_nand.c             |  358 ++
+ drivers/mtd/nand/rawnand/davinci_nand.c            |  862 ++++
+ drivers/mtd/nand/rawnand/denali.c                  | 1663 +++++++
+ drivers/mtd/nand/rawnand/denali.h                  |  484 ++
+ drivers/mtd/nand/rawnand/denali_dt.c               |  131 +
+ drivers/mtd/nand/rawnand/denali_pci.c              |  121 +
+ drivers/mtd/nand/rawnand/diskonchip.c              | 1712 +++++++
+ drivers/mtd/nand/rawnand/docg4.c                   | 1410 ++++++
+ drivers/mtd/nand/rawnand/fsl_elbc_nand.c           |  977 ++++
+ drivers/mtd/nand/rawnand/fsl_ifc_nand.c            | 1095 +++++
+ drivers/mtd/nand/rawnand/fsl_upm.c                 |  363 ++
+ drivers/mtd/nand/rawnand/fsmc_nand.c               | 1100 +++++
+ drivers/mtd/nand/rawnand/gpio.c                    |  322 ++
+ drivers/mtd/nand/rawnand/gpmi-nand/Makefile        |    3 +
+ drivers/mtd/nand/rawnand/gpmi-nand/bch-regs.h      |  128 +
+ drivers/mtd/nand/rawnand/gpmi-nand/gpmi-lib.c      | 1508 ++++++
+ drivers/mtd/nand/rawnand/gpmi-nand/gpmi-nand.c     | 2193 +++++++++
+ drivers/mtd/nand/rawnand/gpmi-nand/gpmi-nand.h     |  310 ++
+ drivers/mtd/nand/rawnand/gpmi-nand/gpmi-regs.h     |  187 +
+ drivers/mtd/nand/rawnand/hisi504_nand.c            |  898 ++++
+ drivers/mtd/nand/rawnand/jz4740_nand.c             |  557 +++
+ drivers/mtd/nand/rawnand/jz4780_bch.c              |  380 ++
+ drivers/mtd/nand/rawnand/jz4780_bch.h              |   43 +
+ drivers/mtd/nand/rawnand/jz4780_nand.c             |  416 ++
+ drivers/mtd/nand/rawnand/lpc32xx_mlc.c             |  902 ++++
+ drivers/mtd/nand/rawnand/lpc32xx_slc.c             | 1041 ++++
+ drivers/mtd/nand/rawnand/mpc5121_nfc.c             |  855 ++++
+ drivers/mtd/nand/rawnand/mtk_ecc.c                 |  530 +++
+ drivers/mtd/nand/rawnand/mtk_ecc.h                 |   50 +
+ drivers/mtd/nand/rawnand/mtk_nand.c                | 1526 ++++++
+ drivers/mtd/nand/rawnand/mxc_nand.c                | 1857 ++++++++
+ drivers/mtd/nand/rawnand/nand_base.c               | 4946 ++++++++++++++++++++
+ drivers/mtd/nand/rawnand/nand_bch.c                |  234 +
+ drivers/mtd/nand/rawnand/nand_ecc.c                |  533 +++
+ drivers/mtd/nand/rawnand/nand_ids.c                |  193 +
+ drivers/mtd/nand/rawnand/nand_timings.c            |  311 ++
+ drivers/mtd/nand/rawnand/nandsim.c                 | 2431 ++++++++++
+ drivers/mtd/nand/rawnand/ndfc.c                    |  286 ++
+ drivers/mtd/nand/rawnand/nuc900_nand.c             |  306 ++
+ drivers/mtd/nand/rawnand/omap2.c                   | 2214 +++++++++
+ drivers/mtd/nand/rawnand/omap_elm.c                |  578 +++
+ drivers/mtd/nand/rawnand/orion_nand.c              |  218 +
+ drivers/mtd/nand/rawnand/pasemi_nand.c             |  233 +
+ drivers/mtd/nand/rawnand/plat_nand.c               |  145 +
+ drivers/mtd/nand/rawnand/pxa3xx_nand.c             | 2067 ++++++++
+ drivers/mtd/nand/rawnand/qcom_nandc.c              | 2208 +++++++++
+ drivers/mtd/nand/rawnand/r852.c                    | 1082 +++++
+ drivers/mtd/nand/rawnand/r852.h                    |  160 +
+ drivers/mtd/nand/rawnand/s3c2410.c                 | 1165 +++++
+ drivers/mtd/nand/rawnand/sh_flctl.c                | 1251 +++++
+ drivers/mtd/nand/rawnand/sharpsl.c                 |  235 +
+ drivers/mtd/nand/rawnand/sm_common.c               |  202 +
+ drivers/mtd/nand/rawnand/sm_common.h               |   61 +
+ drivers/mtd/nand/rawnand/socrates_nand.c           |  251 +
+ drivers/mtd/nand/rawnand/sunxi_nand.c              | 2291 +++++++++
+ drivers/mtd/nand/rawnand/tmio_nand.c               |  510 ++
+ drivers/mtd/nand/rawnand/txx9ndfmc.c               |  423 ++
+ drivers/mtd/nand/rawnand/vf610_nfc.c               |  846 ++++
+ drivers/mtd/nand/rawnand/xway_nand.c               |  248 +
+ drivers/mtd/nand/s3c2410.c                         | 1165 -----
+ drivers/mtd/nand/sh_flctl.c                        | 1251 -----
+ drivers/mtd/nand/sharpsl.c                         |  235 -
+ drivers/mtd/nand/sm_common.c                       |  202 -
+ drivers/mtd/nand/sm_common.h                       |   61 -
+ drivers/mtd/nand/socrates_nand.c                   |  251 -
+ drivers/mtd/nand/sunxi_nand.c                      | 2291 ---------
+ drivers/mtd/nand/tmio_nand.c                       |  510 --
+ drivers/mtd/nand/txx9ndfmc.c                       |  423 --
+ drivers/mtd/nand/vf610_nfc.c                       |  846 ----
+ drivers/mtd/nand/xway_nand.c                       |  248 -
+ drivers/mtd/nftlcore.c                             |    2 +-
+ drivers/mtd/nftlmount.c                            |    2 +-
+ drivers/mtd/sm_ftl.c                               |    2 +-
+ drivers/mtd/ssfdc.c                                |    2 +-
+ drivers/mtd/tests/nandbiterrs.c                    |    2 +-
+ drivers/staging/mt29f_spinand/mt29f_spinand.c      |    8 +-
+ fs/jffs2/wbuf.c                                    |    2 +-
+ include/linux/mtd/nand-gpio.h                      |    2 +-
+ include/linux/mtd/nand.h                           | 1424 ++----
+ include/linux/mtd/rawnand.h                        | 1200 +++++
+ include/linux/mtd/sh_flctl.h                       |    4 +-
+ include/linux/mtd/sharpsl.h                        |    2 +-
+ include/linux/platform_data/atmel.h                |    2 +-
+ include/linux/platform_data/mtd-davinci.h          |    2 +-
+ 231 files changed, 62543 insertions(+), 61971 deletions(-)
+ delete mode 100644 drivers/mtd/nand/ams-delta.c
+ delete mode 100644 drivers/mtd/nand/atmel_nand.c
+ delete mode 100644 drivers/mtd/nand/atmel_nand_ecc.h
+ delete mode 100644 drivers/mtd/nand/atmel_nand_nfc.h
+ delete mode 100644 drivers/mtd/nand/au1550nd.c
+ create mode 100644 drivers/mtd/nand/bbt.c
+ delete mode 100644 drivers/mtd/nand/bcm47xxnflash/Makefile
+ delete mode 100644 drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+ delete mode 100644 drivers/mtd/nand/bcm47xxnflash/main.c
+ delete mode 100644 drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+ delete mode 100644 drivers/mtd/nand/bf5xx_nand.c
+ delete mode 100644 drivers/mtd/nand/brcmnand/Makefile
+ delete mode 100644 drivers/mtd/nand/brcmnand/bcm63138_nand.c
+ delete mode 100644 drivers/mtd/nand/brcmnand/bcm6368_nand.c
+ delete mode 100644 drivers/mtd/nand/brcmnand/brcmnand.c
+ delete mode 100644 drivers/mtd/nand/brcmnand/brcmnand.h
+ delete mode 100644 drivers/mtd/nand/brcmnand/brcmstb_nand.c
+ delete mode 100644 drivers/mtd/nand/brcmnand/iproc_nand.c
+ delete mode 100644 drivers/mtd/nand/cafe_nand.c
+ delete mode 100644 drivers/mtd/nand/cmx270_nand.c
+ delete mode 100644 drivers/mtd/nand/cs553x_nand.c
+ delete mode 100644 drivers/mtd/nand/davinci_nand.c
+ delete mode 100644 drivers/mtd/nand/denali.c
+ delete mode 100644 drivers/mtd/nand/denali.h
+ delete mode 100644 drivers/mtd/nand/denali_dt.c
+ delete mode 100644 drivers/mtd/nand/denali_pci.c
+ delete mode 100644 drivers/mtd/nand/diskonchip.c
+ delete mode 100644 drivers/mtd/nand/docg4.c
+ delete mode 100644 drivers/mtd/nand/fsl_elbc_nand.c
+ delete mode 100644 drivers/mtd/nand/fsl_ifc_nand.c
+ delete mode 100644 drivers/mtd/nand/fsl_upm.c
+ delete mode 100644 drivers/mtd/nand/fsmc_nand.c
+ delete mode 100644 drivers/mtd/nand/gpio.c
+ delete mode 100644 drivers/mtd/nand/gpmi-nand/Makefile
+ delete mode 100644 drivers/mtd/nand/gpmi-nand/bch-regs.h
+ delete mode 100644 drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+ delete mode 100644 drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+ delete mode 100644 drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+ delete mode 100644 drivers/mtd/nand/gpmi-nand/gpmi-regs.h
+ delete mode 100644 drivers/mtd/nand/hisi504_nand.c
+ delete mode 100644 drivers/mtd/nand/jz4740_nand.c
+ delete mode 100644 drivers/mtd/nand/jz4780_bch.c
+ delete mode 100644 drivers/mtd/nand/jz4780_bch.h
+ delete mode 100644 drivers/mtd/nand/jz4780_nand.c
+ delete mode 100644 drivers/mtd/nand/lpc32xx_mlc.c
+ delete mode 100644 drivers/mtd/nand/lpc32xx_slc.c
+ delete mode 100644 drivers/mtd/nand/mpc5121_nfc.c
+ delete mode 100644 drivers/mtd/nand/mtk_ecc.c
+ delete mode 100644 drivers/mtd/nand/mtk_ecc.h
+ delete mode 100644 drivers/mtd/nand/mtk_nand.c
+ delete mode 100644 drivers/mtd/nand/mxc_nand.c
+ delete mode 100644 drivers/mtd/nand/nand_base.c
+ delete mode 100644 drivers/mtd/nand/nand_bbt.c
+ delete mode 100644 drivers/mtd/nand/nand_bch.c
+ delete mode 100644 drivers/mtd/nand/nand_ecc.c
+ delete mode 100644 drivers/mtd/nand/nand_ids.c
+ delete mode 100644 drivers/mtd/nand/nand_timings.c
+ delete mode 100644 drivers/mtd/nand/nandsim.c
+ delete mode 100644 drivers/mtd/nand/ndfc.c
+ delete mode 100644 drivers/mtd/nand/nuc900_nand.c
+ delete mode 100644 drivers/mtd/nand/omap2.c
+ delete mode 100644 drivers/mtd/nand/omap_elm.c
+ delete mode 100644 drivers/mtd/nand/orion_nand.c
+ delete mode 100644 drivers/mtd/nand/pasemi_nand.c
+ delete mode 100644 drivers/mtd/nand/plat_nand.c
+ delete mode 100644 drivers/mtd/nand/pxa3xx_nand.c
+ delete mode 100644 drivers/mtd/nand/qcom_nandc.c
+ delete mode 100644 drivers/mtd/nand/r852.c
+ delete mode 100644 drivers/mtd/nand/r852.h
+ create mode 100644 drivers/mtd/nand/rawnand/Kconfig
+ create mode 100644 drivers/mtd/nand/rawnand/Makefile
+ create mode 100644 drivers/mtd/nand/rawnand/ams-delta.c
+ create mode 100644 drivers/mtd/nand/rawnand/atmel_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/atmel_nand_ecc.h
+ create mode 100644 drivers/mtd/nand/rawnand/atmel_nand_nfc.h
+ create mode 100644 drivers/mtd/nand/rawnand/au1550nd.c
+ create mode 100644 drivers/mtd/nand/rawnand/bcm47xxnflash/Makefile
+ create mode 100644 drivers/mtd/nand/rawnand/bcm47xxnflash/bcm47xxnflash.h
+ create mode 100644 drivers/mtd/nand/rawnand/bcm47xxnflash/main.c
+ create mode 100644 drivers/mtd/nand/rawnand/bcm47xxnflash/ops_bcm4706.c
+ create mode 100644 drivers/mtd/nand/rawnand/bf5xx_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/brcmnand/Makefile
+ create mode 100644 drivers/mtd/nand/rawnand/brcmnand/bcm63138_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/brcmnand/bcm6368_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/brcmnand/brcmnand.c
+ create mode 100644 drivers/mtd/nand/rawnand/brcmnand/brcmnand.h
+ create mode 100644 drivers/mtd/nand/rawnand/brcmnand/brcmstb_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/brcmnand/iproc_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/cafe_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/cmx270_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/cs553x_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/davinci_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/denali.c
+ create mode 100644 drivers/mtd/nand/rawnand/denali.h
+ create mode 100644 drivers/mtd/nand/rawnand/denali_dt.c
+ create mode 100644 drivers/mtd/nand/rawnand/denali_pci.c
+ create mode 100644 drivers/mtd/nand/rawnand/diskonchip.c
+ create mode 100644 drivers/mtd/nand/rawnand/docg4.c
+ create mode 100644 drivers/mtd/nand/rawnand/fsl_elbc_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/fsl_ifc_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/fsl_upm.c
+ create mode 100644 drivers/mtd/nand/rawnand/fsmc_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/gpio.c
+ create mode 100644 drivers/mtd/nand/rawnand/gpmi-nand/Makefile
+ create mode 100644 drivers/mtd/nand/rawnand/gpmi-nand/bch-regs.h
+ create mode 100644 drivers/mtd/nand/rawnand/gpmi-nand/gpmi-lib.c
+ create mode 100644 drivers/mtd/nand/rawnand/gpmi-nand/gpmi-nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/gpmi-nand/gpmi-nand.h
+ create mode 100644 drivers/mtd/nand/rawnand/gpmi-nand/gpmi-regs.h
+ create mode 100644 drivers/mtd/nand/rawnand/hisi504_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/jz4740_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/jz4780_bch.c
+ create mode 100644 drivers/mtd/nand/rawnand/jz4780_bch.h
+ create mode 100644 drivers/mtd/nand/rawnand/jz4780_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/lpc32xx_mlc.c
+ create mode 100644 drivers/mtd/nand/rawnand/lpc32xx_slc.c
+ create mode 100644 drivers/mtd/nand/rawnand/mpc5121_nfc.c
+ create mode 100644 drivers/mtd/nand/rawnand/mtk_ecc.c
+ create mode 100644 drivers/mtd/nand/rawnand/mtk_ecc.h
+ create mode 100644 drivers/mtd/nand/rawnand/mtk_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/mxc_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/nand_base.c
+ create mode 100644 drivers/mtd/nand/rawnand/nand_bch.c
+ create mode 100644 drivers/mtd/nand/rawnand/nand_ecc.c
+ create mode 100644 drivers/mtd/nand/rawnand/nand_ids.c
+ create mode 100644 drivers/mtd/nand/rawnand/nand_timings.c
+ create mode 100644 drivers/mtd/nand/rawnand/nandsim.c
+ create mode 100644 drivers/mtd/nand/rawnand/ndfc.c
+ create mode 100644 drivers/mtd/nand/rawnand/nuc900_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/omap2.c
+ create mode 100644 drivers/mtd/nand/rawnand/omap_elm.c
+ create mode 100644 drivers/mtd/nand/rawnand/orion_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/pasemi_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/plat_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/pxa3xx_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/qcom_nandc.c
+ create mode 100644 drivers/mtd/nand/rawnand/r852.c
+ create mode 100644 drivers/mtd/nand/rawnand/r852.h
+ create mode 100644 drivers/mtd/nand/rawnand/s3c2410.c
+ create mode 100644 drivers/mtd/nand/rawnand/sh_flctl.c
+ create mode 100644 drivers/mtd/nand/rawnand/sharpsl.c
+ create mode 100644 drivers/mtd/nand/rawnand/sm_common.c
+ create mode 100644 drivers/mtd/nand/rawnand/sm_common.h
+ create mode 100644 drivers/mtd/nand/rawnand/socrates_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/sunxi_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/tmio_nand.c
+ create mode 100644 drivers/mtd/nand/rawnand/txx9ndfmc.c
+ create mode 100644 drivers/mtd/nand/rawnand/vf610_nfc.c
+ create mode 100644 drivers/mtd/nand/rawnand/xway_nand.c
+ delete mode 100644 drivers/mtd/nand/s3c2410.c
+ delete mode 100644 drivers/mtd/nand/sh_flctl.c
+ delete mode 100644 drivers/mtd/nand/sharpsl.c
+ delete mode 100644 drivers/mtd/nand/sm_common.c
+ delete mode 100644 drivers/mtd/nand/sm_common.h
+ delete mode 100644 drivers/mtd/nand/socrates_nand.c
+ delete mode 100644 drivers/mtd/nand/sunxi_nand.c
+ delete mode 100644 drivers/mtd/nand/tmio_nand.c
+ delete mode 100644 drivers/mtd/nand/txx9ndfmc.c
+ delete mode 100644 drivers/mtd/nand/vf610_nfc.c
+ delete mode 100644 drivers/mtd/nand/xway_nand.c
+ create mode 100644 include/linux/mtd/rawnand.h
+
 -- 
 2.7.4
