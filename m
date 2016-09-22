@@ -1,15 +1,20 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmpZC-0008Rt-31
- for linux-mtd@lists.infradead.org; Wed, 21 Sep 2016 22:00:35 +0000
-Received: by mail-wm0-x241.google.com with SMTP id w84so10893122wmg.0
- for <linux-mtd@lists.infradead.org>; Wed, 21 Sep 2016 15:00:13 -0700 (PDT)
-From: Pascal Eberhard <pascal.eberhard@gmail.com>
-To: richard@nod.at
-Cc: linux-mtd@lists.infradead.org, Pascal Eberhard <pascal.eberhard@gmail.com>
-Subject: [PATCH] ubifs: fix host xattr_len when changing xattr
-Date: Wed, 21 Sep 2016 23:57:30 +0200
-Message-Id: <1474495050-13529-1-git-send-email-pascal.eberhard@gmail.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bn10O-00024a-Bd
+ for linux-mtd@lists.infradead.org; Thu, 22 Sep 2016 10:13:25 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Peter Pan <peterpansjtu@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: [RFC PATCH 5/7] mtd: nand: rawnand: create struct rawnand_device
+Date: Thu, 22 Sep 2016 12:12:58 +0200
+Message-Id: <1474539180-5863-6-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,97 +24,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When an extended attribute is changed, xattr_len of host inode is
-recalculated. ui->data_len is updated before computation and result
-is wrong. This patch adds a temporary variable to fix computation.
+Create the rawnand_device struct inheriting from nand_device and make
+nand_chip inherit from this struct.
 
-To reproduce the issue:
+The rawnand_device object should be used for the new
+rawnand-device/rawnand-controller model, and fields inside nand_chip
+should progressively move to the future rawnand_controller or the existing
+rawnand_device struct.
 
-~# > a.txt
-~# attr -s an-attr -V a-value a.txt
-~# attr -s an-attr -V a-bit-bigger-value a.txt
+In the meantime, we make sure nand_device fields are properly initialized
+by converting information stored in mtd_info and nand_chip into the
+nand_memory_organization format.
 
-Now host inode xattr_len is wrong. Forcing dbg_check_filesystem()
-generates the following error:
-
-[  130.620140] UBIFS (ubi0:2): background thread "ubifs_bgt0_2" started, PID 565
-[  131.470790] UBIFS error (ubi0:2 pid 564): check_inodes: inode 646 has xattr size 240, but calculated size is 256
-[  131.481697] UBIFS (ubi0:2): dump of the inode 646 sitting in LEB 29:114688
-[  131.488953]  magic          0x6101831
-[  131.492876]  crc            0x9fce9091
-[  131.496836]  node_type      0 (inode node)
-[  131.501193]  group_type     1 (in node group)
-[  131.505788]  sqnum          9278
-[  131.509191]  len            160
-[  131.512549]  key            (646, inode)
-[  131.516688]  creat_sqnum    9270
-[  131.520133]  size           0
-[  131.523264]  nlink          1
-[  131.526398]  atime          1053025857.0
-[  131.530574]  mtime          1053025857.0
-[  131.534714]  ctime          1053025906.0
-[  131.538849]  uid            0
-[  131.542009]  gid            0
-[  131.545140]  mode           33188
-[  131.548636]  flags          0x1
-[  131.551977]  xattr_cnt      1
-[  131.555108]  xattr_size     240
-[  131.558420]  xattr_names    12
-[  131.561670]  compr_type     0x1
-[  131.564983]  data len       0
-[  131.568125] UBIFS error (ubi0:2 pid 564): dbg_check_filesystem: file-system check failed with error -22
-[  131.578074] CPU: 0 PID: 564 Comm: mount Not tainted 4.4.12-g3639bea54a #24
-[  131.585352] Hardware name: Generic AM33XX (Flattened Device Tree)
-[  131.591918] [<c00151c0>] (unwind_backtrace) from [<c0012acc>] (show_stack+0x10/0x14)
-[  131.600177] [<c0012acc>] (show_stack) from [<c01c950c>] (dbg_check_filesystem+0x464/0x4d0)
-[  131.608934] [<c01c950c>] (dbg_check_filesystem) from [<c019f36c>] (ubifs_mount+0x14f8/0x2130)
-[  131.617991] [<c019f36c>] (ubifs_mount) from [<c00d7088>] (mount_fs+0x14/0x98)
-[  131.625572] [<c00d7088>] (mount_fs) from [<c00ed674>] (vfs_kern_mount+0x4c/0xd4)
-[  131.633435] [<c00ed674>] (vfs_kern_mount) from [<c00efb5c>] (do_mount+0x988/0xb50)
-[  131.641471] [<c00efb5c>] (do_mount) from [<c00f004c>] (SyS_mount+0x74/0xa0)
-[  131.648837] [<c00f004c>] (SyS_mount) from [<c000fe20>] (ret_fast_syscall+0x0/0x3c)
-[  131.665315] UBIFS (ubi0:2): background thread "ubifs_bgt0_2" stops
-
-Signed-off-by: Pascal Eberhard <pascal.eberhard@gmail.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- fs/ubifs/xattr.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/rawnand/nand_base.c | 40 ++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h          | 26 +++++++++++++++++------
+ 2 files changed, 60 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 11a0041..6c2f4d4 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -200,6 +200,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 	struct ubifs_inode *host_ui = ubifs_inode(host);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	void *buf = NULL;
-+	int old_size;
- 	struct ubifs_budget_req req = { .dirtied_ino = 2,
- 		.dirtied_ino_d = ALIGN(size, 8) + ALIGN(host_ui->data_len, 8) };
+diff --git a/drivers/mtd/nand/rawnand/nand_base.c b/drivers/mtd/nand/rawnand/nand_base.c
+index c4a4054255cf..2eb04d1b9f98 100644
+--- a/drivers/mtd/nand/rawnand/nand_base.c
++++ b/drivers/mtd/nand/rawnand/nand_base.c
+@@ -3972,6 +3972,43 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return false;
+ }
  
-@@ -217,12 +218,13 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 	kfree(ui->data);
- 	ui->data = buf;
- 	inode->i_size = ui->ui_size = size;
-+	old_size = ui->data_len;
- 	ui->data_len = size;
- 	mutex_unlock(&ui->ui_mutex);
++static int rawnand_erase(struct nand_device *nand, struct erase_info *einfo)
++{
++	struct mtd_info *mtd = nand_to_mtd(nand);
++
++	return nand_erase_nand(mtd, einfo, 1);
++}
++
++static int rawnand_markbad(struct nand_device *nand, int block)
++{
++	struct mtd_info *mtd = nand_to_mtd(nand);
++	struct nand_chip *chip = mtd_to_nandc(mtd);
++	loff_t offs = nand_eraseblock_to_offs(nand, block);
++
++	return chip->block_markbad(mtd, offs);
++}
++
++static const struct nand_ops rawnand_ops = {
++	.erase = rawnand_erase,
++	.markbad = rawnand_markbad,
++};
++
++static void nandc_fill_nandd(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nandc_to_mtd(chip);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	struct nand_memory_organization *memorg = &nand->memorg;
++
++	memorg->pagesize = mtd->writesize;
++	memorg->oobsize = mtd->oobsize;
++	memorg->eraseblocksize = mtd->erasesize;
++	memorg->ndies = chip->numchips;
++	memorg->diesize = chip->chipsize;
++	/* TODO: fill ->planesize and ->nplanes */
++
++	nand->ops = &rawnand_ops;
++}
++
+ /*
+  * Get the flash and manufacturer id and lookup if the type is supported.
+  */
+@@ -4357,6 +4394,9 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	chip->numchips = i;
+ 	mtd->size = i * chip->chipsize;
  
- 	mutex_lock(&host_ui->ui_mutex);
- 	host->i_ctime = ubifs_current_time(host);
--	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
-+	host_ui->xattr_size -= CALC_XATTR_BYTES(old_size);
- 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
++	/* Fill nand_device info */
++	nandc_fill_nandd(chip);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(nand_scan_ident);
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 941218dec463..8efff12604ad 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -20,6 +20,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/flashchip.h>
++#include <linux/mtd/nand.h>
+ #include <linux/mtd/bbm.h>
  
- 	/*
-@@ -241,7 +243,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
+ struct mtd_info;
+@@ -689,8 +690,21 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+ }
  
- out_cancel:
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(size);
--	host_ui->xattr_size += CALC_XATTR_BYTES(ui->data_len);
-+	host_ui->xattr_size += CALC_XATTR_BYTES(old_size);
- 	mutex_unlock(&host_ui->ui_mutex);
- 	make_bad_inode(inode);
- out_free:
+ /**
++ * struct rawnand_device - raw NAND device structure
++ * @base: NAND device instance (inheritance)
++ *
++ * This structure describes a raw NAND device and should progressively
++ * replace the nand_chip struct.
++ *
++ * Note: do not blindly move nand_chip fields into rawnand_device.
++ */
++struct rawnand_device {
++	struct nand_device base;
++};
++
++/**
+  * struct nand_chip - NAND Private Flash Chip Data
+- * @mtd:		MTD device registered to the MTD framework
++ * @base:		raw NAND device instance (inheritance)
+  * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
+  *			flash device
+  * @IO_ADDR_W:		[BOARDSPECIFIC] address to write the 8 I/O lines of the
+@@ -790,7 +804,7 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+  */
+ 
+ struct nand_chip {
+-	struct mtd_info mtd;
++	struct rawnand_device base;
+ 	void __iomem *IO_ADDR_R;
+ 	void __iomem *IO_ADDR_W;
+ 
+@@ -880,22 +894,22 @@ extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
+ static inline void nand_set_flash_node(struct nand_chip *chip,
+ 				       struct device_node *np)
+ {
+-	mtd_set_of_node(&chip->mtd, np);
++	nand_set_of_node(&chip->base.base, np);
+ }
+ 
+ static inline struct device_node *nand_get_flash_node(struct nand_chip *chip)
+ {
+-	return mtd_get_of_node(&chip->mtd);
++	return nand_get_of_node(&chip->base.base);
+ }
+ 
+ static inline struct nand_chip *mtd_to_nandc(struct mtd_info *mtd)
+ {
+-	return container_of(mtd, struct nand_chip, mtd);
++	return container_of(mtd_to_nand(mtd), struct nand_chip, base.base);
+ }
+ 
+ static inline struct mtd_info *nandc_to_mtd(struct nand_chip *chip)
+ {
+-	return &chip->mtd;
++	return nand_to_mtd(&chip->base.base);
+ }
+ 
+ static inline void *nand_get_controller_data(struct nand_chip *chip)
 -- 
 2.7.4
