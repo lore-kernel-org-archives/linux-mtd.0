@@ -1,19 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bnOtl-00066w-1W
- for linux-mtd@lists.infradead.org; Fri, 23 Sep 2016 11:44:12 +0000
-Date: Fri, 23 Sep 2016 13:43:44 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jan Glauber <jan.glauber@caviumnetworks.com>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: Re: Question about nand_scan()
-Message-ID: <20160923134344.715638a4@bbrezillon>
-In-Reply-To: <20160923112944.GB4580@hardcore>
-References: <20160923112944.GB4580@hardcore>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bnPFX-0000Fv-Kk
+ for linux-mtd@lists.infradead.org; Fri, 23 Sep 2016 12:06:41 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] MTD NAND fixes for v4.8-rc8
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <91984e2b-9bc9-0938-f4af-8decc00b7e63@nod.at>
+Date: Fri, 23 Sep 2016 14:05:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jan,
+Linus,
 
-On Fri, 23 Sep 2016 13:29:44 +0200
-Jan Glauber <jan.glauber@caviumnetworks.com> wrote:
+This pull request contains fixes for bugs which got introduced in -rc1.
+You may wonder why I'm sending this pull request. Usually Brian takes NAND patches
+from Boris, but since Brian is very busy these days with other stuff and Boris is
+not yet member of the kernel.org web of trust I stepped in.
 
-> Hi all,
->=20
-> I'm working on a driver for the NAND controller on Cavium's ThunderX.
->=20
-> So far I implemented the low-level functions for using the controller
-> to access a NAND chip. I can read the ONFI ID and parameter page
-> with that.
->=20
-> Now I wanted to use nand_scan() instead of manually reading the chip
-> parameters, but it fails with "No NAND device found".
->=20
-> The hardware I'm using has one NAND device wired as chip 1 (the NAND
-> controller support chips 0..7).
->=20
-> The reason for the failure seems to be that nand_get_flash_type()
-> returns an error before all the chips are scanned. What I don't
-> understand is in that function chip 0 is selected before the loop
-> that would scan all chips:
->=20
->         /* Select the device */
->         chip->select_chip(mtd, 0);
->=20
-> My select_chip() stores the chip number (in that case 0) and uses
-> that for subsequent commands to the controller. Since there is no
-> chip 0 the read returns nothing and nand_scan() fails.
->=20
-> Probably I'm missing something, would be great if someone could
-> help me...
+Boris will be in Berlin at ELCE, I'll sign his key and hopefully other
+Kernel developers too such that he can issue his own pull requests soon.
 
-Actually, the chip parameter passed to ->select_chip() is not the
-CS-id from the NAND controller PoV, but the one from the NAND chip PoV.
+Brian, if there is anything wrong with this pull request, please let us know.
+We're not trying to bypass you. All we want is getting these fixes upstream
+before the merge window opens and new bugs emerge.
 
-You have to store an association table between chip=E2=81=BBCS and controll=
-er-CS
-somewhere in your NAND controller private struct (a struct inheriting
-from nand_control_hw).
+The following changes since commit 3be7988674ab33565700a37b210f502563d932e6:
 
-And remember that nand_scan_ident() is supposed to detect a single NAND
-chip, not all the chips connected to your controller (the multi-CS
-logic is here to handle multi-dies NANDs, not the case where you have
-multiple NAND chips connected to the same controller).
+  Linux 4.8-rc7 (2016-09-18 17:27:41 -0700)
 
-You can have a look at the sunxi_nand [1] driver if you want an example.
+are available in the git repository at:
 
-Regards,
+  git://git.infradead.org/linux-ubifs.git tags/nand-fixes-for-4.8-rc8
 
-Boris
+for you to fetch changes up to 38178e7b88dcbe1ab384f27a7370074e774dda81:
 
-[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/sunxi_nand.c#L219
+  mtd: nand: mxc: fix obiwan error in mxc_nand_v[12]_ooblayout_free() functions (2016-09-19 11:57:12 +0200)
+
+----------------------------------------------------------------
+NAND Fixes for 4.8-rc8:
+- Fix a wrong OOB layout definition in the mxc driver
+- Fix incorrect ECC handling in the mtk driver
+
+----------------------------------------------------------------
+Lothar Waßmann (1):
+      mtd: nand: mxc: fix obiwan error in mxc_nand_v[12]_ooblayout_free() functions
+
+RogerCC Lin (2):
+      mtd: nand: fix generating over-boundary ECC data when writing
+      mtd: nand: fix chances to create incomplete ECC data when writing
+
+ drivers/mtd/nand/mtk_ecc.c  | 12 ++++++++----
+ drivers/mtd/nand/mtk_nand.c |  7 +++++--
+ drivers/mtd/nand/mxc_nand.c |  2 +-
+ 3 files changed, 14 insertions(+), 7 deletions(-)
