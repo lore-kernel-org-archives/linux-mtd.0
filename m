@@ -1,27 +1,19 @@
-Received: from relay1.mentorg.com ([192.94.38.131])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bnOnv-0003A8-DH
- for linux-mtd@lists.infradead.org; Fri, 23 Sep 2016 11:38:09 +0000
-From: "Chugh, Sanjeev" <Sanjeev_Chugh@mentor.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>
-Subject: RE: [PATCH 2/2] ubi: attach: do not return -EINVAL if the
- mtd->numeraseregions is 1
-Date: Fri, 23 Sep 2016 11:37:44 +0000
-Message-ID: <BEFE8A70F8F03B42BC5848A2E783B9E950AC853F@EU-MBX-03.mgc.mentorg.com>
-References: <1469440019-29358-1-git-send-email-rajeev_kumar@mentor.com>
- <1469440019-29358-2-git-send-email-rajeev_kumar@mentor.com>
- <5795EA8B.2040209@nod.at> <20160729182449.GA124841@google.com>
- <1470292252.2311.48.camel@gmail.com>
- <BEFE8A70F8F03B42BC5848A2E783B9E950AC8413@EU-MBX-03.mgc.mentorg.com>
-In-Reply-To: <BEFE8A70F8F03B42BC5848A2E783B9E950AC8413@EU-MBX-03.mgc.mentorg.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bnOtl-00066w-1W
+ for linux-mtd@lists.infradead.org; Fri, 23 Sep 2016 11:44:12 +0000
+Date: Fri, 23 Sep 2016 13:43:44 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Jan Glauber <jan.glauber@caviumnetworks.com>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: Re: Question about nand_scan()
+Message-ID: <20160923134344.715638a4@bbrezillon>
+In-Reply-To: <20160923112944.GB4580@hardcore>
+References: <20160923112944.GB4580@hardcore>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,83 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just to clarify, I meant since you were suggesting that value of numerasere=
-gions either 0 or 1 is essentially equal.=20
+Hi Jan,
 
-Are you suggesting that you don't like the change and better clarify this i=
-n documentation about this ?=20
+On Fri, 23 Sep 2016 13:29:44 +0200
+Jan Glauber <jan.glauber@caviumnetworks.com> wrote:
 
--Sanjeev
+> Hi all,
+>=20
+> I'm working on a driver for the NAND controller on Cavium's ThunderX.
+>=20
+> So far I implemented the low-level functions for using the controller
+> to access a NAND chip. I can read the ONFI ID and parameter page
+> with that.
+>=20
+> Now I wanted to use nand_scan() instead of manually reading the chip
+> parameters, but it fails with "No NAND device found".
+>=20
+> The hardware I'm using has one NAND device wired as chip 1 (the NAND
+> controller support chips 0..7).
+>=20
+> The reason for the failure seems to be that nand_get_flash_type()
+> returns an error before all the chips are scanned. What I don't
+> understand is in that function chip 0 is selected before the loop
+> that would scan all chips:
+>=20
+>         /* Select the device */
+>         chip->select_chip(mtd, 0);
+>=20
+> My select_chip() stores the chip number (in that case 0) and uses
+> that for subsequent commands to the controller. Since there is no
+> chip 0 the read returns nothing and nand_scan() fails.
+>=20
+> Probably I'm missing something, would be great if someone could
+> help me...
 
->-----Original Message-----
->From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf O=
-f
->Chugh, Sanjeev
->Sent: Friday, September 23, 2016 4:51 PM
->To: dedekind1@gmail.com; Brian Norris; Richard Weinberger
->Cc: linux-mtd@lists.infradead.org; dwmw2@infradead.org;
->stable@vger.kernel.org
->Subject: RE: [PATCH 2/2] ubi: attach: do not return -EINVAL if the mtd-
->>numeraseregions is 1
->
->Hello Brian, Artem,
->
->Are you suggesting that this change be documented instead. Note that we ar=
-e
->using NOR flash devices for our testing as you asked.
->
->Can I request you to please clarify on acceptance of this patch ?
->
->Thanks
->Sanjeev
->
->>-----Original Message-----
->>From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
->>Sent: Thursday, August 04, 2016 12:01 PM
->>To: Brian Norris; Richard Weinberger
->>Cc: Rajeev Kumar; dwmw2@infradead.org; linux-mtd@lists.infradead.org;
->>stable@vger.kernel.org
->>Subject: Re: [PATCH 2/2] ubi: attach: do not return -EINVAL if the mtd-
->>>numeraseregions is 1
->>
->>On Fri, 2016-07-29 at 11:24 -0700, Brian Norris wrote:
->>> (Artem, any opinions, since you had the most opinion last time this
->>> came
->>> up?)
->>
->>Hi Brian,
->>
->>well, I do not have strong opinion. That UBI translates to "I do not know=
- how to
->>deal with multiple regions", nothing else.
->>
->>I think this was my understanding of numeraseregions
->>
->>1. numaraseregions=3D0: no regions, just uniform flash.
->>
->>2. numeraseregions=3D1: basically same as above, but friendlier to the re=
-gion-
->>aware software. Indeed, if I care about regions, I do not want to handle =
-the
->>special case of numerasereions=3D0, I want a common case with
->>numerasereionts>0.
->>
->>Or to put it this way, from the drivers' writer POW:
->>
->>numaraseregions=3D0 - do not know anything about regions, do not care.
->>Also pre-regions dirivers, old stuff
->>
->>numeraseregions=3D1 - I want my driver to be ideal. Non-aware SW won't lo=
-ok to
->>the regions stuff, the aware SW will work nicely.
->>
->>So my take is: ban numeraseregions=3D1 if you feel like, but I recommend =
-to just
->>document the 0 (don't care/legacy) and 1 (same as 0, but care) and allow =
-for
->>both.
->>
->>Artem.
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Actually, the chip parameter passed to ->select_chip() is not the
+CS-id from the NAND controller PoV, but the one from the NAND chip PoV.
+
+You have to store an association table between chip=E2=81=BBCS and controll=
+er-CS
+somewhere in your NAND controller private struct (a struct inheriting
+from nand_control_hw).
+
+And remember that nand_scan_ident() is supposed to detect a single NAND
+chip, not all the chips connected to your controller (the multi-CS
+logic is here to handle multi-dies NANDs, not the case where you have
+multiple NAND chips connected to the same controller).
+
+You can have a look at the sunxi_nand [1] driver if you want an example.
+
+Regards,
+
+Boris
+
+[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/sunxi_nand.c#L219
