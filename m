@@ -1,24 +1,30 @@
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+Received: from mail-eopbgr20077.outbound.protection.outlook.com ([40.107.2.77]
+ helo=EUR02-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bnFKp-00053n-HQ
- for linux-mtd@lists.infradead.org; Fri, 23 Sep 2016 01:31:28 +0000
-Received: by mail-wm0-x233.google.com with SMTP id w84so3423145wmg.1
- for <linux-mtd@lists.infradead.org>; Thu, 22 Sep 2016 18:31:06 -0700 (PDT)
+ id 1bnJUd-0003o5-EF
+ for linux-mtd@lists.infradead.org; Fri, 23 Sep 2016 05:57:53 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: Scott Wood <oss@buserror.net>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Ronak Desai
+ <ronak.desai@rockwellcollins.com>
+CC: Matt Weber <matthew.weber@rockwellcollins.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Ezequiel
+ Garcia" <ezequiel@vanguardiasur.com.ar>
+Subject: RE: [PATCH] fsl_ifc_nand: Added random output enable cmd
+Date: Fri, 23 Sep 2016 05:57:27 +0000
+Message-ID: <DB5PR0401MB195839380B3527B22346170B97C80@DB5PR0401MB1958.eurprd04.prod.outlook.com>
+References: <1473189197-45191-1-git-send-email-matthew.weber@rockwellcollins.com>
+ <20160906215003.1b6eb095@bbrezillon>
+ <1473228233.30217.32.camel@buserror.net>
+ <20160907092257.77915c23@bbrezillon>
+ <CADFuHZ7e4-vrP+kys1U9Pc7e4A4+-J_W3-QERBv6KAi9hQy8ZA@mail.gmail.com>
+ <20160907181514.27a7fefc@bbrezillon>
+ <1473291077.30217.84.camel@buserror.net>
+In-Reply-To: <1473291077.30217.84.camel@buserror.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date: Thu, 22 Sep 2016 22:31:05 -0300
-Message-ID: <CAAEAJfDHch0DuoFRix7kzy0D7pe9aERJcCG2MtWo0wO6o0-b4g@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] mtd: nand: Abstract away the NAND interface type
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Peter Pan <peterpansjtu@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +34,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 22 September 2016 at 07:12, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hi,
->
-> This series is aiming at providing a generic NAND layer to share code
-> between different NAND based devices.
->
-> We currently have 3 different interfaces to interact with NANDs:
-> - Raw NANDs
-> - OneNANDs
-> - SPI NANDs
->
-> Apart from the way these NAND devices are accessed they have a lot
-> in common, like the way the memory is organized, or their constraints.
-> This is usually a good sign that some work should be done to factorize
-> the code.
->
-> This work has been started by Peter who wanted to re-use the BBT
-> code for its SPI-NAND driver. But I think we can push it further
-> other stuff (the software ECC implementation, or the way offsets are
-> converted to block/page number).
->
-> Before I continue in this direction, I'd like to get some feedback
-> from Peter and those who reviewed his initial submission (Brian,
-> Ezequiel) [1], or anyone who is interested in this topic.
->
-
-The general idea looks sane to me. It looks like a very decent
-step forward towards the infrastructure required for SPI NAND
-devices.
-
-If there's consensus about it, then let's do some tests on a bunch
-of platforms and merge it.
-
-Thanks,
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+SGkgU2NvdHQsDQoNClNvcnJ5IGZvciB2ZXJ5IGxhdGUgcmVwbHkuDQoNCj4gLS0tLS1PcmlnaW5h
+bCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2NvdHQgV29vZCBbbWFpbHRvOm9zc0BidXNlcnJvci5u
+ZXRdDQo+IFNlbnQ6IFRodXJzZGF5LCBTZXB0ZW1iZXIgMDgsIDIwMTYgNTowMSBBTQ0KPiBUbzog
+Qm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tPjsgUm9u
+YWsgRGVzYWkNCj4gPHJvbmFrLmRlc2FpQHJvY2t3ZWxsY29sbGlucy5jb20+DQo+IENjOiBNYXR0
+IFdlYmVyIDxtYXR0aGV3LndlYmVyQHJvY2t3ZWxsY29sbGlucy5jb20+OyBQcmFiaGFrYXIgS3Vz
+aHdhaGENCj4gPHByYWJoYWthci5rdXNod2FoYUBueHAuY29tPjsgbGludXgtbXRkQGxpc3RzLmlu
+ZnJhZGVhZC5vcmc7IEV6ZXF1aWVsDQo+IEdhcmNpYSA8ZXplcXVpZWxAdmFuZ3VhcmRpYXN1ci5j
+b20uYXI+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGZzbF9pZmNfbmFuZDogQWRkZWQgcmFuZG9t
+IG91dHB1dCBlbmFibGUgY21kDQo+IA0KPiBPbiBXZWQsIDIwMTYtMDktMDcgYXQgMTg6MTUgKzAy
+MDAsIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gPiBPbiBXZWQsIDcgU2VwIDIwMTYgMDk6NTA6
+NTAgLTA1MDANCj4gPiBSb25hayBEZXNhaSA8cm9uYWsuZGVzYWlAcm9ja3dlbGxjb2xsaW5zLmNv
+bT4gd3JvdGU6DQo+ID4NCj4gPiA+IElGQyBpbnB1dCBjbG9jayBpcyBkaXZpZGUgYnkgMiBwbGF0
+Zm9ybSBjbG9jayB3aGljaCBpcyBmaXhlZCBpbiBULCBQDQo+ID4gPiBzZXJpZXMNCj4gPiA+IGFu
+ZCBMYXllcnNjYXBlIHNlcmllcyBvZiBwcm9jZXNzb3JzIHdoZXJlIElGQyBpcyB1c2VkLCBtYXhp
+bXVtDQo+ID4gPiBwbGF0Zm9ybSBjbG9jayBpcyA2MDAgTUh6IHNvIElGQyBpbnB1dCBjbG9jayBi
+ZWNvbWVzIDMwMCBNSHogbWF4aW11bS4NCj4gPiA+IFRvIGF2b2lkIGZsb2F0aW5nIG9wZXJhdGlv
+biwgSSBjaG9zZSBuZXh0IHBvc3NpYmxlIGZyZXF1ZW5jeSBvZg0KPiA+ID4gMzMzLjMzIE1IeiB3
+aGljaCBnaXZlcyBtZSBwZXJpb2Qgb2YgMyBucy4gVGhlcmUgd2FzIG5vIGVhc3kgd2F5IHRvIGZp
+bmQNCj4gPiA+IHRoZSBpbnB1dCBJRkMgY2xvY2sgd2l0aG91dCBrbm93aW5nIHBsYXRmb3JtIGNs
+b2NrIHdoaWNoIHJlcXVpcmVzIFJDVw0KPiA+ID4gdmFsdWVzLg0KPiA+ID4gU28sIHRvIGF2b2lk
+IHRoYXQgSSBzZWxlY3RlZCB0aGlzIHJvdXRlIHdoZXJlIHdlIHdpbGwgZW5kIHVwIHdhaXRpbmcg
+ZmV3DQo+ID4gPiBtb3JlDQo+ID4gPiBjeWNsZXMgdGhlbiByZXF1aXJlZCBidXQgaXQgZG9lcyBu
+b3QgaGFybS4gRm9yIGV4YW1wbGUsIG15IGlucHV0IElGQyBjbG9jaw0KPiA+ID4gaXMNCj4gPiA+
+IDI2Ni42NiBNaHogYW5kIG15IE5BTkQgcGFydCB0ZWxscyBtZSB0byB3YWl0IG1pbmltdW0gMjAw
+IG5zIHNvIEkgaGF2ZSB0bw0KPiA+ID4gd2FpdCBmb3LCoMKgNTQgY3ljbGVzIHdoaWxlIHdpdGgg
+dGhpcyBjYWxjdWxhdGlvbiBJIHdpbGwgYmUgd2FpdGluZyBmb3IgNjYNCj4gPiA+IGN5Y2xlcw0K
+PiA+ID4gd2hpY2ggSSB0aGluayB3b24ndCBtYXR0ZXIgYXMgdGhlIGRhdGEtc2hlZXQgc3BlY2lm
+aWVzIG1pbmltdW0gY2hhbmdlDQo+ID4gPiBjb2x1bW4NCj4gPiA+IHNldC11cCB0aW1lLg0KPiA+
+IE9rLCBsZXQncyBmb3JnZXQgdGhpcyBhc3BlY3QgZm9yIG5vdy4gSXQganVzdCBmZWVscyB3ZWly
+ZCBmb3Igc29tZW9uZQ0KPiA+IHdobyBpcyB3b3JraW5nIG9uIEFSTSBwbGF0Zm9ybXMgdG8gc2Vl
+IGNvZGUgdGhhdCBpcyBtYWtpbmcgYXNzdW1wdGlvbnMNCj4gPiBvbiB0aGUgcGFyZW50IGNsayBy
+YXRlLg0KPiA+IFdlIHVzdWFsbHkgaGF2ZSBtb3N0IGNsb2NrcyBleHBvc2VkIHRocm91Z2ggdGhl
+IGNsayBmcmFtZXdvcmssIGFuZA0KPiA+IHF1ZXJ5IHRoZSByYXRlIG9mIHRoZSBjbG9jayBkcml2
+aW5nIHRoZSBJUCBiZWZvcmUgY2FsY3VsYXRpbmcNCj4gPiBzdWItdGltaW5ncy4NCj4gDQo+IEkg
+ZG9uJ3QgbGlrZSBzZWVpbmcgdGhlc2UgYXNzdW1wdGlvbnMgaGFyZGNvZGVkIGVpdGhlciwgYW5k
+IHdlIGRvIGhhdmUgYSBjbG9jaw0KPiBkcml2ZXIgdGhhdCBjYW4gc3VwcGx5IHRoaXMgaW5mb3Jt
+YXRpb24uIMKgV2UganVzdCBuZWVkIHRvIGFkZCBhbiBhcHByb3ByaWF0ZQ0KPiBjbG9ja3MgcHJv
+cGVydHkgdG8gdGhlIElGQyBub2RlICh0aG91Z2ggdGhlIGRyaXZlciBzaG91bGQga2VlcCB3b3Jr
+aW5nIGF0DQo+IGxlYXN0IGFzIHdlbGwgYXMgaXQgY3VycmVudGx5IGRvZXMgb24gZXhpc3Rpbmcg
+ZGV2aWNlIHRyZWVzKS4NCj4gDQo+IFByYWJoYWthciwgZG8geW91IGtub3cgb2YgYSBGSVIgb3Bl
+cmF0aW9uIG90aGVyIHRoYW4gTldBSVQgdGhhdCB3b3VsZCBiZQ0KPiBzdWl0YWJsZSBoZXJlIGlm
+IHdlIGRvIGdvIHRoZSByb3V0ZSBvZiBzZW5kaW5nIGEgcmVhbCBSTkRPVVQgY29tbWFuZD8NCg0K
+VGhlcmUgaXMgbm8gRklSIG9wZXJhdGlvbiBvdGhlciB0aGFuIE5XQUlUIHdoaWNoIGNhbiBiZSB1
+c2VkLiANClNhbWUgaGFzIGJlZW4gY29uZmlybWVkIGZyb20gZGVzaWduIHRlYW0uIA0KDQotLXBy
+YWJoYWthcg0KDQo=
