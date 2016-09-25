@@ -1,20 +1,25 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bo2Te-0001vK-SZ
- for linux-mtd@lists.infradead.org; Sun, 25 Sep 2016 05:59:56 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>,
- Mark Brown <broonie@kernel.org>, broonie@kernel.org, linux-spi@vger.kernel.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org, vigneshr@ti.com,
- f.fainelli@gmail.com, yendapally.reddy@broadcom.com,
- bcm-kernel-feedback-list@broadcom.com, jon.mason@broadcom.com,
- linux-spi@vger.kernel.org
-In-Reply-To: <1472076269-4731-9-git-send-email-kdasu.kdev@gmail.com>
-Message-Id: <E1bo2T9-0003FQ-Lq@finisterre>
-Date: Sat, 24 Sep 2016 22:59:19 -0700
-Subject: Applied "spi: iproc-qspi: Add Broadcom iProc SoCs support" to the spi
- tree
+ id 1boDSc-0007YI-KS
+ for linux-mtd@lists.infradead.org; Sun, 25 Sep 2016 17:43:31 +0000
+Received: by mail-qk0-x242.google.com with SMTP id m184so2392717qkb.3
+ for <linux-mtd@lists.infradead.org>; Sun, 25 Sep 2016 10:43:09 -0700 (PDT)
+Date: Sun, 25 Sep 2016 14:42:57 -0300
+From: Sergio Prado <sergio.prado@e-labworks.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, kgene@kernel.org, k.kozlowski@samsung.com,
+ richard@nod.at, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH] mtd: s3c2410: add device tree support
+Message-ID: <20160925174257.GA20238@sprado-desktop>
+References: <1474125760-28168-1-git-send-email-sergio.prado@e-labworks.com>
+ <20160917193123.762587d0@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160917193123.762587d0@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,493 +29,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch
+Hi Boris,
 
-   spi: iproc-qspi: Add Broadcom iProc SoCs support
+> > +Optional properties:
+> > +- samsung,tacls : time for active CLE/ALE to nWE/nOE
+> > +- samsung,twrph0 : active time for nWE/nOE
+> > +- samsung,twrph1 : time for release CLE/ALE from nWE/nOE inactive
+> 
+> Can you try to extract these information from the nand_sdr_timings
+> struct instead of passing it in your DT?
 
-has been applied to the spi tree at
+I've tested and the nand chip I'm working on is not ONFI or JEDEC
+compatible, so looks like it is not possible to extract the timing
+information from nand_sdr_timings. Am I right?
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+> > +	samsung,ignore_unset_ecc;
+> 
+> Just discovered this ->ignore_unset_ecc property, and I don't
+> understand why it's here for...
+> Either you don't want to have ECC, and in this case you should set
+> NAND_ECC_NONE, or you want to have ECC calculated, and in this case,
+> the only valid situation where ECC bytes are 0xff is when the page is
+> erased.
+> 
+> If I'm right, please fix the driver instead of adding this DT property.
+> If I'm wrong, could you explain in more detail when you have ECC bytes
+> set to 0xff?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I think you are right but I am not an expert on flash devices and the
+MTD sub-system. The commit message of this code says "If a block's ecc
+field is all 0xff, then ignore the ECC correction. This is for systems
+where some of the blocks, such as the initial cramfs are written without
+ECC and need to be loaded on start.". Does it make sense?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > +	for_each_available_child_of_node(np, child) {
+> > +
+> > +		sets->name = (char *)child->name;
+> > +		sets->of_node = child;
+> > +		sets->nr_chips = 1;
+> > +
+> > +		if (!of_property_match_string(child, "nand-ecc-mode", "none"))
+> > +			sets->disable_ecc = 1;
+> > +
+> > +		if (of_get_property(child, "nand-on-flash-bbt", NULL))
+> > +			sets->flash_bbt = 1;
+> > +
+> 
+> These properties are automatically extracted in nand_scan_ident(), why
+> do you need to parse them twice?
+> 
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+You are right, there is no need to parse them twice. But taking a look
+at the code I found a problem. Right now enabling hardware ECC is done
+at compile time by enabling CONFIG_MTD_NAND_S3C2410_HWECC in the
+menuconfig. Looks like this config option should be removed so we can
+select ECC mode using nand-ecc-mode property in the device tree. But
+this would break current boards that are not using a device tree. So it
+would be necessary to add a ecc_mode field in the platform_data of these
+boards and set them all to the default ECC mode (NAND_ECC_SOFT). Is this
+the right approach?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Thanks!
 
-Thanks,
-Mark
-
->From cc20a38612dbc87dc7396affc9758e3bfbe92340 Mon Sep 17 00:00:00 2001
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-Date: Wed, 24 Aug 2016 18:04:29 -0400
-Subject: [PATCH] spi: iproc-qspi: Add Broadcom iProc SoCs support
-
-This spi driver uses the common spi-bcm-qspi driver and implements iProc
-SoCs specific interrupt controller. The common driver now calls the SoC
-handlers when present. Adding support for both muxed l1 and unmuxed interrupt
-sources.
-
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-Signed-off-by: Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/spi/Makefile         |   2 +-
- drivers/spi/spi-bcm-qspi.c   |  97 ++++++++++++++++++++++++-
- drivers/spi/spi-bcm-qspi.h   |  34 ++++++++-
- drivers/spi/spi-iproc-qspi.c | 163 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 291 insertions(+), 5 deletions(-)
- create mode 100644 drivers/spi/spi-iproc-qspi.c
-
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 3e753db484d4..2dc1b71706f9 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -21,7 +21,7 @@ obj-$(CONFIG_SPI_BCM2835AUX)		+= spi-bcm2835aux.o
- obj-$(CONFIG_SPI_BCM53XX)		+= spi-bcm53xx.o
- obj-$(CONFIG_SPI_BCM63XX)		+= spi-bcm63xx.o
- obj-$(CONFIG_SPI_BCM63XX_HSSPI)		+= spi-bcm63xx-hsspi.o
--obj-$(CONFIG_SPI_BCM_QSPI)		+= spi-brcmstb-qspi.o spi-bcm-qspi.o
-+obj-$(CONFIG_SPI_BCM_QSPI)		+= spi-iproc-qspi.o spi-brcmstb-qspi.o spi-bcm-qspi.o
- obj-$(CONFIG_SPI_BFIN5XX)		+= spi-bfin5xx.o
- obj-$(CONFIG_SPI_ADI_V3)                += spi-adi-v3.o
- obj-$(CONFIG_SPI_BFIN_SPORT)		+= spi-bfin-sport.o
-diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
-index 2c121ba8f0cb..14f9dea3173f 100644
---- a/drivers/spi/spi-bcm-qspi.c
-+++ b/drivers/spi/spi-bcm-qspi.c
-@@ -175,9 +175,15 @@ enum base_type {
- 	BASEMAX,
- };
- 
-+enum irq_source {
-+	SINGLE_L2,
-+	MUXED_L1,
-+};
-+
- struct bcm_qspi_irq {
- 	const char *irq_name;
- 	const irq_handler_t irq_handler;
-+	int irq_source;
- 	u32 mask;
- };
- 
-@@ -198,6 +204,10 @@ struct bcm_qspi {
- 	u32 base_clk;
- 	u32 max_speed_hz;
- 	void __iomem *base[BASEMAX];
-+
-+	/* Some SoCs provide custom interrupt status register(s) */
-+	struct bcm_qspi_soc_intc	*soc_intc;
-+
- 	struct bcm_qspi_parms last_parms;
- 	struct qspi_trans  trans_pos;
- 	int curr_cs;
-@@ -806,6 +816,7 @@ static int bcm_qspi_bspi_flash_read(struct spi_device *spi,
- 	u32 addr = 0, len, len_words;
- 	int ret = 0;
- 	unsigned long timeo = msecs_to_jiffies(100);
-+	struct bcm_qspi_soc_intc *soc_intc = qspi->soc_intc;
- 
- 	if (bcm_qspi_bspi_ver_three(qspi))
- 		if (msg->addr_width == BSPI_ADDRLEN_4BYTES)
-@@ -850,6 +861,15 @@ static int bcm_qspi_bspi_flash_read(struct spi_device *spi,
- 	bcm_qspi_write(qspi, BSPI, BSPI_RAF_NUM_WORDS, len_words);
- 	bcm_qspi_write(qspi, BSPI, BSPI_RAF_WATERMARK, 0);
- 
-+	if (qspi->soc_intc) {
-+		/*
-+		 * clear soc MSPI and BSPI interrupts and enable
-+		 * BSPI interrupts.
-+		 */
-+		soc_intc->bcm_qspi_int_ack(soc_intc, MSPI_BSPI_DONE);
-+		soc_intc->bcm_qspi_int_set(soc_intc, BSPI_DONE, true);
-+	}
-+
- 	/* Must flush previous writes before starting BSPI operation */
- 	mb();
- 
-@@ -952,9 +972,12 @@ static irqreturn_t bcm_qspi_mspi_l2_isr(int irq, void *dev_id)
- 	u32 status = bcm_qspi_read(qspi, MSPI, MSPI_MSPI_STATUS);
- 
- 	if (status & MSPI_MSPI_STATUS_SPIF) {
-+		struct bcm_qspi_soc_intc *soc_intc = qspi->soc_intc;
- 		/* clear interrupt */
- 		status &= ~MSPI_MSPI_STATUS_SPIF;
- 		bcm_qspi_write(qspi, MSPI, MSPI_MSPI_STATUS, status);
-+		if (qspi->soc_intc)
-+			soc_intc->bcm_qspi_int_ack(soc_intc, MSPI_DONE);
- 		complete(&qspi->mspi_done);
- 		return IRQ_HANDLED;
- 	}
-@@ -966,20 +989,33 @@ static irqreturn_t bcm_qspi_bspi_lr_l2_isr(int irq, void *dev_id)
- {
- 	struct bcm_qspi_dev_id *qspi_dev_id = dev_id;
- 	struct bcm_qspi *qspi = qspi_dev_id->dev;
--	u32 status;
-+	struct bcm_qspi_soc_intc *soc_intc = qspi->soc_intc;
-+	u32 status = qspi_dev_id->irqp->mask;
- 
- 	if (qspi->bspi_enabled && qspi->bspi_rf_msg) {
- 		bcm_qspi_bspi_lr_data_read(qspi);
- 		if (qspi->bspi_rf_msg_len == 0) {
- 			qspi->bspi_rf_msg = NULL;
-+			if (qspi->soc_intc) {
-+				/* disable soc BSPI interrupt */
-+				soc_intc->bcm_qspi_int_set(soc_intc, BSPI_DONE,
-+							   false);
-+				/* indicate done */
-+				status = INTR_BSPI_LR_SESSION_DONE_MASK;
-+			}
-+
- 			if (qspi->bspi_rf_msg_status)
- 				bcm_qspi_bspi_lr_clear(qspi);
- 			else
- 				bcm_qspi_bspi_flush_prefetch_buffers(qspi);
- 		}
-+
-+		if (qspi->soc_intc)
-+			/* clear soc BSPI interrupt */
-+			soc_intc->bcm_qspi_int_ack(soc_intc, BSPI_DONE);
- 	}
- 
--	status = (qspi_dev_id->irqp->mask & INTR_BSPI_LR_SESSION_DONE_MASK);
-+	status &= INTR_BSPI_LR_SESSION_DONE_MASK;
- 	if (qspi->bspi_enabled && status && qspi->bspi_rf_msg_len == 0)
- 		complete(&qspi->bspi_done);
- 
-@@ -990,13 +1026,39 @@ static irqreturn_t bcm_qspi_bspi_lr_err_l2_isr(int irq, void *dev_id)
- {
- 	struct bcm_qspi_dev_id *qspi_dev_id = dev_id;
- 	struct bcm_qspi *qspi = qspi_dev_id->dev;
-+	struct bcm_qspi_soc_intc *soc_intc = qspi->soc_intc;
- 
- 	dev_err(&qspi->pdev->dev, "BSPI INT error\n");
- 	qspi->bspi_rf_msg_status = -EIO;
-+	if (qspi->soc_intc)
-+		/* clear soc interrupt */
-+		soc_intc->bcm_qspi_int_ack(soc_intc, BSPI_ERR);
-+
- 	complete(&qspi->bspi_done);
- 	return IRQ_HANDLED;
- }
- 
-+static irqreturn_t bcm_qspi_l1_isr(int irq, void *dev_id)
-+{
-+	struct bcm_qspi_dev_id *qspi_dev_id = dev_id;
-+	struct bcm_qspi *qspi = qspi_dev_id->dev;
-+	struct bcm_qspi_soc_intc *soc_intc = qspi->soc_intc;
-+	irqreturn_t ret = IRQ_NONE;
-+
-+	if (soc_intc) {
-+		u32 status = soc_intc->bcm_qspi_get_int_status(soc_intc);
-+
-+		if (status & MSPI_DONE)
-+			ret = bcm_qspi_mspi_l2_isr(irq, dev_id);
-+		else if (status & BSPI_DONE)
-+			ret = bcm_qspi_bspi_lr_l2_isr(irq, dev_id);
-+		else if (status & BSPI_ERR)
-+			ret = bcm_qspi_bspi_lr_err_l2_isr(irq, dev_id);
-+	}
-+
-+	return ret;
-+}
-+
- static const struct bcm_qspi_irq qspi_irq_tab[] = {
- 	{
- 		.irq_name = "spi_lr_fullness_reached",
-@@ -1036,6 +1098,13 @@ static const struct bcm_qspi_irq qspi_irq_tab[] = {
- 		.irq_handler = bcm_qspi_mspi_l2_isr,
- 		.mask = INTR_MSPI_HALTED_MASK,
- 	},
-+	{
-+		/* single muxed L1 interrupt source */
-+		.irq_name = "spi_l1_intr",
-+		.irq_handler = bcm_qspi_l1_isr,
-+		.irq_source = MUXED_L1,
-+		.mask = QSPI_INTERRUPTS_ALL,
-+	},
- };
- 
- static void bcm_qspi_bspi_init(struct bcm_qspi *qspi)
-@@ -1182,7 +1251,13 @@ int bcm_qspi_probe(struct platform_device *pdev,
- 	for (val = 0; val < num_irqs; val++) {
- 		irq = -1;
- 		name = qspi_irq_tab[val].irq_name;
--		irq = platform_get_irq_byname(pdev, name);
-+		if (qspi_irq_tab[val].irq_source == SINGLE_L2) {
-+			/* get the l2 interrupts */
-+			irq = platform_get_irq_byname(pdev, name);
-+		} else if (!num_ints && soc_intc) {
-+			/* all mspi, bspi intrs muxed to one L1 intr */
-+			irq = platform_get_irq(pdev, 0);
-+		}
- 
- 		if (irq  >= 0) {
- 			ret = devm_request_irq(&pdev->dev, irq,
-@@ -1209,6 +1284,17 @@ int bcm_qspi_probe(struct platform_device *pdev,
- 		goto qspi_probe_err;
- 	}
- 
-+	/*
-+	 * Some SoCs integrate spi controller (e.g., its interrupt bits)
-+	 * in specific ways
-+	 */
-+	if (soc_intc) {
-+		qspi->soc_intc = soc_intc;
-+		soc_intc->bcm_qspi_int_set(soc_intc, MSPI_DONE, true);
-+	} else {
-+		qspi->soc_intc = NULL;
-+	}
-+
- 	qspi->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(qspi->clk)) {
- 		dev_warn(dev, "unable to get clock\n");
-@@ -1288,6 +1374,11 @@ static int __maybe_unused bcm_qspi_resume(struct device *dev)
- 
- 	bcm_qspi_hw_init(qspi);
- 	bcm_qspi_chip_select(qspi, qspi->curr_cs);
-+	if (qspi->soc_intc)
-+		/* enable MSPI interrupt */
-+		qspi->soc_intc->bcm_qspi_int_set(qspi->soc_intc, MSPI_DONE,
-+						 true);
-+
- 	ret = clk_enable(qspi->clk);
- 	if (!ret)
- 		spi_master_resume(qspi->master);
-diff --git a/drivers/spi/spi-bcm-qspi.h b/drivers/spi/spi-bcm-qspi.h
-index 65c363b6b7b7..7abfc75a3860 100644
---- a/drivers/spi/spi-bcm-qspi.h
-+++ b/drivers/spi/spi-bcm-qspi.h
-@@ -48,10 +48,26 @@
- 	(INTR_MSPI_DONE_MASK |		       \
- 	 INTR_MSPI_HALTED_MASK)
- 
-+#define QSPI_INTERRUPTS_ALL                    \
-+	(MSPI_INTERRUPTS_ALL |		       \
-+	 BSPI_LR_INTERRUPTS_ALL)
-+
- struct platform_device;
- struct dev_pm_ops;
- 
--struct bcm_qspi_soc_intc;
-+enum {
-+	MSPI_DONE = 0x1,
-+	BSPI_DONE = 0x2,
-+	BSPI_ERR = 0x4,
-+	MSPI_BSPI_DONE = 0x7
-+};
-+
-+struct bcm_qspi_soc_intc {
-+	void (*bcm_qspi_int_ack)(struct bcm_qspi_soc_intc *soc_intc, int type);
-+	void (*bcm_qspi_int_set)(struct bcm_qspi_soc_intc *soc_intc, int type,
-+				 bool en);
-+	u32 (*bcm_qspi_get_int_status)(struct bcm_qspi_soc_intc *soc_intc);
-+};
- 
- /* Read controller register*/
- static inline u32 bcm_qspi_readl(bool be, void __iomem *addr)
-@@ -72,6 +88,22 @@ static inline void bcm_qspi_writel(bool be,
- 		writel_relaxed(data, addr);
- }
- 
-+static inline u32 get_qspi_mask(int type)
-+{
-+	switch (type) {
-+	case MSPI_DONE:
-+		return INTR_MSPI_DONE_MASK;
-+	case BSPI_DONE:
-+		return BSPI_LR_INTERRUPTS_ALL;
-+	case MSPI_BSPI_DONE:
-+		return QSPI_INTERRUPTS_ALL;
-+	case BSPI_ERR:
-+		return BSPI_LR_INTERRUPTS_ERROR;
-+	}
-+
-+	return 0;
-+}
-+
- /* The common driver functions to be called by the SoC platform driver */
- int bcm_qspi_probe(struct platform_device *pdev,
- 		   struct bcm_qspi_soc_intc *soc_intc);
-diff --git a/drivers/spi/spi-iproc-qspi.c b/drivers/spi/spi-iproc-qspi.c
-new file mode 100644
-index 000000000000..be6ccb204a66
---- /dev/null
-+++ b/drivers/spi/spi-iproc-qspi.c
-@@ -0,0 +1,163 @@
-+/*
-+ * Copyright 2016 Broadcom Limited
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include "spi-bcm-qspi.h"
-+
-+#define INTR_BASE_BIT_SHIFT			0x02
-+#define INTR_COUNT				0x07
-+
-+struct bcm_iproc_intc {
-+	struct bcm_qspi_soc_intc soc_intc;
-+	struct platform_device *pdev;
-+	void __iomem *int_reg;
-+	void __iomem *int_status_reg;
-+	spinlock_t soclock;
-+	bool big_endian;
-+};
-+
-+static u32 bcm_iproc_qspi_get_l2_int_status(struct bcm_qspi_soc_intc *soc_intc)
-+{
-+	struct bcm_iproc_intc *priv =
-+			container_of(soc_intc, struct bcm_iproc_intc, soc_intc);
-+	void __iomem *mmio = priv->int_status_reg;
-+	int i;
-+	u32 val = 0, sts = 0;
-+
-+	for (i = 0; i < INTR_COUNT; i++) {
-+		if (bcm_qspi_readl(priv->big_endian, mmio + (i * 4)))
-+			val |= 1UL << i;
-+	}
-+
-+	if (val & INTR_MSPI_DONE_MASK)
-+		sts |= MSPI_DONE;
-+
-+	if (val & BSPI_LR_INTERRUPTS_ALL)
-+		sts |= BSPI_DONE;
-+
-+	if (val & BSPI_LR_INTERRUPTS_ERROR)
-+		sts |= BSPI_ERR;
-+
-+	return sts;
-+}
-+
-+static void bcm_iproc_qspi_int_ack(struct bcm_qspi_soc_intc *soc_intc, int type)
-+{
-+	struct bcm_iproc_intc *priv =
-+			container_of(soc_intc, struct bcm_iproc_intc, soc_intc);
-+	void __iomem *mmio = priv->int_status_reg;
-+	u32 mask = get_qspi_mask(type);
-+	int i;
-+
-+	for (i = 0; i < INTR_COUNT; i++) {
-+		if (mask & (1UL << i))
-+			bcm_qspi_writel(priv->big_endian, 1, mmio + (i * 4));
-+	}
-+}
-+
-+static void bcm_iproc_qspi_int_set(struct bcm_qspi_soc_intc *soc_intc, int type,
-+				   bool en)
-+{
-+	struct bcm_iproc_intc *priv =
-+			container_of(soc_intc, struct bcm_iproc_intc, soc_intc);
-+	void __iomem *mmio = priv->int_reg;
-+	u32 mask = get_qspi_mask(type);
-+	u32 val;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&priv->soclock, flags);
-+
-+	val = bcm_qspi_readl(priv->big_endian, mmio);
-+
-+	if (en)
-+		val = val | (mask << INTR_BASE_BIT_SHIFT);
-+	else
-+		val = val & ~(mask << INTR_BASE_BIT_SHIFT);
-+
-+	bcm_qspi_writel(priv->big_endian, val, mmio);
-+
-+	spin_unlock_irqrestore(&priv->soclock, flags);
-+}
-+
-+static int bcm_iproc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct bcm_iproc_intc *priv;
-+	struct bcm_qspi_soc_intc *soc_intc;
-+	struct resource *res;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+	soc_intc = &priv->soc_intc;
-+	priv->pdev = pdev;
-+
-+	spin_lock_init(&priv->soclock);
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "intr_regs");
-+	priv->int_reg = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->int_reg))
-+		return PTR_ERR(priv->int_reg);
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+					   "intr_status_reg");
-+	priv->int_status_reg = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->int_status_reg))
-+		return PTR_ERR(priv->int_status_reg);
-+
-+	priv->big_endian = of_device_is_big_endian(dev->of_node);
-+
-+	bcm_iproc_qspi_int_ack(soc_intc, MSPI_BSPI_DONE);
-+	bcm_iproc_qspi_int_set(soc_intc, MSPI_BSPI_DONE, false);
-+
-+	soc_intc->bcm_qspi_int_ack = bcm_iproc_qspi_int_ack;
-+	soc_intc->bcm_qspi_int_set = bcm_iproc_qspi_int_set;
-+	soc_intc->bcm_qspi_get_int_status = bcm_iproc_qspi_get_l2_int_status;
-+
-+	return bcm_qspi_probe(pdev, soc_intc);
-+}
-+
-+static int bcm_iproc_remove(struct platform_device *pdev)
-+{
-+	return bcm_qspi_remove(pdev);
-+}
-+
-+static const struct of_device_id bcm_iproc_of_match[] = {
-+	{ .compatible = "brcm,spi-nsp-qspi" },
-+	{ .compatible = "brcm,spi-ns2-qspi" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, bcm_iproc_of_match);
-+
-+static struct platform_driver bcm_iproc_driver = {
-+	.probe			= bcm_iproc_probe,
-+	.remove			= bcm_iproc_remove,
-+	.driver = {
-+		.name		= "bcm_iproc",
-+		.pm		= &bcm_qspi_pm_ops,
-+		.of_match_table = bcm_iproc_of_match,
-+	}
-+};
-+module_platform_driver(bcm_iproc_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Kamal Dasu");
-+MODULE_DESCRIPTION("SPI flash driver for Broadcom iProc SoCs");
 -- 
-2.9.3
+Sergio Prado
+Embedded Labworks
+Office: +55 11 2628-3461
+Mobile: +55 11 97123-3420
