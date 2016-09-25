@@ -1,17 +1,16 @@
-Date: Sun, 25 Sep 2016 20:05:05 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1boEYf-0005Pl-OT
+ for linux-mtd@lists.infradead.org; Sun, 25 Sep 2016 18:53:50 +0000
+Date: Sun, 25 Sep 2016 20:53:26 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sergio Prado <sergio.prado@e-labworks.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, kgene@kernel.org, k.kozlowski@samsung.com,
- richard@nod.at, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH] mtd: s3c2410: add device tree support
-Message-ID: <20160925200505.372672ee@bbrezillon>
-In-Reply-To: <20160925174257.GA20238@sprado-desktop>
-References: <1474125760-28168-1-git-send-email-sergio.prado@e-labworks.com>
- <20160917193123.762587d0@bbrezillon>
- <20160925174257.GA20238@sprado-desktop>
+To: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
+ <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PULL] mtd: nand: material for 4.9
+Message-ID: <20160925205326.67b5a9bd@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,98 +23,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sergio,
+Hi Brian,
 
-On Sun, 25 Sep 2016 14:42:57 -0300
-Sergio Prado <sergio.prado@e-labworks.com> wrote:
-
-> Hi Boris,
-> 
-> > > +Optional properties:
-> > > +- samsung,tacls : time for active CLE/ALE to nWE/nOE
-> > > +- samsung,twrph0 : active time for nWE/nOE
-> > > +- samsung,twrph1 : time for release CLE/ALE from nWE/nOE inactive  
-> > 
-> > Can you try to extract these information from the nand_sdr_timings
-> > struct instead of passing it in your DT?  
-> 
-> I've tested and the nand chip I'm working on is not ONFI or JEDEC
-> compatible, so looks like it is not possible to extract the timing
-> information from nand_sdr_timings. Am I right?
-
-There's an default_onfi_timing_mode in the nand_flash_dev struct. You
-can define a full-id for your NAND chip in the nand-ids table if you
-want. Otherwise, this means you'll have to use ONFI timing mode 0
-(which should work for all NANDs).
-
-Note that we've recently introduced a generic interface [1] to let NAND
-controllers configure the timings, and let the core select the best
-timings based on the information it has (ONFI, JEDEC or the nand-ids
-table).
-
-> 
-> > > +	samsung,ignore_unset_ecc;  
-> > 
-> > Just discovered this ->ignore_unset_ecc property, and I don't
-> > understand why it's here for...
-> > Either you don't want to have ECC, and in this case you should set
-> > NAND_ECC_NONE, or you want to have ECC calculated, and in this case,
-> > the only valid situation where ECC bytes are 0xff is when the page is
-> > erased.
-> > 
-> > If I'm right, please fix the driver instead of adding this DT property.
-> > If I'm wrong, could you explain in more detail when you have ECC bytes
-> > set to 0xff?  
-> 
-> I think you are right but I am not an expert on flash devices and the
-> MTD sub-system. The commit message of this code says "If a block's ecc
-> field is all 0xff, then ignore the ECC correction. This is for systems
-> where some of the blocks, such as the initial cramfs are written without
-> ECC and need to be loaded on start.". Does it make sense?
-
-Well, no, it does not make any sense. What could have a sense is
-enabling ECC on some partitions, but not on others, but that's not
-supported right now (actually, I tried to add support for that once,
-but it was not accepted).
-
-Do you really need that? I mean, is the platform you're trying to
-convert to DT using this property in its platform_data objects?
-
-I'd recommend to drop this property until we figure what it's really
-used for.
-
-> 
-> > > +	for_each_available_child_of_node(np, child) {
-> > > +
-> > > +		sets->name = (char *)child->name;
-> > > +		sets->of_node = child;
-> > > +		sets->nr_chips = 1;
-> > > +
-> > > +		if (!of_property_match_string(child, "nand-ecc-mode", "none"))
-> > > +			sets->disable_ecc = 1;
-> > > +
-> > > +		if (of_get_property(child, "nand-on-flash-bbt", NULL))
-> > > +			sets->flash_bbt = 1;
-> > > +  
-> > 
-> > These properties are automatically extracted in nand_scan_ident(), why
-> > do you need to parse them twice?
-> >   
-> 
-> You are right, there is no need to parse them twice. But taking a look
-> at the code I found a problem. Right now enabling hardware ECC is done
-> at compile time by enabling CONFIG_MTD_NAND_S3C2410_HWECC in the
-> menuconfig. Looks like this config option should be removed so we can
-> select ECC mode using nand-ecc-mode property in the device tree. But
-> this would break current boards that are not using a device tree. So it
-> would be necessary to add a ecc_mode field in the platform_data of these
-> boards and set them all to the default ECC mode (NAND_ECC_SOFT). Is this
-> the right approach?
-
-It's the right approach, indeed.
+Here is my PR for 4.9. Let me know if you see any problem.
+Also, please let us know ahead of time if you can't take this PR (I know you
+are busy lately, and I guess I could send this PR directly to Linus or ask
+Richard to take it in its UBIFS/UBI tree).
 
 Thanks,
 
 Boris
 
-[1]http://www.spinics.net/lists/arm-kernel/msg532007.html
+The following changes since commit 29b4817d4018df78086157ea3a55c1d9424a7cfc:
+
+  Linux 4.8-rc1 (2016-08-07 18:18:00 -0700)
+
+are available in the git repository at:
+
+  git@github.com:linux-nand/linux.git tags/for-4.9
+
+for you to fetch changes up to d44154f969a44269a9288c274c1c2fd9e85df8a5:
+
+  mtd: nand: Provide nand_cleanup() function to free NAND related resources (2016-09-23 09:35:16 +0200)
+
+----------------------------------------------------------------
+Notable core changes:
+- add the infrastructure to automate NAND timings configuration
+- provide a generic DT property to maximize ECC strength
+
+The rest is just a bunch of minor drivers and core fixes/cleanup
+patches.
+
+----------------------------------------------------------------
+Andrey Smirnov (4):
+      Kconfig: nand: Make MTD_NAND_FSL_ELBC depend on FSL_SOC
+      Kconfig: nand: Remove redundant dependency on MTD_NAND
+      mtd: nand: Error out if cmd_ctrl() is missing
+      mtd: nand: Get rid of needless 'goto'
+
+Boris Brezillon (10):
+      mtd: nand: timings: Fix tADL_min for ONFI 4.0 chips
+      mtd: nand: timings: Reorder tRR_min def in mode 0
+      mtd: nand_bbt: Move BBT block selection logic out of write_bbt()
+      mtd: nand: automate NAND timings selection
+      mtd: nand: Add an option to maximize the ECC strength
+      mtd: nand: Support maximizing ECC when using software BCH
+      mtd: nand: sunxi: Support ECC maximization
+      mtd: nand: Fix nand_command_lp() for 8bits opcodes
+      mtd: nand: mxc: Test CONFIG_OF instead of CONFIG_OF_MTD
+      mtd: Kill the OF_MTD Kconfig option
+
+Brian Norris (1):
+      mtd: nand: sh_flctl: handle dma_submit() errors
+
+Han Xu (1):
+      mtd: nand: gpmi: get correct free oob space
+
+Harvey Hunt (1):
+      MAINTAINERS: Add maintainer entry for Ingenic JZ4780 NAND driver
+
+Krzysztof Kozlowski (1):
+      mtd: nand: s3c2410: Register cpufreq notifier only on S3C24xx
+
+Kyle Roeschley (1):
+      mtd: nand_bbt: scan for next free bbt block if writing bbt fails
+
+Marc Gonzalez (1):
+      mtd: nand: import nand_hw_control_init()
+
+Ray Jui (1):
+      mtd: brcmnand: iProc big endian and ONFI support
+
+Richard Weinberger (1):
+      mtd: nand: Provide nand_cleanup() function to free NAND related resources
+
+Roger Quadros (1):
+      mtd: nand: Allow MTD_NAND_OMAP2 to be usable on Keystone devices
+
+Sascha Hauer (9):
+      mtd: nand: remove unnecessary 'extern' from function declarations
+      mtd: nand: Create a NAND reset function
+      mtd: nand: Introduce nand_data_interface
+      mtd: nand: convert ONFI mode into data interface
+      mtd: nand: Add function to convert ONFI mode to data_interface
+      mtd: nand: Expose data interface for ONFI mode 0
+      mtd: nand: mxc: implement onfi get/set features
+      mtd: nand: mxc: Add timing setup for v2 controllers
+
+ Documentation/devicetree/bindings/mtd/nand.txt |   9 ++
+ MAINTAINERS                                    |   6 +
+ drivers/mtd/nand/Kconfig                       |  12 +-
+ drivers/mtd/nand/bf5xx_nand.c                  |   3 +-
+ drivers/mtd/nand/brcmnand/brcmnand.c           |  15 +-
+ drivers/mtd/nand/brcmnand/brcmnand.h           |  13 +-
+ drivers/mtd/nand/brcmnand/iproc_nand.c         |  18 ++-
+ drivers/mtd/nand/docg4.c                       |   3 +-
+ drivers/mtd/nand/fsl_elbc_nand.c               |   3 +-
+ drivers/mtd/nand/fsl_ifc_nand.c                |   3 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c         |   3 +-
+ drivers/mtd/nand/jz4780_nand.c                 |   3 +-
+ drivers/mtd/nand/mxc_nand.c                    | 137 ++++++++++++++++++-
+ drivers/mtd/nand/nand_base.c                   | 260 +++++++++++++++++++++++++++++++----
+ drivers/mtd/nand/nand_bbt.c                    | 161 ++++++++++++++++------
+ drivers/mtd/nand/nand_timings.c                | 470 +++++++++++++++++++++++++++++++++++----------------------------
+ drivers/mtd/nand/ndfc.c                        |   3 +-
+ drivers/mtd/nand/pxa3xx_nand.c                 |   3 +-
+ drivers/mtd/nand/qcom_nandc.c                  |   3 +-
+ drivers/mtd/nand/s3c2410.c                     |   7 +-
+ drivers/mtd/nand/sh_flctl.c                    |   8 +-
+ drivers/mtd/nand/sunxi_nand.c                  | 108 ++++++---------
+ drivers/mtd/nand/txx9ndfmc.c                   |   3 +-
+ drivers/of/Kconfig                             |   4 -
+ include/linux/mtd/nand.h                       | 234 +++++++++++++++++++++----------
+ 25 files changed, 1033 insertions(+), 459 deletions(-)
