@@ -1,22 +1,21 @@
-Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
+Received: from smtp2-g21.free.fr ([212.27.42.2])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpLWG-0006X8-4B
- for linux-mtd@lists.infradead.org; Wed, 28 Sep 2016 20:31:56 +0000
-Received: by mail-pa0-x242.google.com with SMTP id j3so2459951paj.2
- for <linux-mtd@lists.infradead.org>; Wed, 28 Sep 2016 13:31:36 -0700 (PDT)
-Date: Wed, 28 Sep 2016 13:31:33 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- dwmw2@infradead.org
-Subject: Re: [PATCH 4/5] mtd: Don't unconditionally execute remove notifiers
-Message-ID: <20160928203133.GD142302@google.com>
-References: <1467669983-12105-1-git-send-email-richard@nod.at>
- <1467669983-12105-5-git-send-email-richard@nod.at>
+ id 1bpMgF-0001C8-BU
+ for linux-mtd@lists.infradead.org; Wed, 28 Sep 2016 21:46:20 +0000
+Date: Wed, 28 Sep 2016 23:45:46 +0200
+From: Albert ARIBAUD <albert.aribaud@3adev.fr>
+To: Han Xu <xhnjupt@gmail.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Han Xu
+ <han.xu@nxp.com>
+Subject: Re: [PATCH 1/2] fsl-quadspi: fix QUAD read, add NORMAL, DUAL and
+ FAST reads
+Message-ID: <20160928234546.6df9c893.albert.aribaud@3adev.fr>
+In-Reply-To: <20160928200652.GA31901@shlinux2>
+References: <20160927055957.427-1-albert.aribaud@3adev.fr>
+ <20160928200652.GA31901@shlinux2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1467669983-12105-5-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,50 +25,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 05, 2016 at 12:06:22AM +0200, Richard Weinberger wrote:
-> Only call them when we're really removing the MTD.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/mtd/mtdcore.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 36e5fb0..f49e103 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -499,16 +499,16 @@ int del_mtd_device(struct mtd_info *mtd)
->  		goto out_error;
->  	}
->  
-> -	/* No need to get a refcount on the module containing
-> -		the notifier, since we hold the mtd_table_mutex */
-> -	list_for_each_entry(not, &mtd_notifiers, list)
-> -		not->remove(mtd);
-> -
->  	if (mtd->usecount) {
->  		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
->  		       mtd->index, mtd->name, mtd->usecount);
->  		ret = -EBUSY;
->  	} else {
-> +		/* No need to get a refcount on the module containing
-> +			the notifier, since we hold the mtd_table_mutex */
-> +		list_for_each_entry(not, &mtd_notifiers, list)
-> +			not->remove(mtd);
-> +
+Hello Han,
 
-The ordering looks like it was somewhat intentional here:
+Le Thu, 29 Sep 2016 04:06:52 +0800, Han Xu <xhnjupt@gmail.com> a =C3=A9crit=
+ :
 
-75c0b84d41c6 mtd: call the remove notifiers before assuming it is in use
+> Too much changes in one patch, need to split to several patches.
 
-Have we fixed or refactored the issues that seem to have prompted that?
+Will do.
 
-Brian
+> > +#define QUADSPI_SPTRCLR			0x15c
+> > +#define QUADSPI_SPTRCLR_BFPTRC_SHIFT		0
+> > +#define QUADSPI_SPTRCLR_BFPTRC_MASK		(0x1 << QUADSPI_SPTRCLR_BFPTRC_SH=
+IFT)
+> > + =20
+>=20
+> offset 0x15c is SR register for i.MX, not sure where does SPTRCLR come fr=
+om
 
+It's a typo -- should have been 0x16c, not 0x15c. It is the Vybrid's
+Sequence Pointer Clear Register. Apparently, the bad register write did
+not screw thing up enough to cause any visible issue. Thanks for
+pointing it out.
 
->  		device_unregister(&mtd->dev);
->  
->  		idr_remove(&mtd_idr, mtd->index);
-> -- 
-> 2.7.3
-> 
+> > +    /* use 24-bit addresses for up to 16MB, 32-bit above 16MB */
+> > +	if (q->nor_size <=3D SZ_16M)
+> > +		addrlen =3D ADDR24BIT;
+> > +	else
+> > +		addrlen =3D ADDR32BIT; =20
+>=20
+> A better patch fetch info from nor structure, refer to
+> https://patchwork.ozlabs.org/patch/613429/
+
+v3 (https://patchwork.kernel.org/patch/9287005/) seems poised to go in
+at some point. I can base my patches above it. I will mention the
+dependency in my series' cover letter.
+
+> > + * When using two ports, the SEQID to use for one port might differ fr=
+om
+> > + * the one to use for the other (e.g., if one port can do 4-pad reads =
+but
+> > + * the other cannot). So we set up a basic mode here (SEQID_READ) and =
+we
+> > + * will set up the proper SEQID for the port right before doing the AHB
+> > + * access(es).
+> >   */ =20
+>=20
+> It's rare to find this use case, considering the amount of lut is only 16,
+> please don't add two many luts in this way. I will send a patch soon for
+> dynamic lut change, please add these extra luts in dynamic lut list.
+
+I'm fine with switching to a dynamic LUT list; this matches the "two
+ports with different characteristics" well. Is the patch already
+available somewhere so that I can rebase over it in advance?
+
+> >  	/* Read out the data directly from the AHB buffer.*/
+> > -	memcpy(buf, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
+> > -		len);
+> > +	memcpy(buf, q->ahb_addr + nor_ofs + from, len); =20
+>=20
+> No much diff from the previous implementation
+
+Still, it simplifies the memcpy source address computation.
+
+> > +		ret =3D spi_nor_scan(nor, NULL, readmode); =20
+>=20
+> Not necessary, can fetch info from nor structure
+> https://patchwork.ozlabs.org/patch/613429/
+
+Ditto.
+
+Thanks for your review!
+
+Cordialement,
+Albert ARIBAUD
+3ADEV
