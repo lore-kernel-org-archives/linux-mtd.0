@@ -1,23 +1,21 @@
 Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpKaE-0002a8-Ua
- for linux-mtd@lists.infradead.org; Wed, 28 Sep 2016 19:31:59 +0000
-Received: by mail-pf0-x241.google.com with SMTP id 21so2518272pfy.1
- for <linux-mtd@lists.infradead.org>; Wed, 28 Sep 2016 12:31:38 -0700 (PDT)
-Date: Wed, 28 Sep 2016 12:31:34 -0700
+ id 1bpKl7-0006HM-JM
+ for linux-mtd@lists.infradead.org; Wed, 28 Sep 2016 19:43:14 +0000
+Received: by mail-pf0-x241.google.com with SMTP id q2so2517069pfj.0
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Sep 2016 12:42:53 -0700 (PDT)
+Date: Wed, 28 Sep 2016 12:42:49 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Richard Weinberger <richard@nod.at>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] MTD NAND fixes for v4.8-rc8
-Message-ID: <20160928193134.GA142302@google.com>
-References: <91984e2b-9bc9-0938-f4af-8decc00b7e63@nod.at>
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: [GIT PULL] Late MTD fixes for v4.8
+Message-ID: <20160928194249.GA145475@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <91984e2b-9bc9-0938-f4af-8decc00b7e63@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+Hi Linus,
 
-On Fri, Sep 23, 2016 at 02:05:20PM +0200, Richard Weinberger wrote:
-> This pull request contains fixes for bugs which got introduced in -rc1.
-> You may wonder why I'm sending this pull request. Usually Brian takes NAND patches
-> from Boris, but since Brian is very busy these days with other stuff and Boris is
-> not yet member of the kernel.org web of trust I stepped in.
+My apologies for sending this so late. I've been fairly absent as a
+maintainer this cycle, but I did queue these up weeks ago. In the
+meantime, Richard was able to handle some other fixes (thanks!) but
+didn't pick these up.
 
-Thank you for doing this.
+On the bright side, these are very simple changes that should carry
+little risk. Please let me know if you have any concerns.
 
-> Boris will be in Berlin at ELCE, I'll sign his key and hopefully other
-> Kernel developers too such that he can issue his own pull requests soon.
+The following changes since commit 29b4817d4018df78086157ea3a55c1d9424a7cfc:
 
-Perfect.
+  Linux 4.8-rc1 (2016-08-07 18:18:00 -0700)
 
-> Brian, if there is anything wrong with this pull request, please let us know.
-> We're not trying to bypass you. All we want is getting these fixes upstream
-> before the merge window opens and new bugs emerge.
+are available in the git repository at:
 
-No problem, and all looks good. Sorry I've been too distracted :(
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20160928
 
-Unfortunately, there are also two other bugfixes I had queued in
-linux-mtd.git weeks ago, and I didn't get around to sending a PR. They
-are very minor (in risk and patch size) so I'll send the PR now.
+for you to fetch changes up to f6d7c1b5598b6407c3f1da795dd54acf99c1990c:
 
-Brian
+  mtd: nand: davinci: Reinitialize the HW ECC engine in 4bit hwctl (2016-09-09 19:39:33 -0700)
+
+----------------------------------------------------------------
+Another round of MTD fixes for v4.8
+
+Davinci NAND: fix a long-standing bug in how we clear/prep 4-bit ECC
+
+OMAP NAND: an error-handling fix that made it into v4.8-rc1 caused
+error-handling cases in other configurations/code-paths; this fixes the fix
+
+----------------------------------------------------------------
+Karl Beldan (1):
+      mtd: nand: davinci: Reinitialize the HW ECC engine in 4bit hwctl
+
+Roger Quadros (1):
+      mtd: nand: omap2: Don't call dma_release_channel() if dma_request_chan() failed
+
+ drivers/mtd/nand/davinci_nand.c | 3 +++
+ drivers/mtd/nand/omap2.c        | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
