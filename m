@@ -1,21 +1,24 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpKl7-0006HM-JM
- for linux-mtd@lists.infradead.org; Wed, 28 Sep 2016 19:43:14 +0000
-Received: by mail-pf0-x241.google.com with SMTP id q2so2517069pfj.0
- for <linux-mtd@lists.infradead.org>; Wed, 28 Sep 2016 12:42:53 -0700 (PDT)
-Date: Wed, 28 Sep 2016 12:42:49 -0700
+ id 1bpLHR-0001VV-Aj
+ for linux-mtd@lists.infradead.org; Wed, 28 Sep 2016 20:16:38 +0000
+Received: by mail-pf0-x244.google.com with SMTP id q2so2544192pfj.0
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Sep 2016 13:16:16 -0700 (PDT)
+Date: Wed, 28 Sep 2016 13:16:11 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>
-Subject: [GIT PULL] Late MTD fixes for v4.8
-Message-ID: <20160928194249.GA145475@google.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Daniel Walter <dwalter@sigma-star.at>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/46] mtdpart: Propagate _get/put_device()
+Message-ID: <20160928201611.GB142302@google.com>
+References: <cover.1474450295.git.dwalter@sigma-star.at>
+ <984fd8eb53b742bd46e7b42605ae4e0ceaf5ba08.1474450295.git.dwalter@sigma-star.at>
+ <20160921121531.7786ee9b@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20160921121531.7786ee9b@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+On Wed, Sep 21, 2016 at 12:15:31PM +0200, Boris Brezillon wrote:
+> On Wed, 21 Sep 2016 11:43:56 +0200
+> Daniel Walter <dwalter@sigma-star.at> wrote:
+> 
+> > From: Richard Weinberger <richard@nod.at>
+> > 
+> > If the master device has callbacks for _get/put_device()
+> > and this MTD has slaves a get_mtd_device() call on paritions
+> > will never issue the registered callbacks.
+> > Fix this by propagating _get/put_device() down.
+> 
+> Brian, can we have this one queued for 4.9? I can't take it in my tree
+> if you want, but it's probably better if it's in the mtd tree.
 
-My apologies for sending this so late. I've been fairly absent as a
-maintainer this cycle, but I did queue these up weeks ago. In the
-meantime, Richard was able to handle some other fixes (thanks!) but
-didn't pick these up.
-
-On the bright side, these are very simple changes that should carry
-little risk. Please let me know if you have any concerns.
-
-The following changes since commit 29b4817d4018df78086157ea3a55c1d9424a7cfc:
-
-  Linux 4.8-rc1 (2016-08-07 18:18:00 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20160928
-
-for you to fetch changes up to f6d7c1b5598b6407c3f1da795dd54acf99c1990c:
-
-  mtd: nand: davinci: Reinitialize the HW ECC engine in 4bit hwctl (2016-09-09 19:39:33 -0700)
-
-----------------------------------------------------------------
-Another round of MTD fixes for v4.8
-
-Davinci NAND: fix a long-standing bug in how we clear/prep 4-bit ECC
-
-OMAP NAND: an error-handling fix that made it into v4.8-rc1 caused
-error-handling cases in other configurations/code-paths; this fixes the fix
-
-----------------------------------------------------------------
-Karl Beldan (1):
-      mtd: nand: davinci: Reinitialize the HW ECC engine in 4bit hwctl
-
-Roger Quadros (1):
-      mtd: nand: omap2: Don't call dma_release_channel() if dma_request_chan() failed
-
- drivers/mtd/nand/davinci_nand.c | 3 +++
- drivers/mtd/nand/omap2.c        | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+Applied this patch to l2-mtd.git
