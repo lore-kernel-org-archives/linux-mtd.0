@@ -1,24 +1,27 @@
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from mail-pf0-x22c.google.com ([2607:f8b0:400e:c00::22c])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpbXy-0001DB-M1
- for linux-mtd@lists.infradead.org; Thu, 29 Sep 2016 13:38:47 +0000
-Date: Thu, 29 Sep 2016 16:29:40 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
+ id 1bpebA-0004Mx-Qu
+ for linux-mtd@lists.infradead.org; Thu, 29 Sep 2016 16:54:19 +0000
+Received: by mail-pf0-x22c.google.com with SMTP id 21so30853613pfy.0
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Sep 2016 09:53:56 -0700 (PDT)
+Date: Thu, 29 Sep 2016 17:56:02 +0100
+From: Lee Jones <lee.jones@linaro.org>
 To: "Kraemer, Matthias (Ferchau; ADITG/SW1)" <mkraemer@de.adit-jv.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Lee Jones <lee.jones@linaro.org>, Peter Tyser <ptyser@xes-inc.com>,
+ David Woodhouse <dwmw2@infradead.org>, Peter Tyser <ptyser@xes-inc.com>,
  "key.seong.lim@intel.com" <key.seong.lim@intel.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH v3 3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-Message-ID: <20160929132940.GP1218@lahna.fi.intel.com>
+Message-ID: <20160929165602.GA2844@dell>
 References: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
  <1471245044-12767-4-git-send-email-mika.westerberg@linux.intel.com>
  <B0A28CDC26EEC74CBBA518A6F0B2DE9E66ECD04F@HI2EXCH01.adit-jv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <B0A28CDC26EEC74CBBA518A6F0B2DE9E66ECD04F@HI2EXCH01.adit-jv.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,7 +32,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 29, 2016 at 01:19:30PM +0000, Kraemer, Matthias (Ferchau; ADITG/SW1) wrote:
+On Thu, 29 Sep 2016, Kraemer, Matthias (Ferchau; ADITG/SW1) wrote:
+
 > Hello Mika,
 > 
 > In line 1239 you specify "struct pci_bus *bus = dev->bus;"
@@ -45,14 +49,26 @@ On Thu, Sep 29, 2016 at 01:19:30PM +0000, Kraemer, Matthias (Ferchau; ADITG/SW1)
 > but in line 1262 you are using dev->bus again. 
 > +
 > +		pci_bus_write_config_byte(dev->bus, p2sb, 0xe1, 0x1);
+> 
+> Sure this is not a runtime issue, but it would be nice to keep the coding-style consistent. 
+> We could just use dev->bus for BXT SOCs, like the remaining parts of this driver do. 
+> 
+> Kind regards
+> Matthias Kraemer
 
-Good point. It is a typo, although works.
+Please reply in-line.  It is considered bad etiquette to top-post like this.
 
-> Sure this is not a runtime issue, but it would be nice to keep the
-> coding-style consistent.  We could just use dev->bus for BXT SOCs,
-> like the remaining parts of this driver do. 
+> -----Original Message-----
+> From: linux-kernel-owner@vger.kernel.org [mailto:linux-kernel-owner@vger.kernel.org] On Behalf Of Mika Westerberg
+> Sent: Montag, 15. August 2016 09:11
+> To: linux-mtd@lists.infradead.org
+> Cc: Brian Norris; David Woodhouse; Lee Jones; Peter Tyser; key.seong.lim@intel.com; Mika Westerberg; linux-kernel@vger.kernel.org
+> Subject: [PATCH v3 3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
 
-Or "bus". But yeah I agree it should be consistent.
+Please fix your mailer.  This is crud and should not be quoted.
 
-Since it looks like this driver is not going to make it for v4.9, I'll
-fix this up and resend the whole thing once v4.9-rc1 is released.
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
