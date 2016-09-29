@@ -1,21 +1,24 @@
-Received: from smtp2-g21.free.fr ([212.27.42.2])
+Received: from smtp1.de.adit-jv.com ([62.225.105.245])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpMgF-0001C8-BU
- for linux-mtd@lists.infradead.org; Wed, 28 Sep 2016 21:46:20 +0000
-Date: Wed, 28 Sep 2016 23:45:46 +0200
-From: Albert ARIBAUD <albert.aribaud@3adev.fr>
-To: Han Xu <xhnjupt@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Han Xu
- <han.xu@nxp.com>
-Subject: Re: [PATCH 1/2] fsl-quadspi: fix QUAD read, add NORMAL, DUAL and
- FAST reads
-Message-ID: <20160928234546.6df9c893.albert.aribaud@3adev.fr>
-In-Reply-To: <20160928200652.GA31901@shlinux2>
-References: <20160927055957.427-1-albert.aribaud@3adev.fr>
- <20160928200652.GA31901@shlinux2>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+ id 1bpbFp-0002vC-91
+ for linux-mtd@lists.infradead.org; Thu, 29 Sep 2016 13:20:05 +0000
+From: "Kraemer, Matthias (Ferchau; ADITG/SW1)" <mkraemer@de.adit-jv.com>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Lee Jones <lee.jones@linaro.org>, Peter Tyser
+ <ptyser@xes-inc.com>, "key.seong.lim@intel.com" <key.seong.lim@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
+Date: Thu, 29 Sep 2016 13:19:30 +0000
+Message-ID: <B0A28CDC26EEC74CBBA518A6F0B2DE9E66ECD04F@HI2EXCH01.adit-jv.com>
+References: <1471245044-12767-1-git-send-email-mika.westerberg@linux.intel.com>
+ <1471245044-12767-4-git-send-email-mika.westerberg@linux.intel.com>
+In-Reply-To: <1471245044-12767-4-git-send-email-mika.westerberg@linux.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,78 +28,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Han,
+Hello Mika,
 
-Le Thu, 29 Sep 2016 04:06:52 +0800, Han Xu <xhnjupt@gmail.com> a =C3=A9crit=
- :
+In line 1239 you specify "struct pci_bus *bus =3D dev->bus;"
+}, @@ -1122,6 +1131,36 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 		}
+ 		break;
+=20
++	case INTEL_SPI_BXT: {
++		unsigned int p2sb =3D PCI_DEVFN(13, 0);
++		unsigned int spi =3D PCI_DEVFN(13, 2);
++		struct pci_bus *bus =3D dev->bus;
 
-> Too much changes in one patch, need to split to several patches.
+but in line 1262 you are using dev->bus again.=20
++
++		pci_bus_write_config_byte(dev->bus, p2sb, 0xe1, 0x1);
 
-Will do.
+Sure this is not a runtime issue, but it would be nice to keep the coding-s=
+tyle consistent.=20
+We could just use dev->bus for BXT SOCs, like the remaining parts of this d=
+river do.=20
 
-> > +#define QUADSPI_SPTRCLR			0x15c
-> > +#define QUADSPI_SPTRCLR_BFPTRC_SHIFT		0
-> > +#define QUADSPI_SPTRCLR_BFPTRC_MASK		(0x1 << QUADSPI_SPTRCLR_BFPTRC_SH=
-IFT)
-> > + =20
->=20
-> offset 0x15c is SR register for i.MX, not sure where does SPTRCLR come fr=
-om
+Kind regards
+Matthias Kraemer
 
-It's a typo -- should have been 0x16c, not 0x15c. It is the Vybrid's
-Sequence Pointer Clear Register. Apparently, the bad register write did
-not screw thing up enough to cause any visible issue. Thanks for
-pointing it out.
+-----Original Message-----
+From: linux-kernel-owner@vger.kernel.org [mailto:linux-kernel-owner@vger.ke=
+rnel.org] On Behalf Of Mika Westerberg
+Sent: Montag, 15. August 2016 09:11
+To: linux-mtd@lists.infradead.org
+Cc: Brian Norris; David Woodhouse; Lee Jones; Peter Tyser; key.seong.lim@in=
+tel.com; Mika Westerberg; linux-kernel@vger.kernel.org
+Subject: [PATCH v3 3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
 
-> > +    /* use 24-bit addresses for up to 16MB, 32-bit above 16MB */
-> > +	if (q->nor_size <=3D SZ_16M)
-> > +		addrlen =3D ADDR24BIT;
-> > +	else
-> > +		addrlen =3D ADDR32BIT; =20
->=20
-> A better patch fetch info from nor structure, refer to
-> https://patchwork.ozlabs.org/patch/613429/
+Intel Apollo Lake SoC exposes serial SPI flash through the LPC device. The =
+SPI flash host controller is not discoverable through PCI config cycles bec=
+ause P2SB (function 0 of the device 13) is hidden by the BIOS. We unhide th=
+e device briefly in order to read BAR 0 of the SPI host controller.
 
-v3 (https://patchwork.kernel.org/patch/9287005/) seems poised to go in
-at some point. I can base my patches above it. I will mention the
-dependency in my series' cover letter.
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
+ drivers/mfd/lpc_ich.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-> > + * When using two ports, the SEQID to use for one port might differ fr=
-om
-> > + * the one to use for the other (e.g., if one port can do 4-pad reads =
-but
-> > + * the other cannot). So we set up a basic mode here (SEQID_READ) and =
-we
-> > + * will set up the proper SEQID for the port right before doing the AHB
-> > + * access(es).
-> >   */ =20
->=20
-> It's rare to find this use case, considering the amount of lut is only 16,
-> please don't add two many luts in this way. I will send a patch soon for
-> dynamic lut change, please add these extra luts in dynamic lut list.
-
-I'm fine with switching to a dynamic LUT list; this matches the "two
-ports with different characteristics" well. Is the patch already
-available somewhere so that I can rebase over it in advance?
-
-> >  	/* Read out the data directly from the AHB buffer.*/
-> > -	memcpy(buf, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
-> > -		len);
-> > +	memcpy(buf, q->ahb_addr + nor_ofs + from, len); =20
->=20
-> No much diff from the previous implementation
-
-Still, it simplifies the memcpy source address computation.
-
-> > +		ret =3D spi_nor_scan(nor, NULL, readmode); =20
->=20
-> Not necessary, can fetch info from nor structure
-> https://patchwork.ozlabs.org/patch/613429/
-
-Ditto.
-
-Thanks for your review!
-
-Cordialement,
-Albert ARIBAUD
-3ADEV
+diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c index 56a0e98a5f=
+89..b1013b3f4dee 100644
+--- a/drivers/mfd/lpc_ich.c
++++ b/drivers/mfd/lpc_ich.c
+@@ -56,6 +56,7 @@
+  *	document number TBD : Wildcat Point-LP
+  *	document number TBD : 9 Series
+  *	document number TBD : Lewisburg
++ *	document number TBD : Apollo Lake SoC
+  */
+=20
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt @@ -92,6 +93,8 @@
+ #define BCR			0xdc
+ #define BCR_WPD			BIT(0)
+=20
++#define SPIBASE_APL_SZ		4096
++
+ #define GPIOBASE_ICH0		0x58
+ #define GPIOCTRL_ICH0		0x5C
+ #define GPIOBASE_ICH6		0x48
+@@ -239,6 +242,7 @@ enum lpc_chipsets {
+ 	LPC_BRASWELL,	/* Braswell SoC */
+ 	LPC_LEWISBURG,	/* Lewisburg */
+ 	LPC_9S,		/* 9 Series */
++	LPC_APL,	/* Apollo Lake SoC */
+ };
+=20
+ static struct lpc_ich_info lpc_chipset_info[] =3D { @@ -559,6 +563,10 @@ s=
+tatic struct lpc_ich_info lpc_chipset_info[] =3D {
+ 		.name =3D "9 Series",
+ 		.iTCO_version =3D 2,
+ 	},
++	[LPC_APL] =3D {
++		.name =3D "Apollo Lake SoC",
++		.spi_type =3D INTEL_SPI_BXT,
++	},
+ };
+=20
+ /*
+@@ -707,6 +715,7 @@ static const struct pci_device_id lpc_ich_ids[] =3D {
+ 	{ PCI_VDEVICE(INTEL, 0x3b14), LPC_3420},
+ 	{ PCI_VDEVICE(INTEL, 0x3b16), LPC_3450},
+ 	{ PCI_VDEVICE(INTEL, 0x5031), LPC_EP80579},
++	{ PCI_VDEVICE(INTEL, 0x5ae8), LPC_APL},
+ 	{ PCI_VDEVICE(INTEL, 0x8c40), LPC_LPT},
+ 	{ PCI_VDEVICE(INTEL, 0x8c41), LPC_LPT},
+ 	{ PCI_VDEVICE(INTEL, 0x8c42), LPC_LPT}, @@ -1122,6 +1131,36 @@ static int=
+ lpc_ich_init_spi(struct pci_dev *dev)
+ 		}
+ 		break;
+=20
++	case INTEL_SPI_BXT: {
++		unsigned int p2sb =3D PCI_DEVFN(13, 0);
++		unsigned int spi =3D PCI_DEVFN(13, 2);
++		struct pci_bus *bus =3D dev->bus;
++
++		/*
++		 * The P2SB is hidden by BIOS and we need to unhide it in
++		 * order to read BAR of the SPI flash device. Once that is
++		 * done we hide it again.
++		 */
++		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x0);
++		pci_bus_read_config_dword(bus, spi, PCI_BASE_ADDRESS_0,
++					  &spi_base);
++		if (spi_base !=3D ~0) {
++			res->start =3D spi_base & 0xfffffff0;
++			res->end =3D res->start + SPIBASE_APL_SZ - 1;
++
++			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
++			if (!(bcr & BCR_WPD)) {
++				bcr |=3D BCR_WPD;
++				pci_bus_write_config_dword(bus, spi, BCR, bcr);
++				pci_bus_read_config_dword(bus, spi, BCR, &bcr);
++			}
++			info->writeable =3D !!(bcr & BCR_WPD);
++		}
++
++		pci_bus_write_config_byte(dev->bus, p2sb, 0xe1, 0x1);
++		break;
++	}
++
+ 	default:
+ 		return -EINVAL;
+ 	}
+--
+2.8.1
