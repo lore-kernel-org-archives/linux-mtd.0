@@ -1,24 +1,23 @@
-Received: from mail-db5eur01on0067.outbound.protection.outlook.com
- ([104.47.2.67] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+Received: from szxga01-in.huawei.com ([58.251.152.64])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpjWg-0002te-IV
- for linux-mtd@lists.infradead.org; Thu, 29 Sep 2016 22:09:59 +0000
-From: Han Xu <han.xu@nxp.com>
-To: Albert ARIBAUD <albert.aribaud@3adev.fr>, Han Xu <xhnjupt@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 1/2] fsl-quadspi: fix QUAD read, add NORMAL, DUAL and FAST
- reads
-Date: Thu, 29 Sep 2016 22:09:33 +0000
-Message-ID: <DB5PR0401MB184590EED7EB8A68E7352E8997CE0@DB5PR0401MB1845.eurprd04.prod.outlook.com>
-References: <20160927055957.427-1-albert.aribaud@3adev.fr>
- <20160928200652.GA31901@shlinux2>,
- <20160928234546.6df9c893.albert.aribaud@3adev.fr>
-In-Reply-To: <20160928234546.6df9c893.albert.aribaud@3adev.fr>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1bptlO-0004dS-9m
+ for linux-mtd@lists.infradead.org; Fri, 30 Sep 2016 09:05:56 +0000
+From: linshunquan 00354166 <linshunquan1@hisilicon.com>
+To: <robh+dt@kernel.org>, <mark.rutland@arm.com>, <lee.jones@linaro.org>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>
+CC: <robh@kernel.org>, <xuejiancheng@hisilicon.com>,
+ <cyrille.pitchen@atmel.com>, <ezequiel@vanguardiasur.com.ar>,
+ <jteki@openedev.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <howell.yang@hisilicon.com>, <jalen.hsu@hisilicon.com>,
+ <suwenping@hisilicon.com>, <raojun@hisilicon.com>,
+ <kevin.lixu@hisilicon.com>, <lvkuanliang@hisilicon.com>,
+ linshunquan 00354166 <linshunquan1@hisilicon.com>
+Subject: [PATCH 0/2] Add the HiSilicon Flash Memory Controller driver 
+Date: Fri, 30 Sep 2016 16:59:29 +0800
+Message-ID: <1475225971-30152-1-git-send-email-linshunquan1@hisilicon.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,90 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Albert ARIBAUD <albert.aribaud@3adev.fr>
-Sent: Wednesday, September 28, 2016 3:45 PM
-To: Han Xu
-Cc: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org; Han Xu
-Subject: Re: [PATCH 1/2] fsl-quadspi: fix QUAD read, add NORMAL, DUAL and F=
-AST reads
+Brief:
+The HiSilicon Flash Memory Controller(FMC) is feature-rich that supports
+3 interfaces: SPI Nor, SPI Nand and Parallel Nand, choosed by the different
+chipselect and boot media of board, these sub-controllers share the same
+register block. The transmission protocol of each interface is different
+depends on their own framework.
 
-Hello Han,
+The HiSilicon Spi Nor framework you can refer to:
+drivers/mtd/spi-nor/hisi-sfc.c
+Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
 
-Le Thu, 29 Sep 2016 04:06:52 +0800, Han Xu <xhnjupt@gmail.com> a =E9crit :
+Shunquan Lin (2):
+  mfd: Add HiSilicon Flash Memory Controller(FMC) driver
+  mtd: spi nor: gets resource from HiSilicon Flash Memory Controller
+    driver
 
-> Too much changes in one patch, need to split to several patches.
+ .../devicetree/bindings/mfd/hisilicon,hisi-fmc.txt |  62 ++++++++++++
+ drivers/mfd/Kconfig                                |  10 ++
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/hisi_fmc.c                             | 109 +++++++++++++++++++++
+ drivers/mtd/spi-nor/hisi-sfc.c                     |  86 ++--------------
+ include/linux/mfd/hisi_fmc.h                       |  92 +++++++++++++++++
+ 6 files changed, 280 insertions(+), 80 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hisi-fmc.txt
+ create mode 100644 drivers/mfd/hisi_fmc.c
+ create mode 100644 include/linux/mfd/hisi_fmc.h
 
-Will do.
-
-> > +#define QUADSPI_SPTRCLR                    0x15c
-> > +#define QUADSPI_SPTRCLR_BFPTRC_SHIFT               0
-> > +#define QUADSPI_SPTRCLR_BFPTRC_MASK                (0x1 << QUADSPI_SPT=
-RCLR_BFPTRC_SHIFT)
-> > +
->
-> offset 0x15c is SR register for i.MX, not sure where does SPTRCLR come fr=
-om
-
-It's a typo -- should have been 0x16c, not 0x15c. It is the Vybrid's
-Sequence Pointer Clear Register. Apparently, the bad register write did
-not screw thing up enough to cause any visible issue. Thanks for
-pointing it out.
-
-> > +    /* use 24-bit addresses for up to 16MB, 32-bit above 16MB */
-> > +   if (q->nor_size <=3D SZ_16M)
-> > +           addrlen =3D ADDR24BIT;
-> > +   else
-> > +           addrlen =3D ADDR32BIT;
->
-> A better patch fetch info from nor structure, refer to
-> https://patchwork.ozlabs.org/patch/613429/
-
-v3 (https://patchwork.kernel.org/patch/9287005/) seems poised to go in
-at some point. I can base my patches above it. I will mention the
-dependency in my series' cover letter.
-
-> > + * When using two ports, the SEQID to use for one port might differ fr=
-om
-> > + * the one to use for the other (e.g., if one port can do 4-pad reads =
-but
-> > + * the other cannot). So we set up a basic mode here (SEQID_READ) and =
-we
-> > + * will set up the proper SEQID for the port right before doing the AH=
-B
-> > + * access(es).
-> >   */
->
-> It's rare to find this use case, considering the amount of lut is only 16=
-,
-> please don't add two many luts in this way. I will send a patch soon for
-> dynamic lut change, please add these extra luts in dynamic lut list.
-
-I'm fine with switching to a dynamic LUT list; this matches the "two
-ports with different characteristics" well. Is the patch already
-available somewhere so that I can rebase over it in advance?
-
-Just sent the patch out, refer to https://patchwork.ozlabs.org/patch/676791=
-/
-
-> >     /* Read out the data directly from the AHB buffer.*/
-> > -   memcpy(buf, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs=
-,
-> > -           len);
-> > +   memcpy(buf, q->ahb_addr + nor_ofs + from, len);
->
-> No much diff from the previous implementation
-
-Still, it simplifies the memcpy source address computation.
-
-> > +           ret =3D spi_nor_scan(nor, NULL, readmode);
->
-> Not necessary, can fetch info from nor structure
-> https://patchwork.ozlabs.org/patch/613429/
-
-Ditto.
-
-Thanks for your review!
-
-Cordialement,
-Albert ARIBAUD
-3ADEV
+-- 
+2.3.7
