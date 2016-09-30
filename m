@@ -1,18 +1,28 @@
-Subject: Re: [PATCH v3 1/9] mtd:fsl-quadspi:use the property fields of SPI-NOR
-To: Yunhui Cui <B56489@freescale.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <han.xu@freescale.com>,
- <jagannadh.teki@gmail.com>
-References: <1471505884-33996-1-git-send-email-B56489@freescale.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: Yunhui Cui <yunhui.cui@nxp.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <yao.yuan@nxp.com>
-Message-ID: <22010794-652a-4f1e-21ec-4f0025073a82@atmel.com>
-Date: Fri, 30 Sep 2016 12:04:46 +0200
+Received: from mout.kundenserver.de ([212.227.17.24])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bpygB-0002YI-Vx
+ for linux-mtd@lists.infradead.org; Fri, 30 Sep 2016 14:20:50 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: linshunquan 00354166 <linshunquan1@hisilicon.com>
+Subject: Re: [PATCH 2/2] mtd: spi nor: gets resource from HiSilicon Flash
+ Memory Controller driver
+Date: Fri, 30 Sep 2016 16:19:21 +0200
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, lee.jones@linaro.org,
+ dwmw2@infradead.org, computersforpeace@gmail.com, robh@kernel.org,
+ xuejiancheng@hisilicon.com, cyrille.pitchen@atmel.com,
+ ezequiel@vanguardiasur.com.ar, jteki@openedev.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, howell.yang@hisilicon.com,
+ jalen.hsu@hisilicon.com, suwenping@hisilicon.com, raojun@hisilicon.com,
+ kevin.lixu@hisilicon.com, lvkuanliang@hisilicon.com
+References: <1475225971-30152-1-git-send-email-linshunquan1@hisilicon.com>
+ <1475225971-30152-3-git-send-email-linshunquan1@hisilicon.com>
+In-Reply-To: <1475225971-30152-3-git-send-email-linshunquan1@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <1471505884-33996-1-git-send-email-B56489@freescale.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201609301619.21674.arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,107 +32,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yunhui,
-
-Indeed it's a really good thing to update the Freescale QSPI controller driver
-so it relies more on the settings chosen in spi-nor.c: it avoids duplicating
-the code. spi-nor.c is supposed to select all the instruction codes and memory
-settings according to both the (Q)SPI memory and the controller capabilities.
-The controller driver should only be responsible for sending the SPI commands
-but should neither modify those commands nor be aware of the actual memory
-connected to it.
-
-So the idea of this patch is great :)
-
-Best regards,
-
-Cyrille
-
-Le 18/08/2016 à 09:37, Yunhui Cui a écrit :
-> We can get the read/write/erase opcode from the spi nor framework
-> directly. This patch uses the information stored in the SPI-NOR to
-> remove the hardcode in the fsl_qspi_init_lut().
+On Friday 30 September 2016, linshunquan 00354166 wrote:
 > 
-> Signed-off-by: Yunhui Cui <B56489@freescale.com>
-> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
-Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> From: Shunquan Lin <linshunquan1@hisilicon.com>
+> 
+> As the HiSilicon Flash Memory Controller(FMC) driver is a Multi-
+> function device drivers(MFD) that not only support spi-nor flash
+> controller, but spi-nand and nand, so moves the register map of
+> HiSilicon spi-nor flash controller driver to
+> include/linux/mfd/hisi_fmc.h
+> 
+> Signed-off-by: Shunquan Lin <linshunquan1@hisilicon.com>
 > ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 40 ++++++++++++---------------------------
->  1 file changed, 12 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 5c82e4e..5ad6402 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -373,9 +373,13 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	void __iomem *base = q->iobase;
->  	int rxfifo = q->devtype_data->rxfifo;
->  	u32 lut_base;
-> -	u8 cmd, addrlen, dummy;
->  	int i;
->  
-> +	struct spi_nor *nor = &q->nor[0];
-> +	u8 addrlen = (nor->addr_width == 3) ? ADDR24BIT : ADDR32BIT;
-> +	u8 read_op = nor->read_opcode;
-> +	u8 read_dm = nor->read_dummy;
-> +
->  	fsl_qspi_unlock_lut(q);
->  
->  	/* Clear all the LUT table */
-> @@ -385,20 +389,10 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	/* Quad Read */
->  	lut_base = SEQID_QUAD_READ * 4;
->  
-> -	if (q->nor_size <= SZ_16M) {
-> -		cmd = SPINOR_OP_READ_1_1_4;
-> -		addrlen = ADDR24BIT;
-> -		dummy = 8;
-> -	} else {
-> -		/* use the 4-byte address */
-> -		cmd = SPINOR_OP_READ_1_1_4;
-> -		addrlen = ADDR32BIT;
-> -		dummy = 8;
-> -	}
-> -
-> -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-> +	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
->  			base + QUADSPI_LUT(lut_base));
-> -	qspi_writel(q, LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4, rxfifo),
-> +	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
-> +		    LUT1(FSL_READ, PAD4, rxfifo),
->  			base + QUADSPI_LUT(lut_base + 1));
->  
->  	/* Write enable */
-> @@ -409,16 +403,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	/* Page Program */
->  	lut_base = SEQID_PP * 4;
->  
-> -	if (q->nor_size <= SZ_16M) {
-> -		cmd = SPINOR_OP_PP;
-> -		addrlen = ADDR24BIT;
-> -	} else {
-> -		/* use the 4-byte address */
-> -		cmd = SPINOR_OP_PP;
-> -		addrlen = ADDR32BIT;
-> -	}
-> -
-> -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-> +	qspi_writel(q, LUT0(CMD, PAD1, nor->program_opcode) |
-> +		    LUT1(ADDR, PAD1, addrlen),
->  			base + QUADSPI_LUT(lut_base));
->  	qspi_writel(q, LUT0(FSL_WRITE, PAD1, 0),
->  			base + QUADSPI_LUT(lut_base + 1));
-> @@ -432,10 +418,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	/* Erase a sector */
->  	lut_base = SEQID_SE * 4;
->  
-> -	cmd = q->nor[0].erase_opcode;
-> -	addrlen = q->nor_size <= SZ_16M ? ADDR24BIT : ADDR32BIT;
-> -
-> -	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-> +	qspi_writel(q, LUT0(CMD, PAD1, nor->erase_opcode) |
-> +		    LUT1(ADDR, PAD1, addrlen),
->  			base + QUADSPI_LUT(lut_base));
->  
->  	/* Erase the whole chip */
-> 
+>  drivers/mtd/spi-nor/hisi-sfc.c | 86 +++---------------------------------------
+>  1 file changed, 6 insertions(+), 80 deletions(-)
+
+The patch seems incomplete, maybe forgot "git add" after a rebase?
+
+	Arnd
