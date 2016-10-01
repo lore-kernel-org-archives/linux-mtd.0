@@ -1,21 +1,19 @@
-Received: from p3nlsmtpcp01-02.prod.phx3.secureserver.net ([184.168.200.140])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat
- Linux)) id 1bqFPW-0006st-Ev
- for linux-mtd@lists.infradead.org; Sat, 01 Oct 2016 08:12:44 +0000
-Received: from lehmanadmin14 by p3plcpnl0344.prod.phx3.secureserver.net with
- local (Exim 4.87)
- (envelope-from <lehmanadmin14@p3plcpnl0344.prod.phx3.secureserver.net>)
- id 1bqFNB-0006t8-Ln
- for linux-mtd@lists.infradead.org; Sat, 01 Oct 2016 01:10:17 -0700
-To: linux-mtd@lists.infradead.org
-Subject: Delivery Notification, ID 00394204
-Date: Sat, 1 Oct 2016 08:10:17 +0000
-From: "FedEx 2Day" <bruce.mullins@emerylehman.com>
-Reply-To: "FedEx 2Day" <bruce.mullins@emerylehman.com>
-Message-ID: <791d71e4facda89127568e5c7f28e798@emerylehman.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_358ba64a8e96aa12b039ac1377de4d1c"
-Content-Transfer-Encoding: 8bit
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bqFas-00028E-W7
+ for linux-mtd@lists.infradead.org; Sat, 01 Oct 2016 08:24:28 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Subject: [PATCH 2/2] mtd: nand: Wait tCCS after a column change
+Date: Sat,  1 Oct 2016 10:24:03 +0200
+Message-Id: <1475310243-32625-3-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1475310243-32625-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1475310243-32625-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,117 +23,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_358ba64a8e96aa12b039ac1377de4d1c
-Content-Type: text/plain; charset=us-ascii
+Drivers implementing ->cmd_ctrl() and relying on the default ->cmdfunc()
+implementation usually don't wait tCCS when a column change (RNDIN or
+RNDOUT) is requested.
+Add an option flag to ask the core to do so (note that we keep this as
+an opt-in to avoid breaking existing implementations), and make use of
+the ->data_interface information is available (otherwise, wait 500ns).
 
-Dear Customer,
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 26 +++++++++++++++++++++++++-
+ include/linux/mtd/nand.h     | 10 ++++++++++
+ 2 files changed, 35 insertions(+), 1 deletion(-)
 
-We could not deliver your parcel.
-Shipment Label is attached to this email.
-
-Yours sincerely,
-Bruce Mullins,
-Sr. Station Manager.
-
-
---b1_358ba64a8e96aa12b039ac1377de4d1c
-Content-Type: application/zip; name="Delivery_Notification_00394204.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=Delivery_Notification_00394204.zip
-
-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
-ZG9jLndzZlBLBQYAAAAAAgACAJIAAADxEwAAAAA=
-
-
---b1_358ba64a8e96aa12b039ac1377de4d1c--
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 7a00245ebada..3b0e6d861e2e 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -709,6 +709,25 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
+ 	nand_wait_ready(mtd);
+ }
+ 
++static void nand_ccs_delay(struct nand_chip *chip)
++{
++	/*
++	 * The controller already takes care of waiting for tCCS when the RNDIN
++	 * or RNDOUT command is sent, return directly.
++	 */
++	if (!(chip->options & NAND_WAIT_TCCS))
++		return;
++
++	/*
++	 * Wait tCCS_min if it is correctly defined, otherwise wait 500ns
++	 * (which should be safe for all NANDs).
++	 */
++	if (chip->data_interface && chip->data_interface->timings.sdr.tCCS_min)
++		ndelay(chip->data_interface->timings.sdr.tCCS_min / 1000);
++	else
++		ndelay(500);
++}
++
+ /**
+  * nand_command_lp - [DEFAULT] Send command to NAND large page device
+  * @mtd: MTD device structure
+@@ -773,10 +792,13 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 	case NAND_CMD_ERASE1:
+ 	case NAND_CMD_ERASE2:
+ 	case NAND_CMD_SEQIN:
+-	case NAND_CMD_RNDIN:
+ 	case NAND_CMD_STATUS:
+ 		return;
+ 
++	case NAND_CMD_RNDIN:
++		nand_ccs_delay(chip);
++		return;
++
+ 	case NAND_CMD_RESET:
+ 		if (chip->dev_ready)
+ 			break;
+@@ -795,6 +817,8 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
+ 		chip->cmd_ctrl(mtd, NAND_CMD_NONE,
+ 			       NAND_NCE | NAND_CTRL_CHANGE);
++
++		nand_ccs_delay(chip);
+ 		return;
+ 
+ 	case NAND_CMD_READ0:
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 6fe83bce83a6..970ceb948835 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -210,6 +210,16 @@ enum nand_ecc_algo {
+  */
+ #define NAND_USE_BOUNCE_BUFFER	0x00100000
+ 
++/*
++ * In case your controller is implementing ->cmd_ctrl() and is relying on the
++ * default ->cmdfunc() implementation, you may want to let the core handle the
++ * tCCS delay which is required when a column change (RNDIN or RNDOUT) is
++ * requested.
++ * If your controller already takes care of this delay, you don't need to set
++ * this flag.
++ */
++#define NAND_WAIT_TCCS		0x00200000
++
+ /* Options set by nand scan */
+ /* Nand scan has allocated controller struct */
+ #define NAND_CONTROLLER_ALLOC	0x80000000
+-- 
+2.7.4
