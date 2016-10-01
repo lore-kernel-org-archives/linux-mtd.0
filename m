@@ -1,20 +1,17 @@
-Date: Sat, 1 Oct 2016 11:25:05 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bqQg6-00053Z-3v
+ for linux-mtd@lists.infradead.org; Sat, 01 Oct 2016 20:14:35 +0000
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+To: Richard Weinberger <richard@nod.at>
+Cc: kernel-janitors@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: mtk: avoid warning in mtk_ecc_encode
-Message-ID: <20161001112505.5f391ee6@bbrezillon>
-In-Reply-To: <201609301925.17577.arnd@arndb.de>
-References: <20160930163429.380785-1-arnd@arndb.de>
- <20160930185139.15c8be66@bbrezillon>
- <201609301925.17577.arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH 01/15] UBIFS: improve function-level documentation
+Date: Sat,  1 Oct 2016 21:46:18 +0200
+Message-Id: <1475351192-27079-2-git-send-email-Julia.Lawall@lip6.fr>
+In-Reply-To: <1475351192-27079-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1475351192-27079-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +21,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 30 Sep 2016 19:25:17 +0200
-Arnd Bergmann <arnd@arndb.de> wrote:
+Fix various inconsistencies in the documentation associated with various
+functions.
 
-> On Friday 30 September 2016, Boris Brezillon wrote:
-> > > +     /* copy into possibly unaligned OOB region with actual length */
-> > > +     memcpy(data + bytes, eccdata, len);  
-> > 
-> > Is it better than
-> > 
-> >         for (i = 0; i < len; i += 4) {
-> >                 u32 val = __raw_readl(ecc->regs + ECC_ENCPAR(i / 4));
-> > 
-> >                 memcpy(data + bytes + i, &val, min(len, 4));
-> >         }
-> > 
-> > I'm probably missing something, but what's the point of creating a
-> > temporary buffer of 112 bytes on the stack since you'll have to copy
-> > this data to the oob buffer at some point?  
-> 
-> 
-> I tried something like that first, but wasn't too happy with it for
-> a number of small reasons:
-> 
-> - __raw_readl in a driver is not usually the right API, __memcpy32_from_io
->   uses it internally, but it's better for a driver not to rely on that,
->   in case we need some barriers (which we may in factt need for other drivers).
+In the case of fs/ubifs/lprops.c, the second parameter of
+ubifs_get_lp_stats was renamed from st to lst in 84abf972.
 
-I agree, even though calling something prefixed with __ (in this case,
-__ioread32_copy()) sounds like a bad thing too :).
+In the case of fs/ubifs/lpt_commit.c, the excess variables have never
+existed in the associated functions since the code was introduced into the
+kernel.
 
-> 
-> - the min(len,4) expression is incorrect, fixing that makes it more complicated
->   again
+The others appear to be straightforward typos.
 
-Sorry, it's min(len - i, 4), which is not that complicated :P.
+Issues detected using Coccinelle (http://coccinelle.lip6.fr/)
 
-> 
-> - I didn't like to call memcpy() multiple times, as that might get turned
->   into an external function call (the compiler is free to optimize small
->   memcpy calls or not).
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
-Okay.
+---
+ fs/ubifs/file.c       |    2 +-
+ fs/ubifs/gc.c         |    2 +-
+ fs/ubifs/lprops.c     |    2 +-
+ fs/ubifs/lpt_commit.c |    4 +---
+ fs/ubifs/replay.c     |    2 +-
+ 5 files changed, 5 insertions(+), 7 deletions(-)
 
-> 
-> I agree that he 112 byte buffer isn't ideal either, it just seemed to
-> be the lesser annoyance.
-
-How about we keep your approach, but put the buffer in the mtk_ecc
-struct?
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index b0a6a53..629c719 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1397,7 +1397,7 @@ int ubifs_update_time(struct inode *inode, struct timespec *time,
+ #endif
+ 
+ /**
+- * update_ctime - update mtime and ctime of an inode.
++ * update_mctime - update mtime and ctime of an inode.
+  * @inode: inode to update
+  *
+  * This function updates mtime and ctime of the inode if it is not equivalent to
+diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+index 821b348..e845c64 100644
+--- a/fs/ubifs/gc.c
++++ b/fs/ubifs/gc.c
+@@ -113,7 +113,7 @@ static int switch_gc_head(struct ubifs_info *c)
+  * data_nodes_cmp - compare 2 data nodes.
+  * @priv: UBIFS file-system description object
+  * @a: first data node
+- * @a: second data node
++ * @b: second data node
+  *
+  * This function compares data nodes @a and @b. Returns %1 if @a has greater
+  * inode or block number, and %-1 otherwise.
+diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
+index a0011aa..6c3a1ab 100644
+--- a/fs/ubifs/lprops.c
++++ b/fs/ubifs/lprops.c
+@@ -636,7 +636,7 @@ const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
+ /**
+  * ubifs_get_lp_stats - get lprops statistics.
+  * @c: UBIFS file-system description object
+- * @st: return statistics
++ * @lst: return statistics
+  */
+ void ubifs_get_lp_stats(struct ubifs_info *c, struct ubifs_lp_stats *lst)
+ {
+diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
+index ce89bdc..235654c 100644
+--- a/fs/ubifs/lpt_commit.c
++++ b/fs/ubifs/lpt_commit.c
+@@ -34,7 +34,6 @@
+ 
+ /**
+  * first_dirty_cnode - find first dirty cnode.
+- * @c: UBIFS file-system description object
+  * @nnode: nnode at which to start
+  *
+  * This function returns the first dirty cnode or %NULL if there is not one.
+@@ -1623,7 +1622,6 @@ static int dbg_is_node_dirty(struct ubifs_info *c, int node_type, int lnum,
+  * dbg_check_ltab_lnum - check the ltab for a LPT LEB number.
+  * @c: the UBIFS file-system description object
+  * @lnum: LEB number where node was written
+- * @offs: offset where node was written
+  *
+  * This function returns %0 on success and a negative error code on failure.
+  */
+@@ -1870,7 +1868,7 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
+ }
+ 
+ /**
+- * ubifs_dump_lpt_leb - dump an LPT LEB.
++ * dump_lpt_leb - dump an LPT LEB.
+  * @c: UBIFS file-system description object
+  * @lnum: LEB number to dump
+  *
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 3ca4540..fb0f44c 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -267,7 +267,7 @@ static int apply_replay_entry(struct ubifs_info *c, struct replay_entry *r)
+  * replay_entries_cmp - compare 2 replay entries.
+  * @priv: UBIFS file-system description object
+  * @a: first replay entry
+- * @a: second replay entry
++ * @b: second replay entry
+  *
+  * This is a comparios function for 'list_sort()' which compares 2 replay
+  * entries @a and @b by comparing their sequence numer.  Returns %1 if @a has
