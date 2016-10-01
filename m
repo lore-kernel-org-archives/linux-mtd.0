@@ -1,19 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bqFas-00028A-WA
- for linux-mtd@lists.infradead.org; Sat, 01 Oct 2016 08:24:28 +0000
+Date: Sat, 1 Oct 2016 11:25:05 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Subject: [PATCH 1/2] mtd: nand: Add a few more timings to nand_sdr_timings
-Date: Sat,  1 Oct 2016 10:24:02 +0200
-Message-Id: <1475310243-32625-2-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1475310243-32625-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1475310243-32625-1-git-send-email-boris.brezillon@free-electrons.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: mtk: avoid warning in mtk_ecc_encode
+Message-ID: <20161001112505.5f391ee6@bbrezillon>
+In-Reply-To: <201609301925.17577.arnd@arndb.de>
+References: <20160930163429.380785-1-arnd@arndb.de>
+ <20160930185139.15c8be66@bbrezillon>
+ <201609301925.17577.arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,125 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the tR_max, tBERS_max, tPROG_max and tCCS_min timings to the
-nand_sdr_timings struct.
-Assign default/safe values for the statically defined timings, and
-extract them from the ONFI parameter table if the NAND is ONFI
-compliant.
+On Fri, 30 Sep 2016 19:25:17 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/nand_timings.c | 26 +++++++++++++++++++++++++-
- include/linux/mtd/nand.h        |  8 ++++++++
- 2 files changed, 33 insertions(+), 1 deletion(-)
+> On Friday 30 September 2016, Boris Brezillon wrote:
+> > > +     /* copy into possibly unaligned OOB region with actual length */
+> > > +     memcpy(data + bytes, eccdata, len);  
+> > 
+> > Is it better than
+> > 
+> >         for (i = 0; i < len; i += 4) {
+> >                 u32 val = __raw_readl(ecc->regs + ECC_ENCPAR(i / 4));
+> > 
+> >                 memcpy(data + bytes + i, &val, min(len, 4));
+> >         }
+> > 
+> > I'm probably missing something, but what's the point of creating a
+> > temporary buffer of 112 bytes on the stack since you'll have to copy
+> > this data to the oob buffer at some point?  
+> 
+> 
+> I tried something like that first, but wasn't too happy with it for
+> a number of small reasons:
+> 
+> - __raw_readl in a driver is not usually the right API, __memcpy32_from_io
+>   uses it internally, but it's better for a driver not to rely on that,
+>   in case we need some barriers (which we may in factt need for other drivers).
 
-diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-index 13a587407be3..f06312df3669 100644
---- a/drivers/mtd/nand/nand_timings.c
-+++ b/drivers/mtd/nand/nand_timings.c
-@@ -18,6 +18,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 	{
- 		.type = NAND_SDR_IFACE,
- 		.timings.sdr = {
-+			.tCCS_min = 500000,
-+			.tR_max = 200000000,
- 			.tADL_min = 400000,
- 			.tALH_min = 20000,
- 			.tALS_min = 50000,
-@@ -58,6 +60,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 	{
- 		.type = NAND_SDR_IFACE,
- 		.timings.sdr = {
-+			.tCCS_min = 500000,
-+			.tR_max = 200000000,
- 			.tADL_min = 400000,
- 			.tALH_min = 10000,
- 			.tALS_min = 25000,
-@@ -98,6 +102,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 	{
- 		.type = NAND_SDR_IFACE,
- 		.timings.sdr = {
-+			.tCCS_min = 500000,
-+			.tR_max = 200000000,
- 			.tADL_min = 400000,
- 			.tALH_min = 10000,
- 			.tALS_min = 15000,
-@@ -138,6 +144,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 	{
- 		.type = NAND_SDR_IFACE,
- 		.timings.sdr = {
-+			.tCCS_min = 500000,
-+			.tR_max = 200000000,
- 			.tADL_min = 400000,
- 			.tALH_min = 5000,
- 			.tALS_min = 10000,
-@@ -178,6 +186,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 	{
- 		.type = NAND_SDR_IFACE,
- 		.timings.sdr = {
-+			.tCCS_min = 500000,
-+			.tR_max = 200000000,
- 			.tADL_min = 400000,
- 			.tALH_min = 5000,
- 			.tALS_min = 10000,
-@@ -218,6 +228,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 	{
- 		.type = NAND_SDR_IFACE,
- 		.timings.sdr = {
-+			.tCCS_min = 500000,
-+			.tR_max = 200000000,
- 			.tADL_min = 400000,
- 			.tALH_min = 5000,
- 			.tALS_min = 10000,
-@@ -290,10 +302,22 @@ int onfi_init_data_interface(struct nand_chip *chip,
- 	*iface = onfi_sdr_timings[timing_mode];
- 
- 	/*
--	 * TODO: initialize timings that cannot be deduced from timing mode:
-+	 * Initialize timings that cannot be deduced from timing mode:
- 	 * tR, tPROG, tCCS, ...
- 	 * These information are part of the ONFI parameter page.
- 	 */
-+	if (chip->onfi_version) {
-+		struct nand_onfi_params *params = &chip->onfi_params;
-+		struct nand_sdr_timings *timings = &iface->timings.sdr;
-+
-+		/* microseconds -> picoseconds */
-+		timings->tPROG_max = 1000000UL * le16_to_cpu(params->t_prog);
-+		timings->tBERS_max = 1000000UL * le16_to_cpu(params->t_bers);
-+		timings->tR_max = 1000000UL * le16_to_cpu(params->t_r);
-+
-+		/* nanoseconds -> picoseconds */
-+		timings->tCCS_min = 1000UL * le16_to_cpu(params->t_ccs);
-+	}
- 
- 	return 0;
- }
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index c5d3d5024fc8..6fe83bce83a6 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -584,6 +584,10 @@ struct nand_buffers {
-  *
-  * All these timings are expressed in picoseconds.
-  *
-+ * @tBERS_max: Block erase time
-+ * @tCCS_min: Change column setup time
-+ * @tPROG_max: Page program time
-+ * @tR_max: Page read time
-  * @tALH_min: ALE hold time
-  * @tADL_min: ALE to data loading time
-  * @tALS_min: ALE setup time
-@@ -621,6 +625,10 @@ struct nand_buffers {
-  * @tWW_min: WP# transition to WE# low
-  */
- struct nand_sdr_timings {
-+	u32 tBERS_max;
-+	u32 tCCS_min;
-+	u32 tPROG_max;
-+	u32 tR_max;
- 	u32 tALH_min;
- 	u32 tADL_min;
- 	u32 tALS_min;
--- 
-2.7.4
+I agree, even though calling something prefixed with __ (in this case,
+__ioread32_copy()) sounds like a bad thing too :).
+
+> 
+> - the min(len,4) expression is incorrect, fixing that makes it more complicated
+>   again
+
+Sorry, it's min(len - i, 4), which is not that complicated :P.
+
+> 
+> - I didn't like to call memcpy() multiple times, as that might get turned
+>   into an external function call (the compiler is free to optimize small
+>   memcpy calls or not).
+
+Okay.
+
+> 
+> I agree that he 112 byte buffer isn't ideal either, it just seemed to
+> be the lesser annoyance.
+
+How about we keep your approach, but put the buffer in the mtk_ecc
+struct?
