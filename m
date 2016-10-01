@@ -1,7 +1,7 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bqFas-000289-WA
+ id 1bqFas-00028A-WA
  for linux-mtd@lists.infradead.org; Sat, 01 Oct 2016 08:24:28 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
@@ -9,9 +9,11 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>
 Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Subject: [PATCH 0/2] mtd: nand: Enforce tCCS wait time after a column change
-Date: Sat,  1 Oct 2016 10:24:01 +0200
-Message-Id: <1475310243-32625-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 1/2] mtd: nand: Add a few more timings to nand_sdr_timings
+Date: Sat,  1 Oct 2016 10:24:02 +0200
+Message-Id: <1475310243-32625-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1475310243-32625-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1475310243-32625-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +23,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Add the tR_max, tBERS_max, tPROG_max and tCCS_min timings to the
+nand_sdr_timings struct.
+Assign default/safe values for the statically defined timings, and
+extract them from the ONFI parameter table if the NAND is ONFI
+compliant.
 
-Marc recently struggled with the RNDIN/RNDOUT commands when trying to
-add support for the Tango NAND controller.
-After some investigation it appeared that nothing in the
-nand_command_lp() code waits tCCS, which is required to make sure the
-NAND chip is ready to receive/send data on the bus after a column
-change.
-
-This series adds some more timings to the nand_sdr_timings struct
-(including tCCS) and try to extract them from the ONFI parameter table
-(if available).
-
-It then adds a new flags to ask the core to enforce the tCCS
-constraint.
-As noted in the commit message, this is an opt-in flag to avoid perf
-regressions on existing implementations (adding an ndelay() might be
-useless if the controller IP or driver already takes care of that),
-but it might appear that some implementations are actually broken and
-needs this flag as well.
-
-Regards,
-
-Boris
-
-Boris Brezillon (2):
-  mtd: nand: Add a few more timings to nand_sdr_timings
-  mtd: nand: Wait tCCS after a column change
-
- drivers/mtd/nand/nand_base.c    | 26 +++++++++++++++++++++++++-
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
  drivers/mtd/nand/nand_timings.c | 26 +++++++++++++++++++++++++-
- include/linux/mtd/nand.h        | 18 ++++++++++++++++++
- 3 files changed, 68 insertions(+), 2 deletions(-)
+ include/linux/mtd/nand.h        |  8 ++++++++
+ 2 files changed, 33 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+index 13a587407be3..f06312df3669 100644
+--- a/drivers/mtd/nand/nand_timings.c
++++ b/drivers/mtd/nand/nand_timings.c
+@@ -18,6 +18,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	{
+ 		.type = NAND_SDR_IFACE,
+ 		.timings.sdr = {
++			.tCCS_min = 500000,
++			.tR_max = 200000000,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 20000,
+ 			.tALS_min = 50000,
+@@ -58,6 +60,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	{
+ 		.type = NAND_SDR_IFACE,
+ 		.timings.sdr = {
++			.tCCS_min = 500000,
++			.tR_max = 200000000,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 10000,
+ 			.tALS_min = 25000,
+@@ -98,6 +102,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	{
+ 		.type = NAND_SDR_IFACE,
+ 		.timings.sdr = {
++			.tCCS_min = 500000,
++			.tR_max = 200000000,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 10000,
+ 			.tALS_min = 15000,
+@@ -138,6 +144,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	{
+ 		.type = NAND_SDR_IFACE,
+ 		.timings.sdr = {
++			.tCCS_min = 500000,
++			.tR_max = 200000000,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 5000,
+ 			.tALS_min = 10000,
+@@ -178,6 +186,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	{
+ 		.type = NAND_SDR_IFACE,
+ 		.timings.sdr = {
++			.tCCS_min = 500000,
++			.tR_max = 200000000,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 5000,
+ 			.tALS_min = 10000,
+@@ -218,6 +228,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
+ 	{
+ 		.type = NAND_SDR_IFACE,
+ 		.timings.sdr = {
++			.tCCS_min = 500000,
++			.tR_max = 200000000,
+ 			.tADL_min = 400000,
+ 			.tALH_min = 5000,
+ 			.tALS_min = 10000,
+@@ -290,10 +302,22 @@ int onfi_init_data_interface(struct nand_chip *chip,
+ 	*iface = onfi_sdr_timings[timing_mode];
+ 
+ 	/*
+-	 * TODO: initialize timings that cannot be deduced from timing mode:
++	 * Initialize timings that cannot be deduced from timing mode:
+ 	 * tR, tPROG, tCCS, ...
+ 	 * These information are part of the ONFI parameter page.
+ 	 */
++	if (chip->onfi_version) {
++		struct nand_onfi_params *params = &chip->onfi_params;
++		struct nand_sdr_timings *timings = &iface->timings.sdr;
++
++		/* microseconds -> picoseconds */
++		timings->tPROG_max = 1000000UL * le16_to_cpu(params->t_prog);
++		timings->tBERS_max = 1000000UL * le16_to_cpu(params->t_bers);
++		timings->tR_max = 1000000UL * le16_to_cpu(params->t_r);
++
++		/* nanoseconds -> picoseconds */
++		timings->tCCS_min = 1000UL * le16_to_cpu(params->t_ccs);
++	}
+ 
+ 	return 0;
+ }
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index c5d3d5024fc8..6fe83bce83a6 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -584,6 +584,10 @@ struct nand_buffers {
+  *
+  * All these timings are expressed in picoseconds.
+  *
++ * @tBERS_max: Block erase time
++ * @tCCS_min: Change column setup time
++ * @tPROG_max: Page program time
++ * @tR_max: Page read time
+  * @tALH_min: ALE hold time
+  * @tADL_min: ALE to data loading time
+  * @tALS_min: ALE setup time
+@@ -621,6 +625,10 @@ struct nand_buffers {
+  * @tWW_min: WP# transition to WE# low
+  */
+ struct nand_sdr_timings {
++	u32 tBERS_max;
++	u32 tCCS_min;
++	u32 tPROG_max;
++	u32 tR_max;
+ 	u32 tALH_min;
+ 	u32 tADL_min;
+ 	u32 tALS_min;
 -- 
 2.7.4
