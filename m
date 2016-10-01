@@ -1,17 +1,14 @@
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bqQg6-00053Z-3v
- for linux-mtd@lists.infradead.org; Sat, 01 Oct 2016 20:14:35 +0000
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-To: Richard Weinberger <richard@nod.at>
-Cc: kernel-janitors@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH 01/15] UBIFS: improve function-level documentation
-Date: Sat,  1 Oct 2016 21:46:18 +0200
-Message-Id: <1475351192-27079-2-git-send-email-Julia.Lawall@lip6.fr>
-In-Reply-To: <1475351192-27079-1-git-send-email-Julia.Lawall@lip6.fr>
-References: <1475351192-27079-1-git-send-email-Julia.Lawall@lip6.fr>
+To: linux-metag@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, linux-clk@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 00/15] improve function-level documentation
+Date: Sat,  1 Oct 2016 21:46:17 +0200
+Message-Id: <1475351192-27079-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,108 +18,239 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix various inconsistencies in the documentation associated with various
-functions.
+These patches fix cases where the documentation above a function definition
+is not consistent with the function header.  Issues are detected using the
+semantic patch below (http://coccinelle.lip6.fr/).  Basically, the semantic
+patch parses a file to find comments, then matches each function header,
+and checks that the name and parameter list in the function header are
+compatible with the comment that preceeds it most closely.
 
-In the case of fs/ubifs/lprops.c, the second parameter of
-ubifs_get_lp_stats was renamed from st to lst in 84abf972.
+// <smpl>
+@initialize:ocaml@
+@@
 
-In the case of fs/ubifs/lpt_commit.c, the excess variables have never
-existed in the associated functions since the code was introduced into the
-kernel.
+let tbl = ref []
+let fnstart = ref []
+let success = Hashtbl.create 101
+let thefile = ref ""
+let parsed = ref []
+let nea = ref []
 
-The others appear to be straightforward typos.
+let parse file =
+  thefile := List.nth (Str.split (Str.regexp "linux-next/") file) 1;
+  let i = open_in file in
+  let startline = ref 0 in
+  let fn = ref "" in
+  let ids = ref [] in
+  let rec inside n =
+    let l = input_line i in
+    let n = n + 1 in
+    match Str.split_delim (Str.regexp_string "*/") l with
+      before::after::_ ->
+	(if not (!fn = "")
+	then tbl := (!startline,n,!fn,List.rev !ids)::!tbl);
+	startline := 0;
+	fn := "";
+	ids := [];
+	outside n
+    | _ ->
+	(match Str.split (Str.regexp "[ \t]+") l with
+	  "*"::name::rest ->
+	    let len = String.length name in
+	    (if !fn = "" && len > 2 && String.sub name (len-2) 2 = "()"
+	    then fn := String.sub name 0 (len-2)
+	    else if !fn = "" && (not (rest = [])) && List.hd rest = "-"
+	    then
+	      if String.get name (len-1) = ':'
+	      then fn := String.sub name 0 (len-1)
+	      else fn := name
+	    else if not(!fn = "") && len > 2 &&
+	      String.get name 0 = '@' && String.get name (len-1) = ':'
+	    then ids := (String.sub name 1 (len-2)) :: !ids);
+	| _ -> ());
+	inside n
+  and outside n =
+    let l = input_line i in
+    let n = n + 1 in
+    if String.length l > 2 && String.sub l 0 3 = "/**"
+    then
+      begin
+	startline := n;
+	inside n
+      end
+    else outside n in
+  try outside 0 with End_of_file -> ()
 
-Issues detected using Coccinelle (http://coccinelle.lip6.fr/)
+let hashadd tbl k v =
+  let cell =
+    try Hashtbl.find tbl k
+    with Not_found ->
+      let cell = ref [] in
+      Hashtbl.add tbl k cell;
+      cell in
+  cell := v :: !cell
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+@script:ocaml@
+@@
+
+tbl := [];
+fnstart := [];
+Hashtbl.clear success;
+parsed := [];
+nea := [];
+parse (List.hd (Coccilib.files()))
+
+@r@
+identifier f;
+position p;
+@@
+
+f@p(...) { ... }
+
+@script:ocaml@
+p << r.p;
+f << r.f;
+@@
+
+parsed := f :: !parsed;
+fnstart := (List.hd p).line :: !fnstart
+
+@param@
+identifier f;
+type T;
+identifier i;
+parameter list[n] ps;
+parameter list[n1] ps1;
+position p;
+@@
+
+f@p(ps,T i,ps1) { ... }
+
+@script:ocaml@
+@@
+
+tbl := List.rev (List.sort compare !tbl)
+
+@script:ocaml@
+p << param.p;
+f << param.f;
+@@
+
+let myline = (List.hd p).line in
+let prevline =
+  List.fold_left
+    (fun prev x ->
+      if x < myline
+      then max x prev
+      else prev)
+    0 !fnstart in
+let _ =
+  List.exists
+    (function (st,fn,nm,ids) ->
+      if prevline < st && myline > st && prevline < fn && myline > fn
+      then
+	begin
+	  (if not (String.lowercase f = String.lowercase nm)
+	  then
+	    Printf.printf "%s:%d %s doesn't match preceding comment: %s\n"
+	      !thefile myline f nm);
+	  true
+	end
+      else false)
+    !tbl in
+()
+
+@script:ocaml@
+p << param.p;
+n << param.n;
+n1 << param.n1;
+i << param.i;
+f << param.f;
+@@
+
+let myline = (List.hd p).line in
+let prevline =
+  List.fold_left
+    (fun prev x ->
+      if x < myline
+      then max x prev
+      else prev)
+    0 !fnstart in
+let _ =
+  List.exists
+    (function (st,fn,nm,ids) ->
+      if prevline < st && myline > st && prevline < fn && myline > fn
+      then
+	begin
+	  (if List.mem i ids then hashadd success (st,fn,nm) i);
+	  (if ids = [] (* arg list seems not obligatory *)
+	  then ()
+	  else if not (List.mem i ids)
+	  then
+	    Printf.printf "%s:%d %s doesn't appear in ids: %s\n"
+	      !thefile myline i (String.concat " " ids)
+	  else if List.length ids <= n || List.length ids <= n1
+	  then
+	    (if not (List.mem f !nea)
+	    then
+	      begin
+		nea := f :: !nea;
+		Printf.printf "%s:%d %s not enough args\n" !thefile myline f;
+	      end)
+	  else
+	    let foundid = List.nth ids n in
+	    let efoundid = List.nth (List.rev ids) n1 in
+	    if not(foundid = i || efoundid = i)
+	    then
+	      Printf.printf "%s:%d %s wrong arg in position %d: %s\n"
+		!thefile myline i n foundid);
+	  true
+	end
+      else false)
+    !tbl in
+()
+
+@script:ocaml@
+@@
+List.iter
+  (function (st,fn,nm,ids) ->
+    if List.mem nm !parsed
+    then
+      let entry =
+	try !(Hashtbl.find success (st,fn,nm))
+	with Not_found -> [] in
+      List.iter
+	(fun id ->
+	  if not (List.mem id entry) && not (id = "...")
+	  then Printf.printf "%s:%d %s not used\n" !thefile st id)
+	ids)
+  !tbl
+// </smpl>
+
 
 ---
- fs/ubifs/file.c       |    2 +-
- fs/ubifs/gc.c         |    2 +-
- fs/ubifs/lprops.c     |    2 +-
- fs/ubifs/lpt_commit.c |    4 +---
- fs/ubifs/replay.c     |    2 +-
- 5 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index b0a6a53..629c719 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1397,7 +1397,7 @@ int ubifs_update_time(struct inode *inode, struct timespec *time,
- #endif
- 
- /**
-- * update_ctime - update mtime and ctime of an inode.
-+ * update_mctime - update mtime and ctime of an inode.
-  * @inode: inode to update
-  *
-  * This function updates mtime and ctime of the inode if it is not equivalent to
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 821b348..e845c64 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -113,7 +113,7 @@ static int switch_gc_head(struct ubifs_info *c)
-  * data_nodes_cmp - compare 2 data nodes.
-  * @priv: UBIFS file-system description object
-  * @a: first data node
-- * @a: second data node
-+ * @b: second data node
-  *
-  * This function compares data nodes @a and @b. Returns %1 if @a has greater
-  * inode or block number, and %-1 otherwise.
-diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
-index a0011aa..6c3a1ab 100644
---- a/fs/ubifs/lprops.c
-+++ b/fs/ubifs/lprops.c
-@@ -636,7 +636,7 @@ const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
- /**
-  * ubifs_get_lp_stats - get lprops statistics.
-  * @c: UBIFS file-system description object
-- * @st: return statistics
-+ * @lst: return statistics
-  */
- void ubifs_get_lp_stats(struct ubifs_info *c, struct ubifs_lp_stats *lst)
- {
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index ce89bdc..235654c 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -34,7 +34,6 @@
- 
- /**
-  * first_dirty_cnode - find first dirty cnode.
-- * @c: UBIFS file-system description object
-  * @nnode: nnode at which to start
-  *
-  * This function returns the first dirty cnode or %NULL if there is not one.
-@@ -1623,7 +1622,6 @@ static int dbg_is_node_dirty(struct ubifs_info *c, int node_type, int lnum,
-  * dbg_check_ltab_lnum - check the ltab for a LPT LEB number.
-  * @c: the UBIFS file-system description object
-  * @lnum: LEB number where node was written
-- * @offs: offset where node was written
-  *
-  * This function returns %0 on success and a negative error code on failure.
-  */
-@@ -1870,7 +1868,7 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
- }
- 
- /**
-- * ubifs_dump_lpt_leb - dump an LPT LEB.
-+ * dump_lpt_leb - dump an LPT LEB.
-  * @c: UBIFS file-system description object
-  * @lnum: LEB number to dump
-  *
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 3ca4540..fb0f44c 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -267,7 +267,7 @@ static int apply_replay_entry(struct ubifs_info *c, struct replay_entry *r)
-  * replay_entries_cmp - compare 2 replay entries.
-  * @priv: UBIFS file-system description object
-  * @a: first replay entry
-- * @a: second replay entry
-+ * @b: second replay entry
-  *
-  * This is a comparios function for 'list_sort()' which compares 2 replay
-  * entries @a and @b by comparing their sequence numer.  Returns %1 if @a has
+ drivers/clk/keystone/pll.c               |    4 ++--
+ drivers/clk/sunxi/clk-mod0.c             |    2 +-
+ drivers/clk/tegra/cvb.c                  |   10 +++++-----
+ drivers/dma-buf/sw_sync.c                |    6 +++---
+ drivers/gpu/drm/gma500/intel_i2c.c       |    3 +--
+ drivers/gpu/drm/omapdrm/omap_drv.c       |    4 ++--
+ drivers/irqchip/irq-metag-ext.c          |    1 -
+ drivers/irqchip/irq-vic.c                |    1 -
+ drivers/mfd/tc3589x.c                    |    4 ++--
+ drivers/power/supply/ab8500_fg.c         |    8 ++++----
+ drivers/power/supply/abx500_chargalg.c   |    1 +
+ drivers/power/supply/intel_mid_battery.c |    2 +-
+ drivers/power/supply/power_supply_core.c |    4 ++--
+ fs/crypto/crypto.c                       |    4 ++--
+ fs/crypto/fname.c                        |    4 ++--
+ fs/ubifs/file.c                          |    2 +-
+ fs/ubifs/gc.c                            |    2 +-
+ fs/ubifs/lprops.c                        |    2 +-
+ fs/ubifs/lpt_commit.c                    |    4 +---
+ fs/ubifs/replay.c                        |    2 +-
+ lib/kobject_uevent.c                     |    6 +++---
+ lib/lru_cache.c                          |    4 ++--
+ lib/nlattr.c                             |    2 +-
+ 23 files changed, 39 insertions(+), 43 deletions(-)
