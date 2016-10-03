@@ -1,17 +1,14 @@
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
+Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bqRHr-0003cY-QX
- for linux-mtd@lists.infradead.org; Sat, 01 Oct 2016 20:53:37 +0000
-Date: Sat, 1 Oct 2016 22:53:11 +0200 (CEST)
-From: Julia Lawall <julia.lawall@lip6.fr>
-To: Richard Weinberger <richard@nod.at>
-cc: kernel-janitors@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH 01/15 v2] UBIFS: improve function-level documentation
-Message-ID: <alpine.DEB.2.10.1610012252190.3445@hadrien>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+ id 1br4GA-0002y7-AO
+ for linux-mtd@lists.infradead.org; Mon, 03 Oct 2016 14:30:28 +0000
+From: Zach Brown <zach.brown@ni.com>
+To: dwmw2@infradead.org
+Cc: computersforpeace@gmail.com, dedekind1@gmail.com, richard@nod.at,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC v3] UBI: add debugfs file for tracking PEB state
+Date: Mon, 3 Oct 2016 09:29:32 -0500
+Message-Id: <1475504972-8859-1-git-send-email-zach.brown@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,111 +18,208 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix various inconsistencies in the documentation associated with various
-functions.
+From: Ben Shelton <ben.shelton@ni.com>
 
-In the case of fs/ubifs/lprops.c, the second parameter of
-ubifs_get_lp_stats was renamed from st to lst in commit 84abf972ccff
-("UBIFS: add re-mount debugging checks")
+Add a file under debugfs to allow easy access to the erase count for
+each physical erase block on an UBI device.  This is useful when
+debugging data integrity issues with UBIFS on NAND flash devices.
 
-In the case of fs/ubifs/lpt_commit.c, the excess variables have never
-existed in the associated functions since the code was introduced into the
-kernel.
-
-The others appear to be straightforward typos.
-
-Issues detected using Coccinelle (http://coccinelle.lip6.fr/)
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
+Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+Signed-off-by: Zach Brown <zach.brown@ni.com>
 ---
-v2: improve reference to earlier commit
+v2
+ * Cast pointer in unsigned long instead of int to avoid build warning
+ * Use ubi->lookuptbl[] to get erase counter instead of reading from flash
+v3
+ * Use wl_lock to protect section that uses ubi_wl_entry
+ * Handle case where ubi->lookuptbl returns null
 
- fs/ubifs/file.c       |    2 +-
- fs/ubifs/gc.c         |    2 +-
- fs/ubifs/lprops.c     |    2 +-
- fs/ubifs/lpt_commit.c |    4 +---
- fs/ubifs/replay.c     |    2 +-
- 5 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index b0a6a53..629c719 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1397,7 +1397,7 @@ int ubifs_update_time(struct inode *inode, struct timespec *time,
- #endif
+ drivers/mtd/ubi/debug.c | 151 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 150 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index f101a49..6086822 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -22,6 +22,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/uaccess.h>
+ #include <linux/module.h>
++#include <linux/seq_file.h>
+ 
+ 
  /**
-- * update_ctime - update mtime and ctime of an inode.
-+ * update_mctime - update mtime and ctime of an inode.
-  * @inode: inode to update
-  *
-  * This function updates mtime and ctime of the inode if it is not equivalent to
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 821b348..e845c64 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -113,7 +113,7 @@ static int switch_gc_head(struct ubifs_info *c)
-  * data_nodes_cmp - compare 2 data nodes.
-  * @priv: UBIFS file-system description object
-  * @a: first data node
-- * @a: second data node
-+ * @b: second data node
-  *
-  * This function compares data nodes @a and @b. Returns %1 if @a has greater
-  * inode or block number, and %-1 otherwise.
-diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
-index a0011aa..6c3a1ab 100644
---- a/fs/ubifs/lprops.c
-+++ b/fs/ubifs/lprops.c
-@@ -636,7 +636,7 @@ const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
- /**
-  * ubifs_get_lp_stats - get lprops statistics.
-  * @c: UBIFS file-system description object
-- * @st: return statistics
-+ * @lst: return statistics
-  */
- void ubifs_get_lp_stats(struct ubifs_info *c, struct ubifs_lp_stats *lst)
- {
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index ce89bdc..235654c 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -34,7 +34,6 @@
-
- /**
-  * first_dirty_cnode - find first dirty cnode.
-- * @c: UBIFS file-system description object
-  * @nnode: nnode at which to start
-  *
-  * This function returns the first dirty cnode or %NULL if there is not one.
-@@ -1623,7 +1622,6 @@ static int dbg_is_node_dirty(struct ubifs_info *c, int node_type, int lnum,
-  * dbg_check_ltab_lnum - check the ltab for a LPT LEB number.
-  * @c: the UBIFS file-system description object
-  * @lnum: LEB number where node was written
-- * @offs: offset where node was written
-  *
-  * This function returns %0 on success and a negative error code on failure.
-  */
-@@ -1870,7 +1868,7 @@ int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
+@@ -386,7 +387,9 @@ out:
+ 	return count;
  }
-
+ 
+-/* File operations for all UBI debugfs files */
++/* File operations for all UBI debugfs files except
++ * detailed_erase_block_info
++ */
+ static const struct file_operations dfs_fops = {
+ 	.read   = dfs_file_read,
+ 	.write  = dfs_file_write,
+@@ -395,6 +398,146 @@ static const struct file_operations dfs_fops = {
+ 	.owner  = THIS_MODULE,
+ };
+ 
++/* As long as the position is less then that total number of erase blocks,
++ * we still have more to print.
++ */
++static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
++
++	if (*pos == 0)
++		return SEQ_START_TOKEN;
++
++	if (*pos < ubi->peb_count)
++		return pos;
++
++	return NULL;
++}
++
++/* Since we are using the position as the iterator, we just need to check if we
++ * are done and increment the position.
++ */
++static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
++
++	if (v == SEQ_START_TOKEN)
++		return pos;
++	(*pos)++;
++
++	if (*pos < ubi->peb_count)
++		return pos;
++
++	return NULL;
++}
++
++static void eraseblk_count_seq_stop(struct seq_file *s, void *v)
++{
++}
++
++enum block_status {
++	BLOCK_STATUS_OK,
++	BLOCK_STATUS_BAD_BLOCK,
++	BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX
++};
++
++static char const *block_status_names[] = {"OK", "marked_bad",
++					   "erase_count_beyond_max"};
++
++enum read_status {
++	READ_STATUS_OK,
++	READ_STATUS_ERR_READING_BLOCK,
++};
++
++static char const *read_status_names[] = {"OK", "err_reading_block"};
++
++static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
++{
++	struct ubi_device *ubi = s->private;
++	struct ubi_wl_entry *wl;
++	int *block_number = iter;
++	int erase_count = -1;
++	enum block_status b_sts = BLOCK_STATUS_OK;
++	enum read_status r_sts = READ_STATUS_OK;
++	int err;
++
++	/* If this is the start, print a header */
++	if (iter == SEQ_START_TOKEN) {
++		seq_puts(s,
++			 "physical_block_number\terase_count\tblock_status\tread_status\n");
++		return 0;
++	}
++
++	err = ubi_io_is_bad(ubi, *block_number);
++	if (err) {
++		if (err < 0)
++			r_sts = READ_STATUS_ERR_READING_BLOCK;
++		else
++			b_sts = BLOCK_STATUS_BAD_BLOCK;
++	} else {
++		spin_lock(&ubi->wl_lock);
++
++		wl = ubi->lookuptbl[*block_number];
++		if (wl)
++			erase_count = wl->ec;
++		else
++			r_sts = READ_STATUS_ERR_READING_BLOCK;
++
++		spin_unlock(&ubi->wl_lock);
++
++		if (erase_count > UBI_MAX_ERASECOUNTER)
++			b_sts = BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX;
++	}
++
++	seq_printf(s, "%-22d\t%-11d\t%-12s\t%-12s\n", *block_number,
++		   erase_count, block_status_names[b_sts],
++		   read_status_names[r_sts]);
++	return 0;
++}
++
++static const struct seq_operations eraseblk_count_seq_ops = {
++	.start = eraseblk_count_seq_start,
++	.next = eraseblk_count_seq_next,
++	.stop = eraseblk_count_seq_stop,
++	.show = eraseblk_count_seq_show
++};
++
++static int eraseblk_count_open(struct inode *inode, struct file *f)
++{
++	struct seq_file *s;
++	int err;
++
++	err = seq_open(f, &eraseblk_count_seq_ops);
++	if (err)
++		return err;
++
++	s = f->private_data;
++	s->private = ubi_get_device((unsigned long)inode->i_private);
++
++	if (!s->private)
++		return -ENODEV;
++	else
++		return 0;
++}
++
++static int eraseblk_count_release(struct inode *inode, struct file *f)
++{
++	struct seq_file *s = f->private_data;
++	struct ubi_device *ubi = s->private;
++
++	ubi_put_device(ubi);
++
++	return seq_release(inode, f);
++}
++
++static const struct file_operations eraseblk_count_fops = {
++	.owner = THIS_MODULE,
++	.open = eraseblk_count_open,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = eraseblk_count_release,
++};
++
  /**
-- * ubifs_dump_lpt_leb - dump an LPT LEB.
-+ * dump_lpt_leb - dump an LPT LEB.
-  * @c: UBIFS file-system description object
-  * @lnum: LEB number to dump
-  *
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 3ca4540..fb0f44c 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -267,7 +267,7 @@ static int apply_replay_entry(struct ubifs_info *c, struct replay_entry *r)
-  * replay_entries_cmp - compare 2 replay entries.
-  * @priv: UBIFS file-system description object
-  * @a: first replay entry
-- * @a: second replay entry
-+ * @b: second replay entry
-  *
-  * This is a comparios function for 'list_sort()' which compares 2 replay
-  * entries @a and @b by comparing their sequence numer.  Returns %1 if @a has
+  * ubi_debugfs_init_dev - initialize debugfs for an UBI device.
+  * @ubi: UBI device description object
+@@ -491,6 +634,12 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 		goto out_remove;
+ 	d->dfs_power_cut_max = dent;
+ 
++	fname = "detailed_erase_block_info";
++	dent = debugfs_create_file(fname, S_IRUSR, d->dfs_dir, (void *)ubi_num,
++				   &eraseblk_count_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++
+ 	return 0;
+ 
+ out_remove:
+-- 
+2.7.4
