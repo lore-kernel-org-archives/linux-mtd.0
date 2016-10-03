@@ -1,14 +1,22 @@
-Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1br4GA-0002y7-AO
- for linux-mtd@lists.infradead.org; Mon, 03 Oct 2016 14:30:28 +0000
-From: Zach Brown <zach.brown@ni.com>
-To: dwmw2@infradead.org
-Cc: computersforpeace@gmail.com, dedekind1@gmail.com, richard@nod.at,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC v3] UBI: add debugfs file for tracking PEB state
-Date: Mon, 3 Oct 2016 09:29:32 -0500
-Message-Id: <1475504972-8859-1-git-send-email-zach.brown@ni.com>
+ id 1br6X3-0003H0-OI
+ for linux-mtd@lists.infradead.org; Mon, 03 Oct 2016 16:56:02 +0000
+Received: by mail-pf0-x242.google.com with SMTP id i85so2440273pfa.0
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Oct 2016 09:55:40 -0700 (PDT)
+Date: Mon, 3 Oct 2016 09:55:33 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PULL] mtd: nand: material for 4.9
+Message-ID: <20161003165533.GA66959@google.com>
+References: <20160925205326.67b5a9bd@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160925205326.67b5a9bd@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,208 +26,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Ben Shelton <ben.shelton@ni.com>
+Hi Boris,
 
-Add a file under debugfs to allow easy access to the erase count for
-each physical erase block on an UBI device.  This is useful when
-debugging data integrity issues with UBIFS on NAND flash devices.
+On Sun, Sep 25, 2016 at 08:53:26PM +0200, Boris Brezillon wrote:
+> Hi Brian,
+> 
+> Here is my PR for 4.9. Let me know if you see any problem.
+> Also, please let us know ahead of time if you can't take this PR (I know you
+> are busy lately, and I guess I could send this PR directly to Linus or ask
+> Richard to take it in its UBIFS/UBI tree).
 
-Signed-off-by: Ben Shelton <ben.shelton@ni.com>
-Signed-off-by: Zach Brown <zach.brown@ni.com>
----
-v2
- * Cast pointer in unsigned long instead of int to avoid build warning
- * Use ubi->lookuptbl[] to get erase counter instead of reading from flash
-v3
- * Use wl_lock to protect section that uses ubi_wl_entry
- * Handle case where ubi->lookuptbl returns null
+I made some time for this one. We'll see about the pairing one
+(hopefully trivial? but I'm not sure if there's value in merging without
+users).
+
+> Thanks,
+> 
+> Boris
+> 
+> The following changes since commit 29b4817d4018df78086157ea3a55c1d9424a7cfc:
+> 
+>   Linux 4.8-rc1 (2016-08-07 18:18:00 -0700)
+> 
+> are available in the git repository at:
+> 
+>   git@github.com:linux-nand/linux.git tags/for-4.9
+> 
+> for you to fetch changes up to d44154f969a44269a9288c274c1c2fd9e85df8a5:
+> 
+>   mtd: nand: Provide nand_cleanup() function to free NAND related resources (2016-09-23 09:35:16 +0200)
+
+Thanks. I only added one trivial fixup that checkpatch.pl's spelling.txt
+(what??) caught:
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 7a00245ebada..e5718e5ecf92 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -746,7 +746,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 			chip->cmd_ctrl(mtd, column, ctrl);
+ 			ctrl &= ~NAND_CTRL_CHANGE;
+ 
+-			/* Only ouput a single addr cycle for 8bits opcodes. */
++			/* Only output a single addr cycle for 8bits opcodes. */
+ 			if (!nand_opcode_8bits(command))
+ 				chip->cmd_ctrl(mtd, column >> 8, ctrl);
+ 		}
 
 
- drivers/mtd/ubi/debug.c | 151 +++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 150 insertions(+), 1 deletion(-)
+> ----------------------------------------------------------------
+> Notable core changes:
+> - add the infrastructure to automate NAND timings configuration
+> - provide a generic DT property to maximize ECC strength
+> 
+> The rest is just a bunch of minor drivers and core fixes/cleanup
+> patches.
+> 
+> ----------------------------------------------------------------
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index f101a49..6086822 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -22,6 +22,7 @@
- #include <linux/debugfs.h>
- #include <linux/uaccess.h>
- #include <linux/module.h>
-+#include <linux/seq_file.h>
- 
- 
- /**
-@@ -386,7 +387,9 @@ out:
- 	return count;
- }
- 
--/* File operations for all UBI debugfs files */
-+/* File operations for all UBI debugfs files except
-+ * detailed_erase_block_info
-+ */
- static const struct file_operations dfs_fops = {
- 	.read   = dfs_file_read,
- 	.write  = dfs_file_write,
-@@ -395,6 +398,146 @@ static const struct file_operations dfs_fops = {
- 	.owner  = THIS_MODULE,
- };
- 
-+/* As long as the position is less then that total number of erase blocks,
-+ * we still have more to print.
-+ */
-+static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
-+{
-+	struct ubi_device *ubi = s->private;
-+
-+	if (*pos == 0)
-+		return SEQ_START_TOKEN;
-+
-+	if (*pos < ubi->peb_count)
-+		return pos;
-+
-+	return NULL;
-+}
-+
-+/* Since we are using the position as the iterator, we just need to check if we
-+ * are done and increment the position.
-+ */
-+static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
-+{
-+	struct ubi_device *ubi = s->private;
-+
-+	if (v == SEQ_START_TOKEN)
-+		return pos;
-+	(*pos)++;
-+
-+	if (*pos < ubi->peb_count)
-+		return pos;
-+
-+	return NULL;
-+}
-+
-+static void eraseblk_count_seq_stop(struct seq_file *s, void *v)
-+{
-+}
-+
-+enum block_status {
-+	BLOCK_STATUS_OK,
-+	BLOCK_STATUS_BAD_BLOCK,
-+	BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX
-+};
-+
-+static char const *block_status_names[] = {"OK", "marked_bad",
-+					   "erase_count_beyond_max"};
-+
-+enum read_status {
-+	READ_STATUS_OK,
-+	READ_STATUS_ERR_READING_BLOCK,
-+};
-+
-+static char const *read_status_names[] = {"OK", "err_reading_block"};
-+
-+static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
-+{
-+	struct ubi_device *ubi = s->private;
-+	struct ubi_wl_entry *wl;
-+	int *block_number = iter;
-+	int erase_count = -1;
-+	enum block_status b_sts = BLOCK_STATUS_OK;
-+	enum read_status r_sts = READ_STATUS_OK;
-+	int err;
-+
-+	/* If this is the start, print a header */
-+	if (iter == SEQ_START_TOKEN) {
-+		seq_puts(s,
-+			 "physical_block_number\terase_count\tblock_status\tread_status\n");
-+		return 0;
-+	}
-+
-+	err = ubi_io_is_bad(ubi, *block_number);
-+	if (err) {
-+		if (err < 0)
-+			r_sts = READ_STATUS_ERR_READING_BLOCK;
-+		else
-+			b_sts = BLOCK_STATUS_BAD_BLOCK;
-+	} else {
-+		spin_lock(&ubi->wl_lock);
-+
-+		wl = ubi->lookuptbl[*block_number];
-+		if (wl)
-+			erase_count = wl->ec;
-+		else
-+			r_sts = READ_STATUS_ERR_READING_BLOCK;
-+
-+		spin_unlock(&ubi->wl_lock);
-+
-+		if (erase_count > UBI_MAX_ERASECOUNTER)
-+			b_sts = BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX;
-+	}
-+
-+	seq_printf(s, "%-22d\t%-11d\t%-12s\t%-12s\n", *block_number,
-+		   erase_count, block_status_names[b_sts],
-+		   read_status_names[r_sts]);
-+	return 0;
-+}
-+
-+static const struct seq_operations eraseblk_count_seq_ops = {
-+	.start = eraseblk_count_seq_start,
-+	.next = eraseblk_count_seq_next,
-+	.stop = eraseblk_count_seq_stop,
-+	.show = eraseblk_count_seq_show
-+};
-+
-+static int eraseblk_count_open(struct inode *inode, struct file *f)
-+{
-+	struct seq_file *s;
-+	int err;
-+
-+	err = seq_open(f, &eraseblk_count_seq_ops);
-+	if (err)
-+		return err;
-+
-+	s = f->private_data;
-+	s->private = ubi_get_device((unsigned long)inode->i_private);
-+
-+	if (!s->private)
-+		return -ENODEV;
-+	else
-+		return 0;
-+}
-+
-+static int eraseblk_count_release(struct inode *inode, struct file *f)
-+{
-+	struct seq_file *s = f->private_data;
-+	struct ubi_device *ubi = s->private;
-+
-+	ubi_put_device(ubi);
-+
-+	return seq_release(inode, f);
-+}
-+
-+static const struct file_operations eraseblk_count_fops = {
-+	.owner = THIS_MODULE,
-+	.open = eraseblk_count_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = eraseblk_count_release,
-+};
-+
- /**
-  * ubi_debugfs_init_dev - initialize debugfs for an UBI device.
-  * @ubi: UBI device description object
-@@ -491,6 +634,12 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
- 		goto out_remove;
- 	d->dfs_power_cut_max = dent;
- 
-+	fname = "detailed_erase_block_info";
-+	dent = debugfs_create_file(fname, S_IRUSR, d->dfs_dir, (void *)ubi_num,
-+				   &eraseblk_count_fops);
-+	if (IS_ERR_OR_NULL(dent))
-+		goto out_remove;
-+
- 	return 0;
- 
- out_remove:
--- 
-2.7.4
+I added a small note in the merge commit about the BBT changes you made.
+That's an especially fragile piece of code I think (and used by every
+NAND driver), but it looked OK to me.
+
+Brian
