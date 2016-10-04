@@ -1,16 +1,16 @@
 Received: from exsmtp01.microchip.com ([198.175.253.37]
  helo=email.microchip.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brSiR-0000Gw-HR
- for linux-mtd@lists.infradead.org; Tue, 04 Oct 2016 16:37:17 +0000
+ id 1brSiU-0000Gw-0S
+ for linux-mtd@lists.infradead.org; Tue, 04 Oct 2016 16:37:21 +0000
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
  <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
  <cyrille.pitchen@atmel.com>
-Subject: [PATCH 8/9] mtd: spi-nor: add support to Macronix mx66l1g45g
-Date: Tue, 4 Oct 2016 18:37:10 +0200
-Message-ID: <3f42f61ab50fed1c41553963f63bfacc9341adbc.1475597385.git.cyrille.pitchen@atmel.com>
+Subject: [PATCH 9/9] mtd: spi-nor: add support to SST sst26* QSPI memories
+Date: Tue, 4 Oct 2016 18:37:11 +0200
+Message-ID: <f83bd832c8012f12300d04ee419bbc5457c412c3.1475597385.git.cyrille.pitchen@atmel.com>
 In-Reply-To: <cover.1475597385.git.cyrille.pitchen@atmel.com>
 References: <cover.1475597385.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
@@ -24,25 +24,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds an entry in the spi_nor_ids[] table to add support
-to the Macronix mx66l1g45g.
+This patch adds support to the SST sst26* QSPI memories.
+It also adds a new SST_BLOCK_PROTECT flag so spi_nor_scan() sends
+a SST Global Block Protection Unlock (98h) command once for all
+otherwise later Sector Erase and Page Program commands would fail.
+
+It was tested with sst26vf016b, sst26vf032b, sst26vf032ba and sst26vf064b
+on a sama5d2 xplained board at 55.3MHz and 3.3V.
+
+sst26wf040b and sst26wf080b were not tested since they are 1.8V memories
+hence don't fit the sama5d2 xplained board requirements.
 
 Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++++++++
+ include/linux/mtd/spi-nor.h   |  1 +
+ 2 files changed, 21 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 879b98ef1d80..031c6792a3fe 100644
+index 031c6792a3fe..355824bd3587 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -937,6 +937,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
- 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
-+	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+@@ -81,6 +81,7 @@ struct flash_info {
+ 					 * to support memory size above 128Mib.
+ 					 */
+ #define SPI_NOR_SKIP_SFDP	BIT(11) /* Skip read of SFDP tables */
++#define SST_BLOCK_PROTECT	BIT(12)	/* use SST Unlock Block-Protection */
+ };
  
- 	/* Micron */
+ #define JEDEC_MFR(info)	((info)->id[0])
+@@ -999,6 +1000,11 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
+ 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+ 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
++	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32, SECT_4K | SST_BLOCK_PROTECT) },
++	{ "sst26vf032b", INFO(0xbf2642, 0, 64 * 1024, 64, SECT_4K | SST_BLOCK_PROTECT) },
++	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SST_BLOCK_PROTECT) },
++	{ "sst26wf040b", INFO(0xbf2654, 0, 64 * 1024,  8, SECT_4K | SST_BLOCK_PROTECT) },
++	{ "sst26wf080b", INFO(0xbf2658, 0, 64 * 1024, 16, SECT_4K | SST_BLOCK_PROTECT) },
+ 
+ 	/* ST Microelectronics -- newer production may have feature updates */
+ 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+@@ -1135,6 +1141,14 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	return ret;
+ }
+ 
++static int sst_unlock_block_protection(struct spi_nor *nor)
++{
++	int ret;
++
++	ret = write_enable(nor);
++	return ret ? ret : nor->write_reg(nor, SPINOR_OP_ULBPR, NULL, 0);
++}
++
+ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		size_t *retlen, const u_char *buf)
+ {
+@@ -2308,6 +2322,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		return -EINVAL;
+ 	}
+ 
++	if (info->flags & SST_BLOCK_PROTECT) {
++		ret = sst_unlock_block_protection(nor);
++		if (ret)
++			return ret;
++	}
++
+ 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+ 			(long long)mtd->size >> 10);
+ 
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index ede7ad83c9c5..016b6c51e854 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -80,6 +80,7 @@
+ #define SPINOR_OP_BP		0x02	/* Byte program */
+ #define SPINOR_OP_WRDI		0x04	/* Write disable */
+ #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
++#define SPINOR_OP_ULBPR		0x98	/* Global Block Protection Unlock */
+ 
+ /* Used for Macronix and Winbond flashes. */
+ #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
 -- 
 2.7.4
