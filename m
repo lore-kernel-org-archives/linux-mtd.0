@@ -1,20 +1,22 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brkvg-0002d8-Rz
- for linux-mtd@lists.infradead.org; Wed, 05 Oct 2016 12:04:13 +0000
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
- <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 9/9] mtd: spi-nor: add support to SST sst26* QSPI memories
-Date: Wed, 5 Oct 2016 14:00:40 +0200
-Message-ID: <9c6e5ae4ce3089089ddf18f96731c92bfea1635b.1475668319.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1475668319.git.cyrille.pitchen@atmel.com>
-References: <cover.1475668319.git.cyrille.pitchen@atmel.com>
+ id 1brl4e-0008Ss-9z
+ for linux-mtd@lists.infradead.org; Wed, 05 Oct 2016 12:13:25 +0000
+Subject: Re: [PATCH 2/9] mtd: spi-nor: add an alternative method to support
+ memory >16MiB
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+References: <cover.1475597385.git.cyrille.pitchen@atmel.com>
+ <75db6c008249df8d0646ea5006648e57fea40706.1475597385.git.cyrille.pitchen@atmel.com>
+CC: <marex@denx.de>, <boris.brezillon@free-electrons.com>,
+ <nicolas.ferre@atmel.com>, <linux-kernel@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <d35f2b66-1915-8111-9187-cdc49417f787@ti.com>
+Date: Wed, 5 Oct 2016 17:42:50 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <75db6c008249df8d0646ea5006648e57fea40706.1475597385.git.cyrille.pitchen@atmel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,86 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds support to the SST sst26* QSPI memories.
-It also adds a new SST_BLOCK_PROTECT flag so spi_nor_scan() sends
-a SST Global Block Protection Unlock (98h) command once for all
-otherwise later Sector Erase and Page Program commands would fail.
+Hi,
 
-It was tested with sst26vf016b, sst26vf032b, sst26vf032ba and sst26vf064b
-on a sama5d2 xplained board at 55.3MHz and 3.3V.
 
-sst26wf040b and sst26wf080b were not tested since they are 1.8V memories
-hence don't fit the sama5d2 xplained board requirements.
+On Tuesday 04 October 2016 10:07 PM, Cyrille Pitchen wrote:
+[...]
+>  static struct seq_rw_config stfsm_s25fl_write4_configs[] = {
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 5c87b2d99507..423448c1c7a8 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -75,6 +75,10 @@ struct flash_info {
+>  					 * bit. Must be used with
+>  					 * SPI_NOR_HAS_LOCK.
+>  					 */
+> +#define SPI_NOR_4B_OPCODES	BIT(10)	/*
+> +					 * Use dedicated 4byte address op codes
+> +					 * to support memory size above 128Mib.
+> +					 */
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++++++++
- include/linux/mtd/spi-nor.h   |  1 +
- 2 files changed, 21 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 031c6792a3fe..355824bd3587 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -81,6 +81,7 @@ struct flash_info {
- 					 * to support memory size above 128Mib.
- 					 */
- #define SPI_NOR_SKIP_SFDP	BIT(11) /* Skip read of SFDP tables */
-+#define SST_BLOCK_PROTECT	BIT(12)	/* use SST Unlock Block-Protection */
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -999,6 +1000,11 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
- 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
- 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
-+	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32, SECT_4K | SST_BLOCK_PROTECT) },
-+	{ "sst26vf032b", INFO(0xbf2642, 0, 64 * 1024, 64, SECT_4K | SST_BLOCK_PROTECT) },
-+	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SST_BLOCK_PROTECT) },
-+	{ "sst26wf040b", INFO(0xbf2654, 0, 64 * 1024,  8, SECT_4K | SST_BLOCK_PROTECT) },
-+	{ "sst26wf080b", INFO(0xbf2658, 0, 64 * 1024, 16, SECT_4K | SST_BLOCK_PROTECT) },
- 
- 	/* ST Microelectronics -- newer production may have feature updates */
- 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
-@@ -1135,6 +1141,14 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	return ret;
- }
- 
-+static int sst_unlock_block_protection(struct spi_nor *nor)
-+{
-+	int ret;
-+
-+	ret = write_enable(nor);
-+	return ret ? ret : nor->write_reg(nor, SPINOR_OP_ULBPR, NULL, 0);
-+}
-+
- static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		size_t *retlen, const u_char *buf)
- {
-@@ -2308,6 +2322,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		return -EINVAL;
- 	}
- 
-+	if (info->flags & SST_BLOCK_PROTECT) {
-+		ret = sst_unlock_block_protection(nor);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
- 			(long long)mtd->size >> 10);
- 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index ede7ad83c9c5..016b6c51e854 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -80,6 +80,7 @@
- #define SPINOR_OP_BP		0x02	/* Byte program */
- #define SPINOR_OP_WRDI		0x04	/* Write disable */
- #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
-+#define SPINOR_OP_ULBPR		0x98	/* Global Block Protection Unlock */
- 
- /* Used for Macronix and Winbond flashes. */
- #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
+I don't see this flag being added to any flash_info data for any m25p80
+compatible flashes? Is that part of a separate series?
+
 -- 
-2.7.4
+Regards
+Vignesh
