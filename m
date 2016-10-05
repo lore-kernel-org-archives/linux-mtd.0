@@ -1,23 +1,30 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from mail-it0-x232.google.com ([2607:f8b0:4001:c0b::232])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brlhT-00080F-Qr
- for linux-mtd@lists.infradead.org; Wed, 05 Oct 2016 12:53:32 +0000
-Subject: Re: [PATCH 2/9] mtd: spi-nor: add an alternative method to support
- memory >16MiB
-To: Vignesh R <vigneshr@ti.com>, <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>
-References: <cover.1475597385.git.cyrille.pitchen@atmel.com>
- <75db6c008249df8d0646ea5006648e57fea40706.1475597385.git.cyrille.pitchen@atmel.com>
- <d35f2b66-1915-8111-9187-cdc49417f787@ti.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <marex@denx.de>, <boris.brezillon@free-electrons.com>,
- <nicolas.ferre@atmel.com>, <linux-kernel@vger.kernel.org>
-Message-ID: <aabd37f7-b173-650c-aac4-4bc8fa7a0daa@atmel.com>
-Date: Wed, 5 Oct 2016 14:53:07 +0200
+ id 1brm3P-0001Ri-0p
+ for linux-mtd@lists.infradead.org; Wed, 05 Oct 2016 13:16:15 +0000
+Received: by mail-it0-x232.google.com with SMTP id o19so172574322ito.1
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2016 06:15:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d35f2b66-1915-8111-9187-cdc49417f787@ti.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Sender: daniel.vetter@ffwll.ch
+In-Reply-To: <1475351192-27079-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1475351192-27079-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Daniel Vetter <daniel@ffwll.ch>
+Date: Wed, 5 Oct 2016 15:15:46 +0200
+Message-ID: <CAKMK7uHT3FutHQuQQ3iwXmYbidB3AOs7AxnpaJD4MTqy0-QehQ@mail.gmail.com>
+Subject: Re: [PATCH 00/15] improve function-level documentation
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: linux-metag@vger.kernel.org, Linux PM list <linux-pm@vger.kernel.org>,
+ kernel-janitors@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+ linux-mtd@lists.infradead.org,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ linux-clk@vger.kernel.org,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ drbd-dev@lists.linbit.com
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,52 +34,261 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vignesh,
+Jani Nikula has a patch with a scrip to make the one kernel-doc parser
+into a lint/checker pass over the entire kernel. I think that'd would
+be more robust instead of trying to approximate the real kerneldoc
+parser. Otoh that parser is a horror show of a perl/regex driven state
+machine ;-)
 
-Le 05/10/2016 à 14:12, Vignesh R a écrit :
-> Hi,
-> 
-> 
-> On Tuesday 04 October 2016 10:07 PM, Cyrille Pitchen wrote:
-> [...]
->>  static struct seq_rw_config stfsm_s25fl_write4_configs[] = {
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 5c87b2d99507..423448c1c7a8 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -75,6 +75,10 @@ struct flash_info {
->>  					 * bit. Must be used with
->>  					 * SPI_NOR_HAS_LOCK.
->>  					 */
->> +#define SPI_NOR_4B_OPCODES	BIT(10)	/*
->> +					 * Use dedicated 4byte address op codes
->> +					 * to support memory size above 128Mib.
->> +					 */
-> 
-> 
-> I don't see this flag being added to any flash_info data for any m25p80
-> compatible flashes? Is that part of a separate series?
-> 
+Jani, can you pls digg out these patches? Can't find them right now ...
+-Daniel
 
-Indeed, this flag is not used yet by any entry in the spi_nor_ids[] array.
-At first, I tested this patch with a Macronix mx25l25673g memory.
-This memory shares the very same JEDEC ID as the older mx25l25635e, so
-I added the SPI_NOR_4B_OPCODES flag in the mx25l25635e entry during my test.
-However I didn't commit this change since the actual mx25l25635e memory
-doesn't support The 4-byte address instruction test.
 
-Also the mx25l25673g provides the optional 4-byte Address Instruction Table,
-as described in the JESD216 rev B specification, so patches 6 and 7 allow
-to use the 4-byte address op codes without setting the SPI_NOR_4B_OPCODES flag.
+On Sat, Oct 1, 2016 at 9:46 PM, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
+> These patches fix cases where the documentation above a function definition
+> is not consistent with the function header.  Issues are detected using the
+> semantic patch below (http://coccinelle.lip6.fr/).  Basically, the semantic
+> patch parses a file to find comments, then matches each function header,
+> and checks that the name and parameter list in the function header are
+> compatible with the comment that preceeds it most closely.
+>
+> // <smpl>
+> @initialize:ocaml@
+> @@
+>
+> let tbl = ref []
+> let fnstart = ref []
+> let success = Hashtbl.create 101
+> let thefile = ref ""
+> let parsed = ref []
+> let nea = ref []
+>
+> let parse file =
+>   thefile := List.nth (Str.split (Str.regexp "linux-next/") file) 1;
+>   let i = open_in file in
+>   let startline = ref 0 in
+>   let fn = ref "" in
+>   let ids = ref [] in
+>   let rec inside n =
+>     let l = input_line i in
+>     let n = n + 1 in
+>     match Str.split_delim (Str.regexp_string "*/") l with
+>       before::after::_ ->
+>         (if not (!fn = "")
+>         then tbl := (!startline,n,!fn,List.rev !ids)::!tbl);
+>         startline := 0;
+>         fn := "";
+>         ids := [];
+>         outside n
+>     | _ ->
+>         (match Str.split (Str.regexp "[ \t]+") l with
+>           "*"::name::rest ->
+>             let len = String.length name in
+>             (if !fn = "" && len > 2 && String.sub name (len-2) 2 = "()"
+>             then fn := String.sub name 0 (len-2)
+>             else if !fn = "" && (not (rest = [])) && List.hd rest = "-"
+>             then
+>               if String.get name (len-1) = ':'
+>               then fn := String.sub name 0 (len-1)
+>               else fn := name
+>             else if not(!fn = "") && len > 2 &&
+>               String.get name 0 = '@' && String.get name (len-1) = ':'
+>             then ids := (String.sub name 1 (len-2)) :: !ids);
+>         | _ -> ());
+>         inside n
+>   and outside n =
+>     let l = input_line i in
+>     let n = n + 1 in
+>     if String.length l > 2 && String.sub l 0 3 = "/**"
+>     then
+>       begin
+>         startline := n;
+>         inside n
+>       end
+>     else outside n in
+>   try outside 0 with End_of_file -> ()
+>
+> let hashadd tbl k v =
+>   let cell =
+>     try Hashtbl.find tbl k
+>     with Not_found ->
+>       let cell = ref [] in
+>       Hashtbl.add tbl k cell;
+>       cell in
+>   cell := v :: !cell
+>
+> @script:ocaml@
+> @@
+>
+> tbl := [];
+> fnstart := [];
+> Hashtbl.clear success;
+> parsed := [];
+> nea := [];
+> parse (List.hd (Coccilib.files()))
+>
+> @r@
+> identifier f;
+> position p;
+> @@
+>
+> f@p(...) { ... }
+>
+> @script:ocaml@
+> p << r.p;
+> f << r.f;
+> @@
+>
+> parsed := f :: !parsed;
+> fnstart := (List.hd p).line :: !fnstart
+>
+> @param@
+> identifier f;
+> type T;
+> identifier i;
+> parameter list[n] ps;
+> parameter list[n1] ps1;
+> position p;
+> @@
+>
+> f@p(ps,T i,ps1) { ... }
+>
+> @script:ocaml@
+> @@
+>
+> tbl := List.rev (List.sort compare !tbl)
+>
+> @script:ocaml@
+> p << param.p;
+> f << param.f;
+> @@
+>
+> let myline = (List.hd p).line in
+> let prevline =
+>   List.fold_left
+>     (fun prev x ->
+>       if x < myline
+>       then max x prev
+>       else prev)
+>     0 !fnstart in
+> let _ =
+>   List.exists
+>     (function (st,fn,nm,ids) ->
+>       if prevline < st && myline > st && prevline < fn && myline > fn
+>       then
+>         begin
+>           (if not (String.lowercase f = String.lowercase nm)
+>           then
+>             Printf.printf "%s:%d %s doesn't match preceding comment: %s\n"
+>               !thefile myline f nm);
+>           true
+>         end
+>       else false)
+>     !tbl in
+> ()
+>
+> @script:ocaml@
+> p << param.p;
+> n << param.n;
+> n1 << param.n1;
+> i << param.i;
+> f << param.f;
+> @@
+>
+> let myline = (List.hd p).line in
+> let prevline =
+>   List.fold_left
+>     (fun prev x ->
+>       if x < myline
+>       then max x prev
+>       else prev)
+>     0 !fnstart in
+> let _ =
+>   List.exists
+>     (function (st,fn,nm,ids) ->
+>       if prevline < st && myline > st && prevline < fn && myline > fn
+>       then
+>         begin
+>           (if List.mem i ids then hashadd success (st,fn,nm) i);
+>           (if ids = [] (* arg list seems not obligatory *)
+>           then ()
+>           else if not (List.mem i ids)
+>           then
+>             Printf.printf "%s:%d %s doesn't appear in ids: %s\n"
+>               !thefile myline i (String.concat " " ids)
+>           else if List.length ids <= n || List.length ids <= n1
+>           then
+>             (if not (List.mem f !nea)
+>             then
+>               begin
+>                 nea := f :: !nea;
+>                 Printf.printf "%s:%d %s not enough args\n" !thefile myline f;
+>               end)
+>           else
+>             let foundid = List.nth ids n in
+>             let efoundid = List.nth (List.rev ids) n1 in
+>             if not(foundid = i || efoundid = i)
+>             then
+>               Printf.printf "%s:%d %s wrong arg in position %d: %s\n"
+>                 !thefile myline i n foundid);
+>           true
+>         end
+>       else false)
+>     !tbl in
+> ()
+>
+> @script:ocaml@
+> @@
+> List.iter
+>   (function (st,fn,nm,ids) ->
+>     if List.mem nm !parsed
+>     then
+>       let entry =
+>         try !(Hashtbl.find success (st,fn,nm))
+>         with Not_found -> [] in
+>       List.iter
+>         (fun id ->
+>           if not (List.mem id entry) && not (id = "...")
+>           then Printf.printf "%s:%d %s not used\n" !thefile st id)
+>         ids)
+>   !tbl
+> // </smpl>
+>
+>
+> ---
+>
+>  drivers/clk/keystone/pll.c               |    4 ++--
+>  drivers/clk/sunxi/clk-mod0.c             |    2 +-
+>  drivers/clk/tegra/cvb.c                  |   10 +++++-----
+>  drivers/dma-buf/sw_sync.c                |    6 +++---
+>  drivers/gpu/drm/gma500/intel_i2c.c       |    3 +--
+>  drivers/gpu/drm/omapdrm/omap_drv.c       |    4 ++--
+>  drivers/irqchip/irq-metag-ext.c          |    1 -
+>  drivers/irqchip/irq-vic.c                |    1 -
+>  drivers/mfd/tc3589x.c                    |    4 ++--
+>  drivers/power/supply/ab8500_fg.c         |    8 ++++----
+>  drivers/power/supply/abx500_chargalg.c   |    1 +
+>  drivers/power/supply/intel_mid_battery.c |    2 +-
+>  drivers/power/supply/power_supply_core.c |    4 ++--
+>  fs/crypto/crypto.c                       |    4 ++--
+>  fs/crypto/fname.c                        |    4 ++--
+>  fs/ubifs/file.c                          |    2 +-
+>  fs/ubifs/gc.c                            |    2 +-
+>  fs/ubifs/lprops.c                        |    2 +-
+>  fs/ubifs/lpt_commit.c                    |    4 +---
+>  fs/ubifs/replay.c                        |    2 +-
+>  lib/kobject_uevent.c                     |    6 +++---
+>  lib/lru_cache.c                          |    4 ++--
+>  lib/nlattr.c                             |    2 +-
+>  23 files changed, 39 insertions(+), 43 deletions(-)
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-Hence the SPI_NOR_4B_OPCODES, will be useful for memories which don't
-provide the JESD216B 4-byte Address Instruction Table but still support
-the associated op code. It will have to be tested for each individual entry
-in the spi_nor_ids[] array, which can be done later.
 
-Anyway, the 4-byte address op codes introduced by this patch are also used
-by patch 7 (parse SFDP 4-byte Address Instruction Table).
 
-Best regards,
-
-Cyrille
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
