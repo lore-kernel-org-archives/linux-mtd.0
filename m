@@ -1,9 +1,9 @@
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bsWwM-00057u-Ks
- for linux-mtd@lists.infradead.org; Fri, 07 Oct 2016 15:20:04 +0000
-Received: by mail-wm0-x22f.google.com with SMTP id b201so45854575wmb.0
- for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2016 08:19:41 -0700 (PDT)
+ id 1bsWwS-0005BX-9u
+ for linux-mtd@lists.infradead.org; Fri, 07 Oct 2016 15:20:10 +0000
+Received: by mail-wm0-x231.google.com with SMTP id b201so45861141wmb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2016 08:19:47 -0700 (PDT)
 From: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 To: Lee Jones <lee.jones@linaro.org>
 Cc: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
@@ -20,9 +20,11 @@ Cc: Rob Herring <robh+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org
-Subject: [PATCH 00/10] Introduce Juniper PTXPMB CPLD driver
-Date: Fri,  7 Oct 2016 18:17:21 +0300
-Message-Id: <1475853451-22121-1-git-send-email-pantelis.antoniou@konsulko.com>
+Subject: [PATCH 02/10] mfd: ptxpmb-cpld: Add documentation for PTXPMB CPLD
+Date: Fri,  7 Oct 2016 18:17:23 +0300
+Message-Id: <1475853451-22121-3-git-send-email-pantelis.antoniou@konsulko.com>
+In-Reply-To: <1475853451-22121-1-git-send-email-pantelis.antoniou@konsulko.com>
+References: <1475853451-22121-1-git-send-email-pantelis.antoniou@konsulko.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,67 +34,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Juniper's PTXPMB FPGA CPLD driver. Those FPGAs
-are present in Juniper's PTX series of routers.
+From: Georgi Vlaev <gvlaev@juniper.net>
 
-The MFD driver provices watchdog/i2c/gpio/mtd devices.
+Add DT bindings document for the PTXPMB CPLD MFD device.
 
-There are full device tree binding documents for the
-master mfd driver and for all slave drivers.
-
-This patchset is against mainline as of today: v4.8-9431-g3477d16
-and is dependent on the "Juniper prerequisites" and
-"Juniper infrastructure" patchsets sent earlier.
-
-Georgi Vlaev (5):
-  mfd: ptxpmb-cpld: Add documentation for PTXPMB CPLD
-  watchdog: ptxpmb-wdt: Add ptxpmb-wdt device tree bindings
-  i2c: i2c-mux-ptxpmb-cpld: Add device tree bindings
-  gpio: ptxpmb-cpld: Document bindings of PTXPMB's CPLD GPIO
-  mtd: ngpmb_nvram: Add bindings for Juniper's ngpmb NVRAM
-
-Guenter Roeck (4):
-  mfd: Juniper PTXPMB CPLD Multi-function core driver
-  watchdog: Add support for PTXPMB CPLD watchdog
-  i2c/muxes: Juniper's PTXPMB CPLD I2C multiplexer
-  gpio: ptxpmb-cpld: Add support for PTXPMB CPLD's GPIO
-
-JawaharBalaji Thirumalaisamy (1):
-  mtd: devices: Add driver for memory mapped NVRAM on FPC
-
- .../bindings/gpio/jnx,gpio-ptxpmb-cpld.txt         |  30 ++
- .../bindings/i2c/jnx,i2c-mux-ptxpmb-cpld.txt       |  50 +++
- .../devicetree/bindings/mfd/jnx-ptxpmb-cpld.txt    |  76 ++++
- .../devicetree/bindings/mtd/ngpmb-nvram.txt        |  22 ++
- .../bindings/watchdog/jnx-ptxpmb-wdt.txt           |  17 +
- drivers/gpio/Kconfig                               |  11 +
- drivers/gpio/Makefile                              |   1 +
- drivers/gpio/gpio-ptxpmb-cpld.c                    | 177 +++++++++
- drivers/i2c/muxes/Kconfig                          |  11 +
- drivers/i2c/muxes/Makefile                         |   1 +
- drivers/i2c/muxes/i2c-mux-ptxpmb.c                 | 299 +++++++++++++++
- drivers/mfd/Kconfig                                |  15 +
- drivers/mfd/Makefile                               |   1 +
- drivers/mfd/ptxpmb-cpld-core.c                     | 406 +++++++++++++++++++++
- drivers/mtd/devices/Kconfig                        |  11 +
- drivers/mtd/devices/Makefile                       |   1 +
- drivers/mtd/devices/jnx_pmb_nvram.c                | 191 ++++++++++
- drivers/watchdog/Kconfig                           |  12 +
- drivers/watchdog/Makefile                          |   1 +
- drivers/watchdog/ptxpmb_wdt.c                      | 283 ++++++++++++++
- include/linux/mfd/ptxpmb_cpld.h                    | 140 +++++++
- 21 files changed, 1756 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/gpio/jnx,gpio-ptxpmb-cpld.txt
- create mode 100644 Documentation/devicetree/bindings/i2c/jnx,i2c-mux-ptxpmb-cpld.txt
+Signed-off-by: Georgi Vlaev <gvlaev@juniper.net>
+[Ported from Juniper kernel]
+Signed-off-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+---
+ .../devicetree/bindings/mfd/jnx-ptxpmb-cpld.txt    | 76 ++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mfd/jnx-ptxpmb-cpld.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/ngpmb-nvram.txt
- create mode 100644 Documentation/devicetree/bindings/watchdog/jnx-ptxpmb-wdt.txt
- create mode 100644 drivers/gpio/gpio-ptxpmb-cpld.c
- create mode 100644 drivers/i2c/muxes/i2c-mux-ptxpmb.c
- create mode 100644 drivers/mfd/ptxpmb-cpld-core.c
- create mode 100644 drivers/mtd/devices/jnx_pmb_nvram.c
- create mode 100644 drivers/watchdog/ptxpmb_wdt.c
- create mode 100644 include/linux/mfd/ptxpmb_cpld.h
 
+diff --git a/Documentation/devicetree/bindings/mfd/jnx-ptxpmb-cpld.txt b/Documentation/devicetree/bindings/mfd/jnx-ptxpmb-cpld.txt
+new file mode 100644
+index 0000000..cc3cbb9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/jnx-ptxpmb-cpld.txt
+@@ -0,0 +1,76 @@
++* Device tree bindings for Juniper's PTXPMB CPLD FPGA MFD driver
++
++The device supports a number I2C muxes, hardware watchdog and a gpio block.
++Those devices bindings are described in the jnx-i2c-mux-ptxpmb-cpld,
++jnx-ptxpmb-wdt and jnx-gpio-ptxpmb-cpld documents.
++
++Required properties:
++
++- compatible:		"jnx,ptxpmb-cpld", "jnx,ngpmb-bcpld". They differ
++			in the i2c-mux blocks.
++
++- reg:			contains offset/length value for device state control
++			registers space.
++
++Optional properties:
++
++- interrupts:		The interrupt line(s) the /IRQ signal(s) for the device is
++			connected to.
++
++- interrupt-parent:	The parent interrupt controller.
++
++Example:
++
++cpld@0,0 {
++	compatible = "jnx,ptxpmb-cpld";
++	reg = <0x0 0 0x10000>;
++
++	cpld-i2c-mux {
++		compatible = "jnx,i2c-mux-ptxpmb-cpld";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		i2c-parent = <&i2c_master_0>;
++
++		num-enable = <1>;
++
++		i2c@0 {
++			reg = <0>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			/* PMB devices are accessed through FPC */
++
++			temp-sensor@1a { /* FPC */
++				compatible = "maxim,max6697";
++				reg = <0x1a>;
++				smbus-timeout-disable;
++				resistance-cancellation;
++				alert-mask = <0xff>;
++				over-temperature-mask = <0xff>;
++			};
++		};
++
++		pic0i2c: i2c@1 {
++			reg = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			/* PIC 0 */
++		};
++
++		pic1i2c: i2c@2 {
++			reg = <2>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			/* PIC 1 */
++		};
++	};
++
++	gpio_cpld: cpld_gpio {
++		compatible = "jnx,gpio-ptxpmb-cpld";
++		#gpio-cells = <2>;
++		gpio-controller;
++	};
++};
 -- 
 1.9.1
