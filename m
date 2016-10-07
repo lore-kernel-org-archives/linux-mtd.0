@@ -1,9 +1,9 @@
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bsX0k-0000uP-Ew
+ id 1bsX10-000169-VW
  for linux-mtd@lists.infradead.org; Fri, 07 Oct 2016 15:25:14 +0000
-Received: by mail-wm0-x229.google.com with SMTP id b201so46141469wmb.0
- for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2016 08:24:14 -0700 (PDT)
+Received: by mail-wm0-x22e.google.com with SMTP id b201so46158128wmb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2016 08:24:30 -0700 (PDT)
 From: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 To: Lee Jones <lee.jones@linaro.org>
 Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
@@ -17,9 +17,11 @@ Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
  linux-hwmon@vger.kernel.org
-Subject: [PATCH 0/7] Introduce PTX1K Boot FPGA driver
-Date: Fri,  7 Oct 2016 18:21:57 +0300
-Message-Id: <1475853724-22557-1-git-send-email-pantelis.antoniou@konsulko.com>
+Subject: [PATCH 6/7] mtd: ptx1kbf: Bindings for Juniper's PTX1K Boot FPGA
+Date: Fri,  7 Oct 2016 18:22:03 +0300
+Message-Id: <1475853724-22557-7-git-send-email-pantelis.antoniou@konsulko.com>
+In-Reply-To: <1475853724-22557-1-git-send-email-pantelis.antoniou@konsulko.com>
+References: <1475853724-22557-1-git-send-email-pantelis.antoniou@konsulko.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,52 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Juniper's PTX1K Boot FPGA driver. Those FPGAs
-are present in Juniper's PTX series of routers.
+From: Georgi Vlaev <gvlaev@juniper.net>
 
-The MFD driver provices watchdog/mtd/hwmon devices.
+Add binding document for Junipers Flash IP block present
+in the PTX1K Boot FPGA on PTX series of routers.
 
-There are full device tree binding documents for the
-master mfd driver and for the slave driver.
-
-This patchset is against mainline as of today: v4.8-9431-g3477d16
-and is dependent on the "Juniper prerequisites" and
-"Juniper infrastructure" patchsets sent earlier.
-
-Georgi Vlaev (7):
-  mfd: Add PTX1K I2CS BootFPGA MFD driver
-  mfd: dt-bindings: Add bindings for the Juniper PTX1K Boot FPGA
-  watchdog: Add PTX1K I2CS BootFPGA watchdog driver.
-  watchdog: ptx1kbf-wdt: Add ptx1kbf device tree bindings
-  mtd: ptx1kbf: Add PTX1K BootFPGA MTD driver
-  mtd: ptx1kbf: Bindings for Juniper's PTX1K Boot FPGA
-  hwmon: ptx1kbf: Add PTX1K I2CS BootFPGA sensor driver
-
- .../devicetree/bindings/mfd/jnx-ptx1k-bootfpga.txt |  34 ++
- .../devicetree/bindings/mtd/ptx1kbf-mtd.txt        |  23 +
- .../bindings/watchdog/jnx-ptx1kbf-wdt.txt          |  17 +
- drivers/hwmon/Kconfig                              |  17 +
- drivers/hwmon/Makefile                             |   1 +
- drivers/hwmon/jnx_ptx1kbf_hwmon.c                  | 123 ++++
- drivers/mfd/Kconfig                                |  11 +
- drivers/mfd/Makefile                               |   1 +
- drivers/mfd/ptx1k-bootfpga.c                       | 462 ++++++++++++++
- drivers/mtd/devices/Kconfig                        |  10 +
- drivers/mtd/devices/Makefile                       |   1 +
- drivers/mtd/devices/jnx_ptx1kbf_mtd.c              | 677 +++++++++++++++++++++
- drivers/watchdog/Kconfig                           |  15 +
- drivers/watchdog/Makefile                          |   1 +
- drivers/watchdog/jnx_ptx1kbf_wdt.c                 | 229 +++++++
- include/linux/mfd/ptx1k-bootfpga.h                 |  93 +++
- 16 files changed, 1715 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/jnx-ptx1k-bootfpga.txt
+Signed-off-by: Georgi Vlaev <gvlaev@juniper.net>
+[Ported from Juniper kernel]
+Signed-off-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+---
+ .../devicetree/bindings/mtd/ptx1kbf-mtd.txt        | 23 ++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mtd/ptx1kbf-mtd.txt
- create mode 100644 Documentation/devicetree/bindings/watchdog/jnx-ptx1kbf-wdt.txt
- create mode 100644 drivers/hwmon/jnx_ptx1kbf_hwmon.c
- create mode 100644 drivers/mfd/ptx1k-bootfpga.c
- create mode 100644 drivers/mtd/devices/jnx_ptx1kbf_mtd.c
- create mode 100644 drivers/watchdog/jnx_ptx1kbf_wdt.c
- create mode 100644 include/linux/mfd/ptx1k-bootfpga.h
 
+diff --git a/Documentation/devicetree/bindings/mtd/ptx1kbf-mtd.txt b/Documentation/devicetree/bindings/mtd/ptx1kbf-mtd.txt
+new file mode 100644
+index 0000000..4e25060
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/ptx1kbf-mtd.txt
+@@ -0,0 +1,23 @@
++Flash device on a PTX1K Boot FPGA
++
++These flash chips are found in the PTX series of Juniper routers.
++
++Required properties:
++- compatible : must be "jnx,flash-sam"
++
++Optional properties:
++- reg : memory address for the flash chip, note that this is not
++required since usually the device is a subdevice of the SAM MFD
++driver which fills in the register fields.
++
++For the rest of the properties, see mtd-physmap.txt.
++
++The device tree may optionally contain sub-nodes describing partitions of the
++address space. See partition.txt for more detail.
++
++Example:
++
++ptx1kbf_mtd {
++	compatible = "jnx,ptx1kbf-mtd";
++	/* usually the whole flash is used */
++};
 -- 
 1.9.1
