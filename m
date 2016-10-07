@@ -1,9 +1,9 @@
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bsX0u-0008N7-Se
- for linux-mtd@lists.infradead.org; Fri, 07 Oct 2016 15:24:45 +0000
-Received: by mail-wm0-x232.google.com with SMTP id i130so46096880wmg.1
- for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2016 08:24:24 -0700 (PDT)
+ id 1bsX0m-0008MP-Cg
+ for linux-mtd@lists.infradead.org; Fri, 07 Oct 2016 15:24:36 +0000
+Received: by mail-wm0-x231.google.com with SMTP id b201so46147192wmb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2016 08:24:19 -0700 (PDT)
 From: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 To: Lee Jones <lee.jones@linaro.org>
 Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
@@ -17,9 +17,10 @@ Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
  linux-hwmon@vger.kernel.org
-Subject: [PATCH 4/7] watchdog: ptx1kbf-wdt: Add ptx1kbf device tree bindings
-Date: Fri,  7 Oct 2016 18:22:01 +0300
-Message-Id: <1475853724-22557-5-git-send-email-pantelis.antoniou@konsulko.com>
+Subject: [PATCH 2/7] mfd: dt-bindings: Add bindings for the Juniper PTX1K Boot
+ FPGA
+Date: Fri,  7 Oct 2016 18:21:59 +0300
+Message-Id: <1475853724-22557-3-git-send-email-pantelis.antoniou@konsulko.com>
 In-Reply-To: <1475853724-22557-1-git-send-email-pantelis.antoniou@konsulko.com>
 References: <1475853724-22557-1-git-send-email-pantelis.antoniou@konsulko.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,38 +34,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Georgi Vlaev <gvlaev@juniper.net>
 
-Add binding document for the watchdog driver of PTX1K Boot FPGA.
+Add device tree bindings for the Juniper PTX1K Boot FPGA MFD driver.
 
 Signed-off-by: Georgi Vlaev <gvlaev@juniper.net>
 [Ported from Juniper kernel]
 Signed-off-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 ---
- .../devicetree/bindings/watchdog/jnx-ptx1kbf-wdt.txt    | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/watchdog/jnx-ptx1kbf-wdt.txt
+ .../devicetree/bindings/mfd/jnx-ptx1k-bootfpga.txt | 34 ++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/jnx-ptx1k-bootfpga.txt
 
-diff --git a/Documentation/devicetree/bindings/watchdog/jnx-ptx1kbf-wdt.txt b/Documentation/devicetree/bindings/watchdog/jnx-ptx1kbf-wdt.txt
+diff --git a/Documentation/devicetree/bindings/mfd/jnx-ptx1k-bootfpga.txt b/Documentation/devicetree/bindings/mfd/jnx-ptx1k-bootfpga.txt
 new file mode 100644
-index 0000000..0aa8086
+index 0000000..596dec7
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/jnx-ptx1kbf-wdt.txt
-@@ -0,0 +1,17 @@
-+Juniper's PTX1K Boot FPGA watchdog driver
++++ b/Documentation/devicetree/bindings/mfd/jnx-ptx1k-bootfpga.txt
+@@ -0,0 +1,34 @@
++* Device tree bindings for Juniper's PTX1K boot FPGA MFD driver
++
++The device supports a hardware watchdog, a flash MTD device and
++a hwmon sensor device. The bindings of those drivers are described
++in the jnx-ptx1kbf-wdt, jnx-ptx1kbf-mtd and jnx-ptx1kbf-hwmon documents.
 +
 +Required properties:
 +
-+- compatible:	Should be "jnx,ptx1kbf-wdt"
++- compatible:		"ptx1k-bootfpga"
 +
-+Optional properties:
-+
-+- reg : Specifies base physical address and size of the registers. It is
-+  optional since the MFD parent driver supplies it, but can be overridden.
++- reg:			contains offset/length value for device state control
++			registers space.
 +
 +Example:
 +
-+wdt {
-+	compatible = "jnx,ptx1kbf-wdt";
-+	/* no properties defined */
++bootfpga@10000 {
++	compatible = "jnx,ptx1k-bootfpga";
++	reg = <0x10000 0x100>;
++
++	wdt {
++		compatible = "jnx,ptx1kbf-wdt";
++		/* no properties required */
++	};
++
++	mtd {
++		compatible = "jnx,ptx1kbf-mtd";
++		/* use the full device */
++	};
++
++	hwmon {
++		compatible = "jnx,ptx1kbf-hwmon";
++		/* no properties required */
++	};
 +};
 -- 
 1.9.1
