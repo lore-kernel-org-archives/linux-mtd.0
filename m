@@ -1,9 +1,9 @@
-Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bsWxR-0006tc-M4
- for linux-mtd@lists.infradead.org; Fri, 07 Oct 2016 15:21:15 +0000
-Received: by mail-wm0-x22a.google.com with SMTP id b201so45925319wmb.0
- for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2016 08:20:49 -0700 (PDT)
+ id 1bsWxY-0006wm-HP
+ for linux-mtd@lists.infradead.org; Fri, 07 Oct 2016 15:21:20 +0000
+Received: by mail-wm0-x233.google.com with SMTP id f193so38958645wmg.0
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2016 08:20:55 -0700 (PDT)
 From: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 To: Lee Jones <lee.jones@linaro.org>
 Cc: Linus Walleij <linus.walleij@linaro.org>,
@@ -20,9 +20,11 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
  linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
  netdev@vger.kernel.org
-Subject: [PATCH 00/10] Introduce Juniper SAM FPGA driver
-Date: Fri,  7 Oct 2016 18:18:28 +0300
-Message-Id: <1475853518-22264-1-git-send-email-pantelis.antoniou@konsulko.com>
+Subject: [PATCH 02/10] mfd: sam: Add documentation for the SAM FPGA
+Date: Fri,  7 Oct 2016 18:18:30 +0300
+Message-Id: <1475853518-22264-3-git-send-email-pantelis.antoniou@konsulko.com>
+In-Reply-To: <1475853518-22264-1-git-send-email-pantelis.antoniou@konsulko.com>
+References: <1475853518-22264-1-git-send-email-pantelis.antoniou@konsulko.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,69 +34,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Juniper's SAM FPGA driver. Those FPGAs
-are present in Juniper's PTX series of routers.
+From: Georgi Vlaev <gvlaev@juniper.net>
 
-The MFD driver provices i2c/gpio/mtd/mdio devices.
+Add DT bindings document for the SAM MFD device.
 
-There are full device tree binding documents for the
-master mfd driver and for all slave drivers.
-
-This patchset is against mainline as of today: v4.8-9431-g3477d16
-and is dependent on the "Juniper prerequisites" and
-"Juniper infrastructure" patchsets sent earlier.
-
-Georgi Vlaev (6):
-  mfd: sam: Add documentation for the SAM FPGA
-  i2c: i2c-sam: Add device tree bindings
-  gpio: sam: Document bindings of SAM FPGA GPIO block
-  mtd: flash-sam: Bindings for Juniper's SAM FPGA flash
-  net: phy: Add MDIO driver for Juniper's SAM FPGA
-  net: mdio-sam: Add device tree documentation for SAM MDIO
-
-Guenter Roeck (2):
-  gpio: Introduce SAM gpio driver
-  mtd: Add SAM Flash driver
-
-Maryam Seraj (2):
-  mfd: Add Juniper SAM FPGA MFD driver
-  i2c: Juniper SAM I2C driver
-
- .../devicetree/bindings/gpio/jnx,gpio-sam.txt      | 110 +++
- .../devicetree/bindings/i2c/i2c-sam-mux.txt        |  20 +
- Documentation/devicetree/bindings/i2c/i2c-sam.txt  |  44 +
- Documentation/devicetree/bindings/mfd/jnx-sam.txt  |  94 ++
- .../devicetree/bindings/mtd/flash-sam.txt          |  31 +
- Documentation/devicetree/bindings/net/mdio-sam.txt |  48 +
- drivers/gpio/Kconfig                               |  11 +
- drivers/gpio/Makefile                              |   1 +
- drivers/gpio/gpio-sam.c                            | 707 +++++++++++++++
- drivers/i2c/busses/Kconfig                         |  11 +
- drivers/i2c/busses/Makefile                        |   1 +
- drivers/i2c/busses/i2c-sam.c                       | 942 +++++++++++++++++++
- drivers/mfd/Kconfig                                |  16 +
- drivers/mfd/Makefile                               |   1 +
- drivers/mfd/sam-core.c                             | 997 +++++++++++++++++++++
- drivers/mtd/devices/Kconfig                        |  11 +
- drivers/mtd/devices/Makefile                       |   1 +
- drivers/mtd/devices/sam-flash.c                    | 642 +++++++++++++
- drivers/net/phy/Kconfig                            |   8 +
- drivers/net/phy/Makefile                           |   1 +
- drivers/net/phy/mdio-sam.c                         | 564 ++++++++++++
- include/linux/mfd/sam.h                            |  30 +
- 22 files changed, 4291 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/gpio/jnx,gpio-sam.txt
- create mode 100644 Documentation/devicetree/bindings/i2c/i2c-sam-mux.txt
- create mode 100644 Documentation/devicetree/bindings/i2c/i2c-sam.txt
+Signed-off-by: Georgi Vlaev <gvlaev@juniper.net>
+[Ported from Juniper kernel]
+Signed-off-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+---
+ Documentation/devicetree/bindings/mfd/jnx-sam.txt | 94 +++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mfd/jnx-sam.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/flash-sam.txt
- create mode 100644 Documentation/devicetree/bindings/net/mdio-sam.txt
- create mode 100644 drivers/gpio/gpio-sam.c
- create mode 100644 drivers/i2c/busses/i2c-sam.c
- create mode 100644 drivers/mfd/sam-core.c
- create mode 100644 drivers/mtd/devices/sam-flash.c
- create mode 100644 drivers/net/phy/mdio-sam.c
- create mode 100644 include/linux/mfd/sam.h
 
+diff --git a/Documentation/devicetree/bindings/mfd/jnx-sam.txt b/Documentation/devicetree/bindings/mfd/jnx-sam.txt
+new file mode 100644
+index 0000000..b4af7ea
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/jnx-sam.txt
+@@ -0,0 +1,94 @@
++Device-Tree bindings for Juniper Networks SAM MFD
++
++Required properties:
++
++- compatible - Must be: "jnx,sam"
++
++Optional properties:
++
++- pma-coefficients: A set of tupples containing the configuration of the PMA.
++
++Device                   Description
++------                   -----------
++jnx,i2c-sam		: I2C mux driver
++jnx,gpio-sam		: GPIO block
++jnx,flash-sam		: MTD Flash
++jnx,mdio-sam		: MDIO interfaces
++
++All these optional nodes are described in their respective binding
++documents.
++
++Example node:
++
++pci-0000-10-00.0 {
++	compatible = "jnx,sam";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pma-coefficients = <4 0x0>;
++
++	i2c-sam@10 {
++		compatible = "jnx,i2c-sam";
++		mux-channels = <2>;
++		master-offset = <0x10000>;
++	};
++
++	gpiogpqam0: gpio-sam@10 {
++		compatible = "jnx,gpio-sam";
++		gpio-controller;
++		#gpio-cells = <2>;
++		gpio-count = <297>;
++		interrupt-controller;
++		/*
++		* 1st cell: gpio interrupt status bit
++		* 2nd cell: 1st pin
++		* 3rd cell: # of pins
++		*/
++		gpio-interrupts =
++			<0 0 12>,   /* phy_int_monitor_en [16] */
++			<1 235 24>, /* qsfpp_fpga_int_monitor [17] */
++			<2 259 24>, /* qsfpp_fpga_modprs_monitor [18] */
++			<3 295 1>,  /* si5345_fpga_monitor [19] */
++			<4 294 1>;  /* fpc_pic_int_monitor [20] */
++	};
++
++	flash-sam@10 {
++		compatible = "jnx,flash-sam";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		partition@0 {
++		reg = <0x0 0x400000>;
++			label = "pic0-golden";
++			read-only;
++		};
++		partition@400000 {
++			reg = <0x400000 0x400000>;
++			label = "pic0-user";
++		};
++	};
++
++	mdio-sam@10 {
++		compatible = "jnx,mdio-sam";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x40000>;
++
++		/* mii_bus types */
++		mdio0: mdio-sam@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0x0>;
++		};
++
++		mdio1: mdio-sam@4000 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0x4000>;
++		};
++
++		mdio2: mdio-sam@8000 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0x8000>;
++		};
++	};
++};
 -- 
 1.9.1
