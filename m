@@ -1,19 +1,15 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1btCfJ-00030a-PV
- for linux-mtd@lists.infradead.org; Sun, 09 Oct 2016 11:53:15 +0000
-Date: Sun, 9 Oct 2016 13:52:48 +0200
+Date: Sun, 9 Oct 2016 13:58:21 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Peter Pan <peterpansjtu@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC PATCH 0/7] mtd: nand: Abstract away the NAND interface type
-Message-ID: <20161009135248.6a9a9185@bbrezillon>
-In-Reply-To: <20161009053406.GE10199@brian-ubuntu>
-References: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
- <20161009053406.GE10199@brian-ubuntu>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+Subject: Re: [PATCH 5/9] mtd: nand: Expose data interface for ONFI mode 0
+Message-ID: <20161009135821.02ec6636@bbrezillon>
+In-Reply-To: <20161009051248.GC10199@brian-ubuntu>
+References: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
+ <1473928373-8680-6-git-send-email-s.hauer@pengutronix.de>
+ <20160915145625.15e81012@bbrezillon>
+ <20161009051248.GC10199@brian-ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,70 +24,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Brian,
 
-On Sat, 8 Oct 2016 22:34:06 -0700
+On Sat, 8 Oct 2016 22:12:48 -0700
 Brian Norris <computersforpeace@gmail.com> wrote:
 
-> On Thu, Sep 22, 2016 at 12:12:53PM +0200, Boris Brezillon wrote:
-> > Hi,
+> On Thu, Sep 15, 2016 at 02:56:25PM +0200, Boris Brezillon wrote:
+> > On Thu, 15 Sep 2016 10:32:49 +0200
+> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >   
+> > > The nand layer will need ONFI mode 0 to use it as timing mode
+> > > before and right after reset.
+> > > 
+> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > ---
+> > >  drivers/mtd/nand/nand_timings.c | 11 +++++++++++
+> > >  include/linux/mtd/nand.h        |  2 ++
+> > >  2 files changed, 13 insertions(+)
+> > > 
+> > > diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+> > > index 608d098..9cdbc16 100644
+> > > --- a/drivers/mtd/nand/nand_timings.c
+> > > +++ b/drivers/mtd/nand/nand_timings.c
+> > > @@ -297,3 +297,14 @@ int onfi_init_data_interface(struct nand_chip *chip,
+> > >  
+> > >  	return 0;
+> > >  }
+> > > +
+> > > +/**
+> > > + * nand_get_default_data_interface - [NAND Interface] Retrieve NAND
+> > > + * data interface for mode 0. This is used as default timing after
+> > > + * reset.
+> > > + */
+> > > +const struct nand_data_interface *nand_get_default_data_interface(void)
+> > > +{
+> > > +	return &onfi_sdr_timings[0];
+> > > +}
+> > > +EXPORT_SYMBOL(nand_get_default_data_interface);  
 > > 
-> > This series is aiming at providing a generic NAND layer to share code
-> > between different NAND based devices.
-> > 
-> > We currently have 3 different interfaces to interact with NANDs:
-> > - Raw NANDs
-> > - OneNANDs
-> > - SPI NANDs
-> > 
-> > Apart from the way these NAND devices are accessed they have a lot
-> > in common, like the way the memory is organized, or their constraints.
-> > This is usually a good sign that some work should be done to factorize
-> > the code.
-> > 
-> > This work has been started by Peter who wanted to re-use the BBT
-> > code for its SPI-NAND driver. But I think we can push it further
-> > other stuff (the software ECC implementation, or the way offsets are
-> > converted to block/page number).
-> > 
-> > Before I continue in this direction, I'd like to get some feedback
-> > from Peter and those who reviewed his initial submission (Brian,
-> > Ezequiel) [1], or anyone who is interested in this topic.  
+> > You export nand_get_default_data_interface() here, but you don't export
+> > onfi_init_data_interface().
+> > None of these functions should be called from NAND controller drivers,
+> > so they don't need to be exported. ITOH, the prototypes are public
+> > (defined in nand.h), so nothing prevents a driver from calling these
+> > functions.  
 > 
-> My eyes are bleeding for two reasons:
+> A bit late, but we can still change things for the next cycle of
+> course...
+> 
+> > I don't know what's the best solution here:
+> > 1/ Export both nand_get_default_data_interface() and
+> >    onfi_init_data_interface()  
+> 
+> I don't really like this one. We shouldn't export them if we don't want
+> people to use them in modules. And I'm sure the various compile-test
+> builders out there would complain eventually if someone did.
 
-Sorry for your eyes :-).
+Yes, I had the feeling it was the wrong choice, but it was also the
+less invasive one ;-).
 
 > 
-> (1) You haven't used any of git's nice rename detection for your patches
+> > 2/ Do not export them, but keep their prototypes in nand.h with a
+> >    comment saying that they should not be directly called by NAND
+> >    controller drivers  
+> 
+> Could be OK.
 
-Yep, as already answered to Ezequiel on IRC, I forgot to pass -M when
-generating patches with git format-patch. Will be addressed in v2.
-
-> (2) The 'rawnand' naming seems a bit much for me. If we really need to
->     reorganize everything, keeping the name shorter, like just 'raw'
->     might be fine -- at least wherever we're already namespaces as
->     "nand". e.g., 'drivers/mtd/nand/raw/' and 'mtd: nand: raw:
->     commit subject', but you might still keep 'rawnand.h' (unless you
->     want to move things into an include/linux/mtd/nand/ subdirectory).
-
-That's also something Ezequiel complained about. I'm perfectly fine
-dropping the nand suffix when it's unneeded (will be fixed in v2).
+I don't like that one. It just bloats nand.h with things that are not
+supposed to be exported to NAND controller drivers, which just adds
+more confusion (the NAND framework is already hard to
+follow/understand, let's try not to make it worse).
 
 > 
-> You'll also need to update MAINTAINERS for the header pattern.
-
-Sure, I'll patch MAINTAINERS to describe the new patterns.
-
+> > 3/ Removing the prototypes from nand.h and defining them in nand_base.c
+> >    (or in a private header).  
 > 
-> Haven't looked too closely at the code yet.
+> I like this one. Why not add a drivers/mtd/nand/nand.h that's intended
+> for the nand.{o,ko} module only?
 
-Thanks for this preliminary review, but I was actually looking for a
-more general review:
-
-- Is the general approach OK (the fact that we now have a generic NAND
-  layer to share code between different NAND based devices, no matter
-  the interface they use)?
-- Is the API defined at the generic NAND level (the interface-agnostic
-  API) acceptable?
+I like this one too. I'll try to come up with something (maybe with a
+different name, like core.h, to prevent developers from including this
+file in their NAND controller drivers).
 
 Thanks,
 
