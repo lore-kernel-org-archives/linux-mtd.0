@@ -1,23 +1,22 @@
-Received: from mail-pa0-x241.google.com ([2607:f8b0:400e:c03::241])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bt6XB-00028T-Mf
- for linux-mtd@lists.infradead.org; Sun, 09 Oct 2016 05:20:26 +0000
-Received: by mail-pa0-x241.google.com with SMTP id hh10so4916229pac.0
- for <linux-mtd@lists.infradead.org>; Sat, 08 Oct 2016 22:20:05 -0700 (PDT)
-Date: Sat, 8 Oct 2016 22:20:02 -0700
+ id 1bt6ko-0006UJ-8k
+ for linux-mtd@lists.infradead.org; Sun, 09 Oct 2016 05:34:31 +0000
+Received: by mail-pf0-x243.google.com with SMTP id i85so5265688pfa.0
+ for <linux-mtd@lists.infradead.org>; Sat, 08 Oct 2016 22:34:09 -0700 (PDT)
+Date: Sat, 8 Oct 2016 22:34:06 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Daniel Walter <dwalter@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v2 03/46] mtd: Don't unconditionally unregister reboot
- notifier
-Message-ID: <20161009052002.GD10199@brian-ubuntu>
-References: <cover.1474450295.git.dwalter@sigma-star.at>
- <f83b7dd1edbee967b352aa3c2dab676bafd63a56.1474450295.git.dwalter@sigma-star.at>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Peter Pan <peterpansjtu@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [RFC PATCH 0/7] mtd: nand: Abstract away the NAND interface type
+Message-ID: <20161009053406.GE10199@brian-ubuntu>
+References: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f83b7dd1edbee967b352aa3c2dab676bafd63a56.1474450295.git.dwalter@sigma-star.at>
+In-Reply-To: <1474539180-5863-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,63 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I realize I didn't comment on the latest copy of this patch, so copying
-my questions here:
-
-On Wed, Sep 21, 2016 at 11:45:12AM +0200, Daniel Walter wrote:
-> From: Richard Weinberger <richard@nod.at>
+On Thu, Sep 22, 2016 at 12:12:53PM +0200, Boris Brezillon wrote:
+> Hi,
 > 
-> del_mtd_device() is allowed to fail.
-> i.e. when the MTD is busy.
-> Unregister the reboot notifier only when we're really
-> about to delete the MTD.
+> This series is aiming at providing a generic NAND layer to share code
+> between different NAND based devices.
 > 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/mtd/mtdcore.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
+> We currently have 3 different interfaces to interact with NANDs:
+> - Raw NANDs
+> - OneNANDs
+> - SPI NANDs
 > 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index e3936b8..36e5fb0 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -654,17 +654,22 @@ int mtd_device_unregister(struct mtd_info *master)
->  {
->  	int err;
->  
-> -	if (master->_reboot)
-> -		unregister_reboot_notifier(&master->reboot_notifier);
-> -
->  	err = del_mtd_partitions(master);
->  	if (err)
->  		return err;
->  
->  	if (!device_is_registered(&master->dev))
-> -		return 0;
-> +		goto unregister;
->  
-> -	return del_mtd_device(master);
-> +	err = del_mtd_device(master);
-> +	if (err)
-> +		return err;
-> +
-> +unregister:
-> +	if (master->_reboot)
-> +		unregister_reboot_notifier(&master->reboot_notifier);
+> Apart from the way these NAND devices are accessed they have a lot
+> in common, like the way the memory is organized, or their constraints.
+> This is usually a good sign that some work should be done to factorize
+> the code.
+> 
+> This work has been started by Peter who wanted to re-use the BBT
+> code for its SPI-NAND driver. But I think we can push it further
+> other stuff (the software ECC implementation, or the way offsets are
+> converted to block/page number).
+> 
+> Before I continue in this direction, I'd like to get some feedback
+> from Peter and those who reviewed his initial submission (Brian,
+> Ezequiel) [1], or anyone who is interested in this topic.
 
-Is there any kind of race issue with unregistering the notifier *after*
-we've deleted the device? I had intentionally unregistered first,
-because I didn't want any chance of the driver/module and/or data
-structures being freed before we call the notifier.
+My eyes are bleeding for two reasons:
 
-I can't think of any particular issue yet, but I wanted to ask.
+(1) You haven't used any of git's nice rename detection for your patches
+(2) The 'rawnand' naming seems a bit much for me. If we really need to
+    reorganize everything, keeping the name shorter, like just 'raw'
+    might be fine -- at least wherever we're already namespaces as
+    "nand". e.g., 'drivers/mtd/nand/raw/' and 'mtd: nand: raw:
+    commit subject', but you might still keep 'rawnand.h' (unless you
+    want to move things into an include/linux/mtd/nand/ subdirectory).
+
+You'll also need to update MAINTAINERS for the header pattern.
+
+Haven't looked too closely at the code yet.
 
 Brian
-
-> +	return 0;
->  }
->  EXPORT_SYMBOL_GPL(mtd_device_unregister);
->  
-> -- 
-> 2.8.3
-> 
