@@ -1,18 +1,15 @@
-Date: Sun, 9 Oct 2016 13:58:21 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Received: from vs81.iboxed.net ([185.82.85.146])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1btETU-0000yZ-Tb
+ for linux-mtd@lists.infradead.org; Sun, 09 Oct 2016 13:49:10 +0000
+From: Alexander Kurz <akurz@blala.de>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
-Subject: Re: [PATCH 5/9] mtd: nand: Expose data interface for ONFI mode 0
-Message-ID: <20161009135821.02ec6636@bbrezillon>
-In-Reply-To: <20161009051248.GC10199@brian-ubuntu>
-References: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
- <1473928373-8680-6-git-send-email-s.hauer@pengutronix.de>
- <20160915145625.15e81012@bbrezillon>
- <20161009051248.GC10199@brian-ubuntu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Michal Suchanek <hramrach@gmail.com>, linux-mtd@lists.infradead.org,
+ Alexander Kurz <akurz@blala.de>
+Subject: [PATCH] drivers mtd: spi-nor: add new variants
+Date: Sun,  9 Oct 2016 15:45:27 +0200
+Message-Id: <1476020727-17299-1-git-send-email-akurz@blala.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,88 +19,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Add spi-nor variants found in ebook readers.
 
-On Sat, 8 Oct 2016 22:12:48 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+Signed-off-by: Alexander Kurz <akurz@blala.de>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> On Thu, Sep 15, 2016 at 02:56:25PM +0200, Boris Brezillon wrote:
-> > On Thu, 15 Sep 2016 10:32:49 +0200
-> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> >   
-> > > The nand layer will need ONFI mode 0 to use it as timing mode
-> > > before and right after reset.
-> > > 
-> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > > ---
-> > >  drivers/mtd/nand/nand_timings.c | 11 +++++++++++
-> > >  include/linux/mtd/nand.h        |  2 ++
-> > >  2 files changed, 13 insertions(+)
-> > > 
-> > > diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-> > > index 608d098..9cdbc16 100644
-> > > --- a/drivers/mtd/nand/nand_timings.c
-> > > +++ b/drivers/mtd/nand/nand_timings.c
-> > > @@ -297,3 +297,14 @@ int onfi_init_data_interface(struct nand_chip *chip,
-> > >  
-> > >  	return 0;
-> > >  }
-> > > +
-> > > +/**
-> > > + * nand_get_default_data_interface - [NAND Interface] Retrieve NAND
-> > > + * data interface for mode 0. This is used as default timing after
-> > > + * reset.
-> > > + */
-> > > +const struct nand_data_interface *nand_get_default_data_interface(void)
-> > > +{
-> > > +	return &onfi_sdr_timings[0];
-> > > +}
-> > > +EXPORT_SYMBOL(nand_get_default_data_interface);  
-> > 
-> > You export nand_get_default_data_interface() here, but you don't export
-> > onfi_init_data_interface().
-> > None of these functions should be called from NAND controller drivers,
-> > so they don't need to be exported. ITOH, the prototypes are public
-> > (defined in nand.h), so nothing prevents a driver from calling these
-> > functions.  
-> 
-> A bit late, but we can still change things for the next cycle of
-> course...
-> 
-> > I don't know what's the best solution here:
-> > 1/ Export both nand_get_default_data_interface() and
-> >    onfi_init_data_interface()  
-> 
-> I don't really like this one. We shouldn't export them if we don't want
-> people to use them in modules. And I'm sure the various compile-test
-> builders out there would complain eventually if someone did.
-
-Yes, I had the feeling it was the wrong choice, but it was also the
-less invasive one ;-).
-
-> 
-> > 2/ Do not export them, but keep their prototypes in nand.h with a
-> >    comment saying that they should not be directly called by NAND
-> >    controller drivers  
-> 
-> Could be OK.
-
-I don't like that one. It just bloats nand.h with things that are not
-supposed to be exported to NAND controller drivers, which just adds
-more confusion (the NAND framework is already hard to
-follow/understand, let's try not to make it worse).
-
-> 
-> > 3/ Removing the prototypes from nand.h and defining them in nand_base.c
-> >    (or in a private header).  
-> 
-> I like this one. Why not add a drivers/mtd/nand/nand.h that's intended
-> for the nand.{o,ko} module only?
-
-I like this one too. I'll try to come up with something (maybe with a
-different name, like core.h, to prevent developers from including this
-file in their NAND controller drivers).
-
-Thanks,
-
-Boris
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..649f54e 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -868,6 +868,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
++	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
++	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+@@ -980,6 +982,9 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "w25x80", INFO(0xef3014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
+ 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
++	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
++	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
++	{ "w25q20ew", INFO(0xef6012, 0, 64 * 1024,  4, SECT_4K) },
+ 	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{
+ 		"w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64,
+-- 
+2.1.4
