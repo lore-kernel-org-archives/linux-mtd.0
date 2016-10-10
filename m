@@ -1,10 +1,10 @@
-Received: from mail-oi0-f66.google.com ([209.85.218.66])
+Received: from mail-oi0-f65.google.com ([209.85.218.65])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1btfAK-0000Pp-8o
- for linux-mtd@lists.infradead.org; Mon, 10 Oct 2016 18:19:10 +0000
-Received: by mail-oi0-f66.google.com with SMTP id r132so8884572oig.1
- for <linux-mtd@lists.infradead.org>; Mon, 10 Oct 2016 11:18:47 -0700 (PDT)
-Date: Mon, 10 Oct 2016 13:18:46 -0500
+ id 1btgYc-0000op-NP
+ for linux-mtd@lists.infradead.org; Mon, 10 Oct 2016 19:48:19 +0000
+Received: by mail-oi0-f65.google.com with SMTP id d132so9004746oib.2
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Oct 2016 12:47:57 -0700 (PDT)
+Date: Mon, 10 Oct 2016 14:47:55 -0500
 From: Rob Herring <robh@kernel.org>
 To: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 Cc: Lee Jones <lee.jones@linaro.org>, Linus Walleij <linus.walleij@linaro.org>,
@@ -12,24 +12,22 @@ Cc: Lee Jones <lee.jones@linaro.org>, Linus Walleij <linus.walleij@linaro.org>,
  Frank Rowand <frowand.list@gmail.com>, Wolfram Sang <wsa@the-dreams.de>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Wim Van Sebroeck <wim@iguana.be>,
- Guenter Roeck <linux@roeck-us.net>, Peter Rosin <peda@axentia.se>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Wim Van Sebroeck <wim@iguana.be>, Peter Rosin <peda@axentia.se>,
  Debjit Ghosh <dghosh@juniper.net>, Georgi Vlaev <gvlaev@juniper.net>,
- Guenter Roeck <groeck@juniper.net>,
- JawaharBalaji Thirumalaisamy <jawaharb@juniper.net>,
- Rajat Jain <rajatjain@juniper.net>, devicetree@vger.kernel.org,
+ Guenter Roeck <linux@roeck-us.net>,
+ Maryam Seraj <mseraj@juniper.net>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
  linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 10/10] mtd: ngpmb_nvram: Add bindings for Juniper's ngpmb
- NVRAM
-Message-ID: <20161010181846.GA32705@rob-hp-laptop>
-References: <1475853451-22121-1-git-send-email-pantelis.antoniou@konsulko.com>
- <1475853451-22121-11-git-send-email-pantelis.antoniou@konsulko.com>
+ linux-watchdog@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 02/10] mfd: sam: Add documentation for the SAM FPGA
+Message-ID: <20161010194755.GA16910@rob-hp-laptop>
+References: <1475853518-22264-1-git-send-email-pantelis.antoniou@konsulko.com>
+ <1475853518-22264-3-git-send-email-pantelis.antoniou@konsulko.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1475853451-22121-11-git-send-email-pantelis.antoniou@konsulko.com>
+In-Reply-To: <1475853518-22264-3-git-send-email-pantelis.antoniou@konsulko.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,55 +37,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 07, 2016 at 06:17:31PM +0300, Pantelis Antoniou wrote:
+On Fri, Oct 07, 2016 at 06:18:30PM +0300, Pantelis Antoniou wrote:
 > From: Georgi Vlaev <gvlaev@juniper.net>
 > 
-> Add device tree binging document for the ngpmb NVRAM device.
+> Add DT bindings document for the SAM MFD device.
 > 
 > Signed-off-by: Georgi Vlaev <gvlaev@juniper.net>
 > [Ported from Juniper kernel]
 > Signed-off-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 > ---
->  .../devicetree/bindings/mtd/ngpmb-nvram.txt        | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/ngpmb-nvram.txt
+>  Documentation/devicetree/bindings/mfd/jnx-sam.txt | 94 +++++++++++++++++++++++
+>  1 file changed, 94 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/jnx-sam.txt
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/ngpmb-nvram.txt b/Documentation/devicetree/bindings/mtd/ngpmb-nvram.txt
+> diff --git a/Documentation/devicetree/bindings/mfd/jnx-sam.txt b/Documentation/devicetree/bindings/mfd/jnx-sam.txt
 > new file mode 100644
-> index 0000000..297ad0e
+> index 0000000..b4af7ea
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/ngpmb-nvram.txt
-
-mtd is really flash. sram/ or nvmem/ are probably better choices.
-
-> @@ -0,0 +1,22 @@
-> +Non Volatile RAM device on a Juniper NG PMB FPGA
-> +
-> +These devices are found in the PTX series of Juniper routers.
+> +++ b/Documentation/devicetree/bindings/mfd/jnx-sam.txt
+> @@ -0,0 +1,94 @@
+> +Device-Tree bindings for Juniper Networks SAM MFD
 > +
 > +Required properties:
-> +- compatible : must be "jnx,ngpmb-nvram"
+> +
+> +- compatible - Must be: "jnx,sam"
 
-Compatible with mmio-sram?
+Kind of generic. Only 1 FPGA version or some other way to tell the 
+version?
 
 > +
 > +Optional properties:
-> +- reg : memory address for the RAM, note that this is not
-> +required since usually the device is a subdevice of the SAM MFD
-> +driver which fills in the register fields.
 > +
-> +For the rest of the properties, see mtd-physmap.txt.
-> +
-> +The device tree may optionally contain sub-nodes describing partitions of the
-> +address space. See partition.txt for more detail.
+> +- pma-coefficients: A set of tupples containing the configuration of the PMA.
 
-sram or nvmem style partitioning is probably more appropriate.
+What's a PMA? What type of configuration? How many entries?
 
+> +Device                   Description
+> +------                   -----------
+> +jnx,i2c-sam		: I2C mux driver
+> +jnx,gpio-sam		: GPIO block
+> +jnx,flash-sam		: MTD Flash
+> +jnx,mdio-sam		: MDIO interfaces
 > +
-> +Example:
+> +All these optional nodes are described in their respective binding
+> +documents.
 > +
-> +ngpmb_nvram {
-> +	compatible = "jnx,ngpmb-nvram";
+> +Example node:
+> +
+> +pci-0000-10-00.0 {
+
+What are the numbers?
+
+> +	compatible = "jnx,sam";
+
+If this is a PCI device, then it should use PCI compatible string 
+syntax.
+
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	pma-coefficients = <4 0x0>;
+> +
+> +	i2c-sam@10 {
+> +		compatible = "jnx,i2c-sam";
+> +		mux-channels = <2>;
+> +		master-offset = <0x10000>;
+> +	};
+> +
+> +	gpiogpqam0: gpio-sam@10 {
+
+gpio@...
+
+Where does 10 come from?
+
+> +		compatible = "jnx,gpio-sam";
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +		gpio-count = <297>;
+> +		interrupt-controller;
+> +		/*
+> +		* 1st cell: gpio interrupt status bit
+> +		* 2nd cell: 1st pin
+> +		* 3rd cell: # of pins
+> +		*/
+> +		gpio-interrupts =
+> +			<0 0 12>,   /* phy_int_monitor_en [16] */
+> +			<1 235 24>, /* qsfpp_fpga_int_monitor [17] */
+> +			<2 259 24>, /* qsfpp_fpga_modprs_monitor [18] */
+> +			<3 295 1>,  /* si5345_fpga_monitor [19] */
+> +			<4 294 1>;  /* fpc_pic_int_monitor [20] */
+> +	};
+> +
+> +	flash-sam@10 {
+> +		compatible = "jnx,flash-sam";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		partition@0 {
+> +		reg = <0x0 0x400000>;
+> +			label = "pic0-golden";
+> +			read-only;
+> +		};
+> +		partition@400000 {
+> +			reg = <0x400000 0x400000>;
+> +			label = "pic0-user";
+> +		};
+> +	};
+> +
+> +	mdio-sam@10 {
+> +		compatible = "jnx,mdio-sam";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		reg = <0x40000>;
+> +
+> +		/* mii_bus types */
+> +		mdio0: mdio-sam@0 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0x0>;
+> +		};
+> +
+> +		mdio1: mdio-sam@4000 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0x4000>;
+> +		};
+> +
+> +		mdio2: mdio-sam@8000 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0x8000>;
+> +		};
+> +	};
 > +};
 > -- 
 > 1.9.1
