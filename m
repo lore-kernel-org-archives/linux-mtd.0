@@ -1,22 +1,32 @@
-Date: Mon, 10 Oct 2016 08:16:14 -0500
-From: Rob Herring <robh@kernel.org>
-To: Sergio Prado <sergio.prado@e-labworks.com>
-Cc: linux@armlinux.org.uk, linux@simtec.co.uk, mark.rutland@arm.com,
- devicetree@vger.kernel.org, kgene@kernel.org, krzk@kernel.org,
- javier@osg.samsung.com, boris.brezillon@free-electrons.com,
- richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: add DT binding for s3c2410 flash
- controller
-Message-ID: <20161010131614.GA7855@rob-hp-laptop>
-References: <1475711217-974-1-git-send-email-sergio.prado@e-labworks.com>
- <1475711217-974-3-git-send-email-sergio.prado@e-labworks.com>
+Received: from mail-db5eur01on0101.outbound.protection.outlook.com
+ ([104.47.2.101] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1btbxU-0006r6-ML
+ for linux-mtd@lists.infradead.org; Mon, 10 Oct 2016 14:53:42 +0000
+Subject: Re: [PATCH 10/10] net: mdio-sam: Add device tree documentation for
+ SAM MDIO
+To: Pantelis Antoniou <pantelis.antoniou@konsulko.com>, Lee Jones
+ <lee.jones@linaro.org>
+References: <1475853518-22264-1-git-send-email-pantelis.antoniou@konsulko.com>
+ <1475853518-22264-11-git-send-email-pantelis.antoniou@konsulko.com>
+CC: Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot
+ <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>, Wolfram Sang
+ <wsa@the-dreams.de>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Wim
+ Van Sebroeck <wim@iguana.be>, Debjit Ghosh <dghosh@juniper.net>, Georgi Vlaev
+ <gvlaev@juniper.net>, Guenter Roeck <linux@roeck-us.net>, Maryam Seraj
+ <mseraj@juniper.net>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+ <linux-i2c@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-watchdog@vger.kernel.org>, <netdev@vger.kernel.org>
+From: Peter Rosin <peda@axentia.se>
+Message-ID: <aad9e8eb-2c15-3c83-067a-e76e0bc73e44@axentia.se>
+Date: Mon, 10 Oct 2016 16:53:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1475711217-974-3-git-send-email-sergio.prado@e-labworks.com>
+In-Reply-To: <1475853518-22264-11-git-send-email-pantelis.antoniou@konsulko.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +36,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 05, 2016 at 08:46:56PM -0300, Sergio Prado wrote:
-> Adds the device tree bindings description for Samsung S3C2410 and
-> compatible NAND flash controller.
+On 2016-10-07 17:18, Pantelis Antoniou wrote:
+> From: Georgi Vlaev <gvlaev@juniper.net>
 > 
-> Signed-off-by: Sergio Prado <sergio.prado@e-labworks.com>
+> Add device tree bindings document for the SAM MDIO block
+> present in Juniper's SAM FPGA.
+> 
+> Signed-off-by: Georgi Vlaev <gvlaev@juniper.net>
+> [Ported from Juniper kernel]
+> Signed-off-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
 > ---
->  .../devicetree/bindings/mtd/samsung-s3c2410.txt    | 57 ++++++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
+>  Documentation/devicetree/bindings/net/mdio-sam.txt | 48 ++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/mdio-sam.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/net/mdio-sam.txt b/Documentation/devicetree/bindings/net/mdio-sam.txt
+> new file mode 100644
+> index 0000000..7d354e0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/mdio-sam.txt
+> @@ -0,0 +1,48 @@
+> +Juniper SAM FPGA MFD MDIO bus properties.
+> +
+> +Required properties:
+> +- compatible : "jnx,mdio-sam"
+> +- reg : The start offset of the MDIO bus range
+> +- #address-cells = <1>;
+> +- #size-cells = <0>;
+> +
+> +Optional properties:
+> +
+> +Required properties for child nodes:
+> +- #address-cells = <1>;
+> +- #size-cells = <0>;
+> +- reg : The MDIO bus offset within the MDIO range.
+> +
+> +
+> +Example :
+> +
+> +	sam@10 {
+> +		compatible = "jnx,sam";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		mdio-sam@10 {
 
-Acked-by: Rob Herring <robh@kernel.org>
+This should be mdio-sam@40000, OR ...
+
+> +			compatible = "jnx,mdio-sam";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0x40000>;
+
+... this should be reg = <0x10>. AFAIK.
+
+Cheers,
+Peter
+
+> +
+> +			mdio0: mdio-sam@0 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <0x0>;
+> +			};
+> +
+> +			mdio1: mdio-sam@4000 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <0x4000>;
+> +			};
+> +
+> +			mdio2: mdio-sam@8000 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <0x8000>;
+> +			};
+> +		};
+> +	};
+> 
