@@ -1,24 +1,34 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1btVyP-0005AL-KX
- for linux-mtd@lists.infradead.org; Mon, 10 Oct 2016 08:30:14 +0000
-Subject: Re: [PATCH v6, 5/8] mtd: m25p80: Let m25p80_read() fallback to spi
- transfer
-To: Florian Fainelli <f.fainelli@gmail.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>,
- <vigneshr@ti.com>, <yendapally.reddy@broadcom.com>
-References: <1472076269-4731-1-git-send-email-kdasu.kdev@gmail.com>
- <1472076269-4731-6-git-send-email-kdasu.kdev@gmail.com>
- <4b3b3d3e-b3f8-1d5b-65e3-0c37b6a29096@gmail.com>
-CC: <bcm-kernel-feedback-list@broadcom.com>, <jon.mason@broadcom.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <8309370e-f99f-ed51-4789-c1d97d9d8191@atmel.com>
-Date: Mon, 10 Oct 2016 10:29:49 +0200
+ id 1btWI4-0005Sw-GA
+ for linux-mtd@lists.infradead.org; Mon, 10 Oct 2016 08:50:33 +0000
+Received: by mail-lf0-x244.google.com with SMTP id b75so8760792lfg.3
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Oct 2016 01:50:11 -0700 (PDT)
+Subject: Re: [PATCH 10/10] net: mdio-sam: Add device tree documentation for
+ SAM MDIO
+To: Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+ Lee Jones <lee.jones@linaro.org>
+References: <1475853518-22264-1-git-send-email-pantelis.antoniou@konsulko.com>
+ <1475853518-22264-11-git-send-email-pantelis.antoniou@konsulko.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
+ Wolfram Sang <wsa@the-dreams.de>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Wim Van Sebroeck
+ <wim@iguana.be>, Peter Rosin <peda@axentia.se>,
+ Debjit Ghosh <dghosh@juniper.net>, Georgi Vlaev <gvlaev@juniper.net>,
+ Guenter Roeck <linux@roeck-us.net>, Maryam Seraj <mseraj@juniper.net>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ netdev@vger.kernel.org
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1b764238-1094-dcbc-1176-fdc845781c31@gmail.com>
+Date: Mon, 10 Oct 2016 01:50:07 -0700
 MIME-Version: 1.0
-In-Reply-To: <4b3b3d3e-b3f8-1d5b-65e3-0c37b6a29096@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1475853518-22264-11-git-send-email-pantelis.antoniou@konsulko.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +38,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
 
-Le 10/10/2016 à 10:04, Florian Fainelli a écrit :
-> On 08/24/2016 03:04 PM, Kamal Dasu wrote:
->> In m25p80_read() even though spi_flash_read() is supported
->> by some drivers, under certain circumstances like unaligned
->> buffer, address or address range limitations on certain SoCs
->> let it fallback to core spi reads. Such drivers are expected
->> to return -EAGAIN so that the m25p80_read() uses standard
->> spi transfer.
->>
->> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+On 10/07/2016 08:18 AM, Pantelis Antoniou wrote:
+> From: Georgi Vlaev <gvlaev@juniper.net>
 > 
-> MTD folks, any comments on this?
+> Add device tree bindings document for the SAM MDIO block
+> present in Juniper's SAM FPGA.
 > 
->> ---
->>  drivers/mtd/devices/m25p80.c | 11 +++++++++--
->>  1 file changed, 9 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index 9cf7fcd..77c2d2c 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -155,9 +155,16 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->>  		msg.data_nbits = m25p80_rx_nbits(nor);
->>  
->>  		ret = spi_flash_read(spi, &msg);
->> -		if (ret < 0)
->> +
->> +		if (ret >= 0)
->> +			return msg.retlen;
->> +
->> +		/*
->> +		 * some spi master drivers might need to fallback to
->> +		 * normal spi transfer
->> +		 */
->> +		if (ret != -EAGAIN)
-I just wonder whether EINVAL would be a better choice.
->>  			return ret;
->> -		return msg.retlen;
->>  	}
->>  
->>  	spi_message_init(&m);
->>
+> Signed-off-by: Georgi Vlaev <gvlaev@juniper.net>
+> [Ported from Juniper kernel]
+> Signed-off-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+> ---
+>  Documentation/devicetree/bindings/net/mdio-sam.txt | 48 ++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/mdio-sam.txt
 > 
+> diff --git a/Documentation/devicetree/bindings/net/mdio-sam.txt b/Documentation/devicetree/bindings/net/mdio-sam.txt
+> new file mode 100644
+> index 0000000..7d354e0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/mdio-sam.txt
+> @@ -0,0 +1,48 @@
+> +Juniper SAM FPGA MFD MDIO bus properties.
+> +
+> +Required properties:
+> +- compatible : "jnx,mdio-sam"
+> +- reg : The start offset of the MDIO bus range
+> +- #address-cells = <1>;
+> +- #size-cells = <0>;
+> +
+> +Optional properties:
+> +
+> +Required properties for child nodes:
+> +- #address-cells = <1>;
+> +- #size-cells = <0>;
+> +- reg : The MDIO bus offset within the MDIO range.
 
-Best regards,
+I would just refer to Documentation/devicetree/bindings/net/phy.txt for
+the child node properties.
 
-Cyrille
+Other than that:
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
