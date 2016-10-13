@@ -1,20 +1,18 @@
-Received: from mail-vk0-x22a.google.com ([2607:f8b0:400c:c05::22a])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1buab0-0001xf-Dm
- for linux-mtd@lists.infradead.org; Thu, 13 Oct 2016 07:38:31 +0000
-Received: by mail-vk0-x22a.google.com with SMTP id 2so68806192vkb.3
- for <linux-mtd@lists.infradead.org>; Thu, 13 Oct 2016 00:38:08 -0700 (PDT)
+ id 1bub4r-0003uO-DW
+ for linux-mtd@lists.infradead.org; Thu, 13 Oct 2016 08:09:22 +0000
+Date: Thu, 13 Oct 2016 11:06:47 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: [patch 1/2] mtd: spi-nor: Off by one in cqspi_setup_flash()
+Message-ID: <20161013080646.GB3389@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <1476020727-17299-1-git-send-email-akurz@blala.de>
-References: <1476020727-17299-1-git-send-email-akurz@blala.de>
-From: Moritz Fischer <moritz.fischer@ettus.com>
-Date: Thu, 13 Oct 2016 09:38:07 +0200
-Message-ID: <CAAtXAHdVxz-uV7EYWnUsBx9JpATBF8Wjf4Sg=-81xR4c3Xu81w@mail.gmail.com>
-Subject: Re: [PATCH] drivers mtd: spi-nor: add new variants
-To: Alexander Kurz <akurz@blala.de>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Michal Suchanek <hramrach@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alex,
+There are CQSPI_MAX_CHIPSELECT elements in the ->f_pdata array so the >
+should be >=.
 
-On Sun, Oct 9, 2016 at 3:45 PM, Alexander Kurz <akurz@blala.de> wrote:
-> Add spi-nor variants found in ebook readers.
+Fixes: 140623410536 ('mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Would be interesting which ones (i.e. can you edit the commit message?
-
-Thanks,
-
-Moritz
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index d403ba7..944863b 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -1082,7 +1082,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+ 			goto err;
+ 		}
+ 
+-		if (cs > CQSPI_MAX_CHIPSELECT) {
++		if (cs >= CQSPI_MAX_CHIPSELECT) {
+ 			dev_err(dev, "Chip select %d out of range.\n", cs);
+ 			goto err;
+ 		}
