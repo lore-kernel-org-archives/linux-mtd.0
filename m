@@ -1,28 +1,20 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
+Received: from smtp1.ascom-ws.com ([195.81.148.76] helo=mail.ascom-ws.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bv2NE-00085T-QP
- for linux-mtd@lists.infradead.org; Fri, 14 Oct 2016 13:18:10 +0000
-Subject: Re: [PATCH v6, 5/8] mtd: m25p80: Let m25p80_read() fallback to spi
- transfer
-To: Kamal Dasu <kamal.dasu@broadcom.com>
-References: <1472076269-4731-1-git-send-email-kdasu.kdev@gmail.com>
- <1472076269-4731-6-git-send-email-kdasu.kdev@gmail.com>
- <4b3b3d3e-b3f8-1d5b-65e3-0c37b6a29096@gmail.com>
- <8309370e-f99f-ed51-4789-c1d97d9d8191@atmel.com>
- <CAKekbesq1deU_0TCV4STAi=o8jZwoc_u+9zkdZuEhmd+BGwU2A@mail.gmail.com>
-CC: Florian Fainelli <f.fainelli@gmail.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Mark Brown <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, <vigneshr@ti.com>, "Yendapally Reddy
- Dhananjaya Reddy" <yendapally.reddy@broadcom.com>,
- <bcm-kernel-feedback-list@broadcom.com>, Jon Mason <jon.mason@broadcom.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <ae2c984e-2bcf-380e-a257-dbe786973af1@atmel.com>
-Date: Fri, 14 Oct 2016 15:17:44 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAKekbesq1deU_0TCV4STAi=o8jZwoc_u+9zkdZuEhmd+BGwU2A@mail.gmail.com>
+ id 1bv3Hs-0003dE-89
+ for linux-mtd@lists.infradead.org; Fri, 14 Oct 2016 14:16:44 +0000
+From: Danesh Daroui <Danesh.Daroui@ascom.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: Failure on MTD sub-page test
+Date: Fri, 14 Oct 2016 14:13:49 +0000
+Message-ID: <39BC08CB3FF4C84CB6397533D4FC7909015DE2F7@SEGOTEXCH02.ascom-Resource.ads>
+References: <39BC08CB3FF4C84CB6397533D4FC7909015DDE3F@SEGOTEXCH02.ascom-Resource.ads>
+ <1476448883.2342.924.camel@gmail.com>
+In-Reply-To: <1476448883.2342.924.camel@gmail.com>
+Content-Language: en-US
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,83 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 13/10/2016 à 23:15, Kamal Dasu a écrit :
-> On Mon, Oct 10, 2016 at 4:29 AM, Cyrille Pitchen
-> <cyrille.pitchen@atmel.com> wrote:
->> Hi all,
->>
->>
->> Le 10/10/2016 à 10:04, Florian Fainelli a écrit :
->>> On 08/24/2016 03:04 PM, Kamal Dasu wrote:
->>>> In m25p80_read() even though spi_flash_read() is supported
->>>> by some drivers, under certain circumstances like unaligned
->>>> buffer, address or address range limitations on certain SoCs
->>>> let it fallback to core spi reads. Such drivers are expected
->>>> to return -EAGAIN so that the m25p80_read() uses standard
->>>> spi transfer.
->>>>
->>>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->>>
->>> MTD folks, any comments on this?
->>>
->>>> ---
->>>>  drivers/mtd/devices/m25p80.c | 11 +++++++++--
->>>>  1 file changed, 9 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->>>> index 9cf7fcd..77c2d2c 100644
->>>> --- a/drivers/mtd/devices/m25p80.c
->>>> +++ b/drivers/mtd/devices/m25p80.c
->>>> @@ -155,9 +155,16 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->>>>              msg.data_nbits = m25p80_rx_nbits(nor);
->>>>
->>>>              ret = spi_flash_read(spi, &msg);
->>>> -            if (ret < 0)
->>>> +
->>>> +            if (ret >= 0)
->>>> +                    return msg.retlen;
->>>> +
->>>> +            /*
->>>> +             * some spi master drivers might need to fallback to
->>>> +             * normal spi transfer
->>>> +             */
->>>> +            if (ret != -EAGAIN)
->> I just wonder whether EINVAL would be a better choice.
-> 
->  spi_flash_read calls the down stream controller driver with all
-> params addresses however  accelerated transfer is not possible by the
-> controller due to alignment issues, it needs to indicate to m25p call
-> to try the normal transfer, hence use of EAGAIN seemed appropriate.
-> 
->
-
-Yes, I think I've understood the purpose of this patch. In the example you
-gave, the actual implementation of spi_flash_read() works fine with aligned
-addresses but doesn't support unaligned addresses. Hence, such unaligned
-addresses are invalid argument for spi_flash_read() and we should fall back
-to the legacy implementation of m25p80_read().
-
-My point is just that EINVAL clearly tells that the SPI controller driver
-implementation of spi_flash_read() doesn't support the given input
-parameters, here an unaligned address, whereas EAGAIN suggests that some
-hardware resource is temporarily unavailable and we could call spi_flash_read()
-again later. However, in this case, spi_flash_read() would still fail even if
-called later.
-
-That's why I've suggested EINVAL might have been a better choice than EAGAIN,
-but honestly it's not a big deal, only a detail. So if most people prefer to
-keep EAGAIN, I'm perfectly fine with it! :)
-
-I don't want my comment to delay the integration of this patch.
-
->>>>                      return ret;
->>>> -            return msg.retlen;
->>>>      }
->>>>
->>>>      spi_message_init(&m);
->>>>
->>>
->>
->> Best regards,
->>
->> Cyrille
+SGkgQXJ0ZW0sDQoNClRoYW5rcyBmb3IgeW91ciByZXBseS4gSSBjYW4gdW5tb3VudCB0aGUgZGV2
+aWNlIGFuZCBydW4gdGhlIHRlc3RzLCBidXQgdGhlbiBob3cgY2FuIHdlIG1ha2Ugc3VyZSB3aGV0
+aGVyIHRoZSBwcm9ibGVtIGlzIGluIFVCSS9VQklGUyBsYXllcnMgb3Igb25seSBNVEQgbGF5ZXI/
+IEFueXdheSwgaWYgd2UgdXBkYXRlIHRoZSBrZXJuZWwsIHRoZW4gYm90aCBNVEQgZHJpdmVycyBh
+bmQgVUJJL1VCSUZTIHdpbGwgYmUgdXBkYXRlZCwgYW0gSSByaWdodD8NCg0KUmVnYXJkcywNCg0K
+RGFuZXNoIERhcm91aQ0KDQogDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0
+ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dIA0KU2VudDogZGVuIDE0
+IG9rdG9iZXIgMjAxNiAxNDo0MQ0KVG86IERhbmVzaCBEYXJvdWkgPERhbmVzaC5EYXJvdWlAYXNj
+b20uY29tPjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1YmplY3Q6IFJlOiBGYWls
+dXJlIG9uIE1URCBzdWItcGFnZSB0ZXN0DQoNCk9uIFR1ZSwgMjAxNi0xMC0xMSBhdCAxMToxMSAr
+MDAwMCwgRGFuZXNoIERhcm91aSB3cm90ZToNCj4gSGVsbG8sDQo+IA0KPiBXZSBhcmUgdXNpbmcg
+VUJJRlMgd2hpY2ggaXMgc2hpcHBlZCB3aXRoIHRoZSBLZXJuZWwgMi42LjM5LjQgb24gYSBOQU5E
+IA0KPiBGbGFzaCBtZW1vcnkuIFdoZW4gSSBydW4gIm10ZF9kZWJ1ZyBpbmZvIC9kZXYvbXRkMCIg
+Zm9sbG93aW5nIGluZm8gYXJlIA0KPiBzaG93bjoNCj4gDQo+IG10ZC50eXBlID0gTVREX05BTkRG
+TEFTSA0KPiBtdGQuZmxhZ3MgPSBNVERfQ0FQX05BTkRGTEFTSA0KPiBtdGQuc2l6ZSA9IDEwNzM3
+NDE4MjQgKDFHKQ0KPiBtdGQuZXJhc2VzaXplID0gNTI0Mjg4ICg1MTJLKQ0KPiBtdGQud3JpdGVz
+aXplID0gNDA5NiAoNEspDQo+IG10ZC5vb2JzaXplID0gMTI4DQo+IHJlZ2lvbnMgPSAwDQo+IA0K
+PiBOb3cgdGhlIHByb2JsZW0gaXMgdGhhdCB3aGVuIEkgcnVuIG10ZCB0ZXN0cywgb25seSByZWFk
+IGFuZCBOQU5EIEVDQyANCj4gdGVzdHMgYXJlIHBhc3NlZC4gVGhlbiBhbGwgb3RoZXIgdGVzdHMg
+ZmFpbCBvbiBleGFjdGx5IHBhZ2UgMjEuIEZvciANCj4gaW5zdGFuY2UgdGhpcyBpcyB0aGUgb3V0
+cHV0IHdoZW4gSSBydW4gcGFnZSB0ZXN0Og0KDQpJZiBtdGQgdGVzdHMgZG8gbm90IHdvcmssIHlv
+dSBuZWVkIHRvIGZvY3VzIG9uIHlvdXIgTVREIGRyaXZlcnMgYW5kIGZpeCB0aGVtLg0KDQo+ID09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4gbXRkX3N1
+YnBhZ2V0ZXN0OiBNVEQgZGV2aWNlOiAwDQo+IG10ZF9zdWJwYWdldGVzdDogTVREIGRldmljZSBz
+aXplIDEwNzM3NDE4MjQsIGVyYXNlYmxvY2sgc2l6ZSA1MjQyODgsIA0KPiBwYWdlIHNpemUgNDA5
+Niwgc3VicGFnZSBzaXplIDEwMjQsIGNvdW50IG9mIGVyYXNlYmxvY2tzIDIwNDgsIHBhZ2VzDQou
+Li4gc25pcCAuLi4NCj4gbXRkX3N1YnBhZ2V0ZXN0OiB2ZXJpZmllZCB1cCB0byBlcmFzZWJsb2Nr
+IDEyODANCj4gbXRkX3N1YnBhZ2V0ZXN0OiB2ZXJpZmllZCB1cCB0byBlcmFzZWJsb2NrIDE1MzYN
+Cj4gbXRkX3N1YnBhZ2V0ZXN0OiB2ZXJpZmllZCB1cCB0byBlcmFzZWJsb2NrIDE3OTIgVUJJRlMg
+ZXJyb3IgKHBpZCANCj4gNDI0Myk6IHViaWZzX3JlYWRfbm9kZTogYmFkIG5vZGUgdHlwZSAoMjU1
+IGJ1dCBleHBlY3RlZCAxKSBVQklGUyBlcnJvciANCj4gKHBpZCA0MjQzKTogdWJpZnNfcmVhZF9u
+b2RlOiBiYWQgbm9kZSBhdCBMRUIgMzA6OTgwODgsIExFQiBtYXBwaW5nIA0KPiBzdGF0dXMgMSBV
+QklGUyBlcnJvciAocGlkIDQyNDMpOiBkb19yZWFkcGFnZTogY2Fubm90IHJlYWQgcGFnZSAyMSBv
+ZiANCj4gaW5vZGUgNzkxLCBlcnJvciAtMjINCg0KVGhpcyBpcyBhIGJpdCBjb25mdXNpbmcgLSB3
+aHkgbWVzc2FnZXMgZ28gdG9nZXRoZXIuIERvIHlvdSBydW4gbXRkIHRlc3RzIGFuZCBhbHNvIGhh
+dmUgdGhlIHNhbWUgbXRkIGRldmljZSBtb3VudGVkIGF0IHRoZSBzYW1lIHRpbWU/DQoNClRoZSB0
+ZXN0cyBoYW1tZXIgdGhlIE1URCBkZXZpY2UgZGlyZWN0bHksIHRoZXkgZG8gbm90IGdvIHRocm91
+Z2ggVUJJL1VCSUZTLiBTbyBtYWtlIHN1cmUgVUJJL1VCSUZTIGFyZSBub3QgdXNpbmcgdGhlIE1U
+RCBkZXZpY2UgdGhhdCB5b3UgYXJlIHRlc3RpbmcuDQoNCkFydGVtLg0KDQo=
