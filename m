@@ -1,20 +1,21 @@
-Received: from smtp1.ascom-ws.com ([195.81.148.76] helo=mail.ascom-ws.com)
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bv3Hs-0003dE-89
- for linux-mtd@lists.infradead.org; Fri, 14 Oct 2016 14:16:44 +0000
-From: Danesh Daroui <Danesh.Daroui@ascom.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: Failure on MTD sub-page test
-Date: Fri, 14 Oct 2016 14:13:49 +0000
-Message-ID: <39BC08CB3FF4C84CB6397533D4FC7909015DE2F7@SEGOTEXCH02.ascom-Resource.ads>
+ id 1bv3dX-0003cH-8K
+ for linux-mtd@lists.infradead.org; Fri, 14 Oct 2016 14:39:04 +0000
+Message-ID: <1476455919.2342.950.camel@gmail.com>
+Subject: Re: Failure on MTD sub-page test
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Danesh Daroui <Danesh.Daroui@ascom.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Date: Fri, 14 Oct 2016 17:38:39 +0300
+In-Reply-To: <39BC08CB3FF4C84CB6397533D4FC7909015DE2F7@SEGOTEXCH02.ascom-Resource.ads>
 References: <39BC08CB3FF4C84CB6397533D4FC7909015DDE3F@SEGOTEXCH02.ascom-Resource.ads>
  <1476448883.2342.924.camel@gmail.com>
-In-Reply-To: <1476448883.2342.924.camel@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ <39BC08CB3FF4C84CB6397533D4FC7909015DE2F7@SEGOTEXCH02.ascom-Resource.ads>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW0sDQoNClRoYW5rcyBmb3IgeW91ciByZXBseS4gSSBjYW4gdW5tb3VudCB0aGUgZGV2
-aWNlIGFuZCBydW4gdGhlIHRlc3RzLCBidXQgdGhlbiBob3cgY2FuIHdlIG1ha2Ugc3VyZSB3aGV0
-aGVyIHRoZSBwcm9ibGVtIGlzIGluIFVCSS9VQklGUyBsYXllcnMgb3Igb25seSBNVEQgbGF5ZXI/
-IEFueXdheSwgaWYgd2UgdXBkYXRlIHRoZSBrZXJuZWwsIHRoZW4gYm90aCBNVEQgZHJpdmVycyBh
-bmQgVUJJL1VCSUZTIHdpbGwgYmUgdXBkYXRlZCwgYW0gSSByaWdodD8NCg0KUmVnYXJkcywNCg0K
-RGFuZXNoIERhcm91aQ0KDQogDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0
-ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dIA0KU2VudDogZGVuIDE0
-IG9rdG9iZXIgMjAxNiAxNDo0MQ0KVG86IERhbmVzaCBEYXJvdWkgPERhbmVzaC5EYXJvdWlAYXNj
-b20uY29tPjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1YmplY3Q6IFJlOiBGYWls
-dXJlIG9uIE1URCBzdWItcGFnZSB0ZXN0DQoNCk9uIFR1ZSwgMjAxNi0xMC0xMSBhdCAxMToxMSAr
-MDAwMCwgRGFuZXNoIERhcm91aSB3cm90ZToNCj4gSGVsbG8sDQo+IA0KPiBXZSBhcmUgdXNpbmcg
-VUJJRlMgd2hpY2ggaXMgc2hpcHBlZCB3aXRoIHRoZSBLZXJuZWwgMi42LjM5LjQgb24gYSBOQU5E
-IA0KPiBGbGFzaCBtZW1vcnkuIFdoZW4gSSBydW4gIm10ZF9kZWJ1ZyBpbmZvIC9kZXYvbXRkMCIg
-Zm9sbG93aW5nIGluZm8gYXJlIA0KPiBzaG93bjoNCj4gDQo+IG10ZC50eXBlID0gTVREX05BTkRG
-TEFTSA0KPiBtdGQuZmxhZ3MgPSBNVERfQ0FQX05BTkRGTEFTSA0KPiBtdGQuc2l6ZSA9IDEwNzM3
-NDE4MjQgKDFHKQ0KPiBtdGQuZXJhc2VzaXplID0gNTI0Mjg4ICg1MTJLKQ0KPiBtdGQud3JpdGVz
-aXplID0gNDA5NiAoNEspDQo+IG10ZC5vb2JzaXplID0gMTI4DQo+IHJlZ2lvbnMgPSAwDQo+IA0K
-PiBOb3cgdGhlIHByb2JsZW0gaXMgdGhhdCB3aGVuIEkgcnVuIG10ZCB0ZXN0cywgb25seSByZWFk
-IGFuZCBOQU5EIEVDQyANCj4gdGVzdHMgYXJlIHBhc3NlZC4gVGhlbiBhbGwgb3RoZXIgdGVzdHMg
-ZmFpbCBvbiBleGFjdGx5IHBhZ2UgMjEuIEZvciANCj4gaW5zdGFuY2UgdGhpcyBpcyB0aGUgb3V0
-cHV0IHdoZW4gSSBydW4gcGFnZSB0ZXN0Og0KDQpJZiBtdGQgdGVzdHMgZG8gbm90IHdvcmssIHlv
-dSBuZWVkIHRvIGZvY3VzIG9uIHlvdXIgTVREIGRyaXZlcnMgYW5kIGZpeCB0aGVtLg0KDQo+ID09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4gbXRkX3N1
-YnBhZ2V0ZXN0OiBNVEQgZGV2aWNlOiAwDQo+IG10ZF9zdWJwYWdldGVzdDogTVREIGRldmljZSBz
-aXplIDEwNzM3NDE4MjQsIGVyYXNlYmxvY2sgc2l6ZSA1MjQyODgsIA0KPiBwYWdlIHNpemUgNDA5
-Niwgc3VicGFnZSBzaXplIDEwMjQsIGNvdW50IG9mIGVyYXNlYmxvY2tzIDIwNDgsIHBhZ2VzDQou
-Li4gc25pcCAuLi4NCj4gbXRkX3N1YnBhZ2V0ZXN0OiB2ZXJpZmllZCB1cCB0byBlcmFzZWJsb2Nr
-IDEyODANCj4gbXRkX3N1YnBhZ2V0ZXN0OiB2ZXJpZmllZCB1cCB0byBlcmFzZWJsb2NrIDE1MzYN
-Cj4gbXRkX3N1YnBhZ2V0ZXN0OiB2ZXJpZmllZCB1cCB0byBlcmFzZWJsb2NrIDE3OTIgVUJJRlMg
-ZXJyb3IgKHBpZCANCj4gNDI0Myk6IHViaWZzX3JlYWRfbm9kZTogYmFkIG5vZGUgdHlwZSAoMjU1
-IGJ1dCBleHBlY3RlZCAxKSBVQklGUyBlcnJvciANCj4gKHBpZCA0MjQzKTogdWJpZnNfcmVhZF9u
-b2RlOiBiYWQgbm9kZSBhdCBMRUIgMzA6OTgwODgsIExFQiBtYXBwaW5nIA0KPiBzdGF0dXMgMSBV
-QklGUyBlcnJvciAocGlkIDQyNDMpOiBkb19yZWFkcGFnZTogY2Fubm90IHJlYWQgcGFnZSAyMSBv
-ZiANCj4gaW5vZGUgNzkxLCBlcnJvciAtMjINCg0KVGhpcyBpcyBhIGJpdCBjb25mdXNpbmcgLSB3
-aHkgbWVzc2FnZXMgZ28gdG9nZXRoZXIuIERvIHlvdSBydW4gbXRkIHRlc3RzIGFuZCBhbHNvIGhh
-dmUgdGhlIHNhbWUgbXRkIGRldmljZSBtb3VudGVkIGF0IHRoZSBzYW1lIHRpbWU/DQoNClRoZSB0
-ZXN0cyBoYW1tZXIgdGhlIE1URCBkZXZpY2UgZGlyZWN0bHksIHRoZXkgZG8gbm90IGdvIHRocm91
-Z2ggVUJJL1VCSUZTLiBTbyBtYWtlIHN1cmUgVUJJL1VCSUZTIGFyZSBub3QgdXNpbmcgdGhlIE1U
-RCBkZXZpY2UgdGhhdCB5b3UgYXJlIHRlc3RpbmcuDQoNCkFydGVtLg0KDQo=
+On Fri, 2016-10-14 at 14:13 +0000, Danesh Daroui wrote:
+> Hi Artem,
+> 
+> Thanks for your reply. I can unmount the device and run the tests,
+> but then how can we make sure whether the problem is in UBI/UBIFS
+> layers or only MTD layer? Anyway, if we update the kernel, then both
+> MTD drivers and UBI/UBIFS will be updated, am I right?
+
+You are experiencing some issues with UBIFS, I suppose. Naturally, you
+want to fix it.
+
+But the SW you are dealing with is sandwich, and you want to narrow
+down the problem to a specific layer, if possible.
+
+The first step we usually recommend to do is to start validating the
+low level - MTD. You use MTD tests for that. If they fail, you know
+there is something wrong at this layer, and you go and fix that. If
+they do not fail, the problem is probably somewhere above MTD.
+
+Artem.
