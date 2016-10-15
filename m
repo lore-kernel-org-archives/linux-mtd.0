@@ -1,17 +1,18 @@
-Received: from m50-134.163.com ([123.125.50.134])
- by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bv9Cd-0002sD-Vs
- for linux-mtd@lists.infradead.org; Fri, 14 Oct 2016 20:35:42 +0000
-From: Massimiliano Tretene <moranpig@163.com>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>, "periyasamy samy"
- <eceperiyasamy@gmail.com>, "openrisc" <openrisc@openrisc.net>,
- "reinhard.arlt" <reinhard.arlt@esd-electronics.com>
-Date: Fri, 14 Oct 2016 23:34:26 +0300
-Subject: =?utf-8?B?b2gsIGNoZSBzb3JwcmVzYSE=?=
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bvRMQ-0007dQ-QJ
+ for linux-mtd@lists.infradead.org; Sat, 15 Oct 2016 15:58:59 +0000
+From: Colin King <colin.king@canonical.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH] ubi: fix swapped arguments to call to ubi_alloc_aeb
+Date: Sat, 15 Oct 2016 16:58:32 +0100
+Message-Id: <20161015155832.27538-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Message-ID: <0000dcd8d56f$11a519b8$cf4dd49d$@inwind.it>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,10 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Salve amico,
+From: Colin Ian King <colin.king@canonical.com>
 
-Hai sentito la notizia? =C3=88 impressionante, =C3=A8 stata una  vera =
- sorpresa  per me, ti prego di dare un'occhiata <http://nicoletta.scre=
-wtown.com/qdn>
+Static analysis by CoverityScan detected the ec and pnum
+arguments are in the wrong order on a call to ubi_alloc_aeb.
+Swap the order to fix this.
 
-Ci vediamo in giro, Massimiliano Tretene
+Fixes: 91f4285fe389a27 ("UBI: provide helpers to allocate and free aeb elements")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/mtd/ubi/fastmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index d6384d9..4eed546 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -287,7 +287,7 @@ static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 
+ 		/* new_aeb is newer */
+ 		if (cmp_res & 1) {
+-			victim = ubi_alloc_aeb(ai, aeb->ec, aeb->pnum);
++			victim = ubi_alloc_aeb(ai, aeb->pnum aeb->ec);
+ 			if (!victim)
+ 				return -ENOMEM;
+ 
+-- 
+2.9.3
