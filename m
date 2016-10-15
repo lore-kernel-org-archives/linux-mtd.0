@@ -1,18 +1,24 @@
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mail-vk0-x22e.google.com ([2607:f8b0:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bvRNy-0008DP-AS
- for linux-mtd@lists.infradead.org; Sat, 15 Oct 2016 16:00:34 +0000
-From: Colin King <colin.king@canonical.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH][V2] ubi: fix swapped arguments to call to ubi_alloc_aeb
-Date: Sat, 15 Oct 2016 17:00:11 +0100
-Message-Id: <20161015160011.27600-1-colin.king@canonical.com>
+ id 1bvX8v-0000Bx-73
+ for linux-mtd@lists.infradead.org; Sat, 15 Oct 2016 22:09:26 +0000
+Received: by mail-vk0-x22e.google.com with SMTP id 83so119384441vkd.0
+ for <linux-mtd@lists.infradead.org>; Sat, 15 Oct 2016 15:09:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3ebab16e-ddf8-0a4b-aaaf-d5b424720eb2@denx.de>
+References: <20161013080857.GC3389@mwanda>
+ <3ebab16e-ddf8-0a4b-aaaf-d5b424720eb2@denx.de>
+From: Moritz Fischer <moritz.fischer@ettus.com>
+Date: Sun, 16 Oct 2016 00:09:02 +0200
+Message-ID: <CAAtXAHey9fxQJ12=xt8jd4ZYTsYLs8s-TJ=YS=ob8CB03mnXpA@mail.gmail.com>
+Subject: Re: [patch 2/2] mtd: spi-nor: Fix some error codes in
+ cqspi_setup_flash()
+To: Marek Vasut <marex@denx.de>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>, kernel-janitors@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Oct 14, 2016 at 9:16 AM, Marek Vasut <marex@denx.de> wrote:
+> On 10/13/2016 10:30 AM, Dan Carpenter wrote:
+>> We return success or possibly uninitialized values on these error paths
+>> instead of proper error codes.
+>>
+>> Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller")
+>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>>
+>
+> Nice
+>
+> Reviewed-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Moritz Fischer <moritz.fischer@ettus.com>
 
-Static analysis by CoverityScan detected the ec and pnum
-arguments are in the wrong order on a call to ubi_alloc_aeb.
-Swap the order to fix this.
+Thanks,
 
-Fixes: 91f4285fe389a27 ("UBI: provide helpers to allocate and free aeb elements")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/mtd/ubi/fastmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index d6384d9..4eed546 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -287,7 +287,7 @@ static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 
- 		/* new_aeb is newer */
- 		if (cmp_res & 1) {
--			victim = ubi_alloc_aeb(ai, aeb->ec, aeb->pnum);
-+			victim = ubi_alloc_aeb(ai, aeb->pnum, aeb->ec);
- 			if (!victim)
- 				return -ENOMEM;
- 
--- 
-2.9.3
+Moritz
