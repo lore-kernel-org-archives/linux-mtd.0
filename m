@@ -1,15 +1,15 @@
 Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bvRMQ-0007dQ-QJ
- for linux-mtd@lists.infradead.org; Sat, 15 Oct 2016 15:58:59 +0000
+ id 1bvRNy-0008DP-AS
+ for linux-mtd@lists.infradead.org; Sat, 15 Oct 2016 16:00:34 +0000
 From: Colin King <colin.king@canonical.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH] ubi: fix swapped arguments to call to ubi_alloc_aeb
-Date: Sat, 15 Oct 2016 16:58:32 +0100
-Message-Id: <20161015155832.27538-1-colin.king@canonical.com>
+Subject: [PATCH][V2] ubi: fix swapped arguments to call to ubi_alloc_aeb
+Date: Sat, 15 Oct 2016 17:00:11 +0100
+Message-Id: <20161015160011.27600-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,7 +43,7 @@ index d6384d9..4eed546 100644
  		/* new_aeb is newer */
  		if (cmp_res & 1) {
 -			victim = ubi_alloc_aeb(ai, aeb->ec, aeb->pnum);
-+			victim = ubi_alloc_aeb(ai, aeb->pnum aeb->ec);
++			victim = ubi_alloc_aeb(ai, aeb->pnum, aeb->ec);
  			if (!victim)
  				return -ENOMEM;
  
