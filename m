@@ -1,8 +1,8 @@
 Received: from up.free-electrons.com ([163.172.77.33]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bvmXX-0006Ue-GL
- for linux-mtd@lists.infradead.org; Sun, 16 Oct 2016 14:36:09 +0000
+ id 1bvmXX-0006Uk-GN
+ for linux-mtd@lists.infradead.org; Sun, 16 Oct 2016 14:36:11 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -11,9 +11,10 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Peter Pan <peterpansjtu@gmail.com>
 Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/7] mtd: nand: Rename nand.h into rawnand.h
-Date: Sun, 16 Oct 2016 16:35:12 +0200
-Message-Id: <1476628518-20450-2-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 2/7] mtd: nand: move raw NAND related code to the raw/
+ subdir
+Date: Sun, 16 Oct 2016 16:35:13 +0200
+Message-Id: <1476628518-20450-3-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1476628518-20450-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1476628518-20450-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
@@ -28,1700 +29,1799 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We are planning to share more code between different NAND based
-devices (SPI NAND, OneNAND and raw NANDs), but before doing that
-we need to move the existing include/linux/mtd/nand.h file into
-include/linux/mtd/rawnand.h so we can later create a nand.h header
-containing all common structure and function prototypes.
+As part of the process of sharing more code between different NAND
+based devices, we need to move all raw NAND related code to the raw/
+subdirectory.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- Documentation/DocBook/mtdnand.tmpl              | 2 +-
- arch/arm/mach-davinci/board-da850-evm.c         | 2 +-
- arch/arm/mach-davinci/board-dm355-evm.c         | 2 +-
- arch/arm/mach-davinci/board-dm355-leopard.c     | 2 +-
- arch/arm/mach-davinci/board-dm365-evm.c         | 2 +-
- arch/arm/mach-davinci/board-dm644x-evm.c        | 2 +-
- arch/arm/mach-davinci/board-dm646x-evm.c        | 2 +-
- arch/arm/mach-davinci/board-sffsdr.c            | 2 +-
- arch/arm/mach-dove/dove-db-setup.c              | 2 +-
- arch/arm/mach-ep93xx/snappercl15.c              | 2 +-
- arch/arm/mach-ep93xx/ts72xx.c                   | 2 +-
- arch/arm/mach-imx/mach-qong.c                   | 2 +-
- arch/arm/mach-ixp4xx/ixdp425-setup.c            | 2 +-
- arch/arm/mach-mmp/aspenite.c                    | 2 +-
- arch/arm/mach-omap1/board-fsample.c             | 2 +-
- arch/arm/mach-omap1/board-h2.c                  | 2 +-
- arch/arm/mach-omap1/board-h3.c                  | 2 +-
- arch/arm/mach-omap1/board-nand.c                | 2 +-
- arch/arm/mach-omap1/board-perseus2.c            | 2 +-
- arch/arm/mach-omap2/gpmc-nand.c                 | 2 +-
- arch/arm/mach-orion5x/db88f5281-setup.c         | 2 +-
- arch/arm/mach-orion5x/kurobox_pro-setup.c       | 2 +-
- arch/arm/mach-orion5x/ts209-setup.c             | 2 +-
- arch/arm/mach-orion5x/ts78xx-setup.c            | 2 +-
- arch/arm/mach-pxa/balloon3.c                    | 2 +-
- arch/arm/mach-pxa/em-x270.c                     | 2 +-
- arch/arm/mach-pxa/eseries.c                     | 2 +-
- arch/arm/mach-pxa/palmtx.c                      | 2 +-
- arch/arm/mach-pxa/tosa.c                        | 2 +-
- arch/arm/mach-s3c24xx/common-smdk.c             | 2 +-
- arch/arm/mach-s3c24xx/mach-anubis.c             | 2 +-
- arch/arm/mach-s3c24xx/mach-at2440evb.c          | 2 +-
- arch/arm/mach-s3c24xx/mach-bast.c               | 2 +-
- arch/arm/mach-s3c24xx/mach-gta02.c              | 2 +-
- arch/arm/mach-s3c24xx/mach-jive.c               | 2 +-
- arch/arm/mach-s3c24xx/mach-mini2440.c           | 2 +-
- arch/arm/mach-s3c24xx/mach-osiris.c             | 2 +-
- arch/arm/mach-s3c24xx/mach-qt2410.c             | 2 +-
- arch/arm/mach-s3c24xx/mach-rx3715.c             | 2 +-
- arch/arm/mach-s3c24xx/mach-vstms.c              | 2 +-
- arch/blackfin/mach-bf537/boards/dnp5370.c       | 2 +-
- arch/blackfin/mach-bf537/boards/stamp.c         | 2 +-
- arch/blackfin/mach-bf561/boards/acvilon.c       | 2 +-
- arch/cris/arch-v32/drivers/mach-a3/nandflash.c  | 2 +-
- arch/cris/arch-v32/drivers/mach-fs/nandflash.c  | 2 +-
- arch/mips/alchemy/devboards/db1200.c            | 2 +-
- arch/mips/alchemy/devboards/db1300.c            | 2 +-
- arch/mips/alchemy/devboards/db1550.c            | 2 +-
- arch/mips/include/asm/mach-jz4740/jz4740_nand.h | 2 +-
- arch/mips/netlogic/xlr/platform-flash.c         | 2 +-
- arch/mips/pnx833x/common/platform.c             | 2 +-
- arch/mips/rb532/devices.c                       | 2 +-
- arch/sh/boards/mach-migor/setup.c               | 2 +-
- drivers/mtd/inftlcore.c                         | 2 +-
- drivers/mtd/nand/ams-delta.c                    | 2 +-
- drivers/mtd/nand/atmel_nand.c                   | 2 +-
- drivers/mtd/nand/au1550nd.c                     | 2 +-
- drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h  | 2 +-
- drivers/mtd/nand/bf5xx_nand.c                   | 2 +-
- drivers/mtd/nand/brcmnand/brcmnand.c            | 2 +-
- drivers/mtd/nand/cafe_nand.c                    | 2 +-
- drivers/mtd/nand/cmx270_nand.c                  | 2 +-
- drivers/mtd/nand/cs553x_nand.c                  | 2 +-
- drivers/mtd/nand/davinci_nand.c                 | 2 +-
- drivers/mtd/nand/denali.h                       | 2 +-
- drivers/mtd/nand/diskonchip.c                   | 2 +-
- drivers/mtd/nand/docg4.c                        | 2 +-
- drivers/mtd/nand/fsl_elbc_nand.c                | 2 +-
- drivers/mtd/nand/fsl_ifc_nand.c                 | 2 +-
- drivers/mtd/nand/fsl_upm.c                      | 2 +-
- drivers/mtd/nand/fsmc_nand.c                    | 2 +-
- drivers/mtd/nand/gpio.c                         | 2 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h          | 2 +-
- drivers/mtd/nand/hisi504_nand.c                 | 2 +-
- drivers/mtd/nand/jz4740_nand.c                  | 2 +-
- drivers/mtd/nand/jz4780_nand.c                  | 2 +-
- drivers/mtd/nand/lpc32xx_mlc.c                  | 2 +-
- drivers/mtd/nand/lpc32xx_slc.c                  | 2 +-
- drivers/mtd/nand/mpc5121_nfc.c                  | 2 +-
- drivers/mtd/nand/mtk_nand.c                     | 2 +-
- drivers/mtd/nand/mxc_nand.c                     | 2 +-
- drivers/mtd/nand/nand_base.c                    | 2 +-
- drivers/mtd/nand/nand_bbt.c                     | 2 +-
- drivers/mtd/nand/nand_bch.c                     | 2 +-
- drivers/mtd/nand/nand_ecc.c                     | 2 +-
- drivers/mtd/nand/nand_ids.c                     | 2 +-
- drivers/mtd/nand/nand_timings.c                 | 2 +-
- drivers/mtd/nand/nandsim.c                      | 2 +-
- drivers/mtd/nand/ndfc.c                         | 2 +-
- drivers/mtd/nand/nuc900_nand.c                  | 2 +-
- drivers/mtd/nand/omap2.c                        | 2 +-
- drivers/mtd/nand/orion_nand.c                   | 2 +-
- drivers/mtd/nand/pasemi_nand.c                  | 2 +-
- drivers/mtd/nand/plat_nand.c                    | 2 +-
- drivers/mtd/nand/pxa3xx_nand.c                  | 2 +-
- drivers/mtd/nand/qcom_nandc.c                   | 2 +-
- drivers/mtd/nand/r852.h                         | 2 +-
- drivers/mtd/nand/s3c2410.c                      | 2 +-
- drivers/mtd/nand/sh_flctl.c                     | 2 +-
- drivers/mtd/nand/sharpsl.c                      | 2 +-
- drivers/mtd/nand/sm_common.c                    | 2 +-
- drivers/mtd/nand/socrates_nand.c                | 2 +-
- drivers/mtd/nand/sunxi_nand.c                   | 2 +-
- drivers/mtd/nand/tmio_nand.c                    | 2 +-
- drivers/mtd/nand/txx9ndfmc.c                    | 2 +-
- drivers/mtd/nand/vf610_nfc.c                    | 2 +-
- drivers/mtd/nand/xway_nand.c                    | 2 +-
- drivers/mtd/nftlcore.c                          | 2 +-
- drivers/mtd/nftlmount.c                         | 2 +-
- drivers/mtd/ssfdc.c                             | 2 +-
- drivers/mtd/tests/nandbiterrs.c                 | 2 +-
- drivers/staging/mt29f_spinand/mt29f_spinand.c   | 2 +-
- fs/jffs2/wbuf.c                                 | 2 +-
- include/linux/mtd/nand-gpio.h                   | 2 +-
- include/linux/mtd/{nand.h => rawnand.h}         | 8 +++-----
- include/linux/mtd/sh_flctl.h                    | 2 +-
- include/linux/mtd/sharpsl.h                     | 2 +-
- include/linux/platform_data/atmel.h             | 2 +-
- include/linux/platform_data/mtd-davinci.h       | 2 +-
- 119 files changed, 121 insertions(+), 123 deletions(-)
- rename include/linux/mtd/{nand.h => rawnand.h} (99%)
+ drivers/mtd/nand/Kconfig                           | 573 +--------------------
+ drivers/mtd/nand/Makefile                          |  63 +--
+ drivers/mtd/nand/raw/Kconfig                       | 572 ++++++++++++++++++++
+ drivers/mtd/nand/raw/Makefile                      |  62 +++
+ drivers/mtd/nand/{ => raw}/ams-delta.c             |   0
+ drivers/mtd/nand/{ => raw}/atmel_nand.c            |   0
+ drivers/mtd/nand/{ => raw}/atmel_nand_ecc.h        |   0
+ drivers/mtd/nand/{ => raw}/atmel_nand_nfc.h        |   0
+ drivers/mtd/nand/{ => raw}/au1550nd.c              |   0
+ drivers/mtd/nand/{ => raw}/bcm47xxnflash/Makefile  |   0
+ .../nand/{ => raw}/bcm47xxnflash/bcm47xxnflash.h   |   0
+ drivers/mtd/nand/{ => raw}/bcm47xxnflash/main.c    |   0
+ .../mtd/nand/{ => raw}/bcm47xxnflash/ops_bcm4706.c |   0
+ drivers/mtd/nand/{ => raw}/bf5xx_nand.c            |   0
+ drivers/mtd/nand/{ => raw}/brcmnand/Makefile       |   0
+ .../mtd/nand/{ => raw}/brcmnand/bcm63138_nand.c    |   0
+ drivers/mtd/nand/{ => raw}/brcmnand/bcm6368_nand.c |   0
+ drivers/mtd/nand/{ => raw}/brcmnand/brcmnand.c     |   0
+ drivers/mtd/nand/{ => raw}/brcmnand/brcmnand.h     |   0
+ drivers/mtd/nand/{ => raw}/brcmnand/brcmstb_nand.c |   0
+ drivers/mtd/nand/{ => raw}/brcmnand/iproc_nand.c   |   0
+ drivers/mtd/nand/{ => raw}/cafe_nand.c             |   0
+ drivers/mtd/nand/{ => raw}/cmx270_nand.c           |   0
+ drivers/mtd/nand/{ => raw}/cs553x_nand.c           |   0
+ drivers/mtd/nand/{ => raw}/davinci_nand.c          |   0
+ drivers/mtd/nand/{ => raw}/denali.c                |   0
+ drivers/mtd/nand/{ => raw}/denali.h                |   0
+ drivers/mtd/nand/{ => raw}/denali_dt.c             |   0
+ drivers/mtd/nand/{ => raw}/denali_pci.c            |   0
+ drivers/mtd/nand/{ => raw}/diskonchip.c            |   0
+ drivers/mtd/nand/{ => raw}/docg4.c                 |   0
+ drivers/mtd/nand/{ => raw}/fsl_elbc_nand.c         |   0
+ drivers/mtd/nand/{ => raw}/fsl_ifc_nand.c          |   0
+ drivers/mtd/nand/{ => raw}/fsl_upm.c               |   0
+ drivers/mtd/nand/{ => raw}/fsmc_nand.c             |   0
+ drivers/mtd/nand/{ => raw}/gpio.c                  |   0
+ drivers/mtd/nand/{ => raw}/gpmi-nand/Makefile      |   0
+ drivers/mtd/nand/{ => raw}/gpmi-nand/bch-regs.h    |   0
+ drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-lib.c    |   0
+ drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-nand.c   |   0
+ drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-nand.h   |   0
+ drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-regs.h   |   0
+ drivers/mtd/nand/{ => raw}/hisi504_nand.c          |   0
+ drivers/mtd/nand/{ => raw}/jz4740_nand.c           |   0
+ drivers/mtd/nand/{ => raw}/jz4780_bch.c            |   0
+ drivers/mtd/nand/{ => raw}/jz4780_bch.h            |   0
+ drivers/mtd/nand/{ => raw}/jz4780_nand.c           |   0
+ drivers/mtd/nand/{ => raw}/lpc32xx_mlc.c           |   0
+ drivers/mtd/nand/{ => raw}/lpc32xx_slc.c           |   0
+ drivers/mtd/nand/{ => raw}/mpc5121_nfc.c           |   0
+ drivers/mtd/nand/{ => raw}/mtk_ecc.c               |   0
+ drivers/mtd/nand/{ => raw}/mtk_ecc.h               |   0
+ drivers/mtd/nand/{ => raw}/mtk_nand.c              |   0
+ drivers/mtd/nand/{ => raw}/mxc_nand.c              |   0
+ drivers/mtd/nand/{ => raw}/nand_base.c             |   0
+ drivers/mtd/nand/{ => raw}/nand_bbt.c              |   0
+ drivers/mtd/nand/{ => raw}/nand_bch.c              |   0
+ drivers/mtd/nand/{ => raw}/nand_ecc.c              |   0
+ drivers/mtd/nand/{ => raw}/nand_ids.c              |   0
+ drivers/mtd/nand/{ => raw}/nand_timings.c          |   0
+ drivers/mtd/nand/{ => raw}/nandsim.c               |   0
+ drivers/mtd/nand/{ => raw}/ndfc.c                  |   0
+ drivers/mtd/nand/{ => raw}/nuc900_nand.c           |   0
+ drivers/mtd/nand/{ => raw}/omap2.c                 |   0
+ drivers/mtd/nand/{ => raw}/omap_elm.c              |   0
+ drivers/mtd/nand/{ => raw}/orion_nand.c            |   0
+ drivers/mtd/nand/{ => raw}/pasemi_nand.c           |   0
+ drivers/mtd/nand/{ => raw}/plat_nand.c             |   0
+ drivers/mtd/nand/{ => raw}/pxa3xx_nand.c           |   0
+ drivers/mtd/nand/{ => raw}/qcom_nandc.c            |   0
+ drivers/mtd/nand/{ => raw}/r852.c                  |   0
+ drivers/mtd/nand/{ => raw}/r852.h                  |   0
+ drivers/mtd/nand/{ => raw}/s3c2410.c               |   0
+ drivers/mtd/nand/{ => raw}/sh_flctl.c              |   0
+ drivers/mtd/nand/{ => raw}/sharpsl.c               |   0
+ drivers/mtd/nand/{ => raw}/sm_common.c             |   0
+ drivers/mtd/nand/{ => raw}/sm_common.h             |   0
+ drivers/mtd/nand/{ => raw}/socrates_nand.c         |   0
+ drivers/mtd/nand/{ => raw}/sunxi_nand.c            |   0
+ drivers/mtd/nand/{ => raw}/tmio_nand.c             |   0
+ drivers/mtd/nand/{ => raw}/txx9ndfmc.c             |   0
+ drivers/mtd/nand/{ => raw}/vf610_nfc.c             |   0
+ drivers/mtd/nand/{ => raw}/xway_nand.c             |   0
+ drivers/mtd/sm_ftl.c                               |   2 +-
+ 84 files changed, 637 insertions(+), 635 deletions(-)
+ create mode 100644 drivers/mtd/nand/raw/Kconfig
+ create mode 100644 drivers/mtd/nand/raw/Makefile
+ rename drivers/mtd/nand/{ => raw}/ams-delta.c (100%)
+ rename drivers/mtd/nand/{ => raw}/atmel_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/atmel_nand_ecc.h (100%)
+ rename drivers/mtd/nand/{ => raw}/atmel_nand_nfc.h (100%)
+ rename drivers/mtd/nand/{ => raw}/au1550nd.c (100%)
+ rename drivers/mtd/nand/{ => raw}/bcm47xxnflash/Makefile (100%)
+ rename drivers/mtd/nand/{ => raw}/bcm47xxnflash/bcm47xxnflash.h (100%)
+ rename drivers/mtd/nand/{ => raw}/bcm47xxnflash/main.c (100%)
+ rename drivers/mtd/nand/{ => raw}/bcm47xxnflash/ops_bcm4706.c (100%)
+ rename drivers/mtd/nand/{ => raw}/bf5xx_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/brcmnand/Makefile (100%)
+ rename drivers/mtd/nand/{ => raw}/brcmnand/bcm63138_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/brcmnand/bcm6368_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/brcmnand/brcmnand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/brcmnand/brcmnand.h (100%)
+ rename drivers/mtd/nand/{ => raw}/brcmnand/brcmstb_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/brcmnand/iproc_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/cafe_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/cmx270_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/cs553x_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/davinci_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/denali.c (100%)
+ rename drivers/mtd/nand/{ => raw}/denali.h (100%)
+ rename drivers/mtd/nand/{ => raw}/denali_dt.c (100%)
+ rename drivers/mtd/nand/{ => raw}/denali_pci.c (100%)
+ rename drivers/mtd/nand/{ => raw}/diskonchip.c (100%)
+ rename drivers/mtd/nand/{ => raw}/docg4.c (100%)
+ rename drivers/mtd/nand/{ => raw}/fsl_elbc_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/fsl_ifc_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/fsl_upm.c (100%)
+ rename drivers/mtd/nand/{ => raw}/fsmc_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/gpio.c (100%)
+ rename drivers/mtd/nand/{ => raw}/gpmi-nand/Makefile (100%)
+ rename drivers/mtd/nand/{ => raw}/gpmi-nand/bch-regs.h (100%)
+ rename drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-lib.c (100%)
+ rename drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-nand.h (100%)
+ rename drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-regs.h (100%)
+ rename drivers/mtd/nand/{ => raw}/hisi504_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/jz4740_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/jz4780_bch.c (100%)
+ rename drivers/mtd/nand/{ => raw}/jz4780_bch.h (100%)
+ rename drivers/mtd/nand/{ => raw}/jz4780_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/lpc32xx_mlc.c (100%)
+ rename drivers/mtd/nand/{ => raw}/lpc32xx_slc.c (100%)
+ rename drivers/mtd/nand/{ => raw}/mpc5121_nfc.c (100%)
+ rename drivers/mtd/nand/{ => raw}/mtk_ecc.c (100%)
+ rename drivers/mtd/nand/{ => raw}/mtk_ecc.h (100%)
+ rename drivers/mtd/nand/{ => raw}/mtk_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/mxc_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/nand_base.c (100%)
+ rename drivers/mtd/nand/{ => raw}/nand_bbt.c (100%)
+ rename drivers/mtd/nand/{ => raw}/nand_bch.c (100%)
+ rename drivers/mtd/nand/{ => raw}/nand_ecc.c (100%)
+ rename drivers/mtd/nand/{ => raw}/nand_ids.c (100%)
+ rename drivers/mtd/nand/{ => raw}/nand_timings.c (100%)
+ rename drivers/mtd/nand/{ => raw}/nandsim.c (100%)
+ rename drivers/mtd/nand/{ => raw}/ndfc.c (100%)
+ rename drivers/mtd/nand/{ => raw}/nuc900_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/omap2.c (100%)
+ rename drivers/mtd/nand/{ => raw}/omap_elm.c (100%)
+ rename drivers/mtd/nand/{ => raw}/orion_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/pasemi_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/plat_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/pxa3xx_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/qcom_nandc.c (100%)
+ rename drivers/mtd/nand/{ => raw}/r852.c (100%)
+ rename drivers/mtd/nand/{ => raw}/r852.h (100%)
+ rename drivers/mtd/nand/{ => raw}/s3c2410.c (100%)
+ rename drivers/mtd/nand/{ => raw}/sh_flctl.c (100%)
+ rename drivers/mtd/nand/{ => raw}/sharpsl.c (100%)
+ rename drivers/mtd/nand/{ => raw}/sm_common.c (100%)
+ rename drivers/mtd/nand/{ => raw}/sm_common.h (100%)
+ rename drivers/mtd/nand/{ => raw}/socrates_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/sunxi_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/tmio_nand.c (100%)
+ rename drivers/mtd/nand/{ => raw}/txx9ndfmc.c (100%)
+ rename drivers/mtd/nand/{ => raw}/vf610_nfc.c (100%)
+ rename drivers/mtd/nand/{ => raw}/xway_nand.c (100%)
 
-diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
-index b442921bca54..35ec7155faa3 100644
---- a/Documentation/DocBook/mtdnand.tmpl
-+++ b/Documentation/DocBook/mtdnand.tmpl
-@@ -1239,7 +1239,7 @@ in this page</entry>
-      struct member has a short description which is marked with an [XXX] identifier.
-      See the chapter "Documentation hints" for an explanation.
-      </para>
--!Iinclude/linux/mtd/nand.h
-+!Iinclude/linux/mtd/rawnand.h
-   </chapter>
- 
-   <chapter id="pubfunctions">
-diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
-index 8e4539f69fdc..02ec0add04e0 100644
---- a/arch/arm/mach-davinci/board-da850-evm.c
-+++ b/arch/arm/mach-davinci/board-da850-evm.c
-@@ -24,7 +24,7 @@
- #include <linux/input/tps6507x-ts.h>
- #include <linux/mfd/tps6507x.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/platform_device.h>
-diff --git a/arch/arm/mach-davinci/board-dm355-evm.c b/arch/arm/mach-davinci/board-dm355-evm.c
-index 18296a99c4d2..62e7bc3018f0 100644
---- a/arch/arm/mach-davinci/board-dm355-evm.c
-+++ b/arch/arm/mach-davinci/board-dm355-evm.c
-@@ -14,7 +14,7 @@
- #include <linux/platform_device.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/i2c.h>
- #include <linux/gpio.h>
- #include <linux/clk.h>
-diff --git a/arch/arm/mach-davinci/board-dm355-leopard.c b/arch/arm/mach-davinci/board-dm355-leopard.c
-index 284ff27c1b32..be997243447b 100644
---- a/arch/arm/mach-davinci/board-dm355-leopard.c
-+++ b/arch/arm/mach-davinci/board-dm355-leopard.c
-@@ -13,7 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/i2c.h>
- #include <linux/gpio.h>
- #include <linux/clk.h>
-diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
-index 0464999b7137..e75741fb2c1d 100644
---- a/arch/arm/mach-davinci/board-dm365-evm.c
-+++ b/arch/arm/mach-davinci/board-dm365-evm.c
-@@ -23,7 +23,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/input.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/eeprom.h>
-diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
-index 521e40977265..15a2476057e4 100644
---- a/arch/arm/mach-davinci/board-dm644x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm644x-evm.c
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 7b7a887b4709..6d5373471809 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -1,572 +1 @@
+-config MTD_NAND_ECC
+-	tristate
+-
+-config MTD_NAND_ECC_SMC
+-	bool "NAND ECC Smart Media byte order"
+-	depends on MTD_NAND_ECC
+-	default n
+-	help
+-	  Software ECC according to the Smart Media Specification.
+-	  The original Linux implementation had byte 0 and 1 swapped.
+-
+-
+-menuconfig MTD_NAND
+-	tristate "NAND Device Support"
+-	depends on MTD
+-	select MTD_NAND_IDS
+-	select MTD_NAND_ECC
+-	help
+-	  This enables support for accessing all type of NAND flash
+-	  devices. For further information see
+-	  <http://www.linux-mtd.infradead.org/doc/nand.html>.
+-
+-if MTD_NAND
+-
+-config MTD_NAND_BCH
+-	tristate
+-	select BCH
+-	depends on MTD_NAND_ECC_BCH
+-	default MTD_NAND
+-
+-config MTD_NAND_ECC_BCH
+-	bool "Support software BCH ECC"
+-	default n
+-	help
+-	  This enables support for software BCH error correction. Binary BCH
+-	  codes are more powerful and cpu intensive than traditional Hamming
+-	  ECC codes. They are used with NAND devices requiring more than 1 bit
+-	  of error correction.
+-
+-config MTD_SM_COMMON
+-	tristate
+-	default n
+-
+-config MTD_NAND_DENALI
+-	tristate
+-
+-config MTD_NAND_DENALI_PCI
+-        tristate "Support Denali NAND controller on Intel Moorestown"
+-	select MTD_NAND_DENALI
+-	depends on HAS_DMA && PCI
+-        help
+-          Enable the driver for NAND flash on Intel Moorestown, using the
+-          Denali NAND controller core.
+-
+-config MTD_NAND_DENALI_DT
+-	tristate "Support Denali NAND controller as a DT device"
+-	select MTD_NAND_DENALI
+-	depends on HAS_DMA && HAVE_CLK && OF
+-	help
+-	  Enable the driver for NAND flash on platforms using a Denali NAND
+-	  controller as a DT device.
+-
+-config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+-        hex "Denali NAND size scratch register address"
+-        default "0xFF108018"
+-        depends on MTD_NAND_DENALI_PCI
+-        help
+-          Some platforms place the NAND chip size in a scratch register
+-          because (some versions of) the driver aren't able to automatically
+-          determine the size of certain chips. Set the address of the
+-          scratch register here to enable this feature. On Intel Moorestown
+-          boards, the scratch register is at 0xFF108018.
+-
+-config MTD_NAND_GPIO
+-	tristate "GPIO assisted NAND Flash driver"
+-	depends on GPIOLIB || COMPILE_TEST
+-	depends on HAS_IOMEM
+-	help
+-	  This enables a NAND flash driver where control signals are
+-	  connected to GPIO pins, and commands and data are communicated
+-	  via a memory mapped interface.
+-
+-config MTD_NAND_AMS_DELTA
+-	tristate "NAND Flash device on Amstrad E3"
+-	depends on MACH_AMS_DELTA
+-	default y
+-	help
+-	  Support for NAND flash on Amstrad E3 (Delta).
+-
+-config MTD_NAND_OMAP2
+-	tristate "NAND Flash device on OMAP2, OMAP3, OMAP4 and Keystone"
+-	depends on (ARCH_OMAP2PLUS || ARCH_KEYSTONE)
+-	help
+-          Support for NAND flash on Texas Instruments OMAP2, OMAP3, OMAP4
+-	  and Keystone platforms.
+-
+-config MTD_NAND_OMAP_BCH
+-	depends on MTD_NAND_OMAP2
+-	bool "Support hardware based BCH error correction"
+-	default n
+-	select BCH
+-	help
+-	  This config enables the ELM hardware engine, which can be used to
+-	  locate and correct errors when using BCH ECC scheme. This offloads
+-	  the cpu from doing ECC error searching and correction. However some
+-	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
+-	  so this is optional for them.
+-
+-config MTD_NAND_OMAP_BCH_BUILD
+-	def_tristate MTD_NAND_OMAP2 && MTD_NAND_OMAP_BCH
+-
+-config MTD_NAND_IDS
+-	tristate
+-
+-config MTD_NAND_RICOH
+-	tristate "Ricoh xD card reader"
+-	default n
+-	depends on PCI
+-	select MTD_SM_COMMON
+-	help
+-	  Enable support for Ricoh R5C852 xD card reader
+-	  You also need to enable ether
+-	  NAND SSFDC (SmartMedia) read only translation layer' or new
+-	  expermental, readwrite
+-	  'SmartMedia/xD new translation layer'
+-
+-config MTD_NAND_AU1550
+-	tristate "Au1550/1200 NAND support"
+-	depends on MIPS_ALCHEMY
+-	help
+-	  This enables the driver for the NAND flash controller on the
+-	  AMD/Alchemy 1550 SOC.
+-
+-config MTD_NAND_BF5XX
+-	tristate "Blackfin on-chip NAND Flash Controller driver"
+-	depends on BF54x || BF52x
+-	help
+-	  This enables the Blackfin on-chip NAND flash controller
+-
+-	  No board specific support is done by this driver, each board
+-	  must advertise a platform_device for the driver to attach.
+-
+-	  This driver can also be built as a module. If so, the module
+-	  will be called bf5xx-nand.
+-
+-config MTD_NAND_BF5XX_HWECC
+-	bool "BF5XX NAND Hardware ECC"
+-	default y
+-	depends on MTD_NAND_BF5XX
+-	help
+-	  Enable the use of the BF5XX's internal ECC generator when
+-	  using NAND.
+-
+-config MTD_NAND_BF5XX_BOOTROM_ECC
+-	bool "Use Blackfin BootROM ECC Layout"
+-	default n
+-	depends on MTD_NAND_BF5XX_HWECC
+-	help
+-	  If you wish to modify NAND pages and allow the Blackfin on-chip
+-	  BootROM to boot from them, say Y here.  This is only necessary
+-	  if you are booting U-Boot out of NAND and you wish to update
+-	  U-Boot from Linux' userspace.  Otherwise, you should say N here.
+-
+-	  If unsure, say N.
+-
+-config MTD_NAND_S3C2410
+-	tristate "NAND Flash support for Samsung S3C SoCs"
+-	depends on ARCH_S3C24XX || ARCH_S3C64XX
+-	help
+-	  This enables the NAND flash controller on the S3C24xx and S3C64xx
+-	  SoCs
+-
+-	  No board specific support is done by this driver, each board
+-	  must advertise a platform_device for the driver to attach.
+-
+-config MTD_NAND_S3C2410_DEBUG
+-	bool "Samsung S3C NAND driver debug"
+-	depends on MTD_NAND_S3C2410
+-	help
+-	  Enable debugging of the S3C NAND driver
+-
+-config MTD_NAND_S3C2410_HWECC
+-	bool "Samsung S3C NAND Hardware ECC"
+-	depends on MTD_NAND_S3C2410
+-	help
+-	  Enable the use of the controller's internal ECC generator when
+-	  using NAND. Early versions of the chips have had problems with
+-	  incorrect ECC generation, and if using these, the default of
+-	  software ECC is preferable.
+-
+-config MTD_NAND_NDFC
+-	tristate "NDFC NanD Flash Controller"
+-	depends on 4xx
+-	select MTD_NAND_ECC_SMC
+-	help
+-	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
+-
+-config MTD_NAND_S3C2410_CLKSTOP
+-	bool "Samsung S3C NAND IDLE clock stop"
+-	depends on MTD_NAND_S3C2410
+-	default n
+-	help
+-	  Stop the clock to the NAND controller when there is no chip
+-	  selected to save power. This will mean there is a small delay
+-	  when the is NAND chip selected or released, but will save
+-	  approximately 5mA of power when there is nothing happening.
+-
+-config MTD_NAND_DISKONCHIP
+-	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation)"
+-	depends on HAS_IOMEM
+-	select REED_SOLOMON
+-	select REED_SOLOMON_DEC16
+-	help
+-	  This is a reimplementation of M-Systems DiskOnChip 2000,
+-	  Millennium and Millennium Plus as a standard NAND device driver,
+-	  as opposed to the earlier self-contained MTD device drivers.
+-	  This should enable, among other things, proper JFFS2 operation on
+-	  these devices.
+-
+-config MTD_NAND_DISKONCHIP_PROBE_ADVANCED
+-        bool "Advanced detection options for DiskOnChip"
+-        depends on MTD_NAND_DISKONCHIP
+-        help
+-          This option allows you to specify nonstandard address at which to
+-          probe for a DiskOnChip, or to change the detection options.  You
+-          are unlikely to need any of this unless you are using LinuxBIOS.
+-          Say 'N'.
+-
+-config MTD_NAND_DISKONCHIP_PROBE_ADDRESS
+-        hex "Physical address of DiskOnChip" if MTD_NAND_DISKONCHIP_PROBE_ADVANCED
+-        depends on MTD_NAND_DISKONCHIP
+-        default "0"
+-        ---help---
+-        By default, the probe for DiskOnChip devices will look for a
+-        DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
+-        This option allows you to specify a single address at which to probe
+-        for the device, which is useful if you have other devices in that
+-        range which get upset when they are probed.
+-
+-        (Note that on PowerPC, the normal probe will only check at
+-        0xE4000000.)
+-
+-        Normally, you should leave this set to zero, to allow the probe at
+-        the normal addresses.
+-
+-config MTD_NAND_DISKONCHIP_PROBE_HIGH
+-        bool "Probe high addresses"
+-        depends on MTD_NAND_DISKONCHIP_PROBE_ADVANCED
+-        help
+-          By default, the probe for DiskOnChip devices will look for a
+-          DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
+-          This option changes to make it probe between 0xFFFC8000 and
+-          0xFFFEE000.  Unless you are using LinuxBIOS, this is unlikely to be
+-          useful to you.  Say 'N'.
+-
+-config MTD_NAND_DISKONCHIP_BBTWRITE
+-	bool "Allow BBT writes on DiskOnChip Millennium and 2000TSOP"
+-	depends on MTD_NAND_DISKONCHIP
+-	help
+-	  On DiskOnChip devices shipped with the INFTL filesystem (Millennium
+-	  and 2000 TSOP/Alon), Linux reserves some space at the end of the
+-	  device for the Bad Block Table (BBT).  If you have existing INFTL
+-	  data on your device (created by non-Linux tools such as M-Systems'
+-	  DOS drivers), your data might overlap the area Linux wants to use for
+-	  the BBT.  If this is a concern for you, leave this option disabled and
+-	  Linux will not write BBT data into this area.
+-	  The downside of leaving this option disabled is that if bad blocks
+-	  are detected by Linux, they will not be recorded in the BBT, which
+-	  could cause future problems.
+-	  Once you enable this option, new filesystems (INFTL or others, created
+-	  in Linux or other operating systems) will not use the reserved area.
+-	  The only reason not to enable this option is to prevent damage to
+-	  preexisting filesystems.
+-	  Even if you leave this disabled, you can enable BBT writes at module
+-	  load time (assuming you build diskonchip as a module) with the module
+-	  parameter "inftl_bbt_write=1".
+-
+-config MTD_NAND_DOCG4
+-	tristate "Support for DiskOnChip G4"
+-	depends on HAS_IOMEM
+-	select BCH
+-	select BITREVERSE
+-	help
+-	  Support for diskonchip G4 nand flash, found in various smartphones and
+-	  PDAs, among them the Palm Treo680, HTC Prophet and Wizard, Toshiba
+-	  Portege G900, Asus P526, and O2 XDA Zinc.
+-
+-	  With this driver you will be able to use UBI and create a ubifs on the
+-	  device, so you may wish to consider enabling UBI and UBIFS as well.
+-
+-	  These devices ship with the Mys/Sandisk SAFTL formatting, for which
+-	  there is currently no mtd parser, so you may want to use command line
+-	  partitioning to segregate write-protected blocks. On the Treo680, the
+-	  first five erase blocks (256KiB each) are write-protected, followed
+-	  by the block containing the saftl partition table.  This is probably
+-	  typical.
+-
+-config MTD_NAND_SHARPSL
+-	tristate "Support for NAND Flash on Sharp SL Series (C7xx + others)"
+-	depends on ARCH_PXA
+-
+-config MTD_NAND_CAFE
+-	tristate "NAND support for OLPC CAFÉ chip"
+-	depends on PCI
+-	select REED_SOLOMON
+-	select REED_SOLOMON_DEC16
+-	help
+-	  Use NAND flash attached to the CAFÉ chip designed for the OLPC
+-	  laptop.
+-
+-config MTD_NAND_CS553X
+-	tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
+-	depends on X86_32
+-	depends on !UML && HAS_IOMEM
+-	help
+-	  The CS553x companion chips for the AMD Geode processor
+-	  include NAND flash controllers with built-in hardware ECC
+-	  capabilities; enabling this option will allow you to use
+-	  these. The driver will check the MSRs to verify that the
+-	  controller is enabled for NAND, and currently requires that
+-	  the controller be in MMIO mode.
+-
+-	  If you say "m", the module will be called cs553x_nand.
+-
+-config MTD_NAND_ATMEL
+-	tristate "Support for NAND Flash / SmartMedia on AT91 and AVR32"
+-	depends on ARCH_AT91 || AVR32
+-	help
+-	  Enables support for NAND Flash / Smart Media Card interface
+-	  on Atmel AT91 and AVR32 processors.
+-
+-config MTD_NAND_PXA3xx
+-	tristate "NAND support on PXA3xx and Armada 370/XP"
+-	depends on PXA3xx || ARCH_MMP || PLAT_ORION
+-	help
+-	  This enables the driver for the NAND flash device found on
+-	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
+-
+-config MTD_NAND_SLC_LPC32XX
+-	tristate "NXP LPC32xx SLC Controller"
+-	depends on ARCH_LPC32XX
+-	help
+-	  Enables support for NXP's LPC32XX SLC (i.e. for Single Level Cell
+-	  chips) NAND controller. This is the default for the PHYTEC 3250
+-	  reference board which contains a NAND256R3A2CZA6 chip.
+-
+-	  Please check the actual NAND chip connected and its support
+-	  by the SLC NAND controller.
+-
+-config MTD_NAND_MLC_LPC32XX
+-	tristate "NXP LPC32xx MLC Controller"
+-	depends on ARCH_LPC32XX
+-	help
+-	  Uses the LPC32XX MLC (i.e. for Multi Level Cell chips) NAND
+-	  controller. This is the default for the WORK92105 controller
+-	  board.
+-
+-	  Please check the actual NAND chip connected and its support
+-	  by the MLC NAND controller.
+-
+-config MTD_NAND_CM_X270
+-	tristate "Support for NAND Flash on CM-X270 modules"
+-	depends on MACH_ARMCORE
+-
+-config MTD_NAND_PASEMI
+-	tristate "NAND support for PA Semi PWRficient"
+-	depends on PPC_PASEMI
+-	help
+-	  Enables support for NAND Flash interface on PA Semi PWRficient
+-	  based boards
+-
+-config MTD_NAND_TMIO
+-	tristate "NAND Flash device on Toshiba Mobile IO Controller"
+-	depends on MFD_TMIO
+-	help
+-	  Support for NAND flash connected to a Toshiba Mobile IO
+-	  Controller in some PDAs, including the Sharp SL6000x.
+-
+-config MTD_NAND_NANDSIM
+-	tristate "Support for NAND Flash Simulator"
+-	help
+-	  The simulator may simulate various NAND flash chips for the
+-	  MTD nand layer.
+-
+-config MTD_NAND_GPMI_NAND
+-        tristate "GPMI NAND Flash Controller driver"
+-        depends on MTD_NAND && MXS_DMA
+-        help
+-	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
+-	 The GPMI controller is very powerful, with the help of BCH
+-	 module, it can do the hardware ECC. The GPMI supports several
+-	 NAND flashs at the same time. The GPMI may conflicts with other
+-	 block, such as SD card. So pay attention to it when you enable
+-	 the GPMI.
+-
+-config MTD_NAND_BRCMNAND
+-	tristate "Broadcom STB NAND controller"
+-	depends on ARM || ARM64 || MIPS
+-	help
+-	  Enables the Broadcom NAND controller driver. The controller was
+-	  originally designed for Set-Top Box but is used on various BCM7xxx,
+-	  BCM3xxx, BCM63xxx, iProc/Cygnus and more.
+-
+-config MTD_NAND_BCM47XXNFLASH
+-	tristate "Support for NAND flash on BCM4706 BCMA bus"
+-	depends on BCMA_NFLASH
+-	help
+-	  BCMA bus can have various flash memories attached, they are
+-	  registered by bcma as platform devices. This enables driver for
+-	  NAND flash memories. For now only BCM4706 is supported.
+-
+-config MTD_NAND_PLATFORM
+-	tristate "Support for generic platform NAND driver"
+-	depends on HAS_IOMEM
+-	help
+-	  This implements a generic NAND driver for on-SOC platform
+-	  devices. You will need to provide platform-specific functions
+-	  via platform_data.
+-
+-config MTD_NAND_ORION
+-	tristate "NAND Flash support for Marvell Orion SoC"
+-	depends on PLAT_ORION
+-	help
+-	  This enables the NAND flash controller on Orion machines.
+-
+-	  No board specific support is done by this driver, each board
+-	  must advertise a platform_device for the driver to attach.
+-
+-config MTD_NAND_FSL_ELBC
+-	tristate "NAND support for Freescale eLBC controllers"
+-	depends on FSL_SOC
+-	select FSL_LBC
+-	help
+-	  Various Freescale chips, including the 8313, include a NAND Flash
+-	  Controller Module with built-in hardware ECC capabilities.
+-	  Enabling this option will enable you to use this to control
+-	  external NAND devices.
+-
+-config MTD_NAND_FSL_IFC
+-	tristate "NAND support for Freescale IFC controller"
+-	depends on FSL_SOC || ARCH_LAYERSCAPE
+-	select FSL_IFC
+-	select MEMORY
+-	help
+-	  Various Freescale chips e.g P1010, include a NAND Flash machine
+-	  with built-in hardware ECC capabilities.
+-	  Enabling this option will enable you to use this to control
+-	  external NAND devices.
+-
+-config MTD_NAND_FSL_UPM
+-	tristate "Support for NAND on Freescale UPM"
+-	depends on PPC_83xx || PPC_85xx
+-	select FSL_LBC
+-	help
+-	  Enables support for NAND Flash chips wired onto Freescale PowerPC
+-	  processor localbus with User-Programmable Machine support.
+-
+-config MTD_NAND_MPC5121_NFC
+-	tristate "MPC5121 built-in NAND Flash Controller support"
+-	depends on PPC_MPC512x
+-	help
+-	  This enables the driver for the NAND flash controller on the
+-	  MPC5121 SoC.
+-
+-config MTD_NAND_VF610_NFC
+-	tristate "Support for Freescale NFC for VF610/MPC5125"
+-	depends on (SOC_VF610 || COMPILE_TEST)
+-	depends on HAS_IOMEM
+-	help
+-	  Enables support for NAND Flash Controller on some Freescale
+-	  processors like the VF610, MPC5125, MCF54418 or Kinetis K70.
+-	  The driver supports a maximum 2k page size. With 2k pages and
+-	  64 bytes or more of OOB, hardware ECC with up to 32-bit error
+-	  correction is supported. Hardware ECC is only enabled through
+-	  device tree.
+-
+-config MTD_NAND_MXC
+-	tristate "MXC NAND support"
+-	depends on ARCH_MXC
+-	help
+-	  This enables the driver for the NAND flash controller on the
+-	  MXC processors.
+-
+-config MTD_NAND_SH_FLCTL
+-	tristate "Support for NAND on Renesas SuperH FLCTL"
+-	depends on SUPERH || COMPILE_TEST
+-	depends on HAS_IOMEM
+-	depends on HAS_DMA
+-	help
+-	  Several Renesas SuperH CPU has FLCTL. This option enables support
+-	  for NAND Flash using FLCTL.
+-
+-config MTD_NAND_DAVINCI
+-        tristate "Support NAND on DaVinci/Keystone SoC"
+-        depends on ARCH_DAVINCI || (ARCH_KEYSTONE && TI_AEMIF)
+-        help
+-	  Enable the driver for NAND flash chips on Texas Instruments
+-	  DaVinci/Keystone processors.
+-
+-config MTD_NAND_TXX9NDFMC
+-	tristate "NAND Flash support for TXx9 SoC"
+-	depends on SOC_TX4938 || SOC_TX4939
+-	help
+-	  This enables the NAND flash controller on the TXx9 SoCs.
+-
+-config MTD_NAND_SOCRATES
+-	tristate "Support for NAND on Socrates board"
+-	depends on SOCRATES
+-	help
+-	  Enables support for NAND Flash chips wired onto Socrates board.
+-
+-config MTD_NAND_NUC900
+-	tristate "Support for NAND on Nuvoton NUC9xx/w90p910 evaluation boards."
+-	depends on ARCH_W90X900
+-	help
+-	  This enables the driver for the NAND Flash on evaluation board based
+-	  on w90p910 / NUC9xx.
+-
+-config MTD_NAND_JZ4740
+-	tristate "Support for JZ4740 SoC NAND controller"
+-	depends on MACH_JZ4740
+-	help
+-		Enables support for NAND Flash on JZ4740 SoC based boards.
+-
+-config MTD_NAND_JZ4780
+-	tristate "Support for NAND on JZ4780 SoC"
+-	depends on MACH_JZ4780 && JZ4780_NEMC
+-	help
+-	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
+-	  based boards, using the BCH controller for hardware error correction.
+-
+-config MTD_NAND_FSMC
+-	tristate "Support for NAND on ST Micros FSMC"
+-	depends on PLAT_SPEAR || ARCH_NOMADIK || ARCH_U8500 || MACH_U300
+-	help
+-	  Enables support for NAND Flash chips on the ST Microelectronics
+-	  Flexible Static Memory Controller (FSMC)
+-
+-config MTD_NAND_XWAY
+-	tristate "Support for NAND on Lantiq XWAY SoC"
+-	depends on LANTIQ && SOC_TYPE_XWAY
+-	help
+-	  Enables support for NAND Flash chips on Lantiq XWAY SoCs. NAND is attached
+-	  to the External Bus Unit (EBU).
+-
+-config MTD_NAND_SUNXI
+-	tristate "Support for NAND on Allwinner SoCs"
+-	depends on ARCH_SUNXI
+-	help
+-	  Enables support for NAND Flash chips on Allwinner SoCs.
+-
+-config MTD_NAND_HISI504
+-	tristate "Support for NAND controller on Hisilicon SoC Hip04"
+-	depends on HAS_DMA
+-	help
+-	  Enables support for NAND controller on Hisilicon SoC Hip04.
+-
+-config MTD_NAND_QCOM
+-	tristate "Support for NAND on QCOM SoCs"
+-	depends on ARCH_QCOM
+-	help
+-	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
+-	  controller. This controller is found on IPQ806x SoC.
+-
+-config MTD_NAND_MTK
+-	tristate "Support for NAND controller on MTK SoCs"
+-	depends on HAS_DMA
+-	help
+-	  Enables support for NAND controller on MTK SoCs.
+-	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
+-
+-endif # MTD_NAND
++source "drivers/mtd/nand/raw/Kconfig"
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index cafde6f3d957..eee2f27e92fc 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -1,62 +1 @@
+-#
+-# linux/drivers/nand/Makefile
+-#
+-
+-obj-$(CONFIG_MTD_NAND)			+= nand.o
+-obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
+-obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
+-obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o
+-obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
+-
+-obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
+-obj-$(CONFIG_MTD_NAND_AMS_DELTA)	+= ams-delta.o
+-obj-$(CONFIG_MTD_NAND_DENALI)		+= denali.o
+-obj-$(CONFIG_MTD_NAND_DENALI_PCI)	+= denali_pci.o
+-obj-$(CONFIG_MTD_NAND_DENALI_DT)	+= denali_dt.o
+-obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
+-obj-$(CONFIG_MTD_NAND_BF5XX)		+= bf5xx_nand.o
+-obj-$(CONFIG_MTD_NAND_S3C2410)		+= s3c2410.o
+-obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
+-obj-$(CONFIG_MTD_NAND_DISKONCHIP)	+= diskonchip.o
+-obj-$(CONFIG_MTD_NAND_DOCG4)		+= docg4.o
+-obj-$(CONFIG_MTD_NAND_FSMC)		+= fsmc_nand.o
+-obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
+-obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
+-obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
+-obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
+-obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
+-obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
+-omap2_nand-objs := omap2.o
+-obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
+-obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
+-obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
+-obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
+-obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
+-obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
+-obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
+-obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
+-obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
+-obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
+-obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
+-obj-$(CONFIG_MTD_NAND_SLC_LPC32XX)      += lpc32xx_slc.o
+-obj-$(CONFIG_MTD_NAND_MLC_LPC32XX)      += lpc32xx_mlc.o
+-obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
+-obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
+-obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
+-obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
+-obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
+-obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
+-obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
+-obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
+-obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
+-obj-$(CONFIG_MTD_NAND_JZ4780)		+= jz4780_nand.o jz4780_bch.o
+-obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
+-obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
+-obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
+-obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
+-obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
+-obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
+-obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+-obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
+-
+-nand-objs := nand_base.o nand_bbt.o nand_timings.o
++obj-y	+= raw/
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+new file mode 100644
+index 000000000000..7b7a887b4709
+--- /dev/null
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -0,0 +1,572 @@
++config MTD_NAND_ECC
++	tristate
++
++config MTD_NAND_ECC_SMC
++	bool "NAND ECC Smart Media byte order"
++	depends on MTD_NAND_ECC
++	default n
++	help
++	  Software ECC according to the Smart Media Specification.
++	  The original Linux implementation had byte 0 and 1 swapped.
++
++
++menuconfig MTD_NAND
++	tristate "NAND Device Support"
++	depends on MTD
++	select MTD_NAND_IDS
++	select MTD_NAND_ECC
++	help
++	  This enables support for accessing all type of NAND flash
++	  devices. For further information see
++	  <http://www.linux-mtd.infradead.org/doc/nand.html>.
++
++if MTD_NAND
++
++config MTD_NAND_BCH
++	tristate
++	select BCH
++	depends on MTD_NAND_ECC_BCH
++	default MTD_NAND
++
++config MTD_NAND_ECC_BCH
++	bool "Support software BCH ECC"
++	default n
++	help
++	  This enables support for software BCH error correction. Binary BCH
++	  codes are more powerful and cpu intensive than traditional Hamming
++	  ECC codes. They are used with NAND devices requiring more than 1 bit
++	  of error correction.
++
++config MTD_SM_COMMON
++	tristate
++	default n
++
++config MTD_NAND_DENALI
++	tristate
++
++config MTD_NAND_DENALI_PCI
++        tristate "Support Denali NAND controller on Intel Moorestown"
++	select MTD_NAND_DENALI
++	depends on HAS_DMA && PCI
++        help
++          Enable the driver for NAND flash on Intel Moorestown, using the
++          Denali NAND controller core.
++
++config MTD_NAND_DENALI_DT
++	tristate "Support Denali NAND controller as a DT device"
++	select MTD_NAND_DENALI
++	depends on HAS_DMA && HAVE_CLK && OF
++	help
++	  Enable the driver for NAND flash on platforms using a Denali NAND
++	  controller as a DT device.
++
++config MTD_NAND_DENALI_SCRATCH_REG_ADDR
++        hex "Denali NAND size scratch register address"
++        default "0xFF108018"
++        depends on MTD_NAND_DENALI_PCI
++        help
++          Some platforms place the NAND chip size in a scratch register
++          because (some versions of) the driver aren't able to automatically
++          determine the size of certain chips. Set the address of the
++          scratch register here to enable this feature. On Intel Moorestown
++          boards, the scratch register is at 0xFF108018.
++
++config MTD_NAND_GPIO
++	tristate "GPIO assisted NAND Flash driver"
++	depends on GPIOLIB || COMPILE_TEST
++	depends on HAS_IOMEM
++	help
++	  This enables a NAND flash driver where control signals are
++	  connected to GPIO pins, and commands and data are communicated
++	  via a memory mapped interface.
++
++config MTD_NAND_AMS_DELTA
++	tristate "NAND Flash device on Amstrad E3"
++	depends on MACH_AMS_DELTA
++	default y
++	help
++	  Support for NAND flash on Amstrad E3 (Delta).
++
++config MTD_NAND_OMAP2
++	tristate "NAND Flash device on OMAP2, OMAP3, OMAP4 and Keystone"
++	depends on (ARCH_OMAP2PLUS || ARCH_KEYSTONE)
++	help
++          Support for NAND flash on Texas Instruments OMAP2, OMAP3, OMAP4
++	  and Keystone platforms.
++
++config MTD_NAND_OMAP_BCH
++	depends on MTD_NAND_OMAP2
++	bool "Support hardware based BCH error correction"
++	default n
++	select BCH
++	help
++	  This config enables the ELM hardware engine, which can be used to
++	  locate and correct errors when using BCH ECC scheme. This offloads
++	  the cpu from doing ECC error searching and correction. However some
++	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
++	  so this is optional for them.
++
++config MTD_NAND_OMAP_BCH_BUILD
++	def_tristate MTD_NAND_OMAP2 && MTD_NAND_OMAP_BCH
++
++config MTD_NAND_IDS
++	tristate
++
++config MTD_NAND_RICOH
++	tristate "Ricoh xD card reader"
++	default n
++	depends on PCI
++	select MTD_SM_COMMON
++	help
++	  Enable support for Ricoh R5C852 xD card reader
++	  You also need to enable ether
++	  NAND SSFDC (SmartMedia) read only translation layer' or new
++	  expermental, readwrite
++	  'SmartMedia/xD new translation layer'
++
++config MTD_NAND_AU1550
++	tristate "Au1550/1200 NAND support"
++	depends on MIPS_ALCHEMY
++	help
++	  This enables the driver for the NAND flash controller on the
++	  AMD/Alchemy 1550 SOC.
++
++config MTD_NAND_BF5XX
++	tristate "Blackfin on-chip NAND Flash Controller driver"
++	depends on BF54x || BF52x
++	help
++	  This enables the Blackfin on-chip NAND flash controller
++
++	  No board specific support is done by this driver, each board
++	  must advertise a platform_device for the driver to attach.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called bf5xx-nand.
++
++config MTD_NAND_BF5XX_HWECC
++	bool "BF5XX NAND Hardware ECC"
++	default y
++	depends on MTD_NAND_BF5XX
++	help
++	  Enable the use of the BF5XX's internal ECC generator when
++	  using NAND.
++
++config MTD_NAND_BF5XX_BOOTROM_ECC
++	bool "Use Blackfin BootROM ECC Layout"
++	default n
++	depends on MTD_NAND_BF5XX_HWECC
++	help
++	  If you wish to modify NAND pages and allow the Blackfin on-chip
++	  BootROM to boot from them, say Y here.  This is only necessary
++	  if you are booting U-Boot out of NAND and you wish to update
++	  U-Boot from Linux' userspace.  Otherwise, you should say N here.
++
++	  If unsure, say N.
++
++config MTD_NAND_S3C2410
++	tristate "NAND Flash support for Samsung S3C SoCs"
++	depends on ARCH_S3C24XX || ARCH_S3C64XX
++	help
++	  This enables the NAND flash controller on the S3C24xx and S3C64xx
++	  SoCs
++
++	  No board specific support is done by this driver, each board
++	  must advertise a platform_device for the driver to attach.
++
++config MTD_NAND_S3C2410_DEBUG
++	bool "Samsung S3C NAND driver debug"
++	depends on MTD_NAND_S3C2410
++	help
++	  Enable debugging of the S3C NAND driver
++
++config MTD_NAND_S3C2410_HWECC
++	bool "Samsung S3C NAND Hardware ECC"
++	depends on MTD_NAND_S3C2410
++	help
++	  Enable the use of the controller's internal ECC generator when
++	  using NAND. Early versions of the chips have had problems with
++	  incorrect ECC generation, and if using these, the default of
++	  software ECC is preferable.
++
++config MTD_NAND_NDFC
++	tristate "NDFC NanD Flash Controller"
++	depends on 4xx
++	select MTD_NAND_ECC_SMC
++	help
++	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
++
++config MTD_NAND_S3C2410_CLKSTOP
++	bool "Samsung S3C NAND IDLE clock stop"
++	depends on MTD_NAND_S3C2410
++	default n
++	help
++	  Stop the clock to the NAND controller when there is no chip
++	  selected to save power. This will mean there is a small delay
++	  when the is NAND chip selected or released, but will save
++	  approximately 5mA of power when there is nothing happening.
++
++config MTD_NAND_DISKONCHIP
++	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation)"
++	depends on HAS_IOMEM
++	select REED_SOLOMON
++	select REED_SOLOMON_DEC16
++	help
++	  This is a reimplementation of M-Systems DiskOnChip 2000,
++	  Millennium and Millennium Plus as a standard NAND device driver,
++	  as opposed to the earlier self-contained MTD device drivers.
++	  This should enable, among other things, proper JFFS2 operation on
++	  these devices.
++
++config MTD_NAND_DISKONCHIP_PROBE_ADVANCED
++        bool "Advanced detection options for DiskOnChip"
++        depends on MTD_NAND_DISKONCHIP
++        help
++          This option allows you to specify nonstandard address at which to
++          probe for a DiskOnChip, or to change the detection options.  You
++          are unlikely to need any of this unless you are using LinuxBIOS.
++          Say 'N'.
++
++config MTD_NAND_DISKONCHIP_PROBE_ADDRESS
++        hex "Physical address of DiskOnChip" if MTD_NAND_DISKONCHIP_PROBE_ADVANCED
++        depends on MTD_NAND_DISKONCHIP
++        default "0"
++        ---help---
++        By default, the probe for DiskOnChip devices will look for a
++        DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
++        This option allows you to specify a single address at which to probe
++        for the device, which is useful if you have other devices in that
++        range which get upset when they are probed.
++
++        (Note that on PowerPC, the normal probe will only check at
++        0xE4000000.)
++
++        Normally, you should leave this set to zero, to allow the probe at
++        the normal addresses.
++
++config MTD_NAND_DISKONCHIP_PROBE_HIGH
++        bool "Probe high addresses"
++        depends on MTD_NAND_DISKONCHIP_PROBE_ADVANCED
++        help
++          By default, the probe for DiskOnChip devices will look for a
++          DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
++          This option changes to make it probe between 0xFFFC8000 and
++          0xFFFEE000.  Unless you are using LinuxBIOS, this is unlikely to be
++          useful to you.  Say 'N'.
++
++config MTD_NAND_DISKONCHIP_BBTWRITE
++	bool "Allow BBT writes on DiskOnChip Millennium and 2000TSOP"
++	depends on MTD_NAND_DISKONCHIP
++	help
++	  On DiskOnChip devices shipped with the INFTL filesystem (Millennium
++	  and 2000 TSOP/Alon), Linux reserves some space at the end of the
++	  device for the Bad Block Table (BBT).  If you have existing INFTL
++	  data on your device (created by non-Linux tools such as M-Systems'
++	  DOS drivers), your data might overlap the area Linux wants to use for
++	  the BBT.  If this is a concern for you, leave this option disabled and
++	  Linux will not write BBT data into this area.
++	  The downside of leaving this option disabled is that if bad blocks
++	  are detected by Linux, they will not be recorded in the BBT, which
++	  could cause future problems.
++	  Once you enable this option, new filesystems (INFTL or others, created
++	  in Linux or other operating systems) will not use the reserved area.
++	  The only reason not to enable this option is to prevent damage to
++	  preexisting filesystems.
++	  Even if you leave this disabled, you can enable BBT writes at module
++	  load time (assuming you build diskonchip as a module) with the module
++	  parameter "inftl_bbt_write=1".
++
++config MTD_NAND_DOCG4
++	tristate "Support for DiskOnChip G4"
++	depends on HAS_IOMEM
++	select BCH
++	select BITREVERSE
++	help
++	  Support for diskonchip G4 nand flash, found in various smartphones and
++	  PDAs, among them the Palm Treo680, HTC Prophet and Wizard, Toshiba
++	  Portege G900, Asus P526, and O2 XDA Zinc.
++
++	  With this driver you will be able to use UBI and create a ubifs on the
++	  device, so you may wish to consider enabling UBI and UBIFS as well.
++
++	  These devices ship with the Mys/Sandisk SAFTL formatting, for which
++	  there is currently no mtd parser, so you may want to use command line
++	  partitioning to segregate write-protected blocks. On the Treo680, the
++	  first five erase blocks (256KiB each) are write-protected, followed
++	  by the block containing the saftl partition table.  This is probably
++	  typical.
++
++config MTD_NAND_SHARPSL
++	tristate "Support for NAND Flash on Sharp SL Series (C7xx + others)"
++	depends on ARCH_PXA
++
++config MTD_NAND_CAFE
++	tristate "NAND support for OLPC CAFÉ chip"
++	depends on PCI
++	select REED_SOLOMON
++	select REED_SOLOMON_DEC16
++	help
++	  Use NAND flash attached to the CAFÉ chip designed for the OLPC
++	  laptop.
++
++config MTD_NAND_CS553X
++	tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
++	depends on X86_32
++	depends on !UML && HAS_IOMEM
++	help
++	  The CS553x companion chips for the AMD Geode processor
++	  include NAND flash controllers with built-in hardware ECC
++	  capabilities; enabling this option will allow you to use
++	  these. The driver will check the MSRs to verify that the
++	  controller is enabled for NAND, and currently requires that
++	  the controller be in MMIO mode.
++
++	  If you say "m", the module will be called cs553x_nand.
++
++config MTD_NAND_ATMEL
++	tristate "Support for NAND Flash / SmartMedia on AT91 and AVR32"
++	depends on ARCH_AT91 || AVR32
++	help
++	  Enables support for NAND Flash / Smart Media Card interface
++	  on Atmel AT91 and AVR32 processors.
++
++config MTD_NAND_PXA3xx
++	tristate "NAND support on PXA3xx and Armada 370/XP"
++	depends on PXA3xx || ARCH_MMP || PLAT_ORION
++	help
++	  This enables the driver for the NAND flash device found on
++	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
++
++config MTD_NAND_SLC_LPC32XX
++	tristate "NXP LPC32xx SLC Controller"
++	depends on ARCH_LPC32XX
++	help
++	  Enables support for NXP's LPC32XX SLC (i.e. for Single Level Cell
++	  chips) NAND controller. This is the default for the PHYTEC 3250
++	  reference board which contains a NAND256R3A2CZA6 chip.
++
++	  Please check the actual NAND chip connected and its support
++	  by the SLC NAND controller.
++
++config MTD_NAND_MLC_LPC32XX
++	tristate "NXP LPC32xx MLC Controller"
++	depends on ARCH_LPC32XX
++	help
++	  Uses the LPC32XX MLC (i.e. for Multi Level Cell chips) NAND
++	  controller. This is the default for the WORK92105 controller
++	  board.
++
++	  Please check the actual NAND chip connected and its support
++	  by the MLC NAND controller.
++
++config MTD_NAND_CM_X270
++	tristate "Support for NAND Flash on CM-X270 modules"
++	depends on MACH_ARMCORE
++
++config MTD_NAND_PASEMI
++	tristate "NAND support for PA Semi PWRficient"
++	depends on PPC_PASEMI
++	help
++	  Enables support for NAND Flash interface on PA Semi PWRficient
++	  based boards
++
++config MTD_NAND_TMIO
++	tristate "NAND Flash device on Toshiba Mobile IO Controller"
++	depends on MFD_TMIO
++	help
++	  Support for NAND flash connected to a Toshiba Mobile IO
++	  Controller in some PDAs, including the Sharp SL6000x.
++
++config MTD_NAND_NANDSIM
++	tristate "Support for NAND Flash Simulator"
++	help
++	  The simulator may simulate various NAND flash chips for the
++	  MTD nand layer.
++
++config MTD_NAND_GPMI_NAND
++        tristate "GPMI NAND Flash Controller driver"
++        depends on MTD_NAND && MXS_DMA
++        help
++	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
++	 The GPMI controller is very powerful, with the help of BCH
++	 module, it can do the hardware ECC. The GPMI supports several
++	 NAND flashs at the same time. The GPMI may conflicts with other
++	 block, such as SD card. So pay attention to it when you enable
++	 the GPMI.
++
++config MTD_NAND_BRCMNAND
++	tristate "Broadcom STB NAND controller"
++	depends on ARM || ARM64 || MIPS
++	help
++	  Enables the Broadcom NAND controller driver. The controller was
++	  originally designed for Set-Top Box but is used on various BCM7xxx,
++	  BCM3xxx, BCM63xxx, iProc/Cygnus and more.
++
++config MTD_NAND_BCM47XXNFLASH
++	tristate "Support for NAND flash on BCM4706 BCMA bus"
++	depends on BCMA_NFLASH
++	help
++	  BCMA bus can have various flash memories attached, they are
++	  registered by bcma as platform devices. This enables driver for
++	  NAND flash memories. For now only BCM4706 is supported.
++
++config MTD_NAND_PLATFORM
++	tristate "Support for generic platform NAND driver"
++	depends on HAS_IOMEM
++	help
++	  This implements a generic NAND driver for on-SOC platform
++	  devices. You will need to provide platform-specific functions
++	  via platform_data.
++
++config MTD_NAND_ORION
++	tristate "NAND Flash support for Marvell Orion SoC"
++	depends on PLAT_ORION
++	help
++	  This enables the NAND flash controller on Orion machines.
++
++	  No board specific support is done by this driver, each board
++	  must advertise a platform_device for the driver to attach.
++
++config MTD_NAND_FSL_ELBC
++	tristate "NAND support for Freescale eLBC controllers"
++	depends on FSL_SOC
++	select FSL_LBC
++	help
++	  Various Freescale chips, including the 8313, include a NAND Flash
++	  Controller Module with built-in hardware ECC capabilities.
++	  Enabling this option will enable you to use this to control
++	  external NAND devices.
++
++config MTD_NAND_FSL_IFC
++	tristate "NAND support for Freescale IFC controller"
++	depends on FSL_SOC || ARCH_LAYERSCAPE
++	select FSL_IFC
++	select MEMORY
++	help
++	  Various Freescale chips e.g P1010, include a NAND Flash machine
++	  with built-in hardware ECC capabilities.
++	  Enabling this option will enable you to use this to control
++	  external NAND devices.
++
++config MTD_NAND_FSL_UPM
++	tristate "Support for NAND on Freescale UPM"
++	depends on PPC_83xx || PPC_85xx
++	select FSL_LBC
++	help
++	  Enables support for NAND Flash chips wired onto Freescale PowerPC
++	  processor localbus with User-Programmable Machine support.
++
++config MTD_NAND_MPC5121_NFC
++	tristate "MPC5121 built-in NAND Flash Controller support"
++	depends on PPC_MPC512x
++	help
++	  This enables the driver for the NAND flash controller on the
++	  MPC5121 SoC.
++
++config MTD_NAND_VF610_NFC
++	tristate "Support for Freescale NFC for VF610/MPC5125"
++	depends on (SOC_VF610 || COMPILE_TEST)
++	depends on HAS_IOMEM
++	help
++	  Enables support for NAND Flash Controller on some Freescale
++	  processors like the VF610, MPC5125, MCF54418 or Kinetis K70.
++	  The driver supports a maximum 2k page size. With 2k pages and
++	  64 bytes or more of OOB, hardware ECC with up to 32-bit error
++	  correction is supported. Hardware ECC is only enabled through
++	  device tree.
++
++config MTD_NAND_MXC
++	tristate "MXC NAND support"
++	depends on ARCH_MXC
++	help
++	  This enables the driver for the NAND flash controller on the
++	  MXC processors.
++
++config MTD_NAND_SH_FLCTL
++	tristate "Support for NAND on Renesas SuperH FLCTL"
++	depends on SUPERH || COMPILE_TEST
++	depends on HAS_IOMEM
++	depends on HAS_DMA
++	help
++	  Several Renesas SuperH CPU has FLCTL. This option enables support
++	  for NAND Flash using FLCTL.
++
++config MTD_NAND_DAVINCI
++        tristate "Support NAND on DaVinci/Keystone SoC"
++        depends on ARCH_DAVINCI || (ARCH_KEYSTONE && TI_AEMIF)
++        help
++	  Enable the driver for NAND flash chips on Texas Instruments
++	  DaVinci/Keystone processors.
++
++config MTD_NAND_TXX9NDFMC
++	tristate "NAND Flash support for TXx9 SoC"
++	depends on SOC_TX4938 || SOC_TX4939
++	help
++	  This enables the NAND flash controller on the TXx9 SoCs.
++
++config MTD_NAND_SOCRATES
++	tristate "Support for NAND on Socrates board"
++	depends on SOCRATES
++	help
++	  Enables support for NAND Flash chips wired onto Socrates board.
++
++config MTD_NAND_NUC900
++	tristate "Support for NAND on Nuvoton NUC9xx/w90p910 evaluation boards."
++	depends on ARCH_W90X900
++	help
++	  This enables the driver for the NAND Flash on evaluation board based
++	  on w90p910 / NUC9xx.
++
++config MTD_NAND_JZ4740
++	tristate "Support for JZ4740 SoC NAND controller"
++	depends on MACH_JZ4740
++	help
++		Enables support for NAND Flash on JZ4740 SoC based boards.
++
++config MTD_NAND_JZ4780
++	tristate "Support for NAND on JZ4780 SoC"
++	depends on MACH_JZ4780 && JZ4780_NEMC
++	help
++	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
++	  based boards, using the BCH controller for hardware error correction.
++
++config MTD_NAND_FSMC
++	tristate "Support for NAND on ST Micros FSMC"
++	depends on PLAT_SPEAR || ARCH_NOMADIK || ARCH_U8500 || MACH_U300
++	help
++	  Enables support for NAND Flash chips on the ST Microelectronics
++	  Flexible Static Memory Controller (FSMC)
++
++config MTD_NAND_XWAY
++	tristate "Support for NAND on Lantiq XWAY SoC"
++	depends on LANTIQ && SOC_TYPE_XWAY
++	help
++	  Enables support for NAND Flash chips on Lantiq XWAY SoCs. NAND is attached
++	  to the External Bus Unit (EBU).
++
++config MTD_NAND_SUNXI
++	tristate "Support for NAND on Allwinner SoCs"
++	depends on ARCH_SUNXI
++	help
++	  Enables support for NAND Flash chips on Allwinner SoCs.
++
++config MTD_NAND_HISI504
++	tristate "Support for NAND controller on Hisilicon SoC Hip04"
++	depends on HAS_DMA
++	help
++	  Enables support for NAND controller on Hisilicon SoC Hip04.
++
++config MTD_NAND_QCOM
++	tristate "Support for NAND on QCOM SoCs"
++	depends on ARCH_QCOM
++	help
++	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
++	  controller. This controller is found on IPQ806x SoC.
++
++config MTD_NAND_MTK
++	tristate "Support for NAND controller on MTK SoCs"
++	depends on HAS_DMA
++	help
++	  Enables support for NAND controller on MTK SoCs.
++	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
++
++endif # MTD_NAND
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+new file mode 100644
+index 000000000000..cafde6f3d957
+--- /dev/null
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -0,0 +1,62 @@
++#
++# linux/drivers/nand/Makefile
++#
++
++obj-$(CONFIG_MTD_NAND)			+= nand.o
++obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
++obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
++obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o
++obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
++
++obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
++obj-$(CONFIG_MTD_NAND_AMS_DELTA)	+= ams-delta.o
++obj-$(CONFIG_MTD_NAND_DENALI)		+= denali.o
++obj-$(CONFIG_MTD_NAND_DENALI_PCI)	+= denali_pci.o
++obj-$(CONFIG_MTD_NAND_DENALI_DT)	+= denali_dt.o
++obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
++obj-$(CONFIG_MTD_NAND_BF5XX)		+= bf5xx_nand.o
++obj-$(CONFIG_MTD_NAND_S3C2410)		+= s3c2410.o
++obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
++obj-$(CONFIG_MTD_NAND_DISKONCHIP)	+= diskonchip.o
++obj-$(CONFIG_MTD_NAND_DOCG4)		+= docg4.o
++obj-$(CONFIG_MTD_NAND_FSMC)		+= fsmc_nand.o
++obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
++obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
++obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
++obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
++obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
++obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
++omap2_nand-objs := omap2.o
++obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
++obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
++obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
++obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
++obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
++obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
++obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
++obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
++obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
++obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
++obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
++obj-$(CONFIG_MTD_NAND_SLC_LPC32XX)      += lpc32xx_slc.o
++obj-$(CONFIG_MTD_NAND_MLC_LPC32XX)      += lpc32xx_mlc.o
++obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
++obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
++obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
++obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
++obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
++obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
++obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
++obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
++obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
++obj-$(CONFIG_MTD_NAND_JZ4780)		+= jz4780_nand.o jz4780_bch.o
++obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
++obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
++obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
++obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
++obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
++obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
++obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
++obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
++
++nand-objs := nand_base.o nand_bbt.o nand_timings.o
+diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+similarity index 100%
+rename from drivers/mtd/nand/ams-delta.c
+rename to drivers/mtd/nand/raw/ams-delta.c
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/raw/atmel_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/atmel_nand.c
+rename to drivers/mtd/nand/raw/atmel_nand.c
+diff --git a/drivers/mtd/nand/atmel_nand_ecc.h b/drivers/mtd/nand/raw/atmel_nand_ecc.h
+similarity index 100%
+rename from drivers/mtd/nand/atmel_nand_ecc.h
+rename to drivers/mtd/nand/raw/atmel_nand_ecc.h
+diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/raw/atmel_nand_nfc.h
+similarity index 100%
+rename from drivers/mtd/nand/atmel_nand_nfc.h
+rename to drivers/mtd/nand/raw/atmel_nand_nfc.h
+diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/raw/au1550nd.c
+similarity index 100%
+rename from drivers/mtd/nand/au1550nd.c
+rename to drivers/mtd/nand/raw/au1550nd.c
+diff --git a/drivers/mtd/nand/bcm47xxnflash/Makefile b/drivers/mtd/nand/raw/bcm47xxnflash/Makefile
+similarity index 100%
+rename from drivers/mtd/nand/bcm47xxnflash/Makefile
+rename to drivers/mtd/nand/raw/bcm47xxnflash/Makefile
+diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
+similarity index 100%
+rename from drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+rename to drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
+diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/raw/bcm47xxnflash/main.c
+similarity index 100%
+rename from drivers/mtd/nand/bcm47xxnflash/main.c
+rename to drivers/mtd/nand/raw/bcm47xxnflash/main.c
+diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+similarity index 100%
+rename from drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+rename to drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/raw/bf5xx_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/bf5xx_nand.c
+rename to drivers/mtd/nand/raw/bf5xx_nand.c
+diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/raw/brcmnand/Makefile
+similarity index 100%
+rename from drivers/mtd/nand/brcmnand/Makefile
+rename to drivers/mtd/nand/raw/brcmnand/Makefile
+diff --git a/drivers/mtd/nand/brcmnand/bcm63138_nand.c b/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/brcmnand/bcm63138_nand.c
+rename to drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
+diff --git a/drivers/mtd/nand/brcmnand/bcm6368_nand.c b/drivers/mtd/nand/raw/brcmnand/bcm6368_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/brcmnand/bcm6368_nand.c
+rename to drivers/mtd/nand/raw/brcmnand/bcm6368_nand.c
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+similarity index 100%
+rename from drivers/mtd/nand/brcmnand/brcmnand.c
+rename to drivers/mtd/nand/raw/brcmnand/brcmnand.c
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
+similarity index 100%
+rename from drivers/mtd/nand/brcmnand/brcmnand.h
+rename to drivers/mtd/nand/raw/brcmnand/brcmnand.h
+diff --git a/drivers/mtd/nand/brcmnand/brcmstb_nand.c b/drivers/mtd/nand/raw/brcmnand/brcmstb_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/brcmnand/brcmstb_nand.c
+rename to drivers/mtd/nand/raw/brcmnand/brcmstb_nand.c
+diff --git a/drivers/mtd/nand/brcmnand/iproc_nand.c b/drivers/mtd/nand/raw/brcmnand/iproc_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/brcmnand/iproc_nand.c
+rename to drivers/mtd/nand/raw/brcmnand/iproc_nand.c
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/cafe_nand.c
+rename to drivers/mtd/nand/raw/cafe_nand.c
+diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/raw/cmx270_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/cmx270_nand.c
+rename to drivers/mtd/nand/raw/cmx270_nand.c
+diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/cs553x_nand.c
+rename to drivers/mtd/nand/raw/cs553x_nand.c
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/davinci_nand.c
+rename to drivers/mtd/nand/raw/davinci_nand.c
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/raw/denali.c
+similarity index 100%
+rename from drivers/mtd/nand/denali.c
+rename to drivers/mtd/nand/raw/denali.c
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/raw/denali.h
+similarity index 100%
+rename from drivers/mtd/nand/denali.h
+rename to drivers/mtd/nand/raw/denali.h
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
+similarity index 100%
+rename from drivers/mtd/nand/denali_dt.c
+rename to drivers/mtd/nand/raw/denali_dt.c
+diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/raw/denali_pci.c
+similarity index 100%
+rename from drivers/mtd/nand/denali_pci.c
+rename to drivers/mtd/nand/raw/denali_pci.c
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
+similarity index 100%
+rename from drivers/mtd/nand/diskonchip.c
+rename to drivers/mtd/nand/raw/diskonchip.c
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/raw/docg4.c
+similarity index 100%
+rename from drivers/mtd/nand/docg4.c
+rename to drivers/mtd/nand/raw/docg4.c
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/fsl_elbc_nand.c
+rename to drivers/mtd/nand/raw/fsl_elbc_nand.c
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/fsl_ifc_nand.c
+rename to drivers/mtd/nand/raw/fsl_ifc_nand.c
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
+similarity index 100%
+rename from drivers/mtd/nand/fsl_upm.c
+rename to drivers/mtd/nand/raw/fsl_upm.c
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/fsmc_nand.c
+rename to drivers/mtd/nand/raw/fsmc_nand.c
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/raw/gpio.c
+similarity index 100%
+rename from drivers/mtd/nand/gpio.c
+rename to drivers/mtd/nand/raw/gpio.c
+diff --git a/drivers/mtd/nand/gpmi-nand/Makefile b/drivers/mtd/nand/raw/gpmi-nand/Makefile
+similarity index 100%
+rename from drivers/mtd/nand/gpmi-nand/Makefile
+rename to drivers/mtd/nand/raw/gpmi-nand/Makefile
+diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/raw/gpmi-nand/bch-regs.h
+similarity index 100%
+rename from drivers/mtd/nand/gpmi-nand/bch-regs.h
+rename to drivers/mtd/nand/raw/gpmi-nand/bch-regs.h
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+similarity index 100%
+rename from drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+rename to drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+similarity index 100%
+rename from drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+rename to drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+similarity index 100%
+rename from drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+rename to drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-regs.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h
+similarity index 100%
+rename from drivers/mtd/nand/gpmi-nand/gpmi-regs.h
+rename to drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h
+diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/hisi504_nand.c
+rename to drivers/mtd/nand/raw/hisi504_nand.c
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/jz4740_nand.c
+rename to drivers/mtd/nand/raw/jz4740_nand.c
+diff --git a/drivers/mtd/nand/jz4780_bch.c b/drivers/mtd/nand/raw/jz4780_bch.c
+similarity index 100%
+rename from drivers/mtd/nand/jz4780_bch.c
+rename to drivers/mtd/nand/raw/jz4780_bch.c
+diff --git a/drivers/mtd/nand/jz4780_bch.h b/drivers/mtd/nand/raw/jz4780_bch.h
+similarity index 100%
+rename from drivers/mtd/nand/jz4780_bch.h
+rename to drivers/mtd/nand/raw/jz4780_bch.h
+diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/jz4780_nand.c
+rename to drivers/mtd/nand/raw/jz4780_nand.c
+diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+similarity index 100%
+rename from drivers/mtd/nand/lpc32xx_mlc.c
+rename to drivers/mtd/nand/raw/lpc32xx_mlc.c
+diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
+similarity index 100%
+rename from drivers/mtd/nand/lpc32xx_slc.c
+rename to drivers/mtd/nand/raw/lpc32xx_slc.c
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
+similarity index 100%
+rename from drivers/mtd/nand/mpc5121_nfc.c
+rename to drivers/mtd/nand/raw/mpc5121_nfc.c
+diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/raw/mtk_ecc.c
+similarity index 100%
+rename from drivers/mtd/nand/mtk_ecc.c
+rename to drivers/mtd/nand/raw/mtk_ecc.c
+diff --git a/drivers/mtd/nand/mtk_ecc.h b/drivers/mtd/nand/raw/mtk_ecc.h
+similarity index 100%
+rename from drivers/mtd/nand/mtk_ecc.h
+rename to drivers/mtd/nand/raw/mtk_ecc.h
+diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/mtk_nand.c
+rename to drivers/mtd/nand/raw/mtk_nand.c
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/mxc_nand.c
+rename to drivers/mtd/nand/raw/mxc_nand.c
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+similarity index 100%
+rename from drivers/mtd/nand/nand_base.c
+rename to drivers/mtd/nand/raw/nand_base.c
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+similarity index 100%
+rename from drivers/mtd/nand/nand_bbt.c
+rename to drivers/mtd/nand/raw/nand_bbt.c
+diff --git a/drivers/mtd/nand/nand_bch.c b/drivers/mtd/nand/raw/nand_bch.c
+similarity index 100%
+rename from drivers/mtd/nand/nand_bch.c
+rename to drivers/mtd/nand/raw/nand_bch.c
+diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/raw/nand_ecc.c
+similarity index 100%
+rename from drivers/mtd/nand/nand_ecc.c
+rename to drivers/mtd/nand/raw/nand_ecc.c
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
+similarity index 100%
+rename from drivers/mtd/nand/nand_ids.c
+rename to drivers/mtd/nand/raw/nand_ids.c
+diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
+similarity index 100%
+rename from drivers/mtd/nand/nand_timings.c
+rename to drivers/mtd/nand/raw/nand_timings.c
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+similarity index 100%
+rename from drivers/mtd/nand/nandsim.c
+rename to drivers/mtd/nand/raw/nandsim.c
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
+similarity index 100%
+rename from drivers/mtd/nand/ndfc.c
+rename to drivers/mtd/nand/raw/ndfc.c
+diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/raw/nuc900_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/nuc900_nand.c
+rename to drivers/mtd/nand/raw/nuc900_nand.c
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/raw/omap2.c
+similarity index 100%
+rename from drivers/mtd/nand/omap2.c
+rename to drivers/mtd/nand/raw/omap2.c
+diff --git a/drivers/mtd/nand/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
+similarity index 100%
+rename from drivers/mtd/nand/omap_elm.c
+rename to drivers/mtd/nand/raw/omap_elm.c
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/raw/orion_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/orion_nand.c
+rename to drivers/mtd/nand/raw/orion_nand.c
+diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/raw/pasemi_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/pasemi_nand.c
+rename to drivers/mtd/nand/raw/pasemi_nand.c
+diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/plat_nand.c
+rename to drivers/mtd/nand/raw/plat_nand.c
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/raw/pxa3xx_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/pxa3xx_nand.c
+rename to drivers/mtd/nand/raw/pxa3xx_nand.c
+diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+similarity index 100%
+rename from drivers/mtd/nand/qcom_nandc.c
+rename to drivers/mtd/nand/raw/qcom_nandc.c
+diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/raw/r852.c
+similarity index 100%
+rename from drivers/mtd/nand/r852.c
+rename to drivers/mtd/nand/raw/r852.c
+diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/raw/r852.h
+similarity index 100%
+rename from drivers/mtd/nand/r852.h
+rename to drivers/mtd/nand/raw/r852.h
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+similarity index 100%
+rename from drivers/mtd/nand/s3c2410.c
+rename to drivers/mtd/nand/raw/s3c2410.c
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
+similarity index 100%
+rename from drivers/mtd/nand/sh_flctl.c
+rename to drivers/mtd/nand/raw/sh_flctl.c
+diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/raw/sharpsl.c
+similarity index 100%
+rename from drivers/mtd/nand/sharpsl.c
+rename to drivers/mtd/nand/raw/sharpsl.c
+diff --git a/drivers/mtd/nand/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
+similarity index 100%
+rename from drivers/mtd/nand/sm_common.c
+rename to drivers/mtd/nand/raw/sm_common.c
+diff --git a/drivers/mtd/nand/sm_common.h b/drivers/mtd/nand/raw/sm_common.h
+similarity index 100%
+rename from drivers/mtd/nand/sm_common.h
+rename to drivers/mtd/nand/raw/sm_common.h
+diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/raw/socrates_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/socrates_nand.c
+rename to drivers/mtd/nand/raw/socrates_nand.c
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/sunxi_nand.c
+rename to drivers/mtd/nand/raw/sunxi_nand.c
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/tmio_nand.c
+rename to drivers/mtd/nand/raw/tmio_nand.c
+diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
+similarity index 100%
+rename from drivers/mtd/nand/txx9ndfmc.c
+rename to drivers/mtd/nand/raw/txx9ndfmc.c
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+similarity index 100%
+rename from drivers/mtd/nand/vf610_nfc.c
+rename to drivers/mtd/nand/raw/vf610_nfc.c
+diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/xway_nand.c
+rename to drivers/mtd/nand/raw/xway_nand.c
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index 3692dd547879..bcc851d02440 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
 @@ -17,7 +17,7 @@
- #include <linux/i2c/pcf857x.h>
- #include <linux/platform_data/at24.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/phy.h>
-diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
-index f702d4fc8eb8..9b8864c66619 100644
---- a/arch/arm/mach-davinci/board-dm646x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm646x-evm.c
-@@ -29,7 +29,7 @@
- #include <media/i2c/adv7343.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/export.h>
-diff --git a/arch/arm/mach-davinci/board-sffsdr.c b/arch/arm/mach-davinci/board-sffsdr.c
-index 41c7c9615791..d85accf7f760 100644
---- a/arch/arm/mach-davinci/board-sffsdr.c
-+++ b/arch/arm/mach-davinci/board-sffsdr.c
-@@ -28,7 +28,7 @@
- #include <linux/i2c.h>
- #include <linux/platform_data/at24.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/mach-types.h>
-diff --git a/arch/arm/mach-dove/dove-db-setup.c b/arch/arm/mach-dove/dove-db-setup.c
-index bcb678fd2415..8971c3c0f0fe 100644
---- a/arch/arm/mach-dove/dove-db-setup.c
-+++ b/arch/arm/mach-dove/dove-db-setup.c
-@@ -13,7 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/irq.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/timer.h>
- #include <linux/ata_platform.h>
- #include <linux/mv643xx_eth.h>
-diff --git a/arch/arm/mach-ep93xx/snappercl15.c b/arch/arm/mach-ep93xx/snappercl15.c
-index b2db791b3b38..8b29398f4dc7 100644
---- a/arch/arm/mach-ep93xx/snappercl15.c
-+++ b/arch/arm/mach-ep93xx/snappercl15.c
-@@ -25,7 +25,7 @@
- #include <linux/fb.h>
- 
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- #include <mach/hardware.h>
- #include <linux/platform_data/video-ep93xx.h>
-diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
-index 3b39ea353d30..9def3b98945e 100644
---- a/arch/arm/mach-ep93xx/ts72xx.c
-+++ b/arch/arm/mach-ep93xx/ts72xx.c
-@@ -17,7 +17,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/platform_data/rtc-m48t86.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <mach/hardware.h>
-diff --git a/arch/arm/mach-imx/mach-qong.c b/arch/arm/mach-imx/mach-qong.c
-index 8c2cbd693d21..42a700053103 100644
---- a/arch/arm/mach-imx/mach-qong.c
-+++ b/arch/arm/mach-imx/mach-qong.c
-@@ -18,7 +18,7 @@
- #include <linux/memory.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/gpio.h>
- 
- #include <asm/mach-types.h>
-diff --git a/arch/arm/mach-ixp4xx/ixdp425-setup.c b/arch/arm/mach-ixp4xx/ixdp425-setup.c
-index 508c2d7786e2..93b89291c06b 100644
---- a/arch/arm/mach-ixp4xx/ixdp425-setup.c
-+++ b/arch/arm/mach-ixp4xx/ixdp425-setup.c
-@@ -17,7 +17,7 @@
- #include <linux/i2c-gpio.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/delay.h>
- #include <linux/gpio.h>
-diff --git a/arch/arm/mach-mmp/aspenite.c b/arch/arm/mach-mmp/aspenite.c
-index 5db0edf716dd..d2283009a5ff 100644
---- a/arch/arm/mach-mmp/aspenite.c
-+++ b/arch/arm/mach-mmp/aspenite.c
-@@ -16,7 +16,7 @@
- #include <linux/smc91x.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/interrupt.h>
- #include <linux/platform_data/mv_usb.h>
- 
-diff --git a/arch/arm/mach-omap1/board-fsample.c b/arch/arm/mach-omap1/board-fsample.c
-index fad95b74bb65..b93ad58b0a63 100644
---- a/arch/arm/mach-omap1/board-fsample.c
-+++ b/arch/arm/mach-omap1/board-fsample.c
-@@ -16,7 +16,7 @@
- #include <linux/platform_device.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-omap1/board-h2.c b/arch/arm/mach-omap1/board-h2.c
-index 675254ee4b1e..a444b139bff5 100644
---- a/arch/arm/mach-omap1/board-h2.c
-+++ b/arch/arm/mach-omap1/board-h2.c
-@@ -24,7 +24,7 @@
- #include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-omap1/board-h3.c b/arch/arm/mach-omap1/board-h3.c
-index e62f9d454f10..a618a49a30b8 100644
---- a/arch/arm/mach-omap1/board-h3.c
-+++ b/arch/arm/mach-omap1/board-h3.c
-@@ -23,7 +23,7 @@
- #include <linux/workqueue.h>
- #include <linux/i2c.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-omap1/board-nand.c b/arch/arm/mach-omap1/board-nand.c
-index 7684f9203474..1bffbb4e050f 100644
---- a/arch/arm/mach-omap1/board-nand.c
-+++ b/arch/arm/mach-omap1/board-nand.c
-@@ -16,7 +16,7 @@
- #include <linux/kernel.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/board-perseus2.c b/arch/arm/mach-omap1/board-perseus2.c
-index 150b57ba42bf..e994a78bdd09 100644
---- a/arch/arm/mach-omap1/board-perseus2.c
-+++ b/arch/arm/mach-omap1/board-perseus2.c
-@@ -16,7 +16,7 @@
- #include <linux/platform_device.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
-index f6ac027f3c3b..250ae0173402 100644
---- a/arch/arm/mach-omap2/gpmc-nand.c
-+++ b/arch/arm/mach-omap2/gpmc-nand.c
-@@ -13,7 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/omap-gpmc.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/platform_data/mtd-nand-omap2.h>
- 
- #include <asm/mach/flash.h>
-diff --git a/arch/arm/mach-orion5x/db88f5281-setup.c b/arch/arm/mach-orion5x/db88f5281-setup.c
-index 12f74b46e2ff..3f5863de766a 100644
---- a/arch/arm/mach-orion5x/db88f5281-setup.c
-+++ b/arch/arm/mach-orion5x/db88f5281-setup.c
-@@ -16,7 +16,7 @@
- #include <linux/pci.h>
- #include <linux/irq.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/timer.h>
- #include <linux/mv643xx_eth.h>
- #include <linux/i2c.h>
-diff --git a/arch/arm/mach-orion5x/kurobox_pro-setup.c b/arch/arm/mach-orion5x/kurobox_pro-setup.c
-index 9dc3f59bed9c..83d43cff4bd7 100644
---- a/arch/arm/mach-orion5x/kurobox_pro-setup.c
-+++ b/arch/arm/mach-orion5x/kurobox_pro-setup.c
-@@ -15,7 +15,7 @@
- #include <linux/irq.h>
- #include <linux/delay.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mv643xx_eth.h>
- #include <linux/i2c.h>
- #include <linux/serial_reg.h>
-diff --git a/arch/arm/mach-orion5x/ts209-setup.c b/arch/arm/mach-orion5x/ts209-setup.c
-index 7bd671b2854c..0c315515dd2d 100644
---- a/arch/arm/mach-orion5x/ts209-setup.c
-+++ b/arch/arm/mach-orion5x/ts209-setup.c
-@@ -15,7 +15,7 @@
- #include <linux/pci.h>
- #include <linux/irq.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mv643xx_eth.h>
- #include <linux/gpio_keys.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-orion5x/ts78xx-setup.c b/arch/arm/mach-orion5x/ts78xx-setup.c
-index 8d597267d0c4..4632e674e9c5 100644
---- a/arch/arm/mach-orion5x/ts78xx-setup.c
-+++ b/arch/arm/mach-orion5x/ts78xx-setup.c
-@@ -17,7 +17,7 @@
- #include <linux/mv643xx_eth.h>
- #include <linux/ata_platform.h>
- #include <linux/platform_data/rtc-m48t86.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/timeriomem-rng.h>
- #include <asm/mach-types.h>
-diff --git a/arch/arm/mach-pxa/balloon3.c b/arch/arm/mach-pxa/balloon3.c
-index 8a3c409294bf..38afb6fa1dcf 100644
---- a/arch/arm/mach-pxa/balloon3.c
-+++ b/arch/arm/mach-pxa/balloon3.c
-@@ -28,7 +28,7 @@
- #include <linux/types.h>
- #include <linux/i2c/pcf857x.h>
- #include <linux/i2c/pxa-i2c.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/physmap.h>
- #include <linux/regulator/max1586.h>
- 
-diff --git a/arch/arm/mach-pxa/em-x270.c b/arch/arm/mach-pxa/em-x270.c
-index 03354c21e1f2..a6c5f5b96e47 100644
---- a/arch/arm/mach-pxa/em-x270.c
-+++ b/arch/arm/mach-pxa/em-x270.c
-@@ -15,7 +15,7 @@
- 
- #include <linux/dm9000.h>
- #include <linux/platform_data/rtc-v3020.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/input.h>
-diff --git a/arch/arm/mach-pxa/eseries.c b/arch/arm/mach-pxa/eseries.c
-index fa9d71d194f0..91f7c3e40065 100644
---- a/arch/arm/mach-pxa/eseries.c
-+++ b/arch/arm/mach-pxa/eseries.c
-@@ -20,7 +20,7 @@
- #include <linux/mfd/tc6387xb.h>
- #include <linux/mfd/tc6393xb.h>
- #include <linux/mfd/t7l66xb.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/usb/gpio_vbus.h>
- #include <linux/memblock.h>
-diff --git a/arch/arm/mach-pxa/palmtx.c b/arch/arm/mach-pxa/palmtx.c
-index 36646975b5d2..47e3e38e9bec 100644
---- a/arch/arm/mach-pxa/palmtx.c
-+++ b/arch/arm/mach-pxa/palmtx.c
-@@ -28,7 +28,7 @@
- #include <linux/wm97xx.h>
- #include <linux/power_supply.h>
- #include <linux/usb/gpio_vbus.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/physmap.h>
-diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
-index 13de6602966f..6a386fd6363e 100644
---- a/arch/arm/mach-pxa/tosa.c
-+++ b/arch/arm/mach-pxa/tosa.c
-@@ -24,7 +24,7 @@
- #include <linux/mmc/host.h>
- #include <linux/mfd/tc6393xb.h>
- #include <linux/mfd/tmio.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/pm.h>
-diff --git a/arch/arm/mach-s3c24xx/common-smdk.c b/arch/arm/mach-s3c24xx/common-smdk.c
-index e9fbcc91c5c0..a39d9667eb14 100644
---- a/arch/arm/mach-s3c24xx/common-smdk.c
-+++ b/arch/arm/mach-s3c24xx/common-smdk.c
-@@ -23,7 +23,7 @@
- #include <linux/platform_device.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-anubis.c b/arch/arm/mach-s3c24xx/mach-anubis.c
-index d03df0df01fa..357f24e3fd80 100644
---- a/arch/arm/mach-s3c24xx/mach-anubis.c
-+++ b/arch/arm/mach-s3c24xx/mach-anubis.c
-@@ -40,7 +40,7 @@
- #include <linux/platform_data/i2c-s3c2410.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-at2440evb.c b/arch/arm/mach-s3c24xx/mach-at2440evb.c
-index 9ae170fef2a7..8cb1c26e5809 100644
---- a/arch/arm/mach-s3c24xx/mach-at2440evb.c
-+++ b/arch/arm/mach-s3c24xx/mach-at2440evb.c
-@@ -41,7 +41,7 @@
- #include <linux/platform_data/i2c-s3c2410.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-bast.c b/arch/arm/mach-s3c24xx/mach-bast.c
-index ed07cf392d4b..c895050afe07 100644
---- a/arch/arm/mach-s3c24xx/mach-bast.c
-+++ b/arch/arm/mach-s3c24xx/mach-bast.c
-@@ -28,7 +28,7 @@
- #include <linux/serial_8250.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-gta02.c b/arch/arm/mach-s3c24xx/mach-gta02.c
-index 27ae6877550f..21de3ceb98a1 100644
---- a/arch/arm/mach-s3c24xx/mach-gta02.c
-+++ b/arch/arm/mach-s3c24xx/mach-gta02.c
-@@ -50,7 +50,7 @@
- #include <linux/mfd/pcf50633/pmic.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
-diff --git a/arch/arm/mach-s3c24xx/mach-jive.c b/arch/arm/mach-s3c24xx/mach-jive.c
-index 7d99fe8f6157..1e95d1528860 100644
---- a/arch/arm/mach-s3c24xx/mach-jive.c
-+++ b/arch/arm/mach-s3c24xx/mach-jive.c
-@@ -43,7 +43,7 @@
- #include <asm/mach-types.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-mini2440.c b/arch/arm/mach-s3c24xx/mach-mini2440.c
-index ec60bd4a1646..38dc7e21deb1 100644
---- a/arch/arm/mach-s3c24xx/mach-mini2440.c
-+++ b/arch/arm/mach-s3c24xx/mach-mini2440.c
-@@ -49,7 +49,7 @@
- #include <linux/platform_data/usb-s3c2410_udc.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-osiris.c b/arch/arm/mach-s3c24xx/mach-osiris.c
-index 2f6fdc326835..0cf4f222f222 100644
---- a/arch/arm/mach-s3c24xx/mach-osiris.c
-+++ b/arch/arm/mach-s3c24xx/mach-osiris.c
-@@ -36,7 +36,7 @@
- #include <linux/platform_data/i2c-s3c2410.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-qt2410.c b/arch/arm/mach-s3c24xx/mach-qt2410.c
-index 984516e8307a..86d7ffd8c511 100644
---- a/arch/arm/mach-s3c24xx/mach-qt2410.c
-+++ b/arch/arm/mach-s3c24xx/mach-qt2410.c
-@@ -36,7 +36,7 @@
- #include <linux/spi/spi_gpio.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-rx3715.c b/arch/arm/mach-s3c24xx/mach-rx3715.c
-index cf55196f89ca..b6fdd088987a 100644
---- a/arch/arm/mach-s3c24xx/mach-rx3715.c
-+++ b/arch/arm/mach-s3c24xx/mach-rx3715.c
-@@ -27,7 +27,7 @@
- #include <linux/serial.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/arch/arm/mach-s3c24xx/mach-vstms.c b/arch/arm/mach-s3c24xx/mach-vstms.c
-index b4460d5f7011..67adb4c5f327 100644
---- a/arch/arm/mach-s3c24xx/mach-vstms.c
-+++ b/arch/arm/mach-s3c24xx/mach-vstms.c
-@@ -20,7 +20,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/memblock.h>
-diff --git a/arch/blackfin/mach-bf537/boards/dnp5370.c b/arch/blackfin/mach-bf537/boards/dnp5370.c
-index e79b3b810c39..c4a8ffb15417 100644
---- a/arch/blackfin/mach-bf537/boards/dnp5370.c
-+++ b/arch/blackfin/mach-bf537/boards/dnp5370.c
-@@ -17,7 +17,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/plat-ram.h>
- #include <linux/mtd/physmap.h>
-diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
-index eaec7b4832a2..ab3034fd1c5b 100644
---- a/arch/blackfin/mach-bf537/boards/stamp.c
-+++ b/arch/blackfin/mach-bf537/boards/stamp.c
-@@ -12,7 +12,7 @@
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/plat-ram.h>
- #include <linux/mtd/physmap.h>
-diff --git a/arch/blackfin/mach-bf561/boards/acvilon.c b/arch/blackfin/mach-bf561/boards/acvilon.c
-index 37f8f25a1347..696cc9d7820a 100644
---- a/arch/blackfin/mach-bf561/boards/acvilon.c
-+++ b/arch/blackfin/mach-bf561/boards/acvilon.c
-@@ -38,7 +38,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/plat-ram.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
-diff --git a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-index 3f646c787e58..925a98eb6d68 100644
---- a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-+++ b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-@@ -16,7 +16,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <arch/memmap.h>
- #include <hwregs/reg_map.h>
-diff --git a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-index a74540514bdb..53b56a429dde 100644
---- a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-+++ b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-@@ -16,7 +16,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <arch/memmap.h>
- #include <hwregs/reg_map.h>
-diff --git a/arch/mips/alchemy/devboards/db1200.c b/arch/mips/alchemy/devboards/db1200.c
-index 992442a03d8b..83831002c832 100644
---- a/arch/mips/alchemy/devboards/db1200.c
-+++ b/arch/mips/alchemy/devboards/db1200.c
-@@ -29,7 +29,7 @@
- #include <linux/leds.h>
- #include <linux/mmc/host.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/platform_device.h>
- #include <linux/serial_8250.h>
-diff --git a/arch/mips/alchemy/devboards/db1300.c b/arch/mips/alchemy/devboards/db1300.c
-index d3c087f59f1a..06c18a80a129 100644
---- a/arch/mips/alchemy/devboards/db1300.c
-+++ b/arch/mips/alchemy/devboards/db1300.c
-@@ -17,7 +17,7 @@
- #include <linux/mmc/host.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/platform_device.h>
- #include <linux/smsc911x.h>
-diff --git a/arch/mips/alchemy/devboards/db1550.c b/arch/mips/alchemy/devboards/db1550.c
-index 1c01d6eadb08..421bd5793f7e 100644
---- a/arch/mips/alchemy/devboards/db1550.c
-+++ b/arch/mips/alchemy/devboards/db1550.c
-@@ -12,7 +12,7 @@
- #include <linux/io.h>
- #include <linux/interrupt.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
-diff --git a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-index 7f7b0fc554da..f381d465e768 100644
---- a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-+++ b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-@@ -16,7 +16,7 @@
- #ifndef __ASM_MACH_JZ4740_JZ4740_NAND_H__
- #define __ASM_MACH_JZ4740_JZ4740_NAND_H__
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #define JZ_NAND_NUM_BANKS 4
-diff --git a/arch/mips/netlogic/xlr/platform-flash.c b/arch/mips/netlogic/xlr/platform-flash.c
-index f03131fec41d..4d1b4c003376 100644
---- a/arch/mips/netlogic/xlr/platform-flash.c
-+++ b/arch/mips/netlogic/xlr/platform-flash.c
-@@ -19,7 +19,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/physmap.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/netlogic/haldefs.h>
-diff --git a/arch/mips/pnx833x/common/platform.c b/arch/mips/pnx833x/common/platform.c
-index 7cf4eb50fc72..a7a4e9f5146d 100644
---- a/arch/mips/pnx833x/common/platform.c
-+++ b/arch/mips/pnx833x/common/platform.c
-@@ -30,7 +30,7 @@
- #include <linux/resource.h>
- #include <linux/serial.h>
- #include <linux/serial_pnx8xxx.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <irq.h>
-diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-index 0966adccf520..32ea3e6731d6 100644
---- a/arch/mips/rb532/devices.c
-+++ b/arch/mips/rb532/devices.c
-@@ -20,7 +20,7 @@
- #include <linux/ctype.h>
- #include <linux/string.h>
- #include <linux/platform_device.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/gpio.h>
-diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migor/setup.c
-index 5de60a77eaa1..0bcbe58b11e9 100644
---- a/arch/sh/boards/mach-migor/setup.c
-+++ b/arch/sh/boards/mach-migor/setup.c
-@@ -15,7 +15,7 @@
- #include <linux/mmc/host.h>
- #include <linux/mtd/physmap.h>
- #include <linux/mfd/tmio.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/i2c.h>
- #include <linux/regulator/fixed.h>
- #include <linux/regulator/machine.h>
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index b66b541877f0..6373ccba8bb8 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -33,7 +33,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nftl.h>
- #include <linux/mtd/inftl.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <asm/uaccess.h>
- #include <asm/errno.h>
- #include <asm/io.h>
-diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-index 78e12cc8bac2..0972493b6cd2 100644
---- a/drivers/mtd/nand/ams-delta.c
-+++ b/drivers/mtd/nand/ams-delta.c
-@@ -20,7 +20,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/gpio.h>
- #include <linux/platform_data/gpio-omap.h>
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 68b9160108c9..fbb7e5da2541 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -37,7 +37,7 @@
- #include <linux/of_device.h>
- #include <linux/of_gpio.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <linux/delay.h>
-diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
-index 9bf6d9915694..9d4a28fa6b73 100644
---- a/drivers/mtd/nand/au1550nd.c
-+++ b/drivers/mtd/nand/au1550nd.c
-@@ -14,7 +14,7 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/platform_device.h>
- #include <asm/io.h>
-diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-index 8ea75710a854..c8834767ab6d 100644
---- a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-+++ b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-@@ -6,7 +6,7 @@
- #endif
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- struct bcm47xxnflash {
- 	struct bcma_drv_cc *cc;
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 3962f55bd034..5655dca6ce43 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -49,7 +49,7 @@
  #include <linux/bitops.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 9d2424bfdbf5..98453816a0a2 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -29,7 +29,7 @@
- #include <linux/bitops.h>
- #include <linux/mm.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of.h>
- #include <linux/of_platform.h>
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index 0b0c93702abb..93880171740a 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -13,7 +13,7 @@
- #include <linux/device.h>
- #undef DEBUG
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/rslib.h>
- #include <linux/pci.h>
-diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
-index 49133783ca53..2efe6a56557f 100644
---- a/drivers/mtd/nand/cmx270_nand.c
-+++ b/drivers/mtd/nand/cmx270_nand.c
-@@ -18,7 +18,7 @@
-  *   CM-X270 board.
-  */
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
  #include <linux/slab.h>
- #include <linux/gpio.h>
-diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/cs553x_nand.c
-index a65e4e0f57a1..8fafb4b4488d 100644
---- a/drivers/mtd/nand/cs553x_nand.c
-+++ b/drivers/mtd/nand/cs553x_nand.c
-@@ -24,7 +24,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
  #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 27fa8b87cd5f..29034e378b5b 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -29,7 +29,7 @@
- #include <linux/err.h>
- #include <linux/clk.h>
- #include <linux/io.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
- #include <linux/of_device.h>
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index e7ab4866a5da..37618b532317 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -20,7 +20,7 @@
- #ifndef __DENALI_H__
- #define __DENALI_H__
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- #define DEVICE_RESET				0x0
- #define     DEVICE_RESET__BANK0				0x0001
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index a023ab9e9cbf..c3aa53caab5c 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -27,7 +27,7 @@
- #include <linux/io.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/doc2000.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/inftl.h>
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index 7af2a3cd949e..e038130b7206 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -41,7 +41,7 @@
- #include <linux/bitops.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/bch.h>
- #include <linux/bitrev.h>
- #include <linux/jiffies.h>
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 113f76e59937..7d8453eb4d0f 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -34,7 +34,7 @@
- #include <linux/interrupt.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 0a177b1bfe3e..bcf7f0b8abf9 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -26,7 +26,7 @@
- #include <linux/of_address.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/fsl_ifc.h>
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index d85fa2555b68..a88e2cf66e0f 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -14,7 +14,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/delay.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index d4f454a4b35e..5c08694aa153 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -28,7 +28,7 @@
- #include <linux/sched.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 6317f6836022..21b19efe1ac7 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -26,7 +26,7 @@
- #include <linux/gpio.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/nand-gpio.h>
- #include <linux/of.h>
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 4e49a1f5fa27..d7625cad6493 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -17,7 +17,7 @@
- #ifndef __DRIVERS_MTD_NAND_GPMI_NAND_H
- #define __DRIVERS_MTD_NAND_GPMI_NAND_H
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/platform_device.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
-diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
-index 9432546f4cd4..a287d73bb17e 100644
---- a/drivers/mtd/nand/hisi504_nand.c
-+++ b/drivers/mtd/nand/hisi504_nand.c
-@@ -26,7 +26,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/interrupt.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/dma-mapping.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/partitions.h>
-diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-index 5551c36adbdf..e813ec11ee84 100644
---- a/drivers/mtd/nand/jz4740_nand.c
-+++ b/drivers/mtd/nand/jz4740_nand.c
-@@ -20,7 +20,7 @@
- #include <linux/slab.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <linux/gpio.h>
-diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
-index a39bb70175ee..2f725bd83de8 100644
---- a/drivers/mtd/nand/jz4780_nand.c
-+++ b/drivers/mtd/nand/jz4780_nand.c
-@@ -20,7 +20,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #include <linux/jz4780-nemc.h>
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-index 852388171f20..b212bb0fd902 100644
---- a/drivers/mtd/nand/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -27,7 +27,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/err.h>
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index 8d3edc34958e..018d783d37cd 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -23,7 +23,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/err.h>
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index 7eacb2f545f5..2a1fa86fd123 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -33,7 +33,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of_address.h>
- #include <linux/of_device.h>
-diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-index 5223a2182ee4..95f32ca88823 100644
---- a/drivers/mtd/nand/mtk_nand.c
-+++ b/drivers/mtd/nand/mtk_nand.c
-@@ -19,7 +19,7 @@
- #include <linux/interrupt.h>
- #include <linux/delay.h>
- #include <linux/clk.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/mtd.h>
- #include <linux/module.h>
- #include <linux/iopoll.h>
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index d7f724b24fd7..58a960540369 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -22,7 +22,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/interrupt.h>
- #include <linux/device.h>
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index e5718e5ecf92..286abd768454 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -38,7 +38,7 @@
- #include <linux/mm.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/nand_bch.h>
- #include <linux/interrupt.h>
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 7695efea65f2..2915b6739bf8 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -61,7 +61,7 @@
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/bbm.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/bitops.h>
- #include <linux/delay.h>
- #include <linux/vmalloc.h>
-diff --git a/drivers/mtd/nand/nand_bch.c b/drivers/mtd/nand/nand_bch.c
-index 44763f87eae4..505441c9373b 100644
---- a/drivers/mtd/nand/nand_bch.c
-+++ b/drivers/mtd/nand/nand_bch.c
-@@ -25,7 +25,7 @@
- #include <linux/slab.h>
- #include <linux/bitops.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_bch.h>
- #include <linux/bch.h>
- 
-diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
-index d1770b066396..7613a0388044 100644
---- a/drivers/mtd/nand/nand_ecc.c
-+++ b/drivers/mtd/nand/nand_ecc.c
-@@ -43,7 +43,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <asm/byteorder.h>
- #else
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 2af9869a115e..80550dbf9467 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -7,7 +7,7 @@
-  *
-  */
- #include <linux/module.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/sizes.h>
- 
- #define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
-diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-index 13a587407be3..5cf237268284 100644
---- a/drivers/mtd/nand/nand_timings.c
-+++ b/drivers/mtd/nand/nand_timings.c
-@@ -11,7 +11,7 @@
- #include <linux/kernel.h>
- #include <linux/err.h>
- #include <linux/export.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- static const struct nand_data_interface onfi_sdr_timings[] = {
- 	/* Mode 0 */
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 1eb934414eb5..9c16635b5338 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -33,7 +33,7 @@
- #include <linux/errno.h>
- #include <linux/string.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_bch.h>
- #include <linux/mtd/partitions.h>
- #include <linux/delay.h>
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-index 28e6118362f7..d8a806894937 100644
---- a/drivers/mtd/nand/ndfc.c
-+++ b/drivers/mtd/nand/ndfc.c
-@@ -22,7 +22,7 @@
-  *
-  */
- #include <linux/module.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/ndfc.h>
-diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/nuc900_nand.c
-index 8f64011d32ef..7bb4d2ea9342 100644
---- a/drivers/mtd/nand/nuc900_nand.c
-+++ b/drivers/mtd/nand/nuc900_nand.c
-@@ -19,7 +19,7 @@
- #include <linux/err.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- #define REG_FMICSR   	0x00
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 5513bfd9cdc9..5283898e9589 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -18,7 +18,7 @@
- #include <linux/jiffies.h>
- #include <linux/sched.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/omap-dma.h>
- #include <linux/io.h>
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index 40a7c4a2cf0d..e68c4231e8b7 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -15,7 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/err.h>
-diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
-index 5de7591b0510..372b9736ac02 100644
---- a/drivers/mtd/nand/pasemi_nand.c
-+++ b/drivers/mtd/nand/pasemi_nand.c
-@@ -25,7 +25,7 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 415a53a0deeb..d5c3c894c60d 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -15,7 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- 
- struct plat_nand_data {
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index b121bf4ed73a..4feec4ea3082 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -21,7 +21,7 @@
- #include <linux/delay.h>
- #include <linux/clk.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 57d483ac5765..a77c66f4d8bc 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -17,7 +17,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
- #include <linux/module.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/r852.h
-index d042ddb71a8b..8713c57f6207 100644
---- a/drivers/mtd/nand/r852.h
-+++ b/drivers/mtd/nand/r852.h
-@@ -10,7 +10,7 @@
- #include <linux/pci.h>
- #include <linux/completion.h>
- #include <linux/workqueue.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/spinlock.h>
+-#include "nand/sm_common.h"
++#include "nand/raw/sm_common.h"
+ #include "sm_ftl.h"
  
  
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index d459c19d78de..6ce9f867a123 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -41,7 +41,7 @@
- #include <linux/cpufreq.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 442ce619b3b6..492705fb23f2 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -38,7 +38,7 @@
- #include <linux/string.h>
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/sh_flctl.h>
- 
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-index 064ca1757589..737efe83cd36 100644
---- a/drivers/mtd/nand/sharpsl.c
-+++ b/drivers/mtd/nand/sharpsl.c
-@@ -17,7 +17,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/sharpsl.h>
-diff --git a/drivers/mtd/nand/sm_common.c b/drivers/mtd/nand/sm_common.c
-index 5939dff253c2..c378705c6e2b 100644
---- a/drivers/mtd/nand/sm_common.c
-+++ b/drivers/mtd/nand/sm_common.c
-@@ -7,7 +7,7 @@
-  * published by the Free Software Foundation.
-  */
- #include <linux/kernel.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/module.h>
- #include <linux/sizes.h>
- #include "sm_common.h"
-diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
-index 888fd314c62a..f5a3e7252b82 100644
---- a/drivers/mtd/nand/socrates_nand.c
-+++ b/drivers/mtd/nand/socrates_nand.c
-@@ -13,7 +13,7 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 8b8470c4e6d0..ccccc7ab9023 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -31,7 +31,7 @@
- #include <linux/of_device.h>
- #include <linux/of_gpio.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index 08b30549ec0a..e599ada12cd0 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -34,7 +34,7 @@
- #include <linux/interrupt.h>
- #include <linux/ioport.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index 0a14fda2e41b..b567d212fe7d 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -16,7 +16,7 @@
- #include <linux/platform_device.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
-diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-index 3ad514c44dcb..c497b157d56a 100644
---- a/drivers/mtd/nand/vf610_nfc.c
-+++ b/drivers/mtd/nand/vf610_nfc.c
-@@ -31,7 +31,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
-diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index 1f2948c0c458..3e7353e76264 100644
---- a/drivers/mtd/nand/xway_nand.c
-+++ b/drivers/mtd/nand/xway_nand.c
-@@ -7,7 +7,7 @@
-  *  Copyright © 2016 Hauke Mehrtens <hauke@hauke-m.de>
-  */
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/of_gpio.h>
- #include <linux/of_platform.h>
- 
-diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
-index 46f27de018c3..2a1dd0049a45 100644
---- a/drivers/mtd/nftlcore.c
-+++ b/drivers/mtd/nftlcore.c
-@@ -34,7 +34,7 @@
- 
- #include <linux/kmod.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nftl.h>
- #include <linux/mtd/blktrans.h>
- 
-diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-index a5dfbfbebfca..184c8fbfe465 100644
---- a/drivers/mtd/nftlmount.c
-+++ b/drivers/mtd/nftlmount.c
-@@ -25,7 +25,7 @@
- #include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nftl.h>
- 
- #define SECTORSIZE 512
-diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-index 41b13d1cdcc4..95f0bf95f095 100644
---- a/drivers/mtd/ssfdc.c
-+++ b/drivers/mtd/ssfdc.c
-@@ -16,7 +16,7 @@
- #include <linux/slab.h>
- #include <linux/hdreg.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/blktrans.h>
- 
- struct ssfdcr_record {
-diff --git a/drivers/mtd/tests/nandbiterrs.c b/drivers/mtd/tests/nandbiterrs.c
-index f26dec896afa..5f03b8c885a9 100644
---- a/drivers/mtd/tests/nandbiterrs.c
-+++ b/drivers/mtd/tests/nandbiterrs.c
-@@ -47,7 +47,7 @@
- #include <linux/moduleparam.h>
- #include <linux/mtd/mtd.h>
- #include <linux/err.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/slab.h>
- #include "mtd_test.h"
- 
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index e389009fca42..f7f6edf2dda1 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -18,7 +18,7 @@
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/spi/spi.h>
- 
- #include "mt29f_spinand.h"
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index b25d28a21212..48d9522e209c 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -17,7 +17,7 @@
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
- #include <linux/crc32.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/jiffies.h>
- #include <linux/sched.h>
- #include <linux/writeback.h>
-diff --git a/include/linux/mtd/nand-gpio.h b/include/linux/mtd/nand-gpio.h
-index 51534e50f7fc..be4f45d89be2 100644
---- a/include/linux/mtd/nand-gpio.h
-+++ b/include/linux/mtd/nand-gpio.h
-@@ -1,7 +1,7 @@
- #ifndef __LINUX_MTD_NAND_GPIO_H
- #define __LINUX_MTD_NAND_GPIO_H
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- struct gpio_nand_platdata {
- 	int	gpio_nce;
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/rawnand.h
-similarity index 99%
-rename from include/linux/mtd/nand.h
-rename to include/linux/mtd/rawnand.h
-index c5d3d5024fc8..fecfd05a585a 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1,6 +1,4 @@
- /*
-- *  linux/include/linux/mtd/nand.h
-- *
-  *  Copyright © 2000-2010 David Woodhouse <dwmw2@infradead.org>
-  *                        Steven J. Hill <sjhill@realitydiluted.com>
-  *		          Thomas Gleixner <tglx@linutronix.de>
-@@ -15,8 +13,8 @@
-  * Changelog:
-  *	See git changelog.
-  */
--#ifndef __LINUX_MTD_NAND_H
--#define __LINUX_MTD_NAND_H
-+#ifndef __LINUX_MTD_RAWNAND_H
-+#define __LINUX_MTD_RAWNAND_H
- 
- #include <linux/wait.h>
- #include <linux/spinlock.h>
-@@ -1189,4 +1187,4 @@ int nand_reset(struct nand_chip *chip);
- /* Free resources held by the NAND device */
- void nand_cleanup(struct nand_chip *chip);
- 
--#endif /* __LINUX_MTD_NAND_H */
-+#endif /* __LINUX_MTD_RAWNAND_H */
-diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index 2251add65fa7..c759d403cbc0 100644
---- a/include/linux/mtd/sh_flctl.h
-+++ b/include/linux/mtd/sh_flctl.h
-@@ -22,7 +22,7 @@
- 
- #include <linux/completion.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/pm_qos.h>
- 
-diff --git a/include/linux/mtd/sharpsl.h b/include/linux/mtd/sharpsl.h
-index 65e91d0fa981..72a79c7d0e08 100644
---- a/include/linux/mtd/sharpsl.h
-+++ b/include/linux/mtd/sharpsl.h
-@@ -8,7 +8,7 @@
-  * published by the Free Software Foundation.
-  */
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
- 
-diff --git a/include/linux/platform_data/atmel.h b/include/linux/platform_data/atmel.h
-index 3c8825b67298..d9d886fbc259 100644
---- a/include/linux/platform_data/atmel.h
-+++ b/include/linux/platform_data/atmel.h
-@@ -7,7 +7,7 @@
- #ifndef __ATMEL_H__
- #define __ATMEL_H__
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/serial.h>
- 
-diff --git a/include/linux/platform_data/mtd-davinci.h b/include/linux/platform_data/mtd-davinci.h
-index 1cf555aef896..f1a2cf655bdb 100644
---- a/include/linux/platform_data/mtd-davinci.h
-+++ b/include/linux/platform_data/mtd-davinci.h
-@@ -28,7 +28,7 @@
- #ifndef __ARCH_ARM_DAVINCI_NAND_H
- #define __ARCH_ARM_DAVINCI_NAND_H
- 
--#include <linux/mtd/nand.h>
-+#include <linux/mtd/rawnand.h>
- 
- #define NANDFCR_OFFSET		0x60
- #define NANDFSR_OFFSET		0x64
 -- 
 2.7.4
