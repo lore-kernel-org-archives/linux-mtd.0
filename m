@@ -1,31 +1,21 @@
-Received: from mail-qk0-x233.google.com ([2607:f8b0:400d:c09::233])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwDIc-0004si-Jh
- for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 19:10:15 +0000
-Received: by mail-qk0-x233.google.com with SMTP id o68so298661017qkf.3
- for <linux-mtd@lists.infradead.org>; Mon, 17 Oct 2016 12:09:54 -0700 (PDT)
-Subject: Re: [PATCH 4/4] gpio: ptxpmb-ext-cpld: Document bindings of PTXPMB
- extended CPLD
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=utf-8
-From: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
-In-Reply-To: <20161010201936.GB32418@rob-hp-laptop>
-Date: Mon, 17 Oct 2016 22:10:01 +0300
-Cc: Lee Jones <lee.jones@linaro.org>, Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>, Georgi Vlaev <gvlaev@juniper.net>,
- Guenter Roeck <linux@roeck-us.net>,
- JawaharBalaji Thirumalaisamy <jawaharb@juniper.net>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- netdev@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <FECF48A5-4540-4370-B2E1-5EEC10EEA22B@konsulko.com>
-References: <1475853574-22339-1-git-send-email-pantelis.antoniou@konsulko.com>
- <1475853574-22339-5-git-send-email-pantelis.antoniou@konsulko.com>
- <20161010201936.GB32418@rob-hp-laptop>
-To: Rob Herring <robh@kernel.org>
+Received: from up.free-electrons.com ([163.172.77.33]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bwEOZ-0005Dh-6z
+ for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 20:20:29 +0000
+Date: Mon, 17 Oct 2016 22:20:00 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Javier Martinez Canillas <javier@osg.samsung.com>
+Cc: linux-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: nand: omap2: Fix module autoload
+Message-ID: <20161017222000.79b8fe04@bbrezillon>
+In-Reply-To: <1476721177-3425-1-git-send-email-javier@osg.samsung.com>
+References: <1476721177-3425-1-git-send-email-javier@osg.samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,90 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rob,
+On Mon, 17 Oct 2016 13:19:37 -0300
+Javier Martinez Canillas <javier@osg.samsung.com> wrote:
 
-> On Oct 10, 2016, at 23:19 , Rob Herring <robh@kernel.org> wrote:
->=20
-> On Fri, Oct 07, 2016 at 06:19:34PM +0300, Pantelis Antoniou wrote:
->> From: Georgi Vlaev <gvlaev@juniper.net>
->>=20
->> Add device tree bindings document for the GPIO driver of
->> Juniper's PTXPMB extended CPLD.
->>=20
->> Signed-off-by: Georgi Vlaev <gvlaev@juniper.net>
->> [Ported from Juniper kernel]
->> Signed-off-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
->> ---
->> .../bindings/gpio/jnx,gpio-ptxpmb-ext-cpld.txt     | 36 =
-++++++++++++++++++++++
->> 1 file changed, 36 insertions(+)
->> create mode 100644 =
-Documentation/devicetree/bindings/gpio/jnx,gpio-ptxpmb-ext-cpld.txt
->>=20
->> diff --git =
-a/Documentation/devicetree/bindings/gpio/jnx,gpio-ptxpmb-ext-cpld.txt =
-b/Documentation/devicetree/bindings/gpio/jnx,gpio-ptxpmb-ext-cpld.txt
->> new file mode 100644
->> index 0000000..87f01b9
->> --- /dev/null
->> +++ =
-b/Documentation/devicetree/bindings/gpio/jnx,gpio-ptxpmb-ext-cpld.txt
->> @@ -0,0 +1,36 @@
->> +Juniper PTXPMB extended CPLD GPIO block
->> +
->> +Required properties:
->> +
->> +- compatible:
->> +    Must be "jnx,gpio-ptxpmb-ext-cpld"
->=20
-> Generally, '-gpio' would be last.
->=20
+> If the driver is built as a module, autoload won't work because the module
+> alias information is not filled. So user-space can't match the registered
+> device with the corresponding module.
+> 
+> Export the module alias information using the MODULE_DEVICE_TABLE() macro.
+> 
+> Before this patch:
+> 
+> $ modinfo drivers/mtd/nand/omap2_nand.ko | grep alias
+> alias:          platform:omap2-nand
+> 
+> After this patch:
+> 
+> $ modinfo drivers/mtd/nand/omap2_nand.ko | grep alias
+> alias:          platform:omap2-nand
+> alias:          of:N*T*Cti,omap2-nandC*
+> alias:          of:N*T*Cti,omap2-nand
+> 
+> Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
 
-OK.
+Applied.
 
+Thanks,
 
->> +
->> +- #gpio-cells:
->> +    Should be <2>.  The first cell is the pin number (within the =
-controller's
->> +    pin space), and the second is used for the following flags:
->> +	bit[0]: direction (0 =3D out, 1 =3D in)
->> +	bit[1]: init high
->> +	bit[2]: active low
->=20
-> Same comment as all the other gpio bindings...
->=20
->> +
->> +- gpio-controller:
->> +    Specifies that the node is a GPIO controller.
->> +
->> +- interrupt-controller:
->> +    Specifies that the node is an interrupt controller.
->> +
->> +Optional properties:
->> +
->> +- reg:
->> +    Address and length of the register set for the device. Usually =
-supplied
->> +    by the parent MFD device.
->=20
-> Make it required.
->=20
+Boris
 
-Hmm, the current driver supplies that range via platform data (it=E2=80=99=
-s an mfd driver).
-What=E2=80=99s the take on mixing those?
-
->> +
->> +
->> +Example:
->> +
->> +gpio_ext_cpld: cpld-ext-gpio {
->> +	compatible =3D "jnx,gpio-ptxpmb-ext-cpld";
->> +	#gpio-cells =3D <2>;
->> +	#interrupt-cells =3D <2>;
->> +	gpio-controller;
->> +	interrupt-controller;
->> +};
->> --=20
->> 1.9.1
+> 
+> ---
+> 
+>  drivers/mtd/nand/omap2.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 5513bfd9cdc9..0934c3b3f70e 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -2197,6 +2197,7 @@ static const struct of_device_id omap_nand_ids[] = {
+>  	{ .compatible = "ti,omap2-nand", },
+>  	{},
+>  };
+> +MODULE_DEVICE_TABLE(of, omap_nand_ids);
+>  
+>  static struct platform_driver omap_nand_driver = {
+>  	.probe		= omap_nand_probe,
