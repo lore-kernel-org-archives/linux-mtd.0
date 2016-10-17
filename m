@@ -1,19 +1,16 @@
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bw9OL-0002nw-MP
- for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 14:59:58 +0000
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: linux-mtd@lists.infradead.org
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Lee Jones <lee.jones@linaro.org>,
- Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
- mkraemer@de.adit-jv.com, Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-Date: Mon, 17 Oct 2016 17:58:58 +0300
-Message-Id: <20161017145858.143771-4-mika.westerberg@linux.intel.com>
-In-Reply-To: <20161017145858.143771-1-mika.westerberg@linux.intel.com>
-References: <20161017145858.143771-1-mika.westerberg@linux.intel.com>
+ id 1bwAIm-00047I-Ny
+ for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 15:58:14 +0000
+From: Zach Brown <zach.brown@ni.com>
+To: <dwmw2@infradead.org>
+CC: <computersforpeace@gmail.com>, <dedekind1@gmail.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] UBI: add debugfs file for tracking PEB state
+Date: Mon, 17 Oct 2016 10:57:22 -0500
+Message-ID: <1476719842-28642-1-git-send-email-zach.brown@ni.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,101 +20,200 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Intel Apollo Lake SoC exposes serial SPI flash through the LPC device. The
-SPI flash host controller is not discoverable through PCI config cycles
-because P2SB (function 0 of the device 13) is hidden by the BIOS. We unhide
-the device briefly in order to read BAR 0 of the SPI host controller.
+From: Ben Shelton <ben.shelton@ni.com>
 
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Acked-by: Lee Jones <lee.jones@linaro.org>
+Add a file under debugfs to allow easy access to the erase count for
+each physical erase block on an UBI device.  This is useful when
+debugging data integrity issues with UBIFS on NAND flash devices.
+
+Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+Signed-off-by: Zach Brown <zach.brown@ni.com>
 ---
- drivers/mfd/lpc_ich.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ drivers/mtd/ubi/debug.c | 151 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 150 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-index 985bda575849..1d8d1caebdf1 100644
---- a/drivers/mfd/lpc_ich.c
-+++ b/drivers/mfd/lpc_ich.c
-@@ -56,6 +56,7 @@
-  *	document number TBD : Wildcat Point-LP
-  *	document number TBD : 9 Series
-  *	document number TBD : Lewisburg
-+ *	document number TBD : Apollo Lake SoC
-  */
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index f101a49..6086822 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -22,6 +22,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/uaccess.h>
+ #include <linux/module.h>
++#include <linux/seq_file.h>
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-@@ -92,6 +93,8 @@
- #define BCR			0xdc
- #define BCR_WPD			BIT(0)
  
-+#define SPIBASE_APL_SZ		4096
-+
- #define GPIOBASE_ICH0		0x58
- #define GPIOCTRL_ICH0		0x5C
- #define GPIOBASE_ICH6		0x48
-@@ -239,6 +242,7 @@ enum lpc_chipsets {
- 	LPC_BRASWELL,	/* Braswell SoC */
- 	LPC_LEWISBURG,	/* Lewisburg */
- 	LPC_9S,		/* 9 Series */
-+	LPC_APL,	/* Apollo Lake SoC */
+ /**
+@@ -386,7 +387,9 @@ out:
+ 	return count;
+ }
+ 
+-/* File operations for all UBI debugfs files */
++/* File operations for all UBI debugfs files except
++ * detailed_erase_block_info
++ */
+ static const struct file_operations dfs_fops = {
+ 	.read   = dfs_file_read,
+ 	.write  = dfs_file_write,
+@@ -395,6 +398,146 @@ static const struct file_operations dfs_fops = {
+ 	.owner  = THIS_MODULE,
  };
  
- static struct lpc_ich_info lpc_chipset_info[] = {
-@@ -559,6 +563,10 @@ static struct lpc_ich_info lpc_chipset_info[] = {
- 		.name = "9 Series",
- 		.iTCO_version = 2,
- 	},
-+	[LPC_APL] = {
-+		.name = "Apollo Lake SoC",
-+		.spi_type = INTEL_SPI_BXT,
-+	},
- };
- 
- /*
-@@ -707,6 +715,7 @@ static const struct pci_device_id lpc_ich_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x3b14), LPC_3420},
- 	{ PCI_VDEVICE(INTEL, 0x3b16), LPC_3450},
- 	{ PCI_VDEVICE(INTEL, 0x5031), LPC_EP80579},
-+	{ PCI_VDEVICE(INTEL, 0x5ae8), LPC_APL},
- 	{ PCI_VDEVICE(INTEL, 0x8c40), LPC_LPT},
- 	{ PCI_VDEVICE(INTEL, 0x8c41), LPC_LPT},
- 	{ PCI_VDEVICE(INTEL, 0x8c42), LPC_LPT},
-@@ -1126,6 +1135,36 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
- 		}
- 		break;
- 
-+	case INTEL_SPI_BXT: {
-+		unsigned int p2sb = PCI_DEVFN(13, 0);
-+		unsigned int spi = PCI_DEVFN(13, 2);
-+		struct pci_bus *bus = dev->bus;
++/* As long as the position is less then that total number of erase blocks,
++ * we still have more to print.
++ */
++static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
 +
-+		/*
-+		 * The P2SB is hidden by BIOS and we need to unhide it in
-+		 * order to read BAR of the SPI flash device. Once that is
-+		 * done we hide it again.
-+		 */
-+		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x0);
-+		pci_bus_read_config_dword(bus, spi, PCI_BASE_ADDRESS_0,
-+					  &spi_base);
-+		if (spi_base != ~0) {
-+			res->start = spi_base & 0xfffffff0;
-+			res->end = res->start + SPIBASE_APL_SZ - 1;
++	if (*pos == 0)
++		return SEQ_START_TOKEN;
 +
-+			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
-+			if (!(bcr & BCR_WPD)) {
-+				bcr |= BCR_WPD;
-+				pci_bus_write_config_dword(bus, spi, BCR, bcr);
-+				pci_bus_read_config_dword(bus, spi, BCR, &bcr);
-+			}
-+			info->writeable = !!(bcr & BCR_WPD);
-+		}
++	if (*pos < ubi->peb_count)
++		return pos;
 +
-+		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x1);
-+		break;
++	return NULL;
++}
++
++/* Since we are using the position as the iterator, we just need to check if we
++ * are done and increment the position.
++ */
++static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
++
++	if (v == SEQ_START_TOKEN)
++		return pos;
++	(*pos)++;
++
++	if (*pos < ubi->peb_count)
++		return pos;
++
++	return NULL;
++}
++
++static void eraseblk_count_seq_stop(struct seq_file *s, void *v)
++{
++}
++
++enum block_status {
++	BLOCK_STATUS_OK,
++	BLOCK_STATUS_BAD_BLOCK,
++	BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX
++};
++
++static char const *block_status_names[] = {"OK", "marked_bad",
++					   "erase_count_beyond_max"};
++
++enum read_status {
++	READ_STATUS_OK,
++	READ_STATUS_ERR_READING_BLOCK,
++};
++
++static char const *read_status_names[] = {"OK", "err_reading_block"};
++
++static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
++{
++	struct ubi_device *ubi = s->private;
++	struct ubi_wl_entry *wl;
++	int *block_number = iter;
++	int erase_count = -1;
++	enum block_status b_sts = BLOCK_STATUS_OK;
++	enum read_status r_sts = READ_STATUS_OK;
++	int err;
++
++	/* If this is the start, print a header */
++	if (iter == SEQ_START_TOKEN) {
++		seq_puts(s,
++			 "physical_block_number\terase_count\tblock_status\tread_status\n");
++		return 0;
 +	}
 +
- 	default:
- 		return -EINVAL;
- 	}
++	err = ubi_io_is_bad(ubi, *block_number);
++	if (err) {
++		if (err < 0)
++			r_sts = READ_STATUS_ERR_READING_BLOCK;
++		else
++			b_sts = BLOCK_STATUS_BAD_BLOCK;
++	} else {
++		spin_lock(&ubi->wl_lock);
++
++		wl = ubi->lookuptbl[*block_number];
++		if (wl)
++			erase_count = wl->ec;
++		else
++			r_sts = READ_STATUS_ERR_READING_BLOCK;
++
++		spin_unlock(&ubi->wl_lock);
++
++		if (erase_count > UBI_MAX_ERASECOUNTER)
++			b_sts = BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX;
++	}
++
++	seq_printf(s, "%-22d\t%-11d\t%-12s\t%-12s\n", *block_number,
++		   erase_count, block_status_names[b_sts],
++		   read_status_names[r_sts]);
++	return 0;
++}
++
++static const struct seq_operations eraseblk_count_seq_ops = {
++	.start = eraseblk_count_seq_start,
++	.next = eraseblk_count_seq_next,
++	.stop = eraseblk_count_seq_stop,
++	.show = eraseblk_count_seq_show
++};
++
++static int eraseblk_count_open(struct inode *inode, struct file *f)
++{
++	struct seq_file *s;
++	int err;
++
++	err = seq_open(f, &eraseblk_count_seq_ops);
++	if (err)
++		return err;
++
++	s = f->private_data;
++	s->private = ubi_get_device((unsigned long)inode->i_private);
++
++	if (!s->private)
++		return -ENODEV;
++	else
++		return 0;
++}
++
++static int eraseblk_count_release(struct inode *inode, struct file *f)
++{
++	struct seq_file *s = f->private_data;
++	struct ubi_device *ubi = s->private;
++
++	ubi_put_device(ubi);
++
++	return seq_release(inode, f);
++}
++
++static const struct file_operations eraseblk_count_fops = {
++	.owner = THIS_MODULE,
++	.open = eraseblk_count_open,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = eraseblk_count_release,
++};
++
+ /**
+  * ubi_debugfs_init_dev - initialize debugfs for an UBI device.
+  * @ubi: UBI device description object
+@@ -491,6 +634,12 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 		goto out_remove;
+ 	d->dfs_power_cut_max = dent;
+ 
++	fname = "detailed_erase_block_info";
++	dent = debugfs_create_file(fname, S_IRUSR, d->dfs_dir, (void *)ubi_num,
++				   &eraseblk_count_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++
+ 	return 0;
+ 
+ out_remove:
 -- 
-2.9.3
+2.7.4
