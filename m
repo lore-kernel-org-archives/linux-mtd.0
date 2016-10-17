@@ -1,19 +1,26 @@
-Received: from up.free-electrons.com ([163.172.77.33]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bvoFD-0001bs-AR
- for linux-mtd@lists.infradead.org; Sun, 16 Oct 2016 16:25:04 +0000
-Date: Sun, 16 Oct 2016 18:24:41 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Daniel Walter <dwalter@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/46] Nandsim facelift (part I of II)
-Message-ID: <20161016182441.49adc653@bbrezillon>
-In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
-References: <cover.1474450295.git.dwalter@sigma-star.at>
+Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bw2ql-0000a3-O8
+ for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 08:00:49 +0000
+Received: by mail-io0-x241.google.com with SMTP id i202so10432280ioi.1
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Oct 2016 01:00:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20161013162458.0219177b@bbrezillon>
+References: <1476367536-24782-1-git-send-email-geert@linux-m68k.org>
+ <20161013162458.0219177b@bbrezillon>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 17 Oct 2016 10:00:25 +0200
+Message-ID: <CAMuHMdVJJxN2bU6JVsia9uDMonczqMw3SiAu-eygnHVLUqcqMg@mail.gmail.com>
+Subject: Re: [PATCH] UBI: Fix crash in try_recover_peb()
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,70 +30,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Daniel, Richard,
+Hi Boris,
 
-On Wed, 21 Sep 2016 11:43:29 +0200
-Daniel Walter <dwalter@sigma-star.at> wrote:
+On Thu, Oct 13, 2016 at 4:24 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Thu, 13 Oct 2016 16:05:36 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+>>     drivers/mtd/ubi/eba.c: In function =E2=80=98try_recover_peb=E2=80=99=
+:
+>>     drivers/mtd/ubi/eba.c:744: warning: =E2=80=98vid_hdr=E2=80=99 is use=
+d uninitialized in this function
+>>
+>> The pointer vid_hdr is indeed not initialized, leading to a crash when
+>> it is dereferenced.
+>>
+>> Fix this by obtaining the pointer from the VID buffer, like is done
+>> everywhere else.
+>
+> Indeed, I don't know how I missed that one :-/.
+>
+>>
+>> Fixes: 3291b52f9ff0acc8 ("UBI: introduce the VID buffer concept")
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> One minor comment below, otherwise
+>
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> Changes since V1:
->   Incooperate feedback for nand_cleanup()
->   Improve commit messages
-> 
-> 
-> 
-> Over a decade ago nandsim was introduced to Linux. The main purpose is having a software implementation of a NAND chip for rapid prototyping systems such as UBI on top of it. On
-> the other hand is it also heavily used to load and inspect dumps from real NAND flashes. The current design allows only having a single chip and all parameters are passed as
-> modules parameters. Another draw back is that it emulates all NAND chip internals including command parsing, this makes it slow and error prone wrt. changes in nand_base.c since
-> the emulated chip is not really ONFI compliant.
-> 
-> This series addresses the singleton property of nandsim. It allows having multiple instances which can be controlled by a new userspace tool, nandsimctl. Nandsimctl works like
-> losetup. You can add and remove instances with different settings.
-> To allow multiple instances nandsim offers an ioctl() interface via a new device file, /dev/nandsimctl, to userspace.
-> 
-> Currently nandsim has two backends, ram and cache. In the default backend mode, ram, all data you change is stored in main memory. For smaller chips this works well but becomes
-> problematic when modern multi-gigabyte chips are emulated. Cache mode addresses this drawback and redirects program commands to a local file. Using the cache_file module parameter
-> the path of the backing file can be set. When nandsim is not a module passing a file name to it can lead to unexpected behavior since during kernel bootup the real root filesystem
-> might not be ready and nandsim will populate the cache file on the initial root filesysem which is either tmpfs or worse a ramfs.
-> 
-> Via the new ioctl() interface a third backend mode can be used, file mode. File mode works like cache file but all data (including erases and OOB data) are stored on a local file.
-> This file can also also be reused later. It is also possible to operate nandsim in a mode to omit existing OOB data and masquerade OOB bytes to 0xFF. This allows using a nanddump
-> (without OOB) from a real NAND chip directly in nandsim using the file backend. That way you don't have to use nandwrite or other tools to write the dump into yout MTD before using
-> it. You can directly attach the dump in a losetup alike way.
-> 
-> The ioctl() accepts all existing nandsim parameters except that in cache mode you pass a file descriptor instead of a file name to nandsim. This allows utilizing O_TMPFILE.
-> To preserve existing behavior and no breaking any users of nandsim it is still possible to specify all parameters using module parameters but these parameters will only affect the
-> first nandsim instance which will be automatically created upon module loading. If you don't have to have a default instance and explicitly create nandsim instances using
-> nandsimctl pass defaults=n to the module.
-> 
-> There will be an additional patch series for mtd-utils containing nandsimctl.
-> 
-> A side effect of heavily reworking nandsim's backend internals it is now also possible to create custom backends. A custom backed was added to UserModeLinux. It allows directly
-> booting from a nanddump using UML such that UBIFS as rootfs can be tested nicely on virtual machines.
-> On step ahead for MTD testing.
-> 
-> The series itself is less straight forward than I wanted it to be, mostly because while adding new features it was needed to cleanup some parts, over and over.
-> 
-> Part II of that series will address the chip emulation nature of nandsim. It will add a second emulation mode. By default NAND chip emulation will be used but to allow arbitrary
-> sized MTDs a more simple mode will be added which just allocates a MTD with the expected sizes instead of mocking nand_base.c.
+Thanks!
 
-I really like the new approach for 2 reasons:
-1/ it allows creating several NAND devs, and you can do that after the
-   module has been loaded.
-2/ it fixes the partial NAND detection support by allowing one to
-   describe its NAND in term of page size, eraseblock size, oob
-   size, ...
+>> ---
+>> Completely untested. And I know nothing about UBI ;-)
+>> ---
+>>  drivers/mtd/ubi/eba.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+>> index 95c4048a371e87b6..388e46be6ad92805 100644
+>> --- a/drivers/mtd/ubi/eba.c
+>> +++ b/drivers/mtd/ubi/eba.c
+>> @@ -741,6 +741,7 @@ static int try_recover_peb(struct ubi_volume *vol, i=
+nt pnum, int lnum,
+>>               goto out_put;
+>>       }
+>>
+>> +     vid_hdr =3D ubi_get_vid_hdr(vidb);
+>
+> Can you move this assignment at variable declaration time?
 
-But I'm wondering if we should not create a new driver instead of
-trying to fix the old one (I must admit I haven't been through the 46
-patches of this series, but last time we discussed it on IRC, Richard
-said it actually was a complete rewrite of the nandsim driver).
+I can do that. However, that moves the call to ubi_get_vid_hdr() _before_
+the call to ubi_io_read_vid_hdr().
 
-Moreover, if we specify the flash layout manually, maybe we could make
-it an mtdsim driver instead of restricting the emulation to NAND
-devices.
+While that would still work (ubi_get_vid_hdr() would just return a pointer =
+to
+the not-yet-read data), I think it's better to not move it, to prevent peop=
+le
+from accidentally trying to use it before the data has been read.
 
-What do you think?
+Do you agree?
 
-Regards,
+Gr{oetje,eeting}s,
 
-Boris
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
