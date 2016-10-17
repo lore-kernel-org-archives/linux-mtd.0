@@ -1,7 +1,7 @@
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bw9Nw-0002aM-47
- for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 14:59:31 +0000
+ id 1bw9Nr-0002YE-TZ
+ for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 14:59:42 +0000
 From: Mika Westerberg <mika.westerberg@linux.intel.com>
 To: linux-mtd@lists.infradead.org
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -9,10 +9,12 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
  mkraemer@de.adit-jv.com, Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/3] spi-nor: Add support for Intel SPI serial flash
+Subject: [PATCH v4 1/3] spi-nor: Add support for Intel SPI serial flash
  controller
-Date: Mon, 17 Oct 2016 17:58:55 +0300
-Message-Id: <20161017145858.143771-1-mika.westerberg@linux.intel.com>
+Date: Mon, 17 Oct 2016 17:58:56 +0300
+Message-Id: <20161017145858.143771-2-mika.westerberg@linux.intel.com>
+In-Reply-To: <20161017145858.143771-1-mika.westerberg@linux.intel.com>
+References: <20161017145858.143771-1-mika.westerberg@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,97 +24,1077 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is fourth version of the series. Previous versions can be found:
+Add support for the SPI serial flash host controller found on many Intel
+CPUs including Baytrail and Braswell. The SPI serial flash controller is
+used to access BIOS and other platform specific information. By default the
+driver exposes a single read-only MTD device but with a module parameter
+"writeable=1" the MTD device can be made read-write which makes it possible
+to upgrade BIOS directly from Linux.
 
-  v3: https://lwn.net/Articles/697231/
-  v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
-  v1: https://lkml.org/lkml/2016/6/14/269
-
-This patch series adds support for the Intel SPI serial flash controller
-found on many recent Intel CPUs including Baytrail and Braswell. This
-driver makes it possible to access the BIOS and other platform data which
-is stored on the SPI serial flash. It is also possible to upgrade the BIOS
-using this driver if it has not been protected by special hardware bits.
-
-The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
-MAX.
-
-Since poking the SPI serial flash can brick the machine, this driver can
-only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
-unless instructed othwerwise by module parameter.
-
-This missed v4.8 and v4.9 so it would be really nice to get it finally
-included in v4.10.
-
-Changes from v3:
-
-[1/3] spi-nor: Add support for Intel SPI serial flash controller
-  
-  * No changes
-
-[2/3] mfd: lpc_ich: Add support for SPI serial flash host controller
-
-  * Added ACK from Lee Jones.
-
-[3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-   
-  * Use bus instead of dev->bus in PCI accesses
-  * Added ACK from Lee Jones.
-
-Changes from v2:
-
-  * Rebased on top of v4.8-rc2
-
-  * Updated intel_spi_read/write() according spi-nor core changes which
-    drops retlen parameter and returns number of bytes read/written.
-
-Changes from v1:
-
-[1/3] spi-nor: Add support for Intel SPI serial flash controller
-
-  * Older hardware does not support 64k erase command so added erase_64k
-    flag which is set only for Broxton (BXT).
-
-  * Fix protection range offset for Broxton. Now there is ispi->pregs
-    pointing to the start of the protection registers.
-
-  * Change naming of constants from BCR_BYT -> BYT_BCR and so on.
-
-[2/3] mfd: lpc_ich: Add support for SPI serial flash host controller
-
-  * Drop lpc_ich_finalize_spi_cell() and initialize cell directly in
-    lpc_ich_init_spi().
-
-  * Use info->type in switch in lpc_ich_init_spi().
-
-  * Add defines for magic numbers used in lpc_ich_init_spi().
-
-  * Use PLATFORM_DEVID_NONE with mfd_add_devices().
-
-[3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-
-  * No changes
-
-Mika Westerberg (3):
-  spi-nor: Add support for Intel SPI serial flash controller
-  mfd: lpc_ich: Add support for SPI serial flash host controller
-  mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
  Documentation/mtd/intel-spi.txt          |  88 ++++
- drivers/mfd/lpc_ich.c                    | 131 ++++++
  drivers/mtd/spi-nor/Kconfig              |  20 +
  drivers/mtd/spi-nor/Makefile             |   2 +
  drivers/mtd/spi-nor/intel-spi-platform.c |  57 +++
  drivers/mtd/spi-nor/intel-spi.c          | 780 +++++++++++++++++++++++++++++++
  drivers/mtd/spi-nor/intel-spi.h          |  24 +
- include/linux/mfd/lpc_ich.h              |   3 +
  include/linux/platform_data/intel-spi.h  |  31 ++
- 9 files changed, 1136 insertions(+)
+ 7 files changed, 1002 insertions(+)
  create mode 100644 Documentation/mtd/intel-spi.txt
  create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
  create mode 100644 drivers/mtd/spi-nor/intel-spi.c
  create mode 100644 drivers/mtd/spi-nor/intel-spi.h
  create mode 100644 include/linux/platform_data/intel-spi.h
 
+diff --git a/Documentation/mtd/intel-spi.txt b/Documentation/mtd/intel-spi.txt
+new file mode 100644
+index 000000000000..bc357729c2cb
+--- /dev/null
++++ b/Documentation/mtd/intel-spi.txt
+@@ -0,0 +1,88 @@
++Upgrading BIOS using intel-spi
++------------------------------
++
++Many Intel CPUs like Baytrail and Braswell include SPI serial flash host
++controller which is used to hold BIOS and other platform specific data.
++Since contents of the SPI serial flash is crucial for machine to function,
++it is typically protected by different hardware protection mechanisms to
++avoid accidental (or on purpose) overwrite of the content.
++
++Not all manufacturers protect the SPI serial flash, mainly because it
++allows upgrading the BIOS image directly from an OS.
++
++The intel-spi driver makes it possible to read and write the SPI serial
++flash, if certain protection bits are not set and locked. If it finds
++any of them set, the whole MTD device is made read-only to prevent
++partial overwrites. By default the driver exposes SPI serial flash
++contents as read-only but it can be changed from kernel command line,
++passing "intel-spi.writeable=1".
++
++Please keep in mind that overwriting the BIOS image on SPI serial flash
++might render the machine unbootable and requires special equipment like
++Dediprog to revive. You have been warned!
++
++Below are the steps how to upgrade MinnowBoard MAX BIOS directly from
++Linux.
++
++ 1) Download and extract the latest Minnowboard MAX BIOS SPI image
++    [1]. At the time writing this the latest image is v92.
++
++ 2) Install mtd-utils package [2]. We need this in order to erase the SPI
++    serial flash. Distros like Debian and Fedora have this prepackaged with
++    name "mtd-utils".
++
++ 3) Add "intel-spi.writeable=1" to the kernel command line and reboot
++    the board (you can also reload the driver passing "writeable=1" as
++    module parameter to modprobe).
++
++ 4) Once the board is up and running again, find the right MTD partition
++    (it is named as "BIOS"):
++
++    # cat /proc/mtd
++    dev:    size   erasesize  name
++    mtd0: 00800000 00001000 "BIOS"
++
++    So here it will be /dev/mtd0 but it may vary.
++
++ 5) Make backup of the existing image first:
++
++    # dd if=/dev/mtd0ro of=bios.bak
++    16384+0 records in
++    16384+0 records out
++    8388608 bytes (8.4 MB) copied, 10.0269 s, 837 kB/s
++
++ 6) Verify the backup
++
++    # sha1sum /dev/mtd0ro bios.bak
++    fdbb011920572ca6c991377c4b418a0502668b73  /dev/mtd0ro
++    fdbb011920572ca6c991377c4b418a0502668b73  bios.bak
++
++    The SHA1 sums must match. Otherwise do not continue any further!
++
++ 7) Erase the SPI serial flash. After this step, do not reboot the
++    board! Otherwise it will not start anymore.
++
++    # flash_erase /dev/mtd0 0 0
++    Erasing 4 Kibyte @ 7ff000 -- 100 % complete
++
++ 8) Once completed without errors you can write the new BIOS image:
++
++    # dd if=MNW2MAX1.X64.0092.R01.1605221712.bin of=/dev/mtd0
++
++ 9) Verify that the new content of the SPI serial flash matches the new
++    BIOS image:
++
++    # sha1sum /dev/mtd0ro MNW2MAX1.X64.0092.R01.1605221712.bin
++    9b4df9e4be2057fceec3a5529ec3d950836c87a2  /dev/mtd0ro
++    9b4df9e4be2057fceec3a5529ec3d950836c87a2 MNW2MAX1.X64.0092.R01.1605221712.bin
++
++    The SHA1 sums should match.
++
++ 10) Now you can reboot your board and observe the new BIOS starting up
++     properly.
++
++References
++----------
++
++[1] https://firmware.intel.com/sites/default/files/MinnowBoard.MAX_.X64.92.R01.zip
++[2] http://www.linux-mtd.infradead.org/
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 4a682ee0f632..02013ffa5231 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -76,4 +76,24 @@ config SPI_NXP_SPIFI
+ 	  Flash. Enable this option if you have a device with a SPIFI
+ 	  controller and want to access the Flash as a mtd device.
+ 
++config SPI_INTEL_SPI
++	tristate
++
++config SPI_INTEL_SPI_PLATFORM
++	tristate "Intel PCH/PCU SPI flash platform driver" if EXPERT
++	depends on X86
++	select SPI_INTEL_SPI
++	help
++	  This enables platform support for the Intel PCH/PCU SPI
++	  controller in master mode. This controller is present in modern
++	  Intel hardware and is used to hold BIOS and other persistent
++	  settings. Using this driver it is possible to upgrade BIOS
++	  directly from Linux.
++
++	  Say N here unless you know what you are doing. Overwriting the
++	  SPI flash may render the system unbootable.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called intel-spi-platform.
++
+ endif # MTD_SPI_NOR
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 121695e83542..1796e8cd6e1a 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -5,3 +5,5 @@ obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
+ obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
+ obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
+ obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
++obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
++obj-$(CONFIG_SPI_INTEL_SPI_PLATFORM)	+= intel-spi-platform.o
+diff --git a/drivers/mtd/spi-nor/intel-spi-platform.c b/drivers/mtd/spi-nor/intel-spi-platform.c
+new file mode 100644
+index 000000000000..5c943df9398f
+--- /dev/null
++++ b/drivers/mtd/spi-nor/intel-spi-platform.c
+@@ -0,0 +1,57 @@
++/*
++ * Intel PCH/PCU SPI flash platform driver.
++ *
++ * Copyright (C) 2016, Intel Corporation
++ * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/ioport.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++#include "intel-spi.h"
++
++static int intel_spi_platform_probe(struct platform_device *pdev)
++{
++	struct intel_spi_boardinfo *info;
++	struct intel_spi *ispi;
++	struct resource *mem;
++
++	info = dev_get_platdata(&pdev->dev);
++	if (!info)
++		return -EINVAL;
++
++	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	ispi = intel_spi_probe(&pdev->dev, mem, info);
++	if (IS_ERR(ispi))
++		return PTR_ERR(ispi);
++
++	platform_set_drvdata(pdev, ispi);
++	return 0;
++}
++
++static int intel_spi_platform_remove(struct platform_device *pdev)
++{
++	struct intel_spi *ispi = platform_get_drvdata(pdev);
++
++	return intel_spi_remove(ispi);
++}
++
++static struct platform_driver intel_spi_platform_driver = {
++	.probe = intel_spi_platform_probe,
++	.remove = intel_spi_platform_remove,
++	.driver = {
++		.name = "intel-spi",
++	},
++};
++
++module_platform_driver(intel_spi_platform_driver);
++
++MODULE_DESCRIPTION("Intel PCH/PCU SPI flash platform driver");
++MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:intel-spi");
+diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
+new file mode 100644
+index 000000000000..ded613bff1ab
+--- /dev/null
++++ b/drivers/mtd/spi-nor/intel-spi.c
+@@ -0,0 +1,780 @@
++/*
++ * Intel PCH/PCU SPI flash driver.
++ *
++ * Copyright (C) 2016, Intel Corporation
++ * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/sched.h>
++#include <linux/sizes.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/spi-nor.h>
++#include <linux/platform_data/intel-spi.h>
++
++#include "intel-spi.h"
++
++/* Offsets are from @ispi->base */
++#define BFPREG				0x00
++
++#define HSFSTS_CTL			0x04
++#define HSFSTS_CTL_FSMIE		BIT(31)
++#define HSFSTS_CTL_FDBC_SHIFT		24
++#define HSFSTS_CTL_FDBC_MASK		(0x3f << HSFSTS_CTL_FDBC_SHIFT)
++
++#define HSFSTS_CTL_FCYCLE_SHIFT		17
++#define HSFSTS_CTL_FCYCLE_MASK		(0x0f << HSFSTS_CTL_FCYCLE_SHIFT)
++/* HW sequencer opcodes */
++#define HSFSTS_CTL_FCYCLE_READ		(0x00 << HSFSTS_CTL_FCYCLE_SHIFT)
++#define HSFSTS_CTL_FCYCLE_WRITE		(0x02 << HSFSTS_CTL_FCYCLE_SHIFT)
++#define HSFSTS_CTL_FCYCLE_ERASE		(0x03 << HSFSTS_CTL_FCYCLE_SHIFT)
++#define HSFSTS_CTL_FCYCLE_ERASE_64K	(0x04 << HSFSTS_CTL_FCYCLE_SHIFT)
++#define HSFSTS_CTL_FCYCLE_RDID		(0x06 << HSFSTS_CTL_FCYCLE_SHIFT)
++#define HSFSTS_CTL_FCYCLE_WRSR		(0x07 << HSFSTS_CTL_FCYCLE_SHIFT)
++#define HSFSTS_CTL_FCYCLE_RDSR		(0x08 << HSFSTS_CTL_FCYCLE_SHIFT)
++
++#define HSFSTS_CTL_FGO			BIT(16)
++#define HSFSTS_CTL_FLOCKDN		BIT(15)
++#define HSFSTS_CTL_FDV			BIT(14)
++#define HSFSTS_CTL_SCIP			BIT(5)
++#define HSFSTS_CTL_AEL			BIT(2)
++#define HSFSTS_CTL_FCERR		BIT(1)
++#define HSFSTS_CTL_FDONE		BIT(0)
++
++#define FADDR				0x08
++#define DLOCK				0x0c
++#define FDATA(n)			(0x10 + ((n) * 4))
++
++#define FRACC				0x50
++
++#define FREG(n)				(0x54 + ((n) * 4))
++#define FREG_BASE_MASK			0x3fff
++#define FREG_LIMIT_SHIFT		16
++#define FREG_LIMIT_MASK			(0x03fff << FREG_LIMIT_SHIFT)
++
++/* Offset is from @ispi->pregs */
++#define PR(n)				((n) * 4)
++#define PR_WPE				BIT(31)
++#define PR_LIMIT_SHIFT			16
++#define PR_LIMIT_MASK			(0x3fff << PR_LIMIT_SHIFT)
++#define PR_RPE				BIT(15)
++#define PR_BASE_MASK			0x3fff
++/* Last PR is GPR0 */
++#define PR_NUM				(5 + 1)
++
++/* Offsets are from @ispi->sregs */
++#define SSFSTS_CTL			0x00
++#define SSFSTS_CTL_FSMIE		BIT(23)
++#define SSFSTS_CTL_DS			BIT(22)
++#define SSFSTS_CTL_DBC_SHIFT		16
++#define SSFSTS_CTL_SPOP			BIT(11)
++#define SSFSTS_CTL_ACS			BIT(10)
++#define SSFSTS_CTL_SCGO			BIT(9)
++#define SSFSTS_CTL_COP_SHIFT		12
++#define SSFSTS_CTL_FRS			BIT(7)
++#define SSFSTS_CTL_DOFRS		BIT(6)
++#define SSFSTS_CTL_AEL			BIT(4)
++#define SSFSTS_CTL_FCERR		BIT(3)
++#define SSFSTS_CTL_FDONE		BIT(2)
++#define SSFSTS_CTL_SCIP			BIT(0)
++
++#define PREOP_OPTYPE			0x04
++#define OPMENU0				0x08
++#define OPMENU1				0x0c
++
++/* CPU specifics */
++#define BYT_PR				0x74
++#define BYT_SSFSTS_CTL			0x90
++#define BYT_BCR				0xfc
++#define BYT_BCR_WPD			BIT(0)
++#define BYT_FREG_NUM			5
++
++#define LPT_PR				0x74
++#define LPT_SSFSTS_CTL			0x90
++#define LPT_FREG_NUM			5
++
++#define BXT_PR				0x84
++#define BXT_SSFSTS_CTL			0xa0
++#define BXT_FREG_NUM			12
++
++#define INTEL_SPI_TIMEOUT		5000 /* ms */
++
++/**
++ * struct intel_spi - Driver private data
++ * @dev: Device pointer
++ * @info: Pointer to board specific info
++ * @nor: SPI NOR layer structure
++ * @base: Beginning of MMIO space
++ * @pregs: Start of protection registers
++ * @sregs: Start of software sequencer registers
++ * @nregions: Maximum number of regions
++ * @writeable: Is the chip writeable
++ * @swseq: Use SW sequencer in register reads/writes
++ * @erase_64k: 64k erase supported
++ * @opcodes: Opcodes which are supported. This are programmed by BIOS
++ *           before it locks down the controller.
++ * @preopcodes: Preopcodes which are supported.
++ */
++struct intel_spi {
++	struct device *dev;
++	const struct intel_spi_boardinfo *info;
++	struct spi_nor nor;
++	void __iomem *base;
++	void __iomem *pregs;
++	void __iomem *sregs;
++	size_t nregions;
++	bool writeable;
++	bool swseq;
++	bool erase_64k;
++	u8 opcodes[8];
++	u8 preopcodes[2];
++};
++
++static bool writeable;
++module_param(writeable, bool, 0);
++MODULE_PARM_DESC(writeable, "Enable write access to SPI flash chip (default=0)");
++
++static void intel_spi_dump_regs(struct intel_spi *ispi)
++{
++	u32 value;
++	int i;
++
++	dev_dbg(ispi->dev, "BFPREG=0x%08x\n", readl(ispi->base + BFPREG));
++
++	value = readl(ispi->base + HSFSTS_CTL);
++	dev_dbg(ispi->dev, "HSFSTS_CTL=0x%08x\n", value);
++	if (value & HSFSTS_CTL_FLOCKDN)
++		dev_dbg(ispi->dev, "-> Locked\n");
++
++	dev_dbg(ispi->dev, "FADDR=0x%08x\n", readl(ispi->base + FADDR));
++	dev_dbg(ispi->dev, "DLOCK=0x%08x\n", readl(ispi->base + DLOCK));
++
++	for (i = 0; i < 16; i++)
++		dev_dbg(ispi->dev, "FDATA(%d)=0x%08x\n",
++			i, readl(ispi->base + FDATA(i)));
++
++	dev_dbg(ispi->dev, "FRACC=0x%08x\n", readl(ispi->base + FRACC));
++
++	for (i = 0; i < ispi->nregions; i++)
++		dev_dbg(ispi->dev, "FREG(%d)=0x%08x\n", i,
++			readl(ispi->base + FREG(i)));
++	for (i = 0; i < PR_NUM; i++)
++		dev_dbg(ispi->dev, "PR(%d)=0x%08x\n", i,
++			readl(ispi->pregs + PR(i)));
++
++	value = readl(ispi->sregs + SSFSTS_CTL);
++	dev_dbg(ispi->dev, "SSFSTS_CTL=0x%08x\n", value);
++	dev_dbg(ispi->dev, "PREOP_OPTYPE=0x%08x\n",
++		readl(ispi->sregs + PREOP_OPTYPE));
++	dev_dbg(ispi->dev, "OPMENU0=0x%08x\n", readl(ispi->sregs + OPMENU0));
++	dev_dbg(ispi->dev, "OPMENU1=0x%08x\n", readl(ispi->sregs + OPMENU1));
++
++	if (ispi->info->type == INTEL_SPI_BYT)
++		dev_dbg(ispi->dev, "BCR=0x%08x\n", readl(ispi->base + BYT_BCR));
++
++	dev_dbg(ispi->dev, "Protected regions:\n");
++	for (i = 0; i < PR_NUM; i++) {
++		u32 base, limit;
++
++		value = readl(ispi->pregs + PR(i));
++		if (!(value & (PR_WPE | PR_RPE)))
++			continue;
++
++		limit = (value & PR_LIMIT_MASK) >> PR_LIMIT_SHIFT;
++		base = value & PR_BASE_MASK;
++
++		dev_dbg(ispi->dev, " %02d base: 0x%08x limit: 0x%08x [%c%c]\n",
++			 i, base << 12, (limit << 12) | 0xfff,
++			 value & PR_WPE ? 'W' : '.',
++			 value & PR_RPE ? 'R' : '.');
++	}
++
++	dev_dbg(ispi->dev, "Flash regions:\n");
++	for (i = 0; i < ispi->nregions; i++) {
++		u32 region, base, limit;
++
++		region = readl(ispi->base + FREG(i));
++		base = region & FREG_BASE_MASK;
++		limit = (region & FREG_LIMIT_MASK) >> FREG_LIMIT_SHIFT;
++
++		if (base > limit || (i > 0 && limit == 0))
++			dev_dbg(ispi->dev, " %02d disabled\n", i);
++		else
++			dev_dbg(ispi->dev, " %02d base: 0x%08x limit: 0x%08x\n",
++				 i, base << 12, (limit << 12) | 0xfff);
++	}
++
++	dev_dbg(ispi->dev, "Using %cW sequencer for register access\n",
++		ispi->swseq ? 'S' : 'H');
++}
++
++/* Reads max 64 bytes from the device fifo */
++static int intel_spi_read_block(struct intel_spi *ispi, void *buf, size_t size)
++{
++	size_t bytes;
++	int i = 0;
++
++	if (size > 64)
++		return -EINVAL;
++
++	while (size > 0) {
++		bytes = min_t(size_t, size, 4);
++		memcpy_fromio(buf, ispi->base + FDATA(i++), bytes);
++		size -= bytes;
++		buf += bytes;
++	}
++
++	return 0;
++}
++
++/* Writes max 64 bytes to the device fifo */
++static int intel_spi_write_block(struct intel_spi *ispi, const void *buf,
++				 size_t size)
++{
++	size_t bytes;
++	int i = 0;
++
++	if (size > 64)
++		return -EINVAL;
++
++	while (size > 0) {
++		bytes = min_t(size_t, size, 4);
++		memcpy_toio(ispi->base + FDATA(i++), buf, bytes);
++		size -= bytes;
++		buf += bytes;
++	}
++
++	return 0;
++}
++
++static int intel_spi_wait_hw_busy(struct intel_spi *ispi)
++{
++	unsigned long timeout = jiffies + msecs_to_jiffies(INTEL_SPI_TIMEOUT);
++	u32 hwstat;
++
++	while (!time_after(jiffies, timeout)) {
++		hwstat = readl(ispi->base + HSFSTS_CTL);
++		if (!(hwstat & HSFSTS_CTL_SCIP))
++			return 0;
++		cond_resched();
++	}
++
++	return -ETIMEDOUT;
++}
++
++static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
++{
++	unsigned long timeout = jiffies + msecs_to_jiffies(INTEL_SPI_TIMEOUT);
++	u32 swstat;
++
++	while (!time_after(jiffies, timeout)) {
++		swstat = readl(ispi->sregs + SSFSTS_CTL);
++		if (!(swstat & SSFSTS_CTL_SCIP))
++			return 0;
++		cond_resched();
++	}
++
++	return -ETIMEDOUT;
++}
++
++static int intel_spi_init(struct intel_spi *ispi)
++{
++	u32 opmenu0, opmenu1, val;
++	int i;
++
++	switch (ispi->info->type) {
++	case INTEL_SPI_BYT:
++		ispi->sregs = ispi->base + BYT_SSFSTS_CTL;
++		ispi->pregs = ispi->base + BYT_PR;
++		ispi->nregions = BYT_FREG_NUM;
++
++		if (writeable) {
++			/* Disable write protection */
++			val = readl(ispi->base + BYT_BCR);
++			if (!(val & BYT_BCR_WPD)) {
++				val |= BYT_BCR_WPD;
++				writel(val, ispi->base + BYT_BCR);
++				val = readl(ispi->base + BYT_BCR);
++			}
++
++			ispi->writeable = !!(val & BYT_BCR_WPD);
++		}
++
++		break;
++
++	case INTEL_SPI_LPT:
++		ispi->sregs = ispi->base + LPT_SSFSTS_CTL;
++		ispi->pregs = ispi->base + LPT_PR;
++		ispi->nregions = LPT_FREG_NUM;
++		break;
++
++	case INTEL_SPI_BXT:
++		ispi->sregs = ispi->base + BXT_SSFSTS_CTL;
++		ispi->pregs = ispi->base + BXT_PR;
++		ispi->nregions = BXT_FREG_NUM;
++		ispi->erase_64k = true;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	/* Disable #SMI generation */
++	val = readl(ispi->base + HSFSTS_CTL);
++	val &= ~HSFSTS_CTL_FSMIE;
++	writel(val, ispi->base + HSFSTS_CTL);
++
++	/*
++	 * BIOS programs allowed opcodes and then locks down the register.
++	 * So read back what opcodes it decided to support. That's the set
++	 * we are going to support as well.
++	 */
++	opmenu0 = readl(ispi->sregs + OPMENU0);
++	opmenu1 = readl(ispi->sregs + OPMENU1);
++
++	/*
++	 * Some controllers can only do basic operations using hardware
++	 * sequencer. All other operations are supposed to be carried out
++	 * using software sequencer. If we find that BIOS has programmed
++	 * opcodes for the software sequencer we use that over the hardware
++	 * sequencer.
++	 */
++	if (opmenu0 && opmenu1) {
++		for (i = 0; i < ARRAY_SIZE(ispi->opcodes) / 2; i++) {
++			ispi->opcodes[i] = opmenu0 >> i * 8;
++			ispi->opcodes[i + 4] = opmenu1 >> i * 8;
++		}
++
++		val = readl(ispi->sregs + PREOP_OPTYPE);
++		ispi->preopcodes[0] = val;
++		ispi->preopcodes[1] = val >> 8;
++
++		/* Disable #SMI generation from SW sequencer */
++		val = readl(ispi->sregs + SSFSTS_CTL);
++		val &= ~SSFSTS_CTL_FSMIE;
++		writel(val, ispi->sregs + SSFSTS_CTL);
++
++		ispi->swseq = true;
++	}
++
++	intel_spi_dump_regs(ispi);
++
++	return 0;
++}
++
++static int intel_spi_opcode_index(struct intel_spi *ispi, u8 opcode)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(ispi->opcodes); i++)
++		if (ispi->opcodes[i] == opcode)
++			return i;
++	return -EINVAL;
++}
++
++static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, u8 *buf,
++			      int len)
++{
++	u32 val, status;
++	int ret;
++
++	val = readl(ispi->base + HSFSTS_CTL);
++	val &= ~(HSFSTS_CTL_FCYCLE_MASK | HSFSTS_CTL_FDBC_MASK);
++
++	switch (opcode) {
++	case SPINOR_OP_RDID:
++		val |= HSFSTS_CTL_FCYCLE_RDID;
++		break;
++	case SPINOR_OP_WRSR:
++		val |= HSFSTS_CTL_FCYCLE_WRSR;
++		break;
++	case SPINOR_OP_RDSR:
++		val |= HSFSTS_CTL_FCYCLE_RDSR;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	val |= (len - 1) << HSFSTS_CTL_FDBC_SHIFT;
++	val |= HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
++	val |= HSFSTS_CTL_FGO;
++	writel(val, ispi->base + HSFSTS_CTL);
++
++	ret = intel_spi_wait_hw_busy(ispi);
++	if (ret)
++		return ret;
++
++	status = readl(ispi->base + HSFSTS_CTL);
++	if (status & HSFSTS_CTL_FCERR)
++		return -EIO;
++	else if (status & HSFSTS_CTL_AEL)
++		return -EACCES;
++
++	return 0;
++}
++
++static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, u8 *buf,
++			      int len)
++{
++	u32 val, status;
++	int ret;
++
++	ret = intel_spi_opcode_index(ispi, opcode);
++	if (ret < 0)
++		return ret;
++
++	val = (len << SSFSTS_CTL_DBC_SHIFT) | SSFSTS_CTL_DS;
++	val |= ret << SSFSTS_CTL_COP_SHIFT;
++	val |= SSFSTS_CTL_FCERR | SSFSTS_CTL_FDONE;
++	val |= SSFSTS_CTL_SCGO;
++	writel(val, ispi->sregs + SSFSTS_CTL);
++
++	ret = intel_spi_wait_sw_busy(ispi);
++	if (ret)
++		return ret;
++
++	status = readl(ispi->base + SSFSTS_CTL);
++	if (status & SSFSTS_CTL_FCERR)
++		return -EIO;
++	else if (status & SSFSTS_CTL_AEL)
++		return -EACCES;
++
++	return 0;
++}
++
++static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
++{
++	struct intel_spi *ispi = nor->priv;
++	int ret;
++
++	/* Address of the first chip */
++	writel(0, ispi->base + FADDR);
++
++	if (ispi->swseq)
++		ret = intel_spi_sw_cycle(ispi, opcode, buf, len);
++	else
++		ret = intel_spi_hw_cycle(ispi, opcode, buf, len);
++
++	if (ret)
++		return ret;
++
++	return intel_spi_read_block(ispi, buf, len);
++}
++
++static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
++{
++	struct intel_spi *ispi = nor->priv;
++	int ret;
++
++	/*
++	 * This is handled with atomic operation and preop code in Intel
++	 * controller so skip it here now.
++	 */
++	if (opcode == SPINOR_OP_WREN)
++		return 0;
++
++	writel(0, ispi->base + FADDR);
++
++	/* Write the value beforehand */
++	ret = intel_spi_write_block(ispi, buf, len);
++	if (ret)
++		return ret;
++
++	if (ispi->swseq)
++		return intel_spi_sw_cycle(ispi, opcode, buf, len);
++	return intel_spi_hw_cycle(ispi, opcode, buf, len);
++}
++
++static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
++			      u_char *read_buf)
++{
++	struct intel_spi *ispi = nor->priv;
++	size_t block_size, retlen = 0;
++	u32 val, status;
++	ssize_t ret;
++
++	while (len > 0) {
++		block_size = min_t(size_t, len, 64);
++
++		writel(from, ispi->base + FADDR);
++
++		val = readl(ispi->base + HSFSTS_CTL);
++		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
++		val &= ~HSFSTS_CTL_FDBC_MASK;
++		val |= (block_size - 1) << HSFSTS_CTL_FDBC_SHIFT;
++		val &= ~HSFSTS_CTL_FCYCLE_MASK;
++		val |= HSFSTS_CTL_FCYCLE_READ;
++		val |= HSFSTS_CTL_FGO;
++		writel(val, ispi->base + HSFSTS_CTL);
++
++		ret = intel_spi_wait_hw_busy(ispi);
++		if (ret)
++			return ret;
++
++		status = readl(ispi->base + HSFSTS_CTL);
++		if (status & HSFSTS_CTL_FCERR)
++			ret = -EIO;
++		else if (status & HSFSTS_CTL_AEL)
++			ret = -EACCES;
++
++		if (ret < 0) {
++			dev_err(ispi->dev, "read error: %llx: %#x\n", from,
++				status);
++			return ret;
++		}
++
++		ret = intel_spi_read_block(ispi, read_buf, block_size);
++		if (ret)
++			return ret;
++
++		len -= block_size;
++		from += block_size;
++		retlen += block_size;
++		read_buf += block_size;
++	}
++
++	return retlen;
++}
++
++static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
++			       const u_char *write_buf)
++{
++	struct intel_spi *ispi = nor->priv;
++	size_t block_size, retlen = 0;
++	u32 val, status;
++	ssize_t ret;
++
++	while (len > 0) {
++		block_size = min_t(size_t, len, 64);
++
++		writel(to, ispi->base + FADDR);
++
++		val = readl(ispi->base + HSFSTS_CTL);
++		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
++		val &= ~HSFSTS_CTL_FDBC_MASK;
++		val |= (block_size - 1) << HSFSTS_CTL_FDBC_SHIFT;
++		val &= ~HSFSTS_CTL_FCYCLE_MASK;
++		val |= HSFSTS_CTL_FCYCLE_WRITE;
++
++		/* Write enable */
++		if (ispi->preopcodes[1] == SPINOR_OP_WREN)
++			val |= SSFSTS_CTL_SPOP;
++		val |= SSFSTS_CTL_ACS;
++		writel(val, ispi->base + HSFSTS_CTL);
++
++		ret = intel_spi_write_block(ispi, write_buf, block_size);
++		if (ret) {
++			dev_err(ispi->dev, "failed to write block\n");
++			return ret;
++		}
++
++		/* Start the write now */
++		val = readl(ispi->base + HSFSTS_CTL);
++		writel(val | HSFSTS_CTL_FGO, ispi->base + HSFSTS_CTL);
++
++		ret = intel_spi_wait_hw_busy(ispi);
++		if (ret) {
++			dev_err(ispi->dev, "timeout\n");
++			return ret;
++		}
++
++		status = readl(ispi->base + HSFSTS_CTL);
++		if (status & HSFSTS_CTL_FCERR)
++			ret = -EIO;
++		else if (status & HSFSTS_CTL_AEL)
++			ret = -EACCES;
++
++		if (ret < 0) {
++			dev_err(ispi->dev, "write error: %llx: %#x\n", to,
++				status);
++			return ret;
++		}
++
++		len -= block_size;
++		to += block_size;
++		retlen += block_size;
++		write_buf += block_size;
++	}
++
++	return retlen;
++}
++
++static int intel_spi_erase(struct spi_nor *nor, loff_t offs)
++{
++	size_t erase_size, len = nor->mtd.erasesize;
++	struct intel_spi *ispi = nor->priv;
++	u32 val, status, cmd;
++	int ret;
++
++	/* If the hardware can do 64k erase use that when possible */
++	if (len >= SZ_64K && ispi->erase_64k) {
++		cmd = HSFSTS_CTL_FCYCLE_ERASE_64K;
++		erase_size = SZ_64K;
++	} else {
++		cmd = HSFSTS_CTL_FCYCLE_ERASE;
++		erase_size = SZ_4K;
++	}
++
++	while (len > 0) {
++		writel(offs, ispi->base + FADDR);
++
++		val = readl(ispi->base + HSFSTS_CTL);
++		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
++		val &= ~HSFSTS_CTL_FDBC_MASK;
++		val &= ~HSFSTS_CTL_FCYCLE_MASK;
++		val |= cmd;
++		val |= HSFSTS_CTL_FGO;
++		writel(val, ispi->base + HSFSTS_CTL);
++
++		ret = intel_spi_wait_hw_busy(ispi);
++		if (ret)
++			return ret;
++
++		status = readl(ispi->base + HSFSTS_CTL);
++		if (status & HSFSTS_CTL_FCERR)
++			return -EIO;
++		else if (status & HSFSTS_CTL_AEL)
++			return -EACCES;
++
++		offs += erase_size;
++		len -= erase_size;
++	}
++
++	return 0;
++}
++
++static bool intel_spi_is_protected(const struct intel_spi *ispi,
++				   unsigned int base, unsigned int limit)
++{
++	int i;
++
++	for (i = 0; i < PR_NUM; i++) {
++		u32 pr_base, pr_limit, pr_value;
++
++		pr_value = readl(ispi->pregs + PR(i));
++		if (!(pr_value & (PR_WPE | PR_RPE)))
++			continue;
++
++		pr_limit = (pr_value & PR_LIMIT_MASK) >> PR_LIMIT_SHIFT;
++		pr_base = pr_value & PR_BASE_MASK;
++
++		if (pr_base >= base && pr_limit <= limit)
++			return true;
++	}
++
++	return false;
++}
++
++/*
++ * There will be a single partition holding all enabled flash regions. We
++ * call this "BIOS".
++ */
++static void intel_spi_fill_partition(struct intel_spi *ispi,
++				     struct mtd_partition *part)
++{
++	u64 end;
++	int i;
++
++	memset(part, 0, sizeof(*part));
++
++	/* Start from the mandatory descriptor region */
++	part->size = 4096;
++	part->name = "BIOS";
++
++	/*
++	 * Now try to find where this partition ends based on the flash
++	 * region registers.
++	 */
++	for (i = 1; i < ispi->nregions; i++) {
++		u32 region, base, limit;
++
++		region = readl(ispi->base + FREG(i));
++		base = region & FREG_BASE_MASK;
++		limit = (region & FREG_LIMIT_MASK) >> FREG_LIMIT_SHIFT;
++
++		if (base > limit || limit == 0)
++			continue;
++
++		/*
++		 * If any of the regions have protection bits set, make the
++		 * whole partition read-only to be on the safe side.
++		 */
++		if (intel_spi_is_protected(ispi, base, limit))
++			ispi->writeable = 0;
++
++		end = (limit << 12) + 4096;
++		if (end > part->size)
++			part->size = end;
++	}
++}
++
++struct intel_spi *intel_spi_probe(struct device *dev,
++	struct resource *mem, const struct intel_spi_boardinfo *info)
++{
++	struct mtd_partition part;
++	struct intel_spi *ispi;
++	int ret;
++
++	if (!info || !mem)
++		return ERR_PTR(-EINVAL);
++
++	ispi = devm_kzalloc(dev, sizeof(*ispi), GFP_KERNEL);
++	if (!ispi)
++		return ERR_PTR(-ENOMEM);
++
++	ispi->base = devm_ioremap_resource(dev, mem);
++	if (IS_ERR(ispi->base))
++		return ispi->base;
++
++	ispi->dev = dev;
++	ispi->info = info;
++	ispi->writeable = info->writeable;
++
++	ret = intel_spi_init(ispi);
++	if (ret)
++		return ERR_PTR(ret);
++
++	ispi->nor.dev = ispi->dev;
++	ispi->nor.priv = ispi;
++	ispi->nor.read_reg = intel_spi_read_reg;
++	ispi->nor.write_reg = intel_spi_write_reg;
++	ispi->nor.read = intel_spi_read;
++	ispi->nor.write = intel_spi_write;
++	ispi->nor.erase = intel_spi_erase;
++
++	ret = spi_nor_scan(&ispi->nor, NULL, SPI_NOR_NORMAL);
++	if (ret) {
++		dev_info(dev, "failed to locate the chip\n");
++		return ERR_PTR(ret);
++	}
++
++	intel_spi_fill_partition(ispi, &part);
++
++	/* Prevent writes if not explicitly enabled */
++	if (!ispi->writeable || !writeable)
++		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
++
++	ret = mtd_device_parse_register(&ispi->nor.mtd, NULL, NULL, &part, 1);
++	if (ret)
++		return ERR_PTR(ret);
++
++	return ispi;
++}
++EXPORT_SYMBOL_GPL(intel_spi_probe);
++
++int intel_spi_remove(struct intel_spi *ispi)
++{
++	return mtd_device_unregister(&ispi->nor.mtd);
++}
++EXPORT_SYMBOL_GPL(intel_spi_remove);
++
++MODULE_DESCRIPTION("Intel PCH/PCU SPI flash core driver");
++MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/mtd/spi-nor/intel-spi.h b/drivers/mtd/spi-nor/intel-spi.h
+new file mode 100644
+index 000000000000..5ab7dc250050
+--- /dev/null
++++ b/drivers/mtd/spi-nor/intel-spi.h
+@@ -0,0 +1,24 @@
++/*
++ * Intel PCH/PCU SPI flash driver.
++ *
++ * Copyright (C) 2016, Intel Corporation
++ * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef INTEL_SPI_H
++#define INTEL_SPI_H
++
++#include <linux/platform_data/intel-spi.h>
++
++struct intel_spi;
++struct resource;
++
++struct intel_spi *intel_spi_probe(struct device *dev,
++	struct resource *mem, const struct intel_spi_boardinfo *info);
++int intel_spi_remove(struct intel_spi *ispi);
++
++#endif /* INTEL_SPI_H */
+diff --git a/include/linux/platform_data/intel-spi.h b/include/linux/platform_data/intel-spi.h
+new file mode 100644
+index 000000000000..942b0c3f8f08
+--- /dev/null
++++ b/include/linux/platform_data/intel-spi.h
+@@ -0,0 +1,31 @@
++/*
++ * Intel PCH/PCU SPI flash driver.
++ *
++ * Copyright (C) 2016, Intel Corporation
++ * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef INTEL_SPI_PDATA_H
++#define INTEL_SPI_PDATA_H
++
++enum intel_spi_type {
++	INTEL_SPI_BYT = 1,
++	INTEL_SPI_LPT,
++	INTEL_SPI_BXT,
++};
++
++/**
++ * struct intel_spi_boardinfo - Board specific data for Intel SPI driver
++ * @type: Type which this controller is compatible with
++ * @writeable: The chip is writeable
++ */
++struct intel_spi_boardinfo {
++	enum intel_spi_type type;
++	bool writeable;
++};
++
++#endif /* INTEL_SPI_PDATA_H */
 -- 
 2.9.3
