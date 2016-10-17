@@ -1,18 +1,22 @@
+Received: from mout.kundenserver.de ([212.227.126.135])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bwG7b-0001ce-KA
+ for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 22:11:04 +0000
 From: Arnd Bergmann <arnd@arndb.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
- RogerCC Lin <rogercc.lin@mediatek.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: [PATCH 02/28] [v2] mtd: mtk: avoid warning in mtk_ecc_encode
-Date: Tue, 18 Oct 2016 00:05:31 +0200
-Message-Id: <20161017220557.1688282-2-arnd@arndb.de>
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 10/28] UBI: fix uninitialized access of vid_hdr pointer
+Date: Tue, 18 Oct 2016 00:10:13 +0200
+Message-Id: <20161017221037.1781185-1-arnd@arndb.de>
 In-Reply-To: <20161017220342.1627073-1-arnd@arndb.de>
 References: <20161017220342.1627073-1-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,74 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When building with -Wmaybe-uninitialized, gcc produces a silly false positive
-warning for the mtk_ecc_encode function:
+A rework of UBI that just appeared in linux-next during the merge
+window introduced caused the recover_peb to use a variable that
+is never initialized as seen from this gcc warning:
 
-drivers/mtd/nand/mtk_ecc.c: In function 'mtk_ecc_encode':
-drivers/mtd/nand/mtk_ecc.c:402:15: error: 'val' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+drivers/mtd/ubi/eba.c: In function ‘recover_peb’:
+drivers/mtd/ubi/eba.c:744:40: error: ‘vid_hdr’ may be used uninitialized in this function [-Werror=maybe-uninitialized]
 
-The function for some reason contains a double byte swap on big-endian
-builds to get the OOB data into the correct order again, and is written
-in a slightly confusing way.
+It seems clear that the change to the function arguments was missing
+the initialization that I'm now adding back to restore the
+way the function was working before.
 
-Using a simple memcpy32_fromio() to read the data simplifies it a lot
-so it becomes more readable and produces no warning. However, the
-output might not have 32-bit alignment, so we have to use another
-memcpy to avoid taking alignment faults or writing beyond the end
-of the array.
-
+Fixes: 3291b52f9ff0 ("UBI: introduce the VID buffer concept")
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v2: move temporary buffer into struct mtk_ecc instead of having it
-    on the stack, as suggested by Boris Brezillon
----
- drivers/mtd/nand/mtk_ecc.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ drivers/mtd/ubi/eba.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-index d54f666..dbf2562 100644
---- a/drivers/mtd/nand/mtk_ecc.c
-+++ b/drivers/mtd/nand/mtk_ecc.c
-@@ -86,6 +86,8 @@ struct mtk_ecc {
- 	struct completion done;
- 	struct mutex lock;
- 	u32 sectors;
-+
-+	u8 eccdata[112];
- };
- 
- static inline void mtk_ecc_wait_idle(struct mtk_ecc *ecc,
-@@ -366,9 +368,8 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
- 		   u8 *data, u32 bytes)
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 95c4048..2e152be 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -719,7 +719,7 @@ static int try_recover_peb(struct ubi_volume *vol, int pnum, int lnum,
+ 			   struct ubi_vid_io_buf *vidb, bool *retry)
  {
- 	dma_addr_t addr;
--	u8 *p;
--	u32 len, i, val;
--	int ret = 0;
-+	u32 len;
-+	int ret;
+ 	struct ubi_device *ubi = vol->ubi;
+-	struct ubi_vid_hdr *vid_hdr;
++	struct ubi_vid_hdr *vid_hdr = ubi_get_vid_hdr(vidb);
+ 	int new_pnum, err, vol_id = vol->vol_id, data_size;
+ 	uint32_t crc;
  
- 	addr = dma_map_single(ecc->dev, data, bytes, DMA_TO_DEVICE);
- 	ret = dma_mapping_error(ecc->dev, addr);
-@@ -393,14 +394,12 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
- 
- 	/* Program ECC bytes to OOB: per sector oob = FDM + ECC + SPARE */
- 	len = (config->strength * ECC_PARITY_BITS + 7) >> 3;
--	p = data + bytes;
- 
--	/* write the parity bytes generated by the ECC back to the OOB region */
--	for (i = 0; i < len; i++) {
--		if ((i % 4) == 0)
--			val = readl(ecc->regs + ECC_ENCPAR(i / 4));
--		p[i] = (val >> ((i % 4) * 8)) & 0xff;
--	}
-+	/* write the parity bytes generated by the ECC back to temp buffer */
-+	__ioread32_copy(ecc->eccdata, ecc->regs + ECC_ENCPAR(0), round_up(len, 4));
-+
-+	/* copy into possibly unaligned OOB region with actual length */
-+	memcpy(data + bytes, ecc->eccdata, len);
- timeout:
- 
- 	dma_unmap_single(ecc->dev, addr, bytes, DMA_TO_DEVICE);
 -- 
 2.9.0
