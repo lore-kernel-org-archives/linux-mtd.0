@@ -1,21 +1,33 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
+Received: from mail-lf0-x235.google.com ([2a00:1450:4010:c07::235])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwBPU-0005H7-LT
- for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 17:09:14 +0000
-Subject: Re: [PATCH v2, 1/1] mtd: devices: m25p80: Add PM suspend resume
- support
-To: Kamal Dasu <kdasu.kdev@gmail.com>, <linux-spi@vger.kernel.org>,
- <f.fainelli@gmail.com>, <linux-mtd@lists.infradead.org>,
- <computersforpeace@gmail.com>
-References: <1473710494-4084-1-git-send-email-kdasu.kdev@gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <bcm-kernel-feedback-list@broadcom.com>
-Message-ID: <4fe502a4-ee01-3fb8-6697-161de814596e@atmel.com>
-Date: Mon, 17 Oct 2016 19:08:49 +0200
-MIME-Version: 1.0
-In-Reply-To: <1473710494-4084-1-git-send-email-kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+ id 1bwDAb-0001cq-Vp
+ for linux-mtd@lists.infradead.org; Mon, 17 Oct 2016 19:01:59 +0000
+Received: by mail-lf0-x235.google.com with SMTP id x79so309501068lff.0
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Oct 2016 12:01:36 -0700 (PDT)
+Subject: Re: [PATCH 06/10] gpio: sam: Document bindings of SAM FPGA GPIO block
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+In-Reply-To: <20161010200346.GA24239@rob-hp-laptop>
+Date: Mon, 17 Oct 2016 22:01:39 +0300
+Cc: Lee Jones <lee.jones@linaro.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+ Frank Rowand <frowand.list@gmail.com>, Wolfram Sang <wsa@the-dreams.de>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Wim Van Sebroeck <wim@iguana.be>,
+ Peter Rosin <peda@axentia.se>, Debjit Ghosh <dghosh@juniper.net>,
+ Georgi Vlaev <gvlaev@juniper.net>, Guenter Roeck <linux@roeck-us.net>,
+ Maryam Seraj <mseraj@juniper.net>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <59521A70-4897-4F10-B757-E25245F8E05E@konsulko.com>
+References: <1475853518-22264-1-git-send-email-pantelis.antoniou@konsulko.com>
+ <1475853518-22264-7-git-send-email-pantelis.antoniou@konsulko.com>
+ <20161010200346.GA24239@rob-hp-laptop>
+To: Rob Herring <robh@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,158 +37,188 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kamal,
+Hi Rob,
 
-Le 12/09/2016 à 22:01, Kamal Dasu a écrit :
-> Adding PM support so as to be able to probe spi-nor flash
-> on resume. There are vendor specific commands to setup
-> the transfer mode and enable read/write as part of
-> spi_nor_scan(), done on initial probe and needed on resume().
-> The spi-nor structure is private to the m25p driver and hence
-> is the only place this can be done without having to duplicate
-> code in controller driver.
+> On Oct 10, 2016, at 23:03 , Rob Herring <robh@kernel.org> wrote:
+>=20
+> On Fri, Oct 07, 2016 at 06:18:34PM +0300, Pantelis Antoniou wrote:
+>> From: Georgi Vlaev <gvlaev@juniper.net>
+>>=20
+>> Add device tree bindings document for the GPIO driver of
+>> Juniper's SAM FPGA.
+>>=20
+>> Signed-off-by: Georgi Vlaev <gvlaev@juniper.net>
+>> [Ported from Juniper kernel]
+>> Signed-off-by: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+>> ---
+>> .../devicetree/bindings/gpio/jnx,gpio-sam.txt      | 110 =
++++++++++++++++++++++
+>> 1 file changed, 110 insertions(+)
+>> create mode 100644 =
+Documentation/devicetree/bindings/gpio/jnx,gpio-sam.txt
+>>=20
+>> diff --git a/Documentation/devicetree/bindings/gpio/jnx,gpio-sam.txt =
+b/Documentation/devicetree/bindings/gpio/jnx,gpio-sam.txt
+>> new file mode 100644
+>> index 0000000..514c350
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/gpio/jnx,gpio-sam.txt
+>> @@ -0,0 +1,110 @@
+>> +Juniper SAM FPGA GPIO block
+>> +
+>> +The controller's registers are organized as sets of eight 32-bit
+>> +registers with each set controlling a bank of up to 32 pins.  A =
+single
+>> +interrupt is shared for all of the banks handled by the controller.
+>> +
+>> +Required properties:
+>> +
+>> +- compatible:
+>> +    Must be "jnx,gpio-sam"
+>> +
+>> +- #gpio-cells:
+>> +    Should be <2>.  The first cell is the pin number (within the =
+controller's
+>> +    pin space), and the second is used for the following flags:
+>> +	bit[0]: direction (0 =3D out, 1 =3D in)
+>> +	bit[1]: init high
+>> +	bit[2]: active low
+>> +	bit[3]: open drain
+>> +	bit[4]: open drain
+>=20
+> Use and/or add to standard flags.
+>=20
 
-Just to be sure I've understood the purpose of this patch: here we suppose
-that the SPI NOR memory power supply was cut when the CPU entered its suspend
-mode. So when the CPU is resumed, the SPI NOR memory power supply is enabled
-again as well and the internal state of the memory is reset.
+OK.
 
-Depending on the manufacturer, we may need to send dedicated commands so the
-memory is ready again (for instance, a Global Unlock Block command for SST
-memories so we can perform Sector Erase and Page Program operations).
-Those commands are sent from spi_nor_scan(). Hence you call spi_nor_scan()
-once again from the resume callback.
+>> +
+>> +- gpio-controller:
+>> +    Specifies that the node is a GPIO controller.
+>> +
+>> +Optional properties:
+>> +
+>> +- reg:
+>> +    This driver is part of the SAM FPGA MFD driver, so the
+>> +    address range is supplied by that driver. However you can
+>> +    override using this property.
+>> +
+>> +- gpio-base:
+>> +    Base of the GPIO pins of this instance. If not present use =
+system allocated.
+>=20
+> This probably needs to go.
+>=20
 
-If so, your patch does make sense but I wonder whether some operations done
-inside spi_nor_scan() and not related to the memory itself but more to other
-layers like mtd (struct mtd_info) could always be safely performed a second
-time. I don't know if that issue already exists or would ever exist, if so
-it might be interesting to find a mean to tell spi_nor_scan() whether it's
-called for the first time on this memory (boot) or not (resume).
+OK.
 
-Best regards,
+>> +
+>> +- gpio-count:
+>=20
+> ngpios instead.
+>=20
 
-Cyrille
+OK.
 
+>> +    Number of GPIO pins of this instance. If not present read the =
+number from
+>> +    the one configured in the FPGA data. Maximum number is 512.
+>> +
+>> +- #interrupt-cells:
+>> +    Should be <2>.  The first cell is the GPIO number, the second =
+should specify
+>> +    flags.  The following subset of flags is supported:
+>> +    - bits[16,4:0] trigger type and level flags
+>> +	bit  0: rising edge interrupt
+>> +	bit  1: falling edge interrupt
+>> +	bit  2: active high interrupt
+>> +	bit  3: active low interrupt
+>> +	bit  4: enable debounce
+>> +	bit 16: signal is active low
+>=20
+> What does this mean?
+>=20
 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> ---
->  drivers/mtd/devices/m25p80.c | 68 +++++++++++++++++++++++++++++++-------------
->  1 file changed, 48 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 9cf7fcd..48c3f64 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -186,6 +186,39 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  }
->  
->  /*
-> + * scan for spi nor flash vendor parts and setup
-> + * read/write mode
-> + */
-> +static int m25p_nor_flash_scan(struct device *dev)
-> +{
-> +	struct m25p *flash = dev_get_drvdata(dev);
-> +	struct flash_platform_data	*data;
-> +	char *flash_name = NULL;
-> +	enum read_mode mode = SPI_NOR_NORMAL;
-> +
-> +	data = dev_get_platdata(dev);
-> +
-> +	/* For some (historical?) reason many platforms provide two different
-> +	 * names in flash_platform_data: "name" and "type". Quite often name is
-> +	 * set to "m25p80" and then "type" provides a real chip name.
-> +	 * If that's the case, respect "type" and ignore a "name".
-> +	 */
-> +	if (data && data->type)
-> +		flash_name = data->type;
-> +	else if (!strcmp(flash->spi->modalias, "spi-nor"))
-> +		flash_name = NULL; /* auto-detect */
-> +	else
-> +		flash_name = flash->spi->modalias;
-> +
-> +	if (flash->spi->mode & SPI_RX_QUAD)
-> +		mode = SPI_NOR_QUAD;
-> +	else if (flash->spi->mode & SPI_RX_DUAL)
-> +		mode = SPI_NOR_DUAL;
-> +
-> +	return spi_nor_scan(&flash->spi_nor, flash_name, mode);
-> +}
-> +
-> +/*
->   * board specific setup should have ensured the SPI clock used here
->   * matches what the READ command supports, at least until this driver
->   * understands FAST_READ (for clocks over 25 MHz).
-> @@ -195,8 +228,6 @@ static int m25p_probe(struct spi_device *spi)
->  	struct flash_platform_data	*data;
->  	struct m25p *flash;
->  	struct spi_nor *nor;
-> -	enum read_mode mode = SPI_NOR_NORMAL;
-> -	char *flash_name;
->  	int ret;
->  
->  	data = dev_get_platdata(&spi->dev);
-> @@ -220,27 +251,11 @@ static int m25p_probe(struct spi_device *spi)
->  	spi_set_drvdata(spi, flash);
->  	flash->spi = spi;
->  
-> -	if (spi->mode & SPI_RX_QUAD)
-> -		mode = SPI_NOR_QUAD;
-> -	else if (spi->mode & SPI_RX_DUAL)
-> -		mode = SPI_NOR_DUAL;
-> -
->  	if (data && data->name)
->  		nor->mtd.name = data->name;
->  
-> -	/* For some (historical?) reason many platforms provide two different
-> -	 * names in flash_platform_data: "name" and "type". Quite often name is
-> -	 * set to "m25p80" and then "type" provides a real chip name.
-> -	 * If that's the case, respect "type" and ignore a "name".
-> -	 */
-> -	if (data && data->type)
-> -		flash_name = data->type;
-> -	else if (!strcmp(spi->modalias, "spi-nor"))
-> -		flash_name = NULL; /* auto-detect */
-> -	else
-> -		flash_name = spi->modalias;
-> +	ret = m25p_nor_flash_scan(nor->dev);
->  
-> -	ret = spi_nor_scan(nor, flash_name, mode);
->  	if (ret)
->  		return ret;
->  
-> @@ -248,7 +263,6 @@ static int m25p_probe(struct spi_device *spi)
->  				   data ? data->nr_parts : 0);
->  }
->  
-> -
->  static int m25p_remove(struct spi_device *spi)
->  {
->  	struct m25p	*flash = spi_get_drvdata(spi);
-> @@ -319,10 +333,24 @@ static const struct of_device_id m25p_of_table[] = {
->  };
->  MODULE_DEVICE_TABLE(of, m25p_of_table);
->  
-> +#ifdef CONFIG_PM_SLEEP
-> +static int m25p_suspend(struct device *dev)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int m25p_resume(struct device *dev)
-> +{
-> +	return m25p_nor_flash_scan(dev);
-> +}
-> +#endif
-> +static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
-> +
->  static struct spi_driver m25p80_driver = {
->  	.driver = {
->  		.name	= "m25p80",
->  		.of_match_table = m25p_of_table,
-> +		.pm	= &m25p_pm_ops,
->  	},
->  	.id_table	= m25p_ids,
->  	.probe	= m25p_probe,
-> 
+I will reword.
+
+>> +    See also =
+Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+>> +
+>> +- gpio-interrupts:
+>> +    A number of triples that define the mapping of interrupt groupsb =
+to a range of
+>> +    pins. The first cell defines the interrupt group, the second is =
+the start of
+>> +    the pin range and the third the number of pins in the range.
+>=20
+> Needs a vendor prefix.
+>=20
+
+OK.
+
+>> +
+>> +- gpio-exports:
+>> +    A subnode containing the list of pins that will be exported to =
+user-space.
+>=20
+> DT doesn't know about userspace. Drop this.
+>=20
+
+OK, the export bit should go.=20
+
+>> +    Each subnode contains:
+>> +    Required properties:
+>> +	- pin: The gpio to be exported and the relevant flags.
+>> +    Optional properties:
+>> +        - label: The label to use for export; if not supplied use =
+the node name.
+>> +
+>> +Example:
+>> +
+>> +gpio20: gpio-sam {
+>> +	compatible =3D "jnx,gpio-sam";
+>> +	gpio-controller;
+>> +	interrupt-controller;
+>> +	/* 1st cell: gpio pin
+>> +	 * 2nd cell: flags (bit mask)
+>> +	 * bit  0: rising edge interrupt
+>> +	 * bit  1: falling edge interrupt
+>> +	 * bit  2: active high interrupt
+>> +	 * bit  3: active low interrupt
+>> +	 * bit  4: enable debounce
+>> +	 * bit 16: signal is active low
+>> +	 */
+>> +	#interrupt-cells =3D <2>;
+>> +	#gpio-cells =3D <2>;
+>> +	gpio-count =3D <340>;
+>> +	/* 1st cell: gpio interrupt status bit
+>> +	 * 2nd cell: 1st pin
+>> +	 * 3rd cell: # of pins
+>> +	 */
+>> +	gpio-interrupts =3D
+>> +		<0 0 32>,	/* TL / TQ */
+>> +		<1 32 32>,	/* PIC 1 */
+>> +		<2 32 32>,	/* PIC 1 spare */
+>> +		<7 148 32>,	/* PIC 0 */
+>> +		<8 170 32>,	/* PIC 0 spare */
+>> +		<16 318 22>;	/* FPC */
+>> +
+>> +	gpio-exports {
+>> +		/*
+>> +		 * flags:
+>> +		 * GPIOF_DIR_IN			bit 0=3D1
+>> +		 * GPIOF_DIR_OUT		bit 0=3D0
+>> +		 * GPIOF_INIT_HIGH		bit 1=3D1
+>> +		 *   GPIOF_INIT_HIGH is raw, not translated
+>> +		 * GPIOF_ACTIVE_LOW		bit 2=3D1
+>> +		 * GPIOF_OPEN_DRAIN		bit 3=3D1
+>> +		 * GPIOF_OPEN_SOURCE		bit 4=3D1
+>> +		 * GPIOF_EXPORT			bit 5=3D1
+>> +		 * GPIOF_EXPORT_CHANGEABLE      bit 6=3D1
+>> +		 */
+>> +		tl0-rst {
+>> +			pin =3D < 8 0x24 >;
+>> +		};
+>> +	};
+>> +};
+>> --=20
+>> 1.9.1
