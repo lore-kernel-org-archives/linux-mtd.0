@@ -1,24 +1,31 @@
-Received: from mail-oi0-f66.google.com ([209.85.218.66])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwXQN-00062B-Kw
- for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 16:39:37 +0000
-Received: by mail-oi0-f66.google.com with SMTP id i127so14709054oia.0
- for <linux-mtd@lists.infradead.org>; Tue, 18 Oct 2016 09:39:14 -0700 (PDT)
-Date: Tue, 18 Oct 2016 11:39:13 -0500
-From: Rob Herring <robh@kernel.org>
-To: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- devicetree@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
- Milton Miller <miltonm@us.ibm.com>
-Subject: Re: [PATCH] mtd/spi-nor: Add SPI memory controllers for Aspeed SoCs
-Message-ID: <20161018163913.7z337iyc53atp4yd@rob-hp-laptop>
-References: <1476723427-13243-1-git-send-email-clg@kaod.org>
+ id 1bwZPx-0005hB-3m
+ for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 18:47:18 +0000
+Received: by mail-pf0-x243.google.com with SMTP id 128so178166pfz.1
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Oct 2016 11:46:56 -0700 (PDT)
+Date: Tue, 18 Oct 2016 11:46:51 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ nicolas.ferre@atmel.com,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ LKML <linux-kernel@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 1/1] MAINTAINERS: add a maintainer for the SPI NOR
+ subsystem
+Message-ID: <20161018184651.GA71760@google.com>
+References: <0a3eaa21fb0f38743308c9cc9fc5d2373f4877de.1476802288.git.cyrille.pitchen@atmel.com>
+ <d4e954c1-0bbb-fc16-4e9a-46c25ec4fb9e@denx.de>
+ <CAFLxGvy9okx1cHnRhq2U-u574PzAk=Tampw1Fmvp4KzY8vnDnw@mail.gmail.com>
+ <3d45f698-08e9-e672-d405-1ab9bfec1222@atmel.com>
+ <cf010a6c-b642-0994-bbfd-c86d5ab24e6e@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1476723427-13243-1-git-send-email-clg@kaod.org>
+In-Reply-To: <cf010a6c-b642-0994-bbfd-c86d5ab24e6e@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,141 +35,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 17, 2016 at 06:57:07PM +0200, Cédric Le Goater wrote:
-> This driver adds mtd support for spi-nor attached to either or both of
-> the Firmware Memory Controller or the SPI Flash Controller (AST2400
-> only).
++ others
+
+On Tue, Oct 18, 2016 at 06:15:23PM +0200, Richard Weinberger wrote:
+> On 18.10.2016 17:55, Cyrille Pitchen wrote:
+> > Le 18/10/2016 à 17:30, Richard Weinberger a écrit :
+> >> On Tue, Oct 18, 2016 at 5:17 PM, Marek Vasut <marex@denx.de> wrote:
+> >>> On 10/18/2016 04:58 PM, Cyrille Pitchen wrote:
+> >>>> I would like to volunteer as a maintainer for the SPI NOR part of the MTD
+> >>>> subsystem.
+
+Awesome!
+
+> >>>> Over the last months, a significant number of SPI NOR related patches have
+> >>>> been submitted, some of them have been reviewed, but very few have finally
+> >>>> been merged. Hence, the number of pending SPI NOR related patches continues
+> >>>> to increase over the time.
+
+Agreed, and sorry. But I guess the delays had the side effect of forcing
+peoples hands, instead of delaying the inevitable.
+
+> >>>> Through my work on SPI NOR memories from many manufacturers over the last
+> >>>> two years, I've gained a solid understanding of this technology.
+> >>>> I've already helped by reviewing patches from other contributors on the
+> >>>> mailing list, and would like to help getting those patches integrated by
+> >>>> volunteering as a maintainer for this specific area.
+
+Agreed.
+
+> >>>> Boris Brezillon has already stepped up as a maintainer for the NAND
+> >>>> sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
+> >>>> the same way: I would be reviewing patches touching this area, collecting
+> >>>> them and sending pull requests to Brian Norris.
+> >>
+> >> I'd suggest you send pull requests directly to Linus.
+> >> Same for NAND.
+
+I could go with either method I suppose, but I don't personally like the
+idea of splitting out the various bits of MTD into *completely*
+independent lines of development. As long as someone (not necessarily
+me) can manage pulling the sub-subsystems together, I think it would
+make sense to have 1 PR for Linus for non-UBI/FS MTD changes.
+
+> >>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> >>>
+> >>> Let me know if you need co-maintainer.
+> >>
+> >> +1
+
++1, I think I've not-so-subtly suggested this to Marek previously.
+
+> >> While we are here, what about forming a MTD maintainer team?
+> >> This concept works very well for other subsystems.
+> >>
+> > 
+> > I totally agree with you so if Marek and you volunteer as well, your help
+> > will be precious!
 > 
-> The SMC controllers on the Aspeed AST2500 SoC are very similar to the
-> ones found on the AST2400. The differences are on the number of
-> supported flash modules and their default mappings in the SoC address
-> space.
-> 
-> The Aspeed AST2500 has one SPI controller for the BMC firmware and two
-> for the host firmware. All controllers have now the same set of
-> registers compatible with the AST2400 FMC controller and the legacy
-> 'SMC' controller is fully gone.
-> 
-> Based on previous work from Milton D. Miller II <miltonm@us.ibm.com>
-> 
-> Signed-off-by: Cédric Le Goater <clg@kaod.org>
-> ---
->  .../devicetree/bindings/mtd/aspeed-smc.txt         |  86 +++
->  drivers/mtd/spi-nor/Kconfig                        |  12 +
->  drivers/mtd/spi-nor/Makefile                       |   1 +
->  drivers/mtd/spi-nor/aspeed-smc.c                   | 746 +++++++++++++++++++++
->  4 files changed, 845 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
->  create mode 100644 drivers/mtd/spi-nor/aspeed-smc.c
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/aspeed-smc.txt b/Documentation/devicetree/bindings/mtd/aspeed-smc.txt
-> new file mode 100644
-> index 000000000000..f6bfa7761205
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/aspeed-smc.txt
-> @@ -0,0 +1,86 @@
-> +* Aspeed Static Memory controller
-> +* Aspeed SPI Flash Controller
-> +
-> +The Static memory controller in the ast2400 supports 5 chip selects each
-> +can be attached to NAND, parallel NOR, or SPI NOR attached flash.  The
-> +Firmware Memory Controller in the ast2500 supports 3 chip selects, two of
-> +which are always in SPI-NOR mode and the third can be SPI-NOR or parallel
-> +flash.  The SPI flash controller in the ast2400 supports one of 2 chip
-> +selects selected by pinmux.  The two SPI flash controllers in the ast2500
-> +each support two chip selects.
-> +
-> +Required properties:
-> +  - compatible : Should be one of
-> +	"aspeed,ast2400-fmc" for the AST2400 Static Memory Controller
-> +	"aspeed,ast2400-smc" for the AST2400 SPI Flash Controller
-> +	"aspeed,ast2500-fmc" for the AST2500 Firmware SPI Memory Controller
-> +	"aspeed,ast2500-smc" for the AST2500 SPI Flash Controllers
-> +  - reg : the first contains the control register location and length,
-> +          the second contains the memory window mapping address and length
-> +  - clocks : The APB clock input to the controller
-> +  - #address-cells : must be 1 corresponding to chip select child binding
-> +  - #size-cells : must be 0 corresponding to chip select child binding
-> +
-> +Optional properties:
-> +  - aspeed,fmc-has-dma : controller supports DMA transfers
+> Well, my SPI-NOR fu is not strong. And UBI/UBIFS keeps me busy.
+> But if Brian likes the idea of having a MTD maintainer team I'll offer my help.
 
-The compatible should imply this.
+I think a MTD maintainer team would be good to try, and I think it might
+help to resolve my above complaint; a maintainer team could help to make
+sure that everything can be coordinated in one tree + pull request,
+without adding too many extra points of failure (e.g., so we don't have
+awesome SPI NOR and NAND trees get bogged down by a slow MTD pull).
 
-> +  - interrupts : Should contain the interrupt for the dma device if an fmc
-> +
-> +Child node required properties:
+Random thoughts:
 
-Need to say what the child nodes are.
+ Does it make sense to still use infradead.org? We'd need to add a few
+ users there.
 
-> +  - reg : must contain chip select number in first cell of address, must
-> +	  be 1 tuple long
-> +  - compatible : may contain "vendor,part", must include "jedec,spi-nor"
-> +		when attached to SPI flash (see spi-nor.txt binding).
-> +
-> +Child node optional properties:
-> +  - label           - (optional) name to assign to mtd, default os assigned
-> +
-> +Child node optional properties for SPI mode (may be ignored):
-> +  - spi-max-frequency - (optional) max frequency of spi bus
-> +  - spi-cpol        - (optional) Empty property indicating device requires
-> +			inverse clock polarity (CPOL) mode (boolean)
-> +  - spi-cpha        - (optional) Empty property indicating device requires
-> +			shifted clock phase (CPHA) mode (boolean)
-> +  - spi-tx-bus-width - (optional) The bus width(number of data wires) that
-> +                        used for MOSI. Defaults to 1 if not present.
-> +  - spi-rx-bus-width - (optional) The bus width(number of data wires) that
-> +                        used for MOSI. Defaults to 1 if not present.
-> +
-> +Grandchild node optional properties:
-> + - see mtd/partiton.txt for partitioning bindings and mtd naming
-> +
-> +
-> +Example:
-> +
-> +fmc: fmc@1e620000 {
-> +	compatible = "aspeed,ast2400-fmc";
-> +	reg = < 0x1e620000 0x94
-> +		0x20000000 0x02000000
-> +		0x22000000 0x02000000 >;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	flash@0 {
-> +		reg = < 0 >;
-> +		compatible = "jedec,spi-nor" ;
-> +		label = "bmc";
+ Trust? I have met most of you in person, but not all, and I don't have
+ signed keys from all of you. I don't know what the best way to get a
+ group-writeable repo with credentials for all of you that we can trust.
+ (FWIW, neither Artem nor David met me, but they saw it fit to grant me
+ infradead.org access ;) )
 
-label isn't really a defined property here. Belongs in jedec,spi-nor 
-binding if you want to add it.
+ Coordination: how do we avoid stepping on each other's toes? We'd have
+ to definitely 100% kill 'git push -f' and 'git rebase'. Also, would
+ patchwork help or hurt us here? I think Boris and I have been sort of
+ using it, but it's still got a pretty good backlog (partly real --
+ i.e., the cause for this thread; and partly artificial, due to
+ accounting).
 
-> +		/* spi-max-frequency = <>; */
-> +		/* m25p,fast-read; */
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		boot@0 {
+ What to do about mtd-utils.git? That's been languishing a bit, and it
+ has no release schedule. Maybe we want a plan for that too.
 
-Use the newer style with all partitions under a 'partitions' node.
+BTW, will anybody be at Linux Plumbers? I plan to be there in a few
+weeks. And something tells me dwmw2 will be there.
 
-> +			label = "boot-loader";
-> +			reg = < 0 0x8000 >
-
-Missing ';'
-
-> +		}
-> +		image@8000 {
-> +			label = "kernel-image";
-> +			reg = < 0x8000 0x1f8000 >
-
-ditto
-
-> +		}
-> +	};
-> +	flash@1 {
-> +		reg = < 1 >;
-> +		compatible = "jedec,spi-nor" ;
-> +		label = "alt";
-> +		/* spi-max-frequency = <>; */
-> +		status = "fail";
-> +		/* m25p,fast-read; */
-> +	};
-> +};
+Brian
