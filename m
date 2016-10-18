@@ -1,27 +1,18 @@
-Received: from mail-lf0-x22b.google.com ([2a00:1450:4010:c07::22b])
+Received: from smtpout.microchip.com ([198.175.253.82]
+ helo=email.microchip.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwTCb-0001kQ-97
- for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 12:09:06 +0000
-Received: by mail-lf0-x22b.google.com with SMTP id b81so340368438lfe.1
- for <linux-mtd@lists.infradead.org>; Tue, 18 Oct 2016 05:08:44 -0700 (PDT)
-Subject: Re: [RFC PATCH] mtd: nand: Add OX820 NAND Support
-To: Daniel Golle <daniel@makrotopia.org>
-References: <20161018090927.1990-1-narmstrong@baylibre.com>
- <20161018110807.GD1641@makrotopia.org>
- <c377cb60-a359-62c1-dc6b-7b0be8b8e228@baylibre.com>
- <20161018115115.GF1641@makrotopia.org>
-Cc: boris.brezillon@free-electrons.com, devicetree@vger.kernel.org,
- linux-oxnas@lists.tuxfamily.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, richard@nod.at, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org,
- Russell Senior <russell@personaltelco.net>
-From: Neil Armstrong <narmstrong@baylibre.com>
-Message-ID: <ff8fb0cf-a442-12dc-3365-fd3417ae887c@baylibre.com>
-Date: Tue, 18 Oct 2016 14:08:38 +0200
+ id 1bwVqI-0005Lw-GT
+ for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 14:58:15 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: [PATCH 1/1] MAINTAINERS: add a maintainer for the SPI NOR subsystem
+Date: Tue, 18 Oct 2016 16:58:44 +0200
+Message-ID: <0a3eaa21fb0f38743308c9cc9fc5d2373f4877de.1476802288.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <20161018115115.GF1641@makrotopia.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,112 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/18/2016 01:51 PM, Daniel Golle wrote:
-> Hi Neil,
-> 
-> On Tue, Oct 18, 2016 at 01:24:22PM +0200, Neil Armstrong wrote:
->> On 10/18/2016 01:08 PM, Daniel Golle wrote:
->>> Hi Neil,
->>>
->>> great to see progress towards supporting OX820!
->>> The NAND driver I hacked up for Kernel 4.1 and 4.4 in OpenWrt/LEDE
->>> looks very similar, see
->>>
->>> https://git.lede-project.org/?p=lede/dangole/staging.git;a=blob;f=target/linux/oxnas/files/drivers/mtd/nand/oxnas_nand.c;h=f5a142950e32227fee304de731e619278350a91b;hb=refs/heads/oxnas-nand
->>>
->>> To me therefore this looks quite good, just one small question below.
->>
->> Hi Daniel,
->>
->> Yes, I work step by step, I hope to have something booting for 4.10 !
->>
->> Indeed, they look identical except the part_probes[] stuff, are they necessary ?
-> 
-> Nah, this was dropped around kernel 4.7 from most drivers in favour of
-> using the default partition probes (ie. cmdline and dt) afaik.
-> 
->>
->> My primary source of code was Ma Haiju's tree and OPenWRT's tree, but would some people like to push some of the openwrt driver upstream somehow ?
-> 
-> I was planning this somehow, but lack the resources to seriously move
-> forward. I've mostly been focussing on cleaning up Ma Haiju's code and
-> improving support for the SATA driver (ie. adding support for both
-> ports) and re-factoring the stmmac-based Ethernet driver to match the
-> current kernel driver's style.
-> However, I'm still using platform-specific includes (hardware.h) and
-> thus look forward to rebase SATA and Ethernet support on top of your
-> tree, as that would unluck ox820 support in multi-v6 instead of having
-> a platform-specific kernel.
+I would like to volunteer as a maintainer for the SPI NOR part of the MTD
+subsystem.
 
-I made a fork of the SATA driver for the OX810SE who needs the external DMA
-to work since it lacks the SATA-sgdma as used in OX820.
-But it seems having Ethernet support would be easy, I can rework it and post it.
+Over the last months, a significant number of SPI NOR related patches have
+been submitted, some of them have been reviewed, but very few have finally
+been merged. Hence, the number of pending SPI NOR related patches continues
+to increase over the time.
 
-Yes, It would be great to sync with the upstream tree at some point, please tell
-me how my work could be useful.
+Through my work on SPI NOR memories from many manufacturers over the last
+two years, I've gained a solid understanding of this technology.
+I've already helped by reviewing patches from other contributors on the
+mailing list, and would like to help getting those patches integrated by
+volunteering as a maintainer for this specific area.
 
-I only own a PogoPlug v3 to support the basic OX820, but I will lack hardware to
-support PCIe and the dual SATA setup at some point.
+Boris Brezillon has already stepped up as a maintainer for the NAND
+sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
+the same way: I would be reviewing patches touching this area, collecting
+them and sending pull requests to Brian Norris.
 
-The next work I plan to do once the basic OX820 boot is merged is to push the USB,
-and the PLL support in the clock driver. The SATA and PCIe would be a natural following work.
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+---
+ MAINTAINERS | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-> 
-> Currently there are problems with the NAND driver failing to detect the
-> chip on non-PCIe platform like the PogoPlug V3 (non-Pro), MitraStar
-> STG-212 and probably other non-PCIe boards which I didn't check yet.
-> This magically happened when switching from kernel 4.1 to 4.4, I'm
-> bisecting this since, but the problem seems to be hidden somewhere
-> between the lines (ie. probe-order-related or such)...
-> Did you test your NAND driver on any non-PCIe boards and did it work?
-
-Actually I tested only on non-PCIe, since I only own a PogoPlug v3 (non-pro) and the
-probe works perfectly on 4.9-rc1 :
-[...]
-nand: Could not find valid ONFI parameter page; aborting
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xf1
-nand: Hynix NAND 128MiB 3,3V 8-bit
-nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-Scanning device for bad blocks
-Bad eraseblock 511 at 0x000003fe0000
-2 ofpart partitions found on MTD device 41000000.nand
-Creating 2 MTD partitions on "41000000.nand":
-0x000000000000-0x000000e00000 : "boot"
-0x000000e00000-0x000008000000 : "ubi"
-[...]
-# ubiattach -p /dev/mtd1
-ubi0: attaching mtd1
-ubi0: scanning is finished
-ubi0 warning: ubi_eba_init: cannot reserve enough PEBs for bad PEB handling, reserved 9, need 19
-ubi0: attached mtd1 (name "ubi", size 114 MiB)
-ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
-ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 512
-ubi0: VID header offset: 512 (aligned 512), data offset: 2048
-ubi0: good PEBs: 911, bad PEBs: 1, corrupted PEBs: 0
-ubi0: user volume: 1, internal volumes: 1, max. volumes count: 128
-ubi0: max/mean erase counter: 2/0, WL threshold: 4096, image sequence number: 0
-ubi0: available PEBs: 0, total reserved PEBs: 911, PEBs reserved for bad PEB handling: 9
-ubi0: background thread "ubi_bgt0d" started, PID 824
-UBI device number 0, total 911 LEBs (117540864 bytes, 112.1 MiB), available 0 LEBs (0 bytes), LEB size 129024 bytes (126.0 KiB)
-[...]
-
-> 
-> 
-> For a more or less complete history of the changes I made since
-> branching of Ma Haijun's tree, see
-> 
-> https://git.lede-project.org/?p=lede/dangole/staging.git;a=history;f=target/linux/oxnas;hb=refs/heads/oxnas-nand
-> 
-> and for the very early history, prior to the merge into the official
-> OpenWrt tree, see
-> 
-> http://gitorious.org/openwrt-oxnas/openwrt-oxnas.git
-> 
-
-Great, thanks for the hints.
-
-I did set up a ML for the upstream work at linux-oxnas@lists.tuxfamily.org and a patchwork interface https://patchwork.kernel.org/project/linux-oxnas/list/ if it can be helpful.
-
-I also idle on #linux-oxnas on freenode...
-
-Neil
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 757f9c4b388d..73e9319b3f9f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11390,6 +11390,16 @@ W:	http://www.st.com/spear
+ S:	Maintained
+ F:	drivers/clk/spear/
+ 
++SPI NOR SUBSYSTEM
++M:	Cyrille Pitchen <cyrille.pitchen@atmel.com>
++L:	linux-mtd@lists.infradead.org
++W:	http://www.linux-mtd.infradead.org/
++Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
++T:	git git://github.com/spi-nor/linux.git
++S:	Maintained
++F:	drivers/mtd/spi-nor/
++F:	include/linux/mtd/spi-nor.h
++
+ SPI SUBSYSTEM
+ M:	Mark Brown <broonie@kernel.org>
+ L:	linux-spi@vger.kernel.org
+-- 
+2.7.4
