@@ -1,32 +1,20 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from 38plumes.fr ([37.187.67.249])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwcUy-0004PS-MP
- for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 22:04:43 +0000
-Subject: Re: [PATCH 1/1] MAINTAINERS: add a maintainer for the SPI NOR
- subsystem
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <0a3eaa21fb0f38743308c9cc9fc5d2373f4877de.1476802288.git.cyrille.pitchen@atmel.com>
- <d4e954c1-0bbb-fc16-4e9a-46c25ec4fb9e@denx.de>
- <CAFLxGvy9okx1cHnRhq2U-u574PzAk=Tampw1Fmvp4KzY8vnDnw@mail.gmail.com>
- <3d45f698-08e9-e672-d405-1ab9bfec1222@atmel.com>
- <cf010a6c-b642-0994-bbfd-c86d5ab24e6e@nod.at>
- <20161018184651.GA71760@google.com> <20161018211548.08dded8a@bbrezillon>
- <1072e553-202a-70c9-3f3c-815dbdac823d@sigma-star.at>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, nicolas.ferre@atmel.com,
- LKML <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <38160757-92bb-45b9-3ee3-472a9286ec7e@denx.de>
-Date: Wed, 19 Oct 2016 00:04:14 +0200
+ id 1bweDJ-0007Xz-2U
+ for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 23:54:34 +0000
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] ubifs: implement POSIX Access Control Lists (ACLs)
 MIME-Version: 1.0
-In-Reply-To: <1072e553-202a-70c9-3f3c-815dbdac823d@sigma-star.at>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Wed, 19 Oct 2016 01:54:09 +0200
+From: Pascal Eberhard <pascal.eberhard@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Andreas Gruenbacher <agruenba@redhat.com>
+In-Reply-To: <443b11a2-729a-32ec-0a6f-5a3276290329@nod.at>
+References: <1476046382-19185-1-git-send-email-pascal.eberhard@gmail.com>
+ <443b11a2-729a-32ec-0a6f-5a3276290329@nod.at>
+Message-ID: <ac97ae77409865d113ddb5c71420a791@38plumes.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,123 +24,178 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/18/2016 11:10 PM, David Oberhollenzer wrote:
-> On 10/18/2016 09:15 PM, Boris Brezillon wrote:
->> On Tue, 18 Oct 2016 11:46:51 -0700
->> Brian Norris <computersforpeace@gmail.com> wrote:
->>
->>> + others
->>>
->>> On Tue, Oct 18, 2016 at 06:15:23PM +0200, Richard Weinberger wrote:
->>>> On 18.10.2016 17:55, Cyrille Pitchen wrote:  
->>>>> Le 18/10/2016 à 17:30, Richard Weinberger a écrit :  
->>>>>> On Tue, Oct 18, 2016 at 5:17 PM, Marek Vasut <marex@denx.de> wrote:  
->>>>>>> On 10/18/2016 04:58 PM, Cyrille Pitchen wrote:  
->>>>>>>> I would like to volunteer as a maintainer for the SPI NOR part of the MTD
->>>>>>>> subsystem.  
->>>
->>> Awesome!
->>>
->>>>>>>> Over the last months, a significant number of SPI NOR related patches have
->>>>>>>> been submitted, some of them have been reviewed, but very few have finally
->>>>>>>> been merged. Hence, the number of pending SPI NOR related patches continues
->>>>>>>> to increase over the time.  
->>>
->>> Agreed, and sorry. But I guess the delays had the side effect of forcing
->>> peoples hands, instead of delaying the inevitable.
->>>
->>>>>>>> Through my work on SPI NOR memories from many manufacturers over the last
->>>>>>>> two years, I've gained a solid understanding of this technology.
->>>>>>>> I've already helped by reviewing patches from other contributors on the
->>>>>>>> mailing list, and would like to help getting those patches integrated by
->>>>>>>> volunteering as a maintainer for this specific area.  
->>>
->>> Agreed.
->>>
->>>>>>>> Boris Brezillon has already stepped up as a maintainer for the NAND
->>>>>>>> sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
->>>>>>>> the same way: I would be reviewing patches touching this area, collecting
->>>>>>>> them and sending pull requests to Brian Norris.  
->>>>>>
->>>>>> I'd suggest you send pull requests directly to Linus.
->>>>>> Same for NAND.  
->>>
->>> I could go with either method I suppose, but I don't personally like the
->>> idea of splitting out the various bits of MTD into *completely*
->>> independent lines of development. As long as someone (not necessarily
->>> me) can manage pulling the sub-subsystems together, I think it would
->>> make sense to have 1 PR for Linus for non-UBI/FS MTD changes.
->>>
->>>>>>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>  
->>>>>>>
->>>>>>> Let me know if you need co-maintainer.  
->>>>>>
->>>>>> +1  
->>>
->>> +1, I think I've not-so-subtly suggested this to Marek previously.
->>
->> Okay, that's all great news!
->> You can add my ack after adding Marek as a co-maintainer.
->>
->>>
->>>>>> While we are here, what about forming a MTD maintainer team?
->>>>>> This concept works very well for other subsystems.
->>>>>>  
->>>>>
->>>>> I totally agree with you so if Marek and you volunteer as well, your help
->>>>> will be precious!  
->>>>
->>>> Well, my SPI-NOR fu is not strong. And UBI/UBIFS keeps me busy.
->>>> But if Brian likes the idea of having a MTD maintainer team I'll offer my help.  
->>>
->>> I think a MTD maintainer team would be good to try, and I think it might
->>> help to resolve my above complaint; a maintainer team could help to make
->>> sure that everything can be coordinated in one tree + pull request,
->>> without adding too many extra points of failure (e.g., so we don't have
->>> awesome SPI NOR and NAND trees get bogged down by a slow MTD pull).
->>>
->>> Random thoughts:
->>>
->>>  Does it make sense to still use infradead.org? We'd need to add a few
->>>  users there.
->>>
->>>  Trust? I have met most of you in person, but not all, and I don't have
->>>  signed keys from all of you. I don't know what the best way to get a
->>>  group-writeable repo with credentials for all of you that we can trust.
->>>  (FWIW, neither Artem nor David met me, but they saw it fit to grant me
->>>  infradead.org access ;) )
->>>
->>>  Coordination: how do we avoid stepping on each other's toes? We'd have
->>>  to definitely 100% kill 'git push -f' and 'git rebase'. Also, would
->>>  patchwork help or hurt us here? I think Boris and I have been sort of
->>>  using it, but it's still got a pretty good backlog (partly real --
->>>  i.e., the cause for this thread; and partly artificial, due to
->>>  accounting).
->>
->> I really think we should keep separate trees for the spi-nor and nand
->> sub-subsystems, and then do PRs. The question is, how do we agree that
->> a PR should be pulled in the MTD tree.
->>
->> I guess we could have a simple rule like, if it's been reviewed by at
->> least X person (I guess 2 is acceptable), then we can merge it.
->>
->>>
->>>  What to do about mtd-utils.git? That's been languishing a bit, and it
->>>  has no release schedule. Maybe we want a plan for that too.
->>
->> Richard and David had some plans for the mtd-utils repo, and I think
->> they already have the permissions to push things to this repo, so the
->> best solution is probably to officially promote them maintainers of
->> mtd-utils.
-> I would volunteer to maintain it together with Richard.
+Richard,
+
+Thanks for your review.
+
+On 2016-10-18 23:32, Richard Weinberger wrote:
+> Pascal,
 > 
-> As has been previously mentioned, we did a major overhaul and merged lots
-> of fixes locally. AFAIK Richard already has push permissions for the mtd-utils
-> tree on infradead.org, so it should be just a matter of making it official?
+> On 09.10.2016 22:53, Pascal Eberhard wrote:
+>> This patch implements POSIX Access Control Lists (ACLs) in UBIFS.
+>> It uses posix_acl_(access|default)_xattr_handler ACL generic handlers
+>> as xattr handlers are now used in UBIFS.
+> 
+> Cool! :)
+> CC'ing Andreas, maybe he also has comments.
+> 
+>> Signed-off-by: Pascal Eberhard <pascal.eberhard@gmail.com>
+>> ---
+>>  fs/ubifs/Kconfig  |  13 +++++
+>>  fs/ubifs/Makefile |   1 +
+>>  fs/ubifs/acl.c    | 143 
+>> ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>  fs/ubifs/dir.c    |  22 +++++++++
+>>  fs/ubifs/file.c   |   9 ++++
+>>  fs/ubifs/super.c  |  15 ++++++
+>>  fs/ubifs/ubifs.h  |  18 +++++++
+>>  fs/ubifs/xattr.c  |  11 +++--
+>>  8 files changed, 229 insertions(+), 3 deletions(-)
+>>  create mode 100644 fs/ubifs/acl.c
+>> 
+
+[...]
+
+>> +#include <linux/fs.h>
+> 
+> ubifs.h includes this already.
 > 
 
-Yes please, I saw some of your patches via Richard and they were nice.
+ok
 
--- 
-Best regards,
-Marek Vasut
+>> +#include <linux/xattr.h>
+> 
+> Ditto.
+> 
+
+ok
+
+[...]
+
+>> +/*
+>> + * Initialize the ACLs of a new inode.
+> 
+> Please use the Javadoc style we use for all UBIFS functions.
+> (applies to other functions too in this patch)-
+
+ok
+
+[...]
+
+>> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+>> index ccd9128..a2e5609 100644
+>> --- a/fs/ubifs/dir.c
+>> +++ b/fs/ubifs/dir.c
+>> @@ -270,6 +270,10 @@ static int ubifs_create(struct inode *dir, struct 
+>> dentry *dentry, umode_t mode,
+>>  		goto out_budg;
+>>  	}
+>> 
+>> +	err = ubifs_init_acl(dir, inode);
+>> +	if (err)
+>> +		goto out_inode;
+>> +
+>>  	err = ubifs_init_security(dir, inode, &dentry->d_name);
+>>  	if (err)
+>>  		goto out_inode;
+>> @@ -341,6 +345,10 @@ static int do_tmpfile(struct inode *dir, struct 
+>> dentry *dentry,
+>>  		ubifs_assert(inode->i_op == &ubifs_file_inode_operations);
+>>  	}
+>> 
+>> +	err = ubifs_init_acl(dir, inode);
+>> +	if (err)
+>> +		goto out_inode;
+> 
+> Why do we need ACLs for O_TMPFILE?
+
+O_TMPFILE files are unnamed... until linkat() is called.
+open manpage says that when linkat() is called to a O_TMPFILE file:
+"In this case, the open() mode argument determines the file permission 
+mode, as with O_CREAT."
+And mode with O_CREAT is applied with respect of the default ACLs:
+"in the absence of a default ACL, the mode of the created file is (mode 
+& ~umask)"
+
+So my interpretation is that default ACLs shall be propagated to 
+O_TMPFILE at creation.
+
+O_TMPFILE implementation for btrfs and xfs apply default ACLs as well.
+
+[...]
+
+>> @@ -985,6 +1001,10 @@ static int ubifs_symlink(struct inode *dir, 
+>> struct dentry *dentry,
+>>  	ui->data_len = len;
+>>  	inode->i_size = ubifs_inode(inode)->ui_size = len;
+>> 
+>> +	err = ubifs_init_acl(dir, inode);
+>> +	if (err)
+>> +		goto out_inode;
+> 
+> Do we really need ACLs for symlinks too? I thought permissions for
+> symlinks are irrelevant.
+
+Indeed, they are irrelevant. It will be removed.
+
+>> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+>> index 6c2f4d4..0a596a1 100644
+>> --- a/fs/ubifs/xattr.c
+>> +++ b/fs/ubifs/xattr.c
+>> @@ -52,13 +52,14 @@
+>>   * in the VFS inode cache. The xentries are cached in the LNC cache 
+>> (see
+>>   * tnc.c).
+>>   *
+>> - * ACL support is not implemented.
+>> + * ACL support is now implemented.
+> 
+> I think we can just drop that line now. :-)
+
+:-)
+
+> 
+>>   */
+>> 
+>>  #include "ubifs.h"
+>>  #include <linux/fs.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/xattr.h>
+>> +#include <linux/posix_acl_xattr.h>
+> 
+> While we are here, these includes should also be cleaned up.
+> 
+
+Ok, and I'll remove the now obsolete enum just below too then:
+
+/*
+  * Extended attribute type constants.
+  *
+  * USER_XATTR: user extended attribute ("user.*")
+  * TRUSTED_XATTR: trusted extended attribute ("trusted.*)
+  * SECURITY_XATTR: security extended attribute ("security.*")
+  */
+
+enum {
+         USER_XATTR,
+         TRUSTED_XATTR,
+         SECURITY_XATTR,
+};
+
+
+> 
+> Overall the patch does not look bad and I'm sure we can add it for 
+> v4.10 soon.
+
+ok, great!
+
+> I'm a bit confused since most stuff is not really UBIFS specific.
+> Andreas, is just "normal" for ACL support? I thought most code is
+> generic and already in VFS.
+> 
+> Thanks,
+> //richard
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
