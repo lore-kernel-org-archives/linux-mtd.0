@@ -1,22 +1,18 @@
-Message-ID: <1476785552.24626.4.camel@mtkswgap22>
-Subject: Re: [PATCH 02/28] [v2] mtd: mtk: avoid warning in mtk_ecc_encode
-From: RogerCC.Lin <rogercc.lin@mediatek.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Arnd Bergmann <arnd@arndb.de>, Jorge Ramirez-Ortiz
- <jorge.ramirez-ortiz@linaro.org>, Richard Weinberger <richard@nod.at>,
- <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Linus
- Torvalds" <torvalds@linux-foundation.org>, <linux-mtd@lists.infradead.org>,
- Matthias Brugger <matthias.bgg@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>
-Date: Tue, 18 Oct 2016 18:12:32 +0800
-In-Reply-To: <20161018071948.0b7eef05@bbrezillon>
-References: <20161017220342.1627073-1-arnd@arndb.de>
- <20161017220557.1688282-2-arnd@arndb.de>
- <20161018071948.0b7eef05@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Date: Tue, 18 Oct 2016 13:08:07 +0200
+From: Daniel Golle <daniel@makrotopia.org>
+To: Neil Armstrong <narmstrong@baylibre.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ devicetree@vger.kernel.org, linux-oxnas@lists.tuxfamily.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH] mtd: nand: Add OX820 NAND Support
+Message-ID: <20161018110807.GD1641@makrotopia.org>
+References: <20161018090927.1990-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20161018090927.1990-1-narmstrong@baylibre.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,83 +22,253 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2016-10-18 at 07:19 +0200, Boris Brezillon wrote:
-> On Tue, 18 Oct 2016 00:05:31 +0200
-> Arnd Bergmann <arnd@arndb.de> wrote:
-> 
-> > When building with -Wmaybe-uninitialized, gcc produces a silly false positive
-> > warning for the mtk_ecc_encode function:
-> > 
-> > drivers/mtd/nand/mtk_ecc.c: In function 'mtk_ecc_encode':
-> > drivers/mtd/nand/mtk_ecc.c:402:15: error: 'val' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> > 
-> > The function for some reason contains a double byte swap on big-endian
-> > builds to get the OOB data into the correct order again, and is written
-> > in a slightly confusing way.
-> > 
-> > Using a simple memcpy32_fromio() to read the data simplifies it a lot
-> > so it becomes more readable and produces no warning. However, the
-> > output might not have 32-bit alignment, so we have to use another
-> > memcpy to avoid taking alignment faults or writing beyond the end
-> > of the array.
-> > 
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> Jorge, RogerCC, can I have an Acked-by and/or Tested-by for this patch?
-Tested, this patch is OK,
-Tested-by: RogerCC Lin <rogercc.lin@mediatek.com>
+Hi Neil,
 
+great to see progress towards supporting OX820!
+The NAND driver I hacked up for Kernel 4.1 and 4.4 in OpenWrt/LEDE
+looks very similar, see
+
+https://git.lede-project.org/?p=lede/dangole/staging.git;a=blob;f=target/linux/oxnas/files/drivers/mtd/nand/oxnas_nand.c;h=f5a142950e32227fee304de731e619278350a91b;hb=refs/heads/oxnas-nand
+
+To me therefore this looks quite good, just one small question below.
+
+Cheers
+
+Daniel
+
+
+On Tue, Oct 18, 2016 at 11:09:27AM +0200, Neil Armstrong wrote:
+> Add NAND driver to support the Oxford Semiconductor OX820 NAND Controller.
+> This is a simple memory mapped NAND controller with single chip select and
+> software ECC.
 > 
-> > ---
-> > v2: move temporary buffer into struct mtk_ecc instead of having it
-> >     on the stack, as suggested by Boris Brezillon
-> > ---
-> >  drivers/mtd/nand/mtk_ecc.c | 19 +++++++++----------
-> >  1 file changed, 9 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-> > index d54f666..dbf2562 100644
-> > --- a/drivers/mtd/nand/mtk_ecc.c
-> > +++ b/drivers/mtd/nand/mtk_ecc.c
-> > @@ -86,6 +86,8 @@ struct mtk_ecc {
-> >  	struct completion done;
-> >  	struct mutex lock;
-> >  	u32 sectors;
-> > +
-> > +	u8 eccdata[112];
-> >  };
-> >  
-> >  static inline void mtk_ecc_wait_idle(struct mtk_ecc *ecc,
-> > @@ -366,9 +368,8 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
-> >  		   u8 *data, u32 bytes)
-> >  {
-> >  	dma_addr_t addr;
-> > -	u8 *p;
-> > -	u32 len, i, val;
-> > -	int ret = 0;
-> > +	u32 len;
-> > +	int ret;
-> >  
-> >  	addr = dma_map_single(ecc->dev, data, bytes, DMA_TO_DEVICE);
-> >  	ret = dma_mapping_error(ecc->dev, addr);
-> > @@ -393,14 +394,12 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
-> >  
-> >  	/* Program ECC bytes to OOB: per sector oob = FDM + ECC + SPARE */
-> >  	len = (config->strength * ECC_PARITY_BITS + 7) >> 3;
-> > -	p = data + bytes;
-> >  
-> > -	/* write the parity bytes generated by the ECC back to the OOB region */
-> > -	for (i = 0; i < len; i++) {
-> > -		if ((i % 4) == 0)
-> > -			val = readl(ecc->regs + ECC_ENCPAR(i / 4));
-> > -		p[i] = (val >> ((i % 4) * 8)) & 0xff;
-> > -	}
-> > +	/* write the parity bytes generated by the ECC back to temp buffer */
-> > +	__ioread32_copy(ecc->eccdata, ecc->regs + ECC_ENCPAR(0), round_up(len, 4));
-> > +
-> > +	/* copy into possibly unaligned OOB region with actual length */
-> > +	memcpy(data + bytes, ecc->eccdata, len);
-> >  timeout:
-> >  
-> >  	dma_unmap_single(ecc->dev, addr, bytes, DMA_TO_DEVICE);
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  .../devicetree/bindings/mtd/oxnas-nand.txt         |  24 ++++
+>  drivers/mtd/nand/Kconfig                           |   5 +
+>  drivers/mtd/nand/Makefile                          |   1 +
+>  drivers/mtd/nand/oxnas_nand.c                      | 144 +++++++++++++++++++++
+>  4 files changed, 174 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+>  create mode 100644 drivers/mtd/nand/oxnas_nand.c
 > 
+> diff --git a/Documentation/devicetree/bindings/mtd/oxnas-nand.txt b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+> new file mode 100644
+> index 0000000..83b684d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+> @@ -0,0 +1,24 @@
+> +* Oxford Semiconductor OXNAS NAND Controller
+> +
+> +Please refer to nand.txt for generic information regarding MTD NAND bindings.
+> +
+> +Required properties:
+> + - compatible: "oxsemi,ox820-nand"
+> + - reg: Base address and length for NAND mapped memory.
+> +
+> +Optional Properties:
+> + - clocks: phandle to the NAND gate clock if needed.
+> + - resets: phandle to the NAND reset control if needed.
+> +
+> +Example:
+> +
+> +nand: nand@41000000 {
+> +	compatible = "oxsemi,ox820-nand";
+> +	reg = <0x41000000 0x100000>;
+> +	nand-ecc-mode = "soft";
+> +	clocks = <&stdclk CLK_820_NAND>;
+> +	resets = <&reset RESET_NAND>;
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +	status = "disabled";
+> +};
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 7b7a887..c023125 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -426,6 +426,11 @@ config MTD_NAND_ORION
+>  	  No board specific support is done by this driver, each board
+>  	  must advertise a platform_device for the driver to attach.
+>  
+> +config MTD_NAND_OXNAS
+> +	tristate "NAND Flash support for Oxford Semiconductor SoC"
+> +	help
+> +	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
+> +
+>  config MTD_NAND_FSL_ELBC
+>  	tristate "NAND support for Freescale eLBC controllers"
+>  	depends on FSL_SOC
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index cafde6f..05fc054 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -35,6 +35,7 @@ obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
+>  obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
+>  obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
+>  obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
+> +obj-$(CONFIG_MTD_NAND_OXNAS)		+= oxnas_nand.o
+>  obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
+>  obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
+>  obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
+> diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
+> new file mode 100644
+> index 0000000..ee402ab
+> --- /dev/null
+> +++ b/drivers/mtd/nand/oxnas_nand.c
+> @@ -0,0 +1,144 @@
+> +/*
+> + * Oxford Semiconductor OXNAS NAND driver
+> + *
+> + * Heavily based on plat_nand.c :
+> + * Author: Vitaly Wool <vitalywool@gmail.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/clk.h>
+> +#include <linux/reset.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
+> +#include <linux/mtd/partitions.h>
+> +
+> +/* nand commands */
+> +#define NAND_CMD_ALE		BIT(18)
+> +#define NAND_CMD_CLE		BIT(19)
+> +#define NAND_CMD_CS		0
+> +#define NAND_CMD_RESET		0xff
+> +#define NAND_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
+> +#define NAND_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
+> +#define NAND_DATA		(NAND_CMD_CS)
+> +
+> +struct oxnas_nand_data {
+> +	struct nand_chip	chip;
+> +	void __iomem		*io_base;
+
+Why do you redundantly keep io_base in platform data rather than
+just using chip.IO_ADDR_R and >chip.IO_ADDR_W?
+
+
+> +	struct clk		*clk;
+> +};
+> +
+> +static void oxnas_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
+> +				unsigned int ctrl)
+> +{
+> +	struct nand_chip *this = mtd->priv;
+> +	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
+> +
+> +	if (ctrl & NAND_CTRL_CHANGE) {
+> +		nandaddr &= ~(NAND_CMD | NAND_ADDR);
+> +		if (ctrl & NAND_CLE)
+> +			nandaddr |= NAND_CMD;
+> +		else if (ctrl & NAND_ALE)
+> +			nandaddr |= NAND_ADDR;
+> +		this->IO_ADDR_W = (void __iomem *) nandaddr;
+> +	}
+> +
+> +	if (cmd != NAND_CMD_NONE)
+> +		writeb(cmd, (void __iomem *) nandaddr);
+> +}
+> +
+> +/*
+> + * Probe for the NAND device.
+> + */
+> +static int oxnas_nand_probe(struct platform_device *pdev)
+> +{
+> +	struct oxnas_nand_data *data;
+> +	struct mtd_info *mtd;
+> +	struct resource *res;
+> +	int err = 0;
+> +
+> +	/* Allocate memory for the device structure (and zero it) */
+> +	data = devm_kzalloc(&pdev->dev, sizeof(struct oxnas_nand_data),
+> +			    GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	data->io_base = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(data->io_base))
+> +		return PTR_ERR(data->io_base);
+> +
+> +	data->clk = devm_clk_get(&pdev->dev, NULL);
+> +	if (IS_ERR(data->clk))
+> +		data->clk = NULL;
+> +
+> +	nand_set_flash_node(&data->chip, pdev->dev.of_node);
+> +	mtd = nand_to_mtd(&data->chip);
+> +	mtd->dev.parent = &pdev->dev;
+> +	mtd->priv = &data->chip;
+> +
+> +	data->chip.IO_ADDR_R = data->io_base;
+> +	data->chip.IO_ADDR_W = data->io_base;
+> +	data->chip.cmd_ctrl = oxnas_nand_cmd_ctrl;
+> +	data->chip.chip_delay = 30;
+> +	data->chip.ecc.mode = NAND_ECC_SOFT;
+> +	data->chip.ecc.algo = NAND_ECC_HAMMING;
+> +
+> +	platform_set_drvdata(pdev, data);
+> +
+> +	clk_prepare_enable(data->clk);
+> +	device_reset_optional(&pdev->dev);
+> +
+> +	/* Scan to find existence of the device */
+> +	if (nand_scan(mtd, 1)) {
+> +		err = -ENXIO;
+> +		goto out;
+> +	}
+> +
+> +	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
+> +	if (!err)
+> +		return err;
+> +
+> +	nand_release(mtd);
+> +out:
+> +	return err;
+> +}
+> +
+> +static int oxnas_nand_remove(struct platform_device *pdev)
+> +{
+> +	struct oxnas_nand_data *data = platform_get_drvdata(pdev);
+> +
+> +	nand_release(nand_to_mtd(&data->chip));
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id oxnas_nand_match[] = {
+> +	{ .compatible = "oxsemi,ox820-nand" },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, oxnas_nand_match);
+> +
+> +static struct platform_driver oxnas_nand_driver = {
+> +	.probe	= oxnas_nand_probe,
+> +	.remove	= oxnas_nand_remove,
+> +	.driver	= {
+> +		.name		= "oxnas_nand",
+> +		.of_match_table = oxnas_nand_match,
+> +	},
+> +};
+> +
+> +module_platform_driver(oxnas_nand_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Vitaly Wool");
+> +MODULE_DESCRIPTION("Oxnas NAND driver");
+> +MODULE_ALIAS("platform:oxnas_nand");
+> -- 
+> 2.7.0
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
