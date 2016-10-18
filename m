@@ -1,21 +1,24 @@
-Subject: Re: [PATCH v2 2/2] arm64: dts: Updated NAND DT properties for NS2 SVK
-To: Ray Jui <ray.jui@broadcom.com>, Brian Norris
- <computersforpeace@gmail.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-References: <1469051631-7896-1-git-send-email-ray.jui@broadcom.com>
- <1469051631-7896-3-git-send-email-ray.jui@broadcom.com>
- <8832e18c-cd77-9fe1-8bd8-a2d65390666a@broadcom.com>
-Cc: bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Prafulla Kota <prafulla.kota@broadcom.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <9657d27d-dbfa-e629-f5d4-4f7a748d5033@gmail.com>
-Date: Mon, 17 Oct 2016 17:54:57 -0700
+Date: Mon, 17 Oct 2016 22:08:04 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, x86@kernel.org, linux-media@vger.kernel.org,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Martin Schwidefsky <schwidefsky@de.ibm.com>,
+ linux-s390@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+ dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+ Herbert Xu <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ ceph-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-ext4@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH 00/28] Reenable maybe-uninitialized warnings
+Message-ID: <20161018050804.GA9902@infradead.org>
+References: <20161017220342.1627073-1-arnd@arndb.de>
 MIME-Version: 1.0
-In-Reply-To: <8832e18c-cd77-9fe1-8bd8-a2d65390666a@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20161017220342.1627073-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,12 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/17/2016 01:49 PM, Ray Jui wrote:
-> Hi Florian,
-> 
-> Would you be able to help to queue the following patch for v4.10? Sorry
-> I did not include you in the "To" field of the original email.
+On Tue, Oct 18, 2016 at 12:03:28AM +0200, Arnd Bergmann wrote:
+> This is a set of patches that I hope to get into v4.9 in some form
+> in order to turn on the -Wmaybe-uninitialized warnings again.
 
-Applied, thanks!
--- 
-Florian
+Hi Arnd,
+
+I jsut complained to Geert that I was introducing way to many
+bugs or pointless warnings for some compilers lately, but gcc didn't
+warn me about them.  From a little research the lack of
+-Wmaybe-uninitialized seems to be the reason for it, so I'm all
+for re-enabling it.
