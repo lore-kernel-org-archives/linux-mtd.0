@@ -1,31 +1,16 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwaQS-0001Dl-LY
- for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 19:51:53 +0000
-Subject: Re: [PATCH 1/1] MAINTAINERS: add a maintainer for the SPI NOR
- subsystem
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <0a3eaa21fb0f38743308c9cc9fc5d2373f4877de.1476802288.git.cyrille.pitchen@atmel.com>
- <d4e954c1-0bbb-fc16-4e9a-46c25ec4fb9e@denx.de>
- <CAFLxGvy9okx1cHnRhq2U-u574PzAk=Tampw1Fmvp4KzY8vnDnw@mail.gmail.com>
- <3d45f698-08e9-e672-d405-1ab9bfec1222@atmel.com>
- <cf010a6c-b642-0994-bbfd-c86d5ab24e6e@nod.at>
- <20161018184651.GA71760@google.com>
- <23317635-426e-fbf8-f0b2-b59dde75900a@denx.de>
- <20161018214153.69c95a06@bbrezillon>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- nicolas.ferre@atmel.com, LKML <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <0c6e5a80-3f34-0e76-088a-35dad443ca2f@denx.de>
-Date: Tue, 18 Oct 2016 21:51:28 +0200
+ id 1bwaVd-00039N-R1
+ for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 19:57:15 +0000
 MIME-Version: 1.0
-In-Reply-To: <20161018214153.69c95a06@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date: Tue, 18 Oct 2016 12:51:00 -0700
+From: Stefan Agner <stefan@agner.ch>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com
+Subject: UBI assert failed in wl_tree_add at 168 using v4.9-rc1
+Message-ID: <5d8e8bc09c75405a783990312dd1dc41@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,52 +20,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/18/2016 09:41 PM, Boris Brezillon wrote:
+Hi All,
 
-[...]
+After flashing and 2-3 hard resets (power-cut), I happen to get a lot of
+the following stack traces:
 
->> Patchwork is nice, it helps keeping track of the patch status real well.
->> But there is always the problem of keeping the patchwork up-to-date when
->> the status of patch changes, esp. if one is offline (or maybe I didn't
->> look hard enough).
-> 
-> I use git notes + a pre-push hook to help mark a patch as 'Accepted' in
-> patchwork, but still, it does not automate moving patches to the
-> 'Superseeded' state (which IMO should be directly handled in patchwork)
-> and those who are rejected. This is why the backlog tend to grow until
-> I decide to do some cleanup.
-> 
-> We also have all those patches which are over 1 year old, but that we
-> keep just in case someone wants to revive them.
-> 
-> Anyway, I think patchwork is very useful if it's well maintained, so
-> maybe we should cleanup things after each release.
+[   33.031951] UBI assert failed in wl_tree_add at 168 (pid 1)
+[   33.037763] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
+4.9.0-rc1-00001-g4b1532a-dirty #568
+[   33.046071] Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
+[   33.052596] Backtrace:
+[   33.055143] [<c010c3b8>] (dump_backtrace) from [<c010c5b0>]
+(show_stack+0x18/0x1c)
+[   33.062831]  r7:00000000[   33.065223]  r6:60000013
+ r5:00000000[   33.068891]  r4:c0e2352c
+[   33.071484]
+[   33.073043] [<c010c598>] (show_stack) from [<c03f7da8>]
+(dump_stack+0xb4/0xe8)
+[   33.080402] [<c03f7cf4>] (dump_stack) from [<c05b80dc>]
+(wl_tree_add+0xb8/0xd0)
+[   33.087829]  r9:c0c54860[   33.090215]  r8:cdd62e88
+ r7:ce458000[   33.093885]  r6:cddfdcd8
+ r5:cddfc82c[   33.097556]  r4:cddfdaf8
+[   33.100167] [<c05b8024>] (wl_tree_add) from [<c05b9f68>]
+(ubi_wl_init+0x218/0x6d8)
+[   33.107860]  r10:c165e66c[   33.110341]  r9:cdd5a90c
+ r8:cdd62e88[   33.114010]  r7:00000d27
+ r6:cddfdcd8[   33.117681]  r5:cdd62000
+[   33.120275]  r4:cddd8cc0[   33.122663]  r3:0000069c
+[   33.125254]
+[   33.126810] [<c05b9d50>] (ubi_wl_init) from [<c05bd2a0>]
+(ubi_attach+0x1fc/0x394)
+[   33.134415]  r10:00000001[   33.136889]  r9:cdd5a980
+ r8:cdd63000[   33.140557]  r7:cdd5a900
+ r6:cdd62000[   33.144228]  r5:00000000
+[   33.146822]  r4:cdd68500[   33.149208]
+[   33.150770] [<c05bd0a4>] (ubi_attach) from [<c05af73c>]
+(ubi_attach_mtd_dev+0x4d8/0xdd0)
+[   33.158980]  r10:00000014[   33.161457]  r9:00000800
+ r8:00000000[   33.165126]  r7:cdd63000
+ r6:cdc97400[   33.168796]  r5:cdd62000
+[   33.171391]  r4:fffff800[   33.173779]  r3:00000002
+[   33.176370]
+[   33.177931] [<c05af264>] (ubi_attach_mtd_dev) from [<c0d46f54>]
+(ubi_init+0x1cc/0x28c)
+[   33.185969]  r10:c0d00618[   33.188447]  r9:000fffff
+ r8:c0e3a9cc[   33.192116]  r7:c0d69370
+ r6:c0d69374[   33.195787]  r5:cdc97400
+[   33.198380]  r4:00000000[   33.200766]
+[   33.202331] [<c0d46d88>] (ubi_init) from [<c010194c>]
+(do_one_initcall+0x44/0x180)
+[   33.210022]  r10:c0d00618[   33.212494]  r9:00000000
+ r8:00000000[   33.216163]  r7:c0d5e854
+ r6:c0e72000[   33.219834]  r5:c0d46d88
+[   33.222428]  r4:ffffe000[   33.224814]
+[   33.226375] [<c0101908>] (do_one_initcall) from [<c0d00e58>]
+(kernel_init_freeable+0x128/0x1f0)
+[   33.235198]  r8:000000e9[   33.237583]  r7:c0d5e854
+ r6:c0e72000[   33.241252]  r5:c0e72000
+ r4:00000008[   33.244920]
+[   33.246488] [<c0d00d30>] (kernel_init_freeable) from [<c0967908>]
+(kernel_init+0x10/0x11c)
+[   33.254877]  r10:00000000[   33.257352]  r9:00000000
+ r8:00000000[   33.261021]  r7:00000000
+ r6:00000000[   33.264692]  r5:c09678f8
+[   33.267286]  r4:00000000[   33.269672]
+[   33.271238] [<c09678f8>] (kernel_init) from [<c0107e70>]
+(ret_from_fork+0x14/0x24)
+[   33.278929]  r5:c09678f8[   33.281321]  r4:00000000
+[   33.283912]
 
-You've very much nailed it. Those are all my complaints about patchwork
-and problems we had in U-Boot. Cleaning it up took a while.
+The system successfully boots in the end (after printing out such traces
+for a minute or so). 
 
-One just has to keep an eye on patchwork so it doesn't get out of
-control, otherwise the mountain of patches you have no clue about
-anymore becomes the source of utter frustration.
+This is on a NXP Vybrid using the vf610-nfc driver. The driver is
+mainline since some releases now, and I haven't seen such a stack trace
+before.
 
->>> I think Boris and I have been sort of
->>>  using it, but it's still got a pretty good backlog (partly real --
->>>  i.e., the cause for this thread; and partly artificial, due to
->>>  accounting).
->>>
->>>  What to do about mtd-utils.git? That's been languishing a bit, and it
->>>  has no release schedule. Maybe we want a plan for that too.
->>>
->>> BTW, will anybody be at Linux Plumbers? I plan to be there in a few
->>> weeks. And something tells me dwmw2 will be there.
->>>
->>> Brian
->>>   
->>
->>
-> 
+I do use fastmap and a 2015.04 U-Boot to read the kernel/device tree
+from a separate volume.
 
+Anybody else seen this?
 
--- 
-Best regards,
-Marek Vasut
+--
+Stefan
