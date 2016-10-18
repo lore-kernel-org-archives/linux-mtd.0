@@ -1,27 +1,29 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwa87-0008I7-NW
- for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 19:32:57 +0000
+ id 1bwa8A-0008It-6D
+ for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 19:32:59 +0000
 Subject: Re: [PATCH 1/1] MAINTAINERS: add a maintainer for the SPI NOR
  subsystem
-To: Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>
 References: <0a3eaa21fb0f38743308c9cc9fc5d2373f4877de.1476802288.git.cyrille.pitchen@atmel.com>
  <d4e954c1-0bbb-fc16-4e9a-46c25ec4fb9e@denx.de>
  <CAFLxGvy9okx1cHnRhq2U-u574PzAk=Tampw1Fmvp4KzY8vnDnw@mail.gmail.com>
  <3d45f698-08e9-e672-d405-1ab9bfec1222@atmel.com>
  <cf010a6c-b642-0994-bbfd-c86d5ab24e6e@nod.at>
-Cc: Brian Norris <computersforpeace@gmail.com>,
+ <20161018184651.GA71760@google.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  nicolas.ferre@atmel.com, Boris Brezillon
- <boris.brezillon@free-electrons.com>, LKML <linux-kernel@vger.kernel.org>
+ <boris.brezillon@free-electrons.com>, LKML <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 From: Marek Vasut <marex@denx.de>
-Message-ID: <326eced2-6766-e90a-7eaa-42ccdb5016a9@denx.de>
-Date: Tue, 18 Oct 2016 18:37:40 +0200
+Message-ID: <23317635-426e-fbf8-f0b2-b59dde75900a@denx.de>
+Date: Tue, 18 Oct 2016 21:31:06 +0200
 MIME-Version: 1.0
-In-Reply-To: <cf010a6c-b642-0994-bbfd-c86d5ab24e6e@nod.at>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20161018184651.GA71760@google.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,53 +33,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/18/2016 06:15 PM, Richard Weinberger wrote:
-> On 18.10.2016 17:55, Cyrille Pitchen wrote:
->> Le 18/10/2016 à 17:30, Richard Weinberger a écrit :
->>> On Tue, Oct 18, 2016 at 5:17 PM, Marek Vasut <marex@denx.de> wrote:
->>>> On 10/18/2016 04:58 PM, Cyrille Pitchen wrote:
->>>>> I would like to volunteer as a maintainer for the SPI NOR part of the MTD
->>>>> subsystem.
->>>>>
->>>>> Over the last months, a significant number of SPI NOR related patches have
->>>>> been submitted, some of them have been reviewed, but very few have finally
->>>>> been merged. Hence, the number of pending SPI NOR related patches continues
->>>>> to increase over the time.
->>>>>
->>>>> Through my work on SPI NOR memories from many manufacturers over the last
->>>>> two years, I've gained a solid understanding of this technology.
->>>>> I've already helped by reviewing patches from other contributors on the
->>>>> mailing list, and would like to help getting those patches integrated by
->>>>> volunteering as a maintainer for this specific area.
->>>>>
->>>>> Boris Brezillon has already stepped up as a maintainer for the NAND
->>>>> sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
->>>>> the same way: I would be reviewing patches touching this area, collecting
->>>>> them and sending pull requests to Brian Norris.
->>>
->>> I'd suggest you send pull requests directly to Linus.
->>> Same for NAND.
->>>
->>>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>>>
->>>> Let me know if you need co-maintainer.
->>>
->>> +1
->>>
->>> While we are here, what about forming a MTD maintainer team?
->>> This concept works very well for other subsystems.
->>>
->>
->> I totally agree with you so if Marek and you volunteer as well, your help
->> will be precious!
-> 
-> Well, my SPI-NOR fu is not strong. And UBI/UBIFS keeps me busy.
-> But if Brian likes the idea of having a MTD maintainer team I'll offer my help.
+On 10/18/2016 08:46 PM, Brian Norris wrote:
 
-After talking to Wolfram Sang a bit about the maintainer overload at
-ELCE, I think the least I can do here is help reviewing patches. The
-CQSPI upstreaming experience was real crap, it took a long time, so
-we should certainly do something about it.
+[...]
+
+>>>>>> Boris Brezillon has already stepped up as a maintainer for the NAND
+>>>>>> sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
+>>>>>> the same way: I would be reviewing patches touching this area, collecting
+>>>>>> them and sending pull requests to Brian Norris.
+>>>>
+>>>> I'd suggest you send pull requests directly to Linus.
+>>>> Same for NAND.
+> 
+> I could go with either method I suppose, but I don't personally like the
+> idea of splitting out the various bits of MTD into *completely*
+> independent lines of development. As long as someone (not necessarily
+> me) can manage pulling the sub-subsystems together, I think it would
+> make sense to have 1 PR for Linus for non-UBI/FS MTD changes.
+
+Yes please, agreed. This looks far more systematic and it's what other
+subsystems do.
+
+[...]
+
+> Random thoughts:
+
+[...]
+
+>  Coordination: how do we avoid stepping on each other's toes? We'd have
+>  to definitely 100% kill 'git push -f' and 'git rebase'. Also, would
+>  patchwork help or hurt us here?
+
+Patchwork is nice, it helps keeping track of the patch status real well.
+But there is always the problem of keeping the patchwork up-to-date when
+the status of patch changes, esp. if one is offline (or maybe I didn't
+look hard enough).
+
+> I think Boris and I have been sort of
+>  using it, but it's still got a pretty good backlog (partly real --
+>  i.e., the cause for this thread; and partly artificial, due to
+>  accounting).
+> 
+>  What to do about mtd-utils.git? That's been languishing a bit, and it
+>  has no release schedule. Maybe we want a plan for that too.
+> 
+> BTW, will anybody be at Linux Plumbers? I plan to be there in a few
+> weeks. And something tells me dwmw2 will be there.
+> 
+> Brian
+> 
+
 
 -- 
 Best regards,
