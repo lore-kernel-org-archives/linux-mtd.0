@@ -1,27 +1,20 @@
-Received: from up.free-electrons.com ([163.172.77.33]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwaHK-00056C-H0
- for linux-mtd@lists.infradead.org; Tue, 18 Oct 2016 19:42:27 +0000
-Date: Tue, 18 Oct 2016 21:41:53 +0200
+Date: Tue, 18 Oct 2016 21:45:05 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marek Vasut <marex@denx.de>
-Cc: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- nicolas.ferre@atmel.com, LKML <linux-kernel@vger.kernel.org>, David
- Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/1] MAINTAINERS: add a maintainer for the SPI NOR
- subsystem
-Message-ID: <20161018214153.69c95a06@bbrezillon>
-In-Reply-To: <23317635-426e-fbf8-f0b2-b59dde75900a@denx.de>
-References: <0a3eaa21fb0f38743308c9cc9fc5d2373f4877de.1476802288.git.cyrille.pitchen@atmel.com>
- <d4e954c1-0bbb-fc16-4e9a-46c25ec4fb9e@denx.de>
- <CAFLxGvy9okx1cHnRhq2U-u574PzAk=Tampw1Fmvp4KzY8vnDnw@mail.gmail.com>
- <3d45f698-08e9-e672-d405-1ab9bfec1222@atmel.com>
- <cf010a6c-b642-0994-bbfd-c86d5ab24e6e@nod.at>
- <20161018184651.GA71760@google.com>
- <23317635-426e-fbf8-f0b2-b59dde75900a@denx.de>
+To: "RogerCC.Lin" <rogercc.lin@mediatek.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Jorge Ramirez-Ortiz
+ <jorge.ramirez-ortiz@linaro.org>, Richard Weinberger <richard@nod.at>,
+ <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ "Linus Torvalds" <torvalds@linux-foundation.org>,
+ <linux-mtd@lists.infradead.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 02/28] [v2] mtd: mtk: avoid warning in mtk_ecc_encode
+Message-ID: <20161018214505.489628db@bbrezillon>
+In-Reply-To: <1476785552.24626.4.camel@mtkswgap22>
+References: <20161017220342.1627073-1-arnd@arndb.de>
+ <20161017220557.1688282-2-arnd@arndb.de>
+ <20161018071948.0b7eef05@bbrezillon>
+ <1476785552.24626.4.camel@mtkswgap22>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -34,70 +27,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 18 Oct 2016 21:31:06 +0200
-Marek Vasut <marex@denx.de> wrote:
+On Tue, 18 Oct 2016 18:12:32 +0800
+RogerCC.Lin <rogercc.lin@mediatek.com> wrote:
 
-> On 10/18/2016 08:46 PM, Brian Norris wrote:
-> 
-> [...]
-> 
-> >>>>>> Boris Brezillon has already stepped up as a maintainer for the NAND
-> >>>>>> sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
-> >>>>>> the same way: I would be reviewing patches touching this area, collecting
-> >>>>>> them and sending pull requests to Brian Norris.  
-> >>>>
-> >>>> I'd suggest you send pull requests directly to Linus.
-> >>>> Same for NAND.  
+> On Tue, 2016-10-18 at 07:19 +0200, Boris Brezillon wrote:
+> > On Tue, 18 Oct 2016 00:05:31 +0200
+> > Arnd Bergmann <arnd@arndb.de> wrote:
+> >   
+> > > When building with -Wmaybe-uninitialized, gcc produces a silly false positive
+> > > warning for the mtk_ecc_encode function:
+> > > 
+> > > drivers/mtd/nand/mtk_ecc.c: In function 'mtk_ecc_encode':
+> > > drivers/mtd/nand/mtk_ecc.c:402:15: error: 'val' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+> > > 
+> > > The function for some reason contains a double byte swap on big-endian
+> > > builds to get the OOB data into the correct order again, and is written
+> > > in a slightly confusing way.
+> > > 
+> > > Using a simple memcpy32_fromio() to read the data simplifies it a lot
+> > > so it becomes more readable and produces no warning. However, the
+> > > output might not have 32-bit alignment, so we have to use another
+> > > memcpy to avoid taking alignment faults or writing beyond the end
+> > > of the array.
+> > > 
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
 > > 
-> > I could go with either method I suppose, but I don't personally like the
-> > idea of splitting out the various bits of MTD into *completely*
-> > independent lines of development. As long as someone (not necessarily
-> > me) can manage pulling the sub-subsystems together, I think it would
-> > make sense to have 1 PR for Linus for non-UBI/FS MTD changes.  
-> 
-> Yes please, agreed. This looks far more systematic and it's what other
-> subsystems do.
-> 
-> [...]
-> 
-> > Random thoughts:  
-> 
-> [...]
-> 
-> >  Coordination: how do we avoid stepping on each other's toes? We'd have
-> >  to definitely 100% kill 'git push -f' and 'git rebase'. Also, would
-> >  patchwork help or hurt us here?  
-> 
-> Patchwork is nice, it helps keeping track of the patch status real well.
-> But there is always the problem of keeping the patchwork up-to-date when
-> the status of patch changes, esp. if one is offline (or maybe I didn't
-> look hard enough).
+> > Jorge, RogerCC, can I have an Acked-by and/or Tested-by for this patch?  
+> Tested, this patch is OK,
+> Tested-by: RogerCC Lin <rogercc.lin@mediatek.com>
 
-I use git notes + a pre-push hook to help mark a patch as 'Accepted' in
-patchwork, but still, it does not automate moving patches to the
-'Superseeded' state (which IMO should be directly handled in patchwork)
-and those who are rejected. This is why the backlog tend to grow until
-I decide to do some cleanup.
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-We also have all those patches which are over 1 year old, but that we
-keep just in case someone wants to revive them.
-
-Anyway, I think patchwork is very useful if it's well maintained, so
-maybe we should cleanup things after each release.
+Brian, can you take this patch for the next -rc?
 
 > 
-> > I think Boris and I have been sort of
-> >  using it, but it's still got a pretty good backlog (partly real --
-> >  i.e., the cause for this thread; and partly artificial, due to
-> >  accounting).
-> > 
-> >  What to do about mtd-utils.git? That's been languishing a bit, and it
-> >  has no release schedule. Maybe we want a plan for that too.
-> > 
-> > BTW, will anybody be at Linux Plumbers? I plan to be there in a few
-> > weeks. And something tells me dwmw2 will be there.
-> > 
-> > Brian
+> >   
+> > > ---
+> > > v2: move temporary buffer into struct mtk_ecc instead of having it
+> > >     on the stack, as suggested by Boris Brezillon
+> > > ---
+> > >  drivers/mtd/nand/mtk_ecc.c | 19 +++++++++----------
+> > >  1 file changed, 9 insertions(+), 10 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
+> > > index d54f666..dbf2562 100644
+> > > --- a/drivers/mtd/nand/mtk_ecc.c
+> > > +++ b/drivers/mtd/nand/mtk_ecc.c
+> > > @@ -86,6 +86,8 @@ struct mtk_ecc {
+> > >  	struct completion done;
+> > >  	struct mutex lock;
+> > >  	u32 sectors;
+> > > +
+> > > +	u8 eccdata[112];
+> > >  };
+> > >  
+> > >  static inline void mtk_ecc_wait_idle(struct mtk_ecc *ecc,
+> > > @@ -366,9 +368,8 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
+> > >  		   u8 *data, u32 bytes)
+> > >  {
+> > >  	dma_addr_t addr;
+> > > -	u8 *p;
+> > > -	u32 len, i, val;
+> > > -	int ret = 0;
+> > > +	u32 len;
+> > > +	int ret;
+> > >  
+> > >  	addr = dma_map_single(ecc->dev, data, bytes, DMA_TO_DEVICE);
+> > >  	ret = dma_mapping_error(ecc->dev, addr);
+> > > @@ -393,14 +394,12 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
+> > >  
+> > >  	/* Program ECC bytes to OOB: per sector oob = FDM + ECC + SPARE */
+> > >  	len = (config->strength * ECC_PARITY_BITS + 7) >> 3;
+> > > -	p = data + bytes;
+> > >  
+> > > -	/* write the parity bytes generated by the ECC back to the OOB region */
+> > > -	for (i = 0; i < len; i++) {
+> > > -		if ((i % 4) == 0)
+> > > -			val = readl(ecc->regs + ECC_ENCPAR(i / 4));
+> > > -		p[i] = (val >> ((i % 4) * 8)) & 0xff;
+> > > -	}
+> > > +	/* write the parity bytes generated by the ECC back to temp buffer */
+> > > +	__ioread32_copy(ecc->eccdata, ecc->regs + ECC_ENCPAR(0), round_up(len, 4));
+> > > +
+> > > +	/* copy into possibly unaligned OOB region with actual length */
+> > > +	memcpy(data + bytes, ecc->eccdata, len);
+> > >  timeout:
+> > >  
+> > >  	dma_unmap_single(ecc->dev, addr, bytes, DMA_TO_DEVICE);  
 > >   
 > 
 > 
