@@ -1,28 +1,24 @@
-Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
+Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwkov-00086V-Uv
- for linux-mtd@lists.infradead.org; Wed, 19 Oct 2016 06:57:51 +0000
-Received: by mail-it0-x242.google.com with SMTP id 66so1107467itl.3
- for <linux-mtd@lists.infradead.org>; Tue, 18 Oct 2016 23:57:29 -0700 (PDT)
+ id 1bwnCc-0002xk-MG
+ for linux-mtd@lists.infradead.org; Wed, 19 Oct 2016 09:30:28 +0000
+Received: by mail-wm0-x229.google.com with SMTP id z189so39573852wmb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Oct 2016 02:30:06 -0700 (PDT)
+Subject: Re: [RFC PATCH] mtd: nand: Add OX820 NAND Support
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <20161018090927.1990-1-narmstrong@baylibre.com>
+ <20161018221744.5e574e82@bbrezillon>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
+ devicetree@vger.kernel.org, linux-oxnas@lists.tuxfamily.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+From: Neil Armstrong <narmstrong@baylibre.com>
+Message-ID: <37a5b543-e564-a496-d5cf-c215e798839f@baylibre.com>
+Date: Wed, 19 Oct 2016 11:29:59 +0200
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20161018220334.6452fc5b.albert.aribaud@3adev.fr>
-References: <20160927055957.427-1-albert.aribaud@3adev.fr>
- <20160927055957.427-2-albert.aribaud@3adev.fr>
- <20161003185143.GA27634@rob-hp-laptop>
- <CAMuHMdW6WJBj3TiXU0mmwKJmcwp28HEVUSD17-7RH7-UXFtX1g@mail.gmail.com>
- <20161018220334.6452fc5b.albert.aribaud@3adev.fr>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 19 Oct 2016 08:57:27 +0200
-Message-ID: <CAMuHMdW-L=Wc7mcs6s_N+joEZ8hX7DLHoY_YU0wuvnM=3DN8ug@mail.gmail.com>
-Subject: Re: [PATCH 2/2] fsl-quadspi: introduce per-bus spi-bus-width property
-To: Albert ARIBAUD <albert.aribaud@3adev.fr>
-Cc: Rob Herring <robh@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Han Xu <han.xu@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20161018221744.5e574e82@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,73 +28,341 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 18, 2016 at 10:03 PM, Albert ARIBAUD
-<albert.aribaud@3adev.fr> wrote:
-> Le Mon, 3 Oct 2016 21:57:58 +0200, Geert Uytterhoeven
-> <geert@linux-m68k.org> a =C3=A9crit :
->
->> On Mon, Oct 3, 2016 at 8:51 PM, Rob Herring <robh@kernel.org> wrote:
->> > On Tue, Sep 27, 2016 at 07:59:57AM +0200, Albert ARIBAUD (3ADEV) wrote=
-:
->> >> Introduce spi-bus-width property for bus subnodes, to
->> >> specify per-bus capability to use NORMAL, FAST, DUAL,
->> >> and/or QUAD reads.
->> >>
->> >> Signed-off-by: Albert ARIBAUD (3ADEV) <albert.aribaud@3adev.fr>
->> >> ---
->> >>  Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 18 +++++++++=
-+++++++++
->> >>  1 file changed, 18 insertions(+)
->> >
->> > Make this a common property.
->
-> @Rob: do you mean common to all slaves, i.e. described
-> in ./Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt?
->
->> They already exist:
->>
->> Documentation/devicetree/bindings/spi/spi-bus.txt:
->> - spi-tx-bus-width - (optional) The bus width (number of data wires)
->> that is used for MOSI. Defaults to 1 if not present.
->> - spi-rx-bus-width - (optional) The bus width (number of data wires)
->> that is used for MISO. Defaults to 1 if not present.
->>
->> The above are for normal/dual/quad.
->>
->> "Fast" is not a property of the bus, but of the SPI slave, right? Cfr.
->>
->> Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt:
->> - m25p,fast-read : Use the "fast read" opcode to read data from the
->> chip instead of the usual "read" opcode. This opcode is not supported
->> by all chips and support for it can not be detected at runtime.
->>                    Refer to your chips' datasheet to check if this is
->> supported by your chip.
->>
->> Gr{oetje,eeting}s,
->
-> @Geert: the problem here is that on the board for which I wrote this
-> patch, only one of the two NOR slaves can do quad SPI; the other one
-> can do dual at best. Setting a bus property would prevent the
-> quad-capable device from doing actual quad reads.
->
-> The fsl-quadspi driver already supports per-NOR read and erase commands
-> to support heterogeneous NOR setups. A per-NOR bus width property would
-> make sense in this light.
+Hi Boris,
 
-spi-[tx]x-bus-width is already a property for the SPI slave, not for
-the whole bus.
-So you can use 4 for the quad-capable device, and 1 or 2 for the other.
+On 10/18/2016 10:17 PM, Boris Brezillon wrote:
+> Hi Neil,
+> 
+> On Tue, 18 Oct 2016 11:09:27 +0200
+> Neil Armstrong <narmstrong@baylibre.com> wrote:
+> 
+>> Add NAND driver to support the Oxford Semiconductor OX820 NAND Controller.
+>> This is a simple memory mapped NAND controller with single chip select and
+>> software ECC.
+>>
+>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> ---
+>>  .../devicetree/bindings/mtd/oxnas-nand.txt         |  24 ++++
+>>  drivers/mtd/nand/Kconfig                           |   5 +
+>>  drivers/mtd/nand/Makefile                          |   1 +
+>>  drivers/mtd/nand/oxnas_nand.c                      | 144 +++++++++++++++++++++
+>>  4 files changed, 174 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+>>  create mode 100644 drivers/mtd/nand/oxnas_nand.c
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/oxnas-nand.txt b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+>> new file mode 100644
+>> index 0000000..83b684d
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+>> @@ -0,0 +1,24 @@
+>> +* Oxford Semiconductor OXNAS NAND Controller
+>> +
+>> +Please refer to nand.txt for generic information regarding MTD NAND bindings.
+>> +
+>> +Required properties:
+>> + - compatible: "oxsemi,ox820-nand"
+>> + - reg: Base address and length for NAND mapped memory.
+>> +
+>> +Optional Properties:
+>> + - clocks: phandle to the NAND gate clock if needed.
+>> + - resets: phandle to the NAND reset control if needed.
+>> +
+>> +Example:
+>> +
+>> +nand: nand@41000000 {
+>> +	compatible = "oxsemi,ox820-nand";
+>> +	reg = <0x41000000 0x100000>;
+>> +	nand-ecc-mode = "soft";
+>> +	clocks = <&stdclk CLK_820_NAND>;
+>> +	resets = <&reset RESET_NAND>;
+>> +	#address-cells = <1>;
+>> +	#size-cells = <1>;
+>> +	status = "disabled";
+>> +};
+> 
+> Can you switch to new DT representation for NAND controllers, with one
+> node for the NAND controller and NAND devices connected to this NAND
+> controller defined as sub-nodes of this NAND controller [1]?
 
-Gr{oetje,eeting}s,
+Yes, I was wondering if this existed... my bad, next time I will search further.
 
-                        Geert
+> 
+>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+>> index 7b7a887..c023125 100644
+>> --- a/drivers/mtd/nand/Kconfig
+>> +++ b/drivers/mtd/nand/Kconfig
+>> @@ -426,6 +426,11 @@ config MTD_NAND_ORION
+>>  	  No board specific support is done by this driver, each board
+>>  	  must advertise a platform_device for the driver to attach.
+>>  
+>> +config MTD_NAND_OXNAS
+>> +	tristate "NAND Flash support for Oxford Semiconductor SoC"
+>> +	help
+>> +	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
+>> +
+>>  config MTD_NAND_FSL_ELBC
+>>  	tristate "NAND support for Freescale eLBC controllers"
+>>  	depends on FSL_SOC
+>> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+>> index cafde6f..05fc054 100644
+>> --- a/drivers/mtd/nand/Makefile
+>> +++ b/drivers/mtd/nand/Makefile
+>> @@ -35,6 +35,7 @@ obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
+>>  obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
+>>  obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
+>>  obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
+>> +obj-$(CONFIG_MTD_NAND_OXNAS)		+= oxnas_nand.o
+>>  obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
+>>  obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
+>>  obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
+>> diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
+>> new file mode 100644
+>> index 0000000..ee402ab
+>> --- /dev/null
+>> +++ b/drivers/mtd/nand/oxnas_nand.c
+>> @@ -0,0 +1,144 @@
+>> +/*
+>> + * Oxford Semiconductor OXNAS NAND driver
+>> + *
+>> + * Heavily based on plat_nand.c :
+>> + * Author: Vitaly Wool <vitalywool@gmail.com>
+>> + *
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License version 2 as
+>> + * published by the Free Software Foundation.
+>> + *
+>> + */
+>> +
+>> +#include <linux/err.h>
+>> +#include <linux/io.h>
+>> +#include <linux/module.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/clk.h>
+>> +#include <linux/reset.h>
+>> +#include <linux/mtd/mtd.h>
+>> +#include <linux/mtd/nand.h>
+>> +#include <linux/mtd/partitions.h>
+>> +
+>> +/* nand commands */
+>> +#define NAND_CMD_ALE		BIT(18)
+>> +#define NAND_CMD_CLE		BIT(19)
+>> +#define NAND_CMD_CS		0
+> 
+> I guess this is zero here because you only support connecting a NAND to
+> CS0.
+> It's probably something like
+> 
+> OX820_NAND_CS(x)		((x) << CS_FIELD_SHIFT)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+The hardware seems to be able to drive multiple chip selects, but no implementation does this.
+We will stick to CS0 only here for test reasons.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> 
+>> +#define NAND_CMD_RESET		0xff
+> 
+> Why do you have to redefine it? it's already defined here [2].
+> 
+>> +#define NAND_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
+>> +#define NAND_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
+>> +#define NAND_DATA		(NAND_CMD_CS)
+> 
+> Please prefix those macros with OX820, has stated above, this can
+> conflict with generic definitions.
+> Also, I'm not sure you should pass the CS information here.
+> 
+>> +
+>> +struct oxnas_nand_data {
+>> +	struct nand_chip	chip;
+>> +	void __iomem		*io_base;
+>> +	struct clk		*clk;
+>> +};
+> 
+> Even if your driver does not seem to support connecting several chips
+> to the same controller, I'd like you to clearly separate the NAND
+> controller and NAND chip objects:
+> 
+> #define OXNAS_NAND_MAX_CHIPS	1
+> 
+> struct oxnas_nand_controller {
+> 	struct nand_hw_control base;
+> 	void __iomem *io_base;
+> 	struct clk *clk;
+> 	struct nand_chip *chips[OXNAS_NAND_MAX_CHIPS];
+> }
+
+Ok.
+
+> 
+>> +
+>> +static void oxnas_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
+>> +				unsigned int ctrl)
+>> +{
+>> +	struct nand_chip *this = mtd->priv;
+>> +	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
+> 
+> Please use the ->io_base field directly, and do not use ->IO_ADDR_W/R
+> (I'd like to get rid of them at some point).
+
+Yes, it seems cleaner.
+
+> 
+> Also, declare the nandaddr as a void __iomem *, and use the '+'
+> operator instead of '|'.
+> 
+>> +
+>> +	if (ctrl & NAND_CTRL_CHANGE) {
+>> +		nandaddr &= ~(NAND_CMD | NAND_ADDR);
+> 
+> This is not needed.
+> 
+>> +		if (ctrl & NAND_CLE)
+>> +			nandaddr |= NAND_CMD;
+>> +		else if (ctrl & NAND_ALE)
+>> +			nandaddr |= NAND_ADDR;
+>> +		this->IO_ADDR_W = (void __iomem *) nandaddr;
+> 
+> This is not needed, is it?
+
+No more if we stick to ->io_base
+
+> 
+>> +	}
+>> +
+>> +	if (cmd != NAND_CMD_NONE)
+>> +		writeb(cmd, (void __iomem *) nandaddr);
+>> +}
+>> +
+>> +/*
+>> + * Probe for the NAND device.
+>> + */
+>> +static int oxnas_nand_probe(struct platform_device *pdev)
+>> +{
+>> +	struct oxnas_nand_data *data;
+>> +	struct mtd_info *mtd;
+>> +	struct resource *res;
+>> +	int err = 0;
+>> +
+>> +	/* Allocate memory for the device structure (and zero it) */
+>> +	data = devm_kzalloc(&pdev->dev, sizeof(struct oxnas_nand_data),
+>> +			    GFP_KERNEL);
+>> +	if (!data)
+>> +		return -ENOMEM;
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	data->io_base = devm_ioremap_resource(&pdev->dev, res);
+>> +	if (IS_ERR(data->io_base))
+>> +		return PTR_ERR(data->io_base);
+>> +
+>> +	data->clk = devm_clk_get(&pdev->dev, NULL);
+>> +	if (IS_ERR(data->clk))
+>> +		data->clk = NULL;
+>> +
+>> +	nand_set_flash_node(&data->chip, pdev->dev.of_node);
+>> +	mtd = nand_to_mtd(&data->chip);
+>> +	mtd->dev.parent = &pdev->dev;
+>> +	mtd->priv = &data->chip;
+>> +
+>> +	data->chip.IO_ADDR_R = data->io_base;
+>> +	data->chip.IO_ADDR_W = data->io_base;
+> 
+> As I said above, don't use these fields.
+> 
+>> +	data->chip.cmd_ctrl = oxnas_nand_cmd_ctrl;
+>> +	data->chip.chip_delay = 30;
+>> +	data->chip.ecc.mode = NAND_ECC_SOFT;
+>> +	data->chip.ecc.algo = NAND_ECC_HAMMING;
+> 
+> Probably a good idea to support soft ECC as well...
+
+This was taken from plat_nand.c, I was not sure if it was necessary, will remove this and rely on DT attributes.
+
+> 
+>> +
+>> +	platform_set_drvdata(pdev, data);
+>> +
+>> +	clk_prepare_enable(data->clk);
+>> +	device_reset_optional(&pdev->dev);
+>> +
+>> +	/* Scan to find existence of the device */
+>> +	if (nand_scan(mtd, 1)) {
+> 
+> Why not returning nand_scan() error code?
+
+Same, bad plat_nand.c copy/paste.
+
+> 
+>> +		err = -ENXIO;
+>> +		goto out;
+> 
+> Return directly here.
+> 
+>> +	}
+>> +
+>> +	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
+> 
+> Use mtd_device_register() here.
+> 
+>> +	if (!err)
+>> +		return err;
+>> +
+>> +	nand_release(mtd);
+> 
+> Why not
+> 
+> 	if (err)
+> 		nand_release(mtd);
+> 
+>> +out:
+> 
+> Drop this label.
+
+Will refactor this error management.
+
+> 
+>> +	return err;
+>> +}
+>> +
+>> +static int oxnas_nand_remove(struct platform_device *pdev)
+>> +{
+>> +	struct oxnas_nand_data *data = platform_get_drvdata(pdev);
+>> +
+>> +	nand_release(nand_to_mtd(&data->chip));
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct of_device_id oxnas_nand_match[] = {
+>> +	{ .compatible = "oxsemi,ox820-nand" },
+>> +	{},
+>> +};
+>> +MODULE_DEVICE_TABLE(of, oxnas_nand_match);
+>> +
+>> +static struct platform_driver oxnas_nand_driver = {
+>> +	.probe	= oxnas_nand_probe,
+>> +	.remove	= oxnas_nand_remove,
+>> +	.driver	= {
+>> +		.name		= "oxnas_nand",
+>> +		.of_match_table = oxnas_nand_match,
+>> +	},
+>> +};
+>> +
+>> +module_platform_driver(oxnas_nand_driver);
+>> +
+>> +MODULE_LICENSE("GPL");
+>> +MODULE_AUTHOR("Vitaly Wool");
+>> +MODULE_DESCRIPTION("Oxnas NAND driver");
+>> +MODULE_ALIAS("platform:oxnas_nand");
+> 
+> Thanks,
+> 
+> Boris
+
+Thanks,
+Neil
+
+> 
+> [1]https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/mtd/nand.txt?id=refs/tags/v4.9-rc1#n57
+> [2]http://lxr.free-electrons.com/source/include/linux/mtd/nand.h#L90
+> 
