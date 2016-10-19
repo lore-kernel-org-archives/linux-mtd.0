@@ -1,21 +1,17 @@
-Date: Wed, 19 Oct 2016 22:10:12 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sergio Prado <sergio.prado@e-labworks.com>
-Cc: linux@armlinux.org.uk, linux@simtec.co.uk, robh+dt@kernel.org,
- mark.rutland@arm.com, devicetree@vger.kernel.org, kgene@kernel.org,
- javier@osg.samsung.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] mtd: s3c2410: parse the device configuration
- from OF node
-Message-ID: <20161019221012.5a20e7df@bbrezillon>
-In-Reply-To: <1476906725-22613-4-git-send-email-sergio.prado@e-labworks.com>
-References: <1476906725-22613-1-git-send-email-sergio.prado@e-labworks.com>
- <1476906725-22613-4-git-send-email-sergio.prado@e-labworks.com>
+Received: from mail-bn3nam01on070c.outbound.protection.outlook.com
+ ([2a01:111:f400:fe41::70c]
+ helo=NAM01-BN3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bwz5s-0003ip-Vd
+ for linux-mtd@lists.infradead.org; Wed, 19 Oct 2016 22:12:19 +0000
+From: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
+To: <linux-mtd@lists.infradead.org>
+CC: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
+Subject: [PATCH] mtd: spi-nor: fixed spansion quad enable
+Date: Thu, 20 Oct 2016 00:11:18 +0200
+Message-ID: <1476915078-98841-1-git-send-email-joel.esponde@honeywell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,93 +21,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Oct 2016 17:52:05 -0200
-Sergio Prado <sergio.prado@e-labworks.com> wrote:
+With the S25FL127S nor flash part, each writing to the configuration 
+register takes hundreds of ms. During that  time, no more accesses to 
+the flash should be done (even reads).
 
-> Allows configuring Samsung's s3c2410 memory controller using a
-> devicetree.
-> 
-> Signed-off-by: Sergio Prado <sergio.prado@e-labworks.com>
-> ---
->  drivers/mtd/nand/s3c2410.c                     | 155 ++++++++++++++++++++++---
->  include/linux/platform_data/mtd-nand-s3c2410.h |   1 +
->  2 files changed, 140 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-> index 371db0d48135..52f768f01b0d 100644
-> --- a/drivers/mtd/nand/s3c2410.c
-> +++ b/drivers/mtd/nand/s3c2410.c
-> @@ -39,6 +39,8 @@
->  #include <linux/slab.h>
->  #include <linux/clk.h>
->  #include <linux/cpufreq.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
->  
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/nand.h>
-> @@ -185,6 +187,22 @@ struct s3c2410_nand_info {
->  #endif
->  };
->  
-> +struct s3c24XX_nand_devtype_data {
-> +	enum s3c_cpu_type type;
-> +};
-> +
-> +static const struct s3c24XX_nand_devtype_data s3c2410_nand_devtype_data = {
-> +	.type = TYPE_S3C2410,
-> +};
-> +
-> +static const struct s3c24XX_nand_devtype_data s3c2412_nand_devtype_data = {
-> +	.type = TYPE_S3C2412,
-> +};
-> +
-> +static const struct s3c24XX_nand_devtype_data s3c2440_nand_devtype_data = {
-> +	.type = TYPE_S3C2440,
-> +};
-> +
->  /* conversion functions */
->  
->  static struct s3c2410_nand_mtd *s3c2410_nand_mtd_toours(struct mtd_info *mtd)
-> @@ -794,6 +812,34 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
->  	return -ENODEV;
->  }
->  
-> +static int s3c2410_nand_setup_data_interface(struct mtd_info *mtd,
-> +					     const struct nand_data_interface *conf,
-> +					     bool check_only)
-> +{
-> +	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
-> +	struct s3c2410_platform_nand *pdata = info->platform;
-> +	struct device_node *np = info->device->of_node;
-> +	const struct nand_sdr_timings *timings;
-> +	int tacls;
-> +
-> +	/* auto-detect timings when booting with a device tree */
-> +	if (np) {
+This commit adds:
+- a pre check of the quad enable bit to avoid a useless and time 
+  consuming writing to the flash,
+- a wait loop after the register writing until the flash finishes its 
+  work.
 
-That's not really dependent on the use of DT, but I understand why you
-want to keep it unchanged for users who did not switch to DT.
+This issue could make rootfs mounting fail when the latter was done too 
+much closely to this quad enable bit setting step. And in this case, a 
+driver as UBIFS may try to recover the filesystem and may broke it 
+completely.
+---
+ drivers/mtd/spi-nor/spi-nor.c | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
-Instead of testing the np value here, I'd recommend that you
-conditionally assign chip->setup_data_interface to
-s3c2410_nand_setup_data_interface in s3c2410_nand_init_chip().
-
-Can you also explain in more details in the comment why you don't want
-to do it for non-DT configs (keep behavior unchanged for legacy boards)?
-
-> +		timings = nand_get_sdr_timings(conf);
-> +		if (IS_ERR(timings))
-> +			return -ENOTSUPP;
-> +
-> +		tacls = timings->tCLS_min - timings->tWP_min;
-> +		if (tacls < 0)
-> +			tacls = 0;
-> +
-> +		pdata->tacls  = DIV_ROUND_UP(tacls, 1000);
-> +		pdata->twrph0 = DIV_ROUND_UP(timings->tWP_min, 1000);
-> +		pdata->twrph1 = DIV_ROUND_UP(timings->tCLH_min, 1000);
-> +	}
-> +
-> +	return 0;
-> +}
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..df43cd7 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1246,18 +1246,41 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 	int ret;
+ 	int quad_en = CR_QUAD_EN_SPAN << 8;
+ 
++	/* check quad enable bit
++	 * as S25FL127S takes 200 ms to execute each write of SR & CR 
++	 * registers even if data is the same, write step will be shorted 
++	 * if not needed
++	 */
++	ret = read_cr(nor);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading CR\n", ret);
++		return ret;
++	} 
++	if (ret & CR_QUAD_EN_SPAN) {
++		/* quad enable bit is already set */
++		return 0;
++	}
++
++	/* set SR & CR, enable quad I/O */
+ 	write_enable(nor);
+ 
+ 	ret = write_sr_cr(nor, quad_en);
+ 	if (ret < 0) {
+-		dev_err(nor->dev,
+-			"error while writing configuration register\n");
++		dev_err(nor->dev, "error while writing SR and CR registers\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	/* read back and check it */
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++	
++	/* read CR and check it */
+ 	ret = read_cr(nor);
+-	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading CR\n", ret);
++		return ret;
++	}
++	if (!(ret & CR_QUAD_EN_SPAN)) {
+ 		dev_err(nor->dev, "Spansion Quad bit not set\n");
+ 		return -EINVAL;
+ 	}
+-- 
+2.7.4
