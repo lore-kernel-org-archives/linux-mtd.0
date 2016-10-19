@@ -1,23 +1,19 @@
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]
- helo=mx0a-00082601.pphosted.com)
+Received: from mail-qk0-x235.google.com ([2607:f8b0:400d:c09::235])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwsDU-00022V-6G
- for linux-mtd@lists.infradead.org; Wed, 19 Oct 2016 14:51:41 +0000
-Subject: Re: [PATCH] ubifs: implement POSIX Access Control Lists (ACLs)
-To: Andreas Gruenbacher <agruenba@redhat.com>, Pascal Eberhard
- <pascal.eberhard@gmail.com>
-References: <1476046382-19185-1-git-send-email-pascal.eberhard@gmail.com>
- <443b11a2-729a-32ec-0a6f-5a3276290329@nod.at>
- <CAHc6FU7Sh3cX2NAs6bu1jBWQwwpQK0OLsLMAEZMpzocb7L5teg@mail.gmail.com>
- <CAHc6FU5pei6eLT2msMO3NV-me5SoCWf7_6y5utuCvfZHYjyiZw@mail.gmail.com>
-CC: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>
-From: Josef Bacik <jbacik@fb.com>
-Message-ID: <8970b7a5-eea0-921b-16ff-6cf53df52f85@fb.com>
-Date: Wed, 19 Oct 2016 10:51:02 -0400
-MIME-Version: 1.0
-In-Reply-To: <CAHc6FU5pei6eLT2msMO3NV-me5SoCWf7_6y5utuCvfZHYjyiZw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+ id 1bwsHY-0004DY-9f
+ for linux-mtd@lists.infradead.org; Wed, 19 Oct 2016 14:55:54 +0000
+Received: by mail-qk0-x235.google.com with SMTP id n189so39944225qke.0
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Oct 2016 07:55:31 -0700 (PDT)
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at
+Cc: Neil Armstrong <narmstrong@baylibre.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-oxnas@lists.tuxfamily.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ daniel@makrotopia.org
+Subject: [PATCH] mtd: nand: Add OX820 NAND Support
+Date: Wed, 19 Oct 2016 16:55:23 +0200
+Message-Id: <20161019145523.6763-1-narmstrong@baylibre.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,249 +23,295 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/19/2016 10:37 AM, Andreas Gruenbacher wrote:
-> On Wed, Oct 19, 2016 at 4:34 PM, Andreas Gruenbacher
-> <agruenba@redhat.com> wrote:
->> Pascal,
->>
->> On Tue, Oct 18, 2016 at 11:32 PM, Richard Weinberger <richard@nod.at> wrote:
->>> Pascal,
->>>
->>> On 09.10.2016 22:53, Pascal Eberhard wrote:
->>>> This patch implements POSIX Access Control Lists (ACLs) in UBIFS.
->>>> It uses posix_acl_(access|default)_xattr_handler ACL generic handlers
->>>> as xattr handlers are now used in UBIFS.
->>>
->>> Cool! :)
->>> CC'ing Andreas, maybe he also has comments.
->>
->> please run this through xfstests as well. Note the following fixes /
->> improvements I've made in the course of reviewing this; they've
->> obviously not been merged, yet:
->>
->>   https://github.com/andreas-gruenbacher/xfsprogs-dev/commits/io
->>   https://github.com/andreas-gruenbacher/xfstests/commits/tmpfile
->>
->>>> Signed-off-by: Pascal Eberhard <pascal.eberhard@gmail.com>
->>>> ---
->>>>  fs/ubifs/Kconfig  |  13 +++++
->>>>  fs/ubifs/Makefile |   1 +
->>>>  fs/ubifs/acl.c    | 143 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
->>>>  fs/ubifs/dir.c    |  22 +++++++++
->>>>  fs/ubifs/file.c   |   9 ++++
->>>>  fs/ubifs/super.c  |  15 ++++++
->>>>  fs/ubifs/ubifs.h  |  18 +++++++
->>>>  fs/ubifs/xattr.c  |  11 +++--
->>>>  8 files changed, 229 insertions(+), 3 deletions(-)
->>>>  create mode 100644 fs/ubifs/acl.c
->>>>
->>>> diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
->>>> index 7ff7712..39119e5 100644
->>>> --- a/fs/ubifs/Kconfig
->>>> +++ b/fs/ubifs/Kconfig
->>>> @@ -50,3 +50,16 @@ config UBIFS_ATIME_SUPPORT
->>>>         strictatime is the "heavy", relatime is "lighter", etc.
->>>>
->>>>         If unsure, say 'N'
->>>> +
->>>> +config UBIFS_FS_POSIX_ACL
->>>> +     bool "UBIFS POSIX Access Control Lists"
->>>> +     depends on UBIFS_FS
->>>> +     select FS_POSIX_ACL
->>>> +     help
->>>> +       POSIX Access Control Lists (ACLs) support permissions for users and
->>>> +       groups beyond the owner/group/world scheme.
->>>> +
->>>> +       To learn more about Access Control Lists, visit the POSIX ACLs for
->>>> +       Linux website <https://urldefense.proofpoint.com/v2/url?u=http-3A__acl.bestbits.at_&d=DQIBaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=sDzg6MvHymKOUgI8SFIm4Q&m=kMcqxODxmAbECYcLW6bRou3Q-jJYfAL4HPw5ErTumUU&s=De0Qb4gRiGITbgivfS5NKW92fL7-HKCGNvCnAMU6CwM&e= >.
->>>> +
->>>> +       If you don't know what Access Control Lists are, say N
->>>> diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
->>>> index c54a243..af7a83f 100644
->>>> --- a/fs/ubifs/Makefile
->>>> +++ b/fs/ubifs/Makefile
->>>> @@ -5,3 +5,4 @@ ubifs-y += tnc.o master.o scan.o replay.o log.o commit.o gc.o orphan.o
->>>>  ubifs-y += budget.o find.o tnc_commit.o compress.o lpt.o lprops.o
->>>>  ubifs-y += recovery.o ioctl.o lpt_commit.o tnc_misc.o xattr.o debug.o
->>>>  ubifs-y += misc.o
->>>> +ubifs-$(CONFIG_UBIFS_FS_POSIX_ACL) += acl.o
->>>> \ No newline at end of file
->>>> diff --git a/fs/ubifs/acl.c b/fs/ubifs/acl.c
->>>> new file mode 100644
->>>> index 0000000..a4d4734
->>>> --- /dev/null
->>>> +++ b/fs/ubifs/acl.c
->>>> @@ -0,0 +1,143 @@
->>>> +/*
->>>> + * This file is part of UBIFS.
->>>> + *
->>>> + * This program is free software; you can redistribute it and/or modify it
->>>> + * under the terms of the GNU General Public License version 2 as published by
->>>> + * the Free Software Foundation.
->>>> + *
->>>> + * This program is distributed in the hope that it will be useful, but WITHOUT
->>>> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
->>>> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
->>>> + * more details.
->>>> + *
->>>> + */
->>>> +
->>>> +#include <linux/fs.h>
->>>
->>> ubifs.h includes this already.
->>>
->>>> +#include <linux/xattr.h>
->>>
->>> Ditto.
->>>
->>>> +#include <linux/posix_acl_xattr.h>
->>>> +
->>>> +#include "ubifs.h"
->>>> +
->>>> +struct posix_acl *ubifs_get_acl(struct inode *inode, int type)
->>>> +{
->>>> +     int size;
->>>> +     const char *name;
->>>> +     char *value = NULL;
->>>> +     struct posix_acl *acl;
->>>> +
->>>> +     switch (type) {
->>>> +     case ACL_TYPE_ACCESS:
->>>> +             name = XATTR_NAME_POSIX_ACL_ACCESS;
->>>> +             break;
->>>> +     case ACL_TYPE_DEFAULT:
->>>> +             name = XATTR_NAME_POSIX_ACL_DEFAULT;
->>>> +             break;
->>>> +     default:
->>>> +             return ERR_PTR(-EINVAL);
->>>> +     }
->>>> +
->>>> +     size = __ubifs_getxattr(inode, name, NULL, 0);
->>>> +     if (size > 0) {
->>>> +             value = kzalloc(size, GFP_KERNEL);
->>>> +             if (!value)
->>>> +                     return ERR_PTR(-ENOMEM);
->>>> +             size = __ubifs_getxattr(inode, name, value, size);
->>>> +     }
->>>> +     if (size > 0)
->>>> +             acl = posix_acl_from_xattr(&init_user_ns, value, size);
->>>> +     else if (size == -ERANGE || size == -ENODATA || size == 0)
->>>> +             acl = NULL;
->>>> +     else
->>>> +             acl = ERR_PTR(size);
->>>> +
->>>> +     kfree(value);
->>>> +     if (!IS_ERR(acl))
->>>> +             set_cached_acl(inode, type, acl);
->>
->> The get_acl inode operation should no longer call set_cached_acl; the
->> cached ACL is updated automatically. (It's correct to use
->> set_cached_acl in the set_acl inode operation though.)
->>
->>>> +
->>>> +     return acl;
->>>> +}
->>>> +
->>>> +int ubifs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
->>>> +{
->>>> +     int ret;
->>>> +     int size = 0;
->>>> +     const char *name;
->>>> +     char *value = NULL;
->>>> +     int flags = 0;
->>>> +
->>>> +     switch (type) {
->>>> +     case ACL_TYPE_ACCESS:
->>>> +             name = XATTR_NAME_POSIX_ACL_ACCESS;
->>>> +             if (acl) {
->>>> +                     ret = posix_acl_equiv_mode(acl, &inode->i_mode);
->>>> +                     if (ret < 0)
->>>> +                             return ret;
->>>> +                     if (ret == 0)
->>>> +                             acl = NULL;
->>>> +             }
->>>> +             ret = 0;
->>>> +             break;
->>>> +     case ACL_TYPE_DEFAULT:
->>>> +             if (!S_ISDIR(inode->i_mode))
->>>> +                     return acl ? -EINVAL : 0;
->>>> +             name = XATTR_NAME_POSIX_ACL_DEFAULT;
->>>> +             break;
->>>> +     default:
->>>> +             return -EINVAL;
->>>> +     }
->>>> +
->>>> +     if (acl) {
->>>> +             size = posix_acl_xattr_size(acl->a_count);
->>>> +             value = kmalloc(size, GFP_KERNEL);
->>>> +             if (!value)
->>>> +                     return -ENOMEM;
->>>> +
->>>> +             ret = posix_acl_to_xattr(&init_user_ns, acl, value, size);
->>>> +             if (ret < 0)
->>>> +                     goto out;
->>>> +     }
->>>> +
->>>> +     if (size == 0)
->>>> +             flags = XATTR_REPLACE;
->>>> +     ret = __ubifs_setxattr(inode, name, value, size, flags);
->>>> +
->>>> +out:
->>>> +     kfree(value);
->>>> +     if (!ret)
->>>> +             set_cached_acl(inode, type, acl);
->>>> +
->>>> +     return ret;
->>>> +}
->>>> +
->>>> +/*
->>>> + * Initialize the ACLs of a new inode.
->>>
->>> Please use the Javadoc style we use for all UBIFS functions.
->>> (applies to other functions too in this patch)-
->>>
->>>> + */
->>>> +int ubifs_init_acl(struct inode *dir, struct inode *inode)
->>>> +{
->>>> +     struct posix_acl *default_acl, *acl;
->>>> +     int ret = 0;
->>>> +
->>>> +     ret = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
->>>> +     if (ret)
->>>> +             return ret;
->>>> +
->>>> +     if (default_acl) {
->>>> +             inode_lock(inode);
->>
->> Why the inode locking here?
->>
->>>> +             ret = ubifs_set_acl(inode, default_acl, ACL_TYPE_DEFAULT);
->>>> +             inode_unlock(inode);
->>>> +             posix_acl_release(default_acl);
->>>> +     }
->>>> +
->>>> +     if (acl) {
->>>> +             if (!ret) {
->>>> +                     inode_lock(inode);
->>
->> Same here.
->>
->>>> +                     ret = ubifs_set_acl(inode, acl, ACL_TYPE_ACCESS);
->>>> +                     inode_unlock(inode);
->>>> +             }
->>>> +             posix_acl_release(acl);
->>>> +     }
->>>> +
->>>> +     if (!default_acl && !acl)
->>>> +             cache_no_acl(inode);
->>
->> This call to cache_no_acl doesn't make sense; please check. It may be
->> wrong in btrfs as well; copying Josef for that.
->
-> Now with Josef's current email address, hopefully.
->
+Add NAND driver to support the Oxford Semiconductor OX820 NAND Controller.
+This is a simple memory mapped NAND controller with single chip select and
+software ECC.
 
-Looks right to me, we call this during inode creation, so if there is no ACL to 
-set then we cache no acl so we don't waste the lookup later.  Thanks,
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ .../devicetree/bindings/mtd/oxnas-nand.txt         |  24 +++
+ drivers/mtd/nand/Kconfig                           |   5 +
+ drivers/mtd/nand/Makefile                          |   1 +
+ drivers/mtd/nand/oxnas_nand.c                      | 204 +++++++++++++++++++++
+ 4 files changed, 234 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+ create mode 100644 drivers/mtd/nand/oxnas_nand.c
 
-Josef
+Changes since RFC http://lkml.kernel.org/r/20161018090927.1990-1-narmstrong@baylibre.com :
+ - Avoid using chip->IO_ADDR*
+ - Use new DT structure
+ - Assign a chip for the subnode
+ - Use the nand_hw_control structure
+ - Cleanup probe
+ - Cleanup cmd_ctrl by using a context ctrl offset used in write_bytes
+
+diff --git a/Documentation/devicetree/bindings/mtd/oxnas-nand.txt b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+new file mode 100644
+index 0000000..83b684d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+@@ -0,0 +1,24 @@
++* Oxford Semiconductor OXNAS NAND Controller
++
++Please refer to nand.txt for generic information regarding MTD NAND bindings.
++
++Required properties:
++ - compatible: "oxsemi,ox820-nand"
++ - reg: Base address and length for NAND mapped memory.
++
++Optional Properties:
++ - clocks: phandle to the NAND gate clock if needed.
++ - resets: phandle to the NAND reset control if needed.
++
++Example:
++
++nand: nand@41000000 {
++	compatible = "oxsemi,ox820-nand";
++	reg = <0x41000000 0x100000>;
++	nand-ecc-mode = "soft";
++	clocks = <&stdclk CLK_820_NAND>;
++	resets = <&reset RESET_NAND>;
++	#address-cells = <1>;
++	#size-cells = <1>;
++	status = "disabled";
++};
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 7b7a887..c023125 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -426,6 +426,11 @@ config MTD_NAND_ORION
+ 	  No board specific support is done by this driver, each board
+ 	  must advertise a platform_device for the driver to attach.
+ 
++config MTD_NAND_OXNAS
++	tristate "NAND Flash support for Oxford Semiconductor SoC"
++	help
++	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
++
+ config MTD_NAND_FSL_ELBC
+ 	tristate "NAND support for Freescale eLBC controllers"
+ 	depends on FSL_SOC
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index cafde6f..05fc054 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -35,6 +35,7 @@ obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
+ obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
+ obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
+ obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
++obj-$(CONFIG_MTD_NAND_OXNAS)		+= oxnas_nand.o
+ obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
+ obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
+ obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
+diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
+new file mode 100644
+index 0000000..a9fe1ac
+--- /dev/null
++++ b/drivers/mtd/nand/oxnas_nand.c
+@@ -0,0 +1,204 @@
++/*
++ * Oxford Semiconductor OXNAS NAND driver
++
++ * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
++ * Heavily based on plat_nand.c :
++ * Author: Vitaly Wool <vitalywool@gmail.com>
++ * Copyright (C) 2013 Ma Haijun <mahaijuns@gmail.com>
++ * Copyright (C) 2012 John Crispin <blogic@openwrt.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/clk.h>
++#include <linux/reset.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <linux/of.h>
++
++/* Nand commands */
++#define OXNAS_NAND_CMD_ALE		BIT(18)
++#define OXNAS_NAND_CMD_CLE		BIT(19)
++
++#define OXNAS_NAND_MAX_CHIPS	1
++
++struct oxnas_nand {
++	struct nand_hw_control base;
++	void __iomem *io_base;
++	struct clk *clk;
++	struct nand_chip *chips[OXNAS_NAND_MAX_CHIPS];
++	unsigned long ctrl;
++};
++
++static uint8_t oxnas_nand_read_byte(struct mtd_info *mtd)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
++
++	return readb(oxnas->io_base);
++}
++
++static void oxnas_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
++
++	ioread8_rep(oxnas->io_base, buf, len);
++}
++
++static void oxnas_nand_write_buf(struct mtd_info *mtd,
++				 const uint8_t *buf, int len)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
++
++	iowrite8_rep(oxnas->io_base + oxnas->ctrl, buf, len);
++}
++
++/* Single CS command control */
++static void oxnas_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
++				unsigned int ctrl)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
++
++	if (ctrl & NAND_CTRL_CHANGE) {
++		if (ctrl & NAND_CLE)
++			oxnas->ctrl = OXNAS_NAND_CMD_CLE;
++		else if (ctrl & NAND_ALE)
++			oxnas->ctrl = OXNAS_NAND_CMD_ALE;
++		else
++			oxnas->ctrl = 0;
++	}
++
++	if (cmd != NAND_CMD_NONE)
++		writeb(cmd, oxnas->io_base + oxnas->ctrl);
++}
++
++/*
++ * Probe for the NAND device.
++ */
++static int oxnas_nand_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *nand_np;
++	struct oxnas_nand *oxnas;
++	struct nand_chip *chip;
++	struct mtd_info *mtd;
++	struct resource *res;
++	int nchips = 0;
++	int count = 0;
++	int err = 0;
++
++	/* Allocate memory for the device structure (and zero it) */
++	oxnas = devm_kzalloc(&pdev->dev, sizeof(struct nand_chip),
++			    GFP_KERNEL);
++	if (!oxnas)
++		return -ENOMEM;
++
++	nand_hw_control_init(&oxnas->base);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	oxnas->io_base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(oxnas->io_base))
++		return PTR_ERR(oxnas->io_base);
++
++	oxnas->clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(oxnas->clk))
++		oxnas->clk = NULL;
++
++	/* Only a single chip node is supported */
++	count = of_get_child_count(np);
++	if (count > 1)
++		return -EINVAL;
++
++	clk_prepare_enable(oxnas->clk);
++	device_reset_optional(&pdev->dev);
++
++	for_each_child_of_node(np, nand_np) {
++		chip = devm_kzalloc(&pdev->dev, sizeof(struct nand_chip),
++				    GFP_KERNEL);
++		if (!chip)
++			return -ENOMEM;
++
++		chip->controller = &oxnas->base;
++
++		nand_set_flash_node(chip, nand_np);
++		nand_set_controller_data(chip, oxnas);
++
++		mtd = nand_to_mtd(chip);
++		mtd->dev.parent = &pdev->dev;
++		mtd->priv = chip;
++
++		chip->cmd_ctrl = oxnas_nand_cmd_ctrl;
++		chip->read_buf = oxnas_nand_read_buf;
++		chip->read_byte = oxnas_nand_read_byte;
++		chip->write_buf = oxnas_nand_write_buf;
++		chip->chip_delay = 30;
++
++		/* Scan to find existence of the device */
++		err = nand_scan(mtd, 1);
++		if (err)
++			return err;
++
++		err = mtd_device_register(mtd, NULL, 0);
++		if (err) {
++			nand_release(mtd);
++			return err;
++		}
++
++		oxnas->chips[nchips] = chip;
++		++nchips;
++	}
++
++	/* Exit if no chips found */
++	if (!nchips)
++		return -ENODEV;
++
++	platform_set_drvdata(pdev, oxnas);
++
++	return 0;
++}
++
++static int oxnas_nand_remove(struct platform_device *pdev)
++{
++	struct oxnas_nand *oxnas = platform_get_drvdata(pdev);
++
++	if (oxnas->chips[0])
++		nand_release(nand_to_mtd(oxnas->chips[0]));
++
++	clk_disable_unprepare(oxnas->clk);
++
++	return 0;
++}
++
++static const struct of_device_id oxnas_nand_match[] = {
++	{ .compatible = "oxsemi,ox820-nand" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, oxnas_nand_match);
++
++static struct platform_driver oxnas_nand_driver = {
++	.probe	= oxnas_nand_probe,
++	.remove	= oxnas_nand_remove,
++	.driver	= {
++		.name		= "oxnas_nand",
++		.of_match_table = oxnas_nand_match,
++	},
++};
++
++module_platform_driver(oxnas_nand_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
++MODULE_DESCRIPTION("Oxnas NAND driver");
++MODULE_ALIAS("platform:oxnas_nand");
+-- 
+2.7.0
