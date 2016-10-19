@@ -1,18 +1,17 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwssm-00012u-N1
- for linux-mtd@lists.infradead.org; Wed, 19 Oct 2016 15:34:22 +0000
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
- <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 1/1] MAINTAINERS: add a maintainer for the SPI NOR subsystem
-Date: Wed, 19 Oct 2016 17:34:49 +0200
-Message-ID: <aad52b708dcf6754edab87d2e0afe4f0ee6831f9.1476891131.git.cyrille.pitchen@atmel.com>
+Date: Wed, 19 Oct 2016 17:37:04 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Neil Armstrong <narmstrong@baylibre.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-oxnas@lists.tuxfamily.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, daniel@makrotopia.org
+Subject: Re: [PATCH] mtd: nand: Add OX820 NAND Support
+Message-ID: <20161019173704.75592f52@bbrezillon>
+In-Reply-To: <20161019145523.6763-1-narmstrong@baylibre.com>
+References: <20161019145523.6763-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +21,198 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I would like to volunteer as a maintainer for the SPI NOR part of the MTD
-subsystem.
+On Wed, 19 Oct 2016 16:55:23 +0200
+Neil Armstrong <narmstrong@baylibre.com> wrote:
 
-Over the last months, a significant number of SPI NOR related patches have
-been submitted, some of them have been reviewed, but very few have finally
-been merged. Hence, the number of pending SPI NOR related patches continues
-to increase over the time.
+> Add NAND driver to support the Oxford Semiconductor OX820 NAND Controller.
+> This is a simple memory mapped NAND controller with single chip select and
+> software ECC.
+> 
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 
-Through my work on SPI NOR memories from many manufacturers over the last
-two years, I've gained a solid understanding of this technology.
-I've already helped by reviewing patches from other contributors on the
-mailing list, and would like to help getting those patches integrated by
-volunteering as a maintainer for this specific area.
+It looks pretty good already (I like those dummy controllers :-)). Just
+a few comments below.
 
-Boris Brezillon has already stepped up as a maintainer for the NAND
-sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
-the same way: I would be reviewing patches touching this area, collecting
-them and sending pull requests to Brian Norris.
+> ---
+>  .../devicetree/bindings/mtd/oxnas-nand.txt         |  24 +++
+>  drivers/mtd/nand/Kconfig                           |   5 +
+>  drivers/mtd/nand/Makefile                          |   1 +
+>  drivers/mtd/nand/oxnas_nand.c                      | 204 +++++++++++++++++++++
+>  4 files changed, 234 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+>  create mode 100644 drivers/mtd/nand/oxnas_nand.c
+> 
+> Changes since RFC http://lkml.kernel.org/r/20161018090927.1990-1-narmstrong@baylibre.com :
+>  - Avoid using chip->IO_ADDR*
+>  - Use new DT structure
+>  - Assign a chip for the subnode
+>  - Use the nand_hw_control structure
+>  - Cleanup probe
+>  - Cleanup cmd_ctrl by using a context ctrl offset used in write_bytes
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/oxnas-nand.txt b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+> new file mode 100644
+> index 0000000..83b684d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+> @@ -0,0 +1,24 @@
+> +* Oxford Semiconductor OXNAS NAND Controller
+> +
+> +Please refer to nand.txt for generic information regarding MTD NAND bindings.
+> +
+> +Required properties:
+> + - compatible: "oxsemi,ox820-nand"
+> + - reg: Base address and length for NAND mapped memory.
+> +
+> +Optional Properties:
+> + - clocks: phandle to the NAND gate clock if needed.
+> + - resets: phandle to the NAND reset control if needed.
+> +
+> +Example:
+> +
+> +nand: nand@41000000 {
 
-Also both Marek Vasut and Richard Weinberger have volunteered as well as
-maintainers for the SPI NOR subsystem.
+nandc: nand-controller@41000000 {
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
-ChangeLog:
+> +	compatible = "oxsemi,ox820-nand";
+> +	reg = <0x41000000 0x100000>;
+> +	nand-ecc-mode = "soft";
+> +	clocks = <&stdclk CLK_820_NAND>;
+> +	resets = <&reset RESET_NAND>;
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +	status = "disabled";
+> +};
 
-v1 -> v2:
-- add Marek and Richard as maintainers.
-- add Acked-by from Boris Brezillon.
+You should probably provide an example where the NAND controller is
+enabled and at least one nand chip is connected to the NAND bus.
 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 7b7a887..c023125 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -426,6 +426,11 @@ config MTD_NAND_ORION
+>  	  No board specific support is done by this driver, each board
+>  	  must advertise a platform_device for the driver to attach.
+>  
+> +config MTD_NAND_OXNAS
+> +	tristate "NAND Flash support for Oxford Semiconductor SoC"
+> +	help
+> +	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
+> +
+>  config MTD_NAND_FSL_ELBC
+>  	tristate "NAND support for Freescale eLBC controllers"
+>  	depends on FSL_SOC
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index cafde6f..05fc054 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -35,6 +35,7 @@ obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
+>  obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
+>  obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
+>  obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
+> +obj-$(CONFIG_MTD_NAND_OXNAS)		+= oxnas_nand.o
+>  obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
+>  obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
+>  obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
+> diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
+> new file mode 100644
+> index 0000000..a9fe1ac
+> --- /dev/null
+> +++ b/drivers/mtd/nand/oxnas_nand.c
+> @@ -0,0 +1,204 @@
+> +/*
+> + * Oxford Semiconductor OXNAS NAND driver
+> +
+> + * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
+> + * Heavily based on plat_nand.c :
+> + * Author: Vitaly Wool <vitalywool@gmail.com>
+> + * Copyright (C) 2013 Ma Haijun <mahaijuns@gmail.com>
+> + * Copyright (C) 2012 John Crispin <blogic@openwrt.org>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/clk.h>
+> +#include <linux/reset.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/of.h>
+> +
+> +/* Nand commands */
+> +#define OXNAS_NAND_CMD_ALE		BIT(18)
+> +#define OXNAS_NAND_CMD_CLE		BIT(19)
+> +
+> +#define OXNAS_NAND_MAX_CHIPS	1
+> +
+> +struct oxnas_nand {
+> +	struct nand_hw_control base;
+> +	void __iomem *io_base;
+> +	struct clk *clk;
+> +	struct nand_chip *chips[OXNAS_NAND_MAX_CHIPS];
+> +	unsigned long ctrl;
+> +};
+> +
+> +static uint8_t oxnas_nand_read_byte(struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
+> +
+> +	return readb(oxnas->io_base);
+> +}
+> +
+> +static void oxnas_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
+> +
+> +	ioread8_rep(oxnas->io_base, buf, len);
+> +}
+> +
+> +static void oxnas_nand_write_buf(struct mtd_info *mtd,
+> +				 const uint8_t *buf, int len)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
+> +
+> +	iowrite8_rep(oxnas->io_base + oxnas->ctrl, buf, len);
+> +}
+> +
+> +/* Single CS command control */
+> +static void oxnas_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
+> +				unsigned int ctrl)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
+> +
+> +	if (ctrl & NAND_CTRL_CHANGE) {
+> +		if (ctrl & NAND_CLE)
+> +			oxnas->ctrl = OXNAS_NAND_CMD_CLE;
+> +		else if (ctrl & NAND_ALE)
+> +			oxnas->ctrl = OXNAS_NAND_CMD_ALE;
+> +		else
+> +			oxnas->ctrl = 0;
+> +	}
+> +
+> +	if (cmd != NAND_CMD_NONE)
+> +		writeb(cmd, oxnas->io_base + oxnas->ctrl);
 
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+There's no need to test the NAND_CTRL_CHANGE here, and I don't think
+the CLE or ALE flag is ever set when cmd == CMD_NONE. So, you can kill
+the ->ctrl field and simply do:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 757f9c4b388d..7e63b2015072 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11390,6 +11390,18 @@ W:	http://www.st.com/spear
- S:	Maintained
- F:	drivers/clk/spear/
- 
-+SPI NOR SUBSYSTEM
-+M:	Cyrille Pitchen <cyrille.pitchen@atmel.com>
-+M:	Marek Vasut <marek.vasut@gmail.com>
-+M:	Richard Weinberger <richard@nod.at>
-+L:	linux-mtd@lists.infradead.org
-+W:	http://www.linux-mtd.infradead.org/
-+Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-+T:	git git://github.com/spi-nor/linux.git
-+S:	Maintained
-+F:	drivers/mtd/spi-nor/
-+F:	include/linux/mtd/spi-nor.h
-+
- SPI SUBSYSTEM
- M:	Mark Brown <broonie@kernel.org>
- L:	linux-spi@vger.kernel.org
--- 
-2.7.4
+	if (ctrl & NAND_CLE)
+		writeb(cmd, oxnas->io_base + OXNAS_NAND_CMD_CLE);
+	else if (ctrl & NAND_ALE)
+		writeb(cmd, oxnas->io_base + OXNAS_NAND_CMD_ALE);
+
+> +}
