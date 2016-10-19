@@ -1,23 +1,18 @@
-Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwt4b-0001XJ-4r
- for linux-mtd@lists.infradead.org; Wed, 19 Oct 2016 15:46:35 +0000
-Received: by mail-lf0-x22f.google.com with SMTP id l131so28385807lfl.2
- for <linux-mtd@lists.infradead.org>; Wed, 19 Oct 2016 08:46:09 -0700 (PDT)
-Subject: Re: [PATCH] mtd: nand: Add OX820 NAND Support
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <20161019145523.6763-1-narmstrong@baylibre.com>
- <20161019173704.75592f52@bbrezillon>
+Date: Wed, 19 Oct 2016 17:54:28 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Neil Armstrong <narmstrong@baylibre.com>
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-oxnas@lists.tuxfamily.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, daniel@makrotopia.org
-From: Neil Armstrong <narmstrong@baylibre.com>
-Message-ID: <0f5398bb-52f1-d5bb-834c-dead4f708fd3@baylibre.com>
-Date: Wed, 19 Oct 2016 17:46:01 +0200
+Subject: Re: [PATCH] mtd: nand: Add OX820 NAND Support
+Message-ID: <20161019175428.6ea3998d@bbrezillon>
+In-Reply-To: <0f5398bb-52f1-d5bb-834c-dead4f708fd3@baylibre.com>
+References: <20161019145523.6763-1-narmstrong@baylibre.com>
+ <20161019173704.75592f52@bbrezillon>
+ <0f5398bb-52f1-d5bb-834c-dead4f708fd3@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20161019173704.75592f52@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,105 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/19/2016 05:37 PM, Boris Brezillon wrote:
-> On Wed, 19 Oct 2016 16:55:23 +0200
-> Neil Armstrong <narmstrong@baylibre.com> wrote:
+On Wed, 19 Oct 2016 17:46:01 +0200
+Neil Armstrong <narmstrong@baylibre.com> wrote:
 
-[...]
+> >> +/* Single CS command control */
+> >> +static void oxnas_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
+> >> +				unsigned int ctrl)
+> >> +{
+> >> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> >> +	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
+> >> +
+> >> +	if (ctrl & NAND_CTRL_CHANGE) {
+> >> +		if (ctrl & NAND_CLE)
+> >> +			oxnas->ctrl = OXNAS_NAND_CMD_CLE;
+> >> +		else if (ctrl & NAND_ALE)
+> >> +			oxnas->ctrl = OXNAS_NAND_CMD_ALE;
+> >> +		else
+> >> +			oxnas->ctrl = 0;
+> >> +	}
+> >> +
+> >> +	if (cmd != NAND_CMD_NONE)
+> >> +		writeb(cmd, oxnas->io_base + oxnas->ctrl);  
+> > 
+> > There's no need to test the NAND_CTRL_CHANGE here, and I don't think
+> > the CLE or ALE flag is ever set when cmd == CMD_NONE. So, you can kill
+> > the ->ctrl field and simply do:
+> > 
+> > 	if (ctrl & NAND_CLE)
+> > 		writeb(cmd, oxnas->io_base + OXNAS_NAND_CMD_CLE);
+> > 	else if (ctrl & NAND_ALE)
+> > 		writeb(cmd, oxnas->io_base + OXNAS_NAND_CMD_ALE);
+> >   
+> >> +}  
+> 
+> Hmm, except it's needed back in the oxnas_nand_write_buf() call (don't ask me why)
+> so I don't see how to simplify more this function.
 
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
->> @@ -0,0 +1,24 @@
->> +* Oxford Semiconductor OXNAS NAND Controller
->> +
->> +Please refer to nand.txt for generic information regarding MTD NAND bindings.
->> +
->> +Required properties:
->> + - compatible: "oxsemi,ox820-nand"
->> + - reg: Base address and length for NAND mapped memory.
->> +
->> +Optional Properties:
->> + - clocks: phandle to the NAND gate clock if needed.
->> + - resets: phandle to the NAND reset control if needed.
->> +
->> +Example:
->> +
->> +nand: nand@41000000 {
-> 
-> nandc: nand-controller@41000000 {
-> 
->> +	compatible = "oxsemi,ox820-nand";
->> +	reg = <0x41000000 0x100000>;
->> +	nand-ecc-mode = "soft";
->> +	clocks = <&stdclk CLK_820_NAND>;
->> +	resets = <&reset RESET_NAND>;
->> +	#address-cells = <1>;
->> +	#size-cells = <1>;
->> +	status = "disabled";
->> +};
-> 
-> You should probably provide an example where the NAND controller is
-> enabled and at least one nand chip is connected to the NAND bus.
-
-Indeed, I forgot that.
-
-[...]
-
->> +
->> +static uint8_t oxnas_nand_read_byte(struct mtd_info *mtd)
->> +{
->> +	struct nand_chip *chip = mtd_to_nand(mtd);
->> +	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
->> +
->> +	return readb(oxnas->io_base);
->> +}
->> +
->> +static void oxnas_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
->> +{
->> +	struct nand_chip *chip = mtd_to_nand(mtd);
->> +	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
->> +
->> +	ioread8_rep(oxnas->io_base, buf, len);
->> +}
->> +
->> +static void oxnas_nand_write_buf(struct mtd_info *mtd,
->> +				 const uint8_t *buf, int len)
->> +{
->> +	struct nand_chip *chip = mtd_to_nand(mtd);
->> +	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
->> +
->> +	iowrite8_rep(oxnas->io_base + oxnas->ctrl, buf, len);
->> +}
->> +
->> +/* Single CS command control */
->> +static void oxnas_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
->> +				unsigned int ctrl)
->> +{
->> +	struct nand_chip *chip = mtd_to_nand(mtd);
->> +	struct oxnas_nand *oxnas = nand_get_controller_data(chip);
->> +
->> +	if (ctrl & NAND_CTRL_CHANGE) {
->> +		if (ctrl & NAND_CLE)
->> +			oxnas->ctrl = OXNAS_NAND_CMD_CLE;
->> +		else if (ctrl & NAND_ALE)
->> +			oxnas->ctrl = OXNAS_NAND_CMD_ALE;
->> +		else
->> +			oxnas->ctrl = 0;
->> +	}
->> +
->> +	if (cmd != NAND_CMD_NONE)
->> +		writeb(cmd, oxnas->io_base + oxnas->ctrl);
-> 
-> There's no need to test the NAND_CTRL_CHANGE here, and I don't think
-> the CLE or ALE flag is ever set when cmd == CMD_NONE. So, you can kill
-> the ->ctrl field and simply do:
-> 
-> 	if (ctrl & NAND_CLE)
-> 		writeb(cmd, oxnas->io_base + OXNAS_NAND_CMD_CLE);
-> 	else if (ctrl & NAND_ALE)
-> 		writeb(cmd, oxnas->io_base + OXNAS_NAND_CMD_ALE);
-> 
->> +}
-
-Hmm, except it's needed back in the oxnas_nand_write_buf() call (don't ask me why)
-so I don't see how to simplify more this function.
+Are you sure? Can you add a WARN(oxnas->ctrl) in oxnas_nand_write_buf()
+to check if it's ever the case? I'm almost sure there is a call to
+->cmd_ctrl() with none of the CLE and ALE flags set before the
+->write_buf() call.
