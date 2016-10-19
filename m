@@ -1,24 +1,14 @@
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwnCc-0002xk-MG
- for linux-mtd@lists.infradead.org; Wed, 19 Oct 2016 09:30:28 +0000
-Received: by mail-wm0-x229.google.com with SMTP id z189so39573852wmb.1
- for <linux-mtd@lists.infradead.org>; Wed, 19 Oct 2016 02:30:06 -0700 (PDT)
-Subject: Re: [RFC PATCH] mtd: nand: Add OX820 NAND Support
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <20161018090927.1990-1-narmstrong@baylibre.com>
- <20161018221744.5e574e82@bbrezillon>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
- devicetree@vger.kernel.org, linux-oxnas@lists.tuxfamily.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-From: Neil Armstrong <narmstrong@baylibre.com>
-Message-ID: <37a5b543-e564-a496-d5cf-c215e798839f@baylibre.com>
-Date: Wed, 19 Oct 2016 11:29:59 +0200
-MIME-Version: 1.0
-In-Reply-To: <20161018221744.5e574e82@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bwoaT-00015Y-1H
+ for linux-mtd@lists.infradead.org; Wed, 19 Oct 2016 10:59:10 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com, dedekind1@gmail.com,
+ richard@nod.at, david@sigma-star.at, stable@vger.kernel.org
+Subject: [PATCH] ubifs: Abort readdir upon error
+Date: Wed, 19 Oct 2016 12:58:35 +0200
+Message-Id: <1476874715-7127-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,341 +18,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+If UBIFS is facing an error while walking a directory, it reports this
+error and ubifs_readdir() returns the error code. But the VFS readdir
+logic does not make the getdents system call fail in all cases. When the
+readdir cursor indicates that more entries are present, the system call
+will just return and the libc wrapper will try again since it also
+knows that more entries are present.
+This causes the libc wrapper to busy loop for ever when a directory is
+corrupted on UBIFS.
+A common approach do deal with corrupted directory entries is
+skipping them by setting the cursor to the next entry. On UBIFS this
+approach is not possible since we cannot compute the next directory
+entry cursor position without reading the current entry. So all we can
+do is setting the cursor to the "no more entries" position and make
+getdents exit.
 
-On 10/18/2016 10:17 PM, Boris Brezillon wrote:
-> Hi Neil,
-> 
-> On Tue, 18 Oct 2016 11:09:27 +0200
-> Neil Armstrong <narmstrong@baylibre.com> wrote:
-> 
->> Add NAND driver to support the Oxford Semiconductor OX820 NAND Controller.
->> This is a simple memory mapped NAND controller with single chip select and
->> software ECC.
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> ---
->>  .../devicetree/bindings/mtd/oxnas-nand.txt         |  24 ++++
->>  drivers/mtd/nand/Kconfig                           |   5 +
->>  drivers/mtd/nand/Makefile                          |   1 +
->>  drivers/mtd/nand/oxnas_nand.c                      | 144 +++++++++++++++++++++
->>  4 files changed, 174 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/oxnas-nand.txt
->>  create mode 100644 drivers/mtd/nand/oxnas_nand.c
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/oxnas-nand.txt b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
->> new file mode 100644
->> index 0000000..83b684d
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
->> @@ -0,0 +1,24 @@
->> +* Oxford Semiconductor OXNAS NAND Controller
->> +
->> +Please refer to nand.txt for generic information regarding MTD NAND bindings.
->> +
->> +Required properties:
->> + - compatible: "oxsemi,ox820-nand"
->> + - reg: Base address and length for NAND mapped memory.
->> +
->> +Optional Properties:
->> + - clocks: phandle to the NAND gate clock if needed.
->> + - resets: phandle to the NAND reset control if needed.
->> +
->> +Example:
->> +
->> +nand: nand@41000000 {
->> +	compatible = "oxsemi,ox820-nand";
->> +	reg = <0x41000000 0x100000>;
->> +	nand-ecc-mode = "soft";
->> +	clocks = <&stdclk CLK_820_NAND>;
->> +	resets = <&reset RESET_NAND>;
->> +	#address-cells = <1>;
->> +	#size-cells = <1>;
->> +	status = "disabled";
->> +};
-> 
-> Can you switch to new DT representation for NAND controllers, with one
-> node for the NAND controller and NAND devices connected to this NAND
-> controller defined as sub-nodes of this NAND controller [1]?
+Cc: stable@vger.kernel.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/dir.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Yes, I was wondering if this existed... my bad, next time I will search further.
-
-> 
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 7b7a887..c023125 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -426,6 +426,11 @@ config MTD_NAND_ORION
->>  	  No board specific support is done by this driver, each board
->>  	  must advertise a platform_device for the driver to attach.
->>  
->> +config MTD_NAND_OXNAS
->> +	tristate "NAND Flash support for Oxford Semiconductor SoC"
->> +	help
->> +	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
->> +
->>  config MTD_NAND_FSL_ELBC
->>  	tristate "NAND support for Freescale eLBC controllers"
->>  	depends on FSL_SOC
->> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
->> index cafde6f..05fc054 100644
->> --- a/drivers/mtd/nand/Makefile
->> +++ b/drivers/mtd/nand/Makefile
->> @@ -35,6 +35,7 @@ obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
->>  obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
->>  obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
->>  obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
->> +obj-$(CONFIG_MTD_NAND_OXNAS)		+= oxnas_nand.o
->>  obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
->>  obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
->>  obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
->> diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
->> new file mode 100644
->> index 0000000..ee402ab
->> --- /dev/null
->> +++ b/drivers/mtd/nand/oxnas_nand.c
->> @@ -0,0 +1,144 @@
->> +/*
->> + * Oxford Semiconductor OXNAS NAND driver
->> + *
->> + * Heavily based on plat_nand.c :
->> + * Author: Vitaly Wool <vitalywool@gmail.com>
->> + *
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License version 2 as
->> + * published by the Free Software Foundation.
->> + *
->> + */
->> +
->> +#include <linux/err.h>
->> +#include <linux/io.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/slab.h>
->> +#include <linux/clk.h>
->> +#include <linux/reset.h>
->> +#include <linux/mtd/mtd.h>
->> +#include <linux/mtd/nand.h>
->> +#include <linux/mtd/partitions.h>
->> +
->> +/* nand commands */
->> +#define NAND_CMD_ALE		BIT(18)
->> +#define NAND_CMD_CLE		BIT(19)
->> +#define NAND_CMD_CS		0
-> 
-> I guess this is zero here because you only support connecting a NAND to
-> CS0.
-> It's probably something like
-> 
-> OX820_NAND_CS(x)		((x) << CS_FIELD_SHIFT)
-
-The hardware seems to be able to drive multiple chip selects, but no implementation does this.
-We will stick to CS0 only here for test reasons.
-
-> 
->> +#define NAND_CMD_RESET		0xff
-> 
-> Why do you have to redefine it? it's already defined here [2].
-> 
->> +#define NAND_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
->> +#define NAND_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
->> +#define NAND_DATA		(NAND_CMD_CS)
-> 
-> Please prefix those macros with OX820, has stated above, this can
-> conflict with generic definitions.
-> Also, I'm not sure you should pass the CS information here.
-> 
->> +
->> +struct oxnas_nand_data {
->> +	struct nand_chip	chip;
->> +	void __iomem		*io_base;
->> +	struct clk		*clk;
->> +};
-> 
-> Even if your driver does not seem to support connecting several chips
-> to the same controller, I'd like you to clearly separate the NAND
-> controller and NAND chip objects:
-> 
-> #define OXNAS_NAND_MAX_CHIPS	1
-> 
-> struct oxnas_nand_controller {
-> 	struct nand_hw_control base;
-> 	void __iomem *io_base;
-> 	struct clk *clk;
-> 	struct nand_chip *chips[OXNAS_NAND_MAX_CHIPS];
-> }
-
-Ok.
-
-> 
->> +
->> +static void oxnas_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
->> +				unsigned int ctrl)
->> +{
->> +	struct nand_chip *this = mtd->priv;
->> +	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
-> 
-> Please use the ->io_base field directly, and do not use ->IO_ADDR_W/R
-> (I'd like to get rid of them at some point).
-
-Yes, it seems cleaner.
-
-> 
-> Also, declare the nandaddr as a void __iomem *, and use the '+'
-> operator instead of '|'.
-> 
->> +
->> +	if (ctrl & NAND_CTRL_CHANGE) {
->> +		nandaddr &= ~(NAND_CMD | NAND_ADDR);
-> 
-> This is not needed.
-> 
->> +		if (ctrl & NAND_CLE)
->> +			nandaddr |= NAND_CMD;
->> +		else if (ctrl & NAND_ALE)
->> +			nandaddr |= NAND_ADDR;
->> +		this->IO_ADDR_W = (void __iomem *) nandaddr;
-> 
-> This is not needed, is it?
-
-No more if we stick to ->io_base
-
-> 
->> +	}
->> +
->> +	if (cmd != NAND_CMD_NONE)
->> +		writeb(cmd, (void __iomem *) nandaddr);
->> +}
->> +
->> +/*
->> + * Probe for the NAND device.
->> + */
->> +static int oxnas_nand_probe(struct platform_device *pdev)
->> +{
->> +	struct oxnas_nand_data *data;
->> +	struct mtd_info *mtd;
->> +	struct resource *res;
->> +	int err = 0;
->> +
->> +	/* Allocate memory for the device structure (and zero it) */
->> +	data = devm_kzalloc(&pdev->dev, sizeof(struct oxnas_nand_data),
->> +			    GFP_KERNEL);
->> +	if (!data)
->> +		return -ENOMEM;
->> +
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	data->io_base = devm_ioremap_resource(&pdev->dev, res);
->> +	if (IS_ERR(data->io_base))
->> +		return PTR_ERR(data->io_base);
->> +
->> +	data->clk = devm_clk_get(&pdev->dev, NULL);
->> +	if (IS_ERR(data->clk))
->> +		data->clk = NULL;
->> +
->> +	nand_set_flash_node(&data->chip, pdev->dev.of_node);
->> +	mtd = nand_to_mtd(&data->chip);
->> +	mtd->dev.parent = &pdev->dev;
->> +	mtd->priv = &data->chip;
->> +
->> +	data->chip.IO_ADDR_R = data->io_base;
->> +	data->chip.IO_ADDR_W = data->io_base;
-> 
-> As I said above, don't use these fields.
-> 
->> +	data->chip.cmd_ctrl = oxnas_nand_cmd_ctrl;
->> +	data->chip.chip_delay = 30;
->> +	data->chip.ecc.mode = NAND_ECC_SOFT;
->> +	data->chip.ecc.algo = NAND_ECC_HAMMING;
-> 
-> Probably a good idea to support soft ECC as well...
-
-This was taken from plat_nand.c, I was not sure if it was necessary, will remove this and rely on DT attributes.
-
-> 
->> +
->> +	platform_set_drvdata(pdev, data);
->> +
->> +	clk_prepare_enable(data->clk);
->> +	device_reset_optional(&pdev->dev);
->> +
->> +	/* Scan to find existence of the device */
->> +	if (nand_scan(mtd, 1)) {
-> 
-> Why not returning nand_scan() error code?
-
-Same, bad plat_nand.c copy/paste.
-
-> 
->> +		err = -ENXIO;
->> +		goto out;
-> 
-> Return directly here.
-> 
->> +	}
->> +
->> +	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-> 
-> Use mtd_device_register() here.
-> 
->> +	if (!err)
->> +		return err;
->> +
->> +	nand_release(mtd);
-> 
-> Why not
-> 
-> 	if (err)
-> 		nand_release(mtd);
-> 
->> +out:
-> 
-> Drop this label.
-
-Will refactor this error management.
-
-> 
->> +	return err;
->> +}
->> +
->> +static int oxnas_nand_remove(struct platform_device *pdev)
->> +{
->> +	struct oxnas_nand_data *data = platform_get_drvdata(pdev);
->> +
->> +	nand_release(nand_to_mtd(&data->chip));
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct of_device_id oxnas_nand_match[] = {
->> +	{ .compatible = "oxsemi,ox820-nand" },
->> +	{},
->> +};
->> +MODULE_DEVICE_TABLE(of, oxnas_nand_match);
->> +
->> +static struct platform_driver oxnas_nand_driver = {
->> +	.probe	= oxnas_nand_probe,
->> +	.remove	= oxnas_nand_remove,
->> +	.driver	= {
->> +		.name		= "oxnas_nand",
->> +		.of_match_table = oxnas_nand_match,
->> +	},
->> +};
->> +
->> +module_platform_driver(oxnas_nand_driver);
->> +
->> +MODULE_LICENSE("GPL");
->> +MODULE_AUTHOR("Vitaly Wool");
->> +MODULE_DESCRIPTION("Oxnas NAND driver");
->> +MODULE_ALIAS("platform:oxnas_nand");
-> 
-> Thanks,
-> 
-> Boris
-
-Thanks,
-Neil
-
-> 
-> [1]https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/mtd/nand.txt?id=refs/tags/v4.9-rc1#n57
-> [2]http://lxr.free-electrons.com/source/include/linux/mtd/nand.h#L90
-> 
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 668ec3b90ea1..bd4a5e8ce441 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -439,7 +439,7 @@ static unsigned int vfs_dent_type(uint8_t type)
+  */
+ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
+ {
+-	int err;
++	int err = 0;
+ 	struct qstr nm;
+ 	union ubifs_key key;
+ 	struct ubifs_dent_node *dent;
+@@ -541,14 +541,12 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
+ 	kfree(file->private_data);
+ 	file->private_data = NULL;
+ 
+-	if (err != -ENOENT) {
++	if (err != -ENOENT)
+ 		ubifs_err(c, "cannot find next direntry, error %d", err);
+-		return err;
+-	}
+ 
+ 	/* 2 is a special value indicating that there are no more direntries */
+ 	ctx->pos = 2;
+-	return 0;
++	return err;
+ }
+ 
+ /* Free saved readdir() state when the directory is closed */
+-- 
+2.7.3
