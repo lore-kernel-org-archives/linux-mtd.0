@@ -1,16 +1,36 @@
-Received: from mail-cys01nam02on0090.outbound.protection.outlook.com
- ([104.47.37.90] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from mail-qt0-f179.google.com ([209.85.216.179])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxDf3-00089j-9i
- for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 13:45:34 +0000
-From: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
-To: <linux-mtd@lists.infradead.org>
-CC: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
-Subject: [PATCH] mtd: spi-nor: fixed spansion quad enable
-Date: Thu, 20 Oct 2016 15:43:46 +0200
-Message-ID: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+ id 1bxDyB-0004BT-RK
+ for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 14:05:20 +0000
+Received: by mail-qt0-f179.google.com with SMTP id s49so54930751qta.0
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2016 07:04:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAPybu_2j6vn9y-rOAvs2vp18RvSEe8qkg_r3RdRGNgna7-J31A@mail.gmail.com>
+References: <20160920154551.3494-1-ricardo.ribalda@gmail.com>
+ <20160921090704.2cfebfc8@bbrezillon>
+ <CAPybu_0S0juNTNO1eQUbxyvcDR8o8W-69+oK5G_i42Z8CHS+FA@mail.gmail.com>
+ <20160921101420.7ea87f2d@bbrezillon>
+ <CAPybu_1f924DvgT1hSPyEMyD7tTN8Cng=mkq5ydDBBbZqpUtuw@mail.gmail.com>
+ <20160921102137.6ff58bc7@bbrezillon>
+ <CAPybu_2j6vn9y-rOAvs2vp18RvSEe8qkg_r3RdRGNgna7-J31A@mail.gmail.com>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Thu, 20 Oct 2016 16:03:37 +0200
+Message-ID: <CAPybu_0U-j6yrO0oOY99UqdVoSqqzN=2c3MbRV8wosWqhm_8EA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for S3AN spi-nor devices
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Stephen Warren <swarren@nvidia.com>,
+ Jagan Teki <jteki@openedev.com>, Vignesh R <vigneshr@ti.com>,
+ Marek Vasut <marex@denx.de>,
+ =?UTF-8?Q?Ezequiel_Garc=C3=ADa?= <ezequiel@vanguardiasur.com.ar>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Furquan Shaikh <furquan@google.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,66 +40,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the S25FL127S nor flash part, each writing to the configuration register takes hundreds of ms. During that  time, no more accesses to the flash should be done (even reads).
+Ping?
 
-This commit adds:
-- a pre check of the quad enable bit to avoid a useless and time consuming writing to the flash,
-- a wait loop after the register writing until the flash finishes its work.
+On Wed, Sep 21, 2016 at 10:26 AM, Ricardo Ribalda Delgado
+<ricardo.ribalda@gmail.com> wrote:
+> Hi
+>
+>>>
+>>> Unsinged long is more than enough for s3an. I think v7 is ok.
+>>
+>> Then, why did you change the spi_nor_s3an_addr_convert() prototype?
+>>
+>
+> Because it is used in spi_nor_read and spi_nor_write, which use loff_t.
+>
+> I think it is more clean to have only one comment explaining the max
+> size of the s3an, instead of having them scattered around. But if
+> think that it is better to have unsinged int as prototype I have no
+> problem in changing it.
+>
+> Regards!
+>
+>
+> --
+> Ricardo Ribalda
 
-This issue could make rootfs mounting fail when the latter was done too much closely to this quad enable bit setting step. And in this case, a driver as UBIFS may try to recover the filesystem and may broke it completely.
----
- drivers/mtd/spi-nor/spi-nor.c | 31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d0fc165..df43cd7 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1246,18 +1246,41 @@ static int spansion_quad_enable(struct spi_nor *nor)
- 	int ret;
- 	int quad_en = CR_QUAD_EN_SPAN << 8;
- 
-+	/* check quad enable bit
-+	 * as S25FL127S takes 200 ms to execute each write of SR & CR 
-+	 * registers even if data is the same, write step will be shorted 
-+	 * if not needed
-+	 */
-+	ret = read_cr(nor);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading CR\n", ret);
-+		return ret;
-+	} 
-+	if (ret & CR_QUAD_EN_SPAN) {
-+		/* quad enable bit is already set */
-+		return 0;
-+	}
-+
-+	/* set SR & CR, enable quad I/O */
- 	write_enable(nor);
- 
- 	ret = write_sr_cr(nor, quad_en);
- 	if (ret < 0) {
--		dev_err(nor->dev,
--			"error while writing configuration register\n");
-+		dev_err(nor->dev, "error while writing SR and CR registers\n");
- 		return -EINVAL;
- 	}
- 
--	/* read back and check it */
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+	
-+	/* read CR and check it */
- 	ret = read_cr(nor);
--	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading CR\n", ret);
-+		return ret;
-+	}
-+	if (!(ret & CR_QUAD_EN_SPAN)) {
- 		dev_err(nor->dev, "Spansion Quad bit not set\n");
- 		return -EINVAL;
- 	}
+
 -- 
-2.7.4
+Ricardo Ribalda
