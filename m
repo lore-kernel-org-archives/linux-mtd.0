@@ -1,4 +1,4 @@
-Date: Thu, 20 Oct 2016 19:08:26 +0200
+Date: Thu, 20 Oct 2016 19:08:44 +0200
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
 To: Chen-Yu Tsai <wens@csie.org>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -8,16 +8,16 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
  Mylene Josserand <mylene.josserand@free-electrons.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH 7/8] ARM: gr8: Add UART3 pins
-Message-ID: <20161020170826.wdhgn2uozowmkx5u@lukather>
+Subject: Re: [PATCH 8/8] ARM: gr8: Add CHIP Pro support
+Message-ID: <20161020170844.a2e3mglefgawwr6p@lukather>
 References: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
- <cc81030de43c26dfc15ad9a9e525188ad8fb8ec9.1476951078.git-series.maxime.ripard@free-electrons.com>
- <CAGb2v65OXss+_jKMSJD-KUDeK2iH96mmvDvPEzgW60PUXoS90g@mail.gmail.com>
+ <d3f91b731f944fe0e23b4532f6e83a1c2fc345f0.1476951078.git-series.maxime.ripard@free-electrons.com>
+ <CAGb2v67S8rK6Hdkvkgtfz6hDtiR4a4yUUqB01AnQ4sJ3-SQc0A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="srfaxfzlnen75glc"
+ protocol="application/pgp-signature"; boundary="gswhhvortktkw4r3"
 Content-Disposition: inline
-In-Reply-To: <CAGb2v65OXss+_jKMSJD-KUDeK2iH96mmvDvPEzgW60PUXoS90g@mail.gmail.com>
+In-Reply-To: <CAGb2v67S8rK6Hdkvkgtfz6hDtiR4a4yUUqB01AnQ4sJ3-SQc0A@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +28,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---srfaxfzlnen75glc
+--gswhhvortktkw4r3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 20, 2016 at 10:16:11PM +0800, Chen-Yu Tsai wrote:
+On Thu, Oct 20, 2016 at 10:26:09PM +0800, Chen-Yu Tsai wrote:
 > On Thu, Oct 20, 2016 at 4:12 PM, Maxime Ripard
 > <maxime.ripard@free-electrons.com> wrote:
-> > The UART3 pins were missing from the DTSI. Add them.
+> > The CHIP Pro is a small embeddable board. It features a GR8, an AXP209
+> > PMIC, a 512MB SLC NAND and a WiFi/BT chip.
 > >
 > > Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 >=20
 > Acked-by: Chen-Yu Tsai <wens@csie.org>
 
-Applied
-
+Applied. Thanks for reviewing!
 Maxime
 
 --=20
@@ -51,24 +51,24 @@ Maxime Ripard, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
 
---srfaxfzlnen75glc
+--gswhhvortktkw4r3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYCPoKAAoJEBx+YmzsjxAgb4EQAIlqLPcr5legcZJK4BhUTmar
-rkBqKfJAG2wvi+nPsF8gwQ6wqOCP4Z9uUDr3LL1jgukfcUkhXhy5h7j6oM6xAnZ5
-eYCTgEhwHTLqWTgssYGM3D6ZjHn10VczybVAGF639TMarIvvXh3gzfMWZNi361I9
-2Vdf0Y9jla4FIlD+ICQkbtsXWMjwwf6FxrIf8T/IUt/s0cagxnOwYQwC0PQDk1Rz
-AVyvHcnU4ULwGS/gicoFbIl78VZTC+H/FOljP7+4BvB9pseHW/E+DdCw1RpDPDba
-j292yel6QBrsxOuH+0XU28BE+gBITn2Rx+2ZHT4OlqtcqoEsQ+Fi3s//IWZuh7ow
-ULel6MK1xkYYCCd/9d5PNIax9OLt5lAEYtC2rT8zlGUY/iVVEB4REgiyeDgIg06X
-V7zRTrHKaXHU+eaEHtMpSOC8dKf5H6GaWW7qwrl27igpfWvv24Hz1kms/mQlSgCx
-GxhmyX4y1dgq1fg/+dR75ukMjmFuN54f9ysN7wkL5BhMIBVm7jmQr1EXwGgQ2YPa
-MVa5E6cG6zX4uZjwgA+XukBTA/sTPTcAt5+OwnlL4CBtRXIGNXYl4bEaRPiIwuXu
-Gb+FMAbtAxcvLYEVh3ObiiLECdBtB+4OcJxkZh3ZVDDEZbfjDj6/6WjCkDv6gJ3F
-wImg2yLz9svhaT2Uas3G
-=5CVU
+iQIcBAEBCAAGBQJYCPocAAoJEBx+YmzsjxAgnrQP/3Jp+IotoC8nhXpaXqQzGeZb
+DVxKO8fG9Jae/zh2G6oT5FzxAx5Tloo6ALifRJnebk1ueX1lH1vcBk9YaF5n2iN4
+qYG4M37uHjTz3JixAa3vg4B0nETdEgbju+yjhAt+Ovj7aPw3BlpFaq8IrHhRNzy/
+0rvLWH1rBvQl1xcHEAQWWyLqcq2tMCzixU1BgqHaGx1OKIdYLXotO2mRLXEpYioE
+cJjVazciYAJiw/qLrOeOMUDhm8ZgbkEvsqU5Ie0+Efl/t0yJDj+94ujgh84rtGfU
+6NK9Z0VPyW+7L8NaYS8+K5MO8IWyviur+yOoVR7ALjkskLJjyDYy6xH8ugmggYdf
+tQfuYknMY7a+jNNhofkJxvIoGB31Ob+UcIdS2dnV1pkWM4HXLou75yxDoFjCDuai
+mbwGL1TYe+8h5+0dUH9OopRg+3xe42/9JHaUnuUwk8rqa5frZNjzCzvPXq8B2YXv
+QuwpiO190/tjcuj+NAfmIXjj0xbNtPi3cUdtZGUoKz2WY2xEaxchoF6kHYTgtWSv
+QcO6gdK6dy5kN4EOvxUx1CR8NGV1MLSghFxJ9QyXRPMNJAH2Kpswc27bYqEmJYdR
+qyvXHQI42CoQz7GZskphBSIq5btm+4r7bb8Miw46tU4xt8l1yw17UN3rCoiFPxmb
+rP/KyvbC0LhlRRPvpW7z
+=GaCr
 -----END PGP SIGNATURE-----
 
---srfaxfzlnen75glc--
+--gswhhvortktkw4r3--
