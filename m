@@ -1,4 +1,4 @@
-Date: Thu, 20 Oct 2016 19:07:39 +0200
+Date: Thu, 20 Oct 2016 19:08:02 +0200
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
 To: Chen-Yu Tsai <wens@csie.org>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -8,16 +8,16 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
  Mylene Josserand <mylene.josserand@free-electrons.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH 5/8] ARM: gr8: Add missing pwm channel 1 pin
-Message-ID: <20161020170739.lgt2ywm346vm47zd@lukather>
+Subject: Re: [PATCH 6/8] ARM: gr8: Add UART2 pins
+Message-ID: <20161020170802.36yohn7mtrvdphhh@lukather>
 References: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
- <0df42247c3348e7f6aed945e5669cec87f96f7ac.1476951078.git-series.maxime.ripard@free-electrons.com>
- <CAGb2v66w0sTzn_SWH4rrpWKOosSxALV8ot3CBQbGhwLxvX1vxw@mail.gmail.com>
+ <0c1f98755c7dd1764dcd89a599f182a0face286f.1476951078.git-series.maxime.ripard@free-electrons.com>
+ <CAGb2v641SWJTG=3AmHE3zAypuoq7fL7gFLBXwfXpmCYw7K0Guw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="pr2bi74pr2efxgjc"
+ protocol="application/pgp-signature"; boundary="idqd7ciwoysqul2r"
 Content-Disposition: inline
-In-Reply-To: <CAGb2v66w0sTzn_SWH4rrpWKOosSxALV8ot3CBQbGhwLxvX1vxw@mail.gmail.com>
+In-Reply-To: <CAGb2v641SWJTG=3AmHE3zAypuoq7fL7gFLBXwfXpmCYw7K0Guw@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +28,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---pr2bi74pr2efxgjc
+--idqd7ciwoysqul2r
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 20, 2016 at 10:10:03PM +0800, Chen-Yu Tsai wrote:
+On Thu, Oct 20, 2016 at 10:14:09PM +0800, Chen-Yu Tsai wrote:
 > On Thu, Oct 20, 2016 at 4:12 PM, Maxime Ripard
 > <maxime.ripard@free-electrons.com> wrote:
-> > The PWM controller has two different channels, but only the first pin w=
-as
-> > exposed in the DTSI. Add the other one.
+> > The UART2 pins were missing from the DTSI. Add them.
 > >
 > > Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 >=20
 > Acked-by: Chen-Yu Tsai <wens@csie.org>
->=20
-> > ---
-> >  arch/arm/boot/dts/ntc-gr8.dtsi | 7 +++++++
-> >  1 file changed, 7 insertions(+), 0 deletions(-)
-> >
-> > diff --git a/arch/arm/boot/dts/ntc-gr8.dtsi b/arch/arm/boot/dts/ntc-gr8=
-=2Edtsi
-> > index 74aff795e723..fad7381630f3 100644
-> > --- a/arch/arm/boot/dts/ntc-gr8.dtsi
-> > +++ b/arch/arm/boot/dts/ntc-gr8.dtsi
-> > @@ -854,6 +854,13 @@
-> >                                 allwinner,pull =3D <SUN4I_PINCTRL_NO_PU=
-LL>;
-> >                         };
-> >
-> > +                       pwm1_pins_a: pwm1@0 {
->=20
-> Nit: really don't need "_a" and "@0" here.
 
-Fixed and applied.
+Applied.
 
-Thanks!
 Maxime
 
 --=20
@@ -72,24 +51,24 @@ Maxime Ripard, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
 
---pr2bi74pr2efxgjc
+--idqd7ciwoysqul2r
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYCPnaAAoJEBx+YmzsjxAgCbIP/iYf2qdtbBqOelrNNvxHjmO7
-z/4TdeB8fO8dLn3jIzEsTg044hUklx8wQLT6msTuB2kH6YjVxpVPI1pUi/SWGFdf
-OrWQXbagcWOUuAP9o/4ApOt/8Zv+9mKVkifBrsIfZ3CvSjgQS7S7akHJ2M+rbyYn
-sS/peydiiuZc06XkFx815Vv8plr9uWXc84GjMxqLWZB8soCtvq0gOyRK7saeKIfT
-QZe0bZYzRZYtyCuADULfYGT7RSwnZ7jv4hyWULEH47yKEXgVxkKvZpjpRioJbW4t
-8aP66ZCH6rIGBlsPsk3JhWlxqP0lacyg059Fjc/8byMFenKfw9sk5yCwvhkvIUvt
-twbkaPeuNrWC51M2sDJlDzMePxnsnMv0s2MSB1hVvwd5NIEZ7p8c40/ODHfUQwKc
-CPfMuQYVT13OVFrft3T+xXC3BUJWIbht9n4CrpFBks4Wc5HHgt0h9vwJS4Klo7z3
-PjdTN6vrmOSoY3Kazart8D83Ty7n71Gi+3NmhpTuA9vpTIvC4jsq+JwLgQW4Zklf
-m0BCz87ylPbMqveZDXerz4cymtcqNqXuexThGc0HKVu6YDltUX5icQMHr/6wSGqb
-HXRyEdyFIM0wqKF4ZGqDe0ezhruWkvq/S43D1jxFh6nPAsDEM/V03Z41Da1MKe4z
-Tvngf/ZdbyF9Obqv0oLv
-=mlUy
+iQIcBAEBCAAGBQJYCPnyAAoJEBx+YmzsjxAgAMUP/2ZdXOzGDcZqVSgj3POUIRao
+iFhfeGd8i3EibegKYlRUas0/NbKi3XLHot4C/OcMmoW8eWn2vttwZcBwObPKCEAu
+nbcGj/hNgpdtF0H/kZzA/zTwUj8i7SOFQdQG6phtll+Srp68LCM/KVm+voI8+iye
+AXc2LVF1/k2il5OzaTgaNHRCTkrDGtldo8TxYINxeXxAOT9V0ZvGpGOWO5d8u//M
+9lpHtGBwAhan0O/d+1cIHwZ6NjJvzAtlAQm/I7+uOwIo/rdU/Mcvzqj1gE7Bzwwo
+E9TJVZsDI3Uq799gdgPEIIlAQuOaHf8eQj2G9yd2yKwc5HtcZwu8LfXmsVHZ0fN5
+SuQl5STggpSsoaMrfdUWdQR1zGdW08T7BeTd7wguLBHKitnxdCykiNDv3FhcFECF
+HKnw9q8IpfbkYHeQtMnEfWpOQp2hbdf2v1a0HXVNKWWzT9nKvEXy4VoQzS+O3kIm
+PWdQR1Yo+5Ec2TR8CFOCGrhPXUnAoPjmLK2reUpgTVdpkqzHL4SQJHx+fvxlIA0t
+/mYZIBhlHthq6yQUlggtfN4YoyqqXViJqJnCPVsRFHQ1qkZ+OhCz9tX6QMNWp7CX
+TNI8N3VU+8tAa2FqEtgKscZzpKrnP61iDZPbgbb/mQsmuRyxeP6ziy27w20c2tY/
+hHfT+ezEMhI6DKhAbOc6
+=DRDS
 -----END PGP SIGNATURE-----
 
---pr2bi74pr2efxgjc--
+--idqd7ciwoysqul2r--
