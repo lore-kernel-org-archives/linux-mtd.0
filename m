@@ -1,21 +1,36 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-qt0-f173.google.com ([209.85.216.173])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxDeG-0007bo-NI
- for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 13:44:46 +0000
-Subject: Re: [PATCH v2 1/1] MAINTAINERS: add a maintainer for the SPI NOR
- subsystem
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
-References: <aad52b708dcf6754edab87d2e0afe4f0ee6831f9.1476891131.git.cyrille.pitchen@atmel.com>
-Cc: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com,
- linux-kernel@vger.kernel.org
-From: Marek Vasut <marex@denx.de>
-Message-ID: <d92f8ef8-be78-0386-fa84-117c3cae6459@denx.de>
-Date: Thu, 20 Oct 2016 15:42:24 +0200
-MIME-Version: 1.0
-In-Reply-To: <aad52b708dcf6754edab87d2e0afe4f0ee6831f9.1476891131.git.cyrille.pitchen@atmel.com>
+ id 1bxDeL-0007dF-Jm
+ for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 13:44:51 +0000
+Received: by mail-qt0-f173.google.com with SMTP id s49so54050103qta.0
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2016 06:44:29 -0700 (PDT)
+Subject: Re: [PATCH 00/10] Introduce Juniper PTXPMB CPLD driver
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+In-Reply-To: <CACRpkdYkgondu3NuReFg=FZ29Xzi0zncpku0+++_OSsPnUs+Ew@mail.gmail.com>
+Date: Thu, 20 Oct 2016 16:43:41 +0300
+Cc: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+ Frank Rowand <frowand.list@gmail.com>, Wolfram Sang <wsa@the-dreams.de>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Wim Van Sebroeck <wim@iguana.be>, Guenter Roeck <linux@roeck-us.net>,
+ Peter Rosin <peda@axentia.se>, Debjit Ghosh <dghosh@juniper.net>,
+ Georgi Vlaev <gvlaev@juniper.net>, Guenter Roeck <groeck@juniper.net>,
+ JawaharBalaji Thirumalaisamy <jawaharb@juniper.net>,
+ Rajat Jain <rajatjain@juniper.net>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-watchdog@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E368DA67-BAD4-462C-9323-548E55A2E7D2@konsulko.com>
+References: <1475853451-22121-1-git-send-email-pantelis.antoniou@konsulko.com>
+ <CACRpkdYkgondu3NuReFg=FZ29Xzi0zncpku0+++_OSsPnUs+Ew@mail.gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,73 +40,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/19/2016 05:34 PM, Cyrille Pitchen wrote:
-> I would like to volunteer as a maintainer for the SPI NOR part of the MTD
-> subsystem.
-> 
-> Over the last months, a significant number of SPI NOR related patches have
-> been submitted, some of them have been reviewed, but very few have finally
-> been merged. Hence, the number of pending SPI NOR related patches continues
-> to increase over the time.
-> 
-> Through my work on SPI NOR memories from many manufacturers over the last
-> two years, I've gained a solid understanding of this technology.
-> I've already helped by reviewing patches from other contributors on the
-> mailing list, and would like to help getting those patches integrated by
-> volunteering as a maintainer for this specific area.
-> 
-> Boris Brezillon has already stepped up as a maintainer for the NAND
-> sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
-> the same way: I would be reviewing patches touching this area, collecting
-> them and sending pull requests to Brian Norris.
-> 
-> Also both Marek Vasut and Richard Weinberger have volunteered as well as
-> maintainers for the SPI NOR subsystem.
-> 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Hi Linus,
 
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+> On Oct 20, 2016, at 16:42 , Linus Walleij <linus.walleij@linaro.org> =
+wrote:
+>=20
+> On Fri, Oct 7, 2016 at 5:17 PM, Pantelis Antoniou
+> <pantelis.antoniou@konsulko.com> wrote:
+>=20
+>> Add Juniper's PTXPMB FPGA CPLD driver. Those FPGAs
+>> are present in Juniper's PTX series of routers.
+>>=20
+>> The MFD driver provices watchdog/i2c/gpio/mtd devices.
+>=20
+> Since it's quite a bunch of patches to quite a bunch of controllers
+> I think it's best if you get the MFD parts ready and merged through
+> Lee first for v4.10, then we can add the subdrivers on top, maybe
+> in v4.11, or on top of an immutable branch from Lee once he is
+> happy with the core if the MFD core is finished quickly.
+>=20
 
-btw I think I'll need higher privileges in patchwork to fiddle with patches.
+Will do.
 
-> ---
-> ChangeLog:
-> 
-> v1 -> v2:
-> - add Marek and Richard as maintainers.
-> - add Acked-by from Boris Brezillon.
-> 
-> 
->  MAINTAINERS | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 757f9c4b388d..7e63b2015072 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11390,6 +11390,18 @@ W:	http://www.st.com/spear
->  S:	Maintained
->  F:	drivers/clk/spear/
->  
-> +SPI NOR SUBSYSTEM
-> +M:	Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> +M:	Marek Vasut <marek.vasut@gmail.com>
-> +M:	Richard Weinberger <richard@nod.at>
-> +L:	linux-mtd@lists.infradead.org
-> +W:	http://www.linux-mtd.infradead.org/
-> +Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-> +T:	git git://github.com/spi-nor/linux.git
-> +S:	Maintained
-> +F:	drivers/mtd/spi-nor/
-> +F:	include/linux/mtd/spi-nor.h
-> +
->  SPI SUBSYSTEM
->  M:	Mark Brown <broonie@kernel.org>
->  L:	linux-spi@vger.kernel.org
-> 
+> I will review all the GPIO stuff though so you can revise these
+> patches too :)
+>=20
 
+Goodie :)
 
--- 
-Best regards,
-Marek Vasut
+> Yours,
+> Linus Walleij
+
+Regards
+
+=E2=80=94 Pantelis
