@@ -1,4 +1,4 @@
-Date: Thu, 20 Oct 2016 19:06:02 +0200
+Date: Thu, 20 Oct 2016 19:06:21 +0200
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
 To: Chen-Yu Tsai <wens@csie.org>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -8,16 +8,16 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
  Mylene Josserand <mylene.josserand@free-electrons.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH 3/8] ARM: gr8: Add the UART3
-Message-ID: <20161020170602.mkk3cp2om2xbtmen@lukather>
+Subject: Re: [PATCH 4/8] ARM: gr8: Fix typo in the i2s mclk pin group
+Message-ID: <20161020170621.wlwd3hv3py2sme5s@lukather>
 References: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
- <b62c8661eb3c2d72e61511794a3ab1b43f005805.1476951078.git-series.maxime.ripard@free-electrons.com>
- <CAGb2v65iR=mZyCQrF64HOku5Sq7fNKGhV=Yy3zUFYzB=4ozkWg@mail.gmail.com>
+ <f1c79380c34fcc2a1c1ff75ca91177de3b7380a9.1476951078.git-series.maxime.ripard@free-electrons.com>
+ <CAGb2v65P6WEZCy8AXCk5mV4gWgiWuZJiDZzJnEgr+sj9qf8ORA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="w77hcz4kzl6tsv44"
+ protocol="application/pgp-signature"; boundary="6bhoykys7y53f3mn"
 Content-Disposition: inline
-In-Reply-To: <CAGb2v65iR=mZyCQrF64HOku5Sq7fNKGhV=Yy3zUFYzB=4ozkWg@mail.gmail.com>
+In-Reply-To: <CAGb2v65P6WEZCy8AXCk5mV4gWgiWuZJiDZzJnEgr+sj9qf8ORA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +28,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---w77hcz4kzl6tsv44
+--6bhoykys7y53f3mn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 20, 2016 at 10:06:47PM +0800, Chen-Yu Tsai wrote:
+On Thu, Oct 20, 2016 at 10:07:46PM +0800, Chen-Yu Tsai wrote:
 > On Thu, Oct 20, 2016 at 4:12 PM, Maxime Ripard
 > <maxime.ripard@free-electrons.com> wrote:
-> > The GR8 has access to the UART3 controller, which was missing in the
-> > DTSI. Add it.
+> > There was a dumb copy and paste mistake here, fix it.
 > >
 > > Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 >=20
@@ -52,24 +51,24 @@ Maxime Ripard, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
 
---w77hcz4kzl6tsv44
+--6bhoykys7y53f3mn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYCPl1AAoJEBx+YmzsjxAgCMwQALkmvO3TtBGDRRUjs5i8xwC7
-LcNYji7Y8FZx2qA0f3e1tCgV1Lx/yNTMwkm76atG2PnmaT3FH2FGtttc33oC1/Tm
-jsMNqiWJ4bl2RpJFrDYFtLfO9vf7V0dk4bTx4ukTn1T33F58kueH2LvXygEB43OA
-60XEukj2QgzCtBxq+TTuK0kq8MM2p8jcz9eojQUzVDU2QIj5X+AtDiBUch92vHF6
-aWV6g5eHQYO7omNyYCNl42Fp8F3SVXdB/dcCW9CH6RioOD4BCqwvthslX90PCq5S
-MRC2jHztR1OMflllVXFDCfvYD0WGzDwd1953r6G0EQv5xiXlfQVuUJ4PC3X+ehPb
-xcXlO4Et03jQ06eBSUeGs2GF48g7xQwyJuAhq4tgua2UXbUAm5FQq2UQLp2j6lQR
-+/XDKbthET6PSZ/vEBTIANRZizsvl80Sz8Z7ggyLKZPApoK0JzpplCc50mSzl/pK
-6Qi4FhHNmQyp8LAAf6h7pf4IDppkb/wLrIE3FGhytvmXERrw2OEY0fbsfagzZ1Va
-G9fz0DZm8rfMxhHJpOYyO/czmY84kRjz02kmkSqaUDPEkx2AzR8JtBg/QNzexTYQ
-fkZUBV0hODzia29RjMuHvyIHS5/s2RGJdetxYvGpzxEjl1RwyJmBWKvEhc9SrhiQ
-zWVtSY9ft/9f0XXRavjY
-=nqrt
+iQIcBAEBCAAGBQJYCPmNAAoJEBx+YmzsjxAgUy4P/RvIAi2hVB9IwAE7/gbI0EON
+YpKjBR2WQXS5pI17zqPGlXwhXMihB74AFbyaN8YEG9e87DwMuOwdiDrL1xubFXF4
+eKNcuQEwvsg8yo1MlaVI16Y4vF48NE3cMrHYy5GitQqH9bO8G0gnzTtPd+2ZMvtP
+2HsPt42+d/w+vpyl6cy+59o3cYUctGom3i4nX/H+uoI3JawAqnr066ANuNYCqtJN
+JjSB+/qQMrO7yKnBb9hZZpwsKpUPwfXJfN6sImZu+EgZ7tJQyij/xozC1nS0Il2m
+nuEmURue8IuOKP6zJSEinX4+tIWYl7oYz5UAO15IKc4lKnreytFYFiDzcPa/K79I
+gr7i/S6xMXn5YlwA3LkOHm5bM6s+4Fzm423sChe8+F59c3pqVciqhkmY1bHmmUN0
+LMrYoobpbdvpeDSnocRbisGExNvhCEouN8RA9oFogeA5E0dSqT9RiEKMWooaRKz2
+nO86fay2CM9ULBSUbtVFE0TiiIinSV7n9idisFvPDQerVI9ARFIghrn4eVbXoqnG
+2Eubfrr9nOuB8dwuy5lNxhQbHUnOXqJ1HK8QfMqY7GZ5NELP6uIkTG7L+u+XAchL
+zyjbBaLWjCqndRQaL5wh0QFlsHrskTO9mgmGGlqeJ9jasuxK+INRq4TaGlZCG+26
+QuoJlBzRzlSKQOsNXIhw
+=H3Dk
 -----END PGP SIGNATURE-----
 
---w77hcz4kzl6tsv44--
+--6bhoykys7y53f3mn--
