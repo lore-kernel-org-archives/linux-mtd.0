@@ -1,36 +1,16 @@
-Received: from mail-qt0-f173.google.com ([209.85.216.173])
+Received: from mail-cys01nam02on0090.outbound.protection.outlook.com
+ ([104.47.37.90] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxDeL-0007dF-Jm
- for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 13:44:51 +0000
-Received: by mail-qt0-f173.google.com with SMTP id s49so54050103qta.0
- for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2016 06:44:29 -0700 (PDT)
-Subject: Re: [PATCH 00/10] Introduce Juniper PTXPMB CPLD driver
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=utf-8
-From: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
-In-Reply-To: <CACRpkdYkgondu3NuReFg=FZ29Xzi0zncpku0+++_OSsPnUs+Ew@mail.gmail.com>
-Date: Thu, 20 Oct 2016 16:43:41 +0300
-Cc: Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Alexandre Courbot <gnurou@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>, Wolfram Sang <wsa@the-dreams.de>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Wim Van Sebroeck <wim@iguana.be>, Guenter Roeck <linux@roeck-us.net>,
- Peter Rosin <peda@axentia.se>, Debjit Ghosh <dghosh@juniper.net>,
- Georgi Vlaev <gvlaev@juniper.net>, Guenter Roeck <groeck@juniper.net>,
- JawaharBalaji Thirumalaisamy <jawaharb@juniper.net>,
- Rajat Jain <rajatjain@juniper.net>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
- "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-watchdog@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E368DA67-BAD4-462C-9323-548E55A2E7D2@konsulko.com>
-References: <1475853451-22121-1-git-send-email-pantelis.antoniou@konsulko.com>
- <CACRpkdYkgondu3NuReFg=FZ29Xzi0zncpku0+++_OSsPnUs+Ew@mail.gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
+ id 1bxDf3-00089j-9i
+ for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 13:45:34 +0000
+From: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
+To: <linux-mtd@lists.infradead.org>
+CC: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
+Subject: [PATCH] mtd: spi-nor: fixed spansion quad enable
+Date: Thu, 20 Oct 2016 15:43:46 +0200
+Message-ID: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,37 +20,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+With the S25FL127S nor flash part, each writing to the configuration register takes hundreds of ms. During that  time, no more accesses to the flash should be done (even reads).
 
-> On Oct 20, 2016, at 16:42 , Linus Walleij <linus.walleij@linaro.org> =
-wrote:
->=20
-> On Fri, Oct 7, 2016 at 5:17 PM, Pantelis Antoniou
-> <pantelis.antoniou@konsulko.com> wrote:
->=20
->> Add Juniper's PTXPMB FPGA CPLD driver. Those FPGAs
->> are present in Juniper's PTX series of routers.
->>=20
->> The MFD driver provices watchdog/i2c/gpio/mtd devices.
->=20
-> Since it's quite a bunch of patches to quite a bunch of controllers
-> I think it's best if you get the MFD parts ready and merged through
-> Lee first for v4.10, then we can add the subdrivers on top, maybe
-> in v4.11, or on top of an immutable branch from Lee once he is
-> happy with the core if the MFD core is finished quickly.
->=20
+This commit adds:
+- a pre check of the quad enable bit to avoid a useless and time consuming writing to the flash,
+- a wait loop after the register writing until the flash finishes its work.
 
-Will do.
+This issue could make rootfs mounting fail when the latter was done too much closely to this quad enable bit setting step. And in this case, a driver as UBIFS may try to recover the filesystem and may broke it completely.
+---
+ drivers/mtd/spi-nor/spi-nor.c | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
-> I will review all the GPIO stuff though so you can revise these
-> patches too :)
->=20
-
-Goodie :)
-
-> Yours,
-> Linus Walleij
-
-Regards
-
-=E2=80=94 Pantelis
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..df43cd7 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1246,18 +1246,41 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 	int ret;
+ 	int quad_en = CR_QUAD_EN_SPAN << 8;
+ 
++	/* check quad enable bit
++	 * as S25FL127S takes 200 ms to execute each write of SR & CR 
++	 * registers even if data is the same, write step will be shorted 
++	 * if not needed
++	 */
++	ret = read_cr(nor);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading CR\n", ret);
++		return ret;
++	} 
++	if (ret & CR_QUAD_EN_SPAN) {
++		/* quad enable bit is already set */
++		return 0;
++	}
++
++	/* set SR & CR, enable quad I/O */
+ 	write_enable(nor);
+ 
+ 	ret = write_sr_cr(nor, quad_en);
+ 	if (ret < 0) {
+-		dev_err(nor->dev,
+-			"error while writing configuration register\n");
++		dev_err(nor->dev, "error while writing SR and CR registers\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	/* read back and check it */
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++	
++	/* read CR and check it */
+ 	ret = read_cr(nor);
+-	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading CR\n", ret);
++		return ret;
++	}
++	if (!(ret & CR_QUAD_EN_SPAN)) {
+ 		dev_err(nor->dev, "Spansion Quad bit not set\n");
+ 		return -EINVAL;
+ 	}
+-- 
+2.7.4
