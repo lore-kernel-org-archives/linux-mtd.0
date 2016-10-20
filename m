@@ -1,19 +1,19 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Mylene Josserand <mylene.josserand@free-electrons.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: [PATCH 7/8] ARM: gr8: Add UART3 pins
-Date: Thu, 20 Oct 2016 10:12:48 +0200
-Message-Id: <cc81030de43c26dfc15ad9a9e525188ad8fb8ec9.1476951078.git-series.maxime.ripard@free-electrons.com>
-In-Reply-To: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
-References: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
-In-Reply-To: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
-References: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
+Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bx92a-0006Kd-Ou
+ for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 08:49:35 +0000
+Received: by mail-lf0-x22d.google.com with SMTP id l131so68880914lfl.2
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2016 01:49:12 -0700 (PDT)
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at
+Cc: Neil Armstrong <narmstrong@baylibre.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-oxnas@lists.tuxfamily.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ daniel@makrotopia.org
+Subject: [PATCH v2] mtd: nand: Add OX820 NAND Support
+Date: Thu, 20 Oct 2016 10:49:01 +0200
+Message-Id: <20161020084901.6486-1-narmstrong@baylibre.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +23,310 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The UART3 pins were missing from the DTSI. Add them.
+Add NAND driver to support the Oxford Semiconductor OX820 NAND Controller.
+This is a simple memory mapped NAND controller with single chip select and
+software ECC.
 
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
- arch/arm/boot/dts/ntc-gr8.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+), 0 deletions(-)
+ .../devicetree/bindings/mtd/oxnas-nand.txt         |  41 +++++
+ drivers/mtd/nand/Kconfig                           |   5 +
+ drivers/mtd/nand/Makefile                          |   1 +
+ drivers/mtd/nand/oxnas_nand.c                      | 196 +++++++++++++++++++++
+ 4 files changed, 243 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+ create mode 100644 drivers/mtd/nand/oxnas_nand.c
 
-diff --git a/arch/arm/boot/dts/ntc-gr8.dtsi b/arch/arm/boot/dts/ntc-gr8.dtsi
-index 52c150592953..4480ffadc42d 100644
---- a/arch/arm/boot/dts/ntc-gr8.dtsi
-+++ b/arch/arm/boot/dts/ntc-gr8.dtsi
-@@ -895,6 +895,20 @@
- 				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
- 				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
- 			};
+Changes since v1 http://lkml.kernel.org/r/20161019145523.6763-1-narmstrong@baylibre.com :
+ - Simplify cmd_ctrl command and drop the ctrl address offset
+ - Change oxnas_nand struct name to oxnas_nand_ctrl
+ - Update DT-Bindings example to reflect the ctrl->chip->partitions hierarchy
+
+Changes since RFC http://lkml.kernel.org/r/20161018090927.1990-1-narmstrong@baylibre.com :
+ - Avoid using chip->IO_ADDR*
+ - Use new DT structure
+ - Assign a chip for the subnode
+ - Use the nand_hw_control structure
+ - Cleanup probe
+ - Cleanup cmd_ctrl by using a context ctrl offset used in write_bytes
+
+diff --git a/Documentation/devicetree/bindings/mtd/oxnas-nand.txt b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+new file mode 100644
+index 0000000..33a77b8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
+@@ -0,0 +1,41 @@
++* Oxford Semiconductor OXNAS NAND Controller
 +
-+			uart3_pins_a: uart3@1 {
-+				allwinner,pins = "PG9", "PG10";
-+				allwinner,function = "uart3";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
++Please refer to nand.txt for generic information regarding MTD NAND bindings.
 +
-+			uart3_cts_rts_pins_a: uart3-cts-rts@0 {
-+				allwinner,pins = "PG11", "PG12";
-+				allwinner,function = "uart3";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
- 		};
++Required properties:
++ - compatible: "oxsemi,ox820-nand"
++ - reg: Base address and length for NAND mapped memory.
++
++Optional Properties:
++ - clocks: phandle to the NAND gate clock if needed.
++ - resets: phandle to the NAND reset control if needed.
++
++Example:
++
++nand: nand-controller@41000000 {
++	compatible = "oxsemi,ox820-nand";
++	reg = <0x41000000 0x100000>;
++	clocks = <&stdclk CLK_820_NAND>;
++	resets = <&reset RESET_NAND>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	nand@0 {
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		nand-ecc-mode = "soft";
++		nand-ecc-algo = "hamming";
++
++		partition@0 {
++			label = "boot";
++			reg = <0x00000000 0x00e00000>;
++			read-only;
++		};
++
++		partition@e00000 {
++			label = "ubi";
++			reg = <0x00e00000 0x07200000>;
++		};
++	};
++};
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 7b7a887..c023125 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -426,6 +426,11 @@ config MTD_NAND_ORION
+ 	  No board specific support is done by this driver, each board
+ 	  must advertise a platform_device for the driver to attach.
  
- 		pwm: pwm@01c20e00 {
++config MTD_NAND_OXNAS
++	tristate "NAND Flash support for Oxford Semiconductor SoC"
++	help
++	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
++
+ config MTD_NAND_FSL_ELBC
+ 	tristate "NAND support for Freescale eLBC controllers"
+ 	depends on FSL_SOC
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index cafde6f..05fc054 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -35,6 +35,7 @@ obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
+ obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
+ obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
+ obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
++obj-$(CONFIG_MTD_NAND_OXNAS)		+= oxnas_nand.o
+ obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
+ obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
+ obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
+diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
+new file mode 100644
+index 0000000..35c94af
+--- /dev/null
++++ b/drivers/mtd/nand/oxnas_nand.c
+@@ -0,0 +1,196 @@
++/*
++ * Oxford Semiconductor OXNAS NAND driver
++
++ * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
++ * Heavily based on plat_nand.c :
++ * Author: Vitaly Wool <vitalywool@gmail.com>
++ * Copyright (C) 2013 Ma Haijun <mahaijuns@gmail.com>
++ * Copyright (C) 2012 John Crispin <blogic@openwrt.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/clk.h>
++#include <linux/reset.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <linux/of.h>
++
++/* Nand commands */
++#define OXNAS_NAND_CMD_ALE		BIT(18)
++#define OXNAS_NAND_CMD_CLE		BIT(19)
++
++#define OXNAS_NAND_MAX_CHIPS	1
++
++struct oxnas_nand_ctrl {
++	struct nand_hw_control base;
++	void __iomem *io_base;
++	struct clk *clk;
++	struct nand_chip *chips[OXNAS_NAND_MAX_CHIPS];
++};
++
++static uint8_t oxnas_nand_read_byte(struct mtd_info *mtd)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct oxnas_nand_ctrl *oxnas = nand_get_controller_data(chip);
++
++	return readb(oxnas->io_base);
++}
++
++static void oxnas_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct oxnas_nand_ctrl *oxnas = nand_get_controller_data(chip);
++
++	ioread8_rep(oxnas->io_base, buf, len);
++}
++
++static void oxnas_nand_write_buf(struct mtd_info *mtd,
++				 const uint8_t *buf, int len)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct oxnas_nand_ctrl *oxnas = nand_get_controller_data(chip);
++
++	iowrite8_rep(oxnas->io_base, buf, len);
++}
++
++/* Single CS command control */
++static void oxnas_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
++				unsigned int ctrl)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct oxnas_nand_ctrl *oxnas = nand_get_controller_data(chip);
++
++	if (ctrl & NAND_CLE)
++		writeb(cmd, oxnas->io_base + OXNAS_NAND_CMD_CLE);
++	else if (ctrl & NAND_ALE)
++		writeb(cmd, oxnas->io_base + OXNAS_NAND_CMD_ALE);
++}
++
++/*
++ * Probe for the NAND device.
++ */
++static int oxnas_nand_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *nand_np;
++	struct oxnas_nand_ctrl *oxnas;
++	struct nand_chip *chip;
++	struct mtd_info *mtd;
++	struct resource *res;
++	int nchips = 0;
++	int count = 0;
++	int err = 0;
++
++	/* Allocate memory for the device structure (and zero it) */
++	oxnas = devm_kzalloc(&pdev->dev, sizeof(struct nand_chip),
++			    GFP_KERNEL);
++	if (!oxnas)
++		return -ENOMEM;
++
++	nand_hw_control_init(&oxnas->base);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	oxnas->io_base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(oxnas->io_base))
++		return PTR_ERR(oxnas->io_base);
++
++	oxnas->clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(oxnas->clk))
++		oxnas->clk = NULL;
++
++	/* Only a single chip node is supported */
++	count = of_get_child_count(np);
++	if (count > 1)
++		return -EINVAL;
++
++	clk_prepare_enable(oxnas->clk);
++	device_reset_optional(&pdev->dev);
++
++	for_each_child_of_node(np, nand_np) {
++		chip = devm_kzalloc(&pdev->dev, sizeof(struct nand_chip),
++				    GFP_KERNEL);
++		if (!chip)
++			return -ENOMEM;
++
++		chip->controller = &oxnas->base;
++
++		nand_set_flash_node(chip, nand_np);
++		nand_set_controller_data(chip, oxnas);
++
++		mtd = nand_to_mtd(chip);
++		mtd->dev.parent = &pdev->dev;
++		mtd->priv = chip;
++
++		chip->cmd_ctrl = oxnas_nand_cmd_ctrl;
++		chip->read_buf = oxnas_nand_read_buf;
++		chip->read_byte = oxnas_nand_read_byte;
++		chip->write_buf = oxnas_nand_write_buf;
++		chip->chip_delay = 30;
++
++		/* Scan to find existence of the device */
++		err = nand_scan(mtd, 1);
++		if (err)
++			return err;
++
++		err = mtd_device_register(mtd, NULL, 0);
++		if (err) {
++			nand_release(mtd);
++			return err;
++		}
++
++		oxnas->chips[nchips] = chip;
++		++nchips;
++	}
++
++	/* Exit if no chips found */
++	if (!nchips)
++		return -ENODEV;
++
++	platform_set_drvdata(pdev, oxnas);
++
++	return 0;
++}
++
++static int oxnas_nand_remove(struct platform_device *pdev)
++{
++	struct oxnas_nand_ctrl *oxnas = platform_get_drvdata(pdev);
++
++	if (oxnas->chips[0])
++		nand_release(nand_to_mtd(oxnas->chips[0]));
++
++	clk_disable_unprepare(oxnas->clk);
++
++	return 0;
++}
++
++static const struct of_device_id oxnas_nand_match[] = {
++	{ .compatible = "oxsemi,ox820-nand" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, oxnas_nand_match);
++
++static struct platform_driver oxnas_nand_driver = {
++	.probe	= oxnas_nand_probe,
++	.remove	= oxnas_nand_remove,
++	.driver	= {
++		.name		= "oxnas_nand",
++		.of_match_table = oxnas_nand_match,
++	},
++};
++
++module_platform_driver(oxnas_nand_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
++MODULE_DESCRIPTION("Oxnas NAND driver");
++MODULE_ALIAS("platform:oxnas_nand");
 -- 
-git-series 0.8.10
+2.7.0
