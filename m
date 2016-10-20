@@ -1,26 +1,19 @@
-Received: from mail-ve1eur01on0076.outbound.protection.outlook.com
- ([104.47.1.76] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxEk2-0006vg-4K
- for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 14:54:47 +0000
-From: Han Xu <han.xu@nxp.com>
-To: Albert ARIBAUD <albert.aribaud@3adev.fr>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Yunhui
- Cui" <yunhui.cui@nxp.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 1/2] fsl-quadspi: fix QUAD read, add NORMAL, DUAL and FAST
- reads
-Date: Thu, 20 Oct 2016 14:54:20 +0000
-Message-ID: <AM4PR0401MB1841BD90C29964BB2324E2CE97D50@AM4PR0401MB1841.eurprd04.prod.outlook.com>
-References: <20160927055957.427-1-albert.aribaud@3adev.fr>
- <69a5b0d7-6b89-7edc-738d-c9e25802ba31@atmel.com>,
- <20161020091630.3477efab.albert.aribaud@3adev.fr>
-In-Reply-To: <20161020091630.3477efab.albert.aribaud@3adev.fr>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1bxEov-00017d-Lo
+ for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 14:59:51 +0000
+From: Zach Brown <zach.brown@ni.com>
+To: <dwmw2@infradead.org>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <richard@nod.at>, <dedekind1@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 1/3] mtd: introduce function max_bad_blocks
+Date: Thu, 20 Oct 2016 09:58:56 -0500
+Message-ID: <1476975538-19051-2-git-send-email-zach.brown@ni.com>
+In-Reply-To: <1476975538-19051-1-git-send-email-zach.brown@ni.com>
+References: <1476975538-19051-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,84 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Jeff Westfahl <jeff.westfahl@ni.com>
 
+If implemented, 'max_bad_blocks' returns the maximum number of bad
+blocks to reserve for an MTD. An implementation for NAND is coming soon.
 
-________________________________________
-From: Albert ARIBAUD <albert.aribaud@3adev.fr>
-Sent: Thursday, October 20, 2016 1:16 AM
-To: Cyrille Pitchen
-Cc: linux-mtd@lists.infradead.org; Yunhui Cui; devicetree@vger.kernel.org; =
-Han Xu
-Subject: Re: [PATCH 1/2] fsl-quadspi: fix QUAD read, add NORMAL, DUAL and F=
-AST reads
+Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+Signed-off-by: Zach Brown <zach.brown@ni.com>
+---
+ drivers/mtd/mtdpart.c   | 12 ++++++++++++
+ include/linux/mtd/mtd.h |  1 +
+ 2 files changed, 13 insertions(+)
 
-Hi Cyrille,
-
-Le Wed, 19 Oct 2016 18:42:36 +0200, Cyrille Pitchen
-<cyrille.pitchen@atmel.com> a =E9crit :
-
-> Hi Albert,
->
-> +Yunhui
-
-
-> It seems that both Yunhui and you work on the same topic, maybe you can
-> synchronize?
-> https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpatc=
-hwork.ozlabs.org%2Fpatch%2F660356%2F&data=3D01%7C01%7Chan.xu%40nxp.com%7C4b=
-7dcf6422694f68dc1408d3f8b90a4d%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0&sdata=
-=3DWjiiPqupc9bGtqixGvPeFoBddg51SJwehI4L0Zup9RY%3D&reserved=3D0
-
-I am already preparing a v2 based over Yunhui's series. :)
-
-> I don't think it is a good thing to select the relevant "READ" LUT entry
-> according to the command op code. What if spi-nor.c introduces new op cod=
-es?
->
-> Maybe you could index the LUT entries by functions:
-> - READ_REG: the LUT op code would be dynamically updated by your
->             .read_reg(nor, opcode, ...) implementation according to opcod=
-e.
-> - WRITE_REG: the same as above with the .write_reg(nor, opcode, ...) hook=
-.
-> - READ_SLAVE1: read memory from the first SPI-NOR memory.
-> - WRITE_SLAVE1: write into the first SPI-NOR memory.
-> - READ_SLAVE2: read memory form the 2nd SPI-NOR memory.
-> ...
-> - WRITE_SLAVEN: write into the N-th SPI-NOR memory.
-
-Actually, my needs could be met using Han Xu's dynamic LUT entries
-without the need to introduce 'virtual' opcodes (and without having
-to 'leak back' those new opcodes into other kernel code portions).
-
-The per-slave differences (in my case, bus width essentially) can be
-managed though DT entries and corresponding per-nor flags in the driver.
-
-> Also be aware even for the .read() hook the nor->read_opcode might change=
-s
-> between calls!
-
-Noted -- I'll check that the driver always use the current NOR codes.
-
-> I don't know whether those comments fit your actual needs and the Freesca=
-le SPI
-> controller hardware constraints but I'm always worried about the ease to =
-maintain
-> SPI-NOR controller drivers when they are not "op code agnostic".
-
-Understood and agreed.
-
-Thanks for yuor feedback!
-
-Good. I have another question about Yunhui's patch set. Who are in charge o=
-f review
-and merge code change in spi-nor.c? Some patches have been pending for a wh=
-ile.
-
-> Best regards,
->
-> Cyrille
-
-Cordialement,
-Albert ARIBAUD
-3ADEV
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index c1f34f0..65d3563 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -350,6 +350,16 @@ static const struct mtd_ooblayout_ops part_ooblayout_ops = {
+ 	.free = part_ooblayout_free,
+ };
+ 
++static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
++{
++	struct mtd_part *part = mtd_to_part(mtd);
++
++	if ((len + ofs) > mtd->size)
++		return -EINVAL;
++	return part->master->_max_bad_blocks(part->master,
++					     ofs + part->offset, len);
++}
++
+ static inline void free_partition(struct mtd_part *p)
+ {
+ 	kfree(p->mtd.name);
+@@ -482,6 +492,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 	if (master->_put_device)
+ 		slave->mtd._put_device = part_put_device;
+ 
++	if (master->_max_bad_blocks)
++		slave->mtd._max_bad_blocks = part_max_bad_blocks;
+ 	slave->mtd._erase = part_erase;
+ 	slave->master = master;
+ 	slave->offset = part->offset;
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 13f8052..bd277eb 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -322,6 +322,7 @@ struct mtd_info {
+ 	int (*_block_isreserved) (struct mtd_info *mtd, loff_t ofs);
+ 	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
+ 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
++	int (*_max_bad_blocks) (struct mtd_info *mtd, loff_t ofs, size_t len);
+ 	int (*_suspend) (struct mtd_info *mtd);
+ 	void (*_resume) (struct mtd_info *mtd);
+ 	void (*_reboot) (struct mtd_info *mtd);
+-- 
+2.7.4
