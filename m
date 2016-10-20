@@ -1,18 +1,23 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxFBr-00084M-Ph
- for linux-mtd@lists.infradead.org; Thu, 20 Oct 2016 15:23:38 +0000
-Subject: Re: [PATCH] mtd: spi-nor: fixed spansion quad enable
-To: =?UTF-8?Q?Jo=c3=abl_Esponde?= <joel.esponde@honeywell.com>,
- <linux-mtd@lists.infradead.org>
-References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <56670303-e8e8-fb2c-e043-035c566f347c@atmel.com>
-Date: Thu, 20 Oct 2016 17:23:08 +0200
+Date: Thu, 20 Oct 2016 19:06:02 +0200
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Mylene Josserand <mylene.josserand@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH 3/8] ARM: gr8: Add the UART3
+Message-ID: <20161020170602.mkk3cp2om2xbtmen@lukather>
+References: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
+ <b62c8661eb3c2d72e61511794a3ab1b43f005805.1476951078.git-series.maxime.ripard@free-electrons.com>
+ <CAGb2v65iR=mZyCQrF64HOku5Sq7fNKGhV=Yy3zUFYzB=4ozkWg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="w77hcz4kzl6tsv44"
+Content-Disposition: inline
+In-Reply-To: <CAGb2v65iR=mZyCQrF64HOku5Sq7fNKGhV=Yy3zUFYzB=4ozkWg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,113 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Joël,
 
-Le 20/10/2016 à 15:43, Joël Esponde a écrit :
-> With the S25FL127S nor flash part, each writing to the configuration register takes hundreds of ms. During that  time, no more accesses to the flash should be done (even reads).
-> 
-> This commit adds:
-> - a pre check of the quad enable bit to avoid a useless and time consuming writing to the flash,
-> - a wait loop after the register writing until the flash finishes its work.
-> 
-> This issue could make rootfs mounting fail when the latter was done too much closely to this quad enable bit setting step. And in this case, a driver as UBIFS may try to recover the filesystem and may broke it completely.
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 31 +++++++++++++++++++++++++++----
->  1 file changed, 27 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d0fc165..df43cd7 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1246,18 +1246,41 @@ static int spansion_quad_enable(struct spi_nor *nor)
->  	int ret;
->  	int quad_en = CR_QUAD_EN_SPAN << 8;
->  
-> +	/* check quad enable bit
-> +	 * as S25FL127S takes 200 ms to execute each write of SR & CR 
-> +	 * registers even if data is the same, write step will be shorted 
-> +	 * if not needed
-> +	 */
-> +	ret = read_cr(nor);
+--w77hcz4kzl6tsv44
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry but the Read Configuration Register (35h) command is not supported by
-all Spansion (or Spansion-like) memories.
+On Thu, Oct 20, 2016 at 10:06:47PM +0800, Chen-Yu Tsai wrote:
+> On Thu, Oct 20, 2016 at 4:12 PM, Maxime Ripard
+> <maxime.ripard@free-electrons.com> wrote:
+> > The GR8 has access to the UART3 controller, which was missing in the
+> > DTSI. Add it.
+> >
+> > Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+>=20
+> Acked-by: Chen-Yu Tsai <wens@csie.org>
 
-For more details, please refer to the JEDEC JESD216B specification, especially
-the part dealing with the "Quad Enable Requirements". An extract of this
-specification can also be found in this patch:
-https://patchwork.ozlabs.org/patch/678408/
+Applied.
 
-Please have a look at values 001b, 100b and 101b for the bits[22:20] of the
-15th DWORD.
+Maxime
 
-I think your patch is likely to introduce a regression on some old memory
-parts.
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
 
-However, *if* your S25FL127S memory implements the SFDP tables correctly,
-bits[22:20] of the 15th DWORD should be set to 101b, hence using SFDP patch
-above should fix the issue:
-spansion_new_quad_enable() will be called instead of the current
-spansion_quad_enable(). This new function adds the very same test on the Quad
-Enable bit as your patch does.
+--w77hcz4kzl6tsv44
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If you want to test the SFDP patch, you will need to apply the whole series
-which introduces some improvement on QSPI memory support:
-http://lists.infradead.org/pipermail/linux-mtd/2016-October/069554.html
+-----BEGIN PGP SIGNATURE-----
 
-I'm just cautious with Spansion memories: I tested one sample, and I guess
-it was a S25FL127S, which claimed to be compliant with JESD216 rev B (minor 6)
-but words after the 9th one were all 0xffffffff.
-JESD216 (minor 0) describes only 9 DWORDs in the Basic Flash Parameter Table
-JESD216 rev A (minor 5) introduces 7 new DWORDS, hence 16 DWORDS in the (BFPT).
-the 15th DWORD provides the Quad Enable Requirements, which describes the
-procedure to set the Quad Enable bit.
+iQIcBAEBCAAGBQJYCPl1AAoJEBx+YmzsjxAgCMwQALkmvO3TtBGDRRUjs5i8xwC7
+LcNYji7Y8FZx2qA0f3e1tCgV1Lx/yNTMwkm76atG2PnmaT3FH2FGtttc33oC1/Tm
+jsMNqiWJ4bl2RpJFrDYFtLfO9vf7V0dk4bTx4ukTn1T33F58kueH2LvXygEB43OA
+60XEukj2QgzCtBxq+TTuK0kq8MM2p8jcz9eojQUzVDU2QIj5X+AtDiBUch92vHF6
+aWV6g5eHQYO7omNyYCNl42Fp8F3SVXdB/dcCW9CH6RioOD4BCqwvthslX90PCq5S
+MRC2jHztR1OMflllVXFDCfvYD0WGzDwd1953r6G0EQv5xiXlfQVuUJ4PC3X+ehPb
+xcXlO4Et03jQ06eBSUeGs2GF48g7xQwyJuAhq4tgua2UXbUAm5FQq2UQLp2j6lQR
++/XDKbthET6PSZ/vEBTIANRZizsvl80Sz8Z7ggyLKZPApoK0JzpplCc50mSzl/pK
+6Qi4FhHNmQyp8LAAf6h7pf4IDppkb/wLrIE3FGhytvmXERrw2OEY0fbsfagzZ1Va
+G9fz0DZm8rfMxhHJpOYyO/czmY84kRjz02kmkSqaUDPEkx2AzR8JtBg/QNzexTYQ
+fkZUBV0hODzia29RjMuHvyIHS5/s2RGJdetxYvGpzxEjl1RwyJmBWKvEhc9SrhiQ
+zWVtSY9ft/9f0XXRavjY
+=nqrt
+-----END PGP SIGNATURE-----
 
-If the BFPT of your S25FL127S is incomplete but the memory still claiming to be
-JESD216 rev B compliant, neither spansion_quad_enable() nor
-spansion_new_quad_enable() would be called. Since the Quad Enable bit is
-non-volatile on Spansion memories, it will work if the bit as already been set
-before.
-
-
-Best regards,
-
-Cyrille
-
-> +	if (ret < 0) {
-> +		dev_err(nor->dev, "error %d reading CR\n", ret);
-> +		return ret;
-> +	} 
-> +	if (ret & CR_QUAD_EN_SPAN) {
-> +		/* quad enable bit is already set */
-> +		return 0;
-> +	}
-> +
-> +	/* set SR & CR, enable quad I/O */
->  	write_enable(nor);
->  
->  	ret = write_sr_cr(nor, quad_en);
->  	if (ret < 0) {
-> -		dev_err(nor->dev,
-> -			"error while writing configuration register\n");
-> +		dev_err(nor->dev, "error while writing SR and CR registers\n");
->  		return -EINVAL;
->  	}
->  
-> -	/* read back and check it */
-> +	ret = spi_nor_wait_till_ready(nor);
-> +	if (ret)
-> +		return ret;
-> +	
-> +	/* read CR and check it */
->  	ret = read_cr(nor);
-> -	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
-> +	if (ret < 0) {
-> +		dev_err(nor->dev, "error %d reading CR\n", ret);
-> +		return ret;
-> +	}
-> +	if (!(ret & CR_QUAD_EN_SPAN)) {
->  		dev_err(nor->dev, "Spansion Quad bit not set\n");
->  		return -EINVAL;
->  	}
-> 
+--w77hcz4kzl6tsv44--
