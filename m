@@ -1,26 +1,29 @@
-Date: Fri, 21 Oct 2016 23:06:25 +0300
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>,
- Sergio Prado <sergio.prado@e-labworks.com>, mark.rutland@arm.com,
- boris.brezillon@free-electrons.com,
- linux-samsung-soc@vger.kernel.org, robh+dt@kernel.org,
- devicetree@vger.kernel.org, richard@nod.at, linux@armlinux.org.uk,
- linux-kernel@vger.kernel.org, javier@osg.samsung.com,
- kgene@kernel.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- linux@simtec.co.uk, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] mtd: s3c2410: make ecc mode configurable via
- platform data
-Message-ID: <20161021200625.GA20847@kozik-lap>
-References: <1476999766-32526-1-git-send-email-sergio.prado@e-labworks.com>
- <1476999766-32526-2-git-send-email-sergio.prado@e-labworks.com>
- <20161021182710.GA17279@kozik-lap>
- <5a626833-d4bf-a991-65ea-2849f2250dce@gmail.com>
+Received: from quartz.orcorp.ca ([184.70.90.242])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bxgX3-0002Wl-1g
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 20:35:15 +0000
+Date: Fri, 21 Oct 2016 14:33:22 -0600
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
+Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ rob@landley.net, michal.simek@xilinx.com, grant.likely@linaro.org,
+ gregkh@linuxfoundation.org, jason@lakedaemon.net,
+ ezequiel.garcia@free-electrons.com, arnd@arndb.de,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ artem.bityutskiy@linux.intel.com, jussi.kivilinna@iki.fi,
+ acourbot@nvidia.com, ivan.khoronzhuk@ti.com, joern@logfs.org,
+ devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kpc528@gmail.com, kalluripunnaiahchoudary@gmail.com, punnaia@xilinx.com
+Subject: Re: [v7, 1/3] nand: pl353: Add basic driver for arm pl353 smc nand
+ interface
+Message-ID: <20161021203322.GA28655@obsidianresearch.com>
+References: <1433786918-21500-2-git-send-email-punnaia@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5a626833-d4bf-a991-65ea-2849f2250dce@gmail.com>
+In-Reply-To: <1433786918-21500-2-git-send-email-punnaia@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,53 +33,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 21, 2016 at 08:51:51PM +0200, Marek Vasut wrote:
-> On 10/21/2016 08:27 PM, Krzysztof Kozlowski wrote:
-> > On Thu, Oct 20, 2016 at 07:42:44PM -0200, Sergio Prado wrote:
-> >> Removing CONFIG_MTD_NAND_S3C2410_HWECC option and adding a ecc_mode
-> >> field in the drivers's platform data structure so it can be selectable
-> >> via platform data.
-> >>
-> >> Also setting this field to NAND_ECC_SOFT in all boards using this
-> >> driver since none of them had CONFIG_MTD_NAND_S3C2410_HWECC enabled.
-> >>
-> >> Signed-off-by: Sergio Prado <sergio.prado@e-labworks.com>
-> >> ---
-> >>  arch/arm/mach-s3c24xx/common-smdk.c            |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-anubis.c            |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-at2440evb.c         |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-bast.c              |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-gta02.c             |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-jive.c              |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-mini2440.c          |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-osiris.c            |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-qt2410.c            |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-rx1950.c            |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-rx3715.c            |   1 +
-> >>  arch/arm/mach-s3c24xx/mach-vstms.c             |   1 +
-> >>  arch/arm/mach-s3c64xx/mach-hmt.c               |   1 +
-> >>  arch/arm/mach-s3c64xx/mach-mini6410.c          |   1 +
-> >>  arch/arm/mach-s3c64xx/mach-real6410.c          |   1 +
-> >>  drivers/mtd/nand/Kconfig                       |   9 --
-> >>  drivers/mtd/nand/s3c2410.c                     | 119 +++++++++++++------------
-> >>  include/linux/platform_data/mtd-nand-s3c2410.h |   6 +-
-> >>  18 files changed, 79 insertions(+), 70 deletions(-)
-> >>
-> > 
-> > I acked this twice (v1 and v2)... and still you are ignoring them. I am
-> > sorry, I am not gonna to ack this third time!
+On Mon, Jun 08, 2015 at 11:38:36PM +0530, Punnaiah Choudary Kalluri wrote:
+> Add driver for arm pl353 static memory controller nand interface with
+> HW ECC support. This controller is used in xilinx zynq soc for interfacing
+> the nand flash memory.
 > 
-> Hi, um, I am kinda new to this mess, what's going on ? You ACKed
-> previous patches, next revision was submitted, so you need to ACK
-> the next revision too (due to the changes).
->
+> Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+> Changes in v7:
+>  - Currently not implemented the memclk rate adjustments. I will
+>    look into this later and once the basic driver is accepted.
+>  - Fixed GPL licence ident
+> Changes in v6:
+>  - Fixed the checkpatch.pl reported warnings
+>  - Using the address cycles information from the onfi param page
+>    earlier it is hardcoded to 5 in driver
+> Changes in v5:
+>  - Configure the nand timing parameters as per the onfi spec
+> Changes in v4:
+>  - Updated the driver to sync with pl353_smc driver APIs
+> Changes in v3:
+>  - implemented the proper error codes
+>  - further breakdown this patch to multiple sets
+>  - added the controller and driver details to Documentation section
+>  - updated the licenece to GPLv2
+>  - reorganized the pl353_nand_ecc_init function
+> Changes in v2:
+>  - use "depends on" rather than "select" option in kconfig
+>  - remove unused variable parts
+>  - remove dummy helper and use writel_relaxed directly
 
-Some of the patches (1/3 and 2/3) were not changed. The resubmission of
-a patch should contain the ack. Otherwise one would have to ack
-indefinitely...
+What is the status of getting this driver merged? I am interested in
+this driver and can provide some help if there are still TODO items.
 
-The changes in 2/3 were quite irrelevant to my ack, so the ack could
-stay.
+At the very least I will test it, is there something newer than v7 out
+there?
 
-BR,
-Krzysztof
+Regards,
+Jason
