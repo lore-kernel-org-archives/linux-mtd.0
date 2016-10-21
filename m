@@ -1,6 +1,6 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxZGk-0004Vn-R1
+ id 1bxZGk-0004X6-Rw
  for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:49:56 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
@@ -8,9 +8,9 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  dedekind1@gmail.com, adrian.hunter@intel.com, tytso@mit.edu,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 05/26] ubifs: Define UBIFS crypto context xattr
-Date: Fri, 21 Oct 2016 14:48:20 +0200
-Message-Id: <1477054121-10198-6-git-send-email-richard@nod.at>
+Subject: [PATCH 11/26] ubifs: Preload crypto context in ->lookup()
+Date: Fri, 21 Oct 2016 14:48:26 +0200
+Message-Id: <1477054121-10198-12-git-send-email-richard@nod.at>
 In-Reply-To: <1477054121-10198-1-git-send-email-richard@nod.at>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,31 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Like ext4 UBIFS will store the crypto context in a xattr
-attribute.
+...and mark the dentry as encrypted.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/ubifs-media.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/ubifs/dir.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-index e24380cf46ed..d47e9569b3de 100644
---- a/fs/ubifs/ubifs-media.h
-+++ b/fs/ubifs/ubifs-media.h
-@@ -301,6 +301,13 @@ enum {
- #define UBIFS_MAX_NODE_SZ UBIFS_MAX_INO_NODE_SZ
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index a77edc5ca5c9..7ee32768ba19 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -218,6 +218,21 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
  
- /*
-+ * xattr name of UBIFS encryption context, we don't use a prefix
-+ * nor a long name to not waste space on the flash.
-+ */
-+#define UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT "c"
+ 	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
+ 
++	if (ubifs_crypt_is_encrypted(dir)) {
++		err = fscrypt_get_encryption_info(dir);
 +
++		/*
++		 * DCACHE_ENCRYPTED_WITH_KEY is set if the dentry is
++		 * created while the directory was encrypted and we
++		 * have access to the key.
++		 */
++		if (fscrypt_has_encryption_key(dir))
++			fscrypt_set_encrypted_dentry(dentry);
++		fscrypt_set_d_op(dentry);
++		if (err && err != -ENOKEY)
++			return ERR_PTR(err);
++	}
 +
-+/*
-  * On-flash inode flags.
-  *
-  * UBIFS_COMPR_FL: use compression for this inode
+ 	if (dentry->d_name.len > UBIFS_MAX_NLEN)
+ 		return ERR_PTR(-ENAMETOOLONG);
+ 
 -- 
 2.7.3
