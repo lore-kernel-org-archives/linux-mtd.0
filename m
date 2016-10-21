@@ -1,26 +1,20 @@
-Received: from mail-pf0-x233.google.com ([2607:f8b0:400e:c00::233])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxe06-0005YC-Jm
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 17:53:03 +0000
-Received: by mail-pf0-x233.google.com with SMTP id e6so60425285pfk.3
- for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2016 10:52:06 -0700 (PDT)
-Date: Fri, 21 Oct 2016 10:52:02 -0700
-From: Michael Halcrow <mhalcrow@google.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, dedekind1@gmail.com,
- adrian.hunter@intel.com, tytso@mit.edu, jaegeuk@kernel.org,
- david@sigma-star.at, wd@denx.de, sbabic@denx.de, dengler@linutronix.de
-Subject: Re: [PATCH 15/26] ubifs: Implement encrypt/decrypt for all IO
-Message-ID: <20161021175202.GA20642@google.com>
-References: <1477054121-10198-1-git-send-email-richard@nod.at>
- <1477054121-10198-16-git-send-email-richard@nod.at>
- <20161021171439.GA17121@google.com>
- <78f09113-fcc3-c2d2-9849-ba980cd9c0b4@nod.at>
+Date: Fri, 21 Oct 2016 19:55:06 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Mylene Josserand
+ <mylene.josserand@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH 1/8] mtd: nand: sunxi: fix support for 512bytes ECC chunks
+Message-ID: <20161021195506.10d32e81@bbrezillon>
+In-Reply-To: <f1cb6efb6817c11b235f073639a137bec6ac17e5.1476951078.git-series.maxime.ripard@free-electrons.com>
+References: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
+ <f1cb6efb6817c11b235f073639a137bec6ac17e5.1476951078.git-series.maxime.ripard@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78f09113-fcc3-c2d2-9849-ba980cd9c0b4@nod.at>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 21, 2016 at 07:21:04PM +0200, Richard Weinberger wrote:
-> On 21.10.2016 19:14, Michael Halcrow wrote:
-> > Compress-before-encrypt is a hazard.
-> > 
-> > http://www.iacr.org/cryptodb/archive/2002/FSE/3091/3091.pdf
+On Thu, 20 Oct 2016 10:12:42 +0200
+Maxime Ripard <maxime.ripard@free-electrons.com> wrote:
+
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
 > 
-> I'm fully aware of that. But as usual it depends on the use case.
-> Compression is optional in UBIFS, paranoid users can disable it
-> when encryption is enabled.
-
-It's not the paranoid users I'm concerned about.  It's those building
-systems with complexity and nuance on top of UBIFS who aren't paranoid
-enough.
-
-I suggest disabling compression by default when encryption is enabled,
-unless the user explicitly enables both.
-
+> The driver is incorrectly assuming that the ECC block size is always 1k
+> which is not always true.
 > 
-> Thanks,
-> //richard
+> Also take the other cases into account.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+
+Applied.
+
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 4 ++++
+>  1 file changed, 4 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index 8b8470c4e6d0..e40482a65de6 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -145,6 +145,7 @@
+>  #define NFC_ECC_PIPELINE	BIT(3)
+>  #define NFC_ECC_EXCEPTION	BIT(4)
+>  #define NFC_ECC_BLOCK_SIZE_MSK	BIT(5)
+> +#define NFC_ECC_BLOCK_512	BIT(5)
+>  #define NFC_RANDOM_EN		BIT(9)
+>  #define NFC_RANDOM_DIRECTION	BIT(10)
+>  #define NFC_ECC_MODE_MSK	GENMASK(15, 12)
+> @@ -817,6 +818,9 @@ static void sunxi_nfc_hw_ecc_enable(struct mtd_info *mtd)
+>  	ecc_ctl |= NFC_ECC_EN | NFC_ECC_MODE(data->mode) | NFC_ECC_EXCEPTION |
+>  		   NFC_ECC_PIPELINE;
+>  
+> +	if (nand->ecc.size == 512)
+> +		ecc_ctl |= NFC_ECC_BLOCK_512;
+> +
+>  	writel(ecc_ctl, nfc->regs + NFC_REG_ECC_CTL);
+>  }
+>  
