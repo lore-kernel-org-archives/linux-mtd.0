@@ -1,16 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxZGn-0004Vn-IM
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:50:05 +0000
+ id 1bxZGq-0004W6-Ey
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:50:10 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  dedekind1@gmail.com, adrian.hunter@intel.com, tytso@mit.edu,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 17/26] ubifs: Make r5 hash binary string aware
-Date: Fri, 21 Oct 2016 14:48:32 +0200
-Message-Id: <1477054121-10198-18-git-send-email-richard@nod.at>
+Subject: [PATCH 20/26] ubifs: Add support for encrypted symlinks
+Date: Fri, 21 Oct 2016 14:48:35 +0200
+Message-Id: <1477054121-10198-21-git-send-email-richard@nod.at>
 In-Reply-To: <1477054121-10198-1-git-send-email-richard@nod.at>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,30 +22,242 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As of now all filenames known by UBIFS are strings with a NUL
-terminator. With encrypted filenames a filename can be any binary
-string and the r5 function cannot search for the NUL terminator.
-UBIFS always knows how long a filename is, therefore we can change
-the hash function to iterate over the filename length to work
-correctly with binary strings.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/key.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ubifs/dir.c   | 81 +++++++++++++++++++++++++++++++++++++++++++++++++-------
+ fs/ubifs/file.c  | 55 +++++++++++++++++++++++++++++++++++++-
+ fs/ubifs/super.c |  1 -
+ 3 files changed, 125 insertions(+), 12 deletions(-)
 
-diff --git a/fs/ubifs/key.h b/fs/ubifs/key.h
-index c0a95e393347..ca4371fdfa7d 100644
---- a/fs/ubifs/key.h
-+++ b/fs/ubifs/key.h
-@@ -69,7 +69,7 @@ static inline uint32_t key_r5_hash(const char *s, int len)
- 	uint32_t a = 0;
- 	const signed char *str = (const signed char *)s;
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 723bae4dec30..2f33be5ca57c 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1051,10 +1051,27 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+ 	struct ubifs_info *c = dir->i_sb->s_fs_info;
+ 	int err, len = strlen(symname);
+-	int sz_change = CALC_DENT_SIZE(dentry->d_name.len);
++	int sz_change = CALC_DENT_SIZE(len);
++	struct fscrypt_str disk_link = FSTR_INIT((char *)symname, len + 1);
++	struct fscrypt_symlink_data *sd = NULL;
+ 	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+ 					.new_ino_d = ALIGN(len, 8),
+ 					.dirtied_ino = 1 };
++	struct fscrypt_name nm;
++
++	if (ubifs_crypt_is_encrypted(dir)) {
++		err = fscrypt_get_encryption_info(dir);
++		if (err)
++			goto out_budg;
++
++		if (!fscrypt_has_encryption_key(dir)) {
++			err = -EPERM;
++			goto out_budg;
++		}
++
++		disk_link.len = (fscrypt_fname_encrypted_size(dir, len) +
++				sizeof(struct fscrypt_symlink_data));
++	}
  
--	while (*str) {
-+	while (len--) {
- 		a += *str << 4;
- 		a += *str >> 4;
- 		a *= 11;
+ 	/*
+ 	 * Budget request settings: new inode, new direntry and changing parent
+@@ -1064,36 +1081,77 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
+ 		symname, dir->i_ino);
+ 
+-	if (len > UBIFS_MAX_INO_DATA)
++	if (disk_link.len > UBIFS_MAX_INO_DATA)
+ 		return -ENAMETOOLONG;
+ 
+ 	err = ubifs_budget_space(c, &req);
+ 	if (err)
+ 		return err;
+ 
++	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
++	if (err)
++		goto out_budg;
++
+ 	inode = ubifs_new_inode(c, dir, S_IFLNK | S_IRWXUGO);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+-		goto out_budg;
++		goto out_fname;
+ 	}
+ 
+ 	ui = ubifs_inode(inode);
+-	ui->data = kmalloc(len + 1, GFP_NOFS);
++	ui->data = kmalloc(disk_link.len, GFP_NOFS);
+ 	if (!ui->data) {
+ 		err = -ENOMEM;
+ 		goto out_inode;
+ 	}
+ 
+-	memcpy(ui->data, symname, len);
+-	((char *)ui->data)[len] = '\0';
+-	inode->i_link = ui->data;
++	if (ubifs_crypt_is_encrypted(dir)) {
++		struct qstr istr = QSTR_INIT(symname, len);
++		struct fscrypt_str ostr;
++
++		sd = kzalloc(disk_link.len, GFP_NOFS);
++		if (!sd) {
++			err = -ENOMEM;
++			goto out_inode;
++		}
++
++		err = fscrypt_get_encryption_info(inode);
++		if (err) {
++			kfree(sd);
++			goto out_inode;
++		}
++
++		if (!fscrypt_has_encryption_key(inode)) {
++			kfree(sd);
++			err = -EPERM;
++			goto out_inode;
++		}
++
++		ostr.name = sd->encrypted_path;
++		ostr.len = disk_link.len;
++
++		err = fscrypt_fname_usr_to_disk(inode, &istr, &ostr);
++		if (err < 0) {
++			kfree(sd);
++			goto out_inode;
++		}
++
++		sd->len = cpu_to_le16(ostr.len);
++		disk_link.name = (char *)sd;
++	} else {
++		inode->i_link = ui->data;
++	}
++
++	memcpy(ui->data, disk_link.name, disk_link.len);
++	((char *)ui->data)[disk_link.len - 1] = '\0';
++
+ 	/*
+ 	 * The terminating zero byte is not written to the flash media and it
+ 	 * is put just to make later in-memory string processing simpler. Thus,
+ 	 * data length is @len, not @len + %1.
+ 	 */
+-	ui->data_len = len;
+-	inode->i_size = ubifs_inode(inode)->ui_size = len;
++	ui->data_len = disk_link.len - 1;
++	inode->i_size = ubifs_inode(inode)->ui_size = disk_link.len - 1;
+ 
+ 	err = ubifs_init_security(dir, inode, &dentry->d_name);
+ 	if (err)
+@@ -1103,7 +1161,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	dir->i_size += sz_change;
+ 	dir_ui->ui_size = dir->i_size;
+ 	dir->i_mtime = dir->i_ctime = inode->i_ctime;
+-	err = ubifs_jnl_update(c, dir, &dentry->d_name, inode, 0, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
+ 	if (err)
+ 		goto out_cancel;
+ 	mutex_unlock(&dir_ui->ui_mutex);
+@@ -1111,6 +1169,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	ubifs_release_budget(c, &req);
+ 	insert_inode_hash(inode);
+ 	d_instantiate(dentry, inode);
++	fscrypt_free_filename(&nm);
+ 	return 0;
+ 
+ out_cancel:
+@@ -1120,6 +1179,8 @@ out_cancel:
+ out_inode:
+ 	make_bad_inode(inode);
+ 	iput(inode);
++out_fname:
++	fscrypt_free_filename(&nm);
+ out_budg:
+ 	ubifs_release_budget(c, &req);
+ 	return err;
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 60e089d50c82..ce168b3f61ca 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1679,6 +1679,59 @@ static int ubifs_file_open(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
+ 
++static const char *ubifs_get_link(struct dentry *dentry,
++					    struct inode *inode,
++					    struct delayed_call *done)
++{
++	int err;
++	struct fscrypt_symlink_data *sd;
++	struct ubifs_inode *ui = ubifs_inode(inode);
++	struct fscrypt_str cstr;
++	struct fscrypt_str pstr;
++
++	if (!dentry)
++		return ERR_PTR(-ECHILD);
++
++	if (ubifs_crypt_is_encrypted(inode)) {
++		err = fscrypt_get_encryption_info(inode);
++		if (err)
++			return ERR_PTR(err);
++	} else
++		return ui->data;
++
++
++	sd = (struct fscrypt_symlink_data *)ui->data;
++	cstr.name = sd->encrypted_path;
++	cstr.len = le16_to_cpu(sd->len);
++
++	if (cstr.len == 0)
++		return ERR_PTR(-ENOENT);
++
++	if ((cstr.len + sizeof(struct fscrypt_symlink_data) - 1) > ui->data_len)
++		return ERR_PTR(-EIO);
++
++	err = fscrypt_fname_alloc_buffer(inode, cstr.len, &pstr);
++	if (err)
++		return ERR_PTR(err);
++
++	err = fscrypt_fname_disk_to_usr(inode, 0, 0, &cstr, &pstr);
++	if (err < 0) {
++		fscrypt_fname_free_buffer(&pstr);
++		return ERR_PTR(err);
++	}
++
++	pstr.name[err] = '\0';
++
++	if (pstr.name[0] == '\0') {
++		fscrypt_fname_free_buffer(&pstr);
++		return ERR_PTR(-ENOENT);
++	}
++
++	set_delayed_call(done, kfree_link, pstr.name);
++	return pstr.name;
++}
++
++
+ const struct address_space_operations ubifs_file_address_operations = {
+ 	.readpage       = ubifs_readpage,
+ 	.writepage      = ubifs_writepage,
+@@ -1706,7 +1759,7 @@ const struct inode_operations ubifs_file_inode_operations = {
+ 
+ const struct inode_operations ubifs_symlink_inode_operations = {
+ 	.readlink    = generic_readlink,
+-	.get_link    = simple_get_link,
++	.get_link    = ubifs_get_link,
+ 	.setattr     = ubifs_setattr,
+ 	.getattr     = ubifs_getattr,
+ 	.setxattr    = generic_setxattr,
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index ae25c908fbe5..e08aa04fc835 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -198,7 +198,6 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
+ 		}
+ 		memcpy(ui->data, ino->data, ui->data_len);
+ 		((char *)ui->data)[ui->data_len] = '\0';
+-		inode->i_link = ui->data;
+ 		break;
+ 	case S_IFBLK:
+ 	case S_IFCHR:
 -- 
 2.7.3
