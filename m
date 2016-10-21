@@ -1,22 +1,25 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxbTW-0002LU-Hh
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 15:11:16 +0000
-Subject: Re: [PATCH 02/26] fscrypto: Constify struct inode pointer
-To: Theodore Ts'o <tytso@mit.edu>, linux-mtd@lists.infradead.org,
+ id 1bxbYF-0006Cs-Rt
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 15:16:09 +0000
+Date: Fri, 21 Oct 2016 11:14:45 -0400
+From: Theodore Ts'o <tytso@mit.edu>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  dedekind1@gmail.com, adrian.hunter@intel.com, jaegeuk@kernel.org,
  david@sigma-star.at, wd@denx.de, sbabic@denx.de, dengler@linutronix.de
+Subject: Re: [PATCH 01/26] fscrypto: Add buffer operations
+Message-ID: <20161021151445.xcqzggh27nzdqmuh@thunk.org>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
- <1477054121-10198-3-git-send-email-richard@nod.at>
- <20161021145720.raaeyivtonf2ynmb@thunk.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <99679ee6-ccda-0c58-3278-14fb8cb8534c@nod.at>
-Date: Fri, 21 Oct 2016 17:10:48 +0200
+ <1477054121-10198-2-git-send-email-richard@nod.at>
+ <20161021130558.GA2411@infradead.org>
+ <9c80d1d0-0237-606f-91ce-a004c3694aa5@nod.at>
+ <20161021132400.GA28880@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20161021145720.raaeyivtonf2ynmb@thunk.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20161021132400.GA28880@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ted,
-
-On 21.10.2016 16:57, Theodore Ts'o wrote:
-> On Fri, Oct 21, 2016 at 02:48:17PM +0200, Richard Weinberger wrote:
->> Some filesystems, such as UBIFS, maintain a const pointer
->> for struct inode.
->>
->>  /* fname.c */
->> -extern int fscrypt_setup_filename(struct inode *, const struct qstr *,
->> -				int lookup, struct fscrypt_name *);
->> +extern int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
->> +			   int lookup, struct fscrypt_name *fname);
+On Fri, Oct 21, 2016 at 06:24:00AM -0700, Christoph Hellwig wrote:
+> > Another reason why I did the buffer functions is because fscrypt_encrypt_page()
+> > always allocates a bounce page as temporary memory. For ext4 this is needed,
+> > for UBIFS not.
+> > UBIFS has already a construction buffer, especially since it also does compression.
 > 
-> Was it deliberate that you didn't add a const pointer here?
+> We should defintively find a way to avoid that, but it's a separate
+> issue from adding another API just to pass buffers.
 
-Erm, no. Either I forgot or while rebasing my mess to something
-sane the change got lost.
+Hmm, one approach we could use is to avoid allocating a bounce page if
+the passed-in plaintext_page has the PageSlab flag set.  That would
+work for ubifs, but if there are file systems that are using
+get_free_page() for their particular construction buffer. it wouldn't
+work for them.
 
-> I take it that ubifs is basically using const in certain places to
-> essentially promise that those functions don't actually modify the
-> inode structure?
+Perhaps more importantly, are you planning on making compression +
+encryption work?  Some security purists will say that compression +
+encryption will leak some information about the plaintext (which is
+technically true, but it's much like the people who don't want make it
+easy to discard + encrypt, which Linus recently railed against).  So
+my take is that as long as users understand that there are minor
+leakage issues with compression + encryption, we should let them do
+that --- and that would be an argument for supporting buffer
+operations, and only requiring that the buffer size must be a multiple
+of the underlying encryption block size.
 
-Yes.
-
-Thanks,
-//richard
+						- Ted
