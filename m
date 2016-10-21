@@ -1,17 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxZH7-0004js-OO
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:50:19 +0000
+ id 1bxZH7-0004le-Oc
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:50:21 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  dedekind1@gmail.com, adrian.hunter@intel.com, tytso@mit.edu,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 18/26] ubifs: Constify struct inode pointer in
- ubifs_crypt_is_encrypted()
-Date: Fri, 21 Oct 2016 14:48:33 +0200
-Message-Id: <1477054121-10198-19-git-send-email-richard@nod.at>
+Subject: [PATCH 21/26] ubifs: Rename tnc_read_node_nm
+Date: Fri, 21 Oct 2016 14:48:36 +0200
+Message-Id: <1477054121-10198-22-git-send-email-richard@nod.at>
 In-Reply-To: <1477054121-10198-1-git-send-email-richard@nod.at>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,50 +22,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-...and provide a non const variant for fscrypto
+tnc_read_hashed_node() is a better name since we read a node
+by a given hash, not a name.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/crypto.c | 2 +-
- fs/ubifs/ubifs.h  | 7 ++++++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ fs/ubifs/tnc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
-index 160c31479e0c..d19a097435f0 100644
---- a/fs/ubifs/crypto.c
-+++ b/fs/ubifs/crypto.c
-@@ -38,7 +38,7 @@ static int ubifs_key_prefix(struct inode *inode, u8 **key)
- struct fscrypt_operations ubifs_crypt_operations = {
- 	.get_context		= ubifs_crypt_get_context,
- 	.set_context		= ubifs_crypt_set_context,
--	.is_encrypted		= ubifs_crypt_is_encrypted,
-+	.is_encrypted		= __ubifs_crypt_is_encrypted,
- 	.empty_dir		= ubifs_crypt_empty_dir,
- 	.max_namelen		= ubifs_crypt_max_namelen,
- 	.key_prefix		= ubifs_key_prefix,
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 6c56a08afcd7..456f22aed35c 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1816,13 +1816,18 @@ extern struct fscrypt_operations ubifs_crypt_operations;
- #define fscrypt_fname_usr_to_disk       fscrypt_notsupp_fname_usr_to_disk
- #endif
- 
--static inline bool ubifs_crypt_is_encrypted(struct inode *inode)
-+static inline bool __ubifs_crypt_is_encrypted(struct inode *inode)
- {
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 
- 	return ui->flags & UBIFS_CRYPT_FL;
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index 0d0030461cb4..0d751297873e 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -378,7 +378,7 @@ static void lnc_free(struct ubifs_zbranch *zbr)
  }
  
-+static inline bool ubifs_crypt_is_encrypted(const struct inode *inode)
-+{
-+	return __ubifs_crypt_is_encrypted((struct inode *)inode);
-+}
-+
- /* Normal UBIFS messages */
- __printf(2, 3)
- void ubifs_msg(const struct ubifs_info *c, const char *fmt, ...);
+ /**
+- * tnc_read_node_nm - read a "hashed" leaf node.
++ * tnc_read_hashed_node - read a "hashed" leaf node.
+  * @c: UBIFS file-system description object
+  * @zbr: key and position of the node
+  * @node: node is returned here
+@@ -388,8 +388,8 @@ static void lnc_free(struct ubifs_zbranch *zbr)
+  * added to LNC. Returns zero in case of success or a negative negative error
+  * code in case of failure.
+  */
+-static int tnc_read_node_nm(struct ubifs_info *c, struct ubifs_zbranch *zbr,
+-			    void *node)
++static int tnc_read_hashed_node(struct ubifs_info *c, struct ubifs_zbranch *zbr,
++				void *node)
+ {
+ 	int err;
+ 
+@@ -1454,7 +1454,7 @@ again:
+ 		 * In this case the leaf node cache gets used, so we pass the
+ 		 * address of the zbranch and keep the mutex locked
+ 		 */
+-		err = tnc_read_node_nm(c, zt, node);
++		err = tnc_read_hashed_node(c, zt, node);
+ 		goto out;
+ 	}
+ 	if (safely) {
+@@ -1817,7 +1817,7 @@ static int do_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
+ 		goto out_unlock;
+ 	}
+ 
+-	err = tnc_read_node_nm(c, &znode->zbranch[n], node);
++	err = tnc_read_hashed_node(c, &znode->zbranch[n], node);
+ 
+ out_unlock:
+ 	mutex_unlock(&c->tnc_mutex);
+@@ -2815,7 +2815,7 @@ struct ubifs_dent_node *ubifs_tnc_next_ent(struct ubifs_info *c,
+ 		goto out_free;
+ 	}
+ 
+-	err = tnc_read_node_nm(c, zbr, dent);
++	err = tnc_read_hashed_node(c, zbr, dent);
+ 	if (unlikely(err))
+ 		goto out_free;
+ 
 -- 
 2.7.3
