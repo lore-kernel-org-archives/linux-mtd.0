@@ -1,6 +1,6 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxZGO-0004HV-1z
+ id 1bxZGO-0004II-1x
  for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:49:36 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
@@ -8,9 +8,9 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  dedekind1@gmail.com, adrian.hunter@intel.com, tytso@mit.edu,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 01/26] fscrypto: Add buffer operations
-Date: Fri, 21 Oct 2016 14:48:16 +0200
-Message-Id: <1477054121-10198-2-git-send-email-richard@nod.at>
+Subject: [PATCH 04/26] ubifs: Export xattr get and set functions
+Date: Fri, 21 Oct 2016 14:48:19 +0200
+Message-Id: <1477054121-10198-5-git-send-email-richard@nod.at>
 In-Reply-To: <1477054121-10198-1-git-send-email-richard@nod.at>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,157 +22,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Not all filesystems operate on pages, therefore offer
-operations to en/decrypt buffers.
-Of course these buffers have to be allocated in a way such that
-the kernel crypto framework can work with them.
+For fscrypto we need this function outside of xattr.c.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/crypto/crypto.c       | 63 +++++++++++++++++++++++++++++++++++++++---------
- include/linux/fscrypto.h | 24 ++++++++++++++++++
- 2 files changed, 76 insertions(+), 11 deletions(-)
+ fs/ubifs/ubifs.h |  4 ++++
+ fs/ubifs/xattr.c | 35 ++++++++++++++++++-----------------
+ 2 files changed, 22 insertions(+), 17 deletions(-)
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index c502c116924c..1c2f9516b4be 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -147,15 +147,14 @@ typedef enum {
- 	FS_ENCRYPT,
- } fscrypt_direction_t;
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index f7d649eb61d5..94c1f5563c01 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1738,6 +1738,10 @@ extern const struct xattr_handler *ubifs_xattr_handlers[];
+ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size);
+ int ubifs_init_security(struct inode *dentry, struct inode *inode,
+ 			const struct qstr *qstr);
++int ubifs_xattr_set(struct inode *host, const char *name, const void *value,
++		    size_t size, int flags);
++ssize_t ubifs_xattr_get(struct inode *host, const char *name, void *buf,
++			size_t size);
  
--static int do_page_crypto(struct inode *inode,
--			fscrypt_direction_t rw, pgoff_t index,
--			struct page *src_page, struct page *dest_page,
--			gfp_t gfp_flags)
-+static int do_crypto(struct inode *inode,
-+		     fscrypt_direction_t rw, pgoff_t index,
-+		     struct scatterlist *src, struct scatterlist *dst,
-+		     unsigned int cryptlen, gfp_t gfp_flags)
+ /* super.c */
+ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index 11a004114eba..ad4463752709 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -266,8 +266,8 @@ static struct inode *iget_xattr(struct ubifs_info *c, ino_t inum)
+ 	return ERR_PTR(-EINVAL);
+ }
+ 
+-static int __ubifs_setxattr(struct inode *host, const char *name,
+-			    const void *value, size_t size, int flags)
++int ubifs_xattr_set(struct inode *host, const char *name, const void *value,
++		    size_t size, int flags)
  {
- 	u8 xts_tweak[FS_XTS_TWEAK_SIZE];
- 	struct skcipher_request *req = NULL;
- 	DECLARE_FS_COMPLETION_RESULT(ecr);
--	struct scatterlist dst, src;
- 	struct fscrypt_info *ci = inode->i_crypt_info;
- 	struct crypto_skcipher *tfm = ci->ci_ctfm;
- 	int res = 0;
-@@ -177,12 +176,8 @@ static int do_page_crypto(struct inode *inode,
- 	memset(&xts_tweak[sizeof(index)], 0,
- 			FS_XTS_TWEAK_SIZE - sizeof(index));
+ 	struct inode *inode;
+ 	struct ubifs_info *c = host->i_sb->s_fs_info;
+@@ -326,8 +326,8 @@ out_free:
+ 	return err;
+ }
  
--	sg_init_table(&dst, 1);
--	sg_set_page(&dst, dest_page, PAGE_SIZE, 0);
--	sg_init_table(&src, 1);
--	sg_set_page(&src, src_page, PAGE_SIZE, 0);
--	skcipher_request_set_crypt(req, &src, &dst, PAGE_SIZE,
--					xts_tweak);
-+	skcipher_request_set_crypt(req, src, dst, cryptlen,
-+				   xts_tweak);
- 	if (rw == FS_DECRYPT)
- 		res = crypto_skcipher_decrypt(req);
+-static ssize_t __ubifs_getxattr(struct inode *host, const char *name,
+-				void *buf, size_t size)
++ssize_t ubifs_xattr_get(struct inode *host, const char *name, void *buf,
++			size_t size)
+ {
+ 	struct inode *inode;
+ 	struct ubifs_info *c = host->i_sb->s_fs_info;
+@@ -482,7 +482,7 @@ out_cancel:
+ 	return err;
+ }
+ 
+-static int __ubifs_removexattr(struct inode *host, const char *name)
++static int ubifs_xattr_remove(struct inode *host, const char *name)
+ {
+ 	struct inode *inode;
+ 	struct ubifs_info *c = host->i_sb->s_fs_info;
+@@ -544,7 +544,8 @@ static int init_xattrs(struct inode *inode, const struct xattr *xattr_array,
+ 		}
+ 		strcpy(name, XATTR_SECURITY_PREFIX);
+ 		strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
+-		err = __ubifs_setxattr(inode, name, xattr->value, xattr->value_len, 0);
++		err = ubifs_xattr_set(inode, name, xattr->value,
++				      xattr->value_len, 0);
+ 		kfree(name);
+ 		if (err < 0)
+ 			break;
+@@ -568,7 +569,7 @@ int ubifs_init_security(struct inode *dentry, struct inode *inode,
+ 	return err;
+ }
+ 
+-static int ubifs_xattr_get(const struct xattr_handler *handler,
++static int xattr_get(const struct xattr_handler *handler,
+ 			   struct dentry *dentry, struct inode *inode,
+ 			   const char *name, void *buffer, size_t size)
+ {
+@@ -576,10 +577,10 @@ static int ubifs_xattr_get(const struct xattr_handler *handler,
+ 		inode->i_ino, dentry, size);
+ 
+ 	name = xattr_full_name(handler, name);
+-	return __ubifs_getxattr(inode, name, buffer, size);
++	return ubifs_xattr_get(inode, name, buffer, size);
+ }
+ 
+-static int ubifs_xattr_set(const struct xattr_handler *handler,
++static int xattr_set(const struct xattr_handler *handler,
+ 			   struct dentry *dentry, struct inode *inode,
+ 			   const char *name, const void *value,
+ 			   size_t size, int flags)
+@@ -590,27 +591,27 @@ static int ubifs_xattr_set(const struct xattr_handler *handler,
+ 	name = xattr_full_name(handler, name);
+ 
+ 	if (value)
+-		return __ubifs_setxattr(inode, name, value, size, flags);
++		return ubifs_xattr_set(inode, name, value, size, flags);
  	else
-@@ -202,6 +197,34 @@ static int do_page_crypto(struct inode *inode,
- 	return 0;
+-		return __ubifs_removexattr(inode, name);
++		return ubifs_xattr_remove(inode, name);
  }
  
-+static int do_page_crypto(struct inode *inode,
-+			  fscrypt_direction_t rw, pgoff_t index,
-+			  struct page *src_page, struct page *dst_page,
-+			  gfp_t gfp_flags)
-+{
-+	struct scatterlist src, dst;
-+
-+	sg_init_table(&src, 1);
-+	sg_set_page(&src, src_page, PAGE_SIZE, 0);
-+	sg_init_table(&dst, 1);
-+	sg_set_page(&dst, dst_page, PAGE_SIZE, 0);
-+
-+	return do_crypto(inode, rw, index, &src, &dst, PAGE_SIZE, gfp_flags);
-+}
-+
-+static int do_buf_crypto(struct inode *inode,
-+			 fscrypt_direction_t rw, pgoff_t index,
-+			 const void *src_buf, const void *dst_buf,
-+			 unsigned int buflen, gfp_t gfp_flags)
-+{
-+	struct scatterlist src, dst;
-+
-+	sg_init_one(&src, src_buf, buflen);
-+	sg_init_one(&dst, dst_buf, buflen);
-+
-+	return do_crypto(inode, rw, index, &src, &dst, buflen, gfp_flags);
-+}
-+
- static struct page *alloc_bounce_page(struct fscrypt_ctx *ctx, gfp_t gfp_flags)
- {
- 	ctx->w.bounce_page = mempool_alloc(fscrypt_bounce_page_pool, gfp_flags);
-@@ -264,6 +287,24 @@ errout:
- }
- EXPORT_SYMBOL(fscrypt_encrypt_page);
+ static const struct xattr_handler ubifs_user_xattr_handler = {
+ 	.prefix = XATTR_USER_PREFIX,
+-	.get = ubifs_xattr_get,
+-	.set = ubifs_xattr_set,
++	.get = xattr_get,
++	.set = xattr_set,
+ };
  
-+int fscrypt_encrypt_buffer(struct inode *inode, const void *plaintext_buf,
-+			   const void *ciphertext_buf, unsigned int buflen,
-+			   pgoff_t index, gfp_t gfp_flags)
-+{
-+	return do_buf_crypto(inode, FS_ENCRYPT, index, plaintext_buf,
-+			     ciphertext_buf, buflen, gfp_flags);
-+}
-+EXPORT_SYMBOL(fscrypt_encrypt_buffer);
-+
-+int fscrypt_decrypt_buffer(struct inode *inode, const void *ciphertext_buf,
-+			   const void *plaintext_buf, unsigned int buflen,
-+			   pgoff_t index, gfp_t gfp_flags)
-+{
-+	return do_buf_crypto(inode, FS_DECRYPT, index, ciphertext_buf,
-+			     plaintext_buf, buflen, gfp_flags);
-+}
-+EXPORT_SYMBOL(fscrypt_decrypt_buffer);
-+
- /**
-  * f2crypt_decrypt_page() - Decrypts a page in-place
-  * @page: The page to decrypt. Must be locked.
-diff --git a/include/linux/fscrypto.h b/include/linux/fscrypto.h
-index 76cff18bb032..a9628b4882e7 100644
---- a/include/linux/fscrypto.h
-+++ b/include/linux/fscrypto.h
-@@ -273,6 +273,12 @@ extern void fscrypt_pullback_bio_page(struct page **, bool);
- extern void fscrypt_restore_control_page(struct page *);
- extern int fscrypt_zeroout_range(struct inode *, pgoff_t, sector_t,
- 						unsigned int);
-+int fscrypt_encrypt_buffer(struct inode *inode, const void *plaintext_buf,
-+			   const void *ciphertext_buf, unsigned int buflen,
-+			   pgoff_t index, gfp_t gfp_flags);
-+int fscrypt_decrypt_buffer(struct inode *inode, const void *ciphertext_buf,
-+			   const void *plaintext_buf, unsigned int buflen,
-+			   pgoff_t index, gfp_t gfp_flags);
- /* policy.c */
- extern int fscrypt_process_policy(struct file *, const struct fscrypt_policy *);
- extern int fscrypt_get_policy(struct inode *, struct fscrypt_policy *);
-@@ -418,6 +424,24 @@ static inline void fscrypt_notsupp_fname_free_buffer(struct fscrypt_str *c)
- 	return;
- }
+ static const struct xattr_handler ubifs_trusted_xattr_handler = {
+ 	.prefix = XATTR_TRUSTED_PREFIX,
+-	.get = ubifs_xattr_get,
+-	.set = ubifs_xattr_set,
++	.get = xattr_get,
++	.set = xattr_set,
+ };
  
-+static inline int fscrypt_notsupp_encrypt_buffer(const struct inode *inode,
-+						 const void *plaintext_buf,
-+						 const void *ciphertext_buf,
-+						 unsigned int buflen,
-+						 pgoff_t index, gfp_t gfp_flags)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int fscrypt_notsupp_decrypt_buffer(const struct inode *inode,
-+						 const void *ciphertext_buf,
-+						 const void *plaintext_buf,
-+						 unsigned int buflen,
-+						 pgoff_t index, gfp_t gfp_flags)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline int fscrypt_notsupp_fname_disk_to_usr(struct inode *inode,
- 			u32 hash, u32 minor_hash,
- 			const struct fscrypt_str *iname,
+ static const struct xattr_handler ubifs_security_xattr_handler = {
+ 	.prefix = XATTR_SECURITY_PREFIX,
+-	.get = ubifs_xattr_get,
+-	.set = ubifs_xattr_set,
++	.get = xattr_get,
++	.set = xattr_set,
+ };
+ 
+ const struct xattr_handler *ubifs_xattr_handlers[] = {
 -- 
 2.7.3
