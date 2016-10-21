@@ -1,19 +1,20 @@
-Date: Fri, 21 Oct 2016 19:55:18 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Mylene Josserand
- <mylene.josserand@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH 2/8] mtd: nand: add support for the TC58NVG2S0H chip
-Message-ID: <20161021195518.020a3c19@bbrezillon>
-In-Reply-To: <62d5d978da8c6bc6b47c340c86e9a5fe5f6971ef.1476951078.git-series.maxime.ripard@free-electrons.com>
-References: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
- <62d5d978da8c6bc6b47c340c86e9a5fe5f6971ef.1476951078.git-series.maxime.ripard@free-electrons.com>
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bxe0H-0002wf-Cb
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 17:53:13 +0000
+Received: by mail-wm0-x244.google.com with SMTP id d128so581922wmf.0
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2016 10:52:52 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: Add possibility to disable chip erase
+To: marcin.krzeminski@nokia.com, linux-mtd@lists.infradead.org
+References: <1477054546-2548-1-git-send-email-marcin.krzeminski@nokia.com>
+Cc: computersforpeace@gmail.com, cyrille.pitchen@atmel.com,
+ rfsw-patches@mlist.nokia.com, dwmw2@infradead.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <3b23706b-bf46-8d3b-e9b0-01194eec5e11@gmail.com>
+Date: Fri, 21 Oct 2016 19:52:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1477054546-2548-1-git-send-email-marcin.krzeminski@nokia.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,34 +25,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Oct 2016 10:12:43 +0200
-Maxime Ripard <maxime.ripard@free-electrons.com> wrote:
-
-> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+On 10/21/2016 02:55 PM, marcin.krzeminski@nokia.com wrote:
+> From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 > 
-> Add the description of the Toshiba TC58NVG2S0H SLC nand to the nand_ids
-> table so we can use the NAND ECC infos and the ONFI timings.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> n25q00 does not support chip erase command (0xC7),
+> but spi-nor framework still send if if user want to erase
+> whole flash. This patch adds option to disable chip erase
+> command and enable in on n25q00.
 
-Applied.
+That's true and it's a pretty nasty issue.
+Can you instead implement logic to send multiple die-erase commands ?
+They do make erasing faster afterall.
 
+> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 > ---
->  drivers/mtd/nand/nand_ids.c | 3 +++
->  1 file changed, 3 insertions(+), 0 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
+>  include/linux/mtd/spi-nor.h   | 1 +
+>  2 files changed, 7 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-> index 2af9869a115e..b3a332f37e14 100644
-> --- a/drivers/mtd/nand/nand_ids.c
-> +++ b/drivers/mtd/nand/nand_ids.c
-> @@ -36,6 +36,9 @@ struct nand_flash_dev nand_flash_ids[] = {
->  	{"TC58NVG2S0F 4G 3.3V 8-bit",
->  		{ .id = {0x98, 0xdc, 0x90, 0x26, 0x76, 0x15, 0x01, 0x08} },
->  		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224, NAND_ECC_INFO(4, SZ_512) },
-> +	{"TC58NVG2S0H 4G 3.3V 8-bit",
-> +		{ .id = {0x98, 0xdc, 0x90, 0x26, 0x76, 0x16, 0x08, 0x00} },
-> +		  SZ_4K, SZ_512, SZ_256K, 0, 8, 256, NAND_ECC_INFO(8, SZ_512) },
->  	{"TC58NVG3S0F 8G 3.3V 8-bit",
->  		{ .id = {0x98, 0xd3, 0x90, 0x26, 0x76, 0x15, 0x02, 0x08} },
->  		  SZ_4K, SZ_1K, SZ_256K, 0, 8, 232, NAND_ECC_INFO(4, SZ_512) },
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d0fc165..8338be1 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -75,6 +75,7 @@ struct flash_info {
+>  					 * bit. Must be used with
+>  					 * SPI_NOR_HAS_LOCK.
+>  					 */
+> +#define DISABLE_CE			BIT(10)	/*Some multi-die flash does not support CE */
+>  };
+>  
+>  #define JEDEC_MFR(info)	((info)->id[0])
+> @@ -368,7 +369,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  		return ret;
+>  
+>  	/* whole-chip erase? */
+> -	if (len == mtd->size) {
+> +	if (len == mtd->size && !(nor->flags & SNOR_F_DISABLE_CE)) {
+>  		unsigned long timeout;
+>  
+>  		write_enable(nor);
+> @@ -886,8 +887,8 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+> -	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+> -	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+> +	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DISABLE_CE) },
+> +	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DISABLE_CE) },
+>  
+>  	/* PMC */
+>  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+> @@ -1395,6 +1396,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  		nor->flags |= SNOR_F_USE_FSR;
+>  	if (info->flags & SPI_NOR_HAS_TB)
+>  		nor->flags |= SNOR_F_HAS_SR_TB;
+> +	if (info->flags & DISABLE_CE)
+> +		nor->flags |= SNOR_F_DISABLE_CE;
+>  
+>  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
+>  	/* prefer "small sector" erase if possible */
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index c425c7b..2d0b967 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -119,6 +119,7 @@ enum spi_nor_ops {
+>  enum spi_nor_option_flags {
+>  	SNOR_F_USE_FSR		= BIT(0),
+>  	SNOR_F_HAS_SR_TB	= BIT(1),
+> +	SNOR_F_DISABLE_CE	= BIT(2),
+>  };
+>  
+>  /**
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
