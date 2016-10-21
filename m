@@ -1,27 +1,25 @@
-Received: from mail-pf0-x230.google.com ([2607:f8b0:400e:c00::230])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxeQj-0003On-K9
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 18:20:34 +0000
-Received: by mail-pf0-x230.google.com with SMTP id r16so60844052pfg.1
- for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2016 11:19:34 -0700 (PDT)
-Date: Fri, 21 Oct 2016 11:19:31 -0700
-From: Eric Biggers <ebiggers@google.com>
-To: Theodore Ts'o <tytso@mit.edu>, Michael Halcrow <mhalcrow@google.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- dedekind1@gmail.com, adrian.hunter@intel.com, jaegeuk@kernel.org,
- david@sigma-star.at, wd@denx.de, sbabic@denx.de,
- dengler@linutronix.de, alexcope@google.com
-Subject: Re: [PATCH 26/26] ubifs: Raise write version to 5
-Message-ID: <20161021181931.GA90712@google.com>
+ id 1bxeSV-0005EG-Dt
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 18:22:24 +0000
+Subject: Re: [PATCH 15/26] ubifs: Implement encrypt/decrypt for all IO
+To: Michael Halcrow <mhalcrow@google.com>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
- <1477054121-10198-27-git-send-email-richard@nod.at>
- <20161021173154.GB17121@google.com>
- <20161021174758.wz7xrulokicuhlht@thunk.org>
+ <1477054121-10198-16-git-send-email-richard@nod.at>
+ <20161021171439.GA17121@google.com>
+ <78f09113-fcc3-c2d2-9849-ba980cd9c0b4@nod.at>
+ <20161021175202.GA20642@google.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, dedekind1@gmail.com, adrian.hunter@intel.com,
+ tytso@mit.edu, jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de,
+ sbabic@denx.de, dengler@linutronix.de
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <ccfd1997-8010-3e0f-36ab-e5e360e50564@nod.at>
+Date: Fri, 21 Oct 2016 20:21:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161021174758.wz7xrulokicuhlht@thunk.org>
+In-Reply-To: <20161021175202.GA20642@google.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,37 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 21, 2016 at 01:47:59PM -0400, Theodore Ts'o wrote:
-> On Fri, Oct 21, 2016 at 10:31:54AM -0700, Michael Halcrow wrote:
-> > > diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-> > > index bdc7935a5e41..e8c23c9d4f4a 100644
-> > > --- a/fs/ubifs/ubifs-media.h
-> > > +++ b/fs/ubifs/ubifs-media.h
-> > > @@ -46,7 +46,7 @@
-> > >   * UBIFS went into mainline kernel with format version 4. The older formats
-> > >   * were development formats.
-> > >   */
-> > > -#define UBIFS_FORMAT_VERSION 4
-> > > +#define UBIFS_FORMAT_VERSION 5
-> > 
-> > Alex Cope is working on a fix for file name encryption in ext4 so that
-> > common plaintext prefixes don't result in common ciphertext prefixes.
-> > Older kernels will not be able to read the new file names.
+On 21.10.2016 19:52, Michael Halcrow wrote:
+> On Fri, Oct 21, 2016 at 07:21:04PM +0200, Richard Weinberger wrote:
+>> On 21.10.2016 19:14, Michael Halcrow wrote:
+>>> Compress-before-encrypt is a hazard.
+>>>
+>>> http://www.iacr.org/cryptodb/archive/2002/FSE/3091/3091.pdf
+>>
+>> I'm fully aware of that. But as usual it depends on the use case.
+>> Compression is optional in UBIFS, paranoid users can disable it
+>> when encryption is enabled.
 > 
-> To be clear, this will be done in the context of a new encryption
-> mode.  In terms of how Ubifs will handle things, that's going to
-> depend on whether ubifs uses a single major version number or whether
-> they have a feature bitmask like other filesystems, including ext4.
+> It's not the paranoid users I'm concerned about.  It's those building
+> systems with complexity and nuance on top of UBIFS who aren't paranoid
+> enough.
 > 
+> I suggest disabling compression by default when encryption is enabled,
+> unless the user explicitly enables both.
 
-I don't think it's reasonable to require require changes to filesystems whenever
-someone introduces a new encryption mode --- contents, filenames, or both.
-Filesystems need to be able to handle unsupported encryption modes in some way
-that makes sense.  Currently, when it sees an unsupported encryption mode
-fscrypto will behave as if the encryption key is not available and will also
-print a one-time warning to the kernel log.  This happens when a file is
-accessed, not when the filesystem is mounted.  As far as I can tell, ext4, f2fs,
-and ubifs would all behave this way because this code is shared.  I think this
-is probably the most realistic behavior.
+That's definitely an option, yes.
 
-Eric
+Thanks,
+//richard
