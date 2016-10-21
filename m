@@ -1,22 +1,25 @@
-Received: from mo69.mail-out.ovh.net ([178.32.228.69])
+Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxXxL-0000kX-Ky
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 11:25:54 +0000
-Received: from player798.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo69.mail-out.ovh.net (Postfix) with ESMTP id CDEA980FA
- for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2016 13:25:24 +0200 (CEST)
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Subject: Re: [PATCH] mtd/spi-nor: Add SPI memory controllers for Aspeed SoCs
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-References: <1476723427-13243-1-git-send-email-clg@kaod.org>
- <6964c1fd-3ac1-a28f-7b73-8113f0837e75@atmel.com>
- <f5074ac1-e536-5817-377a-e39514c8ca97@kaod.org>
- <420eece6-277d-6c8f-70ed-ba2a1c42d5d5@atmel.com>
-Message-ID: <6d956d82-5966-c760-9332-7f9889ac17ff@kaod.org>
-Date: Fri, 21 Oct 2016 13:25:21 +0200
+ id 1bxYS8-0002RI-L3
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 11:57:38 +0000
+Subject: Re: UBIFS with dma on 4.6 kernel is not working
+To: Richard Weinberger <richard@nod.at>, Naga Sureshkumar Relli
+ <naga.sureshkumar.relli@xilinx.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "michal.simek@xilinx.com" <michal.simek@xilinx.com>, "Punnaiah Choudary
+ Kalluri" <punnaia@xilinx.com>
+References: <DA6901612C71B84D91459DE817C418AE26DF0F2B@XAP-PVEXMBX01.xlnx.xilinx.com>
+ <519a83bf-1244-5151-b873-bb8e1f2db3c6@nod.at>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <9a25ff8c-d988-4954-0141-eea08a01258e@atmel.com>
+Date: Fri, 21 Oct 2016 13:57:12 +0200
 MIME-Version: 1.0
-In-Reply-To: <420eece6-277d-6c8f-70ed-ba2a1c42d5d5@atmel.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <519a83bf-1244-5151-b873-bb8e1f2db3c6@nod.at>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,236 +30,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Cyrille,
+Hi all,
 
-On 10/20/2016 04:33 PM, Cyrille Pitchen wrote:
-> Hi Cédric,
+Le 21/10/2016 à 11:29, Richard Weinberger a écrit :
+> Hi!
 > 
-> Le 20/10/2016 à 11:17, Cédric Le Goater a écrit :
->> Hello Cyrille,
+> On 21.10.2016 11:21, Naga Sureshkumar Relli wrote:
+>> Hi,
 >>
->> Thanks for taking a look, some answers and more questions below.
+>> This is regarding UBIFS on 4.6 kernel.
+>> We have tested UBIFS on our ZynqMP SOC QSPI Controller, the UBIFS is not working with dma on this kernel.
+>> Controller driver: https://github.com/torvalds/linux/commits/master/drivers/spi/spi-zynqmp-gqspi.c
+>> If I replace all vmalloc allocations in fs/ubifs/ to kmalloc then UBIFS with dma is working fine.
+> 
+> No, it will sooner or later OOM. Both UBI and UBIFS need rather large buffers, that's why we have to use
+> vmalloc().
+> 
+>> But whereas kernel before 4.6 without changing vmalloc to kmalloc, UBIFS is working fine with dma.
+>> So is there any change in UBIFS in 4.6 kernel that to dma related?
+> 
+> I'm not aware of such one.
+> Do you see this with vanilla kernels? Maybe some other internal stuff has changed.
+> git bisect can help.
+> 
+> DMA to vmalloced memory not good, it may work by chance if you transfer less than PAGE_SIZE.
+> Especially on ARM.
+> 
+
+Indeed we have the very same issue with Atmel SPI (not QSPI) controller driver
+(drivers/spi/spi-atmel.c). Both the Atmel and Zynq drivers call dma_map_single()
+on an address pointing inside the rx_buf or tx_buf members of the struct
+spi_transfer.
+
+dma_map_single() can only map *physically* contiguous memory pages. Memory
+returned by kmalloc() is guaranteed to be physically contiguous so that's why
+it worked when the memory was allocated with kmalloc() but since the memory
+is allocated with vmalloc(), crashes have occurred: with vmalloc() there is no
+guarantee that memory pages are physically contiguous.
+
+I've have started to fix the Atmel SPI controller driver to get rid of the
+dma_map_single() calls. To avoid the use a bounce buffer and the resulting
+performance drop, I've tried to rely on the spi_map_msg() function from the SPI
+framework. I've just implemented the master->can_dma() handler. Then the SPI
+framework calls spi_map_msg() just before master->transfer_one() in
+__spi_pump_messages(). spi_map_msg() calls __spi_map_msg(), which in turn calls
+master->can_dma() and eventually spi_map_buf() to build a scatter-gather list
+in xfer->tx_sg or xfer->rx_sg and map it with dma_map_sg().
+
+For the few tests I ran till now, it works with a sama5d2. However I warn you
+that there is a theoretical risk/limitation mapping vmalloc'ed memory for DMA
+purpose. I've read that the DMA API doesn't handle cache aliases for memory
+areas other than the DMA capable areas. vmalloc'ed memory falls into one
+of those non DMA capable areas.
+Hence, depending on the cache model (PIPT, VIPT or VIVT) you might expect cache
+coherency issues if the same physical memory page is mapped to two or more
+different virtual memory addresses. It is safe with a Physically Indexed
+Physically Tagged cache model but unsafe with Virtually Indexed cache models.
+As the name says, the cache line is indexed by the virtual address, so even
+if the physical page is the same, each virtual address may have its own
+cache line. Then when you call dma_map_sg() on the first virtual address, the
+function is likely not to be aware of the second virtual address so would
+not clean/invalidate the cache line associated with this second virtual
+address.
+
+This is theoretical, honestly I don't know whether there is a good reason to map
+the same physical page twice in the virtual memory...
+Anyway I'm not an expert in DMA and cache aliases so if anyone has a real
+knowledge of the actual issues we may face using spi_map_msg(), it would be
+nice to share with us! :)
+
+Best regards,
+
+Cyrille
+
+>> May I know some info regarding this?
+>> Why UBIFS on kernels before 4.6 is working with dma but not with 4.6?
+>> Now a days, most of QSPI controllers have internal dmas.
 >>
->> On 10/19/2016 07:06 PM, Cyrille Pitchen wrote:
->>> Hi Cédric,
->>>
->>> Le 17/10/2016 à 18:57, Cédric Le Goater a écrit :
->>>> This driver adds mtd support for spi-nor attached to either or both of
->>>> the Firmware Memory Controller or the SPI Flash Controller (AST2400
->>>> only).
->>>>
->>>> The SMC controllers on the Aspeed AST2500 SoC are very similar to the
->>>> ones found on the AST2400. The differences are on the number of
->>>> supported flash modules and their default mappings in the SoC address
->>>> space.
->>>>
->>>> The Aspeed AST2500 has one SPI controller for the BMC firmware and two
->>>> for the host firmware. All controllers have now the same set of
->>>> registers compatible with the AST2400 FMC controller and the legacy
->>>> 'SMC' controller is fully gone.
->>>>
->>>> Based on previous work from Milton D. Miller II <miltonm@us.ibm.com>
->>>>
->>>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
->>>> ---
->>> [...]
->>>> +
->>>> +static void aspeed_smc_send_cmd_addr(struct spi_nor *nor, u8 cmd, u32 addr)
->>>> +{
->>>> +	struct aspeed_smc_chip *chip = nor->priv;
->>>> +	__be32 temp;
->>>> +	u32 cmdaddr;
->>>> +
->>>> +	switch (nor->addr_width) {
->>>> +	default:
->>>> +		WARN_ONCE(1, "Unexpected address width %u, defaulting to 3\n",
->>>> +			  nor->addr_width);
->>>> +		/* FALLTHROUGH */
->>>> +	case 3:
->>>> +		cmdaddr = addr & 0xFFFFFF;
->>>> +
->>>> +		cmdaddr |= (u32)cmd << 24;
->>>> +
->>>> +		temp = cpu_to_be32(cmdaddr);
->>>> +		aspeed_smc_to_fifo(chip->base, &temp, 4);
->>>> +		break;
->>>> +	case 4:
->>>> +		temp = cpu_to_be32(addr);
->>>> +		aspeed_smc_to_fifo(chip->base, &cmd, 1);
->>>> +		aspeed_smc_to_fifo(chip->base, &temp, 4);
->>>> +		break;
->>>> +	}
->>>> +}
->>>> +
->>>> +static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from, size_t len,
->>>> +				    u_char *read_buf)
->>>> +{
->>>> +	struct aspeed_smc_chip *chip = nor->priv;
->>>> +
->>>> +	mutex_lock(&chip->controller->mutex);
->>>> +
->>>> +	aspeed_smc_start_user(nor);
->>
->> I think this section of code lock+start_user should be in a prepare handler 
->> if I am correct ? and I could get rid of the lock in that case to rely on
->> the one of the spi nor.
->>
+>> Could you please provide some info regrading this dma issue?
+>> We can change our controller driver to operate in IO mode (doesn't use dma) but performance wise it's not a preferred one.
 > 
-> For the mutex, looking at your driver, you lock it at the beginning then unlock
-> at the end of the four handlers:
-> - nor->read()
-> - nor->write()
-> - nor->read_reg()
-> - nor->write_reg()
+> Most MTD drivers use a bounce buffer.
+> How much does your performance degrade?
 > 
-> If this is the only purpose of this mutex, yes, you can remove it and relie on
-> the internal spi-nor one (nor->lock), which is locked from
-> spi_nor_lock_and_prep() hence at the beginning of spi_nor_erase(),
-> spi_nor_read() and spi_nor_write() calls.
+> Thanks,
+> //richard
 > 
-> However, about moving the call of aspeed_smc_start_user() into a new prepare
-> handler, I don't know whether it would actually fit your needs: for sure, 
-> aspeed_smc_start_user() would be no longer called at some points.
-> 
-> 2 examples:
-> 
-> A - spi_nor_write() calls:
-> 1 - spi_nor_lock_and_prep() -> nor->prepare()
-> 2 - write_enable() -> nor->write_reg()
-> 3 - nor->write()
-> 4 - spi_nor_wait_till_ready() -> nor->read_reg()
-> 5 - spi_nor_unlock_and_unprep() -> nor->unprepare()
-> 
-> With your current driver, aspeed_smc_start_user()/aspeed_smc_stop_user() are
-> called 3 times, indeed each time a command is sent on the SPI bus:
-> WRITE ENABLE, PAGE PROGRAM, READ STATUS
-> 
-> Then if you move then into spi_nor_[un]lock_and_[un]prep(), those two functions
-> would only be called once each.
-> 
-> 
-> B - spi_nor_scan() calls:
-> 1 - spi_nor_read_id() -> nor->read_reg()
-> 
-> but spi_nor_lock_and_prep() is not called before, so if you nead to call
-> aspeed_smc_start_user() before sending any command on the SPI bus, it won't
-> work.
-
-ok. So I need to keep it for now as the driver only supports the 
-'User mode' of the controller.
-
-In 'User mode', the controller sends commands to the module doing 
-writes at the base address where the module is mapped and gets 
-the results doing reads. So whatever is done, we need to make sure
-this mode is enforced.
-
-There is another mode called 'Command Mode' in the specs (the naming
-is rather confusing) in which you can access the contents of the 
-flash doing memory accesses in the memory window in which the module 
-is mapped. The controller uses the setting in the CE control register
-to generate the commands. This is not supported yet.
-
-> I don't know how your SPI controller works but maybe using the nor->prepare()
-> handler is not what you want!
-
-Thanks a lot for the analysis.
-
->>>> +	aspeed_smc_send_cmd_addr(nor, nor->read_opcode, from);
->>>
->>> I guess the dummy cycles are missing between address cycles and data cycles!
->>> Check nor->read_dummy ;)
->>
->> ah yes, I meant to and I forgot to add it ... will do in v2. I suppose 
->> we are doing fine with the driver now because we only use normal speed.
->>
-> 
-> Indeed, the legacy READ (03h) command has no dummy cycles as opposed to all
-> other FAST READ commands. Of course, the READ command is far much slower.
-> 
->>> Or maybe this controller can really only perform READ operations but no FAST
->>> READ commands. Hence the "spi_nor_scan(&chip->nor, NULL, SPI_NOR_NORMAL)"
->>> below.
->>
->> yes it can. I suppose the driver should also call spi_nor_set_flash_node() 
->> for module supporting it. that brings another question I would like 
->> to discuss for possible followups patches. 
->>
-> 
-> Calling spi_nor_set_flash_node() with the relevant parameter tells
-> spi_nor_scan() which DT node to parse to tune some settings.
-> For instance, you could add the "m25p,fast-read" DT property so spi_nor_scan()
-> would select Fast Read operations rather than Read operations.
-
-Yes. That is something I will try pretty soon on the boards we have.
-
->> The controller can be fine tuned for a particular chip module. The 
->> CE0 control register has a few bits to set the spi clock, the dummy 
->> cycles, the CS inactive width and there is also a register to setup 
->> read timings delay.
->>  
->> So you need to loop on these different settings to find a correct one
->> and for that, you use a gold image captured at low speed as reference.
->>
->> But you need to know which chip module you are dealing with. would it 
->> be possible to expose the jedec to the controller for this purpose ? 
->> and then do the training to build the timing settings in the driver. 
->> This is a similar approach taken by some nand controllers.
->>
-> 
-> I'm not sure to fully understand your needs.
-> The spi clock is often provided in the device tree, on the controller or memory
-> node, with the "spi-max-frequency" DT property.
-
-yes but it is possible also to discover what is the best timing at runtime 
-depending on the chip model found and not rely on the DT for that. That is 
-what I am trying to explain poorly. 
-
-> The number of dummy cycles is set in nor->read_dummy by spi_nor_scan()
-> according to the actual memory model and the selected (Fast) Read op code.
-> For chip-select timings, those settings aren't currently handled by
-> spi_nor_scan() but might be supported inside the SPI controller driver 
-> through DT properties if needed.
->
-> I don't know why your SPI controller driver needs to know the exact memory
-> model to work. Aren't the pieces of information provided by spi-nor.c enough?
-> Actually, for this point I don't quite exactly understand your needs! :)
-
-he. Let's start with a non optimized version, then I will check the fast 
-read op with the different boards/modules we have. Timings will come later, 
-DMA also.
-
-Thanks for the review.
-
-C. 
-
-
-> 
-> Best regards,
-> 
-> Cyrille
-> 
-> 
->> Thanks,
->>
->> C.
->>
->>  
->>>> +	aspeed_smc_from_fifo(read_buf, chip->base, len);
->>>> +	aspeed_smc_stop_user(nor);
->>>> +
->>>> +	mutex_unlock(&chip->controller->mutex);
->>>> +
->>>> +	return len;
->>>> +}
->>> [...]
->>>
->>> Best regards,
->>>
->>> Cyrille
->>>
->>> ______________________________________________________
->>> Linux MTD discussion mailing list
->>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>>
->>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 > 
