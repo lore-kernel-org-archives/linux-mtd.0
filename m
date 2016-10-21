@@ -1,30 +1,27 @@
-Received: from s159.web-hosting.com ([68.65.120.118])
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxe5R-00033m-2q
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 17:58:33 +0000
-Received: from mail-lf0-f46.google.com ([209.85.215.46]:33024)
- by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
- (Exim 4.86_1) (envelope-from <jagan@openedev.com>)
- id 1bxe4w-003KQH-Nb
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 13:58:08 -0400
-Received: by mail-lf0-f46.google.com with SMTP id x79so159882236lff.0
- for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2016 10:58:02 -0700 (PDT)
+Received: from mail-pf0-x230.google.com ([2607:f8b0:400e:c00::230])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bxeQj-0003On-K9
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 18:20:34 +0000
+Received: by mail-pf0-x230.google.com with SMTP id r16so60844052pfg.1
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2016 11:19:34 -0700 (PDT)
+Date: Fri, 21 Oct 2016 11:19:31 -0700
+From: Eric Biggers <ebiggers@google.com>
+To: Theodore Ts'o <tytso@mit.edu>, Michael Halcrow <mhalcrow@google.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ dedekind1@gmail.com, adrian.hunter@intel.com, jaegeuk@kernel.org,
+ david@sigma-star.at, wd@denx.de, sbabic@denx.de,
+ dengler@linutronix.de, alexcope@google.com
+Subject: Re: [PATCH 26/26] ubifs: Raise write version to 5
+Message-ID: <20161021181931.GA90712@google.com>
+References: <1477054121-10198-1-git-send-email-richard@nod.at>
+ <1477054121-10198-27-git-send-email-richard@nod.at>
+ <20161021173154.GB17121@google.com>
+ <20161021174758.wz7xrulokicuhlht@thunk.org>
 MIME-Version: 1.0
-In-Reply-To: <d92f8ef8-be78-0386-fa84-117c3cae6459@denx.de>
-References: <aad52b708dcf6754edab87d2e0afe4f0ee6831f9.1476891131.git.cyrille.pitchen@atmel.com>
- <d92f8ef8-be78-0386-fa84-117c3cae6459@denx.de>
-From: Jagan Teki <jagan@openedev.com>
-Date: Fri, 21 Oct 2016 23:28:00 +0530
-Message-ID: <CAD6G_RRm0ttasw8DAQvE2fOpXd61tTsbNwyy_vJ_quAO0y3swA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] MAINTAINERS: add a maintainer for the SPI NOR
- subsystem
-To: Marek Vasut <marex@denx.de>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- boris.brezillon@free-electrons.com, nicolas.ferre@atmel.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20161021174758.wz7xrulokicuhlht@thunk.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,73 +31,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 20, 2016 at 7:12 PM, Marek Vasut <marex@denx.de> wrote:
-> On 10/19/2016 05:34 PM, Cyrille Pitchen wrote:
->> I would like to volunteer as a maintainer for the SPI NOR part of the MTD
->> subsystem.
->>
->> Over the last months, a significant number of SPI NOR related patches have
->> been submitted, some of them have been reviewed, but very few have finally
->> been merged. Hence, the number of pending SPI NOR related patches continues
->> to increase over the time.
->>
->> Through my work on SPI NOR memories from many manufacturers over the last
->> two years, I've gained a solid understanding of this technology.
->> I've already helped by reviewing patches from other contributors on the
->> mailing list, and would like to help getting those patches integrated by
->> volunteering as a maintainer for this specific area.
->>
->> Boris Brezillon has already stepped up as a maintainer for the NAND
->> sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
->> the same way: I would be reviewing patches touching this area, collecting
->> them and sending pull requests to Brian Norris.
->>
->> Also both Marek Vasut and Richard Weinberger have volunteered as well as
->> maintainers for the SPI NOR subsystem.
->>
->> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
+On Fri, Oct 21, 2016 at 01:47:59PM -0400, Theodore Ts'o wrote:
+> On Fri, Oct 21, 2016 at 10:31:54AM -0700, Michael Halcrow wrote:
+> > > diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+> > > index bdc7935a5e41..e8c23c9d4f4a 100644
+> > > --- a/fs/ubifs/ubifs-media.h
+> > > +++ b/fs/ubifs/ubifs-media.h
+> > > @@ -46,7 +46,7 @@
+> > >   * UBIFS went into mainline kernel with format version 4. The older formats
+> > >   * were development formats.
+> > >   */
+> > > -#define UBIFS_FORMAT_VERSION 4
+> > > +#define UBIFS_FORMAT_VERSION 5
+> > 
+> > Alex Cope is working on a fix for file name encryption in ext4 so that
+> > common plaintext prefixes don't result in common ciphertext prefixes.
+> > Older kernels will not be able to read the new file names.
+> 
+> To be clear, this will be done in the context of a new encryption
+> mode.  In terms of how Ubifs will handle things, that's going to
+> depend on whether ubifs uses a single major version number or whether
+> they have a feature bitmask like other filesystems, including ext4.
+> 
 
-Acked-by: Jagan Teki <jteki@openedev.com>
+I don't think it's reasonable to require require changes to filesystems whenever
+someone introduces a new encryption mode --- contents, filenames, or both.
+Filesystems need to be able to handle unsupported encryption modes in some way
+that makes sense.  Currently, when it sees an unsupported encryption mode
+fscrypto will behave as if the encryption key is not available and will also
+print a one-time warning to the kernel log.  This happens when a file is
+accessed, not when the filesystem is mounted.  As far as I can tell, ext4, f2fs,
+and ubifs would all behave this way because this code is shared.  I think this
+is probably the most realistic behavior.
 
->
-> btw I think I'll need higher privileges in patchwork to fiddle with patches.
->
->> ---
->> ChangeLog:
->>
->> v1 -> v2:
->> - add Marek and Richard as maintainers.
->> - add Acked-by from Boris Brezillon.
->>
->>
->>  MAINTAINERS | 12 ++++++++++++
->>  1 file changed, 12 insertions(+)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 757f9c4b388d..7e63b2015072 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -11390,6 +11390,18 @@ W:   http://www.st.com/spear
->>  S:   Maintained
->>  F:   drivers/clk/spear/
->>
->> +SPI NOR SUBSYSTEM
->> +M:   Cyrille Pitchen <cyrille.pitchen@atmel.com>
->> +M:   Marek Vasut <marek.vasut@gmail.com>
->> +M:   Richard Weinberger <richard@nod.at>
-
-May be I was little late, but if there is any space for one more or so
-I would also like to co-maintain? Currently I am maintaining
-SPI/SPI-FLASH for u-boot and working for generic MTD (with u-boot
-driver model) + SPI-NOR addition on u-boot which eventually similar
-conceptual theory what Linux follows.
-
-thanks!
--- 
-Jagan Teki
-Free Software Engineer | www.openedev.com
-U-Boot, Linux | Upstream Maintainer
-Hyderabad, India.
+Eric
