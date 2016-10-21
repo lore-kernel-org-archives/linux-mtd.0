@@ -1,16 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxZGk-0004X4-RG
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:50:03 +0000
+ id 1bxZGq-0004XY-Jm
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:50:07 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  dedekind1@gmail.com, adrian.hunter@intel.com, tytso@mit.edu,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 12/26] ubifs: Massage assert in ubifs_xattr_set() wrt. fscrypto
-Date: Fri, 21 Oct 2016 14:48:27 +0200
-Message-Id: <1477054121-10198-13-git-send-email-richard@nod.at>
+Subject: [PATCH 23/26] ubifs: Use a random number for cookies
+Date: Fri, 21 Oct 2016 14:48:38 +0200
+Message-Id: <1477054121-10198-24-git-send-email-richard@nod.at>
 In-Reply-To: <1477054121-10198-1-git-send-email-richard@nod.at>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,34 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When we're creating a new inode in UBIFS the inode is not
-yet exposed and fscrypto calls ubifs_xattr_set() without
-holding the inode mutex. This is okay but ubifs_xattr_set()
-has to know about this.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/xattr.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/ubifs/journal.c | 3 +++
+ fs/ubifs/ubifs.h   | 1 +
+ 2 files changed, 4 insertions(+)
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 54ec2b9fd506..d3b53c55ea39 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -286,7 +286,13 @@ int ubifs_xattr_set(struct inode *host, const char *name, const void *value,
- 	union ubifs_key key;
- 	int err;
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 50696c6e0ae2..dcecfbfbf40e 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -589,6 +589,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 	dent->nlen = cpu_to_le16(fname_len(nm));
+ 	memcpy(dent->name, fname_name(nm), fname_len(nm));
+ 	dent->name[fname_len(nm)] = '\0';
++	dent->cookie = prandom_u32();
  
--	ubifs_assert(inode_is_locked(host));
-+	/*
-+	 * Creating an encryption context is done unlocked since we
-+	 * operate on a new inode which is not visible to other users
-+	 * at this point.
-+	 */
-+	if (strcmp(name, UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT) != 0)
-+		ubifs_assert(inode_is_locked(host));
+ 	zero_dent_node_unused(dent);
+ 	ubifs_prep_grp_node(c, dent, dlen, 0);
+@@ -992,6 +993,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	dent->nlen = cpu_to_le16(fname_len(new_nm));
+ 	memcpy(dent->name, fname_name(new_nm), fname_len(new_nm));
+ 	dent->name[fname_len(new_nm)] = '\0';
++	dent->cookie = prandom_u32();
+ 	zero_dent_node_unused(dent);
+ 	ubifs_prep_grp_node(c, dent, dlen1, 0);
  
- 	if (size > UBIFS_MAX_INO_DATA)
- 		return -ERANGE;
+@@ -1004,6 +1006,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	dent2->nlen = cpu_to_le16(fname_len(old_nm));
+ 	memcpy(dent2->name, fname_name(old_nm), fname_len(old_nm));
+ 	dent2->name[fname_len(old_nm)] = '\0';
++	dent2->cookie = prandom_u32();
+ 	zero_dent_node_unused(dent2);
+ 	ubifs_prep_grp_node(c, dent2, dlen2, 0);
+ 
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 3f68b26b120f..294e4047bcc0 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -39,6 +39,7 @@
+ #include <linux/security.h>
+ #include <linux/xattr.h>
+ #include <linux/fscrypto.h>
++#include <linux/random.h>
+ #include "ubifs-media.h"
+ 
+ /* Version of this UBIFS implementation */
 -- 
 2.7.3
