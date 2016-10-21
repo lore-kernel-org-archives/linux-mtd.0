@@ -1,21 +1,30 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from s159.web-hosting.com ([68.65.120.118])
  by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxe0H-0002wf-Cb
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 17:53:13 +0000
-Received: by mail-wm0-x244.google.com with SMTP id d128so581922wmf.0
- for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2016 10:52:52 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: Add possibility to disable chip erase
-To: marcin.krzeminski@nokia.com, linux-mtd@lists.infradead.org
-References: <1477054546-2548-1-git-send-email-marcin.krzeminski@nokia.com>
-Cc: computersforpeace@gmail.com, cyrille.pitchen@atmel.com,
- rfsw-patches@mlist.nokia.com, dwmw2@infradead.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <3b23706b-bf46-8d3b-e9b0-01194eec5e11@gmail.com>
-Date: Fri, 21 Oct 2016 19:52:49 +0200
+ id 1bxe5R-00033m-2q
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 17:58:33 +0000
+Received: from mail-lf0-f46.google.com ([209.85.215.46]:33024)
+ by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
+ (Exim 4.86_1) (envelope-from <jagan@openedev.com>)
+ id 1bxe4w-003KQH-Nb
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 13:58:08 -0400
+Received: by mail-lf0-f46.google.com with SMTP id x79so159882236lff.0
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2016 10:58:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1477054546-2548-1-git-send-email-marcin.krzeminski@nokia.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <d92f8ef8-be78-0386-fa84-117c3cae6459@denx.de>
+References: <aad52b708dcf6754edab87d2e0afe4f0ee6831f9.1476891131.git.cyrille.pitchen@atmel.com>
+ <d92f8ef8-be78-0386-fa84-117c3cae6459@denx.de>
+From: Jagan Teki <jagan@openedev.com>
+Date: Fri, 21 Oct 2016 23:28:00 +0530
+Message-ID: <CAD6G_RRm0ttasw8DAQvE2fOpXd61tTsbNwyy_vJ_quAO0y3swA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] MAINTAINERS: add a maintainer for the SPI NOR
+ subsystem
+To: Marek Vasut <marex@denx.de>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ boris.brezillon@free-electrons.com, nicolas.ferre@atmel.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,80 +34,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/21/2016 02:55 PM, marcin.krzeminski@nokia.com wrote:
-> From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
-> 
-> n25q00 does not support chip erase command (0xC7),
-> but spi-nor framework still send if if user want to erase
-> whole flash. This patch adds option to disable chip erase
-> command and enable in on n25q00.
+On Thu, Oct 20, 2016 at 7:12 PM, Marek Vasut <marex@denx.de> wrote:
+> On 10/19/2016 05:34 PM, Cyrille Pitchen wrote:
+>> I would like to volunteer as a maintainer for the SPI NOR part of the MTD
+>> subsystem.
+>>
+>> Over the last months, a significant number of SPI NOR related patches have
+>> been submitted, some of them have been reviewed, but very few have finally
+>> been merged. Hence, the number of pending SPI NOR related patches continues
+>> to increase over the time.
+>>
+>> Through my work on SPI NOR memories from many manufacturers over the last
+>> two years, I've gained a solid understanding of this technology.
+>> I've already helped by reviewing patches from other contributors on the
+>> mailing list, and would like to help getting those patches integrated by
+>> volunteering as a maintainer for this specific area.
+>>
+>> Boris Brezillon has already stepped up as a maintainer for the NAND
+>> sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
+>> the same way: I would be reviewing patches touching this area, collecting
+>> them and sending pull requests to Brian Norris.
+>>
+>> Also both Marek Vasut and Richard Weinberger have volunteered as well as
+>> maintainers for the SPI NOR subsystem.
+>>
+>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>
+> Acked-by: Marek Vasut <marek.vasut@gmail.com>
 
-That's true and it's a pretty nasty issue.
-Can you instead implement logic to send multiple die-erase commands ?
-They do make erasing faster afterall.
+Acked-by: Jagan Teki <jteki@openedev.com>
 
-> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
->  include/linux/mtd/spi-nor.h   | 1 +
->  2 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d0fc165..8338be1 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -75,6 +75,7 @@ struct flash_info {
->  					 * bit. Must be used with
->  					 * SPI_NOR_HAS_LOCK.
->  					 */
-> +#define DISABLE_CE			BIT(10)	/*Some multi-die flash does not support CE */
->  };
->  
->  #define JEDEC_MFR(info)	((info)->id[0])
-> @@ -368,7 +369,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
->  		return ret;
->  
->  	/* whole-chip erase? */
-> -	if (len == mtd->size) {
-> +	if (len == mtd->size && !(nor->flags & SNOR_F_DISABLE_CE)) {
->  		unsigned long timeout;
->  
->  		write_enable(nor);
-> @@ -886,8 +887,8 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> -	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> -	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> +	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DISABLE_CE) },
-> +	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DISABLE_CE) },
->  
->  	/* PMC */
->  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-> @@ -1395,6 +1396,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  		nor->flags |= SNOR_F_USE_FSR;
->  	if (info->flags & SPI_NOR_HAS_TB)
->  		nor->flags |= SNOR_F_HAS_SR_TB;
-> +	if (info->flags & DISABLE_CE)
-> +		nor->flags |= SNOR_F_DISABLE_CE;
->  
->  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
->  	/* prefer "small sector" erase if possible */
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index c425c7b..2d0b967 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -119,6 +119,7 @@ enum spi_nor_ops {
->  enum spi_nor_option_flags {
->  	SNOR_F_USE_FSR		= BIT(0),
->  	SNOR_F_HAS_SR_TB	= BIT(1),
-> +	SNOR_F_DISABLE_CE	= BIT(2),
->  };
->  
->  /**
-> 
+>
+> btw I think I'll need higher privileges in patchwork to fiddle with patches.
+>
+>> ---
+>> ChangeLog:
+>>
+>> v1 -> v2:
+>> - add Marek and Richard as maintainers.
+>> - add Acked-by from Boris Brezillon.
+>>
+>>
+>>  MAINTAINERS | 12 ++++++++++++
+>>  1 file changed, 12 insertions(+)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 757f9c4b388d..7e63b2015072 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -11390,6 +11390,18 @@ W:   http://www.st.com/spear
+>>  S:   Maintained
+>>  F:   drivers/clk/spear/
+>>
+>> +SPI NOR SUBSYSTEM
+>> +M:   Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> +M:   Marek Vasut <marek.vasut@gmail.com>
+>> +M:   Richard Weinberger <richard@nod.at>
 
+May be I was little late, but if there is any space for one more or so
+I would also like to co-maintain? Currently I am maintaining
+SPI/SPI-FLASH for u-boot and working for generic MTD (with u-boot
+driver model) + SPI-NOR addition on u-boot which eventually similar
+conceptual theory what Linux follows.
 
+thanks!
 -- 
-Best regards,
-Marek Vasut
+Jagan Teki
+Free Software Engineer | www.openedev.com
+U-Boot, Linux | Upstream Maintainer
+Hyderabad, India.
