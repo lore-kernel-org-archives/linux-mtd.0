@@ -1,6 +1,6 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxZGk-0004W6-RH
+ id 1bxZGk-0004XY-R4
  for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:50:00 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
@@ -8,9 +8,9 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  dedekind1@gmail.com, adrian.hunter@intel.com, tytso@mit.edu,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 07/26] ubifs: Massage ubifs_listxattr() for encryption context
-Date: Fri, 21 Oct 2016 14:48:22 +0200
-Message-Id: <1477054121-10198-8-git-send-email-richard@nod.at>
+Subject: [PATCH 14/26] ubifs: Introduce new data node field, compr_size
+Date: Fri, 21 Oct 2016 14:48:29 +0200
+Message-Id: <1477054121-10198-15-git-send-email-richard@nod.at>
 In-Reply-To: <1477054121-10198-1-git-send-email-richard@nod.at>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,50 +22,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We have to make sure that we don't expose our internal
-crypto context to userspace.
+When data of a data node is compressed and encrypted
+we need to store the size of the compressed data because
+before encryption we may have to add padding bytes.
+
+For the new field we consume the last two padding bytes
+in struct ubifs_data_node. Two bytes are fine because
+the data length is at most 4096.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/xattr.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ fs/ubifs/journal.c     | 11 -----------
+ fs/ubifs/ubifs-media.h |  6 ++----
+ 2 files changed, 2 insertions(+), 15 deletions(-)
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index b390902c48aa..54ec2b9fd506 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -394,6 +394,20 @@ out_unlock:
- 	return err;
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 0b9da5b6e0f9..a643de4e3d91 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -82,15 +82,6 @@ static inline void zero_dent_node_unused(struct ubifs_dent_node *dent)
  }
  
-+static bool xattr_visible(const char *name)
-+{
-+	/* File encryption related xattrs are for internal use only */
-+	if (strcmp(name, UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT) == 0)
-+		return false;
-+
-+	/* Show trusted namespace only for "power" users */
-+	if (strncmp(name, XATTR_TRUSTED_PREFIX,
-+		    XATTR_TRUSTED_PREFIX_LEN) == 0 && !capable(CAP_SYS_ADMIN))
-+		return false;
-+
-+	return true;
-+}
-+
- ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- {
- 	union ubifs_key key;
-@@ -429,10 +443,7 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 		nm.name = xent->name;
- 		nm.len = le16_to_cpu(xent->nlen);
+ /**
+- * zero_data_node_unused - zero out unused fields of an on-flash data node.
+- * @data: the data node to zero out
+- */
+-static inline void zero_data_node_unused(struct ubifs_data_node *data)
+-{
+-	memset(data->padding, 0, 2);
+-}
+-
+-/**
+  * zero_trun_node_unused - zero out unused fields of an on-flash truncation
+  *                         node.
+  * @trun: the truncation node to zero out
+@@ -722,7 +713,6 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+ 	data->ch.node_type = UBIFS_DATA_NODE;
+ 	key_write(c, key, &data->key);
+ 	data->size = cpu_to_le32(len);
+-	zero_data_node_unused(data);
  
--		/* Show trusted namespace only for "power" users */
--		if (strncmp(xent->name, XATTR_TRUSTED_PREFIX,
--			    XATTR_TRUSTED_PREFIX_LEN) ||
--		    capable(CAP_SYS_ADMIN)) {
-+		if (xattr_visible(xent->name)) {
- 			memcpy(buffer + written, nm.name, nm.len + 1);
- 			written += nm.len + 1;
+ 	if (!(ui->flags & UBIFS_COMPR_FL))
+ 		/* Compression is disabled for this inode */
+@@ -1199,7 +1189,6 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
+ 					dn->size = cpu_to_le32(dlen);
+ 					dlen += UBIFS_DATA_NODE_SZ;
+ 				}
+-				zero_data_node_unused(dn);
+ 			}
  		}
+ 	}
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index aa302b11aec8..e46331dcca4c 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -553,18 +553,16 @@ struct ubifs_dent_node {
+  * @key: node key
+  * @size: uncompressed data size in bytes
+  * @compr_type: compression type (%UBIFS_COMPR_NONE, %UBIFS_COMPR_LZO, etc)
+- * @padding: reserved for future, zeroes
++ * @compr_size: compressed data size in bytes, only valid when data is encrypted
+  * @data: data
+  *
+- * Note, do not forget to amend 'zero_data_node_unused()' function when
+- * changing the padding fields.
+  */
+ struct ubifs_data_node {
+ 	struct ubifs_ch ch;
+ 	__u8 key[UBIFS_MAX_KEY_LEN];
+ 	__le32 size;
+ 	__le16 compr_type;
+-	__u8 padding[2]; /* Watch 'zero_data_node_unused()' if changing! */
++	__le16 compr_size;
+ 	__u8 data[];
+ } __packed;
+ 
 -- 
 2.7.3
