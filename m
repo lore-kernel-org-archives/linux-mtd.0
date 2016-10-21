@@ -1,16 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxZH7-0004jn-OL
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:50:24 +0000
+ id 1bxZH7-0004ln-OK
+ for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 12:50:25 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  dedekind1@gmail.com, adrian.hunter@intel.com, tytso@mit.edu,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 15/26] ubifs: Implement encrypt/decrypt for all IO
-Date: Fri, 21 Oct 2016 14:48:30 +0200
-Message-Id: <1477054121-10198-16-git-send-email-richard@nod.at>
+Subject: [PATCH 22/26] ubifs: Add full hash lookup support
+Date: Fri, 21 Oct 2016 14:48:37 +0200
+Message-Id: <1477054121-10198-23-git-send-email-richard@nod.at>
 In-Reply-To: <1477054121-10198-1-git-send-email-richard@nod.at>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,265 +22,229 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+UBIFS stores a 32bit hash of every file, for traditional lookups by name
+this scheme is fine since UBIFS can first try to find the file by the
+hash of the filename and upon collisions it can walk through all entries
+with the same hash and do a string compare.
+When filesnames are encrypted fscrypto will ask the filesystem for a
+unique cookie, based on this cookie the filesystem has to be able to
+locate the target file again. With 32bit hashes this is impossible
+because the chance for collisions is very high. Do deal with that we
+store a 32bit cookie directly in the UBIFS directory entry node such
+that we get a 64bit cookie (32bit from filename hash and the dent
+cookie). For a lookup by hash UBIFS finds the entry by the first 32bit
+and then compares the dent cookie. If it does not match, it has to do a
+linear search of the whole directory and compares all dent cookies until
+the correct entry is found.
+
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/file.c    |  36 ++++++++++++++++++
- fs/ubifs/journal.c | 105 +++++++++++++++++++++++++++++++++++++++++++----------
- fs/ubifs/super.c   |   6 ++-
- fs/ubifs/ubifs.h   |   6 +++
- 4 files changed, 131 insertions(+), 22 deletions(-)
+ fs/ubifs/dir.c         |  7 +++-
+ fs/ubifs/journal.c     |  1 -
+ fs/ubifs/tnc.c         | 99 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ fs/ubifs/ubifs-media.h |  5 ++-
+ fs/ubifs/ubifs.h       |  2 +
+ 5 files changed, 107 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index bd0049788e24..60e089d50c82 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -78,6 +78,24 @@ static int read_block(struct inode *inode, void *addr, unsigned int block,
- 		goto dump;
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 2f33be5ca57c..4b2db102a0a9 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -253,7 +253,7 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+ 		ubifs_assert(fname_len(&nm) == 0);
+ 		ubifs_assert(fname_name(&nm) == NULL);
+ 		dent_key_init_hash(c, &key, dir->i_ino, nm.hash);
+-		err = ubifs_tnc_lookup(c, &key, dent);
++		err = ubifs_tnc_lookup_dh(c, &key, dent, nm.minor_hash);
+ 	} else {
+ 		dent_key_init(c, &key, dir->i_ino, &nm);
+ 		err = ubifs_tnc_lookup_nm(c, &key, dent, &nm);
+@@ -521,7 +521,10 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
+ 		if (encrypted) {
+ 			fstr.len = fstr_real_len;
  
- 	dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
-+
-+	if (ubifs_crypt_is_encrypted(inode)) {
-+		int clen = le16_to_cpu(dn->compr_size);
-+
-+		if (clen <= 0 || clen > UBIFS_BLOCK_SIZE || clen > dlen)
-+			goto dump;
-+
-+		ubifs_assert(dlen <= UBIFS_BLOCK_SIZE);
-+		err = fscrypt_decrypt_buffer(inode, &dn->data, &dn->data, dlen, block, GFP_NOFS);
-+		if (err) {
-+			ubifs_err(c, "fscrypt_decrypt_buffer failed: %i", err);
-+			return err;
-+		}
-+
-+		ubifs_assert(clen <= dlen);
-+		dlen = clen;
-+	}
-+
- 	out_len = UBIFS_BLOCK_SIZE;
- 	err = ubifs_decompress(c, &dn->data, dlen, addr, &out_len,
- 			       le16_to_cpu(dn->compr_type));
-@@ -650,6 +668,24 @@ static int populate_page(struct ubifs_info *c, struct page *page,
- 
- 			dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
- 			out_len = UBIFS_BLOCK_SIZE;
-+
-+			if (ubifs_crypt_is_encrypted(inode)) {
-+				int clen = le16_to_cpu(dn->compr_size);
-+
-+				if (clen <= 0 || clen > UBIFS_BLOCK_SIZE || clen > dlen)
-+					goto out_err;
-+
-+				ubifs_assert(dlen <= UBIFS_BLOCK_SIZE);
-+				err = fscrypt_decrypt_buffer(inode, &dn->data, &dn->data, dlen, page_block, GFP_NOFS);
-+				if (err) {
-+					ubifs_err(c, "fscrypt_decrypt_buffer failed: %i", err);
-+					goto out_err;
-+				}
-+
-+				ubifs_assert(clen <= dlen);
-+				dlen = clen;
-+			}
-+
- 			err = ubifs_decompress(c, &dn->data, dlen, addr, &out_len,
- 					       le16_to_cpu(dn->compr_type));
- 			if (err || len != out_len)
+-			err = fscrypt_fname_disk_to_usr(dir, key_hash_flash(c, &dent->key), 0, &nm.disk_name, &fstr);
++			err = fscrypt_fname_disk_to_usr(dir, key_hash_flash(c,
++							&dent->key),
++							le32_to_cpu(dent->cookie),
++							&nm.disk_name, &fstr);
+ 			if (err < 0)
+ 				goto out;
+ 		} else {
 diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index a643de4e3d91..da694e520ec8 100644
+index eb1cef8032e7..50696c6e0ae2 100644
 --- a/fs/ubifs/journal.c
 +++ b/fs/ubifs/journal.c
-@@ -691,11 +691,15 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
- 	int err, lnum, offs, compr_type, out_len;
- 	int dlen = COMPRESSED_DATA_NODE_BUF_SZ, allocated = 1;
- 	struct ubifs_inode *ui = ubifs_inode(inode);
-+	bool encrypted = ubifs_crypt_is_encrypted(inode);
- 
- 	dbg_jnlk(key, "ino %lu, blk %u, len %d, key ",
- 		(unsigned long)key_inum(c, key), key_block(c, key), len);
- 	ubifs_assert(len <= UBIFS_BLOCK_SIZE);
- 
-+	if (encrypted)
-+		dlen += UBIFS_CIPHER_BLOCK_SIZE;
-+
- 	data = kmalloc(dlen, GFP_NOFS | __GFP_NOWARN);
- 	if (!data) {
- 		/*
-@@ -724,6 +728,26 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
- 	ubifs_compress(c, buf, len, &data->data, &out_len, &compr_type);
- 	ubifs_assert(out_len <= UBIFS_BLOCK_SIZE);
- 
-+	if (encrypted) {
-+		void *p = &data->data;
-+		int plen = round_up(out_len, UBIFS_CIPHER_BLOCK_SIZE);
-+
-+		data->compr_size = cpu_to_le16(out_len);
-+
-+		if (plen != out_len) {
-+			memset(p + out_len, 0, plen - out_len);
-+			out_len = plen;
-+		}
-+
-+		err = fscrypt_encrypt_buffer(inode, &data->data, &data->data, out_len, key_block(c, key), GFP_NOFS);
-+		if (err) {
-+			ubifs_err(c, "fscrypt_encrypt_buffer failed: %i", err);
-+			goto out_free;
-+		}
-+	} else {
-+		data->compr_size = 0;
-+	}
-+
- 	dlen = UBIFS_DATA_NODE_SZ + out_len;
- 	data->compr_type = cpu_to_le16(compr_type);
- 
-@@ -1083,31 +1107,79 @@ out_free:
+@@ -78,7 +78,6 @@ static inline void zero_ino_node_unused(struct ubifs_ino_node *ino)
+ static inline void zero_dent_node_unused(struct ubifs_dent_node *dent)
+ {
+ 	dent->padding1 = 0;
+-	memset(dent->padding2, 0, 4);
  }
  
  /**
-- * recomp_data_node - re-compress a truncated data node.
-+ * truncate_data_node - re-compress/encrypt a truncated data node.
-+ * @c: UBIFS file-system description object
-+ * @inode: inode which referes to the data node
-+ * @block: data block number
-  * @dn: data node to re-compress
-  * @new_len: new length
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index 0d751297873e..1eaf994addb4 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -1783,7 +1783,7 @@ int ubifs_tnc_bulk_read(struct ubifs_info *c, struct bu_info *bu)
+  * @node: the node is returned here
+  * @nm: node name
   *
-  * This function is used when an inode is truncated and the last data node of
-- * the inode has to be re-compressed and re-written.
-+ * the inode has to be re-compressed/encrypted and re-written.
-  */
--static int recomp_data_node(const struct ubifs_info *c,
--			    struct ubifs_data_node *dn, int *new_len)
-+static int truncate_data_node(const struct ubifs_info *c, struct inode *inode,
-+			      unsigned int block, struct ubifs_data_node *dn,
-+			      int *new_len)
- {
- 	void *buf;
--	int err, len, compr_type, out_len;
-+	int err, dlen, compr_type, out_len, old_dlen;
- 
- 	out_len = le32_to_cpu(dn->size);
- 	buf = kmalloc(out_len * WORST_COMPR_FACTOR, GFP_NOFS);
- 	if (!buf)
- 		return -ENOMEM;
- 
--	len = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
-+	dlen = old_dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
- 	compr_type = le16_to_cpu(dn->compr_type);
--	err = ubifs_decompress(c, &dn->data, len, buf, &out_len, compr_type);
--	if (err)
--		goto out;
- 
--	ubifs_compress(c, buf, *new_len, &dn->data, &out_len, &compr_type);
-+	if (ubifs_crypt_is_encrypted(inode)) {
-+		int clen = le16_to_cpu(dn->compr_size);
+- * This function look up and reads a node which contains name hash in the key.
++ * This function looks up and reads a node which contains name hash in the key.
+  * Since the hash may have collisions, there may be many nodes with the same
+  * key, so we have to sequentially look to all of them until the needed one is
+  * found. This function returns zero in case of success, %-ENOENT if the node
+@@ -1831,7 +1831,7 @@ out_unlock:
+  * @node: the node is returned here
+  * @nm: node name
+  *
+- * This function look up and reads a node which contains name hash in the key.
++ * This function looks up and reads a node which contains name hash in the key.
+  * Since the hash may have collisions, there may be many nodes with the same
+  * key, so we have to sequentially look to all of them until the needed one is
+  * found. This function returns zero in case of success, %-ENOENT if the node
+@@ -1859,9 +1859,104 @@ int ubifs_tnc_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
+ 	 * Unluckily, there are hash collisions and we have to iterate over
+ 	 * them look at each direntry with colliding name hash sequentially.
+ 	 */
 +
-+		if (clen <= 0 || clen > UBIFS_BLOCK_SIZE || clen > dlen) {
-+			ubifs_err(c, "bad compr_size: %i", clen);
-+			err = -EINVAL;
-+			goto out;
+ 	return do_lookup_nm(c, key, node, nm);
+ }
+ 
++static int do_lookup_dh(struct ubifs_info *c, const union ubifs_key *key,
++			struct ubifs_dent_node *dent, uint32_t cookie)
++{
++	int n, err, type = key_type(c, key);
++	struct ubifs_znode *znode;
++	struct ubifs_zbranch *zbr;
++	union ubifs_key *cur_key, start_key;
++
++	ubifs_assert(is_hash_key(c, key));
++
++	lowest_dent_key(c, &start_key, key_inum(c, key));
++	cur_key = &start_key;
++
++	for (;;) {
++		mutex_lock(&c->tnc_mutex);
++
++		err = ubifs_lookup_level0(c, cur_key, &znode, &n);
++		if (unlikely(err < 0))
++			goto out_unlock;
++
++		if (!err) {
++			err = tnc_next(c, &znode, &n);
++			if (err)
++				goto out_unlock;
 +		}
 +
-+		err = fscrypt_decrypt_buffer(inode, &dn->data, &dn->data, dlen, block, GFP_NOFS);
-+		if (err) {
-+			ubifs_err(c, "fscrypt_decrypt_buffer failed: %i", err);
-+			goto out;
++		zbr = &znode->zbranch[n];
++		cur_key = &zbr->key;
++
++		if (key_inum(c, cur_key) != key_inum(c, key) ||
++		    key_type(c, cur_key) != type) {
++			err = -ENOENT;
++			goto out_unlock;
 +		}
 +
-+		ubifs_assert(clen <= dlen);
-+		dlen = clen;
-+	}
-+
-+	if (compr_type != UBIFS_COMPR_NONE) {
-+		err = ubifs_decompress(c, &dn->data, dlen, buf, &out_len, compr_type);
++		err = tnc_read_hashed_node(c, zbr, dent);
 +		if (err)
-+			goto out;
++			goto out_unlock;
 +
-+		ubifs_compress(c, buf, *new_len, &dn->data, &out_len, &compr_type);
-+	}
-+
-+	if (ubifs_crypt_is_encrypted(inode)) {
-+		void *p = &dn->data;
-+		int plen = round_up(out_len, UBIFS_CIPHER_BLOCK_SIZE);
-+
-+		ubifs_assert(old_dlen >= plen);
-+		dn->compr_size = cpu_to_le16(out_len);
-+
-+		if (plen != out_len) {
-+			memset(p + out_len, 0, plen - out_len);
-+			out_len = plen;
++		if (key_hash(c, key) == key_hash(c, cur_key) &&
++		    le32_to_cpu(dent->cookie) == cookie) {
++			/* We found the entry. :-) */
++			err = 0;
++			goto out_unlock;
 +		}
 +
-+		err = fscrypt_encrypt_buffer(inode, &dn->data, &dn->data, out_len, block, GFP_NOFS);
-+		if (err) {
-+			ubifs_msg(c, "fscrypt_encrypt_buffer failed: %i", err);
-+			goto out;
-+		}
-+	} else {
-+		dn->compr_size = 0;
++		mutex_unlock(&c->tnc_mutex);
 +	}
 +
- 	ubifs_assert(out_len <= UBIFS_BLOCK_SIZE);
- 	dn->compr_type = cpu_to_le16(compr_type);
- 	dn->size = cpu_to_le32(*new_len);
-@@ -1179,16 +1251,9 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
- 			if (le32_to_cpu(dn->size) <= dlen)
- 				dlen = 0; /* Nothing to do */
- 			else {
--				int compr_type = le16_to_cpu(dn->compr_type);
--
--				if (compr_type != UBIFS_COMPR_NONE) {
--					err = recomp_data_node(c, dn, &dlen);
--					if (err)
--						goto out_free;
--				} else {
--					dn->size = cpu_to_le32(dlen);
--					dlen += UBIFS_DATA_NODE_SZ;
--				}
-+				err = truncate_data_node(c, inode, blk, dn, &dlen);
-+				if (err)
-+					goto out_free;
- 			}
- 		}
- 	}
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index a31222947265..ae25c908fbe5 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1210,7 +1210,8 @@ static int mount_ubifs(struct ubifs_info *c)
- 		bu_init(c);
++	ubifs_assert(0);
++
++out_unlock:
++	mutex_unlock(&c->tnc_mutex);
++	return err;
++}
++
++/**
++ * ubifs_tnc_lookup_dh - look up a "double hashed" node.
++ * @c: UBIFS file-system description object
++ * @key: node key to lookup
++ * @node: the node is returned here
++ * @cookie: node cookie for collision resolution
++ *
++ * This function looks up and reads a node which contains name hash in the key.
++ * Since the hash may have collisions, there may be many nodes with the same
++ * key, so we have to sequentially look to all of them until the needed one
++ * with the same cookie value is found.
++ * This function returns zero in case of success, %-ENOENT if the node
++ * was not found, and a negative error code in case of failure.
++ */
++int ubifs_tnc_lookup_dh(struct ubifs_info *c, const union ubifs_key *key,
++			void *node, uint32_t cookie)
++{
++	int err;
++	const struct ubifs_dent_node *dent = node;
++
++	/*
++	 * We assume that in most of the cases there are no name collisions and
++	 * 'ubifs_tnc_lookup()' returns us the right direntry.
++	 */
++	err = ubifs_tnc_lookup(c, key, node);
++	if (err)
++		return err;
++
++	if (le32_to_cpu(dent->cookie) == cookie)
++		return 0;
++
++	/*
++	 * Unluckily, there are hash collisions and we have to iterate over
++	 * them look at each direntry with colliding name hash sequentially.
++	 */
++	return do_lookup_dh(c, key, node, cookie);
++}
++
+ /**
+  * correct_parent_keys - correct parent znodes' keys.
+  * @c: UBIFS file-system description object
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index e46331dcca4c..249124d9a801 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -530,7 +530,8 @@ struct ubifs_ino_node {
+  * @padding1: reserved for future, zeroes
+  * @type: type of the target inode (%UBIFS_ITYPE_REG, %UBIFS_ITYPE_DIR, etc)
+  * @nlen: name length
+- * @padding2: reserved for future, zeroes
++ * @cookie: A 32bits random number, used to construct a 64bits
++ *          identifier.
+  * @name: zero-terminated name
+  *
+  * Note, do not forget to amend 'zero_dent_node_unused()' function when
+@@ -543,7 +544,7 @@ struct ubifs_dent_node {
+ 	__u8 padding1;
+ 	__u8 type;
+ 	__le16 nlen;
+-	__u8 padding2[4]; /* Watch 'zero_dent_node_unused()' if changing! */
++	__le32 cookie;
+ 	__u8 name[];
+ } __packed;
  
- 	if (!c->ro_mount) {
--		c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ,
-+		c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ + \
-+					       UBIFS_CIPHER_BLOCK_SIZE,
- 					       GFP_KERNEL);
- 		if (!c->write_reserve_buf)
- 			goto out_free;
-@@ -1623,7 +1624,8 @@ static int ubifs_remount_rw(struct ubifs_info *c)
- 		goto out;
- 	}
- 
--	c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ, GFP_KERNEL);
-+	c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ + \
-+				       UBIFS_CIPHER_BLOCK_SIZE, GFP_KERNEL);
- 	if (!c->write_reserve_buf) {
- 		err = -ENOMEM;
- 		goto out;
 diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 63dd027727ca..6c56a08afcd7 100644
+index f91ef52a4523..3f68b26b120f 100644
 --- a/fs/ubifs/ubifs.h
 +++ b/fs/ubifs/ubifs.h
-@@ -139,6 +139,12 @@
-  */
- #define WORST_COMPR_FACTOR 2
- 
-+#ifdef CONFIG_UBIFS_FS_ENCRYPTION
-+#define UBIFS_CIPHER_BLOCK_SIZE FS_CRYPTO_BLOCK_SIZE
-+#else
-+#define UBIFS_CIPHER_BLOCK_SIZE 0
-+#endif
-+
- /*
-  * How much memory is needed for a buffer where we compress a data node.
-  */
+@@ -1573,6 +1573,8 @@ int ubifs_lookup_level0(struct ubifs_info *c, const union ubifs_key *key,
+ 			struct ubifs_znode **zn, int *n);
+ int ubifs_tnc_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
+ 			void *node, const struct fscrypt_name *nm);
++int ubifs_tnc_lookup_dh(struct ubifs_info *c, const union ubifs_key *key,
++			void *node, uint32_t secondary_hash);
+ int ubifs_tnc_locate(struct ubifs_info *c, const union ubifs_key *key,
+ 		     void *node, int *lnum, int *offs);
+ int ubifs_tnc_add(struct ubifs_info *c, const union ubifs_key *key, int lnum,
 -- 
 2.7.3
