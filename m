@@ -1,25 +1,16 @@
-Date: Sat, 22 Oct 2016 18:32:08 +0300
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>,
- Sergio Prado <sergio.prado@e-labworks.com>, kgene@kernel.org,
- javier@osg.samsung.com, linux@armlinux.org.uk, linux@simtec.co.uk,
- richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, robh+dt@kernel.org,
- mark.rutland@arm.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] mtd: s3c2410: make ecc mode configurable via
- platform data
-Message-ID: <20161022153208.GA3830@kozik-lap>
-References: <1476999766-32526-1-git-send-email-sergio.prado@e-labworks.com>
- <1476999766-32526-2-git-send-email-sergio.prado@e-labworks.com>
- <20161021182710.GA17279@kozik-lap>
- <20161022142907.08a3eedf@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20161022142907.08a3eedf@bbrezillon>
+Received: from mail-qt0-x244.google.com ([2607:f8b0:400d:c0d::244])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bxyy3-0007t6-SH
+ for linux-mtd@lists.infradead.org; Sat, 22 Oct 2016 16:16:20 +0000
+Received: by mail-qt0-x244.google.com with SMTP id g49so4282700qtc.2
+ for <linux-mtd@lists.infradead.org>; Sat, 22 Oct 2016 09:15:58 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: boris.brezillon@free-electrons.com
+Cc: han.xu@nxp.com, linux-mtd@lists.infradead.org,
+ Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH] mtd: nand: gpmi: disable the clocks on errors
+Date: Sat, 22 Oct 2016 14:15:22 -0200
+Message-Id: <1477152922-6722-1-git-send-email-festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,56 +20,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Oct 22, 2016 at 02:29:07PM +0200, Boris Brezillon wrote:
-> Hi Krzysztof,
-> 
-> On Fri, 21 Oct 2016 21:27:10 +0300
-> Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> 
-> > On Thu, Oct 20, 2016 at 07:42:44PM -0200, Sergio Prado wrote:
-> > > Removing CONFIG_MTD_NAND_S3C2410_HWECC option and adding a ecc_mode
-> > > field in the drivers's platform data structure so it can be selectable
-> > > via platform data.
-> > > 
-> > > Also setting this field to NAND_ECC_SOFT in all boards using this
-> > > driver since none of them had CONFIG_MTD_NAND_S3C2410_HWECC enabled.
-> > > 
-> > > Signed-off-by: Sergio Prado <sergio.prado@e-labworks.com>
-> > > ---
-> > >  arch/arm/mach-s3c24xx/common-smdk.c            |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-anubis.c            |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-at2440evb.c         |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-bast.c              |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-gta02.c             |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-jive.c              |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-mini2440.c          |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-osiris.c            |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-qt2410.c            |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-rx1950.c            |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-rx3715.c            |   1 +
-> > >  arch/arm/mach-s3c24xx/mach-vstms.c             |   1 +
-> > >  arch/arm/mach-s3c64xx/mach-hmt.c               |   1 +
-> > >  arch/arm/mach-s3c64xx/mach-mini6410.c          |   1 +
-> > >  arch/arm/mach-s3c64xx/mach-real6410.c          |   1 +
-> > >  drivers/mtd/nand/Kconfig                       |   9 --
-> > >  drivers/mtd/nand/s3c2410.c                     | 119 +++++++++++++------------
-> > >  include/linux/platform_data/mtd-nand-s3c2410.h |   6 +-
-> > >  18 files changed, 79 insertions(+), 70 deletions(-)
-> > >  
-> > 
-> > I acked this twice (v1 and v2)... and still you are ignoring them. I am
-> > sorry, I am not gonna to ack this third time!
-> > 
-> > For v2 I acked also other patches but it it is not there as well...
-> 
-> I'll collect your acks (and Rob ones) when applying the patches. BTW,
-> how should I proceed with patch 1? Do you want an topic branch
-> containing this patch?
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-I don't expect much work around these files so the risk of conflicts is
-rather small. You could put it on a topic branch just in case (so I
-could pull in if needed) but I am fine with applying these to your tree
-as is.
+We should disable the previously enabled GPMI clocks in the error paths.
 
-Best regards,
-Krzysztof
+Also, when gpmi_enable_clk() fails simply return the error
+code immediately rather than jumping to to the 'err_out' label.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 0f68a99..141bd70 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -161,7 +161,7 @@ int gpmi_init(struct gpmi_nand_data *this)
+ 
+ 	ret = gpmi_enable_clk(this);
+ 	if (ret)
+-		goto err_out;
++		return ret;
+ 	ret = gpmi_reset_block(r->gpmi_regs, false);
+ 	if (ret)
+ 		goto err_out;
+@@ -197,6 +197,7 @@ int gpmi_init(struct gpmi_nand_data *this)
+ 	gpmi_disable_clk(this);
+ 	return 0;
+ err_out:
++	gpmi_disable_clk(this);
+ 	return ret;
+ }
+ 
+@@ -270,7 +271,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 
+ 	ret = gpmi_enable_clk(this);
+ 	if (ret)
+-		goto err_out;
++		return ret;
+ 
+ 	/*
+ 	* Due to erratum #2847 of the MX23, the BCH cannot be soft reset on this
+@@ -308,6 +309,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	gpmi_disable_clk(this);
+ 	return 0;
+ err_out:
++	gpmi_disable_clk(this);
+ 	return ret;
+ }
+ 
+-- 
+2.7.4
