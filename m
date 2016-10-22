@@ -1,29 +1,22 @@
-Received: from s159.web-hosting.com ([68.65.120.118])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxu2y-0001qO-Fc
- for linux-mtd@lists.infradead.org; Sat, 22 Oct 2016 11:01:05 +0000
-Received: from mail-lf0-f45.google.com ([209.85.215.45]:36680)
- by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
- (Exim 4.86_1) (envelope-from <jagan@openedev.com>)
- id 1bxu2Y-000596-6W
- for linux-mtd@lists.infradead.org; Sat, 22 Oct 2016 07:00:42 -0400
-Received: by mail-lf0-f45.google.com with SMTP id b75so162577927lfg.3
- for <linux-mtd@lists.infradead.org>; Sat, 22 Oct 2016 04:00:38 -0700 (PDT)
+Date: Sat, 22 Oct 2016 14:29:07 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Sergio Prado <sergio.prado@e-labworks.com>, kgene@kernel.org,
+ javier@osg.samsung.com, linux@armlinux.org.uk, linux@simtec.co.uk,
+ richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] mtd: s3c2410: make ecc mode configurable via
+ platform data
+Message-ID: <20161022142907.08a3eedf@bbrezillon>
+In-Reply-To: <20161021182710.GA17279@kozik-lap>
+References: <1476999766-32526-1-git-send-email-sergio.prado@e-labworks.com>
+ <1476999766-32526-2-git-send-email-sergio.prado@e-labworks.com>
+ <20161021182710.GA17279@kozik-lap>
 MIME-Version: 1.0
-In-Reply-To: <cover.1475668319.git.cyrille.pitchen@atmel.com>
-References: <cover.1475668319.git.cyrille.pitchen@atmel.com>
-From: Jagan Teki <jagan@openedev.com>
-Date: Sat, 22 Oct 2016 16:30:35 +0530
-Message-ID: <CAD6G_RR4Av8+szo9v2oucCFvwnow86gMVC-Ku_-Qfy18TVMGgA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] mtd: spi-nor: parse SFDP tables to setup (Q)SPI
- memories
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- nicolas.ferre@atmel.com,
- boris.brezillon@free-electrons.com, Marek Vasut <marex@denx.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,32 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 5, 2016 at 5:30 PM, Cyrille Pitchen
-<cyrille.pitchen@atmel.com> wrote:
-> Hi all,
->
-> This series extends support of SPI protocols to new protocols such as
-> SPI x-2-2 and SPI x-4-4. Also spi_nor_scan() tries now to select the right
-> op codes, timing parameters (number of mode and dummy cycles) and erase
-> sector size by parsing the Serial Flash Discoverable Parameter (SFDP)
-> tables, when available, as defined in the JEDEC JESD216 specifications.
->
-> When SFDP tables are not available, legacy settings are still used for
-> backward compatibility (SPI and earlier QSPI memories).
->
-> Support of SPI memories >128Mbits is also improved by using the 4byte
-> address instruction set, when available. Using those dedicated op codes
-> is stateless as opposed to enter the 4byte address mode, hence a better
-> compatibility with some boot loaders which expect to use 3byte address
-> op codes.
+Hi Krzysztof,
 
-The memories which are > 128Mbits should have 4-bytes addressing
-support based on my experience, do you think BAR is also required
-atleast from spi-nor side?
+On Fri, 21 Oct 2016 21:27:10 +0300
+Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-thanks!
--- 
-Jagan Teki
-Free Software Engineer | www.openedev.com
-U-Boot, Linux | Upstream Maintainer
-Hyderabad, India.
+> On Thu, Oct 20, 2016 at 07:42:44PM -0200, Sergio Prado wrote:
+> > Removing CONFIG_MTD_NAND_S3C2410_HWECC option and adding a ecc_mode
+> > field in the drivers's platform data structure so it can be selectable
+> > via platform data.
+> > 
+> > Also setting this field to NAND_ECC_SOFT in all boards using this
+> > driver since none of them had CONFIG_MTD_NAND_S3C2410_HWECC enabled.
+> > 
+> > Signed-off-by: Sergio Prado <sergio.prado@e-labworks.com>
+> > ---
+> >  arch/arm/mach-s3c24xx/common-smdk.c            |   1 +
+> >  arch/arm/mach-s3c24xx/mach-anubis.c            |   1 +
+> >  arch/arm/mach-s3c24xx/mach-at2440evb.c         |   1 +
+> >  arch/arm/mach-s3c24xx/mach-bast.c              |   1 +
+> >  arch/arm/mach-s3c24xx/mach-gta02.c             |   1 +
+> >  arch/arm/mach-s3c24xx/mach-jive.c              |   1 +
+> >  arch/arm/mach-s3c24xx/mach-mini2440.c          |   1 +
+> >  arch/arm/mach-s3c24xx/mach-osiris.c            |   1 +
+> >  arch/arm/mach-s3c24xx/mach-qt2410.c            |   1 +
+> >  arch/arm/mach-s3c24xx/mach-rx1950.c            |   1 +
+> >  arch/arm/mach-s3c24xx/mach-rx3715.c            |   1 +
+> >  arch/arm/mach-s3c24xx/mach-vstms.c             |   1 +
+> >  arch/arm/mach-s3c64xx/mach-hmt.c               |   1 +
+> >  arch/arm/mach-s3c64xx/mach-mini6410.c          |   1 +
+> >  arch/arm/mach-s3c64xx/mach-real6410.c          |   1 +
+> >  drivers/mtd/nand/Kconfig                       |   9 --
+> >  drivers/mtd/nand/s3c2410.c                     | 119 +++++++++++++------------
+> >  include/linux/platform_data/mtd-nand-s3c2410.h |   6 +-
+> >  18 files changed, 79 insertions(+), 70 deletions(-)
+> >  
+> 
+> I acked this twice (v1 and v2)... and still you are ignoring them. I am
+> sorry, I am not gonna to ack this third time!
+> 
+> For v2 I acked also other patches but it it is not there as well...
+
+I'll collect your acks (and Rob ones) when applying the patches. BTW,
+how should I proceed with patch 1? Do you want an topic branch
+containing this patch?
+
+Regards,
+
+Boris
