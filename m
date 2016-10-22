@@ -1,27 +1,25 @@
-Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
+Received: from mail-it0-x243.google.com ([2607:f8b0:4001:c0b::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bxiOx-0008SA-1M
- for linux-mtd@lists.infradead.org; Fri, 21 Oct 2016 22:35:00 +0000
-Date: Fri, 21 Oct 2016 18:34:25 -0400
-From: Theodore Ts'o <tytso@mit.edu>
-To: Eric Biggers <ebiggers@google.com>
-Cc: Michael Halcrow <mhalcrow@google.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- dedekind1@gmail.com, adrian.hunter@intel.com, jaegeuk@kernel.org,
- david@sigma-star.at, wd@denx.de, sbabic@denx.de,
- dengler@linutronix.de, alexcope@google.com
-Subject: Re: [PATCH 26/26] ubifs: Raise write version to 5
-Message-ID: <20161021223425.sqtjey2xov7fqjh3@thunk.org>
-References: <1477054121-10198-1-git-send-email-richard@nod.at>
- <1477054121-10198-27-git-send-email-richard@nod.at>
- <20161021173154.GB17121@google.com>
- <20161021174758.wz7xrulokicuhlht@thunk.org>
- <20161021181931.GA90712@google.com>
+ id 1bxpsJ-0005JX-OW
+ for linux-mtd@lists.infradead.org; Sat, 22 Oct 2016 06:33:48 +0000
+Received: by mail-it0-x243.google.com with SMTP id e203so2127149itc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2016 23:33:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161021181931.GA90712@google.com>
+In-Reply-To: <20161021232954.4900709e@bbrezillon>
+References: <aad52b708dcf6754edab87d2e0afe4f0ee6831f9.1476891131.git.cyrille.pitchen@atmel.com>
+ <20161021232954.4900709e@bbrezillon>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sat, 22 Oct 2016 08:33:24 +0200
+Message-ID: <CAFLxGvypdHy+O8-i8Dshzj1+WAemxkpmu8EtrJKnXmf0HWjQwg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] MAINTAINERS: add a maintainer for the SPI NOR
+ subsystem
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ nicolas.ferre@atmel.com,
+ Marek Vasut <marex@denx.de>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,50 +29,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 21, 2016 at 11:19:31AM -0700, Eric Biggers wrote:
-> 
-> I don't think it's reasonable to require require changes to filesystems whenever
-> someone introduces a new encryption mode --- contents, filenames, or both.
-> Filesystems need to be able to handle unsupported encryption modes in some way
-> that makes sense.  Currently, when it sees an unsupported encryption mode
-> fscrypto will behave as if the encryption key is not available and will also
-> print a one-time warning to the kernel log.  This happens when a file is
-> accessed, not when the filesystem is mounted.  As far as I can tell, ext4, f2fs,
-> and ubifs would all behave this way because this code is shared.  I think this
-> is probably the most realistic behavior.
+On Fri, Oct 21, 2016 at 11:29 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Wed, 19 Oct 2016 17:34:49 +0200
+> Cyrille Pitchen <cyrille.pitchen@atmel.com> wrote:
+>
+>> I would like to volunteer as a maintainer for the SPI NOR part of the MTD
+>> subsystem.
+>>
+>> Over the last months, a significant number of SPI NOR related patches have
+>> been submitted, some of them have been reviewed, but very few have finally
+>> been merged. Hence, the number of pending SPI NOR related patches continues
+>> to increase over the time.
+>>
+>> Through my work on SPI NOR memories from many manufacturers over the last
+>> two years, I've gained a solid understanding of this technology.
+>> I've already helped by reviewing patches from other contributors on the
+>> mailing list, and would like to help getting those patches integrated by
+>> volunteering as a maintainer for this specific area.
+>>
+>> Boris Brezillon has already stepped up as a maintainer for the NAND
+>> sub-subsystem in MTD, and the SPI NOR sub-subsystem could be handled in
+>> the same way: I would be reviewing patches touching this area, collecting
+>> them and sending pull requests to Brian Norris.
+>>
+>> Also both Marek Vasut and Richard Weinberger have volunteered as well as
+>> maintainers for the SPI NOR subsystem.
+>>
+>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> ---
+>> ChangeLog:
+>>
+>> v1 -> v2:
+>> - add Marek and Richard as maintainers.
+>> - add Acked-by from Boris Brezillon.
+>>
+>>
+>>  MAINTAINERS | 12 ++++++++++++
+>>  1 file changed, 12 insertions(+)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 757f9c4b388d..7e63b2015072 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -11390,6 +11390,18 @@ W:   http://www.st.com/spear
+>>  S:   Maintained
+>>  F:   drivers/clk/spear/
+>>
+>> +SPI NOR SUBSYSTEM
+>> +M:   Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> +M:   Marek Vasut <marek.vasut@gmail.com>
+>> +M:   Richard Weinberger <richard@nod.at>
+>
+> My bad, I think I misunderstood Richard's answer: Richard does not want
+> to be a spi-nor maintainer, he was just acking Marek's proposal to be a
+> co-maintainer.
 
-I tend to agree, but file systems may choose some alternate approach
-if they want to "fail fast" (e.g., at mount time).  I wouldn't want to
-do that for ext4, but if ubifs (or some other file system) wants do
-something more draconian, they can be afraid to do that.  Failing
-that, some kind of one-time warning makes sense.
+Correct. :-)
 
-What I would like to do though is to is to have a callback so that
-code in fs/crypto can call a file system specific notification
-routine.  e.g., for ext4, we would probably want to be able to call
-ext4_warning() and ext4_error() from fs/crypto, and other file systems
-might want to have a different set of notification routines.
-
-This way we can print a message like
-
-kernel: EXT4-fs warning (device sdb1): fscrypto_xxx: foo bar baz
-
-and if we later on have a way of sending file system specific warnings
-or errors through some kind of IPC mechanism, such as netlink or some
-future kdbus scheme, we can send the warning and error messages out
-the same way we send other filesystem specific error messages.
-
-	      	      	     	       	      - Ted
-
-P.S.  BTW, we actually _do_ have something hacked together inside the
-Google production kernel which pipes ext4_error() messages to a
-netlink socket, so that monitoring systems don't have scrape dmesg or
-/var/log/messages.
-
-If anyone inside or outside google is interested in that
-functionality, I can make the code available.  There's nothing
-sensitive or Google specific in it; it's just that unfortunately,
-getting that code cleaned up and upstreamed has just never made it
-"above the fold" on the priority list, the engineer who originally
-implemented it is no longer on the team --- and I never had the time
-to cleanup work to get the code to upstream quality myself.
+-- 
+Thanks,
+//richard
