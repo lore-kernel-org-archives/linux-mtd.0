@@ -1,23 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1by4xQ-00076h-A9
- for linux-mtd@lists.infradead.org; Sat, 22 Oct 2016 22:40:05 +0000
-Subject: Re: [PATCH v2 0/9] mtd: spi-nor: parse SFDP tables to setup (Q)SPI
- memories
-To: Jagan Teki <jagan@openedev.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <cover.1475668319.git.cyrille.pitchen@atmel.com>
- <CAD6G_RR4Av8+szo9v2oucCFvwnow86gMVC-Ku_-Qfy18TVMGgA@mail.gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <c022e6fc-6bd7-d124-7233-e1e742049657@denx.de>
-Date: Sat, 22 Oct 2016 22:33:29 +0200
+ id 1by99c-0001Mp-77
+ for linux-mtd@lists.infradead.org; Sun, 23 Oct 2016 03:08:57 +0000
+Received: by mail-wm0-x243.google.com with SMTP id o81so4514660wma.2
+ for <linux-mtd@lists.infradead.org>; Sat, 22 Oct 2016 20:08:35 -0700 (PDT)
+Subject: Re: [PATCH] mtd: nand: gpmi: disable the clocks on errors
+To: Fabio Estevam <festevam@gmail.com>, boris.brezillon@free-electrons.com
+References: <1477152922-6722-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, han.xu@nxp.com,
+ linux-mtd@lists.infradead.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <73e38ebd-3612-94c3-46bf-dc6e29925ee3@gmail.com>
+Date: Sun, 23 Oct 2016 05:08:19 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAD6G_RR4Av8+szo9v2oucCFvwnow86gMVC-Ku_-Qfy18TVMGgA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1477152922-6722-1-git-send-email-festevam@gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,32 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/22/2016 01:00 PM, Jagan Teki wrote:
-> On Wed, Oct 5, 2016 at 5:30 PM, Cyrille Pitchen
-> <cyrille.pitchen@atmel.com> wrote:
->> Hi all,
->>
->> This series extends support of SPI protocols to new protocols such as
->> SPI x-2-2 and SPI x-4-4. Also spi_nor_scan() tries now to select the right
->> op codes, timing parameters (number of mode and dummy cycles) and erase
->> sector size by parsing the Serial Flash Discoverable Parameter (SFDP)
->> tables, when available, as defined in the JEDEC JESD216 specifications.
->>
->> When SFDP tables are not available, legacy settings are still used for
->> backward compatibility (SPI and earlier QSPI memories).
->>
->> Support of SPI memories >128Mbits is also improved by using the 4byte
->> address instruction set, when available. Using those dedicated op codes
->> is stateless as opposed to enter the 4byte address mode, hence a better
->> compatibility with some boot loaders which expect to use 3byte address
->> op codes.
+On 10/22/2016 06:15 PM, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@nxp.com>
 > 
-> The memories which are > 128Mbits should have 4-bytes addressing
-> support based on my experience, do you think BAR is also required
-> atleast from spi-nor side?
+> We should disable the previously enabled GPMI clocks in the error paths.
+> 
+> Also, when gpmi_enable_clk() fails simply return the error
+> code immediately rather than jumping to to the 'err_out' label.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 
-Yes, I believe BAR is still required for broken/dumb flash chips.
-Not all chips > 16 MiB support dedicated 4-byte addressing opcodes :-(
+Reviewed-by: Marek Vasut <marex@denx.de>
+
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> index 0f68a99..141bd70 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> @@ -161,7 +161,7 @@ int gpmi_init(struct gpmi_nand_data *this)
+>  
+>  	ret = gpmi_enable_clk(this);
+>  	if (ret)
+> -		goto err_out;
+> +		return ret;
+>  	ret = gpmi_reset_block(r->gpmi_regs, false);
+>  	if (ret)
+>  		goto err_out;
+> @@ -197,6 +197,7 @@ int gpmi_init(struct gpmi_nand_data *this)
+>  	gpmi_disable_clk(this);
+>  	return 0;
+>  err_out:
+> +	gpmi_disable_clk(this);
+>  	return ret;
+>  }
+>  
+> @@ -270,7 +271,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>  
+>  	ret = gpmi_enable_clk(this);
+>  	if (ret)
+> -		goto err_out;
+> +		return ret;
+>  
+>  	/*
+>  	* Due to erratum #2847 of the MX23, the BCH cannot be soft reset on this
+> @@ -308,6 +309,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>  	gpmi_disable_clk(this);
+>  	return 0;
+>  err_out:
+> +	gpmi_disable_clk(this);
+>  	return ret;
+>  }
+>  
+> 
+
 
 -- 
 Best regards,
