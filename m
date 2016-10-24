@@ -1,31 +1,29 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from s159.web-hosting.com ([68.65.120.118])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byZN8-00087a-JL
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 07:08:39 +0000
-Subject: Re: UBIFS with dma on 4.6 kernel is not working
-To: Christoph Hellwig <hch@infradead.org>
-References: <DA6901612C71B84D91459DE817C418AE26DF0F2B@XAP-PVEXMBX01.xlnx.xilinx.com>
- <519a83bf-1244-5151-b873-bb8e1f2db3c6@nod.at>
- <20161021125313.GA16754@infradead.org>
- <c0b0098d-3a68-3a4a-0b7e-a1d95dd4aafc@nod.at>
- <20161021131505.GA25942@infradead.org>
-Cc: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <3de2ca29-120b-b7a6-da55-47fe5e056f73@nod.at>
-Date: Mon, 24 Oct 2016 09:08:13 +0200
+ id 1byZnQ-0004MG-LO
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 07:35:49 +0000
+Received: from mail-lf0-f43.google.com ([209.85.215.43]:33547)
+ by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
+ (Exim 4.86_1) (envelope-from <jagan@openedev.com>)
+ id 1byZn0-000Qog-Rw
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 03:35:26 -0400
+Received: by mail-lf0-f43.google.com with SMTP id x79so195493281lff.0
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Oct 2016 00:35:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20161021131505.GA25942@infradead.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <ad5a4648bd2486d5c8e671312a0a717fa2a6b2b8.1475668319.git.cyrille.pitchen@atmel.com>
+References: <cover.1475668319.git.cyrille.pitchen@atmel.com>
+ <ad5a4648bd2486d5c8e671312a0a717fa2a6b2b8.1475668319.git.cyrille.pitchen@atmel.com>
+From: Jagan Teki <jagan@openedev.com>
+Date: Mon, 24 Oct 2016 13:05:20 +0530
+Message-ID: <CAD6G_RRDFaJU=u5qvscYw+3KEb3GqzJEWwCjePhogQT6XZzaBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] mtd: spi-nor: improve macronix_quad_enable()
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ nicolas.ferre@atmel.com,
+ boris.brezillon@free-electrons.com, Marek Vasut <marex@denx.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,28 +33,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Christoph,
+On Wed, Oct 5, 2016 at 5:30 PM, Cyrille Pitchen
+<cyrille.pitchen@atmel.com> wrote:
+> The patch checks whether the Quad Enable bit is already set in the Status
+> Register. If so, the function exits immediately with a successful return
+> code. Otherwise, a message is now printed telling we're setting the
+> non-volatile bit.
+>
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
-On 21.10.2016 15:15, Christoph Hellwig wrote:
-> On Fri, Oct 21, 2016 at 03:07:57PM +0200, Richard Weinberger wrote:
->> Hmm, thought this is still problematic on VIVT architectures.
->> Boris tried to provide a solution for that some time ago:
->> http://www.spinics.net/lists/arm-kernel/msg494025.html
-> 
-> Things have been working fine for approx 10 years when using
-> flush_kernel_vmap_range before doing I/O using the physical addresses and
-> then invalidate_kernel_vmap_range when completing the I/O and going back
-> to using the virtual mapping for XFS.
-> 
-> Of course all this assumes at least the higher level that did the
-> vm_map_ram operation knows about this dance between virtually mapped and
-> physiscal addresses. 
+Reviewed-by: Jagan Teki <jagan@openedev.com>
 
-Good to know, I was clearly wrong.
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d0fc165d7d66..5c87b2d99507 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1211,6 +1211,11 @@ static int macronix_quad_enable(struct spi_nor *nor)
+>         val = read_sr(nor);
+>         if (val < 0)
+>                 return val;
+> +       if (val & SR_QUAD_EN_MX)
+> +               return 0;
+> +
+> +       /* Update the Quad Enable bit. */
+> +       dev_info(nor->dev, "setting Macronix Quad Enable (non-volatile) bit\n");
+>         write_enable(nor);
+>
+>         write_sr(nor, val | SR_QUAD_EN_MX);
 
-Let's see whether the costs of flush_kernel_vmap_range and invalidate_kernel_vmap_range
-are smaller than the speedup by DMA on embedded platforms.
-We'll have to test it.
+Safe to save ret and check the same as well.
 
-Thanks,
-//richard
+thanks!
+-- 
+Jagan Teki
+Free Software Engineer | www.openedev.com
+U-Boot, Linux | Upstream Maintainer
+Hyderabad, India.
