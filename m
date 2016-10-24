@@ -1,23 +1,22 @@
-Date: Mon, 24 Oct 2016 20:50:56 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sergio Prado <sergio.prado@e-labworks.com>
-Cc: kgene@kernel.org, krzk@kernel.org, javier@osg.samsung.com,
- linux@armlinux.org.uk, linux@simtec.co.uk, richard@nod.at,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] mtd: s3c2410: parse the device configuration
- from OF node
-Message-ID: <20161024205056.1782f76e@bbrezillon>
-In-Reply-To: <20161024184738.GA26671@sprado-desktop>
-References: <1476999766-32526-1-git-send-email-sergio.prado@e-labworks.com>
- <1476999766-32526-4-git-send-email-sergio.prado@e-labworks.com>
- <20161024150201.01952f67@bbrezillon>
- <20161024184738.GA26671@sprado-desktop>
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bymAt-0002nC-R1
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 20:48:52 +0000
+Received: by mail-wm0-x241.google.com with SMTP id d128so11552374wmf.0
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Oct 2016 13:48:30 -0700 (PDT)
+Subject: Re: [PATCH] mtd: ichxrom: maybe-uninitialized with gcc-4.9
+To: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <20161024152853.2673518-1-arnd@arndb.de>
+Cc: Julia Lawall <julia.lawall@lip6.fr>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <470c5483-949c-6e2a-cd52-73d99748b312@gmail.com>
+Date: Mon, 24 Oct 2016 22:47:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20161024152853.2673518-1-arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 24 Oct 2016 16:47:38 -0200
-Sergio Prado <sergio.prado@e-labworks.com> wrote:
-
-> On Mon, Oct 24, 2016 at 03:02:01PM +0200, Boris Brezillon wrote:
-> > > +static int s3c2410_nand_setup_data_interface(struct mtd_info *mtd,
-> > > +					     const struct nand_data_interface *conf,
-> > > +					     bool check_only)
-> > > +{
-> > > +	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
-> > > +	struct s3c2410_platform_nand *pdata = info->platform;
-> > > +	const struct nand_sdr_timings *timings;
-> > > +	int tacls;
-> > > +
-> > > +	timings = nand_get_sdr_timings(conf);
-> > > +	if (IS_ERR(timings))
-> > > +		return -ENOTSUPP;
-> > > +
-> > > +	tacls = timings->tCLS_min - timings->tWP_min;
-> > > +	if (tacls < 0)
-> > > +		tacls = 0;
-> > > +
-> > > +	pdata->tacls  = DIV_ROUND_UP(tacls, 1000);
-> > > +	pdata->twrph0 = DIV_ROUND_UP(timings->tWP_min, 1000);
-> > > +	pdata->twrph1 = DIV_ROUND_UP(timings->tCLH_min, 1000);  
-> > 
-> > You seem to only apply the timings in s3c2410_nand_setrate(), which is
-> > only called at probe time or on a cpufreq even, but the core can change
-> > timings at runtime (this is what happens each time you reset the chip).
-> > 
-> > To support that you have 2 options:
-> >  - apply the timings in ->select_chip()
-> >  - apply the timings here  
+On 10/24/2016 05:28 PM, Arnd Bergmann wrote:
+> pci_read_config_word() might fail and not initialize its output,
+> as pointed out by older versions of gcc when using the -Wmaybe-unintialized
+> flag:
 > 
-> Right. As far as I understood, ->setup_data_interface() will be called
-> when MTD core change timings at runtime, so it is enough to apply the
-> timings in the end of ->setup_data_interface()?
+> drivers/mtd/maps/ichxrom.c: In function ‘ichxrom_cleanup’:
+> drivers/mtd/maps/ichxrom.c:63:2: error: ‘word’ is used uninitialized in this function [-Werror=uninitialized]
+> 
+> This is apparently a correct warning, though it does not show up
+> with newer compilers. Changing the code to not attempt to write
+> back uninitialized data into PCI config space is a correct
+> fix for the problem and avoids the warning.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-If your controller does not support interfacing with multiple chips,
-then yes, it should work.
+Reviewed-by: Marek Vasut <marex@denx.de>
+
+> ---
+>  drivers/mtd/maps/ichxrom.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/maps/ichxrom.c b/drivers/mtd/maps/ichxrom.c
+> index e17d02ae03f0..976d42f63aef 100644
+> --- a/drivers/mtd/maps/ichxrom.c
+> +++ b/drivers/mtd/maps/ichxrom.c
+> @@ -57,10 +57,12 @@ static void ichxrom_cleanup(struct ichxrom_window *window)
+>  {
+>  	struct ichxrom_map_info *map, *scratch;
+>  	u16 word;
+> +	int ret;
+>  
+>  	/* Disable writes through the rom window */
+> -	pci_read_config_word(window->pdev, BIOS_CNTL, &word);
+> -	pci_write_config_word(window->pdev, BIOS_CNTL, word & ~1);
+> +	ret = pci_read_config_word(window->pdev, BIOS_CNTL, &word);
+> +	if (!ret)
+> +		pci_write_config_word(window->pdev, BIOS_CNTL, word & ~1);
+>  	pci_dev_put(window->pdev);
+>  
+>  	/* Free all of the mtd devices */
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
