@@ -1,22 +1,21 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byexy-0001m6-M8
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 13:07:07 +0000
-Subject: Re: [PATCH] MAINTAINERS: add more people to the MTD maintainer team
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>
-References: <1477312526-7563-1-git-send-email-boris.brezillon@free-electrons.com>
-CC: Artem Bityutskiy <dedekind1@gmail.com>, <linux-kernel@vger.kernel.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <9e70dbc8-d234-fdb4-b7a6-0cfd91aca1cf@atmel.com>
-Date: Mon, 24 Oct 2016 15:06:39 +0200
+ id 1byf1O-0003CE-Ly
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 13:10:38 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id f193so118848657wmg.0
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Oct 2016 06:10:13 -0700 (PDT)
+Subject: Re: [PATCHv1] mtd: spi-nor: add support for s25fl208k
+To: Jagan Teki <jagan@openedev.com>, Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+References: <20161005085949.29804-1-sean.nyekjaer@prevas.dk>
+ <CAD6G_RSJPXj2qNM28ODnW94q6dpqfJSRrm3YK7HdNB8_DVUahQ@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <3536a9c3-9821-a7ee-7589-c329394894b9@gmail.com>
+Date: Mon, 24 Oct 2016 15:07:11 +0200
 MIME-Version: 1.0
-In-Reply-To: <1477312526-7563-1-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD6G_RSJPXj2qNM28ODnW94q6dpqfJSRrm3YK7HdNB8_DVUahQ@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On 10/24/2016 10:16 AM, Jagan Teki wrote:
+> On Wed, Oct 5, 2016 at 2:29 PM, Sean Nyekjaer <sean.nyekjaer@prevas.dk> wrote:
+>> Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+>> ---
+>> Changes: Fixed commit msg
+> 
+> Reviewed-by: Jagan Teki <jagan@openedev.com>
+> 
+> thanks!
+> 
+Acked-by: Marek Vasut <marex@denx.de>
 
-Le 24/10/2016 à 14:35, Boris Brezillon a écrit :
-> Brian has been maintaining the MTD subsystem alone for several years
-> now, and maintaining such a subsystem can really be time consuming.
-> 
-> Create a maintainer team formed of the most active MTD contributors
-> to help Brian with this task, which will hopefully improve the
-> subsystem reactivity.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Acked-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-
-thanks! :)
-
-Cyrille
-> ---
-> Hi all,
-> 
-> I'm just trying to summarize what I understood the process would be,
-> don't hesitate to correct me if I'm wrong.
-> 
-> For each release we will assign a specific MTD maintainer which will be
-> responsible for taking MTD core patches and pulling spi-nor and nand PRs
-> into the MTD tree and eventually send one or several PRs to Linus.
-> 
-> For fixes that are submitted after -rc1, I usually ask Brian to apply
-> them directly into the MTD tree (I don't think there's a real need to
-> prepare spi-nor and nand PRs for fixes), so we can proceed the same
-> way: ask the maintainer assigned to this release to also take care of
-> applying fixes and sending PRs to Linus before each -rc.
-> 
-> If you have other ideas, or would like to proceed differently, don't
-> hesitate propose them.
-> 
-> Thanks,
-> 
-> Boris
-> ---
->  MAINTAINERS | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1cd38a7e0064..cbf9583fdbe7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7912,6 +7912,10 @@ F:	mm/
->  MEMORY TECHNOLOGY DEVICES (MTD)
->  M:	David Woodhouse <dwmw2@infradead.org>
->  M:	Brian Norris <computersforpeace@gmail.com>
-> +M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-> +M:	Marek Vasut <marek.vasut@gmail.com>
-> +M:	Richard Weinberger <richard@nod.at>
-> +M:	Cyrille Pitchen <cyrille.pitchen@atmel.com>
->  L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-> 
+-- 
+Best regards,
+Marek Vasut
