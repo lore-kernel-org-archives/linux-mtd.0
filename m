@@ -1,22 +1,23 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byZIy-0005nP-H2
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 07:04:21 +0000
-Subject: Re: [PATCH 26/26] ubifs: Raise write version to 5
-To: Theodore Ts'o <tytso@mit.edu>, Michael Halcrow <mhalcrow@google.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, dedekind1@gmail.com, adrian.hunter@intel.com,
- jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
- dengler@linutronix.de, alexcope@google.com
+ id 1byZKh-0007QA-9T
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 07:06:08 +0000
+Subject: Re: [PATCH 01/26] fscrypto: Add buffer operations
+To: Christoph Hellwig <hch@infradead.org>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
- <1477054121-10198-27-git-send-email-richard@nod.at>
- <20161021173154.GB17121@google.com>
- <20161021174758.wz7xrulokicuhlht@thunk.org>
+ <1477054121-10198-2-git-send-email-richard@nod.at>
+ <20161021130558.GA2411@infradead.org>
+ <9c80d1d0-0237-606f-91ce-a004c3694aa5@nod.at>
+ <20161021132400.GA28880@infradead.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, dedekind1@gmail.com, adrian.hunter@intel.com,
+ tytso@mit.edu, jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de,
+ sbabic@denx.de, dengler@linutronix.de
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <b7909fac-9ebe-613c-77ca-0a7fcd494e46@nod.at>
-Date: Mon, 24 Oct 2016 09:03:56 +0200
+Message-ID: <b7f1f92e-3e0f-ba91-fc36-dcf45c6d461d@nod.at>
+Date: Mon, 24 Oct 2016 09:05:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <20161021174758.wz7xrulokicuhlht@thunk.org>
+In-Reply-To: <20161021132400.GA28880@infradead.org>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,38 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ted,
+Christoph,
 
-On 21.10.2016 19:47, Theodore Ts'o wrote:
-> On Fri, Oct 21, 2016 at 10:31:54AM -0700, Michael Halcrow wrote:
->>> diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
->>> index bdc7935a5e41..e8c23c9d4f4a 100644
->>> --- a/fs/ubifs/ubifs-media.h
->>> +++ b/fs/ubifs/ubifs-media.h
->>> @@ -46,7 +46,7 @@
->>>   * UBIFS went into mainline kernel with format version 4. The older formats
->>>   * were development formats.
->>>   */
->>> -#define UBIFS_FORMAT_VERSION 4
->>> +#define UBIFS_FORMAT_VERSION 5
->>
->> Alex Cope is working on a fix for file name encryption in ext4 so that
->> common plaintext prefixes don't result in common ciphertext prefixes.
->> Older kernels will not be able to read the new file names.
+On 21.10.2016 15:24, Christoph Hellwig wrote:
+> On Fri, Oct 21, 2016 at 03:17:03PM +0200, Richard Weinberger wrote:
+>> UBIFS works on kmalloc()'ed buffers where it constructs the NAND/NOR pages
+>> which will be written to the MTD. JFFS2 does the same.
 > 
-> To be clear, this will be done in the context of a new encryption
-> mode.  In terms of how Ubifs will handle things, that's going to
-> depend on whether ubifs uses a single major version number or whether
-> they have a feature bitmask like other filesystems, including ext4.
+> Yes, you can trivially do a virt_to_page on a kmalloc buffer.
+> 
+>> Another reason why I did the buffer functions is because fscrypt_encrypt_page()
+>> always allocates a bounce page as temporary memory. For ext4 this is needed,
+>> for UBIFS not.
+>> UBIFS has already a construction buffer, especially since it also does compression.
+> 
+> We should defintively find a way to avoid that, but it's a separate
+> issue from adding another API just to pass buffers.
 
-With write version 5, UBIFS has a real feature bitmask.
-UBIFS has a feature bitmask since ever but never enforced it.
-i.e. you could set bits which are unknown to UBIFS and it sill mounted.
-Now UBIFS will refuse to mount when features are set which are not known/enabled
-by this implementation.
-
-Maybe I'll add another bitmap just for crypto do be able to support different cipher
-modes.
+Okay, I'll address this in v2 of my series.
 
 Thanks,
 //richard
