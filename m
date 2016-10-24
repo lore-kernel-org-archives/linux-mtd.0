@@ -1,25 +1,43 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bye4R-00037q-Op
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 12:09:43 +0000
-Subject: Re: [PATCH v2 0/9] mtd: spi-nor: parse SFDP tables to setup (Q)SPI
- memories
-To: Jagan Teki <jagan@openedev.com>, Marek Vasut <marex@denx.de>
-References: <cover.1475668319.git.cyrille.pitchen@atmel.com>
- <CAD6G_RR4Av8+szo9v2oucCFvwnow86gMVC-Ku_-Qfy18TVMGgA@mail.gmail.com>
- <c022e6fc-6bd7-d124-7233-e1e742049657@denx.de>
- <CAD6G_RQ2BjtF2cmPUJvYNk7KZZ6eTVAQsEqWs26xn710A4Dz-w@mail.gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: Brian Norris <computersforpeace@gmail.com>,
+Received: from up.free-electrons.com ([163.172.77.33]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1byeLo-0007U0-Dv
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 12:27:36 +0000
+Date: Mon, 24 Oct 2016 14:27:14 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: punnaiah choudary kalluri <punnaia@xilinx.com>
+Cc: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, Punnaiah Choudary
+ Kalluri <punnaiah.choudary.kalluri@xilinx.com>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <558d668a-69b0-8066-b7da-090517d3161d@atmel.com>
-Date: Mon, 24 Oct 2016 14:09:15 +0200
+ "arnd@arndb.de" <arnd@arndb.de>, "michal.simek@xilinx.com"
+ <michal.simek@xilinx.com>, "ezequiel.garcia@free-electrons.com"
+ <ezequiel.garcia@free-electrons.com>, "grant.likely@linaro.org"
+ <grant.likely@linaro.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "jason@lakedaemon.net"
+ <jason@lakedaemon.net>, "pawel.moll@arm.com" <pawel.moll@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "joern@logfs.org" <joern@logfs.org>, "kpc528@gmail.com" <kpc528@gmail.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>, "acourbot@nvidia.com"
+ <acourbot@nvidia.com>, "gregkh@linuxfoundation.org"
+ <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "rob@landley.net" <rob@landley.net>,
+ "galak@codeaurora.org" <galak@codeaurora.org>, "Khoronzhuk, Ivan"
+ <ivan.khoronzhuk@ti.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [v7, 1/3] nand: pl353: Add basic driver for arm pl353 smc nand
+ interface
+Message-ID: <20161024142714.10902cf2@bbrezillon>
+In-Reply-To: <CAGnW=Bb-pnJ9-xjcw-1dR-y+oKjNs53bgD+dh1LwsMTCmzdRmQ@mail.gmail.com>
+References: <1433786918-21500-2-git-send-email-punnaia@xilinx.com>
+ <20161021203322.GA28655@obsidianresearch.com>
+ <20161021234611.1f737144@bbrezillon>
+ <CAGnW=Bb-pnJ9-xjcw-1dR-y+oKjNs53bgD+dh1LwsMTCmzdRmQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD6G_RQ2BjtF2cmPUJvYNk7KZZ6eTVAQsEqWs26xn710A4Dz-w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,68 +47,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jagan,
+Hi Punnaih,
 
-Le 24/10/2016 à 09:41, Jagan Teki a écrit :
-> On Sun, Oct 23, 2016 at 2:03 AM, Marek Vasut <marex@denx.de> wrote:
->> On 10/22/2016 01:00 PM, Jagan Teki wrote:
->>> On Wed, Oct 5, 2016 at 5:30 PM, Cyrille Pitchen
->>> <cyrille.pitchen@atmel.com> wrote:
->>>> Hi all,
->>>>
->>>> This series extends support of SPI protocols to new protocols such as
->>>> SPI x-2-2 and SPI x-4-4. Also spi_nor_scan() tries now to select the right
->>>> op codes, timing parameters (number of mode and dummy cycles) and erase
->>>> sector size by parsing the Serial Flash Discoverable Parameter (SFDP)
->>>> tables, when available, as defined in the JEDEC JESD216 specifications.
->>>>
->>>> When SFDP tables are not available, legacy settings are still used for
->>>> backward compatibility (SPI and earlier QSPI memories).
->>>>
->>>> Support of SPI memories >128Mbits is also improved by using the 4byte
->>>> address instruction set, when available. Using those dedicated op codes
->>>> is stateless as opposed to enter the 4byte address mode, hence a better
->>>> compatibility with some boot loaders which expect to use 3byte address
->>>> op codes.
->>>
->>> The memories which are > 128Mbits should have 4-bytes addressing
->>> support based on my experience, do you think BAR is also required
->>> atleast from spi-nor side?
->>
->> Yes, I believe BAR is still required for broken/dumb flash chips.
->> Not all chips > 16 MiB support dedicated 4-byte addressing opcodes :-(
+On Sun, 23 Oct 2016 17:37:42 +0530
+punnaiah choudary kalluri <punnaia@xilinx.com> wrote:
+
+> Hi Boris and Jason,
 > 
-> Do you have list for those broken chips? because I never find any
-> chips which has > 16 MiB with not support of 4-byte address opcodes
-> and I've seen the controller has dependable with BAR though it can
-> access > 16MiB ex: zynq qspi/
+>  I am doing rework on these patches to accommodate recent changes with
+>  respect to ooblayout. Also some of the comments that i have received
+> from Boris as part of the arasan nand controller upstream patches will
+> apply to this driver. So, i will be releasing the next set of patches for this
+> driver soon and request your time for reviewing those patches.
 > 
-> thanks!
-> 
+> for now, please ignore these patches.
 
-Let's take the case of Micron n25q256* memories. Depending of the part number,
-the 12h op code is associated with either 4-byte address Page Program 1-1-1
-or 3-byte address Page Program 1-4-4.
-Then considering parts where the 12h op code is used for 3-byte address Page
-Program 1-4-4, there is no op code for a 4-byte address Page Program 1-1-1.
+OK. Thanks for the heads up. I'll wait for your new version.
 
-Note 15, extracted from the Micron n25q_256mb_3v_65nm.pdf datasheet, about
-the 3-byte address Page Program 1-4-4 (Extended Quad Input Fast Program):
-The code 38h is valid only for part numbers N25Q256A83ESF40x, N25Q256A83E1240x
-and N25Q256A83ESFA0F; the code 12h is valid for the other part numbers.
+Regards,
 
-Hence most of the Micron n25q256* memories has no op code for 4-byte address
-Page Program 1-1-1.
-Then we could use the 34h op code instead to perform 4-byte address Page
-Program 1-1-4 but some SPI controllers might not support the SPI 1-1-4 protocol
-for Page Program operations. Sp entering the 4-byte address mode or using
-the BAR might still be the only solutions in those cases.
-
-Also, I'm pretty sure some other SPI NOR memories support 4-byte address Fast
-Read op codes but only 3-byte address op codes for Page Program and Sector
-Erase. I will look at the datasheets I have to find and provide an example.
-
-
-Best regards,
-
-Cyrille
+Boris
