@@ -1,18 +1,19 @@
-Received: from mout.kundenserver.de ([212.227.17.13])
+Received: from smtpout.microchip.com ([198.175.253.82]
+ helo=email.microchip.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byhBe-0001qV-VB
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 15:29:21 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Julia Lawall <julia.lawall@lip6.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: ichxrom: maybe-uninitialized with gcc-4.9
-Date: Mon, 24 Oct 2016 17:28:35 +0200
-Message-Id: <20161024152853.2673518-1-arnd@arndb.de>
+ id 1byiCb-0000XD-Ua
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 16:34:24 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <richard@nod.at>, <linux-kernel@vger.kernel.org>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v3 0/9] mtd: spi-nor: parse SFDP tables to setup (Q)SPI
+ memories
+Date: Mon, 24 Oct 2016 18:34:37 +0200
+Message-ID: <cover.1477325128.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +23,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-pci_read_config_word() might fail and not initialize its output,
-as pointed out by older versions of gcc when using the -Wmaybe-unintialized
-flag:
+Hi all,
 
-drivers/mtd/maps/ichxrom.c: In function ‘ichxrom_cleanup’:
-drivers/mtd/maps/ichxrom.c:63:2: error: ‘word’ is used uninitialized in this function [-Werror=uninitialized]
+This series extends support of SPI protocols to new protocols such as
+SPI x-2-2 and SPI x-4-4. Also spi_nor_scan() tries now to select the right
+op codes, timing parameters (number of mode and dummy cycles) and erase
+sector size by parsing the Serial Flash Discoverable Parameter (SFDP)
+tables, when available, as defined in the JEDEC JESD216 specifications.
 
-This is apparently a correct warning, though it does not show up
-with newer compilers. Changing the code to not attempt to write
-back uninitialized data into PCI config space is a correct
-fix for the problem and avoids the warning.
+When SFDP tables are not available, legacy settings are still used for
+backward compatibility (SPI and earlier QSPI memories).
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/maps/ichxrom.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Support of SPI memories >128Mbits is also improved by using the 4byte
+address instruction set, when available. Using those dedicated op codes
+is stateless as opposed to enter the 4byte address mode, hence a better
+compatibility with some boot loaders which expect to use 3byte address
+op codes.
 
-diff --git a/drivers/mtd/maps/ichxrom.c b/drivers/mtd/maps/ichxrom.c
-index e17d02ae03f0..976d42f63aef 100644
---- a/drivers/mtd/maps/ichxrom.c
-+++ b/drivers/mtd/maps/ichxrom.c
-@@ -57,10 +57,12 @@ static void ichxrom_cleanup(struct ichxrom_window *window)
- {
- 	struct ichxrom_map_info *map, *scratch;
- 	u16 word;
-+	int ret;
- 
- 	/* Disable writes through the rom window */
--	pci_read_config_word(window->pdev, BIOS_CNTL, &word);
--	pci_write_config_word(window->pdev, BIOS_CNTL, word & ~1);
-+	ret = pci_read_config_word(window->pdev, BIOS_CNTL, &word);
-+	if (!ret)
-+		pci_write_config_word(window->pdev, BIOS_CNTL, word & ~1);
- 	pci_dev_put(window->pdev);
- 
- 	/* Free all of the mtd devices */
+
+This series was tested on a Atmel sama5d2 xplained board with the
+atmel-qspi.c driver. Except for SST memories, the SPI bus clock was set
+to 83MHz. The config MTD_SPI_NOR_USE_4K_SECTORS was selected.
+
+For my tests, I used some shell scripts using mtd_debug and sha1sum to
+check the data integrity.
+
+e.g:
+#!/bin/sh
+
+mtd_debug erase /dev/mtd5 0 0x780000
+mtd_debug write /dev/mtd5 0 7674703 sama5d4_doc11238.pdf
+mtd_debug read /dev/mtd5 0 7674703 sama5d4_tmp.pdf
+
+sha1sum sama5d4_doc11238.pdf sama5d4_tmp.pdf
+
+
+Depending on the actual memory size, I may have used other partitions
+(/dev/mtd4) and input file size (2880044 and 320044 bytes).
+
+
+The series was tested with the following QSPI memories:
+
+Spansion/Cypress:
+- s25fl127s	OK
+- s25fl512s	OK
+- s25fl164k	OK
+
+Micron:
+- n25q128a	OK
+- n25q512	OK
+- n25q01g	OK
+
+Macronix:
+- mx25v1635f	OK
+- mx25l3235f	OK
+- mx25l3273f	OK
+- mx25l6433f	OK
+- mx25l6473f	OK
+- mx25l12835f	OK
+- mx25l12845g	OK
+- mx25l12873g	OK
+- mx25l25645g	OK
+- mx25l25673g	OK
+- mx25l51245g	OK
+- mx66l1g45g	OK (1)
+
+SST:
+- sst26vf016b	OK (2)
+- sst26vf032b	OK (2)
+- sst26vf064b	OK (2)
+
+(1): requires patch 8
+(2): requires patch 9, the SPI bus clock frequency was decreased down to 55.3MHz
+
+
+Best regards,
+
+Cyrille
+
+ChangeLog:
+
+v2 -> v3
+- tested with new samples: Micron n25q512, n25q01g and Macronix
+  mx25v1635f, mx25l3235f, mx25l3273f.
+- add "Reviewed-by: Jagan Teki <jagan@openedev.com>" on patch 1.
+- add "Tested-by: Vignesh R <vigneshr@ti.com>" on patch 2.
+- fix some checkpatch warnings.
+- add call of spi_nor_wait_till_ready() in spansion_new_quad_enable() 
+  and sr2_bit7_quad_enable(), as suggested by Joel Esponde on patch 6.
+- test JESD216 rev A (minor 5) instead of rev B (minor 6) with the return
+  code of spi_nor_parse_sfdp() from spi_nor_init_params() on patch 6.
+  The seven additional DWORDs of the Basic Flash Parameter Table were
+  introduced in rev A, not rev B, so the 15th DWORD was already available
+  in rev A. The 15th DWORD provides us with the Quad Enable Requirements
+  (QER) bits.
+  Basic Flash Parameter Table size:
+  + JESD216 :  9 DWORDS
+  + JESD216A: 16 DWORDS
+  + JESD216B: 16 DWORDS
+
+v1 -> v2
+- fix patch 3 to resolve compiler errors on hisi-sfc.c and cadence-quadspi.c
+  drivers
+
+
+Cyrille Pitchen (9):
+  mtd: spi-nor: improve macronix_quad_enable()
+  mtd: spi-nor: add an alternative method to support memory >16MiB
+  mtd: spi-nor: add support of SPI protocols like SPI 1-2-2 and SPI
+    1-4-4
+  mtd: spi-nor: remove unused set_quad_mode() function
+  mtd: m25p80: add support of dual and quad spi protocols to all
+    commands
+  mtd: spi-nor: parse Serial Flash Discoverable Parameters (SFDP) tables
+  mtd: spi-nor: parse SFDP 4-byte Address Instruction Table
+  mtd: spi-nor: add support to Macronix mx66l1g45g
+  mtd: spi-nor: add support to SST sst26* QSPI memories
+
+ drivers/mtd/devices/m25p80.c            |  204 ++++--
+ drivers/mtd/devices/serial_flash_cmds.h |    7 -
+ drivers/mtd/devices/st_spi_fsm.c        |   28 +-
+ drivers/mtd/spi-nor/atmel-quadspi.c     |   83 ++-
+ drivers/mtd/spi-nor/cadence-quadspi.c   |   18 +-
+ drivers/mtd/spi-nor/fsl-quadspi.c       |    8 +-
+ drivers/mtd/spi-nor/hisi-sfc.c          |   32 +-
+ drivers/mtd/spi-nor/mtk-quadspi.c       |   16 +-
+ drivers/mtd/spi-nor/nxp-spifi.c         |   21 +-
+ drivers/mtd/spi-nor/spi-nor.c           | 1026 ++++++++++++++++++++++++++++---
+ include/linux/mtd/spi-nor.h             |  165 ++++-
+ 11 files changed, 1372 insertions(+), 236 deletions(-)
+
 -- 
-2.9.0
+2.7.4
