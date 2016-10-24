@@ -1,21 +1,21 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byZ9X-00021G-ML
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 06:54:37 +0000
-Subject: Re: [PATCH 20/26] ubifs: Add support for encrypted symlinks
+ id 1byZEc-0003vT-RX
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 06:59:51 +0000
+Subject: Re: [PATCH 25/26] ubifs: Implement UBIFS_FLG_ENCRYPTION
 To: Eric Biggers <ebiggers@google.com>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
- <1477054121-10198-21-git-send-email-richard@nod.at>
- <20161021184231.GD90712@google.com>
+ <1477054121-10198-26-git-send-email-richard@nod.at>
+ <20161021183012.GC90712@google.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, dedekind1@gmail.com, adrian.hunter@intel.com,
  tytso@mit.edu, jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de,
  sbabic@denx.de, dengler@linutronix.de
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <e251d6e6-514c-84ba-60df-143b16a0b020@nod.at>
-Date: Mon, 24 Oct 2016 08:54:03 +0200
+Message-ID: <58235996-2da6-259c-a02c-9e7fcb499d62@nod.at>
+Date: Mon, 24 Oct 2016 08:59:26 +0200
 MIME-Version: 1.0
-In-Reply-To: <20161021184231.GD90712@google.com>
+In-Reply-To: <20161021183012.GC90712@google.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,43 +29,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Eric,
 
-On 21.10.2016 20:42, Eric Biggers wrote:
-> On Fri, Oct 21, 2016 at 02:48:35PM +0200, Richard Weinberger wrote:
->> +
->> +	if (!dentry)
->> +		return ERR_PTR(-ECHILD);
->> +
->> +	if (ubifs_crypt_is_encrypted(inode)) {
->> +		err = fscrypt_get_encryption_info(inode);
+On 21.10.2016 20:30, Eric Biggers wrote:
+> On Fri, Oct 21, 2016 at 02:48:40PM +0200, Richard Weinberger wrote:
+>> @@ -190,6 +191,10 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>>  				   sizeof(policy)))
+>>  			return -EFAULT;
+>>  
+>> +		err = ubifs_enable_encryption(c);
 >> +		if (err)
->> +			return ERR_PTR(err);
->> +	} else
->> +		return ui->data;
+>> +			return err;
 >> +
+>>  		err = fscrypt_process_policy(file, &policy);
 > 
-> This will make path lookups drop out of RCU mode when an unencrypted symlink is
-> followed.  This can be avoided by checking for unencrypted symlinks first:
+> Is ubifs_enable_encryption() being done with proper locking and authorization?
 
-Oh! Thanks for pointing this out!
+Anyone can encrypted files when UBIFS is build with that feature. Locking is fine
+since the operation is atomic. (UBI LEB change).
 
-> 	if (!ubifs_crypt_is_encrypted(inode))
-> 		return ui->data;
-> 
-> 	if (!dentry)
-> 		return ERR_PTR(-ECHILD);
-> 
-> 	err = fscrypt_get_encryption_info(inode);
-> 	if (err)
-> 		return ERR_PTR(err);
-> 
->> +
->> +	pstr.name[err] = '\0';
->> +
-> 
-> In 4.9, fscrypt_fname_{disk_to_usr,usr_to_disk} return 0 instead of the output
-> length, so this will need to be changed to 'pstr.name[pstr.len] = '\0''.
+> As-is, anyone can call this at any time if they can open some file on UBIFS.
 
-Noted.
+That's what I had in mind.
+
+> FYI, the approach being taken for ext4 is that the encryption feature flag has
+> to be explicitly turned on before FS_IOC_SET_ENCRYPTION_POLICY will work.
+
+So, on ext4 (f2fs too?) root has to enable to feature first before users
+can use it?
+IOW for ext4 the encryption flag means "file encryption is allowed", for UBIFS it
+means "at least one file got encrypted on this fs".
+
+I think I'll do what ext4 does to have common policies.
+BTW: Are these policies documented somewhere?
 
 Thanks,
 //richard
