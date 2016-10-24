@@ -1,19 +1,25 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byfiX-00014C-VH
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 13:55:14 +0000
-Subject: Re: [PATCH 1/3] mtd: spi-nor: Add die_cnt field and flags
-To: <marcin.krzeminski@nokia.com>, <linux-mtd@lists.infradead.org>
-References: <1477314214-17718-1-git-send-email-marcin.krzeminski@nokia.com>
- <1477314214-17718-2-git-send-email-marcin.krzeminski@nokia.com>
+ id 1byfvI-0006Kr-JP
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 14:08:24 +0000
+Subject: Re: [PATCH v2 0/9] mtd: spi-nor: parse SFDP tables to setup (Q)SPI
+ memories
+To: Jagan Teki <jagan@openedev.com>, Marek Vasut <marex@denx.de>
+References: <cover.1475668319.git.cyrille.pitchen@atmel.com>
+ <CAD6G_RR4Av8+szo9v2oucCFvwnow86gMVC-Ku_-Qfy18TVMGgA@mail.gmail.com>
+ <c022e6fc-6bd7-d124-7233-e1e742049657@denx.de>
+ <CAD6G_RQ2BjtF2cmPUJvYNk7KZZ6eTVAQsEqWs26xn710A4Dz-w@mail.gmail.com>
+ <558d668a-69b0-8066-b7da-090517d3161d@atmel.com>
+CC: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <rfsw-patches@mlist.nokia.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>
-Message-ID: <0386ac08-f41e-1e10-d0e6-a16624bba952@atmel.com>
-Date: Mon, 24 Oct 2016 15:54:46 +0200
+Message-ID: <1181d557-c149-8dfd-7fd1-bc83056541cf@atmel.com>
+Date: Mon, 24 Oct 2016 16:07:57 +0200
 MIME-Version: 1.0
-In-Reply-To: <1477314214-17718-2-git-send-email-marcin.krzeminski@nokia.com>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <558d668a-69b0-8066-b7da-090517d3161d@atmel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,118 +30,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marcin,
-
-Le 24/10/2016 � 15:03, marcin.krzeminski@nokia.com a �crit :
-> From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+Le 24/10/2016 à 14:09, Cyrille Pitchen a écrit :
+> Hi Jagan,
 > 
-> This commit adds new field and flags that could
-> be used to signalize that chip support die erase
-> command.
+> Le 24/10/2016 à 09:41, Jagan Teki a écrit :
+>> On Sun, Oct 23, 2016 at 2:03 AM, Marek Vasut <marex@denx.de> wrote:
+>>> On 10/22/2016 01:00 PM, Jagan Teki wrote:
+>>>> On Wed, Oct 5, 2016 at 5:30 PM, Cyrille Pitchen
+>>>> <cyrille.pitchen@atmel.com> wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> This series extends support of SPI protocols to new protocols such as
+>>>>> SPI x-2-2 and SPI x-4-4. Also spi_nor_scan() tries now to select the right
+>>>>> op codes, timing parameters (number of mode and dummy cycles) and erase
+>>>>> sector size by parsing the Serial Flash Discoverable Parameter (SFDP)
+>>>>> tables, when available, as defined in the JEDEC JESD216 specifications.
+>>>>>
+>>>>> When SFDP tables are not available, legacy settings are still used for
+>>>>> backward compatibility (SPI and earlier QSPI memories).
+>>>>>
+>>>>> Support of SPI memories >128Mbits is also improved by using the 4byte
+>>>>> address instruction set, when available. Using those dedicated op codes
+>>>>> is stateless as opposed to enter the 4byte address mode, hence a better
+>>>>> compatibility with some boot loaders which expect to use 3byte address
+>>>>> op codes.
+>>>>
+>>>> The memories which are > 128Mbits should have 4-bytes addressing
+>>>> support based on my experience, do you think BAR is also required
+>>>> atleast from spi-nor side?
+>>>
+>>> Yes, I believe BAR is still required for broken/dumb flash chips.
+>>> Not all chips > 16 MiB support dedicated 4-byte addressing opcodes :-(
+>>
+>> Do you have list for those broken chips? because I never find any
+>> chips which has > 16 MiB with not support of 4-byte address opcodes
+>> and I've seen the controller has dependable with BAR though it can
+>> access > 16MiB ex: zynq qspi/
+>>
+>> thanks!
+>>
 > 
-> If DIE_ERASE flag will be selected but die_cnt field
-> will be 0 chip will not use chip erase command.
+> Let's take the case of Micron n25q256* memories. Depending of the part number,
+> the 12h op code is associated with either 4-byte address Page Program 1-1-1
+> or 3-byte address Page Program 1-4-4.
+> Then considering parts where the 12h op code is used for 3-byte address Page
+> Program 1-4-4, there is no op code for a 4-byte address Page Program 1-1-1.
 > 
-> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 18 ++++++++++++++++++
->  include/linux/mtd/spi-nor.h   |  5 +++++
->  2 files changed, 23 insertions(+)
+> Note 15, extracted from the Micron n25q_256mb_3v_65nm.pdf datasheet, about
+> the 3-byte address Page Program 1-4-4 (Extended Quad Input Fast Program):
+> The code 38h is valid only for part numbers N25Q256A83ESF40x, N25Q256A83E1240x
+> and N25Q256A83ESFA0F; the code 12h is valid for the other part numbers.
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d0fc165..3afe207 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -75,6 +75,7 @@ struct flash_info {
->  					 * bit. Must be used with
->  					 * SPI_NOR_HAS_LOCK.
->  					 */
-> +#define DIE_ERASE			BIT(10)	/* Support for die erase cmd */
->  };
->  
->  #define JEDEC_MFR(info)	((info)->id[0])
-> @@ -295,6 +296,23 @@ static int erase_chip(struct spi_nor *nor)
->  	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
->  }
->  
-> +static int spi_nor_die_erase(struct spi_nor *nor, u32 addr)
-> +{
-> +	u8 buf[SPI_NOR_MAX_ADDR_WIDTH];
-> +	int i;
-> +
-> +	dev_dbg(nor->dev, "erase @ 0x%X\n", addr);
-> +
-> +	write_enable(nor);
-> +
-> +	for (i = nor->addr_width - 1; i >= 0; i--) {
-> +		buf[i] = addr & 0xff;
-> +		addr >>= 8;
-> +	}
-> +
-> +	return nor->write_reg(nor, SPINOR_OP_DIE_ERASE, buf, nor->addr_width);
-
-If think you should first check whether nor->erase() is implemented by the SPI
-controller driver and call it instead of nor->write_reg().
-
-For instance, some SPI controllers are mapped to the system memory to speed
-up Fast Read operations. In which case, they could also enable data cache to
-fasten even more the read operations.
-
-So when the spi-nor framework calls nor->erase() or nor->write(), those
-handlers might need to invalidate the cache before performing the next read.
-
-This is just an example but generally speaking, don't forget the nor->erase()
-handler! :)
-
-
-> +}
-> +
->  static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->  {
->  	int ret = 0;
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index c425c7b..80154b2 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -50,6 +50,7 @@
->  #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
->  #define SPINOR_OP_BE_32K	0x52	/* Erase 32KiB block */
->  #define SPINOR_OP_CHIP_ERASE	0xc7	/* Erase whole flash chip */
-> +#define SPINOR_OP_DIE_ERASE	0xc4	/* Erase whole die within chip */
->  #define SPINOR_OP_SE		0xd8	/* Sector erase (usually 64KiB) */
->  #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
->  #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
-> @@ -119,6 +120,7 @@ enum spi_nor_ops {
->  enum spi_nor_option_flags {
->  	SNOR_F_USE_FSR		= BIT(0),
->  	SNOR_F_HAS_SR_TB	= BIT(1),
-> +	SNOR_F_DIE_ERASE	= BIT(2),
->  };
->  
->  /**
-> @@ -136,6 +138,8 @@ enum spi_nor_option_flags {
->   * @sst_write_second:	used by the SST write operation
->   * @flags:		flag options for the current SPI-NOR (SNOR_F_*)
->   * @cmd_buf:		used by the write_reg
-> + * @die_cnt:		number of dies in chip, if and SNOR_F_DIE_ERASE
-
-The 1st flag is missing between "if" and "and", isn't it?
-> + * 			flasg is enabled CE command will be disabled
-
-typo: s/flasg/flags/
->   * @prepare:		[OPTIONAL] do some preparations for the
->   *			read/write/erase/lock/unlock operations
->   * @unprepare:		[OPTIONAL] do some post work after the
-> @@ -167,6 +171,7 @@ struct spi_nor {
->  	bool			sst_write_second;
->  	u32			flags;
->  	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
-> +	u32			die_cnt;
->  
->  	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
->  	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
+> Hence most of the Micron n25q256* memories has no op code for 4-byte address
+> Page Program 1-1-1.
+> Then we could use the 34h op code instead to perform 4-byte address Page
+> Program 1-1-4 but some SPI controllers might not support the SPI 1-1-4 protocol
+> for Page Program operations. Sp entering the 4-byte address mode or using
+> the BAR might still be the only solutions in those cases.
 > 
+> Also, I'm pretty sure some other SPI NOR memories support 4-byte address Fast
+> Read op codes but only 3-byte address op codes for Page Program and Sector
+> Erase. I will look at the datasheets I have to find and provide an example.
+> 
+>
 
-Best regards,
+Even worse, let's take the example for Macronix MX25L25635* and MX25L25673*:
+they both share the very same JEDEC ID. The older part (35) doesn't support
+the 4-byte address instruction set at all whereas the newer part (73) does.
 
-Cyrille
+> Best regards,
+> 
+> Cyrille
+> 
