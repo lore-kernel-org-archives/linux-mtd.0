@@ -1,21 +1,21 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byZEc-0003vT-RX
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 06:59:51 +0000
-Subject: Re: [PATCH 25/26] ubifs: Implement UBIFS_FLG_ENCRYPTION
+ id 1byZFF-0004EY-9y
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 07:00:30 +0000
+Subject: Re: [PATCH 15/26] ubifs: Implement encrypt/decrypt for all IO
 To: Eric Biggers <ebiggers@google.com>
 References: <1477054121-10198-1-git-send-email-richard@nod.at>
- <1477054121-10198-26-git-send-email-richard@nod.at>
- <20161021183012.GC90712@google.com>
+ <1477054121-10198-16-git-send-email-richard@nod.at>
+ <20161021182559.GB90712@google.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, dedekind1@gmail.com, adrian.hunter@intel.com,
  tytso@mit.edu, jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de,
  sbabic@denx.de, dengler@linutronix.de
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <58235996-2da6-259c-a02c-9e7fcb499d62@nod.at>
-Date: Mon, 24 Oct 2016 08:59:26 +0200
+Message-ID: <ad408dbe-db9a-05f5-b3ee-8a650aceafb3@nod.at>
+Date: Mon, 24 Oct 2016 09:00:03 +0200
 MIME-Version: 1.0
-In-Reply-To: <20161021183012.GC90712@google.com>
+In-Reply-To: <20161021182559.GB90712@google.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,37 +29,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Eric,
 
-On 21.10.2016 20:30, Eric Biggers wrote:
-> On Fri, Oct 21, 2016 at 02:48:40PM +0200, Richard Weinberger wrote:
->> @@ -190,6 +191,10 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->>  				   sizeof(policy)))
->>  			return -EFAULT;
->>  
->> +		err = ubifs_enable_encryption(c);
->> +		if (err)
->> +			return err;
+On 21.10.2016 20:25, Eric Biggers wrote:
+> On Fri, Oct 21, 2016 at 02:48:30PM +0200, Richard Weinberger wrote:
 >> +
->>  		err = fscrypt_process_policy(file, &policy);
+>> +	if (ubifs_crypt_is_encrypted(inode)) {
+>> +		int clen = le16_to_cpu(dn->compr_size);
+>> +
+>> +		if (clen <= 0 || clen > UBIFS_BLOCK_SIZE || clen > dlen)
+>> +			goto dump;
+>> +
+>> +		ubifs_assert(dlen <= UBIFS_BLOCK_SIZE);
+>> +		err = fscrypt_decrypt_buffer(inode, &dn->data, &dn->data, dlen, block, GFP_NOFS);
+>> +		if (err) {
+>> +			ubifs_err(c, "fscrypt_decrypt_buffer failed: %i", err);
+>> +			return err;
+>> +		}
+>> +
+>> +		ubifs_assert(clen <= dlen);
+>> +		dlen = clen;
+>> +	}
+>> +
 > 
-> Is ubifs_enable_encryption() being done with proper locking and authorization?
+> There are several code blocks like this, calling either fscrypt_decrypt_buffer()
+> or fscrypt_encrypt_buffer(), which seem to be mostly duplicated.  Is it possible
+> to refactor them into helper functions?  There are also some lines well over 80
+> characters.
 
-Anyone can encrypted files when UBIFS is build with that feature. Locking is fine
-since the operation is atomic. (UBI LEB change).
-
-> As-is, anyone can call this at any time if they can open some file on UBIFS.
-
-That's what I had in mind.
-
-> FYI, the approach being taken for ext4 is that the encryption feature flag has
-> to be explicitly turned on before FS_IOC_SET_ENCRYPTION_POLICY will work.
-
-So, on ext4 (f2fs too?) root has to enable to feature first before users
-can use it?
-IOW for ext4 the encryption flag means "file encryption is allowed", for UBIFS it
-means "at least one file got encrypted on this fs".
-
-I think I'll do what ext4 does to have common policies.
-BTW: Are these policies documented somewhere?
+Yes, that's already on my TODO.
 
 Thanks,
 //richard
