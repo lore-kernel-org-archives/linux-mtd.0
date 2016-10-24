@@ -1,23 +1,29 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byZKh-0007QA-9T
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 07:06:08 +0000
-Subject: Re: [PATCH 01/26] fscrypto: Add buffer operations
+ id 1byZN8-00087a-JL
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 07:08:39 +0000
+Subject: Re: UBIFS with dma on 4.6 kernel is not working
 To: Christoph Hellwig <hch@infradead.org>
-References: <1477054121-10198-1-git-send-email-richard@nod.at>
- <1477054121-10198-2-git-send-email-richard@nod.at>
- <20161021130558.GA2411@infradead.org>
- <9c80d1d0-0237-606f-91ce-a004c3694aa5@nod.at>
- <20161021132400.GA28880@infradead.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, dedekind1@gmail.com, adrian.hunter@intel.com,
- tytso@mit.edu, jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de,
- sbabic@denx.de, dengler@linutronix.de
+References: <DA6901612C71B84D91459DE817C418AE26DF0F2B@XAP-PVEXMBX01.xlnx.xilinx.com>
+ <519a83bf-1244-5151-b873-bb8e1f2db3c6@nod.at>
+ <20161021125313.GA16754@infradead.org>
+ <c0b0098d-3a68-3a4a-0b7e-a1d95dd4aafc@nod.at>
+ <20161021131505.GA25942@infradead.org>
+Cc: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <b7f1f92e-3e0f-ba91-fc36-dcf45c6d461d@nod.at>
-Date: Mon, 24 Oct 2016 09:05:42 +0200
+Message-ID: <3de2ca29-120b-b7a6-da55-47fe5e056f73@nod.at>
+Date: Mon, 24 Oct 2016 09:08:13 +0200
 MIME-Version: 1.0
-In-Reply-To: <20161021132400.GA28880@infradead.org>
+In-Reply-To: <20161021131505.GA25942@infradead.org>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,22 +37,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Christoph,
 
-On 21.10.2016 15:24, Christoph Hellwig wrote:
-> On Fri, Oct 21, 2016 at 03:17:03PM +0200, Richard Weinberger wrote:
->> UBIFS works on kmalloc()'ed buffers where it constructs the NAND/NOR pages
->> which will be written to the MTD. JFFS2 does the same.
+On 21.10.2016 15:15, Christoph Hellwig wrote:
+> On Fri, Oct 21, 2016 at 03:07:57PM +0200, Richard Weinberger wrote:
+>> Hmm, thought this is still problematic on VIVT architectures.
+>> Boris tried to provide a solution for that some time ago:
+>> http://www.spinics.net/lists/arm-kernel/msg494025.html
 > 
-> Yes, you can trivially do a virt_to_page on a kmalloc buffer.
+> Things have been working fine for approx 10 years when using
+> flush_kernel_vmap_range before doing I/O using the physical addresses and
+> then invalidate_kernel_vmap_range when completing the I/O and going back
+> to using the virtual mapping for XFS.
 > 
->> Another reason why I did the buffer functions is because fscrypt_encrypt_page()
->> always allocates a bounce page as temporary memory. For ext4 this is needed,
->> for UBIFS not.
->> UBIFS has already a construction buffer, especially since it also does compression.
-> 
-> We should defintively find a way to avoid that, but it's a separate
-> issue from adding another API just to pass buffers.
+> Of course all this assumes at least the higher level that did the
+> vm_map_ram operation knows about this dance between virtually mapped and
+> physiscal addresses. 
 
-Okay, I'll address this in v2 of my series.
+Good to know, I was clearly wrong.
+
+Let's see whether the costs of flush_kernel_vmap_range and invalidate_kernel_vmap_range
+are smaller than the speedup by DMA on embedded platforms.
+We'll have to test it.
 
 Thanks,
 //richard
