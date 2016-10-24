@@ -1,22 +1,21 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bymAt-0002nC-R1
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 20:48:52 +0000
-Received: by mail-wm0-x241.google.com with SMTP id d128so11552374wmf.0
- for <linux-mtd@lists.infradead.org>; Mon, 24 Oct 2016 13:48:30 -0700 (PDT)
-Subject: Re: [PATCH] mtd: ichxrom: maybe-uninitialized with gcc-4.9
-To: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-References: <20161024152853.2673518-1-arnd@arndb.de>
-Cc: Julia Lawall <julia.lawall@lip6.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <470c5483-949c-6e2a-cd52-73d99748b312@gmail.com>
-Date: Mon, 24 Oct 2016 22:47:59 +0200
+ id 1bynQU-0003dr-N8
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 22:09:03 +0000
+Subject: Re: [PATCH v3 1/9] mtd: spi-nor: improve macronix_quad_enable()
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
+References: <cover.1477325128.git.cyrille.pitchen@atmel.com>
+ <c63d3715903e640c7ea5328614bd4468688b761d.1477325128.git.cyrille.pitchen@atmel.com>
+Cc: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com,
+ richard@nod.at, linux-kernel@vger.kernel.org
+From: Marek Vasut <marex@denx.de>
+Message-ID: <74f0fa1b-3212-8a21-f966-14f153d2bf43@denx.de>
+Date: Tue, 25 Oct 2016 00:00:33 +0200
 MIME-Version: 1.0
-In-Reply-To: <20161024152853.2673518-1-arnd@arndb.de>
+In-Reply-To: <c63d3715903e640c7ea5328614bd4468688b761d.1477325128.git.cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/24/2016 05:28 PM, Arnd Bergmann wrote:
-> pci_read_config_word() might fail and not initialize its output,
-> as pointed out by older versions of gcc when using the -Wmaybe-unintialized
-> flag:
+On 10/24/2016 06:34 PM, Cyrille Pitchen wrote:
+> The patch checks whether the Quad Enable bit is already set in the Status
+> Register. If so, the function exits immediately with a successful return
+> code. Otherwise, a message is now printed telling we're setting the
+> non-volatile bit.
 > 
-> drivers/mtd/maps/ichxrom.c: In function ‘ichxrom_cleanup’:
-> drivers/mtd/maps/ichxrom.c:63:2: error: ‘word’ is used uninitialized in this function [-Werror=uninitialized]
-> 
-> This is apparently a correct warning, though it does not show up
-> with newer compilers. Changing the code to not attempt to write
-> back uninitialized data into PCI config space is a correct
-> fix for the problem and avoids the warning.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Reviewed-by: Marek Vasut <marex@denx.de>
-
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> Reviewed-by: Jagan Teki <jagan@openedev.com>
 > ---
->  drivers/mtd/maps/ichxrom.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> diff --git a/drivers/mtd/maps/ichxrom.c b/drivers/mtd/maps/ichxrom.c
-> index e17d02ae03f0..976d42f63aef 100644
-> --- a/drivers/mtd/maps/ichxrom.c
-> +++ b/drivers/mtd/maps/ichxrom.c
-> @@ -57,10 +57,12 @@ static void ichxrom_cleanup(struct ichxrom_window *window)
->  {
->  	struct ichxrom_map_info *map, *scratch;
->  	u16 word;
-> +	int ret;
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d0fc165d7d66..5c87b2d99507 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1211,6 +1211,11 @@ static int macronix_quad_enable(struct spi_nor *nor)
+>  	val = read_sr(nor);
+>  	if (val < 0)
+>  		return val;
+> +	if (val & SR_QUAD_EN_MX)
+> +		return 0;
+> +
+> +	/* Update the Quad Enable bit. */
+> +	dev_info(nor->dev, "setting Macronix Quad Enable (non-volatile) bit\n");
+
+Should probably be dev_dbg(), since this is just churn in the kernel
+log. The user doesn't care and the developer can just up the debug level
+or add his own printk .
+
+>  	write_enable(nor);
 >  
->  	/* Disable writes through the rom window */
-> -	pci_read_config_word(window->pdev, BIOS_CNTL, &word);
-> -	pci_write_config_word(window->pdev, BIOS_CNTL, word & ~1);
-> +	ret = pci_read_config_word(window->pdev, BIOS_CNTL, &word);
-> +	if (!ret)
-> +		pci_write_config_word(window->pdev, BIOS_CNTL, word & ~1);
->  	pci_dev_put(window->pdev);
->  
->  	/* Free all of the mtd devices */
+>  	write_sr(nor, val | SR_QUAD_EN_MX);
 > 
 
 
