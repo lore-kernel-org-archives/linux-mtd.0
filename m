@@ -1,40 +1,16 @@
 Received: from up.free-electrons.com ([163.172.77.33]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byeLo-0007U0-Dv
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 12:27:36 +0000
-Date: Mon, 24 Oct 2016 14:27:14 +0200
+ id 1byePd-00017U-Oo
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 12:31:38 +0000
+Date: Mon, 24 Oct 2016 14:31:12 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: punnaiah choudary kalluri <punnaia@xilinx.com>
-Cc: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, Punnaiah Choudary
- Kalluri <punnaiah.choudary.kalluri@xilinx.com>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "michal.simek@xilinx.com"
- <michal.simek@xilinx.com>, "ezequiel.garcia@free-electrons.com"
- <ezequiel.garcia@free-electrons.com>, "grant.likely@linaro.org"
- <grant.likely@linaro.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "jason@lakedaemon.net"
- <jason@lakedaemon.net>, "pawel.moll@arm.com" <pawel.moll@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "joern@logfs.org" <joern@logfs.org>, "kpc528@gmail.com" <kpc528@gmail.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "acourbot@nvidia.com"
- <acourbot@nvidia.com>, "gregkh@linuxfoundation.org"
- <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "rob@landley.net" <rob@landley.net>,
- "galak@codeaurora.org" <galak@codeaurora.org>, "Khoronzhuk, Ivan"
- <ivan.khoronzhuk@ti.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [v7, 1/3] nand: pl353: Add basic driver for arm pl353 smc nand
- interface
-Message-ID: <20161024142714.10902cf2@bbrezillon>
-In-Reply-To: <CAGnW=Bb-pnJ9-xjcw-1dR-y+oKjNs53bgD+dh1LwsMTCmzdRmQ@mail.gmail.com>
-References: <1433786918-21500-2-git-send-email-punnaia@xilinx.com>
- <20161021203322.GA28655@obsidianresearch.com>
- <20161021234611.1f737144@bbrezillon>
- <CAGnW=Bb-pnJ9-xjcw-1dR-y+oKjNs53bgD+dh1LwsMTCmzdRmQ@mail.gmail.com>
+To: Fabio Estevam <festevam@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>
+Cc: han.xu@nxp.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: gpmi: disable the clocks on errors
+Message-ID: <20161024143112.66bb705a@bbrezillon>
+In-Reply-To: <1477152922-6722-1-git-send-email-festevam@gmail.com>
+References: <1477152922-6722-1-git-send-email-festevam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -47,23 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Punnaih,
+On Sat, 22 Oct 2016 14:15:22 -0200
+Fabio Estevam <festevam@gmail.com> wrote:
 
-On Sun, 23 Oct 2016 17:37:42 +0530
-punnaiah choudary kalluri <punnaia@xilinx.com> wrote:
-
-> Hi Boris and Jason,
+> From: Fabio Estevam <fabio.estevam@nxp.com>
 > 
->  I am doing rework on these patches to accommodate recent changes with
->  respect to ooblayout. Also some of the comments that i have received
-> from Boris as part of the arasan nand controller upstream patches will
-> apply to this driver. So, i will be releasing the next set of patches for this
-> driver soon and request your time for reviewing those patches.
+> We should disable the previously enabled GPMI clocks in the error paths.
 > 
-> for now, please ignore these patches.
+> Also, when gpmi_enable_clk() fails simply return the error
+> code immediately rather than jumping to to the 'err_out' label.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 
-OK. Thanks for the heads up. I'll wait for your new version.
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Regards,
+Brian, can you take this patch in the MTD tree and queue it for the
+next -rc?
 
-Boris
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> index 0f68a99..141bd70 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> @@ -161,7 +161,7 @@ int gpmi_init(struct gpmi_nand_data *this)
+>  
+>  	ret = gpmi_enable_clk(this);
+>  	if (ret)
+> -		goto err_out;
+> +		return ret;
+>  	ret = gpmi_reset_block(r->gpmi_regs, false);
+>  	if (ret)
+>  		goto err_out;
+> @@ -197,6 +197,7 @@ int gpmi_init(struct gpmi_nand_data *this)
+>  	gpmi_disable_clk(this);
+>  	return 0;
+>  err_out:
+> +	gpmi_disable_clk(this);
+>  	return ret;
+>  }
+>  
+> @@ -270,7 +271,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>  
+>  	ret = gpmi_enable_clk(this);
+>  	if (ret)
+> -		goto err_out;
+> +		return ret;
+>  
+>  	/*
+>  	* Due to erratum #2847 of the MX23, the BCH cannot be soft reset on this
+> @@ -308,6 +309,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>  	gpmi_disable_clk(this);
+>  	return 0;
+>  err_out:
+> +	gpmi_disable_clk(this);
+>  	return ret;
+>  }
+>  
