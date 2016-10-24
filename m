@@ -1,23 +1,26 @@
-Received: from mail-co1nam03on0124.outbound.protection.outlook.com
- ([104.47.40.124] helo=NAM03-CO1-obe.outbound.protection.outlook.com)
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byaho-0000LK-Ez
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 08:34:05 +0000
-From: "Esponde, Joel" <Joel.Esponde@Honeywell.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH] mtd: spi-nor: fixed spansion quad enable
-Date: Mon, 24 Oct 2016 08:33:11 +0000
-Message-ID: <F6CD090A69E64C4289DC608E1C5D20242545487D@DE08W1305.global.ds.honeywell.com>
-References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
- <56670303-e8e8-fb2c-e043-035c566f347c@atmel.com>
- <F6CD090A69E64C4289DC608E1C5D20242544AEF1@DE08W1305.global.ds.honeywell.com>
- <f45e1845-573f-d0b7-0f23-abd035f25945@atmel.com>
-In-Reply-To: <f45e1845-573f-d0b7-0f23-abd035f25945@atmel.com>
-Content-Language: fr-FR
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1bydjj-0006Mu-QS
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 11:48:18 +0000
+Subject: Re: [PATCH v2 0/9] mtd: spi-nor: parse SFDP tables to setup (Q)SPI
+ memories
+To: Jagan Teki <jagan@openedev.com>
+References: <cover.1475668319.git.cyrille.pitchen@atmel.com>
+ <CAD6G_RR4Av8+szo9v2oucCFvwnow86gMVC-Ku_-Qfy18TVMGgA@mail.gmail.com>
+ <c022e6fc-6bd7-d124-7233-e1e742049657@denx.de>
+ <CAD6G_RQ2BjtF2cmPUJvYNk7KZZ6eTVAQsEqWs26xn710A4Dz-w@mail.gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Marek Vasut <marex@denx.de>
+Message-ID: <e9eb9848-522d-2889-457b-d8060f89b352@denx.de>
+Date: Mon, 24 Oct 2016 13:41:49 +0200
 MIME-Version: 1.0
+In-Reply-To: <CAD6G_RQ2BjtF2cmPUJvYNk7KZZ6eTVAQsEqWs26xn710A4Dz-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,52 +30,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille,
+On 10/24/2016 09:41 AM, Jagan Teki wrote:
+> On Sun, Oct 23, 2016 at 2:03 AM, Marek Vasut <marex@denx.de> wrote:
+>> On 10/22/2016 01:00 PM, Jagan Teki wrote:
+>>> On Wed, Oct 5, 2016 at 5:30 PM, Cyrille Pitchen
+>>> <cyrille.pitchen@atmel.com> wrote:
+>>>> Hi all,
+>>>>
+>>>> This series extends support of SPI protocols to new protocols such as
+>>>> SPI x-2-2 and SPI x-4-4. Also spi_nor_scan() tries now to select the right
+>>>> op codes, timing parameters (number of mode and dummy cycles) and erase
+>>>> sector size by parsing the Serial Flash Discoverable Parameter (SFDP)
+>>>> tables, when available, as defined in the JEDEC JESD216 specifications.
+>>>>
+>>>> When SFDP tables are not available, legacy settings are still used for
+>>>> backward compatibility (SPI and earlier QSPI memories).
+>>>>
+>>>> Support of SPI memories >128Mbits is also improved by using the 4byte
+>>>> address instruction set, when available. Using those dedicated op codes
+>>>> is stateless as opposed to enter the 4byte address mode, hence a better
+>>>> compatibility with some boot loaders which expect to use 3byte address
+>>>> op codes.
+>>>
+>>> The memories which are > 128Mbits should have 4-bytes addressing
+>>> support based on my experience, do you think BAR is also required
+>>> atleast from spi-nor side?
+>>
+>> Yes, I believe BAR is still required for broken/dumb flash chips.
+>> Not all chips > 16 MiB support dedicated 4-byte addressing opcodes :-(
+> 
+> Do you have list for those broken chips?
 
-> -----Message d'origine-----
-> De=A0: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
-> Envoy=E9=A0: vendredi 21 octobre 2016 14:50
-> =C0=A0: Esponde, Joel <Joel.Esponde@Honeywell.com>; linux-
-> mtd@lists.infradead.org
-> Objet=A0: Re: [PATCH] mtd: spi-nor: fixed spansion quad enable
->=20
-> >>> +	/* set SR & CR, enable quad I/O */
-> >>>  	write_enable(nor);
-> >>>
-> >>>  	ret =3D write_sr_cr(nor, quad_en);
-> >>>  	if (ret < 0) {
-> >>> -		dev_err(nor->dev,
-> >>> -			"error while writing configuration register\n");
-> >>> +		dev_err(nor->dev, "error while writing SR and CR
-> >> registers\n");
-> >>>  		return -EINVAL;
-> >>>  	}
-> >>>
-> >>> -	/* read back and check it */
-> >>> +	ret =3D spi_nor_wait_till_ready(nor);
-> >>> +	if (ret)
-> >>> +		return ret;
-> >>> +
-> >
-> > I think that this wait is required with every memories that store Quad
-> Enable bit in a non-volatile way.
-> > I am using today a stripped down kernel with a rootfs based on UBIFS.
-> > When this bit is set, UBIFS will start reading the memory 100ms after.
-> > As this bit writing step takes up to 200ms, spansion memory is not read=
-y
-> and UBIFS will fail when trying to read the content of the partition.
-> > As UBIFS has a recovery mechanism, it will even broke the file system.
-> >
->=20
-> I agree with you about adding the spi_nor_wait_till_ready() call. I plan =
-to add
-> it in my SFDP patch for the spansion_new_quad_enable(), if not done yet.
->=20
+No.
 
-Good news !!
-Because I think that this part of the patch is the most critical.
-Without this, you may broke your filesystem so this is a big issue.
+> because I never find any
+> chips which has > 16 MiB with not support of 4-byte address opcodes
+> and I've seen the controller has dependable with BAR though it can
+> access > 16MiB ex: zynq qspi/
 
+IIRC some of the 32 MiB micron chips were pretty flaky in that aspect,
+they used the same opcodes for 4byte access as for 3byte access and
+their behavior was switched by writing some non-volatile bit.
+
+-- 
 Best regards,
-
-Jo=EBl
+Marek Vasut
