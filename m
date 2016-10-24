@@ -1,20 +1,20 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bynZZ-0006nu-Qe
- for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 22:18:27 +0000
-Subject: Re: [PATCH v3 2/9] mtd: spi-nor: add an alternative method to support
- memory >16MiB
+ id 1bynZc-0006oD-Uo
+ for linux-mtd@lists.infradead.org; Mon, 24 Oct 2016 22:18:30 +0000
+Subject: Re: [PATCH v3 9/9] mtd: spi-nor: add support to SST sst26* QSPI
+ memories
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org
 References: <cover.1477325128.git.cyrille.pitchen@atmel.com>
- <87ace1a307f4d9899a84108de999a2eeb151da1a.1477325128.git.cyrille.pitchen@atmel.com>
+ <74fedab98fba683d3563ac8c93d1fac6108ba278.1477325128.git.cyrille.pitchen@atmel.com>
 Cc: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com,
  richard@nod.at, linux-kernel@vger.kernel.org
 From: Marek Vasut <marex@denx.de>
-Message-ID: <6eb07d71-cd1c-fa96-f576-c3ab6a62d246@denx.de>
-Date: Tue, 25 Oct 2016 00:10:57 +0200
+Message-ID: <ca306f33-2eb7-a268-49f3-9b515a04f318@denx.de>
+Date: Tue, 25 Oct 2016 00:17:57 +0200
 MIME-Version: 1.0
-In-Reply-To: <87ace1a307f4d9899a84108de999a2eeb151da1a.1477325128.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <74fedab98fba683d3563ac8c93d1fac6108ba278.1477325128.git.cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,122 +27,100 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 10/24/2016 06:34 PM, Cyrille Pitchen wrote:
-> This patch provides an alternative mean to support memory above 16MiB
-> (128Mib) by replacing 3byte address op codes by their associated 4byte
-> address versions.
+> This patch adds support to the SST sst26* QSPI memories.
+> It also adds a new SST_BLOCK_PROTECT flag so spi_nor_scan() sends
+> a SST Global Block Protection Unlock (98h) command once for all
+> otherwise later Sector Erase and Page Program commands would fail.
 > 
-> Using the dedicated 4byte address op codes doesn't change the internal
-> state of the SPI NOR memory as opposed to using other means such as
-> updating a Base Address Register (BAR) and sending command to enter/leave
-> the 4byte mode.
+> It was tested with sst26vf016b, sst26vf032b, sst26vf032ba and sst26vf064b
+> on a sama5d2 xplained board at 55.3MHz and 3.3V.
 > 
-> Hence when a CPU reset occurs, early bootloaders don't need to be aware
-> of BAR value or 4byte mode being enabled: they can still access the first
-> 16MiB of the SPI NOR memory using the regular 3byte address op codes.
+> sst26wf040b and sst26wf080b were not tested since they are 1.8V memories
+> hence don't fit the sama5d2 xplained board requirements.
 > 
 > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> Tested-by: Vignesh R <vigneshr@ti.com>
 > ---
->  drivers/mtd/devices/serial_flash_cmds.h |   7 ---
->  drivers/mtd/devices/st_spi_fsm.c        |  28 ++++-----
->  drivers/mtd/spi-nor/spi-nor.c           | 104 +++++++++++++++++++++++++-------
->  include/linux/mtd/spi-nor.h             |  22 +++++--
->  4 files changed, 113 insertions(+), 48 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++++++++
+>  include/linux/mtd/spi-nor.h   |  1 +
+>  2 files changed, 21 insertions(+)
 > 
-> diff --git a/drivers/mtd/devices/serial_flash_cmds.h b/drivers/mtd/devices/serial_flash_cmds.h
-> index f59a125295d0..8b81e15105dd 100644
-> --- a/drivers/mtd/devices/serial_flash_cmds.h
-> +++ b/drivers/mtd/devices/serial_flash_cmds.h
-> @@ -18,19 +18,12 @@
->  #define SPINOR_OP_RDVCR		0x85
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index eb21d3d4e4e6..300ee38f4e9a 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -81,6 +81,7 @@ struct flash_info {
+>  					 * to support memory size above 128Mib.
+>  					 */
+>  #define SPI_NOR_SKIP_SFDP	BIT(11) /* Skip read of SFDP tables */
+> +#define SST_BLOCK_PROTECT	BIT(12)	/* use SST Unlock Block-Protection */
+>  };
 >  
->  /* JEDEC Standard - Serial Flash Discoverable Parmeters (SFDP) Commands */
-> -#define SPINOR_OP_READ_1_2_2	0xbb	/* DUAL I/O READ */
-> -#define SPINOR_OP_READ_1_4_4	0xeb	/* QUAD I/O READ */
-> -
->  #define SPINOR_OP_WRITE		0x02	/* PAGE PROGRAM */
->  #define SPINOR_OP_WRITE_1_1_2	0xa2	/* DUAL INPUT PROGRAM */
->  #define SPINOR_OP_WRITE_1_2_2	0xd2	/* DUAL INPUT EXT PROGRAM */
->  #define SPINOR_OP_WRITE_1_1_4	0x32	/* QUAD INPUT PROGRAM */
->  #define SPINOR_OP_WRITE_1_4_4	0x12	/* QUAD INPUT EXT PROGRAM */
+>  #define JEDEC_MFR(info)	((info)->id[0])
+> @@ -999,6 +1000,11 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
+>  	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+>  	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
+> +	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32, SECT_4K | SST_BLOCK_PROTECT) },
+> +	{ "sst26vf032b", INFO(0xbf2642, 0, 64 * 1024, 64, SECT_4K | SST_BLOCK_PROTECT) },
+> +	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SST_BLOCK_PROTECT) },
+> +	{ "sst26wf040b", INFO(0xbf2654, 0, 64 * 1024,  8, SECT_4K | SST_BLOCK_PROTECT) },
+> +	{ "sst26wf080b", INFO(0xbf2658, 0, 64 * 1024, 16, SECT_4K | SST_BLOCK_PROTECT) },
+
+You should split adding the chip and adding the sst block protection
+into two separate patches.
+
+>  	/* ST Microelectronics -- newer production may have feature updates */
+>  	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+> @@ -1135,6 +1141,14 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  	return ret;
+>  }
 >  
-> -/* READ commands with 32-bit addressing */
-> -#define SPINOR_OP_READ4_1_2_2	0xbc
-> -#define SPINOR_OP_READ4_1_4_4	0xec
-> -
-
-It'd be nice to have this move/rename bit factored out into a separate
-patch.
-
->  /* Configuration flags */
->  #define FLASH_FLAG_SINGLE	0x000000ff
->  #define FLASH_FLAG_READ_WRITE	0x00000001
-> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-> index 5454b4113589..804313a33f2b 100644
-
-[...]
-
-> +static u8 spi_nor_convert_opcode(u8 opcode,
-> +				 const struct spi_nor_address_entry *entries,
-> +				 size_t num_entries)
+> +static int sst_unlock_block_protection(struct spi_nor *nor)
 > +{
-> +	int min, max;
+> +	int ret;
 > +
-> +	min = 0;
-> +	max = num_entries - 1;
-> +	while (min <= max) {
+> +	ret = write_enable(nor);
+> +	return ret ? ret : nor->write_reg(nor, SPINOR_OP_ULBPR, NULL, 0);
 
-It's really not clear at all what this function does, so please add a
-comment.
+I'm not a big fan of the ternary here, what about:
 
-> +		int mid = (min + max) >> 1;
-> +		const struct spi_nor_address_entry *entry = &entries[mid];
+ret = write_enable()
+if (!ret)
+  ret = nor->write_reg();
+return ret;
+
+> +}
 > +
-> +		if (opcode == entry->src_opcode)
-> +			return entry->dst_opcode;
-> +
-> +		if (opcode < entry->src_opcode)
-> +			max = mid - 1;
-> +		else
-> +			min = mid + 1;
+>  static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  		size_t *retlen, const u_char *buf)
+>  {
+> @@ -2321,6 +2335,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (info->flags & SST_BLOCK_PROTECT) {
+> +		ret = sst_unlock_block_protection(nor);
+> +		if (ret)
+> +			return ret;
 > +	}
 > +
-> +	/* No conversion found */
-> +	return opcode;
-> +}
-> +
-> +static u8 spi_nor_3to4_opcode(u8 opcode)
-> +{
-> +	/* MUST be sorted by 3byte opcode */
+>  	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+>  			(long long)mtd->size >> 10);
+>  
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 8fd9619dabff..c8f7e231a25c 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -80,6 +80,7 @@
+>  #define SPINOR_OP_BP		0x02	/* Byte program */
+>  #define SPINOR_OP_WRDI		0x04	/* Write disable */
+>  #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
+> +#define SPINOR_OP_ULBPR		0x98	/* Global Block Protection Unlock */
+>  
+>  /* Used for Macronix and Winbond flashes. */
+>  #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
+> 
 
-Because ... why ?
-
-> +#define ENTRY_3TO4(_opcode)	{ _opcode, _opcode##_4B }
-
-Will this break/be unflexible for flashes with some different 4B opcodes ?
-
-> +	static const struct spi_nor_address_entry spi_nor_3to4_table[] = {
-> +		ENTRY_3TO4(SPINOR_OP_PP),		/* 0x02 */
-> +		ENTRY_3TO4(SPINOR_OP_READ),		/* 0x03 */
-> +		ENTRY_3TO4(SPINOR_OP_READ_FAST),	/* 0x0b */
-> +		ENTRY_3TO4(SPINOR_OP_BE_4K),		/* 0x20 */
-> +		ENTRY_3TO4(SPINOR_OP_PP_1_1_4),		/* 0x32 */
-> +		ENTRY_3TO4(SPINOR_OP_PP_1_4_4),		/* 0x38 */
-> +		ENTRY_3TO4(SPINOR_OP_READ_1_1_2),	/* 0x3b */
-> +		ENTRY_3TO4(SPINOR_OP_BE_32K),		/* 0x52 */
-> +		ENTRY_3TO4(SPINOR_OP_READ_1_1_4),	/* 0x6b */
-> +		ENTRY_3TO4(SPINOR_OP_READ_1_2_2),	/* 0xbb */
-> +		ENTRY_3TO4(SPINOR_OP_SE),		/* 0xd8 */
-> +		ENTRY_3TO4(SPINOR_OP_READ_1_4_4),	/* 0xeb */
-> +	};
-> +#undef ENTRY_3TO4
-> +
-> +	return spi_nor_convert_opcode(opcode, spi_nor_3to4_table,
-> +				      ARRAY_SIZE(spi_nor_3to4_table));
-> +}
-> +
-
-[...]
 
 -- 
 Best regards,
