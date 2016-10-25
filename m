@@ -1,21 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bz7QO-00059l-MP
- for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 19:30:17 +0000
-Subject: Re: [PATCH v3 8/9] mtd: spi-nor: add support to Macronix mx66l1g45g
+ id 1bz7QR-00059p-VV
+ for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 19:30:22 +0000
+Subject: Re: [PATCH v3 2/9] mtd: spi-nor: add an alternative method to support
+ memory >16MiB
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org
 References: <cover.1477325128.git.cyrille.pitchen@atmel.com>
- <4db277dccf52acd48e592d9f285724aab70704d1.1477325128.git.cyrille.pitchen@atmel.com>
- <b043147d-cc39-9238-c6e7-432af67f684e@denx.de>
- <1d74bddb-fcf7-cb0c-5c0f-a86a54c9a033@atmel.com>
+ <87ace1a307f4d9899a84108de999a2eeb151da1a.1477325128.git.cyrille.pitchen@atmel.com>
+ <6eb07d71-cd1c-fa96-f576-c3ab6a62d246@denx.de>
+ <dbcbf5d3-61cd-844d-c2e3-7e8d83914f97@atmel.com>
 Cc: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com,
  richard@nod.at, linux-kernel@vger.kernel.org
 From: Marek Vasut <marex@denx.de>
-Message-ID: <e636f1e4-e8d8-ed9b-2ecd-dc1f248d923e@denx.de>
-Date: Tue, 25 Oct 2016 16:58:03 +0200
+Message-ID: <adf69d0e-adac-5de3-28a2-87733e720915@denx.de>
+Date: Tue, 25 Oct 2016 16:53:02 +0200
 MIME-Version: 1.0
-In-Reply-To: <1d74bddb-fcf7-cb0c-5c0f-a86a54c9a033@atmel.com>
+In-Reply-To: <dbcbf5d3-61cd-844d-c2e3-7e8d83914f97@atmel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,72 +28,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/25/2016 11:39 AM, Cyrille Pitchen wrote:
-> Hi Marek,
-
-Hi,
-
-> Le 25/10/2016 à 00:16, Marek Vasut a écrit :
+On 10/25/2016 11:18 AM, Cyrille Pitchen wrote:
+> Le 25/10/2016 à 00:10, Marek Vasut a écrit :
 >> On 10/24/2016 06:34 PM, Cyrille Pitchen wrote:
->>> This patch adds an entry in the spi_nor_ids[] table to add support
->>> to the Macronix mx66l1g45g.
+>>> This patch provides an alternative mean to support memory above 16MiB
+>>> (128Mib) by replacing 3byte address op codes by their associated 4byte
+>>> address versions.
+>>>
+>>> Using the dedicated 4byte address op codes doesn't change the internal
+>>> state of the SPI NOR memory as opposed to using other means such as
+>>> updating a Base Address Register (BAR) and sending command to enter/leave
+>>> the 4byte mode.
+>>>
+>>> Hence when a CPU reset occurs, early bootloaders don't need to be aware
+>>> of BAR value or 4byte mode being enabled: they can still access the first
+>>> 16MiB of the SPI NOR memory using the regular 3byte address op codes.
 >>>
 >>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>>> Tested-by: Vignesh R <vigneshr@ti.com>
 >>> ---
->>>  drivers/mtd/spi-nor/spi-nor.c | 1 +
->>>  1 file changed, 1 insertion(+)
+>>>  drivers/mtd/devices/serial_flash_cmds.h |   7 ---
+>>>  drivers/mtd/devices/st_spi_fsm.c        |  28 ++++-----
+>>>  drivers/mtd/spi-nor/spi-nor.c           | 104 +++++++++++++++++++++++++-------
+>>>  include/linux/mtd/spi-nor.h             |  22 +++++--
+>>>  4 files changed, 113 insertions(+), 48 deletions(-)
 >>>
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>> index db4874d4af79..eb21d3d4e4e6 100644
->>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -937,6 +937,7 @@ static const struct flash_info spi_nor_ids[] = {
->>>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
->>>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
->>>  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
->>> +	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
->>>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+>>> diff --git a/drivers/mtd/devices/serial_flash_cmds.h b/drivers/mtd/devices/serial_flash_cmds.h
+>>> index f59a125295d0..8b81e15105dd 100644
+>>> --- a/drivers/mtd/devices/serial_flash_cmds.h
+>>> +++ b/drivers/mtd/devices/serial_flash_cmds.h
+>>> @@ -18,19 +18,12 @@
+>>>  #define SPINOR_OP_RDVCR		0x85
 >>>  
->>>  	/* Micron */
->>>
->> This should be submitted separately as it could be applied right away.
+>>>  /* JEDEC Standard - Serial Flash Discoverable Parmeters (SFDP) Commands */
+>>> -#define SPINOR_OP_READ_1_2_2	0xbb	/* DUAL I/O READ */
+>>> -#define SPINOR_OP_READ_1_4_4	0xeb	/* QUAD I/O READ */
+>>> -
+>>>  #define SPINOR_OP_WRITE		0x02	/* PAGE PROGRAM */
+>>>  #define SPINOR_OP_WRITE_1_1_2	0xa2	/* DUAL INPUT PROGRAM */
+>>>  #define SPINOR_OP_WRITE_1_2_2	0xd2	/* DUAL INPUT EXT PROGRAM */
+>>>  #define SPINOR_OP_WRITE_1_1_4	0x32	/* QUAD INPUT PROGRAM */
+>>>  #define SPINOR_OP_WRITE_1_4_4	0x12	/* QUAD INPUT EXT PROGRAM */
+>>>  
+>>> -/* READ commands with 32-bit addressing */
+>>> -#define SPINOR_OP_READ4_1_2_2	0xbc
+>>> -#define SPINOR_OP_READ4_1_4_4	0xec
+>>> -
+>>
+>> It'd be nice to have this move/rename bit factored out into a separate
+>> patch.
 >>
 > 
-> I totally agree with you. Indeed I have only provided patch 8 and 9 because
-> I refer to these memories in the cover letter and to "prove" that I did really
-> test every memory of the list. If everyone trust me about the test I do, I
-> will remove patch 8 and 9 in the next version.
+> OK, I will try to do this. Anyway, this rename seems to break the freshly
+> merged drivers/spi/spi-bcm-qspi.c, which uses the SPINOR_OP_READ4_* macro so
+> I have to do something about this driver. IMHO, the broadcom driver should not
+> select its own op code but use the one provided by read_opcode member of the
+> struct spi_flash_read_message.
 
-I think 9 needs to stay or be separated somehow differently from the
-series, since it also adds some code to support the flash. Otherwise,
-go for submitting them separately.
+Thanks
 
-> By the way, I need to add a remark about the Spansion S25FL127S. The sample I
-> have is compliant with neither the JESD216B specification nor the Cypress
-> datasheet. More precisely, the Cypress datasheet claims that the S25FL127S
-> is compliant with the JESD216B (minor 6) so its Basic Flash Parameter Table
-> (BFPT) should contain 16 DWORDS.
-> However my sample claims to be JESD216B compliant (I read minor 6) and that
-> the BFPT has 16 DWORDS but the 7 last DWORDS of this table are all 0xFFFFFFFF.
-> Only the first 9 DWORDS are properly filled, the DWORDS described in JESD216
-> (minor 0).
-> Also my sample pretend to provide the optional 4-byte address instruction set
-> (4BAIS) table but the data I read are once again all 0xFFFFFFFF.
+>>>  /* Configuration flags */
+>>>  #define FLASH_FLAG_SINGLE	0x000000ff
+>>>  #define FLASH_FLAG_READ_WRITE	0x00000001
+>>> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+>>> index 5454b4113589..804313a33f2b 100644
+>>
+>> [...]
+>>
+>>> +static u8 spi_nor_convert_opcode(u8 opcode,
+>>> +				 const struct spi_nor_address_entry *entries,
+>>> +				 size_t num_entries)
+>>> +{
+>>> +	int min, max;
+>>> +
+>>> +	min = 0;
+>>> +	max = num_entries - 1;
+>>> +	while (min <= max) {
+>>
+>> It's really not clear at all what this function does, so please add a
+>> comment.
+>>
 > 
-> It's surprising that this 128Mbit memory supports the 4-byte address
-> instruction set but the 4-byte Fast Read actually seems to be supported.
+> This is just a dichotomic search to reduce the number of comparisons: it 
+> assumes the entries[] array is sorted by ascending src_opcode.
+> 
+> I will add a comment to clarify this point.
 
-They probably use the same HDL design for the controller block in many
-memories, they just burn in different ID/SFDP/geometry tables for each
-chip they roll out from the factory based on how well the memory array
-works.
+Cool, that'd help. Are you invoking this every time an opcode is
+submitted to the SPI NOR ?
 
-> Consequently, Fast Read operations work but Sector Erase cannot due to the
-> 0xFF op code read from the 4BAIS table. I think I just have a broken sample so
-> if anyone can test with another sample and confirm that the SFDP series also
-> work with Spansion S25FL127S it would be nice! :)
+>>> +		int mid = (min + max) >> 1;
+>>> +		const struct spi_nor_address_entry *entry = &entries[mid];
+>>> +
+>>> +		if (opcode == entry->src_opcode)
+>>> +			return entry->dst_opcode;
+>>> +
+>>> +		if (opcode < entry->src_opcode)
+>>> +			max = mid - 1;
+>>> +		else
+>>> +			min = mid + 1;
+>>> +	}
+>>> +
+>>> +	/* No conversion found */
+>>> +	return opcode;
+>>> +}
+>>> +
+>>> +static u8 spi_nor_3to4_opcode(u8 opcode)
+>>> +{
+>>> +	/* MUST be sorted by 3byte opcode */
+>>
+>> Because ... why ?
+>>
+> 
+> As explained above, the dichotomic search implemented in
+> spi_nor_convert_opcode() assumes that the input array is sorted by src_opcode.
 
-I don't have one, sorry.
+Maybe you should drop that assumption and do normal traversal of the
+array ? I feel this is a bit fragile and will break once someone will
+cluelessly add a new opcode.
+
+... or add a comment with a big WARNING statement.
+
+>>> +#define ENTRY_3TO4(_opcode)	{ _opcode, _opcode##_4B }
+>>
+>> Will this break/be unflexible for flashes with some different 4B opcodes ?
+>>
+> 
+> Of course I cannot provide any guarantee that it will never happen but
+> currently it seems that all manufacturers use the same op codes. Besides, 
+> the 4-byte address instruction set is part the of JESD216B specification,
+> so there is a standard for these op codes and new SPI NOR memories tend
+> to match this specification by providing the SFDP tables.
+
+Great. Still, will the code need an overhaul if some vendor decides to
+deviate ?
+
+> Indeed this instruction set is maybe one of the few things where all
+> manufacturers seem to agree :)
+
+That's a good start :)
+
+>>> +	static const struct spi_nor_address_entry spi_nor_3to4_table[] = {
+>>> +		ENTRY_3TO4(SPINOR_OP_PP),		/* 0x02 */
+>>> +		ENTRY_3TO4(SPINOR_OP_READ),		/* 0x03 */
+>>> +		ENTRY_3TO4(SPINOR_OP_READ_FAST),	/* 0x0b */
+>>> +		ENTRY_3TO4(SPINOR_OP_BE_4K),		/* 0x20 */
+>>> +		ENTRY_3TO4(SPINOR_OP_PP_1_1_4),		/* 0x32 */
+>>> +		ENTRY_3TO4(SPINOR_OP_PP_1_4_4),		/* 0x38 */
+>>> +		ENTRY_3TO4(SPINOR_OP_READ_1_1_2),	/* 0x3b */
+>>> +		ENTRY_3TO4(SPINOR_OP_BE_32K),		/* 0x52 */
+>>> +		ENTRY_3TO4(SPINOR_OP_READ_1_1_4),	/* 0x6b */
+>>> +		ENTRY_3TO4(SPINOR_OP_READ_1_2_2),	/* 0xbb */
+>>> +		ENTRY_3TO4(SPINOR_OP_SE),		/* 0xd8 */
+>>> +		ENTRY_3TO4(SPINOR_OP_READ_1_4_4),	/* 0xeb */
+>>> +	};
+>>> +#undef ENTRY_3TO4
+>>> +
+>>> +	return spi_nor_convert_opcode(opcode, spi_nor_3to4_table,
+>>> +				      ARRAY_SIZE(spi_nor_3to4_table));
+>>> +}
+>>> +
+>>
+>> [...]
+>>
+> 
+
 
 -- 
 Best regards,
