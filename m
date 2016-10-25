@@ -1,20 +1,25 @@
-Received: from smtp1.ascom-ws.com ([195.81.148.76] helo=mail.ascom-ws.com)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bzR58-0000FO-MH
- for linux-mtd@lists.infradead.org; Wed, 26 Oct 2016 16:29:39 +0000
-From: Danesh Daroui <Danesh.Daroui@ascom.com>
-To: Steve deRosier <derosier@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: OOB Test fails
-Date: Wed, 26 Oct 2016 16:28:43 +0000
-Message-ID: <39BC08CB3FF4C84CB6397533D4FC79095770D530@SEGOTEXCH02.ascom-Resource.ads>
-References: <39BC08CB3FF4C84CB6397533D4FC79095770D513@SEGOTEXCH02.ascom-Resource.ads>
- <CALupW3CJ_gXS+7BrZEGTF8o0H8pJ_AOw0JcKOftSVaMVSbP1zQ@mail.gmail.com>
-In-Reply-To: <CALupW3CJ_gXS+7BrZEGTF8o0H8pJ_AOw0JcKOftSVaMVSbP1zQ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Date: Tue, 25 Oct 2016 12:42:09 +0200
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Mylene Josserand <mylene.josserand@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH 5/8] ARM: gr8: Add missing pwm channel 1 pin
+Message-ID: <20161025104209.edtqoymu4thc56p4@lukather>
+References: <cover.bb1e4a568bc16ada5254cad063f4afbaa1ca5906.1476951078.git-series.maxime.ripard@free-electrons.com>
+ <0df42247c3348e7f6aed945e5669cec87f96f7ac.1476951078.git-series.maxime.ripard@free-electrons.com>
+ <CAGb2v66w0sTzn_SWH4rrpWKOosSxALV8ot3CBQbGhwLxvX1vxw@mail.gmail.com>
+ <20161020170739.lgt2ywm346vm47zd@lukather>
+ <CAGb2v64Ai+8sUPyH9aTnKUw1ROmQNxzCEqUXrT4v8Q-nipqR3Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="w7nbiypn7hrkd6kw"
+Content-Disposition: inline
+In-Reply-To: <CAGb2v64Ai+8sUPyH9aTnKUw1ROmQNxzCEqUXrT4v8Q-nipqR3Q@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,57 +29,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgU3RldmUsDQoNClRoYW5rIHlvdSBmb3IgeW91ciBwcm9tcHQgYW5zd2VyLiBXaGVuIEkgcnVu
-IE9PQiB0ZXN0IChtdGRfb29idGVzdCksIGZvciBpbnN0YW5jZSwgb25lIG9mIGRldmljZXMgYWx3
-YXlzIHJldHVybiB2ZXJpZmljYXRpb24gZmFpbGVkIGVycm9yIG9uIGEgY2VydGFpbiBhZGRyZXNz
-LiBUaGlzIGlzIGFsbCB3ZSBrbm93IGFuZCBhbGwgdGhlIHRlc3QgcmVwb3J0cy4gV2UgdXNlIGEg
-cXVpdGUgb2xkIGtlcm5lbCBpLmUuIDIuNi4zOSBhbmQgdGhpcyBpcyBvbmUgb2YgdGhlIHRoaW5n
-cyB0aGF0IHdlIHN1c3BlY3QgYXMgYSBzb3VyY2Ugb2YgdGhlIHByb2JsZW0gdGhhdCB0aGUga2Vy
-bmVsIGlzIG91dGRhdGVkLiBBbHNvLCB3ZSBjb25zaWRlciB0aGUgaGFyZHdhcmUgZmFpbHVyZSBz
-aW5jZSBvbiBzb21lIGRldmljZXMgbm8gZXJyb3IgaXMgc2hvd24gb24gT09CIHRlc3Qgd2hpbGUg
-b24gb3RoZXJzIG1vcmUgZXJyb3JzIGFyZSBzaG93biBhbmQgdGhlIGFkZHJlc3MgaXMgY2hhbmdl
-ZCByYW5kb21seSBzb21ldGltZXMuDQoNCk91ciBtYWluIHByb2JsZW0gaXMgdGhhdCBzb21ldGlt
-ZXMgVUJJRlMgZm9yY2VzIHRoZSBkZXZpY2UgaW50byByZWFkLW9ubHkgbW9kZSBkdWUgdG8gImJh
-ZCBDUkMiIGVycm9yIGF0IHN0YXJ0dXAgd2hlbiB0aGUgZGV2aWNlIGlzIGJvb3RlZC4gSSBhbSBu
-b3cgcnVubmluZyB0ZXN0cyB3aGljaCBhcmUgaW4gIm10ZF91dGlscyIgZm9yIHRlc3RpbmcgZmls
-ZSBzeXN0ZW0uIEkgaGF2ZSBzdGFydGVkIHJ1bm5pbmcgdHdvIHRlc3RzIHdoaWNoIGFyZSAic2lt
-cGxlL3Rlc3RfMSIgYW5kICJzaW1wbGUvdGVzdF8yIiB3aGljaCBzaW1wbHkgd3JpdGUgdW50aWwg
-dGhlIGRyaXZlIGlzIGZ1bGwgYW5kIHRoZSByZWFkIHRoZSBkYXRhIGJhY2sgYW5kIHZlcmlmeSB0
-aGUgY29ycmVjdG5lc3MuIER1cmluZyB0aGUgdGVzdCwgSSBzZWUgbG90cyBvZjoNCg0KVUJJOiBz
-Y3J1YmJlZCBQRUIgNTg1IChMRUIgMzo3NzApLCBkYXRhIG1vdmVkIHRvIFBFQiAxNzcyDQpVQkk6
-IHNjcnViYmVkIFBFQiAxMDQ1IChMRUIgMzoxMjYxKSwgZGF0YSBtb3ZlZCB0byBQRUIgODI4DQpV
-Qkk6IHNjcnViYmVkIFBFQiAxNDkzIChMRUIgMzo2NjQpLCBkYXRhIG1vdmVkIHRvIFBFQiA4MTQN
-ClVCSTogc2NydWJiZWQgUEVCIDc1MSAoTEVCIDM6MTI2MCksIGRhdGEgbW92ZWQgdG8gUEVCIDE3
-NzINCg0KSW4gbXkgbWluZCwgdGhpcyBpcyByZWxhdGVkIHRvIHByb2JsZW1hdGljIGhhcmR3YXJl
-IHRoYXQgdGhlIGRhdGEgaXMgY29ycnVwdGVkIG9uIG1hbnkgY2VsbHMgdGhhdCBVQklGUyB0cmll
-cyB0byBtb3ZlIHRoZSBkYXRhIHdoZW4gYSBjb3JydXB0aW9uIGlzIGRldGVjdGVkLiBNeSBxdWVz
-dGlvbiBpcywgd2hldGhlciB0aGlzIGd1ZXNzIGNhbiBiZSB2YWxpZCBvciB0aGlzIGlzIG1vc3Rs
-eSBkdWUgdG8gb2xkIGtlcm5lbCB0aGF0IHdlIGFyZSB1c2luZyBhbmQgdXBncmFkaW5nIHRvIGEg
-bmV3IGtlcm5lbCB3b3VsZCBtb3N0IGxpa2VseSBzb2x2ZSB0aGUgcHJvYmxlbXM/DQoNClRoYW5r
-cyBhZ2FpbiwNCg0KRGFuZXNoIERhcm91aQ0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
-DQpGcm9tOiBTdGV2ZSBkZVJvc2llciBbbWFpbHRvOmRlcm9zaWVyQGdtYWlsLmNvbV0gDQpTZW50
-OiBkZW4gMjYgb2t0b2JlciAyMDE2IDE4OjE3DQpUbzogRGFuZXNoIERhcm91aSA8RGFuZXNoLkRh
-cm91aUBhc2NvbS5jb20+DQpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1Ympl
-Y3Q6IFJlOiBPT0IgVGVzdCBmYWlscw0KDQpIaSBEYW5lc2gsDQoNCg0KT24gV2VkLCBPY3QgMjYs
-IDIwMTYgYXQgOTowNyBBTSwgRGFuZXNoIERhcm91aSA8RGFuZXNoLkRhcm91aUBhc2NvbS5jb20+
-IHdyb3RlOg0KPiBIZWxsbyBhbGwsDQo+DQo+IEkgaGF2ZSBleGVjdXRlZCBNVEQgdGVzdHMgYWdh
-aW5zdCBhbiB1bm1vdW50ZWQgTVREIGRldmljZSB3aGljaCB1c2VzIFVCSUZTLiBBbGwgTVREIHRl
-c3RzIGV4Y2VwdCBPT0IgdGVzdCBpcyBwYXNzZWQgd2hlcmUgdGhlIE9PQiB0ZXN0IGZhaWxzIGZy
-b20gdGltZSB0byB0aW1lIGFuZCBmcm9tIGRldmljZSB0byBkZXZpY2UuIEkgaGF2ZSByZWFkIGhl
-cmU6DQo+DQo+IGh0dHA6Ly93d3cubGludXgtbXRkLmluZnJhZGVhZC5vcmcvZmFxL3ViaS5odG1s
-I0xfd2h5X25vX29vYg0KPg0KPiB0aGF0IFVCSUZTIGRvZXMgbm90IHVzZSBPT0IgYXJlYS4gVGhl
-cmVmb3JlIHdhbnRlZCB0byBhc2sgaWYgZmFpbGluZyB0aGlzIHRlc3QgZG9lcyBub3QgbmVlZCB0
-aGF0IHRoZXJlIGlzIGFueSBwcm9ibGVtIGluIG91ciBzeXN0ZW0gKGJvdGggSFcgYW5kIFNXL2Nv
-bmZpZ3VyYXRpb24pIGFuZCB3ZSBjYW4gc2FmZWx5IGlnbm9yZSB0aGUgcmVzdWx0cyBmb3IgdGhp
-cyB0ZXN0Lg0KPg0KDQpVQklGUyBkb2Vzbid0IHVzZSB0aGUgT09CIGFyZWEsIGJ1dCB5b3VyIE1U
-RCBkcml2ZXIgbW9zdCBsaWtlbHkgZG9lcy4NCldlIGRvbid0IHdhbnQgVUJJIG9yIFVCSUZTIG1l
-c3Npbmcgd2l0aCB0aGUgT09CIGFyZWEgYmVjYXVzZSB5b3VyIGZsYXNoLCBOQU5EIGNvbnRyb2xs
-ZXIgYW5kIHRoZSBNVEQgZHJpdmVyIHdpbGwgdXNlIHRoYXQuIEJhZCBibG9jayBtYXJrZXJzIGFy
-ZSBzZXQgaW4gdGhlIE9PQiBhcmVhIGJ5IHRoZSBtYW51ZmFjdHVyZXIgaW4gbW9zdCBOQU5EIGZs
-YXNoZXMgYW5kIHlvdXIgY29udHJvbGxlciBhbmQgTVREIGRyaXZlciB3aWxsIHN0b3JlIGFuZCB1
-c2UgdGhlIGJpdHMgaW4gdGhlIE9PQiB0byBkbyBlcnJvciBjb3JyZWN0aW9uLg0KDQpTbywgaW4g
-c2hvcnQgLSB0aGUgT09CIGFyZWEgZG9lcyBuZWVkIHRvIGZ1bmN0aW9uIGNvcnJlY3RseS4gIEFz
-IHRvIGlmIGFuZCB3aHkgdGhlIE9PQiB0ZXN0IGlzIG9yIGlzbid0IHdvcmtpbmcgaXMgYSBkaWZm
-ZXJlbnQgaXNzdWUgYW5kIEkgaGF2ZSBubyBpbnB1dCBvbiB0aGF0LiAgQWxsIHRoYXQgZGVwZW5k
-cyBvbiB5b3VyIG1peCBvZiBmbGFzaCwgY29udHJvbGxlciBhbmQgZHJpdmVyLg0KDQotIFN0ZXZl
-DQo=
+
+--w7nbiypn7hrkd6kw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Oct 25, 2016 at 12:10:26PM +0800, Chen-Yu Tsai wrote:
+> On Fri, Oct 21, 2016 at 1:07 AM, Maxime Ripard
+> <maxime.ripard@free-electrons.com> wrote:
+> > On Thu, Oct 20, 2016 at 10:10:03PM +0800, Chen-Yu Tsai wrote:
+> >> On Thu, Oct 20, 2016 at 4:12 PM, Maxime Ripard
+> >> <maxime.ripard@free-electrons.com> wrote:
+> >> > The PWM controller has two different channels, but only the first pi=
+n was
+> >> > exposed in the DTSI. Add the other one.
+> >> >
+> >> > Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> >>
+> >> Acked-by: Chen-Yu Tsai <wens@csie.org>
+> >>
+> >> > ---
+> >> >  arch/arm/boot/dts/ntc-gr8.dtsi | 7 +++++++
+> >> >  1 file changed, 7 insertions(+), 0 deletions(-)
+> >> >
+> >> > diff --git a/arch/arm/boot/dts/ntc-gr8.dtsi b/arch/arm/boot/dts/ntc-=
+gr8.dtsi
+> >> > index 74aff795e723..fad7381630f3 100644
+> >> > --- a/arch/arm/boot/dts/ntc-gr8.dtsi
+> >> > +++ b/arch/arm/boot/dts/ntc-gr8.dtsi
+> >> > @@ -854,6 +854,13 @@
+> >> >                                 allwinner,pull =3D <SUN4I_PINCTRL_NO=
+_PULL>;
+> >> >                         };
+> >> >
+> >> > +                       pwm1_pins_a: pwm1@0 {
+> >>
+> >> Nit: really don't need "_a" and "@0" here.
+> >
+> > Fixed and applied.
+>=20
+> Oops, you forgot to fix the label in the chip-pro dts:
+>=20
+>   DTC     arch/arm/boot/dts/ntc-gr8-chip-pro.dtb
+> ERROR (phandle_references): Reference to non-existent node or label
+> "pwm1_pins_a"
+>=20
+> ERROR: Input tree has errors, aborting (use -f to force output)
+> scripts/Makefile.lib:313: recipe for target
+> 'arch/arm/boot/dts/ntc-gr8-chip-pro.dtb' failed
+
+Yeah, it was noticed by linux-next too, and I fixed it...
+
+Sorry for that.
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+
+--w7nbiypn7hrkd6kw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYDzcBAAoJEBx+YmzsjxAg1TIQAJqvhK0//NH0DZxpFP0KqzT3
+x+8bTObh6Qg1Jw/KC5PmhiiEZa09upAx1MWT3aOzyePOxKzdFlq0E3idXZfzAXeI
+FEwkg/tpODPS55AIFFdbEnMOl5WY233ur5RI4mlb/X82HUdmQKvJrZ0zN7VmqSAe
+cgTfW01NYGj4qswbl7FH1cDVvb9MDjWI2IqfglDlvbwaIbxfuk72nT5rpCdoLTH0
+lls07wodA9nif9psBUsaL/SNn0/OIH4sW+riSkFQ7Tagv7lqcjZOyHtDC/nGv6g/
+YGdNW1coXVK6PkyeSgT8/wrTLEQDUjFaa1VPMOvAAnwQYHusAgASH4Xr+fzLpYbQ
+wvIHeO5f1OJCzfhr2rAvENrCSashzGwQAsSpkRlz8OOxoTr/lLAaZSpGKql0nkiJ
+TPhD3xuSb8bn8dCX+qFwWZDMjjnwzYqNN9m6exEfDjTmXbnSMnbB2qUXARScLpqj
+p387aB0RRhkHcysIKuH8s084kZ9alsG2mSI5ln4ZNUZ+zD3gj9V5tceFmmUYWYgs
+RcZttUzho2jhlY/eJ+P/J+8zL4buOeKZEVnEyNaI2oyjG4fhzqeSug8gWJ0HLTIX
+X6TdYtu5cV7CTA78//j8QUaSCoFgBOhpDHEoePJQ4zE1OzQopTbbkweyTzGQkSuV
+V9Zr9x7TKtc5UjUzWzyn
+=u4d+
+-----END PGP SIGNATURE-----
+
+--w7nbiypn7hrkd6kw--
