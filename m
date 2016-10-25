@@ -1,33 +1,24 @@
-Received: from mail-bl2nam02on0074.outbound.protection.outlook.com
- ([104.47.38.74] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+Received: from mail-he1eur01on0129.outbound.protection.outlook.com
+ ([104.47.0.129] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byttM-0007qB-70
- for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 05:03:18 +0000
-From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "rob@landley.net" <rob@landley.net>, "galak@codeaurora.org"
- <galak@codeaurora.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: RE: [v7, 1/3] nand: pl353: Add basic driver for arm pl353 smc nand
- interface
-Date: Tue, 25 Oct 2016 05:02:47 +0000
-Message-ID: <03CA77BA8AF6F1469AEDFBDA1322A7B764216E5A@XAP-PVEXMBX02.xlnx.xilinx.com>
-References: <1433786918-21500-2-git-send-email-punnaia@xilinx.com>
- <20161021203322.GA28655@obsidianresearch.com>
- <20161021234611.1f737144@bbrezillon>
- <CAGnW=Bb-pnJ9-xjcw-1dR-y+oKjNs53bgD+dh1LwsMTCmzdRmQ@mail.gmail.com>
- <20161024225954.GA12438@obsidianresearch.com>
- <03CA77BA8AF6F1469AEDFBDA1322A7B764216D8A@XAP-PVEXMBX02.xlnx.xilinx.com>
- <20161025044608.GA4929@obsidianresearch.com>
-In-Reply-To: <20161025044608.GA4929@obsidianresearch.com>
+ id 1byuWu-0005O9-TX
+ for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 05:44:10 +0000
+From: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "rfsw-patches@mlist.nokia.com" <rfsw-patches@mlist.nokia.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>
+Subject: RE: [PATCH 1/3] mtd: spi-nor: Add die_cnt field and flags
+Date: Tue, 25 Oct 2016 05:43:44 +0000
+Message-ID: <AM4PR0701MB2130E8217FE5642F6FF3E362FEA80@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+References: <1477314214-17718-1-git-send-email-marcin.krzeminski@nokia.com>
+ <1477314214-17718-2-git-send-email-marcin.krzeminski@nokia.com>
+ <0386ac08-f41e-1e10-d0e6-a16624bba952@atmel.com>
+In-Reply-To: <0386ac08-f41e-1e10-d0e6-a16624bba952@atmel.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,133 +30,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
+Hi Cyrille,
 
 > -----Original Message-----
-> From: Jason Gunthorpe [mailto:jgunthorpe@obsidianresearch.com]
-> Sent: Tuesday, October 25, 2016 10:16 AM
-> To: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>;
-> mark.rutland@arm.com; linux-mtd@lists.infradead.org;
-> michal.simek@xilinx.com; ezequiel.garcia@free-electrons.com; linux-
-> kernel@vger.kernel.org; rob@landley.net; galak@codeaurora.org;
-> computersforpeace@gmail.com; dwmw2@infradead.org
-> Subject: Re: [v7, 1/3] nand: pl353: Add basic driver for arm pl353 smc na=
-nd
-> interface
->
-> On Tue, Oct 25, 2016 at 03:58:49AM +0000, Punnaiah Choudary Kalluri wrote=
-:
->
-> > > I have hacked the v7 patchset enough to work on 4.8 and hacked it som=
-e
-> > > more to work on my hardware. The driver appears to be in no better
-> > > shape than the 3.12 out-of-tree Xilinx release I was using previously=
-..
+> From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+> Sent: Monday, October 24, 2016 3:55 PM
+> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
+> <marcin.krzeminski@nokia.com>; linux-mtd@lists.infradead.org
+> Cc: rfsw-patches@mlist.nokia.com; dwmw2@infradead.org;
+> computersforpeace@gmail.com; marek.vasut@gmail.com
+> Subject: Re: [PATCH 1/3] mtd: spi-nor: Add die_cnt field and flags
+>=20
+> Hi Marcin,
+>=20
+> Le 24/10/2016 =E0 15:03, marcin.krzeminski@nokia.com a =E9crit :
+> > From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 > >
-> > The driver in Xilinx tree works with 4.6 kernel and adopted the
-> > required
->
-> I mean, the driver from the 3.12 Xilinx tree that I last looked
-> at years ago. This is at v7 now and is still needs lots of work, I did
-> some fixing, including making parts of it work on 4.8.
-> You can copy it out of the patch I sent you.
->
-> > Changes (may release in 1-2 weeks). Still it need some rework, now a da=
-ys
-> > I am seeing many requests from different people for this driver and som=
+> > This commit adds new field and flags that could be used to signalize
+> > that chip support die erase command.
+> >
+> > If DIE_ERASE flag will be selected but die_cnt field will be 0 chip
+> > will not use chip erase command.
+> >
+> > Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 18 ++++++++++++++++++
+> >  include/linux/mtd/spi-nor.h   |  5 +++++
+> >  2 files changed, 23 insertions(+)
+> >
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c
+> > b/drivers/mtd/spi-nor/spi-nor.c index d0fc165..3afe207 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -75,6 +75,7 @@ struct flash_info {
+> >  					 * bit. Must be used with
+> >  					 * SPI_NOR_HAS_LOCK.
+> >  					 */
+> > +#define DIE_ERASE			BIT(10)	/* Support for die erase cmd
+> */
+> >  };
+> >
+> >  #define JEDEC_MFR(info)	((info)->id[0])
+> > @@ -295,6 +296,23 @@ static int erase_chip(struct spi_nor *nor)
+> >  	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);  }
+> >
+> > +static int spi_nor_die_erase(struct spi_nor *nor, u32 addr) {
+> > +	u8 buf[SPI_NOR_MAX_ADDR_WIDTH];
+> > +	int i;
+> > +
+> > +	dev_dbg(nor->dev, "erase @ 0x%X\n", addr);
+> > +
+> > +	write_enable(nor);
+> > +
+> > +	for (i =3D nor->addr_width - 1; i >=3D 0; i--) {
+> > +		buf[i] =3D addr & 0xff;
+> > +		addr >>=3D 8;
+> > +	}
+> > +
+> > +	return nor->write_reg(nor, SPINOR_OP_DIE_ERASE, buf,
+> > +nor->addr_width);
+>=20
+> If think you should first check whether nor->erase() is implemented by th=
 e
-> of
-> > Them are using different version of IP as you know this IP has four var=
-iants
-> and
-> > Xilinx is using the pl353 variant.
->
-> Well, I am using Xilinx Zynq hardware and care about making that
-> configuration actually work. This is the last driver I require to use
-> Zynq with mainline.
->
-
-Sure.
-
-> It clearly needs more work than just forward porting to 4.8, so please
-> let me know if you are able to tackle this.
-
-I didn't say that I am forwarding the patch working with 4.8. I said
-We made changes to driver compatible for 4.6 and working on driver rework,
-Most of your comments also part of that.
-
->
-> > Let's wait for the next series of patches and Get the patches tested
-> > with others as well along with the review comments.
->
-> You now have 10 review comments from me, please respond to all of them
-> in
-> your v8 patchset - no sense in continuing to drag this out.
->
-
-See above.
-
-> Please cc me on future series.
-
-Ok.
+> SPI controller driver and call it instead of nor->write_reg().
+>=20
+> For instance, some SPI controllers are mapped to the system memory to
+> speed up Fast Read operations. In which case, they could also enable data
+> cache to fasten even more the read operations.
+>=20
+> So when the spi-nor framework calls nor->erase() or nor->write(), those
+> handlers might need to invalidate the cache before performing the next
+> read.
+>=20
+> This is just an example but generally speaking, don't forget the nor->era=
+se()
+> handler! :)
+>=20
+Thanks for extensive clarification, I will include this in v2.
 
 Regards,
-Punnaiah
+Marcin
 
->
-> Jason
->
-> > Regards,
-> > Punnaiah
-> > > I've attached the ugly, ugly patch I made, it may save you some time
-> > > when preparing v8.
-> > >
-> > > Commentary:
-> > >  1) nand_chip already includes mtd_info, no reason for a second one i=
-n
-> > >     the pl353_nand_info struct. The standard accessors mtd_to_nand/et=
-c
-> > >     should be used instead of priv
-> > >  2) I hacked out all the ECC stuff from the driver since I don't use
-> > >     it and it was broken.. Obviously some has to come back, but fixin=
-g
-> > >     other things on this list first will make that much easier and be=
-tter..
-> > >  3) pl353_nand_write_page_swecc/pl353_nand_read_page_swecc are
-> pure
-> > >     outdated copies of the core routines and should not exist in a
-> > >     driver. This needs to be fixed so nand_scan_tail sets them.
-> > >     This seems to be a side effect of #9 ?
-> > >  4) The hacky stuff to detect 2 vs 3 address cycle NAND doesn't work,
-> > >     and doesn't work without ONFI (see patch for possible fix). The
-> > >     driver should probably use the same scheme the core code uses..
-> > >     But this is all a problem because of #10
-> > >  5) The driver assumes alignment of the iomap, needs to use + not |
-> > >     when constructing the address. (yes, this blows up on my system)
-> > >  6) Driver unconditionally sets timing to ONFI mode 0 (slow!)
-> > >     Maybe timing should be common code driven by DT..
-> > >  7) Driver unconditionally selects a BBT format, and an ECC layout
-> > >     (neither match what my system uses, but I guess that is a core mt=
-d
-> > >     issue these days :/)
-> > >  8) Driver unconditionally forces a chip-delay (wrong for my
-> > >     system) maybe this should be common code driven by DT..
-> > >  9) This buisness with pl353_nand_ecc_init and the
-> > >     special functions to do PL353_NAND_LAST_TRANSFER_LENGTH stuff
-> > >     is just horrid. I'd expect that is a big NAK.
-> > >
-> > >     The driver needs to implement read_buf *properly* so the core
-> > >     routines can be used instead of trying to 'fix' the call sites
-> > >     to do the PL353_NAND_LAST_TRANSFER_LENGTH stuff.
-> > >  10) pl353_nand_cmd_function is a wonky copy of nand_command_lp,
-> > > maybe
-> > >      this driver should use cmd_ctrl, or the core code should be
-> > >      refactored some more..
-
-
-This email and any attachments are intended for the sole use of the named r=
-ecipient(s) and contain(s) confidential information that may be proprietary=
-, privileged or copyrighted under applicable law. If you are not the intend=
-ed recipient, do not read, copy, or forward this email message or any attac=
-hments. Delete this email message and any attachments immediately.
+>=20
+> > +}
+> > +
+> >  static int spi_nor_lock_and_prep(struct spi_nor *nor, enum
+> > spi_nor_ops ops)  {
+> >  	int ret =3D 0;
+> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> > index c425c7b..80154b2 100644
+> > --- a/include/linux/mtd/spi-nor.h
+> > +++ b/include/linux/mtd/spi-nor.h
+> > @@ -50,6 +50,7 @@
+> >  #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC
+> chips */
+> >  #define SPINOR_OP_BE_32K	0x52	/* Erase 32KiB block */
+> >  #define SPINOR_OP_CHIP_ERASE	0xc7	/* Erase whole flash chip */
+> > +#define SPINOR_OP_DIE_ERASE	0xc4	/* Erase whole die within chip
+> */
+> >  #define SPINOR_OP_SE		0xd8	/* Sector erase (usually
+> 64KiB) */
+> >  #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
+> >  #define SPINOR_OP_RDCR		0x35	/* Read configuration register
+> */
+> > @@ -119,6 +120,7 @@ enum spi_nor_ops {  enum spi_nor_option_flags {
+> >  	SNOR_F_USE_FSR		=3D BIT(0),
+> >  	SNOR_F_HAS_SR_TB	=3D BIT(1),
+> > +	SNOR_F_DIE_ERASE	=3D BIT(2),
+> >  };
+> >
+> >  /**
+> > @@ -136,6 +138,8 @@ enum spi_nor_option_flags {
+> >   * @sst_write_second:	used by the SST write operation
+> >   * @flags:		flag options for the current SPI-NOR (SNOR_F_*)
+> >   * @cmd_buf:		used by the write_reg
+> > + * @die_cnt:		number of dies in chip, if and
+> SNOR_F_DIE_ERASE
+>=20
+> The 1st flag is missing between "if" and "and", isn't it?
+> > + * 			flasg is enabled CE command will be disabled
+>=20
+> typo: s/flasg/flags/
+> >   * @prepare:		[OPTIONAL] do some preparations for the
+> >   *			read/write/erase/lock/unlock operations
+> >   * @unprepare:		[OPTIONAL] do some post work after the
+> > @@ -167,6 +171,7 @@ struct spi_nor {
+> >  	bool			sst_write_second;
+> >  	u32			flags;
+> >  	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
+> > +	u32			die_cnt;
+> >
+> >  	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
+> >  	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
+> >
+>=20
+> Best regards,
+>=20
+> Cyrille
