@@ -1,25 +1,21 @@
-Received: from mail-cys01nam02on0082.outbound.protection.outlook.com
- ([104.47.37.82] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byus3-0007QV-6H
- for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 06:06:00 +0000
-From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-To: Christoph Hellwig <hch@infradead.org>, Richard Weinberger <richard@nod.at>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "michal.simek@xilinx.com" <michal.simek@xilinx.com>, "Punnaiah Choudary
- Kalluri" <punnaia@xilinx.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-Subject: UBIFS LEB properties tree with odd addresses
-Date: Tue, 25 Oct 2016 06:05:32 +0000
-Message-ID: <DA6901612C71B84D91459DE817C418AE26E0016D@XAP-PVEXMBX01.xlnx.xilinx.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1byuwH-0008SG-0z
+ for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 06:10:23 +0000
+Date: Tue, 25 Oct 2016 08:09:55 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Subject: Re: [PATCH] mtd: nand: Fix data interface configuration logic
+Message-ID: <20161025060955.4kn76hgilglhvehd@pengutronix.de>
+References: <1477320380-11062-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1477320380-11062-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,74 +25,205 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, Oct 24, 2016 at 04:46:20PM +0200, Boris Brezillon wrote:
+> When changing from one data interface setting to another, one has to
+> ensure a specific sequence which is described in the ONFI spec.
+> 
+> One of these constraints is that the CE line has go high after a reset
+> before a command can be sent with the new data interface setting, which
+> is not guaranteed by the current implementation.
+> 
+> Rework the nand_reset() function and all the call sites to make sure the
+> CE line is asserted and released when required.
+> 
+> Also make sure to actually apply the new data interface setting on the
+> first die.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Fixes: d8e725dd8311 ("mtd: nand: automate NAND timings selection")
 
-We are testing UBIFS (NOR) on Zynq Ultrascale+ MPSoC GQSPI controller drive=
-r.
-Apart from my previous mail thread about UBIFS, i.e along with dma issue I =
-am facing one more
-Problem related to offsets.
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-Info about GQSPI Controller:
-This controller can access the flash device in the following modes.
-1. Single flash mode
-2. Two spi flash memories with separate buses (dual parallel)
+Sasha
 
-Single flash mode: it is normal configuration, one controller and one flash=
- memory
+> ---
+>  drivers/mtd/nand/nand_base.c | 60 +++++++++++++++++++++++++++++++-------------
+>  include/linux/mtd/nand.h     |  2 +-
+>  2 files changed, 43 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index e5718e5ecf92..3bde96a3f7bf 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1095,10 +1095,11 @@ static void nand_release_data_interface(struct nand_chip *chip)
+>  /**
+>   * nand_reset - Reset and initialize a NAND device
+>   * @chip: The NAND chip
+> + * @chipnr: Internal die id
+>   *
+>   * Returns 0 for success or negative error code otherwise
+>   */
+> -int nand_reset(struct nand_chip *chip)
+> +int nand_reset(struct nand_chip *chip, int chipnr)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	int ret;
+> @@ -1107,9 +1108,17 @@ int nand_reset(struct nand_chip *chip)
+>  	if (ret)
+>  		return ret;
+>  
+> +	/*
+> +	 * The CS line has to be released before we can apply the new NAND
+> +	 * interface settings, hence this weird ->select_chip() dance.
+> +	 */
+> +	chip->select_chip(mtd, chipnr);
+>  	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+> +	chip->select_chip(mtd, -1);
+>  
+> +	chip->select_chip(mtd, chipnr);
+>  	ret = nand_setup_data_interface(chip);
+> +	chip->select_chip(mtd, -1);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -1185,8 +1194,6 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	/* Shift to get chip number */
+>  	chipnr = ofs >> chip->chip_shift;
+>  
+> -	chip->select_chip(mtd, chipnr);
+> -
+>  	/*
+>  	 * Reset the chip.
+>  	 * If we want to check the WP through READ STATUS and check the bit 7
+> @@ -1194,7 +1201,9 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	 * some operation can also clear the bit 7 of status register
+>  	 * eg. erase/program a locked block
+>  	 */
+> -	nand_reset(chip);
+> +	nand_reset(chip, chipnr);
+> +
+> +	chip->select_chip(mtd, chipnr);
+>  
+>  	/* Check, if it is write protected */
+>  	if (nand_check_wp(mtd)) {
+> @@ -1244,8 +1253,6 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	/* Shift to get chip number */
+>  	chipnr = ofs >> chip->chip_shift;
+>  
+> -	chip->select_chip(mtd, chipnr);
+> -
+>  	/*
+>  	 * Reset the chip.
+>  	 * If we want to check the WP through READ STATUS and check the bit 7
+> @@ -1253,7 +1260,9 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	 * some operation can also clear the bit 7 of status register
+>  	 * eg. erase/program a locked block
+>  	 */
+> -	nand_reset(chip);
+> +	nand_reset(chip, chipnr);
+> +
+> +	chip->select_chip(mtd, chipnr);
+>  
+>  	/* Check, if it is write protected */
+>  	if (nand_check_wp(mtd)) {
+> @@ -2940,10 +2949,6 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+>  	}
+>  
+>  	chipnr = (int)(to >> chip->chip_shift);
+> -	chip->select_chip(mtd, chipnr);
+> -
+> -	/* Shift to get page */
+> -	page = (int)(to >> chip->page_shift);
+>  
+>  	/*
+>  	 * Reset the chip. Some chips (like the Toshiba TC5832DC found in one
+> @@ -2951,7 +2956,12 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+>  	 * if we don't do this. I have no clue why, but I seem to have 'fixed'
+>  	 * it in the doc2000 driver in August 1999.  dwmw2.
+>  	 */
+> -	nand_reset(chip);
+> +	nand_reset(chip, chipnr);
+> +
+> +	chip->select_chip(mtd, chipnr);
+> +
+> +	/* Shift to get page */
+> +	page = (int)(to >> chip->page_shift);
+>  
+>  	/* Check, if it is write protected */
+>  	if (nand_check_wp(mtd)) {
+> @@ -3984,14 +3994,14 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+>  	int i, maf_idx;
+>  	u8 id_data[8];
+>  
+> -	/* Select the device */
+> -	chip->select_chip(mtd, 0);
+> -
+>  	/*
+>  	 * Reset the chip, required by some chips (e.g. Micron MT29FxGxxxxx)
+>  	 * after power-up.
+>  	 */
+> -	nand_reset(chip);
+> +	nand_reset(chip, 0);
+> +
+> +	/* Select the device */
+> +	chip->select_chip(mtd, 0);
+>  
+>  	/* Send the command for reading device ID */
+>  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+> @@ -4329,17 +4339,31 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+>  		return PTR_ERR(type);
+>  	}
+>  
+> +	/* Initialize the ->data_interface field. */
+>  	ret = nand_init_data_interface(chip);
+>  	if (ret)
+>  		return ret;
+>  
+> +	/*
+> +	 * Setup the data interface correctly on the chip and controller side.
+> +	 * This explicit call to nand_setup_data_interface() is only required
+> +	 * for the first die, because nand_reset() has been called before
+> +	 * ->data_interface and ->default_onfi_timing_mode were set.
+> +	 * For the other dies, nand_reset() will automatically switch to the
+> +	 * best mode for us.
+> +	 */
+> +	ret = nand_setup_data_interface(chip);
+> +	if (ret)
+> +		return ret;
+> +
+>  	chip->select_chip(mtd, -1);
+>  
+>  	/* Check for a chip array */
+>  	for (i = 1; i < maxchips; i++) {
+> -		chip->select_chip(mtd, i);
+>  		/* See comment in nand_get_flash_type for reset */
+> -		nand_reset(chip);
+> +		nand_reset(chip, i);
+> +
+> +		chip->select_chip(mtd, i);
+>  		/* Send the command for reading device ID */
+>  		chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+>  		/* Read manufacturer and device IDs */
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index c5d3d5024fc8..d8905a229f34 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -1184,7 +1184,7 @@ int nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+>  			   int page);
+>  
+>  /* Reset and initialize a NAND device */
+> -int nand_reset(struct nand_chip *chip);
+> +int nand_reset(struct nand_chip *chip, int chipnr);
+>  
+>  /* Free resources held by the NAND device */
+>  void nand_cleanup(struct nand_chip *chip);
+> -- 
+> 2.7.4
+> 
+> 
 
-In dual parallel mode following are the functionalities:
-1) Supporting two SPI flash memories operating in parallel. 8 I/O lines.
-2) Chip selects and clock are shared to both the flash devices
-3) This mode is targeted for faster read/write speed and also doubles the s=
-ize
-4) Commands/data can be transmitted/received from both the devices(mirror),=
- or only upper or only lower flash memory devices.
-5) Data arrangement:
-=A0=A0=A0 With stripe (controller configuration) enabled,
-=A0=A0=A0 Even bytes i.e. 0, 2, 4,... are transmitted on Lower Data Bus
-=A0=A0=A0 Odd bytes i.e. 1, 3, 5,.. are transmitted on Upper Data Bus.
-
-Kernel version : 4.4.0
-Controller limitation: ZynqMP gqspi controller supports only even addresses=
- when two flash devices are connected (dual parallel mode).
-
-Issue I am facing:
--> Since our controller supports even addresses in dual parallel mode
-We are seeing issues with ubifs in dual parallel mode and jffs2 is working =
-fine and we observed the following:
-
-IN dual parallel mode, the Erase block size was 128KiB whereas single flash=
- mode the Erase block size was 64KiB.
-In single flash mode, we are getting pnode_sz value as 16 and for dual para=
-llel mode we are getting an odd value 17
-And ltab_sz value in single mode as 12 and in dual parallel mode as 11.
-Because of these odd values, check_lpt_type  offset argument is odd address=
- and hence lpt_type error.
-
-When I ran the mnt command, I am getting the following error
-"UBIFS error (ubi0:0 pid 1882): check_lpt_type: invalid type (4) in LPT nod=
-e type 2"
-Ran the below commands:
-a)ubiformat /dev/mtd0 -e 0 -y
-b)ubiattach -p /dev/mtd0
-c)ubimkvol -N data -m /dev/ubi0
-d)mount -t ubifs ubi0:data /mnt
-
-So for temporary hack we did the following change
-In fs/ubifs/lpt.c
-In do_calc_lpt_geom(), added the following
-+=A0=A0=A0=A0=A0=A0 if (c->pnode_sz % 2)
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 c->pnode_sz +=3D 1;=20
-+=A0=A0=A0=A0=A0=A0 if (c->ltab_sz % 2)
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 c->ltab_sz +=3D 1;
-
-Please kindly suggest, I need your inputs, changing the pnode_sz and ltab_s=
-z to even in lpt.c, will it impact on any others?
-We can do the same change in spi layer (change the address to even) but the=
- above properties won't reflect in ubi layer.
-Kindly please suggest.
-If I haven't provided sufficient information, please let me know.
-
-Thanks,
-Naga Sureshkumar Relli
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
