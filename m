@@ -1,19 +1,17 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.195])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.199])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bz1cl-00013D-Uw
- for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 13:18:43 +0000
-Subject: [PATCH v7 1/2] mtd: nand: add tango NFC dt bindings doc
+ id 1bz1cm-00013B-Bv
+ for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 13:18:44 +0000
 To: linux-mtd <linux-mtd@lists.infradead.org>, Boris Brezillon
  <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>
 CC: DT <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, "Mark
  Rutland" <mark.rutland@arm.com>, Mason <slash.tmp@free.fr>, Sebastian Frias
  <sf84@laposte.net>
-References: <580F5AD2.9020909@sigmadesigns.com>
 From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Message-ID: <580F5B06.6030608@sigmadesigns.com>
-Date: Tue, 25 Oct 2016 15:15:50 +0200
+Subject: [PATCH v7 0/2] tango NFC support + bindings doc
+Message-ID: <580F5AD2.9020909@sigmadesigns.com>
+Date: Tue, 25 Oct 2016 15:14:58 +0200
 MIME-Version: 1.0
-In-Reply-To: <580F5AD2.9020909@sigmadesigns.com>
 Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,56 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the tango NAND Flash Controller dt bindings documentation.
+Hello,
 
-Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
----
- Documentation/devicetree/bindings/mtd/tango-nand.txt | 38 ++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+This patch series adds support for the NAND Flash controller
+on recent Tango chips, along with the bindings documentation.
 
-diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-new file mode 100644
-index 000000000000..3cbf95d6595a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-@@ -0,0 +1,38 @@
-+Sigma Designs Tango4 NAND Flash Controller (NFC)
-+
-+Required properties:
-+
-+- compatible: "sigma,smp8758-nand"
-+- reg: address/size of nfc_reg, nfc_mem, and pbus_reg
-+- dmas: reference to the DMA channel used by the controller
-+- dma-names: "nfc_sbox"
-+- clocks: reference to the system clock
-+- #address-cells: <1>
-+- #size-cells: <0>
-+
-+Children nodes represent the available NAND chips.
-+See Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
-+
-+Example:
-+
-+	nand: nand@2c000 {
-+		compatible = "sigma,smp8758-nand";
-+		reg = <0x2c000 0x30 0x2d000 0x800 0x20000 0x1000>;
-+		dmas = <&dma0 3>;
-+		dma-names = "nfc_sbox";
-+		clocks = <&clkgen SYS_CLK>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		nand@0 {
-+			reg = <0>; /* CS0 */
-+			nand-ecc-strength = <14>;
-+			nand-ecc-step-size = <1024>;
-+		};
-+
-+		nand@1 {
-+			reg = <1>; /* CS1 */
-+			nand-ecc-strength = <14>;
-+			nand-ecc-step-size = <1024>;
-+		};
-+	};
--- 
-2.9.0
+Marc Gonzalez (2):
+  mtd: nand: add tango NFC dt bindings doc
+  mtd: nand: add tango NAND flash controller support
+
+ Documentation/devicetree/bindings/mtd/tango-nand.txt |  38 ++
+ drivers/mtd/nand/Kconfig                             |   6 +
+ drivers/mtd/nand/Makefile                            |   1 +
+ drivers/mtd/nand/tango_nand.c                        | 654 +++++++++++++++++++++++++++++
+ 4 files changed, 699 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/tango-nand.txt
+ create mode 100644 drivers/mtd/nand/tango_nand.c
+
+Regards.
