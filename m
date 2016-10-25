@@ -1,21 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bz7QL-00059b-2a
+ id 1bz7QO-00059l-MP
  for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 19:30:17 +0000
-Subject: Re: [PATCH v3 1/9] mtd: spi-nor: improve macronix_quad_enable()
+Subject: Re: [PATCH v3 8/9] mtd: spi-nor: add support to Macronix mx66l1g45g
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org
 References: <cover.1477325128.git.cyrille.pitchen@atmel.com>
- <c63d3715903e640c7ea5328614bd4468688b761d.1477325128.git.cyrille.pitchen@atmel.com>
- <74f0fa1b-3212-8a21-f966-14f153d2bf43@denx.de>
- <6948ab96-62ab-c383-4f50-e897be0999b3@atmel.com>
+ <4db277dccf52acd48e592d9f285724aab70704d1.1477325128.git.cyrille.pitchen@atmel.com>
+ <b043147d-cc39-9238-c6e7-432af67f684e@denx.de>
+ <1d74bddb-fcf7-cb0c-5c0f-a86a54c9a033@atmel.com>
 Cc: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com,
  richard@nod.at, linux-kernel@vger.kernel.org
 From: Marek Vasut <marex@denx.de>
-Message-ID: <32ea0535-97a6-34d6-7263-24f155d3da62@denx.de>
-Date: Tue, 25 Oct 2016 16:49:04 +0200
+Message-ID: <e636f1e4-e8d8-ed9b-2ecd-dc1f248d923e@denx.de>
+Date: Tue, 25 Oct 2016 16:58:03 +0200
 MIME-Version: 1.0
-In-Reply-To: <6948ab96-62ab-c383-4f50-e897be0999b3@atmel.com>
+In-Reply-To: <1d74bddb-fcf7-cb0c-5c0f-a86a54c9a033@atmel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,46 +27,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/25/2016 10:52 AM, Cyrille Pitchen wrote:
+On 10/25/2016 11:39 AM, Cyrille Pitchen wrote:
 > Hi Marek,
-> 
-> Le 25/10/2016 à 00:00, Marek Vasut a écrit :
+
+Hi,
+
+> Le 25/10/2016 à 00:16, Marek Vasut a écrit :
 >> On 10/24/2016 06:34 PM, Cyrille Pitchen wrote:
->>> The patch checks whether the Quad Enable bit is already set in the Status
->>> Register. If so, the function exits immediately with a successful return
->>> code. Otherwise, a message is now printed telling we're setting the
->>> non-volatile bit.
+>>> This patch adds an entry in the spi_nor_ids[] table to add support
+>>> to the Macronix mx66l1g45g.
 >>>
 >>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>> Reviewed-by: Jagan Teki <jagan@openedev.com>
 >>> ---
->>>  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
->>>  1 file changed, 5 insertions(+)
+>>>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>>>  1 file changed, 1 insertion(+)
 >>>
 >>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>> index d0fc165d7d66..5c87b2d99507 100644
+>>> index db4874d4af79..eb21d3d4e4e6 100644
 >>> --- a/drivers/mtd/spi-nor/spi-nor.c
 >>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -1211,6 +1211,11 @@ static int macronix_quad_enable(struct spi_nor *nor)
->>>  	val = read_sr(nor);
->>>  	if (val < 0)
->>>  		return val;
->>> +	if (val & SR_QUAD_EN_MX)
->>> +		return 0;
->>> +
->>> +	/* Update the Quad Enable bit. */
->>> +	dev_info(nor->dev, "setting Macronix Quad Enable (non-volatile) bit\n");
->>
->> Should probably be dev_dbg(), since this is just churn in the kernel
->> log. The user doesn't care and the developer can just up the debug level
->> or add his own printk .
+>>> @@ -937,6 +937,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+>>>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>>>  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+>>> +	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+>>>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+>>>  
+>>>  	/* Micron */
+>>>
+>> This should be submitted separately as it could be applied right away.
 >>
 > 
-> The Quad Enable bit is non-volatile so this trace should be printed only once
-> but I'm perfectly fine with using dev_dbg(). I'll change it in the next version.
+> I totally agree with you. Indeed I have only provided patch 8 and 9 because
+> I refer to these memories in the cover letter and to "prove" that I did really
+> test every memory of the list. If everyone trust me about the test I do, I
+> will remove patch 8 and 9 in the next version.
 
-I get it, but what's the value of it ? Who will make use of this
-information being in the kernel log? The kernel is already chatty enough :)
+I think 9 needs to stay or be separated somehow differently from the
+series, since it also adds some code to support the flash. Otherwise,
+go for submitting them separately.
+
+> By the way, I need to add a remark about the Spansion S25FL127S. The sample I
+> have is compliant with neither the JESD216B specification nor the Cypress
+> datasheet. More precisely, the Cypress datasheet claims that the S25FL127S
+> is compliant with the JESD216B (minor 6) so its Basic Flash Parameter Table
+> (BFPT) should contain 16 DWORDS.
+> However my sample claims to be JESD216B compliant (I read minor 6) and that
+> the BFPT has 16 DWORDS but the 7 last DWORDS of this table are all 0xFFFFFFFF.
+> Only the first 9 DWORDS are properly filled, the DWORDS described in JESD216
+> (minor 0).
+> Also my sample pretend to provide the optional 4-byte address instruction set
+> (4BAIS) table but the data I read are once again all 0xFFFFFFFF.
+> 
+> It's surprising that this 128Mbit memory supports the 4-byte address
+> instruction set but the 4-byte Fast Read actually seems to be supported.
+
+They probably use the same HDL design for the controller block in many
+memories, they just burn in different ID/SFDP/geometry tables for each
+chip they roll out from the factory based on how well the memory array
+works.
+
+> Consequently, Fast Read operations work but Sector Erase cannot due to the
+> 0xFF op code read from the 4BAIS table. I think I just have a broken sample so
+> if anyone can test with another sample and confirm that the SFDP series also
+> work with Spansion S25FL127S it would be nice! :)
+
+I don't have one, sorry.
 
 -- 
 Best regards,
