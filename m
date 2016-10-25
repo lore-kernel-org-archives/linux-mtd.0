@@ -1,20 +1,19 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.203])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.10])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byzwe-0003BN-Lr
- for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 11:31:05 +0000
-Subject: Re: [PATCH v6 4/4] mtd: nand: tango: import driver for tango chips
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: linux-mtd <linux-mtd@lists.infradead.org>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>
-References: <580E0318.5020004@sigmadesigns.com>
- <580E04B4.7040102@sigmadesigns.com> <20161024171026.710d0f6a@bbrezillon>
+ id 1bz0s0-0000sy-6d
+ for linux-mtd@lists.infradead.org; Tue, 25 Oct 2016 12:30:25 +0000
+Subject: Re: [PATCH] mtd: nand: Fix data interface configuration logic
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>
+CC: Sascha Hauer <s.hauer@pengutronix.de>
+References: <1477320380-11062-1-git-send-email-boris.brezillon@free-electrons.com>
 From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Message-ID: <580F425F.8090000@sigmadesigns.com>
-Date: Tue, 25 Oct 2016 13:30:39 +0200
+Message-ID: <580F5043.6060901@sigmadesigns.com>
+Date: Tue, 25 Oct 2016 14:29:55 +0200
 MIME-Version: 1.0
-In-Reply-To: <20161024171026.710d0f6a@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1477320380-11062-1-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,52 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Heya :-)
+On 24/10/2016 16:46, Boris Brezillon wrote:
 
-On 24/10/2016 17:10, Boris Brezillon wrote:
-
-> Marc Gonzalez wrote:
+> When changing from one data interface setting to another, one has to
+> ensure a specific sequence which is described in the ONFI spec.
 > 
->> This driver supports the NAND Flash controller embedded in recent
->> Tango chips, such as SMP8758 and SMP8759.
+> One of these constraints is that the CE line has go high after a reset
+> before a command can be sent with the new data interface setting, which
+> is not guaranteed by the current implementation.
 > 
-> A few comments below (most of them are about coding style).
-
-20c25f430311 tweak chip->options
-cd1f53e6d2b8 Move ECC init code around
-b90efb09a921 Increment ecc_stats.failed on error
-2236f67af8d6 move brace for checkpatch
-83c1c0311c2a braces in for loop
-13faec8fa36b proper braces for if-block
-f879bf99d5c3 Move test before DMA write
-a2d319b18702 no brackets for readl_poll_timeout
-67acc45e26e1 Remove nice alignment
-dd71ae037721 fix TIMING macro
-
-Time to squash and send v7, along with the bindings doc.
-
-
->> +#define TIMING(t0, t1, t2, t3) (t0 << 24 | t1 << 16 | t2 << 8 | t3 << 0)
+> Rework the nand_reset() function and all the call sites to make sure the
+> CE line is asserted and released when required.
 > 
-> Wrap tX params with parenthesis to make sure the shift operation is
-> applied to the correct value (for example, if t0 = a + b, then the
-> resulting operation will be a + (b << 24) instead of (a + b) << 24 if
-> you don't put those parenthesis).
-
-Fixed.
-
-For the record, addition has higher precedence than shift.
-Thus a + b << n = (a + b) << n
-But your point is valid for bit-wise operations, e.g.
-a & b << n = a & (b << n)
-
->> +	writel_relaxed(page, nfc->reg_base + NFC_ADDR_PAGE);
->> +	writel_relaxed(   0, nfc->reg_base + NFC_ADDR_OFFSET);
->> +	writel_relaxed( cmd, nfc->reg_base + NFC_FLASH_CMD);
+> Also make sure to actually apply the new data interface setting on the
+> first die.
 > 
-> A vestige of you weird alignment policy ;). Please fix that.
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Fixes: d8e725dd8311 ("mtd: nand: automate NAND timings selection")
+> ---
+>  drivers/mtd/nand/nand_base.c | 60 +++++++++++++++++++++++++++++++-------------
+>  include/linux/mtd/nand.h     |  2 +-
+>  2 files changed, 43 insertions(+), 19 deletions(-)
 
-Fixed. Even checkpatch complains...
-(Sad puppy face)
+Tested-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
 
 Regards.
