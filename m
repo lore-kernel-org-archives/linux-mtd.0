@@ -1,19 +1,20 @@
-Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
+Received: from smtp1.ascom-ws.com ([195.81.148.76] helo=mail.ascom-ws.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bzQsz-0003Xz-45
- for linux-mtd@lists.infradead.org; Wed, 26 Oct 2016 16:17:06 +0000
-Received: by mail-oi0-x22b.google.com with SMTP id n202so24224952oig.3
- for <linux-mtd@lists.infradead.org>; Wed, 26 Oct 2016 09:16:43 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <39BC08CB3FF4C84CB6397533D4FC79095770D513@SEGOTEXCH02.ascom-Resource.ads>
+ id 1bzR58-0000FO-MH
+ for linux-mtd@lists.infradead.org; Wed, 26 Oct 2016 16:29:39 +0000
+From: Danesh Daroui <Danesh.Daroui@ascom.com>
+To: Steve deRosier <derosier@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: OOB Test fails
+Date: Wed, 26 Oct 2016 16:28:43 +0000
+Message-ID: <39BC08CB3FF4C84CB6397533D4FC79095770D530@SEGOTEXCH02.ascom-Resource.ads>
 References: <39BC08CB3FF4C84CB6397533D4FC79095770D513@SEGOTEXCH02.ascom-Resource.ads>
-From: Steve deRosier <derosier@gmail.com>
-Date: Wed, 26 Oct 2016 09:16:42 -0700
-Message-ID: <CALupW3CJ_gXS+7BrZEGTF8o0H8pJ_AOw0JcKOftSVaMVSbP1zQ@mail.gmail.com>
-Subject: Re: OOB Test fails
-To: Danesh Daroui <Danesh.Daroui@ascom.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+ <CALupW3CJ_gXS+7BrZEGTF8o0H8pJ_AOw0JcKOftSVaMVSbP1zQ@mail.gmail.com>
+In-Reply-To: <CALupW3CJ_gXS+7BrZEGTF8o0H8pJ_AOw0JcKOftSVaMVSbP1zQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Danesh,
-
-
-On Wed, Oct 26, 2016 at 9:07 AM, Danesh Daroui <Danesh.Daroui@ascom.com> wrote:
-> Hello all,
->
-> I have executed MTD tests against an unmounted MTD device which uses UBIFS. All MTD tests except OOB test is passed where the OOB test fails from time to time and from device to device. I have read here:
->
-> http://www.linux-mtd.infradead.org/faq/ubi.html#L_why_no_oob
->
-> that UBIFS does not use OOB area. Therefore wanted to ask if failing this test does not need that there is any problem in our system (both HW and SW/configuration) and we can safely ignore the results for this test.
->
-
-UBIFS doesn't use the OOB area, but your MTD driver most likely does.
-We don't want UBI or UBIFS messing with the OOB area because your
-flash, NAND controller and the MTD driver will use that. Bad block
-markers are set in the OOB area by the manufacturer in most NAND
-flashes and your controller and MTD driver will store and use the bits
-in the OOB to do error correction.
-
-So, in short - the OOB area does need to function correctly.  As to if
-and why the OOB test is or isn't working is a different issue and I
-have no input on that.  All that depends on your mix of flash,
-controller and driver.
-
-- Steve
+SGkgU3RldmUsDQoNClRoYW5rIHlvdSBmb3IgeW91ciBwcm9tcHQgYW5zd2VyLiBXaGVuIEkgcnVu
+IE9PQiB0ZXN0IChtdGRfb29idGVzdCksIGZvciBpbnN0YW5jZSwgb25lIG9mIGRldmljZXMgYWx3
+YXlzIHJldHVybiB2ZXJpZmljYXRpb24gZmFpbGVkIGVycm9yIG9uIGEgY2VydGFpbiBhZGRyZXNz
+LiBUaGlzIGlzIGFsbCB3ZSBrbm93IGFuZCBhbGwgdGhlIHRlc3QgcmVwb3J0cy4gV2UgdXNlIGEg
+cXVpdGUgb2xkIGtlcm5lbCBpLmUuIDIuNi4zOSBhbmQgdGhpcyBpcyBvbmUgb2YgdGhlIHRoaW5n
+cyB0aGF0IHdlIHN1c3BlY3QgYXMgYSBzb3VyY2Ugb2YgdGhlIHByb2JsZW0gdGhhdCB0aGUga2Vy
+bmVsIGlzIG91dGRhdGVkLiBBbHNvLCB3ZSBjb25zaWRlciB0aGUgaGFyZHdhcmUgZmFpbHVyZSBz
+aW5jZSBvbiBzb21lIGRldmljZXMgbm8gZXJyb3IgaXMgc2hvd24gb24gT09CIHRlc3Qgd2hpbGUg
+b24gb3RoZXJzIG1vcmUgZXJyb3JzIGFyZSBzaG93biBhbmQgdGhlIGFkZHJlc3MgaXMgY2hhbmdl
+ZCByYW5kb21seSBzb21ldGltZXMuDQoNCk91ciBtYWluIHByb2JsZW0gaXMgdGhhdCBzb21ldGlt
+ZXMgVUJJRlMgZm9yY2VzIHRoZSBkZXZpY2UgaW50byByZWFkLW9ubHkgbW9kZSBkdWUgdG8gImJh
+ZCBDUkMiIGVycm9yIGF0IHN0YXJ0dXAgd2hlbiB0aGUgZGV2aWNlIGlzIGJvb3RlZC4gSSBhbSBu
+b3cgcnVubmluZyB0ZXN0cyB3aGljaCBhcmUgaW4gIm10ZF91dGlscyIgZm9yIHRlc3RpbmcgZmls
+ZSBzeXN0ZW0uIEkgaGF2ZSBzdGFydGVkIHJ1bm5pbmcgdHdvIHRlc3RzIHdoaWNoIGFyZSAic2lt
+cGxlL3Rlc3RfMSIgYW5kICJzaW1wbGUvdGVzdF8yIiB3aGljaCBzaW1wbHkgd3JpdGUgdW50aWwg
+dGhlIGRyaXZlIGlzIGZ1bGwgYW5kIHRoZSByZWFkIHRoZSBkYXRhIGJhY2sgYW5kIHZlcmlmeSB0
+aGUgY29ycmVjdG5lc3MuIER1cmluZyB0aGUgdGVzdCwgSSBzZWUgbG90cyBvZjoNCg0KVUJJOiBz
+Y3J1YmJlZCBQRUIgNTg1IChMRUIgMzo3NzApLCBkYXRhIG1vdmVkIHRvIFBFQiAxNzcyDQpVQkk6
+IHNjcnViYmVkIFBFQiAxMDQ1IChMRUIgMzoxMjYxKSwgZGF0YSBtb3ZlZCB0byBQRUIgODI4DQpV
+Qkk6IHNjcnViYmVkIFBFQiAxNDkzIChMRUIgMzo2NjQpLCBkYXRhIG1vdmVkIHRvIFBFQiA4MTQN
+ClVCSTogc2NydWJiZWQgUEVCIDc1MSAoTEVCIDM6MTI2MCksIGRhdGEgbW92ZWQgdG8gUEVCIDE3
+NzINCg0KSW4gbXkgbWluZCwgdGhpcyBpcyByZWxhdGVkIHRvIHByb2JsZW1hdGljIGhhcmR3YXJl
+IHRoYXQgdGhlIGRhdGEgaXMgY29ycnVwdGVkIG9uIG1hbnkgY2VsbHMgdGhhdCBVQklGUyB0cmll
+cyB0byBtb3ZlIHRoZSBkYXRhIHdoZW4gYSBjb3JydXB0aW9uIGlzIGRldGVjdGVkLiBNeSBxdWVz
+dGlvbiBpcywgd2hldGhlciB0aGlzIGd1ZXNzIGNhbiBiZSB2YWxpZCBvciB0aGlzIGlzIG1vc3Rs
+eSBkdWUgdG8gb2xkIGtlcm5lbCB0aGF0IHdlIGFyZSB1c2luZyBhbmQgdXBncmFkaW5nIHRvIGEg
+bmV3IGtlcm5lbCB3b3VsZCBtb3N0IGxpa2VseSBzb2x2ZSB0aGUgcHJvYmxlbXM/DQoNClRoYW5r
+cyBhZ2FpbiwNCg0KRGFuZXNoIERhcm91aQ0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+DQpGcm9tOiBTdGV2ZSBkZVJvc2llciBbbWFpbHRvOmRlcm9zaWVyQGdtYWlsLmNvbV0gDQpTZW50
+OiBkZW4gMjYgb2t0b2JlciAyMDE2IDE4OjE3DQpUbzogRGFuZXNoIERhcm91aSA8RGFuZXNoLkRh
+cm91aUBhc2NvbS5jb20+DQpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1Ympl
+Y3Q6IFJlOiBPT0IgVGVzdCBmYWlscw0KDQpIaSBEYW5lc2gsDQoNCg0KT24gV2VkLCBPY3QgMjYs
+IDIwMTYgYXQgOTowNyBBTSwgRGFuZXNoIERhcm91aSA8RGFuZXNoLkRhcm91aUBhc2NvbS5jb20+
+IHdyb3RlOg0KPiBIZWxsbyBhbGwsDQo+DQo+IEkgaGF2ZSBleGVjdXRlZCBNVEQgdGVzdHMgYWdh
+aW5zdCBhbiB1bm1vdW50ZWQgTVREIGRldmljZSB3aGljaCB1c2VzIFVCSUZTLiBBbGwgTVREIHRl
+c3RzIGV4Y2VwdCBPT0IgdGVzdCBpcyBwYXNzZWQgd2hlcmUgdGhlIE9PQiB0ZXN0IGZhaWxzIGZy
+b20gdGltZSB0byB0aW1lIGFuZCBmcm9tIGRldmljZSB0byBkZXZpY2UuIEkgaGF2ZSByZWFkIGhl
+cmU6DQo+DQo+IGh0dHA6Ly93d3cubGludXgtbXRkLmluZnJhZGVhZC5vcmcvZmFxL3ViaS5odG1s
+I0xfd2h5X25vX29vYg0KPg0KPiB0aGF0IFVCSUZTIGRvZXMgbm90IHVzZSBPT0IgYXJlYS4gVGhl
+cmVmb3JlIHdhbnRlZCB0byBhc2sgaWYgZmFpbGluZyB0aGlzIHRlc3QgZG9lcyBub3QgbmVlZCB0
+aGF0IHRoZXJlIGlzIGFueSBwcm9ibGVtIGluIG91ciBzeXN0ZW0gKGJvdGggSFcgYW5kIFNXL2Nv
+bmZpZ3VyYXRpb24pIGFuZCB3ZSBjYW4gc2FmZWx5IGlnbm9yZSB0aGUgcmVzdWx0cyBmb3IgdGhp
+cyB0ZXN0Lg0KPg0KDQpVQklGUyBkb2Vzbid0IHVzZSB0aGUgT09CIGFyZWEsIGJ1dCB5b3VyIE1U
+RCBkcml2ZXIgbW9zdCBsaWtlbHkgZG9lcy4NCldlIGRvbid0IHdhbnQgVUJJIG9yIFVCSUZTIG1l
+c3Npbmcgd2l0aCB0aGUgT09CIGFyZWEgYmVjYXVzZSB5b3VyIGZsYXNoLCBOQU5EIGNvbnRyb2xs
+ZXIgYW5kIHRoZSBNVEQgZHJpdmVyIHdpbGwgdXNlIHRoYXQuIEJhZCBibG9jayBtYXJrZXJzIGFy
+ZSBzZXQgaW4gdGhlIE9PQiBhcmVhIGJ5IHRoZSBtYW51ZmFjdHVyZXIgaW4gbW9zdCBOQU5EIGZs
+YXNoZXMgYW5kIHlvdXIgY29udHJvbGxlciBhbmQgTVREIGRyaXZlciB3aWxsIHN0b3JlIGFuZCB1
+c2UgdGhlIGJpdHMgaW4gdGhlIE9PQiB0byBkbyBlcnJvciBjb3JyZWN0aW9uLg0KDQpTbywgaW4g
+c2hvcnQgLSB0aGUgT09CIGFyZWEgZG9lcyBuZWVkIHRvIGZ1bmN0aW9uIGNvcnJlY3RseS4gIEFz
+IHRvIGlmIGFuZCB3aHkgdGhlIE9PQiB0ZXN0IGlzIG9yIGlzbid0IHdvcmtpbmcgaXMgYSBkaWZm
+ZXJlbnQgaXNzdWUgYW5kIEkgaGF2ZSBubyBpbnB1dCBvbiB0aGF0LiAgQWxsIHRoYXQgZGVwZW5k
+cyBvbiB5b3VyIG1peCBvZiBmbGFzaCwgY29udHJvbGxlciBhbmQgZHJpdmVyLg0KDQotIFN0ZXZl
+DQo=
