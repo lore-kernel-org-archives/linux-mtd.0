@@ -1,23 +1,26 @@
-Received: from mail-ve1eur03on072e.outbound.protection.outlook.com
- ([2a01:111:f400:fe09::72e]
- helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+Received: from mail7.hitachi.co.jp ([133.145.228.42])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bzEAr-0001Sz-5T
- for linux-mtd@lists.infradead.org; Wed, 26 Oct 2016 02:44:45 +0000
-Message-ID: <5810179D.90104@axentia.se>
-Date: Wed, 26 Oct 2016 04:40:29 +0200
-From: Peter Rosin <peda@axentia.se>
-MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: Regression caused by commit c83ed4c9dbb3 "ubifs: Abort readdir
- on error"
-References: <ce65141e-87d2-344e-82d2-a1c4ed0bdbf1@lysator.liu.se>
- <e4cbe883-003e-5522-400a-da79a98a0ec4@nod.at>
- <2e3cf9f7-d747-7129-455f-a1105f5474de@nod.at>
-In-Reply-To: <2e3cf9f7-d747-7129-455f-a1105f5474de@nod.at>
+ id 1bzGgR-0007uG-2F
+ for linux-mtd@lists.infradead.org; Wed, 26 Oct 2016 05:23:28 +0000
+From: =?utf-8?B?5bKp5p2+5L+h5rSLIC8gSVdBTUFUU1XvvIxOT0JVSElSTw==?=
+ <nobuhiro.iwamatsu.kw@hitachi.com>
+To: Jagan Teki <jagan@openedev.com>, Marek Vasut <marek.vasut@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>,
+ =?utf-8?B?6ZW36Ii56L6w5pitIC8gT1NBRlVORe+8jFRBVFNVQUtJ?=
+ <tatsuaki.osafune.uv@hitachi.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: RE: [PATCH] mtd: spi-nor: Add support for N25Q256A13
+Date: Wed, 26 Oct 2016 05:20:46 +0000
+Message-ID: <F89ECF87BC754A49BB74E794F6A0EC2FF7F15E@GSjpTKYDCembx31.service.hitachi.net>
+References: <1475637910-2324-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
+ <CAD6G_RT8s5=vDP2bc__SULyxt=NnqZrLDuepcUkxs75HG9=ZQg@mail.gmail.com>
+ <25b5dc82-a5fa-1d0f-8915-60b121a65751@gmail.com>
+ <CAD6G_RSTKULAU6v=W=GS-x10x206oMTjd6kfNhDuNc=jwqN93g@mail.gmail.com>
+In-Reply-To: <CAD6G_RSTKULAU6v=W=GS-x10x206oMTjd6kfNhDuNc=jwqN93g@mail.gmail.com>
+Content-Language: ja-JP
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +30,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
-
-On 2016-10-25 22:50, Richard Weinberger wrote:
-> Peter,
-> 
-> On 25.10.2016 22:09, Richard Weinberger wrote:
->>> /bin/mkdir -p /mnt/ovl/ovl
->>> /bin/mkdir -p /mnt/ovl/work
->>> # with c83ed4c9dbb3, the following mount fails with
->>> # mount: mounting overlay on /mnt/merge failed: No such file or directory
->>> /bin/mount -t overlay -o lowerdir=/,upperdir=/mnt/ovl/ovl,workdir=/mnt/ovl/work overlay /mnt/merge
->>
->> Uhhhh! Thanks for catching this.
->> I think I know what is going on, the fix exposes now internal UBIFS return codes to VFS.
->> Let me prepare a fix.
-> 
-> Does the attached patch cure the issue?
-
-Yup, back to normal AFAICT. Thanks for the speedy fix!
-
-Reported-by: Peter Rosin <peda@axentia.se>
-Tested-by: Peter Rosin <peda@axentia.se>
-
-Cheers,
-Peter
+SGksIGFsbC4NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKYWdhbiBU
+ZWtpIFttYWlsdG86amFnYW5Ab3BlbmVkZXYuY29tXQ0KPiBTZW50OiBNb25kYXksIE9jdG9iZXIg
+MjQsIDIwMTYgMTA6MjEgUE0NCj4gVG86IE1hcmVrIFZhc3V0DQo+IENjOiDlsqnmnb7kv6HmtIsg
+LyBJV0FNQVRTVe+8jE5PQlVISVJPOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgQnJp
+YW4NCj4gTm9ycmlzOyDplbfoiLnovrDmmK0gLyBPU0FGVU5F77yMVEFUU1VBS0k7IERhdmlkIFdv
+b2Rob3VzZQ0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBtdGQ6IHNwaS1ub3I6IEFkZCBzdXBwb3J0
+IGZvciBOMjVRMjU2QTEzDQo+IA0KPiBPbiBNb24sIE9jdCAyNCwgMjAxNiBhdCA2OjM5IFBNLCBN
+YXJlayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwuY29tPiB3cm90ZToNCj4gPiBPbiAxMC8yNC8y
+MDE2IDEwOjA0IEFNLCBKYWdhbiBUZWtpIHdyb3RlOg0KPiA+PiBPbiBXZWQsIE9jdCA1LCAyMDE2
+IGF0IDg6NTUgQU0sIE5vYnVoaXJvIEl3YW1hdHN1DQo+ID4+IDxub2J1aGlyby5pd2FtYXRzdS5r
+d0BoaXRhY2hpLmNvbT4gd3JvdGU6DQo+ID4+PiBBZGQgTWljcm9uIE4yNVEyNTZBMTMgMjU2TWJp
+dCBOT1IgRmxhc2ggaW4gdGhlIGxpc3Qgb2Ygc3VwcG9ydGVkDQo+ID4+PiBkZXZpY2VzLiBUaGlz
+IGNoaXAgaXMgdGhlIHNhbWUgc3RydWN0dXJlIGFzIHRoZSBOMjVRMjU2QSBidXQgSUQgaXMNCj4g
+Pj4+IGRpZmZlcmVudC4NCj4gPj4+DQo+ID4+PiBTaWduZWQtb2ZmLWJ5OiBOb2J1aGlybyBJd2Ft
+YXRzdSA8bm9idWhpcm8uaXdhbWF0c3Uua3dAaGl0YWNoaS5jb20+DQo+ID4+PiAtLS0NCj4gPj4+
+DQo+ID4+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAxICsNCj4gPj4+ICAxIGZp
+bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gPj4+DQo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPj4+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9z
+cGktbm9yLmMgaW5kZXggZDBmYzE2NS4uY2U2N2NjZCAxMDA2NDQNCj4gPj4+IC0tLSBhL2RyaXZl
+cnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ID4+PiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9y
+L3NwaS1ub3IuYw0KPiA+Pj4gQEAgLTg4NCw2ICs4ODQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0
+IGZsYXNoX2luZm8gc3BpX25vcl9pZHNbXSA9IHsNCj4gPj4+ICAgICAgICAgeyAibjI1cTEyOGEx
+MSIsICBJTkZPKDB4MjBiYjE4LCAwLCA2NCAqIDEwMjQsICAyNTYsIFNFQ1RfNEsNCj4gfCBTUElf
+Tk9SX1FVQURfUkVBRCkgfSwNCj4gPj4+ICAgICAgICAgeyAibjI1cTEyOGExMyIsICBJTkZPKDB4
+MjBiYTE4LCAwLCA2NCAqIDEwMjQsICAyNTYsIFNFQ1RfNEsNCj4gfCBTUElfTk9SX1FVQURfUkVB
+RCkgfSwNCj4gPj4+ICAgICAgICAgeyAibjI1cTI1NmEiLCAgICBJTkZPKDB4MjBiYTE5LCAwLCA2
+NCAqIDEwMjQsICA1MTIsIFNFQ1RfNEsNCj4gfCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4gPj4+
+ICsgICAgICAgeyAibjI1cTI1NmExMyIsICBJTkZPKDB4MjBiYjE5LCAwLCA2NCAqIDEwMjQsICA1
+MTIsIFNFQ1RfNEsNCj4gPj4+ICsgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4gPj4NCj4gPj4g
+U2luY2UgdGhlIHByZXZpb3VzIGNoaXBzIGZvbGxvdyAnYScgbm90YXRpb24gZm9yIGJiIGNoaXBz
+LCBiZXR0ZXIgdG8NCj4gPj4gdXNlIG4yNXEyNTZhIGZvciBiYiBhbmQgbjI1cTI1NiBmb3IgYmEN
+Cj4gPg0KPiA+IERvIHlvdSBtaW5kIGV4cGFuZGluZyBvbiB0aGlzPyBJIGRvbid0IHVuZGVyc3Rh
+bmQgdGhlIHJlbWFyay4NCj4gDQo+IHsgIm4yNXEwNjQiLCAgICAgSU5GTygweDIwYmExNywNCj4g
+eyAibjI1cTA2NGEiLCAgIElORk8oMHgyMGJiMTcsDQo+IA0KPiBXaGF0IEkgYW0gc2F5aW5nIGlz
+IG4yNXEyNTZhIGlzIHNob3VsZCBiZSBuMjVxMjU2IGFuZCB0aGUgbmV3IGFkZGl0aW9uIGNhbg0K
+PiBiZSBuMjVxMjU2YQ0KPiANCg0KSSBzZWUuIEkgd2lsbCB1cGRhdGUgcGF0Y2guDQoNClRoYW5r
+cyENCg0KTm9idWhpcm8NCg==
