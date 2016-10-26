@@ -1,16 +1,21 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from mail-ve1eur03on072e.outbound.protection.outlook.com
+ ([2a01:111:f400:fe09::72e]
+ helo=EUR03-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bzDJp-0004mP-9c
- for linux-mtd@lists.infradead.org; Wed, 26 Oct 2016 01:47:55 +0000
-Message-ID: <58100B0B.3030906@huawei.com>
-Date: Wed, 26 Oct 2016 09:46:51 +0800
-From: Sheng Yong <shengyong1@huawei.com>
+ id 1bzEAr-0001Sz-5T
+ for linux-mtd@lists.infradead.org; Wed, 26 Oct 2016 02:44:45 +0000
+Message-ID: <5810179D.90104@axentia.se>
+Date: Wed, 26 Oct 2016 04:40:29 +0200
+From: Peter Rosin <peda@axentia.se>
 MIME-Version: 1.0
-To: Dan Carpenter <dan.carpenter@oracle.com>
-CC: <linux-mtd@lists.infradead.org>
-Subject: Re: [bug report] UBI: Fastmap: Do not add vol if it already exists
-References: <20161025204607.GA27826@elgon.mountain>
-In-Reply-To: <20161025204607.GA27826@elgon.mountain>
+To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: Regression caused by commit c83ed4c9dbb3 "ubifs: Abort readdir
+ on error"
+References: <ce65141e-87d2-344e-82d2-a1c4ed0bdbf1@lysator.liu.se>
+ <e4cbe883-003e-5522-400a-da79a98a0ec4@nod.at>
+ <2e3cf9f7-d747-7129-455f-a1105f5474de@nod.at>
+In-Reply-To: <2e3cf9f7-d747-7129-455f-a1105f5474de@nod.at>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,46 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Dan,
+Hi Richard,
 
-On 10/26/2016 4:46 AM, Dan Carpenter wrote:
-> Hello shengyong,
+On 2016-10-25 22:50, Richard Weinberger wrote:
+> Peter,
 > 
-> The patch e96a8a3bb671: "UBI: Fastmap: Do not add vol if it already
-> exists" from May 26, 2015, leads to the following static checker
-> warning:
+> On 25.10.2016 22:09, Richard Weinberger wrote:
+>>> /bin/mkdir -p /mnt/ovl/ovl
+>>> /bin/mkdir -p /mnt/ovl/work
+>>> # with c83ed4c9dbb3, the following mount fails with
+>>> # mount: mounting overlay on /mnt/merge failed: No such file or directory
+>>> /bin/mount -t overlay -o lowerdir=/,upperdir=/mnt/ovl/ovl,workdir=/mnt/ovl/work overlay /mnt/merge
+>>
+>> Uhhhh! Thanks for catching this.
+>> I think I know what is going on, the fix exposes now internal UBIFS return codes to VFS.
+>> Let me prepare a fix.
 > 
-> 	drivers/mtd/ubi/fastmap.c:712 ubi_attach_fastmap()
-> 	warn: PTR_ERR(av) is never (-22)
-> 
-> drivers/mtd/ubi/fastmap.c
->    703  
->    704                  av = add_vol(ai, be32_to_cpu(fmvhdr->vol_id),
->    705                               be32_to_cpu(fmvhdr->used_ebs),
->    706                               be32_to_cpu(fmvhdr->data_pad),
->    707                               fmvhdr->vol_type,
->    708                               be32_to_cpu(fmvhdr->last_eb_bytes));
->    709  
->    710                  if (!av)
->    711                          goto fail_bad;
->    712                  if (PTR_ERR(av) == -EINVAL) {
-> 
-> av is either -EEXIST or -ENOMEM.  It's never -EINVAL.
-The commit e96a8a3bb671 ("UBI: Fastmap: Do not add vol if it already exists")
-adds a "return ERR_PTR(-EINVAL);" to add_vol(). So I think av could be -EINVAL.
-You mean add_vol should return -EEXIST instead of -EINVAL?
+> Does the attached patch cure the issue?
 
-thanks,
-Sheng
-> 
->    713                          ubi_err(ubi, "volume (ID %i) already exists",
->    714                                  fmvhdr->vol_id);
->    715                          goto fail_bad;
->    716                  }
->    717  
-> 
-> regards,
-> dan carpenter
-> 
-> .
-> 
+Yup, back to normal AFAICT. Thanks for the speedy fix!
+
+Reported-by: Peter Rosin <peda@axentia.se>
+Tested-by: Peter Rosin <peda@axentia.se>
+
+Cheers,
+Peter
