@@ -1,26 +1,20 @@
-Received: from mail7.hitachi.co.jp ([133.145.228.42])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bzGgR-0007uG-2F
- for linux-mtd@lists.infradead.org; Wed, 26 Oct 2016 05:23:28 +0000
-From: =?utf-8?B?5bKp5p2+5L+h5rSLIC8gSVdBTUFUU1XvvIxOT0JVSElSTw==?=
- <nobuhiro.iwamatsu.kw@hitachi.com>
-To: Jagan Teki <jagan@openedev.com>, Marek Vasut <marek.vasut@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Brian
- Norris" <computersforpeace@gmail.com>,
- =?utf-8?B?6ZW36Ii56L6w5pitIC8gT1NBRlVORe+8jFRBVFNVQUtJ?=
- <tatsuaki.osafune.uv@hitachi.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: RE: [PATCH] mtd: spi-nor: Add support for N25Q256A13
-Date: Wed, 26 Oct 2016 05:20:46 +0000
-Message-ID: <F89ECF87BC754A49BB74E794F6A0EC2FF7F15E@GSjpTKYDCembx31.service.hitachi.net>
-References: <1475637910-2324-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
- <CAD6G_RT8s5=vDP2bc__SULyxt=NnqZrLDuepcUkxs75HG9=ZQg@mail.gmail.com>
- <25b5dc82-a5fa-1d0f-8915-60b121a65751@gmail.com>
- <CAD6G_RSTKULAU6v=W=GS-x10x206oMTjd6kfNhDuNc=jwqN93g@mail.gmail.com>
-In-Reply-To: <CAD6G_RSTKULAU6v=W=GS-x10x206oMTjd6kfNhDuNc=jwqN93g@mail.gmail.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1bzJXD-0006dQ-IP
+ for linux-mtd@lists.infradead.org; Wed, 26 Oct 2016 08:26:08 +0000
+Date: Wed, 26 Oct 2016 11:25:36 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Sheng Yong <shengyong1@huawei.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [bug report] UBI: Fastmap: Do not add vol if it already exists
+Message-ID: <20161026082536.GP4418@mwanda>
+References: <20161025204607.GA27826@elgon.mountain>
+ <58100B0B.3030906@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <58100B0B.3030906@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,40 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIGFsbC4NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKYWdhbiBU
-ZWtpIFttYWlsdG86amFnYW5Ab3BlbmVkZXYuY29tXQ0KPiBTZW50OiBNb25kYXksIE9jdG9iZXIg
-MjQsIDIwMTYgMTA6MjEgUE0NCj4gVG86IE1hcmVrIFZhc3V0DQo+IENjOiDlsqnmnb7kv6HmtIsg
-LyBJV0FNQVRTVe+8jE5PQlVISVJPOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgQnJp
-YW4NCj4gTm9ycmlzOyDplbfoiLnovrDmmK0gLyBPU0FGVU5F77yMVEFUU1VBS0k7IERhdmlkIFdv
-b2Rob3VzZQ0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBtdGQ6IHNwaS1ub3I6IEFkZCBzdXBwb3J0
-IGZvciBOMjVRMjU2QTEzDQo+IA0KPiBPbiBNb24sIE9jdCAyNCwgMjAxNiBhdCA2OjM5IFBNLCBN
-YXJlayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwuY29tPiB3cm90ZToNCj4gPiBPbiAxMC8yNC8y
-MDE2IDEwOjA0IEFNLCBKYWdhbiBUZWtpIHdyb3RlOg0KPiA+PiBPbiBXZWQsIE9jdCA1LCAyMDE2
-IGF0IDg6NTUgQU0sIE5vYnVoaXJvIEl3YW1hdHN1DQo+ID4+IDxub2J1aGlyby5pd2FtYXRzdS5r
-d0BoaXRhY2hpLmNvbT4gd3JvdGU6DQo+ID4+PiBBZGQgTWljcm9uIE4yNVEyNTZBMTMgMjU2TWJp
-dCBOT1IgRmxhc2ggaW4gdGhlIGxpc3Qgb2Ygc3VwcG9ydGVkDQo+ID4+PiBkZXZpY2VzLiBUaGlz
-IGNoaXAgaXMgdGhlIHNhbWUgc3RydWN0dXJlIGFzIHRoZSBOMjVRMjU2QSBidXQgSUQgaXMNCj4g
-Pj4+IGRpZmZlcmVudC4NCj4gPj4+DQo+ID4+PiBTaWduZWQtb2ZmLWJ5OiBOb2J1aGlybyBJd2Ft
-YXRzdSA8bm9idWhpcm8uaXdhbWF0c3Uua3dAaGl0YWNoaS5jb20+DQo+ID4+PiAtLS0NCj4gPj4+
-DQo+ID4+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAxICsNCj4gPj4+ICAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gPj4+DQo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPj4+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9z
-cGktbm9yLmMgaW5kZXggZDBmYzE2NS4uY2U2N2NjZCAxMDA2NDQNCj4gPj4+IC0tLSBhL2RyaXZl
-cnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ID4+PiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9y
-L3NwaS1ub3IuYw0KPiA+Pj4gQEAgLTg4NCw2ICs4ODQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0
-IGZsYXNoX2luZm8gc3BpX25vcl9pZHNbXSA9IHsNCj4gPj4+ICAgICAgICAgeyAibjI1cTEyOGEx
-MSIsICBJTkZPKDB4MjBiYjE4LCAwLCA2NCAqIDEwMjQsICAyNTYsIFNFQ1RfNEsNCj4gfCBTUElf
-Tk9SX1FVQURfUkVBRCkgfSwNCj4gPj4+ICAgICAgICAgeyAibjI1cTEyOGExMyIsICBJTkZPKDB4
-MjBiYTE4LCAwLCA2NCAqIDEwMjQsICAyNTYsIFNFQ1RfNEsNCj4gfCBTUElfTk9SX1FVQURfUkVB
-RCkgfSwNCj4gPj4+ICAgICAgICAgeyAibjI1cTI1NmEiLCAgICBJTkZPKDB4MjBiYTE5LCAwLCA2
-NCAqIDEwMjQsICA1MTIsIFNFQ1RfNEsNCj4gfCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4gPj4+
-ICsgICAgICAgeyAibjI1cTI1NmExMyIsICBJTkZPKDB4MjBiYjE5LCAwLCA2NCAqIDEwMjQsICA1
-MTIsIFNFQ1RfNEsNCj4gPj4+ICsgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4gPj4NCj4gPj4g
-U2luY2UgdGhlIHByZXZpb3VzIGNoaXBzIGZvbGxvdyAnYScgbm90YXRpb24gZm9yIGJiIGNoaXBz
-LCBiZXR0ZXIgdG8NCj4gPj4gdXNlIG4yNXEyNTZhIGZvciBiYiBhbmQgbjI1cTI1NiBmb3IgYmEN
-Cj4gPg0KPiA+IERvIHlvdSBtaW5kIGV4cGFuZGluZyBvbiB0aGlzPyBJIGRvbid0IHVuZGVyc3Rh
-bmQgdGhlIHJlbWFyay4NCj4gDQo+IHsgIm4yNXEwNjQiLCAgICAgSU5GTygweDIwYmExNywNCj4g
-eyAibjI1cTA2NGEiLCAgIElORk8oMHgyMGJiMTcsDQo+IA0KPiBXaGF0IEkgYW0gc2F5aW5nIGlz
-IG4yNXEyNTZhIGlzIHNob3VsZCBiZSBuMjVxMjU2IGFuZCB0aGUgbmV3IGFkZGl0aW9uIGNhbg0K
-PiBiZSBuMjVxMjU2YQ0KPiANCg0KSSBzZWUuIEkgd2lsbCB1cGRhdGUgcGF0Y2guDQoNClRoYW5r
-cyENCg0KTm9idWhpcm8NCg==
+On Wed, Oct 26, 2016 at 09:46:51AM +0800, Sheng Yong wrote:
+> Hi Dan,
+> 
+> On 10/26/2016 4:46 AM, Dan Carpenter wrote:
+> > Hello shengyong,
+> > 
+> > The patch e96a8a3bb671: "UBI: Fastmap: Do not add vol if it already
+> > exists" from May 26, 2015, leads to the following static checker
+> > warning:
+> > 
+> > 	drivers/mtd/ubi/fastmap.c:712 ubi_attach_fastmap()
+> > 	warn: PTR_ERR(av) is never (-22)
+> > 
+> > drivers/mtd/ubi/fastmap.c
+> >    703  
+> >    704                  av = add_vol(ai, be32_to_cpu(fmvhdr->vol_id),
+> >    705                               be32_to_cpu(fmvhdr->used_ebs),
+> >    706                               be32_to_cpu(fmvhdr->data_pad),
+> >    707                               fmvhdr->vol_type,
+> >    708                               be32_to_cpu(fmvhdr->last_eb_bytes));
+> >    709  
+> >    710                  if (!av)
+> >    711                          goto fail_bad;
+> >    712                  if (PTR_ERR(av) == -EINVAL) {
+> > 
+> > av is either -EEXIST or -ENOMEM.  It's never -EINVAL.
+> The commit e96a8a3bb671 ("UBI: Fastmap: Do not add vol if it already exists")
+> adds a "return ERR_PTR(-EINVAL);" to add_vol(). So I think av could be -EINVAL.
+> You mean add_vol should return -EEXIST instead of -EINVAL?
+>
+
+Oh, ah.  I'm on linux-next.  Commit de4c455b3e9f ("UBI: factorize code
+used to manipulate volumes at attach time") removed the -EINVAL.
+
+It's really Boris to blame for this warning.  I'm not sure what the fix
+is.
+
+regards,
+dan carpenter
