@@ -1,19 +1,16 @@
-Received: from up.free-electrons.com ([163.172.77.33]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bzmsJ-0006ht-At
- for linux-mtd@lists.infradead.org; Thu, 27 Oct 2016 15:45:53 +0000
-Date: Thu, 27 Oct 2016 17:45:27 +0200
+Date: Thu, 27 Oct 2016 18:12:25 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Steve deRosier <derosier@gmail.com>
-Cc: Danesh Daroui <Danesh.Daroui@ascom.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: OOB Test fails
-Message-ID: <20161027174527.6003fd37@bbrezillon>
-In-Reply-To: <20161027093407.53a76657@bbrezillon>
-References: <39BC08CB3FF4C84CB6397533D4FC79095770D513@SEGOTEXCH02.ascom-Resource.ads>
- <CALupW3CJ_gXS+7BrZEGTF8o0H8pJ_AOw0JcKOftSVaMVSbP1zQ@mail.gmail.com>
- <20161027093407.53a76657@bbrezillon>
+To: Sergio Prado <sergio.prado@e-labworks.com>
+Cc: kgene@kernel.org, krzk@kernel.org, javier@osg.samsung.com,
+ linux@armlinux.org.uk, linux@simtec.co.uk, richard@nod.at,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 0/3] mtd: s3c2410: add device tree support
+Message-ID: <20161027181225.3d5a6f04@bbrezillon>
+In-Reply-To: <1477526395-13103-1-git-send-email-sergio.prado@e-labworks.com>
+References: <1477526395-13103-1-git-send-email-sergio.prado@e-labworks.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,40 +23,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 27 Oct 2016 09:34:07 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Wed, 26 Oct 2016 21:59:52 -0200
+Sergio Prado <sergio.prado@e-labworks.com> wrote:
 
-> Hi Steve,
+> This series adds support for configuring Samsung's s3c2410 and
+> compatible flash memory controller via devicetree.
 > 
-> On Wed, 26 Oct 2016 09:16:42 -0700
-> Steve deRosier <derosier@gmail.com> wrote:
+> Tested on FriendlyARM mini2440, based on s3c2440 SoC.
 > 
-> > Hi Danesh,
-> > 
-> > 
-> > On Wed, Oct 26, 2016 at 9:07 AM, Danesh Daroui <Danesh.Daroui@ascom.com> wrote:  
-> > > Hello all,
-> > >
-> > > I have executed MTD tests against an unmounted MTD device which uses UBIFS. All MTD tests except OOB test is passed where the OOB test fails from time to time and from device to device. I have read here:
-> > >
-> > > http://www.linux-mtd.infradead.org/faq/ubi.html#L_why_no_oob
-> > >
-> > > that UBIFS does not use OOB area. Therefore wanted to ask if failing this test does not need that there is any problem in our system (both HW and SW/configuration) and we can safely ignore the results for this test.
-> > >    
-> > 
-> > UBIFS doesn't use the OOB area, but your MTD driver most likely does.
-> > We don't want UBI or UBIFS messing with the OOB area because your
-> > flash, NAND controller and the MTD driver will use that. Bad block
-> > markers are set in the OOB area by the manufacturer in most NAND
-> > flashes and your controller and MTD driver will store and use the bits
-> > in the OOB to do error correction.
-> > 
-> > So, in short - the OOB area does need to function correctly.  As to if
-> > and why the OOB test is or isn't working is a different issue and I
-> > have no input on that.  All that depends on your mix of flash,
-> > controller and driver.  
+> Patch 3 depends on patch 1.
 
-My bad, I misread your sentence. I thought you we saying "the OOB area
-does *not* need to function correctly".
+Applied.
 
-My apologies for this misunderstanding, it seems we're on the same page.
+Thanks,
+
+Boris
+
+> 
+> Changes since v3:
+> - apply the timings in the end of ->setup_data_interface so the
+>   timings can be changed at runtime by the MTD core.
+> 
+> Changes since v2:
+> - conditionally assign chip->setup_data_interface to
+>   s3c2410_nand_setup_data_interface if booting via device tree
+> 
+> Changes since v1:
+> - automate timing selection when booting with a device tree
+> - make s3c24XX_nand_devtype_data structs "static const"
+> - removing samsung,s3c6400-nand compatible since it is equivalent to
+>   samsung,s3c2412-nand
+> 
+> Changes since initial version:
+> - patch converted to a patch series
+> - read timings from nand_sdr_timings when booting with a device tree
+> - naming improvements in the device tree binding
+>   (s/nand/nand-controller/, s/_/-, s/children/child)
+> - dropped property samsung,ignore_unset_ecc
+> - remove @0 from nand device node
+> - checking pdev->dev.of_node instead of using ifdef CONFIG_OF_MTD
+> - preventing from parsing device tree properties twice
+> - increment the nand controller child node refcount, since we
+>   maintain a reference to it and its name field
+> - using of_device_get_match_data() instead of of_match_device()
+>   to make the code simpler
+> - remove CONFIG_MTD_NAND_S3C2410_HWECC compile option so we can
+>   select ECC mode using nand-ecc-mode property in the device tree
+> 
+> Sergio Prado (3):
+>   mtd: s3c2410: make ecc mode configurable via platform data
+>   dt-bindings: mtd: add DT binding for s3c2410 flash controller
+>   mtd: s3c2410: parse the device configuration from OF node
+> 
+>  .../devicetree/bindings/mtd/samsung-s3c2410.txt    |  56 +++++
+>  arch/arm/mach-s3c24xx/common-smdk.c                |   1 +
+>  arch/arm/mach-s3c24xx/mach-anubis.c                |   1 +
+>  arch/arm/mach-s3c24xx/mach-at2440evb.c             |   1 +
+>  arch/arm/mach-s3c24xx/mach-bast.c                  |   1 +
+>  arch/arm/mach-s3c24xx/mach-gta02.c                 |   1 +
+>  arch/arm/mach-s3c24xx/mach-jive.c                  |   1 +
+>  arch/arm/mach-s3c24xx/mach-mini2440.c              |   1 +
+>  arch/arm/mach-s3c24xx/mach-osiris.c                |   1 +
+>  arch/arm/mach-s3c24xx/mach-qt2410.c                |   1 +
+>  arch/arm/mach-s3c24xx/mach-rx1950.c                |   1 +
+>  arch/arm/mach-s3c24xx/mach-rx3715.c                |   1 +
+>  arch/arm/mach-s3c24xx/mach-vstms.c                 |   1 +
+>  arch/arm/mach-s3c64xx/mach-hmt.c                   |   1 +
+>  arch/arm/mach-s3c64xx/mach-mini6410.c              |   1 +
+>  arch/arm/mach-s3c64xx/mach-real6410.c              |   1 +
+>  drivers/mtd/nand/Kconfig                           |   9 -
+>  drivers/mtd/nand/s3c2410.c                         | 277 +++++++++++++++------
+>  include/linux/platform_data/mtd-nand-s3c2410.h     |   7 +-
+>  19 files changed, 278 insertions(+), 86 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
+> 
