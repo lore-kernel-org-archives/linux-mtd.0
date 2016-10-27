@@ -1,25 +1,21 @@
 Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bzsAA-0000jU-Ds
+ id 1bzsAA-0000in-Dr
  for linux-mtd@lists.infradead.org; Thu, 27 Oct 2016 21:24:39 +0000
-Received: by mail-wm0-x243.google.com with SMTP id m83so4573798wmc.0
- for <linux-mtd@lists.infradead.org>; Thu, 27 Oct 2016 14:24:19 -0700 (PDT)
-Subject: [PATCH RESEND] mtd: m25p80: consider max message size in m25p80_read
-References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
- <20160816164204.GV9347@sirena.org.uk>
- <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
- <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
+Received: by mail-wm0-x243.google.com with SMTP id y138so4575149wme.1
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Oct 2016 14:24:17 -0700 (PDT)
+Subject: [PATCH RESEND v3] mtd: spi-nor: fix flags for s25fl128s
+References: <4d3db993-d030-3659-2f62-94c373f57038@gmail.com>
+ <808bf727-f562-79d4-a60f-5e437cc15da6@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+ MTD Mailing List <linux-mtd@lists.infradead.org>,
+ Jagan Teki <jteki@openedev.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
 From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
-Date: Thu, 27 Oct 2016 23:23:58 +0200
+Message-ID: <514b12c9-447b-1688-29d3-aac839de08ac@gmail.com>
+Date: Thu, 27 Oct 2016 23:13:26 +0200
 MIME-Version: 1.0
-In-Reply-To: <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <808bf727-f562-79d4-a60f-5e437cc15da6@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,35 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Consider a message size limit when calculating the maximum amount
-of data that can be read.
+The Spansion S25FL128S also supports dual read mode.
+In addition remove flag SECT_4K. 4K erases are supported,
+but not uniformly.
 
 Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Reviewed-by: Jagan Teki <jteki@openedev.com>
 ---
 v2:
-- use the new function spi_max_message_size
-
-This patch was part of a series and is needed to correctly support
-reads > 64k on fsl-espi (as first user of spi_max_message_size).
-See commit 02a595d5d6e4 ("spi: fsl-espi: eliminate spi nor flash
-read loop")
+- In addition remove SECT_4K flag. 4K erases are supported,
+  but not uniformly.
+v3:
+- mention removal of SECT_4K also in actual commit message
 ---
- drivers/mtd/devices/m25p80.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 9cf7fcd..16a7df2 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -172,7 +172,8 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 
- 	t[1].rx_buf = buf;
- 	t[1].rx_nbits = m25p80_rx_nbits(nor);
--	t[1].len = min(len, spi_max_transfer_size(spi));
-+	t[1].len = min3(len, spi_max_transfer_size(spi),
-+			spi_max_message_size(spi) - t[0].len);
- 	spi_message_add_tail(&t[1], &m);
- 
- 	ret = spi_sync(spi, &m);
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..4f8e488 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -905,7 +905,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+-	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SECT_4K | SPI_NOR_QUAD_READ) },
++	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
 -- 
 2.9.2
