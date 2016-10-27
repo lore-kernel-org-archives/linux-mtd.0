@@ -1,19 +1,20 @@
-Date: Thu, 27 Oct 2016 18:12:25 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sergio Prado <sergio.prado@e-labworks.com>
-Cc: kgene@kernel.org, krzk@kernel.org, javier@osg.samsung.com,
- linux@armlinux.org.uk, linux@simtec.co.uk, richard@nod.at,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] mtd: s3c2410: add device tree support
-Message-ID: <20161027181225.3d5a6f04@bbrezillon>
-In-Reply-To: <1477526395-13103-1-git-send-email-sergio.prado@e-labworks.com>
-References: <1477526395-13103-1-git-send-email-sergio.prado@e-labworks.com>
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bzq8c-0004D4-3S
+ for linux-mtd@lists.infradead.org; Thu, 27 Oct 2016 19:14:56 +0000
+From: Zach Brown <zach.brown@ni.com>
+To: <dwmw2@infradead.org>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <richard@nod.at>, <dedekind1@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [RESEND PATCH v2 3/3] mtd: ubi: use 'max_bad_blocks' to compute
+ bad_peb_limit if available
+Date: Thu, 27 Oct 2016 14:14:02 -0500
+Message-ID: <1477595642-11454-4-git-send-email-zach.brown@ni.com>
+In-Reply-To: <1477595642-11454-1-git-send-email-zach.brown@ni.com>
+References: <1477595642-11454-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,77 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 26 Oct 2016 21:59:52 -0200
-Sergio Prado <sergio.prado@e-labworks.com> wrote:
+From: Jeff Westfahl <jeff.westfahl@ni.com>
 
-> This series adds support for configuring Samsung's s3c2410 and
-> compatible flash memory controller via devicetree.
-> 
-> Tested on FriendlyARM mini2440, based on s3c2440 SoC.
-> 
-> Patch 3 depends on patch 1.
+Use the MTD function 'max_bad_blocks' to compute the UBI bad_peb_limit,
+if the function is implemented for an MTD and doesn't return an error.
 
-Applied.
+Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+Signed-off-by: Zach Brown <zach.brown@ni.com>
+---
+ drivers/mtd/ubi/build.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Thanks,
-
-Boris
-
-> 
-> Changes since v3:
-> - apply the timings in the end of ->setup_data_interface so the
->   timings can be changed at runtime by the MTD core.
-> 
-> Changes since v2:
-> - conditionally assign chip->setup_data_interface to
->   s3c2410_nand_setup_data_interface if booting via device tree
-> 
-> Changes since v1:
-> - automate timing selection when booting with a device tree
-> - make s3c24XX_nand_devtype_data structs "static const"
-> - removing samsung,s3c6400-nand compatible since it is equivalent to
->   samsung,s3c2412-nand
-> 
-> Changes since initial version:
-> - patch converted to a patch series
-> - read timings from nand_sdr_timings when booting with a device tree
-> - naming improvements in the device tree binding
->   (s/nand/nand-controller/, s/_/-, s/children/child)
-> - dropped property samsung,ignore_unset_ecc
-> - remove @0 from nand device node
-> - checking pdev->dev.of_node instead of using ifdef CONFIG_OF_MTD
-> - preventing from parsing device tree properties twice
-> - increment the nand controller child node refcount, since we
->   maintain a reference to it and its name field
-> - using of_device_get_match_data() instead of of_match_device()
->   to make the code simpler
-> - remove CONFIG_MTD_NAND_S3C2410_HWECC compile option so we can
->   select ECC mode using nand-ecc-mode property in the device tree
-> 
-> Sergio Prado (3):
->   mtd: s3c2410: make ecc mode configurable via platform data
->   dt-bindings: mtd: add DT binding for s3c2410 flash controller
->   mtd: s3c2410: parse the device configuration from OF node
-> 
->  .../devicetree/bindings/mtd/samsung-s3c2410.txt    |  56 +++++
->  arch/arm/mach-s3c24xx/common-smdk.c                |   1 +
->  arch/arm/mach-s3c24xx/mach-anubis.c                |   1 +
->  arch/arm/mach-s3c24xx/mach-at2440evb.c             |   1 +
->  arch/arm/mach-s3c24xx/mach-bast.c                  |   1 +
->  arch/arm/mach-s3c24xx/mach-gta02.c                 |   1 +
->  arch/arm/mach-s3c24xx/mach-jive.c                  |   1 +
->  arch/arm/mach-s3c24xx/mach-mini2440.c              |   1 +
->  arch/arm/mach-s3c24xx/mach-osiris.c                |   1 +
->  arch/arm/mach-s3c24xx/mach-qt2410.c                |   1 +
->  arch/arm/mach-s3c24xx/mach-rx1950.c                |   1 +
->  arch/arm/mach-s3c24xx/mach-rx3715.c                |   1 +
->  arch/arm/mach-s3c24xx/mach-vstms.c                 |   1 +
->  arch/arm/mach-s3c64xx/mach-hmt.c                   |   1 +
->  arch/arm/mach-s3c64xx/mach-mini6410.c              |   1 +
->  arch/arm/mach-s3c64xx/mach-real6410.c              |   1 +
->  drivers/mtd/nand/Kconfig                           |   9 -
->  drivers/mtd/nand/s3c2410.c                         | 277 +++++++++++++++------
->  include/linux/platform_data/mtd-nand-s3c2410.h     |   7 +-
->  19 files changed, 278 insertions(+), 86 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
-> 
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 85d54f3..0648863 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -584,6 +584,15 @@ static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
+ 	int limit, device_pebs;
+ 	uint64_t device_size;
+ 
++	/* If the MTD provides a max_bad_blocks function, use that value. Fall
++	 * back to max_beb_per1024 if that function returns an error.
++	 */
++	if (ubi->mtd->_max_bad_blocks) {
++		limit = ubi->mtd->_max_bad_blocks(ubi->mtd, 0, ubi->mtd->size);
++		if (limit > 0)
++			return limit;
++	}
++
+ 	if (!max_beb_per1024)
+ 		return 0;
+ 
+-- 
+2.7.4
