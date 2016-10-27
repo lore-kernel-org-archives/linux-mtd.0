@@ -1,15 +1,16 @@
 Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bzq8c-0004Cy-7T
+ id 1bzq8c-0004Cz-34
  for linux-mtd@lists.infradead.org; Thu, 27 Oct 2016 19:14:56 +0000
 From: Zach Brown <zach.brown@ni.com>
 To: <dwmw2@infradead.org>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <dedekind1@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RESEND PATCH v2 1/3] mtd: introduce function max_bad_blocks
-Date: Thu, 27 Oct 2016 14:14:00 -0500
-Message-ID: <1477595642-11454-2-git-send-email-zach.brown@ni.com>
+Subject: [RESEND PATCH v2 2/3] mtd: nand: implement 'max_bad_blocks' mtd
+ function
+Date: Thu, 27 Oct 2016 14:14:01 -0500
+Message-ID: <1477595642-11454-3-git-send-email-zach.brown@ni.com>
 In-Reply-To: <1477595642-11454-1-git-send-email-zach.brown@ni.com>
 References: <1477595642-11454-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
@@ -25,57 +26,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Jeff Westfahl <jeff.westfahl@ni.com>
 
-If implemented, 'max_bad_blocks' returns the maximum number of bad
-blocks to reserve for an MTD. An implementation for NAND is coming soon.
+Implement the new mtd function 'max_bad_blocks'. Use the ONFI parameter
+page to find the maximum bad blocks to reserve for an MTD, taking into
+account how many LUNs the MTD spans.
 
 Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 Signed-off-by: Zach Brown <zach.brown@ni.com>
 ---
- drivers/mtd/mtdpart.c   | 12 ++++++++++++
- include/linux/mtd/mtd.h |  1 +
- 2 files changed, 13 insertions(+)
+ drivers/mtd/nand/nand_base.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index fccdd49..565f0dd 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -349,6 +349,16 @@ static const struct mtd_ooblayout_ops part_ooblayout_ops = {
- 	.free = part_ooblayout_free,
- };
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index e5718e5..ac08224 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3226,6 +3226,39 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ }
  
-+static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
+ /**
++ * nand_max_bad_blocks - [MTD Interface] Max number of bad blocks for an mtd
++ * @mtd: MTD device structure
++ * @ofs: offset relative to mtd start
++ * @len: length of mtd
++ */
++static int nand_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
 +{
-+	struct mtd_part *part = mtd_to_part(mtd);
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	uint32_t part_start_block;
++	uint32_t part_end_block;
++	uint32_t part_start_lun;
++	uint32_t part_end_lun;
 +
-+	if ((len + ofs) > mtd->size)
-+		return -EINVAL;
-+	return part->master->_max_bad_blocks(part->master,
-+					     ofs + part->offset, len);
++	/* ONFI is used to determine the maximum bad block count. */
++	if (!chip->onfi_version)
++		return -ENOTSUPP;
++
++	/* Get the start and end of the partition in erase blocks. */
++	part_start_block = mtd_div_by_eb(ofs, mtd);
++	part_end_block = mtd_div_by_eb(len, mtd) + part_start_block - 1;
++
++	/* Get the start and end LUNs of the partition. */
++	part_start_lun = part_start_block / chip->onfi_params.blocks_per_lun;
++	part_end_lun = part_end_block / chip->onfi_params.blocks_per_lun;
++
++	/* Look up the bad blocks per unit and multiply by the number of units
++	 * that the partition spans.
++	 */
++	return chip->onfi_params.bb_per_lun *
++		(part_end_lun - part_start_lun + 1);
 +}
 +
- static inline void free_partition(struct mtd_part *p)
- {
- 	kfree(p->mtd.name);
-@@ -481,6 +491,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	if (master->_put_device)
- 		slave->mtd._put_device = part_put_device;
++/**
+  * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
+  * @mtd: MTD device structure
+  * @chip: nand chip info structure
+@@ -4743,6 +4776,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->_block_isreserved = nand_block_isreserved;
+ 	mtd->_block_isbad = nand_block_isbad;
+ 	mtd->_block_markbad = nand_block_markbad;
++	mtd->_max_bad_blocks = nand_max_bad_blocks;
+ 	mtd->writebufsize = mtd->writesize;
  
-+	if (master->_max_bad_blocks)
-+		slave->mtd._max_bad_blocks = part_max_bad_blocks;
- 	slave->mtd._erase = part_erase;
- 	slave->master = master;
- 	slave->offset = part->offset;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 13f8052..bd277eb 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -322,6 +322,7 @@ struct mtd_info {
- 	int (*_block_isreserved) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
-+	int (*_max_bad_blocks) (struct mtd_info *mtd, loff_t ofs, size_t len);
- 	int (*_suspend) (struct mtd_info *mtd);
- 	void (*_resume) (struct mtd_info *mtd);
- 	void (*_reboot) (struct mtd_info *mtd);
+ 	/*
 -- 
 2.7.4
