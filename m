@@ -1,18 +1,24 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bzzda-0003WH-Nw
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 05:23:32 +0000
-Subject: Re: MTD partitions vs erase regions
-To: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
-References: <AM4PR0701MB21304CE213B5F0B0534AB52FFEAA0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <35c63aa4-d686-e06a-a12f-408c25895a22@denx.de>
- <AM4PR0701MB2130B3903E47ACF2A5D9A3F5FEAD0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <c821516b-cda3-d6e1-2aad-1fe3c11cab77@denx.de>
-Date: Fri, 28 Oct 2016 07:08:08 +0200
+ id 1c002L-0004zO-Et
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 05:49:06 +0000
+Received: by mail-wm0-x242.google.com with SMTP id y138so5793035wme.1
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Oct 2016 22:48:44 -0700 (PDT)
+Subject: Re: [PATCH RESEND] mtd: m25p80: consider max message size in
+ m25p80_read
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
+ <20160816164204.GV9347@sirena.org.uk>
+ <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
+ <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
+ <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <4ad13cef-96b5-20d6-db1b-18f04807845e@gmail.com>
+Date: Fri, 28 Oct 2016 07:48:29 +0200
 MIME-Version: 1.0
-In-Reply-To: <AM4PR0701MB2130B3903E47ACF2A5D9A3F5FEAD0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+In-Reply-To: <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,35 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/28/2016 06:50 AM, Krzeminski, Marcin (Nokia - PL/Wroclaw) wrote:
-> Marek,
+Am 27.10.2016 um 23:23 schrieb Heiner Kallweit:
+> Consider a message size limit when calculating the maximum amount
+> of data that can be read.
 > 
->> -----Original Message-----
->> From: Marek Vasut [mailto:marex@denx.de]
->> Sent: Friday, October 28, 2016 2:15 AM
->> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
->> <marcin.krzeminski@nokia.com>
->> Cc: linux-mtd@lists.infradead.org
->> Subject: Re: MTD partitions vs erase regions
->>
->> On 10/27/2016 02:19 PM, Krzeminski, Marcin (Nokia - PL/Wroclaw) wrote:
->>> Hi Marek,
->>
->> Hi,
->>
->>> I am sending mtd partition and erase regions conflict that I had.
->>> I admit I have no investigated it, since finally all is different.
->>> This could make some problems with your idea of having erase sizes
->> defined from DT.
->>
->> Which flash is that ?
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> ---
+> v2:
+> - use the new function spi_max_message_size
 > 
-> Sorry - forgot to mention: MT25Q00 (64KiB erase size).
-> CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is disabled.
-
-I think this is expected then, the subsystem is not ready for device
-with variable eraseblock length.
-
--- 
-Best regards,
-Marek Vasut
+> This patch was part of a series and is needed to correctly support
+> reads > 64k on fsl-espi (as first user of spi_max_message_size).
+> See commit 02a595d5d6e4 ("spi: fsl-espi: eliminate spi nor flash
+> read loop")
+> ---
+>  drivers/mtd/devices/m25p80.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 9cf7fcd..16a7df2 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -172,7 +172,8 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  
+>  	t[1].rx_buf = buf;
+>  	t[1].rx_nbits = m25p80_rx_nbits(nor);
+> -	t[1].len = min(len, spi_max_transfer_size(spi));
+> +	t[1].len = min3(len, spi_max_transfer_size(spi),
+> +			spi_max_message_size(spi) - t[0].len);
+>  	spi_message_add_tail(&t[1], &m);
+>  
+>  	ret = spi_sync(spi, &m);
+> 
+Sorry, forgot that this needs to go to stable as well. Will send a v2.
