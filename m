@@ -1,26 +1,18 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c00CE-0000Wx-Pa
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 05:59:20 +0000
-Received: by mail-wm0-x241.google.com with SMTP id b80so5782464wme.2
- for <linux-mtd@lists.infradead.org>; Thu, 27 Oct 2016 22:58:58 -0700 (PDT)
-Subject: [PATCH v2] mtd: m25p80: consider max message size in m25p80_read
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
- <20160816164204.GV9347@sirena.org.uk>
- <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
- <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
- <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <0e38d1ed-af5c-160f-e02a-f1433c507d23@gmail.com>
-Date: Fri, 28 Oct 2016 07:58:46 +0200
+Received: from up.free-electrons.com ([163.172.77.33]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c021b-0005FI-C1
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 07:56:29 +0000
+Date: Fri, 28 Oct 2016 09:56:02 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Ville Michael Baillie <ville.michael.baillie@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: davinci: Fix unaligned 16-bit NAND read
+Message-ID: <20161028095602.7a02f404@bbrezillon>
+In-Reply-To: <20161021092605.GA14609@gmail.com>
+References: <20161021092605.GA14609@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,38 +23,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Consider a message size limit when calculating the maximum amount
-of data that can be read.
+Hi Michael,
 
-The message size limit has been introduced with 4.9, so cc it
-to stable.
+On Fri, 21 Oct 2016 10:26:05 +0100
+Ville Michael Baillie <ville.michael.baillie@gmail.com> wrote:
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: <stable@vger.kernel.org> # 4.9.x
----
-v2:
-- This patch was part of a series and the other patches of the
-  series went into 4.9. It's needed to correctly support
-  reads > 64k on fsl-espi as first user of spi_max_message_size.
-  See commit 02a595d5d6e4 ("spi: fsl-espi: eliminate spi nor
-  flash read loop"). CC it to stable.  
----
- drivers/mtd/devices/m25p80.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> This patch fixes a rare bug when reading from 16-bit NAND flashes, by
+> not allowing 8-bit read accesses within nand_davinci_read_buf().
+> 
+> In certain situations, an non 16-bit aligned buffer is passed to
+> nand_davinci_read_buf(), which causes 8-bit accesses to be performed.
+> However, the NAND will be returning 16-bit words, and half of these will
+> be discarded.
+> 
+> This was observed when running mtd_stresstest.ko, which would report ECC
+> errors when reading from a non 16-bit aligned offset into a page, and
+> reading at least one subsequent page in the same read.
+> 
+> Signed-off-by: Ville Michael Baillie <ville.michael.baillie@gmail.com>
+> ---
+>  drivers/mtd/nand/davinci_nand.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+> index 27fa8b8..ed9cd0d 100644
+> --- a/drivers/mtd/nand/davinci_nand.c
+> +++ b/drivers/mtd/nand/davinci_nand.c
+> @@ -442,12 +442,24 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
+>  static void nand_davinci_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+>  {
+>  	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	u16 tmp;
+>  
+>  	if ((0x03 & ((unsigned)buf)) == 0 && (0x03 & len) == 0)
+>  		ioread32_rep(chip->IO_ADDR_R, buf, len >> 2);
+>  	else if ((0x01 & ((unsigned)buf)) == 0 && (0x01 & len) == 0)
+>  		ioread16_rep(chip->IO_ADDR_R, buf, len >> 1);
+> -	else
+> +	else if (chip->options & NAND_BUSWIDTH_16) {
+> +		/*
+> +		 * if NAND buswidth is 16 then 8 bit accesses
+> +		 * will silently discard half the data
+> +		 */
+> +		len /= 2;
+> +		while (len--) {
+> +			tmp = ioread16(chip->IO_ADDR_R);
+> +			memcpy(buf, &tmp, sizeof(u16));
+> +			buf += sizeof(u16);
+> +		}
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 9cf7fcd..16a7df2 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -172,7 +172,8 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 
- 	t[1].rx_buf = buf;
- 	t[1].rx_nbits = m25p80_rx_nbits(nor);
--	t[1].len = min(len, spi_max_transfer_size(spi));
-+	t[1].len = min3(len, spi_max_transfer_size(spi),
-+			spi_max_message_size(spi) - t[0].len);
- 	spi_message_add_tail(&t[1], &m);
- 
- 	ret = spi_sync(spi, &m);
--- 
-2.9.2
+Hm, you're not checking the len alignment here. Not sure this
+is safe to assume len will always be a multiple of 2 bytes.
+
+How about doing the following instead:
+
+		/* Use ioread16_rep for aligned accesses. */
+		if (IS_ALIGNED(addr, sizeof(u16))) {
+			ioread16_rep(chip->IO_ADDR_R, buf, len >> 1);
+			buf += len & ~0x1;
+			len &= 0x1;
+		}
+
+		/*
+		 * Now handle unaligned accesses.
+		 * Warning: in case of unaligned len, we are consuming
+		 * one extra byte, which is then discarded. It's fine
+		 * as long as the caller does not call ->read_buf()
+		 * twice without re-issuing a command in the middle.
+		 * Otherwise, this means we lost one byte.
+		 */
+		for (; len > 0; len -= sizeof(u16)) {
+			u16 tmp;
+
+			tmp = ioread16(chip->IO_ADDR_R);
+			memcpy(buf, &tmp,
+			       len < sizeof(u16) ? len : sizeof(u16));
+			buf += sizeof(u16);
+		}
+
+> +	} else
+>  		ioread8_rep(chip->IO_ADDR_R, buf, len);
+
+	} else {
+		ioread8_rep(chip->IO_ADDR_R, buf, len);
+	}
+
+>  }
+>  
