@@ -1,19 +1,23 @@
 Received: from up.free-electrons.com ([163.172.77.33]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c021b-0005FI-C1
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 07:56:29 +0000
-Date: Fri, 28 Oct 2016 09:56:02 +0200
+ id 1c029Z-0000Bk-Fx
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 08:04:42 +0000
+Date: Fri, 28 Oct 2016 10:04:19 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ville Michael Baillie <ville.michael.baillie@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: davinci: Fix unaligned 16-bit NAND read
-Message-ID: <20161028095602.7a02f404@bbrezillon>
-In-Reply-To: <20161021092605.GA14609@gmail.com>
-References: <20161021092605.GA14609@gmail.com>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH] mtd: nand: pxa3xx_nand: write exactly one message on
+ probe failure
+Message-ID: <20161028100419.1ba04968@bbrezillon>
+In-Reply-To: <1474276878-1021-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1474276878-1021-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,90 +27,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Michael,
+On Mon, 19 Sep 2016 11:21:18 +0200
+Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> wrote:
 
-On Fri, 21 Oct 2016 10:26:05 +0100
-Ville Michael Baillie <ville.michael.baillie@gmail.com> wrote:
+> For some error paths alloc_nand_resource() emitted an error message, for
+> others it didn't. Make it consistently print a message including the
+> error code where it's not constant and drop the hardly helpful
+> additional message printed by the caller of alloc_nand_resource.
+>=20
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-> This patch fixes a rare bug when reading from 16-bit NAND flashes, by
-> not allowing 8-bit read accesses within nand_davinci_read_buf().
-> 
-> In certain situations, an non 16-bit aligned buffer is passed to
-> nand_davinci_read_buf(), which causes 8-bit accesses to be performed.
-> However, the NAND will be returning 16-bit words, and half of these will
-> be discarded.
-> 
-> This was observed when running mtd_stresstest.ko, which would report ECC
-> errors when reading from a non 16-bit aligned offset into a page, and
-> reading at least one subsequent page in the same read.
-> 
-> Signed-off-by: Ville Michael Baillie <ville.michael.baillie@gmail.com>
+It looks good to me. Ezequiel, Robert, any objection to this patch? If
+not, can I have your Acked/Reviewed-by ?
+
 > ---
->  drivers/mtd/nand/davinci_nand.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index 27fa8b8..ed9cd0d 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -442,12 +442,24 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
->  static void nand_davinci_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
->  {
->  	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	u16 tmp;
->  
->  	if ((0x03 & ((unsigned)buf)) == 0 && (0x03 & len) == 0)
->  		ioread32_rep(chip->IO_ADDR_R, buf, len >> 2);
->  	else if ((0x01 & ((unsigned)buf)) == 0 && (0x01 & len) == 0)
->  		ioread16_rep(chip->IO_ADDR_R, buf, len >> 1);
-> -	else
-> +	else if (chip->options & NAND_BUSWIDTH_16) {
-> +		/*
-> +		 * if NAND buswidth is 16 then 8 bit accesses
-> +		 * will silently discard half the data
-> +		 */
-> +		len /= 2;
-> +		while (len--) {
-> +			tmp = ioread16(chip->IO_ADDR_R);
-> +			memcpy(buf, &tmp, sizeof(u16));
-> +			buf += sizeof(u16);
-> +		}
-
-Hm, you're not checking the len alignment here. Not sure this
-is safe to assume len will always be a multiple of 2 bytes.
-
-How about doing the following instead:
-
-		/* Use ioread16_rep for aligned accesses. */
-		if (IS_ALIGNED(addr, sizeof(u16))) {
-			ioread16_rep(chip->IO_ADDR_R, buf, len >> 1);
-			buf += len & ~0x1;
-			len &= 0x1;
-		}
-
-		/*
-		 * Now handle unaligned accesses.
-		 * Warning: in case of unaligned len, we are consuming
-		 * one extra byte, which is then discarded. It's fine
-		 * as long as the caller does not call ->read_buf()
-		 * twice without re-issuing a command in the middle.
-		 * Otherwise, this means we lost one byte.
-		 */
-		for (; len > 0; len -= sizeof(u16)) {
-			u16 tmp;
-
-			tmp = ioread16(chip->IO_ADDR_R);
-			memcpy(buf, &tmp,
-			       len < sizeof(u16) ? len : sizeof(u16));
-			buf += sizeof(u16);
-		}
-
-> +	} else
->  		ioread8_rep(chip->IO_ADDR_R, buf, len);
-
-	} else {
-		ioread8_rep(chip->IO_ADDR_R, buf, len);
-	}
-
->  }
->  
+>  drivers/mtd/nand/pxa3xx_nand.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
+d.c
+> index 436dd6dc11f4..052e9725cf12 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -1774,8 +1774,11 @@ static int alloc_nand_resource(struct platform_dev=
+ice *pdev)
+>  	int ret, irq, cs;
+> =20
+>  	pdata =3D dev_get_platdata(&pdev->dev);
+> -	if (pdata->num_cs <=3D 0)
+> +	if (pdata->num_cs <=3D 0) {
+> +		dev_err(&pdev->dev, "broken number of chip selects\n");
+>  		return -ENODEV;
+> +	}
+> +
+>  	info =3D devm_kzalloc(&pdev->dev,
+>  			    sizeof(*info) + sizeof(*host) * pdata->num_cs,
+>  			    GFP_KERNEL);
+> @@ -1814,8 +1817,9 @@ static int alloc_nand_resource(struct platform_devi=
+ce *pdev)
+>  	init_waitqueue_head(&chip->controller->wq);
+>  	info->clk =3D devm_clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(info->clk)) {
+> -		dev_err(&pdev->dev, "failed to get nand clock\n");
+> -		return PTR_ERR(info->clk);
+> +		ret =3D PTR_ERR(info->clk);
+> +		dev_err(&pdev->dev, "failed to get nand clock (%d)\n", ret);
+> +		return ret;
+>  	}
+>  	ret =3D clk_prepare_enable(info->clk);
+>  	if (ret < 0)
+> @@ -1843,6 +1847,7 @@ static int alloc_nand_resource(struct platform_devi=
+ce *pdev)
+>  	info->mmio_base =3D devm_ioremap_resource(&pdev->dev, r);
+>  	if (IS_ERR(info->mmio_base)) {
+>  		ret =3D PTR_ERR(info->mmio_base);
+> +		dev_err(&pdev->dev, "failed to map register space (%d)\n", ret);
+>  		goto fail_disable_clk;
+>  	}
+>  	info->mmio_phys =3D r->start;
+> @@ -1862,7 +1867,7 @@ static int alloc_nand_resource(struct platform_devi=
+ce *pdev)
+>  				   pxa3xx_nand_irq_thread, IRQF_ONESHOT,
+>  				   pdev->name, info);
+>  	if (ret < 0) {
+> -		dev_err(&pdev->dev, "failed to request IRQ\n");
+> +		dev_err(&pdev->dev, "failed to request IRQ (%d)\n", ret);
+>  		goto fail_free_buf;
+>  	}
+> =20
+> @@ -1961,10 +1966,8 @@ static int pxa3xx_nand_probe(struct platform_devic=
+e *pdev)
+>  	}
+> =20
+>  	ret =3D alloc_nand_resource(pdev);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "alloc nand resource failed\n");
+> +	if (ret)
+>  		return ret;
+> -	}
+> =20
+>  	info =3D platform_get_drvdata(pdev);
+>  	probe_success =3D 0;
