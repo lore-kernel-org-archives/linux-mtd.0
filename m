@@ -1,16 +1,16 @@
-Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0DlU-0006Qq-3B
+ id 1c0DlU-0006Qz-3X
  for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 20:28:37 +0000
 From: Zach Brown <zach.brown@ni.com>
 To: <dwmw2@infradead.org>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <dedekind1@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 5/5] mtd: nand: set bb_per_lun and blocks_per_lun for ONFI
- compliant chips
-Date: Fri, 28 Oct 2016 15:27:44 -0500
-Message-ID: <1477686464-7437-6-git-send-email-zach.brown@ni.com>
+Subject: [PATCH v3 2/5] mtd: ubi: use 'max_bad_blocks' to compute
+ bad_peb_limit if available
+Date: Fri, 28 Oct 2016 15:27:41 -0500
+Message-ID: <1477686464-7437-3-git-send-email-zach.brown@ni.com>
 In-Reply-To: <1477686464-7437-1-git-send-email-zach.brown@ni.com>
 References: <1477686464-7437-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
@@ -24,31 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ONFI compliant chips contain the values for the bb_per_lun and
-blocks_per_lun fields in the parameter page. When the ONFI paged is
-retrieved/parsed the chip's fields are set by the corresponding fields
-in the param page.
+From: Jeff Westfahl <jeff.westfahl@ni.com>
 
+Use the MTD function 'max_bad_blocks' to compute the UBI bad_peb_limit,
+if the function is implemented for an MTD and doesn't return an error.
+
+Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 Signed-off-by: Zach Brown <zach.brown@ni.com>
 ---
- drivers/mtd/nand/nand_base.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/ubi/build.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ed8dc89..c4ced91 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3619,6 +3619,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (p->jedec_id == NAND_MFR_MICRON)
- 		nand_onfi_detect_micron(chip, p);
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 85d54f3..e9940a9 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -584,6 +584,10 @@ static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
+ 	int limit, device_pebs;
+ 	uint64_t device_size;
  
-+	if (p->bb_per_lun)
-+		chip->bb_per_lun = p->bb_per_lun;
-+	if (p->blocks_per_lun)
-+		chip->blocks_per_lun = p->blocks_per_lun;
++	limit = mtd_max_bad_blocks(ubi->mtd, 0, ubi->mtd->size);
++	if (limit > 0)
++		return limit;
 +
- 	return 1;
- }
+ 	if (!max_beb_per1024)
+ 		return 0;
  
 -- 
 2.7.4
