@@ -1,31 +1,22 @@
-Received: from up.free-electrons.com ([163.172.77.33]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c09tf-0003YI-Eq
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 16:20:48 +0000
-Date: Fri, 28 Oct 2016 18:20:22 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 1/4] of: Add device tree bindings for Evatronix
-Message-ID: <20161028182022.7643c4ea@bbrezillon>
-In-Reply-To: <alpine.DEB.2.02.1610281725060.9986@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1606020946500.19416@lnxricardw1.se.axis.com>
- <20160603162207.0688c9e6@bbrezillon>
- <alpine.DEB.2.02.1606060757180.23377@lnxricardw1.se.axis.com>
- <20160608175018.16c88207@bbrezillon>
- <alpine.DEB.2.02.1606101641050.30757@lnxricardw1.se.axis.com>
- <20160610175454.327f51a2@bbrezillon>
- <alpine.DEB.2.02.1610261152170.9986@lnxricardw1.se.axis.com>
- <20161026135241.63653c4f@bbrezillon>
- <alpine.DEB.2.02.1610261359290.9986@lnxricardw1.se.axis.com>
- <20161026150557.587a7387@bbrezillon>
- <alpine.DEB.2.02.1610280900260.9986@lnxricardw1.se.axis.com>
- <20161028164440.253b0c96@bbrezillon>
- <alpine.DEB.2.02.1610281725060.9986@lnxricardw1.se.axis.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c0AdH-0001rD-Pj
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 17:07:57 +0000
+Subject: Re: [PATCH] ubifs: Fix regression in ubifs_readdir()
+To: =?UTF-8?Q?J=c3=b6rg_Krause?= <joerg.krause@embedded.rocks>,
+ linux-mtd@lists.infradead.org
+References: <1477648432-9543-1-git-send-email-richard@nod.at>
+ <1477671544.8927.1.camel@embedded.rocks>
+Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, adrian.hunter@intel.com, ralph.sennhauser@gmail.com,
+ peda@axentia.se
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <c542e099-0404-be8e-ebeb-d4265d3204d6@nod.at>
+Date: Fri, 28 Oct 2016 19:07:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1477671544.8927.1.camel@embedded.rocks>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,66 +26,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 28 Oct 2016 18:01:44 +0200
-Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
+Jörg,
 
-> On Fri, 28 Oct 2016, Boris Brezillon wrote:
+On 28.10.2016 18:19, Jörg Krause wrote:
+> Hi,
 > 
-> > > One thing I would have liked to have is to have the actual timing mode 
-> > > number in the nand_data_interface struct, for controllers like in my case 
-> > > where it's problematic to take the numeric timing values and map them to 
-> > > register values, and the timing register values need to be pre-computed.   
-> > 
-> > What do you mean by pre-computed? If you're able to pre-compute the
-> > timings, why can't you do that at runtime?  
+> On Fri, 2016-10-28 at 11:53 +0200, Richard Weinberger wrote:
+>> Commit c83ed4c9dbb35 ("ubifs: Abort readdir upon error") broke
+>> overlayfs support because the fix exposed an internal error
+>> code to VFS.
+>>
+>> Reported-by: Peter Rosin <peda@axentia.se>
+>> Tested-by: Peter Rosin <peda@axentia.se>
+>> Reported-by: Ralph Sennhauser <ralph.sennhauser@gmail.com>
+>> Fixes: c83ed4c9dbb35 ("ubifs: Abort readdir upon error")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>> ---
+>>  fs/ubifs/dir.c | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>>
+>> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+>> index bd4a5e8ce441..ca16c5d7bab1 100644
+>> --- a/fs/ubifs/dir.c
+>> +++ b/fs/ubifs/dir.c
+>> @@ -543,6 +543,14 @@ static int ubifs_readdir(struct file *file,
+>> struct dir_context *ctx)
+>>  
+>>  	if (err != -ENOENT)
+>>  		ubifs_err(c, "cannot find next direntry, error %d",
+>> err);
+>> +	else
+>> +		/*
+>> +		 * -ENOENT is a non-fatal error in this context, the
+>> TNC uses
+>> +		 * it to indicate that the cursor moved past the
+>> current directory
+>> +		 * and readdir() has to stop.
+>> +		 */
+>> +		err = 0;
+>> +
+>>  
+>>  	/* 2 is a special value indicating that there are no more
+>> direntries */
+>>  	ctx->pos = 2;
 > 
-> The short answer in this case is because the timing values were delivered 
-> by our ASIC integration vendor, partly after running simulations to verify 
-> the exact timing using the actual silicon layout. That is why I originally 
-> wanted to put those timing register values directly in the DT, becuase 
-> they are in practice part of the specifications for the actual ASIC. In 
-> essence, we looked at the flash chips we wanted to use with the ASIC, and 
-> realized they all conformed to ONFi mode 2. Our vendor then provided us 
-> with mode 2 timing values that they guaranteed would work with the chip. 
-> (In addition, mode 0 is used during initial boot so minimize the 
-> likeleyhood that something would go wrong, given that the boot loader is 
-> in a ROM.) Especially given that there was no mtd timing setup 
-> infrastructure at the time, we had no interest in how the values were 
-> derived, or to support more modes.
-> 
-> Another issue is how to model the internal delays within the ASIC between 
-> the NAND controller IP and the pads, which are also part of the equation.
-> 
-> I don't know if our case is unique, but at least it is an example of a 
-> situation in which runtime calculation of the timing register values is 
-> problematic.
+> I'm not sure if it's related to the issue reported by Peter Rosin and
+> Ralph Sennhauser, but I am still getting a kernel panic using UBIFS
+> with OverlayFS on Linux v4.9.0-rc2 with this patch applied:
 
-Okay. I guess we could add the associated ONFI timing mode to the
-nand_data_interface struct (it would represent the closest one if the
-NAND is not ONFI and some vendor specific implementation decided to
-tweak the timing values).
+Does reverting c83ed4c9dbb35 help?
+And are you 100% sure you applied the fix?
 
-> 
-> > > There might be other reasons where the driver might want to know the mode 
-> > > number.  
-> > 
-> > Do you have real examples?  
-> 
-> No, it just seemed like a reasonable concept, given that 
-> nand_init_data_interface() actually does this mapping anyway, so it might 
-> as well inform chip->setup_data_interface() about it, since the 
-> information is right there anyway.
-> 
-> > We could pass the ONFI timing mode here, but some timings are not
-> > defined using this mode (like tCCS), and I'm not sure we have the same
-> > mapping between ONFI and JEDEC modes. The other thing is that I wanted
-> > to leave the door open for vendor specific timing definitions which do
-> > not exactly match one of the timing mode defined in the ONFI spec.
-> > 
-> > That's why I didn't bother exposing the ONFI timing mode to the NAND
-> > controller ->setup_data_interface() implementation.  
-> 
-> Ok, so the reason is really future expansion, where ONFi modes 0..5 may 
-> not be the only modes to be configured. Fair enough.
+Does the following WARN_ON() trigger?
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index ca16c5d7bab1..12ffc91f7ef8 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -554,6 +554,9 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
 
-Yep.
+ 	/* 2 is a special value indicating that there are no more direntries */
+ 	ctx->pos = 2;
++
++	WARN_ON(err);
++
+ 	return err;
+ }
+
+
+Thanks,
+//richard
