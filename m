@@ -1,7 +1,7 @@
 Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0C0K-00063h-Os
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 18:35:49 +0000
+ id 1c0C0j-0006Ln-Ba
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 18:36:13 +0000
 From: Colin King <colin.king@canonical.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -9,9 +9,9 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: mtdswap: fix spelling mistake "erassure" -> "erasure"
-Date: Fri, 28 Oct 2016 19:35:23 +0100
-Message-Id: <20161028183523.8135-1-colin.king@canonical.com>
+Subject: [PATCH] mfd: si476x-i2c: Fix spelling mistakes "Failet" and "gett"
+Date: Fri, 28 Oct 2016 19:35:48 +0100
+Message-Id: <20161028183548.8190-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -26,25 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Colin Ian King <colin.king@canonical.com>
 
-Trivial fix to spelling mistake in dev_err message
+Trivial spelling mistake fixes in dev_err message.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/mtd/mtdswap.c | 2 +-
+ drivers/mfd/si476x-i2c.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index cb06bdd..d0402df 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -587,7 +587,7 @@ static int mtdswap_erase_block(struct mtdswap_dev *d, struct swap_eb *eb)
- 	ret = wait_event_interruptible(wq, erase.state == MTD_ERASE_DONE ||
- 					   erase.state == MTD_ERASE_FAILED);
- 	if (ret) {
--		dev_err(d->dev, "Interrupted erase block %#llx erassure on %s",
-+		dev_err(d->dev, "Interrupted erase block %#llx erasure on %s",
- 			erase.addr, mtd->name);
- 		return -EINTR;
+diff --git a/drivers/mfd/si476x-i2c.c b/drivers/mfd/si476x-i2c.c
+index c180b75..e6a3d99 100644
+--- a/drivers/mfd/si476x-i2c.c
++++ b/drivers/mfd/si476x-i2c.c
+@@ -753,7 +753,7 @@ static int si476x_core_probe(struct i2c_client *client,
+ 				       ARRAY_SIZE(core->supplies),
+ 				       core->supplies);
+ 	if (rval) {
+-		dev_err(&client->dev, "Failet to gett all of the regulators\n");
++		dev_err(&client->dev, "Failed to get all of the regulators\n");
+ 		goto free_gpio;
  	}
+ 
 -- 
 2.9.3
