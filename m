@@ -1,7 +1,7 @@
 Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0BrG-00024f-Ee
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 18:26:27 +0000
+ id 1c0C0K-00063h-Os
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 18:35:49 +0000
 From: Colin King <colin.king@canonical.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -10,8 +10,8 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Subject: [PATCH] mtd: mtdswap: fix spelling mistake "erassure" -> "erasure"
-Date: Fri, 28 Oct 2016 19:25:59 +0100
-Message-Id: <20161028182559.7887-1-colin.king@canonical.com>
+Date: Fri, 28 Oct 2016 19:35:23 +0100
+Message-Id: <20161028183523.8135-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
