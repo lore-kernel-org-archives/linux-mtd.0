@@ -1,21 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mout02.posteo.de ([185.67.36.142])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0Dxo-0004ua-V5
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 20:41:22 +0000
-Subject: Re: [PULL v2] mtd: nand: Fixes for 4.9-rc3
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>
-References: <20161028102649.7b90e308@bbrezillon>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <f88ccae7-58f2-d86d-200a-0cf8cf642cc7@denx.de>
-Date: Fri, 28 Oct 2016 22:25:34 +0200
-MIME-Version: 1.0
-In-Reply-To: <20161028102649.7b90e308@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1c0FZ5-0002eW-SD
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 22:23:57 +0000
+Message-ID: <1477693395.31471.1.camel@embedded.rocks>
+Subject: Re: [PATCH] ubifs: Fix regression in ubifs_readdir()
+From: =?ISO-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org,  adrian.hunter@intel.com,
+ ralph.sennhauser@gmail.com, peda@axentia.se
+Date: Sat, 29 Oct 2016 00:23:15 +0200
+In-Reply-To: <c542e099-0404-be8e-ebeb-d4265d3204d6@nod.at>
+References: <1477648432-9543-1-git-send-email-richard@nod.at>
+ <1477671544.8927.1.camel@embedded.rocks>
+ <c542e099-0404-be8e-ebeb-d4265d3204d6@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +26,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/28/2016 10:26 AM, Boris Brezillon wrote:
-> Hi Brian,
+Richard,
 
-Hi,
+On Fri, 2016-10-28 at 19:07 +0200, Richard Weinberger wrote:
+> Jörg,
+> 
+> On 28.10.2016 18:19, Jörg Krause wrote:
+> > Hi,
+> > 
+> > On Fri, 2016-10-28 at 11:53 +0200, Richard Weinberger wrote:
+> > > Commit c83ed4c9dbb35 ("ubifs: Abort readdir upon error") broke
+> > > overlayfs support because the fix exposed an internal error
+> > > code to VFS.
+> > > 
+> > > Reported-by: Peter Rosin <peda@axentia.se>
+> > > Tested-by: Peter Rosin <peda@axentia.se>
+> > > Reported-by: Ralph Sennhauser <ralph.sennhauser@gmail.com>
+> > > Fixes: c83ed4c9dbb35 ("ubifs: Abort readdir upon error")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Richard Weinberger <richard@nod.at>
+> > > ---
+> > >  fs/ubifs/dir.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > > 
+> > > diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> > > index bd4a5e8ce441..ca16c5d7bab1 100644
+> > > --- a/fs/ubifs/dir.c
+> > > +++ b/fs/ubifs/dir.c
+> > > @@ -543,6 +543,14 @@ static int ubifs_readdir(struct file *file,
+> > > struct dir_context *ctx)
+> > >  
+> > >  	if (err != -ENOENT)
+> > >  		ubifs_err(c, "cannot find next direntry, error
+> > > %d",
+> > > err);
+> > > +	else
+> > > +		/*
+> > > +		 * -ENOENT is a non-fatal error in this context,
+> > > the
+> > > TNC uses
+> > > +		 * it to indicate that the cursor moved past the
+> > > current directory
+> > > +		 * and readdir() has to stop.
+> > > +		 */
+> > > +		err = 0;
+> > > +
+> > >  
+> > >  	/* 2 is a special value indicating that there are no
+> > > more
+> > > direntries */
+> > >  	ctx->pos = 2;
+> > 
+> > I'm not sure if it's related to the issue reported by Peter Rosin
+> > and
+> > Ralph Sennhauser, but I am still getting a kernel panic using UBIFS
+> > with OverlayFS on Linux v4.9.0-rc2 with this patch applied:
+> 
+> Does reverting c83ed4c9dbb35 help?
+> And are you 100% sure you applied the fix?
 
-> Here is the PR I was mentioning yesterday.
-> As usual, let me know if you find something weird in this PR, and I'll
-> fix it.
-> 
-> Thanks,
-> 
-> Boris
-> 
-> The following changes since commit 07d9a380680d1c0eb51ef87ff2eab5c994949e69:
-> 
->   Linux 4.9-rc2 (2016-10-23 17:10:14 -0700)
-> 
-> are available in the git repository at:
-> 
->   git@github.com:linux-nand/linux.git tags/nand/fixes-for-4.9-rc3
-> 
-> for you to fetch changes up to 8ff0513bdcdd71e84aa561cce216675d43fb41b8:
-> 
->   mtd: mtk: avoid warning in mtk_ecc_encode (2016-10-28 10:21:23 +0200)
-> 
-> ----------------------------------------------------------------
-> Three simple fixes:
-> 
-> - the first one is fixing a non-critical bug in the gpmi driver
-> - the second one is fixing a bug in the 'automatic NAND timings
->   selection' feature introduced in 4.9-rc1
-> - the last one is fixing a false positive uninitialized-var warning
-> 
-> ----------------------------------------------------------------
-> Arnd Bergmann (1):
->       mtd: mtk: avoid warning in mtk_ecc_encode
-> 
-> Boris Brezillon (1):
->       mtd: nand: Fix data interface configuration logic
-> 
-> Fabio Estevam (1):
->       mtd: nand: gpmi: disable the clocks on errors
-> 
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c |  6 ++++--
->  drivers/mtd/nand/mtk_ecc.c            | 19 +++++++++----------
->  drivers/mtd/nand/nand_base.c          | 60 ++++++++++++++++++++++++++++++++++++++++++------------------
->  include/linux/mtd/nand.h              |  2 +-
->  4 files changed, 56 insertions(+), 31 deletions(-)
-> 
+I double double checked. The fix was applied on the git tree, but the
+compiler cache (I am using Buildroot with this option enabled) fooled
+me by using an old copy. After disabling the compiler cache I got a
+fixed build of the kernel. The panic is gone! Thanks!
 
-I saw all those patches, so:
+> 
+> Does the following WARN_ON() trigger?
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index ca16c5d7bab1..12ffc91f7ef8 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -554,6 +554,9 @@ static int ubifs_readdir(struct file *file,
+> struct dir_context *ctx)
+> 
+>  	/* 2 is a special value indicating that there are no more
+> direntries */
+>  	ctx->pos = 2;
+> +
+> +	WARN_ON(err);
+> +
+>  	return err;
+>  }
 
-Acked-by: Marek Vasut <marex@denx.de>
-
--- 
 Best regards,
-Marek Vasut
+Jörg Krause
