@@ -1,16 +1,20 @@
 Received: from up.free-electrons.com ([163.172.77.33]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c02VK-0001cm-5E
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 08:27:10 +0000
-Date: Fri, 28 Oct 2016 10:26:49 +0200
+ id 1c02w6-0004aI-QV
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 08:54:51 +0000
+Date: Fri, 28 Oct 2016 10:54:25 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
  <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>
-Subject: [PULL v2] mtd: nand: Fixes for 4.9-rc3
-Message-ID: <20161028102649.7b90e308@bbrezillon>
+Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Subject: Re: [PATCH 0/2] mtd: nand: Enforce tCCS wait time after a column
+ change
+Message-ID: <20161028105425.61868d75@bbrezillon>
+In-Reply-To: <1475310243-32625-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1475310243-32625-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,48 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Sat,  1 Oct 2016 10:24:01 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-Here is the PR I was mentioning yesterday.
-As usual, let me know if you find something weird in this PR, and I'll
-fix it.
+> Hi,
+> 
+> Marc recently struggled with the RNDIN/RNDOUT commands when trying to
+> add support for the Tango NAND controller.
+> After some investigation it appeared that nothing in the
+> nand_command_lp() code waits tCCS, which is required to make sure the
+> NAND chip is ready to receive/send data on the bus after a column
+> change.
+> 
+> This series adds some more timings to the nand_sdr_timings struct
+> (including tCCS) and try to extract them from the ONFI parameter table
+> (if available).
+> 
+> It then adds a new flags to ask the core to enforce the tCCS
+> constraint.
+> As noted in the commit message, this is an opt-in flag to avoid perf
+> regressions on existing implementations (adding an ndelay() might be
+> useless if the controller IP or driver already takes care of that),
+> but it might appear that some implementations are actually broken and
+> needs this flag as well.
 
-Thanks,
+Applied.
 
-Boris
-
-The following changes since commit 07d9a380680d1c0eb51ef87ff2eab5c994949e69:
-
-  Linux 4.9-rc2 (2016-10-23 17:10:14 -0700)
-
-are available in the git repository at:
-
-  git@github.com:linux-nand/linux.git tags/nand/fixes-for-4.9-rc3
-
-for you to fetch changes up to 8ff0513bdcdd71e84aa561cce216675d43fb41b8:
-
-  mtd: mtk: avoid warning in mtk_ecc_encode (2016-10-28 10:21:23 +0200)
-
-----------------------------------------------------------------
-Three simple fixes:
-
-- the first one is fixing a non-critical bug in the gpmi driver
-- the second one is fixing a bug in the 'automatic NAND timings
-  selection' feature introduced in 4.9-rc1
-- the last one is fixing a false positive uninitialized-var warning
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      mtd: mtk: avoid warning in mtk_ecc_encode
-
-Boris Brezillon (1):
-      mtd: nand: Fix data interface configuration logic
-
-Fabio Estevam (1):
-      mtd: nand: gpmi: disable the clocks on errors
-
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c |  6 ++++--
- drivers/mtd/nand/mtk_ecc.c            | 19 +++++++++----------
- drivers/mtd/nand/nand_base.c          | 60 ++++++++++++++++++++++++++++++++++++++++++------------------
- include/linux/mtd/nand.h              |  2 +-
- 4 files changed, 56 insertions(+), 31 deletions(-)
+> 
+> Regards,
+> 
+> Boris
+> 
+> Boris Brezillon (2):
+>   mtd: nand: Add a few more timings to nand_sdr_timings
+>   mtd: nand: Wait tCCS after a column change
+> 
+>  drivers/mtd/nand/nand_base.c    | 26 +++++++++++++++++++++++++-
+>  drivers/mtd/nand/nand_timings.c | 26 +++++++++++++++++++++++++-
+>  include/linux/mtd/nand.h        | 18 ++++++++++++++++++
+>  3 files changed, 68 insertions(+), 2 deletions(-)
+> 
