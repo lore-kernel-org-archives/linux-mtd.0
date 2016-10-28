@@ -1,21 +1,16 @@
-Received: from up.free-electrons.com ([163.172.77.33]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c03OY-0002SJ-F6
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 09:24:16 +0000
-Date: Fri, 28 Oct 2016 11:23:52 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger
- <richard@nod.at>, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] MAINTAINERS: add more people to the MTD maintainer team
-Message-ID: <20161028112352.772abae8@bbrezillon>
-In-Reply-To: <20161027205732.GB1582@localhost>
-References: <1477312526-7563-1-git-send-email-boris.brezillon@free-electrons.com>
- <20161027205732.GB1582@localhost>
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c03bR-0001RZ-N0
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 09:37:35 +0000
+Received: by mail-wm0-x242.google.com with SMTP id b80so6547177wme.2
+ for <linux-mtd@lists.infradead.org>; Fri, 28 Oct 2016 02:37:12 -0700 (PDT)
+Date: Fri, 28 Oct 2016 11:37:08 +0200
+From: Ralph Sennhauser <ralph.sennhauser@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [REGRESSION 4.9-rc2] "c83ed4c - ubifs: Abort readdir upon error"
+ breaks mount
+Message-ID: <20161028113708.4d5535ba@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,116 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Dear Richard, dear list
 
-On Thu, 27 Oct 2016 13:57:32 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+When testing 4.9-rc2 the device wouldn't boot, as it turns out commit
+c83ed4c9dbb358b9e7707486e167e940d48bfeed prevent's me mounting root.
 
-> On Mon, Oct 24, 2016 at 02:35:26PM +0200, Boris Brezillon wrote:
-> > Brian has been maintaining the MTD subsystem alone for several years
-> > now, and maintaining such a subsystem can really be time consuming.
-> > 
-> > Create a maintainer team formed of the most active MTD contributors
-> > to help Brian with this task, which will hopefully improve the
-> > subsystem reactivity.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>  
-> 
-> Thanks to all the volunteers! Applied to linux-mtd.git. Will send to
-> Linus once we can collect other outstanding fixes.
-> 
-> > ---
-> > Hi all,
-> > 
-> > I'm just trying to summarize what I understood the process would be,
-> > don't hesitate to correct me if I'm wrong.
-> > 
-> > For each release we will assign a specific MTD maintainer which will be
-> > responsible for taking MTD core patches and pulling spi-nor and nand PRs
-> > into the MTD tree and eventually send one or several PRs to Linus.  
-> 
-> I had imagined that the "release owner" role wouldn't necessarily imply
-> exclusive commit rights, but that they'd just the primary one
-> responsible. I don't see a problem with other maintainer(s) applying
-> patches as long as they've gotten the proper review. Or would that be
-> too confusing?
 
-Nope, I'm fine with both solutions.
+The relevant portion of init in the initramfs:
 
-> 
-> But that's something not discussed here so far: review requirements. I
-> expect we need a minimum of 1 reviewer (where reviewer may be the one
-> applying it) that isn't the author. And for bigger things (i.e., not
-> trivial and not just a leaf driver) maybe 2. Hopefully in the form of
-> explicit Reviewed-by or Acked-by.
+  modprobe ubi mtd=$(get_mtd_from_root_arg) block=0,0 || rescue_shell "ubi"
+  modprobe ubifs || rescue_shell "ubifs"
+  sleep 1
 
-Agreed.
+  mount -o ro -t squashfs /dev/ubiblock0_0 /rom || rescue_shell "mount rootfs"
+  mount -o rw,noatime -t ubifs /dev/ubi0_1 /overlay || rescue_shell "mount rootfs_data"
 
-> And that means that for NAND or
-> SPI-NOR PRs, that may require preempting the "release owner" (e.g., if
-> Boris is supposed to be the "owner" for a release, he'll have to find
-> someone else to review his NAND PR -- I'm still happy to do so for now,
-> but others are welcome).
+  mkdir -p /overlay/upper || rescue_shell "mkdir upper"
+  mkdir -p /overlay/work || rescue_shell "mkdir work"
 
-Cool.
+  mount -o rw,noatime,lowerdir=/rom,upperdir=/overlay/upper,workdir=/overlay/work \
+        -t overlay overlay /newroot || rescue_shell "mount overlay"
 
-> 
-> And for PRs to Linus: if y'all don't mind, I'd still like to have a
-> last look at things from the brand new maintainers, at least for now.
-> (Boris and Richard would probably also be good candidates for the last
-> review / PR, as they've proven to maintain things well already.) I'm
-> sure that can be relaxed after a release or so (say, after 4.10?).
 
-I'm perfectly fine with that.
+The corresponding output:
 
-> 
-> Thoughts?
-> 
-> Also, everyone should make their attempts to get their PGP keys into the
-> web-of-trust. And we need David to get people infradead.org permissions.
-> 
-> One other point of order: if it isn't clear, I've been using
-> l2-mtd.git/master as the -next "branch" and linux-mtd.git/master as the
-> -current-release "branch." We should work extra hard to avoid rebasing
-> in either of those trees now. In fact, I'll go disable non-ff pushes
-> now...
-> 
-> I also currently have a server-side post-receive git hook installed in
-> l2-mtd.git that tries to update patchwork. It's not 100% accurate
-> because it matches contents (which might be the same across multiple
-> revisions of a series). I should probably remove or modify that before
-> others start pushing there.
+  [    1.396152] ubi0: attaching mtd5
+  [    1.407127] random: fast init done
+  [    1.471770] ubi0: scanning is finished
+  [    1.491499] ubi0: volume 1 ("rootfs_data") re-sized from 9 to 111 LEBs
+  [    1.498325] ubi0: attached mtd5 (name "rootfs1", size 34 MiB)
+  [    1.504106] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+  [    1.511007] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+  [    1.517826] ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+  [    1.524819] ubi0: good PEBs: 272, bad PEBs: 0, corrupted PEBs: 0
+  [    1.530848] ubi0: user volume: 2, internal volumes: 1, max. volumes count: 128
+  [    1.538102] ubi0: max/mean erase counter: 1/0, WL threshold: 4096, image sequence number: 1823239451
+  [    1.547275] ubi0: available PEBs: 0, total reserved PEBs: 272, PEBs reserved for bad PEB handling: 20
+  [    1.556613] ubi0: background thread "ubi_bgt0d" started, PID 575
+  [    1.562933] block ubiblock0_0: created from ubi0:0(rootfs)
+  [    2.588027] UBIFS (ubi0:1): default file-system created
+  [    2.593689] UBIFS (ubi0:1): background thread "ubifs_bgt0_1" started, PID 586
+  [    2.626943] UBIFS (ubi0:1): UBIFS: mounted UBI device 0, volume 1, name "rootfs_data"
+  [    2.634816] UBIFS (ubi0:1): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+  [    2.644781] UBIFS (ubi0:1): FS size: 12824576 bytes (12 MiB, 101 LEBs), journal size 1015809 bytes (0 MiB, 6 LEBs)
+  [    2.655175] UBIFS (ubi0:1): reserved for root: 605735 bytes (591 KiB)
+  [    2.661646] UBIFS (ubi0:1): media format: w4/r0 (latest is w4/r0), UUID FC75053C-E958-4BBC-BD2B-CFCD72BD47F6, small LPT model
+  mount: mounting overlay on /newroot failed: No such file or directory
+  Error in /init: mount overlay
+  -install: applet not found
 
-I use git notes to do that: each time I apply a patch using pwclient,
-it adds a note containing the patchwork id, then, I have a pre-push
-hook that scan all the commits that are being pushed on my nand/next
-branch and mark the new ones as Accepted in patchwork.
 
-I can provide those scripts if you want, but this means it has to be
-done on the client side, because notes are discarded when you push
-things to a remote.
+  BusyBox v1.25.1 () built-in shell (ash)
 
-> 
-> > For fixes that are submitted after -rc1, I usually ask Brian to apply
-> > them directly into the MTD tree (I don't think there's a real need to
-> > prepare spi-nor and nand PRs for fixes), so we can proceed the same
-> > way: ask the maintainer assigned to this release to also take care of
-> > applying fixes and sending PRs to Linus before each -rc.  
-> 
-> I'm flexible on this. If the "release owner" is attentive enough,
-> applying them to the MTD tree works just fine. But if a PR helps (as
-> Boris is planning to do right now for 4.9-rc) I don't see a problem with
-> that either.
+  sh: can't access tty; job control turned off
+  #
 
-Well, it all depends on the number of fixes we have. But if we all have
-permissions to push to the mtd tree, then we can just create a fixes
-branch where the sub-subsystem maintainers can easily push their fixes
-and the release owner will then send a PR to Linus before the next -rc.
 
-> 
-> > If you have other ideas, or would like to proceed differently, don't
-> > hesitate propose them.  
-> 
-> Good luck, and happy MTD hacking :)
+The device is a Linksys WRT1900ACS (Shelby), for a basically identical device
+see ./arch/arm/boot/dts/armada-385-linksys-cobra.dts
 
-Thanks.
+
+Regards
+Ralph
