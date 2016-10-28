@@ -1,21 +1,19 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0AdH-0001rD-Pj
- for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 17:07:57 +0000
-Subject: Re: [PATCH] ubifs: Fix regression in ubifs_readdir()
-To: =?UTF-8?Q?J=c3=b6rg_Krause?= <joerg.krause@embedded.rocks>,
- linux-mtd@lists.infradead.org
-References: <1477648432-9543-1-git-send-email-richard@nod.at>
- <1477671544.8927.1.camel@embedded.rocks>
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, adrian.hunter@intel.com, ralph.sennhauser@gmail.com,
- peda@axentia.se
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <c542e099-0404-be8e-ebeb-d4265d3204d6@nod.at>
-Date: Fri, 28 Oct 2016 19:07:26 +0200
+ id 1c0BrG-00024f-Ee
+ for linux-mtd@lists.infradead.org; Fri, 28 Oct 2016 18:26:27 +0000
+From: Colin King <colin.king@canonical.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: mtdswap: fix spelling mistake "erassure" -> "erasure"
+Date: Fri, 28 Oct 2016 19:25:59 +0100
+Message-Id: <20161028182559.7887-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <1477671544.8927.1.camel@embedded.rocks>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,73 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörg,
+From: Colin Ian King <colin.king@canonical.com>
 
-On 28.10.2016 18:19, Jörg Krause wrote:
-> Hi,
-> 
-> On Fri, 2016-10-28 at 11:53 +0200, Richard Weinberger wrote:
->> Commit c83ed4c9dbb35 ("ubifs: Abort readdir upon error") broke
->> overlayfs support because the fix exposed an internal error
->> code to VFS.
->>
->> Reported-by: Peter Rosin <peda@axentia.se>
->> Tested-by: Peter Rosin <peda@axentia.se>
->> Reported-by: Ralph Sennhauser <ralph.sennhauser@gmail.com>
->> Fixes: c83ed4c9dbb35 ("ubifs: Abort readdir upon error")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->> ---
->>  fs/ubifs/dir.c | 8 ++++++++
->>  1 file changed, 8 insertions(+)
->>
->> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
->> index bd4a5e8ce441..ca16c5d7bab1 100644
->> --- a/fs/ubifs/dir.c
->> +++ b/fs/ubifs/dir.c
->> @@ -543,6 +543,14 @@ static int ubifs_readdir(struct file *file,
->> struct dir_context *ctx)
->>  
->>  	if (err != -ENOENT)
->>  		ubifs_err(c, "cannot find next direntry, error %d",
->> err);
->> +	else
->> +		/*
->> +		 * -ENOENT is a non-fatal error in this context, the
->> TNC uses
->> +		 * it to indicate that the cursor moved past the
->> current directory
->> +		 * and readdir() has to stop.
->> +		 */
->> +		err = 0;
->> +
->>  
->>  	/* 2 is a special value indicating that there are no more
->> direntries */
->>  	ctx->pos = 2;
-> 
-> I'm not sure if it's related to the issue reported by Peter Rosin and
-> Ralph Sennhauser, but I am still getting a kernel panic using UBIFS
-> with OverlayFS on Linux v4.9.0-rc2 with this patch applied:
+Trivial fix to spelling mistake in dev_err message
 
-Does reverting c83ed4c9dbb35 help?
-And are you 100% sure you applied the fix?
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/mtd/mtdswap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Does the following WARN_ON() trigger?
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index ca16c5d7bab1..12ffc91f7ef8 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -554,6 +554,9 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
-
- 	/* 2 is a special value indicating that there are no more direntries */
- 	ctx->pos = 2;
-+
-+	WARN_ON(err);
-+
- 	return err;
- }
-
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+index cb06bdd..d0402df 100644
+--- a/drivers/mtd/mtdswap.c
++++ b/drivers/mtd/mtdswap.c
+@@ -587,7 +587,7 @@ static int mtdswap_erase_block(struct mtdswap_dev *d, struct swap_eb *eb)
+ 	ret = wait_event_interruptible(wq, erase.state == MTD_ERASE_DONE ||
+ 					   erase.state == MTD_ERASE_FAILED);
+ 	if (ret) {
+-		dev_err(d->dev, "Interrupted erase block %#llx erassure on %s",
++		dev_err(d->dev, "Interrupted erase block %#llx erasure on %s",
+ 			erase.addr, mtd->name);
+ 		return -EINTR;
+ 	}
+-- 
+2.9.3
