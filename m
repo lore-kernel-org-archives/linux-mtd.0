@@ -1,29 +1,17 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0Y4h-0002n4-AU
- for linux-mtd@lists.infradead.org; Sat, 29 Oct 2016 18:09:48 +0000
-Date: Sat, 29 Oct 2016 12:09:08 -0600
-From: Mark Brown <broonie@kernel.org>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Message-ID: <20161029180908.txwr5tgr3ixux6gy@sirena.org.uk>
-References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
- <20160816164204.GV9347@sirena.org.uk>
- <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
- <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
- <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
- <0e38d1ed-af5c-160f-e02a-f1433c507d23@gmail.com>
- <6f1aed1e-9467-aa94-56cb-5e9435b21ae4@gmail.com>
+ id 1c0Yyk-00049b-OZ
+ for linux-mtd@lists.infradead.org; Sat, 29 Oct 2016 19:07:44 +0000
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UBI/UBIFS fixes for 4.9-rc3
+Message-ID: <f0db8192-0b26-dfc3-95a9-395616c8d848@nod.at>
+Date: Sat, 29 Oct 2016 21:07:15 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="uqohw3pro2mebook"
-Content-Disposition: inline
-In-Reply-To: <6f1aed1e-9467-aa94-56cb-5e9435b21ae4@gmail.com>
-Subject: Re: [PATCH v2] mtd: m25p80: consider max message size in m25p80_read
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,42 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Linus,
 
---uqohw3pro2mebook
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following changes since commit 14970f204b1993af7459d5bd34aaff38dfee6670:
 
-On Sat, Oct 29, 2016 at 07:59:09PM +0200, Marek Vasut wrote:
-> On 10/28/2016 07:58 AM, Heiner Kallweit wrote:
+  Merge branch 'akpm' (patches from Andrew) (2016-10-27 19:58:39 -0700)
 
-> > - This patch was part of a series and the other patches of the
-> >   series went into 4.9. It's needed to correctly support
-> >   reads > 64k on fsl-espi as first user of spi_max_message_size.
-> >   See commit 02a595d5d6e4 ("spi: fsl-espi: eliminate spi nor
-> >   flash read loop"). CC it to stable. =20
+are available in the git repository at:
 
-> Does this imply that we have to fix every single driver this way ?
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.9-rc3
 
-Ideally.  Any SPI driver that has an upper limit really ought to export
-it, and any driver that might bump into one of those limits should
-check.  A lot of drivers are either unlikely to be deployed in a system
-that has relevant limits or tend to only do short enough transfers
-though - if systems are currently working it's just neatening things up
-really.
+for you to fetch changes up to a00052a296e54205cf238c75bd98d17d5d02a6db:
 
---uqohw3pro2mebook
-Content-Type: application/pgp-signature; name="signature.asc"
+  ubifs: Fix regression in ubifs_readdir() (2016-10-28 14:48:31 +0200)
 
------BEGIN PGP SIGNATURE-----
+----------------------------------------------------------------
+This pull request contains fixes for issues in both UBI and UBIFS:
+- A regression wrt. overlayfs, introduced in -rc2.
+- An UBI issue, found by Dan Carpenter's static checker.
 
-iQEcBAABCAAGBQJYFOXDAAoJECTWi3JdVIfQqUsH/2l2kHRKVuubOKBBGSPDp4Qz
-bV2N/bLAcfI3O9Ij4ni/RVplY2TEnZbVewFhO4/yKRCKKtoDY4GG59Sc8ho6hIJH
-7poQNByMzHuNGvNa/QgyrSgAVmeidBfZxFOinUdVkyUN8+sAhugkIPXA7k3KpKZC
-Z6oFtCYxDfimkM6OtrH6ICNF1K/6Cn9xHveAm6EW6r4W6ydnzEg1tFWwt3qVGnR0
-2IT7moSr3g/mgDILqw3lpZZRjtG1g6wLEQ4ZJZGtG3BBFp2zArswptusFDbvKd1j
-Na/XEBjS+gKog1f0JfSMNWzYjl6R5pM1f/X3mbJc/kL2JVSK4RqeTZ5EWWOjVyw=
-=BG72
------END PGP SIGNATURE-----
+----------------------------------------------------------------
+Boris Brezillon (1):
+      ubi: fastmap: Fix add_vol() return value test in ubi_attach_fastmap()
 
---uqohw3pro2mebook--
+Richard Weinberger (1):
+      ubifs: Fix regression in ubifs_readdir()
+
+ drivers/mtd/ubi/fastmap.c | 10 +++++-----
+ fs/ubifs/dir.c            |  8 ++++++++
+ 2 files changed, 13 insertions(+), 5 deletions(-)
