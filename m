@@ -1,23 +1,27 @@
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0XvU-0005HT-2C
- for linux-mtd@lists.infradead.org; Sat, 29 Oct 2016 18:00:18 +0000
-Received: by mail-wm0-x235.google.com with SMTP id e69so164337681wmg.0
- for <linux-mtd@lists.infradead.org>; Sat, 29 Oct 2016 10:59:54 -0700 (PDT)
-Subject: Re: [PATCH RESEND v3] mtd: spi-nor: fix flags for s25fl128s
-To: Heiner Kallweit <hkallweit1@gmail.com>
-References: <4d3db993-d030-3659-2f62-94c373f57038@gmail.com>
- <808bf727-f562-79d4-a60f-5e437cc15da6@gmail.com>
- <514b12c9-447b-1688-29d3-aac839de08ac@gmail.com>
-Cc: Jagan Teki <jteki@openedev.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- MTD Mailing List <linux-mtd@lists.infradead.org>
+ id 1c0XvW-0005HW-6e
+ for linux-mtd@lists.infradead.org; Sat, 29 Oct 2016 18:00:19 +0000
+Received: by mail-wm0-x244.google.com with SMTP id c17so12038113wmc.3
+ for <linux-mtd@lists.infradead.org>; Sat, 29 Oct 2016 10:59:56 -0700 (PDT)
+Subject: Re: [PATCH v2] mtd: m25p80: consider max message size in m25p80_read
+To: Heiner Kallweit <hkallweit1@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
+ <20160816164204.GV9347@sirena.org.uk>
+ <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
+ <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
+ <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
+ <0e38d1ed-af5c-160f-e02a-f1433c507d23@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <5d633567-ca28-abe6-2789-ba9291e4eaf1@gmail.com>
-Date: Sat, 29 Oct 2016 19:54:40 +0200
+Message-ID: <6f1aed1e-9467-aa94-56cb-5e9435b21ae4@gmail.com>
+Date: Sat, 29 Oct 2016 19:59:09 +0200
 MIME-Version: 1.0
-In-Reply-To: <514b12c9-447b-1688-29d3-aac839de08ac@gmail.com>
+In-Reply-To: <0e38d1ed-af5c-160f-e02a-f1433c507d23@gmail.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,15 +33,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/27/2016 11:13 PM, Heiner Kallweit wrote:
-> The Spansion S25FL128S also supports dual read mode.
-> In addition remove flag SECT_4K. 4K erases are supported,
-> but not uniformly.
+On 10/28/2016 07:58 AM, Heiner Kallweit wrote:
+> Consider a message size limit when calculating the maximum amount
+> of data that can be read.
+> 
+> The message size limit has been introduced with 4.9, so cc it
+> to stable.
 > 
 > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> Reviewed-by: Jagan Teki <jteki@openedev.com>
+> Cc: <stable@vger.kernel.org> # 4.9.x
+> ---
+> v2:
+> - This patch was part of a series and the other patches of the
+>   series went into 4.9. It's needed to correctly support
+>   reads > 64k on fsl-espi as first user of spi_max_message_size.
+>   See commit 02a595d5d6e4 ("spi: fsl-espi: eliminate spi nor
+>   flash read loop"). CC it to stable.  
 
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+Does this imply that we have to fix every single driver this way ?
+
+> ---
+>  drivers/mtd/devices/m25p80.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 9cf7fcd..16a7df2 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -172,7 +172,8 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  
+>  	t[1].rx_buf = buf;
+>  	t[1].rx_nbits = m25p80_rx_nbits(nor);
+> -	t[1].len = min(len, spi_max_transfer_size(spi));
+> +	t[1].len = min3(len, spi_max_transfer_size(spi),
+> +			spi_max_message_size(spi) - t[0].len);
+>  	spi_message_add_tail(&t[1], &m);
+>  
+>  	ret = spi_sync(spi, &m);
+> 
+
 
 -- 
 Best regards,
