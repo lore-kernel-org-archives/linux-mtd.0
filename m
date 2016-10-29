@@ -1,26 +1,29 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0XvV-0005HU-RQ
- for linux-mtd@lists.infradead.org; Sat, 29 Oct 2016 18:00:19 +0000
-Received: by mail-wm0-x243.google.com with SMTP id c17so12038061wmc.3
- for <linux-mtd@lists.infradead.org>; Sat, 29 Oct 2016 10:59:55 -0700 (PDT)
-Subject: Re: [PATCH] mtd: nand: pxa3xx_nand: write exactly one message on
- probe failure
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-References: <1474276878-1021-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <20161028100419.1ba04968@bbrezillon>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, kernel@pengutronix.de,
- Robert Jarzmik <robert.jarzmik@free.fr>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <ac811aeb-1f9d-e985-134b-8faba0a1a4cf@gmail.com>
-Date: Sat, 29 Oct 2016 19:56:39 +0200
+ id 1c0Y4h-0002n4-AU
+ for linux-mtd@lists.infradead.org; Sat, 29 Oct 2016 18:09:48 +0000
+Date: Sat, 29 Oct 2016 12:09:08 -0600
+From: Mark Brown <broonie@kernel.org>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Message-ID: <20161029180908.txwr5tgr3ixux6gy@sirena.org.uk>
+References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
+ <20160816164204.GV9347@sirena.org.uk>
+ <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
+ <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
+ <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
+ <0e38d1ed-af5c-160f-e02a-f1433c507d23@gmail.com>
+ <6f1aed1e-9467-aa94-56cb-5e9435b21ae4@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20161028100419.1ba04968@bbrezillon>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="uqohw3pro2mebook"
+Content-Disposition: inline
+In-Reply-To: <6f1aed1e-9467-aa94-56cb-5e9435b21ae4@gmail.com>
+Subject: Re: [PATCH v2] mtd: m25p80: consider max message size in m25p80_read
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,95 +33,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/28/2016 10:04 AM, Boris Brezillon wrote:
-> On Mon, 19 Sep 2016 11:21:18 +0200
-> Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
-> 
->> For some error paths alloc_nand_resource() emitted an error message, for
->> others it didn't. Make it consistently print a message including the
->> error code where it's not constant and drop the hardly helpful
->> additional message printed by the caller of alloc_nand_resource.
->>
->> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> 
-> It looks good to me. Ezequiel, Robert, any objection to this patch? If
-> not, can I have your Acked/Reviewed-by ?
-> 
->> ---
->>  drivers/mtd/nand/pxa3xx_nand.c | 17 ++++++++++-------
->>  1 file changed, 10 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
->> index 436dd6dc11f4..052e9725cf12 100644
->> --- a/drivers/mtd/nand/pxa3xx_nand.c
->> +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> @@ -1774,8 +1774,11 @@ static int alloc_nand_resource(struct platform_device *pdev)
->>  	int ret, irq, cs;
->>  
->>  	pdata = dev_get_platdata(&pdev->dev);
->> -	if (pdata->num_cs <= 0)
->> +	if (pdata->num_cs <= 0) {
->> +		dev_err(&pdev->dev, "broken number of chip selects\n");
 
-Not: Should be "invalid number of chip selects" . Also, if you turn the
-num_cs to unsigned type in the platdata, the test can be if (foo == 0)
-instead.
+--uqohw3pro2mebook
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->>  		return -ENODEV;
->> +	}
->> +
->>  	info = devm_kzalloc(&pdev->dev,
->>  			    sizeof(*info) + sizeof(*host) * pdata->num_cs,
->>  			    GFP_KERNEL);
->> @@ -1814,8 +1817,9 @@ static int alloc_nand_resource(struct platform_device *pdev)
->>  	init_waitqueue_head(&chip->controller->wq);
->>  	info->clk = devm_clk_get(&pdev->dev, NULL);
->>  	if (IS_ERR(info->clk)) {
->> -		dev_err(&pdev->dev, "failed to get nand clock\n");
->> -		return PTR_ERR(info->clk);
->> +		ret = PTR_ERR(info->clk);
->> +		dev_err(&pdev->dev, "failed to get nand clock (%d)\n", ret);
->> +		return ret;
->>  	}
->>  	ret = clk_prepare_enable(info->clk);
->>  	if (ret < 0)
->> @@ -1843,6 +1847,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
->>  	info->mmio_base = devm_ioremap_resource(&pdev->dev, r);
->>  	if (IS_ERR(info->mmio_base)) {
->>  		ret = PTR_ERR(info->mmio_base);
->> +		dev_err(&pdev->dev, "failed to map register space (%d)\n", ret);
->>  		goto fail_disable_clk;
->>  	}
->>  	info->mmio_phys = r->start;
->> @@ -1862,7 +1867,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
->>  				   pxa3xx_nand_irq_thread, IRQF_ONESHOT,
->>  				   pdev->name, info);
->>  	if (ret < 0) {
->> -		dev_err(&pdev->dev, "failed to request IRQ\n");
->> +		dev_err(&pdev->dev, "failed to request IRQ (%d)\n", ret);
->>  		goto fail_free_buf;
->>  	}
->>  
->> @@ -1961,10 +1966,8 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
->>  	}
->>  
->>  	ret = alloc_nand_resource(pdev);
->> -	if (ret) {
->> -		dev_err(&pdev->dev, "alloc nand resource failed\n");
->> +	if (ret)
->>  		return ret;
->> -	}
->>  
->>  	info = platform_get_drvdata(pdev);
->>  	probe_success = 0;
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+On Sat, Oct 29, 2016 at 07:59:09PM +0200, Marek Vasut wrote:
+> On 10/28/2016 07:58 AM, Heiner Kallweit wrote:
 
+> > - This patch was part of a series and the other patches of the
+> >   series went into 4.9. It's needed to correctly support
+> >   reads > 64k on fsl-espi as first user of spi_max_message_size.
+> >   See commit 02a595d5d6e4 ("spi: fsl-espi: eliminate spi nor
+> >   flash read loop"). CC it to stable. =20
 
--- 
-Best regards,
-Marek Vasut
+> Does this imply that we have to fix every single driver this way ?
+
+Ideally.  Any SPI driver that has an upper limit really ought to export
+it, and any driver that might bump into one of those limits should
+check.  A lot of drivers are either unlikely to be deployed in a system
+that has relevant limits or tend to only do short enough transfers
+though - if systems are currently working it's just neatening things up
+really.
+
+--uqohw3pro2mebook
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYFOXDAAoJECTWi3JdVIfQqUsH/2l2kHRKVuubOKBBGSPDp4Qz
+bV2N/bLAcfI3O9Ij4ni/RVplY2TEnZbVewFhO4/yKRCKKtoDY4GG59Sc8ho6hIJH
+7poQNByMzHuNGvNa/QgyrSgAVmeidBfZxFOinUdVkyUN8+sAhugkIPXA7k3KpKZC
+Z6oFtCYxDfimkM6OtrH6ICNF1K/6Cn9xHveAm6EW6r4W6ydnzEg1tFWwt3qVGnR0
+2IT7moSr3g/mgDILqw3lpZZRjtG1g6wLEQ4ZJZGtG3BBFp2zArswptusFDbvKd1j
+Na/XEBjS+gKog1f0JfSMNWzYjl6R5pM1f/X3mbJc/kL2JVSK4RqeTZ5EWWOjVyw=
+=BG72
+-----END PGP SIGNATURE-----
+
+--uqohw3pro2mebook--
