@@ -1,27 +1,20 @@
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0Zn8-0004wH-F0
- for linux-mtd@lists.infradead.org; Sat, 29 Oct 2016 19:59:47 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, kernel@pengutronix.de
-Subject: Re: [PATCH] mtd: nand: pxa3xx_nand: write exactly one message on
- probe failure
-References: <1474276878-1021-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <20161028100419.1ba04968@bbrezillon>
- <ac811aeb-1f9d-e985-134b-8faba0a1a4cf@gmail.com>
-Date: Sat, 29 Oct 2016 21:59:18 +0200
-In-Reply-To: <ac811aeb-1f9d-e985-134b-8faba0a1a4cf@gmail.com> (Marek Vasut's
- message of "Sat, 29 Oct 2016 19:56:39 +0200")
-Message-ID: <87funf0vvt.fsf@belgarion.home>
+ id 1c0mUG-0007u7-Tg
+ for linux-mtd@lists.infradead.org; Sun, 30 Oct 2016 09:33:09 +0000
+Received: by mail-wm0-x243.google.com with SMTP id 68so7224605wmz.2
+ for <linux-mtd@lists.infradead.org>; Sun, 30 Oct 2016 02:32:47 -0700 (PDT)
+From: Heiner Kallweit <hkallweit1@gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: spi-nor: add sleeping version of spi_nor_wait_till_ready
+ for erase ops
+Message-ID: <eaa526ca-f0b4-4fde-d334-2ca6af72c32d@gmail.com>
+Date: Sun, 30 Oct 2016 10:32:38 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +24,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Marek Vasut <marek.vasut@gmail.com> writes:
+Currently spi_nor_wait_till_ready in the poll loop permanently checks
+for the WIP flag to be reset. Erase ops typically take >100ms for
+sector erase and >10s for chip erase. Permanently polling for such
+longer time periods puts unnecessary load on the SPI subsystem
+(especially on systems w/o SPI DMA support or systems using bitbanging).
 
-> On 10/28/2016 10:04 AM, Boris Brezillon wrote:
->> On Mon, 19 Sep 2016 11:21:18 +0200
->> Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> wrote:
->>=20
->>> For some error paths alloc_nand_resource() emitted an error message, for
->>> others it didn't. Make it consistently print a message including the
->>> error code where it's not constant and drop the hardly helpful
->>> additional message printed by the caller of alloc_nand_resource.
->>>
->>> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
->>=20
->> It looks good to me. Ezequiel, Robert, any objection to this patch? If
->> not, can I have your Acked/Reviewed-by ?
-Hi,
+Relax this by sleeping for a reasonable time between checking the
+WIP flag.
 
-Actually I was wondering if my mail system is utterly broken ... This is the
-first mail I receive, while it seems to me I was in the recipients in the f=
-ormer
-ones ...
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
 
-You can take my Reviewed-by, at least from:
-	https://patchwork.ozlabs.org/patch/671644/
-
-As a side note, normally for pxa architecture we use a printk format to dis=
-play
-the return value as :
-   pr_something("XXXX :%d\n", ret)
-
-As pxa3xx_nand is shared with other architectures this will be Boris/Ezequi=
-el's
-call.
-
-Cheers.
-
---
-Robert
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..808ea4c 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -17,6 +17,7 @@
+ #include <linux/mutex.h>
+ #include <linux/math64.h>
+ #include <linux/sizes.h>
++#include <linux/delay.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/of_platform.h>
+@@ -252,7 +253,8 @@ static int spi_nor_ready(struct spi_nor *nor)
+  * Returns non-zero if error.
+  */
+ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+-						unsigned long timeout_jiffies)
++						unsigned long timeout_jiffies,
++						unsigned int sleep_msecs)
+ {
+ 	unsigned long deadline;
+ 	int timeout = 0, ret;
+@@ -269,7 +271,13 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+ 		if (ret)
+ 			return 0;
+ 
+-		cond_resched();
++		if (!sleep_msecs)
++			cond_resched();
++		else if (sleep_msecs < 50)
++			usleep_range(sleep_msecs * 1000 - 100,
++				     sleep_msecs * 1000);
++		else
++			msleep(sleep_msecs);
+ 	}
+ 
+ 	dev_err(nor->dev, "flash operation timed out\n");
+@@ -277,10 +285,17 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+ 	return -ETIMEDOUT;
+ }
+ 
+-static int spi_nor_wait_till_ready(struct spi_nor *nor)
++static inline int spi_nor_wait_till_ready_sleep(struct spi_nor *nor,
++						unsigned int sleep_msecs)
+ {
+ 	return spi_nor_wait_till_ready_with_timeout(nor,
+-						    DEFAULT_READY_WAIT_JIFFIES);
++						    DEFAULT_READY_WAIT_JIFFIES,
++						    sleep_msecs);
++}
++
++static inline int spi_nor_wait_till_ready(struct spi_nor *nor)
++{
++	return spi_nor_wait_till_ready_sleep(nor, 0);
+ }
+ 
+ /*
+@@ -387,7 +402,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
+ 			      CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
+ 			      (unsigned long)(mtd->size / SZ_2M));
+-		ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
++		ret = spi_nor_wait_till_ready_with_timeout(nor, timeout, 100);
+ 		if (ret)
+ 			goto erase_err;
+ 
+@@ -408,7 +423,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 			addr += mtd->erasesize;
+ 			len -= mtd->erasesize;
+ 
+-			ret = spi_nor_wait_till_ready(nor);
++			ret = spi_nor_wait_till_ready_sleep(nor, 2);
+ 			if (ret)
+ 				goto erase_err;
+ 		}
+-- 
+2.10.1
