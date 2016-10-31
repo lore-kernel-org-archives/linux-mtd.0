@@ -1,25 +1,20 @@
-Received: from mail-oi0-f68.google.com ([209.85.218.68])
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c12bd-0006C2-HO
- for linux-mtd@lists.infradead.org; Mon, 31 Oct 2016 02:45:50 +0000
-Received: by mail-oi0-f68.google.com with SMTP id v84so3414602oie.2
- for <linux-mtd@lists.infradead.org>; Sun, 30 Oct 2016 19:45:29 -0700 (PDT)
-Date: Sun, 30 Oct 2016 21:45:26 -0500
-From: Rob Herring <robh@kernel.org>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, DT <devicetree@vger.kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Mason <slash.tmp@free.fr>,
- Sebastian Frias <sf84@laposte.net>
-Subject: Re: [PATCH v7 1/2] mtd: nand: add tango NFC dt bindings doc
-Message-ID: <20161031024526.g3fadht2coqqu6a5@rob-hp-laptop>
-References: <580F5AD2.9020909@sigmadesigns.com>
- <580F5B06.6030608@sigmadesigns.com>
+ id 1c1D07-0004iT-E5
+ for linux-mtd@lists.infradead.org; Mon, 31 Oct 2016 13:51:48 +0000
+Subject: Re: [PATCH] mtd: spi-nor: add sleeping version of
+ spi_nor_wait_till_ready for erase ops
+To: Heiner Kallweit <hkallweit1@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+References: <eaa526ca-f0b4-4fde-d334-2ca6af72c32d@gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: Brian Norris <computersforpeace@gmail.com>, MTD Maling List
+ <linux-mtd@lists.infradead.org>
+Message-ID: <716d2877-dc4f-f93d-5d93-cde671b89082@atmel.com>
+Date: Mon, 31 Oct 2016 14:50:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <580F5B06.6030608@sigmadesigns.com>
+In-Reply-To: <eaa526ca-f0b4-4fde-d334-2ca6af72c32d@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,12 +24,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 25, 2016 at 03:15:50PM +0200, Marc Gonzalez wrote:
-> Add the tango NAND Flash Controller dt bindings documentation.
-> 
-> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-> ---
->  Documentation/devicetree/bindings/mtd/tango-nand.txt | 38 ++++++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
+Hi Heiner,
 
-Acked-by: Rob Herring <robh@kernel.org>
++Marek
+
+Le 30/10/2016 à 10:32, Heiner Kallweit a écrit :
+> Currently spi_nor_wait_till_ready in the poll loop permanently checks
+> for the WIP flag to be reset. Erase ops typically take >100ms for
+> sector erase and >10s for chip erase. Permanently polling for such
+> longer time periods puts unnecessary load on the SPI subsystem
+> (especially on systems w/o SPI DMA support or systems using bitbanging).
+> 
+> Relax this by sleeping for a reasonable time between checking the
+> WIP flag.
+> 
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 27 +++++++++++++++++++++------
+>  1 file changed, 21 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d0fc165..808ea4c 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/math64.h>
+>  #include <linux/sizes.h>
+> +#include <linux/delay.h>
+>  
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/of_platform.h>
+> @@ -252,7 +253,8 @@ static int spi_nor_ready(struct spi_nor *nor)
+>   * Returns non-zero if error.
+>   */
+>  static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+> -						unsigned long timeout_jiffies)
+> +						unsigned long timeout_jiffies,
+> +						unsigned int sleep_msecs)
+>  {
+>  	unsigned long deadline;
+>  	int timeout = 0, ret;
+> @@ -269,7 +271,13 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+>  		if (ret)
+>  			return 0;
+>  
+> -		cond_resched();
+> +		if (!sleep_msecs)
+> +			cond_resched();
+> +		else if (sleep_msecs < 50)
+> +			usleep_range(sleep_msecs * 1000 - 100,
+> +				     sleep_msecs * 1000);
+> +		else
+> +			msleep(sleep_msecs);
+>  	}
+>  
+>  	dev_err(nor->dev, "flash operation timed out\n");
+> @@ -277,10 +285,17 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+>  	return -ETIMEDOUT;
+>  }
+>  
+> -static int spi_nor_wait_till_ready(struct spi_nor *nor)
+> +static inline int spi_nor_wait_till_ready_sleep(struct spi_nor *nor,
+> +						unsigned int sleep_msecs)
+>  {
+>  	return spi_nor_wait_till_ready_with_timeout(nor,
+> -						    DEFAULT_READY_WAIT_JIFFIES);
+> +						    DEFAULT_READY_WAIT_JIFFIES,
+> +						    sleep_msecs);
+> +}
+> +
+> +static inline int spi_nor_wait_till_ready(struct spi_nor *nor)
+> +{
+> +	return spi_nor_wait_till_ready_sleep(nor, 0);
+>  }
+>  
+
+Not a big deal but, IMHO, you should remove spi_nor_wait_till_ready_sleep()
+from your patch to avoid introducing a 3rd spi_nor_wait_till_ready* function,
+so we don't have to wonder which version to call when we have to wait for the
+memory to be ready again.
+
+Besides, spi_nor_wait_ready_sleep() is called only once so it is not so
+useful.
+
+Finally, the duration expressed by the sleep_msecs parameter should not be
+higher than the duration of timeout_jiffies in
+spi_nor_wait_till_ready_with_timeout(). The spi_nor_wait_till_ready_sleep()
+hides the timeout_jiffies value so it's less obvious to choose a right value
+for sleep_msecs when you have to look at the implementation of the
+spi_nor_wait_till_ready_sleep() function to find out the actual value of
+timeout_jiffies.
+
+What I mean is that those two parameters, timeout_jiffies and sleep_msec, are
+tightly bound. So when calling one of the spi_nor_wait_till_ready* functions(),
+those two parameters should be either both fixed (macro) or both variable.
+
+Marek, what do you think about this point?
+
+>  /*
+> @@ -387,7 +402,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  		timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
+>  			      CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
+>  			      (unsigned long)(mtd->size / SZ_2M));
+> -		ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
+> +		ret = spi_nor_wait_till_ready_with_timeout(nor, timeout, 100);
+
+Please, use macros instead of hardcoded values. For instance, here it could be
+CHIP_ERASE_READY_WAIT_SLEEP_MSEC or something else which clearly states
+that the value is for chip erase operations and is associated with the
+CHIP_ERASE_2MB_READY_WAIT_JIFFIES macro.
+
+>  		if (ret)
+>  			goto erase_err;
+>  
+> @@ -408,7 +423,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  			addr += mtd->erasesize;
+>  			len -= mtd->erasesize;
+>  
+> -			ret = spi_nor_wait_till_ready(nor);
+> +			ret = spi_nor_wait_till_ready_sleep(nor, 2);
+See comments above.
+
+Do you have some figures to show the impact of this patch on the performances?
+>  			if (ret)
+>  				goto erase_err;
+>  		}
+> 
+
+Best regards,
+
+Cyrille
