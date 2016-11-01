@@ -1,19 +1,22 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c1XSw-0003vu-Dn
- for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 11:42:56 +0000
-Subject: Re: [PATCH] UBIFS: Remove some dead code
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, dedekind1@gmail.com,
- adrian.hunter@intel.com
-References: <20161101064525.11813-1-christophe.jaillet@wanadoo.fr>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <a074d673-cf23-d7a1-7b1e-0e1f8f7b0ffe@nod.at>
-Date: Tue, 1 Nov 2016 12:42:25 +0100
+Received: from up.free-electrons.com ([163.172.77.33]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c1ZTP-0005sm-L0
+ for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 13:51:33 +0000
+Date: Tue, 1 Nov 2016 14:50:58 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Zach Brown <zach.brown@ni.com>
+Cc: <dwmw2@infradead.org>, dedekind1@gmail.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com
+Subject: Re: [PATCH v3 3/5] mtd: nand: Add bb_per_lun and blocks_per_lun
+ fields to nand_chip
+Message-ID: <20161101145058.65317535@bbrezillon>
+In-Reply-To: <1477686464-7437-4-git-send-email-zach.brown@ni.com>
+References: <1477686464-7437-1-git-send-email-zach.brown@ni.com>
+ <1477686464-7437-4-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-In-Reply-To: <20161101064525.11813-1-christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,32 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 28 Oct 2016 15:27:42 -0500
+Zach Brown <zach.brown@ni.com> wrote:
 
-
-On 01.11.2016 07:45, Christophe JAILLET wrote:
-> 'ubifs_fast_find_freeable()' can not return an error pointer, so this test
-> can be removed.
+> The fields bb_per_lun and blocks_per_lun are useful determining the
+> number of bad blocks a MTD needs to allocate. How they are set will
+> depend on if the chip is ONFI, JEDEC or a fuill-id entry in the nand_ids
+> table.
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Signed-off-by: Zach Brown <zach.brown@ni.com>
 > ---
->  fs/ubifs/gc.c | 4 ----
->  1 file changed, 4 deletions(-)
+>  include/linux/mtd/nand.h | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-> index e845c64b6ce1..7b35e3d6cde7 100644
-> --- a/fs/ubifs/gc.c
-> +++ b/fs/ubifs/gc.c
-> @@ -846,10 +846,6 @@ int ubifs_gc_start_commit(struct ubifs_info *c)
->  	 */
->  	while (1) {
->  		lp = ubifs_fast_find_freeable(c);
-> -		if (IS_ERR(lp)) {
-> -			err = PTR_ERR(lp);
-> -			goto out;
-> -		}
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index c5d3d502..efbe439 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -771,6 +771,9 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+>   *			supported, 0 otherwise.
+>   * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
+>   *			supported, 0 otherwise.
+> + * @bb_per_lun:	[INTERN] the max number of bad blocks each LUN of a
+> + *			this nand device will encounter their life times.
+> + * @blocks_per_lun:	[INTERN] The number of PEBs in a LUN
+>   * @read_retries:	[INTERN] the number of read retry modes supported
+>   * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
+>   * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
+> @@ -853,6 +856,8 @@ struct nand_chip {
+>  		struct nand_onfi_params	onfi_params;
+>  		struct nand_jedec_params jedec_params;
+>  	};
+> +	__le16 bb_per_lun;
+> +	__le32 blocks_per_lun;
 
-Good catch, how did you find this?
-If you have a tool/script I'd like to use it too.
+Two things I don't like here:
+- you use little-endian types, while it should use native endianness.
+  Make it easier, and just declare those fields as int (or unsigned
+  int).
+- you stick to the ONFI spec, while I'd prefer to see the term lun
+  replaced by die, and I wonder if we don't already have a field
+  storing the number of blocks per die (I might be wrong though).
 
-Thanks,
-//richard
+>  
+>  	struct nand_data_interface *data_interface;
+>  
