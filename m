@@ -1,20 +1,20 @@
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83])
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c1enO-0006Ia-3R
- for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 19:32:31 +0000
-Date: Tue, 1 Nov 2016 20:32:04 +0100 (CET)
+ id 1c1epk-00079r-GU
+ for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 19:34:57 +0000
+Date: Tue, 1 Nov 2016 20:34:29 +0100 (CET)
 From: Julia Lawall <julia.lawall@lip6.fr>
 To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] UBIFS: Remove some dead code
 In-Reply-To: <1dc01a45-1eb4-20bd-c5c8-c8f37ba60e06@wanadoo.fr>
-Message-ID: <alpine.DEB.2.10.1611012028530.6300@hadrien>
+Message-ID: <alpine.DEB.2.10.1611012033160.6300@hadrien>
 References: <20161101064525.11813-1-christophe.jaillet@wanadoo.fr>
  <a074d673-cf23-d7a1-7b1e-0e1f8f7b0ffe@nod.at>
  <1dc01a45-1eb4-20bd-c5c8-c8f37ba60e06@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323329-1849458589-1478028727=:6300"
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323329-2014439981-1478028872=:6300"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1849458589-1478028727=:6300
+--8323329-2014439981-1478028872=:6300
 Content-Type: TEXT/PLAIN; charset=windows-1252
 Content-Transfer-Encoding: 8BIT
 
@@ -110,13 +110,6 @@ On Tue, 1 Nov 2016, Christophe JAILLET wrote:
 >    {
 >       ...
 >       return NULL;
-
-Do you want functions that always return NULL or that may return NULL?
-Currently you are getting those that always return NULL, except perhaps
-under ifs.  But if you want functions that may return NULL, it would be
-better to put exists in the rule header after find.  This will also likely
-be more efficient.
-
 >    }
 >
 > @script:python@
@@ -139,10 +132,6 @@ be more efficient.
 > |
 >    if (!x) S
 > )
-
-You might want to put ... after x = f(...);, or rather .... when != x = e
-for some expression metavariable e.
-
 >
 > @script:python@
 > f << find2.f;
@@ -164,11 +153,6 @@ for some expression metavariable e.
 > @@
 >
 >     x = f(...);
-
-Same here about the ...
-
-julia
-
 > (
 >     if (IS_ERR(x)) S
 > |
@@ -182,13 +166,14 @@ julia
 > @@
 >
 > print "%s" %(f)
->
->
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
---8323329-1849458589-1478028727=:6300--
+
+Shouldn't there be a rule like the return NULL here too?
+
+You may also want to take into account the possibility of
+
+ret = NULL;
+... when != ret = e
+return ret;
+
+julia
+--8323329-2014439981-1478028872=:6300--
