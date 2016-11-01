@@ -1,24 +1,28 @@
-Received: from mail-bl2nam02on0109.outbound.protection.outlook.com
- ([104.47.38.109] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+Received: from s159.web-hosting.com ([68.65.120.118])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c1drx-0007hU-Q8
- for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 18:33:12 +0000
-Date: Tue, 1 Nov 2016 13:32:32 -0500
-From: Zach Brown <zach.brown@ni.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: <dwmw2@infradead.org>, <dedekind1@gmail.com>, <richard@nod.at>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 3/5] mtd: nand: Add bb_per_lun and blocks_per_lun
- fields to nand_chip
-Message-ID: <20161101183231.GA13831@zach-desktop>
-References: <1477686464-7437-1-git-send-email-zach.brown@ni.com>
- <1477686464-7437-4-git-send-email-zach.brown@ni.com>
- <20161101145058.65317535@bbrezillon>
+ id 1c1eGR-0000ir-3y
+ for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 18:58:27 +0000
+Received: from mail-lf0-f47.google.com ([209.85.215.47]:35389)
+ by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
+ (Exim 4.86_1) (envelope-from <jagan@openedev.com>)
+ id 1c1eG2-001iA2-Sd
+ for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 14:58:05 -0400
+Received: by mail-lf0-f47.google.com with SMTP id f134so128156204lfg.2
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Nov 2016 11:58:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20161101145058.65317535@bbrezillon>
+In-Reply-To: <3591c563-7a90-c060-f6f0-c61d35bbef0e@gmail.com>
+References: <3591c563-7a90-c060-f6f0-c61d35bbef0e@gmail.com>
+From: Jagan Teki <jagan@openedev.com>
+Date: Wed, 2 Nov 2016 00:28:00 +0530
+Message-ID: <CAD6G_RTzdGzcV55gYOOOLVVkF+hBatG=DXL3-9F4gDk1M0Q+5g@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: add sleeping version of
+ spi_nor_wait_till_ready for erase ops
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +32,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 01, 2016 at 02:50:58PM +0100, Boris Brezillon wrote:
-> On Fri, 28 Oct 2016 15:27:42 -0500
-> Zach Brown <zach.brown@ni.com> wrote:
+On Tue, Nov 1, 2016 at 10:35 PM, Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> Currently spi_nor_wait_till_ready in the poll loop permanently checks
+> for the WIP flag to be reset. Erase ops typically take >100ms for
+> sector erase and >10s for chip erase. Permanently polling for such
+> longer time periods puts unnecessary load on the SPI subsystem
+> (especially on systems w/o SPI DMA support or systems using bitbanging).
 >
-> > The fields bb_per_lun and blocks_per_lun are useful determining the
-> > number of bad blocks a MTD needs to allocate. How they are set will
-> > depend on if the chip is ONFI, JEDEC or a fuill-id entry in the nand_ids
-> > table.
-> >
-> > Signed-off-by: Zach Brown <zach.brown@ni.com>
-> > ---
-> >  include/linux/mtd/nand.h | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> > index c5d3d502..efbe439 100644
-> > --- a/include/linux/mtd/nand.h
-> > +++ b/include/linux/mtd/nand.h
-> > @@ -771,6 +771,9 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
-> >   *			supported, 0 otherwise.
-> >   * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
-> >   *			supported, 0 otherwise.
-> > + * @bb_per_lun:	[INTERN] the max number of bad blocks each LUN of a
-> > + *			this nand device will encounter their life times.
-> > + * @blocks_per_lun:	[INTERN] The number of PEBs in a LUN
-> >   * @read_retries:	[INTERN] the number of read retry modes supported
-> >   * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
-> >   * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
-> > @@ -853,6 +856,8 @@ struct nand_chip {
-> >  		struct nand_onfi_params	onfi_params;
-> >  		struct nand_jedec_params jedec_params;
-> >  	};
-> > +	__le16 bb_per_lun;
-> > +	__le32 blocks_per_lun;
+> Relax this by sleeping for a reasonable time between checking the
+> WIP flag.
 >
-> Two things I don't like here:
-> - you use little-endian types, while it should use native endianness.
->   Make it easier, and just declare those fields as int (or unsigned
->   int).
-> - you stick to the ONFI spec, while I'd prefer to see the term lun
->   replaced by die, and I wonder if we don't already have a field
->   storing the number of blocks per die (I might be wrong though).
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> ---
+> v2:
+> - add defines for numeric constants
+> - Don't introduce a third spi_nor_wait_till_ready_.. function.
+> - add sanity check to ensure that sleep time <= timeout
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 27 ++++++++++++++++++++++-----
+>  1 file changed, 22 insertions(+), 5 deletions(-)
 >
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d0fc165..7c793a6 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/math64.h>
+>  #include <linux/sizes.h>
+> +#include <linux/delay.h>
+>
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/of_platform.h>
+> @@ -37,6 +38,10 @@
+>   */
+>  #define CHIP_ERASE_2MB_READY_WAIT_JIFFIES      (40UL * HZ)
+>
+> +#define READY_WAIT_NO_SLEEP                    0
+> +#define SECTOR_ERASE_READY_WAIT_SLEEP_MSECS    2
+> +#define CHIP_ERASE_READY_WAIT_SLEEP_MSECS      100
+> +
+>  #define SPI_NOR_MAX_ID_LEN     6
+>  #define SPI_NOR_MAX_ADDR_WIDTH 4
+>
+> @@ -252,11 +257,13 @@ static int spi_nor_ready(struct spi_nor *nor)
+>   * Returns non-zero if error.
+>   */
+>  static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+> -                                               unsigned long timeout_jiffies)
+> +                                               unsigned long timeout_jiffies,
+> +                                               unsigned int sleep_msecs)
+>  {
+>         unsigned long deadline;
+>         int timeout = 0, ret;
+>
+> +       sleep_msecs = min(sleep_msecs, jiffies_to_msecs(timeout_jiffies));
+>         deadline = jiffies + timeout_jiffies;
+>
+>         while (!timeout) {
+> @@ -269,7 +276,13 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+>                 if (ret)
+>                         return 0;
+>
+> -               cond_resched();
+> +               if (!sleep_msecs)
+> +                       cond_resched();
+> +               else if (sleep_msecs < 50)
+> +                       usleep_range(sleep_msecs * 1000 - 100,
+> +                                    sleep_msecs * 1000);
+> +               else
+> +                       msleep(sleep_msecs);
 
-I looked for an existing field for number of blocks per die and could not find
-it. Perhaps you were remembering chipsize? or numchips? I looked at how they
-were calculated and chipsize is a multiple of (blocks_per_lun * lun_count) so
-it can't be used to find blocks_per_lun without storing lun_count anyways.
-Let me know if you think I missed something.
+Sorry, I am unable to check the different possible sleep scenarios
+with these numerical checks like sleep_msecs < 50 can you explain?
+
+>         }
+>
+>         dev_err(nor->dev, "flash operation timed out\n");
+> @@ -280,7 +293,8 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+>  static int spi_nor_wait_till_ready(struct spi_nor *nor)
+>  {
+>         return spi_nor_wait_till_ready_with_timeout(nor,
+> -                                                   DEFAULT_READY_WAIT_JIFFIES);
+> +                                                   DEFAULT_READY_WAIT_JIFFIES,
+> +                                                   READY_WAIT_NO_SLEEP);
+
+So this should identical as with previous behaviour of no-sleep isn't
+it? where it eventually call the cond_resched().
+
+>  }
+>
+>  /*
+> @@ -387,7 +401,8 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>                 timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
+>                               CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
+>                               (unsigned long)(mtd->size / SZ_2M));
+> -               ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
+> +               ret = spi_nor_wait_till_ready_with_timeout(nor, timeout,
+> +                                       CHIP_ERASE_READY_WAIT_SLEEP_MSECS);
+>                 if (ret)
+>                         goto erase_err;
+>
+> @@ -408,7 +423,9 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>                         addr += mtd->erasesize;
+>                         len -= mtd->erasesize;
+>
+> -                       ret = spi_nor_wait_till_ready(nor);
+> +                       ret = spi_nor_wait_till_ready_with_timeout(nor,
+> +                                       DEFAULT_READY_WAIT_JIFFIES,
+> +                                       SECTOR_ERASE_READY_WAIT_SLEEP_MSECS);
+
+I don't think sleeping version should require for sector-erase unlike
+the chip-erase sector-erase enough of using default ready_wait jiffies
+which eventually similar ready_wait for program operations as well.
+did you find any diff while testing this?
+
+thanks!
+-- 
+Jagan Teki
+Free Software Engineer | www.openedev.com
+U-Boot, Linux | Upstream Maintainer
+Hyderabad, India.
