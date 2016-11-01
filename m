@@ -1,19 +1,24 @@
-Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
+Received: from mail-bl2nam02on0109.outbound.protection.outlook.com
+ ([104.47.38.109] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c1dcd-0008VK-PE
- for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 18:17:22 +0000
+ id 1c1drx-0007hU-Q8
+ for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 18:33:12 +0000
+Date: Tue, 1 Nov 2016 13:32:32 -0500
 From: Zach Brown <zach.brown@ni.com>
-To: <dwmw2@infradead.org>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <richard@nod.at>, <dedekind1@gmail.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 1/5] mtd: introduce function max_bad_blocks
-Date: Tue, 1 Nov 2016 13:16:26 -0500
-Message-ID: <1478024190-13713-2-git-send-email-zach.brown@ni.com>
-In-Reply-To: <1478024190-13713-1-git-send-email-zach.brown@ni.com>
-References: <1478024190-13713-1-git-send-email-zach.brown@ni.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: <dwmw2@infradead.org>, <dedekind1@gmail.com>, <richard@nod.at>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 3/5] mtd: nand: Add bb_per_lun and blocks_per_lun
+ fields to nand_chip
+Message-ID: <20161101183231.GA13831@zach-desktop>
+References: <1477686464-7437-1-git-send-email-zach.brown@ni.com>
+ <1477686464-7437-4-git-send-email-zach.brown@ni.com>
+ <20161101145058.65317535@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20161101145058.65317535@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,77 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jeff Westfahl <jeff.westfahl@ni.com>
+On Tue, Nov 01, 2016 at 02:50:58PM +0100, Boris Brezillon wrote:
+> On Fri, 28 Oct 2016 15:27:42 -0500
+> Zach Brown <zach.brown@ni.com> wrote:
+>
+> > The fields bb_per_lun and blocks_per_lun are useful determining the
+> > number of bad blocks a MTD needs to allocate. How they are set will
+> > depend on if the chip is ONFI, JEDEC or a fuill-id entry in the nand_ids
+> > table.
+> >
+> > Signed-off-by: Zach Brown <zach.brown@ni.com>
+> > ---
+> >  include/linux/mtd/nand.h | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> > index c5d3d502..efbe439 100644
+> > --- a/include/linux/mtd/nand.h
+> > +++ b/include/linux/mtd/nand.h
+> > @@ -771,6 +771,9 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+> >   *			supported, 0 otherwise.
+> >   * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
+> >   *			supported, 0 otherwise.
+> > + * @bb_per_lun:	[INTERN] the max number of bad blocks each LUN of a
+> > + *			this nand device will encounter their life times.
+> > + * @blocks_per_lun:	[INTERN] The number of PEBs in a LUN
+> >   * @read_retries:	[INTERN] the number of read retry modes supported
+> >   * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
+> >   * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
+> > @@ -853,6 +856,8 @@ struct nand_chip {
+> >  		struct nand_onfi_params	onfi_params;
+> >  		struct nand_jedec_params jedec_params;
+> >  	};
+> > +	__le16 bb_per_lun;
+> > +	__le32 blocks_per_lun;
+>
+> Two things I don't like here:
+> - you use little-endian types, while it should use native endianness.
+>   Make it easier, and just declare those fields as int (or unsigned
+>   int).
+> - you stick to the ONFI spec, while I'd prefer to see the term lun
+>   replaced by die, and I wonder if we don't already have a field
+>   storing the number of blocks per die (I might be wrong though).
+>
 
-If implemented, 'max_bad_blocks' returns the maximum number of bad
-blocks to reserve for an MTD. An implementation for NAND is coming soon.
-
-Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
-Signed-off-by: Zach Brown <zach.brown@ni.com>
----
- drivers/mtd/mtdpart.c   | 13 +++++++++++++
- include/linux/mtd/mtd.h | 11 +++++++++++
- 2 files changed, 24 insertions(+)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index fccdd49..2106bd5 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -349,6 +349,16 @@ static const struct mtd_ooblayout_ops part_ooblayout_ops = {
- 	.free = part_ooblayout_free,
- };
- 
-+static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
-+{
-+	struct mtd_part *part = mtd_to_part(mtd);
-+
-+	if ((len + ofs) > mtd->size)
-+		return -EINVAL;
-+	return part->master->_max_bad_blocks(part->master,
-+					     ofs + part->offset, len);
-+}
-+
- static inline void free_partition(struct mtd_part *p)
- {
- 	kfree(p->mtd.name);
-@@ -481,6 +491,9 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	if (master->_put_device)
- 		slave->mtd._put_device = part_put_device;
- 
-+	if (master->_max_bad_blocks)
-+		slave->mtd._max_bad_blocks = part_max_bad_blocks;
-+
- 	slave->mtd._erase = part_erase;
- 	slave->master = master;
- 	slave->offset = part->offset;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 13f8052..c02d3c2 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -322,6 +322,7 @@ struct mtd_info {
- 	int (*_block_isreserved) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
-+	int (*_max_bad_blocks) (struct mtd_info *mtd, loff_t ofs, size_t len);
- 	int (*_suspend) (struct mtd_info *mtd);
- 	void (*_resume) (struct mtd_info *mtd);
- 	void (*_reboot) (struct mtd_info *mtd);
-@@ -402,6 +403,16 @@ int mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
- int mtd_pairing_info_to_wunit(struct mtd_info *mtd,
- 			      const struct mtd_pairing_info *info);
- int mtd_pairing_groups(struct mtd_info *mtd);
-+
-+static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
-+				     loff_t ofs, size_t len)
-+{
-+	if (mtd->_max_bad_blocks)
-+		return mtd->_max_bad_blocks(mtd, ofs, len);
-+
-+	return -ENOTSUPP;
-+}
-+
- int mtd_erase(struct mtd_info *mtd, struct erase_info *instr);
- int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	      void **virt, resource_size_t *phys);
--- 
-2.7.4
+I looked for an existing field for number of blocks per die and could not find
+it. Perhaps you were remembering chipsize? or numchips? I looked at how they
+were calculated and chipsize is a multiple of (blocks_per_lun * lun_count) so
+it can't be used to find blocks_per_lun without storing lun_count anyways.
+Let me know if you think I missed something.
