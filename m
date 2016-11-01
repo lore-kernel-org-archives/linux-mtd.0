@@ -1,16 +1,16 @@
 Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c1dcd-0008VW-PD
- for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 18:17:21 +0000
+ id 1c1dcd-0008VO-PJ
+ for linux-mtd@lists.infradead.org; Tue, 01 Nov 2016 18:17:22 +0000
 From: Zach Brown <zach.brown@ni.com>
 To: <dwmw2@infradead.org>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <dedekind1@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 3/5] mtd: nand: Add bb_per_die and blocks_per_die fields to
- nand_chip
-Date: Tue, 1 Nov 2016 13:16:28 -0500
-Message-ID: <1478024190-13713-4-git-send-email-zach.brown@ni.com>
+Subject: [PATCH v4 2/5] mtd: ubi: use 'max_bad_blocks' to compute
+ bad_peb_limit if available
+Date: Tue, 1 Nov 2016 13:16:27 -0500
+Message-ID: <1478024190-13713-3-git-send-email-zach.brown@ni.com>
 In-Reply-To: <1478024190-13713-1-git-send-email-zach.brown@ni.com>
 References: <1478024190-13713-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
@@ -24,38 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The fields bb_per_die and blocks_per_die are useful determining the
-number of bad blocks a MTD needs to allocate. How they are set will
-depend on if the chip is ONFI, JEDEC or a full-id entry in the nand_ids
-table.
+From: Jeff Westfahl <jeff.westfahl@ni.com>
 
+Use the MTD function 'max_bad_blocks' to compute the UBI bad_peb_limit,
+if the function is implemented for an MTD and doesn't return an error.
+
+Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 Signed-off-by: Zach Brown <zach.brown@ni.com>
 ---
- include/linux/mtd/nand.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/ubi/build.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index d8905a2..3093827 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -771,6 +771,9 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
-  *			supported, 0 otherwise.
-  * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
-  *			supported, 0 otherwise.
-+ * @bb_per_die:	[INTERN] the max number of bad blocks each die of a
-+ *			this nand device will encounter their life times.
-+ * @blocks_per_die:	[INTERN] The number of PEBs in a die
-  * @read_retries:	[INTERN] the number of read retry modes supported
-  * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
-  * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
-@@ -853,6 +856,8 @@ struct nand_chip {
- 		struct nand_onfi_params	onfi_params;
- 		struct nand_jedec_params jedec_params;
- 	};
-+	u16  bb_per_die;
-+	u32  blocks_per_die;
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 85d54f3..e9940a9 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -584,6 +584,10 @@ static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
+ 	int limit, device_pebs;
+ 	uint64_t device_size;
  
- 	struct nand_data_interface *data_interface;
++	limit = mtd_max_bad_blocks(ubi->mtd, 0, ubi->mtd->size);
++	if (limit > 0)
++		return limit;
++
+ 	if (!max_beb_per1024)
+ 		return 0;
  
 -- 
 2.7.4
