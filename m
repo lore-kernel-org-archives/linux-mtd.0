@@ -1,31 +1,23 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from relay1.mentorg.com ([192.94.38.131])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c2D7Q-0000b9-5T
- for linux-mtd@lists.infradead.org; Thu, 03 Nov 2016 08:11:29 +0000
-Subject: Re: UBIFS LEB properties tree with odd addresses
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
- Christoph Hellwig <hch@infradead.org>
-References: <DA6901612C71B84D91459DE817C418AE26E0016D@XAP-PVEXMBX01.xlnx.xilinx.com>
- <e7f63f72-0dc1-54f4-b94c-2efef3e7af6b@nod.at>
- <DA6901612C71B84D91459DE817C418AE26E0069D@XAP-PVEXMBX01.xlnx.xilinx.com>
- <c6e394c9-bbec-1121-7a93-268abcf934bf@nod.at>
- <DA6901612C71B84D91459DE817C418AE26E02536@XAP-PVEXMBX01.xlnx.xilinx.com>
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <b8bb5842-0fda-43aa-9e56-4dc5c940b3c6@nod.at>
-Date: Thu, 3 Nov 2016 09:10:52 +0100
+ id 1c2GIL-0008BR-Qp
+ for linux-mtd@lists.infradead.org; Thu, 03 Nov 2016 11:34:58 +0000
+Date: Thu, 3 Nov 2016 17:04:22 +0530
+From: Sandeep Jain <Sandeep_Jain@mentor.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, Steve
+ Longerbeam <steve_longerbeam@mentor.com>, Jim Baxter <jim_baxter@mentor.com>
+Subject: Re: [PATCH] mtd: Allocate bdi objects dynamically
+Message-ID: <20161103113421.GA4873@mentor.com>
+References: <Sandeep_Jain@mentor.com>
+ <1470319275-9465-1-git-send-email-Sandeep_Jain@mentor.com>
+ <CAFLxGvx6B02c+HgYwJ8exVLT6owrkQL1Rq+X6VzUDKVUxE=aoQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <DA6901612C71B84D91459DE817C418AE26E02536@XAP-PVEXMBX01.xlnx.xilinx.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvx6B02c+HgYwJ8exVLT6owrkQL1Rq+X6VzUDKVUxE=aoQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,35 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Naga Sureshkumar Relli,
+Dear Maintainers,
+  This patch is reviewed by Richard.
+Requesting for Maintainer's attention for patch merge.
 
-On 03.11.2016 06:11, Naga Sureshkumar Relli wrote:
-> Hi Richard,
+Thanks & Regards,
+Sandeep Jain
+
+On Sat, Sep 17, 2016 at 04:41:47PM +0200, Richard Weinberger wrote:
+> On Thu, Aug 4, 2016 at 4:01 PM, Sandeep Jain <Sandeep_Jain@mentor.com> wrote:
+> > From: Steve Longerbeam <steve_longerbeam@mentor.com>
+> >
+> > The MTD backing dev info objects mtd_bdi was statically allocated.
+> > So when MTD is built as a loadable module, this object fall in the
+> > vmalloc address space.
+> >
+> > The problem with that, is that the BDI APIs use wake_up_bit(), which calls
+> > virt_to_page() to retrieve the memory zone of the page containing the
+> > wait_queue to wake up, and virt_to_page() is not valid for vmalloc or
+> > highmem addresses.
+> >
+> > Fix this by allocating the BDI objects dynamically with kmalloc. The
+> > objects now fall in the logical address space so that BDI APIs will
+> > work in all cases (mtd builtin or module).
+> >
+> > Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+> > Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
+> > Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
 > 
->>> Hmm, the calculations in lpt.c use basic properties of the MTD (number of blocks, etc...).
->>> Can you please double check which property causes the failure and also verify whether the MTD driver provides correct properties. i.e. page sizes, block size, number of blocks, ...
+> Reviewed-by: Richard Weinberger <richard@nod.at>
 > 
->> Hm, these values depend only on basic MTD prperties AFAICT.
->> Mtd->numeraseregions = 0
->> Nor->pagesize = 512
-> 
-> As per the above query only, I have given the below inputs.
->> Maybe you miss some bit and set incorrect MTD properties.
-> I double checked the MTD properties (as mentioned above) which were causing the failure, but didn't find any clue.
-> All mtd properties looks good for dual parallel case(there is no odd value).
-> 
-> Is there any impact by putting below logic in do_calc_lpt_geom() ?
-> If(c->pnode_sz % 2)
->     c->pnode_sz += 1;
-
-Yes, we need to understand first what exactly is going on.
-
-> please suggest me to do any further debugging?
-
-Please find the exact MTD property which causes the odd values.
-Can you also please share the full kernel log of both cases? (dual and non-dual).
-I'm especially interested in the output of UBI.
-I have the feeling that we oversee something.
-
-Thanks,
-//richard
+> -- 
+> Thanks,
+> //richard
