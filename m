@@ -1,19 +1,18 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c2bwL-0005cT-Bq
- for linux-mtd@lists.infradead.org; Fri, 04 Nov 2016 10:41:44 +0000
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c2bwR-00036Y-8j
+ for linux-mtd@lists.infradead.org; Fri, 04 Nov 2016 10:41:48 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Kamal Dasu <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH 11/22] mtd: nand: brcmnand: return error code of
- nand_scan_ident/tail() on error
-Date: Fri,  4 Nov 2016 19:42:59 +0900
-Message-Id: <1478256190-7452-12-git-send-email-yamada.masahiro@socionext.com>
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 19/22] mtd: nand: hisi504: return error code of
+ nand_scan_ident() on error
+Date: Fri,  4 Nov 2016 19:43:07 +0900
+Message-Id: <1478256190-7452-20-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1478256190-7452-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1478256190-7452-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,42 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The nand_scan_ident/tail() returns an appropriate error value when
-it fails.  Use it instead of the fixed error code -ENXIO.
+The nand_scan_ident() returns an appropriate error value when it
+fails.  Use it instead of the fixed error code -ENODEV.
+(This driver is already doing so for nand_scan_tail().)
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/brcmnand/brcmnand.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/hisi504_nand.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 9d2424b..42ebd73 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -2209,8 +2209,9 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
- 	nand_writereg(ctrl, cfg_offs,
- 		      nand_readreg(ctrl, cfg_offs) & ~CFG_BUS_WIDTH);
+diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
+index 9432546..e40364e 100644
+--- a/drivers/mtd/nand/hisi504_nand.c
++++ b/drivers/mtd/nand/hisi504_nand.c
+@@ -774,10 +774,8 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 	}
  
--	if (nand_scan_ident(mtd, 1, NULL))
--		return -ENXIO;
-+	ret = nand_scan_ident(mtd, 1, NULL);
+ 	ret = nand_scan_ident(mtd, max_chips, NULL);
+-	if (ret) {
+-		ret = -ENODEV;
 +	if (ret)
-+		return ret;
+ 		goto err_res;
+-	}
  
- 	chip->options |= NAND_NO_SUBPAGE_WRITE;
- 	/*
-@@ -2234,8 +2235,9 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
- 	if (ret)
- 		return ret;
- 
--	if (nand_scan_tail(mtd))
--		return -ENXIO;
-+	ret = nand_scan_tail(mtd);
-+	if (ret)
-+		return ret;
- 
- 	return mtd_device_register(mtd, NULL, 0);
- }
+ 	host->buffer = dmam_alloc_coherent(dev, mtd->writesize + mtd->oobsize,
+ 		&host->dma_buffer, GFP_KERNEL);
 -- 
 1.9.1
