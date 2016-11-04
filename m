@@ -1,15 +1,18 @@
+Received: from conuserg-07.nifty.com ([210.131.2.74])
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c2bwo-00037o-8w
+ for linux-mtd@lists.infradead.org; Fri, 04 Nov 2016 10:42:10 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- Sylvain Lemieux <slemieux.tyco@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Vladimir Zapolskiy <vz@mleia.com>, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 13/22] mtd: nand: lpc32xx: return error code of
- nand_scan_ident/tail() on error
-Date: Fri,  4 Nov 2016 19:43:01 +0900
-Message-Id: <1478256190-7452-14-git-send-email-yamada.masahiro@socionext.com>
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 22/22] mtd: nand: socrates: use nand_scan() for
+ nand_scan_ident/tail() combo
+Date: Fri,  4 Nov 2016 19:43:10 +0900
+Message-Id: <1478256190-7452-23-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1478256190-7452-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1478256190-7452-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,74 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The nand_scan_ident/tail() returns an appropriate error value when
-it fails.  Use it instead of the fixed error code -ENXIO.
+For this driver, there is nothing between nand_scan_ident() and
+nand_scan_tail().  They can be merged into nand_scan().
+
+Also, nand_scan() returns an appropriate error value when it fails.
+Use it instead of the fixed error code -ENXIO.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/lpc32xx_mlc.c | 10 ++++------
- drivers/mtd/nand/lpc32xx_slc.c |  9 +++------
- 2 files changed, 7 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/socrates_nand.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-index 8523881..5553a5d 100644
---- a/drivers/mtd/nand/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -747,10 +747,9 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	 * Scan to find existance of the device and
- 	 * Get the type of NAND device SMALL block or LARGE block
- 	 */
+diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
+index 888fd31..72369bd 100644
+--- a/drivers/mtd/nand/socrates_nand.c
++++ b/drivers/mtd/nand/socrates_nand.c
+@@ -187,17 +187,9 @@ static int socrates_nand_probe(struct platform_device *ofdev)
+ 
+ 	dev_set_drvdata(&ofdev->dev, host);
+ 
+-	/* first scan to find the device and get the page size */
 -	if (nand_scan_ident(mtd, 1, NULL)) {
 -		res = -ENXIO;
-+	res = nand_scan_ident(mtd, 1, NULL);
++	res = nand_scan(mtd, 1);
 +	if (res)
- 		goto err_exit3;
+ 		goto out;
 -	}
- 
- 	host->dma_buf = devm_kzalloc(&pdev->dev, mtd->writesize, GFP_KERNEL);
- 	if (!host->dma_buf) {
-@@ -793,10 +792,9 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	 * Fills out all the uninitialized function pointers with the defaults
- 	 * And scans for a bad block table if appropriate.
- 	 */
+-
+-	/* second phase scan */
 -	if (nand_scan_tail(mtd)) {
 -		res = -ENXIO;
-+	res = nand_scan_tail(mtd);
-+	if (res)
- 		goto err_exit4;
+-		goto out;
 -	}
  
- 	mtd->name = DRV_NAME;
- 
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index 8d3edc3..f1094e5 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -894,10 +894,9 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Find NAND device */
--	if (nand_scan_ident(mtd, 1, NULL)) {
--		res = -ENXIO;
-+	res = nand_scan_ident(mtd, 1, NULL);
-+	if (res)
- 		goto err_exit3;
--	}
- 
- 	/* OOB and ECC CPU and DMA work areas */
- 	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
-@@ -929,10 +928,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	/*
- 	 * Fills out all the uninitialized function pointers with the defaults
- 	 */
--	if (nand_scan_tail(mtd)) {
--		res = -ENXIO;
-+	res = nand_scan_tail(mtd);
- 		goto err_exit3;
--	}
- 
- 	mtd->name = "nxp_lpc3220_slc";
- 	res = mtd_device_register(mtd, host->ncfg->parts,
+ 	res = mtd_device_register(mtd, NULL, 0);
+ 	if (!res)
 -- 
 1.9.1
