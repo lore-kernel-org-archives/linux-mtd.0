@@ -1,24 +1,28 @@
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c2onr-0000jz-Po
- for linux-mtd@lists.infradead.org; Sat, 05 Nov 2016 00:25:48 +0000
-Received: by mail-it0-x241.google.com with SMTP id q124so854598itd.1
- for <linux-mtd@lists.infradead.org>; Fri, 04 Nov 2016 17:25:27 -0700 (PDT)
-Date: Fri, 4 Nov 2016 17:24:25 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [GIT PULL] MTD updates for 4.9-rc4
-Message-ID: <20161105002425.GA10139@localhost>
+ id 1c2vWK-0003uf-5m
+ for linux-mtd@lists.infradead.org; Sat, 05 Nov 2016 07:36:09 +0000
+Received: by mail-wm0-x243.google.com with SMTP id c17so7123034wmc.3
+ for <linux-mtd@lists.infradead.org>; Sat, 05 Nov 2016 00:35:47 -0700 (PDT)
+Subject: Re: [PATCH] mtd: Allocate bdi objects dynamically
+To: Sandeep Jain <Sandeep_Jain@mentor.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>
+References: <Sandeep_Jain@mentor.com>
+ <1470319275-9465-1-git-send-email-Sandeep_Jain@mentor.com>
+ <CAFLxGvx6B02c+HgYwJ8exVLT6owrkQL1Rq+X6VzUDKVUxE=aoQ@mail.gmail.com>
+ <20161103113421.GA4873@mentor.com>
+Cc: Steve Longerbeam <steve_longerbeam@mentor.com>,
+ LKML <linux-kernel@vger.kernel.org>, Jim Baxter <jim_baxter@mentor.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <4055a3ed-c024-4c29-45e1-e600cdc5902e@gmail.com>
+Date: Sat, 5 Nov 2016 08:22:31 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20161103113421.GA4873@mentor.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,58 +32,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+On 11/03/2016 12:34 PM, Sandeep Jain wrote:
+> Dear Maintainers,
+>   This patch is reviewed by Richard.
+> Requesting for Maintainer's attention for patch merge.
+> 
+> Thanks & Regards,
+> Sandeep Jain
+> 
+> On Sat, Sep 17, 2016 at 04:41:47PM +0200, Richard Weinberger wrote:
+>> On Thu, Aug 4, 2016 at 4:01 PM, Sandeep Jain <Sandeep_Jain@mentor.com> wrote:
+>>> From: Steve Longerbeam <steve_longerbeam@mentor.com>
+>>>
+>>> The MTD backing dev info objects mtd_bdi was statically allocated.
+>>> So when MTD is built as a loadable module, this object fall in the
+>>> vmalloc address space.
+>>>
+>>> The problem with that, is that the BDI APIs use wake_up_bit(), which calls
+>>> virt_to_page() to retrieve the memory zone of the page containing the
+>>> wait_queue to wake up, and virt_to_page() is not valid for vmalloc or
+>>> highmem addresses.
+>>>
+>>> Fix this by allocating the BDI objects dynamically with kmalloc. The
+>>> objects now fall in the logical address space so that BDI APIs will
+>>> work in all cases (mtd builtin or module).
+>>>
+>>> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+>>> Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
+>>> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
+>>
+>> Reviewed-by: Richard Weinberger <richard@nod.at>
 
-The following changes since commit 07d9a380680d1c0eb51ef87ff2eab5c994949e69:
+I don't see any obvious problem either:
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
-  Linux 4.9-rc2 (2016-10-23 17:10:14 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20161104
-
-for you to fetch changes up to 0e2ce9d3fcba5f92dd6c2b27d82690e49d0c0854:
-
-  Merge tag 'nand/fixes-for-4.9-rc3' of github.com:linux-nand/linux (2016-10-28 19:05:25 -0700)
-
-----------------------------------------------------------------
-MTD updates for 4.9-rc4:
-
- * MAINTAINERS updates to reflect some new maintainers/submaintainers -- we
-   have some great volunteers who've been developing and reviewing already.
-   We're going to try a group maintainership model, so eventually you'll
-   probably see pull requests from people besides me.
-
- * NAND fixes from Boris:
-   """
-   Three simple fixes:
-
-   - the first one is fixing a non-critical bug in the gpmi driver
-   - the second one is fixing a bug in the 'automatic NAND timings
-     selection' feature introduced in 4.9-rc1
-   - the last one is fixing a false positive uninitialized-var warning
-   """
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      mtd: mtk: avoid warning in mtk_ecc_encode
-
-Boris Brezillon (2):
-      MAINTAINERS: add more people to the MTD maintainer team
-      mtd: nand: Fix data interface configuration logic
-
-Brian Norris (1):
-      Merge tag 'nand/fixes-for-4.9-rc3' of github.com:linux-nand/linux
-
-Cyrille Pitchen (1):
-      MAINTAINERS: add a maintainer for the SPI NOR subsystem
-
-Fabio Estevam (1):
-      mtd: nand: gpmi: disable the clocks on errors
-
- MAINTAINERS                           | 15 +++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c |  6 ++--
- drivers/mtd/nand/mtk_ecc.c            | 19 ++++++-----
- drivers/mtd/nand/nand_base.c          | 60 ++++++++++++++++++++++++-----------
- include/linux/mtd/nand.h              |  2 +-
- 5 files changed, 71 insertions(+), 31 deletions(-)
+-- 
+Best regards,
+Marek Vasut
