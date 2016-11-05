@@ -1,26 +1,23 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c2vWK-0003uf-5m
- for linux-mtd@lists.infradead.org; Sat, 05 Nov 2016 07:36:09 +0000
-Received: by mail-wm0-x243.google.com with SMTP id c17so7123034wmc.3
- for <linux-mtd@lists.infradead.org>; Sat, 05 Nov 2016 00:35:47 -0700 (PDT)
-Subject: Re: [PATCH] mtd: Allocate bdi objects dynamically
-To: Sandeep Jain <Sandeep_Jain@mentor.com>,
- Richard Weinberger <richard.weinberger@gmail.com>
+ id 1c2vWM-0003v3-3Y
+ for linux-mtd@lists.infradead.org; Sat, 05 Nov 2016 07:36:11 +0000
+Received: by mail-wm0-x244.google.com with SMTP id p190so7153980wmp.1
+ for <linux-mtd@lists.infradead.org>; Sat, 05 Nov 2016 00:35:49 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] mtd: m25p80: lock module while used
+To: Sandeep Jain <Sandeep_Jain@mentor.com>, dwmw2@infradead.org,
+ computersforpeace@gmail.com
 References: <Sandeep_Jain@mentor.com>
- <1470319275-9465-1-git-send-email-Sandeep_Jain@mentor.com>
- <CAFLxGvx6B02c+HgYwJ8exVLT6owrkQL1Rq+X6VzUDKVUxE=aoQ@mail.gmail.com>
- <20161103113421.GA4873@mentor.com>
-Cc: Steve Longerbeam <steve_longerbeam@mentor.com>,
- LKML <linux-kernel@vger.kernel.org>, Jim Baxter <jim_baxter@mentor.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ <1470320194-9602-1-git-send-email-Sandeep_Jain@mentor.com>
+ <1470320194-9602-2-git-send-email-Sandeep_Jain@mentor.com>
+ <20161103113926.GB4873@mentor.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <4055a3ed-c024-4c29-45e1-e600cdc5902e@gmail.com>
-Date: Sat, 5 Nov 2016 08:22:31 +0100
+Message-ID: <8472764e-c72f-ad3c-35e4-d590386c1ad1@gmail.com>
+Date: Sat, 5 Nov 2016 08:24:24 +0100
 MIME-Version: 1.0
-In-Reply-To: <20161103113421.GA4873@mentor.com>
+In-Reply-To: <20161103113926.GB4873@mentor.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,39 +29,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/03/2016 12:34 PM, Sandeep Jain wrote:
+On 11/03/2016 12:39 PM, Sandeep Jain wrote:
 > Dear Maintainers,
->   This patch is reviewed by Richard.
-> Requesting for Maintainer's attention for patch merge.
+> 	Requesting for your attention for patch review/merge.
 > 
 > Thanks & Regards,
 > Sandeep Jain
 > 
-> On Sat, Sep 17, 2016 at 04:41:47PM +0200, Richard Weinberger wrote:
->> On Thu, Aug 4, 2016 at 4:01 PM, Sandeep Jain <Sandeep_Jain@mentor.com> wrote:
->>> From: Steve Longerbeam <steve_longerbeam@mentor.com>
->>>
->>> The MTD backing dev info objects mtd_bdi was statically allocated.
->>> So when MTD is built as a loadable module, this object fall in the
->>> vmalloc address space.
->>>
->>> The problem with that, is that the BDI APIs use wake_up_bit(), which calls
->>> virt_to_page() to retrieve the memory zone of the page containing the
->>> wait_queue to wake up, and virt_to_page() is not valid for vmalloc or
->>> highmem addresses.
->>>
->>> Fix this by allocating the BDI objects dynamically with kmalloc. The
->>> objects now fall in the logical address space so that BDI APIs will
->>> work in all cases (mtd builtin or module).
->>>
->>> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
->>> Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
->>> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
+> On Thu, Aug 04, 2016 at 07:46:33PM +0530, Sandeep Jain wrote:
+>> From: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
 >>
->> Reviewed-by: Richard Weinberger <richard@nod.at>
+>> The change controls module users counter, which prevents to get
+>> accidental oops on module unload while it is in use by mtd subsystem:
+>>
+>> % dd if=/dev/mtd0 of=/dev/null &
+>> % rmmod m25p80
+>>
+>> Removing MTD device #0 (spi32766.0) with use count 1
+>> Unable to handle kernel paging request at virtual address 7f4fb7f8
+>> pgd = bd094000
+>> [7f4fb7f8] *pgd=4cb66811, *pte=00000000, *ppte=00000000
+>> Internal error: Oops: 80000007 [#1] PREEMPT SMP ARM
+>>
+>> Signed-off-by: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+>> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
+>> ---
+>>  drivers/mtd/devices/m25p80.c |   15 +++++++++++++++
+>>  1 file changed, 15 insertions(+)
+>>
+>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>> index 9cf7fcd..2eb1530 100644
+>> --- a/drivers/mtd/devices/m25p80.c
+>> +++ b/drivers/mtd/devices/m25p80.c
+>> @@ -185,6 +185,19 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>>  	return ret;
+>>  }
+>>  
+>> +static void m25p80_put(struct mtd_info *mtd)
+>> +{
+>> +	module_put(THIS_MODULE);
+>> +}
+>> +
+>> +static int m25p80_get(struct mtd_info *mtd)
+>> +{
+>> +	if (!try_module_get(THIS_MODULE))
+>> +		return -ENODEV;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  /*
+>>   * board specific setup should have ensured the SPI clock used here
+>>   * matches what the READ command supports, at least until this driver
+>> @@ -212,6 +225,8 @@ static int m25p_probe(struct spi_device *spi)
+>>  	nor->write = m25p80_write;
+>>  	nor->write_reg = m25p80_write_reg;
+>>  	nor->read_reg = m25p80_read_reg;
+>> +	nor->mtd._put_device = m25p80_put;
+>> +	nor->mtd._get_device = m25p80_get;
+>>  
+>>  	nor->dev = &spi->dev;
+>>  	spi_nor_set_flash_node(nor, spi->dev.of_node);
 
-I don't see any obvious problem either:
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+This makes me ponder how many other drivers suffer from this issue and
+whether you shouldn't fix this in the core code instead. What do you think?
 
 -- 
 Best regards,
