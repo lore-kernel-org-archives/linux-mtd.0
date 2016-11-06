@@ -1,21 +1,21 @@
-Subject: Re: [PATCH 13/22] mtd: nand: lpc32xx: return error code of
- nand_scan_ident/tail() on error
-To: Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-mtd@lists.infradead.org
-References: <1478256190-7452-1-git-send-email-yamada.masahiro@socionext.com>
- <1478256190-7452-14-git-send-email-yamada.masahiro@socionext.com>
-Cc: Sylvain Lemieux <slemieux.tyco@gmail.com>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-From: Vladimir Zapolskiy <vz@mleia.com>
-Message-ID: <fab30f15-231a-f5fa-c547-025ee615b472@mleia.com>
-Date: Sun, 6 Nov 2016 03:37:06 +0200
+Received: from up.free-electrons.com ([163.172.77.33]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c3RGK-0001lF-RR
+ for linux-mtd@lists.infradead.org; Sun, 06 Nov 2016 17:29:45 +0000
+Date: Sun, 6 Nov 2016 18:29:20 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Subject: Re: [PATCH] mtd: nand: pxa3xx_nand: write exactly one message on
+ probe failure
+Message-ID: <20161106182920.3215ea1a@bbrezillon>
+In-Reply-To: <1474276878-1021-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1474276878-1021-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1478256190-7452-14-git-send-email-yamada.masahiro@socionext.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +25,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/04/2016 12:43 PM, Masahiro Yamada wrote:
-> The nand_scan_ident/tail() returns an appropriate error value when
-> it fails.  Use it instead of the fixed error code -ENXIO.
->
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+On Mon, 19 Sep 2016 11:21:18 +0200
+Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> wrote:
+
+> For some error paths alloc_nand_resource() emitted an error message, for
+> others it didn't. Make it consistently print a message including the
+> error code where it's not constant and drop the hardly helpful
+> additional message printed by the caller of alloc_nand_resource.
+>=20
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+
+Applied after addressing Marek and Robert comments.
+
+Thanks,
+
+Boris
+
 > ---
-
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-
-Thank you for the change.
-
---
-With best wishes,
-Vladimir
+>  drivers/mtd/nand/pxa3xx_nand.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
+d.c
+> index 436dd6dc11f4..052e9725cf12 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -1774,8 +1774,11 @@ static int alloc_nand_resource(struct platform_dev=
+ice *pdev)
+>  	int ret, irq, cs;
+> =20
+>  	pdata =3D dev_get_platdata(&pdev->dev);
+> -	if (pdata->num_cs <=3D 0)
+> +	if (pdata->num_cs <=3D 0) {
+> +		dev_err(&pdev->dev, "broken number of chip selects\n");
+>  		return -ENODEV;
+> +	}
+> +
+>  	info =3D devm_kzalloc(&pdev->dev,
+>  			    sizeof(*info) + sizeof(*host) * pdata->num_cs,
+>  			    GFP_KERNEL);
+> @@ -1814,8 +1817,9 @@ static int alloc_nand_resource(struct platform_devi=
+ce *pdev)
+>  	init_waitqueue_head(&chip->controller->wq);
+>  	info->clk =3D devm_clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(info->clk)) {
+> -		dev_err(&pdev->dev, "failed to get nand clock\n");
+> -		return PTR_ERR(info->clk);
+> +		ret =3D PTR_ERR(info->clk);
+> +		dev_err(&pdev->dev, "failed to get nand clock (%d)\n", ret);
+> +		return ret;
+>  	}
+>  	ret =3D clk_prepare_enable(info->clk);
+>  	if (ret < 0)
+> @@ -1843,6 +1847,7 @@ static int alloc_nand_resource(struct platform_devi=
+ce *pdev)
+>  	info->mmio_base =3D devm_ioremap_resource(&pdev->dev, r);
+>  	if (IS_ERR(info->mmio_base)) {
+>  		ret =3D PTR_ERR(info->mmio_base);
+> +		dev_err(&pdev->dev, "failed to map register space (%d)\n", ret);
+>  		goto fail_disable_clk;
+>  	}
+>  	info->mmio_phys =3D r->start;
+> @@ -1862,7 +1867,7 @@ static int alloc_nand_resource(struct platform_devi=
+ce *pdev)
+>  				   pxa3xx_nand_irq_thread, IRQF_ONESHOT,
+>  				   pdev->name, info);
+>  	if (ret < 0) {
+> -		dev_err(&pdev->dev, "failed to request IRQ\n");
+> +		dev_err(&pdev->dev, "failed to request IRQ (%d)\n", ret);
+>  		goto fail_free_buf;
+>  	}
+> =20
+> @@ -1961,10 +1966,8 @@ static int pxa3xx_nand_probe(struct platform_devic=
+e *pdev)
+>  	}
+> =20
+>  	ret =3D alloc_nand_resource(pdev);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "alloc nand resource failed\n");
+> +	if (ret)
+>  		return ret;
+> -	}
+> =20
+>  	info =3D platform_get_drvdata(pdev);
+>  	probe_success =3D 0;
