@@ -1,22 +1,17 @@
-Received: from up.free-electrons.com ([163.172.77.33]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c3Rn2-0006Ph-3x
- for linux-mtd@lists.infradead.org; Sun, 06 Nov 2016 18:03:33 +0000
-Date: Sun, 6 Nov 2016 19:03:10 +0100
+Date: Sun, 6 Nov 2016 19:27:43 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Kelvin Cheung <keguang.zhang@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Peter Pan <peterpansjtu@gmail.com>
-Subject: Re: [PATCH V4] mtd: nand: add Loongson1 NAND driver
-Message-ID: <20161106190310.4894d3d7@bbrezillon>
-In-Reply-To: <CAJhJPsWZ77a33rhjfB0MagZuvJzAMFOtf2qi1HYy-1+5gd7v1w@mail.gmail.com>
-References: <1478051526-7216-1-git-send-email-keguang.zhang@gmail.com>
- <20161102083613.443bcb10@bbrezillon>
- <CAJhJPsWcJiPjUfGmsHn7v2ODgj-0tb5XfqfyJVyr0gsbRxYPZA@mail.gmail.com>
- <20161102115728.52e8b187@bbrezillon>
- <CAJhJPsWttKnF2WhHmX6J9PuSgUw8F9Yqrmd6aX9Qez7xyubH7A@mail.gmail.com>
- <20161102205404.0611ca4c@bbrezillon>
- <CAJhJPsWZ77a33rhjfB0MagZuvJzAMFOtf2qi1HYy-1+5gd7v1w@mail.gmail.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Sylvain Lemieux
+ <slemieux.tyco@gmail.com>, linux-kernel@vger.kernel.org, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Vladimir Zapolskiy <vz@mleia.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 13/22] mtd: nand: lpc32xx: return error code of
+ nand_scan_ident/tail() on error
+Message-ID: <20161106192743.00e401ec@bbrezillon>
+In-Reply-To: <1478256190-7452-14-git-send-email-yamada.masahiro@socionext.com>
+References: <1478256190-7452-1-git-send-email-yamada.masahiro@socionext.com>
+ <1478256190-7452-14-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,124 +24,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Peter
+On Fri,  4 Nov 2016 19:43:01 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-Hi Kelvin,
-
-On Thu, 3 Nov 2016 19:09:55 +0800
-Kelvin Cheung <keguang.zhang@gmail.com> wrote:
-
-> >  
-> > > I doubt whether the MTD maintainer will be happy with this kind of MTD
-> > > driver.
-> > > After all, it is a NAND controller driver.  
-> >
-> > Yes, it is a raw NAND controller driver, but one with a limited set of
-> > features.
-> > Letting the core think that this is a regular raw NAND controller
-> > driver is just wrong, and as I said, I want to stop this insanity.
-> > The nand_chip interface has been abused for too long, and it's one of
-> > the reason the NAND subsystem has become a pile of hardly maintainable
-> > hacks preventing support for advanced features in a generic way.
-> >
-> > There are probably a few things that could be re-used (like the SW ECC
-> > implementation), and that's the reason for the "interface-agnostic NAND
-> > framework" series I pointed to in my previous answer. So yes, there are
-> > better solutions than developing an MTD driver
-> >
-> > I got it now.  
-> The Loongson1 is classified as interface-agnostic NAND, while others are
-> raw NANDs.
-
-Well, it's not really the case, since this controller is really
-interfacing with raw NANDs.
-The interface-agnostic framework is here to share NAND device
-functionalities (like BBT handling, soft ECC handling, ...) no matter
-the I/O interface.
-But it appears that your driver would be more easily implemented using
-this interface, and more importantly, it would not let the raw NAND
-framework think this controller is able to send any kind of raw NAND
-commands, which is the point I'm complaining about. 
-
+> The nand_scan_ident/tail() returns an appropriate error value when
+> it fails.  Use it instead of the fixed error code -ENXIO.
 > 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
 > 
-> > >  
-> > > >  
-> > > > >
-> > > > >  
-> > > > > > You may also want to have a look at [1]. I started to abstract  
-> > away the  
-> > > > > > NAND interface type to share some code between SPI NANDs and raw  
-> > NANDs.  
-> > > > > > By implementing this interface, you'll at least be able to re-use  
-> > the  
-> > > > > > BBT code.
-> > > > > >
-> > > > > > I'm really sorry to ask you that now, after you've reworked most  
-> > of the  
-> > > > > > driver to address my comments, but the more I look at it the more I
-> > > > > > feel it's just a big hack to make it fit in a framework that was  
-> > not  
-> > > > > > designed to support such "high-level" controllers.
-> > > > > >  
-> > > > >
-> > > > > Since the driver of "high-level" controllers is still ongoing.
-> > > > > Could you please accept this patch for now?  
-> > > >
-> > > > Sorry, but no. I'm okay helping you improve/develop what you need to
-> > > > support this controller, but I don't want to accept more hacky drivers
-> > > > that do not fit in the current NAND framework, and yours is falling in
-> > > > this case.
-> > > >  
-> > >
-> > > Is there anything left I can do with my patch?  
-> >
-> > There are several things you could try:
-> >
-> > 1/ Try to extend interface-agnostic framework to expose high level
-> >    functionality like
-> >    - reading/writing one of several pages
-> >    - erasing a block (already done)
-> >    - making SW ECC implementation generic enough to get rid of the
-> >      nand_chip specific aspects so that it can be re-used for SPI NANDs
-> >      or high-level NAND controllers (AFAICT, this shouldn't be to hard,
-> >      the SW implementations are already providing generic functions and
-> >      implementing nand_chip specific wrappers)
-> >    Once you have such an interface, you can start implementing generic
-> >    mtd_info hooks at the interface-agnostic NAND level.
-> >
-> > 2/ Try to directly implement the mtd_info hooks I am mentioning above.
-> >
-> > Of course I'd prefer solution 1 since it would benefit to everybody. I
-> > also understand you need to have access to the nand_ids table. But this
-> > should be rather simple, since it's completely independent from the
-> > nand_chip interface.
-> >  
+>  drivers/mtd/nand/lpc32xx_mlc.c | 10 ++++------
+>  drivers/mtd/nand/lpc32xx_slc.c |  9 +++------
+>  2 files changed, 7 insertions(+), 12 deletions(-)
 > 
-> OK, I will try solution 1.
+> diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+> index 8523881..5553a5d 100644
+> --- a/drivers/mtd/nand/lpc32xx_mlc.c
+> +++ b/drivers/mtd/nand/lpc32xx_mlc.c
+> @@ -747,10 +747,9 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	 * Scan to find existance of the device and
+>  	 * Get the type of NAND device SMALL block or LARGE block
+>  	 */
+> -	if (nand_scan_ident(mtd, 1, NULL)) {
+> -		res = -ENXIO;
+> +	res = nand_scan_ident(mtd, 1, NULL);
+> +	if (res)
+>  		goto err_exit3;
+> -	}
+>  
+>  	host->dma_buf = devm_kzalloc(&pdev->dev, mtd->writesize, GFP_KERNEL);
+>  	if (!host->dma_buf) {
+> @@ -793,10 +792,9 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	 * Fills out all the uninitialized function pointers with the defaults
+>  	 * And scans for a bad block table if appropriate.
+>  	 */
+> -	if (nand_scan_tail(mtd)) {
+> -		res = -ENXIO;
+> +	res = nand_scan_tail(mtd);
+> +	if (res)
+>  		goto err_exit4;
+> -	}
+>  
+>  	mtd->name = DRV_NAME;
+>  
+> diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+> index 8d3edc3..f1094e5 100644
+> --- a/drivers/mtd/nand/lpc32xx_slc.c
+> +++ b/drivers/mtd/nand/lpc32xx_slc.c
+> @@ -894,10 +894,9 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	/* Find NAND device */
+> -	if (nand_scan_ident(mtd, 1, NULL)) {
+> -		res = -ENXIO;
+> +	res = nand_scan_ident(mtd, 1, NULL);
+> +	if (res)
+>  		goto err_exit3;
+> -	}
+>  
+>  	/* OOB and ECC CPU and DMA work areas */
+>  	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
+> @@ -929,10 +928,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	/*
+>  	 * Fills out all the uninitialized function pointers with the defaults
+>  	 */
+> -	if (nand_scan_tail(mtd)) {
+> -		res = -ENXIO;
+> +	res = nand_scan_tail(mtd);
 
-Great!
+You miss
 
-> 
-> >  
-> > > BTW, what is status of "high-level" controllers drivers?  
-> >
-> > Since no one worked on it, there's not much done here. But I really
-> > think it could be based on the interface-agnostic framework I started.
-> >  
-> 
-> I'd like to know when the patch set of interface-agnostic framework will be
-> merged,
-> Then, I can try solution 1.
+	if (res)
 
-Actually, I started this work to help Peter support SPI NANDs without
-duplicating the BBT code, and I was expecting him to review/test this
-implementation, but I never hear back from him.
+here.
 
-I really don't want to merge these changes until someone really starts
-using/testing it. But I can provide a branch containing those patches
-if you need.
+No need to resend, I'll fix it when applying the patches.
 
-Regards,
-
-Boris
+>  		goto err_exit3;
+> -	}
+>  
+>  	mtd->name = "nxp_lpc3220_slc";
+>  	res = mtd_device_register(mtd, host->ncfg->parts,
