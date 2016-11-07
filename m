@@ -1,25 +1,22 @@
 Received: from up.free-electrons.com ([163.172.77.33]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c3gQ2-0006Ju-Q6
- for linux-mtd@lists.infradead.org; Mon, 07 Nov 2016 09:40:47 +0000
-Date: Mon, 7 Nov 2016 10:40:14 +0100
+ id 1c3gRg-0006wK-1o
+ for linux-mtd@lists.infradead.org; Mon, 07 Nov 2016 09:42:29 +0000
+Date: Mon, 7 Nov 2016 10:41:56 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-mtd
- <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>, DT
- <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Mason <slash.tmp@free.fr>, Sebastian Frias
- <sf84@laposte.net>
-Subject: Re: [PATCH v7 1/2] mtd: nand: add tango NFC dt bindings doc
-Message-ID: <20161107104014.2eeec802@bbrezillon>
-In-Reply-To: <582048D8.3000000@sigmadesigns.com>
-References: <580F5AD2.9020909@sigmadesigns.com>
- <580F5B06.6030608@sigmadesigns.com> <1978954.SRtJpfOGp1@wuerfel>
- <582048D8.3000000@sigmadesigns.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Frans Klaver <fransklaver@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: bcm47xxsflash: use uncached MMIO access for BCM53573
+Message-ID: <20161107104156.0f79c416@bbrezillon>
+In-Reply-To: <1471263690-32512-1-git-send-email-zajec5@gmail.com>
+References: <1471263690-32512-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,71 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 7 Nov 2016 10:26:48 +0100
-Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+On Mon, 15 Aug 2016 14:21:28 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-> On 07/11/2016 10:18, Arnd Bergmann wrote:
-> > On Tuesday, October 25, 2016 3:15:50 PM CET Marc Gonzalez wrote:  
-> >> Add the tango NAND Flash Controller dt bindings documentation.
-> >>
-> >> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-> >> ---
-> >>  Documentation/devicetree/bindings/mtd/tango-nand.txt | 38 ++++++++++++++++++++++++++++++
-> >>  1 file changed, 38 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-> >> new file mode 100644
-> >> index 000000000000..3cbf95d6595a
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-> >> @@ -0,0 +1,38 @@
-> >> +Sigma Designs Tango4 NAND Flash Controller (NFC)
-> >> +
-> >> +Required properties:
-> >> +
-> >> +- compatible: "sigma,smp8758-nand"
-> >> +- reg: address/size of nfc_reg, nfc_mem, and pbus_reg
-> >> +- dmas: reference to the DMA channel used by the controller
-> >> +- dma-names: "nfc_sbox"  
-> > 
-> > Drop the "nfc_" prefix here, it seems redundant.  
-> 
-> I don't think it's redundant; there are switch boxes for several
-> different HW blocks; nfc_sbox is the first one to be exposed.
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> BCM53573 is a new series of Broadcom's SoCs. It's based on ARM and uses
+> this old ChipCommon-based flash access. Early tests resulted in flash
+> corruptions that were tracked down to using cached MMIO for flash read
+> access. Switch to ioremap_nocache conditionally to support BCM53573 and
+> don't break performance on old MIPS devices.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 
-The dma-names are local to the device, so I think the nfc_ prefix is
-indeed not needed.
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> 
-> >> +- clocks: reference to the system clock
-> >> +- #address-cells: <1>
-> >> +- #size-cells: <0>
-> >> +
-> >> +Children nodes represent the available NAND chips.
-> >> +See Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
-> >> +
-> >> +Example:
-> >> +
-> >> +	nand: nand@2c000 {
-> >> +		compatible = "sigma,smp8758-nand";
-> >> +		reg = <0x2c000 0x30 0x2d000 0x800 0x20000 0x1000>;  
-> > 
-> > It would be nicer to write this as
-> > 
-> > 	reg = <0x2c000 0x30>, <0x2d000 0x800>, <0x20000 0x1000>;
-> > 
-> > which is identical in binary format.  
-> 
-> I didn't know that, thanks for pointing it out.
-> 
-> Unfortunately, Boris already accepted the patch yesterday :-(
-> 
-> Boris, do you fixup patches in your tree?
-
-I usually try to avoid that, unless one of the patches breaks
-bisectibility (which is not the case here). Please send new patches to
-fix that.
-
-Thanks,
-
-Boris
+> ---
+>  drivers/mtd/devices/bcm47xxsflash.c | 24 +++++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bc=
+m47xxsflash.c
+> index 1c65c15..514be04 100644
+> --- a/drivers/mtd/devices/bcm47xxsflash.c
+> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+> @@ -296,16 +296,30 @@ static int bcm47xxsflash_bcma_probe(struct platform=
+_device *pdev)
+>  		dev_err(dev, "can't request region for resource %pR\n", res);
+>  		return -EBUSY;
+>  	}
+> -	b47s->window =3D ioremap_cache(res->start, resource_size(res));
+> -	if (!b47s->window) {
+> -		dev_err(dev, "ioremap failed for resource %pR\n", res);
+> -		return -ENOMEM;
+> -	}
+> =20
+>  	b47s->bcma_cc =3D container_of(sflash, struct bcma_drv_cc, sflash);
+>  	b47s->cc_read =3D bcm47xxsflash_bcma_cc_read;
+>  	b47s->cc_write =3D bcm47xxsflash_bcma_cc_write;
+> =20
+> +	/*
+> +	 * On old MIPS devices cache was magically invalidated when needed,
+> +	 * allowing us to use cached access and gain some performance. Trying
+> +	 * the same on ARM based BCM53573 results in flash corruptions, we need
+> +	 * to use uncached access for it.
+> +	 *
+> +	 * It may be arch specific, but right now there is only 1 ARM SoC using
+> +	 * this driver, so let's follow Broadcom's reference code and check
+> +	 * ChipCommon revision.
+> +	 */
+> +	if (b47s->bcma_cc->core->id.rev =3D=3D 54)
+> +		b47s->window =3D ioremap_nocache(res->start, resource_size(res));
+> +	else
+> +		b47s->window =3D ioremap_cache(res->start, resource_size(res));
+> +	if (!b47s->window) {
+> +		dev_err(dev, "ioremap failed for resource %pR\n", res);
+> +		return -ENOMEM;
+> +	}
+> +
+>  	switch (b47s->bcma_cc->capabilities & BCMA_CC_CAP_FLASHT) {
+>  	case BCMA_CC_FLASHT_STSER:
+>  		b47s->type =3D BCM47XXSFLASH_TYPE_ST;
