@@ -1,16 +1,15 @@
-Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c3myB-0002Hq-UJ
+ id 1c3myC-0002GV-7t
  for linux-mtd@lists.infradead.org; Mon, 07 Nov 2016 16:40:30 +0000
 From: Zach Brown <zach.brown@ni.com>
 To: <dwmw2@infradead.org>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <dedekind1@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 3/5] mtd: nand: Add max_bb_per_die and blocks_per_die
- fields to nand_chip
-Date: Mon, 7 Nov 2016 10:36:11 -0600
-Message-ID: <1478536573-17610-4-git-send-email-zach.brown@ni.com>
+Subject: [PATCH v5 4/5] mtd: nand: implement 'max_bad_blocks' mtd function
+Date: Mon, 7 Nov 2016 10:36:12 -0600
+Message-ID: <1478536573-17610-5-git-send-email-zach.brown@ni.com>
 In-Reply-To: <1478536573-17610-1-git-send-email-zach.brown@ni.com>
 References: <1478536573-17610-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
@@ -24,39 +23,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The fields max_bb_per_die and blocks_per_die are useful determining the
-number of bad blocks a MTD needs to allocate. How they are set will
-depend on if the chip is ONFI, JEDEC or a full-id entry in the nand_ids
-table.
+Implement the new mtd function 'max_bad_blocks'. Using the chip's
+max_bb_per_die and blocks_per_die fields to determine the maximum bad
+blocks to reserve for an MTD.
 
+Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 Signed-off-by: Zach Brown <zach.brown@ni.com>
 Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
 ---
- include/linux/mtd/nand.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/nand/nand_base.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index d8905a2..8e9dce1 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -771,6 +771,9 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
-  *			supported, 0 otherwise.
-  * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
-  *			supported, 0 otherwise.
-+ * @max_bb_per_die:	[INTERN] the max number of bad blocks each die of a
-+ *			this nand device will encounter their life times.
-+ * @blocks_per_die:	[INTERN] The number of PEBs in a die
-  * @read_retries:	[INTERN] the number of read retry modes supported
-  * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
-  * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
-@@ -853,6 +856,8 @@ struct nand_chip {
- 		struct nand_onfi_params	onfi_params;
- 		struct nand_jedec_params jedec_params;
- 	};
-+	u16 max_bb_per_die;
-+	u32 blocks_per_die;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 3bde96a..193a6b7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3236,6 +3236,40 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ }
  
- 	struct nand_data_interface *data_interface;
+ /**
++ * nand_max_bad_blocks - [MTD Interface] Max number of bad blocks for an mtd
++ * @mtd: MTD device structure
++ * @ofs: offset relative to mtd start
++ * @len: length of mtd
++ */
++static int nand_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	uint32_t part_start_block;
++	uint32_t part_end_block;
++	uint32_t part_start_lun;
++	uint32_t part_end_lun;
++
++	/* max_bb_per_lun and blocks_per_lun used to determine
++	 * the maximum bad block count.
++	 */
++	if (!chip->max_bb_per_die || !chip->blocks_per_die)
++		return -ENOTSUPP;
++
++	/* Get the start and end of the partition in erase blocks. */
++	part_start_block = mtd_div_by_eb(ofs, mtd);
++	part_end_block = mtd_div_by_eb(len, mtd) + part_start_block - 1;
++
++	/* Get the start and end LUNs of the partition. */
++	part_start_lun = part_start_block / chip->blocks_per_die;
++	part_end_lun = part_end_block / chip->blocks_per_die;
++
++	/* Look up the bad blocks per unit and multiply by the number of units
++	 * that the partition spans.
++	 */
++	return chip->max_bb_per_die * (part_end_lun - part_start_lun + 1);
++}
++
++/**
+  * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
+  * @mtd: MTD device structure
+  * @chip: nand chip info structure
+@@ -4767,6 +4801,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->_block_isreserved = nand_block_isreserved;
+ 	mtd->_block_isbad = nand_block_isbad;
+ 	mtd->_block_markbad = nand_block_markbad;
++	mtd->_max_bad_blocks = nand_max_bad_blocks;
+ 	mtd->writebufsize = mtd->writesize;
  
+ 	/*
 -- 
 2.7.4
