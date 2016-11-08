@@ -1,19 +1,27 @@
-Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+Received: from mail-pf0-x236.google.com ([2607:f8b0:400e:c00::236])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c3myB-0002Ew-U1
- for linux-mtd@lists.infradead.org; Mon, 07 Nov 2016 16:40:31 +0000
-From: Zach Brown <zach.brown@ni.com>
-To: <dwmw2@infradead.org>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <richard@nod.at>, <dedekind1@gmail.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 1/5] mtd: introduce function max_bad_blocks
-Date: Mon, 7 Nov 2016 10:36:09 -0600
-Message-ID: <1478536573-17610-2-git-send-email-zach.brown@ni.com>
-In-Reply-To: <1478536573-17610-1-git-send-email-zach.brown@ni.com>
-References: <1478536573-17610-1-git-send-email-zach.brown@ni.com>
+ id 1c3vwy-0006Gs-PU
+ for linux-mtd@lists.infradead.org; Tue, 08 Nov 2016 02:15:49 +0000
+Received: by mail-pf0-x236.google.com with SMTP id n85so99116117pfi.1
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Nov 2016 18:15:28 -0800 (PST)
+Date: Mon, 7 Nov 2016 18:01:15 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Yao Yuan <yao.yuan@nxp.com>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "hramrach@gmail.com" <hramrach@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: Re: SPI NAND support in drivers/mtd/spi-nor/spi-nor.c
+Message-ID: <20161108020115.GA116407@google.com>
+References: <DB6PR0401MB2407AE783B4F57D09750D8DA89A70@DB6PR0401MB2407.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DB6PR0401MB2407AE783B4F57D09750D8DA89A70@DB6PR0401MB2407.eurprd04.prod.outlook.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,77 +31,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jeff Westfahl <jeff.westfahl@ni.com>
++ others
 
-If implemented, 'max_bad_blocks' returns the maximum number of bad
-blocks to reserve for an MTD. An implementation for NAND is coming soon.
+On Mon, Nov 07, 2016 at 09:53:34AM +0000, Yao Yuan wrote:
+>    Hi All,
 
-Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
-Signed-off-by: Zach Brown <zach.brown@ni.com>
-Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
----
- drivers/mtd/mtdpart.c   | 12 ++++++++++++
- include/linux/mtd/mtd.h | 11 +++++++++++
- 2 files changed, 23 insertions(+)
+Hi Yao,
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index fccdd49..565f0dd 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -349,6 +349,16 @@ static const struct mtd_ooblayout_ops part_ooblayout_ops = {
- 	.free = part_ooblayout_free,
- };
- 
-+static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
-+{
-+	struct mtd_part *part = mtd_to_part(mtd);
-+
-+	if ((len + ofs) > mtd->size)
-+		return -EINVAL;
-+	return part->master->_max_bad_blocks(part->master,
-+					     ofs + part->offset, len);
-+}
-+
- static inline void free_partition(struct mtd_part *p)
- {
- 	kfree(p->mtd.name);
-@@ -481,6 +491,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	if (master->_put_device)
- 		slave->mtd._put_device = part_put_device;
- 
-+	if (master->_max_bad_blocks)
-+		slave->mtd._max_bad_blocks = part_max_bad_blocks;
- 	slave->mtd._erase = part_erase;
- 	slave->master = master;
- 	slave->offset = part->offset;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 13f8052..c02d3c2 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -322,6 +322,7 @@ struct mtd_info {
- 	int (*_block_isreserved) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
-+	int (*_max_bad_blocks) (struct mtd_info *mtd, loff_t ofs, size_t len);
- 	int (*_suspend) (struct mtd_info *mtd);
- 	void (*_resume) (struct mtd_info *mtd);
- 	void (*_reboot) (struct mtd_info *mtd);
-@@ -402,6 +403,16 @@ int mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
- int mtd_pairing_info_to_wunit(struct mtd_info *mtd,
- 			      const struct mtd_pairing_info *info);
- int mtd_pairing_groups(struct mtd_info *mtd);
-+
-+static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
-+				     loff_t ofs, size_t len)
-+{
-+	if (mtd->_max_bad_blocks)
-+		return mtd->_max_bad_blocks(mtd, ofs, len);
-+
-+	return -ENOTSUPP;
-+}
-+
- int mtd_erase(struct mtd_info *mtd, struct erase_info *instr);
- int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	      void **virt, resource_size_t *phys);
--- 
-2.7.4
+I'm not that interested in handling private requests, and this is
+generally informative, so I've added the linux-mtd list, as well as the
+other maintainers.
+
+Also, when you're ready to send patches, make sure you use plain text
+instead of HTML email.
+
+>    I’m trying to add the QSPI NAND support in MTD.
+> 
+>    But I have reached a junction, could you please take some minutes and
+>    give me some suggestions?
+> 
+> 
+>    You know, we have the QSPI NOR support in
+>    drivers/mtd/spi-nor/spi-nor.c,
+> 
+>    And the QSPI NAND is very similar with QSPI NOR, but the Read, write
+>    and erase is different with SPI-NOR.
+
+How similar is the controller hardware? Does your IP support standard
+SPI protocol, or is it specialized for accelerating SPI NAND (e.g.,
+memory-mapped, DMA, etc.)? Does it support SPI NOR?
+
+>    So I have two ways to add QSPI-NAND:
+
+I'll leave your options intact below, but I don't think either of them
+are that good. SPI NOR and SPI NAND are different enough, I doubt that
+we'll get much benefit from using the same framework, unless you happen
+to have IP that's designed for both NOR and NAND, yet doesn't quite do
+traditional SPI.
+
+Particularly, NAND flash has a lot of issues that NOR flash generally
+does not, around bad block management and wear leveling. Also, there may
+be something to share around identification/ONFI? (Not sure how similar
+the implementations are there.) There's been some prior discussion about
+it, and maybe one of the CC'd people can direct you toward the latest
+opinions, or else you can search the archives youreself ("SPI NAND"
+should turn up several results).
+
+So the main issues would probably be around abstracting out the
+bad-block-related and chip identification code so you can share code
+with existing (parallel) NAND support. At least, that's what I think
+based on the last time I looked at things, and I think some of the other
+active maintainers had ideas along the same lines.
+
+Brian
+
+>    1, rename
+> 
+>    drivers/mtd/spi-nor/spi-nor.c
+> 
+>    As
+> 
+>    drivers/mtd/spi-flash/spi-flash.c
+> 
+>    And then add:
+> 
+>    spi_nand_erase
+> 
+>    spi_nand_read
+> 
+>    spi_nand_write
+> 
+>    to support QSPI NAND.
+> 
+> 
+>    2, rename
+> 
+>    drivers/mtd/spi-nor/
+> 
+>    to
+> 
+>    drivers/mtd/spi-flash/
+> 
+>    and then add:
+> 
+>    drivers/mtd/spi-flash/spi-nand.c
+> 
+>    to support QSPI NAND.
+> 
+> 
+>    Thanks for your suggestions, and I will send the RFC patch once I can
+>    select a way.
+> 
+> 
+>    Best Regards,
+> 
+>    Yao
