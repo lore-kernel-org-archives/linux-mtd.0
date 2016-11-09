@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c4Ka1-00021c-5a
- for linux-mtd@lists.infradead.org; Wed, 09 Nov 2016 04:33:49 +0000
+ id 1c4KaF-00023D-Gp
+ for linux-mtd@lists.infradead.org; Wed, 09 Nov 2016 04:34:01 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Alan Cox <alan@linux.intel.com>,
@@ -16,10 +16,12 @@ Cc: Alan Cox <alan@linux.intel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 00/11] mtd: nand: denali: first round of cleanups of Denali
- NAND driver
-Date: Wed,  9 Nov 2016 13:35:19 +0900
-Message-Id: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 11/11] mtd: nand: denali: remove debug lines of __FILE__,
+ __LINE__, __func__
+Date: Wed,  9 Nov 2016 13:35:30 +0900
+Message-Id: <1478666130-13413-12-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +31,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Such debug lines might be useful when debugging the driver first,
+but should be deleted from the upstream code.
 
-I am tackling on this driver to use it for my SoCs.
-The difficulty is a bunch of platform specific stuff
-(more specifically, Intel MRST specific) is hard-coded in this driver.
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-I need lots of rework to utilize the driver for generic cases,
-but at the same time, I found the driver code is really dirty,
-lots of unused code, odd comments, etc.
+ drivers/mtd/nand/denali.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-The first thing I needed to do was to clean up the code.
-My work is still under the way, but I decided to drop this series
-for now.  I hope this series is easy to review, so I guess
-splitting into a small chunks is better than a one-shot patch bomb.
-
-
-
-Masahiro Yamada (11):
-  mtd: nand: denali: remove unneeded <linux/slab.h> includes
-  mtd: nand: denali: remove unused struct member denali_nand_info::idx
-  mtd: nand: denali: remove bogus comment about interrupt handler setup
-  mtd: nand: denali: remove detect_partition_feature()
-  mtd: nand: denali: remove "Spectra:" prefix from printk strings
-  mtd: nand: denali: remove unused struct member totalblks, blksperchip
-  mtd: nand: denali: use managed devm_irq_request()
-  mtd: nand: denali: return error code from devm_request_irq() on error
-  mtd: nand: denali: return error code from nand_scan_ident/tail on
-    error
-  mtd: nand: denali: remove unneeded parentheses
-  mtd: nand: denali: remove debug lines of __FILE__, __LINE__, __func__
-
- drivers/mtd/nand/denali.c     | 101 +++++++++---------------------------------
- drivers/mtd/nand/denali.h     |  12 -----
- drivers/mtd/nand/denali_dt.c  |   1 -
- drivers/mtd/nand/denali_pci.c |   1 -
- 4 files changed, 21 insertions(+), 94 deletions(-)
-
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 14e66ab..e32e13c 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -181,9 +181,6 @@ static uint16_t denali_nand_reset(struct denali_nand_info *denali)
+ {
+ 	int i;
+ 
+-	dev_dbg(denali->dev, "%s, Line %d, Function: %s\n",
+-		__FILE__, __LINE__, __func__);
+-
+ 	for (i = 0; i < denali->max_banks; i++)
+ 		iowrite32(INTR_STATUS__RST_COMP | INTR_STATUS__TIME_OUT,
+ 		denali->flash_reg + INTR_STATUS(i));
+@@ -233,9 +230,6 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
+ 	uint16_t acc_clks;
+ 	uint16_t addr_2_data, re_2_we, re_2_re, we_2_re, cs_cnt;
+ 
+-	dev_dbg(denali->dev, "%s, Line %d, Function: %s\n",
+-		__FILE__, __LINE__, __func__);
+-
+ 	en_lo = CEIL_DIV(Trp[mode], CLK_X);
+ 	en_hi = CEIL_DIV(Treh[mode], CLK_X);
+ #if ONFI_BLOOM_TIME
+@@ -480,9 +474,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ 	uint8_t maf_id, device_id;
+ 	int i;
+ 
+-	dev_dbg(denali->dev, "%s, Line %d, Function: %s\n",
+-			__FILE__, __LINE__, __func__);
+-
+ 	/*
+ 	 * Use read id method to get device ID and other params.
+ 	 * For some NAND chips, controller can't report the correct
+@@ -537,9 +528,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ static void denali_set_intr_modes(struct denali_nand_info *denali,
+ 					uint16_t INT_ENABLE)
+ {
+-	dev_dbg(denali->dev, "%s, Line %d, Function: %s\n",
+-		__FILE__, __LINE__, __func__);
+-
+ 	if (INT_ENABLE)
+ 		iowrite32(1, denali->flash_reg + GLOBAL_INT_ENABLE);
+ 	else
 -- 
 1.9.1
