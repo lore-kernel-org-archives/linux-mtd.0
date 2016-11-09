@@ -1,25 +1,18 @@
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.4])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c4TfB-0004tw-JE
- for linux-mtd@lists.infradead.org; Wed, 09 Nov 2016 14:15:42 +0000
-Date: Wed, 9 Nov 2016 16:15:08 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-mtd@lists.infradead.org, mkraemer@de.adit-jv.com,
- David Woodhouse <dwmw2@infradead.org>, key.seong.lim@intel.com,
- linux-kernel@vger.kernel.org, Peter Tyser <ptyser@xes-inc.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Lee Jones <lee.jones@linaro.org>, Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH v4 1/3] spi-nor: Add support for Intel SPI serial flash
- controller
-Message-ID: <20161109141508.GH1447@lahna.fi.intel.com>
-References: <20161017145858.143771-1-mika.westerberg@linux.intel.com>
- <20161017145858.143771-2-mika.westerberg@linux.intel.com>
- <36b27635-8163-f3cb-5953-88f102e22ee4@atmel.com>
+ id 1c4X7r-0004cc-Rb
+ for linux-mtd@lists.infradead.org; Wed, 09 Nov 2016 17:57:33 +0000
+From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Subject: [RFC] Special handling for NAND_CMD_PAGEPROG and NAND_CMD_READ0
+To: linux-mtd <linux-mtd@lists.infradead.org>
+CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, Mason <slash.tmp@free.fr>, Sebastian Frias
+ <sf84@laposte.net>
+Message-ID: <58236370.1050105@sigmadesigns.com>
+Date: Wed, 9 Nov 2016 18:57:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <36b27635-8163-f3cb-5953-88f102e22ee4@atmel.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,79 +22,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 09, 2016 at 02:51:20PM +0100, Cyrille Pitchen wrote:
-> > +/* Reads max 64 bytes from the device fifo */
-> > +static int intel_spi_read_block(struct intel_spi *ispi, void *buf, size_t size)
-> > +{
-> > +	size_t bytes;
-> > +	int i = 0;
-> > +
-> > +	if (size > 64)
-> 
-> This is not a blocking point but just a recommendation: you should define
-> and use a macro for this 64 byte FIFO size instead of using this hardcoded
-> 64 value here and in intel_spi_write_block(), intel_spi_write(),
-> intel_spi_read().
+Sample code to generate some discussion around having the framework
+send I/O commands (for read_page and write_page) when it is dealing
+with "high-level" NFCs that send the commands themselves.
+---
+ drivers/mtd/nand/nand_base.c  | 6 ++++--
+ drivers/mtd/nand/tango_nand.c | 7 ++++++-
+ include/linux/mtd/nand.h      | 6 ++++++
+ 3 files changed, 16 insertions(+), 3 deletions(-)
 
-Good point. I'll change that to use a macro.
-
-> > +		return -EINVAL;
-> > +
-> > +	while (size > 0) {
-> > +		bytes = min_t(size_t, size, 4);
-> > +		memcpy_fromio(buf, ispi->base + FDATA(i++), bytes);
-> Here again another general recommendation: be careful about using
-> operators like ++ on macro parameters. In the case of this FDATA() macro
-> it will work as expected but unwanted side effect might occur depending on
-> the actual macro definition:
-> 
-> int i = 1;
-> 
-> #define DOUBLE(n)	((n) + (n))
-> DOUBLE(i++); /* here i is incremented twice, not just once. */
-
-Indeed, even though with the current macro it does not happen I'm going
-change it to update i separately like:
-
-	memcpy_fromio(buf, ispi->base + FDATA(i), bytes);
-	i++
-
-> > +		size -= bytes;
-> > +		buf += bytes;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-
-[snip]
-
-> > +static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
-> > +			      u_char *read_buf)
-> > +{
-> > +	struct intel_spi *ispi = nor->priv;
-> > +	size_t block_size, retlen = 0;
-> > +	u32 val, status;
-> > +	ssize_t ret;
-> > +
-> 
-> As I understand some Intel SPI controllers can only use op codes in a fixed
-> instruction set, so here you should check the nor->read_opcode.
-> Indeed when the support of SFDP tables will be integrated, the
-> nor->read_opcode might change between calls of the nor->read() handler.
-
-OK, I did not know that it can change.
-
-> spi_nor_read_sfdp() make use of this nor->read() handler but set
-> nor->read_opcode to SPINOR_OP_RDSFDP (5Ah) before calling the handler.
-> 
-> Then, if intel_spi_read() is called with an unsupported nor->read_opcode,
-> it should fail returning -EINVAL. The spi-nor framework will handle this
-> failure correctly.
-> 
-> You can find the SFDP patch here:
-> http://patchwork.ozlabs.org/patch/685984/
-
-Thanks for the pointer. I'll update the driver to take read_opcode into
-account in intel_spi_read().
-
-Thanks for the comments.
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 50cdf37cb8e4..b4149101342c 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1970,7 +1970,8 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 						 __func__, buf);
+ 
+ read_retry:
+-			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
++			if (!(chip->options & NAND_FOO))
++				chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+ 
+ 			/*
+ 			 * Now read the page into the buffer.  Absent an error,
+@@ -2681,7 +2682,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 	if (!cached || !NAND_HAS_CACHEPROG(chip)) {
+ 
+-		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
++		if (!(chip->options & NAND_FOO))
++			chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+ 		status = chip->waitfunc(mtd, chip);
+ 		/*
+ 		 * See if operation failed and additional status checks are
+diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+index 74e39a92771c..d3679fdf2020 100644
+--- a/drivers/mtd/nand/tango_nand.c
++++ b/drivers/mtd/nand/tango_nand.c
+@@ -401,13 +401,17 @@ static int raw_write(struct nand_chip *chip, const u8 *buf, const u8 *oob)
+ static int tango_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 		uint8_t *buf, int oob_required, int page)
+ {
++	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+ 	return raw_read(chip, buf, chip->oob_poi);
+ }
+ 
+ static int tango_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 		const uint8_t *buf, int oob_required, int page)
+ {
+-	return raw_write(chip, buf, chip->oob_poi);
++	/* what about NAND_CMD_SEQIN ? */
++	raw_write(chip, buf, chip->oob_poi);
++	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
++	return 0;
+ }
+ 
+ static int tango_read_oob(struct mtd_info *mtd, struct nand_chip *chip, int page)
+@@ -527,6 +531,7 @@ static int chip_init(struct device *dev, struct device_node *np)
+ 	chip->setup_data_interface = tango_set_timings;
+ 	chip->options = NAND_USE_BOUNCE_BUFFER
+ 		| NAND_NO_SUBPAGE_WRITE
++		| NAND_FOO
+ 		| NAND_WAIT_TCCS;
+ 	chip->controller = &nfc->hw;
+ 	tchip->base = nfc->pbus_base + (cs * 256);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 06d0c9d740f7..fd8968f3ccca 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -220,6 +220,12 @@ enum nand_ecc_algo {
+  */
+ #define NAND_WAIT_TCCS		0x00200000
+ 
++/*
++ * Controller sends NAND_CMD_PAGEPROG (write_page) and NAND_CMD_READ0 (read_page)
++ * therefore the framework should not send these commands.
++ */
++#define NAND_FOO		0x00400000
++
+ /* Options set by nand scan */
+ /* Nand scan has allocated controller struct */
+ #define NAND_CONTROLLER_ALLOC	0x80000000
+-- 
+2.1.4
