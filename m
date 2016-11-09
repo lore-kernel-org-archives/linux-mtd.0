@@ -1,26 +1,15 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c4QcE-0006yd-Da
- for linux-mtd@lists.infradead.org; Wed, 09 Nov 2016 11:00:27 +0000
-Date: Wed, 9 Nov 2016 13:00:00 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: linux-mtd@lists.infradead.org
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Lee Jones <lee.jones@linaro.org>, Peter Tyser <ptyser@xes-inc.com>,
- key.seong.lim@intel.com, mkraemer@de.adit-jv.com,
- linux-kernel@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v4 0/3] spi-nor: Add support for Intel SPI serial flash
- controller
-Message-ID: <20161109110000.GE1447@lahna.fi.intel.com>
-References: <20161017145858.143771-1-mika.westerberg@linux.intel.com>
+Received: from ip2.televic.com ([81.82.194.222] helo=exchange.televic.com)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c4S6b-0001Hv-0p
+ for linux-mtd@lists.infradead.org; Wed, 09 Nov 2016 12:35:54 +0000
+From: <w.cappelle@televic.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <w.cappelle@televic.com>
+Subject: gpmi detection of erased pages
+Date: Wed, 9 Nov 2016 13:35:19 +0100
+Message-ID: <1478694920-6453-1-git-send-email-w.cappelle@televic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161017145858.143771-1-mika.westerberg@linux.intel.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,28 +19,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 17, 2016 at 05:58:55PM +0300, Mika Westerberg wrote:
-> This is fourth version of the series. Previous versions can be found:
-> 
->   v3: https://lwn.net/Articles/697231/
->   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
->   v1: https://lkml.org/lkml/2016/6/14/269
-> 
-> This patch series adds support for the Intel SPI serial flash controller
-> found on many recent Intel CPUs including Baytrail and Braswell. This
-> driver makes it possible to access the BIOS and other platform data which
-> is stored on the SPI serial flash. It is also possible to upgrade the BIOS
-> using this driver if it has not been protected by special hardware bits.
-> 
-> The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
-> MAX.
-> 
-> Since poking the SPI serial flash can brick the machine, this driver can
-> only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
-> unless instructed othwerwise by module parameter.
-> 
-> This missed v4.8 and v4.9 so it would be really nice to get it finally
-> included in v4.10.
+I'm using BCH8 on a 2k nand page and created a testpage with 6 bitflips
+at following locations:
+0x02D:FB
+0x057:FE
+0xA5:FB
+0x16A:FB
+0x18A:DF
+0x4EE:FE
 
-Adding the new MTD and SPI-NOR maintainers. Any change getting this
-merged for v4.10?
+When reading the page through the driver, the page is uncorrectable (as 
+expected), then it will verify if the page is erased (gpmi_erased_check).
+There i can see that the first count of the first subpage, is returning me
+it detected 7 bitflips (should be 5 in that subpage). The second count of 
+bitflips on the full raw page returns me the correct amount of bitflips 
+(being 6 for the complete page).
+
+I Don't really see the need of the first subpage check, except of speed 
+improvement. But as it is failing due to the gpmi block trying to repair the 
+page and alternating the wrong bits, I would propose to either increase the
+threshold of the first check with the max number of repairable bitflips the 
+gpmi block is set to, or just skip the first check since on empty pages it will
+however not make a difference in speed. For real uncorrectable pages, this will
+not have a huge speed penalty due to the unlikely event that this will happen.
+
+I propose following patch to be be applied to detect the correct number of 
+bitflips based on the raw nand read data.
