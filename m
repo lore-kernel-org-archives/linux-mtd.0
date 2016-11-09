@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c4Ka1-00021p-5Y
- for linux-mtd@lists.infradead.org; Wed, 09 Nov 2016 04:33:46 +0000
+ id 1c4Ka1-00021w-5d
+ for linux-mtd@lists.infradead.org; Wed, 09 Nov 2016 04:33:47 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Alan Cox <alan@linux.intel.com>,
@@ -16,10 +16,10 @@ Cc: Alan Cox <alan@linux.intel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 03/11] mtd: nand: denali: remove bogus comment about interrupt
- handler setup
-Date: Wed,  9 Nov 2016 13:35:22 +0900
-Message-Id: <1478666130-13413-4-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 08/11] mtd: nand: denali: return error code from
+ devm_request_irq() on error
+Date: Wed,  9 Nov 2016 13:35:27 +0900
+Message-Id: <1478666130-13413-9-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,28 +31,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The interrupt handler is setup in denali_init(), not in
-denali_drv_init().  This comment is false.
+The devm_request_irq() returns an appropriate error value when it
+fails.  Use it instead of the fixed -ENODEV.
 
-Such a comment adds no value, so just delete it instead of move.
+While we are here, reword the comment to make it fit in a single
+line, fixing the misspelling of "initialization".
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/denali.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/denali.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 51ddb84..d6f1b29 100644
+index 44e075a..f188a48 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1436,7 +1436,6 @@ static int denali_ooblayout_free(struct mtd_info *mtd, int section,
- /* initialize driver data structures */
- static void denali_drv_init(struct denali_nand_info *denali)
- {
--	/* setup interrupt handler */
- 	/*
- 	 * the completion object will be used to notify
- 	 * the callee that the interrupt is done
+@@ -1451,14 +1451,12 @@ int denali_init(struct denali_nand_info *denali)
+ 	denali_hw_init(denali);
+ 	denali_drv_init(denali);
+ 
+-	/*
+-	 * denali_isr register is done after all the hardware
+-	 * initilization is finished
+-	 */
+-	if (devm_request_irq(denali->dev, denali->irq, denali_isr, IRQF_SHARED,
+-			     DENALI_NAND_NAME, denali)) {
++	/* request IRQ after all the hardware initialization is finished */
++	ret = devm_request_irq(denali->dev, denali->irq, denali_isr,
++			       IRQF_SHARED, DENALI_NAND_NAME, denali);
++	if (ret) {
+ 		dev_err(denali->dev, "Unable to request IRQ\n");
+-		return -ENODEV;
++		return ret;
+ 	}
+ 
+ 	/* now that our ISR is registered, we can enable interrupts */
 -- 
 1.9.1
