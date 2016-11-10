@@ -1,20 +1,21 @@
-Received: from smtp2-g21.free.fr ([212.27.42.2])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c4ZLO-0003gb-Bv
- for linux-mtd@lists.infradead.org; Wed, 09 Nov 2016 20:19:39 +0000
-Subject: Re: [RFC] Special handling for NAND_CMD_PAGEPROG and NAND_CMD_READ0
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
-Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
- Richard Weinberger <richard@nod.at>, Sebastian Frias <sf84@laposte.net>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c4rI9-0002WN-VL
+ for linux-mtd@lists.infradead.org; Thu, 10 Nov 2016 15:29:32 +0000
+Date: Thu, 10 Nov 2016 16:29:12 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, Richard Weinberger
+ <richard@nod.at>, Mason <slash.tmp@free.fr>, Sebastian Frias
+ <sf84@laposte.net>
+Subject: Re: [RFC v2] Special handling for NAND_CMD_PAGEPROG and NAND_CMD_READ0
+Message-ID: <20161110162912.19c7022d@bbrezillon>
+In-Reply-To: <58248886.9080906@sigmadesigns.com>
 References: <58236370.1050105@sigmadesigns.com>
  <20161109194903.1c4ee5a3@bbrezillon>
-From: Mason <slash.tmp@free.fr>
-Message-ID: <582384B3.7040106@free.fr>
-Date: Wed, 9 Nov 2016 21:18:59 +0100
+ <58248886.9080906@sigmadesigns.com>
 MIME-Version: 1.0
-In-Reply-To: <20161109194903.1c4ee5a3@bbrezillon>
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,85 +26,192 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/11/2016 19:49, Boris Brezillon wrote:
+On Thu, 10 Nov 2016 15:47:34 +0100
+Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
 
-> Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+> Sample code to generate some discussion around having the framework
+> *not* send I/O commands for read_page and write_page, when it is
+> dealing with "high-level" NFCs that already send the commands
+> themselves.
+> ---
+> diff from v1 to v2:
+> - handle NAND_CMD_SEQIN as well
+> - implement check_page_access_callbacks
 > 
->> Sample code to generate some discussion around having the framework
->> send I/O commands (for read_page and write_page) when it is dealing
->> with "high-level" NFCs that send the commands themselves.
->> ---
->>  drivers/mtd/nand/nand_base.c  | 6 ++++--
->>  drivers/mtd/nand/tango_nand.c | 7 ++++++-
->>  include/linux/mtd/nand.h      | 6 ++++++
->>  3 files changed, 16 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index 50cdf37cb8e4..b4149101342c 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -1970,7 +1970,8 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->>  						 __func__, buf);
->>  
->>  read_retry:
->> -			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
->> +			if (!(chip->options & NAND_FOO))
->> +				chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
->>  
+> If this RFC is an acceptable state, we can pick an appropriate
+> name for the option, and I'll make a formal submission.
+> ---
+>  drivers/mtd/nand/nand_base.c  | 27 ++++++++++++++++++++++++---
+>  drivers/mtd/nand/tango_nand.c |  7 ++++++-
+>  include/linux/mtd/nand.h      |  8 ++++++++
+>  3 files changed, 38 insertions(+), 4 deletions(-)
 > 
-> You'll have to patch the standard implementations provided by the core
-> (nand_read/write_page_xx()) to send these READ0/SEQIN/PAGEPROG commands
-> when the NAND_FOO flag is set.
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 50cdf37cb8e4..f42f79d8d0c4 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1970,7 +1970,8 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+>  						 __func__, buf);
+>  
+>  read_retry:
+> -			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+> +			if (!(chip->options & NAND_FOO))
+> +				chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+>  
+>  			/*
+>  			 * Now read the page into the buffer.  Absent an error,
+> @@ -2658,7 +2659,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	else
+>  		subpage = 0;
+>  
+> -	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+> +	if (!(chip->options & NAND_FOO))
+> +		chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+>  
+>  	if (unlikely(raw))
+>  		status = chip->ecc.write_page_raw(mtd, chip, buf,
+> @@ -2681,7 +2683,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  	if (!cached || !NAND_HAS_CACHEPROG(chip)) {
+>  
+> -		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+> +		if (!(chip->options & NAND_FOO))
+> +			chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+>  		status = chip->waitfunc(mtd, chip);
+>  		/*
+>  		 * See if operation failed and additional status checks are
+> @@ -4539,6 +4542,21 @@ static bool nand_ecc_strength_good(struct mtd_info *mtd)
+>  	return corr >= ds_corr && ecc->strength >= chip->ecc_strength_ds;
+>  }
+>  
+> +static int check_page_access_callbacks(struct nand_chip *chip)
 
-Thanks, I had completely overlooked that part.
+check_*ecc*_page_accessors() ?
+
+> +{
+> +	int err = 0;
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +
+> +	if (chip->options & NAND_FOO) {
+> +		err |= !ecc->read_page || !ecc->write_page;
+> +		err |= !ecc->read_page_raw || !ecc->write_page_raw;
+> +		err |= !ecc->read_subpage && NAND_HAS_SUBPAGE_READ(chip);
+> +		err |= !ecc->write_subpage && NAND_HAS_SUBPAGE_WRITE(chip);
+> +	}
+
+Please return a real error code:
+
+	if (err)
+		return -EINVAL;
+
+	return 0;
+
+I think I'd prefer something more straightforward (but slightly longer):
+
+	if (!(chip->options & NAND_FOO))
+		return 0;
+
+	/*
+	 * NAND_FOO flag is set, make sure the NAND controller
+	 * driver implements all the page accessors because
+	 * default helpers are not suitable when the core does
+	 * not send the READ0/PAGEPROG commands.
+	 */
+	if (!ecc->read_page || !ecc->write_page ||
+	    !ecc->read_page_raw || !ecc->write_page_raw ||
+	    (NAND_HAS_SUBPAGE_READ(chip) && !ecc->read_subpage) ||
+	    (NAND_HAS_SUBPAGE_WRITE(chip) && !ecc->write_subpage))
+		return -EINVAL;
+
+	return 0;
+
+> +	return err;
+> +}
+> +
+>  /**
+>   * nand_scan_tail - [NAND Interface] Scan for the NAND device
+>   * @mtd: MTD device structure
+> @@ -4559,6 +4577,9 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  		   !(chip->bbt_options & NAND_BBT_USE_FLASH)))
+>  		return -EINVAL;
+>  
+> +	if (WARN_ON(check_page_access_callbacks(chip)))
+> +		return -EINVAL;
+> +
+>  	if (!(chip->options & NAND_OWN_BUFFERS)) {
+>  		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
+>  				+ mtd->oobsize * 3, GFP_KERNEL);
+> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+> index 74e39a92771c..2c9c0cac8f49 100644
+> --- a/drivers/mtd/nand/tango_nand.c
+> +++ b/drivers/mtd/nand/tango_nand.c
+> @@ -401,13 +401,17 @@ static int raw_write(struct nand_chip *chip, const u8 *buf, const u8 *oob)
+>  static int tango_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>  		uint8_t *buf, int oob_required, int page)
+>  {
+> +	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+>  	return raw_read(chip, buf, chip->oob_poi);
+>  }
+>  
+>  static int tango_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>  		const uint8_t *buf, int oob_required, int page)
+>  {
+> -	return raw_write(chip, buf, chip->oob_poi);
+> +	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0, page);
+> +	raw_write(chip, buf, chip->oob_poi);
+> +	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+> +	return 0;
+>  }
+>  
+>  static int tango_read_oob(struct mtd_info *mtd, struct nand_chip *chip, int page)
+> @@ -527,6 +531,7 @@ static int chip_init(struct device *dev, struct device_node *np)
+>  	chip->setup_data_interface = tango_set_timings;
+>  	chip->options = NAND_USE_BOUNCE_BUFFER
+>  		| NAND_NO_SUBPAGE_WRITE
+> +		| NAND_FOO
+
+This is an ECC engine related flag, as such it should be set in
+ecc->options and defined next to NAND_ECC_GENERIC_ERASED_CHECK and
+NAND_ECC_MAXIMIZE.
+
+>  		| NAND_WAIT_TCCS;
+>  	chip->controller = &nfc->hw;
+>  	tchip->base = nfc->pbus_base + (cs * 256);
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 06d0c9d740f7..6999196d04f3 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -186,6 +186,7 @@ enum nand_ecc_algo {
+>  /* Macros to identify the above */
+>  #define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
+>  #define NAND_HAS_SUBPAGE_READ(chip) ((chip->options & NAND_SUBPAGE_READ))
+> +#define NAND_HAS_SUBPAGE_WRITE(chip) (~chip->options & NAND_NO_SUBPAGE_WRITE)
+>  
+>  /* Non chip related options */
+>  /* This option skips the bbt scan during initialization. */
+> @@ -220,6 +221,13 @@ enum nand_ecc_algo {
+>   */
+>  #define NAND_WAIT_TCCS		0x00200000
+>  
+> +/*
+> + * Controller sends NAND_CMD_PAGEPROG (write_page) and NAND_CMD_READ0 (read_page)
+> + * therefore the framework should not send these commands.
+> + * TODO: find a real name. Write a better description.
+> + */
+> +#define NAND_FOO		0x00400000
+> +
+
+Okay, we need to find a real name for this flag, otherwise, it looks
+good to me.
+
+Regarding the name, I have the following suggestions:
+
+NAND_ECC_SKIP_READ_PROG_CMDS
+NAND_ECC_DELEGATE_READ_PROG_CMDS
+NAND_ECC_DELEGATE_PAGE_ACCESS
+NAND_ECC_CUSTOM_PAGE_ACCESS
 
 
->> @@ -2681,7 +2682,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
->>  
->>  	if (!cached || !NAND_HAS_CACHEPROG(chip)) {
->>  
->> -		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
->> +		if (!(chip->options & NAND_FOO))
->> +			chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-> 
-> If you ask the core to not send NAND_CMD_PAGEPROG, it should also not
-> send the SEQIN command.
-
-OK.
-
-
->>  static int tango_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
->>  		const uint8_t *buf, int oob_required, int page)
->>  {
->> -	return raw_write(chip, buf, chip->oob_poi);
->> +	/* what about NAND_CMD_SEQIN ? */
-> 
-> You should send SEQIN as well, and patch the core to not send it when
-> NAND_FOO is set.
-
-OK.
-
-
->> +/*
->> + * Controller sends NAND_CMD_PAGEPROG (write_page) and NAND_CMD_READ0 (read_page)
->> + * therefore the framework should not send these commands.
->> + */
->> +#define NAND_FOO		0x00400000
->> +
-> 
-> Nice name :-).
-
-I was worried there might be some bike-shedding :-)
-Is this the right place to put it? And the right bit to use?
-Would anyone care to suggest a good name?
-
-I've thought of
-NAND_DONT_SEND_RW_CMD
-NAND_ZEALOUS_NFC
-NAND_HIGH_LEVEL_NFC
-NAND_HIGH_LEVEL_RW
-NAND_COMPLEX_RW
-
-Something else?
-
-Regards.
+>  /* Options set by nand scan */
+>  /* Nand scan has allocated controller struct */
+>  #define NAND_CONTROLLER_ALLOC	0x80000000
