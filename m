@@ -1,26 +1,26 @@
-Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c53gj-0002FP-RW
- for linux-mtd@lists.infradead.org; Fri, 11 Nov 2016 04:43:43 +0000
-Received: by mail-it0-x242.google.com with SMTP id q124so8140804itd.1
- for <linux-mtd@lists.infradead.org>; Thu, 10 Nov 2016 20:43:18 -0800 (PST)
-MIME-Version: 1.0
-Sender: joel.stan@gmail.com
-In-Reply-To: <1478688149-4554-1-git-send-email-clg@kaod.org>
-References: <1478688149-4554-1-git-send-email-clg@kaod.org>
-From: Joel Stanley <joel@jms.id.au>
-Date: Fri, 11 Nov 2016 15:12:57 +1030
-Message-ID: <CACPK8Xc=AcA=d+O++W07ki+KkCxA86EnXj7dqTRobTpb9WQbUw@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd/spi-nor: Add SPI memory controllers for Aspeed SoCs
-To: =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ id 1c57gG-0002ly-Jt
+ for linux-mtd@lists.infradead.org; Fri, 11 Nov 2016 08:59:30 +0000
+Received: by mail-wm0-x234.google.com with SMTP id a197so413655914wmd.0
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Nov 2016 00:59:07 -0800 (PST)
+Date: Fri, 11 Nov 2016 09:01:54 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Colin King <colin.king@canonical.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: si476x-i2c: Fix spelling mistakes "Failet" and "gett"
+Message-ID: <20161111090154.GC13638@dell>
+References: <20161028183548.8190-1-colin.king@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20161028183548.8190-1-colin.king@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,86 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 9, 2016 at 9:12 PM, C=C3=A9dric Le Goater <clg@kaod.org> wrote:
-> This driver adds mtd support for spi-nor attached to either or both of
-> the Firmware Memory Controller or the SPI Flash Controller (AST2400
-> only).
->
-> The SMC controllers on the Aspeed AST2500 SoC are very similar to the
-> ones found on the AST2400. The differences are on the number of
-> supported flash modules and their default mappings in the SoC address
-> space.
->
-> The Aspeed AST2500 has one SPI controller for the BMC firmware and two
-> for the host firmware. All controllers have now the same set of
-> registers compatible with the AST2400 FMC controller and the legacy
-> 'SMC' controller is fully gone.
->
-> Each controller has a memory range on which it maps its flash module
-> slaves. Each slave is assigned a memory window for its mapping that
-> can be changed at bootime with the Segment Address Register.
->
-> Each SPI flash slave can then be accessed in two modes: Command and
-> User. When in User mode, accesses to the memory segment of the slaves
-> are translated in SPI transfers. When in Command mode, the HW
-> generates the SPI commands automatically and the memory segment is
-> accessed as if doing a MMIO.
->
-> Currently, only the User mode is supported. Command mode needs a
-> little more work to check that the memory window on the AHB bus fits
-> the module size.
->
-> Based on previous work from Milton D. Miller II <miltonm@us.ibm.com>
->
-> Signed-off-by: C=C3=A9dric Le Goater <clg@kaod.org>
+On Fri, 28 Oct 2016, Colin King wrote:
+
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Trivial spelling mistake fixes in dev_err message.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  Tested on:
->
->  * OpenPOWER Palmetto (AST2400) with
->         FMC controller : n25q256a
->         SPI controller : mx25l25635e and n25q512ax3
->
->  * Evaluation board (AST2500) with
->         FMC controller : w25q256
->         SPI controller : w25q256
->
->  * OpenPOWER Witherspoon (AST2500) with
->         FMC controller : mx25l25635e * 2
->         SPI controller : mx66l1g45g
+>  drivers/mfd/si476x-i2c.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mfd/si476x-i2c.c b/drivers/mfd/si476x-i2c.c
+> index c180b75..e6a3d99 100644
+> --- a/drivers/mfd/si476x-i2c.c
+> +++ b/drivers/mfd/si476x-i2c.c
+> @@ -753,7 +753,7 @@ static int si476x_core_probe(struct i2c_client *client,
+>  				       ARRAY_SIZE(core->supplies),
+>  				       core->supplies);
+>  	if (rval) {
+> -		dev_err(&client->dev, "Failet to gett all of the regulators\n");
+> +		dev_err(&client->dev, "Failed to get all of the regulators\n");
+>  		goto free_gpio;
+>  	}
+>  
 
-It's also in use on the Zaius and Barreleye OpenBMC systems.
+Applied, thanks.
 
-In that respect, I would like to see this merged once it's deemed
-ready by the mtd maintainers. We can follow up with the extra features
-in future patches.
+[Hi Colin, hope you're well!]
 
-I've reviewed and tested this as Cedric and Milton have developed it,
-so please add:
-
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-
-Cheers,
-
-Joel
-
->
->  Changes since v2:
->
->  - added a set4b ops to handle difference in the controllers
->  - simplified the IO routines
->  - prepared for fast read using dummy cycles
->
->  Work in progress:
->
->  - read optimization using higher SPI clock frequencies
->  - command mode to direct reads from AHB
->  - DMA support
->
->  .../devicetree/bindings/mtd/aspeed-smc.txt         |  72 ++
->  drivers/mtd/spi-nor/Kconfig                        |  12 +
->  drivers/mtd/spi-nor/Makefile                       |   1 +
->  drivers/mtd/spi-nor/aspeed-smc.c                   | 783 +++++++++++++++=
-++++++
->  4 files changed, 868 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
->  create mode 100644 drivers/mtd/spi-nor/aspeed-smc.c
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
