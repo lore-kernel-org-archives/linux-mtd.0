@@ -1,30 +1,30 @@
 Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c5gHf-000276-Kb
+ id 1c5gHf-00026y-Kd
  for linux-mtd@lists.infradead.org; Sat, 12 Nov 2016 21:56:24 +0000
-Received: by mail-wm0-x241.google.com with SMTP id g23so5329780wme.1
- for <linux-mtd@lists.infradead.org>; Sat, 12 Nov 2016 13:56:05 -0800 (PST)
-Subject: Re: [PATCH 02/11] mtd: nand: denali: remove unused struct member
- denali_nand_info::idx
+Received: by mail-wm0-x241.google.com with SMTP id a20so5316801wme.2
+ for <linux-mtd@lists.infradead.org>; Sat, 12 Nov 2016 13:56:04 -0800 (PST)
+Subject: Re: [PATCH 01/11] mtd: nand: denali: remove unneeded <linux/slab.h>
+ includes
 To: Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-mtd@lists.infradead.org
 References: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
- <1478666130-13413-3-git-send-email-yamada.masahiro@socionext.com>
-Cc: Alan Cox <alan@linux.intel.com>,
+ <1478666130-13413-2-git-send-email-yamada.masahiro@socionext.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  David Woodhouse <David.Woodhouse@intel.com>,
- Jason Roberts <jason.e.roberts@intel.com>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>, Dinh Nguyen
- <dinguyen@altera.com>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Jason Roberts <jason.e.roberts@intel.com>, linux-kernel@vger.kernel.org,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>,
+ Alan Cox <alan@linux.intel.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <f147e67b-4c46-8571-3121-d86615b9edc2@gmail.com>
-Date: Sat, 12 Nov 2016 22:29:09 +0100
+Message-ID: <94e0b7c7-ab2e-c7a7-fcf3-a7c4bd123008@gmail.com>
+Date: Sat, 12 Nov 2016 22:28:53 +0100
 MIME-Version: 1.0
-In-Reply-To: <1478666130-13413-3-git-send-email-yamada.masahiro@socionext.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1478666130-13413-2-git-send-email-yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,11 +36,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 11/09/2016 05:35 AM, Masahiro Yamada wrote:
-> The struct member "idx" was used as an index for debug_array long
-> ago, but the DEBUG_DENALI feature was removed by commit 7cfffac06ca0
-> ("nand/denali: use dev_xx debug function to replace nand_dbg_print
-> and some printk").  Since then, this has been only initialized, but
-> never referenced.
+> The driver calls devm_kzalloc()/devm_kfree() to allocate/free memory.
+> They are declared in <linux/device.h>, not in <linux/slab.h>.
 > 
 > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
@@ -48,35 +45,47 @@ Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
 > ---
 > 
->  drivers/mtd/nand/denali.c | 2 --
->  drivers/mtd/nand/denali.h | 1 -
->  2 files changed, 3 deletions(-)
+>  drivers/mtd/nand/denali.c     | 1 -
+>  drivers/mtd/nand/denali_dt.c  | 1 -
+>  drivers/mtd/nand/denali_pci.c | 1 -
+>  3 files changed, 3 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 062d5b5..51ddb84 100644
+> index 7e2c650..062d5b5 100644
 > --- a/drivers/mtd/nand/denali.c
 > +++ b/drivers/mtd/nand/denali.c
-> @@ -1436,8 +1436,6 @@ static int denali_ooblayout_free(struct mtd_info *mtd, int section,
->  /* initialize driver data structures */
->  static void denali_drv_init(struct denali_nand_info *denali)
->  {
-> -	denali->idx = 0;
-> -
->  	/* setup interrupt handler */
->  	/*
->  	 * the completion object will be used to notify
-> diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-> index e7ab486..0ce7344 100644
-> --- a/drivers/mtd/nand/denali.h
-> +++ b/drivers/mtd/nand/denali.h
-> @@ -467,7 +467,6 @@ struct denali_nand_info {
->  	spinlock_t irq_lock;
->  	uint32_t irq_status;
->  	int irq_debug_array[32];
-> -	int idx;
->  	int irq;
+> @@ -21,7 +21,6 @@
+>  #include <linux/dma-mapping.h>
+>  #include <linux/wait.h>
+>  #include <linux/mutex.h>
+> -#include <linux/slab.h>
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/module.h>
 >  
->  	uint32_t devnum;	/* represent how many nands connected */
+> diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+> index f821dc1..5607fcd 100644
+> --- a/drivers/mtd/nand/denali_dt.c
+> +++ b/drivers/mtd/nand/denali_dt.c
+> @@ -21,7 +21,6 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> -#include <linux/slab.h>
+>  
+>  #include "denali.h"
+>  
+> diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
+> index de31514..ac84323 100644
+> --- a/drivers/mtd/nand/denali_pci.c
+> +++ b/drivers/mtd/nand/denali_pci.c
+> @@ -14,7 +14,6 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/pci.h>
+> -#include <linux/slab.h>
+>  
+>  #include "denali.h"
+>  
 > 
 
 
