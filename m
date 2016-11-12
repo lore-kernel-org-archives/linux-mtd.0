@@ -1,15 +1,14 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c5gHk-00028G-1k
- for linux-mtd@lists.infradead.org; Sat, 12 Nov 2016 21:56:29 +0000
-Received: by mail-wm0-x241.google.com with SMTP id g23so5330240wme.1
- for <linux-mtd@lists.infradead.org>; Sat, 12 Nov 2016 13:56:12 -0800 (PST)
-Subject: Re: [PATCH 06/11] mtd: nand: denali: remove unused struct member
- totalblks, blksperchip
+ id 1c5gHl-00028W-9b
+ for linux-mtd@lists.infradead.org; Sat, 12 Nov 2016 21:56:30 +0000
+Received: by mail-wm0-x242.google.com with SMTP id u144so5312687wmu.0
+ for <linux-mtd@lists.infradead.org>; Sat, 12 Nov 2016 13:56:13 -0800 (PST)
+Subject: Re: [PATCH 07/11] mtd: nand: denali: use managed devm_irq_request()
 To: Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-mtd@lists.infradead.org
 References: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
- <1478666130-13413-7-git-send-email-yamada.masahiro@socionext.com>
+ <1478666130-13413-8-git-send-email-yamada.masahiro@socionext.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  David Woodhouse <David.Woodhouse@intel.com>,
  Richard Weinberger <richard@nod.at>,
@@ -20,10 +19,10 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>,
  Alan Cox <alan@linux.intel.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <5c9e0f94-1ed5-8681-8829-4f025d5403e0@gmail.com>
-Date: Sat, 12 Nov 2016 22:35:50 +0100
+Message-ID: <a5f5bd0f-0a80-8562-472a-6f6224cdead7@gmail.com>
+Date: Sat, 12 Nov 2016 22:38:47 +0100
 MIME-Version: 1.0
-In-Reply-To: <1478666130-13413-7-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1478666130-13413-8-git-send-email-yamada.masahiro@socionext.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,9 +35,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 11/09/2016 05:35 AM, Masahiro Yamada wrote:
-> The denali->blksperchip is set, but not referenced any more.  The
-> denali->totalblks is used only for calculating denali->blksperchip.
-> Both of them are unneeded.
+> Use the managed variant instead of request_irq() and free_irq().
 > 
 > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
@@ -46,42 +43,32 @@ Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
 > ---
 > 
->  drivers/mtd/nand/denali.c | 8 --------
->  drivers/mtd/nand/denali.h | 2 --
->  2 files changed, 10 deletions(-)
+>  drivers/mtd/nand/denali.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 78d795b..548278b 100644
+> index 548278b..44e075a 100644
 > --- a/drivers/mtd/nand/denali.c
 > +++ b/drivers/mtd/nand/denali.c
-> @@ -1573,14 +1573,6 @@ int denali_init(struct denali_nand_info *denali)
->  	denali->nand.ecc.bytes *= denali->devnum;
->  	denali->nand.ecc.strength *= denali->devnum;
+> @@ -575,7 +575,6 @@ static void denali_irq_init(struct denali_nand_info *denali)
+>  static void denali_irq_cleanup(int irqnum, struct denali_nand_info *denali)
+>  {
+>  	denali_set_intr_modes(denali, false);
+> -	free_irq(irqnum, denali);
+>  }
 >  
-> -	/*
-> -	 * Let driver know the total blocks number and how many blocks
-> -	 * contained by each nand chip. blksperchip will help driver to
-> -	 * know how many blocks is taken by FW.
-> -	 */
-> -	denali->totalblks = mtd->size >> denali->nand.phys_erase_shift;
-> -	denali->blksperchip = denali->totalblks / denali->nand.numchips;
-> -
->  	/* override the default read operations */
->  	denali->nand.ecc.size = ECC_SECTOR_SIZE * denali->devnum;
->  	denali->nand.ecc.read_page = denali_read_page;
-> diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-> index 7c0800d..ea22191 100644
-> --- a/drivers/mtd/nand/denali.h
-> +++ b/drivers/mtd/nand/denali.h
-> @@ -462,8 +462,6 @@ struct denali_nand_info {
->  	int irq;
->  
->  	uint32_t devnum;	/* represent how many nands connected */
-> -	uint32_t totalblks;
-> -	uint32_t blksperchip;
->  	uint32_t bbtskipbytes;
->  	uint32_t max_banks;
->  };
+>  static void denali_irq_enable(struct denali_nand_info *denali,
+> @@ -1456,8 +1455,8 @@ int denali_init(struct denali_nand_info *denali)
+>  	 * denali_isr register is done after all the hardware
+>  	 * initilization is finished
+>  	 */
+> -	if (request_irq(denali->irq, denali_isr, IRQF_SHARED,
+> -			DENALI_NAND_NAME, denali)) {
+> +	if (devm_request_irq(denali->dev, denali->irq, denali_isr, IRQF_SHARED,
+> +			     DENALI_NAND_NAME, denali)) {
+>  		dev_err(denali->dev, "Unable to request IRQ\n");
+>  		return -ENODEV;
+>  	}
 > 
 
 
