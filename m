@@ -1,6 +1,6 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c62Ew-00056v-61
+ id 1c62Ew-00055s-6D
  for linux-mtd@lists.infradead.org; Sun, 13 Nov 2016 21:23:06 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
@@ -9,9 +9,9 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, ebiggers@google.com, mhalcrow@google.com,
  hch@infradead.org, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 24/29] ubifs: Rename tnc_read_node_nm
-Date: Sun, 13 Nov 2016 22:21:07 +0100
-Message-Id: <1479072072-6844-25-git-send-email-richard@nod.at>
+Subject: [PATCH 17/29] ubifs: Introduce new data node field, compr_size
+Date: Sun, 13 Nov 2016 22:21:00 +0100
+Message-Id: <1479072072-6844-18-git-send-email-richard@nod.at>
 In-Reply-To: <1479072072-6844-1-git-send-email-richard@nod.at>
 References: <1479072072-6844-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,64 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-tnc_read_hashed_node() is a better name since we read a node
-by a given hash, not a name.
+When data of a data node is compressed and encrypted
+we need to store the size of the compressed data because
+before encryption we may have to add padding bytes.
+
+For the new field we consume the last two padding bytes
+in struct ubifs_data_node. Two bytes are fine because
+the data length is at most 4096.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/tnc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/ubifs/journal.c     | 11 -----------
+ fs/ubifs/ubifs-media.h |  6 ++----
+ 2 files changed, 2 insertions(+), 15 deletions(-)
 
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 0d0030461cb4..0d751297873e 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -378,7 +378,7 @@ static void lnc_free(struct ubifs_zbranch *zbr)
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 91bc76dc559e..b5e86c4da48f 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -82,15 +82,6 @@ static inline void zero_dent_node_unused(struct ubifs_dent_node *dent)
  }
  
  /**
-- * tnc_read_node_nm - read a "hashed" leaf node.
-+ * tnc_read_hashed_node - read a "hashed" leaf node.
-  * @c: UBIFS file-system description object
-  * @zbr: key and position of the node
-  * @node: node is returned here
-@@ -388,8 +388,8 @@ static void lnc_free(struct ubifs_zbranch *zbr)
-  * added to LNC. Returns zero in case of success or a negative negative error
-  * code in case of failure.
+- * zero_data_node_unused - zero out unused fields of an on-flash data node.
+- * @data: the data node to zero out
+- */
+-static inline void zero_data_node_unused(struct ubifs_data_node *data)
+-{
+-	memset(data->padding, 0, 2);
+-}
+-
+-/**
+  * zero_trun_node_unused - zero out unused fields of an on-flash truncation
+  *                         node.
+  * @trun: the truncation node to zero out
+@@ -722,7 +713,6 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+ 	data->ch.node_type = UBIFS_DATA_NODE;
+ 	key_write(c, key, &data->key);
+ 	data->size = cpu_to_le32(len);
+-	zero_data_node_unused(data);
+ 
+ 	if (!(ui->flags & UBIFS_COMPR_FL))
+ 		/* Compression is disabled for this inode */
+@@ -1357,7 +1347,6 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
+ 					dn->size = cpu_to_le32(dlen);
+ 					dlen += UBIFS_DATA_NODE_SZ;
+ 				}
+-				zero_data_node_unused(dn);
+ 			}
+ 		}
+ 	}
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index aa302b11aec8..e46331dcca4c 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -553,18 +553,16 @@ struct ubifs_dent_node {
+  * @key: node key
+  * @size: uncompressed data size in bytes
+  * @compr_type: compression type (%UBIFS_COMPR_NONE, %UBIFS_COMPR_LZO, etc)
+- * @padding: reserved for future, zeroes
++ * @compr_size: compressed data size in bytes, only valid when data is encrypted
+  * @data: data
+  *
+- * Note, do not forget to amend 'zero_data_node_unused()' function when
+- * changing the padding fields.
   */
--static int tnc_read_node_nm(struct ubifs_info *c, struct ubifs_zbranch *zbr,
--			    void *node)
-+static int tnc_read_hashed_node(struct ubifs_info *c, struct ubifs_zbranch *zbr,
-+				void *node)
- {
- 	int err;
- 
-@@ -1454,7 +1454,7 @@ int ubifs_tnc_locate(struct ubifs_info *c, const union ubifs_key *key,
- 		 * In this case the leaf node cache gets used, so we pass the
- 		 * address of the zbranch and keep the mutex locked
- 		 */
--		err = tnc_read_node_nm(c, zt, node);
-+		err = tnc_read_hashed_node(c, zt, node);
- 		goto out;
- 	}
- 	if (safely) {
-@@ -1817,7 +1817,7 @@ static int do_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
- 		goto out_unlock;
- 	}
- 
--	err = tnc_read_node_nm(c, &znode->zbranch[n], node);
-+	err = tnc_read_hashed_node(c, &znode->zbranch[n], node);
- 
- out_unlock:
- 	mutex_unlock(&c->tnc_mutex);
-@@ -2815,7 +2815,7 @@ struct ubifs_dent_node *ubifs_tnc_next_ent(struct ubifs_info *c,
- 		goto out_free;
- 	}
- 
--	err = tnc_read_node_nm(c, zbr, dent);
-+	err = tnc_read_hashed_node(c, zbr, dent);
- 	if (unlikely(err))
- 		goto out_free;
+ struct ubifs_data_node {
+ 	struct ubifs_ch ch;
+ 	__u8 key[UBIFS_MAX_KEY_LEN];
+ 	__le32 size;
+ 	__le16 compr_type;
+-	__u8 padding[2]; /* Watch 'zero_data_node_unused()' if changing! */
++	__le16 compr_size;
+ 	__u8 data[];
+ } __packed;
  
 -- 
 2.7.3
