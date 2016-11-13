@@ -1,7 +1,7 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c62EZ-0004v7-Om
- for linux-mtd@lists.infradead.org; Sun, 13 Nov 2016 21:22:41 +0000
+ id 1c62EZ-0004vU-Oi
+ for linux-mtd@lists.infradead.org; Sun, 13 Nov 2016 21:22:42 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -9,9 +9,9 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, ebiggers@google.com, mhalcrow@google.com,
  hch@infradead.org, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 08/29] ubifs: Define UBIFS crypto context xattr
-Date: Sun, 13 Nov 2016 22:20:51 +0100
-Message-Id: <1479072072-6844-9-git-send-email-richard@nod.at>
+Subject: [PATCH 11/29] ubifs: Implement directory open operation
+Date: Sun, 13 Nov 2016 22:20:54 +0100
+Message-Id: <1479072072-6844-12-git-send-email-richard@nod.at>
 In-Reply-To: <1479072072-6844-1-git-send-email-richard@nod.at>
 References: <1479072072-6844-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,31 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Like ext4 UBIFS will store the crypto context in a xattr
-attribute.
+We need the ->open() hook to load the crypto context
+which is needed for all crypto operations within that
+directory.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/ubifs-media.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/ubifs/dir.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-index e24380cf46ed..d47e9569b3de 100644
---- a/fs/ubifs/ubifs-media.h
-+++ b/fs/ubifs/ubifs-media.h
-@@ -301,6 +301,13 @@ enum {
- #define UBIFS_MAX_NODE_SZ UBIFS_MAX_INO_NODE_SZ
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 2315cb864c39..477817567971 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1410,6 +1410,14 @@ int ubifs_getattr(struct vfsmount *mnt, struct dentry *dentry,
+ 	return 0;
+ }
  
- /*
-+ * xattr name of UBIFS encryption context, we don't use a prefix
-+ * nor a long name to not waste space on the flash.
-+ */
-+#define UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT "c"
++static int ubifs_dir_open(struct inode *dir, struct file *file)
++{
++	if (ubifs_crypt_is_encrypted(dir))
++		return fscrypt_get_encryption_info(dir) ? -EACCES : 0;
 +
++	return 0;
++}
 +
-+/*
-  * On-flash inode flags.
-  *
-  * UBIFS_COMPR_FL: use compression for this inode
+ const struct inode_operations ubifs_dir_inode_operations = {
+ 	.lookup      = ubifs_lookup,
+ 	.create      = ubifs_create,
+@@ -1436,6 +1444,7 @@ const struct file_operations ubifs_dir_operations = {
+ 	.iterate_shared = ubifs_readdir,
+ 	.fsync          = ubifs_fsync,
+ 	.unlocked_ioctl = ubifs_ioctl,
++	.open		= ubifs_dir_open,
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl   = ubifs_compat_ioctl,
+ #endif
 -- 
 2.7.3
