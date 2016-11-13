@@ -1,7 +1,7 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c62ED-0004ry-4L
- for linux-mtd@lists.infradead.org; Sun, 13 Nov 2016 21:22:18 +0000
+ id 1c62ED-0004s1-40
+ for linux-mtd@lists.infradead.org; Sun, 13 Nov 2016 21:22:19 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -9,9 +9,9 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, ebiggers@google.com, mhalcrow@google.com,
  hch@infradead.org, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 01/29] fscrypt: Add in-place encryption mode
-Date: Sun, 13 Nov 2016 22:20:44 +0100
-Message-Id: <1479072072-6844-2-git-send-email-richard@nod.at>
+Subject: [PATCH 04/29] fscrypt: Constify struct inode pointer
+Date: Sun, 13 Nov 2016 22:20:47 +0100
+Message-Id: <1479072072-6844-5-git-send-email-richard@nod.at>
 In-Reply-To: <1479072072-6844-1-git-send-email-richard@nod.at>
 References: <1479072072-6844-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,94 +25,169 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: David Gstir <david@sigma-star.at>
 
-ext4 and f2fs require a bounce page when encrypting pages. However, not
-all filesystems will need that (eg. UBIFS). This is handled via a
-flag on fscrypt_operations where a fs implementation can select in-place
-encryption over using a bounce page (which is the default).
+Some filesystems, such as UBIFS, maintain a const pointer for struct
+inode.
 
 Signed-off-by: David Gstir <david@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/crypto/crypto.c       | 25 +++++++++++++++----------
- include/linux/fscrypto.h |  6 ++++++
- 2 files changed, 21 insertions(+), 10 deletions(-)
+ fs/crypto/crypto.c       | 10 +++++-----
+ fs/crypto/fname.c        |  4 ++--
+ include/linux/fscrypto.h | 22 +++++++++++-----------
+ 3 files changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 98f87fe8f186..f38dc8aac2fe 100644
+index e170aa05011d..f5c5e84ea9db 100644
 --- a/fs/crypto/crypto.c
 +++ b/fs/crypto/crypto.c
-@@ -217,8 +217,9 @@ static struct page *alloc_bounce_page(struct fscrypt_ctx *ctx, gfp_t gfp_flags)
-  * @plaintext_page: The page to encrypt. Must be locked.
-  * @gfp_flags:      The gfp flag for memory allocation
+@@ -88,7 +88,7 @@ EXPORT_SYMBOL(fscrypt_release_ctx);
+  * Return: An allocated and initialized encryption context on success; error
+  * value or NULL otherwise.
+  */
+-struct fscrypt_ctx *fscrypt_get_ctx(struct inode *inode, gfp_t gfp_flags)
++struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *inode, gfp_t gfp_flags)
+ {
+ 	struct fscrypt_ctx *ctx = NULL;
+ 	struct fscrypt_info *ci = inode->i_crypt_info;
+@@ -146,7 +146,7 @@ typedef enum {
+ 	FS_ENCRYPT,
+ } fscrypt_direction_t;
+ 
+-static int do_page_crypto(struct inode *inode,
++static int do_page_crypto(const struct inode *inode,
+ 			fscrypt_direction_t rw, pgoff_t index,
+ 			struct page *src_page, struct page *dest_page,
+ 			unsigned int src_len, unsigned int src_offset,
+@@ -231,7 +231,7 @@ static struct page *alloc_bounce_page(struct fscrypt_ctx *ctx, gfp_t gfp_flags)
+  * Return: An allocated page with the encrypted content on success. Else, an
+  * error value or NULL.
+  */
+-struct page *fscrypt_encrypt_page(struct inode *inode,
++struct page *fscrypt_encrypt_page(const struct inode *inode,
+ 				struct page *plaintext_page,
+ 				unsigned int plaintext_len,
+ 				unsigned int plaintext_offset,
+@@ -290,7 +290,7 @@ EXPORT_SYMBOL(fscrypt_encrypt_page);
   *
-- * Allocates a ciphertext page and encrypts plaintext_page into it using the ctx
-- * encryption context.
-+ * Encrypts plaintext_page using the ctx encryption context. If
-+ * the filesystem supports it, encryption is performed in-place, otherwise a
-+ * new ciphertext_page is allocated and returned.
-  *
-  * Called on the page write path.  The caller must call
-  * fscrypt_restore_control_page() on the returned ciphertext page to
-@@ -231,7 +232,7 @@ struct page *fscrypt_encrypt_page(struct inode *inode,
- 				struct page *plaintext_page, gfp_t gfp_flags)
+  * Return: Zero on success, non-zero otherwise.
+  */
+-int fscrypt_decrypt_page(struct inode *inode, struct page *page,
++int fscrypt_decrypt_page(const struct inode *inode, struct page *page,
+ 			unsigned int len, unsigned int offs)
+ {
+ 	return do_page_crypto(inode, FS_DECRYPT, page->index, page, page, len, offs,
+@@ -298,7 +298,7 @@ int fscrypt_decrypt_page(struct inode *inode, struct page *page,
+ }
+ EXPORT_SYMBOL(fscrypt_decrypt_page);
+ 
+-int fscrypt_zeroout_range(struct inode *inode, pgoff_t lblk,
++int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+ 				sector_t pblk, unsigned int len)
  {
  	struct fscrypt_ctx *ctx;
--	struct page *ciphertext_page = NULL;
-+	struct page *ciphertext_page = plaintext_page;
- 	int err;
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 9a28133ac3b8..faeaf0be9400 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -220,7 +220,7 @@ static int digest_decode(const char *src, int len, char *dst)
+ 	return cp - dst;
+ }
  
- 	BUG_ON(!PageLocked(plaintext_page));
-@@ -240,10 +241,12 @@ struct page *fscrypt_encrypt_page(struct inode *inode,
- 	if (IS_ERR(ctx))
- 		return (struct page *)ctx;
- 
--	/* The encryption operation will require a bounce page. */
--	ciphertext_page = alloc_bounce_page(ctx, gfp_flags);
--	if (IS_ERR(ciphertext_page))
--		goto errout;
-+	if (!(inode->i_sb->s_cop->flags & FS_CFLG_INPLACE_ENCRYPTION)) {
-+		/* The encryption operation will require a bounce page. */
-+		ciphertext_page = alloc_bounce_page(ctx, gfp_flags);
-+		if (IS_ERR(ciphertext_page))
-+			goto errout;
-+	}
- 
- 	ctx->w.control_page = plaintext_page;
- 	err = do_page_crypto(inode, FS_ENCRYPT, plaintext_page->index,
-@@ -253,9 +256,11 @@ struct page *fscrypt_encrypt_page(struct inode *inode,
- 		ciphertext_page = ERR_PTR(err);
- 		goto errout;
- 	}
--	SetPagePrivate(ciphertext_page);
--	set_page_private(ciphertext_page, (unsigned long)ctx);
--	lock_page(ciphertext_page);
-+	if (!(inode->i_sb->s_cop->flags & FS_CFLG_INPLACE_ENCRYPTION)) {
-+		SetPagePrivate(ciphertext_page);
-+		set_page_private(ciphertext_page, (unsigned long)ctx);
-+		lock_page(ciphertext_page);
-+	}
- 	return ciphertext_page;
- 
- errout:
+-u32 fscrypt_fname_encrypted_size(struct inode *inode, u32 ilen)
++u32 fscrypt_fname_encrypted_size(const struct inode *inode, u32 ilen)
+ {
+ 	int padding = 32;
+ 	struct fscrypt_info *ci = inode->i_crypt_info;
+@@ -238,7 +238,7 @@ EXPORT_SYMBOL(fscrypt_fname_encrypted_size);
+  * Allocates an output buffer that is sufficient for the crypto operation
+  * specified by the context and the direction.
+  */
+-int fscrypt_fname_alloc_buffer(struct inode *inode,
++int fscrypt_fname_alloc_buffer(const struct inode *inode,
+ 				u32 ilen, struct fscrypt_str *crypto_str)
+ {
+ 	unsigned int olen = fscrypt_fname_encrypted_size(inode, ilen);
 diff --git a/include/linux/fscrypto.h b/include/linux/fscrypto.h
-index ff8b11b26f31..5a65b0e3773f 100644
+index e05931272cea..e9be944a324c 100644
 --- a/include/linux/fscrypto.h
 +++ b/include/linux/fscrypto.h
-@@ -154,9 +154,15 @@ struct fscrypt_name {
- #define fname_len(p)		((p)->disk_name.len)
+@@ -212,7 +212,7 @@ static inline struct page *fscrypt_control_page(struct page *page)
+ #endif
+ }
  
- /*
-+ * fscrypt superblock flags
-+ */
-+#define FS_CFLG_INPLACE_ENCRYPTION (1U << 1)
-+
-+/*
-  * crypto opertions for filesystems
-  */
- struct fscrypt_operations {
-+	unsigned int flags;
- 	int (*get_context)(struct inode *, void *, size_t);
- 	int (*key_prefix)(struct inode *, u8 **);
- 	int (*prepare_context)(struct inode *);
+-static inline int fscrypt_has_encryption_key(struct inode *inode)
++static inline int fscrypt_has_encryption_key(const struct inode *inode)
+ {
+ #if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+ 	return (inode->i_crypt_info != NULL);
+@@ -246,17 +246,17 @@ static inline void fscrypt_set_d_op(struct dentry *dentry)
+ extern struct kmem_cache *fscrypt_info_cachep;
+ int fscrypt_initialize(void);
+ 
+-extern struct fscrypt_ctx *fscrypt_get_ctx(struct inode *, gfp_t);
++extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
+ extern void fscrypt_release_ctx(struct fscrypt_ctx *);
+-extern struct page *fscrypt_encrypt_page(struct inode *, struct page *,
++extern struct page *fscrypt_encrypt_page(const struct inode *, struct page *,
+ 						unsigned int, unsigned int,
+ 						gfp_t);
+-extern int fscrypt_decrypt_page(struct inode *, struct page *, unsigned int,
++extern int fscrypt_decrypt_page(const struct inode *, struct page *, unsigned int,
+ 				unsigned int);
+ extern void fscrypt_decrypt_bio_pages(struct fscrypt_ctx *, struct bio *);
+ extern void fscrypt_pullback_bio_page(struct page **, bool);
+ extern void fscrypt_restore_control_page(struct page *);
+-extern int fscrypt_zeroout_range(struct inode *, pgoff_t, sector_t,
++extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
+ 						unsigned int);
+ /* policy.c */
+ extern int fscrypt_process_policy(struct file *, const struct fscrypt_policy *);
+@@ -273,8 +273,8 @@ extern void fscrypt_put_encryption_info(struct inode *, struct fscrypt_info *);
+ extern int fscrypt_setup_filename(struct inode *, const struct qstr *,
+ 				int lookup, struct fscrypt_name *);
+ extern void fscrypt_free_filename(struct fscrypt_name *);
+-extern u32 fscrypt_fname_encrypted_size(struct inode *, u32);
+-extern int fscrypt_fname_alloc_buffer(struct inode *, u32,
++extern u32 fscrypt_fname_encrypted_size(const struct inode *, u32);
++extern int fscrypt_fname_alloc_buffer(const struct inode *, u32,
+ 				struct fscrypt_str *);
+ extern void fscrypt_fname_free_buffer(struct fscrypt_str *);
+ extern int fscrypt_fname_disk_to_usr(struct inode *, u32, u32,
+@@ -284,7 +284,7 @@ extern int fscrypt_fname_usr_to_disk(struct inode *, const struct qstr *,
+ #endif
+ 
+ /* crypto.c */
+-static inline struct fscrypt_ctx *fscrypt_notsupp_get_ctx(struct inode *i,
++static inline struct fscrypt_ctx *fscrypt_notsupp_get_ctx(const struct inode *i,
+ 							gfp_t f)
+ {
+ 	return ERR_PTR(-EOPNOTSUPP);
+@@ -295,7 +295,7 @@ static inline void fscrypt_notsupp_release_ctx(struct fscrypt_ctx *c)
+ 	return;
+ }
+ 
+-static inline struct page *fscrypt_notsupp_encrypt_page(struct inode *i,
++static inline struct page *fscrypt_notsupp_encrypt_page(const struct inode *i,
+ 						struct page *p,
+ 						unsigned int len,
+ 						unsigned int offs,
+@@ -304,7 +304,7 @@ static inline struct page *fscrypt_notsupp_encrypt_page(struct inode *i,
+ 	return ERR_PTR(-EOPNOTSUPP);
+ }
+ 
+-static inline int fscrypt_notsupp_decrypt_page(struct inode *i, struct page *p,
++static inline int fscrypt_notsupp_decrypt_page(const struct inode *i, struct page *p,
+ 						unsigned int len, unsigned int offs)
+ {
+ 	return -EOPNOTSUPP;
+@@ -326,7 +326,7 @@ static inline void fscrypt_notsupp_restore_control_page(struct page *p)
+ 	return;
+ }
+ 
+-static inline int fscrypt_notsupp_zeroout_range(struct inode *i, pgoff_t p,
++static inline int fscrypt_notsupp_zeroout_range(const struct inode *i, pgoff_t p,
+ 					sector_t s, unsigned int f)
+ {
+ 	return -EOPNOTSUPP;
 -- 
 2.7.3
