@@ -1,6 +1,6 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c62Ew-00054a-62
+ id 1c62Ew-000571-5r
  for linux-mtd@lists.infradead.org; Sun, 13 Nov 2016 21:23:03 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
@@ -9,9 +9,9 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, ebiggers@google.com, mhalcrow@google.com,
  hch@infradead.org, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 16/29] ubifs: Enforce crypto policy in mmap
-Date: Sun, 13 Nov 2016 22:20:59 +0100
-Message-Id: <1479072072-6844-17-git-send-email-richard@nod.at>
+Subject: [PATCH 26/29] ubifs: Use a random number for cookies
+Date: Sun, 13 Nov 2016 22:21:09 +0100
+Message-Id: <1479072072-6844-27-git-send-email-richard@nod.at>
 In-Reply-To: <1479072072-6844-1-git-send-email-richard@nod.at>
 References: <1479072072-6844-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,33 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We need this extra check in mmap because a process could
-gain an already opened fd.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/file.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/ubifs/journal.c | 3 +++
+ fs/ubifs/ubifs.h   | 1 +
+ 2 files changed, 4 insertions(+)
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index a9c5cc6c0bc5..60e789a9cac8 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1594,6 +1594,15 @@ static const struct vm_operations_struct ubifs_file_vm_ops = {
- static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
- {
- 	int err;
-+	struct inode *inode = file->f_mapping->host;
-+
-+	if (ubifs_crypt_is_encrypted(inode)) {
-+		err = fscrypt_get_encryption_info(inode);
-+		if (err)
-+			return -EACCES;
-+		if (!fscrypt_has_encryption_key(inode))
-+			return -ENOKEY;
-+	}
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 0698cccc6223..88d33775f18b 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -589,6 +589,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 	dent->nlen = cpu_to_le16(fname_len(nm));
+ 	memcpy(dent->name, fname_name(nm), fname_len(nm));
+ 	dent->name[fname_len(nm)] = '\0';
++	dent->cookie = prandom_u32();
  
- 	err = generic_file_mmap(file, vma);
- 	if (err)
+ 	zero_dent_node_unused(dent);
+ 	ubifs_prep_grp_node(c, dent, dlen, 0);
+@@ -1124,6 +1125,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	dent->nlen = cpu_to_le16(fname_len(new_nm));
+ 	memcpy(dent->name, fname_name(new_nm), fname_len(new_nm));
+ 	dent->name[fname_len(new_nm)] = '\0';
++	dent->cookie = prandom_u32();
+ 	zero_dent_node_unused(dent);
+ 	ubifs_prep_grp_node(c, dent, dlen1, 0);
+ 
+@@ -1142,6 +1144,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	dent2->nlen = cpu_to_le16(fname_len(old_nm));
+ 	memcpy(dent2->name, fname_name(old_nm), fname_len(old_nm));
+ 	dent2->name[fname_len(old_nm)] = '\0';
++	dent2->cookie = prandom_u32();
+ 	zero_dent_node_unused(dent2);
+ 	ubifs_prep_grp_node(c, dent2, dlen2, 0);
+ 
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 8d9946082665..eafddb2b30e3 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -39,6 +39,7 @@
+ #include <linux/security.h>
+ #include <linux/xattr.h>
+ #include <linux/fscrypto.h>
++#include <linux/random.h>
+ #include "ubifs-media.h"
+ 
+ /* Version of this UBIFS implementation */
 -- 
 2.7.3
