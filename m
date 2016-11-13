@@ -1,6 +1,6 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c62EZ-0004vc-Oj
+ id 1c62EZ-0004vb-Og
  for linux-mtd@lists.infradead.org; Sun, 13 Nov 2016 21:22:44 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
@@ -9,9 +9,9 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, ebiggers@google.com, mhalcrow@google.com,
  hch@infradead.org, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 14/29] ubifs: Preload crypto context in ->lookup()
-Date: Sun, 13 Nov 2016 22:20:57 +0100
-Message-Id: <1479072072-6844-15-git-send-email-richard@nod.at>
+Subject: [PATCH 13/29] ubifs: Enforce crypto policy in ->link and ->rename
+Date: Sun, 13 Nov 2016 22:20:56 +0100
+Message-Id: <1479072072-6844-14-git-send-email-richard@nod.at>
 In-Reply-To: <1479072072-6844-1-git-send-email-richard@nod.at>
 References: <1479072072-6844-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,38 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-...and mark the dentry as encrypted.
+When a file is moved or linked into another directory
+its current crypto policy has to be compatible with the
+target policy.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/dir.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ fs/ubifs/dir.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index bd0af4e9ca0b..9976a709b875 100644
+index 477817567971..bd0af4e9ca0b 100644
 --- a/fs/ubifs/dir.c
 +++ b/fs/ubifs/dir.c
-@@ -218,6 +218,21 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+@@ -639,6 +639,10 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+ 	ubifs_assert(inode_is_locked(dir));
+ 	ubifs_assert(inode_is_locked(inode));
  
- 	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
- 
-+	if (ubifs_crypt_is_encrypted(dir)) {
-+		err = fscrypt_get_encryption_info(dir);
++	if (ubifs_crypt_is_encrypted(dir) &&
++	    !fscrypt_has_permitted_context(dir, inode))
++		return -EPERM;
 +
-+		/*
-+		 * DCACHE_ENCRYPTED_WITH_KEY is set if the dentry is
-+		 * created while the directory was encrypted and we
-+		 * have access to the key.
-+		 */
-+		if (fscrypt_has_encryption_key(dir))
-+			fscrypt_set_encrypted_dentry(dentry);
-+		fscrypt_set_d_op(dentry);
-+		if (err && err != -ENOKEY)
-+			return ERR_PTR(err);
+ 	err = dbg_check_synced_i_size(c, inode);
+ 	if (err)
+ 		return err;
+@@ -1133,6 +1137,12 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	if (unlink)
+ 		ubifs_assert(inode_is_locked(new_inode));
+ 
++	if (old_dir != new_dir) {
++		if (ubifs_crypt_is_encrypted(new_dir) &&
++		    !fscrypt_has_permitted_context(new_dir, old_inode))
++			return -EPERM;
 +	}
 +
- 	if (dentry->d_name.len > UBIFS_MAX_NLEN)
- 		return ERR_PTR(-ENAMETOOLONG);
+ 	if (unlink && is_dir) {
+ 		err = ubifs_check_dir_empty(new_inode);
+ 		if (err)
+@@ -1327,6 +1337,13 @@ static int ubifs_xrename(struct inode *old_dir, struct dentry *old_dentry,
  
+ 	ubifs_assert(fst_inode && snd_inode);
+ 
++	if ((ubifs_crypt_is_encrypted(old_dir) ||
++	    ubifs_crypt_is_encrypted(new_dir)) &&
++	    (old_dir != new_dir) &&
++	    (!fscrypt_has_permitted_context(new_dir, fst_inode) ||
++	     !fscrypt_has_permitted_context(old_dir, snd_inode)))
++		return -EPERM;
++
+ 	lock_4_inodes(old_dir, new_dir, NULL, NULL);
+ 
+ 	time = ubifs_current_time(old_dir);
 -- 
 2.7.3
