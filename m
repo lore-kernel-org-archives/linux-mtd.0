@@ -1,7 +1,7 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c62ED-0004s1-40
- for linux-mtd@lists.infradead.org; Sun, 13 Nov 2016 21:22:19 +0000
+ id 1c62ED-0004rx-3U
+ for linux-mtd@lists.infradead.org; Sun, 13 Nov 2016 21:22:20 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -9,11 +9,9 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  jaegeuk@kernel.org, david@sigma-star.at, wd@denx.de, sbabic@denx.de,
  dengler@linutronix.de, ebiggers@google.com, mhalcrow@google.com,
  hch@infradead.org, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 04/29] fscrypt: Constify struct inode pointer
-Date: Sun, 13 Nov 2016 22:20:47 +0100
-Message-Id: <1479072072-6844-5-git-send-email-richard@nod.at>
-In-Reply-To: <1479072072-6844-1-git-send-email-richard@nod.at>
-References: <1479072072-6844-1-git-send-email-richard@nod.at>
+Subject: [PATCH 00/29] UBIFS File Encryption v1
+Date: Sun, 13 Nov 2016 22:20:43 +0100
+Message-Id: <1479072072-6844-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,171 +21,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Gstir <david@sigma-star.at>
+This patch series implements file level encryption for UBIFS.
+It makes use of the generic fscrypto framework as used by ext4 and f2fs.
+Among file contents also file names are encrypted,
+for more details on fscrypto please see [0] and [1].
 
-Some filesystems, such as UBIFS, maintain a const pointer for struct
-inode.
+To support encrypted files in UBIFS multiple preparations were needed.
+The first five patches touch fscrypto code and add support for
+kmalloc()'ed pages.
+UBIFS has a different IO model than ext4 and f2fs because it uses MTD
+instead of the block layer. But the changes are small and non-invasive.
+In UBIFS itself the biggest change was supporting hash lookups.
+Now UBIFS is able to provide a 64bit cookie which can be used later
+to locate a file. This change will also allow us implementing proper
+NFS and telldir() support, but that will be a different patch series.
+Because of these changes the UBIFS write version is now 5.
 
-Signed-off-by: David Gstir <david@sigma-star.at>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/crypto/crypto.c       | 10 +++++-----
- fs/crypto/fname.c        |  4 ++--
- include/linux/fscrypto.h | 22 +++++++++++-----------
- 3 files changed, 18 insertions(+), 18 deletions(-)
+As userspace component I'm currently using e4crypt from e2fsprogs with
+EXT2FS_KEY_DESC_PREFIX set to "fscrypt:" instead of "ext4:".
+A common tool will hopefully emerge soon[2]. I don't want an UBIFS
+specific tool in mtd-utils.
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index e170aa05011d..f5c5e84ea9db 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -88,7 +88,7 @@ EXPORT_SYMBOL(fscrypt_release_ctx);
-  * Return: An allocated and initialized encryption context on success; error
-  * value or NULL otherwise.
-  */
--struct fscrypt_ctx *fscrypt_get_ctx(struct inode *inode, gfp_t gfp_flags)
-+struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *inode, gfp_t gfp_flags)
- {
- 	struct fscrypt_ctx *ctx = NULL;
- 	struct fscrypt_info *ci = inode->i_crypt_info;
-@@ -146,7 +146,7 @@ typedef enum {
- 	FS_ENCRYPT,
- } fscrypt_direction_t;
- 
--static int do_page_crypto(struct inode *inode,
-+static int do_page_crypto(const struct inode *inode,
- 			fscrypt_direction_t rw, pgoff_t index,
- 			struct page *src_page, struct page *dest_page,
- 			unsigned int src_len, unsigned int src_offset,
-@@ -231,7 +231,7 @@ static struct page *alloc_bounce_page(struct fscrypt_ctx *ctx, gfp_t gfp_flags)
-  * Return: An allocated page with the encrypted content on success. Else, an
-  * error value or NULL.
-  */
--struct page *fscrypt_encrypt_page(struct inode *inode,
-+struct page *fscrypt_encrypt_page(const struct inode *inode,
- 				struct page *plaintext_page,
- 				unsigned int plaintext_len,
- 				unsigned int plaintext_offset,
-@@ -290,7 +290,7 @@ EXPORT_SYMBOL(fscrypt_encrypt_page);
-  *
-  * Return: Zero on success, non-zero otherwise.
-  */
--int fscrypt_decrypt_page(struct inode *inode, struct page *page,
-+int fscrypt_decrypt_page(const struct inode *inode, struct page *page,
- 			unsigned int len, unsigned int offs)
- {
- 	return do_page_crypto(inode, FS_DECRYPT, page->index, page, page, len, offs,
-@@ -298,7 +298,7 @@ int fscrypt_decrypt_page(struct inode *inode, struct page *page,
- }
- EXPORT_SYMBOL(fscrypt_decrypt_page);
- 
--int fscrypt_zeroout_range(struct inode *inode, pgoff_t lblk,
-+int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
- 				sector_t pblk, unsigned int len)
- {
- 	struct fscrypt_ctx *ctx;
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 9a28133ac3b8..faeaf0be9400 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -220,7 +220,7 @@ static int digest_decode(const char *src, int len, char *dst)
- 	return cp - dst;
- }
- 
--u32 fscrypt_fname_encrypted_size(struct inode *inode, u32 ilen)
-+u32 fscrypt_fname_encrypted_size(const struct inode *inode, u32 ilen)
- {
- 	int padding = 32;
- 	struct fscrypt_info *ci = inode->i_crypt_info;
-@@ -238,7 +238,7 @@ EXPORT_SYMBOL(fscrypt_fname_encrypted_size);
-  * Allocates an output buffer that is sufficient for the crypto operation
-  * specified by the context and the direction.
-  */
--int fscrypt_fname_alloc_buffer(struct inode *inode,
-+int fscrypt_fname_alloc_buffer(const struct inode *inode,
- 				u32 ilen, struct fscrypt_str *crypto_str)
- {
- 	unsigned int olen = fscrypt_fname_encrypted_size(inode, ilen);
-diff --git a/include/linux/fscrypto.h b/include/linux/fscrypto.h
-index e05931272cea..e9be944a324c 100644
---- a/include/linux/fscrypto.h
-+++ b/include/linux/fscrypto.h
-@@ -212,7 +212,7 @@ static inline struct page *fscrypt_control_page(struct page *page)
- #endif
- }
- 
--static inline int fscrypt_has_encryption_key(struct inode *inode)
-+static inline int fscrypt_has_encryption_key(const struct inode *inode)
- {
- #if IS_ENABLED(CONFIG_FS_ENCRYPTION)
- 	return (inode->i_crypt_info != NULL);
-@@ -246,17 +246,17 @@ static inline void fscrypt_set_d_op(struct dentry *dentry)
- extern struct kmem_cache *fscrypt_info_cachep;
- int fscrypt_initialize(void);
- 
--extern struct fscrypt_ctx *fscrypt_get_ctx(struct inode *, gfp_t);
-+extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
- extern void fscrypt_release_ctx(struct fscrypt_ctx *);
--extern struct page *fscrypt_encrypt_page(struct inode *, struct page *,
-+extern struct page *fscrypt_encrypt_page(const struct inode *, struct page *,
- 						unsigned int, unsigned int,
- 						gfp_t);
--extern int fscrypt_decrypt_page(struct inode *, struct page *, unsigned int,
-+extern int fscrypt_decrypt_page(const struct inode *, struct page *, unsigned int,
- 				unsigned int);
- extern void fscrypt_decrypt_bio_pages(struct fscrypt_ctx *, struct bio *);
- extern void fscrypt_pullback_bio_page(struct page **, bool);
- extern void fscrypt_restore_control_page(struct page *);
--extern int fscrypt_zeroout_range(struct inode *, pgoff_t, sector_t,
-+extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
- 						unsigned int);
- /* policy.c */
- extern int fscrypt_process_policy(struct file *, const struct fscrypt_policy *);
-@@ -273,8 +273,8 @@ extern void fscrypt_put_encryption_info(struct inode *, struct fscrypt_info *);
- extern int fscrypt_setup_filename(struct inode *, const struct qstr *,
- 				int lookup, struct fscrypt_name *);
- extern void fscrypt_free_filename(struct fscrypt_name *);
--extern u32 fscrypt_fname_encrypted_size(struct inode *, u32);
--extern int fscrypt_fname_alloc_buffer(struct inode *, u32,
-+extern u32 fscrypt_fname_encrypted_size(const struct inode *, u32);
-+extern int fscrypt_fname_alloc_buffer(const struct inode *, u32,
- 				struct fscrypt_str *);
- extern void fscrypt_fname_free_buffer(struct fscrypt_str *);
- extern int fscrypt_fname_disk_to_usr(struct inode *, u32, u32,
-@@ -284,7 +284,7 @@ extern int fscrypt_fname_usr_to_disk(struct inode *, const struct qstr *,
- #endif
- 
- /* crypto.c */
--static inline struct fscrypt_ctx *fscrypt_notsupp_get_ctx(struct inode *i,
-+static inline struct fscrypt_ctx *fscrypt_notsupp_get_ctx(const struct inode *i,
- 							gfp_t f)
- {
- 	return ERR_PTR(-EOPNOTSUPP);
-@@ -295,7 +295,7 @@ static inline void fscrypt_notsupp_release_ctx(struct fscrypt_ctx *c)
- 	return;
- }
- 
--static inline struct page *fscrypt_notsupp_encrypt_page(struct inode *i,
-+static inline struct page *fscrypt_notsupp_encrypt_page(const struct inode *i,
- 						struct page *p,
- 						unsigned int len,
- 						unsigned int offs,
-@@ -304,7 +304,7 @@ static inline struct page *fscrypt_notsupp_encrypt_page(struct inode *i,
- 	return ERR_PTR(-EOPNOTSUPP);
- }
- 
--static inline int fscrypt_notsupp_decrypt_page(struct inode *i, struct page *p,
-+static inline int fscrypt_notsupp_decrypt_page(const struct inode *i, struct page *p,
- 						unsigned int len, unsigned int offs)
- {
- 	return -EOPNOTSUPP;
-@@ -326,7 +326,7 @@ static inline void fscrypt_notsupp_restore_control_page(struct page *p)
- 	return;
- }
- 
--static inline int fscrypt_notsupp_zeroout_range(struct inode *i, pgoff_t p,
-+static inline int fscrypt_notsupp_zeroout_range(const struct inode *i, pgoff_t p,
- 					sector_t s, unsigned int f)
- {
- 	return -EOPNOTSUPP;
+The series is based on 4.9-rc3.
+It can be obtained from:
+git://git.infradead.org/users/rw/linux.git ubifs_crypt_v1
+
+[0] https://lwn.net/Articles/639427/
+[1] https://docs.google.com/document/d/1ft26lUQyuSpiu6VleP70_npaWdRfXFoNnB8JYnykNTg/edit
+[2] http://www.spinics.net/lists/linux-fsdevel/msg103107.html
+
+Changes since v0, https://lwn.net/Articles/704261/
+ - Rebased to v4.9-rc4
+ - Made fscrypto functions generic instead of adding new versions (hch)
+ - Addressed various comments (Eric and Ted)
+
+David Gstir (5):
+  fscrypt: Add in-place encryption mode
+  fscrypt: Allow fscrypt_decrypt_page() to function with non-writeback
+    pages
+  fscrypt: Enable partial page encryption
+  fscrypt: Constify struct inode pointer
+  fscrypt: Let fs select encryption index/tweak
+
+Richard Weinberger (24):
+  ubifs: Export ubifs_check_dir_empty()
+  ubifs: Export xattr get and set functions
+  ubifs: Define UBIFS crypto context xattr
+  ubifs: Add skeleton for fscrypto
+  ubifs: Massage ubifs_listxattr() for encryption context
+  ubifs: Implement directory open operation
+  ubifs: Implement file open operation
+  ubifs: Enforce crypto policy in ->link and ->rename
+  ubifs: Preload crypto context in ->lookup()
+  ubifs: Massage assert in ubifs_xattr_set() wrt. fscrypto
+  ubifs: Enforce crypto policy in mmap
+  ubifs: Introduce new data node field, compr_size
+  ubifs: Constify struct inode pointer in ubifs_crypt_is_encrypted()
+  ubifs: Implement encrypt/decrypt for all IO
+  ubifs: Relax checks in ubifs_validate_entry()
+  ubifs: Make r5 hash binary string aware
+  ubifs: Implement encrypted filenames
+  ubifs: Add support for encrypted symlinks
+  ubifs: Rename tnc_read_node_nm
+  ubifs: Add full hash lookup support
+  ubifs: Use a random number for cookies
+  ubifs: Implement UBIFS_FLG_DOUBLE_HASH
+  ubifs: Implement UBIFS_FLG_ENCRYPTION
+  ubifs: Raise write version to 5
+
+ fs/crypto/crypto.c       |  83 ++++----
+ fs/crypto/fname.c        |   4 +-
+ fs/ext4/inode.c          |   7 +-
+ fs/ext4/page-io.c        |   3 +-
+ fs/f2fs/data.c           |   5 +-
+ fs/ubifs/Kconfig         |  11 ++
+ fs/ubifs/Makefile        |   1 +
+ fs/ubifs/crypto.c        |  97 ++++++++++
+ fs/ubifs/debug.c         |  14 +-
+ fs/ubifs/dir.c           | 478 ++++++++++++++++++++++++++++++++++++++++-------
+ fs/ubifs/file.c          | 108 ++++++++++-
+ fs/ubifs/ioctl.c         |  40 ++++
+ fs/ubifs/journal.c       | 224 ++++++++++++----------
+ fs/ubifs/key.h           |  21 ++-
+ fs/ubifs/replay.c        |  10 +-
+ fs/ubifs/sb.c            |  59 ++++++
+ fs/ubifs/super.c         |  17 +-
+ fs/ubifs/tnc.c           | 168 +++++++++++++----
+ fs/ubifs/ubifs-media.h   |  29 ++-
+ fs/ubifs/ubifs.h         | 104 +++++++++--
+ fs/ubifs/xattr.c         | 116 +++++++-----
+ include/linux/fscrypto.h |  38 ++--
+ 22 files changed, 1299 insertions(+), 338 deletions(-)
+ create mode 100644 fs/ubifs/crypto.c
+
 -- 
 2.7.3
