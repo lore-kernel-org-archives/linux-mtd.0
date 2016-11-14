@@ -1,20 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6EEx-000319-5x
- for linux-mtd@lists.infradead.org; Mon, 14 Nov 2016 10:11:52 +0000
-Date: Mon, 14 Nov 2016 11:11:22 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd
- <linux-mtd@lists.infradead.org>, Mason <slash.tmp@free.fr>, Sebastian Frias
- <sf84@laposte.net>
-Subject: Re: [PATCH] mtd: nand: Support controllers with custom page accessors
-Message-ID: <20161114111122.27804c4e@bbrezillon>
-In-Reply-To: <5829883A.8080307@sigmadesigns.com>
-References: <5829883A.8080307@sigmadesigns.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mga04.intel.com ([192.55.52.120])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c6ERt-0000fN-1N
+ for linux-mtd@lists.infradead.org; Mon, 14 Nov 2016 10:25:13 +0000
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: linux-mtd@lists.infradead.org
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Lee Jones <lee.jones@linaro.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v5 3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
+Date: Mon, 14 Nov 2016 12:24:47 +0200
+Message-Id: <20161114102447.131602-4-mika.westerberg@linux.intel.com>
+In-Reply-To: <20161114102447.131602-1-mika.westerberg@linux.intel.com>
+References: <20161114102447.131602-1-mika.westerberg@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,212 +27,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marc,
+Intel Apollo Lake SoC exposes serial SPI flash through the LPC device. The
+SPI flash host controller is not discoverable through PCI config cycles
+because P2SB (function 0 of the device 13) is hidden by the BIOS. We unhide
+the device briefly in order to read BAR 0 of the SPI host controller.
 
-On Mon, 14 Nov 2016 10:47:38 +0100
-Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Acked-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mfd/lpc_ich.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-> If your controller already sends the required NAND commands when
-> reading or writing a page, then the framework is not supposed to
-> send READ0 and SEQIN/PAGEPROG respectively.
-> 
-> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-> ---
->  drivers/mtd/nand/nand_base.c  | 31 ++++++++++++++++++++++++++++---
->  drivers/mtd/nand/tango_nand.c | 21 ++++++++++++---------
->  include/linux/mtd/nand.h      | 12 ++++++++++++
->  3 files changed, 52 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 50cdf37cb8e4..b8ea6b397c16 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1970,7 +1970,8 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->  						 __func__, buf);
->  
->  read_retry:
-> -			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
-> +			if (nand_default_page_accessors(&chip->ecc))
-> +				chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
->  
->  			/*
->  			 * Now read the page into the buffer.  Absent an error,
-> @@ -2658,7 +2659,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
->  	else
->  		subpage = 0;
->  
-> -	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
-> +	if (nand_default_page_accessors(&chip->ecc))
-> +		chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
->  
->  	if (unlikely(raw))
->  		status = chip->ecc.write_page_raw(mtd, chip, buf,
-> @@ -2681,7 +2683,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
->  
->  	if (!cached || !NAND_HAS_CACHEPROG(chip)) {
->  
-> -		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-> +		if (nand_default_page_accessors(&chip->ecc))
-> +			chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
->  		status = chip->waitfunc(mtd, chip);
->  		/*
->  		 * See if operation failed and additional status checks are
-> @@ -4539,6 +4542,25 @@ static bool nand_ecc_strength_good(struct mtd_info *mtd)
->  	return corr >= ds_corr && ecc->strength >= chip->ecc_strength_ds;
->  }
->  
-> +static bool invalid_ecc_page_accessors(struct nand_chip *chip)
-> +{
-> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> +
-> +	if (nand_default_page_accessors(ecc))
-> +		return false;
-> +
-> +	/*
-> +	 * NAND_ECC_CUSTOM_PAGE_ACCESS flag is set, make sure the NAND
-> +	 * controller driver implements all the page accessors because
-> +	 * default helpers are not suitable when the core does not
-> +	 * send the READ0/PAGEPROG commands.
-> +	 */
-> +	return (!ecc->read_page || !ecc->write_page ||
-> +		!ecc->read_page_raw || !ecc->write_page_raw ||
-> +		(NAND_HAS_SUBPAGE_READ(chip) && !ecc->read_subpage) ||
-> +		(NAND_HAS_SUBPAGE_WRITE(chip) && !ecc->write_subpage));
-> +}
-> +
->  /**
->   * nand_scan_tail - [NAND Interface] Scan for the NAND device
->   * @mtd: MTD device structure
-> @@ -4559,6 +4581,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		   !(chip->bbt_options & NAND_BBT_USE_FLASH)))
->  		return -EINVAL;
->  
-> +	if (WARN_ON(invalid_ecc_page_accessors(chip)))
-> +		return -EINVAL;
-> +
->  	if (!(chip->options & NAND_OWN_BUFFERS)) {
->  		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
->  				+ mtd->oobsize * 3, GFP_KERNEL);
-> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-> index fd8cf414cb2b..7ed35348993e 100644
-> --- a/drivers/mtd/nand/tango_nand.c
-> +++ b/drivers/mtd/nand/tango_nand.c
-> @@ -343,7 +343,7 @@ static void aux_write(struct nand_chip *chip, const u8 **buf, int len, int *pos)
->   * buf = |      PKT_0      | ... |      PKT_N      |
->   *       +-----------------+-----+-----------------+
->   */
-> -static int raw_read(struct nand_chip *chip, u8 *buf, u8 *oob)
-> +static void raw_read(struct nand_chip *chip, u8 *buf, u8 *oob)
-
-This change is completely unrelated to the custom page accessors patch.
-Please separate the function prototype changes in a separate patch.
-
->  {
->  	u8 *oob_orig = oob;
->  	const int page_size = chip->mtd.writesize;
-> @@ -367,11 +367,9 @@ static int raw_read(struct nand_chip *chip, u8 *buf, u8 *oob)
->  	aux_read(chip, &oob_orig, BBM_SIZE, &pos);
->  	aux_read(chip, &buf, pkt_size - rem, &pos);
->  	aux_read(chip, &oob, ecc_size, &pos);
-> -
-> -	return 0;
->  }
->  
-> -static int raw_write(struct nand_chip *chip, const u8 *buf, const u8 *oob)
-> +static void raw_write(struct nand_chip *chip, const u8 *buf, const u8 *
->  {
->  	const u8 *oob_orig = oob;
->  	const int page_size = chip->mtd.writesize;
-> @@ -395,27 +393,31 @@ static int raw_write(struct nand_chip *chip, const u8 *buf, const u8 *oob)
->  	aux_write(chip, &oob_orig, BBM_SIZE, &pos);
->  	aux_write(chip, &buf, pkt_size - rem, &pos);
->  	aux_write(chip, &oob, ecc_size, &pos);
-> -
-> -	return 0;
->  }
->  
->  static int tango_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  			       u8 *buf, int oob_required, int page)
->  {
-> -	return raw_read(chip, buf, chip->oob_poi);
-> +	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-> +	raw_read(chip, buf, chip->oob_poi);
-> +	return 0;
->  }
->  
->  static int tango_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  				const u8 *buf, int oob_required, int page)
->  {
-> -	return raw_write(chip, buf, chip->oob_poi);
-> +	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0, page);
-> +	raw_write(chip, buf, chip->oob_poi);
-> +	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-> +	return 0;
->  }
->  
->  static int tango_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
->  			  int page)
->  {
->  	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-> -	return raw_read(chip, NULL, chip->oob_poi);
-> +	raw_read(chip, NULL, chip->oob_poi);
-> +	return 0;
->  }
->  
->  static int tango_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
-> @@ -553,6 +555,7 @@ static int chip_init(struct device *dev, struct device_node *np)
->  	ecc->write_page = tango_write_page;
->  	ecc->read_oob = tango_read_oob;
->  	ecc->write_oob = tango_write_oob;
-> +	ecc->options = NAND_ECC_CUSTOM_PAGE_ACCESS;
->  
->  	err = nand_scan_tail(mtd);
->  	if (err)
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 06d0c9d740f7..a95a27a30005 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -142,6 +142,12 @@ enum nand_ecc_algo {
->   */
->  #define NAND_ECC_GENERIC_ERASED_CHECK	BIT(0)
->  #define NAND_ECC_MAXIMIZE		BIT(1)
-> +/*
-> + * If your controller already sends the required NAND commands when
-> + * reading or writing a page, then the framework is not supposed to
-> + * send READ0 and SEQIN/PAGEPROG respectively.
-> + */
-> +#define NAND_ECC_CUSTOM_PAGE_ACCESS	BIT(2)
->  
->  /* Bit mask for flags passed to do_nand_read_ecc */
->  #define NAND_GET_DEVICE		0x80
-> @@ -186,6 +192,7 @@ enum nand_ecc_algo {
->  /* Macros to identify the above */
->  #define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
->  #define NAND_HAS_SUBPAGE_READ(chip) ((chip->options & NAND_SUBPAGE_READ))
-> +#define NAND_HAS_SUBPAGE_WRITE(chip) !(chip->options & NAND_NO_SUBPAGE_WRITE)
-
-					  (chip)->options
-
-Just in case the chip parameter is something like that &x->chip.
-
->  
->  /* Non chip related options */
->  /* This option skips the bbt scan during initialization. */
-> @@ -568,6 +575,11 @@ struct nand_ecc_ctrl {
->  			int page);
->  };
->  
-> +static inline int nand_default_page_accessors(struct nand_ecc_ctrl *ecc)
-
-Not sure the term default is correct here: some drivers implement
-their own ->read/write_page() methods, but expect the core to send the
-READ/PROG commands.
-How about renaming it nand_standard_page_accessors()?
-
-> +{
-> +	return !(ecc->options & NAND_ECC_CUSTOM_PAGE_ACCESS);
-> +}
-> +
->  /**
->   * struct nand_buffers - buffer structure for read/write
->   * @ecccalc:	buffer pointer for calculated ECC, size is oobsize.
+diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+index 985bda575849..1d8d1caebdf1 100644
+--- a/drivers/mfd/lpc_ich.c
++++ b/drivers/mfd/lpc_ich.c
+@@ -56,6 +56,7 @@
+  *	document number TBD : Wildcat Point-LP
+  *	document number TBD : 9 Series
+  *	document number TBD : Lewisburg
++ *	document number TBD : Apollo Lake SoC
+  */
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+@@ -92,6 +93,8 @@
+ #define BCR			0xdc
+ #define BCR_WPD			BIT(0)
+ 
++#define SPIBASE_APL_SZ		4096
++
+ #define GPIOBASE_ICH0		0x58
+ #define GPIOCTRL_ICH0		0x5C
+ #define GPIOBASE_ICH6		0x48
+@@ -239,6 +242,7 @@ enum lpc_chipsets {
+ 	LPC_BRASWELL,	/* Braswell SoC */
+ 	LPC_LEWISBURG,	/* Lewisburg */
+ 	LPC_9S,		/* 9 Series */
++	LPC_APL,	/* Apollo Lake SoC */
+ };
+ 
+ static struct lpc_ich_info lpc_chipset_info[] = {
+@@ -559,6 +563,10 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+ 		.name = "9 Series",
+ 		.iTCO_version = 2,
+ 	},
++	[LPC_APL] = {
++		.name = "Apollo Lake SoC",
++		.spi_type = INTEL_SPI_BXT,
++	},
+ };
+ 
+ /*
+@@ -707,6 +715,7 @@ static const struct pci_device_id lpc_ich_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x3b14), LPC_3420},
+ 	{ PCI_VDEVICE(INTEL, 0x3b16), LPC_3450},
+ 	{ PCI_VDEVICE(INTEL, 0x5031), LPC_EP80579},
++	{ PCI_VDEVICE(INTEL, 0x5ae8), LPC_APL},
+ 	{ PCI_VDEVICE(INTEL, 0x8c40), LPC_LPT},
+ 	{ PCI_VDEVICE(INTEL, 0x8c41), LPC_LPT},
+ 	{ PCI_VDEVICE(INTEL, 0x8c42), LPC_LPT},
+@@ -1126,6 +1135,36 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 		}
+ 		break;
+ 
++	case INTEL_SPI_BXT: {
++		unsigned int p2sb = PCI_DEVFN(13, 0);
++		unsigned int spi = PCI_DEVFN(13, 2);
++		struct pci_bus *bus = dev->bus;
++
++		/*
++		 * The P2SB is hidden by BIOS and we need to unhide it in
++		 * order to read BAR of the SPI flash device. Once that is
++		 * done we hide it again.
++		 */
++		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x0);
++		pci_bus_read_config_dword(bus, spi, PCI_BASE_ADDRESS_0,
++					  &spi_base);
++		if (spi_base != ~0) {
++			res->start = spi_base & 0xfffffff0;
++			res->end = res->start + SPIBASE_APL_SZ - 1;
++
++			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
++			if (!(bcr & BCR_WPD)) {
++				bcr |= BCR_WPD;
++				pci_bus_write_config_dword(bus, spi, BCR, bcr);
++				pci_bus_read_config_dword(bus, spi, BCR, &bcr);
++			}
++			info->writeable = !!(bcr & BCR_WPD);
++		}
++
++		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x1);
++		break;
++	}
++
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.9.3
