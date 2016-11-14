@@ -1,27 +1,22 @@
-Received: from mail-yw0-f195.google.com ([209.85.161.195])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6L39-0000Yv-IZ
- for linux-mtd@lists.infradead.org; Mon, 14 Nov 2016 17:28:12 +0000
-Received: by mail-yw0-f195.google.com with SMTP id a10so7847533ywa.1
- for <linux-mtd@lists.infradead.org>; Mon, 14 Nov 2016 09:27:46 -0800 (PST)
-Date: Mon, 14 Nov 2016 11:27:44 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
- Joel Stanley <joel@jms.id.au>
-Subject: Re: [PATCH v2] mtd/spi-nor: Add SPI memory controllers for Aspeed SoCs
-Message-ID: <20161114172744.mi6xl4iiva27jxc5@rob-hp-laptop>
-References: <1478688149-4554-1-git-send-email-clg@kaod.org>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c6L9x-0006Wu-Vu
+ for linux-mtd@lists.infradead.org; Mon, 14 Nov 2016 17:35:13 +0000
+Date: Mon, 14 Nov 2016 18:34:44 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd
+ <linux-mtd@lists.infradead.org>, Mason <slash.tmp@free.fr>, Sebastian Frias
+ <sf84@laposte.net>
+Subject: Re: [PATCH v2 1/2] mtd: nand: Support controllers with custom page
+Message-ID: <20161114183444.73074760@bbrezillon>
+In-Reply-To: <5829EDE7.1060300@sigmadesigns.com>
+References: <5829883A.8080307@sigmadesigns.com>
+ <20161114111122.27804c4e@bbrezillon>
+ <5829EDE7.1060300@sigmadesigns.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1478688149-4554-1-git-send-email-clg@kaod.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,72 +26,159 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 09, 2016 at 11:42:29AM +0100, Cédric Le Goater wrote:
-> This driver adds mtd support for spi-nor attached to either or both of
-> the Firmware Memory Controller or the SPI Flash Controller (AST2400
-> only).
+Hi Marc,
+
+On Mon, 14 Nov 2016 18:01:27 +0100
+Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+
+> If your controller already sends the required NAND commands when
+> reading or writing a page, then the framework is not supposed to
+> send READ0 and SEQIN/PAGEPROG respectively.
 > 
-> The SMC controllers on the Aspeed AST2500 SoC are very similar to the
-> ones found on the AST2400. The differences are on the number of
-> supported flash modules and their default mappings in the SoC address
-> space.
-> 
-> The Aspeed AST2500 has one SPI controller for the BMC firmware and two
-> for the host firmware. All controllers have now the same set of
-> registers compatible with the AST2400 FMC controller and the legacy
-> 'SMC' controller is fully gone.
-> 
-> Each controller has a memory range on which it maps its flash module
-> slaves. Each slave is assigned a memory window for its mapping that
-> can be changed at bootime with the Segment Address Register.
-> 
-> Each SPI flash slave can then be accessed in two modes: Command and
-> User. When in User mode, accesses to the memory segment of the slaves
-> are translated in SPI transfers. When in Command mode, the HW
-> generates the SPI commands automatically and the memory segment is
-> accessed as if doing a MMIO.
-> 
-> Currently, only the User mode is supported. Command mode needs a
-> little more work to check that the memory window on the AHB bus fits
-> the module size.
-> 
-> Based on previous work from Milton D. Miller II <miltonm@us.ibm.com>
-> 
-> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
 > ---
->  Tested on:
+> v2:
+> (chip) in NAND_HAS_SUBPAGE_WRITE macro
+> s/nand_default_page_accessors/nand_standard_page_accessors/
+> scripts/checkpatch.pl --strict v2-0001-mtd-nand-Support-controllers-with-custom-page-acc.patch
+> total: 0 errors, 0 warnings, 0 checks, 91 lines checked
+> ---
+>  drivers/mtd/nand/nand_base.c | 31 ++++++++++++++++++++++++++++---
+>  include/linux/mtd/nand.h     | 12 ++++++++++++
+>  2 files changed, 40 insertions(+), 3 deletions(-)
 > 
->  * OpenPOWER Palmetto (AST2400) with
->  	FMC controller : n25q256a
-> 	SPI controller : mx25l25635e and n25q512ax3
-> 
->  * Evaluation board (AST2500) with
->  	FMC controller : w25q256 
-> 	SPI controller : w25q256
-> 
->  * OpenPOWER Witherspoon (AST2500) with
->  	FMC controller : mx25l25635e * 2
-> 	SPI controller : mx66l1g45g
-> 
->  Changes since v2:
-> 
->  - added a set4b ops to handle difference in the controllers
->  - simplified the IO routines
->  - prepared for fast read using dummy cycles
-> 
->  Work in progress:
-> 
->  - read optimization using higher SPI clock frequencies
->  - command mode to direct reads from AHB
->  - DMA support
-> 
->  .../devicetree/bindings/mtd/aspeed-smc.txt         |  72 ++
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 50cdf37cb8e4..db5f27db3748 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1970,7 +1970,8 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+>  						 __func__, buf);
+>  
+>  read_retry:
+> -			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+> +			if (nand_standard_page_accessors(&chip->ecc))
+> +				chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+>  
+>  			/*
+>  			 * Now read the page into the buffer.  Absent an error,
+> @@ -2658,7 +2659,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	else
+>  		subpage = 0;
+>  
+> -	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+> +	if (nand_standard_page_accessors(&chip->ecc))
+> +		chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+>  
+>  	if (unlikely(raw))
+>  		status = chip->ecc.write_page_raw(mtd, chip, buf,
+> @@ -2681,7 +2683,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  	if (!cached || !NAND_HAS_CACHEPROG(chip)) {
+>  
+> -		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+> +		if (nand_standard_page_accessors(&chip->ecc))
+> +			chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+>  		status = chip->waitfunc(mtd, chip);
+>  		/*
+>  		 * See if operation failed and additional status checks are
+> @@ -4539,6 +4542,25 @@ static bool nand_ecc_strength_good(struct mtd_info *mtd)
+>  	return corr >= ds_corr && ecc->strength >= chip->ecc_strength_ds;
+>  }
+>  
+> +static bool invalid_ecc_page_accessors(struct nand_chip *chip)
+> +{
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +
+> +	if (nand_standard_page_accessors(ecc))
+> +		return false;
+> +
+> +	/*
+> +	 * NAND_ECC_CUSTOM_PAGE_ACCESS flag is set, make sure the NAND
+> +	 * controller driver implements all the page accessors because
+> +	 * default helpers are not suitable when the core does not
+> +	 * send the READ0/PAGEPROG commands.
+> +	 */
+> +	return (!ecc->read_page || !ecc->write_page ||
+> +		!ecc->read_page_raw || !ecc->write_page_raw ||
+> +		(NAND_HAS_SUBPAGE_READ(chip) && !ecc->read_subpage) ||
+> +		(NAND_HAS_SUBPAGE_WRITE(chip) && !ecc->write_subpage));
 
-Acked-by: Rob Herring <robh@kernel.org>
+Just had a closer look at the nand_write_page() function, and it seems
+that !NAND_NO_SUBPAGE_WRITE && !ecc->write_subpage is valid use case.
+In this situation, nand_write_page() uses ecc->write_page().
 
->  drivers/mtd/spi-nor/Kconfig                        |  12 +
->  drivers/mtd/spi-nor/Makefile                       |   1 +
->  drivers/mtd/spi-nor/aspeed-smc.c                   | 783 +++++++++++++++++++++
->  4 files changed, 868 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
->  create mode 100644 drivers/mtd/spi-nor/aspeed-smc.c
+I know it's a real mess, and each time I look at this subpage support
+detection, I have a hard time remembering how it works, and why it's
+done this way. The idea is that, even if the controller does not
+explicitly implement ->write_subpage(), the core will fill the page
+buffer with 0xff, and since programming NANDs is just about moving bits
+from 1 to zero, when you leave bits to one, they are just and-ed with
+the previous content.
+
+The correct test is:
+
+	return (!ecc->read_page || !ecc->write_page ||
+		!ecc->read_page_raw || !ecc->write_page_raw ||
+		(NAND_HAS_SUBPAGE_READ(chip) && !ecc->read_subpage) ||
+		(NAND_HAS_SUBPAGE_WRITE(chip) && !ecc->write_subpage &&
+		 ecc->hwctl && ecc->calculate))
+		
+
+
+> +}
+> +
+>  /**
+>   * nand_scan_tail - [NAND Interface] Scan for the NAND device
+>   * @mtd: MTD device structure
+> @@ -4559,6 +4581,9 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  		   !(chip->bbt_options & NAND_BBT_USE_FLASH)))
+>  		return -EINVAL;
+>  
+> +	if (WARN_ON(invalid_ecc_page_accessors(chip)))
+> +		return -EINVAL;
+> +
+
+Sorry, I didn't notice that one in my previous review. We're currently
+trying to get rid of all BUG() and WARN_ON() calls in the NAND
+framework. Can you replace this WARN_ON() by a pr_err() message?
+
+>  	if (!(chip->options & NAND_OWN_BUFFERS)) {
+>  		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
+>  				+ mtd->oobsize * 3, GFP_KERNEL);
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 06d0c9d740f7..c5f3a012ae62 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -142,6 +142,12 @@ enum nand_ecc_algo {
+>   */
+>  #define NAND_ECC_GENERIC_ERASED_CHECK	BIT(0)
+>  #define NAND_ECC_MAXIMIZE		BIT(1)
+> +/*
+> + * If your controller already sends the required NAND commands when
+> + * reading or writing a page, then the framework is not supposed to
+> + * send READ0 and SEQIN/PAGEPROG respectively.
+> + */
+> +#define NAND_ECC_CUSTOM_PAGE_ACCESS	BIT(2)
+>  
+>  /* Bit mask for flags passed to do_nand_read_ecc */
+>  #define NAND_GET_DEVICE		0x80
+> @@ -186,6 +192,7 @@ enum nand_ecc_algo {
+>  /* Macros to identify the above */
+>  #define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
+>  #define NAND_HAS_SUBPAGE_READ(chip) ((chip->options & NAND_SUBPAGE_READ))
+> +#define NAND_HAS_SUBPAGE_WRITE(chip) !((chip)->options & NAND_NO_SUBPAGE_WRITE)
+>  
+>  /* Non chip related options */
+>  /* This option skips the bbt scan during initialization. */
+> @@ -568,6 +575,11 @@ struct nand_ecc_ctrl {
+>  			int page);
+>  };
+>  
+> +static inline int nand_standard_page_accessors(struct nand_ecc_ctrl *ecc)
+> +{
+> +	return !(ecc->options & NAND_ECC_CUSTOM_PAGE_ACCESS);
+> +}
+> +
+>  /**
+>   * struct nand_buffers - buffer structure for read/write
+>   * @ecccalc:	buffer pointer for calculated ECC, size is oobsize.
