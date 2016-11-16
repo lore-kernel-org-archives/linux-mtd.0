@@ -1,23 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6vrk-0003oX-FD
- for linux-mtd@lists.infradead.org; Wed, 16 Nov 2016 08:46:50 +0000
-Date: Wed, 16 Nov 2016 09:46:14 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] mtd: nand: raw: make BBT code more generic
-Message-ID: <20161116094614.2cacc47f@bbrezillon>
-In-Reply-To: <CAAyFORKEcxUuC61_6ngke5Qmb9U4VaS-fHx6Ly0Mgw1VwzxLEw@mail.gmail.com>
-References: <1476628518-20450-1-git-send-email-boris.brezillon@free-electrons.com>
- <1476628518-20450-7-git-send-email-boris.brezillon@free-electrons.com>
- <CAAyFORKEcxUuC61_6ngke5Qmb9U4VaS-fHx6Ly0Mgw1VwzxLEw@mail.gmail.com>
+Received: from eusmtp01.atmel.com ([212.144.249.242])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c6znH-0007D9-7V
+ for linux-mtd@lists.infradead.org; Wed, 16 Nov 2016 12:58:28 +0000
+Subject: Re: [PATCH] mtd: spi-nor: fixed spansion quad enable
+To: "Esponde, Joel" <Joel.Esponde@Honeywell.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek Vasut
+ <marex@denx.de>
+References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+ <56670303-e8e8-fb2c-e043-035c566f347c@atmel.com>
+ <F6CD090A69E64C4289DC608E1C5D20242544AEF1@DE08W1305.global.ds.honeywell.com>
+ <f45e1845-573f-d0b7-0f23-abd035f25945@atmel.com>
+ <F6CD090A69E64C4289DC608E1C5D20242545487D@DE08W1305.global.ds.honeywell.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <eb2ce083-3854-a0a3-c82e-345b4de3dc26@atmel.com>
+Date: Wed, 16 Nov 2016 13:58:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <F6CD090A69E64C4289DC608E1C5D20242545487D@DE08W1305.global.ds.honeywell.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,95 +27,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 16 Nov 2016 16:43:58 +0800
-Peter Pan <peterpansjtu@gmail.com> wrote:
+Hi Joel,
 
-> Hi Boris,
-> 
-> I found a bug during my review. Please see below.
-> 
-> On Sun, Oct 16, 2016 at 10:35 PM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > BBT support is currently tightly tied to raw NAND, though this is the kind
-> > of code we could share across all NAND based devices, no matter what
-> > physical interface is to communicate with the NAND chip.
-> >
-> > Make BBT code interface agnostic by replacing all occurrence of
-> > struct nand_chip by struct nand_device, and move functions that are
-> > specific to raw NANDs to drivers/mtd/nand/rawnand/nand_base.c.
-> >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/raw/nand_base.c |  78 ++++-
-> >  drivers/mtd/nand/raw/nand_bbt.c  | 609 ++++++++++++++++++---------------------
-> >  include/linux/mtd/nand.h         |   8 +
-> >  include/linux/mtd/rawnand.h      |   4 -
-> >  4 files changed, 361 insertions(+), 338 deletions(-)
-> >  
-> [...]
-> >  /**
-> >   * write_bbt - [GENERIC] (Re)write the bad block table
-> > - * @mtd: MTD device structure
-> > + * @this: NAND device
-> >   * @buf: temporary buffer
-> >   * @td: descriptor for the bad block table
-> >   * @md: descriptor for the bad block table mirror
-> > @@ -708,11 +707,11 @@ static void mark_bbt_block_bad(struct nand_chip *this,
-> >   *
-> >   * (Re)write the bad block table.
-> >   */
-> > -static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
-> > +static int write_bbt(struct nand_device *this, uint8_t *buf,
-> >                      struct nand_bbt_descr *td, struct nand_bbt_descr *md,
-> >                      int chipsel)
-> >  {
-> > -       struct nand_chip *this = mtd_to_nandc(mtd);
-> > +       struct mtd_info *mtd = nand_to_mtd(this);
-> >         struct erase_info einfo;
-> >         int i, res, chip = 0;
-> >         int bits, page, offs, numblocks, sft, sftmsk;
-> > @@ -723,7 +722,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
-> >         loff_t to;
-> >         struct mtd_oob_ops ops;
-> >
-> > -       ops.ooblen = mtd->oobsize;
-> > +       ops.ooblen = nand_per_page_oobsize(this);
-> >         ops.ooboffs = 0;
-> >         ops.datbuf = NULL;
-> >         ops.mode = MTD_OPS_PLACE_OOB;
-> > @@ -732,16 +731,16 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
-> >                 rcode = 0xff;
-> >         /* Write bad block table per chip rather than per device? */
-> >         if (td->options & NAND_BBT_PERCHIP) {
-> > -               numblocks = (int)(this->chipsize >> this->bbt_erase_shift);
-> > +               numblocks = nand_eraseblocks_per_die(this);
-> >                 /* Full device write or specific chip? */
-> >                 if (chipsel == -1) {
-> > -                       nrchips = this->numchips;
-> > +                       nrchips = nand_ndies(this);
-> >                 } else {
-> >                         nrchips = chipsel + 1;
-> >                         chip = chipsel;
-> >                 }
-> >         } else {
-> > -               numblocks = (int)(mtd->size >> this->bbt_erase_shift);
-> > +               numblocks = nand_neraseblocks(this);
-> >                 nrchips = 1;
-> >         }
-> >
-> > @@ -760,7 +759,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
-> >                  * get_bbt_block() returns a block number, shift the value to
-> >                  * get a page number.
-> >                  */
-> > -               page = block << (this->bbt_erase_shift - this->page_shift);
-> > +               nand_eraseblock_to_page(this, block);  
-> 
-> Should be page = nand_eraseblock_to_page(this, block);
-> 
-> I will continue to review and test your patch. Hope give you feedback this week.
++Marek
 
-Cool. Thanks a lot!
-
+Le 24/10/2016 à 10:33, Esponde, Joel a écrit :
+> Hi Cyrille,
 > 
-> Thanks,
-> Peter Pan
+>> -----Message d'origine-----
+>> De : Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+>> Envoyé : vendredi 21 octobre 2016 14:50
+>> À : Esponde, Joel <Joel.Esponde@Honeywell.com>; linux-
+>> mtd@lists.infradead.org
+>> Objet : Re: [PATCH] mtd: spi-nor: fixed spansion quad enable
+>>
+>>>>> +	/* set SR & CR, enable quad I/O */
+>>>>>  	write_enable(nor);
+>>>>>
+>>>>>  	ret = write_sr_cr(nor, quad_en);
+>>>>>  	if (ret < 0) {
+>>>>> -		dev_err(nor->dev,
+>>>>> -			"error while writing configuration register\n");
+>>>>> +		dev_err(nor->dev, "error while writing SR and CR
+>>>> registers\n");
+>>>>>  		return -EINVAL;
+>>>>>  	}
+>>>>>
+>>>>> -	/* read back and check it */
+>>>>> +	ret = spi_nor_wait_till_ready(nor);
+>>>>> +	if (ret)
+>>>>> +		return ret;
+>>>>> +
+>>>
+>>> I think that this wait is required with every memories that store Quad
+>> Enable bit in a non-volatile way.
+>>> I am using today a stripped down kernel with a rootfs based on UBIFS.
+>>> When this bit is set, UBIFS will start reading the memory 100ms after.
+>>> As this bit writing step takes up to 200ms, spansion memory is not ready
+>> and UBIFS will fail when trying to read the content of the partition.
+>>> As UBIFS has a recovery mechanism, it will even broke the file system.
+>>>
+>>
+>> I agree with you about adding the spi_nor_wait_till_ready() call. I plan to add
+>> it in my SFDP patch for the spansion_new_quad_enable(), if not done yet.
+>>
+> 
+> Good news !!
+> Because I think that this part of the patch is the most critical.
+> Without this, you may broke your filesystem so this is a big issue.
+> 
+> Best regards,
+> 
+> Joël
+> 
+
+I've recently tested with two Winbond QSPI memories, W25Q256 and W25M512 and
+now I can confirm that the issue you reported also applies to those memories:
+if spi_nor_wait_till_ready() is not called after write_sr_cr(), the next SPI
+command may be sent too quickly and bad data may be read.
+Indeed, this issue occured in some bare metal (boot loader) code, when I
+performed a Fast Read 1-4-4 (EBh) command right after the Write Status Register
+(01h) command, without polling the BUSY bit with Read Status Register (05h)
+commands.
+
+Also the W25Q256 datasheet I have claims that the memory supports the Read
+Status Register2 (35h) however the data read from the SFDP table of my memory
+sample tells that the Quad Enable bit should be set only using the Write
+Status Register (01h) command with 2 data bytes (SR1 then SR2) and without
+using the Read Status Register 2 (35h) command:
+
+Indeed, bits[22:20] of the 15th dword in the Basic Flash Parameter Table (BFPT)
+are 100b and not 101b!
+
+100b: QE is bit 1 of status register 2. It is set wia Write Status with two
+      data bytes where bit 1 of the second byte is one.
+
+101b: QE is bit 1 of status register 2. Status register 1 is read using Read
+      Status instruction 05h. Status register 2 is read using instruction 35h.
+      QE is set via Write Status instruction 01h with two data bytes where bit
+      1 of the second byte is one.
+
+I didn't test whether the datasheet is right and the 35h command is actually
+supported by those Winbond memories so their bits[22:20] of the 15th dword in
+the BFPT should have been set to 101b instead of 100b.
+However I'd rather be compliant with the JESD216B specification.
+
+So could you please send a new version of your patch adding only the
+spi_nor_wait_till_ready() call but without adding other read to the Status
+Register 2/Control Register 1 (35h)?
+
+The 2nd procedure, which uses the 35h instruction to check whether the Quad
+Enable bit has already been set, will be implemented by
+spansion_new_quad_enable() from the SFDP patch. I've already fixed this patch
+to add the call of spi_nor_wait_till_ready().
+
+With both your patch and mine, we will fix the issue and still be compliant
+with the SFDP specification.
+
+Best regards,
+
+Cyrille
