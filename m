@@ -1,27 +1,18 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from balrog.mythic-beasts.com ([2a00:1098:0:82:1000:0:2:1])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c77Gi-0003XZ-CP
- for linux-mtd@lists.infradead.org; Wed, 16 Nov 2016 20:57:21 +0000
-Received: by mail-wm0-x242.google.com with SMTP id g23so15135384wme.1
- for <linux-mtd@lists.infradead.org>; Wed, 16 Nov 2016 12:56:59 -0800 (PST)
-Message-ID: <582CC815.8010803@gmail.com>
-Date: Wed, 16 Nov 2016 20:56:53 +0000
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-MIME-Version: 1.0
-To: Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
+ id 1c793u-0006qA-Cd
+ for linux-mtd@lists.infradead.org; Wed, 16 Nov 2016 22:52:15 +0000
+From: Luis Henriques <henrix@camandro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: nandsim: fix error check
-References: <1479251395-3100-1-git-send-email-sudipm.mukherjee@gmail.com>
- <0ad0b3d4-bde6-57ab-6856-de771ade3c32@gmail.com> <582C1041.7040809@gmail.com>
- <009a3016-3fe9-bda0-feb7-7d2cc132b091@gmail.com>
-In-Reply-To: <009a3016-3fe9-bda0-feb7-7d2cc132b091@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Luis Henriques <henrix@camandro.org>
+Subject: [PATCH] mtd: maps: add missing iounmap() in error path
+Date: Wed, 16 Nov 2016 22:50:16 +0000
+Message-Id: <20161116225016.29958-1-henrix@camandro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,46 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 16 November 2016 04:56 PM, Marek Vasut wrote:
-> On 11/16/2016 08:52 AM, Sudip Mukherjee wrote:
->> On Tuesday 15 November 2016 11:42 PM, Marek Vasut wrote:
->>> On 11/16/2016 12:09 AM, Sudip Mukherjee wrote:
->>>> debugfs_create_dir() and debugfs_create_file() returns NULL on error or
->>>> a pointer on success. They do not return the error value with ERR_PTR.
->>>> So we should not check the return with IS_ERR_OR_NULL, instead we
->>>> should just check for NULL.
->>>>
->>>> Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
->>>> ---
->>>>    drivers/mtd/nand/nandsim.c | 9 +++------
->>>>    1 file changed, 3 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
->>>> index c76287a..9b0d79a 100644
->>>> --- a/drivers/mtd/nand/nandsim.c
->>>> +++ b/drivers/mtd/nand/nandsim.c
->>>> @@ -525,15 +525,13 @@ static int nandsim_debugfs_create(struct
->>>> nandsim *dev)
->>>>    {
->>>>        struct nandsim_debug_info *dbg = &dev->dbg;
->>>>        struct dentry *dent;
->>>> -    int err;
->>>> +    int err = -ENODEV;
->>>
->>> Why don't you just nuke the err altogether and just return -ENODEV ?
->>
->> That was the first version which i made and discarded before sending. I
->> will go and find it now.
->
-> Why did you discard it ?
->
+This patch was triggered by the following Coccinelle error:
 
-That is actually a stupid reason. I was confused with the print 
-statement which uses err.
+./drivers/mtd/maps/sc520cdp.c:246:3-9: \
+	ERROR: missing iounmap; ioremap on line 242 \
+	and execution via conditional on line 244
 
-NS_ERR("cannot create \"nandsim\" debugfs directory, err %d\n",
-			err);
+Signed-off-by: Luis Henriques <henrix@camandro.org>
+---
+ drivers/mtd/maps/sc520cdp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-
-Regards
-Sudip
+diff --git a/drivers/mtd/maps/sc520cdp.c b/drivers/mtd/maps/sc520cdp.c
+index 093edd51bdc7..7a27ed345d0d 100644
+--- a/drivers/mtd/maps/sc520cdp.c
++++ b/drivers/mtd/maps/sc520cdp.c
+@@ -243,6 +243,10 @@ static int __init init_sc520cdp(void)
+ 
+ 		if (!sc520cdp_map[i].virt) {
+ 			printk("Failed to ioremap_nocache\n");
++			if (i) {
++				while (--i)
++					iounmap(sc520cdp_map[i].virt);
++			}
+ 			return -EIO;
+ 		}
+ 
