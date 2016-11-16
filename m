@@ -1,20 +1,27 @@
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c77Gi-0003XZ-CP
+ for linux-mtd@lists.infradead.org; Wed, 16 Nov 2016 20:57:21 +0000
+Received: by mail-wm0-x242.google.com with SMTP id g23so15135384wme.1
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Nov 2016 12:56:59 -0800 (PST)
+Message-ID: <582CC815.8010803@gmail.com>
+Date: Wed, 16 Nov 2016 20:56:53 +0000
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1471505884-33996-6-git-send-email-B56489@freescale.com>
-References: <1471505884-33996-1-git-send-email-B56489@freescale.com>
- <1471505884-33996-6-git-send-email-B56489@freescale.com>
-From: Jagan Teki <jagan@openedev.com>
-Date: Wed, 16 Nov 2016 23:14:24 +0530
-Message-ID: <CAD6G_RTmFksos0Y33U0wsw52z4PqXWxVwFUN6kmOtFxPJGWLPA@mail.gmail.com>
-Subject: Re: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
-To: Yunhui Cui <B56489@freescale.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+To: Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Han Xu <han.xu@freescale.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Yao Yuan <yao.yuan@nxp.com>, Yunhui Cui <yunhui.cui@nxp.com>
-Content-Type: text/plain; charset=UTF-8
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: nandsim: fix error check
+References: <1479251395-3100-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <0ad0b3d4-bde6-57ab-6856-de771ade3c32@gmail.com> <582C1041.7040809@gmail.com>
+ <009a3016-3fe9-bda0-feb7-7d2cc132b091@gmail.com>
+In-Reply-To: <009a3016-3fe9-bda0-feb7-7d2cc132b091@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +31,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 18, 2016 at 1:08 PM, Yunhui Cui <B56489@freescale.com> wrote:
-> From: Yunhui Cui <yunhui.cui@nxp.com>
+On Wednesday 16 November 2016 04:56 PM, Marek Vasut wrote:
+> On 11/16/2016 08:52 AM, Sudip Mukherjee wrote:
+>> On Tuesday 15 November 2016 11:42 PM, Marek Vasut wrote:
+>>> On 11/16/2016 12:09 AM, Sudip Mukherjee wrote:
+>>>> debugfs_create_dir() and debugfs_create_file() returns NULL on error or
+>>>> a pointer on success. They do not return the error value with ERR_PTR.
+>>>> So we should not check the return with IS_ERR_OR_NULL, instead we
+>>>> should just check for NULL.
+>>>>
+>>>> Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+>>>> ---
+>>>>    drivers/mtd/nand/nandsim.c | 9 +++------
+>>>>    1 file changed, 3 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+>>>> index c76287a..9b0d79a 100644
+>>>> --- a/drivers/mtd/nand/nandsim.c
+>>>> +++ b/drivers/mtd/nand/nandsim.c
+>>>> @@ -525,15 +525,13 @@ static int nandsim_debugfs_create(struct
+>>>> nandsim *dev)
+>>>>    {
+>>>>        struct nandsim_debug_info *dbg = &dev->dbg;
+>>>>        struct dentry *dent;
+>>>> -    int err;
+>>>> +    int err = -ENODEV;
+>>>
+>>> Why don't you just nuke the err altogether and just return -ENODEV ?
+>>
+>> That was the first version which i made and discarded before sending. I
+>> will go and find it now.
 >
-> With the physical sectors combination, S25FS-S family flash
-> requires some special operations for read/write functions.
+> Why did you discard it ?
 >
-> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 56 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d0fc165..495d0bb 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -39,6 +39,10 @@
->
->  #define SPI_NOR_MAX_ID_LEN     6
->  #define SPI_NOR_MAX_ADDR_WIDTH 4
-> +/* Added for S25FS-S family flash */
-> +#define SPINOR_CONFIG_REG3_OFFSET      0x800004
-> +#define CR3V_4KB_ERASE_UNABLE  0x8
-> +#define SPINOR_S25FS_FAMILY_EXT_JEDEC  0x81
->
->  struct flash_info {
->         char            *name;
-> @@ -78,6 +82,7 @@ struct flash_info {
->  };
->
->  #define JEDEC_MFR(info)        ((info)->id[0])
-> +#define EXT_JEDEC(info)        ((info)->id[5])
->
->  static const struct flash_info *spi_nor_match_id(const char *name);
->
-> @@ -899,6 +904,7 @@ static const struct flash_info spi_nor_ids[] = {
->          */
->         { "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->         { "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512, 0)},
 
-Handling normal and parameter sectors on specific chip part look quite
-messy, and this patch[1] will erase SECT_4K by seeing whole flash as
-normal sectors.
+That is actually a stupid reason. I was confused with the print 
+statement which uses err.
 
-[1] https://patchwork.kernel.org/patch/9266541/
+NS_ERR("cannot create \"nandsim\" debugfs directory, err %d\n",
+			err);
 
-thanks!
--- 
-Jagan Teki
-Free Software Engineer | www.openedev.com
-U-Boot, Linux | Upstream Maintainer
-Hyderabad, India.
+
+Regards
+Sudip
