@@ -1,18 +1,17 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7Fy7-0003GC-QG
- for linux-mtd@lists.infradead.org; Thu, 17 Nov 2016 06:14:44 +0000
-Received: by mail-wm0-x244.google.com with SMTP id m203so17899312wma.3
- for <linux-mtd@lists.infradead.org>; Wed, 16 Nov 2016 22:14:23 -0800 (PST)
+ id 1c7G35-0005IF-M1
+ for linux-mtd@lists.infradead.org; Thu, 17 Nov 2016 06:19:52 +0000
+Received: by mail-wm0-x243.google.com with SMTP id g23so18043392wme.1
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Nov 2016 22:19:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1476628518-20450-4-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1476628518-20450-7-git-send-email-boris.brezillon@free-electrons.com>
 References: <1476628518-20450-1-git-send-email-boris.brezillon@free-electrons.com>
- <1476628518-20450-4-git-send-email-boris.brezillon@free-electrons.com>
+ <1476628518-20450-7-git-send-email-boris.brezillon@free-electrons.com>
 From: Peter Pan <peterpansjtu@gmail.com>
-Date: Thu, 17 Nov 2016 14:14:21 +0800
-Message-ID: <CAAyFORLqjZTZ78XOdJbqUXvSFtsWmbtw_wpmjvBwu2Z4cYCvdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] mtd: nand: add a nand.h file to expose basic NAND
- stuff
+Date: Thu, 17 Nov 2016 14:19:29 +0800
+Message-ID: <CAAyFORJR5xUCxp=jQ2kzxp7H3ArLijWAPafOgFWP19Vj97naRw@mail.gmail.com>
+Subject: Re: [PATCH v2 6/7] mtd: nand: raw: make BBT code more generic
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>,
@@ -34,40 +33,35 @@ Hi Boris,
 
 On Sun, Oct 16, 2016 at 10:35 PM, Boris Brezillon
 <boris.brezillon@free-electrons.com> wrote:
-> Now that raw NAND header has been moved to rawnand.h, we can add a new
-> nand.h file and define the common nand stuff in there.
+> BBT support is currently tightly tied to raw NAND, though this is the kind
+> of code we could share across all NAND based devices, no matter what
+> physical interface is to communicate with the NAND chip.
+>
+> Make BBT code interface agnostic by replacing all occurrence of
+> struct nand_chip by struct nand_device, and move functions that are
+> specific to raw NANDs to drivers/mtd/nand/rawnand/nand_base.c.
 >
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  include/linux/mtd/nand.h | 480 +++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 480 insertions(+)
->  create mode 100644 include/linux/mtd/nand.h
+>  drivers/mtd/nand/raw/nand_base.c |  78 ++++-
+>  drivers/mtd/nand/raw/nand_bbt.c  | 609 ++++++++++++++++++---------------------
+>  include/linux/mtd/nand.h         |   8 +
+>  include/linux/mtd/rawnand.h      |   4 -
+>  4 files changed, 361 insertions(+), 338 deletions(-)
 >
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> new file mode 100644
-> index 000000000000..b9b5d3c1bdf9
-> --- /dev/null
-> +++ b/include/linux/mtd/nand.h
-[...]
-> +
-> +/**
-> + * nand_offs_to_die - Convert an absolute offset to a die number
-> + * @nand: NAND device
-> + * @offs: absolute offset
-> + *
-> + * Returns the die number containing @offs.
-> + */
-> +static inline int nand_offs_to_die(struct nand_device *nand, loff_t offs)
-> +{
-> +       u64 die = offs;
-> +
-> +       do_div(die, nand->memorg.diesize);
-> +
-> +       return die;
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index b86f4a1bfbe1..4930b3569de9 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -471,7 +471,7 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
+>
+>         /* Mark block bad in BBT */
+>         if (chip->bbt) {
 
-Is it proper to use do_div here?. If I'm right, the divisor of do_div is 32bit.
-It may cause division 0 exception when die size is larger than 4GB.
-div64_u64 may be better.
+Should be "if (!nand->bbt.bbt)".
 
-Thanks,
-Peter Pan
+> -               res = nand_markbad_bbt(mtd, ofs);
+> +               res = nand_markbad_bbt(mtd_to_nand(mtd), ofs);
+>                 if (!ret)
+>                         ret = res;
+>         }
