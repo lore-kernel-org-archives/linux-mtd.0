@@ -1,15 +1,15 @@
 Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7U2L-0004wv-AU
- for linux-mtd@lists.infradead.org; Thu, 17 Nov 2016 21:16:02 +0000
-Received: by mail-wm0-x243.google.com with SMTP id m203so25063672wma.3
- for <linux-mtd@lists.infradead.org>; Thu, 17 Nov 2016 13:15:40 -0800 (PST)
+ id 1c7U7X-0007Qe-Tn
+ for linux-mtd@lists.infradead.org; Thu, 17 Nov 2016 21:21:24 +0000
+Received: by mail-wm0-x243.google.com with SMTP id m203so25106770wma.3
+ for <linux-mtd@lists.infradead.org>; Thu, 17 Nov 2016 13:21:03 -0800 (PST)
+Date: Thu, 17 Nov 2016 22:21:00 +0100
 From: Ivan Grimaldi <grimaldi.ivan@gmail.com>
-Date: Thu, 17 Nov 2016 22:15:37 +0100
 To: linux-mtd@lists.infradead.org, grimaldi.ivan@gmail.com
 Cc: linux-kernel@vger.kernel.org, grimaldi.ivan@gmail.com
 Subject: [BUG] mtd: blkdevs: fix deadlock
-Message-ID: <20161117211537.GA5885@tuco>
+Message-ID: <20161117212100.GA6467@tuco>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -25,7 +25,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 I found this deadlock with kernel version 4.4.30, when insmod the ftl
 module, which register_mtd_blktrans.
 
-  -> register_mtd_blktrans()
+-> register_mtd_blktrans()
   -> mutex_lock(&mtd_table_mutex)
   -> ftl_add_mtd()
   -> add_mtd_blktrans_dev()
@@ -37,8 +37,7 @@ module, which register_mtd_blktrans.
   -> mutex_lock(&mtd_table_mutex); !!!!!!!
 
 I think the lock/unlock of the mtd_table_mutex is not necessary in
-blktrans_open and blktrans_release, the log message of lockdep
-output follow:
+blktrans_open, the log message of lockdep output follow:
 
 =============================================
 [ INFO: possible recursive locking detected ]
@@ -116,5 +115,4 @@ Backtrace:
  r10:00000000 r9:bd842000 r8:8000fd04 r7:00000080 r6:00000191 r5:7e8cbf31
  r4:00024780
 
-
-IVan
+Ivan
