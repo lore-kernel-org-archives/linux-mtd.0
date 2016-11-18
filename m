@@ -1,19 +1,25 @@
-Received: from mail-eopbgr30139.outbound.protection.outlook.com
- ([40.107.3.139] helo=EUR03-AM5-obe.outbound.protection.outlook.com)
+Received: from mail-he1eur01on0121.outbound.protection.outlook.com
+ ([104.47.0.121] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7geW-0004oq-2D
- for linux-mtd@lists.infradead.org; Fri, 18 Nov 2016 10:44:19 +0000
-From: <marcin.krzeminski@nokia.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <rfsw-patches@mlist.nokia.com>, <cyrille.pitchen@atmel.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <marek.vasut@gmail.com>
-Subject: [PATCH v2 2/3] mtd: spi-nor: Implement die erase command logic
-Date: Fri, 18 Nov 2016 11:42:48 +0100
-Message-ID: <1479465769-28276-3-git-send-email-marcin.krzeminski@nokia.com>
-In-Reply-To: <1479465769-28276-1-git-send-email-marcin.krzeminski@nokia.com>
-References: <1479465769-28276-1-git-send-email-marcin.krzeminski@nokia.com>
+ id 1c7gng-0001fc-9z
+ for linux-mtd@lists.infradead.org; Fri, 18 Nov 2016 10:53:45 +0000
+From: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "rfsw-patches@mlist.nokia.com" <rfsw-patches@mlist.nokia.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>
+Subject: RE: [PATCH 1/3] mtd: spi-nor: Add die_cnt field and flags
+Date: Fri, 18 Nov 2016 10:53:19 +0000
+Message-ID: <AM4PR0701MB213010A6B6B0284D8E30427DFEB00@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+References: <1477314214-17718-1-git-send-email-marcin.krzeminski@nokia.com>
+ <1477314214-17718-2-git-send-email-marcin.krzeminski@nokia.com>
+ <0386ac08-f41e-1e10-d0e6-a16624bba952@atmel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,141 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+Cyrille,
 
-This commit implements die erase logic.
-Sector at a time procedure is moved to function,
-then erase algorithm will try to use die erase cmd
-if size and address cover one or more dies.
+....
+> >
+> > If think you should first check whether nor->erase() is implemented by
+> > the SPI controller driver and call it instead of nor->write_reg().
+> >
+> > For instance, some SPI controllers are mapped to the system memory to
+> > speed up Fast Read operations. In which case, they could also enable
+> > data cache to fasten even more the read operations.
+> >
+> > So when the spi-nor framework calls nor->erase() or nor->write(),
+> > those handlers might need to invalidate the cache before performing
+> > the next read.
+> >
+> > This is just an example but generally speaking, don't forget the
+> > nor->erase() handler! :)
+> >
+> Thanks for extensive clarification, I will include this in v2.
+>=20
+> Regards,
+> Marcin
+>=20
+I've just sent v2 with added check for nor->erase() handler.
+As we talked on IRC, with the example you gave above there is
+a bug in case of chip erase command, because the driver will not
+know that whole flash has been erased.
+Maybe there is a need to have a handler in spi-nor framework
+for memory invalidation?
 
-Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 88 +++++++++++++++++++++++++++++++++++++------
- 1 file changed, 77 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 9b8656e..5fc809e 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -369,6 +369,29 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 	return nor->write_reg(nor, nor->erase_opcode, buf, nor->addr_width);
- }
- 
-+static inline int spi_nor_sector_at_time_erase(struct mtd_info *mtd, u32 addr, u32 len)
-+{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	int ret = 0;
-+
-+	while (len) {
-+		write_enable(nor);
-+
-+		ret = spi_nor_erase_sector(nor, addr);
-+		if (ret)
-+			return ret;
-+
-+		addr += mtd->erasesize;
-+		len -= mtd->erasesize;
-+
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return ret;
-+}
-+
- /*
-  * Erase an address range on the nor chip.  The address range may extend
-  * one or more erase sectors.  Return an error is there is a problem erasing.
-@@ -376,9 +399,10 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
--	u32 addr, len;
-+	u32 addr, len, die_no, die_size;
- 	uint32_t rem;
- 	int ret;
-+	unsigned long timeout;
- 
- 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
- 			(long long)instr->len);
-@@ -395,7 +419,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 		return ret;
- 
- 	/* whole-chip erase? */
--	if (len == mtd->size) {
-+	if (len == mtd->size && !(nor->flags & SNOR_F_DIE_ERASE)) {
- 		unsigned long timeout;
- 
- 		write_enable(nor);
-@@ -425,17 +449,59 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 
- 	/* "sector"-at-a-time erase */
- 	} else {
--		while (len) {
--			write_enable(nor);
--
--			ret = spi_nor_erase_sector(nor, addr);
--			if (ret)
-+		if (nor->die_cnt && (nor->flags & SNOR_F_DIE_ERASE)) {
-+			die_size = div_u64_rem(mtd->size, nor->die_cnt, &rem);
-+			if (rem) {
-+				ret = -EINVAL;
- 				goto erase_err;
-+			}
- 
--			addr += mtd->erasesize;
--			len -= mtd->erasesize;
--
--			ret = spi_nor_wait_till_ready(nor);
-+			while (len) {
-+				die_no = div_u64_rem(addr, die_size, &rem);
-+
-+				/* Check if address is aligned to die begin*/
-+				if (!rem) {
-+					/* die erase? */
-+					if (len >= die_size) {
-+						ret = spi_nor_die_erase(nor, addr);
-+						if (ret)
-+							goto erase_err;
-+
-+						len -= die_size;
-+						addr += die_size;
-+
-+						timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
-+								CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
-+								(unsigned long)(die_size / SZ_2M));
-+						ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
-+						if (ret)
-+							goto erase_err;
-+					} else {
-+						ret = spi_nor_sector_at_time_erase(mtd, addr, len);
-+						if (ret)
-+							goto erase_err;
-+						len = 0;
-+					}
-+				} else {
-+					/* check if end address cover at least one die */
-+					if (div64_ul(addr + len, die_size) > ++die_no) {
-+						/* align to next die */
-+						rem = die_size - rem;
-+						ret = spi_nor_sector_at_time_erase(mtd, addr, rem);
-+						if (ret)
-+							goto erase_err;
-+						len -= rem;
-+						addr += rem;
-+					} else {
-+						ret = spi_nor_sector_at_time_erase(mtd, addr, len);
-+						if (ret)
-+							goto erase_err;
-+						len = 0;
-+					}
-+				}
-+			}
-+		} else {
-+			ret = spi_nor_sector_at_time_erase(mtd, addr, len);
- 			if (ret)
- 				goto erase_err;
- 		}
--- 
-2.7.4
+Thanks,
+Marcin
