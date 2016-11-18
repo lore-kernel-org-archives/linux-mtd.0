@@ -1,20 +1,14 @@
-Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7Vdo-000256-0B
- for linux-mtd@lists.infradead.org; Thu, 17 Nov 2016 22:58:49 +0000
-Received: by mail-oi0-x22b.google.com with SMTP id 128so70656491oih.0
- for <linux-mtd@lists.infradead.org>; Thu, 17 Nov 2016 14:58:26 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20161117211537.GA5885@tuco>
-References: <20161117211537.GA5885@tuco>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 17 Nov 2016 23:58:24 +0100
-Message-ID: <CAFLxGvzJFBFheXWSLWSkQhT0Fh3K5dKiTg2j=FBQFW+7oobZxw@mail.gmail.com>
-Subject: Re: [BUG] mtd: blkdevs: fix deadlock
-To: Ivan Grimaldi <grimaldi.ivan@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+From: Shawn Lin <shawn.lin@rock-chips.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ Heiko Stuebner <heiko@sntech.de>, Shawn Lin <shawn.lin@rock-chips.com>
+Subject: [PATCH v2 0/2] Add rockchip serial flash controller support
+Date: Fri, 18 Nov 2016 10:59:03 +0800
+Message-Id: <1479437945-27918-1-git-send-email-shawn.lin@rock-chips.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,103 +18,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 17, 2016 at 10:15 PM, Ivan Grimaldi <grimaldi.ivan@gmail.com> wrote:
-> I found this deadlock with kernel version 4.4.30, when insmod the ftl
-> module, which register_mtd_blktrans.
->
->   -> register_mtd_blktrans()
->   -> mutex_lock(&mtd_table_mutex)
->   -> ftl_add_mtd()
->   -> add_mtd_blktrans_dev()
->   -> add_disk()
->   -> register_disk()
->   -> blkdev_get()
->   -> __blkdev_get()
->   -> blktrans_open()
->   -> mutex_lock(&mtd_table_mutex); !!!!!!!
->
-> I think the lock/unlock of the mtd_table_mutex is not necessary in
-> blktrans_open and blktrans_release, the log message of lockdep
-> output follow:
->
-> =============================================
-> [ INFO: possible recursive locking detected ]
-> 4.4.30+siae-g8b14c5b-dirty #23 Not tainted
-> ---------------------------------------------
-> insmod/440 is trying to acquire lock:
->  (mtd_table_mutex){+.+.+.}, at: [<802fe6b0>] blktrans_open+0x30/0x1ac
->
-> but task is already holding lock:
->  (mtd_table_mutex){+.+.+.}, at: [<802fe93c>] register_mtd_blktrans+0x2c/0x120
->
-> other info that might help us debug this:
->  Possible unsafe locking scenario:
->
->        CPU0
->        ----
->   lock(mtd_table_mutex);
->   lock(mtd_table_mutex);
->
->  *** DEADLOCK ***
->
->  May be due to missing lock nesting notation
->
-> 2 locks held by insmod/440:
->  #0:  (mtd_table_mutex){+.+.+.}, at: [<802fe93c>] register_mtd_blktrans+0x2c/0x120
->  #1:  (&bdev->bd_mutex){+.+.+.}, at: [<8013c404>] __blkdev_get+0x40/0x398
->
-> stack backtrace:
-> CPU: 0 PID: 440 Comm: insmod Not tainted 4.4.30+siae-g8b14c5b-dirty #23
-> Hardware name: SIAE Microelettronica AGS20 (Device Tree)
-> Backtrace:
-> [<800140e8>] (dump_backtrace) from [<800142dc>] (show_stack+0x18/0x1c)
->  r6:60000093 r5:00000000 r4:8067cb48 r3:00000000
-> [<800142c4>] (show_stack) from [<8024fe1c>] (dump_stack+0xb4/0xe8)
-> [<8024fd68>] (dump_stack) from [<8006dc48>] (__lock_acquire+0x1a94/0x1f14)
->  r10:807d6db8 r9:8067cc28 r8:bdacd4c0 r7:80e933dc r6:bdacd080 r5:80e84ab4
->  r4:807d6db8 r3:00000002
-> [<8006c1b4>] (__lock_acquire) from [<8006e8ec>] (lock_acquire+0x78/0x98)
->  r10:80686c38 r9:00000000 r8:00000001 r7:00000001 r6:802fe6b0 r5:60000013
->  r4:00000000
-> [<8006e874>] (lock_acquire) from [<804bc708>] (mutex_lock_nested+0x54/0x3ec)
->  r7:bdacd080 r6:80e84ab4 r5:802fe6b0 r4:00000000
-> [<804bc6b4>] (mutex_lock_nested) from [<802fe6b0>] (blktrans_open+0x30/0x1ac)
->  r10:00000001 r9:00000000 r8:00000001 r7:be61be10 r6:00000000 r5:bd98a400
->  r4:be61be00
-> [<802fe680>] (blktrans_open) from [<8013c464>] (__blkdev_get+0xa0/0x398)
->  r8:00000000 r7:bec24f10 r6:00000000 r5:bd98a400 r4:bec24f00 r3:802fe680
-> [<8013c3c4>] (__blkdev_get) from [<8013c86c>] (blkdev_get+0x110/0x348)
->  r10:bec24f00 r9:00000001 r8:be831f90 r7:bd98a40c r6:00000000 r5:00000000
->  r4:bec24f00
-> [<8013c75c>] (blkdev_get) from [<8024204c>] (add_disk+0x318/0x46c)
->  r10:bec24f00 r9:00000001 r8:be831f90 r7:bd98a40c r6:bd98a480 r5:00000000
->  r4:bd98a400
-> [<80241d34>] (add_disk) from [<802fde80>] (add_mtd_blktrans_dev+0x314/0x440)
->  r10:be61be9c r9:00000000 r8:00f68e00 r7:bd98a400 r6:7f00242c r5:00000000
->  r4:be61be00
-> [<802fdb6c>] (add_mtd_blktrans_dev) from [<7f000c74>] (ftl_add_mtd+0x490/0x7d8 [ftl])
->  r10:bd843d28 r9:be61bf00 r8:00000000 r7:000000bf r6:00007b47 r5:00000be0
->  r4:be61be00
-> [<7f0007e4>] (ftl_add_mtd [ftl]) from [<802fe9c4>] (register_mtd_blktrans+0xb4/0x120)
->  r10:00000000 r9:be618ec0 r8:7f0024c8 r7:7f004000 r6:00000000 r5:7f00242c
->  r4:be806000
-> [<802fe910>] (register_mtd_blktrans) from [<7f004014>] (init_ftl+0x14/0x1c [ftl])
->  r6:be618f80 r5:8066ad20 r4:8066ad20 r3:00000000
-> [<7f004000>] (init_ftl [ftl]) from [<800097bc>] (do_one_initcall+0x88/0x1e8)
-> [<80009734>] (do_one_initcall) from [<800bf9f4>] (do_init_module+0x60/0x394)
->  r10:00000001 r9:be618ec0 r8:7f0024c8 r7:7f002480 r6:be618700 r5:be618ec8
->  r4:7f002480
-> [<800bf994>] (do_init_module) from [<800a1b7c>] (load_module+0x1814/0x1f34)
->  r6:00000001 r5:be618ec8 r4:bd843f34
-> [<800a0368>] (load_module) from [<800a2370>] (SyS_init_module+0xd4/0x148)
->  r10:bd842000 r9:00000051 r8:c6b16780 r7:76fd8788 r6:00000000 r5:00004780
->  r4:00000000
-> [<800a229c>] (SyS_init_module) from [<8000fb60>] (ret_fast_syscall+0x0/0x1c)
->  r10:00000000 r9:bd842000 r8:8000fd04 r7:00000080 r6:00000191 r5:7e8cbf31
->  r4:00024780
 
-Forgot to include the diff?
+This pathset is gonna support serial flash controller
+, namely SFC, found on Rockchip RK1108 platform.
+
+Feature:
+(1) Support x1, x2, x4 data bits mode
+(2) Support up to 4 chip select
+(3) Support two independent clock domain: AHB clock and SPI clock
+(4) Support DMA master up to 16KB/transfer
+
+Test environment:
+This patchset is testing on RK1108 evb boards with Winboud flash
+(w25q256) and working find with PIO or DMA mode.
+
+How-to:
+Any rockchip guys who are interested in testing it could refer to
+the following steps:
+(1) enable CONFIG_MTD_M25P80
+(2) enable CONFIG_SPI_ROCKCHIP_SFC
+(3) enable CONFIG_MTD_CMDLINE_PARTS
+(4) enable CONFIG_SQUASHFS
+(4) CONFIG_CMDLINE="root=/dev/mtdblock2
+	mtdparts=spi-nor:256k@0(loader)ro,8m(kernel)ro,7m(rootfs),-(freedisk)"
+	Of course, you should check the partition layout if you modify it. Also
+	you could pass it from your loader to the kernel's cmdline.
+(5) Add dts support:
+nor_flash: sfc@301c0000 {
+	compatible = "rockchip,rk1108-sfc", "rockchip,sfc";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
+	clock-names = "sfc", "hsfc";
+	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+	reg = <0x301c0000 0x1000>;
+	/* If you want to use PIO mode, activate this */
+	#rockchip,sfc-no-dma;
+	spi-nor@0 {
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <12000000>;
+		reg = <0>;
+	}
+};
+
+please make sure your DT's mdtid matchs what you assgin to the
+mdtparts(cmdline), namely they are both *spi-nor* here.
+
+With enabling DBG for cmdlinepart.c, you could get following log and
+boot kernel and rootfs successfully.
+
+[    0.481420] rockchip-sfc 301c0000.sfc: w25q256 (32768 Kbytes)
+[    0.481962] DEBUG-CMDLINE-PART: parsing
+<256k@0(loader)ro,8m(kernel)ro,7m(rootfs)ro,-(freedisk)>
+[    0.482897] DEBUG-CMDLINE-PART: partition 3: name
+<freedisk>, offset ffffffffffffffff, size ffffffffffffffff, mask flags 0
+[    0.484021] DEBUG-CMDLINE-PART: partition 2: name
+<rootfs>, offset ffffffffffffffff, size 700000, mask flags 400
+[    0.485066] DEBUG-CMDLINE-PART: partition 1: name
+<kernel>, offset ffffffffffffffff, size 800000, mask flags 400
+[    0.486108] DEBUG-CMDLINE-PART: partition 0: name
+<loader>, offset 0, size 40000, mask flags 400
+[    0.487152] DEBUG-CMDLINE-PART: mtdid=<spi-nor> num_parts=<4>
+[    0.487827] 4 cmdlinepart partitions found on MTD device spi-nor
+[    0.488370] Creating 4 MTD partitions on "spi-nor":
+[    0.488826] 0x000000000000-0x000000040000 : "loader"
+[    0.492340] 0x000000040000-0x000000840000 : "kernel"
+[    0.495679] 0x000000840000-0x000000f40000 : "rootfs"
+[    0.499241] 0x000000f40000-0x000002000000 : "freedisk"
+
+[root@arm-linux]#
+[root@arm-linux]#mount
+/dev/root on / type squashfs (ro,relatime)
+devtmpfs on /dev type devtmpfs
+(rw,relatime,size=26124k,nr_inodes=6531,mode=755)
+proc on /proc type proc (rw,relatime)
+none on /tmp type ramfs (rw,relatime)
+none on /var type ramfs (rw,relatime)
+sysfs on /sys type sysfs (rw,relatime)
+debug on /sys/kernel/debug type debugfs (rw,relatime)
+none on /dev/pts type devpts (rw,relatime,mode=600,ptmxmode=000)
+
+
+Changes in v2:
+- fix typos
+- add some comment for buffer and others operations
+- rename SFC_MAX_CHIP_NUM to MAX_CHIPSELECT_NUM
+- use u8 for cs
+- return -EINVAL for default case of get_if_type
+- use readl_poll_*() to check timeout cases
+- simplify and clarify some condition checks
+- rework the bitshifts to simplify the code
+- define SFC_CMD_DUMMY(x)
+- fix ummap for dma read path and finish all the
+  cache maintenance.
+- rename to rockchip_sfc_chip_priv and embed struct spi_nor
+  in it.
+- add MODULE_AUTHOR
+- add runtime PM and general PM support.
+- Thanks for Marek's comments. Link:
+  http://lists.infradead.org/pipermail/linux-mtd/2016-November/070321.html
+
+Shawn Lin (2):
+  mtd: spi-nor: Bindings for Rockchip serial flash controller
+  mtd: spi-nor: add rockchip serial flash controller driver
+
+ .../devicetree/bindings/mtd/rockchip-sfc.txt       |  31 +
+ MAINTAINERS                                        |   8 +
+ drivers/mtd/spi-nor/Kconfig                        |   7 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/rockchip-sfc.c                 | 971 +++++++++++++++++++++
+ 5 files changed, 1018 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+ create mode 100644 drivers/mtd/spi-nor/rockchip-sfc.c
 
 -- 
-Thanks,
-//richard
+1.9.1
