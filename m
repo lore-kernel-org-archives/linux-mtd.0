@@ -1,21 +1,29 @@
-Received: from mail.digineo.de ([185.55.116.143] helo=digineo.de)
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7k25-0002Z4-9Z
- for linux-mtd@lists.infradead.org; Fri, 18 Nov 2016 14:20:59 +0000
-Received: from dominik.digineo.lan (unknown
- [IPv6:2a06:8780:dead:0:8a88:88ff:fe88:8788])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: dom)
- by digineo.de (Postfix) with ESMTPSA id EB7126080A
- for <linux-mtd@lists.infradead.org>; Fri, 18 Nov 2016 15:20:24 +0100 (CET)
-Message-ID: <1479478821.2465.41.camel@digineo.de>
-Subject: Handling soft reset on mt7261 Soc with 32M flash
-From: Dominik Menke <dom@digineo.de>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 18 Nov 2016 15:20:21 +0100
-Content-Type: multipart/signed; micalg="pgp-sha256";
- protocol="application/pgp-signature"; boundary="=-ciGUJ7sEMsrC85IkfF0L"
-Mime-Version: 1.0
+ id 1c7oQ2-0000Pt-9o
+ for linux-mtd@lists.infradead.org; Fri, 18 Nov 2016 19:01:59 +0000
+Received: by mail-wm0-x233.google.com with SMTP id a197so56846696wmd.0
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Nov 2016 11:01:29 -0800 (PST)
+Date: Fri, 18 Nov 2016 19:04:26 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/3] spi-nor: Add support for Intel SPI serial flash
+ controller
+Message-ID: <20161118190426.GC23246@dell.home>
+References: <20161114102447.131602-1-mika.westerberg@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20161114102447.131602-1-mika.westerberg@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,87 +33,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 14 Nov 2016, Mika Westerberg wrote:
 
---=-ciGUJ7sEMsrC85IkfF0L
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> This is fifth version of the series. You can find the previous versions
+> archived on:
+> 
+>   v4: https://lwn.net/Articles/703773/
+>   v3: https://lwn.net/Articles/697231/
+>   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
+>   v1: https://lkml.org/lkml/2016/6/14/269
+> 
+> This patch series adds support for the Intel SPI serial flash controller
+> found on many recent Intel CPUs including Baytrail and Braswell. This
+> driver makes it possible to access the BIOS and other platform data which
+> is stored on the SPI serial flash. It is also possible to upgrade the BIOS
+> using this driver if it has not been protected by special hardware bits.
+> 
+> The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
+> MAX.
+> 
+> Since poking the SPI serial flash can brick the machine, this driver can
+> only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
+> unless instructed othwerwise by module parameter.
+> 
+> Changes from v4:
+>   * Use INTEL_SPI_FIFO_SZ instead of hard coded value of 64 bytes
+>   * Don't increment i inside call to FDATA() macro
+>   * Check nor->read_opcode in intel_spi_read() and return
+>     -EINVAL if not supported. We may add SFDP support later on.
+> 
+> Changes from v3:
+>   * Added ACKs from Lee Jones.
+>   * Use bus instead of dev->bus in PCI accesses
+> 
+> Changes from v2:
+>   * Rebased on top of v4.8-rc2
+>   * Updated intel_spi_read/write() according spi-nor core changes which
+>     drops retlen parameter and returns number of bytes read/written.
+> 
+> Changes from v1:
+>   * Older hardware does not support 64k erase command so added erase_64k
+>     flag which is set only for Broxton (BXT).
+>   * Fix protection range offset for Broxton. Now there is ispi->pregs
+>     pointing to the start of the protection registers.
+>   * Change naming of constants from BCR_BYT -> BYT_BCR and so on.
+>   * Drop lpc_ich_finalize_spi_cell() and initialize cell directly in
+>     lpc_ich_init_spi().
+>   * Use info->type in switch in lpc_ich_init_spi().
+>   * Add defines for magic numbers used in lpc_ich_init_spi().
+>   * Use PLATFORM_DEVID_NONE with mfd_add_devices().
+> 
+> Mika Westerberg (3):
+>   spi-nor: Add support for Intel SPI serial flash controller
+>   mfd: lpc_ich: Add support for SPI serial flash host controller
+>   mfd: lpc_ich: Add support for Intel Apollo Lake SoC
 
-Hello list,
+What's the plan for this set?
 
-I've been redirected here by Mathias Kresin (mkresin; LEDE project) to
-ask for comments on how to handle the following situation:
+>  Documentation/mtd/intel-spi.txt          |  88 ++++
+>  drivers/mfd/lpc_ich.c                    | 131 +++++
+>  drivers/mtd/spi-nor/Kconfig              |  20 +
+>  drivers/mtd/spi-nor/Makefile             |   2 +
+>  drivers/mtd/spi-nor/intel-spi-platform.c |  57 +++
+>  drivers/mtd/spi-nor/intel-spi.c          | 791 +++++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/intel-spi.h          |  24 +
+>  include/linux/mfd/lpc_ich.h              |   3 +
+>  include/linux/platform_data/intel-spi.h  |  31 ++
+>  9 files changed, 1147 insertions(+)
+>  create mode 100644 Documentation/mtd/intel-spi.txt
+>  create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
+>  create mode 100644 drivers/mtd/spi-nor/intel-spi.c
+>  create mode 100644 drivers/mtd/spi-nor/intel-spi.h
+>  create mode 100644 include/linux/platform_data/intel-spi.h
+> 
 
-We have a router board using MediaTek's MT7261 SoC with 32M flash memory
-(Winbond W25Q256FV [1]). To address >16M, the SPI bus must be configured
-to use 4-byte addressing mode. The problem arises after a soft reset,
-when the SoC expects the SPI to be in 3-byte addressing mode, but then
-can't communicate with the flash memory.
-
-When researching the issue, I've found this [2] mail in the OpenWRT
-mailing list archives, describing the problem as
-
-> Paul Fertser on openwrt-devel, 2015-07-08
->=20
-> Apparently MT7620 can't handle 4 byte addressing mode of the flash
-> memory on hardware level so it needs to be reset somehow prior to
-> resetting the SoC.
-
-=46rom that mail, I have buthered together a patch [3] which fixes the
-problem for my hardware, but it'll most likely not work with other flash
-chips (cp. [4]):
-
-> Daniel Golle on commit comment, 2015-11-11
->=20
-> At least on Macronix SPI chips, using 0x66, 0x99 to reset the chip is
-> not nough as that will not clear the adressing-mode bits.
-> Using 0xE9 (EX4B; exit 4-byte mode) instead fixes the issue eg. on
-> MX25L256.
-
-In another Pull Request [5], introducing a modalias for a Macronix
-MX25l25635E flash on the Lenovo Newifi D1 [6], the same reset sequence
-appears. Mathias hinted in the PR, that the flash reset sequence should
-be executed conditionally, based on the JEDED id (I have not a clue
-though, how to do that, to be honest).
-
-How would you proceed?
-
-Thanks for your advice,
-Dominik
-
-
-[1]:
-https://www.winbond.com/resource-files/w25q256fv_revg1_120214_qpi_website_r=
-ev_g.pdf
-[2]:
-https://lists.openwrt.org/pipermail/openwrt-devel/2015-July/034153.html
-[3]: https://gist.github.com/dmke/d389bc364b3f73f525076eaee0019dc1
-[4]: https://patchwork.ozlabs.org/patch/541391/
-[5]: https://github.com/lede-project/source/pull/464
-[6]: https://wikidevi.com/wiki/Lenovo_Newifi_D1
-
-
-
---=-ciGUJ7sEMsrC85IkfF0L
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAABCAAGBQJYLw4lAAoJEChok9YuKEw1MoQP/0x1Yrnnzn7YXOo3Xr3EbS7P
-xGrc+0Qq9wUqpWLYMii0tpCT1Y+RcZLLmcEbNRZ0aqknol5gBfPCaLB7ZIhs5D1B
-fTJKoeXa/F0A06Yk8RrIPH95dzDbDwaBr2Bwr9sX+ZLrDlvbJX3HJcpL6mxaP+P6
-boZK/RXyMiO+jHdEGcAfoR1a8kgaDtXu/EgquJn/5J0nnUzPnYUi0CBHnEincKqN
-XY6Q+AkJz7gxeix/ehEzkmVHMT0e/RZxdQWx8l6YklhRefL1j0v4IN8LJmXTokyy
-Qs3fN6HnYzH3BEJ9DzC87JoouyNG4mGJsxh6e0S7Iefq2/n4s8f2p3NG3HFnwoYa
-2Prck8LISKtlWk8hE/Xmlko4CZWsmbwcTrpqQW3xWJqU8vUJk2gNAnxTHEyn+cTT
-HH0PCsMNqgIacBu4gMIKXyJvy3N+PBmes+Q/KIhJJ3W7RnBZk1ULyMV4ifguhyu+
-g5ablT73YgNTfMwD+9zr2GBcvqvCK4oeaybqDWjoS+B9D+8QZFbhS5RMkLSdWLkO
-QuLFoPRC3TzWmA5b+G7TEjKK6rMwfstuPDIQC4+AxvZxvRxqBv3cdm/PH7wHz5XD
-0XEI7sk/vILmwZPV+scwpPNf8O8hER5nyUGqfnqYcqalN2XiSZegWPSEJKCS1RmM
-ZkqNeMDDCTHGqvkXosgT
-=e5pp
------END PGP SIGNATURE-----
-
---=-ciGUJ7sEMsrC85IkfF0L--
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
