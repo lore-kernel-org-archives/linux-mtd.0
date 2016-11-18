@@ -1,15 +1,15 @@
-Received: from mail-db5eur01on0119.outbound.protection.outlook.com
- ([104.47.2.119] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+Received: from mail-eopbgr30139.outbound.protection.outlook.com
+ ([40.107.3.139] helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7geS-0004or-R1
- for linux-mtd@lists.infradead.org; Fri, 18 Nov 2016 10:44:18 +0000
+ id 1c7geW-0004oq-2D
+ for linux-mtd@lists.infradead.org; Fri, 18 Nov 2016 10:44:19 +0000
 From: <marcin.krzeminski@nokia.com>
 To: <linux-mtd@lists.infradead.org>
 CC: <rfsw-patches@mlist.nokia.com>, <cyrille.pitchen@atmel.com>,
  <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <marek.vasut@gmail.com>
-Subject: [PATCH v2 1/3] mtd: spi-nor: Add die_cnt field and flags
-Date: Fri, 18 Nov 2016 11:42:47 +0100
-Message-ID: <1479465769-28276-2-git-send-email-marcin.krzeminski@nokia.com>
+Subject: [PATCH v2 2/3] mtd: spi-nor: Implement die erase command logic
+Date: Fri, 18 Nov 2016 11:42:48 +0100
+Message-ID: <1479465769-28276-3-git-send-email-marcin.krzeminski@nokia.com>
 In-Reply-To: <1479465769-28276-1-git-send-email-marcin.krzeminski@nokia.com>
 References: <1479465769-28276-1-git-send-email-marcin.krzeminski@nokia.com>
 MIME-Version: 1.0
@@ -25,100 +25,139 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 
-This commit adds new field and flags that could
-be used to signalize that chip support die erase
-command.
-
-If DIE_ERASE flag will be selected but die_cnt field
-will be 0 chip will not use chip erase command.
+This commit implements die erase logic.
+Sector at a time procedure is moved to function,
+then erase algorithm will try to use die erase cmd
+if size and address cover one or more dies.
 
 Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 27 +++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h   |  5 +++++
- 2 files changed, 32 insertions(+)
+ drivers/mtd/spi-nor/spi-nor.c | 88 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 77 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d0fc165..9b8656e 100644
+index 9b8656e..5fc809e 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -75,6 +75,7 @@ struct flash_info {
- 					 * bit. Must be used with
- 					 * SPI_NOR_HAS_LOCK.
- 					 */
-+#define DIE_ERASE			BIT(10)	/* Support for die erase cmd */
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -295,6 +296,32 @@ static int erase_chip(struct spi_nor *nor)
- 	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
+@@ -369,6 +369,29 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ 	return nor->write_reg(nor, nor->erase_opcode, buf, nor->addr_width);
  }
  
-+static int spi_nor_die_erase(struct spi_nor *nor, u32 addr)
++static inline int spi_nor_sector_at_time_erase(struct mtd_info *mtd, u32 addr, u32 len)
 +{
-+	u8 buf[SPI_NOR_MAX_ADDR_WIDTH];
-+	u8 cmd;
-+	int i, ret;
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret = 0;
 +
-+	dev_dbg(nor->dev, "erase @ 0x%X\n", addr);
++	while (len) {
++		write_enable(nor);
 +
-+	write_enable(nor);
++		ret = spi_nor_erase_sector(nor, addr);
++		if (ret)
++			return ret;
 +
-+	if (nor->erase) {
-+		cmd = nor->erase_opcode;
-+		nor->erase_opcode = SPINOR_OP_DIE_ERASE;
-+		ret = nor->erase(nor, addr);
-+		nor->erase_opcode = cmd;
-+		return ret;
++		addr += mtd->erasesize;
++		len -= mtd->erasesize;
++
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			return ret;
 +	}
 +
-+	for (i = nor->addr_width - 1; i >= 0; i--) {
-+		buf[i] = addr & 0xff;
-+		addr >>= 8;
-+	}
-+
-+	return nor->write_reg(nor, SPINOR_OP_DIE_ERASE, buf, nor->addr_width);
++	return ret;
 +}
 +
- static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+ /*
+  * Erase an address range on the nor chip.  The address range may extend
+  * one or more erase sectors.  Return an error is there is a problem erasing.
+@@ -376,9 +399,10 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
  {
- 	int ret = 0;
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index c425c7b..80154b2 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -50,6 +50,7 @@
- #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
- #define SPINOR_OP_BE_32K	0x52	/* Erase 32KiB block */
- #define SPINOR_OP_CHIP_ERASE	0xc7	/* Erase whole flash chip */
-+#define SPINOR_OP_DIE_ERASE	0xc4	/* Erase whole die within chip */
- #define SPINOR_OP_SE		0xd8	/* Sector erase (usually 64KiB) */
- #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
- #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
-@@ -119,6 +120,7 @@ enum spi_nor_ops {
- enum spi_nor_option_flags {
- 	SNOR_F_USE_FSR		= BIT(0),
- 	SNOR_F_HAS_SR_TB	= BIT(1),
-+	SNOR_F_DIE_ERASE	= BIT(2),
- };
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	u32 addr, len;
++	u32 addr, len, die_no, die_size;
+ 	uint32_t rem;
+ 	int ret;
++	unsigned long timeout;
  
- /**
-@@ -136,6 +138,8 @@ enum spi_nor_option_flags {
-  * @sst_write_second:	used by the SST write operation
-  * @flags:		flag options for the current SPI-NOR (SNOR_F_*)
-  * @cmd_buf:		used by the write_reg
-+ * @die_cnt:		number of dies in chip, if and SNOR_F_DIE_ERASE
-+ * 			flasg is enabled CE command will be disabled
-  * @prepare:		[OPTIONAL] do some preparations for the
-  *			read/write/erase/lock/unlock operations
-  * @unprepare:		[OPTIONAL] do some post work after the
-@@ -167,6 +171,7 @@ struct spi_nor {
- 	bool			sst_write_second;
- 	u32			flags;
- 	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
-+	u32			die_cnt;
+ 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
+ 			(long long)instr->len);
+@@ -395,7 +419,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		return ret;
  
- 	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
- 	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
+ 	/* whole-chip erase? */
+-	if (len == mtd->size) {
++	if (len == mtd->size && !(nor->flags & SNOR_F_DIE_ERASE)) {
+ 		unsigned long timeout;
+ 
+ 		write_enable(nor);
+@@ -425,17 +449,59 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 
+ 	/* "sector"-at-a-time erase */
+ 	} else {
+-		while (len) {
+-			write_enable(nor);
+-
+-			ret = spi_nor_erase_sector(nor, addr);
+-			if (ret)
++		if (nor->die_cnt && (nor->flags & SNOR_F_DIE_ERASE)) {
++			die_size = div_u64_rem(mtd->size, nor->die_cnt, &rem);
++			if (rem) {
++				ret = -EINVAL;
+ 				goto erase_err;
++			}
+ 
+-			addr += mtd->erasesize;
+-			len -= mtd->erasesize;
+-
+-			ret = spi_nor_wait_till_ready(nor);
++			while (len) {
++				die_no = div_u64_rem(addr, die_size, &rem);
++
++				/* Check if address is aligned to die begin*/
++				if (!rem) {
++					/* die erase? */
++					if (len >= die_size) {
++						ret = spi_nor_die_erase(nor, addr);
++						if (ret)
++							goto erase_err;
++
++						len -= die_size;
++						addr += die_size;
++
++						timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
++								CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
++								(unsigned long)(die_size / SZ_2M));
++						ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
++						if (ret)
++							goto erase_err;
++					} else {
++						ret = spi_nor_sector_at_time_erase(mtd, addr, len);
++						if (ret)
++							goto erase_err;
++						len = 0;
++					}
++				} else {
++					/* check if end address cover at least one die */
++					if (div64_ul(addr + len, die_size) > ++die_no) {
++						/* align to next die */
++						rem = die_size - rem;
++						ret = spi_nor_sector_at_time_erase(mtd, addr, rem);
++						if (ret)
++							goto erase_err;
++						len -= rem;
++						addr += rem;
++					} else {
++						ret = spi_nor_sector_at_time_erase(mtd, addr, len);
++						if (ret)
++							goto erase_err;
++						len = 0;
++					}
++				}
++			}
++		} else {
++			ret = spi_nor_sector_at_time_erase(mtd, addr, len);
+ 			if (ret)
+ 				goto erase_err;
+ 		}
 -- 
 2.7.4
