@@ -1,25 +1,34 @@
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c7elr-00053W-Vt
+ for linux-mtd@lists.infradead.org; Fri, 18 Nov 2016 08:43:45 +0000
+Received: from mail-yb0-f178.google.com (mail-yb0-f178.google.com
+ [209.85.213.178]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id uAI8guRB013797
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Nov 2016 17:42:57 +0900
+Received: by mail-yb0-f178.google.com with SMTP id a184so78884610ybb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Nov 2016 00:42:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <DB6PR0401MB24077A46D3FC5147DC4C69D989B10@DB6PR0401MB2407.eurprd04.prod.outlook.com>
-References: <1471505884-33996-1-git-send-email-B56489@freescale.com>
- <1471505884-33996-6-git-send-email-B56489@freescale.com>
- <CA+EcR20NkBzFjMJ_ArWw9ALZY-x1SqwS1nUyGYAnjsygTk8K-Q@mail.gmail.com>
- <AM4PR0701MB21308B262DB7B94E0F7FC34EFEF00@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <20161116171058.GA21300@Cayman.am.freescale.net>
- <AM4PR0701MB2130273C90BE0EE615382718FEB10@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <DB6PR0401MB24077A46D3FC5147DC4C69D989B10@DB6PR0401MB2407.eurprd04.prod.outlook.com>
-From: Han Xu <xhnjupt@gmail.com>
-Date: Thu, 17 Nov 2016 22:30:50 -0600
-Message-ID: <CA+EcR20gNsuWG7pXimCmXmMy1wFFOv+zocMXTQoFhysGQ+wEFA@mail.gmail.com>
-Subject: Re: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
-To: Yao Yuan <yao.yuan@nxp.com>
-Cc: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "han.xu@freescale.com" <han.xu@freescale.com>,
+In-Reply-To: <5a1b5ef5-5c1a-ce20-f0be-ed6abed6996e@gmail.com>
+References: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
+ <1478666130-13413-6-git-send-email-yamada.masahiro@socionext.com>
+ <5a1b5ef5-5c1a-ce20-f0be-ed6abed6996e@gmail.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Fri, 18 Nov 2016 17:42:55 +0900
+Message-ID: <CAK7LNAQYAcGcXnwgKYohgyDNN=5S3czCbDm7enKnVUBVhf3T8g@mail.gmail.com>
+Subject: Re: [PATCH 05/11] mtd: nand: denali: remove "Spectra:" prefix from
+ printk strings
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Alan Cox <alan@linux.intel.com>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Jason Roberts <jason.e.roberts@intel.com>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Dinh Nguyen <dinguyen@altera.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- "jagannadh.teki@gmail.com" <jagannadh.teki@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,173 +39,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 17, 2016 at 3:14 AM, Yao Yuan <yao.yuan@nxp.com> wrote:
-> On Thu, Nov 17, 2016 at 06:50:55AM +0000, Krzeminski, Marcin (Nokia - PL/Wroclaw) wrote:
->> > > > On Thu, Aug 18, 2016 at 2:38 AM, Yunhui Cui <B56489@freescale.com>
->> > > > wrote:
->> > > > > From: Yunhui Cui <yunhui.cui@nxp.com>
->> > > > >
->> > > > > With the physical sectors combination, S25FS-S family flash
->> > > > > requires some special operations for read/write functions.
->> > > > >
->> > > > > Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
->> > > > > ---
->> > > > >  drivers/mtd/spi-nor/spi-nor.c | 56
->> > > > > +++++++++++++++++++++++++++++++++++++++++++
->> > > > >  1 file changed, 56 insertions(+)
->> > > > >
->> > > > > diff --git a/drivers/mtd/spi-nor/spi-nor.c
->> > > > > b/drivers/mtd/spi-nor/spi-nor.c index d0fc165..495d0bb 100644
->> > > > > --- a/drivers/mtd/spi-nor/spi-nor.c
->> > > > > +++ b/drivers/mtd/spi-nor/spi-nor.c
->> > > > > @@ -39,6 +39,10 @@
->> > > > >
->> > > > >  #define SPI_NOR_MAX_ID_LEN     6
->> > > > >  #define SPI_NOR_MAX_ADDR_WIDTH 4
->> > > > > +/* Added for S25FS-S family flash */
->> > > > > +#define SPINOR_CONFIG_REG3_OFFSET      0x800004
->> > > > > +#define CR3V_4KB_ERASE_UNABLE  0x8 #define
->> > > > > +SPINOR_S25FS_FAMILY_EXT_JEDEC  0x81
->> > > > >
->> > > > >  struct flash_info {
->> > > > >         char            *name;
->> > > > > @@ -78,6 +82,7 @@ struct flash_info {  };
->> > > > >
->> > > > >  #define JEDEC_MFR(info)        ((info)->id[0])
->> > > > > +#define EXT_JEDEC(info)        ((info)->id[5])
->> > > > >
->> > > > >  static const struct flash_info *spi_nor_match_id(const char
->> > > > > *name);
->> > > > >
->> > > > > @@ -899,6 +904,7 @@ static const struct flash_info spi_nor_ids[] = {
->> > > > >          */
->> > > > >         { "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64,
->> > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->> > > > >         { "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128,
->> > > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->> > > > > +       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024,
->> > > > > + 512, 0)},
->> > > > >         { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
->> > > > >         { "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512,
->> > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->> > > > >         { "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256,
->> > > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) }, @@ -1036,6
->> > +1042,50
->> > > > @@ static const struct flash_info *spi_nor_read_id(struct spi_nor
->> > > > *nor)
->> > > > >         return ERR_PTR(-ENODEV);  }
->> > > > >
->> > > > > +/*
->> > > > > + * The S25FS-S family physical sectors may be configured as a
->> > > > > + * hybrid combination of eight 4-kB parameter sectors
->> > > > > + * at the top or bottom of the address space with all
->> > > > > + * but one of the remaining sectors being uniform size.
->> > > > > + * The Parameter Sector Erase commands (20h or 21h) must
->> > > > > + * be used to erase the 4-kB parameter sectors individually.
->> > > > > + * The Sector (uniform sector) Erase commands (D8h or DCh)
->> > > > > + * must be used to erase any of the remaining
->> > > > > + * sectors, including the portion of highest or lowest address
->> > > > > + * sector that is not overlaid by the parameter sectors.
->> > > > > + * The uniform sector erase command has no effect on parameter
->> > > > sectors.
->> > > > > + */
->> > > > > +static int spansion_s25fs_disable_4kb_erase(struct spi_nor *nor) {
->> > > > > +       u32 cr3v_addr  = SPINOR_CONFIG_REG3_OFFSET;
->> > > > > +       u8 cr3v = 0x0;
->> > > > > +       int ret = 0x0;
->> > > > > +
->> > > > > +       nor->cmd_buf[2] = cr3v_addr >> 16;
->> > > > > +       nor->cmd_buf[1] = cr3v_addr >> 8;
->> > > > > +       nor->cmd_buf[0] = cr3v_addr >> 0;
->> > > > > +
->> > > > > +       ret = nor->read_reg(nor, SPINOR_OP_SPANSION_RDAR, &cr3v, 1);
->> > > > > +       if (ret)
->> > > > > +               return ret;
->> > > > > +       if (cr3v & CR3V_4KB_ERASE_UNABLE)
->> > > > > +               return 0;
->> > > > > +       ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
->> > > > > +       if (ret)
->> > > > > +               return ret;
->> > > > > +       cr3v = CR3V_4KB_ERASE_UNABLE;
->> > > > > +       nor->program_opcode = SPINOR_OP_SPANSION_WRAR;
->> > > > > +       nor->write(nor, cr3v_addr, 1, &cr3v);
->> > > > > +
->> > > > > +       ret = nor->read_reg(nor, SPINOR_OP_SPANSION_RDAR, &cr3v, 1);
->> > > > > +       if (ret)
->> > > > > +               return ret;
->> > > > > +       if (!(cr3v & CR3V_4KB_ERASE_UNABLE))
->> > > > > +               return -EPERM;
->> > > > > +
->> > > > > +       return 0;
->> > > > > +}
->> > > > > +
->> > > > >  static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
->> > > > >                         size_t *retlen, u_char *buf)  { @@
->> > > > > -1361,6
->> > > > > +1411,12 @@ int spi_nor_scan(struct spi_nor *nor, const char
->> > > > > +*name,
->> > > > enum read_mode mode)
->> > > > >                 spi_nor_wait_till_ready(nor);
->> > > > >         }
->> > > > >
->> > > > > +       if (EXT_JEDEC(info) == SPINOR_S25FS_FAMILY_EXT_JEDEC) {
->> > > > > +               ret = spansion_s25fs_disable_4kb_erase(nor);
->> > > > > +               if (ret)
->> > > > > +                       return ret;
->> > > > > +       }
->> > > > > +
->> > > > >         if (!mtd->name)
->> > > > >                 mtd->name = dev_name(dev);
->> > > > >         mtd->priv = nor;
->> > > > > --
->> > > > > 2.1.0.27.g96db324
->> > > > >
->> > > > >
->> > > > Hi Brian, I will ack this change but still feel it's kind of hacking code.
->> > > >
->> > > > Acked-by: Han xu <han.xu@nxp.com>
->> > >
->> > > I am new on the list so I am not sure if this topic has been discussed.
->> > > Generally our product functionality relay on those 4KiB sectors.
->> > > I know that this hack is already in u-boot, but if you mainstream
->> > > this you will force users of those 4KiB sectors to do hack the hack...
->> > > I believe the proper solution here is to use erase regions
->> > > functionality, I send and RFS about that some time ago.
->> >
->> > Do you mind to send me a link for reference?
->> >
->> Han,
->>
->> Sorry, It seem I have not posted erase region changes (only those regarding
->> DUAL/QUAD I/O).
->> Generally, in this flash you need to create 3 erase regions (because in FS-S
->> family support only  4KiB erase on parameters sector - eg. 1.2.2.4 in S25FS512S).
->> In my case regions are:
->> 1. 0-32KiB (8*4KiB) - 4K_ERASE (0x20/0x21) 2. 32 - 256 - SE_CMD (0xd8/0xdc) 3.
->> Rest of the flash SE_CMD (0xd8/0xdc)
->>
->> To erase whole flash you can also use CHIP_ERASE_CMD (0x60/0xC7) command,
->> you just need to add one more mtd partition that will cover whole flash.
->>
->
-> Hi Krzeminski,
->
-> Do you think is there any great advantages for enable 4KB?
-> Because for NXP(Freescale) QSPI controller, there is only support max to 16 groups command.
+Hi Marek,
 
-If it's really necessary to support all command groups, you can try
-apply my dynamic lut patch first.
-https://patchwork.ozlabs.org/patch/676791/
 
+2016-11-13 6:35 GMT+09:00 Marek Vasut <marek.vasut@gmail.com>:
+> On 11/09/2016 05:35 AM, Masahiro Yamada wrote:
+>> As far as I understood from the Kconfig menu deleted by commit
+>> be7f39c5ecf5 ("Staging: delete spectra driver"), the "Spectra" is
+>> specific to Intel Moorestown Platform.
+>>
+>> The Denali NAND controller IP is used for various SoCs such as
+>> Altera SOCFPGA, Socionext UniPhier, etc.  The platform specific
+>> strings are not preferred in this driver.
+>>
+>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 >
-> So It's hard to give 3 groups command just for erase (0x21,0xdc and 0xc7).
-> So we have to disable the 4kb erase and only use 256kbytes in this patch.
+> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 >
+>> ---
+>>
+>> As an ARM-SoC developer, I only need denali.c and denali_dt.c.
+>>
+>> I see some "Spectra:" in drivers/mtd/nand/denali_pci.c as well.
+>> I was not quite sure if they are needed or not.
+>> If desired, I can update this patch to remove them too.
 >
+> Is anyone even using Denali on Intel now ?
+>
+>>  drivers/mtd/nand/denali.c | 11 +++++------
+>>  1 file changed, 5 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+>> index 80d3e26..78d795b 100644
+>> --- a/drivers/mtd/nand/denali.c
+>> +++ b/drivers/mtd/nand/denali.c
+>> @@ -402,7 +402,7 @@ static void get_hynix_nand_para(struct denali_nand_info *denali,
+>>               break;
+>>       default:
+>>               dev_warn(denali->dev,
+>> -                      "Spectra: Unknown Hynix NAND (Device ID: 0x%x).\n"
+>> +                      "Unknown Hynix NAND (Device ID: 0x%x).\n"
+>>                        "Will use default parameter values instead.\n",
+>>                        device_id);
+>>       }
+>> @@ -1458,7 +1458,7 @@ int denali_init(struct denali_nand_info *denali)
+>>        */
+>>       if (request_irq(denali->irq, denali_isr, IRQF_SHARED,
+>>                       DENALI_NAND_NAME, denali)) {
+>> -             pr_err("Spectra: Unable to allocate IRQ\n");
+>> +             dev_err(denali->dev, "Unable to request IRQ\n");
+>>               return -ENODEV;
+>>       }
+>>
+>> @@ -1495,7 +1495,7 @@ int denali_init(struct denali_nand_info *denali)
+>>       /* Is 32-bit DMA supported? */
+>>       ret = dma_set_mask(denali->dev, DMA_BIT_MASK(32));
+>>       if (ret) {
+>> -             pr_err("Spectra: no usable DMA configuration\n");
+>> +             dev_err(denali->dev, "no usable DMA configuration\n");
+>>               goto failed_req_irq;
+>>       }
+>>
+>> @@ -1503,7 +1503,7 @@ int denali_init(struct denali_nand_info *denali)
+>>                            mtd->writesize + mtd->oobsize,
+>>                            DMA_BIDIRECTIONAL);
+>>       if (dma_mapping_error(denali->dev, denali->buf.dma_buf)) {
+>> -             dev_err(denali->dev, "Spectra: failed to map DMA buffer\n");
+>> +             dev_err(denali->dev, "failed to map DMA buffer\n");
+>
+> Nit: For consistency's sake, use Failed with capital F . Fix the "No
+> usable DMA ..." too.
 
+
+Even if we fix those two, we still have some more printk strings
+that start with a lower case.
+
+
+line 177:  dev_err(denali->dev, "reset bank failed.\n");
+
+line 699:  pr_err("timeout occurred, status = 0x%x, mask = 0x%x\n",
+
+line 863:  dev_err(denali->dev, "unable to send pipeline command\n");
+
+line 1074:  dev_err(denali->dev, "timeout on write_page (type = %d)\n",
+
+line 1309:  pr_err(": unsupported command received 0x%x\n", cmd);
+
+
+
+If you say "consistency's sake" and
+you are a big fan of capital letters instead of lower cases,
+will you send a patch that touches those globally?
+
+
+Your comments against this series are just about
+"upper cases vs lower cases".
+
+If I get more useful comments, I am happy to send v2.
+
+But, at this moment, I see no good reason for v2
+because changing those two lines does not give us any consistency.
 
 
 -- 
-Sincerely,
-
-Han XU
+Best Regards
+Masahiro Yamada
