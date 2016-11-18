@@ -1,30 +1,21 @@
-From: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
-To: Yao Yuan <yao.yuan@nxp.com>, Han Xu <xhnjupt@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "han.xu@freescale.com"
- <han.xu@freescale.com>, Brian Norris <computersforpeace@gmail.com>,
- "jagannadh.teki@gmail.com" <jagannadh.teki@gmail.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: RE: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
-Date: Fri, 18 Nov 2016 10:59:30 +0000
-Message-ID: <AM4PR0701MB21302592BE1B712D6E74C569FEB00@AM4PR0701MB2130.eurprd07.prod.outlook.com>
-References: <1471505884-33996-1-git-send-email-B56489@freescale.com>
- <1471505884-33996-6-git-send-email-B56489@freescale.com>
- <CA+EcR20NkBzFjMJ_ArWw9ALZY-x1SqwS1nUyGYAnjsygTk8K-Q@mail.gmail.com>
- <AM4PR0701MB21308B262DB7B94E0F7FC34EFEF00@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <20161116171058.GA21300@Cayman.am.freescale.net>
- <AM4PR0701MB2130273C90BE0EE615382718FEB10@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <DB6PR0401MB24077A46D3FC5147DC4C69D989B10@DB6PR0401MB2407.eurprd04.prod.outlook.com>
- <AM4PR0701MB213027FC738E6E377A593B60FEB10@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <DB6PR0401MB24074D231C8EBCC56E168CC989B00@DB6PR0401MB2407.eurprd04.prod.outlook.com>
-In-Reply-To: <DB6PR0401MB24074D231C8EBCC56E168CC989B00@DB6PR0401MB2407.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c7gx9-0006qI-Na
+ for linux-mtd@lists.infradead.org; Fri, 18 Nov 2016 11:03:33 +0000
+Received: by mail-oi0-x244.google.com with SMTP id v84so10034924oie.2
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Nov 2016 03:03:10 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <20161118101203.18992-1-ash.benz@bk.ru>
+References: <20161118101203.18992-1-ash.benz@bk.ru>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date: Fri, 18 Nov 2016 12:03:08 +0100
+Message-ID: <CACna6rxYHGpm7y6kKFYA0nC-K6thwuAehFNX+3bDY2phr61BvA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: add Macronix mx25u25635f to list of known
+ devices.
+To: Ash Benz <ash.benz@bk.ru>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,268 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 18 November 2016 at 11:12, Ash Benz <ash.benz@bk.ru> wrote:
+> Signed-off-by: Ash Benz <ash.benz@bk.ru>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.=
+c
+> index d0fc165..171adb3 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -872,6 +872,7 @@ static const struct flash_info spi_nor_ids[] =3D {
+>         { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+>         { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>         { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+> +       { "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, 0) },
+>         { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>         { "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_=
+READ) },
+>         { "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_=
+READ) },
+
+Please keep this list sorted.
+
+Are you sure this chip doesn't support 4 k sections? Datasheets says:
+"Equal Sectors with 4K byte each, or Equal Blocks with 32K byte each
+or Equal Blocks with 64K byte each "
+
+--=20
+Rafa=C5=82
+
+On 18 November 2016 at 11:12, Ash Benz <ash.benz@bk.ru> wrote:
+> Signed-off-by: Ash Benz <ash.benz@bk.ru>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.=
+c
+> index d0fc165..171adb3 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -872,6 +872,7 @@ static const struct flash_info spi_nor_ids[] =3D {
+>         { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+>         { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>         { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+> +       { "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, 0) },
+>         { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>         { "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_=
+READ) },
+>         { "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_=
+READ) },
+> --
+> 2.10.2
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
-> -----Original Message-----
-> From: Yao Yuan [mailto:yao.yuan@nxp.com]
-> Sent: Friday, November 18, 2016 5:20 AM
-> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
-> <marcin.krzeminski@nokia.com>; Han Xu <xhnjupt@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>; linux-
-> kernel@vger.kernel.org; linux-mtd@lists.infradead.org;
-> han.xu@freescale.com; Brian Norris <computersforpeace@gmail.com>;
-> jagannadh.teki@gmail.com; linux-arm-kernel@lists.infradead.org
-> Subject: RE: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S family
-> flash
->=20
-> On Thu, Nov 17, 2016 at 10:14:55AM +0000, Krzeminski, Marcin (Nokia -
-> PL/Wroclaw) wrote:
-> > > On Thu, Nov 17, 2016 at 06:50:55AM +0000, Krzeminski, Marcin (Nokia
-> > > -
-> > > PL/Wroclaw) wrote:
-> > > > > > > On Thu, Aug 18, 2016 at 2:38 AM, Yunhui Cui
-> > > > > > > <B56489@freescale.com>
-> > > > > > > wrote:
-> > > > > > > > From: Yunhui Cui <yunhui.cui@nxp.com>
-> > > > > > > >
-> > > > > > > > With the physical sectors combination, S25FS-S family
-> > > > > > > > flash requires some special operations for read/write funct=
-ions.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
-> > > > > > > > ---
-> > > > > > > >  drivers/mtd/spi-nor/spi-nor.c | 56
-> > > > > > > > +++++++++++++++++++++++++++++++++++++++++++
-> > > > > > > >  1 file changed, 56 insertions(+)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/mtd/spi-nor/spi-nor.c
-> > > > > > > > b/drivers/mtd/spi-nor/spi-nor.c index d0fc165..495d0bb
-> > > > > > > > 100644
-> > > > > > > > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > > > > > > > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > > > > > > > @@ -39,6 +39,10 @@
-> > > > > > > >
-> > > > > > > >  #define SPI_NOR_MAX_ID_LEN     6
-> > > > > > > >  #define SPI_NOR_MAX_ADDR_WIDTH 4
-> > > > > > > > +/* Added for S25FS-S family flash */
-> > > > > > > > +#define SPINOR_CONFIG_REG3_OFFSET      0x800004
-> > > > > > > > +#define CR3V_4KB_ERASE_UNABLE  0x8 #define
-> > > > > > > > +SPINOR_S25FS_FAMILY_EXT_JEDEC  0x81
-> > > > > > > >
-> > > > > > > >  struct flash_info {
-> > > > > > > >         char            *name;
-> > > > > > > > @@ -78,6 +82,7 @@ struct flash_info {  };
-> > > > > > > >
-> > > > > > > >  #define JEDEC_MFR(info)        ((info)->id[0])
-> > > > > > > > +#define EXT_JEDEC(info)        ((info)->id[5])
-> > > > > > > >
-> > > > > > > >  static const struct flash_info *spi_nor_match_id(const
-> > > > > > > > char *name);
-> > > > > > > >
-> > > > > > > > @@ -899,6 +904,7 @@ static const struct flash_info
-> spi_nor_ids[] =3D {
-> > > > > > > >          */
-> > > > > > > >         { "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,
-> > > > > > > > 64,
-> > > > > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> > > > > > > >         { "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024,
-> > > > > > > > 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> > > > > > > > +       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 *
-> > > > > > > > + 1024, 512, 0)},
-> > > > > > > >         { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, =
-128, 0) },
-> > > > > > > >         { "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024,
-> > > > > > > > 512,
-> > > > > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> > > > > > > >         { "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024,
-> > > > > > > > 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) }, @@ -
-> 1036,6
-> > > > > +1042,50
-> > > > > > > @@ static const struct flash_info *spi_nor_read_id(struct
-> > > > > > > spi_nor
-> > > > > > > *nor)
-> > > > > > > >         return ERR_PTR(-ENODEV);  }
-> > > > > > > >
-> > > > > > > > +/*
-> > > > > > > > + * The S25FS-S family physical sectors may be configured
-> > > > > > > > +as a
-> > > > > > > > + * hybrid combination of eight 4-kB parameter sectors
-> > > > > > > > + * at the top or bottom of the address space with all
-> > > > > > > > + * but one of the remaining sectors being uniform size.
-> > > > > > > > + * The Parameter Sector Erase commands (20h or 21h) must
-> > > > > > > > + * be used to erase the 4-kB parameter sectors individuall=
-y.
-> > > > > > > > + * The Sector (uniform sector) Erase commands (D8h or
-> > > > > > > > +DCh)
-> > > > > > > > + * must be used to erase any of the remaining
-> > > > > > > > + * sectors, including the portion of highest or lowest
-> > > > > > > > +address
-> > > > > > > > + * sector that is not overlaid by the parameter sectors.
-> > > > > > > > + * The uniform sector erase command has no effect on
-> > > > > > > > +parameter
-> > > > > > > sectors.
-> > > > > > > > + */
-> > > > > > > > +static int spansion_s25fs_disable_4kb_erase(struct spi_nor
-> *nor) {
-> > > > > > > > +       u32 cr3v_addr  =3D SPINOR_CONFIG_REG3_OFFSET;
-> > > > > > > > +       u8 cr3v =3D 0x0;
-> > > > > > > > +       int ret =3D 0x0;
-> > > > > > > > +
-> > > > > > > > +       nor->cmd_buf[2] =3D cr3v_addr >> 16;
-> > > > > > > > +       nor->cmd_buf[1] =3D cr3v_addr >> 8;
-> > > > > > > > +       nor->cmd_buf[0] =3D cr3v_addr >> 0;
-> > > > > > > > +
-> > > > > > > > +       ret =3D nor->read_reg(nor, SPINOR_OP_SPANSION_RDAR,
-> > > &cr3v, 1);
-> > > > > > > > +       if (ret)
-> > > > > > > > +               return ret;
-> > > > > > > > +       if (cr3v & CR3V_4KB_ERASE_UNABLE)
-> > > > > > > > +               return 0;
-> > > > > > > > +       ret =3D nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0=
-);
-> > > > > > > > +       if (ret)
-> > > > > > > > +               return ret;
-> > > > > > > > +       cr3v =3D CR3V_4KB_ERASE_UNABLE;
-> > > > > > > > +       nor->program_opcode =3D SPINOR_OP_SPANSION_WRAR;
-> > > > > > > > +       nor->write(nor, cr3v_addr, 1, &cr3v);
-> > > > > > > > +
-> > > > > > > > +       ret =3D nor->read_reg(nor, SPINOR_OP_SPANSION_RDAR,
-> > > &cr3v, 1);
-> > > > > > > > +       if (ret)
-> > > > > > > > +               return ret;
-> > > > > > > > +       if (!(cr3v & CR3V_4KB_ERASE_UNABLE))
-> > > > > > > > +               return -EPERM;
-> > > > > > > > +
-> > > > > > > > +       return 0;
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > >  static int spi_nor_read(struct mtd_info *mtd, loff_t
-> > > > > > > > from, size_t
-> > > len,
-> > > > > > > >                         size_t *retlen, u_char *buf)  { @@
-> > > > > > > > -1361,6
-> > > > > > > > +1411,12 @@ int spi_nor_scan(struct spi_nor *nor, const
-> > > > > > > > +char *name,
-> > > > > > > enum read_mode mode)
-> > > > > > > >                 spi_nor_wait_till_ready(nor);
-> > > > > > > >         }
-> > > > > > > >
-> > > > > > > > +       if (EXT_JEDEC(info) =3D=3D SPINOR_S25FS_FAMILY_EXT_=
-JEDEC)
-> {
-> > > > > > > > +               ret =3D spansion_s25fs_disable_4kb_erase(no=
-r);
-> > > > > > > > +               if (ret)
-> > > > > > > > +                       return ret;
-> > > > > > > > +       }
-> > > > > > > > +
-> > > > > > > >         if (!mtd->name)
-> > > > > > > >                 mtd->name =3D dev_name(dev);
-> > > > > > > >         mtd->priv =3D nor;
-> > > > > > > > --
-> > > > > > > > 2.1.0.27.g96db324
-> > > > > > > >
-> > > > > > > >
-> > > > > > > Hi Brian, I will ack this change but still feel it's kind of =
-hacking code.
-> > > > > > >
-> > > > > > > Acked-by: Han xu <han.xu@nxp.com>
-> > > > > >
-> > > > > > I am new on the list so I am not sure if this topic has been di=
-scussed.
-> > > > > > Generally our product functionality relay on those 4KiB sectors=
-.
-> > > > > > I know that this hack is already in u-boot, but if you
-> > > > > > mainstream this you will force users of those 4KiB sectors to
-> > > > > > do hack the
-> > hack...
-> > > > > > I believe the proper solution here is to use erase regions
-> > > > > > functionality, I send and RFS about that some time ago.
-> > > > >
-> > > > > Do you mind to send me a link for reference?
-> > > > >
-> > > > Han,
-> > > >
-> > > > Sorry, It seem I have not posted erase region changes (only those
-> > > > regarding DUAL/QUAD I/O).
-> > > > Generally, in this flash you need to create 3 erase regions
-> > > > (because in FS-S family support only  4KiB erase on parameters sect=
-or -
-> eg.
-> > > > 1.2.2.4 in
-> > > S25FS512S).
-> > > > In my case regions are:
-> > > > 1. 0-32KiB (8*4KiB) - 4K_ERASE (0x20/0x21) 2. 32 - 256 - SE_CMD
-> > > (0xd8/0xdc) 3.
-> > > > Rest of the flash SE_CMD (0xd8/0xdc)
-> > > >
-> > > > To erase whole flash you can also use CHIP_ERASE_CMD (0x60/0xC7)
-> > > > command, you just need to add one more mtd partition that will
-> > > > cover
-> > > whole flash.
-> > > >
-> > >
-> > > Hi Krzeminski,
-> > >
-> > > Do you think is there any great advantages for enable 4KB?
-> > > Because for NXP(Freescale) QSPI controller, there is only support
-> > > max to 16 groups command.
-> > >
-> > > So It's hard to give 3 groups command just for erase (0x21,0xdc and 0=
-xc7).
-> > > So we have to disable the 4kb erase and only use 256kbytes in this pa=
-tch.
-> > >
-> > Yes, if you disable parameters sector in spi-nor framework you will
-> > disable it for all spi-nor clients not only for NXP QSPI controller.
-> > There are users (at least me) that relay on parameters sector functiona=
-lity.
-> This patch will brake it.
-> >
-> > Thanks,
->=20
-> Hi Krzeminski,
->=20
-> Get it.
-> So do you think how about that I add a flag in dts to select it?
-> The user want's disable 4kb, he can add the flag.
->=20
-> In spi-nor.c:
-> if (of_property_read_bool(np, "spi-nor, disable-4kb")) {
-> 	spansion_s25fs_disable_4kb_erase();
-> }
->                 else
-> ...
->=20
-> In dts:
->=20
-> &qspi {
->         num-cs =3D <2>;
->         bus-num =3D <0>;
->         status =3D "okay";
->=20
->         qflash0: s25fs512s@0 {
->                 compatible =3D "spansion, s25fs512s";
-> 	 spi-nor, disable-4kb
->                 #address-cells =3D <1>;
->                 #size-cells =3D <1>;
->                 spi-max-frequency =3D <20000000>;
->                 reg =3D <0>;
->         };
->=20
-> I think it should be a better way.
->=20
-> How about your think?
 
-This looks much better - at least for me.
-There are some parameters in JESD216 standard regarding parameters sector,
-but unfortunately I have not investigated that. You can take a look at Cyri=
-lle series,
-that adds support for JESD216  standard.
-
-Thanks,
-Marcin
-
->=20
-> Thanks.
->=20
+--=20
+Rafa=C5=82
