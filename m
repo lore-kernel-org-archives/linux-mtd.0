@@ -1,20 +1,24 @@
-Received: from smtp28.mail.ru ([94.100.181.183])
+Received: from 12.mo3.mail-out.ovh.net ([188.165.41.191])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7szv-00032G-LC
- for linux-mtd@lists.infradead.org; Fri, 18 Nov 2016 23:55:12 +0000
-Subject: Re: [PATCH] mtd: spi-nor: add Macronix mx25u25635f to list of known
- devices.
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-References: <20161118101203.18992-1-ash.benz@bk.ru>
- <CACna6rxYHGpm7y6kKFYA0nC-K6thwuAehFNX+3bDY2phr61BvA@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: "A. Benz" <ash.benz@bk.ru>
-Message-ID: <ac4b00d4-5453-3d60-f823-0a8e86f0ddd2@bk.ru>
-Date: Sat, 19 Nov 2016 07:54:36 +0800
+ id 1c7zGr-00065e-Ai
+ for linux-mtd@lists.infradead.org; Sat, 19 Nov 2016 06:37:06 +0000
+Received: from player734.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo3.mail-out.ovh.net (Postfix) with ESMTP id C14CF5F81B
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Nov 2016 07:36:36 +0100 (CET)
+Subject: Re: [PATCH] mtd/spi-nor: Add SPI memory controllers for Aspeed SoCs
+To: Rob Herring <robh@kernel.org>
+References: <1476723427-13243-1-git-send-email-clg@kaod.org>
+ <20161018163913.7z337iyc53atp4yd@rob-hp-laptop>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, devicetree@vger.kernel.org,
+ Joel Stanley <joel@jms.id.au>, Milton Miller <miltonm@us.ibm.com>
+From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <71e9a762-eca2-40be-ba3c-1ab8d1f7ec3b@kaod.org>
+Date: Sat, 19 Nov 2016 07:36:29 +0100
 MIME-Version: 1.0
-In-Reply-To: <CACna6rxYHGpm7y6kKFYA0nC-K6thwuAehFNX+3bDY2phr61BvA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20161018163913.7z337iyc53atp4yd@rob-hp-laptop>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rafał,
+Hello Rob,
 
-I sent a v2 with 4k sect.
-Regarding sort, the list is already unsorted, it seems models that are 
-very similar are put next to each other.
+>> +Example:
+>> +
+>> +fmc: fmc@1e620000 {
+>> +	compatible = "aspeed,ast2400-fmc";
+>> +	reg = < 0x1e620000 0x94
+>> +		0x20000000 0x02000000
+>> +		0x22000000 0x02000000 >;
+>> +	#address-cells = <1>;
+>> +	#size-cells = <0>;
+>> +	flash@0 {
+>> +		reg = < 0 >;
+>> +		compatible = "jedec,spi-nor" ;
+>> +		label = "bmc";
+> 
+> label isn't really a defined property here. Belongs in jedec,spi-nor 
+> binding if you want to add it.
+> 
 
-Regards,
-A. Benz
+I am not sure I understand the suggestion.
 
-On 11/18/16 19:03, Rafał Miłecki wrote:
-> On 18 November 2016 at 11:12, Ash Benz <ash.benz@bk.ru> wrote:
->> Signed-off-by: Ash Benz <ash.benz@bk.ru>
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index d0fc165..171adb3 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -872,6 +872,7 @@ static const struct flash_info spi_nor_ids[] = {
->>         { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
->>         { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
->>         { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
->> +       { "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, 0) },
->>         { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
->>         { "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
->>         { "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
->
-> Please keep this list sorted.
->
-> Are you sure this chip doesn't support 4 k sections? Datasheets says:
-> "Equal Sectors with 4K byte each, or Equal Blocks with 32K byte each
-> or Equal Blocks with 64K byte each "
->
+Do you mean that we should rename the device node to something 
+like "bmc@0" to identify a flash module on the system ?
+
+This is a bit problematic for user space today as we need to sort 
+out which flash modules are for the BMC or for the host, each having 
+a primary and alternate. So the "label" was a practical way for 
+identification.
+
+Thanks,
+
+C.
