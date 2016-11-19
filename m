@@ -1,22 +1,26 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c80dK-0003Vl-6m
- for linux-mtd@lists.infradead.org; Sat, 19 Nov 2016 08:04:23 +0000
-Date: Sat, 19 Nov 2016 09:03:52 +0100
+ id 1c80y8-0004dA-OF
+ for linux-mtd@lists.infradead.org; Sat, 19 Nov 2016 08:25:54 +0000
+Date: Sat, 19 Nov 2016 09:25:30 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Marek Vasut <marek.vasut@gmail.com>
-Cc: Lee Jones <lee.jones@linaro.org>, linux-mtd@lists.infradead.org, Richard
- Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Peter Tyser <ptyser@xes-inc.com>,
- key.seong.lim@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/3] spi-nor: Add support for Intel SPI serial flash
- controller
-Message-ID: <20161119090352.062e00c9@bbrezillon>
-In-Reply-To: <20161119073546.GA1446@lahna.fi.intel.com>
-References: <20161114102447.131602-1-mika.westerberg@linux.intel.com>
- <20161118190426.GC23246@dell.home>
- <20161119073546.GA1446@lahna.fi.intel.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Alan
+ Cox <alan@linux.intel.com>, David Woodhouse <David.Woodhouse@intel.com>,
+ Jason Roberts <jason.e.roberts@intel.com>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Dinh Nguyen <dinguyen@altera.com>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH 05/11] mtd: nand: denali: remove "Spectra:" prefix from
+ printk strings
+Message-ID: <20161119092530.18bd2516@bbrezillon>
+In-Reply-To: <CAK7LNAQYAcGcXnwgKYohgyDNN=5S3czCbDm7enKnVUBVhf3T8g@mail.gmail.com>
+References: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
+ <1478666130-13413-6-git-send-email-yamada.masahiro@socionext.com>
+ <5a1b5ef5-5c1a-ce20-f0be-ed6abed6996e@gmail.com>
+ <CAK7LNAQYAcGcXnwgKYohgyDNN=5S3czCbDm7enKnVUBVhf3T8g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,68 +33,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 19 Nov 2016 09:35:46 +0200
-Mika Westerberg <mika.westerberg@linux.intel.com> wrote:
+On Fri, 18 Nov 2016 17:42:55 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> On Fri, Nov 18, 2016 at 07:04:26PM +0000, Lee Jones wrote:
-> > On Mon, 14 Nov 2016, Mika Westerberg wrote:
-> >   
-> > > This is fifth version of the series. You can find the previous versions
-> > > archived on:
-> > > 
-> > >   v4: https://lwn.net/Articles/703773/
-> > >   v3: https://lwn.net/Articles/697231/
-> > >   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
-> > >   v1: https://lkml.org/lkml/2016/6/14/269
-> > > 
-> > > This patch series adds support for the Intel SPI serial flash controller
-> > > found on many recent Intel CPUs including Baytrail and Braswell. This
-> > > driver makes it possible to access the BIOS and other platform data which
-> > > is stored on the SPI serial flash. It is also possible to upgrade the BIOS
-> > > using this driver if it has not been protected by special hardware bits.
-> > > 
-> > > The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
-> > > MAX.
-> > > 
-> > > Since poking the SPI serial flash can brick the machine, this driver can
-> > > only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
-> > > unless instructed othwerwise by module parameter.
-> > > 
-> > > Changes from v4:
-> > >   * Use INTEL_SPI_FIFO_SZ instead of hard coded value of 64 bytes
-> > >   * Don't increment i inside call to FDATA() macro
-> > >   * Check nor->read_opcode in intel_spi_read() and return
-> > >     -EINVAL if not supported. We may add SFDP support later on.
-> > > 
-> > > Changes from v3:
-> > >   * Added ACKs from Lee Jones.
-> > >   * Use bus instead of dev->bus in PCI accesses
-> > > 
-> > > Changes from v2:
-> > >   * Rebased on top of v4.8-rc2
-> > >   * Updated intel_spi_read/write() according spi-nor core changes which
-> > >     drops retlen parameter and returns number of bytes read/written.
-> > > 
-> > > Changes from v1:
-> > >   * Older hardware does not support 64k erase command so added erase_64k
-> > >     flag which is set only for Broxton (BXT).
-> > >   * Fix protection range offset for Broxton. Now there is ispi->pregs
-> > >     pointing to the start of the protection registers.
-> > >   * Change naming of constants from BCR_BYT -> BYT_BCR and so on.
-> > >   * Drop lpc_ich_finalize_spi_cell() and initialize cell directly in
-> > >     lpc_ich_init_spi().
-> > >   * Use info->type in switch in lpc_ich_init_spi().
-> > >   * Add defines for magic numbers used in lpc_ich_init_spi().
-> > >   * Use PLATFORM_DEVID_NONE with mfd_add_devices().
-> > > 
-> > > Mika Westerberg (3):
-> > >   spi-nor: Add support for Intel SPI serial flash controller
-> > >   mfd: lpc_ich: Add support for SPI serial flash host controller
-> > >   mfd: lpc_ich: Add support for Intel Apollo Lake SoC  
-> > 
-> > What's the plan for this set?  
+> Hi Marek,
 > 
-> I was hoping to get this merged via MTD tree but I haven't got much
-> comments from the maintainers. No idea if anyone is going to take this :-(
+> 
+> 2016-11-13 6:35 GMT+09:00 Marek Vasut <marek.vasut@gmail.com>:
+> > On 11/09/2016 05:35 AM, Masahiro Yamada wrote:  
+> >> As far as I understood from the Kconfig menu deleted by commit
+> >> be7f39c5ecf5 ("Staging: delete spectra driver"), the "Spectra" is
+> >> specific to Intel Moorestown Platform.
+> >>
+> >> The Denali NAND controller IP is used for various SoCs such as
+> >> Altera SOCFPGA, Socionext UniPhier, etc.  The platform specific
+> >> strings are not preferred in this driver.
+> >>
+> >> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>  
+> >
+> > Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+> >  
+> >> ---
+> >>
+> >> As an ARM-SoC developer, I only need denali.c and denali_dt.c.
+> >>
+> >> I see some "Spectra:" in drivers/mtd/nand/denali_pci.c as well.
+> >> I was not quite sure if they are needed or not.
+> >> If desired, I can update this patch to remove them too.  
+> >
+> > Is anyone even using Denali on Intel now ?
+> >  
+> >>  drivers/mtd/nand/denali.c | 11 +++++------
+> >>  1 file changed, 5 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+> >> index 80d3e26..78d795b 100644
+> >> --- a/drivers/mtd/nand/denali.c
+> >> +++ b/drivers/mtd/nand/denali.c
+> >> @@ -402,7 +402,7 @@ static void get_hynix_nand_para(struct denali_nand_info *denali,
+> >>               break;
+> >>       default:
+> >>               dev_warn(denali->dev,
+> >> -                      "Spectra: Unknown Hynix NAND (Device ID: 0x%x).\n"
+> >> +                      "Unknown Hynix NAND (Device ID: 0x%x).\n"
+> >>                        "Will use default parameter values instead.\n",
+> >>                        device_id);
+> >>       }
+> >> @@ -1458,7 +1458,7 @@ int denali_init(struct denali_nand_info *denali)
+> >>        */
+> >>       if (request_irq(denali->irq, denali_isr, IRQF_SHARED,
+> >>                       DENALI_NAND_NAME, denali)) {
+> >> -             pr_err("Spectra: Unable to allocate IRQ\n");
+> >> +             dev_err(denali->dev, "Unable to request IRQ\n");
+> >>               return -ENODEV;
+> >>       }
+> >>
+> >> @@ -1495,7 +1495,7 @@ int denali_init(struct denali_nand_info *denali)
+> >>       /* Is 32-bit DMA supported? */
+> >>       ret = dma_set_mask(denali->dev, DMA_BIT_MASK(32));
+> >>       if (ret) {
+> >> -             pr_err("Spectra: no usable DMA configuration\n");
+> >> +             dev_err(denali->dev, "no usable DMA configuration\n");
+> >>               goto failed_req_irq;
+> >>       }
+> >>
+> >> @@ -1503,7 +1503,7 @@ int denali_init(struct denali_nand_info *denali)
+> >>                            mtd->writesize + mtd->oobsize,
+> >>                            DMA_BIDIRECTIONAL);
+> >>       if (dma_mapping_error(denali->dev, denali->buf.dma_buf)) {
+> >> -             dev_err(denali->dev, "Spectra: failed to map DMA buffer\n");
+> >> +             dev_err(denali->dev, "failed to map DMA buffer\n");  
+> >
+> > Nit: For consistency's sake, use Failed with capital F . Fix the "No
+> > usable DMA ..." too.  
+> 
+> 
+> Even if we fix those two, we still have some more printk strings
+> that start with a lower case.
+> 
+> 
+> line 177:  dev_err(denali->dev, "reset bank failed.\n");
+> 
+> line 699:  pr_err("timeout occurred, status = 0x%x, mask = 0x%x\n",
+> 
+> line 863:  dev_err(denali->dev, "unable to send pipeline command\n");
+> 
+> line 1074:  dev_err(denali->dev, "timeout on write_page (type = %d)\n",
+> 
+> line 1309:  pr_err(": unsupported command received 0x%x\n", cmd);
+> 
+> 
+> 
+> If you say "consistency's sake" and
+> you are a big fan of capital letters instead of lower cases,
+> will you send a patch that touches those globally?
+> 
+> 
+> Your comments against this series are just about
+> "upper cases vs lower cases".
 
-Marek, Cyrille, can you take a look?
+It's not like your series was doing useful things either ;-), all I see
+is a bunch of cleanup and cosmetic changes. I'm perfectly fine taking
+the series, but Marek comments about 'Upper case vs Lower case' is
+perfectly valid in regards to this kind of changes.
+
+> 
+> If I get more useful comments, I am happy to send v2.
+> 
+> But, at this moment, I see no good reason for v2
+> because changing those two lines does not give us any consistency.
+> 
+> 
