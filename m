@@ -1,24 +1,27 @@
-Received: from 12.mo3.mail-out.ovh.net ([188.165.41.191])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7zGr-00065e-Ai
- for linux-mtd@lists.infradead.org; Sat, 19 Nov 2016 06:37:06 +0000
-Received: from player734.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo3.mail-out.ovh.net (Postfix) with ESMTP id C14CF5F81B
- for <linux-mtd@lists.infradead.org>; Sat, 19 Nov 2016 07:36:36 +0100 (CET)
-Subject: Re: [PATCH] mtd/spi-nor: Add SPI memory controllers for Aspeed SoCs
-To: Rob Herring <robh@kernel.org>
-References: <1476723427-13243-1-git-send-email-clg@kaod.org>
- <20161018163913.7z337iyc53atp4yd@rob-hp-laptop>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, devicetree@vger.kernel.org,
- Joel Stanley <joel@jms.id.au>, Milton Miller <miltonm@us.ibm.com>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <71e9a762-eca2-40be-ba3c-1ab8d1f7ec3b@kaod.org>
-Date: Sat, 19 Nov 2016 07:36:29 +0100
+ id 1c80GG-0004j6-NJ
+ for linux-mtd@lists.infradead.org; Sat, 19 Nov 2016 07:40:33 +0000
+Date: Sat, 19 Nov 2016 09:35:46 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/3] spi-nor: Add support for Intel SPI serial flash
+ controller
+Message-ID: <20161119073546.GA1446@lahna.fi.intel.com>
+References: <20161114102447.131602-1-mika.westerberg@linux.intel.com>
+ <20161118190426.GC23246@dell.home>
 MIME-Version: 1.0
-In-Reply-To: <20161018163913.7z337iyc53atp4yd@rob-hp-laptop>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20161118190426.GC23246@dell.home>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +31,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Rob,
-
->> +Example:
->> +
->> +fmc: fmc@1e620000 {
->> +	compatible = "aspeed,ast2400-fmc";
->> +	reg = < 0x1e620000 0x94
->> +		0x20000000 0x02000000
->> +		0x22000000 0x02000000 >;
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +	flash@0 {
->> +		reg = < 0 >;
->> +		compatible = "jedec,spi-nor" ;
->> +		label = "bmc";
+On Fri, Nov 18, 2016 at 07:04:26PM +0000, Lee Jones wrote:
+> On Mon, 14 Nov 2016, Mika Westerberg wrote:
 > 
-> label isn't really a defined property here. Belongs in jedec,spi-nor 
-> binding if you want to add it.
+> > This is fifth version of the series. You can find the previous versions
+> > archived on:
+> > 
+> >   v4: https://lwn.net/Articles/703773/
+> >   v3: https://lwn.net/Articles/697231/
+> >   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
+> >   v1: https://lkml.org/lkml/2016/6/14/269
+> > 
+> > This patch series adds support for the Intel SPI serial flash controller
+> > found on many recent Intel CPUs including Baytrail and Braswell. This
+> > driver makes it possible to access the BIOS and other platform data which
+> > is stored on the SPI serial flash. It is also possible to upgrade the BIOS
+> > using this driver if it has not been protected by special hardware bits.
+> > 
+> > The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
+> > MAX.
+> > 
+> > Since poking the SPI serial flash can brick the machine, this driver can
+> > only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
+> > unless instructed othwerwise by module parameter.
+> > 
+> > Changes from v4:
+> >   * Use INTEL_SPI_FIFO_SZ instead of hard coded value of 64 bytes
+> >   * Don't increment i inside call to FDATA() macro
+> >   * Check nor->read_opcode in intel_spi_read() and return
+> >     -EINVAL if not supported. We may add SFDP support later on.
+> > 
+> > Changes from v3:
+> >   * Added ACKs from Lee Jones.
+> >   * Use bus instead of dev->bus in PCI accesses
+> > 
+> > Changes from v2:
+> >   * Rebased on top of v4.8-rc2
+> >   * Updated intel_spi_read/write() according spi-nor core changes which
+> >     drops retlen parameter and returns number of bytes read/written.
+> > 
+> > Changes from v1:
+> >   * Older hardware does not support 64k erase command so added erase_64k
+> >     flag which is set only for Broxton (BXT).
+> >   * Fix protection range offset for Broxton. Now there is ispi->pregs
+> >     pointing to the start of the protection registers.
+> >   * Change naming of constants from BCR_BYT -> BYT_BCR and so on.
+> >   * Drop lpc_ich_finalize_spi_cell() and initialize cell directly in
+> >     lpc_ich_init_spi().
+> >   * Use info->type in switch in lpc_ich_init_spi().
+> >   * Add defines for magic numbers used in lpc_ich_init_spi().
+> >   * Use PLATFORM_DEVID_NONE with mfd_add_devices().
+> > 
+> > Mika Westerberg (3):
+> >   spi-nor: Add support for Intel SPI serial flash controller
+> >   mfd: lpc_ich: Add support for SPI serial flash host controller
+> >   mfd: lpc_ich: Add support for Intel Apollo Lake SoC
 > 
+> What's the plan for this set?
 
-I am not sure I understand the suggestion.
-
-Do you mean that we should rename the device node to something 
-like "bmc@0" to identify a flash module on the system ?
-
-This is a bit problematic for user space today as we need to sort 
-out which flash modules are for the BMC or for the host, each having 
-a primary and alternate. So the "label" was a practical way for 
-identification.
-
-Thanks,
-
-C.
+I was hoping to get this merged via MTD tree but I haven't got much
+comments from the maintainers. No idea if anyone is going to take this :-(
