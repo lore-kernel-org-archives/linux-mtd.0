@@ -1,26 +1,22 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c80y8-0004dA-OF
- for linux-mtd@lists.infradead.org; Sat, 19 Nov 2016 08:25:54 +0000
-Date: Sat, 19 Nov 2016 09:25:30 +0100
+ id 1c812e-0005ni-RU
+ for linux-mtd@lists.infradead.org; Sat, 19 Nov 2016 08:30:33 +0000
+Date: Sat, 19 Nov 2016 09:30:11 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Alan
- Cox <alan@linux.intel.com>, David Woodhouse <David.Woodhouse@intel.com>,
- Jason Roberts <jason.e.roberts@intel.com>, Chuanxiao Dong
- <chuanxiao.dong@intel.com>, Dinh Nguyen <dinguyen@altera.com>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH 05/11] mtd: nand: denali: remove "Spectra:" prefix from
- printk strings
-Message-ID: <20161119092530.18bd2516@bbrezillon>
-In-Reply-To: <CAK7LNAQYAcGcXnwgKYohgyDNN=5S3czCbDm7enKnVUBVhf3T8g@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, Alan Cox <alan@linux.intel.com>, David
+ Woodhouse <David.Woodhouse@intel.com>, Jason Roberts
+ <jason.e.roberts@intel.com>, Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Dinh Nguyen <dinguyen@altera.com>, linux-kernel@vger.kernel.org, Marek
+ Vasut <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH 00/11] mtd: nand: denali: first round of cleanups of
+ Denali NAND driver
+Message-ID: <20161119093011.17b53356@bbrezillon>
+In-Reply-To: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1478666130-13413-1-git-send-email-yamada.masahiro@socionext.com>
- <1478666130-13413-6-git-send-email-yamada.masahiro@socionext.com>
- <5a1b5ef5-5c1a-ce20-f0be-ed6abed6996e@gmail.com>
- <CAK7LNAQYAcGcXnwgKYohgyDNN=5S3czCbDm7enKnVUBVhf3T8g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,114 +29,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 18 Nov 2016 17:42:55 +0900
+Hi Masahiro,
+
+On Wed,  9 Nov 2016 13:35:19 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Hi Marek,
+> I am tackling on this driver to use it for my SoCs.
+> The difficulty is a bunch of platform specific stuff
+> (more specifically, Intel MRST specific) is hard-coded in this driver.
 > 
+> I need lots of rework to utilize the driver for generic cases,
+> but at the same time, I found the driver code is really dirty,
+> lots of unused code, odd comments, etc.
 > 
-> 2016-11-13 6:35 GMT+09:00 Marek Vasut <marek.vasut@gmail.com>:
-> > On 11/09/2016 05:35 AM, Masahiro Yamada wrote:  
-> >> As far as I understood from the Kconfig menu deleted by commit
-> >> be7f39c5ecf5 ("Staging: delete spectra driver"), the "Spectra" is
-> >> specific to Intel Moorestown Platform.
-> >>
-> >> The Denali NAND controller IP is used for various SoCs such as
-> >> Altera SOCFPGA, Socionext UniPhier, etc.  The platform specific
-> >> strings are not preferred in this driver.
-> >>
-> >> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>  
-> >
-> > Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-> >  
-> >> ---
-> >>
-> >> As an ARM-SoC developer, I only need denali.c and denali_dt.c.
-> >>
-> >> I see some "Spectra:" in drivers/mtd/nand/denali_pci.c as well.
-> >> I was not quite sure if they are needed or not.
-> >> If desired, I can update this patch to remove them too.  
-> >
-> > Is anyone even using Denali on Intel now ?
-> >  
-> >>  drivers/mtd/nand/denali.c | 11 +++++------
-> >>  1 file changed, 5 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> >> index 80d3e26..78d795b 100644
-> >> --- a/drivers/mtd/nand/denali.c
-> >> +++ b/drivers/mtd/nand/denali.c
-> >> @@ -402,7 +402,7 @@ static void get_hynix_nand_para(struct denali_nand_info *denali,
-> >>               break;
-> >>       default:
-> >>               dev_warn(denali->dev,
-> >> -                      "Spectra: Unknown Hynix NAND (Device ID: 0x%x).\n"
-> >> +                      "Unknown Hynix NAND (Device ID: 0x%x).\n"
-> >>                        "Will use default parameter values instead.\n",
-> >>                        device_id);
-> >>       }
-> >> @@ -1458,7 +1458,7 @@ int denali_init(struct denali_nand_info *denali)
-> >>        */
-> >>       if (request_irq(denali->irq, denali_isr, IRQF_SHARED,
-> >>                       DENALI_NAND_NAME, denali)) {
-> >> -             pr_err("Spectra: Unable to allocate IRQ\n");
-> >> +             dev_err(denali->dev, "Unable to request IRQ\n");
-> >>               return -ENODEV;
-> >>       }
-> >>
-> >> @@ -1495,7 +1495,7 @@ int denali_init(struct denali_nand_info *denali)
-> >>       /* Is 32-bit DMA supported? */
-> >>       ret = dma_set_mask(denali->dev, DMA_BIT_MASK(32));
-> >>       if (ret) {
-> >> -             pr_err("Spectra: no usable DMA configuration\n");
-> >> +             dev_err(denali->dev, "no usable DMA configuration\n");
-> >>               goto failed_req_irq;
-> >>       }
-> >>
-> >> @@ -1503,7 +1503,7 @@ int denali_init(struct denali_nand_info *denali)
-> >>                            mtd->writesize + mtd->oobsize,
-> >>                            DMA_BIDIRECTIONAL);
-> >>       if (dma_mapping_error(denali->dev, denali->buf.dma_buf)) {
-> >> -             dev_err(denali->dev, "Spectra: failed to map DMA buffer\n");
-> >> +             dev_err(denali->dev, "failed to map DMA buffer\n");  
-> >
-> > Nit: For consistency's sake, use Failed with capital F . Fix the "No
-> > usable DMA ..." too.  
-> 
-> 
-> Even if we fix those two, we still have some more printk strings
-> that start with a lower case.
-> 
-> 
-> line 177:  dev_err(denali->dev, "reset bank failed.\n");
-> 
-> line 699:  pr_err("timeout occurred, status = 0x%x, mask = 0x%x\n",
-> 
-> line 863:  dev_err(denali->dev, "unable to send pipeline command\n");
-> 
-> line 1074:  dev_err(denali->dev, "timeout on write_page (type = %d)\n",
-> 
-> line 1309:  pr_err(": unsupported command received 0x%x\n", cmd);
-> 
-> 
-> 
-> If you say "consistency's sake" and
-> you are a big fan of capital letters instead of lower cases,
-> will you send a patch that touches those globally?
-> 
-> 
-> Your comments against this series are just about
-> "upper cases vs lower cases".
+> The first thing I needed to do was to clean up the code.
+> My work is still under the way, but I decided to drop this series
+> for now.  I hope this series is easy to review, so I guess
+> splitting into a small chunks is better than a one-shot patch bomb.
 
-It's not like your series was doing useful things either ;-), all I see
-is a bunch of cleanup and cosmetic changes. I'm perfectly fine taking
-the series, but Marek comments about 'Upper case vs Lower case' is
-perfectly valid in regards to this kind of changes.
+Well, all I've seen coming from you so far are minor cleanups and
+cosmetic changes (including one introducing a regression).
+I'll apply this series, but please, next time, try to send the whole
+series, so that we can see the big picture, and not just random
+cleanups.
+
+Thanks,
+
+Boris
 
 > 
-> If I get more useful comments, I am happy to send v2.
 > 
-> But, at this moment, I see no good reason for v2
-> because changing those two lines does not give us any consistency.
 > 
+> Masahiro Yamada (11):
+>   mtd: nand: denali: remove unneeded <linux/slab.h> includes
+>   mtd: nand: denali: remove unused struct member denali_nand_info::idx
+>   mtd: nand: denali: remove bogus comment about interrupt handler setup
+>   mtd: nand: denali: remove detect_partition_feature()
+>   mtd: nand: denali: remove "Spectra:" prefix from printk strings
+>   mtd: nand: denali: remove unused struct member totalblks, blksperchip
+>   mtd: nand: denali: use managed devm_irq_request()
+>   mtd: nand: denali: return error code from devm_request_irq() on error
+>   mtd: nand: denali: return error code from nand_scan_ident/tail on
+>     error
+>   mtd: nand: denali: remove unneeded parentheses
+>   mtd: nand: denali: remove debug lines of __FILE__, __LINE__, __func__
+> 
+>  drivers/mtd/nand/denali.c     | 101 +++++++++---------------------------------
+>  drivers/mtd/nand/denali.h     |  12 -----
+>  drivers/mtd/nand/denali_dt.c  |   1 -
+>  drivers/mtd/nand/denali_pci.c |   1 -
+>  4 files changed, 21 insertions(+), 94 deletions(-)
 > 
