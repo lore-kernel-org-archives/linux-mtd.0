@@ -1,29 +1,23 @@
-Received: from tux.runtux.com ([176.9.82.136])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c8Qo0-0001Mj-It
- for linux-mtd@lists.infradead.org; Sun, 20 Nov 2016 12:01:09 +0000
-Received: from localhost (localhost [127.0.0.1])
- by tux.runtux.com (Postfix) with ESMTP id 15F616F0E1
- for <linux-mtd@lists.infradead.org>; Sun, 20 Nov 2016 13:00:43 +0100 (CET)
-Received: from tux.runtux.com ([127.0.0.1])
- by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id VyhpbnKQaBXD for <linux-mtd@lists.infradead.org>;
- Sun, 20 Nov 2016 13:00:34 +0100 (CET)
-Received: from bee.priv.zoo (91-118-140-5.dsl.dynamic.surfer.at [91.118.140.5])
- (Authenticated sender: postmaster@runtux.com)
- by tux.runtux.com (Postfix) with ESMTPSA id 350B16F028
- for <linux-mtd@lists.infradead.org>; Sun, 20 Nov 2016 13:00:31 +0100 (CET)
-Date: Sun, 20 Nov 2016 13:00:30 +0100
-From: Ralf Schlatterbeck <rsc@runtux.com>
+ id 1c8Tkq-0004W3-CI
+ for linux-mtd@lists.infradead.org; Sun, 20 Nov 2016 15:10:05 +0000
+Received: by mail-wm0-x243.google.com with SMTP id m203so19743108wma.3
+ for <linux-mtd@lists.infradead.org>; Sun, 20 Nov 2016 07:09:44 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: Re: init_constants_early: too small LEBs?
-Message-ID: <20161120120029.GA1220@runtux.com>
-References: <20161119212508.GA5237@runtux.com>
- <20161120105141.69e66105@bbrezillon>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH] mtd: bcm47xxpart: fix parsing first block after aligned TRX
+Date: Sun, 20 Nov 2016 16:09:30 +0100
+Message-Id: <20161120150930.25401-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161120105141.69e66105@bbrezillon>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,31 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 20, 2016 at 10:51:41AM +0100, Boris Brezillon wrote:
-> On Sat, 19 Nov 2016 22:25:08 +0100
-> Ralf Schlatterbeck <rsc@runtux.com> wrote:
-> 
-> > I'm trying to get an ubifs on a 2MB NOR flash.
-> 
-> Why not putting JFFS2 directly on your MTD device (no UBI in the
-> middle).
-> 
-> > I'd really like to be bad block tolerant but
-> > don't know if this makes sense with NOR-Flash (of this size) at all.
-> 
-> You shouldn't need UBI, AFAIR, JFFS2 already deals with
-> wear-leveling/bad-block problems.
+From: Rafał Miłecki <rafal@milecki.pl>
 
-I also need to reinitialize the complete filesystem if something is
-inconsistent from a known-good source (in that case on a NAND flash).
-The idea was to ubiformat everything (which preserves wear counters) and
-re-create the filesystem on top of it (and in the first place I thought
-I'd use ubifs). I don't think there is a way to re-create a jffs *and*
-preserving wear counters?
+After parsing TRX we should skip to the first block placed behind it.
+Our code was working only with TRX with length not aligned to the
+blocksize. In other cases (length aligned) it was missing the block
+places right after TRX.
 
-Thanks
-Ralf
+This fixes calculation and simplifies the comment.
+
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ drivers/mtd/bcm47xxpart.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+index 3779475..283ff7e 100644
+--- a/drivers/mtd/bcm47xxpart.c
++++ b/drivers/mtd/bcm47xxpart.c
+@@ -229,12 +229,10 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 
+ 			last_trx_part = curr_part - 1;
+ 
+-			/*
+-			 * We have whole TRX scanned, skip to the next part. Use
+-			 * roundown (not roundup), as the loop will increase
+-			 * offset in next step.
+-			 */
+-			offset = rounddown(offset + trx->length, blocksize);
++			/* Jump to the end of TRX */
++			offset = roundup(offset + trx->length, blocksize);
++			/* Next loop iteration will increase the offset */
++			offset -= blocksize;
+ 			continue;
+ 		}
+ 
 -- 
-Dr. Ralf Schlatterbeck                  Tel:   +43/2243/26465-16
-Open Source Consulting                  www:   http://www.runtux.com
-Reichergasse 131, A-3411 Weidling       email: office@runtux.com
+2.10.1
