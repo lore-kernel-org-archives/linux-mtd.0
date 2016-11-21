@@ -1,24 +1,22 @@
-Received: from mail-wj0-x243.google.com ([2a00:1450:400c:c01::243])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c8Zwt-0006Ky-Pu
- for linux-mtd@lists.infradead.org; Sun, 20 Nov 2016 21:46:56 +0000
-Received: by mail-wj0-x243.google.com with SMTP id jb2so2593777wjb.3
- for <linux-mtd@lists.infradead.org>; Sun, 20 Nov 2016 13:46:35 -0800 (PST)
-Subject: Re: [PATCH] mtd: maps: add missing iounmap() in error path
-To: Luis Henriques <henrix@camandro.org>,
+Subject: Re: [PATCH 2/2] mtd: spi-nor: add rockchip serial flash controller
+ driver
+To: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
  David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <20161116225016.29958-1-henrix@camandro.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <26e25b8b-5169-0262-b850-3108cb8d0cde@gmail.com>
-Date: Sun, 20 Nov 2016 22:13:25 +0100
+ Brian Norris <computersforpeace@gmail.com>
+References: <1478855766-151673-1-git-send-email-shawn.lin@rock-chips.com>
+ <1478855766-151673-3-git-send-email-shawn.lin@rock-chips.com>
+ <b1420e9d-b6a1-7fe8-4381-e32e0bc7dd53@gmail.com>
+ <775a8918-bc93-218a-808d-2a160137ad56@rock-chips.com>
+ <8f8213a1-f694-8159-fdbd-5e607c8aaaa2@gmail.com>
+Cc: shawn.lin@rock-chips.com, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Heiko Stuebner <heiko@sntech.de>,
+ linux-rockchip@lists.infradead.org
+From: Shawn Lin <shawn.lin@rock-chips.com>
+Message-ID: <76670120-dacd-ef0e-cf36-cbf549b19853@rock-chips.com>
+Date: Mon, 21 Nov 2016 10:51:38 +0800
 MIME-Version: 1.0
-In-Reply-To: <20161116225016.29958-1-henrix@camandro.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <8f8213a1-f694-8159-fdbd-5e607c8aaaa2@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,39 +27,197 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/16/2016 11:50 PM, Luis Henriques wrote:
-> This patch was triggered by the following Coccinelle error:
-> 
-> ./drivers/mtd/maps/sc520cdp.c:246:3-9: \
-> 	ERROR: missing iounmap; ioremap on line 242 \
-> 	and execution via conditional on line 244
-> 
-> Signed-off-by: Luis Henriques <henrix@camandro.org>
+Hi Marek,
 
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+On 2016/11/21 5:11, Marek Vasut wrote:
+> On 11/16/2016 02:59 AM, Shawn Lin wrote:
+>> Hi Marek,
+>
+> Hi,
+>
+> [...]
+>
+>>>> +static int rockchip_sfc_read_reg(struct spi_nor *nor, u8 opcode,
+>>>> +                 u8 *buf, int len)
+>>>> +{
+>>>> +    struct rockchip_sfc_priv *priv = nor->priv;
+>>>> +    struct rockchip_sfc *sfc = priv->sfc;
+>>>> +    int ret;
+>>>> +    u32 tmp;
+>>>> +    u32 i;
+>>>> +
+>>>> +    ret = rockchip_sfc_op_reg(nor, opcode, len, SFC_CMD_DIR_RD);
+>>>> +    if (ret)
+>>>> +        return ret;
+>>>> +
+>>>> +    while (len > 0) {
+>>>> +        tmp = readl_relaxed(sfc->regbase + SFC_DATA);
+>>>> +        for (i = 0; i < len; i++)
+>>>> +            *buf++ = (u8)((tmp >> (i * 8)) & 0xff);
+>>>
+>>> Won't this fail for len > 4 ?
+>>
+>> nope, this loop will reduce 4 for each successful readl. And
+>> reading the remained bytes which isn't aligned to DWORD, isn't it?
+>
+> Try for len = 8 ... it will write 8 bytes to the buf, but half of them
+> would be zero. I believe it should look like:
+>
+>         for (i = 0; i < 4 /* was len */; i++)
+>             *buf++ = (u8)((tmp >> (i * 8)) & 0xff);
+>
 
-> ---
->  drivers/mtd/maps/sc520cdp.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/maps/sc520cdp.c b/drivers/mtd/maps/sc520cdp.c
-> index 093edd51bdc7..7a27ed345d0d 100644
-> --- a/drivers/mtd/maps/sc520cdp.c
-> +++ b/drivers/mtd/maps/sc520cdp.c
-> @@ -243,6 +243,10 @@ static int __init init_sc520cdp(void)
->  
->  		if (!sc520cdp_map[i].virt) {
->  			printk("Failed to ioremap_nocache\n");
-> +			if (i) {
-> +				while (--i)
-> +					iounmap(sc520cdp_map[i].virt);
-> +			}
->  			return -EIO;
->  		}
->  
-> 
+you're right, I was misunderstanding your comment and fixed it in V2. :)
+
+>>>
+>>> Also, you can use ioread32_rep() here, but (!) that won't work for
+>>> unaligned reads, which I dunno if they can happen here, but please do
+>>> double-check.
+>>
+>> yes, I have checked this API as well as others like memcpy_{to,from}io
+>> , etc. They will generate a external abort for arm core as the unaligned
+>> (DWORD) read/write via AHB aren't supported by Rockchip Socs. So I have
+>> to open code these stuff. This could be easily found for other
+>> upstreamed rockchip drivers. :)
+>
+> This is normal, but you can still use the _rep variant if you handle the
+> corner cases.
+>
+
+Sure, I will keep improving it once more comment for my v2 sent last
+friday there. :)
+
+>>>
+>>>> +        len = len - 4;
+>>>> +    }
+>>>> +
+>>>> +    return 0;
+>>>> +}
+>
+> [...]
+>
+>>>> +static ssize_t rockchip_sfc_write(struct spi_nor *nor, loff_t to,
+>>>> +                  size_t len, const u_char *write_buf)
+>>>> +{
+>>>> +    struct rockchip_sfc_priv *priv = nor->priv;
+>>>> +    struct rockchip_sfc *sfc = priv->sfc;
+>>>> +    size_t offset;
+>>>> +    int ret;
+>>>> +    dma_addr_t dma_addr = 0;
+>>>> +
+>>>> +    if (!sfc->use_dma)
+>>>> +        goto no_dma;
+>>>
+>>> Seems like there's a lot of similarity between read/write .
+>>
+>> I was thinking to combine read/write with a extra argument to
+>> indicate WR/RD. But as we could see still some differece between
+>> WR and RD and there are already some condiction checks. So it
+>> will make the code hard to read with stuffing lots of condition
+>> checks. So I splited out read and write strightforward. :)
+>
+> Hrm, is it that bad ?
+>
+>>>> +    for (offset = 0; offset < len; offset += SFC_DMA_MAX_LEN) {
+>>>> +        size_t trans = min_t(size_t, SFC_DMA_MAX_LEN, len - offset);
+>>>> +
+>>>> +        dma_addr = dma_map_single(NULL, (void *)write_buf,
+>>>> +                      trans, DMA_TO_DEVICE);
+>>>> +        if (dma_mapping_error(sfc->dev, dma_addr)) {
+>>>> +            dma_addr = 0;
+>>>> +            memcpy(sfc->buffer, write_buf + offset, trans);
+>>>> +        }
+>>>> +
+>>>> +        /* Fail to map dma, use pre-allocated area instead */
+>>>> +        ret = rockchip_sfc_dma_transfer(nor, to + offset,
+>>>> +                        dma_addr ? dma_addr :
+>>>> +                        sfc->dma_buffer,
+>>>> +                        trans, SFC_CMD_DIR_WR);
+>>>> +        if (dma_addr)
+>>>> +            dma_unmap_single(NULL, dma_addr,
+>>>> +                     trans, DMA_TO_DEVICE);
+>>>> +        if (ret) {
+>>>> +            dev_warn(nor->dev, "DMA write timeout\n");
+>>>> +            return ret;
+>>>> +        }
+>>>> +    }
+>>>> +
+>>>> +    return len;
+>>>> +no_dma:
+>>>> +    ret = rockchip_sfc_pio_transfer(nor, to, len,
+>>>> +                    (u_char *)write_buf, SFC_CMD_DIR_WR);
+>>>> +    if (ret) {
+>>>> +        dev_warn(nor->dev, "PIO write timeout\n");
+>>>> +        return ret;
+>>>> +    }
+>>>> +    return len;
+>>>> +}
+>
+> [...]
+>
+>>>> +static void rockchip_sfc_unregister_all(struct rockchip_sfc *sfc)
+>>>> +{
+>>>> +    int i;
+>>>> +
+>>>> +    for (i = 0; i < sfc->num_chip; i++)
+>>>> +        mtd_device_unregister(&sfc->nor[i]->mtd);
+>>>> +}
+>>>> +
+>>>> +static int rockchip_sfc_register_all(struct rockchip_sfc *sfc)
+>>>> +{
+>>>> +    struct device *dev = sfc->dev;
+>>>> +    struct device_node *np;
+>>>> +    int ret;
+>>>> +
+>>>> +    for_each_available_child_of_node(dev->of_node, np) {
+>>>> +        ret = rockchip_sfc_register(np, sfc);
+>>>> +        if (ret)
+>>>> +            goto fail;
+>>>> +
+>>>> +        if (sfc->num_chip == SFC_MAX_CHIP_NUM) {
+>>>> +            dev_warn(dev, "Exceeds the max cs limitation\n");
+>>>> +            break;
+>>>> +        }
+>>>> +    }
+>>>> +
+>>>> +    return 0;
+>>>> +
+>>>> +fail:
+>>>> +    dev_err(dev, "Failed to register all chip\n");
+>>>> +    rockchip_sfc_unregister_all(sfc);
+>>>
+>>> See cadence qspi where we only unregister the registered flashes.
+>>> Implement it the same way here.
+>>>
+>>
+>> yup, but I'm afraid that rockchip_sfc_unregister_all confused you
+>> as it actually unregisters the registered ones, not for all.
+>>
+>> static void rockchip_sfc_unregister_all(struct rockchip_sfc *sfc)
+>> {
+>>         int i;
+>>
+>>         for (i = 0; i < sfc->num_chip; i++)
+>>                 mtd_device_unregister(&sfc->nor[i]->mtd);
+>> }
+>>
+>> sfc->num_chip stands for how many flashes registered successfully.
+>
+> Does it work if you have a hole in there ? Like if you have a flash on
+> chipselect 0 and chipselect 2 ?
+
+Yes it does, as it won't leave a room for chipselect 1 whose node isn't
+present, which means there isn't a hole in there at all. :)
+
+>
+>>>> +    return ret;
+>>>> +}
+>
+> [...]
+>
+>
 
 
 -- 
-Best regards,
-Marek Vasut
+Best Regards
+Shawn Lin
