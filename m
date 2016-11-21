@@ -1,18 +1,20 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c8pfE-0003vl-9v
- for linux-mtd@lists.infradead.org; Mon, 21 Nov 2016 14:33:45 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: add Macronix mx25u25635f to list of
- known devices.
-To: <linux-mtd@lists.infradead.org>
-References: <20161118235149.21275-1-ash.benz@bk.ru>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <87c62603-d563-6eb9-d878-3a61c9b0419a@atmel.com>
-Date: Mon, 21 Nov 2016 15:33:20 +0100
+ id 1c8udh-0008RD-HE
+ for linux-mtd@lists.infradead.org; Mon, 21 Nov 2016 19:52:30 +0000
+From: Zach Brown <zach.brown@ni.com>
+To: <dwmw2@infradead.org>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <richard@nod.at>, <dedekind1@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [RESEND PATCH v5 5/5] mtd: nand: set max_bb_per_die and
+ blocks_per_die for ONFI compliant chips
+Date: Mon, 21 Nov 2016 13:51:39 -0600
+Message-ID: <1479757899-6849-6-git-send-email-zach.brown@ni.com>
+In-Reply-To: <1479757899-6849-1-git-send-email-zach.brown@ni.com>
+References: <1479757899-6849-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-In-Reply-To: <20161118235149.21275-1-ash.benz@bk.ru>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 19/11/2016 à 00:51, Ash Benz a écrit :
-> Signed-off-by: Ash Benz <ash.benz@bk.ru>
-Acked-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+ONFI compliant chips contain the values for the max_bb_per_die and
+blocks_per_die fields in the parameter page. When the ONFI paged is
+retrieved/parsed the chip's fields are set by the corresponding fields
+in the param page.
 
-Thanks!
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d0fc165..4fd3ac8 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -872,6 +872,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
->  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
->  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
-> +	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
->  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
->  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
->  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
-> 
+Signed-off-by: Zach Brown <zach.brown@ni.com>
+Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
+---
+ drivers/mtd/nand/nand_base.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 193a6b7..fb5b585 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3599,6 +3599,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+ 	chip->bits_per_cell = p->bits_per_cell;
+ 
++	chip->max_bb_per_die = le16_to_cpu(p->bb_per_lun);
++	chip->blocks_per_die = le32_to_cpu(p->blocks_per_lun);
++
+ 	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
+ 		*busw = NAND_BUSWIDTH_16;
+ 	else
+-- 
+2.7.4
