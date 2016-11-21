@@ -1,15 +1,16 @@
-From: Yao Yuan <yao.yuan@nxp.com>
-To: Han Xu <xhnjupt@gmail.com>
-CC: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>,
- David Woodhouse <dwmw2@infradead.org>, "linux-kernel@vger.kernel.org"
+From: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
+To: Yao Yuan <yao.yuan@nxp.com>, Han Xu <xhnjupt@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>, "han.xu@freescale.com"
  <han.xu@freescale.com>, Brian Norris <computersforpeace@gmail.com>,
  "jagannadh.teki@gmail.com" <jagannadh.teki@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
 Subject: RE: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
-Date: Mon, 21 Nov 2016 06:30:46 +0000
-Message-ID: <DB6PR0401MB2407D724D861C9780499EF4A89B50@DB6PR0401MB2407.eurprd04.prod.outlook.com>
+Date: Mon, 21 Nov 2016 07:14:31 +0000
+Message-ID: <AM4PR0701MB21302252988A38FE2A393FE4FEB50@AM4PR0701MB2130.eurprd07.prod.outlook.com>
 References: <1471505884-33996-1-git-send-email-B56489@freescale.com>
  <1471505884-33996-6-git-send-email-B56489@freescale.com>
  <CA+EcR20NkBzFjMJ_ArWw9ALZY-x1SqwS1nUyGYAnjsygTk8K-Q@mail.gmail.com>
@@ -17,11 +18,14 @@ References: <1471505884-33996-1-git-send-email-B56489@freescale.com>
  <20161116171058.GA21300@Cayman.am.freescale.net>
  <AM4PR0701MB2130273C90BE0EE615382718FEB10@AM4PR0701MB2130.eurprd07.prod.outlook.com>
  <DB6PR0401MB24077A46D3FC5147DC4C69D989B10@DB6PR0401MB2407.eurprd04.prod.outlook.com>
- <CA+EcR20gNsuWG7pXimCmXmMy1wFFOv+zocMXTQoFhysGQ+wEFA@mail.gmail.com>
-In-Reply-To: <CA+EcR20gNsuWG7pXimCmXmMy1wFFOv+zocMXTQoFhysGQ+wEFA@mail.gmail.com>
+ <AM4PR0701MB213027FC738E6E377A593B60FEB10@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+ <DB6PR0401MB24074D231C8EBCC56E168CC989B00@DB6PR0401MB2407.eurprd04.prod.outlook.com>
+ <AM4PR0701MB21302592BE1B712D6E74C569FEB00@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+ <DB6PR0401MB24070BB49A1F5152A915AE3289B50@DB6PR0401MB2407.eurprd04.prod.outlook.com>
+In-Reply-To: <DB6PR0401MB24070BB49A1F5152A915AE3289B50@DB6PR0401MB2407.eurprd04.prod.outlook.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,140 +36,316 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVGh1LCBOb3YgMTgsIDIwMTYgYXQgMTI6MzEgUE0sIEhhbiBYdSB3cm90ZToNCj4gT24gVGh1
-LCBOb3YgMTcsIDIwMTYgYXQgMzoxNCBBTSwgWWFvIFl1YW4gPHlhby55dWFuQG54cC5jb20+IHdy
-b3RlOg0KPiA+IE9uIFRodSwgTm92IDE3LCAyMDE2IGF0IDA2OjUwOjU1QU0gKzAwMDAsIEtyemVt
-aW5za2ksIE1hcmNpbiAoTm9raWEgLQ0KPiBQTC9Xcm9jbGF3KSB3cm90ZToNCj4gPj4gPiA+ID4g
-T24gVGh1LCBBdWcgMTgsIDIwMTYgYXQgMjozOCBBTSwgWXVuaHVpIEN1aQ0KPiA+PiA+ID4gPiA8
-QjU2NDg5QGZyZWVzY2FsZS5jb20+DQo+ID4+ID4gPiA+IHdyb3RlOg0KPiA+PiA+ID4gPiA+IEZy
-b206IFl1bmh1aSBDdWkgPHl1bmh1aS5jdWlAbnhwLmNvbT4NCj4gPj4gPiA+ID4gPg0KPiA+PiA+
-ID4gPiA+IFdpdGggdGhlIHBoeXNpY2FsIHNlY3RvcnMgY29tYmluYXRpb24sIFMyNUZTLVMgZmFt
-aWx5IGZsYXNoDQo+ID4+ID4gPiA+ID4gcmVxdWlyZXMgc29tZSBzcGVjaWFsIG9wZXJhdGlvbnMg
-Zm9yIHJlYWQvd3JpdGUgZnVuY3Rpb25zLg0KPiA+PiA+ID4gPiA+DQo+ID4+ID4gPiA+ID4gU2ln
-bmVkLW9mZi1ieTogWXVuaHVpIEN1aSA8eXVuaHVpLmN1aUBueHAuY29tPg0KPiA+PiA+ID4gPiA+
-IC0tLQ0KPiA+PiA+ID4gPiA+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDU2DQo+
-ID4+ID4gPiA+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0K
-PiA+PiA+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNTYgaW5zZXJ0aW9ucygrKQ0KPiA+PiA+ID4g
-PiA+DQo+ID4+ID4gPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
-ci5jDQo+ID4+ID4gPiA+ID4gYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBpbmRleCBk
-MGZjMTY1Li40OTVkMGJiIDEwMDY0NA0KPiA+PiA+ID4gPiA+IC0tLSBhL2RyaXZlcnMvbXRkL3Nw
-aS1ub3Ivc3BpLW5vci5jDQo+ID4+ID4gPiA+ID4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9z
-cGktbm9yLmMNCj4gPj4gPiA+ID4gPiBAQCAtMzksNiArMzksMTAgQEANCj4gPj4gPiA+ID4gPg0K
-PiA+PiA+ID4gPiA+ICAjZGVmaW5lIFNQSV9OT1JfTUFYX0lEX0xFTiAgICAgNg0KPiA+PiA+ID4g
-PiA+ICAjZGVmaW5lIFNQSV9OT1JfTUFYX0FERFJfV0lEVEggNA0KPiA+PiA+ID4gPiA+ICsvKiBB
-ZGRlZCBmb3IgUzI1RlMtUyBmYW1pbHkgZmxhc2ggKi8NCj4gPj4gPiA+ID4gPiArI2RlZmluZSBT
-UElOT1JfQ09ORklHX1JFRzNfT0ZGU0VUICAgICAgMHg4MDAwMDQNCj4gPj4gPiA+ID4gPiArI2Rl
-ZmluZSBDUjNWXzRLQl9FUkFTRV9VTkFCTEUgIDB4OCAjZGVmaW5lDQo+ID4+ID4gPiA+ID4gK1NQ
-SU5PUl9TMjVGU19GQU1JTFlfRVhUX0pFREVDICAweDgxDQo+ID4+ID4gPiA+ID4NCj4gPj4gPiA+
-ID4gPiAgc3RydWN0IGZsYXNoX2luZm8gew0KPiA+PiA+ID4gPiA+ICAgICAgICAgY2hhciAgICAg
-ICAgICAgICpuYW1lOw0KPiA+PiA+ID4gPiA+IEBAIC03OCw2ICs4Miw3IEBAIHN0cnVjdCBmbGFz
-aF9pbmZvIHsgIH07DQo+ID4+ID4gPiA+ID4NCj4gPj4gPiA+ID4gPiAgI2RlZmluZSBKRURFQ19N
-RlIoaW5mbykgICAgICAgICgoaW5mbyktPmlkWzBdKQ0KPiA+PiA+ID4gPiA+ICsjZGVmaW5lIEVY
-VF9KRURFQyhpbmZvKSAgICAgICAgKChpbmZvKS0+aWRbNV0pDQo+ID4+ID4gPiA+ID4NCj4gPj4g
-PiA+ID4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICpzcGlfbm9yX21hdGNoX2lk
-KGNvbnN0IGNoYXINCj4gPj4gPiA+ID4gPiAqbmFtZSk7DQo+ID4+ID4gPiA+ID4NCj4gPj4gPiA+
-ID4gPiBAQCAtODk5LDYgKzkwNCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyBz
-cGlfbm9yX2lkc1tdID0gew0KPiA+PiA+ID4gPiA+ICAgICAgICAgICovDQo+ID4+ID4gPiA+ID4g
-ICAgICAgICB7ICJzMjVzbDAzMnAiLCAgSU5GTygweDAxMDIxNSwgMHg0ZDAwLCAgNjQgKiAxMDI0
-LA0KPiA+PiA+ID4gPiA+IDY0LA0KPiA+PiA+ID4gPiBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9O
-T1JfUVVBRF9SRUFEKSB9LA0KPiA+PiA+ID4gPiA+ICAgICAgICAgeyAiczI1c2wwNjRwIiwgIElO
-Rk8oMHgwMTAyMTYsIDB4NGQwMCwgIDY0ICogMTAyNCwNCj4gPj4gPiA+ID4gPiAxMjgsIFNQSV9O
-T1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ID4+ID4gPiA+ID4gKyAgICAg
-ICB7ICJzMjVmczI1NnMxIiwgSU5GTzYoMHgwMTAyMTksIDB4NGQwMTgxLCA2NCAqIDEwMjQsDQo+
-ID4+ID4gPiA+ID4gKyA1MTIsIDApfSwNCj4gPj4gPiA+ID4gPiAgICAgICAgIHsgInMyNWZsMjU2
-czAiLCBJTkZPKDB4MDEwMjE5LCAweDRkMDAsIDI1NiAqIDEwMjQsIDEyOCwgMCkgfSwNCj4gPj4g
-PiA+ID4gPiAgICAgICAgIHsgInMyNWZsMjU2czEiLCBJTkZPKDB4MDEwMjE5LCAweDRkMDEsICA2
-NCAqIDEwMjQsDQo+ID4+ID4gPiA+ID4gNTEyLA0KPiA+PiA+ID4gPiBTUElfTk9SX0RVQUxfUkVB
-RCB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+PiA+ID4gPiA+ICAgICAgICAgeyAiczI1Zmw1
-MTJzIiwgIElORk8oMHgwMTAyMjAsIDB4NGQwMCwgMjU2ICogMTAyNCwNCj4gPj4gPiA+ID4gPiAy
-NTYsIFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sIEBAIC0xMDM2LDYN
-Cj4gPj4gPiArMTA0Miw1MA0KPiA+PiA+ID4gPiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNo
-X2luZm8gKnNwaV9ub3JfcmVhZF9pZChzdHJ1Y3QNCj4gPj4gPiA+ID4gc3BpX25vcg0KPiA+PiA+
-ID4gPiAqbm9yKQ0KPiA+PiA+ID4gPiA+ICAgICAgICAgcmV0dXJuIEVSUl9QVFIoLUVOT0RFVik7
-ICB9DQo+ID4+ID4gPiA+ID4NCj4gPj4gPiA+ID4gPiArLyoNCj4gPj4gPiA+ID4gPiArICogVGhl
-IFMyNUZTLVMgZmFtaWx5IHBoeXNpY2FsIHNlY3RvcnMgbWF5IGJlIGNvbmZpZ3VyZWQgYXMNCj4g
-Pj4gPiA+ID4gPiArYQ0KPiA+PiA+ID4gPiA+ICsgKiBoeWJyaWQgY29tYmluYXRpb24gb2YgZWln
-aHQgNC1rQiBwYXJhbWV0ZXIgc2VjdG9ycw0KPiA+PiA+ID4gPiA+ICsgKiBhdCB0aGUgdG9wIG9y
-IGJvdHRvbSBvZiB0aGUgYWRkcmVzcyBzcGFjZSB3aXRoIGFsbA0KPiA+PiA+ID4gPiA+ICsgKiBi
-dXQgb25lIG9mIHRoZSByZW1haW5pbmcgc2VjdG9ycyBiZWluZyB1bmlmb3JtIHNpemUuDQo+ID4+
-ID4gPiA+ID4gKyAqIFRoZSBQYXJhbWV0ZXIgU2VjdG9yIEVyYXNlIGNvbW1hbmRzICgyMGggb3Ig
-MjFoKSBtdXN0DQo+ID4+ID4gPiA+ID4gKyAqIGJlIHVzZWQgdG8gZXJhc2UgdGhlIDQta0IgcGFy
-YW1ldGVyIHNlY3RvcnMgaW5kaXZpZHVhbGx5Lg0KPiA+PiA+ID4gPiA+ICsgKiBUaGUgU2VjdG9y
-ICh1bmlmb3JtIHNlY3RvcikgRXJhc2UgY29tbWFuZHMgKEQ4aCBvciBEQ2gpDQo+ID4+ID4gPiA+
-ID4gKyAqIG11c3QgYmUgdXNlZCB0byBlcmFzZSBhbnkgb2YgdGhlIHJlbWFpbmluZw0KPiA+PiA+
-ID4gPiA+ICsgKiBzZWN0b3JzLCBpbmNsdWRpbmcgdGhlIHBvcnRpb24gb2YgaGlnaGVzdCBvciBs
-b3dlc3QNCj4gPj4gPiA+ID4gPiArYWRkcmVzcw0KPiA+PiA+ID4gPiA+ICsgKiBzZWN0b3IgdGhh
-dCBpcyBub3Qgb3ZlcmxhaWQgYnkgdGhlIHBhcmFtZXRlciBzZWN0b3JzLg0KPiA+PiA+ID4gPiA+
-ICsgKiBUaGUgdW5pZm9ybSBzZWN0b3IgZXJhc2UgY29tbWFuZCBoYXMgbm8gZWZmZWN0IG9uDQo+
-ID4+ID4gPiA+ID4gK3BhcmFtZXRlcg0KPiA+PiA+ID4gPiBzZWN0b3JzLg0KPiA+PiA+ID4gPiA+
-ICsgKi8NCj4gPj4gPiA+ID4gPiArc3RhdGljIGludCBzcGFuc2lvbl9zMjVmc19kaXNhYmxlXzRr
-Yl9lcmFzZShzdHJ1Y3Qgc3BpX25vciAqbm9yKSB7DQo+ID4+ID4gPiA+ID4gKyAgICAgICB1MzIg
-Y3Izdl9hZGRyICA9IFNQSU5PUl9DT05GSUdfUkVHM19PRkZTRVQ7DQo+ID4+ID4gPiA+ID4gKyAg
-ICAgICB1OCBjcjN2ID0gMHgwOw0KPiA+PiA+ID4gPiA+ICsgICAgICAgaW50IHJldCA9IDB4MDsN
-Cj4gPj4gPiA+ID4gPiArDQo+ID4+ID4gPiA+ID4gKyAgICAgICBub3ItPmNtZF9idWZbMl0gPSBj
-cjN2X2FkZHIgPj4gMTY7DQo+ID4+ID4gPiA+ID4gKyAgICAgICBub3ItPmNtZF9idWZbMV0gPSBj
-cjN2X2FkZHIgPj4gODsNCj4gPj4gPiA+ID4gPiArICAgICAgIG5vci0+Y21kX2J1ZlswXSA9IGNy
-M3ZfYWRkciA+PiAwOw0KPiA+PiA+ID4gPiA+ICsNCj4gPj4gPiA+ID4gPiArICAgICAgIHJldCA9
-IG5vci0+cmVhZF9yZWcobm9yLCBTUElOT1JfT1BfU1BBTlNJT05fUkRBUiwgJmNyM3YsDQo+IDEp
-Ow0KPiA+PiA+ID4gPiA+ICsgICAgICAgaWYgKHJldCkNCj4gPj4gPiA+ID4gPiArICAgICAgICAg
-ICAgICAgcmV0dXJuIHJldDsNCj4gPj4gPiA+ID4gPiArICAgICAgIGlmIChjcjN2ICYgQ1IzVl80
-S0JfRVJBU0VfVU5BQkxFKQ0KPiA+PiA+ID4gPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gMDsN
-Cj4gPj4gPiA+ID4gPiArICAgICAgIHJldCA9IG5vci0+d3JpdGVfcmVnKG5vciwgU1BJTk9SX09Q
-X1dSRU4sIE5VTEwsIDApOw0KPiA+PiA+ID4gPiA+ICsgICAgICAgaWYgKHJldCkNCj4gPj4gPiA+
-ID4gPiArICAgICAgICAgICAgICAgcmV0dXJuIHJldDsNCj4gPj4gPiA+ID4gPiArICAgICAgIGNy
-M3YgPSBDUjNWXzRLQl9FUkFTRV9VTkFCTEU7DQo+ID4+ID4gPiA+ID4gKyAgICAgICBub3ItPnBy
-b2dyYW1fb3Bjb2RlID0gU1BJTk9SX09QX1NQQU5TSU9OX1dSQVI7DQo+ID4+ID4gPiA+ID4gKyAg
-ICAgICBub3ItPndyaXRlKG5vciwgY3Izdl9hZGRyLCAxLCAmY3Izdik7DQo+ID4+ID4gPiA+ID4g
-Kw0KPiA+PiA+ID4gPiA+ICsgICAgICAgcmV0ID0gbm9yLT5yZWFkX3JlZyhub3IsIFNQSU5PUl9P
-UF9TUEFOU0lPTl9SREFSLCAmY3IzdiwNCj4gMSk7DQo+ID4+ID4gPiA+ID4gKyAgICAgICBpZiAo
-cmV0KQ0KPiA+PiA+ID4gPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gcmV0Ow0KPiA+PiA+ID4g
-PiA+ICsgICAgICAgaWYgKCEoY3IzdiAmIENSM1ZfNEtCX0VSQVNFX1VOQUJMRSkpDQo+ID4+ID4g
-PiA+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAtRVBFUk07DQo+ID4+ID4gPiA+ID4gKw0KPiA+
-PiA+ID4gPiA+ICsgICAgICAgcmV0dXJuIDA7DQo+ID4+ID4gPiA+ID4gK30NCj4gPj4gPiA+ID4g
-PiArDQo+ID4+ID4gPiA+ID4gIHN0YXRpYyBpbnQgc3BpX25vcl9yZWFkKHN0cnVjdCBtdGRfaW5m
-byAqbXRkLCBsb2ZmX3QgZnJvbSwgc2l6ZV90IGxlbiwNCj4gPj4gPiA+ID4gPiAgICAgICAgICAg
-ICAgICAgICAgICAgICBzaXplX3QgKnJldGxlbiwgdV9jaGFyICpidWYpICB7IEBADQo+ID4+ID4g
-PiA+ID4gLTEzNjEsNg0KPiA+PiA+ID4gPiA+ICsxNDExLDEyIEBAIGludCBzcGlfbm9yX3NjYW4o
-c3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3QgY2hhcg0KPiA+PiA+ID4gPiA+ICsqbmFtZSwNCj4g
-Pj4gPiA+ID4gZW51bSByZWFkX21vZGUgbW9kZSkNCj4gPj4gPiA+ID4gPiAgICAgICAgICAgICAg
-ICAgc3BpX25vcl93YWl0X3RpbGxfcmVhZHkobm9yKTsNCj4gPj4gPiA+ID4gPiAgICAgICAgIH0N
-Cj4gPj4gPiA+ID4gPg0KPiA+PiA+ID4gPiA+ICsgICAgICAgaWYgKEVYVF9KRURFQyhpbmZvKSA9
-PSBTUElOT1JfUzI1RlNfRkFNSUxZX0VYVF9KRURFQykgew0KPiA+PiA+ID4gPiA+ICsgICAgICAg
-ICAgICAgICByZXQgPSBzcGFuc2lvbl9zMjVmc19kaXNhYmxlXzRrYl9lcmFzZShub3IpOw0KPiA+
-PiA+ID4gPiA+ICsgICAgICAgICAgICAgICBpZiAocmV0KQ0KPiA+PiA+ID4gPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+ID4+ID4gPiA+ID4gKyAgICAgICB9DQo+ID4+
-ID4gPiA+ID4gKw0KPiA+PiA+ID4gPiA+ICAgICAgICAgaWYgKCFtdGQtPm5hbWUpDQo+ID4+ID4g
-PiA+ID4gICAgICAgICAgICAgICAgIG10ZC0+bmFtZSA9IGRldl9uYW1lKGRldik7DQo+ID4+ID4g
-PiA+ID4gICAgICAgICBtdGQtPnByaXYgPSBub3I7DQo+ID4+ID4gPiA+ID4gLS0NCj4gPj4gPiA+
-ID4gPiAyLjEuMC4yNy5nOTZkYjMyNA0KPiA+PiA+ID4gPiA+DQo+ID4+ID4gPiA+ID4NCj4gPj4g
-PiA+ID4gSGkgQnJpYW4sIEkgd2lsbCBhY2sgdGhpcyBjaGFuZ2UgYnV0IHN0aWxsIGZlZWwgaXQn
-cyBraW5kIG9mIGhhY2tpbmcgY29kZS4NCj4gPj4gPiA+ID4NCj4gPj4gPiA+ID4gQWNrZWQtYnk6
-IEhhbiB4dSA8aGFuLnh1QG54cC5jb20+DQo+ID4+ID4gPg0KPiA+PiA+ID4gSSBhbSBuZXcgb24g
-dGhlIGxpc3Qgc28gSSBhbSBub3Qgc3VyZSBpZiB0aGlzIHRvcGljIGhhcyBiZWVuIGRpc2N1c3Nl
-ZC4NCj4gPj4gPiA+IEdlbmVyYWxseSBvdXIgcHJvZHVjdCBmdW5jdGlvbmFsaXR5IHJlbGF5IG9u
-IHRob3NlIDRLaUIgc2VjdG9ycy4NCj4gPj4gPiA+IEkga25vdyB0aGF0IHRoaXMgaGFjayBpcyBh
-bHJlYWR5IGluIHUtYm9vdCwgYnV0IGlmIHlvdSBtYWluc3RyZWFtDQo+ID4+ID4gPiB0aGlzIHlv
-dSB3aWxsIGZvcmNlIHVzZXJzIG9mIHRob3NlIDRLaUIgc2VjdG9ycyB0byBkbyBoYWNrIHRoZSBo
-YWNrLi4uDQo+ID4+ID4gPiBJIGJlbGlldmUgdGhlIHByb3BlciBzb2x1dGlvbiBoZXJlIGlzIHRv
-IHVzZSBlcmFzZSByZWdpb25zDQo+ID4+ID4gPiBmdW5jdGlvbmFsaXR5LCBJIHNlbmQgYW5kIFJG
-UyBhYm91dCB0aGF0IHNvbWUgdGltZSBhZ28uDQo+ID4+ID4NCj4gPj4gPiBEbyB5b3UgbWluZCB0
-byBzZW5kIG1lIGEgbGluayBmb3IgcmVmZXJlbmNlPw0KPiA+PiA+DQo+ID4+IEhhbiwNCj4gPj4N
-Cj4gPj4gU29ycnksIEl0IHNlZW0gSSBoYXZlIG5vdCBwb3N0ZWQgZXJhc2UgcmVnaW9uIGNoYW5n
-ZXMgKG9ubHkgdGhvc2UNCj4gPj4gcmVnYXJkaW5nIERVQUwvUVVBRCBJL08pLg0KPiA+PiBHZW5l
-cmFsbHksIGluIHRoaXMgZmxhc2ggeW91IG5lZWQgdG8gY3JlYXRlIDMgZXJhc2UgcmVnaW9ucyAo
-YmVjYXVzZQ0KPiA+PiBpbiBGUy1TIGZhbWlseSBzdXBwb3J0IG9ubHkgIDRLaUIgZXJhc2Ugb24g
-cGFyYW1ldGVycyBzZWN0b3IgLSBlZy4gMS4yLjIuNCBpbg0KPiBTMjVGUzUxMlMpLg0KPiA+PiBJ
-biBteSBjYXNlIHJlZ2lvbnMgYXJlOg0KPiA+PiAxLiAwLTMyS2lCICg4KjRLaUIpIC0gNEtfRVJB
-U0UgKDB4MjAvMHgyMSkgMi4gMzIgLSAyNTYgLSBTRV9DTUQgKDB4ZDgvMHhkYykNCj4gMy4NCj4g
-Pj4gUmVzdCBvZiB0aGUgZmxhc2ggU0VfQ01EICgweGQ4LzB4ZGMpDQo+ID4+DQo+ID4+IFRvIGVy
-YXNlIHdob2xlIGZsYXNoIHlvdSBjYW4gYWxzbyB1c2UgQ0hJUF9FUkFTRV9DTUQgKDB4NjAvMHhD
-NykNCj4gPj4gY29tbWFuZCwgeW91IGp1c3QgbmVlZCB0byBhZGQgb25lIG1vcmUgbXRkIHBhcnRp
-dGlvbiB0aGF0IHdpbGwgY292ZXINCj4gd2hvbGUgZmxhc2guDQo+ID4+DQo+ID4NCj4gPiBIaSBL
-cnplbWluc2tpLA0KPiA+DQo+ID4gRG8geW91IHRoaW5rIGlzIHRoZXJlIGFueSBncmVhdCBhZHZh
-bnRhZ2VzIGZvciBlbmFibGUgNEtCPw0KPiA+IEJlY2F1c2UgZm9yIE5YUChGcmVlc2NhbGUpIFFT
-UEkgY29udHJvbGxlciwgdGhlcmUgaXMgb25seSBzdXBwb3J0IG1heCB0byAxNg0KPiBncm91cHMg
-Y29tbWFuZC4NCj4gDQo+IElmIGl0J3MgcmVhbGx5IG5lY2Vzc2FyeSB0byBzdXBwb3J0IGFsbCBj
-b21tYW5kIGdyb3VwcywgeW91IGNhbiB0cnkgYXBwbHkgbXkNCj4gZHluYW1pYyBsdXQgcGF0Y2gg
-Zmlyc3QuDQo+IGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcGF0Y2gvNjc2NzkxLw0KPiAN
-Cg0KSSB0aGluayBpdCB3aWxsIGJlIGhlbHBmdWwsIEkgd2lsbCB0ZXN0IGFuZCBjaGVjayBpdC4N
-Cg0KVGhhbmtzLA0K
+
+
+> -----Original Message-----
+> From: Yao Yuan [mailto:yao.yuan@nxp.com]
+> Sent: Monday, November 21, 2016 7:28 AM
+> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
+> <marcin.krzeminski@nokia.com>; Han Xu <xhnjupt@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>; linux-
+> kernel@vger.kernel.org; linux-mtd@lists.infradead.org;
+> han.xu@freescale.com; Brian Norris <computersforpeace@gmail.com>;
+> jagannadh.teki@gmail.com; linux-arm-kernel@lists.infradead.org; Cyrille
+> Pitchen <cyrille.pitchen@atmel.com>
+> Subject: RE: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S family
+> flash
+>=20
+> On Thu, Nov 18, 2016 at 07:00 PM +0000, Krzeminski, Marcin (Nokia -
+> PL/Wroclaw) wrote:
+> > > -----Original Message-----
+> > > From: Yao Yuan [mailto:yao.yuan@nxp.com]
+> > > Sent: Friday, November 18, 2016 5:20 AM
+> > > To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
+> > > <marcin.krzeminski@nokia.com>; Han Xu <xhnjupt@gmail.com>
+> > > Cc: David Woodhouse <dwmw2@infradead.org>; linux-
+> > > kernel@vger.kernel.org; linux-mtd@lists.infradead.org;
+> > > han.xu@freescale.com; Brian Norris <computersforpeace@gmail.com>;
+> > > jagannadh.teki@gmail.com; linux-arm-kernel@lists.infradead.org
+> > > Subject: RE: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S
+> > > family flash
+> > >
+> > > On Thu, Nov 17, 2016 at 10:14:55AM +0000, Krzeminski, Marcin (Nokia
+> > > -
+> > > PL/Wroclaw) wrote:
+> > > > > On Thu, Nov 17, 2016 at 06:50:55AM +0000, Krzeminski, Marcin
+> > > > > (Nokia
+> > > > > -
+> > > > > PL/Wroclaw) wrote:
+> > > > > > > > > On Thu, Aug 18, 2016 at 2:38 AM, Yunhui Cui
+> > > > > > > > > <B56489@freescale.com>
+> > > > > > > > > wrote:
+> > > > > > > > > > From: Yunhui Cui <yunhui.cui@nxp.com>
+> > > > > > > > > >
+> > > > > > > > > > With the physical sectors combination, S25FS-S family
+> > > > > > > > > > flash requires some special operations for read/write
+> functions.
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
+> > > > > > > > > > ---
+> > > > > > > > > >  drivers/mtd/spi-nor/spi-nor.c | 56
+> > > > > > > > > > +++++++++++++++++++++++++++++++++++++++++++
+> > > > > > > > > >  1 file changed, 56 insertions(+)
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/drivers/mtd/spi-nor/spi-nor.c
+> > > > > > > > > > b/drivers/mtd/spi-nor/spi-nor.c index d0fc165..495d0bb
+> > > > > > > > > > 100644
+> > > > > > > > > > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > > > > > > > > > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > > > > > > > > > @@ -39,6 +39,10 @@
+> > > > > > > > > >
+> > > > > > > > > >  #define SPI_NOR_MAX_ID_LEN     6
+> > > > > > > > > >  #define SPI_NOR_MAX_ADDR_WIDTH 4
+> > > > > > > > > > +/* Added for S25FS-S family flash */
+> > > > > > > > > > +#define SPINOR_CONFIG_REG3_OFFSET      0x800004
+> > > > > > > > > > +#define CR3V_4KB_ERASE_UNABLE  0x8 #define
+> > > > > > > > > > +SPINOR_S25FS_FAMILY_EXT_JEDEC  0x81
+> > > > > > > > > >
+> > > > > > > > > >  struct flash_info {
+> > > > > > > > > >         char            *name;
+> > > > > > > > > > @@ -78,6 +82,7 @@ struct flash_info {  };
+> > > > > > > > > >
+> > > > > > > > > >  #define JEDEC_MFR(info)        ((info)->id[0])
+> > > > > > > > > > +#define EXT_JEDEC(info)        ((info)->id[5])
+> > > > > > > > > >
+> > > > > > > > > >  static const struct flash_info
+> > > > > > > > > > *spi_nor_match_id(const char *name);
+> > > > > > > > > >
+> > > > > > > > > > @@ -899,6 +904,7 @@ static const struct flash_info
+> > > spi_nor_ids[] =3D {
+> > > > > > > > > >          */
+> > > > > > > > > >         { "s25sl032p",  INFO(0x010215, 0x4d00,  64 *
+> > > > > > > > > > 1024, 64,
+> > > > > > > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> > > > > > > > > >         { "s25sl064p",  INFO(0x010216, 0x4d00,  64 *
+> > > > > > > > > > 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+> },
+> > > > > > > > > > +       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 *
+> > > > > > > > > > + 1024, 512, 0)},
+> > > > > > > > > >         { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 10=
+24, 128,
+> 0) },
+> > > > > > > > > >         { "s25fl256s1", INFO(0x010219, 0x4d01,  64 *
+> > > > > > > > > > 1024, 512,
+> > > > > > > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> > > > > > > > > >         { "s25fl512s",  INFO(0x010220, 0x4d00, 256 *
+> > > > > > > > > > 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+> },
+> > @@
+> > > > > > > > > > -
+> > > 1036,6
+> > > > > > > +1042,50
+> > > > > > > > > @@ static const struct flash_info
+> > > > > > > > > *spi_nor_read_id(struct spi_nor
+> > > > > > > > > *nor)
+> > > > > > > > > >         return ERR_PTR(-ENODEV);  }
+> > > > > > > > > >
+> > > > > > > > > > +/*
+> > > > > > > > > > + * The S25FS-S family physical sectors may be
+> > > > > > > > > > +configured as a
+> > > > > > > > > > + * hybrid combination of eight 4-kB parameter sectors
+> > > > > > > > > > + * at the top or bottom of the address space with all
+> > > > > > > > > > + * but one of the remaining sectors being uniform size=
+.
+> > > > > > > > > > + * The Parameter Sector Erase commands (20h or 21h)
+> > > > > > > > > > +must
+> > > > > > > > > > + * be used to erase the 4-kB parameter sectors individ=
+ually.
+> > > > > > > > > > + * The Sector (uniform sector) Erase commands (D8h or
+> > > > > > > > > > +DCh)
+> > > > > > > > > > + * must be used to erase any of the remaining
+> > > > > > > > > > + * sectors, including the portion of highest or
+> > > > > > > > > > +lowest address
+> > > > > > > > > > + * sector that is not overlaid by the parameter sector=
+s.
+> > > > > > > > > > + * The uniform sector erase command has no effect on
+> > > > > > > > > > +parameter
+> > > > > > > > > sectors.
+> > > > > > > > > > + */
+> > > > > > > > > > +static int spansion_s25fs_disable_4kb_erase(struct
+> > > > > > > > > > +spi_nor
+> > > *nor) {
+> > > > > > > > > > +       u32 cr3v_addr  =3D SPINOR_CONFIG_REG3_OFFSET;
+> > > > > > > > > > +       u8 cr3v =3D 0x0;
+> > > > > > > > > > +       int ret =3D 0x0;
+> > > > > > > > > > +
+> > > > > > > > > > +       nor->cmd_buf[2] =3D cr3v_addr >> 16;
+> > > > > > > > > > +       nor->cmd_buf[1] =3D cr3v_addr >> 8;
+> > > > > > > > > > +       nor->cmd_buf[0] =3D cr3v_addr >> 0;
+> > > > > > > > > > +
+> > > > > > > > > > +       ret =3D nor->read_reg(nor,
+> > > > > > > > > > + SPINOR_OP_SPANSION_RDAR,
+> > > > > &cr3v, 1);
+> > > > > > > > > > +       if (ret)
+> > > > > > > > > > +               return ret;
+> > > > > > > > > > +       if (cr3v & CR3V_4KB_ERASE_UNABLE)
+> > > > > > > > > > +               return 0;
+> > > > > > > > > > +       ret =3D nor->write_reg(nor, SPINOR_OP_WREN, NUL=
+L, 0);
+> > > > > > > > > > +       if (ret)
+> > > > > > > > > > +               return ret;
+> > > > > > > > > > +       cr3v =3D CR3V_4KB_ERASE_UNABLE;
+> > > > > > > > > > +       nor->program_opcode =3D
+> SPINOR_OP_SPANSION_WRAR;
+> > > > > > > > > > +       nor->write(nor, cr3v_addr, 1, &cr3v);
+> > > > > > > > > > +
+> > > > > > > > > > +       ret =3D nor->read_reg(nor,
+> > > > > > > > > > + SPINOR_OP_SPANSION_RDAR,
+> > > > > &cr3v, 1);
+> > > > > > > > > > +       if (ret)
+> > > > > > > > > > +               return ret;
+> > > > > > > > > > +       if (!(cr3v & CR3V_4KB_ERASE_UNABLE))
+> > > > > > > > > > +               return -EPERM;
+> > > > > > > > > > +
+> > > > > > > > > > +       return 0;
+> > > > > > > > > > +}
+> > > > > > > > > > +
+> > > > > > > > > >  static int spi_nor_read(struct mtd_info *mtd, loff_t
+> > > > > > > > > > from, size_t
+> > > > > len,
+> > > > > > > > > >                         size_t *retlen, u_char *buf)
+> > > > > > > > > > { @@
+> > > > > > > > > > -1361,6
+> > > > > > > > > > +1411,12 @@ int spi_nor_scan(struct spi_nor *nor,
+> > > > > > > > > > +const char *name,
+> > > > > > > > > enum read_mode mode)
+> > > > > > > > > >                 spi_nor_wait_till_ready(nor);
+> > > > > > > > > >         }
+> > > > > > > > > >
+> > > > > > > > > > +       if (EXT_JEDEC(info) =3D=3D
+> > > > > > > > > > + SPINOR_S25FS_FAMILY_EXT_JEDEC)
+> > > {
+> > > > > > > > > > +               ret =3D spansion_s25fs_disable_4kb_eras=
+e(nor);
+> > > > > > > > > > +               if (ret)
+> > > > > > > > > > +                       return ret;
+> > > > > > > > > > +       }
+> > > > > > > > > > +
+> > > > > > > > > >         if (!mtd->name)
+> > > > > > > > > >                 mtd->name =3D dev_name(dev);
+> > > > > > > > > >         mtd->priv =3D nor;
+> > > > > > > > > > --
+> > > > > > > > > > 2.1.0.27.g96db324
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > Hi Brian, I will ack this change but still feel it's kind=
+ of hacking
+> code.
+> > > > > > > > >
+> > > > > > > > > Acked-by: Han xu <han.xu@nxp.com>
+> > > > > > > >
+> > > > > > > > I am new on the list so I am not sure if this topic has bee=
+n
+> discussed.
+> > > > > > > > Generally our product functionality relay on those 4KiB sec=
+tors.
+> > > > > > > > I know that this hack is already in u-boot, but if you
+> > > > > > > > mainstream this you will force users of those 4KiB sectors
+> > > > > > > > to do hack the
+> > > > hack...
+> > > > > > > > I believe the proper solution here is to use erase regions
+> > > > > > > > functionality, I send and RFS about that some time ago.
+> > > > > > >
+> > > > > > > Do you mind to send me a link for reference?
+> > > > > > >
+> > > > > > Han,
+> > > > > >
+> > > > > > Sorry, It seem I have not posted erase region changes (only
+> > > > > > those regarding DUAL/QUAD I/O).
+> > > > > > Generally, in this flash you need to create 3 erase regions
+> > > > > > (because in FS-S family support only  4KiB erase on parameters
+> > > > > > sector -
+> > > eg.
+> > > > > > 1.2.2.4 in
+> > > > > S25FS512S).
+> > > > > > In my case regions are:
+> > > > > > 1. 0-32KiB (8*4KiB) - 4K_ERASE (0x20/0x21) 2. 32 - 256 -
+> > > > > > SE_CMD
+> > > > > (0xd8/0xdc) 3.
+> > > > > > Rest of the flash SE_CMD (0xd8/0xdc)
+> > > > > >
+> > > > > > To erase whole flash you can also use CHIP_ERASE_CMD
+> > > > > > (0x60/0xC7) command, you just need to add one more mtd
+> > > > > > partition that will cover
+> > > > > whole flash.
+> > > > > >
+> > > > >
+> > > > > Hi Krzeminski,
+> > > > >
+> > > > > Do you think is there any great advantages for enable 4KB?
+> > > > > Because for NXP(Freescale) QSPI controller, there is only
+> > > > > support max to 16 groups command.
+> > > > >
+> > > > > So It's hard to give 3 groups command just for erase (0x21,0xdc a=
+nd
+> 0xc7).
+> > > > > So we have to disable the 4kb erase and only use 256kbytes in thi=
+s
+> patch.
+> > > > >
+> > > > Yes, if you disable parameters sector in spi-nor framework you
+> > > > will disable it for all spi-nor clients not only for NXP QSPI contr=
+oller.
+> > > > There are users (at least me) that relay on parameters sector
+> functionality.
+> > > This patch will brake it.
+> > > >
+> > > > Thanks,
+> > >
+> > > Hi Krzeminski,
+> > >
+> > > Get it.
+> > > So do you think how about that I add a flag in dts to select it?
+> > > The user want's disable 4kb, he can add the flag.
+> > >
+> > > In spi-nor.c:
+> > > if (of_property_read_bool(np, "spi-nor, disable-4kb")) {
+> > > 	spansion_s25fs_disable_4kb_erase();
+> > > }
+> > >                 else
+> > > ...
+> > >
+> > > In dts:
+> > >
+> > > &qspi {
+> > >         num-cs =3D <2>;
+> > >         bus-num =3D <0>;
+> > >         status =3D "okay";
+> > >
+> > >         qflash0: s25fs512s@0 {
+> > >                 compatible =3D "spansion, s25fs512s";
+> > > 	 spi-nor, disable-4kb
+> > >                 #address-cells =3D <1>;
+> > >                 #size-cells =3D <1>;
+> > >                 spi-max-frequency =3D <20000000>;
+> > >                 reg =3D <0>;
+> > >         };
+> > >
+> > > I think it should be a better way.
+> > >
+> > > How about your think?
+> >
+> > This looks much better - at least for me.
+> > There are some parameters in JESD216 standard regarding parameters
+> > sector, but unfortunately I have not investigated that. You can take a
+> > look at Cyrille series, that adds support for JESD216  standard.
+> >
+>=20
+> Ok, I will resend v4 for add this.
+>=20
+> BTW, the 4-kytes block for S25FS is just only the first 8 blocks, the oth=
+er block
+> is 256kytes.
+> Do out SPI-NOR support erase those specific combination?
+>=20
+> If not, do you have any plan for add it?
+> It seems I can't fine the support in spi-nor.
+>=20
+Those erase regions are solution for such flash, current upstream version d=
+oes not
+have this. My solution is not universal, so probably I will not add it.
+
+Regards,
+Marcin
+
+> Thanks.
