@@ -1,32 +1,16 @@
-From: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
-To: Yao Yuan <yao.yuan@nxp.com>, Han Xu <xhnjupt@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "han.xu@freescale.com"
- <han.xu@freescale.com>, Brian Norris <computersforpeace@gmail.com>,
- "jagannadh.teki@gmail.com" <jagannadh.teki@gmail.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: RE: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
-Date: Mon, 21 Nov 2016 07:14:31 +0000
-Message-ID: <AM4PR0701MB21302252988A38FE2A393FE4FEB50@AM4PR0701MB2130.eurprd07.prod.outlook.com>
-References: <1471505884-33996-1-git-send-email-B56489@freescale.com>
- <1471505884-33996-6-git-send-email-B56489@freescale.com>
- <CA+EcR20NkBzFjMJ_ArWw9ALZY-x1SqwS1nUyGYAnjsygTk8K-Q@mail.gmail.com>
- <AM4PR0701MB21308B262DB7B94E0F7FC34EFEF00@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <20161116171058.GA21300@Cayman.am.freescale.net>
- <AM4PR0701MB2130273C90BE0EE615382718FEB10@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <DB6PR0401MB24077A46D3FC5147DC4C69D989B10@DB6PR0401MB2407.eurprd04.prod.outlook.com>
- <AM4PR0701MB213027FC738E6E377A593B60FEB10@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <DB6PR0401MB24074D231C8EBCC56E168CC989B00@DB6PR0401MB2407.eurprd04.prod.outlook.com>
- <AM4PR0701MB21302592BE1B712D6E74C569FEB00@AM4PR0701MB2130.eurprd07.prod.outlook.com>
- <DB6PR0401MB24070BB49A1F5152A915AE3289B50@DB6PR0401MB2407.eurprd04.prod.outlook.com>
-In-Reply-To: <DB6PR0401MB24070BB49A1F5152A915AE3289B50@DB6PR0401MB2407.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nand: tango: Use nand_to_mtd() instead of directly
+ accessing chip->mtd
+Date: Mon, 21 Nov 2016 10:03:04 +0100
+Message-Id: <1479718984-26491-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,316 +20,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The nand_to_mtd() helper is here to hide internal mtd_info <-> nand_chip
+association and ease future refactors.
 
+Make use of this helper instead of directly accessing chip->mtd.
 
-> -----Original Message-----
-> From: Yao Yuan [mailto:yao.yuan@nxp.com]
-> Sent: Monday, November 21, 2016 7:28 AM
-> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
-> <marcin.krzeminski@nokia.com>; Han Xu <xhnjupt@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>; linux-
-> kernel@vger.kernel.org; linux-mtd@lists.infradead.org;
-> han.xu@freescale.com; Brian Norris <computersforpeace@gmail.com>;
-> jagannadh.teki@gmail.com; linux-arm-kernel@lists.infradead.org; Cyrille
-> Pitchen <cyrille.pitchen@atmel.com>
-> Subject: RE: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S family
-> flash
->=20
-> On Thu, Nov 18, 2016 at 07:00 PM +0000, Krzeminski, Marcin (Nokia -
-> PL/Wroclaw) wrote:
-> > > -----Original Message-----
-> > > From: Yao Yuan [mailto:yao.yuan@nxp.com]
-> > > Sent: Friday, November 18, 2016 5:20 AM
-> > > To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
-> > > <marcin.krzeminski@nokia.com>; Han Xu <xhnjupt@gmail.com>
-> > > Cc: David Woodhouse <dwmw2@infradead.org>; linux-
-> > > kernel@vger.kernel.org; linux-mtd@lists.infradead.org;
-> > > han.xu@freescale.com; Brian Norris <computersforpeace@gmail.com>;
-> > > jagannadh.teki@gmail.com; linux-arm-kernel@lists.infradead.org
-> > > Subject: RE: [PATCH v3 6/9] mtd: spi-nor: Support R/W for S25FS-S
-> > > family flash
-> > >
-> > > On Thu, Nov 17, 2016 at 10:14:55AM +0000, Krzeminski, Marcin (Nokia
-> > > -
-> > > PL/Wroclaw) wrote:
-> > > > > On Thu, Nov 17, 2016 at 06:50:55AM +0000, Krzeminski, Marcin
-> > > > > (Nokia
-> > > > > -
-> > > > > PL/Wroclaw) wrote:
-> > > > > > > > > On Thu, Aug 18, 2016 at 2:38 AM, Yunhui Cui
-> > > > > > > > > <B56489@freescale.com>
-> > > > > > > > > wrote:
-> > > > > > > > > > From: Yunhui Cui <yunhui.cui@nxp.com>
-> > > > > > > > > >
-> > > > > > > > > > With the physical sectors combination, S25FS-S family
-> > > > > > > > > > flash requires some special operations for read/write
-> functions.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
-> > > > > > > > > > ---
-> > > > > > > > > >  drivers/mtd/spi-nor/spi-nor.c | 56
-> > > > > > > > > > +++++++++++++++++++++++++++++++++++++++++++
-> > > > > > > > > >  1 file changed, 56 insertions(+)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/drivers/mtd/spi-nor/spi-nor.c
-> > > > > > > > > > b/drivers/mtd/spi-nor/spi-nor.c index d0fc165..495d0bb
-> > > > > > > > > > 100644
-> > > > > > > > > > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > > > > > > > > > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > > > > > > > > > @@ -39,6 +39,10 @@
-> > > > > > > > > >
-> > > > > > > > > >  #define SPI_NOR_MAX_ID_LEN     6
-> > > > > > > > > >  #define SPI_NOR_MAX_ADDR_WIDTH 4
-> > > > > > > > > > +/* Added for S25FS-S family flash */
-> > > > > > > > > > +#define SPINOR_CONFIG_REG3_OFFSET      0x800004
-> > > > > > > > > > +#define CR3V_4KB_ERASE_UNABLE  0x8 #define
-> > > > > > > > > > +SPINOR_S25FS_FAMILY_EXT_JEDEC  0x81
-> > > > > > > > > >
-> > > > > > > > > >  struct flash_info {
-> > > > > > > > > >         char            *name;
-> > > > > > > > > > @@ -78,6 +82,7 @@ struct flash_info {  };
-> > > > > > > > > >
-> > > > > > > > > >  #define JEDEC_MFR(info)        ((info)->id[0])
-> > > > > > > > > > +#define EXT_JEDEC(info)        ((info)->id[5])
-> > > > > > > > > >
-> > > > > > > > > >  static const struct flash_info
-> > > > > > > > > > *spi_nor_match_id(const char *name);
-> > > > > > > > > >
-> > > > > > > > > > @@ -899,6 +904,7 @@ static const struct flash_info
-> > > spi_nor_ids[] =3D {
-> > > > > > > > > >          */
-> > > > > > > > > >         { "s25sl032p",  INFO(0x010215, 0x4d00,  64 *
-> > > > > > > > > > 1024, 64,
-> > > > > > > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> > > > > > > > > >         { "s25sl064p",  INFO(0x010216, 0x4d00,  64 *
-> > > > > > > > > > 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> },
-> > > > > > > > > > +       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 *
-> > > > > > > > > > + 1024, 512, 0)},
-> > > > > > > > > >         { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 10=
-24, 128,
-> 0) },
-> > > > > > > > > >         { "s25fl256s1", INFO(0x010219, 0x4d01,  64 *
-> > > > > > > > > > 1024, 512,
-> > > > > > > > > SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> > > > > > > > > >         { "s25fl512s",  INFO(0x010220, 0x4d00, 256 *
-> > > > > > > > > > 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> },
-> > @@
-> > > > > > > > > > -
-> > > 1036,6
-> > > > > > > +1042,50
-> > > > > > > > > @@ static const struct flash_info
-> > > > > > > > > *spi_nor_read_id(struct spi_nor
-> > > > > > > > > *nor)
-> > > > > > > > > >         return ERR_PTR(-ENODEV);  }
-> > > > > > > > > >
-> > > > > > > > > > +/*
-> > > > > > > > > > + * The S25FS-S family physical sectors may be
-> > > > > > > > > > +configured as a
-> > > > > > > > > > + * hybrid combination of eight 4-kB parameter sectors
-> > > > > > > > > > + * at the top or bottom of the address space with all
-> > > > > > > > > > + * but one of the remaining sectors being uniform size=
-.
-> > > > > > > > > > + * The Parameter Sector Erase commands (20h or 21h)
-> > > > > > > > > > +must
-> > > > > > > > > > + * be used to erase the 4-kB parameter sectors individ=
-ually.
-> > > > > > > > > > + * The Sector (uniform sector) Erase commands (D8h or
-> > > > > > > > > > +DCh)
-> > > > > > > > > > + * must be used to erase any of the remaining
-> > > > > > > > > > + * sectors, including the portion of highest or
-> > > > > > > > > > +lowest address
-> > > > > > > > > > + * sector that is not overlaid by the parameter sector=
-s.
-> > > > > > > > > > + * The uniform sector erase command has no effect on
-> > > > > > > > > > +parameter
-> > > > > > > > > sectors.
-> > > > > > > > > > + */
-> > > > > > > > > > +static int spansion_s25fs_disable_4kb_erase(struct
-> > > > > > > > > > +spi_nor
-> > > *nor) {
-> > > > > > > > > > +       u32 cr3v_addr  =3D SPINOR_CONFIG_REG3_OFFSET;
-> > > > > > > > > > +       u8 cr3v =3D 0x0;
-> > > > > > > > > > +       int ret =3D 0x0;
-> > > > > > > > > > +
-> > > > > > > > > > +       nor->cmd_buf[2] =3D cr3v_addr >> 16;
-> > > > > > > > > > +       nor->cmd_buf[1] =3D cr3v_addr >> 8;
-> > > > > > > > > > +       nor->cmd_buf[0] =3D cr3v_addr >> 0;
-> > > > > > > > > > +
-> > > > > > > > > > +       ret =3D nor->read_reg(nor,
-> > > > > > > > > > + SPINOR_OP_SPANSION_RDAR,
-> > > > > &cr3v, 1);
-> > > > > > > > > > +       if (ret)
-> > > > > > > > > > +               return ret;
-> > > > > > > > > > +       if (cr3v & CR3V_4KB_ERASE_UNABLE)
-> > > > > > > > > > +               return 0;
-> > > > > > > > > > +       ret =3D nor->write_reg(nor, SPINOR_OP_WREN, NUL=
-L, 0);
-> > > > > > > > > > +       if (ret)
-> > > > > > > > > > +               return ret;
-> > > > > > > > > > +       cr3v =3D CR3V_4KB_ERASE_UNABLE;
-> > > > > > > > > > +       nor->program_opcode =3D
-> SPINOR_OP_SPANSION_WRAR;
-> > > > > > > > > > +       nor->write(nor, cr3v_addr, 1, &cr3v);
-> > > > > > > > > > +
-> > > > > > > > > > +       ret =3D nor->read_reg(nor,
-> > > > > > > > > > + SPINOR_OP_SPANSION_RDAR,
-> > > > > &cr3v, 1);
-> > > > > > > > > > +       if (ret)
-> > > > > > > > > > +               return ret;
-> > > > > > > > > > +       if (!(cr3v & CR3V_4KB_ERASE_UNABLE))
-> > > > > > > > > > +               return -EPERM;
-> > > > > > > > > > +
-> > > > > > > > > > +       return 0;
-> > > > > > > > > > +}
-> > > > > > > > > > +
-> > > > > > > > > >  static int spi_nor_read(struct mtd_info *mtd, loff_t
-> > > > > > > > > > from, size_t
-> > > > > len,
-> > > > > > > > > >                         size_t *retlen, u_char *buf)
-> > > > > > > > > > { @@
-> > > > > > > > > > -1361,6
-> > > > > > > > > > +1411,12 @@ int spi_nor_scan(struct spi_nor *nor,
-> > > > > > > > > > +const char *name,
-> > > > > > > > > enum read_mode mode)
-> > > > > > > > > >                 spi_nor_wait_till_ready(nor);
-> > > > > > > > > >         }
-> > > > > > > > > >
-> > > > > > > > > > +       if (EXT_JEDEC(info) =3D=3D
-> > > > > > > > > > + SPINOR_S25FS_FAMILY_EXT_JEDEC)
-> > > {
-> > > > > > > > > > +               ret =3D spansion_s25fs_disable_4kb_eras=
-e(nor);
-> > > > > > > > > > +               if (ret)
-> > > > > > > > > > +                       return ret;
-> > > > > > > > > > +       }
-> > > > > > > > > > +
-> > > > > > > > > >         if (!mtd->name)
-> > > > > > > > > >                 mtd->name =3D dev_name(dev);
-> > > > > > > > > >         mtd->priv =3D nor;
-> > > > > > > > > > --
-> > > > > > > > > > 2.1.0.27.g96db324
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > Hi Brian, I will ack this change but still feel it's kind=
- of hacking
-> code.
-> > > > > > > > >
-> > > > > > > > > Acked-by: Han xu <han.xu@nxp.com>
-> > > > > > > >
-> > > > > > > > I am new on the list so I am not sure if this topic has bee=
-n
-> discussed.
-> > > > > > > > Generally our product functionality relay on those 4KiB sec=
-tors.
-> > > > > > > > I know that this hack is already in u-boot, but if you
-> > > > > > > > mainstream this you will force users of those 4KiB sectors
-> > > > > > > > to do hack the
-> > > > hack...
-> > > > > > > > I believe the proper solution here is to use erase regions
-> > > > > > > > functionality, I send and RFS about that some time ago.
-> > > > > > >
-> > > > > > > Do you mind to send me a link for reference?
-> > > > > > >
-> > > > > > Han,
-> > > > > >
-> > > > > > Sorry, It seem I have not posted erase region changes (only
-> > > > > > those regarding DUAL/QUAD I/O).
-> > > > > > Generally, in this flash you need to create 3 erase regions
-> > > > > > (because in FS-S family support only  4KiB erase on parameters
-> > > > > > sector -
-> > > eg.
-> > > > > > 1.2.2.4 in
-> > > > > S25FS512S).
-> > > > > > In my case regions are:
-> > > > > > 1. 0-32KiB (8*4KiB) - 4K_ERASE (0x20/0x21) 2. 32 - 256 -
-> > > > > > SE_CMD
-> > > > > (0xd8/0xdc) 3.
-> > > > > > Rest of the flash SE_CMD (0xd8/0xdc)
-> > > > > >
-> > > > > > To erase whole flash you can also use CHIP_ERASE_CMD
-> > > > > > (0x60/0xC7) command, you just need to add one more mtd
-> > > > > > partition that will cover
-> > > > > whole flash.
-> > > > > >
-> > > > >
-> > > > > Hi Krzeminski,
-> > > > >
-> > > > > Do you think is there any great advantages for enable 4KB?
-> > > > > Because for NXP(Freescale) QSPI controller, there is only
-> > > > > support max to 16 groups command.
-> > > > >
-> > > > > So It's hard to give 3 groups command just for erase (0x21,0xdc a=
-nd
-> 0xc7).
-> > > > > So we have to disable the 4kb erase and only use 256kbytes in thi=
-s
-> patch.
-> > > > >
-> > > > Yes, if you disable parameters sector in spi-nor framework you
-> > > > will disable it for all spi-nor clients not only for NXP QSPI contr=
-oller.
-> > > > There are users (at least me) that relay on parameters sector
-> functionality.
-> > > This patch will brake it.
-> > > >
-> > > > Thanks,
-> > >
-> > > Hi Krzeminski,
-> > >
-> > > Get it.
-> > > So do you think how about that I add a flag in dts to select it?
-> > > The user want's disable 4kb, he can add the flag.
-> > >
-> > > In spi-nor.c:
-> > > if (of_property_read_bool(np, "spi-nor, disable-4kb")) {
-> > > 	spansion_s25fs_disable_4kb_erase();
-> > > }
-> > >                 else
-> > > ...
-> > >
-> > > In dts:
-> > >
-> > > &qspi {
-> > >         num-cs =3D <2>;
-> > >         bus-num =3D <0>;
-> > >         status =3D "okay";
-> > >
-> > >         qflash0: s25fs512s@0 {
-> > >                 compatible =3D "spansion, s25fs512s";
-> > > 	 spi-nor, disable-4kb
-> > >                 #address-cells =3D <1>;
-> > >                 #size-cells =3D <1>;
-> > >                 spi-max-frequency =3D <20000000>;
-> > >                 reg =3D <0>;
-> > >         };
-> > >
-> > > I think it should be a better way.
-> > >
-> > > How about your think?
-> >
-> > This looks much better - at least for me.
-> > There are some parameters in JESD216 standard regarding parameters
-> > sector, but unfortunately I have not investigated that. You can take a
-> > look at Cyrille series, that adds support for JESD216  standard.
-> >
->=20
-> Ok, I will resend v4 for add this.
->=20
-> BTW, the 4-kytes block for S25FS is just only the first 8 blocks, the oth=
-er block
-> is 256kytes.
-> Do out SPI-NOR support erase those specific combination?
->=20
-> If not, do you have any plan for add it?
-> It seems I can't fine the support in spi-nor.
->=20
-Those erase regions are solution for such flash, current upstream version d=
-oes not
-have this. My solution is not universal, so probably I will not add it.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/tango_nand.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-Regards,
-Marcin
-
-> Thanks.
+diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+index 7ed35348993e..ec87516b87f5 100644
+--- a/drivers/mtd/nand/tango_nand.c
++++ b/drivers/mtd/nand/tango_nand.c
+@@ -171,6 +171,7 @@ static void tango_select_chip(struct mtd_info *mtd, int idx)
+  */
+ static int check_erased_page(struct nand_chip *chip, u8 *buf)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	u8 *meta = chip->oob_poi + BBM_SIZE;
+ 	u8 *ecc = chip->oob_poi + BBM_SIZE + METADATA_SIZE;
+ 	const int ecc_size = chip->ecc.bytes;
+@@ -183,7 +184,7 @@ static int check_erased_page(struct nand_chip *chip, u8 *buf)
+ 						  meta, meta_len,
+ 						  chip->ecc.strength);
+ 		if (res < 0)
+-			chip->mtd.ecc_stats.failed++;
++			mtd->ecc_stats.failed++;
+ 
+ 		bitflips = max(res, bitflips);
+ 		buf += pkt_size;
+@@ -300,26 +301,30 @@ static int tango_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ static void aux_read(struct nand_chip *chip, u8 **buf, int len, int *pos)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
+ 	*pos += len;
+ 
+ 	if (!*buf) {
+ 		/* skip over "len" bytes */
+-		chip->cmdfunc(&chip->mtd, NAND_CMD_RNDOUT, *pos, -1);
++		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, *pos, -1);
+ 	} else {
+-		tango_read_buf(&chip->mtd, *buf, len);
++		tango_read_buf(mtd, *buf, len);
+ 		*buf += len;
+ 	}
+ }
+ 
+ static void aux_write(struct nand_chip *chip, const u8 **buf, int len, int *pos)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
+ 	*pos += len;
+ 
+ 	if (!*buf) {
+ 		/* skip over "len" bytes */
+-		chip->cmdfunc(&chip->mtd, NAND_CMD_SEQIN, *pos, -1);
++		chip->cmdfunc(mtd, NAND_CMD_SEQIN, *pos, -1);
+ 	} else {
+-		tango_write_buf(&chip->mtd, *buf, len);
++		tango_write_buf(mtd, *buf, len);
+ 		*buf += len;
+ 	}
+ }
+@@ -345,8 +350,9 @@ static void aux_write(struct nand_chip *chip, const u8 **buf, int len, int *pos)
+  */
+ static void raw_read(struct nand_chip *chip, u8 *buf, u8 *oob)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	u8 *oob_orig = oob;
+-	const int page_size = chip->mtd.writesize;
++	const int page_size = mtd->writesize;
+ 	const int ecc_size = chip->ecc.bytes;
+ 	const int pkt_size = chip->ecc.size;
+ 	int pos = 0; /* position within physical page */
+@@ -371,8 +377,9 @@ static void raw_read(struct nand_chip *chip, u8 *buf, u8 *oob)
+ 
+ static void raw_write(struct nand_chip *chip, const u8 *buf, const u8 *oob)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	const u8 *oob_orig = oob;
+-	const int page_size = chip->mtd.writesize;
++	const int page_size = mtd->writesize;
+ 	const int ecc_size = chip->ecc.bytes;
+ 	const int pkt_size = chip->ecc.size;
+ 	int pos = 0; /* position within physical page */
+@@ -522,7 +529,7 @@ static int chip_init(struct device *dev, struct device_node *np)
+ 
+ 	chip = &tchip->nand_chip;
+ 	ecc = &chip->ecc;
+-	mtd = &chip->mtd;
++	mtd = nand_to_mtd(chip);
+ 
+ 	chip->read_byte = tango_read_byte;
+ 	chip->write_buf = tango_write_buf;
+@@ -584,7 +591,7 @@ static int tango_nand_remove(struct platform_device *pdev)
+ 
+ 	for (cs = 0; cs < MAX_CS; ++cs) {
+ 		if (nfc->chips[cs])
+-			nand_release(&nfc->chips[cs]->nand_chip.mtd);
++			nand_release(nand_to_mtd(&nfc->chips[cs]->nand_chip));
+ 	}
+ 
+ 	return 0;
+-- 
+2.7.4
