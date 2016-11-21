@@ -1,15 +1,16 @@
-Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
+Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c8udh-0008S2-G5
- for linux-mtd@lists.infradead.org; Mon, 21 Nov 2016 19:52:31 +0000
+ id 1c8udh-0008S6-HG
+ for linux-mtd@lists.infradead.org; Mon, 21 Nov 2016 19:52:32 +0000
 From: Zach Brown <zach.brown@ni.com>
 To: <dwmw2@infradead.org>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <dedekind1@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RESEND PATCH v5 1/5] mtd: introduce function max_bad_blocks
-Date: Mon, 21 Nov 2016 13:51:35 -0600
-Message-ID: <1479757899-6849-2-git-send-email-zach.brown@ni.com>
+Subject: [RESEND PATCH v5 4/5] mtd: nand: implement 'max_bad_blocks' mtd
+ function
+Date: Mon, 21 Nov 2016 13:51:38 -0600
+Message-ID: <1479757899-6849-5-git-send-email-zach.brown@ni.com>
 In-Reply-To: <1479757899-6849-1-git-send-email-zach.brown@ni.com>
 References: <1479757899-6849-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
@@ -23,77 +24,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jeff Westfahl <jeff.westfahl@ni.com>
-
-If implemented, 'max_bad_blocks' returns the maximum number of bad
-blocks to reserve for an MTD. An implementation for NAND is coming soon.
+Implement the new mtd function 'max_bad_blocks'. Using the chip's
+max_bb_per_die and blocks_per_die fields to determine the maximum bad
+blocks to reserve for an MTD.
 
 Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 Signed-off-by: Zach Brown <zach.brown@ni.com>
 Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
 ---
- drivers/mtd/mtdpart.c   | 12 ++++++++++++
- include/linux/mtd/mtd.h | 11 +++++++++++
- 2 files changed, 23 insertions(+)
+ drivers/mtd/nand/nand_base.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index fccdd49..565f0dd 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -349,6 +349,16 @@ static const struct mtd_ooblayout_ops part_ooblayout_ops = {
- 	.free = part_ooblayout_free,
- };
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 3bde96a..193a6b7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3236,6 +3236,40 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ }
  
-+static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
+ /**
++ * nand_max_bad_blocks - [MTD Interface] Max number of bad blocks for an mtd
++ * @mtd: MTD device structure
++ * @ofs: offset relative to mtd start
++ * @len: length of mtd
++ */
++static int nand_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
 +{
-+	struct mtd_part *part = mtd_to_part(mtd);
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	uint32_t part_start_block;
++	uint32_t part_end_block;
++	uint32_t part_start_lun;
++	uint32_t part_end_lun;
 +
-+	if ((len + ofs) > mtd->size)
-+		return -EINVAL;
-+	return part->master->_max_bad_blocks(part->master,
-+					     ofs + part->offset, len);
++	/* max_bb_per_lun and blocks_per_lun used to determine
++	 * the maximum bad block count.
++	 */
++	if (!chip->max_bb_per_die || !chip->blocks_per_die)
++		return -ENOTSUPP;
++
++	/* Get the start and end of the partition in erase blocks. */
++	part_start_block = mtd_div_by_eb(ofs, mtd);
++	part_end_block = mtd_div_by_eb(len, mtd) + part_start_block - 1;
++
++	/* Get the start and end LUNs of the partition. */
++	part_start_lun = part_start_block / chip->blocks_per_die;
++	part_end_lun = part_end_block / chip->blocks_per_die;
++
++	/* Look up the bad blocks per unit and multiply by the number of units
++	 * that the partition spans.
++	 */
++	return chip->max_bb_per_die * (part_end_lun - part_start_lun + 1);
 +}
 +
- static inline void free_partition(struct mtd_part *p)
- {
- 	kfree(p->mtd.name);
-@@ -481,6 +491,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	if (master->_put_device)
- 		slave->mtd._put_device = part_put_device;
++/**
+  * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
+  * @mtd: MTD device structure
+  * @chip: nand chip info structure
+@@ -4767,6 +4801,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->_block_isreserved = nand_block_isreserved;
+ 	mtd->_block_isbad = nand_block_isbad;
+ 	mtd->_block_markbad = nand_block_markbad;
++	mtd->_max_bad_blocks = nand_max_bad_blocks;
+ 	mtd->writebufsize = mtd->writesize;
  
-+	if (master->_max_bad_blocks)
-+		slave->mtd._max_bad_blocks = part_max_bad_blocks;
- 	slave->mtd._erase = part_erase;
- 	slave->master = master;
- 	slave->offset = part->offset;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 13f8052..c02d3c2 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -322,6 +322,7 @@ struct mtd_info {
- 	int (*_block_isreserved) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
-+	int (*_max_bad_blocks) (struct mtd_info *mtd, loff_t ofs, size_t len);
- 	int (*_suspend) (struct mtd_info *mtd);
- 	void (*_resume) (struct mtd_info *mtd);
- 	void (*_reboot) (struct mtd_info *mtd);
-@@ -402,6 +403,16 @@ int mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
- int mtd_pairing_info_to_wunit(struct mtd_info *mtd,
- 			      const struct mtd_pairing_info *info);
- int mtd_pairing_groups(struct mtd_info *mtd);
-+
-+static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
-+				     loff_t ofs, size_t len)
-+{
-+	if (mtd->_max_bad_blocks)
-+		return mtd->_max_bad_blocks(mtd, ofs, len);
-+
-+	return -ENOTSUPP;
-+}
-+
- int mtd_erase(struct mtd_info *mtd, struct erase_info *instr);
- int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	      void **virt, resource_size_t *phys);
+ 	/*
 -- 
 2.7.4
