@@ -1,15 +1,13 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c8p0J-0004xU-Sg
- for linux-mtd@lists.infradead.org; Mon, 21 Nov 2016 13:51:29 +0000
-Date: Mon, 21 Nov 2016 14:51:04 +0100
+Date: Mon, 21 Nov 2016 14:56:43 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>
-Subject: Re: ONFI timing mode with onfi_set_features unsupported
-Message-ID: <20161121145104.376349f8@bbrezillon>
-In-Reply-To: <20161121132327.hup6bi7zqu54jsia@pengutronix.de>
-References: <20161121132327.hup6bi7zqu54jsia@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 8/9] mtd: nand: mxc: implement onfi get/set features
+Message-ID: <20161121145643.7804e28f@bbrezillon>
+In-Reply-To: <1473928373-8680-9-git-send-email-s.hauer@pengutronix.de>
+References: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
+ <1473928373-8680-9-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,96 +22,96 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Sascha,
 
-On Mon, 21 Nov 2016 14:23:27 +0100
+On Thu, 15 Sep 2016 10:32:52 +0200
 Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-> Hi all,
-> 
-> I have a i.MX6ul here with a Cypress S34ML04G2 connected. This Nand chip
-> has ONFI support, but onfi_set_features is unsupported (opt_cmd is
-> 0x3b). Currently the gpmi Nand driver calls nand_onfi_set_features(),
-> gets -EINVAL as error and continues with a very slow default timing.
-> 
-> I assume the nand_onfi_set_features() call is just unnecessary for this
-> chip, if I skip it, the chip works with the fast timing.
-> 
-> Any idea how to cope with this situation? I attached the most obvious
-> patch, but it looks a bit hackish. Any suggestions or is the patch fine
-> as is?
-
-It looks good to me. Why do you find this code hackish?
-Of course, it would be even better to implement the
-->setup_data_interface() method.
-
-BTW, can you patch the core to only send the ->set_feature() command
-(to change the timings mode) when the chip supports it?
-
-Thanks,
-
-Boris
-
-> 
-> Sascha
-> 
-> 
-> ---------------------------------8<----------------------------
-> 
-> From 1d76ea80915b298b99def706cac0e20b65bd7ef4 Mon Sep 17 00:00:00 2001
-> From: Sascha Hauer <s.hauer@pengutronix.de>
-> Date: Mon, 21 Nov 2016 14:18:27 +0100
-> Subject: [PATCH] mtd: nand: gpmi: Fix timing on ONFI chips with
->  onfi_set_features unsupported
-> 
-> Some chips like for example the Cypress S34ML04G2 are ONFI compliant,
-> but do not support the get/set_feature commands. Do not call this
-> command when it's not supported to allow for a fast timing on these
-> chips.
+> To be able to support different ONFI timing modes we have to implement
+> the onfi_set_features and onfi_get_features. Tested on an i.MX25 SoC.
 > 
 > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 27 +++++++++++++++------------
->  1 file changed, 15 insertions(+), 12 deletions(-)
+>  drivers/mtd/nand/mxc_nand.c | 53 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index 141bd70..7b2862c 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -930,23 +930,26 @@ static int enable_edo_mode(struct gpmi_nand_data *this, int mode)
->  	if (!feature)
->  		return -ENOMEM;
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index 5173fad..1db8299 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -1239,6 +1239,57 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+>  	}
+>  }
 >  
-> -	nand->select_chip(mtd, 0);
-> +	if ((le16_to_cpu(nand->onfi_params.opt_cmd)
-> +	      & ONFI_OPT_CMD_SET_GET_FEATURES)) {
-> +		nand->select_chip(mtd, 0);
+> +static int mxc_nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+> +			int addr, uint8_t *subfeature_param)
+> +{
+> +	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+> +	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
+> +	int i;
+> +
+> +	if (!chip->onfi_version ||
+> +	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+> +	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+> +		return -EINVAL;
+> +
+> +	host->buf_start = 0;
+> +
+> +	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
+> +		chip->write_byte(mtd, subfeature_param[i]);
+> +
+> +	memcpy32_toio(host->main_area0, host->data_buf, mtd->writesize);
+> +	host->devtype_data->send_cmd(host, NAND_CMD_SET_FEATURES, false);
+> +	mxc_do_addr_cycle(mtd, addr, -1);
+> +	host->devtype_data->send_page(mtd, NFC_INPUT);
+
+I've been working with an mx27 board embedding a NAND device lately,
+and had a closer look at the NAND controller IP.
+With this IP, you're not able to send only 4 bytes of data, and I'm
+sure sure what you're doing here (sending a full page of data) works
+for a SET_FEATURE command.
+
+Do you have a way to test it (my NAND is not ONFI compliant)? By test
+it, I mean, set a timing mode using SET_FEATURE and check if the new
+mode has been applied using GET_FEATURE.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int mxc_nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
+> +			int addr, uint8_t *subfeature_param)
+> +{
+> +	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+> +	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
+> +	int i;
+> +
+> +	if (!chip->onfi_version ||
+> +	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+> +	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+> +		return -EINVAL;
+> +
+> +	*(uint32_t *)host->main_area0 = 0xdeadbeef;
+> +
+> +	host->devtype_data->send_cmd(host, NAND_CMD_GET_FEATURES, false);
+> +	mxc_do_addr_cycle(mtd, addr, -1);
+> +	host->devtype_data->send_page(mtd, NFC_OUTPUT);
+> +	memcpy32_fromio(host->data_buf, host->main_area0, 512);
+> +	host->buf_start = 0;
+> +
+> +	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
+> +		*subfeature_param++ = chip->read_byte(mtd);
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * The generic flash bbt decriptors overlap with our ecc
+>   * hardware, so define some i.MX specific ones.
+> @@ -1513,6 +1564,8 @@ static int mxcnd_probe(struct platform_device *pdev)
+>  	this->read_word = mxc_nand_read_word;
+>  	this->write_buf = mxc_nand_write_buf;
+>  	this->read_buf = mxc_nand_read_buf;
+> +	this->onfi_set_features = mxc_nand_onfi_set_features;
+> +	this->onfi_get_features = mxc_nand_onfi_get_features;
 >  
-> -	/* [1] send SET FEATURE commond to NAND */
-> -	feature[0] = mode;
-> -	ret = nand->onfi_set_features(mtd, nand,
-> +		/* [1] send SET FEATURE commond to NAND */
-> +		feature[0] = mode;
-> +		ret = nand->onfi_set_features(mtd, nand,
->  				ONFI_FEATURE_ADDR_TIMING_MODE, feature);
-> -	if (ret)
-> -		goto err_out;
-> +		if (ret)
-> +			goto err_out;
->  
-> -	/* [2] send GET FEATURE command to double-check the timing mode */
-> -	memset(feature, 0, ONFI_SUBFEATURE_PARAM_LEN);
-> -	ret = nand->onfi_get_features(mtd, nand,
-> +		/* [2] send GET FEATURE command to double-check the timing mode */
-> +		memset(feature, 0, ONFI_SUBFEATURE_PARAM_LEN);
-> +		ret = nand->onfi_get_features(mtd, nand,
->  				ONFI_FEATURE_ADDR_TIMING_MODE, feature);
-> -	if (ret || feature[0] != mode)
-> -		goto err_out;
-> +		if (ret || feature[0] != mode)
-> +			goto err_out;
->  
-> -	nand->select_chip(mtd, -1);
-> +		nand->select_chip(mtd, -1);
-> +	}
->  
->  	/* [3] set the main IO clock, 100MHz for mode 5, 80MHz for mode 4. */
->  	rate = (mode == 5) ? 100000000 : 80000000;
+>  	host->clk = devm_clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(host->clk))
