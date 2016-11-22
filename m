@@ -1,25 +1,25 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from smtprelay0027.hostedemail.com ([216.40.44.27]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9H59-0000Vc-NH
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 19:50:20 +0000
-Received: by mail-pg0-x244.google.com with SMTP id 3so2917152pgd.0
- for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2016 11:49:57 -0800 (PST)
-Date: Tue, 22 Nov 2016 11:49:54 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Colin King <colin.king@canonical.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Joe Perches <joe@perches.com>
+ id 1c9Ihb-0007BG-48
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 21:34:08 +0000
+Message-ID: <1479850347.1942.24.camel@perches.com>
 Subject: Re: [PATCH] mtd: mtdswap: fix spelling mistake "erassure" -> "erasure"
-Message-ID: <20161122194954.GI77253@google.com>
+From: Joe Perches <joe@perches.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Colin King <colin.king@canonical.com>, David Woodhouse
+ <dwmw2@infradead.org>,  Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>,  linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20161122193753.GG77253@google.com>
 References: <20161028182559.7887-1-colin.king@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161028182559.7887-1-colin.king@canonical.com>
+ <1477680707.7945.13.camel@perches.com> <20161122193753.GG77253@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Date: Tue, 22 Nov 2016 13:32:27 -0800
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,34 +29,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 28, 2016 at 07:25:59PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, 2016-11-22 at 11:37 -0800, Brian Norris wrote:
+> On Fri, Oct 28, 2016 at 11:51:47AM -0700, Joe Perches wrote:
+> > I'd suggest as well fixing all the dev_<level> uses
+> > to be a consistent form: (this also fixes the typo)
+> > and a few other bits
+> > 
+> > o Coalesce formats
+> > o Realign arguments
+> > o Add missing newlines
 > 
-> Trivial fix to spelling mistake in dev_err message
+> Yeah, Colin missed this on the line he was fixing.
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/mtd/mtdswap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > o Convert printk(KERN_<LEVEL> to pr_<level>(
+> > o Add #define pr_fmt, remove MTDSWAP_PREFIX
+> > 
+> > Reduces object size a little too
 > 
-> diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-> index cb06bdd..d0402df 100644
-> --- a/drivers/mtd/mtdswap.c
-> +++ b/drivers/mtd/mtdswap.c
-> @@ -587,7 +587,7 @@ static int mtdswap_erase_block(struct mtdswap_dev *d, struct swap_eb *eb)
->  	ret = wait_event_interruptible(wq, erase.state == MTD_ERASE_DONE ||
->  					   erase.state == MTD_ERASE_FAILED);
->  	if (ret) {
-> -		dev_err(d->dev, "Interrupted erase block %#llx erassure on %s",
-> +		dev_err(d->dev, "Interrupted erase block %#llx erasure on %s",
+> Thanks, these all look good but:
+> 
+>  (a) you didn't provide a Signed-off-by and
+>  (b) your patch is full of non-breaking spaces (0xA0), instead of proper
+>  ASCII spaces (0x20)
+> 
+> I feel like we've had this conversation before about your Evolution
+> mailer a long time ago; you still haven't fixed that?
+> 
+> I'm sorry, but I just can't take your patch. I'm not going to hand-edit
+> this one...
 
-Applied this patch to l2-mtd.git, adding a newline to the above.
+No worries, it was an unsigned patch suggestion, not
+a formal patch.  I know the difference.
 
-Brian
-
->  			erase.addr, mtd->name);
->  		return -EINTR;
->  	}
-> -- 
-> 2.9.3
-> 
+And have you ever looked at the evolution source code?
+At best, it's pretty convoluted.
+There's _no way_ I want to touch it.
