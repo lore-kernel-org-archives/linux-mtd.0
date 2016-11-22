@@ -1,19 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c98qf-0008Kc-PY
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 11:02:50 +0000
-Date: Tue, 22 Nov 2016 12:02:27 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>
-Subject: Re: ONFI timing mode with onfi_set_features unsupported
-Message-ID: <20161122110227.6m4waiv4odpl7qep@pengutronix.de>
-References: <20161121132327.hup6bi7zqu54jsia@pengutronix.de>
- <20161121145104.376349f8@bbrezillon>
+Date: Tue, 22 Nov 2016 12:03:12 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 8/9] mtd: nand: mxc: implement onfi get/set features
+Message-ID: <20161122120312.73551075@bbrezillon>
+In-Reply-To: <20161122105253.tzz2hvzhkse7telr@pengutronix.de>
+References: <1473928373-8680-1-git-send-email-s.hauer@pengutronix.de>
+ <1473928373-8680-9-git-send-email-s.hauer@pengutronix.de>
+ <20161121145643.7804e28f@bbrezillon>
+ <20161122105253.tzz2hvzhkse7telr@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161121145104.376349f8@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +22,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 21, 2016 at 02:51:04PM +0100, Boris Brezillon wrote:
-> Hi Sascha,
+On Tue, 22 Nov 2016 11:52:53 +0100
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
+
+> Hi Boris,
 > 
-> On Mon, 21 Nov 2016 14:23:27 +0100
-> Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> 
-> > Hi all,
+> On Mon, Nov 21, 2016 at 02:56:43PM +0100, Boris Brezillon wrote:
+> > Hi Sascha,
 > > 
-> > I have a i.MX6ul here with a Cypress S34ML04G2 connected. This Nand chip
-> > has ONFI support, but onfi_set_features is unsupported (opt_cmd is
-> > 0x3b). Currently the gpmi Nand driver calls nand_onfi_set_features(),
-> > gets -EINVAL as error and continues with a very slow default timing.
+> > On Thu, 15 Sep 2016 10:32:52 +0200
+> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >   
+> > > To be able to support different ONFI timing modes we have to implement
+> > > the onfi_set_features and onfi_get_features. Tested on an i.MX25 SoC.
+> > > 
+> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > ---
+> > >  drivers/mtd/nand/mxc_nand.c | 53 +++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 53 insertions(+)
+> > > 
+> > > diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> > > index 5173fad..1db8299 100644
+> > > --- a/drivers/mtd/nand/mxc_nand.c
+> > > +++ b/drivers/mtd/nand/mxc_nand.c
+> > > @@ -1239,6 +1239,57 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+> > >  	}
+> > >  }
+> > >  
+> > > +static int mxc_nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+> > > +			int addr, uint8_t *subfeature_param)
+> > > +{
+> > > +	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+> > > +	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
+> > > +	int i;
+> > > +
+> > > +	if (!chip->onfi_version ||
+> > > +	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+> > > +	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+> > > +		return -EINVAL;
+> > > +
+> > > +	host->buf_start = 0;
+> > > +
+> > > +	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
+> > > +		chip->write_byte(mtd, subfeature_param[i]);
+> > > +
+> > > +	memcpy32_toio(host->main_area0, host->data_buf, mtd->writesize);
+> > > +	host->devtype_data->send_cmd(host, NAND_CMD_SET_FEATURES, false);
+> > > +	mxc_do_addr_cycle(mtd, addr, -1);
+> > > +	host->devtype_data->send_page(mtd, NFC_INPUT);  
 > > 
-> > I assume the nand_onfi_set_features() call is just unnecessary for this
-> > chip, if I skip it, the chip works with the fast timing.
+> > I've been working with an mx27 board embedding a NAND device lately,
+> > and had a closer look at the NAND controller IP.
+> > With this IP, you're not able to send only 4 bytes of data, and I'm
+> > sure sure what you're doing here (sending a full page of data) works
+> > for a SET_FEATURE command.
 > > 
-> > Any idea how to cope with this situation? I attached the most obvious
-> > patch, but it looks a bit hackish. Any suggestions or is the patch fine
-> > as is?
+> > Do you have a way to test it (my NAND is not ONFI compliant)? By test
+> > it, I mean, set a timing mode using SET_FEATURE and check if the new
+> > mode has been applied using GET_FEATURE.  
 > 
-> It looks good to me. Why do you find this code hackish?
-> Of course, it would be even better to implement the
-> ->setup_data_interface() method.
-
-Indeed, but my current project doesn't allow to spend that much time at
-the moment.
-
+> I have an i.MX27 board with ONFI flash, but this one does not have the
+> ONFI_OPT_CMD_SET_GET_FEATURES bit set, so I can't test it there.
+> However, I can confirm that it works on an i.MX25. With the attached
+> patch applied on vanilla v4.9-rc5 I get:
 > 
-> BTW, can you patch the core to only send the ->set_feature() command
-> (to change the timings mode) when the chip supports it?
+> GET FEATURES. chip->onfi_timing_mode_default: 4
+> timing before: 0x00
+> timing after: 0x04
 
-With hackish I mean that I think the problem should be solved in the
-core. How about returning -EOPNOTSUPP from onfi_set_features() when the
-operation is not supported? The caller could then decide what to do
-without testing for bits in the onfi param page.
+Okay, cool. I guess most NANDs are more tolerant than what's strictly
+required in the ONFI spec.
 
-Sascha
+Thanks for testing.
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Boris
