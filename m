@@ -1,22 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9A6b-000078-W1
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 12:23:23 +0000
-Date: Tue, 22 Nov 2016 13:22:59 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>
-Subject: Re: ONFI timing mode with onfi_set_features unsupported
-Message-ID: <20161122132259.47ee0138@bbrezillon>
-In-Reply-To: <20161122111854.wgwrloa2xgjez3xn@pengutronix.de>
-References: <20161121132327.hup6bi7zqu54jsia@pengutronix.de>
- <20161121145104.376349f8@bbrezillon>
- <20161122110227.6m4waiv4odpl7qep@pengutronix.de>
- <20161122121047.5a28734b@bbrezillon>
- <20161122111854.wgwrloa2xgjez3xn@pengutronix.de>
+Received: from mail-eopbgr730135.outbound.protection.outlook.com
+ ([40.107.73.135] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c9Bg5-0000jK-BP
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 14:04:06 +0000
+From: "Esponde, Joel" <Joel.Esponde@Honeywell.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek Vasut
+ <marex@denx.de>
+Subject: RE: [PATCH] mtd: spi-nor: fixed spansion quad enable
+Date: Tue, 22 Nov 2016 14:02:48 +0000
+Message-ID: <F6CD090A69E64C4289DC608E1C5D20242545AED8@DE08W1305.global.ds.honeywell.com>
+References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+ <56670303-e8e8-fb2c-e043-035c566f347c@atmel.com>
+ <F6CD090A69E64C4289DC608E1C5D20242544AEF1@DE08W1305.global.ds.honeywell.com>
+ <f45e1845-573f-d0b7-0f23-abd035f25945@atmel.com>
+ <F6CD090A69E64C4289DC608E1C5D20242545487D@DE08W1305.global.ds.honeywell.com>
+ <eb2ce083-3854-a0a3-c82e-345b4de3dc26@atmel.com>
+In-Reply-To: <eb2ce083-3854-a0a3-c82e-345b4de3dc26@atmel.com>
+Content-Language: fr-FR
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,106 +30,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 22 Nov 2016 12:18:54 +0100
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+Hi Cyrille,
 
-> On Tue, Nov 22, 2016 at 12:10:47PM +0100, Boris Brezillon wrote:
-> > On Tue, 22 Nov 2016 12:02:27 +0100
-> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> >   
-> > > On Mon, Nov 21, 2016 at 02:51:04PM +0100, Boris Brezillon wrote:  
-> > > > Hi Sascha,
-> > > > 
-> > > > On Mon, 21 Nov 2016 14:23:27 +0100
-> > > > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > > >     
-> > > > > Hi all,
-> > > > > 
-> > > > > I have a i.MX6ul here with a Cypress S34ML04G2 connected. This Nand chip
-> > > > > has ONFI support, but onfi_set_features is unsupported (opt_cmd is
-> > > > > 0x3b). Currently the gpmi Nand driver calls nand_onfi_set_features(),
-> > > > > gets -EINVAL as error and continues with a very slow default timing.
-> > > > > 
-> > > > > I assume the nand_onfi_set_features() call is just unnecessary for this
-> > > > > chip, if I skip it, the chip works with the fast timing.
-> > > > > 
-> > > > > Any idea how to cope with this situation? I attached the most obvious
-> > > > > patch, but it looks a bit hackish. Any suggestions or is the patch fine
-> > > > > as is?    
-> > > > 
-> > > > It looks good to me. Why do you find this code hackish?
-> > > > Of course, it would be even better to implement the    
-> > > > ->setup_data_interface() method.    
-> > > 
-> > > Indeed, but my current project doesn't allow to spend that much time at
-> > > the moment.  
-> > 
-> > Understood. Let's wait for Han's review.
-> >   
-> > >   
-> > > > 
-> > > > BTW, can you patch the core to only send the ->set_feature() command
-> > > > (to change the timings mode) when the chip supports it?    
-> > > 
-> > > With hackish I mean that I think the problem should be solved in the
-> > > core. How about returning -EOPNOTSUPP from onfi_set_features() when the
-> > > operation is not supported? The caller could then decide what to do
-> > > without testing for bits in the onfi param page.  
-> > 
-> > The problem is, ->onfi_set_feature() is a method that can be overloaded
-> > by NAND controller drivers. Of course, we could add a wrapper around  
-> > ->onfi_set_feature() (nand_set_feature()?),  
-> 
-> Such a wrapper would have the advantage that we wouldn't have to repeat
-> the
-> 
-> 	if (!chip->onfi_version ||
-> 		    !(le16_to_cpu(chip->onfi_params.opt_cmd)
-> 		    	      & ONFI_OPT_CMD_SET_GET_FEATURES))
-> 
-> test in each driver with a special onfi_get_features() implementation.
-
-You're right.
-
-> 
-> > but then, the meaning of
-> > -ENOTSUPP is not clear. It could be returned if the  
-> > ->onfi_set_feature() is NULL or if the requested feature is not  
-> > supported  
-> 
-> ->onfi_set_feature() will never be NULL as it's set to nand_onfi_set_features  
-> if it's NULL in during registration.
-
-You're right, that's actually one of the problem with calling
-->onfi_set_feature() without having any guarantee that the underlying
-->cmdfunc() will implement it properly. But that's another story.
-
-> Also I would suggest -ENOSYS if the
-> driver is lacking support for an operation.
-
-ENOSYS is documented as "Invalid system call number". Not sure it is
-appropriate to describe a missing operation.
-
-> 
-> > 
-> > Another solution would be to add an extra helper to check if a specific
-> > feature is supported:
-> > 
-> > bool nand_feature_supported(nand, feature_id);  
-> 
-> Yes, that would work aswell. Up to you to decide ;)
-
-Let's go for the first proposal: nand_{get,set}_feature() wrappers
-returning -ENOTSUP if ONFI_OPT_CMD_SET_GET_FEATURES is not set.
-Note that even non-ONFI NANDs support the SET/GET_FEATURE commands, so
-the test you suggested above is incorrect.
-
-Ideally, we should have an extra bitmap marking features as supported or
-not, and let NAND id detection code set these flags. But in the
-meantime, we can just use your test with a comment saying that this
-should be reworked if we want to support SET/GET_FEATURE on non-ONFI
-NANDs.
+I apologize but I did not have time to work on this.
+I will try to send you the patch this evening (European time).
 
 Regards,
 
-Boris
+Jo=EBl Esponde
+Honeywell | Safety and Productivity Solutions
+
+> -----Message d'origine-----
+> De=A0: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+> Envoy=E9=A0: mercredi 16 novembre 2016 13:58
+> =C0=A0: Esponde, Joel <Joel.Esponde@Honeywell.com>; linux-
+> mtd@lists.infradead.org; Marek Vasut <marex@denx.de>
+> Objet=A0: Re: [PATCH] mtd: spi-nor: fixed spansion quad enable
+>=20
+> Hi Joel,
+>=20
+> +Marek
+>=20
+> Le 24/10/2016 =E0 10:33, Esponde, Joel a =E9crit :
+> > Hi Cyrille,
+> >
+> >> -----Message d'origine-----
+> >> De : Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+> >> Envoy=E9 : vendredi 21 octobre 2016 14:50 =C0 : Esponde, Joel
+> >> <Joel.Esponde@Honeywell.com>; linux- mtd@lists.infradead.org Objet :
+> >> Re: [PATCH] mtd: spi-nor: fixed spansion quad enable
+> >>
+> >>>>> +	/* set SR & CR, enable quad I/O */
+> >>>>>  	write_enable(nor);
+> >>>>>
+> >>>>>  	ret =3D write_sr_cr(nor, quad_en);
+> >>>>>  	if (ret < 0) {
+> >>>>> -		dev_err(nor->dev,
+> >>>>> -			"error while writing configuration
+> register\n");
+> >>>>> +		dev_err(nor->dev, "error while writing SR and CR
+> >>>> registers\n");
+> >>>>>  		return -EINVAL;
+> >>>>>  	}
+> >>>>>
+> >>>>> -	/* read back and check it */
+> >>>>> +	ret =3D spi_nor_wait_till_ready(nor);
+> >>>>> +	if (ret)
+> >>>>> +		return ret;
+> >>>>> +
+> >>>
+> >>> I think that this wait is required with every memories that store
+> >>> Quad
+> >> Enable bit in a non-volatile way.
+> >>> I am using today a stripped down kernel with a rootfs based on UBIFS.
+> >>> When this bit is set, UBIFS will start reading the memory 100ms after=
+.
+> >>> As this bit writing step takes up to 200ms, spansion memory is not
+> >>> ready
+> >> and UBIFS will fail when trying to read the content of the partition.
+> >>> As UBIFS has a recovery mechanism, it will even broke the file system=
+.
+> >>>
+> >>
+> >> I agree with you about adding the spi_nor_wait_till_ready() call. I
+> >> plan to add it in my SFDP patch for the spansion_new_quad_enable(), if
+> not done yet.
+> >>
+> >
+> > Good news !!
+> > Because I think that this part of the patch is the most critical.
+> > Without this, you may broke your filesystem so this is a big issue.
+> >
+> > Best regards,
+> >
+> > Jo=EBl
+> >
+>=20
+> I've recently tested with two Winbond QSPI memories, W25Q256 and
+> W25M512 and now I can confirm that the issue you reported also applies to
+> those memories:
+> if spi_nor_wait_till_ready() is not called after write_sr_cr(), the next =
+SPI
+> command may be sent too quickly and bad data may be read.
+> Indeed, this issue occured in some bare metal (boot loader) code, when I
+> performed a Fast Read 1-4-4 (EBh) command right after the Write Status
+> Register
+> (01h) command, without polling the BUSY bit with Read Status Register (05=
+h)
+> commands.
+>=20
+> Also the W25Q256 datasheet I have claims that the memory supports the
+> Read Status Register2 (35h) however the data read from the SFDP table of
+> my memory sample tells that the Quad Enable bit should be set only using
+> the Write Status Register (01h) command with 2 data bytes (SR1 then SR2)
+> and without using the Read Status Register 2 (35h) command:
+>=20
+> Indeed, bits[22:20] of the 15th dword in the Basic Flash Parameter Table
+> (BFPT) are 100b and not 101b!
+>=20
+> 100b: QE is bit 1 of status register 2. It is set wia Write Status with t=
+wo
+>       data bytes where bit 1 of the second byte is one.
+>=20
+> 101b: QE is bit 1 of status register 2. Status register 1 is read using R=
+ead
+>       Status instruction 05h. Status register 2 is read using instruction=
+ 35h.
+>       QE is set via Write Status instruction 01h with two data bytes wher=
+e bit
+>       1 of the second byte is one.
+>=20
+> I didn't test whether the datasheet is right and the 35h command is actua=
+lly
+> supported by those Winbond memories so their bits[22:20] of the 15th
+> dword in the BFPT should have been set to 101b instead of 100b.
+> However I'd rather be compliant with the JESD216B specification.
+>=20
+> So could you please send a new version of your patch adding only the
+> spi_nor_wait_till_ready() call but without adding other read to the Statu=
+s
+> Register 2/Control Register 1 (35h)?
+>=20
+> The 2nd procedure, which uses the 35h instruction to check whether the
+> Quad Enable bit has already been set, will be implemented by
+> spansion_new_quad_enable() from the SFDP patch. I've already fixed this
+> patch to add the call of spi_nor_wait_till_ready().
+>=20
+> With both your patch and mine, we will fix the issue and still be complia=
+nt
+> with the SFDP specification.
+>=20
+> Best regards,
+>=20
+> Cyrille
