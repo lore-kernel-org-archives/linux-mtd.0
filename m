@@ -1,22 +1,13 @@
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c8zOj-0004CR-JL
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 00:57:22 +0000
-Received: from mail-yw0-f180.google.com (mail-yw0-f180.google.com
- [209.85.161.180]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id uAM0uMUV020648
- for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2016 09:56:23 +0900
-Received: by mail-yw0-f180.google.com with SMTP id r204so2335812ywb.0
- for <linux-mtd@lists.infradead.org>; Mon, 21 Nov 2016 16:56:22 -0800 (PST)
-MIME-Version: 1.0
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Tue, 22 Nov 2016 09:56:21 +0900
-Message-ID: <CAK7LNATiq+mZ1TzqLxC91UBqbFum_kEddLeeTsBH-A8RNCbYRA@mail.gmail.com>
-Subject: Unclear comment about nand->ecc.read_page ?
 To: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] mtd: fix nand.h kernel-doc warnings
+Message-ID: <131b4b61-e800-2343-14d4-ab8e128126ea@infradead.org>
+Date: Mon, 21 Nov 2016 18:32:08 -0800
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +17,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi.
+From: Randy Dunlap <rdunlap@infradead.org>
 
-I have a question about the following comment in
-include/linux/mtd/nand.h:
+Fix kernel-doc warnings in <linux/mtd/nand.h>:
 
- * @read_page: function to read a page according to the ECC generator
- * requirements; returns maximum number of bitflips corrected in
- * any single ECC step, 0 if bitflips uncorrectable, -EIO hw error
+..//include/linux/mtd/nand.h:658: warning: No description found for parameter 'tCEH_min'
+..//include/linux/mtd/nand.h:877: warning: No description found for parameter 'data_interface'
 
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+ include/linux/mtd/nand.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+I haven't been able to find tCEH_min in any NAND datasheets (yet).
 
-The "0 if bitflips uncorrectable" sounds like
-"the read function could not correct bitflips"
-(=uncorrectable ECC (EBADMSG) error).
-
-
-In my understanding, the return value zero means
-it read the page successfully and no bitflip correction
-happend, right?
-
-
-If so, is is better to reword like
-"0 if no bitflips" or something?
-
-Or remove the "0 if bitflips uncorrectable" entirely?
-(because "returns maximum number of bitfilps corrected"
-explains the zero case as well)
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+--- lnx-49-rc6.orig/include/linux/mtd/nand.h
++++ lnx-49-rc6/include/linux/mtd/nand.h
+@@ -589,7 +589,7 @@ struct nand_buffers {
+  * @tALS_min: ALE setup time
+  * @tAR_min: ALE to RE# delay
+  * @tCEA_max: CE# access time
+- * @tCEH_min:
++ * @tCEH_min: CE# XXX time
+  * @tCH_min:  CE# hold time
+  * @tCHZ_max: CE# high to output hi-Z
+  * @tCLH_min: CLE hold time
+@@ -771,6 +771,7 @@ nand_get_sdr_timings(const struct nand_d
+  *			supported, 0 otherwise.
+  * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
+  *			supported, 0 otherwise.
++ * @data_interface:	[INTERN] NAND interface timing information
+  * @read_retries:	[INTERN] the number of read retry modes supported
+  * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
+  * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
