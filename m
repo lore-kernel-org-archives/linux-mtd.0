@@ -1,25 +1,18 @@
-Received: from smtprelay0027.hostedemail.com ([216.40.44.27]
- helo=smtprelay.hostedemail.com)
+Received: from mail-bn3nam01on0128.outbound.protection.outlook.com
+ ([104.47.33.128] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9Ihb-0007BG-48
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 21:34:08 +0000
-Message-ID: <1479850347.1942.24.camel@perches.com>
-Subject: Re: [PATCH] mtd: mtdswap: fix spelling mistake "erassure" -> "erasure"
-From: Joe Perches <joe@perches.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Colin King <colin.king@canonical.com>, David Woodhouse
- <dwmw2@infradead.org>,  Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>,  linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20161122193753.GG77253@google.com>
-References: <20161028182559.7887-1-colin.king@canonical.com>
- <1477680707.7945.13.camel@perches.com> <20161122193753.GG77253@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Date: Tue, 22 Nov 2016 13:32:27 -0800
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ id 1c9JVr-0001mf-Mw
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 22:26:04 +0000
+From: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
+To: <linux-mtd@lists.infradead.org>
+CC: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
+Subject: [PATCH v2] mtd: spi-nor: fixed spansion quad enable
+Date: Tue, 22 Nov 2016 23:24:28 +0100
+Message-ID: <1479853468-119195-1-git-send-email-joel.esponde@honeywell.com>
+In-Reply-To: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2016-11-22 at 11:37 -0800, Brian Norris wrote:
-> On Fri, Oct 28, 2016 at 11:51:47AM -0700, Joe Perches wrote:
-> > I'd suggest as well fixing all the dev_<level> uses
-> > to be a consistent form: (this also fixes the typo)
-> > and a few other bits
-> > 
-> > o Coalesce formats
-> > o Realign arguments
-> > o Add missing newlines
-> 
-> Yeah, Colin missed this on the line he was fixing.
-> 
-> > o Convert printk(KERN_<LEVEL> to pr_<level>(
-> > o Add #define pr_fmt, remove MTDSWAP_PREFIX
-> > 
-> > Reduces object size a little too
-> 
-> Thanks, these all look good but:
-> 
->  (a) you didn't provide a Signed-off-by and
->  (b) your patch is full of non-breaking spaces (0xA0), instead of proper
->  ASCII spaces (0x20)
-> 
-> I feel like we've had this conversation before about your Evolution
-> mailer a long time ago; you still haven't fixed that?
-> 
-> I'm sorry, but I just can't take your patch. I'm not going to hand-edit
-> this one...
+With the S25FL127S nor flash part, each writing to the configuration register takes hundreds of ms. During that  time, no more accesses to the flash should be done (even reads).
 
-No worries, it was an unsigned patch suggestion, not
-a formal patch.  I know the difference.
+This commit adds a wait loop after the register writing until the flash finishes its work.
 
-And have you ever looked at the evolution source code?
-At best, it's pretty convoluted.
-There's _no way_ I want to touch it.
+This issue could make rootfs mounting fail when the latter was done too much closely to this quad enable bit setting step. And in this case, a driver as UBIFS may try to recover the filesystem and may broke it completely.
+---
+ drivers/mtd/spi-nor/spi-nor.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d0fc165..a945122 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1255,7 +1255,11 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 		return -EINVAL;
+ 	}
+ 
+-	/* read back and check it */
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++	
++	/* read CR and check it */
+ 	ret = read_cr(nor);
+ 	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
+ 		dev_err(nor->dev, "Spansion Quad bit not set\n");
+-- 
+2.7.4
