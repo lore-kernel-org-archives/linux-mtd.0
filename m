@@ -1,26 +1,16 @@
-Received: from mail-eopbgr730135.outbound.protection.outlook.com
- ([40.107.73.135] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+Received: from mail-qk0-x22e.google.com ([2607:f8b0:400d:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9Bg5-0000jK-BP
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 14:04:06 +0000
-From: "Esponde, Joel" <Joel.Esponde@Honeywell.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek Vasut
- <marex@denx.de>
-Subject: RE: [PATCH] mtd: spi-nor: fixed spansion quad enable
-Date: Tue, 22 Nov 2016 14:02:48 +0000
-Message-ID: <F6CD090A69E64C4289DC608E1C5D20242545AED8@DE08W1305.global.ds.honeywell.com>
-References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
- <56670303-e8e8-fb2c-e043-035c566f347c@atmel.com>
- <F6CD090A69E64C4289DC608E1C5D20242544AEF1@DE08W1305.global.ds.honeywell.com>
- <f45e1845-573f-d0b7-0f23-abd035f25945@atmel.com>
- <F6CD090A69E64C4289DC608E1C5D20242545487D@DE08W1305.global.ds.honeywell.com>
- <eb2ce083-3854-a0a3-c82e-345b4de3dc26@atmel.com>
-In-Reply-To: <eb2ce083-3854-a0a3-c82e-345b4de3dc26@atmel.com>
-Content-Language: fr-FR
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1c9CqY-00051w-L1
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 15:18:59 +0000
+Received: by mail-qk0-x22e.google.com with SMTP id n21so28652590qka.3
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2016 07:18:38 -0800 (PST)
 MIME-Version: 1.0
+From: Olivier Singla <olivier.singla@gmail.com>
+Date: Tue, 22 Nov 2016 10:17:56 -0500
+Message-ID: <CACcFhEU=U1f0HM9bZvWosM0odDqg7x5QE=dWV+7fMj+4aAho4g@mail.gmail.com>
+Subject: Unable to remount ubifs after many unclean reboot
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,136 +20,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille,
+Hi,
 
-I apologize but I did not have time to work on this.
-I will try to send you the patch this evening (European time).
+I am working for an embedded system using 4GB NAND Flash
+(MT29F32G08ABAAAWP), ubifs, and 3.6.5 kernel (A9 dualcore).. Using a
+simple test program, I am able to have UBIFS to fail to mount the NAND
+partition (I am using pretty much all the 4GB of the NAND). The test
+is quite simple: mount the ubifs partition at boot time, then write a
+file (justa  few KB), do a sync, wait a few seconds, and then reboot
+(/sbin/reboot, and -important point- I have a micro-controller which
+does a power-cycle). Intentionally, I did NOT unmount the ubifs
+partition. Later on, I changed the test to unmount the ubifs partition
+(but I still do not detach the ubi volume). What I am seeing is that
+after many iterations (usually around a thousand), ubifs could not
+mount the ubifs partition, both under u-boot and Linux.
 
-Regards,
+Under Linux, this is what I see when ubifs try to mount the partition:
 
-Jo=EBl Esponde
-Honeywell | Safety and Productivity Solutions
+[   55.646884] UBIFS: background thread "ubifs_bgt0_0" started, PID 858
+[   56.013037] UBIFS: recovery needed
+[   56.258731] UBI warning: ubi_io_read: error -119 while reading
+294912 bytes from PEB 600:753664, read only 294912 bytes, retry
+[   56.320616] UBI warning: ubi_io_read: error -119 while reading
+294912 bytes from PEB 600:753664, read only 294912 bytes, retry
+[   56.382444] UBI warning: ubi_io_read: error -119 while reading
+294912 bytes from PEB 600:753664, read only 294912 bytes, retry
+[   56.444263] UBI error: ubi_io_read: error -119 while reading 294912
+bytes from PEB 600:753664, read 294912 bytes
+[   56.454775] CPU: 0 PID: 857 Comm: mount Not tainted 3.14.29 #16
+[   56.460888] Backtrace:
+[   56.463441] [<c0011ea8>] (dump_backtrace) from [<c00120bc>]
+(show_stack+0x18/0x1c)
+[   56.471255]  r7:000b8000 r6:ede50000 r5:00000000 r4:c06c730c
+[   56.477151] [<c00120a4>] (show_stack) from [<c04f4074>]
+(dump_stack+0x94/0xcc)
+[   56.484636] [<c04f3fe0>] (dump_stack) from [<c031d390>]
+(ubi_io_read+0x134/0x314)
+[   56.492356]  r7:000b8000 r6:00000000 r5:00048000 r4:ffffff89
+[   56.498233] [<c031d25c>] (ubi_io_read) from [<c031ae84>]
+(ubi_eba_read_leb+0x140/0x3e4)
+etc.
 
-> -----Message d'origine-----
-> De=A0: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
-> Envoy=E9=A0: mercredi 16 novembre 2016 13:58
-> =C0=A0: Esponde, Joel <Joel.Esponde@Honeywell.com>; linux-
-> mtd@lists.infradead.org; Marek Vasut <marex@denx.de>
-> Objet=A0: Re: [PATCH] mtd: spi-nor: fixed spansion quad enable
->=20
-> Hi Joel,
->=20
-> +Marek
->=20
-> Le 24/10/2016 =E0 10:33, Esponde, Joel a =E9crit :
-> > Hi Cyrille,
-> >
-> >> -----Message d'origine-----
-> >> De : Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
-> >> Envoy=E9 : vendredi 21 octobre 2016 14:50 =C0 : Esponde, Joel
-> >> <Joel.Esponde@Honeywell.com>; linux- mtd@lists.infradead.org Objet :
-> >> Re: [PATCH] mtd: spi-nor: fixed spansion quad enable
-> >>
-> >>>>> +	/* set SR & CR, enable quad I/O */
-> >>>>>  	write_enable(nor);
-> >>>>>
-> >>>>>  	ret =3D write_sr_cr(nor, quad_en);
-> >>>>>  	if (ret < 0) {
-> >>>>> -		dev_err(nor->dev,
-> >>>>> -			"error while writing configuration
-> register\n");
-> >>>>> +		dev_err(nor->dev, "error while writing SR and CR
-> >>>> registers\n");
-> >>>>>  		return -EINVAL;
-> >>>>>  	}
-> >>>>>
-> >>>>> -	/* read back and check it */
-> >>>>> +	ret =3D spi_nor_wait_till_ready(nor);
-> >>>>> +	if (ret)
-> >>>>> +		return ret;
-> >>>>> +
-> >>>
-> >>> I think that this wait is required with every memories that store
-> >>> Quad
-> >> Enable bit in a non-volatile way.
-> >>> I am using today a stripped down kernel with a rootfs based on UBIFS.
-> >>> When this bit is set, UBIFS will start reading the memory 100ms after=
-.
-> >>> As this bit writing step takes up to 200ms, spansion memory is not
-> >>> ready
-> >> and UBIFS will fail when trying to read the content of the partition.
-> >>> As UBIFS has a recovery mechanism, it will even broke the file system=
-.
-> >>>
-> >>
-> >> I agree with you about adding the spi_nor_wait_till_ready() call. I
-> >> plan to add it in my SFDP patch for the spansion_new_quad_enable(), if
-> not done yet.
-> >>
-> >
-> > Good news !!
-> > Because I think that this part of the patch is the most critical.
-> > Without this, you may broke your filesystem so this is a big issue.
-> >
-> > Best regards,
-> >
-> > Jo=EBl
-> >
->=20
-> I've recently tested with two Winbond QSPI memories, W25Q256 and
-> W25M512 and now I can confirm that the issue you reported also applies to
-> those memories:
-> if spi_nor_wait_till_ready() is not called after write_sr_cr(), the next =
-SPI
-> command may be sent too quickly and bad data may be read.
-> Indeed, this issue occured in some bare metal (boot loader) code, when I
-> performed a Fast Read 1-4-4 (EBh) command right after the Write Status
-> Register
-> (01h) command, without polling the BUSY bit with Read Status Register (05=
-h)
-> commands.
->=20
-> Also the W25Q256 datasheet I have claims that the memory supports the
-> Read Status Register2 (35h) however the data read from the SFDP table of
-> my memory sample tells that the Quad Enable bit should be set only using
-> the Write Status Register (01h) command with 2 data bytes (SR1 then SR2)
-> and without using the Read Status Register 2 (35h) command:
->=20
-> Indeed, bits[22:20] of the 15th dword in the Basic Flash Parameter Table
-> (BFPT) are 100b and not 101b!
->=20
-> 100b: QE is bit 1 of status register 2. It is set wia Write Status with t=
-wo
->       data bytes where bit 1 of the second byte is one.
->=20
-> 101b: QE is bit 1 of status register 2. Status register 1 is read using R=
-ead
->       Status instruction 05h. Status register 2 is read using instruction=
- 35h.
->       QE is set via Write Status instruction 01h with two data bytes wher=
-e bit
->       1 of the second byte is one.
->=20
-> I didn't test whether the datasheet is right and the 35h command is actua=
-lly
-> supported by those Winbond memories so their bits[22:20] of the 15th
-> dword in the BFPT should have been set to 101b instead of 100b.
-> However I'd rather be compliant with the JESD216B specification.
->=20
-> So could you please send a new version of your patch adding only the
-> spi_nor_wait_till_ready() call but without adding other read to the Statu=
-s
-> Register 2/Control Register 1 (35h)?
->=20
-> The 2nd procedure, which uses the 35h instruction to check whether the
-> Quad Enable bit has already been set, will be implemented by
-> spansion_new_quad_enable() from the SFDP patch. I've already fixed this
-> patch to add the call of spi_nor_wait_till_ready().
->=20
-> With both your patch and mine, we will fix the issue and still be complia=
-nt
-> with the SFDP specification.
->=20
-> Best regards,
->=20
-> Cyrille
+At this point, my only option is to erase the NAND, and recreate the
+UBIFS partition, which I can then use as usual. When I redo the test,
+the PEB failing are at a different address in the flash, but this is
+still a whole nand erase block size (1 MB in the case of this nand
+part).
+
+I realize this test might not be realistic, but the idea is to test
+how the system would behave after several power loss, with and without
+clean unmount.
+
+I noticed that even after un-mounting the ubifs partition the ubi
+working thread (ubifs_bgt0_0) is still running. I am wondering if this
+thread could schedule a nand erase even in the case of the ubisfs
+partition unmounted? If this is the case, doing the ubidetach, which
+stop the thread should help, is that a fair statement?
+
+I thought that the whole idea of ubifs was to be protected again
+unexpected loss of power. I understand that obviously I could loose
+some data, but at least ubifs should be able to mount the partition.
+
+Any idea what could be wrong? And also should using ubidetach help, in
+the case of testing reboot with clean unmount ?
