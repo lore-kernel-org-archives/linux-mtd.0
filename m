@@ -1,16 +1,24 @@
-Received: from mail-qk0-x22e.google.com ([2607:f8b0:400d:c09::22e])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9CqY-00051w-L1
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 15:18:59 +0000
-Received: by mail-qk0-x22e.google.com with SMTP id n21so28652590qka.3
- for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2016 07:18:38 -0800 (PST)
+ id 1c9G1g-0003wx-AP
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 18:42:41 +0000
+Received: by mail-pg0-x242.google.com with SMTP id e9so2778097pgc.1
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2016 10:42:19 -0800 (PST)
+Date: Tue, 22 Nov 2016 10:42:15 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Zach Brown <zach.brown@ni.com>
+Cc: dwmw2@infradead.org, boris.brezillon@free-electrons.com, richard@nod.at,
+ dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v5 2/5] mtd: ubi: use 'max_bad_blocks' to compute
+ bad_peb_limit if available
+Message-ID: <20161122184215.GA77253@google.com>
+References: <1479757899-6849-1-git-send-email-zach.brown@ni.com>
+ <1479757899-6849-3-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-From: Olivier Singla <olivier.singla@gmail.com>
-Date: Tue, 22 Nov 2016 10:17:56 -0500
-Message-ID: <CACcFhEU=U1f0HM9bZvWosM0odDqg7x5QE=dWV+7fMj+4aAho4g@mail.gmail.com>
-Subject: Unable to remount ubifs after many unclean reboot
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1479757899-6849-3-git-send-email-zach.brown@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,66 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, Nov 21, 2016 at 01:51:36PM -0600, Zach Brown wrote:
+> From: Jeff Westfahl <jeff.westfahl@ni.com>
+> 
+> Use the MTD function 'max_bad_blocks' to compute the UBI bad_peb_limit,
+> if the function is implemented for an MTD and doesn't return an error.
 
-I am working for an embedded system using 4GB NAND Flash
-(MT29F32G08ABAAAWP), ubifs, and 3.6.5 kernel (A9 dualcore).. Using a
-simple test program, I am able to have UBIFS to fail to mount the NAND
-partition (I am using pretty much all the 4GB of the NAND). The test
-is quite simple: mount the ubifs partition at boot time, then write a
-file (justa  few KB), do a sync, wait a few seconds, and then reboot
-(/sbin/reboot, and -important point- I have a micro-controller which
-does a power-cycle). Intentionally, I did NOT unmount the ubifs
-partition. Later on, I changed the test to unmount the ubifs partition
-(but I still do not detach the ubi volume). What I am seeing is that
-after many iterations (usually around a thousand), ubifs could not
-mount the ubifs partition, both under u-boot and Linux.
+I'm not exactly a UBI expert here, but it seems reasonable that we
+should adjust the Kconfig documentation for MTD_UBI_BEB_LIMIT to further
+emphasize that it's a default, if the value can't be determined by other
+means.
 
-Under Linux, this is what I see when ubifs try to mount the partition:
+> Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+> Signed-off-by: Zach Brown <zach.brown@ni.com>
+> Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
+> ---
+>  drivers/mtd/ubi/build.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> index 85d54f3..e9940a9 100644
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -584,6 +584,10 @@ static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
+>  	int limit, device_pebs;
+>  	uint64_t device_size;
+>  
+> +	limit = mtd_max_bad_blocks(ubi->mtd, 0, ubi->mtd->size);
+> +	if (limit > 0)
+> +		return limit;
 
-[   55.646884] UBIFS: background thread "ubifs_bgt0_0" started, PID 858
-[   56.013037] UBIFS: recovery needed
-[   56.258731] UBI warning: ubi_io_read: error -119 while reading
-294912 bytes from PEB 600:753664, read only 294912 bytes, retry
-[   56.320616] UBI warning: ubi_io_read: error -119 while reading
-294912 bytes from PEB 600:753664, read only 294912 bytes, retry
-[   56.382444] UBI warning: ubi_io_read: error -119 while reading
-294912 bytes from PEB 600:753664, read only 294912 bytes, retry
-[   56.444263] UBI error: ubi_io_read: error -119 while reading 294912
-bytes from PEB 600:753664, read 294912 bytes
-[   56.454775] CPU: 0 PID: 857 Comm: mount Not tainted 3.14.29 #16
-[   56.460888] Backtrace:
-[   56.463441] [<c0011ea8>] (dump_backtrace) from [<c00120bc>]
-(show_stack+0x18/0x1c)
-[   56.471255]  r7:000b8000 r6:ede50000 r5:00000000 r4:c06c730c
-[   56.477151] [<c00120a4>] (show_stack) from [<c04f4074>]
-(dump_stack+0x94/0xcc)
-[   56.484636] [<c04f3fe0>] (dump_stack) from [<c031d390>]
-(ubi_io_read+0x134/0x314)
-[   56.492356]  r7:000b8000 r6:00000000 r5:00048000 r4:ffffff89
-[   56.498233] [<c031d25c>] (ubi_io_read) from [<c031ae84>]
-(ubi_eba_read_leb+0x140/0x3e4)
-etc.
+Are you sure you want to even override the user-provided
+max_beb_per1024 value taken from the mtd= line? I'd think if someone
+went as far as to specify this in the kernel command line, they don't
+expect it to get overridden. Just my two cents.
 
-At this point, my only option is to erase the NAND, and recreate the
-UBIFS partition, which I can then use as usual. When I redo the test,
-the PEB failing are at a different address in the flash, but this is
-still a whole nand erase block size (1 MB in the case of this nand
-part).
+Brian
 
-I realize this test might not be realistic, but the idea is to test
-how the system would behave after several power loss, with and without
-clean unmount.
-
-I noticed that even after un-mounting the ubifs partition the ubi
-working thread (ubifs_bgt0_0) is still running. I am wondering if this
-thread could schedule a nand erase even in the case of the ubisfs
-partition unmounted? If this is the case, doing the ubidetach, which
-stop the thread should help, is that a fair statement?
-
-I thought that the whole idea of ubifs was to be protected again
-unexpected loss of power. I understand that obviously I could loose
-some data, but at least ubifs should be able to mount the partition.
-
-Any idea what could be wrong? And also should using ubidetach help, in
-the case of testing reboot with clean unmount ?
+> +
+>  	if (!max_beb_per1024)
+>  		return 0;
+>  
+> -- 
+> 2.7.4
+> 
