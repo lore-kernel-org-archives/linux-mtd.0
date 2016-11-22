@@ -1,23 +1,24 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9GHT-0005Nc-JI
- for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 18:59:00 +0000
-Received: by mail-pf0-x243.google.com with SMTP id i88so1846504pfk.2
- for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2016 10:58:38 -0800 (PST)
-Date: Tue, 22 Nov 2016 10:58:35 -0800
+ id 1c9GdY-0001XV-Ko
+ for linux-mtd@lists.infradead.org; Tue, 22 Nov 2016 19:21:49 +0000
+Received: by mail-pg0-x242.google.com with SMTP id x23so2855310pgx.3
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2016 11:21:28 -0800 (PST)
+Date: Tue, 22 Nov 2016 11:21:24 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Zach Brown <zach.brown@ni.com>
-Cc: dwmw2@infradead.org, boris.brezillon@free-electrons.com, richard@nod.at,
- dedekind1@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH v5 0/5] mtd: use ONFI bad blocks per LUN to
- calculate UBI bad PEB limit
-Message-ID: <20161122185835.GE77253@google.com>
-References: <1479757899-6849-1-git-send-email-zach.brown@ni.com>
+To: Luis Henriques <henrix@camandro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: maps: add missing iounmap() in error path
+Message-ID: <20161122192124.GF77253@google.com>
+References: <20161116225016.29958-1-henrix@camandro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1479757899-6849-1-git-send-email-zach.brown@ni.com>
+In-Reply-To: <20161116225016.29958-1-henrix@camandro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +28,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 21, 2016 at 01:51:34PM -0600, Zach Brown wrote:
-> For ONFI-compliant NAND devices, the ONFI parameters report the maximum number
-> of bad blocks per LUN that will be encountered over the lifetime of the device,
-> so we can use that information to get a more accurate (and smaller) value for
-> the UBI bad PEB limit.
+On Wed, Nov 16, 2016 at 10:50:16PM +0000, Luis Henriques wrote:
+> This patch was triggered by the following Coccinelle error:
 > 
-> The ONFI parameter "maxiumum number of bad blocks per LUN" is the max number of
-> bad blocks that each individual LUN will ever ecounter. It is not the number of
-> bad blocks to reserve for the nand device per LUN in the device.
+> ./drivers/mtd/maps/sc520cdp.c:246:3-9: \
+> 	ERROR: missing iounmap; ioremap on line 242 \
+> 	and execution via conditional on line 244
 > 
-> This means that in the worst case a UBI device spanning X LUNs will encounter
-> "maximum number of bad blocks per LUN" * X bad blocks. The implementation in
-> this patch assumes this worst case and allocates bad block accordingly.
+> Signed-off-by: Luis Henriques <henrix@camandro.org>
+> ---
+>  drivers/mtd/maps/sc520cdp.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> These patches are ordered in terms of their dependencies, but ideally, all 5
-> would need to be applied for this to work as intended.
+> diff --git a/drivers/mtd/maps/sc520cdp.c b/drivers/mtd/maps/sc520cdp.c
+> index 093edd51bdc7..7a27ed345d0d 100644
+> --- a/drivers/mtd/maps/sc520cdp.c
+> +++ b/drivers/mtd/maps/sc520cdp.c
+> @@ -243,6 +243,10 @@ static int __init init_sc520cdp(void)
+>  
+>  		if (!sc520cdp_map[i].virt) {
+>  			printk("Failed to ioremap_nocache\n");
+> +			if (i) {
+> +				while (--i)
 
-Other than some small comments, the MTD parts look fine to me. For
-patches 1, 3, 4, and 5 with my comments fixed:
+Umm, so you never unmap from sc520cdp_map[0].virt? How about:
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+				while (--i >= 0)
 
-For the UBI part, I wasn't quite sure about the precedence among the 3
-possible ways to determine the appropriate value. I'll leave that up to
-Richard, et al, though.
+?
+
+You can also skip the 'if (i)' part in that case. Or maybe make it a for
+loop, to be even clearer.
+
+> +					iounmap(sc520cdp_map[i].virt);
+
+This may often be a double-iounmap. If you take a look later in the
+loop, many instances of the loop may not find a device, and so they'll
+unmap this memory and move on. You're just doing it a second time for
+them.
+
+> +			}
+>  			return -EIO;
+>  		}
+>  
+
+Please put some more care into your patch, since I very much expect that
+you did not test it.
 
 Brian
