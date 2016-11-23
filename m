@@ -1,17 +1,19 @@
-Received: from smtpbg337.qq.com ([14.17.44.32])
+Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9Pd7-0001yb-8E
- for linux-mtd@lists.infradead.org; Wed, 23 Nov 2016 04:57:58 +0000
-From: "=?utf-8?B?VHltb24=?=" <banglang.huang@foxmail.com>
-To: "=?utf-8?B?bGludXgtbXRk?=" <linux-mtd@lists.infradead.org>
-Subject: =?utf-8?B?5Zue5aSN77yaSGFuZGxpbmcgc29mdCByZXNldCBv?=
- =?utf-8?B?biBtdDcyNjEgU29DIHdpdGggMzJNIGZsYXNo?=
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Wed, 23 Nov 2016 12:53:48 +0800
-Message-ID: <tencent_45F3AFA3524D96AA13E4449A@qq.com>
+ id 1c9Uxs-0007JI-GS
+ for linux-mtd@lists.infradead.org; Wed, 23 Nov 2016 10:39:45 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: fixed spansion quad enable
+To: =?UTF-8?Q?Jo=c3=abl_Esponde?= <joel.esponde@honeywell.com>,
+ <linux-mtd@lists.infradead.org>
+References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+ <1479853468-119195-1-git-send-email-joel.esponde@honeywell.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <a60225d9-674e-422c-aa1b-ed232e8650cb@atmel.com>
+Date: Wed, 23 Nov 2016 11:39:21 +0100
+MIME-Version: 1.0
+In-Reply-To: <1479853468-119195-1-git-send-email-joel.esponde@honeywell.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,15 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SSB0aGluayBzZW5kaW5nIOKAnDB4NjYgMHg5OeKAnSB0byBteDI1bDI1NiBpcyBhIHByb3Bl
-ciB3YXkgdG8gZml4IHRoZSBpc3N1ZSwKYmVjYXVzZSB0aGlzIGFjdGlvbiBkb2VzIG5vdCBj
-aGFuZ2UgdGhlIGJpdC1tb2RlIG9mIHNwaSBmbGFzaCBhbmQgaXQgb25seSB3b3JrCndoZW4g
-dXNlciByZWJvb3QgdGhlIHN5c3RlbS4KCi0tLS0tLS0tLS0tLS0tLS0tLQpSZWdhcmRzLAoK
-YmFuZ2xhbmcgaHVhbmcKIAoKCi0tLS0tLS0tLS0tLS0tLS0tLSDljp/lp4vpgq7ku7YgLS0t
-LS0tLS0tLS0tLS0tLS0tCuWPkeS7tuS6ujogIkRvbWluaWsgTWVua2UiOzxkb21AZGlnaW5l
-by5kZT47CuWPkemAgeaXtumXtDogMjAxNuW5tDEx5pyIMTjml6Uo5pif5pyf5LqUKSDmmZrk
-uIoxMDoyMArmlLbku7bkuro6ICJsaW51eC1tdGQiPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRl
-YWQub3JnPjsgCuS4u+mimDogSGFuZGxpbmcgc29mdCByZXNldCBvbiBtdDcyNjEgU29jIHdp
-dGggMzJNIGZsYXNoCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLw==
+Hi Joel,
+
+Le 22/11/2016 à 23:24, Joël Esponde a écrit :
+> With the S25FL127S nor flash part, each writing to the configuration register takes hundreds of ms. During that  time, no more accesses to the flash should be done (even reads).
+> 
+> This commit adds a wait loop after the register writing until the flash finishes its work.
+> 
+> This issue could make rootfs mounting fail when the latter was done too much closely to this quad enable bit setting step. And in this case, a driver as UBIFS may try to recover the filesystem and may broke it completely.
+
+Just few formal remarks about common usage and according to
+Documentation/process/submitting-patches.rst:
+- The summary phrase of the subject line should describe changes in imperative
+  mood, so please use something like
+  "mtd: spi-nor: fix spansion_quad_enable..." instead of
+  "mtd: spi-nor: fixED spansion_quad_enable...".
+- The commit message should be line wrapped at 75 columns.
+- You must add your "Signed-off-by:". It is mandatory to know who's introduced
+  the commit when browsing the logs.
+
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d0fc165..a945122 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1255,7 +1255,11 @@ static int spansion_quad_enable(struct spi_nor *nor)
+>  		return -EINVAL;
+>  	}
+>  
+> -	/* read back and check it */
+> +	ret = spi_nor_wait_till_ready(nor);
+> +	if (ret)
+I agree this is not done in macronix_quad_enable() but maybe a dev_err()
+message may notify about the reason of the failure, just like what is done
+for write_sr_cr() and read_cr().
+This point is optional!
+
+> +		return ret;
+> +	
+It seems there is a tab at the beginning of the empty line above.
+
+> +	/* read CR and check it */
+Your patch deals with the missing call of spi_nor_wait_till_ready() so
+there is no strong reason to also modify the comment about read_cr().
+The general idea is to make the patch modify only what needs to be.
+
+>  	ret = read_cr(nor);
+>  	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
+>  		dev_err(nor->dev, "Spansion Quad bit not set\n");
+> 
+
+Finally, it may help you to run the scripts/checkpatch.pl tool on your patch
+so this script reports you any warnings and errors in the syntax before
+submitting your patch.
+
+Best regards,
+
+Cyrille
