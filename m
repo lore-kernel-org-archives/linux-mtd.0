@@ -1,24 +1,22 @@
-Received: from haggis.mythic-beasts.com ([2a00:1098:0:86:1000:0:2:1])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9ZOz-0004fo-5d
- for linux-mtd@lists.infradead.org; Wed, 23 Nov 2016 15:24:02 +0000
-From: Luis Henriques <henrix@camandro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: maps: add missing iounmap() in error path
-References: <20161116225016.29958-1-henrix@camandro.org>
- <20161122192124.GF77253@google.com>
-Date: Wed, 23 Nov 2016 15:22:04 +0000
-In-Reply-To: <20161122192124.GF77253@google.com> (Brian Norris's message of
- "Tue, 22 Nov 2016 11:21:24 -0800")
-Message-ID: <87a8cq9q77.fsf@camandro.org>
+ id 1c9Zai-0001r4-09
+ for linux-mtd@lists.infradead.org; Wed, 23 Nov 2016 15:36:10 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: fixed spansion quad enable
+To: "Esponde, Joel" <Joel.Esponde@Honeywell.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+ <1479853468-119195-1-git-send-email-joel.esponde@honeywell.com>
+ <a60225d9-674e-422c-aa1b-ed232e8650cb@atmel.com>
+ <F6CD090A69E64C4289DC608E1C5D20242545B1DA@DE08W1305.global.ds.honeywell.com>
+From: Marek Vasut <marex@denx.de>
+Message-ID: <23a5fe9d-a2d5-1577-57e1-1e9428e8a6df@denx.de>
+Date: Wed, 23 Nov 2016 16:35:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <F6CD090A69E64C4289DC608E1C5D20242545B1DA@DE08W1305.global.ds.honeywell.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,60 +26,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris <computersforpeace@gmail.com> writes:
+On 11/23/2016 03:27 PM, Esponde, Joel wrote:
+> Hi Cyrille,
+> 
+> Thanks for your explanations and patience!
+> I will try to avoid these "noob" mistakes next time! :-)
 
-> On Wed, Nov 16, 2016 at 10:50:16PM +0000, Luis Henriques wrote:
->> This patch was triggered by the following Coccinelle error:
->>=20
->> ./drivers/mtd/maps/sc520cdp.c:246:3-9: \
->> 	ERROR: missing iounmap; ioremap on line 242 \
->> 	and execution via conditional on line 244
->>=20
->> Signed-off-by: Luis Henriques <henrix@camandro.org>
->> ---
->>  drivers/mtd/maps/sc520cdp.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>=20
->> diff --git a/drivers/mtd/maps/sc520cdp.c b/drivers/mtd/maps/sc520cdp.c
->> index 093edd51bdc7..7a27ed345d0d 100644
->> --- a/drivers/mtd/maps/sc520cdp.c
->> +++ b/drivers/mtd/maps/sc520cdp.c
->> @@ -243,6 +243,10 @@ static int __init init_sc520cdp(void)
->>=20=20
->>  		if (!sc520cdp_map[i].virt) {
->>  			printk("Failed to ioremap_nocache\n");
->> +			if (i) {
->> +				while (--i)
->
-> Umm, so you never unmap from sc520cdp_map[0].virt? How about:
->
-> 				while (--i >=3D 0)
->
-> ?
->
-> You can also skip the 'if (i)' part in that case. Or maybe make it a for
-> loop, to be even clearer.
->
->> +					iounmap(sc520cdp_map[i].virt);
->
-> This may often be a double-iounmap. If you take a look later in the
-> loop, many instances of the loop may not find a device, and so they'll
-> unmap this memory and move on. You're just doing it a second time for
-> them.
->
->> +			}
->>  			return -EIO;
->>  		}
->>=20=20
->
-> Please put some more care into your patch, since I very much expect that
-> you did not test it.
->
-> Brian
+You can start by NOT top-posting, it's really frowned upon :)
 
-Thank you very much for your review.  All very good points indeed!
-I'll try to send v2 soon to cover all the issues you've found.
+> Joël Esponde
+> Honeywell | Safety and Productivity Solutions
+> 
+>> -----Message d'origine-----
+>> De : Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+>> Envoyé : mercredi 23 novembre 2016 11:39
+>> À : Esponde, Joel <Joel.Esponde@Honeywell.com>; linux-
+>> mtd@lists.infradead.org
+>> Objet : Re: [PATCH v2] mtd: spi-nor: fixed spansion quad enable
+>>
+>> Hi Joel,
+>>
+>> Le 22/11/2016 à 23:24, Joël Esponde a écrit :
+>>> With the S25FL127S nor flash part, each writing to the configuration register
+>> takes hundreds of ms. During that  time, no more accesses to the flash
+>> should be done (even reads).
+>>>
+>>> This commit adds a wait loop after the register writing until the flash
+>> finishes its work.
+>>>
+>>> This issue could make rootfs mounting fail when the latter was done too
+>> much closely to this quad enable bit setting step. And in this case, a driver as
+>> UBIFS may try to recover the filesystem and may broke it completely.
+>>
+>> Just few formal remarks about common usage and according to
+>> Documentation/process/submitting-patches.rst:
+>> - The summary phrase of the subject line should describe changes in
+>> imperative
+>>   mood, so please use something like
+>>   "mtd: spi-nor: fix spansion_quad_enable..." instead of
+>>   "mtd: spi-nor: fixED spansion_quad_enable...".
+>> - The commit message should be line wrapped at 75 columns.
+>> - You must add your "Signed-off-by:". It is mandatory to know who's
+>> introduced
+>>   the commit when browsing the logs.
+>>
+>>> ---
+>>>  drivers/mtd/spi-nor/spi-nor.c | 6 +++++-
+>>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
+>>> b/drivers/mtd/spi-nor/spi-nor.c index d0fc165..a945122 100644
+>>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>>> @@ -1255,7 +1255,11 @@ static int spansion_quad_enable(struct spi_nor
+>> *nor)
+>>>  		return -EINVAL;
+>>>  	}
+>>>
+>>> -	/* read back and check it */
+>>> +	ret = spi_nor_wait_till_ready(nor);
+>>> +	if (ret)
+>> I agree this is not done in macronix_quad_enable() but maybe a dev_err()
+>> message may notify about the reason of the failure, just like what is done for
+>> write_sr_cr() and read_cr().
+>> This point is optional!
+>>
+>>> +		return ret;
+>>> +
+>> It seems there is a tab at the beginning of the empty line above.
+>>
+>>> +	/* read CR and check it */
+>> Your patch deals with the missing call of spi_nor_wait_till_ready() so there is
+>> no strong reason to also modify the comment about read_cr().
+>> The general idea is to make the patch modify only what needs to be.
+>>
+>>>  	ret = read_cr(nor);
+>>>  	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
+>>>  		dev_err(nor->dev, "Spansion Quad bit not set\n");
+>>>
+>>
+>> Finally, it may help you to run the scripts/checkpatch.pl tool on your patch so
+>> this script reports you any warnings and errors in the syntax before
+>> submitting your patch.
+>>
+>> Best regards,
+>>
+>> Cyrille
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
-Cheers,
---=20
-Lu=C3=ADs
+
+-- 
+Best regards,
+Marek Vasut
