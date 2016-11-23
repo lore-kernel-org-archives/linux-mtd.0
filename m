@@ -1,19 +1,17 @@
-Received: from mail-cys01nam02on071c.outbound.protection.outlook.com
- ([2a01:111:f400:fe45::71c]
- helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9W3V-0006LX-Fg
- for linux-mtd@lists.infradead.org; Wed, 23 Nov 2016 11:49:38 +0000
-From: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
-To: <linux-mtd@lists.infradead.org>
-CC: =?UTF-8?q?Jo=C3=ABl=20Esponde?= <joel.esponde@honeywell.com>
-Subject: [PATCH v3] mtd: spi-nor: fix spansion quad enable
-Date: Wed, 23 Nov 2016 12:47:40 +0100
-Message-ID: <1479901660-124876-1-git-send-email-joel.esponde@honeywell.com>
-In-Reply-To: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
-References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+ id 1c9YNh-0004Dt-I1
+ for linux-mtd@lists.infradead.org; Wed, 23 Nov 2016 14:18:39 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: add Macronix mx25u25635f to list of
+ known devices.
+To: Ash Benz <ash.benz@bk.ru>, <linux-mtd@lists.infradead.org>
+References: <20161118235149.21275-1-ash.benz@bk.ru>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <f31e0599-9586-7118-82cb-4d4318146dc1@atmel.com>
+Date: Wed, 23 Nov 2016 15:18:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20161118235149.21275-1-ash.benz@bk.ru>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,40 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the S25FL127S nor flash part, each writing to the configuration
-register takes hundreds of ms. During that  time, no more accesses to
-the flash should be done (even reads).
+Le 19/11/2016 à 00:51, Ash Benz a écrit :
+> Signed-off-by: Ash Benz <ash.benz@bk.ru>
 
-This commit adds a wait loop after the register writing until the flash
-finishes its work.
+Applied to git://github.com/spi-nor/linux.git
 
-This issue could make rootfs mounting fail when the latter was done too
-much closely to this quad enable bit setting step. And in this case, a
-driver as UBIFS may try to recover the filesystem and may broke it
-completely.
-
-Signed-off-by: JoÃ«l Esponde <joel.esponde@honeywell.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d0fc165..21dde52 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1255,6 +1255,13 @@ static int spansion_quad_enable(struct spi_nor *nor)
- 		return -EINVAL;
- 	}
- 
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret) {
-+		dev_err(nor->dev,
-+			"timeout while writing configuration register\n");
-+		return ret;
-+	}
-+
- 	/* read back and check it */
- 	ret = read_cr(nor);
- 	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
--- 
-2.7.4
+Thanks!
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d0fc165..4fd3ac8 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -872,6 +872,7 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+>  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+> +	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
+>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+> 
