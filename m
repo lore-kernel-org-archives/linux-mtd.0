@@ -1,19 +1,16 @@
-Received: from smtp34.i.mail.ru ([94.100.177.94])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9kMj-0000tD-HB
- for linux-mtd@lists.infradead.org; Thu, 24 Nov 2016 03:06:28 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: add Macronix mx25u25635f to list of
- known devices.
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-References: <20161118235149.21275-1-ash.benz@bk.ru>
- <f31e0599-9586-7118-82cb-4d4318146dc1@atmel.com>
-From: "A. Benz" <ash.benz@bk.ru>
-Message-ID: <7687a7bd-64cb-1fac-3c9e-304fbbe1b029@bk.ru>
-Date: Thu, 24 Nov 2016 11:05:52 +0800
+ id 1c9rY1-0005es-EX
+ for linux-mtd@lists.infradead.org; Thu, 24 Nov 2016 10:46:34 +0000
+Date: Thu, 24 Nov 2016 13:45:59 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: kyungmin.park@samsung.com
+Cc: linux-mtd@lists.infradead.org
+Subject: [bug report] mtd: add Samsung SoC OneNAND driver
+Message-ID: <20161124101817.GA14449@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <f31e0599-9586-7118-82cb-4d4318146dc1@atmel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +20,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks!
+Hello Kyungmin Park,
 
-Regards,
-A. Benz
+The patch 46f3e88bd9da: "mtd: add Samsung SoC OneNAND driver" from
+Apr 28, 2010, leads to the following static checker warning:
 
-On 11/23/16 22:18, Cyrille Pitchen wrote:
-> Le 19/11/2016 à 00:51, Ash Benz a écrit :
->> Signed-off-by: Ash Benz <ash.benz@bk.ru>
->
-> Applied to git://github.com/spi-nor/linux.git
->
-> Thanks!
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index d0fc165..4fd3ac8 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -872,6 +872,7 @@ static const struct flash_info spi_nor_ids[] = {
->>  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
->>  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
->>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
->> +	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
->>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
->>  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
->>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
->>
->
+	drivers/mtd/onenand/samsung.c:876 s3c_onenand_probe()
+	info: ignoring unreachable code.
+
+drivers/mtd/onenand/samsung.c
+   858          onenand = kzalloc(sizeof(struct s3c_onenand), GFP_KERNEL);
+   859          if (!onenand) {
+   860                  err = -ENOMEM;
+   861                  goto onenand_fail;
+   862          }
+   863  
+   864          this = (struct onenand_chip *) &mtd[1];
+   865          mtd->priv = this;
+   866          mtd->dev.parent = &pdev->dev;
+   867          onenand->pdev = pdev;
+   868          onenand->type = platform_get_device_id(pdev)->driver_data;
+   869  
+   870          s3c_onenand_setup(mtd);
+   871  
+   872          r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+   873          if (!r) {
+   874                  dev_err(&pdev->dev, "no memory resource defined\n");
+   875                  return -ENOENT;
+   876                  goto ahb_resource_failed;
+
+We should probably do a goto but problem not that one.  It looks like
+maybe "goto resource_failed;"?  Best to name the gotos after what they
+do instead of using come-from names that describe the goto location.
+"goto free_onenand;".
+
+   877          }
+   878  
+   879          onenand->base_res = request_mem_region(r->start, resource_size(r),
+   880                                                 pdev->name);
+   881          if (!onenand->base_res) {
+   882                  dev_err(&pdev->dev, "failed to request memory resource\n");
+   883                  err = -EBUSY;
+   884                  goto resource_failed;
+   885          }
+   886  
+
+regards,
+dan carpenter
