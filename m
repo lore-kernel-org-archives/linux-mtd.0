@@ -1,20 +1,19 @@
-Received: from balrog.mythic-beasts.com ([2a00:1098:0:82:1000:0:2:1])
+Received: from smtp34.i.mail.ru ([94.100.177.94])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9hBU-0000gb-Pt
- for linux-mtd@lists.infradead.org; Wed, 23 Nov 2016 23:42:37 +0000
-From: Luis Henriques <henrix@camandro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Luis Henriques <henrix@camandro.org>
-Subject: [PATCH v2] mtd: maps: add missing iounmap() in error path
-Date: Wed, 23 Nov 2016 23:40:36 +0000
-Message-Id: <20161123234036.9985-1-henrix@camandro.org>
-In-Reply-To: <20161122192124.GF77253@google.com>
-References: <20161122192124.GF77253@google.com>
+ id 1c9kMj-0000tD-HB
+ for linux-mtd@lists.infradead.org; Thu, 24 Nov 2016 03:06:28 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: add Macronix mx25u25635f to list of
+ known devices.
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+References: <20161118235149.21275-1-ash.benz@bk.ru>
+ <f31e0599-9586-7118-82cb-4d4318146dc1@atmel.com>
+From: "A. Benz" <ash.benz@bk.ru>
+Message-ID: <7687a7bd-64cb-1fac-3c9e-304fbbe1b029@bk.ru>
+Date: Thu, 24 Nov 2016 11:05:52 +0800
+MIME-Version: 1.0
+In-Reply-To: <f31e0599-9586-7118-82cb-4d4318146dc1@atmel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch was triggered by the following Coccinelle error:
+Thanks!
 
-./drivers/mtd/maps/sc520cdp.c:246:3-9: \
-	ERROR: missing iounmap; ioremap on line 242 \
-	and execution via conditional on line 244
+Regards,
+A. Benz
 
-Since do_map_probe() is also invoked in this loop, it is also necessary to
-map_destroy() any initialised struct mtd_info.
-
-Signed-off-by: Luis Henriques <henrix@camandro.org>
----
-Changes since v1:
-* Changes according to Brian Norris review:
-  - Ensure sc520cdp_map[0].virt is unmaped when needed
-  - Use a for loop instead of an 'if (i)'
-  - Prevent double-iounmap
-* Added map_destroy() in the cleanup
-
-drivers/mtd/maps/sc520cdp.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/maps/sc520cdp.c b/drivers/mtd/maps/sc520cdp.c
-index 093edd51bdc7..9b1c13aa9f20 100644
---- a/drivers/mtd/maps/sc520cdp.c
-+++ b/drivers/mtd/maps/sc520cdp.c
-@@ -227,7 +227,7 @@ static void sc520cdp_setup_par(void)
- 
- static int __init init_sc520cdp(void)
- {
--	int i, devices_found = 0;
-+	int i, j, devices_found = 0;
- 
- #ifdef REPROGRAM_PAR
- 	/* reprogram PAR registers so flash appears at the desired addresses */
-@@ -243,6 +243,12 @@ static int __init init_sc520cdp(void)
- 
- 		if (!sc520cdp_map[i].virt) {
- 			printk("Failed to ioremap_nocache\n");
-+			for (j = 0; j < i; j++) {
-+				if (mymtd[j]) {
-+					map_destroy(mymtd[j]);
-+					iounmap(sc520cdp_map[j].virt);
-+				}
-+			}
- 			return -EIO;
- 		}
- 
+On 11/23/16 22:18, Cyrille Pitchen wrote:
+> Le 19/11/2016 à 00:51, Ash Benz a écrit :
+>> Signed-off-by: Ash Benz <ash.benz@bk.ru>
+>
+> Applied to git://github.com/spi-nor/linux.git
+>
+> Thanks!
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index d0fc165..4fd3ac8 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -872,6 +872,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+>>  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+>> +	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
+>>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>>  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+>>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+>>
+>
