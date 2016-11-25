@@ -1,30 +1,26 @@
-Received: from mail-wj0-x243.google.com ([2a00:1450:400c:c01::243])
+Received: from mail-by2nam01on0728.outbound.protection.outlook.com
+ ([2a01:111:f400:fe42::728]
+ helo=NAM01-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAIC5-000191-0n
- for linux-mtd@lists.infradead.org; Fri, 25 Nov 2016 15:13:42 +0000
-Received: by mail-wj0-x243.google.com with SMTP id o2so2035184wje.2
- for <linux-mtd@lists.infradead.org>; Fri, 25 Nov 2016 07:13:20 -0800 (PST)
-Subject: Re: [PATCH v2] mtd/spi-nor: Add SPI memory controllers for Aspeed SoCs
-To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- Joel Stanley <joel@jms.id.au>
-References: <1478688149-4554-1-git-send-email-clg@kaod.org>
- <bc14b6ba-800c-bf69-763e-65ead8d4efa7@gmail.com>
- <CACPK8Xc7Dy=4oaZ_+j3hCEkMY+sqZ_-QkCQ9okmUoOjTpuZvvA@mail.gmail.com>
- <9569aaca-5748-e82d-20e1-ed846fb762f6@gmail.com>
- <b9d8ba33-2bb9-cb93-d833-89ddd8cfd7f9@kaod.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <c35d6a7a-1c77-1884-4ed4-aee161bd0e43@gmail.com>
-Date: Fri, 25 Nov 2016 16:12:31 +0100
+ id 1cAIxO-00007P-VB
+ for linux-mtd@lists.infradead.org; Fri, 25 Nov 2016 16:02:40 +0000
+From: "Esponde, Joel" <Joel.Esponde@Honeywell.com>
+To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH v3] mtd: spi-nor: fix spansion quad enable
+Date: Fri, 25 Nov 2016 16:01:36 +0000
+Message-ID: <F6CD090A69E64C4289DC608E1C5D20242545B77C@DE08W1305.global.ds.honeywell.com>
+References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
+ <1479901660-124876-1-git-send-email-joel.esponde@honeywell.com>
+ <4c1b8cc9-3f1b-fa43-8ebc-eb6c3481abcc@gmail.com>
+ <d08bf4d1-7667-1888-f9fa-ec63e4c9b249@atmel.com>
+ <751ced45-1d6c-2d2d-3ea8-bb6d6be1da4a@gmail.com>
+In-Reply-To: <751ced45-1d6c-2d2d-3ea8-bb6d6be1da4a@gmail.com>
+Content-Language: fr-FR
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <b9d8ba33-2bb9-cb93-d833-89ddd8cfd7f9@kaod.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,178 +30,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/25/2016 04:01 PM, Cédric Le Goater wrote:
-> Hello Marek,
-
-Hi!
-
-> Sorry for the late answer. Here are a couple of answers to the naming 
-> problem 
-> 
-> On 11/25/2016 02:57 PM, Marek Vasut wrote:
->> On 11/21/2016 05:45 AM, Joel Stanley wrote:
->>> Hello Marek,
->>
->> Hi!
->>
->>> Thank you for the review. I have answered a few of your questions;
->>> I'll leave the rest to Cedric.
->>>
->>> On Mon, Nov 21, 2016 at 8:13 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
->>>>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
->>>>> index 4a682ee0f632..96148600fdab 100644
->>>>> --- a/drivers/mtd/spi-nor/Kconfig
->>>>> +++ b/drivers/mtd/spi-nor/Kconfig
->>>>> @@ -76,4 +76,16 @@ config SPI_NXP_SPIFI
->>>>>         Flash. Enable this option if you have a device with a SPIFI
->>>>>         controller and want to access the Flash as a mtd device.
->>>>>
->>>>> +config ASPEED_FLASH_SPI
->>>>
->>>> Should be SPI_ASPEED , see the other controllers and keep the list sorted.
->>>
->>> Perhaps SPI_NOR_ASPEED so it's clear it's not a driver for a generic SPI bus?
->>
->> But it's not a driver for SPI-NOR only either, it seems it's a driver
->> for multiple distinct devices.
-> 
-> yes and I think it was a mistake to send the whole at once. We have 
-> added the support in qemu controller by controller and it was easier 
-> to understand. I need to split the patchset in the next version. 
-
-Cool :-)
-
->>>>> +     tristate "Aspeed flash controllers in SPI mode"
->>>>> +     depends on HAS_IOMEM && OF
->>>>> +     depends on ARCH_ASPEED || COMPILE_TEST
->>>>> +     # IO_SPACE_LIMIT must be equivalent to (~0UL)
->>>>> +     depends on !NEED_MACH_IO_H
->>>>
->>>> Why?
->>>>
->>>>> +     help
->>>>> +       This enables support for the New Static Memory Controller
->>>>> +       (FMC) in the Aspeed SoCs (AST2400 and AST2500) when attached
->>>>> +       to SPI nor chips, and support for the SPI Memory controller
->>>>> +       (SPI) for the BIOS.
->>>>
->>>> I think there is a naming chaos between FMC, SMC (as in Static MC) and
->>>> SMC (as in SPI MC).
->>>
->>> Yes, you're spot on. This naming chaos comes form the vendor's documentation.
->>>
->>> I think we could re-work this sentence to make it clearer.
->>
->> Please do before someone's head explodes from this :)
-> 
-> Indeed .. :) I will give a try. Here is the status :
-> 
-> Aspeed SoC AST2400 has a set of SMC (Static Memory Controller) 
-> controllers in which you find :
-> 
-> - Legacy Static Memory Controller (called SMC in the spec)  
->   . base address at 0x16000000
->   . BMC firmware
->   . old register set
->   . supports NOR flash, NAND flash and SPI flash memory. All bootable.
->   . 1 chip select pin (CE0)
-> 
-> - New Static Memory Controller (called FMC in the spec)
->   . base address at 0x16200000
->   . BMC firmware
->   . new register set
->   . supports NOR flash, NAND flash and SPI flash memory. 
->   . 5 chip select pins (CE0 ∼ CE4)
-> 
-> - SPI Flash Controller (called SPI in the spec)  
->   . base address at 0x16300000
->   . host Firmware
->   . exotic register set, between old and new ...
->   . supports SPI flash memory
->   . 1 chip select pin (CE0)
-
-This should be (except for the base address) be in some documentation,
-it helps.
-
-> Aspeed SoC AST2500 defines has a similar set of SMC (Static Memory 
-> Controller) controllers, more in the vein of the AST2400 FMC  :
-> 
-> - Legacy Static Memory Controller is gone, NOR and NAND support also
-> 
-> - Firmware SPI Memory Controller (called FMC in the spec)  
->   . base address at 0x16200000
->   . BMC firmware
->   . new register set
->   . supports SPI flash memory.
->   . 3 chip select pins (CE0 ~ CE2)
-> 
-> - SPI Flash Controller (called SPI1 in the spec) first
->   . base address at 0x16300000
->   . host firmware
->   . new register set
->   . supports SPI flash memory.
->   . 2 chip select pins (CE0 ~ CE1)
-> 
-> - SPI Flash Controller (called SPI2 in the spec) second
->   . base address at 0x16310000
->   . host firmware
->   . new register set
->   . supports SPI flash memory.
->   . 2 chip select pins (CE0 ~ CE1)
-> 
-> 
-> So, these are the reasons behind the naming mess. Added to that the 
-> driver considers the acronym SMC to stand for SPI Memory Controller, 
-> which is wrong. I tried to reduce the confusion with some comments but 
-> that was a failure :)
-
-The explanation above is awesome though.
-
-> In qemu, we have used FMC (Firmware ...) and SPI to name the controllers 
-> and we just dropped the legacy SMC. I think using the same naming scheme
-> is a good idea. We don't support anything else than SPI either so we can 
-> drop the other types for the moment.
-
-One thing which I still ponder about is how do you support those
-controllers which support NOR and NAND flash and SPI, do you tap
-into all subsystems ?
-
->>>>> +static int aspeed_smc_read_from_ahb(void *buf, const void __iomem *src,
->>>>> +                                 size_t len)
->>>>> +{
->>>>
->>>> What if start of buf is unaligned ?
->>>>
->>>>> +     if ((((unsigned long)src | (unsigned long)buf | len) & 3) == 0) {
->>>>
->>>> Uh, should use boolean OR, not bitwise or. Also, if you're testing
->>>> pointer for NULL, do if (!ptr) .
->>>>
->>>> if (!src || !buf || !len)
->>>>    return;
->>>
->>> That's a different test. We're testing here that the buffers are
->>> aligned to see if we can do a word-at-a-time copy.
->>>
->>> If not, it falls through to do a byte-at-a-time copy. I think this
->>> covers your first question about buf being unaligned.
->>
->> Ah, I see, thanks for clarifying. Comment in the code would be helpful
->> for why what you're doing is OK. And I think you want to cast to
->> uintptr_t instead to make this work on 64bit.
-> 
-> yes
-> 
->>> Cedric, perhaps you could create a macro called IS_ALLIGNED to make it
->>> clear what this is doing?
->>
->> Yup, thanks!
-> 
-> sure. I still need to go through Marek's comments in the initial email, 
-> I will split the pachset and fix the naming in next version.
-
-Thanks!
-
--- 
-Best regards,
-Marek Vasut
+PiAtLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCj4gRGXCoDogTWFyZWsgVmFzdXQgW21haWx0
+bzptYXJlay52YXN1dEBnbWFpbC5jb21dDQo+IEVudm95w6nCoDogdmVuZHJlZGkgMjUgbm92ZW1i
+cmUgMjAxNiAxNjowOA0KPiDDgMKgOiBDeXJpbGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0Y2hlbkBh
+dG1lbC5jb20+OyBFc3BvbmRlLCBKb2VsDQo+IDxKb2VsLkVzcG9uZGVASG9uZXl3ZWxsLmNvbT47
+IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IE9iamV0wqA6IFJlOiBbUEFUQ0ggdjNd
+IG10ZDogc3BpLW5vcjogZml4IHNwYW5zaW9uIHF1YWQgZW5hYmxlDQo+IA0KPiBPbiAxMS8yNS8y
+MDE2IDAzOjUwIFBNLCBDeXJpbGxlIFBpdGNoZW4gd3JvdGU6DQo+ID4gSGkgTWFyZWssDQo+IA0K
+PiBIaSwNCj4gDQo+ID4gTGUgMjUvMTEvMjAxNiDDoCAxNToxNywgTWFyZWsgVmFzdXQgYSDDqWNy
+aXQgOg0KPiA+PiBPbiAxMS8yMy8yMDE2IDEyOjQ3IFBNLCBKb8OrbCBFc3BvbmRlIHdyb3RlOg0K
+PiA+Pj4gV2l0aCB0aGUgUzI1RkwxMjdTIG5vciBmbGFzaCBwYXJ0LCBlYWNoIHdyaXRpbmcgdG8g
+dGhlIGNvbmZpZ3VyYXRpb24NCj4gPj4+IHJlZ2lzdGVyIHRha2VzIGh1bmRyZWRzIG9mIG1zLiBE
+dXJpbmcgdGhhdCAgdGltZSwgbm8gbW9yZSBhY2Nlc3Nlcw0KPiA+Pj4gdG8gdGhlIGZsYXNoIHNo
+b3VsZCBiZSBkb25lIChldmVuIHJlYWRzKS4NCj4gPj4+DQo+ID4+PiBUaGlzIGNvbW1pdCBhZGRz
+IGEgd2FpdCBsb29wIGFmdGVyIHRoZSByZWdpc3RlciB3cml0aW5nIHVudGlsIHRoZQ0KPiA+Pj4g
+Zmxhc2ggZmluaXNoZXMgaXRzIHdvcmsuDQo+ID4+Pg0KPiA+Pj4gVGhpcyBpc3N1ZSBjb3VsZCBt
+YWtlIHJvb3RmcyBtb3VudGluZyBmYWlsIHdoZW4gdGhlIGxhdHRlciB3YXMgZG9uZQ0KPiA+Pj4g
+dG9vIG11Y2ggY2xvc2VseSB0byB0aGlzIHF1YWQgZW5hYmxlIGJpdCBzZXR0aW5nIHN0ZXAuIEFu
+ZCBpbiB0aGlzDQo+ID4+PiBjYXNlLCBhIGRyaXZlciBhcyBVQklGUyBtYXkgdHJ5IHRvIHJlY292
+ZXIgdGhlIGZpbGVzeXN0ZW0gYW5kIG1heQ0KPiA+Pj4gYnJva2UgaXQgY29tcGxldGVseS4NCj4g
+Pj4NCj4gPj4gRG9lcyB0aGlzIGFwcGx5IHRvIGFsbCBzcGFuc2lvbiBjaGlwcyBvciBvbmx5IHRv
+IHNlbGVjdGVkIGZldyA/DQo+ID4+DQo+ID4NCj4gPiBJJ3ZlIHJlY2VudGx5IGZhY2VkIHRoZSB2
+ZXJ5IHNhbWUgaXNzdWUgd2l0aCBXaW5ib25kIG1lbW9yaWVzLCB3aGljaA0KPiA+IHVzZSB0aGUg
+c2FtZSBwcm9jZWR1cmUgYXMgU3BhbnNpb24gdG8gc2V0IHRoZSBRdWFkIEVuYWJsZSBiaXQuDQo+
+ID4gTW9yZSBwcmVjaXNlbHksIGluIG15IGNhc2UgaXQgd2FzIHNvbWUgYmFyZSBtZXRhbCAoYm9v
+dGxvYWRlcikgY29kZQ0KPiA+IGJ1dCB0aGUgaXNzdWUgd2FzIHRoZSBzYW1lLCB0aGVyZSB3YXMg
+bm8gcG9sbGluZyBvZiBidXN5IGJpdCBmcm9tIHRoZQ0KPiA+IFN0YXR1cyBSZWdpc3RlciBhZnRl
+ciBoYXZpbmcgc2V0IHRoZSBRRSBiaXQgaW4gdGhlIFN0YXR1cyBSZWdpc3RlciAyIC8NCj4gPiBD
+b250cm9sIFJlZ2lzdGVyIDEuIFRoZW4gdGhlIG5leHQgU1BJIGNvbW1hbmQgY2FtZSB0b28gZWFy
+bHkgYW5kDQo+ID4gZmFpbGVkIGJlY2F1c2UgdGhlIG1lbW9yeSB3YXMgYWN0dWFsbHkgc3RpbGwg
+YnVzeS4NCj4gPg0KPiA+IEkgZmFjZWQgdGhpcyBpc3N1ZSB3aXRoIFdpbmJvbmQgVzI1UTI1NiBh
+bmQgVzI1TTUxMi4NCj4gDQo+IFNvIHdlIGNhbiBsZWF2ZSB0aGlzIGNvZGUgYXMgaXMgPw0KPiAN
+Cg0KDQpIaSwNCg0KSSBjaGVja2VkIHRoZXNlIGRhdGEgc2hlZXRzLCBhbmQgaW4gYWxsIG9mIHRo
+ZW0sIEJpdCAwIG9mIHRoZSBTdGF0dXMgUmVnaXN0ZXIgc3RhbmRzIGZvciBXSVAgKFdvcmsgaW4g
+cHJvZ3Jlc3MpLg0KDQpTMjVGTDAzMlAJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzE5Njg2
+MS9kb3dubG9hZCNHNC4xMjMxNTE2DQpTMjVGTDA2NFAJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9m
+aWxlLzE5Njg1Ni9kb3dubG9hZCNHMy4xMjMxNTE2DQpTMjVGTDEyN1MJaHR0cDovL3d3dy5jeXBy
+ZXNzLmNvbS9maWxlLzE3Nzk2MS9kb3dubG9hZCNHMy4xNDY4NDg5DQpTMjVGTDEyOFMsDQpTMjVG
+TDI1NlMJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzE3Nzk2Ni9kb3dubG9hZCNHMy4xMjU0
+MjgyDQpTMjVGTDUxMlMsDQpTNzBGTDAxR1MJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzE3
+Nzk3MS9kb3dubG9hZCNHMy4xMjM4NzA0DQpTMjVGTDEyOVAJaHR0cDovL3d3dy5jeXByZXNzLmNv
+bS9maWxlLzE5NzEyMS9kb3dubG9hZCNHNC4xMjMxNTE2DQpTMjVGTDAwNEssDQpTMjVGTDAwOEss
+DQpTMjVGTDAxNksJaHR0cDovL3d3dy5tb3VzZXIuY29tL2RzLzIvMzgwL3NwYW5zaW9uJTIwaW5j
+X3MyNWZsMDA0ay0wMTZrXzAwLTMyOTQ5Mi5wZGYjcGFnZT0xNiZ6b29tPWF1dG8sNjEsNjgzDQpT
+MjVGTDEyOEsJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzIyODM3Ni9kb3dubG9hZCNHNC4x
+Mjk5NDM1DQpTMjVGTDExNkssDQpTMjVGTDEzMkssDQpTMjVGTDE2NEsJaHR0cDovL3d3dy5jeXBy
+ZXNzLmNvbS9maWxlLzE5Njg4Ni9kb3dubG9hZCNHMy4xMjM5NTIxDQpTMjVGTDIwNEsJaHR0cDov
+L3d3dy5jeXByZXNzLmNvbS9maWxlLzE5Njg3MS9kb3dubG9hZCNHNC4xMzU0Nzc4DQoNCkkgd2Fz
+IG5vdCBhYmxlIHRvIGZpbmQgdGhlIGRhdGEgc2hlZXRzIG9mIFMyNVNMIHBhcnRzLg0KQmFzZWQg
+b24gdGhpcyBvbGQgcGF0Y2ggcHJvdmlkZWQgYnkgYW4gU3BhbnNpb24gZW5naW5lZXIsIGl0IGxv
+b2tzIGxpa2UgUzI1U0wgZmFtaWx5IG5ldmVyIGV4aXN0ZWQ6DQpodHRwczovL3BhdGNod29yay5v
+emxhYnMub3JnL3BhdGNoLzU5MTA5Lw0KDQpSZWdhcmRzLA0KDQpKb8OrbA0KDQo=
