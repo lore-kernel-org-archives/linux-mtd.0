@@ -1,26 +1,26 @@
-Received: from mail-by2nam01on0728.outbound.protection.outlook.com
- ([2a01:111:f400:fe42::728]
- helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAIxO-00007P-VB
- for linux-mtd@lists.infradead.org; Fri, 25 Nov 2016 16:02:40 +0000
-From: "Esponde, Joel" <Joel.Esponde@Honeywell.com>
-To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH v3] mtd: spi-nor: fix spansion quad enable
-Date: Fri, 25 Nov 2016 16:01:36 +0000
-Message-ID: <F6CD090A69E64C4289DC608E1C5D20242545B77C@DE08W1305.global.ds.honeywell.com>
+ id 1cAJbM-0005kk-Vl
+ for linux-mtd@lists.infradead.org; Fri, 25 Nov 2016 16:43:54 +0000
+Received: by mail-wm0-x241.google.com with SMTP id a20so8505584wme.2
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Nov 2016 08:43:32 -0800 (PST)
+Subject: Re: [PATCH v3] mtd: spi-nor: fix spansion quad enable
+To: "Esponde, Joel" <Joel.Esponde@Honeywell.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 References: <1476971026-9665-1-git-send-email-joel.esponde@honeywell.com>
  <1479901660-124876-1-git-send-email-joel.esponde@honeywell.com>
  <4c1b8cc9-3f1b-fa43-8ebc-eb6c3481abcc@gmail.com>
  <d08bf4d1-7667-1888-f9fa-ec63e4c9b249@atmel.com>
  <751ced45-1d6c-2d2d-3ea8-bb6d6be1da4a@gmail.com>
-In-Reply-To: <751ced45-1d6c-2d2d-3ea8-bb6d6be1da4a@gmail.com>
-Content-Language: fr-FR
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <F6CD090A69E64C4289DC608E1C5D20242545B77C@DE08W1305.global.ds.honeywell.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <d81e5625-4ab8-52cb-ea12-c891bfc84948@gmail.com>
+Date: Fri, 25 Nov 2016 17:43:29 +0100
 MIME-Version: 1.0
+In-Reply-To: <F6CD090A69E64C4289DC608E1C5D20242545B77C@DE08W1305.global.ds.honeywell.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,54 +30,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiAtLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0NCj4gRGXCoDogTWFyZWsgVmFzdXQgW21haWx0
-bzptYXJlay52YXN1dEBnbWFpbC5jb21dDQo+IEVudm95w6nCoDogdmVuZHJlZGkgMjUgbm92ZW1i
-cmUgMjAxNiAxNjowOA0KPiDDgMKgOiBDeXJpbGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0Y2hlbkBh
-dG1lbC5jb20+OyBFc3BvbmRlLCBKb2VsDQo+IDxKb2VsLkVzcG9uZGVASG9uZXl3ZWxsLmNvbT47
-IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IE9iamV0wqA6IFJlOiBbUEFUQ0ggdjNd
-IG10ZDogc3BpLW5vcjogZml4IHNwYW5zaW9uIHF1YWQgZW5hYmxlDQo+IA0KPiBPbiAxMS8yNS8y
-MDE2IDAzOjUwIFBNLCBDeXJpbGxlIFBpdGNoZW4gd3JvdGU6DQo+ID4gSGkgTWFyZWssDQo+IA0K
-PiBIaSwNCj4gDQo+ID4gTGUgMjUvMTEvMjAxNiDDoCAxNToxNywgTWFyZWsgVmFzdXQgYSDDqWNy
-aXQgOg0KPiA+PiBPbiAxMS8yMy8yMDE2IDEyOjQ3IFBNLCBKb8OrbCBFc3BvbmRlIHdyb3RlOg0K
-PiA+Pj4gV2l0aCB0aGUgUzI1RkwxMjdTIG5vciBmbGFzaCBwYXJ0LCBlYWNoIHdyaXRpbmcgdG8g
-dGhlIGNvbmZpZ3VyYXRpb24NCj4gPj4+IHJlZ2lzdGVyIHRha2VzIGh1bmRyZWRzIG9mIG1zLiBE
-dXJpbmcgdGhhdCAgdGltZSwgbm8gbW9yZSBhY2Nlc3Nlcw0KPiA+Pj4gdG8gdGhlIGZsYXNoIHNo
-b3VsZCBiZSBkb25lIChldmVuIHJlYWRzKS4NCj4gPj4+DQo+ID4+PiBUaGlzIGNvbW1pdCBhZGRz
-IGEgd2FpdCBsb29wIGFmdGVyIHRoZSByZWdpc3RlciB3cml0aW5nIHVudGlsIHRoZQ0KPiA+Pj4g
-Zmxhc2ggZmluaXNoZXMgaXRzIHdvcmsuDQo+ID4+Pg0KPiA+Pj4gVGhpcyBpc3N1ZSBjb3VsZCBt
-YWtlIHJvb3RmcyBtb3VudGluZyBmYWlsIHdoZW4gdGhlIGxhdHRlciB3YXMgZG9uZQ0KPiA+Pj4g
-dG9vIG11Y2ggY2xvc2VseSB0byB0aGlzIHF1YWQgZW5hYmxlIGJpdCBzZXR0aW5nIHN0ZXAuIEFu
-ZCBpbiB0aGlzDQo+ID4+PiBjYXNlLCBhIGRyaXZlciBhcyBVQklGUyBtYXkgdHJ5IHRvIHJlY292
-ZXIgdGhlIGZpbGVzeXN0ZW0gYW5kIG1heQ0KPiA+Pj4gYnJva2UgaXQgY29tcGxldGVseS4NCj4g
-Pj4NCj4gPj4gRG9lcyB0aGlzIGFwcGx5IHRvIGFsbCBzcGFuc2lvbiBjaGlwcyBvciBvbmx5IHRv
-IHNlbGVjdGVkIGZldyA/DQo+ID4+DQo+ID4NCj4gPiBJJ3ZlIHJlY2VudGx5IGZhY2VkIHRoZSB2
-ZXJ5IHNhbWUgaXNzdWUgd2l0aCBXaW5ib25kIG1lbW9yaWVzLCB3aGljaA0KPiA+IHVzZSB0aGUg
-c2FtZSBwcm9jZWR1cmUgYXMgU3BhbnNpb24gdG8gc2V0IHRoZSBRdWFkIEVuYWJsZSBiaXQuDQo+
-ID4gTW9yZSBwcmVjaXNlbHksIGluIG15IGNhc2UgaXQgd2FzIHNvbWUgYmFyZSBtZXRhbCAoYm9v
-dGxvYWRlcikgY29kZQ0KPiA+IGJ1dCB0aGUgaXNzdWUgd2FzIHRoZSBzYW1lLCB0aGVyZSB3YXMg
-bm8gcG9sbGluZyBvZiBidXN5IGJpdCBmcm9tIHRoZQ0KPiA+IFN0YXR1cyBSZWdpc3RlciBhZnRl
-ciBoYXZpbmcgc2V0IHRoZSBRRSBiaXQgaW4gdGhlIFN0YXR1cyBSZWdpc3RlciAyIC8NCj4gPiBD
-b250cm9sIFJlZ2lzdGVyIDEuIFRoZW4gdGhlIG5leHQgU1BJIGNvbW1hbmQgY2FtZSB0b28gZWFy
-bHkgYW5kDQo+ID4gZmFpbGVkIGJlY2F1c2UgdGhlIG1lbW9yeSB3YXMgYWN0dWFsbHkgc3RpbGwg
-YnVzeS4NCj4gPg0KPiA+IEkgZmFjZWQgdGhpcyBpc3N1ZSB3aXRoIFdpbmJvbmQgVzI1UTI1NiBh
-bmQgVzI1TTUxMi4NCj4gDQo+IFNvIHdlIGNhbiBsZWF2ZSB0aGlzIGNvZGUgYXMgaXMgPw0KPiAN
-Cg0KDQpIaSwNCg0KSSBjaGVja2VkIHRoZXNlIGRhdGEgc2hlZXRzLCBhbmQgaW4gYWxsIG9mIHRo
-ZW0sIEJpdCAwIG9mIHRoZSBTdGF0dXMgUmVnaXN0ZXIgc3RhbmRzIGZvciBXSVAgKFdvcmsgaW4g
-cHJvZ3Jlc3MpLg0KDQpTMjVGTDAzMlAJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzE5Njg2
-MS9kb3dubG9hZCNHNC4xMjMxNTE2DQpTMjVGTDA2NFAJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9m
-aWxlLzE5Njg1Ni9kb3dubG9hZCNHMy4xMjMxNTE2DQpTMjVGTDEyN1MJaHR0cDovL3d3dy5jeXBy
-ZXNzLmNvbS9maWxlLzE3Nzk2MS9kb3dubG9hZCNHMy4xNDY4NDg5DQpTMjVGTDEyOFMsDQpTMjVG
-TDI1NlMJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzE3Nzk2Ni9kb3dubG9hZCNHMy4xMjU0
-MjgyDQpTMjVGTDUxMlMsDQpTNzBGTDAxR1MJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzE3
-Nzk3MS9kb3dubG9hZCNHMy4xMjM4NzA0DQpTMjVGTDEyOVAJaHR0cDovL3d3dy5jeXByZXNzLmNv
-bS9maWxlLzE5NzEyMS9kb3dubG9hZCNHNC4xMjMxNTE2DQpTMjVGTDAwNEssDQpTMjVGTDAwOEss
-DQpTMjVGTDAxNksJaHR0cDovL3d3dy5tb3VzZXIuY29tL2RzLzIvMzgwL3NwYW5zaW9uJTIwaW5j
-X3MyNWZsMDA0ay0wMTZrXzAwLTMyOTQ5Mi5wZGYjcGFnZT0xNiZ6b29tPWF1dG8sNjEsNjgzDQpT
-MjVGTDEyOEsJaHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzIyODM3Ni9kb3dubG9hZCNHNC4x
-Mjk5NDM1DQpTMjVGTDExNkssDQpTMjVGTDEzMkssDQpTMjVGTDE2NEsJaHR0cDovL3d3dy5jeXBy
-ZXNzLmNvbS9maWxlLzE5Njg4Ni9kb3dubG9hZCNHMy4xMjM5NTIxDQpTMjVGTDIwNEsJaHR0cDov
-L3d3dy5jeXByZXNzLmNvbS9maWxlLzE5Njg3MS9kb3dubG9hZCNHNC4xMzU0Nzc4DQoNCkkgd2Fz
-IG5vdCBhYmxlIHRvIGZpbmQgdGhlIGRhdGEgc2hlZXRzIG9mIFMyNVNMIHBhcnRzLg0KQmFzZWQg
-b24gdGhpcyBvbGQgcGF0Y2ggcHJvdmlkZWQgYnkgYW4gU3BhbnNpb24gZW5naW5lZXIsIGl0IGxv
-b2tzIGxpa2UgUzI1U0wgZmFtaWx5IG5ldmVyIGV4aXN0ZWQ6DQpodHRwczovL3BhdGNod29yay5v
-emxhYnMub3JnL3BhdGNoLzU5MTA5Lw0KDQpSZWdhcmRzLA0KDQpKb8OrbA0KDQo=
+On 11/25/2016 05:01 PM, Esponde, Joel wrote:
+>> -----Message d'origine-----
+>> De : Marek Vasut [mailto:marek.vasut@gmail.com]
+>> Envoyé : vendredi 25 novembre 2016 16:08
+>> À : Cyrille Pitchen <cyrille.pitchen@atmel.com>; Esponde, Joel
+>> <Joel.Esponde@Honeywell.com>; linux-mtd@lists.infradead.org
+>> Objet : Re: [PATCH v3] mtd: spi-nor: fix spansion quad enable
+>>
+>> On 11/25/2016 03:50 PM, Cyrille Pitchen wrote:
+>>> Hi Marek,
+>>
+>> Hi,
+>>
+>>> Le 25/11/2016 à 15:17, Marek Vasut a écrit :
+>>>> On 11/23/2016 12:47 PM, Joël Esponde wrote:
+>>>>> With the S25FL127S nor flash part, each writing to the configuration
+>>>>> register takes hundreds of ms. During that  time, no more accesses
+>>>>> to the flash should be done (even reads).
+>>>>>
+>>>>> This commit adds a wait loop after the register writing until the
+>>>>> flash finishes its work.
+>>>>>
+>>>>> This issue could make rootfs mounting fail when the latter was done
+>>>>> too much closely to this quad enable bit setting step. And in this
+>>>>> case, a driver as UBIFS may try to recover the filesystem and may
+>>>>> broke it completely.
+>>>>
+>>>> Does this apply to all spansion chips or only to selected few ?
+>>>>
+>>>
+>>> I've recently faced the very same issue with Winbond memories, which
+>>> use the same procedure as Spansion to set the Quad Enable bit.
+>>> More precisely, in my case it was some bare metal (bootloader) code
+>>> but the issue was the same, there was no polling of busy bit from the
+>>> Status Register after having set the QE bit in the Status Register 2 /
+>>> Control Register 1. Then the next SPI command came too early and
+>>> failed because the memory was actually still busy.
+>>>
+>>> I faced this issue with Winbond W25Q256 and W25M512.
+>>
+>> So we can leave this code as is ?
+>>
+> 
+> 
+> Hi,
+> 
+> I checked these data sheets, and in all of them, Bit 0 of the Status Register stands for WIP (Work in progress).
+> 
+> S25FL032P	http://www.cypress.com/file/196861/download#G4.1231516
+> S25FL064P	http://www.cypress.com/file/196856/download#G3.1231516
+> S25FL127S	http://www.cypress.com/file/177961/download#G3.1468489
+> S25FL128S,
+> S25FL256S	http://www.cypress.com/file/177966/download#G3.1254282
+> S25FL512S,
+> S70FL01GS	http://www.cypress.com/file/177971/download#G3.1238704
+> S25FL129P	http://www.cypress.com/file/197121/download#G4.1231516
+> S25FL004K,
+> S25FL008K,
+> S25FL016K	http://www.mouser.com/ds/2/380/spansion%20inc_s25fl004k-016k_00-329492.pdf#page=16&zoom=auto,61,683
+> S25FL128K	http://www.cypress.com/file/228376/download#G4.1299435
+> S25FL116K,
+> S25FL132K,
+> S25FL164K	http://www.cypress.com/file/196886/download#G3.1239521
+> S25FL204K	http://www.cypress.com/file/196871/download#G4.1354778
+> 
+> I was not able to find the data sheets of S25SL parts.
+> Based on this old patch provided by an Spansion engineer, it looks like S25SL family never existed:
+> https://patchwork.ozlabs.org/patch/59109/
+
+Oh great, thanks a lot for checking :-) So we can leave the code as is.
+
+Regarding the S25SL, I found [1], but that might be a typo.
+
+[1]
+http://lxr.free-electrons.com/source/arch/powerpc/boot/dts/mpc8536ds.dts?v=3.0
+
+-- 
+Best regards,
+Marek Vasut
