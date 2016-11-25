@@ -1,20 +1,20 @@
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAHGS-00049n-95
- for linux-mtd@lists.infradead.org; Fri, 25 Nov 2016 14:14:12 +0000
-Received: by mail-wm0-x233.google.com with SMTP id g23so145396642wme.1
- for <linux-mtd@lists.infradead.org>; Fri, 25 Nov 2016 06:13:47 -0800 (PST)
-Subject: Re: Unable to remount ubifs after many unclean reboot
-To: Olivier Singla <olivier.singla@gmail.com>, linux-mtd@lists.infradead.org
-References: <CACcFhEU=U1f0HM9bZvWosM0odDqg7x5QE=dWV+7fMj+4aAho4g@mail.gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Bindings for Rockchip serial flash
+ controller
+To: Shawn Lin <shawn.lin@rock-chips.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1479437945-27918-1-git-send-email-shawn.lin@rock-chips.com>
+ <1479437945-27918-2-git-send-email-shawn.lin@rock-chips.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ Heiko Stuebner <heiko@sntech.de>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <4318d4ee-4ed6-a3db-5783-75cef32986b7@gmail.com>
-Date: Fri, 25 Nov 2016 15:13:44 +0100
+Message-ID: <7fd2cdc0-2103-d254-c7b2-d2552a32a738@gmail.com>
+Date: Fri, 25 Nov 2016 14:30:01 +0100
 MIME-Version: 1.0
-In-Reply-To: <CACcFhEU=U1f0HM9bZvWosM0odDqg7x5QE=dWV+7fMj+4aAho4g@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <1479437945-27918-2-git-send-email-shawn.lin@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,83 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/22/2016 04:17 PM, Olivier Singla wrote:
-> Hi,
+On 11/18/2016 03:59 AM, Shawn Lin wrote:
+> Add binding document for the Rockchip serial flash controller.
 > 
-> I am working for an embedded system using 4GB NAND Flash
-> (MT29F32G08ABAAAWP), ubifs, and 3.6.5 kernel (A9 dualcore).
+> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+> 
+> Changes in v2: None
+> 
+>  .../devicetree/bindings/mtd/rockchip-sfc.txt       | 31 ++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+> new file mode 100644
+> index 0000000..28430ce
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+> @@ -0,0 +1,31 @@
+> +Rockchip Serial Flash Controller
+> +
+> +Required properties:
+> +- compatible : Should be
+> +		"rockchip,rk1108-sfc", "rockchip,sfc" for ROCKCHIP RK1108.
+> +- address-cells : Should be 1.
+> +- size-cells : Should be 0.
 
-So you're using ancient unsupported kernel version and a controller/CPU
-which you do not disclose. It's hard to help.
+Shouldn't these two props have a # prefix ? I'm not sure they should
+even be part of this binding document at all.
 
-Can you check whether this problem still happens in mainline?
+> +- clocks: Must contain two entries for each entry in clock-names.
+> +- clock-names: Shall be "sfc" for the transfer-clock, and "hsfc" for
+> +		the peripheral clock.
+> +- interrupts : Should contain the interrupt for the device.
+> +- reg: Physical base address of the controller and length of memory mapped.
+> +
+> +Optional properties:
+> +- rockchip,sfc-no-dma: Indicate the controller doesn't support dma transfer.
 
-Are you using MLC NAND ? I suspect you do ...
+DMA should be in capital letters.
 
-. Using a
-> simple test program, I am able to have UBIFS to fail to mount the NAND
-> partition (I am using pretty much all the 4GB of the NAND). The test
-> is quite simple: mount the ubifs partition at boot time, then write a
-> file (justa  few KB), do a sync, wait a few seconds, and then reboot
-> (/sbin/reboot, and -important point- I have a micro-controller which
-> does a power-cycle). Intentionally, I did NOT unmount the ubifs
-> partition. Later on, I changed the test to unmount the ubifs partition
-> (but I still do not detach the ubi volume). What I am seeing is that
-> after many iterations (usually around a thousand), ubifs could not
-> mount the ubifs partition, both under u-boot and Linux.
-> 
-> Under Linux, this is what I see when ubifs try to mount the partition:
-> 
-> [   55.646884] UBIFS: background thread "ubifs_bgt0_0" started, PID 858
-> [   56.013037] UBIFS: recovery needed
-> [   56.258731] UBI warning: ubi_io_read: error -119 while reading
-> 294912 bytes from PEB 600:753664, read only 294912 bytes, retry
-> [   56.320616] UBI warning: ubi_io_read: error -119 while reading
-> 294912 bytes from PEB 600:753664, read only 294912 bytes, retry
-> [   56.382444] UBI warning: ubi_io_read: error -119 while reading
-> 294912 bytes from PEB 600:753664, read only 294912 bytes, retry
-> [   56.444263] UBI error: ubi_io_read: error -119 while reading 294912
-> bytes from PEB 600:753664, read 294912 bytes
-> [   56.454775] CPU: 0 PID: 857 Comm: mount Not tainted 3.14.29 #16
-> [   56.460888] Backtrace:
-> [   56.463441] [<c0011ea8>] (dump_backtrace) from [<c00120bc>]
-> (show_stack+0x18/0x1c)
-> [   56.471255]  r7:000b8000 r6:ede50000 r5:00000000 r4:c06c730c
-> [   56.477151] [<c00120a4>] (show_stack) from [<c04f4074>]
-> (dump_stack+0x94/0xcc)
-> [   56.484636] [<c04f3fe0>] (dump_stack) from [<c031d390>]
-> (ubi_io_read+0x134/0x314)
-> [   56.492356]  r7:000b8000 r6:00000000 r5:00048000 r4:ffffff89
-> [   56.498233] [<c031d25c>] (ubi_io_read) from [<c031ae84>]
-> (ubi_eba_read_leb+0x140/0x3e4)
-> etc.
-> 
-> At this point, my only option is to erase the NAND, and recreate the
-> UBIFS partition, which I can then use as usual. When I redo the test,
-> the PEB failing are at a different address in the flash, but this is
-> still a whole nand erase block size (1 MB in the case of this nand
-> part).
-> 
-> I realize this test might not be realistic, but the idea is to test
-> how the system would behave after several power loss, with and without
-> clean unmount.
-> 
-> I noticed that even after un-mounting the ubifs partition the ubi
-> working thread (ubifs_bgt0_0) is still running. I am wondering if this
-> thread could schedule a nand erase even in the case of the ubisfs
-> partition unmounted? If this is the case, doing the ubidetach, which
-> stop the thread should help, is that a fair statement?
-> 
-> I thought that the whole idea of ubifs was to be protected again
-> unexpected loss of power. I understand that obviously I could loose
-> some data, but at least ubifs should be able to mount the partition.
-> 
-> Any idea what could be wrong? And also should using ubidetach help, in
-> the case of testing reboot with clean unmount ?
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> +Example:
+> +nor_flash: sfc@301c0000 {
+> +	compatible = "rockchip,rk1108-sfc", "rockchip,sfc";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
+> +	clock-names = "sfc", "hsfc";
+> +	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+> +	reg = <0x301c0000 0x1000>;
+> +	spi-nor@0 {
+> +		compatible = "jedec,spi-nor";
+> +		spi-max-frequency = <12000000>;
+> +		reg = <0>;
+> +	};
+> +};
 > 
 
 
