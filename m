@@ -1,13 +1,13 @@
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Description: Mail message body
-Subject: Nezahtevano sredstev.//..
+Subject: Svare.//..
 To: Recipients <noreply@eLIVE.co.uk>
 From: "Santander Bank Plc" <noreply@eLIVE.co.uk>
-Date: Thu, 24 Nov 2016 14:19:45 -0500
+Date: Fri, 25 Nov 2016 01:39:47 -0500
 Reply-To: steve.s.bhatti@gmail.com
-Message-Id: <20161124191946.BDD81A211A@mail.enovaservers.in>
+Message-Id: <20161125063949.D4D9AA1C7C@mail.enovaservers.in>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,64 +17,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-G. Steve Batija
-Operations / regionalni direktor
+Mr. Steve Bhatti,
+Drift / regionsjef
 Santander Bank Plc,
 47-48 Piccadilly
 PICCADILLY
 W1J0DT
-London, Zdru=C5=BEeno Kraljestvo
+London, Storbritannia
  =
 
-Good Day Spo=C5=A1tovani,
+Good Day Kj=E6re,
 
-Kako se vi in ??va=C5=A1a dru=C5=BEina? Upam, da danes moje pismo ste se se=
-staja na svoje najbolj=C5=A1e razpolo=C5=BEenje. Sem Dr. Steve Batija, od H=
-arlesden North West London, vodja oddelka racunovodskega revidiranja in for=
-malno vi=C5=A1ji vodja programer pri Deutsche bank, tukaj v Angliji (Santan=
-der Bank Plc). Delal sem tudi za novej=C5=A1e ministrov Bank Plc.
+Hvordan har du og familien det? Jeg h=E5per mitt brev m=F8ter deg i ditt be=
+ste hum=F8r i dag. Jeg er Dr. Steve Bhatti, fra Harlesden North West London=
+, leder for regnskap Revisjonen og formell senior programmerer sjef hos Deu=
+tsche bank, her i England (Santander Bank Plc). Jeg har ogs=E5 jobbet for N=
+yeste ministrene Bank Plc.
  =
 
-Rabim nujno pomoc pri prenosu vsoto (=C2=A3 21,5 GBP) Twenty One Million, p=
-et tisoc britanskih funtov na svoj racun v 11 ali 15 bancnih dni. Ta denar =
-je bil v mirovanju za let v na=C5=A1i banki brez zahtevka. =C5=BDelim banka=
- sprostiti denar za vas, najbli=C5=BEje osebe v na=C5=A1i pokojnega Stranka=
- (lastnik racuna), ki je na =C5=BEalost izgubil =C5=BEivljenje februarja 20=
-03 po ju=C5=BEnem ZDA raketoplana Columbia, je umrl en sam clovek. Sem ugot=
-ovil, da ni natancno koli o=C5=BEjih sorodnikov ali pa bo upravicencu na nj=
-egov racun po tekoc skozi njegov spis v na=C5=A1i banki in nocem denarja, d=
-a gredo na racun zakladni=C5=A1tva kot zapu=C5=A1ceni sklada. To je torej r=
-azlog, zakaj sem kontakt z vami, da bi lahko banka spustite denar za vas, s=
-aj naj o=C5=BEjih sorodnikov / Will upravicenec do pokojnika stranko (Late =
-David McDowell Brown), ameri=C5=A1ki dr=C5=BEavljan Arlington v Virginiji. =
-Prosim, jaz bi tudi rad, da ta predlog kot top skrivnost in ga izbrisati, c=
-e vas ne zanimajo.
+Jeg trenger din haster hjelp til =E5 overf=F8re summen av (=A3 21,5 GBP) Tw=
+enty One Million, fem tusen britiske pund p=E5 kontoen din innen 11 eller 1=
+5 bankdager. Disse pengene har v=E6rt sovende i mange =E5r i v=E5r Bank ute=
+n et krav. Jeg =F8nsker banken =E5 frigj=F8re penger til deg som n=E6rmeste=
+ person til v=E5r avd=F8de kunden (eieren av kontoen) som dessverre mistet =
+livet i februar 2003 gjennom det s=F8rlige USA romfergen Columbia, d=F8de h=
+an en enkelt mann. Jeg oppdaget at han ikke spesifiserer noen p=E5r=F8rende=
+ eller vilje mottaker til hans konto etter =E5 ha g=E5tt gjennom hans fil i=
+ v=E5r bank, og jeg =F8nsker ikke penger til =E5 g=E5 inn i Bank treasury k=
+onto som en forlatt fondet. S=E5 dette er grunnen til at jeg kontakter deg =
+slik at banken kan frigj=F8re penger til deg som skal p=E5r=F8rende / Will =
+mottaker til den avd=F8de kunden (Late David McDowell Brown) en amerikansk =
+statsborger av Arlington Virginia. V=E6r s=E5 snill, jeg vil ogs=E5 gjerne =
+at du skal holde Forslaget som en topp hemmelig og slette den hvis du ikke =
+er interessert.
  =
 
-Tu je razmerje delitev; 50% za mene in 40% za vas, medtem ko 10% je za vse =
-stro=C5=A1ke, ki so nastali v casu transakcije. Ce ste zainteresirani, se o=
-brnite mi neposredno preko mojega zasebnega e-po=C5=A1ta: steve.s.bhatti@gm=
-ail.com
+Her er deling ratio; 50% til meg og 40% til deg mens 10% er for eventuelle =
+utgifter i l=F8pet av transaksjonen. Hvis du er interessert, ta kontakt med=
+ meg umiddelbart via min private e-post: steve.s.bhatti@gmail.com
 
-Navedite mi sledi spodaj, kot smo 7 dni teci skozi. To je zelo nujna.
+Gi meg f=F8lgende under, som vi har 7 dager for =E5 kj=F8re den gjennom. De=
+tte er veldig HASTER.
  =
 
-1. Polno ime:
-2. Direct Mobile =C5=A0tevilo:
-3. Kontaktni naslov:
-4. Poklic:
-5. Age:
-6. Spol:
-7. Dr=C5=BEavljanstvo:
+1. Fullt navn:
+2. Direkte Mobilnummer:
+3. Kontakt Adresse:
+4. Yrke:
+5. Alder:
+6. Kj=F8nn:
+7. Nasjonalitet:
 
-To je, da bi mi upload svoje podatke v na=C5=A1em bancnem bazi podatkov, da=
- odra=C5=BEa v sistemu bancnega omre=C5=BEja, ki ga so poimenovali
-o=C5=BEjih sorodnikov / volje prejemnika tega racuna, potem vas bom vodil n=
-a komunikacijo z banko za nadaljnji prenos tega sklada za vas.
-OPOMBA: Imamo nekaj bancnih dni za izvr=C5=A1itev te transakcije posel.
-Hvala v pricakovanju va=C5=A1ega takoj=C5=A1en odziv.
+Dette er for =E5 aktivere meg laste opp informasjon i v=E5r bank database f=
+or =E5 reflektere i banken nettverk system du den navngitte
+p=E5r=F8rende / vilje mottaker av denne kontoen, s=E5 vil jeg lede deg p=E5=
+ kommunikasjon med banken for videreformidling av dette fondet til deg.
+MERK: Vi har noen bankdager for =E5 utf=F8re denne transaksjonen avtale.
+Takk i p=E5vente av umiddelbar respons.
  =
 
-S spo=C5=A1tovanjem,
+Vennlig hilsen,
 Dr. Steve Bhatti.
 Tel: +447042043211
