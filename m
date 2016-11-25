@@ -1,28 +1,29 @@
-Received: from mail-wj0-x22c.google.com ([2a00:1450:400c:c01::22c])
+Received: from mail-wj0-x244.google.com ([2a00:1450:400c:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAKRM-0004hB-9p
+ id 1cAKRM-0004hV-J3
  for linux-mtd@lists.infradead.org; Fri, 25 Nov 2016 17:37:38 +0000
-Received: by mail-wj0-x22c.google.com with SMTP id mp19so64602484wjc.1
- for <linux-mtd@lists.infradead.org>; Fri, 25 Nov 2016 09:37:14 -0800 (PST)
-Subject: Re: SPI NAND support in drivers/mtd/spi-nor/spi-nor.c
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+Received: by mail-wj0-x244.google.com with SMTP id xy5so6363736wjc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Nov 2016 09:37:16 -0800 (PST)
+Subject: Re: [PATCH v5 1/3] spi-nor: Add support for Intel SPI serial flash
+ controller
+To: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-mtd@lists.infradead.org
+References: <20161114102447.131602-1-mika.westerberg@linux.intel.com>
+ <20161114102447.131602-2-mika.westerberg@linux.intel.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <DB6PR0401MB2407AE783B4F57D09750D8DA89A70@DB6PR0401MB2407.eurprd04.prod.outlook.com>
- <20161108020115.GA116407@google.com> <20161108090757.204ef112@bbrezillon>
- <b5b54cd1-87fb-3b56-6960-d87c172f93fb@atmel.com>
-Cc: "hramrach@gmail.com" <hramrach@gmail.com>,
- Richard Weinberger <richard@nod.at>, Peter Pan <peterpansjtu@gmail.com>,
- linux-mtd@lists.infradead.org, Yao Yuan <yao.yuan@nxp.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Lee Jones <lee.jones@linaro.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <0810b4e9-96fc-ae5d-590b-1449b646defb@gmail.com>
-Date: Fri, 25 Nov 2016 18:11:41 +0100
+Message-ID: <75195621-aeec-3d83-46ed-74ab1660fd5f@gmail.com>
+Date: Fri, 25 Nov 2016 18:26:10 +0100
 MIME-Version: 1.0
-In-Reply-To: <b5b54cd1-87fb-3b56-6960-d87c172f93fb@atmel.com>
+In-Reply-To: <20161114102447.131602-2-mika.westerberg@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,108 +33,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/08/2016 11:52 AM, Cyrille Pitchen wrote:
-> Hi all,
+On 11/14/2016 11:24 AM, Mika Westerberg wrote:
+> Add support for the SPI serial flash host controller found on many Intel
+> CPUs including Baytrail and Braswell. The SPI serial flash controller is
+> used to access BIOS and other platform specific information. By default the
+> driver exposes a single read-only MTD device but with a module parameter
+> "writeable=1" the MTD device can be made read-write which makes it possible
+> to upgrade BIOS directly from Linux.
 > 
-> Le 08/11/2016 à 09:07, Boris Brezillon a écrit :
->> +Peter
->>
->> On Mon, 7 Nov 2016 18:01:15 -0800
->> Brian Norris <computersforpeace@gmail.com> wrote:
->>
->>> + others
->>>
->>> On Mon, Nov 07, 2016 at 09:53:34AM +0000, Yao Yuan wrote:
->>>>    Hi All,  
->>>
->>> Hi Yao,
->>>
->>> I'm not that interested in handling private requests, and this is
->>> generally informative, so I've added the linux-mtd list, as well as the
->>> other maintainers.
->>>
->>> Also, when you're ready to send patches, make sure you use plain text
->>> instead of HTML email.
->>>
->>>>    I’m trying to add the QSPI NAND support in MTD.
->>
->> Yao, can you sync with Peter who is currently working on a SPI NAND
->> framework (which would sit in drivers/mtd/nand/spi/).
->>
->>>>
->>>>    But I have reached a junction, could you please take some minutes and
->>>>    give me some suggestions?
->>>>
->>>>
->>>>    You know, we have the QSPI NOR support in
->>>>    drivers/mtd/spi-nor/spi-nor.c,
->>>>
->>>>    And the QSPI NAND is very similar with QSPI NOR, but the Read, write
->>>>    and erase is different with SPI-NOR.  
->>>
->>> How similar is the controller hardware? Does your IP support standard
->>> SPI protocol, or is it specialized for accelerating SPI NAND (e.g.,
->>> memory-mapped, DMA, etc.)? Does it support SPI NOR?
->>>
->>>>    So I have two ways to add QSPI-NAND:  
->>>
->>> I'll leave your options intact below, but I don't think either of them
->>> are that good. SPI NOR and SPI NAND are different enough, I doubt that
->>> we'll get much benefit from using the same framework, unless you happen
->>> to have IP that's designed for both NOR and NAND, yet doesn't quite do
->>> traditional SPI.
->>>
->>> Particularly, NAND flash has a lot of issues that NOR flash generally
->>> does not, around bad block management and wear leveling. Also, there may
->>> be something to share around identification/ONFI? (Not sure how similar
->>> the implementations are there.) There's been some prior discussion about
->>> it, and maybe one of the CC'd people can direct you toward the latest
->>> opinions, or else you can search the archives youreself ("SPI NAND"
->>> should turn up several results).
->>>
->>> So the main issues would probably be around abstracting out the
->>> bad-block-related and chip identification code so you can share code
->>> with existing (parallel) NAND support. At least, that's what I think
->>> based on the last time I looked at things, and I think some of the other
->>> active maintainers had ideas along the same lines.
->>
->> I'm not sure identification of raw and SPI NAND is working the same
->> way, but that's true for the BBT. And, as Brian said, you don't interact
->> with NANDs the same way you do with NORs, so it should IMO stay in
->> different frameworks.
->>
-> 
-> I agree with Brian and Boris about separating NORs and NANDs in different
-> frameworks. I know this is just a detail but for instance, the current
-> spi-nor framework starts sending the JEDEC Read ID command 9Fh to probe
-> the memory. At this point, you don't know yet what memory is connected to
-> the SPI controller. Hence you don't even know wether it is a NAND or a NOR.
-> Then if I take the Macronix MX35LFxGE4AB QSPI NAND as an example, its
-> datasheet claims that the JEDEC Read ID command (9Fh) requires 8 dummy
-> clock cycles after the op code and before reading the actual memory ID.
-> Those dummy cycles don't exist with SPI NOR memories.
-> So spi_nor_scan() cannot be used probe (Q)SPI NAND memories.
-> 
-> Also, the read operation can be performed with a single (Fast) Read
-> command with (Q)SPI NOR memories whereas it has to be done in two steps
-> for QSPI NAND memories:
-> 1 - Page Read (13h): to transfer data from array to cache
-> 2 - Random Data Read (03h or 0Bh): to read data from the cache and
->                                    transfer them on the SPI bus.
-> 
-> So read operations are quite different as well between NORs and NANDs.
-> I didn't have a look at the Page Program operation but I expect
-> strong differences as well.
-> 
-> I think there are too many differences to handle both kind of memories
-> with a single framework.
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-Can a QSPI controller handle both SPI NOR and SPI NAND ? That is the
-question here. If so, we'd have the same driver for both, but different
-layer on top of it (handling either NOR or NAND commands). I think the
-different command sets are a detail which can be handled just fine and
-it should be a detail handled in separate SPI NOR and SPI NAND layers.
-Just my 5 cents ...
+Only minor nits below. Sorry I took so long with the review.
+
+[...]
+
+> +static int intel_spi_wait_hw_busy(struct intel_spi *ispi)
+> +{
+> +	unsigned long timeout = jiffies + msecs_to_jiffies(INTEL_SPI_TIMEOUT);
+> +	u32 hwstat;
+
+Won't some include/linux/iopoll.h macro help here ?
+
+> +	while (!time_after(jiffies, timeout)) {
+> +		hwstat = readl(ispi->base + HSFSTS_CTL);
+> +		if (!(hwstat & HSFSTS_CTL_SCIP))
+> +			return 0;
+> +		cond_resched();
+> +	}
+> +
+> +	return -ETIMEDOUT;
+> +}
+> +
+> +static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
+> +{
+> +	unsigned long timeout = jiffies + msecs_to_jiffies(INTEL_SPI_TIMEOUT);
+> +	u32 swstat;
+> +
+> +	while (!time_after(jiffies, timeout)) {
+
+DTTO
+
+> +		swstat = readl(ispi->sregs + SSFSTS_CTL);
+> +		if (!(swstat & SSFSTS_CTL_SCIP))
+> +			return 0;
+> +		cond_resched();
+> +	}
+> +
+> +	return -ETIMEDOUT;
+> +}
+
+[...]
+
+> +static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
+> +			      u_char *read_buf)
+> +{
+> +	struct intel_spi *ispi = nor->priv;
+> +	size_t block_size, retlen = 0;
+> +	u32 val, status;
+> +	ssize_t ret;
+> +
+> +	switch (nor->read_opcode) {
+> +	case SPINOR_OP_READ:
+> +	case SPINOR_OP_READ_FAST:
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	while (len > 0) {
+> +		block_size = min_t(size_t, len, INTEL_SPI_FIFO_SZ);
+> +
+> +		writel(from, ispi->base + FADDR);
+> +
+> +		val = readl(ispi->base + HSFSTS_CTL);
+> +		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
+> +		val &= ~HSFSTS_CTL_FDBC_MASK;
+> +		val |= (block_size - 1) << HSFSTS_CTL_FDBC_SHIFT;
+> +		val &= ~HSFSTS_CTL_FCYCLE_MASK;
+> +		val |= HSFSTS_CTL_FCYCLE_READ;
+> +		val |= HSFSTS_CTL_FGO;
+
+Sort those bit clears and bit sets so you first clear and then set bits.
+
+> +		writel(val, ispi->base + HSFSTS_CTL);
+> +
+> +		ret = intel_spi_wait_hw_busy(ispi);
+> +		if (ret)
+> +			return ret;
+> +
+> +		status = readl(ispi->base + HSFSTS_CTL);
+> +		if (status & HSFSTS_CTL_FCERR)
+> +			ret = -EIO;
+> +		else if (status & HSFSTS_CTL_AEL)
+> +			ret = -EACCES;
+> +
+> +		if (ret < 0) {
+> +			dev_err(ispi->dev, "read error: %llx: %#x\n", from,
+> +				status);
+> +			return ret;
+> +		}
+> +
+> +		ret = intel_spi_read_block(ispi, read_buf, block_size);
+> +		if (ret)
+> +			return ret;
+> +
+> +		len -= block_size;
+> +		from += block_size;
+> +		retlen += block_size;
+> +		read_buf += block_size;
+> +	}
+> +
+> +	return retlen;
+> +}
+> +
+> +static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
+> +			       const u_char *write_buf)
+> +{
+> +	struct intel_spi *ispi = nor->priv;
+> +	size_t block_size, retlen = 0;
+> +	u32 val, status;
+> +	ssize_t ret;
+> +
+> +	while (len > 0) {
+> +		block_size = min_t(size_t, len, INTEL_SPI_FIFO_SZ);
+> +
+> +		writel(to, ispi->base + FADDR);
+> +
+> +		val = readl(ispi->base + HSFSTS_CTL);
+> +		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
+> +		val &= ~HSFSTS_CTL_FDBC_MASK;
+> +		val |= (block_size - 1) << HSFSTS_CTL_FDBC_SHIFT;
+> +		val &= ~HSFSTS_CTL_FCYCLE_MASK;
+> +		val |= HSFSTS_CTL_FCYCLE_WRITE;
+
+DTTO here.
+
+> +		/* Write enable */
+> +		if (ispi->preopcodes[1] == SPINOR_OP_WREN)
+> +			val |= SSFSTS_CTL_SPOP;
+> +		val |= SSFSTS_CTL_ACS;
+> +		writel(val, ispi->base + HSFSTS_CTL);
+> +
+> +		ret = intel_spi_write_block(ispi, write_buf, block_size);
+> +		if (ret) {
+> +			dev_err(ispi->dev, "failed to write block\n");
+> +			return ret;
+> +		}
+> +
+> +		/* Start the write now */
+> +		val = readl(ispi->base + HSFSTS_CTL);
+> +		writel(val | HSFSTS_CTL_FGO, ispi->base + HSFSTS_CTL);
+> +
+> +		ret = intel_spi_wait_hw_busy(ispi);
+> +		if (ret) {
+> +			dev_err(ispi->dev, "timeout\n");
+> +			return ret;
+> +		}
+> +
+> +		status = readl(ispi->base + HSFSTS_CTL);
+> +		if (status & HSFSTS_CTL_FCERR)
+> +			ret = -EIO;
+> +		else if (status & HSFSTS_CTL_AEL)
+> +			ret = -EACCES;
+> +
+> +		if (ret < 0) {
+> +			dev_err(ispi->dev, "write error: %llx: %#x\n", to,
+> +				status);
+> +			return ret;
+> +		}
+> +
+> +		len -= block_size;
+> +		to += block_size;
+> +		retlen += block_size;
+> +		write_buf += block_size;
+> +	}
+> +
+> +	return retlen;
+> +}
+
+[...]
 
 -- 
 Best regards,
