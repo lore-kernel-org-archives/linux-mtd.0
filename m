@@ -1,15 +1,15 @@
 Received: from mail-wj0-x244.google.com ([2a00:1450:400c:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAKRM-0004hV-J3
- for linux-mtd@lists.infradead.org; Fri, 25 Nov 2016 17:37:38 +0000
-Received: by mail-wj0-x244.google.com with SMTP id xy5so6363736wjc.1
- for <linux-mtd@lists.infradead.org>; Fri, 25 Nov 2016 09:37:16 -0800 (PST)
-Subject: Re: [PATCH v5 1/3] spi-nor: Add support for Intel SPI serial flash
- controller
+ id 1cAKRM-0004i0-J8
+ for linux-mtd@lists.infradead.org; Fri, 25 Nov 2016 17:37:39 +0000
+Received: by mail-wj0-x244.google.com with SMTP id xy5so6363770wjc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Nov 2016 09:37:17 -0800 (PST)
+Subject: Re: [PATCH v5 2/3] mfd: lpc_ich: Add support for SPI serial flash
+ host controller
 To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd@lists.infradead.org
 References: <20161114102447.131602-1-mika.westerberg@linux.intel.com>
- <20161114102447.131602-2-mika.westerberg@linux.intel.com>
+ <20161114102447.131602-3-mika.westerberg@linux.intel.com>
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
@@ -18,10 +18,10 @@ Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
  linux-kernel@vger.kernel.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <75195621-aeec-3d83-46ed-74ab1660fd5f@gmail.com>
-Date: Fri, 25 Nov 2016 18:26:10 +0100
+Message-ID: <54d54e00-dd6d-a33e-1239-fc64bc5a0afc@gmail.com>
+Date: Fri, 25 Nov 2016 18:28:30 +0100
 MIME-Version: 1.0
-In-Reply-To: <20161114102447.131602-2-mika.westerberg@linux.intel.com>
+In-Reply-To: <20161114102447.131602-3-mika.westerberg@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,184 +34,138 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 11/14/2016 11:24 AM, Mika Westerberg wrote:
-> Add support for the SPI serial flash host controller found on many Intel
-> CPUs including Baytrail and Braswell. The SPI serial flash controller is
-> used to access BIOS and other platform specific information. By default the
-> driver exposes a single read-only MTD device but with a module parameter
-> "writeable=1" the MTD device can be made read-write which makes it possible
-> to upgrade BIOS directly from Linux.
+> Many Intel CPUs including Haswell, Broadwell and Baytrail have SPI serial
+> flash host controller as part of the LPC device. This will populate an MFD
+> cell suitable for the SPI host controller driver if we know that the LPC
+> device has one.
 > 
 > Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-
-Only minor nits below. Sorry I took so long with the review.
-
-[...]
-
-> +static int intel_spi_wait_hw_busy(struct intel_spi *ispi)
-> +{
-> +	unsigned long timeout = jiffies + msecs_to_jiffies(INTEL_SPI_TIMEOUT);
-> +	u32 hwstat;
-
-Won't some include/linux/iopoll.h macro help here ?
-
-> +	while (!time_after(jiffies, timeout)) {
-> +		hwstat = readl(ispi->base + HSFSTS_CTL);
-> +		if (!(hwstat & HSFSTS_CTL_SCIP))
-> +			return 0;
-> +		cond_resched();
+> Acked-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mfd/lpc_ich.c       | 92 +++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/lpc_ich.h |  3 ++
+>  2 files changed, 95 insertions(+)
+> 
+> diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+> index c8dee47b45d9..985bda575849 100644
+> --- a/drivers/mfd/lpc_ich.c
+> +++ b/drivers/mfd/lpc_ich.c
+> @@ -83,6 +83,15 @@
+>  #define ACPIBASE_GCS_OFF	0x3410
+>  #define ACPIBASE_GCS_END	0x3414
+>  
+> +#define SPIBASE_BYT		0x54
+> +#define SPIBASE_BYT_SZ		512
+> +#define SPIBASE_BYT_EN		BIT(1)
+> +
+> +#define SPIBASE_LPT		0x3800
+> +#define SPIBASE_LPT_SZ		512
+> +#define BCR			0xdc
+> +#define BCR_WPD			BIT(0)
+> +
+>  #define GPIOBASE_ICH0		0x58
+>  #define GPIOCTRL_ICH0		0x5C
+>  #define GPIOBASE_ICH6		0x48
+> @@ -133,6 +142,12 @@ static struct resource gpio_ich_res[] = {
+>  	},
+>  };
+>  
+> +static struct resource intel_spi_res[] = {
+> +	{
+> +		.flags = IORESOURCE_MEM,
 > +	}
+> +};
 > +
-> +	return -ETIMEDOUT;
-> +}
+>  static struct mfd_cell lpc_ich_wdt_cell = {
+>  	.name = "iTCO_wdt",
+>  	.num_resources = ARRAY_SIZE(wdt_ich_res),
+> @@ -147,6 +162,14 @@ static struct mfd_cell lpc_ich_gpio_cell = {
+>  	.ignore_resource_conflicts = true,
+>  };
+>  
 > +
-> +static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
+> +static struct mfd_cell lpc_ich_spi_cell = {
+> +	.name = "intel-spi",
+> +	.num_resources = ARRAY_SIZE(intel_spi_res),
+> +	.resources = intel_spi_res,
+> +	.ignore_resource_conflicts = true,
+> +};
+> +
+>  /* chipset related info */
+>  enum lpc_chipsets {
+>  	LPC_ICH = 0,	/* ICH */
+> @@ -493,10 +516,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+>  	[LPC_LPT] = {
+>  		.name = "Lynx Point",
+>  		.iTCO_version = 2,
+> +		.spi_type = INTEL_SPI_LPT,
+>  	},
+>  	[LPC_LPT_LP] = {
+>  		.name = "Lynx Point_LP",
+>  		.iTCO_version = 2,
+> +		.spi_type = INTEL_SPI_LPT,
+>  	},
+>  	[LPC_WBG] = {
+>  		.name = "Wellsburg",
+> @@ -510,6 +535,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+>  	[LPC_BAYTRAIL] = {
+>  		.name = "Bay Trail SoC",
+>  		.iTCO_version = 3,
+> +		.spi_type = INTEL_SPI_BYT,
+>  	},
+>  	[LPC_COLETO] = {
+>  		.name = "Coleto Creek",
+> @@ -518,10 +544,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+>  	[LPC_WPT_LP] = {
+>  		.name = "Wildcat Point_LP",
+>  		.iTCO_version = 2,
+> +		.spi_type = INTEL_SPI_LPT,
+>  	},
+>  	[LPC_BRASWELL] = {
+>  		.name = "Braswell SoC",
+>  		.iTCO_version = 3,
+> +		.spi_type = INTEL_SPI_BYT,
+>  	},
+>  	[LPC_LEWISBURG] = {
+>  		.name = "Lewisburg",
+> @@ -1054,6 +1082,64 @@ static int lpc_ich_init_wdt(struct pci_dev *dev)
+>  	return ret;
+>  }
+>  
+> +static int lpc_ich_init_spi(struct pci_dev *dev)
 > +{
-> +	unsigned long timeout = jiffies + msecs_to_jiffies(INTEL_SPI_TIMEOUT);
-> +	u32 swstat;
+> +	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
+> +	struct resource *res = &intel_spi_res[0];
+> +	struct intel_spi_boardinfo *info;
+> +	u32 spi_base, rcba, bcr;
 > +
-> +	while (!time_after(jiffies, timeout)) {
-
-DTTO
-
-> +		swstat = readl(ispi->sregs + SSFSTS_CTL);
-> +		if (!(swstat & SSFSTS_CTL_SCIP))
-> +			return 0;
-> +		cond_resched();
-> +	}
+> +	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
+> +	if (!info)
+> +		return -ENOMEM;
 > +
-> +	return -ETIMEDOUT;
-> +}
-
-[...]
-
-> +static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
-> +			      u_char *read_buf)
-> +{
-> +	struct intel_spi *ispi = nor->priv;
-> +	size_t block_size, retlen = 0;
-> +	u32 val, status;
-> +	ssize_t ret;
+> +	info->type = lpc_chipset_info[priv->chipset].spi_type;
 > +
-> +	switch (nor->read_opcode) {
-> +	case SPINOR_OP_READ:
-> +	case SPINOR_OP_READ_FAST:
+> +	switch (info->type) {
+> +	case INTEL_SPI_BYT:
+> +		pci_read_config_dword(dev, SPIBASE_BYT, &spi_base);
+> +		if (spi_base & SPIBASE_BYT_EN) {
+> +			res->start = spi_base & ~(SPIBASE_BYT_SZ - 1);
+> +			res->end = res->start + SPIBASE_BYT_SZ - 1;
+> +		}
 > +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
 > +
-> +	while (len > 0) {
-> +		block_size = min_t(size_t, len, INTEL_SPI_FIFO_SZ);
-> +
-> +		writel(from, ispi->base + FADDR);
-> +
-> +		val = readl(ispi->base + HSFSTS_CTL);
-> +		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
-> +		val &= ~HSFSTS_CTL_FDBC_MASK;
-> +		val |= (block_size - 1) << HSFSTS_CTL_FDBC_SHIFT;
-> +		val &= ~HSFSTS_CTL_FCYCLE_MASK;
-> +		val |= HSFSTS_CTL_FCYCLE_READ;
-> +		val |= HSFSTS_CTL_FGO;
+> +	case INTEL_SPI_LPT:
+> +		pci_read_config_dword(dev, RCBABASE, &rcba);
+> +		if (rcba & 1) {
+> +			spi_base = rcba & ~(SPIBASE_LPT_SZ - 1);
 
-Sort those bit clears and bit sets so you first clear and then set bits.
+Use the round_down() macro here ?
 
-> +		writel(val, ispi->base + HSFSTS_CTL);
-> +
-> +		ret = intel_spi_wait_hw_busy(ispi);
-> +		if (ret)
-> +			return ret;
-> +
-> +		status = readl(ispi->base + HSFSTS_CTL);
-> +		if (status & HSFSTS_CTL_FCERR)
-> +			ret = -EIO;
-> +		else if (status & HSFSTS_CTL_AEL)
-> +			ret = -EACCES;
-> +
-> +		if (ret < 0) {
-> +			dev_err(ispi->dev, "read error: %llx: %#x\n", from,
-> +				status);
-> +			return ret;
-> +		}
-> +
-> +		ret = intel_spi_read_block(ispi, read_buf, block_size);
-> +		if (ret)
-> +			return ret;
-> +
-> +		len -= block_size;
-> +		from += block_size;
-> +		retlen += block_size;
-> +		read_buf += block_size;
-> +	}
-> +
-> +	return retlen;
-> +}
-> +
-> +static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
-> +			       const u_char *write_buf)
-> +{
-> +	struct intel_spi *ispi = nor->priv;
-> +	size_t block_size, retlen = 0;
-> +	u32 val, status;
-> +	ssize_t ret;
-> +
-> +	while (len > 0) {
-> +		block_size = min_t(size_t, len, INTEL_SPI_FIFO_SZ);
-> +
-> +		writel(to, ispi->base + FADDR);
-> +
-> +		val = readl(ispi->base + HSFSTS_CTL);
-> +		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
-> +		val &= ~HSFSTS_CTL_FDBC_MASK;
-> +		val |= (block_size - 1) << HSFSTS_CTL_FDBC_SHIFT;
-> +		val &= ~HSFSTS_CTL_FCYCLE_MASK;
-> +		val |= HSFSTS_CTL_FCYCLE_WRITE;
-
-DTTO here.
-
-> +		/* Write enable */
-> +		if (ispi->preopcodes[1] == SPINOR_OP_WREN)
-> +			val |= SSFSTS_CTL_SPOP;
-> +		val |= SSFSTS_CTL_ACS;
-> +		writel(val, ispi->base + HSFSTS_CTL);
-> +
-> +		ret = intel_spi_write_block(ispi, write_buf, block_size);
-> +		if (ret) {
-> +			dev_err(ispi->dev, "failed to write block\n");
-> +			return ret;
-> +		}
-> +
-> +		/* Start the write now */
-> +		val = readl(ispi->base + HSFSTS_CTL);
-> +		writel(val | HSFSTS_CTL_FGO, ispi->base + HSFSTS_CTL);
-> +
-> +		ret = intel_spi_wait_hw_busy(ispi);
-> +		if (ret) {
-> +			dev_err(ispi->dev, "timeout\n");
-> +			return ret;
-> +		}
-> +
-> +		status = readl(ispi->base + HSFSTS_CTL);
-> +		if (status & HSFSTS_CTL_FCERR)
-> +			ret = -EIO;
-> +		else if (status & HSFSTS_CTL_AEL)
-> +			ret = -EACCES;
-> +
-> +		if (ret < 0) {
-> +			dev_err(ispi->dev, "write error: %llx: %#x\n", to,
-> +				status);
-> +			return ret;
-> +		}
-> +
-> +		len -= block_size;
-> +		to += block_size;
-> +		retlen += block_size;
-> +		write_buf += block_size;
-> +	}
-> +
-> +	return retlen;
-> +}
+> +			res->start = spi_base + SPIBASE_LPT;
+> +			res->end = res->start + SPIBASE_LPT_SZ - 1;
 
 [...]
+
 
 -- 
 Best regards,
