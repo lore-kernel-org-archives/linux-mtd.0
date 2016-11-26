@@ -1,20 +1,20 @@
 Received: from conuserg-11.nifty.com ([210.131.2.78])
  by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAhOC-00025h-3Y
+ id 1cAhOC-00025f-4e
  for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:53 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH 22/39] mtd: nand: denali_dt: remove dma-mask DT property
-Date: Sun, 27 Nov 2016 03:06:08 +0900
-Message-Id: <1480183585-592-23-git-send-email-yamada.masahiro@socionext.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH 16/39] mtd: nand: denali: rename handle_ecc() to
+ denali_sw_ecc_fixup()
+Date: Sun, 27 Nov 2016 03:06:02 +0900
+Message-Id: <1480183585-592-17-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,62 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The driver sets appropriate DMA mask.  Delete the "dma-mask" DT
-property.  Refer to the Link tag for negative opinions for this
-binding.
+I am going to add HW_ECC_FIXUP capability in the next commit.
+Rename the software ECC handling function to denali_sw_ecc_fixup()
+for clarification.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Link: https://lkml.org/lkml/2016/2/8/57
 ---
 
- Documentation/devicetree/bindings/mtd/denali-nand.txt | 2 --
- drivers/mtd/nand/denali_dt.c                          | 9 ---------
- 2 files changed, 11 deletions(-)
+ drivers/mtd/nand/denali.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-index b04d03a..603110b 100644
---- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-@@ -5,7 +5,6 @@ Required properties:
-   - reg : should contain registers location and length for data and reg.
-   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
-   - interrupts : The interrupt number.
--  - dm-mask : DMA bit mask
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index b577560..271b41a 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -903,8 +903,8 @@ static bool is_erased(u8 *buf, int len)
+ #define ECC_ERR_DEVICE(x)	(((x) & ERR_CORRECTION_INFO__DEVICE_NR) >> 8)
+ #define ECC_LAST_ERR(x)		((x) & ERR_CORRECTION_INFO__LAST_ERR_INFO)
  
- The device tree may optionally contain sub-nodes describing partitions of the
- address space. See partition.txt for more detail.
-@@ -19,5 +18,4 @@ nand: nand@ff900000 {
- 	reg = <0xff900000 0x100000>, <0xffb80000 0x10000>;
- 	reg-names = "nand_data", "denali_reg";
- 	interrupts = <0 144 4>;
--	dma-mask = <0xffffffff>;
- };
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 9dcd203..6a486a7 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -40,8 +40,6 @@ static const struct of_device_id denali_nand_dt_ids[] = {
- 
- MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
- 
--static u64 denali_dma_mask;
--
- static int denali_dt_probe(struct platform_device *ofdev)
+-static bool handle_ecc(struct denali_nand_info *denali, u8 *buf,
+-		       u32 irq_status, unsigned int *max_bitflips)
++static bool denali_sw_ecc_fixup(struct denali_nand_info *denali, u8 *buf,
++				u32 irq_status, unsigned int *max_bitflips)
  {
- 	struct resource *denali_reg, *nand_data;
-@@ -79,13 +77,6 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	if (IS_ERR(denali->flash_mem))
- 		return PTR_ERR(denali->flash_mem);
+ 	bool check_erased_page = false;
+ 	unsigned int bitflips = 0;
+@@ -1139,7 +1139,8 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
  
--	if (!of_property_read_u32(ofdev->dev.of_node,
--		"dma-mask", (u32 *)&denali_dma_mask)) {
--		denali->dev->dma_mask = &denali_dma_mask;
--	} else {
--		denali->dev->dma_mask = NULL;
--	}
--
- 	dt->clk = devm_clk_get(&ofdev->dev, NULL);
- 	if (IS_ERR(dt->clk)) {
- 		dev_err(&ofdev->dev, "no clk available\n");
+ 	memcpy(buf, denali->buf.buf, mtd->writesize);
+ 
+-	check_erased_page = handle_ecc(denali, buf, irq_status, &max_bitflips);
++	check_erased_page = denali_sw_ecc_fixup(denali, buf, irq_status,
++						&max_bitflips);
+ 	denali_enable_dma(denali, false);
+ 
+ 	if (check_erased_page) {
 -- 
 2.7.4
