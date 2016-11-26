@@ -1,6 +1,6 @@
 Received: from conuserg-11.nifty.com ([210.131.2.78])
  by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAhOB-0006Od-TQ
+ id 1cAhOB-0006OY-SL
  for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:53 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -11,10 +11,9 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 20/39] mtd: nand: denali_dt: enable HW_ECC_FIXUP capability
- for DT platform
-Date: Sun, 27 Nov 2016 03:06:06 +0900
-Message-Id: <1480183585-592-21-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 27/39] mtd: nand: denali: do not set mtd->name
+Date: Sun, 27 Nov 2016 03:06:13 +0900
+Message-Id: <1480183585-592-28-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,29 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The denali_dt.c was split out by Altera for the SOCFPGA port.  The
-Denali IP on SOCFPGA incorporates the hardware ECC fixup feature.
-Newer versions are very likely to support it.  So, it should be OK
-to set DENALI_CAPS_HW_ECC_FIXUP for all DT platforms.
+This will be filled by nand_scan_ident() later.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/denali_dt.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/nand/denali.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 293ddb8..9dcd203 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -59,6 +59,8 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	if (data)
- 		denali->caps = data->caps;
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 0f94381b..60b0858 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1509,7 +1509,6 @@ int denali_init(struct denali_nand_info *denali)
  
-+	denali->caps |= DENALI_CAPS_HW_ECC_FIXUP;
-+
- 	denali->platform = DT;
- 	denali->dev = &ofdev->dev;
- 	denali->irq = platform_get_irq(ofdev, 0);
+ 	/* now that our ISR is registered, we can enable interrupts */
+ 	denali_set_intr_modes(denali, true);
+-	mtd->name = "denali-nand";
+ 	nand_set_flash_node(chip, denali->dev->of_node);
+ 
+ 	/* register the driver with the NAND core subsystem */
 -- 
 2.7.4
