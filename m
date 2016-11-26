@@ -1,7 +1,7 @@
 Received: from conuserg-11.nifty.com ([210.131.2.78])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAhNm-00050n-Qd
- for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:28 +0000
+ id 1cAhNm-00050w-Qa
+ for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:30 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
@@ -11,9 +11,10 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 15/39] mtd: nand: denali: improve readability of handle_ecc()
-Date: Sun, 27 Nov 2016 03:06:01 +0900
-Message-Id: <1480183585-592-16-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 01/39] mtd: nand: allow to set only one of ECC size and ECC
+ strength from DT
+Date: Sun, 27 Nov 2016 03:05:47 +0900
+Message-Id: <1480183585-592-2-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,148 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This function is unreadable due to the deep nesting.  Note this
-function does a job only when INTR_STATUS__ECC_ERR is set.
-So, if the flag is not set, let it bail-out.
+Currently, it is valid to specify both "nand-ecc-step-size" and
+"nand-ecc-strength", but not allowed to set only one of them.
+
+This requirement has a conflict with "nand-ecc-maximize"; this flag
+is used when you want the driver to choose the best ECC strength.
+If "nand-ecc-maximize" is set, "nand-ecc-strength" is very likely to
+be unset.
+
+It would be possible to make the if-conditional more complex by
+adding the check for the NAND_ECC_MAXIMIZE flag, but I chose to drop
+the check entirely.  I thought of the situation where the hardware
+has a fixed ECC step size (so it can be hard-coded in the driver),
+whereas the ECC strength is configurable by software.  In that case,
+we may want to only set "nand-ecc-strength" (or "nand-ecc-maximize")
+in DT.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/denali.c | 119 +++++++++++++++++++++++-----------------------
- 1 file changed, 59 insertions(+), 60 deletions(-)
+The Denali NAND is the case.
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index a7dc692..b577560 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -908,69 +908,68 @@ static bool handle_ecc(struct denali_nand_info *denali, u8 *buf,
- {
- 	bool check_erased_page = false;
- 	unsigned int bitflips = 0;
-+	u32 err_address, err_correction_info, err_byte, err_sector, err_device,
-+	    err_correction_value;
+The ecc.size is fixed when the RTL is delivered, while the
+driver can choose ecc.strength from some supported values.
+
+ For Intel and Altera, available ecc.strength are 8, 15.
+ For Socionext UniPhier, available ecc.strength are 8, 16, 24.
+
+
+ drivers/mtd/nand/nand_base.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8c74d8c..c1ed91d 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4266,12 +4266,6 @@ static int nand_dt_init(struct nand_chip *chip)
+ 	ecc_strength = of_get_nand_ecc_strength(dn);
+ 	ecc_step = of_get_nand_ecc_step_size(dn);
  
--	if (irq_status & INTR_STATUS__ECC_ERR) {
--		/* read the ECC errors. we'll ignore them for now */
--		u32 err_address, err_correction_info, err_byte,
--			err_sector, err_device, err_correction_value;
--		denali_set_intr_modes(denali, false);
--
--		do {
--			err_address = ioread32(denali->flash_reg +
--						ECC_ERROR_ADDRESS);
--			err_sector = ECC_SECTOR(err_address);
--			err_byte = ECC_BYTE(err_address);
--
--			err_correction_info = ioread32(denali->flash_reg +
--						ERR_CORRECTION_INFO);
--			err_correction_value =
-+	if (!(irq_status & INTR_STATUS__ECC_ERR))
-+		goto out;
-+
-+	/* read the ECC errors. we'll ignore them for now */
-+	denali_set_intr_modes(denali, false);
-+
-+	do {
-+		err_address = ioread32(denali->flash_reg + ECC_ERROR_ADDRESS);
-+		err_sector = ECC_SECTOR(err_address);
-+		err_byte = ECC_BYTE(err_address);
-+
-+		err_correction_info = ioread32(denali->flash_reg +
-+					       ERR_CORRECTION_INFO);
-+		err_correction_value =
- 				ECC_CORRECTION_VALUE(err_correction_info);
--			err_device = ECC_ERR_DEVICE(err_correction_info);
--
--			if (ECC_ERROR_CORRECTABLE(err_correction_info)) {
--				/*
--				 * If err_byte is larger than ECC_SECTOR_SIZE,
--				 * means error happened in OOB, so we ignore
--				 * it. It's no need for us to correct it
--				 * err_device is represented the NAND error
--				 * bits are happened in if there are more
--				 * than one NAND connected.
--				 */
--				if (err_byte < ECC_SECTOR_SIZE) {
--					struct mtd_info *mtd =
--						nand_to_mtd(&denali->nand);
--					int offset;
--
--					offset = (err_sector *
--							ECC_SECTOR_SIZE +
--							err_byte) *
--							denali->devnum +
--							err_device;
--					/* correct the ECC error */
--					buf[offset] ^= err_correction_value;
--					mtd->ecc_stats.corrected++;
--					bitflips++;
--				}
--			} else {
--				/*
--				 * if the error is not correctable, need to
--				 * look at the page to see if it is an erased
--				 * page. if so, then it's not a real ECC error
--				 */
--				check_erased_page = true;
-+		err_device = ECC_ERR_DEVICE(err_correction_info);
-+
-+		if (ECC_ERROR_CORRECTABLE(err_correction_info)) {
-+			/*
-+			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
-+			 * happened in OOB, so we ignore it. It's no need for
-+			 * us to correct it err_device is represented the NAND
-+			 * error bits are happened in if there are more than
-+			 * one NAND connected.
-+			 */
-+			if (err_byte < ECC_SECTOR_SIZE) {
-+				struct mtd_info *mtd =
-+					nand_to_mtd(&denali->nand);
-+				int offset;
-+
-+				offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
-+					denali->devnum + err_device;
-+				/* correct the ECC error */
-+				buf[offset] ^= err_correction_value;
-+				mtd->ecc_stats.corrected++;
-+				bitflips++;
- 			}
--		} while (!ECC_LAST_ERR(err_correction_info));
--		/*
--		 * Once handle all ecc errors, controller will triger
--		 * a ECC_TRANSACTION_DONE interrupt, so here just wait
--		 * for a while for this interrupt
--		 */
--		while (!(read_interrupt_status(denali) &
--				INTR_STATUS__ECC_TRANSACTION_DONE))
--			cpu_relax();
--		clear_interrupts(denali);
--		denali_set_intr_modes(denali, true);
+-	if ((ecc_step >= 0 && !(ecc_strength >= 0)) ||
+-	    (!(ecc_step >= 0) && ecc_strength >= 0)) {
+-		pr_err("must set both strength and step size in DT\n");
+-		return -EINVAL;
 -	}
-+		} else {
-+			/*
-+			 * if the error is not correctable, need to look at the
-+			 * page to see if it is an erased page. if so, then
-+			 * it's not a real ECC error
-+			 */
-+			check_erased_page = true;
-+		}
-+	} while (!ECC_LAST_ERR(err_correction_info));
-+
-+	/*
-+	 * Once handle all ecc errors, controller will triger a
-+	 * ECC_TRANSACTION_DONE interrupt, so here just wait for
-+	 * a while for this interrupt
-+	 */
-+	while (!(read_interrupt_status(denali) &
-+		 INTR_STATUS__ECC_TRANSACTION_DONE))
-+		cpu_relax();
-+	clear_interrupts(denali);
-+	denali_set_intr_modes(denali, true);
-+
-+ out:
- 	*max_bitflips = bitflips;
- 	return check_erased_page;
- }
+-
+ 	if (ecc_mode >= 0)
+ 		chip->ecc.mode = ecc_mode;
+ 
 -- 
 2.7.4
