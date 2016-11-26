@@ -1,10 +1,21 @@
-Date: Sat, 26 Nov 2016 20:52:23 +0530 (IST)
-From: Wahid Davo <vedanti.dhuri@jaypeebrothers.com>
-Message-ID: <1496261910.159692.1480173743028.JavaMail.zimbra@jaypeebrothers.com>
-Subject: Product inquiry
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Received: from conuserg-11.nifty.com ([210.131.2.78])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cAhNm-00050n-Qd
+ for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:28 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH 15/39] mtd: nand: denali: improve readability of handle_ecc()
+Date: Sun, 27 Nov 2016 03:06:01 +0900
+Message-Id: <1480183585-592-16-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,23 +25,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This function is unreadable due to the deep nesting.  Note this
+function does a job only when INTR_STATUS__ECC_ERR is set.
+So, if the flag is not set, let it bail-out.
 
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
+ drivers/mtd/nand/denali.c | 119 +++++++++++++++++++++++-----------------------
+ 1 file changed, 59 insertions(+), 60 deletions(-)
 
-Dear Sir/Madam,
-
-We are interested in purchasing your products and we sincerely hope to establish a long-term business relation with your esteemed company.
-
-Please kindly send me your latest catalog. Also, inform me about the Minimum Order Quantity, Delivery time or FOB, and payment terms warranty.
-
-Please contact us via Email, quality is all we may ask. Your early reply is highly appreciated.
-
-Thank You!
-Best Regards,
-Mr: Wahid Davo
-(purchasing manager)
-Wahid Llc group, Ltd.
-Adderss: Riyadh Saudi Arabia
-Tel.: +966 1 477 1088
-Fax.: +966 1 478 9879
-Email: wahid.llcgroupltd@gmail.com
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index a7dc692..b577560 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -908,69 +908,68 @@ static bool handle_ecc(struct denali_nand_info *denali, u8 *buf,
+ {
+ 	bool check_erased_page = false;
+ 	unsigned int bitflips = 0;
++	u32 err_address, err_correction_info, err_byte, err_sector, err_device,
++	    err_correction_value;
+ 
+-	if (irq_status & INTR_STATUS__ECC_ERR) {
+-		/* read the ECC errors. we'll ignore them for now */
+-		u32 err_address, err_correction_info, err_byte,
+-			err_sector, err_device, err_correction_value;
+-		denali_set_intr_modes(denali, false);
+-
+-		do {
+-			err_address = ioread32(denali->flash_reg +
+-						ECC_ERROR_ADDRESS);
+-			err_sector = ECC_SECTOR(err_address);
+-			err_byte = ECC_BYTE(err_address);
+-
+-			err_correction_info = ioread32(denali->flash_reg +
+-						ERR_CORRECTION_INFO);
+-			err_correction_value =
++	if (!(irq_status & INTR_STATUS__ECC_ERR))
++		goto out;
++
++	/* read the ECC errors. we'll ignore them for now */
++	denali_set_intr_modes(denali, false);
++
++	do {
++		err_address = ioread32(denali->flash_reg + ECC_ERROR_ADDRESS);
++		err_sector = ECC_SECTOR(err_address);
++		err_byte = ECC_BYTE(err_address);
++
++		err_correction_info = ioread32(denali->flash_reg +
++					       ERR_CORRECTION_INFO);
++		err_correction_value =
+ 				ECC_CORRECTION_VALUE(err_correction_info);
+-			err_device = ECC_ERR_DEVICE(err_correction_info);
+-
+-			if (ECC_ERROR_CORRECTABLE(err_correction_info)) {
+-				/*
+-				 * If err_byte is larger than ECC_SECTOR_SIZE,
+-				 * means error happened in OOB, so we ignore
+-				 * it. It's no need for us to correct it
+-				 * err_device is represented the NAND error
+-				 * bits are happened in if there are more
+-				 * than one NAND connected.
+-				 */
+-				if (err_byte < ECC_SECTOR_SIZE) {
+-					struct mtd_info *mtd =
+-						nand_to_mtd(&denali->nand);
+-					int offset;
+-
+-					offset = (err_sector *
+-							ECC_SECTOR_SIZE +
+-							err_byte) *
+-							denali->devnum +
+-							err_device;
+-					/* correct the ECC error */
+-					buf[offset] ^= err_correction_value;
+-					mtd->ecc_stats.corrected++;
+-					bitflips++;
+-				}
+-			} else {
+-				/*
+-				 * if the error is not correctable, need to
+-				 * look at the page to see if it is an erased
+-				 * page. if so, then it's not a real ECC error
+-				 */
+-				check_erased_page = true;
++		err_device = ECC_ERR_DEVICE(err_correction_info);
++
++		if (ECC_ERROR_CORRECTABLE(err_correction_info)) {
++			/*
++			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
++			 * happened in OOB, so we ignore it. It's no need for
++			 * us to correct it err_device is represented the NAND
++			 * error bits are happened in if there are more than
++			 * one NAND connected.
++			 */
++			if (err_byte < ECC_SECTOR_SIZE) {
++				struct mtd_info *mtd =
++					nand_to_mtd(&denali->nand);
++				int offset;
++
++				offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
++					denali->devnum + err_device;
++				/* correct the ECC error */
++				buf[offset] ^= err_correction_value;
++				mtd->ecc_stats.corrected++;
++				bitflips++;
+ 			}
+-		} while (!ECC_LAST_ERR(err_correction_info));
+-		/*
+-		 * Once handle all ecc errors, controller will triger
+-		 * a ECC_TRANSACTION_DONE interrupt, so here just wait
+-		 * for a while for this interrupt
+-		 */
+-		while (!(read_interrupt_status(denali) &
+-				INTR_STATUS__ECC_TRANSACTION_DONE))
+-			cpu_relax();
+-		clear_interrupts(denali);
+-		denali_set_intr_modes(denali, true);
+-	}
++		} else {
++			/*
++			 * if the error is not correctable, need to look at the
++			 * page to see if it is an erased page. if so, then
++			 * it's not a real ECC error
++			 */
++			check_erased_page = true;
++		}
++	} while (!ECC_LAST_ERR(err_correction_info));
++
++	/*
++	 * Once handle all ecc errors, controller will triger a
++	 * ECC_TRANSACTION_DONE interrupt, so here just wait for
++	 * a while for this interrupt
++	 */
++	while (!(read_interrupt_status(denali) &
++		 INTR_STATUS__ECC_TRANSACTION_DONE))
++		cpu_relax();
++	clear_interrupts(denali);
++	denali_set_intr_modes(denali, true);
++
++ out:
+ 	*max_bitflips = bitflips;
+ 	return check_erased_page;
+ }
+-- 
+2.7.4
