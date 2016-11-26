@@ -1,6 +1,6 @@
 Received: from conuserg-11.nifty.com ([210.131.2.78])
  by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAhOB-0006OZ-Rs
+ id 1cAhOB-0006Oa-St
  for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:54 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -11,10 +11,10 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 23/39] mtd: nand: denali_dt: use pdev instead of ofdev for
- platform_device
-Date: Sun, 27 Nov 2016 03:06:09 +0900
-Message-Id: <1480183585-592-24-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 32/39] mtd: nand: denali: remove unnecessary writes to
+ ECC_CORRECTION
+Date: Sun, 27 Nov 2016 03:06:18 +0900
+Message-Id: <1480183585-592-33-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,103 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"pdev" is much more often used for platform_device, so this will
-help the driver code look consistent across the kernel.
+Because SUPPORT_15BITECC is defined, the following is dead code:
 
-While we are here, fix "line over 80 characters" coding style
-violations.
+  #elif SUPPORT_8BITECC
+          iowrite32(8, denali->flash_reg + ECC_CORRECTION);
+  #endif
+
+Such ifdefs are useless and unacceptable coding style.
+
+These writes are not needed in the first place since ECC_CORRECTION
+is set up by the nand_init() function.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/denali_dt.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ drivers/mtd/nand/denali.c | 15 +--------------
+ drivers/mtd/nand/denali.h |  3 ---
+ 2 files changed, 1 insertion(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 6a486a7..f085626 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -40,7 +40,7 @@ static const struct of_device_id denali_nand_dt_ids[] = {
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 9193331..63f7500 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -62,8 +62,6 @@ MODULE_PARM_DESC(onfi_timing_mode,
+  */
+ #define CHIP_SELECT_INVALID	-1
  
- MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
- 
--static int denali_dt_probe(struct platform_device *ofdev)
-+static int denali_dt_probe(struct platform_device *pdev)
- {
- 	struct resource *denali_reg, *nand_data;
- 	struct denali_dt *dt;
-@@ -48,38 +48,40 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	struct denali_nand_info *denali;
- 	int ret;
- 
--	dt = devm_kzalloc(&ofdev->dev, sizeof(*dt), GFP_KERNEL);
-+	dt = devm_kzalloc(&pdev->dev, sizeof(*dt), GFP_KERNEL);
- 	if (!dt)
- 		return -ENOMEM;
- 	denali = &dt->denali;
- 
--	data = of_device_get_match_data(&ofdev->dev);
-+	data = of_device_get_match_data(&pdev->dev);
- 	if (data)
- 		denali->caps = data->caps;
- 
- 	denali->caps |= DENALI_CAPS_HW_ECC_FIXUP;
- 
- 	denali->platform = DT;
--	denali->dev = &ofdev->dev;
--	denali->irq = platform_get_irq(ofdev, 0);
-+	denali->dev = &pdev->dev;
-+	denali->irq = platform_get_irq(pdev, 0);
- 	if (denali->irq < 0) {
--		dev_err(&ofdev->dev, "no irq defined\n");
-+		dev_err(&pdev->dev, "no irq defined\n");
- 		return denali->irq;
- 	}
- 
--	denali_reg = platform_get_resource_byname(ofdev, IORESOURCE_MEM, "denali_reg");
--	denali->flash_reg = devm_ioremap_resource(&ofdev->dev, denali_reg);
-+	denali_reg = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+						  "denali_reg");
-+	denali->flash_reg = devm_ioremap_resource(&pdev->dev, denali_reg);
- 	if (IS_ERR(denali->flash_reg))
- 		return PTR_ERR(denali->flash_reg);
- 
--	nand_data = platform_get_resource_byname(ofdev, IORESOURCE_MEM, "nand_data");
--	denali->flash_mem = devm_ioremap_resource(&ofdev->dev, nand_data);
-+	nand_data = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+						 "nand_data");
-+	denali->flash_mem = devm_ioremap_resource(&pdev->dev, nand_data);
- 	if (IS_ERR(denali->flash_mem))
- 		return PTR_ERR(denali->flash_mem);
- 
--	dt->clk = devm_clk_get(&ofdev->dev, NULL);
-+	dt->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(dt->clk)) {
--		dev_err(&ofdev->dev, "no clk available\n");
-+		dev_err(&pdev->dev, "no clk available\n");
- 		return PTR_ERR(dt->clk);
- 	}
- 	clk_prepare_enable(dt->clk);
-@@ -88,7 +90,7 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	if (ret)
- 		goto out_disable_clk;
- 
--	platform_set_drvdata(ofdev, dt);
-+	platform_set_drvdata(pdev, dt);
- 	return 0;
- 
- out_disable_clk:
-@@ -97,9 +99,9 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	return ret;
+-#define SUPPORT_8BITECC		1
+-
+ /*
+  * This macro divides two integers and rounds fractional values up
+  * to the nearest integer value.
+@@ -347,14 +345,8 @@ static void get_toshiba_nand_para(struct denali_nand_info *denali)
+ 	 * spare area size for some kind of Toshiba NAND device
+ 	 */
+ 	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
+-		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64)) {
++		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
+ 		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+-#if SUPPORT_15BITECC
+-		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
+-#elif SUPPORT_8BITECC
+-		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
+-#endif
+-	}
  }
  
--static int denali_dt_remove(struct platform_device *ofdev)
-+static int denali_dt_remove(struct platform_device *pdev)
- {
--	struct denali_dt *dt = platform_get_drvdata(ofdev);
-+	struct denali_dt *dt = platform_get_drvdata(pdev);
+ static void get_hynix_nand_para(struct denali_nand_info *denali, u8 device_id)
+@@ -366,11 +358,6 @@ static void get_hynix_nand_para(struct denali_nand_info *denali, u8 device_id)
+ 		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
+ 		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+ 		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
+-#if SUPPORT_15BITECC
+-		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
+-#elif SUPPORT_8BITECC
+-		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
+-#endif
+ 		break;
+ 	default:
+ 		dev_warn(denali->dev,
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index e3fe3bc..d621b74 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -387,9 +387,6 @@
+ #define CLK_X  5
+ #define CLK_MULTI 4
  
- 	denali_remove(&dt->denali);
- 	clk_disable_unprepare(dt->clk);
+-#define SUPPORT_15BITECC        1
+-#define SUPPORT_8BITECC         1
+-
+ #define ONFI_BLOOM_TIME         1
+ #define MODE5_WORKAROUND        0
+ 
 -- 
 2.7.4
