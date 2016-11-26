@@ -1,6 +1,6 @@
 Received: from conuserg-11.nifty.com ([210.131.2.78])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAhNu-00056D-Ud
+ id 1cAhNv-00056O-07
  for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:37 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -11,10 +11,10 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 28/39] mtd: nand: denali: move multi NAND fixup code to a
- helper function
-Date: Sun, 27 Nov 2016 03:06:14 +0900
-Message-Id: <1480183585-592-29-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 18/39] mtd: nand: denali: move denali_read_page_raw() above
+ denali_read_page()
+Date: Sun, 27 Nov 2016 03:06:04 +0900
+Message-Id: <1480183585-592-19-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,99 +26,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Collect multi NAND fixups into a helper function instead of
-scattering them in denali_init().
+This will be needed in the next commit to call denali_read_page_raw()
+from denali_read_page().
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/denali.c | 51 ++++++++++++++++++++++++++++-------------------
- 1 file changed, 31 insertions(+), 20 deletions(-)
+ drivers/mtd/nand/denali.c | 76 +++++++++++++++++++++++------------------------
+ 1 file changed, 38 insertions(+), 38 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 60b0858..54dcd83 100644
+index c101e7f..f035dac 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1472,6 +1472,34 @@ static void denali_drv_init(struct denali_nand_info *denali)
- 	denali->irq_status = 0;
+@@ -1118,6 +1118,44 @@ static int denali_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return 0;
  }
  
-+static void denali_multidev_fixup(struct denali_nand_info *denali)
++static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
++				u8 *buf, int oob_required, int page)
 +{
-+	struct nand_chip *chip = &denali->nand;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++	dma_addr_t addr = denali->buf.dma_buf;
++	size_t size = mtd->writesize + mtd->oobsize;
++	u32 irq_mask = INTR_STATUS__DMA_CMD_COMP;
 +
-+	/*
-+	 * Support for multi NAND:
-+	 * MTD knows nothing about multi NAND, so we should tell it
-+	 * the real pagesize and anything necessary
-+	 */
-+	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
++	if (page != denali->page) {
++		dev_err(denali->dev,
++			"IN %s: page %d is not equal to denali->page %d",
++			__func__, page, denali->page);
++		BUG();
++	}
 +
-+	mtd->size <<= denali->devnum - 1;
-+	mtd->erasesize <<= denali->devnum - 1;
-+	mtd->writesize <<= denali->devnum - 1;
-+	mtd->oobsize <<= denali->devnum - 1;
-+	chip->chipsize <<= denali->devnum - 1;
-+	chip->page_shift += denali->devnum - 1;
-+	chip->phys_erase_shift += denali->devnum - 1;
-+	chip->bbt_erase_shift += denali->devnum - 1;
-+	chip->chip_shift += denali->devnum - 1;
-+	chip->pagemask <<= denali->devnum - 1;
-+	chip->ecc.size *= denali->devnum;
-+	chip->ecc.bytes *= denali->devnum;
-+	chip->ecc.strength *= denali->devnum;
-+	denali->bbtskipbytes *= denali->devnum;
++	setup_ecc_for_xfer(denali, false, oob_required ? true : false);
++	denali_enable_dma(denali, true);
++
++	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
++
++	clear_interrupts(denali);
++	denali_setup_dma(denali, DENALI_READ);
++
++	/* wait for operation to complete */
++	wait_for_irq(denali, irq_mask);
++
++	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_FROM_DEVICE);
++
++	denali_enable_dma(denali, false);
++
++	memcpy(buf, denali->buf.buf, mtd->writesize);
++	if (oob_required)
++		memcpy(chip->oob_poi, denali->buf.buf + mtd->writesize,
++		       mtd->oobsize);
++
++	return 0;
 +}
 +
- int denali_init(struct denali_nand_info *denali)
+ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 			    u8 *buf, int oob_required, int page)
  {
- 	struct nand_chip *chip = &denali->nand;
-@@ -1553,23 +1581,6 @@ int denali_init(struct denali_nand_info *denali)
- 		goto failed_req_irq;
- 	}
+@@ -1182,44 +1220,6 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return max_bitflips;
+ }
  
--	/*
--	 * support for multi nand
--	 * MTD known nothing about multi nand, so we should tell it
--	 * the real pagesize and anything necessery
--	 */
--	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
--	chip->chipsize <<= denali->devnum - 1;
--	chip->page_shift += denali->devnum - 1;
--	chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
--	chip->bbt_erase_shift += denali->devnum - 1;
--	chip->phys_erase_shift = chip->bbt_erase_shift;
--	chip->chip_shift += denali->devnum - 1;
--	mtd->writesize <<= denali->devnum - 1;
--	mtd->oobsize <<= denali->devnum - 1;
--	mtd->erasesize <<= denali->devnum - 1;
--	mtd->size = chip->numchips * chip->chipsize;
--	denali->bbtskipbytes *= denali->devnum;
- 
- 	/*
- 	 * second stage of the NAND scan
-@@ -1614,11 +1625,9 @@ int denali_init(struct denali_nand_info *denali)
- 	}
- 
- 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
--	chip->ecc.bytes *= denali->devnum;
--	chip->ecc.strength *= denali->devnum;
- 
- 	/* override the default read operations */
--	chip->ecc.size = ECC_SECTOR_SIZE * denali->devnum;
-+	chip->ecc.size = ECC_SECTOR_SIZE;
- 	chip->ecc.read_page = denali_read_page;
- 	chip->ecc.read_page_raw = denali_read_page_raw;
- 	chip->ecc.write_page = denali_write_page;
-@@ -1627,6 +1636,8 @@ int denali_init(struct denali_nand_info *denali)
- 	chip->ecc.write_oob = denali_write_oob;
- 	chip->erase = denali_erase;
- 
-+	denali_multidev_fixup(denali);
-+
- 	ret = nand_scan_tail(mtd);
- 	if (ret)
- 		goto failed_req_irq;
+-static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+-				u8 *buf, int oob_required, int page)
+-{
+-	struct denali_nand_info *denali = mtd_to_denali(mtd);
+-	dma_addr_t addr = denali->buf.dma_buf;
+-	size_t size = mtd->writesize + mtd->oobsize;
+-	u32 irq_mask = INTR_STATUS__DMA_CMD_COMP;
+-
+-	if (page != denali->page) {
+-		dev_err(denali->dev,
+-			"IN %s: page %d is not equal to denali->page %d",
+-			__func__, page, denali->page);
+-		BUG();
+-	}
+-
+-	setup_ecc_for_xfer(denali, false, oob_required ? true : false);
+-	denali_enable_dma(denali, true);
+-
+-	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
+-
+-	clear_interrupts(denali);
+-	denali_setup_dma(denali, DENALI_READ);
+-
+-	/* wait for operation to complete */
+-	wait_for_irq(denali, irq_mask);
+-
+-	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_FROM_DEVICE);
+-
+-	denali_enable_dma(denali, false);
+-
+-	memcpy(buf, denali->buf.buf, mtd->writesize);
+-	if (oob_required)
+-		memcpy(chip->oob_poi, denali->buf.buf + mtd->writesize,
+-		       mtd->oobsize);
+-
+-	return 0;
+-}
+-
+ static u8 denali_read_byte(struct mtd_info *mtd)
+ {
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
 -- 
 2.7.4
