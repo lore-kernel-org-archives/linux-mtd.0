@@ -1,19 +1,20 @@
 Received: from conuserg-11.nifty.com ([210.131.2.78])
  by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAhOC-00025g-43
- for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:54 +0000
+ id 1cAhOC-00025h-3Y
+ for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:53 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 30/39] mtd: nand: denali: set DEVICES_CONNECTED 1 if not set
-Date: Sun, 27 Nov 2016 03:06:16 +0900
-Message-Id: <1480183585-592-31-git-send-email-yamada.masahiro@socionext.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH 22/39] mtd: nand: denali_dt: remove dma-mask DT property
+Date: Sun, 27 Nov 2016 03:06:08 +0900
+Message-Id: <1480183585-592-23-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,46 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, the driver expects DEVICE_CONNECTED is automatically set
-by the hardware, but this feature is disabled in some cases.
-In such cases, it is the software's responsibility to set up the
-DEVICES_CONNECTED register.
+The driver sets appropriate DMA mask.  Delete the "dma-mask" DT
+property.  Refer to the Link tag for negative opinions for this
+binding.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Link: https://lkml.org/lkml/2016/2/8/57
 ---
 
- drivers/mtd/nand/denali.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/mtd/denali-nand.txt | 2 --
+ drivers/mtd/nand/denali_dt.c                          | 9 ---------
+ 2 files changed, 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 71bdf2a..4b2bbcb 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1485,6 +1485,13 @@ static void denali_multidev_fixup(struct denali_nand_info *denali)
- 	 */
- 	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index b04d03a..603110b 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -5,7 +5,6 @@ Required properties:
+   - reg : should contain registers location and length for data and reg.
+   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
+   - interrupts : The interrupt number.
+-  - dm-mask : DMA bit mask
  
-+	/*
-+	 * On some SoCs, DEVICES_CONNECTED is not auto-detected. For those SoCs
-+	 * DEVICES_CONNECT is left to 0.  Set 1 if it is the case.
-+	 */
-+	if (denali->devnum == 0)
-+		denali->devnum = 1;
-+
- 	devnum_shift = fls(denali->devnum) - 1;
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+@@ -19,5 +18,4 @@ nand: nand@ff900000 {
+ 	reg = <0xff900000 0x100000>, <0xffb80000 0x10000>;
+ 	reg-names = "nand_data", "denali_reg";
+ 	interrupts = <0 144 4>;
+-	dma-mask = <0xffffffff>;
+ };
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 9dcd203..6a486a7 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -40,8 +40,6 @@ static const struct of_device_id denali_nand_dt_ids[] = {
  
- 	if (denali->devnum != BIT(devnum_shift)) {
-@@ -1492,9 +1499,10 @@ static void denali_multidev_fixup(struct denali_nand_info *denali)
- 			 "DEVICE_CONNECTED=%d is not power of 2. Some devices will not be used.\n",
- 			 denali->devnum);
- 		denali->devnum = BIT(devnum_shift);
--		iowrite32(denali->devnum, denali->flash_reg + DEVICES_CONNECTED);
- 	}
+ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
  
-+	iowrite32(denali->devnum, denali->flash_reg + DEVICES_CONNECTED);
-+
- 	mtd->size <<= devnum_shift;
- 	mtd->erasesize <<= devnum_shift;
- 	mtd->writesize <<= devnum_shift;
+-static u64 denali_dma_mask;
+-
+ static int denali_dt_probe(struct platform_device *ofdev)
+ {
+ 	struct resource *denali_reg, *nand_data;
+@@ -79,13 +77,6 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 	if (IS_ERR(denali->flash_mem))
+ 		return PTR_ERR(denali->flash_mem);
+ 
+-	if (!of_property_read_u32(ofdev->dev.of_node,
+-		"dma-mask", (u32 *)&denali_dma_mask)) {
+-		denali->dev->dma_mask = &denali_dma_mask;
+-	} else {
+-		denali->dev->dma_mask = NULL;
+-	}
+-
+ 	dt->clk = devm_clk_get(&ofdev->dev, NULL);
+ 	if (IS_ERR(dt->clk)) {
+ 		dev_err(&ofdev->dev, "no clk available\n");
 -- 
 2.7.4
