@@ -1,6 +1,6 @@
 Received: from conuserg-11.nifty.com ([210.131.2.78])
  by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAhOC-00025e-4U
+ id 1cAhOC-00025g-43
  for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:54 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -11,9 +11,9 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 21/39] mtd: nand: denali: support 64bit capable DMA engine
-Date: Sun, 27 Nov 2016 03:06:07 +0900
-Message-Id: <1480183585-592-22-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 30/39] mtd: nand: denali: set DEVICES_CONNECTED 1 if not set
+Date: Sun, 27 Nov 2016 03:06:16 +0900
+Message-Id: <1480183585-592-31-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,96 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current driver only supports the DMA engine up to 32 bit
-physical address, but there also exists 64 bit capable DMA engine
-for this IP.
-
-The data DMA setup sequence is completely different, so I added the
-64 bit DMA code as a new function denali_setup_dma64().  The 32 bit
-one has been renamed to denali_setup_dma32().
+Currently, the driver expects DEVICE_CONNECTED is automatically set
+by the hardware, but this feature is disabled in some cases.
+In such cases, it is the software's responsibility to set up the
+DEVICES_CONNECTED register.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/denali.c | 39 +++++++++++++++++++++++++++++++++++----
- drivers/mtd/nand/denali.h |  1 +
- 2 files changed, 36 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/denali.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index ae44c01..752ad98 100644
+index 71bdf2a..4b2bbcb 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -995,8 +995,30 @@ static void denali_enable_dma(struct denali_nand_info *denali, bool en)
- 	ioread32(denali->flash_reg + DMA_ENABLE);
- }
+@@ -1485,6 +1485,13 @@ static void denali_multidev_fixup(struct denali_nand_info *denali)
+ 	 */
+ 	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
  
--/* setups the HW to perform the data DMA */
--static void denali_setup_dma(struct denali_nand_info *denali, int op)
-+static void denali_setup_dma64(struct denali_nand_info *denali, int op)
-+{
-+	u32 mode;
-+	const int page_count = 1;
-+	u64 addr = denali->buf.dma_buf;
-+
-+	mode = MODE_10 | BANK(denali->flash_bank) | denali->page;
-+
-+	/* DMA is a three step process */
-+
 +	/*
-+	 * 1. setup transfer type, interrupt when complete,
-+	 *    burst len = 64 bytes, the number of pages
++	 * On some SoCs, DEVICES_CONNECTED is not auto-detected. For those SoCs
++	 * DEVICES_CONNECT is left to 0.  Set 1 if it is the case.
 +	 */
-+	index_addr(denali, mode, 0x01002000 | (64 << 16) | op | page_count);
++	if (denali->devnum == 0)
++		denali->devnum = 1;
 +
-+	/* 2. set memory low address */
-+	index_addr(denali, mode, addr);
-+
-+	/* 3. set memory high address */
-+	index_addr(denali, mode, addr >> 32);
-+}
-+
-+static void denali_setup_dma32(struct denali_nand_info *denali, int op)
- {
- 	u32 mode;
- 	const int page_count = 1;
-@@ -1019,6 +1041,14 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
- 	index_addr(denali, mode | 0x14000, 0x2400);
- }
+ 	devnum_shift = fls(denali->devnum) - 1;
  
-+static void denali_setup_dma(struct denali_nand_info *denali, int op)
-+{
-+	if (denali->caps & DENALI_CAPS_DMA_64BIT)
-+		denali_setup_dma64(denali, op);
-+	else
-+		denali_setup_dma32(denali, op);
-+}
-+
- /*
-  * writes a page. user specifies type, and this function handles the
-  * configuration details.
-@@ -1495,8 +1525,9 @@ int denali_init(struct denali_nand_info *denali)
- 		goto failed_req_irq;
+ 	if (denali->devnum != BIT(devnum_shift)) {
+@@ -1492,9 +1499,10 @@ static void denali_multidev_fixup(struct denali_nand_info *denali)
+ 			 "DEVICE_CONNECTED=%d is not power of 2. Some devices will not be used.\n",
+ 			 denali->devnum);
+ 		denali->devnum = BIT(devnum_shift);
+-		iowrite32(denali->devnum, denali->flash_reg + DEVICES_CONNECTED);
  	}
  
--	/* Is 32-bit DMA supported? */
--	ret = dma_set_mask(denali->dev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask(denali->dev,
-+			   DMA_BIT_MASK(denali->caps & DENALI_CAPS_DMA_64BIT ?
-+					64 : 32));
- 	if (ret) {
- 		dev_err(denali->dev, "no usable DMA configuration\n");
- 		goto failed_req_irq;
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index beadc8a..9bdf037 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -435,6 +435,7 @@ struct denali_nand_info {
- 	u32 max_banks;
- 	unsigned int caps;
- #define DENALI_CAPS_HW_ECC_FIXUP		BIT(0)
-+#define DENALI_CAPS_DMA_64BIT			BIT(1)
- };
- 
- extern int denali_init(struct denali_nand_info *denali);
++	iowrite32(denali->devnum, denali->flash_reg + DEVICES_CONNECTED);
++
+ 	mtd->size <<= devnum_shift;
+ 	mtd->erasesize <<= devnum_shift;
+ 	mtd->writesize <<= devnum_shift;
 -- 
 2.7.4
