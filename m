@@ -1,7 +1,7 @@
 Received: from conuserg-11.nifty.com ([210.131.2.78])
  by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAhOJ-000264-MG
- for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:08:01 +0000
+ id 1cAhOJ-000265-MI
+ for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:08:00 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
@@ -11,10 +11,10 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 38/39] mtd: nand: denali: remove Toshiba,
- Hynix specific fixup code
-Date: Sun, 27 Nov 2016 03:06:24 +0900
-Message-Id: <1480183585-592-39-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 36/39] mtd: nand: denali: allow to use SoC-specific ECC
+ strength
+Date: Sun, 27 Nov 2016 03:06:22 +0900
+Message-Id: <1480183585-592-37-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,94 +26,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Denali IP can automatically detect device parameters such as
-page size, device width, etc. and this driver currently relies on it.
-However, this hardware function is problematic.
+The ecc.strength of this IP is a platform-dependent parameter.
 
-[1] Due to a hardware bug, various misdetected cases are known.
-    That is why get_toshiba_nand_para(), get_hynix_nand_para() exist
-    to fix the misdetected parameters.  It is not realistic to add a
-    new NAND device to the *black list* every time we are hit by a
-    misdetected case.  We would never be able to guarantee that all
-    the cases are covered.
+I chose {15, 8} as the default to respect the historical reason of
+this driver, but it should be overridable to use this driver for
+other SoCs.
 
-[2] Because this feature is unreliable, it is disabled on some
-    platforms.
-
-The nand_scan_ident() sets device parameters such as mtd->writesize,
-mtd->erasesize, etc. in a more tested way.  We should not set the
-hardware registers in a different, unreliable way.  Instead, set
-the parameters from nand_scan_ident() back to the registers.
+If necessary, SoCs can provide their own ecc_strength_avail.
+This must be an array of supported ecc.strength in descending order,
+terminated by zero.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/denali.c | 39 ++++++---------------------------------
- 1 file changed, 6 insertions(+), 33 deletions(-)
+ drivers/mtd/nand/denali.c    | 5 ++++-
+ drivers/mtd/nand/denali.h    | 1 +
+ drivers/mtd/nand/denali_dt.c | 5 ++++-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index df174ca..1aa19ec 100644
+index f2ed3f8..54c9e0c 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -338,35 +338,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali, u8 device_id)
- 	}
- }
+@@ -1373,7 +1373,7 @@ static int denali_set_max_ecc_strength(struct denali_nand_info *denali)
+ 	int oobsize = mtd->oobsize;
+ 	int ecc_size = chip->ecc.size;
+ 	int ecc_steps = mtd->writesize / chip->ecc.size;
+-	const int *ecc_strength = denali_default_ecc_strength;
++	const int *ecc_strength = denali->ecc_strength_avail;
+ 	int ecc_bytes;
  
--static void get_toshiba_nand_para(struct denali_nand_info *denali)
--{
--	/*
--	 * Workaround to fix a controller bug which reports a wrong
--	 * spare area size for some kind of Toshiba NAND device
--	 */
--	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
--		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
--		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--}
--
--static void get_hynix_nand_para(struct denali_nand_info *denali, u8 device_id)
--{
--	switch (device_id) {
--	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
--	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
--		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
--		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
--		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
--		break;
--	default:
--		dev_warn(denali->dev,
--			 "Unknown Hynix NAND (Device ID: 0x%x).\n"
--			 "Will use default parameter values instead.\n",
--			 device_id);
--	}
--}
--
- /*
-  * determines how many NAND chips are connected to the controller. Note for
-  * Intel CE4100 devices we don't support more than one device.
-@@ -468,10 +439,6 @@ static u16 denali_nand_timing_set(struct denali_nand_info *denali)
- 			return FAIL;
- 	} else if (maf_id == 0xEC) { /* Samsung NAND */
- 		get_samsung_nand_para(denali, device_id);
--	} else if (maf_id == 0x98) { /* Toshiba NAND */
--		get_toshiba_nand_para(denali);
--	} else if (maf_id == 0xAD) { /* Hynix NAND */
--		get_hynix_nand_para(denali, device_id);
- 	}
+ 	/* carve out the BBM area */
+@@ -1625,6 +1625,9 @@ int denali_init(struct denali_nand_info *denali)
+ 		chip->ecc.size = denali->caps & DENALI_CAPS_ECC_SIZE_1024 ?
+ 								1024 : 512;
  
- 	dev_info(denali->dev,
-@@ -1661,6 +1628,12 @@ int denali_init(struct denali_nand_info *denali)
- 						chip->ecc.strength);
++	if (!denali->ecc_strength_avail)
++		denali->ecc_strength_avail = denali_default_ecc_strength;
++
+ 	ret = denali_set_max_ecc_strength(denali);
+ 	if (ret)
+ 		goto failed_req_irq;
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index 5209625..2892e46 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -428,6 +428,7 @@ struct denali_nand_info {
+ 	u32 devnum;	/* represent how many nands connected */
+ 	u32 bbtskipbytes;
+ 	u32 max_banks;
++	const int *ecc_strength_avail;
+ 	unsigned int caps;
+ #define DENALI_CAPS_HW_ECC_FIXUP		BIT(0)
+ #define DENALI_CAPS_DMA_64BIT			BIT(1)
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index f085626..aa1e032 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -30,6 +30,7 @@ struct denali_dt {
+ };
  
- 	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
-+	iowrite32(mtd->erasesize / mtd->writesize,
-+		  denali->flash_reg + PAGES_PER_BLOCK);
-+	iowrite32(denali->nand.options & NAND_BUSWIDTH_16 ? 1 : 0,
-+		  denali->flash_reg + DEVICE_WIDTH);
-+	iowrite32(mtd->writesize, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
-+	iowrite32(mtd->oobsize, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+ struct denali_dt_data {
++	const int *ecc_strength_avail;
+ 	unsigned int caps;
+ };
  
- 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
+@@ -54,8 +55,10 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 	denali = &dt->denali;
+ 
+ 	data = of_device_get_match_data(&pdev->dev);
+-	if (data)
++	if (data) {
++		denali->ecc_strength_avail = data->ecc_strength_avail;
+ 		denali->caps = data->caps;
++	}
+ 
+ 	denali->caps |= DENALI_CAPS_HW_ECC_FIXUP;
  
 -- 
 2.7.4
