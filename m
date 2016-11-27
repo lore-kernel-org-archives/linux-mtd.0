@@ -1,20 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cB24A-0005vL-Es
- for linux-mtd@lists.infradead.org; Sun, 27 Nov 2016 16:12:35 +0000
-Date: Sun, 27 Nov 2016 17:12:13 +0100
+ id 1cB25z-0006wz-M1
+ for linux-mtd@lists.infradead.org; Sun, 27 Nov 2016 16:14:28 +0000
+Date: Sun, 27 Nov 2016 17:14:06 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Marek Vasut
  <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH 19/39] mtd: nand: denali: perform erased check against
- raw transferred page
-Message-ID: <20161127171213.704e6856@bbrezillon>
-In-Reply-To: <1480183585-592-20-git-send-email-yamada.masahiro@socionext.com>
+Subject: Re: [PATCH 20/39] mtd: nand: denali_dt: enable HW_ECC_FIXUP
+ capability for DT platform
+Message-ID: <20161127171406.327c4d6e@bbrezillon>
+In-Reply-To: <1480183585-592-21-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
- <1480183585-592-20-git-send-email-yamada.masahiro@socionext.com>
+ <1480183585-592-21-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,45 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 27 Nov 2016 03:06:05 +0900
+On Sun, 27 Nov 2016 03:06:06 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> The erased page check must be done against the raw transferred data.
-> The current first call of is_erase() is against the data after ECC
-> correction.  I saw cases where not all of the data in the page are
-> 0xFF after they are manipulated by the ECC correction engine.
+> The denali_dt.c was split out by Altera for the SOCFPGA port.  The
+> Denali IP on SOCFPGA incorporates the hardware ECC fixup feature.
+> Newer versions are very likely to support it.  So, it should be OK
+> to set DENALI_CAPS_HW_ECC_FIXUP for all DT platforms.
 
-Hm, that's surprising. Usually ECC engines leaves data unchanged when
-uncorrectable errors are detected. Do you have examples where this
-happens? How did you trigger this case?
+Seems like a bad idea. What's the problem with setting this flag in the
+data->caps definition of each revision?
 
 > 
 > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 > ---
 > 
->  drivers/mtd/nand/denali.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/denali_dt.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index f035dac..ae44c01 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -1168,6 +1168,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  		INTR_STATUS__DMA_CMD_COMP | INTR_STATUS__ECC_UNCOR_ERR :
->  		INTR_STATUS__ECC_TRANSACTION_DONE | INTR_STATUS__ECC_ERR;
->  	bool check_erased_page = false;
-> +	int ret;
+> diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+> index 293ddb8..9dcd203 100644
+> --- a/drivers/mtd/nand/denali_dt.c
+> +++ b/drivers/mtd/nand/denali_dt.c
+> @@ -59,6 +59,8 @@ static int denali_dt_probe(struct platform_device *ofdev)
+>  	if (data)
+>  		denali->caps = data->caps;
 >  
->  	if (page != denali->page) {
->  		dev_err(denali->dev,
-> @@ -1206,7 +1207,9 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  		 * error.
->  		 */
->  
-> -		read_oob_data(mtd, chip->oob_poi, denali->page);
-> +		ret = denali_read_page_raw(mtd, chip, buf, 1, denali->page);
-> +		if (ret < 0)
-> +			return ret;
->  
->  		/* check ECC failures that may have occurred on erased pages */
->  		if (!is_erased(buf, mtd->writesize) ||
+> +	denali->caps |= DENALI_CAPS_HW_ECC_FIXUP;
+> +
+>  	denali->platform = DT;
+>  	denali->dev = &ofdev->dev;
+>  	denali->irq = platform_get_irq(ofdev, 0);
