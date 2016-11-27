@@ -1,21 +1,27 @@
-Received: from conuserg-11.nifty.com ([210.131.2.78])
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cAhOB-0006OY-SL
- for linux-mtd@lists.infradead.org; Sat, 26 Nov 2016 18:07:53 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 27/39] mtd: nand: denali: do not set mtd->name
-Date: Sun, 27 Nov 2016 03:06:13 +0900
-Message-Id: <1480183585-592-28-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from mail-pg0-x235.google.com ([2607:f8b0:400e:c05::235])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cAtHo-0001ts-Io
+ for linux-mtd@lists.infradead.org; Sun, 27 Nov 2016 06:50:05 +0000
+Received: by mail-pg0-x235.google.com with SMTP id p66so44589211pga.2
+ for <linux-mtd@lists.infradead.org>; Sat, 26 Nov 2016 22:49:42 -0800 (PST)
+Date: Sat, 26 Nov 2016 22:49:38 -0800
+From: Eric Biggers <ebiggers@google.com>
+To: David Gstir <david@sigma-star.at>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ dedekind1@gmail.com, adrian.hunter@intel.com, tytso@mit.edu,
+ jaegeuk@kernel.org, wd@denx.de, sbabic@denx.de,
+ dengler@linutronix.de, mhalcrow@google.com, hch@infradead.org
+Subject: Re: [PATCH 01/29] fscrypt: Add in-place encryption mode
+Message-ID: <20161127064938.GC34163@google.com>
+References: <1479072072-6844-1-git-send-email-richard@nod.at>
+ <1479072072-6844-2-git-send-email-richard@nod.at>
+ <20161115181455.GA127180@google.com>
+ <C622816B-E69F-4B81-9F37-E04E06CDC591@sigma-star.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C622816B-E69F-4B81-9F37-E04E06CDC591@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +31,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This will be filled by nand_scan_ident() later.
+On Fri, Nov 25, 2016 at 01:09:05PM +0100, David Gstir wrote:
+> 
+> > Additionally, after this change the name of the flag FS_WRITE_PATH_FL is
+> > misleading, since it now really indicates the presence of a bounce buffer rather
+> > than the "write path".
+> 
+> I can see no use case for FS_WRITE_PATH_FL other than to indicate that the bounce buffer has to be free'd. Is there any reason why we should not just remove it and check the presence of a bounce buffer by a simple "if (ctx->w.bounce_page)" ?
+> 
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+It appears that the flag is needed because the 'w' (write) and 'r' (read)
+members are in union.  So you can't simply check for 'ctx->w.bounce_page'.
 
- drivers/mtd/nand/denali.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 0f94381b..60b0858 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1509,7 +1509,6 @@ int denali_init(struct denali_nand_info *denali)
- 
- 	/* now that our ISR is registered, we can enable interrupts */
- 	denali_set_intr_modes(denali, true);
--	mtd->name = "denali-nand";
- 	nand_set_flash_node(chip, denali->dev->of_node);
- 
- 	/* register the driver with the NAND core subsystem */
--- 
-2.7.4
+Eric
