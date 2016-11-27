@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cB1TU-0001VF-KT
- for linux-mtd@lists.infradead.org; Sun, 27 Nov 2016 15:34:42 +0000
-Date: Sun, 27 Nov 2016 16:34:19 +0100
+ id 1cB1bV-00067O-9d
+ for linux-mtd@lists.infradead.org; Sun, 27 Nov 2016 15:42:58 +0000
+Date: Sun, 27 Nov 2016 16:42:35 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Marek Vasut
@@ -11,7 +11,7 @@ Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Marek Vasut
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
 Subject: Re: [PATCH 15/39] mtd: nand: denali: improve readability of
  handle_ecc()
-Message-ID: <20161127163419.556a3307@bbrezillon>
+Message-ID: <20161127164235.6ad93fab@bbrezillon>
 In-Reply-To: <1480183585-592-16-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
  <1480183585-592-16-git-send-email-yamada.masahiro@socionext.com>
@@ -50,15 +50,6 @@ Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 >  	unsigned int bitflips = 0;
 > +	u32 err_address, err_correction_info, err_byte, err_sector, err_device,
 > +	    err_correction_value;
-
-Please use single line definitions for local variables:
-
-	u32 err_address, err_correction_info, err_byte, err_sector;
-	u32 err_device, err_correction_value;
-
-Also, maybe you should use shorter names to avoid 80 chars wrapping as
-much as possible.
-
 >  
 > -	if (irq_status & INTR_STATUS__ECC_ERR) {
 > -		/* read the ECC errors. we'll ignore them for now */
@@ -144,6 +135,20 @@ much as possible.
 > +				buf[offset] ^= err_correction_value;
 > +				mtd->ecc_stats.corrected++;
 > +				bitflips++;
+
+Hm, bitflips is what is set in max_bitflips, and apparently the
+implementation (which is not yours) is not doing what the core expects.
+
+You should first count bitflips per sector with something like that:
+
+				bitflips[err_sector]++;
+
+
+And then once you've iterated over all errors do:
+
+	for (i = 0; i < nsectors; i++)
+		max_bitflips = max(bitflips[err_sector], max_bitflips);
+
 >  			}
 > -		} while (!ECC_LAST_ERR(err_correction_info));
 > -		/*
