@@ -1,20 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cB2KC-0006fB-6P
- for linux-mtd@lists.infradead.org; Sun, 27 Nov 2016 16:29:09 +0000
-Date: Sun, 27 Nov 2016 17:28:46 +0100
+ id 1cB2NI-0008Vf-L8
+ for linux-mtd@lists.infradead.org; Sun, 27 Nov 2016 16:32:21 +0000
+Date: Sun, 27 Nov 2016 17:31:58 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH 38/39] mtd: nand: denali: remove Toshiba, Hynix specific
- fixup code
-Message-ID: <20161127172846.0692d5e6@bbrezillon>
-In-Reply-To: <1480183585-592-39-git-send-email-yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>
+Subject: Re: [PATCH 00/39] mtd: nand: denali: 2nd round of Denali NAND IP
+ patch bomb
+Message-ID: <20161127173158.57ceb4f6@bbrezillon>
+In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
- <1480183585-592-39-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,98 +28,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 27 Nov 2016 03:06:24 +0900
+On Sun, 27 Nov 2016 03:05:46 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> The Denali IP can automatically detect device parameters such as
-> page size, device width, etc. and this driver currently relies on it.
-> However, this hardware function is problematic.
+> As I said in the 1st round series, I am tackling on this driver
+> to use it for my SoCs.
 > 
-> [1] Due to a hardware bug, various misdetected cases are known.
->     That is why get_toshiba_nand_para(), get_hynix_nand_para() exist
->     to fix the misdetected parameters.  It is not realistic to add a
->     new NAND device to the *black list* every time we are hit by a
->     misdetected case.  We would never be able to guarantee that all
->     the cases are covered.
+> The previous series was just cosmetic things, but this series
+> includes *real* changes.
 > 
-> [2] Because this feature is unreliable, it is disabled on some
->     platforms.
+> After some more cleanups, I will start to add changes that
+> are really necessary.
+> One of the biggest problems I want to solve is a bunch of
+> hard-coded parameters that prevent me from using this driver for
+> my SoCs.
 > 
-> The nand_scan_ident() sets device parameters such as mtd->writesize,
-> mtd->erasesize, etc. in a more tested way.  We should not set the
-> hardware registers in a different, unreliable way.  Instead, set
-> the parameters from nand_scan_ident() back to the registers.
+> I will introduce capability flags that are associated with DT
+> compatible and make platform-dependent parameters overridable.
+> 
+> I still have lots of reworks to get done (so probably 3rd round
+> series will come), but I hope it is getting better and
+> I am showing a big picture now.
 > 
 
-Thanks a lot for fixing that.
+I still need to carefully review some of those patches, but I must
+admit I like some of the cleanups/rework you're doing here.
 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
+Thanks for all your work.
+
+Boris
+
 > 
->  drivers/mtd/nand/denali.c | 39 ++++++---------------------------------
->  1 file changed, 6 insertions(+), 33 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index df174ca..1aa19ec 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -338,35 +338,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali, u8 device_id)
->  	}
->  }
->  
-> -static void get_toshiba_nand_para(struct denali_nand_info *denali)
-> -{
-> -	/*
-> -	 * Workaround to fix a controller bug which reports a wrong
-> -	 * spare area size for some kind of Toshiba NAND device
-> -	 */
-> -	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
-> -		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
-> -		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
-> -}
-> -
-> -static void get_hynix_nand_para(struct denali_nand_info *denali, u8 device_id)
-> -{
-> -	switch (device_id) {
-> -	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
-> -	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
-> -		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
-> -		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
-> -		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
-> -		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
-> -		break;
-> -	default:
-> -		dev_warn(denali->dev,
-> -			 "Unknown Hynix NAND (Device ID: 0x%x).\n"
-> -			 "Will use default parameter values instead.\n",
-> -			 device_id);
-> -	}
-> -}
-> -
->  /*
->   * determines how many NAND chips are connected to the controller. Note for
->   * Intel CE4100 devices we don't support more than one device.
-> @@ -468,10 +439,6 @@ static u16 denali_nand_timing_set(struct denali_nand_info *denali)
->  			return FAIL;
->  	} else if (maf_id == 0xEC) { /* Samsung NAND */
->  		get_samsung_nand_para(denali, device_id);
-> -	} else if (maf_id == 0x98) { /* Toshiba NAND */
-> -		get_toshiba_nand_para(denali);
-> -	} else if (maf_id == 0xAD) { /* Hynix NAND */
-> -		get_hynix_nand_para(denali, device_id);
->  	}
->  
->  	dev_info(denali->dev,
-> @@ -1661,6 +1628,12 @@ int denali_init(struct denali_nand_info *denali)
->  						chip->ecc.strength);
->  
->  	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
-> +	iowrite32(mtd->erasesize / mtd->writesize,
-> +		  denali->flash_reg + PAGES_PER_BLOCK);
-> +	iowrite32(denali->nand.options & NAND_BUSWIDTH_16 ? 1 : 0,
-> +		  denali->flash_reg + DEVICE_WIDTH);
-> +	iowrite32(mtd->writesize, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
-> +	iowrite32(mtd->oobsize, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
->  
->  	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
->  
+> Masahiro Yamada (39):
+>   mtd: nand: allow to set only one of ECC size and ECC strength from DT
+>   mtd: nand: denali: remove unused CONFIG option and macros
+>   mtd: nand: denali: remove redundant define of BANK(x)
+>   mtd: nand: denali: remove more unused struct members
+>   mtd: nand: denali: fix comment of denali_nand_info::flash_mem
+>   mtd: nand: denali: fix write_oob_data() function
+>   mtd: nand: denali: transfer OOB only when oob_required is set
+>   mtd: nand: denali: introduce capability flag
+>   mtd: nand: denali: fix erased page check code
+>   mtd: nand: denali: remove redundant if conditional of erased_check
+>   mtd: nand: denali: increment ecc_stats.failed by one per error
+>   mtd: nand: denali: return 0 for uncorrectable ECC error
+>   mtd: nand: denali: increment ecc_stats->corrected
+>   mtd: nand: denali: replace uint{8/16/32}_t with u{8/16/32}
+>   mtd: nand: denali: improve readability of handle_ecc()
+>   mtd: nand: denali: rename handle_ecc() to denali_sw_ecc_fixup()
+>   mtd: nand: denali: support HW_ECC_FIXUP capability
+>   mtd: nand: denali: move denali_read_page_raw() above
+>     denali_read_page()
+>   mtd: nand: denali: perform erased check against raw transferred page
+>   mtd: nand: denali_dt: enable HW_ECC_FIXUP capability for DT platform
+>   mtd: nand: denali: support 64bit capable DMA engine
+>   mtd: nand: denali_dt: remove dma-mask DT property
+>   mtd: nand: denali_dt: use pdev instead of ofdev for platform_device
+>   mtd: nand: denali: add NEW_N_BANKS_FORMAT capability
+>   mtd: nand: denali: use nand_chip to hold frequently accessed data
+>   mtd: nand: denali: call nand_set_flash_node() to set DT node
+>   mtd: nand: denali: do not set mtd->name
+>   mtd: nand: denali: move multi NAND fixup code to a helper function
+>   mtd: nand: denali: refactor multi NAND fixup code in more generic way
+>   mtd: nand: denali: set DEVICES_CONNECTED 1 if not set
+>   mtd: nand: denali: remove meaningless writes to read-only registers
+>   mtd: nand: denali: remove unnecessary writes to ECC_CORRECTION
+>   mtd: nand: denali: support 1024 byte ECC step size
+>   mtd: nand: denali: fix the condition for 15 bit ECC strength
+>   mtd: nand: denali: calculate ecc.strength and ecc.bytes generically
+>   mtd: nand: denali: allow to use SoC-specific ECC strength
+>   mtd: nand: denali: support "nand-ecc-strength" DT property
+>   mtd: nand: denali: remove Toshiba, Hynix specific fixup code
+>   mtd: nand: denali_dt: add compatible strings for UniPhier SoC variants
+> 
+>  .../devicetree/bindings/mtd/denali-nand.txt        |  19 +-
+>  drivers/mtd/nand/Kconfig                           |  11 -
+>  drivers/mtd/nand/denali.c                          | 740 ++++++++++++---------
+>  drivers/mtd/nand/denali.h                          |  84 +--
+>  drivers/mtd/nand/denali_dt.c                       |  95 ++-
+>  drivers/mtd/nand/denali_pci.c                      |   2 +
+>  drivers/mtd/nand/nand_base.c                       |   6 -
+>  7 files changed, 515 insertions(+), 442 deletions(-)
+> 
