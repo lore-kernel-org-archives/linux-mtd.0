@@ -1,21 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cB119-00034s-KP
- for linux-mtd@lists.infradead.org; Sun, 27 Nov 2016 15:05:24 +0000
-Date: Sun, 27 Nov 2016 16:04:59 +0100
+ id 1cB18V-0007DX-UH
+ for linux-mtd@lists.infradead.org; Sun, 27 Nov 2016 15:13:00 +0000
+Date: Sun, 27 Nov 2016 16:12:38 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 00/39] mtd: nand: denali: 2nd round of Denali NAND IP
- patch bomb
-Message-ID: <20161127160459.5894be93@bbrezillon>
-In-Reply-To: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH 04/39] mtd: nand: denali: remove more unused struct members
+Message-ID: <20161127161238.750ca39a@bbrezillon>
+In-Reply-To: <1480183585-592-5-git-send-email-yamada.masahiro@socionext.com>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
+ <1480183585-592-5-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,96 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Andy
-
-Hi Masahiro,
-
-On Sun, 27 Nov 2016 03:05:46 +0900
+On Sun, 27 Nov 2016 03:05:50 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> As I said in the 1st round series, I am tackling on this driver
-> to use it for my SoCs.
-> 
-> The previous series was just cosmetic things, but this series
-> includes *real* changes.
-> 
-> After some more cleanups, I will start to add changes that
-> are really necessary.
-> One of the biggest problems I want to solve is a bunch of
-> hard-coded parameters that prevent me from using this driver for
-> my SoCs.
-> 
-> I will introduce capability flags that are associated with DT
-> compatible and make platform-dependent parameters overridable.
-> 
-> I still have lots of reworks to get done (so probably 3rd round
-> series will come), but I hope it is getting better and
-> I am showing a big picture now.
-> 
+Please add a description here.
 
-Thanks for posting this 2nd round of patches, I know have a clearer
-view of what you're trying to achieve.
-Could you be a bit more specific about the remaining rework (your 3rd
-round)?
+Also, this commit tends to validate my fears: you should have wait for
+the full rework/cleanup to be done before submitting the first round of
+cleanups. Indeed, commit c4ae0977f57d ("mtd: nand: denali: remove unused
+struct member denali_nand_info::idx") was removing one of these unused
+fields, leaving 2 of them behind.
 
-Also, if you don't mind, I'd like to have reviews and testing from intel
-users before applying the series. Can you Cc Andy (and possibly other
-intel maintainers) for the next round.
+While I like when things I clearly separated in different commits, when
+you push the logic too far, you end up with big series which are not
+necessarily easier to review, and several commits that are achieving
+the same goal...
 
-Thanks,
-
-Boris
-
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
 > 
+>  drivers/mtd/nand/denali.h | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> Masahiro Yamada (39):
->   mtd: nand: allow to set only one of ECC size and ECC strength from DT
->   mtd: nand: denali: remove unused CONFIG option and macros
->   mtd: nand: denali: remove redundant define of BANK(x)
->   mtd: nand: denali: remove more unused struct members
->   mtd: nand: denali: fix comment of denali_nand_info::flash_mem
->   mtd: nand: denali: fix write_oob_data() function
->   mtd: nand: denali: transfer OOB only when oob_required is set
->   mtd: nand: denali: introduce capability flag
->   mtd: nand: denali: fix erased page check code
->   mtd: nand: denali: remove redundant if conditional of erased_check
->   mtd: nand: denali: increment ecc_stats.failed by one per error
->   mtd: nand: denali: return 0 for uncorrectable ECC error
->   mtd: nand: denali: increment ecc_stats->corrected
->   mtd: nand: denali: replace uint{8/16/32}_t with u{8/16/32}
->   mtd: nand: denali: improve readability of handle_ecc()
->   mtd: nand: denali: rename handle_ecc() to denali_sw_ecc_fixup()
->   mtd: nand: denali: support HW_ECC_FIXUP capability
->   mtd: nand: denali: move denali_read_page_raw() above
->     denali_read_page()
->   mtd: nand: denali: perform erased check against raw transferred page
->   mtd: nand: denali_dt: enable HW_ECC_FIXUP capability for DT platform
->   mtd: nand: denali: support 64bit capable DMA engine
->   mtd: nand: denali_dt: remove dma-mask DT property
->   mtd: nand: denali_dt: use pdev instead of ofdev for platform_device
->   mtd: nand: denali: add NEW_N_BANKS_FORMAT capability
->   mtd: nand: denali: use nand_chip to hold frequently accessed data
->   mtd: nand: denali: call nand_set_flash_node() to set DT node
->   mtd: nand: denali: do not set mtd->name
->   mtd: nand: denali: move multi NAND fixup code to a helper function
->   mtd: nand: denali: refactor multi NAND fixup code in more generic way
->   mtd: nand: denali: set DEVICES_CONNECTED 1 if not set
->   mtd: nand: denali: remove meaningless writes to read-only registers
->   mtd: nand: denali: remove unnecessary writes to ECC_CORRECTION
->   mtd: nand: denali: support 1024 byte ECC step size
->   mtd: nand: denali: fix the condition for 15 bit ECC strength
->   mtd: nand: denali: calculate ecc.strength and ecc.bytes generically
->   mtd: nand: denali: allow to use SoC-specific ECC strength
->   mtd: nand: denali: support "nand-ecc-strength" DT property
->   mtd: nand: denali: remove Toshiba, Hynix specific fixup code
->   mtd: nand: denali_dt: add compatible strings for UniPhier SoC variants
-> 
->  .../devicetree/bindings/mtd/denali-nand.txt        |  19 +-
->  drivers/mtd/nand/Kconfig                           |  11 -
->  drivers/mtd/nand/denali.c                          | 740 ++++++++++++---------
->  drivers/mtd/nand/denali.h                          |  84 +--
->  drivers/mtd/nand/denali_dt.c                       |  95 ++-
->  drivers/mtd/nand/denali_pci.c                      |   2 +
->  drivers/mtd/nand/nand_base.c                       |   6 -
->  7 files changed, 515 insertions(+), 442 deletions(-)
-> 
+> diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+> index fd1ae08..4fad43b 100644
+> --- a/drivers/mtd/nand/denali.h
+> +++ b/drivers/mtd/nand/denali.h
+> @@ -407,7 +407,6 @@ struct denali_nand_info {
+>  	struct nand_buf buf;
+>  	struct device *dev;
+>  	int total_used_banks;
+> -	uint32_t block;  /* stored for future use */
+>  	uint16_t page;
+>  	void __iomem *flash_reg;  /* Mapped io reg base address */
+>  	void __iomem *flash_mem;  /* Mapped io reg base address */
+> @@ -416,7 +415,6 @@ struct denali_nand_info {
+>  	struct completion complete;
+>  	spinlock_t irq_lock;
+>  	uint32_t irq_status;
+> -	int irq_debug_array[32];
+>  	int irq;
+>  
+>  	uint32_t devnum;	/* represent how many nands connected */
