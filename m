@@ -1,23 +1,18 @@
 Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBHFl-0002hO-2f
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 08:25:33 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for N25Q016A
-To: Jagan Teki <jagannadh.teki@gmail.com>, Moritz Fischer
- <moritz.fischer@ettus.com>
-References: <1468602228-25154-1-git-send-email-moritz.fischer@ettus.com>
- <CAD6G_RT84jtTYcOkW87Z-g0j9sAVuku3RCpWXHZC_DLSEFrT1w@mail.gmail.com>
-CC: Brian Norris <computersforpeace@gmail.com>,
- <ezequiel@vanguardiasur.com.ar>, <moritz.fischer.private@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "David
- Woodhouse" <dwmw2@infradead.org>
+ id 1cBHJI-0004mg-Ar
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 08:29:13 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Add support for mr25h40
+To: <linux-mtd@lists.infradead.org>
+References: <OS2PR01MB007355EE4F7CBD8647D65CD8DFC50@OS2PR01MB0073.jpnprd01.prod.outlook.com>
+ <CAD6G_RRTiToQScvOSCyrUn7XR9oLhoi574FabypAfPtSoMRF9g@mail.gmail.com>
+ <452adce6-5f94-03bd-4752-becfe6429c1c@gmail.com>
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <55cc1619-7cae-75c8-bad7-6dbfe233549e@atmel.com>
-Date: Mon, 28 Nov 2016 09:25:09 +0100
+Message-ID: <814f244b-8dbb-e740-9d8e-a68f2575658e@atmel.com>
+Date: Mon, 28 Nov 2016 09:28:49 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAD6G_RT84jtTYcOkW87Z-g0j9sAVuku3RCpWXHZC_DLSEFrT1w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <452adce6-5f94-03bd-4752-becfe6429c1c@gmail.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,19 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 15/07/2016 Ã  19:12, Jagan Teki a Ã©crit :
-> On 15 July 2016 at 22:33, Moritz Fischer <moritz.fischer@ettus.com> wrote:
->> This commit adds support in the spi-nor driver for the
->> N25Q016A, a 16Mbit SPI NOR flash from Micron.
+Le 24/10/2016 à 15:07, Marek Vasut a écrit :
+> On 10/24/2016 10:09 AM, Jagan Teki wrote:
+>> On Wed, Oct 5, 2016 at 1:52 PM, IWAMOTO Masahiko
+>> <iwamoto@allied-telesis.co.jp> wrote:
+>>>
+>>> Add Everspin mr25h40 512KB MRAM to the list of supported chips.
+>>>
+>>> Signed-off-by: Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>
 >>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: Brian Norris <computersforpeace@gmail.com>
->> Cc: Jagan Teki <jteki@openedev.com>
+>> Reviewed-by: Jagan Teki <jagan@openedev.com>
 >>
->> Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
+>> thanks!
+>>
+> Acked-by: Marek Vasut <marex@denx.de>
 > 
-> Reviewed-by: Jagan Teki <jteki@openedev.com>
-> 
+
 Applied to git://github.com/spi-nor/linux.git
 
 Thanks!
+
+
+The patch didn't apply as is due to space instead of tab at the beginning
+of lines but I've fixed it.
