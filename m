@@ -1,23 +1,19 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBKiw-00006l-0F
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 12:07:54 +0000
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: linux-mtd@lists.infradead.org
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Lee Jones <lee.jones@linaro.org>,
- Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v6 3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-Date: Mon, 28 Nov 2016 15:06:26 +0300
-Message-Id: <20161128120626.130693-4-mika.westerberg@linux.intel.com>
-In-Reply-To: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
-References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+ id 1cBLqp-0002BN-PI
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 13:20:08 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [GIT PULL] mtd: spi-nor: updates for 4.10
+To: Brian Norris <computersforpeace@gmail.com>
+CC: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>, "David
+ Woodhouse" <dwmw2@infradead.org>, MTD Maling List
+ <linux-mtd@lists.infradead.org>, Boris BREZILLON
+ <boris.brezillon@free-electrons.com>, <cyrille.pitchen@atmel.com>
+Message-ID: <2bdf6239-d998-825c-cd22-db6ac09d3391@atmel.com>
+Date: Mon, 28 Nov 2016 14:19:43 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,102 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Intel Apollo Lake SoC exposes serial SPI flash through the LPC device. The
-SPI flash host controller is not discoverable through PCI config cycles
-because P2SB (function 0 of the device 13) is hidden by the BIOS. We unhide
-the device briefly in order to read BAR 0 of the SPI host controller.
+Hi Brian,
 
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Acked-by: Lee Jones <lee.jones@linaro.org>
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
----
- drivers/mfd/lpc_ich.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+this is my very first PR so let me know whether I should change something.
 
-diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-index ad88e827a398..909229cecf41 100644
---- a/drivers/mfd/lpc_ich.c
-+++ b/drivers/mfd/lpc_ich.c
-@@ -56,6 +56,7 @@
-  *	document number TBD : Wildcat Point-LP
-  *	document number TBD : 9 Series
-  *	document number TBD : Lewisburg
-+ *	document number TBD : Apollo Lake SoC
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-@@ -92,6 +93,8 @@
- #define BCR			0xdc
- #define BCR_WPD			BIT(0)
- 
-+#define SPIBASE_APL_SZ		4096
-+
- #define GPIOBASE_ICH0		0x58
- #define GPIOCTRL_ICH0		0x5C
- #define GPIOBASE_ICH6		0x48
-@@ -239,6 +242,7 @@ enum lpc_chipsets {
- 	LPC_BRASWELL,	/* Braswell SoC */
- 	LPC_LEWISBURG,	/* Lewisburg */
- 	LPC_9S,		/* 9 Series */
-+	LPC_APL,	/* Apollo Lake SoC */
- };
- 
- static struct lpc_ich_info lpc_chipset_info[] = {
-@@ -559,6 +563,10 @@ static struct lpc_ich_info lpc_chipset_info[] = {
- 		.name = "9 Series",
- 		.iTCO_version = 2,
- 	},
-+	[LPC_APL] = {
-+		.name = "Apollo Lake SoC",
-+		.spi_type = INTEL_SPI_BXT,
-+	},
- };
- 
- /*
-@@ -707,6 +715,7 @@ static const struct pci_device_id lpc_ich_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x3b14), LPC_3420},
- 	{ PCI_VDEVICE(INTEL, 0x3b16), LPC_3450},
- 	{ PCI_VDEVICE(INTEL, 0x5031), LPC_EP80579},
-+	{ PCI_VDEVICE(INTEL, 0x5ae8), LPC_APL},
- 	{ PCI_VDEVICE(INTEL, 0x8c40), LPC_LPT},
- 	{ PCI_VDEVICE(INTEL, 0x8c41), LPC_LPT},
- 	{ PCI_VDEVICE(INTEL, 0x8c42), LPC_LPT},
-@@ -1126,6 +1135,36 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
- 		}
- 		break;
- 
-+	case INTEL_SPI_BXT: {
-+		unsigned int p2sb = PCI_DEVFN(13, 0);
-+		unsigned int spi = PCI_DEVFN(13, 2);
-+		struct pci_bus *bus = dev->bus;
-+
-+		/*
-+		 * The P2SB is hidden by BIOS and we need to unhide it in
-+		 * order to read BAR of the SPI flash device. Once that is
-+		 * done we hide it again.
-+		 */
-+		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x0);
-+		pci_bus_read_config_dword(bus, spi, PCI_BASE_ADDRESS_0,
-+					  &spi_base);
-+		if (spi_base != ~0) {
-+			res->start = spi_base & 0xfffffff0;
-+			res->end = res->start + SPIBASE_APL_SZ - 1;
-+
-+			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
-+			if (!(bcr & BCR_WPD)) {
-+				bcr |= BCR_WPD;
-+				pci_bus_write_config_dword(bus, spi, BCR, bcr);
-+				pci_bus_read_config_dword(bus, spi, BCR, &bcr);
-+			}
-+			info->writeable = !!(bcr & BCR_WPD);
-+		}
-+
-+		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x1);
-+		break;
-+	}
-+
- 	default:
- 		return -EINVAL;
- 	}
--- 
-2.10.2
+Best regards,
+
+Cyrille
+
+The following changes since commit 1001354ca34179f3db924eb66672442a173147dc:
+
+  Linux 4.9-rc1 (2016-10-15 12:17:50 -0700)
+
+are available in the git repository at:
+
+  git://github.com/spi-nor/linux.git tags/spi-nor/for-4.10
+
+for you to fetch changes up to dfce0cd943fe0554f5f79d5b29624064dafb18cd:
+
+  mtd: spi-nor: constify fsl_qspi_devtype_data (2016-11-26 17:45:06 +0100)
+
+----------------------------------------------------------------
+This pull request contains the following notable changes:
+- add support to new memory parts.
+- fix of spansion_quad_enable().
+- fix of the Candence QSPI driver.
+- constify some structure instances of the Freescale QSPI driver.
+
+----------------------------------------------------------------
+Ash Benz (1):
+      mtd: spi-nor: add Macronix mx25u25635f to list of known devices.
+
+Dan Carpenter (2):
+      mtd: spi-nor: Off by one in cqspi_setup_flash()
+      mtd: spi-nor: Fix some error codes in cqspi_setup_flash()
+
+Heiner Kallweit (1):
+      mtd: spi-nor: fix flags for s25fl128s
+
+IWAMOTO Masahiko (1):
+      mtd: spi-nor: Add support for mr25h40
+
+Jagan Teki (1):
+      mtd: spi-nor: Add at25df321 spi-nor flash support
+
+Joël Esponde (1):
+      mtd: spi-nor: fix spansion quad enable
+
+LABBE Corentin (1):
+      mtd: spi-nor: constify fsl_qspi_devtype_data
+
+Moritz Fischer (1):
+      mtd: spi-nor: Add support for N25Q016A
+
+Sean Nyekjaer (1):
+      mtd: spi-nor: add support for s25fl208k
+
+ drivers/mtd/spi-nor/cadence-quadspi.c |  6 ++++--
+ drivers/mtd/spi-nor/fsl-quadspi.c     |  8 ++++----
+ drivers/mtd/spi-nor/spi-nor.c         | 14 +++++++++++++-
+ 3 files changed, 21 insertions(+), 7 deletions(-)
