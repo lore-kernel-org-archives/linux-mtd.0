@@ -1,23 +1,31 @@
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from mail-he1eur01on0628.outbound.protection.outlook.com
+ ([2a01:111:f400:fe1e::628]
+ helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBBtb-0000g3-4x
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 02:42:20 +0000
-Received: by mail-wm0-x230.google.com with SMTP id g23so192554730wme.1
- for <linux-mtd@lists.infradead.org>; Sun, 27 Nov 2016 18:41:57 -0800 (PST)
-Subject: =?UTF-8?B?UmU6IOWbnuWkje+8miDlm57lpI3vvJpIYW5kbGluZyBzb2Z0IHJlc2V0?=
- =?UTF-8?Q?_on_mt7261_SoC_with_32M_flash?=
-To: Tymon <banglang.huang@foxmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
-References: <tencent_45F3AFA3524D96AA13E4449A@qq.com>
- <6f125fe0-a41a-61ca-04e6-d50cc8c8a5aa@gmail.com>
- <tencent_4CE5B4086D95E4B1431C87DE@qq.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <f38032e4-bfc1-a5a2-7ba0-4088812a7b29@gmail.com>
-Date: Mon, 28 Nov 2016 03:41:54 +0100
+ id 1cBElv-0001L7-Co
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 05:46:37 +0000
+From: Yao Yuan <yao.yuan@nxp.com>
+To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Brian Norris
+ <computersforpeace@gmail.com>
+CC: "hramrach@gmail.com" <hramrach@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Peter Pan <peterpansjtu@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>
+Subject: RE: SPI NAND support in drivers/mtd/spi-nor/spi-nor.c
+Date: Mon, 28 Nov 2016 05:46:10 +0000
+Message-ID: <AM4PR0401MB2402FF0F93A15629F39699A1898A0@AM4PR0401MB2402.eurprd04.prod.outlook.com>
+References: <DB6PR0401MB2407AE783B4F57D09750D8DA89A70@DB6PR0401MB2407.eurprd04.prod.outlook.com>
+ <20161108020115.GA116407@google.com> <20161108090757.204ef112@bbrezillon>
+ <b5b54cd1-87fb-3b56-6960-d87c172f93fb@atmel.com>
+ <0810b4e9-96fc-ae5d-590b-1449b646defb@gmail.com>
+In-Reply-To: <0810b4e9-96fc-ae5d-590b-1449b646defb@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <tencent_4CE5B4086D95E4B1431C87DE@qq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,60 +35,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/28/2016 02:34 AM, Tymon wrote:
-> The real reason had been described : when the flash size > 16MB, the SPI bus must
-> be configured to use 4-byte mode. The problem arised after a soft reset, when the SoC
-> expects the SPI to be in 3-byte addressing mode, but then can't communicate with the flash.
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2016-November/070368.html
-
-Well yes, it's the same problem, over and over again. Some flashes have
-dedicated 4-byte opcodes.
-
-btw please stop top-posting.
-
-> ------------------ 原始邮件 ------------------
-> 发件人: "Marek Vasut";<marek.vasut@gmail.com>;
-> 发送时间: 2016年11月25日(星期五) 晚上10:15
-> 收件人: "Tymon"<banglang.huang@foxmail.com>; "linux-mtd"<linux-mtd@lists.infradead.org>; 
-> 主题: Re: 回复：Handling soft reset on mt7261 SoC with 32M flash
-> 
-> On 11/23/2016 05:53 AM, Tymon wrote:
->> I think sending “0x66 0x99” to mx25l256 is a proper way to fix the issue,
->> because this action does not change the bit-mode of spi flash and it only work
->> when user reboot the system.
-> 
-> Since there is no context here, I cannot really comment, but is this
-> about SPI NOR being in 4-byte addressing mode and bootrom which does
-> not support it? If so, what happens if you press reset button on the
-> device ? SPI NOR remains in undefined mode and bootrom won't read the
-> bootloader from it. The only real fix is to implement CORRECT dedicated
-> SPI NOR reset logic.
-> 
->> ------------------
->> Regards,
->>
->> banglang huang
->>  
->>
->>
->> ------------------ 原始邮件 ------------------
->> 发件人: "Dominik Menke";<dom@digineo.de>;
->> 发送时间: 2016年11月18日(星期五) 晚上10:20
->> 收件人: "linux-mtd"<linux-mtd@lists.infradead.org>; 
->> 主题: Handling soft reset on mt7261 Soc with 32M flash
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
-> 
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+T24gMTEvMjYvMjAxNiAwMToxMmFtLCBNYXJlayBWYXN1dCB3cm90ZToNCj4gT24gMTEvMDgvMjAx
+NiAxMTo1MiBBTSwgQ3lyaWxsZSBQaXRjaGVuIHdyb3RlOg0KPiA+IEhpIGFsbCwNCj4gPg0KPiA+
+IExlIDA4LzExLzIwMTYgw6AgMDk6MDcsIEJvcmlzIEJyZXppbGxvbiBhIMOpY3JpdCA6DQo+ID4+
+ICtQZXRlcg0KPiA+Pg0KPiA+PiBPbiBNb24sIDcgTm92IDIwMTYgMTg6MDE6MTUgLTA4MDANCj4g
+Pj4gQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+IHdyb3RlOg0KPiA+
+Pg0KPiA+Pj4gKyBvdGhlcnMNCj4gPj4+DQo+ID4+PiBPbiBNb24sIE5vdiAwNywgMjAxNiBhdCAw
+OTo1MzozNEFNICswMDAwLCBZYW8gWXVhbiB3cm90ZToNCj4gPj4+PiAgICBIaSBBbGwsDQo+ID4+
+Pg0KPiA+Pj4gSGkgWWFvLA0KPiA+Pj4NCj4gPj4+IEknbSBub3QgdGhhdCBpbnRlcmVzdGVkIGlu
+IGhhbmRsaW5nIHByaXZhdGUgcmVxdWVzdHMsIGFuZCB0aGlzIGlzDQo+ID4+PiBnZW5lcmFsbHkg
+aW5mb3JtYXRpdmUsIHNvIEkndmUgYWRkZWQgdGhlIGxpbnV4LW10ZCBsaXN0LCBhcyB3ZWxsIGFz
+DQo+ID4+PiB0aGUgb3RoZXIgbWFpbnRhaW5lcnMuDQo+ID4+Pg0KPiA+Pj4gQWxzbywgd2hlbiB5
+b3UncmUgcmVhZHkgdG8gc2VuZCBwYXRjaGVzLCBtYWtlIHN1cmUgeW91IHVzZSBwbGFpbg0KPiA+
+Pj4gdGV4dCBpbnN0ZWFkIG9mIEhUTUwgZW1haWwuDQo+ID4+Pg0KPiA+Pj4+ICAgIEnigJltIHRy
+eWluZyB0byBhZGQgdGhlIFFTUEkgTkFORCBzdXBwb3J0IGluIE1URC4NCj4gPj4NCj4gPj4gWWFv
+LCBjYW4geW91IHN5bmMgd2l0aCBQZXRlciB3aG8gaXMgY3VycmVudGx5IHdvcmtpbmcgb24gYSBT
+UEkgTkFORA0KPiA+PiBmcmFtZXdvcmsgKHdoaWNoIHdvdWxkIHNpdCBpbiBkcml2ZXJzL210ZC9u
+YW5kL3NwaS8pLg0KPiA+Pg0KPiA+Pj4+DQo+ID4+Pj4gICAgQnV0IEkgaGF2ZSByZWFjaGVkIGEg
+anVuY3Rpb24sIGNvdWxkIHlvdSBwbGVhc2UgdGFrZSBzb21lIG1pbnV0ZXMgYW5kDQo+ID4+Pj4g
+ICAgZ2l2ZSBtZSBzb21lIHN1Z2dlc3Rpb25zPw0KPiA+Pj4+DQo+ID4+Pj4NCj4gPj4+PiAgICBZ
+b3Uga25vdywgd2UgaGF2ZSB0aGUgUVNQSSBOT1Igc3VwcG9ydCBpbg0KPiA+Pj4+ICAgIGRyaXZl
+cnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jLA0KPiA+Pj4+DQo+ID4+Pj4gICAgQW5kIHRoZSBRU1BJ
+IE5BTkQgaXMgdmVyeSBzaW1pbGFyIHdpdGggUVNQSSBOT1IsIGJ1dCB0aGUgUmVhZCwgd3JpdGUN
+Cj4gPj4+PiAgICBhbmQgZXJhc2UgaXMgZGlmZmVyZW50IHdpdGggU1BJLU5PUi4NCj4gPj4+DQo+
+ID4+PiBIb3cgc2ltaWxhciBpcyB0aGUgY29udHJvbGxlciBoYXJkd2FyZT8gRG9lcyB5b3VyIElQ
+IHN1cHBvcnQNCj4gPj4+IHN0YW5kYXJkIFNQSSBwcm90b2NvbCwgb3IgaXMgaXQgc3BlY2lhbGl6
+ZWQgZm9yIGFjY2VsZXJhdGluZyBTUEkNCj4gPj4+IE5BTkQgKGUuZy4sIG1lbW9yeS1tYXBwZWQs
+IERNQSwgZXRjLik/IERvZXMgaXQgc3VwcG9ydCBTUEkgTk9SPw0KPiA+Pj4NCj4gPj4+PiAgICBT
+byBJIGhhdmUgdHdvIHdheXMgdG8gYWRkIFFTUEktTkFORDoNCj4gPj4+DQo+ID4+PiBJJ2xsIGxl
+YXZlIHlvdXIgb3B0aW9ucyBpbnRhY3QgYmVsb3csIGJ1dCBJIGRvbid0IHRoaW5rIGVpdGhlciBv
+Zg0KPiA+Pj4gdGhlbSBhcmUgdGhhdCBnb29kLiBTUEkgTk9SIGFuZCBTUEkgTkFORCBhcmUgZGlm
+ZmVyZW50IGVub3VnaCwgSQ0KPiA+Pj4gZG91YnQgdGhhdCB3ZSdsbCBnZXQgbXVjaCBiZW5lZml0
+IGZyb20gdXNpbmcgdGhlIHNhbWUgZnJhbWV3b3JrLA0KPiA+Pj4gdW5sZXNzIHlvdSBoYXBwZW4g
+dG8gaGF2ZSBJUCB0aGF0J3MgZGVzaWduZWQgZm9yIGJvdGggTk9SIGFuZCBOQU5ELA0KPiA+Pj4g
+eWV0IGRvZXNuJ3QgcXVpdGUgZG8gdHJhZGl0aW9uYWwgU1BJLg0KPiA+Pj4NCj4gPj4+IFBhcnRp
+Y3VsYXJseSwgTkFORCBmbGFzaCBoYXMgYSBsb3Qgb2YgaXNzdWVzIHRoYXQgTk9SIGZsYXNoDQo+
+ID4+PiBnZW5lcmFsbHkgZG9lcyBub3QsIGFyb3VuZCBiYWQgYmxvY2sgbWFuYWdlbWVudCBhbmQg
+d2VhciBsZXZlbGluZy4NCj4gPj4+IEFsc28sIHRoZXJlIG1heSBiZSBzb21ldGhpbmcgdG8gc2hh
+cmUgYXJvdW5kIGlkZW50aWZpY2F0aW9uL09ORkk/DQo+ID4+PiAoTm90IHN1cmUgaG93IHNpbWls
+YXIgdGhlIGltcGxlbWVudGF0aW9ucyBhcmUgdGhlcmUuKSBUaGVyZSdzIGJlZW4NCj4gPj4+IHNv
+bWUgcHJpb3IgZGlzY3Vzc2lvbiBhYm91dCBpdCwgYW5kIG1heWJlIG9uZSBvZiB0aGUgQ0MnZCBw
+ZW9wbGUgY2FuDQo+ID4+PiBkaXJlY3QgeW91IHRvd2FyZCB0aGUgbGF0ZXN0IG9waW5pb25zLCBv
+ciBlbHNlIHlvdSBjYW4gc2VhcmNoIHRoZSBhcmNoaXZlcw0KPiB5b3VyZXNlbGYgKCJTUEkgTkFO
+RCINCj4gPj4+IHNob3VsZCB0dXJuIHVwIHNldmVyYWwgcmVzdWx0cykuDQo+ID4+Pg0KPiA+Pj4g
+U28gdGhlIG1haW4gaXNzdWVzIHdvdWxkIHByb2JhYmx5IGJlIGFyb3VuZCBhYnN0cmFjdGluZyBv
+dXQgdGhlDQo+ID4+PiBiYWQtYmxvY2stcmVsYXRlZCBhbmQgY2hpcCBpZGVudGlmaWNhdGlvbiBj
+b2RlIHNvIHlvdSBjYW4gc2hhcmUgY29kZQ0KPiA+Pj4gd2l0aCBleGlzdGluZyAocGFyYWxsZWwp
+IE5BTkQgc3VwcG9ydC4gQXQgbGVhc3QsIHRoYXQncyB3aGF0IEkgdGhpbmsNCj4gPj4+IGJhc2Vk
+IG9uIHRoZSBsYXN0IHRpbWUgSSBsb29rZWQgYXQgdGhpbmdzLCBhbmQgSSB0aGluayBzb21lIG9m
+IHRoZQ0KPiA+Pj4gb3RoZXIgYWN0aXZlIG1haW50YWluZXJzIGhhZCBpZGVhcyBhbG9uZyB0aGUg
+c2FtZSBsaW5lcy4NCj4gPj4NCj4gPj4gSSdtIG5vdCBzdXJlIGlkZW50aWZpY2F0aW9uIG9mIHJh
+dyBhbmQgU1BJIE5BTkQgaXMgd29ya2luZyB0aGUgc2FtZQ0KPiA+PiB3YXksIGJ1dCB0aGF0J3Mg
+dHJ1ZSBmb3IgdGhlIEJCVC4gQW5kLCBhcyBCcmlhbiBzYWlkLCB5b3UgZG9uJ3QNCj4gPj4gaW50
+ZXJhY3Qgd2l0aCBOQU5EcyB0aGUgc2FtZSB3YXkgeW91IGRvIHdpdGggTk9Scywgc28gaXQgc2hv
+dWxkIElNTw0KPiA+PiBzdGF5IGluIGRpZmZlcmVudCBmcmFtZXdvcmtzLg0KPiA+Pg0KPiA+DQo+
+ID4gSSBhZ3JlZSB3aXRoIEJyaWFuIGFuZCBCb3JpcyBhYm91dCBzZXBhcmF0aW5nIE5PUnMgYW5k
+IE5BTkRzIGluDQo+ID4gZGlmZmVyZW50IGZyYW1ld29ya3MuIEkga25vdyB0aGlzIGlzIGp1c3Qg
+YSBkZXRhaWwgYnV0IGZvciBpbnN0YW5jZSwNCj4gPiB0aGUgY3VycmVudCBzcGktbm9yIGZyYW1l
+d29yayBzdGFydHMgc2VuZGluZyB0aGUgSkVERUMgUmVhZCBJRCBjb21tYW5kDQo+ID4gOUZoIHRv
+IHByb2JlIHRoZSBtZW1vcnkuIEF0IHRoaXMgcG9pbnQsIHlvdSBkb24ndCBrbm93IHlldCB3aGF0
+IG1lbW9yeQ0KPiA+IGlzIGNvbm5lY3RlZCB0byB0aGUgU1BJIGNvbnRyb2xsZXIuIEhlbmNlIHlv
+dSBkb24ndCBldmVuIGtub3cgd2V0aGVyIGl0IGlzIGENCj4gTkFORCBvciBhIE5PUi4NCj4gPiBU
+aGVuIGlmIEkgdGFrZSB0aGUgTWFjcm9uaXggTVgzNUxGeEdFNEFCIFFTUEkgTkFORCBhcyBhbiBl
+eGFtcGxlLCBpdHMNCj4gPiBkYXRhc2hlZXQgY2xhaW1zIHRoYXQgdGhlIEpFREVDIFJlYWQgSUQg
+Y29tbWFuZCAoOUZoKSByZXF1aXJlcyA4IGR1bW15DQo+ID4gY2xvY2sgY3ljbGVzIGFmdGVyIHRo
+ZSBvcCBjb2RlIGFuZCBiZWZvcmUgcmVhZGluZyB0aGUgYWN0dWFsIG1lbW9yeSBJRC4NCj4gPiBU
+aG9zZSBkdW1teSBjeWNsZXMgZG9uJ3QgZXhpc3Qgd2l0aCBTUEkgTk9SIG1lbW9yaWVzLg0KPiA+
+IFNvIHNwaV9ub3Jfc2NhbigpIGNhbm5vdCBiZSB1c2VkIHByb2JlIChRKVNQSSBOQU5EIG1lbW9y
+aWVzLg0KPiA+DQo+ID4gQWxzbywgdGhlIHJlYWQgb3BlcmF0aW9uIGNhbiBiZSBwZXJmb3JtZWQg
+d2l0aCBhIHNpbmdsZSAoRmFzdCkgUmVhZA0KPiA+IGNvbW1hbmQgd2l0aCAoUSlTUEkgTk9SIG1l
+bW9yaWVzIHdoZXJlYXMgaXQgaGFzIHRvIGJlIGRvbmUgaW4gdHdvDQo+ID4gc3RlcHMgZm9yIFFT
+UEkgTkFORCBtZW1vcmllczoNCj4gPiAxIC0gUGFnZSBSZWFkICgxM2gpOiB0byB0cmFuc2ZlciBk
+YXRhIGZyb20gYXJyYXkgdG8gY2FjaGUNCj4gPiAyIC0gUmFuZG9tIERhdGEgUmVhZCAoMDNoIG9y
+IDBCaCk6IHRvIHJlYWQgZGF0YSBmcm9tIHRoZSBjYWNoZSBhbmQNCj4gPiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHRyYW5zZmVyIHRoZW0gb24gdGhlIFNQSSBidXMuDQo+ID4N
+Cj4gPiBTbyByZWFkIG9wZXJhdGlvbnMgYXJlIHF1aXRlIGRpZmZlcmVudCBhcyB3ZWxsIGJldHdl
+ZW4gTk9ScyBhbmQgTkFORHMuDQo+ID4gSSBkaWRuJ3QgaGF2ZSBhIGxvb2sgYXQgdGhlIFBhZ2Ug
+UHJvZ3JhbSBvcGVyYXRpb24gYnV0IEkgZXhwZWN0IHN0cm9uZw0KPiA+IGRpZmZlcmVuY2VzIGFz
+IHdlbGwuDQo+ID4NCj4gPiBJIHRoaW5rIHRoZXJlIGFyZSB0b28gbWFueSBkaWZmZXJlbmNlcyB0
+byBoYW5kbGUgYm90aCBraW5kIG9mIG1lbW9yaWVzDQo+ID4gd2l0aCBhIHNpbmdsZSBmcmFtZXdv
+cmsuDQo+IA0KPiBDYW4gYSBRU1BJIGNvbnRyb2xsZXIgaGFuZGxlIGJvdGggU1BJIE5PUiBhbmQg
+U1BJIE5BTkQgPyBUaGF0IGlzIHRoZSBxdWVzdGlvbg0KPiBoZXJlLiBJZiBzbywgd2UnZCBoYXZl
+IHRoZSBzYW1lIGRyaXZlciBmb3IgYm90aCwgYnV0IGRpZmZlcmVudCBsYXllciBvbiB0b3Agb2Yg
+aXQNCj4gKGhhbmRsaW5nIGVpdGhlciBOT1Igb3IgTkFORCBjb21tYW5kcykuIEkgdGhpbmsgdGhl
+IGRpZmZlcmVudCBjb21tYW5kIHNldHMNCj4gYXJlIGEgZGV0YWlsIHdoaWNoIGNhbiBiZSBoYW5k
+bGVkIGp1c3QgZmluZSBhbmQgaXQgc2hvdWxkIGJlIGEgZGV0YWlsIGhhbmRsZWQgaW4NCj4gc2Vw
+YXJhdGUgU1BJIE5PUiBhbmQgU1BJIE5BTkQgbGF5ZXJzLg0KPiBKdXN0IG15IDUgY2VudHMgLi4u
+DQo+IA0KPiAtLQ0KDQpZZXMsIGF0IGxlYXN0IHRoZSBRU1BJIGZvciBGcmVlc2NhbGUoTlhQKSBj
+YW4gc3VwcG9ydCBib3RoIFNQSSBOT1IgYW5kIFNQSSBOQU5ELg0KU28gSSB0aGluayB0aGUgUVNQ
+SSBkcml2ZXIgY2FuIGJlIHRoZSBzYW1lLCBJIGFncmVlIHdpdGggeW91IHRoYXQgd2UgY2FuIGFk
+ZCBhIHRvcCANCmxheWVyIGZvciBkaWZmZXJlbnQgZmxhc2guDQoNCg==
