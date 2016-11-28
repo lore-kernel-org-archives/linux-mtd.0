@@ -1,30 +1,29 @@
-Received: from mail-ve1eur01on0050.outbound.protection.outlook.com
- ([104.47.1.50] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBFsk-00082E-Cb
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 06:57:45 +0000
-From: Yao Yuan <yao.yuan@nxp.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>
-CC: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Brian Norris
- <computersforpeace@gmail.com>, "hramrach@gmail.com" <hramrach@gmail.com>,
- Richard Weinberger <richard@nod.at>, Peter Pan <peterpansjtu@gmail.com>,
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cBGoG-0004Wo-Ja
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 07:57:10 +0000
+Date: Mon, 28 Nov 2016 08:56:40 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Yao Yuan <yao.yuan@nxp.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>,
+ "hramrach@gmail.com" <hramrach@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Peter Pan <peterpansjtu@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>, Ezequiel Garcia
  <ezequiel@vanguardiasur.com.ar>
-Subject: RE: SPI NAND support in drivers/mtd/spi-nor/spi-nor.c
-Date: Mon, 28 Nov 2016 06:57:19 +0000
-Message-ID: <AM4PR0401MB240225A987757FA27384DBD6898A0@AM4PR0401MB2402.eurprd04.prod.outlook.com>
+Subject: Re: SPI NAND support in drivers/mtd/spi-nor/spi-nor.c
+Message-ID: <20161128085640.33c96d82@bbrezillon>
+In-Reply-To: <AM4PR0401MB2402FF0F93A15629F39699A1898A0@AM4PR0401MB2402.eurprd04.prod.outlook.com>
 References: <DB6PR0401MB2407AE783B4F57D09750D8DA89A70@DB6PR0401MB2407.eurprd04.prod.outlook.com>
- <20161108020115.GA116407@google.com>	<20161108090757.204ef112@bbrezillon>
+ <20161108020115.GA116407@google.com>
+ <20161108090757.204ef112@bbrezillon>
  <b5b54cd1-87fb-3b56-6960-d87c172f93fb@atmel.com>
  <0810b4e9-96fc-ae5d-590b-1449b646defb@gmail.com>
- <20161125193557.2bbf064b@bbrezillon>
-In-Reply-To: <20161125193557.2bbf064b@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <AM4PR0401MB2402FF0F93A15629F39699A1898A0@AM4PR0401MB2402.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,122 +33,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMTEvMjUvMjAxNiAwMjozNiBBTSwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOg0KPiBPbiBGcmks
-IDI1IE5vdiAyMDE2IDE4OjExOjQxICswMTAwDQo+IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBn
-bWFpbC5jb20+IHdyb3RlOg0KPiANCj4gPiBPbiAxMS8wOC8yMDE2IDExOjUyIEFNLCBDeXJpbGxl
-IFBpdGNoZW4gd3JvdGU6DQo+ID4gPiBIaSBhbGwsDQo+ID4gPg0KPiA+ID4gTGUgMDgvMTEvMjAx
-NiDDoCAwOTowNywgQm9yaXMgQnJlemlsbG9uIGEgw6ljcml0IDoNCj4gPiA+PiArUGV0ZXINCj4g
-PiA+Pg0KPiA+ID4+IE9uIE1vbiwgNyBOb3YgMjAxNiAxODowMToxNSAtMDgwMA0KPiA+ID4+IEJy
-aWFuIE5vcnJpcyA8Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tPiB3cm90ZToNCj4gPiA+Pg0K
-PiA+ID4+PiArIG90aGVycw0KPiA+ID4+Pg0KPiA+ID4+PiBPbiBNb24sIE5vdiAwNywgMjAxNiBh
-dCAwOTo1MzozNEFNICswMDAwLCBZYW8gWXVhbiB3cm90ZToNCj4gPiA+Pj4+ICAgIEhpIEFsbCwN
-Cj4gPiA+Pj4NCj4gPiA+Pj4gSGkgWWFvLA0KPiA+ID4+Pg0KPiA+ID4+PiBJJ20gbm90IHRoYXQg
-aW50ZXJlc3RlZCBpbiBoYW5kbGluZyBwcml2YXRlIHJlcXVlc3RzLCBhbmQgdGhpcyBpcw0KPiA+
-ID4+PiBnZW5lcmFsbHkgaW5mb3JtYXRpdmUsIHNvIEkndmUgYWRkZWQgdGhlIGxpbnV4LW10ZCBs
-aXN0LCBhcyB3ZWxsDQo+ID4gPj4+IGFzIHRoZSBvdGhlciBtYWludGFpbmVycy4NCj4gPiA+Pj4N
-Cj4gPiA+Pj4gQWxzbywgd2hlbiB5b3UncmUgcmVhZHkgdG8gc2VuZCBwYXRjaGVzLCBtYWtlIHN1
-cmUgeW91IHVzZSBwbGFpbg0KPiA+ID4+PiB0ZXh0IGluc3RlYWQgb2YgSFRNTCBlbWFpbC4NCj4g
-PiA+Pj4NCj4gPiA+Pj4+ICAgIEnigJltIHRyeWluZyB0byBhZGQgdGhlIFFTUEkgTkFORCBzdXBw
-b3J0IGluIE1URC4NCj4gPiA+Pg0KPiA+ID4+IFlhbywgY2FuIHlvdSBzeW5jIHdpdGggUGV0ZXIg
-d2hvIGlzIGN1cnJlbnRseSB3b3JraW5nIG9uIGEgU1BJIE5BTkQNCj4gPiA+PiBmcmFtZXdvcmsg
-KHdoaWNoIHdvdWxkIHNpdCBpbiBkcml2ZXJzL210ZC9uYW5kL3NwaS8pLg0KPiA+ID4+DQo+ID4g
-Pj4+Pg0KPiA+ID4+Pj4gICAgQnV0IEkgaGF2ZSByZWFjaGVkIGEganVuY3Rpb24sIGNvdWxkIHlv
-dSBwbGVhc2UgdGFrZSBzb21lIG1pbnV0ZXMNCj4gYW5kDQo+ID4gPj4+PiAgICBnaXZlIG1lIHNv
-bWUgc3VnZ2VzdGlvbnM/DQo+ID4gPj4+Pg0KPiA+ID4+Pj4NCj4gPiA+Pj4+ICAgIFlvdSBrbm93
-LCB3ZSBoYXZlIHRoZSBRU1BJIE5PUiBzdXBwb3J0IGluDQo+ID4gPj4+PiAgICBkcml2ZXJzL210
-ZC9zcGktbm9yL3NwaS1ub3IuYywNCj4gPiA+Pj4+DQo+ID4gPj4+PiAgICBBbmQgdGhlIFFTUEkg
-TkFORCBpcyB2ZXJ5IHNpbWlsYXIgd2l0aCBRU1BJIE5PUiwgYnV0IHRoZSBSZWFkLCB3cml0ZQ0K
-PiA+ID4+Pj4gICAgYW5kIGVyYXNlIGlzIGRpZmZlcmVudCB3aXRoIFNQSS1OT1IuDQo+ID4gPj4+
-DQo+ID4gPj4+IEhvdyBzaW1pbGFyIGlzIHRoZSBjb250cm9sbGVyIGhhcmR3YXJlPyBEb2VzIHlv
-dXIgSVAgc3VwcG9ydA0KPiA+ID4+PiBzdGFuZGFyZCBTUEkgcHJvdG9jb2wsIG9yIGlzIGl0IHNw
-ZWNpYWxpemVkIGZvciBhY2NlbGVyYXRpbmcgU1BJDQo+ID4gPj4+IE5BTkQgKGUuZy4sIG1lbW9y
-eS1tYXBwZWQsIERNQSwgZXRjLik/IERvZXMgaXQgc3VwcG9ydCBTUEkgTk9SPw0KPiA+ID4+Pg0K
-PiA+ID4+Pj4gICAgU28gSSBoYXZlIHR3byB3YXlzIHRvIGFkZCBRU1BJLU5BTkQ6DQo+ID4gPj4+
-DQo+ID4gPj4+IEknbGwgbGVhdmUgeW91ciBvcHRpb25zIGludGFjdCBiZWxvdywgYnV0IEkgZG9u
-J3QgdGhpbmsgZWl0aGVyIG9mDQo+ID4gPj4+IHRoZW0gYXJlIHRoYXQgZ29vZC4gU1BJIE5PUiBh
-bmQgU1BJIE5BTkQgYXJlIGRpZmZlcmVudCBlbm91Z2gsIEkNCj4gPiA+Pj4gZG91YnQgdGhhdCB3
-ZSdsbCBnZXQgbXVjaCBiZW5lZml0IGZyb20gdXNpbmcgdGhlIHNhbWUgZnJhbWV3b3JrLA0KPiA+
-ID4+PiB1bmxlc3MgeW91IGhhcHBlbiB0byBoYXZlIElQIHRoYXQncyBkZXNpZ25lZCBmb3IgYm90
-aCBOT1IgYW5kDQo+ID4gPj4+IE5BTkQsIHlldCBkb2Vzbid0IHF1aXRlIGRvIHRyYWRpdGlvbmFs
-IFNQSS4NCj4gPiA+Pj4NCj4gPiA+Pj4gUGFydGljdWxhcmx5LCBOQU5EIGZsYXNoIGhhcyBhIGxv
-dCBvZiBpc3N1ZXMgdGhhdCBOT1IgZmxhc2gNCj4gPiA+Pj4gZ2VuZXJhbGx5IGRvZXMgbm90LCBh
-cm91bmQgYmFkIGJsb2NrIG1hbmFnZW1lbnQgYW5kIHdlYXIgbGV2ZWxpbmcuDQo+ID4gPj4+IEFs
-c28sIHRoZXJlIG1heSBiZSBzb21ldGhpbmcgdG8gc2hhcmUgYXJvdW5kIGlkZW50aWZpY2F0aW9u
-L09ORkk/DQo+ID4gPj4+IChOb3Qgc3VyZSBob3cgc2ltaWxhciB0aGUgaW1wbGVtZW50YXRpb25z
-IGFyZSB0aGVyZS4pIFRoZXJlJ3MgYmVlbg0KPiA+ID4+PiBzb21lIHByaW9yIGRpc2N1c3Npb24g
-YWJvdXQgaXQsIGFuZCBtYXliZSBvbmUgb2YgdGhlIENDJ2QgcGVvcGxlDQo+ID4gPj4+IGNhbiBk
-aXJlY3QgeW91IHRvd2FyZCB0aGUgbGF0ZXN0IG9waW5pb25zLCBvciBlbHNlIHlvdSBjYW4gc2Vh
-cmNoIHRoZQ0KPiBhcmNoaXZlcyB5b3VyZXNlbGYgKCJTUEkgTkFORCINCj4gPiA+Pj4gc2hvdWxk
-IHR1cm4gdXAgc2V2ZXJhbCByZXN1bHRzKS4NCj4gPiA+Pj4NCj4gPiA+Pj4gU28gdGhlIG1haW4g
-aXNzdWVzIHdvdWxkIHByb2JhYmx5IGJlIGFyb3VuZCBhYnN0cmFjdGluZyBvdXQgdGhlDQo+ID4g
-Pj4+IGJhZC1ibG9jay1yZWxhdGVkIGFuZCBjaGlwIGlkZW50aWZpY2F0aW9uIGNvZGUgc28geW91
-IGNhbiBzaGFyZQ0KPiA+ID4+PiBjb2RlIHdpdGggZXhpc3RpbmcgKHBhcmFsbGVsKSBOQU5EIHN1
-cHBvcnQuIEF0IGxlYXN0LCB0aGF0J3Mgd2hhdA0KPiA+ID4+PiBJIHRoaW5rIGJhc2VkIG9uIHRo
-ZSBsYXN0IHRpbWUgSSBsb29rZWQgYXQgdGhpbmdzLCBhbmQgSSB0aGluaw0KPiA+ID4+PiBzb21l
-IG9mIHRoZSBvdGhlciBhY3RpdmUgbWFpbnRhaW5lcnMgaGFkIGlkZWFzIGFsb25nIHRoZSBzYW1l
-IGxpbmVzLg0KPiA+ID4+DQo+ID4gPj4gSSdtIG5vdCBzdXJlIGlkZW50aWZpY2F0aW9uIG9mIHJh
-dyBhbmQgU1BJIE5BTkQgaXMgd29ya2luZyB0aGUgc2FtZQ0KPiA+ID4+IHdheSwgYnV0IHRoYXQn
-cyB0cnVlIGZvciB0aGUgQkJULiBBbmQsIGFzIEJyaWFuIHNhaWQsIHlvdSBkb24ndA0KPiA+ID4+
-IGludGVyYWN0IHdpdGggTkFORHMgdGhlIHNhbWUgd2F5IHlvdSBkbyB3aXRoIE5PUnMsIHNvIGl0
-IHNob3VsZCBJTU8NCj4gPiA+PiBzdGF5IGluIGRpZmZlcmVudCBmcmFtZXdvcmtzLg0KPiA+ID4+
-DQo+ID4gPg0KPiA+ID4gSSBhZ3JlZSB3aXRoIEJyaWFuIGFuZCBCb3JpcyBhYm91dCBzZXBhcmF0
-aW5nIE5PUnMgYW5kIE5BTkRzIGluDQo+ID4gPiBkaWZmZXJlbnQgZnJhbWV3b3Jrcy4gSSBrbm93
-IHRoaXMgaXMganVzdCBhIGRldGFpbCBidXQgZm9yIGluc3RhbmNlLA0KPiA+ID4gdGhlIGN1cnJl
-bnQgc3BpLW5vciBmcmFtZXdvcmsgc3RhcnRzIHNlbmRpbmcgdGhlIEpFREVDIFJlYWQgSUQNCj4g
-PiA+IGNvbW1hbmQgOUZoIHRvIHByb2JlIHRoZSBtZW1vcnkuIEF0IHRoaXMgcG9pbnQsIHlvdSBk
-b24ndCBrbm93IHlldA0KPiA+ID4gd2hhdCBtZW1vcnkgaXMgY29ubmVjdGVkIHRvIHRoZSBTUEkg
-Y29udHJvbGxlci4gSGVuY2UgeW91IGRvbid0IGV2ZW4NCj4ga25vdyB3ZXRoZXIgaXQgaXMgYSBO
-QU5EIG9yIGEgTk9SLg0KPiA+ID4gVGhlbiBpZiBJIHRha2UgdGhlIE1hY3Jvbml4IE1YMzVMRnhH
-RTRBQiBRU1BJIE5BTkQgYXMgYW4gZXhhbXBsZSwNCj4gPiA+IGl0cyBkYXRhc2hlZXQgY2xhaW1z
-IHRoYXQgdGhlIEpFREVDIFJlYWQgSUQgY29tbWFuZCAoOUZoKSByZXF1aXJlcyA4DQo+ID4gPiBk
-dW1teSBjbG9jayBjeWNsZXMgYWZ0ZXIgdGhlIG9wIGNvZGUgYW5kIGJlZm9yZSByZWFkaW5nIHRo
-ZSBhY3R1YWwNCj4gbWVtb3J5IElELg0KPiA+ID4gVGhvc2UgZHVtbXkgY3ljbGVzIGRvbid0IGV4
-aXN0IHdpdGggU1BJIE5PUiBtZW1vcmllcy4NCj4gPiA+IFNvIHNwaV9ub3Jfc2NhbigpIGNhbm5v
-dCBiZSB1c2VkIHByb2JlIChRKVNQSSBOQU5EIG1lbW9yaWVzLg0KPiA+ID4NCj4gPiA+IEFsc28s
-IHRoZSByZWFkIG9wZXJhdGlvbiBjYW4gYmUgcGVyZm9ybWVkIHdpdGggYSBzaW5nbGUgKEZhc3Qp
-IFJlYWQNCj4gPiA+IGNvbW1hbmQgd2l0aCAoUSlTUEkgTk9SIG1lbW9yaWVzIHdoZXJlYXMgaXQg
-aGFzIHRvIGJlIGRvbmUgaW4gdHdvDQo+ID4gPiBzdGVwcyBmb3IgUVNQSSBOQU5EIG1lbW9yaWVz
-Og0KPiA+ID4gMSAtIFBhZ2UgUmVhZCAoMTNoKTogdG8gdHJhbnNmZXIgZGF0YSBmcm9tIGFycmF5
-IHRvIGNhY2hlDQo+ID4gPiAyIC0gUmFuZG9tIERhdGEgUmVhZCAoMDNoIG9yIDBCaCk6IHRvIHJl
-YWQgZGF0YSBmcm9tIHRoZSBjYWNoZSBhbmQNCj4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgdHJhbnNmZXIgdGhlbSBvbiB0aGUgU1BJIGJ1cy4NCj4gPiA+DQo+ID4gPiBT
-byByZWFkIG9wZXJhdGlvbnMgYXJlIHF1aXRlIGRpZmZlcmVudCBhcyB3ZWxsIGJldHdlZW4gTk9S
-cyBhbmQgTkFORHMuDQo+ID4gPiBJIGRpZG4ndCBoYXZlIGEgbG9vayBhdCB0aGUgUGFnZSBQcm9n
-cmFtIG9wZXJhdGlvbiBidXQgSSBleHBlY3QNCj4gPiA+IHN0cm9uZyBkaWZmZXJlbmNlcyBhcyB3
-ZWxsLg0KPiA+ID4NCj4gPiA+IEkgdGhpbmsgdGhlcmUgYXJlIHRvbyBtYW55IGRpZmZlcmVuY2Vz
-IHRvIGhhbmRsZSBib3RoIGtpbmQgb2YNCj4gPiA+IG1lbW9yaWVzIHdpdGggYSBzaW5nbGUgZnJh
-bWV3b3JrLg0KPiA+DQo+ID4gQ2FuIGEgUVNQSSBjb250cm9sbGVyIGhhbmRsZSBib3RoIFNQSSBO
-T1IgYW5kIFNQSSBOQU5EID8gVGhhdCBpcyB0aGUNCj4gPiBxdWVzdGlvbiBoZXJlLiBJZiBzbywg
-d2UnZCBoYXZlIHRoZSBzYW1lIGRyaXZlciBmb3IgYm90aCwgYnV0DQo+ID4gZGlmZmVyZW50IGxh
-eWVyIG9uIHRvcCBvZiBpdCAoaGFuZGxpbmcgZWl0aGVyIE5PUiBvciBOQU5EIGNvbW1hbmRzKS4g
-SQ0KPiA+IHRoaW5rIHRoZSBkaWZmZXJlbnQgY29tbWFuZCBzZXRzIGFyZSBhIGRldGFpbCB3aGlj
-aCBjYW4gYmUgaGFuZGxlZA0KPiA+IGp1c3QgZmluZSBhbmQgaXQgc2hvdWxkIGJlIGEgZGV0YWls
-IGhhbmRsZWQgaW4gc2VwYXJhdGUgU1BJIE5PUiBhbmQgU1BJIE5BTkQNCj4gbGF5ZXJzLg0KPiA+
-IEp1c3QgbXkgNSBjZW50cyAuLi4NCj4gDQo+IFRoYXQgd2FzIG15IGZlZWxpbmcgdG9vLCBidXQg
-YXMgSSBzYWlkLCBJIGtub3cgYWxtb3N0IG5vdGhpbmcgYWJvdXQgc3BpLQ0KPiBub3IvbmFuZCwg
-c28gSSB0cnVzdCBwZW9wbGUgd2hvIGFscmVhZHkgd29ya2VkIG9uIHRoaXMgdG9waWMuDQo+IElm
-IHdlIGhhdmUgZW5vdWdoIGNvZGUgdG8gc2hhcmUgKGV2ZXJ5dGhpbmcgdGhhdCBpcyBzdG9yYWdl
-IGFnbm9zdGljKSwgdGhlbg0KPiBsZXQncyBkbyB0aGF0LCBidXQgQUZBSVUsIHRoZXJlJ3Mgbm90
-IG11Y2ggdG8gc2hhcmUuIEFuZCBpZiBpdCdzIHJlYWxseSBzdG9yYWdlDQo+IGFnbm9zdGljLCBz
-aG91bGRuJ3Qgd2UgcGxhY2UgdGhhdCBjb2RlIGluIHRoZSBzcGkgZnJhbWV3b3JrPw0KDQpIaSBC
-b3JpcyBhbmQgTWFyZWssDQoNClRoZSBRU1BJIGNvbnRyb2xsZXIgaXMganVzdCB1c2VkIHRvIHNl
-bmQgdGhlIGNvbW1hbmQgdG8gdGhlIGJ1cy4NClNvIGl0IHdpbGwgbm90IGNhcmUgYWJvdXQgdGhl
-IE5BTkQgb3IgTk9SLg0KDQpXZSBjYW4gaGF2ZSBhIGxheWVyIGxpa2Ugc3BpLW5vci5jIHRvIG1h
-a2Ugc3VyZSB3aGljaCBjb21tYW5kIHNldCB3ZSBzaG91bGQgDQpTdXBwb3J0IGZvciBkaWZmZXJl
-bnQgZmxhc2ggYW5kIHRoZSB0aW1pbmcgc2VxdWVuY2UgZm9yIGV2ZXJ5IGNvbW1hbmQuDQpUaGVu
-IFFTUEkgY29udHJvbGxlciBjYW4gc3VwcG9ydCBhbGwgdGhlIGZsYXNoIHdpdGggdGhhdCBpbmZv
-cm1hdGlvbi4NCg0KSSdtIHdvcmtpbmcgb24gUVNQSSBTUEktTkFORCwgYW5kIEkgaGF2ZSBjaGVj
-a2VkIGEgbG90IG9mIHRoZSBTUEktTkFORCBSTSwgDQpsaWtlIEN5cmlsbGUgc2FpZCBNYWNyb25p
-eCBNWDM1TEZ4R0U0QUIgYW5kIE1pY3JvbiBNVDI5RjFHMDFBQkFGRFNGLg0KSSBoYXZlIGZvdW5k
-IHRoYXQgYWxsIHRoZSBTUEktTkFORCBhcmUgYWxtb3N0IHRoZSBzYW1lLg0KDQpCdXQgdGhlcmUg
-aXMgc29tZSBkaWZmZXJlbmNlIHdpdGggU1BJLU5PUi4NCg0KU28gbWF5YmUgd2UgY2FuIGhhdmUg
-dHdvIHdheXM6DQoxLCBUaGVyZSBpcyBvbmUgc3BpLWZsYXNoIGxheWVyIGNhbiBjb3ZlciBhbGwg
-dGhlIGZsYXNoJ3MgY29tbW9uIGNoYXJhY3RlcnMsIGFuZCBkaWZmZXJlbnQgZmxhc2gNCmNhbiBh
-Y2hpZXZlIGRpZmZlcmVudCBmaW5hbCBvcGVyYXRpb24uDQpMaWtlOg0KSWYobWljcm9uX3NwaV9u
-YW5kX3JlYWQpDQoJbXRkLT5fcmVhZCA9IG1pY3Jvbl9zcGlfbmFuZF9yZWFkOw0KZWxzZSBpZiAo
-b2ZfcHJvcGVydHlfcmVhZF9ib29sKG5wLCAic3BpLCBuYW5kICIpKQ0KCW10ZC0+X3JlYWQgPSBz
-cGlfbmFuZF9yZWFkOw0KZWxzZQ0KCW10ZC0+X3JlYWQgPSBzcGlfbm9yX3JlYWQ7DQoNCjIsIFRo
-ZXJlIGFyZSB0d28gZnJhbWV3b3JrIGZvciBTUEktTkFORCBhbmQgU1BJLU5PUi4NCmRyaXZlcnMv
-bXRkL3NwaS1ub3Ivc3BpLW5vci5jIHNwZWNpYWxseSBmb3IgYWxsIHRoZSBTUEktTk9SIGZsYXNo
-DQpkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1uYW5kLmMgc3BlY2lhbGx5IGZvciBhbGwgdGhlIFNQ
-SS1OQU5EIGZsYXNoDQoNCg0K
+On Mon, 28 Nov 2016 05:46:10 +0000
+Yao Yuan <yao.yuan@nxp.com> wrote:
+
+> On 11/26/2016 01:12am, Marek Vasut wrote:
+> > On 11/08/2016 11:52 AM, Cyrille Pitchen wrote: =20
+> > > Hi all,
+> > >
+> > > Le 08/11/2016 =C3=A0 09:07, Boris Brezillon a =C3=A9crit : =20
+> > >> +Peter
+> > >>
+> > >> On Mon, 7 Nov 2016 18:01:15 -0800
+> > >> Brian Norris <computersforpeace@gmail.com> wrote:
+> > >> =20
+> > >>> + others
+> > >>>
+> > >>> On Mon, Nov 07, 2016 at 09:53:34AM +0000, Yao Yuan wrote: =20
+> > >>>>    Hi All, =20
+> > >>>
+> > >>> Hi Yao,
+> > >>>
+> > >>> I'm not that interested in handling private requests, and this is
+> > >>> generally informative, so I've added the linux-mtd list, as well as
+> > >>> the other maintainers.
+> > >>>
+> > >>> Also, when you're ready to send patches, make sure you use plain
+> > >>> text instead of HTML email.
+> > >>> =20
+> > >>>>    I=E2=80=99m trying to add the QSPI NAND support in MTD. =20
+> > >>
+> > >> Yao, can you sync with Peter who is currently working on a SPI NAND
+> > >> framework (which would sit in drivers/mtd/nand/spi/).
+> > >> =20
+> > >>>>
+> > >>>>    But I have reached a junction, could you please take some minut=
+es and
+> > >>>>    give me some suggestions?
+> > >>>>
+> > >>>>
+> > >>>>    You know, we have the QSPI NOR support in
+> > >>>>    drivers/mtd/spi-nor/spi-nor.c,
+> > >>>>
+> > >>>>    And the QSPI NAND is very similar with QSPI NOR, but the Read, =
+write
+> > >>>>    and erase is different with SPI-NOR. =20
+> > >>>
+> > >>> How similar is the controller hardware? Does your IP support
+> > >>> standard SPI protocol, or is it specialized for accelerating SPI
+> > >>> NAND (e.g., memory-mapped, DMA, etc.)? Does it support SPI NOR?
+> > >>> =20
+> > >>>>    So I have two ways to add QSPI-NAND: =20
+> > >>>
+> > >>> I'll leave your options intact below, but I don't think either of
+> > >>> them are that good. SPI NOR and SPI NAND are different enough, I
+> > >>> doubt that we'll get much benefit from using the same framework,
+> > >>> unless you happen to have IP that's designed for both NOR and NAND,
+> > >>> yet doesn't quite do traditional SPI.
+> > >>>
+> > >>> Particularly, NAND flash has a lot of issues that NOR flash
+> > >>> generally does not, around bad block management and wear leveling.
+> > >>> Also, there may be something to share around identification/ONFI?
+> > >>> (Not sure how similar the implementations are there.) There's been
+> > >>> some prior discussion about it, and maybe one of the CC'd people can
+> > >>> direct you toward the latest opinions, or else you can search the a=
+rchives =20
+> > youreself ("SPI NAND" =20
+> > >>> should turn up several results).
+> > >>>
+> > >>> So the main issues would probably be around abstracting out the
+> > >>> bad-block-related and chip identification code so you can share code
+> > >>> with existing (parallel) NAND support. At least, that's what I think
+> > >>> based on the last time I looked at things, and I think some of the
+> > >>> other active maintainers had ideas along the same lines. =20
+> > >>
+> > >> I'm not sure identification of raw and SPI NAND is working the same
+> > >> way, but that's true for the BBT. And, as Brian said, you don't
+> > >> interact with NANDs the same way you do with NORs, so it should IMO
+> > >> stay in different frameworks.
+> > >> =20
+> > >
+> > > I agree with Brian and Boris about separating NORs and NANDs in
+> > > different frameworks. I know this is just a detail but for instance,
+> > > the current spi-nor framework starts sending the JEDEC Read ID command
+> > > 9Fh to probe the memory. At this point, you don't know yet what memory
+> > > is connected to the SPI controller. Hence you don't even know wether =
+it is a =20
+> > NAND or a NOR. =20
+> > > Then if I take the Macronix MX35LFxGE4AB QSPI NAND as an example, its
+> > > datasheet claims that the JEDEC Read ID command (9Fh) requires 8 dummy
+> > > clock cycles after the op code and before reading the actual memory I=
+D.
+> > > Those dummy cycles don't exist with SPI NOR memories.
+> > > So spi_nor_scan() cannot be used probe (Q)SPI NAND memories.
+> > >
+> > > Also, the read operation can be performed with a single (Fast) Read
+> > > command with (Q)SPI NOR memories whereas it has to be done in two
+> > > steps for QSPI NAND memories:
+> > > 1 - Page Read (13h): to transfer data from array to cache
+> > > 2 - Random Data Read (03h or 0Bh): to read data from the cache and
+> > >                                    transfer them on the SPI bus.
+> > >
+> > > So read operations are quite different as well between NORs and NANDs.
+> > > I didn't have a look at the Page Program operation but I expect strong
+> > > differences as well.
+> > >
+> > > I think there are too many differences to handle both kind of memories
+> > > with a single framework. =20
+> >=20
+> > Can a QSPI controller handle both SPI NOR and SPI NAND ? That is the qu=
+estion
+> > here. If so, we'd have the same driver for both, but different layer on=
+ top of it
+> > (handling either NOR or NAND commands). I think the different command s=
+ets
+> > are a detail which can be handled just fine and it should be a detail h=
+andled in
+> > separate SPI NOR and SPI NAND layers.
+> > Just my 5 cents ...
+> >=20
+> > -- =20
+>=20
+> Yes, at least the QSPI for Freescale(NXP) can support both SPI NOR and SP=
+I NAND.
+> So I think the QSPI driver can be the same, I agree with you that we can =
+add a top=20
+> layer for different flash.
+>=20
+
+Well, I'd like to see what can be shared before taking a decision.
