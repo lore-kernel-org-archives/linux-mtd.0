@@ -1,20 +1,23 @@
 Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBHDl-0001SK-CO
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 08:23:30 +0000
-Subject: Re: [PATCH] mtd: spi-nor: Add at25df321 spi-nor flash support
-To: <Wenyou.Yang@microchip.com>, <jteki@openedev.com>,
- <linux-mtd@lists.infradead.org>
-References: <1469522274-10478-1-git-send-email-jteki@openedev.com>
- <F9F4555C4E01D7469D37975B62D0EFBB38C872@CHN-SV-EXMX07.mchp-main.com>
-CC: <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
- <linux-kernel@vger.kernel.org>, <wenyou.yang@atmel.com>
+ id 1cBHFl-0002hO-2f
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 08:25:33 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for N25Q016A
+To: Jagan Teki <jagannadh.teki@gmail.com>, Moritz Fischer
+ <moritz.fischer@ettus.com>
+References: <1468602228-25154-1-git-send-email-moritz.fischer@ettus.com>
+ <CAD6G_RT84jtTYcOkW87Z-g0j9sAVuku3RCpWXHZC_DLSEFrT1w@mail.gmail.com>
+CC: Brian Norris <computersforpeace@gmail.com>,
+ <ezequiel@vanguardiasur.com.ar>, <moritz.fischer.private@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "David
+ Woodhouse" <dwmw2@infradead.org>
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <cf93fe51-cd85-4328-e537-a741a96e8879@atmel.com>
-Date: Mon, 28 Nov 2016 09:23:05 +0100
+Message-ID: <55cc1619-7cae-75c8-bad7-6dbfe233549e@atmel.com>
+Date: Mon, 28 Nov 2016 09:25:09 +0100
 MIME-Version: 1.0
-In-Reply-To: <F9F4555C4E01D7469D37975B62D0EFBB38C872@CHN-SV-EXMX07.mchp-main.com>
-Content-Type: text/plain; charset="gbk"
+In-Reply-To: <CAD6G_RT84jtTYcOkW87Z-g0j9sAVuku3RCpWXHZC_DLSEFrT1w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,57 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 29/07/2016 ¨¤ 02:34, Wenyou.Yang@microchip.com a ¨¦crit :
-> 
-> 
->> -----Original Message-----
->> From: Jagan Teki [mailto:jteki@openedev.com]
->> Sent: 2016Äê7ÔÂ26ÈÕ 16:38
->> To: linux-mtd@lists.infradead.org
->> Cc: David Woodhouse <dwmw2@infradead.org>; linux-kernel@vger.kernel.org;
->> Jagan Teki <jteki@openedev.com>; Brian Norris
->> <computersforpeace@gmail.com>; Wenyou Yang <wenyou.yang@atmel.com>
->> Subject: [PATCH] mtd: spi-nor: Add at25df321 spi-nor flash support
+Le 15/07/2016 Ã  19:12, Jagan Teki a Ã©crit :
+> On 15 July 2016 at 22:33, Moritz Fischer <moritz.fischer@ettus.com> wrote:
+>> This commit adds support in the spi-nor driver for the
+>> N25Q016A, a 16Mbit SPI NOR flash from Micron.
 >>
->> Add Atmel at25df321 spi-nor flash to the list of spi_nor_ids.
->>
+>> Cc: David Woodhouse <dwmw2@infradead.org>
 >> Cc: Brian Norris <computersforpeace@gmail.com>
->> Cc: Wenyou Yang <wenyou.yang@atmel.com>
->> Signed-off-by: Jagan Teki <jteki@openedev.com>
+>> Cc: Jagan Teki <jteki@openedev.com>
+>>
+>> Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
 > 
-> Acked-by Wenyou Yang <wenyou.yang@atmel.com>
+> Reviewed-by: Jagan Teki <jteki@openedev.com>
 > 
-
- Applied to git://github.com/spi-nor/linux.git
+Applied to git://github.com/spi-nor/linux.git
 
 Thanks!
-
-Wenyou, I've fixed your "Acked-by:" tag when merging the patch :)
-
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c index
->> d0fc165..ec47451 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -799,6 +799,7 @@ static const struct flash_info spi_nor_ids[] = {
->>  	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) },
->>
->>  	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K) },
->> +	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K) },
->>  	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K) },
->>  	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
->>
->> --
->> 2.7.4
-> 
-> 
-> Best Regards,
-> Wenyou Yang
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
