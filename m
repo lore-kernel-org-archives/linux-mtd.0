@@ -1,19 +1,20 @@
 Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBH94-0006pq-O1
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 08:18:39 +0000
-Subject: Re: [PATCHv1] mtd: spi-nor: add support for s25fl208k
-To: Marek Vasut <marek.vasut@gmail.com>, Jagan Teki <jagan@openedev.com>,
- "Sean Nyekjaer" <sean.nyekjaer@prevas.dk>
-References: <20161005085949.29804-1-sean.nyekjaer@prevas.dk>
- <CAD6G_RSJPXj2qNM28ODnW94q6dpqfJSRrm3YK7HdNB8_DVUahQ@mail.gmail.com>
- <3536a9c3-9821-a7ee-7589-c329394894b9@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1cBHA5-00075r-Rz
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 08:19:42 +0000
+Subject: Re: [patch 1/2] mtd: spi-nor: Off by one in cqspi_setup_flash()
+To: Marek Vasut <marex@denx.de>, Dan Carpenter <dan.carpenter@oracle.com>,
+ David Woodhouse <dwmw2@infradead.org>, Graham Moore
+ <grmoore@opensource.altera.com>
+References: <20161013080646.GB3389@mwanda>
+ <360bddfc-0495-8836-41ef-4121517011a3@denx.de>
+CC: <kernel-janitors@vger.kernel.org>, Brian Norris
+ <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <3cfe0aee-b8b0-5125-eedd-aadf97e5a94a@atmel.com>
-Date: Mon, 28 Nov 2016 09:18:15 +0100
+Message-ID: <6be2afea-0981-b625-1c8a-6511e20db759@atmel.com>
+Date: Mon, 28 Nov 2016 09:19:18 +0100
 MIME-Version: 1.0
-In-Reply-To: <3536a9c3-9821-a7ee-7589-c329394894b9@gmail.com>
+In-Reply-To: <360bddfc-0495-8836-41ef-4121517011a3@denx.de>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,19 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 24/10/2016 à 15:07, Marek Vasut a écrit :
-> On 10/24/2016 10:16 AM, Jagan Teki wrote:
->> On Wed, Oct 5, 2016 at 2:29 PM, Sean Nyekjaer <sean.nyekjaer@prevas.dk> wrote:
->>> Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
->>> ---
->>> Changes: Fixed commit msg
+Le 14/10/2016 à 09:19, Marek Vasut a écrit :
+> On 10/13/2016 10:06 AM, Dan Carpenter wrote:
+>> There are CQSPI_MAX_CHIPSELECT elements in the ->f_pdata array so the >
+>> should be >=.
 >>
->> Reviewed-by: Jagan Teki <jagan@openedev.com>
->>
->> thanks!
->>
-> Acked-by: Marek Vasut <marex@denx.de>
+>> Fixes: 140623410536 ('mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller')
+>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
+> Reviewed-by: Marek Vasut <marex@denx.de>
 Applied to git://github.com/spi-nor/linux.git
 
 Thanks!
+> 
+>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> index d403ba7..944863b 100644
+>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> @@ -1082,7 +1082,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+>>  			goto err;
+>>  		}
+>>  
+>> -		if (cs > CQSPI_MAX_CHIPSELECT) {
+>> +		if (cs >= CQSPI_MAX_CHIPSELECT) {
+>>  			dev_err(dev, "Chip select %d out of range.\n", cs);
+>>  			goto err;
+>>  		}
+>>
+> 
+> 
