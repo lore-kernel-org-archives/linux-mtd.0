@@ -1,17 +1,19 @@
-Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
+Received: from mail-pg0-x22d.google.com ([2607:f8b0:400e:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBA3O-0003eJ-Sy
- for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 00:44:19 +0000
-Date: Sun, 27 Nov 2016 19:43:26 -0500
-From: Theodore Ts'o <tytso@mit.edu>
+ id 1cBAk2-0006bi-W4
+ for linux-mtd@lists.infradead.org; Mon, 28 Nov 2016 01:28:24 +0000
+Received: by mail-pg0-x22d.google.com with SMTP id f188so50644440pgc.3
+ for <linux-mtd@lists.infradead.org>; Sun, 27 Nov 2016 17:28:02 -0800 (PST)
+Date: Sun, 27 Nov 2016 17:27:58 -0800
+From: Eric Biggers <ebiggers@google.com>
 To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, dedekind1@gmail.com,
- adrian.hunter@intel.com, jaegeuk@kernel.org, david@sigma-star.at,
- wd@denx.de, sbabic@denx.de, dengler@linutronix.de,
- ebiggers@google.com, mhalcrow@google.com, hch@infradead.org
+Cc: Theodore Ts'o <tytso@mit.edu>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ dedekind1@gmail.com, adrian.hunter@intel.com, jaegeuk@kernel.org,
+ david@sigma-star.at, wd@denx.de, sbabic@denx.de,
+ dengler@linutronix.de, mhalcrow@google.com, hch@infradead.org
 Subject: Re: [PATCH 00/29] UBIFS File Encryption v1
-Message-ID: <20161128004326.f34bt5lsuonv7uvu@thunk.org>
+Message-ID: <20161128012758.GA6813@google.com>
 References: <1479072072-6844-1-git-send-email-richard@nod.at>
  <20161114030548.eils5al7ugfhlqwg@thunk.org>
  <34885683-a40f-eaff-b99d-b11fc68803f7@nod.at>
@@ -31,32 +33,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Sun, Nov 27, 2016 at 11:21:56PM +0100, Richard Weinberger wrote:
+> Ted,
+> 
+> On 27.11.2016 18:52, Theodore Ts'o wrote:
+> > On Fri, Nov 25, 2016 at 09:18:12AM +0100, Richard Weinberger wrote:
+> >>
+> >> Do you want us to address Eric's review comments on top of the fscrypt
+> >> branch or shall we rebase?
+> >> I'd suggest the former.
+> > 
+> > Yes, let's address them on top of the existing fscrypt branch.  I
+> > don't consider any of his comments super-serious --- they were mostly
+> > documentation or comments level changes unless I missed something.
 > 
 > Okay. Then I'll queue UBIFS encryption for the v4.10 merge window.
 > Just to be sure, I base my UBIFS next tree on your fscrypt tree such that
 > it will build fine and Linus won't see same commits with a different sha1?
+> Usually I'm a lucky maintainer and not have to deal with dependencies
+> between pull requests. :-)
+> 
+> Thanks,
+> //richard
 
-Yep, if you pull down the dev branch from ext4.git, and run the
-command:
+Shouldn't the branch be rebased to remove the CONFIG_VMAP_STACK fixes which are
+already in Linus' tree?
 
-git log --merges ext4/origin^..ext4/dev
+	fscrypto: don't use on-stack buffer for key derivation
+	fscrypto: don't use on-stack buffer for filename encryption
 
-you should see:
+Otherwise we'll end up with duplicate commits.
 
-commit 6da22013bb7907b33c87968c25034b409a6161a2
-Merge: a2f6d9c4c081 a6e089128617
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Sun Nov 13 22:02:22 2016 -0500
-
-    Merge branch 'fscrypt' into origin
-
-commit a2f6d9c4c081ec2a02529b8af2c04f3e557a3a3e
-Merge: bc33b0ca11e3 9484ab1bf446
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Sun Nov 13 22:02:15 2016 -0500
-
-    Merge branch 'dax-4.10-iomap-pmd' into origin
-
-Cheers,
-
-						- Ted
+Eric
