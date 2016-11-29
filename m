@@ -1,27 +1,28 @@
-Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBY9f-0002cs-VE
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 02:28:25 +0000
-Date: Mon, 28 Nov 2016 21:27:33 -0500
-From: Theodore Ts'o <tytso@mit.edu>
-To: Eric Biggers <ebiggers@google.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- dedekind1@gmail.com, adrian.hunter@intel.com, jaegeuk@kernel.org,
- david@sigma-star.at, wd@denx.de, sbabic@denx.de,
- dengler@linutronix.de, mhalcrow@google.com, hch@infradead.org
-Subject: Re: [PATCH 00/29] UBIFS File Encryption v1
-Message-ID: <20161129022733.pfougb5hyw6wzdwo@thunk.org>
-References: <1479072072-6844-1-git-send-email-richard@nod.at>
- <20161114030548.eils5al7ugfhlqwg@thunk.org>
- <34885683-a40f-eaff-b99d-b11fc68803f7@nod.at>
- <20161127175241.ojvqnla4zn5mkg63@thunk.org>
- <698c121c-5d44-1d6f-cab8-0cbaa61e5109@nod.at>
- <20161128012758.GA6813@google.com>
+ id 1cBbvs-00074T-3Z
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 06:30:25 +0000
+Received: by mail-wm0-x244.google.com with SMTP id m203so22524703wma.3
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Nov 2016 22:30:02 -0800 (PST)
+Subject: Re: [PATCH v2] mtd: m25p80: consider max message size in m25p80_read
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
+ <20160816164204.GV9347@sirena.org.uk>
+ <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
+ <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
+ <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
+ <0e38d1ed-af5c-160f-e02a-f1433c507d23@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <bd0da0b0-c2a1-eade-3b27-407b3842182c@gmail.com>
+Date: Tue, 29 Nov 2016 07:29:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161128012758.GA6813@google.com>
+In-Reply-To: <0e38d1ed-af5c-160f-e02a-f1433c507d23@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,24 +32,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 27, 2016 at 05:27:58PM -0800, Eric Biggers wrote:
+Am 28.10.2016 um 07:58 schrieb Heiner Kallweit:
+> Consider a message size limit when calculating the maximum amount
+> of data that can be read.
 > 
-> Shouldn't the branch be rebased to remove the CONFIG_VMAP_STACK fixes which are
-> already in Linus' tree?
+> The message size limit has been introduced with 4.9, so cc it
+> to stable.
 > 
-> 	fscrypto: don't use on-stack buffer for key derivation
-> 	fscrypto: don't use on-stack buffer for filename encryption
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> Cc: <stable@vger.kernel.org> # 4.9.x
+> ---
+> v2:
+> - This patch was part of a series and the other patches of the
+>   series went into 4.9. It's needed to correctly support
+>   reads > 64k on fsl-espi as first user of spi_max_message_size.
+>   See commit 02a595d5d6e4 ("spi: fsl-espi: eliminate spi nor
+>   flash read loop"). CC it to stable.  
+> ---
+>  drivers/mtd/devices/m25p80.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Otherwise we'll end up with duplicate commits.
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 9cf7fcd..16a7df2 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -172,7 +172,8 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  
+>  	t[1].rx_buf = buf;
+>  	t[1].rx_nbits = m25p80_rx_nbits(nor);
+> -	t[1].len = min(len, spi_max_transfer_size(spi));
+> +	t[1].len = min3(len, spi_max_transfer_size(spi),
+> +			spi_max_message_size(spi) - t[0].len);
+>  	spi_message_add_tail(&t[1], &m);
+>  
+>  	ret = spi_sync(spi, &m);
+> 
+This one is still open and there have been reports already from
+people facing this issue. Can we still get it into 4.10 +
+into 4.9 ?
 
-Given that the ubifs folks are depending on the existing branch,
-having duplicate commits is considered an acceptable tradeoff to not
-rebasing a published commit that other trees are depending on.
-
-I tell people that the ext4.git dev branch is a rewinding branch, so
-people shouldn't be building other trees on top of it unless they are
-willing to deal with the fact that it can be rebased.  However, i
-didn't give that warning for the fscrypt branch, so I'd much rather
-not rewind/rebase it.
-
-						- Ted
+Thanks
