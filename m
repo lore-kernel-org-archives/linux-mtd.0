@@ -1,20 +1,28 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBlgt-0003wp-7G
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 16:55:45 +0000
-Subject: Re: [PATCH 3/3] mtd: spi-nor: Enable die erase for Micron 1GiB
-To: <marcin.krzeminski@nokia.com>, <linux-mtd@lists.infradead.org>
-References: <1477314214-17718-1-git-send-email-marcin.krzeminski@nokia.com>
- <1477314214-17718-4-git-send-email-marcin.krzeminski@nokia.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <rfsw-patches@mlist.nokia.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>
-Message-ID: <688b853c-6e08-81dd-63dd-eb528e2c6078@atmel.com>
-Date: Tue, 29 Nov 2016 17:54:06 +0100
+Received: from 216-12-86-13.cv.mvl.ntelos.net ([216.12.86.13]
+ helo=brightrain.aerifal.cx)
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cBlvh-0001jz-Hm
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 17:10:55 +0000
+Date: Tue, 29 Nov 2016 12:09:49 -0500
+From: Rich Felker <dalias@libc.org>
+To: Simon Horman <horms+renesas@verge.net.au>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+ linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>
+Subject: Re: [PATCH/RFC linux-mtd] mtd: sh_flctl: Remove sh7372 and device
+ tree support
+Message-ID: <20161129170949.GZ1555@brightrain.aerifal.cx>
+References: <1480059181-29355-1-git-send-email-horms+renesas@verge.net.au>
 MIME-Version: 1.0
-In-Reply-To: <1477314214-17718-4-git-send-email-marcin.krzeminski@nokia.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1480059181-29355-1-git-send-email-horms+renesas@verge.net.au>
+Sender: Rich Felker <dalias@aerifal.cx>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,97 +32,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marcin,
-
-Le 24/10/2016 à 15:03, marcin.krzeminski@nokia.com a écrit :
-> From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+On Fri, Nov 25, 2016 at 08:33:01AM +0100, Simon Horman wrote:
+> Commit edf4100906044225 ("ARM: shmobile: sh7372 dtsi: Remove Legacy file")
+> removed the sh7272 SoC from the kernel in v4.1.
 > 
-> Micron N25Q00 and MT25Q00 share same JEDEC Id,
-> but it seem can be properly recognized by second
-> ext_jedec id byte.
+> This patch removes support for the sh7272 SoC from the sh_flctl driver.
+> As that SoC was the only user of device tree support also remove that
+> from the driver.
 > 
-> This commits extends n25q00 ids by adding ext
-> bytes and also adds mt25q00 family.
-> For MT25Q00 family, the number of dies is two, N25Q00
-> has it four. Logic to support that is added.
+> In essence it reverts commit 7c8f680e96ed ("mtd: sh_flctl: Add device tree
+> support"). This commit may be used as a reference for re-adding device
+> tree support to this driver if a need for it is found in future.
 > 
-> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+> This commit has been build-testesd against the ap325rxa_defconfig.
+> I do not have access to the hardware to perform run-time testing
+> on that board which appears to be the only remaining user of this driver.
+> Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 36 ++++++++++++++++++++++++++++++++++--
->  1 file changed, 34 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 17bbec0..b33ead6 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -218,6 +218,28 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
->  		return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1);
->  	}
->  }
-> +
-> +static void spi_nor_die_cnt(struct spi_nor *nor,
-> +		const struct flash_info *info)
-> +{
-> +	switch (JEDEC_MFR(info)) {
-> +	case SNOR_MFR_MICRON:
-> +		/* 1GiB devices */
-> +		if (info->id[2] == 0x21) {
-> +			/* MT25Q00 has 2 dies N25Q00 has 4 */
-> +			if (info->id[4] & BIT(6))
-> +				nor->die_cnt = 2;
-> +			else
-> +				nor->die_cnt = 4;
-> +		} else
-> +			nor->die_cnt = 0;
+>  .../devicetree/bindings/mtd/flctl-nand.txt         | 49 ---------------
+>  drivers/mtd/nand/sh_flctl.c                        | 70 +++-------------------
+>  2 files changed, 8 insertions(+), 111 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/flctl-nand.txt
 
-You set nor->die_cnt according to the JEDED ID but what is BIT(6) in the 5th
-byte of the JEDEC ID?
-How do you know whether this "rule of thumb" also applies to other Micron
-memories?
+While I'm not the maintainer for this (and I'm not clear that the
+linux-sh list even should have been cc'd; it seems to be shmobile arm
+soc stuff rather than sh arch) I think this is a bad change. If the
+driver is completely unused, it should just be removed, but if there
+are remaining users that are still using legacy platform device
+bindings, they should gradually be transitioned to device tree, and
+having the device tree support still present makes it easier to do
+that.
 
-I think we should find another solution to set nor->die_cnt properly.
-Maybe adding some info in the relevant entries of the spi_nor_ids[] array?
+Removing the *bindings* is even worse, as these are a permanent
+interface between hardware/firmware and software.
 
-Best regards,
-
-Cyrille
-
-> +	break;
-> +	default:
-> +		nor->die_cnt = 0;
-> +		break;
-> +	}
-> +}
-> +
->  static inline int spi_nor_sr_ready(struct spi_nor *nor)
->  {
->  	int sr = read_sr(nor);
-> @@ -970,8 +992,14 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> -	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> -	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> +	{ "n25q00",      INFO(0x20ba21, 0x1000, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
-> +	{ "n25q00a",     INFO(0x20bb21, 0x1000, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
-> +	{ "n25q00",      INFO(0x20ba21, 0x1004, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
-> +	{ "n25q00a",     INFO(0x20bb21, 0x1004, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
-> +	{ "mt25ql01g",   INFO(0x20ba21, 0x1044, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
-> +	{ "mt25qu01g",   INFO(0x20bb21, 0x1044, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
-> +	{ "mt25ql01g",   INFO(0x20ba21, 0x1040, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
-> +	{ "mt25qu01g",   INFO(0x20bb21, 0x1040, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
->  
->  	/* PMC */
->  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-> @@ -1479,6 +1507,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  		nor->flags |= SNOR_F_USE_FSR;
->  	if (info->flags & SPI_NOR_HAS_TB)
->  		nor->flags |= SNOR_F_HAS_SR_TB;
-> +	if (info->flags & DIE_ERASE) {
-> +		nor->flags |= SNOR_F_DIE_ERASE;
-> +		spi_nor_die_cnt(nor, info);
-> +	}
->  
->  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
->  	/* prefer "small sector" erase if possible */
-> 
+Rich
