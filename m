@@ -1,26 +1,24 @@
-Received: from relay1.mentorg.com ([192.94.38.131])
+Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBdWu-00082G-Gy
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 08:12:45 +0000
-Date: Tue, 29 Nov 2016 13:42:05 +0530
-From: Sandeep Jain <Sandeep_Jain@mentor.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-CC: Richard Weinberger <richard.weinberger@gmail.com>, Steve Longerbeam
- <steve_longerbeam@mentor.com>, LKML <linux-kernel@vger.kernel.org>, Jim
- Baxter <jim_baxter@mentor.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: Allocate bdi objects dynamically
-Message-ID: <20161129081204.GA6617@mentor.com>
-References: <Sandeep_Jain@mentor.com>
- <1470319275-9465-1-git-send-email-Sandeep_Jain@mentor.com>
- <CAFLxGvx6B02c+HgYwJ8exVLT6owrkQL1Rq+X6VzUDKVUxE=aoQ@mail.gmail.com>
- <20161103113421.GA4873@mentor.com>
- <4055a3ed-c024-4c29-45e1-e600cdc5902e@gmail.com>
+ id 1cBiCO-0003lE-OX
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 13:11:54 +0000
+Subject: Re: [PATCH v2, 1/1] mtd: devices: m25p80: Add PM suspend resume
+ support
+To: Kamal Dasu <kamal.dasu@broadcom.com>, Marek Vasut <marex@denx.de>
+References: <1473710494-4084-1-git-send-email-kdasu.kdev@gmail.com>
+ <4fe502a4-ee01-3fb8-6697-161de814596e@atmel.com>
+ <CAKekbeubczM5NpQy-Umqx-SmDM+deMcgYciyST2Sgrh2_dOsAw@mail.gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: Kamal Dasu <kdasu.kdev@gmail.com>, <linux-spi@vger.kernel.org>, "Florian
+ Fainelli" <f.fainelli@gmail.com>, <linux-mtd@lists.infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>,
+ <bcm-kernel-feedback-list@broadcom.com>
+Message-ID: <c9198202-29d1-5e67-f675-5a53d926ede9@atmel.com>
+Date: Tue, 29 Nov 2016 14:11:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4055a3ed-c024-4c29-45e1-e600cdc5902e@gmail.com>
+In-Reply-To: <CAKekbeubczM5NpQy-Umqx-SmDM+deMcgYciyST2Sgrh2_dOsAw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,48 +28,204 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Maintainers,
-   This patch is already reviewed twice with no issues.
-Requesting your attention for patch merge.
+Hi Kamal,
 
-Thanks & Regards,
-Sandeep Jain
++Marek
 
-On Sat, Nov 05, 2016 at 08:22:31AM +0100, Marek Vasut wrote:
-> On 11/03/2016 12:34 PM, Sandeep Jain wrote:
-> > Dear Maintainers,
-> >   This patch is reviewed by Richard.
-> > Requesting for Maintainer's attention for patch merge.
-> > 
-> > Thanks & Regards,
-> > Sandeep Jain
-> > 
-> > On Sat, Sep 17, 2016 at 04:41:47PM +0200, Richard Weinberger wrote:
-> >> On Thu, Aug 4, 2016 at 4:01 PM, Sandeep Jain <Sandeep_Jain@mentor.com> wrote:
-> >>> From: Steve Longerbeam <steve_longerbeam@mentor.com>
-> >>>
-> >>> The MTD backing dev info objects mtd_bdi was statically allocated.
-> >>> So when MTD is built as a loadable module, this object fall in the
-> >>> vmalloc address space.
-> >>>
-> >>> The problem with that, is that the BDI APIs use wake_up_bit(), which calls
-> >>> virt_to_page() to retrieve the memory zone of the page containing the
-> >>> wait_queue to wake up, and virt_to_page() is not valid for vmalloc or
-> >>> highmem addresses.
-> >>>
-> >>> Fix this by allocating the BDI objects dynamically with kmalloc. The
-> >>> objects now fall in the logical address space so that BDI APIs will
-> >>> work in all cases (mtd builtin or module).
-> >>>
-> >>> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
-> >>> Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
-> >>> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
-> >>
-> >> Reviewed-by: Richard Weinberger <richard@nod.at>
+Le 24/10/2016 à 20:18, Kamal Dasu a écrit :
 > 
-> I don't see any obvious problem either:
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+> Cyrille,
 > 
-> -- 
-> Best regards,
-> Marek Vasut
+> On Mon, Oct 17, 2016 at 1:08 PM, Cyrille Pitchen <cyrille.pitchen@atmel.com <mailto:cyrille.pitchen@atmel.com>> wrote:
+> 
+>     Hi Kamal,
+> 
+>     Le 12/09/2016 à 22:01, Kamal Dasu a écrit :
+>     > Adding PM support so as to be able to probe spi-nor flash
+>     > on resume. There are vendor specific commands to setup
+>     > the transfer mode and enable read/write as part of
+>     > spi_nor_scan(), done on initial probe and needed on resume().
+>     > The spi-nor structure is private to the m25p driver and hence
+>     > is the only place this can be done without having to duplicate
+>     > code in controller driver.
+> 
+>     Just to be sure I've understood the purpose of this patch: here we suppose
+>     that the SPI NOR memory power supply was cut when the CPU entered its suspend
+>     mode. So when the CPU is resumed, the SPI NOR memory power supply is enabled
+>     again as well and the internal state of the memory is reset.
+> 
+> 
+> Memory could be intact and in refresh state. But generally the spi nor part might be powered down. 
+> 
+> 
+>     Depending on the manufacturer, we may need to send dedicated commands so the
+>     memory is ready again (for instance, a Global Unlock Block command for SST
+>     memories so we can perform Sector Erase and Page Program operations).
+>     Those commands are sent from spi_nor_scan(). Hence you call spi_nor_scan()
+>     once again from the resume callback.
+> 
+> 
+> Yes there are are chain of calls that setup the state of the part from spi_nor_scan that are vendor specific based on the jdec id. So yes some of the unlock commands need to be sent before we can start using the part again.
+>  
+> 
+>     If so, your patch does make sense but I wonder whether some operations done
+>     inside spi_nor_scan() and not related to the memory itself but more to other
+>     layers like mtd (struct mtd_info) could always be safely performed a second
+>     time. I don't know if that issue already exists or would ever exist, if so
+>     it might be interesting to find a mean to tell spi_nor_scan() whether it's
+>     called for the first time on this memory (boot) or not (resume).
+> 
+> 
+> I do see the mtd settings that could be done a second time but should not cause any issues IMHO.  I don't see a need to distinguish between a (re)boot or a resume  and complicate the code. Unless somebody can point out a specific issue in doing so.
+
+OK, so I'm fine with leaving the patch as is for now but I would like Marek
+review just to be sure we didn't miss something: Marek, any comments?
+
+I just have one more comment below but it's only a detail.
+
+> 
+>  
+> 
+>     Best regards,
+> 
+>     Cyrille
+> 
+> 
+> 
+> Thanks
+> Kamal
+> 
+>  
+> 
+> 
+>     > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com <mailto:kdasu.kdev@gmail.com>>
+>     > ---
+>     >  drivers/mtd/devices/m25p80.c | 68 +++++++++++++++++++++++++++++++-------------
+>     >  1 file changed, 48 insertions(+), 20 deletions(-)
+>     >
+>     > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>     > index 9cf7fcd..48c3f64 100644
+>     > --- a/drivers/mtd/devices/m25p80.c
+>     > +++ b/drivers/mtd/devices/m25p80.c
+>     > @@ -186,6 +186,39 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>     >  }
+>     >
+>     >  /*
+>     > + * scan for spi nor flash vendor parts and setup
+>     > + * read/write mode
+>     > + */
+>     > +static int m25p_nor_flash_scan(struct device *dev)
+>     > +{
+>     > +     struct m25p *flash = dev_get_drvdata(dev);
+>     > +     struct flash_platform_data      *data;
+>     > +     char *flash_name = NULL;
+>     > +     enum read_mode mode = SPI_NOR_NORMAL;
+>     > +
+>     > +     data = dev_get_platdata(dev);
+>     > +
+>     > +     /* For some (historical?) reason many platforms provide two different
+>     > +      * names in flash_platform_data: "name" and "type". Quite often name is
+>     > +      * set to "m25p80" and then "type" provides a real chip name.
+>     > +      * If that's the case, respect "type" and ignore a "name".
+>     > +      */
+>     > +     if (data && data->type)
+>     > +             flash_name = data->type;
+>     > +     else if (!strcmp(flash->spi->modalias, "spi-nor"))
+>     > +             flash_name = NULL; /* auto-detect */
+>     > +     else
+>     > +             flash_name = flash->spi->modalias;
+>     > +
+>     > +     if (flash->spi->mode & SPI_RX_QUAD)
+>     > +             mode = SPI_NOR_QUAD;
+>     > +     else if (flash->spi->mode & SPI_RX_DUAL)
+>     > +             mode = SPI_NOR_DUAL;
+>     > +
+>     > +     return spi_nor_scan(&flash->spi_nor, flash_name, mode);
+>     > +}
+>     > +
+>     > +/*
+>     >   * board specific setup should have ensured the SPI clock used here
+>     >   * matches what the READ command supports, at least until this driver
+>     >   * understands FAST_READ (for clocks over 25 MHz).
+>     > @@ -195,8 +228,6 @@ static int m25p_probe(struct spi_device *spi)
+>     >       struct flash_platform_data      *data;
+>     >       struct m25p *flash;
+>     >       struct spi_nor *nor;
+>     > -     enum read_mode mode = SPI_NOR_NORMAL;
+>     > -     char *flash_name;
+>     >       int ret;
+>     >
+>     >       data = dev_get_platdata(&spi->dev);
+>     > @@ -220,27 +251,11 @@ static int m25p_probe(struct spi_device *spi)
+>     >       spi_set_drvdata(spi, flash);
+>     >       flash->spi = spi;
+>     >
+>     > -     if (spi->mode & SPI_RX_QUAD)
+>     > -             mode = SPI_NOR_QUAD;
+>     > -     else if (spi->mode & SPI_RX_DUAL)
+>     > -             mode = SPI_NOR_DUAL;
+>     > -
+>     >       if (data && data->name)
+>     >               nor->mtd.name <http://mtd.name> = data->name;
+>     >
+>     > -     /* For some (historical?) reason many platforms provide two different
+>     > -      * names in flash_platform_data: "name" and "type". Quite often name is
+>     > -      * set to "m25p80" and then "type" provides a real chip name.
+>     > -      * If that's the case, respect "type" and ignore a "name".
+>     > -      */
+>     > -     if (data && data->type)
+>     > -             flash_name = data->type;
+>     > -     else if (!strcmp(spi->modalias, "spi-nor"))
+>     > -             flash_name = NULL; /* auto-detect */
+>     > -     else
+>     > -             flash_name = spi->modalias;
+>     > +     ret = m25p_nor_flash_scan(nor->dev);
+>     >
+>     > -     ret = spi_nor_scan(nor, flash_name, mode);
+>     >       if (ret)
+>     >               return ret;
+>     >
+>     > @@ -248,7 +263,6 @@ static int m25p_probe(struct spi_device *spi)
+>     >                                  data ? data->nr_parts : 0);
+>     >  }
+>     >
+>     > -
+I know this just just a detail but this chunk should not be included in
+your patch since this is a cosmetic change and it has nothing to do with
+the suspend/resume feature.
+
+>     >  static int m25p_remove(struct spi_device *spi)
+>     >  {
+>     >       struct m25p     *flash = spi_get_drvdata(spi);
+>     > @@ -319,10 +333,24 @@ static const struct of_device_id m25p_of_table[] = {
+>     >  };
+>     >  MODULE_DEVICE_TABLE(of, m25p_of_table);
+>     >
+>     > +#ifdef CONFIG_PM_SLEEP
+>     > +static int m25p_suspend(struct device *dev)
+>     > +{
+>     > +     return 0;
+>     > +}
+>     > +
+>     > +static int m25p_resume(struct device *dev)
+>     > +{
+>     > +     return m25p_nor_flash_scan(dev);
+>     > +}
+>     > +#endif
+>     > +static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
+>     > +
+>     >  static struct spi_driver m25p80_driver = {
+>     >       .driver = {
+>     >               .name   = "m25p80",
+>     >               .of_match_table = m25p_of_table,
+>     > +             .pm     = &m25p_pm_ops,
+>     >       },
+>     >       .id_table       = m25p_ids,
+>     >       .probe  = m25p_probe,
+>     >
+> 
+> 
+
+Best regards,
+
+Cyrille
