@@ -1,17 +1,20 @@
-Received: from mail-bn3nam01on0085.outbound.protection.outlook.com
- ([104.47.33.85] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
+Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBkLd-0003Cu-7I
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 15:29:34 +0000
-From: Fabio Estevam <fabio.estevam@nxp.com>
-To: <boris.brezillon@free-electrons.com>
-CC: <marek.vasut@gmail.com>, <cyrille.pitchen@atmel.com>, <vz@mleia.com>,
- <linux-mtd@lists.infradead.org>, Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH] mtd: nand: lpc32xx_slc: Remove unneeded NULL check on 'rc'
-Date: Tue, 29 Nov 2016 13:28:52 -0200
-Message-ID: <1480433332-2090-1-git-send-email-fabio.estevam@nxp.com>
+ id 1cBlYj-0005r0-It
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 16:47:10 +0000
+Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement die erase command logic
+To: <marcin.krzeminski@nokia.com>, <linux-mtd@lists.infradead.org>
+References: <1477314214-17718-1-git-send-email-marcin.krzeminski@nokia.com>
+ <1477314214-17718-3-git-send-email-marcin.krzeminski@nokia.com>
+CC: <rfsw-patches@mlist.nokia.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <marek.vasut@gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <7e94d439-114a-8827-9667-1472d3e4323a@atmel.com>
+Date: Tue, 29 Nov 2016 17:46:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1477314214-17718-3-git-send-email-marcin.krzeminski@nokia.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,45 +24,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-devm_ioremap_resource() does a NULL check on the 'rc' argument, so
-remove the unneeded manual NULL check.
+Hi Marcin,
 
-While at it, place the 'rc' assignment just before
-devm_ioremap_resource() to improve readability.
+I know you have already answered some of my questions of IRC but I ask
+them again here on the mailing list so everybody can benefit from your
+answers.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
- drivers/mtd/nand/lpc32xx_slc.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+Le 24/10/2016 à 15:03, marcin.krzeminski@nokia.com a écrit :
+> From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+> 
+> This commit implements die erase logic.
+> Sector at a time procedure is moved to function,
+> then erase algorithm will try to use die erase cmd
+> if size and address cover one or more dies.
+> 
 
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index 53bafe2..a0669a3 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -797,22 +797,17 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	struct resource *rc;
- 	int res;
- 
--	rc = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (rc == NULL) {
--		dev_err(&pdev->dev, "No memory resource found for device\n");
--		return -EBUSY;
--	}
--
- 	/* Allocate memory for the device structure (and zero it) */
- 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
- 	if (!host)
- 		return -ENOMEM;
--	host->io_base_dma = rc->start;
- 
-+	rc = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	host->io_base = devm_ioremap_resource(&pdev->dev, rc);
- 	if (IS_ERR(host->io_base))
- 		return PTR_ERR(host->io_base);
- 
-+	host->io_base_dma = rc->start;
- 	if (pdev->dev.of_node)
- 		host->ncfg = lpc32xx_parse_dt(&pdev->dev);
- 	if (!host->ncfg) {
--- 
-2.7.4
+I'm reading your v2 series but indeed I try to understand the purpose of the
+series simply because I don't know what does die erase do as compared to chip
+erase of sector erase.
+Is you series a bug fix or an optmization, maybe both?
+
+Best regards,
+
+Cyrille
+
+> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 90 +++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 78 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 3afe207..17bbec0 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -360,6 +360,29 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+>  	return nor->write_reg(nor, nor->erase_opcode, buf, nor->addr_width);
+>  }
+>  
+> +static inline int spi_nor_sector_at_time_erase(struct mtd_info *mtd, u32 addr, u32 len)
+> +{
+> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> +	int ret = 0;
+> +
+> +	while (len) {
+> +		write_enable(nor);
+> +
+> +		ret = spi_nor_erase_sector(nor, addr);
+> +		if (ret)
+> +			return ret;
+> +
+> +		addr += mtd->erasesize;
+> +		len -= mtd->erasesize;
+> +
+> +		ret = spi_nor_wait_till_ready(nor);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Erase an address range on the nor chip.  The address range may extend
+>   * one or more erase sectors.  Return an error is there is a problem erasing.
+> @@ -367,9 +390,11 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+>  static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  {
+>  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> -	u32 addr, len;
+> +	u32 addr, len, die_no, die_size;
+>  	uint32_t rem;
+>  	int ret;
+> +	unsigned long timeout;
+> +	u8 die_erase = nor->die_cnt && SNOR_F_DIE_ERASE;
+>  
+>  	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
+>  			(long long)instr->len);
+> @@ -386,7 +411,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  		return ret;
+>  
+>  	/* whole-chip erase? */
+> -	if (len == mtd->size) {
+> +	if (len == mtd->size && !die_erase) {
+>  		unsigned long timeout;
+>  
+>  		write_enable(nor);
+> @@ -416,17 +441,58 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  
+>  	/* "sector"-at-a-time erase */
+>  	} else {
+> -		while (len) {
+> -			write_enable(nor);
+> -
+> -			ret = spi_nor_erase_sector(nor, addr);
+> -			if (ret)
+> +		if (die_erase) {
+> +			die_size = div_u64_rem(mtd->size, nor->die_cnt, &rem);
+> +			if (rem) {
+> +				ret = -EINVAL;
+>  				goto erase_err;
+> -
+> -			addr += mtd->erasesize;
+> -			len -= mtd->erasesize;
+> -
+> -			ret = spi_nor_wait_till_ready(nor);
+> +			}
+> +			while (len) {
+> +				die_no = div_u64_rem(addr, die_size, &rem);
+> +
+> +				/* Check if address is aligned to die begin*/
+> +				if (!rem) {
+> +					/* die erase? */
+> +					if (len >= die_size) {
+> +						ret = spi_nor_die_erase(nor, addr);
+> +						if (ret)
+> +							goto erase_err;
+> +
+> +						len -= die_size;
+> +						addr += die_size;
+> +
+> +						timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
+> +								CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
+> +								(unsigned long)(die_size / SZ_2M));
+> +						ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
+> +						if (ret)
+> +							goto erase_err;
+> +					} else {
+> +						ret = spi_nor_sector_at_time_erase(mtd, addr, len);
+> +						if (ret)
+> +							goto erase_err;
+> +						len = 0;
+> +					}
+> +				} else {
+> +					/* check if end address cover at least one die */
+> +					if (div64_ul(addr + len, die_size) > ++die_no) {
+> +						/* align to next die */
+> +						rem = die_size - rem;
+> +						ret = spi_nor_sector_at_time_erase(mtd, addr, rem);
+> +						if (ret)
+> +							goto erase_err;
+> +						len -= rem;
+> +						addr += rem;
+> +					} else {
+> +						ret = spi_nor_sector_at_time_erase(mtd, addr, len);
+> +						if (ret)
+> +							goto erase_err;
+> +						len = 0;
+> +					}
+> +				}
+> +			}
+> +		} else {
+> +			ret = spi_nor_sector_at_time_erase(mtd, addr, len);
+>  			if (ret)
+>  				goto erase_err;
+>  		}
+> 
