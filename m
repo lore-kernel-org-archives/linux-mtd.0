@@ -1,18 +1,18 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBlYj-0005r0-It
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 16:47:10 +0000
-Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement die erase command logic
+ id 1cBlgt-0003wp-7G
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 16:55:45 +0000
+Subject: Re: [PATCH 3/3] mtd: spi-nor: Enable die erase for Micron 1GiB
 To: <marcin.krzeminski@nokia.com>, <linux-mtd@lists.infradead.org>
 References: <1477314214-17718-1-git-send-email-marcin.krzeminski@nokia.com>
- <1477314214-17718-3-git-send-email-marcin.krzeminski@nokia.com>
+ <1477314214-17718-4-git-send-email-marcin.krzeminski@nokia.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 CC: <rfsw-patches@mlist.nokia.com>, <dwmw2@infradead.org>,
  <computersforpeace@gmail.com>, <marek.vasut@gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <7e94d439-114a-8827-9667-1472d3e4323a@atmel.com>
-Date: Tue, 29 Nov 2016 17:46:45 +0100
+Message-ID: <688b853c-6e08-81dd-63dd-eb528e2c6078@atmel.com>
+Date: Tue, 29 Nov 2016 17:54:06 +0100
 MIME-Version: 1.0
-In-Reply-To: <1477314214-17718-3-git-send-email-marcin.krzeminski@nokia.com>
+In-Reply-To: <1477314214-17718-4-git-send-email-marcin.krzeminski@nokia.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,156 +26,95 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Marcin,
 
-I know you have already answered some of my questions of IRC but I ask
-them again here on the mailing list so everybody can benefit from your
-answers.
-
 Le 24/10/2016 à 15:03, marcin.krzeminski@nokia.com a écrit :
 > From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
 > 
-> This commit implements die erase logic.
-> Sector at a time procedure is moved to function,
-> then erase algorithm will try to use die erase cmd
-> if size and address cover one or more dies.
+> Micron N25Q00 and MT25Q00 share same JEDEC Id,
+> but it seem can be properly recognized by second
+> ext_jedec id byte.
 > 
+> This commits extends n25q00 ids by adding ext
+> bytes and also adds mt25q00 family.
+> For MT25Q00 family, the number of dies is two, N25Q00
+> has it four. Logic to support that is added.
+> 
+> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 36 ++++++++++++++++++++++++++++++++++--
+>  1 file changed, 34 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 17bbec0..b33ead6 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -218,6 +218,28 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+>  		return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1);
+>  	}
+>  }
+> +
+> +static void spi_nor_die_cnt(struct spi_nor *nor,
+> +		const struct flash_info *info)
+> +{
+> +	switch (JEDEC_MFR(info)) {
+> +	case SNOR_MFR_MICRON:
+> +		/* 1GiB devices */
+> +		if (info->id[2] == 0x21) {
+> +			/* MT25Q00 has 2 dies N25Q00 has 4 */
+> +			if (info->id[4] & BIT(6))
+> +				nor->die_cnt = 2;
+> +			else
+> +				nor->die_cnt = 4;
+> +		} else
+> +			nor->die_cnt = 0;
 
-I'm reading your v2 series but indeed I try to understand the purpose of the
-series simply because I don't know what does die erase do as compared to chip
-erase of sector erase.
-Is you series a bug fix or an optmization, maybe both?
+You set nor->die_cnt according to the JEDED ID but what is BIT(6) in the 5th
+byte of the JEDEC ID?
+How do you know whether this "rule of thumb" also applies to other Micron
+memories?
+
+I think we should find another solution to set nor->die_cnt properly.
+Maybe adding some info in the relevant entries of the spi_nor_ids[] array?
 
 Best regards,
 
 Cyrille
 
-> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 90 +++++++++++++++++++++++++++++++++++++------
->  1 file changed, 78 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 3afe207..17bbec0 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -360,6 +360,29 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
->  	return nor->write_reg(nor, nor->erase_opcode, buf, nor->addr_width);
->  }
->  
-> +static inline int spi_nor_sector_at_time_erase(struct mtd_info *mtd, u32 addr, u32 len)
-> +{
-> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> +	int ret = 0;
-> +
-> +	while (len) {
-> +		write_enable(nor);
-> +
-> +		ret = spi_nor_erase_sector(nor, addr);
-> +		if (ret)
-> +			return ret;
-> +
-> +		addr += mtd->erasesize;
-> +		len -= mtd->erasesize;
-> +
-> +		ret = spi_nor_wait_till_ready(nor);
-> +		if (ret)
-> +			return ret;
+> +	break;
+> +	default:
+> +		nor->die_cnt = 0;
+> +		break;
 > +	}
-> +
-> +	return ret;
 > +}
 > +
->  /*
->   * Erase an address range on the nor chip.  The address range may extend
->   * one or more erase sectors.  Return an error is there is a problem erasing.
-> @@ -367,9 +390,11 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
->  static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  static inline int spi_nor_sr_ready(struct spi_nor *nor)
 >  {
->  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> -	u32 addr, len;
-> +	u32 addr, len, die_no, die_size;
->  	uint32_t rem;
->  	int ret;
-> +	unsigned long timeout;
-> +	u8 die_erase = nor->die_cnt && SNOR_F_DIE_ERASE;
+>  	int sr = read_sr(nor);
+> @@ -970,8 +992,14 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+> -	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+> -	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+> +	{ "n25q00",      INFO(0x20ba21, 0x1000, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
+> +	{ "n25q00a",     INFO(0x20bb21, 0x1000, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
+> +	{ "n25q00",      INFO(0x20ba21, 0x1004, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
+> +	{ "n25q00a",     INFO(0x20bb21, 0x1004, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
+> +	{ "mt25ql01g",   INFO(0x20ba21, 0x1044, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
+> +	{ "mt25qu01g",   INFO(0x20bb21, 0x1044, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
+> +	{ "mt25ql01g",   INFO(0x20ba21, 0x1040, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
+> +	{ "mt25qu01g",   INFO(0x20bb21, 0x1040, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | DIE_ERASE) },
 >  
->  	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
->  			(long long)instr->len);
-> @@ -386,7 +411,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
->  		return ret;
+>  	/* PMC */
+>  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+> @@ -1479,6 +1507,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  		nor->flags |= SNOR_F_USE_FSR;
+>  	if (info->flags & SPI_NOR_HAS_TB)
+>  		nor->flags |= SNOR_F_HAS_SR_TB;
+> +	if (info->flags & DIE_ERASE) {
+> +		nor->flags |= SNOR_F_DIE_ERASE;
+> +		spi_nor_die_cnt(nor, info);
+> +	}
 >  
->  	/* whole-chip erase? */
-> -	if (len == mtd->size) {
-> +	if (len == mtd->size && !die_erase) {
->  		unsigned long timeout;
->  
->  		write_enable(nor);
-> @@ -416,17 +441,58 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
->  
->  	/* "sector"-at-a-time erase */
->  	} else {
-> -		while (len) {
-> -			write_enable(nor);
-> -
-> -			ret = spi_nor_erase_sector(nor, addr);
-> -			if (ret)
-> +		if (die_erase) {
-> +			die_size = div_u64_rem(mtd->size, nor->die_cnt, &rem);
-> +			if (rem) {
-> +				ret = -EINVAL;
->  				goto erase_err;
-> -
-> -			addr += mtd->erasesize;
-> -			len -= mtd->erasesize;
-> -
-> -			ret = spi_nor_wait_till_ready(nor);
-> +			}
-> +			while (len) {
-> +				die_no = div_u64_rem(addr, die_size, &rem);
-> +
-> +				/* Check if address is aligned to die begin*/
-> +				if (!rem) {
-> +					/* die erase? */
-> +					if (len >= die_size) {
-> +						ret = spi_nor_die_erase(nor, addr);
-> +						if (ret)
-> +							goto erase_err;
-> +
-> +						len -= die_size;
-> +						addr += die_size;
-> +
-> +						timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
-> +								CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
-> +								(unsigned long)(die_size / SZ_2M));
-> +						ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
-> +						if (ret)
-> +							goto erase_err;
-> +					} else {
-> +						ret = spi_nor_sector_at_time_erase(mtd, addr, len);
-> +						if (ret)
-> +							goto erase_err;
-> +						len = 0;
-> +					}
-> +				} else {
-> +					/* check if end address cover at least one die */
-> +					if (div64_ul(addr + len, die_size) > ++die_no) {
-> +						/* align to next die */
-> +						rem = die_size - rem;
-> +						ret = spi_nor_sector_at_time_erase(mtd, addr, rem);
-> +						if (ret)
-> +							goto erase_err;
-> +						len -= rem;
-> +						addr += rem;
-> +					} else {
-> +						ret = spi_nor_sector_at_time_erase(mtd, addr, len);
-> +						if (ret)
-> +							goto erase_err;
-> +						len = 0;
-> +					}
-> +				}
-> +			}
-> +		} else {
-> +			ret = spi_nor_sector_at_time_erase(mtd, addr, len);
->  			if (ret)
->  				goto erase_err;
->  		}
+>  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
+>  	/* prefer "small sector" erase if possible */
 > 
