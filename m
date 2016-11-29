@@ -1,28 +1,26 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from relay1.mentorg.com ([192.94.38.131])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBbvs-00074T-3Z
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 06:30:25 +0000
-Received: by mail-wm0-x244.google.com with SMTP id m203so22524703wma.3
- for <linux-mtd@lists.infradead.org>; Mon, 28 Nov 2016 22:30:02 -0800 (PST)
-Subject: Re: [PATCH v2] mtd: m25p80: consider max message size in m25p80_read
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
- <20160816164204.GV9347@sirena.org.uk>
- <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
- <a5aad691-fb3b-39a5-943e-43068df74c44@gmail.com>
- <e2e4ecfe-b888-f335-57f6-634f5c818252@gmail.com>
- <0e38d1ed-af5c-160f-e02a-f1433c507d23@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <bd0da0b0-c2a1-eade-3b27-407b3842182c@gmail.com>
-Date: Tue, 29 Nov 2016 07:29:53 +0100
+ id 1cBdWu-00082G-Gy
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 08:12:45 +0000
+Date: Tue, 29 Nov 2016 13:42:05 +0530
+From: Sandeep Jain <Sandeep_Jain@mentor.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+CC: Richard Weinberger <richard.weinberger@gmail.com>, Steve Longerbeam
+ <steve_longerbeam@mentor.com>, LKML <linux-kernel@vger.kernel.org>, Jim
+ Baxter <jim_baxter@mentor.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: Allocate bdi objects dynamically
+Message-ID: <20161129081204.GA6617@mentor.com>
+References: <Sandeep_Jain@mentor.com>
+ <1470319275-9465-1-git-send-email-Sandeep_Jain@mentor.com>
+ <CAFLxGvx6B02c+HgYwJ8exVLT6owrkQL1Rq+X6VzUDKVUxE=aoQ@mail.gmail.com>
+ <20161103113421.GA4873@mentor.com>
+ <4055a3ed-c024-4c29-45e1-e600cdc5902e@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <0e38d1ed-af5c-160f-e02a-f1433c507d23@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4055a3ed-c024-4c29-45e1-e600cdc5902e@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,43 +30,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 28.10.2016 um 07:58 schrieb Heiner Kallweit:
-> Consider a message size limit when calculating the maximum amount
-> of data that can be read.
-> 
-> The message size limit has been introduced with 4.9, so cc it
-> to stable.
-> 
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> Cc: <stable@vger.kernel.org> # 4.9.x
-> ---
-> v2:
-> - This patch was part of a series and the other patches of the
->   series went into 4.9. It's needed to correctly support
->   reads > 64k on fsl-espi as first user of spi_max_message_size.
->   See commit 02a595d5d6e4 ("spi: fsl-espi: eliminate spi nor
->   flash read loop"). CC it to stable.  
-> ---
->  drivers/mtd/devices/m25p80.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 9cf7fcd..16a7df2 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -172,7 +172,8 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  
->  	t[1].rx_buf = buf;
->  	t[1].rx_nbits = m25p80_rx_nbits(nor);
-> -	t[1].len = min(len, spi_max_transfer_size(spi));
-> +	t[1].len = min3(len, spi_max_transfer_size(spi),
-> +			spi_max_message_size(spi) - t[0].len);
->  	spi_message_add_tail(&t[1], &m);
->  
->  	ret = spi_sync(spi, &m);
-> 
-This one is still open and there have been reports already from
-people facing this issue. Can we still get it into 4.10 +
-into 4.9 ?
+Dear Maintainers,
+   This patch is already reviewed twice with no issues.
+Requesting your attention for patch merge.
 
-Thanks
+Thanks & Regards,
+Sandeep Jain
+
+On Sat, Nov 05, 2016 at 08:22:31AM +0100, Marek Vasut wrote:
+> On 11/03/2016 12:34 PM, Sandeep Jain wrote:
+> > Dear Maintainers,
+> >   This patch is reviewed by Richard.
+> > Requesting for Maintainer's attention for patch merge.
+> > 
+> > Thanks & Regards,
+> > Sandeep Jain
+> > 
+> > On Sat, Sep 17, 2016 at 04:41:47PM +0200, Richard Weinberger wrote:
+> >> On Thu, Aug 4, 2016 at 4:01 PM, Sandeep Jain <Sandeep_Jain@mentor.com> wrote:
+> >>> From: Steve Longerbeam <steve_longerbeam@mentor.com>
+> >>>
+> >>> The MTD backing dev info objects mtd_bdi was statically allocated.
+> >>> So when MTD is built as a loadable module, this object fall in the
+> >>> vmalloc address space.
+> >>>
+> >>> The problem with that, is that the BDI APIs use wake_up_bit(), which calls
+> >>> virt_to_page() to retrieve the memory zone of the page containing the
+> >>> wait_queue to wake up, and virt_to_page() is not valid for vmalloc or
+> >>> highmem addresses.
+> >>>
+> >>> Fix this by allocating the BDI objects dynamically with kmalloc. The
+> >>> objects now fall in the logical address space so that BDI APIs will
+> >>> work in all cases (mtd builtin or module).
+> >>>
+> >>> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+> >>> Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
+> >>> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
+> >>
+> >> Reviewed-by: Richard Weinberger <richard@nod.at>
+> 
+> I don't see any obvious problem either:
+> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+> 
+> -- 
+> Best regards,
+> Marek Vasut
