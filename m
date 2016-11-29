@@ -1,22 +1,28 @@
 Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBiCO-0003lE-OX
- for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 13:11:54 +0000
-Subject: Re: [PATCH v2, 1/1] mtd: devices: m25p80: Add PM suspend resume
- support
-To: Kamal Dasu <kamal.dasu@broadcom.com>, Marek Vasut <marex@denx.de>
-References: <1473710494-4084-1-git-send-email-kdasu.kdev@gmail.com>
- <4fe502a4-ee01-3fb8-6697-161de814596e@atmel.com>
- <CAKekbeubczM5NpQy-Umqx-SmDM+deMcgYciyST2Sgrh2_dOsAw@mail.gmail.com>
+ id 1cBj3k-0000tA-PW
+ for linux-mtd@lists.infradead.org; Tue, 29 Nov 2016 14:07:03 +0000
+Subject: Re: [PATCH v6, 5/8] mtd: m25p80: Let m25p80_read() fallback to spi
+ transfer
+To: Florian Fainelli <f.fainelli@gmail.com>, Kamal Dasu
+ <kamal.dasu@broadcom.com>, Marek Vasut <marex@denx.de>
+References: <1472076269-4731-1-git-send-email-kdasu.kdev@gmail.com>
+ <1472076269-4731-6-git-send-email-kdasu.kdev@gmail.com>
+ <4b3b3d3e-b3f8-1d5b-65e3-0c37b6a29096@gmail.com>
+ <8309370e-f99f-ed51-4789-c1d97d9d8191@atmel.com>
+ <CAKekbesq1deU_0TCV4STAi=o8jZwoc_u+9zkdZuEhmd+BGwU2A@mail.gmail.com>
+ <ae2c984e-2bcf-380e-a257-dbe786973af1@atmel.com>
+ <7697b2fa-4660-c791-e891-a22c8bc5390f@gmail.com>
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: Kamal Dasu <kdasu.kdev@gmail.com>, <linux-spi@vger.kernel.org>, "Florian
- Fainelli" <f.fainelli@gmail.com>, <linux-mtd@lists.infradead.org>, "Brian
- Norris" <computersforpeace@gmail.com>,
- <bcm-kernel-feedback-list@broadcom.com>
-Message-ID: <c9198202-29d1-5e67-f675-5a53d926ede9@atmel.com>
-Date: Tue, 29 Nov 2016 14:11:39 +0100
+CC: Kamal Dasu <kdasu.kdev@gmail.com>, Mark Brown <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <vigneshr@ti.com>, "Yendapally Reddy
+ Dhananjaya Reddy" <yendapally.reddy@broadcom.com>,
+ <bcm-kernel-feedback-list@broadcom.com>, Jon Mason <jon.mason@broadcom.com>
+Message-ID: <a0179d25-71a5-b47f-4272-49aa2a346b54@atmel.com>
+Date: Tue, 29 Nov 2016 15:06:37 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAKekbeubczM5NpQy-Umqx-SmDM+deMcgYciyST2Sgrh2_dOsAw@mail.gmail.com>
+In-Reply-To: <7697b2fa-4660-c791-e891-a22c8bc5390f@gmail.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,203 +34,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kamal,
+Hi all,
 
 +Marek
 
-Le 24/10/2016 à 20:18, Kamal Dasu a écrit :
+Le 29/11/2016 à 02:32, Florian Fainelli a écrit :
+> On 10/14/2016 06:17 AM, Cyrille Pitchen wrote:
+>> Le 13/10/2016 à 23:15, Kamal Dasu a écrit :
+>>> On Mon, Oct 10, 2016 at 4:29 AM, Cyrille Pitchen
+>>> <cyrille.pitchen@atmel.com> wrote:
+>>>> Hi all,
+>>>>
+>>>>
+>>>> Le 10/10/2016 à 10:04, Florian Fainelli a écrit :
+>>>>> On 08/24/2016 03:04 PM, Kamal Dasu wrote:
+>>>>>> In m25p80_read() even though spi_flash_read() is supported
+>>>>>> by some drivers, under certain circumstances like unaligned
+>>>>>> buffer, address or address range limitations on certain SoCs
+>>>>>> let it fallback to core spi reads. Such drivers are expected
+>>>>>> to return -EAGAIN so that the m25p80_read() uses standard
+>>>>>> spi transfer.
+>>>>>>
+>>>>>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+>>>>>
+>>>>> MTD folks, any comments on this?
+>>>>>
+>>>>>> ---
+>>>>>>  drivers/mtd/devices/m25p80.c | 11 +++++++++--
+>>>>>>  1 file changed, 9 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>>>>>> index 9cf7fcd..77c2d2c 100644
+>>>>>> --- a/drivers/mtd/devices/m25p80.c
+>>>>>> +++ b/drivers/mtd/devices/m25p80.c
+>>>>>> @@ -155,9 +155,16 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>>>>>>              msg.data_nbits = m25p80_rx_nbits(nor);
+>>>>>>
+>>>>>>              ret = spi_flash_read(spi, &msg);
+>>>>>> -            if (ret < 0)
+>>>>>> +
+>>>>>> +            if (ret >= 0)
+>>>>>> +                    return msg.retlen;
+>>>>>> +
+>>>>>> +            /*
+>>>>>> +             * some spi master drivers might need to fallback to
+>>>>>> +             * normal spi transfer
+>>>>>> +             */
+>>>>>> +            if (ret != -EAGAIN)
+>>>> I just wonder whether EINVAL would be a better choice.
+>>>
+>>>  spi_flash_read calls the down stream controller driver with all
+>>> params addresses however  accelerated transfer is not possible by the
+>>> controller due to alignment issues, it needs to indicate to m25p call
+>>> to try the normal transfer, hence use of EAGAIN seemed appropriate.
+>>>
+>>>
+>>
+>> Yes, I think I've understood the purpose of this patch. In the example you
+>> gave, the actual implementation of spi_flash_read() works fine with aligned
+>> addresses but doesn't support unaligned addresses. Hence, such unaligned
+>> addresses are invalid argument for spi_flash_read() and we should fall back
+>> to the legacy implementation of m25p80_read().
+>>
+>> My point is just that EINVAL clearly tells that the SPI controller driver
+>> implementation of spi_flash_read() doesn't support the given input
+>> parameters, here an unaligned address, whereas EAGAIN suggests that some
+>> hardware resource is temporarily unavailable and we could call spi_flash_read()
+>> again later. However, in this case, spi_flash_read() would still fail even if
+>> called later.
+>>
+>> That's why I've suggested EINVAL might have been a better choice than EAGAIN,
+>> but honestly it's not a big deal, only a detail. So if most people prefer to
+>> keep EAGAIN, I'm perfectly fine with it! :)
+>>
+>> I don't want my comment to delay the integration of this patch.
 > 
-> Cyrille,
+> So what are we going to do now, should Kamal resubmit and
+> s/EGAIN/EINVAL/ or is EAGAIN good enough? If EINVAL needs to be used,
+> which I agree with you seems like a valid error code to return, this
+> does imply changing the Broadcom QSPI driver though... so we have to
+> coordinate the two changes to be merged through the same cycle to avoid
+> regressions.
 > 
-> On Mon, Oct 17, 2016 at 1:08 PM, Cyrille Pitchen <cyrille.pitchen@atmel.com <mailto:cyrille.pitchen@atmel.com>> wrote:
-> 
->     Hi Kamal,
-> 
->     Le 12/09/2016 à 22:01, Kamal Dasu a écrit :
->     > Adding PM support so as to be able to probe spi-nor flash
->     > on resume. There are vendor specific commands to setup
->     > the transfer mode and enable read/write as part of
->     > spi_nor_scan(), done on initial probe and needed on resume().
->     > The spi-nor structure is private to the m25p driver and hence
->     > is the only place this can be done without having to duplicate
->     > code in controller driver.
-> 
->     Just to be sure I've understood the purpose of this patch: here we suppose
->     that the SPI NOR memory power supply was cut when the CPU entered its suspend
->     mode. So when the CPU is resumed, the SPI NOR memory power supply is enabled
->     again as well and the internal state of the memory is reset.
-> 
-> 
-> Memory could be intact and in refresh state. But generally the spi nor part might be powered down. 
-> 
-> 
->     Depending on the manufacturer, we may need to send dedicated commands so the
->     memory is ready again (for instance, a Global Unlock Block command for SST
->     memories so we can perform Sector Erase and Page Program operations).
->     Those commands are sent from spi_nor_scan(). Hence you call spi_nor_scan()
->     once again from the resume callback.
-> 
-> 
-> Yes there are are chain of calls that setup the state of the part from spi_nor_scan that are vendor specific based on the jdec id. So yes some of the unlock commands need to be sent before we can start using the part again.
->  
-> 
->     If so, your patch does make sense but I wonder whether some operations done
->     inside spi_nor_scan() and not related to the memory itself but more to other
->     layers like mtd (struct mtd_info) could always be safely performed a second
->     time. I don't know if that issue already exists or would ever exist, if so
->     it might be interesting to find a mean to tell spi_nor_scan() whether it's
->     called for the first time on this memory (boot) or not (resume).
-> 
-> 
-> I do see the mtd settings that could be done a second time but should not cause any issues IMHO.  I don't see a need to distinguish between a (re)boot or a resume  and complicate the code. Unless somebody can point out a specific issue in doing so.
 
-OK, so I'm fine with leaving the patch as is for now but I would like Marek
-review just to be sure we didn't miss something: Marek, any comments?
+Please replace the EAGAIN error code by EINVAL then I agree to merge this
+patch in the github spi-nor tree.
 
-I just have one more comment below but it's only a detail.
+I know the EAGAIN error code has already been introduced in spi-bcm-qspi.c
+through the spi tree but since currently m25p280.c handles neither EAGAIN
+nor EINVAL as the returned code of spi_flash_read(), I guess no regression
+will be introduced. The feature will work as expected once both the m25p80.c
+and spi-bcm-qspi.c use the very same error code.
 
-> 
->  
-> 
->     Best regards,
-> 
->     Cyrille
-> 
-> 
-> 
-> Thanks
-> Kamal
-> 
->  
-> 
-> 
->     > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com <mailto:kdasu.kdev@gmail.com>>
->     > ---
->     >  drivers/mtd/devices/m25p80.c | 68 +++++++++++++++++++++++++++++++-------------
->     >  1 file changed, 48 insertions(+), 20 deletions(-)
->     >
->     > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->     > index 9cf7fcd..48c3f64 100644
->     > --- a/drivers/mtd/devices/m25p80.c
->     > +++ b/drivers/mtd/devices/m25p80.c
->     > @@ -186,6 +186,39 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->     >  }
->     >
->     >  /*
->     > + * scan for spi nor flash vendor parts and setup
->     > + * read/write mode
->     > + */
->     > +static int m25p_nor_flash_scan(struct device *dev)
->     > +{
->     > +     struct m25p *flash = dev_get_drvdata(dev);
->     > +     struct flash_platform_data      *data;
->     > +     char *flash_name = NULL;
->     > +     enum read_mode mode = SPI_NOR_NORMAL;
->     > +
->     > +     data = dev_get_platdata(dev);
->     > +
->     > +     /* For some (historical?) reason many platforms provide two different
->     > +      * names in flash_platform_data: "name" and "type". Quite often name is
->     > +      * set to "m25p80" and then "type" provides a real chip name.
->     > +      * If that's the case, respect "type" and ignore a "name".
->     > +      */
->     > +     if (data && data->type)
->     > +             flash_name = data->type;
->     > +     else if (!strcmp(flash->spi->modalias, "spi-nor"))
->     > +             flash_name = NULL; /* auto-detect */
->     > +     else
->     > +             flash_name = flash->spi->modalias;
->     > +
->     > +     if (flash->spi->mode & SPI_RX_QUAD)
->     > +             mode = SPI_NOR_QUAD;
->     > +     else if (flash->spi->mode & SPI_RX_DUAL)
->     > +             mode = SPI_NOR_DUAL;
->     > +
->     > +     return spi_nor_scan(&flash->spi_nor, flash_name, mode);
->     > +}
->     > +
->     > +/*
->     >   * board specific setup should have ensured the SPI clock used here
->     >   * matches what the READ command supports, at least until this driver
->     >   * understands FAST_READ (for clocks over 25 MHz).
->     > @@ -195,8 +228,6 @@ static int m25p_probe(struct spi_device *spi)
->     >       struct flash_platform_data      *data;
->     >       struct m25p *flash;
->     >       struct spi_nor *nor;
->     > -     enum read_mode mode = SPI_NOR_NORMAL;
->     > -     char *flash_name;
->     >       int ret;
->     >
->     >       data = dev_get_platdata(&spi->dev);
->     > @@ -220,27 +251,11 @@ static int m25p_probe(struct spi_device *spi)
->     >       spi_set_drvdata(spi, flash);
->     >       flash->spi = spi;
->     >
->     > -     if (spi->mode & SPI_RX_QUAD)
->     > -             mode = SPI_NOR_QUAD;
->     > -     else if (spi->mode & SPI_RX_DUAL)
->     > -             mode = SPI_NOR_DUAL;
->     > -
->     >       if (data && data->name)
->     >               nor->mtd.name <http://mtd.name> = data->name;
->     >
->     > -     /* For some (historical?) reason many platforms provide two different
->     > -      * names in flash_platform_data: "name" and "type". Quite often name is
->     > -      * set to "m25p80" and then "type" provides a real chip name.
->     > -      * If that's the case, respect "type" and ignore a "name".
->     > -      */
->     > -     if (data && data->type)
->     > -             flash_name = data->type;
->     > -     else if (!strcmp(spi->modalias, "spi-nor"))
->     > -             flash_name = NULL; /* auto-detect */
->     > -     else
->     > -             flash_name = spi->modalias;
->     > +     ret = m25p_nor_flash_scan(nor->dev);
->     >
->     > -     ret = spi_nor_scan(nor, flash_name, mode);
->     >       if (ret)
->     >               return ret;
->     >
->     > @@ -248,7 +263,6 @@ static int m25p_probe(struct spi_device *spi)
->     >                                  data ? data->nr_parts : 0);
->     >  }
->     >
->     > -
-I know this just just a detail but this chunk should not be included in
-your patch since this is a cosmetic change and it has nothing to do with
-the suspend/resume feature.
-
->     >  static int m25p_remove(struct spi_device *spi)
->     >  {
->     >       struct m25p     *flash = spi_get_drvdata(spi);
->     > @@ -319,10 +333,24 @@ static const struct of_device_id m25p_of_table[] = {
->     >  };
->     >  MODULE_DEVICE_TABLE(of, m25p_of_table);
->     >
->     > +#ifdef CONFIG_PM_SLEEP
->     > +static int m25p_suspend(struct device *dev)
->     > +{
->     > +     return 0;
->     > +}
->     > +
->     > +static int m25p_resume(struct device *dev)
->     > +{
->     > +     return m25p_nor_flash_scan(dev);
->     > +}
->     > +#endif
->     > +static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
->     > +
->     >  static struct spi_driver m25p80_driver = {
->     >       .driver = {
->     >               .name   = "m25p80",
->     >               .of_match_table = m25p_of_table,
->     > +             .pm     = &m25p_pm_ops,
->     >       },
->     >       .id_table       = m25p_ids,
->     >       .probe  = m25p_probe,
->     >
-> 
-> 
+Marek, any comment?
 
 Best regards,
 
