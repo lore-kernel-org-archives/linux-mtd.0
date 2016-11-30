@@ -1,23 +1,23 @@
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
+Received: from conssluserg-02.nifty.com ([210.131.2.81])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBy9F-000135-SP
- for linux-mtd@lists.infradead.org; Wed, 30 Nov 2016 06:13:42 +0000
-Received: from mail-yw0-f172.google.com (mail-yw0-f172.google.com
- [209.85.161.172]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id uAU6D4MG025957
- for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 15:13:04 +0900
-Received: by mail-yw0-f172.google.com with SMTP id i145so152324760ywg.2
- for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2016 22:13:04 -0800 (PST)
+ id 1cByAh-0001jq-No
+ for linux-mtd@lists.infradead.org; Wed, 30 Nov 2016 06:15:12 +0000
+Received: from mail-yw0-f169.google.com (mail-yw0-f169.google.com
+ [209.85.161.169]) (authenticated)
+ by conssluserg-02.nifty.com with ESMTP id uAU6EVFH028660
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 15:14:32 +0900
+Received: by mail-yw0-f169.google.com with SMTP id r204so152164712ywb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2016 22:14:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20161127171008.39f883b8@bbrezillon>
+In-Reply-To: <20161127171406.327c4d6e@bbrezillon>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
- <1480183585-592-19-git-send-email-yamada.masahiro@socionext.com>
- <20161127171008.39f883b8@bbrezillon>
+ <1480183585-592-21-git-send-email-yamada.masahiro@socionext.com>
+ <20161127171406.327c4d6e@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Wed, 30 Nov 2016 15:13:03 +0900
-Message-ID: <CAK7LNAQOQANtmgeRtJU7S6fUth0r5ZstUM+68Qs9FjxEz0_gfQ@mail.gmail.com>
-Subject: Re: [PATCH 18/39] mtd: nand: denali: move denali_read_page_raw()
- above denali_read_page()
+Date: Wed, 30 Nov 2016 15:14:31 +0900
+Message-ID: <CAK7LNATp1Pvmk_cE6UGaURsM+nyWHpsmGiTgxU5M=FdVogL4Ew@mail.gmail.com>
+Subject: Re: [PATCH 20/39] mtd: nand: denali_dt: enable HW_ECC_FIXUP
+ capability for DT platform
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -37,23 +37,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-2016-11-28 1:10 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Sun, 27 Nov 2016 03:06:04 +0900
+2016-11-28 1:14 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Sun, 27 Nov 2016 03:06:06 +0900
 > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 >
->> This will be needed in the next commit to call denali_read_page_raw()
->> from denali_read_page().
+>> The denali_dt.c was split out by Altera for the SOCFPGA port.  The
+>> Denali IP on SOCFPGA incorporates the hardware ECC fixup feature.
+>> Newer versions are very likely to support it.  So, it should be OK
+>> to set DENALI_CAPS_HW_ECC_FIXUP for all DT platforms.
 >
-> Please squash this change into patch 19. It's clearly useless to
-> dissociate them.
->
+> Seems like a bad idea. What's the problem with setting this flag in the
+> data->caps definition of each revision?
 
-I will.
+No problem.
 
-But as I mentioned in the reply to 19/39,
-I am thinking that another solution may be possible.
-
-In that case, both 18/39 and 19/39 will be unnecessary.
+I will follow your suggestion in v2.
 
 
 -- 
