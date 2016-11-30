@@ -1,32 +1,23 @@
-Received: from kirsty.vergenet.net ([202.4.237.240])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cC1cD-0003CV-NP
- for linux-mtd@lists.infradead.org; Wed, 30 Nov 2016 09:55:52 +0000
-Date: Wed, 30 Nov 2016 10:55:23 +0100
-From: Simon Horman <horms@verge.net.au>
-To: Rich Felker <dalias@libc.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>
-Subject: Re: [PATCH/RFC linux-mtd] mtd: sh_flctl: Remove sh7372 and device
- tree support
-Message-ID: <20161130095520.GB2336@verge.net.au>
-References: <1480059181-29355-1-git-send-email-horms+renesas@verge.net.au>
- <20161129170949.GZ1555@brightrain.aerifal.cx>
- <CAMuHMdUnaXbG-4GFB0BcTpYjcKHh8xA3Z0Z5CwiHJqCT-QhBJA@mail.gmail.com>
- <20161129174445.GA1555@brightrain.aerifal.cx>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Bindings for Rockchip serial flash
+ controller
+To: Shawn Lin <shawn.lin@rock-chips.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1479437945-27918-1-git-send-email-shawn.lin@rock-chips.com>
+ <1479437945-27918-2-git-send-email-shawn.lin@rock-chips.com>
+ <7fd2cdc0-2103-d254-c7b2-d2552a32a738@gmail.com>
+ <a5f13048-fbfa-7988-659a-0223b767ddf3@rock-chips.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ Heiko Stuebner <heiko@sntech.de>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <492f9988-816b-f857-3b3d-957479501ed5@gmail.com>
+Date: Wed, 30 Nov 2016 04:18:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161129174445.GA1555@brightrain.aerifal.cx>
+In-Reply-To: <a5f13048-fbfa-7988-659a-0223b767ddf3@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,73 +27,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 29, 2016 at 12:44:45PM -0500, Rich Felker wrote:
-> On Tue, Nov 29, 2016 at 06:23:38PM +0100, Geert Uytterhoeven wrote:
-> > Hi Rich,
-> > 
-> > On Tue, Nov 29, 2016 at 6:09 PM, Rich Felker <dalias@libc.org> wrote:
-> > > On Fri, Nov 25, 2016 at 08:33:01AM +0100, Simon Horman wrote:
-> > >> Commit edf4100906044225 ("ARM: shmobile: sh7372 dtsi: Remove Legacy file")
-> > >> removed the sh7272 SoC from the kernel in v4.1.
-> > >>
-> > >> This patch removes support for the sh7272 SoC from the sh_flctl driver.
-> > >> As that SoC was the only user of device tree support also remove that
-> > >> from the driver.
-> > >>
-> > >> In essence it reverts commit 7c8f680e96ed ("mtd: sh_flctl: Add device tree
-> > >> support"). This commit may be used as a reference for re-adding device
-> > >> tree support to this driver if a need for it is found in future.
-> > >>
-> > >> This commit has been build-testesd against the ap325rxa_defconfig.
-> > >> I do not have access to the hardware to perform run-time testing
-> > >> on that board which appears to be the only remaining user of this driver.
-> > >> Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
-> > >> ---
-> > >>  .../devicetree/bindings/mtd/flctl-nand.txt         | 49 ---------------
-> > >>  drivers/mtd/nand/sh_flctl.c                        | 70 +++-------------------
-> > >>  2 files changed, 8 insertions(+), 111 deletions(-)
-> > >>  delete mode 100644 Documentation/devicetree/bindings/mtd/flctl-nand.txt
-> > >
-> > > While I'm not the maintainer for this (and I'm not clear that the
-> > > linux-sh list even should have been cc'd; it seems to be shmobile arm
-> > > soc stuff rather than sh arch) I think this is a bad change. If the
-> > > driver is completely unused, it should just be removed, but if there
-> > 
-> > Its sole remaining in-kernel user is arch/sh/boards/mach-ap325rxa/setup.c.
+On 11/30/2016 01:55 AM, Shawn Lin wrote:
+> On 2016/11/25 21:30, Marek Vasut wrote:
+>> On 11/18/2016 03:59 AM, Shawn Lin wrote:
+>>> Add binding document for the Rockchip serial flash controller.
+>>>
+>>> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
+>>> Acked-by: Rob Herring <robh@kernel.org>
+>>> ---
+>>>
+>>> Changes in v2: None
+>>>
+>>>  .../devicetree/bindings/mtd/rockchip-sfc.txt       | 31
+>>> ++++++++++++++++++++++
+>>>  1 file changed, 31 insertions(+)
+>>>  create mode 100644
+>>> Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+>>> b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+>>> new file mode 100644
+>>> index 0000000..28430ce
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+>>> @@ -0,0 +1,31 @@
+>>> +Rockchip Serial Flash Controller
+>>> +
+>>> +Required properties:
+>>> +- compatible : Should be
+>>> +        "rockchip,rk1108-sfc", "rockchip,sfc" for ROCKCHIP RK1108.
+>>> +- address-cells : Should be 1.
+>>> +- size-cells : Should be 0.
+>>
+>> Shouldn't these two props have a # prefix ? I'm not sure they should
+>> even be part of this binding document at all.
+>>
+>>> +- clocks: Must contain two entries for each entry in clock-names.
+>>> +- clock-names: Shall be "sfc" for the transfer-clock, and "hsfc" for
+>>> +        the peripheral clock.
+>>> +- interrupts : Should contain the interrupt for the device.
+>>> +- reg: Physical base address of the controller and length of memory
+>>> mapped.
+>>> +
+>>> +Optional properties:
+>>> +- rockchip,sfc-no-dma: Indicate the controller doesn't support dma
+>>> transfer.
+>>
+>> DMA should be in capital letters.
 > 
-> If indeed there's a user in arch/sh, it makes even more sense not to
-> remove it. arch/sh/boards/* is intended to be removed with only DT
-> support remaining, once drivers have DT support. :-)
+> Both of DMA or dma could be found by grepping the
+> Documentation/devicetree/bindings/, so I think it
+> isn't a big deal for this. :)
 
-I think we can trivially bring and end to speculation on the presence of a
-user in arch/sh:
+You can find a lot of spelling mistakes throughout the kernel, which
+doesn't make them right.
 
-$ make kernelrelease
-4.9.0-rc7
-$ grep -r sh_flctl arch/sh/
-arch/sh/boards/mach-ap325rxa/setup.c:#include <linux/mtd/sh_flctl.h>
-arch/sh/boards/mach-ap325rxa/setup.c:static struct sh_flctl_platform_data nand_flash_data = {
-arch/sh/boards/mach-ap325rxa/setup.c:   .name           = "sh_flctl",
 
-> > > are remaining users that are still using legacy platform device
-> > > bindings, they should gradually be transitioned to device tree, and
-> > > having the device tree support still present makes it easier to do
-> > > that.
-> > 
-> > Enjoy converting ap325rxa to DT ;-)
-> 
-> Not sure if that's expected to be worse than the rest of it and if it
-> makes sense to convert or just remove. But I don't think changes that
-> put us farther away from DT-only make sense.
-> 
-> > > Removing the *bindings* is even worse, as these are a permanent
-> > > interface between hardware/firmware and software.
-> > 
-> > While it is a permanent interface, it is only a git revert away...
-> 
-> Indeed, but one that requires coordination between subsystem
-> maintainers to get it back in a working state.
-
-For now I think it would be best if this thread served to document that
-sh7372 support should be removed either when another user of the bindings
-is added or when DT support is removed from the driver.
+-- 
+Best regards,
+Marek Vasut
