@@ -1,15 +1,16 @@
-Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cC8D7-0006X0-VH
+ id 1cC8D8-0006Wv-Bm
  for linux-mtd@lists.infradead.org; Wed, 30 Nov 2016 16:58:26 +0000
 From: Zach Brown <zach.brown@ni.com>
 To: <dwmw2@infradead.org>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <dedekind1@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 4/5] mtd: nand: implement 'max_bad_blocks' mtd function
-Date: Wed, 30 Nov 2016 10:57:30 -0600
-Message-ID: <1480525051-4991-5-git-send-email-zach.brown@ni.com>
+Subject: [PATCH v6 5/5] mtd: nand: set max_bb_per_die and blocks_per_die for
+ ONFI compliant chips
+Date: Wed, 30 Nov 2016 10:57:31 -0600
+Message-ID: <1480525051-4991-6-git-send-email-zach.brown@ni.com>
 In-Reply-To: <1480525051-4991-1-git-send-email-zach.brown@ni.com>
 References: <1480525051-4991-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
@@ -23,72 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Implement the new mtd function 'max_bad_blocks'. Using the chip's
-max_bb_per_die and blocks_per_die fields to determine the maximum bad
-blocks to reserve for an MTD.
+ONFI compliant chips contain the values for the max_bb_per_die and
+blocks_per_die fields in the parameter page. When the ONFI paged is
+retrieved/parsed the chip's fields are set by the corresponding fields
+in the param page.
 
-Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 Signed-off-by: Zach Brown <zach.brown@ni.com>
 Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
 Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ drivers/mtd/nand/nand_base.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 3bde96a..b4a7c7f 100644
+index b4a7c7f..623cdc5 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -3236,6 +3236,42 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- }
+@@ -3601,6 +3601,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+ 	chip->bits_per_cell = p->bits_per_cell;
  
- /**
-+ * nand_max_bad_blocks - [MTD Interface] Max number of bad blocks for an mtd
-+ * @mtd: MTD device structure
-+ * @ofs: offset relative to mtd start
-+ * @len: length of mtd
-+ */
-+static int nand_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	uint32_t part_start_block;
-+	uint32_t part_end_block;
-+	uint32_t part_start_die;
-+	uint32_t part_end_die;
++	chip->max_bb_per_die = le16_to_cpu(p->bb_per_lun);
++	chip->blocks_per_die = le32_to_cpu(p->blocks_per_lun);
 +
-+	/*
-+	 * max_bb_per_die and blocks_per_die used to determine
-+	 * the maximum bad block count.
-+	 */
-+	if (!chip->max_bb_per_die || !chip->blocks_per_die)
-+		return -ENOTSUPP;
-+
-+	/* Get the start and end of the partition in erase blocks. */
-+	part_start_block = mtd_div_by_eb(ofs, mtd);
-+	part_end_block = mtd_div_by_eb(len, mtd) + part_start_block - 1;
-+
-+	/* Get the start and end LUNs of the partition. */
-+	part_start_die = part_start_block / chip->blocks_per_die;
-+	part_end_die = part_end_block / chip->blocks_per_die;
-+
-+	/*
-+	 * Look up the bad blocks per unit and multiply by the number of units
-+	 * that the partition spans.
-+	 */
-+	return chip->max_bb_per_die * (part_end_die - part_start_die + 1);
-+}
-+
-+/**
-  * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
-  * @mtd: MTD device structure
-  * @chip: nand chip info structure
-@@ -4767,6 +4803,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	mtd->_block_isreserved = nand_block_isreserved;
- 	mtd->_block_isbad = nand_block_isbad;
- 	mtd->_block_markbad = nand_block_markbad;
-+	mtd->_max_bad_blocks = nand_max_bad_blocks;
- 	mtd->writebufsize = mtd->writesize;
- 
- 	/*
+ 	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
+ 		*busw = NAND_BUSWIDTH_16;
+ 	else
 -- 
 2.7.4
