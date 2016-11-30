@@ -1,17 +1,16 @@
 Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
  by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cC8Cn-00016G-Co
+ id 1cC8Co-00016H-0K
  for linux-mtd@lists.infradead.org; Wed, 30 Nov 2016 16:58:02 +0000
 From: Zach Brown <zach.brown@ni.com>
 To: <dwmw2@infradead.org>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <dedekind1@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 1/5] mtd: introduce function max_bad_blocks
-Date: Wed, 30 Nov 2016 10:57:27 -0600
-Message-ID: <1480525051-4991-2-git-send-email-zach.brown@ni.com>
-In-Reply-To: <1480525051-4991-1-git-send-email-zach.brown@ni.com>
-References: <1480525051-4991-1-git-send-email-zach.brown@ni.com>
+Subject: [PATCH v6 0/5] mtd: use ONFI bad blocks per LUN to calculate UBI bad
+ PEB limit
+Date: Wed, 30 Nov 2016 10:57:26 -0600
+Message-ID: <1480525051-4991-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,79 +22,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jeff Westfahl <jeff.westfahl@ni.com>
+For ONFI-compliant NAND devices, the ONFI parameters report the maximum number
+of bad blocks per LUN that will be encountered over the lifetime of the device,
+so we can use that information to get a more accurate (and smaller) value for
+the UBI bad PEB limit.
 
-If implemented, 'max_bad_blocks' returns the maximum number of bad
-blocks to reserve for a MTD. An implementation for NAND is coming soon.
+The ONFI parameter "maxiumum number of bad blocks per LUN" is the max number of
+bad blocks that each individual LUN will ever ecounter. It is not the number of
+bad blocks to reserve for the nand device per LUN in the device.
 
-Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
-Signed-off-by: Zach Brown <zach.brown@ni.com>
-Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
-Acked-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/mtdpart.c   | 10 ++++++++++
- include/linux/mtd/mtd.h | 14 ++++++++++++++
- 2 files changed, 24 insertions(+)
+This means that in the worst case a UBI device spanning X LUNs will encounter
+"maximum number of bad blocks per LUN" * X bad blocks. The implementation in
+this patch assumes this worst case and allocates bad block accordingly.
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index fccdd49..08925bb 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -349,6 +349,14 @@ static const struct mtd_ooblayout_ops part_ooblayout_ops = {
- 	.free = part_ooblayout_free,
- };
- 
-+static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
-+{
-+	struct mtd_part *part = mtd_to_part(mtd);
-+
-+	return part->master->_max_bad_blocks(part->master,
-+					     ofs + part->offset, len);
-+}
-+
- static inline void free_partition(struct mtd_part *p)
- {
- 	kfree(p->mtd.name);
-@@ -475,6 +483,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 		slave->mtd._block_isbad = part_block_isbad;
- 	if (master->_block_markbad)
- 		slave->mtd._block_markbad = part_block_markbad;
-+	if (master->_max_bad_blocks)
-+		slave->mtd._max_bad_blocks = part_max_bad_blocks;
- 
- 	if (master->_get_device)
- 		slave->mtd._get_device = part_get_device;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 13f8052..da6d762 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -322,6 +322,7 @@ struct mtd_info {
- 	int (*_block_isreserved) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
- 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
-+	int (*_max_bad_blocks) (struct mtd_info *mtd, loff_t ofs, size_t len);
- 	int (*_suspend) (struct mtd_info *mtd);
- 	void (*_resume) (struct mtd_info *mtd);
- 	void (*_reboot) (struct mtd_info *mtd);
-@@ -402,6 +403,19 @@ int mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
- int mtd_pairing_info_to_wunit(struct mtd_info *mtd,
- 			      const struct mtd_pairing_info *info);
- int mtd_pairing_groups(struct mtd_info *mtd);
-+
-+static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
-+				     loff_t ofs, size_t len)
-+{
-+	if (!mtd->_max_bad_blocks)
-+		return -ENOTSUPP;
-+
-+	if (mtd->size < (len + ofs) || ofs < 0)
-+		return -EINVAL;
-+
-+	return mtd->_max_bad_blocks(mtd, ofs, len);
-+}
-+
- int mtd_erase(struct mtd_info *mtd, struct erase_info *instr);
- int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	      void **virt, resource_size_t *phys);
--- 
+These patches are ordered in terms of their dependencies, but ideally, all 5
+would need to be applied for this to work as intended.
+
+v2:
+ * Changed commit message to address concerns from v1[1] about this patch set
+   making best case assumptions.
+v3:
+ * Provided helper function for _max_bad_blocks
+ * Two new patches
+ * First new patch adds bb_per_lun and blocks_per_lun to nand_chip struct
+ * Second new patch sets the new fields during nand_flash_detect_onfi
+ * Max bad blocks calculation now uses the new nand_chip fields
+v4:
+ * Changed bb_per_lun and blocks_per_lun to bb_per_die and blocks_per_die
+ * Corrected type of bb_per_die and blocks_per_die from little endian to host
+   unsigned int
+v5:
+ * Changed bb_per_die to max_bb_per_die
+ * Fixed spacing style issue
+v6:
+ * Moved bounds checking from "part_max_bad_blocks" to "mtd_max_bad_blocks"
+ * Added check for 'ofs < 0' to bounds checking mentioned in change above.
+ * Moved assignment of slave->mtd._max_bad_blocks up to be next to the other
+   bad-block-related assignments
+ * s/lun/die in "nand_max_bad_blocks"
+ * Fixed comment style in "nand_max_bad_blocks"
+ * In "get_bad_peb_limit" made call to "mtd_max_bad_blocks" occurr only if
+   !max_beb_per1024. This makes the ordering the three different ways to set
+   the bad_peb_limit: cmdline > Kconfig > automatic with mtd_max_bad_blocks
+
+
+Jeff Westfahl (2):
+  mtd: introduce function max_bad_blocks
+  mtd: ubi: use 'max_bad_blocks' to compute bad_peb_limit if available
+
+Zach Brown (3):
+  mtd: nand: Add max_bb_per_die and blocks_per_die fields to nand_chip
+  mtd: nand: implement 'max_bad_blocks' mtd function
+  mtd: nand: set max_bb_per_die and blocks_per_die for ONFI compliant
+    chips
+
+ drivers/mtd/mtdpart.c        | 10 ++++++++++
+ drivers/mtd/nand/nand_base.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/build.c      | 13 +++++++++++--
+ include/linux/mtd/mtd.h      | 14 ++++++++++++++
+ include/linux/mtd/nand.h     |  5 +++++
+ 5 files changed, 80 insertions(+), 2 deletions(-)
+
+--
 2.7.4
