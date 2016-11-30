@@ -1,26 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBzw2-00063v-QF
- for linux-mtd@lists.infradead.org; Wed, 30 Nov 2016 08:08:12 +0000
-Date: Wed, 30 Nov 2016 09:07:49 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH 28/39] mtd: nand: denali: move multi NAND fixup code to
- a helper function
-Message-ID: <20161130090749.37484fff@bbrezillon>
-In-Reply-To: <CAK7LNAR_x0=jOWfkf=0X9f+OHnTSRDBiQZPG_FnFHEJda8fP_g@mail.gmail.com>
-References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
- <1480183585-592-29-git-send-email-yamada.masahiro@socionext.com>
- <20161127172456.5dba79f2@bbrezillon>
- <CAK7LNAR_x0=jOWfkf=0X9f+OHnTSRDBiQZPG_FnFHEJda8fP_g@mail.gmail.com>
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cC01h-0002Ke-ST
+ for linux-mtd@lists.infradead.org; Wed, 30 Nov 2016 08:14:02 +0000
+Received: from mail-yw0-f181.google.com (mail-yw0-f181.google.com
+ [209.85.161.181]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id uAU8D9LY007387
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 17:13:10 +0900
+Received: by mail-yw0-f181.google.com with SMTP id t125so152834453ywc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 00:13:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20161127160459.5894be93@bbrezillon>
+References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
+ <20161127160459.5894be93@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 30 Nov 2016 17:13:08 +0900
+Message-ID: <CAK7LNARSL=pH6upMcDN248m_CgrSHSiwC8k70oPd9cR7cmKSMw@mail.gmail.com>
+Subject: Re: [PATCH 00/39] mtd: nand: denali: 2nd round of Denali NAND IP
+ patch bomb
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,63 +36,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 30 Nov 2016 15:09:27 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+2016-11-28 0:04 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> +Andy
+>
+> Hi Masahiro,
+>
+> On Sun, 27 Nov 2016 03:05:46 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> As I said in the 1st round series, I am tackling on this driver
+>> to use it for my SoCs.
+>>
+>> The previous series was just cosmetic things, but this series
+>> includes *real* changes.
+>>
+>> After some more cleanups, I will start to add changes that
+>> are really necessary.
+>> One of the biggest problems I want to solve is a bunch of
+>> hard-coded parameters that prevent me from using this driver for
+>> my SoCs.
+>>
+>> I will introduce capability flags that are associated with DT
+>> compatible and make platform-dependent parameters overridable.
+>>
+>> I still have lots of reworks to get done (so probably 3rd round
+>> series will come), but I hope it is getting better and
+>> I am showing a big picture now.
+>>
+>
+> Thanks for posting this 2nd round of patches, I know have a clearer
+> view of what you're trying to achieve.
+> Could you be a bit more specific about the remaining rework (your 3rd
+> round)?
 
-> Hi Boris,
-> 
-> 
-> 2016-11-28 1:24 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> > On Sun, 27 Nov 2016 03:06:14 +0900
-> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> >  
-> >> Collect multi NAND fixups into a helper function instead of
-> >> scattering them in denali_init().  
-> >
-> > Can you tell me more about this multi-NAND feature?
-> > The core is already able to detect multi-die NAND chips in a generic
-> > way,  
-> 
-> This is not the case.
-> 
-> > but I fear this is something else, like "put two 8-bits chips on a
-> > 16bits bus to emulate a single 16bits chip".  
-> 
-> Yes, it is.
-> 
-> (I have never used this controller like that.
-> But, I am pretty sure it is
-> from the code and the
-> Denali's User Guide mentions such usage.)
-> 
-> 
-> Just in case, I will clearly rephrase the comment block like follows in v2:
-> 
->         /*
->          * Support for multi device:
->          * When the IP configuration is x16 capable and two x8 chips are
->          * connected in parallel, DEVICES_CONNECTED should be set to 2.
->          * In this case, the core framework knows nothing about this fact,
->          * so we should tell it the _logical_ pagesize and anything necessary.
->          */
-> 
 
-BTW, you should also set the NAND_BUSWIDTH_16 flag in this case.
+We still have plenty of time, and no reason to hurry now.
+So, you do not have to apply this series
+until you see an even bigger picture.
 
-> 
-> 
-> 
-> > If that's a case, and this feature is actually used, then it's a bad
-> > idea IMHO.
-> > For example, how do you handle the case where one block is bad on a
-> > chip but not on the other? And I fear this is not the only problem
-> > with this approach :-/.  
-> 
-> As you expect, if one block is bad,
-> the correspond block on the other chip can not be used.
-> 
+I will try my best to include as many of my plans as possible
+in this round.
 
-Hm, last time I thought about this usage I found others things that
-could cause problems, but I can't remember exactly what.
+I may end up with dropping my on-going work to the ML occasionally
+because I want early feedback in case I am doing something wrong.
 
-Anyway, if this feature is already used, let's keep it.
+-- 
+Best Regards
+Masahiro Yamada
