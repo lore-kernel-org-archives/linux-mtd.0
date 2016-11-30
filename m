@@ -1,24 +1,20 @@
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add rockchip serial flash controller
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add rockchip serial flash controller
  driver
-To: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-References: <1478855766-151673-1-git-send-email-shawn.lin@rock-chips.com>
- <1478855766-151673-3-git-send-email-shawn.lin@rock-chips.com>
- <b1420e9d-b6a1-7fe8-4381-e32e0bc7dd53@gmail.com>
- <775a8918-bc93-218a-808d-2a160137ad56@rock-chips.com>
- <8f8213a1-f694-8159-fdbd-5e607c8aaaa2@gmail.com>
- <76670120-dacd-ef0e-cf36-cbf549b19853@rock-chips.com>
- <b513a489-5913-ffe8-69f1-7201943a05a3@gmail.com>
-Cc: shawn.lin@rock-chips.com, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, Heiko Stuebner <heiko@sntech.de>,
- linux-rockchip@lists.infradead.org
+To: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>
+References: <1479437945-27918-1-git-send-email-shawn.lin@rock-chips.com>
+ <1479437945-27918-3-git-send-email-shawn.lin@rock-chips.com>
+ <020fe898-8476-42cd-9591-d2bc97263457@gmail.com>
+Cc: shawn.lin@rock-chips.com, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ Heiko Stuebner <heiko@sntech.de>
 From: Shawn Lin <shawn.lin@rock-chips.com>
-Message-ID: <42f45944-8a63-fe59-8339-af72d004544e@rock-chips.com>
-Date: Wed, 30 Nov 2016 08:57:03 +0800
+Message-ID: <71919aa3-8f28-65f4-de27-3e0d8ea165bb@rock-chips.com>
+Date: Wed, 30 Nov 2016 08:58:18 +0800
 MIME-Version: 1.0
-In-Reply-To: <b513a489-5913-ffe8-69f1-7201943a05a3@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <020fe898-8476-42cd-9591-d2bc97263457@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,27 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-在 2016/11/25 21:54, Marek Vasut 写道:
-> On 11/21/2016 03:51 AM, Shawn Lin wrote:
->> Hi Marek,
->
-> Hi!
+在 2016/11/25 21:55, Marek Vasut 写道:
+> On 11/18/2016 03:59 AM, Shawn Lin wrote:
+>> Add rockchip serial flash controller driver
+>>
+>> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
 >
 > [...]
 >
->>>> sfc->num_chip stands for how many flashes registered successfully.
->>>
->>> Does it work if you have a hole in there ? Like if you have a flash on
->>> chipselect 0 and chipselect 2 ?
->>
->> Yes it does, as it won't leave a room for chipselect 1 whose node isn't
->> present, which means there isn't a hole in there at all. :)
->
-> Ah , because you are not indexing those NORs with their CS number , right ?
+>> +static void rockchip_sfc_unregister_all(struct rockchip_sfc *sfc)
+>> +{
+>> +	int i;
+>> +
+>> +	for (i = 0; i < sfc->num_chip; i++)
+>> +		mtd_device_unregister(&(sfc->flash[sfc->num_chip].nor.mtd));
+>                                                    ^^^^^^^^^^^^^
+> This will always unregister the same flash, no ? This cannot work.
 
-yes. :)
+Ah, yup, I will fix this. :)
 
 >
+>> +}
+>
+> [...]
 >
 
 
