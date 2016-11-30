@@ -1,23 +1,23 @@
-Received: from conssluserg-02.nifty.com ([210.131.2.81])
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBy5v-0005wq-7F
- for linux-mtd@lists.infradead.org; Wed, 30 Nov 2016 06:10:17 +0000
-Received: from mail-yb0-f182.google.com (mail-yb0-f182.google.com
- [209.85.213.182]) (authenticated)
- by conssluserg-02.nifty.com with ESMTP id uAU69Urp026941
- for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 15:09:30 +0900
-Received: by mail-yb0-f182.google.com with SMTP id d59so14362109ybi.1
- for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2016 22:09:30 -0800 (PST)
+ id 1cBy9F-000135-SP
+ for linux-mtd@lists.infradead.org; Wed, 30 Nov 2016 06:13:42 +0000
+Received: from mail-yw0-f172.google.com (mail-yw0-f172.google.com
+ [209.85.161.172]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id uAU6D4MG025957
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 15:13:04 +0900
+Received: by mail-yw0-f172.google.com with SMTP id i145so152324760ywg.2
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2016 22:13:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20161127172456.5dba79f2@bbrezillon>
+In-Reply-To: <20161127171008.39f883b8@bbrezillon>
 References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
- <1480183585-592-29-git-send-email-yamada.masahiro@socionext.com>
- <20161127172456.5dba79f2@bbrezillon>
+ <1480183585-592-19-git-send-email-yamada.masahiro@socionext.com>
+ <20161127171008.39f883b8@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Wed, 30 Nov 2016 15:09:27 +0900
-Message-ID: <CAK7LNAR_x0=jOWfkf=0X9f+OHnTSRDBiQZPG_FnFHEJda8fP_g@mail.gmail.com>
-Subject: Re: [PATCH 28/39] mtd: nand: denali: move multi NAND fixup code to a
- helper function
+Date: Wed, 30 Nov 2016 15:13:03 +0900
+Message-ID: <CAK7LNAQOQANtmgeRtJU7S6fUth0r5ZstUM+68Qs9FjxEz0_gfQ@mail.gmail.com>
+Subject: Re: [PATCH 18/39] mtd: nand: denali: move denali_read_page_raw()
+ above denali_read_page()
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -37,53 +37,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-
-2016-11-28 1:24 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Sun, 27 Nov 2016 03:06:14 +0900
+2016-11-28 1:10 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Sun, 27 Nov 2016 03:06:04 +0900
 > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 >
->> Collect multi NAND fixups into a helper function instead of
->> scattering them in denali_init().
+>> This will be needed in the next commit to call denali_read_page_raw()
+>> from denali_read_page().
 >
-> Can you tell me more about this multi-NAND feature?
-> The core is already able to detect multi-die NAND chips in a generic
-> way,
+> Please squash this change into patch 19. It's clearly useless to
+> dissociate them.
+>
 
-This is not the case.
+I will.
 
-> but I fear this is something else, like "put two 8-bits chips on a
-> 16bits bus to emulate a single 16bits chip".
+But as I mentioned in the reply to 19/39,
+I am thinking that another solution may be possible.
 
-Yes, it is.
-
-(I have never used this controller like that.
-But, I am pretty sure it is
-from the code and the
-Denali's User Guide mentions such usage.)
-
-
-Just in case, I will clearly rephrase the comment block like follows in v2:
-
-        /*
-         * Support for multi device:
-         * When the IP configuration is x16 capable and two x8 chips are
-         * connected in parallel, DEVICES_CONNECTED should be set to 2.
-         * In this case, the core framework knows nothing about this fact,
-         * so we should tell it the _logical_ pagesize and anything necessary.
-         */
-
-
-
-
-> If that's a case, and this feature is actually used, then it's a bad
-> idea IMHO.
-> For example, how do you handle the case where one block is bad on a
-> chip but not on the other? And I fear this is not the only problem
-> with this approach :-/.
-
-As you expect, if one block is bad,
-the correspond block on the other chip can not be used.
-
+In that case, both 18/39 and 19/39 will be unnecessary.
 
 
 -- 
