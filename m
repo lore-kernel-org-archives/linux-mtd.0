@@ -1,21 +1,25 @@
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Bindings for Rockchip serial flash
- controller
-To: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>
-References: <1479437945-27918-1-git-send-email-shawn.lin@rock-chips.com>
- <1479437945-27918-2-git-send-email-shawn.lin@rock-chips.com>
- <7fd2cdc0-2103-d254-c7b2-d2552a32a738@gmail.com>
-Cc: shawn.lin@rock-chips.com, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
- Heiko Stuebner <heiko@sntech.de>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: add rockchip serial flash controller
+ driver
+To: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1478855766-151673-1-git-send-email-shawn.lin@rock-chips.com>
+ <1478855766-151673-3-git-send-email-shawn.lin@rock-chips.com>
+ <b1420e9d-b6a1-7fe8-4381-e32e0bc7dd53@gmail.com>
+ <775a8918-bc93-218a-808d-2a160137ad56@rock-chips.com>
+ <8f8213a1-f694-8159-fdbd-5e607c8aaaa2@gmail.com>
+ <76670120-dacd-ef0e-cf36-cbf549b19853@rock-chips.com>
+ <b513a489-5913-ffe8-69f1-7201943a05a3@gmail.com>
+Cc: shawn.lin@rock-chips.com, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Heiko Stuebner <heiko@sntech.de>,
+ linux-rockchip@lists.infradead.org
 From: Shawn Lin <shawn.lin@rock-chips.com>
-Message-ID: <a5f13048-fbfa-7988-659a-0223b767ddf3@rock-chips.com>
-Date: Wed, 30 Nov 2016 08:55:23 +0800
+Message-ID: <42f45944-8a63-fe59-8339-af72d004544e@rock-chips.com>
+Date: Wed, 30 Nov 2016 08:57:03 +0800
 MIME-Version: 1.0
-In-Reply-To: <7fd2cdc0-2103-d254-c7b2-d2552a32a738@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <b513a489-5913-ffe8-69f1-7201943a05a3@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,69 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2016/11/25 21:30, Marek Vasut wrote:
-> On 11/18/2016 03:59 AM, Shawn Lin wrote:
->> Add binding document for the Rockchip serial flash controller.
->>
->> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
->> Acked-by: Rob Herring <robh@kernel.org>
->> ---
->>
->> Changes in v2: None
->>
->>  .../devicetree/bindings/mtd/rockchip-sfc.txt       | 31 ++++++++++++++++++++++
->>  1 file changed, 31 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
->> new file mode 100644
->> index 0000000..28430ce
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
->> @@ -0,0 +1,31 @@
->> +Rockchip Serial Flash Controller
->> +
->> +Required properties:
->> +- compatible : Should be
->> +		"rockchip,rk1108-sfc", "rockchip,sfc" for ROCKCHIP RK1108.
->> +- address-cells : Should be 1.
->> +- size-cells : Should be 0.
+在 2016/11/25 21:54, Marek Vasut 写道:
+> On 11/21/2016 03:51 AM, Shawn Lin wrote:
+>> Hi Marek,
 >
-> Shouldn't these two props have a # prefix ? I'm not sure they should
-> even be part of this binding document at all.
+> Hi!
 >
->> +- clocks: Must contain two entries for each entry in clock-names.
->> +- clock-names: Shall be "sfc" for the transfer-clock, and "hsfc" for
->> +		the peripheral clock.
->> +- interrupts : Should contain the interrupt for the device.
->> +- reg: Physical base address of the controller and length of memory mapped.
->> +
->> +Optional properties:
->> +- rockchip,sfc-no-dma: Indicate the controller doesn't support dma transfer.
+> [...]
 >
-> DMA should be in capital letters.
+>>>> sfc->num_chip stands for how many flashes registered successfully.
+>>>
+>>> Does it work if you have a hole in there ? Like if you have a flash on
+>>> chipselect 0 and chipselect 2 ?
+>>
+>> Yes it does, as it won't leave a room for chipselect 1 whose node isn't
+>> present, which means there isn't a hole in there at all. :)
+>
+> Ah , because you are not indexing those NORs with their CS number , right ?
 
-Both of DMA or dma could be found by grepping the
-Documentation/devicetree/bindings/, so I think it
-isn't a big deal for this. :)
+yes. :)
 
->
->> +Example:
->> +nor_flash: sfc@301c0000 {
->> +	compatible = "rockchip,rk1108-sfc", "rockchip,sfc";
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +	clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
->> +	clock-names = "sfc", "hsfc";
->> +	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
->> +	reg = <0x301c0000 0x1000>;
->> +	spi-nor@0 {
->> +		compatible = "jedec,spi-nor";
->> +		spi-max-frequency = <12000000>;
->> +		reg = <0>;
->> +	};
->> +};
->>
 >
 >
 
