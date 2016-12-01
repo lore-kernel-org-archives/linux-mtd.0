@@ -1,22 +1,26 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCVUy-0004aV-CY
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 17:50:21 +0000
-Received: by mail-pg0-x242.google.com with SMTP id x23so5247805pgx.3
- for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 09:49:59 -0800 (PST)
-Date: Thu, 1 Dec 2016 09:49:57 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] mtd: nand: tango: Add standard legalese header
-Message-ID: <20161201174957.GM77253@google.com>
-References: <583FF9D6.9090109@sigmadesigns.com>
+ id 1cCVXK-0007qw-8e
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 17:52:47 +0000
+Received: by mail-wm0-x243.google.com with SMTP id u144so35289022wmu.0
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 09:52:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <583FF9D6.9090109@sigmadesigns.com>
+In-Reply-To: <1e8b99b6-1110-70ae-e299-1c2c153a1908@gmail.com>
+References: <20161124165608.29816-1-ricardo.ribalda@gmail.com>
+ <1e8b99b6-1110-70ae-e299-1c2c153a1908@gmail.com>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Thu, 1 Dec 2016 18:52:03 +0100
+Message-ID: <CAPybu_1r3Hpu9m4pn8yTG6Fi5hhbr_6wgJQt2yozL_+_+6HaHg@mail.gmail.com>
+Subject: Re: [PATCH v8] mtd: spi-nor: Add support for S3AN spi-nor devices
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +30,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 01, 2016 at 11:22:14AM +0100, Marc Gonzalez wrote:
-> Provide proper copyright notice and license information.
-> 
-> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-> ---
-> I originally didn't provide this information because I thought
-> MODULE_AUTHOR defined the copyright holder, and MODULE_LICENSE
-> defined the license. (So I figured the header was redundant.)
+Hi Marek
 
-It may be redundant, but (IANAL) I expect the macros are more
-interesting to machines (which can do things like handle GPL vs. non-GPL
-symbols, and print out nice 'modinfo') and maybe programmers (who are
-often more like machines than lawyers) than to lawyers.
+Thanks for your review
 
-> ---
->  drivers/mtd/nand/tango_nand.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-> index 7ed35348993e..cc23db64f0ca 100644
-> --- a/drivers/mtd/nand/tango_nand.c
-> +++ b/drivers/mtd/nand/tango_nand.c
-> @@ -1,3 +1,11 @@
-> +/*
-> + * Copyright (C) 2016 Sigma Designs
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * version 2 as published by the Free Software Foundation.
-> + */
-> +
+On Thu, Dec 1, 2016 at 5:05 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
+>
+> On 11/24/2016 05:56 PM, Ricardo Ribalda Delgado wrote:
 
-Thanks. Applied to l2-mtd.git.
+>> +#define      SPI_S3AN                BIT(10) /*
+>> +                                      * Xilinx Spartan 3AN In-System Flash
+>> +                                      * (MFR cannot be used for probing
+>> +                                      * because it has the same value as
+>> +                                      * ATMEL flashes)
+>> +                                      */
+>
+> I have possibly off-topic question. Altera has something very similar --
+> EPCS/EPCQ flash which cannot be detected using standard READID .
+> Would this patch help with supporting those degenerate flashes too?
+>
+>>  };
+>>
 
-Brian
+I dont know, but I love the term degenerated flash, please let me use it :)
 
->  #include <linux/io.h>
->  #include <linux/of.h>
->  #include <linux/clk.h>
-> -- 
-> 2.9.0
+> >       for (i = 0; i < len; ) {
+> >               ssize_t written;
+> > +             loff_t addr = to + i;
+> > +
+> > +             if (hweight32(nor->page_size) == 1) {
+> > +                     page_offset = addr & (nor->page_size - 1);
+> > +             } else {
+> > +                     uint64_t aux = addr;
+> >
+> > -             page_offset = (to + i) & (nor->page_size - 1);
+> > +                     page_offset = do_div(aux, nor->page_size);
+> > +             }
+>
+> Why is this part necessary ?
+
+If page_size is not a power of 2 (264,528),  the & (size-1) operation
+for getting the offset  does not work, you need to do a real modulus.
+
+> > +
+> > +     /* Flash in Power of 2 mode */
+> > +     if (val & XSR_PAGESIZE) {
+> > +             nor->page_size = (nor->page_size == 264) ? 256 : 512;
+>
+> 264 is due to some ECC ?
+
+The flash can be in standard mode or in power of two mode. You need to
+check the status register to know if the chip is in one mode or the
+other.
+
+The flash is in standard mode from factory, you can change the mode to
+power of two, but the data is corrupted and you cannot change  back to
+standard mode.
+
+I guess they are using some bits reserved to ECC for data and that way
+you can squeeze some bits for user data.
+
+>
+> > +             nor->mtd.writebufsize = nor->page_size;
+> > +             nor->mtd.size = 8 * nor->page_size * info->n_sectors;
+> > +             nor->mtd.erasesize = 8 * nor->page_size;
+> > +     } else {
+> > +             nor->flags |= SNOR_F_S3AN_ADDR_DEFAULT;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+>
+> [...]
+>
+> --
+> Best regards,
+> Marek Vasut
+
+Thanks Again
+
+
+
+
+-- 
+Ricardo Ribalda
