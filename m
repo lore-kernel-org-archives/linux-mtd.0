@@ -1,25 +1,22 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCVNE-0000af-8S
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 17:42:21 +0000
-Received: by mail-pg0-x244.google.com with SMTP id p66so5232068pga.2
- for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 09:41:59 -0800 (PST)
-Date: Thu, 1 Dec 2016 09:41:56 -0800
+ id 1cCVUy-0004aV-CY
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 17:50:21 +0000
+Received: by mail-pg0-x242.google.com with SMTP id x23so5247805pgx.3
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 09:49:59 -0800 (PST)
+Date: Thu, 1 Dec 2016 09:49:57 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [GIT PULL] mtd: spi-nor: updates for 4.10
-Message-ID: <20161201174156.GA66143@google.com>
-References: <2bdf6239-d998-825c-cd22-db6ac09d3391@atmel.com>
- <20161201022238.GA3973@google.com>
- <a16b5d6e-2fcf-be61-f41d-788a08c23177@denx.de>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd: nand: tango: Add standard legalese header
+Message-ID: <20161201174957.GM77253@google.com>
+References: <583FF9D6.9090109@sigmadesigns.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a16b5d6e-2fcf-be61-f41d-788a08c23177@denx.de>
+In-Reply-To: <583FF9D6.9090109@sigmadesigns.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 01, 2016 at 03:36:35PM +0100, Marek Vasut wrote:
-> On 12/01/2016 03:22 AM, Brian Norris wrote:
-> > BTW, does Marek have access to your repo, or are you planning on doing
-> > all the merging?
+On Thu, Dec 01, 2016 at 11:22:14AM +0100, Marc Gonzalez wrote:
+> Provide proper copyright notice and license information.
 > 
-> I'm not a big github fan, but I have access, yep.
+> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+> ---
+> I originally didn't provide this information because I thought
+> MODULE_AUTHOR defined the copyright holder, and MODULE_LICENSE
+> defined the license. (So I figured the header was redundant.)
 
-Not even as a dumb git server? I can understand not appreciating the
-web interface.
+It may be redundant, but (IANAL) I expect the macros are more
+interesting to machines (which can do things like handle GPL vs. non-GPL
+symbols, and print out nice 'modinfo') and maybe programmers (who are
+often more like machines than lawyers) than to lawyers.
 
-Anyway, nothing (except MAINTAINERS, which can be changed) requires we
-use github. We could probably set up a shared infradead.org repo or
-maybe even kernel.org if you'd prefer.
+> ---
+>  drivers/mtd/nand/tango_nand.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+> index 7ed35348993e..cc23db64f0ca 100644
+> --- a/drivers/mtd/nand/tango_nand.c
+> +++ b/drivers/mtd/nand/tango_nand.c
+> @@ -1,3 +1,11 @@
+> +/*
+> + * Copyright (C) 2016 Sigma Designs
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * version 2 as published by the Free Software Foundation.
+> + */
+> +
+
+Thanks. Applied to l2-mtd.git.
 
 Brian
+
+>  #include <linux/io.h>
+>  #include <linux/of.h>
+>  #include <linux/clk.h>
+> -- 
+> 2.9.0
