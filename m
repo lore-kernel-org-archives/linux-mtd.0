@@ -1,7 +1,7 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCYnw-00036Q-CM
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 21:22:10 +0000
+ id 1cCYnw-000360-CP
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 21:22:11 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
@@ -9,9 +9,9 @@ Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
  linux-kernel@vger.kernel.org, hch@infradead.org,
  linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org, dengler@linutronix.de,
  sbabic@denx.de, wd@denx.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 09/24] ubifs: Preload crypto context in ->lookup()
-Date: Thu,  1 Dec 2016 22:20:56 +0100
-Message-Id: <1480627271-10441-10-git-send-email-richard@nod.at>
+Subject: [PATCH 07/24] ubifs: Implement file open operation
+Date: Thu,  1 Dec 2016 22:20:54 +0100
+Message-Id: <1480627271-10441-8-git-send-email-richard@nod.at>
 In-Reply-To: <1480627271-10441-1-git-send-email-richard@nod.at>
 References: <1480627271-10441-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,38 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-...and mark the dentry as encrypted.
+We need ->open() for files to load the crypto key.
+If the no key is present and the file is encrypted,
+refuse to open.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/dir.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ fs/ubifs/file.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index bd0af4e9ca0b..9976a709b875 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -218,6 +218,21 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index b4fbeefba246..a9c5cc6c0bc5 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1605,6 +1605,35 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ 	return 0;
+ }
  
- 	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
- 
-+	if (ubifs_crypt_is_encrypted(dir)) {
-+		err = fscrypt_get_encryption_info(dir);
++static int ubifs_file_open(struct inode *inode, struct file *filp)
++{
++	int ret;
++	struct dentry *dir;
++	struct ubifs_info *c = inode->i_sb->s_fs_info;
 +
-+		/*
-+		 * DCACHE_ENCRYPTED_WITH_KEY is set if the dentry is
-+		 * created while the directory was encrypted and we
-+		 * have access to the key.
-+		 */
-+		if (fscrypt_has_encryption_key(dir))
-+			fscrypt_set_encrypted_dentry(dentry);
-+		fscrypt_set_d_op(dentry);
-+		if (err && err != -ENOKEY)
-+			return ERR_PTR(err);
++	if (ubifs_crypt_is_encrypted(inode)) {
++		ret = fscrypt_get_encryption_info(inode);
++		if (ret)
++			return -EACCES;
++		if (!fscrypt_has_encryption_key(inode))
++			return -ENOKEY;
 +	}
 +
- 	if (dentry->d_name.len > UBIFS_MAX_NLEN)
- 		return ERR_PTR(-ENAMETOOLONG);
- 
++	dir = dget_parent(file_dentry(filp));
++	if (ubifs_crypt_is_encrypted(d_inode(dir)) &&
++			!fscrypt_has_permitted_context(d_inode(dir), inode)) {
++		ubifs_err(c, "Inconsistent encryption contexts: %lu/%lu",
++			  (unsigned long) d_inode(dir)->i_ino,
++			  (unsigned long) inode->i_ino);
++		dput(dir);
++		ubifs_ro_mode(c, -EPERM);
++		return -EPERM;
++	}
++	dput(dir);
++
++	return 0;
++}
++
+ const struct address_space_operations ubifs_file_address_operations = {
+ 	.readpage       = ubifs_readpage,
+ 	.writepage      = ubifs_writepage,
+@@ -1647,6 +1676,7 @@ const struct file_operations ubifs_file_operations = {
+ 	.unlocked_ioctl = ubifs_ioctl,
+ 	.splice_read	= generic_file_splice_read,
+ 	.splice_write	= iter_file_splice_write,
++	.open		= ubifs_file_open,
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl   = ubifs_compat_ioctl,
+ #endif
 -- 
 2.7.3
