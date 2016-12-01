@@ -1,27 +1,30 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCHBS-0005z3-Dw
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 02:33:15 +0000
-Received: by mail-pg0-x241.google.com with SMTP id p66so3035133pga.2
- for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 18:32:54 -0800 (PST)
-Date: Wed, 30 Nov 2016 18:32:50 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Luis Henriques <henrix@camandro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: maps: add missing iounmap() in error path
-Message-ID: <20161201023250.GL77253@google.com>
-References: <20161122192124.GF77253@google.com>
- <20161123234036.9985-1-henrix@camandro.org>
- <f933f0ff-2ba6-ac7b-e5b8-d7a4d04c0aa9@gmail.com>
+ id 1cCNNi-0002et-LO
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 09:10:20 +0000
+Received: from mail-yb0-f169.google.com (mail-yb0-f169.google.com
+ [209.85.213.169]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id uB199c2d013143
+ for <linux-mtd@lists.infradead.org>; Thu, 1 Dec 2016 18:09:39 +0900
+Received: by mail-yb0-f169.google.com with SMTP id v132so24780768yba.0
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 01:09:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f933f0ff-2ba6-ac7b-e5b8-d7a4d04c0aa9@gmail.com>
+In-Reply-To: <CAK7LNATS-Vd0BEWZEdp7skHrpngvyyLm6OFXJsRQ=87VMbUOAQ@mail.gmail.com>
+References: <CAK7LNATS-Vd0BEWZEdp7skHrpngvyyLm6OFXJsRQ=87VMbUOAQ@mail.gmail.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Thu, 1 Dec 2016 18:09:37 +0900
+Message-ID: <CAK7LNAS7n3k=+MzQk-oQOP3VzE4Koj=PsreV=bf8EznNSFRUBA@mail.gmail.com>
+Subject: Re: How read_oob() should work for HW_SYNDROME NAND controller?
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Jason Roberts <jason.e.roberts@intel.com>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Dinh Nguyen <dinguyen@altera.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, masahiroy@kernel.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +34,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 25, 2016 at 03:18:09PM +0100, Marek Vasut wrote:
-> On 11/24/2016 12:40 AM, Luis Henriques wrote:
-> > This patch was triggered by the following Coccinelle error:
-> > 
-> > ./drivers/mtd/maps/sc520cdp.c:246:3-9: \
-> > 	ERROR: missing iounmap; ioremap on line 242 \
-> > 	and execution via conditional on line 244
-> > 
-> > Since do_map_probe() is also invoked in this loop, it is also necessary to
-> > map_destroy() any initialised struct mtd_info.
-> > 
-> > Signed-off-by: Luis Henriques <henrix@camandro.org>
-> > ---
-> > Changes since v1:
-> > * Changes according to Brian Norris review:
-> >   - Ensure sc520cdp_map[0].virt is unmaped when needed
-> >   - Use a for loop instead of an 'if (i)'
-> >   - Prevent double-iounmap
-> > * Added map_destroy() in the cleanup
-> > 
-> > drivers/mtd/maps/sc520cdp.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
+Hi Boris,
 
-...
 
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+>>
+>> And let's say the controller's ecc.size = 1024 and ecc.bytes == 14.
+>> I am omitting BBM to make the situation simpler.
+>
+> Hm, actually the placement of the BBM is important. Do you know where
+> it's placed in the page layout used by Denali.
 
-Applied to l2-mtd.git
+
+BBM is placed at the beginning of the OOB area.
+(so, factory BBMs are protected from the ECC correction engine.)
+
+
+The more precise layout is as follows:
+
+   |-----------|    |-----------|
+   |           |    |           |
+   | Payload0  |    |           |
+   |           |    |           |
+   | (ecc.size |    |           |
+   |  1024B)   |    | Main Page |
+   |           |    |   area    |
+   |-----------|    |           |
+   |  ECC0     |    |   2048B   |
+   | (ecc.bytes|    |           |
+   |   14B)    |    |           |
+   |-----------|    |           |
+   |           |    |           |
+   | Payload1  |    |           |
+   |           |    |           |
+   | (ecc.size |    |           |
+   |  1010B)   |    |           |
+   |-----------|    |-----------|
+   | BBM (8B)  |    |           |
+   |-----------|    |           |
+   | Payload1  |    |           |
+   |   14B     |    |           |
+   |-----------|    |           |
+   |  ECC1     |    | OOB area  |
+   | (ecc.bytes|    |           |
+   |   14B)    |    |   64B     |
+   |-----------|    |           |
+   | OOB free  |    |           |
+   |    28B    |    |           |
+   |-----------|    |-----------|
+
+
+The Playload1 is split by the BBM area.
+
+
+
+
+>> The Denali IP also supports lowlevel
+>> command-base interface to issue NAND_CMD_RNDOUT
+>> and cherry-pick ECC sections.
+>>
+>> But, more simply, I can transfer the whole page + oob
+>> into a temporary buffer, then only copy
+>> ECC sections into oob_poi.
+>
+> It should be faster if you only retrieve ECC sections (less I/Os), but
+> that's just optimization. Note that read_oob() is heavily used when
+> scanning bad blocks, so it might make a huge boot-time difference in the
+> end.
+
+
+I think this comes down to
+
+"PIO register access only for ECC sectors"
+    vs
+"DMA transfer for the whole page"
+
+I will test which is better.
+
+
+BTW, surprisingly enough, the Denali still sets
+NAND_SKIP_BBTSCAN flag.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
