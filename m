@@ -1,6 +1,6 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCYnw-000360-CP
+ id 1cCYnw-000362-CI
  for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 21:22:11 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
@@ -9,9 +9,9 @@ Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
  linux-kernel@vger.kernel.org, hch@infradead.org,
  linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org, dengler@linutronix.de,
  sbabic@denx.de, wd@denx.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 07/24] ubifs: Implement file open operation
-Date: Thu,  1 Dec 2016 22:20:54 +0100
-Message-Id: <1480627271-10441-8-git-send-email-richard@nod.at>
+Subject: [PATCH 08/24] ubifs: Enforce crypto policy in ->link and ->rename
+Date: Thu,  1 Dec 2016 22:20:55 +0100
+Message-Id: <1480627271-10441-9-git-send-email-richard@nod.at>
 In-Reply-To: <1480627271-10441-1-git-send-email-richard@nod.at>
 References: <1480627271-10441-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,62 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We need ->open() for files to load the crypto key.
-If the no key is present and the file is encrypted,
-refuse to open.
+When a file is moved or linked into another directory
+its current crypto policy has to be compatible with the
+target policy.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/file.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ fs/ubifs/dir.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index b4fbeefba246..a9c5cc6c0bc5 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1605,6 +1605,35 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	return 0;
- }
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 477817567971..bd0af4e9ca0b 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -639,6 +639,10 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+ 	ubifs_assert(inode_is_locked(dir));
+ 	ubifs_assert(inode_is_locked(inode));
  
-+static int ubifs_file_open(struct inode *inode, struct file *filp)
-+{
-+	int ret;
-+	struct dentry *dir;
-+	struct ubifs_info *c = inode->i_sb->s_fs_info;
-+
-+	if (ubifs_crypt_is_encrypted(inode)) {
-+		ret = fscrypt_get_encryption_info(inode);
-+		if (ret)
-+			return -EACCES;
-+		if (!fscrypt_has_encryption_key(inode))
-+			return -ENOKEY;
-+	}
-+
-+	dir = dget_parent(file_dentry(filp));
-+	if (ubifs_crypt_is_encrypted(d_inode(dir)) &&
-+			!fscrypt_has_permitted_context(d_inode(dir), inode)) {
-+		ubifs_err(c, "Inconsistent encryption contexts: %lu/%lu",
-+			  (unsigned long) d_inode(dir)->i_ino,
-+			  (unsigned long) inode->i_ino);
-+		dput(dir);
-+		ubifs_ro_mode(c, -EPERM);
++	if (ubifs_crypt_is_encrypted(dir) &&
++	    !fscrypt_has_permitted_context(dir, inode))
 +		return -EPERM;
++
+ 	err = dbg_check_synced_i_size(c, inode);
+ 	if (err)
+ 		return err;
+@@ -1133,6 +1137,12 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	if (unlink)
+ 		ubifs_assert(inode_is_locked(new_inode));
+ 
++	if (old_dir != new_dir) {
++		if (ubifs_crypt_is_encrypted(new_dir) &&
++		    !fscrypt_has_permitted_context(new_dir, old_inode))
++			return -EPERM;
 +	}
-+	dput(dir);
 +
-+	return 0;
-+}
+ 	if (unlink && is_dir) {
+ 		err = ubifs_check_dir_empty(new_inode);
+ 		if (err)
+@@ -1327,6 +1337,13 @@ static int ubifs_xrename(struct inode *old_dir, struct dentry *old_dentry,
+ 
+ 	ubifs_assert(fst_inode && snd_inode);
+ 
++	if ((ubifs_crypt_is_encrypted(old_dir) ||
++	    ubifs_crypt_is_encrypted(new_dir)) &&
++	    (old_dir != new_dir) &&
++	    (!fscrypt_has_permitted_context(new_dir, fst_inode) ||
++	     !fscrypt_has_permitted_context(old_dir, snd_inode)))
++		return -EPERM;
 +
- const struct address_space_operations ubifs_file_address_operations = {
- 	.readpage       = ubifs_readpage,
- 	.writepage      = ubifs_writepage,
-@@ -1647,6 +1676,7 @@ const struct file_operations ubifs_file_operations = {
- 	.unlocked_ioctl = ubifs_ioctl,
- 	.splice_read	= generic_file_splice_read,
- 	.splice_write	= iter_file_splice_write,
-+	.open		= ubifs_file_open,
- #ifdef CONFIG_COMPAT
- 	.compat_ioctl   = ubifs_compat_ioctl,
- #endif
+ 	lock_4_inodes(old_dir, new_dir, NULL, NULL);
+ 
+ 	time = ubifs_current_time(old_dir);
 -- 
 2.7.3
