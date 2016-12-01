@@ -1,24 +1,32 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCVl9-0000hn-EC
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 18:07:04 +0000
-Subject: Re: [GIT PULL] mtd: spi-nor: updates for 4.10
-To: Brian Norris <computersforpeace@gmail.com>
-References: <2bdf6239-d998-825c-cd22-db6ac09d3391@atmel.com>
- <20161201022238.GA3973@google.com>
- <a16b5d6e-2fcf-be61-f41d-788a08c23177@denx.de>
- <20161201174156.GA66143@google.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <0914d553-20e2-b7e5-f16d-fb562601a4aa@denx.de>
-Date: Thu, 1 Dec 2016 19:06:38 +0100
+ id 1cCVsF-0006aK-GO
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 18:14:24 +0000
+Received: by mail-pg0-x243.google.com with SMTP id 3so5301576pgd.0
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 10:14:03 -0800 (PST)
+Date: Thu, 1 Dec 2016 10:14:00 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Sandeep Jain <Sandeep_Jain@mentor.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Steve Longerbeam <steve_longerbeam@mentor.com>,
+ LKML <linux-kernel@vger.kernel.org>, Jim Baxter <jim_baxter@mentor.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH] mtd: Allocate bdi objects dynamically
+Message-ID: <20161201181400.GA68619@google.com>
+References: <Sandeep_Jain@mentor.com>
+ <1470319275-9465-1-git-send-email-Sandeep_Jain@mentor.com>
+ <CAFLxGvx6B02c+HgYwJ8exVLT6owrkQL1Rq+X6VzUDKVUxE=aoQ@mail.gmail.com>
+ <20161103113421.GA4873@mentor.com>
+ <4055a3ed-c024-4c29-45e1-e600cdc5902e@gmail.com>
+ <20161129081204.GA6617@mentor.com>
+ <2339c911-3399-e69b-aabc-f7d57d26af7d@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20161201174156.GA66143@google.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2339c911-3399-e69b-aabc-f7d57d26af7d@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +36,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/01/2016 06:41 PM, Brian Norris wrote:
-> On Thu, Dec 01, 2016 at 03:36:35PM +0100, Marek Vasut wrote:
->> On 12/01/2016 03:22 AM, Brian Norris wrote:
->>> BTW, does Marek have access to your repo, or are you planning on doing
->>> all the merging?
->>
->> I'm not a big github fan, but I have access, yep.
+On Thu, Dec 01, 2016 at 04:39:23PM +0100, Marek Vasut wrote:
+> On 11/29/2016 09:12 AM, Sandeep Jain wrote:
+> > On Sat, Nov 05, 2016 at 08:22:31AM +0100, Marek Vasut wrote:
+> >> On 11/03/2016 12:34 PM, Sandeep Jain wrote:
+> >>> On Sat, Sep 17, 2016 at 04:41:47PM +0200, Richard Weinberger wrote:
+> >>>> On Thu, Aug 4, 2016 at 4:01 PM, Sandeep Jain <Sandeep_Jain@mentor.com> wrote:
+> >>>>> From: Steve Longerbeam <steve_longerbeam@mentor.com>
+> >>>>>
+> >>>>> The MTD backing dev info objects mtd_bdi was statically allocated.
+> >>>>> So when MTD is built as a loadable module, this object fall in the
+> >>>>> vmalloc address space.
+> >>>>>
+> >>>>> The problem with that, is that the BDI APIs use wake_up_bit(), which calls
+> >>>>> virt_to_page() to retrieve the memory zone of the page containing the
+> >>>>> wait_queue to wake up, and virt_to_page() is not valid for vmalloc or
+> >>>>> highmem addresses.
+> >>>>>
+> >>>>> Fix this by allocating the BDI objects dynamically with kmalloc. The
+> >>>>> objects now fall in the logical address space so that BDI APIs will
+> >>>>> work in all cases (mtd builtin or module).
+> >>>>>
+> >>>>> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+> >>>>> Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
+> >>>>> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
+> >>>>
+> >>>> Reviewed-by: Richard Weinberger <richard@nod.at>
+> >>
+> >> I don't see any obvious problem either:
+> >> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 > 
-> Not even as a dumb git server? I can understand not appreciating the
-> web interface.
+> Bump?
 
-Well, it doesn't really feel right to keep kernel stuff outside of
-kernel.org , or is that OK now ? And I don't really like the EULA
-they have.
-
-> Anyway, nothing (except MAINTAINERS, which can be changed) requires we
-> use github. We could probably set up a shared infradead.org repo or
-> maybe even kernel.org if you'd prefer.
-
-I have a k.org account, but then, I also don't want to cause too much fuss.
-
-> Brian
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+Applied to l2-mtd.git.
