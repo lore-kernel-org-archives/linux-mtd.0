@@ -1,32 +1,27 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCVwr-0001K0-N1
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 18:19:10 +0000
-Received: by mail-wm0-x242.google.com with SMTP id m203so35429278wma.3
- for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 10:18:48 -0800 (PST)
-Subject: Re: [PATCH] mtd: Allocate bdi objects dynamically
-To: Brian Norris <computersforpeace@gmail.com>
-References: <Sandeep_Jain@mentor.com>
- <1470319275-9465-1-git-send-email-Sandeep_Jain@mentor.com>
- <CAFLxGvx6B02c+HgYwJ8exVLT6owrkQL1Rq+X6VzUDKVUxE=aoQ@mail.gmail.com>
- <20161103113421.GA4873@mentor.com>
- <4055a3ed-c024-4c29-45e1-e600cdc5902e@gmail.com>
- <20161129081204.GA6617@mentor.com>
- <2339c911-3399-e69b-aabc-f7d57d26af7d@gmail.com>
- <20161201181400.GA68619@google.com>
-Cc: Sandeep Jain <Sandeep_Jain@mentor.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Steve Longerbeam <steve_longerbeam@mentor.com>,
- LKML <linux-kernel@vger.kernel.org>, Jim Baxter <jim_baxter@mentor.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ id 1cCWB5-0007EU-40
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 18:33:52 +0000
+Received: by mail-wm0-x244.google.com with SMTP id a20so35636848wme.2
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 10:33:29 -0800 (PST)
+Subject: Re: [PATCH v8] mtd: spi-nor: Add support for S3AN spi-nor devices
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+References: <20161124165608.29816-1-ricardo.ribalda@gmail.com>
+ <1e8b99b6-1110-70ae-e299-1c2c153a1908@gmail.com>
+ <CAPybu_1r3Hpu9m4pn8yTG6Fi5hhbr_6wgJQt2yozL_+_+6HaHg@mail.gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  David Woodhouse <dwmw2@infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <0119eedd-8fb5-8b63-8e70-075182af72ae@gmail.com>
-Date: Thu, 1 Dec 2016 19:18:46 +0100
+Message-ID: <a83c7988-4418-5118-786f-91dcc981ce40@gmail.com>
+Date: Thu, 1 Dec 2016 19:11:24 +0100
 MIME-Version: 1.0
-In-Reply-To: <20161201181400.GA68619@google.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <CAPybu_1r3Hpu9m4pn8yTG6Fi5hhbr_6wgJQt2yozL_+_+6HaHg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,42 +32,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/01/2016 07:14 PM, Brian Norris wrote:
-> On Thu, Dec 01, 2016 at 04:39:23PM +0100, Marek Vasut wrote:
->> On 11/29/2016 09:12 AM, Sandeep Jain wrote:
->>> On Sat, Nov 05, 2016 at 08:22:31AM +0100, Marek Vasut wrote:
->>>> On 11/03/2016 12:34 PM, Sandeep Jain wrote:
->>>>> On Sat, Sep 17, 2016 at 04:41:47PM +0200, Richard Weinberger wrote:
->>>>>> On Thu, Aug 4, 2016 at 4:01 PM, Sandeep Jain <Sandeep_Jain@mentor.com> wrote:
->>>>>>> From: Steve Longerbeam <steve_longerbeam@mentor.com>
->>>>>>>
->>>>>>> The MTD backing dev info objects mtd_bdi was statically allocated.
->>>>>>> So when MTD is built as a loadable module, this object fall in the
->>>>>>> vmalloc address space.
->>>>>>>
->>>>>>> The problem with that, is that the BDI APIs use wake_up_bit(), which calls
->>>>>>> virt_to_page() to retrieve the memory zone of the page containing the
->>>>>>> wait_queue to wake up, and virt_to_page() is not valid for vmalloc or
->>>>>>> highmem addresses.
->>>>>>>
->>>>>>> Fix this by allocating the BDI objects dynamically with kmalloc. The
->>>>>>> objects now fall in the logical address space so that BDI APIs will
->>>>>>> work in all cases (mtd builtin or module).
->>>>>>>
->>>>>>> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
->>>>>>> Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
->>>>>>> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
->>>>>>
->>>>>> Reviewed-by: Richard Weinberger <richard@nod.at>
->>>>
->>>> I don't see any obvious problem either:
->>>> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+On 12/01/2016 06:52 PM, Ricardo Ribalda Delgado wrote:
+> Hi Marek
+
+Hi,
+
+> Thanks for your review
+> 
+> On Thu, Dec 1, 2016 at 5:05 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
 >>
->> Bump?
+>> On 11/24/2016 05:56 PM, Ricardo Ribalda Delgado wrote:
 > 
-> Applied to l2-mtd.git.
+>>> +#define      SPI_S3AN                BIT(10) /*
+>>> +                                      * Xilinx Spartan 3AN In-System Flash
+>>> +                                      * (MFR cannot be used for probing
+>>> +                                      * because it has the same value as
+>>> +                                      * ATMEL flashes)
+>>> +                                      */
+>>
+>> I have possibly off-topic question. Altera has something very similar --
+>> EPCS/EPCQ flash which cannot be detected using standard READID .
+>> Would this patch help with supporting those degenerate flashes too?
+>>
+>>>  };
+>>>
 > 
-Thanks !
+> I dont know, but I love the term degenerated flash, please let me use it :)
+
+Hehe. It'd be great to know whether we don't have a possibility for a
+generic usecase here. Can you briefly check that ?
+
+>>>       for (i = 0; i < len; ) {
+>>>               ssize_t written;
+>>> +             loff_t addr = to + i;
+>>> +
+>>> +             if (hweight32(nor->page_size) == 1) {
+>>> +                     page_offset = addr & (nor->page_size - 1);
+>>> +             } else {
+>>> +                     uint64_t aux = addr;
+>>>
+>>> -             page_offset = (to + i) & (nor->page_size - 1);
+>>> +                     page_offset = do_div(aux, nor->page_size);
+>>> +             }
+>>
+>> Why is this part necessary ?
+> 
+> If page_size is not a power of 2 (264,528),  the & (size-1) operation
+> for getting the offset  does not work, you need to do a real modulus.
+
+Aaah, now it makes sense. Ew, but all right, thanks for clarifying.
+This could use a comment, somewhere along these lines.
+
+>>> +
+>>> +     /* Flash in Power of 2 mode */
+>>> +     if (val & XSR_PAGESIZE) {
+>>> +             nor->page_size = (nor->page_size == 264) ? 256 : 512;
+>>
+>> 264 is due to some ECC ?
+> 
+> The flash can be in standard mode or in power of two mode. You need to
+> check the status register to know if the chip is in one mode or the
+> other.
+> 
+> The flash is in standard mode from factory, you can change the mode to
+> power of two, but the data is corrupted and you cannot change  back to
+> standard mode.
+> 
+> I guess they are using some bits reserved to ECC for data and that way
+> you can squeeze some bits for user data.
+
+OK, comment could help clarify this, so please add one.
+
+>>> +             nor->mtd.writebufsize = nor->page_size;
+>>> +             nor->mtd.size = 8 * nor->page_size * info->n_sectors;
+>>> +             nor->mtd.erasesize = 8 * nor->page_size;
+>>> +     } else {
+>>> +             nor->flags |= SNOR_F_S3AN_ADDR_DEFAULT;
+>>> +     }
+>>> +
+>>> +     return 0;
+>>> +}
+>>
+>> [...]
+>>
+>> --
+>> Best regards,
+>> Marek Vasut
+> 
+> Thanks Again
+> 
+> 
+> 
+> 
+
 
 -- 
 Best regards,
