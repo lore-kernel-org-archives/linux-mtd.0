@@ -1,29 +1,25 @@
-Received: from mail-yw0-f195.google.com ([209.85.161.195])
+Received: from mail-wj0-x244.google.com ([2a00:1450:400c:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCTrc-0002Fs-DE
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 16:05:37 +0000
-Received: by mail-yw0-f195.google.com with SMTP id r204so19063187ywb.3
- for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 08:05:15 -0800 (PST)
-Date: Thu, 1 Dec 2016 10:05:11 -0600
-From: Rob Herring <robh@kernel.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ id 1cCTvt-0005Nm-F1
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 16:10:03 +0000
+Received: by mail-wj0-x244.google.com with SMTP id he10so12716198wjc.2
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 08:09:39 -0800 (PST)
+Subject: Re: [PATCH v8] mtd: spi-nor: Add support for S3AN spi-nor devices
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 39/39] mtd: nand: denali_dt: add compatible strings for
- UniPhier SoC variants
-Message-ID: <20161201160511.ahlibszokg547wxk@rob-hp-laptop>
-References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
- <1480183585-592-40-git-send-email-yamada.masahiro@socionext.com>
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20161124165608.29816-1-ricardo.ribalda@gmail.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <1e8b99b6-1110-70ae-e299-1c2c153a1908@gmail.com>
+Date: Thu, 1 Dec 2016 17:05:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1480183585-592-40-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <20161124165608.29816-1-ricardo.ribalda@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,57 +29,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 27, 2016 at 03:06:25AM +0900, Masahiro Yamada wrote:
-> Add two compatible strings for UniPhier SoCs.  The revision register
-> on both shows revision 5.0, but they are different hardware.
+On 11/24/2016 05:56 PM, Ricardo Ribalda Delgado wrote:
+> Xilinx Spartan-3AN FPGAs contain an In-System Flash where they keep
+> their configuration data and (optionally) some user data.
 > 
-> Features:
->  - DMA engine with 64 bit physical address support
->  - 1024 byte ECC step size
->  - 8 / 16 / 24 bit ECC strength
->  - The n_banks format depends on SoC
+> The protocol of this flash follows most of the spi-nor standard. With
+> the following differences:
 > 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> - Page size might not be a power of two.
+> - The address calculation (default addressing mode).
+> - The spi nor commands used.
+> 
+> Protocol is described on Xilinx User Guide UG333
+> 
+> Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
 > ---
+
+Hi, minor questions/nits below.
+
+[...]
+
+> -Remove inline qualifier
+> -Improve documentation of Default Addressing Mode
+> -Convert function callbacks into SNOR_F_
+> -Fix missmatch braces
+> -Improve documentation of SPI_S3AN flag
 > 
->  .../devicetree/bindings/mtd/denali-nand.txt        | 10 +++++--
->  drivers/mtd/nand/denali_dt.c                       | 33 ++++++++++++++++++++--
->  2 files changed, 38 insertions(+), 5 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 134 ++++++++++++++++++++++++++++++++++++++++--
+>  include/linux/mtd/spi-nor.h   |  12 ++++
+>  2 files changed, 141 insertions(+), 5 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> index 51fe195..cea46e2 100644
-> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> @@ -1,13 +1,19 @@
->  * Denali NAND controller
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d0fc165d7d66..cf0410d4e258 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -75,6 +75,12 @@ struct flash_info {
+>  					 * bit. Must be used with
+>  					 * SPI_NOR_HAS_LOCK.
+>  					 */
+> +#define	SPI_S3AN		BIT(10)	/*
+> +					 * Xilinx Spartan 3AN In-System Flash
+> +					 * (MFR cannot be used for probing
+> +					 * because it has the same value as
+> +					 * ATMEL flashes)
+> +					 */
+
+I have possibly off-topic question. Altera has something very similar --
+EPCS/EPCQ flash which cannot be detected using standard READID .
+Would this patch help with supporting those degenerate flashes too?
+
+>  };
 >  
->  Required properties:
-> -  - compatible : should be "denali,denali-nand-dt"
-> +  - compatible : should be one of the following:
-> +      "denali,denali-nand-dt"
+>  #define JEDEC_MFR(info)	((info)->id[0])
 
-There are multiple things wrong with this string. denali,denali is 
-redundant is one. It's also fairly useless as this IP has several 
-versions and numerous configuration options IIRC. This should be 
-deprecated IMO.
+[...]
 
-> +      "denali,denali-nand-uniphier-v5a"
-> +      "denali,denali-nand-uniphier-v5b"
-
-Use your vendor prefix, not denali. The 2nd denali can probably be 
-dropped because it is not likely you have another kind of nand 
-controller in the SoC.
-
->    - reg : should contain registers location and length for data and reg.
->    - reg-names: Should contain the reg names "nand_data" and "denali_reg"
->    - interrupts : The interrupt number.
+> @@ -1170,8 +1241,15 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
 >  
->  Optional properties:
-> -  - nand-ecc-step-size: must be 512 or 1024.  If not specified, default to 512.
-> +  - nand-ecc-step-size: must be 512 or 1024.  If not specified, default to:
-> +      512  for "denali,denali-nand-dt"
-> +      1024 for "denali,denali-nand-uniphier-v5a"
-> +      1024 for "denali,denali-nand-uniphier-v5b"
->      see nand.txt for details.
->    - nand-ecc-strength: see nand.txt for details
->    - nand-ecc-maximize: see nand.txt for details
+>  	for (i = 0; i < len; ) {
+>  		ssize_t written;
+> +		loff_t addr = to + i;
+> +
+> +		if (hweight32(nor->page_size) == 1) {
+> +			page_offset = addr & (nor->page_size - 1);
+> +		} else {
+> +			uint64_t aux = addr;
+>  
+> -		page_offset = (to + i) & (nor->page_size - 1);
+> +			page_offset = do_div(aux, nor->page_size);
+> +		}
+
+Why is this part necessary ?
+
+>  		WARN_ONCE(page_offset,
+>  			  "Writing at offset %zu into a NOR page. Writing partial pages may decrease reliability and increase wear of NOR flash.",
+>  			  page_offset);
+
+[...]
+
+> +static int s3an_nor_scan(const struct flash_info *info, struct spi_nor *nor)
+> +{
+> +	int ret;
+> +	u8 val;
+> +
+> +	ret = nor->read_reg(nor, SPINOR_OP_XRDSR, &val, 1);
+> +	if (ret < 0) {
+> +		dev_err(nor->dev, "error %d reading XRDSR\n", (int) ret);
+> +		return ret;
+> +	}
+> +
+> +	nor->erase_opcode = SPINOR_OP_XSE;
+> +	nor->program_opcode = SPINOR_OP_XPP;
+> +	nor->read_opcode = SPINOR_OP_READ;
+> +	nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+> +
+> +	/* Flash in Power of 2 mode */
+> +	if (val & XSR_PAGESIZE) {
+> +		nor->page_size = (nor->page_size == 264) ? 256 : 512;
+
+264 is due to some ECC ?
+
+> +		nor->mtd.writebufsize = nor->page_size;
+> +		nor->mtd.size = 8 * nor->page_size * info->n_sectors;
+> +		nor->mtd.erasesize = 8 * nor->page_size;
+> +	} else {
+> +		nor->flags |= SNOR_F_S3AN_ADDR_DEFAULT;
+> +	}
+> +
+> +	return 0;
+> +}
+
+[...]
+
+-- 
+Best regards,
+Marek Vasut
