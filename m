@@ -1,16 +1,18 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.9])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCOVj-00036f-Ad
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 10:22:42 +0000
-To: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: linux-mtd <linux-mtd@lists.infradead.org>
-From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Subject: [PATCH] mtd: nand: tango: Add standard legalese header
-Message-ID: <583FF9D6.9090109@sigmadesigns.com>
-Date: Thu, 1 Dec 2016 11:22:14 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cCOiy-0000fp-C4
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 10:36:21 +0000
+Date: Thu, 1 Dec 2016 11:35:27 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>, computersforpeace@gmail.com
+Cc: richard@nod.at, dwmw2@infradead.org, marek.vasut@gmail.com,
+ cyrille.pitchen@atmel.com, linux-mtd@lists.infradead.org, john@phrozen.org
+Subject: Re: [PATCH] mtd: nand: xway: fix build undefined MODULE_DEVICE_TABLE()
+Message-ID: <20161201113527.7a523c89@bbrezillon>
+In-Reply-To: <20161130225110.10759-1-hauke@hauke-m.de>
+References: <20161130225110.10759-1-hauke@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,32 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Provide proper copyright notice and license information.
+On Wed, 30 Nov 2016 23:51:10 +0100
+Hauke Mehrtens <hauke@hauke-m.de> wrote:
 
-Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
----
-I originally didn't provide this information because I thought
-MODULE_AUTHOR defined the copyright holder, and MODULE_LICENSE
-defined the license. (So I figured the header was redundant.)
----
- drivers/mtd/nand/tango_nand.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> The header file with the definition of MODULE_DEVICE_TABLE() was
+> missing, add include for linux/module.h to fix the problem in 4.9.
+> 
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 
-diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-index 7ed35348993e..cc23db64f0ca 100644
---- a/drivers/mtd/nand/tango_nand.c
-+++ b/drivers/mtd/nand/tango_nand.c
-@@ -1,3 +1,11 @@
-+/*
-+ * Copyright (C) 2016 Sigma Designs
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ */
-+
- #include <linux/io.h>
- #include <linux/of.h>
- #include <linux/clk.h>
--- 
-2.9.0
+Fixes: 024366750c2e ("mtd: nand: xway: convert to normal platform driver")
+Cc: <stable@vger.kernel.org>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Brian, can you take this patch directly in the MTD tree with the
+additional Fixes and Cc tags?
+
+> ---
+>  drivers/mtd/nand/xway_nand.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
+> index 1f2948c..bcbc1c7 100644
+> --- a/drivers/mtd/nand/xway_nand.c
+> +++ b/drivers/mtd/nand/xway_nand.c
+> @@ -8,6 +8,7 @@
+>   */
+>  
+>  #include <linux/mtd/nand.h>
+> +#include <linux/module.h>
+>  #include <linux/of_gpio.h>
+>  #include <linux/of_platform.h>
+>  
