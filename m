@@ -1,7 +1,7 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCYna-00030Z-1f
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 21:21:51 +0000
+ id 1cCYnw-00036Q-CM
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 21:22:10 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
@@ -9,9 +9,9 @@ Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
  linux-kernel@vger.kernel.org, hch@infradead.org,
  linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org, dengler@linutronix.de,
  sbabic@denx.de, wd@denx.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 04/24] ubifs: Add skeleton for fscrypto
-Date: Thu,  1 Dec 2016 22:20:51 +0100
-Message-Id: <1480627271-10441-5-git-send-email-richard@nod.at>
+Subject: [PATCH 09/24] ubifs: Preload crypto context in ->lookup()
+Date: Thu,  1 Dec 2016 22:20:56 +0100
+Message-Id: <1480627271-10441-10-git-send-email-richard@nod.at>
 In-Reply-To: <1480627271-10441-1-git-send-email-richard@nod.at>
 References: <1480627271-10441-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,347 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is the first building block to provide file level
-encryption on UBIFS.
+...and mark the dentry as encrypted.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/Kconfig       | 11 +++++++++++
- fs/ubifs/Makefile      |  1 +
- fs/ubifs/crypto.c      | 46 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/dir.c         | 28 +++++++++++++++++++++++++++-
- fs/ubifs/ioctl.c       | 35 +++++++++++++++++++++++++++++++++++
- fs/ubifs/super.c       | 10 ++++++++++
- fs/ubifs/ubifs-media.h |  2 ++
- fs/ubifs/ubifs.h       | 37 ++++++++++++++++++++++++++++++++++++-
- fs/ubifs/xattr.c       | 10 ++++++++++
- 9 files changed, 178 insertions(+), 2 deletions(-)
- create mode 100644 fs/ubifs/crypto.c
+ fs/ubifs/dir.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-index 7ff7712f284e..0a908ae7af13 100644
---- a/fs/ubifs/Kconfig
-+++ b/fs/ubifs/Kconfig
-@@ -50,3 +50,14 @@ config UBIFS_ATIME_SUPPORT
- 	  strictatime is the "heavy", relatime is "lighter", etc.
- 
- 	  If unsure, say 'N'
-+
-+config UBIFS_FS_ENCRYPTION
-+	bool "UBIFS Encryption"
-+	depends on UBIFS_FS
-+	select FS_ENCRYPTION
-+	default n
-+	help
-+	  Enable encryption of UBIFS files and directories. This
-+	  feature is similar to ecryptfs, but it is more memory
-+	  efficient since it avoids caching the encrypted and
-+	  decrypted pages in the page cache.
-diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
-index c54a24360f85..6f3251c2bf08 100644
---- a/fs/ubifs/Makefile
-+++ b/fs/ubifs/Makefile
-@@ -5,3 +5,4 @@ ubifs-y += tnc.o master.o scan.o replay.o log.o commit.o gc.o orphan.o
- ubifs-y += budget.o find.o tnc_commit.o compress.o lpt.o lprops.o
- ubifs-y += recovery.o ioctl.o lpt_commit.o tnc_misc.o xattr.o debug.o
- ubifs-y += misc.o
-+ubifs-$(CONFIG_UBIFS_FS_ENCRYPTION) += crypto.o
-diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
-new file mode 100644
-index 000000000000..12a0072bddd3
---- /dev/null
-+++ b/fs/ubifs/crypto.c
-@@ -0,0 +1,46 @@
-+#include "ubifs.h"
-+
-+static int ubifs_crypt_get_context(struct inode *inode, void *ctx, size_t len)
-+{
-+	return ubifs_xattr_get(inode, UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT,
-+			       ctx, len);
-+}
-+
-+static int ubifs_crypt_set_context(struct inode *inode, const void *ctx,
-+				   size_t len, void *fs_data)
-+{
-+	return ubifs_xattr_set(inode, UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT,
-+			       ctx, len, 0);
-+}
-+
-+static bool ubifs_crypt_empty_dir(struct inode *inode)
-+{
-+	return ubifs_check_dir_empty(inode) == 0;
-+}
-+
-+static unsigned int ubifs_crypt_max_namelen(struct inode *inode)
-+{
-+	if (S_ISLNK(inode->i_mode))
-+		return UBIFS_MAX_INO_DATA;
-+	else
-+		return UBIFS_MAX_NLEN;
-+}
-+
-+static int ubifs_key_prefix(struct inode *inode, u8 **key)
-+{
-+	static char prefix[] = "ubifs:";
-+
-+	*key = prefix;
-+
-+	return sizeof(prefix) - 1;
-+}
-+
-+struct fscrypt_operations ubifs_crypt_operations = {
-+	.flags			= FS_CFLG_INPLACE_ENCRYPTION,
-+	.get_context		= ubifs_crypt_get_context,
-+	.set_context		= ubifs_crypt_set_context,
-+	.is_encrypted		= ubifs_crypt_is_encrypted,
-+	.empty_dir		= ubifs_crypt_empty_dir,
-+	.max_namelen		= ubifs_crypt_max_namelen,
-+	.key_prefix		= ubifs_key_prefix,
-+};
 diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 14a226d47f4c..2315cb864c39 100644
+index bd0af4e9ca0b..9976a709b875 100644
 --- a/fs/ubifs/dir.c
 +++ b/fs/ubifs/dir.c
-@@ -85,11 +85,26 @@ static int inherit_flags(const struct inode *dir, umode_t mode)
-  * initializes it. Returns new inode in case of success and an error code in
-  * case of failure.
-  */
--struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
-+struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 			      umode_t mode)
- {
-+	int err;
- 	struct inode *inode;
- 	struct ubifs_inode *ui;
-+	bool encrypted = false;
-+
+@@ -218,6 +218,21 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+ 
+ 	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
+ 
 +	if (ubifs_crypt_is_encrypted(dir)) {
 +		err = fscrypt_get_encryption_info(dir);
-+		if (err) {
-+			ubifs_err(c, "fscrypt_get_encryption_info failed: %i", err);
++
++		/*
++		 * DCACHE_ENCRYPTED_WITH_KEY is set if the dentry is
++		 * created while the directory was encrypted and we
++		 * have access to the key.
++		 */
++		if (fscrypt_has_encryption_key(dir))
++			fscrypt_set_encrypted_dentry(dentry);
++		fscrypt_set_d_op(dentry);
++		if (err && err != -ENOKEY)
 +			return ERR_PTR(err);
-+		}
-+
-+		if (!fscrypt_has_encryption_key(dir))
-+			return ERR_PTR(-EPERM);
-+
-+		encrypted = true;
-+	}
- 
- 	inode = new_inode(c->vfs_sb);
- 	ui = ubifs_inode(inode);
-@@ -165,6 +180,17 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
- 	 */
- 	ui->creat_sqnum = ++c->max_sqnum;
- 	spin_unlock(&c->cnt_lock);
-+
-+	if (encrypted) {
-+		err = fscrypt_inherit_context(dir, inode, &encrypted, true);
-+		if (err) {
-+			ubifs_err(c, "fscrypt_inherit_context failed: %i", err);
-+			make_bad_inode(inode);
-+			iput(inode);
-+			return ERR_PTR(err);
-+		}
 +	}
 +
- 	return inode;
- }
+ 	if (dentry->d_name.len > UBIFS_MAX_NLEN)
+ 		return ERR_PTR(-ENAMETOOLONG);
  
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 3c7b29de0ca7..6bb5b35050de 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -181,6 +181,41 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		mnt_drop_write_file(file);
- 		return err;
- 	}
-+	case FS_IOC_SET_ENCRYPTION_POLICY: {
-+#ifdef CONFIG_UBIFS_FS_ENCRYPTION
-+		struct fscrypt_policy policy;
-+
-+		if (copy_from_user(&policy,
-+				   (struct fscrypt_policy __user *)arg,
-+				   sizeof(policy)))
-+			return -EFAULT;
-+
-+		err = fscrypt_process_policy(file, &policy);
-+
-+		return err;
-+#else
-+		return -EOPNOTSUPP;
-+#endif
-+	}
-+	case FS_IOC_GET_ENCRYPTION_POLICY: {
-+#ifdef CONFIG_UBIFS_FS_ENCRYPTION
-+		struct fscrypt_policy policy;
-+
-+		if (!ubifs_crypt_is_encrypted(inode))
-+			return -ENOENT;
-+
-+		err = fscrypt_get_policy(inode, &policy);
-+		if (err)
-+			return err;
-+
-+		if (copy_to_user((void __user *)arg, &policy, sizeof(policy)))
-+			return -EFAULT;
-+
-+		return 0;
-+#else
-+		return -EOPNOTSUPP;
-+#endif
-+	}
- 
- 	default:
- 		return -ENOTTY;
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 4ec051089186..e85d5a47aeac 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -380,6 +380,9 @@ static void ubifs_evict_inode(struct inode *inode)
- 	}
- done:
- 	clear_inode(inode);
-+#ifdef CONFIG_UBIFS_FS_ENCRYPTION
-+	fscrypt_put_encryption_info(inode, NULL);
-+#endif
- }
- 
- static void ubifs_dirty_inode(struct inode *inode, int flags)
-@@ -1995,6 +1998,12 @@ static struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi)
- 	return c;
- }
- 
-+#ifndef CONFIG_UBIFS_FS_ENCRYPTION
-+struct fscrypt_operations ubifs_crypt_operations = {
-+	.is_encrypted		= ubifs_crypt_is_encrypted,
-+};
-+#endif
-+
- static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- {
- 	struct ubifs_info *c = sb->s_fs_info;
-@@ -2041,6 +2050,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 		sb->s_maxbytes = c->max_inode_sz = MAX_LFS_FILESIZE;
- 	sb->s_op = &ubifs_super_operations;
- 	sb->s_xattr = ubifs_xattr_handlers;
-+	sb->s_cop = &ubifs_crypt_operations;
- 
- 	mutex_lock(&c->umount_mutex);
- 	err = mount_ubifs(c);
-diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-index d47e9569b3de..aa302b11aec8 100644
---- a/fs/ubifs/ubifs-media.h
-+++ b/fs/ubifs/ubifs-media.h
-@@ -316,6 +316,7 @@ enum {
-  * UBIFS_APPEND_FL: writes to the inode may only append data
-  * UBIFS_DIRSYNC_FL: I/O on this directory inode has to be synchronous
-  * UBIFS_XATTR_FL: this inode is the inode for an extended attribute value
-+ * UBIFS_CRYPT_FL: use encryption for this inode
-  *
-  * Note, these are on-flash flags which correspond to ioctl flags
-  * (@FS_COMPR_FL, etc). They have the same values now, but generally, do not
-@@ -328,6 +329,7 @@ enum {
- 	UBIFS_APPEND_FL    = 0x08,
- 	UBIFS_DIRSYNC_FL   = 0x10,
- 	UBIFS_XATTR_FL     = 0x20,
-+	UBIFS_CRYPT_FL     = 0x40,
- };
- 
- /* Inode flag bits used by UBIFS */
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index b2ea20b469ea..16484570e2a6 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -38,6 +38,7 @@
- #include <linux/backing-dev.h>
- #include <linux/security.h>
- #include <linux/xattr.h>
-+#include <linux/fscrypto.h>
- #include "ubifs-media.h"
- 
- /* Version of this UBIFS implementation */
-@@ -1733,7 +1734,7 @@ int ubifs_update_time(struct inode *inode, struct timespec *time, int flags);
- #endif
- 
- /* dir.c */
--struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
-+struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 			      umode_t mode);
- int ubifs_getattr(struct vfsmount *mnt, struct dentry *dentry,
- 		  struct kstat *stat);
-@@ -1782,10 +1783,44 @@ void ubifs_compress(const struct ubifs_info *c, const void *in_buf, int in_len,
- int ubifs_decompress(const struct ubifs_info *c, const void *buf, int len,
- 		     void *out, int *out_len, int compr_type);
- 
-+extern struct fscrypt_operations ubifs_crypt_operations;
-+
- #include "debug.h"
- #include "misc.h"
- #include "key.h"
- 
-+#ifndef CONFIG_UBIFS_FS_ENCRYPTION
-+#define fscrypt_set_d_op(i)
-+#define fscrypt_get_ctx                 fscrypt_notsupp_get_ctx
-+#define fscrypt_release_ctx             fscrypt_notsupp_release_ctx
-+#define fscrypt_encrypt_page            fscrypt_notsupp_encrypt_page
-+#define fscrypt_decrypt_page            fscrypt_notsupp_decrypt_page
-+#define fscrypt_decrypt_bio_pages       fscrypt_notsupp_decrypt_bio_pages
-+#define fscrypt_pullback_bio_page       fscrypt_notsupp_pullback_bio_page
-+#define fscrypt_restore_control_page    fscrypt_notsupp_restore_control_page
-+#define fscrypt_zeroout_range           fscrypt_notsupp_zeroout_range
-+#define fscrypt_process_policy          fscrypt_notsupp_process_policy
-+#define fscrypt_get_policy              fscrypt_notsupp_get_policy
-+#define fscrypt_has_permitted_context   fscrypt_notsupp_has_permitted_context
-+#define fscrypt_inherit_context         fscrypt_notsupp_inherit_context
-+#define fscrypt_get_encryption_info     fscrypt_notsupp_get_encryption_info
-+#define fscrypt_put_encryption_info     fscrypt_notsupp_put_encryption_info
-+#define fscrypt_setup_filename          fscrypt_notsupp_setup_filename
-+#define fscrypt_free_filename           fscrypt_notsupp_free_filename
-+#define fscrypt_fname_encrypted_size    fscrypt_notsupp_fname_encrypted_size
-+#define fscrypt_fname_alloc_buffer      fscrypt_notsupp_fname_alloc_buffer
-+#define fscrypt_fname_free_buffer       fscrypt_notsupp_fname_free_buffer
-+#define fscrypt_fname_disk_to_usr       fscrypt_notsupp_fname_disk_to_usr
-+#define fscrypt_fname_usr_to_disk       fscrypt_notsupp_fname_usr_to_disk
-+#endif
-+
-+static inline bool ubifs_crypt_is_encrypted(struct inode *inode)
-+{
-+	struct ubifs_inode *ui = ubifs_inode(inode);
-+
-+	return ui->flags & UBIFS_CRYPT_FL;
-+}
-+
- /* Normal UBIFS messages */
- __printf(2, 3)
- void ubifs_msg(const struct ubifs_info *c, const char *fmt, ...);
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 2d09dbeecd58..95a16028bbdb 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -158,6 +158,15 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
- 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
- 	host_ui->xattr_names += nm->len;
- 
-+	/*
-+	 * We handle UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT here because we
-+	 * have to set the UBIFS_CRYPT_FL flag on the host inode.
-+	 * To avoid multiple updates of the same inode in the same operation,
-+	 * let's do it here.
-+	 */
-+	if (strcmp(nm->name, UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT) == 0)
-+		host_ui->flags |= UBIFS_CRYPT_FL;
-+
- 	err = ubifs_jnl_update(c, host, nm, inode, 0, 1);
- 	if (err)
- 		goto out_cancel;
-@@ -173,6 +182,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
- 	host_ui->xattr_size -= CALC_DENT_SIZE(nm->len);
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(size);
- 	host_ui->xattr_names -= nm->len;
-+	host_ui->flags &= ~UBIFS_CRYPT_FL;
- 	mutex_unlock(&host_ui->ui_mutex);
- out_free:
- 	make_bad_inode(inode);
 -- 
 2.7.3
