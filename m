@@ -1,7 +1,7 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCYnw-00036d-CO
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 21:22:17 +0000
+ id 1cCYo2-00036R-Ie
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 21:22:18 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
@@ -9,9 +9,9 @@ Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
  linux-kernel@vger.kernel.org, hch@infradead.org,
  linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org, dengler@linutronix.de,
  sbabic@denx.de, wd@denx.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 12/24] ubifs: Introduce new data node field, compr_size
-Date: Thu,  1 Dec 2016 22:20:59 +0100
-Message-Id: <1480627271-10441-13-git-send-email-richard@nod.at>
+Subject: [PATCH 21/24] ubifs: Use a random number for cookies
+Date: Thu,  1 Dec 2016 22:21:08 +0100
+Message-Id: <1480627271-10441-22-git-send-email-richard@nod.at>
 In-Reply-To: <1480627271-10441-1-git-send-email-richard@nod.at>
 References: <1480627271-10441-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,80 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When data of a data node is compressed and encrypted
-we need to store the size of the compressed data because
-before encryption we may have to add padding bytes.
-
-For the new field we consume the last two padding bytes
-in struct ubifs_data_node. Two bytes are fine because
-the data length is at most 4096.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/journal.c     | 11 -----------
- fs/ubifs/ubifs-media.h |  6 ++----
- 2 files changed, 2 insertions(+), 15 deletions(-)
+ fs/ubifs/journal.c | 3 +++
+ fs/ubifs/ubifs.h   | 1 +
+ 2 files changed, 4 insertions(+)
 
 diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 91bc76dc559e..b5e86c4da48f 100644
+index 0698cccc6223..88d33775f18b 100644
 --- a/fs/ubifs/journal.c
 +++ b/fs/ubifs/journal.c
-@@ -82,15 +82,6 @@ static inline void zero_dent_node_unused(struct ubifs_dent_node *dent)
- }
+@@ -589,6 +589,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 	dent->nlen = cpu_to_le16(fname_len(nm));
+ 	memcpy(dent->name, fname_name(nm), fname_len(nm));
+ 	dent->name[fname_len(nm)] = '\0';
++	dent->cookie = prandom_u32();
  
- /**
-- * zero_data_node_unused - zero out unused fields of an on-flash data node.
-- * @data: the data node to zero out
-- */
--static inline void zero_data_node_unused(struct ubifs_data_node *data)
--{
--	memset(data->padding, 0, 2);
--}
--
--/**
-  * zero_trun_node_unused - zero out unused fields of an on-flash truncation
-  *                         node.
-  * @trun: the truncation node to zero out
-@@ -722,7 +713,6 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
- 	data->ch.node_type = UBIFS_DATA_NODE;
- 	key_write(c, key, &data->key);
- 	data->size = cpu_to_le32(len);
--	zero_data_node_unused(data);
+ 	zero_dent_node_unused(dent);
+ 	ubifs_prep_grp_node(c, dent, dlen, 0);
+@@ -1124,6 +1125,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	dent->nlen = cpu_to_le16(fname_len(new_nm));
+ 	memcpy(dent->name, fname_name(new_nm), fname_len(new_nm));
+ 	dent->name[fname_len(new_nm)] = '\0';
++	dent->cookie = prandom_u32();
+ 	zero_dent_node_unused(dent);
+ 	ubifs_prep_grp_node(c, dent, dlen1, 0);
  
- 	if (!(ui->flags & UBIFS_COMPR_FL))
- 		/* Compression is disabled for this inode */
-@@ -1357,7 +1347,6 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
- 					dn->size = cpu_to_le32(dlen);
- 					dlen += UBIFS_DATA_NODE_SZ;
- 				}
--				zero_data_node_unused(dn);
- 			}
- 		}
- 	}
-diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-index aa302b11aec8..e46331dcca4c 100644
---- a/fs/ubifs/ubifs-media.h
-+++ b/fs/ubifs/ubifs-media.h
-@@ -553,18 +553,16 @@ struct ubifs_dent_node {
-  * @key: node key
-  * @size: uncompressed data size in bytes
-  * @compr_type: compression type (%UBIFS_COMPR_NONE, %UBIFS_COMPR_LZO, etc)
-- * @padding: reserved for future, zeroes
-+ * @compr_size: compressed data size in bytes, only valid when data is encrypted
-  * @data: data
-  *
-- * Note, do not forget to amend 'zero_data_node_unused()' function when
-- * changing the padding fields.
-  */
- struct ubifs_data_node {
- 	struct ubifs_ch ch;
- 	__u8 key[UBIFS_MAX_KEY_LEN];
- 	__le32 size;
- 	__le16 compr_type;
--	__u8 padding[2]; /* Watch 'zero_data_node_unused()' if changing! */
-+	__le16 compr_size;
- 	__u8 data[];
- } __packed;
+@@ -1142,6 +1144,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	dent2->nlen = cpu_to_le16(fname_len(old_nm));
+ 	memcpy(dent2->name, fname_name(old_nm), fname_len(old_nm));
+ 	dent2->name[fname_len(old_nm)] = '\0';
++	dent2->cookie = prandom_u32();
+ 	zero_dent_node_unused(dent2);
+ 	ubifs_prep_grp_node(c, dent2, dlen2, 0);
  
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index ca33efcb4335..85c74ad98898 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -39,6 +39,7 @@
+ #include <linux/security.h>
+ #include <linux/xattr.h>
+ #include <linux/fscrypto.h>
++#include <linux/random.h>
+ #include "ubifs-media.h"
+ 
+ /* Version of this UBIFS implementation */
 -- 
 2.7.3
