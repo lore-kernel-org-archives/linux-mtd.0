@@ -1,23 +1,27 @@
 Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCH1Z-00088g-Pa
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 02:23:02 +0000
-Received: by mail-pg0-x241.google.com with SMTP id x23so3006439pgx.3
- for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 18:22:41 -0800 (PST)
-Date: Wed, 30 Nov 2016 18:22:38 -0800
+ id 1cCHBS-0005z3-Dw
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 02:33:15 +0000
+Received: by mail-pg0-x241.google.com with SMTP id p66so3035133pga.2
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 18:32:54 -0800 (PST)
+Date: Wed, 30 Nov 2016 18:32:50 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>,
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Luis Henriques <henrix@camandro.org>,
  David Woodhouse <dwmw2@infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [GIT PULL] mtd: spi-nor: updates for 4.10
-Message-ID: <20161201022238.GA3973@google.com>
-References: <2bdf6239-d998-825c-cd22-db6ac09d3391@atmel.com>
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: maps: add missing iounmap() in error path
+Message-ID: <20161201023250.GL77253@google.com>
+References: <20161122192124.GF77253@google.com>
+ <20161123234036.9985-1-henrix@camandro.org>
+ <f933f0ff-2ba6-ac7b-e5b8-d7a4d04c0aa9@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2bdf6239-d998-825c-cd22-db6ac09d3391@atmel.com>
+In-Reply-To: <f933f0ff-2ba6-ac7b-e5b8-d7a4d04c0aa9@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 28, 2016 at 02:19:43PM +0100, Cyrille Pitchen wrote:
-> Hi Brian,
-> 
-> this is my very first PR so let me know whether I should change something.
-> 
-> Best regards,
-> 
-> Cyrille
+On Fri, Nov 25, 2016 at 03:18:09PM +0100, Marek Vasut wrote:
+> On 11/24/2016 12:40 AM, Luis Henriques wrote:
+> > This patch was triggered by the following Coccinelle error:
+> > 
+> > ./drivers/mtd/maps/sc520cdp.c:246:3-9: \
+> > 	ERROR: missing iounmap; ioremap on line 242 \
+> > 	and execution via conditional on line 244
+> > 
+> > Since do_map_probe() is also invoked in this loop, it is also necessary to
+> > map_destroy() any initialised struct mtd_info.
+> > 
+> > Signed-off-by: Luis Henriques <henrix@camandro.org>
+> > ---
+> > Changes since v1:
+> > * Changes according to Brian Norris review:
+> >   - Ensure sc520cdp_map[0].virt is unmaped when needed
+> >   - Use a for loop instead of an 'if (i)'
+> >   - Prevent double-iounmap
+> > * Added map_destroy() in the cleanup
+> > 
+> > drivers/mtd/maps/sc520cdp.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
 
-I don't see any issues. Thanks for doing this!
+...
 
-BTW, does Marek have access to your repo, or are you planning on doing
-all the merging?
+> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
-> The following changes since commit 1001354ca34179f3db924eb66672442a173147dc:
-> 
->   Linux 4.9-rc1 (2016-10-15 12:17:50 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/spi-nor/linux.git tags/spi-nor/for-4.10
-> 
-> for you to fetch changes up to dfce0cd943fe0554f5f79d5b29624064dafb18cd:
-> 
->   mtd: spi-nor: constify fsl_qspi_devtype_data (2016-11-26 17:45:06 +0100)
-> 
-> ----------------------------------------------------------------
-> This pull request contains the following notable changes:
-> - add support to new memory parts.
-> - fix of spansion_quad_enable().
-> - fix of the Candence QSPI driver.
-> - constify some structure instances of the Freescale QSPI driver.
-> 
-> ----------------------------------------------------------------
-
-Merged to l2-mtd.git.
-
-Brian
+Applied to l2-mtd.git
