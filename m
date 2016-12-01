@@ -1,26 +1,23 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCGRY-0005f1-4p
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 01:45:49 +0000
-Received: by mail-pg0-x241.google.com with SMTP id x23so2921276pgx.3
- for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 17:45:02 -0800 (PST)
-Date: Wed, 30 Nov 2016 17:44:59 -0800
+ id 1cCGlS-0004tB-VG
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 02:06:24 +0000
+Received: by mail-pf0-x241.google.com with SMTP id i88so1584825pfk.2
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Nov 2016 18:06:02 -0800 (PST)
+Date: Wed, 30 Nov 2016 18:05:59 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
- DT <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Sebastian Frias <sf84@laposte.net>, Mason <slash.tmp@free.fr>
-Subject: Re: [PATCH v8] mtd: nand: add tango NAND flash controller support
-Message-ID: <20161201014459.GK77253@google.com>
-References: <580F5AD2.9020909@sigmadesigns.com>
- <580F5B37.5090100@sigmadesigns.com>
- <580F8407.5070706@sigmadesigns.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PULL] mtd: nand: 4.10 materials
+Message-ID: <20161201020559.GA79662@google.com>
+References: <20161127154416.6ce36b76@bbrezillon>
+ <20161128113934.53058563@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <580F8407.5070706@sigmadesigns.com>
+In-Reply-To: <20161128113934.53058563@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,44 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Boris,
 
-On Tue, Oct 25, 2016 at 06:10:47PM +0200, Marc Gonzalez wrote:
-> This driver supports the NAND Flash controller embedded in recent
-> Tango chips, such as SMP8758 and SMP8759.
+On Mon, Nov 28, 2016 at 11:39:34AM +0100, Boris Brezillon wrote:
+> On Sun, 27 Nov 2016 15:44:16 +0100
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 > 
-> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-> ---
+> > Hi Brian,
+> > 
+> > Here is my PR for 4.10.
+> > As usual, don't hesitate to tell me if there's anything wrong, or fix
+> > things after pulling the changes if you think it does not require a new 
+> > PR.
+> > 
+> 
+> I realized I forgot to Cc the MTD ML.
+> 
+> > Thanks,
+> > 
+> > Boris
+> > 
+> > The following changes since commit 1001354ca34179f3db924eb66672442a173147dc:
+> > 
+> >   Linux 4.9-rc1 (2016-10-15 12:17:50 -0700)
+> > 
+> > are available in the git repository at:
+> > 
+> >   git@github.com:linux-nand/linux.git tags/nand/for-4.10
+> > 
+> > for you to fetch changes up to 8fcfba072420518fda4b2fe00a3f3c9c3e2774e2:
+> > 
+> >   mtd: nand: tango: Use nand_to_mtd() instead of directly accessing chip->mtd (2016-11-21 11:55:59 +0100)
+> > 
+> > ----------------------------------------------------------------
+> > This pull request contains the following notable changes:
+> > - new tango NAND controller driver
+> > - new ox820 NAND controller driver
+> > - addition of a new full-ID entry in the nand_ids table
+> > - rework of the s3c240 driver to support DT
+> > - extension of the nand_sdr_timings to expose tCCS, tPROG and tR
+> > - addition of a new flag to ask the core to wait for tCCS when sending
+> >   a RNDIN/RNDOUT command
+> > - addition of a new flag to ask the core to let the controller driver
+> >   send the READ/PROGPAGE command
+> > 
+> > This pull request also contains minor fixes/cleanup/cosmetic changes:
+> > - properly support 512 ECC step size in the sunxi driver
+> > - improve the error messages in the pxa probe path
+> > - fix module autoload in the omap2 driver
+> > - cleanup of several nand drivers to return nand_scan{_tail}() error
+> >   code instead of returning -EIO
+> > - various cleanups in the denali driver
+> > - cleanups in the ooblayout handling (MTD core)
+> > - fix an error check in nandsim
+> > 
+> > ----------------------------------------------------------------
+
+I think this all looks good except:
 
 ...
 
-> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-> new file mode 100644
-> index 000000000000..74e39a92771c
-> --- /dev/null
-> +++ b/drivers/mtd/nand/tango_nand.c
-> @@ -0,0 +1,654 @@
+> > Marc Gonzalez (5):
+> >       mtd: nand: add tango NFC dt bindings doc
+> >       mtd: nand: add tango NAND flash controller support
+> >       mtd: nand: Support controllers with custom page
+> >       mtd: nand: tango: Enable custom page accessors
+> >       mtd: nand: tango: Cleanup raw_write and raw_read
 
-This driver is being introduced with no copyright or license header. At
-least it has an appropriate MODULE_LICENSE().
+this driver was missing a copyright header. Presumably we can get a
+proper one before the merge window.
 
-Can the original author(s) please provide a follow-up patch with one?
-Thanks.
-
-> +#include <linux/io.h>
-> +#include <linux/of.h>
-> +#include <linux/clk.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/module.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/dmaengine.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/platform_device.h>
-
-...
-
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Sigma Designs");
-> +MODULE_DESCRIPTION("Tango4 NAND Flash controller driver");
+Merged the whole thing to l2-mtd.git.
 
 Brian
