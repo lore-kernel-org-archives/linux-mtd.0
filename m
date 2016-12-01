@@ -1,20 +1,29 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-wj0-x242.google.com ([2a00:1450:400c:c01::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCTQc-0002Rp-Co
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 15:37:45 +0000
-Subject: Re: [GIT PULL] mtd: spi-nor: updates for 4.10
-To: Brian Norris <computersforpeace@gmail.com>,
+ id 1cCTjB-0001ge-ET
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 15:56:55 +0000
+Received: by mail-wj0-x242.google.com with SMTP id jb2so26896257wjb.3
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 07:56:32 -0800 (PST)
+Subject: Re: [PATCH] mtd: Allocate bdi objects dynamically
+To: Sandeep Jain <Sandeep_Jain@mentor.com>
+References: <Sandeep_Jain@mentor.com>
+ <1470319275-9465-1-git-send-email-Sandeep_Jain@mentor.com>
+ <CAFLxGvx6B02c+HgYwJ8exVLT6owrkQL1Rq+X6VzUDKVUxE=aoQ@mail.gmail.com>
+ <20161103113421.GA4873@mentor.com>
+ <4055a3ed-c024-4c29-45e1-e600cdc5902e@gmail.com>
+ <20161129081204.GA6617@mentor.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ Steve Longerbeam <steve_longerbeam@mentor.com>,
+ LKML <linux-kernel@vger.kernel.org>, Jim Baxter <jim_baxter@mentor.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <2bdf6239-d998-825c-cd22-db6ac09d3391@atmel.com>
- <20161201022238.GA3973@google.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, MTD Maling List <linux-mtd@lists.infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <a16b5d6e-2fcf-be61-f41d-788a08c23177@denx.de>
-Date: Thu, 1 Dec 2016 15:36:35 +0100
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <2339c911-3399-e69b-aabc-f7d57d26af7d@gmail.com>
+Date: Thu, 1 Dec 2016 16:39:23 +0100
 MIME-Version: 1.0
-In-Reply-To: <20161201022238.GA3973@google.com>
+In-Reply-To: <20161129081204.GA6617@mentor.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,22 +35,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/01/2016 03:22 AM, Brian Norris wrote:
-> On Mon, Nov 28, 2016 at 02:19:43PM +0100, Cyrille Pitchen wrote:
->> Hi Brian,
->>
->> this is my very first PR so let me know whether I should change something.
->>
->> Best regards,
->>
->> Cyrille
+On 11/29/2016 09:12 AM, Sandeep Jain wrote:
+> Dear Maintainers,
+>    This patch is already reviewed twice with no issues.
+> Requesting your attention for patch merge.
 > 
-> I don't see any issues. Thanks for doing this!
+> Thanks & Regards,
+> Sandeep Jain
 > 
-> BTW, does Marek have access to your repo, or are you planning on doing
-> all the merging?
+> On Sat, Nov 05, 2016 at 08:22:31AM +0100, Marek Vasut wrote:
+>> On 11/03/2016 12:34 PM, Sandeep Jain wrote:
+>>> Dear Maintainers,
+>>>   This patch is reviewed by Richard.
+>>> Requesting for Maintainer's attention for patch merge.
+>>>
+>>> Thanks & Regards,
+>>> Sandeep Jain
+>>>
+>>> On Sat, Sep 17, 2016 at 04:41:47PM +0200, Richard Weinberger wrote:
+>>>> On Thu, Aug 4, 2016 at 4:01 PM, Sandeep Jain <Sandeep_Jain@mentor.com> wrote:
+>>>>> From: Steve Longerbeam <steve_longerbeam@mentor.com>
+>>>>>
+>>>>> The MTD backing dev info objects mtd_bdi was statically allocated.
+>>>>> So when MTD is built as a loadable module, this object fall in the
+>>>>> vmalloc address space.
+>>>>>
+>>>>> The problem with that, is that the BDI APIs use wake_up_bit(), which calls
+>>>>> virt_to_page() to retrieve the memory zone of the page containing the
+>>>>> wait_queue to wake up, and virt_to_page() is not valid for vmalloc or
+>>>>> highmem addresses.
+>>>>>
+>>>>> Fix this by allocating the BDI objects dynamically with kmalloc. The
+>>>>> objects now fall in the logical address space so that BDI APIs will
+>>>>> work in all cases (mtd builtin or module).
+>>>>>
+>>>>> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+>>>>> Signed-off-by: Jim Baxter <jim_baxter@mentor.com>
+>>>>> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
+>>>>
+>>>> Reviewed-by: Richard Weinberger <richard@nod.at>
+>>
+>> I don't see any obvious problem either:
+>> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
-I'm not a big github fan, but I have access, yep.
+Bump?
 
 -- 
 Best regards,
