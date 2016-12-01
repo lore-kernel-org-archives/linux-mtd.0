@@ -1,7 +1,7 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCYnw-000373-CN
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 21:22:20 +0000
+ id 1cCYo0-000360-4E
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 21:22:21 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
@@ -9,9 +9,9 @@ Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
  linux-kernel@vger.kernel.org, hch@infradead.org,
  linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org, dengler@linutronix.de,
  sbabic@denx.de, wd@denx.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 14/24] ubifs: Implement encrypt/decrypt for all IO
-Date: Thu,  1 Dec 2016 22:21:01 +0100
-Message-Id: <1480627271-10441-15-git-send-email-richard@nod.at>
+Subject: [PATCH 18/24] ubifs: Add support for encrypted symlinks
+Date: Thu,  1 Dec 2016 22:21:05 +0100
+Message-Id: <1480627271-10441-19-git-send-email-richard@nod.at>
 In-Reply-To: <1480627271-10441-1-git-send-email-richard@nod.at>
 References: <1480627271-10441-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,322 +24,250 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: David Gstir <david@sigma-star.at>
 ---
- fs/ubifs/crypto.c  | 51 +++++++++++++++++++++++++++++++++++
- fs/ubifs/file.c    | 14 ++++++++++
- fs/ubifs/journal.c | 78 +++++++++++++++++++++++++++++++++++++-----------------
- fs/ubifs/super.c   |  6 +++--
- fs/ubifs/ubifs.h   | 31 ++++++++++++++++++++--
- 5 files changed, 152 insertions(+), 28 deletions(-)
+ fs/ubifs/dir.c   | 83 ++++++++++++++++++++++++++++++++++++++++++++++++--------
+ fs/ubifs/file.c  | 55 ++++++++++++++++++++++++++++++++++++-
+ fs/ubifs/super.c |  1 -
+ 3 files changed, 126 insertions(+), 13 deletions(-)
 
-diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
-index 25bb2062b8a3..aefa3c30b73b 100644
---- a/fs/ubifs/crypto.c
-+++ b/fs/ubifs/crypto.c
-@@ -35,6 +35,57 @@ static int ubifs_key_prefix(struct inode *inode, u8 **key)
- 	return sizeof(prefix) - 1;
- }
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 7d1bd4b28140..7d3bc3fb8831 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -629,7 +629,7 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
+ 			fstr.len = fstr_real_len;
  
-+int ubifs_encrypt(const struct inode *inode, struct ubifs_data_node *dn,
-+		  unsigned int in_len, unsigned int *out_len, int block)
-+{
-+	struct ubifs_info *c = inode->i_sb->s_fs_info;
-+	void *p = &dn->data;
-+	struct page *ret;
-+	unsigned int pad_len = round_up(in_len, UBIFS_CIPHER_BLOCK_SIZE);
+ 			err = fscrypt_fname_disk_to_usr(dir, key_hash_flash(c, &dent->key), 0, &nm.disk_name, &fstr);
+-			if (err < 0)
++			if (err)
+ 				goto out;
+ 		} else {
+ 			fstr.len = fname_len(&nm);
+@@ -1164,10 +1164,27 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+ 	struct ubifs_info *c = dir->i_sb->s_fs_info;
+ 	int err, len = strlen(symname);
+-	int sz_change = CALC_DENT_SIZE(dentry->d_name.len);
++	int sz_change = CALC_DENT_SIZE(len);
++	struct fscrypt_str disk_link = FSTR_INIT((char *)symname, len + 1);
++	struct fscrypt_symlink_data *sd = NULL;
+ 	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+ 					.new_ino_d = ALIGN(len, 8),
+ 					.dirtied_ino = 1 };
++	struct fscrypt_name nm;
 +
-+	ubifs_assert(pad_len <= *out_len);
-+	dn->compr_size = cpu_to_le16(in_len);
++	if (ubifs_crypt_is_encrypted(dir)) {
++		err = fscrypt_get_encryption_info(dir);
++		if (err)
++			goto out_budg;
 +
-+	/* pad to full block cipher length */
-+	if (pad_len != in_len)
-+		memset(p + in_len, 0, pad_len - in_len);
++		if (!fscrypt_has_encryption_key(dir)) {
++			err = -EPERM;
++			goto out_budg;
++		}
 +
-+	ret = fscrypt_encrypt_page(inode, virt_to_page(&dn->data), pad_len,
-+			offset_in_page(&dn->data), block, GFP_NOFS);
-+	if (IS_ERR(ret)) {
-+		ubifs_err(c, "fscrypt_encrypt_page failed: %ld", PTR_ERR(ret));
-+		return PTR_ERR(ret);
++		disk_link.len = (fscrypt_fname_encrypted_size(dir, len) +
++				sizeof(struct fscrypt_symlink_data));
 +	}
-+	*out_len = pad_len;
+ 
+ 	/*
+ 	 * Budget request settings: new inode, new direntry and changing parent
+@@ -1177,36 +1194,77 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
+ 		symname, dir->i_ino);
+ 
+-	if (len > UBIFS_MAX_INO_DATA)
++	if (disk_link.len > UBIFS_MAX_INO_DATA)
+ 		return -ENAMETOOLONG;
+ 
+ 	err = ubifs_budget_space(c, &req);
+ 	if (err)
+ 		return err;
+ 
++	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
++	if (err)
++		goto out_budg;
 +
-+	return 0;
-+}
+ 	inode = ubifs_new_inode(c, dir, S_IFLNK | S_IRWXUGO);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+-		goto out_budg;
++		goto out_fname;
+ 	}
+ 
+ 	ui = ubifs_inode(inode);
+-	ui->data = kmalloc(len + 1, GFP_NOFS);
++	ui->data = kmalloc(disk_link.len, GFP_NOFS);
+ 	if (!ui->data) {
+ 		err = -ENOMEM;
+ 		goto out_inode;
+ 	}
+ 
+-	memcpy(ui->data, symname, len);
+-	((char *)ui->data)[len] = '\0';
+-	inode->i_link = ui->data;
++	if (ubifs_crypt_is_encrypted(dir)) {
++		struct qstr istr = QSTR_INIT(symname, len);
++		struct fscrypt_str ostr;
 +
-+int ubifs_decrypt(const struct inode *inode, struct ubifs_data_node *dn,
-+		  unsigned int *out_len, int block)
-+{
-+	struct ubifs_info *c = inode->i_sb->s_fs_info;
-+	int err;
-+	unsigned int clen = le16_to_cpu(dn->compr_size);
-+	unsigned int dlen = *out_len;
++		sd = kzalloc(disk_link.len, GFP_NOFS);
++		if (!sd) {
++			err = -ENOMEM;
++			goto out_inode;
++		}
 +
-+	if (clen <= 0 || clen > UBIFS_BLOCK_SIZE || clen > dlen) {
-+		ubifs_err(c, "bad compr_size: %i", clen);
-+		return -EINVAL;
++		err = fscrypt_get_encryption_info(inode);
++		if (err) {
++			kfree(sd);
++			goto out_inode;
++		}
++
++		if (!fscrypt_has_encryption_key(inode)) {
++			kfree(sd);
++			err = -EPERM;
++			goto out_inode;
++		}
++
++		ostr.name = sd->encrypted_path;
++		ostr.len = disk_link.len;
++
++		err = fscrypt_fname_usr_to_disk(inode, &istr, &ostr);
++		if (err) {
++			kfree(sd);
++			goto out_inode;
++		}
++
++		sd->len = cpu_to_le16(ostr.len);
++		disk_link.name = (char *)sd;
++	} else {
++		inode->i_link = ui->data;
 +	}
 +
-+	ubifs_assert(dlen <= UBIFS_BLOCK_SIZE);
-+	err = fscrypt_decrypt_page(inode, virt_to_page(&dn->data), dlen,
-+			offset_in_page(&dn->data), block);
-+	if (err) {
-+		ubifs_err(c, "fscrypt_decrypt_page failed: %i", err);
-+		return err;
-+	}
-+	*out_len = clen;
++	memcpy(ui->data, disk_link.name, disk_link.len);
++	((char *)ui->data)[disk_link.len - 1] = '\0';
 +
-+	return 0;
-+}
-+
- struct fscrypt_operations ubifs_crypt_operations = {
- 	.flags			= FS_CFLG_INPLACE_ENCRYPTION,
- 	.get_context		= ubifs_crypt_get_context,
+ 	/*
+ 	 * The terminating zero byte is not written to the flash media and it
+ 	 * is put just to make later in-memory string processing simpler. Thus,
+ 	 * data length is @len, not @len + %1.
+ 	 */
+-	ui->data_len = len;
+-	inode->i_size = ubifs_inode(inode)->ui_size = len;
++	ui->data_len = disk_link.len - 1;
++	inode->i_size = ubifs_inode(inode)->ui_size = disk_link.len - 1;
+ 
+ 	err = ubifs_init_security(dir, inode, &dentry->d_name);
+ 	if (err)
+@@ -1216,7 +1274,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	dir->i_size += sz_change;
+ 	dir_ui->ui_size = dir->i_size;
+ 	dir->i_mtime = dir->i_ctime = inode->i_ctime;
+-	err = ubifs_jnl_update(c, dir, &dentry->d_name, inode, 0, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
+ 	if (err)
+ 		goto out_cancel;
+ 	mutex_unlock(&dir_ui->ui_mutex);
+@@ -1224,6 +1282,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	ubifs_release_budget(c, &req);
+ 	insert_inode_hash(inode);
+ 	d_instantiate(dentry, inode);
++	fscrypt_free_filename(&nm);
+ 	return 0;
+ 
+ out_cancel:
+@@ -1233,6 +1292,8 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ out_inode:
+ 	make_bad_inode(inode);
+ 	iput(inode);
++out_fname:
++	fscrypt_free_filename(&nm);
+ out_budg:
+ 	ubifs_release_budget(c, &req);
+ 	return err;
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 60e789a9cac8..4c50f8feb0d5 100644
+index 4c50f8feb0d5..aa0625f4f642 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -78,6 +78,13 @@ static int read_block(struct inode *inode, void *addr, unsigned int block,
- 		goto dump;
- 
- 	dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
-+
-+	if (ubifs_crypt_is_encrypted(inode)) {
-+		err = ubifs_decrypt(inode, dn, &dlen, block);
-+		if (err)
-+			goto dump;
-+	}
-+
- 	out_len = UBIFS_BLOCK_SIZE;
- 	err = ubifs_decompress(c, &dn->data, dlen, addr, &out_len,
- 			       le16_to_cpu(dn->compr_type));
-@@ -650,6 +657,13 @@ static int populate_page(struct ubifs_info *c, struct page *page,
- 
- 			dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
- 			out_len = UBIFS_BLOCK_SIZE;
-+
-+			if (ubifs_crypt_is_encrypted(inode)) {
-+				err = ubifs_decrypt(inode, dn, &dlen, page_block);
-+				if (err)
-+					goto out_err;
-+			}
-+
- 			err = ubifs_decompress(c, &dn->data, dlen, addr, &out_len,
- 					       le16_to_cpu(dn->compr_type));
- 			if (err || len != out_len)
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index b5e86c4da48f..167b9e1c80df 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -688,14 +688,18 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
- 			 const union ubifs_key *key, const void *buf, int len)
- {
- 	struct ubifs_data_node *data;
--	int err, lnum, offs, compr_type, out_len;
-+	int err, lnum, offs, compr_type, out_len, compr_len;
- 	int dlen = COMPRESSED_DATA_NODE_BUF_SZ, allocated = 1;
- 	struct ubifs_inode *ui = ubifs_inode(inode);
-+	bool encrypted = ubifs_crypt_is_encrypted(inode);
- 
- 	dbg_jnlk(key, "ino %lu, blk %u, len %d, key ",
- 		(unsigned long)key_inum(c, key), key_block(c, key), len);
- 	ubifs_assert(len <= UBIFS_BLOCK_SIZE);
- 
-+	if (encrypted)
-+		dlen += UBIFS_CIPHER_BLOCK_SIZE;
-+
- 	data = kmalloc(dlen, GFP_NOFS | __GFP_NOWARN);
- 	if (!data) {
- 		/*
-@@ -720,9 +724,18 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
- 	else
- 		compr_type = ui->compr_type;
- 
--	out_len = dlen - UBIFS_DATA_NODE_SZ;
--	ubifs_compress(c, buf, len, &data->data, &out_len, &compr_type);
--	ubifs_assert(out_len <= UBIFS_BLOCK_SIZE);
-+	out_len = compr_len = dlen - UBIFS_DATA_NODE_SZ;
-+	ubifs_compress(c, buf, len, &data->data, &compr_len, &compr_type);
-+	ubifs_assert(compr_len <= UBIFS_BLOCK_SIZE);
-+
-+	if (encrypted) {
-+		err = ubifs_encrypt(inode, data, compr_len, &out_len, key_block(c, key));
-+		if (err)
-+			goto out_free;
-+
-+	} else {
-+		data->compr_size = 0;
-+	}
- 
- 	dlen = UBIFS_DATA_NODE_SZ + out_len;
- 	data->compr_type = cpu_to_le16(compr_type);
-@@ -1241,31 +1254,55 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+@@ -1657,6 +1657,59 @@ static int ubifs_file_open(struct inode *inode, struct file *filp)
+ 	return 0;
  }
  
- /**
-- * recomp_data_node - re-compress a truncated data node.
-+ * truncate_data_node - re-compress/encrypt a truncated data node.
-+ * @c: UBIFS file-system description object
-+ * @inode: inode which referes to the data node
-+ * @block: data block number
-  * @dn: data node to re-compress
-  * @new_len: new length
-  *
-  * This function is used when an inode is truncated and the last data node of
-- * the inode has to be re-compressed and re-written.
-+ * the inode has to be re-compressed/encrypted and re-written.
-  */
--static int recomp_data_node(const struct ubifs_info *c,
--			    struct ubifs_data_node *dn, int *new_len)
-+static int truncate_data_node(const struct ubifs_info *c, const struct inode *inode,
-+			      unsigned int block, struct ubifs_data_node *dn,
-+			      int *new_len)
- {
- 	void *buf;
--	int err, len, compr_type, out_len;
-+	int err, dlen, compr_type, out_len, old_dlen;
- 
- 	out_len = le32_to_cpu(dn->size);
- 	buf = kmalloc(out_len * WORST_COMPR_FACTOR, GFP_NOFS);
- 	if (!buf)
- 		return -ENOMEM;
- 
--	len = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
-+	dlen = old_dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
- 	compr_type = le16_to_cpu(dn->compr_type);
--	err = ubifs_decompress(c, &dn->data, len, buf, &out_len, compr_type);
--	if (err)
--		goto out;
- 
--	ubifs_compress(c, buf, *new_len, &dn->data, &out_len, &compr_type);
-+	if (ubifs_crypt_is_encrypted(inode)) {
-+		err = ubifs_decrypt(inode, dn, &dlen, block);
-+		if (err)
-+			goto out;
++static const char *ubifs_get_link(struct dentry *dentry,
++					    struct inode *inode,
++					    struct delayed_call *done)
++{
++	int err;
++	struct fscrypt_symlink_data *sd;
++	struct ubifs_inode *ui = ubifs_inode(inode);
++	struct fscrypt_str cstr;
++	struct fscrypt_str pstr;
++
++	if (!ubifs_crypt_is_encrypted(inode))
++		return ui->data;
++
++	if (!dentry)
++		return ERR_PTR(-ECHILD);
++
++	err = fscrypt_get_encryption_info(inode);
++	if (err)
++		return ERR_PTR(err);
++
++	sd = (struct fscrypt_symlink_data *)ui->data;
++	cstr.name = sd->encrypted_path;
++	cstr.len = le16_to_cpu(sd->len);
++
++	if (cstr.len == 0)
++		return ERR_PTR(-ENOENT);
++
++	if ((cstr.len + sizeof(struct fscrypt_symlink_data) - 1) > ui->data_len)
++		return ERR_PTR(-EIO);
++
++	err = fscrypt_fname_alloc_buffer(inode, cstr.len, &pstr);
++	if (err)
++		return ERR_PTR(err);
++
++	err = fscrypt_fname_disk_to_usr(inode, 0, 0, &cstr, &pstr);
++	if (err) {
++		fscrypt_fname_free_buffer(&pstr);
++		return ERR_PTR(err);
 +	}
 +
-+	if (compr_type != UBIFS_COMPR_NONE) {
-+		err = ubifs_decompress(c, &dn->data, dlen, buf, &out_len, compr_type);
-+		if (err)
-+			goto out;
++	pstr.name[pstr.len] = '\0';
 +
-+		ubifs_compress(c, buf, *new_len, &dn->data, &out_len, &compr_type);
++	// XXX this probably won't happen anymore...
++	if (pstr.name[0] == '\0') {
++		fscrypt_fname_free_buffer(&pstr);
++		return ERR_PTR(-ENOENT);
 +	}
 +
-+	if (ubifs_crypt_is_encrypted(inode)) {
-+		err = ubifs_encrypt(inode, dn, out_len, &old_dlen, block);
-+		if (err)
-+			goto out;
++	set_delayed_call(done, kfree_link, pstr.name);
++	return pstr.name;
++}
 +
-+		out_len = old_dlen;
-+	} else {
-+		dn->compr_size = 0;
-+	}
 +
- 	ubifs_assert(out_len <= UBIFS_BLOCK_SIZE);
- 	dn->compr_type = cpu_to_le16(compr_type);
- 	dn->size = cpu_to_le32(*new_len);
-@@ -1337,16 +1374,9 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
- 			if (le32_to_cpu(dn->size) <= dlen)
- 				dlen = 0; /* Nothing to do */
- 			else {
--				int compr_type = le16_to_cpu(dn->compr_type);
--
--				if (compr_type != UBIFS_COMPR_NONE) {
--					err = recomp_data_node(c, dn, &dlen);
--					if (err)
--						goto out_free;
--				} else {
--					dn->size = cpu_to_le32(dlen);
--					dlen += UBIFS_DATA_NODE_SZ;
--				}
-+				err = truncate_data_node(c, inode, blk, dn, &dlen);
-+				if (err)
-+					goto out_free;
- 			}
- 		}
- 	}
+ const struct address_space_operations ubifs_file_address_operations = {
+ 	.readpage       = ubifs_readpage,
+ 	.writepage      = ubifs_writepage,
+@@ -1681,7 +1734,7 @@ const struct inode_operations ubifs_file_inode_operations = {
+ 
+ const struct inode_operations ubifs_symlink_inode_operations = {
+ 	.readlink    = generic_readlink,
+-	.get_link    = simple_get_link,
++	.get_link    = ubifs_get_link,
+ 	.setattr     = ubifs_setattr,
+ 	.getattr     = ubifs_getattr,
+ 	.listxattr   = ubifs_listxattr,
 diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index a31222947265..ae25c908fbe5 100644
+index ae25c908fbe5..e08aa04fc835 100644
 --- a/fs/ubifs/super.c
 +++ b/fs/ubifs/super.c
-@@ -1210,7 +1210,8 @@ static int mount_ubifs(struct ubifs_info *c)
- 		bu_init(c);
- 
- 	if (!c->ro_mount) {
--		c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ,
-+		c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ + \
-+					       UBIFS_CIPHER_BLOCK_SIZE,
- 					       GFP_KERNEL);
- 		if (!c->write_reserve_buf)
- 			goto out_free;
-@@ -1623,7 +1624,8 @@ static int ubifs_remount_rw(struct ubifs_info *c)
- 		goto out;
- 	}
- 
--	c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ, GFP_KERNEL);
-+	c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ + \
-+				       UBIFS_CIPHER_BLOCK_SIZE, GFP_KERNEL);
- 	if (!c->write_reserve_buf) {
- 		err = -ENOMEM;
- 		goto out;
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 8d61b2fc3e82..3803f833b712 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -139,6 +139,12 @@
-  */
- #define WORST_COMPR_FACTOR 2
- 
-+#ifdef CONFIG_UBIFS_FS_ENCRYPTION
-+#define UBIFS_CIPHER_BLOCK_SIZE FS_CRYPTO_BLOCK_SIZE
-+#else
-+#define UBIFS_CIPHER_BLOCK_SIZE 0
-+#endif
-+
- /*
-  * How much memory is needed for a buffer where we compress a data node.
-  */
-@@ -1783,8 +1789,6 @@ void ubifs_compress(const struct ubifs_info *c, const void *in_buf, int in_len,
- int ubifs_decompress(const struct ubifs_info *c, const void *buf, int len,
- 		     void *out, int *out_len, int compr_type);
- 
--extern struct fscrypt_operations ubifs_crypt_operations;
--
- #include "debug.h"
- #include "misc.h"
- #include "key.h"
-@@ -1812,8 +1816,31 @@ extern struct fscrypt_operations ubifs_crypt_operations;
- #define fscrypt_fname_free_buffer       fscrypt_notsupp_fname_free_buffer
- #define fscrypt_fname_disk_to_usr       fscrypt_notsupp_fname_disk_to_usr
- #define fscrypt_fname_usr_to_disk       fscrypt_notsupp_fname_usr_to_disk
-+static inline int ubifs_encrypt(const struct inode *inode,
-+				struct ubifs_data_node *dn,
-+				unsigned int in_len, unsigned int *out_len,
-+				int block)
-+{
-+	ubifs_assert(0);
-+	return -EOPNOTSUPP;
-+}
-+static inline int ubifs_decrypt(const struct inode *inode,
-+				struct ubifs_data_node *dn,
-+				unsigned int *out_len, int block)
-+{
-+	ubifs_assert(0);
-+	return -EOPNOTSUPP;
-+}
-+#else
-+/* crypto.c */
-+int ubifs_encrypt(const struct inode *inode, struct ubifs_data_node *dn,
-+		  unsigned int in_len, unsigned int *out_len, int block);
-+int ubifs_decrypt(const struct inode *inode, struct ubifs_data_node *dn,
-+		  unsigned int *out_len, int block);
- #endif
- 
-+extern struct fscrypt_operations ubifs_crypt_operations;
-+
- static inline bool __ubifs_crypt_is_encrypted(struct inode *inode)
- {
- 	struct ubifs_inode *ui = ubifs_inode(inode);
+@@ -198,7 +198,6 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
+ 		}
+ 		memcpy(ui->data, ino->data, ui->data_len);
+ 		((char *)ui->data)[ui->data_len] = '\0';
+-		inode->i_link = ui->data;
+ 		break;
+ 	case S_IFBLK:
+ 	case S_IFCHR:
 -- 
 2.7.3
