@@ -1,26 +1,19 @@
-Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCWkT-0008Bp-U8
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 19:10:27 +0000
-Received: by mail-io0-x244.google.com with SMTP id h133so3623044ioe.2
- for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 11:10:05 -0800 (PST)
-Date: Thu, 1 Dec 2016 11:10:01 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Sandeep Jain <Sandeep_Jain@mentor.com>, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
-Subject: Re: [PATCH v1 1/2] mtd: m25p80: lock module while used
-Message-ID: <20161201191001.GA50438@google.com>
-References: <Sandeep_Jain@mentor.com>
- <1470320194-9602-1-git-send-email-Sandeep_Jain@mentor.com>
- <1470320194-9602-2-git-send-email-Sandeep_Jain@mentor.com>
- <20161103113926.GB4873@mentor.com>
- <8472764e-c72f-ad3c-35e4-d590386c1ad1@gmail.com>
+ id 1cCXow-0006wF-LC
+ for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 20:19:07 +0000
+Date: Thu, 1 Dec 2016 21:00:27 +0100 (CET)
+From: Julia Lawall <julia.lawall@lip6.fr>
+To: Steve Longerbeam <steve_longerbeam@mentor.com>
+cc: Brian Norris <computersforpeace@gmail.com>,
+ Jim Baxter <jim_baxter@mentor.com>, Sandeep Jain <Sandeep_Jain@mentor.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, kbuild-all@01.org
+Subject: [mtd-next:master 11/11] drivers/mtd/mtdcore.c:1786:29-32: ERROR:
+ reference preceded by free on line 1784 (fwd)
+Message-ID: <alpine.DEB.2.20.1612012058000.2068@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8472764e-c72f-ad3c-35e4-d590386c1ad1@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,85 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+It's a false positive from Coccinelle, but I wonder if it's really worth
+it.  Perhaps the code would be simpler with if (ret) { kfree(bdi); return
+ERR_PTR(ret); } return bdi;
 
-On Sat, Nov 05, 2016 at 08:24:24AM +0100, Marek Vasut wrote:
-> On 11/03/2016 12:39 PM, Sandeep Jain wrote:
-> > On Thu, Aug 04, 2016 at 07:46:33PM +0530, Sandeep Jain wrote:
-> >> From: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
-> >>
-> >> The change controls module users counter, which prevents to get
-> >> accidental oops on module unload while it is in use by mtd subsystem:
-> >>
-> >> % dd if=/dev/mtd0 of=/dev/null &
-> >> % rmmod m25p80
-> >>
-> >> Removing MTD device #0 (spi32766.0) with use count 1
-> >> Unable to handle kernel paging request at virtual address 7f4fb7f8
-> >> pgd = bd094000
-> >> [7f4fb7f8] *pgd=4cb66811, *pte=00000000, *ppte=00000000
-> >> Internal error: Oops: 80000007 [#1] PREEMPT SMP ARM
-> >>
-> >> Signed-off-by: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
-> >> Signed-off-by: Sandeep Jain <Sandeep_Jain@mentor.com>
-> >> ---
-> >>  drivers/mtd/devices/m25p80.c |   15 +++++++++++++++
-> >>  1 file changed, 15 insertions(+)
-> >>
-> >> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> >> index 9cf7fcd..2eb1530 100644
-> >> --- a/drivers/mtd/devices/m25p80.c
-> >> +++ b/drivers/mtd/devices/m25p80.c
-> >> @@ -185,6 +185,19 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
-> >>  	return ret;
-> >>  }
-> >>  
-> >> +static void m25p80_put(struct mtd_info *mtd)
-> >> +{
-> >> +	module_put(THIS_MODULE);
-> >> +}
-> >> +
-> >> +static int m25p80_get(struct mtd_info *mtd)
-> >> +{
-> >> +	if (!try_module_get(THIS_MODULE))
-> >> +		return -ENODEV;
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >>  /*
-> >>   * board specific setup should have ensured the SPI clock used here
-> >>   * matches what the READ command supports, at least until this driver
-> >> @@ -212,6 +225,8 @@ static int m25p_probe(struct spi_device *spi)
-> >>  	nor->write = m25p80_write;
-> >>  	nor->write_reg = m25p80_write_reg;
-> >>  	nor->read_reg = m25p80_read_reg;
-> >> +	nor->mtd._put_device = m25p80_put;
-> >> +	nor->mtd._get_device = m25p80_get;
-> >>  
-> >>  	nor->dev = &spi->dev;
-> >>  	spi_nor_set_flash_node(nor, spi->dev.of_node);
-> 
-> This makes me ponder how many other drivers suffer from this issue and
-> whether you shouldn't fix this in the core code instead. What do you think?
+julia
 
-I'm a bit confused; the owner is already set as mtd->owner
-(spi_register_driver() assigns the driver.owner, and the MTD core code
-finds it via mtd->dev.parent), and I think we grab the appropriate
-references. But I wouldn't be surprised if there was a bug lurking in
-there somewhere still. Certainly the removal/cleanup logic might still
-have some issues.
 
-But I also notice that your supposed test case actually works just fine
-for me:
 
-# dd if=/dev/mtd0 of=/dev/null bs=2M & rmmod m25p80
-[1] 8781
-rmmod: ERROR: Module m25p80 is in use
+tree:   git://git.infradead.org/linux-mtd-next.git master
+head:   445caaa20c4d6da74f426464f90513b81157ad77
+commit: 445caaa20c4d6da74f426464f90513b81157ad77 [11/11] mtd: Allocate bdi objects dynamically
+:::::: branch date: 2 hours ago
+:::::: commit date: 2 hours ago
 
-Maybe this has already been fixed in the meantime?
+>> drivers/mtd/mtdcore.c:1786:29-32: ERROR: reference preceded by free on line 1784
 
-And anyway, if there is a problem like this, I expect we'll want to
-handle it in the core code, as Marek suggested.
+git remote add mtd-next git://git.infradead.org/linux-mtd-next.git
+git remote update mtd-next
+git checkout 445caaa20c4d6da74f426464f90513b81157ad77
+vim +1786 drivers/mtd/mtdcore.c
 
-Brian
+445caaa2 Steve Longerbeam 2016-08-04  1778  	bdi = kzalloc(sizeof(*bdi), GFP_KERNEL);
+445caaa2 Steve Longerbeam 2016-08-04  1779  	if (!bdi)
+445caaa2 Steve Longerbeam 2016-08-04  1780  		return ERR_PTR(-ENOMEM);
+0661b1ac Jens Axboe       2010-04-27  1781
+445caaa2 Steve Longerbeam 2016-08-04  1782  	ret = bdi_setup_and_register(bdi, name);
+0661b1ac Jens Axboe       2010-04-27  1783  	if (ret)
+445caaa2 Steve Longerbeam 2016-08-04 @1784  		kfree(bdi);
+0661b1ac Jens Axboe       2010-04-27  1785
+445caaa2 Steve Longerbeam 2016-08-04 @1786  	return ret ? ERR_PTR(ret) : bdi;
+694bb7fc Kevin Cernekee   2009-04-03  1787  }
+0661b1ac Jens Axboe       2010-04-27  1788
+93e56214 Artem Bityutskiy 2013-03-15  1789  static struct proc_dir_entry *proc_mtd;
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
