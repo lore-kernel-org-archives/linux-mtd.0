@@ -1,19 +1,33 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCZdv-00080z-7i
- for linux-mtd@lists.infradead.org; Thu, 01 Dec 2016 22:15:52 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: david@sigma-star.at, tytso@mit.edu, dedekind1@gmail.com,
- ebiggers@google.com, mhalcrow@google.com, adrian.hunter@intel.com,
- linux-kernel@vger.kernel.org, hch@infradead.org,
- linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org, dengler@linutronix.de,
- sbabic@denx.de, wd@denx.de, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5/6] fscrypt: Deplay bounce page pool allocation until needed
-Date: Thu,  1 Dec 2016 23:14:57 +0100
-Message-Id: <1480630498-19201-6-git-send-email-richard@nod.at>
-In-Reply-To: <1480630498-19201-1-git-send-email-richard@nod.at>
-References: <1480630498-19201-1-git-send-email-richard@nod.at>
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cCe0C-0005Lx-0x
+ for linux-mtd@lists.infradead.org; Fri, 02 Dec 2016 02:55:10 +0000
+Received: from mail-yw0-f170.google.com (mail-yw0-f170.google.com
+ [209.85.161.170]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id uB22sJdX005298
+ for <linux-mtd@lists.infradead.org>; Fri, 2 Dec 2016 11:54:19 +0900
+Received: by mail-yw0-f170.google.com with SMTP id r204so211322173ywb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2016 18:54:19 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20161201160511.ahlibszokg547wxk@rob-hp-laptop>
+References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
+ <1480183585-592-40-git-send-email-yamada.masahiro@socionext.com>
+ <20161201160511.ahlibszokg547wxk@rob-hp-laptop>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Fri, 2 Dec 2016 11:54:17 +0900
+Message-ID: <CAK7LNASJLbizHEh8mUUVDvTKiRMCSvyYtdrQzwN5tHmCV8iYOA@mail.gmail.com>
+Subject: Re: [PATCH 39/39] mtd: nand: denali_dt: add compatible strings for
+ UniPhier SoC variants
+To: Rob Herring <robh@kernel.org>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Mark Rutland <mark.rutland@arm.com>, Dinh Nguyen <dinguyen@altera.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +37,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Gstir <david@sigma-star.at>
+Hi Rob,
+(+CC Dinh)
 
-Since fscrypt users can now indicated if fscrypt_encrypt_page() should
-use a bounce page, we can delay the bounce page pool initialization util
-it is really needed. That is until fscrypt_operations has no
-FS_CFLG_OWN_PAGES flag set.
+2016-12-02 1:05 GMT+09:00 Rob Herring <robh@kernel.org>:
+> On Sun, Nov 27, 2016 at 03:06:25AM +0900, Masahiro Yamada wrote:
+>> Add two compatible strings for UniPhier SoCs.  The revision register
+>> on both shows revision 5.0, but they are different hardware.
+>>
+>> Features:
+>>  - DMA engine with 64 bit physical address support
+>>  - 1024 byte ECC step size
+>>  - 8 / 16 / 24 bit ECC strength
+>>  - The n_banks format depends on SoC
+>>
+>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> ---
+>>
+>>  .../devicetree/bindings/mtd/denali-nand.txt        | 10 +++++--
+>>  drivers/mtd/nand/denali_dt.c                       | 33 ++++++++++++++++++++--
+>>  2 files changed, 38 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+>> index 51fe195..cea46e2 100644
+>> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+>> @@ -1,13 +1,19 @@
+>>  * Denali NAND controller
+>>
+>>  Required properties:
+>> -  - compatible : should be "denali,denali-nand-dt"
+>> +  - compatible : should be one of the following:
+>> +      "denali,denali-nand-dt"
+>
+> There are multiple things wrong with this string. denali,denali is
+> redundant is one.
 
-Signed-off-by: David Gstir <david@sigma-star.at>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/crypto/crypto.c       | 7 +++++--
- fs/crypto/keyinfo.c      | 2 +-
- include/linux/fscrypto.h | 2 +-
- 3 files changed, 7 insertions(+), 4 deletions(-)
+One more redundancy; "-dt" is weird because
+DT compatible should be a name of hardware.
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 2f41eee963e1..d694a3a93eb3 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -521,17 +521,20 @@ static void fscrypt_destroy(void)
- 
- /**
-  * fscrypt_initialize() - allocate major buffers for fs encryption.
-+ * @cop_flags:  fscrypt operations flags
-  *
-  * We only call this when we start accessing encrypted files, since it
-  * results in memory getting allocated that wouldn't otherwise be used.
-  *
-  * Return: Zero on success, non-zero otherwise.
-  */
--int fscrypt_initialize(void)
-+int fscrypt_initialize(unsigned int cop_flags)
- {
- 	int i, res = -ENOMEM;
- 
--	if (fscrypt_bounce_page_pool)
-+	/* No need to allocate a bounce page pool if there already is one or
-+	 * this FS won't use it. */
-+	if (cop_flags & FS_CFLG_OWN_PAGES || fscrypt_bounce_page_pool)
- 		return 0;
- 
- 	mutex_lock(&fscrypt_init_mutex);
-diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
-index 67fb6d8876d0..5951f4ebf2a9 100644
---- a/fs/crypto/keyinfo.c
-+++ b/fs/crypto/keyinfo.c
-@@ -188,7 +188,7 @@ int get_crypt_info(struct inode *inode)
- 	u8 *raw_key = NULL;
- 	int res;
- 
--	res = fscrypt_initialize();
-+	res = fscrypt_initialize(inode->i_sb->s_cop->flags);
- 	if (res)
- 		return res;
- 
-diff --git a/include/linux/fscrypto.h b/include/linux/fscrypto.h
-index 65be74f3afb6..6f5c7e8fbd55 100644
---- a/include/linux/fscrypto.h
-+++ b/include/linux/fscrypto.h
-@@ -244,7 +244,7 @@ static inline void fscrypt_set_d_op(struct dentry *dentry)
- #if IS_ENABLED(CONFIG_FS_ENCRYPTION)
- /* crypto.c */
- extern struct kmem_cache *fscrypt_info_cachep;
--int fscrypt_initialize(void);
-+int fscrypt_initialize(unsigned int);
- 
- extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
- extern void fscrypt_release_ctx(struct fscrypt_ctx *);
+
+> It's also fairly useless as this IP has several
+> versions and numerous configuration options IIRC. This should be
+> deprecated IMO.
+
+Right.  There are several customizable parameters for this IP,
+so a generic compatible string like this is probably useless.
+
+This DT binding was added by commit 30f9f2f for Altera SOCFPGA,
+A funny thing is that they upstreamed DT binding, but they did not upstream
+needed changes for the Denali driver core.
+So, the mainline driver has never worked on SOCFPGA
+(or any of DT-based SoCs).
+
+
+
+>> +      "denali,denali-nand-uniphier-v5a"
+>> +      "denali,denali-nand-uniphier-v5b"
+>
+> Use your vendor prefix, not denali. The 2nd denali can probably be
+> dropped because it is not likely you have another kind of nand
+> controller in the SoC.
+
+Hmm, your statement implies that a vendor prefix
+belongs to an SoC vendor, not an IP vendor.
+(I was not quite sure about this.)
+
+
+It is unlikely to happen to have two different NAND controllers on one SoC.
+But, we used a different NAND controller for our SoC family before
+introducing the Denali IP.
+It also implies that Socionext may use a different NAND IP in the future.
+I'd like to include "denali" somewhere because it is clearly associated with
+the driver name.
+Also, this will give an idea what kind of _basic_ hardware is used,
+even though we know various parameters are customizable.
+
+
+
+(Plan A)
+  "denali,socfpga-nand"           (for Altera SOCFPGA variant)
+  "denali,uniphier-nand-v1"       (for old Socionext UniPhier family variant)
+  "denali,uniphier-nand-v2"       (for new Socionext UniPhier family variant)
+
+(Plan B)
+  "altera,denali-nand"            (for Altera SOCFPGA variant)
+  "socionext,denali-nand-v5a"     (for old Socionext UniPhier family variant)
+  "socionext,denali-nand-v5b"     (for new Socionext UniPhier family variant)
+
+
+I think Plan B is nearer to your suggestion,
+and I think it is OK for Socionext (hopefully for Altera too).
+
+
+
+
+
 -- 
-2.7.3
+Best Regards
+Masahiro Yamada
