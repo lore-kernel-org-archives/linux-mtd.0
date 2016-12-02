@@ -1,25 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCijL-0001Dp-Ue
- for linux-mtd@lists.infradead.org; Fri, 02 Dec 2016 07:58:05 +0000
-Date: Fri, 2 Dec 2016 08:57:42 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Richard Weinberger <richard@nod.at>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>
-Subject: Re: [PATCH 09/39] mtd: nand: denali: fix erased page check code
-Message-ID: <20161202085742.06cff892@bbrezillon>
-In-Reply-To: <CAK7LNAS8RFs6iLNObj=HESUqWyEr8CO7B=LCCCbZ6Ki8Em96wg@mail.gmail.com>
-References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
- <1480183585-592-10-git-send-email-yamada.masahiro@socionext.com>
- <20161127162129.67bb8e00@bbrezillon>
- <CAK7LNAS8RFs6iLNObj=HESUqWyEr8CO7B=LCCCbZ6Ki8Em96wg@mail.gmail.com>
+Received: from mail-pf0-x233.google.com ([2607:f8b0:400e:c00::233])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cCiy3-0004sH-AA
+ for linux-mtd@lists.infradead.org; Fri, 02 Dec 2016 08:13:16 +0000
+Received: by mail-pf0-x233.google.com with SMTP id 189so51641564pfz.3
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Dec 2016 00:12:54 -0800 (PST)
+Date: Fri, 2 Dec 2016 00:12:49 -0800
+From: Eric Biggers <ebiggers@google.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, david@sigma-star.at, tytso@mit.edu,
+ dedekind1@gmail.com, mhalcrow@google.com, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org, hch@infradead.org,
+ linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
+ dengler@linutronix.de, sbabic@denx.de, wd@denx.de
+Subject: Re: [PATCH 2/6] fscrypt: Release fscrypt context on in-place
+ encryption
+Message-ID: <20161202081249.GB18690@google.com>
+References: <1480630498-19201-1-git-send-email-richard@nod.at>
+ <1480630498-19201-3-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1480630498-19201-3-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,52 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2 Dec 2016 13:33:58 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+On Thu, Dec 01, 2016 at 11:14:54PM +0100, Richard Weinberger wrote:
+> From: David Gstir <david@sigma-star.at>
+> 
+> In case of in-place encryption ctx must be released right away.
+> Otherwise ctx is never freed.
+> 
 
-> Hi Boris,
-> 
-> 
-> 2016-11-28 0:21 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> > On Sun, 27 Nov 2016 03:05:55 +0900
-> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> >  
-> >> Currently, is_erased() is called against "buf" twice, so the second
-> >> call is meaningless.  The second one should be checked against
-> >> chip->oob_poi.
-> >>  
-> >
-> > IMO, patch 9 to 12 should be squashed in a single patch. All you're
-> > doing in these patch is fixing the check_erased_page logic.
-> >
-> > You can describe the different broken thing in the commit message, but
-> > splitting things as you do does not help much.  
-> 
-> 
-> OK. I will do so.
-> 
-> I realized some mistakes in this part
-> (both in my patches and in the current mainline code),
-> so I will rework it in a more sensible chunk.
-> 
-> 
-> > Also, please have at nand_check_erased_ecc_chunk() [1] instead of using
-> > a private method (is_erased()) to check if the page is erased.
-> > With this method you get bitflips in erased pages correction for free.  
-> 
-> I will use this helper, thanks!
-> 
-> 
-> 
-> 
-> With this, I think I answered all of your questions to v1.
+I didn't notice this before, but the fscrypt_ctx isn't actually used at all in
+the "own pages" crypto case.  So there's really no need to allocate one.  How
+about we just handle the "own pages" case at the beginning of
+fscrypt_encrypt_page():
 
-You did. I'm waiting for the v2 now ;)
+	if (inode->i_sb->s_cop->flags & FS_CFLG_OWN_PAGES) {
+		err = do_page_crypto(inode, FS_ENCRYPT, lblk_num, page, page,
+				     len, offs, gfp_flags);
+		if (err)
+			return ERR_PTR(err);
+		return page;
+	}
 
-> 
-> (Please tell me if there is something I missed to answer.)
-> 
-> Thanks a lot for your review.
-> 
-> 
-> 
+	(and the rest essentially the same as it used to be)
+
+Eric
