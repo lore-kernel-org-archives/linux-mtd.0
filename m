@@ -1,25 +1,25 @@
-Received: from mail-pg0-x22b.google.com ([2607:f8b0:400e:c05::22b])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCj4Z-0001oX-7F
- for linux-mtd@lists.infradead.org; Fri, 02 Dec 2016 08:20:00 +0000
-Received: by mail-pg0-x22b.google.com with SMTP id x23so105164891pgx.1
- for <linux-mtd@lists.infradead.org>; Fri, 02 Dec 2016 00:19:38 -0800 (PST)
-Date: Fri, 2 Dec 2016 00:19:34 -0800
-From: Eric Biggers <ebiggers@google.com>
+ id 1cCkF9-0005nj-D6
+ for linux-mtd@lists.infradead.org; Fri, 02 Dec 2016 09:35:00 +0000
+Received: by mail-lf0-x243.google.com with SMTP id 98so21421491lfs.0
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Dec 2016 01:34:38 -0800 (PST)
+Date: Fri, 2 Dec 2016 10:28:40 +0100
+From: Marcus Folkesson <marcus.folkesson@gmail.com>
 To: Richard Weinberger <richard@nod.at>
 Cc: linux-mtd@lists.infradead.org, david@sigma-star.at, tytso@mit.edu,
- dedekind1@gmail.com, mhalcrow@google.com, adrian.hunter@intel.com,
- linux-kernel@vger.kernel.org, hch@infradead.org,
- linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
- dengler@linutronix.de, sbabic@denx.de, wd@denx.de
-Subject: Re: [PATCH 3/6] fscrypt: Cleanup fscrypt_{decrypt,encrypt}_page()
-Message-ID: <20161202081934.GC18690@google.com>
-References: <1480630498-19201-1-git-send-email-richard@nod.at>
- <1480630498-19201-4-git-send-email-richard@nod.at>
+ dedekind1@gmail.com, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ adilger.kernel@dilger.ca, akpm@linux-foundation.org,
+ linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 4/6] ubifs: Maintain a parent pointer
+Message-ID: <20161202092840.i67lhgglzlnugwpd@gmail.com>
+References: <1480629741-18375-1-git-send-email-richard@nod.at>
+ <1480629741-18375-5-git-send-email-richard@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1480630498-19201-4-git-send-email-richard@nod.at>
+In-Reply-To: <1480629741-18375-5-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,11 +29,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 01, 2016 at 11:14:55PM +0100, Richard Weinberger wrote:
-> + * @lblk_num:  Logical block number. This must be unique for multiple
-> + *             calls with same page.
+On Thu, Dec 01, 2016 at 11:02:19PM +0100, Richard Weinberger wrote:
+>  
+> +	if (new_dir != old_dir) {
+> +		fst_inode_ui->parent_inum = new_dir->i_ino;
+> +		snd_inode_ui->parent_inum = old_dir->i_ino;
+> +	}
+> +
+>  	if (old_dir != new_dir) {
+>  		if (S_ISDIR(fst_inode->i_mode) && !S_ISDIR(snd_inode->i_mode)) {
+>  			inc_nlink(new_dir);
 
-Must be unique for all calls with the same *inode*, except when overwriting
-previously written data.
+Insignificant thing, but use the existing if-statment instead?
 
-Eric
+Cheers,
+Marcus Folkesson
