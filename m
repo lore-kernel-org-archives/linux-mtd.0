@@ -1,25 +1,19 @@
-Received: from nbd.name ([2a01:4f8:131:30e2::2])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDcKD-00087T-CH
- for linux-mtd@lists.infradead.org; Sun, 04 Dec 2016 19:19:50 +0000
-Subject: Re: [PATCH] mtd: nand: xway: fix build undefined MODULE_DEVICE_TABLE()
-To: Hauke Mehrtens <hauke@hauke-m.de>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <20161130225110.10759-1-hauke@hauke-m.de>
- <20161201133627.38953fb0@bbrezillon>
- <d9847313-cb0b-5cdc-b70f-5fa3f5638473@phrozen.org>
- <20161201144706.6757b632@bbrezillon>
- <098516d2-89e7-3c7a-9c52-4ab46671e355@phrozen.org>
- <6d1536a4-a712-e7bf-5b0f-998ac6a8d829@hauke-m.de>
-Cc: richard@nod.at, marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- cyrille.pitchen@atmel.com, computersforpeace@gmail.com, dwmw2@infradead.org
-From: John Crispin <john@phrozen.org>
-Message-ID: <bdf8a3a3-f58a-5115-7e84-84199f8b2b0d@phrozen.org>
-Date: Sun, 4 Dec 2016 20:19:21 +0100
-MIME-Version: 1.0
-In-Reply-To: <6d1536a4-a712-e7bf-5b0f-998ac6a8d829@hauke-m.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Received: from m50-132.163.com ([123.125.50.132])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cDctj-00068T-Re
+ for linux-mtd@lists.infradead.org; Sun, 04 Dec 2016 19:56:35 +0000
+From: Pan Bian <bianpan201604@163.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	Pan Bian <bianpan2016@163.com>
+Subject: [PATCH 1/1] mtd: ubi: fix improper return value
+Date: Sun,  4 Dec 2016 14:12:10 +0800
+Message-Id: <1480831930-5449-1-git-send-email-bianpan201604@163.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,11 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Pan Bian <bianpan2016@163.com>
 
+When __vmalloc() returns a NULL pointer, the region is not checked, and
+we cannot make sure that only 0xFF bytes are present at offset. Thus,
+returning 0 seems improper.
 
-On 04/12/2016 20:15, Hauke Mehrtens wrote:
-> I also do not like this ebu integration. the ebu lock is also a problem.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=189081
 
-yep, the lock is needed for pci to work. its really ugly i agree.
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+---
+ drivers/mtd/ubi/io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	John
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index b6fb8f9..b54fe05 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -1413,7 +1413,7 @@ int ubi_self_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len)
+ 	buf = __vmalloc(len, GFP_NOFS, PAGE_KERNEL);
+ 	if (!buf) {
+ 		ubi_err(ubi, "cannot allocate memory to check for 0xFFs");
+-		return 0;
++		return -ENOMEM;
+ 	}
+ 
+ 	err = mtd_read(ubi->mtd, addr, len, &read, buf);
+-- 
+1.9.1
