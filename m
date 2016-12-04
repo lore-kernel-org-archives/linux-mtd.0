@@ -1,23 +1,23 @@
-Received: from mail-wj0-x241.google.com ([2a00:1450:400c:c01::241])
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDYrW-0006Oa-DE
- for linux-mtd@lists.infradead.org; Sun, 04 Dec 2016 15:37:59 +0000
-Received: by mail-wj0-x241.google.com with SMTP id j10so8597214wjb.3
- for <linux-mtd@lists.infradead.org>; Sun, 04 Dec 2016 07:37:37 -0800 (PST)
-Subject: Re: [PATCH 1/1] mtd: ubi: fix improper return value
-To: Pan Bian <bianpan201604@163.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-References: <1480831930-5449-1-git-send-email-bianpan201604@163.com>
-Cc: linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <c56efbcf-9398-0299-35d7-929f9a8c3dd6@gmail.com>
-Date: Sun, 4 Dec 2016 13:48:59 +0100
+ id 1cDcG4-0006Xr-79
+ for linux-mtd@lists.infradead.org; Sun, 04 Dec 2016 19:15:33 +0000
+Subject: Re: [PATCH] mtd: nand: xway: fix build undefined MODULE_DEVICE_TABLE()
+To: John Crispin <john@phrozen.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <20161130225110.10759-1-hauke@hauke-m.de>
+ <20161201133627.38953fb0@bbrezillon>
+ <d9847313-cb0b-5cdc-b70f-5fa3f5638473@phrozen.org>
+ <20161201144706.6757b632@bbrezillon>
+ <098516d2-89e7-3c7a-9c52-4ab46671e355@phrozen.org>
+Cc: richard@nod.at, marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ cyrille.pitchen@atmel.com, computersforpeace@gmail.com, dwmw2@infradead.org
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <6d1536a4-a712-e7bf-5b0f-998ac6a8d829@hauke-m.de>
+Date: Sun, 4 Dec 2016 20:15:08 +0100
 MIME-Version: 1.0
-In-Reply-To: <1480831930-5449-1-git-send-email-bianpan201604@163.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <098516d2-89e7-3c7a-9c52-4ab46671e355@phrozen.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,40 +28,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/04/2016 07:12 AM, Pan Bian wrote:
-> From: Pan Bian <bianpan2016@163.com>
+On 12/01/2016 02:57 PM, John Crispin wrote:
 > 
-> When __vmalloc() returns a NULL pointer, the region is not checked, and
-> we cannot make sure that only 0xFF bytes are present at offset. Thus,
-> returning 0 seems improper.
 > 
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=189081
-> 
-> Signed-off-by: Pan Bian <bianpan2016@163.com>
-> ---
->  drivers/mtd/ubi/io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-> index b6fb8f9..b54fe05 100644
-> --- a/drivers/mtd/ubi/io.c
-> +++ b/drivers/mtd/ubi/io.c
-> @@ -1413,7 +1413,7 @@ int ubi_self_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len)
->  	buf = __vmalloc(len, GFP_NOFS, PAGE_KERNEL);
->  	if (!buf) {
->  		ubi_err(ubi, "cannot allocate memory to check for 0xFFs");
-> -		return 0;
-> +		return -ENOMEM;
+> On 01/12/2016 14:47, Boris Brezillon wrote:
+>> On Thu, 1 Dec 2016 14:02:55 +0100
+>> John Crispin <john@phrozen.org> wrote:
+>>
+>>> On 01/12/2016 13:36, Boris Brezillon wrote:
+>>>> Hi Hauke,
+>>>>
+>>>> On Wed, 30 Nov 2016 23:51:10 +0100
+>>>> Hauke Mehrtens <hauke@hauke-m.de> wrote:
+>>>>   
+>>>>> The header file with the definition of MODULE_DEVICE_TABLE() was
+>>>>> missing, add include for linux/module.h to fix the problem in 4.9.  
+>>>>
+>>>> I tried to enable this driver as a module, and the build failed because
+>>>> of a missing symbol (see the following patch).
+>>>> Now, if it's not supposed to be compiled as a module, then you should
+>>>> modify the Kconfig accordingly.
+>>>>
+>>>> Regards,
+>>>>
+>>>> Boris
+>>>>   
+>>>> --->8---  
+>>>> diff --git a/arch/mips/lantiq/xway/sysctrl.c
+>>>> b/arch/mips/lantiq/xway/sysctrl.c index 236193b5210b..29e753556597
+>>>> 100644 --- a/arch/mips/lantiq/xway/sysctrl.c
+>>>> +++ b/arch/mips/lantiq/xway/sysctrl.c
+>>>> @@ -156,6 +156,7 @@ static void __iomem *pmu_membase;
+>>>>  static void __iomem *ltq_xbar_membase;
+>>>>  void __iomem *ltq_cgu_membase;
+>>>>  void __iomem *ltq_ebu_membase;
+>>>> +EXPORT_SYMBOL(ltq_ebu_membase);  
+>>>
+>>> Hi,
+>>>
+>>> i would be against exporting the membase pointers as global symbols. i
+>>> already find it annoying that cgu and ebu are not static
+>>
+>> Yep, that's also my opinion.
 
-I wonder if you shouldn't also nuke the ubi_err() , because when you run
-out of memory, printk() will likely also fail.
+I also do not like this ebu integration. the ebu lock is also a problem.
 
->  	}
->  
->  	err = mtd_read(ubi->mtd, addr, len, &read, buf);
+>> Let's patch the Kconfig entry instead. BTW, if you don't compile the
+>> driver as a module, then you don't need the MODULE_XX() calls, and you
+>> can get rid of the module.h header.
+>>
 > 
+> agreed. not sure how hauke tested his patch in the first place.
 
+Sorry, I never tested this as a module, I only used it compiled into the
+kernel.
 
--- 
-Best regards,
-Marek Vasut
+I will send a patch which changes Kconfig.
+
+Hauke
