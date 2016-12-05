@@ -1,26 +1,22 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDrVL-00046H-9d
- for linux-mtd@lists.infradead.org; Mon, 05 Dec 2016 11:32:20 +0000
-Date: Mon, 5 Dec 2016 13:27:27 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v6 0/3] spi-nor: Add support for Intel SPI serial flash
- controller
-Message-ID: <20161205112727.GI1459@lahna.fi.intel.com>
-References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cDs7B-0004gq-MQ
+ for linux-mtd@lists.infradead.org; Mon, 05 Dec 2016 12:11:27 +0000
+Date: Mon, 5 Dec 2016 13:10:59 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: richard@nod.at, marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ john@phrozen.org, cyrille.pitchen@atmel.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Subject: Re: [PATCH] mtd: nand: xway: fix build undefined MODULE_DEVICE_TABLE()
+Message-ID: <20161205131059.45fafdf6@bbrezillon>
+In-Reply-To: <eb0b0e63-6c77-8192-adf9-14fdf83aabba@hauke-m.de>
+References: <20161130225110.10759-1-hauke@hauke-m.de>
+ <20161201133627.38953fb0@bbrezillon>
+ <eb0b0e63-6c77-8192-adf9-14fdf83aabba@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 28, 2016 at 03:06:23PM +0300, Mika Westerberg wrote:
-> This is 6th iteration of the series. You can find the previous versions
-> archived on:
-> 
->   v5: https://lwn.net/Articles/706363/
->   v4: https://lwn.net/Articles/703773/
->   v3: https://lwn.net/Articles/697231/
->   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
->   v1: https://lkml.org/lkml/2016/6/14/269
-> 
-> This patch series adds support for the Intel SPI serial flash controller
-> found on many recent Intel CPUs including Baytrail and Braswell. This
-> driver makes it possible to access the BIOS and other platform data which
-> is stored on the SPI serial flash. It is also possible to upgrade the BIOS
-> using this driver if it has not been protected by special hardware bits.
-> 
-> The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
-> MAX.
-> 
-> Since poking the SPI serial flash can brick the machine, this driver can
-> only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
-> unless instructed othwerwise by module parameter.
+On Sun, 4 Dec 2016 23:40:56 +0100
+Hauke Mehrtens <hauke@hauke-m.de> wrote:
 
-Hi Lee,
+> On 12/01/2016 01:36 PM, Boris Brezillon wrote:
+> > Hi Hauke,
+> > 
+> > On Wed, 30 Nov 2016 23:51:10 +0100
+> > Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> >   
+> >> The header file with the definition of MODULE_DEVICE_TABLE() was
+> >> missing, add include for linux/module.h to fix the problem in 4.9.  
+> > 
+> > I tried to enable this driver as a module, and the build failed because
+> > of a missing symbol (see the following patch).
+> > Now, if it's not supposed to be compiled as a module, then you should
+> > modify the Kconfig accordingly.
+> > 
+> > Regards,
+> > 
+> > Boris
+> >   
+> > --->8---  
+> > diff --git a/arch/mips/lantiq/xway/sysctrl.c
+> > b/arch/mips/lantiq/xway/sysctrl.c index 236193b5210b..29e753556597
+> > 100644 --- a/arch/mips/lantiq/xway/sysctrl.c
+> > +++ b/arch/mips/lantiq/xway/sysctrl.c
+> > @@ -156,6 +156,7 @@ static void __iomem *pmu_membase;
+> >  static void __iomem *ltq_xbar_membase;
+> >  void __iomem *ltq_cgu_membase;
+> >  void __iomem *ltq_ebu_membase;
+> > +EXPORT_SYMBOL(ltq_ebu_membase);
+> >  
+> >  static u32 ifccr = CGU_IFCCR;
+> >  static u32 pcicr = CGU_PCICR;
+> >   
+> 
+> Also module_platform_driver() needs linux/module.h, because it contains
+> module_init() and some more stuff.
 
-I think we have enough acks from the MTD maintainers. I wonder if you
-could merge this series via your MFD tree?
+You should use builtin_platform_driver() and not
+module_platform_driver().
+
+> 
+> I would like to add the include for linux/module.h and deactivate module
+> support. It looks like it was possible to select module building since
+> it was added, but it should never have worked.
+> 
+> Hauke
