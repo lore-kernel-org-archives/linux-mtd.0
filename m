@@ -1,14 +1,17 @@
-From: Vladimir Zapolskiy <vz@mleia.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Sylvain Lemieux <slemieux.tyco@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] mtd: nand: lpc32xx: fix invalid error handling of a requested
- irq
-Date: Mon,  5 Dec 2016 03:47:10 +0200
-Message-Id: <20161205014710.2015-1-vz@mleia.com>
+From: Shawn Lin <shawn.lin@rock-chips.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ Heiko Stuebner <heiko@sntech.de>, Shawn Lin <shawn.lin@rock-chips.com>
+Subject: [PATCH v3 1/2] mtd: spi-nor: Bindings for Rockchip serial flash
+ controller
+Date: Mon,  5 Dec 2016 10:56:16 +0800
+Message-Id: <1480906577-38455-2-git-send-email-shawn.lin@rock-chips.com>
+In-Reply-To: <1480906577-38455-1-git-send-email-shawn.lin@rock-chips.com>
+References: <1480906577-38455-1-git-send-email-shawn.lin@rock-chips.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,32 +21,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Semantics of NR_IRQS is different on machines with SPARSE_IRQ option
-disabled or enabled, in the latter case IRQs are allocated starting
-at least from the value specified by NR_IRQS and going upwards, so
-the check of (irq >= NR_IRQ) to decide about an error code returned by
-platform_get_irq() is completely invalid, don't attempt to overrule
-irq subsystem in the driver.
+Add binding document for the Rockchip serial flash controller.
 
-The change fixes LPC32xx NAND MLC driver initialization on boot.
+Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
 
-Signed-off-by: Vladimir Zapolskiy <vz@mleia.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- drivers/mtd/nand/lpc32xx_mlc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-index 8523881..bc6e49a 100644
---- a/drivers/mtd/nand/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -776,7 +776,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	init_completion(&host->comp_controller);
- 
- 	host->irq = platform_get_irq(pdev, 0);
--	if ((host->irq < 0) || (host->irq >= NR_IRQS)) {
-+	if (host->irq < 0) {
- 		dev_err(&pdev->dev, "failed to get platform irq\n");
- 		res = -EINVAL;
- 		goto err_exit3;
+Changes in v3:
+- rename sfc-no-dma to sfc-no-DMA
+
+Changes in v2: None
+
+ .../devicetree/bindings/mtd/rockchip-sfc.txt       | 31 ++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+
+diff --git a/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+new file mode 100644
+index 0000000..c6b4f58
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+@@ -0,0 +1,31 @@
++Rockchip Serial Flash Controller
++
++Required properties:
++- compatible : Should be
++		"rockchip,rk1108-sfc", "rockchip,sfc" for ROCKCHIP RK1108.
++- address-cells : Should be 1.
++- size-cells : Should be 0.
++- clocks: Must contain two entries for each entry in clock-names.
++- clock-names: Shall be "sfc" for the transfer-clock, and "hsfc" for
++		the peripheral clock.
++- interrupts : Should contain the interrupt for the device.
++- reg: Physical base address of the controller and length of memory mapped.
++
++Optional properties:
++- rockchip,sfc-no-DMA: Indicate the controller doesn't support dma transfer.
++
++Example:
++nor_flash: sfc@301c0000 {
++	compatible = "rockchip,rk1108-sfc", "rockchip,sfc";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
++	clock-names = "sfc", "hsfc";
++	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
++	reg = <0x301c0000 0x1000>;
++	spi-nor@0 {
++		compatible = "jedec,spi-nor";
++		spi-max-frequency = <12000000>;
++		reg = <0>;
++	};
++};
 -- 
-2.10.2
+1.9.1
