@@ -1,31 +1,29 @@
-Received: from mail-co1nam03on0070.outbound.protection.outlook.com
- ([104.47.40.70] helo=NAM03-CO1-obe.outbound.protection.outlook.com)
+Received: from mail-wj0-x243.google.com ([2a00:1450:400c:c01::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDtlh-0006Te-1y
- for linux-mtd@lists.infradead.org; Mon, 05 Dec 2016 13:57:22 +0000
-From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>, "robh+dt@kernel.org"
- <robh+dt@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Michal Simek
- <michals@xilinx.com>, "kalluripunnaiahchoudary@gmail.com"
- <kalluripunnaiahchoudary@gmail.com>, "kpc528@gmail.com" <kpc528@gmail.com>
-Subject: RE: [PATCH v6 1/2] mtd: arasan: Add device tree binding documentation
-Date: Mon, 5 Dec 2016 13:56:51 +0000
-Message-ID: <03CA77BA8AF6F1469AEDFBDA1322A7B76423EE53@XAP-PVEXMBX02.xlnx.xilinx.com>
-References: <1480911066-26157-1-git-send-email-punnaia@xilinx.com>
- <74842d92-840d-a7c2-fb1b-ddab1ac2cf42@gmail.com>
- <20161205093630.650451d7@bbrezillon>
-In-Reply-To: <20161205093630.650451d7@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1cDvnn-0004YD-4I
+ for linux-mtd@lists.infradead.org; Mon, 05 Dec 2016 16:07:40 +0000
+Received: by mail-wj0-x243.google.com with SMTP id he10so25814212wjc.2
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Dec 2016 08:07:18 -0800 (PST)
+Subject: Re: [PATCH v6 0/3] spi-nor: Add support for Intel SPI serial flash
+ controller
+To: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Lee Jones <lee.jones@linaro.org>
+References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+ <20161205112727.GI1459@lahna.fi.intel.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Peter Tyser <ptyser@xes-inc.com>,
+ key.seong.lim@intel.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <2dac1535-de7f-47c3-2747-ba8cac854811@gmail.com>
+Date: Mon, 5 Dec 2016 14:33:12 +0100
 MIME-Version: 1.0
+In-Reply-To: <20161205112727.GI1459@lahna.fi.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,137 +33,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 12/05/2016 12:27 PM, Mika Westerberg wrote:
+> On Mon, Nov 28, 2016 at 03:06:23PM +0300, Mika Westerberg wrote:
+>> This is 6th iteration of the series. You can find the previous versions
+>> archived on:
+>>
+>>   v5: https://lwn.net/Articles/706363/
+>>   v4: https://lwn.net/Articles/703773/
+>>   v3: https://lwn.net/Articles/697231/
+>>   v2: http://lists.infradead.org/pipermail/linux-mtd/2016-June/068277.html
+>>   v1: https://lkml.org/lkml/2016/6/14/269
+>>
+>> This patch series adds support for the Intel SPI serial flash controller
+>> found on many recent Intel CPUs including Baytrail and Braswell. This
+>> driver makes it possible to access the BIOS and other platform data which
+>> is stored on the SPI serial flash. It is also possible to upgrade the BIOS
+>> using this driver if it has not been protected by special hardware bits.
+>>
+>> The patch [1/3] includes documentation how to upgrade BIOS on MinnowBoard
+>> MAX.
+>>
+>> Since poking the SPI serial flash can brick the machine, this driver can
+>> only be enabled when CONFIG_EXPERT=y and even then it will remain read-only
+>> unless instructed othwerwise by module parameter.
+> 
+> Hi Lee,
+> 
+> I think we have enough acks from the MTD maintainers. I wonder if you
+> could merge this series via your MFD tree?
+> 
+Ideally you'd merge 1/3 via MTD and 2,3/3 via MFD, but I'm not sure if
+that is possible and if that is a sensible thing to do.
 
-
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
-> Sent: Monday, December 05, 2016 2:07 PM
-> To: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Punnaiah Choudary Kalluri <punnaia@xilinx.com>;
-> dwmw2@infradead.org; computersforpeace@gmail.com; richard@nod.at;
-> cyrille.pitchen@atmel.com; robh+dt@kernel.org; mark.rutland@arm.com;
-> linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org;
-> devicetree@vger.kernel.org; Michal Simek <michals@xilinx.com>;
-> kalluripunnaiahchoudary@gmail.com; kpc528@gmail.com; Punnaiah
-> Choudary Kalluri <punnaia@xilinx.com>
-> Subject: Re: [PATCH v6 1/2] mtd: arasan: Add device tree binding
-> documentation
->=20
-> On Mon, 5 Dec 2016 05:25:54 +0100
-> Marek Vasut <marek.vasut@gmail.com> wrote:
->=20
-> > On 12/05/2016 05:11 AM, Punnaiah Choudary Kalluri wrote:
-> > > This patch adds the dts binding document for arasan nand flash
-> > > controller.
-> > >
-> > > Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
-> > > Acked-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > > changes in v6:
-> > > - Removed num-cs property
-> > > - Separated nandchip from nand controller changes in v5:
-> > > - None
-> > > Changes in v4:
-> > > - Added num-cs property
-> > > - Added clock support
-> > > Changes in v3:
-> > > - None
-> > > Changes in v2:
-> > > - None
-> > > ---
-> > >  .../devicetree/bindings/mtd/arasan_nfc.txt         | 38
-> ++++++++++++++++++++++
-> > >  1 file changed, 38 insertions(+)
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/mtd/arasan_nfc.txt
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/mtd/arasan_nfc.txt
-> > > b/Documentation/devicetree/bindings/mtd/arasan_nfc.txt
-> > > new file mode 100644
-> > > index 0000000..dcbe7ad
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/mtd/arasan_nfc.txt
-> > > @@ -0,0 +1,38 @@
-> > > +Arasan Nand Flash Controller with ONFI 3.1 support
-> >
-> > Arasan NAND Flash ...
-> >
-> > > +Required properties:
-> > > +- compatible: Should be "arasan,nfc-v3p10"
-> >
-> > This v3p10 looks like version 3 patchlevel 10, but shouldn't we have
-> > some fallback option which doesn't encode IP version in the compat
-> > string ?
->=20
-> Not necessarily. Usually you define a generic compatible when you have
-> other reliable means to detect the IP version (a version register for
-> example).
-> If you can't detect that at runtime, then providing only specific compati=
-ble
-> strings is a good solution to avoid breaking the DT ABI.
-
-Yes. I am also thinking the same. Arasan controller doesn't have the regist=
-er
-to indicate the IP version number.
-
->=20
-> >
-> > Also, shouldn't quirks be handled by DT props instead of effectively
-> > encoding them into the compatible string ?
->=20
-> Well, from my experience, it's better to hide as much as possible behind =
-the
-> compatible. This way, if new quirks are needed for a specific revision, y=
-ou can
-> update the driver without having to change the DT.
->=20
-
-Agree.
-
-Regards,
-Punnaiah
-
-> >
-> > > +- reg: Memory map for module access
-> > > +- interrupt-parent: Interrupt controller the interrupt is routed
-> > > +through
-> > > +- interrupts: Should contain the interrupt for the device
-> > > +- clock-name: List of input clocks - "clk_sys", "clk_flash"
-> > > +	      (See clock bindings for details)
-> > > +- clocks: Clock phandles (see clock bindings for details)
-> > > +
-> > > +Optional properties:
-> > > +- arasan,has-mdma: Enables Dma support
-> >
-> > 'Enables DMA support' , with DMA in caps.
-> >
-> > > +for nand partition information please refer the below file
-> >
-> > For NAND ...
-> >
-> > > +Documentation/devicetree/bindings/mtd/partition.txt
-> > > +
-> > > +Example:
-> > > +	nand0: nand@ff100000 {
-> > > +		compatible =3D "arasan,nfc-v3p10"
-> > > +		reg =3D <0x0 0xff100000 0x1000>;
-> > > +		clock-name =3D "clk_sys", "clk_flash"
-> > > +		clocks =3D <&misc_clk &misc_clk>;
-> > > +		interrupt-parent =3D <&gic>;
-> > > +		interrupts =3D <0 14 4>;
-> > > +		arasan,has-mdma;
-> > > +		#address-cells =3D <1>;
-> > > +		#size-cells =3D <0>
-> > > +
-> > > +		nand@0 {
-> > > +			reg =3D <0>
-> > > +			partition@0 {
-> > > +				label =3D "filesystem";
-> > > +				reg =3D <0x0 0x0 0x1000000>;
-> > > +			};
-> > > +			(...)
-> > > +		};
-> > > +	};
-> > >
-> >
-> >
+-- 
+Best regards,
+Marek Vasut
