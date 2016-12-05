@@ -1,28 +1,25 @@
-Received: from mail-wj0-x242.google.com ([2a00:1450:400c:c01::242])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDl57-00047o-6J
- for linux-mtd@lists.infradead.org; Mon, 05 Dec 2016 04:40:53 +0000
-Received: by mail-wj0-x242.google.com with SMTP id j10so9996211wjb.3
- for <linux-mtd@lists.infradead.org>; Sun, 04 Dec 2016 20:40:27 -0800 (PST)
-Subject: Re: [PATCH v6 2/2] mtd: nand: Add support for Arasan Nand Flash
- Controller
-To: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- cyrille.pitchen@atmel.com, robh+dt@kernel.org, mark.rutland@arm.com
-References: <1480911066-26157-1-git-send-email-punnaia@xilinx.com>
- <1480911066-26157-2-git-send-email-punnaia@xilinx.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, michals@xilinx.com,
- kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com,
+From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+ Soren Brinkmann <sorenb@xilinx.com>, Harini Katakam <harinik@xilinx.com>,
  Punnaiah Choudary Kalluri <punnaia@xilinx.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <7a8fe6c9-b53f-a16f-19f7-6ce4a83672a2@gmail.com>
-Date: Mon, 5 Dec 2016 05:40:17 +0100
+CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [LINUX RFC v4 3/4] mtd: spi-nor: add stripe support
+Date: Mon, 5 Dec 2016 07:02:21 +0000
+Message-ID: <DA6901612C71B84D91459DE817C418AE26E0C110@XAP-PVEXMBX01.xlnx.xilinx.com>
+References: <1480235616-34038-1-git-send-email-nagasure@xilinx.com>
+ <68ca0f19-e534-3361-11f0-6566626380fe@atmel.com>
+ <DA6901612C71B84D91459DE817C418AE26E0B5E2@XAP-PVEXMBX01.xlnx.xilinx.com>
+ <504cd632-022b-3e6b-8c50-563a585e1a08@atmel.com>
+In-Reply-To: <504cd632-022b-3e6b-8c50-563a585e1a08@atmel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1480911066-26157-2-git-send-email-punnaia@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,563 +29,492 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/05/2016 05:11 AM, Punnaiah Choudary Kalluri wrote:
-> Added the basic driver for Arasan Nand Flash Controller used in
-> Zynq UltraScale+ MPSoC. It supports only Hw Ecc and upto 24bit
-> correction.
+Hi Cyrille,
 
-Ummm, NAND, ECC, can you fix the acronyms to be in caps ?
+> > Hi Cyrille,
+> >
+> >> I have not finished to review the whole series yet but here some
+> >> first
+> >> comments:
+> >
+> > Thanks for reviewing these patch series.
+> >
+> >>
+> >> Le 27/11/2016 =E0 09:33, Naga Sureshkumar Relli a =E9crit :
+> >>> This patch adds stripe support and it is needed for GQSPI parallel
+> >>> configuration mode by:
+> >>>
+> >>> - Adding required parameters like stripe and shift to spi_nor
+> >>>   structure.
+> >>> - Initializing all added parameters in spi_nor_scan()
+> >>> - Updating read_sr() and read_fsr() for getting status from both
+> >>>   flashes
+> >>> - Increasing page_size, sector_size, erase_size and toatal flash
+> >>>   size as and when required.
+> >>> - Dividing address by 2
+> >>> - Updating spi->master->flags for qspi driver to change CS
+> >>>
+> >>> Signed-off-by: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> >>> ---
+> >>> Changes for v4:
+> >>>  - rename isparallel to stripe
+> >>> Changes for v3:
+> >>>  - No change
+> >>> Changes for v2:
+> >>>  - Splitted to separate MTD layer changes from SPI core changes
+> >>> ---
+> >>>  drivers/mtd/spi-nor/spi-nor.c | 130
+> >> ++++++++++++++++++++++++++++++++----------
+> >>>  include/linux/mtd/spi-nor.h   |   2 +
+> >>>  2 files changed, 103 insertions(+), 29 deletions(-)
+> >>>
+> >>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
+> >>> b/drivers/mtd/spi-nor/spi-nor.c index d0fc165..4252239 100644
+> >>> --- a/drivers/mtd/spi-nor/spi-nor.c
+> >>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> >>> @@ -22,6 +22,7 @@
+> >>>  #include <linux/of_platform.h>
+> >>>  #include <linux/spi/flash.h>
+> >>>  #include <linux/mtd/spi-nor.h>
+> >>> +#include <linux/spi/spi.h>
+> >>>
+> >>>  /* Define max times to check status register before we give up. */
+> >>>
+> >>> @@ -89,15 +90,24 @@ static const struct flash_info
+> >>> *spi_nor_match_id(const char *name);  static int read_sr(struct
+> >>> spi_nor *nor)  {
+> >>>   int ret;
+> >>> - u8 val;
+> >>> + u8 val[2];
+> >>>
+> >>> - ret =3D nor->read_reg(nor, SPINOR_OP_RDSR, &val, 1);
+> >>> - if (ret < 0) {
+> >>> -         pr_err("error %d reading SR\n", (int) ret);
+> >>> -         return ret;
+> >>> + if (nor->stripe) {
+> >>> +         ret =3D nor->read_reg(nor, SPINOR_OP_RDSR, &val[0], 2);
+> >>> +         if (ret < 0) {
+> >>> +                 pr_err("error %d reading SR\n", (int) ret);
+> >>> +                 return ret;
+> >>> +         }
+> >>> +         val[0] |=3D val[1];
+> >> Why '|' rather than '&' ?
+> >> I guess because of the 'Write In Progress/Busy' bit: when called by
+> >> spi_nor_sr_ready(), you want to be sure that this 'BUSY' bit is
+> >> cleared on both memories.
+> >>
+> >> But what about when the Status Register is read for purpose other
+> >> than checking the state of the 'BUSY' bit?
+> >>
+> > Yes you are correct, I will change this.
+> >
+> >> What about SPI controllers supporting more than 2 memories in parallel=
+?
+> >>
+> >> This solution might fit the ZynqMP controller but doesn't look so gene=
+ric.
+> >>
+> >>> + } else {
+> >>> +         ret =3D nor->read_reg(nor, SPINOR_OP_RDSR, &val[0], 1);
+> >>> +         if (ret < 0) {
+> >>> +                 pr_err("error %d reading SR\n", (int) ret);
+> >>> +                 return ret;
+> >>> +         }
+> >>>   }
+> >>>
+> >>> - return val;
+> >>> + return val[0];
+> >>>  }
+> >>>
+> >>>  /*
+> >>> @@ -108,15 +118,24 @@ static int read_sr(struct spi_nor *nor)
+> >>> static int read_fsr(struct spi_nor *nor)  {
+> >>>   int ret;
+> >>> - u8 val;
+> >>> + u8 val[2];
+> >>>
+> >>> - ret =3D nor->read_reg(nor, SPINOR_OP_RDFSR, &val, 1);
+> >>> - if (ret < 0) {
+> >>> -         pr_err("error %d reading FSR\n", ret);
+> >>> -         return ret;
+> >>> + if (nor->stripe) {
+> >>> +         ret =3D nor->read_reg(nor, SPINOR_OP_RDFSR, &val[0], 2);
+> >>> +         if (ret < 0) {
+> >>> +                 pr_err("error %d reading FSR\n", ret);
+> >>> +                 return ret;
+> >>> +         }
+> >>> +         val[0] &=3D val[1];
+> >> Same comment here: why '&' rather than '|'?
+> >> Surely because of the the 'READY' bit which should be set for both
+> memories.
+> > I will update this also.
+> >>
+> >>> + } else {
+> >>> +         ret =3D nor->read_reg(nor, SPINOR_OP_RDFSR, &val[0], 1);
+> >>> +         if (ret < 0) {
+> >>> +                 pr_err("error %d reading FSR\n", ret);
+> >>> +                 return ret;
+> >>> +         }
+> >>>   }
+> >>>
+> >>> - return val;
+> >>> + return val[0];
+> >>>  }
+> >>>
+> >>>  /*
+> >>> @@ -290,9 +309,16 @@ static int spi_nor_wait_till_ready(struct
+> >>> spi_nor
+> >> *nor)
+> >>>   */
+> >>>  static int erase_chip(struct spi_nor *nor)  {
+> >>> + u32 ret;
+> >>> +
+> >>>   dev_dbg(nor->dev, " %lldKiB\n", (long long)(nor->mtd.size >> 10));
+> >>>
+> >>> - return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
+> >>> + ret =3D nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
+> >>> + if (ret)
+> >>> +         return ret;
+> >>> +
+> >>> + return ret;
+> >>> +
+> >>
+> >>    if (ret)
+> >>            return ret;
+> >>    else
+> >>            return ret;
+> >>
+> >> This chunk should be removed, it doesn't ease the patch review ;)
+> > Ok, I will remove.
+> >>
+> >>>  }
+> >>>
+> >>>  static int spi_nor_lock_and_prep(struct spi_nor *nor, enum
+> >>> spi_nor_ops ops) @@ -349,7 +375,7 @@ static int
+> >>> spi_nor_erase_sector(struct spi_nor *nor, u32 addr)  static int
+> >>> spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)  {
+> >>>   struct spi_nor *nor =3D mtd_to_spi_nor(mtd);
+> >>> - u32 addr, len;
+> >>> + u32 addr, len, offset;
+> >>>   uint32_t rem;
+> >>>   int ret;
+> >>>
+> >>> @@ -399,9 +425,13 @@ static int spi_nor_erase(struct mtd_info *mtd,
+> >> struct erase_info *instr)
+> >>>   /* "sector"-at-a-time erase */
+> >>>   } else {
+> >>>           while (len) {
+> >>> +
+> >>>                   write_enable(nor);
+> >>> +                 offset =3D addr;
+> >>> +                 if (nor->stripe)
+> >>> +                         offset /=3D 2;
+> >>
+> >> I guess this should be /=3D 4 for controllers supporting 4 memories in
+> parallel.
+> >> Shouldn't you use nor->shift and define shift as an unsigned int
+> >> instead of a bool?
+> >> offset >>=3D nor->shift;
+> >>
+> > Yes we can use this shift, I will update
+> >
+> >> Anyway, by tuning the address here in spi-nor.c rather than in the
+> >> SPI controller driver, you impose a model to support parallel
+> >> memories that might not be suited to other controllers.
+> >
+> > For this ZynqMP GQSPI controller parallel configuration, globally
+> > spi-nor should know about this stripe feature And based on that address
+> has to change.
+> > As I mentioned in cover letter, this controller in parallel configurati=
+on will
+> work with even addresses only.
+> > i.e. Before creating address format(m25p_addr2cmd) in mtd layer, spi-no=
+r
+> should change that address based on stripe option.
+> >
+> > I am updating this offset based on stripe option, and stripe option wil=
+l
+> update by reading dt property in nor_scan().
+> > So the controller which doesn't support, then the stripe will be zero.
+> > Or Can you please suggest any other way?
+> >
+> >>
+> >>>
+> >>> -                 ret =3D spi_nor_erase_sector(nor, addr);
+> >>> +                 ret =3D spi_nor_erase_sector(nor, offset);
+> >>>                   if (ret)
+> >>>                           goto erase_err;
+> >>>
+> >>> @@ -525,6 +555,8 @@ static int stm_lock(struct spi_nor *nor, loff_t
+> >>> ofs,
+> >> uint64_t len)
+> >>>   bool use_top;
+> >>>   int ret;
+> >>>
+> >>> + ofs =3D ofs >> nor->shift;
+> >>> +
+> >>>   status_old =3D read_sr(nor);
+> >>>   if (status_old < 0)
+> >>>           return status_old;
+> >>> @@ -610,6 +642,8 @@ static int stm_unlock(struct spi_nor *nor,
+> >>> loff_t ofs,
+> >> uint64_t len)
+> >>>   bool use_top;
+> >>>   int ret;
+> >>>
+> >>> + ofs =3D ofs >> nor->shift;
+> >>> +
+> >>>   status_old =3D read_sr(nor);
+> >>>   if (status_old < 0)
+> >>>           return status_old;
+> >>> @@ -709,6 +743,8 @@ static int spi_nor_lock(struct mtd_info *mtd,
+> >>> loff_t
+> >> ofs, uint64_t len)
+> >>>   if (ret)
+> >>>           return ret;
+> >>>
+> >>> + ofs =3D ofs >> nor->shift;
+> >>> +
+> >>>   ret =3D nor->flash_lock(nor, ofs, len);
+> >>>
+> >>>   spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_UNLOCK); @@ -
+> >> 724,6 +760,8
+> >>> @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs,
+> >>> uint64_t
+> >> len)
+> >>>   if (ret)
+> >>>           return ret;
+> >>>
+> >>> + ofs =3D ofs >> nor->shift;
+> >>> +
+> >>>   ret =3D nor->flash_unlock(nor, ofs, len);
+> >>>
+> >>>   spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK); @@ -
+> >> 1018,6 +1056,9
+> >>> @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *no=
+r)
+> >>>   u8                      id[SPI_NOR_MAX_ID_LEN];
+> >>>   const struct flash_info *info;
+> >>>
+> >>> + nor->spi->master->flags &=3D ~(SPI_MASTER_BOTH_CS |
+> >>> +                                 SPI_MASTER_DATA_STRIPE);
+> >>> +
+> >>>   tmp =3D nor->read_reg(nor, SPINOR_OP_RDID, id,
+> >> SPI_NOR_MAX_ID_LEN);
+> >>>   if (tmp < 0) {
+> >>>           dev_dbg(nor->dev, "error %d reading JEDEC ID\n", tmp);
+> >> @@ -1041,6
+> >>> +1082,7 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t
+> >>> +from,
+> >>> size_t len,  {
+> >>>   struct spi_nor *nor =3D mtd_to_spi_nor(mtd);
+> >>>   int ret;
+> >>> + u32 offset =3D from;
+> >>>
+> >>>   dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
+> >>>
+> >>> @@ -1049,7 +1091,13 @@ static int spi_nor_read(struct mtd_info *mtd,
+> >> loff_t from, size_t len,
+> >>>           return ret;
+> >>>
+> >>>   while (len) {
+> >>> -         ret =3D nor->read(nor, from, len, buf);
+> >>> +
+> >>> +         offset =3D from;
+> >>> +
+> >>> +         if (nor->stripe)
+> >>> +                 offset /=3D 2;
+> >>> +
+> >>> +         ret =3D nor->read(nor, offset, len, buf);
+> >>>           if (ret =3D=3D 0) {
+> >>>                   /* We shouldn't see 0-length reads */
+> >>>                   ret =3D -EIO;
+> >>> @@ -1161,6 +1209,7 @@ static int spi_nor_write(struct mtd_info *mtd,
+> >> loff_t to, size_t len,
+> >>>   struct spi_nor *nor =3D mtd_to_spi_nor(mtd);
+> >>>   size_t page_offset, page_remain, i;
+> >>>   ssize_t ret;
+> >>> + u32 offset;
+> >>>
+> >>>   dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
+> >>>
+> >>> @@ -1178,9 +1227,13 @@ static int spi_nor_write(struct mtd_info
+> >>> *mtd,
+> >> loff_t to, size_t len,
+> >>>           /* the size of data remaining on the first page */
+> >>>           page_remain =3D min_t(size_t,
+> >>>                               nor->page_size - page_offset, len - i);
+> >>> +         offset =3D (to + i);
+> >>> +
+> >>> +         if (nor->stripe)
+> >>> +                 offset /=3D 2;
+> >>>
+> >>>           write_enable(nor);
+> >>> -         ret =3D nor->write(nor, to + i, page_remain, buf + i);
+> >>> +         ret =3D nor->write(nor, (offset), page_remain, buf + i);
+> >>>           if (ret < 0)
+> >>>                   goto write_err;
+> >>>           written =3D ret;
+> >>> @@ -1302,22 +1355,22 @@ static int spi_nor_check(struct spi_nor
+> >>> *nor)
+> >>>
+> >>>  int spi_nor_scan(struct spi_nor *nor, const char *name, enum
+> >>> read_mode mode)  {
+> >>> - const struct flash_info *info =3D NULL;
+> >>> + struct flash_info *info =3D NULL;
+> >>
+> >> You should not remove the const and should not try to modify members
+> >> of *info.
+> >>
+> >>>   struct device *dev =3D nor->dev;
+> >>>   struct mtd_info *mtd =3D &nor->mtd;
+> >>>   struct device_node *np =3D spi_nor_get_flash_node(nor);
+> >>> - int ret;
+> >>> - int i;
+> >>> + struct device_node *np_spi;
+> >>> + int ret, i, xlnx_qspi_mode;
+> >>>
+> >>>   ret =3D spi_nor_check(nor);
+> >>>   if (ret)
+> >>>           return ret;
+> >>>
+> >>>   if (name)
+> >>> -         info =3D spi_nor_match_id(name);
+> >>> +         info =3D (struct flash_info *)spi_nor_match_id(name);
+> >>>   /* Try to auto-detect if chip name wasn't specified or not found */
+> >>>   if (!info)
+> >>> -         info =3D spi_nor_read_id(nor);
+> >>> +         info =3D (struct flash_info *)spi_nor_read_id(nor);
+> >>>   if (IS_ERR_OR_NULL(info))
+> >>>           return -ENOENT;
+> >>>
+> >> Both spi_nor_match_id() and spi_nor_read_id(), when they succeed,
+> >> return a pointer to an entry of the spi_nor_ids[] array, which is
+> >> located in a read- only memory area.
+> >>
+> >> Since your patch doesn't remove the const attribute of the
+> >> spi_nor_ids[], I wonder whether it has been tested. I expect it not
+> >> to work on most architecture.
+> >>
+> >> Anyway spi_nor_ids[] should remain const. Let's take the case of
+> >> eXecution In Place (XIP) from an external memory: if spi_nor_ids[] is
+> >> const, it can be read directly from this external (read-only) memory
+> >> and we never need to copy the array in RAM, so we save some KB of
+> RAM.
+> >> This is just an example but I guess we can find other reasons to keep
+> >> this array const.
+> >>
+> >>> @@ -1341,7 +1394,7 @@ int spi_nor_scan(struct spi_nor *nor, const
+> >>> char
+> >> *name, enum read_mode mode)
+> >>>                    */
+> >>>                   dev_warn(dev, "found %s, expected %s\n",
+> >>>                            jinfo->name, info->name);
+> >>> -                 info =3D jinfo;
+> >>> +                 info =3D (struct flash_info *)jinfo;
+> >>>           }
+> >>>   }
+> >>>
+> >>> @@ -1370,6 +1423,27 @@ int spi_nor_scan(struct spi_nor *nor, const
+> >>> char
+> >> *name, enum read_mode mode)
+> >>>   mtd->size =3D info->sector_size * info->n_sectors;
+> >>>   mtd->_erase =3D spi_nor_erase;
+> >>>   mtd->_read =3D spi_nor_read;
+> >>> +#ifdef CONFIG_OF
+> >>> + np_spi =3D of_get_next_parent(np);
+> >>> +
+> >>> + if (of_property_read_u32(np_spi, "xlnx,qspi-mode",
+> >>> +                         &xlnx_qspi_mode) < 0) {
+> >> This really looks controller specific so should not be placed in the
+> >> generic spi- nor.c file.
+> >
+> > Const is removed in info struct, because to update info members based
+> parallel configuration.
+> > As I mentioned above,  for this parallel configuration, mtd and
+> > spi-nor should know the details like
+> > mtd->size, info->sectors, sector_size and page_size.
+>
+> You can tune the values of nor->mtd.size, nor->mtd.erasesize, nor-
+> >page_size or whatever member of nor/nor.mtd as needed without ever
+> modifying members of *info.
+>
+> If you modify *info then spi_nor_scan() is called a 2nd time to probe and
+> configure SPI memories of the same part but connected to another
+> controller, the values of the modified members in this *info would not be
+> those expected.
+> So *info and the spi_nor_ids[] array must remain const.
+>
+> The *info structure is not used outside spi_nor_scan(); none of
+> spi_nor_read(),
+> spi_nor_write() and spi_nor_erase() refers to *info hence every relevant
+> value can be set only nor or nor->mtd members.
+>
+>
+> Anyway, I think OR'ing or AND'ing values of memory registers depending on
+> the relevant bit we want to check is not the right solution.
+> If done in spi-nor.c, there would be a specific case for each memory regi=
+ster
+> we read, each register bit would have to be handled differently.
+>
+> spi-nor.c tries to support as much memory parts as possible, it deals wit=
+h
+> many registers and bits: Status/Control registers, Quad Enable bits...
+>
+> If we start to OR or AND each of these register values to support the
+> stripping mode, spi-nor will become really hard to maintain.
+>
+> I don't know whether it could be done with the xilinx controller but I th=
+ought
+> about first configuring the two memories independently calling
+> spi_nor_scan() twice; one call for each memory.
+>
+> Then the xilinx driver could register only one struct mtd_info, overridin=
+g
+> mtd->_read() [and likely mtd->_write() and mtd->_erase() too] set by
+> spi_nor_scan() with a xilinx driver custom implementation so this driver
+> supports its controller stripping mode as it wants.
+>
+> Of course, this solution assumes that the SPI controller has one dedicate=
+d
+> chip-select line for each memory and not a single chip-select line shared=
+ by
+> both memories. The memories should be configured independently: you
+> can't assume multiple instances of the very same memory part always retur=
+n
+> the exact same value when reading one of their register. Logical AND/OR i=
+s
+> not a generic solution, IMHO.
+>
+> If the xilinx controller has only one shared chip-select line then let's =
+see
+> whether 2 GPIO lines could be used as independent chip-select lines.
+>
+>
+In parallel configuration, Physically we have two flashes but mtd will see =
+as single flash memory (sum of both memories)
+If we call spi_nor_scan(), twice then read/write will override but nor->mtd=
+.size, nor->mtd.erasesize, nor->page_size  will remain same, I,e they will =
+also override, they won't append.
+I tried calling spi_nor_scan() twice by some hacks but nor->mtd.size, nor->=
+mtd.erasesize, nor->page_size are not changing
+Also the same issue we are getting for flash address, need to shift the add=
+ress to work in this configuration.
+Also to tune  nor->mtd.size, nor->mtd.erasesize, nor->page_size, we need to=
+ touch this spi-nor.c
 
-> Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
-> ---
-> Chnages in v6:
-> - Addressed most of the Brian and Boris comments
-> - Separated the nandchip from the nand controller
-> - Removed the ecc lookup table from driver
-> - Now use framework nand waitfunction and readoob
-> - Fixed the compiler warning
-> - Adapted the new frameowrk changes related to ecc and ooblayout
-> - Disabled the clocks after the nand_reelase
-> - Now using only one completion object
-> - Boris suggessions like adapting cmd_ctrl and rework on read/write byte
->   are not implemented and i will patch them later
-> - Also check_erased_ecc_chunk for erase and check for is_vmalloc_addr will
->   implement later once the basic driver is mainlined. 
-> Changes in v5:
-> - Renamed the driver filei as arasan_nand.c
-> - Fixed all comments relaqted coding style
-> - Fixed comments related to propagating the errors
-> - Modified the anfc_write_page_hwecc as per the write_page
->   prototype
-> Changes in v4:
-> - Added support for onfi timing mode configuration
-> - Added clock supppport
-> - Added support for multiple chipselects
-> Changes in v3:
-> - Removed unused variables
-> - Avoided busy loop and used jifies based implementation
-> - Fixed compiler warnings "right shift count >= width of type"
-> - Removed unneeded codei and improved error reporting
-> - Added onfi version check to ensure reading the valid address cycles
-> Changes in v2:
-> - Added missing of.h to avoid kbuild system report erro
-> ---
->  drivers/mtd/nand/Kconfig       |   8 +
->  drivers/mtd/nand/Makefile      |   1 +
->  drivers/mtd/nand/arasan_nand.c | 974 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 983 insertions(+)
->  create mode 100644 drivers/mtd/nand/arasan_nand.c
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 7b7a887..e831f4e 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -569,4 +569,12 @@ config MTD_NAND_MTK
->  	  Enables support for NAND controller on MTK SoCs.
->  	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
->  
-> +config MTD_NAND_ARASAN
-> +	tristate "Support for Arasan Nand Flash controller"
-> +	depends on HAS_IOMEM
-> +	depends on HAS_DMA
-> +	help
-> +	  Enables the driver for the Arasan Nand Flash controller on
-> +	  Zynq UltraScale+ MPSoC.
-> +
->  endif # MTD_NAND
-> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> index cafde6f..44b8b00 100644
-> --- a/drivers/mtd/nand/Makefile
-> +++ b/drivers/mtd/nand/Makefile
-> @@ -58,5 +58,6 @@ obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
->  obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
->  obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
-> +obj-$(CONFIG_MTD_NAND_ARASAN)		+= arasan_nand.o
+Please kindly suggest, if I am wrong.
 
-Keep the list at least reasonably sorted.
+Thanks,
+Naga Sureshkumar Relli
 
->  nand-objs := nand_base.o nand_bbt.o nand_timings.o
-> diff --git a/drivers/mtd/nand/arasan_nand.c b/drivers/mtd/nand/arasan_nand.c
-> new file mode 100644
-> index 0000000..6b0670e
-> --- /dev/null
-> +++ b/drivers/mtd/nand/arasan_nand.c
-> @@ -0,0 +1,974 @@
-> +/*
-> + * Arasan Nand Flash Controller Driver
-
-NAND
-
-> + * Copyright (C) 2014 - 2015 Xilinx, Inc.
-
-It's 2016 now ...
-
-> + * This program is free software; you can redistribute it and/or modify it under
-> + * the terms of the GNU General Public License version 2 as published by the
-> + * Free Software Foundation; either version 2 of the License, or (at your
-> + * option) any later version.
-> + */
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io-64-nonatomic-lo-hi.h>
-> +#include <linux/module.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +
-> +#define DRIVER_NAME			"arasan_nand"
-> +#define EVNT_TIMEOUT			1000
-
-Rename to EVENT_TIMEOUT_<units> to make this less cryptic
-
-> +#define STATUS_TIMEOUT			2000
-
-DTTO
-
-> +#define PKT_OFST			0x00
-> +#define MEM_ADDR1_OFST			0x04
-> +#define MEM_ADDR2_OFST			0x08
-> +#define CMD_OFST			0x0C
-> +#define PROG_OFST			0x10
-> +#define INTR_STS_EN_OFST		0x14
-> +#define INTR_SIG_EN_OFST		0x18
-> +#define INTR_STS_OFST			0x1C
-> +#define READY_STS_OFST			0x20
-> +#define DMA_ADDR1_OFST			0x24
-> +#define FLASH_STS_OFST			0x28
-> +#define DATA_PORT_OFST			0x30
-> +#define ECC_OFST			0x34
-> +#define ECC_ERR_CNT_OFST		0x38
-> +#define ECC_SPR_CMD_OFST		0x3C
-> +#define ECC_ERR_CNT_1BIT_OFST		0x40
-> +#define ECC_ERR_CNT_2BIT_OFST		0x44
-> +#define DMA_ADDR0_OFST			0x50
-> +#define DATA_INTERFACE_REG		0x6C
-
-Why are some things suffixed with _OFST and some with _REG ? Consistency
-please. Using ARASAN_ prefix, ie. #define ARASAN_FOO 0xbar to define
-regs would be nice.
-
-> +#define PKT_CNT_SHIFT			12
-> +
-> +#define ECC_ENABLE			BIT(31)
-> +#define DMA_EN_MASK			GENMASK(27, 26)
-> +#define DMA_ENABLE			0x2
-> +#define DMA_EN_SHIFT			26
-> +#define REG_PAGE_SIZE_MASK		GENMASK(25, 23)
-> +#define REG_PAGE_SIZE_SHIFT		23
-> +#define REG_PAGE_SIZE_512		0
-> +#define REG_PAGE_SIZE_1K		5
-> +#define REG_PAGE_SIZE_2K		1
-> +#define REG_PAGE_SIZE_4K		2
-> +#define REG_PAGE_SIZE_8K		3
-> +#define REG_PAGE_SIZE_16K		4
-> +#define CMD2_SHIFT			8
-> +#define ADDR_CYCLES_SHIFT		28
-> +
-> +#define XFER_COMPLETE			BIT(2)
-> +#define READ_READY			BIT(1)
-> +#define WRITE_READY			BIT(0)
-> +#define MBIT_ERROR			BIT(3)
-> +#define ERR_INTRPT			BIT(4)
-> +
-> +#define PROG_PGRD			BIT(0)
-> +#define PROG_ERASE			BIT(2)
-> +#define PROG_STATUS			BIT(3)
-> +#define PROG_PGPROG			BIT(4)
-> +#define PROG_RDID			BIT(6)
-> +#define PROG_RDPARAM			BIT(7)
-> +#define PROG_RST			BIT(8)
-> +#define PROG_GET_FEATURE		BIT(9)
-> +#define PROG_SET_FEATURE		BIT(10)
-> +
-> +#define ONFI_STATUS_FAIL		BIT(0)
-> +#define ONFI_STATUS_READY		BIT(6)
-> +
-> +#define PG_ADDR_SHIFT			16
-> +#define BCH_MODE_SHIFT			25
-> +#define BCH_EN_SHIFT			27
-> +#define ECC_SIZE_SHIFT			16
-> +
-> +#define MEM_ADDR_MASK			GENMASK(7, 0)
-> +#define BCH_MODE_MASK			GENMASK(27, 25)
-> +
-> +#define CS_MASK				GENMASK(31, 30)
-> +#define CS_SHIFT			30
-> +
-> +#define PAGE_ERR_CNT_MASK		GENMASK(16, 8)
-> +#define PKT_ERR_CNT_MASK		GENMASK(7, 0)
-> +
-> +#define NVDDR_MODE			BIT(9)
-> +#define NVDDR_TIMING_MODE_SHIFT		3
-> +
-> +#define ONFI_ID_LEN			8
-> +#define TEMP_BUF_SIZE			512
-> +#define NVDDR_MODE_PACKET_SIZE		8
-> +#define SDR_MODE_PACKET_SIZE		4
-> +
-> +#define ONFI_DATA_INTERFACE_NVDDR      (1 << 4)
-
-BIT() ?
-
-
-[...]
-
-> +struct anfc {
-> +	struct nand_hw_control controller;
-> +	struct list_head chips;
-> +	struct device *dev;
-> +	void __iomem *base;
-> +	int curr_cmd;
-> +	struct clk *clk_sys;
-> +	struct clk *clk_flash;
-> +	bool dma;
-> +	bool err;
-> +	bool iswriteoob;
-> +	u8 buf[TEMP_BUF_SIZE];
-> +	int irq;
-> +	u32 bufshift;
-> +	int csnum;
-> +	struct completion evnt;
-
-event ?
-
-> +};
-
-[...]
-
-> +static void anfc_prepare_cmd(struct anfc *nfc, u8 cmd1, u8 cmd2, u8 dmamode,
-> +			     u32 pagesize, u8 addrcycles)
-> +{
-> +	u32 regval;
-> +
-> +	regval = cmd1 | (cmd2 << CMD2_SHIFT);
-> +	if (dmamode && nfc->dma)
-> +		regval |= DMA_ENABLE << DMA_EN_SHIFT;
-> +	if (addrcycles)
-> +		regval |= addrcycles << ADDR_CYCLES_SHIFT;
-> +	if (pagesize)
-> +		regval |= anfc_page(pagesize) << REG_PAGE_SIZE_SHIFT;
-
-Drop the if (foo), if it's zero, the regval would be OR'd with zero.
-
-> +	writel(regval, nfc->base + CMD_OFST);
-> +}
-> +
-> +static int anfc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
-> +			  int page)
-> +{
-> +	struct anfc *nfc = to_anfc(chip->controller);
-> +
-> +	nfc->iswriteoob = true;
-> +	chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize, page);
-> +	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-> +	nfc->iswriteoob = false;
-> +
-> +	return 0;
-> +}
-> +
-> +static void anfc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
-> +{
-> +	u32 pktcount, pktsize, eccintr = 0;
-> +	unsigned int buf_rd_cnt = 0;
-> +	u32 *bufptr = (u32 *)buf;
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
-> +	struct anfc *nfc = to_anfc(chip->controller);
-> +	dma_addr_t paddr;
-> +
-> +	if (nfc->curr_cmd == NAND_CMD_READ0) {
-> +		pktsize = achip->pktsize;
-> +		pktcount = DIV_ROUND_UP(mtd->writesize, pktsize);
-> +		if (!achip->bch)
-> +			eccintr = MBIT_ERROR;
-> +	} else {
-> +		pktsize = len;
-> +		pktcount = 1;
-> +	}
-> +
-> +	anfc_setpktszcnt(nfc, pktsize, pktcount);
-> +
-> +	if (nfc->dma) {
-> +		paddr = dma_map_single(nfc->dev, buf, len, DMA_FROM_DEVICE);
-> +		if (dma_mapping_error(nfc->dev, paddr)) {
-> +			dev_err(nfc->dev, "Read buffer mapping error");
-> +			return;
-> +		}
-> +		lo_hi_writeq(paddr, nfc->base + DMA_ADDR0_OFST);
-> +		anfc_enable_intrs(nfc, (XFER_COMPLETE | eccintr));
-> +		writel(PROG_PGRD, nfc->base + PROG_OFST);
-> +		anfc_wait_for_event(nfc);
-> +		dma_unmap_single(nfc->dev, paddr, len, DMA_FROM_DEVICE);
-
-Split this function into anfc_read_buf() and then anfc_read_buf_pio()
-and anfc_read_buf_dma() to avoid this ugliness. Also, does this handle
-any errors in any way ? Looks like it ignores all errors, so please fix.
-
-> +		return;
-> +	}
-> +
-> +	anfc_enable_intrs(nfc, (READ_READY | eccintr));
-> +	writel(PROG_PGRD, nfc->base + PROG_OFST);
-> +
-> +	while (buf_rd_cnt < pktcount) {
-> +		anfc_wait_for_event(nfc);
-> +		buf_rd_cnt++;
-> +
-> +		if (buf_rd_cnt == pktcount)
-> +			anfc_enable_intrs(nfc, XFER_COMPLETE);
-> +
-> +		readsl(nfc->base + DATA_PORT_OFST, bufptr, pktsize/4);
-> +		bufptr += (pktsize / 4);
-> +
-> +		if (buf_rd_cnt < pktcount)
-> +			anfc_enable_intrs(nfc, (READ_READY | eccintr));
-> +	}
-> +
-> +	anfc_wait_for_event(nfc);
-> +}
-> +
-> +static void anfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-> +{
-> +	u32 pktcount, pktsize;
-> +	unsigned int buf_wr_cnt = 0;
-> +	u32 *bufptr = (u32 *)buf;
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
-> +	struct anfc *nfc = to_anfc(chip->controller);
-> +	dma_addr_t paddr;
-> +
-> +	if (nfc->iswriteoob) {
-> +		pktsize = len;
-> +		pktcount = 1;
-> +	} else {
-> +		pktsize = achip->pktsize;
-> +		pktcount = mtd->writesize / pktsize;
-> +	}
-
-This looks like a copy of the read path. Can these two functions be
-parametrized and merged ?
-
-> +	anfc_setpktszcnt(nfc, pktsize, pktcount);
-> +
-> +	if (nfc->dma) {
-> +		paddr = dma_map_single(nfc->dev, (void *)buf, len,
-> +				       DMA_TO_DEVICE);
-> +		if (dma_mapping_error(nfc->dev, paddr)) {
-> +			dev_err(nfc->dev, "Write buffer mapping error");
-> +			return;
-> +		}
-> +		lo_hi_writeq(paddr, nfc->base + DMA_ADDR0_OFST);
-> +		anfc_enable_intrs(nfc, XFER_COMPLETE);
-> +		writel(PROG_PGPROG, nfc->base + PROG_OFST);
-> +		anfc_wait_for_event(nfc);
-> +		dma_unmap_single(nfc->dev, paddr, len, DMA_TO_DEVICE);
-> +		return;
-> +	}
-> +
-> +	anfc_enable_intrs(nfc, WRITE_READY);
-> +	writel(PROG_PGPROG, nfc->base + PROG_OFST);
-> +
-> +	while (buf_wr_cnt < pktcount) {
-> +		anfc_wait_for_event(nfc);
-> +		buf_wr_cnt++;
-> +		if (buf_wr_cnt == pktcount)
-> +			anfc_enable_intrs(nfc, XFER_COMPLETE);
-> +
-> +		writesl(nfc->base + DATA_PORT_OFST, bufptr, pktsize/4);
-> +		bufptr += (pktsize / 4);
-> +
-> +		if (buf_wr_cnt < pktcount)
-> +			anfc_enable_intrs(nfc, WRITE_READY);
-> +	}
-> +
-> +	anfc_wait_for_event(nfc);
-> +}
-
-
-[...]
-
-> +static void anfc_writefifo(struct anfc *nfc, u32 prog, u32 size, u8 *buf)
-> +{
-> +	u32 *bufptr = (u32 *)buf;
-> +
-> +	anfc_enable_intrs(nfc, WRITE_READY);
-> +
-> +	writel(prog, nfc->base + PROG_OFST);
-> +	anfc_wait_for_event(nfc);
-> +
-> +	anfc_enable_intrs(nfc, XFER_COMPLETE);
-> +	writesl(nfc->base + DATA_PORT_OFST, bufptr, size/4);
-
-use ioread32_rep and iowrite32_rep , otherwise this won't compile on x86
-with COMPILE_TEST.
-
-> +	anfc_wait_for_event(nfc);
-> +}
-> +
-> +static void anfc_readfifo(struct anfc *nfc, u32 prog, u32 size)
-> +{
-> +	u32 *bufptr = (u32 *)nfc->buf;
-> +
-> +	anfc_enable_intrs(nfc, READ_READY);
-> +
-> +	writel(prog, nfc->base + PROG_OFST);
-> +	anfc_wait_for_event(nfc);
-> +
-> +	anfc_enable_intrs(nfc, XFER_COMPLETE);
-> +	readsl(nfc->base + DATA_PORT_OFST, bufptr, size/4);
-
-See above
-
-> +	anfc_wait_for_event(nfc);
-> +}
-
-
-[...]
-
-> +static void anfc_select_chip(struct mtd_info *mtd, int num)
-> +{
-> +	u32 val;
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
-> +	struct anfc *nfc = to_anfc(chip->controller);
-> +
-> +	if (num == -1)
-> +		return;
-> +
-> +	val = readl(nfc->base + MEM_ADDR2_OFST);
-> +	val = (val & ~(CS_MASK)) | (achip->csnum << CS_SHIFT);
-> +	val = (val & ~(BCH_MODE_MASK)) | (achip->bchmode << BCH_MODE_SHIFT);
-
-Just rewrite this as a series of val &= ~(foo | bar); val |= baz | quux;
-for clarity sake.
-
-> +	writel(val, nfc->base + MEM_ADDR2_OFST);
-> +	nfc->csnum = achip->csnum;
-> +	writel(achip->eccval, nfc->base + ECC_OFST);
-> +	writel(achip->inftimeval, nfc->base + DATA_INTERFACE_REG);
-> +}
-> +
-> +static irqreturn_t anfc_irq_handler(int irq, void *ptr)
-> +{
-> +	struct anfc *nfc = ptr;
-> +	u32 regval = 0, status;
-> +
-> +	status = readl(nfc->base + INTR_STS_OFST);
-> +	if (status & XFER_COMPLETE) {
-> +		complete(&nfc->evnt);
-> +		regval |= XFER_COMPLETE;
-
-Can the complete() be invoked multiple times ? That seems a bit odd.
-
-> +	}
-> +
-> +	if (status & READ_READY) {
-> +		complete(&nfc->evnt);
-> +		regval |= READ_READY;
-> +	}
-> +
-> +	if (status & WRITE_READY) {
-> +		complete(&nfc->evnt);
-> +		regval |= WRITE_READY;
-> +	}
-> +
-> +	if (status & MBIT_ERROR) {
-> +		nfc->err = true;
-> +		complete(&nfc->evnt);
-> +		regval |= MBIT_ERROR;
-> +	}
-> +
-> +	if (regval) {
-> +		writel(regval, nfc->base + INTR_STS_OFST);
-> +		writel(0, nfc->base + INTR_STS_EN_OFST);
-> +		writel(0, nfc->base + INTR_SIG_EN_OFST);
-> +
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	return IRQ_NONE;
-> +}
-> +
-> +static int anfc_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
-> +				int addr, uint8_t *subfeature_param)
-> +{
-> +	struct anfc *nfc = to_anfc(chip->controller);
-> +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
-> +	int status;
-> +
-> +	if (!chip->onfi_version || !(le16_to_cpu(chip->onfi_params.opt_cmd)
-> +		& ONFI_OPT_CMD_SET_GET_FEATURES))
-
-Split this into two conditions to improve readability.
-
-> +		return -EINVAL;
-> +
-> +	chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, -1);
-> +	anfc_writefifo(nfc, PROG_SET_FEATURE, achip->spktsize,
-> +			subfeature_param);
-> +
-> +	status = chip->waitfunc(mtd, chip);
-> +	if (status & NAND_STATUS_FAIL)
-> +		return -EIO;
-> +
-> +	return 0;
-> +}
-> +
-> +static int anfc_init_timing_mode(struct anfc *nfc,
-> +				 struct anfc_nand_chip *achip)
-> +{
-> +	int mode, err;
-> +	unsigned int feature[2];
-> +	u32 inftimeval;
-> +	struct nand_chip *chip = &achip->chip;
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +
-> +	memset(feature, 0, NVDDR_MODE_PACKET_SIZE);
-> +	/* Get nvddr timing modes */
-> +	mode = onfi_get_sync_timing_mode(chip) & 0xff;
-> +	if (!mode) {
-> +		mode = fls(onfi_get_async_timing_mode(chip)) - 1;
-> +		inftimeval = mode;
-> +	} else {
-> +		mode = fls(mode) - 1;
-> +		inftimeval = NVDDR_MODE | (mode << NVDDR_TIMING_MODE_SHIFT);
-> +		mode |= ONFI_DATA_INTERFACE_NVDDR;
-> +	}
-> +
-> +	feature[0] = mode;
-> +	chip->select_chip(mtd, achip->csnum);
-> +	err = chip->onfi_set_features(mtd, chip, ONFI_FEATURE_ADDR_TIMING_MODE,
-> +				      (uint8_t *)feature);
-> +	chip->select_chip(mtd, -1);
-> +	if (err)
-> +		return err;
-> +
-> +	achip->inftimeval = inftimeval;
-> +
-> +	if (mode & ONFI_DATA_INTERFACE_NVDDR)
-> +		achip->spktsize = NVDDR_MODE_PACKET_SIZE;
-> +
-> +	return 0;
-> +}
-
-[...]
-
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Xilinx, Inc");
-
-There should be a contact with email address here.
-
-> +MODULE_DESCRIPTION("Arasan NAND Flash Controller Driver");
-> 
+> Best regards,
+>
+> Cyrille
 
 
--- 
-Best regards,
-Marek Vasut
+This email and any attachments are intended for the sole use of the named r=
+ecipient(s) and contain(s) confidential information that may be proprietary=
+, privileged or copyrighted under applicable law. If you are not the intend=
+ed recipient, do not read, copy, or forward this email message or any attac=
+hments. Delete this email message and any attachments immediately.
