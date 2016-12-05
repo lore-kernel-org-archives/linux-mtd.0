@@ -1,19 +1,21 @@
-Received: from m12-18.163.com ([220.181.12.18])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDjpU-0008Ht-QY
- for linux-mtd@lists.infradead.org; Mon, 05 Dec 2016 03:20:40 +0000
-From: Pan Bian <bianpan2016@163.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	Pan Bian <bianpan2016@163.com>
-Subject: [PATCH 2/2] mtd: ubi: fix improper return value
-Date: Mon,  5 Dec 2016 11:19:29 +0800
-Message-Id: <1480907969-19960-1-git-send-email-bianpan2016@163.com>
+Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Bindings for Rockchip serial flash
+ controller
+To: Shawn Lin <shawn.lin@rock-chips.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1480906577-38455-1-git-send-email-shawn.lin@rock-chips.com>
+ <1480906577-38455-2-git-send-email-shawn.lin@rock-chips.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ Heiko Stuebner <heiko@sntech.de>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <40cb2739-f58d-2e35-5b87-6b46e93e422e@gmail.com>
+Date: Mon, 5 Dec 2016 04:24:55 +0100
+MIME-Version: 1.0
+In-Reply-To: <1480906577-38455-2-git-send-email-shawn.lin@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +25,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When __vmalloc() returns a NULL pointer, the data is not really tested,
-and we cannot conclude that the data matches. Thus, returning 0 seems
-improper. This patch fixes it, returns "-ENOMEM" and removes the
-warning.
+On 12/05/2016 03:56 AM, Shawn Lin wrote:
+> Add binding document for the Rockchip serial flash controller.
+> 
+> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+> 
+> Changes in v3:
+> - rename sfc-no-dma to sfc-no-DMA
+> 
+> Changes in v2: None
+> 
+>  .../devicetree/bindings/mtd/rockchip-sfc.txt       | 31 ++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+> new file mode 100644
+> index 0000000..c6b4f58
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+> @@ -0,0 +1,31 @@
+> +Rockchip Serial Flash Controller
+> +
+> +Required properties:
+> +- compatible : Should be
+> +		"rockchip,rk1108-sfc", "rockchip,sfc" for ROCKCHIP RK1108.
+> +- address-cells : Should be 1.
+> +- size-cells : Should be 0.
+> +- clocks: Must contain two entries for each entry in clock-names.
+> +- clock-names: Shall be "sfc" for the transfer-clock, and "hsfc" for
+> +		the peripheral clock.
+> +- interrupts : Should contain the interrupt for the device.
+> +- reg: Physical base address of the controller and length of memory mapped.
+> +
+> +Optional properties:
 
-Signed-off-by: Pan Bian <bianpan2016@163.com>
----
- drivers/mtd/ubi/io.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Uhhh, I apologize for the miscommunication.
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 00d7f44..6707277 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -1347,10 +1347,8 @@ static int self_check_write(struct ubi_device *ubi, const void *buf, int pnum,
- 		return 0;
- 
- 	buf1 = __vmalloc(len, GFP_NOFS, PAGE_KERNEL);
--	if (!buf1) {
--		ubi_err(ubi, "cannot allocate memory to check writes");
--		return 0;
--	}
-+	if (!buf1)
-+		return -ENOMEM;
- 
- 	err = mtd_read(ubi->mtd, addr, len, &read, buf1);
- 	if (err && !mtd_is_bitflip(err))
+> +- rockchip,sfc-no-DMA: Indicate the controller doesn't support dma transfer.
+I didn't mean this   ^^^ DMA, that should be lowercase. I meant   ^^^
+this one. The property should be lowercase, the description
+should be uppercase.
+
+> +
+> +Example:
+> +nor_flash: sfc@301c0000 {
+> +	compatible = "rockchip,rk1108-sfc", "rockchip,sfc";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
+> +	clock-names = "sfc", "hsfc";
+> +	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+> +	reg = <0x301c0000 0x1000>;
+> +	spi-nor@0 {
+> +		compatible = "jedec,spi-nor";
+> +		spi-max-frequency = <12000000>;
+> +		reg = <0>;
+> +	};
+> +};
+> 
+
+
 -- 
-1.9.1
+Best regards,
+Marek Vasut
