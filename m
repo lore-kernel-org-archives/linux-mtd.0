@@ -1,21 +1,41 @@
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Bindings for Rockchip serial flash
- controller
-To: Shawn Lin <shawn.lin@rock-chips.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-References: <1480906577-38455-1-git-send-email-shawn.lin@rock-chips.com>
- <1480906577-38455-2-git-send-email-shawn.lin@rock-chips.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
- Heiko Stuebner <heiko@sntech.de>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <40cb2739-f58d-2e35-5b87-6b46e93e422e@gmail.com>
-Date: Mon, 5 Dec 2016 04:24:55 +0100
+Received: from conssluserg-06.nifty.com ([210.131.2.91])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cDjzp-0005tz-AT
+ for linux-mtd@lists.infradead.org; Mon, 05 Dec 2016 03:31:18 +0000
+Received: from mail-yb0-f180.google.com (mail-yb0-f180.google.com
+ [209.85.213.180]) (authenticated)
+ by conssluserg-06.nifty.com with ESMTP id uB53UX8v018914
+ for <linux-mtd@lists.infradead.org>; Mon, 5 Dec 2016 12:30:33 +0900
+Received: by mail-yb0-f180.google.com with SMTP id v132so54206817yba.0
+ for <linux-mtd@lists.infradead.org>; Sun, 04 Dec 2016 19:30:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1480906577-38455-2-git-send-email-shawn.lin@rock-chips.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CADhT+wfh+_oQ6TDJJ9b-nnSYP+N5eYTL1jwZ6OuchAF-3iuYxA@mail.gmail.com>
+References: <1480183585-592-1-git-send-email-yamada.masahiro@socionext.com>
+ <1480183585-592-40-git-send-email-yamada.masahiro@socionext.com>
+ <20161201160511.ahlibszokg547wxk@rob-hp-laptop>
+ <CAK7LNASJLbizHEh8mUUVDvTKiRMCSvyYtdrQzwN5tHmCV8iYOA@mail.gmail.com>
+ <CAL_Jsq+H-JcAtDV3NCfptCWrmTgkQkmZFTj=Do8HhX4b=At9RA@mail.gmail.com>
+ <CAK7LNAQHnH=On=+7fzenu_v6rB71y9hYuAZi5oinZFu-tfAdjw@mail.gmail.com>
+ <f98b49b9-91fc-c3d0-1ace-fa862581e53b@gmail.com>
+ <CADhT+wfh+_oQ6TDJJ9b-nnSYP+N5eYTL1jwZ6OuchAF-3iuYxA@mail.gmail.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Mon, 5 Dec 2016 12:30:31 +0900
+Message-ID: <CAK7LNARBwy1BZ+sBWRC0_vd60x=3TsJqdhr4F91yU22JN9XQug@mail.gmail.com>
+Subject: Re: [PATCH 39/39] mtd: nand: denali_dt: add compatible strings for
+ UniPhier SoC variants
+To: Dinh Nguyen <dinh.linux@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Mark Rutland <mark.rutland@arm.com>, Dinh Nguyen <dinguyen@altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ Chin Liang See <clsee@altera.com>, Dinh Nguyen <dinguyen@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,70 +45,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/05/2016 03:56 AM, Shawn Lin wrote:
-> Add binding document for the Rockchip serial flash controller.
-> 
-> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
-> 
-> Changes in v3:
-> - rename sfc-no-dma to sfc-no-DMA
-> 
-> Changes in v2: None
-> 
->  .../devicetree/bindings/mtd/rockchip-sfc.txt       | 31 ++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
-> new file mode 100644
-> index 0000000..c6b4f58
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
-> @@ -0,0 +1,31 @@
-> +Rockchip Serial Flash Controller
-> +
-> +Required properties:
-> +- compatible : Should be
-> +		"rockchip,rk1108-sfc", "rockchip,sfc" for ROCKCHIP RK1108.
-> +- address-cells : Should be 1.
-> +- size-cells : Should be 0.
-> +- clocks: Must contain two entries for each entry in clock-names.
-> +- clock-names: Shall be "sfc" for the transfer-clock, and "hsfc" for
-> +		the peripheral clock.
-> +- interrupts : Should contain the interrupt for the device.
-> +- reg: Physical base address of the controller and length of memory mapped.
-> +
-> +Optional properties:
+Hi Dinh,
 
-Uhhh, I apologize for the miscommunication.
 
-> +- rockchip,sfc-no-DMA: Indicate the controller doesn't support dma transfer.
-I didn't mean this   ^^^ DMA, that should be lowercase. I meant   ^^^
-this one. The property should be lowercase, the description
-should be uppercase.
+2016-12-04 7:08 GMT+09:00 Dinh Nguyen <dinh.linux@gmail.com>:
+> Hi,
+>
+> On Fri, Dec 2, 2016 at 8:49 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
+>> On 12/03/2016 03:41 AM, Masahiro Yamada wrote:
+>>> Hi Rob,
+>>
+>> Hi!
+>>
+>>> 2016-12-03 1:26 GMT+09:00 Rob Herring <robh@kernel.org>:
+>>>
+>>>>>
+>>>>>
+>>>>> (Plan A)
+>>>>>   "denali,socfpga-nand"           (for Altera SOCFPGA variant)
+>>>>>   "denali,uniphier-nand-v1"       (for old Socionext UniPhier family variant)
+>>>>>   "denali,uniphier-nand-v2"       (for new Socionext UniPhier family variant)
+>>>>>
+>>>>> (Plan B)
+>>>>>   "altera,denali-nand"            (for Altera SOCFPGA variant)
+>>>>>   "socionext,denali-nand-v5a"     (for old Socionext UniPhier family variant)
+>>>>>   "socionext,denali-nand-v5b"     (for new Socionext UniPhier family variant)
+>>>
+>>>> Let the Altera folks worry about their stuff. At least for soft IP in
+>>>> FPGA, it's a bit of a special case. The old string can remain as bad
+>>>> as it is.
+>>>
+>>>
+>>> Hmm, I am not sure if this IP would fit in FPGA
+>>> (to use it along with NIOS-II?)
+>>>
+>>> (even if it happened, nothing of this IP would be customizable on users' side.
+>>> When buying the IP, SoC vendors submit a list of desired features.
+>>> Denali (now Cadence) generates the RTL according to the configuration sheet.
+>>> The function is fixed at this point. So, generic compatible would be
+>>> useless anyway.)
+>>>
+>>>
+>>> If we are talking about SOCFPGA,
+>>> SOCFPGA is not only FPGA. Rather "SOC" + "FPGA".
+>>> It consists of two parts:
+>>> [1] SOC part  (Cortex-A9 + various hard-wired peripherals such UART,
+>>> USB, SD, NAND, ...)
+>>> [2] FPGA part (User design logic)
+>>>
+>>> The Denali NAND controller is included in [1].
+>>> So, as far as we talk about the Denali on SOCFPGA,
+>>> it is as hard-wired as Intel, Socionext's ones.
+>>
+>> That's correct, the Denali NAND IP in altera socfpga is a hardware
+>> block. You can make it available to the fabric too, but by default
+>> it's used by the ARM part of the chip, so for this discussion, you
+>> can forget that the FPGA part exists altogether.
+>>
+>> I would be in favor of plan B, since it seems to be the more often
+>> taken approach. A nice example is ci-hdrc:
+>>
+>> $ git grep compatible drivers/usb/chipidea/
+>>
+>>>> I simply would do "socionext,uniphier-v5b-nand" (and v5a).
+>>>> The fact that it is denali is part of the documentation.
+>>>>
+>>>
+>>> Let me think about this.
+>>>
+>>> Socionext bought two version of Denali IP,
+>>> and we are now re-using the newer one (v5b) for several SoCs.
+>>> Socionext has some more product lines other than Uniphier SoC family,
+>>> perhaps wider re-use might happen in the future.
+>>>
+>>> At first, I included "uniphier" in compatible, but I am still wondering
+>>> if such a specific string is good or not.
+>>>
+>>> Also, comments from Altera engineers are appreciated.
+>
+> Sorry, it's taken me a while to add comments. My altera email is very spotty now
+> that the Intel merge is completed. Please use dinguyen@kernel.org for any future
+> communications.
+>
+> Yes, everything that is said so far for the NAND controller on the
+> SoCFPGA is correct. I added the binding for the controller a while
+> back, but unfortunately, we never added the NAND interface to the
+> devkit, so we did not do much in terms of enabling it.
+>
+> I think the only SoCFPGA board I know that has the NAND interface active is
+> the TRCom board, but I have never seen that board.
+>
+> I don't have any strong opinions on this matter, just as long as the
+> original binding
+> "denali,denali-nand-dt" is kept, and I think Rob was ok with keeping
+> that binding.
+>
 
-> +
-> +Example:
-> +nor_flash: sfc@301c0000 {
-> +	compatible = "rockchip,rk1108-sfc", "rockchip,sfc";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-> +	clock-names = "sfc", "hsfc";
-> +	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-> +	reg = <0x301c0000 0x1000>;
-> +	spi-nor@0 {
-> +		compatible = "jedec,spi-nor";
-> +		spi-max-frequency = <12000000>;
-> +		reg = <0>;
-> +	};
-> +};
-> 
+I am proposing to add "altera,denali-nand" for Altera.
+For what, do you need the generic compatible?
+This IP has no default for it to fallback to.
 
 
 -- 
-Best regards,
-Marek Vasut
+Best Regards
+Masahiro Yamada
