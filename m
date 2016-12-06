@@ -1,13 +1,13 @@
-Received: from relay101b.appriver.com ([207.97.230.15] helo=relay.appriver.com)
+Received: from relay101a.appriver.com ([207.97.230.14] helo=relay.appriver.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEK6v-0005E2-Ab
- for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 18:05:02 +0000
+ id 1cEK6w-0005E1-F7
+ for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 18:05:03 +0000
 From: Mike Crowe <mac@mcrowe.com>
 To: linux-mtd@lists.infradead.org
 Cc: Mike Crowe <mac@mcrowe.com>
-Subject: [PATCH 1/2] nandwrite: Add --output-skip
-Date: Tue,  6 Dec 2016 18:04:16 +0000
-Message-Id: <1481047457-25427-2-git-send-email-mac@mcrowe.com>
+Subject: [PATCH 2/2] nanddump: Add --input-skip
+Date: Tue,  6 Dec 2016 18:04:17 +0000
+Message-Id: <1481047457-25427-3-git-send-email-mac@mcrowe.com>
 In-Reply-To: <1481047457-25427-1-git-send-email-mac@mcrowe.com>
 References: <1481047457-25427-1-git-send-email-mac@mcrowe.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,97 +20,96 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Skip the specified number of bytes (which must be page aligned) before
-writing. This differs from --start when there are bad blocks: --start
-always seeks to the specified offset in the flash, --output-skip works its
-way through the flash a page at a time from the specified start, skipping
-bad blocks provided --noskipbad was not also passed.
+dumping. This differs from --startaddress when there are bad blocks:
+--startaddress always seeks to the specified offset in the partition,
+--output-skip works its way through the partition a page at a time from the
+specified start, skipping bad blocks as required by --bb.
 
-This can be useful when writing part way through a partition that will be
-read using a simple bad-block-skipping algorithm.
+This can be useful if other readers of the partition will be reading using
+a simple bad-block-skipping algorithm.
 ---
- nand-utils/nandwrite.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ nand-utils/nanddump.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/nand-utils/nandwrite.c b/nand-utils/nandwrite.c
-index b376869..b4a6d8c 100644
---- a/nand-utils/nandwrite.c
-+++ b/nand-utils/nandwrite.c
-@@ -60,6 +60,7 @@ static void display_help(int status)
- "  -b, --blockalign=1|2|4  Set multiple of eraseblocks to align to\n"
- "      --input-skip=length Skip |length| bytes of the input file\n"
- "      --input-size=length Only read |length| bytes of the input file\n"
-+"      --output-skip=length Skip |length| bytes before writing\n"
- "  -q, --quiet             Don't display progress messages\n"
- "  -h, --help              Display this help and exit\n"
- "  -V, --version           Output version information and exit\n"
-@@ -87,6 +88,7 @@ static const char	*mtd_device, *img;
- static long long	mtdoffset = 0;
- static long long	inputskip = 0;
- static long long	inputsize = 0;
-+static long long	outputskip = 0;
- static bool		quiet = false;
- static bool		writeoob = false;
- static bool		onlyoob = false;
-@@ -110,6 +112,7 @@ static void process_options(int argc, char * const argv[])
+diff --git a/nand-utils/nanddump.c b/nand-utils/nanddump.c
+index a8ad334..bd0d420 100644
+--- a/nand-utils/nanddump.c
++++ b/nand-utils/nanddump.c
+@@ -46,6 +46,7 @@ static void display_help(int status)
+ "-c         --canonicalprint     Print canonical Hex+ASCII dump\n"
+ "-f file    --file=file          Dump to file\n"
+ "-l length  --length=length      Length\n"
++"           --input-skip=length  Skip |length| bytes before dumping\n"
+ "-n         --noecc              Read without error correction\n"
+ "           --omitoob            Omit OOB data (default)\n"
+ "-o         --oob                Dump OOB data\n"
+@@ -81,6 +82,7 @@ static bool			noecc = false;		// don't error correct
+ static bool			omitoob = true;		// omit oob data
+ static long long		start_addr;		// start address
+ static long long		length;			// dump length
++static long long		inputskip;              // skip bytes before dump
+ static const char		*mtddev;		// mtd device name
+ static const char		*dumpfile;		// dump file name
+ static bool			quiet = false;		// suppress diagnostic output
+@@ -105,6 +107,7 @@ static void process_options(int argc, char * const argv[])
  			{"version", no_argument, 0, 'V'},
- 			{"input-skip", required_argument, 0, 0},
- 			{"input-size", required_argument, 0, 0},
-+			{"output-skip", required_argument, 0, 0},
+ 			{"bb", required_argument, 0, 0},
+ 			{"omitoob", no_argument, 0, 0},
++			{"input-skip", required_argument, 0, 0},
  			{"help", no_argument, 0, 'h'},
- 			{"blockalign", required_argument, 0, 'b'},
- 			{"markbad", no_argument, 0, 'm'},
-@@ -139,6 +142,9 @@ static void process_options(int argc, char * const argv[])
- 			case 2: /* --input-size */
- 				inputsize = simple_strtoll(optarg, &error);
+ 			{"forcebinary", no_argument, 0, 'a'},
+ 			{"canonicalprint", no_argument, 0, 'c'},
+@@ -146,6 +149,9 @@ static void process_options(int argc, char * const argv[])
+ 							errmsg_die("--oob and --oomitoob are mutually exclusive");
+ 						}
+ 						break;
++					case 3: /* --input-skip */
++						inputskip = simple_strtoll(optarg, &error);
++						break;
+ 				}
  				break;
-+			case 3: /* --output-skip */
-+				outputskip = simple_strtoll(optarg, &error);
-+				break;
- 			}
- 			break;
- 		case 'V':
-@@ -286,6 +292,11 @@ int main(int argc, char * const argv[])
- 			   "The pagesize of this NAND Flash is 0x%x.\n",
- 			   mtd.min_io_size);
+ 			case 'V':
+@@ -404,13 +410,21 @@ int main(int argc, char * const argv[])
  
-+	if (outputskip % ebsize_aligned)
-+		errmsg_die("The output skip length is not page-aligned !\n"
-+			   "The pagesize of this NAND flash is 0x%x.\n",
-+			   mtd.min_io_size);
+ 	bs = mtd.min_io_size;
+ 
++	if (inputskip & (mtd.min_io_size - 1)) {
++		fprintf(stderr, "the input-skip parameter is not page-aligned!\n"
++			        "The pagesize of this NAND flash is 0x%x.\n",
++			        mtd.min_io_size);
++		goto closeall;
++	}
 +
- 	/* Select OOB write mode */
- 	if (noecc)
- 		write_mode = MTD_OPS_RAW;
-@@ -350,7 +361,7 @@ int main(int argc, char * const argv[])
+ 	/* Print informative message */
+ 	if (!quiet) {
+ 		fprintf(stderr, "Block size %d, page size %d, OOB size %d\n",
+ 				mtd.eb_size, mtd.min_io_size, mtd.oob_size);
+-		fprintf(stderr,
+-				"Dumping data starting at 0x%08llx and ending at 0x%08llx...\n",
+-				start_addr, end_addr);
++		if (!inputskip)
++			fprintf(stderr,
++				        "Dumping data starting at 0x%08llx and ending at 0x%08llx...\n",
++				        start_addr, end_addr);
  	}
  
- 	/* Check, if length fits into device */
--	if ((imglen / pagelen) * mtd.min_io_size > mtd.size - mtdoffset) {
-+	if ((imglen / pagelen) * mtd.min_io_size > mtd.size - mtdoffset - outputskip) {
- 		fprintf(stderr, "Image %lld bytes, NAND page %d bytes, OOB area %d"
- 				" bytes, device size %lld bytes\n",
- 				imglen, pagelen, mtd.oob_size, mtd.size);
-@@ -400,7 +411,7 @@ int main(int argc, char * const argv[])
- 			}
- 
- 			baderaseblock = false;
--			if (!quiet)
-+			if (!quiet && (outputskip == 0))
- 				fprintf(stdout, "Writing data to block %lld at offset 0x%llx\n",
- 						 blockstart / ebsize_aligned, blockstart);
- 
-@@ -432,7 +443,12 @@ int main(int argc, char * const argv[])
- 
- 				offs +=  ebsize_aligned / blockalign;
- 			} while (offs < blockstart + ebsize_aligned);
-+		}
- 
-+		if (outputskip > 0) {
-+			mtdoffset += mtd.min_io_size;
-+			outputskip -= mtd.min_io_size;
-+			continue;
+ 	/* Dump the flash contents */
+@@ -463,6 +477,16 @@ int main(int argc, char * const argv[])
+ 			stat1 = stat2;
  		}
  
- 		/* Read more data from the input if there isn't enough in the buffer */
++		if (inputskip) {
++			inputskip -= bs;
++			end_addr += bs;
++			if (!inputskip && !quiet)
++				fprintf(stderr,
++					"Dumping data starting at 0x%08llx and ending at 0x%08llx...\n",
++					ofs + bs, end_addr);
++			continue;
++		}
++
+ 		/* Write out page data */
+ 		if (pretty_print) {
+ 			for (i = 0; i < bs; i += PRETTY_ROW_SIZE) {
 -- 
 2.1.4
