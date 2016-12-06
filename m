@@ -1,22 +1,23 @@
-Received: from 5.mo3.mail-out.ovh.net ([87.98.178.36])
+Received: from mo3.mail-out.ovh.net ([178.32.228.3])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEOnt-0007Bx-BV
- for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 23:05:42 +0000
+ id 1cEPKM-0004vM-Km
+ for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 23:39:16 +0000
 Received: from player693.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo3.mail-out.ovh.net (Postfix) with ESMTP id 4087C637EF
- for <linux-mtd@lists.infradead.org>; Wed,  7 Dec 2016 00:05:09 +0100 (CET)
-Subject: Re: [PATCH 1/1] mtd: spi-nor: improve macronix_quad_enable()
+ by mo3.mail-out.ovh.net (Postfix) with ESMTP id C41E966E9E
+ for <linux-mtd@lists.infradead.org>; Wed,  7 Dec 2016 00:38:50 +0100 (CET)
+Subject: Re: [PATCH 1/1] mtd: spi-nor: remove WARN_ONCE() message in
+ spi_nor_write()
 To: Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <5b7ad2367d9b6a4e3a766ce6cadf16c313a03a26.1481039788.git.cyrille.pitchen@atmel.com>
- <5962912d-b5de-f0d0-077b-af3b9ff2a77c@gmail.com>
+References: <0078578d0f5d2402ac623afabf601d25998f84a9.1481044434.git.cyrille.pitchen@atmel.com>
+ <096f8b4c-b00a-af89-e667-7385226c2e7e@gmail.com>
 Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, richard@nod.at
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <c5bf49e1-fd4b-7d33-3d15-3ad4ac1174fa@wedev4u.fr>
-Date: Wed, 7 Dec 2016 00:05:01 +0100
+Message-ID: <0b871c04-c105-ec94-441c-481e9773f19e@wedev4u.fr>
+Date: Wed, 7 Dec 2016 00:38:42 +0100
 MIME-Version: 1.0
-In-Reply-To: <5962912d-b5de-f0d0-077b-af3b9ff2a77c@gmail.com>
+In-Reply-To: <096f8b4c-b00a-af89-e667-7385226c2e7e@gmail.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,48 +29,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 06/12/2016 à 20:01, Marek Vasut a écrit :
-> On 12/06/2016 05:01 PM, Cyrille Pitchen wrote:
->> The patch checks whether the Quad Enable bit is already set in the Status
->> Register. If so, the function exits immediately with a successful return
->> code.
+Le 06/12/2016 à 20:00, Marek Vasut a écrit :
+> On 12/06/2016 06:14 PM, Cyrille Pitchen wrote:
+>> This patch removes the WARN_ONCE() test in spi_nor_write().
+>> This macro triggers the display of a warning message almost every time we
+>> use a UBI file-system because a write operation is performed at offset 64,
+>> which is in the middle of the SPI NOR memory page. This is a valid
+>> operation for ubifs.
 > 
-> Performance optimization I presume ?
+> Is that a valid operation for all spi nors ?
+>
 
-Performance optimization is one benefit but this real purpose of the
-patch is to avoid writing over and over a non-volatile bit at each boot,
-actually each time spi_nor_scan() is called.
+AFAIK, yes, it is. First we need to erase a sector or a block, then we
+can send page program commands to write data into the memory. We cannot
+write more than a page size within a single page program command but you
+can write less and start in the middle of a page if you want.
+I don't know whether we could cross the page boundary if we start
+writing from the middle of a page as long as we write less data than a
+single page size. However spi_nor_write() don't do so, this is why it
+computes
+page_remain = min_t(size_t, nor->page_size - page_offset, len - i)
 
-To be honest, I don't know whether internally the SPI memory is clever
-enough not to perform the actual write when it sees the bit value has
-not changed. I wanted to improve the memory lifetime by avoiding the
-update of the bit from software just to be sure :)
+Well, now looking at the Spansion S25FL127S datasheet, the address is
+wrapped if we cross the page boundary:
 
-Anyway, thanks for your review!
+"Depending on the device configuration, the page size can either be 256
+or 512 bytes. Up to a page can be provided on SI after the 3-byte
+address with instruction 02h or 4-byte address with instruction 12h has
+been provided. If the 9 least significant address bits (A8-A0) are not
+all 0, all transmitted data that goes beyond the end of the current page
+are programmed from the start address of the same page (from the address
+whose 9 least significant bits (A8-A0) are all 0) i.e. the address wraps
+within the page aligned address boundaries. This is a result of only
+requiring the user to enter one single page address to cover the entire
+page boundary."
 
-> 
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> 
+Then from Adesto AT25DF321A datasheet:
+"If the starting memory address denoted by A23-A0 does not fall on an
+even 256-byte page boundary (A7-A0 are not all 0), then special
+circumstances regarding which memory locations to be programmed will
+apply. In this situation, any data that is sent to the device that goes
+beyond the end of the page will wrap around back to the beginning of the
+same page. For example, if the starting address denoted by A23-A0 is
+0000FEh, and three bytes of data are sent to the device, then the first
+two bytes of data will be programmed at addresses 0000FEh and 0000FFh
+while the last byte of data will be programmed at address 000000h. The
+remaining bytes in the page (addresses 000001h through 0000FDh) will not
+be programmed and will remain in the erased state (FFh). In addition, if
+more than 256-bytes of data are sent to the device, then only the last
+256-bytes sent will be latched into the internal buffer."
+
+
+Besides, the wear leveling is handled by the ubi layer I guess, at the
+spi-nor level we write raw data. Maybe Richard and Boris could tell us
+more but talking with them I've understood that's it is normal for the
+ubi layer to write at offset 64.
+
+Best regards,
+
+Cyrille
+
+>> Hence this warning is pretty annoying and useless so we just remove it.
+>>
 >> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->> Reviewed-by: Jagan Teki <jagan@openedev.com>
+>> Suggested-by: Richard Weinberger <richard@nod.at>
+>> Suggested-by: Andras Szemzo <szemzo.andras@gmail.com>
 >> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 3 +++
->>  1 file changed, 3 insertions(+)
+>>  drivers/mtd/spi-nor/spi-nor.c | 3 ---
+>>  1 file changed, 3 deletions(-)
 >>
 >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index da7cd69d4857..1fd32b991eb7 100644
+>> index c9bcd05ca5d9..cdeb2c6b1492 100644
 >> --- a/drivers/mtd/spi-nor/spi-nor.c
 >> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -1216,6 +1216,9 @@ static int macronix_quad_enable(struct spi_nor *nor)
->>  	val = read_sr(nor);
->>  	if (val < 0)
->>  		return val;
->> +	if (val & SR_QUAD_EN_MX)
->> +		return 0;
->> +
->>  	write_enable(nor);
+>> @@ -1265,9 +1265,6 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>>  		ssize_t written;
 >>  
->>  	write_sr(nor, val | SR_QUAD_EN_MX);
+>>  		page_offset = (to + i) & (nor->page_size - 1);
+>> -		WARN_ONCE(page_offset,
+>> -			  "Writing at offset %zu into a NOR page. Writing partial pages may decrease reliability and increase wear of NOR flash.",
+>> -			  page_offset);
+>>  		/* the size of data remaining on the first page */
+>>  		page_remain = min_t(size_t,
+>>  				    nor->page_size - page_offset, len - i);
 >>
 > 
 > 
