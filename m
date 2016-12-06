@@ -1,16 +1,18 @@
 Received: from smtpout.microchip.com ([198.175.253.82]
  helo=email.microchip.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEICJ-00033f-HB
- for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 16:02:28 +0000
+ id 1cEIzV-0003zN-Ox
+ for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 16:53:19 +0000
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 To: <marek.vasut@gmail.com>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 1/1] mtd: spi-nor: improve macronix_quad_enable()
-Date: Tue, 6 Dec 2016 17:01:41 +0100
-Message-ID: <5b7ad2367d9b6a4e3a766ce6cadf16c313a03a26.1481039788.git.cyrille.pitchen@atmel.com>
+ <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+ <broonie@kernel.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH 0/2] mtd: spi-nor: add a stateless method to support memory
+ size above 128Mib
+Date: Tue, 6 Dec 2016 17:52:30 +0100
+Message-ID: <cover.1481041702.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,29 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch checks whether the Quad Enable bit is already set in the Status
-Register. If so, the function exits immediately with a successful return
-code.
+Hi all,
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Reviewed-by: Jagan Teki <jagan@openedev.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 3 +++
- 1 file changed, 3 insertions(+)
+this series of patches is based on next-20161206 and can also be applied
+to the git://github.com/spi-nor/linux.git tree.
+It has been extracted from the SFDP series and is resent as a standalone
+series.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index da7cd69d4857..1fd32b991eb7 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1216,6 +1216,9 @@ static int macronix_quad_enable(struct spi_nor *nor)
- 	val = read_sr(nor);
- 	if (val < 0)
- 		return val;
-+	if (val & SR_QUAD_EN_MX)
-+		return 0;
-+
- 	write_enable(nor);
- 
- 	write_sr(nor, val | SR_QUAD_EN_MX);
+This series fixes compatibility issue between Linux and many bootloaders
+when using SPI flash with size greater than 128Mib.
+
+Indeed, before this series, Linux used to make the SPI flash memory enter
+its 4-byte address mode when its size is greater than 128Mib: The very
+same Fast Read 1-1-z op code is used, for instance Fast Read 1-1-4 (6Bh)
+but once in 4-byte address mode, the SPI flash memory now expects a 4-byte
+address following the op code instead of a 3-byte address.
+This solution is statefull: it changes the internal state of the memory.
+
+Hence, when the CPU is reset but not the memory, many bootloaders are not
+aware of this internal state change at the memory side, don't know how to
+handle this and still send one Fast Read op code followed by a 3-byte
+address. So the bootloader fails to read data from the SPI flash memory.
+
+Cyrille Pitchen (2):
+  mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte address op codes
+  mtd: spi-nor: add a stateless method to support memory size above
+    128Mib
+
+ drivers/mtd/devices/serial_flash_cmds.h |   7 --
+ drivers/mtd/devices/st_spi_fsm.c        |  28 ++++----
+ drivers/mtd/spi-nor/spi-nor.c           | 114 ++++++++++++++++++++++++++------
+ drivers/spi/spi-bcm-qspi.c              |   6 +-
+ include/linux/mtd/spi-nor.h             |  22 ++++--
+ 5 files changed, 126 insertions(+), 51 deletions(-)
+
 -- 
 2.7.4
