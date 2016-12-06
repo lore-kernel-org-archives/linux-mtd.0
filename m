@@ -1,16 +1,23 @@
-Received: from mail-yb0-x236.google.com ([2607:f8b0:4002:c09::236])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cE9wN-0004T7-98
- for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 07:13:32 +0000
-Received: by mail-yb0-x236.google.com with SMTP id v78so64813048ybe.3
- for <linux-mtd@lists.infradead.org>; Mon, 05 Dec 2016 23:13:06 -0800 (PST)
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: add rockchip serial flash controller
+ driver
+To: Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1480906577-38455-1-git-send-email-shawn.lin@rock-chips.com>
+ <1480906577-38455-3-git-send-email-shawn.lin@rock-chips.com>
+ <852b11c2-daf3-75dc-a5c6-576109a974a9@gmail.com>
+ <8cac8489-3fd1-bfc3-9a25-a3fbda74e03e@rock-chips.com>
+ <cdc8647b-77c5-5d74-931c-46bcebafae65@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, shawn.lin@rock-chips.com,
+ devicetree@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+ linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+From: Shawn Lin <shawn.lin@rock-chips.com>
+Message-ID: <25392a10-a2e7-4147-baf9-b54af946fa67@rock-chips.com>
+Date: Tue, 6 Dec 2016 15:15:00 +0800
 MIME-Version: 1.0
-From: =?UTF-8?B?5p2O56OK?= <rockdotlee@gmail.com>
-Date: Tue, 6 Dec 2016 15:13:05 +0800
-Message-ID: <CAL-1w2vQHnuDmo-5bsE=Lc-uPpVy4vPU7tNmwkcEasB9uvAZ3A@mail.gmail.com>
-Subject: UBIFS crash in power cutting test
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <cdc8647b-77c5-5d74-931c-46bcebafae65@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,63 +27,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, there:
-    I'm doing a random power cutting test(just copy and delete files),
-but got ubifs crash frequently, the rate is about 20%,
-is anyone has any hint about this? BTW, the kernel is 3.18.31, here is the log.
+On 2016/12/6 11:08, Marek Vasut wrote:
+> On 12/06/2016 03:56 AM, Shawn Lin wrote:
+>
+> [...]
+>
+>>>> +static inline void rockchip_sfc_setup_transfer(struct spi_nor *nor,
+>>>> +                           loff_t from_to,
+>>>> +                           size_t len, u8 op_type)
+>>>> +{
+>>>> +    struct rockchip_sfc_chip_priv *priv = nor->priv;
+>>>> +    struct rockchip_sfc *sfc = priv->sfc;
+>>>> +    u32 reg;
+>>>> +    u8 if_type = 0;
+>>>> +
+>>>> +    if_type = get_if_type(sfc, nor->flash_read);
+>>>> +    writel_relaxed((if_type << SFC_CTRL_DATA_BITS_SHIFT) |
+>>>> +               (if_type << SFC_CTRL_ADDR_BITS_SHIFT) |
+>>>> +               (if_type << SFC_CTRL_CMD_BITS_SHIFT) |
+>>>
+>>> Hm, looking at this, does the controller only support n-n-n mode (1-1-1,
+>>> 2-2-2, 4-4-4) ? Or why don't you allow 1-1-n/1-n-n/2-n-n ?
+>>
+>> No, it also could support 1-1-n, etc.
+>> By looking at the cadence-quadspi.c,  it only allows
+>> CQSPI_INST_TYPE_SINGLE for f_pdata->addr_width and f_pdata->inst_width,
+>> so finally it only supports 1-1-1, 1-1-2, 1-1-4?
+>>
+>>> I would like to hear some input from Cyrille on this one.
+>
+> The CQSPI driver indeed does only 1-1-x read thus far.
+> I am not sure whether support for the other modes in the SPI NOR
+> subsystem landed already, which is why I'd like to hear from
+> Cyrille here.
+>
+> [...]
+>
+>>>> +#ifdef CONFIG_PM
+>>>> +int rockchip_sfc_runtime_suspend(struct device *dev)
+>>>> +{
+>>>> +    struct rockchip_sfc *sfc = dev_get_drvdata(dev);
+>>>> +
+>>>> +    clk_disable_unprepare(sfc->hclk);
+>>>> +    return 0;
+>>>> +}
+>>>
+>>> Was the suspend ever really tested with this block ? Is disabling clock
+>>> really enough ?
+>>
+>> It was tested and we could do more, for instance power off the genpd,
+>> but disabling clcok should be enough.
+>
+> What about putting the controller into some reset state , is that possible?
 
-[   25.854498] UBIFS DBG lp (pid 349): LEB 50, free 0, dirty 238488, flags 1
-[   25.861248] UBIFS DBG lp (pid 349): LEB 50, free -2147483647, dirty
-238568, flags 1
-[   25.868868] UBIFS DBG lp (pid 349): LEB 50, free 0, dirty 238488, flags 1
-[   25.875661] UBIFS DBG tnc (pid 349): ino 75997
-[   25.880082] UBIFS DBG tnc (pid 349): (lowest) (75997, xentry, 0x000000)
-[   25.886576] UBIFS DBG tnc (pid 349): search key (75997, xentry, 0x000000)
-[   25.893281] UBIFS DBG tnc (pid 349): found 0, lvl 0, n 0
-[   25.898559] UBIFS DBG io (pid 349): LEB 50:196608, xentry node,
-length 73, jhead 1 (base)
-[   25.906734] UBIFS DBG io (pid 349): LEB 50:196608, xentry node, length 73
-[   25.919996] UBIFS error (ubi3:0 pid 349): ubifs_read_node: bad node
-type (2 but expected 3)
-[   25.928350] UBIFS error (ubi3:0 pid 349): ubifs_read_node: bad node
-at LEB 50:196608, LEB mapping status 1
-[   25.937979] magic          0x6101831
-[   25.941625] crc            0xc1c19beb
-[   25.945341] node_type      2 (direntry node)
-[   25.949681] group_type     1 (in node group)
-[   25.954041] sqnum          676362
-[   25.957406] len            75
-[   25.960465] key            (75729, direntry, 0x1feecdb6)
-[   25.965826] inum           0
-[   25.968777] type           2
-[   25.971758] nlen           18
-[   25.974765] name           SecureTrust_CA.peR
-[   25.979334] CPU: 0 PID: 349 Comm: mount Not tainted 3.18.31 #2
-[   25.985403] [<c0014b68>] (unwind_backtrace) from [<c0012014>]
-(show_stack+0x10/0x14)
-[   25.992856] [<c0012014>] (show_stack) from [<c02015d8>]
-(ubifs_read_node+0x2c0/0x2f8)
-[   26.000672] [<c02015d8>] (ubifs_read_node) from [<c021d744>]
-(ubifs_tnc_read_node+0x58/0x1c0)
-[   26.009151] [<c021d744>] (ubifs_tnc_read_node) from [<c0202448>]
-(tnc_read_node_nm+0xb4/0x1b8)
-[   26.017767] [<c0202448>] (tnc_read_node_nm) from [<c02057ec>]
-(ubifs_tnc_next_ent+0x1b4/0x220)
-[   26.026361] [<c02057ec>] (ubifs_tnc_next_ent) from [<c02058c4>]
-(ubifs_tnc_remove_ino+0x6c/0x17c)
-[   26.035216] [<c02058c4>] (ubifs_tnc_remove_ino) from [<c020854c>]
-(ubifs_replay_journal+0xe74/0x1540)
-[   26.044532] [<c020854c>] (ubifs_replay_journal) from [<c01fd794>]
-(ubifs_mount+0xbe8/0x15dc)
-[   26.052840] [<c01fd794>] (ubifs_mount) from [<c00fa410>]
-(mount_fs+0x6c/0x164)
-[   26.060018] [<c00fa410>] (mount_fs) from [<c010ff90>]
-(vfs_kern_mount+0x4c/0xe0)
-[   26.067437] [<c010ff90>] (vfs_kern_mount) from [<c0112f34>]
-(do_mount+0x934/0xa38)
-[   26.074910] [<c0112f34>] (do_mount) from [<c0113258>] (SyS_mount+0x70/0x9c)
-[   26.081826] [<c0113258>] (SyS_mount) from [<c000e740>]
-(ret_fast_syscall+0x0/0x38)
-[   26.089541] UBIFS DBG tnc (pid 349): key (75997, xentry, 0x5edc87e)
-[   26.096045] UBIFS (ubi3:0): background thread "ubifs_bgt3_0" stops
-mount: mounting /dev/ubi3_0 on /mnt/flash failed: Invalid argument
+yup, there are two reset control for sfc for some Socs.
+I will include them as optional properties to put the controller
+into reset state.
+
+>
+>>>> +int rockchip_sfc_runtime_resume(struct device *dev)
+>>>> +{
+>>>> +    struct rockchip_sfc *sfc = dev_get_drvdata(dev);
+>>>> +
+>>>> +    clk_prepare_enable(sfc->hclk);
+>>>> +    return 0;
+>>>> +}
+>>>> +#endif /* CONFIG_PM */
+>>>
+>>> [...]
+>>>
+>>
+>>
+>
+>
+
+
+-- 
+Best Regards
+Shawn Lin
