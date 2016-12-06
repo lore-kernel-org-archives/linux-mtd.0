@@ -1,19 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEFfy-00019O-BY
- for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 13:20:55 +0000
-Subject: Re: Add --skip-all-ffs option to mtd-utils nandwrite
-To: Kees Trommel <ctrommel@aimvalley.nl>, linux-mtd@lists.infradead.org
-References: <82cbfdbc-c79b-01b0-bc64-a4259d7a150e@aimvalley.nl>
- <16abefc9-61e8-3b0d-c44c-6d02764ec8e9@sigma-star.at>
- <33437f45-d3e8-17ec-d5b0-0118d50ff6ec@aimvalley.nl>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <cb18365f-4fe0-9e07-f7cc-6c2bf72018b3@sigma-star.at>
-Date: Tue, 6 Dec 2016 14:19:19 +0100
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: add rockchip serial flash controller
+ driver
+To: Marek Vasut <marek.vasut@gmail.com>, Shawn Lin <shawn.lin@rock-chips.com>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>
+References: <1480906577-38455-1-git-send-email-shawn.lin@rock-chips.com>
+ <1480906577-38455-3-git-send-email-shawn.lin@rock-chips.com>
+ <852b11c2-daf3-75dc-a5c6-576109a974a9@gmail.com>
+ <8cac8489-3fd1-bfc3-9a25-a3fbda74e03e@rock-chips.com>
+ <cdc8647b-77c5-5d74-931c-46bcebafae65@gmail.com>
+CC: Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-rockchip@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
+ "Heiko Stuebner" <heiko@sntech.de>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <8fae0968-5e3d-2454-c79c-599bc55ac0e5@atmel.com>
+Date: Tue, 6 Dec 2016 16:44:51 +0100
 MIME-Version: 1.0
-In-Reply-To: <33437f45-d3e8-17ec-d5b0-0118d50ff6ec@aimvalley.nl>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <cdc8647b-77c5-5d74-931c-46bcebafae65@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +27,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/06/2016 09:29 AM, Kees Trommel wrote:
-> David,
+Hi all,
+
+Le 06/12/2016 à 04:08, Marek Vasut a écrit :
+> On 12/06/2016 03:56 AM, Shawn Lin wrote:
 > 
-> Attached a rebased patch file.
+> [...]
 > 
-> Kees.
-Applied to mtd-utils.git.
+>>>> +static inline void rockchip_sfc_setup_transfer(struct spi_nor *nor,
+>>>> +                           loff_t from_to,
+>>>> +                           size_t len, u8 op_type)
+>>>> +{
+>>>> +    struct rockchip_sfc_chip_priv *priv = nor->priv;
+>>>> +    struct rockchip_sfc *sfc = priv->sfc;
+>>>> +    u32 reg;
+>>>> +    u8 if_type = 0;
+>>>> +
+>>>> +    if_type = get_if_type(sfc, nor->flash_read);
+>>>> +    writel_relaxed((if_type << SFC_CTRL_DATA_BITS_SHIFT) |
+>>>> +               (if_type << SFC_CTRL_ADDR_BITS_SHIFT) |
+>>>> +               (if_type << SFC_CTRL_CMD_BITS_SHIFT) |
+>>>
+>>> Hm, looking at this, does the controller only support n-n-n mode (1-1-1,
+>>> 2-2-2, 4-4-4) ? Or why don't you allow 1-1-n/1-n-n/2-n-n ?
+>>
+>> No, it also could support 1-1-n, etc.
+>> By looking at the cadence-quadspi.c,  it only allows
+>> CQSPI_INST_TYPE_SINGLE for f_pdata->addr_width and f_pdata->inst_width,
+>> so finally it only supports 1-1-1, 1-1-2, 1-1-4?
+>>
+>>> I would like to hear some input from Cyrille on this one.
+> 
+> The CQSPI driver indeed does only 1-1-x read thus far.
+> I am not sure whether support for the other modes in the SPI NOR
+> subsystem landed already, which is why I'd like to hear from
+> Cyrille here.
+> 
+> [...]
+> 
 
+No, the support of SPI protocols other than 1-1-z has not been merged yet
+into the spi-nor subsystem. I've sent it as part of the SFDP series, since
+then I've been waiting for more reviews and approvals before merging it
+because I don't want to force anything and wait to avoid regression.
 
-Thanks,
+Recently I was thinking about splitting the series into smaller and almost
+independent topics. For instance the Macronix patch to improve the
+management of the Quad Enable bit is a stand alone patch.
 
-David
+Then the patch about improving support of > 128Mbit memory by using the
+dedicated 4-byte instruction set only depends on the patch renaming some
+SPINOR_OP_* macros to unify the use of the "_4B" suffix. Those two patches
+solve the issue of bootloaders which fail to read from SPI flash when the
+memory has entered its statefull 4-byte address mode.
+
+Next, there are 3 patches to add support to SPI protocols 1-y-z. I guess
+they are the patches your are talking about. Those patches prepares the
+move to the SFDP support but actually they can be also be used as is just
+to use SPI 1-y-z protocol without talking about SFDP.
+
+Finally, the last patches introduce the SFDP support. As I said, there are
+not mandatory for your use case if you only want to test SPI protocols such
+as 1-4-4.
+
+In your case, you might be interested in reviewing/testing:
+
+[v4, 4/8] mtd: spi-nor: add support of SPI protocols like SPI 1-2-2 and
+SPI-1-4-4
+http://patchwork.ozlabs.org/patch/697268/
+This is the main patch.
+
+[v4, 5/8] mtd: spi-nor: remove unused set_quad_mode() function
+http://patchwork.ozlabs.org/patch/697269/
+Only small cleanup, please read the commit message for more explination
+
+[v4, 6/8] mtd: m25p80: add support of dual and quad spi protocols to all
+commands
+http://patchwork.ozlabs.org/patch/697270/
+This one is not need when testing with this rockchip serial flash
+controller driver as it directly calls spi_nor_scan() from
+rockchip_sfc_register.
+
+Please note there might be a small dependence to the SPINOR_OP_* macro
+renaming patch:
+[v4, 2/8] mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte address op
+codes
+http://patchwork.ozlabs.org/patch/697266/
+Indeed this patch introduces in spi-nor.h the SPINOR_OP_READ_1_2_2 and
+SPINOR_OP_READ_1_4_4 macros and their associated op codes.
+
+About the support of SPI 2-2-2 and SPI 4-4-4, I also have patches to add
+support to those two protocols however I decided not to submit them for now
+for many reasons. First, the series is already long and hard enough to
+review. Secondly, in most cases the performance increase between SPI 1-4-4
+and SPI 4-4-4 isn't worth it when you read 512 byte pages or 64KB sectors.
+
+I think it was a mistake to send all those patches in a single big series
+since actually most of them have nothing to do with SFDP. They just prepare
+the transition. I understand big series might scare people and discourage
+them from reviewing or testing.
+
+However, if you are interested in some of those features, I think I should
+send the patches step by step.
+
+Best regards,
+
+Cyrille
+
+>>>> +#ifdef CONFIG_PM
+>>>> +int rockchip_sfc_runtime_suspend(struct device *dev)
+>>>> +{
+>>>> +    struct rockchip_sfc *sfc = dev_get_drvdata(dev);
+>>>> +
+>>>> +    clk_disable_unprepare(sfc->hclk);
+>>>> +    return 0;
+>>>> +}
+>>>
+>>> Was the suspend ever really tested with this block ? Is disabling clock
+>>> really enough ?
+>>
+>> It was tested and we could do more, for instance power off the genpd,
+>> but disabling clcok should be enough.
+> 
+> What about putting the controller into some reset state , is that possible?
+> 
+>>>> +int rockchip_sfc_runtime_resume(struct device *dev)
+>>>> +{
+>>>> +    struct rockchip_sfc *sfc = dev_get_drvdata(dev);
+>>>> +
+>>>> +    clk_prepare_enable(sfc->hclk);
+>>>> +    return 0;
+>>>> +}
+>>>> +#endif /* CONFIG_PM */
+>>>
+>>> [...]
+>>>
+>>
+>>
+> 
+> 
