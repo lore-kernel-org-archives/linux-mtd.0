@@ -1,23 +1,20 @@
-Subject: Re: [PATCH v3 2/2] mtd: spi-nor: add rockchip serial flash controller
- driver
-To: Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <1480906577-38455-1-git-send-email-shawn.lin@rock-chips.com>
- <1480906577-38455-3-git-send-email-shawn.lin@rock-chips.com>
- <852b11c2-daf3-75dc-a5c6-576109a974a9@gmail.com>
- <8cac8489-3fd1-bfc3-9a25-a3fbda74e03e@rock-chips.com>
- <cdc8647b-77c5-5d74-931c-46bcebafae65@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, shawn.lin@rock-chips.com,
- devicetree@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
- linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-From: Shawn Lin <shawn.lin@rock-chips.com>
-Message-ID: <25392a10-a2e7-4147-baf9-b54af946fa67@rock-chips.com>
-Date: Tue, 6 Dec 2016 15:15:00 +0800
+Received: from mail-ve1eur01on0109.outbound.protection.outlook.com
+ ([104.47.1.109] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cEAKQ-0008A4-OR
+ for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 07:38:21 +0000
+From: "Zhang, Fan (F.)" <fzhang14@yfve.com.cn>
+To: =?gb2312?B?wO7A2g==?= <rockdotlee@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: UBIFS crash in power cutting test
+Date: Tue, 6 Dec 2016 07:37:54 +0000
+Message-ID: <HE1PR0602MB29722B3E65F95691ECA2175A83820@HE1PR0602MB2972.eurprd06.prod.outlook.com>
+References: <CAL-1w2vQHnuDmo-5bsE=Lc-uPpVy4vPU7tNmwkcEasB9uvAZ3A@mail.gmail.com>
+In-Reply-To: <CAL-1w2vQHnuDmo-5bsE=Lc-uPpVy4vPU7tNmwkcEasB9uvAZ3A@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <cdc8647b-77c5-5d74-931c-46bcebafae65@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,81 +24,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2016/12/6 11:08, Marek Vasut wrote:
-> On 12/06/2016 03:56 AM, Shawn Lin wrote:
->
-> [...]
->
->>>> +static inline void rockchip_sfc_setup_transfer(struct spi_nor *nor,
->>>> +                           loff_t from_to,
->>>> +                           size_t len, u8 op_type)
->>>> +{
->>>> +    struct rockchip_sfc_chip_priv *priv = nor->priv;
->>>> +    struct rockchip_sfc *sfc = priv->sfc;
->>>> +    u32 reg;
->>>> +    u8 if_type = 0;
->>>> +
->>>> +    if_type = get_if_type(sfc, nor->flash_read);
->>>> +    writel_relaxed((if_type << SFC_CTRL_DATA_BITS_SHIFT) |
->>>> +               (if_type << SFC_CTRL_ADDR_BITS_SHIFT) |
->>>> +               (if_type << SFC_CTRL_CMD_BITS_SHIFT) |
->>>
->>> Hm, looking at this, does the controller only support n-n-n mode (1-1-1,
->>> 2-2-2, 4-4-4) ? Or why don't you allow 1-1-n/1-n-n/2-n-n ?
->>
->> No, it also could support 1-1-n, etc.
->> By looking at the cadence-quadspi.c,  it only allows
->> CQSPI_INST_TYPE_SINGLE for f_pdata->addr_width and f_pdata->inst_width,
->> so finally it only supports 1-1-1, 1-1-2, 1-1-4?
->>
->>> I would like to hear some input from Cyrille on this one.
->
-> The CQSPI driver indeed does only 1-1-x read thus far.
-> I am not sure whether support for the other modes in the SPI NOR
-> subsystem landed already, which is why I'd like to hear from
-> Cyrille here.
->
-> [...]
->
->>>> +#ifdef CONFIG_PM
->>>> +int rockchip_sfc_runtime_suspend(struct device *dev)
->>>> +{
->>>> +    struct rockchip_sfc *sfc = dev_get_drvdata(dev);
->>>> +
->>>> +    clk_disable_unprepare(sfc->hclk);
->>>> +    return 0;
->>>> +}
->>>
->>> Was the suspend ever really tested with this block ? Is disabling clock
->>> really enough ?
->>
->> It was tested and we could do more, for instance power off the genpd,
->> but disabling clcok should be enough.
->
-> What about putting the controller into some reset state , is that possible?
-
-yup, there are two reset control for sfc for some Socs.
-I will include them as optional properties to put the controller
-into reset state.
-
->
->>>> +int rockchip_sfc_runtime_resume(struct device *dev)
->>>> +{
->>>> +    struct rockchip_sfc *sfc = dev_get_drvdata(dev);
->>>> +
->>>> +    clk_prepare_enable(sfc->hclk);
->>>> +    return 0;
->>>> +}
->>>> +#endif /* CONFIG_PM */
->>>
->>> [...]
->>>
->>
->>
->
->
-
-
--- 
-Best Regards
-Shawn Lin
+SGkgbGlsZWkNCgkJSXQgc2VlbXMgdGhhdCB0aGUgdWJpZnMgbm9kZXMgYXJlIGJyb2tlbiwgY2Fu
+IHlvdSBzaG93IHVzIG1vcmUgZGV0YWlsIGFib3V0IHlvdXIgdGVzdD8gRm9yIGV4YW1wbGUgeW91
+ciBtb3VudCBvcHRpb24sZXRjLi4uDQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KQmVzdCByZWdhcmRzLCAN
+ClpoYW5nLGZhbg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
+CkZyb206IGxpbnV4LW10ZCBbbWFpbHRvOmxpbnV4LW10ZC1ib3VuY2VzQGxpc3RzLmluZnJhZGVh
+ZC5vcmddIE9uIEJlaGFsZiBPZiDA7sDaDQpTZW50OiAyMDE2xOoxMtTCNsjVIDE1OjEzDQpUbzog
+bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1YmplY3Q6IFVCSUZTIGNyYXNoIGluIHBv
+d2VyIGN1dHRpbmcgdGVzdA0KDQpIaSwgdGhlcmU6DQogICAgSSdtIGRvaW5nIGEgcmFuZG9tIHBv
+d2VyIGN1dHRpbmcgdGVzdChqdXN0IGNvcHkgYW5kIGRlbGV0ZSBmaWxlcyksIGJ1dCBnb3QgdWJp
+ZnMgY3Jhc2ggZnJlcXVlbnRseSwgdGhlIHJhdGUgaXMgYWJvdXQgMjAlLCBpcyBhbnlvbmUgaGFz
+IGFueSBoaW50IGFib3V0IHRoaXM/IEJUVywgdGhlIGtlcm5lbCBpcyAzLjE4LjMxLCBoZXJlIGlz
+IHRoZSBsb2cuDQoNClsgICAyNS44NTQ0OThdIFVCSUZTIERCRyBscCAocGlkIDM0OSk6IExFQiA1
+MCwgZnJlZSAwLCBkaXJ0eSAyMzg0ODgsIGZsYWdzIDENClsgICAyNS44NjEyNDhdIFVCSUZTIERC
+RyBscCAocGlkIDM0OSk6IExFQiA1MCwgZnJlZSAtMjE0NzQ4MzY0NywgZGlydHkNCjIzODU2OCwg
+ZmxhZ3MgMQ0KWyAgIDI1Ljg2ODg2OF0gVUJJRlMgREJHIGxwIChwaWQgMzQ5KTogTEVCIDUwLCBm
+cmVlIDAsIGRpcnR5IDIzODQ4OCwgZmxhZ3MgMQ0KWyAgIDI1Ljg3NTY2MV0gVUJJRlMgREJHIHRu
+YyAocGlkIDM0OSk6IGlubyA3NTk5Nw0KWyAgIDI1Ljg4MDA4Ml0gVUJJRlMgREJHIHRuYyAocGlk
+IDM0OSk6IChsb3dlc3QpICg3NTk5NywgeGVudHJ5LCAweDAwMDAwMCkNClsgICAyNS44ODY1NzZd
+IFVCSUZTIERCRyB0bmMgKHBpZCAzNDkpOiBzZWFyY2gga2V5ICg3NTk5NywgeGVudHJ5LCAweDAw
+MDAwMCkNClsgICAyNS44OTMyODFdIFVCSUZTIERCRyB0bmMgKHBpZCAzNDkpOiBmb3VuZCAwLCBs
+dmwgMCwgbiAwDQpbICAgMjUuODk4NTU5XSBVQklGUyBEQkcgaW8gKHBpZCAzNDkpOiBMRUIgNTA6
+MTk2NjA4LCB4ZW50cnkgbm9kZSwNCmxlbmd0aCA3MywgamhlYWQgMSAoYmFzZSkNClsgICAyNS45
+MDY3MzRdIFVCSUZTIERCRyBpbyAocGlkIDM0OSk6IExFQiA1MDoxOTY2MDgsIHhlbnRyeSBub2Rl
+LCBsZW5ndGggNzMNClsgICAyNS45MTk5OTZdIFVCSUZTIGVycm9yICh1YmkzOjAgcGlkIDM0OSk6
+IHViaWZzX3JlYWRfbm9kZTogYmFkIG5vZGUNCnR5cGUgKDIgYnV0IGV4cGVjdGVkIDMpDQpbICAg
+MjUuOTI4MzUwXSBVQklGUyBlcnJvciAodWJpMzowIHBpZCAzNDkpOiB1Ymlmc19yZWFkX25vZGU6
+IGJhZCBub2RlDQphdCBMRUIgNTA6MTk2NjA4LCBMRUIgbWFwcGluZyBzdGF0dXMgMQ0KWyAgIDI1
+LjkzNzk3OV0gbWFnaWMgICAgICAgICAgMHg2MTAxODMxDQpbICAgMjUuOTQxNjI1XSBjcmMgICAg
+ICAgICAgICAweGMxYzE5YmViDQpbICAgMjUuOTQ1MzQxXSBub2RlX3R5cGUgICAgICAyIChkaXJl
+bnRyeSBub2RlKQ0KWyAgIDI1Ljk0OTY4MV0gZ3JvdXBfdHlwZSAgICAgMSAoaW4gbm9kZSBncm91
+cCkNClsgICAyNS45NTQwNDFdIHNxbnVtICAgICAgICAgIDY3NjM2Mg0KWyAgIDI1Ljk1NzQwNl0g
+bGVuICAgICAgICAgICAgNzUNClsgICAyNS45NjA0NjVdIGtleSAgICAgICAgICAgICg3NTcyOSwg
+ZGlyZW50cnksIDB4MWZlZWNkYjYpDQpbICAgMjUuOTY1ODI2XSBpbnVtICAgICAgICAgICAwDQpb
+ICAgMjUuOTY4Nzc3XSB0eXBlICAgICAgICAgICAyDQpbICAgMjUuOTcxNzU4XSBubGVuICAgICAg
+ICAgICAxOA0KWyAgIDI1Ljk3NDc2NV0gbmFtZSAgICAgICAgICAgU2VjdXJlVHJ1c3RfQ0EucGVS
+DQpbICAgMjUuOTc5MzM0XSBDUFU6IDAgUElEOiAzNDkgQ29tbTogbW91bnQgTm90IHRhaW50ZWQg
+My4xOC4zMSAjMg0KWyAgIDI1Ljk4NTQwM10gWzxjMDAxNGI2OD5dICh1bndpbmRfYmFja3RyYWNl
+KSBmcm9tIFs8YzAwMTIwMTQ+XQ0KKHNob3dfc3RhY2srMHgxMC8weDE0KQ0KWyAgIDI1Ljk5Mjg1
+Nl0gWzxjMDAxMjAxND5dIChzaG93X3N0YWNrKSBmcm9tIFs8YzAyMDE1ZDg+XQ0KKHViaWZzX3Jl
+YWRfbm9kZSsweDJjMC8weDJmOCkNClsgICAyNi4wMDA2NzJdIFs8YzAyMDE1ZDg+XSAodWJpZnNf
+cmVhZF9ub2RlKSBmcm9tIFs8YzAyMWQ3NDQ+XQ0KKHViaWZzX3RuY19yZWFkX25vZGUrMHg1OC8w
+eDFjMCkNClsgICAyNi4wMDkxNTFdIFs8YzAyMWQ3NDQ+XSAodWJpZnNfdG5jX3JlYWRfbm9kZSkg
+ZnJvbSBbPGMwMjAyNDQ4Pl0NCih0bmNfcmVhZF9ub2RlX25tKzB4YjQvMHgxYjgpDQpbICAgMjYu
+MDE3NzY3XSBbPGMwMjAyNDQ4Pl0gKHRuY19yZWFkX25vZGVfbm0pIGZyb20gWzxjMDIwNTdlYz5d
+DQoodWJpZnNfdG5jX25leHRfZW50KzB4MWI0LzB4MjIwKQ0KWyAgIDI2LjAyNjM2MV0gWzxjMDIw
+NTdlYz5dICh1Ymlmc190bmNfbmV4dF9lbnQpIGZyb20gWzxjMDIwNThjND5dDQoodWJpZnNfdG5j
+X3JlbW92ZV9pbm8rMHg2Yy8weDE3YykNClsgICAyNi4wMzUyMTZdIFs8YzAyMDU4YzQ+XSAodWJp
+ZnNfdG5jX3JlbW92ZV9pbm8pIGZyb20gWzxjMDIwODU0Yz5dDQoodWJpZnNfcmVwbGF5X2pvdXJu
+YWwrMHhlNzQvMHgxNTQwKQ0KWyAgIDI2LjA0NDUzMl0gWzxjMDIwODU0Yz5dICh1Ymlmc19yZXBs
+YXlfam91cm5hbCkgZnJvbSBbPGMwMWZkNzk0Pl0NCih1Ymlmc19tb3VudCsweGJlOC8weDE1ZGMp
+DQpbICAgMjYuMDUyODQwXSBbPGMwMWZkNzk0Pl0gKHViaWZzX21vdW50KSBmcm9tIFs8YzAwZmE0
+MTA+XQ0KKG1vdW50X2ZzKzB4NmMvMHgxNjQpDQpbICAgMjYuMDYwMDE4XSBbPGMwMGZhNDEwPl0g
+KG1vdW50X2ZzKSBmcm9tIFs8YzAxMGZmOTA+XQ0KKHZmc19rZXJuX21vdW50KzB4NGMvMHhlMCkN
+ClsgICAyNi4wNjc0MzddIFs8YzAxMGZmOTA+XSAodmZzX2tlcm5fbW91bnQpIGZyb20gWzxjMDEx
+MmYzND5dDQooZG9fbW91bnQrMHg5MzQvMHhhMzgpDQpbICAgMjYuMDc0OTEwXSBbPGMwMTEyZjM0
+Pl0gKGRvX21vdW50KSBmcm9tIFs8YzAxMTMyNTg+XSAoU3lTX21vdW50KzB4NzAvMHg5YykNClsg
+ICAyNi4wODE4MjZdIFs8YzAxMTMyNTg+XSAoU3lTX21vdW50KSBmcm9tIFs8YzAwMGU3NDA+XQ0K
+KHJldF9mYXN0X3N5c2NhbGwrMHgwLzB4MzgpDQpbICAgMjYuMDg5NTQxXSBVQklGUyBEQkcgdG5j
+IChwaWQgMzQ5KToga2V5ICg3NTk5NywgeGVudHJ5LCAweDVlZGM4N2UpDQpbICAgMjYuMDk2MDQ1
+XSBVQklGUyAodWJpMzowKTogYmFja2dyb3VuZCB0aHJlYWQgInViaWZzX2JndDNfMCIgc3RvcHMN
+Cm1vdW50OiBtb3VudGluZyAvZGV2L3ViaTNfMCBvbiAvbW50L2ZsYXNoIGZhaWxlZDogSW52YWxp
+ZCBhcmd1bWVudA0KDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18NCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvDQo=
