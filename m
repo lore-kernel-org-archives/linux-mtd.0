@@ -1,20 +1,19 @@
-Received: from mail-wj0-x242.google.com ([2a00:1450:400c:c01::242])
+Received: from mail-wj0-x244.google.com ([2a00:1450:400c:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEL7D-00020M-Gb
- for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 19:09:26 +0000
-Received: by mail-wj0-x242.google.com with SMTP id kp2so45650535wjc.0
- for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2016 11:09:01 -0800 (PST)
-Subject: Re: [PATCH 1/1] mtd: spi-nor: remove WARN_ONCE() message in
- spi_nor_write()
+ id 1cEL7D-00021F-Kq
+ for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 19:09:28 +0000
+Received: by mail-wj0-x244.google.com with SMTP id kp2so45650634wjc.0
+ for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2016 11:09:02 -0800 (PST)
+Subject: Re: [PATCH 1/1] mtd: spi-nor: improve macronix_quad_enable()
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <0078578d0f5d2402ac623afabf601d25998f84a9.1481044434.git.cyrille.pitchen@atmel.com>
+References: <5b7ad2367d9b6a4e3a766ce6cadf16c313a03a26.1481039788.git.cyrille.pitchen@atmel.com>
 Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
  richard@nod.at, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <096f8b4c-b00a-af89-e667-7385226c2e7e@gmail.com>
-Date: Tue, 6 Dec 2016 20:00:15 +0100
+Message-ID: <5962912d-b5de-f0d0-077b-af3b9ff2a77c@gmail.com>
+Date: Tue, 6 Dec 2016 20:01:03 +0100
 MIME-Version: 1.0
-In-Reply-To: <0078578d0f5d2402ac623afabf601d25998f84a9.1481044434.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <5b7ad2367d9b6a4e3a766ce6cadf16c313a03a26.1481039788.git.cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,38 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/06/2016 06:14 PM, Cyrille Pitchen wrote:
-> This patch removes the WARN_ONCE() test in spi_nor_write().
-> This macro triggers the display of a warning message almost every time we
-> use a UBI file-system because a write operation is performed at offset 64,
-> which is in the middle of the SPI NOR memory page. This is a valid
-> operation for ubifs.
+On 12/06/2016 05:01 PM, Cyrille Pitchen wrote:
+> The patch checks whether the Quad Enable bit is already set in the Status
+> Register. If so, the function exits immediately with a successful return
+> code.
 
-Is that a valid operation for all spi nors ?
+Performance optimization I presume ?
 
-> Hence this warning is pretty annoying and useless so we just remove it.
-> 
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+
 > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> Suggested-by: Richard Weinberger <richard@nod.at>
-> Suggested-by: Andras Szemzo <szemzo.andras@gmail.com>
+> Reviewed-by: Jagan Teki <jagan@openedev.com>
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 3 ---
->  1 file changed, 3 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index c9bcd05ca5d9..cdeb2c6b1492 100644
+> index da7cd69d4857..1fd32b991eb7 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1265,9 +1265,6 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  		ssize_t written;
+> @@ -1216,6 +1216,9 @@ static int macronix_quad_enable(struct spi_nor *nor)
+>  	val = read_sr(nor);
+>  	if (val < 0)
+>  		return val;
+> +	if (val & SR_QUAD_EN_MX)
+> +		return 0;
+> +
+>  	write_enable(nor);
 >  
->  		page_offset = (to + i) & (nor->page_size - 1);
-> -		WARN_ONCE(page_offset,
-> -			  "Writing at offset %zu into a NOR page. Writing partial pages may decrease reliability and increase wear of NOR flash.",
-> -			  page_offset);
->  		/* the size of data remaining on the first page */
->  		page_remain = min_t(size_t,
->  				    nor->page_size - page_offset, len - i);
+>  	write_sr(nor, val | SR_QUAD_EN_MX);
 > 
 
 
