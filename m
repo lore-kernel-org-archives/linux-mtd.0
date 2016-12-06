@@ -1,7 +1,7 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEOeV-0000M1-RQ
- for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 22:56:04 +0000
+ id 1cEOeW-0000NR-2i
+ for linux-mtd@lists.infradead.org; Tue, 06 Dec 2016 22:56:05 +0000
 From: David Gstir <david@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: tytso@mit.edu, dedekind1@gmail.com, ebiggers@google.com,
@@ -9,9 +9,12 @@ Cc: tytso@mit.edu, dedekind1@gmail.com, ebiggers@google.com,
  hch@infradead.org, linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
  dengler@linutronix.de, sbabic@denx.de, wd@denx.de, richard@nod.at,
  David Gstir <david@sigma-star.at>
-Subject: [PATCH v2 0/6] UBIFS related fscrypt updates
-Date: Tue,  6 Dec 2016 23:53:52 +0100
-Message-Id: <20161206225358.12126-1-david@sigma-star.at>
+Subject: [PATCH v2 4/6] fscrypt: Cleanup page locking requirements for
+ fscrypt_{decrypt, encrypt}_page()
+Date: Tue,  6 Dec 2016 23:53:56 +0100
+Message-Id: <20161206225358.12126-5-david@sigma-star.at>
+In-Reply-To: <20161206225358.12126-1-david@sigma-star.at>
+References: <20161206225358.12126-1-david@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +24,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This series applies on top of Ted's fscrypt tree[0] addresses the review
-comments from Eric.
+Rename the FS_CFLG_INPLACE_ENCRYPTION flag to FS_CFLG_OWN_PAGES which,
+when set, indicates that the fs uses pages under its own control as
+opposed to writeback pages which require locking and a bounce buffer for
+encryption.
 
-Changes since v1:
-- Never allocate fscrypt_ctx in "own pages" mode
-- Fix code comments
-- Fix issues reported by checkpatch.pl
+Signed-off-by: David Gstir <david@sigma-star.at>
+---
+ fs/crypto/crypto.c       | 11 ++++++++---
+ fs/ext4/inode.c          |  1 -
+ fs/f2fs/data.c           |  1 -
+ include/linux/fscrypto.h |  2 +-
+ 4 files changed, 9 insertions(+), 6 deletions(-)
 
-[0] git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git fscrypt
-
-David Gstir (6):
-  fscrypt: Use correct index in decrypt path.
-  fscrypt: Never allocate fscrypt_ctx on in-place encryption
-  fscrypt: Cleanup fscrypt_{decrypt,encrypt}_page()
-  fscrypt: Cleanup page locking requirements for
-    fscrypt_{decrypt,encrypt}_page()
-  fscrypt: Delay bounce page pool allocation until needed
-  fscrypt: Rename FS_WRITE_PATH_FL to FS_CTX_HAS_BOUNCE_BUFFER_FL
-
- fs/crypto/crypto.c       | 135 ++++++++++++++++++++++++++++-------------------
- fs/crypto/keyinfo.c      |   2 +-
- fs/ext4/inode.c          |   1 -
- fs/f2fs/data.c           |   1 -
- include/linux/fscrypto.h |  14 ++---
- 5 files changed, 90 insertions(+), 63 deletions(-)
-
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 8805ec5d7de2..6f5c3a8df70b 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -238,7 +238,7 @@ static struct page *alloc_bounce_page(struct fscrypt_ctx *ctx, gfp_t gfp_flags)
+  * fscrypt_restore_control_page() on the returned ciphertext page to
+  * release the bounce buffer and the encryption context.
+  *
+- * In-place encryption is used by setting the FS_CFLG_INPLACE_ENCRYPTION flag in
++ * In-place encryption is used by setting the FS_CFLG_OWN_PAGES flag in
+  * fscrypt_operations. Here, the input-page is returned with its content
+  * encrypted.
+  *
+@@ -258,7 +258,7 @@ struct page *fscrypt_encrypt_page(const struct inode *inode,
+ 
+ 	BUG_ON(len % FS_CRYPTO_BLOCK_SIZE != 0);
+ 
+-	if (inode->i_sb->s_cop->flags & FS_CFLG_INPLACE_ENCRYPTION) {
++	if (inode->i_sb->s_cop->flags & FS_CFLG_OWN_PAGES) {
+ 		/* with inplace-encryption we just encrypt the page */
+ 		err = do_page_crypto(inode, FS_ENCRYPT, lblk_num,
+ 					page, ciphertext_page,
+@@ -269,6 +269,8 @@ struct page *fscrypt_encrypt_page(const struct inode *inode,
+ 		return ciphertext_page;
+ 	}
+ 
++	BUG_ON(!PageLocked(page));
++
+ 	ctx = fscrypt_get_ctx(inode, gfp_flags);
+ 	if (IS_ERR(ctx))
+ 		return (struct page *)ctx;
+@@ -301,7 +303,7 @@ EXPORT_SYMBOL(fscrypt_encrypt_page);
+  * fscrypt_decrypt_page() - Decrypts a page in-place
+  * @inode:     The corresponding inode for the page to decrypt.
+  * @page:      The page to decrypt. Must be locked in case
+- *             it is a writeback page.
++ *             it is a writeback page (FS_CFLG_OWN_PAGES unset).
+  * @len:       Number of bytes in @page to be decrypted.
+  * @offs:      Start of data in @page.
+  * @lblk_num:  Logical block number.
+@@ -315,6 +317,9 @@ EXPORT_SYMBOL(fscrypt_encrypt_page);
+ int fscrypt_decrypt_page(const struct inode *inode, struct page *page,
+ 			unsigned int len, unsigned int offs, u64 lblk_num)
+ {
++	if (!(inode->i_sb->s_cop->flags & FS_CFLG_OWN_PAGES))
++		BUG_ON(!PageLocked(page));
++
+ 	return do_page_crypto(inode, FS_DECRYPT, lblk_num, page, page, len,
+ 			offs, GFP_NOFS);
+ }
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 1485ac273bfb..fb2b514f675b 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3744,7 +3744,6 @@ static int __ext4_block_zero_page_range(handle_t *handle,
+ 			/* We expect the key to be set. */
+ 			BUG_ON(!fscrypt_has_encryption_key(inode));
+ 			BUG_ON(blocksize != PAGE_SIZE);
+-			BUG_ON(!PageLocked(page));
+ 			WARN_ON_ONCE(fscrypt_decrypt_page(page->mapping->host,
+ 						page, PAGE_SIZE, 0, page->index));
+ 		}
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 435590c4b341..9f0ba90b92e4 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1194,7 +1194,6 @@ int do_write_data_page(struct f2fs_io_info *fio)
+ 		f2fs_wait_on_encrypted_page_writeback(F2FS_I_SB(inode),
+ 							fio->old_blkaddr);
+ retry_encrypt:
+-		BUG_ON(!PageLocked(fio->page));
+ 		fio->encrypted_page = fscrypt_encrypt_page(inode, fio->page,
+ 							PAGE_SIZE, 0,
+ 							fio->page->index,
+diff --git a/include/linux/fscrypto.h b/include/linux/fscrypto.h
+index e9648b62eca6..65be74f3afb6 100644
+--- a/include/linux/fscrypto.h
++++ b/include/linux/fscrypto.h
+@@ -156,7 +156,7 @@ struct fscrypt_name {
+ /*
+  * fscrypt superblock flags
+  */
+-#define FS_CFLG_INPLACE_ENCRYPTION (1U << 1)
++#define FS_CFLG_OWN_PAGES (1U << 1)
+ 
+ /*
+  * crypto opertions for filesystems
 -- 
 2.10.1
