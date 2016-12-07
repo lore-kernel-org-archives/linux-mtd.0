@@ -1,26 +1,27 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEfZZ-0000Pu-35
- for linux-mtd@lists.infradead.org; Wed, 07 Dec 2016 17:00:49 +0000
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add a stateless method to support
- memory size above 128Mib
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cEfZf-0000U2-Th
+ for linux-mtd@lists.infradead.org; Wed, 07 Dec 2016 17:00:54 +0000
+Date: Wed, 7 Dec 2016 17:59:33 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Marek Vasut <marek.vasut@gmail.com>
-References: <cover.1481041702.git.cyrille.pitchen@atmel.com>
- <97e02fd9d6328bc591f98d5ae3da98b0ad9051d2.1481041702.git.cyrille.pitchen@atmel.com>
- <e1f9652e-4dda-0420-69d3-6fef606bc5dd@gmail.com>
- <6623dc41-f7a8-9788-fe01-7fe3d5b2062f@atmel.com>
- <6443cfb4-2d6d-c929-0d8a-053082bda506@gmail.com>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
- <broonie@kernel.org>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <679d301c-363a-e8fe-abed-c3ad00ea1fad@atmel.com>
-Date: Wed, 7 Dec 2016 17:59:37 +0100
+Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>, Kees Trommel
+ <ctrommel@aimvalley.nl>, linux-mtd@lists.infradead.org
+Subject: Re: Add --skip-all-ffs option to mtd-utils nandwrite
+Message-ID: <20161207175933.28c0df93@bbrezillon>
+In-Reply-To: <3b42761b-4415-f8a1-37cf-f01c064b76d3@gmail.com>
+References: <82cbfdbc-c79b-01b0-bc64-a4259d7a150e@aimvalley.nl>
+ <16abefc9-61e8-3b0d-c44c-6d02764ec8e9@sigma-star.at>
+ <33437f45-d3e8-17ec-d5b0-0118d50ff6ec@aimvalley.nl>
+ <cb18365f-4fe0-9e07-f7cc-6c2bf72018b3@sigma-star.at>
+ <15c62cdb-38f7-76b8-b3fc-6b3c2766e9df@gmail.com>
+ <b2a82878-d9f8-f22b-1993-aeae926a0e40@sigma-star.at>
+ <d4a1082b-d79a-8c90-b17d-5d559e32308a@gmail.com>
+ <20161207170700.4b967faa@bbrezillon>
+ <3b42761b-4415-f8a1-37cf-f01c064b76d3@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <6443cfb4-2d6d-c929-0d8a-053082bda506@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,232 +31,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 07/12/2016 à 17:32, Marek Vasut a écrit :
-> On 12/07/2016 05:29 PM, Cyrille Pitchen wrote:
->> Le 07/12/2016 à 17:20, Marek Vasut a écrit :
->>> On 12/06/2016 05:52 PM, Cyrille Pitchen wrote:
->>>> This patch provides an alternative mean to support memory above 16MiB
->>>> (128Mib) by replacing 3byte address op codes by their associated 4byte
->>>> address versions.
->>>>
->>>> Using the dedicated 4byte address op codes doesn't change the internal
->>>> state of the SPI NOR memory as opposed to using other means such as
->>>> updating a Base Address Register (BAR) and sending command to enter/leave
->>>> the 4byte mode.
->>>>
->>>> Hence when a CPU reset occurs, early bootloaders don't need to be aware
->>>> of BAR value or 4byte mode being enabled: they can still access the first
->>>> 16MiB of the SPI NOR memory using the regular 3byte address op codes.
->>>>
->>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>>> Tested-by: Vignesh R <vigneshr@ti.com>
->>>> ---
->>>>  drivers/mtd/spi-nor/spi-nor.c | 114 ++++++++++++++++++++++++++++++++++--------
->>>>  1 file changed, 93 insertions(+), 21 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>>> index 8abe134e174a..606c030c566d 100644
->>>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>>> @@ -75,6 +75,10 @@ struct flash_info {
->>>>  					 * bit. Must be used with
->>>>  					 * SPI_NOR_HAS_LOCK.
->>>>  					 */
->>>> +#define SPI_NOR_4B_OPCODES	BIT(10)	/*
->>>> +					 * Use dedicated 4byte address op codes
->>>> +					 * to support memory size above 128Mib.
->>>> +					 */
->>>>  };
->>>>  
->>>>  #define JEDEC_MFR(info)	((info)->id[0])
->>>> @@ -188,6 +192,91 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
->>>>  	return mtd->priv;
->>>>  }
->>>>  
->>>> +
->>>> +struct spi_nor_address_entry {
->>>> +	u8	src_opcode;
->>>> +	u8	dst_opcode;
->>>> +};
->>>> +
->>>> +static u8 spi_nor_convert_opcode(u8 opcode,
->>>> +				 const struct spi_nor_address_entry *entries,
->>>> +				 size_t num_entries)
->>>> +{
->>>> +	int min, max;
->>>> +
->>>> +	/*
->>>> +	 * This function implements a dichotomic search in the entries[]
->>>> +	 * array indexed by src_opcode. Hence we assume that the entries[]
->>>> +	 * array is sorted by src_opcode.
->>>> +	 * The dichotomic search has a logarithmic complexity as opposed
->>>> +	 * to a simple loop on all entires, which has a linear complexity:
->>>> +	 * it means that when n is the number of entries in the input array,
->>>> +	 * the dichotomic search performs O(log2(n)) comparisons whereas
->>>> +	 * a simple loop performs O(n) comparisons.
->>>> +	 */
->>>> +	min = 0;
->>>> +	max = num_entries - 1;
->>>> +	while (min <= max) {
->>>> +		int mid = (min + max) >> 1;
->>>> +		const struct spi_nor_address_entry *entry = &entries[mid];
->>>> +
->>>> +		if (opcode == entry->src_opcode)
->>>> +			return entry->dst_opcode;
->>>> +
->>>> +		if (opcode < entry->src_opcode)
->>>> +			max = mid - 1;
->>>> +		else
->>>> +			min = mid + 1;
->>>> +	}
->>>
->>> You have like 16 entries in that table, just do a linear search, this is
->>> only complex for no benefit.
->>
->> Well ok, I agree with you, it's too much overkill for what it does.
->> For readiness purpose, what about a simple and straight forward switch()
->> statement? Let's forget about cache-line and other memory/time optimizations :)
+On Wed, 7 Dec 2016 17:31:04 +0100
+Marek Vasut <marek.vasut@gmail.com> wrote:
+
+> On 12/07/2016 05:07 PM, Boris Brezillon wrote:
+> > On Wed, 7 Dec 2016 15:09:49 +0100
+> > Marek Vasut <marek.vasut@gmail.com> wrote:
+> >   
+> >> On 12/07/2016 09:21 AM, David Oberhollenzer wrote:  
+> >>> On 12/07/2016 06:01 AM, Marek Vasut wrote:    
+> >>>> +               if (skipallffs)
+> >>>> +               {
+> >>>> +                       for (ii = 0; ii < mtd.min_io_size; ii +=
+> >>>> sizeof(uint32_t))
+> >>>> +                       {
+> >>>> +                               if (*(uint32_t*)(writebuf + ii) !=
+> >>>> 0xffffffff)
+> >>>> +                                       break;
+> >>>>
+> >>>> Is this memcmp()-alike function ?
+> >>>>
+> >>>> +                       }
+> >>>> +                       if (ii == mtd.min_io_size)
+> >>>> +                               allffs = 1;
+> >>>> +               }
+> >>>> +               if (!allffs) {    
+> >>> The point of the patch is not to write a page that is filled with 0xFF bytes.
+> >>> A feature that is turned off by default and can be activated via a command
+> >>> line switch.    
+> >>
+> >> That much I figured out
+> >>  
+> >>> The code you are trying to replace tries to figure out if an entire block of
+> >>> memory is set to 0xFF. The code path should be conditional, as this feature
+> >>> is turned off unless explicitly requested.    
+> >>
+> >> And to do that, we need to open-code it like above ?
+> >> Looks pretty crappy.  
+> > 
+> > I agree with Marek on one point: we're likely to need the 0xff-pattern
+> > check in other places, so how about implementing a helper (or several
+> > helpers) in libmtd?  
 > 
-> If you do a switch, you cannot walk a table which you pass in, see below.
+> Helper would be great, yeah.
+> 
+> >>>> This could be simply turned to:
+> >>>>
+> >>>> ret = 0;
+> >>>> if (!memcmp(writebuf, writebuf + 1, mtd.min_io_size - 1)) {
+> >>>>     ret = mtd_write(....);
+> >>>> }    
+> > 
+> > Oh, nice trick! It works with and additional writebuf[0] == 0xff test.
+> > However I'm concerned about readability (can be addressed with a comment
+> > explaining what you're doing)  
+> 
+> Yeah, it's not exactly obvious. You need the writebuf[0] == pattern test
+> and bufsize >= 2 test.
+> 
+> >, and perfs (memcmp is likely to be
+> > optimized for aligned accesses, and you defeat that with your writebuf
+> > + 1).  
+> 
+> That's up to libc optimization, really. memcpy() implementation in glibc
+> and musl at least does a lot of magic to optimize copying regardless of
+> alignment.
+> 
+> > Here's a proposal for the pattern comparison API:
+> > 
+> > struct pattern_buf {
+> > 	unsigned int size;
+> > 	void *buf;
+> > }
+> > 
+> > const struct pattern_buf *mtd_create_pattern_buf(int size, u8 pattern);
+> > void mtd_free_pattern_buf(const struct pattern_buf *pbuf);
+> > bool mtd_check_pattern(const struct pattern_buf *pbuf, void *buf,
+> > 		       int size);
+> > 
+> > This way you can allocate a pattern buffer of pagesize and re-use it for
+> > each new page you want to check. This also solves the unaligned
+> > memcmp() problem.  
+> 
+> Here you're filling memory with stuff, which for large buffer will
+> trigger IO to main memory, which is slow. This is unnecessary since
+> you already have such data available to you (it's your own buffer and
+> it's in cache), just use it.
+
+Indeed, I didn't consider caches, and as you said, memcmp is likely to
+be optimized for the unaligned case, and even if it's not, I'm not sure
+we really care about perfs here. 
+
+> 
+> And the implementation would be:
+> 
+> int mtd_buffer_is_filled_with_byte(void *buf, size_t size, u8 pattern)
+> {
+>   int match;
+> 
+>   if (size == 0)
+>     return 0;
+> 
+>   match = (*buf == pattern);
+> 
+>   return (size == 1) ? match : !memcmp(buf, buf + 1, size - 1)
+> }
 > 
 
-I meant I remove the table too, a hidden "table" would still be generated
-by the compiler in the assembly code to translate the switch statement:
-
-static u8 spi_nor_3to4_opcode(u8 3byte_address_opcode)
-{
-	#define CASE_3TO4(_opcode)	case _opcode: return _opcode##_4B
-	
-	switch (3_byte_address_opcode) {
-	/* Without macro. */
-	case SPINOR_OP_PP:
-		return SPINOR_OP_PP_4B;
-
-	case SPINOR_OP_READ:
-		return SPINOR_OP_READ_4B;
-
-	case SPINOR_OP_READ_FAST:
-		return SPINOR_OP_READ_FAST_4B;
-
-	/* With macro. */
-	CASE_3TO4(SPINOR_OP_READ_FAST);
-
-	default:
-		break;
-	}
-
-	/* No conversion found */
-	return opcode;
-}
-
-For readiness, I don't whether people prefer the version with macro or the
-version without. Just tell me :)
-
-Of course with the switch statement I no longer need the struct
-spi_nor_address_entry.
-
-Also for now I don't need a 4TO3 translation.
-
-
->>>> +	/* No conversion found */
->>>> +	return opcode;
->>>> +}
->>>> +
->>>> +static u8 spi_nor_3to4_opcode(u8 opcode)
->>>> +{
->>>> +	/* MUST be sorted by 3byte opcode (cf spi_nor_convert_opcode). */
->>>> +#define ENTRY_3TO4(_opcode)	{ _opcode, _opcode##_4B }
->>>> +	static const struct spi_nor_address_entry spi_nor_3to4_table[] = {
->>>
->>> You can make this static const struct const for extra constness :-)
->>>
->>>> +		ENTRY_3TO4(SPINOR_OP_PP),		/* 0x02 */
->>>> +		ENTRY_3TO4(SPINOR_OP_READ),		/* 0x03 */
->>>> +		ENTRY_3TO4(SPINOR_OP_READ_FAST),	/* 0x0b */
->>>> +		ENTRY_3TO4(SPINOR_OP_BE_4K),		/* 0x20 */
->>>> +		ENTRY_3TO4(SPINOR_OP_PP_1_1_4),		/* 0x32 */
->>>> +		ENTRY_3TO4(SPINOR_OP_PP_1_4_4),		/* 0x38 */
->>>> +		ENTRY_3TO4(SPINOR_OP_READ_1_1_2),	/* 0x3b */
->>>> +		ENTRY_3TO4(SPINOR_OP_BE_32K),		/* 0x52 */
->>>> +		ENTRY_3TO4(SPINOR_OP_READ_1_1_4),	/* 0x6b */
->>>> +		ENTRY_3TO4(SPINOR_OP_READ_1_2_2),	/* 0xbb */
->>>> +		ENTRY_3TO4(SPINOR_OP_SE),		/* 0xd8 */
->>>> +		ENTRY_3TO4(SPINOR_OP_READ_1_4_4),	/* 0xeb */
->>>
->>> I'd probably break this into three smaller tables, read/program/erase
->>> and then call something like:
->>>
->>> spi_nor_3to4_opcode(nor->read_opcode, read_opcode_table,
->>>                     ARRAY_SIZE(read_opcode_table));
->>>
->>> This would further reduce the table size (heck, it'd probably fit into a
->>> cacheline), so linear search would be more than enough.
->>>
->>>> +	};
->>>> +#undef ENTRY_3TO4
->>>> +
->>>> +	return spi_nor_convert_opcode(opcode, spi_nor_3to4_table,
->>>> +				      ARRAY_SIZE(spi_nor_3to4_table));
->>>> +}
->>>> +
->>>> +static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
->>>> +				      const struct flash_info *info)
->>>> +{
->>>> +	/* Do some manufacturer fixups first */
->>>> +	switch (JEDEC_MFR(info)) {
->>>> +	case SNOR_MFR_SPANSION:
->>>> +		/* No small sector erase for 4-byte command set */
->>>> +		nor->erase_opcode = SPINOR_OP_SE;
->>>> +		nor->mtd.erasesize = info->sector_size;
->>>> +		break;
->>>> +
->>>> +	default:
->>>> +		break;
->>>> +	}
->>>> +
->>>> +	nor->read_opcode	= spi_nor_3to4_opcode(nor->read_opcode);
->>>> +	nor->program_opcode	= spi_nor_3to4_opcode(nor->program_opcode);
->>>> +	nor->erase_opcode	= spi_nor_3to4_opcode(nor->erase_opcode);
->>>> +}
->>>> +
->>>>  /* Enable/disable 4-byte addressing mode. */
->>>>  static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
->>>>  			    int enable)
->>>> @@ -1486,27 +1575,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->>>>  	else if (mtd->size > 0x1000000) {
->>>>  		/* enable 4-byte addressing if the device exceeds 16MiB */
->>>>  		nor->addr_width = 4;
->>>> -		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION) {
->>>> -			/* Dedicated 4-byte command set */
->>>> -			switch (nor->flash_read) {
->>>> -			case SPI_NOR_QUAD:
->>>> -				nor->read_opcode = SPINOR_OP_READ_1_1_4_4B;
->>>> -				break;
->>>> -			case SPI_NOR_DUAL:
->>>> -				nor->read_opcode = SPINOR_OP_READ_1_1_2_4B;
->>>> -				break;
->>>> -			case SPI_NOR_FAST:
->>>> -				nor->read_opcode = SPINOR_OP_READ_FAST_4B;
->>>> -				break;
->>>> -			case SPI_NOR_NORMAL:
->>>> -				nor->read_opcode = SPINOR_OP_READ_4B;
->>>> -				break;
->>>> -			}
->>>> -			nor->program_opcode = SPINOR_OP_PP_4B;
->>>> -			/* No small sector erase for 4-byte command set */
->>>> -			nor->erase_opcode = SPINOR_OP_SE_4B;
->>>> -			mtd->erasesize = info->sector_size;
->>>> -		} else
->>>> +		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
->>>> +		    info->flags & SPI_NOR_4B_OPCODES)
->>>> +			spi_nor_set_4byte_opcodes(nor, info);
->>>> +		else
->>>>  			set_4byte(nor, info, 1);
->>>>  	} else {
->>>>  		nor->addr_width = 3;
->>>>
->>>
->>>
->>
-> 
-> 
+Looks good to me. Feel free to post a patch ;-).
