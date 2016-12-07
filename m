@@ -1,22 +1,31 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEXVF-0008LI-FD
- for linux-mtd@lists.infradead.org; Wed, 07 Dec 2016 08:23:06 +0000
-Subject: Re: Add --skip-all-ffs option to mtd-utils nandwrite
-To: Marek Vasut <marek.vasut@gmail.com>, Kees Trommel
- <ctrommel@aimvalley.nl>, linux-mtd@lists.infradead.org
-References: <82cbfdbc-c79b-01b0-bc64-a4259d7a150e@aimvalley.nl>
- <16abefc9-61e8-3b0d-c44c-6d02764ec8e9@sigma-star.at>
- <33437f45-d3e8-17ec-d5b0-0118d50ff6ec@aimvalley.nl>
- <cb18365f-4fe0-9e07-f7cc-6c2bf72018b3@sigma-star.at>
- <15c62cdb-38f7-76b8-b3fc-6b3c2766e9df@gmail.com>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <b2a82878-d9f8-f22b-1993-aeae926a0e40@sigma-star.at>
-Date: Wed, 7 Dec 2016 09:21:26 +0100
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cEXzB-0001Qa-Aj
+ for linux-mtd@lists.infradead.org; Wed, 07 Dec 2016 08:53:58 +0000
+Date: Wed, 7 Dec 2016 10:53:30 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v6 0/3] spi-nor: Add support for Intel SPI serial flash
+ controller
+Message-ID: <20161207085330.GN1459@lahna.fi.intel.com>
+References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+ <20161205112727.GI1459@lahna.fi.intel.com>
+ <2dac1535-de7f-47c3-2747-ba8cac854811@gmail.com>
+ <20161205163106.GJ1459@lahna.fi.intel.com>
+ <62db8daa-7ebf-1a42-bd70-897c3c636e3c@atmel.com>
+ <20161206094525.GA25385@dell.home>
 MIME-Version: 1.0
-In-Reply-To: <15c62cdb-38f7-76b8-b3fc-6b3c2766e9df@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20161206094525.GA25385@dell.home>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +35,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/07/2016 06:01 AM, Marek Vasut wrote:
-> +               if (skipallffs)
-> +               {
-> +                       for (ii = 0; ii < mtd.min_io_size; ii +=
-> sizeof(uint32_t))
-> +                       {
-> +                               if (*(uint32_t*)(writebuf + ii) !=
-> 0xffffffff)
-> +                                       break;
+On Tue, Dec 06, 2016 at 09:45:25AM +0000, Lee Jones wrote:
+> I'm happy either way.  However if you take them, I will require a
+> pull-request to an immutable branch containing only these patches.
 > 
-> Is this memcmp()-alike function ?
-> 
-> +                       }
-> +                       if (ii == mtd.min_io_size)
-> +                               allffs = 1;
-> +               }
-> +               if (!allffs) {
-The point of the patch is not to write a page that is filled with 0xFF bytes.
-A feature that is turned off by default and can be activated via a command
-line switch.
+> If I take them, it won't be until v4.11, since we are half way though
+> -rc8 already and I would like them to soak in -next for at least a
+> couple of weeks.
 
-The code you are trying to replace tries to figure out if an entire block of
-memory is set to 0xFF. The code path should be conditional, as this feature
-is turned off unless explicitly requested.
-
-> This could be simply turned to:
-> 
-> ret = 0;
-> if (!memcmp(writebuf, writebuf + 1, mtd.min_io_size - 1)) {
->     ret = mtd_write(....);
-> }
-This does something completely different.
+This series already missed v4.8 and v4.9 so I don't think there is a
+rush to get it for v4.10 either ;-) I'm fine if it goes for v4.11.
