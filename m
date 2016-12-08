@@ -1,22 +1,21 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEy2g-0002k3-Qc
- for linux-mtd@lists.infradead.org; Thu, 08 Dec 2016 12:43:21 +0000
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: <marek.vasut@gmail.com>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cF0fT-0002j9-5G
+ for linux-mtd@lists.infradead.org; Thu, 08 Dec 2016 15:31:33 +0000
+Date: Thu, 8 Dec 2016 16:31:09 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: <marek.vasut@gmail.com>, <computersforpeace@gmail.com>,
  <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 2/2] mtd: spi-nor: add a stateless method to support memory
- size above 128Mib
-Date: Thu, 8 Dec 2016 13:41:37 +0100
-Message-ID: <1362ba746fee8d8ad359d4fd67d2d6d8fd544a57.1481200454.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1481200454.git.cyrille.pitchen@atmel.com>
-References: <cover.1481200454.git.cyrille.pitchen@atmel.com>
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] mtd: spi-nor: remove WARN_ONCE() message in
+ spi_nor_write()
+Message-ID: <20161208163109.17429627@bbrezillon>
+In-Reply-To: <0078578d0f5d2402ac623afabf601d25998f84a9.1481044434.git.cyrille.pitchen@atmel.com>
+References: <0078578d0f5d2402ac623afabf601d25998f84a9.1481044434.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,127 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch provides an alternative mean to support memory above 16MiB
-(128Mib) by replacing 3byte address op codes by their associated 4byte
-address versions.
+On Tue, 6 Dec 2016 18:14:24 +0100
+Cyrille Pitchen <cyrille.pitchen@atmel.com> wrote:
 
-Using the dedicated 4byte address op codes doesn't change the internal
-state of the SPI NOR memory as opposed to using other means such as
-updating a Base Address Register (BAR) and sending command to enter/leave
-the 4byte mode.
+> This patch removes the WARN_ONCE() test in spi_nor_write().
+> This macro triggers the display of a warning message almost every time we
+> use a UBI file-system because a write operation is performed at offset 64,
+> which is in the middle of the SPI NOR memory page. This is a valid
+> operation for ubifs.
+> 
+> Hence this warning is pretty annoying and useless so we just remove it.
+> 
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> Suggested-by: Richard Weinberger <richard@nod.at>
+> Suggested-by: Andras Szemzo <szemzo.andras@gmail.com>
 
-Hence when a CPU reset occurs, early bootloaders don't need to be aware
-of BAR value or 4byte mode being enabled: they can still access the first
-16MiB of the SPI NOR memory using the regular 3byte address op codes.
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Tested-by: Vignesh R <vigneshr@ti.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 78 +++++++++++++++++++++++++++++++------------
- 1 file changed, 57 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 8abe134e174a..40b78ebb9900 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -75,6 +75,10 @@ struct flash_info {
- 					 * bit. Must be used with
- 					 * SPI_NOR_HAS_LOCK.
- 					 */
-+#define SPI_NOR_4B_OPCODES	BIT(10)	/*
-+					 * Use dedicated 4byte address op codes
-+					 * to support memory size above 128Mib.
-+					 */
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -188,6 +192,55 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
- 	return mtd->priv;
- }
- 
-+
-+static u8 spi_nor_3to4_opcode(u8 opcode)
-+{
-+#define ENTRY_3TO4(_opcode)	{ _opcode, _opcode##_4B }
-+	static const u8 spi_nor_3to4_table[][2] = {
-+		ENTRY_3TO4(SPINOR_OP_READ),
-+		ENTRY_3TO4(SPINOR_OP_READ_FAST),
-+		ENTRY_3TO4(SPINOR_OP_READ_1_1_2),
-+		ENTRY_3TO4(SPINOR_OP_READ_1_2_2),
-+		ENTRY_3TO4(SPINOR_OP_READ_1_1_4),
-+		ENTRY_3TO4(SPINOR_OP_READ_1_4_4),
-+		ENTRY_3TO4(SPINOR_OP_PP),
-+		ENTRY_3TO4(SPINOR_OP_PP_1_1_4),
-+		ENTRY_3TO4(SPINOR_OP_PP_1_4_4),
-+		ENTRY_3TO4(SPINOR_OP_BE_4K),
-+		ENTRY_3TO4(SPINOR_OP_BE_32K),
-+		ENTRY_3TO4(SPINOR_OP_SE),
-+	};
-+#undef ENTRY_3TO4
-+	size_t i;
-+
-+	for (i = 0; i < ARRAY_SIZE(spi_nor_3to4_table); ++i)
-+		if (spi_nor_3to4_table[i][0] == opcode)
-+			return spi_nor_3to4_table[i][1];
-+
-+	/* No conversion found, keep input op code. */
-+	return opcode;
-+}
-+
-+static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
-+				      const struct flash_info *info)
-+{
-+	/* Do some manufacturer fixups first */
-+	switch (JEDEC_MFR(info)) {
-+	case SNOR_MFR_SPANSION:
-+		/* No small sector erase for 4-byte command set */
-+		nor->erase_opcode = SPINOR_OP_SE;
-+		nor->mtd.erasesize = info->sector_size;
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	nor->read_opcode	= spi_nor_3to4_opcode(nor->read_opcode);
-+	nor->program_opcode	= spi_nor_3to4_opcode(nor->program_opcode);
-+	nor->erase_opcode	= spi_nor_3to4_opcode(nor->erase_opcode);
-+}
-+
- /* Enable/disable 4-byte addressing mode. */
- static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
- 			    int enable)
-@@ -1486,27 +1539,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 	else if (mtd->size > 0x1000000) {
- 		/* enable 4-byte addressing if the device exceeds 16MiB */
- 		nor->addr_width = 4;
--		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION) {
--			/* Dedicated 4-byte command set */
--			switch (nor->flash_read) {
--			case SPI_NOR_QUAD:
--				nor->read_opcode = SPINOR_OP_READ_1_1_4_4B;
--				break;
--			case SPI_NOR_DUAL:
--				nor->read_opcode = SPINOR_OP_READ_1_1_2_4B;
--				break;
--			case SPI_NOR_FAST:
--				nor->read_opcode = SPINOR_OP_READ_FAST_4B;
--				break;
--			case SPI_NOR_NORMAL:
--				nor->read_opcode = SPINOR_OP_READ_4B;
--				break;
--			}
--			nor->program_opcode = SPINOR_OP_PP_4B;
--			/* No small sector erase for 4-byte command set */
--			nor->erase_opcode = SPINOR_OP_SE_4B;
--			mtd->erasesize = info->sector_size;
--		} else
-+		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
-+		    info->flags & SPI_NOR_4B_OPCODES)
-+			spi_nor_set_4byte_opcodes(nor, info);
-+		else
- 			set_4byte(nor, info, 1);
- 	} else {
- 		nor->addr_width = 3;
--- 
-2.7.4
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index c9bcd05ca5d9..cdeb2c6b1492 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1265,9 +1265,6 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  		ssize_t written;
+>  
+>  		page_offset = (to + i) & (nor->page_size - 1);
+> -		WARN_ONCE(page_offset,
+> -			  "Writing at offset %zu into a NOR page. Writing partial pages may decrease reliability and increase wear of NOR flash.",
+> -			  page_offset);
+>  		/* the size of data remaining on the first page */
+>  		page_remain = min_t(size_t,
+>  				    nor->page_size - page_offset, len - i);
