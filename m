@@ -1,19 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cFFvp-00084m-Hr
- for linux-mtd@lists.infradead.org; Fri, 09 Dec 2016 07:49:26 +0000
-Date: Fri, 9 Dec 2016 08:49:04 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marek Vasut <marex@denx.de>
-Cc: linux-mtd@lists.infradead.org, David Oberhollenzer
- <david.oberhollenzer@sigma-star.at>, Kees Trommel <ctrommel@aimvalley.nl>
+ id 1cFGW9-0005xU-PN
+ for linux-mtd@lists.infradead.org; Fri, 09 Dec 2016 08:26:59 +0000
 Subject: Re: [PATCH V2] nandwrite: Factor out buffer checking code
-Message-ID: <20161209084904.28d1e914@bbrezillon>
-In-Reply-To: <20161209014741.15609-1-marex@denx.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marex@denx.de>
 References: <20161209014741.15609-1-marex@denx.de>
+ <20161209084904.28d1e914@bbrezillon>
+Cc: linux-mtd@lists.infradead.org, Kees Trommel <ctrommel@aimvalley.nl>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <7f4c3ff4-10e7-e34f-388f-6d02bf6bcb21@sigma-star.at>
+Date: Fri, 9 Dec 2016 09:25:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20161209084904.28d1e914@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,95 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  9 Dec 2016 02:47:41 +0100
-Marek Vasut <marex@denx.de> wrote:
-
-> Pull the buffer content checking code into separate function and
-> simplify the code invoking it slightly.
+On 12/09/2016 08:49 AM, Boris Brezillon wrote:
+> On Fri,  9 Dec 2016 02:47:41 +0100
+> Marek Vasut <marex@denx.de> wrote:
 > 
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-> Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-> Cc: Kees Trommel <ctrommel@aimvalley.nl>
-> ---
->  include/common.h       | 25 +++++++++++++++++++++++++
->  nand-utils/nandwrite.c | 17 +++--------------
->  2 files changed, 28 insertions(+), 14 deletions(-)
-> ---
-> V2: Move the buffer_check_pattern() to include/common.h
+>> Pull the buffer content checking code into separate function and
+>> simplify the code invoking it slightly.
+>>
+>> Signed-off-by: Marek Vasut <marex@denx.de>
+>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 > 
-> diff --git a/include/common.h b/include/common.h
-> index 32b5d23..2812f49 100644
-> --- a/include/common.h
-> +++ b/include/common.h
-> @@ -181,6 +181,31 @@ static inline int is_power_of_2(unsigned long long n)
->  	return (n != 0 && ((n & (n - 1)) == 0));
->  }
->  
-> +/* Check whether buffer is filled with character 'pattern' */
-> +static inline int buffer_check_pattern(unsigned char *buffer, size_t size,
-> +				       unsigned char pattern)
-> +{
-> +	/* Invalid input */
-> +	if (!buffer || (size == 0))
-> +		return 0;
-> +
-> +	/* No match on first byte */
-> +	if (*buffer != pattern)
-> +		return 0;
-> +
-> +	/* First byte matched and buffer is 1 byte long, OK. */
-> +	if (size == 1)
-> +		return 1;
-> +
-> +	/*
-> +	 * Check buffer longer than 1 byte. We already know that buffer[0]
-> +	 * matches the pattern, so the test below only checks whether the
-> +	 * buffer[0...size-2] == buffer[1...size-1] , which is a test for
-> +	 * whether the buffer is filled with constant value.
-> +	 */
-> +	return !memcmp(buffer, buffer + 1, size - 1);
-> +}
-> +
->  /**
->   * simple_strtoX - convert a hex/dec/oct string into a number
->   * @snum: buffer to convert
-> diff --git a/nand-utils/nandwrite.c b/nand-utils/nandwrite.c
-> index b376869..9602a6e 100644
-> --- a/nand-utils/nandwrite.c
-> +++ b/nand-utils/nandwrite.c
-> @@ -523,18 +523,8 @@ int main(int argc, char * const argv[])
->  			}
->  		}
->  
-> -		allffs = 0;
-> -		if (skipallffs) 
-> -		{
-> -			for (ii = 0; ii < mtd.min_io_size; ii += sizeof(uint32_t))
-> -			{
-> -				if (*(uint32_t*)(writebuf + ii) != 0xffffffff)
-> -					break;
-> -			}
-> -			if (ii == mtd.min_io_size)
-> -				allffs = 1;
-> -		}
-> -		if (!allffs) {
-> +		ret = 0;
-> +		if (!skipallffs || !buffer_check_pattern(writebuf, mtd.min_io_size, 0xff)) {
->  			/* Write out data */
->  			ret = mtd_write(mtd_desc, &mtd, fd, mtdoffset / mtd.eb_size,
->  					mtdoffset % mtd.eb_size,
-> @@ -543,9 +533,8 @@ int main(int argc, char * const argv[])
->  					writeoob ? oobbuf : NULL,
->  					writeoob ? mtd.oob_size : 0,
->  					write_mode);
-> -		} else  {
-> -			ret = 0;
->  		}
-> +
->  		if (ret) {
->  			long long i;
->  			if (errno != EIO) {
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Looks good to me too.
+
+On 12/09/2016 02:49 AM, Marek Vasut wrote:
+> OK, done and V2 out. But it'd be great if someone could actually test it
+> :-) Kees ?
+> 
+> 
+
+>From looking at the code, it looks perfectly reasonable and I don't see
+why it shouldn't work.
+
+Anyway, I took the code snippet and ran an exhaustive test on all 32 bit
+integers. It appears to work as intended.
+
+Applied to mtd-utils.git.
+
+
+Thanks,
+
+David
