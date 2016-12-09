@@ -1,10 +1,10 @@
-Received: from 10.mo5.mail-out.ovh.net ([46.105.52.148])
+Received: from 11.mo5.mail-out.ovh.net ([46.105.47.167])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cFONq-0008Oy-76
- for linux-mtd@lists.infradead.org; Fri, 09 Dec 2016 16:50:55 +0000
+ id 1cFOO2-0008S5-RX
+ for linux-mtd@lists.infradead.org; Fri, 09 Dec 2016 16:51:08 +0000
 Received: from player760.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id E306E53BFD
- for <linux-mtd@lists.infradead.org>; Fri,  9 Dec 2016 17:50:30 +0100 (CET)
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id 0D44253F3B
+ for <linux-mtd@lists.infradead.org>; Fri,  9 Dec 2016 17:50:43 +0100 (CET)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -15,9 +15,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Joel Stanley <joel@jms.id.au>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH v3 3/5] mtd: aspeed: used a label property
-Date: Fri,  9 Dec 2016 17:49:25 +0100
-Message-Id: <1481302167-28044-4-git-send-email-clg@kaod.org>
+Subject: [PATCH v3 4/5] mtd: spi-nor: bindings for the Aspeed memory
+ controllers
+Date: Fri,  9 Dec 2016 17:49:26 +0100
+Message-Id: <1481302167-28044-5-git-send-email-clg@kaod.org>
 In-Reply-To: <1481302167-28044-1-git-send-email-clg@kaod.org>
 References: <1481302167-28044-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
@@ -32,26 +33,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This can be used to easily identify a chip on a system with multiple
-chips.
-
 Signed-off-by: Cédric Le Goater <clg@kaod.org>
 ---
- drivers/mtd/spi-nor/aspeed-smc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../devicetree/bindings/mtd/aspeed-smc.txt         | 51 ++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
 
-diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-index 99302b0d7786..9119c0ca86b6 100644
---- a/drivers/mtd/spi-nor/aspeed-smc.c
-+++ b/drivers/mtd/spi-nor/aspeed-smc.c
-@@ -676,6 +676,8 @@ static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
- 		nor->prepare = aspeed_smc_prep;
- 		nor->unprepare = aspeed_smc_unprep;
- 
-+		mtd->name = of_get_property(child, "label", NULL);
+diff --git a/Documentation/devicetree/bindings/mtd/aspeed-smc.txt b/Documentation/devicetree/bindings/mtd/aspeed-smc.txt
+new file mode 100644
+index 000000000000..e2c88cea38f6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/aspeed-smc.txt
+@@ -0,0 +1,51 @@
++* Aspeed Firmware Memory controller
++* Aspeed SPI Flash Memory Controller
 +
- 		ret = aspeed_smc_chip_setup_init(chip, r);
- 		if (ret)
- 			break;
++The Firmware Memory Controller in the Aspeed AST2500 SoC supports
++three chip selects, two of which are always of SPI type and the third
++can be SPI or NOR type flash, but the driver only supports SPI.
++
++The two SPI flash memory controllers in the AST2500 each support two
++chip selects.
++
++Required properties:
++  - compatible : Should be one of
++	"aspeed,ast2400-fmc" for the AST2400 Firmware Memory Controller
++	"aspeed,ast2400-spi" for the AST2400 SPI Flash memory Controller
++	"aspeed,ast2500-fmc" for the AST2500 Firmware Memory Controller
++	"aspeed,ast2500-spi" for the AST2500 SPI flash memory controllers
++
++  - reg : the first contains the control register location and length,
++          the second contains the memory window mapping address and length
++  - #address-cells : must be 1 corresponding to chip select child binding
++  - #size-cells : must be 0 corresponding to chip select child binding
++
++Optional properties:
++  - interrupts : Should contain the interrupt for the dma device if an
++    FMC
++
++The child nodes are the SPI flash modules which must have a compatible
++property as specified in bindings/mtd/jedec,spi-nor.txt
++
++Optionally, the child node can contain properties for SPI mode (may be
++ignored):
++  - spi-max-frequency - max frequency of spi bus
++
++
++Example:
++fmc: fmc@1e620000 {
++	compatible = "aspeed,ast2500-fmc";
++	reg = < 0x1e620000 0x94
++		0x20000000 0x02000000 >;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	interrupts = <19>;
++	flash@0 {
++		reg = < 0 >;
++		compatible = "jedec,spi-nor";
++		/* spi-max-frequency = <>; */
++		/* m25p,fast-read; */
++		#address-cells = <1>;
++		#size-cells = <1>;
++	};
++};
 -- 
 2.7.4
