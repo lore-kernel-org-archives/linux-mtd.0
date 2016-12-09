@@ -1,10 +1,10 @@
-Received: from 11.mo5.mail-out.ovh.net ([46.105.47.167])
+Received: from 15.mo5.mail-out.ovh.net ([178.33.107.29])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cFOO2-0008S5-RX
- for linux-mtd@lists.infradead.org; Fri, 09 Dec 2016 16:51:08 +0000
+ id 1cFOOE-0008WV-NB
+ for linux-mtd@lists.infradead.org; Fri, 09 Dec 2016 16:51:19 +0000
 Received: from player760.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id 0D44253F3B
- for <linux-mtd@lists.infradead.org>; Fri,  9 Dec 2016 17:50:43 +0100 (CET)
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id 726895409F
+ for <linux-mtd@lists.infradead.org>; Fri,  9 Dec 2016 17:50:55 +0100 (CET)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -15,10 +15,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Joel Stanley <joel@jms.id.au>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH v3 4/5] mtd: spi-nor: bindings for the Aspeed memory
- controllers
-Date: Fri,  9 Dec 2016 17:49:26 +0100
-Message-Id: <1481302167-28044-5-git-send-email-clg@kaod.org>
+Subject: [PATCH v3 5/5] mtd: spi-nor: add a label property to jedec,spi-nor
+Date: Fri,  9 Dec 2016 17:49:27 +0100
+Message-Id: <1481302167-28044-6-git-send-email-clg@kaod.org>
 In-Reply-To: <1481302167-28044-1-git-send-email-clg@kaod.org>
 References: <1481302167-28044-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
@@ -33,68 +32,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This can be used to easily identify a chip on a system with multiple
+chips.
+
 Signed-off-by: Cédric Le Goater <clg@kaod.org>
 ---
- .../devicetree/bindings/mtd/aspeed-smc.txt         | 51 ++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
+ Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/aspeed-smc.txt b/Documentation/devicetree/bindings/mtd/aspeed-smc.txt
-new file mode 100644
-index 000000000000..e2c88cea38f6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/aspeed-smc.txt
-@@ -0,0 +1,51 @@
-+* Aspeed Firmware Memory controller
-+* Aspeed SPI Flash Memory Controller
-+
-+The Firmware Memory Controller in the Aspeed AST2500 SoC supports
-+three chip selects, two of which are always of SPI type and the third
-+can be SPI or NOR type flash, but the driver only supports SPI.
-+
-+The two SPI flash memory controllers in the AST2500 each support two
-+chip selects.
-+
-+Required properties:
-+  - compatible : Should be one of
-+	"aspeed,ast2400-fmc" for the AST2400 Firmware Memory Controller
-+	"aspeed,ast2400-spi" for the AST2400 SPI Flash memory Controller
-+	"aspeed,ast2500-fmc" for the AST2500 Firmware Memory Controller
-+	"aspeed,ast2500-spi" for the AST2500 SPI flash memory controllers
-+
-+  - reg : the first contains the control register location and length,
-+          the second contains the memory window mapping address and length
-+  - #address-cells : must be 1 corresponding to chip select child binding
-+  - #size-cells : must be 0 corresponding to chip select child binding
-+
-+Optional properties:
-+  - interrupts : Should contain the interrupt for the dma device if an
-+    FMC
-+
-+The child nodes are the SPI flash modules which must have a compatible
-+property as specified in bindings/mtd/jedec,spi-nor.txt
-+
-+Optionally, the child node can contain properties for SPI mode (may be
-+ignored):
-+  - spi-max-frequency - max frequency of spi bus
-+
-+
-+Example:
-+fmc: fmc@1e620000 {
-+	compatible = "aspeed,ast2500-fmc";
-+	reg = < 0x1e620000 0x94
-+		0x20000000 0x02000000 >;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	interrupts = <19>;
-+	flash@0 {
-+		reg = < 0 >;
-+		compatible = "jedec,spi-nor";
-+		/* spi-max-frequency = <>; */
-+		/* m25p,fast-read; */
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+	};
-+};
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+index 2c91c03e7eb0..b7cd02a3ebe8 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+@@ -65,6 +65,7 @@ Optional properties:
+                    all chips and support for it can not be detected at runtime.
+                    Refer to your chips' datasheet to check if this is supported
+                    by your chip.
++- label : name to assign to mtd. If omitted, the label is the MTD device name.
+ 
+ Example:
+ 
+@@ -75,4 +76,5 @@ Example:
+ 		reg = <0>;
+ 		spi-max-frequency = <40000000>;
+ 		m25p,fast-read;
++		label = "System-firmware";
+ 	};
 -- 
 2.7.4
