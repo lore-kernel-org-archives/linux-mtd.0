@@ -1,20 +1,20 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cFOwW-00064i-8w
- for linux-mtd@lists.infradead.org; Fri, 09 Dec 2016 17:26:45 +0000
-Subject: Re: [PATCH v2 1/3] mtd: spi-nor: Add die_cnt field and flags
-To: <marcin.krzeminski@nokia.com>, <linux-mtd@lists.infradead.org>
-References: <1479465769-28276-1-git-send-email-marcin.krzeminski@nokia.com>
- <1479465769-28276-2-git-send-email-marcin.krzeminski@nokia.com>
-CC: <rfsw-patches@mlist.nokia.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <cfc14d07-a49e-4dcf-27bf-69a564739e13@atmel.com>
-Date: Fri, 9 Dec 2016 18:26:21 +0100
-MIME-Version: 1.0
-In-Reply-To: <1479465769-28276-2-git-send-email-marcin.krzeminski@nokia.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>, linux@armlinux.org.uk,
+ nicolas.pitre@linaro.org, panand@redhat.com, chris.brandt@renesas.com,
+ arnd@arndb.de, jonathan.austin@arm.com, pawel.moll@arm.com,
+ vladimir.murzin@arm.com, mark.rutland@arm.com, ard.biesheuvel@linaro.org,
+ keescook@chromium.org, matt@codeblueprint.co.uk, labbott@fedoraproject.org,
+ kirill.shutemov@linux.intel.com, ben@decadent.org.uk, js07.lee@samsung.com,
+ stefan@agner.ch, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com, richard@nod.at,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Subject: [PATCH v3 0/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
+Date: Fri,  9 Dec 2016 15:36:24 -0800
+Message-Id: <20161209233628.6642-1-f.fainelli@gmail.com>
+In-Reply-To: <20161208185933.13749-1-f.fainelli@gmail.com>
+References: <20161208185933.13749-1-f.fainelli@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,104 +24,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 18/11/2016 à 11:42, marcin.krzeminski@nokia.com a écrit :
-> From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
-> 
-> This commit adds new field and flags that could
-> be used to signalize that chip support die erase
-> command.
-> 
-> If DIE_ERASE flag will be selected but die_cnt field
-> will be 0 chip will not use chip erase command.
-> 
-IHMO, this semantics sounds odd.
+This patch series builds on top of Laura's [PATCHv5 00/10] CONFIG_DEBUG_VIRTUAL
+for arm64 to add support for CONFIG_DEBUG_VIRTUAL for ARM.
 
-> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 27 +++++++++++++++++++++++++++
->  include/linux/mtd/spi-nor.h   |  5 +++++
->  2 files changed, 32 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d0fc165..9b8656e 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -75,6 +75,7 @@ struct flash_info {
->  					 * bit. Must be used with
->  					 * SPI_NOR_HAS_LOCK.
->  					 */
-> +#define DIE_ERASE			BIT(10)	/* Support for die erase cmd */
->  };
->  
->  #define JEDEC_MFR(info)	((info)->id[0])
-> @@ -295,6 +296,32 @@ static int erase_chip(struct spi_nor *nor)
->  	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
->  }
->  
-> +static int spi_nor_die_erase(struct spi_nor *nor, u32 addr)
-> +{
-> +	u8 buf[SPI_NOR_MAX_ADDR_WIDTH];
-> +	u8 cmd;
-> +	int i, ret;
-> +
-> +	dev_dbg(nor->dev, "erase @ 0x%X\n", addr);
-> +
-> +	write_enable(nor);
-> +
-> +	if (nor->erase) {
-> +		cmd = nor->erase_opcode;
-> +		nor->erase_opcode = SPINOR_OP_DIE_ERASE;
-> +		ret = nor->erase(nor, addr);
-> +		nor->erase_opcode = cmd;
-> +		return ret;
-> +	}
-> +
-> +	for (i = nor->addr_width - 1; i >= 0; i--) {
-> +		buf[i] = addr & 0xff;
-> +		addr >>= 8;
-> +	}
-> +
-> +	return nor->write_reg(nor, SPINOR_OP_DIE_ERASE, buf, nor->addr_width);
-> +}
-> +
->  static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->  {
->  	int ret = 0;
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index c425c7b..80154b2 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -50,6 +50,7 @@
->  #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
->  #define SPINOR_OP_BE_32K	0x52	/* Erase 32KiB block */
->  #define SPINOR_OP_CHIP_ERASE	0xc7	/* Erase whole flash chip */
-> +#define SPINOR_OP_DIE_ERASE	0xc4	/* Erase whole die within chip */
->  #define SPINOR_OP_SE		0xd8	/* Sector erase (usually 64KiB) */
->  #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
->  #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
-> @@ -119,6 +120,7 @@ enum spi_nor_ops {
->  enum spi_nor_option_flags {
->  	SNOR_F_USE_FSR		= BIT(0),
->  	SNOR_F_HAS_SR_TB	= BIT(1),
-> +	SNOR_F_DIE_ERASE	= BIT(2),
->  };
->  
->  /**
-> @@ -136,6 +138,8 @@ enum spi_nor_option_flags {
->   * @sst_write_second:	used by the SST write operation
->   * @flags:		flag options for the current SPI-NOR (SNOR_F_*)
->   * @cmd_buf:		used by the write_reg
-> + * @die_cnt:		number of dies in chip, if and SNOR_F_DIE_ERASE
-> + * 			flasg is enabled CE command will be disabled
->   * @prepare:		[OPTIONAL] do some preparations for the
->   *			read/write/erase/lock/unlock operations
->   * @unprepare:		[OPTIONAL] do some post work after the
-> @@ -167,6 +171,7 @@ struct spi_nor {
->  	bool			sst_write_second;
->  	u32			flags;
->  	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
-> +	u32			die_cnt;
->  
->  	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
->  	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
-> 
+This was tested on a Brahma B15 platform (ARMv7 + HIGHMEM + LPAE).
+
+Note that the treewide changes would involve a huge CC list, which
+is why it has been purposely trimmed to just focusing on the DEBUG_VIRTUAL
+aspect.
+
+Changes in v3:
+
+- fix build failures reported by Kbuild test robot
+
+Changes in v2:
+
+- Modified MTD LART driver not to create symbol conflicts with
+  KERNEL_START
+- Fixed patch that defines and uses KERNEL_START/END
+- Fixed __pa_symbol()'s definition
+- Inline __pa_symbol() check wihtin the VIRTUAL_BUG_ON statement
+- Simplified check for virtual addresses
+- Added a tree-wide patch changing SMP/PM implementations to use
+  __pa_symbol(), build tested against multi_v{5,7}_defconfig
+
+Thanks!
+
+Florian Fainelli (4):
+  mtd: lart: Rename partition defines to be prefixed with PART_
+  ARM: Define KERNEL_START and KERNEL_END
+  ARM: Add support for CONFIG_DEBUG_VIRTUAL
+  ARM: treewide: Replace uses of virt_to_phys with __pa_symbol
+
+ arch/arm/Kconfig                          |   1 +
+ arch/arm/boot/compressed/piggy.xzkern     | Bin 0 -> 2998584 bytes
+ arch/arm/common/mcpm_entry.c              |  12 +++----
+ arch/arm/include/asm/memory.h             |  23 ++++++++++++--
+ arch/arm/mach-alpine/platsmp.c            |   2 +-
+ arch/arm/mach-axxia/platsmp.c             |   2 +-
+ arch/arm/mach-bcm/bcm63xx_smp.c           |   2 +-
+ arch/arm/mach-bcm/platsmp-brcmstb.c       |   2 +-
+ arch/arm/mach-bcm/platsmp.c               |   4 +--
+ arch/arm/mach-berlin/platsmp.c            |   2 +-
+ arch/arm/mach-exynos/firmware.c           |   4 +--
+ arch/arm/mach-exynos/mcpm-exynos.c        |   2 +-
+ arch/arm/mach-exynos/platsmp.c            |   4 +--
+ arch/arm/mach-exynos/pm.c                 |   6 ++--
+ arch/arm/mach-exynos/suspend.c            |   6 ++--
+ arch/arm/mach-hisi/platmcpm.c             |   2 +-
+ arch/arm/mach-hisi/platsmp.c              |   6 ++--
+ arch/arm/mach-imx/platsmp.c               |   2 +-
+ arch/arm/mach-imx/pm-imx6.c               |   2 +-
+ arch/arm/mach-imx/src.c                   |   2 +-
+ arch/arm/mach-mediatek/platsmp.c          |   2 +-
+ arch/arm/mach-mvebu/pm.c                  |   2 +-
+ arch/arm/mach-mvebu/pmsu.c                |   2 +-
+ arch/arm/mach-mvebu/system-controller.c   |   2 +-
+ arch/arm/mach-omap2/control.c             |   8 ++---
+ arch/arm/mach-omap2/omap-mpuss-lowpower.c |   8 ++---
+ arch/arm/mach-omap2/omap-smp.c            |   4 +--
+ arch/arm/mach-prima2/platsmp.c            |   2 +-
+ arch/arm/mach-prima2/pm.c                 |   2 +-
+ arch/arm/mach-pxa/palmz72.c               |   2 +-
+ arch/arm/mach-pxa/pxa25x.c                |   2 +-
+ arch/arm/mach-pxa/pxa27x.c                |   2 +-
+ arch/arm/mach-pxa/pxa3xx.c                |   2 +-
+ arch/arm/mach-realview/platsmp-dt.c       |   2 +-
+ arch/arm/mach-rockchip/platsmp.c          |   4 +--
+ arch/arm/mach-rockchip/pm.c               |   2 +-
+ arch/arm/mach-s3c24xx/mach-jive.c         |   2 +-
+ arch/arm/mach-s3c24xx/pm-s3c2410.c        |   2 +-
+ arch/arm/mach-s3c24xx/pm-s3c2416.c        |   2 +-
+ arch/arm/mach-s3c64xx/pm.c                |   2 +-
+ arch/arm/mach-s5pv210/pm.c                |   2 +-
+ arch/arm/mach-sa1100/pm.c                 |   2 +-
+ arch/arm/mach-shmobile/platsmp-apmu.c     |   6 ++--
+ arch/arm/mach-shmobile/platsmp-scu.c      |   4 +--
+ arch/arm/mach-socfpga/platsmp.c           |   4 +--
+ arch/arm/mach-spear/platsmp.c             |   2 +-
+ arch/arm/mach-sti/platsmp.c               |   2 +-
+ arch/arm/mach-sunxi/platsmp.c             |   4 +--
+ arch/arm/mach-tango/platsmp.c             |   2 +-
+ arch/arm/mach-tango/pm.c                  |   2 +-
+ arch/arm/mach-tegra/reset.c               |   4 +--
+ arch/arm/mach-ux500/platsmp.c             |   2 +-
+ arch/arm/mach-vexpress/dcscb.c            |   2 +-
+ arch/arm/mach-vexpress/platsmp.c          |   2 +-
+ arch/arm/mach-vexpress/tc2_pm.c           |   4 +--
+ arch/arm/mach-zx/platsmp.c                |   4 +--
+ arch/arm/mach-zynq/platsmp.c              |   2 +-
+ arch/arm/mm/Makefile                      |   1 +
+ arch/arm/mm/init.c                        |   7 ++--
+ arch/arm/mm/mmu.c                         |   6 +---
+ arch/arm/mm/physaddr.c                    |  51 ++++++++++++++++++++++++++++++
+ drivers/mtd/devices/lart.c                |  24 +++++++-------
+ 62 files changed, 173 insertions(+), 108 deletions(-)
+ create mode 100644 arch/arm/boot/compressed/piggy.xzkern
+ create mode 100644 arch/arm/mm/physaddr.c
+
+-- 
+2.9.3
