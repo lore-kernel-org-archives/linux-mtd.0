@@ -1,16 +1,17 @@
-Received: from mo5.mail-out.ovh.net ([178.32.228.5])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cFlYB-000113-9q
- for linux-mtd@lists.infradead.org; Sat, 10 Dec 2016 17:35:08 +0000
-Received: from player760.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id 504B14CD12
- for <linux-mtd@lists.infradead.org>; Sat, 10 Dec 2016 18:34:44 +0100 (CET)
+ id 1cFn0a-00071E-Qv
+ for linux-mtd@lists.infradead.org; Sat, 10 Dec 2016 19:08:34 +0000
+Received: by mail-wm0-x244.google.com with SMTP id a20so2754378wme.2
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Dec 2016 11:08:11 -0800 (PST)
 Subject: Re: [PATCH v3 1/5] mtd: spi-nor: add memory controllers for the
  Aspeed AST2500 SoC
-To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+ linux-mtd@lists.infradead.org
 References: <1481302167-28044-1-git-send-email-clg@kaod.org>
  <1481302167-28044-2-git-send-email-clg@kaod.org>
  <68aa03be-8195-1824-a9e1-609a5ad74381@gmail.com>
+ <f0ad683a-0989-e1ae-b33b-9746260ffa0e@kaod.org>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -18,11 +19,11 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Joel Stanley <joel@jms.id.au>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <f0ad683a-0989-e1ae-b33b-9746260ffa0e@kaod.org>
-Date: Sat, 10 Dec 2016 18:34:32 +0100
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <2b51e3b8-5d02-c045-63c6-fcb0c9f8f460@gmail.com>
+Date: Sat, 10 Dec 2016 20:08:08 +0100
 MIME-Version: 1.0
-In-Reply-To: <68aa03be-8195-1824-a9e1-609a5ad74381@gmail.com>
+In-Reply-To: <f0ad683a-0989-e1ae-b33b-9746260ffa0e@kaod.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,236 +35,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, 
+On 12/10/2016 06:34 PM, Cédric Le Goater wrote:
+> Hello, 
 
-On 12/10/2016 05:01 AM, Marek Vasut wrote:
-> On 12/09/2016 05:49 PM, Cédric Le Goater wrote:
-> 
-> [...]
-> 
-> 
->> +static int aspeed_smc_read_from_ahb(void *buf, const void __iomem *src,
->> +				    size_t len)
->> +{
->> +	if (IS_ALIGNED((u32)src, sizeof(u32)) &&
->> +	    IS_ALIGNED((u32)buf, sizeof(u32)) &&
->> +	    IS_ALIGNED(len, sizeof(u32))) {
-> 
-> Did you try compiling this on any 64bit system ?
+Hi!
 
-I cross compile the kernel on a 64bit host and then upload on the
-target. What kind of problem are you forseeing ? 
+> On 12/10/2016 05:01 AM, Marek Vasut wrote:
+>> On 12/09/2016 05:49 PM, Cédric Le Goater wrote:
+>>
+>> [...]
+>>
+>>
+>>> +static int aspeed_smc_read_from_ahb(void *buf, const void __iomem *src,
+>>> +				    size_t len)
+>>> +{
+>>> +	if (IS_ALIGNED((u32)src, sizeof(u32)) &&
+>>> +	    IS_ALIGNED((u32)buf, sizeof(u32)) &&
+>>> +	    IS_ALIGNED(len, sizeof(u32))) {
+>>
+>> Did you try compiling this on any 64bit system ?
+> 
+> I cross compile the kernel on a 64bit host and then upload on the
+> target. What kind of problem are you forseeing ? 
 
-> 
->> +		while (len > 3) {
->> +			*(u32 *)buf = readl(src);
-> 
-> ioread32_rep() to avoid open-coding the loop .
+Something about the pointer being clipped to 4 bytes, I'd rather use
+uintptr_t cast instead of u32 . I don't think it matters for this check,
+but just to be extra precise ...
 
-ok.
-
->> +			buf += 4;
->> +			src += 4;
->> +			len -= 4;
->> +		}
->> +	}
->> +
->> +	while (len--) {
->> +		*(u8 *)buf = readb(src);
->> +		buf += 1;
->> +		src += 1;
->> +	}
->> +	return 0;
->> +}
->> +
->> +static int aspeed_smc_write_to_ahb(void __iomem *dst, const void *buf,
->> +				   size_t len)
->> +{
->> +	if (IS_ALIGNED((u32)dst, sizeof(u32)) &&
->> +	    IS_ALIGNED((u32)buf, sizeof(u32)) &&
->> +	    IS_ALIGNED(len, sizeof(u32))) {
->> +		while (len > 3) {
->> +			u32 val = *(u32 *)buf;
->> +
->> +			writel(val, dst);
-> 
-> iowrite32_rep()
-> 
->> +			buf += 4;
->> +			dst += 4;
->> +			len -= 4;
->> +		}
->> +	}
->> +
->> +	while (len--) {
->> +		u8 val = *(u8 *)buf;
->> +
->> +		writeb(val, dst);
->> +		buf += 1;
->> +		dst += 1;
->> +	}
->> +	return 0;
->> +}
->> +
->> +/*
->> + * The driver only support SPI flash
->> + */
->> +enum aspeed_smc_flash_type {
->> +	smc_type_nor  = 0,
->> +	smc_type_nand = 1,
->> +	smc_type_spi  = 2,
->> +};
->> +
->> +struct aspeed_smc_chip;
->> +
->> +struct aspeed_smc_info {
->> +	u32 maxsize;		/* maximum size of chip window */
->> +	u8 nce;			/* number of chip enables */
->> +	bool hastype;		/* flash type field exists in config reg */
->> +	u8 we0;			/* shift for write enable bit for CE0 */
->> +	u8 ctl0;		/* offset in regs of ctl for CE0 */
->> +
->> +	void (*set_4b)(struct aspeed_smc_chip *chip);
->> +};
-> 
-> Move all the structs to the beginning of the driver please.
-
-ok.
-
-> 
->> +static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip);
->> +
->> +static const struct aspeed_smc_info fmc_2500_info = {
->> +	.maxsize = 256 * 1024 * 1024,
->> +	.nce = 3,
->> +	.hastype = true,
->> +	.we0 = 16,
->> +	.ctl0 = 0x10,
->> +	.set_4b = aspeed_smc_chip_set_4b,
->> +};
->> +
->> +static const struct aspeed_smc_info spi_2500_info = {
->> +	.maxsize = 128 * 1024 * 1024,
->> +	.nce = 2,
->> +	.hastype = false,
->> +	.we0 = 16,
->> +	.ctl0 = 0x10,
->> +	.set_4b = aspeed_smc_chip_set_4b,
->> +};
->> +
->> +enum aspeed_smc_ctl_reg_value {
->> +	smc_base,		/* base value without mode for other commands */
->> +	smc_read,		/* command reg for (maybe fast) reads */
->> +	smc_write,		/* command reg for writes */
->> +	smc_max,
->> +};
-> 
-> [...]
-> 
->> +#define CONTROL_CE_STOP_ACTIVE_CONTROL	BIT(2)
->> +#define CONTROL_COMMAND_MODE_MASK	GENMASK(1, 0)
->> +#define CONTROL_COMMAND_MODE_NORMAL	(0)
->> +#define CONTROL_COMMAND_MODE_FREAD	(1)
->> +#define CONTROL_COMMAND_MODE_WRITE	(2)
->> +#define CONTROL_COMMAND_MODE_USER	(3)
-> 
-> Drop the parenthesis around constants :)
-
-yeah
-
->> +#define CONTROL_KEEP_MASK						\
->> +	(CONTROL_AAF_MODE | CONTROL_CE_INACTIVE_MASK | CONTROL_CLK_DIV4 | \
->> +	 CONTROL_IO_DUMMY_MASK | CONTROL_CLOCK_FREQ_SEL_MASK |		\
->> +	 CONTROL_LSB_FIRST | CONTROL_CLOCK_MODE_3)
->> +
->> +/*
->> + * Segment Address Registers. Start and end addresses are encoded
->> + * using 8MB units
->> + */
->> +#define SEGMENT_ADDR_REG0		0x30
->> +#define SEGMENT_ADDR_START(_r)		((((_r) >> 16) & 0xFF) << 23)
-> 
-> is that ((r) & 0xff0000) << 7 ?
-> 
->> +#define SEGMENT_ADDR_END(_r)		((((_r) >> 24) & 0xFF) << 23)
-> 
-> ((r) & 0xff000000) >> 1 ?
-
-yes. 
-
-I rather keep the initial macros though, which I found easier to 
-understand.
-
-The Segment Register uses a 8MB unit to encode the start address
-and the end address of the mapping window of a flash SPI slave :
-
-        | byte 1 | byte 2 | byte 3 | byte 4 |
-        +--------+--------+--------+--------+
-        |  end   |  start |   0    |   0    |
+>>
+>>> +		while (len > 3) {
+>>> +			*(u32 *)buf = readl(src);
 
 
+[...]
 
->> +static inline u32 aspeed_smc_chip_write_bit(struct aspeed_smc_chip *chip)
->> +{
->> +	return BIT(chip->controller->info->we0 + chip->cs);
->> +}
+>>> +/*
+>>> + * Segment Address Registers. Start and end addresses are encoded
+>>> + * using 8MB units
+>>> + */
+>>> +#define SEGMENT_ADDR_REG0		0x30
+>>> +#define SEGMENT_ADDR_START(_r)		((((_r) >> 16) & 0xFF) << 23)
+>>
+>> is that ((r) & 0xff0000) << 7 ?
+>>
+>>> +#define SEGMENT_ADDR_END(_r)		((((_r) >> 24) & 0xFF) << 23)
+>>
+>> ((r) & 0xff000000) >> 1 ?
 > 
-> [...]
+> yes. 
 > 
->> +static int aspeed_smc_chip_setup_init(struct aspeed_smc_chip *chip,
->> +				      struct resource *res)
->> +{
->> +	struct aspeed_smc_controller *controller = chip->controller;
->> +	const struct aspeed_smc_info *info = controller->info;
->> +	u32 reg, base_reg;
->> +
->> +	/*
->> +	 * Always turn on the write enable bit to allow opcodes to be
->> +	 * sent in user mode.
->> +	 */
->> +	aspeed_smc_chip_enable_write(chip);
->> +
->> +	/* The driver only supports SPI type flash */
->> +	if (info->hastype)
->> +		aspeed_smc_chip_set_type(chip, smc_type_spi);
->> +
->> +	/*
->> +	 * Configure chip base address in memory
->> +	 */
->> +	chip->ahb_base = aspeed_smc_chip_base(chip, res);
->> +	if (!chip->ahb_base) {
->> +		dev_warn(chip->nor.dev, "CE segment window closed.\n");
->> +		return -1;
+> I rather keep the initial macros though, which I found easier to 
+> understand.
 > 
-> return -EINVAL ? Check whether you always use errno.h macros in returns.
+> The Segment Register uses a 8MB unit to encode the start address
+> and the end address of the mapping window of a flash SPI slave :
+> 
+>         | byte 1 | byte 2 | byte 3 | byte 4 |
+>         +--------+--------+--------+--------+
+>         |  end   |  start |   0    |   0    |
 
-ah yes. I missed that one.
+Then the above should be in the comment , it's a good explanation :)
 
-> 
->> +	}
->> +
->> +	/*
->> +	 * Get value of the inherited control register. U-Boot usually
->> +	 * does some timing calibration on the FMC chip, so it's good
->> +	 * to keep them. In the future, we should handle calibration
->> +	 * from Linux.
->> +	 */
->> +	reg = readl(chip->ctl);
->> +	dev_dbg(controller->dev, "control register: %08x\n", reg);
->> +
->> +	base_reg = reg & CONTROL_KEEP_MASK;
->> +	if (base_reg != reg) {
->> +		dev_info(controller->dev,
->> +			 "control register changed to: %08x\n",
->> +			 base_reg);
->> +	}
->> +	chip->ctl_val[smc_base] = base_reg;
-> 
-> [...]
-> 
-> Mostly minor nits, looks nice otherwise, thanks :)
+Thanks!
 
-
-Thanks for the review,
-
-C.
+-- 
+Best regards,
+Marek Vasut
