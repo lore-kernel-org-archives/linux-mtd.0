@@ -1,30 +1,38 @@
-Received: from mail-ua0-x244.google.com ([2607:f8b0:400c:c08::244])
+Received: from mail-wj0-x22f.google.com ([2a00:1450:400c:c01::22f])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGIlF-0002na-Ad
- for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 05:02:51 +0000
-Received: by mail-ua0-x244.google.com with SMTP id b35so7412526uaa.1
- for <linux-mtd@lists.infradead.org>; Sun, 11 Dec 2016 21:02:28 -0800 (PST)
-MIME-Version: 1.0
-Sender: joel.stan@gmail.com
-In-Reply-To: <1481302167-28044-2-git-send-email-clg@kaod.org>
-References: <1481302167-28044-1-git-send-email-clg@kaod.org>
- <1481302167-28044-2-git-send-email-clg@kaod.org>
-From: Joel Stanley <joel@jms.id.au>
-Date: Mon, 12 Dec 2016 16:02:07 +1100
-Message-ID: <CACPK8XeTw4uNCjzp7qmbwkojrSAJw_U=7vXD-wTjDL2gb220qQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] mtd: spi-nor: add memory controllers for the
- Aspeed AST2500 SoC
-To: =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1cGLOv-0008UK-EA
+ for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 07:51:59 +0000
+Received: by mail-wj0-x22f.google.com with SMTP id tg4so64274712wjb.1
+ for <linux-mtd@lists.infradead.org>; Sun, 11 Dec 2016 23:51:36 -0800 (PST)
+Date: Mon, 12 Dec 2016 07:54:54 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v6 0/3] spi-nor: Add support for Intel SPI serial flash
+ controller
+Message-ID: <20161212075454.GR3625@dell.home>
+References: <20161205112727.GI1459@lahna.fi.intel.com>
+ <2dac1535-de7f-47c3-2747-ba8cac854811@gmail.com>
+ <20161205163106.GJ1459@lahna.fi.intel.com>
+ <62db8daa-7ebf-1a42-bd70-897c3c636e3c@atmel.com>
+ <20161206094525.GA25385@dell.home>
+ <20161207085330.GN1459@lahna.fi.intel.com>
+ <0695162f-0959-ab2c-4e68-14881e386060@gmail.com>
+ <20161209085753.GC3625@dell.home>
+ <20161209122541.GN1501@lahna.fi.intel.com>
+ <c06ebcda-5c64-8e5c-0616-647b784210d4@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c06ebcda-5c64-8e5c-0616-647b784210d4@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,45 +42,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 10, 2016 at 3:49 AM, C=C3=A9dric Le Goater <clg@kaod.org> wrote=
-:
+On Fri, 09 Dec 2016, Marek Vasut wrote:
 
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 4a682ee0f632..5c0efbd9dd89 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -29,6 +29,16 @@ config MTD_SPI_NOR_USE_4K_SECTORS
->           Please note that some tools/drivers/filesystems may not work wi=
-th
->           4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
->
-> +config SPI_ASPEED
-> +       tristate "Aspeed flash controllers in SPI mode"
-> +       depends on ARCH_ASPEED || COMPILE_TEST
-> +       depends on HAS_IOMEM && OF
-> +       help
-> +         This enables support for the Firmware Memory controller (FMC)
-> +         in the Aspeed AST2500 SoC when attached to SPI NOR chips,
-> +         and support for the SPI flash memory controller (SPI) for
-> +         the host firmware. The implementation only supports SPI NOR.
-> +
->  config SPI_ATMEL_QUADSPI
->         tristate "Atmel Quad SPI Controller"
->         depends on ARCH_AT91 || (ARM && COMPILE_TEST)
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 121695e83542..d73d772c689c 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,4 +1,5 @@
->  obj-$(CONFIG_MTD_SPI_NOR)      +=3D spi-nor.o
-> +obj-$(CONFIG_SPI_ASPEED)       +=3D aspeed-smc.o
+> On 12/09/2016 01:25 PM, Mika Westerberg wrote:
+> > On Fri, Dec 09, 2016 at 08:57:53AM +0000, Lee Jones wrote:
+> >> On Wed, 07 Dec 2016, Marek Vasut wrote:
+> >>
+> >>> On 12/07/2016 09:53 AM, Mika Westerberg wrote:
+> >>>> On Tue, Dec 06, 2016 at 09:45:25AM +0000, Lee Jones wrote:
+> >>>>> I'm happy either way.  However if you take them, I will require a
+> >>>>> pull-request to an immutable branch containing only these patches.
+> >>>>>
+> >>>>> If I take them, it won't be until v4.11, since we are half way though
+> >>>>> -rc8 already and I would like them to soak in -next for at least a
+> >>>>> couple of weeks.
+> >>>>
+> >>>> This series already missed v4.8 and v4.9 so I don't think there is a
+> >>>> rush to get it for v4.10 either ;-) I'm fine if it goes for v4.11.
+> >>>
+> >>> Hmmmmmmmmmmm, that kinda sucks. Lee, are you positive this isn't 4.10
+> >>> material ?
+> >>
+> >> The merge-window opens in 2 days.
+> >>
+> >> As I mentioned, I like patches to reside in -next for at least 1 maybe
+> >> 2 RC cycles before merging.  It's far to easy to accept code, then get
+> >> bitten if/when it breaks after being merged by Linus.
+> > 
+> > I agree. Better to give it some time in linux-next.
+> > 
+> > Can you queue this series for v4.11?
+> 
+> OK, I'm fine with this.
 
-Can we make the symbol CONFIG_SPI_ASPEED_SMC?
+Yes, no problem.
 
-Brendan has proposed a generic SPI master driver for the Aspeed SoC
-that would allow the controller to be used for non-flash devices. The
-obvious symbol for that driver is CONFIG_SPI_ASPEED.
-
-Cheers,
-
-Joel
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
