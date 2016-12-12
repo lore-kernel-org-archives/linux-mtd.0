@@ -1,14 +1,28 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGa1I-0003ND-UJ
- for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 23:28:34 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com, dedekind1@gmail.com,
- david@sigma-star.at, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 1/2] ubifs: Use FS_CFLG_OWN_PAGES
-Date: Tue, 13 Dec 2016 00:27:58 +0100
-Message-Id: <20161212232759.30239-1-richard@nod.at>
+Received: from mail-ua0-x241.google.com ([2607:f8b0:400c:c08::241])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cGaGE-0000L9-Rv
+ for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 23:44:00 +0000
+Received: by mail-ua0-x241.google.com with SMTP id 20so10242759uak.0
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Dec 2016 15:43:36 -0800 (PST)
+MIME-Version: 1.0
+Sender: joel.stan@gmail.com
+In-Reply-To: <1481557252-13656-4-git-send-email-clg@kaod.org>
+References: <1481557252-13656-1-git-send-email-clg@kaod.org>
+ <1481557252-13656-4-git-send-email-clg@kaod.org>
+From: Joel Stanley <joel@jms.id.au>
+Date: Tue, 13 Dec 2016 10:43:14 +1100
+Message-ID: <CACPK8Xc938_y98WN=4HezPsosXQSb_LuJBkZa69FcdMuVfkVcw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] mtd: spi-nor: bindings for the Aspeed memory
+ controllers
+To: =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +32,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit bd7b8290388d ("fscrypt: Cleanup page locking requirements for
-fscrypt_{decrypt,encrypt}_page()") renamed the flag.
+On Tue, Dec 13, 2016 at 2:40 AM, C=C3=A9dric Le Goater <clg@kaod.org> wrote=
+:
+> Signed-off-by: C=C3=A9dric Le Goater <clg@kaod.org>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/crypto.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Joel Stanley <joel@jms.id.au>
 
-diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
-index aefa3c30b73b..3402720f2b28 100644
---- a/fs/ubifs/crypto.c
-+++ b/fs/ubifs/crypto.c
-@@ -87,7 +87,7 @@ int ubifs_decrypt(const struct inode *inode, struct ubifs_data_node *dn,
- }
- 
- struct fscrypt_operations ubifs_crypt_operations = {
--	.flags			= FS_CFLG_INPLACE_ENCRYPTION,
-+	.flags			= FS_CFLG_OWN_PAGES,
- 	.get_context		= ubifs_crypt_get_context,
- 	.set_context		= ubifs_crypt_set_context,
- 	.is_encrypted		= __ubifs_crypt_is_encrypted,
--- 
-2.10.2
+> ---
+>  .../devicetree/bindings/mtd/aspeed-smc.txt         | 51 ++++++++++++++++=
+++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
