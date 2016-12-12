@@ -1,10 +1,10 @@
-Received: from 20.mo5.mail-out.ovh.net ([91.121.55.239])
+Received: from 3.mo5.mail-out.ovh.net ([46.105.40.108])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGSjr-0002BK-Ts
- for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 15:42:05 +0000
+ id 1cGSk3-0002Dd-Tk
+ for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 15:42:17 +0000
 Received: from player760.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id 1AFCB5525D
- for <linux-mtd@lists.infradead.org>; Mon, 12 Dec 2016 16:41:40 +0100 (CET)
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id 24C135527E
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Dec 2016 16:41:53 +0100 (CET)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -15,10 +15,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Joel Stanley <joel@jms.id.au>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH v4 2/4] mtd: aspeed: add memory controllers for the Aspeed
- AST2400 SoC
-Date: Mon, 12 Dec 2016 16:40:50 +0100
-Message-Id: <1481557252-13656-3-git-send-email-clg@kaod.org>
+Subject: [PATCH v4 3/4] mtd: spi-nor: bindings for the Aspeed memory
+ controllers
+Date: Mon, 12 Dec 2016 16:40:51 +0100
+Message-Id: <1481557252-13656-4-git-send-email-clg@kaod.org>
 In-Reply-To: <1481557252-13656-1-git-send-email-clg@kaod.org>
 References: <1481557252-13656-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
@@ -33,111 +33,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver adds mtd support for the Aspeed AST2400 SoC static memory
-controllers:
-
- * New Static Memory Controller (referred as FMC)
-   . BMC firmware
-   . AST2500 compatible register set
-   . 5 chip select pins (CE0 ∼ CE4)
-   . supports NOR flash, NAND flash and SPI flash memory.
-
- * SPI Flash Controller (SPI)
-   . host Firmware
-   . slightly different register set, between AST2500 and the legacy
-     controller
-   . supports SPI flash memory
-   . 1 chip select pin (CE0)
-
-The legacy static memory controller (referred as SMC) is not
-supported, as well as types other than SPI.
-
 Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
 ---
- drivers/mtd/spi-nor/Kconfig      |  2 +-
- drivers/mtd/spi-nor/aspeed-smc.c | 33 +++++++++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/mtd/aspeed-smc.txt         | 51 ++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 42168e9d6097..7b00a0cb9ed8 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -35,7 +35,7 @@ config SPI_ASPEED_SMC
- 	depends on HAS_IOMEM && OF
- 	help
- 	  This enables support for the Firmware Memory controller (FMC)
--	  in the Aspeed AST2500 SoC when attached to SPI NOR chips,
-+	  in the Aspeed AST2500/AST2400 SoCs when attached to SPI NOR chips,
- 	  and support for the SPI flash memory controller (SPI) for
- 	  the host firmware. The implementation only supports SPI NOR.
- 
-diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-index 2667ab7aeb9b..ce2ab13d114d 100644
---- a/drivers/mtd/spi-nor/aspeed-smc.c
-+++ b/drivers/mtd/spi-nor/aspeed-smc.c
-@@ -44,8 +44,27 @@ struct aspeed_smc_info {
- 	void (*set_4b)(struct aspeed_smc_chip *chip);
- };
- 
-+static void aspeed_smc_chip_set_4b_spi_2400(struct aspeed_smc_chip *chip);
- static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip);
- 
-+static const struct aspeed_smc_info fmc_2400_info = {
-+	.maxsize = 64 * 1024 * 1024,
-+	.nce = 5,
-+	.hastype = true,
-+	.we0 = 16,
-+	.ctl0 = 0x10,
-+	.set_4b = aspeed_smc_chip_set_4b,
+diff --git a/Documentation/devicetree/bindings/mtd/aspeed-smc.txt b/Documentation/devicetree/bindings/mtd/aspeed-smc.txt
+new file mode 100644
+index 000000000000..49f6528ef547
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/aspeed-smc.txt
+@@ -0,0 +1,51 @@
++* Aspeed Firmware Memory controller
++* Aspeed SPI Flash Memory Controller
++
++The Firmware Memory Controller in the Aspeed AST2500 SoC supports
++three chip selects, two of which are always of SPI type and the third
++can be SPI or NOR type flash. These bindings only describe SPI.
++
++The two SPI flash memory controllers in the AST2500 each support two
++chip selects.
++
++Required properties:
++  - compatible : Should be one of
++	"aspeed,ast2400-fmc" for the AST2400 Firmware Memory Controller
++	"aspeed,ast2400-spi" for the AST2400 SPI Flash memory Controller
++	"aspeed,ast2500-fmc" for the AST2500 Firmware Memory Controller
++	"aspeed,ast2500-spi" for the AST2500 SPI flash memory controllers
++
++  - reg : the first contains the control register location and length,
++          the second contains the memory window mapping address and length
++  - #address-cells : must be 1 corresponding to chip select child binding
++  - #size-cells : must be 0 corresponding to chip select child binding
++
++Optional properties:
++  - interrupts : Should contain the interrupt for the dma device if an
++    FMC
++
++The child nodes are the SPI flash modules which must have a compatible
++property as specified in bindings/mtd/jedec,spi-nor.txt
++
++Optionally, the child node can contain properties for SPI mode (may be
++ignored):
++  - spi-max-frequency - max frequency of spi bus
++
++
++Example:
++fmc: fmc@1e620000 {
++	compatible = "aspeed,ast2500-fmc";
++	reg = < 0x1e620000 0x94
++		0x20000000 0x02000000 >;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	interrupts = <19>;
++	flash@0 {
++		reg = < 0 >;
++		compatible = "jedec,spi-nor";
++		/* spi-max-frequency = <>; */
++		/* m25p,fast-read; */
++		#address-cells = <1>;
++		#size-cells = <1>;
++	};
 +};
-+
-+static const struct aspeed_smc_info spi_2400_info = {
-+	.maxsize = 64 * 1024 * 1024,
-+	.nce = 1,
-+	.hastype = false,
-+	.we0 = 0,
-+	.ctl0 = 0x04,
-+	.set_4b = aspeed_smc_chip_set_4b_spi_2400,
-+};
-+
- static const struct aspeed_smc_info fmc_2500_info = {
- 	.maxsize = 256 * 1024 * 1024,
- 	.nce = 3,
-@@ -135,6 +154,7 @@ struct aspeed_smc_controller {
- #define CONTROL_IO_DUMMY_HI		BIT(14)
- #define CONTROL_IO_DUMMY_HI_SHIFT	14
- #define CONTROL_CLK_DIV4		BIT(13) /* others */
-+#define CONTROL_IO_ADDRESS_4B		BIT(13) /* AST2400 SPI */
- #define CONTROL_RW_MERGE		BIT(12)
- #define CONTROL_IO_DUMMY_LO_SHIFT	6
- #define CONTROL_IO_DUMMY_LO		GENMASK(7, \
-@@ -388,6 +408,8 @@ static int aspeed_smc_remove(struct platform_device *dev)
- }
- 
- static const struct of_device_id aspeed_smc_matches[] = {
-+	{ .compatible = "aspeed,ast2400-fmc", .data = &fmc_2400_info },
-+	{ .compatible = "aspeed,ast2400-spi", .data = &spi_2400_info },
- 	{ .compatible = "aspeed,ast2500-fmc", .data = &fmc_2500_info },
- 	{ .compatible = "aspeed,ast2500-spi", .data = &spi_2500_info },
- 	{ }
-@@ -461,6 +483,17 @@ static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip)
- 	}
- }
- 
-+/*
-+ * The AST2400 SPI flash controller does not have a CE Control
-+ * register. It uses the CE0 control register to set 4Byte mode at the
-+ * controller level.
-+ */
-+static void aspeed_smc_chip_set_4b_spi_2400(struct aspeed_smc_chip *chip)
-+{
-+	chip->ctl_val[smc_base] |= CONTROL_IO_ADDRESS_4B;
-+	chip->ctl_val[smc_read] |= CONTROL_IO_ADDRESS_4B;
-+}
-+
- static int aspeed_smc_chip_setup_init(struct aspeed_smc_chip *chip,
- 				      struct resource *res)
- {
 -- 
 2.7.4
