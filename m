@@ -1,27 +1,24 @@
-Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
+Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGVCV-0004GN-3B
- for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 18:19:47 +0000
-Received: by mail-oi0-x244.google.com with SMTP id v84so12052888oie.2
- for <linux-mtd@lists.infradead.org>; Mon, 12 Dec 2016 10:19:25 -0800 (PST)
+ id 1cGYvx-0008Fn-IZ
+ for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 22:18:58 +0000
+Received: by mail-oi0-x242.google.com with SMTP id m75so13017436oig.1
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Dec 2016 14:18:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a09b8dbc-ca4b-000e-e5c2-5039119e99ba@gmail.com>
-References: <1481479310-2698-1-git-send-email-arvind.yadav.cs@gmail.com>
- <a09b8dbc-ca4b-000e-e5c2-5039119e99ba@gmail.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 12 Dec 2016 16:19:24 -0200
-Message-ID: <CAOMZO5DsH_4oLOjWjuJH0Z_OD-TYU42b9MkGh7AJ6N=ODt=DTw@mail.gmail.com>
-Subject: Re: [V1] mtd: devices: docg3:- Handle return value of devm_ioremap.
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <1480629741-18375-2-git-send-email-richard@nod.at>
+References: <1480629741-18375-1-git-send-email-richard@nod.at>
+ <1480629741-18375-2-git-send-email-richard@nod.at>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 12 Dec 2016 23:18:35 +0100
+Message-ID: <CAFLxGvzZL8KaYQw=A+oURnfBV7TzM0-bemRhTZzWp_8W3rdfdQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] ext4: Move is_32bit_api() to generic code
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Gstir <david@sigma-star.at>,
+ "Theodore Ts'o" <tytso@mit.edu>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, adilger.kernel@dilger.ca,
+ Andrew Morton <akpm@linux-foundation.org>, linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,15 +29,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 11, 2016 at 5:15 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
-
->>       ret = -ENOMEM;
->> +     base = devm_ioremap(dev, ress->start, DOC_IOSPACE_SIZE);
->> +     if (!base)
->> +             return ret;
+On Thu, Dec 1, 2016 at 11:02 PM, Richard Weinberger <richard@nod.at> wrote:
+> Since UBIFS will also use this function, move it to compat.h.
 >
-> I think return -ENOMEM right away won't hurt here. Also, dev_err()
-> explaining the failure would be nice to add.
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  fs/ext4/dir.c          | 9 ---------
+>  include/linux/compat.h | 2 ++
+>  2 files changed, 2 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> index e8b365000d73..464e6e99d744 100644
+> --- a/fs/ext4/dir.c
+> +++ b/fs/ext4/dir.c
+> @@ -290,15 +290,6 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
+>         return err;
+>  }
+>
+> -static inline int is_32bit_api(void)
+> -{
+> -#ifdef CONFIG_COMPAT
+> -       return in_compat_syscall();
+> -#else
+> -       return (BITS_PER_LONG == 32);
+> -#endif
+> -}
+> -
+>  /*
+>   * These functions convert from the major/minor hash to an f_pos
+>   * value for dx directories
+> diff --git a/include/linux/compat.h b/include/linux/compat.h
+> index 63609398ef9f..8412382e8d08 100644
+> --- a/include/linux/compat.h
+> +++ b/include/linux/compat.h
+> @@ -730,11 +730,13 @@ asmlinkage long compat_sys_fanotify_mark(int, unsigned int, __u32, __u32,
+>  #ifndef in_compat_syscall
+>  static inline bool in_compat_syscall(void) { return is_compat_task(); }
+>  #endif
+> +static inline int is_32bit_api(void) { return in_compat_syscall(); }
+>
+>  #else
+>
+>  #define is_compat_task() (0)
+>  static inline bool in_compat_syscall(void) { return false; }
+> +static inline int is_32bit_api(void) { return BITS_PER_LONG == 32; }
+>
+>  #endif /* CONFIG_COMPAT */
 
-There is no need to add dev_err() message as the mm core will complain
-loudly if devm_ioremap() fails.
+Just realized that this patch didn't get any feedback.
+Ted, are you fine with it?
+
+Anyway, exportable UBIFS has to wait until the next merge window.
+
+-- 
+Thanks,
+//richard
