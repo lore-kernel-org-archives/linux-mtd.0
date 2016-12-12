@@ -1,23 +1,16 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGZPG-0001g2-1f
- for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 22:49:15 +0000
-Received: by mail-pg0-x242.google.com with SMTP id e9so2307843pgc.1
- for <linux-mtd@lists.infradead.org>; Mon, 12 Dec 2016 14:48:52 -0800 (PST)
-Date: Mon, 12 Dec 2016 14:48:49 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Zach Brown <zach.brown@ni.com>
-Cc: dwmw2@infradead.org, boris.brezillon@free-electrons.com, richard@nod.at,
- dedekind1@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/5] mtd: introduce function max_bad_blocks
-Message-ID: <20161212224849.GA50814@google.com>
-References: <1480525051-4991-1-git-send-email-zach.brown@ni.com>
- <1480525051-4991-2-git-send-email-zach.brown@ni.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1480525051-4991-2-git-send-email-zach.brown@ni.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cGa1I-0003N5-Q0
+ for linux-mtd@lists.infradead.org; Mon, 12 Dec 2016 23:28:34 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com, dedekind1@gmail.com,
+ david@sigma-star.at, Richard Weinberger <richard@nod.at>
+Subject: [PATCH 2/2] ubifs: Use fscrypt ioctl() helpers
+Date: Tue, 13 Dec 2016 00:27:59 +0100
+Message-Id: <20161212232759.30239-2-richard@nod.at>
+In-Reply-To: <20161212232759.30239-1-richard@nod.at>
+References: <20161212232759.30239-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,97 +20,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Commit db717d8e26c2 ("fscrypto: move ioctl processing more fully into
+common code") moved ioctl() related functions into fscrypt and offers
+us now a set of helper functions.
 
-On Wed, Nov 30, 2016 at 10:57:27AM -0600, Zach Brown wrote:
-> From: Jeff Westfahl <jeff.westfahl@ni.com>
-> 
-> If implemented, 'max_bad_blocks' returns the maximum number of bad
-> blocks to reserve for a MTD. An implementation for NAND is coming soon.
-> 
-> Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
-> Signed-off-by: Zach Brown <zach.brown@ni.com>
-> Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/ioctl.c | 24 ++----------------------
+ fs/ubifs/ubifs.h |  4 ++--
+ 2 files changed, 4 insertions(+), 24 deletions(-)
 
-I guess I had given my 'ack' conditional on fixing my comments. It
-appears they have been fixed well enough. One small nit, but that's not
-worth holding anything up:
-
-> ---
->  drivers/mtd/mtdpart.c   | 10 ++++++++++
->  include/linux/mtd/mtd.h | 14 ++++++++++++++
->  2 files changed, 24 insertions(+)
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index fccdd49..08925bb 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -349,6 +349,14 @@ static const struct mtd_ooblayout_ops part_ooblayout_ops = {
->  	.free = part_ooblayout_free,
->  };
->  
-> +static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
-> +{
-> +	struct mtd_part *part = mtd_to_part(mtd);
-> +
-> +	return part->master->_max_bad_blocks(part->master,
-> +					     ofs + part->offset, len);
-> +}
-> +
->  static inline void free_partition(struct mtd_part *p)
->  {
->  	kfree(p->mtd.name);
-> @@ -475,6 +483,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
->  		slave->mtd._block_isbad = part_block_isbad;
->  	if (master->_block_markbad)
->  		slave->mtd._block_markbad = part_block_markbad;
-> +	if (master->_max_bad_blocks)
-> +		slave->mtd._max_bad_blocks = part_max_bad_blocks;
->  
->  	if (master->_get_device)
->  		slave->mtd._get_device = part_get_device;
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 13f8052..da6d762 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -322,6 +322,7 @@ struct mtd_info {
->  	int (*_block_isreserved) (struct mtd_info *mtd, loff_t ofs);
->  	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
->  	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
-> +	int (*_max_bad_blocks) (struct mtd_info *mtd, loff_t ofs, size_t len);
->  	int (*_suspend) (struct mtd_info *mtd);
->  	void (*_resume) (struct mtd_info *mtd);
->  	void (*_reboot) (struct mtd_info *mtd);
-> @@ -402,6 +403,19 @@ int mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
->  int mtd_pairing_info_to_wunit(struct mtd_info *mtd,
->  			      const struct mtd_pairing_info *info);
->  int mtd_pairing_groups(struct mtd_info *mtd);
-> +
-> +static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
-> +				     loff_t ofs, size_t len)
-> +{
-> +	if (!mtd->_max_bad_blocks)
-> +		return -ENOTSUPP;
-> +
-> +	if (mtd->size < (len + ofs) || ofs < 0)
-> +		return -EINVAL;
-> +
-> +	return mtd->_max_bad_blocks(mtd, ofs, len);
-> +}
-
-I don't really know what the reasoning is for putting functions like
-this as 'static inline' in the header, vs. exported from the .c file.
-But this seems to be the odd man out in that regard.
-
-> +
->  int mtd_erase(struct mtd_info *mtd, struct erase_info *instr);
->  int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
->  	      void **virt, resource_size_t *phys);
-
-Anyway, it's all fine with me here. I think Richard suggested he'd like
-to take the whole series (presuming he's happy with patch 2?) in his
-tree, though IMO it's a bit late for 4.10. I guess I'm fine either way,
-as it's only UBI that will suffer if this wasn't properly baked ;)
-
-Brian
+diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+index 3d10f5525274..78d713644df3 100644
+--- a/fs/ubifs/ioctl.c
++++ b/fs/ubifs/ioctl.c
+@@ -184,39 +184,19 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case FS_IOC_SET_ENCRYPTION_POLICY: {
+ #ifdef CONFIG_UBIFS_FS_ENCRYPTION
+ 		struct ubifs_info *c = inode->i_sb->s_fs_info;
+-		struct fscrypt_policy policy;
+-
+-		if (copy_from_user(&policy,
+-				   (struct fscrypt_policy __user *)arg,
+-				   sizeof(policy)))
+-			return -EFAULT;
+ 
+ 		err = ubifs_enable_encryption(c);
+ 		if (err)
+ 			return err;
+ 
+-		err = fscrypt_process_policy(file, &policy);
+-
+-		return err;
++		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
+ #else
+ 		return -EOPNOTSUPP;
+ #endif
+ 	}
+ 	case FS_IOC_GET_ENCRYPTION_POLICY: {
+ #ifdef CONFIG_UBIFS_FS_ENCRYPTION
+-		struct fscrypt_policy policy;
+-
+-		if (!ubifs_crypt_is_encrypted(inode))
+-			return -ENOENT;
+-
+-		err = fscrypt_get_policy(inode, &policy);
+-		if (err)
+-			return err;
+-
+-		if (copy_to_user((void __user *)arg, &policy, sizeof(policy)))
+-			return -EFAULT;
+-
+-		return 0;
++		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
+ #else
+ 		return -EOPNOTSUPP;
+ #endif
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 8d0e4818e3ea..ca72382ce6cc 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1806,8 +1806,8 @@ int ubifs_decompress(const struct ubifs_info *c, const void *buf, int len,
+ #define fscrypt_pullback_bio_page       fscrypt_notsupp_pullback_bio_page
+ #define fscrypt_restore_control_page    fscrypt_notsupp_restore_control_page
+ #define fscrypt_zeroout_range           fscrypt_notsupp_zeroout_range
+-#define fscrypt_process_policy          fscrypt_notsupp_process_policy
+-#define fscrypt_get_policy              fscrypt_notsupp_get_policy
++#define fscrypt_ioctl_set_policy	fscrypt_notsupp_ioctl_set_policy
++#define fscrypt_ioctl_get_policy	fscrypt_notsupp_ioctl_get_policy
+ #define fscrypt_has_permitted_context   fscrypt_notsupp_has_permitted_context
+ #define fscrypt_inherit_context         fscrypt_notsupp_inherit_context
+ #define fscrypt_get_encryption_info     fscrypt_notsupp_get_encryption_info
+-- 
+2.10.2
