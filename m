@@ -1,30 +1,19 @@
-Received: from 7.mo3.mail-out.ovh.net ([46.105.57.200])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.9])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGm6r-000050-2m
- for linux-mtd@lists.infradead.org; Tue, 13 Dec 2016 12:23:06 +0000
-Received: from player797.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo3.mail-out.ovh.net (Postfix) with ESMTP id BFEF569097
- for <linux-mtd@lists.infradead.org>; Tue, 13 Dec 2016 13:22:39 +0100 (CET)
-Subject: Re: [PATCH v4 1/4] mtd: spi-nor: add memory controllers for the
- Aspeed AST2500 SoC
-To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-References: <1481557252-13656-1-git-send-email-clg@kaod.org>
- <1481557252-13656-2-git-send-email-clg@kaod.org>
- <3f3260d1-e677-b6d9-5571-a08a80344495@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Joel Stanley <joel@jms.id.au>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <4ed8b39b-69af-e62b-f6d6-472a6c791bcc@kaod.org>
-Date: Tue, 13 Dec 2016 13:22:26 +0100
+ id 1cGoC2-0004Co-3L
+ for linux-mtd@lists.infradead.org; Tue, 13 Dec 2016 14:36:38 +0000
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>
+CC: linux-mtd <linux-mtd@lists.infradead.org>, Iwo Mergler
+ <iwo.mergler@netcommwireless.com>, Brian Norris <computersforpeace@gmail.com>
+From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Subject: [PATCH v1] mtd: nandbiterrs: Have init function return 0 on success
+Message-ID: <49b7d473-ad61-57fa-dfb0-f0b47ed32f76@sigmadesigns.com>
+Date: Tue, 13 Dec 2016 15:36:07 +0100
 MIME-Version: 1.0
-In-Reply-To: <3f3260d1-e677-b6d9-5571-a08a80344495@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Language: 
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,47 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/13/2016 08:50 AM, Marek Vasut wrote:
-> On 12/12/2016 04:40 PM, Cédric Le Goater wrote:
->> This driver adds mtd support for the Aspeed AST2500 SoC static memory
->> controllers :
-> 
-> [...]
-> 
->> +#define DEVICE_NAME	"aspeed-smc"
->> +
->> +/*
->> + * The driver only support SPI flash
->> + */
->> +enum aspeed_smc_flash_type {
->> +	smc_type_nor  = 0,
->> +	smc_type_nand = 1,
->> +	smc_type_spi  = 2,
->> +};
-> 
-> So why is this here ? :)
+The init function currently returns -EIO on success. This behavior
+was probably chosen in order to avoid a subsequent rmmod, but this
+complicates failure detection from user-space.
 
-well, because we do enforce the SPI type in aspeed_smc_chip_set_type()
-but I agree, we could be a bit more direct with it and just write
-the SPI type. May be in a followup patch then.
+Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+---
+I'm not sure failures are reported as expected. I would expect
+the test to report a failure if the driver cannot fix less than
+$STRENGTH bit flips, but it doesn't, AFAICT.
+cf. incremental_errors_test which sets err to 0 in the 
+"After %d biterrors per subpage, read reported error %d\n"
+code path.
+---
+ drivers/mtd/tests/nandbiterrs.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> 
->> +struct aspeed_smc_chip;
->> +
->> +struct aspeed_smc_info {
->> +	u32 maxsize;		/* maximum size of chip window */
->> +	u8 nce;			/* number of chip enables */
->> +	bool hastype;		/* flash type field exists in config reg */
->> +	u8 we0;			/* shift for write enable bit for CE0 */
->> +	u8 ctl0;		/* offset in regs of ctl for CE0 */
->> +
->> +	void (*set_4b)(struct aspeed_smc_chip *chip);
->> +};
-> 
-> Otherwise looks good:
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-> 
-
-Thanks for the review,
-
-C. 
+diff --git a/drivers/mtd/tests/nandbiterrs.c b/drivers/mtd/tests/nandbiterrs.c
+index f26dec896afa..41050bcae9f1 100644
+--- a/drivers/mtd/tests/nandbiterrs.c
++++ b/drivers/mtd/tests/nandbiterrs.c
+@@ -403,7 +403,6 @@ static int __init mtd_nandbiterrs_init(void)
+ 	if (err)
+ 		goto exit_error;
+ 
+-	err = -EIO;
+ 	pr_info("finished successfully.\n");
+ 	printk(KERN_INFO "==================================================\n");
+ 
+-- 
+2.10.0
