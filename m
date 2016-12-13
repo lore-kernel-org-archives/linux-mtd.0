@@ -1,8 +1,8 @@
-Received: from mail-eopbgr40120.outbound.protection.outlook.com
- ([40.107.4.120] helo=EUR03-DB5-obe.outbound.protection.outlook.com)
+Received: from mail-eopbgr40137.outbound.protection.outlook.com
+ ([40.107.4.137] helo=EUR03-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGjfn-0000GG-FD
- for linux-mtd@lists.infradead.org; Tue, 13 Dec 2016 09:47:03 +0000
+ id 1cGjgG-0000Hi-2T
+ for linux-mtd@lists.infradead.org; Tue, 13 Dec 2016 09:47:30 +0000
 From: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
@@ -11,13 +11,12 @@ To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, "computersforpeace@gmail.com"
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 CC: "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 4/8] mtd: spi-nor: add support of SPI protocols like
- SPI 1-2-2 and SPI 1-4-4
-Date: Tue, 13 Dec 2016 09:46:24 +0000
-Message-ID: <AM4PR0701MB2130C191B75A408799F4C4C7FE9B0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+Subject: RE: [PATCH v4 0/8] mtd: spi-nor: parse SFDP tables to setup (Q)SPI
+ memories
+Date: Tue, 13 Dec 2016 09:46:29 +0000
+Message-ID: <AM4PR0701MB21304810DE7FBE18431901FFFE9B0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
 References: <cover.1479736401.git.cyrille.pitchen@atmel.com>
- <9adeee98798f3ba9bb01f86e1bd1a3543643a2ec.1479736401.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <9adeee98798f3ba9bb01f86e1bd1a3543643a2ec.1479736401.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <cover.1479736401.git.cyrille.pitchen@atmel.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -31,7 +30,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cyrille,
+
 
 > -----Original Message-----
 > From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf
@@ -42,1136 +41,182 @@ Cyrille,
 > mtd@lists.infradead.org
 > Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>; nicolas.ferre@atmel.com;
 > linux-kernel@vger.kernel.org
-> Subject: [PATCH v4 4/8] mtd: spi-nor: add support of SPI protocols like S=
-PI 1-
-> 2-2 and SPI 1-4-4
+> Subject: [PATCH v4 0/8] mtd: spi-nor: parse SFDP tables to setup (Q)SPI
+> memories
 >=20
-> This patch changes the prototype of spi_nor_scan(): its 3rd parameter is
-> replaced by a const struct spi_nor_modes pointer, which tells the spi-nor
-> framework about which SPI protocols are supported by the SPI controller.
+> Hi all,
 >=20
-> Besides, this patch also introduces a new spi_nor_basic_flash_parameter
-> structure telling the spi-nor framework about the SPI protocols supported=
- by
-> the SPI memory and the needed op codes to use these SPI protocols.
+> This series extends support of SPI protocols to new protocols such as SPI=
+ x-2-
+> 2 and SPI x-4-4. Also spi_nor_scan() tries now to select the right op cod=
+es,
+> timing parameters (number of mode and dummy cycles) and erase sector
+> size by parsing the Serial Flash Discoverable Parameter (SFDP) tables, wh=
+en
+> available, as defined in the JEDEC JESD216 specifications.
 >=20
-> Currently the struct spi_nor_basic_flash_parameter is filled with legacy
-> values but a later patch will allow to fill it dynamically by reading the
-> JESD216 Serial Flash Discoverable Parameter (SFDP) tables from the SPI
-> memory.
+> When SFDP tables are not available, legacy settings are still used for
+> backward compatibility (SPI and earlier QSPI memories).
 >=20
-> With both structures, the spi-nor framework can now compute the best
-> match between SPI protocols supported by both the (Q)SPI memory and
-> controller hence selecting the relevant op codes for (Fast) Read, Page
-> Program and Sector Erase operations.
->=20
-> The spi_nor_basic_flash_parameter structure also provides the spi-nor
-> framework with the number of dummy cycles to be used with each Fast
-> Read commands and the erase block size associated to the erase block op
+> Support of SPI memories >128Mbits is also improved by using the 4byte
+> address instruction set, when available. Using those dedicated op codes i=
+s
+> stateless as opposed to enter the 4byte address mode, hence a better
+> compatibility with some boot loaders which expect to use 3byte address op
 > codes.
 >=20
-> Finally the spi_nor_basic_flash_parameter structure, through the optional
-> .enable_quad_io() hook, tells the spi-nor framework how to set the Quad
-> Enable (QE) bit of the QSPI memory to enable its Quad SPI features.
 >=20
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> ---
->  drivers/mtd/devices/m25p80.c          |  17 ++-
->  drivers/mtd/spi-nor/atmel-quadspi.c   |  83 ++++++----
->  drivers/mtd/spi-nor/cadence-quadspi.c |  18 ++-
->  drivers/mtd/spi-nor/fsl-quadspi.c     |   8 +-
->  drivers/mtd/spi-nor/hisi-sfc.c        |  32 +++-
->  drivers/mtd/spi-nor/mtk-quadspi.c     |  16 +-
->  drivers/mtd/spi-nor/nxp-spifi.c       |  21 +--
->  drivers/mtd/spi-nor/spi-nor.c         | 280 +++++++++++++++++++++++++++-
-> ------
->  include/linux/mtd/spi-nor.h           | 136 +++++++++++++++--
->  9 files changed, 482 insertions(+), 129 deletions(-)
+> This series was tested on a Atmel sama5d2 xplained board with the atmel-
+> qspi.c driver. Except for SST memories, the SPI bus clock was set to 83MH=
+z.
+> The config MTD_SPI_NOR_USE_4K_SECTORS was selected.
 >=20
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 9cf7fcd28034..f0a55c01406b 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -111,10 +111,10 @@ static ssize_t m25p80_write(struct spi_nor *nor,
-> loff_t to, size_t len,
+> For my tests, I used some shell scripts using mtd_debug and sha1sum to
+> check the data integrity.
 >=20
->  static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)  {
-> -	switch (nor->flash_read) {
-> -	case SPI_NOR_DUAL:
-> +	switch (SNOR_PROTO_DATA_FROM_PROTO(nor->read_proto)) {
-> +	case 2:
->  		return 2;
-> -	case SPI_NOR_QUAD:
-> +	case 4:
->  		return 4;
->  	default:
->  		return 0;
-> @@ -195,7 +195,10 @@ static int m25p_probe(struct spi_device *spi)
->  	struct flash_platform_data	*data;
->  	struct m25p *flash;
->  	struct spi_nor *nor;
-> -	enum read_mode mode =3D SPI_NOR_NORMAL;
-> +	struct spi_nor_modes modes =3D {
-> +		.rd_modes =3D SNOR_MODE_SLOW,
-> +		.wr_modes =3D SNOR_MODE_1_1_1,
-> +	};
->  	char *flash_name;
->  	int ret;
+> e.g:
+> #!/bin/sh
 >=20
-> @@ -221,9 +224,9 @@ static int m25p_probe(struct spi_device *spi)
->  	flash->spi =3D spi;
+> mtd_debug erase /dev/mtd5 0 0x780000
+> mtd_debug write /dev/mtd5 0 7674703 sama5d4_doc11238.pdf mtd_debug
+> read /dev/mtd5 0 7674703 sama5d4_tmp.pdf
 >=20
->  	if (spi->mode & SPI_RX_QUAD)
-> -		mode =3D SPI_NOR_QUAD;
-> +		modes.rd_modes |=3D SNOR_MODE_1_1_4;
->  	else if (spi->mode & SPI_RX_DUAL)
-> -		mode =3D SPI_NOR_DUAL;
-> +		modes.rd_modes |=3D SNOR_MODE_1_1_2;
+> sha1sum sama5d4_doc11238.pdf sama5d4_tmp.pdf
 >=20
->  	if (data && data->name)
->  		nor->mtd.name =3D data->name;
-> @@ -240,7 +243,7 @@ static int m25p_probe(struct spi_device *spi)
->  	else
->  		flash_name =3D spi->modalias;
 >=20
-> -	ret =3D spi_nor_scan(nor, flash_name, mode);
-> +	ret =3D spi_nor_scan(nor, flash_name, &modes);
->  	if (ret)
->  		return ret;
+> Depending on the actual memory size, I may have used other partitions
+> (/dev/mtd4) and input file size (2880044 and 320044 bytes).
 >=20
-> diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-
-> nor/atmel-quadspi.c
-> index 47937d9beec6..9f7e3124e8b8 100644
-> --- a/drivers/mtd/spi-nor/atmel-quadspi.c
-> +++ b/drivers/mtd/spi-nor/atmel-quadspi.c
-> @@ -275,14 +275,48 @@ static void atmel_qspi_debug_command(struct
-> atmel_qspi *aq,
 >=20
->  static int atmel_qspi_run_command(struct atmel_qspi *aq,
->  				  const struct atmel_qspi_command *cmd,
-> -				  u32 ifr_tfrtyp, u32 ifr_width)
-> +				  u32 ifr_tfrtyp, enum spi_nor_protocol
-> proto)
->  {
->  	u32 iar, icr, ifr, sr;
->  	int err =3D 0;
+> The series was tested with the following QSPI memories:
 >=20
->  	iar =3D 0;
->  	icr =3D 0;
-> -	ifr =3D ifr_tfrtyp | ifr_width;
-> +	ifr =3D ifr_tfrtyp;
-> +
-> +	/* Set the SPI protocol */
-> +	switch (proto) {
-> +	case SNOR_PROTO_1_1_1:
-> +		ifr |=3D QSPI_IFR_WIDTH_SINGLE_BIT_SPI;
-> +		break;
-> +
-> +	case SNOR_PROTO_1_1_2:
-> +		ifr |=3D QSPI_IFR_WIDTH_DUAL_OUTPUT;
-> +		break;
-> +
-> +	case SNOR_PROTO_1_1_4:
-> +		ifr |=3D QSPI_IFR_WIDTH_QUAD_OUTPUT;
-> +		break;
-> +
-> +	case SNOR_PROTO_1_2_2:
-> +		ifr |=3D QSPI_IFR_WIDTH_DUAL_IO;
-> +		break;
-> +
-> +	case SNOR_PROTO_1_4_4:
-> +		ifr |=3D QSPI_IFR_WIDTH_QUAD_IO;
-> +		break;
-> +
-> +	case SNOR_PROTO_2_2_2:
-> +		ifr |=3D QSPI_IFR_WIDTH_DUAL_CMD;
-> +		break;
-> +
-> +	case SNOR_PROTO_4_4_4:
-> +		ifr |=3D QSPI_IFR_WIDTH_QUAD_CMD;
-> +		break;
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
+> Spansion/Cypress:
+> - s25fl127s	OK
+> - s25fl512s	OK
+> - s25fl164k	OK
 >=20
->  	/* Compute instruction parameters */
->  	if (cmd->enable.bits.instruction) {
-> @@ -434,7 +468,7 @@ static int atmel_qspi_read_reg(struct spi_nor *nor, u=
-8
-> opcode,
->  	cmd.rx_buf =3D buf;
->  	cmd.buf_len =3D len;
->  	return atmel_qspi_run_command(aq, &cmd,
-> QSPI_IFR_TFRTYP_TRSFR_READ,
-> -				      QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
-> +				      nor->reg_proto);
->  }
+> Micron:
+> - n25q128a	OK
+> - n25q512	OK
+> - n25q01g	OK
 >=20
->  static int atmel_qspi_write_reg(struct spi_nor *nor, u8 opcode, @@ -450,=
-7
-> +484,7 @@ static int atmel_qspi_write_reg(struct spi_nor *nor, u8 opcode,
->  	cmd.tx_buf =3D buf;
->  	cmd.buf_len =3D len;
->  	return atmel_qspi_run_command(aq, &cmd,
-> QSPI_IFR_TFRTYP_TRSFR_WRITE,
-> -				      QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
-> +				      nor->reg_proto);
->  }
+> Macronix:
+> - mx25v1635f	OK
+> - mx25l3235f	OK
+> - mx25l3273f	OK
+> - mx25l6433f	OK
+> - mx25l6473f	OK
+> - mx25l12835f	OK
+> - mx25l12845g	OK
+> - mx25l12873g	OK
+> - mx25l25645g	OK
+> - mx25l25673g	OK
+> - mx25l51245g	OK
+> - mx66l1g45g	OK
 >=20
->  static ssize_t atmel_qspi_write(struct spi_nor *nor, loff_t to, size_t l=
-en, @@
-> -469,7 +503,7 @@ static ssize_t atmel_qspi_write(struct spi_nor *nor, lof=
-f_t
-> to, size_t len,
->  	cmd.tx_buf =3D write_buf;
->  	cmd.buf_len =3D len;
->  	ret =3D atmel_qspi_run_command(aq, &cmd,
-> QSPI_IFR_TFRTYP_TRSFR_WRITE_MEM,
-> -				     QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
-> +				     nor->write_proto);
->  	return (ret < 0) ? ret : len;
->  }
+> SST:
+> - sst26vf016b	OK
+> - sst26vf032b	OK
+> - sst26vf064b	OK
 >=20
-> @@ -484,7 +518,7 @@ static int atmel_qspi_erase(struct spi_nor *nor, loff=
-_t
-> offs)
->  	cmd.instruction =3D nor->erase_opcode;
->  	cmd.address =3D (u32)offs;
->  	return atmel_qspi_run_command(aq, &cmd,
-> QSPI_IFR_TFRTYP_TRSFR_WRITE,
-> -				      QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
-> +				      nor->reg_proto);
->  }
 >=20
->  static ssize_t atmel_qspi_read(struct spi_nor *nor, loff_t from, size_t =
-len,
-> @@ -493,27 +527,8 @@ static ssize_t atmel_qspi_read(struct spi_nor *nor,
-> loff_t from, size_t len,
->  	struct atmel_qspi *aq =3D nor->priv;
->  	struct atmel_qspi_command cmd;
->  	u8 num_mode_cycles, num_dummy_cycles;
-> -	u32 ifr_width;
->  	ssize_t ret;
+> Best regards,
 >=20
-> -	switch (nor->flash_read) {
-> -	case SPI_NOR_NORMAL:
-> -	case SPI_NOR_FAST:
-> -		ifr_width =3D QSPI_IFR_WIDTH_SINGLE_BIT_SPI;
-> -		break;
-> -
-> -	case SPI_NOR_DUAL:
-> -		ifr_width =3D QSPI_IFR_WIDTH_DUAL_OUTPUT;
-> -		break;
-> -
-> -	case SPI_NOR_QUAD:
-> -		ifr_width =3D QSPI_IFR_WIDTH_QUAD_OUTPUT;
-> -		break;
-> -
-> -	default:
-> -		return -EINVAL;
-> -	}
-> -
->  	if (nor->read_dummy >=3D 2) {
->  		num_mode_cycles =3D 2;
->  		num_dummy_cycles =3D nor->read_dummy - 2; @@ -536,7
-> +551,7 @@ static ssize_t atmel_qspi_read(struct spi_nor *nor, loff_t from=
-,
-> size_t len,
->  	cmd.rx_buf =3D read_buf;
->  	cmd.buf_len =3D len;
->  	ret =3D atmel_qspi_run_command(aq, &cmd,
-> QSPI_IFR_TFRTYP_TRSFR_READ_MEM,
-> -				     ifr_width);
-> +				     nor->read_proto);
->  	return (ret < 0) ? ret : len;
->  }
+> Cyrille
 >=20
-> @@ -596,6 +611,20 @@ static int atmel_qspi_probe(struct platform_device
-> *pdev)
->  	struct spi_nor *nor;
->  	struct mtd_info *mtd;
->  	int irq, err =3D 0;
-> +	struct spi_nor_modes modes =3D {
-> +		.rd_modes =3D (SNOR_MODE_SLOW |
-> +			     SNOR_MODE_1_1_1 |
-> +			     SNOR_MODE_1_1_2 |
-> +			     SNOR_MODE_1_1_4 |
-> +			     SNOR_MODE_1_2_2 |
-> +			     SNOR_MODE_1_4_4),
-> +		.wr_modes =3D (SNOR_MODE_SLOW |
-> +			     SNOR_MODE_1_1_1 |
-> +			     SNOR_MODE_1_1_2 |
-> +			     SNOR_MODE_1_1_4 |
-> +			     SNOR_MODE_1_2_2 |
-> +			     SNOR_MODE_1_4_4),
-> +	};
->=20
->  	if (of_get_child_count(np) !=3D 1)
->  		return -ENODEV;
-> @@ -679,7 +708,7 @@ static int atmel_qspi_probe(struct platform_device
-> *pdev)
->  	if (err)
->  		goto disable_clk;
->=20
-> -	err =3D spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> +	err =3D spi_nor_scan(nor, NULL, &modes);
->  	if (err)
->  		goto disable_clk;
->=20
-> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-
-> nor/cadence-quadspi.c
-> index d403ba7b8f43..87e49231b4ee 100644
-> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
-> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-> @@ -853,15 +853,14 @@ static int cqspi_set_protocol(struct spi_nor *nor,
-> const int read)
->  	f_pdata->data_width =3D CQSPI_INST_TYPE_SINGLE;
->=20
->  	if (read) {
-> -		switch (nor->flash_read) {
-> -		case SPI_NOR_NORMAL:
-> -		case SPI_NOR_FAST:
-> +		switch (nor->read_proto) {
-> +		case SNOR_PROTO_1_1_1:
->  			f_pdata->data_width =3D CQSPI_INST_TYPE_SINGLE;
->  			break;
-> -		case SPI_NOR_DUAL:
-> +		case SNOR_PROTO_1_1_2:
->  			f_pdata->data_width =3D CQSPI_INST_TYPE_DUAL;
->  			break;
-> -		case SPI_NOR_QUAD:
-> +		case SNOR_PROTO_1_1_4:
->  			f_pdata->data_width =3D CQSPI_INST_TYPE_QUAD;
->  			break;
->  		default:
-> @@ -1074,6 +1073,13 @@ static int cqspi_setup_flash(struct cqspi_st *cqsp=
-i,
-> struct device_node *np)
->  	struct mtd_info *mtd;
->  	unsigned int cs;
->  	int i, ret;
-> +	static const struct spi_nor_modes modes =3D {
-> +		.rd_modes =3D (SNOR_MODE_SLOW |
-> +			     SNOR_MODE_1_1_1 |
-> +			     SNOR_MODE_1_1_2 |
-> +			     SNOR_MODE_1_1_4),
-> +		.wr_modes =3D SNOR_MODE_1_1_1,
-> +	};
->=20
->  	/* Get flash device data */
->  	for_each_available_child_of_node(dev->of_node, np) { @@ -1119,7
-> +1125,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct
-> device_node *np)
->  			goto err;
->  		}
->=20
-> -		ret =3D spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> +		ret =3D spi_nor_scan(nor, NULL, &modes);
->  		if (ret)
->  			goto err;
->=20
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-
-> quadspi.c
-> index 5c82e4ef1904..01e7356d6623 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -980,6 +980,12 @@ static int fsl_qspi_probe(struct platform_device
-> *pdev)
->  	struct spi_nor *nor;
->  	struct mtd_info *mtd;
->  	int ret, i =3D 0;
-> +	static const struct spi_nor_modes modes =3D {
-> +		.rd_modes =3D (SNOR_MODE_SLOW |
-> +			     SNOR_MODE_1_1_1 |
-> +			     SNOR_MODE_1_1_4),
-> +		.wr_modes =3D SNOR_MODE_1_1_1,
-> +	};
->=20
->  	q =3D devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
->  	if (!q)
-> @@ -1081,7 +1087,7 @@ static int fsl_qspi_probe(struct platform_device
-> *pdev)
->  		/* set the chip address for READID */
->  		fsl_qspi_set_base_addr(q, nor);
->=20
-> -		ret =3D spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> +		ret =3D spi_nor_scan(nor, NULL, &modes);
->  		if (ret)
->  			goto mutex_failed;
->=20
-> diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sf=
-c.c
-> index 20378b0d55e9..e4d7625b4397 100644
-> --- a/drivers/mtd/spi-nor/hisi-sfc.c
-> +++ b/drivers/mtd/spi-nor/hisi-sfc.c
-> @@ -120,19 +120,24 @@ static inline int wait_op_finish(struct hifmc_host
-> *host)
->  		(reg & FMC_INT_OP_DONE), 0, FMC_WAIT_TIMEOUT);  }
->=20
-> -static int get_if_type(enum read_mode flash_read)
-> +static int get_if_type(enum spi_nor_protocol proto)
->  {
->  	enum hifmc_iftype if_type;
->=20
-> -	switch (flash_read) {
-> -	case SPI_NOR_DUAL:
-> +	switch (proto) {
-> +	case SNOR_PROTO_1_1_2:
->  		if_type =3D IF_TYPE_DUAL;
->  		break;
-> -	case SPI_NOR_QUAD:
-> +	case SNOR_PROTO_1_2_2:
-> +		if_type =3D IF_TYPE_DIO;
-> +		break;
-> +	case SNOR_PROTO_1_1_4:
->  		if_type =3D IF_TYPE_QUAD;
->  		break;
-> -	case SPI_NOR_NORMAL:
-> -	case SPI_NOR_FAST:
-> +	case SNOR_PROTO_1_4_4:
-> +		if_type =3D IF_TYPE_QIO;
-> +		break;
-> +	case SNOR_PROTO_1_1_1:
->  	default:
->  		if_type =3D IF_TYPE_STD;
->  		break;
-> @@ -238,6 +243,7 @@ static int hisi_spi_nor_dma_transfer(struct spi_nor
-> *nor, loff_t start_off,  {
->  	struct hifmc_priv *priv =3D nor->priv;
->  	struct hifmc_host *host =3D priv->host;
-> +	enum spi_nor_protocol proto;
->  	u8 if_type =3D 0;
->  	u32 reg;
->=20
-> @@ -253,7 +259,10 @@ static int hisi_spi_nor_dma_transfer(struct spi_nor
-> *nor, loff_t start_off,
->  	writel(FMC_DMA_LEN_SET(len), host->regbase + FMC_DMA_LEN);
->=20
->  	reg =3D OP_CFG_FM_CS(priv->chipselect);
-> -	if_type =3D get_if_type(nor->flash_read);
-> +	proto =3D (op_type =3D=3D FMC_OP_READ)
-> +		? nor->read_proto
-> +		: nor->write_proto;
-> +	if_type =3D get_if_type(proto);
->  	reg |=3D OP_CFG_MEM_IF_TYPE(if_type);
->  	if (op_type =3D=3D FMC_OP_READ)
->  		reg |=3D OP_CFG_DUMMY_NUM(nor->read_dummy >> 3);
-> @@ -326,6 +335,13 @@ static int hisi_spi_nor_register(struct device_node
-> *np,
->  	struct hifmc_priv *priv;
->  	struct mtd_info *mtd;
->  	int ret;
-> +	static const struct spi_nor_modes modes =3D {
-> +		.rd_modes =3D (SNOR_MODE_SLOW |
-> +			     SNOR_MODE_1_1_1 |
-> +			     SNOR_MODE_1_1_2 |
-> +			     SNOR_MODE_1_1_4),
-> +		.wr_modes =3D SNOR_MODE_1_1_1,
-> +	};
->=20
->  	nor =3D devm_kzalloc(dev, sizeof(*nor), GFP_KERNEL);
->  	if (!nor)
-> @@ -362,7 +378,7 @@ static int hisi_spi_nor_register(struct device_node
-> *np,
->  	nor->read =3D hisi_spi_nor_read;
->  	nor->write =3D hisi_spi_nor_write;
->  	nor->erase =3D NULL;
-> -	ret =3D spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> +	ret =3D spi_nor_scan(nor, NULL, &modes);
->  	if (ret)
->  		return ret;
->=20
-> diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-
-> quadspi.c
-> index e661877c23de..4dc2bb8eb488 100644
-> --- a/drivers/mtd/spi-nor/mtk-quadspi.c
-> +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-> @@ -121,20 +121,20 @@ static void mt8173_nor_set_read_mode(struct
-> mt8173_nor *mt8173_nor)  {
->  	struct spi_nor *nor =3D &mt8173_nor->nor;
->=20
-> -	switch (nor->flash_read) {
-> -	case SPI_NOR_FAST:
-> +	switch (SNOR_PROTO_DATA_FROM_PROTO(nor->read_proto)) {
-> +	case 1:
->  		writeb(nor->read_opcode, mt8173_nor->base +
->  		       MTK_NOR_PRGDATA3_REG);
->  		writeb(MTK_NOR_FAST_READ, mt8173_nor->base +
->  		       MTK_NOR_CFG1_REG);
->  		break;
-> -	case SPI_NOR_DUAL:
-> +	case 2:
->  		writeb(nor->read_opcode, mt8173_nor->base +
->  		       MTK_NOR_PRGDATA3_REG);
->  		writeb(MTK_NOR_DUAL_READ_EN, mt8173_nor->base +
->  		       MTK_NOR_DUAL_REG);
->  		break;
-> -	case SPI_NOR_QUAD:
-> +	case 4:
->  		writeb(nor->read_opcode, mt8173_nor->base +
->  		       MTK_NOR_PRGDATA4_REG);
->  		writeb(MTK_NOR_QUAD_READ_EN, mt8173_nor->base +
-> @@ -383,6 +383,12 @@ static int mtk_nor_init(struct mt8173_nor
-> *mt8173_nor,  {
->  	int ret;
->  	struct spi_nor *nor;
-> +	static const struct spi_nor_modes modes =3D {
-> +		.rd_modes =3D (SNOR_MODE_SLOW |
-> +			     SNOR_MODE_1_1_1 |
-> +			     SNOR_MODE_1_1_2),
-> +		.wr_modes =3D SNOR_MODE_1_1_1,
-> +	};
->=20
->  	/* initialize controller to accept commands */
->  	writel(MTK_NOR_ENABLE_SF_CMD, mt8173_nor->base +
-> MTK_NOR_WRPROT_REG); @@ -399,7 +405,7 @@ static int
-> mtk_nor_init(struct mt8173_nor *mt8173_nor,
->  	nor->write_reg =3D mt8173_nor_write_reg;
->  	nor->mtd.name =3D "mtk_nor";
->  	/* initialized with NULL */
-> -	ret =3D spi_nor_scan(nor, NULL, SPI_NOR_DUAL);
-> +	ret =3D spi_nor_scan(nor, NULL, &modes);
->  	if (ret)
->  		return ret;
->=20
-> diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-sp=
-ifi.c
-> index 73a14f40928b..327c5b5fe9da 100644
-> --- a/drivers/mtd/spi-nor/nxp-spifi.c
-> +++ b/drivers/mtd/spi-nor/nxp-spifi.c
-> @@ -240,13 +240,12 @@ static int nxp_spifi_erase(struct spi_nor *nor, lof=
-f_t
-> offs)
->=20
->  static int nxp_spifi_setup_memory_cmd(struct nxp_spifi *spifi)  {
-> -	switch (spifi->nor.flash_read) {
-> -	case SPI_NOR_NORMAL:
-> -	case SPI_NOR_FAST:
-> +	switch (SNOR_PROTO_DATA_FROM_PROTO(spifi->nor.read_proto))
-> {
-> +	case 1:
->  		spifi->mcmd =3D SPIFI_CMD_FIELDFORM_ALL_SERIAL;
->  		break;
-> -	case SPI_NOR_DUAL:
-> -	case SPI_NOR_QUAD:
-> +	case 2:
-> +	case 4:
->  		spifi->mcmd =3D SPIFI_CMD_FIELDFORM_QUAD_DUAL_DATA;
->  		break;
->  	default:
-> @@ -274,7 +273,10 @@ static void nxp_spifi_dummy_id_read(struct spi_nor
-> *nor)  static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
->  				 struct device_node *np)
->  {
-> -	enum read_mode flash_read;
-> +	struct spi_nor_modes modes =3D {
-> +		.rd_modes =3D (SNOR_MODE_SLOW | SNOR_MODE_1_1_1),
-> +		.wr_modes =3D SNOR_MODE_1_1_1,
-> +	};
->  	u32 ctrl, property;
->  	u16 mode =3D 0;
->  	int ret;
-> @@ -308,13 +310,12 @@ static int nxp_spifi_setup_flash(struct nxp_spifi
-> *spifi,
->=20
->  	if (mode & SPI_RX_DUAL) {
->  		ctrl |=3D SPIFI_CTRL_DUAL;
-> -		flash_read =3D SPI_NOR_DUAL;
-> +		modes.rd_modes |=3D SNOR_MODE_1_1_2;
->  	} else if (mode & SPI_RX_QUAD) {
->  		ctrl &=3D ~SPIFI_CTRL_DUAL;
-> -		flash_read =3D SPI_NOR_QUAD;
-> +		modes.rd_modes |=3D SNOR_MODE_1_1_4;
->  	} else {
->  		ctrl |=3D SPIFI_CTRL_DUAL;
-> -		flash_read =3D SPI_NOR_NORMAL;
->  	}
->=20
->  	switch (mode & (SPI_CPHA | SPI_CPOL)) { @@ -351,7 +352,7 @@
-> static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
->  	 */
->  	nxp_spifi_dummy_id_read(&spifi->nor);
->=20
-> -	ret =3D spi_nor_scan(&spifi->nor, NULL, flash_read);
-> +	ret =3D spi_nor_scan(&spifi->nor, NULL, &modes);
->  	if (ret) {
->  		dev_err(spifi->dev, "device scan failed\n");
->  		return ret;
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.=
-c
-> index fd39516fef35..01e9b40c825f 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -143,24 +143,6 @@ static int read_cr(struct spi_nor *nor)  }
->=20
->  /*
-> - * Dummy Cycle calculation for different type of read.
-> - * It can be used to support more commands with
-> - * different dummy cycle requirements.
-> - */
-> -static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor) -{
-> -	switch (nor->flash_read) {
-> -	case SPI_NOR_FAST:
-> -	case SPI_NOR_DUAL:
-> -	case SPI_NOR_QUAD:
-> -		return 8;
-> -	case SPI_NOR_NORMAL:
-> -		return 0;
-> -	}
-> -	return 0;
-> -}
-> -
-> -/*
->   * Write status register 1 byte
->   * Returns negative if error occurred.
->   */
-> @@ -1394,8 +1376,206 @@ static int spi_nor_check(struct spi_nor *nor)
->  	return 0;
->  }
->=20
-> -int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode
-> mode)
-> +static inline void spi_nor_set_read_settings(struct spi_nor_read *read,
-> +					     u8 num_mode_clocks,
-> +					     u8 num_wait_states,
-> +					     u8 opcode)
-> +{
-> +	read->num_mode_clocks =3D num_mode_clocks;
-> +	read->num_wait_states =3D num_wait_states;
-> +	read->opcode =3D opcode;
-> +}
-> +
-> +static inline void spi_nor_set_erase_settings(struct spi_nor_erase_type
-> *erase,
-> +					      u8 size, u8 opcode)
-> +{
-> +	erase->size =3D size;
-> +	erase->opcode =3D opcode;
-> +}
-> +
-> +static int spi_nor_init_params(struct spi_nor *nor,
-> +			       const struct flash_info *info,
-> +			       struct spi_nor_basic_flash_parameter *params) {
-> +	// TODO: parse SFDP table
-> +
-> +	/* If SFDP tables are not available, use legacy settings. */
-> +	memset(params, 0, sizeof(*params));
-> +
-> +	/* (Fast) Read settings. */
-> +	params->rd_modes =3D SNOR_MODE_SLOW;
-> +	spi_nor_set_read_settings(&params->reads[SNOR_PINDEX_SLOW],
-> +				  0, 0, SPINOR_OP_READ);
-> +	if (!(info->flags & SPI_NOR_NO_FR)) {
-> +		params->rd_modes |=3D SNOR_MODE_1_1_1;
-> +		spi_nor_set_read_settings(&params-
-> >reads[SNOR_PINDEX_1_1_1],
-> +					  0, 8, SPINOR_OP_READ_FAST);
-> +	}
-> +	if (info->flags & SPI_NOR_DUAL_READ) {
-> +		params->rd_modes |=3D SNOR_MODE_1_1_2;
-> +		spi_nor_set_read_settings(&params-
-> >reads[SNOR_PINDEX_1_1_2],
-> +					  0, 8, SPINOR_OP_READ_1_1_2);
-> +	}
-> +	if (info->flags & SPI_NOR_QUAD_READ) {
-> +		params->rd_modes |=3D SNOR_MODE_1_1_4;
-> +		spi_nor_set_read_settings(&params-
-> >reads[SNOR_PINDEX_1_1_4],
-> +					  0, 8, SPINOR_OP_READ_1_1_4);
-> +	}
-> +
-> +	/* Page Program settings. */
-> +	params->wr_modes =3D SNOR_MODE_1_1_1;
-> +	params->page_programs[SNOR_PINDEX_1_1_1] =3D SPINOR_OP_PP;
-> +
-> +	/* Sector Erase settings. */
-> +	spi_nor_set_erase_settings(&params->erase_types[0],
-> +				   SNOR_ERASE_64K, SPINOR_OP_SE);
-> +	if (info->flags & SECT_4K)
-> +		spi_nor_set_erase_settings(&params->erase_types[1],
-> +					   SNOR_ERASE_4K,
-> SPINOR_OP_BE_4K);
-> +	else if (info->flags & SECT_4K_PMC)
-> +		spi_nor_set_erase_settings(&params->erase_types[1],
-> +					   SNOR_ERASE_4K,
-> SPINOR_OP_BE_4K_PMC);
-> +
-> +	/* Select the procedure to set the Quad Enable bit. */
-> +	if (params->rd_modes & (SNOR_MODE_1_1_4 |
-> +				SNOR_MODE_1_4_4 |
-> +				SNOR_MODE_4_4_4)) {
-> +		switch (JEDEC_MFR(info)) {
-> +		case SNOR_MFR_MACRONIX:
-> +			params->enable_quad_io =3D macronix_quad_enable;
-> +			break;
-> +
-> +		case SNOR_MFR_MICRON:
-> +			break;
-> +
-> +		default:
-> +			params->enable_quad_io =3D spansion_quad_enable;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_pindex2proto(int pindex, enum spi_nor_protocol
-> +*proto) {
-> +	enum spi_nor_protocol_width pwidth;
-> +	enum spi_nor_protocol_class pclass;
-> +	uint8_t width;
-> +
-> +	if (pindex < 0)
-> +		return -EINVAL;
-> +
-> +	pwidth =3D (enum spi_nor_protocol_width)(pindex /
-> SNOR_PCLASS_MAX);
-> +	pclass =3D (enum spi_nor_protocol_class)(pindex %
-> SNOR_PCLASS_MAX);
-> +
-> +	width =3D (1 << pwidth) & 0xf;
-> +	if (!width)
-> +		return -EINVAL;
-> +
-> +	switch (pclass) {
-> +	case SNOR_PCLASS_1_1_N:
-> +		*proto =3D SNOR_PROTO(1, 1, width);
-> +		break;
-> +
-> +	case SNOR_PCLASS_1_N_N:
-> +		*proto =3D SNOR_PROTO(1, width, width);
-> +		break;
-> +
-> +	case SNOR_PCLASS_N_N_N:
-> +		*proto =3D SNOR_PROTO(width, width, width);
-> +		break;
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *i=
-nfo,
-> +			 const struct spi_nor_basic_flash_parameter
-> *params,
-> +			 const struct spi_nor_modes *modes)
->  {
-> +	bool enable_quad_io;
-> +	u32 rd_modes, wr_modes, mask;
-> +	const struct spi_nor_erase_type *erase_type =3D NULL;
-> +	const struct spi_nor_read *read;
-> +	int rd_pindex, wr_pindex, i, err =3D 0;
-> +	u8 erase_size =3D SNOR_ERASE_64K;
+Hello,
 
-Erase size could be configurable, then user can chose best sector size that=
- match his use case on multi-sized flash.
+I have tested this series on:
+mx66u51235f OK
+mt25qu01g OK(1)
+s25fs512s FAILED(2)
 
-> +
-> +	/* 2-2-2 or 4-4-4 modes are not supported yet. */
-> +	mask =3D (SNOR_MODE_2_2_2 | SNOR_MODE_4_4_4);
-> +	rd_modes =3D modes->rd_modes & ~mask;
-> +	wr_modes =3D modes->wr_modes & ~mask;
-> +
-> +	/* Setup read operation. */
-> +	rd_pindex =3D fls(params->rd_modes & rd_modes) - 1;
-> +	if (spi_nor_pindex2proto(rd_pindex, &nor->read_proto)) {
-> +		dev_err(nor->dev, "invalid (fast) read\n");
-> +		return -EINVAL;
-> +	}
-> +	read =3D &params->reads[rd_pindex];
-> +	nor->read_opcode =3D read->opcode;
-> +	nor->read_dummy =3D read->num_mode_clocks + read-
-> >num_wait_states;
+(1) - There is a problem with Die Erase command. There is no 4byte version.=
+ I workarounded it by enabling 4byte mode before send, and disabled just af=
+ter.
+Resigning from Die Erase is bad idea because of erase speed. Having statele=
+ss mode is also bad, so some better idea that my workaround could be nice.
+(2) - Totally failed because this chip does not support 64KiB sectors, but =
+still reports that command for erasing that kind of sector is available,
+moreover it is the same as command for erasing 256KiB sector. Solution for =
+this, and for other flash could be that preferred sector size
+is a parameter for spi-nor framework.
 
-I would vote that num_mode_clocks, num_wait_states and mode value will be a=
-vailable for the driver.
-There are some QSPi controller that are aware of that. It generally should =
-not hurt, but might help in the future.
-
-> +
-> +	/* Set page program op code and protocol. */
-> +	wr_pindex =3D fls(params->wr_modes & wr_modes) - 1;
-> +	if (spi_nor_pindex2proto(wr_pindex, &nor->write_proto)) {
-> +		dev_err(nor->dev, "invalid page program\n");
-> +		return -EINVAL;
-> +	}
-> +	nor->program_opcode =3D params->page_programs[wr_pindex];
-> +
-> +	/* Set sector erase op code and size. */
-> +	erase_type =3D &params->erase_types[0];
-> +#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
-> +	erase_size =3D SNOR_ERASE_4K;
-> +#endif
-> +	for (i =3D 0; i < SNOR_MAX_ERASE_TYPES; ++i) {
-> +		if (params->erase_types[i].size =3D=3D erase_size) {
-> +			erase_type =3D &params->erase_types[i];
-> +			break;
-> +		} else if (!erase_type->size && params->erase_types[i].size)
-> {
-> +			erase_type =3D &params->erase_types[i];
-> +		}
-> +	}
-> +	nor->erase_opcode =3D erase_type->opcode;
-> +	nor->mtd.erasesize =3D (1 << erase_type->size);
-> +
-> +
-> +	enable_quad_io =3D (SNOR_PROTO_DATA_FROM_PROTO(nor-
-> >read_proto) =3D=3D 4 ||
-> +			  SNOR_PROTO_DATA_FROM_PROTO(nor-
-> >write_proto) =3D=3D 4);
-> +
-> +	/* Enable Quad I/O if needed. */
-> +	if (enable_quad_io && params->enable_quad_io) {
-> +		err =3D params->enable_quad_io(nor);
-> +		if (err) {
-> +			dev_err(nor->dev,
-> +				"failed to enable the Quad I/O mode\n");
-> +			return err;
-> +		}
-> +	}
-> +
-> +	dev_dbg(nor->dev,
-> +		"(Fast) Read:  opcode=3D%02Xh, protocol=3D%03x, mode=3D%u,
-> wait=3D%u\n",
-> +		nor->read_opcode, nor->read_proto,
-> +		read->num_mode_clocks, read->num_wait_states);
-> +	dev_dbg(nor->dev,
-> +		"Page Program: opcode=3D%02Xh, protocol=3D%03x\n",
-> +		nor->program_opcode, nor->write_proto);
-> +	dev_dbg(nor->dev,
-> +		"Sector Erase: opcode=3D%02Xh, protocol=3D%03x, sector
-> size=3D%u\n",
-> +		nor->erase_opcode, nor->reg_proto, (u32)nor-
-> >mtd.erasesize);
-
-At the end above debugs can be a bit misleading, because later opcodes coul=
-d be replaced in
-set_4byte function.
+My tests covers my use case of mtd/spi-nor framework (ubi, ubifs and jffs2 =
++ some regression).
+=09
+Some small comments in patches.
 
 Thanks,
 Marcin
 
-> +
-> +	return 0;
-> +}
-> +
-> +int spi_nor_scan(struct spi_nor *nor, const char *name,
-> +		 const struct spi_nor_modes *modes)
-> +{
-> +	struct spi_nor_basic_flash_parameter params;
-> +	struct spi_nor_modes fixed_modes =3D *modes;
->  	const struct flash_info *info =3D NULL;
->  	struct device *dev =3D nor->dev;
->  	struct mtd_info *mtd =3D &nor->mtd;
-> @@ -1407,6 +1587,11 @@ int spi_nor_scan(struct spi_nor *nor, const char
-> *name, enum read_mode mode)
->  	if (ret)
->  		return ret;
+> ChangeLog:
 >=20
-> +	/* Reset SPI protocol for all commands */
-> +	nor->reg_proto =3D SNOR_PROTO_1_1_1;
-> +	nor->read_proto =3D SNOR_PROTO_1_1_1;
-> +	nor->write_proto =3D SNOR_PROTO_1_1_1;
-> +
->  	if (name)
->  		info =3D spi_nor_match_id(name);
->  	/* Try to auto-detect if chip name wasn't specified or not found */
-> @@ -1439,6 +1624,11 @@ int spi_nor_scan(struct spi_nor *nor, const char
-> *name, enum read_mode mode)
->  		}
->  	}
+> v3 -> v4
+> - replace dev_info() by dev_dbg() in patch 1.
+> - split former patch 2 into 2 patches:
+>   + new patch 2 deals with the rename of SPINOR_OP_READ4_* macros
+>   + new patch 3 deals with the alternative methode to support memory
+> >16MiB
+> - add comment in patch 3 to describe the dichotomic search performed by
+>   spi_nor_convert_opcode().
+> - change return type from int to void for m25p80_proto2nbits() in patch 6=
+.
+> - remove former patches 8 & 9 from the v2 series: the support of the
+>   Macronix mx66l1g45g memory will be sent in a separated patch.
 >=20
-> +	/* Parse the Serial Flash Discoverable Parameters table */
-> +	ret =3D spi_nor_init_params(nor, info, &params);
-> +	if (ret)
-> +		return ret;
-> +
->  	mutex_init(&nor->lock);
+> v2 -> v3
+> - tested with new samples: Micron n25q512, n25q01g and Macronix
+>   mx25v1635f, mx25l3235f, mx25l3273f.
+> - add "Reviewed-by: Jagan Teki <jagan@openedev.com>" on patch 1.
+> - add "Tested-by: Vignesh R <vigneshr@ti.com>" on patch 2.
+> - fix some checkpatch warnings.
+> - add call of spi_nor_wait_till_ready() in spansion_new_quad_enable()
+>   and sr2_bit7_quad_enable(), as suggested by Joel Esponde on patch 6.
+> - test JESD216 rev A (minor 5) instead of rev B (minor 6) with the return
+>   code of spi_nor_parse_sfdp() from spi_nor_init_params() on patch 6.
+>   The seven additional DWORDs of the Basic Flash Parameter Table were
+>   introduced in rev A, not rev B, so the 15th DWORD was already available
+>   in rev A. The 15th DWORD provides us with the Quad Enable Requirements
+>   (QER) bits.
+>   Basic Flash Parameter Table size:
+>   + JESD216 :  9 DWORDS
+>   + JESD216A: 16 DWORDS
+>   + JESD216B: 16 DWORDS
 >=20
->  	/*
-> @@ -1515,51 +1705,31 @@ int spi_nor_scan(struct spi_nor *nor, const char
-> *name, enum read_mode mode)
->  	if (np) {
->  		/* If we were instantiated by DT, use it */
->  		if (of_property_read_bool(np, "m25p,fast-read"))
-> -			nor->flash_read =3D SPI_NOR_FAST;
-> +			fixed_modes.rd_modes |=3D SNOR_MODE_1_1_1;
->  		else
-> -			nor->flash_read =3D SPI_NOR_NORMAL;
-> +			fixed_modes.rd_modes &=3D ~SNOR_MODE_1_1_1;
->  	} else {
->  		/* If we weren't instantiated by DT, default to fast-read */
-> -		nor->flash_read =3D SPI_NOR_FAST;
-> +		fixed_modes.rd_modes |=3D SNOR_MODE_1_1_1;
->  	}
+> v1 -> v2
+> - fix patch 3 to resolve compiler errors on hisi-sfc.c and cadence-quadsp=
+i.c
+>   drivers
 >=20
->  	/* Some devices cannot do fast-read, no matter what DT tells us */
->  	if (info->flags & SPI_NOR_NO_FR)
-> -		nor->flash_read =3D SPI_NOR_NORMAL;
-> -
-> -	/* Quad/Dual-read mode takes precedence over fast/normal */
-> -	if (mode =3D=3D SPI_NOR_QUAD && info->flags &
-> SPI_NOR_QUAD_READ) {
-> -		ret =3D set_quad_mode(nor, info);
-> -		if (ret) {
-> -			dev_err(dev, "quad mode not supported\n");
-> -			return ret;
-> -		}
-> -		nor->flash_read =3D SPI_NOR_QUAD;
-> -	} else if (mode =3D=3D SPI_NOR_DUAL && info->flags &
-> SPI_NOR_DUAL_READ) {
-> -		nor->flash_read =3D SPI_NOR_DUAL;
-> -	}
-> -
-> -	/* Default commands */
-> -	switch (nor->flash_read) {
-> -	case SPI_NOR_QUAD:
-> -		nor->read_opcode =3D SPINOR_OP_READ_1_1_4;
-> -		break;
-> -	case SPI_NOR_DUAL:
-> -		nor->read_opcode =3D SPINOR_OP_READ_1_1_2;
-> -		break;
-> -	case SPI_NOR_FAST:
-> -		nor->read_opcode =3D SPINOR_OP_READ_FAST;
-> -		break;
-> -	case SPI_NOR_NORMAL:
-> -		nor->read_opcode =3D SPINOR_OP_READ;
-> -		break;
-> -	default:
-> -		dev_err(dev, "No Read opcode defined\n");
-> -		return -EINVAL;
-> -	}
-> +		fixed_modes.rd_modes &=3D ~SNOR_MODE_1_1_1;
 >=20
->  	nor->program_opcode =3D SPINOR_OP_PP;
+> Cyrille Pitchen (8):
+>   mtd: spi-nor: improve macronix_quad_enable()
+>   mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte address op codes
+>   mtd: spi-nor: add an alternative method to support memory >16MiB
+>   mtd: spi-nor: add support of SPI protocols like SPI 1-2-2 and SPI
+>     1-4-4
+>   mtd: spi-nor: remove unused set_quad_mode() function
+>   mtd: m25p80: add support of dual and quad spi protocols to all
+>     commands
+>   mtd: spi-nor: parse Serial Flash Discoverable Parameters (SFDP) tables
+>   mtd: spi-nor: parse SFDP 4-byte Address Instruction Table
 >=20
-> +	/*
-> +	 * Configure the SPI memory:
-> +	 * - select op codes for (Fast) Read, Page Program and Sector Erase.
-> +	 * - set the number of dummy cycles (mode cycles + wait states).
-> +	 * - set the SPI protocols for register and memory accesses.
-> +	 * - set the Quad Enable bit if needed (required by SPI x-y-4 protos).
-> +	 */
-> +	ret =3D spi_nor_setup(nor, info, &params, &fixed_modes);
-> +	if (ret)
-> +		return ret;
-> +
->  	if (info->addr_width)
->  		nor->addr_width =3D info->addr_width;
->  	else if (mtd->size > 0x1000000) {
-> @@ -1580,8 +1750,6 @@ int spi_nor_scan(struct spi_nor *nor, const char
-> *name, enum read_mode mode)
->  		return -EINVAL;
->  	}
+>  drivers/mtd/devices/m25p80.c            |  191 ++++--
+>  drivers/mtd/devices/serial_flash_cmds.h |    7 -
+>  drivers/mtd/devices/st_spi_fsm.c        |   28 +-
+>  drivers/mtd/spi-nor/atmel-quadspi.c     |   83 ++-
+>  drivers/mtd/spi-nor/cadence-quadspi.c   |   18 +-
+>  drivers/mtd/spi-nor/fsl-quadspi.c       |    8 +-
+>  drivers/mtd/spi-nor/hisi-sfc.c          |   32 +-
+>  drivers/mtd/spi-nor/mtk-quadspi.c       |   16 +-
+>  drivers/mtd/spi-nor/nxp-spifi.c         |   21 +-
+>  drivers/mtd/spi-nor/spi-nor.c           | 1017
+> ++++++++++++++++++++++++++++---
+>  drivers/spi/spi-bcm-qspi.c              |    6 +-
+>  include/linux/mtd/spi-nor.h             |  164 ++++-
+>  12 files changed, 1351 insertions(+), 240 deletions(-)
 >=20
-> -	nor->read_dummy =3D spi_nor_read_dummy_cycles(nor);
-> -
->  	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
->  			(long long)mtd->size >> 10);
->=20
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h in=
-dex
-> 8b02fd7864d0..88ac446b1230 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -110,11 +110,124 @@
->  /* Configuration Register bits. */
->  #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
->=20
-> -enum read_mode {
-> -	SPI_NOR_NORMAL =3D 0,
-> -	SPI_NOR_FAST,
-> -	SPI_NOR_DUAL,
-> -	SPI_NOR_QUAD,
-> +
-> +/* Supported SPI protocols */
-> +enum spi_nor_protocol_class {
-> +	SNOR_PCLASS_1_1_N,
-> +	SNOR_PCLASS_1_N_N,
-> +	SNOR_PCLASS_N_N_N,
-> +
-> +	SNOR_PCLASS_MAX
-> +};
-> +
-> +enum spi_nor_protocol_width {
-> +	SNOR_PWIDTH_1,
-> +	SNOR_PWIDTH_2,
-> +	SNOR_PWIDTH_4,
-> +	SNOR_PWIDTH_8,
-> +};
-> +
-> +/* The encoding is chosen so the higher index the higher priority */
-> +#define SNOR_PINDEX(pwidth, pclass) \
-> +	((pwidth) * SNOR_PCLASS_MAX + (pclass)) enum
-> spi_nor_protocol_index {
-> +	SNOR_PINDEX_SLOW  =3D SNOR_PINDEX(SNOR_PWIDTH_1,
-> SNOR_PCLASS_1_1_N),
-> +	/* Little trick to make the difference between Read and Fast Read. */
-> +	SNOR_PINDEX_1_1_1 =3D SNOR_PINDEX(SNOR_PWIDTH_1,
-> SNOR_PCLASS_1_N_N),
-> +	SNOR_PINDEX_1_1_2 =3D SNOR_PINDEX(SNOR_PWIDTH_2,
-> SNOR_PCLASS_1_1_N),
-> +	SNOR_PINDEX_1_2_2 =3D SNOR_PINDEX(SNOR_PWIDTH_2,
-> SNOR_PCLASS_1_N_N),
-> +	SNOR_PINDEX_2_2_2 =3D SNOR_PINDEX(SNOR_PWIDTH_2,
-> SNOR_PCLASS_N_N_N),
-> +	SNOR_PINDEX_1_1_4 =3D SNOR_PINDEX(SNOR_PWIDTH_4,
-> SNOR_PCLASS_1_1_N),
-> +	SNOR_PINDEX_1_4_4 =3D SNOR_PINDEX(SNOR_PWIDTH_4,
-> SNOR_PCLASS_1_N_N),
-> +	SNOR_PINDEX_4_4_4 =3D SNOR_PINDEX(SNOR_PWIDTH_4,
-> SNOR_PCLASS_N_N_N),
-> +
-> +	SNOR_PINDEX_MAX
-> +};
-> +
-> +#define SNOR_MODE_SLOW		BIT(SNOR_PINDEX_SLOW)
-> +#define SNOR_MODE_1_1_1		BIT(SNOR_PINDEX_1_1_1)
-> +#define SNOR_MODE_1_1_2		BIT(SNOR_PINDEX_1_1_2)
-> +#define SNOR_MODE_1_2_2		BIT(SNOR_PINDEX_1_2_2)
-> +#define SNOR_MODE_2_2_2		BIT(SNOR_PINDEX_2_2_2)
-> +#define SNOR_MODE_1_1_4		BIT(SNOR_PINDEX_1_1_4)
-> +#define SNOR_MODE_1_4_4		BIT(SNOR_PINDEX_1_4_4)
-> +#define SNOR_MODE_4_4_4		BIT(SNOR_PINDEX_4_4_4)
-> +
-> +struct spi_nor_modes {
-> +	u32	rd_modes;	/* supported SPI modes for (Fast) Read */
-> +	u32	wr_modes;	/* supported SPI modes for Page Program */
-> +};
-> +
-> +
-> +struct spi_nor_read {
-> +	u8	num_wait_states:5;
-> +	u8	num_mode_clocks:3;
-> +	u8	opcode;
-> +};
-> +
-> +struct spi_nor_erase_type {
-> +	u8	size;	/* specifies 'N' so erase size =3D 2^N */
-> +	u8	opcode;
-> +};
-> +
-> +#define SNOR_ERASE_64K		0x10
-> +#define SNOR_ERASE_32K		0x0f
-> +#define SNOR_ERASE_4K		0x0c
-> +
-> +struct spi_nor;
-> +
-> +#define SNOR_MAX_ERASE_TYPES	4
-> +
-> +struct spi_nor_basic_flash_parameter {
-> +	/* Fast Read settings */
-> +	u32				rd_modes;
-> +	struct spi_nor_read		reads[SNOR_PINDEX_MAX];
-> +
-> +	/* Page Program settings */
-> +	u32				wr_modes;
-> +	u8
-> 	page_programs[SNOR_PINDEX_MAX];
-> +
-> +	/* Sector Erase settings */
-> +	struct spi_nor_erase_type
-> 	erase_types[SNOR_MAX_ERASE_TYPES];
-> +
-> +	int (*enable_quad_io)(struct spi_nor *nor); };
-> +
-> +
-> +#define SNOR_PROTO_CODE_OFF	8
-> +#define SNOR_PROTO_CODE_MASK	GENMASK(11, 8)
-> +#define SNOR_PROTO_CODE_TO_PROTO(code) \
-> +	(((code) << SNOR_PROTO_CODE_OFF) &
-> SNOR_PROTO_CODE_MASK) #define
-> +SNOR_PROTO_CODE_FROM_PROTO(proto) \
-> +	((((u32)(proto)) & SNOR_PROTO_CODE_MASK) >>
-> SNOR_PROTO_CODE_OFF)
-> +
-> +#define SNOR_PROTO_ADDR_OFF	4
-> +#define SNOR_PROTO_ADDR_MASK	GENMASK(7, 4)
-> +#define SNOR_PROTO_ADDR_TO_PROTO(addr) \
-> +	(((addr) << SNOR_PROTO_ADDR_OFF) &
-> SNOR_PROTO_ADDR_MASK) #define
-> +SNOR_PROTO_ADDR_FROM_PROTO(proto) \
-> +	((((u32)(proto)) & SNOR_PROTO_ADDR_MASK) >>
-> SNOR_PROTO_ADDR_OFF)
-> +
-> +#define SNOR_PROTO_DATA_OFF	0
-> +#define SNOR_PROTO_DATA_MASK	GENMASK(3, 0)
-> +#define SNOR_PROTO_DATA_TO_PROTO(data) \
-> +	(((data) << SNOR_PROTO_DATA_OFF) &
-> SNOR_PROTO_DATA_MASK) #define
-> +SNOR_PROTO_DATA_FROM_PROTO(proto) \
-> +	((((u32)(proto)) & SNOR_PROTO_DATA_MASK) >>
-> SNOR_PROTO_DATA_OFF)
-> +
-> +#define SNOR_PROTO(code, addr, data)	  \
-> +	(SNOR_PROTO_CODE_TO_PROTO(code) |   \
-> +	 SNOR_PROTO_ADDR_TO_PROTO(addr) | \
-> +	 SNOR_PROTO_DATA_TO_PROTO(data))
-> +
-> +enum spi_nor_protocol {
-> +	SNOR_PROTO_1_1_1 =3D SNOR_PROTO(1, 1, 1),	/* SPI */
-> +	SNOR_PROTO_1_1_2 =3D SNOR_PROTO(1, 1, 2),	/* Dual Output */
-> +	SNOR_PROTO_1_1_4 =3D SNOR_PROTO(1, 1, 4),	/* Quad Output */
-> +	SNOR_PROTO_1_2_2 =3D SNOR_PROTO(1, 2, 2),	/* Dual IO */
-> +	SNOR_PROTO_1_4_4 =3D SNOR_PROTO(1, 4, 4),	/* Quad IO */
-> +	SNOR_PROTO_2_2_2 =3D SNOR_PROTO(2, 2, 2),	/* Dual Command */
-> +	SNOR_PROTO_4_4_4 =3D SNOR_PROTO(4, 4, 4),	/* Quad Command */
->  };
->=20
->  #define SPI_NOR_MAX_CMD_SIZE	8
-> @@ -142,9 +255,11 @@ enum spi_nor_option_flags {
->   * @read_opcode:	the read opcode
->   * @read_dummy:		the dummy needed by the read operation
->   * @program_opcode:	the program opcode
-> - * @flash_read:		the mode of the read
->   * @sst_write_second:	used by the SST write operation
->   * @flags:		flag options for the current SPI-NOR (SNOR_F_*)
-> + * @read_proto:		the SPI protocol used by read operations
-> + * @write_proto:	the SPI protocol used by write operations
-> + * @reg_proto		the SPI protocol used by read_reg/write_reg
-> operations
->   * @cmd_buf:		used by the write_reg
->   * @prepare:		[OPTIONAL] do some preparations for the
->   *			read/write/erase/lock/unlock operations
-> @@ -173,7 +288,9 @@ struct spi_nor {
->  	u8			read_opcode;
->  	u8			read_dummy;
->  	u8			program_opcode;
-> -	enum read_mode		flash_read;
-> +	enum spi_nor_protocol	read_proto;
-> +	enum spi_nor_protocol	write_proto;
-> +	enum spi_nor_protocol	reg_proto;
->  	bool			sst_write_second;
->  	u32			flags;
->  	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
-> @@ -211,7 +328,7 @@ static inline struct device_node
-> *spi_nor_get_flash_node(struct spi_nor *nor)
->   * spi_nor_scan() - scan the SPI NOR
->   * @nor:	the spi_nor structure
->   * @name:	the chip type name
-> - * @mode:	the read mode supported by the driver
-> + * @modes:	the SPI modes supported by the controller driver
->   *
->   * The drivers can use this fuction to scan the SPI NOR.
->   * In the scanning, it will try to get all the necessary information to =
-@@ -221,6
-> +338,7 @@ static inline struct device_node *spi_nor_get_flash_node(struct
-> spi_nor *nor)
->   *
->   * Return: 0 for success, others for failure.
->   */
-> -int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode
-> mode);
-> +int spi_nor_scan(struct spi_nor *nor, const char *name,
-> +		 const struct spi_nor_modes *modes);
->=20
->  #endif
 > --
 > 2.7.4
 >=20
