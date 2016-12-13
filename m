@@ -1,34 +1,23 @@
 Received: from mail-wj0-x241.google.com ([2a00:1450:400c:c01::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGlSM-0002R6-Cw
+ id 1cGlSM-0002QI-D1
  for linux-mtd@lists.infradead.org; Tue, 13 Dec 2016 11:41:15 +0000
-Received: by mail-wj0-x241.google.com with SMTP id he10so16026998wjc.2
- for <linux-mtd@lists.infradead.org>; Tue, 13 Dec 2016 03:40:58 -0800 (PST)
-Subject: Re: [PATCH v6 0/3] spi-nor: Add support for Intel SPI serial flash
- controller
-To: Lee Jones <lee.jones@linaro.org>
-References: <20161205112727.GI1459@lahna.fi.intel.com>
- <2dac1535-de7f-47c3-2747-ba8cac854811@gmail.com>
- <20161205163106.GJ1459@lahna.fi.intel.com>
- <62db8daa-7ebf-1a42-bd70-897c3c636e3c@atmel.com>
- <20161206094525.GA25385@dell.home> <20161207085330.GN1459@lahna.fi.intel.com>
- <0695162f-0959-ab2c-4e68-14881e386060@gmail.com>
- <20161209085753.GC3625@dell.home> <20161209122541.GN1501@lahna.fi.intel.com>
- <c06ebcda-5c64-8e5c-0616-647b784210d4@gmail.com>
- <20161212075454.GR3625@dell.home>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+Received: by mail-wj0-x241.google.com with SMTP id he10so16026518wjc.2
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Dec 2016 03:40:54 -0800 (PST)
+Subject: Re: [PATCH v9] mtd: spi-nor: Add support for S3AN spi-nor devices
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Peter Tyser <ptyser@xes-inc.com>,
- key.seong.lim@intel.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20161202113144.17970-1-ricardo.ribalda@gmail.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <f5345ec7-253a-463d-9a10-3d62d3ffa58d@gmail.com>
-Date: Tue, 13 Dec 2016 08:53:45 +0100
+Message-ID: <edf9ac78-6431-0f51-3151-3f1195263d9a@gmail.com>
+Date: Tue, 13 Dec 2016 08:53:03 +0100
 MIME-Version: 1.0
-In-Reply-To: <20161212075454.GR3625@dell.home>
+In-Reply-To: <20161202113144.17970-1-ricardo.ribalda@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -40,43 +29,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/12/2016 08:54 AM, Lee Jones wrote:
-> On Fri, 09 Dec 2016, Marek Vasut wrote:
+On 12/02/2016 12:31 PM, Ricardo Ribalda Delgado wrote:
+> Xilinx Spartan-3AN FPGAs contain an In-System Flash where they keep
+> their configuration data and (optionally) some user data.
 > 
->> On 12/09/2016 01:25 PM, Mika Westerberg wrote:
->>> On Fri, Dec 09, 2016 at 08:57:53AM +0000, Lee Jones wrote:
->>>> On Wed, 07 Dec 2016, Marek Vasut wrote:
->>>>
->>>>> On 12/07/2016 09:53 AM, Mika Westerberg wrote:
->>>>>> On Tue, Dec 06, 2016 at 09:45:25AM +0000, Lee Jones wrote:
->>>>>>> I'm happy either way.  However if you take them, I will require a
->>>>>>> pull-request to an immutable branch containing only these patches.
->>>>>>>
->>>>>>> If I take them, it won't be until v4.11, since we are half way though
->>>>>>> -rc8 already and I would like them to soak in -next for at least a
->>>>>>> couple of weeks.
->>>>>>
->>>>>> This series already missed v4.8 and v4.9 so I don't think there is a
->>>>>> rush to get it for v4.10 either ;-) I'm fine if it goes for v4.11.
->>>>>
->>>>> Hmmmmmmmmmmm, that kinda sucks. Lee, are you positive this isn't 4.10
->>>>> material ?
->>>>
->>>> The merge-window opens in 2 days.
->>>>
->>>> As I mentioned, I like patches to reside in -next for at least 1 maybe
->>>> 2 RC cycles before merging.  It's far to easy to accept code, then get
->>>> bitten if/when it breaks after being merged by Linus.
->>>
->>> I agree. Better to give it some time in linux-next.
->>>
->>> Can you queue this series for v4.11?
->>
->> OK, I'm fine with this.
+> The protocol of this flash follows most of the spi-nor standard. With
+> the following differences:
 > 
-> Yes, no problem.
+> - Page size might not be a power of two.
+> - The address calculation (default addressing mode).
+> - The spi nor commands used.
 > 
-Cool, thanks !
+> Protocol is described on Xilinx User Guide UG333
+> 
+> Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+
+[...]
+
+> +static int s3an_nor_scan(const struct flash_info *info, struct spi_nor *nor)
+> +{
+> +	int ret;
+> +	u8 val;
+> +
+> +	ret = nor->read_reg(nor, SPINOR_OP_XRDSR, &val, 1);
+> +	if (ret < 0) {
+> +		dev_err(nor->dev, "error %d reading XRDSR\n", (int) ret);
+> +		return ret;
+> +	}
+> +
+> +	nor->erase_opcode = SPINOR_OP_XSE;
+> +	nor->program_opcode = SPINOR_OP_XPP;
+> +	nor->read_opcode = SPINOR_OP_READ;
+> +	nor->flags |= SNOR_F_NO_OP_CHIP_ERASE ;
+
+NIT: You have an extra space before ;        ^
+
+> +
+> +	/*
+> +	 * This flashes have a page size of 264 or 528 bytes (known as
+> +	 * Default addressing mode). It can be changed to a more standard
+> +	 * Power of two mode where the page size is 256/512. This comes
+> +	 * with a price: there is 3% less of space, the data is corrupted
+> +	 * and the page size cannot be changed back to default addressing
+> +	 * mode.
+> +	 *
+> +	 * The current addressing mode can be read from the XRDSR register
+> +	 * and should not be changed, because is a destructive operation.
+> +	 */
+> +	if (val & XSR_PAGESIZE) {
+> +		/* Flash in Power of 2 mode */
+> +		nor->page_size = (nor->page_size == 264) ? 256 : 512;
+> +		nor->mtd.writebufsize = nor->page_size;
+> +		nor->mtd.size = 8 * nor->page_size * info->n_sectors;
+> +		nor->mtd.erasesize = 8 * nor->page_size;
+> +	} else {
+> +		/* Flash in Default addressing mode */
+> +		nor->flags |= SNOR_F_S3AN_ADDR_DEFAULT;
+> +	}
+> +
+> +	return 0;
+> +}
+
+Looks great otherwise:
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
 -- 
 Best regards,
