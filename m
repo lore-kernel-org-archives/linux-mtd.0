@@ -1,24 +1,17 @@
-Subject: Re: [PATCH v3 0/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
-To: linux-arm-kernel@lists.infradead.org
-References: <20161208185933.13749-1-f.fainelli@gmail.com>
- <20161209233628.6642-1-f.fainelli@gmail.com>
-Cc: linux@armlinux.org.uk, nicolas.pitre@linaro.org, panand@redhat.com,
- chris.brandt@renesas.com, arnd@arndb.de, jonathan.austin@arm.com,
- pawel.moll@arm.com, vladimir.murzin@arm.com, mark.rutland@arm.com,
- ard.biesheuvel@linaro.org, keescook@chromium.org, matt@codeblueprint.co.uk,
- labbott@fedoraproject.org, kirill.shutemov@linux.intel.com,
- ben@decadent.org.uk, js07.lee@samsung.com, stefan@agner.ch,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- cyrille.pitchen@atmel.com, richard@nod.at,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <9364069a-834d-383f-c98f-b9d020fe2d0b@gmail.com>
-Date: Tue, 13 Dec 2016 12:29:00 -0800
+Received: from mail-vk0-x22a.google.com ([2607:f8b0:400c:c05::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cGwyt-0001rd-A5
+ for linux-mtd@lists.infradead.org; Tue, 13 Dec 2016 23:59:36 +0000
+Received: by mail-vk0-x22a.google.com with SMTP id w194so4553782vkw.2
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Dec 2016 15:59:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20161209233628.6642-1-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: Jon Fether <jonf@mds.com>
+Date: Tue, 13 Dec 2016 15:59:12 -0800
+Message-ID: <CAGKNqbE+bWgfe60nh5LpjWcu8t5J66Fx7tpjw7FYrCqw_3Wu_Q@mail.gmail.com>
+Subject: [PATCH] mtd: mtd-utils: Correct casting for final status report in
+ flashcp
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,110 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/09/2016 03:36 PM, Florian Fainelli wrote:
-> This patch series builds on top of Laura's [PATCHv5 00/10] CONFIG_DEBUG_VIRTUAL
-> for arm64 to add support for CONFIG_DEBUG_VIRTUAL for ARM.
-> 
-> This was tested on a Brahma B15 platform (ARMv7 + HIGHMEM + LPAE).
-> 
-> Note that the treewide changes would involve a huge CC list, which
-> is why it has been purposely trimmed to just focusing on the DEBUG_VIRTUAL
-> aspect.
+Add correct casting for filestat.st_size in flashcp.c. While the
+interim status updates had correct casting from commit 08b243, the
+final update was not.
 
-Any comments on this? How would you approach merging these patches?
-Thank you!
+Signed-off-by: Jonathan Fether <jonf@mds.com>
+---
+diff --git a/misc-utils/flashcp.c b/misc-utils/flashcp.c
+index 6594a45..af3c88d 100644
+--- a/misc-utils/flashcp.c
++++ b/misc-utils/flashcp.c
+@@ -386,8 +386,8 @@ int main (int argc,char *argv[])
+  if (flags & FLAG_VERBOSE)
+  log_printf (LOG_NORMAL,
+  "\rVerifying data: %lluk/%lluk (100%%)\n",
+- KB (filestat.st_size),
+- KB (filestat.st_size));
++ KB ((unsigned long long)filestat.st_size),
++ KB ((unsigned long long)filestat.st_size));
+  DEBUG("Verified %d / %lluk bytes\n",written,(unsigned long
+long)filestat.st_size);
 
-> 
-> Changes in v3:
-> 
-> - fix build failures reported by Kbuild test robot
-> 
-> Changes in v2:
-> 
-> - Modified MTD LART driver not to create symbol conflicts with
->   KERNEL_START
-> - Fixed patch that defines and uses KERNEL_START/END
-> - Fixed __pa_symbol()'s definition
-> - Inline __pa_symbol() check wihtin the VIRTUAL_BUG_ON statement
-> - Simplified check for virtual addresses
-> - Added a tree-wide patch changing SMP/PM implementations to use
->   __pa_symbol(), build tested against multi_v{5,7}_defconfig
-> 
-> Thanks!
-> 
-> Florian Fainelli (4):
->   mtd: lart: Rename partition defines to be prefixed with PART_
->   ARM: Define KERNEL_START and KERNEL_END
->   ARM: Add support for CONFIG_DEBUG_VIRTUAL
->   ARM: treewide: Replace uses of virt_to_phys with __pa_symbol
-> 
->  arch/arm/Kconfig                          |   1 +
->  arch/arm/boot/compressed/piggy.xzkern     | Bin 0 -> 2998584 bytes
->  arch/arm/common/mcpm_entry.c              |  12 +++----
->  arch/arm/include/asm/memory.h             |  23 ++++++++++++--
->  arch/arm/mach-alpine/platsmp.c            |   2 +-
->  arch/arm/mach-axxia/platsmp.c             |   2 +-
->  arch/arm/mach-bcm/bcm63xx_smp.c           |   2 +-
->  arch/arm/mach-bcm/platsmp-brcmstb.c       |   2 +-
->  arch/arm/mach-bcm/platsmp.c               |   4 +--
->  arch/arm/mach-berlin/platsmp.c            |   2 +-
->  arch/arm/mach-exynos/firmware.c           |   4 +--
->  arch/arm/mach-exynos/mcpm-exynos.c        |   2 +-
->  arch/arm/mach-exynos/platsmp.c            |   4 +--
->  arch/arm/mach-exynos/pm.c                 |   6 ++--
->  arch/arm/mach-exynos/suspend.c            |   6 ++--
->  arch/arm/mach-hisi/platmcpm.c             |   2 +-
->  arch/arm/mach-hisi/platsmp.c              |   6 ++--
->  arch/arm/mach-imx/platsmp.c               |   2 +-
->  arch/arm/mach-imx/pm-imx6.c               |   2 +-
->  arch/arm/mach-imx/src.c                   |   2 +-
->  arch/arm/mach-mediatek/platsmp.c          |   2 +-
->  arch/arm/mach-mvebu/pm.c                  |   2 +-
->  arch/arm/mach-mvebu/pmsu.c                |   2 +-
->  arch/arm/mach-mvebu/system-controller.c   |   2 +-
->  arch/arm/mach-omap2/control.c             |   8 ++---
->  arch/arm/mach-omap2/omap-mpuss-lowpower.c |   8 ++---
->  arch/arm/mach-omap2/omap-smp.c            |   4 +--
->  arch/arm/mach-prima2/platsmp.c            |   2 +-
->  arch/arm/mach-prima2/pm.c                 |   2 +-
->  arch/arm/mach-pxa/palmz72.c               |   2 +-
->  arch/arm/mach-pxa/pxa25x.c                |   2 +-
->  arch/arm/mach-pxa/pxa27x.c                |   2 +-
->  arch/arm/mach-pxa/pxa3xx.c                |   2 +-
->  arch/arm/mach-realview/platsmp-dt.c       |   2 +-
->  arch/arm/mach-rockchip/platsmp.c          |   4 +--
->  arch/arm/mach-rockchip/pm.c               |   2 +-
->  arch/arm/mach-s3c24xx/mach-jive.c         |   2 +-
->  arch/arm/mach-s3c24xx/pm-s3c2410.c        |   2 +-
->  arch/arm/mach-s3c24xx/pm-s3c2416.c        |   2 +-
->  arch/arm/mach-s3c64xx/pm.c                |   2 +-
->  arch/arm/mach-s5pv210/pm.c                |   2 +-
->  arch/arm/mach-sa1100/pm.c                 |   2 +-
->  arch/arm/mach-shmobile/platsmp-apmu.c     |   6 ++--
->  arch/arm/mach-shmobile/platsmp-scu.c      |   4 +--
->  arch/arm/mach-socfpga/platsmp.c           |   4 +--
->  arch/arm/mach-spear/platsmp.c             |   2 +-
->  arch/arm/mach-sti/platsmp.c               |   2 +-
->  arch/arm/mach-sunxi/platsmp.c             |   4 +--
->  arch/arm/mach-tango/platsmp.c             |   2 +-
->  arch/arm/mach-tango/pm.c                  |   2 +-
->  arch/arm/mach-tegra/reset.c               |   4 +--
->  arch/arm/mach-ux500/platsmp.c             |   2 +-
->  arch/arm/mach-vexpress/dcscb.c            |   2 +-
->  arch/arm/mach-vexpress/platsmp.c          |   2 +-
->  arch/arm/mach-vexpress/tc2_pm.c           |   4 +--
->  arch/arm/mach-zx/platsmp.c                |   4 +--
->  arch/arm/mach-zynq/platsmp.c              |   2 +-
->  arch/arm/mm/Makefile                      |   1 +
->  arch/arm/mm/init.c                        |   7 ++--
->  arch/arm/mm/mmu.c                         |   6 +---
->  arch/arm/mm/physaddr.c                    |  51 ++++++++++++++++++++++++++++++
->  drivers/mtd/devices/lart.c                |  24 +++++++-------
->  62 files changed, 173 insertions(+), 108 deletions(-)
->  create mode 100644 arch/arm/boot/compressed/piggy.xzkern
->  create mode 100644 arch/arm/mm/physaddr.c
-> 
-
-
--- 
-Florian
+  exit (EXIT_SUCCESS);
+--
+2.8.1
