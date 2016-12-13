@@ -1,18 +1,24 @@
-Received: from mx.artech.at ([188.21.106.106] helo=mail.artech.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGt8I-0001CN-DX
- for linux-mtd@lists.infradead.org; Tue, 13 Dec 2016 19:53:03 +0000
-From: Matthias Auchmann <m.auchmann@artech.at>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Tue, 13 Dec 2016 20:52:39 +0100
-Subject: RE: UBI/UBIFS on NAND with PEB 4MB
-Message-ID: <566B344A0B1AB14EB2486D887B6FF9E033AFEBBA18@SRV01.ARTech.local>
-References: <566B344A0B1AB14EB2486D887B6FF9E033AFEBBA17@SRV01.ARTech.local>
-In-Reply-To: <566B344A0B1AB14EB2486D887B6FF9E033AFEBBA17@SRV01.ARTech.local>
-Content-Language: de-DE
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 0/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
+To: linux-arm-kernel@lists.infradead.org
+References: <20161208185933.13749-1-f.fainelli@gmail.com>
+ <20161209233628.6642-1-f.fainelli@gmail.com>
+Cc: linux@armlinux.org.uk, nicolas.pitre@linaro.org, panand@redhat.com,
+ chris.brandt@renesas.com, arnd@arndb.de, jonathan.austin@arm.com,
+ pawel.moll@arm.com, vladimir.murzin@arm.com, mark.rutland@arm.com,
+ ard.biesheuvel@linaro.org, keescook@chromium.org, matt@codeblueprint.co.uk,
+ labbott@fedoraproject.org, kirill.shutemov@linux.intel.com,
+ ben@decadent.org.uk, js07.lee@samsung.com, stefan@agner.ch,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ cyrille.pitchen@atmel.com, richard@nod.at,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <9364069a-834d-383f-c98f-b9d020fe2d0b@gmail.com>
+Date: Tue, 13 Dec 2016 12:29:00 -0800
 MIME-Version: 1.0
+In-Reply-To: <20161209233628.6642-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,94 +28,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Oh please forgive me, I forgot to mention: I'm on Kernel 4.6.
+On 12/09/2016 03:36 PM, Florian Fainelli wrote:
+> This patch series builds on top of Laura's [PATCHv5 00/10] CONFIG_DEBUG_VIRTUAL
+> for arm64 to add support for CONFIG_DEBUG_VIRTUAL for ARM.
+> 
+> This was tested on a Brahma B15 platform (ARMv7 + HIGHMEM + LPAE).
+> 
+> Note that the treewide changes would involve a huge CC list, which
+> is why it has been purposely trimmed to just focusing on the DEBUG_VIRTUAL
+> aspect.
 
------Original Message-----
-From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of=
- Matthias Auchmann
-Sent: Tuesday, December 13, 2016 8:41 PM
-To: linux-mtd@lists.infradead.org
-Subject: UBI/UBIFS on NAND with PEB 4MB
+Any comments on this? How would you approach merging these patches?
+Thank you!
 
-Hi guys!
+> 
+> Changes in v3:
+> 
+> - fix build failures reported by Kbuild test robot
+> 
+> Changes in v2:
+> 
+> - Modified MTD LART driver not to create symbol conflicts with
+>   KERNEL_START
+> - Fixed patch that defines and uses KERNEL_START/END
+> - Fixed __pa_symbol()'s definition
+> - Inline __pa_symbol() check wihtin the VIRTUAL_BUG_ON statement
+> - Simplified check for virtual addresses
+> - Added a tree-wide patch changing SMP/PM implementations to use
+>   __pa_symbol(), build tested against multi_v{5,7}_defconfig
+> 
+> Thanks!
+> 
+> Florian Fainelli (4):
+>   mtd: lart: Rename partition defines to be prefixed with PART_
+>   ARM: Define KERNEL_START and KERNEL_END
+>   ARM: Add support for CONFIG_DEBUG_VIRTUAL
+>   ARM: treewide: Replace uses of virt_to_phys with __pa_symbol
+> 
+>  arch/arm/Kconfig                          |   1 +
+>  arch/arm/boot/compressed/piggy.xzkern     | Bin 0 -> 2998584 bytes
+>  arch/arm/common/mcpm_entry.c              |  12 +++----
+>  arch/arm/include/asm/memory.h             |  23 ++++++++++++--
+>  arch/arm/mach-alpine/platsmp.c            |   2 +-
+>  arch/arm/mach-axxia/platsmp.c             |   2 +-
+>  arch/arm/mach-bcm/bcm63xx_smp.c           |   2 +-
+>  arch/arm/mach-bcm/platsmp-brcmstb.c       |   2 +-
+>  arch/arm/mach-bcm/platsmp.c               |   4 +--
+>  arch/arm/mach-berlin/platsmp.c            |   2 +-
+>  arch/arm/mach-exynos/firmware.c           |   4 +--
+>  arch/arm/mach-exynos/mcpm-exynos.c        |   2 +-
+>  arch/arm/mach-exynos/platsmp.c            |   4 +--
+>  arch/arm/mach-exynos/pm.c                 |   6 ++--
+>  arch/arm/mach-exynos/suspend.c            |   6 ++--
+>  arch/arm/mach-hisi/platmcpm.c             |   2 +-
+>  arch/arm/mach-hisi/platsmp.c              |   6 ++--
+>  arch/arm/mach-imx/platsmp.c               |   2 +-
+>  arch/arm/mach-imx/pm-imx6.c               |   2 +-
+>  arch/arm/mach-imx/src.c                   |   2 +-
+>  arch/arm/mach-mediatek/platsmp.c          |   2 +-
+>  arch/arm/mach-mvebu/pm.c                  |   2 +-
+>  arch/arm/mach-mvebu/pmsu.c                |   2 +-
+>  arch/arm/mach-mvebu/system-controller.c   |   2 +-
+>  arch/arm/mach-omap2/control.c             |   8 ++---
+>  arch/arm/mach-omap2/omap-mpuss-lowpower.c |   8 ++---
+>  arch/arm/mach-omap2/omap-smp.c            |   4 +--
+>  arch/arm/mach-prima2/platsmp.c            |   2 +-
+>  arch/arm/mach-prima2/pm.c                 |   2 +-
+>  arch/arm/mach-pxa/palmz72.c               |   2 +-
+>  arch/arm/mach-pxa/pxa25x.c                |   2 +-
+>  arch/arm/mach-pxa/pxa27x.c                |   2 +-
+>  arch/arm/mach-pxa/pxa3xx.c                |   2 +-
+>  arch/arm/mach-realview/platsmp-dt.c       |   2 +-
+>  arch/arm/mach-rockchip/platsmp.c          |   4 +--
+>  arch/arm/mach-rockchip/pm.c               |   2 +-
+>  arch/arm/mach-s3c24xx/mach-jive.c         |   2 +-
+>  arch/arm/mach-s3c24xx/pm-s3c2410.c        |   2 +-
+>  arch/arm/mach-s3c24xx/pm-s3c2416.c        |   2 +-
+>  arch/arm/mach-s3c64xx/pm.c                |   2 +-
+>  arch/arm/mach-s5pv210/pm.c                |   2 +-
+>  arch/arm/mach-sa1100/pm.c                 |   2 +-
+>  arch/arm/mach-shmobile/platsmp-apmu.c     |   6 ++--
+>  arch/arm/mach-shmobile/platsmp-scu.c      |   4 +--
+>  arch/arm/mach-socfpga/platsmp.c           |   4 +--
+>  arch/arm/mach-spear/platsmp.c             |   2 +-
+>  arch/arm/mach-sti/platsmp.c               |   2 +-
+>  arch/arm/mach-sunxi/platsmp.c             |   4 +--
+>  arch/arm/mach-tango/platsmp.c             |   2 +-
+>  arch/arm/mach-tango/pm.c                  |   2 +-
+>  arch/arm/mach-tegra/reset.c               |   4 +--
+>  arch/arm/mach-ux500/platsmp.c             |   2 +-
+>  arch/arm/mach-vexpress/dcscb.c            |   2 +-
+>  arch/arm/mach-vexpress/platsmp.c          |   2 +-
+>  arch/arm/mach-vexpress/tc2_pm.c           |   4 +--
+>  arch/arm/mach-zx/platsmp.c                |   4 +--
+>  arch/arm/mach-zynq/platsmp.c              |   2 +-
+>  arch/arm/mm/Makefile                      |   1 +
+>  arch/arm/mm/init.c                        |   7 ++--
+>  arch/arm/mm/mmu.c                         |   6 +---
+>  arch/arm/mm/physaddr.c                    |  51 ++++++++++++++++++++++++++++++
+>  drivers/mtd/devices/lart.c                |  24 +++++++-------
+>  62 files changed, 173 insertions(+), 108 deletions(-)
+>  create mode 100644 arch/arm/boot/compressed/piggy.xzkern
+>  create mode 100644 arch/arm/mm/physaddr.c
+> 
 
-I'm trying to use UBI and UBIFS on a Micron MT29F32G08ABCDBJ4 SLC NAND with=
- an erase block size 4MB.
 
-First of all, mkfs.ubifs wouldn't support a LEB larger than UBIFS_MAX_LEB_S=
-Z being (2*1024*1024).
-
-When I use ubiattach though, it seems to be quite happy, giving me that on =
-a 128MB partition:
-
-UBI device number 0, total 32 LEBs (133169152 bytes, 127.0 MiB), available =
-8 LEBs (33292288 bytes, 31.8 MiB), LEB size 4161536 bytes (4.0 MiB)
-
-Anyway, when I detach and reattach, it won't work. Details are in the botto=
-m of that mail, but since I haven't thoroughly looked into it myself yet, t=
-his is only for those who care... I don't want to ask preliminary questions=
-.
-
-Anyway, my questions I guess then are:
--) Are there any patches/branches that enable UBIFS to be run with a LEB of=
- 4161536?
--) Are there any known limitations with using a 4MiB PEB with UBI itself, o=
-r shall I assume for now that the problem is on my board/NAND driver regard=
-ing the above ubiattach errors upon the second attach?
-
-Thanks!
-
-BR,
-
-Matthias
-
-
-
-*** Please only read this if you care: *** Details about attach/detach/atta=
-ch problem.
-Upon first attaching, dmesg says:
-[  117.483503] ubi0: attaching mtd5
-[  117.502347] ubi0: scanning is finished [  117.502353] ubi0: empty MTD de=
-vice detected [  117.513280] ubi0: attached mtd5 (name "rootfs01", size 128=
- MiB) [  117.513288] ubi0: PEB size: 4194304 bytes (4096 KiB), LEB size: 41=
-61536 bytes [  117.513293] ubi0: min./max. I/O unit sizes: 16384/16384, sub=
--page size 16384 [  117.513299] ubi0: VID header offset: 16384 (aligned 163=
-84), data offset: 32768 [  117.513304] ubi0: good PEBs: 32, bad PEBs: 0, co=
-rrupted PEBs: 0 [  117.513309] ubi0: user volume: 0, internal volumes: 1, m=
-ax. volumes count: 128 [  117.513314] ubi0: max/mean erase counter: 0/0, WL=
- threshold: 4096, image sequence number: 34480849 [  117.513320] ubi0: avai=
-lable PEBs: 8, total reserved PEBs: 24, PEBs reserved for bad PEB handling:=
- 20 [  117.513333] ubi0: background thread "ubi_bgt0d" started, PID 1637
-
-Anyway, when I detach and reattach, I get this:
-ubiattach: error!: cannot attach "/dev/mtd5"
-           error 22 (Invalid argument)
-
-dmesg says:
-[  359.282384] ubi0: attaching mtd5
-[  359.319433] ubi0: scanning is finished [  359.321747] ubi0 error: vtbl_c=
-heck: bad CRC at record 0: 0x2b4f6dd5, not 0x000000 [  359.321753] Volume t=
-able record 0 dump:
-[  359.321757]  reserved_pebs   -16777216
-[  359.321760]  alignment       0
-[  359.321763]  data_pad        0
-[  359.321766]  vol_type        0
-[  359.321770]  upd_marker      0
-[  359.321773]  name_len        0
-[  359.321776]  name            NULL
-[  359.321784] ubi0 error: vtbl_check: bad CRC at record 0: 0x2b4f6dd5, not=
- 0x000000 [  359.321788] Volume table record 0 dump:
-[  359.321791]  reserved_pebs   -16777216
-[  359.321794]  alignment       0
-[  359.321797]  data_pad        0
-[  359.321800]  vol_type        0
-[  359.321803]  upd_marker      0
-[  359.321807]  name_len        0
-[  359.321809]  name            NULL
-[  359.321816] ubi0 error: ubi_read_volume_table: both volume tables are co=
-rrupted [  359.321836] ubi0 error: ubi_attach_mtd_dev: failed to attach mtd=
-5, error -22
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+Florian
