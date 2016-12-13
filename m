@@ -1,24 +1,29 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-wj0-x242.google.com ([2a00:1450:400c:c01::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGjp3-0003Yg-56
- for linux-mtd@lists.infradead.org; Tue, 13 Dec 2016 09:56:34 +0000
-Subject: Re: UBIFS crash in power cutting test
-To: Rock Lee <rockdotlee@gmail.com>
-References: <CAL-1w2vQHnuDmo-5bsE=Lc-uPpVy4vPU7tNmwkcEasB9uvAZ3A@mail.gmail.com>
- <CAFLxGvwKKqOWn2Eb06z0JaNo2vxhgi4somVw8bgkFrvtDPY5uw@mail.gmail.com>
- <CAL-1w2tro0Zsybz8eBE22LXd_LV6ReFbT+4WDxU9z0NWFLY=bw@mail.gmail.com>
- <88af03f9-a222-b38e-9cbe-eb38e09248ed@nod.at>
- <CAL-1w2vH681jKYFFz_h=L5ajZ2mRebXxp8gxLjoqMwXGk8aJ9g@mail.gmail.com>
- <937cc2da-b74b-6cfc-96ff-baf6128eb987@nod.at>
- <CAL-1w2v2AYDjkFTR=FbtiJNHeUYcfxi6C+Sdgr5ZJo0W2Vw-ow@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <f1be2e3f-98d5-b574-d4d6-b5fecf385ff8@nod.at>
-Date: Tue, 13 Dec 2016 10:56:07 +0100
+ id 1cGlSM-0002QF-06
+ for linux-mtd@lists.infradead.org; Tue, 13 Dec 2016 11:41:14 +0000
+Received: by mail-wj0-x242.google.com with SMTP id xy5so15945244wjc.1
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Dec 2016 03:40:53 -0800 (PST)
+Subject: Re: [PATCH v4 1/4] mtd: spi-nor: add memory controllers for the
+ Aspeed AST2500 SoC
+To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+ linux-mtd@lists.infradead.org
+References: <1481557252-13656-1-git-send-email-clg@kaod.org>
+ <1481557252-13656-2-git-send-email-clg@kaod.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Joel Stanley <joel@jms.id.au>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <3f3260d1-e677-b6d9-5571-a08a80344495@gmail.com>
+Date: Tue, 13 Dec 2016 08:50:20 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAL-1w2v2AYDjkFTR=FbtiJNHeUYcfxi6C+Sdgr5ZJo0W2Vw-ow@mail.gmail.com>
+In-Reply-To: <1481557252-13656-2-git-send-email-clg@kaod.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +33,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Lee,
+On 12/12/2016 04:40 PM, Cédric Le Goater wrote:
+> This driver adds mtd support for the Aspeed AST2500 SoC static memory
+> controllers :
 
-On 07.12.2016 07:28, Rock Lee wrote:
-> Hi, Richard:
-> I removed SMACK from kernel and tested power cutting again.
-> So far, 5 hours have passed,  the UBIFS crash doesn't show up.
-> It seems that xattr causes that problem.
+[...]
 
-Okay. After the merge window I'll have time to inspect your image.
-I suspect a locking problem with xattr related journal changes.
+> +#define DEVICE_NAME	"aspeed-smc"
+> +
+> +/*
+> + * The driver only support SPI flash
+> + */
+> +enum aspeed_smc_flash_type {
+> +	smc_type_nor  = 0,
+> +	smc_type_nand = 1,
+> +	smc_type_spi  = 2,
+> +};
 
-Thanks,
-//richard
+So why is this here ? :)
+
+> +struct aspeed_smc_chip;
+> +
+> +struct aspeed_smc_info {
+> +	u32 maxsize;		/* maximum size of chip window */
+> +	u8 nce;			/* number of chip enables */
+> +	bool hastype;		/* flash type field exists in config reg */
+> +	u8 we0;			/* shift for write enable bit for CE0 */
+> +	u8 ctl0;		/* offset in regs of ctl for CE0 */
+> +
+> +	void (*set_4b)(struct aspeed_smc_chip *chip);
+> +};
+
+Otherwise looks good:
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+
+-- 
+Best regards,
+Marek Vasut
