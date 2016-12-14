@@ -1,18 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cH3f3-0004Ro-3X
- for linux-mtd@lists.infradead.org; Wed, 14 Dec 2016 07:07:34 +0000
-Date: Wed, 14 Dec 2016 08:06:57 +0100
+Date: Wed, 14 Dec 2016 08:08:36 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: fix typos in ooblayout comment blocks
-Message-ID: <20161214080657.60e658cf@bbrezillon>
-In-Reply-To: <1481675461-19364-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1481675461-19364-1-git-send-email-yamada.masahiro@socionext.com>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, nicolas.pitre@linaro.org,
+ mark.rutland@arm.com, matt@codeblueprint.co.uk, stefan@agner.ch,
+ chris.brandt@renesas.com, linux-mtd@lists.infradead.org,
+ cyrille.pitchen@atmel.com, panand@redhat.com, pawel.moll@arm.com,
+ richard@nod.at, linux@armlinux.org.uk, ben@decadent.org.uk,
+ vladimir.murzin@arm.com, keescook@chromium.org, arnd@arndb.de,
+ labbott@fedoraproject.org, jonathan.austin@arm.com,
+ ard.biesheuvel@linaro.org, linux-kernel@vger.kernel.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ kirill.shutemov@linux.intel.com, js07.lee@samsung.com
+Subject: Re: [PATCH v3 1/4] mtd: lart: Rename partition defines to be
+ prefixed with PART_
+Message-ID: <20161214080836.6149dc42@bbrezillon>
+In-Reply-To: <20161209233628.6642-2-f.fainelli@gmail.com>
+References: <20161208185933.13749-1-f.fainelli@gmail.com>
+ <20161209233628.6642-1-f.fainelli@gmail.com>
+ <20161209233628.6642-2-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,49 +30,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 Dec 2016 09:31:01 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+On Fri,  9 Dec 2016 15:36:25 -0800
+Florian Fainelli <f.fainelli@gmail.com> wrote:
 
->  - "This functions return ..." -> "This function returns ..."
->  - "I you want ..." -> "If you want ..."
+> In preparation for defining KERNEL_START on ARM, rename KERNEL_START to
+> PART_KERNEL_START, and to be consistent, do this for all
+> partition-related constants.
 > 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
 Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
 > ---
+>  drivers/mtd/devices/lart.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
 > 
->  drivers/mtd/mtdcore.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index ca661ce..d64e61b 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -1129,7 +1129,7 @@ EXPORT_SYMBOL_GPL(mtd_write_oob);
->   * @oobecc: OOB region struct filled with the appropriate ECC position
->   *	    information
->   *
-> - * This functions return ECC section information in the OOB area. I you want
-> + * This function returns ECC section information in the OOB area. If you want
->   * to get all the ECC bytes information, then you should call
->   * mtd_ooblayout_ecc(mtd, section++, oobecc) until it returns -ERANGE.
->   *
-> @@ -1161,7 +1161,7 @@ EXPORT_SYMBOL_GPL(mtd_ooblayout_ecc);
->   * @oobfree: OOB region struct filled with the appropriate free position
->   *	     information
->   *
-> - * This functions return free bytes position in the OOB area. I you want
-> + * This function returns free bytes position in the OOB area. If you want
->   * to get all the free bytes information, then you should call
->   * mtd_ooblayout_free(mtd, section++, oobfree) until it returns -ERANGE.
->   *
-> @@ -1191,7 +1191,7 @@ EXPORT_SYMBOL_GPL(mtd_ooblayout_free);
->   * @iter: iterator function. Should be either mtd_ooblayout_free or
->   *	  mtd_ooblayout_ecc depending on the region type you're searching for
->   *
-> - * This functions returns the section id and oobregion information of a
-> + * This function returns the section id and oobregion information of a
->   * specific byte. For example, say you want to know where the 4th ECC byte is
->   * stored, you'll use:
->   *
+> diff --git a/drivers/mtd/devices/lart.c b/drivers/mtd/devices/lart.c
+> index 82bd00af5cc3..268aae45b514 100644
+> --- a/drivers/mtd/devices/lart.c
+> +++ b/drivers/mtd/devices/lart.c
+> @@ -75,18 +75,18 @@ static char module_name[] = "lart";
+>  
+>  /* blob */
+>  #define NUM_BLOB_BLOCKS		FLASH_NUMBLOCKS_16m_PARAM
+> -#define BLOB_START			0x00000000
+> -#define BLOB_LEN			(NUM_BLOB_BLOCKS * FLASH_BLOCKSIZE_PARAM)
+> +#define PART_BLOB_START		0x00000000
+> +#define PART_BLOB_LEN		(NUM_BLOB_BLOCKS * FLASH_BLOCKSIZE_PARAM)
+>  
+>  /* kernel */
+>  #define NUM_KERNEL_BLOCKS	7
+> -#define KERNEL_START		(BLOB_START + BLOB_LEN)
+> -#define KERNEL_LEN			(NUM_KERNEL_BLOCKS * FLASH_BLOCKSIZE_MAIN)
+> +#define PART_KERNEL_START	(PART_BLOB_START + PART_BLOB_LEN)
+> +#define PART_KERNEL_LEN		(NUM_KERNEL_BLOCKS * FLASH_BLOCKSIZE_MAIN)
+>  
+>  /* initial ramdisk */
+>  #define NUM_INITRD_BLOCKS	24
+> -#define INITRD_START		(KERNEL_START + KERNEL_LEN)
+> -#define INITRD_LEN			(NUM_INITRD_BLOCKS * FLASH_BLOCKSIZE_MAIN)
+> +#define PART_INITRD_START	(PART_KERNEL_START + PART_KERNEL_LEN)
+> +#define PART_INITRD_LEN		(NUM_INITRD_BLOCKS * FLASH_BLOCKSIZE_MAIN)
+>  
+>  /*
+>   * See section 4.0 in "3 Volt Fast Boot Block Flash Memory" Intel Datasheet
+> @@ -587,20 +587,20 @@ static struct mtd_partition lart_partitions[] = {
+>  	/* blob */
+>  	{
+>  		.name	= "blob",
+> -		.offset	= BLOB_START,
+> -		.size	= BLOB_LEN,
+> +		.offset	= PART_BLOB_START,
+> +		.size	= PART_BLOB_LEN,
+>  	},
+>  	/* kernel */
+>  	{
+>  		.name	= "kernel",
+> -		.offset	= KERNEL_START,		/* MTDPART_OFS_APPEND */
+> -		.size	= KERNEL_LEN,
+> +		.offset	= PART_KERNEL_START,	/* MTDPART_OFS_APPEND */
+> +		.size	= PART_KERNEL_LEN,
+>  	},
+>  	/* initial ramdisk / file system */
+>  	{
+>  		.name	= "file system",
+> -		.offset	= INITRD_START,		/* MTDPART_OFS_APPEND */
+> -		.size	= INITRD_LEN,		/* MTDPART_SIZ_FULL */
+> +		.offset	= PART_INITRD_START,	/* MTDPART_OFS_APPEND */
+> +		.size	= PART_INITRD_LEN,	/* MTDPART_SIZ_FULL */
+>  	}
+>  };
+>  #define NUM_PARTITIONS ARRAY_SIZE(lart_partitions)
