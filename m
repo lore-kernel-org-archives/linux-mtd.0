@@ -11,10 +11,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
  linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
  LKML <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
-Subject: [PATCH 5/9] xfs: use memalloc_nofs_{save,
- restore} instead of memalloc_noio*
-Date: Thu, 15 Dec 2016 15:07:11 +0100
-Message-Id: <20161215140715.12732-6-mhocko@kernel.org>
+Subject: [PATCH 2/9] xfs: introduce and use KM_NOLOCKDEP to silence reclaim
+ lockdep false positives
+Date: Thu, 15 Dec 2016 15:07:08 +0100
+Message-Id: <20161215140715.12732-3-mhocko@kernel.org>
 In-Reply-To: <20161215140715.12732-1-mhocko@kernel.org>
 References: <20161215140715.12732-1-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,85 +28,91 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Michal Hocko <mhocko@suse.com>
 
-kmem_zalloc_large and _xfs_buf_map_pages use memalloc_noio_{save,restore}
-API to prevent from reclaim recursion into the fs because vmalloc can
-invoke unconditional GFP_KERNEL allocations and these functions might be
-called from the NOFS contexts. The memalloc_noio_save will enforce
-GFP_NOIO context which is even weaker than GFP_NOFS and that seems to be
-unnecessary. Let's use memalloc_nofs_{save,restore} instead as it should
-provide exactly what we need here - implicit GFP_NOFS context.
+Now that the page allocator offers __GFP_NOLOCKDEP let's introduce
+KM_NOLOCKDEP alias for the xfs allocation APIs. While we are at it
+also change KM_NOFS users introduced by b17cb364dbbb ("xfs: fix missing
+KM_NOFS tags to keep lockdep happy") and use the new flag for them
+instead. There is really no reason to make these allocations contexts
+weaker just because of the lockdep which even might not be enabled
+in most cases.
 
 Signed-off-by: Michal Hocko <mhocko@suse.com>
 ---
- fs/xfs/kmem.c    | 10 +++++-----
- fs/xfs/xfs_buf.c |  8 ++++----
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ fs/xfs/kmem.h                | 4 ++++
+ fs/xfs/libxfs/xfs_da_btree.c | 4 ++--
+ fs/xfs/xfs_buf.c             | 2 +-
+ fs/xfs/xfs_dir2_readdir.c    | 2 +-
+ 4 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
-index a76a05dae96b..d69ed5e76621 100644
---- a/fs/xfs/kmem.c
-+++ b/fs/xfs/kmem.c
-@@ -65,7 +65,7 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
- void *
- kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
- {
--	unsigned noio_flag = 0;
-+	unsigned nofs_flag = 0;
- 	void	*ptr;
- 	gfp_t	lflags;
+diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
+index 689f746224e7..ea3984091d58 100644
+--- a/fs/xfs/kmem.h
++++ b/fs/xfs/kmem.h
+@@ -33,6 +33,7 @@ typedef unsigned __bitwise xfs_km_flags_t;
+ #define KM_NOFS		((__force xfs_km_flags_t)0x0004u)
+ #define KM_MAYFAIL	((__force xfs_km_flags_t)0x0008u)
+ #define KM_ZERO		((__force xfs_km_flags_t)0x0010u)
++#define KM_NOLOCKDEP	((__force xfs_km_flags_t)0x0020u)
  
-@@ -80,14 +80,14 @@ kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
- 	 * context via PF_MEMALLOC_NOIO to prevent memory reclaim re-entering
- 	 * the filesystem here and potentially deadlocking.
- 	 */
--	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
--		noio_flag = memalloc_noio_save();
-+	if (flags & KM_NOFS)
-+		nofs_flag = memalloc_nofs_save();
+ /*
+  * We use a special process flag to avoid recursive callbacks into
+@@ -57,6 +58,9 @@ kmem_flags_convert(xfs_km_flags_t flags)
+ 	if (flags & KM_ZERO)
+ 		lflags |= __GFP_ZERO;
  
- 	lflags = kmem_flags_convert(flags);
- 	ptr = __vmalloc(size, lflags | __GFP_HIGHMEM | __GFP_ZERO, PAGE_KERNEL);
- 
--	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
--		memalloc_noio_restore(noio_flag);
-+	if (flags & KM_NOFS)
-+		memalloc_nofs_restore(nofs_flag);
- 
- 	return ptr;
++	if (flags & KM_NOLOCKDEP)
++		lflags |= __GFP_NOLOCKDEP;
++
+ 	return lflags;
  }
+ 
+diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
+index f2dc1a950c85..b8b5f6914863 100644
+--- a/fs/xfs/libxfs/xfs_da_btree.c
++++ b/fs/xfs/libxfs/xfs_da_btree.c
+@@ -2429,7 +2429,7 @@ xfs_buf_map_from_irec(
+ 
+ 	if (nirecs > 1) {
+ 		map = kmem_zalloc(nirecs * sizeof(struct xfs_buf_map),
+-				  KM_SLEEP | KM_NOFS);
++				  KM_SLEEP | KM_NOLOCKDEP);
+ 		if (!map)
+ 			return -ENOMEM;
+ 		*mapp = map;
+@@ -2488,7 +2488,7 @@ xfs_dabuf_map(
+ 		 */
+ 		if (nfsb != 1)
+ 			irecs = kmem_zalloc(sizeof(irec) * nfsb,
+-					    KM_SLEEP | KM_NOFS);
++					    KM_SLEEP | KM_NOLOCKDEP);
+ 
+ 		nirecs = nfsb;
+ 		error = xfs_bmapi_read(dp, (xfs_fileoff_t)bno, nfsb, irecs,
 diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index f31ae592dcae..5c6f9bd4d8be 100644
+index 7f0a01f7b592..f31ae592dcae 100644
 --- a/fs/xfs/xfs_buf.c
 +++ b/fs/xfs/xfs_buf.c
-@@ -441,17 +441,17 @@ _xfs_buf_map_pages(
- 		bp->b_addr = NULL;
- 	} else {
- 		int retried = 0;
--		unsigned noio_flag;
-+		unsigned nofs_flag;
+@@ -1785,7 +1785,7 @@ xfs_alloc_buftarg(
+ {
+ 	xfs_buftarg_t		*btp;
  
- 		/*
- 		 * vm_map_ram() will allocate auxillary structures (e.g.
- 		 * pagetables) with GFP_KERNEL, yet we are likely to be under
- 		 * GFP_NOFS context here. Hence we need to tell memory reclaim
--		 * that we are in such a context via PF_MEMALLOC_NOIO to prevent
-+		 * that we are in such a context via PF_MEMALLOC_NOFS to prevent
- 		 * memory reclaim re-entering the filesystem here and
- 		 * potentially deadlocking.
- 		 */
--		noio_flag = memalloc_noio_save();
-+		nofs_flag = memalloc_nofs_save();
- 		do {
- 			bp->b_addr = vm_map_ram(bp->b_pages, bp->b_page_count,
- 						-1, PAGE_KERNEL);
-@@ -459,7 +459,7 @@ _xfs_buf_map_pages(
- 				break;
- 			vm_unmap_aliases();
- 		} while (retried++ <= 1);
--		memalloc_noio_restore(noio_flag);
-+		memalloc_noio_restore(nofs_flag);
+-	btp = kmem_zalloc(sizeof(*btp), KM_SLEEP | KM_NOFS);
++	btp = kmem_zalloc(sizeof(*btp), KM_SLEEP | KM_NOLOCKDEP);
  
- 		if (!bp->b_addr)
- 			return -ENOMEM;
+ 	btp->bt_mount = mp;
+ 	btp->bt_dev =  bdev->bd_dev;
+diff --git a/fs/xfs/xfs_dir2_readdir.c b/fs/xfs/xfs_dir2_readdir.c
+index 003a99b83bd8..033ed65d7ce6 100644
+--- a/fs/xfs/xfs_dir2_readdir.c
++++ b/fs/xfs/xfs_dir2_readdir.c
+@@ -503,7 +503,7 @@ xfs_dir2_leaf_getdents(
+ 	length = howmany(bufsize + geo->blksize, (1 << geo->fsblog));
+ 	map_info = kmem_zalloc(offsetof(struct xfs_dir2_leaf_map_info, map) +
+ 				(length * sizeof(struct xfs_bmbt_irec)),
+-			       KM_SLEEP | KM_NOFS);
++			       KM_SLEEP | KM_NOLOCKDEP);
+ 	map_info->map_size = length;
+ 
+ 	/*
 -- 
 2.10.2
