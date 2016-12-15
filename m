@@ -1,21 +1,18 @@
-From: Michal Hocko <mhocko@kernel.org>
-To: <linux-mm@kvack.org>,
-	<linux-fsdevel@vger.kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, "Theodore Ts'o" <tytso@mit.edu>,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
- Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org, logfs@logfs.org,
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
-Subject: [PATCH 4/9] mm: introduce memalloc_nofs_{save,restore} API
-Date: Thu, 15 Dec 2016 15:07:10 +0100
-Message-Id: <20161215140715.12732-5-mhocko@kernel.org>
-In-Reply-To: <20161215140715.12732-1-mhocko@kernel.org>
-References: <20161215140715.12732-1-mhocko@kernel.org>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cHYVe-0002Y8-RU
+ for linux-mtd@lists.infradead.org; Thu, 15 Dec 2016 16:03:56 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UBIFS updates for v4.10-rc1
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Gstir <david@sigma-star.at>
+Message-ID: <46fff439-2b95-1c6b-e445-536b8f5b0166@nod.at>
+Date: Thu, 15 Dec 2016 17:03:28 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,234 +22,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Michal Hocko <mhocko@suse.com>
+Linus,
 
-GFP_NOFS context is used for the following 5 reasons currently
-	- to prevent from deadlocks when the lock held by the allocation
-	  context would be needed during the memory reclaim
-	- to prevent from stack overflows during the reclaim because
-	  the allocation is performed from a deep context already
-	- to prevent lockups when the allocation context depends on
-	  other reclaimers to make a forward progress indirectly
-	- just in case because this would be safe from the fs POV
-	- silence lockdep false positives
+The following changes since commit 6a34e4d2be07255cc59e6ccaf820669cfd7f815c:
 
-Unfortunately overuse of this allocation context brings some problems
-to the MM. Memory reclaim is much weaker (especially during heavy FS
-metadata workloads), OOM killer cannot be invoked because the MM layer
-doesn't have enough information about how much memory is freeable by the
-FS layer.
+  fscrypt: Rename FS_WRITE_PATH_FL to FS_CTX_HAS_BOUNCE_BUFFER_FL (2016-12-11 16:33:18 -0500)
 
-In many cases it is far from clear why the weaker context is even used
-and so it might be used unnecessarily. We would like to get rid of
-those as much as possible. One way to do that is to use the flag in
-scopes rather than isolated cases. Such a scope is declared when really
-necessary, tracked per task and all the allocation requests from within
-the context will simply inherit the GFP_NOFS semantic.
+are available in the git repository at:
 
-Not only this is easier to understand and maintain because there are
-much less problematic contexts than specific allocation requests, this
-also helps code paths where FS layer interacts with other layers (e.g.
-crypto, security modules, MM etc...) and there is no easy way to convey
-the allocation context between the layers.
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.10-rc1
 
-Introduce memalloc_nofs_{save,restore} API to control the scope
-of GFP_NOFS allocation context. This is basically copying
-memalloc_noio_{save,restore} API we have for other restricted allocation
-context GFP_NOIO. The PF_MEMALLOC_NOFS flag already exists and it is
-just an alias for PF_FSTRANS which has been xfs specific until recently.
-There are no more PF_FSTRANS users anymore so let's just drop it.
+for you to fetch changes up to ba75d570b60c05cda21c0b43c5fbdc4e344f892d:
 
-PF_MEMALLOC_NOFS is now checked in the MM layer and drops __GFP_FS
-implicitly same as PF_MEMALLOC_NOIO drops __GFP_IO. memalloc_noio_flags
-is renamed to current_gfp_context because it now cares about both
-PF_MEMALLOC_NOFS and PF_MEMALLOC_NOIO contexts. Xfs code paths preserve
-their semantic. kmem_flags_convert() doesn't need to evaluate the flag
-anymore.
+  ubifs: Initialize fstr_real_len (2016-12-14 17:39:21 +0100)
 
-This patch shouldn't introduce any functional changes.
+This time my tree is based on Ted's fscrypt branch to avoid duplicate commits[0].
+UBIFS file encryption required some changes in fscrypt which are carried
+by Ted.
+Stephen noticed also a merge conflict with Miklos' VFS tree[1].
 
-Let's hope that filesystems will drop direct GFP_NOFS (resp. ~__GFP_FS)
-usage as much as possible and only use a properly documented
-memalloc_nofs_{save,restore} checkpoints where they are appropriate.
+[0] http://marc.info/?l=linux-fsdevel&m=147909285425300&w=2
+[1] http://marc.info/?l=linux-next&m=148168934714195&w=2
 
-Signed-off-by: Michal Hocko <mhocko@suse.com>
----
- fs/xfs/kmem.h            |  2 +-
- include/linux/gfp.h      |  8 ++++++++
- include/linux/sched.h    | 34 ++++++++++++++++++++++++++--------
- kernel/locking/lockdep.c |  2 +-
- mm/page_alloc.c          |  8 +++++---
- mm/vmscan.c              |  6 +++---
- 6 files changed, 44 insertions(+), 16 deletions(-)
+----------------------------------------------------------------
+This pull request contains:
+* File encryption for UBIFS using the fscrypt framework
+* A fix to honor the dirty_writeback_interval sysctl
+* Removal of dead code
 
-diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
-index e40ddd12900b..afaa3e059076 100644
---- a/fs/xfs/kmem.h
-+++ b/fs/xfs/kmem.h
-@@ -51,7 +51,7 @@ kmem_flags_convert(xfs_km_flags_t flags)
- 		lflags = GFP_ATOMIC | __GFP_NOWARN;
- 	} else {
- 		lflags = GFP_KERNEL | __GFP_NOWARN;
--		if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
-+		if (flags & KM_NOFS)
- 			lflags &= ~__GFP_FS;
- 	}
- 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 1a934383cc20..bfe53d95c25b 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -217,8 +217,16 @@ struct vm_area_struct;
-  *
-  * GFP_NOIO will use direct reclaim to discard clean pages or slab pages
-  *   that do not require the starting of any physical IO.
-+ *   Please try to avoid using this flag directly and instead use
-+ *   memalloc_noio_{save,restore} to mark the whole scope which cannot
-+ *   perform any IO with a short explanation why. All allocation requests
-+ *   will inherit GFP_NOIO implicitly.
-  *
-  * GFP_NOFS will use direct reclaim but will not use any filesystem interfaces.
-+ *   Please try to avoid using this flag directly and instead use
-+ *   memalloc_nofs_{save,restore} to mark the whole scope which cannot/shouldn't
-+ *   recurse into the FS layer with a short explanation why. All allocation
-+ *   requests will inherit GFP_NOFS implicitly.
-  *
-  * GFP_USER is for userspace allocations that also need to be directly
-  *   accessibly by the kernel or hardware. It is typically used by hardware
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index baffd340ea82..1c9fbcbcfcc8 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2307,9 +2307,9 @@ extern void thread_group_cputime_adjusted(struct task_struct *p, cputime_t *ut,
- #define PF_USED_ASYNC	0x00004000	/* used async_schedule*(), used by module init */
- #define PF_NOFREEZE	0x00008000	/* this thread should not be frozen */
- #define PF_FROZEN	0x00010000	/* frozen for system suspend */
--#define PF_FSTRANS	0x00020000	/* inside a filesystem transaction */
--#define PF_KSWAPD	0x00040000	/* I am kswapd */
--#define PF_MEMALLOC_NOIO 0x00080000	/* Allocating memory without IO involved */
-+#define PF_KSWAPD	0x00020000	/* I am kswapd */
-+#define PF_MEMALLOC_NOFS 0x00040000	/* All allocation requests will inherit GFP_NOFS */
-+#define PF_MEMALLOC_NOIO 0x00080000	/* All allocation requests will inherit GFP_NOIO */
- #define PF_LESS_THROTTLE 0x00100000	/* Throttle me less: I clean memory */
- #define PF_KTHREAD	0x00200000	/* I am a kernel thread */
- #define PF_RANDOMIZE	0x00400000	/* randomize virtual address space */
-@@ -2320,8 +2320,6 @@ extern void thread_group_cputime_adjusted(struct task_struct *p, cputime_t *ut,
- #define PF_FREEZER_SKIP	0x40000000	/* Freezer should not count it as freezable */
- #define PF_SUSPEND_TASK 0x80000000      /* this thread called freeze_processes and should not be frozen */
- 
--#define PF_MEMALLOC_NOFS PF_FSTRANS	/* Transition to a more generic GFP_NOFS scope semantic */
--
- /*
-  * Only the _current_ task can read/write to tsk->flags, but other
-  * tasks can access tsk->flags in readonly mode for example
-@@ -2347,13 +2345,21 @@ extern void thread_group_cputime_adjusted(struct task_struct *p, cputime_t *ut,
- #define tsk_used_math(p) ((p)->flags & PF_USED_MATH)
- #define used_math() tsk_used_math(current)
- 
--/* __GFP_IO isn't allowed if PF_MEMALLOC_NOIO is set in current->flags
-- * __GFP_FS is also cleared as it implies __GFP_IO.
-+/*
-+ * Applies per-task gfp context to the given allocation flags.
-+ * PF_MEMALLOC_NOIO implies GFP_NOIO
-+ * PF_MEMALLOC_NOFS implies GFP_NOFS
-  */
--static inline gfp_t memalloc_noio_flags(gfp_t flags)
-+static inline gfp_t current_gfp_context(gfp_t flags)
- {
-+	/*
-+	 * NOIO implies both NOIO and NOFS and it is a weaker context
-+	 * so always make sure it makes precendence
-+	 */
- 	if (unlikely(current->flags & PF_MEMALLOC_NOIO))
- 		flags &= ~(__GFP_IO | __GFP_FS);
-+	else if (unlikely(current->flags & PF_MEMALLOC_NOFS))
-+		flags &= ~__GFP_FS;
- 	return flags;
- }
- 
-@@ -2369,6 +2375,18 @@ static inline void memalloc_noio_restore(unsigned int flags)
- 	current->flags = (current->flags & ~PF_MEMALLOC_NOIO) | flags;
- }
- 
-+static inline unsigned int memalloc_nofs_save(void)
-+{
-+	unsigned int flags = current->flags & PF_MEMALLOC_NOFS;
-+	current->flags |= PF_MEMALLOC_NOFS;
-+	return flags;
-+}
-+
-+static inline void memalloc_nofs_restore(unsigned int flags)
-+{
-+	current->flags = (current->flags & ~PF_MEMALLOC_NOFS) | flags;
-+}
-+
- /* Per-process atomic flags. */
- #define PFA_NO_NEW_PRIVS 0	/* May not gain new privileges. */
- #define PFA_SPREAD_PAGE  1      /* Spread page cache over cpuset */
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 5684682a9ef8..553bceeedec4 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -2870,7 +2870,7 @@ static void __lockdep_trace_alloc(gfp_t gfp_mask, unsigned long flags)
- 		return;
- 
- 	/* We're only interested __GFP_FS allocations for now */
--	if (!(gfp_mask & __GFP_FS))
-+	if (!(gfp_mask & __GFP_FS) || (curr->flags & PF_MEMALLOC_NOFS))
- 		return;
- 
- 	/*
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 2c6d5f64feca..e701be6b930a 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3803,10 +3803,12 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order,
- 		goto out;
- 
- 	/*
--	 * Runtime PM, block IO and its error handling path can deadlock
--	 * because I/O on the device might not complete.
-+	 * Apply scoped allocation constrains. This is mainly about
-+	 * GFP_NOFS resp. GFP_NOIO which has to be inherited for all
-+	 * allocation requests from a particular context which has
-+	 * been marked by memalloc_no{fs,io}_{save,restore}
- 	 */
--	alloc_mask = memalloc_noio_flags(gfp_mask);
-+	alloc_mask = current_gfp_context(gfp_mask);
- 	ac.spread_dirty_pages = false;
- 
- 	/*
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 6aa5b01d3e75..4ea6b610f20e 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2949,7 +2949,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- 	unsigned long nr_reclaimed;
- 	struct scan_control sc = {
- 		.nr_to_reclaim = SWAP_CLUSTER_MAX,
--		.gfp_mask = (gfp_mask = memalloc_noio_flags(gfp_mask)),
-+		.gfp_mask = (gfp_mask = current_gfp_context(gfp_mask)),
- 		.reclaim_idx = gfp_zone(gfp_mask),
- 		.order = order,
- 		.nodemask = nodemask,
-@@ -3029,7 +3029,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 	int nid;
- 	struct scan_control sc = {
- 		.nr_to_reclaim = max(nr_pages, SWAP_CLUSTER_MAX),
--		.gfp_mask = (gfp_mask & GFP_RECLAIM_MASK) |
-+		.gfp_mask = (current_gfp_context(gfp_mask) & GFP_RECLAIM_MASK) |
- 				(GFP_HIGHUSER_MOVABLE & ~GFP_RECLAIM_MASK),
- 		.reclaim_idx = MAX_NR_ZONES - 1,
- 		.target_mem_cgroup = memcg,
-@@ -3723,7 +3723,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
- 	int classzone_idx = gfp_zone(gfp_mask);
- 	struct scan_control sc = {
- 		.nr_to_reclaim = max(nr_pages, SWAP_CLUSTER_MAX),
--		.gfp_mask = (gfp_mask = memalloc_noio_flags(gfp_mask)),
-+		.gfp_mask = (gfp_mask = current_gfp_context(gfp_mask)),
- 		.order = order,
- 		.priority = NODE_RECLAIM_PRIORITY,
- 		.may_writepage = !!(node_reclaim_mode & RECLAIM_WRITE),
--- 
-2.10.2
+----------------------------------------------------------------
+Christophe Jaillet (1):
+      ubifs: Remove some dead code
+
+Rafał Miłecki (2):
+      ubifs: Drop softlimit and delta fields from struct ubifs_wbuf
+      ubifs: Use dirty_writeback_interval value for wbuf timer
+
+Richard Weinberger (27):
+      ubifs: Export ubifs_check_dir_empty()
+      ubifs: Export xattr get and set functions
+      ubifs: Define UBIFS crypto context xattr
+      ubifs: Add skeleton for fscrypto
+      ubifs: Massage ubifs_listxattr() for encryption context
+      ubifs: Implement directory open operation
+      ubifs: Implement file open operation
+      ubifs: Enforce crypto policy in ->link and ->rename
+      ubifs: Preload crypto context in ->lookup()
+      ubifs: Massage assert in ubifs_xattr_set() wrt. fscrypto
+      ubifs: Enforce crypto policy in mmap
+      ubifs: Introduce new data node field, compr_size
+      ubifs: Constify struct inode pointer in ubifs_crypt_is_encrypted()
+      ubifs: Implement encrypt/decrypt for all IO
+      ubifs: Relax checks in ubifs_validate_entry()
+      ubifs: Make r5 hash binary string aware
+      ubifs: Implement encrypted filenames
+      ubifs: Add support for encrypted symlinks
+      ubifs: Rename tnc_read_node_nm
+      ubifs: Add full hash lookup support
+      ubifs: Use a random number for cookies
+      ubifs: Implement UBIFS_FLG_DOUBLE_HASH
+      ubifs: Implement UBIFS_FLG_ENCRYPTION
+      ubifs: Raise write version to 5
+      ubifs: Use FS_CFLG_OWN_PAGES
+      ubifs: Use fscrypt ioctl() helpers
+      ubifs: Initialize fstr_real_len
+
+ fs/ubifs/Kconfig       |  11 ++
+ fs/ubifs/Makefile      |   1 +
+ fs/ubifs/crypto.c      |  97 ++++++++++
+ fs/ubifs/debug.c       |  14 +-
+ fs/ubifs/dir.c         | 478 +++++++++++++++++++++++++++++++++++++++++--------
+ fs/ubifs/file.c        | 108 ++++++++++-
+ fs/ubifs/gc.c          |   4 -
+ fs/ubifs/io.c          |  18 +-
+ fs/ubifs/ioctl.c       |  20 +++
+ fs/ubifs/journal.c     | 224 +++++++++++++----------
+ fs/ubifs/key.h         |  21 +--
+ fs/ubifs/replay.c      |  10 +-
+ fs/ubifs/sb.c          |  59 ++++++
+ fs/ubifs/super.c       |  17 +-
+ fs/ubifs/tnc.c         | 159 ++++++++++++----
+ fs/ubifs/ubifs-media.h |  29 ++-
+ fs/ubifs/ubifs.h       | 115 +++++++++---
+ fs/ubifs/xattr.c       | 116 +++++++-----
+ 18 files changed, 1192 insertions(+), 309 deletions(-)
+ create mode 100644 fs/ubifs/crypto.c
