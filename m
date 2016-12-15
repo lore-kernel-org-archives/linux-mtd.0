@@ -1,18 +1,14 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHYVe-0002Y8-RU
- for linux-mtd@lists.infradead.org; Thu, 15 Dec 2016 16:03:56 +0000
-From: Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] UBIFS updates for v4.10-rc1
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Gstir <david@sigma-star.at>
-Message-ID: <46fff439-2b95-1c6b-e445-536b8f5b0166@nod.at>
-Date: Thu, 15 Dec 2016 17:03:28 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+From: Shawn Lin <shawn.lin@rock-chips.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+ Heiko Stuebner <heiko@sntech.de>, Shawn Lin <shawn.lin@rock-chips.com>
+Subject: [PATCH v4 0/2] Add rockchip serial flash controller support
+Date: Thu, 15 Dec 2016 17:27:46 +0800
+Message-Id: <1481794068-241619-1-git-send-email-shawn.lin@rock-chips.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,88 +18,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
 
-The following changes since commit 6a34e4d2be07255cc59e6ccaf820669cfd7f815c:
+Here is another try for adding serial flash controller
+, namely SFC, found on Rockchip RK1108 platform.
 
-  fscrypt: Rename FS_WRITE_PATH_FL to FS_CTX_HAS_BOUNCE_BUFFER_FL (2016-12-11 16:33:18 -0500)
+Feature:
+(1) Support x1, x2, x4 data bits mode
+(2) Support up to 4 chip select
+(3) Support two independent clock domain: AHB clock and SPI clock
+(4) Support DMA master up to 16KB/transfer
 
-are available in the git repository at:
+Test environment:
+This patchset was tested on RK1108 evb boards with Winboud flash
+(w25q256) and working fine with PIO or DMA mode.
 
-  git://git.infradead.org/linux-ubifs.git tags/upstream-4.10-rc1
+How-to:
+Any rockchip guys who are interested in testing it could refer to
+the following steps:
+(1) enable CONFIG_MTD_M25P80
+(2) enable CONFIG_SPI_ROCKCHIP_SFC
+(3) enable CONFIG_MTD_CMDLINE_PARTS
+(4) enable CONFIG_SQUASHFS
+(4) CONFIG_CMDLINE="root=/dev/mtdblock2
+	mtdparts=spi-nor:256k@0(loader)ro,8m(kernel)ro,7m(rootfs),-(freedisk)"
+	Of course, you should check the partition layout if you modify it. Also
+	you could pass it from your loader to the kernel's cmdline.
+(5) Add dts support:
+nor_flash: sfc@301c0000 {
+	compatible = "rockchip,rk1108-sfc", "rockchip,sfc";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
+	clock-names = "sfc", "hsfc";
+	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+	reg = <0x301c0000 0x1000>;
+	/* If you want to use PIO mode, activate this */
+	#rockchip,sfc-no-dma;
+	spi-nor@0 {
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <12000000>;
+		reg = <0>;
+	}
+};
 
-for you to fetch changes up to ba75d570b60c05cda21c0b43c5fbdc4e344f892d:
+please make sure your DT's mdtid matchs what you assgin to the
+mdtparts(cmdline), namely they are both *spi-nor* here.
 
-  ubifs: Initialize fstr_real_len (2016-12-14 17:39:21 +0100)
+With enabling DBG for cmdlinepart.c, you could get following log and
+boot kernel and rootfs successfully.
 
-This time my tree is based on Ted's fscrypt branch to avoid duplicate commits[0].
-UBIFS file encryption required some changes in fscrypt which are carried
-by Ted.
-Stephen noticed also a merge conflict with Miklos' VFS tree[1].
+[    0.481420] rockchip-sfc 301c0000.sfc: w25q256 (32768 Kbytes)
+[    0.481962] DEBUG-CMDLINE-PART: parsing
+<256k@0(loader)ro,8m(kernel)ro,7m(rootfs)ro,-(freedisk)>
+[    0.482897] DEBUG-CMDLINE-PART: partition 3: name
+<freedisk>, offset ffffffffffffffff, size ffffffffffffffff, mask flags 0
+[    0.484021] DEBUG-CMDLINE-PART: partition 2: name
+<rootfs>, offset ffffffffffffffff, size 700000, mask flags 400
+[    0.485066] DEBUG-CMDLINE-PART: partition 1: name
+<kernel>, offset ffffffffffffffff, size 800000, mask flags 400
+[    0.486108] DEBUG-CMDLINE-PART: partition 0: name
+<loader>, offset 0, size 40000, mask flags 400
+[    0.487152] DEBUG-CMDLINE-PART: mtdid=<spi-nor> num_parts=<4>
+[    0.487827] 4 cmdlinepart partitions found on MTD device spi-nor
+[    0.488370] Creating 4 MTD partitions on "spi-nor":
+[    0.488826] 0x000000000000-0x000000040000 : "loader"
+[    0.492340] 0x000000040000-0x000000840000 : "kernel"
+[    0.495679] 0x000000840000-0x000000f40000 : "rootfs"
+[    0.499241] 0x000000f40000-0x000002000000 : "freedisk"
 
-[0] http://marc.info/?l=linux-fsdevel&m=147909285425300&w=2
-[1] http://marc.info/?l=linux-next&m=148168934714195&w=2
+[root@arm-linux]#
+[root@arm-linux]#mount
+/dev/root on / type squashfs (ro,relatime)
+devtmpfs on /dev type devtmpfs
+(rw,relatime,size=26124k,nr_inodes=6531,mode=755)
+proc on /proc type proc (rw,relatime)
+none on /tmp type ramfs (rw,relatime)
+none on /var type ramfs (rw,relatime)
+sysfs on /sys type sysfs (rw,relatime)
+debug on /sys/kernel/debug type debugfs (rw,relatime)
+none on /dev/pts type devpts (rw,relatime,mode=600,ptmxmode=000)
 
-----------------------------------------------------------------
-This pull request contains:
-* File encryption for UBIFS using the fscrypt framework
-* A fix to honor the dirty_writeback_interval sysctl
-* Removal of dead code
 
-----------------------------------------------------------------
-Christophe Jaillet (1):
-      ubifs: Remove some dead code
+Changes in v4:
+- use uppercase DMA for description
+- simplify the code of get_if_type
+- use dma_dir to simplify the code
+- simplify the rockchip_sfc_do_rd_wr
+- some minor improvements
+- add reset controller when doing resume
 
-Rafał Miłecki (2):
-      ubifs: Drop softlimit and delta fields from struct ubifs_wbuf
-      ubifs: Use dirty_writeback_interval value for wbuf timer
+Changes in v3:
+- use io{read32,write32}_rep to simplify the corner cases
+- remove more unnecessary bit definitions
+- some minor comment fixes and improvement
+- fix wrong unregister function
+- unify more code
+- use nor to avoid constantly replicating the whole
+  sfc->flash[sfc->num_chip].nor
+- add email for MODULE_AUTHOR
+- remove #if 1 --- #endif
+- extract DMA code to imporve the code structure
+- reset all when failing to do dma
+- pass sfc to get_if_type
+- rename sfc-no-dma to sfc-no-DMA
 
-Richard Weinberger (27):
-      ubifs: Export ubifs_check_dir_empty()
-      ubifs: Export xattr get and set functions
-      ubifs: Define UBIFS crypto context xattr
-      ubifs: Add skeleton for fscrypto
-      ubifs: Massage ubifs_listxattr() for encryption context
-      ubifs: Implement directory open operation
-      ubifs: Implement file open operation
-      ubifs: Enforce crypto policy in ->link and ->rename
-      ubifs: Preload crypto context in ->lookup()
-      ubifs: Massage assert in ubifs_xattr_set() wrt. fscrypto
-      ubifs: Enforce crypto policy in mmap
-      ubifs: Introduce new data node field, compr_size
-      ubifs: Constify struct inode pointer in ubifs_crypt_is_encrypted()
-      ubifs: Implement encrypt/decrypt for all IO
-      ubifs: Relax checks in ubifs_validate_entry()
-      ubifs: Make r5 hash binary string aware
-      ubifs: Implement encrypted filenames
-      ubifs: Add support for encrypted symlinks
-      ubifs: Rename tnc_read_node_nm
-      ubifs: Add full hash lookup support
-      ubifs: Use a random number for cookies
-      ubifs: Implement UBIFS_FLG_DOUBLE_HASH
-      ubifs: Implement UBIFS_FLG_ENCRYPTION
-      ubifs: Raise write version to 5
-      ubifs: Use FS_CFLG_OWN_PAGES
-      ubifs: Use fscrypt ioctl() helpers
-      ubifs: Initialize fstr_real_len
+Changes in v2:
+- fix typos
+- add some comment for buffer and others operations
+- rename SFC_MAX_CHIP_NUM to MAX_CHIPSELECT_NUM
+- use u8 for cs
+- return -EINVAL for default case of get_if_type
+- use readl_poll_*() to check timeout cases
+- simplify and clarify some condition checks
+- rework the bitshifts to simplify the code
+- define SFC_CMD_DUMMY(x)
+- fix ummap for dma read path and finish all the
+  cache maintenance.
+- rename to rockchip_sfc_chip_priv and embed struct spi_nor
+  in it.
+- add MODULE_AUTHOR
+- add runtime PM and general PM support.
+- Thanks for Marek's comments. Link:
+  http://lists.infradead.org/pipermail/linux-mtd/2016-November/070321.html
 
- fs/ubifs/Kconfig       |  11 ++
- fs/ubifs/Makefile      |   1 +
- fs/ubifs/crypto.c      |  97 ++++++++++
- fs/ubifs/debug.c       |  14 +-
- fs/ubifs/dir.c         | 478 +++++++++++++++++++++++++++++++++++++++++--------
- fs/ubifs/file.c        | 108 ++++++++++-
- fs/ubifs/gc.c          |   4 -
- fs/ubifs/io.c          |  18 +-
- fs/ubifs/ioctl.c       |  20 +++
- fs/ubifs/journal.c     | 224 +++++++++++++----------
- fs/ubifs/key.h         |  21 +--
- fs/ubifs/replay.c      |  10 +-
- fs/ubifs/sb.c          |  59 ++++++
- fs/ubifs/super.c       |  17 +-
- fs/ubifs/tnc.c         | 159 ++++++++++++----
- fs/ubifs/ubifs-media.h |  29 ++-
- fs/ubifs/ubifs.h       | 115 +++++++++---
- fs/ubifs/xattr.c       | 116 +++++++-----
- 18 files changed, 1192 insertions(+), 309 deletions(-)
- create mode 100644 fs/ubifs/crypto.c
+Shawn Lin (2):
+  mtd: spi-nor: Bindings for Rockchip serial flash controller
+  mtd: spi-nor: add rockchip serial flash controller driver
+
+ .../devicetree/bindings/mtd/rockchip-sfc.txt       |  31 +
+ MAINTAINERS                                        |   8 +
+ drivers/mtd/spi-nor/Kconfig                        |   7 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/rockchip-sfc.c                 | 872 +++++++++++++++++++++
+ 5 files changed, 919 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+ create mode 100644 drivers/mtd/spi-nor/rockchip-sfc.c
+
+-- 
+1.9.1
