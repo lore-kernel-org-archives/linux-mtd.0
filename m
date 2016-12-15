@@ -10,11 +10,13 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
  reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
  linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 0/9 v2] scope GFP_NOFS api
-Date: Thu, 15 Dec 2016 15:07:06 +0100
-Message-Id: <20161215140715.12732-1-mhocko@kernel.org>
+ LKML <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
+Subject: [PATCH 5/9] xfs: use memalloc_nofs_{save,
+ restore} instead of memalloc_noio*
+Date: Thu, 15 Dec 2016 15:07:11 +0100
+Message-Id: <20161215140715.12732-6-mhocko@kernel.org>
+In-Reply-To: <20161215140715.12732-1-mhocko@kernel.org>
+References: <20161215140715.12732-1-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +26,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I have posted the previous version here [1]. Since then I have added a
-support to suppress reclaim lockdep warnings (__GFP_NOLOCKDEP) to allow
-removing GFP_NOFS usage motivated by the lockdep false positives. On top
-of that I've tried to convert few KM_NOFS usages to use the new flag in
-the xfs code base. This would need a review from somebody familiar with
-xfs of course.
+From: Michal Hocko <mhocko@suse.com>
 
-Then I've added the new scope API to the jbd/ext transaction code +
-reverted some explicit GFP_NOFS usages which are covered by the scope one
-now. This also needs a deep review from ext developers. I have some more
-patches which remove more explicit GFP_NOFS users but that is not really
-ready yet. I would really appreciate if developers for other filesystems
-joined me here as well. Maybe ext parts can help to show how to start.
-Especially btrfs which uses GFP_NOFS a lot (and not with a good reason
-in many cases I suspect).
+kmem_zalloc_large and _xfs_buf_map_pages use memalloc_noio_{save,restore}
+API to prevent from reclaim recursion into the fs because vmalloc can
+invoke unconditional GFP_KERNEL allocations and these functions might be
+called from the NOFS contexts. The memalloc_noio_save will enforce
+GFP_NOIO context which is even weaker than GFP_NOFS and that seems to be
+unnecessary. Let's use memalloc_nofs_{save,restore} instead as it should
+provide exactly what we need here - implicit GFP_NOFS context.
 
-The patchset is based on linux-next (next-20161214).
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+---
+ fs/xfs/kmem.c    | 10 +++++-----
+ fs/xfs/xfs_buf.c |  8 ++++----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-I think the GFP_NOIO should be seeing the same clean up but that is not
-a part of this patchset.
-
-Any feedback is highly appreciated of course.
-
-Diffstat says
- fs/ext4/acl.c                |  6 +++---
- fs/ext4/extents.c            |  8 ++++----
- fs/ext4/resize.c             |  4 ++--
- fs/ext4/xattr.c              |  4 ++--
- fs/jbd2/journal.c            |  7 +++++++
- fs/jbd2/transaction.c        | 11 +++++++++++
- fs/xfs/kmem.c                | 10 +++++-----
- fs/xfs/kmem.h                |  6 +++++-
- fs/xfs/libxfs/xfs_btree.c    |  2 +-
- fs/xfs/libxfs/xfs_da_btree.c |  4 ++--
- fs/xfs/xfs_aops.c            |  6 +++---
- fs/xfs/xfs_buf.c             | 10 +++++-----
- fs/xfs/xfs_dir2_readdir.c    |  2 +-
- fs/xfs/xfs_trans.c           | 12 ++++++------
- include/linux/gfp.h          | 18 +++++++++++++++++-
- include/linux/jbd2.h         |  2 ++
- include/linux/sched.h        | 32 ++++++++++++++++++++++++++------
- kernel/locking/lockdep.c     |  6 +++++-
- lib/radix-tree.c             |  2 ++
- mm/page_alloc.c              |  8 +++++---
- mm/vmscan.c                  |  6 +++---
- 21 files changed, 117 insertions(+), 49 deletions(-)
-
-Shortlog:
-Michal Hocko (9):
-      lockdep: allow to disable reclaim lockup detection
-      xfs: introduce and use KM_NOLOCKDEP to silence reclaim lockdep false positives
-      xfs: abstract PF_FSTRANS to PF_MEMALLOC_NOFS
-      mm: introduce memalloc_nofs_{save,restore} API
-      xfs: use memalloc_nofs_{save,restore} instead of memalloc_noio*
-      jbd2: mark the transaction context with the scope GFP_NOFS context
-      jbd2: make the whole kjournald2 kthread NOFS safe
-      Revert "ext4: avoid deadlocks in the writeback path by using sb_getblk_gfp"
-      Revert "ext4: fix wrong gfp type under transaction"
-
-
-[1] http://lkml.kernel.org/r/1461671772-1269-1-git-send-email-mhocko@kernel.org
+diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
+index a76a05dae96b..d69ed5e76621 100644
+--- a/fs/xfs/kmem.c
++++ b/fs/xfs/kmem.c
+@@ -65,7 +65,7 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
+ void *
+ kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
+ {
+-	unsigned noio_flag = 0;
++	unsigned nofs_flag = 0;
+ 	void	*ptr;
+ 	gfp_t	lflags;
+ 
+@@ -80,14 +80,14 @@ kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
+ 	 * context via PF_MEMALLOC_NOIO to prevent memory reclaim re-entering
+ 	 * the filesystem here and potentially deadlocking.
+ 	 */
+-	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
+-		noio_flag = memalloc_noio_save();
++	if (flags & KM_NOFS)
++		nofs_flag = memalloc_nofs_save();
+ 
+ 	lflags = kmem_flags_convert(flags);
+ 	ptr = __vmalloc(size, lflags | __GFP_HIGHMEM | __GFP_ZERO, PAGE_KERNEL);
+ 
+-	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
+-		memalloc_noio_restore(noio_flag);
++	if (flags & KM_NOFS)
++		memalloc_nofs_restore(nofs_flag);
+ 
+ 	return ptr;
+ }
+diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+index f31ae592dcae..5c6f9bd4d8be 100644
+--- a/fs/xfs/xfs_buf.c
++++ b/fs/xfs/xfs_buf.c
+@@ -441,17 +441,17 @@ _xfs_buf_map_pages(
+ 		bp->b_addr = NULL;
+ 	} else {
+ 		int retried = 0;
+-		unsigned noio_flag;
++		unsigned nofs_flag;
+ 
+ 		/*
+ 		 * vm_map_ram() will allocate auxillary structures (e.g.
+ 		 * pagetables) with GFP_KERNEL, yet we are likely to be under
+ 		 * GFP_NOFS context here. Hence we need to tell memory reclaim
+-		 * that we are in such a context via PF_MEMALLOC_NOIO to prevent
++		 * that we are in such a context via PF_MEMALLOC_NOFS to prevent
+ 		 * memory reclaim re-entering the filesystem here and
+ 		 * potentially deadlocking.
+ 		 */
+-		noio_flag = memalloc_noio_save();
++		nofs_flag = memalloc_nofs_save();
+ 		do {
+ 			bp->b_addr = vm_map_ram(bp->b_pages, bp->b_page_count,
+ 						-1, PAGE_KERNEL);
+@@ -459,7 +459,7 @@ _xfs_buf_map_pages(
+ 				break;
+ 			vm_unmap_aliases();
+ 		} while (retried++ <= 1);
+-		memalloc_noio_restore(noio_flag);
++		memalloc_noio_restore(nofs_flag);
+ 
+ 		if (!bp->b_addr)
+ 			return -ENOMEM;
+-- 
+2.10.2
