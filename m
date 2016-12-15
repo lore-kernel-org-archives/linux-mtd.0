@@ -1,17 +1,16 @@
-From: Shawn Lin <shawn.lin@rock-chips.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
- Heiko Stuebner <heiko@sntech.de>, Shawn Lin <shawn.lin@rock-chips.com>
-Subject: [PATCH v4 1/2] mtd: spi-nor: Bindings for Rockchip serial flash
- controller
-Date: Thu, 15 Dec 2016 17:27:47 +0800
-Message-Id: <1481794068-241619-2-git-send-email-shawn.lin@rock-chips.com>
-In-Reply-To: <1481794068-241619-1-git-send-email-shawn.lin@rock-chips.com>
-References: <1481794068-241619-1-git-send-email-shawn.lin@rock-chips.com>
+Subject: Re: linux-next: Tree for Dec 15 (fs/ubifs/ causes problems in
+ fs/crypto/)
+To: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org
+References: <20161215142108.0ec084b0@canb.auug.org.au>
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a29553a3-c355-43ed-7d50-3aeb7eb8b3b1@infradead.org>
+Date: Thu, 15 Dec 2016 10:13:21 -0800
+MIME-Version: 1.0
+In-Reply-To: <20161215142108.0ec084b0@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +20,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add binding document for the Rockchip serial flash controller.
+On 12/14/16 19:21, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Please do not add any material for v4.11 to your linux-next included
+> branches until after v4.10-rc1 has been released.
+> 
+> Changes since 20161214:
+> 
 
-Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
+on x86_64:
 
-Acked-by: Rob Herring <robh@kernel.org>
----
+when CONFIG_BLOCK is not enabled:
 
-Changes in v4:
-- use uppercase DMA for description
+warning: (UBIFS_FS_ENCRYPTION) selects FS_ENCRYPTION which has unmet direct dependencies (BLOCK)
 
-Changes in v3: None
-Changes in v2: None
+../fs/crypto/crypto.c: In function 'fscrypt_zeroout_range':
+../fs/crypto/crypto.c:355:3: error: implicit declaration of function 'bio_alloc' [-Werror=implicit-function-declaration]
+   bio = bio_alloc(GFP_NOWAIT, 1);
+   ^
+../fs/crypto/crypto.c:355:7: warning: assignment makes pointer from integer without a cast [enabled by default]
+   bio = bio_alloc(GFP_NOWAIT, 1);
+       ^
+../fs/crypto/crypto.c:360:6: error: dereferencing pointer to incomplete type
+   bio->bi_bdev = inode->i_sb->s_bdev;
+      ^
+../fs/crypto/crypto.c:361:6: error: dereferencing pointer to incomplete type
+   bio->bi_iter.bi_sector =
+      ^
+../fs/crypto/crypto.c:363:3: error: implicit declaration of function 'bio_set_op_attrs' [-Werror=implicit-function-declaration]
+   bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
+   ^
+../fs/crypto/crypto.c:363:25: error: 'REQ_OP_WRITE' undeclared (first use in this function)
+   bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
+                         ^
+../fs/crypto/crypto.c:363:25: note: each undeclared identifier is reported only once for each function it appears in
+../fs/crypto/crypto.c:364:3: error: implicit declaration of function 'bio_add_page' [-Werror=implicit-function-declaration]
+   ret = bio_add_page(bio, ciphertext_page,
+   ^
+../fs/crypto/crypto.c:369:4: error: implicit declaration of function 'bio_put' [-Werror=implicit-function-declaration]
+    bio_put(bio);
+    ^
+../fs/crypto/crypto.c:373:3: error: implicit declaration of function 'submit_bio_wait' [-Werror=implicit-function-declaration]
+   err = submit_bio_wait(bio);
+   ^
+../fs/crypto/crypto.c:374:24: error: dereferencing pointer to incomplete type
+   if ((err == 0) && bio->bi_error)
+                        ^
+../fs/crypto/crypto.c: In function 'completion_pages':
+../fs/crypto/crypto.c:457:2: error: implicit declaration of function 'bio_for_each_segment_all' [-Werror=implicit-function-declaration]
+  bio_for_each_segment_all(bv, bio, i) {
+  ^
+../fs/crypto/crypto.c:457:39: error: expected ';' before '{' token
+  bio_for_each_segment_all(bv, bio, i) {
+                                       ^
+cc1: some warnings being treated as errors
 
- .../devicetree/bindings/mtd/rockchip-sfc.txt       | 31 ++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
 
-diff --git a/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
-new file mode 100644
-index 0000000..2a889c9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
-@@ -0,0 +1,31 @@
-+Rockchip Serial Flash Controller
-+
-+Required properties:
-+- compatible : Should be
-+		"rockchip,rk1108-sfc", "rockchip,sfc" for ROCKCHIP RK1108.
-+- address-cells : Should be 1.
-+- size-cells : Should be 0.
-+- clocks: Must contain two entries for each entry in clock-names.
-+- clock-names: Shall be "sfc" for the transfer-clock, and "hsfc" for
-+		the peripheral clock.
-+- interrupts : Should contain the interrupt for the device.
-+- reg: Physical base address of the controller and length of memory mapped.
-+
-+Optional properties:
-+- rockchip,sfc-no-dma: Indicate the controller doesn't support DMA transfer.
-+
-+Example:
-+nor_flash: sfc@301c0000 {
-+	compatible = "rockchip,rk1108-sfc", "rockchip,sfc";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-+	clock-names = "sfc", "hsfc";
-+	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-+	reg = <0x301c0000 0x1000>;
-+	spi-nor@0 {
-+		compatible = "jedec,spi-nor";
-+		spi-max-frequency = <12000000>;
-+		reg = <0>;
-+	};
-+};
+
 -- 
-1.9.1
+~Randy
