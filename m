@@ -1,22 +1,26 @@
-From: Michal Hocko <mhocko@kernel.org>
-To: <linux-mm@kvack.org>,
-	<linux-fsdevel@vger.kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, "Theodore Ts'o" <tytso@mit.edu>,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
- Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org, logfs@logfs.org,
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
-Subject: [DEBUG PATCH 2/2] silent warnings which we cannot do anything about
-Date: Fri, 16 Dec 2016 13:46:28 +0100
-Message-Id: <20161216124628.26846-3-mhocko@kernel.org>
-In-Reply-To: <20161216124628.26846-1-mhocko@kernel.org>
-References: <20161215140715.12732-1-mhocko@kernel.org>
- <20161216124628.26846-1-mhocko@kernel.org>
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.8])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cHsXT-00037N-Cx
+ for linux-mtd@lists.infradead.org; Fri, 16 Dec 2016 13:27:08 +0000
+Subject: Re: [PATCH v7 1/2] mtd: nand: add tango NFC dt bindings doc
+From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+To: Arnd Bergmann <arnd@arndb.de>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+CC: linux-mtd <linux-mtd@lists.infradead.org>, Richard Weinberger
+ <richard@nod.at>, DT <devicetree@vger.kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mason
+ <slash.tmp@free.fr>, Sebastian Frias <sf84@laposte.net>, Mans Rullgard
+ <mans@mansr.com>, Mark Brown <broonie@kernel.org>
+References: <580F5AD2.9020909@sigmadesigns.com>
+ <580F5B06.6030608@sigmadesigns.com> <1978954.SRtJpfOGp1@wuerfel>
+ <d3cbfda6-23bf-4ad1-b1ce-c179b765272f@sigmadesigns.com>
+Message-ID: <ee9efd0a-59f5-8c21-0cad-40ca30e3a3e7@sigmadesigns.com>
+Date: Fri, 16 Dec 2016 14:26:33 +0100
+MIME-Version: 1.0
+In-Reply-To: <d3cbfda6-23bf-4ad1-b1ce-c179b765272f@sigmadesigns.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Language: 
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,88 +30,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Michal Hocko <mhocko@suse.com>
+On 16/12/2016 11:56, Marc Gonzalez wrote:
+> On 07/11/2016 10:18, Arnd Bergmann wrote:
+>> On Tuesday, October 25, 2016 3:15:50 PM CET Marc Gonzalez wrote:
+>>> Add the tango NAND Flash Controller dt bindings documentation.
+>>>
+>>> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/mtd/tango-nand.txt | 38 ++++++++++++++++++++++++++++++
+>>>  1 file changed, 38 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
+>>> new file mode 100644
+>>> index 000000000000..3cbf95d6595a
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
+>>> @@ -0,0 +1,38 @@
+>>> +Sigma Designs Tango4 NAND Flash Controller (NFC)
+>>> +
+>>> +Required properties:
+>>> +
+>>> +- compatible: "sigma,smp8758-nand"
+>>> +- reg: address/size of nfc_reg, nfc_mem, and pbus_reg
+>>> +- dmas: reference to the DMA channel used by the controller
+>>> +- dma-names: "nfc_sbox"
+>>
+>> Drop the "nfc_" prefix here, it seems redundant.
+> 
+> I took a closer look at Documentation/devicetree/bindings and
+> arch/arm/boot/dts and it seems the overwhelming nomenclature
+> is "rx", "tx" (with variants around these two).
+> 
+> Should I just use "rxtx" for my driver?
 
-THIS PATCH IS FOR TESTING ONLY AND NOT MEANT TO HIT LINUS TREE
+On IRC, Arnd wrote:
 
-There are some code paths used by all the filesystems which we cannot
-change to drop the GFP_NOFS, yet they generate a lot of warnings.
-Provide {disable,enable}_scope_gfp_check to silence those.
-alloc_page_buffers and grow_dev_page are silenced right away.
+"The string for dma-names is not important, it just needs to be documented
+in the binding. If you have hardware specifications, use the name that is
+next to the wire for the dma-request line. "dma-names" is only required so
+you can connect a single dmarq to multiple dma engines (most chips only
+connect each rq to one dmaengine though)."
 
-Signed-off-by: Michal Hocko <mhocko@suse.com>
----
- fs/buffer.c           |  4 ++++
- include/linux/sched.h | 11 +++++++++++
- mm/page_alloc.c       |  3 +++
- 3 files changed, 18 insertions(+)
+In my system, peripheral devices are connected to DMA channels via
+a multiplexer called the "host switch box". The documentation calls
+the ports FOO_SBOX and SBOX_FOO.
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index d21771fcf7d3..d27e8f05f736 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -873,7 +873,9 @@ struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
- 	head = NULL;
- 	offset = PAGE_SIZE;
- 	while ((offset -= size) >= 0) {
-+		disable_scope_gfp_check();
- 		bh = alloc_buffer_head(GFP_NOFS);
-+		enable_scope_gfp_check();
- 		if (!bh)
- 			goto no_grow;
- 
-@@ -1003,7 +1005,9 @@ grow_dev_page(struct block_device *bdev, sector_t block,
- 	 */
- 	gfp_mask |= __GFP_NOFAIL;
- 
-+	disable_scope_gfp_check();
- 	page = find_or_create_page(inode->i_mapping, index, gfp_mask);
-+	enable_scope_gfp_check();
- 	if (!page)
- 		return ret;
- 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 288946bfc326..b379ef9ed464 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1988,6 +1988,7 @@ struct task_struct {
- 	/* A live task holds one reference. */
- 	atomic_t stack_refcount;
- #endif
-+	bool disable_scope_gfp_warn;
- 	unsigned long nofs_caller;
- 	unsigned long noio_caller;
- /* CPU-specific state of this task */
-@@ -2390,6 +2391,16 @@ static inline unsigned int __memalloc_nofs_save(unsigned long caller)
- 	return flags;
- }
- 
-+static inline void disable_scope_gfp_check(void)
-+{
-+	current->disable_scope_gfp_warn = true;
-+}
-+
-+static inline void enable_scope_gfp_check(void)
-+{
-+	current->disable_scope_gfp_warn = false;
-+}
-+
- #define memalloc_nofs_save()	__memalloc_nofs_save(_RET_IP_)
- 
- static inline void memalloc_nofs_restore(unsigned int flags)
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 9e35fb2a8681..7ecae58abf74 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3758,6 +3758,9 @@ void debug_scope_gfp_context(gfp_t gfp_mask)
- 	if (!(gfp_mask & __GFP_DIRECT_RECLAIM))
- 		return;
- 
-+	if (current->disable_scope_gfp_warn)
-+		return;
-+
- 	if (current->flags & PF_MEMALLOC_NOIO)
- 		restrict_mask = __GFP_IO;
- 	else if ((current->flags & PF_MEMALLOC_NOFS) && (gfp_mask & __GFP_IO))
--- 
-2.10.2
+For MLC NAND Flash controller 0, the ports are mlc_flash0_sbox
+and sbox_mlc_flash0.
+
+Additionally, the DMA driver handles both directions, so the DT only
+defines a single duplex channel.
+
+I originally used "nfc_sbox" (nfc = NAND Flash controller) to stick to
+the HW naming, but I am willing to change it to "rxtx" if that's what
+Boris prefers, (or just "sbox", but Mans pointed out that this was too
+specific, and future HW might do away with the switch box).
+
+I'm open to comments.
+
+Regards.
