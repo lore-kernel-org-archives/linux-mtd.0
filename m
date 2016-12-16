@@ -1,29 +1,27 @@
-Date: Fri, 16 Dec 2016 23:01:21 +0100
-From: Michal Hocko <mhocko@kernel.org>
-To: Brian Foster <bfoster@redhat.com>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
- Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
- logfs@logfs.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/9 v2] xfs: introduce and use KM_NOLOCKDEP to silence
- reclaim lockdep false positives
-Message-ID: <20161216220121.GC7645@dhcp22.suse.cz>
-References: <20161215140715.12732-1-mhocko@kernel.org>
- <20161215140715.12732-3-mhocko@kernel.org>
- <20161216154041.GA7645@dhcp22.suse.cz>
- <20161216163749.GE8447@bfoster.bfoster>
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cI0mF-0006g0-MO
+ for linux-mtd@lists.infradead.org; Fri, 16 Dec 2016 22:14:56 +0000
+Received: by mail-pg0-x243.google.com with SMTP id b1so877901pgc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Dec 2016 14:14:34 -0800 (PST)
+Date: Fri, 16 Dec 2016 14:14:28 -0800
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: David Gstir <david@sigma-star.at>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ linux-kernel@vger.kernel.org, jaegeuk@kernel.org, tytso@mit.edu,
+ hch@infradead.org, arnd@arndb.de, dedekind1@gmail.com,
+ linux-mtd@lists.infradead.org, adrian.hunter@intel.com,
+ linux-ext4@vger.kernel.org, ebiggers@google.com, rdunlap@infradead.org
+Subject: Re: [PATCH] fscrypt: Factor out bio specific functions
+Message-ID: <20161216221428.GC14264@gmail.com>
+References: <20161216105006.10207-1-richard@nod.at>
+ <72D4D0FB-F56D-4457-9660-4CFF7B4CFB6E@sigma-star.at>
+ <48d4de8e-6e57-cbad-7556-03aa788c815a@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20161216163749.GE8447@bfoster.bfoster>
+In-Reply-To: <48d4de8e-6e57-cbad-7556-03aa788c815a@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,36 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri 16-12-16 11:37:50, Brian Foster wrote:
-> On Fri, Dec 16, 2016 at 04:40:41PM +0100, Michal Hocko wrote:
-> > Updated patch after Mike noticed a BUG_ON when KM_NOLOCKDEP is used.
-> > ---
-> > From 1497e713e11639157aef21cae29052cb3dc7ab44 Mon Sep 17 00:00:00 2001
-> > From: Michal Hocko <mhocko@suse.com>
-> > Date: Thu, 15 Dec 2016 13:06:43 +0100
-> > Subject: [PATCH] xfs: introduce and use KM_NOLOCKDEP to silence reclaim
-> >  lockdep false positives
+On Fri, Dec 16, 2016 at 09:48:19PM +0100, Richard Weinberger wrote:
+> On 16.12.2016 16:37, David Gstir wrote:
+> >> @@ -349,33 +347,10 @@ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+> >> 		err = do_page_crypto(inode, FS_ENCRYPT, lblk,
+> >> 					ZERO_PAGE(0), ciphertext_page,
+> >> 					PAGE_SIZE, 0, GFP_NOFS);
+> >> +		err = fscrypt_bio_submit_page(inode, pblk, ciphertext_page);
 > > 
-> > Now that the page allocator offers __GFP_NOLOCKDEP let's introduce
-> > KM_NOLOCKDEP alias for the xfs allocation APIs. While we are at it
-> > also change KM_NOFS users introduced by b17cb364dbbb ("xfs: fix missing
-> > KM_NOFS tags to keep lockdep happy") and use the new flag for them
-> > instead. There is really no reason to make these allocations contexts
-> > weaker just because of the lockdep which even might not be enabled
-> > in most cases.
-> > 
+> > Any specific reason why you didn't just move the whole fscrypt_zeroout_range() to bio.c?
 > 
-> Hi Michal,
+> The function depends other internal functions of crypto.c which I didn't want to
+> export.
+> At the end of the day it's a matter of taste. I found it less ugly to keep
+> fscrypt_zeroout_range() in crypto.c than exposing internal stuff.
 > 
-> I haven't gone back to fully grok b17cb364dbbb ("xfs: fix missing
-> KM_NOFS tags to keep lockdep happy"), so I'm not really familiar with
-> the original problem. FWIW, there was another KM_NOFS instance added by
-> that commit in xlog_cil_prepare_log_vecs() that is now in
-> xlog_cil_alloc_shadow_bufs(). Perhaps Dave can confirm whether the
-> original issue still applies..?
 
-Yes, I've noticed that but the reworked code looked sufficiently
-different that I didn't dare to simply convert it.
--- 
-Michal Hocko
-SUSE Labs
+Hmm, it still seems weird to define fscrypt_zeroout_range() when it can't
+actually be used.  It looks like the problem is specifically the use of
+alloc_bounce_page() and do_page_crypto().  Would it be that bad to make those
+available in fscrypt_internal.h (not exported to filesystems)?
+
+Also, it seems the actual problem is that fscrypt_zeroout_range() tries to be
+clever and reuse one bounce page over and over.  But this seems very inefficient
+because it has to wait for each block to be synchronously written out before
+moving on to the next.  I'm thinking it really should be updated to work more
+like the normal write path, and then it could use fscrypt_encrypt_page()...
+
+Eric
