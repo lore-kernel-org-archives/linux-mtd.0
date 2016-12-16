@@ -1,17 +1,29 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHq64-0000SC-1C
- for linux-mtd@lists.infradead.org; Fri, 16 Dec 2016 10:50:43 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, jaegeuk@kernel.org, tytso@mit.edu,
- hch@infradead.org, arnd@arndb.de, dedekind1@gmail.com,
- linux-mtd@lists.infradead.org, adrian.hunter@intel.com,
- linux-ext4@vger.kernel.org, ebiggers@google.com, rdunlap@infradead.org,
- david@sigma-star.at, Richard Weinberger <richard@nod.at>
-Subject: [PATCH] fscrypt: Factor out bio specific functions
-Date: Fri, 16 Dec 2016 11:50:06 +0100
-Message-Id: <20161216105006.10207-1-richard@nod.at>
+Received: from eusmtp01.atmel.com ([212.144.249.242])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cHq8t-0001hw-Ek
+ for linux-mtd@lists.infradead.org; Fri, 16 Dec 2016 10:53:38 +0000
+Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement die erase command logic
+To: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <1477314214-17718-1-git-send-email-marcin.krzeminski@nokia.com>
+ <1477314214-17718-3-git-send-email-marcin.krzeminski@nokia.com>
+ <7e94d439-114a-8827-9667-1472d3e4323a@atmel.com>
+ <AM4PR0701MB2130740455BE1618C36E5020FE8C0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+ <852daf6e-a304-2dd3-0a54-0a24c7dc347b@atmel.com>
+ <AM4PR0701MB213003E9E3A8C6DD71E3E2AEFE8C0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+ <2e4aa41d-19a6-6524-0e23-b8d64a614005@atmel.com>
+ <AM4PR0701MB21309F515B35267C2892F0FBFE9C0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+CC: "rfsw-patches@mlist.nokia.com" <rfsw-patches@mlist.nokia.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <31d65517-25ac-198c-b87e-91208a5d4853@atmel.com>
+Date: Fri, 16 Dec 2016 11:52:27 +0100
+MIME-Version: 1.0
+In-Reply-To: <AM4PR0701MB21309F515B35267C2892F0FBFE9C0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,345 +33,438 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-That way we can get rid of the direct dependency on CONFIG_BLOCK.
+Hi Marcin,
 
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/crypto/Kconfig           |   1 -
- fs/crypto/Makefile          |   1 +
- fs/crypto/bio.c             | 115 ++++++++++++++++++++++++++++++++++++++++++++
- fs/crypto/crypto.c          |  89 ++--------------------------------
- fs/crypto/fscrypt_private.h |  14 ++++++
- include/linux/fscrypto.h    |   6 ++-
- 6 files changed, 137 insertions(+), 89 deletions(-)
- create mode 100644 fs/crypto/bio.c
+Le 16/12/2016 à 07:38, Krzeminski, Marcin (Nokia - PL/Wroclaw) a écrit :
+> Cyrille,
+> 
+> Sorry for late answer.
+> 
+>> -----Original Message-----
+>> From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+>> Sent: Friday, December 09, 2016 6:23 PM
+>> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
+>> <marcin.krzeminski@nokia.com>; linux-mtd@lists.infradead.org
+>> Cc: rfsw-patches@mlist.nokia.com; dwmw2@infradead.org;
+>> computersforpeace@gmail.com; marek.vasut@gmail.com
+>> Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement die erase command logic
+>>
+>> Le 30/11/2016 à 19:18, Krzeminski, Marcin (Nokia - PL/Wroclaw) a écrit :
+>>>
+>>>
+>>>> -----Original Message-----
+>>>> From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+>>>> Sent: Wednesday, November 30, 2016 6:20 PM
+>>>> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
+>>>> <marcin.krzeminski@nokia.com>; linux-mtd@lists.infradead.org
+>>>> Cc: rfsw-patches@mlist.nokia.com; dwmw2@infradead.org;
+>>>> computersforpeace@gmail.com; marek.vasut@gmail.com
+>>>> Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement die erase command
+>>>> logic
+>>>>
+>>>> Le 30/11/2016 à 17:44, Krzeminski, Marcin (Nokia - PL/Wroclaw) a écrit :
+>>>>>
+>>>>>
+>>>>>> -----Original Message-----
+>>>>>> From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+>>>>>> Sent: Tuesday, November 29, 2016 5:47 PM
+>>>>>> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
+>>>>>> <marcin.krzeminski@nokia.com>; linux-mtd@lists.infradead.org
+>>>>>> Cc: rfsw-patches@mlist.nokia.com; dwmw2@infradead.org;
+>>>>>> computersforpeace@gmail.com; marek.vasut@gmail.com
+>>>>>> Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement die erase command
+>>>>>> logic
+>>>>>>
+>>>>>> Hi Marcin,
+>>>>>>
+>>>>>> I know you have already answered some of my questions of IRC but I
+>>>>>> ask them again here on the mailing list so everybody can benefit
+>>>>>> from your answers.
+>>>>>>
+>>>>>> Le 24/10/2016 à 15:03, marcin.krzeminski@nokia.com a écrit :
+>>>>>>> From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+>>>>>>>
+>>>>>>> This commit implements die erase logic.
+>>>>>>> Sector at a time procedure is moved to function, then erase
+>>>>>>> algorithm will try to use die erase cmd if size and address cover
+>>>>>>> one or more dies.
+>>>>>>>
+>>>>>>
+>>>>>> I'm reading your v2 series but indeed I try to understand the
+>>>>>> purpose of the series simply because I don't know what does die
+>>>>>> erase do as compared to chip erase of sector erase.
+>>>>>> Is you series a bug fix or an optmization, maybe both?
+>>>>>
+>>>>> In current spi-nor framework when user want to erase whole flash (eg.
+>>>>> mtd_debug erase /dev/mtdX 0 0x8000000) framework issue chip erase
+>>>> cmd.
+>>>>> N25Q00 does not support chip erase, instead there was introduced die
+>>>>> erase command that can erase whole die (N25Q00 is a mulit-die NOR
+>> chip).
+>>>>> So for this case this patch is a bug fix.
+>>>>> Since I have die erase command implemented it was tempting to use
+>>>>> die erase also in case where erase area cover one or more dies to
+>>>>> speed up erase process, especially when user has enabled 4KiB
+>>>>> sector. That is a small
+>>>> optimization.
+>>>>>
+>>>>> I will rewrite commit message and add those informations.
+>>>>>
+>>>>> Thanks,
+>>>>> Marcin
+>>>>>
+>>>>
+>>>> OK, then I think your patch should be split into two different patches.
+>>>>
+>>>> 1 - bug fix:
+>>>>
+>>>> The first patch introducing an explicit flag such as
+>>>> SPI_NOR_NO_CHIP_ERASE, which would be set in the relevant entries of
+>>>> the spi_nor_ids[] (see already existing flags such as SPI_NOR_NO_FR,
+>> SPI_NOR_NO_ERASE, ...).
+>>>>
+>>>> In spi_nor_scan():
+>>>>
+>>>>  	if (info->flags & USE_FSR)
+>>>>  		nor->flags |= SNOR_F_USE_FSR;
+>>>>  	if (info->flags & SPI_NOR_HAS_TB)
+>>>>  		nor->flags |= SNOR_F_HAS_SR_TB;
+>>>> +	if (info->flags & SPI_NOR_NO_CHIP_ERASE)
+>>>> +		nor->flags |= SNOR_F_NO_CHIP_ERASE;
+>>>>
+>>>> Then in spi_nor_erase():
+>>>>
+>>>>  	/* whole-chip erase? */
+>>>> -	if (len == mtd->size) {
+>>>> +	if (len == mtd->size && !(nor->flags & SNOR_F_NO_CHIP_ERASE)) {
+>>>>  		unsigned long timeout;
+>>>>
+>>>> So you fall into the sector erase case, no optimization yet.
+>>>>
+>>>> 2 - optimization of spi_nor_erase()
+>>>>
+>>>> In the "sector"-at-a-time erase branch, try to optimize when possible
+>>>> using die erase instead of sector erase.
+>>>>
+>>>> Each commit message describing the purpose of the patch.
+>>>
+>>>
+>>> OK, I will split patches in this way.
+>>>
+>>>>
+>>>> I would like to also handle the cases where the memory supports:
+>>>> - both chip and die erases: if so, no reason not to use chip erase on such
+>>>>   multi-die memory.
+>>> I do not think that there are chips supporting both.
+>>> In this case two flags are needed one for disable chip erase and
+>>> another one for enabling die erase. Is that OK?
+>>
+>> I think it might be better to have 2 separated flags, at least for semantic
+>> reason: "the memory supports Die-Erase hence we don't try to use Chip-
+>> Erase" sounds a little bit odd to me.
+> 
+> Let's do it with two flags then.
+> 
+>>
+>> This is what I understand when I read:
+>>  	/* whole-chip erase? */
+>> -	if (len == mtd->size) {
+>> +	if (len == mtd->size && !die_erase) {
+>>
+>> Why do we try Chip-Erase only if Die-Erase is not supported?
+> 
+> I assumed that there is no flash that support both.
+> Do you know one that has chip erase and die erase?
+>
 
-diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-index f514978f6688..08b46e6e3995 100644
---- a/fs/crypto/Kconfig
-+++ b/fs/crypto/Kconfig
-@@ -1,6 +1,5 @@
- config FS_ENCRYPTION
- 	tristate "FS Encryption (Per-file encryption)"
--	depends on BLOCK
- 	select CRYPTO
- 	select CRYPTO_AES
- 	select CRYPTO_CBC
-diff --git a/fs/crypto/Makefile b/fs/crypto/Makefile
-index f17684c48739..9f6607f17b53 100644
---- a/fs/crypto/Makefile
-+++ b/fs/crypto/Makefile
-@@ -1,3 +1,4 @@
- obj-$(CONFIG_FS_ENCRYPTION)	+= fscrypto.o
- 
- fscrypto-y := crypto.o fname.o policy.o keyinfo.o
-+fscrypto-$(CONFIG_BLOCK) += bio.o
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-new file mode 100644
-index 000000000000..6a6e694c6879
---- /dev/null
-+++ b/fs/crypto/bio.c
-@@ -0,0 +1,115 @@
-+/*
-+ * This contains encryption functions for per-file encryption.
-+ *
-+ * Copyright (C) 2015, Google, Inc.
-+ * Copyright (C) 2015, Motorola Mobility
-+ *
-+ * Written by Michael Halcrow, 2014.
-+ *
-+ * Filename encryption additions
-+ *	Uday Savagaonkar, 2014
-+ * Encryption policy handling additions
-+ *	Ildar Muslukhov, 2014
-+ * Add fscrypt_pullback_bio_page()
-+ *	Jaegeuk Kim, 2015.
-+ *
-+ * This has not yet undergone a rigorous security audit.
-+ *
-+ * The usage of AES-XTS should conform to recommendations in NIST
-+ * Special Publication 800-38E and IEEE P1619/D16.
-+ */
-+
-+#include <linux/pagemap.h>
-+#include <linux/module.h>
-+#include <linux/bio.h>
-+#include <linux/namei.h>
-+#include "fscrypt_private.h"
-+
-+/*
-+ * Call fscrypt_decrypt_page on every single page, reusing the encryption
-+ * context.
-+ */
-+static void completion_pages(struct work_struct *work)
-+{
-+	struct fscrypt_ctx *ctx =
-+		container_of(work, struct fscrypt_ctx, r.work);
-+	struct bio *bio = ctx->r.bio;
-+	struct bio_vec *bv;
-+	int i;
-+
-+	bio_for_each_segment_all(bv, bio, i) {
-+		struct page *page = bv->bv_page;
-+		int ret = fscrypt_decrypt_page(page->mapping->host, page,
-+				PAGE_SIZE, 0, page->index);
-+
-+		if (ret) {
-+			WARN_ON_ONCE(1);
-+			SetPageError(page);
-+		} else {
-+			SetPageUptodate(page);
-+		}
-+		unlock_page(page);
-+	}
-+	fscrypt_release_ctx(ctx);
-+	bio_put(bio);
-+}
-+
-+void fscrypt_decrypt_bio_pages(struct fscrypt_ctx *ctx, struct bio *bio)
-+{
-+	INIT_WORK(&ctx->r.work, completion_pages);
-+	ctx->r.bio = bio;
-+	queue_work(fscrypt_read_workqueue, &ctx->r.work);
-+}
-+EXPORT_SYMBOL(fscrypt_decrypt_bio_pages);
-+
-+void fscrypt_pullback_bio_page(struct page **page, bool restore)
-+{
-+	struct fscrypt_ctx *ctx;
-+	struct page *bounce_page;
-+
-+	/* The bounce data pages are unmapped. */
-+	if ((*page)->mapping)
-+		return;
-+
-+	/* The bounce data page is unmapped. */
-+	bounce_page = *page;
-+	ctx = (struct fscrypt_ctx *)page_private(bounce_page);
-+
-+	/* restore control page */
-+	*page = ctx->w.control_page;
-+
-+	if (restore)
-+		fscrypt_restore_control_page(bounce_page);
-+}
-+EXPORT_SYMBOL(fscrypt_pullback_bio_page);
-+
-+int fscrypt_bio_submit_page(const struct inode *inode, sector_t blk,
-+			    struct page *page)
-+{
-+	struct bio *bio;
-+	int ret;
-+
-+	bio = bio_alloc(GFP_NOWAIT, 1);
-+	if (!bio) {
-+		ret = -ENOMEM;
-+		goto errout;
-+	}
-+	bio->bi_bdev = inode->i_sb->s_bdev;
-+	bio->bi_iter.bi_sector = blk << (inode->i_sb->s_blocksize_bits - 9);
-+	bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
-+	ret = bio_add_page(bio, page, inode->i_sb->s_blocksize, 0);
-+	if (ret != inode->i_sb->s_blocksize) {
-+		/* should never happen! */
-+		WARN_ON(1);
-+		bio_put(bio);
-+		ret = -EIO;
-+		goto errout;
-+	}
-+	ret = submit_bio_wait(bio);
-+	if ((ret == 0) && bio->bi_error)
-+		ret = -EIO;
-+	bio_put(bio);
-+
-+errout:
-+	return ret;
-+}
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index ac8e4f6a3773..3e981f0fd6e3 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -24,7 +24,6 @@
- #include <linux/module.h>
- #include <linux/scatterlist.h>
- #include <linux/ratelimit.h>
--#include <linux/bio.h>
- #include <linux/dcache.h>
- #include <linux/namei.h>
- #include "fscrypt_private.h"
-@@ -44,7 +43,7 @@ static mempool_t *fscrypt_bounce_page_pool = NULL;
- static LIST_HEAD(fscrypt_free_ctxs);
- static DEFINE_SPINLOCK(fscrypt_ctx_lock);
- 
--static struct workqueue_struct *fscrypt_read_workqueue;
-+struct workqueue_struct *fscrypt_read_workqueue;
- static DEFINE_MUTEX(fscrypt_init_mutex);
- 
- static struct kmem_cache *fscrypt_ctx_cachep;
-@@ -330,8 +329,7 @@ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
- {
- 	struct fscrypt_ctx *ctx;
- 	struct page *ciphertext_page = NULL;
--	struct bio *bio;
--	int ret, err = 0;
-+	int err = 0;
- 
- 	BUG_ON(inode->i_sb->s_blocksize != PAGE_SIZE);
- 
-@@ -349,33 +347,10 @@ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
- 		err = do_page_crypto(inode, FS_ENCRYPT, lblk,
- 					ZERO_PAGE(0), ciphertext_page,
- 					PAGE_SIZE, 0, GFP_NOFS);
-+		err = fscrypt_bio_submit_page(inode, pblk, ciphertext_page);
- 		if (err)
- 			goto errout;
- 
--		bio = bio_alloc(GFP_NOWAIT, 1);
--		if (!bio) {
--			err = -ENOMEM;
--			goto errout;
--		}
--		bio->bi_bdev = inode->i_sb->s_bdev;
--		bio->bi_iter.bi_sector =
--			pblk << (inode->i_sb->s_blocksize_bits - 9);
--		bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
--		ret = bio_add_page(bio, ciphertext_page,
--					inode->i_sb->s_blocksize, 0);
--		if (ret != inode->i_sb->s_blocksize) {
--			/* should never happen! */
--			WARN_ON(1);
--			bio_put(bio);
--			err = -EIO;
--			goto errout;
--		}
--		err = submit_bio_wait(bio);
--		if ((err == 0) && bio->bi_error)
--			err = -EIO;
--		bio_put(bio);
--		if (err)
--			goto errout;
- 		lblk++;
- 		pblk++;
- 	}
-@@ -442,64 +417,6 @@ const struct dentry_operations fscrypt_d_ops = {
- };
- EXPORT_SYMBOL(fscrypt_d_ops);
- 
--/*
-- * Call fscrypt_decrypt_page on every single page, reusing the encryption
-- * context.
-- */
--static void completion_pages(struct work_struct *work)
--{
--	struct fscrypt_ctx *ctx =
--		container_of(work, struct fscrypt_ctx, r.work);
--	struct bio *bio = ctx->r.bio;
--	struct bio_vec *bv;
--	int i;
--
--	bio_for_each_segment_all(bv, bio, i) {
--		struct page *page = bv->bv_page;
--		int ret = fscrypt_decrypt_page(page->mapping->host, page,
--				PAGE_SIZE, 0, page->index);
--
--		if (ret) {
--			WARN_ON_ONCE(1);
--			SetPageError(page);
--		} else {
--			SetPageUptodate(page);
--		}
--		unlock_page(page);
--	}
--	fscrypt_release_ctx(ctx);
--	bio_put(bio);
--}
--
--void fscrypt_decrypt_bio_pages(struct fscrypt_ctx *ctx, struct bio *bio)
--{
--	INIT_WORK(&ctx->r.work, completion_pages);
--	ctx->r.bio = bio;
--	queue_work(fscrypt_read_workqueue, &ctx->r.work);
--}
--EXPORT_SYMBOL(fscrypt_decrypt_bio_pages);
--
--void fscrypt_pullback_bio_page(struct page **page, bool restore)
--{
--	struct fscrypt_ctx *ctx;
--	struct page *bounce_page;
--
--	/* The bounce data pages are unmapped. */
--	if ((*page)->mapping)
--		return;
--
--	/* The bounce data page is unmapped. */
--	bounce_page = *page;
--	ctx = (struct fscrypt_ctx *)page_private(bounce_page);
--
--	/* restore control page */
--	*page = ctx->w.control_page;
--
--	if (restore)
--		fscrypt_restore_control_page(bounce_page);
--}
--EXPORT_SYMBOL(fscrypt_pullback_bio_page);
--
- void fscrypt_restore_control_page(struct page *page)
- {
- 	struct fscrypt_ctx *ctx;
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index aeab032d7d35..32a5b3598446 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -86,8 +86,22 @@ struct fscrypt_completion_result {
- 
- /* crypto.c */
- int fscrypt_initialize(unsigned int cop_flags);
-+extern struct workqueue_struct *fscrypt_read_workqueue;
- 
- /* keyinfo.c */
- extern int fscrypt_get_crypt_info(struct inode *);
- 
-+/* bio.c */
-+#ifdef CONFIG_BLOCK
-+extern int fscrypt_bio_submit_page(const struct inode *inode, sector_t blk,
-+				   struct page *page);
-+#else
-+static inline int fscrypt_bio_submit_page(const struct inode *inode,
-+					  sector_t blk, struct page *page)
-+{
-+	WARN_ON_ONCE(1);
-+	return -EINVAL;
-+}
-+#endif
-+
- #endif /* _FSCRYPT_PRIVATE_H */
-diff --git a/include/linux/fscrypto.h b/include/linux/fscrypto.h
-index c074b670aa99..167b0dfd4e98 100644
---- a/include/linux/fscrypto.h
-+++ b/include/linux/fscrypto.h
-@@ -174,8 +174,6 @@ extern struct page *fscrypt_encrypt_page(const struct inode *, struct page *,
- 						u64, gfp_t);
- extern int fscrypt_decrypt_page(const struct inode *, struct page *, unsigned int,
- 				unsigned int, u64);
--extern void fscrypt_decrypt_bio_pages(struct fscrypt_ctx *, struct bio *);
--extern void fscrypt_pullback_bio_page(struct page **, bool);
- extern void fscrypt_restore_control_page(struct page *);
- extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
- 						unsigned int);
-@@ -201,6 +199,10 @@ extern int fscrypt_fname_disk_to_usr(struct inode *, u32, u32,
- 			const struct fscrypt_str *, struct fscrypt_str *);
- extern int fscrypt_fname_usr_to_disk(struct inode *, const struct qstr *,
- 			struct fscrypt_str *);
-+
-+/* bio.c */
-+extern void fscrypt_decrypt_bio_pages(struct fscrypt_ctx *, struct bio *);
-+extern void fscrypt_pullback_bio_page(struct page **, bool);
- #endif
- 
- /* crypto.c */
--- 
-2.10.2
+No, I don't but I didn't focus on erase operations so maybe some already
+exist or might exit in the future, who knows? :)
+
+Also, please have a look at Ricardo's patch:
+[v9] mtd: spi-nor: Add supported for S3AN spi-nor devices
+http://patchwork.ozlabs.org/patch/701935/
+
+This patch has recently been merged into git://github.com/spi-nor/linux.git
+so you will have to rebase your work on that tree.
+
+Ricardo's patch already introduces a SNOR_F_NO_OP_CHIP_ERASE flag used from
+spi_nor_erase(). The only missing part is to set this flag in nor->flag
+when another dedicated flag is set in info->flags.
+Currently this SNOR_F_NO_OP_CHIP_ERASE is only set from s3an_nor_scan()
+but it should be also set from spi_nor_scan() for the relevant memories.
+
+>>
+>> Reading something like "we try Chip-Erase unless Chip-Erase is not
+>> supported" is more logic, isn't it?
+>>
+>> I want to avoid the implicit assumption "Die Erase supported => Chip Erase
+>> not supported", even if it *might* be true, because it is strange when we
+>> read the code.
+> 
+> Ok.
+>>
+>>>> - neither chip nor die erases.
+>>> This is supported DIE_ERASE flasg set and die_cnt == 0
+>>
+>> DIE_ERASE flag set and die_cnt == 0 meaning Chip-Erase is not supported?
+>> IHMO, semantically, it's not logical.
+> 
+> Just to save yet another flag. Having so many flags make codes complicated,
+> but I agree the it I at least logical.
+>>
+>> Also discussing another topic on #mtd, it seems that some memories don't
+>> have a 4-byte address version of the Die Erase op code.
+> 
+> Yes. Could be workarounded by enabling 4byte address mode just before
+> sending die erase and then disable it back.
+> The more important question is if you really one to have in upstream die erase?
+> It is about 30% faster than  sector at time erase on some flash
+> (especially in case 4KiB sectors). From the other hand I see chips that it was
+> not faster at all (it also applies on chip erase).
+> My first version of fixing this problem was to add only the flag of disable chip erase.
+> See here:
+> http://lists.infradead.org/pipermail/linux-mtd/2016-October/069888.html
+> Maybe for now it is better to take above?
+> 
+>>
+>> If so, it's preferred to use a 4-byte address Sector/Block Erase op code than
+>> to enter/exit the statefull 4-byte address mode then use the Die Erase op
+>> code: this statefull mode should be avoided as much as possible because
+>> many bootloaders expect the SPI memory to be in 3byte address mode and
+>> if a spurious reset occurs on the CPU side (but not on the memory side)
+>> those bootloaders will fail to read data from the SPI memory.
+> 
+> Yeap, moreover similar problem you will face when you will try to
+> add QPi modes (444) to framework.
+>
+
+Entering the 4-byte address mode might be accepted as a workaround to allow
+using the Die Erase op code even on > 16MiB memory as long as the user can
+choose to disable this feature and the feature is not enabled by default.
+This way we don't prevent end users from using Die Erase if they want but
+we don't force them to use it if they don't want to.
+
+Indeed, Die Erase is an optimization but it is not mandatory to erase the
+memory: the slower Sector/Block Erase commands can still be used.
+However entering the 4-byte address mode to allow using the Die Erase
+command has side effects, as explained above, that might introduce regression.
+
+Let's imagine the case of a 2-die memory used to store 2 firmware images.
+The firmware update process could alternate between dies when writing a new
+firmware image so the current/older firmware image is still available if
+the update process fails to write the new image.
+
+Then, if you make the whole memory enter its 4-byte address mode to erase
+one single die and a spurious reboot occurs, many bootloaders would fail to
+read the old firmware from the other die just because the whole memory
+expects 4-byte addresses.
+
+About the QPI mode (SPI 4-4-4), I agree with you, it has the very same
+annoying side effect. Hence I've removed support of the SPI 2-2-2 and SPI
+4-4-4 protocols at the memory side from my SFDP series for the moment.
+Besides, on the controller side, by changing the 3rd argument parameter of
+spi_nor_scan(), one of my patch allows the SPI controller driver to claim
+"I can't/don't want to use SPI 4-4-4 but I support SPI 1-1-4 and SPI 1-4-4
+protocols". So the SPI 4-4-4 protocol can be disabled if needed.
+
+Best regards,
+
+Cyrille
+
+
+> Thanks,
+> Marcin
+> 
+>>
+>>>>
+>>>> Maybe I'm wrong but the assumption (multi-die => chip erase not
+>>>> supported) might be false.
+>>> It is false, but all multi-die chip I know support die erase or chip erase.
+>>> Never both.
+>>>
+>>> Thanks,
+>>> Marcin
+>>>
+>>>>
+>>>>
+>>>> Best regards,
+>>>>
+>>>> Cyrille
+>>>>
+>>>>
+>>>>>>
+>>>>>> Best regards,
+>>>>>>
+>>>>>> Cyrille
+>>>>>>
+>>>>>>> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+>>>>>>> ---
+>>>>>>>  drivers/mtd/spi-nor/spi-nor.c | 90
+>>>>>>> +++++++++++++++++++++++++++++++++++++------
+>>>>>>>  1 file changed, 78 insertions(+), 12 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
+>>>>>>> b/drivers/mtd/spi-nor/spi-nor.c index 3afe207..17bbec0 100644
+>>>>>>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>>>>>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>>>>>>> @@ -360,6 +360,29 @@ static int spi_nor_erase_sector(struct
+>>>>>>> spi_nor
+>>>>>> *nor, u32 addr)
+>>>>>>>  	return nor->write_reg(nor, nor->erase_opcode, buf, nor-
+>>>>>>> addr_width); }
+>>>>>>>
+>>>>>>> +static inline int spi_nor_sector_at_time_erase(struct mtd_info
+>>>>>>> +*mtd,
+>>>>>>> +u32 addr, u32 len) {
+>>>>>>> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+>>>>>>> +	int ret = 0;
+>>>>>>> +
+>>>>>>> +	while (len) {
+>>>>>>> +		write_enable(nor);
+>>>>>>> +
+>>>>>>> +		ret = spi_nor_erase_sector(nor, addr);
+>>>>>>> +		if (ret)
+>>>>>>> +			return ret;
+>>>>>>> +
+>>>>>>> +		addr += mtd->erasesize;
+>>>>>>> +		len -= mtd->erasesize;
+>>>>>>> +
+>>>>>>> +		ret = spi_nor_wait_till_ready(nor);
+>>>>>>> +		if (ret)
+>>>>>>> +			return ret;
+>>>>>>> +	}
+>>>>>>> +
+>>>>>>> +	return ret;
+>>>>>>> +}
+>>>>>>> +
+>>>>>>>  /*
+>>>>>>>   * Erase an address range on the nor chip.  The address range may
+>>>> extend
+>>>>>>>   * one or more erase sectors.  Return an error is there is a
+>>>>>>> problem
+>>>> erasing.
+>>>>>>> @@ -367,9 +390,11 @@ static int spi_nor_erase_sector(struct
+>>>>>>> spi_nor *nor, u32 addr)  static int spi_nor_erase(struct mtd_info
+>>>>>>> *mtd, struct erase_info *instr)  {
+>>>>>>>  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+>>>>>>> -	u32 addr, len;
+>>>>>>> +	u32 addr, len, die_no, die_size;
+>>>>>>>  	uint32_t rem;
+>>>>>>>  	int ret;
+>>>>>>> +	unsigned long timeout;
+>>>>>>> +	u8 die_erase = nor->die_cnt && SNOR_F_DIE_ERASE;
+>>>>>>>
+>>>>>>>  	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
+>>>>>>>  			(long long)instr->len);
+>>>>>>> @@ -386,7 +411,7 @@ static int spi_nor_erase(struct mtd_info *mtd,
+>>>>>> struct erase_info *instr)
+>>>>>>>  		return ret;
+>>>>>>>
+>>>>>>>  	/* whole-chip erase? */
+>>>>>>> -	if (len == mtd->size) {
+>>>>>>> +	if (len == mtd->size && !die_erase) {
+>>>>>>>  		unsigned long timeout;
+>>>>>>>
+>>>>>>>  		write_enable(nor);
+>>>>>>> @@ -416,17 +441,58 @@ static int spi_nor_erase(struct mtd_info
+>>>>>>> *mtd, struct erase_info *instr)
+>>>>>>>
+>>>>>>>  	/* "sector"-at-a-time erase */
+>>>>>>>  	} else {
+>>>>>>> -		while (len) {
+>>>>>>> -			write_enable(nor);
+>>>>>>> -
+>>>>>>> -			ret = spi_nor_erase_sector(nor, addr);
+>>>>>>> -			if (ret)
+>>>>>>> +		if (die_erase) {
+>>>>>>> +			die_size = div_u64_rem(mtd->size, nor-
+>>> die_cnt,
+>>>>>> &rem);
+>>>>>>> +			if (rem) {
+>>>>>>> +				ret = -EINVAL;
+>>>>>>>  				goto erase_err;
+>>>>>>> -
+>>>>>>> -			addr += mtd->erasesize;
+>>>>>>> -			len -= mtd->erasesize;
+>>>>>>> -
+>>>>>>> -			ret = spi_nor_wait_till_ready(nor);
+>>>>>>> +			}
+>>>>>>> +			while (len) {
+>>>>>>> +				die_no = div_u64_rem(addr,
+>> die_size,
+>>>>>> &rem);
+>>>>>>> +
+>>>>>>> +				/* Check if address is aligned to die
+>> begin*/
+>>>>>>> +				if (!rem) {
+>>>>>>> +					/* die erase? */
+>>>>>>> +					if (len >= die_size) {
+>>>>>>> +						ret =
+>> spi_nor_die_erase(nor,
+>>>>>> addr);
+>>>>>>> +						if (ret)
+>>>>>>> +							goto
+>> erase_err;
+>>>>>>> +
+>>>>>>> +						len -= die_size;
+>>>>>>> +						addr += die_size;
+>>>>>>> +
+>>>>>>> +						timeout =
+>>>>>> max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
+>>>>>>> +
+>>>>>> 	CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
+>>>>>>> +
+>> 	(unsigned
+>>>>>> long)(die_size / SZ_2M));
+>>>>>>> +						ret =
+>>>>>> spi_nor_wait_till_ready_with_timeout(nor, timeout);
+>>>>>>> +						if (ret)
+>>>>>>> +							goto
+>> erase_err;
+>>>>>>> +					} else {
+>>>>>>> +						ret =
+>>>>>> spi_nor_sector_at_time_erase(mtd, addr, len);
+>>>>>>> +						if (ret)
+>>>>>>> +							goto
+>> erase_err;
+>>>>>>> +						len = 0;
+>>>>>>> +					}
+>>>>>>> +				} else {
+>>>>>>> +					/* check if end address cover
+>> at least
+>>>>>> one die */
+>>>>>>> +					if (div64_ul(addr + len,
+>> die_size) >
+>>>>>> ++die_no) {
+>>>>>>> +						/* align to next die */
+>>>>>>> +						rem = die_size - rem;
+>>>>>>> +						ret =
+>>>>>> spi_nor_sector_at_time_erase(mtd, addr, rem);
+>>>>>>> +						if (ret)
+>>>>>>> +							goto
+>> erase_err;
+>>>>>>> +						len -= rem;
+>>>>>>> +						addr += rem;
+>>>>>>> +					} else {
+>>>>>>> +						ret =
+>>>>>> spi_nor_sector_at_time_erase(mtd, addr, len);
+>>>>>>> +						if (ret)
+>>>>>>> +							goto
+>> erase_err;
+>>>>>>> +						len = 0;
+>>>>>>> +					}
+>>>>>>> +				}
+>>>>>>> +			}
+>>>>>>> +		} else {
+>>>>>>> +			ret = spi_nor_sector_at_time_erase(mtd,
+>> addr, len);
+>>>>>>>  			if (ret)
+>>>>>>>  				goto erase_err;
+>>>>>>>  		}
+>>>>>>>
+>>>>>
+>>>>>
+>>>
+>>>
+> 
+> 
