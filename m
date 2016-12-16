@@ -1,24 +1,22 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.7])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHqE7-00047G-9f
- for linux-mtd@lists.infradead.org; Fri, 16 Dec 2016 10:59:00 +0000
-Subject: Re: [PATCH v7 1/2] mtd: nand: add tango NFC dt bindings doc
-To: Arnd Bergmann <arnd@arndb.de>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: linux-mtd <linux-mtd@lists.infradead.org>, Richard Weinberger
- <richard@nod.at>, DT <devicetree@vger.kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mason
- <slash.tmp@free.fr>, Sebastian Frias <sf84@laposte.net>
-References: <580F5AD2.9020909@sigmadesigns.com>
- <580F5B06.6030608@sigmadesigns.com> <1978954.SRtJpfOGp1@wuerfel>
-From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Message-ID: <d3cbfda6-23bf-4ad1-b1ce-c179b765272f@sigmadesigns.com>
-Date: Fri, 16 Dec 2016 11:56:38 +0100
-MIME-Version: 1.0
-In-Reply-To: <1978954.SRtJpfOGp1@wuerfel>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Language: 
-Content-Transfer-Encoding: 7bit
+From: Michal Hocko <mhocko@kernel.org>
+To: <linux-mm@kvack.org>,
+	<linux-fsdevel@vger.kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, "Theodore Ts'o" <tytso@mit.edu>,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
+ Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
+Subject: [DEBUG PATCH 0/2] debug explicit GFP_NO{FS,
+ IO} usage from the scope context
+Date: Fri, 16 Dec 2016 13:46:26 +0100
+Message-Id: <20161216124628.26846-1-mhocko@kernel.org>
+In-Reply-To: <20161215140715.12732-1-mhocko@kernel.org>
+References: <20161215140715.12732-1-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,58 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/11/2016 10:18, Arnd Bergmann wrote:
-> On Tuesday, October 25, 2016 3:15:50 PM CET Marc Gonzalez wrote:
->> Add the tango NAND Flash Controller dt bindings documentation.
->>
->> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
->> ---
->>  Documentation/devicetree/bindings/mtd/tango-nand.txt | 38 ++++++++++++++++++++++++++++++
->>  1 file changed, 38 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
->> new file mode 100644
->> index 000000000000..3cbf95d6595a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
->> @@ -0,0 +1,38 @@
->> +Sigma Designs Tango4 NAND Flash Controller (NFC)
->> +
->> +Required properties:
->> +
->> +- compatible: "sigma,smp8758-nand"
->> +- reg: address/size of nfc_reg, nfc_mem, and pbus_reg
->> +- dmas: reference to the DMA channel used by the controller
->> +- dma-names: "nfc_sbox"
-> 
-> Drop the "nfc_" prefix here, it seems redundant.
+Hi,
+I've forgot to add the following two patches which should help to
+identify explicit GFP_NO{FS,IO} usage from withing a scope context. Such
+a usage can be changed to the full GFP_KERNEL because all the calls
+from within the NO{FS,IO} scope will drop the __GFP_FS resp. __GFP_IO
+automatically and if the function is called outside of the scope then
+we do not need to restrict it to NOFS/NOIO as long as all the reclaim
+recursion unsafe contexts are marked properly. This means that each
+such a reported allocation site has to be checked before converted.
 
-I took a closer look at Documentation/devicetree/bindings and
-arch/arm/boot/dts and it seems the overwhelming nomenclature
-is "rx", "tx" (with variants around these two).
+The debugging has to be enabled explicitly by a kernel command line
+parameter and then it reports the stack trace of the allocation and
+also the function which has started the current scope.
 
-Should I just use "rxtx" for my driver?
-
->> +- clocks: reference to the system clock
->> +- #address-cells: <1>
->> +- #size-cells: <0>
->> +
->> +Children nodes represent the available NAND chips.
->> +See Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
->> +
->> +Example:
->> +
->> +	nand: nand@2c000 {
->> +		compatible = "sigma,smp8758-nand";
->> +		reg = <0x2c000 0x30 0x2d000 0x800 0x20000 0x1000>;
-> 
-> It would be nicer to write this as
-> 
-> 	reg = <0x2c000 0x30>, <0x2d000 0x800>, <0x20000 0x1000>;
-> 
-> which is identical in binary format.
-
-This is indeed a marked improvement. Boris, if I fix these two nits,
-can I submit a single patch, or do you want them split?
-
-Regards.
+These two patches are _not_ intended to be merged and they are only
+aimed at debugging.
