@@ -1,30 +1,30 @@
-Received: from 2.mo5.mail-out.ovh.net ([178.33.109.111])
+Received: from mail-ve1eur01on0124.outbound.protection.outlook.com
+ ([104.47.1.124] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHfGI-0002kr-4A
- for linux-mtd@lists.infradead.org; Thu, 15 Dec 2016 23:16:39 +0000
-Received: from player774.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id 85CAE56B8E
- for <linux-mtd@lists.infradead.org>; Fri, 16 Dec 2016 00:15:58 +0100 (CET)
-Subject: Re: [PATCH v4 1/4] mtd: spi-nor: add memory controllers for the
- Aspeed AST2500 SoC
-To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- linux-mtd@lists.infradead.org
-References: <1481557252-13656-1-git-send-email-clg@kaod.org>
- <1481557252-13656-2-git-send-email-clg@kaod.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Joel Stanley <joel@jms.id.au>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <5566c62d-cc72-f207-e1dd-5a59e6947c24@wedev4u.fr>
-Date: Fri, 16 Dec 2016 00:15:44 +0100
+ id 1cHmAs-0008Mf-Fd
+ for linux-mtd@lists.infradead.org; Fri, 16 Dec 2016 06:39:24 +0000
+From: "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "rfsw-patches@mlist.nokia.com" <rfsw-patches@mlist.nokia.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>
+Subject: RE: [PATCH 2/3] mtd: spi-nor: Implement die erase command logic
+Date: Fri, 16 Dec 2016 06:38:57 +0000
+Message-ID: <AM4PR0701MB21309F515B35267C2892F0FBFE9C0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+References: <1477314214-17718-1-git-send-email-marcin.krzeminski@nokia.com>
+ <1477314214-17718-3-git-send-email-marcin.krzeminski@nokia.com>
+ <7e94d439-114a-8827-9667-1472d3e4323a@atmel.com>
+ <AM4PR0701MB2130740455BE1618C36E5020FE8C0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+ <852daf6e-a304-2dd3-0a54-0a24c7dc347b@atmel.com>
+ <AM4PR0701MB213003E9E3A8C6DD71E3E2AEFE8C0@AM4PR0701MB2130.eurprd07.prod.outlook.com>
+ <2e4aa41d-19a6-6524-0e23-b8d64a614005@atmel.com>
+In-Reply-To: <2e4aa41d-19a6-6524-0e23-b8d64a614005@atmel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1481557252-13656-2-git-send-email-clg@kaod.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,913 +34,394 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cedric,
+Cyrille,
 
-Le 12/12/2016 à 16:40, Cédric Le Goater a écrit :
-> This driver adds mtd support for the Aspeed AST2500 SoC static memory
-> controllers :
-> 
->  * Firmware SPI Memory Controller (FMC)
->    . BMC firmware
->    . 3 chip select pins (CE0 ~ CE2)
->    . supports SPI type flash memory (CE0-CE1)
->    . CE2 can be of NOR type flash but this is not supported by the
->      driver
-> 
->  * SPI Flash Controller (SPI1 and SPI2)
->    . host firmware
->    . 2 chip select pins (CE0 ~ CE1)
->    . supports SPI type flash memory
-> 
-> Each controller has a memory range on which it maps its flash module
-> slaves. Each slave is assigned a memory window for its mapping that
-> can be changed at bootime with the Segment Address Register.
-> 
-> Each SPI flash slave can then be accessed in two modes: Command and
-> User. When in User mode, accesses to the memory segment of the slaves
-> are translated in SPI transfers. When in Command mode, the HW
-> generates the SPI commands automatically and the memory segment is
-> accessed as if doing a MMIO.
-> 
-> Currently, only the User mode is supported. Command mode needs a
-> little more work to check that the memory window on the AHB bus fits
-> the module size.
-> 
-> Based on previous work from Milton D. Miller II <miltonm@us.ibm.com>
-> 
-> Signed-off-by: Cédric Le Goater <clg@kaod.org>
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
-> ---
-> 
-> Changes since v3:
->  - reworked IO routines to use io{read,write}32_rep
->  - changed config option to SPI_ASPEED_SMC
->  - fixed aspeed_smc_chip_setup_init() returned value
->  - merged the use of the "label" property"
-> 
->  drivers/mtd/spi-nor/Kconfig      |  10 +
->  drivers/mtd/spi-nor/Makefile     |   1 +
->  drivers/mtd/spi-nor/aspeed-smc.c | 719 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 730 insertions(+)
->  create mode 100644 drivers/mtd/spi-nor/aspeed-smc.c
-> 
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 4a682ee0f632..42168e9d6097 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -29,6 +29,16 @@ config MTD_SPI_NOR_USE_4K_SECTORS
->  	  Please note that some tools/drivers/filesystems may not work with
->  	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
->  
-> +config SPI_ASPEED_SMC
-> +	tristate "Aspeed flash controllers in SPI mode"
-> +	depends on ARCH_ASPEED || COMPILE_TEST
-> +	depends on HAS_IOMEM && OF
-> +	help
-> +	  This enables support for the Firmware Memory controller (FMC)
-> +	  in the Aspeed AST2500 SoC when attached to SPI NOR chips,
-> +	  and support for the SPI flash memory controller (SPI) for
-> +	  the host firmware. The implementation only supports SPI NOR.
-> +
->  config SPI_ATMEL_QUADSPI
->  	tristate "Atmel Quad SPI Controller"
->  	depends on ARCH_AT91 || (ARM && COMPILE_TEST)
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 121695e83542..6ff64bc7fa0e 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,4 +1,5 @@
->  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
-> +obj-$(CONFIG_SPI_ASPEED_SMC)	+= aspeed-smc.o
->  obj-$(CONFIG_SPI_ATMEL_QUADSPI)	+= atmel-quadspi.o
->  obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= cadence-quadspi.o
->  obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
-> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-> new file mode 100644
-> index 000000000000..2667ab7aeb9b
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
-> @@ -0,0 +1,719 @@
-> +/*
-> + * ASPEED Static Memory Controller driver
-> + *
-> + * Copyright (c) 2015-2016, IBM Corporation.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * as published by the Free Software Foundation; either version
-> + * 2 of the License, or (at your option) any later version.
-> + */
-> +
-> +#include <linux/bug.h>
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/mtd/spi-nor.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/sysfs.h>
-> +
-> +#define DEVICE_NAME	"aspeed-smc"
-> +
-> +/*
-> + * The driver only support SPI flash
-> + */
-> +enum aspeed_smc_flash_type {
-> +	smc_type_nor  = 0,
-> +	smc_type_nand = 1,
-> +	smc_type_spi  = 2,
-> +};
-> +
-> +struct aspeed_smc_chip;
-> +
-> +struct aspeed_smc_info {
-> +	u32 maxsize;		/* maximum size of chip window */
-> +	u8 nce;			/* number of chip enables */
-> +	bool hastype;		/* flash type field exists in config reg */
-> +	u8 we0;			/* shift for write enable bit for CE0 */
-> +	u8 ctl0;		/* offset in regs of ctl for CE0 */
-> +
-> +	void (*set_4b)(struct aspeed_smc_chip *chip);
-> +};
-> +
-> +static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip);
-> +
-> +static const struct aspeed_smc_info fmc_2500_info = {
-> +	.maxsize = 256 * 1024 * 1024,
-> +	.nce = 3,
-> +	.hastype = true,
-> +	.we0 = 16,
-> +	.ctl0 = 0x10,
-> +	.set_4b = aspeed_smc_chip_set_4b,
-> +};
-> +
-> +static const struct aspeed_smc_info spi_2500_info = {
-> +	.maxsize = 128 * 1024 * 1024,
-> +	.nce = 2,
-> +	.hastype = false,
-> +	.we0 = 16,
-> +	.ctl0 = 0x10,
-> +	.set_4b = aspeed_smc_chip_set_4b,
-> +};
-> +
-> +enum aspeed_smc_ctl_reg_value {
-> +	smc_base,		/* base value without mode for other commands */
-> +	smc_read,		/* command reg for (maybe fast) reads */
-> +	smc_write,		/* command reg for writes */
-> +	smc_max,
-> +};
-> +
-> +struct aspeed_smc_controller;
-> +
-> +struct aspeed_smc_chip {
-> +	int cs;
-> +	struct aspeed_smc_controller *controller;
-> +	void __iomem *ctl;			/* control register */
-> +	void __iomem *ahb_base;			/* base of chip window */
-> +	u32 ctl_val[smc_max];			/* control settings */
-> +	enum aspeed_smc_flash_type type;	/* what type of flash */
-> +	struct spi_nor nor;
-> +};
-> +
-> +struct aspeed_smc_controller {
-> +	struct device *dev;
-> +
-> +	struct mutex mutex;			/* controller access mutex */
-> +	const struct aspeed_smc_info *info;	/* type info of controller */
-> +	void __iomem *regs;			/* controller registers */
-> +	void __iomem *ahb_base;			/* per-chip windows resource */
-> +
-> +	struct aspeed_smc_chip *chips[0];	/* pointers to attached chips */
-> +};
-> +
-> +/*
-> + * SPI Flash Configuration Register (AST2500 SPI)
-> + *     or
-> + * Type setting Register (AST2500 FMC).
-> + * CE0 and CE1 can only be of type SPI. CE2 can be of type NOR but the
-> + * driver does not support it.
-> + */
-> +#define CONFIG_REG			0x0
-> +#define CONFIG_DISABLE_LEGACY		BIT(31) /* 1 */
-> +
-> +#define CONFIG_CE2_WRITE		BIT(18)
-> +#define CONFIG_CE1_WRITE		BIT(17)
-> +#define CONFIG_CE0_WRITE		BIT(16)
-> +
-> +#define CONFIG_CE2_TYPE			BIT(4) /* AST2500 FMC only */
-> +#define CONFIG_CE1_TYPE			BIT(2) /* AST2500 FMC only */
-> +#define CONFIG_CE0_TYPE			BIT(0) /* AST2500 FMC only */
-> +
-> +/*
-> + * CE Control Register
-> + */
-> +#define CE_CONTROL_REG			0x4
-> +
-> +/*
-> + * CEx Control Register
-> + */
-> +#define CONTROL_AAF_MODE		BIT(31)
-> +#define CONTROL_IO_MODE_MASK		GENMASK(30, 28)
-> +#define CONTROL_IO_DUAL_DATA		BIT(29)
-> +#define CONTROL_IO_DUAL_ADDR_DATA	(BIT(29) | BIT(28))
-> +#define CONTROL_IO_QUAD_DATA		BIT(30)
-> +#define CONTROL_IO_QUAD_ADDR_DATA	(BIT(30) | BIT(28))
-> +#define CONTROL_CE_INACTIVE_SHIFT	24
-> +#define CONTROL_CE_INACTIVE_MASK	GENMASK(27, \
-> +					CONTROL_CE_INACTIVE_SHIFT)
-> +/* 0 = 16T ... 15 = 1T   T=HCLK */
-> +#define CONTROL_COMMAND_SHIFT		16
-> +#define CONTROL_DUMMY_COMMAND_OUT	BIT(15)
-> +#define CONTROL_IO_DUMMY_HI		BIT(14)
-> +#define CONTROL_IO_DUMMY_HI_SHIFT	14
-> +#define CONTROL_CLK_DIV4		BIT(13) /* others */
-> +#define CONTROL_RW_MERGE		BIT(12)
-> +#define CONTROL_IO_DUMMY_LO_SHIFT	6
-> +#define CONTROL_IO_DUMMY_LO		GENMASK(7, \
-> +						CONTROL_IO_DUMMY_LO_SHIFT)
-> +#define CONTROL_IO_DUMMY_MASK		(CONTROL_IO_DUMMY_HI | \
-> +					 CONTROL_IO_DUMMY_LO)
-> +#define CONTROL_IO_DUMMY_SET(dummy)				 \
-> +	(((((dummy) >> 2) & 0x1) << CONTROL_IO_DUMMY_HI_SHIFT) | \
-> +	 (((dummy) & 0x3) << CONTROL_IO_DUMMY_LO_SHIFT))
-> +
-> +#define CONTROL_CLOCK_FREQ_SEL_SHIFT	8
-> +#define CONTROL_CLOCK_FREQ_SEL_MASK	GENMASK(11, \
-> +						CONTROL_CLOCK_FREQ_SEL_SHIFT)
-> +#define CONTROL_LSB_FIRST		BIT(5)
-> +#define CONTROL_CLOCK_MODE_3		BIT(4)
-> +#define CONTROL_IN_DUAL_DATA		BIT(3)
-> +#define CONTROL_CE_STOP_ACTIVE_CONTROL	BIT(2)
-> +#define CONTROL_COMMAND_MODE_MASK	GENMASK(1, 0)
-> +#define CONTROL_COMMAND_MODE_NORMAL	0
-> +#define CONTROL_COMMAND_MODE_FREAD	1
-> +#define CONTROL_COMMAND_MODE_WRITE	2
-> +#define CONTROL_COMMAND_MODE_USER	3
-> +
-> +#define CONTROL_KEEP_MASK						\
-> +	(CONTROL_AAF_MODE | CONTROL_CE_INACTIVE_MASK | CONTROL_CLK_DIV4 | \
-> +	 CONTROL_IO_DUMMY_MASK | CONTROL_CLOCK_FREQ_SEL_MASK |		\
-> +	 CONTROL_LSB_FIRST | CONTROL_CLOCK_MODE_3)
-> +
-> +/*
-> + * The Segment Register uses a 8MB unit to encode the start address
-> + * and the end address of the mapping window of a flash SPI slave :
-> + *
-> + *        | byte 1 | byte 2 | byte 3 | byte 4 |
-> + *        +--------+--------+--------+--------+
-> + *        |  end   |  start |   0    |   0    |
-> + */
-> +#define SEGMENT_ADDR_REG0		0x30
-> +#define SEGMENT_ADDR_START(_r)		((((_r) >> 16) & 0xFF) << 23)
-> +#define SEGMENT_ADDR_END(_r)		((((_r) >> 24) & 0xFF) << 23)
-> +
-> +/*
-> + * In user mode all data bytes read or written to the chip decode address
-> + * range are transferred to or from the SPI bus. The range is treated as a
-> + * fifo of arbitratry 1, 2, or 4 byte width but each write has to be aligned
-> + * to its size. The address within the multiple 8kB range is ignored when
-> + * sending bytes to the SPI bus.
-> + *
-> + * On the arm architecture, as of Linux version 4.3, memcpy_fromio and
-> + * memcpy_toio on little endian targets use the optimized memcpy routines
-> + * that were designed for well behavied memory storage. These routines
-> + * have a stutter if the source and destination are not both word aligned,
-> + * once with a duplicate access to the source after aligning to the
-> + * destination to a word boundary, and again with a duplicate access to
-> + * the source when the final byte count is not word aligned.
-> + *
-> + * When writing or reading the fifo this stutter discards data or sends
-> + * too much data to the fifo and can not be used by this driver.
-> + *
-> + * While the low level io string routines that implement the insl family do
-> + * the desired accesses and memory increments, the cross architecture io
-> + * macros make them essentially impossible to use on a memory mapped address
-> + * instead of a a token from the call to iomap of an io port.
-> + *
-> + * These fifo routines use readl and friends to a constant io port and update
-> + * the memory buffer pointer and count via explicit code. The final updates
-> + * to len are optimistically suppressed.
-> + */
-> +static int aspeed_smc_read_from_ahb(void *buf, const void __iomem *src,
-> +				    size_t len)
-> +{
-> +	if (IS_ALIGNED((uintptr_t)src, sizeof(uintptr_t)) &&
-> +	    IS_ALIGNED((uintptr_t)buf, sizeof(uintptr_t)) &&
-> +	    IS_ALIGNED(len, sizeof(u32))) {
-> +		ioread32_rep(src, buf, len >> 2);
-> +	} else {
-> +		ioread8_rep(src, buf, len);
-> +	}
-> +	return 0;
-> +}
-> +
+Sorry for late answer.
 
-Maybe It might be something like:
+> -----Original Message-----
+> From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+> Sent: Friday, December 09, 2016 6:23 PM
+> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
+> <marcin.krzeminski@nokia.com>; linux-mtd@lists.infradead.org
+> Cc: rfsw-patches@mlist.nokia.com; dwmw2@infradead.org;
+> computersforpeace@gmail.com; marek.vasut@gmail.com
+> Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement die erase command logic
+>=20
+> Le 30/11/2016 =E0 19:18, Krzeminski, Marcin (Nokia - PL/Wroclaw) a =E9cri=
+t :
+> >
+> >
+> >> -----Original Message-----
+> >> From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+> >> Sent: Wednesday, November 30, 2016 6:20 PM
+> >> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
+> >> <marcin.krzeminski@nokia.com>; linux-mtd@lists.infradead.org
+> >> Cc: rfsw-patches@mlist.nokia.com; dwmw2@infradead.org;
+> >> computersforpeace@gmail.com; marek.vasut@gmail.com
+> >> Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement die erase command
+> >> logic
+> >>
+> >> Le 30/11/2016 =E0 17:44, Krzeminski, Marcin (Nokia - PL/Wroclaw) a =E9=
+crit :
+> >>>
+> >>>
+> >>>> -----Original Message-----
+> >>>> From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+> >>>> Sent: Tuesday, November 29, 2016 5:47 PM
+> >>>> To: Krzeminski, Marcin (Nokia - PL/Wroclaw)
+> >>>> <marcin.krzeminski@nokia.com>; linux-mtd@lists.infradead.org
+> >>>> Cc: rfsw-patches@mlist.nokia.com; dwmw2@infradead.org;
+> >>>> computersforpeace@gmail.com; marek.vasut@gmail.com
+> >>>> Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement die erase command
+> >>>> logic
+> >>>>
+> >>>> Hi Marcin,
+> >>>>
+> >>>> I know you have already answered some of my questions of IRC but I
+> >>>> ask them again here on the mailing list so everybody can benefit
+> >>>> from your answers.
+> >>>>
+> >>>> Le 24/10/2016 =E0 15:03, marcin.krzeminski@nokia.com a =E9crit :
+> >>>>> From: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+> >>>>>
+> >>>>> This commit implements die erase logic.
+> >>>>> Sector at a time procedure is moved to function, then erase
+> >>>>> algorithm will try to use die erase cmd if size and address cover
+> >>>>> one or more dies.
+> >>>>>
+> >>>>
+> >>>> I'm reading your v2 series but indeed I try to understand the
+> >>>> purpose of the series simply because I don't know what does die
+> >>>> erase do as compared to chip erase of sector erase.
+> >>>> Is you series a bug fix or an optmization, maybe both?
+> >>>
+> >>> In current spi-nor framework when user want to erase whole flash (eg.
+> >>> mtd_debug erase /dev/mtdX 0 0x8000000) framework issue chip erase
+> >> cmd.
+> >>> N25Q00 does not support chip erase, instead there was introduced die
+> >>> erase command that can erase whole die (N25Q00 is a mulit-die NOR
+> chip).
+> >>> So for this case this patch is a bug fix.
+> >>> Since I have die erase command implemented it was tempting to use
+> >>> die erase also in case where erase area cover one or more dies to
+> >>> speed up erase process, especially when user has enabled 4KiB
+> >>> sector. That is a small
+> >> optimization.
+> >>>
+> >>> I will rewrite commit message and add those informations.
+> >>>
+> >>> Thanks,
+> >>> Marcin
+> >>>
+> >>
+> >> OK, then I think your patch should be split into two different patches=
+.
+> >>
+> >> 1 - bug fix:
+> >>
+> >> The first patch introducing an explicit flag such as
+> >> SPI_NOR_NO_CHIP_ERASE, which would be set in the relevant entries of
+> >> the spi_nor_ids[] (see already existing flags such as SPI_NOR_NO_FR,
+> SPI_NOR_NO_ERASE, ...).
+> >>
+> >> In spi_nor_scan():
+> >>
+> >>  	if (info->flags & USE_FSR)
+> >>  		nor->flags |=3D SNOR_F_USE_FSR;
+> >>  	if (info->flags & SPI_NOR_HAS_TB)
+> >>  		nor->flags |=3D SNOR_F_HAS_SR_TB;
+> >> +	if (info->flags & SPI_NOR_NO_CHIP_ERASE)
+> >> +		nor->flags |=3D SNOR_F_NO_CHIP_ERASE;
+> >>
+> >> Then in spi_nor_erase():
+> >>
+> >>  	/* whole-chip erase? */
+> >> -	if (len =3D=3D mtd->size) {
+> >> +	if (len =3D=3D mtd->size && !(nor->flags & SNOR_F_NO_CHIP_ERASE)) {
+> >>  		unsigned long timeout;
+> >>
+> >> So you fall into the sector erase case, no optimization yet.
+> >>
+> >> 2 - optimization of spi_nor_erase()
+> >>
+> >> In the "sector"-at-a-time erase branch, try to optimize when possible
+> >> using die erase instead of sector erase.
+> >>
+> >> Each commit message describing the purpose of the patch.
+> >
+> >
+> > OK, I will split patches in this way.
+> >
+> >>
+> >> I would like to also handle the cases where the memory supports:
+> >> - both chip and die erases: if so, no reason not to use chip erase on =
+such
+> >>   multi-die memory.
+> > I do not think that there are chips supporting both.
+> > In this case two flags are needed one for disable chip erase and
+> > another one for enabling die erase. Is that OK?
+>=20
+> I think it might be better to have 2 separated flags, at least for semant=
+ic
+> reason: "the memory supports Die-Erase hence we don't try to use Chip-
+> Erase" sounds a little bit odd to me.
 
-	size_t offset = 0;
+Let's do it with two flags then.
 
-	if (IS_ALIGNED((uintptr_t)src, sizeof(uintptr_t)) &&
-	    IS_ALIGNED((uintptr_t)buf, sizeof(uintptr_t))) {
-		ioread32_rep(src, buf, len >> 2);
-		offset = len & ~0x3;
-		len -= offset;
-	}
-	ioread8_rep(src, (const u8 *)buf + offset, len);
+>=20
+> This is what I understand when I read:
+>  	/* whole-chip erase? */
+> -	if (len =3D=3D mtd->size) {
+> +	if (len =3D=3D mtd->size && !die_erase) {
+>=20
+> Why do we try Chip-Erase only if Die-Erase is not supported?
 
-I assume the Aspeed SPI controller allows to read as much 32-bit words
-as possible before reading the remaining bytes.
+I assumed that there is no flash that support both.
+Do you know one that has chip erase and die erase?
 
-This is just a suggested optimization, no need to use it if you don't
-want to.
+>=20
+> Reading something like "we try Chip-Erase unless Chip-Erase is not
+> supported" is more logic, isn't it?
+>=20
+> I want to avoid the implicit assumption "Die Erase supported =3D> Chip Er=
+ase
+> not supported", even if it *might* be true, because it is strange when we
+> read the code.
 
-In v3, with readl()/readb(), you used to increment both src and buf in
-your while() loop but now with ioreadX_rep() only buf is incremented: it
-always reads from src without incrementing this latest address.
+Ok.
+>=20
+> >> - neither chip nor die erases.
+> > This is supported DIE_ERASE flasg set and die_cnt =3D=3D 0
+>=20
+> DIE_ERASE flag set and die_cnt =3D=3D 0 meaning Chip-Erase is not support=
+ed?
+> IHMO, semantically, it's not logical.
 
-I guess it means that the Aspeed SPI controller doesn't care of the
-actual value of src as long as it lays inside the chip address range.
+Just to save yet another flag. Having so many flags make codes complicated,
+but I agree the it I at least logical.
+>=20
+> Also discussing another topic on #mtd, it seems that some memories don't
+> have a 4-byte address version of the Die Erase op code.
 
-This is what you explain in the 1st paragraph of the comment, isn't it?
+Yes. Could be workarounded by enabling 4byte address mode just before
+sending die erase and then disable it back.
+The more important question is if you really one to have in upstream die er=
+ase?
+It is about 30% faster than  sector at time erase on some flash
+(especially in case 4KiB sectors). From the other hand I see chips that it =
+was
+not faster at all (it also applies on chip erase).
+My first version of fixing this problem was to add only the flag of disable=
+ chip erase.
+See here:
+http://lists.infradead.org/pipermail/linux-mtd/2016-October/069888.html
+Maybe for now it is better to take above?
 
+>=20
+> If so, it's preferred to use a 4-byte address Sector/Block Erase op code =
+than
+> to enter/exit the statefull 4-byte address mode then use the Die Erase op
+> code: this statefull mode should be avoided as much as possible because
+> many bootloaders expect the SPI memory to be in 3byte address mode and
+> if a spurious reset occurs on the CPU side (but not on the memory side)
+> those bootloaders will fail to read data from the SPI memory.
 
-> +static int aspeed_smc_write_to_ahb(void __iomem *dst, const void *buf,
-> +				   size_t len)
-> +{
-> +	if (IS_ALIGNED((uintptr_t)dst, sizeof(uintptr_t)) &&
-> +	    IS_ALIGNED((uintptr_t)buf, sizeof(uintptr_t)) &&
-> +	    IS_ALIGNED(len, sizeof(u32))) {
-> +		iowrite32_rep(dst, buf, len >> 2);
-> +	} else {
-> +		iowrite8_rep(dst, buf, len);
-> +	}
-> +	return 0;
-> +}
-> +
-> +static inline u32 aspeed_smc_chip_write_bit(struct aspeed_smc_chip *chip)
-> +{
-> +	return BIT(chip->controller->info->we0 + chip->cs);
-> +}
-> +
-> +static void aspeed_smc_chip_check_config(struct aspeed_smc_chip *chip)
-> +{
-> +	struct aspeed_smc_controller *controller = chip->controller;
-> +	u32 reg;
-> +
-> +	reg = readl(controller->regs + CONFIG_REG);
-> +
-> +	if (reg & aspeed_smc_chip_write_bit(chip))
-> +		return;
-> +
-> +	dev_dbg(controller->dev, "config write is not set ! @%p: 0x%08x\n",
-> +		controller->regs + CONFIG_REG, reg);
-> +	reg |= aspeed_smc_chip_write_bit(chip);
-> +	writel(reg, controller->regs + CONFIG_REG);
-> +}
-> +
-> +static void aspeed_smc_start_user(struct spi_nor *nor)
-> +{
-> +	struct aspeed_smc_chip *chip = nor->priv;
-> +	u32 ctl = chip->ctl_val[smc_base];
-> +
-> +	/*
-> +	 * When the chip is controlled in user mode, we need write
-> +	 * access to send the opcodes to it. So check the config.
-> +	 */
-> +	aspeed_smc_chip_check_config(chip);
-> +
-> +	ctl |= CONTROL_COMMAND_MODE_USER |
-> +		CONTROL_CE_STOP_ACTIVE_CONTROL;
-> +	writel(ctl, chip->ctl);
-> +
-> +	ctl &= ~CONTROL_CE_STOP_ACTIVE_CONTROL;
-> +	writel(ctl, chip->ctl);
-> +}
-> +
-> +static void aspeed_smc_stop_user(struct spi_nor *nor)
-> +{
-> +	struct aspeed_smc_chip *chip = nor->priv;
-> +
-> +	u32 ctl = chip->ctl_val[smc_read];
-> +	u32 ctl2 = ctl | CONTROL_COMMAND_MODE_USER |
-> +		CONTROL_CE_STOP_ACTIVE_CONTROL;
-> +
-> +	writel(ctl2, chip->ctl);	/* stop user CE control */
-> +	writel(ctl, chip->ctl);		/* default to fread or read mode */
-> +}
-> +
+Yeap, moreover similar problem you will face when you will try to
+add QPi modes (444) to framework.
 
-This driver seems to use only the "USER" mode so why do you go back the
-the "FREAD" or "READ" modes at the very end of aspeed_smc_stop_user() as
-the comment suggests?
+Thanks,
+Marcin
 
-Do you plan to implement other modes later? Can't you just stay in
-"USER" mode? I guess you just need the chip-select control part.
-
-> +static int aspeed_smc_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-> +{
-> +	struct aspeed_smc_chip *chip = nor->priv;
-> +
-> +	mutex_lock(&chip->controller->mutex);
-> +	return 0;
-> +}
-> +
-> +static void aspeed_smc_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
-> +{
-> +	struct aspeed_smc_chip *chip = nor->priv;
-> +
-> +	mutex_unlock(&chip->controller->mutex);
-> +}
-> +
-> +static int aspeed_smc_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-> +{
-> +	struct aspeed_smc_chip *chip = nor->priv;
-> +
-> +	aspeed_smc_start_user(nor);
-> +	aspeed_smc_write_to_ahb(chip->ahb_base, &opcode, 1);
-> +	aspeed_smc_read_from_ahb(buf, chip->ahb_base, len);
-> +	aspeed_smc_stop_user(nor);
-> +	return 0;
-> +}
-> +
-> +static int aspeed_smc_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-> +				int len)
-> +{
-> +	struct aspeed_smc_chip *chip = nor->priv;
-> +
-> +	aspeed_smc_start_user(nor);
-> +	aspeed_smc_write_to_ahb(chip->ahb_base, &opcode, 1);
-> +	aspeed_smc_write_to_ahb(chip->ahb_base, buf, len);
-> +	aspeed_smc_stop_user(nor);
-> +	return 0;
-> +}
-> +
-> +static void aspeed_smc_send_cmd_addr(struct spi_nor *nor, u8 cmd, u32 addr)
-> +{
-> +	struct aspeed_smc_chip *chip = nor->priv;
-> +	__be32 temp;
-> +	u32 cmdaddr;
-> +
-> +	switch (nor->addr_width) {
-> +	default:
-> +		WARN_ONCE(1, "Unexpected address width %u, defaulting to 3\n",
-> +			  nor->addr_width);
-> +		/* FALLTHROUGH */
-> +	case 3:
-> +		cmdaddr = addr & 0xFFFFFF;
-> +		cmdaddr |= cmd << 24;
-> +
-> +		temp = cpu_to_be32(cmdaddr);
-> +		aspeed_smc_write_to_ahb(chip->ahb_base, &temp, 4);
-> +		break;
-> +	case 4:
-> +		temp = cpu_to_be32(addr);
-> +		aspeed_smc_write_to_ahb(chip->ahb_base, &cmd, 1);
-> +		aspeed_smc_write_to_ahb(chip->ahb_base, &temp, 4);
-> +		break;
-> +	}
-> +}
-> +
-> +static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
-> +				    size_t len, u_char *read_buf)
-> +{
-> +	struct aspeed_smc_chip *chip = nor->priv;
-> +
-> +	aspeed_smc_start_user(nor);
-> +	aspeed_smc_send_cmd_addr(nor, nor->read_opcode, from);
-
-Here, please check nor->read_dummy to write the relevant number dummy
-bytes between the address and data cycles.
-
-It should not need too much work to add support to the dummy clock
-cycles and it's more reliable/safe.
-
-Indeed, even if you call the current spi_nor_scan() function with the
-enum read_mode SPI_NOR_NORMAL value, this function just doesn't care and
-selects the Fast Read (0Bh) command instead of the Read (03h) command
-for nor->read_opcode if the "m25p,fast-read" DT property is set.
-
-So if any end user sets this property in a custom DT,
-aspeed_smc_read_user() would just fail.
-
-Hence I think it's worth dealing with dummy cycles now rather than later.
-
-Actually all (Fast) Read commands but the legacy Read (03h) command need
-dummy cycles. So the Read SFDP (5Ah) command does.
-
-For all the (Q)SPI memories I've seen till now, the default factory
-settings for the number of dummy cycles are chosen so it always
-corresponds to entire bytes, whatever the SPI protocol is (SPI 1-1-2,
-1-2-2, 1-1-4, 1-4-4, ...).
-
-Besides, I recommend you use the 0xFF value for dummy cycles: this value
-prevents the memory from entering its continuous mode by mistake.
-The 0xFF value works for all manufacturers. The SFDP specification seems
-to confirm that.
-
-
-> +	aspeed_smc_read_from_ahb(read_buf, chip->ahb_base, len);
-> +	aspeed_smc_stop_user(nor);
-> +	return len;
-> +}
-> +
-> +static ssize_t aspeed_smc_write_user(struct spi_nor *nor, loff_t to,
-> +				     size_t len, const u_char *write_buf)
-> +{
-> +	struct aspeed_smc_chip *chip = nor->priv;
-> +
-> +	aspeed_smc_start_user(nor);
-> +	aspeed_smc_send_cmd_addr(nor, nor->program_opcode, to);
-> +	aspeed_smc_write_to_ahb(chip->ahb_base, write_buf, len);
-> +	aspeed_smc_stop_user(nor);
-> +	return len;
-> +}
-> +
-> +static int aspeed_smc_unregister(struct aspeed_smc_controller *controller)
-> +{
-> +	struct aspeed_smc_chip *chip;
-> +	int n;
-> +
-> +	for (n = 0; n < controller->info->nce; n++) {
-> +		chip = controller->chips[n];
-> +		if (chip)
-> +			mtd_device_unregister(&chip->nor.mtd);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int aspeed_smc_remove(struct platform_device *dev)
-> +{
-> +	return aspeed_smc_unregister(platform_get_drvdata(dev));
-> +}
-> +
-> +static const struct of_device_id aspeed_smc_matches[] = {
-> +	{ .compatible = "aspeed,ast2500-fmc", .data = &fmc_2500_info },
-> +	{ .compatible = "aspeed,ast2500-spi", .data = &spi_2500_info },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, aspeed_smc_matches);
-> +
-> +/*
-> + * Each chip has a mapping window defined by a segment address
-> + * register defining a start and an end address on the AHB bus. These
-> + * addresses can be configured to fit the chip size and offer a
-> + * contiguous memory region across chips. For the moment, we only
-> + * check that each chip segment is valid.
-> + */
-> +static void __iomem *aspeed_smc_chip_base(struct aspeed_smc_chip *chip,
-> +					  struct resource *res)
-> +{
-> +	struct aspeed_smc_controller *controller = chip->controller;
-> +	u32 offset = 0;
-> +	u32 reg;
-> +
-> +	if (controller->info->nce > 1) {
-> +		reg = readl(controller->regs + SEGMENT_ADDR_REG0 +
-> +			    chip->cs * 4);
-> +
-> +		if (SEGMENT_ADDR_START(reg) >= SEGMENT_ADDR_END(reg))
-> +			return NULL;
-> +
-> +		offset = SEGMENT_ADDR_START(reg) - res->start;
-> +	}
-> +
-> +	return controller->ahb_base + offset;
-> +}
-> +
-> +static void aspeed_smc_chip_enable_write(struct aspeed_smc_chip *chip)
-> +{
-> +	struct aspeed_smc_controller *controller = chip->controller;
-> +	u32 reg;
-> +
-> +	reg = readl(controller->regs + CONFIG_REG);
-> +
-> +	reg |= aspeed_smc_chip_write_bit(chip);
-> +	writel(reg, controller->regs + CONFIG_REG);
-> +}
-> +
-> +static void aspeed_smc_chip_set_type(struct aspeed_smc_chip *chip, int type)
-> +{
-> +	struct aspeed_smc_controller *controller = chip->controller;
-> +	u32 reg;
-> +
-> +	chip->type = type;
-> +
-> +	reg = readl(controller->regs + CONFIG_REG);
-> +	reg &= ~(3 << (chip->cs * 2));
-> +	reg |= chip->type << (chip->cs * 2);
-> +	writel(reg, controller->regs + CONFIG_REG);
-> +}
-> +
-> +/*
-> + * The AST2500 FMC flash controller should be strapped by hardware, or
-> + * autodetected, but the AST2500 SPI flash needs to be set.
-> + */
-> +static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip)
-> +{
-> +	struct aspeed_smc_controller *controller = chip->controller;
-> +	u32 reg;
-> +
-> +	if (chip->controller->info == &spi_2500_info) {
-> +		reg = readl(controller->regs + CE_CONTROL_REG);
-> +		reg |= 1 << chip->cs;
-> +		writel(reg, controller->regs + CE_CONTROL_REG);
-> +	}
-> +}
-> +
-> +static int aspeed_smc_chip_setup_init(struct aspeed_smc_chip *chip,
-> +				      struct resource *res)
-> +{
-> +	struct aspeed_smc_controller *controller = chip->controller;
-> +	const struct aspeed_smc_info *info = controller->info;
-> +	u32 reg, base_reg;
-> +
-> +	/*
-> +	 * Always turn on the write enable bit to allow opcodes to be
-> +	 * sent in user mode.
-> +	 */
-> +	aspeed_smc_chip_enable_write(chip);
-> +
-> +	/* The driver only supports SPI type flash */
-> +	if (info->hastype)
-> +		aspeed_smc_chip_set_type(chip, smc_type_spi);
-> +
-> +	/*
-> +	 * Configure chip base address in memory
-> +	 */
-> +	chip->ahb_base = aspeed_smc_chip_base(chip, res);
-> +	if (!chip->ahb_base) {
-> +		dev_warn(chip->nor.dev, "CE segment window closed.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/*
-> +	 * Get value of the inherited control register. U-Boot usually
-> +	 * does some timing calibration on the FMC chip, so it's good
-> +	 * to keep them. In the future, we should handle calibration
-> +	 * from Linux.
-> +	 */
-> +	reg = readl(chip->ctl);
-> +	dev_dbg(controller->dev, "control register: %08x\n", reg);
-> +
-> +	base_reg = reg & CONTROL_KEEP_MASK;
-> +	if (base_reg != reg) {
-> +		dev_info(controller->dev,
-> +			 "control register changed to: %08x\n",
-> +			 base_reg);
-
-dev_dbg() should be enough: end users don't know what to do with the new
-control register value, do they?
-
-This is just a suggestion, you can keep dev_info() if you want, I don't
-mind :)
-
-> +	}
-> +	chip->ctl_val[smc_base] = base_reg;
-> +
-> +	/*
-> +	 * Retain the prior value of the control register as the
-> +	 * default if it was normal access mode. Otherwise start with
-> +	 * the sanitized base value set to read mode.
-> +	 */
-> +	if ((reg & CONTROL_COMMAND_MODE_MASK) ==
-> +	    CONTROL_COMMAND_MODE_NORMAL)
-> +		chip->ctl_val[smc_read] = reg;
-> +	else
-> +		chip->ctl_val[smc_read] = chip->ctl_val[smc_base] |
-> +			CONTROL_COMMAND_MODE_NORMAL;
-> +
-> +	dev_dbg(controller->dev, "default control register: %08x\n",
-> +		chip->ctl_val[smc_read]);
-> +	return 0;
-> +}
-> +
-> +static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
-> +{
-> +	struct aspeed_smc_controller *controller = chip->controller;
-> +	const struct aspeed_smc_info *info = controller->info;
-> +	u32 cmd;
-> +
-> +	if (chip->nor.addr_width == 4 && info->set_4b)
-> +		info->set_4b(chip);
-> +
-> +	/*
-> +	 * base mode has not been optimized yet. use it for writes.
-> +	 */
-> +	chip->ctl_val[smc_write] = chip->ctl_val[smc_base] |
-> +		chip->nor.program_opcode << CONTROL_COMMAND_SHIFT |
-> +		CONTROL_COMMAND_MODE_WRITE;
-> +
-> +	dev_dbg(controller->dev, "write control register: %08x\n",
-> +		chip->ctl_val[smc_write]);
-> +
-> +	/*
-> +	 * TODO: Adjust clocks if fast read is supported and interpret
-> +	 * SPI-NOR flags to adjust controller settings.
-> +	 */
-> +	switch (chip->nor.flash_read) {
-> +	case SPI_NOR_NORMAL:
-> +		cmd = CONTROL_COMMAND_MODE_NORMAL;
-> +		break;
-> +	case SPI_NOR_FAST:
-> +		cmd = CONTROL_COMMAND_MODE_FREAD;
-> +		break;
-> +	default:
-> +		dev_err(chip->nor.dev, "unsupported SPI read mode\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	chip->ctl_val[smc_read] |= cmd |
-> +		CONTROL_IO_DUMMY_SET(chip->nor.read_dummy / 8);
-> +
-> +	dev_dbg(controller->dev, "base control register: %08x\n",
-> +		chip->ctl_val[smc_read]);
-> +	return 0;
-> +}
-> +
-
-Why do you configure both chip->ctrl_val[smc_write] and
-chip->ctrl_val[smc_read] if the driver actually only uses
-chip->ctrl_val[smc_base] ?
-
-all aspeed_smc_[read|write]_[reg|user]() functions call
-aspeed_smc_[start|stop]_user(), so this driver always selects the "USER"
-mode and configures the control register based on chip->ctrl_val[smc_base].
-
-
-> +static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
-> +				  struct device_node *np, struct resource *r)
-> +{
-> +	const struct aspeed_smc_info *info = controller->info;
-> +	struct device *dev = controller->dev;
-> +	struct device_node *child;
-> +	unsigned int cs;
-> +	int ret = -ENODEV;
-> +
-> +	for_each_available_child_of_node(np, child) {
-> +		struct aspeed_smc_chip *chip;
-> +		struct spi_nor *nor;
-> +		struct mtd_info *mtd;
-> +
-> +		/* This driver does not support NAND or NOR flash devices. */
-> +		if (!of_device_is_compatible(child, "jedec,spi-nor"))
-> +			continue;
-> +
-> +		ret = of_property_read_u32(child, "reg", &cs);
-> +		if (ret) {
-> +			dev_err(dev, "Couldn't not read chip select.\n");
-> +			break;
-> +		}
-> +
-> +		if (cs >= info->nce) {
-> +			dev_err(dev, "Chip select %d out of range.\n",
-> +				cs);
-> +			ret = -ERANGE;
-> +			break;
-> +		}
-> +
-> +		if (controller->chips[cs]) {
-> +			dev_err(dev, "Chip select %d already in use by %s\n",
-> +				cs, dev_name(controller->chips[cs]->nor.dev));
-> +			ret = -EBUSY;
-> +			break;
-> +		}
-> +
-> +		chip = devm_kzalloc(controller->dev, sizeof(*chip), GFP_KERNEL);
-> +		if (!chip) {
-> +			ret = -ENOMEM;
-> +			break;
-> +		}
-> +
-> +		chip->controller = controller;
-> +		chip->ctl = controller->regs + info->ctl0 + cs * 4;
-> +		chip->cs = cs;
-> +
-> +		nor = &chip->nor;
-> +		mtd = &nor->mtd;
-> +
-> +		nor->dev = dev;
-> +		nor->priv = chip;
-> +		spi_nor_set_flash_node(nor, child);
-> +		nor->read = aspeed_smc_read_user;
-> +		nor->write = aspeed_smc_write_user;
-> +		nor->read_reg = aspeed_smc_read_reg;
-> +		nor->write_reg = aspeed_smc_write_reg;
-> +		nor->prepare = aspeed_smc_prep;
-> +		nor->unprepare = aspeed_smc_unprep;
-> +
-> +		mtd->name = of_get_property(child, "label", NULL);
-
-This new "label" DT property should be removed from this patch and send
-in a dedicated patch to be discussed separately. However I agree with
-Marek: it looks generic so maybe it could be managed directly from
-mtd_device_register() since setting such as name could also be done when
-using a NAND flash. Anyway, I don't see the link between this name and
-spi-nor. Hence I don't think the DT property should be documented in
-jedec,spi-nor.txt.
-
-Be patient because I expect such a topic to be discussed quite a long
-time before we all agree, even if this is "just" a new DT property ;)
-
-
-Best regards,
-
-Cyrille
-
-
-> +
-> +		ret = aspeed_smc_chip_setup_init(chip, r);
-> +		if (ret)
-> +			break;
-> +
-> +		/*
-> +		 * TODO: Add support for SPI_NOR_QUAD and SPI_NOR_DUAL
-> +		 * attach when board support is present as determined
-> +		 * by of property.
-> +		 */
-> +		ret = spi_nor_scan(nor, NULL, SPI_NOR_NORMAL);
-> +		if (ret)
-> +			break;
-> +
-> +		ret = aspeed_smc_chip_setup_finish(chip);
-> +		if (ret)
-> +			break;
-> +
-> +		ret = mtd_device_register(mtd, NULL, 0);
-> +		if (ret)
-> +			break;
-> +
-> +		controller->chips[cs] = chip;
-> +	}
-> +
-> +	if (ret)
-> +		aspeed_smc_unregister(controller);
-> +
-> +	return ret;
-> +}
-> +
-> +static int aspeed_smc_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	struct device *dev = &pdev->dev;
-> +	struct aspeed_smc_controller *controller;
-> +	const struct of_device_id *match;
-> +	const struct aspeed_smc_info *info;
-> +	struct resource *res;
-> +	int ret;
-> +
-> +	match = of_match_device(aspeed_smc_matches, &pdev->dev);
-> +	if (!match || !match->data)
-> +		return -ENODEV;
-> +	info = match->data;
-> +
-> +	controller = devm_kzalloc(&pdev->dev, sizeof(*controller) +
-> +		info->nce * sizeof(controller->chips[0]), GFP_KERNEL);
-> +	if (!controller)
-> +		return -ENOMEM;
-> +	controller->info = info;
-> +	controller->dev = dev;
-> +
-> +	mutex_init(&controller->mutex);
-> +	platform_set_drvdata(pdev, controller);
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	controller->regs = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(controller->regs)) {
-> +		dev_err(dev, "Cannot remap controller address.\n");
-> +		return PTR_ERR(controller->regs);
-> +	}
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +	controller->ahb_base = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(controller->ahb_base)) {
-> +		dev_err(dev, "Cannot remap controller address.\n");
-> +		return PTR_ERR(controller->ahb_base);
-> +	}
-> +
-> +	ret = aspeed_smc_setup_flash(controller, np, res);
-> +	if (ret)
-> +		dev_err(dev, "Aspeed SMC probe failed %d\n", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct platform_driver aspeed_smc_driver = {
-> +	.probe = aspeed_smc_probe,
-> +	.remove = aspeed_smc_remove,
-> +	.driver = {
-> +		.name = DEVICE_NAME,
-> +		.of_match_table = aspeed_smc_matches,
-> +	}
-> +};
-> +
-> +module_platform_driver(aspeed_smc_driver);
-> +
-> +MODULE_DESCRIPTION("ASPEED Static Memory Controller Driver");
-> +MODULE_AUTHOR("Cedric Le Goater <clg@kaod.org>");
-> +MODULE_LICENSE("GPL v2");
-> 
+>=20
+> >>
+> >> Maybe I'm wrong but the assumption (multi-die =3D> chip erase not
+> >> supported) might be false.
+> > It is false, but all multi-die chip I know support die erase or chip er=
+ase.
+> > Never both.
+> >
+> > Thanks,
+> > Marcin
+> >
+> >>
+> >>
+> >> Best regards,
+> >>
+> >> Cyrille
+> >>
+> >>
+> >>>>
+> >>>> Best regards,
+> >>>>
+> >>>> Cyrille
+> >>>>
+> >>>>> Signed-off-by: Marcin Krzeminski <marcin.krzeminski@nokia.com>
+> >>>>> ---
+> >>>>>  drivers/mtd/spi-nor/spi-nor.c | 90
+> >>>>> +++++++++++++++++++++++++++++++++++++------
+> >>>>>  1 file changed, 78 insertions(+), 12 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
+> >>>>> b/drivers/mtd/spi-nor/spi-nor.c index 3afe207..17bbec0 100644
+> >>>>> --- a/drivers/mtd/spi-nor/spi-nor.c
+> >>>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> >>>>> @@ -360,6 +360,29 @@ static int spi_nor_erase_sector(struct
+> >>>>> spi_nor
+> >>>> *nor, u32 addr)
+> >>>>>  	return nor->write_reg(nor, nor->erase_opcode, buf, nor-
+> >>>>> addr_width); }
+> >>>>>
+> >>>>> +static inline int spi_nor_sector_at_time_erase(struct mtd_info
+> >>>>> +*mtd,
+> >>>>> +u32 addr, u32 len) {
+> >>>>> +	struct spi_nor *nor =3D mtd_to_spi_nor(mtd);
+> >>>>> +	int ret =3D 0;
+> >>>>> +
+> >>>>> +	while (len) {
+> >>>>> +		write_enable(nor);
+> >>>>> +
+> >>>>> +		ret =3D spi_nor_erase_sector(nor, addr);
+> >>>>> +		if (ret)
+> >>>>> +			return ret;
+> >>>>> +
+> >>>>> +		addr +=3D mtd->erasesize;
+> >>>>> +		len -=3D mtd->erasesize;
+> >>>>> +
+> >>>>> +		ret =3D spi_nor_wait_till_ready(nor);
+> >>>>> +		if (ret)
+> >>>>> +			return ret;
+> >>>>> +	}
+> >>>>> +
+> >>>>> +	return ret;
+> >>>>> +}
+> >>>>> +
+> >>>>>  /*
+> >>>>>   * Erase an address range on the nor chip.  The address range may
+> >> extend
+> >>>>>   * one or more erase sectors.  Return an error is there is a
+> >>>>> problem
+> >> erasing.
+> >>>>> @@ -367,9 +390,11 @@ static int spi_nor_erase_sector(struct
+> >>>>> spi_nor *nor, u32 addr)  static int spi_nor_erase(struct mtd_info
+> >>>>> *mtd, struct erase_info *instr)  {
+> >>>>>  	struct spi_nor *nor =3D mtd_to_spi_nor(mtd);
+> >>>>> -	u32 addr, len;
+> >>>>> +	u32 addr, len, die_no, die_size;
+> >>>>>  	uint32_t rem;
+> >>>>>  	int ret;
+> >>>>> +	unsigned long timeout;
+> >>>>> +	u8 die_erase =3D nor->die_cnt && SNOR_F_DIE_ERASE;
+> >>>>>
+> >>>>>  	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr=
+,
+> >>>>>  			(long long)instr->len);
+> >>>>> @@ -386,7 +411,7 @@ static int spi_nor_erase(struct mtd_info *mtd,
+> >>>> struct erase_info *instr)
+> >>>>>  		return ret;
+> >>>>>
+> >>>>>  	/* whole-chip erase? */
+> >>>>> -	if (len =3D=3D mtd->size) {
+> >>>>> +	if (len =3D=3D mtd->size && !die_erase) {
+> >>>>>  		unsigned long timeout;
+> >>>>>
+> >>>>>  		write_enable(nor);
+> >>>>> @@ -416,17 +441,58 @@ static int spi_nor_erase(struct mtd_info
+> >>>>> *mtd, struct erase_info *instr)
+> >>>>>
+> >>>>>  	/* "sector"-at-a-time erase */
+> >>>>>  	} else {
+> >>>>> -		while (len) {
+> >>>>> -			write_enable(nor);
+> >>>>> -
+> >>>>> -			ret =3D spi_nor_erase_sector(nor, addr);
+> >>>>> -			if (ret)
+> >>>>> +		if (die_erase) {
+> >>>>> +			die_size =3D div_u64_rem(mtd->size, nor-
+> >die_cnt,
+> >>>> &rem);
+> >>>>> +			if (rem) {
+> >>>>> +				ret =3D -EINVAL;
+> >>>>>  				goto erase_err;
+> >>>>> -
+> >>>>> -			addr +=3D mtd->erasesize;
+> >>>>> -			len -=3D mtd->erasesize;
+> >>>>> -
+> >>>>> -			ret =3D spi_nor_wait_till_ready(nor);
+> >>>>> +			}
+> >>>>> +			while (len) {
+> >>>>> +				die_no =3D div_u64_rem(addr,
+> die_size,
+> >>>> &rem);
+> >>>>> +
+> >>>>> +				/* Check if address is aligned to die
+> begin*/
+> >>>>> +				if (!rem) {
+> >>>>> +					/* die erase? */
+> >>>>> +					if (len >=3D die_size) {
+> >>>>> +						ret =3D
+> spi_nor_die_erase(nor,
+> >>>> addr);
+> >>>>> +						if (ret)
+> >>>>> +							goto
+> erase_err;
+> >>>>> +
+> >>>>> +						len -=3D die_size;
+> >>>>> +						addr +=3D die_size;
+> >>>>> +
+> >>>>> +						timeout =3D
+> >>>> max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
+> >>>>> +
+> >>>> 	CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
+> >>>>> +
+> 	(unsigned
+> >>>> long)(die_size / SZ_2M));
+> >>>>> +						ret =3D
+> >>>> spi_nor_wait_till_ready_with_timeout(nor, timeout);
+> >>>>> +						if (ret)
+> >>>>> +							goto
+> erase_err;
+> >>>>> +					} else {
+> >>>>> +						ret =3D
+> >>>> spi_nor_sector_at_time_erase(mtd, addr, len);
+> >>>>> +						if (ret)
+> >>>>> +							goto
+> erase_err;
+> >>>>> +						len =3D 0;
+> >>>>> +					}
+> >>>>> +				} else {
+> >>>>> +					/* check if end address cover
+> at least
+> >>>> one die */
+> >>>>> +					if (div64_ul(addr + len,
+> die_size) >
+> >>>> ++die_no) {
+> >>>>> +						/* align to next die */
+> >>>>> +						rem =3D die_size - rem;
+> >>>>> +						ret =3D
+> >>>> spi_nor_sector_at_time_erase(mtd, addr, rem);
+> >>>>> +						if (ret)
+> >>>>> +							goto
+> erase_err;
+> >>>>> +						len -=3D rem;
+> >>>>> +						addr +=3D rem;
+> >>>>> +					} else {
+> >>>>> +						ret =3D
+> >>>> spi_nor_sector_at_time_erase(mtd, addr, len);
+> >>>>> +						if (ret)
+> >>>>> +							goto
+> erase_err;
+> >>>>> +						len =3D 0;
+> >>>>> +					}
+> >>>>> +				}
+> >>>>> +			}
+> >>>>> +		} else {
+> >>>>> +			ret =3D spi_nor_sector_at_time_erase(mtd,
+> addr, len);
+> >>>>>  			if (ret)
+> >>>>>  				goto erase_err;
+> >>>>>  		}
+> >>>>>
+> >>>
+> >>>
+> >
+> >
