@@ -1,17 +1,20 @@
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>
-CC: Arnd Bergmann <arnd@arndb.de>, Mark Rutland <mark.rutland@arm.com>, "Rob
- Herring" <robh@kernel.org>, Mans Rullgard <mans@mansr.com>, linux-mtd
- <linux-mtd@lists.infradead.org>, Linux ARM
- <linux-arm-kernel@lists.infradead.org>
-From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Subject: [PATCH v1] mtd: nand: tango: Update DT binding description
-Message-ID: <ba47f2f1-bcdc-91e8-ed79-153931ccdad8@sigmadesigns.com>
-Date: Mon, 19 Dec 2016 15:30:12 +0100
+Received: from smtpout.microchip.com ([198.175.253.82]
+ helo=email.microchip.com)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cIzVx-0004hw-9H
+ for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 15:06:13 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <marek.vasut@gmail.com>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v3 0/2] mtd: spi-nor: add a stateless method to support memory
+ size above 128Mib
+Date: Mon, 19 Dec 2016 16:05:55 +0100
+Message-ID: <cover.1482158909.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Language: 
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Visually separate register ranges (address/size pairs) in reg prop.
-Change DMA channel name, for consistency with other drivers.
+Hi all,
 
-Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
----
- Documentation/devicetree/bindings/mtd/tango-nand.txt | 6 +++---
- drivers/mtd/nand/tango_nand.c                        | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+this series of patches is based on the git://github.com/spi-nor/linux.git
+tree. It has been extracted from the SFDP series and is resent as
+a standalone series.
 
-diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-index ad5a02f2ac8c..cd1bf2ac9055 100644
---- a/Documentation/devicetree/bindings/mtd/tango-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-@@ -5,7 +5,7 @@ Required properties:
- - compatible: "sigma,smp8758-nand"
- - reg: address/size of nfc_reg, nfc_mem, and pbus_reg
- - dmas: reference to the DMA channel used by the controller
--- dma-names: "nfc_sbox"
-+- dma-names: "rxtx"
- - clocks: reference to the system clock
- - #address-cells: <1>
- - #size-cells: <0>
-@@ -17,9 +17,9 @@ Example:
- 
- 	nandc: nand-controller@2c000 {
- 		compatible = "sigma,smp8758-nand";
--		reg = <0x2c000 0x30 0x2d000 0x800 0x20000 0x1000>;
-+		reg = <0x2c000 0x30>, <0x2d000 0x800>, <0x20000 0x1000>;
- 		dmas = <&dma0 3>;
--		dma-names = "nfc_sbox";
-+		dma-names = "rxtx";
- 		clocks = <&clkgen SYS_CLK>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-index cc23db64f0ca..51dc88d6b8da 100644
---- a/drivers/mtd/nand/tango_nand.c
-+++ b/drivers/mtd/nand/tango_nand.c
-@@ -629,7 +629,7 @@ static int tango_nand_probe(struct platform_device *pdev)
- 	if (IS_ERR(clk))
- 		return PTR_ERR(clk);
- 
--	nfc->chan = dma_request_chan(&pdev->dev, "nfc_sbox");
-+	nfc->chan = dma_request_chan(&pdev->dev, "rxtx");
- 	if (IS_ERR(nfc->chan))
- 		return PTR_ERR(nfc->chan);
- 
+This series fixes compatibility issue between Linux and many bootloaders
+when using SPI flash with size greater than 128Mib.
+
+Indeed, before this series, Linux used to make the SPI flash memory enter
+its 4-byte address mode when its size is greater than 128Mib: The very
+same Fast Read 1-1-z op code is used, for instance Fast Read 1-1-4 (6Bh)
+but once in 4-byte address mode, the SPI flash memory now expects a 4-byte
+address following the op code instead of a 3-byte address.
+This solution is statefull: it changes the internal state of the memory.
+
+Hence, when the CPU is reset but not the memory, many bootloaders are not
+aware of this internal state change at the memory side, don't know how to
+handle this and still send one Fast Read op code followed by a 3-byte
+address. So the bootloader fails to read data from the SPI flash memory.
+
+ChangeLog:
+
+v2 -> v3:
+- no change on patch 1.
+- rebase patch 2 on the spi-nor tree: SPI_NOR_4B_OPCODES is changed from
+  BIT(10) to BIT(11), otherwise patch could be applied on linux-next.
+- remove helper macro such as ENTRY_3TO4()
+- split the 3to4 opcode table into 3 different tables for read, program
+  and erase op codes.
+
+v1 -> v2:
+- collect Acked-by for patch 1.
+- replace the dichotomic search by a simple for() loop for better clarity
+  purpose in patch 2.
+
+Cyrille Pitchen (2):
+  mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte address op codes
+  mtd: spi-nor: add a stateless method to support memory size above
+    128Mib
+
+ drivers/mtd/devices/serial_flash_cmds.h |   7 ---
+ drivers/mtd/devices/st_spi_fsm.c        |  28 ++++-----
+ drivers/mtd/spi-nor/spi-nor.c           | 101 +++++++++++++++++++++++++-------
+ drivers/spi/spi-bcm-qspi.c              |   6 +-
+ include/linux/mtd/spi-nor.h             |  22 +++++--
+ 5 files changed, 113 insertions(+), 51 deletions(-)
+
 -- 
-2.10.0
+2.7.4
