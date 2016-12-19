@@ -1,18 +1,23 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJ3Q1-0004De-Fk
- for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 19:16:18 +0000
-Received: by mail-pf0-x243.google.com with SMTP id c4so7891692pfb.3
- for <linux-mtd@lists.infradead.org>; Mon, 19 Dec 2016 11:15:56 -0800 (PST)
+ id 1cJ3Z9-0002nr-IU
+ for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 19:25:44 +0000
+Received: by mail-pg0-x242.google.com with SMTP id b1so9293131pgc.1
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Dec 2016 11:25:22 -0800 (PST)
+Date: Mon, 19 Dec 2016 11:25:20 -0800
 From: Eric Biggers <ebiggers3@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-fsdevel@vger.kernel.org,
- Eric Biggers <ebiggers@google.com>
-Subject: [PATCH] ubifs: remove redundant checks for encryption key
-Date: Mon, 19 Dec 2016 11:15:48 -0800
-Message-Id: <1482174948-104602-1-git-send-email-ebiggers3@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: fstests@vger.kernel.org, linux-mtd@lists.infradead.org,
+ David Gstir <david@sigma-star.at>, "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Eric Biggers <ebiggers@google.com>
+Subject: Re: [RFC][PATCH 0/2] xfstests on ubifs
+Message-ID: <20161219192520.GA37112@gmail.com>
+References: <1482173132-100690-1-git-send-email-ebiggers3@gmail.com>
+ <16b0ba94-bdef-00c5-acd9-d19200f81ecd@nod.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16b0ba94-bdef-00c5-acd9-d19200f81ecd@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,115 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Eric Biggers <ebiggers@google.com>
+On Mon, Dec 19, 2016 at 08:12:07PM +0100, Richard Weinberger wrote:
+> 
+> > Note 2: since mkfs.ubifs doesn't support creating encryption-capable filesystems
+> > yet (ubifs v5), to get the encryption tests to work I also had to hack
+> > _scratch_mkfs_encrypted() to use ubirmvol/ubimkvol instead of mkfs.  I assume
+> > that the ubifs developers are planning to update mkfs.ubifs.
+> 
+> You don't have to run mkfs.ubifs, just mount an empty UBI volume, UBIFS will auto-
+> crate a encryption capable fs.
 
-In several places, ubifs checked for an encryption key before creating a
-file in an encrypted directory.  This was redundant with
-fscrypt_setup_filename() or ubifs_new_inode(), and in the case of
-ubifs_link() it broke linking to special files.  So remove the extra
-checks.
+Yeah, that's what I ended up doing.  I didn't include it in the official patch
+since it was a complete hack, but here's what I did.  Of course the real
+solution would be to update mkfs.ubifs and then just use _scratch_mkfs:
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/ubifs/dir.c | 58 +++-------------------------------------------------------
- 1 file changed, 3 insertions(+), 55 deletions(-)
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 9de9eaa..d346f1e 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -400,16 +400,6 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
- 	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
- 		dentry, mode, dir->i_ino);
- 
--	if (ubifs_crypt_is_encrypted(dir)) {
--		err = fscrypt_get_encryption_info(dir);
--		if (err)
--			return err;
--
--		if (!fscrypt_has_encryption_key(dir)) {
--			return -EPERM;
--		}
--	}
--
- 	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
- 	if (err)
- 		return err;
-@@ -751,17 +741,9 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 	ubifs_assert(inode_is_locked(dir));
- 	ubifs_assert(inode_is_locked(inode));
- 
--	if (ubifs_crypt_is_encrypted(dir)) {
--		if (!fscrypt_has_permitted_context(dir, inode))
--			return -EPERM;
--
--		err = fscrypt_get_encryption_info(inode);
--		if (err)
--			return err;
--
--		if (!fscrypt_has_encryption_key(inode))
--			return -EPERM;
--	}
-+	if (ubifs_crypt_is_encrypted(dir) &&
-+	    !fscrypt_has_permitted_context(dir, inode))
-+		return -EPERM;
- 
- 	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
- 	if (err)
-@@ -1010,17 +992,6 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
- 	if (err)
- 		return err;
- 
--	if (ubifs_crypt_is_encrypted(dir)) {
--		err = fscrypt_get_encryption_info(dir);
--		if (err)
--			goto out_budg;
--
--		if (!fscrypt_has_encryption_key(dir)) {
--			err = -EPERM;
--			goto out_budg;
--		}
--	}
--
- 	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
- 	if (err)
- 		goto out_budg;
-@@ -1106,17 +1077,6 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
- 		return err;
- 	}
- 
--	if (ubifs_crypt_is_encrypted(dir)) {
--		err = fscrypt_get_encryption_info(dir);
--		if (err)
--			goto out_budg;
--
--		if (!fscrypt_has_encryption_key(dir)) {
--			err = -EPERM;
--			goto out_budg;
--		}
--	}
--
- 	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
- 	if (err)
- 		goto out_budg;
-@@ -1241,18 +1201,6 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
- 			goto out_inode;
- 		}
- 
--		err = fscrypt_get_encryption_info(inode);
--		if (err) {
--			kfree(sd);
--			goto out_inode;
--		}
--
--		if (!fscrypt_has_encryption_key(inode)) {
--			kfree(sd);
--			err = -EPERM;
--			goto out_inode;
--		}
--
- 		ostr.name = sd->encrypted_path;
- 		ostr.len = disk_link.len;
- 
--- 
-2.8.0.rc3.226.g39d4020
+diff --git a/common/encrypt b/common/encrypt
+index f09104d..261a1f7 100644
+--- a/common/encrypt
++++ b/common/encrypt
+@@ -71,6 +71,11 @@ _scratch_mkfs_encrypted()
+ 	ext4|f2fs)
+ 		_scratch_mkfs -O encrypt
+ 		;;
++	ubifs)
++		local ubi=${SCRATCH_DEV%_0}
++		ubirmvol $ubi -N vol
++		ubimkvol $ubi -N vol -m
++		;;
+ 	*)
+ 		_notrun "No encryption support for $FSTYP"
+ 		;;
