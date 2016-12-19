@@ -1,22 +1,23 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJ48r-000580-Ex
- for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 20:02:38 +0000
-Subject: Re: [RFC][PATCH 0/2] xfstests on ubifs
-To: Eric Biggers <ebiggers3@gmail.com>
-References: <1482173132-100690-1-git-send-email-ebiggers3@gmail.com>
- <74d2781e-e1db-7aa9-26d0-f1b3d473e064@nod.at>
- <20161219195918.GB37112@gmail.com>
-Cc: fstests@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Gstir <david@sigma-star.at>, "Theodore Y . Ts'o" <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Eric Biggers <ebiggers@google.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <d1e4793b-d713-6d33-6054-412f7c03b2cf@nod.at>
-Date: Mon, 19 Dec 2016 21:02:14 +0100
+ id 1cJ4Tz-0001vP-9K
+ for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 20:24:28 +0000
+Received: by mail-pg0-x244.google.com with SMTP id w68so3436361pgw.3
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Dec 2016 12:24:05 -0800 (PST)
+Date: Mon, 19 Dec 2016 12:24:02 -0800
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ linux-fsdevel@vger.kernel.org, Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH] ubifs: remove redundant checks for encryption key
+Message-ID: <20161219202402.GC37112@gmail.com>
+References: <1482174948-104602-1-git-send-email-ebiggers3@gmail.com>
+ <1fb1f6a6-1204-5013-6406-7305861fdc5b@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <20161219195918.GB37112@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1fb1f6a6-1204-5013-6406-7305861fdc5b@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19.12.2016 20:59, Eric Biggers wrote:
-> On Mon, Dec 19, 2016 at 08:48:52PM +0100, Richard Weinberger wrote:
->>
->> BTW: Do you have a xfstests git tree with all your fscrypt related patches?
->>
+On Mon, Dec 19, 2016 at 08:59:15PM +0100, Richard Weinberger wrote:
+> On 19.12.2016 20:15, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > In several places, ubifs checked for an encryption key before creating a
+> > file in an encrypted directory.  This was redundant with
+> > fscrypt_setup_filename() or ubifs_new_inode(), and in the case of
+> > ubifs_link() it broke linking to special files.  So remove the extra
+> > checks.
 > 
-> No, I think you were Cc'ed on all the patches though.  My latest xfstests series
-> is:
+> Thanks for doing this. I assume same or similar changes were also needed
+> for f2fs and ext4 since I've duplicated the logic from them? :-)
 > 
-> 	[PATCH v4 0/6] Add filesystem-level encryption tests
-> 
-> and it depends on the xfsprogs patch:
-> 
-> 	[PATCH v2] xfs_io: implement 'set_encpolicy' and 'get_encpolicy' commands
 
-Yes, I was cc'ed but pulling from a git tree is still less work than picking
-patches from my inbox. ;-)
+Well all the filesystems are a little different, but I checked link, create,
+mkdir, mknod, symlink, and tmpfile.  UBIFS generally seemed to be the odd one
+out with regards to having these extra checks:
 
-Thanks,
-//richard
+ext4_link(): relies on check in fscrypt_setup_filename()
+ext4_create(): relies on check in __ext4_new_inode()
+ext4_mkdir(): relies on check in __ext4_new_inode()
+ext4_mknod(): relies on check in __ext4_new_inode()
+ext4_symlink(): relies on __ext4_new_inode() preloading encryption info
+		of new inode
+ext4_tmpfile(): relies on check in __ext4_new_inode()
+
+f2fs_link(): relies on check in fscrypt_setup_filename()
+f2fs_create(): relies on check in fscrypt_setup_filename()
+f2fs_mkdir(): relies on check in fscrypt_setup_filename()
+f2fs_mknod(): relies on check in fscrypt_setup_filename()
+f2fs_symlink(): has an explicit call to fscrypt_get_encryption_info() because
+		f2fs_new_inode() doesn't preload encryption info of new inode.
+		Check of fscrypt_has_encryption_key() appears unnecessary.
+f2fs_tmpfile(): has an explicit load of encryption key with no check; it's
+		unclear whether this is sufficient, since it never calls
+		fscrypt_setup_filename()
+
+So I am wondering why ext4 "preloads" encryption keys of new inodes but f2fs
+doesn't, and whether f2fs_tmpfile() is doing the correct checks.  But neither fs
+had all the redundant checks this patch removes from ubifs.
+
+Eric
