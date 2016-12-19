@@ -1,20 +1,23 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJ45x-0003FK-Uf
- for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 19:59:38 +0000
-Subject: Re: [PATCH] ubifs: remove redundant checks for encryption key
-To: Eric Biggers <ebiggers3@gmail.com>, linux-mtd@lists.infradead.org
-References: <1482174948-104602-1-git-send-email-ebiggers3@gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-fsdevel@vger.kernel.org,
- Eric Biggers <ebiggers@google.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1fb1f6a6-1204-5013-6406-7305861fdc5b@nod.at>
-Date: Mon, 19 Dec 2016 20:59:15 +0100
+ id 1cJ461-0003Fb-S9
+ for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 19:59:43 +0000
+Received: by mail-pf0-x244.google.com with SMTP id 144so7926794pfv.0
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Dec 2016 11:59:21 -0800 (PST)
+Date: Mon, 19 Dec 2016 11:59:18 -0800
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: fstests@vger.kernel.org, linux-mtd@lists.infradead.org,
+ David Gstir <david@sigma-star.at>, "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Eric Biggers <ebiggers@google.com>
+Subject: Re: [RFC][PATCH 0/2] xfstests on ubifs
+Message-ID: <20161219195918.GB37112@gmail.com>
+References: <1482173132-100690-1-git-send-email-ebiggers3@gmail.com>
+ <74d2781e-e1db-7aa9-26d0-f1b3d473e064@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <1482174948-104602-1-git-send-email-ebiggers3@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <74d2781e-e1db-7aa9-26d0-f1b3d473e064@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19.12.2016 20:15, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Mon, Dec 19, 2016 at 08:48:52PM +0100, Richard Weinberger wrote:
 > 
-> In several places, ubifs checked for an encryption key before creating a
-> file in an encrypted directory.  This was redundant with
-> fscrypt_setup_filename() or ubifs_new_inode(), and in the case of
-> ubifs_link() it broke linking to special files.  So remove the extra
-> checks.
+> BTW: Do you have a xfstests git tree with all your fscrypt related patches?
+> 
 
-Thanks for doing this. I assume same or similar changes were also needed
-for f2fs and ext4 since I've duplicated the logic from them? :-)
+No, I think you were Cc'ed on all the patches though.  My latest xfstests series
+is:
 
-Thanks,
-//richard
+	[PATCH v4 0/6] Add filesystem-level encryption tests
+
+and it depends on the xfsprogs patch:
+
+	[PATCH v2] xfs_io: implement 'set_encpolicy' and 'get_encpolicy' commands
+
+Eric
