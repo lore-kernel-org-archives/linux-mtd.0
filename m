@@ -1,19 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cIxVg-0001dO-Aq
- for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 12:57:45 +0000
-Date: Mon, 19 Dec 2016 13:57:22 +0100
+ id 1cIxXc-0001qh-SY
+ for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 12:59:45 +0000
+Date: Mon, 19 Dec 2016 13:59:16 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: "Leto, Enrico" <enrico.leto@siemens.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>
-Subject: Re: mtd, nand, omap2: how to pass the NAND device name to mtdparts ?
-Message-ID: <20161219135722.72c619b7@bbrezillon>
-In-Reply-To: <20161219134620.199cfbb7@bbrezillon>
-References: <87CEE11E4E15344BAFE0FAC01C1671FB244857@DEFTHW99EI1MSX.ww902.siemens.net>
- <093f00e2-cd63-eee0-59a7-1548bc9ec723@ti.com>
- <20161219134620.199cfbb7@bbrezillon>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-mtd
+ <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>, DT
+ <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Mason <slash.tmp@free.fr>, Sebastian Frias
+ <sf84@laposte.net>
+Subject: Re: [PATCH v7 1/2] mtd: nand: add tango NFC dt bindings doc
+Message-ID: <20161219135916.4fd5e546@bbrezillon>
+In-Reply-To: <d3cbfda6-23bf-4ad1-b1ce-c179b765272f@sigmadesigns.com>
+References: <580F5AD2.9020909@sigmadesigns.com>
+ <580F5B06.6030608@sigmadesigns.com> <1978954.SRtJpfOGp1@wuerfel>
+ <d3cbfda6-23bf-4ad1-b1ce-c179b765272f@sigmadesigns.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,117 +28,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 Dec 2016 13:46:20 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Fri, 16 Dec 2016 11:56:38 +0100
+Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
 
-> Roger, Enrico,
-> 
-> On Mon, 19 Dec 2016 13:11:48 +0200
-> Roger Quadros <rogerq@ti.com> wrote:
-> 
-> > Hi,
+> On 07/11/2016 10:18, Arnd Bergmann wrote:
+> > On Tuesday, October 25, 2016 3:15:50 PM CET Marc Gonzalez wrote:  
+> >> Add the tango NAND Flash Controller dt bindings documentation.
+> >>
+> >> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+> >> ---
+> >>  Documentation/devicetree/bindings/mtd/tango-nand.txt | 38 ++++++++++++++++++++++++++++++
+> >>  1 file changed, 38 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
+> >> new file mode 100644
+> >> index 000000000000..3cbf95d6595a
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
+> >> @@ -0,0 +1,38 @@
+> >> +Sigma Designs Tango4 NAND Flash Controller (NFC)
+> >> +
+> >> +Required properties:
+> >> +
+> >> +- compatible: "sigma,smp8758-nand"
+> >> +- reg: address/size of nfc_reg, nfc_mem, and pbus_reg
+> >> +- dmas: reference to the DMA channel used by the controller
+> >> +- dma-names: "nfc_sbox"  
 > > 
-> > On 19/12/16 11:30, Leto, Enrico wrote:
-> > > Hello All,
-> > > 
-> > > I'm trying to port some projects to kernel 4.4. It crashes because the driver name given by mtdparts (omap2-nand.0) is no more accepted. It's running fine if I replace it with the device name (e.g. S34ML04G1).  
+> > Drop the "nfc_" prefix here, it seems redundant.  
+> 
+> I took a closer look at Documentation/devicetree/bindings and
+> arch/arm/boot/dts and it seems the overwhelming nomenclature
+> is "rx", "tx" (with variants around these two).
+> 
+> Should I just use "rxtx" for my driver?
+> 
+> >> +- clocks: reference to the system clock
+> >> +- #address-cells: <1>
+> >> +- #size-cells: <0>
+> >> +
+> >> +Children nodes represent the available NAND chips.
+> >> +See Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
+> >> +
+> >> +Example:
+> >> +
+> >> +	nand: nand@2c000 {
+> >> +		compatible = "sigma,smp8758-nand";
+> >> +		reg = <0x2c000 0x30 0x2d000 0x800 0x20000 0x1000>;  
 > > 
-> > What crashes? Is it a user space application?
-> 
-> IIUC, Enrico complains about the mtdparts vs in-kernel device name
-> mismatch which prevents partition creation. Indeed, the first
-> information passed through the mtdparts parameter is the MTD device
-> name, and this name is usually defined by the NAND controller driver.
-> If the controller driver does not set the name, then the core assign
-> one based on the NAND model name.
-> But, in this case, if the MTD device name, does not match the mtdparts
-> one, then the cmdline partition parser will never creates the
-> partitions.
-> 
-> > If it is then it shouldn't be
-> > depending on the platform device name for anything.
-> 
-> I agree, but that's how it currently works. I remember having a
-> discussion with Brian regarding a standardized naming scheme, but it's
-> not been implemented yet.
-> 
-> Usually, on a given board, NAND devices are identified by the
-> controller and the CS line they are connected to. I guess this is what
-> omap2-nand.0 means: omap2-nand controller, CS0 line.
-> 
+> > It would be nicer to write this as
 > > 
-> > The mtd_dev_info has the mtd device name but I don't think it contains
-> > the chip name. Rather it will contain MTD type and partition name.
-> 
-> Actually, for partitions, it will contain the partition name, not the
-> chip name. But here the problem is not on the partition, but on the
-> device itself (which is used by the cmdline partition parser to
-> identify whether partitions should be created for a specific device or
-> not). 
-> 
+> > 	reg = <0x2c000 0x30>, <0x2d000 0x800>, <0x20000 0x1000>;
 > > 
-> > The chip names are cryptic and mean nothing to user space. Why do you
-> > want user space to depend on chip names?
+> > which is identical in binary format.  
 > 
-> I don't think that's what Enrico asked for, but I might be wrong.
-> 
-> > 
-> > > 
-> > > We use different NANDs from different manufacturers. I'm searching for a convenient solution to pass the device name to mtdparts.
-> > > 
-> > > Should I read the device name from u-boot and to pass it to mtdparts?  
-> 
-> No, please don't do that.
-> 
-> > 
-> > Kernel can also read the chip model so we don't need to depend on u-boot.
-> > 
-> > > Or some other suggestion or recommendation how to do that ?  
-> > 
-> > As the kernel mtd driver (nand/spi/etc) already knows this information, it is
-> > a matter of just providing it to userspace. Maybe adding another sysfs parameter
-> > like modelname or something will do.
-> 
-> The MTD device name is already exported (/sys/class/mtd/mtdX/name). We
-> could export the model/part name, but again I'm not sure this is what
-> Enrico wants here.
-> 
-> > 
-> > But as this was not yet done there might be a good reason why the model name was
-> > not provided to user space. Maybe Brian/Boris can comment.
-> 
-> No good reason AFAIK, except no-one ever needed it. Usually, userspace
-> libs/apps need to know about the device capabilities/specificities, and
-> this is already provided in a generic way.
-> 
-> Regarding Enrico's problem, I think the omap2-nand driver should
-> explicitly set the mtd->name field (see below), as is done in many other
-> NAND controller drivers. 
-> 
+> This is indeed a marked improvement. Boris, if I fix these two nits,
+> can I submit a single patch, or do you want them split?
 
-Just for the record, the commit introducing the regression is
-853f1c58c4b2 ("mtd: nand: omap2: show parent device structure in
-sysfs").
-
-> Regards,
-> 
-> Boris
-> 
-> --->8---
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 2a52101120d4..33770cb1b756 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1856,6 +1856,12 @@ static int omap_nand_probe(struct platform_device *pdev)
->         nand_chip->ecc.priv     = NULL;
->         nand_set_flash_node(nand_chip, dev->of_node);
->  
-> +       mtd->name = devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc_cs);
-> +       if (!mtd->name) {
-> +               dev_err(&pdev->dev, "Failed to set MTD name\n");
-> +               return -ENOMEM;
-> +       }
-> +
->         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->         nand_chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
->         if (IS_ERR(nand_chip->IO_ADDR_R))
+Sure, just describe the different binding changes in your commit
+message.
