@@ -1,22 +1,21 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
+Received: from lelnx194.ext.ti.com ([198.47.27.80])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cIzWr-0005M1-Ps
- for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 15:07:12 +0000
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: <marek.vasut@gmail.com>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 2/2] mtd: spi-nor: add a stateless method to support memory
- size above 128Mib
-Date: Mon, 19 Dec 2016 16:05:57 +0100
-Message-ID: <da3ef28917d3ad8ed9e8ee76c543dd12846c295c.1482158909.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1482158909.git.cyrille.pitchen@atmel.com>
-References: <cover.1482158909.git.cyrille.pitchen@atmel.com>
+ id 1cIzra-0001MY-T7
+ for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 15:28:32 +0000
+Subject: Re: mtd, nand, omap2: how to pass the NAND device name to mtdparts ?
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <87CEE11E4E15344BAFE0FAC01C1671FB244857@DEFTHW99EI1MSX.ww902.siemens.net>
+ <093f00e2-cd63-eee0-59a7-1548bc9ec723@ti.com>
+ <20161219134620.199cfbb7@bbrezillon> <20161219135722.72c619b7@bbrezillon>
+CC: "Leto, Enrico" <enrico.leto@siemens.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <d80b2a80-c89c-6b5f-8640-f8d361c11ef9@ti.com>
+Date: Mon, 19 Dec 2016 17:28:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20161219135722.72c619b7@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,150 +25,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch provides an alternative mean to support memory above 16MiB
-(128Mib) by replacing 3byte address op codes by their associated 4byte
-address versions.
+Hi,
 
-Using the dedicated 4byte address op codes doesn't change the internal
-state of the SPI NOR memory as opposed to using other means such as
-updating a Base Address Register (BAR) and sending command to enter/leave
-the 4byte mode.
+On 19/12/16 14:57, Boris Brezillon wrote:
+> On Mon, 19 Dec 2016 13:46:20 +0100
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> 
+>> Roger, Enrico,
+>>
+>> On Mon, 19 Dec 2016 13:11:48 +0200
+>> Roger Quadros <rogerq@ti.com> wrote:
+>>
+>>> Hi,
+>>>
+>>> On 19/12/16 11:30, Leto, Enrico wrote:
+>>>> Hello All,
+>>>>
+>>>> I'm trying to port some projects to kernel 4.4. It crashes because the driver name given by mtdparts (omap2-nand.0) is no more accepted. It's running fine if I replace it with the device name (e.g. S34ML04G1).  
+>>>
+>>> What crashes? Is it a user space application?
+>>
+>> IIUC, Enrico complains about the mtdparts vs in-kernel device name
+>> mismatch which prevents partition creation. Indeed, the first
+>> information passed through the mtdparts parameter is the MTD device
+>> name, and this name is usually defined by the NAND controller driver.
+>> If the controller driver does not set the name, then the core assign
+>> one based on the NAND model name.
+>> But, in this case, if the MTD device name, does not match the mtdparts
+>> one, then the cmdline partition parser will never creates the
+>> partitions.
+>>
+>>> If it is then it shouldn't be
+>>> depending on the platform device name for anything.
+>>
+>> I agree, but that's how it currently works. I remember having a
+>> discussion with Brian regarding a standardized naming scheme, but it's
+>> not been implemented yet.
+>>
+>> Usually, on a given board, NAND devices are identified by the
+>> controller and the CS line they are connected to. I guess this is what
+>> omap2-nand.0 means: omap2-nand controller, CS0 line.
+>>
+>>>
+>>> The mtd_dev_info has the mtd device name but I don't think it contains
+>>> the chip name. Rather it will contain MTD type and partition name.
+>>
+>> Actually, for partitions, it will contain the partition name, not the
+>> chip name. But here the problem is not on the partition, but on the
+>> device itself (which is used by the cmdline partition parser to
+>> identify whether partitions should be created for a specific device or
+>> not). 
+>>
+>>>
+>>> The chip names are cryptic and mean nothing to user space. Why do you
+>>> want user space to depend on chip names?
+>>
+>> I don't think that's what Enrico asked for, but I might be wrong.
+>>
+>>>
+>>>>
+>>>> We use different NANDs from different manufacturers. I'm searching for a convenient solution to pass the device name to mtdparts.
+>>>>
+>>>> Should I read the device name from u-boot and to pass it to mtdparts?  
+>>
+>> No, please don't do that.
+>>
+>>>
+>>> Kernel can also read the chip model so we don't need to depend on u-boot.
+>>>
+>>>> Or some other suggestion or recommendation how to do that ?  
+>>>
+>>> As the kernel mtd driver (nand/spi/etc) already knows this information, it is
+>>> a matter of just providing it to userspace. Maybe adding another sysfs parameter
+>>> like modelname or something will do.
+>>
+>> The MTD device name is already exported (/sys/class/mtd/mtdX/name). We
+>> could export the model/part name, but again I'm not sure this is what
+>> Enrico wants here.
+>>
+>>>
+>>> But as this was not yet done there might be a good reason why the model name was
+>>> not provided to user space. Maybe Brian/Boris can comment.
+>>
+>> No good reason AFAIK, except no-one ever needed it. Usually, userspace
+>> libs/apps need to know about the device capabilities/specificities, and
+>> this is already provided in a generic way.
+>>
+>> Regarding Enrico's problem, I think the omap2-nand driver should
+>> explicitly set the mtd->name field (see below), as is done in many other
+>> NAND controller drivers. 
+>>
+> 
+> Just for the record, the commit introducing the regression is
+> 853f1c58c4b2 ("mtd: nand: omap2: show parent device structure in
+> sysfs").
 
-Hence when a CPU reset occurs, early bootloaders don't need to be aware
-of BAR value or 4byte mode being enabled: they can still access the first
-16MiB of the SPI NOR memory using the regular 3byte address op codes.
+Thanks for this info and the patch Boris. I can give it a try.
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Tested-by: Vignesh R <vigneshr@ti.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 101 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 80 insertions(+), 21 deletions(-)
+Enrico, is the patch good enough for you?
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 9bb8f91fa42e..a5120fd7095e 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -81,6 +81,10 @@ struct flash_info {
- 					 * because it has the same value as
- 					 * ATMEL flashes)
- 					*/
-+#define SPI_NOR_4B_OPCODES	BIT(11)	/*
-+					 * Use dedicated 4byte address op codes
-+					 * to support memory size above 128Mib.
-+					 */
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -194,6 +198,78 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
- 	return mtd->priv;
- }
- 
-+
-+static u8 spi_nor_convert_opcode(u8 opcode, const u8 table[][2])
-+{
-+	size_t i;
-+
-+	for (i = 0; table[i][0]; ++i)
-+		if (table[i][0] == opcode)
-+			return table[i][1];
-+
-+	/* No conversion found, keep input op code. */
-+	return opcode;
-+}
-+
-+static inline u8 spi_nor_convert_3to4_read(u8 opcode)
-+{
-+	static const u8 spi_nor_3to4_read[][2] = {
-+		{ SPINOR_OP_READ,	SPINOR_OP_READ_4B },
-+		{ SPINOR_OP_READ_FAST,	SPINOR_OP_READ_FAST_4B },
-+		{ SPINOR_OP_READ_1_1_2,	SPINOR_OP_READ_1_1_2_4B },
-+		{ SPINOR_OP_READ_1_2_2,	SPINOR_OP_READ_1_2_2_4B },
-+		{ SPINOR_OP_READ_1_1_4,	SPINOR_OP_READ_1_1_4_4B },
-+		{ SPINOR_OP_READ_1_4_4,	SPINOR_OP_READ_1_4_4_4B },
-+		{0, 0}
-+	};
-+
-+	return spi_nor_convert_opcode(opcode, spi_nor_3to4_read);
-+}
-+
-+static inline u8 spi_nor_convert_3to4_program(u8 opcode)
-+{
-+	static const u8 spi_nor_3to4_program[][2] = {
-+		{ SPINOR_OP_PP,		SPINOR_OP_PP_4B },
-+		{ SPINOR_OP_PP_1_1_4,	SPINOR_OP_PP_1_1_4_4B },
-+		{ SPINOR_OP_PP_1_4_4,	SPINOR_OP_PP_1_4_4_4B },
-+		{0, 0}
-+	};
-+
-+	return spi_nor_convert_opcode(opcode, spi_nor_3to4_program);
-+}
-+
-+static inline u8 spi_nor_convert_3to4_erase(u8 opcode)
-+{
-+	static const u8 spi_nor_3to4_erase[][2] = {
-+		{ SPINOR_OP_BE_4K,	SPINOR_OP_BE_4K_4B },
-+		{ SPINOR_OP_BE_32K,	SPINOR_OP_BE_32K_4B },
-+		{ SPINOR_OP_SE,		SPINOR_OP_SE_4B },
-+		{0, 0}
-+	};
-+
-+	return spi_nor_convert_opcode(opcode, spi_nor_3to4_erase);
-+}
-+
-+static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
-+				      const struct flash_info *info)
-+{
-+	/* Do some manufacturer fixups first */
-+	switch (JEDEC_MFR(info)) {
-+	case SNOR_MFR_SPANSION:
-+		/* No small sector erase for 4-byte command set */
-+		nor->erase_opcode = SPINOR_OP_SE;
-+		nor->mtd.erasesize = info->sector_size;
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
-+	nor->program_opcode = spi_nor_convert_3to4_program(nor->program_opcode);
-+	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
-+}
-+
- /* Enable/disable 4-byte addressing mode. */
- static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
- 			    int enable)
-@@ -1621,27 +1697,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 	else if (mtd->size > 0x1000000) {
- 		/* enable 4-byte addressing if the device exceeds 16MiB */
- 		nor->addr_width = 4;
--		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION) {
--			/* Dedicated 4-byte command set */
--			switch (nor->flash_read) {
--			case SPI_NOR_QUAD:
--				nor->read_opcode = SPINOR_OP_READ_1_1_4_4B;
--				break;
--			case SPI_NOR_DUAL:
--				nor->read_opcode = SPINOR_OP_READ_1_1_2_4B;
--				break;
--			case SPI_NOR_FAST:
--				nor->read_opcode = SPINOR_OP_READ_FAST_4B;
--				break;
--			case SPI_NOR_NORMAL:
--				nor->read_opcode = SPINOR_OP_READ_4B;
--				break;
--			}
--			nor->program_opcode = SPINOR_OP_PP_4B;
--			/* No small sector erase for 4-byte command set */
--			nor->erase_opcode = SPINOR_OP_SE_4B;
--			mtd->erasesize = info->sector_size;
--		} else
-+		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
-+		    info->flags & SPI_NOR_4B_OPCODES)
-+			spi_nor_set_4byte_opcodes(nor, info);
-+		else
- 			set_4byte(nor, info, 1);
- 	} else {
- 		nor->addr_width = 3;
--- 
-2.7.4
+cheers,
+-roger
