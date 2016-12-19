@@ -1,22 +1,20 @@
-Date: Mon, 19 Dec 2016 02:39:29 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, David Gstir <david@sigma-star.at>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-kernel@vger.kernel.org, jaegeuk@kernel.org, tytso@mit.edu,
- hch@infradead.org, arnd@arndb.de, dedekind1@gmail.com,
- linux-mtd@lists.infradead.org, adrian.hunter@intel.com,
- linux-ext4@vger.kernel.org, ebiggers@google.com, rdunlap@infradead.org
-Subject: Re: [PATCH] fscrypt: Factor out bio specific functions
-Message-ID: <20161219103929.GA16197@infradead.org>
-References: <20161216105006.10207-1-richard@nod.at>
- <72D4D0FB-F56D-4457-9660-4CFF7B4CFB6E@sigma-star.at>
- <48d4de8e-6e57-cbad-7556-03aa788c815a@nod.at>
- <20161216221428.GC14264@gmail.com>
+Received: from lelnx194.ext.ti.com ([198.47.27.80])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cIvre-0001GR-6P
+ for linux-mtd@lists.infradead.org; Mon, 19 Dec 2016 11:12:19 +0000
+Subject: Re: mtd, nand, omap2: how to pass the NAND device name to mtdparts ?
+To: "Leto, Enrico" <enrico.leto@siemens.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Brian Norris
+ <computersforpeace@gmail.com>
+References: <87CEE11E4E15344BAFE0FAC01C1671FB244857@DEFTHW99EI1MSX.ww902.siemens.net>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <093f00e2-cd63-eee0-59a7-1548bc9ec723@ti.com>
+Date: Mon, 19 Dec 2016 13:11:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161216221428.GC14264@gmail.com>
+In-Reply-To: <87CEE11E4E15344BAFE0FAC01C1671FB244857@DEFTHW99EI1MSX.ww902.siemens.net>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 16, 2016 at 02:14:28PM -0800, Eric Biggers wrote:
-> Hmm, it still seems weird to define fscrypt_zeroout_range() when it can't
-> actually be used.  It looks like the problem is specifically the use of
-> alloc_bounce_page() and do_page_crypto().  Would it be that bad to make those
-> available in fscrypt_internal.h (not exported to filesystems)?
+Hi,
 
-Sounds good to me.
+On 19/12/16 11:30, Leto, Enrico wrote:
+> Hello All,
+> 
+> I'm trying to port some projects to kernel 4.4. It crashes because the driver name given by mtdparts (omap2-nand.0) is no more accepted. It's running fine if I replace it with the device name (e.g. S34ML04G1).
 
-> Also, it seems the actual problem is that fscrypt_zeroout_range() tries to be
-> clever and reuse one bounce page over and over.  But this seems very inefficient
-> because it has to wait for each block to be synchronously written out before
-> moving on to the next.  I'm thinking it really should be updated to work more
-> like the normal write path, and then it could use fscrypt_encrypt_page()...
+What crashes? Is it a user space application? If it is then it shouldn't be
+depending on the platform device name for anything.
 
-That sounds even better, but might take a little more time.
+The mtd_dev_info has the mtd device name but I don't think it contains
+the chip name. Rather it will contain MTD type and partition name.
+
+The chip names are cryptic and mean nothing to user space. Why do you
+want user space to depend on chip names?
+
+> 
+> We use different NANDs from different manufacturers. I'm searching for a convenient solution to pass the device name to mtdparts.
+> 
+> Should I read the device name from u-boot and to pass it to mtdparts?
+
+Kernel can also read the chip model so we don't need to depend on u-boot.
+
+> Or some other suggestion or recommendation how to do that ?
+
+As the kernel mtd driver (nand/spi/etc) already knows this information, it is
+a matter of just providing it to userspace. Maybe adding another sysfs parameter
+like modelname or something will do.
+
+But as this was not yet done there might be a good reason why the model name was
+not provided to user space. Maybe Brian/Boris can comment.
+
+cheers,
+-roger
