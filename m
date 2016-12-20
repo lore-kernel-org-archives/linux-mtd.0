@@ -1,23 +1,27 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJE8E-0003kJ-Lv
- for linux-mtd@lists.infradead.org; Tue, 20 Dec 2016 06:42:39 +0000
+Date: Tue, 20 Dec 2016 09:38:18 +0100
+From: Michal Hocko <mhocko@kernel.org>
+To: Dave Chinner <david@fromorbit.com>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Theodore Ts'o <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.cz>, Jan Kara <jack@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/9] xfs: introduce and use KM_NOLOCKDEP to silence
+ reclaim lockdep false positives
+Message-ID: <20161220083818.GB3769@dhcp22.suse.cz>
+References: <20161215140715.12732-1-mhocko@kernel.org>
+ <20161215140715.12732-3-mhocko@kernel.org>
+ <20161219212413.GN4326@dastard>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Subject: Re: [PATCH v2] fscrypt: Factor out bio specific functions
-From: David Gstir <david@sigma-star.at>
-In-Reply-To: <20161219112532.18863-1-richard@nod.at>
-Date: Tue, 20 Dec 2016 07:42:14 +0100
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- jaegeuk@kernel.org, tytso@mit.edu, hch@infradead.org, arnd@arndb.de,
- dedekind1@gmail.com, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com, linux-ext4@vger.kernel.org, ebiggers@google.com,
- rdunlap@infradead.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <C1B6C185-6DF1-4118-80E4-7B2FE33225E1@sigma-star.at>
-References: <20161219103929.GA16197@infradead.org>
- <20161219112532.18863-1-richard@nod.at>
-To: Richard Weinberger <richard@nod.at>
+Content-Disposition: inline
+In-Reply-To: <20161219212413.GN4326@dastard>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +31,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-> On 19.12.2016, at 12:25, Richard Weinberger <richard@nod.at> wrote:
+On Tue 20-12-16 08:24:13, Dave Chinner wrote:
+> On Thu, Dec 15, 2016 at 03:07:08PM +0100, Michal Hocko wrote:
+> > From: Michal Hocko <mhocko@suse.com>
+> > 
+> > Now that the page allocator offers __GFP_NOLOCKDEP let's introduce
+> > KM_NOLOCKDEP alias for the xfs allocation APIs. While we are at it
+> > also change KM_NOFS users introduced by b17cb364dbbb ("xfs: fix missing
+> > KM_NOFS tags to keep lockdep happy") and use the new flag for them
+> > instead. There is really no reason to make these allocations contexts
+> > weaker just because of the lockdep which even might not be enabled
+> > in most cases.
+> > 
+> > Signed-off-by: Michal Hocko <mhocko@suse.com>
 > 
-> That way we can get rid of the direct dependency on CONFIG_BLOCK.
+> I'd suggest that it might be better to drop this patch for now -
+> it's not necessary for the context flag changeover but does
+> introduce a risk of regressions if the conversion is wrong.
 > 
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
-> Changes since v1:
-> - Moved fscrypt_zeroout_range() also to bio.c
+> Hence I think this is better as a completely separate series
+> which audits and changes all the unnecessary KM_NOFS allocations
+> in one go. I've never liked whack-a-mole style changes like this -
+> do it once, do it properly....
 
-Looks good to me.
+OK, fair enough. I thought it might be better to have an example user so
+that others can follow but as you say, the risk of regression is really
+there and these kind of changes definitely need a throughout review.
 
-Reviewed-by: David Gstir <david@sigma-star.at>
+I am not sure I will be able to post more of those changes because that
+requires an intimate knowledge of the fs so I hope somebody can take
+over there and follow up.
 
-- David
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
