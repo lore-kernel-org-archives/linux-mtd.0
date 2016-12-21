@@ -1,21 +1,21 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-wj0-x242.google.com ([2a00:1450:400c:c01::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJXjj-00035u-Cu
- for linux-mtd@lists.infradead.org; Wed, 21 Dec 2016 03:38:40 +0000
-Received: by mail-wm0-x243.google.com with SMTP id l2so2449971wml.2
- for <linux-mtd@lists.infradead.org>; Tue, 20 Dec 2016 19:38:18 -0800 (PST)
-Subject: Re: [PATCH] mtd: spi-nor: add support for ESMT_f25l32qa and
- ESMT_f25l64qa
+ id 1cJXjk-000369-Ew
+ for linux-mtd@lists.infradead.org; Wed, 21 Dec 2016 03:38:41 +0000
+Received: by mail-wj0-x242.google.com with SMTP id j10so30316668wjb.3
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Dec 2016 19:38:19 -0800 (PST)
+Subject: Re: [PATCH 1/2] mtd: spi-nor: add support for macronix mx25u25635f
 To: John Crispin <john@phrozen.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <1482266481-20700-1-git-send-email-john@phrozen.org>
+References: <1482261923-62559-1-git-send-email-john@phrozen.org>
+ <1482261923-62559-2-git-send-email-john@phrozen.org>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- "Larry D. Pinney" <ldpinney@gmail.com>
+ Ash Benz <ash.benz@bk.ru>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <4500be8e-56fe-5435-3f5a-cd7f20d1112e@gmail.com>
-Date: Wed, 21 Dec 2016 04:37:14 +0100
+Message-ID: <73006194-8842-6ceb-a653-b942b092157e@gmail.com>
+Date: Wed, 21 Dec 2016 04:37:49 +0100
 MIME-Version: 1.0
-In-Reply-To: <1482266481-20700-1-git-send-email-john@phrozen.org>
+In-Reply-To: <1482261923-62559-2-git-send-email-john@phrozen.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,39 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/20/2016 09:41 PM, John Crispin wrote:
-> From: "Larry D. Pinney" <ldpinney@gmail.com>
-> 
-> Add Support for the ESMT_F25L32QA and ESMT_F25L64QA
-> These are 4MB and 8MB SPI NOR Chips from Elite Semiconductor Memory
-> Technology
-> 
+On 12/20/2016 08:25 PM, John Crispin wrote:
+> From: Ash Benz <ash.benz@bk.ru>
+
+Looks fine, but please do add a meaningful commit message.
+
 > Signed-off-by: John Crispin <john@phrozen.org>
-> Signed-off-by: Larry D. Pinney <ldpinney@gmail.com>
-
-It looks OK:
-
-Acked-by: Marek Vasut <marex@denx.de>
-
+> Signed-off-by: Ash Benz <ash.benz@bk.ru>
 > ---
-> Sorry, forgot to add this to the series I sent earlier
-> 
->  drivers/mtd/spi-nor/spi-nor.c |    2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/mtd/spi-nor/spi-nor.c |    1 +
+>  1 file changed, 1 insertion(+)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index f9a41dc..ac4155d 100644
+> index d0fc165..171adb3 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -821,6 +821,8 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  
->  	/* ESMT */
->  	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
-> +	{ "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64, SECT_4K) },
-> +	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128, SECT_4K) },
->  
->  	/* Everspin */
->  	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+> @@ -872,6 +872,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+>  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+> +	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, 0) },
+>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
 > 
 
 
