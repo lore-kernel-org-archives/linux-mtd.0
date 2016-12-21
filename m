@@ -1,17 +1,18 @@
 Received: from nbd.name ([2a01:4f8:131:30e2::2])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJbFX-00028l-VT
- for linux-mtd@lists.infradead.org; Wed, 21 Dec 2016 07:23:45 +0000
+ id 1cJbFX-00028n-VU
+ for linux-mtd@lists.infradead.org; Wed, 21 Dec 2016 07:23:46 +0000
 From: John Crispin <john@phrozen.org>
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Marek Vasut <marek.vasut@gmail.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Ash Benz <ash.benz@bk.ru>, John Crispin <john@phrozen.org>
-Subject: [PATCH V2 1/3] mtd: spi-nor: add support for macronix mx25u25635f
-Date: Wed, 21 Dec 2016 08:23:08 +0100
-Message-Id: <1482304990-23942-2-git-send-email-john@phrozen.org>
-In-Reply-To: <1482304990-23942-1-git-send-email-john@phrozen.org>
-References: <1482304990-23942-1-git-send-email-john@phrozen.org>
+ John Crispin <john@phrozen.org>
+Subject: [PATCH V2 0/3] mtd: spi-nor: add some new chip ids
+Date: Wed, 21 Dec 2016 08:23:07 +0100
+Message-Id: <1482304990-23942-1-git-send-email-john@phrozen.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Ash Benz <ash.benz@bk.ru>
+These have been lingering inside the owrt and lede trees for a while.
 
-This patch adds support for a new macronix spi flash chip. We have had this
-patch inside our tree for a while and people are actively using routers
-with this chip.
+André Valentin (1):
+  mtd: spi-nor: add support for macronix mx25u3235f
 
-Signed-off-by: John Crispin <john@phrozen.org>
-Signed-off-by: Ash Benz <ash.benz@bk.ru>
----
-Changes in V2
-* add description
+Ash Benz (1):
+  mtd: spi-nor: add support for macronix mx25u25635f
 
- drivers/mtd/spi-nor/spi-nor.c |    1 +
- 1 file changed, 1 insertion(+)
+Larry D. Pinney (1):
+  mtd: spi-nor: add support for ESMT_f25l32qa and ESMT_f25l64qa
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d0fc165..171adb3 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -872,6 +872,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
- 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
-+	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, 0) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
- 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+ drivers/mtd/spi-nor/spi-nor.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
 -- 
 1.7.10.4
