@@ -1,19 +1,15 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from frisell.zx2c4.com ([192.95.5.64])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJpQ0-0006CG-FX
- for linux-mtd@lists.infradead.org; Wed, 21 Dec 2016 22:31:29 +0000
-Subject: Re: [PATCH] mtd-utils: Add configure switches to disable jffsX or
- ubifs tools
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- linux-mtd@lists.infradead.org
-References: <20161221155412.29706-1-david.oberhollenzer@sigma-star.at>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5cd37f73-12b5-8e5f-cdaa-29cc6ea1da0c@nod.at>
-Date: Wed, 21 Dec 2016 23:30:57 +0100
-MIME-Version: 1.0
-In-Reply-To: <20161221155412.29706-1-david.oberhollenzer@sigma-star.at>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1cJqGp-0005Ad-KV
+ for linux-mtd@lists.infradead.org; Wed, 21 Dec 2016 23:26:04 +0000
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH] mtd/redboot: avoid null pointer deref
+Date: Thu, 22 Dec 2016 00:25:28 +0100
+Message-Id: <20161221232528.26534-1-Jason@zx2c4.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21.12.2016 16:54, David Oberhollenzer wrote:
-> For some applications, like building a root filesystem for an embedded
-> device, it may be desireable to only build and install a subset of the
-> mtd-utils. This can be done throught the targets of the generated
-> Makefile and hand picking executables, however the jffsX and ubifs
-> utilities have external build dependencies that may not be needed.
-> 
-> This patch adds configure switches to disable building the jffsX and
-> ubifs utilities. Their respective build dependencies (zlib, lzo, uuid)
-> are only requested if the tools are being built.
-> 
-> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+By giving a bogus partition name, it's possible to trigger a null
+pointer dereference.
 
-Reviewed-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ drivers/mtd/redboot.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks,
-//richard
+diff --git a/drivers/mtd/redboot.c b/drivers/mtd/redboot.c
+index 7623ac5fc586..53949ef80d36 100644
+--- a/drivers/mtd/redboot.c
++++ b/drivers/mtd/redboot.c
+@@ -212,6 +212,10 @@ static int parse_redboot_partitions(struct mtd_info *master,
+ 
+ 		nrparts++;
+ 	}
++	if (!fl) {
++		ret = -EINVAL;
++		goto out;
++	}
+ #ifdef CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED
+ 	if (fl->img->flash_base) {
+ 		nrparts++;
+-- 
+2.11.0
