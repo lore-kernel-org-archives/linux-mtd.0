@@ -1,32 +1,26 @@
-Received: from 6.mo2.mail-out.ovh.net ([87.98.165.38])
+Received: from mo2.mail-out.ovh.net ([178.32.228.2])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJk3i-0000sr-9Y
- for linux-mtd@lists.infradead.org; Wed, 21 Dec 2016 16:48:08 +0000
+ id 1cJkDU-0000tz-45
+ for linux-mtd@lists.infradead.org; Wed, 21 Dec 2016 16:58:13 +0000
 Received: from player731.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo2.mail-out.ovh.net (Postfix) with ESMTP id 6702C154CF
- for <linux-mtd@lists.infradead.org>; Wed, 21 Dec 2016 17:47:41 +0100 (CET)
-Subject: Re: [PATCH v4 1/4] mtd: spi-nor: add memory controllers for the
- Aspeed AST2500 SoC
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-References: <1481557252-13656-1-git-send-email-clg@kaod.org>
- <1481557252-13656-2-git-send-email-clg@kaod.org>
- <5566c62d-cc72-f207-e1dd-5a59e6947c24@wedev4u.fr>
- <a7cb781c-a4a8-f0f7-e7db-5cd9f19da0aa@kaod.org>
- <2bec1e91-a196-b894-fb66-590b8f4f35c3@atmel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
+ by mo2.mail-out.ovh.net (Postfix) with ESMTP id 95DCB15310
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Dec 2016 17:57:48 +0100 (CET)
+From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+To: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Joel Stanley <joel@jms.id.au>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <645db8c4-7f3c-f8bf-ddd9-3f513ce2ed14@kaod.org>
-Date: Wed, 21 Dec 2016 17:47:27 +0100
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Joel Stanley <joel@jms.id.au>,
+ =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+Subject: [PATCH v5 0/3] Static memory controllers for the Aspeed SoC
+Date: Wed, 21 Dec 2016 17:57:16 +0100
+Message-Id: <1482339439-26402-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
-In-Reply-To: <2bec1e91-a196-b894-fb66-590b8f4f35c3@atmel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,254 +30,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Cyrille,
+Hello,
 
->>> all aspeed_smc_[read|write]_[reg|user]() functions call
->>> aspeed_smc_[start|stop]_user(), so this driver always selects the "USER"
->>> mode and configures the control register based on chip->ctrl_val[smc_base].
->>
->> yes. 
->>
->> Maybe you think it is too early to prepare ground for the other 
->> mode ? Is that really confusing in the code ? Do you think I should
->> remove it for the initial support in the driver and stick to 'User' 
->> mode.
->>
-> 
-> I think it is not a big deal, at least technically. This is more a
-> psychological aspect of the review: the bigger patches, the more scarier.
-> I mean it requires more time and courage to dig into the source code hence
-> to understand what the driver actually does.
-> Sometime, it's better to split a big patch into many incremental and
-> smaller patches so it's more easy for reviewers to understand each part as
-> an independent feature. It also reveals the driver evolution during the
-> development process hence it helps to understand where it goes and what are
-> the next improvements to come.
+Here is a series introducing a new driver for the different memory
+controllers of the Aspeed AST2500 and AST2400 SoCs. Each SoC has at
+least a memory controller for the BMC firmware and another one for the
+host firmware. The register set are mostly compatible but there are
+some slight differences on the AST2400.
 
-I fully agree. It is just that we have been sitting on the code for more 
-than a year, using it in production and we should send to mainline
-much sooner. that was a mistake of us ...
+The driver only supports SPI type flash.
 
-> Anyway, since the review is done now, on my side I won't ask you to remove
-> or split the support of the 'Command' mode in a separated patch.
-> I let you do as you want, if it help you to introduce some part of the
-> support of this 'Command' mode now even if not completed yet, no problem on
-> my side :)
-> 
-> I was just giving you some pieces of advice for the next time if you want
-> to speed up the review of another patch introducing new features.
-> 
-> However, I will just ask you one more version handling the dummy cycles
-> properly as it would help us for the global maintenance of the spi-nor
-> subsystem. This is the only mandatory modification I ask you, after that I
-> think it would be ok for me and since Marek has already reviewed your
-> driver, it would be ready to be merged into the spi-nor tree.
+Tested on:
 
-Sending a v5 which should address your comments. 
+ * OpenPOWER Palmetto (AST2400) with
+ 	FMC controller : n25q256a
+	SPI controller : mx25l25635e and n25q512ax3
 
-I have removed the label property and will start a new thread in the 
-topic. Any hints on which binding we could add this label prop ?  
+ * Evaluation board (AST2500) with
+ 	FMC controller : w25q256 
+	SPI controller : w25q256
 
-> Anyway, thanks for taking time to explain us how your driver work :)
+ * OpenPOWER Witherspoon (AST2500) with
+ 	FMC controller : mx25l25635e * 2
+	SPI controller : mx66l1g45g
 
-Thanks for the review !
+Changes since v4:
+ - improved IO routines with Cyrille's suggestions
+ - added dummy bytes hanling for fast read commands
+ - removed the 'label' property from jedec,spi-nor. Needs more
+   discussion.
 
-C. 
+Changes since v3:
+ - reworked IO routines to use io{read,write}32_rep
+ - changed config option to SPI_ASPEED_SMC
+ - fixed aspeed_smc_chip_setup_init() returned value
 
+Changes since v2:
+ - splitted patch to distinguish AST2400 and AST2500 controllers
+ - fixed controller names
+ - introduced prepare/unprepare ops
+ - introduced a aspeed_smc_setup_flash() routine
+ - various cleanups
 
-> Best regards,
-> 
-> Cyrille
-> 
-> 
-> 
->>>> +static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
->>>> +				  struct device_node *np, struct resource *r)
->>>> +{
->>>> +	const struct aspeed_smc_info *info = controller->info;
->>>> +	struct device *dev = controller->dev;
->>>> +	struct device_node *child;
->>>> +	unsigned int cs;
->>>> +	int ret = -ENODEV;
->>>> +
->>>> +	for_each_available_child_of_node(np, child) {
->>>> +		struct aspeed_smc_chip *chip;
->>>> +		struct spi_nor *nor;
->>>> +		struct mtd_info *mtd;
->>>> +
->>>> +		/* This driver does not support NAND or NOR flash devices. */
->>>> +		if (!of_device_is_compatible(child, "jedec,spi-nor"))
->>>> +			continue;
->>>> +
->>>> +		ret = of_property_read_u32(child, "reg", &cs);
->>>> +		if (ret) {
->>>> +			dev_err(dev, "Couldn't not read chip select.\n");
->>>> +			break;
->>>> +		}
->>>> +
->>>> +		if (cs >= info->nce) {
->>>> +			dev_err(dev, "Chip select %d out of range.\n",
->>>> +				cs);
->>>> +			ret = -ERANGE;
->>>> +			break;
->>>> +		}
->>>> +
->>>> +		if (controller->chips[cs]) {
->>>> +			dev_err(dev, "Chip select %d already in use by %s\n",
->>>> +				cs, dev_name(controller->chips[cs]->nor.dev));
->>>> +			ret = -EBUSY;
->>>> +			break;
->>>> +		}
->>>> +
->>>> +		chip = devm_kzalloc(controller->dev, sizeof(*chip), GFP_KERNEL);
->>>> +		if (!chip) {
->>>> +			ret = -ENOMEM;
->>>> +			break;
->>>> +		}
->>>> +
->>>> +		chip->controller = controller;
->>>> +		chip->ctl = controller->regs + info->ctl0 + cs * 4;
->>>> +		chip->cs = cs;
->>>> +
->>>> +		nor = &chip->nor;
->>>> +		mtd = &nor->mtd;
->>>> +
->>>> +		nor->dev = dev;
->>>> +		nor->priv = chip;
->>>> +		spi_nor_set_flash_node(nor, child);
->>>> +		nor->read = aspeed_smc_read_user;
->>>> +		nor->write = aspeed_smc_write_user;
->>>> +		nor->read_reg = aspeed_smc_read_reg;
->>>> +		nor->write_reg = aspeed_smc_write_reg;
->>>> +		nor->prepare = aspeed_smc_prep;
->>>> +		nor->unprepare = aspeed_smc_unprep;
->>>> +
->>>> +		mtd->name = of_get_property(child, "label", NULL);
->>>
->>> This new "label" DT property should be removed from this patch and send
->>> in a dedicated patch to be discussed separately. However I agree with
->>> Marek: it looks generic so maybe it could be managed directly from
->>> mtd_device_register() since setting such as name could also be done when
->>> using a NAND flash. Anyway, I don't see the link between this name and
->>> spi-nor. Hence I don't think the DT property should be documented in
->>> jedec,spi-nor.txt.
->>
->> OK. I will remove it in the next version. 
->>
->>> Be patient because I expect such a topic to be discussed quite a long
->>> time before we all agree, even if this is "just" a new DT property ;)
->>
->> yeah. I expected that also :) But it is quite pratical to give user
->> space a hint on the flash nature. Systems can have up to 4 different
->> ones. So there is need for it IMO.
->>
->> How should I proceed then ? Shall I start a discussion with a single
->> patch changing mtd_device_register() ? but I need to know which binding
->> would be the more consensual for such a prop.
->>
->> Thanks,
->>
->> C.
->>
->>>
->>> Best regards,
->>>
->>> Cyrille
->>>
->>>
->>>> +
->>>> +		ret = aspeed_smc_chip_setup_init(chip, r);
->>>> +		if (ret)
->>>> +			break;
->>>> +
->>>> +		/*
->>>> +		 * TODO: Add support for SPI_NOR_QUAD and SPI_NOR_DUAL
->>>> +		 * attach when board support is present as determined
->>>> +		 * by of property.
->>>> +		 */
->>>> +		ret = spi_nor_scan(nor, NULL, SPI_NOR_NORMAL);
->>>> +		if (ret)
->>>> +			break;
->>>> +
->>>> +		ret = aspeed_smc_chip_setup_finish(chip);
->>>> +		if (ret)
->>>> +			break;
->>>> +
->>>> +		ret = mtd_device_register(mtd, NULL, 0);
->>>> +		if (ret)
->>>> +			break;
->>>> +
->>>> +		controller->chips[cs] = chip;
->>>> +	}
->>>> +
->>>> +	if (ret)
->>>> +		aspeed_smc_unregister(controller);
->>>> +
->>>> +	return ret;
->>>> +}
->>>> +
->>>> +static int aspeed_smc_probe(struct platform_device *pdev)
->>>> +{
->>>> +	struct device_node *np = pdev->dev.of_node;
->>>> +	struct device *dev = &pdev->dev;
->>>> +	struct aspeed_smc_controller *controller;
->>>> +	const struct of_device_id *match;
->>>> +	const struct aspeed_smc_info *info;
->>>> +	struct resource *res;
->>>> +	int ret;
->>>> +
->>>> +	match = of_match_device(aspeed_smc_matches, &pdev->dev);
->>>> +	if (!match || !match->data)
->>>> +		return -ENODEV;
->>>> +	info = match->data;
->>>> +
->>>> +	controller = devm_kzalloc(&pdev->dev, sizeof(*controller) +
->>>> +		info->nce * sizeof(controller->chips[0]), GFP_KERNEL);
->>>> +	if (!controller)
->>>> +		return -ENOMEM;
->>>> +	controller->info = info;
->>>> +	controller->dev = dev;
->>>> +
->>>> +	mutex_init(&controller->mutex);
->>>> +	platform_set_drvdata(pdev, controller);
->>>> +
->>>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>>> +	controller->regs = devm_ioremap_resource(dev, res);
->>>> +	if (IS_ERR(controller->regs)) {
->>>> +		dev_err(dev, "Cannot remap controller address.\n");
->>>> +		return PTR_ERR(controller->regs);
->>>> +	}
->>>> +
->>>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->>>> +	controller->ahb_base = devm_ioremap_resource(dev, res);
->>>> +	if (IS_ERR(controller->ahb_base)) {
->>>> +		dev_err(dev, "Cannot remap controller address.\n");
->>>> +		return PTR_ERR(controller->ahb_base);
->>>> +	}
->>>> +
->>>> +	ret = aspeed_smc_setup_flash(controller, np, res);
->>>> +	if (ret)
->>>> +		dev_err(dev, "Aspeed SMC probe failed %d\n", ret);
->>>> +
->>>> +	return ret;
->>>> +}
->>>> +
->>>> +static struct platform_driver aspeed_smc_driver = {
->>>> +	.probe = aspeed_smc_probe,
->>>> +	.remove = aspeed_smc_remove,
->>>> +	.driver = {
->>>> +		.name = DEVICE_NAME,
->>>> +		.of_match_table = aspeed_smc_matches,
->>>> +	}
->>>> +};
->>>> +
->>>> +module_platform_driver(aspeed_smc_driver);
->>>> +
->>>> +MODULE_DESCRIPTION("ASPEED Static Memory Controller Driver");
->>>> +MODULE_AUTHOR("Cedric Le Goater <clg@kaod.org>");
->>>> +MODULE_LICENSE("GPL v2");
->>>>
->>>
->>
->>
-> 
+Changes since v1:
+ - added a set4b ops to handle difference in the controllers
+ - simplified the IO routines
+ - prepared for fast read using dummy cycles
+
+Work in progress:
+ - read optimization using higher SPI clock frequencies
+ - command mode to direct reads from AHB
+ - DMA support
+
+Thanks,
+
+C.
+
+Cédric Le Goater (3):
+  mtd: spi-nor: add memory controllers for the Aspeed AST2500 SoC
+  mtd: aspeed: add memory controllers for the Aspeed AST2400 SoC
+  mtd: spi-nor: bindings for the Aspeed memory controllers
+
+ .../devicetree/bindings/mtd/aspeed-smc.txt         |  51 ++
+ drivers/mtd/spi-nor/Kconfig                        |  10 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/aspeed-smc.c                   | 759 +++++++++++++++++++++
+ 4 files changed, 821 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
+ create mode 100644 drivers/mtd/spi-nor/aspeed-smc.c
+
+-- 
+2.7.4
