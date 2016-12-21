@@ -1,16 +1,15 @@
 Received: from nbd.name ([2a01:4f8:131:30e2::2])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJbFX-00028g-VV
+ id 1cJbFX-00028l-VT
  for linux-mtd@lists.infradead.org; Wed, 21 Dec 2016 07:23:45 +0000
 From: John Crispin <john@phrozen.org>
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Marek Vasut <marek.vasut@gmail.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- "Larry D. Pinney" <ldpinney@gmail.com>, John Crispin <john@phrozen.org>
-Subject: [PATCH V2 3/3] mtd: spi-nor: add support for ESMT_f25l32qa and
- ESMT_f25l64qa
-Date: Wed, 21 Dec 2016 08:23:10 +0100
-Message-Id: <1482304990-23942-4-git-send-email-john@phrozen.org>
+ Ash Benz <ash.benz@bk.ru>, John Crispin <john@phrozen.org>
+Subject: [PATCH V2 1/3] mtd: spi-nor: add support for macronix mx25u25635f
+Date: Wed, 21 Dec 2016 08:23:08 +0100
+Message-Id: <1482304990-23942-2-git-send-email-john@phrozen.org>
 In-Reply-To: <1482304990-23942-1-git-send-email-john@phrozen.org>
 References: <1482304990-23942-1-git-send-email-john@phrozen.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,31 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Larry D. Pinney" <ldpinney@gmail.com>
+From: Ash Benz <ash.benz@bk.ru>
 
-Add Support for the ESMT_F25L32QA and ESMT_F25L64QA
-These are 4MB and 8MB SPI NOR Chips from Elite Semiconductor Memory
-Technology
+This patch adds support for a new macronix spi flash chip. We have had this
+patch inside our tree for a while and people are actively using routers
+with this chip.
 
-Acked-by: Marek Vasut <marex@denx.de>
 Signed-off-by: John Crispin <john@phrozen.org>
-Signed-off-by: Larry D. Pinney <ldpinney@gmail.com>
+Signed-off-by: Ash Benz <ash.benz@bk.ru>
 ---
- drivers/mtd/spi-nor/spi-nor.c |    2 ++
- 1 file changed, 2 insertions(+)
+Changes in V2
+* add description
+
+ drivers/mtd/spi-nor/spi-nor.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index bfff159..2b150b5 100644
+index d0fc165..171adb3 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -821,6 +821,8 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 
- 	/* ESMT */
- 	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
-+	{ "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64, SECT_4K) },
-+	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128, SECT_4K) },
- 
- 	/* Everspin */
- 	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+@@ -872,6 +872,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
++	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, 0) },
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+ 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
 -- 
 1.7.10.4
