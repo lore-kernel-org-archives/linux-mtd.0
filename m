@@ -1,31 +1,19 @@
-Received: from mail-qk0-f178.google.com ([209.85.220.178])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJtJ2-0004Zd-Si
- for linux-mtd@lists.infradead.org; Thu, 22 Dec 2016 02:40:36 +0000
-Received: by mail-qk0-f178.google.com with SMTP id q68so101349273qki.1
- for <linux-mtd@lists.infradead.org>; Wed, 21 Dec 2016 18:40:12 -0800 (PST)
-Subject: Re: [PATCH v3 3/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
-To: Florian Fainelli <f.fainelli@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-References: <20161208185933.13749-1-f.fainelli@gmail.com>
- <20161209233628.6642-1-f.fainelli@gmail.com>
- <20161209233628.6642-4-f.fainelli@gmail.com>
-Cc: linux@armlinux.org.uk, nicolas.pitre@linaro.org, panand@redhat.com,
- chris.brandt@renesas.com, arnd@arndb.de, jonathan.austin@arm.com,
- pawel.moll@arm.com, vladimir.murzin@arm.com, mark.rutland@arm.com,
- ard.biesheuvel@linaro.org, keescook@chromium.org, matt@codeblueprint.co.uk,
- kirill.shutemov@linux.intel.com, ben@decadent.org.uk, js07.lee@samsung.com,
- stefan@agner.ch, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com, richard@nod.at,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
-From: Laura Abbott <labbott@redhat.com>
-Message-ID: <7721bed8-4b08-f5ce-056e-45f02a431e76@redhat.com>
-Date: Wed, 21 Dec 2016 18:40:05 -0800
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cJzXA-0005lZ-8L
+ for linux-mtd@lists.infradead.org; Thu, 22 Dec 2016 09:19:33 +0000
+Date: Thu, 22 Dec 2016 10:19:09 +0100
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Cc: linux-mtd@lists.infradead.org, richard@sigma-star.at
+Subject: Re: [PATCH] mtd-utils: Add configure switches to disable jffsX or
+ ubifs tools
+Message-ID: <20161222101909.3a386438@free-electrons.com>
+In-Reply-To: <20161221155412.29706-1-david.oberhollenzer@sigma-star.at>
+References: <20161221155412.29706-1-david.oberhollenzer@sigma-star.at>
 MIME-Version: 1.0
-In-Reply-To: <20161209233628.6642-4-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,181 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/09/2016 03:36 PM, Florian Fainelli wrote:
-> x86 has an option: CONFIG_DEBUG_VIRTUAL to do additional checks on
-> virt_to_phys calls. The goal is to catch users who are calling
-> virt_to_phys on non-linear addresses immediately. This includes caller
-> using __virt_to_phys() on image addresses instead of __pa_symbol(). This
-> is a generally useful debug feature to spot bad code (particulary in
-> drivers).
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  arch/arm/Kconfig              |  1 +
->  arch/arm/include/asm/memory.h | 16 ++++++++++++--
->  arch/arm/mm/Makefile          |  1 +
->  arch/arm/mm/physaddr.c        | 51 +++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 67 insertions(+), 2 deletions(-)
->  create mode 100644 arch/arm/mm/physaddr.c
-> 
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index b5d529fdffab..5e66173c5787 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -2,6 +2,7 @@ config ARM
->  	bool
->  	default y
->  	select ARCH_CLOCKSOURCE_DATA
-> +	select ARCH_HAS_DEBUG_VIRTUAL
->  	select ARCH_HAS_DEVMEM_IS_ALLOWED
->  	select ARCH_HAS_ELF_RANDOMIZE
->  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-> diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
-> index bee7511c5098..d90300193adf 100644
-> --- a/arch/arm/include/asm/memory.h
-> +++ b/arch/arm/include/asm/memory.h
-> @@ -213,7 +213,7 @@ extern const void *__pv_table_begin, *__pv_table_end;
->  	: "r" (x), "I" (__PV_BITS_31_24)		\
->  	: "cc")
->  
-> -static inline phys_addr_t __virt_to_phys(unsigned long x)
-> +static inline phys_addr_t __virt_to_phys_nodebug(unsigned long x)
->  {
->  	phys_addr_t t;
->  
-> @@ -245,7 +245,7 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
->  #define PHYS_OFFSET	PLAT_PHYS_OFFSET
->  #define PHYS_PFN_OFFSET	((unsigned long)(PHYS_OFFSET >> PAGE_SHIFT))
->  
-> -static inline phys_addr_t __virt_to_phys(unsigned long x)
-> +static inline phys_addr_t __virt_to_phys_nodebug(unsigned long x)
->  {
->  	return (phys_addr_t)x - PAGE_OFFSET + PHYS_OFFSET;
->  }
-> @@ -261,6 +261,16 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
->  	((((unsigned long)(kaddr) - PAGE_OFFSET) >> PAGE_SHIFT) + \
->  	 PHYS_PFN_OFFSET)
->  
-> +#define __pa_symbol_nodebug(x)	__virt_to_phys_nodebug((x))
-> +
-> +#ifdef CONFIG_DEBUG_VIRTUAL
-> +extern phys_addr_t __virt_to_phys(unsigned long x);
-> +extern phys_addr_t __phys_addr_symbol(unsigned long x);
-> +#else
-> +#define __virt_to_phys(x)	__virt_to_phys_nodebug(x)
-> +#define __phys_addr_symbol(x)	__pa_symbol_nodebug(x)
-> +#endif
-> +
->  /*
->   * These are *only* valid on the kernel direct mapped RAM memory.
->   * Note: Drivers should NOT use these.  They are the wrong
-> @@ -283,9 +293,11 @@ static inline void *phys_to_virt(phys_addr_t x)
->   * Drivers should NOT use these either.
->   */
->  #define __pa(x)			__virt_to_phys((unsigned long)(x))
-> +#define __pa_symbol(x)		__phys_addr_symbol(RELOC_HIDE((unsigned long)(x), 0))
->  #define __va(x)			((void *)__phys_to_virt((phys_addr_t)(x)))
->  #define pfn_to_kaddr(pfn)	__va((phys_addr_t)(pfn) << PAGE_SHIFT)
->  
-> +
->  extern long long arch_phys_to_idmap_offset;
->  
->  /*
-> diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
-> index e8698241ece9..b3dea80715b4 100644
-> --- a/arch/arm/mm/Makefile
-> +++ b/arch/arm/mm/Makefile
-> @@ -14,6 +14,7 @@ endif
->  
->  obj-$(CONFIG_ARM_PTDUMP)	+= dump.o
->  obj-$(CONFIG_MODULES)		+= proc-syms.o
-> +obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
->  
->  obj-$(CONFIG_ALIGNMENT_TRAP)	+= alignment.o
->  obj-$(CONFIG_HIGHMEM)		+= highmem.o
-> diff --git a/arch/arm/mm/physaddr.c b/arch/arm/mm/physaddr.c
-> new file mode 100644
-> index 000000000000..0288760306ce
-> --- /dev/null
-> +++ b/arch/arm/mm/physaddr.c
-> @@ -0,0 +1,51 @@
-> +#include <linux/bug.h>
-> +#include <linux/export.h>
-> +#include <linux/types.h>
-> +#include <linux/mmdebug.h>
-> +#include <linux/mm.h>
-> +
-> +#include <asm/sections.h>
-> +#include <asm/memory.h>
-> +#include <asm/fixmap.h>
-> +#include <asm/dma.h>
-> +
-> +#include "mm.h"
-> +
-> +static inline bool __virt_addr_valid(unsigned long x)
-> +{
-> +	/* high_memory does not get immediately defined, and there
-> +	 * are early callers of __pa() against PAGE_OFFSET, just catch
-> +	 * these here, then do normal checks, with the exception of
-> +	 * MAX_DMA_ADDRESS.
-> +	 */
-> +	if ((x >= PAGE_OFFSET && !high_memory) ||
-> +	   (x >= PAGE_OFFSET &&
-> +	    high_memory && x < (unsigned long)high_memory) ||
-> +	    x == MAX_DMA_ADDRESS)
-> +		return true;
+Hello,
 
-This is difficult to read, it's easier to read if it's split out:
+On Wed, 21 Dec 2016 16:54:12 +0100, David Oberhollenzer wrote:
 
-if (!high_memory && x >= PAGE_OFFSET)
-	return true;
-
-if (high_memory && x >= PAGE_OFFSET && x < (unsigned long) high_memory)
-	return true;
-
-if (x == MAX_DMA_ADDRESS)
-	return true;
-
-I'm really not a fan of the check for MAX_DMA_ADDRESS. arm64 gets away
-with this because it uses the asm-generic version of dma.h which sets
-MAX_DMA_ADDRESS to PAGE_OFFSET. __pa(MAX_DMA_ADDRESS) is used a
-bunch of places in the kernel as a lower limit for memblock
-allocation. The implication seems to be that MAX_DMA_ADDRESS
-corresponds to something that corresponds to a real physical address.
-The existing code happens to work because it will simply retry the
-allocation if without the lower bound.
-
-I don't see a good way to fix this though. It doesn't look like
-MAX_DMA_ADDRESS can be changed if it's actually going to be used
-for DMA and there isn't a unified way to just get a physical address.
-
-Thanks,
-Laura
-
+> +AC_ARG_WITH([jffs],
+> +	[AS_HELP_STRING([--without-jffs], [Disable jffsX utilities])],
+> +	[case "${withval}" in
+> +	yes) AM_CONDITIONAL([BUILD_JFFSX], [true]) ;;
+> +	no)  AM_CONDITIONAL([BUILD_JFFSX], [false]) ;;
+> +	*) AC_MSG_ERROR([bad value ${withval} for --without-jffs]) ;;
+> +	esac],
+> +	[AM_CONDITIONAL([BUILD_JFFSX], [true])])
 > +
-> +	return false;
-> +}
-> +
-> +phys_addr_t __virt_to_phys(unsigned long x)
-> +{
-> +	WARN(!__virt_addr_valid(x),
-> +	     "virt_to_phys used for non-linear address: %pK (%pS)\n",
-> +	     (void *)x,
-> +	     (void *)x);
-> +
-> +	return __virt_to_phys_nodebug(x);
-> +}
-> +EXPORT_SYMBOL(__virt_to_phys);
-> +
-> +phys_addr_t __phys_addr_symbol(unsigned long x)
-> +{
-> +	/* This is bounds checking against the kernel image only.
-> +	 * __pa_symbol should only be used on kernel symbol addresses.
-> +	 */
-> +	VIRTUAL_BUG_ON(x < (unsigned long)KERNEL_START ||
-> +		       x > (unsigned long)KERNEL_END);
-> +
-> +	return __pa_symbol_nodebug(x);
-> +}
-> +EXPORT_SYMBOL(__phys_addr_symbol);
-> 
+> +AC_ARG_WITH([ubifs],
+> +	[AS_HELP_STRING([--without-ubifs], [Disable ubifs utilities])],
+> +	[case "${withval}" in
+> +	yes) AM_CONDITIONAL([BUILD_UBIFS], [true]) ;;
+> +	no)  AM_CONDITIONAL([BUILD_UBIFS], [false]) ;;
+> +	*) AC_MSG_ERROR([bad value ${withval} for --without-ubifs]) ;;
+> +	esac],
+> +	[AM_CONDITIONAL([BUILD_UBIFS], [true])])
+
+If the only two correct values are "yes" or "no", then you should use
+AC_ARG_ENABLE() and not AC_ARG_WITH().
+
+Also, I believe a much more autoconf-ish way of writing this is:
+
+AC_ARG_ENABLE([jffs],
+	[AS_HELP_STRING([--without-jffs], [Disable jffsX utilities])],
+	[], [enable_jffs=yes])
+
+if "${enable_jffs}" = "yes" ; then
+	need_uuid="yes"
+	need_zlib="yes"
+	need_lzo="yes"
+fi
+
+Indeed, using AM_CONDITIONAL() is useful to assign automake variable.
+Here, BUILD_JFFS and BUILD_UBIFS are apparently only used within the
+configure.ac, so using AM_CONDITIONAL() is useless.
+
+Best regards,
+
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
