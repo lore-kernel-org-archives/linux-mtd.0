@@ -1,7 +1,7 @@
 Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cKRZe-0001KR-Mp
- for linux-mtd@lists.infradead.org; Fri, 23 Dec 2016 15:15:59 +0000
+ id 1cKRrE-0007eG-SL
+ for linux-mtd@lists.infradead.org; Fri, 23 Dec 2016 15:34:10 +0000
 Subject: Re: [PATCH v2 2/3] mtd: m25p80: consider max message size in
  m25p80_read
 To: Heiner Kallweit <hkallweit1@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -12,8 +12,8 @@ References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
 CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, MTD Maling List
  <linux-mtd@lists.infradead.org>
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <f39fad56-f229-3bbb-7bea-3a557cf94e49@atmel.com>
-Date: Fri, 23 Dec 2016 16:15:34 +0100
+Message-ID: <2e31fbe7-bbc7-8fed-ccbf-dd9ae4d220e1@atmel.com>
+Date: Fri, 23 Dec 2016 16:33:45 +0100
 MIME-Version: 1.0
 In-Reply-To: <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
 Content-Type: text/plain; charset="windows-1252"
@@ -32,7 +32,10 @@ Le 17/08/2016 à 21:09, Heiner Kallweit a écrit :
 > of data that can be read.
 > 
 > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+
+Applied to git://github.com/spi-nor/linux.git
+
+Thanks!
 
 > ---
 > v2:
