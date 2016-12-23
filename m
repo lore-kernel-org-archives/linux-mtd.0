@@ -1,19 +1,22 @@
-Subject: Re: [PATCH v4 1/2] mtd: spi-nor: Bindings for Rockchip serial flash
- controller
-To: Shawn Lin <shawn.lin@rock-chips.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-References: <1481794068-241619-1-git-send-email-shawn.lin@rock-chips.com>
- <1481794068-241619-2-git-send-email-shawn.lin@rock-chips.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
- Heiko Stuebner <heiko@sntech.de>
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cKV6W-0002nL-GM
+ for linux-mtd@lists.infradead.org; Fri, 23 Dec 2016 19:02:12 +0000
+Received: by mail-wm0-x244.google.com with SMTP id u144so43023031wmu.0
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Dec 2016 11:01:47 -0800 (PST)
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: add a stateless method to support
+ memory size above 128Mib
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <cover.1482158909.git.cyrille.pitchen@atmel.com>
+ <da3ef28917d3ad8ed9e8ee76c543dd12846c295c.1482158909.git.cyrille.pitchen@atmel.com>
+Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ richard@nod.at, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ broonie@kernel.org, linux-spi@vger.kernel.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <c5e8a5ca-429a-5603-de28-a5332007e193@gmail.com>
-Date: Fri, 23 Dec 2016 20:00:48 +0100
+Message-ID: <79acc8f2-9794-f954-4185-480c57d58d6f@gmail.com>
+Date: Fri, 23 Dec 2016 19:56:36 +0100
 MIME-Version: 1.0
-In-Reply-To: <1481794068-241619-2-git-send-email-shawn.lin@rock-chips.com>
+In-Reply-To: <da3ef28917d3ad8ed9e8ee76c543dd12846c295c.1482158909.git.cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,15 +28,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/15/2016 10:27 AM, Shawn Lin wrote:
-> Add binding document for the Rockchip serial flash controller.
+On 12/19/2016 04:05 PM, Cyrille Pitchen wrote:
+> This patch provides an alternative mean to support memory above 16MiB
+> (128Mib) by replacing 3byte address op codes by their associated 4byte
+> address versions.
 > 
-> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
+> Using the dedicated 4byte address op codes doesn't change the internal
+> state of the SPI NOR memory as opposed to using other means such as
+> updating a Base Address Register (BAR) and sending command to enter/leave
+> the 4byte mode.
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
+> Hence when a CPU reset occurs, early bootloaders don't need to be aware
+> of BAR value or 4byte mode being enabled: they can still access the first
+> 16MiB of the SPI NOR memory using the regular 3byte address op codes.
+> 
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> Tested-by: Vignesh R <vigneshr@ti.com>
 > ---
+>  drivers/mtd/spi-nor/spi-nor.c | 101 +++++++++++++++++++++++++++++++++---------
+>  1 file changed, 80 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 9bb8f91fa42e..a5120fd7095e 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -81,6 +81,10 @@ struct flash_info {
+>  					 * because it has the same value as
+>  					 * ATMEL flashes)
+>  					*/
+> +#define SPI_NOR_4B_OPCODES	BIT(11)	/*
+> +					 * Use dedicated 4byte address op codes
+> +					 * to support memory size above 128Mib.
+> +					 */
+>  };
+>  
+>  #define JEDEC_MFR(info)	((info)->id[0])
+> @@ -194,6 +198,78 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+>  	return mtd->priv;
+>  }
+>  
+> +
+> +static u8 spi_nor_convert_opcode(u8 opcode, const u8 table[][2])
+> +{
+> +	size_t i;
+> +
+> +	for (i = 0; table[i][0]; ++i)
 
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+i++ :)
+
+> +		if (table[i][0] == opcode)
+> +			return table[i][1];
+
+This code just waits for some nice SPI NOR to introduce opcode 0x0 I
+think. Wouldn't it be better to use ARRAY_SIZE() instead and pass the
+result of it into this function ?
+
+> +	/* No conversion found, keep input op code. */
+> +	return opcode;
+> +}
+> +
+> +static inline u8 spi_nor_convert_3to4_read(u8 opcode)
+> +{
+> +	static const u8 spi_nor_3to4_read[][2] = {
+> +		{ SPINOR_OP_READ,	SPINOR_OP_READ_4B },
+> +		{ SPINOR_OP_READ_FAST,	SPINOR_OP_READ_FAST_4B },
+> +		{ SPINOR_OP_READ_1_1_2,	SPINOR_OP_READ_1_1_2_4B },
+> +		{ SPINOR_OP_READ_1_2_2,	SPINOR_OP_READ_1_2_2_4B },
+> +		{ SPINOR_OP_READ_1_1_4,	SPINOR_OP_READ_1_1_4_4B },
+> +		{ SPINOR_OP_READ_1_4_4,	SPINOR_OP_READ_1_4_4_4B },
+> +		{0, 0}
+> +	};
+> +
+> +	return spi_nor_convert_opcode(opcode, spi_nor_3to4_read);
+> +}
+> +
+> +static inline u8 spi_nor_convert_3to4_program(u8 opcode)
+> +{
+> +	static const u8 spi_nor_3to4_program[][2] = {
+> +		{ SPINOR_OP_PP,		SPINOR_OP_PP_4B },
+> +		{ SPINOR_OP_PP_1_1_4,	SPINOR_OP_PP_1_1_4_4B },
+> +		{ SPINOR_OP_PP_1_4_4,	SPINOR_OP_PP_1_4_4_4B },
+> +		{0, 0}
+> +	};
+> +
+> +	return spi_nor_convert_opcode(opcode, spi_nor_3to4_program);
+> +}
+> +
+> +static inline u8 spi_nor_convert_3to4_erase(u8 opcode)
+> +{
+> +	static const u8 spi_nor_3to4_erase[][2] = {
+> +		{ SPINOR_OP_BE_4K,	SPINOR_OP_BE_4K_4B },
+> +		{ SPINOR_OP_BE_32K,	SPINOR_OP_BE_32K_4B },
+> +		{ SPINOR_OP_SE,		SPINOR_OP_SE_4B },
+> +		{0, 0}
+> +	};
+> +
+> +	return spi_nor_convert_opcode(opcode, spi_nor_3to4_erase);
+> +}
+> +
+> +static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
+> +				      const struct flash_info *info)
+> +{
+> +	/* Do some manufacturer fixups first */
+> +	switch (JEDEC_MFR(info)) {
+> +	case SNOR_MFR_SPANSION:
+> +		/* No small sector erase for 4-byte command set */
+> +		nor->erase_opcode = SPINOR_OP_SE;
+> +		nor->mtd.erasesize = info->sector_size;
+> +		break;
+> +
+> +	default:
+> +		break;
+> +	}
+> +
+> +	nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
+> +	nor->program_opcode = spi_nor_convert_3to4_program(nor->program_opcode);
+> +	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
+> +}
+> +
+>  /* Enable/disable 4-byte addressing mode. */
+>  static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+>  			    int enable)
+> @@ -1621,27 +1697,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  	else if (mtd->size > 0x1000000) {
+>  		/* enable 4-byte addressing if the device exceeds 16MiB */
+>  		nor->addr_width = 4;
+> -		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION) {
+> -			/* Dedicated 4-byte command set */
+> -			switch (nor->flash_read) {
+> -			case SPI_NOR_QUAD:
+> -				nor->read_opcode = SPINOR_OP_READ_1_1_4_4B;
+> -				break;
+> -			case SPI_NOR_DUAL:
+> -				nor->read_opcode = SPINOR_OP_READ_1_1_2_4B;
+> -				break;
+> -			case SPI_NOR_FAST:
+> -				nor->read_opcode = SPINOR_OP_READ_FAST_4B;
+> -				break;
+> -			case SPI_NOR_NORMAL:
+> -				nor->read_opcode = SPINOR_OP_READ_4B;
+> -				break;
+> -			}
+> -			nor->program_opcode = SPINOR_OP_PP_4B;
+> -			/* No small sector erase for 4-byte command set */
+> -			nor->erase_opcode = SPINOR_OP_SE_4B;
+> -			mtd->erasesize = info->sector_size;
+> -		} else
+> +		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+> +		    info->flags & SPI_NOR_4B_OPCODES)
+> +			spi_nor_set_4byte_opcodes(nor, info);
+> +		else
+>  			set_4byte(nor, info, 1);
+>  	} else {
+>  		nor->addr_width = 3;
+> 
+
 
 -- 
 Best regards,
