@@ -1,22 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cK5W5-0002b8-89
- for linux-mtd@lists.infradead.org; Thu, 22 Dec 2016 15:42:51 +0000
-To: MTD Mailing List <linux-mtd@lists.infradead.org>,
- Buildroot Mailing List <buildroot@busybox.net>,
- "Josh Boyer (Fedora)" <jwboyer@gmail.com>,
- "Riku Voipio (Debian)" <riku.voipio@linaro.org>,
- "Pascal Bleser (SUSE)" <pascal.bleser@opensuse.org>,
- "Timothy Redaelli (Arch)" <timothy.redaelli@gmail.com>,
- Richard Weinberger <richard@nod.at>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [ANNOUNCE] mtd-utils-2.0.0 is released
-Message-ID: <c68c2794-3234-ab02-971e-e1dc5d9394fa@sigma-star.at>
-Date: Thu, 22 Dec 2016 16:41:03 +0100
+Received: from mail-wj0-x243.google.com ([2a00:1450:400c:c01::243])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cKL2p-0004uk-QG
+ for linux-mtd@lists.infradead.org; Fri, 23 Dec 2016 08:17:40 +0000
+Received: by mail-wj0-x243.google.com with SMTP id hb5so5973747wjc.2
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Dec 2016 00:17:18 -0800 (PST)
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] mtd: nand: xway: fix build failure
+Date: Fri, 23 Dec 2016 08:17:12 +0000
+Message-Id: <1482481032-28043-1-git-send-email-sudipm.mukherjee@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Vd5hAHG4JqUVne3tQHMu98qKaigHHCrVQ"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,283 +27,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Vd5hAHG4JqUVne3tQHMu98qKaigHHCrVQ
-Content-Type: multipart/mixed; boundary="0oUMOs12LrWVKu82is3AMdwd2o1gWRHwS";
- protected-headers="v1"
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-To: MTD Mailing List <linux-mtd@lists.infradead.org>,
- Buildroot Mailing List <buildroot@busybox.net>,
- "Josh Boyer (Fedora)" <jwboyer@gmail.com>,
- "Riku Voipio (Debian)" <riku.voipio@linaro.org>,
- "Pascal Bleser (SUSE)" <pascal.bleser@opensuse.org>,
- "Timothy Redaelli (Arch)" <timothy.redaelli@gmail.com>,
- Richard Weinberger <richard@nod.at>
-Message-ID: <c68c2794-3234-ab02-971e-e1dc5d9394fa@sigma-star.at>
-Subject: [ANNOUNCE] mtd-utils-2.0.0 is released
+The build of mips xway_defconfig was failing with the error:
 
---0oUMOs12LrWVKu82is3AMdwd2o1gWRHwS
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+drivers/mtd/nand/xway_nand.c:235:1: warning:
+	data definition has no type or storage class
+ MODULE_DEVICE_TABLE(of, xway_nand_match);
+ ^~~~~~~~~~~~~~~~~~~
+drivers/mtd/nand/xway_nand.c:235:1: error:
+	type defaults to 'int' in declaration of 'MODULE_DEVICE_TABLE'
+		[-Werror=implicit-int]
 
-Hi,
+It missed to include the header file.
 
-mtd-utils-2.0.0 is released.
+Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+---
 
-Tarball:               ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-2.=
-0.0.tar.bz2
-Tarball gpg signature: ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-2.=
-0.0.tar.bz2.asc
-Signed git tag:        git://git.infradead.org/mtd-utils.git v2.0.0
+Build log of next-20161223 is at:
+https://travis-ci.org/sudipm-mukherjee/parport/jobs/186246753
 
+This error will be fixed but it will now uncover the next error as the
+build goes on.
 
-After a little more than ten years, we bumped the major version number of=
+ drivers/mtd/nand/xway_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-mtd-utils as this release does not only contain fixes and a few new featu=
-res,
-but also a drastic restructuring and cleanup of the source tree. Most not=
-ably,
-the hand written Makefile got replaced with an autotools based build syst=
-em.
-
-During the last two weeks, two release candidates were announced to get s=
-ome
-feedback for the new build system and incorporate potential fixes. Due to=
- the
-mainly positive feedback, we are confident that the new build system perf=
-orms
-to the expectations of downstream package maintainers and are thus releas=
-ing
-the final version 2.0.0.
-
-
-Below is a short summary of changes from the last release. Fixes that wer=
-e
-superseded by the build system upgrade or fixes for newly added features =
-are
-omitted.
-
-Changes from 2.0.0-rc2 to final 2.0.0 release:
- - Add configure switches to disable jffsX or ubifs tools
-
-Changes from 2.0.0-rc1 to 2.0.0-rc2:
- - Correct casting for final status report in flashcp
- - Fix packaging of unit test files
- - nandwrite: Factor out buffer checking code
-
-Changes from 1.5.2 to 2.0.0-rc1:
-
-Features:
- - libmissing with stubs for functions not present in libraries like musl=
-
- - unittests for libmtd and libubi
- - port most kernel space mtd test modules to userspace
- - mkfs.ubifs: extended attribute support
- - ubinize: Move lengthy help text to a man page
- - nandwrite: Add skip-all-ff-pages option
- - flash_{un,}lock: support for MEMISLOCKED
- - nandtest: support hex/dec/oct for --offset and --length
-
-Fixes:
- - common: Fix 'unchecked return code' warnings
- - common: Fix PRI{x,d}off definitions for x86_64 platform
- - common: include sys/sysmacros.h for major/minor/makedev
- - common: fix wrong format specifiers on mips32
- - libmtd: Fix uninitialized buffers
- - libmtd: Eliminate warnings about implicit non-const casting
- - libmtd: Fix return status in mtd_torture test function
- - libmtd: mtd_read: Take the buffer offset into account when reading
- - mkfs.ubifs: use gid from table instead 2x uid
- - mkfs.ubifs: fix compiler warning for WITHOUT_LZO
- - mkfs.ubifs: fix build when WITHOUT_LZO is set
- - mkfs.ubifs: correct the size of nnode in memset
- - mkfs.jffs2: initialize lzo decompression buffer size
- - mkfs.jffs2: Fix scanf() formatstring for modern C version
- - nanddump: check write function result for errors
- - nanddump: write requested length only
- - flash_{un,}lock: don't allow "last byte + 1"
- - flash_{un,}lock: improve strtol() error handling
- - ubinize: Always return error code (at least -1) in case of an error
- - recv_image: fix build warnings w/newer glibc & _BSD_SOURCE
- - serve_image: use proper POSIX_C_SOURCE value
- - flashcp: Use %llu to print filestat.st_size
- - mtd_debug: check amount of data read.
- - fs-tests: integrity: don't include header <bits/stdio_lim.h>
- - tests: Fix endian issue with CRC generation algorithm
- - make_a_release.sh: fix MTD spelling
-
-Cleanup:
- - autotools based build system
- - complete restructuring of the source tree
- - cleanup of some utilities
- - removal of some very old, unused or duplicated files from the source t=
-ree
- - libmtd: removal of very old, completely unused and broken functions
-
-
-Raw short log since the 1.5.2 release:
-
-
-Boris Brezillon (2):
-      common: Fix PRI{x,d}off definitions for x86_64 platform
-      common: Fix 'unchecked return code' warnings
-
-Brian Norris (17):
-      make_a_release.sh: fix MTD spelling
-      autogenerated dependency files are not being utilized properly
-      don't include system headers in dependency files
-      nandtest: support hex/dec/oct for --offset and --length
-      flash_{un,}lock: nest optional parameters in help message
-      flash_{un,}lock: switch to getopt library
-      flash_{un,}lock: support --version flag
-      flash_{un,}lock: document option flags
-      flash_{un,}lock: abstract the argument positions
-      flash_{un,}lock: move args processing to its own function
-      flash_{un,}lock: support both lock/unlock in the same binary
-      flash_{un,}lock: add MEMISLOCKED support
-      flash_{un,}lock: improve strtol() error handling
-      flash_{un,}lock: don't allow "last byte + 1"
-      flash_{un,}lock: document block count =3D=3D -1
-      mkfs.ubifs: <sys/xattr.h>, not <attr/xattr.h>
-      Makefile: install: don't look for scripts in BUILDDIR
-
-Daniel Walter (9):
-      Fix scanf() formatstring for modern C version
-      mkfs.ubifs: fix compiler warning for WITHOUT_LZO
-      Fix uninitialized buffers
-      Add unit test helpers
-      Add support for sysfs mocking
-      Add sysfs tree for unittests
-      Add unittest for libmtd
-      Add unittests for libubi
-      Add Makefile for unittests
-
-David Gstir (1):
-      Add -lrt for clock_gettime() in glibc < 2.17.
-
-David Oberhollenzer (34):
-      libmtd: Fix return status in mtd_torture test function
-      mtd-utils: mkfs.jffs2: initialize lzo decompression buffer size
-      Eliminate warnings about implicit non-const casting in libmtd
-      Remove jffs-dump.c
-      Remove unused legacy_libmtd_open internal libmtd function
-      Remove unused and broken mtd_write_img function from libmtd
-      Remove RPM spec file
-      Remove duplicate copies of GPLv2 license text
-      Remove feature-removal-schedule.txt
-      Integrate tests into autotools build system
-      Unify version string printing
-      Fix paths in .gitignore and add autotools generated files
-      Fix make_a_release script
-      Add libmissing
-      mtd-utils: Add multi-block erase function
-      mtd-utils: Add flash torture test utility
-      mtd-utils: Add flash stress test utility
-      mtd-utils: Add flash speed test utility
-      mtd-utils: Add nand flash bit errors test
-      mtd-utils: Add flash read test utility
-      mtd-utils: Add nand page test utility
-      mtd-utils: Add nand sub-page test utility
-      Add ubinize manpage
-      Remove unused ubiutils_print_text from ubi-utils common
-      Merge rest of ubiutils-common into libmtd common
-      Move ubi-utils libraries to common library location
-      Allow version string to have a release candidate suffix
-      Define WITHOUT_XATTR if sys/acl.h or sys/xattr.h is missing
-      Release mtd-utils-2.0.0-rc1
-      Fix packaging of unit test files
-      Enable tests so they are included in the make dist target
-      Release mtd-utils-2.0.0-rc2
-      mtd-utils: Add configure switches to disable jffsX or ubifs tools
-      Release mtd-utils-2.0.0
-
-Dongsheng Yang (2):
-      ubifs: correct the size of nnode in memset
-      mtd-utils: Restructure the mtd-utils source.
-
-Enrico Jorns (1):
-      mtd-utils: ubinize: Always return error code (at least -1) in case =
-of an error
-
-Fabien Proriol (1):
-      flashcp: Use %llu to print filestat.st_size
-
-Gary Bisson (1):
-      mtd-utils: nanddump: write requested length only
-
-Jonathan Fether (1):
-      mtd-utils: Correct casting for final status report in flashcp
-
-Kees Trommel (1):
-      nandwrite: add skip-all-ff-pages-option
-
-Kirill Smirnov (1):
-      mtd-utils: serve_image: use proper POSIX_C_SOURCE value
-
-Marcus Prebble (1):
-      libmtd: mtd_read: Take the buffer offset into account when reading
-
-Marek Vasut (1):
-      nandwrite: Factor out buffer checking code
-
-Mathias Kresin (1):
-      mtd-utils: fix wrong format specifiers on mips32
-
-Michal Suchanek (1):
-      mtd-utils: mtd_debug: check amount of data read.
-
-Mike Frysinger (2):
-      include sys/sysmacros.h for major/minor/makedev
-      fix build warnings w/newer glibc & _BSD_SOURCE
-
-Paul McGougan (1):
-      mtd: tests: Fix endian issue with CRC generation algorithm
-
-Rafa=C5=82 Mi=C5=82ecki (1):
-      nanddump: check write function result for errors
-
-Rahul Bedarkar (1):
-      fs-tests: integrity: don't include header <bits/stdio_lim.h>
-
-Richard Weinberger (1):
-      Change build system to autotools
-
-Rolf Eike Beer (1):
-      fix build when WITHOUT_LZO is set
-
-Sascha Hauer (5):
-      mkfs.ubifs: change add_directory argument to 'existing'
-      mkfs.ubifs: use xmalloc/xzalloc for allocating memory
-      mkfs.ubifs: simplify make_path with xasprintf
-      mkfs.ubifs: Add extended attribute support
-      mkfs.ubifs: Optionally create extended attribute with inode number
-
-Sebastian Andrzej Siewior (1):
-      mkfs.ubifs: use gid from table instead 2x uid
-
-
-Regards,
-
-David
-
-
---0oUMOs12LrWVKu82is3AMdwd2o1gWRHwS--
-
---Vd5hAHG4JqUVne3tQHMu98qKaigHHCrVQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEEwY/cjyeWErqzVubvOXcPHQaAtEFAlhb9BUACgkQvOXcPHQa
-AtFBbAgAiExO2gNMMFaJ/WWE9ugKhpPUFP1JN4U7IpGm/3i0hAHdEKnD1TEbhI4n
-129Wqy6RMmQLEA0ca1p+koWODWiC8gyBgqWue0U2cBjI9Pc8yK7jQVEAqWSmSc9P
-x16XNV4X9nEwSO8lCsD8yZpSolQ1Klpn4vSme1y/cibeWVfcFBUi3dGWs0Vk4giP
-z02wCKEP/4xXs1m3NJToHd4pa4u/s0s+V9qx7RVxy32gNFxbALTozS8gMrpuTJ7U
-17oRn86vQulj4/rqURZ3kHuBOSWCCnjkHBi/Bhj9FxhE/JnbIMehy7bDKz0joYtj
-yGFUE3eyPTfMts5JqCS57/AWC1jFWg==
-=kZaO
------END PGP SIGNATURE-----
-
---Vd5hAHG4JqUVne3tQHMu98qKaigHHCrVQ--
+diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
+index 1f2948c..00168d6 100644
+--- a/drivers/mtd/nand/xway_nand.c
++++ b/drivers/mtd/nand/xway_nand.c
+@@ -7,6 +7,7 @@
+  *  Copyright © 2016 Hauke Mehrtens <hauke@hauke-m.de>
+  */
+ 
++#include <linux/module.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/of_gpio.h>
+ #include <linux/of_platform.h>
+-- 
+1.9.1
