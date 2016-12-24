@@ -1,26 +1,30 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-wj0-x241.google.com ([2a00:1450:400c:c01::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cKo6S-0008BT-SC
- for linux-mtd@lists.infradead.org; Sat, 24 Dec 2016 15:19:21 +0000
-Received: by mail-pg0-x243.google.com with SMTP id n5so3955104pgh.3
- for <linux-mtd@lists.infradead.org>; Sat, 24 Dec 2016 07:19:00 -0800 (PST)
-Date: Sat, 24 Dec 2016 23:18:54 +0800
-From: Geliang Tang <geliangtang@gmail.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: mtdswap: use MTDSWAP_ECNT_MIN/MAX
-Message-ID: <20161224151854.a3xxd6jdobjviuu2@ThinkPad>
-References: <254e9f859fdb1f850c1d3bd5777e97bf468b4e5a.1482225376.git.geliangtang@gmail.com>
- <252d763e-1767-9bf9-be1a-af0c02d4078f@gmail.com>
+ id 1cKw2Y-0008AZ-Sp
+ for linux-mtd@lists.infradead.org; Sat, 24 Dec 2016 23:47:52 +0000
+Received: by mail-wj0-x241.google.com with SMTP id j10so44936118wjb.3
+ for <linux-mtd@lists.infradead.org>; Sat, 24 Dec 2016 15:47:28 -0800 (PST)
+Subject: Re: [PATCH v2 2/3] mtd: m25p80: consider max message size in
+ m25p80_read
+To: Marek Vasut <marek.vasut@gmail.com>, Michal Suchanek <hramrach@gmail.com>
+References: <6c95366c-7fcc-ef4c-033a-f9f6e152a669@gmail.com>
+ <20160816164204.GV9347@sirena.org.uk>
+ <b65240ff-7e28-5ecb-0670-abfca871246b@gmail.com>
+ <2e31fbe7-bbc7-8fed-ccbf-dd9ae4d220e1@atmel.com>
+ <e7513817-c6d1-948d-19ff-617debfa1399@gmail.com>
+ <CAOMqctTaPoMR=_dEF_j-WU178_i2tOp2sTfZJSDWWkohVxZn8A@mail.gmail.com>
+ <1bd5f31a-a32e-12ce-10af-1a17955f5ab6@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Mark Brown <broonie@kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <a7de8f14-220b-6511-d3b9-3d0858f2565a@gmail.com>
+Date: Sun, 25 Dec 2016 00:47:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <252d763e-1767-9bf9-be1a-af0c02d4078f@gmail.com>
+In-Reply-To: <1bd5f31a-a32e-12ce-10af-1a17955f5ab6@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,55 +34,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 23, 2016 at 07:51:56PM +0100, Marek Vasut wrote:
-> On 12/20/2016 02:54 PM, Geliang Tang wrote:
-> > Since macros MTDSWAP_ECNT_MIN() and MTDSWAP_ECNT_MAX() have been
-> > defined in mtdswap.c, use them instead of open-coding.
-> > 
-> > Signed-off-by: Geliang Tang <geliangtang@gmail.com>
+Am 24.12.2016 um 11:20 schrieb Marek Vasut:
+> On 12/23/2016 10:04 PM, Michal Suchanek wrote:
+>> Hello,
 > 
-> Sorry for getting to this so late. The patch is fine, but if you grep
-> for 'rb_first' in the mtdswap driver , you'll see you can also use the
-> MTDSWAP_ECNT_MIN macro in mtdswap_map_free_block() and in
-> mtdswap_pick_gc_blk() . Can you fix those too ?
+> Hi,
+> 
+>> On 23 December 2016 at 19:53, Marek Vasut <marek.vasut@gmail.com> wrote:
+>>> On 12/23/2016 04:33 PM, Cyrille Pitchen wrote:
+>>>> Le 17/08/2016 à 21:09, Heiner Kallweit a écrit :
+>>>>> Consider a message size limit when calculating the maximum amount
+>>>>> of data that can be read.
+>>>>>
+>>>>> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+>>>>
+>>>> Applied to git://github.com/spi-nor/linux.git
+>>>
+>>> Is that the concensus now that we should fix controller crappiness on
+>>> driver level ? Or did I miss the point of this patch ?
+>>>
+>>
+>> In general most controllers do have some limit on the amount of data
+>> they can transfer at once.
+> 
+> My observations suggest otherwise.
+> 
+>> For some you can apply workaround at controller driver level and for
+>> some it's not practical.
+>>
+>> Also for some the limit is lower so it is more likely hit.
+>>
+>> I guess you can call controllers that have both of these limitations
+>> crappy but that's what's in the silicone out there.
+>>
+>> If you have better solution to the problem please share it in detail.
+> 
+> I don't have a solution, but I am quite sure that if we now set a
+> precedent that each and every device driver should take care of each and
+> every controller's quirk, we have a lot of unpleasant work ahead
+> of us and it will be quite the maintanance burden. The separations
+> between device driver and controller driver has been weakened and I
+> don't think that's good.
+> 
+The controller driver API has been extended to allow exposing certain
+types of controller limits (max tranfer size, max message size)
+to upper layers. And controller drivers rely on upper layers
+considering this information.
+W/o this patch certain combinations of protocol and controller drivers
+(e.g. m25p80 + fsl-espi) don't work for big transfer / message sizes.
 
-Hi Marek,
-
-Thanks for your review. I double checked the code and found out that we can't
-use MTDSWAP_ECNT_MIN macro in mtdswap_map_free_block() and mtdswap_pick_gc_eblk().
-Since the MTDSWAP_ECNT_MIN macro points to erase_count field of swap_eb, and
-erase_count field are not used in these two functions. Isn't it?
-
--Geliang
-
-> 
-> Otherwise:
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> 
-> > ---
-> >  drivers/mtd/mtdswap.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-> > index c40e2c9..f12879a 100644
-> > --- a/drivers/mtd/mtdswap.c
-> > +++ b/drivers/mtd/mtdswap.c
-> > @@ -1235,10 +1235,8 @@ static int mtdswap_show(struct seq_file *s, void *data)
-> >  
-> >  		if (root->rb_node) {
-> >  			count[i] = d->trees[i].count;
-> > -			min[i] = rb_entry(rb_first(root), struct swap_eb,
-> > -					rb)->erase_count;
-> > -			max[i] = rb_entry(rb_last(root), struct swap_eb,
-> > -					rb)->erase_count;
-> > +			min[i] = MTDSWAP_ECNT_MIN(root);
-> > +			max[i] = MTDSWAP_ECNT_MAX(root);
-> >  		} else
-> >  			count[i] = 0;
-> >  	}
-> > 
-> 
-> 
-> -- 
-> Best regards,
-> Marek Vasut
+The (most likely more ugly) alternative is controller drivers
+implementing protocol-specific hacks to deal with messages exceeding
+controller limits. One example was the fsl-espi drivers before the
+recent refactoring. It assumed all big messages to be m25p80.
