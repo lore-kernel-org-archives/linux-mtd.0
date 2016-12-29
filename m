@@ -1,28 +1,19 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cMe9l-0007og-93
- for linux-mtd@lists.infradead.org; Thu, 29 Dec 2016 17:06:22 +0000
-Subject: Re: [PATCH 3/6] ubifs: Use 64bit readdir cookies
-To: "J. Bruce Fields" <bfields@fieldses.org>
-References: <1480629741-18375-1-git-send-email-richard@nod.at>
- <1480629741-18375-4-git-send-email-richard@nod.at>
- <20161229025835.GC21325@fieldses.org>
- <bf60916c-e0f2-387c-ce21-325ad8977539@nod.at>
- <20161229153407.GA29149@fieldses.org>
- <fe46ea3c-ef8f-40ba-f4ab-8dfe8faafb0b@nod.at>
- <20161229161534.GA29261@fieldses.org>
- <224abf2f-c820-5df1-6292-42c1e2d47933@nod.at>
- <20161229165920.GA29744@fieldses.org>
-Cc: linux-mtd@lists.infradead.org, david@sigma-star.at, tytso@mit.edu,
- dedekind1@gmail.com, adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, adilger.kernel@dilger.ca,
- akpm@linux-foundation.org, linux-ext4@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <6ba02247-cb0e-e925-207e-4ea3fc37b9b7@nod.at>
-Date: Thu, 29 Dec 2016 18:05:54 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cMeRu-0006JX-1M
+ for linux-mtd@lists.infradead.org; Thu, 29 Dec 2016 17:25:06 +0000
+Date: Thu, 29 Dec 2016 18:24:43 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@atmel.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V1] mtd : nand : denali :- No need of devm functions
+Message-ID: <20161229182443.2bdb37a7@bbrezillon>
+In-Reply-To: <1481123711-7205-1-git-send-email-arvind.yadav.cs@gmail.com>
+References: <1481123711-7205-1-git-send-email-arvind.yadav.cs@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20161229165920.GA29744@fieldses.org>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,13 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29.12.2016 17:59, J. Bruce Fields wrote:
-> OK, good.  So the random nonce is stored with the entry, and the hash
-> you can always recalculate from the filename, so if you return entries
-> in nonce+hash order, then you can keep that order stable even across
-> deletes and renames.
+On Wed,  7 Dec 2016 20:45:11 +0530
+Arvind Yadav <arvind.yadav.cs@gmail.com> wrote:
 
-Yes.
+> In function denali_init, the memory allocated for denali->buf.buf
+> is live within the function only. After the allocation it is
+> immediately freed with devm_kfree. There is no need to allocate
+> memory for denali->buf.buf with devm function so replace
+> devm_kzalloc with kzalloc and devm_kfree with kfree.
+> 
+> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+> ---
+>  drivers/mtd/nand/denali.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 
-Thanks,
-//richard
+Not sure it's any better than the previous logic (see the diffstat). The
+devm_kzalloc() approach has the benefit of simplifying the different
+error paths.
+
+> 
+> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+> index 0476ae8..ce3c31f 100644
+> --- a/drivers/mtd/nand/denali.c
+> +++ b/drivers/mtd/nand/denali.c
+> @@ -1476,8 +1476,7 @@ int denali_init(struct denali_nand_info *denali)
+>  	}
+>  
+>  	/* allocate a temporary buffer for nand_scan_ident() */
+> -	denali->buf.buf = devm_kzalloc(denali->dev, PAGE_SIZE,
+> -					GFP_DMA | GFP_KERNEL);
+> +	denali->buf.buf = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
+>  	if (!denali->buf.buf)
+>  		return -ENOMEM;
+>  
+> @@ -1492,6 +1491,7 @@ int denali_init(struct denali_nand_info *denali)
+>  	if (request_irq(denali->irq, denali_isr, IRQF_SHARED,
+>  			DENALI_NAND_NAME, denali)) {
+>  		pr_err("Spectra: Unable to allocate IRQ\n");
+> +		kfree(denali->buf.buf);
+>  		return -ENODEV;
+>  	}
+>  
+> @@ -1512,11 +1512,12 @@ int denali_init(struct denali_nand_info *denali)
+>  	 */
+>  	if (nand_scan_ident(mtd, denali->max_banks, NULL)) {
+>  		ret = -ENXIO;
+> +		kfree(denali->buf.buf);
+>  		goto failed_req_irq;
+>  	}
+>  
+>  	/* allocate the right size buffer now */
+> -	devm_kfree(denali->dev, denali->buf.buf);
+> +	kfree(denali->buf.buf);
+>  	denali->buf.buf = devm_kzalloc(denali->dev,
+>  			     mtd->writesize + mtd->oobsize,
+>  			     GFP_KERNEL);
