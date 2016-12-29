@@ -1,27 +1,20 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cMdhM-0004ER-KY
- for linux-mtd@lists.infradead.org; Thu, 29 Dec 2016 16:37:01 +0000
-Subject: Re: [PATCH 3/6] ubifs: Use 64bit readdir cookies
-To: "J. Bruce Fields" <bfields@fieldses.org>
-References: <1480629741-18375-1-git-send-email-richard@nod.at>
- <1480629741-18375-4-git-send-email-richard@nod.at>
- <20161229025835.GC21325@fieldses.org>
- <bf60916c-e0f2-387c-ce21-325ad8977539@nod.at>
- <20161229153407.GA29149@fieldses.org>
- <fe46ea3c-ef8f-40ba-f4ab-8dfe8faafb0b@nod.at>
- <20161229161534.GA29261@fieldses.org>
-Cc: linux-mtd@lists.infradead.org, david@sigma-star.at, tytso@mit.edu,
- dedekind1@gmail.com, adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, adilger.kernel@dilger.ca,
- akpm@linux-foundation.org, linux-ext4@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <224abf2f-c820-5df1-6292-42c1e2d47933@nod.at>
-Date: Thu, 29 Dec 2016 17:36:35 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cMdnY-0006a9-9b
+ for linux-mtd@lists.infradead.org; Thu, 29 Dec 2016 16:43:25 +0000
+Date: Thu, 29 Dec 2016 17:43:02 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: John Crispin <john@phrozen.org>
+Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: update my email address
+Message-ID: <20161229174302.5fcc42c2@bbrezillon>
+In-Reply-To: <1482260606-61784-1-git-send-email-john@phrozen.org>
+References: <1482260606-61784-1-git-send-email-john@phrozen.org>
 MIME-Version: 1.0
-In-Reply-To: <20161229161534.GA29261@fieldses.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,46 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bruce,
+On Tue, 20 Dec 2016 20:03:26 +0100
+John Crispin <john@phrozen.org> wrote:
 
-On 29.12.2016 17:15, J. Bruce Fields wrote:
-> On Thu, Dec 29, 2016 at 04:49:54PM +0100, Richard Weinberger wrote:
->> Bruce,
->>
->> On 29.12.2016 16:34, J. Bruce Fields wrote:
->>>> That way UBIFS can provide a 64bit readdir() cookie which is required for NFS3.
->>>
->>> Sounds good.  And if a matching entry isn't found (as in the case of a
->>> concurrent unlink), what happens?  The answer must be the same as for
->>> ext4, but I've forgotten the details....  I guess it must find the next
->>> highest cookie (thinking of the cookie as a 64-bit integer of some kind)
->>> that exists in the directory.  And that must be the same order that
->>> readdir normally returns entries in.
->>
->> If a 64bit cookie is not found, the lookup function returns -ENOENT.
->> In UBIFS we cannot just select a higher or lower key (cookie in this case),
->> since it is the B-tree key and would point to a completely different
->> entry.
->>
->> So, in case of a concurrent unlink() one would succeed and one fail with
->> -ENOENT. Unless I miss something that seems okay to me.
-> 
-> Unlink takes (parent directory, name), not a directory cookie.
-> 
-> The problem is concurrent unlink and nfs readdir.  So:
-> 
-> 	NFS server returns readdir result with cookie X
-> 
-> 	Somebody unlinks the entry at X.
-> 
-> 	NFS server gets readdir request with cookie X.
-> 
-> Then the NFS client will get a spurious -ENOENT.
+> This patch updates my email address as I no longer have access to the old
+> one.
+>=20
+> Signed-off-by: John Crispin <john@phrozen.org>
 
-Ah yes. Sorry I misunderstood your question.
-UBIFS readdir() address this already, if you ask it to readdir()
-from pos X and X is not present it will jump to the next best entry X'.
-UBIFS does so since ever.
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Thanks,
-//richard
+> ---
+>  drivers/mtd/maps/lantiq-flash.c |    4 ++--
+>  drivers/mtd/nand/xway_nand.c    |    2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-fl=
+ash.c
+> index c8febb3..3e33ab6 100644
+> --- a/drivers/mtd/maps/lantiq-flash.c
+> +++ b/drivers/mtd/maps/lantiq-flash.c
+> @@ -4,7 +4,7 @@
+>   *  by the Free Software Foundation.
+>   *
+>   *  Copyright (C) 2004 Liu Peng Infineon IFAP DC COM CPE
+> - *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
+> + *  Copyright (C) 2010 John Crispin <john@phrozen.org>
+>   */
+> =20
+>  #include <linux/err.h>
+> @@ -209,5 +209,5 @@ struct ltq_mtd {
+>  module_platform_driver(ltq_mtd_driver);
+> =20
+>  MODULE_LICENSE("GPL");
+> -MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");
+> +MODULE_AUTHOR("John Crispin <john@phrozen.org>");
+>  MODULE_DESCRIPTION("Lantiq SoC NOR");
+> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
+> index 1f2948c..bef709c 100644
+> --- a/drivers/mtd/nand/xway_nand.c
+> +++ b/drivers/mtd/nand/xway_nand.c
+> @@ -3,7 +3,7 @@
+>   *  under the terms of the GNU General Public License version 2 as publi=
+shed
+>   *  by the Free Software Foundation.
+>   *
+> - *  Copyright =C2=A9 2012 John Crispin <blogic@openwrt.org>
+> + *  Copyright =C2=A9 2012 John Crispin <john@phrozen.org>
+>   *  Copyright =C2=A9 2016 Hauke Mehrtens <hauke@hauke-m.de>
+>   */
+> =20
