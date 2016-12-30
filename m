@@ -1,19 +1,19 @@
 Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cMxA5-0004U3-Ig
- for linux-mtd@lists.infradead.org; Fri, 30 Dec 2016 13:23:59 +0000
-Received: by mail-lf0-x241.google.com with SMTP id t196so17883816lff.3
- for <linux-mtd@lists.infradead.org>; Fri, 30 Dec 2016 05:23:37 -0800 (PST)
-From: Marcin Krzeminski <mar.krzeminski@gmail.com>
-To: cyrille.pitchen@atmel.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, mar.krzeminski@gmail.com
-Subject: [PATCH v2 1/2] Add flag to disable chip erase
-Date: Fri, 30 Dec 2016 14:23:24 +0100
-Message-Id: <20161230132325.14337-2-mar.krzeminski@gmail.com>
-In-Reply-To: <20161230132325.14337-1-mar.krzeminski@gmail.com>
-References: <20161230132325.14337-1-mar.krzeminski@gmail.com>
+ id 1cN0lq-0007AD-0g
+ for linux-mtd@lists.infradead.org; Fri, 30 Dec 2016 17:15:11 +0000
+Received: by mail-lf0-x241.google.com with SMTP id x140so20668614lfa.2
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Dec 2016 09:14:48 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH RFC 1/2] ubi: add flags1 field to the EC header
+Date: Fri, 30 Dec 2016 18:11:50 +0100
+Message-Id: <20161230171151.13448-1-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Extend spi-nor framework to allow disable chip erase
-command also for selected flash chips.
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Signed-off-by: Marcin Krzeminski <mar.krzeminski@gmail.com>
+It allows storing extra information about header or a whole PEB.
+
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mtd/ubi/ubi-media.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 15fb8af..b6656b2 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -81,6 +81,7 @@ struct flash_info {
- 					 * because it has the same value as
- 					 * ATMEL flashes)
- 					*/
-+#define NO_CHIP_ERASE	BIT(10) /* Chip does not support chip erase */
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -1545,6 +1546,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 		nor->flags |= SNOR_F_USE_FSR;
- 	if (info->flags & SPI_NOR_HAS_TB)
- 		nor->flags |= SNOR_F_HAS_SR_TB;
-+	if (info->flags & NO_CHIP_ERASE)
-+		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
- 
- #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
- 	/* prefer "small sector" erase if possible */
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index 22ed3f6..58065ef 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -125,6 +125,7 @@ enum {
+  * @magic: erase counter header magic number (%UBI_EC_HDR_MAGIC)
+  * @version: version of UBI implementation which is supposed to accept this
+  *           UBI image
++ * @flags1: flags describing header/block
+  * @padding1: reserved for future, zeroes
+  * @ec: the erase counter
+  * @vid_hdr_offset: where the VID header starts
+@@ -157,7 +158,8 @@ enum {
+ struct ubi_ec_hdr {
+ 	__be32  magic;
+ 	__u8    version;
+-	__u8    padding1[3];
++	__u8	flags1;
++	__u8    padding1[2];
+ 	__be64  ec; /* Warning: the current limit is 31-bit anyway! */
+ 	__be32  vid_hdr_offset;
+ 	__be32  data_offset;
 -- 
-2.9.3
+2.10.1
