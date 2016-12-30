@@ -1,18 +1,17 @@
-Date: Thu, 29 Dec 2016 19:23:02 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: Richard Weinberger <richard@nod.at>, Mark Rutland
- <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, Mans Rullgard
- <mans@mansr.com>, Arnd Bergmann <arnd@arndb.de>, linux-mtd
- <linux-mtd@lists.infradead.org>, Linux ARM
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1] mtd: nand: tango: Update DT binding description
-Message-ID: <20161229192302.5c94ecdb@bbrezillon>
-In-Reply-To: <ba47f2f1-bcdc-91e8-ed79-153931ccdad8@sigmadesigns.com>
-References: <ba47f2f1-bcdc-91e8-ed79-153931ccdad8@sigmadesigns.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cMxA5-0004Td-Io
+ for linux-mtd@lists.infradead.org; Fri, 30 Dec 2016 13:23:58 +0000
+Received: by mail-lf0-x241.google.com with SMTP id x140so20230440lfa.2
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Dec 2016 05:23:36 -0800 (PST)
+From: Marcin Krzeminski <mar.krzeminski@gmail.com>
+To: cyrille.pitchen@atmel.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, mar.krzeminski@gmail.com
+Subject: [PATCH v2 0/2] mtd: spi-nor: Add possibility to disable chip erase
+Date: Fri, 30 Dec 2016 14:23:23 +0100
+Message-Id: <20161230132325.14337-1-mar.krzeminski@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +21,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 Dec 2016 15:30:12 +0100
-Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+v2:
+* rebased to git://github.com/spi-nor/linux.git
 
-> Visually separate register ranges (address/size pairs) in reg prop.
-> Change DMA channel name, for consistency with other drivers.
-> 
-> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-> ---
->  Documentation/devicetree/bindings/mtd/tango-nand.txt | 6 +++---
->  drivers/mtd/nand/tango_nand.c                        | 2 +-
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-> index ad5a02f2ac8c..cd1bf2ac9055 100644
-> --- a/Documentation/devicetree/bindings/mtd/tango-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-> @@ -5,7 +5,7 @@ Required properties:
->  - compatible: "sigma,smp8758-nand"
->  - reg: address/size of nfc_reg, nfc_mem, and pbus_reg
->  - dmas: reference to the DMA channel used by the controller
-> -- dma-names: "nfc_sbox"
-> +- dma-names: "rxtx"
+Marcin Krzeminski (2):
+  Add flag to disable chip erase
+  Disable chip erase for Micron n25q00
 
-You probably want to fix the driver accordingly ;-).
+ drivers/mtd/spi-nor/spi-nor.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
->  - clocks: reference to the system clock
->  - #address-cells: <1>
->  - #size-cells: <0>
-> @@ -17,9 +17,9 @@ Example:
->  
->  	nandc: nand-controller@2c000 {
->  		compatible = "sigma,smp8758-nand";
-> -		reg = <0x2c000 0x30 0x2d000 0x800 0x20000 0x1000>;
-> +		reg = <0x2c000 0x30>, <0x2d000 0x800>, <0x20000 0x1000>;
->  		dmas = <&dma0 3>;
-> -		dma-names = "nfc_sbox";
-> +		dma-names = "rxtx";
->  		clocks = <&clkgen SYS_CLK>;
->  		#address-cells = <1>;
->  		#size-cells = <0>;
-> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-> index cc23db64f0ca..51dc88d6b8da 100644
-> --- a/drivers/mtd/nand/tango_nand.c
-> +++ b/drivers/mtd/nand/tango_nand.c
-> @@ -629,7 +629,7 @@ static int tango_nand_probe(struct platform_device *pdev)
->  	if (IS_ERR(clk))
->  		return PTR_ERR(clk);
->  
-> -	nfc->chan = dma_request_chan(&pdev->dev, "nfc_sbox");
-> +	nfc->chan = dma_request_chan(&pdev->dev, "rxtx");
->  	if (IS_ERR(nfc->chan))
->  		return PTR_ERR(nfc->chan);
->  
+-- 
+2.9.3
