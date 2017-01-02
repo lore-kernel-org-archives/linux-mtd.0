@@ -1,19 +1,31 @@
-Date: Mon, 2 Jan 2017 10:01:24 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alison Wang <b18965@freescale.com>
-Cc: kbuild test robot <lkp@intel.com>, alison.wang@nxp.com,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, kbuild-all@01.org,
- cyrille.pitchen@atmel.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: Update dependency of IFC for LS1021A
-Message-ID: <20170102100124.78ca7d7e@bbrezillon>
-In-Reply-To: <201612291704.0tMw9Uis%fengguang.wu@intel.com>
-References: <1482973102-47659-1-git-send-email-b18965@freescale.com>
- <201612291704.0tMw9Uis%fengguang.wu@intel.com>
+Received: from pandora.armlinux.org.uk
+ ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cO3L2-00087r-CY
+ for linux-mtd@lists.infradead.org; Mon, 02 Jan 2017 14:11:51 +0000
+Date: Mon, 2 Jan 2017 14:10:59 +0000
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, nicolas.pitre@linaro.org,
+ panand@redhat.com, chris.brandt@renesas.com, arnd@arndb.de,
+ jonathan.austin@arm.com, pawel.moll@arm.com,
+ vladimir.murzin@arm.com, mark.rutland@arm.com,
+ ard.biesheuvel@linaro.org, keescook@chromium.org,
+ matt@codeblueprint.co.uk, labbott@fedoraproject.org,
+ kirill.shutemov@linux.intel.com, ben@decadent.org.uk,
+ js07.lee@samsung.com, stefan@agner.ch, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com,
+ richard@nod.at, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH v4 0/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
+Message-ID: <20170102141058.GG14217@n2100.armlinux.org.uk>
+References: <20161209233628.6642-1-f.fainelli@gmail.com>
+ <20161226203842.19457-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20161226203842.19457-1-f.fainelli@gmail.com>
+Sender: Russell King - ARM Linux <linux@armlinux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +35,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alison,
+On Mon, Dec 26, 2016 at 12:38:38PM -0800, Florian Fainelli wrote:
+> Hi all,
+> 
+> This patch series builds on top of Laura's [PATCHv5 00/10] CONFIG_DEBUG_VIRTUAL
+> for arm64 to add support for CONFIG_DEBUG_VIRTUAL for ARM.
+> 
+> This was tested on a Brahma B15 platform (ARMv7 + HIGHMEM + LPAE).
+> 
+> Note that the treewide changes would involve a huge CC list, which
+> is why it has been purposely trimmed to just focusing on the DEBUG_VIRTUAL
+> aspect.
 
-On Thu, 29 Dec 2016 17:52:37 +0800
-kbuild test robot <lkp@intel.com> wrote:
+Nothing stands out from a quick read-through of these patches, so for the
+core ARM and SA11x0 bits:
 
-> Hi Alison,
->=20
-> [auto build test WARNING on mtd/master]
-> [also build test WARNING on v4.10-rc1 next-20161224]
-> [if your patch is applied to the wrong git tree, please drop us a note to=
- help improve the system]
->=20
-> url:    https://github.com/0day-ci/linux/commits/Alison-Wang/mtd-nand-Upd=
-ate-dependency-of-IFC-for-LS1021A/20161229-125233
-> base:   git://git.infradead.org/linux-mtd.git master
-> config: arm-allmodconfig (attached as .config)
-> compiler: arm-linux-gnueabi-gcc (Debian 6.1.1-9) 6.1.1 20160705
-> reproduce:
->         wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.g=
-it/plain/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         make.cross ARCH=3Darm=20
->=20
-> All warnings (new ones prefixed by >>):
->=20
-> warning: (MTD_NAND_FSL_IFC) selects FSL_IFC which has unmet direct depend=
-encies (MEMORY && (FSL_SOC || ARCH_LAYERSCAPE))
+Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
 
-Do you have another patch adding the '||=C2=A0SOC_LS1021A' dependency on
-FSL_IFC? If so, please send both patches in the same series.
+Thanks.
 
-Thanks,
-
-Boris
+-- 
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
