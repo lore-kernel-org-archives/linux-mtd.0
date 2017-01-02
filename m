@@ -1,24 +1,21 @@
-Received: from mail-wj0-x22d.google.com ([2a00:1450:400c:c01::22d])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cNy3w-0003t8-Dk
- for linux-mtd@lists.infradead.org; Mon, 02 Jan 2017 08:33:49 +0000
-Received: by mail-wj0-x22d.google.com with SMTP id c11so215240658wjx.3
- for <linux-mtd@lists.infradead.org>; Mon, 02 Jan 2017 00:33:26 -0800 (PST)
-Subject: Re: [PATCH] mtd: nand: oxnas_nand: fix build errors on arch/um,
- require HAS_IOMEM
-To: Randy Dunlap <rdunlap@infradead.org>, LKML
- <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
-References: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
-Cc: kbuild test robot <fengguang.wu@intel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
- user-mode-linux-devel@lists.sourceforge.net
-From: Neil Armstrong <narmstrong@baylibre.com>
-Message-ID: <271b3ede-b784-07f2-8028-19be4ea7fcbd@baylibre.com>
-Date: Mon, 2 Jan 2017 09:33:27 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cNyLu-0002Cn-3Z
+ for linux-mtd@lists.infradead.org; Mon, 02 Jan 2017 08:52:25 +0000
+Date: Mon, 2 Jan 2017 09:51:58 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@atmel.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V1] mtd : nand : denali :- No need of devm functions
+Message-ID: <20170102095158.2394cf93@bbrezillon>
+In-Reply-To: <4bf4a97b-c2c3-51db-9bb1-61e6d433c7ca@gmail.com>
+References: <1481123711-7205-1-git-send-email-arvind.yadav.cs@gmail.com>
+ <20161229182443.2bdb37a7@bbrezillon>
+ <4bf4a97b-c2c3-51db-9bb1-61e6d433c7ca@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,43 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/02/2017 03:58 AM, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix build errors on arch/um, which does not support HAS_IOMEM,
-> while the oxnas_nand.c driver uses interfaces that are
-> supplied by HAS_IOMEM.
-> 
-> (loadable module build:)
-> ERROR: "devm_ioremap_resource" [drivers/mtd/nand/oxnas_nand.ko] undefined!
-> or (built-in build:)
-> drivers/built-in.o: In function `oxnas_nand_probe':
-> drivers/mtd/nand/oxnas_nand.c:102: undefined reference to `devm_ioremap_resource'
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kbuild test robot <fengguang.wu@intel.com>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc:	Jeff Dike <jdike@addtoit.com>
-> Cc:	Richard Weinberger <richard@nod.at>
-> Cc:	user-mode-linux-devel@lists.sourceforge.net
-> Cc:	linux-mtd@lists.infradead.org
-> ---
->  drivers/mtd/nand/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- lnx-410-rc2.orig/drivers/mtd/nand/Kconfig
-> +++ lnx-410-rc2/drivers/mtd/nand/Kconfig
-> @@ -426,6 +426,7 @@ config MTD_NAND_ORION
->  
->  config MTD_NAND_OXNAS
->  	tristate "NAND Flash support for Oxford Semiconductor SoC"
-> +	depends on HAS_IOMEM
->  	help
->  	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
->  
-> 
+On Mon, 2 Jan 2017 13:26:01 +0530
+Arvind Yadav <arvind.yadav.cs@gmail.com> wrote:
 
-Thanks Randy,
+> yes, if Memory is live out side function. Then devm_kzalloc()
+> approach has the benefit of simplifying the different error paths.
+> 
+> Here, Memory is alive with in function. we are going to free allocate memory
+> then why we need devm api. In this case Devm will first add this entry to
+> list and immediately it will remove from list. In this case, It's just a 
+> overhead
+> for devm api.
 
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+Yes, it adds a small overhead, but ITOH, it simplifies the code (see
+the kfree() calls you added in different error paths with your
+approach). Sometime a small runtime overhead (especially when the code
+is executed once at probe time) is acceptable if it improves
+readability.
