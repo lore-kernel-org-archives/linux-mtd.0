@@ -1,22 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cNyLu-0002Cn-3Z
- for linux-mtd@lists.infradead.org; Mon, 02 Jan 2017 08:52:25 +0000
-Date: Mon, 2 Jan 2017 09:51:58 +0100
+Date: Mon, 2 Jan 2017 10:01:24 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@atmel.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V1] mtd : nand : denali :- No need of devm functions
-Message-ID: <20170102095158.2394cf93@bbrezillon>
-In-Reply-To: <4bf4a97b-c2c3-51db-9bb1-61e6d433c7ca@gmail.com>
-References: <1481123711-7205-1-git-send-email-arvind.yadav.cs@gmail.com>
- <20161229182443.2bdb37a7@bbrezillon>
- <4bf4a97b-c2c3-51db-9bb1-61e6d433c7ca@gmail.com>
+To: Alison Wang <b18965@freescale.com>
+Cc: kbuild test robot <lkp@intel.com>, alison.wang@nxp.com,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, kbuild-all@01.org,
+ cyrille.pitchen@atmel.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: Update dependency of IFC for LS1021A
+Message-ID: <20170102100124.78ca7d7e@bbrezillon>
+In-Reply-To: <201612291704.0tMw9Uis%fengguang.wu@intel.com>
+References: <1482973102-47659-1-git-send-email-b18965@freescale.com>
+ <201612291704.0tMw9Uis%fengguang.wu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2 Jan 2017 13:26:01 +0530
-Arvind Yadav <arvind.yadav.cs@gmail.com> wrote:
+Hi Alison,
 
-> yes, if Memory is live out side function. Then devm_kzalloc()
-> approach has the benefit of simplifying the different error paths.
-> 
-> Here, Memory is alive with in function. we are going to free allocate memory
-> then why we need devm api. In this case Devm will first add this entry to
-> list and immediately it will remove from list. In this case, It's just a 
-> overhead
-> for devm api.
+On Thu, 29 Dec 2016 17:52:37 +0800
+kbuild test robot <lkp@intel.com> wrote:
 
-Yes, it adds a small overhead, but ITOH, it simplifies the code (see
-the kfree() calls you added in different error paths with your
-approach). Sometime a small runtime overhead (especially when the code
-is executed once at probe time) is acceptable if it improves
-readability.
+> Hi Alison,
+>=20
+> [auto build test WARNING on mtd/master]
+> [also build test WARNING on v4.10-rc1 next-20161224]
+> [if your patch is applied to the wrong git tree, please drop us a note to=
+ help improve the system]
+>=20
+> url:    https://github.com/0day-ci/linux/commits/Alison-Wang/mtd-nand-Upd=
+ate-dependency-of-IFC-for-LS1021A/20161229-125233
+> base:   git://git.infradead.org/linux-mtd.git master
+> config: arm-allmodconfig (attached as .config)
+> compiler: arm-linux-gnueabi-gcc (Debian 6.1.1-9) 6.1.1 20160705
+> reproduce:
+>         wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.g=
+it/plain/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         make.cross ARCH=3Darm=20
+>=20
+> All warnings (new ones prefixed by >>):
+>=20
+> warning: (MTD_NAND_FSL_IFC) selects FSL_IFC which has unmet direct depend=
+encies (MEMORY && (FSL_SOC || ARCH_LAYERSCAPE))
+
+Do you have another patch adding the '||=C2=A0SOC_LS1021A' dependency on
+FSL_IFC? If so, please send both patches in the same series.
+
+Thanks,
+
+Boris
