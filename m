@@ -1,23 +1,17 @@
-Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cNnz6-0000H2-L2
- for linux-mtd@lists.infradead.org; Sun, 01 Jan 2017 21:48:09 +0000
-Date: Sun, 1 Jan 2017 16:47:25 -0500
-From: Theodore Ts'o <tytso@mit.edu>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- jaegeuk@kernel.org, hch@infradead.org, arnd@arndb.de,
- dedekind1@gmail.com, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com, linux-ext4@vger.kernel.org,
- ebiggers@google.com, rdunlap@infradead.org, david@sigma-star.at
-Subject: Re: [PATCH v2] fscrypt: Factor out bio specific functions
-Message-ID: <20170101214725.g67msbedmpx27waz@thunk.org>
-References: <20161219103929.GA16197@infradead.org>
- <20161219112532.18863-1-richard@nod.at>
+To: LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: oxnas_nand: fix build errors on arch/um, require
+ HAS_IOMEM
+Cc: kbuild test robot <fengguang.wu@intel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Neil Armstrong <narmstrong@baylibre.com>, Jeff Dike <jdike@addtoit.com>,
+ Richard Weinberger <richard@nod.at>,
+ user-mode-linux-devel@lists.sourceforge.net
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
+Date: Sun, 1 Jan 2017 18:58:27 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161219112532.18863-1-richard@nod.at>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 19, 2016 at 12:25:32PM +0100, Richard Weinberger wrote:
-> That way we can get rid of the direct dependency on CONFIG_BLOCK.
-> 
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Applied, thanks.
+Fix build errors on arch/um, which does not support HAS_IOMEM,
+while the oxnas_nand.c driver uses interfaces that are
+supplied by HAS_IOMEM.
 
-					- Ted
+(loadable module build:)
+ERROR: "devm_ioremap_resource" [drivers/mtd/nand/oxnas_nand.ko] undefined!
+or (built-in build:)
+drivers/built-in.o: In function `oxnas_nand_probe':
+drivers/mtd/nand/oxnas_nand.c:102: undefined reference to `devm_ioremap_resource'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc:	Jeff Dike <jdike@addtoit.com>
+Cc:	Richard Weinberger <richard@nod.at>
+Cc:	user-mode-linux-devel@lists.sourceforge.net
+Cc:	linux-mtd@lists.infradead.org
+---
+ drivers/mtd/nand/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- lnx-410-rc2.orig/drivers/mtd/nand/Kconfig
++++ lnx-410-rc2/drivers/mtd/nand/Kconfig
+@@ -426,6 +426,7 @@ config MTD_NAND_ORION
+ 
+ config MTD_NAND_OXNAS
+ 	tristate "NAND Flash support for Oxford Semiconductor SoC"
++	depends on HAS_IOMEM
+ 	help
+ 	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
+ 
