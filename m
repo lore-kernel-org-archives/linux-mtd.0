@@ -1,15 +1,13 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOMmN-0004HI-Io
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 10:57:22 +0000
-Date: Tue, 3 Jan 2017 11:56:48 +0100
+Date: Tue, 3 Jan 2017 11:59:32 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] mtd: fix nand.h kernel-doc warnings
-Message-ID: <20170103115648.5f7025d8@bbrezillon>
-In-Reply-To: <131b4b61-e800-2343-14d4-ab8e128126ea@infradead.org>
-References: <131b4b61-e800-2343-14d4-ab8e128126ea@infradead.org>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd
+ <linux-mtd@lists.infradead.org>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v1] mtd: nand: tango: Reset pbus to raw mode in probe
+Message-ID: <20170103115932.010c6efb@bbrezillon>
+In-Reply-To: <e73bf318-c715-af8c-3fdc-3c5c93a13472@sigmadesigns.com>
+References: <e73bf318-c715-af8c-3fdc-3c5c93a13472@sigmadesigns.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,50 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 21 Nov 2016 18:32:08 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
+On Tue, 3 Jan 2017 11:01:14 +0100
+Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
 
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix kernel-doc warnings in <linux/mtd/nand.h>:
-> 
-> ..//include/linux/mtd/nand.h:658: warning: No description found for parameter 'tCEH_min'
-> ..//include/linux/mtd/nand.h:877: warning: No description found for parameter 'data_interface'
+> Linux should not expect the boot loader to properly configure the
+> peripheral bus "pad mode", so reset PBUS_PAD_MODE to raw.
 > 
 
-Applied.
+Applied to nand/fixes.
 
 Thanks,
 
 Boris
 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
 > ---
->  include/linux/mtd/nand.h |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/tango_nand.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> I haven't been able to find tCEH_min in any NAND datasheets (yet).
+> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+> index d370c0382808..2456640fe4d5 100644
+> --- a/drivers/mtd/nand/tango_nand.c
+> +++ b/drivers/mtd/nand/tango_nand.c
+> @@ -644,6 +644,8 @@ static int tango_nand_probe(struct platform_device *pdev)
+>  	if (IS_ERR(nfc->pbus_base))
+>  		return PTR_ERR(nfc->pbus_base);
+>  
+> +	writel_relaxed(MODE_RAW, nfc->pbus_base + PBUS_PAD_MODE);
+> +
+>  	clk = clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(clk))
+>  		return PTR_ERR(clk);
 > 
-> --- lnx-49-rc6.orig/include/linux/mtd/nand.h
-> +++ lnx-49-rc6/include/linux/mtd/nand.h
-> @@ -589,7 +589,7 @@ struct nand_buffers {
->   * @tALS_min: ALE setup time
->   * @tAR_min: ALE to RE# delay
->   * @tCEA_max: CE# access time
-> - * @tCEH_min:
-> + * @tCEH_min: CE# XXX time
->   * @tCH_min:  CE# hold time
->   * @tCHZ_max: CE# high to output hi-Z
->   * @tCLH_min: CLE hold time
-> @@ -771,6 +771,7 @@ nand_get_sdr_timings(const struct nand_d
->   *			supported, 0 otherwise.
->   * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
->   *			supported, 0 otherwise.
-> + * @data_interface:	[INTERN] NAND interface timing information
->   * @read_retries:	[INTERN] the number of read retry modes supported
->   * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
->   * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
