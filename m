@@ -1,10 +1,27 @@
-Message-ID: <d37b86a124dc62bf0d005cdfd4434359.squirrel@qrec.kyushu-u.ac.jp>
-Date: Tue, 3 Jan 2017 23:57:46 +0900
-Subject: Linkedin Update!
-From: "Linkedin" <likkind@outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-2022-jp
-Content-Transfer-Encoding: 8bit
+Received: from shards.monkeyblade.net ([184.105.139.130])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cORSW-0000C4-Be
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 15:57:09 +0000
+Date: Tue, 03 Jan 2017 10:56:42 -0500 (EST)
+Message-Id: <20170103.105642.1067305724615533420.davem@davemloft.net>
+To: nicolas.dichtel@6wind.com
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, netdev@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
+ fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
+ linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
+ arnd@arndb.de, airlied@linux.ie
+Subject: Re: [PATCH] uapi: use wildcards to list files
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
+References: <20161203.192346.1198940437155108508.davem@davemloft.net>
+ <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,23 +31,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Date: Tue,  3 Jan 2017 15:35:44 +0100
 
+> Regularly, when a new header is created in include/uapi/, the developer
+> forgets to add it in the corresponding Kbuild file. This error is usually
+> detected after the release is out.
+> 
+> In fact, all headers under include/uapi/ should be exported, so let's
+> use wildcards.
+> 
+> After this patch, the following files, which were not exported, are now
+> exported:
+ ...
+> 
+> Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
 
-
-Dear Linkedin User
-
-As part of our effort to improve your experience in Linkedin access across
-our consumer services, we're updating Linkedin Services Agreement and
-Privacy.
-Click the link below to update your account.
-http://rapturerebuttal.com/ti/a/sign.htm
-Your account will be De-Activated if you do not update.
-This notice Ends Tue January 31, 2017
-We apologize for any inconvenience.
-Thank you for your cooperation.
-
-Sincerely.
-
-Linkedin Service Provider
-
-Copyright &#169; 2017 Information
+Acked-by: David S. Miller <davem@davemloft.net>
