@@ -1,7 +1,7 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOOjO-0006MP-Qm
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 13:02:33 +0000
+ id 1cOOjO-0006MQ-Qk
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 13:02:35 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
@@ -11,10 +11,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v4 07/15] mtd: nand: move Samsung specific init/detection
- logic in nand_samsung.c
-Date: Tue,  3 Jan 2017 14:01:27 +0100
-Message-Id: <1483448495-31607-8-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v4 08/15] mtd: nand: move Hynix specific init/detection logic
+ in nand_hynix.c
+Date: Tue,  3 Jan 2017 14:01:28 +0100
+Message-Id: <1483448495-31607-9-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,145 +26,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move Samsung specific initialization and detection logic into
-nand_samsung.c. This is part of the "separate vendor specific code from
+Move Hynix specific initialization and detection logic into
+nand_hynix.c. This is part of the "separate vendor specific code from
 core" cleanup process.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/Makefile       |  1 +
- drivers/mtd/nand/nand_base.c    | 52 ++----------------------
- drivers/mtd/nand/nand_ids.c     |  6 ++-
- drivers/mtd/nand/nand_samsung.c | 89 +++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 98 insertions(+), 50 deletions(-)
- create mode 100644 drivers/mtd/nand/nand_samsung.c
+ drivers/mtd/nand/Makefile     |   1 +
+ drivers/mtd/nand/nand_base.c  | 114 +++++++++++-------------------------------
+ drivers/mtd/nand/nand_hynix.c |  81 ++++++++++++++++++++++++++++++
+ drivers/mtd/nand/nand_ids.c   |   3 +-
+ 4 files changed, 112 insertions(+), 87 deletions(-)
+ create mode 100644 drivers/mtd/nand/nand_hynix.c
 
 diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index bfd5d12b9ade..d4b90b0f879e 100644
+index d4b90b0f879e..ddb2670d9767 100644
 --- a/drivers/mtd/nand/Makefile
 +++ b/drivers/mtd/nand/Makefile
-@@ -61,3 +61,4 @@ obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+@@ -61,4 +61,5 @@ obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
  obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
  
  nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
-+nand-objs += nand_samsung.o
++nand-objs += nand_hynix.o
+ nand-objs += nand_samsung.o
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8f80faa57984..0f0fa13e9448 100644
+index 0f0fa13e9448..67b6eea02d62 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -3792,48 +3792,13 @@ void nand_decode_ext_id(struct nand_chip *chip)
+@@ -3789,85 +3789,32 @@ void nand_decode_ext_id(struct nand_chip *chip)
+ 	/* The 4th id byte is the important one */
+ 	extid = id_data[3];
+ 
++	/* Calc pagesize */
++	mtd->writesize = 1024 << (extid & 0x03);
++	extid >>= 2;
++	/* Calc oobsize */
++	mtd->oobsize = (8 << (extid & 0x01)) * (mtd->writesize >> 9);
++	extid >>= 2;
++	/* Calc blocksize. Blocksize is multiples of 64KiB */
++	mtd->erasesize = (64 * 1024) << (extid & 0x03);
++	extid >>= 2;
++	/* Get buswidth information */
++	if (extid & 0x1)
++		chip->options |= NAND_BUSWIDTH_16;
++
  	/*
- 	 * Field definitions are in the following datasheets:
- 	 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
--	 * New Samsung (6 byte ID): Samsung K9GAG08U0F (p.44)
- 	 * Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22)
- 	 *
- 	 * Check for ID length, non-zero 6th byte, cell type, and Hynix/Samsung
- 	 * ID to decide what to do.
+-	 * Field definitions are in the following datasheets:
+-	 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
+-	 * Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22)
+-	 *
+-	 * Check for ID length, non-zero 6th byte, cell type, and Hynix/Samsung
+-	 * ID to decide what to do.
++	 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
++	 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
++	 * follows:
++	 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
++	 *                         110b -> 24nm
++	 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
  	 */
--	if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG &&
--			!nand_is_slc(chip) && id_data[5] != 0x00) {
+-	if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
+-	    !nand_is_slc(chip)) {
+-		unsigned int tmp;
+-
 -		/* Calc pagesize */
 -		mtd->writesize = 2048 << (extid & 0x03);
 -		extid >>= 2;
 -		/* Calc oobsize */
 -		switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
--		case 1:
+-		case 0:
 -			mtd->oobsize = 128;
 -			break;
+-		case 1:
+-			mtd->oobsize = 224;
+-			break;
 -		case 2:
--			mtd->oobsize = 218;
+-			mtd->oobsize = 448;
 -			break;
 -		case 3:
--			mtd->oobsize = 400;
+-			mtd->oobsize = 64;
 -			break;
 -		case 4:
--			mtd->oobsize = 436;
+-			mtd->oobsize = 32;
 -			break;
 -		case 5:
--			mtd->oobsize = 512;
+-			mtd->oobsize = 16;
 -			break;
--		case 6:
+-		default:
 -			mtd->oobsize = 640;
--			break;
--		case 7:
--		default: /* Other cases are "reserved" (unknown) */
--			mtd->oobsize = 1024;
 -			break;
 -		}
 -		extid >>= 2;
 -		/* Calc blocksize */
--		mtd->erasesize = (128 * 1024) <<
--			(((extid >> 1) & 0x04) | (extid & 0x03));
--	} else if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
--			!nand_is_slc(chip)) {
-+	if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
-+	    !nand_is_slc(chip)) {
- 		unsigned int tmp;
+-		tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
+-		if (tmp < 0x03)
+-			mtd->erasesize = (128 * 1024) << tmp;
+-		else if (tmp == 0x03)
+-			mtd->erasesize = 768 * 1024;
+-		else
+-			mtd->erasesize = (64 * 1024) << tmp;
+-	} else {
+-		/* Calc pagesize */
+-		mtd->writesize = 1024 << (extid & 0x03);
+-		extid >>= 2;
+-		/* Calc oobsize */
+-		mtd->oobsize = (8 << (extid & 0x01)) *
+-			(mtd->writesize >> 9);
+-		extid >>= 2;
+-		/* Calc blocksize. Blocksize is multiples of 64KiB */
+-		mtd->erasesize = (64 * 1024) << (extid & 0x03);
+-		extid >>= 2;
+-		/* Get buswidth information */
+-		if (extid & 0x1)
+-			chip->options |= NAND_BUSWIDTH_16;
+-
+-		/*
+-		 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
+-		 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
+-		 * follows:
+-		 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
+-		 *                         110b -> 24nm
+-		 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
+-		 */
+-		if (id_len >= 6 && id_data[0] == NAND_MFR_TOSHIBA &&
+-				nand_is_slc(chip) &&
+-				(id_data[5] & 0x7) == 0x6 /* 24nm */ &&
+-				!(id_data[4] & 0x80) /* !BENAND */) {
+-			mtd->oobsize = 32 * mtd->writesize >> 9;
+-		}
+-
+-	}
++	if (id_len >= 6 && id_data[0] == NAND_MFR_TOSHIBA &&
++	    nand_is_slc(chip) &&
++	    (id_data[5] & 0x7) == 0x6 /* 24nm */ &&
++	     !(id_data[4] & 0x80) /* !BENAND */)
++		mtd->oobsize = 32 * mtd->writesize >> 9;
+ }
+ EXPORT_SYMBOL_GPL(nand_decode_ext_id);
  
- 		/* Calc pagesize */
-@@ -3961,13 +3926,10 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
+@@ -3926,15 +3873,10 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
  	 * Micron devices with 2KiB pages and on SLC Samsung, Hynix, Toshiba,
  	 * AMD/Spansion, and Macronix.  All others scan only the first page.
  	 */
--	if (!nand_is_slc(chip) &&
--			(maf_id == NAND_MFR_SAMSUNG ||
--			 maf_id == NAND_MFR_HYNIX))
-+	if (!nand_is_slc(chip) && maf_id == NAND_MFR_HYNIX)
- 		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
- 	else if ((nand_is_slc(chip) &&
--				(maf_id == NAND_MFR_SAMSUNG ||
--				 maf_id == NAND_MFR_HYNIX ||
-+				(maf_id == NAND_MFR_HYNIX ||
- 				 maf_id == NAND_MFR_TOSHIBA ||
- 				 maf_id == NAND_MFR_AMD ||
- 				 maf_id == NAND_MFR_MACRONIX)) ||
-@@ -4149,12 +4111,6 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	/* Get chip options */
- 	chip->options |= type->options;
+-	if (!nand_is_slc(chip) && maf_id == NAND_MFR_HYNIX)
+-		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
+-	else if ((nand_is_slc(chip) &&
+-				(maf_id == NAND_MFR_HYNIX ||
+-				 maf_id == NAND_MFR_TOSHIBA ||
+-				 maf_id == NAND_MFR_AMD ||
+-				 maf_id == NAND_MFR_MACRONIX)) ||
+-			(mtd->writesize == 2048 &&
+-			 maf_id == NAND_MFR_MICRON))
++	if ((nand_is_slc(chip) &&
++	     (maf_id == NAND_MFR_TOSHIBA || maf_id == NAND_MFR_AMD ||
++	      maf_id == NAND_MFR_MACRONIX)) ||
++	    (mtd->writesize == 2048 && maf_id == NAND_MFR_MICRON))
+ 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+ }
  
--	/*
--	 * Check if chip is not a Samsung device. Do not clear the
--	 * options for chips which do not have an extended id.
--	 */
--	if (maf_id != NAND_MFR_SAMSUNG && !type->pagesize)
--		chip->options &= ~NAND_SAMSUNG_LP_OPTIONS;
- ident_done:
- 
- 	if (chip->options & NAND_BUSWIDTH_AUTO) {
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index b3a332f37e14..05e9366696c9 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -10,7 +10,7 @@
- #include <linux/mtd/nand.h>
- #include <linux/sizes.h>
- 
--#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
-+#define LP_OPTIONS 0
- #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
- 
- #define SP_OPTIONS NAND_NEED_READRDY
-@@ -169,10 +169,12 @@ struct nand_flash_dev nand_flash_ids[] = {
- };
- 
- /* Manufacturer IDs */
-+extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
-+
- struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_TOSHIBA, "Toshiba"},
- 	{NAND_MFR_ESMT, "ESMT"},
--	{NAND_MFR_SAMSUNG, "Samsung"},
-+	{NAND_MFR_SAMSUNG, "Samsung", &samsung_nand_manuf_ops},
- 	{NAND_MFR_FUJITSU, "Fujitsu"},
- 	{NAND_MFR_NATIONAL, "National"},
- 	{NAND_MFR_RENESAS, "Renesas"},
-diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/nand_samsung.c
+diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
 new file mode 100644
-index 000000000000..863be01a2232
+index 000000000000..06c8e8b0ec68
 --- /dev/null
-+++ b/drivers/mtd/nand/nand_samsung.c
-@@ -0,0 +1,89 @@
++++ b/drivers/mtd/nand/nand_hynix.c
+@@ -0,0 +1,81 @@
 +/*
 + * Copyright (C) 2013 Boris Brezillon <boris.brezillon@free-electrons.com>
 + *
@@ -181,67 +205,59 @@ index 000000000000..863be01a2232
 +
 +#include <linux/mtd/nand.h>
 +
-+static void samsung_nand_decode_id(struct nand_chip *chip)
++static void hynix_nand_decode_id(struct nand_chip *chip)
 +{
 +	struct mtd_info *mtd = nand_to_mtd(chip);
 +
-+	/* New Samsung (6 byte ID): Samsung K9GAG08U0F (p.44) */
-+	if (chip->id.len == 6 && !nand_is_slc(chip) &&
-+	    chip->id.data[5] != 0x00) {
-+		u8 extid = chip->id.data[3];
++	/* Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22) */
++	if (chip->id.len == 6 && !nand_is_slc(chip)) {
++		u8 tmp, extid = chip->id.data[3];
 +
-+		/* Get pagesize */
++		/* Extract pagesize */
 +		mtd->writesize = 2048 << (extid & 0x03);
-+
 +		extid >>= 2;
 +
-+		/* Get oobsize */
++		/* Extract oobsize */
 +		switch (((extid >> 2) & 0x4) | (extid & 0x3)) {
-+		case 1:
++		case 0:
 +			mtd->oobsize = 128;
 +			break;
++		case 1:
++			mtd->oobsize = 224;
++			break;
 +		case 2:
-+			mtd->oobsize = 218;
++			mtd->oobsize = 448;
 +			break;
 +		case 3:
-+			mtd->oobsize = 400;
++			mtd->oobsize = 64;
 +			break;
 +		case 4:
-+			mtd->oobsize = 436;
++			mtd->oobsize = 32;
 +			break;
 +		case 5:
-+			mtd->oobsize = 512;
-+			break;
-+		case 6:
-+			mtd->oobsize = 640;
++			mtd->oobsize = 16;
 +			break;
 +		default:
-+			/*
-+			 * We should never reach this case, but if that
-+			 * happens, this probably means Samsung decided to use
-+			 * a different extended ID format, and we should find
-+			 * a way to support it.
-+			 */
-+			WARN(1, "Invalid OOB size value");
++			mtd->oobsize = 640;
 +			break;
 +		}
 +
-+		/* Get blocksize */
++		/* Extract blocksize */
 +		extid >>= 2;
-+		mtd->erasesize = (128 * 1024) <<
-+				 (((extid >> 1) & 0x04) | (extid & 0x03));
++		tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
++		if (tmp < 0x03)
++			mtd->erasesize = (128 * 1024) << tmp;
++		else if (tmp == 0x03)
++			mtd->erasesize = 768 * 1024;
++		else
++			mtd->erasesize = (64 * 1024) << tmp;
 +	} else {
 +		nand_decode_ext_id(chip);
 +	}
 +}
 +
-+static int samsung_nand_init(struct nand_chip *chip)
++static int hynix_nand_init(struct nand_chip *chip)
 +{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+
-+	if (mtd->writesize > 512)
-+		chip->options |= NAND_SAMSUNG_LP_OPTIONS;
-+
 +	if (!nand_is_slc(chip))
 +		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
 +	else
@@ -250,9 +266,30 @@ index 000000000000..863be01a2232
 +	return 0;
 +}
 +
-+const struct nand_manufacturer_ops samsung_nand_manuf_ops = {
-+	.detect = samsung_nand_decode_id,
-+	.init = samsung_nand_init,
++const struct nand_manufacturer_ops hynix_nand_manuf_ops = {
++	.detect = hynix_nand_decode_id,
++	.init = hynix_nand_init,
 +};
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index 05e9366696c9..6ded005fc5f8 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -170,6 +170,7 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 
+ /* Manufacturer IDs */
+ extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
++extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
+ 
+ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_TOSHIBA, "Toshiba"},
+@@ -179,7 +180,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_NATIONAL, "National"},
+ 	{NAND_MFR_RENESAS, "Renesas"},
+ 	{NAND_MFR_STMICRO, "ST Micro"},
+-	{NAND_MFR_HYNIX, "Hynix"},
++	{NAND_MFR_HYNIX, "Hynix", &hynix_nand_manuf_ops},
+ 	{NAND_MFR_MICRON, "Micron"},
+ 	{NAND_MFR_AMD, "AMD/Spansion"},
+ 	{NAND_MFR_MACRONIX, "Macronix"},
 -- 
 2.7.4
