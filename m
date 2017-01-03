@@ -1,17 +1,18 @@
-Date: Tue, 3 Jan 2017 09:48:14 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOKwX-0003to-An
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 08:59:42 +0000
+Date: Tue, 3 Jan 2017 09:59:18 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: Richard Weinberger <richard@nod.at>, Mark Rutland
- <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, Mans Rullgard
- <mans@mansr.com>, Arnd Bergmann <arnd@arndb.de>, linux-mtd
- <linux-mtd@lists.infradead.org>, Linux ARM
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1] mtd: nand: tango: Update DT binding description
-Message-ID: <20170103094814.54b45f53@bbrezillon>
-In-Reply-To: <24522cc9-9d9a-980d-8cd2-18fb0de19a5f@sigmadesigns.com>
-References: <ba47f2f1-bcdc-91e8-ed79-153931ccdad8@sigmadesigns.com>
- <20161229192302.5c94ecdb@bbrezillon>
- <24522cc9-9d9a-980d-8cd2-18fb0de19a5f@sigmadesigns.com>
+To: Sushaanth Srirangapathi <sushaanth.s@ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: davinci-nand: disable subpage write for davinci-nand
+Message-ID: <20170103095918.7da43be3@bbrezillon>
+In-Reply-To: <1457428095-2801-1-git-send-email-sushaanth.s@ti.com>
+References: <1457428095-2801-1-git-send-email-sushaanth.s@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,46 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 3 Jan 2017 09:34:59 +0100
-Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+Hi Sushaanth,
 
-> On 29/12/2016 19:23, Boris Brezillon wrote:
-> > On Mon, 19 Dec 2016 15:30:12 +0100
-> > Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
-> >   
-> >> Visually separate register ranges (address/size pairs) in reg prop.
-> >> Change DMA channel name, for consistency with other drivers.
-> >>
-> >> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-> >> ---
-> >>  Documentation/devicetree/bindings/mtd/tango-nand.txt | 6 +++---
-> >>  drivers/mtd/nand/tango_nand.c                        | 2 +-
-> >>  2 files changed, 4 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-> >> index ad5a02f2ac8c..cd1bf2ac9055 100644
-> >> --- a/Documentation/devicetree/bindings/mtd/tango-nand.txt
-> >> +++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
-> >> @@ -5,7 +5,7 @@ Required properties:
-> >>  - compatible: "sigma,smp8758-nand"
-> >>  - reg: address/size of nfc_reg, nfc_mem, and pbus_reg
-> >>  - dmas: reference to the DMA channel used by the controller
-> >> -- dma-names: "nfc_sbox"
-> >> +- dma-names: "rxtx"  
-> > 
-> > You probably want to fix the driver accordingly ;-).  
+Sorry for the late reply, I'm dequeing old NAND related patches and
+found this one.
+
+Is this patch still needed?
+
+On Tue, 8 Mar 2016 14:38:15 +0530
+Sushaanth Srirangapathi <sushaanth.s@ti.com> wrote:
+
+> Commit 28c015a9daabe4e ("mtd: davinci-nand: disable subpage write for
+> keystone-nand") disables subpage write for Keystone SOCs due to hw
+> issues.
 > 
-> I'm confused...
+> But subpage writes doesn't work even for DaVinci SOCs due to hw issues.
+> So set NAND_NO_SUBPAGE_WRITE option for all devices compatible to
+> this driver.
 > 
-> Did you miss the change (below) to drivers/mtd/nand/tango_nand.c
-> fixing the driver as well as the documentation?
-
-Indeed, I missed it. The patch is fine, I'll queue it for 4.10-rcX.
-
-Sorry for the noise.
-
-BTW, I heard you had some fixes for 4.10. Feel free to send them.
-
-Regards,
-
-Boris
+> I tested this patch using DA850 board.
+> 
+> Signed-off-by: Sushaanth Srirangapathi <sushaanth.s@ti.com>
+> ---
+>  drivers/mtd/nand/davinci_nand.c |    6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+> index 8cb821b..466439c 100644
+> --- a/drivers/mtd/nand/davinci_nand.c
+> +++ b/drivers/mtd/nand/davinci_nand.c
+> @@ -601,11 +601,7 @@ static struct davinci_nand_pdata
+>  		    of_property_read_bool(pdev->dev.of_node,
+>  			"ti,davinci-nand-use-bbt"))
+>  			pdata->bbt_options = NAND_BBT_USE_FLASH;
+> -
+> -		if (of_device_is_compatible(pdev->dev.of_node,
+> -					    "ti,keystone-nand")) {
+> -			pdata->options |= NAND_NO_SUBPAGE_WRITE;
+> -		}
+> +		pdata->options |= NAND_NO_SUBPAGE_WRITE;
+>  	}
+>  
+>  	return dev_get_platdata(&pdev->dev);
