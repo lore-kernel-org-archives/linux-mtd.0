@@ -1,17 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOKJn-0003Iz-3P
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 08:19:40 +0000
-Date: Tue, 3 Jan 2017 09:19:15 +0100
+ id 1cOKKY-0003XM-8N
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 08:20:27 +0000
+Date: Tue, 3 Jan 2017 09:20:04 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@atmel.com,
- linux-mtd@lists.infradead.org, john@phrozen.org, stable@vger.kernel.org
-Subject: Re: [PATCH V2 1/2] mtd: nand: xway: disable module support
-Message-ID: <20170103091915.50673027@bbrezillon>
-In-Reply-To: <20161205211437.29489-1-hauke@hauke-m.de>
-References: <20161205211437.29489-1-hauke@hauke-m.de>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ kbuild test robot <fengguang.wu@intel.com>, Neil Armstrong
+ <narmstrong@baylibre.com>, Jeff Dike <jdike@addtoit.com>, Richard
+ Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [PATCH] mtd: nand: oxnas_nand: fix build errors on arch/um,
+ require HAS_IOMEM
+Message-ID: <20170103092004.6edd6e3e@bbrezillon>
+In-Reply-To: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
+References: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,38 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  5 Dec 2016 22:14:36 +0100
-Hauke Mehrtens <hauke@hauke-m.de> wrote:
+On Sun, 1 Jan 2017 18:58:27 -0800
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-> The xway_nand driver accesses the ltq_ebu_membase symbol which is not
-> exported. This also should not get exported and we should handle the
-> EBU interface in a better way later. This quick fix just deactivated
-> support for building as module.
+> From: Randy Dunlap <rdunlap@infradead.org>
 > 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> Fix build errors on arch/um, which does not support HAS_IOMEM,
+> while the oxnas_nand.c driver uses interfaces that are
+> supplied by HAS_IOMEM.
+> 
+> (loadable module build:)
+> ERROR: "devm_ioremap_resource" [drivers/mtd/nand/oxnas_nand.ko] undefined!
+> or (built-in build:)
+> drivers/built-in.o: In function `oxnas_nand_probe':
+> drivers/mtd/nand/oxnas_nand.c:102: undefined reference to `devm_ioremap_resource'
 
-Applied both to nand/fixes. They should appear in one of the next -rc
+Applied to nand/fixes. It should appear in one of the next -rc
 (probably not -rc3 though).
 
 Thanks,
 
 Boris
 
-> ---
->  drivers/mtd/nand/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 7b7a887..b254090 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -537,7 +537,7 @@ config MTD_NAND_FSMC
->  	  Flexible Static Memory Controller (FSMC)
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc:	Jeff Dike <jdike@addtoit.com>
+> Cc:	Richard Weinberger <richard@nod.at>
+> Cc:	user-mode-linux-devel@lists.sourceforge.net
+> Cc:	linux-mtd@lists.infradead.org
+> ---
+>  drivers/mtd/nand/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- lnx-410-rc2.orig/drivers/mtd/nand/Kconfig
+> +++ lnx-410-rc2/drivers/mtd/nand/Kconfig
+> @@ -426,6 +426,7 @@ config MTD_NAND_ORION
 >  
->  config MTD_NAND_XWAY
-> -	tristate "Support for NAND on Lantiq XWAY SoC"
-> +	bool "Support for NAND on Lantiq XWAY SoC"
->  	depends on LANTIQ && SOC_TYPE_XWAY
+>  config MTD_NAND_OXNAS
+>  	tristate "NAND Flash support for Oxford Semiconductor SoC"
+> +	depends on HAS_IOMEM
 >  	help
->  	  Enables support for NAND Flash chips on Lantiq XWAY SoCs. NAND is attached
+>  	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
+>  
