@@ -1,22 +1,14 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOLjA-0003nq-3F
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 09:49:57 +0000
-Subject: Re: [PATCH v2] fscrypt: Factor out bio specific functions
-To: Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, jaegeuk@kernel.org, hch@infradead.org,
- arnd@arndb.de, dedekind1@gmail.com, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com, linux-ext4@vger.kernel.org, ebiggers@google.com,
- rdunlap@infradead.org, david@sigma-star.at
-References: <20161219103929.GA16197@infradead.org>
- <20161219112532.18863-1-richard@nod.at>
- <20170101214725.g67msbedmpx27waz@thunk.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <dd8b8365-e84a-7f8e-384d-4900523e761e@nod.at>
-Date: Tue, 3 Jan 2017 10:49:26 +0100
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>
+CC: linux-mtd <linux-mtd@lists.infradead.org>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>
+From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Subject: [PATCH v1] mtd: nand: tango: Reset pbus to raw mode in probe
+Message-ID: <e73bf318-c715-af8c-3fdc-3c5c93a13472@sigmadesigns.com>
+Date: Tue, 3 Jan 2017 11:01:14 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170101214725.g67msbedmpx27waz@thunk.org>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Language: 
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,22 +19,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ted,
+Linux should not expect the boot loader to properly configure the
+peripheral bus "pad mode", so reset PBUS_PAD_MODE to raw.
 
-Am 01.01.2017 um 22:47 schrieb Theodore Ts'o:
-> On Mon, Dec 19, 2016 at 12:25:32PM +0100, Richard Weinberger wrote:
->> That way we can get rid of the direct dependency on CONFIG_BLOCK.
->>
->> Reported-by: Arnd Bergmann <arnd@arndb.de>
->> Reported-by: Randy Dunlap <rdunlap@infradead.org>
->> Suggested-by: Christoph Hellwig <hch@infradead.org>
->> Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
->> Signed-off-by: Richard Weinberger <richard@nod.at>
-> 
-> Applied, thanks.
+Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+---
+ drivers/mtd/nand/tango_nand.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Just to make sure, this fixes a build error and should
-go into Linus' tree ASAP.
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+index d370c0382808..2456640fe4d5 100644
+--- a/drivers/mtd/nand/tango_nand.c
++++ b/drivers/mtd/nand/tango_nand.c
+@@ -644,6 +644,8 @@ static int tango_nand_probe(struct platform_device *pdev)
+ 	if (IS_ERR(nfc->pbus_base))
+ 		return PTR_ERR(nfc->pbus_base);
+ 
++	writel_relaxed(MODE_RAW, nfc->pbus_base + PBUS_PAD_MODE);
++
+ 	clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(clk))
+ 		return PTR_ERR(clk);
