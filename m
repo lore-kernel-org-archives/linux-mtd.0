@@ -1,26 +1,25 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOPCR-0005le-A0
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 13:32:24 +0000
-Date: Tue, 3 Jan 2017 14:32:01 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Icenowy Zheng <icenowy@aosc.xyz>
-Cc: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "Valdis.Kletnieks@vt.edu" <valdis.kletnieks@vt.edu>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 14/15] mtd: nand: hynix: rework NAND ID decoding to
- extract more information
-Message-ID: <20170103143201.14fcf294@bbrezillon>
-In-Reply-To: <3073151483449433@web27m.yandex.ru>
-References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
- <1483448495-31607-15-git-send-email-boris.brezillon@free-electrons.com>
- <3073151483449433@web27m.yandex.ru>
+Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOQ5U-0002Q6-KH
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 14:29:18 +0000
+Date: Tue, 3 Jan 2017 09:28:36 -0500
+From: Theodore Ts'o <tytso@mit.edu>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ jaegeuk@kernel.org, hch@infradead.org, arnd@arndb.de,
+ dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+ adrian.hunter@intel.com, linux-ext4@vger.kernel.org,
+ ebiggers@google.com, rdunlap@infradead.org, david@sigma-star.at
+Subject: Re: [PATCH v2] fscrypt: Factor out bio specific functions
+Message-ID: <20170103142836.no7rp3hphj3czjto@thunk.org>
+References: <20161219103929.GA16197@infradead.org>
+ <20161219112532.18863-1-richard@nod.at>
+ <20170101214725.g67msbedmpx27waz@thunk.org>
+ <dd8b8365-e84a-7f8e-384d-4900523e761e@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd8b8365-e84a-7f8e-384d-4900523e761e@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,74 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 03 Jan 2017 21:17:13 +0800
-Icenowy Zheng <icenowy@aosc.xyz> wrote:
+On Tue, Jan 03, 2017 at 10:49:26AM +0100, Richard Weinberger wrote:
+> Ted,
+> 
+> Am 01.01.2017 um 22:47 schrieb Theodore Ts'o:
+> > On Mon, Dec 19, 2016 at 12:25:32PM +0100, Richard Weinberger wrote:
+> >> That way we can get rid of the direct dependency on CONFIG_BLOCK.
+> >>
+> >> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> >> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> >> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> >> Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
+> >> Signed-off-by: Richard Weinberger <richard@nod.at>
+> > 
+> > Applied, thanks.
+> 
+> Just to make sure, this fixes a build error and should
+> go into Linus' tree ASAP.
 
-> 03.01.2017, 21:01, "Boris Brezillon" <boris.brezillon@free-electrons.com>:
-> > The current NAND ID detection in nand_hynix.c is not handling the
-> > different scheme used by Hynix, thus forcing developers to add new
-> > entries in the nand_ids table each time they want to support a new MLC
-> > NAND.
-> >
-> > Enhance the detection logic to handle all known formats. This does not
-> > necessarily mean we are handling all the cases, but if new formats are
-> > discovered, the code should evolve to take them into account instead of
-> > adding more full-id entries in the nand_ids table.
-> >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> > =C2=A0drivers/mtd/nand/nand_hynix.c | 228 +++++++++++++++++++++++++++++=
-+++++++++----
-> > =C2=A01 file changed, 209 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hyni=
-x.c
-> > index 06c8e8b0ec68..a35ca3a593f5 100644
-> > --- a/drivers/mtd/nand/nand_hynix.c
-> > +++ b/drivers/mtd/nand/nand_hynix.c
-> > @@ -13,21 +13,56 @@
-> > =C2=A0=C2=A0*/
-> >
+I didn't consider this a build error since it could be fixed via a
+config change.  And it is a pretty big patch, even if it is mostly
+moving (not that git recognized it as such)...
 
-[...]
+git show --stat -M 58ae74683ae2c07cd717a91799edb50231061938
+commit 58ae74683ae2c07cd717a91799edb50231061938
+Author: Richard Weinberger <richard@nod.at>
+Date:   Mon Dec 19 12:25:32 2016 +0100
 
-> > + switch (oobsize) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case 0:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0mtd->oobsize =3D 128;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0break;
-> > @@ -46,23 +81,178 @@ static void hynix_nand_decode_id(struct nand_chip =
-*chip)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case 5:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0mtd->oobsize =3D 16;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0break;
-> > - default:
-> > + case 6:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0mtd->oobsize =3D 640;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0break;
-> > + default:
-> > + /*
-> > + * We should never reach this case, but if that
-> > + * happens, this probably means Samsung decided to use =20
->=20
-> Is this "Samsung" a copy-n-paste error? ;-)
+    fscrypt: factor out bio specific functions
+    
+    That way we can get rid of the direct dependency on CONFIG_BLOCK.
+    
+    Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
+    Reported-by: Arnd Bergmann <arnd@arndb.de>
+    Reported-by: Randy Dunlap <rdunlap@infradead.org>
+    Reviewed-by: Eric Biggers <ebiggers@google.com>
+    Reviewed-by: Christoph Hellwig <hch@lst.de>
+    Reviewed-by: David Gstir <david@sigma-star.at>
+    Signed-off-by: Richard Weinberger <richard@nod.at>
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-Indeed, and this is not the only place where I'm wrongly mentioning
-Samsung. I'll fix that.
+ fs/crypto/Kconfig           |   1 -
+ fs/crypto/Makefile          |   1 +
+ fs/crypto/bio.c             | 145 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/crypto/crypto.c          | 157 +++++++++----------------------------------------------------------------------------
+ fs/crypto/fscrypt_private.h |  16 ++++++++-
+ include/linux/fscrypto.h    |  11 +++---
+ 6 files changed, 184 insertions(+), 147 deletions(-)
 
-Thanks,
-
-Boris
+						- Ted
+						
