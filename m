@@ -1,22 +1,14 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOEpS-0001Ly-M0
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 02:28:00 +0000
-Received: by mail-wm0-x244.google.com with SMTP id m203so84474794wma.3
- for <linux-mtd@lists.infradead.org>; Mon, 02 Jan 2017 18:27:38 -0800 (PST)
-Subject: Re: [PATCH] mtd/redboot: avoid null pointer deref
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20161221232528.26534-1-Jason@zx2c4.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <8267e170-e3ae-06dd-c859-17712785071a@gmail.com>
-Date: Tue, 3 Jan 2017 03:22:28 +0100
+From: Alison Wang <b18965@freescale.com>
+To: <boris.brezillon@free-electrons.com>, <marek.vasut@gmail.com>,
+ <cyrille.pitchen@atmel.com>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>
+CC: <alison.wang@nxp.com>
+Subject: [PATCH v2 1/2] mtd: ifc: Update dependency of IFC for LS1021A
+Date: Tue, 3 Jan 2017 10:41:05 +0800
+Message-ID: <1483411266-45875-1-git-send-email-b18965@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <20161221232528.26534-1-Jason@zx2c4.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +18,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/22/2016 12:25 AM, Jason A. Donenfeld wrote:
-> By giving a bogus partition name, it's possible to trigger a null
-> pointer dereference.
-> 
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+As Freescale/NXP IFC controller is available on LS1021A, the dependency
+for LS1021A is added.
 
-Nice catch. It'd be great to have the condition which can be used to
-trigger this problem in the commit message. I presume this happens if
-buf[i].name[0] = 0xff for all $i, right ?
+Signed-off-by: Alison Wang <alison.wang@nxp.com>
+---
+Changes in v2:
+- New patch
 
-So please expand the explanation and add my Ack for V2:
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+ drivers/memory/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks
-
-> ---
->  drivers/mtd/redboot.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/redboot.c b/drivers/mtd/redboot.c
-> index 7623ac5fc586..53949ef80d36 100644
-> --- a/drivers/mtd/redboot.c
-> +++ b/drivers/mtd/redboot.c
-> @@ -212,6 +212,10 @@ static int parse_redboot_partitions(struct mtd_info *master,
->  
->  		nrparts++;
->  	}
-> +	if (!fl) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
->  #ifdef CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED
->  	if (fl->img->flash_base) {
->  		nrparts++;
-> 
-
-
+diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+index ec80e35..fff8345 100644
+--- a/drivers/memory/Kconfig
++++ b/drivers/memory/Kconfig
+@@ -115,7 +115,7 @@ config FSL_CORENET_CF
+ 
+ config FSL_IFC
+ 	bool
+-	depends on FSL_SOC || ARCH_LAYERSCAPE
++	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
+ 
+ config JZ4780_NEMC
+ 	bool "Ingenic JZ4780 SoC NEMC driver"
 -- 
-Best regards,
-Marek Vasut
+2.1.0.27.g96db324
