@@ -1,29 +1,31 @@
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOSyk-0003xQ-8G
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 17:34:32 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id t79so435463393wmt.0
- for <linux-mtd@lists.infradead.org>; Tue, 03 Jan 2017 09:34:09 -0800 (PST)
-Date: Tue, 3 Jan 2017 17:37:50 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Immutable branch between MFD and MTD due for the v4.11
- merge window
-Message-ID: <20170103173750.GA27589@dell>
-References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+Received: from fieldses.org ([173.255.197.46])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOVBL-0005wf-9o
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 19:55:40 +0000
+Date: Tue, 3 Jan 2017 14:52:45 -0500
+From: "J. Bruce Fields" <bfields@fieldses.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, david@sigma-star.at, tytso@mit.edu,
+ dedekind1@gmail.com, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ adilger.kernel@dilger.ca, akpm@linux-foundation.org,
+ linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 3/6] ubifs: Use 64bit readdir cookies
+Message-ID: <20170103195245.GB5712@fieldses.org>
+References: <1480629741-18375-1-git-send-email-richard@nod.at>
+ <1480629741-18375-4-git-send-email-richard@nod.at>
+ <20161229025835.GC21325@fieldses.org>
+ <bf60916c-e0f2-387c-ce21-325ad8977539@nod.at>
+ <20161229153407.GA29149@fieldses.org>
+ <fe46ea3c-ef8f-40ba-f4ab-8dfe8faafb0b@nod.at>
+ <20161229161534.GA29261@fieldses.org>
+ <224abf2f-c820-5df1-6292-42c1e2d47933@nod.at>
+ <20161229165920.GA29744@fieldses.org>
+ <6ba02247-cb0e-e925-207e-4ea3fc37b9b7@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+In-Reply-To: <6ba02247-cb0e-e925-207e-4ea3fc37b9b7@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,49 +35,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD Maintainers,
+On Thu, Dec 29, 2016 at 06:05:54PM +0100, Richard Weinberger wrote:
+> On 29.12.2016 17:59, J. Bruce Fields wrote:
+> > OK, good.  So the random nonce is stored with the entry, and the hash
+> > you can always recalculate from the filename, so if you return entries
+> > in nonce+hash order, then you can keep that order stable even across
+> > deletes and renames.
+> 
+> Yes.
 
-Enjoy!
+Thanks, feel free to add a
 
-The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
+	Reviewed-by: J. Bruce Fields <bfields@redhat.com>
 
-  Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
+to this and 6/6.
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-mtd-v4.11
-
-for you to fetch changes up to 87eb832ae9748fab00588b98c2e33e89de065438:
-
-  mfd: lpc_ich: Add support for Intel Apollo Lake SoC (2017-01-03 17:34:16 +0000)
-
-----------------------------------------------------------------
-Immutable branch between MFD and MTD due for the v4.11 merge window
-
-----------------------------------------------------------------
-Mika Westerberg (3):
-      spi-nor: Add support for Intel SPI serial flash controller
-      mfd: lpc_ich: Add support for SPI serial flash host controller
-      mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-
- Documentation/mtd/intel-spi.txt          |  88 ++++
- drivers/mfd/lpc_ich.c                    | 131 ++++++
- drivers/mtd/spi-nor/Kconfig              |  20 +
- drivers/mtd/spi-nor/Makefile             |   2 +
- drivers/mtd/spi-nor/intel-spi-platform.c |  57 +++
- drivers/mtd/spi-nor/intel-spi.c          | 777 +++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/intel-spi.h          |  24 +
- include/linux/mfd/lpc_ich.h              |   3 +
- include/linux/platform_data/intel-spi.h  |  31 ++
- 9 files changed, 1133 insertions(+)
- create mode 100644 Documentation/mtd/intel-spi.txt
- create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi.h
- create mode 100644 include/linux/platform_data/intel-spi.h
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+--b.
