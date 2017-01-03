@@ -1,23 +1,23 @@
-From: Alison Wang <alison.wang@nxp.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Alison Wang
- <b18965@freescale.com>
-CC: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-Subject: RE: [PATCH v2 1/2] mtd: ifc: Update dependency of IFC for LS1021A
-Date: Tue, 3 Jan 2017 09:19:22 +0000
-Message-ID: <DB6PR0401MB2584447FAAD7E79FC0A87977F46E0@DB6PR0401MB2584.eurprd04.prod.outlook.com>
-References: <1483411266-45875-1-git-send-email-b18965@freescale.com>
- <20170103100439.6e7360c6@bbrezillon>
-In-Reply-To: <20170103100439.6e7360c6@bbrezillon>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOLjA-0003nq-3F
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 09:49:57 +0000
+Subject: Re: [PATCH v2] fscrypt: Factor out bio specific functions
+To: Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, jaegeuk@kernel.org, hch@infradead.org,
+ arnd@arndb.de, dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+ adrian.hunter@intel.com, linux-ext4@vger.kernel.org, ebiggers@google.com,
+ rdunlap@infradead.org, david@sigma-star.at
+References: <20161219103929.GA16197@infradead.org>
+ <20161219112532.18863-1-richard@nod.at>
+ <20170101214725.g67msbedmpx27waz@thunk.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <dd8b8365-e84a-7f8e-384d-4900523e761e@nod.at>
+Date: Tue, 3 Jan 2017 10:49:26 +0100
 MIME-Version: 1.0
+In-Reply-To: <20170101214725.g67msbedmpx27waz@thunk.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,59 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ok, I see. Thanks.
+Ted,
 
+Am 01.01.2017 um 22:47 schrieb Theodore Ts'o:
+> On Mon, Dec 19, 2016 at 12:25:32PM +0100, Richard Weinberger wrote:
+>> That way we can get rid of the direct dependency on CONFIG_BLOCK.
+>>
+>> Reported-by: Arnd Bergmann <arnd@arndb.de>
+>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>> Suggested-by: Christoph Hellwig <hch@infradead.org>
+>> Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+> 
+> Applied, thanks.
 
-Best Regards,
-Alison Wang
+Just to make sure, this fixes a build error and should
+go into Linus' tree ASAP.
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
-> Sent: Tuesday, January 03, 2017 5:05 PM
-> To: Alison Wang <b18965@freescale.com>
-> Cc: marek.vasut@gmail.com; cyrille.pitchen@atmel.com; linux-
-> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
-> mtd@lists.infradead.org; dwmw2@infradead.org;
-> computersforpeace@gmail.com; Alison Wang <alison.wang@nxp.com>
-> Subject: Re: [PATCH v2 1/2] mtd: ifc: Update dependency of IFC for
-> LS1021A
->=20
-> Hi Alison,
->=20
-> The subject prefix should be "memory: " and not "mtd: ifc: ".
->=20
-> Looks good otherwise.
->=20
-> No need to resend, I can fix that when applying.
->=20
-> Regards,
->=20
-> Boris
->=20
-> On Tue, 3 Jan 2017 10:41:05 +0800
-> Alison Wang <b18965@freescale.com> wrote:
->=20
-> > As Freescale/NXP IFC controller is available on LS1021A, the
-> > dependency for LS1021A is added.
-> >
-> > Signed-off-by: Alison Wang <alison.wang@nxp.com>
-> > ---
-> > Changes in v2:
-> > - New patch
-> >
-> >  drivers/memory/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig index
-> > ec80e35..fff8345 100644
-> > --- a/drivers/memory/Kconfig
-> > +++ b/drivers/memory/Kconfig
-> > @@ -115,7 +115,7 @@ config FSL_CORENET_CF
-> >
-> >  config FSL_IFC
-> >  	bool
-> > -	depends on FSL_SOC || ARCH_LAYERSCAPE
-> > +	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
-> >
-> >  config JZ4780_NEMC
-> >  	bool "Ingenic JZ4780 SoC NEMC driver"
+Thanks,
+//richard
