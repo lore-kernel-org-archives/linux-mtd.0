@@ -1,25 +1,18 @@
-From: Alison Wang <alison.wang@nxp.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Alison Wang
- <b18965@freescale.com>
-CC: kbuild test robot <lkp@intel.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "kbuild-all@01.org" <kbuild-all@01.org>,
- "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH] mtd: nand: Update dependency of IFC for LS1021A
-Date: Tue, 3 Jan 2017 01:24:48 +0000
-Message-ID: <DB6PR0401MB25848CE3435451BFF3E722D4F46E0@DB6PR0401MB2584.eurprd04.prod.outlook.com>
-References: <1482973102-47659-1-git-send-email-b18965@freescale.com>
- <201612291704.0tMw9Uis%fengguang.wu@intel.com>
- <20170102100124.78ca7d7e@bbrezillon>
-In-Reply-To: <20170102100124.78ca7d7e@bbrezillon>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from mx1.riseup.net ([198.252.153.129])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOE0A-0008Pk-16
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 01:34:59 +0000
+Received: from piha.riseup.net (unknown [10.0.1.163])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (Client CN "*.riseup.net",
+ Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
+ by mx1.riseup.net (Postfix) with ESMTPS id 354A01A051A
+ for <linux-mtd@lists.infradead.org>; Tue,  3 Jan 2017 01:34:35 +0000 (UTC)
+From: Victor Shyba <victor1984@riseup.net>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spi-nor: Add lock/unlock support for f25l32pa
+Date: Mon,  2 Jan 2017 22:34:30 -0300
+Message-Id: <1483407270-4323-1-git-send-email-victor1984@riseup.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,27 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIEJvcmlzLA0KDQo+IGtidWlsZCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPiB3cm90ZToN
-Cj4gDQo+ID4gSGkgQWxpc29uLA0KPiA+DQo+ID4gW2F1dG8gYnVpbGQgdGVzdCBXQVJOSU5HIG9u
-IG10ZC9tYXN0ZXJdIFthbHNvIGJ1aWxkIHRlc3QgV0FSTklORyBvbg0KPiA+IHY0LjEwLXJjMSBu
-ZXh0LTIwMTYxMjI0XSBbaWYgeW91ciBwYXRjaCBpcyBhcHBsaWVkIHRvIHRoZSB3cm9uZyBnaXQN
-Cj4gPiB0cmVlLCBwbGVhc2UgZHJvcCB1cyBhIG5vdGUgdG8gaGVscCBpbXByb3ZlIHRoZSBzeXN0
-ZW1dDQo+ID4NCj4gPiB1cmw6ICAgIGh0dHBzOi8vZ2l0aHViLmNvbS8wZGF5LWNpL2xpbnV4L2Nv
-bW1pdHMvQWxpc29uLVdhbmcvbXRkLQ0KPiBuYW5kLVVwZGF0ZS1kZXBlbmRlbmN5LW9mLUlGQy1m
-b3ItTFMxMDIxQS8yMDE2MTIyOS0xMjUyMzMNCj4gPiBiYXNlOiAgIGdpdDovL2dpdC5pbmZyYWRl
-YWQub3JnL2xpbnV4LW10ZC5naXQgbWFzdGVyDQo+ID4gY29uZmlnOiBhcm0tYWxsbW9kY29uZmln
-IChhdHRhY2hlZCBhcyAuY29uZmlnKQ0KPiA+IGNvbXBpbGVyOiBhcm0tbGludXgtZ251ZWFiaS1n
-Y2MgKERlYmlhbiA2LjEuMS05KSA2LjEuMSAyMDE2MDcwNQ0KPiA+IHJlcHJvZHVjZToNCj4gPiAg
-ICAgICAgIHdnZXQgaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQv
-d2ZnL2xrcC0NCj4gdGVzdHMuZ2l0L3BsYWluL3NiaW4vbWFrZS5jcm9zcyAtTyB+L2Jpbi9tYWtl
-LmNyb3NzDQo+ID4gICAgICAgICBjaG1vZCAreCB+L2Jpbi9tYWtlLmNyb3NzDQo+ID4gICAgICAg
-ICAjIHNhdmUgdGhlIGF0dGFjaGVkIC5jb25maWcgdG8gbGludXggYnVpbGQgdHJlZQ0KPiA+ICAg
-ICAgICAgbWFrZS5jcm9zcyBBUkNIPWFybQ0KPiA+DQo+ID4gQWxsIHdhcm5pbmdzIChuZXcgb25l
-cyBwcmVmaXhlZCBieSA+Pik6DQo+ID4NCj4gPiB3YXJuaW5nOiAoTVREX05BTkRfRlNMX0lGQykg
-c2VsZWN0cyBGU0xfSUZDIHdoaWNoIGhhcyB1bm1ldCBkaXJlY3QNCj4gPiBkZXBlbmRlbmNpZXMg
-KE1FTU9SWSAmJiAoRlNMX1NPQyB8fCBBUkNIX0xBWUVSU0NBUEUpKQ0KPiANCj4gRG8geW91IGhh
-dmUgYW5vdGhlciBwYXRjaCBhZGRpbmcgdGhlICd8fMKgU09DX0xTMTAyMUEnIGRlcGVuZGVuY3kg
-b24NCj4gRlNMX0lGQz8gSWYgc28sIHBsZWFzZSBzZW5kIGJvdGggcGF0Y2hlcyBpbiB0aGUgc2Ft
-ZSBzZXJpZXMuDQo+IA0KW0FsaXNvbiBXYW5nXSBUaGFua3MgZm9yIHlvdXIgcmVtaW5kZXIuIFll
-cywgSSBoYXZlIGFub3RoZXIgcGF0Y2guIEkgd2lsbCBzZW5kIGl0IHNvb24uDQoNCg0KQmVzdCBS
-ZWdhcmRzLA0KQWxpc29uIFdhbmcNCg==
+This chip has write protection enabled on power-up,
+so this flag is necessary to support write operations.
+
+Signed-off-by: Victor Shyba <victor1984@riseup.net>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index da7cd69..f325925 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -821,7 +821,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128, SECT_4K) },
+ 
+ 	/* ESMT */
+-	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
++	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
+ 
+ 	/* Everspin */
+ 	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+-- 
+2.7.4
