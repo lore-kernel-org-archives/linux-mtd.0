@@ -1,27 +1,29 @@
-Received: from shards.monkeyblade.net ([184.105.139.130])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cORSW-0000C4-Be
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 15:57:09 +0000
-Date: Tue, 03 Jan 2017 10:56:42 -0500 (EST)
-Message-Id: <20170103.105642.1067305724615533420.davem@davemloft.net>
-To: nicolas.dichtel@6wind.com
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, netdev@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- netfilter-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
- fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
- linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
- arnd@arndb.de, airlied@linux.ie
-Subject: Re: [PATCH] uapi: use wildcards to list files
-From: David Miller <davem@davemloft.net>
-In-Reply-To: <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
-References: <20161203.192346.1198940437155108508.davem@davemloft.net>
- <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOSyk-0003xQ-8G
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 17:34:32 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id t79so435463393wmt.0
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Jan 2017 09:34:09 -0800 (PST)
+Date: Tue, 3 Jan 2017 17:37:50 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Immutable branch between MFD and MTD due for the v4.11
+ merge window
+Message-ID: <20170103173750.GA27589@dell>
+References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,20 +33,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Date: Tue,  3 Jan 2017 15:35:44 +0100
+MTD Maintainers,
 
-> Regularly, when a new header is created in include/uapi/, the developer
-> forgets to add it in the corresponding Kbuild file. This error is usually
-> detected after the release is out.
-> 
-> In fact, all headers under include/uapi/ should be exported, so let's
-> use wildcards.
-> 
-> After this patch, the following files, which were not exported, are now
-> exported:
- ...
-> 
-> Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Enjoy!
 
-Acked-by: David S. Miller <davem@davemloft.net>
+The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
+
+  Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-mtd-v4.11
+
+for you to fetch changes up to 87eb832ae9748fab00588b98c2e33e89de065438:
+
+  mfd: lpc_ich: Add support for Intel Apollo Lake SoC (2017-01-03 17:34:16 +0000)
+
+----------------------------------------------------------------
+Immutable branch between MFD and MTD due for the v4.11 merge window
+
+----------------------------------------------------------------
+Mika Westerberg (3):
+      spi-nor: Add support for Intel SPI serial flash controller
+      mfd: lpc_ich: Add support for SPI serial flash host controller
+      mfd: lpc_ich: Add support for Intel Apollo Lake SoC
+
+ Documentation/mtd/intel-spi.txt          |  88 ++++
+ drivers/mfd/lpc_ich.c                    | 131 ++++++
+ drivers/mtd/spi-nor/Kconfig              |  20 +
+ drivers/mtd/spi-nor/Makefile             |   2 +
+ drivers/mtd/spi-nor/intel-spi-platform.c |  57 +++
+ drivers/mtd/spi-nor/intel-spi.c          | 777 +++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/intel-spi.h          |  24 +
+ include/linux/mfd/lpc_ich.h              |   3 +
+ include/linux/platform_data/intel-spi.h  |  31 ++
+ 9 files changed, 1133 insertions(+)
+ create mode 100644 Documentation/mtd/intel-spi.txt
+ create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
+ create mode 100644 drivers/mtd/spi-nor/intel-spi.c
+ create mode 100644 drivers/mtd/spi-nor/intel-spi.h
+ create mode 100644 include/linux/platform_data/intel-spi.h
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
