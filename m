@@ -1,14 +1,15 @@
-Date: Tue, 3 Jan 2017 10:04:39 +0100
+Date: Tue, 3 Jan 2017 10:12:59 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alison Wang <b18965@freescale.com>
-Cc: <marek.vasut@gmail.com>, <cyrille.pitchen@atmel.com>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <alison.wang@nxp.com>
-Subject: Re: [PATCH v2 1/2] mtd: ifc: Update dependency of IFC for LS1021A
-Message-ID: <20170103100439.6e7360c6@bbrezillon>
-In-Reply-To: <1483411266-45875-1-git-send-email-b18965@freescale.com>
-References: <1483411266-45875-1-git-send-email-b18965@freescale.com>
+To: Vladimir Zapolskiy <vz@mleia.com>
+Cc: Richard Weinberger <richard@nod.at>, Sylvain Lemieux
+ <slemieux.tyco@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: lpc32xx: fix invalid error handling of a
+ requested irq
+Message-ID: <20170103101259.0ec123df@bbrezillon>
+In-Reply-To: <20161205014710.2015-1-vz@mleia.com>
+References: <20161205014710.2015-1-vz@mleia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -21,42 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alison,
+Hi Vladimir
 
-The subject prefix should be "memory: " and not "mtd: ifc: ".
+On Mon,  5 Dec 2016 03:47:10 +0200
+Vladimir Zapolskiy <vz@mleia.com> wrote:
 
-Looks good otherwise.
+> Semantics of NR_IRQS is different on machines with SPARSE_IRQ option
+> disabled or enabled, in the latter case IRQs are allocated starting
+> at least from the value specified by NR_IRQS and going upwards, so
+> the check of (irq >= NR_IRQ) to decide about an error code returned by
+> platform_get_irq() is completely invalid, don't attempt to overrule
+> irq subsystem in the driver.
+> 
+> The change fixes LPC32xx NAND MLC driver initialization on boot.
 
-No need to resend, I can fix that when applying.
+Do you need to backport this fix to stable releases? If that's the
+case, I'll add the Cc: stable tag when applying.
 
-Regards,
+Thanks,
 
 Boris
 
-On Tue, 3 Jan 2017 10:41:05 +0800
-Alison Wang <b18965@freescale.com> wrote:
-
-> As Freescale/NXP IFC controller is available on LS1021A, the dependency
-> for LS1021A is added.
 > 
-> Signed-off-by: Alison Wang <alison.wang@nxp.com>
+> Signed-off-by: Vladimir Zapolskiy <vz@mleia.com>
 > ---
-> Changes in v2:
-> - New patch
-> 
->  drivers/memory/Kconfig | 2 +-
+>  drivers/mtd/nand/lpc32xx_mlc.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-> index ec80e35..fff8345 100644
-> --- a/drivers/memory/Kconfig
-> +++ b/drivers/memory/Kconfig
-> @@ -115,7 +115,7 @@ config FSL_CORENET_CF
+> diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+> index 8523881..bc6e49a 100644
+> --- a/drivers/mtd/nand/lpc32xx_mlc.c
+> +++ b/drivers/mtd/nand/lpc32xx_mlc.c
+> @@ -776,7 +776,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	init_completion(&host->comp_controller);
 >  
->  config FSL_IFC
->  	bool
-> -	depends on FSL_SOC || ARCH_LAYERSCAPE
-> +	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
->  
->  config JZ4780_NEMC
->  	bool "Ingenic JZ4780 SoC NEMC driver"
+>  	host->irq = platform_get_irq(pdev, 0);
+> -	if ((host->irq < 0) || (host->irq >= NR_IRQS)) {
+> +	if (host->irq < 0) {
+>  		dev_err(&pdev->dev, "failed to get platform irq\n");
+>  		res = -EINVAL;
+>  		goto err_exit3;
