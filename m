@@ -1,17 +1,20 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOEpS-0001Lp-6N
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 02:27:59 +0000
-Received: by mail-wm0-x243.google.com with SMTP id m203so84474767wma.3
- for <linux-mtd@lists.infradead.org>; Mon, 02 Jan 2017 18:27:36 -0800 (PST)
-Subject: Re: [PATCH] mtd: spi-nor: Add lock/unlock support for f25l32pa
-To: Victor Shyba <victor1984@riseup.net>, linux-mtd@lists.infradead.org
-References: <1483407270-4323-1-git-send-email-victor1984@riseup.net>
+ id 1cOEpS-0001Ly-M0
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 02:28:00 +0000
+Received: by mail-wm0-x244.google.com with SMTP id m203so84474794wma.3
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Jan 2017 18:27:38 -0800 (PST)
+Subject: Re: [PATCH] mtd/redboot: avoid null pointer deref
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20161221232528.26534-1-Jason@zx2c4.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <93b708da-e6f4-edec-5ae7-3a95e8565bc1@gmail.com>
-Date: Tue, 3 Jan 2017 03:10:52 +0100
+Message-ID: <8267e170-e3ae-06dd-c859-17712785071a@gmail.com>
+Date: Tue, 3 Jan 2017 03:22:28 +0100
 MIME-Version: 1.0
-In-Reply-To: <1483407270-4323-1-git-send-email-victor1984@riseup.net>
+In-Reply-To: <20161221232528.26534-1-Jason@zx2c4.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,33 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/03/2017 02:34 AM, Victor Shyba wrote:
-> This chip has write protection enabled on power-up,
-> so this flag is necessary to support write operations.
+On 12/22/2016 12:25 AM, Jason A. Donenfeld wrote:
+> By giving a bogus partition name, it's possible to trigger a null
+> pointer dereference.
 > 
-> Signed-off-by: Victor Shyba <victor1984@riseup.net>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
+Nice catch. It'd be great to have the condition which can be used to
+trigger this problem in the commit message. I presume this happens if
+buf[i].name[0] = 0xff for all $i, right ?
+
+So please expand the explanation and add my Ack for V2:
 Acked-by: Marek Vasut <marek.vasut@gmail.com>
 
-I guess it can also be added for stable.
+Thanks
 
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/redboot.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index da7cd69..f325925 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -821,7 +821,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128, SECT_4K) },
+> diff --git a/drivers/mtd/redboot.c b/drivers/mtd/redboot.c
+> index 7623ac5fc586..53949ef80d36 100644
+> --- a/drivers/mtd/redboot.c
+> +++ b/drivers/mtd/redboot.c
+> @@ -212,6 +212,10 @@ static int parse_redboot_partitions(struct mtd_info *master,
 >  
->  	/* ESMT */
-> -	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
-> +	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
->  
->  	/* Everspin */
->  	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+>  		nrparts++;
+>  	}
+> +	if (!fl) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+>  #ifdef CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED
+>  	if (fl->img->flash_base) {
+>  		nrparts++;
 > 
 
 
