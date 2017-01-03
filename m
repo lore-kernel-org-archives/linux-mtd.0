@@ -1,31 +1,27 @@
-Received: from fieldses.org ([173.255.197.46])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOVBL-0005wf-9o
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 19:55:40 +0000
-Date: Tue, 3 Jan 2017 14:52:45 -0500
-From: "J. Bruce Fields" <bfields@fieldses.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, david@sigma-star.at, tytso@mit.edu,
- dedekind1@gmail.com, adrian.hunter@intel.com,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- adilger.kernel@dilger.ca, akpm@linux-foundation.org,
- linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/6] ubifs: Use 64bit readdir cookies
-Message-ID: <20170103195245.GB5712@fieldses.org>
-References: <1480629741-18375-1-git-send-email-richard@nod.at>
- <1480629741-18375-4-git-send-email-richard@nod.at>
- <20161229025835.GC21325@fieldses.org>
- <bf60916c-e0f2-387c-ce21-325ad8977539@nod.at>
- <20161229153407.GA29149@fieldses.org>
- <fe46ea3c-ef8f-40ba-f4ab-8dfe8faafb0b@nod.at>
- <20161229161534.GA29261@fieldses.org>
- <224abf2f-c820-5df1-6292-42c1e2d47933@nod.at>
- <20161229165920.GA29744@fieldses.org>
- <6ba02247-cb0e-e925-207e-4ea3fc37b9b7@nod.at>
+Received: from mout.kundenserver.de ([212.227.17.10])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOWmI-0003fH-NE
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 21:37:55 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, netdev@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
+ fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
+ linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
+ davem@davemloft.net, airlied@linux.ie, David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH] uapi: use wildcards to list files
+Date: Tue, 03 Jan 2017 22:37:04 +0100
+Message-ID: <2108827.WpE3IvfEdH@wuerfel>
+In-Reply-To: <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
+References: <20161203.192346.1198940437155108508.davem@davemloft.net>
+ <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6ba02247-cb0e-e925-207e-4ea3fc37b9b7@nod.at>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,19 +31,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 29, 2016 at 06:05:54PM +0100, Richard Weinberger wrote:
-> On 29.12.2016 17:59, J. Bruce Fields wrote:
-> > OK, good.  So the random nonce is stored with the entry, and the hash
-> > you can always recalculate from the filename, so if you return entries
-> > in nonce+hash order, then you can keep that order stable even across
-> > deletes and renames.
+On Tuesday, January 3, 2017 3:35:44 PM CET Nicolas Dichtel wrote:
+> Regularly, when a new header is created in include/uapi/, the developer
+> forgets to add it in the corresponding Kbuild file. This error is usually
+> detected after the release is out.
 > 
-> Yes.
+> In fact, all headers under include/uapi/ should be exported, so let's
+> use wildcards.
 
-Thanks, feel free to add a
+I think the idea makes a lot of sense: if a header is in uapi, we should
+really export it. However, using a wildcard expression seems a bit
+backwards here, I think we should make this implicit and not have the
+Kbuild file at all.
 
-	Reviewed-by: J. Bruce Fields <bfields@redhat.com>
+The "header-y" syntax was originally added back when the uapi headers
+were mixed with the internal headers in the same directory. After
+David Howells introduced the separate directory for uapi, it has
+become a bit redundant.
 
-to this and 6/6.
+Can you try to modify scripts/Makefile.headersinst instead so we
+can simply remove the Kbuild files entirely?
 
---b.
+	Arnd
