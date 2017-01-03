@@ -1,21 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOKKY-0003XM-8N
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 08:20:27 +0000
-Date: Tue, 3 Jan 2017 09:20:04 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- kbuild test robot <fengguang.wu@intel.com>, Neil Armstrong
- <narmstrong@baylibre.com>, Jeff Dike <jdike@addtoit.com>, Richard
- Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
-Subject: Re: [PATCH] mtd: nand: oxnas_nand: fix build errors on arch/um,
- require HAS_IOMEM
-Message-ID: <20170103092004.6edd6e3e@bbrezillon>
-In-Reply-To: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
-References: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
+Subject: Re: [PATCH v1] mtd: nand: tango: Update DT binding description
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
+ Rob Herring <robh@kernel.org>, Mans Rullgard <mans@mansr.com>,
+ Arnd Bergmann
+ <arnd@arndb.de>, linux-mtd <linux-mtd@lists.infradead.org>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>
+References: <ba47f2f1-bcdc-91e8-ed79-153931ccdad8@sigmadesigns.com>
+ <20161229192302.5c94ecdb@bbrezillon>
+From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Message-ID: <24522cc9-9d9a-980d-8cd2-18fb0de19a5f@sigmadesigns.com>
+Date: Tue, 3 Jan 2017 09:34:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20161229192302.5c94ecdb@bbrezillon>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Language: 
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,48 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 1 Jan 2017 18:58:27 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> From: Randy Dunlap <rdunlap@infradead.org>
+On 29/12/2016 19:23, Boris Brezillon wrote:
+> On Mon, 19 Dec 2016 15:30:12 +0100
+> Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
 > 
-> Fix build errors on arch/um, which does not support HAS_IOMEM,
-> while the oxnas_nand.c driver uses interfaces that are
-> supplied by HAS_IOMEM.
+>> Visually separate register ranges (address/size pairs) in reg prop.
+>> Change DMA channel name, for consistency with other drivers.
+>>
+>> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+>> ---
+>>  Documentation/devicetree/bindings/mtd/tango-nand.txt | 6 +++---
+>>  drivers/mtd/nand/tango_nand.c                        | 2 +-
+>>  2 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
+>> index ad5a02f2ac8c..cd1bf2ac9055 100644
+>> --- a/Documentation/devicetree/bindings/mtd/tango-nand.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
+>> @@ -5,7 +5,7 @@ Required properties:
+>>  - compatible: "sigma,smp8758-nand"
+>>  - reg: address/size of nfc_reg, nfc_mem, and pbus_reg
+>>  - dmas: reference to the DMA channel used by the controller
+>> -- dma-names: "nfc_sbox"
+>> +- dma-names: "rxtx"
 > 
-> (loadable module build:)
-> ERROR: "devm_ioremap_resource" [drivers/mtd/nand/oxnas_nand.ko] undefined!
-> or (built-in build:)
-> drivers/built-in.o: In function `oxnas_nand_probe':
-> drivers/mtd/nand/oxnas_nand.c:102: undefined reference to `devm_ioremap_resource'
+> You probably want to fix the driver accordingly ;-).
 
-Applied to nand/fixes. It should appear in one of the next -rc
-(probably not -rc3 though).
+I'm confused...
 
-Thanks,
+Did you miss the change (below) to drivers/mtd/nand/tango_nand.c
+fixing the driver as well as the documentation?
 
-Boris
 
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kbuild test robot <fengguang.wu@intel.com>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc:	Jeff Dike <jdike@addtoit.com>
-> Cc:	Richard Weinberger <richard@nod.at>
-> Cc:	user-mode-linux-devel@lists.sourceforge.net
-> Cc:	linux-mtd@lists.infradead.org
-> ---
->  drivers/mtd/nand/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- lnx-410-rc2.orig/drivers/mtd/nand/Kconfig
-> +++ lnx-410-rc2/drivers/mtd/nand/Kconfig
-> @@ -426,6 +426,7 @@ config MTD_NAND_ORION
->  
->  config MTD_NAND_OXNAS
->  	tristate "NAND Flash support for Oxford Semiconductor SoC"
-> +	depends on HAS_IOMEM
->  	help
->  	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
->  
+>>  - clocks: reference to the system clock
+>>  - #address-cells: <1>
+>>  - #size-cells: <0>
+>> @@ -17,9 +17,9 @@ Example:
+>>  
+>>  	nandc: nand-controller@2c000 {
+>>  		compatible = "sigma,smp8758-nand";
+>> -		reg = <0x2c000 0x30 0x2d000 0x800 0x20000 0x1000>;
+>> +		reg = <0x2c000 0x30>, <0x2d000 0x800>, <0x20000 0x1000>;
+>>  		dmas = <&dma0 3>;
+>> -		dma-names = "nfc_sbox";
+>> +		dma-names = "rxtx";
+>>  		clocks = <&clkgen SYS_CLK>;
+>>  		#address-cells = <1>;
+>>  		#size-cells = <0>;
+>> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+>> index cc23db64f0ca..51dc88d6b8da 100644
+>> --- a/drivers/mtd/nand/tango_nand.c
+>> +++ b/drivers/mtd/nand/tango_nand.c
+>> @@ -629,7 +629,7 @@ static int tango_nand_probe(struct platform_device *pdev)
+>>  	if (IS_ERR(clk))
+>>  		return PTR_ERR(clk);
+>>  
+>> -	nfc->chan = dma_request_chan(&pdev->dev, "nfc_sbox");
+>> +	nfc->chan = dma_request_chan(&pdev->dev, "rxtx");
+>>  	if (IS_ERR(nfc->chan))
+>>  		return PTR_ERR(nfc->chan);
+>>  
