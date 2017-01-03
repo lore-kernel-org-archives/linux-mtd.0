@@ -1,19 +1,22 @@
-Subject: Re: [PATCH v1] mtd: nand: tango: Update DT binding description
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
- Rob Herring <robh@kernel.org>, Mans Rullgard <mans@mansr.com>,
- Arnd Bergmann
- <arnd@arndb.de>, linux-mtd <linux-mtd@lists.infradead.org>, Linux ARM
- <linux-arm-kernel@lists.infradead.org>
-References: <ba47f2f1-bcdc-91e8-ed79-153931ccdad8@sigmadesigns.com>
- <20161229192302.5c94ecdb@bbrezillon>
-From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Message-ID: <24522cc9-9d9a-980d-8cd2-18fb0de19a5f@sigmadesigns.com>
-Date: Tue, 3 Jan 2017 09:34:59 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOKgq-0004yx-Re
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 08:43:30 +0000
+Date: Tue, 3 Jan 2017 09:43:07 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Cappelle Wouter <W.Cappelle@TELEVIC.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Fabio Estevam <fabio.estevam@nxp.com>,
+ Stefan Wahren <stefan.wahren@i2se.com>
+Subject: Re: [PATCH] nand gpmi fix erased block bitflip counting
+Message-ID: <20170103094307.397da89b@bbrezillon>
+In-Reply-To: <8c685cf6a6994056ab9db940649bccfd@SRV-MAIL02.TELEVIC.com>
+References: <1478694920-6453-1-git-send-email-w.cappelle@televic.com>
+ <1478694920-6453-2-git-send-email-w.cappelle@televic.com>
+ <8aa7c7cb-5093-3bee-2807-f2734b7c7b06@gmail.com>
+ <8c685cf6a6994056ab9db940649bccfd@SRV-MAIL02.TELEVIC.com>
 MIME-Version: 1.0
-In-Reply-To: <20161229192302.5c94ecdb@bbrezillon>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Language: 
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,63 +27,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29/12/2016 19:23, Boris Brezillon wrote:
-> On Mon, 19 Dec 2016 15:30:12 +0100
-> Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+Hi Wouter,
+
+Sorry for the late reply.
+
+On Wed, 16 Nov 2016 07:33:02 +0000
+Cappelle Wouter <W.Cappelle@TELEVIC.com> wrote:
+
+> On 15-11-16 21:54, Marek Vasut wrote:
+> > On 11/09/2016 01:35 PM, w.cappelle@televic.com wrote:  
+> >> From: Wouter Cappelle <w.cappelle@televic.com>  
+> > Please add commit message explaining the purpose of the patch.
+> > CCing some more interested people.  
+> Sorry, first patch, and don't know what went wrong or how to fix.
 > 
->> Visually separate register ranges (address/size pairs) in reg prop.
->> Change DMA channel name, for consistency with other drivers.
->>
->> Signed-off-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
->> ---
->>  Documentation/devicetree/bindings/mtd/tango-nand.txt | 6 +++---
->>  drivers/mtd/nand/tango_nand.c                        | 2 +-
->>  2 files changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/tango-nand.txt b/Documentation/devicetree/bindings/mtd/tango-nand.txt
->> index ad5a02f2ac8c..cd1bf2ac9055 100644
->> --- a/Documentation/devicetree/bindings/mtd/tango-nand.txt
->> +++ b/Documentation/devicetree/bindings/mtd/tango-nand.txt
->> @@ -5,7 +5,7 @@ Required properties:
->>  - compatible: "sigma,smp8758-nand"
->>  - reg: address/size of nfc_reg, nfc_mem, and pbus_reg
->>  - dmas: reference to the DMA channel used by the controller
->> -- dma-names: "nfc_sbox"
->> +- dma-names: "rxtx"
+> There should have been some introduction being added to the commit:
 > 
-> You probably want to fix the driver accordingly ;-).
+> Some time ago, a patch was added to detect bitflips in erased pages 
+> (http://lists.infradead.org/pipermail/linux-mtd/2014-January/051467.html).
+> After running some test on my board (i.MX6UL), I detected some unexpected 
+> behavior with it, especially with the counting of the # of bitflips in the
+> erased chunks. I have the impressions that with some pattern, the gpmi block
+> did try to correct the data on an empty page. Therefore the gpmi block changed
+> the data leading to introducing extra bitflips and failing the criteria to 
+> decide if the (sub)page is erased.
+> 
+> I'm using BCH8 on a 2k nand page and created a testpage with 6 bitflips at following locations:
+> 0x02D:FB
+> 0x057:FE
+> 0xA5:FB
+> 0x16A:FB
+> 0x18A:DF
+> 0x4EE:FE
+> 
+> When reading the page through the driver, the page is uncorrectable (as 
+> expected), then it will verify if the page is erased (gpmi_erased_check).
+> There i can see that the first count of the first subpage, is returning me
+> it detected 7 bitflips (should be 5 in that subpage). The second count of 
+> bitflips on the full raw page returns me the correct amount of bitflips 
+> (being 6 for the complete page).
+> 
+> I Don't really see the need of the first subpage check, except of speed 
+> improvement. But as it is failing due to the gpmi block trying to repair the 
+> page and alternating the wrong bits, I would propose to either increase the
+> threshold of the first check with the max number of repairable bitflips the 
+> gpmi block is set to, or just skip the first check since on empty pages it will
+> however not make a difference in speed. For real uncorrectable pages, this will
+> not have a huge speed penalty due to the unlikely event that this will happen.
+> 
+> I propose following patch to be be applied to detect the correct number of 
+> bitflips based on the raw nand read data.
+> 
+> >  
+> >> ---
+> >>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 14 +++++++-------
+> >>  1 file changed, 7 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> >> index 8339d4f..6ae118c 100644
+> >> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> >> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> >> @@ -1217,6 +1217,7 @@ static bool gpmi_erased_check(struct gpmi_nand_data *this,
 
-I'm confused...
+You're referring to a function that is not available in mainline. Please
+make sure you're basing your work on Linus' tree when you prepare a
+patch.
 
-Did you miss the change (below) to drivers/mtd/nand/tango_nand.c
-fixing the driver as well as the documentation?
+Also note that the 'bitflips in erased pages' has been fixed in
+mainline. See commit bd2e778c9ee3 ("gpmi-nand: Handle ECC Errors in
+erased pages")
 
+Thanks,
 
->>  - clocks: reference to the system clock
->>  - #address-cells: <1>
->>  - #size-cells: <0>
->> @@ -17,9 +17,9 @@ Example:
->>  
->>  	nandc: nand-controller@2c000 {
->>  		compatible = "sigma,smp8758-nand";
->> -		reg = <0x2c000 0x30 0x2d000 0x800 0x20000 0x1000>;
->> +		reg = <0x2c000 0x30>, <0x2d000 0x800>, <0x20000 0x1000>;
->>  		dmas = <&dma0 3>;
->> -		dma-names = "nfc_sbox";
->> +		dma-names = "rxtx";
->>  		clocks = <&clkgen SYS_CLK>;
->>  		#address-cells = <1>;
->>  		#size-cells = <0>;
->> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
->> index cc23db64f0ca..51dc88d6b8da 100644
->> --- a/drivers/mtd/nand/tango_nand.c
->> +++ b/drivers/mtd/nand/tango_nand.c
->> @@ -629,7 +629,7 @@ static int tango_nand_probe(struct platform_device *pdev)
->>  	if (IS_ERR(clk))
->>  		return PTR_ERR(clk);
->>  
->> -	nfc->chan = dma_request_chan(&pdev->dev, "nfc_sbox");
->> +	nfc->chan = dma_request_chan(&pdev->dev, "rxtx");
->>  	if (IS_ERR(nfc->chan))
->>  		return PTR_ERR(nfc->chan);
->>  
+Boris
+
+> >>  	int base = geo->ecc_chunkn_size * chunk;
+> >>  	unsigned int flip_bits = 0, flip_bits_noecc = 0;
+> >>  	uint64_t *buf = (uint64_t *)this->data_buffer_dma;
+> >> +	unsigned char *chunkbuf =(unsigned char*) this->data_buffer_dma;
+> >>  	unsigned int threshold;
+> >>  	int i;
+> >>  
+> >> @@ -1224,13 +1225,6 @@ static bool gpmi_erased_check(struct gpmi_nand_data *this,
+> >>  	if (threshold > geo->ecc_strength)
+> >>  		threshold = geo->ecc_strength;
+> >>  
+> >> -	/* Count bitflips */
+> >> -	for (i = 0; i < geo->ecc_chunkn_size; i++) {
+> >> -		flip_bits += hweight8(~data[base + i]);
+> >> -		if (flip_bits > threshold)
+> >> -			return false;
+> >> -	}
+> >> -
+> >>  	/*
+> >>  	 * Read out the whole page with ECC disabled, and check it again,
+> >>  	 * This is more strict then just read out a chunk, and it makes
+> >> @@ -1246,6 +1240,12 @@ static bool gpmi_erased_check(struct gpmi_nand_data *this,
+> >>  			return false;
+> >>  	}
+> >>  
+> >> +	/* Count bitflips in the current chunk for correct stats reporting */
+> >> +	for (i = 0; i < geo->ecc_chunkn_size; i++) {
+> >> +		flip_bits += hweight8(~chunkbuf[base + i]);
+> >> +	}
+> >> +
+> >> +
+> >>  	/* Tell the upper layer the bitflips we corrected. */
+> >>  	mtd->ecc_stats.corrected += flip_bits;
+> >>  	*max_bitflips = max_t(unsigned int, *max_bitflips, flip_bits);
+> >>  
+> >  
+> 
