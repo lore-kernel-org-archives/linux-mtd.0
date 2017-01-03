@@ -1,7 +1,7 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOOjO-0006Me-Qn
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 13:02:30 +0000
+ id 1cOOjO-0006ME-Qy
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 13:02:32 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
@@ -11,10 +11,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v4 10/15] mtd: nand: move Micron specific init logic in
- nand_micron.c
-Date: Tue,  3 Jan 2017 14:01:30 +0100
-Message-Id: <1483448495-31607-11-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v4 05/15] mtd: nand: add manufacturer specific
+ initialization/detection steps
+Date: Tue,  3 Jan 2017 14:01:25 +0100
+Message-Id: <1483448495-31607-6-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,227 +26,236 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move Micron specific initialization logic into nand_micron.c. This is
-part of the "separate vendor specific code from core" cleanup process.
+A lot of NANDs are implementing generic features in a non-generic way,
+or are providing advanced auto-detection logic where the NAND ID bytes
+meaning changes with the NAND generation.
+
+Providing this vendor specific initialization step will allow us to get
+rid of the full ids in the nand_ids table or all the vendor specific
+cases added over the time in the generic NAND ID decoding logic.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/Makefile      |  1 +
- drivers/mtd/nand/nand_base.c   | 32 +---------------
- drivers/mtd/nand/nand_ids.c    |  3 +-
- drivers/mtd/nand/nand_micron.c | 83 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nand.h       | 20 ----------
- 5 files changed, 88 insertions(+), 51 deletions(-)
- create mode 100644 drivers/mtd/nand/nand_micron.c
+ drivers/mtd/nand/nand_base.c | 67 +++++++++++++++++++++++++++++++++++---------
+ include/linux/mtd/nand.h     | 35 +++++++++++++++++++++++
+ 2 files changed, 89 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 7c059822f479..11d743155810 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -62,5 +62,6 @@ obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
- 
- nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
- nand-objs += nand_hynix.o
-+nand-objs += nand_micron.o
- nand-objs += nand_samsung.o
- nand-objs += nand_toshiba.o
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index cd09124d071b..ebeaf2aadad9 100644
+index efb3ade568d8..8f80faa57984 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -3500,30 +3500,6 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
- 	return ret;
- }
- 
--static int nand_setup_read_retry_micron(struct mtd_info *mtd, int retry_mode)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	uint8_t feature[ONFI_SUBFEATURE_PARAM_LEN] = {retry_mode};
--
--	return chip->onfi_set_features(mtd, chip, ONFI_FEATURE_ADDR_READ_RETRY,
--			feature);
--}
--
--/*
-- * Configure chip properties from Micron vendor-specific ONFI table
-- */
--static void nand_onfi_detect_micron(struct nand_chip *chip,
--		struct nand_onfi_params *p)
--{
--	struct nand_onfi_vendor_micron *micron = (void *)p->vendor;
--
--	if (le16_to_cpu(p->vendor_revision) < 1)
--		return;
--
--	chip->read_retries = micron->read_retry_options;
--	chip->setup_read_retry = nand_setup_read_retry_micron;
--}
--
- /*
-  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+@@ -3779,7 +3779,7 @@ static int nand_get_bits_per_cell(u8 cellinfo)
+  * chip. The rest of the parameters must be decoded according to generic or
+  * manufacturer-specific "extended ID" decoding patterns.
   */
-@@ -3620,9 +3596,6 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 		pr_warn("Could not retrieve ONFI ECC requirements\n");
+-static void nand_decode_ext_id(struct nand_chip *chip)
++void nand_decode_ext_id(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int extid, id_len = chip->id.len;
+@@ -3904,6 +3904,7 @@ static void nand_decode_ext_id(struct nand_chip *chip)
+ 
  	}
+ }
++EXPORT_SYMBOL_GPL(nand_decode_ext_id);
  
--	if (p->jedec_id == NAND_MFR_MICRON)
--		nand_onfi_detect_micron(chip, p);
+ /*
+  * Old devices have chip data hardcoded in the device ID table. nand_decode_id
+@@ -4008,13 +4009,44 @@ static bool find_full_id_nand(struct nand_chip *chip,
+ }
+ 
+ /*
++ * Manufacturer detection. Only used when the NAND is not ONFI or JEDEC
++ * compliant and does not have a full-id or legacy-id entry in the nand_ids
++ * table.
++ */
++static void nand_manufacturer_detect(struct nand_chip *chip)
++{
++	/*
++	 * Try manufacturer detection if available and use
++	 * nand_decode_ext_id() otherwise.
++	 */
++	if (chip->manufacturer.ops && chip->manufacturer.ops->detect)
++		chip->manufacturer.ops->detect(chip);
++	else
++		nand_decode_ext_id(chip);
++}
++
++/*
++ * Manufacturer initialization. This function is called for all NANDs including
++ * ONFI and JEDEC compliant ones.
++ * Manufacturer drivers should put all their specific initialization code in
++ * their ->init() hook.
++ */
++static int nand_manufacturer_init(struct nand_chip *chip)
++{
++	if (!chip->manufacturer.ops || !chip->manufacturer.ops->init)
++		return 0;
++
++	return chip->manufacturer.ops->init(chip);
++}
++
++/*
+  * Get the flash and manufacturer id and lookup if the type is supported.
+  */
+ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int busw;
+-	int i, maf_idx;
++	int i, maf_idx, ret;
+ 	u8 *id_data = chip->id.data;
+ 	u8 maf_id, dev_id;
+ 
+@@ -4055,6 +4087,14 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 
+ 	chip->id.len = nand_id_len(id_data, 8);
+ 
++	/* Try to identify manufacturer */
++	for (maf_idx = 0; nand_manuf_ids[maf_idx].id != 0x0; maf_idx++) {
++		if (nand_manuf_ids[maf_idx].id == maf_id)
++			break;
++	}
++
++	chip->manufacturer.ops = nand_manuf_ids[maf_idx].ops;
++
+ 	if (!type)
+ 		type = nand_flash_ids;
+ 
+@@ -4101,12 +4141,11 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 
+ 	chip->chipsize = (uint64_t)type->chipsize << 20;
+ 
+-	if (!type->pagesize) {
+-		/* Decode parameters from extended ID */
+-		nand_decode_ext_id(chip);
+-	} else {
++	if (!type->pagesize)
++		nand_manufacturer_detect(chip);
++	else
+ 		nand_decode_id(chip, type);
+-	}
++
+ 	/* Get chip options */
+ 	chip->options |= type->options;
+ 
+@@ -4118,12 +4157,6 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 		chip->options &= ~NAND_SAMSUNG_LP_OPTIONS;
+ ident_done:
+ 
+-	/* Try to identify manufacturer */
+-	for (maf_idx = 0; nand_manuf_ids[maf_idx].id != 0x0; maf_idx++) {
+-		if (nand_manuf_ids[maf_idx].id == maf_id)
+-			break;
+-	}
 -
- 	return 1;
- }
+ 	if (chip->options & NAND_BUSWIDTH_AUTO) {
+ 		WARN_ON(busw & NAND_BUSWIDTH_16);
+ 		nand_set_defaults(chip);
+@@ -4163,6 +4196,10 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+ 		chip->cmdfunc = nand_command_lp;
  
-@@ -3859,9 +3832,8 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
- 	 * Micron devices with 2KiB pages and on SLC Samsung, Hynix, Toshiba,
- 	 * AMD/Spansion, and Macronix.  All others scan only the first page.
- 	 */
--	if ((nand_is_slc(chip) &&
--	     (maf_id == NAND_MFR_AMD || maf_id == NAND_MFR_MACRONIX)) ||
--	    (mtd->writesize == 2048 && maf_id == NAND_MFR_MICRON))
-+	if (nand_is_slc(chip) &&
-+	    (maf_id == NAND_MFR_AMD || maf_id == NAND_MFR_MACRONIX))
- 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
- }
- 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index b27e1823bf1d..8e420f0925f8 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -172,6 +172,7 @@ struct nand_flash_dev nand_flash_ids[] = {
- extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
- extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
- extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
-+extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
- 
- struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
-@@ -182,7 +183,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_RENESAS, "Renesas"},
- 	{NAND_MFR_STMICRO, "ST Micro"},
- 	{NAND_MFR_HYNIX, "Hynix", &hynix_nand_manuf_ops},
--	{NAND_MFR_MICRON, "Micron"},
-+	{NAND_MFR_MICRON, "Micron", &micron_nand_manuf_ops},
- 	{NAND_MFR_AMD, "AMD/Spansion"},
- 	{NAND_MFR_MACRONIX, "Macronix"},
- 	{NAND_MFR_EON, "Eon"},
-diff --git a/drivers/mtd/nand/nand_micron.c b/drivers/mtd/nand/nand_micron.c
-new file mode 100644
-index 000000000000..ddb9adf12c21
---- /dev/null
-+++ b/drivers/mtd/nand/nand_micron.c
-@@ -0,0 +1,83 @@
-+/*
-+ * Copyright (C) 2013 Boris Brezillon <boris.brezillon@free-electrons.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/mtd/nand.h>
-+
-+struct nand_onfi_vendor_micron {
-+	u8 two_plane_read;
-+	u8 read_cache;
-+	u8 read_unique_id;
-+	u8 dq_imped;
-+	u8 dq_imped_num_settings;
-+	u8 dq_imped_feat_addr;
-+	u8 rb_pulldown_strength;
-+	u8 rb_pulldown_strength_feat_addr;
-+	u8 rb_pulldown_strength_num_settings;
-+	u8 otp_mode;
-+	u8 otp_page_start;
-+	u8 otp_data_prot_addr;
-+	u8 otp_num_pages;
-+	u8 otp_feat_addr;
-+	u8 read_retry_options;
-+	u8 reserved[72];
-+	u8 param_revision;
-+} __packed;
-+
-+static int micron_nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {retry_mode};
-+
-+	return chip->onfi_set_features(mtd, chip, ONFI_FEATURE_ADDR_READ_RETRY,
-+				       feature);
-+}
-+
-+/*
-+ * Configure chip properties from Micron vendor-specific ONFI table
-+ */
-+static int micron_nand_onfi_init(struct nand_chip *chip)
-+{
-+	struct nand_onfi_params *p = &chip->onfi_params;
-+	struct nand_onfi_vendor_micron *micron = (void *)p->vendor;
-+
-+	if (!chip->onfi_version)
-+		return 0;
-+
-+	if (le16_to_cpu(p->vendor_revision) < 1)
-+		return 0;
-+
-+	chip->read_retries = micron->read_retry_options;
-+	chip->setup_read_retry = micron_nand_setup_read_retry;
-+
-+	return 0;
-+}
-+
-+static int micron_nand_init(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int ret;
-+
-+	ret = micron_nand_onfi_init(chip);
++	ret = nand_manufacturer_init(chip);
 +	if (ret)
 +		return ret;
 +
-+	if (mtd->writesize == 2048)
-+		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+ 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+ 		maf_id, dev_id);
+ 
+@@ -4907,6 +4944,10 @@ void nand_cleanup(struct nand_chip *chip)
+ 	if (chip->badblock_pattern && chip->badblock_pattern->options
+ 			& NAND_BBT_DYNAMICSTRUCT)
+ 		kfree(chip->badblock_pattern);
 +
-+	return 0;
-+}
-+
-+const struct nand_manufacturer_ops micron_nand_manuf_ops = {
-+	.init = micron_nand_init,
-+};
++	/* Release manufacturer private data */
++	if (chip->manufacturer.ops && chip->manufacturer.ops->cleanup)
++		chip->manufacturer.ops->cleanup(chip);
+ }
+ EXPORT_SYMBOL_GPL(nand_cleanup);
+ 
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index efba76951b7c..2a9655e304d7 100644
+index 632975146c30..efba76951b7c 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -366,26 +366,6 @@ struct onfi_ext_param_page {
- 	 */
- } __packed;
+@@ -732,6 +732,20 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+ }
  
--struct nand_onfi_vendor_micron {
--	u8 two_plane_read;
--	u8 read_cache;
--	u8 read_unique_id;
--	u8 dq_imped;
--	u8 dq_imped_num_settings;
--	u8 dq_imped_feat_addr;
--	u8 rb_pulldown_strength;
--	u8 rb_pulldown_strength_feat_addr;
--	u8 rb_pulldown_strength_num_settings;
--	u8 otp_mode;
--	u8 otp_page_start;
--	u8 otp_data_prot_addr;
--	u8 otp_num_pages;
--	u8 otp_feat_addr;
--	u8 read_retry_options;
--	u8 reserved[72];
--	u8 param_revision;
--} __packed;
--
- struct jedec_ecc_info {
- 	u8 ecc_bits;
- 	u8 codeword_size;
+ /**
++ * struct nand_manufacturer_ops - NAND Manufacturer operations
++ * @detect: detect the NAND memory organization and capabilities
++ * @init: initialize all vendor specific fields (like the ->read_retry()
++ *	  implementation) if any.
++ * @cleanup: the ->init() function may have allocated resources, ->cleanup()
++ *	     is here to let vendor specific code release those resources.
++ */
++struct nand_manufacturer_ops {
++	void (*detect)(struct nand_chip *chip);
++	int (*init)(struct nand_chip *chip);
++	void (*cleanup)(struct nand_chip *chip);
++};
++
++/**
+  * struct nand_chip - NAND Private Flash Chip Data
+  * @mtd:		MTD device registered to the MTD framework
+  * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
+@@ -831,6 +845,7 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+  *			additional error status checks (determine if errors are
+  *			correctable).
+  * @write_page:		[REPLACEABLE] High-level page write function
++ * @manufacturer:	[INTERN] Contains manufacturer data
+  */
+ 
+ struct nand_chip {
+@@ -917,6 +932,11 @@ struct nand_chip {
+ 	struct nand_bbt_descr *badblock_pattern;
+ 
+ 	void *priv;
++
++	struct {
++		const struct nand_manufacturer_ops *ops;
++		void *priv;
++	} manufacturer;
+ };
+ 
+ extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
+@@ -953,6 +973,17 @@ static inline void nand_set_controller_data(struct nand_chip *chip, void *priv)
+ 	chip->priv = priv;
+ }
+ 
++static inline void nand_set_manufacturer_data(struct nand_chip *chip,
++					      void *priv)
++{
++	chip->manufacturer.priv = priv;
++}
++
++static inline void *nand_get_manufacturer_data(struct nand_chip *chip)
++{
++	return chip->manufacturer.priv;
++}
++
+ /*
+  * NAND Flash Manufacturer ID Codes
+  */
+@@ -1058,10 +1089,12 @@ struct nand_flash_dev {
+  * struct nand_manufacturers - NAND Flash Manufacturer ID Structure
+  * @name:	Manufacturer name
+  * @id:		manufacturer ID code of device.
++ * @ops:	manufacturer operations
+ */
+ struct nand_manufacturers {
+ 	int id;
+ 	char *name;
++	const struct nand_manufacturer_ops *ops;
+ };
+ 
+ extern struct nand_flash_dev nand_flash_ids[];
+@@ -1232,4 +1265,6 @@ int nand_reset(struct nand_chip *chip, int chipnr);
+ /* Free resources held by the NAND device */
+ void nand_cleanup(struct nand_chip *chip);
+ 
++/* Default extended ID decoding function */
++void nand_decode_ext_id(struct nand_chip *chip);
+ #endif /* __LINUX_MTD_NAND_H */
 -- 
 2.7.4
