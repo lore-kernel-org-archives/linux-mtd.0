@@ -1,18 +1,22 @@
-Subject: Re: [PATCH v2 2/2] mtd: nand: Update dependency of IFC for LS1021A
-To: Alison Wang <b18965@freescale.com>, boris.brezillon@free-electrons.com,
- cyrille.pitchen@atmel.com, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, computersforpeace@gmail.com
-References: <1483411266-45875-1-git-send-email-b18965@freescale.com>
- <1483411266-45875-2-git-send-email-b18965@freescale.com>
-Cc: alison.wang@nxp.com
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <4e04eb5e-fb53-f71e-ee49-0872a6c11e97@gmail.com>
-Date: Tue, 3 Jan 2017 12:46:14 +0100
-MIME-Version: 1.0
-In-Reply-To: <1483411266-45875-2-git-send-email-b18965@freescale.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOOj2-0006Iv-KA
+ for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 13:02:02 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v4 04/15] mtd: nand: rename nand_get_flash_type() into
+ nand_detect()
+Date: Tue,  3 Jan 2017 14:01:24 +0100
+Message-Id: <1483448495-31607-5-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/03/2017 03:41 AM, Alison Wang wrote:
-> As NAND support for Freescale/NXP IFC controller is available on
-> LS1021A, the dependency for LS1021A is added.
+The only caller of nand_get_flash_type() (nand_scan_ident()) actually
+don't use the returned nand_flash_dev pointer except for converting it to
+to an error code.
+Rename this function nand_detect() and make it return an integer.
 
-Does LS stand for LayerScape ? Yes it does. So why does ARCH_LAYERSCAPE
-not cover LS1021 ?
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-> Signed-off-by: Alison Wang <alison.wang@nxp.com>
-> ---
-> Changes in v2:
-> - None
-> 
->  drivers/mtd/nand/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 353a9dd..85e3860 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -441,7 +441,7 @@ config MTD_NAND_FSL_ELBC
->  
->  config MTD_NAND_FSL_IFC
->  	tristate "NAND support for Freescale IFC controller"
-> -	depends on FSL_SOC || ARCH_LAYERSCAPE
-> +	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
->  	select FSL_IFC
->  	select MEMORY
->  	help
-> 
-
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 3a31b705af6f..efb3ade568d8 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4010,8 +4010,7 @@ static bool find_full_id_nand(struct nand_chip *chip,
+ /*
+  * Get the flash and manufacturer id and lookup if the type is supported.
+  */
+-static int nand_get_flash_type(struct nand_chip *chip,
+-			       struct nand_flash_dev *type)
++static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int busw;
+@@ -4368,7 +4367,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	nand_set_defaults(chip);
+ 
+ 	/* Read the flash type */
+-	ret = nand_get_flash_type(chip, table);
++	ret = nand_detect(chip, table);
+ 	if (ret) {
+ 		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
+ 			pr_warn("No NAND device found\n");
 -- 
-Best regards,
-Marek Vasut
+2.7.4
