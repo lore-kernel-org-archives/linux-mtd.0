@@ -1,18 +1,14 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOKwX-0003to-An
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 08:59:42 +0000
-Date: Tue, 3 Jan 2017 09:59:18 +0100
+Date: Tue, 3 Jan 2017 10:04:39 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sushaanth Srirangapathi <sushaanth.s@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: davinci-nand: disable subpage write for davinci-nand
-Message-ID: <20170103095918.7da43be3@bbrezillon>
-In-Reply-To: <1457428095-2801-1-git-send-email-sushaanth.s@ti.com>
-References: <1457428095-2801-1-git-send-email-sushaanth.s@ti.com>
+To: Alison Wang <b18965@freescale.com>
+Cc: <marek.vasut@gmail.com>, <cyrille.pitchen@atmel.com>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <alison.wang@nxp.com>
+Subject: Re: [PATCH v2 1/2] mtd: ifc: Update dependency of IFC for LS1021A
+Message-ID: <20170103100439.6e7360c6@bbrezillon>
+In-Reply-To: <1483411266-45875-1-git-send-email-b18965@freescale.com>
+References: <1483411266-45875-1-git-send-email-b18965@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,45 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sushaanth,
+Hi Alison,
 
-Sorry for the late reply, I'm dequeing old NAND related patches and
-found this one.
+The subject prefix should be "memory: " and not "mtd: ifc: ".
 
-Is this patch still needed?
+Looks good otherwise.
 
-On Tue, 8 Mar 2016 14:38:15 +0530
-Sushaanth Srirangapathi <sushaanth.s@ti.com> wrote:
+No need to resend, I can fix that when applying.
 
-> Commit 28c015a9daabe4e ("mtd: davinci-nand: disable subpage write for
-> keystone-nand") disables subpage write for Keystone SOCs due to hw
-> issues.
+Regards,
+
+Boris
+
+On Tue, 3 Jan 2017 10:41:05 +0800
+Alison Wang <b18965@freescale.com> wrote:
+
+> As Freescale/NXP IFC controller is available on LS1021A, the dependency
+> for LS1021A is added.
 > 
-> But subpage writes doesn't work even for DaVinci SOCs due to hw issues.
-> So set NAND_NO_SUBPAGE_WRITE option for all devices compatible to
-> this driver.
-> 
-> I tested this patch using DA850 board.
-> 
-> Signed-off-by: Sushaanth Srirangapathi <sushaanth.s@ti.com>
+> Signed-off-by: Alison Wang <alison.wang@nxp.com>
 > ---
->  drivers/mtd/nand/davinci_nand.c |    6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+> Changes in v2:
+> - New patch
 > 
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index 8cb821b..466439c 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -601,11 +601,7 @@ static struct davinci_nand_pdata
->  		    of_property_read_bool(pdev->dev.of_node,
->  			"ti,davinci-nand-use-bbt"))
->  			pdata->bbt_options = NAND_BBT_USE_FLASH;
-> -
-> -		if (of_device_is_compatible(pdev->dev.of_node,
-> -					    "ti,keystone-nand")) {
-> -			pdata->options |= NAND_NO_SUBPAGE_WRITE;
-> -		}
-> +		pdata->options |= NAND_NO_SUBPAGE_WRITE;
->  	}
+>  drivers/memory/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+> index ec80e35..fff8345 100644
+> --- a/drivers/memory/Kconfig
+> +++ b/drivers/memory/Kconfig
+> @@ -115,7 +115,7 @@ config FSL_CORENET_CF
 >  
->  	return dev_get_platdata(&pdev->dev);
+>  config FSL_IFC
+>  	bool
+> -	depends on FSL_SOC || ARCH_LAYERSCAPE
+> +	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
+>  
+>  config JZ4780_NEMC
+>  	bool "Ingenic JZ4780 SoC NEMC driver"
