@@ -1,15 +1,22 @@
-Received: from relay101a.appriver.com ([207.97.230.14] helo=relay.appriver.com)
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOmOl-0006tt-95
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 14:18:40 +0000
-From: Mike Crowe <mac@mcrowe.com>
-To: linux-mtd@lists.infradead.org
-Cc: Mike Crowe <mac@mcrowe.com>
-Subject: [PATCH 1/2] nandwrite: Add --skip-bad-blocks-to-start option
-Date: Wed,  4 Jan 2017 14:18:05 +0000
-Message-Id: <1483539486-16165-2-git-send-email-mac@mcrowe.com>
-In-Reply-To: <1483539486-16165-1-git-send-email-mac@mcrowe.com>
-References: <1483539486-16165-1-git-send-email-mac@mcrowe.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+ will.deacon@arm.com
+Cc: Florian Fainelli <f.fainelli@gmail.com>, linux@armlinux.org.uk,
+ nicolas.pitre@linaro.org, panand@redhat.com, chris.brandt@renesas.com,
+ arnd@arndb.de, jonathan.austin@arm.com, pawel.moll@arm.com,
+ vladimir.murzin@arm.com, mark.rutland@arm.com, ard.biesheuvel@linaro.org,
+ keescook@chromium.org, matt@codeblueprint.co.uk, labbott@fedoraproject.org,
+ kirill.shutemov@linux.intel.com, ben@decadent.org.uk, js07.lee@samsung.com,
+ stefan@agner.ch, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com, richard@nod.at,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Subject: [PATCH v6 3/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
+Date: Wed,  4 Jan 2017 14:39:54 -0800
+Message-Id: <20170104223955.22859-4-f.fainelli@gmail.com>
+In-Reply-To: <20170104223955.22859-1-f.fainelli@gmail.com>
+References: <20170104011417.1496-1-f.fainelli@gmail.com>
+ <20170104223955.22859-1-f.fainelli@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,80 +26,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The --skip-bad-blocks-to-start option will increase the seek offset by the
-size of each bad block encountered between the start of the partition and
-the specified start address.
+x86 has an option: CONFIG_DEBUG_VIRTUAL to do additional checks on
+virt_to_phys calls. The goal is to catch users who are calling
+virt_to_phys on non-linear addresses immediately. This includes caller
+using __virt_to_phys() on image addresses instead of __pa_symbol(). This
+is a generally useful debug feature to spot bad code (particulary in
+drivers).
 
-This can be useful when writing part way through a partition that will be
-read using a simple bad-block-skipping algorithm.
+Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
+Acked-by: Laura Abbott <labbott@redhat.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- nand-utils/nandwrite.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/arm/Kconfig              |  1 +
+ arch/arm/include/asm/memory.h | 15 ++++++++++--
+ arch/arm/mm/Makefile          |  1 +
+ arch/arm/mm/physaddr.c        | 57 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 72 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm/mm/physaddr.c
 
-diff --git a/nand-utils/nandwrite.c b/nand-utils/nandwrite.c
-index 9602a6e..880990f 100644
---- a/nand-utils/nandwrite.c
-+++ b/nand-utils/nandwrite.c
-@@ -56,6 +56,8 @@ static void display_help(int status)
- "  -o, --oob               Input contains oob data\n"
- "  -O, --onlyoob           Input contains oob data and only write the oob part\n"
- "  -s addr, --start=addr   Set output start address (default is 0)\n"
-+"  --skip-bad-blocks-to-start"
-+"                          Skip bad blocks when seeking to the start address\n"
- "  -p, --pad               Pad writes to page size\n"
- "  -b, --blockalign=1|2|4  Set multiple of eraseblocks to align to\n"
- "      --input-skip=length Skip |length| bytes of the input file\n"
-@@ -96,6 +98,7 @@ static bool		autoplace = false;
- static bool		skipallffs = false;
- static bool		noskipbad = false;
- static bool		pad = false;
-+static bool		skip_bad_blocks_to_start = false;
- static int		blockalign = 1; /* default to using actual block size */
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 5fab553fd03a..4700294f4e09 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -2,6 +2,7 @@ config ARM
+ 	bool
+ 	default y
+ 	select ARCH_CLOCKSOURCE_DATA
++	select ARCH_HAS_DEBUG_VIRTUAL
+ 	select ARCH_HAS_DEVMEM_IS_ALLOWED
+ 	select ARCH_HAS_ELF_RANDOMIZE
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
+index bee7511c5098..c30d0d82a105 100644
+--- a/arch/arm/include/asm/memory.h
++++ b/arch/arm/include/asm/memory.h
+@@ -213,7 +213,7 @@ extern const void *__pv_table_begin, *__pv_table_end;
+ 	: "r" (x), "I" (__PV_BITS_31_24)		\
+ 	: "cc")
  
- static void process_options(int argc, char * const argv[])
-@@ -110,6 +113,7 @@ static void process_options(int argc, char * const argv[])
- 			{"version", no_argument, 0, 'V'},
- 			{"input-skip", required_argument, 0, 0},
- 			{"input-size", required_argument, 0, 0},
-+			{"skip-bad-blocks-to-start", no_argument, 0, 0},
- 			{"help", no_argument, 0, 'h'},
- 			{"blockalign", required_argument, 0, 'b'},
- 			{"markbad", no_argument, 0, 'm'},
-@@ -139,6 +143,9 @@ static void process_options(int argc, char * const argv[])
- 			case 2: /* --input-size */
- 				inputsize = simple_strtoll(optarg, &error);
- 				break;
-+			case 3: /* --skip-bad-blocks-to-start */
-+				skip_bad_blocks_to_start = true;
-+				break;
- 			}
- 			break;
- 		case 'V':
-@@ -349,6 +356,25 @@ int main(int argc, char * const argv[])
- 		goto closeall;
- 	}
+-static inline phys_addr_t __virt_to_phys(unsigned long x)
++static inline phys_addr_t __virt_to_phys_nodebug(unsigned long x)
+ {
+ 	phys_addr_t t;
  
-+	/* Skip bad blocks on the way to the start address if necessary */
-+	if (skip_bad_blocks_to_start) {
-+		unsigned long long bbs_offset = 0;
-+		while (bbs_offset < mtdoffset) {
-+			ret = mtd_is_bad(&mtd, fd, bbs_offset / ebsize_aligned);
-+			if (ret < 0) {
-+				sys_errmsg("%s: MTD get bad block failed", mtd_device);
-+				goto closeall;
-+			} else if (ret == 1) {
-+				if (!quiet)
-+					fprintf(stderr, "Bad block at %llx, %u block(s) "
-+						"from %llx will be skipped\n",
-+						bbs_offset, blockalign, bbs_offset);
-+				mtdoffset += ebsize_aligned;
-+			}
-+			bbs_offset += ebsize_aligned;
-+		}
-+	}
+@@ -245,7 +245,7 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
+ #define PHYS_OFFSET	PLAT_PHYS_OFFSET
+ #define PHYS_PFN_OFFSET	((unsigned long)(PHYS_OFFSET >> PAGE_SHIFT))
+ 
+-static inline phys_addr_t __virt_to_phys(unsigned long x)
++static inline phys_addr_t __virt_to_phys_nodebug(unsigned long x)
+ {
+ 	return (phys_addr_t)x - PAGE_OFFSET + PHYS_OFFSET;
+ }
+@@ -261,6 +261,16 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
+ 	((((unsigned long)(kaddr) - PAGE_OFFSET) >> PAGE_SHIFT) + \
+ 	 PHYS_PFN_OFFSET)
+ 
++#define __pa_symbol_nodebug(x)	__virt_to_phys_nodebug((x))
 +
- 	/* Check, if length fits into device */
- 	if ((imglen / pagelen) * mtd.min_io_size > mtd.size - mtdoffset) {
- 		fprintf(stderr, "Image %lld bytes, NAND page %d bytes, OOB area %d"
++#ifdef CONFIG_DEBUG_VIRTUAL
++extern phys_addr_t __virt_to_phys(unsigned long x);
++extern phys_addr_t __phys_addr_symbol(unsigned long x);
++#else
++#define __virt_to_phys(x)	__virt_to_phys_nodebug(x)
++#define __phys_addr_symbol(x)	__pa_symbol_nodebug(x)
++#endif
++
+ /*
+  * These are *only* valid on the kernel direct mapped RAM memory.
+  * Note: Drivers should NOT use these.  They are the wrong
+@@ -283,6 +293,7 @@ static inline void *phys_to_virt(phys_addr_t x)
+  * Drivers should NOT use these either.
+  */
+ #define __pa(x)			__virt_to_phys((unsigned long)(x))
++#define __pa_symbol(x)		__phys_addr_symbol(RELOC_HIDE((unsigned long)(x), 0))
+ #define __va(x)			((void *)__phys_to_virt((phys_addr_t)(x)))
+ #define pfn_to_kaddr(pfn)	__va((phys_addr_t)(pfn) << PAGE_SHIFT)
+ 
+diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
+index e8698241ece9..b3dea80715b4 100644
+--- a/arch/arm/mm/Makefile
++++ b/arch/arm/mm/Makefile
+@@ -14,6 +14,7 @@ endif
+ 
+ obj-$(CONFIG_ARM_PTDUMP)	+= dump.o
+ obj-$(CONFIG_MODULES)		+= proc-syms.o
++obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
+ 
+ obj-$(CONFIG_ALIGNMENT_TRAP)	+= alignment.o
+ obj-$(CONFIG_HIGHMEM)		+= highmem.o
+diff --git a/arch/arm/mm/physaddr.c b/arch/arm/mm/physaddr.c
+new file mode 100644
+index 000000000000..02e60f495608
+--- /dev/null
++++ b/arch/arm/mm/physaddr.c
+@@ -0,0 +1,57 @@
++#include <linux/bug.h>
++#include <linux/export.h>
++#include <linux/types.h>
++#include <linux/mmdebug.h>
++#include <linux/mm.h>
++
++#include <asm/sections.h>
++#include <asm/memory.h>
++#include <asm/fixmap.h>
++#include <asm/dma.h>
++
++#include "mm.h"
++
++static inline bool __virt_addr_valid(unsigned long x)
++{
++	/*
++	 * high_memory does not get immediately defined, and there
++	 * are early callers of __pa() against PAGE_OFFSET
++	 */
++	if (!high_memory && x >= PAGE_OFFSET)
++		return true;
++
++	if (high_memory && x >= PAGE_OFFSET && x < (unsigned long)high_memory)
++		return true;
++
++	/*
++	 * MAX_DMA_ADDRESS is a virtual address that may not correspond to an
++	 * actual physical address. Enough code relies on __pa(MAX_DMA_ADDRESS)
++	 * that we just need to work around it and always return true.
++	 */
++	if (x == MAX_DMA_ADDRESS)
++		return true;
++
++	return false;
++}
++
++phys_addr_t __virt_to_phys(unsigned long x)
++{
++	WARN(!__virt_addr_valid(x),
++	     "virt_to_phys used for non-linear address: %pK (%pS)\n",
++	     (void *)x, (void *)x);
++
++	return __virt_to_phys_nodebug(x);
++}
++EXPORT_SYMBOL(__virt_to_phys);
++
++phys_addr_t __phys_addr_symbol(unsigned long x)
++{
++	/* This is bounds checking against the kernel image only.
++	 * __pa_symbol should only be used on kernel symbol addresses.
++	 */
++	VIRTUAL_BUG_ON(x < (unsigned long)KERNEL_START ||
++		       x > (unsigned long)KERNEL_END);
++
++	return __pa_symbol_nodebug(x);
++}
++EXPORT_SYMBOL(__phys_addr_symbol);
 -- 
-2.1.4
+2.9.3
