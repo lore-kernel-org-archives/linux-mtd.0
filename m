@@ -1,24 +1,24 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wj0-x243.google.com ([2a00:1450:400c:c01::243])
  by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOoaT-0008Qj-MI
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 16:38:54 +0000
-Received: by mail-wm0-x244.google.com with SMTP id u144so92333994wmu.0
- for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2017 08:38:33 -0800 (PST)
-Subject: Re: [PATCH v4 05/15] mtd: nand: add manufacturer specific
- initialization/detection steps
+ id 1cOoaS-0008Qd-I0
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 16:38:52 +0000
+Received: by mail-wj0-x243.google.com with SMTP id kp2so76169060wjc.0
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2017 08:38:32 -0800 (PST)
+Subject: Re: [PATCH v4 04/15] mtd: nand: rename nand_get_flash_type() into
+ nand_detect()
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
- <1483448495-31607-6-git-send-email-boris.brezillon@free-electrons.com>
+ <1483448495-31607-5-git-send-email-boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, Icenowy Zheng
  <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <ec43449a-f1e3-35ff-0d3a-742b94248a77@gmail.com>
-Date: Wed, 4 Jan 2017 16:07:55 +0100
+Message-ID: <018e0948-a867-ac4d-2414-38038e1cbb20@gmail.com>
+Date: Wed, 4 Jan 2017 16:01:42 +0100
 MIME-Version: 1.0
-In-Reply-To: <1483448495-31607-6-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1483448495-31607-5-git-send-email-boris.brezillon@free-electrons.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,19 +31,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 01/03/2017 02:01 PM, Boris Brezillon wrote:
-> A lot of NANDs are implementing generic features in a non-generic way,
-> or are providing advanced auto-detection logic where the NAND ID bytes
-> meaning changes with the NAND generation.
-> 
-> Providing this vendor specific initialization step will allow us to get
-> rid of the full ids in the nand_ids table or all the vendor specific
-> cases added over the time in the generic NAND ID decoding logic.
-> 
+> The only caller of nand_get_flash_type() (nand_scan_ident()) actually
+> don't use the returned nand_flash_dev pointer except for converting it to
+> to an error code.
+> Rename this function nand_detect() and make it return an integer.
+
+Ummmm, it did return an integer before though ? The commit message is
+kinda cryptic, really.
+
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 3a31b705af6f..efb3ade568d8 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4010,8 +4010,7 @@ static bool find_full_id_nand(struct nand_chip *chip,
+>  /*
+>   * Get the flash and manufacturer id and lookup if the type is supported.
+>   */
+> -static int nand_get_flash_type(struct nand_chip *chip,
+> -			       struct nand_flash_dev *type)
+> +static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	int busw;
+> @@ -4368,7 +4367,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+>  	nand_set_defaults(chip);
+>  
+>  	/* Read the flash type */
+> -	ret = nand_get_flash_type(chip, table);
+> +	ret = nand_detect(chip, table);
+>  	if (ret) {
+>  		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
+>  			pr_warn("No NAND device found\n");
+> 
 
-[...]
-
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
 -- 
 Best regards,
