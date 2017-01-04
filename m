@@ -1,31 +1,20 @@
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOhU7-0003kx-KX
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 09:03:52 +0000
-Received: by mail-wm0-x22f.google.com with SMTP id a197so403009957wmd.0
- for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2017 01:03:30 -0800 (PST)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH] uapi: use wildcards to list files
-References: <20161203.192346.1198940437155108508.davem@davemloft.net>
- <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
- <2108827.WpE3IvfEdH@wuerfel>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, netdev@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- netfilter-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
- fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
- linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
- davem@davemloft.net, airlied@linux.ie, David Howells <dhowells@redhat.com>
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Message-ID: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
-Date: Wed, 4 Jan 2017 10:03:50 +0100
+ id 1cOi1Y-00031U-5r
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 09:38:25 +0000
+Subject: Re: [PATCH, REGRESSION] ubifs: fix unencrypted journal write
+To: Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org
+References: <1483519109-26279-1-git-send-email-peda@axentia.se>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, David Gstir <david@sigma-star.at>,
+ linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <fb41d7c5-5bcf-f8df-65cc-32f2cdafaebf@nod.at>
+Date: Wed, 4 Jan 2017 10:37:56 +0100
 MIME-Version: 1.0
-In-Reply-To: <2108827.WpE3IvfEdH@wuerfel>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1483519109-26279-1-git-send-email-peda@axentia.se>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,32 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 03/01/2017 à 22:37, Arnd Bergmann a écrit :
-> On Tuesday, January 3, 2017 3:35:44 PM CET Nicolas Dichtel wrote:
->> Regularly, when a new header is created in include/uapi/, the developer
->> forgets to add it in the corresponding Kbuild file. This error is usually
->> detected after the release is out.
->>
->> In fact, all headers under include/uapi/ should be exported, so let's
->> use wildcards.
-> 
-> I think the idea makes a lot of sense: if a header is in uapi, we should
-> really export it. However, using a wildcard expression seems a bit
-> backwards here, I think we should make this implicit and not have the
-> Kbuild file at all.
-> 
-> The "header-y" syntax was originally added back when the uapi headers
-> were mixed with the internal headers in the same directory. After
-> David Howells introduced the separate directory for uapi, it has
-> become a bit redundant.
-Ok, thank you for the explanation, I was wondering why those Kbuild files were
-needed.
+Peter,
 
+Am 04.01.2017 um 09:38 schrieb Peter Rosin:
+> Without this, I get the following on reboot:
 > 
-> Can you try to modify scripts/Makefile.headersinst instead so we
-> can simply remove the Kbuild files entirely?
-I will try something.
+> UBIFS error (ubi1:0 pid 703): ubifs_load_znode: bad target node (type 1) length (8240)
+> UBIFS error (ubi1:0 pid 703): ubifs_load_znode: have to be in range of 48-4144
+> UBIFS error (ubi1:0 pid 703): ubifs_load_znode: bad indexing node at LEB 13:11080, error 5
+>  magic          0x6101831
+>  crc            0xb1cb246f
+>  node_type      9 (indexing node)
+>  group_type     0 (no node group)
+>  sqnum          546
+>  len            128
+>  child_cnt      5
+>  level          0
+>  Branches:
+>  0: LEB 14:72088 len 161 key (133, inode)
+>  1: LEB 14:81120 len 160 key (134, inode)
+>  2: LEB 20:26624 len 8240 key (134, data, 0)
+>  3: LEB 14:81280 len 160 key (135, inode)
+>  4: LEB 20:34864 len 8240 key (135, data, 0)
+> UBIFS warning (ubi1:0 pid 703): ubifs_ro_mode.part.0: switched to read-only mode, error -22
+> CPU: 0 PID: 703 Comm: mount Not tainted 4.9.0-next-20161213+ #1197
+> Hardware name: Atmel SAMA5
+> [<c010d2ac>] (unwind_backtrace) from [<c010b250>] (show_stack+0x10/0x14)
+> [<c010b250>] (show_stack) from [<c024df94>] (ubifs_jnl_update+0x2e8/0x614)
+> [<c024df94>] (ubifs_jnl_update) from [<c0254bf8>] (ubifs_mkdir+0x160/0x204)
+> [<c0254bf8>] (ubifs_mkdir) from [<c01a6030>] (vfs_mkdir+0xb0/0x104)
+> [<c01a6030>] (vfs_mkdir) from [<c0286070>] (ovl_create_real+0x118/0x248)
+> [<c0286070>] (ovl_create_real) from [<c0283ed4>] (ovl_fill_super+0x994/0xaf4)
+> [<c0283ed4>] (ovl_fill_super) from [<c019c394>] (mount_nodev+0x44/0x9c)
+> [<c019c394>] (mount_nodev) from [<c019c4ac>] (mount_fs+0x14/0xa4)
+> [<c019c4ac>] (mount_fs) from [<c01b5338>] (vfs_kern_mount+0x4c/0xd4)
+> [<c01b5338>] (vfs_kern_mount) from [<c01b6b80>] (do_mount+0x154/0xac8)
+> [<c01b6b80>] (do_mount) from [<c01b782c>] (SyS_mount+0x74/0x9c)
+> [<c01b782c>] (SyS_mount) from [<c0107f80>] (ret_fast_syscall+0x0/0x3c)
+> UBIFS error (ubi1:0 pid 703): ubifs_mkdir: cannot create directory, error -22
+> overlayfs: failed to create directory /mnt/ovl/work/work (errno: 22); mounting read-only
+> 
+> Fixes: 7799953b34d1 ("ubifs: Implement encrypt/decrypt for all IO")
+> Signed-off-by: Peter Rosin <peda@axentia.se>
 
+Good catch!
+I'm a bit astonished since I saw this bug a while ago and fixed it.
+So, either I've reintroduced it again or my local fix didn't made it into my rebased/cleaned.
+upstream series. :-(
 
-Regards,
-Nicolas
+Thanks,
+//richard
