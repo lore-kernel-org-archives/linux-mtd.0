@@ -1,27 +1,21 @@
-Received: from mout.kundenserver.de ([212.227.17.10])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOWmI-0003fH-NE
- for linux-mtd@lists.infradead.org; Tue, 03 Jan 2017 21:37:55 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, netdev@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- netfilter-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
- fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
- linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
- davem@davemloft.net, airlied@linux.ie, David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH] uapi: use wildcards to list files
-Date: Tue, 03 Jan 2017 22:37:04 +0100
-Message-ID: <2108827.WpE3IvfEdH@wuerfel>
-In-Reply-To: <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
-References: <20161203.192346.1198940437155108508.davem@davemloft.net>
- <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-arm-kernel@lists.infradead.org,
+	catalin.marinas@arm.com
+Cc: Florian Fainelli <f.fainelli@gmail.com>, linux@armlinux.org.uk,
+ nicolas.pitre@linaro.org, panand@redhat.com, chris.brandt@renesas.com,
+ arnd@arndb.de, jonathan.austin@arm.com, pawel.moll@arm.com,
+ vladimir.murzin@arm.com, mark.rutland@arm.com, ard.biesheuvel@linaro.org,
+ keescook@chromium.org, matt@codeblueprint.co.uk, labbott@fedoraproject.org,
+ kirill.shutemov@linux.intel.com, ben@decadent.org.uk, js07.lee@samsung.com,
+ stefan@agner.ch, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com, richard@nod.at,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, will.deacon@arm.com
+Subject: [PATCH v5 0/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
+Date: Tue,  3 Jan 2017 17:14:13 -0800
+Message-Id: <20170104011417.1496-1-f.fainelli@gmail.com>
+In-Reply-To: <edc8eaa2-5414-506c-1dad-f2404ef19c81@gmail.com>
+References: <edc8eaa2-5414-506c-1dad-f2404ef19c81@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +25,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, January 3, 2017 3:35:44 PM CET Nicolas Dichtel wrote:
-> Regularly, when a new header is created in include/uapi/, the developer
-> forgets to add it in the corresponding Kbuild file. This error is usually
-> detected after the release is out.
-> 
-> In fact, all headers under include/uapi/ should be exported, so let's
-> use wildcards.
+This patch series builds on top of Laura's [PATCHv6 00/10] CONFIG_DEBUG_VIRTUAL
+for arm64 to add support for CONFIG_DEBUG_VIRTUAL for ARM.
 
-I think the idea makes a lot of sense: if a header is in uapi, we should
-really export it. However, using a wildcard expression seems a bit
-backwards here, I think we should make this implicit and not have the
-Kbuild file at all.
+This was tested on a Brahma B15 platform (ARMv7 + HIGHMEM + LPAE).
 
-The "header-y" syntax was originally added back when the uapi headers
-were mixed with the internal headers in the same directory. After
-David Howells introduced the separate directory for uapi, it has
-become a bit redundant.
+Note that the treewide changes would involve a huge CC list, which
+is why it has been purposely trimmed to just focusing on the DEBUG_VIRTUAL
+aspect.
 
-Can you try to modify scripts/Makefile.headersinst instead so we
-can simply remove the Kbuild files entirely?
+Catalin, provided that you take Laura's series, I suppose I would submit
+this one through Russell's patch system if that's okay with everyone?
 
-	Arnd
+Thanks!
+
+Changes in v5:
+
+- rebased against Laura's [PATCHv6 00/10] CONFIG_DEBUG_VIRTUAL
+  for arm64 and v4.10-rc2
+
+- added Russell's acked-by for patches 2 through 4
+
+Changes in v4:
+
+- added Boris' ack for the first patch
+- reworked the virtual address check based on Laura's suggestion to
+  make the code more readable
+
+Changes in v3:
+
+- fix build failures reported by Kbuild test robot
+
+Changes in v2:
+
+- Modified MTD LART driver not to create symbol conflicts with
+  KERNEL_START
+- Fixed patch that defines and uses KERNEL_START/END
+- Fixed __pa_symbol()'s definition
+- Inline __pa_symbol() check wihtin the VIRTUAL_BUG_ON statement
+- Simplified check for virtual addresses
+- Added a tree-wide patch changing SMP/PM implementations to use
+  __pa_symbol(), build tested against multi_v{5,7}_defconfig
+
+Florian Fainelli (4):
+  mtd: lart: Rename partition defines to be prefixed with PART_
+  ARM: Define KERNEL_START and KERNEL_END
+  ARM: Add support for CONFIG_DEBUG_VIRTUAL
+  ARM: treewide: Replace uses of virt_to_phys with __pa_symbol
+
+ arch/arm/Kconfig                          |  1 +
+ arch/arm/common/mcpm_entry.c              | 12 +++----
+ arch/arm/include/asm/memory.h             | 23 +++++++++++--
+ arch/arm/mach-alpine/platsmp.c            |  2 +-
+ arch/arm/mach-axxia/platsmp.c             |  2 +-
+ arch/arm/mach-bcm/bcm63xx_smp.c           |  2 +-
+ arch/arm/mach-bcm/platsmp-brcmstb.c       |  2 +-
+ arch/arm/mach-bcm/platsmp.c               |  4 +--
+ arch/arm/mach-berlin/platsmp.c            |  2 +-
+ arch/arm/mach-exynos/firmware.c           |  4 +--
+ arch/arm/mach-exynos/mcpm-exynos.c        |  2 +-
+ arch/arm/mach-exynos/platsmp.c            |  4 +--
+ arch/arm/mach-exynos/pm.c                 |  6 ++--
+ arch/arm/mach-exynos/suspend.c            |  6 ++--
+ arch/arm/mach-hisi/platmcpm.c             |  2 +-
+ arch/arm/mach-hisi/platsmp.c              |  6 ++--
+ arch/arm/mach-imx/platsmp.c               |  2 +-
+ arch/arm/mach-imx/pm-imx6.c               |  2 +-
+ arch/arm/mach-imx/src.c                   |  2 +-
+ arch/arm/mach-mediatek/platsmp.c          |  2 +-
+ arch/arm/mach-mvebu/pm.c                  |  2 +-
+ arch/arm/mach-mvebu/pmsu.c                |  2 +-
+ arch/arm/mach-mvebu/system-controller.c   |  2 +-
+ arch/arm/mach-omap2/control.c             |  8 ++---
+ arch/arm/mach-omap2/omap-mpuss-lowpower.c | 12 +++----
+ arch/arm/mach-omap2/omap-smp.c            |  4 +--
+ arch/arm/mach-prima2/platsmp.c            |  2 +-
+ arch/arm/mach-prima2/pm.c                 |  2 +-
+ arch/arm/mach-pxa/palmz72.c               |  2 +-
+ arch/arm/mach-pxa/pxa25x.c                |  2 +-
+ arch/arm/mach-pxa/pxa27x.c                |  2 +-
+ arch/arm/mach-pxa/pxa3xx.c                |  2 +-
+ arch/arm/mach-realview/platsmp-dt.c       |  2 +-
+ arch/arm/mach-rockchip/platsmp.c          |  4 +--
+ arch/arm/mach-rockchip/pm.c               |  2 +-
+ arch/arm/mach-s3c24xx/mach-jive.c         |  2 +-
+ arch/arm/mach-s3c24xx/pm-s3c2410.c        |  2 +-
+ arch/arm/mach-s3c24xx/pm-s3c2416.c        |  2 +-
+ arch/arm/mach-s3c64xx/pm.c                |  2 +-
+ arch/arm/mach-s5pv210/pm.c                |  2 +-
+ arch/arm/mach-sa1100/pm.c                 |  2 +-
+ arch/arm/mach-shmobile/platsmp-apmu.c     |  6 ++--
+ arch/arm/mach-shmobile/platsmp-scu.c      |  4 +--
+ arch/arm/mach-socfpga/platsmp.c           |  4 +--
+ arch/arm/mach-spear/platsmp.c             |  2 +-
+ arch/arm/mach-sti/platsmp.c               |  2 +-
+ arch/arm/mach-sunxi/platsmp.c             |  4 +--
+ arch/arm/mach-tango/platsmp.c             |  2 +-
+ arch/arm/mach-tango/pm.c                  |  2 +-
+ arch/arm/mach-tegra/reset.c               |  4 +--
+ arch/arm/mach-ux500/platsmp.c             |  2 +-
+ arch/arm/mach-vexpress/dcscb.c            |  2 +-
+ arch/arm/mach-vexpress/platsmp.c          |  2 +-
+ arch/arm/mach-vexpress/tc2_pm.c           |  4 +--
+ arch/arm/mach-zx/platsmp.c                |  4 +--
+ arch/arm/mach-zynq/platsmp.c              |  2 +-
+ arch/arm/mm/Makefile                      |  1 +
+ arch/arm/mm/init.c                        |  7 ++--
+ arch/arm/mm/mmu.c                         |  6 +---
+ arch/arm/mm/physaddr.c                    | 55 +++++++++++++++++++++++++++++++
+ drivers/mtd/devices/lart.c                | 24 +++++++-------
+ 61 files changed, 179 insertions(+), 110 deletions(-)
+ create mode 100644 arch/arm/mm/physaddr.c
+
+-- 
+2.9.3
