@@ -1,20 +1,21 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOkYz-0005Pv-Ue
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 12:21:06 +0000
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: <marek.vasut@gmail.com>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v4 0/2] mtd: spi-nor: add a stateless method to support memory
- size above 128Mib
-Date: Wed, 4 Jan 2017 13:20:53 +0100
-Message-ID: <cover.1483528931.git.cyrille.pitchen@atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+ will.deacon@arm.com
+Cc: Florian Fainelli <f.fainelli@gmail.com>, linux@armlinux.org.uk,
+ nicolas.pitre@linaro.org, panand@redhat.com, chris.brandt@renesas.com,
+ arnd@arndb.de, jonathan.austin@arm.com, pawel.moll@arm.com,
+ vladimir.murzin@arm.com, mark.rutland@arm.com, ard.biesheuvel@linaro.org,
+ keescook@chromium.org, matt@codeblueprint.co.uk, labbott@fedoraproject.org,
+ kirill.shutemov@linux.intel.com, ben@decadent.org.uk, js07.lee@samsung.com,
+ stefan@agner.ch, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com, richard@nod.at,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Subject: [PATCH v6 0/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
+Date: Wed,  4 Jan 2017 14:39:51 -0800
+Message-Id: <20170104223955.22859-1-f.fainelli@gmail.com>
+In-Reply-To: <20170104011417.1496-1-f.fainelli@gmail.com>
+References: <20170104011417.1496-1-f.fainelli@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +25,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+This patch series builds on top of Laura's [PATCHv6 00/10] CONFIG_DEBUG_VIRTUAL
+for arm64 to add support for CONFIG_DEBUG_VIRTUAL for ARM.
 
-this series of patches is based on the git://github.com/spi-nor/linux.git
-tree. It has been extracted from the SFDP series and is resent as
-a standalone series.
+This was tested on a Brahma B15 platform (ARMv7 + HIGHMEM + LPAE).
 
-This series fixes compatibility issue between Linux and many bootloaders
-when using SPI flash with size greater than 128Mib.
+Note that the treewide changes would involve a huge CC list, which
+is why it has been purposely trimmed to just focusing on the DEBUG_VIRTUAL
+aspect.
 
-Indeed, before this series, Linux used to make the SPI flash memory enter
-its 4-byte address mode when its size is greater than 128Mib: The very
-same Fast Read 1-1-z op code is used, for instance Fast Read 1-1-4 (6Bh)
-but once in 4-byte address mode, the SPI flash memory now expects a 4-byte
-address following the op code instead of a 3-byte address.
-This solution is statefull: it changes the internal state of the memory.
+Catalin, provided that you take Laura's series, I suppose I would submit
+this one through Russell's patch system if that's okay with everyone?
 
-Hence, when the CPU is reset but not the memory, many bootloaders are not
-aware of this internal state change at the memory side, don't know how to
-handle this and still send one Fast Read op code followed by a 3-byte
-address. So the bootloader fails to read data from the SPI flash memory.
+Thanks!
 
-ChangeLog:
+Changes in v6:
 
-v3 -> v4:
-- replace "++i" by "i++" in a "for" loop.
-- add a new "size" parameter to spi_nor_convert_opcode() and use the
-  ARRAY_SIZE() macro instead of a null sentinel at the end the table array.
+- utilize KERNEL_END in lieu of _end in arm_memblock_init, thanks Hartley!
 
-v2 -> v3:
-- no change on patch 1.
-- rebase patch 2 on the spi-nor tree: SPI_NOR_4B_OPCODES is changed from
-  BIT(10) to BIT(11), otherwise patch could be applied on linux-next.
-- remove helper macro such as ENTRY_3TO4()
-- split the 3to4 opcode table into 3 different tables for read, program
-  and erase op codes.
+- utilize Laura's comment suggestion against MAX_DMA_ADDRESS
 
-v1 -> v2:
-- collect Acked-by for patch 1.
-- replace the dichotomic search by a simple for() loop for better clarity
-  purpose in patch 2.
+- added Laura's Acked-by to patch 3 and Reviewed-by to patch 4
 
-Cyrille Pitchen (2):
-  mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte address op codes
-  mtd: spi-nor: add a stateless method to support memory size above
-    128Mib
+Changes in v5:
 
- drivers/mtd/devices/serial_flash_cmds.h |   7 ---
- drivers/mtd/devices/st_spi_fsm.c        |  28 ++++-----
- drivers/mtd/spi-nor/spi-nor.c           | 101 +++++++++++++++++++++++++-------
- drivers/spi/spi-bcm-qspi.c              |   6 +-
- include/linux/mtd/spi-nor.h             |  22 +++++--
- 5 files changed, 113 insertions(+), 51 deletions(-)
+- rebased against Laura's [PATCHv6 00/10] CONFIG_DEBUG_VIRTUAL
+  for arm64 and v4.10-rc2
+
+- added Russell's acked-by for patches 2 through 4
+
+Changes in v4:
+
+- added Boris' ack for the first patch
+- reworked the virtual address check based on Laura's suggestion to
+  make the code more readable
+
+Changes in v3:
+
+- fix build failures reported by Kbuild test robot
+
+Changes in v2:
+
+- Modified MTD LART driver not to create symbol conflicts with
+  KERNEL_START
+- Fixed patch that defines and uses KERNEL_START/END
+- Fixed __pa_symbol()'s definition
+- Inline __pa_symbol() check wihtin the VIRTUAL_BUG_ON statement
+- Simplified check for virtual addresses
+- Added a tree-wide patch changing SMP/PM implementations to use
+  __pa_symbol(), build tested against multi_v{5,7}_defconfig
+
+Florian Fainelli (4):
+  mtd: lart: Rename partition defines to be prefixed with PART_
+  ARM: Define KERNEL_START and KERNEL_END
+  ARM: Add support for CONFIG_DEBUG_VIRTUAL
+  ARM: treewide: Replace uses of virt_to_phys with __pa_symbol
+
+ arch/arm/Kconfig                          |  1 +
+ arch/arm/common/mcpm_entry.c              | 12 +++----
+ arch/arm/include/asm/memory.h             | 23 +++++++++++--
+ arch/arm/mach-alpine/platsmp.c            |  2 +-
+ arch/arm/mach-axxia/platsmp.c             |  2 +-
+ arch/arm/mach-bcm/bcm63xx_smp.c           |  2 +-
+ arch/arm/mach-bcm/platsmp-brcmstb.c       |  2 +-
+ arch/arm/mach-bcm/platsmp.c               |  4 +--
+ arch/arm/mach-berlin/platsmp.c            |  2 +-
+ arch/arm/mach-exynos/firmware.c           |  4 +--
+ arch/arm/mach-exynos/mcpm-exynos.c        |  2 +-
+ arch/arm/mach-exynos/platsmp.c            |  4 +--
+ arch/arm/mach-exynos/pm.c                 |  6 ++--
+ arch/arm/mach-exynos/suspend.c            |  6 ++--
+ arch/arm/mach-hisi/platmcpm.c             |  2 +-
+ arch/arm/mach-hisi/platsmp.c              |  6 ++--
+ arch/arm/mach-imx/platsmp.c               |  2 +-
+ arch/arm/mach-imx/pm-imx6.c               |  2 +-
+ arch/arm/mach-imx/src.c                   |  2 +-
+ arch/arm/mach-mediatek/platsmp.c          |  2 +-
+ arch/arm/mach-mvebu/pm.c                  |  2 +-
+ arch/arm/mach-mvebu/pmsu.c                |  2 +-
+ arch/arm/mach-mvebu/system-controller.c   |  2 +-
+ arch/arm/mach-omap2/control.c             |  8 ++---
+ arch/arm/mach-omap2/omap-mpuss-lowpower.c | 12 +++----
+ arch/arm/mach-omap2/omap-smp.c            |  4 +--
+ arch/arm/mach-prima2/platsmp.c            |  2 +-
+ arch/arm/mach-prima2/pm.c                 |  2 +-
+ arch/arm/mach-pxa/palmz72.c               |  2 +-
+ arch/arm/mach-pxa/pxa25x.c                |  2 +-
+ arch/arm/mach-pxa/pxa27x.c                |  2 +-
+ arch/arm/mach-pxa/pxa3xx.c                |  2 +-
+ arch/arm/mach-realview/platsmp-dt.c       |  2 +-
+ arch/arm/mach-rockchip/platsmp.c          |  4 +--
+ arch/arm/mach-rockchip/pm.c               |  2 +-
+ arch/arm/mach-s3c24xx/mach-jive.c         |  2 +-
+ arch/arm/mach-s3c24xx/pm-s3c2410.c        |  2 +-
+ arch/arm/mach-s3c24xx/pm-s3c2416.c        |  2 +-
+ arch/arm/mach-s3c64xx/pm.c                |  2 +-
+ arch/arm/mach-s5pv210/pm.c                |  2 +-
+ arch/arm/mach-sa1100/pm.c                 |  2 +-
+ arch/arm/mach-shmobile/platsmp-apmu.c     |  6 ++--
+ arch/arm/mach-shmobile/platsmp-scu.c      |  4 +--
+ arch/arm/mach-socfpga/platsmp.c           |  4 +--
+ arch/arm/mach-spear/platsmp.c             |  2 +-
+ arch/arm/mach-sti/platsmp.c               |  2 +-
+ arch/arm/mach-sunxi/platsmp.c             |  4 +--
+ arch/arm/mach-tango/platsmp.c             |  2 +-
+ arch/arm/mach-tango/pm.c                  |  2 +-
+ arch/arm/mach-tegra/reset.c               |  4 +--
+ arch/arm/mach-ux500/platsmp.c             |  2 +-
+ arch/arm/mach-vexpress/dcscb.c            |  2 +-
+ arch/arm/mach-vexpress/platsmp.c          |  2 +-
+ arch/arm/mach-vexpress/tc2_pm.c           |  4 +--
+ arch/arm/mach-zx/platsmp.c                |  4 +--
+ arch/arm/mach-zynq/platsmp.c              |  2 +-
+ arch/arm/mm/Makefile                      |  1 +
+ arch/arm/mm/init.c                        |  7 ++--
+ arch/arm/mm/mmu.c                         |  6 +---
+ arch/arm/mm/physaddr.c                    | 55 +++++++++++++++++++++++++++++++
+ drivers/mtd/devices/lart.c                | 24 +++++++-------
+ 61 files changed, 179 insertions(+), 110 deletions(-)
+ create mode 100644 arch/arm/mm/physaddr.c
 
 -- 
-2.7.4
+2.9.3
