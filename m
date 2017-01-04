@@ -1,19 +1,25 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cOpPF-0004gp-De
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 17:31:23 +0000
-Subject: Re: [PATCH] mtd: spi-nor: Add lock/unlock support for f25l32pa
-To: Marek Vasut <marek.vasut@gmail.com>, Victor Shyba <victor1984@riseup.net>,
- <linux-mtd@lists.infradead.org>
-References: <1483407270-4323-1-git-send-email-victor1984@riseup.net>
- <93b708da-e6f4-edec-5ae7-3a95e8565bc1@gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <689c3d58-c28c-d68e-e3a7-6b76fbdd6834@atmel.com>
-Date: Wed, 4 Jan 2017 18:30:56 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cOp83-0002nQ-2R
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 17:13:37 +0000
+Date: Wed, 4 Jan 2017 18:13:14 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 10/15] mtd: nand: move Micron specific init logic in
+ nand_micron.c
+Message-ID: <20170104181314.4f9a0c40@bbrezillon>
+In-Reply-To: <51f2f7a3-56a7-1117-ab15-dd8eb59a4373@gmail.com>
+References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1483448495-31607-11-git-send-email-boris.brezillon@free-electrons.com>
+ <51f2f7a3-56a7-1117-ab15-dd8eb59a4373@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <93b708da-e6f4-edec-5ae7-3a95e8565bc1@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +29,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 03/01/2017 à 03:10, Marek Vasut a écrit :
-> On 01/03/2017 02:34 AM, Victor Shyba wrote:
->> This chip has write protection enabled on power-up,
->> so this flag is necessary to support write operations.
->>
->> Signed-off-by: Victor Shyba <victor1984@riseup.net>
+On Wed, 4 Jan 2017 16:15:46 +0100
+Marek Vasut <marek.vasut@gmail.com> wrote:
+
+> On 01/03/2017 02:01 PM, Boris Brezillon wrote:
+> > Move Micron specific initialization logic into nand_micron.c. This is
+> > part of the "separate vendor specific code from core" cleanup process.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>  
 > 
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
+> [...]
+> 
+> > diff --git a/drivers/mtd/nand/nand_micron.c b/drivers/mtd/nand/nand_micron.c
+> > new file mode 100644
+> > index 000000000000..ddb9adf12c21
+> > --- /dev/null
+> > +++ b/drivers/mtd/nand/nand_micron.c
+> > @@ -0,0 +1,83 @@
+> > +/*
+> > + * Copyright (C) 2013 Boris Brezillon <boris.brezillon@free-electrons.com>  
+> 
+> 2013-2017 ?
+
+2017, indeed.
+
+> 
+> > + * This program is free software; you can redistribute it and/or modify
+> > + * it under the terms of the GNU General Public License as published by
+> > + * the Free Software Foundation; either version 2 of the License, or
+> > + * (at your option) any later version.
+> > + *
+> > + * This program is distributed in the hope that it will be useful,
+> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> > + * GNU General Public License for more details.
+> > + */
+> > +
+> > +#include <linux/mtd/nand.h>
+> > +
+> > +struct nand_onfi_vendor_micron {
+> > +	u8 two_plane_read;
+> > +	u8 read_cache;
+> > +	u8 read_unique_id;
+> > +	u8 dq_imped;
+> > +	u8 dq_imped_num_settings;
+> > +	u8 dq_imped_feat_addr;
+> > +	u8 rb_pulldown_strength;
+> > +	u8 rb_pulldown_strength_feat_addr;
+> > +	u8 rb_pulldown_strength_num_settings;
+> > +	u8 otp_mode;
+> > +	u8 otp_page_start;
+> > +	u8 otp_data_prot_addr;
+> > +	u8 otp_num_pages;
+> > +	u8 otp_feat_addr;
+> > +	u8 read_retry_options;
+> > +	u8 reserved[72];
+> > +	u8 param_revision;
+> > +} __packed;  
+> 
+> Is this __packed really needed?
 > 
 
-Applied to git://github.com/spi-nor/linux.git
-
-Thanks!
-
-> I guess it can also be added for stable.
-> 
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index da7cd69..f325925 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -821,7 +821,7 @@ static const struct flash_info spi_nor_ids[] = {
->>  	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128, SECT_4K) },
->>  
->>  	/* ESMT */
->> -	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
->> +	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
->>  
->>  	/* Everspin */
->>  	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
->>
-> 
-> 
+I'm just copying an existing structure. And yes, it's probably unneeded
+since all fields are u8, and the struct size in a multiple of 8 bytes,
+but it shouldn't hurt either. 
