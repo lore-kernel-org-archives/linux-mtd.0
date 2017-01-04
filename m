@@ -1,22 +1,15 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
+Received: from relay101b.appriver.com ([207.97.230.15] helo=relay.appriver.com)
  by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOkZl-0005R7-Gx
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 12:21:53 +0000
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: <marek.vasut@gmail.com>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v4 2/2] mtd: spi-nor: add a stateless method to support memory
- size above 128Mib
-Date: Wed, 4 Jan 2017 13:20:55 +0100
-Message-ID: <59cf17cddbe730d2c48fbba5692edde0ad3f5e1e.1483528931.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1483528931.git.cyrille.pitchen@atmel.com>
-References: <cover.1483528931.git.cyrille.pitchen@atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1cOmP5-0006uD-TM
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 14:19:00 +0000
+From: Mike Crowe <mac@mcrowe.com>
+To: linux-mtd@lists.infradead.org
+Cc: Mike Crowe <mac@mcrowe.com>
+Subject: [PATCH 2/2] nanddump: Add --skip-bad-blocks-to-start option
+Date: Wed,  4 Jan 2017 14:18:06 +0000
+Message-Id: <1483539486-16165-3-git-send-email-mac@mcrowe.com>
+In-Reply-To: <1483539486-16165-1-git-send-email-mac@mcrowe.com>
+References: <1483539486-16165-1-git-send-email-mac@mcrowe.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,150 +19,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch provides an alternative mean to support memory above 16MiB
-(128Mib) by replacing 3byte address op codes by their associated 4byte
-address versions.
+The --skip-bad-blocks-to-start option will increase the start address by
+the size of each bad block encountered between the start of the partition
+and the specified start address.
 
-Using the dedicated 4byte address op codes doesn't change the internal
-state of the SPI NOR memory as opposed to using other means such as
-updating a Base Address Register (BAR) and sending command to enter/leave
-the 4byte mode.
-
-Hence when a CPU reset occurs, early bootloaders don't need to be aware
-of BAR value or 4byte mode being enabled: they can still access the first
-16MiB of the SPI NOR memory using the regular 3byte address op codes.
-
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Tested-by: Vignesh R <vigneshr@ti.com>
+This can be useful if other readers of the partition will be reading using
+a simple bad-block-skipping algorithm.
 ---
- drivers/mtd/spi-nor/spi-nor.c | 101 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 80 insertions(+), 21 deletions(-)
+ nand-utils/nanddump.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 9bb8f91fa42e..499a68d2bf8c 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -81,6 +81,10 @@ struct flash_info {
- 					 * because it has the same value as
- 					 * ATMEL flashes)
- 					*/
-+#define SPI_NOR_4B_OPCODES	BIT(11)	/*
-+					 * Use dedicated 4byte address op codes
-+					 * to support memory size above 128Mib.
-+					 */
- };
+diff --git a/nand-utils/nanddump.c b/nand-utils/nanddump.c
+index a8ad334..eaaf331 100644
+--- a/nand-utils/nanddump.c
++++ b/nand-utils/nanddump.c
+@@ -52,6 +52,8 @@ static void display_help(int status)
+ "-p         --prettyprint        Print nice (hexdump)\n"
+ "-q         --quiet              Don't display progress and status messages\n"
+ "-s addr    --startaddress=addr  Start address\n"
++"           --skip-bad-blocks-to-start\n"
++"                                Skip bad blocks when seeking to the start address\n"
+ "\n"
+ "--bb=METHOD, where METHOD can be `padbad', `dumpbad', or `skipbad':\n"
+ "    padbad:  dump flash data, substituting 0xFF for any bad blocks\n"
+@@ -86,6 +88,7 @@ static const char		*dumpfile;		// dump file name
+ static bool			quiet = false;		// suppress diagnostic output
+ static bool			canonical = false;	// print nice + ascii
+ static bool			forcebinary = false;	// force printing binary to tty
++static bool			skip_bad_blocks_to_start = false;
  
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -194,6 +198,78 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
- 	return mtd->priv;
- }
- 
-+
-+static u8 spi_nor_convert_opcode(u8 opcode, const u8 table[][2], size_t size)
-+{
-+	size_t i;
-+
-+	for (i = 0; i < size; i++)
-+		if (table[i][0] == opcode)
-+			return table[i][1];
-+
-+	/* No conversion found, keep input op code. */
-+	return opcode;
-+}
-+
-+static inline u8 spi_nor_convert_3to4_read(u8 opcode)
-+{
-+	static const u8 spi_nor_3to4_read[][2] = {
-+		{ SPINOR_OP_READ,	SPINOR_OP_READ_4B },
-+		{ SPINOR_OP_READ_FAST,	SPINOR_OP_READ_FAST_4B },
-+		{ SPINOR_OP_READ_1_1_2,	SPINOR_OP_READ_1_1_2_4B },
-+		{ SPINOR_OP_READ_1_2_2,	SPINOR_OP_READ_1_2_2_4B },
-+		{ SPINOR_OP_READ_1_1_4,	SPINOR_OP_READ_1_1_4_4B },
-+		{ SPINOR_OP_READ_1_4_4,	SPINOR_OP_READ_1_4_4_4B },
-+	};
-+
-+	return spi_nor_convert_opcode(opcode, spi_nor_3to4_read,
-+				      ARRAY_SIZE(spi_nor_3to4_read));
-+}
-+
-+static inline u8 spi_nor_convert_3to4_program(u8 opcode)
-+{
-+	static const u8 spi_nor_3to4_program[][2] = {
-+		{ SPINOR_OP_PP,		SPINOR_OP_PP_4B },
-+		{ SPINOR_OP_PP_1_1_4,	SPINOR_OP_PP_1_1_4_4B },
-+		{ SPINOR_OP_PP_1_4_4,	SPINOR_OP_PP_1_4_4_4B },
-+	};
-+
-+	return spi_nor_convert_opcode(opcode, spi_nor_3to4_program,
-+				      ARRAY_SIZE(spi_nor_3to4_program));
-+}
-+
-+static inline u8 spi_nor_convert_3to4_erase(u8 opcode)
-+{
-+	static const u8 spi_nor_3to4_erase[][2] = {
-+		{ SPINOR_OP_BE_4K,	SPINOR_OP_BE_4K_4B },
-+		{ SPINOR_OP_BE_32K,	SPINOR_OP_BE_32K_4B },
-+		{ SPINOR_OP_SE,		SPINOR_OP_SE_4B },
-+	};
-+
-+	return spi_nor_convert_opcode(opcode, spi_nor_3to4_erase,
-+				      ARRAY_SIZE(spi_nor_3to4_erase));
-+}
-+
-+static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
-+				      const struct flash_info *info)
-+{
-+	/* Do some manufacturer fixups first */
-+	switch (JEDEC_MFR(info)) {
-+	case SNOR_MFR_SPANSION:
-+		/* No small sector erase for 4-byte command set */
-+		nor->erase_opcode = SPINOR_OP_SE;
-+		nor->mtd.erasesize = info->sector_size;
-+		break;
-+
-+	default:
-+		break;
+ static enum {
+ 	padbad,   // dump flash data, substituting 0xFF for any bad blocks
+@@ -105,6 +108,7 @@ static void process_options(int argc, char * const argv[])
+ 			{"version", no_argument, 0, 'V'},
+ 			{"bb", required_argument, 0, 0},
+ 			{"omitoob", no_argument, 0, 0},
++			{"skip-bad-blocks-to-start", no_argument, 0, 0 },
+ 			{"help", no_argument, 0, 'h'},
+ 			{"forcebinary", no_argument, 0, 'a'},
+ 			{"canonicalprint", no_argument, 0, 'c'},
+@@ -146,6 +150,9 @@ static void process_options(int argc, char * const argv[])
+ 							errmsg_die("--oob and --oomitoob are mutually exclusive");
+ 						}
+ 						break;
++					case 3: /* --skip-bad-blocks-to-start */
++						skip_bad_blocks_to_start = true;
++						break;
+ 				}
+ 				break;
+ 			case 'V':
+@@ -397,6 +404,22 @@ int main(int argc, char * const argv[])
+ 				mtd.min_io_size);
+ 		goto closeall;
+ 	}
++	if (skip_bad_blocks_to_start) {
++		unsigned long long bbs_offset = 0;
++		while (bbs_offset < start_addr) {
++			err = mtd_is_bad(&mtd, fd, bbs_offset / mtd.eb_size);
++			if (err < 0) {
++				sys_errmsg("%s: MTD get bad block failed", mtddev);
++				goto closeall;
++			} else if (err == 1) {
++				if (!quiet)
++					fprintf(stderr, "Bad block at %llx\n", bbs_offset);
++				start_addr += mtd.eb_size;
++			}
++			bbs_offset += mtd.eb_size;
++		}
 +	}
 +
-+	nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
-+	nor->program_opcode = spi_nor_convert_3to4_program(nor->program_opcode);
-+	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
-+}
-+
- /* Enable/disable 4-byte addressing mode. */
- static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
- 			    int enable)
-@@ -1621,27 +1697,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 	else if (mtd->size > 0x1000000) {
- 		/* enable 4-byte addressing if the device exceeds 16MiB */
- 		nor->addr_width = 4;
--		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION) {
--			/* Dedicated 4-byte command set */
--			switch (nor->flash_read) {
--			case SPI_NOR_QUAD:
--				nor->read_opcode = SPINOR_OP_READ_1_1_4_4B;
--				break;
--			case SPI_NOR_DUAL:
--				nor->read_opcode = SPINOR_OP_READ_1_1_2_4B;
--				break;
--			case SPI_NOR_FAST:
--				nor->read_opcode = SPINOR_OP_READ_FAST_4B;
--				break;
--			case SPI_NOR_NORMAL:
--				nor->read_opcode = SPINOR_OP_READ_4B;
--				break;
--			}
--			nor->program_opcode = SPINOR_OP_PP_4B;
--			/* No small sector erase for 4-byte command set */
--			nor->erase_opcode = SPINOR_OP_SE_4B;
--			mtd->erasesize = info->sector_size;
--		} else
-+		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
-+		    info->flags & SPI_NOR_4B_OPCODES)
-+			spi_nor_set_4byte_opcodes(nor, info);
-+		else
- 			set_4byte(nor, info, 1);
- 	} else {
- 		nor->addr_width = 3;
+ 	if (length)
+ 		end_addr = start_addr + length;
+ 	if (!length || end_addr > mtd.size)
 -- 
-2.7.4
+2.1.4
