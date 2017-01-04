@@ -1,15 +1,22 @@
-Received: from relay101b.appriver.com ([207.97.230.15] helo=relay.appriver.com)
+Received: from smtpout.microchip.com ([198.175.253.82]
+ helo=email.microchip.com)
  by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOmP5-0006uD-TM
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 14:19:00 +0000
-From: Mike Crowe <mac@mcrowe.com>
-To: linux-mtd@lists.infradead.org
-Cc: Mike Crowe <mac@mcrowe.com>
-Subject: [PATCH 2/2] nanddump: Add --skip-bad-blocks-to-start option
-Date: Wed,  4 Jan 2017 14:18:06 +0000
-Message-Id: <1483539486-16165-3-git-send-email-mac@mcrowe.com>
-In-Reply-To: <1483539486-16165-1-git-send-email-mac@mcrowe.com>
-References: <1483539486-16165-1-git-send-email-mac@mcrowe.com>
+ id 1cOkZN-0005QT-PR
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 12:21:30 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <marek.vasut@gmail.com>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v4 1/2] mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte
+ address op codes
+Date: Wed, 4 Jan 2017 13:20:54 +0100
+Message-ID: <7307906af780eb95b0cc6f4024a1bf3eccb2b5ec.1483528931.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <cover.1483528931.git.cyrille.pitchen@atmel.com>
+References: <cover.1483528931.git.cyrille.pitchen@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,77 +26,196 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The --skip-bad-blocks-to-start option will increase the start address by
-the size of each bad block encountered between the start of the partition
-and the specified start address.
+This patch renames the SPINOR_OP_* macros of the 4-byte address
+instruction set so the new names all share a common pattern: the 4-byte
+address name is built from the 3-byte address name appending the "_4B"
+suffix.
 
-This can be useful if other readers of the partition will be reading using
-a simple bad-block-skipping algorithm.
+The patch also introduces new op codes to support other SPI protocols such
+as SPI 1-4-4 and SPI 1-2-2.
+
+This is a transitional patch and will help a later patch of spi-nor.c
+to automate the translation from the 3-byte address op codes into their
+4-byte address version.
+
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
 ---
- nand-utils/nanddump.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/mtd/devices/serial_flash_cmds.h |  7 -------
+ drivers/mtd/devices/st_spi_fsm.c        | 28 ++++++++++++++--------------
+ drivers/mtd/spi-nor/spi-nor.c           |  8 ++++----
+ drivers/spi/spi-bcm-qspi.c              |  6 +++---
+ include/linux/mtd/spi-nor.h             | 22 ++++++++++++++++------
+ 5 files changed, 37 insertions(+), 34 deletions(-)
 
-diff --git a/nand-utils/nanddump.c b/nand-utils/nanddump.c
-index a8ad334..eaaf331 100644
---- a/nand-utils/nanddump.c
-+++ b/nand-utils/nanddump.c
-@@ -52,6 +52,8 @@ static void display_help(int status)
- "-p         --prettyprint        Print nice (hexdump)\n"
- "-q         --quiet              Don't display progress and status messages\n"
- "-s addr    --startaddress=addr  Start address\n"
-+"           --skip-bad-blocks-to-start\n"
-+"                                Skip bad blocks when seeking to the start address\n"
- "\n"
- "--bb=METHOD, where METHOD can be `padbad', `dumpbad', or `skipbad':\n"
- "    padbad:  dump flash data, substituting 0xFF for any bad blocks\n"
-@@ -86,6 +88,7 @@ static const char		*dumpfile;		// dump file name
- static bool			quiet = false;		// suppress diagnostic output
- static bool			canonical = false;	// print nice + ascii
- static bool			forcebinary = false;	// force printing binary to tty
-+static bool			skip_bad_blocks_to_start = false;
+diff --git a/drivers/mtd/devices/serial_flash_cmds.h b/drivers/mtd/devices/serial_flash_cmds.h
+index f59a125295d0..8b81e15105dd 100644
+--- a/drivers/mtd/devices/serial_flash_cmds.h
++++ b/drivers/mtd/devices/serial_flash_cmds.h
+@@ -18,19 +18,12 @@
+ #define SPINOR_OP_RDVCR		0x85
  
- static enum {
- 	padbad,   // dump flash data, substituting 0xFF for any bad blocks
-@@ -105,6 +108,7 @@ static void process_options(int argc, char * const argv[])
- 			{"version", no_argument, 0, 'V'},
- 			{"bb", required_argument, 0, 0},
- 			{"omitoob", no_argument, 0, 0},
-+			{"skip-bad-blocks-to-start", no_argument, 0, 0 },
- 			{"help", no_argument, 0, 'h'},
- 			{"forcebinary", no_argument, 0, 'a'},
- 			{"canonicalprint", no_argument, 0, 'c'},
-@@ -146,6 +150,9 @@ static void process_options(int argc, char * const argv[])
- 							errmsg_die("--oob and --oomitoob are mutually exclusive");
- 						}
- 						break;
-+					case 3: /* --skip-bad-blocks-to-start */
-+						skip_bad_blocks_to_start = true;
-+						break;
- 				}
+ /* JEDEC Standard - Serial Flash Discoverable Parmeters (SFDP) Commands */
+-#define SPINOR_OP_READ_1_2_2	0xbb	/* DUAL I/O READ */
+-#define SPINOR_OP_READ_1_4_4	0xeb	/* QUAD I/O READ */
+-
+ #define SPINOR_OP_WRITE		0x02	/* PAGE PROGRAM */
+ #define SPINOR_OP_WRITE_1_1_2	0xa2	/* DUAL INPUT PROGRAM */
+ #define SPINOR_OP_WRITE_1_2_2	0xd2	/* DUAL INPUT EXT PROGRAM */
+ #define SPINOR_OP_WRITE_1_1_4	0x32	/* QUAD INPUT PROGRAM */
+ #define SPINOR_OP_WRITE_1_4_4	0x12	/* QUAD INPUT EXT PROGRAM */
+ 
+-/* READ commands with 32-bit addressing */
+-#define SPINOR_OP_READ4_1_2_2	0xbc
+-#define SPINOR_OP_READ4_1_4_4	0xec
+-
+ /* Configuration flags */
+ #define FLASH_FLAG_SINGLE	0x000000ff
+ #define FLASH_FLAG_READ_WRITE	0x00000001
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index 5454b4113589..804313a33f2b 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -507,13 +507,13 @@ static struct seq_rw_config n25q_read3_configs[] = {
+  *	- 'FAST' variants configured for 8 dummy cycles (see note above.)
+  */
+ static struct seq_rw_config n25q_read4_configs[] = {
+-	{FLASH_FLAG_READ_1_4_4, SPINOR_OP_READ4_1_4_4,	0, 4, 4, 0x00, 0, 8},
+-	{FLASH_FLAG_READ_1_1_4, SPINOR_OP_READ4_1_1_4,	0, 1, 4, 0x00, 0, 8},
+-	{FLASH_FLAG_READ_1_2_2, SPINOR_OP_READ4_1_2_2,	0, 2, 2, 0x00, 0, 8},
+-	{FLASH_FLAG_READ_1_1_2, SPINOR_OP_READ4_1_1_2,	0, 1, 2, 0x00, 0, 8},
+-	{FLASH_FLAG_READ_FAST,	SPINOR_OP_READ4_FAST,	0, 1, 1, 0x00, 0, 8},
+-	{FLASH_FLAG_READ_WRITE, SPINOR_OP_READ4,	0, 1, 1, 0x00, 0, 0},
+-	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
++	{FLASH_FLAG_READ_1_4_4, SPINOR_OP_READ_1_4_4_4B, 0, 4, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_1_4, SPINOR_OP_READ_1_1_4_4B, 0, 1, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_2_2, SPINOR_OP_READ_1_2_2_4B, 0, 2, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_1_2, SPINOR_OP_READ_1_1_2_4B, 0, 1, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_FAST,	SPINOR_OP_READ_FAST_4B,  0, 1, 1, 0x00, 0, 8},
++	{FLASH_FLAG_READ_WRITE, SPINOR_OP_READ_4B,       0, 1, 1, 0x00, 0, 0},
++	{0x00,			0,                       0, 0, 0, 0x00, 0, 0},
+ };
+ 
+ /*
+@@ -553,13 +553,13 @@ static int stfsm_mx25_en_32bit_addr_seq(struct stfsm_seq *seq)
+  * entering a state that is incompatible with the SPIBoot Controller.
+  */
+ static struct seq_rw_config stfsm_s25fl_read4_configs[] = {
+-	{FLASH_FLAG_READ_1_4_4,  SPINOR_OP_READ4_1_4_4,  0, 4, 4, 0x00, 2, 4},
+-	{FLASH_FLAG_READ_1_1_4,  SPINOR_OP_READ4_1_1_4,  0, 1, 4, 0x00, 0, 8},
+-	{FLASH_FLAG_READ_1_2_2,  SPINOR_OP_READ4_1_2_2,  0, 2, 2, 0x00, 4, 0},
+-	{FLASH_FLAG_READ_1_1_2,  SPINOR_OP_READ4_1_1_2,  0, 1, 2, 0x00, 0, 8},
+-	{FLASH_FLAG_READ_FAST,   SPINOR_OP_READ4_FAST,   0, 1, 1, 0x00, 0, 8},
+-	{FLASH_FLAG_READ_WRITE,  SPINOR_OP_READ4,        0, 1, 1, 0x00, 0, 0},
+-	{0x00,                   0,                      0, 0, 0, 0x00, 0, 0},
++	{FLASH_FLAG_READ_1_4_4,  SPINOR_OP_READ_1_4_4_4B,  0, 4, 4, 0x00, 2, 4},
++	{FLASH_FLAG_READ_1_1_4,  SPINOR_OP_READ_1_1_4_4B,  0, 1, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_2_2,  SPINOR_OP_READ_1_2_2_4B,  0, 2, 2, 0x00, 4, 0},
++	{FLASH_FLAG_READ_1_1_2,  SPINOR_OP_READ_1_1_2_4B,  0, 1, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_FAST,   SPINOR_OP_READ_FAST_4B,   0, 1, 1, 0x00, 0, 8},
++	{FLASH_FLAG_READ_WRITE,  SPINOR_OP_READ_4B,        0, 1, 1, 0x00, 0, 0},
++	{0x00,                   0,                        0, 0, 0, 0x00, 0, 0},
+ };
+ 
+ static struct seq_rw_config stfsm_s25fl_write4_configs[] = {
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 15fb8af82e6b..9bb8f91fa42e 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1625,16 +1625,16 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 			/* Dedicated 4-byte command set */
+ 			switch (nor->flash_read) {
+ 			case SPI_NOR_QUAD:
+-				nor->read_opcode = SPINOR_OP_READ4_1_1_4;
++				nor->read_opcode = SPINOR_OP_READ_1_1_4_4B;
  				break;
- 			case 'V':
-@@ -397,6 +404,22 @@ int main(int argc, char * const argv[])
- 				mtd.min_io_size);
- 		goto closeall;
- 	}
-+	if (skip_bad_blocks_to_start) {
-+		unsigned long long bbs_offset = 0;
-+		while (bbs_offset < start_addr) {
-+			err = mtd_is_bad(&mtd, fd, bbs_offset / mtd.eb_size);
-+			if (err < 0) {
-+				sys_errmsg("%s: MTD get bad block failed", mtddev);
-+				goto closeall;
-+			} else if (err == 1) {
-+				if (!quiet)
-+					fprintf(stderr, "Bad block at %llx\n", bbs_offset);
-+				start_addr += mtd.eb_size;
-+			}
-+			bbs_offset += mtd.eb_size;
-+		}
-+	}
-+
- 	if (length)
- 		end_addr = start_addr + length;
- 	if (!length || end_addr > mtd.size)
+ 			case SPI_NOR_DUAL:
+-				nor->read_opcode = SPINOR_OP_READ4_1_1_2;
++				nor->read_opcode = SPINOR_OP_READ_1_1_2_4B;
+ 				break;
+ 			case SPI_NOR_FAST:
+-				nor->read_opcode = SPINOR_OP_READ4_FAST;
++				nor->read_opcode = SPINOR_OP_READ_FAST_4B;
+ 				break;
+ 			case SPI_NOR_NORMAL:
+-				nor->read_opcode = SPINOR_OP_READ4;
++				nor->read_opcode = SPINOR_OP_READ_4B;
+ 				break;
+ 			}
+ 			nor->program_opcode = SPINOR_OP_PP_4B;
+diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+index 14f9dea3173f..d7843fd8c610 100644
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -371,7 +371,7 @@ static int bcm_qspi_bspi_set_flex_mode(struct bcm_qspi *qspi, int width,
+ 			/* default mode, does not need flex_cmd */
+ 			flex_mode = 0;
+ 		else
+-			command = SPINOR_OP_READ4_FAST;
++			command = SPINOR_OP_READ_FAST_4B;
+ 		break;
+ 	case SPI_NBITS_DUAL:
+ 		bpc = 0x00000001;
+@@ -384,7 +384,7 @@ static int bcm_qspi_bspi_set_flex_mode(struct bcm_qspi *qspi, int width,
+ 		} else {
+ 			command = SPINOR_OP_READ_1_1_2;
+ 			if (spans_4byte)
+-				command = SPINOR_OP_READ4_1_1_2;
++				command = SPINOR_OP_READ_1_1_2_4B;
+ 		}
+ 		break;
+ 	case SPI_NBITS_QUAD:
+@@ -399,7 +399,7 @@ static int bcm_qspi_bspi_set_flex_mode(struct bcm_qspi *qspi, int width,
+ 		} else {
+ 			command = SPINOR_OP_READ_1_1_4;
+ 			if (spans_4byte)
+-				command = SPINOR_OP_READ4_1_1_4;
++				command = SPINOR_OP_READ_1_1_4_4B;
+ 		}
+ 		break;
+ 	default:
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 4950b2ef08c0..f2a718030476 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -43,9 +43,13 @@
+ #define SPINOR_OP_WRSR		0x01	/* Write status register 1 byte */
+ #define SPINOR_OP_READ		0x03	/* Read data bytes (low frequency) */
+ #define SPINOR_OP_READ_FAST	0x0b	/* Read data bytes (high frequency) */
+-#define SPINOR_OP_READ_1_1_2	0x3b	/* Read data bytes (Dual SPI) */
+-#define SPINOR_OP_READ_1_1_4	0x6b	/* Read data bytes (Quad SPI) */
++#define SPINOR_OP_READ_1_1_2	0x3b	/* Read data bytes (Dual Output SPI) */
++#define SPINOR_OP_READ_1_2_2	0xbb	/* Read data bytes (Dual I/O SPI) */
++#define SPINOR_OP_READ_1_1_4	0x6b	/* Read data bytes (Quad Output SPI) */
++#define SPINOR_OP_READ_1_4_4	0xeb	/* Read data bytes (Quad I/O SPI) */
+ #define SPINOR_OP_PP		0x02	/* Page program (up to 256 bytes) */
++#define SPINOR_OP_PP_1_1_4	0x32	/* Quad page program */
++#define SPINOR_OP_PP_1_4_4	0x38	/* Quad page program */
+ #define SPINOR_OP_BE_4K		0x20	/* Erase 4KiB block */
+ #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
+ #define SPINOR_OP_BE_32K	0x52	/* Erase 32KiB block */
+@@ -56,11 +60,17 @@
+ #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
+ 
+ /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+-#define SPINOR_OP_READ4		0x13	/* Read data bytes (low frequency) */
+-#define SPINOR_OP_READ4_FAST	0x0c	/* Read data bytes (high frequency) */
+-#define SPINOR_OP_READ4_1_1_2	0x3c	/* Read data bytes (Dual SPI) */
+-#define SPINOR_OP_READ4_1_1_4	0x6c	/* Read data bytes (Quad SPI) */
++#define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
++#define SPINOR_OP_READ_FAST_4B	0x0c	/* Read data bytes (high frequency) */
++#define SPINOR_OP_READ_1_1_2_4B	0x3c	/* Read data bytes (Dual Output SPI) */
++#define SPINOR_OP_READ_1_2_2_4B	0xbc	/* Read data bytes (Dual I/O SPI) */
++#define SPINOR_OP_READ_1_1_4_4B	0x6c	/* Read data bytes (Quad Output SPI) */
++#define SPINOR_OP_READ_1_4_4_4B	0xec	/* Read data bytes (Quad I/O SPI) */
+ #define SPINOR_OP_PP_4B		0x12	/* Page program (up to 256 bytes) */
++#define SPINOR_OP_PP_1_1_4_4B	0x34	/* Quad page program */
++#define SPINOR_OP_PP_1_4_4_4B	0x3e	/* Quad page program */
++#define SPINOR_OP_BE_4K_4B	0x21	/* Erase 4KiB block */
++#define SPINOR_OP_BE_32K_4B	0x5c	/* Erase 32KiB block */
+ #define SPINOR_OP_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
+ 
+ /* Used for SST flashes only. */
 -- 
-2.1.4
+2.7.4
