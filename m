@@ -1,32 +1,25 @@
-Received: from mail-qk0-f181.google.com ([209.85.220.181])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cOpEl-0003ed-TD
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 17:20:33 +0000
-Received: by mail-qk0-f181.google.com with SMTP id a20so17851210qkc.1
- for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2017 09:20:11 -0800 (PST)
-Subject: Re: [PATCH v5 3/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
-To: Florian Fainelli <f.fainelli@gmail.com>,
- linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com
-References: <edc8eaa2-5414-506c-1dad-f2404ef19c81@gmail.com>
- <20170104011417.1496-1-f.fainelli@gmail.com>
- <20170104011417.1496-4-f.fainelli@gmail.com>
-Cc: linux@armlinux.org.uk, nicolas.pitre@linaro.org, panand@redhat.com,
- chris.brandt@renesas.com, arnd@arndb.de, jonathan.austin@arm.com,
- pawel.moll@arm.com, vladimir.murzin@arm.com, mark.rutland@arm.com,
- ard.biesheuvel@linaro.org, keescook@chromium.org, matt@codeblueprint.co.uk,
- labbott@fedoraproject.org, kirill.shutemov@linux.intel.com,
- ben@decadent.org.uk, js07.lee@samsung.com, stefan@agner.ch,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- cyrille.pitchen@atmel.com, richard@nod.at,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, will.deacon@arm.com
-From: Laura Abbott <labbott@redhat.com>
-Message-ID: <54226b74-85c2-d6c8-6e36-05b840d39734@redhat.com>
-Date: Wed, 4 Jan 2017 09:20:01 -0800
+ id 1cOoaS-0007UP-Jb
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 16:38:55 +0000
+Received: by mail-wm0-x242.google.com with SMTP id u144so92334098wmu.0
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2017 08:38:34 -0800 (PST)
+Subject: Re: [PATCH v4 06/15] mtd: nand: kill the MTD_NAND_IDS Kconfig option
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1483448495-31607-7-git-send-email-boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Icenowy Zheng
+ <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <3e5f31dd-c577-faf4-b186-bfdd5498e526@gmail.com>
+Date: Wed, 4 Jan 2017 16:10:17 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170104011417.1496-4-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1483448495-31607-7-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,182 +29,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/03/2017 05:14 PM, Florian Fainelli wrote:
-> x86 has an option: CONFIG_DEBUG_VIRTUAL to do additional checks on
-> virt_to_phys calls. The goal is to catch users who are calling
-> virt_to_phys on non-linear addresses immediately. This includes caller
-> using __virt_to_phys() on image addresses instead of __pa_symbol(). This
-> is a generally useful debug feature to spot bad code (particulary in
-> drivers).
+On 01/03/2017 02:01 PM, Boris Brezillon wrote:
+> MTD_NAND_IDS is selected by MTD_NAND, which makes it useless. Remove the
+> Kconfig option and link nand_ids.o into the nand.o object file.
+> Doing that also prevents adding an extra nand_ids.ko module when MTD_NAND
+> is activated as a module.
 > 
-> Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-This mostly looks good with a few comments below
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
 > ---
->  arch/arm/Kconfig              |  1 +
->  arch/arm/include/asm/memory.h | 16 +++++++++++--
->  arch/arm/mm/Makefile          |  1 +
->  arch/arm/mm/physaddr.c        | 55 +++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 71 insertions(+), 2 deletions(-)
->  create mode 100644 arch/arm/mm/physaddr.c
+>  arch/cris/arch-v32/drivers/Kconfig | 1 -
+>  drivers/mtd/nand/Kconfig           | 4 ----
+>  drivers/mtd/nand/Makefile          | 3 +--
+>  3 files changed, 1 insertion(+), 7 deletions(-)
 > 
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index 5fab553fd03a..4700294f4e09 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -2,6 +2,7 @@ config ARM
->  	bool
->  	default y
->  	select ARCH_CLOCKSOURCE_DATA
-> +	select ARCH_HAS_DEBUG_VIRTUAL
->  	select ARCH_HAS_DEVMEM_IS_ALLOWED
->  	select ARCH_HAS_ELF_RANDOMIZE
->  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-> diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
-> index bee7511c5098..d90300193adf 100644
-> --- a/arch/arm/include/asm/memory.h
-> +++ b/arch/arm/include/asm/memory.h
-> @@ -213,7 +213,7 @@ extern const void *__pv_table_begin, *__pv_table_end;
->  	: "r" (x), "I" (__PV_BITS_31_24)		\
->  	: "cc")
+> diff --git a/arch/cris/arch-v32/drivers/Kconfig b/arch/cris/arch-v32/drivers/Kconfig
+> index 2735eb7671a5..b7cd6b9209a9 100644
+> --- a/arch/cris/arch-v32/drivers/Kconfig
+> +++ b/arch/cris/arch-v32/drivers/Kconfig
+> @@ -136,7 +136,6 @@ config ETRAX_NANDFLASH
+>  	bool "NAND flash support"
+>  	depends on ETRAX_ARCH_V32
+>  	select MTD_NAND
+> -	select MTD_NAND_IDS
+>  	help
+>  	  This option enables MTD mapping of NAND flash devices.  Needed to use
+>  	  NAND flash memories.  If unsure, say Y.
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 353a9ddf6b97..69f9b03c372e 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -13,7 +13,6 @@ config MTD_NAND_ECC_SMC
+>  menuconfig MTD_NAND
+>  	tristate "NAND Device Support"
+>  	depends on MTD
+> -	select MTD_NAND_IDS
+>  	select MTD_NAND_ECC
+>  	help
+>  	  This enables support for accessing all type of NAND flash
+> @@ -109,9 +108,6 @@ config MTD_NAND_OMAP_BCH
+>  config MTD_NAND_OMAP_BCH_BUILD
+>  	def_tristate MTD_NAND_OMAP2 && MTD_NAND_OMAP_BCH
 >  
-> -static inline phys_addr_t __virt_to_phys(unsigned long x)
-> +static inline phys_addr_t __virt_to_phys_nodebug(unsigned long x)
->  {
->  	phys_addr_t t;
+> -config MTD_NAND_IDS
+> -	tristate
+> -
+>  config MTD_NAND_RICOH
+>  	tristate "Ricoh xD card reader"
+>  	default n
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index 19a66e404d5b..bfd5d12b9ade 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -5,7 +5,6 @@
+>  obj-$(CONFIG_MTD_NAND)			+= nand.o
+>  obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
+>  obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
+> -obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o
+>  obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
 >  
-> @@ -245,7 +245,7 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
->  #define PHYS_OFFSET	PLAT_PHYS_OFFSET
->  #define PHYS_PFN_OFFSET	((unsigned long)(PHYS_OFFSET >> PAGE_SHIFT))
+>  obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
+> @@ -61,4 +60,4 @@ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
+>  obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+>  obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
 >  
-> -static inline phys_addr_t __virt_to_phys(unsigned long x)
-> +static inline phys_addr_t __virt_to_phys_nodebug(unsigned long x)
->  {
->  	return (phys_addr_t)x - PAGE_OFFSET + PHYS_OFFSET;
->  }
-> @@ -261,6 +261,16 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
->  	((((unsigned long)(kaddr) - PAGE_OFFSET) >> PAGE_SHIFT) + \
->  	 PHYS_PFN_OFFSET)
->  
-> +#define __pa_symbol_nodebug(x)	__virt_to_phys_nodebug((x))
-> +
-> +#ifdef CONFIG_DEBUG_VIRTUAL
-> +extern phys_addr_t __virt_to_phys(unsigned long x);
-> +extern phys_addr_t __phys_addr_symbol(unsigned long x);
-> +#else
-> +#define __virt_to_phys(x)	__virt_to_phys_nodebug(x)
-> +#define __phys_addr_symbol(x)	__pa_symbol_nodebug(x)
-> +#endif
-> +
->  /*
->   * These are *only* valid on the kernel direct mapped RAM memory.
->   * Note: Drivers should NOT use these.  They are the wrong
-> @@ -283,9 +293,11 @@ static inline void *phys_to_virt(phys_addr_t x)
->   * Drivers should NOT use these either.
->   */
->  #define __pa(x)			__virt_to_phys((unsigned long)(x))
-> +#define __pa_symbol(x)		__phys_addr_symbol(RELOC_HIDE((unsigned long)(x), 0))
->  #define __va(x)			((void *)__phys_to_virt((phys_addr_t)(x)))
->  #define pfn_to_kaddr(pfn)	__va((phys_addr_t)(pfn) << PAGE_SHIFT)
->  
-> +
-
-Extra blank here
-
->  extern long long arch_phys_to_idmap_offset;
->  
->  /*
-> diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
-> index e8698241ece9..b3dea80715b4 100644
-> --- a/arch/arm/mm/Makefile
-> +++ b/arch/arm/mm/Makefile
-> @@ -14,6 +14,7 @@ endif
->  
->  obj-$(CONFIG_ARM_PTDUMP)	+= dump.o
->  obj-$(CONFIG_MODULES)		+= proc-syms.o
-> +obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
->  
->  obj-$(CONFIG_ALIGNMENT_TRAP)	+= alignment.o
->  obj-$(CONFIG_HIGHMEM)		+= highmem.o
-> diff --git a/arch/arm/mm/physaddr.c b/arch/arm/mm/physaddr.c
-> new file mode 100644
-> index 000000000000..f10bdcbcb155
-> --- /dev/null
-> +++ b/arch/arm/mm/physaddr.c
-> @@ -0,0 +1,55 @@
-> +#include <linux/bug.h>
-> +#include <linux/export.h>
-> +#include <linux/types.h>
-> +#include <linux/mmdebug.h>
-> +#include <linux/mm.h>
-> +
-> +#include <asm/sections.h>
-> +#include <asm/memory.h>
-> +#include <asm/fixmap.h>
-> +#include <asm/dma.h>
-> +
-> +#include "mm.h"
-> +
-> +static inline bool __virt_addr_valid(unsigned long x)
-> +{
-> +	/* high_memory does not get immediately defined, and there
-> +	 * are early callers of __pa() against PAGE_OFFSET
-> +	 */
-
-Nit: All the comments in this file should have the text starting on
-the next line after the /*
-
-> +	if (!high_memory && x >= PAGE_OFFSET)
-> +		return true;
-> +
-> +	if (high_memory && x >= PAGE_OFFSET && x < (unsigned long)high_memory)
-> +		return true;
-> +
-> +	/* ARM uses the default per-CPU allocation routing which forces us to
-> +	 * have an explicit check here to avoid a false positive
-> +	 */
-
-This comment isn't fully descriptive, MAX_DMA_ADDRESS could be used in more
-places than just per-CPU allocation. Suggestion:
-
-/*
- * MAX_DMA_ADDRESS is a virtual address that may not correspond to an actual
- * physical address. Enough code relies on __pa(MAX_DMA_ADDRESS) that we just
- * need to work around it and always return true.
- */
-
-> +	if (x == MAX_DMA_ADDRESS)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +phys_addr_t __virt_to_phys(unsigned long x)
-> +{
-> +	WARN(!__virt_addr_valid(x),
-> +	     "virt_to_phys used for non-linear address: %pK (%pS)\n",
-> +	     (void *)x,
-> +	     (void *)x);
-> +
-> +	return __virt_to_phys_nodebug(x);
-> +}
-> +EXPORT_SYMBOL(__virt_to_phys);
-> +
-> +phys_addr_t __phys_addr_symbol(unsigned long x)
-> +{
-> +	/* This is bounds checking against the kernel image only.
-> +	 * __pa_symbol should only be used on kernel symbol addresses.
-> +	 */
-> +	VIRTUAL_BUG_ON(x < (unsigned long)KERNEL_START ||
-> +		       x > (unsigned long)KERNEL_END);
-> +
-> +	return __pa_symbol_nodebug(x);
-> +}
-> +EXPORT_SYMBOL(__phys_addr_symbol);
+> -nand-objs := nand_base.o nand_bbt.o nand_timings.o
+> +nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
 > 
 
-With those comments, you can add
 
-Acked-by: Laura Abbott <labbott@redhat.com>
+-- 
+Best regards,
+Marek Vasut
