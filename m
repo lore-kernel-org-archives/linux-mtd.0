@@ -1,30 +1,43 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cOphi-0006jC-5k
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 17:50:29 +0000
-Date: Wed, 4 Jan 2017 18:50:05 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>, Mark Rutland
- <mark.rutland@arm.com>, <devicetree@vger.kernel.org>, "Richard Weinberger"
- <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 1/4] mtd: spi-nor: add memory controllers for the
- Aspeed AST2500 SoC
-Message-ID: <20170104185005.7fcafd2d@bbrezillon>
-In-Reply-To: <4c5cf674-06f9-ad6b-05bf-a1d39aaa7ed5@atmel.com>
-References: <1481557252-13656-1-git-send-email-clg@kaod.org>
- <1481557252-13656-2-git-send-email-clg@kaod.org>
- <5566c62d-cc72-f207-e1dd-5a59e6947c24@wedev4u.fr>
- <a7cb781c-a4a8-f0f7-e7db-5cd9f19da0aa@kaod.org>
- <2bec1e91-a196-b894-fb66-590b8f4f35c3@atmel.com>
- <645db8c4-7f3c-f8bf-ddd9-3f513ce2ed14@kaod.org>
- <4c5cf674-06f9-ad6b-05bf-a1d39aaa7ed5@atmel.com>
+Subject: Re: [PATCH v5 2/4] ARM: Define KERNEL_START and KERNEL_END
+To: Hartley Sweeten <HartleyS@visionengravers.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "catalin.marinas@arm.com" <catalin.marinas@arm.com>
+References: <edc8eaa2-5414-506c-1dad-f2404ef19c81@gmail.com>
+ <20170104011417.1496-1-f.fainelli@gmail.com>
+ <20170104011417.1496-3-f.fainelli@gmail.com>
+ <SN1PR0101MB15656D0B421E37BC4813F560D0610@SN1PR0101MB1565.prod.exchangelabs.com>
+Cc: "nicolas.pitre@linaro.org" <nicolas.pitre@linaro.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "matt@codeblueprint.co.uk" <matt@codeblueprint.co.uk>,
+ "will.deacon@arm.com" <will.deacon@arm.com>,
+ "stefan@agner.ch" <stefan@agner.ch>,
+ "chris.brandt@renesas.com" <chris.brandt@renesas.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
+ "panand@redhat.com" <panand@redhat.com>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "pawel.moll@arm.com" <pawel.moll@arm.com>, "richard@nod.at"
+ <richard@nod.at>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+ "ben@decadent.org.uk" <ben@decadent.org.uk>,
+ "vladimir.murzin@arm.com" <vladimir.murzin@arm.com>,
+ "keescook@chromium.org" <keescook@chromium.org>,
+ "arnd@arndb.de" <arnd@arndb.de>,
+ "labbott@fedoraproject.org" <labbott@fedoraproject.org>,
+ "jonathan.austin@arm.com" <jonathan.austin@arm.com>,
+ "ard.biesheuvel@linaro.org" <ard.biesheuvel@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+ "js07.lee@samsung.com" <js07.lee@samsung.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <764f7a9d-243b-617d-3bb6-30b4e5bf4025@gmail.com>
+Date: Wed, 4 Jan 2017 09:36:39 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <SN1PR0101MB15656D0B421E37BC4813F560D0610@SN1PR0101MB1565.prod.exchangelabs.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,97 +47,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cyrille, C=C3=A9dric,
+On 01/04/2017 07:58 AM, Hartley Sweeten wrote:
+> On Tuesday, January 03, 2017 6:14 PM, Florian Fainelli wrote:
+>>
+>> In preparation for adding CONFIG_DEBUG_VIRTUAL support, define a set of
+>> common constants: KERNEL_START and KERNEL_END which abstract
+>> CONFIG_XIP_KERNEL vs. !CONFIG_XIP_KERNEL. Update the code where
+>> relevant.
+>>
+>> Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
+>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>> ---
+>>  arch/arm/include/asm/memory.h | 7 +++++++
+>>  arch/arm/mm/init.c            | 7 ++-----
+>>  arch/arm/mm/mmu.c             | 6 +-----
+>>  3 files changed, 10 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
+>> index 76cbd9c674df..bee7511c5098 100644
+>> --- a/arch/arm/include/asm/memory.h
+>> +++ b/arch/arm/include/asm/memory.h
+>> @@ -111,6 +111,13 @@
+>>  
+>>  #endif /* !CONFIG_MMU */
+>>  
+>> +#ifdef CONFIG_XIP_KERNEL
+>> +#define KERNEL_START		_sdata
+>> +#else
+>> +#define KERNEL_START		_stext
+>> +#endif
+>> +#define KERNEL_END		_end
+>> +
+>>  /*
+>>   * We fix the TCM memories max 32 KiB ITCM resp DTCM at these
+>>   * locations
+>> diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+>> index 370581aeb871..c87d0d5b65f2 100644
+>> --- a/arch/arm/mm/init.c
+>> +++ b/arch/arm/mm/init.c
+>> @@ -230,11 +230,8 @@ phys_addr_t __init arm_memblock_steal(phys_addr_t size, phys_addr_t align)
+>>  void __init arm_memblock_init(const struct machine_desc *mdesc)
+>>  {
+>>  	/* Register the kernel text, kernel data and initrd with memblock. */
+>> -#ifdef CONFIG_XIP_KERNEL
+>> -	memblock_reserve(__pa(_sdata), _end - _sdata);
+>> -#else
+>> -	memblock_reserve(__pa(_stext), _end - _stext);
+>> -#endif
+>> +	memblock_reserve(__pa(KERNEL_START), _end - KERNEL_START);
+> 
+> Shouldn't the '_end' above be 'KERNEL_END'?
 
-On Wed, 4 Jan 2017 15:52:07 +0100
-Cyrille Pitchen <cyrille.pitchen@atmel.com> wrote:
+I sort of intentionally not changed that line in order not to make the
+line exceed 80 columns and make checkpatch whine about it, but if you
+think this is clearer, I can add this change, since I need to respin to
+address Laura's feedback anyway.
 
-> >  =20
-> >> Anyway, since the review is done now, on my side I won't ask you to re=
-move
-> >> or split the support of the 'Command' mode in a separated patch.
-> >> I let you do as you want, if it help you to introduce some part of the
-> >> support of this 'Command' mode now even if not completed yet, no probl=
-em on
-> >> my side :)
-> >>
-> >> I was just giving you some pieces of advice for the next time if you w=
-ant
-> >> to speed up the review of another patch introducing new features.
-> >>
-> >> However, I will just ask you one more version handling the dummy cycles
-> >> properly as it would help us for the global maintenance of the spi-nor
-> >> subsystem. This is the only mandatory modification I ask you, after th=
-at I
-> >> think it would be ok for me and since Marek has already reviewed your
-> >> driver, it would be ready to be merged into the spi-nor tree. =20
-> >=20
-> > Sending a v5 which should address your comments.=20
-> >=20
-> > I have removed the label property and will start a new thread in the=20
-> > topic. Any hints on which binding we could add this label prop ? =20
-> > =20
->=20
-> Here I will provide just few thoughts about this new DT property. I don't
-> pretend this is what should be done. I still think other mtd maintainers
-> should be involved to discuss this topic.
->=20
-> First the DT property name "label" sounds good to me: it is consistent wi=
-th
-> "label" DT property used to name mtd partitions. However, I don't think it
-> should be documented in jedec,spi-nor.txt but *maybe* in partition.txt as
-> the purpose of this new DT property seems very close to the "label"
-> property of partition nodes: let's think about some hard-disk device
-> (/dev/sda) and its partition devices (/dev/sdaX).
-
-Hm, partition.txt may not be appropriate here. We're not documenting
-the MTD partition binding, but the MTD device one. Maybe we should
-create mtd.txt and put all generic MTD dev properties here.
-
->=20
-> Besides, the concept of this memory label is not limited to SPI NOR but
-> could also apply to NAND memories or any other MTD handled memories.
-
-Definitely. Actually I think I'll need that for the Atmel NAND
-controller driver rework I'm currently working on, to keep mtdparts
-parser happy even after changing the NAND device naming scheme.
-
-> Hence the DT property might be handled by drivers/mtd/ofpart.c instead of
-> being handled by spi-nor.c or by each SPI NOR memory controller driver.
-
-Actually, that could be done at the mtdcore level in
-mtd_set_dev_defaults() [1].
-
->=20
-> Finally, I guess we should take time to discuss and all agree what should
-> be done precisely before introducing a new DT property because one general
-> rule with DTB files is that users should be able to update their kernel
-> image (zImage, uImage, ...) without changing their DTB: device trees shou=
-ld
-> be backward compatible. Hence if we make a wrong choice today, we are
-> likely to have to live with it and keep supporting that bad choice.
-
-Rob already acked the patch, so, if all MTD maintainers agree that this
-new property is acceptable, we should be fine ;-).
-
->=20
-> Anyway, maybe you could describe a little bit your use case; what you
-> intend to do with this label from you userspace application.
-
-Here is mine: I want the mtdparts parser to work correctly with
-existing bootloaders even after changing the NAND device naming scheme
-to allow one NAND controller to expose multiple devices.
-
-Current naming scheme: NAND device name is always atmel_nand
-New naming sheme: atmel-nand.%d where %d is replaced by the CS line
-number the NAND device is connected too.
-
-Also note that it's easier to refer to a flash device by it's purpose
-(like System-firmware in Cedric's example) rather than the controller
-CS line this device is connected to.
-
-Regards,
-
-Boris
-
-[1]http://code.bulix.org/p019ah-107877
+Thanks!
+-- 
+Florian
