@@ -1,25 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cOp83-0002nQ-2R
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 17:13:37 +0000
-Date: Wed, 4 Jan 2017 18:13:14 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 10/15] mtd: nand: move Micron specific init logic in
- nand_micron.c
-Message-ID: <20170104181314.4f9a0c40@bbrezillon>
-In-Reply-To: <51f2f7a3-56a7-1117-ab15-dd8eb59a4373@gmail.com>
-References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
- <1483448495-31607-11-git-send-email-boris.brezillon@free-electrons.com>
- <51f2f7a3-56a7-1117-ab15-dd8eb59a4373@gmail.com>
+Received: from mail-qk0-f181.google.com ([209.85.220.181])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cOpEl-0003ed-TD
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 17:20:33 +0000
+Received: by mail-qk0-f181.google.com with SMTP id a20so17851210qkc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2017 09:20:11 -0800 (PST)
+Subject: Re: [PATCH v5 3/4] ARM: Add support for CONFIG_DEBUG_VIRTUAL
+To: Florian Fainelli <f.fainelli@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com
+References: <edc8eaa2-5414-506c-1dad-f2404ef19c81@gmail.com>
+ <20170104011417.1496-1-f.fainelli@gmail.com>
+ <20170104011417.1496-4-f.fainelli@gmail.com>
+Cc: linux@armlinux.org.uk, nicolas.pitre@linaro.org, panand@redhat.com,
+ chris.brandt@renesas.com, arnd@arndb.de, jonathan.austin@arm.com,
+ pawel.moll@arm.com, vladimir.murzin@arm.com, mark.rutland@arm.com,
+ ard.biesheuvel@linaro.org, keescook@chromium.org, matt@codeblueprint.co.uk,
+ labbott@fedoraproject.org, kirill.shutemov@linux.intel.com,
+ ben@decadent.org.uk, js07.lee@samsung.com, stefan@agner.ch,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ cyrille.pitchen@atmel.com, richard@nod.at,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, will.deacon@arm.com
+From: Laura Abbott <labbott@redhat.com>
+Message-ID: <54226b74-85c2-d6c8-6e36-05b840d39734@redhat.com>
+Date: Wed, 4 Jan 2017 09:20:01 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170104011417.1496-4-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +36,182 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 4 Jan 2017 16:15:46 +0100
-Marek Vasut <marek.vasut@gmail.com> wrote:
+On 01/03/2017 05:14 PM, Florian Fainelli wrote:
+> x86 has an option: CONFIG_DEBUG_VIRTUAL to do additional checks on
+> virt_to_phys calls. The goal is to catch users who are calling
+> virt_to_phys on non-linear addresses immediately. This includes caller
+> using __virt_to_phys() on image addresses instead of __pa_symbol(). This
+> is a generally useful debug feature to spot bad code (particulary in
+> drivers).
+> 
+> Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-> On 01/03/2017 02:01 PM, Boris Brezillon wrote:
-> > Move Micron specific initialization logic into nand_micron.c. This is
-> > part of the "separate vendor specific code from core" cleanup process.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>  
-> 
-> [...]
-> 
-> > diff --git a/drivers/mtd/nand/nand_micron.c b/drivers/mtd/nand/nand_micron.c
-> > new file mode 100644
-> > index 000000000000..ddb9adf12c21
-> > --- /dev/null
-> > +++ b/drivers/mtd/nand/nand_micron.c
-> > @@ -0,0 +1,83 @@
-> > +/*
-> > + * Copyright (C) 2013 Boris Brezillon <boris.brezillon@free-electrons.com>  
-> 
-> 2013-2017 ?
+This mostly looks good with a few comments below
 
-2017, indeed.
+> ---
+>  arch/arm/Kconfig              |  1 +
+>  arch/arm/include/asm/memory.h | 16 +++++++++++--
+>  arch/arm/mm/Makefile          |  1 +
+>  arch/arm/mm/physaddr.c        | 55 +++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 71 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/arm/mm/physaddr.c
+> 
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index 5fab553fd03a..4700294f4e09 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -2,6 +2,7 @@ config ARM
+>  	bool
+>  	default y
+>  	select ARCH_CLOCKSOURCE_DATA
+> +	select ARCH_HAS_DEBUG_VIRTUAL
+>  	select ARCH_HAS_DEVMEM_IS_ALLOWED
+>  	select ARCH_HAS_ELF_RANDOMIZE
+>  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+> diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
+> index bee7511c5098..d90300193adf 100644
+> --- a/arch/arm/include/asm/memory.h
+> +++ b/arch/arm/include/asm/memory.h
+> @@ -213,7 +213,7 @@ extern const void *__pv_table_begin, *__pv_table_end;
+>  	: "r" (x), "I" (__PV_BITS_31_24)		\
+>  	: "cc")
+>  
+> -static inline phys_addr_t __virt_to_phys(unsigned long x)
+> +static inline phys_addr_t __virt_to_phys_nodebug(unsigned long x)
+>  {
+>  	phys_addr_t t;
+>  
+> @@ -245,7 +245,7 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
+>  #define PHYS_OFFSET	PLAT_PHYS_OFFSET
+>  #define PHYS_PFN_OFFSET	((unsigned long)(PHYS_OFFSET >> PAGE_SHIFT))
+>  
+> -static inline phys_addr_t __virt_to_phys(unsigned long x)
+> +static inline phys_addr_t __virt_to_phys_nodebug(unsigned long x)
+>  {
+>  	return (phys_addr_t)x - PAGE_OFFSET + PHYS_OFFSET;
+>  }
+> @@ -261,6 +261,16 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
+>  	((((unsigned long)(kaddr) - PAGE_OFFSET) >> PAGE_SHIFT) + \
+>  	 PHYS_PFN_OFFSET)
+>  
+> +#define __pa_symbol_nodebug(x)	__virt_to_phys_nodebug((x))
+> +
+> +#ifdef CONFIG_DEBUG_VIRTUAL
+> +extern phys_addr_t __virt_to_phys(unsigned long x);
+> +extern phys_addr_t __phys_addr_symbol(unsigned long x);
+> +#else
+> +#define __virt_to_phys(x)	__virt_to_phys_nodebug(x)
+> +#define __phys_addr_symbol(x)	__pa_symbol_nodebug(x)
+> +#endif
+> +
+>  /*
+>   * These are *only* valid on the kernel direct mapped RAM memory.
+>   * Note: Drivers should NOT use these.  They are the wrong
+> @@ -283,9 +293,11 @@ static inline void *phys_to_virt(phys_addr_t x)
+>   * Drivers should NOT use these either.
+>   */
+>  #define __pa(x)			__virt_to_phys((unsigned long)(x))
+> +#define __pa_symbol(x)		__phys_addr_symbol(RELOC_HIDE((unsigned long)(x), 0))
+>  #define __va(x)			((void *)__phys_to_virt((phys_addr_t)(x)))
+>  #define pfn_to_kaddr(pfn)	__va((phys_addr_t)(pfn) << PAGE_SHIFT)
+>  
+> +
 
-> 
-> > + * This program is free software; you can redistribute it and/or modify
-> > + * it under the terms of the GNU General Public License as published by
-> > + * the Free Software Foundation; either version 2 of the License, or
-> > + * (at your option) any later version.
-> > + *
-> > + * This program is distributed in the hope that it will be useful,
-> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > + * GNU General Public License for more details.
-> > + */
-> > +
-> > +#include <linux/mtd/nand.h>
-> > +
-> > +struct nand_onfi_vendor_micron {
-> > +	u8 two_plane_read;
-> > +	u8 read_cache;
-> > +	u8 read_unique_id;
-> > +	u8 dq_imped;
-> > +	u8 dq_imped_num_settings;
-> > +	u8 dq_imped_feat_addr;
-> > +	u8 rb_pulldown_strength;
-> > +	u8 rb_pulldown_strength_feat_addr;
-> > +	u8 rb_pulldown_strength_num_settings;
-> > +	u8 otp_mode;
-> > +	u8 otp_page_start;
-> > +	u8 otp_data_prot_addr;
-> > +	u8 otp_num_pages;
-> > +	u8 otp_feat_addr;
-> > +	u8 read_retry_options;
-> > +	u8 reserved[72];
-> > +	u8 param_revision;
-> > +} __packed;  
-> 
-> Is this __packed really needed?
+Extra blank here
+
+>  extern long long arch_phys_to_idmap_offset;
+>  
+>  /*
+> diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
+> index e8698241ece9..b3dea80715b4 100644
+> --- a/arch/arm/mm/Makefile
+> +++ b/arch/arm/mm/Makefile
+> @@ -14,6 +14,7 @@ endif
+>  
+>  obj-$(CONFIG_ARM_PTDUMP)	+= dump.o
+>  obj-$(CONFIG_MODULES)		+= proc-syms.o
+> +obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
+>  
+>  obj-$(CONFIG_ALIGNMENT_TRAP)	+= alignment.o
+>  obj-$(CONFIG_HIGHMEM)		+= highmem.o
+> diff --git a/arch/arm/mm/physaddr.c b/arch/arm/mm/physaddr.c
+> new file mode 100644
+> index 000000000000..f10bdcbcb155
+> --- /dev/null
+> +++ b/arch/arm/mm/physaddr.c
+> @@ -0,0 +1,55 @@
+> +#include <linux/bug.h>
+> +#include <linux/export.h>
+> +#include <linux/types.h>
+> +#include <linux/mmdebug.h>
+> +#include <linux/mm.h>
+> +
+> +#include <asm/sections.h>
+> +#include <asm/memory.h>
+> +#include <asm/fixmap.h>
+> +#include <asm/dma.h>
+> +
+> +#include "mm.h"
+> +
+> +static inline bool __virt_addr_valid(unsigned long x)
+> +{
+> +	/* high_memory does not get immediately defined, and there
+> +	 * are early callers of __pa() against PAGE_OFFSET
+> +	 */
+
+Nit: All the comments in this file should have the text starting on
+the next line after the /*
+
+> +	if (!high_memory && x >= PAGE_OFFSET)
+> +		return true;
+> +
+> +	if (high_memory && x >= PAGE_OFFSET && x < (unsigned long)high_memory)
+> +		return true;
+> +
+> +	/* ARM uses the default per-CPU allocation routing which forces us to
+> +	 * have an explicit check here to avoid a false positive
+> +	 */
+
+This comment isn't fully descriptive, MAX_DMA_ADDRESS could be used in more
+places than just per-CPU allocation. Suggestion:
+
+/*
+ * MAX_DMA_ADDRESS is a virtual address that may not correspond to an actual
+ * physical address. Enough code relies on __pa(MAX_DMA_ADDRESS) that we just
+ * need to work around it and always return true.
+ */
+
+> +	if (x == MAX_DMA_ADDRESS)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+> +phys_addr_t __virt_to_phys(unsigned long x)
+> +{
+> +	WARN(!__virt_addr_valid(x),
+> +	     "virt_to_phys used for non-linear address: %pK (%pS)\n",
+> +	     (void *)x,
+> +	     (void *)x);
+> +
+> +	return __virt_to_phys_nodebug(x);
+> +}
+> +EXPORT_SYMBOL(__virt_to_phys);
+> +
+> +phys_addr_t __phys_addr_symbol(unsigned long x)
+> +{
+> +	/* This is bounds checking against the kernel image only.
+> +	 * __pa_symbol should only be used on kernel symbol addresses.
+> +	 */
+> +	VIRTUAL_BUG_ON(x < (unsigned long)KERNEL_START ||
+> +		       x > (unsigned long)KERNEL_END);
+> +
+> +	return __pa_symbol_nodebug(x);
+> +}
+> +EXPORT_SYMBOL(__phys_addr_symbol);
 > 
 
-I'm just copying an existing structure. And yes, it's probably unneeded
-since all fields are u8, and the struct size in a multiple of 8 bytes,
-but it shouldn't hurt either. 
+With those comments, you can add
+
+Acked-by: Laura Abbott <labbott@redhat.com>
