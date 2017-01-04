@@ -1,19 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOryz-0001QR-FG
- for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 20:16:26 +0000
-Date: Wed, 4 Jan 2017 21:15:57 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
- <richard@nod.at>, Marek Vasut <marex@denx.de>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: [PULL] mtd: nand: Fixes for 4.10-rc3
-Message-ID: <20170104211557.434b07af@bbrezillon>
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cOrtr-0001M2-8o
+ for linux-mtd@lists.infradead.org; Wed, 04 Jan 2017 20:11:07 +0000
+Received: by mail-pg0-x241.google.com with SMTP id b1so38172295pgc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Jan 2017 12:10:46 -0800 (PST)
+Date: Wed, 4 Jan 2017 12:10:43 -0800
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ jaegeuk@kernel.org, hch@infradead.org, arnd@arndb.de,
+ dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+ adrian.hunter@intel.com, linux-ext4@vger.kernel.org,
+ ebiggers@google.com, rdunlap@infradead.org, david@sigma-star.at
+Subject: Re: [PATCH v2] fscrypt: Factor out bio specific functions
+Message-ID: <20170104201043.GA21696@gmail.com>
+References: <20161219103929.GA16197@infradead.org>
+ <20161219112532.18863-1-richard@nod.at>
+ <20170101214725.g67msbedmpx27waz@thunk.org>
+ <dd8b8365-e84a-7f8e-384d-4900523e761e@nod.at>
+ <20170103142836.no7rp3hphj3czjto@thunk.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170103142836.no7rp3hphj3czjto@thunk.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,61 +32,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Tue, Jan 03, 2017 at 09:28:36AM -0500, Theodore Ts'o wrote:
+> On Tue, Jan 03, 2017 at 10:49:26AM +0100, Richard Weinberger wrote:
+> > Ted,
+> > 
+> > Am 01.01.2017 um 22:47 schrieb Theodore Ts'o:
+> > > On Mon, Dec 19, 2016 at 12:25:32PM +0100, Richard Weinberger wrote:
+> > >> That way we can get rid of the direct dependency on CONFIG_BLOCK.
+> > >>
+> > >> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> > >> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > >> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> > >> Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
+> > >> Signed-off-by: Richard Weinberger <richard@nod.at>
+> > > 
+> > > Applied, thanks.
+> > 
+> > Just to make sure, this fixes a build error and should
+> > go into Linus' tree ASAP.
+> 
+> I didn't consider this a build error since it could be fixed via a
+> config change.  And it is a pretty big patch, even if it is mostly
+> moving (not that git recognized it as such)...
+> 
 
-Here is a fixes PR for 4.10-rc3 (or -rc4 if it's already too late for
--rc3).
+I thought you're supposed to be able to build the kernel no matter how it's
+configured.  If this patch is really too large for 4.10 then perhaps we should
+make FS_ENCRYPTION select CONFIG_BLOCK instead?
 
-The xway and oxnas fixes are fixing bugs introduced before 4.10-rc1. I
-know fixes PRs are supposed to contain only fixes for bugs introduced by
-code merged during the merge window, but I thought it would be good to
-have them applied in this release.
-
-Let me know if this is a problem, and I'll move them to my nand/next and
-resend of PR.
-
-Regards,
-
-Boris
-
-The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
-
-  Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
-
-are available in the git repository at:
-
-  git@github.com:linux-nand/linux.git tags/nand/fixes-for-4.10-rc3
-
-for you to fetch changes up to cf9e1672a66c49ed8903c01b4c380a2f2dc91b40:
-
-  mtd: nand: lpc32xx: fix invalid error handling of a requested irq (2017-01-04 20:50:18 +0100)
-
-----------------------------------------------------------------
-Fixes for 4.10-rc3
-- Forbid compiling xway NAND controller driver as a module
-- Fix tango NAND DT binding and make sure the controller is in a clean
-  state at probe time
-- Add dependency on HAS_IOMEM to the oxnas NAND driver
-- Fix irq number validity check in the lpc32xx driver
-
-----------------------------------------------------------------
-Hauke Mehrtens (2):
-      mtd: nand: xway: disable module support
-      mtd: nand: xway: fix build because of module functions
-
-Marc Gonzalez (2):
-      mtd: nand: tango: Update DT binding description
-      mtd: nand: tango: Reset pbus to raw mode in probe
-
-Randy Dunlap (1):
-      mtd: nand: oxnas_nand: fix build errors on arch/um, require HAS_IOMEM
-
-Vladimir Zapolskiy (1):
-      mtd: nand: lpc32xx: fix invalid error handling of a requested irq
-
- Documentation/devicetree/bindings/mtd/tango-nand.txt | 6 +++---
- drivers/mtd/nand/Kconfig                             | 3 ++-
- drivers/mtd/nand/lpc32xx_mlc.c                       | 2 +-
- drivers/mtd/nand/tango_nand.c                        | 4 +++-
- drivers/mtd/nand/xway_nand.c                         | 5 +----
- 5 files changed, 10 insertions(+), 10 deletions(-)
+Eric
