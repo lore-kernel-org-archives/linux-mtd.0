@@ -1,29 +1,21 @@
-Received: from mail-pg0-x22f.google.com ([2607:f8b0:400e:c05::22f])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPCHM-0000O3-S3
- for linux-mtd@lists.infradead.org; Thu, 05 Jan 2017 17:56:46 +0000
-Received: by mail-pg0-x22f.google.com with SMTP id i5so177880981pgh.2
- for <linux-mtd@lists.infradead.org>; Thu, 05 Jan 2017 09:56:23 -0800 (PST)
-Date: Thu, 5 Jan 2017 09:56:20 -0800
-From: Brian Norris <briannorris@chromium.org>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Teresa Remmet <t.remmet@phytec.de>, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
- Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Adam Ford <aford173@gmail.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/6] ARM: dts: am335x-phycore-som: Update NAND partition
- table
-Message-ID: <20170105175619.GA56877@google.com>
-References: <1483627851-17996-1-git-send-email-t.remmet@phytec.de>
- <1483627851-17996-2-git-send-email-t.remmet@phytec.de>
- <20170105153637.GA4310@atomide.com>
- <20170105171845.GK4310@atomide.com>
+Date: Thu, 5 Jan 2017 09:58:51 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Vladimir Zapolskiy <vz@mleia.com>, Richard Weinberger <richard@nod.at>,
+ Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: lpc32xx: fix invalid error handling of a
+ requested irq
+Message-ID: <20170105175851.GC50438@google.com>
+References: <20161205014710.2015-1-vz@mleia.com>
+ <20170103101259.0ec123df@bbrezillon>
+ <72ab91ec-a919-af42-8a82-f5d99b245edf@mleia.com>
+ <20170103114746.141d7d7d@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170105171845.GK4310@atomide.com>
+In-Reply-To: <20170103114746.141d7d7d@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,50 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 05, 2017 at 09:18:45AM -0800, Tony Lindgren wrote:
-> * Tony Lindgren <tony@atomide.com> [170105 07:37]:
-> > * Teresa Remmet <t.remmet@phytec.de> [170105 06:57]:
-> > > To improve NAND safety we updated the partition layout.
-> > > Added barebox backup partition and removed kernel and oftree
-> > > partition. They are kept in ubi now.
+On Tue, Jan 03, 2017 at 11:47:46AM +0100, Boris Brezillon wrote:
+> On Tue, 3 Jan 2017 12:16:26 +0200
+> Vladimir Zapolskiy <vz@mleia.com> wrote:
+> > On 01/03/2017 11:12 AM, Boris Brezillon wrote:
+> > > Do you need to backport this fix to stable releases? If that's the
+> > > case, I'll add the Cc: stable tag when applying.  
 > > 
-> > What about the users with earlier partition tables?
+> > that will be great if you can add
 > > 
-> > Please read about "flag day" changes, typically they are not
-> > acceptable.
+> > Cc: stable@kernel.org # v4.7+
+> > 
+> > Please feel free to add also the tag
+> > 
+> > Fixes: 8cb17b5ed017 ("irqchip: Add LPC32xx interrupt controller driver")
 > 
-> Adding Brian and Adam to Cc. Can you guys come up with some
-> solution on this?
+> Applied to nand/next (this patch will appear in 4.11).
 
-I don't have much context for this thread, and no I don't plan to solve
-your problems for you. But I can provide tips!
+For next time, checkpatch noticed that you got the stable address wrong:
 
-> I'm suggesting we leave the kernel nodes empty and let u-boot
-> populate them, so maybe you guys can discuss this on the related
-> lists.
-
-That's an option. I've worked with platforms that did something like
-this, and that's really one of the only ways you can handle putting
-partition information in the device tree. You're really hamstringing
-yourself when you put all the partition information in the device tree.
-And it's just dumb once that gets codified in the kernel source tree.
-
-The best solution would be to try to migrate away from static device
-tree representations of partition info entirely. UBI volumes are best
-where possible. If not, then some other kind of on-flash data structures
-(along the lines of a GPT) with a corresponding MTD partition parser is
-an OK alternative. Unfortunately, there isn't any good standard format
-for this on MTD, so it's typically all custom -- and so people use the
-easiest approach: device tree. And it's even more difficult with NAND,
-which has reliability problems, especially with static data (e.g., read
-disturb).
-
-Anyway, the parser solution is helpful only if one can properly fix the
-"flag day" first. And it requires a little bit more work to be generally
-useful; I posted some work for this over a year ago, but bikeshedding
-brought it down.
-
-> The rest of the series looks fine to me so applying it into
-> omap-for-v4.11/dt.
+ERROR:STABLE_ADDRESS: The 'stable' address should be 'stable@vger.kernel.org'
+#17: Cc: stable@kernel.org # v4.7+
 
 Brian
