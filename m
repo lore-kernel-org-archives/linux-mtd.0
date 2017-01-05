@@ -1,21 +1,16 @@
 Received: from smtp6-v.fe.bosch.de ([2a03:cc00:ff0:100::2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cP80k-0005zP-GW
- for linux-mtd@lists.infradead.org; Thu, 05 Jan 2017 13:23:20 +0000
+ id 1cP82Z-0006lq-Vz
+ for linux-mtd@lists.infradead.org; Thu, 05 Jan 2017 13:25:13 +0000
 From: "Anurag Raghavan (RBEI/ETW11)" <Raghavan.Anurag@in.bosch.com>
 To: Richard Weinberger <richard@nod.at>, Dan Carpenter
  <dan.carpenter@oracle.com>, David Gstir <david@sigma-star.at>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "Adrian
  Hunter" <adrian.hunter@intel.com>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: RE: [patch] ubifs: potential uninitialized variable in
- truncate_data_node()
-Date: Thu, 5 Jan 2017 13:22:51 +0000
-Message-ID: <62c47e72561e472da08a7ccfed5cf3d9@SGPMBX1023.APAC.bosch.com>
-References: <20170105124635.GA8525@elgon.mountain>
- <787dbd07f1ed419ca37f3bb0c6f6c84a@SGPMBX1023.APAC.bosch.com>
- <5f927d38-c92c-55eb-f2a7-bba3b5f0ebd8@nod.at>
-In-Reply-To: <5f927d38-c92c-55eb-f2a7-bba3b5f0ebd8@nod.at>
+Subject: ubi_io_read: error -74 (ECC error) 
+Date: Thu, 5 Jan 2017 13:24:45 +0000
+Message-ID: <c94b83bade834f249fffc9903a75fba3@SGPMBX1023.APAC.bosch.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -28,6 +23,7 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
 
 
 > Hi All,
