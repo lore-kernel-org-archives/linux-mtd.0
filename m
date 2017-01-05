@@ -1,27 +1,29 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mail-pg0-x22f.google.com ([2607:f8b0:400e:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPAgV-000485-QH
- for linux-mtd@lists.infradead.org; Thu, 05 Jan 2017 16:14:37 +0000
-Date: Thu, 5 Jan 2017 18:07:38 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Immutable branch between MFD and MTD due for the
- v4.11 merge window
-Message-ID: <20170105160738.GH3353@lahna.fi.intel.com>
-References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
- <20170103173750.GA27589@dell>
+ id 1cPCHM-0000O3-S3
+ for linux-mtd@lists.infradead.org; Thu, 05 Jan 2017 17:56:46 +0000
+Received: by mail-pg0-x22f.google.com with SMTP id i5so177880981pgh.2
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Jan 2017 09:56:23 -0800 (PST)
+Date: Thu, 5 Jan 2017 09:56:20 -0800
+From: Brian Norris <briannorris@chromium.org>
+To: Tony Lindgren <tony@atomide.com>
+Cc: Teresa Remmet <t.remmet@phytec.de>, linux-omap@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Adam Ford <aford173@gmail.com>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/6] ARM: dts: am335x-phycore-som: Update NAND partition
+ table
+Message-ID: <20170105175619.GA56877@google.com>
+References: <1483627851-17996-1-git-send-email-t.remmet@phytec.de>
+ <1483627851-17996-2-git-send-email-t.remmet@phytec.de>
+ <20170105153637.GA4310@atomide.com>
+ <20170105171845.GK4310@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170103173750.GA27589@dell>
+In-Reply-To: <20170105171845.GK4310@atomide.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +33,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 03, 2017 at 05:37:50PM +0000, Lee Jones wrote:
-> MTD Maintainers,
+On Thu, Jan 05, 2017 at 09:18:45AM -0800, Tony Lindgren wrote:
+> * Tony Lindgren <tony@atomide.com> [170105 07:37]:
+> > * Teresa Remmet <t.remmet@phytec.de> [170105 06:57]:
+> > > To improve NAND safety we updated the partition layout.
+> > > Added barebox backup partition and removed kernel and oftree
+> > > partition. They are kept in ubi now.
+> > 
+> > What about the users with earlier partition tables?
+> > 
+> > Please read about "flag day" changes, typically they are not
+> > acceptable.
 > 
-> Enjoy!
-> 
-> The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
-> 
->   Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-mtd-v4.11
-> 
-> for you to fetch changes up to 87eb832ae9748fab00588b98c2e33e89de065438:
-> 
->   mfd: lpc_ich: Add support for Intel Apollo Lake SoC (2017-01-03 17:34:16 +0000)
-> 
-> ----------------------------------------------------------------
-> Immutable branch between MFD and MTD due for the v4.11 merge window
-> 
-> ----------------------------------------------------------------
-> Mika Westerberg (3):
->       spi-nor: Add support for Intel SPI serial flash controller
->       mfd: lpc_ich: Add support for SPI serial flash host controller
->       mfd: lpc_ich: Add support for Intel Apollo Lake SoC
+> Adding Brian and Adam to Cc. Can you guys come up with some
+> solution on this?
 
-Thanks Lee for picking these up!
+I don't have much context for this thread, and no I don't plan to solve
+your problems for you. But I can provide tips!
+
+> I'm suggesting we leave the kernel nodes empty and let u-boot
+> populate them, so maybe you guys can discuss this on the related
+> lists.
+
+That's an option. I've worked with platforms that did something like
+this, and that's really one of the only ways you can handle putting
+partition information in the device tree. You're really hamstringing
+yourself when you put all the partition information in the device tree.
+And it's just dumb once that gets codified in the kernel source tree.
+
+The best solution would be to try to migrate away from static device
+tree representations of partition info entirely. UBI volumes are best
+where possible. If not, then some other kind of on-flash data structures
+(along the lines of a GPT) with a corresponding MTD partition parser is
+an OK alternative. Unfortunately, there isn't any good standard format
+for this on MTD, so it's typically all custom -- and so people use the
+easiest approach: device tree. And it's even more difficult with NAND,
+which has reliability problems, especially with static data (e.g., read
+disturb).
+
+Anyway, the parser solution is helpful only if one can properly fix the
+"flag day" first. And it requires a little bit more work to be generally
+useful; I posted some work for this over a year ago, but bikeshedding
+brought it down.
+
+> The rest of the series looks fine to me so applying it into
+> omap-for-v4.11/dt.
+
+Brian
