@@ -1,23 +1,27 @@
-Received: from avasout05.plus.net ([84.93.230.250])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cP9ac-00075v-SS
- for linux-mtd@lists.infradead.org; Thu, 05 Jan 2017 15:04:28 +0000
-Date: Thu, 5 Jan 2017 15:04:02 +0000
-From: Mike Crowe <mac@mcrowe.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: goliath <david.oberhollenzer@sigma-star.at>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 0/2] Support skipping bad blocks when seeking to start
- address
-Message-ID: <20170105150402.GA3931@mcrowe.com>
-References: <1483539486-16165-1-git-send-email-mac@mcrowe.com>
- <82d2fa84-c1ec-8791-9b50-c57314ad7a5e@sigma-star.at>
- <20170105141834.GA3198@mcrowe.com>
- <20170105154824.5c9e97ee@bbrezillon>
+ id 1cPAgV-000485-QH
+ for linux-mtd@lists.infradead.org; Thu, 05 Jan 2017 16:14:37 +0000
+Date: Thu, 5 Jan 2017 18:07:38 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Immutable branch between MFD and MTD due for the
+ v4.11 merge window
+Message-ID: <20170105160738.GH3353@lahna.fi.intel.com>
+References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+ <20170103173750.GA27589@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170105154824.5c9e97ee@bbrezillon>
+In-Reply-To: <20170103173750.GA27589@dell>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 05 January 2017 at 15:48:24 +0100, Boris Brezillon wrote:
-> On Thu, 5 Jan 2017 14:18:34 +0000
-> Mike Crowe <mac@mcrowe.com> wrote:
-> > On Thursday 05 January 2017 at 14:38:23 +0100, goliath wrote:
-> > > If your boot loader seeks to a specific erase block by counting
-> > > only good blocks (to load the kernel or some second stage?), what
-> > > happens if another block in between goes bad? Does that just brick
-> > > your board or do you have to move the data around all the time to
-> > > account for that?  
-> > 
-> > The blocks in-between don't get written so they can't be marked bad.
+On Tue, Jan 03, 2017 at 05:37:50PM +0000, Lee Jones wrote:
+> MTD Maintainers,
 > 
-> Maybe not the block in between, but the first block used to store your
-> 2nd stage bootloader (or whatever your store at this offset) might
-> become bad, which means your data will be moved to the next block (or
-> possibly farther).
+> Enjoy!
+> 
+> The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
+> 
+>   Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
+> 
+> are available in the git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-mtd-v4.11
+> 
+> for you to fetch changes up to 87eb832ae9748fab00588b98c2e33e89de065438:
+> 
+>   mfd: lpc_ich: Add support for Intel Apollo Lake SoC (2017-01-03 17:34:16 +0000)
+> 
+> ----------------------------------------------------------------
+> Immutable branch between MFD and MTD due for the v4.11 merge window
+> 
+> ----------------------------------------------------------------
+> Mika Westerberg (3):
+>       spi-nor: Add support for Intel SPI serial flash controller
+>       mfd: lpc_ich: Add support for SPI serial flash host controller
+>       mfd: lpc_ich: Add support for Intel Apollo Lake SoC
 
-In our case we always write the remainder of the partition so any bad
-blocks that develop will shift everything else down too. You're correct
-that this would be a problem if we attempted to write in the middle though.
-
-> I think this request is acceptable (even if I don't like the option
-> name :-)), but I'll let Richard and David decide what to do with this
-> patch.
-
-I'm not particularly attached to the option name. I chose
-"--skip-bad-blocks-to-start" in the hope of being as clear as possible, but
-I agree that it is a mouthful! The confusion over the meaning of the option
-was also one of the reasons why I originally implemented the feature using
-a separate offset.
-
-Thanks for the review.
-
-Mike.
+Thanks Lee for picking these up!
