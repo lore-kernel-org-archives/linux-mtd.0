@@ -1,22 +1,23 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cPPXV-0005WZ-Rs
- for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 08:06:20 +0000
-Date: Fri, 6 Jan 2017 09:05:56 +0100
+ id 1cPQ4y-0005K9-6z
+ for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 08:40:53 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, David Woodhouse
- <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PULL] mtd: nand: Fixes for 4.10-rc3
-Message-ID: <20170106090556.5fa6a5a8@bbrezillon>
-In-Reply-To: <20170105180710.GA138504@google.com>
-References: <20170104211557.434b07af@bbrezillon>
- <20170105180710.GA138504@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
+ Aleksei Mamlin <mamlinav@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v5 04/15] mtd: nand: rename nand_get_flash_type() into
+ nand_detect()
+Date: Fri,  6 Jan 2017 09:40:15 +0100
+Message-Id: <1483692026-19663-5-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1483692026-19663-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1483692026-19663-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 5 Jan 2017 10:07:10 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
+Since commit 4722c0e958e6 ("mtd: nand: change return type of
+nand_get_flash_type() to int"), nand_get_flash_type() no longer returns
+a nand_flash_dev object.
+Rename the function to match this new behavior.
 
-> On Wed, Jan 04, 2017 at 09:15:57PM +0100, Boris Brezillon wrote:
-> > Hi Brian,
-> > 
-> > Here is a fixes PR for 4.10-rc3 (or -rc4 if it's already too late for
-> > -rc3).
-> > 
-> > The xway and oxnas fixes are fixing bugs introduced before 4.10-rc1. I
-> > know fixes PRs are supposed to contain only fixes for bugs introduced by
-> > code merged during the merge window, but I thought it would be good to
-> > have them applied in this release.  
-> 
-> Actually, I thought all bugfixes are candidates (within reason of
-> course) for post-rc1 merging, especially early rc's. I recall Linus
-> saying things along the lines of "if it's a candidate for stable, then
-> it's a candidate for an -rc" (i.e., don't wait until the next merge
-> window).
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Okay, good to know.
-
-> 
-> These really aren't a big deal anyway.
-> 
-> > Let me know if this is a problem, and I'll move them to my nand/next and
-> > resend of PR.  
-> 
-> Pushed to linux-mtd.git. Thanks!
-
-Thanks,
-
-Boris
-
-> 
-> Brian
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 3a31b705af6f..efb3ade568d8 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4010,8 +4010,7 @@ static bool find_full_id_nand(struct nand_chip *chip,
+ /*
+  * Get the flash and manufacturer id and lookup if the type is supported.
+  */
+-static int nand_get_flash_type(struct nand_chip *chip,
+-			       struct nand_flash_dev *type)
++static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int busw;
+@@ -4368,7 +4367,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	nand_set_defaults(chip);
+ 
+ 	/* Read the flash type */
+-	ret = nand_get_flash_type(chip, table);
++	ret = nand_detect(chip, table);
+ 	if (ret) {
+ 		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
+ 			pr_warn("No NAND device found\n");
+-- 
+2.7.4
