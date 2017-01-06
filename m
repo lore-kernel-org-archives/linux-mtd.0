@@ -1,19 +1,43 @@
-Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPZzI-00032c-Dr
- for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 19:15:45 +0000
-From: Zach Brown <zach.brown@ni.com>
-To: <dwmw2@infradead.org>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <richard@nod.at>, <dedekind1@gmail.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 4/5] mtd: nand: implement 'max_bad_blocks' mtd function
-Date: Fri, 6 Jan 2017 13:14:45 -0600
-Message-ID: <1483730086-26706-5-git-send-email-zach.brown@ni.com>
-In-Reply-To: <1483730086-26706-1-git-send-email-zach.brown@ni.com>
-References: <1483730086-26706-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
+ <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 6 Jan 2017 22:50:34 +0200
+Message-ID: <CAHp75VdDfopdSy-7oy87ZeosDB9+FN4zFBhErPWLQB7tH81zTw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] x86: put msr-index.h in uapi
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, mmarek@suse.com,
+ linux-kbuild@vger.kernel.org,
+ Linux Documentation List <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org,
+ Cris <linux-cris-kernel@axis.com>, uclinux-h8-devel@lists.sourceforge.jp,
+ linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org,
+ linux-mips@linux-mips.org, linux-am33-list@redhat.com,
+ nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+ linux-parisc@vger.kernel.org,
+ "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT"
+ <linuxppc-dev@lists.ozlabs.org>, linux-s390@vger.kernel.org,
+ Linux-SH <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org,
+ linux-xtensa@linux-xtensa.org, Linux-Arch <linux-arch@vger.kernel.org>,
+ dri-devel@lists.freedesktop.org, netdev <netdev@vger.kernel.org>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org, linux-nfs@vger.kernel.org, linux-raid@vger.kernel.org,
+ linux-spi <linux-spi@vger.kernel.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ linux-rdma@vger.kernel.org, fcoe-devel@open-fcoe.org,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ linux-fbdev@vger.kernel.org,
+ xen-devel@lists.xenproject.org, David Airlie <airlied@linux.ie>,
+ "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,72 +47,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Implement the new mtd function 'max_bad_blocks'. Using the chip's
-max_bb_per_die and blocks_per_die fields to determine the maximum bad
-blocks to reserve for an MTD.
+On Fri, Jan 6, 2017 at 11:43 AM, Nicolas Dichtel
+<nicolas.dichtel@6wind.com> wrote:
+> This header file is exported, thus move it to uapi.
 
-Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
-Signed-off-by: Zach Brown <zach.brown@ni.com>
-Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
-Acked-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/nand_base.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+Just hint for the future:
+-M (move)
+-C (copy)
+-D (delete) [though this is NOT for applying]
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ec1c28a..587cd42 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3263,6 +3263,42 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- }
- 
- /**
-+ * nand_max_bad_blocks - [MTD Interface] Max number of bad blocks for an mtd
-+ * @mtd: MTD device structure
-+ * @ofs: offset relative to mtd start
-+ * @len: length of mtd
-+ */
-+static int nand_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	uint32_t part_start_block;
-+	uint32_t part_end_block;
-+	uint32_t part_start_die;
-+	uint32_t part_end_die;
-+
-+	/*
-+	 * max_bb_per_die and blocks_per_die used to determine
-+	 * the maximum bad block count.
-+	 */
-+	if (!chip->max_bb_per_die || !chip->blocks_per_die)
-+		return -ENOTSUPP;
-+
-+	/* Get the start and end of the partition in erase blocks. */
-+	part_start_block = mtd_div_by_eb(ofs, mtd);
-+	part_end_block = mtd_div_by_eb(len, mtd) + part_start_block - 1;
-+
-+	/* Get the start and end LUNs of the partition. */
-+	part_start_die = part_start_block / chip->blocks_per_die;
-+	part_end_die = part_end_block / chip->blocks_per_die;
-+
-+	/*
-+	 * Look up the bad blocks per unit and multiply by the number of units
-+	 * that the partition spans.
-+	 */
-+	return chip->max_bb_per_die * (part_end_die - part_start_die + 1);
-+}
-+
-+/**
-  * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
-  * @mtd: MTD device structure
-  * @chip: nand chip info structure
-@@ -4815,6 +4851,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	mtd->_block_isreserved = nand_block_isreserved;
- 	mtd->_block_isbad = nand_block_isbad;
- 	mtd->_block_markbad = nand_block_markbad;
-+	mtd->_max_bad_blocks = nand_max_bad_blocks;
- 	mtd->writebufsize = mtd->writesize;
- 
- 	/*
 -- 
-2.7.4
+With Best Regards,
+Andy Shevchenko
