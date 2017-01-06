@@ -1,23 +1,27 @@
-Received: from exsmtp02.microchip.com ([198.175.253.38]
- helo=email.microchip.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPW3u-0004Qw-Ug
- for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 15:04:12 +0000
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Fix whole chip erasing for stacked
- chips.
-To: Marcin Krzeminski <mar.krzeminski@gmail.com>, <marek.vasut@gmail.com>,
- <linux-mtd@lists.infradead.org>
-References: <20170106130302.8074-1-mar.krzeminski@gmail.com>
- <20170106130302.8074-2-mar.krzeminski@gmail.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <boris.brezillon@free-electrons.com>
-From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-Message-ID: <c26ed6c7-5e14-1f02-d77b-a47ccae71361@microchip.com>
-Date: Fri, 6 Jan 2017 16:03:46 +0100
+Date: Fri, 6 Jan 2017 08:02:23 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Teresa Remmet <t.remmet@phytec.de>
+Cc: Brian Norris <briannorris@chromium.org>,
+ Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+ linux-omap@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/6] ARM: dts: am335x-phycore-som: Update NAND partition
+ table
+Message-ID: <20170106160222.GC2630@atomide.com>
+References: <1483627851-17996-1-git-send-email-t.remmet@phytec.de>
+ <1483627851-17996-2-git-send-email-t.remmet@phytec.de>
+ <20170105153637.GA4310@atomide.com>
+ <20170105171845.GK4310@atomide.com>
+ <20170105175619.GA56877@google.com>
+ <1483694849.3634.6.camel@phytec.de>
 MIME-Version: 1.0
-In-Reply-To: <20170106130302.8074-2-mar.krzeminski@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1483694849.3634.6.camel@phytec.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +31,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marcin,
-
-You have many typos in your commit message:
-
-Le 06/01/2017 à 14:03, Marcin Krzeminski a écrit :
-> Curretly it is possible to disable chip erase for spi-nor driver.
-Currently
-> Some modern stacked (multi die) flash chips does not support chip
-do not support
-> erase opcode at all but spi-nor framework need to cope with them too.
-needs to
-> This commit extend exising functionality to allow disable
-extends existing
-> chip erase for a single flash chip.
+* Teresa Remmet <t.remmet@phytec.de> [170106 01:28]:
+> Hello Brian,
 > 
-> Signed-off-by: Marcin Krzeminski <mar.krzeminski@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Am Donnerstag, den 05.01.2017, 09:56 -0800 schrieb Brian Norris:
+> > On Thu, Jan 05, 2017 at 09:18:45AM -0800, Tony Lindgren wrote:
+> > > 
+> > > * Tony Lindgren <tony@atomide.com> [170105 07:37]:
+> > > > 
+> > > > * Teresa Remmet <t.remmet@phytec.de> [170105 06:57]:
+> > > > > 
+> > > > > To improve NAND safety we updated the partition layout.
+> > > > > Added barebox backup partition and removed kernel and oftree
+> > > > > partition. They are kept in ubi now.
+> > > > What about the users with earlier partition tables?
+> > > > 
+> > > > Please read about "flag day" changes, typically they are not
+> > > > acceptable.
+> > > Adding Brian and Adam to Cc. Can you guys come up with some
+> > > solution on this?
+> > I don't have much context for this thread, and no I don't plan to
+> > solve
+> > your problems for you. But I can provide tips!
+> > 
+> > > 
+> > > I'm suggesting we leave the kernel nodes empty and let u-boot
+> > > populate them, so maybe you guys can discuss this on the related
+> > > lists.
+> > That's an option. I've worked with platforms that did something like
+> > this, and that's really one of the only ways you can handle putting
+> > partition information in the device tree. You're really hamstringing
+> > yourself when you put all the partition information in the device
+> > tree.
+> > And it's just dumb once that gets codified in the kernel source tree.
+> > 
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 15fb8af..b6656b2 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -81,6 +81,7 @@ struct flash_info {
->  					 * because it has the same value as
->  					 * ATMEL flashes)
->  					*/
-> +#define NO_CHIP_ERASE	BIT(10) /* Chip does not support chip erase */
->  };
->
-
-Sorry but since yesterday, this can't apply to the github spi-nor tree:
-I've merged the "mtd: spi-nor: add a stateless method to support memory
-size above 128Mib" patch, which already defines a new macro with the
-BIT(10) value.
-
->  #define JEDEC_MFR(info)	((info)->id[0])
-> @@ -1545,6 +1546,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  		nor->flags |= SNOR_F_USE_FSR;
->  	if (info->flags & SPI_NOR_HAS_TB)
->  		nor->flags |= SNOR_F_HAS_SR_TB;
-> +	if (info->flags & NO_CHIP_ERASE)
-> +		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
->  
->  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
->  	/* prefer "small sector" erase if possible */
+> In our case the bootloader does pass the partition table to the kernel.
+> So it gets overwritten anyway. This was just more for backup,Â 
+> if someone uses a different bootloader. But I'm fine with removing the
+> nand partition table completely from the kernel device tree.
+> Same with the SPI nor partition table.
 > 
+> I will send patches for this.
 
-Best regards,
+OK thanks! Also thank you Brian for your comments.
 
-Cyrille
+Regards,
+
+Tony
