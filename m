@@ -1,6 +1,6 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cPQ5K-0005Oy-FV
+ id 1cPQ5K-0005Ov-Fy
  for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 08:41:18 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -12,10 +12,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
  Aleksei Mamlin <mamlinav@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v5 13/15] mtd: nand: samsung: retrieve ECC requirements from
- extended ID
-Date: Fri,  6 Jan 2017 09:40:24 +0100
-Message-Id: <1483692026-19663-14-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v5 12/15] mtd: nand: move Macronix specific initialization in
+ nand_macronix.c
+Date: Fri,  6 Jan 2017 09:40:23 +0100
+Message-Id: <1483692026-19663-13-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1483692026-19663-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1483692026-19663-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,57 +27,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hans de Goede <hdegoede@redhat.com>
+Move Macronix specific initialization into nand_macronix.c. This is part
+of the "separate vendor specific code from core" cleanup process.
 
-On some nand controllers with hw-ecc the controller code wants to know
-the ecc strength and size and having these as 0, 0 is not accepted.
-
-Specifying these in devicetree is possible but undesirable as the nand
-may be different in different production runs of the same board, so it
-is better to get this info from the nand id where possible.
-
-This commit adds code to read the ecc strength and size from the nand
-for Samsung extended-id nands. This code is based on the info for the 5th
-id byte in the datasheets for the following Samsung nands: K9GAG08U0E,
-K9GAG08U0F, K9GAG08X0D, K9GBG08U0A, K9GBG08U0B. These all use these bits
-in the exact same way.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_samsung.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/mtd/nand/Makefile        |  1 +
+ drivers/mtd/nand/nand_base.c     | 11 -----------
+ drivers/mtd/nand/nand_ids.c      |  3 ++-
+ drivers/mtd/nand/nand_macronix.c | 30 ++++++++++++++++++++++++++++++
+ 4 files changed, 33 insertions(+), 12 deletions(-)
+ create mode 100644 drivers/mtd/nand/nand_macronix.c
 
-diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/nand_samsung.c
-index 5c259dd5b652..9cfc4035a420 100644
---- a/drivers/mtd/nand/nand_samsung.c
-+++ b/drivers/mtd/nand/nand_samsung.c
-@@ -66,6 +66,26 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
- 		extid >>= 2;
- 		mtd->erasesize = (128 * 1024) <<
- 				 (((extid >> 1) & 0x04) | (extid & 0x03));
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index f48ddcc132bc..098b8791f10a 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -63,6 +63,7 @@ obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
+ nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
+ nand-objs += nand_amd.o
+ nand-objs += nand_hynix.o
++nand-objs += nand_macronix.o
+ nand-objs += nand_micron.o
+ nand-objs += nand_samsung.o
+ nand-objs += nand_toshiba.o
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 751669302cf8..d8f2f81b6d97 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3802,23 +3802,12 @@ static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type)
+ static void nand_decode_bbm_options(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+-	u8 *id_data = chip->id.data;
+-	int maf_id = id_data[0];
+ 
+ 	/* Set the bad block position */
+ 	if (mtd->writesize > 512 || (chip->options & NAND_BUSWIDTH_16))
+ 		chip->badblockpos = NAND_LARGE_BADBLOCK_POS;
+ 	else
+ 		chip->badblockpos = NAND_SMALL_BADBLOCK_POS;
+-
+-	/*
+-	 * Bad block marker is stored in the last page of each block on Samsung
+-	 * and Hynix MLC devices; stored in first two pages of each block on
+-	 * Micron devices with 2KiB pages and on SLC Samsung, Hynix, Toshiba,
+-	 * AMD/Spansion, and Macronix.  All others scan only the first page.
+-	 */
+-	if (nand_is_slc(chip) && maf_id == NAND_MFR_MACRONIX)
+-		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+ }
+ 
+ static inline bool is_full_id_nand(struct nand_flash_dev *type)
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index bf07287ad01a..c8e130fbcf2a 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -174,6 +174,7 @@ extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops amd_nand_manuf_ops;
++extern const struct nand_manufacturer_ops macronix_nand_manuf_ops;
+ 
+ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
+@@ -186,7 +187,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_HYNIX, "Hynix", &hynix_nand_manuf_ops},
+ 	{NAND_MFR_MICRON, "Micron", &micron_nand_manuf_ops},
+ 	{NAND_MFR_AMD, "AMD/Spansion", &amd_nand_manuf_ops},
+-	{NAND_MFR_MACRONIX, "Macronix"},
++	{NAND_MFR_MACRONIX, "Macronix", &macronix_nand_manuf_ops},
+ 	{NAND_MFR_EON, "Eon"},
+ 	{NAND_MFR_SANDISK, "SanDisk"},
+ 	{NAND_MFR_INTEL, "Intel"},
+diff --git a/drivers/mtd/nand/nand_macronix.c b/drivers/mtd/nand/nand_macronix.c
+new file mode 100644
+index 000000000000..84855c3e1a02
+--- /dev/null
++++ b/drivers/mtd/nand/nand_macronix.c
+@@ -0,0 +1,30 @@
++/*
++ * Copyright (C) 2017 Free Electrons
++ * Copyright (C) 2017 NextThing Co
++ *
++ * Author: Boris Brezillon <boris.brezillon@free-electrons.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
 +
-+		/* Extract ECC requirements from 5th id byte*/
-+		extid = (chip->id.data[4] >> 4) & 0x07;
-+		if (extid < 5) {
-+			chip->ecc_step_ds = 512;
-+			chip->ecc_strength_ds = 1 << extid;
-+		} else {
-+			chip->ecc_step_ds = 1024;
-+			switch (extid) {
-+			case 5:
-+				chip->ecc_strength_ds = 24;
-+				break;
-+			case 6:
-+				chip->ecc_strength_ds = 40;
-+				break;
-+			case 7:
-+				chip->ecc_strength_ds = 60;
-+				break;
-+			}
-+		}
- 	} else {
- 		nand_decode_ext_id(chip);
- 	}
++#include <linux/mtd/nand.h>
++
++static int macronix_nand_init(struct nand_chip *chip)
++{
++	if (nand_is_slc(chip))
++		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
++
++	return 0;
++}
++
++const struct nand_manufacturer_ops macronix_nand_manuf_ops = {
++	.init = macronix_nand_init,
++};
 -- 
 2.7.4
