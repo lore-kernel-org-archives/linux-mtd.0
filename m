@@ -1,18 +1,33 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm-kernel@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 3/3] mtd: nand: sunxi: Improve sunxi_nfc_cmd_ctrl()
-Date: Fri,  6 Jan 2017 10:42:07 +0100
-Message-Id: <1483695727-17415-4-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1483695727-17415-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1483695727-17415-1-git-send-email-boris.brezillon@free-electrons.com>
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+To: arnd@arndb.de
+Cc: mmarek@suse.com, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org,
+ linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp,
+ linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org,
+ linux-mips@linux-mips.org, linux-am33-list@redhat.com,
+ nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+ linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ netdev@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mmc@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org, linux-nfs@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
+ fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
+ linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
+ airlied@linux.ie, davem@davemloft.net,
+ Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Subject: [PATCH v2 3/7] nios2: put setup.h in uapi
+Date: Fri,  6 Jan 2017 10:43:55 +0100
+Message-Id: <1483695839-18660-4-git-send-email-nicolas.dichtel@6wind.com>
+In-Reply-To: <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +37,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We only need to call sunxi_nfc_wait_cmd_fifo_empty() if we want to send
-a new command. Move the sunxi_nfc_wait_cmd_fifo_empty() call to right
-place to avoid extra register reads.
+This header file is exported, thus move it to uapi.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
 ---
- drivers/mtd/nand/sunxi_nand.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/nios2/include/asm/setup.h      | 2 +-
+ arch/nios2/include/uapi/asm/setup.h | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+ create mode 100644 arch/nios2/include/uapi/asm/setup.h
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 76449f79d4c5..0eeeb8b889ea 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -604,10 +604,6 @@ static void sunxi_nfc_cmd_ctrl(struct mtd_info *mtd, int dat,
- 	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
- 	int ret;
+diff --git a/arch/nios2/include/asm/setup.h b/arch/nios2/include/asm/setup.h
+index dcbf8cf1a344..d49e9e91bf55 100644
+--- a/arch/nios2/include/asm/setup.h
++++ b/arch/nios2/include/asm/setup.h
+@@ -19,7 +19,7 @@
+ #ifndef _ASM_NIOS2_SETUP_H
+ #define _ASM_NIOS2_SETUP_H
  
--	ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
--	if (ret)
--		return;
--
- 	if (dat == NAND_CMD_NONE && (ctrl & NAND_NCE) &&
- 	    !(ctrl & (NAND_CLE | NAND_ALE))) {
- 		u32 cmd = 0;
-@@ -637,6 +633,10 @@ static void sunxi_nfc_cmd_ctrl(struct mtd_info *mtd, int dat,
- 			writel(sunxi_nand->addr[1],
- 			       nfc->regs + NFC_REG_ADDR_HIGH);
+-#include <asm-generic/setup.h>
++#include <uapi/asm/setup.h>
  
-+		ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
-+		if (ret)
-+			return;
+ #ifndef __ASSEMBLY__
+ #ifdef __KERNEL__
+diff --git a/arch/nios2/include/uapi/asm/setup.h b/arch/nios2/include/uapi/asm/setup.h
+new file mode 100644
+index 000000000000..8d8285997ba8
+--- /dev/null
++++ b/arch/nios2/include/uapi/asm/setup.h
+@@ -0,0 +1,6 @@
++#ifndef _UAPI_ASM_NIOS2_SETUP_H
++#define _UAPI_ASM_NIOS2_SETUP_H
 +
- 		writel(cmd, nfc->regs + NFC_REG_CMD);
- 		sunxi_nand->addr[0] = 0;
- 		sunxi_nand->addr[1] = 0;
++#include <asm-generic/setup.h>
++
++#endif /* _UAPI_ASM_NIOS2_SETUP_H */
 -- 
-2.7.4
+2.8.1
