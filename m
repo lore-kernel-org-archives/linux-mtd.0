@@ -1,25 +1,22 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPUpk-00047j-E1
- for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 13:45:34 +0000
-Subject: Re: [PATCH v1] mtd: spi nor: modify the boot and flash type of FMC
-To: linshunquan 00354166 <linshunquan1@hisilicon.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <marek.vasut@gmail.com>, <richard@nod.at>, <robh+dt@kernel.org>,
- <mark.rutland@arm.com>
-References: <1483693931-22249-1-git-send-email-linshunquan1@hisilicon.com>
-CC: <suwenping@hisilicon.com>, <devicetree@vger.kernel.org>,
- <howell.yang@hisilicon.com>, <jalen.hsu@hisilicon.com>,
- <linux-kernel@vger.kernel.org>, <raojun@hisilicon.com>,
- <kevin.lixu@hisilicon.com>, <linux-mtd@lists.infradead.org>,
- <lvkuanliang@hisilicon.com>, <xuejiancheng@hisilicon.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <506ed7d0-0bd9-874c-eaf8-4fc5d4366612@atmel.com>
-Date: Fri, 6 Jan 2017 14:44:58 +0100
-MIME-Version: 1.0
-In-Reply-To: <1483693931-22249-1-git-send-email-linshunquan1@hisilicon.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+From: Michal Hocko <mhocko@kernel.org>
+To: <linux-mm@kvack.org>,
+	<linux-fsdevel@vger.kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ "Theodore Ts'o" <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.cz>, Jan Kara <jack@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>, Brian Foster <bfoster@redhat.com>,
+ Michal Hocko <mhocko@suse.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 0/8 v3] scope GFP_NOFS api
+Date: Fri,  6 Jan 2017 15:10:59 +0100
+Message-Id: <20170106141107.23953-1-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,131 +27,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi,
+I have posted the previous version here [1]. Since then I've added some
+reviewed bys and fixed some minor issues. I've dropped patch 2 [2] based
+on Dave's request [3]. I agree that this can be done later and doing
+all at once. I still think that __GFP_NOLOCKDEP should be added by this
+series to make the further development easier.
 
-Le 06/01/2017 à 10:12, linshunquan 00354166 a écrit :
-> (1) The HiSilicon Flash Memory Controller(FMC) is a multi-functions
->  device which supports SPI Nor flash controller, SPI nand Flash
->  controller and parallel nand flash controller. So when we are prepare
->  to operation SPI Nor, we should make sure the flash type is SPI Nor.
-> 
-> (2) Make sure the boot type is Normal Type before initialize the SPI
->     Nor controller.
-> 
-> Signed-off-by: linshunquan 00354166 <linshunquan1@hisilicon.com>
-> ---
->  drivers/mtd/spi-nor/hisi-sfc.c | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
-> index 20378b0..7855024 100644
-> --- a/drivers/mtd/spi-nor/hisi-sfc.c
-> +++ b/drivers/mtd/spi-nor/hisi-sfc.c
-> @@ -32,6 +32,8 @@
->  #define FMC_CFG_OP_MODE_MASK		BIT_MASK(0)
->  #define FMC_CFG_OP_MODE_BOOT		0
->  #define FMC_CFG_OP_MODE_NORMAL		1
-> +#define FMC_CFG_OP_MODE_SEL(mode)      ((mode) & 0x1)
-> +#define FMC_CFG_FLASH_SEL_SPI_NOR	(0x0 << 1)
->  #define FMC_CFG_FLASH_SEL(type)		(((type) & 0x3) << 1)
->  #define FMC_CFG_FLASH_SEL_MASK		0x6
->  #define FMC_ECC_TYPE(type)		(((type) & 0x7) << 5)
-> @@ -141,10 +143,36 @@ static int get_if_type(enum read_mode flash_read)
->  	return if_type;
->  }
->  
-> +static void spi_nor_switch_spi_type(struct hifmc_host *host)
-> +{
-> +	unsigned int reg;
-> +
-> +	reg = readl(host->regbase + FMC_CFG);
-> +	if ((reg & FMC_CFG_FLASH_SEL_MASK)
-> +		   	== FMC_CFG_FLASH_SEL_SPI_NOR)
-> +		return;
-> +
-> +	/* if the flash type isn't spi nor, change it */
-> +	reg &= ~FMC_CFG_FLASH_SEL_MASK;
-> +	reg |= FMC_CFG_FLASH_SEL(0);
-> +	writel(reg, host->regbase + FMC_CFG);
-> +}
-> +
+There didn't seem to be any real objections and so I think we should go
+and merge this and build further on top. I would like to get rid of all
+explicit GFP_NOFS usage in ext4 code. I have something half baked already
+and will send it later on. I also hope we can get further with the xfs
+as well.
 
-This is not consistent: we have to check the macro definitions to
-understand that FMC_CFG_FLASH_SPI_NOR == FMC_CFG_FLASH_SEL(0)
+I haven't heard anything from btrfs or other filesystems guys which is a
+bit unfortunate but I do not want to wait for them to much longer, they
+can join the effort later on.
 
-In such a function, you should use the very same macro for both the test
-and the update of reg; either FMC_CFG_FLASH_SEL_SPI_NOR or
-FMC_CFG_FLASH_SEL(0). Please don't mix the use of those macros.
+The patchset is based on next-20170106
 
->  static void hisi_spi_nor_init(struct hifmc_host *host)
->  {
->  	u32 reg;
->  
-> +	/* switch the flash type to spi nor */
-> +	spi_nor_switch_spi_type(host);
-> +
-> +	/* set the boot mode to normal */
-> +	reg = readl(host->regbase + FMC_CFG);
-> +	if ((reg & FMC_CFG_OP_MODE_MASK) == FMC_CFG_OP_MODE_BOOT) {
-> +		reg |= FMC_CFG_OP_MODE_SEL(FMC_CFG_OP_MODE_NORMAL);
+Diffstat says
+ fs/ext4/acl.c             |  6 +++---
+ fs/ext4/extents.c         |  8 ++++----
+ fs/ext4/resize.c          |  4 ++--
+ fs/ext4/xattr.c           |  4 ++--
+ fs/jbd2/journal.c         |  7 +++++++
+ fs/jbd2/transaction.c     | 11 +++++++++++
+ fs/xfs/kmem.c             | 10 +++++-----
+ fs/xfs/kmem.h             |  2 +-
+ fs/xfs/libxfs/xfs_btree.c |  2 +-
+ fs/xfs/xfs_aops.c         |  6 +++---
+ fs/xfs/xfs_buf.c          |  8 ++++----
+ fs/xfs/xfs_trans.c        | 12 ++++++------
+ include/linux/gfp.h       | 18 +++++++++++++++++-
+ include/linux/jbd2.h      |  2 ++
+ include/linux/sched.h     | 32 ++++++++++++++++++++++++++------
+ kernel/locking/lockdep.c  |  6 +++++-
+ lib/radix-tree.c          |  2 ++
+ mm/page_alloc.c           |  8 +++++---
+ mm/vmscan.c               |  6 +++---
+ 19 files changed, 109 insertions(+), 45 deletions(-)
 
-This is not consistent: you test FMC_CFG_OP_MODE_BOOT, hence without
-FMC_CFG_OP_MODE_SEL() but you set
-FMC_CFG_OP_MODE_SEL(FMC_CFG_OP_MODE_NORMAL), with FMC_CFG_OP_MODE_SEL().
+Shortlog:
+Michal Hocko (8):
+      lockdep: allow to disable reclaim lockup detection
+      xfs: abstract PF_FSTRANS to PF_MEMALLOC_NOFS
+      mm: introduce memalloc_nofs_{save,restore} API
+      xfs: use memalloc_nofs_{save,restore} instead of memalloc_noio*
+      jbd2: mark the transaction context with the scope GFP_NOFS context
+      jbd2: make the whole kjournald2 kthread NOFS safe
+      Revert "ext4: avoid deadlocks in the writeback path by using sb_getblk_gfp"
+      Revert "ext4: fix wrong gfp type under transaction"
 
-Of course, looking at the macro definitions, it works as is but once again
-we have to check the macro definitions to understand why sometime you use
-FMC_CFG_OP_MODE_SEL() whereas other times you don't.
-
-> +		writel(reg, host->regbase + FMC_CFG);
-> +	}
-
-spi_nor_switch_spi_type() already updates the FMC_CFG register in the very
-same manner: read, test, modify, write. Hence you should write a more
-generic function and update both bitfields at once.
-
-static void hisi_spi_nor_update_reg(struct hifmc_host *host,
-				    unsigned int reg_offset,
-				    unsigned int value,
-				    unsigned int mask)
-{
-	unsigned int reg;
-
-	reg = readl(host->regbase + reg_offset);
-	if (((reg ^ value) & mask) == 0)
-		return;
-
-	reg = (reg & ~mask) | (value & mask);
-	writel(reg, host->regbase + reg_offset);
-}
-
-...
-
-	unsigned int value, mask;
-
-	/*
-	 * switch the flash type to spi nor and set the boot mode to
-	 * normal.
-	 */
-	value = FMC_CFG_OP_MODE_NORMAL | FMC_CFG_FLASH_SEL_SPI_NOR;
-	mask = FMC_CFG_OP_MODE_MASK | FMC_CFG_FLASH_SEL_MASK;
-	hisi_spi_nor_update_reg(host, FMC_CFG, value, mask);
-
-> +
-> +	/* set timming */
->  	reg = TIMING_CFG_TCSH(CS_HOLD_TIME)
->  		| TIMING_CFG_TCSS(CS_SETUP_TIME)
->  		| TIMING_CFG_TSHSL(CS_DESELECT_TIME);
-> @@ -167,6 +195,8 @@ static int hisi_spi_nor_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->  	if (ret)
->  		goto out;
->  
-> +	spi_nor_switch_spi_type(host);
-> +
->  	return 0;
->  
->  out:
-> 
-
-Best regards,
-
-Cyrille
+[1] http://lkml.kernel.org/r/20161215140715.12732-1-mhocko@kernel.org
+[2] http://lkml.kernel.org/r/20161215140715.12732-3-mhocko@kernel.org
+[3] http://lkml.kernel.org/r/20161219212413.GN4326@dastard
