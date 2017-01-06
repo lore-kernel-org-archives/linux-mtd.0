@@ -1,25 +1,22 @@
-Received: from smtp6-v.fe.bosch.de ([2a03:cc00:ff0:100::2])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPMvH-0007LM-RE
- for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 05:18:41 +0000
-From: "Anurag Raghavan (RBEI/ETW11)" <Raghavan.Anurag@in.bosch.com>
-To: Richard Weinberger <richard@nod.at>, Dan Carpenter
- <dan.carpenter@oracle.com>, David Gstir <david@sigma-star.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "Adrian
- Hunter" <adrian.hunter@intel.com>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: RE: [patch] ubifs: potential uninitialized variable in
- truncate_data_node()
-Date: Fri, 6 Jan 2017 05:18:12 +0000
-Message-ID: <6139ebf22df34767873e7fce48ab5b54@SGPMBX1023.APAC.bosch.com>
-References: <20170105124635.GA8525@elgon.mountain>
- <787dbd07f1ed419ca37f3bb0c6f6c84a@SGPMBX1023.APAC.bosch.com>
- <5f927d38-c92c-55eb-f2a7-bba3b5f0ebd8@nod.at>
-In-Reply-To: <5f927d38-c92c-55eb-f2a7-bba3b5f0ebd8@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cPPXV-0005WZ-Rs
+ for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 08:06:20 +0000
+Date: Fri, 6 Jan 2017 09:05:56 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, David Woodhouse
+ <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PULL] mtd: nand: Fixes for 4.10-rc3
+Message-ID: <20170106090556.5fa6a5a8@bbrezillon>
+In-Reply-To: <20170105180710.GA138504@google.com>
+References: <20170104211557.434b07af@bbrezillon>
+ <20170105180710.GA138504@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,70 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+On Thu, 5 Jan 2017 10:07:10 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-I am using the kernel version-30.3.5
+> On Wed, Jan 04, 2017 at 09:15:57PM +0100, Boris Brezillon wrote:
+> > Hi Brian,
+> > 
+> > Here is a fixes PR for 4.10-rc3 (or -rc4 if it's already too late for
+> > -rc3).
+> > 
+> > The xway and oxnas fixes are fixing bugs introduced before 4.10-rc1. I
+> > know fixes PRs are supposed to contain only fixes for bugs introduced by
+> > code merged during the merge window, but I thought it would be good to
+> > have them applied in this release.  
+> 
+> Actually, I thought all bugfixes are candidates (within reason of
+> course) for post-rc1 merging, especially early rc's. I recall Linus
+> saying things along the lines of "if it's a candidate for stable, then
+> it's a candidate for an -rc" (i.e., don't wait until the next merge
+> window).
 
-Is there any patches available to fix this issue...???
+Okay, good to know.
 
-Best regards
-
-Raghavan Anurag
-RBEI/ETW1 =20
-
-Tel. +91(422)667-4001 | Mobil 9986968950
-
-
-
------Original Message-----
-From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of=
- Richard Weinberger
-Sent: Thursday, January 05, 2017 6:42 PM
-To: Anurag Raghavan (RBEI/ETW11) <Raghavan.Anurag@in.bosch.com>; Dan Carpen=
-ter <dan.carpenter@oracle.com>; David Gstir <david@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org; kernel-janitors@vger.kernel.org; Adrian =
-Hunter <adrian.hunter@intel.com>; Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [patch] ubifs: potential uninitialized variable in truncate_da=
-ta_node()
-
-Raghavan Anurag,
-
-Am 05.01.2017 um 13:54 schrieb Anurag Raghavan (RBEI/ETW11):
-> Hi All,
->=20
-> My appdata partition could not be mounted or where the partition was not =
-able to be used. Anyone can help me to find out the root cause of this. Wha=
-t are the possibilities of this ubifs corruption. Any patched are available=
- to fix this issue.
->=20
-> Error logs:
->=20
-> [    1.797141] UBI error: ubi_io_read: error -74 (ECC error) while readin=
-g 253952 bytes from PEB 445:8192, read 253952 bytes
-> [    1.808274] UBIFS error (pid 491): ubifs_scan: corrupt empty space at =
-LEB 489:233760
-> [    1.816037] UBIFS error (pid 491): ubifs_scanned_corruption: corruptio=
-n at LEB 489:233760
-> [    1.828660] UBIFS error (pid 491): ubifs_scan: LEB 489 scanning failed
-> [    1.835215] UBIFS warning (pid 491): ubifs_ro_mode: switched to read-o=
-nly mode, error -117
-> [    1.843502] UBIFS error (pid 491): make_reservation: cannot reserve 58=
- bytes in jhead 2, error -117
-> [    1.852569] UBIFS error (pid 491): do_writepage: cannot write page 0 o=
-f inode 76584, error -117
-> dpkg: error: unable to sync new file '/var/lib/dpkg/arch-new':=20
-> Structure needs cleaning
-
-Why are you hijacking this mail thread?
-
-In your case UBIFS fails because of an ECC error in 0xFF bytes.
-UBIFS does not expect this and the MTD driver has to make sure that it does=
- not happen.
-Is this a recent kernel?
+> 
+> These really aren't a big deal anyway.
+> 
+> > Let me know if this is a problem, and I'll move them to my nand/next and
+> > resend of PR.  
+> 
+> Pushed to linux-mtd.git. Thanks!
 
 Thanks,
-//richard
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Boris
+
+> 
+> Brian
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
