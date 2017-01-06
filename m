@@ -8,10 +8,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-arm-kernel@lists.infradead.org,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 2/3] mtd: nand: sunxi: Stop using polling mode when waiting
- for long operations
-Date: Fri,  6 Jan 2017 10:42:06 +0100
-Message-Id: <1483695727-17415-3-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 3/3] mtd: nand: sunxi: Improve sunxi_nfc_cmd_ctrl()
+Date: Fri,  6 Jan 2017 10:42:07 +0100
+Message-Id: <1483695727-17415-4-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1483695727-17415-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1483695727-17415-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,98 +22,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some operations, like read/write an entire page of data with the ECC
-engine enabled, are known to take a lot of time. Use the interrupt-based
-waiting mode in these situation.
+We only need to call sunxi_nfc_wait_cmd_fifo_empty() if we want to send
+a new command. Move the sunxi_nfc_wait_cmd_fifo_empty() call to right
+place to avoid extra register reads.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/sunxi_nand.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/sunxi_nand.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index ba78e13a3570..76449f79d4c5 100644
+index 76449f79d4c5..0eeeb8b889ea 100644
 --- a/drivers/mtd/nand/sunxi_nand.c
 +++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -522,6 +522,8 @@ static void sunxi_nfc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 	u32 tmp;
+@@ -604,10 +604,6 @@ static void sunxi_nfc_cmd_ctrl(struct mtd_info *mtd, int dat,
+ 	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
+ 	int ret;
  
- 	while (len > offs) {
-+		bool poll = false;
+-	ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
+-	if (ret)
+-		return;
+-
+ 	if (dat == NAND_CMD_NONE && (ctrl & NAND_NCE) &&
+ 	    !(ctrl & (NAND_CLE | NAND_ALE))) {
+ 		u32 cmd = 0;
+@@ -637,6 +633,10 @@ static void sunxi_nfc_cmd_ctrl(struct mtd_info *mtd, int dat,
+ 			writel(sunxi_nand->addr[1],
+ 			       nfc->regs + NFC_REG_ADDR_HIGH);
+ 
++		ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
++		if (ret)
++			return;
 +
- 		cnt = min(len - offs, NFC_SRAM_SIZE);
- 
- 		ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
-@@ -532,7 +534,11 @@ static void sunxi_nfc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 		tmp = NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD;
- 		writel(tmp, nfc->regs + NFC_REG_CMD);
- 
--		ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, true, 0);
-+		/* Arbitrary limit for polling mode */
-+		if (cnt < 64)
-+			poll = true;
-+
-+		ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, poll, 0);
- 		if (ret)
- 			break;
- 
-@@ -555,6 +561,8 @@ static void sunxi_nfc_write_buf(struct mtd_info *mtd, const uint8_t *buf,
- 	u32 tmp;
- 
- 	while (len > offs) {
-+		bool poll = false;
-+
- 		cnt = min(len - offs, NFC_SRAM_SIZE);
- 
- 		ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
-@@ -567,7 +575,11 @@ static void sunxi_nfc_write_buf(struct mtd_info *mtd, const uint8_t *buf,
- 		      NFC_ACCESS_DIR;
- 		writel(tmp, nfc->regs + NFC_REG_CMD);
- 
--		ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, true, 0);
-+		/* Arbitrary limit for polling mode */
-+		if (cnt < 64)
-+			poll = true;
-+
-+		ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, poll, 0);
- 		if (ret)
- 			break;
- 
-@@ -961,7 +973,7 @@ static int sunxi_nfc_hw_ecc_read_chunk(struct mtd_info *mtd,
- 	writel(NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ECC_OP,
- 	       nfc->regs + NFC_REG_CMD);
- 
--	ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, true, 0);
-+	ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, false, 0);
- 	sunxi_nfc_randomizer_disable(mtd);
- 	if (ret)
- 		return ret;
-@@ -1073,7 +1085,7 @@ static int sunxi_nfc_hw_ecc_read_chunks_dma(struct mtd_info *mtd, uint8_t *buf,
- 	writel(NFC_PAGE_OP | NFC_DATA_SWAP_METHOD | NFC_DATA_TRANS,
- 	       nfc->regs + NFC_REG_CMD);
- 
--	ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, true, 0);
-+	ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, false, 0);
- 	if (ret)
- 		dmaengine_terminate_all(nfc->dmac);
- 
-@@ -1193,7 +1205,7 @@ static int sunxi_nfc_hw_ecc_write_chunk(struct mtd_info *mtd,
- 	       NFC_ACCESS_DIR | NFC_ECC_OP,
- 	       nfc->regs + NFC_REG_CMD);
- 
--	ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, true, 0);
-+	ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, false, 0);
- 	sunxi_nfc_randomizer_disable(mtd);
- 	if (ret)
- 		return ret;
-@@ -1432,7 +1444,7 @@ static int sunxi_nfc_hw_ecc_write_page_dma(struct mtd_info *mtd,
- 	       NFC_DATA_TRANS | NFC_ACCESS_DIR,
- 	       nfc->regs + NFC_REG_CMD);
- 
--	ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, true, 0);
-+	ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, false, 0);
- 	if (ret)
- 		dmaengine_terminate_all(nfc->dmac);
- 
+ 		writel(cmd, nfc->regs + NFC_REG_CMD);
+ 		sunxi_nand->addr[0] = 0;
+ 		sunxi_nand->addr[1] = 0;
 -- 
 2.7.4
