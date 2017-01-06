@@ -1,19 +1,31 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPYAz-0005A7-7f
- for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 17:19:38 +0000
-Received: by mail-lf0-x243.google.com with SMTP id j75so6523745lfe.3
- for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2017 09:19:16 -0800 (PST)
-From: Marcin Krzeminski <mar.krzeminski@gmail.com>
-To: cyrille.pitchen@atmel.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, mar.krzeminski@gmail.com
-Subject: [PATCH v4 2/2] mtd: spi-nor: Disable chip erase for Micron n25q00.
-Date: Fri,  6 Jan 2017 18:19:01 +0100
-Message-Id: <20170106171901.27565-3-mar.krzeminski@gmail.com>
-In-Reply-To: <20170106171901.27565-1-mar.krzeminski@gmail.com>
-References: <20170106171901.27565-1-mar.krzeminski@gmail.com>
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23992514AbdAFRjphuHz0 (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org> + 1 other);
+ Fri, 6 Jan 2017 18:39:45 +0100
+Date: Fri, 6 Jan 2017 18:39:44 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Brian Norris <briannorris@chromium.org>
+Cc: Tony Lindgren <tony@atomide.com>,
+ Teresa Remmet <t.remmet@phytec.de>, linux-omap@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ =?iso-8859-2?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Adam Ford <aford173@gmail.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/6] ARM: dts: am335x-phycore-som: Update NAND partition
+ table
+Message-ID: <20170106173944.t3jq7amga3j5ahe6@lenoch>
+References: <1483627851-17996-1-git-send-email-t.remmet@phytec.de>
+ <1483627851-17996-2-git-send-email-t.remmet@phytec.de>
+ <20170105153637.GA4310@atomide.com>
+ <20170105171845.GK4310@atomide.com>
+ <20170105175619.GA56877@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170105175619.GA56877@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +35,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Micron n25q00 are stacked chips, thus do not support chip erase.
->From now spi-nor framework will not send chip erase command,
-instead will use sector at time erase procedure.
+On Thu, Jan 05, 2017 at 09:56:20AM -0800, Brian Norris wrote:
+[snip]
+> The best solution would be to try to migrate away from static device
+> tree representations of partition info entirely. UBI volumes are best
+> where possible. If not, then some other kind of on-flash data structures
+> (along the lines of a GPT) with a corresponding MTD partition parser is
+> an OK alternative. Unfortunately, there isn't any good standard format
+> for this on MTD, so it's typically all custom -- and so people use the
+> easiest approach: device tree. And it's even more difficult with NAND,
+> which has reliability problems, especially with static data (e.g., read
+> disturb).
 
-Signed-off-by: Marcin Krzeminski <mar.krzeminski@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Just as a side note, there is some work in this area:
+https://www.mail-archive.com/u-boot@lists.denx.de/msg232759.html
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 595de54..0d013fd 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1026,8 +1026,8 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
- 	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
--	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
--	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-+	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
-+	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
- 
- 	/* PMC */
- 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
--- 
-2.9.3
+> Anyway, the parser solution is helpful only if one can properly fix the
+> "flag day" first. And it requires a little bit more work to be generally
+> useful; I posted some work for this over a year ago, but bikeshedding
+> brought it down.
+
+Best regards,
+	ladis
