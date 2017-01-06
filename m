@@ -1,27 +1,23 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-wj0-x243.google.com ([2a00:1450:400c:c01::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPeKS-0007ly-Pj
- for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 23:53:50 +0000
-Received: by mail-wm0-x241.google.com with SMTP id m203so8318798wma.3
- for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2017 15:53:27 -0800 (PST)
-Subject: Re: [PATCH v4 07/15] mtd: nand: move Samsung specific init/detection
- logic in nand_samsung.c
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
- <1483448495-31607-8-git-send-email-boris.brezillon@free-electrons.com>
- <09da7377-1323-0794-fe61-34fd06e35404@gmail.com>
- <20170104180813.700823eb@bbrezillon>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Icenowy Zheng
- <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org
+ id 1cPeoI-0007Bp-3R
+ for linux-mtd@lists.infradead.org; Sat, 07 Jan 2017 00:24:39 +0000
+Received: by mail-wj0-x243.google.com with SMTP id ey1so1749826wjd.2
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2017 16:24:14 -0800 (PST)
+Subject: Re: [PATCH v4 1/2] mtd: spi-nor: Fix whole chip erasing for stacked
+ chips.
+To: Marcin Krzeminski <mar.krzeminski@gmail.com>, cyrille.pitchen@atmel.com,
+ linux-mtd@lists.infradead.org
+References: <20170106171901.27565-1-mar.krzeminski@gmail.com>
+ <20170106171901.27565-2-mar.krzeminski@gmail.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <4982cf88-ff7e-20c9-a158-e1e3826c0762@gmail.com>
-Date: Sat, 7 Jan 2017 00:53:24 +0100
+Message-ID: <e9a447d9-da58-87ac-3136-d1dc0c75d591@gmail.com>
+Date: Sat, 7 Jan 2017 00:45:00 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170104180813.700823eb@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20170106171901.27565-2-mar.krzeminski@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,45 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/04/2017 06:08 PM, Boris Brezillon wrote:
-> On Wed, 4 Jan 2017 16:14:07 +0100
-> Marek Vasut <marek.vasut@gmail.com> wrote:
-> 
->> On 01/03/2017 02:01 PM, Boris Brezillon wrote:
->>> Move Samsung specific initialization and detection logic into
->>> nand_samsung.c. This is part of the "separate vendor specific code from
->>> core" cleanup process.
->>>
->>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>  
->>
->> [...]
->>
->>> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
->>> index b3a332f37e14..05e9366696c9 100644
->>> --- a/drivers/mtd/nand/nand_ids.c
->>> +++ b/drivers/mtd/nand/nand_ids.c
->>> @@ -10,7 +10,7 @@
->>>  #include <linux/mtd/nand.h>
->>>  #include <linux/sizes.h>
->>>  
->>> -#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
->>> +#define LP_OPTIONS 0
->>>  #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
->>>  
->>>  #define SP_OPTIONS NAND_NEED_READRDY
->>> @@ -169,10 +169,12 @@ struct nand_flash_dev nand_flash_ids[] = {
->>>  };
->>>  
->>>  /* Manufacturer IDs */
->>> +extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;  
->>
->> Is the extern needed ?
-> 
-> Yes, unless you have another solution. If you remove the extern keyword
-> you just redeclare samsung_nand_manuf_ops here, which is not what we
-> want.
+On 01/06/2017 06:19 PM, Marcin Krzeminski wrote:
+> Currently it is possible to disable chip erase for spi-nor driver.
+> Some modern stacked (multi die) flash chips do not support chip
+> erase opcode at all but spi-nor framework needs to cope with them too.
+> This commit extends existing functionality to allow disable
+> chip erase for a single flash chip.
 
-Maybe some accessor function can help ?
+I wonder whether this should really be opt-out flag. Since we'll see
+more multi-die chips (and chips with different die sizes), I'd say this
+should rather be opt-in flag.
+
+> Signed-off-by: Marcin Krzeminski <mar.krzeminski@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 2a643a1..595de54 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -85,6 +85,7 @@ struct flash_info {
+>  					 * Use dedicated 4byte address op codes
+>  					 * to support memory size above 128Mib.
+>  					 */
+> +#define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
+>  };
+>  
+>  #define JEDEC_MFR(info)	((info)->id[0])
+> @@ -1621,6 +1622,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  		nor->flags |= SNOR_F_USE_FSR;
+>  	if (info->flags & SPI_NOR_HAS_TB)
+>  		nor->flags |= SNOR_F_HAS_SR_TB;
+> +	if (info->flags & NO_CHIP_ERASE)
+> +		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+>  
+>  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
+>  	/* prefer "small sector" erase if possible */
+> 
+
 
 -- 
 Best regards,
