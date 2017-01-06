@@ -1,43 +1,28 @@
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cPeKS-0007ly-Pj
+ for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 23:53:50 +0000
+Received: by mail-wm0-x241.google.com with SMTP id m203so8318798wma.3
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2017 15:53:27 -0800 (PST)
+Subject: Re: [PATCH v4 07/15] mtd: nand: move Samsung specific init/detection
+ logic in nand_samsung.c
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1483448495-31607-8-git-send-email-boris.brezillon@free-electrons.com>
+ <09da7377-1323-0794-fe61-34fd06e35404@gmail.com>
+ <20170104180813.700823eb@bbrezillon>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Icenowy Zheng
+ <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <4982cf88-ff7e-20c9-a158-e1e3826c0762@gmail.com>
+Date: Sat, 7 Jan 2017 00:53:24 +0100
 MIME-Version: 1.0
-In-Reply-To: <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
-References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
- <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
- <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 6 Jan 2017 22:50:34 +0200
-Message-ID: <CAHp75VdDfopdSy-7oy87ZeosDB9+FN4zFBhErPWLQB7tH81zTw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/7] x86: put msr-index.h in uapi
-To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, mmarek@suse.com,
- linux-kbuild@vger.kernel.org,
- Linux Documentation List <linux-doc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org,
- Cris <linux-cris-kernel@axis.com>, uclinux-h8-devel@lists.sourceforge.jp,
- linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org,
- linux-mips@linux-mips.org, linux-am33-list@redhat.com,
- nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
- linux-parisc@vger.kernel.org,
- "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT"
- <linuxppc-dev@lists.ozlabs.org>, linux-s390@vger.kernel.org,
- Linux-SH <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org,
- linux-xtensa@linux-xtensa.org, Linux-Arch <linux-arch@vger.kernel.org>,
- dri-devel@lists.freedesktop.org, netdev <netdev@vger.kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, linux-nfs@vger.kernel.org, linux-raid@vger.kernel.org,
- linux-spi <linux-spi@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- linux-rdma@vger.kernel.org, fcoe-devel@open-fcoe.org,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- linux-fbdev@vger.kernel.org,
- xen-devel@lists.xenproject.org, David Airlie <airlied@linux.ie>,
- "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20170104180813.700823eb@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,15 +32,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 6, 2017 at 11:43 AM, Nicolas Dichtel
-<nicolas.dichtel@6wind.com> wrote:
-> This header file is exported, thus move it to uapi.
+On 01/04/2017 06:08 PM, Boris Brezillon wrote:
+> On Wed, 4 Jan 2017 16:14:07 +0100
+> Marek Vasut <marek.vasut@gmail.com> wrote:
+> 
+>> On 01/03/2017 02:01 PM, Boris Brezillon wrote:
+>>> Move Samsung specific initialization and detection logic into
+>>> nand_samsung.c. This is part of the "separate vendor specific code from
+>>> core" cleanup process.
+>>>
+>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>  
+>>
+>> [...]
+>>
+>>> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+>>> index b3a332f37e14..05e9366696c9 100644
+>>> --- a/drivers/mtd/nand/nand_ids.c
+>>> +++ b/drivers/mtd/nand/nand_ids.c
+>>> @@ -10,7 +10,7 @@
+>>>  #include <linux/mtd/nand.h>
+>>>  #include <linux/sizes.h>
+>>>  
+>>> -#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
+>>> +#define LP_OPTIONS 0
+>>>  #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
+>>>  
+>>>  #define SP_OPTIONS NAND_NEED_READRDY
+>>> @@ -169,10 +169,12 @@ struct nand_flash_dev nand_flash_ids[] = {
+>>>  };
+>>>  
+>>>  /* Manufacturer IDs */
+>>> +extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;  
+>>
+>> Is the extern needed ?
+> 
+> Yes, unless you have another solution. If you remove the extern keyword
+> you just redeclare samsung_nand_manuf_ops here, which is not what we
+> want.
 
-Just hint for the future:
--M (move)
--C (copy)
--D (delete) [though this is NOT for applying]
+Maybe some accessor function can help ?
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Best regards,
+Marek Vasut
