@@ -1,7 +1,7 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cPQ5K-0005NU-FX
- for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 08:41:28 +0000
+ id 1cPQ5K-0005Nb-Fo
+ for linux-mtd@lists.infradead.org; Fri, 06 Jan 2017 08:41:29 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
@@ -12,10 +12,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
  Aleksei Mamlin <mamlinav@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v5 05/15] mtd: nand: add manufacturer specific
- initialization/detection steps
-Date: Fri,  6 Jan 2017 09:40:16 +0100
-Message-Id: <1483692026-19663-6-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v5 07/15] mtd: nand: move Samsung specific init/detection
+ logic in nand_samsung.c
+Date: Fri,  6 Jan 2017 09:40:18 +0100
+Message-Id: <1483692026-19663-8-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1483692026-19663-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1483692026-19663-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,237 +27,236 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A lot of NANDs are implementing generic features in a non-generic way,
-or are providing advanced auto-detection logic where the NAND ID bytes
-meaning changes with the NAND generation.
-
-Providing this vendor specific initialization step will allow us to get
-rid of the full ids in the nand_ids table or all the vendor specific
-cases added over the time in the generic NAND ID decoding logic.
+Move Samsung specific initialization and detection logic into
+nand_samsung.c. This is part of the "separate vendor specific code from
+core" cleanup process.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c | 67 +++++++++++++++++++++++++++++++++++---------
- include/linux/mtd/nand.h     | 35 +++++++++++++++++++++++
- 2 files changed, 89 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/Makefile       |  1 +
+ drivers/mtd/nand/nand_base.c    | 52 ++---------------------
+ drivers/mtd/nand/nand_ids.c     |  6 ++-
+ drivers/mtd/nand/nand_samsung.c | 92 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 101 insertions(+), 50 deletions(-)
+ create mode 100644 drivers/mtd/nand/nand_samsung.c
 
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index bfd5d12b9ade..d4b90b0f879e 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -61,3 +61,4 @@ obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+ obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
+ 
+ nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
++nand-objs += nand_samsung.o
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index efb3ade568d8..8f80faa57984 100644
+index 8f80faa57984..0f0fa13e9448 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -3779,7 +3779,7 @@ static int nand_get_bits_per_cell(u8 cellinfo)
-  * chip. The rest of the parameters must be decoded according to generic or
-  * manufacturer-specific "extended ID" decoding patterns.
-  */
--static void nand_decode_ext_id(struct nand_chip *chip)
-+void nand_decode_ext_id(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int extid, id_len = chip->id.len;
-@@ -3904,6 +3904,7 @@ static void nand_decode_ext_id(struct nand_chip *chip)
+@@ -3792,48 +3792,13 @@ void nand_decode_ext_id(struct nand_chip *chip)
+ 	/*
+ 	 * Field definitions are in the following datasheets:
+ 	 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
+-	 * New Samsung (6 byte ID): Samsung K9GAG08U0F (p.44)
+ 	 * Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22)
+ 	 *
+ 	 * Check for ID length, non-zero 6th byte, cell type, and Hynix/Samsung
+ 	 * ID to decide what to do.
+ 	 */
+-	if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG &&
+-			!nand_is_slc(chip) && id_data[5] != 0x00) {
+-		/* Calc pagesize */
+-		mtd->writesize = 2048 << (extid & 0x03);
+-		extid >>= 2;
+-		/* Calc oobsize */
+-		switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
+-		case 1:
+-			mtd->oobsize = 128;
+-			break;
+-		case 2:
+-			mtd->oobsize = 218;
+-			break;
+-		case 3:
+-			mtd->oobsize = 400;
+-			break;
+-		case 4:
+-			mtd->oobsize = 436;
+-			break;
+-		case 5:
+-			mtd->oobsize = 512;
+-			break;
+-		case 6:
+-			mtd->oobsize = 640;
+-			break;
+-		case 7:
+-		default: /* Other cases are "reserved" (unknown) */
+-			mtd->oobsize = 1024;
+-			break;
+-		}
+-		extid >>= 2;
+-		/* Calc blocksize */
+-		mtd->erasesize = (128 * 1024) <<
+-			(((extid >> 1) & 0x04) | (extid & 0x03));
+-	} else if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
+-			!nand_is_slc(chip)) {
++	if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
++	    !nand_is_slc(chip)) {
+ 		unsigned int tmp;
  
- 	}
- }
-+EXPORT_SYMBOL_GPL(nand_decode_ext_id);
- 
- /*
-  * Old devices have chip data hardcoded in the device ID table. nand_decode_id
-@@ -4008,13 +4009,44 @@ static bool find_full_id_nand(struct nand_chip *chip,
- }
- 
- /*
-+ * Manufacturer detection. Only used when the NAND is not ONFI or JEDEC
-+ * compliant and does not have a full-id or legacy-id entry in the nand_ids
-+ * table.
-+ */
-+static void nand_manufacturer_detect(struct nand_chip *chip)
-+{
-+	/*
-+	 * Try manufacturer detection if available and use
-+	 * nand_decode_ext_id() otherwise.
-+	 */
-+	if (chip->manufacturer.ops && chip->manufacturer.ops->detect)
-+		chip->manufacturer.ops->detect(chip);
-+	else
-+		nand_decode_ext_id(chip);
-+}
-+
-+/*
-+ * Manufacturer initialization. This function is called for all NANDs including
-+ * ONFI and JEDEC compliant ones.
-+ * Manufacturer drivers should put all their specific initialization code in
-+ * their ->init() hook.
-+ */
-+static int nand_manufacturer_init(struct nand_chip *chip)
-+{
-+	if (!chip->manufacturer.ops || !chip->manufacturer.ops->init)
-+		return 0;
-+
-+	return chip->manufacturer.ops->init(chip);
-+}
-+
-+/*
-  * Get the flash and manufacturer id and lookup if the type is supported.
-  */
- static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int busw;
--	int i, maf_idx;
-+	int i, maf_idx, ret;
- 	u8 *id_data = chip->id.data;
- 	u8 maf_id, dev_id;
- 
-@@ -4055,6 +4087,14 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 
- 	chip->id.len = nand_id_len(id_data, 8);
- 
-+	/* Try to identify manufacturer */
-+	for (maf_idx = 0; nand_manuf_ids[maf_idx].id != 0x0; maf_idx++) {
-+		if (nand_manuf_ids[maf_idx].id == maf_id)
-+			break;
-+	}
-+
-+	chip->manufacturer.ops = nand_manuf_ids[maf_idx].ops;
-+
- 	if (!type)
- 		type = nand_flash_ids;
- 
-@@ -4101,12 +4141,11 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 
- 	chip->chipsize = (uint64_t)type->chipsize << 20;
- 
--	if (!type->pagesize) {
--		/* Decode parameters from extended ID */
--		nand_decode_ext_id(chip);
--	} else {
-+	if (!type->pagesize)
-+		nand_manufacturer_detect(chip);
-+	else
- 		nand_decode_id(chip, type);
--	}
-+
+ 		/* Calc pagesize */
+@@ -3961,13 +3926,10 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
+ 	 * Micron devices with 2KiB pages and on SLC Samsung, Hynix, Toshiba,
+ 	 * AMD/Spansion, and Macronix.  All others scan only the first page.
+ 	 */
+-	if (!nand_is_slc(chip) &&
+-			(maf_id == NAND_MFR_SAMSUNG ||
+-			 maf_id == NAND_MFR_HYNIX))
++	if (!nand_is_slc(chip) && maf_id == NAND_MFR_HYNIX)
+ 		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
+ 	else if ((nand_is_slc(chip) &&
+-				(maf_id == NAND_MFR_SAMSUNG ||
+-				 maf_id == NAND_MFR_HYNIX ||
++				(maf_id == NAND_MFR_HYNIX ||
+ 				 maf_id == NAND_MFR_TOSHIBA ||
+ 				 maf_id == NAND_MFR_AMD ||
+ 				 maf_id == NAND_MFR_MACRONIX)) ||
+@@ -4149,12 +4111,6 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
  	/* Get chip options */
  	chip->options |= type->options;
  
-@@ -4118,12 +4157,6 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 		chip->options &= ~NAND_SAMSUNG_LP_OPTIONS;
+-	/*
+-	 * Check if chip is not a Samsung device. Do not clear the
+-	 * options for chips which do not have an extended id.
+-	 */
+-	if (maf_id != NAND_MFR_SAMSUNG && !type->pagesize)
+-		chip->options &= ~NAND_SAMSUNG_LP_OPTIONS;
  ident_done:
  
--	/* Try to identify manufacturer */
--	for (maf_idx = 0; nand_manuf_ids[maf_idx].id != 0x0; maf_idx++) {
--		if (nand_manuf_ids[maf_idx].id == maf_id)
--			break;
--	}
--
  	if (chip->options & NAND_BUSWIDTH_AUTO) {
- 		WARN_ON(busw & NAND_BUSWIDTH_16);
- 		nand_set_defaults(chip);
-@@ -4163,6 +4196,10 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
- 		chip->cmdfunc = nand_command_lp;
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index b3a332f37e14..05e9366696c9 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -10,7 +10,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/sizes.h>
  
-+	ret = nand_manufacturer_init(chip);
-+	if (ret)
-+		return ret;
+-#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
++#define LP_OPTIONS 0
+ #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
+ 
+ #define SP_OPTIONS NAND_NEED_READRDY
+@@ -169,10 +169,12 @@ struct nand_flash_dev nand_flash_ids[] = {
+ };
+ 
+ /* Manufacturer IDs */
++extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
 +
- 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
- 		maf_id, dev_id);
- 
-@@ -4907,6 +4944,10 @@ void nand_cleanup(struct nand_chip *chip)
- 	if (chip->badblock_pattern && chip->badblock_pattern->options
- 			& NAND_BBT_DYNAMICSTRUCT)
- 		kfree(chip->badblock_pattern);
-+
-+	/* Release manufacturer private data */
-+	if (chip->manufacturer.ops && chip->manufacturer.ops->cleanup)
-+		chip->manufacturer.ops->cleanup(chip);
- }
- EXPORT_SYMBOL_GPL(nand_cleanup);
- 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 632975146c30..efba76951b7c 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -732,6 +732,20 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
- }
- 
- /**
-+ * struct nand_manufacturer_ops - NAND Manufacturer operations
-+ * @detect: detect the NAND memory organization and capabilities
-+ * @init: initialize all vendor specific fields (like the ->read_retry()
-+ *	  implementation) if any.
-+ * @cleanup: the ->init() function may have allocated resources, ->cleanup()
-+ *	     is here to let vendor specific code release those resources.
+ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_TOSHIBA, "Toshiba"},
+ 	{NAND_MFR_ESMT, "ESMT"},
+-	{NAND_MFR_SAMSUNG, "Samsung"},
++	{NAND_MFR_SAMSUNG, "Samsung", &samsung_nand_manuf_ops},
+ 	{NAND_MFR_FUJITSU, "Fujitsu"},
+ 	{NAND_MFR_NATIONAL, "National"},
+ 	{NAND_MFR_RENESAS, "Renesas"},
+diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/nand_samsung.c
+new file mode 100644
+index 000000000000..5c259dd5b652
+--- /dev/null
++++ b/drivers/mtd/nand/nand_samsung.c
+@@ -0,0 +1,92 @@
++/*
++ * Copyright (C) 2017 Free Electrons
++ * Copyright (C) 2017 NextThing Co
++ *
++ * Author: Boris Brezillon <boris.brezillon@free-electrons.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
 + */
-+struct nand_manufacturer_ops {
-+	void (*detect)(struct nand_chip *chip);
-+	int (*init)(struct nand_chip *chip);
-+	void (*cleanup)(struct nand_chip *chip);
++
++#include <linux/mtd/nand.h>
++
++static void samsung_nand_decode_id(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
++	/* New Samsung (6 byte ID): Samsung K9GAG08U0F (p.44) */
++	if (chip->id.len == 6 && !nand_is_slc(chip) &&
++	    chip->id.data[5] != 0x00) {
++		u8 extid = chip->id.data[3];
++
++		/* Get pagesize */
++		mtd->writesize = 2048 << (extid & 0x03);
++
++		extid >>= 2;
++
++		/* Get oobsize */
++		switch (((extid >> 2) & 0x4) | (extid & 0x3)) {
++		case 1:
++			mtd->oobsize = 128;
++			break;
++		case 2:
++			mtd->oobsize = 218;
++			break;
++		case 3:
++			mtd->oobsize = 400;
++			break;
++		case 4:
++			mtd->oobsize = 436;
++			break;
++		case 5:
++			mtd->oobsize = 512;
++			break;
++		case 6:
++			mtd->oobsize = 640;
++			break;
++		default:
++			/*
++			 * We should never reach this case, but if that
++			 * happens, this probably means Samsung decided to use
++			 * a different extended ID format, and we should find
++			 * a way to support it.
++			 */
++			WARN(1, "Invalid OOB size value");
++			break;
++		}
++
++		/* Get blocksize */
++		extid >>= 2;
++		mtd->erasesize = (128 * 1024) <<
++				 (((extid >> 1) & 0x04) | (extid & 0x03));
++	} else {
++		nand_decode_ext_id(chip);
++	}
++}
++
++static int samsung_nand_init(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
++	if (mtd->writesize > 512)
++		chip->options |= NAND_SAMSUNG_LP_OPTIONS;
++
++	if (!nand_is_slc(chip))
++		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
++	else
++		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
++
++	return 0;
++}
++
++const struct nand_manufacturer_ops samsung_nand_manuf_ops = {
++	.detect = samsung_nand_decode_id,
++	.init = samsung_nand_init,
 +};
-+
-+/**
-  * struct nand_chip - NAND Private Flash Chip Data
-  * @mtd:		MTD device registered to the MTD framework
-  * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
-@@ -831,6 +845,7 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
-  *			additional error status checks (determine if errors are
-  *			correctable).
-  * @write_page:		[REPLACEABLE] High-level page write function
-+ * @manufacturer:	[INTERN] Contains manufacturer data
-  */
- 
- struct nand_chip {
-@@ -917,6 +932,11 @@ struct nand_chip {
- 	struct nand_bbt_descr *badblock_pattern;
- 
- 	void *priv;
-+
-+	struct {
-+		const struct nand_manufacturer_ops *ops;
-+		void *priv;
-+	} manufacturer;
- };
- 
- extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
-@@ -953,6 +973,17 @@ static inline void nand_set_controller_data(struct nand_chip *chip, void *priv)
- 	chip->priv = priv;
- }
- 
-+static inline void nand_set_manufacturer_data(struct nand_chip *chip,
-+					      void *priv)
-+{
-+	chip->manufacturer.priv = priv;
-+}
-+
-+static inline void *nand_get_manufacturer_data(struct nand_chip *chip)
-+{
-+	return chip->manufacturer.priv;
-+}
-+
- /*
-  * NAND Flash Manufacturer ID Codes
-  */
-@@ -1058,10 +1089,12 @@ struct nand_flash_dev {
-  * struct nand_manufacturers - NAND Flash Manufacturer ID Structure
-  * @name:	Manufacturer name
-  * @id:		manufacturer ID code of device.
-+ * @ops:	manufacturer operations
- */
- struct nand_manufacturers {
- 	int id;
- 	char *name;
-+	const struct nand_manufacturer_ops *ops;
- };
- 
- extern struct nand_flash_dev nand_flash_ids[];
-@@ -1232,4 +1265,6 @@ int nand_reset(struct nand_chip *chip, int chipnr);
- /* Free resources held by the NAND device */
- void nand_cleanup(struct nand_chip *chip);
- 
-+/* Default extended ID decoding function */
-+void nand_decode_ext_id(struct nand_chip *chip);
- #endif /* __LINUX_MTD_NAND_H */
 -- 
 2.7.4
