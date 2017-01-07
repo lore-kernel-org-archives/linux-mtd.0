@@ -1,16 +1,26 @@
-Received: from mail-qk0-x235.google.com ([2607:f8b0:400d:c09::235])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPiIi-0003Wf-SA
- for linux-mtd@lists.infradead.org; Sat, 07 Jan 2017 04:08:18 +0000
-Received: by mail-qk0-x235.google.com with SMTP id n21so483939293qka.3
- for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2017 20:07:56 -0800 (PST)
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cPlgf-00018n-6b
+ for linux-mtd@lists.infradead.org; Sat, 07 Jan 2017 07:45:20 +0000
+Subject: Re: [PATCH v1] mtd: spi nor: modify the boot and flash type of FMC
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <marek.vasut@gmail.com>, <richard@nod.at>, <robh+dt@kernel.org>,
+ <mark.rutland@arm.com>
+References: <1483693931-22249-1-git-send-email-linshunquan1@hisilicon.com>
+ <506ed7d0-0bd9-874c-eaf8-4fc5d4366612@atmel.com>
+CC: <suwenping@hisilicon.com>, <devicetree@vger.kernel.org>,
+ <howell.yang@hisilicon.com>, <jalen.hsu@hisilicon.com>,
+ <linux-kernel@vger.kernel.org>, <raojun@hisilicon.com>,
+ <kevin.lixu@hisilicon.com>, <linux-mtd@lists.infradead.org>,
+ <lvkuanliang@hisilicon.com>, <xuejiancheng@hisilicon.com>
+From: "linshunquan (A)" <linshunquan1@hisilicon.com>
+Message-ID: <d77207c5-891d-d35e-f6b8-4b0467fabd25@hisilicon.com>
+Date: Sat, 7 Jan 2017 15:33:41 +0800
 MIME-Version: 1.0
-From: Madhu Macaque Labs <madhu@macaque.in>
-Date: Sat, 7 Jan 2017 09:37:55 +0530
-Message-ID: <CAPb2fE86wZMOkaWAU3S97_JRveB2KBb_=wdq4D0zawjntgyQoA@mail.gmail.com>
-Subject: Open Source ONFI 4.0 and NVMe 2.x
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <506ed7d0-0bd9-874c-eaf8-4fc5d4366612@atmel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,73 +30,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Our open source ONFI and NVMe controller are getting to be stable
-and so we have started on the SW development for them. The ONFI
-4.0 controller will be used for NAND boot in our open source RISC-V
-SoCs but we are hoping it will get adopted by other open and proprietary
-SoCs as reference ONFI controller.
+Hi Cyrille,
+ Thanks for your relay, I will update this patch soon.
 
-Need some advice on the appropriate SW systems to for testing our RTL.
-For the ONFI controller, presumably appropriate Micron NAND drivers
-would do. We are creating two open platform along with our IP.
-One is a FMC NAND module that can be used with any FPGA board with
-an FMC connector. The flash is a Micro 3D NAND. Ideal candidate is the
-Xilinx or Altera ARM FPGA board since you get an ARM CPU
-with an AXI bus. Our ONFI controller support both an AXI interface or a
-generic parallel interface. The other is an FPGA based NVMe card with
-6+ ONFI channels. It is basically an enterprise grade NVMe card with an
-open interface for the NAND modules so that any 3rd party NAND module
-can be plugged in and you can mix and match SLC or TLC or MLC.
-Features like battery backup and NVRAM cache will be added in later versions.
-It also supports native fabric interface (2 or 4 lanes of 10G SFP+ ) so that it
-can run NVMe over fabric natively. We may end up opening up the schematics
-and gerber files if one of our he dev  partners waive their rights. In
-any case the
-RTL code (in bluespec and verilog) is open source.
-
-I am curious if the NAND team will find access to the internals of an ONFI
-controller to be of any advantage.  It is just a standard ONFI 4.0 controller
-but as part of our research we are enhancing ONFI to  allow higher level
-software  to have more access to the flash devices. If some
-one needs an extra features in the controller let me know, if it makes sense we
-will add it. Enhancing ONFI is one of our key goals since with an open SSD
-approach what we will end up with is ONFI over a fabric since in a distributed
-block store, an enhanced ONFI may  more sense than NVMe . If nothing else
-I am hoping  our HW platform becomes some kind of a ref. platform for testing
-NAND sub-systems.
-
-For the NVMe controller, we will be supporting both device side FTL and host
-side FTL based on the openchannelSSD work from ITU Copenhagen. For the
-device side FTL, I am planning to take the UBI sub-system and enhance it.
-Since our NVMe controller also support 32 cores and multiple fabric interfaces
-(PCIe and SRIO for now, GenZ as soon as the specs are ready), we also plan
-to have full fledged distributed block storage layer running on these
-cores (of course
-then its is something more than an NVMe controller). The idea  is that
-a collection
-of these cards (along with an optional appliance controller) will present a
-distributed block storage system. Of course higher level sub-systems
-like database
-storage engines  KV stores can also run on these cores but our initial focus
- is an enhanced version of UBI.
-
-Any feedback on our  approach is greatly appreciated. As with the ONFI
-controller,
-we will consider any useful feature requests.
-
-The code is in
-
- bitbucket dot org slash casl
-l
-and is under the 3 part BSD lic for the HW and
-GPL for the SW.
-
-A note: While it will take a fair amount of beta testing to get the
-bugs sorted out,
-the project will maintain and support these IPs to make them
-competitive with any
-commercial IP in terms of stability and hopefully documentation.
-
-
-Regards,
-Madhu
+On 2017/1/6 21:44, Cyrille Pitchen wrote:
+> Hi,
+> 
+> Le 06/01/2017 à 10:12, linshunquan 00354166 a écrit :
+>> (1) The HiSilicon Flash Memory Controller(FMC) is a multi-functions
+>>  device which supports SPI Nor flash controller, SPI nand Flash
+>>  controller and parallel nand flash controller. So when we are prepare
+>>  to operation SPI Nor, we should make sure the flash type is SPI Nor.
+>>
+>> (2) Make sure the boot type is Normal Type before initialize the SPI
+>>     Nor controller.
+>>
+>> Signed-off-by: linshunquan 00354166 <linshunquan1@hisilicon.com>
+>> ---
+>>  drivers/mtd/spi-nor/hisi-sfc.c | 30 ++++++++++++++++++++++++++++++
+>>  1 file changed, 30 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
+>> index 20378b0..7855024 100644
+>> --- a/drivers/mtd/spi-nor/hisi-sfc.c
+>> +++ b/drivers/mtd/spi-nor/hisi-sfc.c
+>> @@ -32,6 +32,8 @@
+>>  #define FMC_CFG_OP_MODE_MASK		BIT_MASK(0)
+>>  #define FMC_CFG_OP_MODE_BOOT		0
+>>  #define FMC_CFG_OP_MODE_NORMAL		1
+>> +#define FMC_CFG_OP_MODE_SEL(mode)      ((mode) & 0x1)
+>> +#define FMC_CFG_FLASH_SEL_SPI_NOR	(0x0 << 1)
+>>  #define FMC_CFG_FLASH_SEL(type)		(((type) & 0x3) << 1)
+>>  #define FMC_CFG_FLASH_SEL_MASK		0x6
+>>  #define FMC_ECC_TYPE(type)		(((type) & 0x7) << 5)
+>> @@ -141,10 +143,36 @@ static int get_if_type(enum read_mode flash_read)
+>>  	return if_type;
+>>  }
+>>  
+>> +static void spi_nor_switch_spi_type(struct hifmc_host *host)
+>> +{
+>> +	unsigned int reg;
+>> +
+>> +	reg = readl(host->regbase + FMC_CFG);
+>> +	if ((reg & FMC_CFG_FLASH_SEL_MASK)
+>> +		   	== FMC_CFG_FLASH_SEL_SPI_NOR)
+>> +		return;
+>> +
+>> +	/* if the flash type isn't spi nor, change it */
+>> +	reg &= ~FMC_CFG_FLASH_SEL_MASK;
+>> +	reg |= FMC_CFG_FLASH_SEL(0);
+>> +	writel(reg, host->regbase + FMC_CFG);
+>> +}
+>> +
+> 
+> This is not consistent: we have to check the macro definitions to
+> understand that FMC_CFG_FLASH_SPI_NOR == FMC_CFG_FLASH_SEL(0)
+> 
+> In such a function, you should use the very same macro for both the test
+> and the update of reg; either FMC_CFG_FLASH_SEL_SPI_NOR or
+> FMC_CFG_FLASH_SEL(0). Please don't mix the use of those macros.
+> 
+>>  static void hisi_spi_nor_init(struct hifmc_host *host)
+>>  {
+>>  	u32 reg;
+>>  
+>> +	/* switch the flash type to spi nor */
+>> +	spi_nor_switch_spi_type(host);
+>> +
+>> +	/* set the boot mode to normal */
+>> +	reg = readl(host->regbase + FMC_CFG);
+>> +	if ((reg & FMC_CFG_OP_MODE_MASK) == FMC_CFG_OP_MODE_BOOT) {
+>> +		reg |= FMC_CFG_OP_MODE_SEL(FMC_CFG_OP_MODE_NORMAL);
+> 
+> This is not consistent: you test FMC_CFG_OP_MODE_BOOT, hence without
+> FMC_CFG_OP_MODE_SEL() but you set
+> FMC_CFG_OP_MODE_SEL(FMC_CFG_OP_MODE_NORMAL), with FMC_CFG_OP_MODE_SEL().
+> 
+> Of course, looking at the macro definitions, it works as is but once again
+> we have to check the macro definitions to understand why sometime you use
+> FMC_CFG_OP_MODE_SEL() whereas other times you don't.
+> 
+>> +		writel(reg, host->regbase + FMC_CFG);
+>> +	}
+> 
+> spi_nor_switch_spi_type() already updates the FMC_CFG register in the very
+> same manner: read, test, modify, write. Hence you should write a more
+> generic function and update both bitfields at once.
+> 
+> static void hisi_spi_nor_update_reg(struct hifmc_host *host,
+> 				    unsigned int reg_offset,
+> 				    unsigned int value,
+> 				    unsigned int mask)
+> {
+> 	unsigned int reg;
+> 
+> 	reg = readl(host->regbase + reg_offset);
+> 	if (((reg ^ value) & mask) == 0)
+> 		return;
+> 
+> 	reg = (reg & ~mask) | (value & mask);
+> 	writel(reg, host->regbase + reg_offset);
+> }
+> 
+> ...
+> 
+> 	unsigned int value, mask;
+> 
+> 	/*
+> 	 * switch the flash type to spi nor and set the boot mode to
+> 	 * normal.
+> 	 */
+> 	value = FMC_CFG_OP_MODE_NORMAL | FMC_CFG_FLASH_SEL_SPI_NOR;
+> 	mask = FMC_CFG_OP_MODE_MASK | FMC_CFG_FLASH_SEL_MASK;
+> 	hisi_spi_nor_update_reg(host, FMC_CFG, value, mask);
+> 
+>> +
+>> +	/* set timming */
+>>  	reg = TIMING_CFG_TCSH(CS_HOLD_TIME)
+>>  		| TIMING_CFG_TCSS(CS_SETUP_TIME)
+>>  		| TIMING_CFG_TSHSL(CS_DESELECT_TIME);
+>> @@ -167,6 +195,8 @@ static int hisi_spi_nor_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+>>  	if (ret)
+>>  		goto out;
+>>  
+>> +	spi_nor_switch_spi_type(host);
+>> +
+>>  	return 0;
+>>  
+>>  out:
+>>
+> 
+> Best regards,
+> 
+> Cyrille
+> .
+> 
