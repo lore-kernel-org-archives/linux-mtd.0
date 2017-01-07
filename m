@@ -1,26 +1,27 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cPlgf-00018n-6b
- for linux-mtd@lists.infradead.org; Sat, 07 Jan 2017 07:45:20 +0000
-Subject: Re: [PATCH v1] mtd: spi nor: modify the boot and flash type of FMC
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <marek.vasut@gmail.com>, <richard@nod.at>, <robh+dt@kernel.org>,
- <mark.rutland@arm.com>
-References: <1483693931-22249-1-git-send-email-linshunquan1@hisilicon.com>
- <506ed7d0-0bd9-874c-eaf8-4fc5d4366612@atmel.com>
-CC: <suwenping@hisilicon.com>, <devicetree@vger.kernel.org>,
- <howell.yang@hisilicon.com>, <jalen.hsu@hisilicon.com>,
- <linux-kernel@vger.kernel.org>, <raojun@hisilicon.com>,
- <kevin.lixu@hisilicon.com>, <linux-mtd@lists.infradead.org>,
- <lvkuanliang@hisilicon.com>, <xuejiancheng@hisilicon.com>
-From: "linshunquan (A)" <linshunquan1@hisilicon.com>
-Message-ID: <d77207c5-891d-d35e-f6b8-4b0467fabd25@hisilicon.com>
-Date: Sat, 7 Jan 2017 15:33:41 +0800
+ id 1cPllY-0000Qb-Fk
+ for linux-mtd@lists.infradead.org; Sat, 07 Jan 2017 07:50:19 +0000
+Date: Sat, 7 Jan 2017 08:49:48 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 07/15] mtd: nand: move Samsung specific
+ init/detection logic in nand_samsung.c
+Message-ID: <20170107084948.1d5d699c@bbrezillon>
+In-Reply-To: <4982cf88-ff7e-20c9-a158-e1e3826c0762@gmail.com>
+References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1483448495-31607-8-git-send-email-boris.brezillon@free-electrons.com>
+ <09da7377-1323-0794-fe61-34fd06e35404@gmail.com>
+ <20170104180813.700823eb@bbrezillon>
+ <4982cf88-ff7e-20c9-a158-e1e3826c0762@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <506ed7d0-0bd9-874c-eaf8-4fc5d4366612@atmel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,138 +31,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille,
- Thanks for your relay, I will update this patch soon.
+On Sat, 7 Jan 2017 00:53:24 +0100
+Marek Vasut <marek.vasut@gmail.com> wrote:
 
-On 2017/1/6 21:44, Cyrille Pitchen wrote:
-> Hi,
+> On 01/04/2017 06:08 PM, Boris Brezillon wrote:
+> > On Wed, 4 Jan 2017 16:14:07 +0100
+> > Marek Vasut <marek.vasut@gmail.com> wrote:
+> >   
+> >> On 01/03/2017 02:01 PM, Boris Brezillon wrote:  
+> >>> Move Samsung specific initialization and detection logic into
+> >>> nand_samsung.c. This is part of the "separate vendor specific code from
+> >>> core" cleanup process.
+> >>>
+> >>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>    
+> >>
+> >> [...]
+> >>  
+> >>> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> >>> index b3a332f37e14..05e9366696c9 100644
+> >>> --- a/drivers/mtd/nand/nand_ids.c
+> >>> +++ b/drivers/mtd/nand/nand_ids.c
+> >>> @@ -10,7 +10,7 @@
+> >>>  #include <linux/mtd/nand.h>
+> >>>  #include <linux/sizes.h>
+> >>>  
+> >>> -#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
+> >>> +#define LP_OPTIONS 0
+> >>>  #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
+> >>>  
+> >>>  #define SP_OPTIONS NAND_NEED_READRDY
+> >>> @@ -169,10 +169,12 @@ struct nand_flash_dev nand_flash_ids[] = {
+> >>>  };
+> >>>  
+> >>>  /* Manufacturer IDs */
+> >>> +extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;    
+> >>
+> >> Is the extern needed ?  
+> > 
+> > Yes, unless you have another solution. If you remove the extern keyword
+> > you just redeclare samsung_nand_manuf_ops here, which is not what we
+> > want.  
 > 
-> Le 06/01/2017 à 10:12, linshunquan 00354166 a écrit :
->> (1) The HiSilicon Flash Memory Controller(FMC) is a multi-functions
->>  device which supports SPI Nor flash controller, SPI nand Flash
->>  controller and parallel nand flash controller. So when we are prepare
->>  to operation SPI Nor, we should make sure the flash type is SPI Nor.
->>
->> (2) Make sure the boot type is Normal Type before initialize the SPI
->>     Nor controller.
->>
->> Signed-off-by: linshunquan 00354166 <linshunquan1@hisilicon.com>
->> ---
->>  drivers/mtd/spi-nor/hisi-sfc.c | 30 ++++++++++++++++++++++++++++++
->>  1 file changed, 30 insertions(+)
->>
->> diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
->> index 20378b0..7855024 100644
->> --- a/drivers/mtd/spi-nor/hisi-sfc.c
->> +++ b/drivers/mtd/spi-nor/hisi-sfc.c
->> @@ -32,6 +32,8 @@
->>  #define FMC_CFG_OP_MODE_MASK		BIT_MASK(0)
->>  #define FMC_CFG_OP_MODE_BOOT		0
->>  #define FMC_CFG_OP_MODE_NORMAL		1
->> +#define FMC_CFG_OP_MODE_SEL(mode)      ((mode) & 0x1)
->> +#define FMC_CFG_FLASH_SEL_SPI_NOR	(0x0 << 1)
->>  #define FMC_CFG_FLASH_SEL(type)		(((type) & 0x3) << 1)
->>  #define FMC_CFG_FLASH_SEL_MASK		0x6
->>  #define FMC_ECC_TYPE(type)		(((type) & 0x7) << 5)
->> @@ -141,10 +143,36 @@ static int get_if_type(enum read_mode flash_read)
->>  	return if_type;
->>  }
->>  
->> +static void spi_nor_switch_spi_type(struct hifmc_host *host)
->> +{
->> +	unsigned int reg;
->> +
->> +	reg = readl(host->regbase + FMC_CFG);
->> +	if ((reg & FMC_CFG_FLASH_SEL_MASK)
->> +		   	== FMC_CFG_FLASH_SEL_SPI_NOR)
->> +		return;
->> +
->> +	/* if the flash type isn't spi nor, change it */
->> +	reg &= ~FMC_CFG_FLASH_SEL_MASK;
->> +	reg |= FMC_CFG_FLASH_SEL(0);
->> +	writel(reg, host->regbase + FMC_CFG);
->> +}
->> +
+> Maybe some accessor function can help ?
 > 
-> This is not consistent: we have to check the macro definitions to
-> understand that FMC_CFG_FLASH_SPI_NOR == FMC_CFG_FLASH_SEL(0)
-> 
-> In such a function, you should use the very same macro for both the test
-> and the update of reg; either FMC_CFG_FLASH_SEL_SPI_NOR or
-> FMC_CFG_FLASH_SEL(0). Please don't mix the use of those macros.
-> 
->>  static void hisi_spi_nor_init(struct hifmc_host *host)
->>  {
->>  	u32 reg;
->>  
->> +	/* switch the flash type to spi nor */
->> +	spi_nor_switch_spi_type(host);
->> +
->> +	/* set the boot mode to normal */
->> +	reg = readl(host->regbase + FMC_CFG);
->> +	if ((reg & FMC_CFG_OP_MODE_MASK) == FMC_CFG_OP_MODE_BOOT) {
->> +		reg |= FMC_CFG_OP_MODE_SEL(FMC_CFG_OP_MODE_NORMAL);
-> 
-> This is not consistent: you test FMC_CFG_OP_MODE_BOOT, hence without
-> FMC_CFG_OP_MODE_SEL() but you set
-> FMC_CFG_OP_MODE_SEL(FMC_CFG_OP_MODE_NORMAL), with FMC_CFG_OP_MODE_SEL().
-> 
-> Of course, looking at the macro definitions, it works as is but once again
-> we have to check the macro definitions to understand why sometime you use
-> FMC_CFG_OP_MODE_SEL() whereas other times you don't.
-> 
->> +		writel(reg, host->regbase + FMC_CFG);
->> +	}
-> 
-> spi_nor_switch_spi_type() already updates the FMC_CFG register in the very
-> same manner: read, test, modify, write. Hence you should write a more
-> generic function and update both bitfields at once.
-> 
-> static void hisi_spi_nor_update_reg(struct hifmc_host *host,
-> 				    unsigned int reg_offset,
-> 				    unsigned int value,
-> 				    unsigned int mask)
-> {
-> 	unsigned int reg;
-> 
-> 	reg = readl(host->regbase + reg_offset);
-> 	if (((reg ^ value) & mask) == 0)
-> 		return;
-> 
-> 	reg = (reg & ~mask) | (value & mask);
-> 	writel(reg, host->regbase + reg_offset);
-> }
-> 
-> ...
-> 
-> 	unsigned int value, mask;
-> 
-> 	/*
-> 	 * switch the flash type to spi nor and set the boot mode to
-> 	 * normal.
-> 	 */
-> 	value = FMC_CFG_OP_MODE_NORMAL | FMC_CFG_FLASH_SEL_SPI_NOR;
-> 	mask = FMC_CFG_OP_MODE_MASK | FMC_CFG_FLASH_SEL_MASK;
-> 	hisi_spi_nor_update_reg(host, FMC_CFG, value, mask);
-> 
->> +
->> +	/* set timming */
->>  	reg = TIMING_CFG_TCSH(CS_HOLD_TIME)
->>  		| TIMING_CFG_TCSS(CS_SETUP_TIME)
->>  		| TIMING_CFG_TSHSL(CS_DESELECT_TIME);
->> @@ -167,6 +195,8 @@ static int hisi_spi_nor_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->>  	if (ret)
->>  		goto out;
->>  
->> +	spi_nor_switch_spi_type(host);
->> +
->>  	return 0;
->>  
->>  out:
->>
-> 
-> Best regards,
-> 
-> Cyrille
-> .
-> 
+
+You mean, in nand_ids.c
+
+    const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops();
+
+    struct nand_manufacturers nand_manuf_ids[] = {
+    ...
+	{NAND_MFR_SAMSUNG, "Samsung", get_samsung_nand_mafuf_ops},
+    ...
+    };
+
+and then, in nand_samsung.c
+
+    const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops()
+    {
+	return &samsung_nand_mafuf_ops;
+    }
+
+What's the point of this extra indirection? I mean, in both cases you
+use a symbol that is not part of the same source file, so you'll have
+to define this symbol (using a function prototype or an extern object
+definition).
+Is this all about fixing checkpatch warnings, or do you have a problem
+with objects shared between different source files?
+
+Now, I agree that the current approach is not ideal. A real improvement
+would be to let the NAND manufacturer drivers (nand_<vendor>.c) register
+themselves to the core. Something similar to CLK_OF_DECLARE() or
+IRQCHIP_DECLARE() for example. But that means creating a dedicated
+section for the nand_manufs_id table, and it's a lot more invasive than
+the current approach.
