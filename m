@@ -1,27 +1,20 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cPzfM-00021C-Ey
- for linux-mtd@lists.infradead.org; Sat, 07 Jan 2017 22:40:50 +0000
-Subject: Re: [PATCH v2] fscrypt: Factor out bio specific functions
-To: Theodore Ts'o <tytso@mit.edu>, Eric Biggers <ebiggers3@gmail.com>,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- jaegeuk@kernel.org, hch@infradead.org, arnd@arndb.de, dedekind1@gmail.com,
- linux-mtd@lists.infradead.org, adrian.hunter@intel.com,
- linux-ext4@vger.kernel.org, ebiggers@google.com, rdunlap@infradead.org,
- david@sigma-star.at
-References: <20161219103929.GA16197@infradead.org>
- <20161219112532.18863-1-richard@nod.at>
- <20170101214725.g67msbedmpx27waz@thunk.org>
- <dd8b8365-e84a-7f8e-384d-4900523e761e@nod.at>
- <20170103142836.no7rp3hphj3czjto@thunk.org>
- <20170104201043.GA21696@gmail.com>
- <20170107192406.56p7ppbdfkjii4vy@thunk.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <21de1dd8-b491-8c59-e874-6834978f1e2e@nod.at>
-Date: Sat, 7 Jan 2017 23:40:15 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cQFgu-0003oe-30
+ for linux-mtd@lists.infradead.org; Sun, 08 Jan 2017 15:47:33 +0000
+Date: Sun, 8 Jan 2017 16:46:59 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Zach Brown <zach.brown@ni.com>, <computersforpeace@gmail.com>,
+ <richard@nod.at>
+Cc: <dwmw2@infradead.org>, <dedekind1@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 4/5] mtd: nand: implement 'max_bad_blocks' mtd function
+Message-ID: <20170108164659.34ac8262@bbrezillon>
+In-Reply-To: <1483730086-26706-5-git-send-email-zach.brown@ni.com>
+References: <1483730086-26706-1-git-send-email-zach.brown@ni.com>
+ <1483730086-26706-5-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-In-Reply-To: <20170107192406.56p7ppbdfkjii4vy@thunk.org>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,24 +25,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ted,
+On Fri, 6 Jan 2017 13:14:45 -0600
+Zach Brown <zach.brown@ni.com> wrote:
 
-Am 07.01.2017 um 20:24 schrieb Theodore Ts'o:
-> On Wed, Jan 04, 2017 at 12:10:43PM -0800, Eric Biggers wrote:
->>
->> I thought you're supposed to be able to build the kernel no matter how it's
->> configured.  If this patch is really too large for 4.10 then perhaps we should
->> make FS_ENCRYPTION select CONFIG_BLOCK instead?
+> Implement the new mtd function 'max_bad_blocks'. Using the chip's
+> max_bb_per_die and blocks_per_die fields to determine the maximum bad
+> blocks to reserve for an MTD.
 > 
-> We already have FS_ENCRYPTIOn depending on BLOCK, so this is *not*
-> fixing a build break.
+> Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+> Signed-off-by: Zach Brown <zach.brown@ni.com>
+> Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 37 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index ec1c28a..587cd42 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3263,6 +3263,42 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+>  }
+>  
+>  /**
+> + * nand_max_bad_blocks - [MTD Interface] Max number of bad blocks for an mtd
+> + * @mtd: MTD device structure
+> + * @ofs: offset relative to mtd start
+> + * @len: length of mtd
+> + */
+> +static int nand_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	uint32_t part_start_block;
+> +	uint32_t part_end_block;
+> +	uint32_t part_start_die;
+> +	uint32_t part_end_die;
 
-Kconfig is tricky. We face a build error with CONFIG_BLOCK=n with UBIFS_FS_ENCRYPTION enabled.
-UBIFS file encryption does "select FS_ENCRYPTION" just like ext4 and f2fs.
-This will enable ENCRYPTION even when no block support is available.
+I missed these ones -> s/uint32_t/u32/.
 
-I can make UBIFS depend on BLOCK as intermediate fix.
-But the real fix is this patch.
+Brian, Richard, if you're fine with this version, I'd like to take the
+whole series in the nand tree (I have other changes which might
+conflict with these ones).
 
-Thanks,
-//richard
+> +
+> +	/*
+> +	 * max_bb_per_die and blocks_per_die used to determine
+> +	 * the maximum bad block count.
+> +	 */
+> +	if (!chip->max_bb_per_die || !chip->blocks_per_die)
+> +		return -ENOTSUPP;
+> +
+> +	/* Get the start and end of the partition in erase blocks. */
+> +	part_start_block = mtd_div_by_eb(ofs, mtd);
+> +	part_end_block = mtd_div_by_eb(len, mtd) + part_start_block - 1;
+> +
+> +	/* Get the start and end LUNs of the partition. */
+> +	part_start_die = part_start_block / chip->blocks_per_die;
+> +	part_end_die = part_end_block / chip->blocks_per_die;
+> +
+> +	/*
+> +	 * Look up the bad blocks per unit and multiply by the number of units
+> +	 * that the partition spans.
+> +	 */
+> +	return chip->max_bb_per_die * (part_end_die - part_start_die + 1);
+> +}
+> +
+> +/**
+>   * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
+>   * @mtd: MTD device structure
+>   * @chip: nand chip info structure
+> @@ -4815,6 +4851,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  	mtd->_block_isreserved = nand_block_isreserved;
+>  	mtd->_block_isbad = nand_block_isbad;
+>  	mtd->_block_markbad = nand_block_markbad;
+> +	mtd->_max_bad_blocks = nand_max_bad_blocks;
+>  	mtd->writebufsize = mtd->writesize;
+>  
+>  	/*
