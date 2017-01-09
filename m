@@ -1,20 +1,34 @@
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cQXev-0005tR-R3
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2017 10:58:39 +0000
-Date: Mon, 9 Jan 2017 11:58:14 +0100
-From: Jean Delvare <jdelvare@suse.de>
-To: linux-mtd@lists.infradead.org
-Cc: Rob Herring <robh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH] mtd: nand: Add OX820 NAND hardware dependency
-Message-ID: <20170109115814.022fd08f@endymion>
+From: Arnd Bergmann <arnd@arndb.de>
+To: linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
+Cc: Nicolas Dichtel <nicolas.dichtel@6wind.com>, linux-mips@linux-mips.org,
+ alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
+ linux-doc@vger.kernel.org, airlied@linux.ie, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+ sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-am33-list@redhat.com,
+ linux-c6x-dev@linux-c6x.org, linux-rdma@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org,
+ coreteam@netfilter.org, fcoe-devel@open-fcoe.org,
+ xen-devel@lists.xenproject.org, linux-snps-arc@lists.infradead.org,
+ linux-media@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
+ adi-buildroot-devel@lists.sourceforge.net, linux-raid@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
+ linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-nfs@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-cris-kernel@axis.com, netdev@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, mmarek@suse.com,
+ netfilter-devel@vger.kernel.org, linux-alpha@vger.kernel.org,
+ nios2-dev@lists.rocketboards.org, davem@davemloft.net
+Subject: Re: [PATCH v2 1/7] arm: put types.h in uapi
+Date: Mon, 09 Jan 2017 12:33:02 +0100
+Message-ID: <1990589.0aJHWbJK4F@wuerfel>
+In-Reply-To: <1483695839-18660-2-git-send-email-nicolas.dichtel@6wind.com>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
+ <1483695839-18660-2-git-send-email-nicolas.dichtel@6wind.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +38,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The oxnas NAND driver is only needed for a specific platform, do
-not propose it on other platforms unless build-testing.
+On Friday, January 6, 2017 10:43:53 AM CET Nicolas Dichtel wrote:
+> 
+> diff --git a/arch/arm/include/asm/types.h b/arch/arm/include/asm/types.h
+> index a53cdb8f068c..c48fee3d7b3b 100644
+> --- a/arch/arm/include/asm/types.h
+> +++ b/arch/arm/include/asm/types.h
+> @@ -1,40 +1,6 @@
+>  #ifndef _ASM_TYPES_H
+>  #define _ASM_TYPES_H
+>  
+> -#include <asm-generic/int-ll64.h>
+...
+> -#define __UINTPTR_TYPE__       unsigned long
+> -#endif
+> +#include <uapi/asm/types.h>
+>  
+>  #endif /* _ASM_TYPES_H */
+> 
 
-Signed-off-by: Jean Delvare <jdelvare@suse.de>
-Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
-Cc: Rob Herring <robh@kernel.org>
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
----
- drivers/mtd/nand/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+Moving the file is correct as far as I can tell, but the extra
+#include is not necessary here, as the kernel will automatically
+search both arch/arm/include/ and arch/arm/include/uapi/.
 
---- linux-4.10-rc2.orig/drivers/mtd/nand/Kconfig	2017-01-09 11:44:05.151733169 +0100
-+++ linux-4.10-rc2/drivers/mtd/nand/Kconfig	2017-01-09 11:44:32.431065848 +0100
-@@ -426,6 +426,7 @@ config MTD_NAND_ORION
- 
- config MTD_NAND_OXNAS
- 	tristate "NAND Flash support for Oxford Semiconductor SoC"
-+	depends on ARCH_OXNAS || COMPILE_TEST
- 	help
- 	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
- 
+The same applies to patches 2 and 4.
 
-
--- 
-Jean Delvare
-SUSE L3 Support
+	Arnd
