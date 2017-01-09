@@ -1,20 +1,26 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cQfiU-00039d-Ct
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2017 19:34:51 +0000
-Message-ID: <1483990466.26691.47.camel@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] UBI: Fix section mismatch
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, linux-mtd@lists.infradead.org, Brian
- Norris <computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Date: Mon, 09 Jan 2017 21:34:26 +0200
-In-Reply-To: <20170109181004.195157-1-andriy.shevchenko@linux.intel.com>
-References: <20170109181004.195157-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date: Mon, 9 Jan 2017 12:58:33 -0800
+From: "Darrick J. Wong" <darrick.wong@oracle.com>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ "Theodore Ts'o" <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.cz>, Jan Kara <jack@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH 2/8] xfs: abstract PF_FSTRANS to PF_MEMALLOC_NOFS
+Message-ID: <20170109205833.GA14029@birch.djwong.org>
+References: <20170106141107.23953-1-mhocko@kernel.org>
+ <20170106141107.23953-3-mhocko@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170106141107.23953-3-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +30,186 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2017-01-09 at 20:10 +0200, Andy Shevchenko wrote:
-> WARNING: vmlinux.o(.text+0x1f2a80): Section mismatch in reference from
-> the variable __param_ops_mtd to the function
-> .init.text:ubi_mtd_param_parse()
-> The function __param_ops_mtd() references
-> the function __init ubi_mtd_param_parse().
-> This is often because __param_ops_mtd lacks a __init
-> annotation or the annotation of ubi_mtd_param_parse is wrong.
-
-Please, discard this. It fixes one and add another.
-
+On Fri, Jan 06, 2017 at 03:11:01PM +0100, Michal Hocko wrote:
+> From: Michal Hocko <mhocko@suse.com>
 > 
-> Cc: Richard Weinberger <richard@nod.at>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> xfs has defined PF_FSTRANS to declare a scope GFP_NOFS semantic quite
+> some time ago. We would like to make this concept more generic and use
+> it for other filesystems as well. Let's start by giving the flag a
+> more generic name PF_MEMALLOC_NOFS which is in line with an exiting
+> PF_MEMALLOC_NOIO already used for the same purpose for GFP_NOIO
+> contexts. Replace all PF_FSTRANS usage from the xfs code in the first
+> step before we introduce a full API for it as xfs uses the flag directly
+> anyway.
+> 
+> This patch doesn't introduce any functional change.
+> 
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
+> Reviewed-by: Brian Foster <bfoster@redhat.com>
+
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+
 > ---
->  drivers/mtd/ubi/build.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/xfs/kmem.c             |  4 ++--
+>  fs/xfs/kmem.h             |  2 +-
+>  fs/xfs/libxfs/xfs_btree.c |  2 +-
+>  fs/xfs/xfs_aops.c         |  6 +++---
+>  fs/xfs/xfs_trans.c        | 12 ++++++------
+>  include/linux/sched.h     |  2 ++
+>  6 files changed, 15 insertions(+), 13 deletions(-)
 > 
-> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> index 85d54f37e28f..00a46ff61528 100644
-> --- a/drivers/mtd/ubi/build.c
-> +++ b/drivers/mtd/ubi/build.c
-> @@ -1389,7 +1389,7 @@ static int __init bytes_str_to_int(const char
-> *str)
->   * This function returns zero in case of success and a negative error
-> code in
->   * case of error.
->   */
-> -static int __init ubi_mtd_param_parse(const char *val, struct
-> kernel_param *kp)
-> +static int ubi_mtd_param_parse(const char *val, struct kernel_param
-> *kp)
->  {
->  	int i, len;
->  	struct mtd_dev_param *p;
-
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+> diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
+> index 339c696bbc01..a76a05dae96b 100644
+> --- a/fs/xfs/kmem.c
+> +++ b/fs/xfs/kmem.c
+> @@ -80,13 +80,13 @@ kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
+>  	 * context via PF_MEMALLOC_NOIO to prevent memory reclaim re-entering
+>  	 * the filesystem here and potentially deadlocking.
+>  	 */
+> -	if ((current->flags & PF_FSTRANS) || (flags & KM_NOFS))
+> +	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
+>  		noio_flag = memalloc_noio_save();
+>  
+>  	lflags = kmem_flags_convert(flags);
+>  	ptr = __vmalloc(size, lflags | __GFP_HIGHMEM | __GFP_ZERO, PAGE_KERNEL);
+>  
+> -	if ((current->flags & PF_FSTRANS) || (flags & KM_NOFS))
+> +	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
+>  		memalloc_noio_restore(noio_flag);
+>  
+>  	return ptr;
+> diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
+> index 689f746224e7..d973dbfc2bfa 100644
+> --- a/fs/xfs/kmem.h
+> +++ b/fs/xfs/kmem.h
+> @@ -50,7 +50,7 @@ kmem_flags_convert(xfs_km_flags_t flags)
+>  		lflags = GFP_ATOMIC | __GFP_NOWARN;
+>  	} else {
+>  		lflags = GFP_KERNEL | __GFP_NOWARN;
+> -		if ((current->flags & PF_FSTRANS) || (flags & KM_NOFS))
+> +		if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
+>  			lflags &= ~__GFP_FS;
+>  	}
+>  
+> diff --git a/fs/xfs/libxfs/xfs_btree.c b/fs/xfs/libxfs/xfs_btree.c
+> index 21e6a6ab6b9a..a2672ba4dc33 100644
+> --- a/fs/xfs/libxfs/xfs_btree.c
+> +++ b/fs/xfs/libxfs/xfs_btree.c
+> @@ -2866,7 +2866,7 @@ xfs_btree_split_worker(
+>  	struct xfs_btree_split_args	*args = container_of(work,
+>  						struct xfs_btree_split_args, work);
+>  	unsigned long		pflags;
+> -	unsigned long		new_pflags = PF_FSTRANS;
+> +	unsigned long		new_pflags = PF_MEMALLOC_NOFS;
+>  
+>  	/*
+>  	 * we are in a transaction context here, but may also be doing work
+> diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
+> index ef382bfb402b..d4094bb55033 100644
+> --- a/fs/xfs/xfs_aops.c
+> +++ b/fs/xfs/xfs_aops.c
+> @@ -189,7 +189,7 @@ xfs_setfilesize_trans_alloc(
+>  	 * We hand off the transaction to the completion thread now, so
+>  	 * clear the flag here.
+>  	 */
+> -	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
+> +	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+>  	return 0;
+>  }
+>  
+> @@ -252,7 +252,7 @@ xfs_setfilesize_ioend(
+>  	 * thus we need to mark ourselves as being in a transaction manually.
+>  	 * Similarly for freeze protection.
+>  	 */
+> -	current_set_flags_nested(&tp->t_pflags, PF_FSTRANS);
+> +	current_set_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+>  	__sb_writers_acquired(VFS_I(ip)->i_sb, SB_FREEZE_FS);
+>  
+>  	/* we abort the update if there was an IO error */
+> @@ -1015,7 +1015,7 @@ xfs_do_writepage(
+>  	 * Given that we do not allow direct reclaim to call us, we should
+>  	 * never be called while in a filesystem transaction.
+>  	 */
+> -	if (WARN_ON_ONCE(current->flags & PF_FSTRANS))
+> +	if (WARN_ON_ONCE(current->flags & PF_MEMALLOC_NOFS))
+>  		goto redirty;
+>  
+>  	/*
+> diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
+> index 70f42ea86dfb..f5969c8274fc 100644
+> --- a/fs/xfs/xfs_trans.c
+> +++ b/fs/xfs/xfs_trans.c
+> @@ -134,7 +134,7 @@ xfs_trans_reserve(
+>  	bool		rsvd = (tp->t_flags & XFS_TRANS_RESERVE) != 0;
+>  
+>  	/* Mark this thread as being in a transaction */
+> -	current_set_flags_nested(&tp->t_pflags, PF_FSTRANS);
+> +	current_set_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+>  
+>  	/*
+>  	 * Attempt to reserve the needed disk blocks by decrementing
+> @@ -144,7 +144,7 @@ xfs_trans_reserve(
+>  	if (blocks > 0) {
+>  		error = xfs_mod_fdblocks(tp->t_mountp, -((int64_t)blocks), rsvd);
+>  		if (error != 0) {
+> -			current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
+> +			current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+>  			return -ENOSPC;
+>  		}
+>  		tp->t_blk_res += blocks;
+> @@ -221,7 +221,7 @@ xfs_trans_reserve(
+>  		tp->t_blk_res = 0;
+>  	}
+>  
+> -	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
+> +	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+>  
+>  	return error;
+>  }
+> @@ -914,7 +914,7 @@ __xfs_trans_commit(
+>  
+>  	xfs_log_commit_cil(mp, tp, &commit_lsn, regrant);
+>  
+> -	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
+> +	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+>  	xfs_trans_free(tp);
+>  
+>  	/*
+> @@ -944,7 +944,7 @@ __xfs_trans_commit(
+>  		if (commit_lsn == -1 && !error)
+>  			error = -EIO;
+>  	}
+> -	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
+> +	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+>  	xfs_trans_free_items(tp, NULLCOMMITLSN, !!error);
+>  	xfs_trans_free(tp);
+>  
+> @@ -998,7 +998,7 @@ xfs_trans_cancel(
+>  		xfs_log_done(mp, tp->t_ticket, NULL, false);
+>  
+>  	/* mark this thread as no longer being in a transaction */
+> -	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
+> +	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+>  
+>  	xfs_trans_free_items(tp, NULLCOMMITLSN, dirty);
+>  	xfs_trans_free(tp);
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 1531c48f56e2..abeb84604d32 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -2320,6 +2320,8 @@ extern void thread_group_cputime_adjusted(struct task_struct *p, cputime_t *ut,
+>  #define PF_FREEZER_SKIP	0x40000000	/* Freezer should not count it as freezable */
+>  #define PF_SUSPEND_TASK 0x80000000      /* this thread called freeze_processes and should not be frozen */
+>  
+> +#define PF_MEMALLOC_NOFS PF_FSTRANS	/* Transition to a more generic GFP_NOFS scope semantic */
+> +
+>  /*
+>   * Only the _current_ task can read/write to tsk->flags, but other
+>   * tasks can access tsk->flags in readonly mode for example
+> -- 
+> 2.11.0
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-ext4" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
