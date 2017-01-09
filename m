@@ -1,26 +1,24 @@
-Date: Mon, 9 Jan 2017 05:33:49 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: Theodore Ts'o <tytso@mit.edu>, Eric Biggers <ebiggers3@gmail.com>,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- jaegeuk@kernel.org, hch@infradead.org, arnd@arndb.de,
- dedekind1@gmail.com, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com, linux-ext4@vger.kernel.org,
- ebiggers@google.com, rdunlap@infradead.org, david@sigma-star.at
-Subject: Re: [PATCH v2] fscrypt: Factor out bio specific functions
-Message-ID: <20170109133349.GA19577@infradead.org>
-References: <20161219103929.GA16197@infradead.org>
- <20161219112532.18863-1-richard@nod.at>
- <20170101214725.g67msbedmpx27waz@thunk.org>
- <dd8b8365-e84a-7f8e-384d-4900523e761e@nod.at>
- <20170103142836.no7rp3hphj3czjto@thunk.org>
- <20170104201043.GA21696@gmail.com>
- <20170107192406.56p7ppbdfkjii4vy@thunk.org>
- <21de1dd8-b491-8c59-e874-6834978f1e2e@nod.at>
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cQa8x-0004Pn-IQ
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2017 13:37:49 +0000
+Received: by mail-wm0-x242.google.com with SMTP id c85so22073947wmi.1
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2017 05:37:26 -0800 (PST)
+Subject: Re: [PATCH] mtd: nand: Add OX820 NAND hardware dependency
+To: Jean Delvare <jdelvare@suse.de>, linux-mtd@lists.infradead.org
+References: <20170109115814.022fd08f@endymion>
+Cc: Rob Herring <robh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <08b4ad83-57f6-5c10-736b-9ff4246580cb@gmail.com>
+Date: Mon, 9 Jan 2017 13:59:19 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <21de1dd8-b491-8c59-e874-6834978f1e2e@nod.at>
+In-Reply-To: <20170109115814.022fd08f@endymion>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jan 07, 2017 at 11:40:15PM +0100, Richard Weinberger wrote:
-> Kconfig is tricky. We face a build error with CONFIG_BLOCK=n with UBIFS_FS_ENCRYPTION enabled.
-> UBIFS file encryption does "select FS_ENCRYPTION" just like ext4 and f2fs.
-> This will enable ENCRYPTION even when no block support is available.
+On 01/09/2017 11:58 AM, Jean Delvare wrote:
+> The oxnas NAND driver is only needed for a specific platform, do
+> not propose it on other platforms unless build-testing.
+> 
+> Signed-off-by: Jean Delvare <jdelvare@suse.de>
+> Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
-It's the good old select vs depends mess once again.
+Seems ok,
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
 
-> I can make UBIFS depend on BLOCK as intermediate fix.
-> But the real fix is this patch.
+> ---
+>  drivers/mtd/nand/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- linux-4.10-rc2.orig/drivers/mtd/nand/Kconfig	2017-01-09 11:44:05.151733169 +0100
+> +++ linux-4.10-rc2/drivers/mtd/nand/Kconfig	2017-01-09 11:44:32.431065848 +0100
+> @@ -426,6 +426,7 @@ config MTD_NAND_ORION
+>  
+>  config MTD_NAND_OXNAS
+>  	tristate "NAND Flash support for Oxford Semiconductor SoC"
+> +	depends on ARCH_OXNAS || COMPILE_TEST
+>  	help
+>  	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
+>  
+> 
+> 
 
-And despite the diffstat it's simple and trivial as it just moves code.
-There is no good reason not to take it for 4.10.
+
+-- 
+Best regards,
+Marek Vasut
