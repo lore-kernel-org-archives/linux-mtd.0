@@ -1,18 +1,17 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cQX2r-0008OS-Bz
- for linux-mtd@lists.infradead.org; Mon, 09 Jan 2017 10:19:19 +0000
-Date: Mon, 9 Jan 2017 11:18:55 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Bastian Stender <bst@pengutronix.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
- <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: partitions: no unnecessary check for erase block
-Message-ID: <20170109111855.7580f007@bbrezillon>
-In-Reply-To: <20170106162624.544-1-bst@pengutronix.de>
-References: <20170106162624.544-1-bst@pengutronix.de>
+Received: from mx2.suse.de ([195.135.220.15])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cQXev-0005tR-R3
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2017 10:58:39 +0000
+Date: Mon, 9 Jan 2017 11:58:14 +0100
+From: Jean Delvare <jdelvare@suse.de>
+To: linux-mtd@lists.infradead.org
+Cc: Rob Herring <robh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH] mtd: nand: Add OX820 NAND hardware dependency
+Message-ID: <20170109115814.022fd08f@endymion>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,38 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  6 Jan 2017 17:26:24 +0100
-Bastian Stender <bst@pengutronix.de> wrote:
+The oxnas NAND driver is only needed for a specific platform, do
+not propose it on other platforms unless build-testing.
 
-> Partitions must start/end on erase block or boundary to be writeable.
-> This makes only sense if erasing is necessary. Do not force the
-> partition to be read-only if MTD_NO_ERASE flag is set.
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
+Cc: Rob Herring <robh@kernel.org>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+---
+ drivers/mtd/nand/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-Shouldn't the partition be aligned on ->writesize in this case?
+--- linux-4.10-rc2.orig/drivers/mtd/nand/Kconfig	2017-01-09 11:44:05.151733169 +0100
++++ linux-4.10-rc2/drivers/mtd/nand/Kconfig	2017-01-09 11:44:32.431065848 +0100
+@@ -426,6 +426,7 @@ config MTD_NAND_ORION
+ 
+ config MTD_NAND_OXNAS
+ 	tristate "NAND Flash support for Oxford Semiconductor SoC"
++	depends on ARCH_OXNAS || COMPILE_TEST
+ 	help
+ 	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
+ 
 
-> 
-> Signed-off-by: Bastian Stender <bst@pengutronix.de>
-> ---
->  drivers/mtd/mtdpart.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index fccdd49bb964..cd138023ed32 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -557,6 +557,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
->  	}
->  
->  	if ((slave->mtd.flags & MTD_WRITEABLE) &&
-> +	    !(slave->mtd.flags & MTD_NO_ERASE) &&
->  	    mtd_mod_by_eb(slave->offset, &slave->mtd)) {
->  		/* Doesn't start on a boundary of major erase size */
->  		/* FIXME: Let it be writable if it is on a boundary of
-> @@ -566,6 +567,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
->  			part->name);
->  	}
->  	if ((slave->mtd.flags & MTD_WRITEABLE) &&
-> +	    !(slave->mtd.flags & MTD_NO_ERASE) &&
->  	    mtd_mod_by_eb(slave->mtd.size, &slave->mtd)) {
->  		slave->mtd.flags &= ~MTD_WRITEABLE;
->  		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase block -- force read-only\n",
+
+-- 
+Jean Delvare
+SUSE L3 Support
