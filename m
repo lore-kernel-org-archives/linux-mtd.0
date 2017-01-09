@@ -1,27 +1,16 @@
-Date: Mon, 9 Jan 2017 12:59:07 -0800
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: Michal Hocko <mhocko@kernel.org>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
- "Theodore Ts'o" <tytso@mit.edu>, Chris Mason <clm@fb.com>,
- David Sterba <dsterba@suse.cz>, Jan Kara <jack@suse.cz>,
- ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, logfs@logfs.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 4/8] xfs: use memalloc_nofs_{save,restore} instead of
- memalloc_noio*
-Message-ID: <20170109205907.GB14029@birch.djwong.org>
-References: <20170106141107.23953-1-mhocko@kernel.org>
- <20170106141107.23953-5-mhocko@kernel.org>
+Received: from mail-eopbgr40108.outbound.protection.outlook.com
+ ([40.107.4.108] helo=EUR03-DB5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cQhd9-0003ah-Jj
+ for linux-mtd@lists.infradead.org; Mon, 09 Jan 2017 21:37:30 +0000
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+From: Peter Rosin <peda@axentia.se>
+Subject: On-die ECC support
+Message-ID: <45d6eb07-d6f0-1ac1-bd50-ef913a2826d8@axentia.se>
+Date: Mon, 9 Jan 2017 22:37:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170106141107.23953-5-mhocko@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,100 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 06, 2017 at 03:11:03PM +0100, Michal Hocko wrote:
-> From: Michal Hocko <mhocko@suse.com>
-> 
-> kmem_zalloc_large and _xfs_buf_map_pages use memalloc_noio_{save,restore}
-> API to prevent from reclaim recursion into the fs because vmalloc can
-> invoke unconditional GFP_KERNEL allocations and these functions might be
-> called from the NOFS contexts. The memalloc_noio_save will enforce
-> GFP_NOIO context which is even weaker than GFP_NOFS and that seems to be
-> unnecessary. Let's use memalloc_nofs_{save,restore} instead as it should
-> provide exactly what we need here - implicit GFP_NOFS context.
-> 
-> Changes since v1
-> - s@memalloc_noio_restore@memalloc_nofs_restore@ in _xfs_buf_map_pages
->   as per Brian Foster
-> 
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
+Hi!
 
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+AFAICT, on-die ECC support [1] (continues in [2]) was never upstreamed
+and the patches no longer applies. I wonder if someone has done the
+work to forward port them to recent kernels?
 
-> ---
->  fs/xfs/kmem.c    | 10 +++++-----
->  fs/xfs/xfs_buf.c |  8 ++++----
->  2 files changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
-> index a76a05dae96b..d69ed5e76621 100644
-> --- a/fs/xfs/kmem.c
-> +++ b/fs/xfs/kmem.c
-> @@ -65,7 +65,7 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
->  void *
->  kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
->  {
-> -	unsigned noio_flag = 0;
-> +	unsigned nofs_flag = 0;
->  	void	*ptr;
->  	gfp_t	lflags;
->  
-> @@ -80,14 +80,14 @@ kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
->  	 * context via PF_MEMALLOC_NOIO to prevent memory reclaim re-entering
->  	 * the filesystem here and potentially deadlocking.
->  	 */
-> -	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
-> -		noio_flag = memalloc_noio_save();
-> +	if (flags & KM_NOFS)
-> +		nofs_flag = memalloc_nofs_save();
->  
->  	lflags = kmem_flags_convert(flags);
->  	ptr = __vmalloc(size, lflags | __GFP_HIGHMEM | __GFP_ZERO, PAGE_KERNEL);
->  
-> -	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
-> -		memalloc_noio_restore(noio_flag);
-> +	if (flags & KM_NOFS)
-> +		memalloc_nofs_restore(nofs_flag);
->  
->  	return ptr;
->  }
-> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-> index 7f0a01f7b592..8cb8dd4cdfd8 100644
-> --- a/fs/xfs/xfs_buf.c
-> +++ b/fs/xfs/xfs_buf.c
-> @@ -441,17 +441,17 @@ _xfs_buf_map_pages(
->  		bp->b_addr = NULL;
->  	} else {
->  		int retried = 0;
-> -		unsigned noio_flag;
-> +		unsigned nofs_flag;
->  
->  		/*
->  		 * vm_map_ram() will allocate auxillary structures (e.g.
->  		 * pagetables) with GFP_KERNEL, yet we are likely to be under
->  		 * GFP_NOFS context here. Hence we need to tell memory reclaim
-> -		 * that we are in such a context via PF_MEMALLOC_NOIO to prevent
-> +		 * that we are in such a context via PF_MEMALLOC_NOFS to prevent
->  		 * memory reclaim re-entering the filesystem here and
->  		 * potentially deadlocking.
->  		 */
-> -		noio_flag = memalloc_noio_save();
-> +		nofs_flag = memalloc_nofs_save();
->  		do {
->  			bp->b_addr = vm_map_ram(bp->b_pages, bp->b_page_count,
->  						-1, PAGE_KERNEL);
-> @@ -459,7 +459,7 @@ _xfs_buf_map_pages(
->  				break;
->  			vm_unmap_aliases();
->  		} while (retried++ <= 1);
-> -		memalloc_noio_restore(noio_flag);
-> +		memalloc_nofs_restore(nofs_flag);
->  
->  		if (!bp->b_addr)
->  			return -ENOMEM;
-> -- 
-> 2.11.0
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-ext4" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Cheers,
+peda
+
+[1] [RFC] On-die ECC support
+    http://lists.infradead.org/pipermail/linux-mtd/2015-March/058458.html
+
+    [PATCH 1/3] mtd: nand: Add on-die ECC support
+    http://lists.infradead.org/pipermail/linux-mtd/2015-March/058459.html
+
+    [PATCH 2/3] mtd: nand: Add support for raw access when using on-die ECC
+    http://lists.infradead.org/pipermail/linux-mtd/2015-March/058457.html
+
+    [PATCH 3/3] mtd: nand: Wire up on-die ECC support
+    http://lists.infradead.org/pipermail/linux-mtd/2015-March/058456.html
+
+[2] http://lists.infradead.org/pipermail/linux-mtd/2015-April/058846.html
