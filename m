@@ -1,28 +1,21 @@
-Received: from mga05.intel.com ([192.55.52.43])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cQyaW-0007ay-5l
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 15:43:53 +0000
-Message-ID: <1484062739.2133.25.camel@linux.intel.com>
-Subject: Re: [PATCH v2 2/2] UBI: Make mtd parameter readable
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 10 Jan 2017 17:38:59 +0200
-In-Reply-To: <da5b6bae-8416-45ac-5153-d1a479715793@nod.at>
-References: <20170110125643.10990-1-andriy.shevchenko@linux.intel.com>
- <20170110125643.10990-2-andriy.shevchenko@linux.intel.com>
- <CAFLxGvyTKH-7X0byYOYardGZXGQZtpHTr=aRhqD6WunDqXbneg@mail.gmail.com>
- <1484056111.2133.16.camel@linux.intel.com>
- <71c71f00-dcb1-081b-ec55-bc7c39ad32d5@nod.at>
- <1484057496.2133.18.camel@linux.intel.com>
- <adfd384d-edb7-1255-f614-174a6793a2a8@nod.at>
- <1484058912.2133.22.camel@linux.intel.com>
- <da5b6bae-8416-45ac-5153-d1a479715793@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cQyai-0007fE-1v
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 15:44:06 +0000
+Date: Tue, 10 Jan 2017 16:43:40 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Rosin <peda@axentia.se>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: On-die ECC support
+Message-ID: <20170110164340.6b3c1f7e@bbrezillon>
+In-Reply-To: <d2765cf2-2bf7-89e6-f7b0-19e5847bab24@nod.at>
+References: <45d6eb07-d6f0-1ac1-bd50-ef913a2826d8@axentia.se>
+ <a00bb5bf-abdb-ce5f-e644-492b54d348c5@nod.at>
+ <2679512d-6646-18c0-d000-494642d66f32@axentia.se>
+ <d2765cf2-2bf7-89e6-f7b0-19e5847bab24@nod.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,52 +25,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2017-01-10 at 16:31 +0100, Richard Weinberger wrote:
-> Andy,
+Hi Peter,
+
+On Tue, 10 Jan 2017 16:30:01 +0100
+Richard Weinberger <richard@nod.at> wrote:
+
+> Peter,
 > 
-> Am 10.01.2017 um 15:35 schrieb Andy Shevchenko:
-> > > Did you check? Do other drivers in the kernel that have a parser
-> > > behind a non-trivial
-> > > module parameter also expose it to user space?
+> Am 10.01.2017 um 15:54 schrieb Peter Rosin:
+> > On 2017-01-09 22:46, Richard Weinberger wrote:  
+> >> Peter,
+> >>
+> >> Am 09.01.2017 um 22:37 schrieb Peter Rosin:  
+> >>> Hi!
+> >>>
+> >>> AFAICT, on-die ECC support [1] (continues in [2]) was never upstreamed
+> >>> and the patches no longer applies. I wonder if someone has done the
+> >>> work to forward port them to recent kernels?  
+> >>
+> >> Nope.
+> >>
+> >> Supporting On-die ECC in a proper way is with the current MTD NAND code
+> >> not possible.  
 > > 
-> > Just checked. The only one which is not, this one.
+> > Hmm, has something fundamental changed since the patches were proposed
+> > that makes it impossible? Or is it just the same as it was a couple of
+> > years ago, but different mechanics (changes to layout handling etc)?  
+> 
+> No, it turned out to be very complicated to support On-Die for all
+> possible NAND controllers.
+> Drivers can use existing helper functions or provide their own functions.
+> But for On-Die ECC you'd have to hook all of them.
+> That's why most On-Die ECC patches touch also a lot of driver code instead
+> only the NAND framework.
+> 
+> Of course it is doable and not rocket science this but it needs more work.
+> AFAIK also Boris thought about that while re-factoring the code.
+
+Well, we have 2 problems here:
+1/ On-die ECC is usually vendor specific and each vendor implements it
+   with its own set of private cmd sequence. We thus need to provide
+   generic helpers and ask vendor drivers to implement them correctly.
+   Even if this is not enough, this series [1] should help address this
+   problem.
+2/ NAND controller drivers are free to support only a minimum set of
+   cmds (basically, read/program and erase), and the core has
+   currently no way to know what's supported by a NAND controller.
+   That's IMO the biggest problem here. We need to improve the NAND
+   framework to let NAND controller expose what they really support so
+   that a decision can be taken at the core level regarding on-die ECC.
+   We also need to dissociate the ECC/NAND controller concepts, which
+   are usually tightly linked together in NAND controller drivers
+   (with no way to disable the ECC engined embedded in the controller).
+
+> 
+> >> I stopped working on it since I have no longer access to working
+> >> On-die ECC hardware and On-die ECC is a dead horse.  
 > > 
+> > Maybe so, but here I am with a desire to use a new kernel with old
+> > hardware...  
 > 
-> That's an excellent reason. :-)
-> But I see also:
-> mtd/devices/phram.c:module_param_call(phram, phram_param_call, NULL,
-> NULL, 000);
-> 
-> If these two are the only users of 000, let's rip them out to be
-> consistent
-> with the rest of the kernel.
+> If you want to continue the work on the patches, you're very welcome.
+> Please see also the patches on BENAND support.
 
-Okay, this is full(?) list of those. 3 drivers.
+Yep, that's really the kind of feature that can help us improve the
+NAND framework, so, as Richard said, I'd be happy to help anyone
+interested in working on this feature.
 
-$ git grep -n 'module_param_call(.*, 0\+)' drivers/
-drivers/ide/ide.c:277:module_param_call(chs, ide_set_disk_chs, NULL,
-NULL, 0);
-drivers/ide/ide.c:351:module_param_call(ignore_cable,
-ide_set_ignore_cable, NULL, NULL, 0);
-drivers/mtd/devices/phram.c:301:module_param_call(phram,
-phram_param_call, NULL, NULL, 000);
-drivers/platform/x86/thinkpad_acpi.c:9666:      module_param_call(featur
-e, set_ibm_param, NULL, NULL, 0); \
+Thanks,
 
-$ git grep -n 'module_param_cb(.*, 0\+)' drivers/
-drivers/mtd/ubi/block.c:168:module_param_cb(block, &ubiblock_param_ops,
-NULL, 0);
+Boris
 
-I doubt about worth to fix IDE (last time I sent clean up maintainer
-told me not to do).
-
-For thinkpad I will look at.
-
-For MTD let's do it now.
-
-So, would you like me to resend with / send separate fix to the other
-one?
-
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+[1]https://lkml.org/lkml/2017/1/9/270
