@@ -1,29 +1,27 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cR1fA-0000OA-47
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 19:00:53 +0000
-Received: by mail-wm0-x243.google.com with SMTP id r126so11588258wmr.3
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2017 11:00:31 -0800 (PST)
-Subject: Re: [PATCH v4 07/15] mtd: nand: move Samsung specific init/detection
- logic in nand_samsung.c
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
- <1483448495-31607-8-git-send-email-boris.brezillon@free-electrons.com>
- <09da7377-1323-0794-fe61-34fd06e35404@gmail.com>
- <20170104180813.700823eb@bbrezillon>
- <4982cf88-ff7e-20c9-a158-e1e3826c0762@gmail.com>
- <20170107084948.1d5d699c@bbrezillon>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
+ id 1cR1p5-00069T-Kl
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 19:11:09 +0000
+Received: by mail-wm0-x244.google.com with SMTP id l2so32050482wml.2
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2017 11:10:46 -0800 (PST)
+Subject: Re: [PATCH v3 4/7] mtd: nand: raw: prefix conflicting names with
+ nandc instead of nand
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Peter Pan <peterpansjtu@gmail.com>
+References: <1479732328-18363-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1479732328-18363-5-git-send-email-boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Icenowy Zheng
- <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Kelvin Cheung <keguang.zhang@gmail.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <27e81612-a7c4-9265-a608-3d5cf1180973@gmail.com>
-Date: Tue, 10 Jan 2017 20:00:28 +0100
+Message-ID: <8fb86bb7-425a-3897-2d1d-7277e94918ec@gmail.com>
+Date: Tue, 10 Jan 2017 20:08:23 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170107084948.1d5d699c@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <1479732328-18363-5-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,90 +32,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/07/2017 08:49 AM, Boris Brezillon wrote:
-> On Sat, 7 Jan 2017 00:53:24 +0100
-> Marek Vasut <marek.vasut@gmail.com> wrote:
+On 11/21/2016 01:45 PM, Boris Brezillon wrote:
+> Some raw NAND function names conflict with names defined in nand.h.
+> Prefix all those functions with nandc (for nand chip) instead of nand so
+> we can include nand.h from rawnand.h
 > 
->> On 01/04/2017 06:08 PM, Boris Brezillon wrote:
->>> On Wed, 4 Jan 2017 16:14:07 +0100
->>> Marek Vasut <marek.vasut@gmail.com> wrote:
->>>   
->>>> On 01/03/2017 02:01 PM, Boris Brezillon wrote:  
->>>>> Move Samsung specific initialization and detection logic into
->>>>> nand_samsung.c. This is part of the "separate vendor specific code from
->>>>> core" cleanup process.
->>>>>
->>>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>    
->>>>
->>>> [...]
->>>>  
->>>>> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
->>>>> index b3a332f37e14..05e9366696c9 100644
->>>>> --- a/drivers/mtd/nand/nand_ids.c
->>>>> +++ b/drivers/mtd/nand/nand_ids.c
->>>>> @@ -10,7 +10,7 @@
->>>>>  #include <linux/mtd/nand.h>
->>>>>  #include <linux/sizes.h>
->>>>>  
->>>>> -#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
->>>>> +#define LP_OPTIONS 0
->>>>>  #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
->>>>>  
->>>>>  #define SP_OPTIONS NAND_NEED_READRDY
->>>>> @@ -169,10 +169,12 @@ struct nand_flash_dev nand_flash_ids[] = {
->>>>>  };
->>>>>  
->>>>>  /* Manufacturer IDs */
->>>>> +extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;    
->>>>
->>>> Is the extern needed ?  
->>>
->>> Yes, unless you have another solution. If you remove the extern keyword
->>> you just redeclare samsung_nand_manuf_ops here, which is not what we
->>> want.  
->>
->> Maybe some accessor function can help ?
->>
-> 
-> You mean, in nand_ids.c
-> 
->     const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops();
-> 
->     struct nand_manufacturers nand_manuf_ids[] = {
->     ...
-> 	{NAND_MFR_SAMSUNG, "Samsung", get_samsung_nand_mafuf_ops},
->     ...
->     };
-> 
-> and then, in nand_samsung.c
-> 
->     const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops()
->     {
-> 	return &samsung_nand_mafuf_ops;
->     }
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Yeah, something like that.
-
-> What's the point of this extra indirection? I mean, in both cases you
-> use a symbol that is not part of the same source file, so you'll have
-> to define this symbol (using a function prototype or an extern object
-> definition).
-> Is this all about fixing checkpatch warnings, or do you have a problem
-> with objects shared between different source files?
-
-The later, separating this with an accessor function feels a bit cleaner
-to me than using extern foo.
-
-> Now, I agree that the current approach is not ideal. A real improvement
-> would be to let the NAND manufacturer drivers (nand_<vendor>.c) register
-> themselves to the core. Something similar to CLK_OF_DECLARE() or
-> IRQCHIP_DECLARE() for example. But that means creating a dedicated
-> section for the nand_manufs_id table, and it's a lot more invasive than
-> the current approach.
-
-Well this would be awesome, but this can also be done later. I presume
-you'll get to it eventually anyway, as soon as you'll be annoyed enough
-with the current ugly-ish implementation.
+Nit, nand and nandc is quite confusing, why not call it nand_chip in full?
 
 -- 
 Best regards,
