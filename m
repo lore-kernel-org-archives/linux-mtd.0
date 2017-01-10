@@ -1,16 +1,16 @@
-Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
+Received: from skprod2.natinst.com ([130.164.80.23] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cR28V-0007nx-FF
+ id 1cR28W-0007nv-9s
  for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 19:31:14 +0000
 From: Zach Brown <zach.brown@ni.com>
 To: <dwmw2@infradead.org>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <dedekind1@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 5/5] mtd: nand: set max_bb_per_die and blocks_per_die for
- ONFI compliant chips
-Date: Tue, 10 Jan 2017 13:30:21 -0600
-Message-ID: <1484076621-7789-6-git-send-email-zach.brown@ni.com>
+Subject: [PATCH v8 3/5] mtd: nand: Add max_bb_per_die and blocks_per_die
+ fields to nand_chip
+Date: Tue, 10 Jan 2017 13:30:19 -0600
+Message-ID: <1484076621-7789-4-git-send-email-zach.brown@ni.com>
 In-Reply-To: <1484076621-7789-1-git-send-email-zach.brown@ni.com>
 References: <1484076621-7789-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
@@ -24,31 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ONFI compliant chips contain the values for the max_bb_per_die and
-blocks_per_die fields in the parameter page. When the ONFI paged is
-retrieved/parsed the chip's fields are set by the corresponding fields
-in the param page.
+The fields max_bb_per_die and blocks_per_die are useful determining the
+number of bad blocks a MTD needs to allocate. How they are set will
+depend on if the chip is ONFI, JEDEC or a full-id entry in the nand_ids
+table.
 
 Signed-off-by: Zach Brown <zach.brown@ni.com>
 Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
 Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/linux/mtd/nand.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 522baa9..1492c12 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3628,6 +3628,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
- 	chip->bits_per_cell = p->bits_per_cell;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index c5f3a01..4e1b441 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -801,6 +801,9 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+  *			supported, 0 otherwise.
+  * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
+  *			supported, 0 otherwise.
++ * @max_bb_per_die:	[INTERN] the max number of bad blocks each die of a
++ *			this nand device will encounter their life times.
++ * @blocks_per_die:	[INTERN] The number of PEBs in a die
+  * @read_retries:	[INTERN] the number of read retry modes supported
+  * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
+  * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
+@@ -883,6 +886,8 @@ struct nand_chip {
+ 		struct nand_onfi_params	onfi_params;
+ 		struct nand_jedec_params jedec_params;
+ 	};
++	u16 max_bb_per_die;
++	u32 blocks_per_die;
  
-+	chip->max_bb_per_die = le16_to_cpu(p->bb_per_lun);
-+	chip->blocks_per_die = le32_to_cpu(p->blocks_per_lun);
-+
- 	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
- 		*busw = NAND_BUSWIDTH_16;
- 	else
+ 	struct nand_data_interface *data_interface;
+ 
 -- 
 2.7.4
