@@ -1,26 +1,23 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cQuxX-00089V-Q0
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 11:51:29 +0000
-Received: by mail-lf0-x244.google.com with SMTP id j75so14420874lfe.3
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2017 03:51:03 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 2/2] mtd: bcm47xxpart: support layouts with multiple TRX
- partitions
-Date: Tue, 10 Jan 2017 12:50:45 +0100
-Message-Id: <20170110115045.9134-2-zajec5@gmail.com>
-In-Reply-To: <20170110115045.9134-1-zajec5@gmail.com>
-References: <20170110115045.9134-1-zajec5@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cQvrg-0000tI-Gs
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 12:49:26 +0000
+Date: Tue, 10 Jan 2017 13:40:35 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
+ <richard@nod.at>
+Subject: Re: [PATCH v1 1/1] UBI: Fix section mismatch
+Message-ID: <20170110134035.0c1fbb9a@bbrezillon>
+In-Reply-To: <1484048711.26691.51.camel@linux.intel.com>
+References: <20170109181004.195157-1-andriy.shevchenko@linux.intel.com>
+ <1483990466.26691.47.camel@linux.intel.com>
+ <20170110093705.6310e828@bbrezillon>
+ <1484048711.26691.51.camel@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,111 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Tue, 10 Jan 2017 13:45:11 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-Some devices may have an extra TRX partition used as failsafe one. If
-we detect such partition we should set a proper name for it and don't
-parse it.
+> On Tue, 2017-01-10 at 09:37 +0100, Boris Brezillon wrote:
+> > On Mon, 09 Jan 2017 21:34:26 +0200
+> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> >  =20
+> > > On Mon, 2017-01-09 at 20:10 +0200, Andy Shevchenko wrote: =20
+> > > > WARNING: vmlinux.o(.text+0x1f2a80): Section mismatch in reference
+> > > > from
+> > > > the variable __param_ops_mtd to the function
+> > > > .init.text:ubi_mtd_param_parse()
+> > > > The function __param_ops_mtd() references
+> > > > the function __init ubi_mtd_param_parse().
+> > > > This is often because __param_ops_mtd lacks a __init
+> > > > annotation or the annotation of ubi_mtd_param_parse is wrong.=C2=A0=
+=C2=A0 =20
+> > >=20
+> > > Please, discard this. It fixes one and add another. =20
+> >=20
+> > Just remove the __initdata specifiers on mtd_devs and mtd_dev_param
+> > and
+> > you should be fine. =20
+>=20
+> Yes, I already have this patch.
+>=20
+> But I decided to talk to Artem and just talked.
+>=20
+> We thought about comment to explain what is going on there and why
+> section mismatch is false positive, though a bit error prone (since you
+> have to keep in mind 0000 permissions).
+>=20
+> So, one solution here is to unmark them and, what I would add, change
+> permissions to read-only.
+>=20
+> If you are okay with this I will send series.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- drivers/mtd/bcm47xxpart.c | 56 ++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 46 insertions(+), 10 deletions(-)
+Sounds good.
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index d7d1b6e..95cfd88 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -9,6 +9,7 @@
-  *
-  */
- 
-+#include <linux/bcm47xx_nvram.h>
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
-@@ -147,6 +148,30 @@ static int bcm47xxpart_parse_trx(struct mtd_info *master,
- 	return curr_part;
- }
- 
-+/**
-+ * bcm47xxpart_bootpartition - gets index of TRX partition used by bootloader
-+ *
-+ * Some devices may have more than one TRX partition. In such case one of them
-+ * is the main one and another a failsafe one. Bootloader may fallback to the
-+ * failsafe firmware if it detects corruption of the main image.
-+ *
-+ * This function provides info about currently used TRX partition. It's the one
-+ * containing kernel started by the bootloader.
-+ */
-+static int bcm47xxpart_bootpartition(void)
-+{
-+	char buf[4];
-+	int bootpartition;
-+
-+	/* Check CFE environment variable */
-+	if (bcm47xx_nvram_getenv("bootpartition", buf, sizeof(buf)) > 0) {
-+		if (!kstrtoint(buf, 0, &bootpartition))
-+			return bootpartition;
-+	}
-+
-+	return 0;
-+}
-+
- static int bcm47xxpart_parse(struct mtd_info *master,
- 			     const struct mtd_partition **pparts,
- 			     struct mtd_part_parser_data *data)
-@@ -157,7 +182,8 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	size_t bytes_read;
- 	uint32_t offset;
- 	uint32_t blocksize = master->erasesize;
--	int trx_part = -1;
-+	int trx_parts[2]; /* Array with indexes of TRX partitions */
-+	int trx_num = 0; /* Number of found TRX partitions */
- 	int possible_nvram_sizes[] = { 0x8000, 0xF000, 0x10000, };
- 	int err;
- 
-@@ -246,7 +272,11 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		if (buf[0x000 / 4] == TRX_MAGIC) {
- 			struct trx_header *trx;
- 
--			trx_part = curr_part;
-+			if (trx_num >= ARRAY_SIZE(trx_parts))
-+				pr_warn("No enough space to store another TRX found at 0x%X\n",
-+					offset);
-+			else
-+				trx_parts[trx_num++] = curr_part;
- 			bcm47xxpart_add_part(&parts[curr_part++], "firmware",
- 					     offset, 0);
- 
-@@ -332,14 +362,20 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	}
- 
- 	/* If there was TRX parse it now */
--	if (trx_part >= 0) {
--		int num_parts;
--
--		num_parts = bcm47xxpart_parse_trx(master, &parts[trx_part],
--						  parts + curr_part,
--						  BCM47XXPART_MAX_PARTS - curr_part);
--		if (num_parts > 0)
--			curr_part += num_parts;
-+	for (i = 0; i < trx_num; i++) {
-+		struct mtd_partition *trx = &parts[trx_parts[i]];
-+
-+		if (i == bcm47xxpart_bootpartition()) {
-+			int num_parts;
-+
-+			num_parts = bcm47xxpart_parse_trx(master, trx,
-+							  parts + curr_part,
-+							  BCM47XXPART_MAX_PARTS - curr_part);
-+			if (num_parts > 0)
-+				curr_part += num_parts;
-+		} else {
-+			trx->name = "failsafe";
-+		}
- 	}
- 
- 	*pparts = parts;
--- 
-2.10.1
+>=20
+> >  =20
+> > >  =20
+> > > >=20
+> > > > Cc: Richard Weinberger <richard@nod.at>
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > ---
+> > > > =C2=A0drivers/mtd/ubi/build.c | 2 +-
+> > > > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+> > > >=20
+> > > > diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> > > > index 85d54f37e28f..00a46ff61528 100644
+> > > > --- a/drivers/mtd/ubi/build.c
+> > > > +++ b/drivers/mtd/ubi/build.c
+> > > > @@ -1389,7 +1389,7 @@ static int __init bytes_str_to_int(const
+> > > > char
+> > > > *str)
+> > > > =C2=A0 * This function returns zero in case of success and a negati=
+ve
+> > > > error
+> > > > code in
+> > > > =C2=A0 * case of error.
+> > > > =C2=A0 */
+> > > > -static int __init ubi_mtd_param_parse(const char *val, struct
+> > > > kernel_param *kp)
+> > > > +static int ubi_mtd_param_parse(const char *val, struct
+> > > > kernel_param
+> > > > *kp)
+> > > > =C2=A0{
+> > > > =C2=A0	int i, len;
+> > > > =C2=A0	struct mtd_dev_param *p;=C2=A0=C2=A0 =20
+> >=20
+> >  =20
+>=20
