@@ -1,26 +1,30 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cR0Tr-0000GN-33
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 17:45:12 +0000
-Received: by mail-wm0-x244.google.com with SMTP id r126so11124165wmr.3
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2017 09:44:46 -0800 (PST)
-Subject: Re: [PATCH v4 1/2] mtd: spi-nor: Fix whole chip erasing for stacked
- chips.
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marcin Krzeminski <mar.krzeminski@gmail.com>, linux-mtd@lists.infradead.org
-References: <20170106171901.27565-1-mar.krzeminski@gmail.com>
- <20170106171901.27565-2-mar.krzeminski@gmail.com>
- <e9a447d9-da58-87ac-3136-d1dc0c75d591@gmail.com>
- <d4bda462-ddcb-2ead-0e57-595aed633b67@atmel.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com
+ id 1cR1fA-0000OA-47
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 19:00:53 +0000
+Received: by mail-wm0-x243.google.com with SMTP id r126so11588258wmr.3
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2017 11:00:31 -0800 (PST)
+Subject: Re: [PATCH v4 07/15] mtd: nand: move Samsung specific init/detection
+ logic in nand_samsung.c
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1483448495-31607-8-git-send-email-boris.brezillon@free-electrons.com>
+ <09da7377-1323-0794-fe61-34fd06e35404@gmail.com>
+ <20170104180813.700823eb@bbrezillon>
+ <4982cf88-ff7e-20c9-a158-e1e3826c0762@gmail.com>
+ <20170107084948.1d5d699c@bbrezillon>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Icenowy Zheng
+ <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <0eab4ac5-c27d-408f-956d-bf02d5996203@gmail.com>
-Date: Tue, 10 Jan 2017 18:44:43 +0100
+Message-ID: <27e81612-a7c4-9265-a608-3d5cf1180973@gmail.com>
+Date: Tue, 10 Jan 2017 20:00:28 +0100
 MIME-Version: 1.0
-In-Reply-To: <d4bda462-ddcb-2ead-0e57-595aed633b67@atmel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170107084948.1d5d699c@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,99 +34,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/10/2017 06:24 PM, Cyrille Pitchen wrote:
-> Hi Marek,
+On 01/07/2017 08:49 AM, Boris Brezillon wrote:
+> On Sat, 7 Jan 2017 00:53:24 +0100
+> Marek Vasut <marek.vasut@gmail.com> wrote:
 > 
-> Le 07/01/2017 à 00:45, Marek Vasut a écrit :
->> On 01/06/2017 06:19 PM, Marcin Krzeminski wrote:
->>> Currently it is possible to disable chip erase for spi-nor driver.
->>> Some modern stacked (multi die) flash chips do not support chip
->>> erase opcode at all but spi-nor framework needs to cope with them too.
->>> This commit extends existing functionality to allow disable
->>> chip erase for a single flash chip.
->>
->> I wonder whether this should really be opt-out flag. Since we'll see
->> more multi-die chips (and chips with different die sizes), I'd say this
->> should rather be opt-in flag.
->>
-> 
-> Just to be sure I've understood what you propose: do you suggest something
-> like CAN_CHIP_ERASE instead of NO_CHIP_ERASE for the new info->flags bit?
-
-Yes
-
-> If so, don't forget that info->flags value is tested for every single entry
-> of the spi_nor_ids[] array, including all legacy SPI memories such as AT25
-> or M25P80. Currently spi-nor.c calls erase_chip() from spi_nor_erase()
-> whenever the user tries to erase the whole memory (len == mtd->size),
-> whatever SPI memory is connected to the controller. This implementation is
-> not restricted to multi-die memory. Indeed, spi-nor.c is not currently
-> aware of multi-die memories.
-> 
-> Hence if we want an opt-in logic for the new flag and still want to be
-> backward compatible, we would have to add the new flag into each entry of
-> the spi_nor_ids[] array.
-
-Yeah
-
-> Also I asked Marcin to split his original patch into 2 parts because I
-> think there are 2 different topics:
-> 
-> 1 - disabling chip erase command on memories which don't support this SPI
-> command. This is a bug fix: we can still provide this chip erase feature
-> using only many regular sector/block erase commands. For sure it is not
-> optimal but at least it works hence the bug is fixed.
-> 
-> Some multi-die memories are examples of devices concerned by the bug but
-> maybe they are not the only one. S3AN memories also suffer from this bug
-> and it has already been dealt by some Ricardo's patches few weeks ago.
-> 
-> 2 - adding support to the die erase command: this one is an optimization so
-> for me, still useful but with a lower priority as we can still live without
-> it so this would let use more time to think about the proper way to
-> implement this feature. Also, as Marcin reported, we already have examples
-> of multi-die memories which do support the chip erase command.
-> 
-> Hence it shows us that (chip erase not supported != multi-die).
-
-I agree with this, my point was only about whether we should handle this
-as opt-in or out-out .
-
-> Best regards,
-> 
-> Cyrille
-> 
->>> Signed-off-by: Marcin Krzeminski <mar.krzeminski@gmail.com>
->>> ---
->>>  drivers/mtd/spi-nor/spi-nor.c | 3 +++
->>>  1 file changed, 3 insertions(+)
+>> On 01/04/2017 06:08 PM, Boris Brezillon wrote:
+>>> On Wed, 4 Jan 2017 16:14:07 +0100
+>>> Marek Vasut <marek.vasut@gmail.com> wrote:
+>>>   
+>>>> On 01/03/2017 02:01 PM, Boris Brezillon wrote:  
+>>>>> Move Samsung specific initialization and detection logic into
+>>>>> nand_samsung.c. This is part of the "separate vendor specific code from
+>>>>> core" cleanup process.
+>>>>>
+>>>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>    
+>>>>
+>>>> [...]
+>>>>  
+>>>>> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+>>>>> index b3a332f37e14..05e9366696c9 100644
+>>>>> --- a/drivers/mtd/nand/nand_ids.c
+>>>>> +++ b/drivers/mtd/nand/nand_ids.c
+>>>>> @@ -10,7 +10,7 @@
+>>>>>  #include <linux/mtd/nand.h>
+>>>>>  #include <linux/sizes.h>
+>>>>>  
+>>>>> -#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
+>>>>> +#define LP_OPTIONS 0
+>>>>>  #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
+>>>>>  
+>>>>>  #define SP_OPTIONS NAND_NEED_READRDY
+>>>>> @@ -169,10 +169,12 @@ struct nand_flash_dev nand_flash_ids[] = {
+>>>>>  };
+>>>>>  
+>>>>>  /* Manufacturer IDs */
+>>>>> +extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;    
+>>>>
+>>>> Is the extern needed ?  
 >>>
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>> index 2a643a1..595de54 100644
->>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -85,6 +85,7 @@ struct flash_info {
->>>  					 * Use dedicated 4byte address op codes
->>>  					 * to support memory size above 128Mib.
->>>  					 */
->>> +#define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
->>>  };
->>>  
->>>  #define JEDEC_MFR(info)	((info)->id[0])
->>> @@ -1621,6 +1622,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->>>  		nor->flags |= SNOR_F_USE_FSR;
->>>  	if (info->flags & SPI_NOR_HAS_TB)
->>>  		nor->flags |= SNOR_F_HAS_SR_TB;
->>> +	if (info->flags & NO_CHIP_ERASE)
->>> +		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
->>>  
->>>  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
->>>  	/* prefer "small sector" erase if possible */
->>>
+>>> Yes, unless you have another solution. If you remove the extern keyword
+>>> you just redeclare samsung_nand_manuf_ops here, which is not what we
+>>> want.  
 >>
+>> Maybe some accessor function can help ?
 >>
 > 
+> You mean, in nand_ids.c
+> 
+>     const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops();
+> 
+>     struct nand_manufacturers nand_manuf_ids[] = {
+>     ...
+> 	{NAND_MFR_SAMSUNG, "Samsung", get_samsung_nand_mafuf_ops},
+>     ...
+>     };
+> 
+> and then, in nand_samsung.c
+> 
+>     const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops()
+>     {
+> 	return &samsung_nand_mafuf_ops;
+>     }
 
+Yeah, something like that.
+
+> What's the point of this extra indirection? I mean, in both cases you
+> use a symbol that is not part of the same source file, so you'll have
+> to define this symbol (using a function prototype or an extern object
+> definition).
+> Is this all about fixing checkpatch warnings, or do you have a problem
+> with objects shared between different source files?
+
+The later, separating this with an accessor function feels a bit cleaner
+to me than using extern foo.
+
+> Now, I agree that the current approach is not ideal. A real improvement
+> would be to let the NAND manufacturer drivers (nand_<vendor>.c) register
+> themselves to the core. Something similar to CLK_OF_DECLARE() or
+> IRQCHIP_DECLARE() for example. But that means creating a dedicated
+> section for the nand_manufs_id table, and it's a lot more invasive than
+> the current approach.
+
+Well this would be awesome, but this can also be done later. I presume
+you'll get to it eventually anyway, as soon as you'll be annoyed enough
+with the current ugly-ish implementation.
 
 -- 
 Best regards,
