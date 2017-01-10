@@ -1,16 +1,16 @@
 Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cR28V-0007nt-FF
+ id 1cR28V-0007nx-FF
  for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 19:31:14 +0000
 From: Zach Brown <zach.brown@ni.com>
 To: <dwmw2@infradead.org>
 CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
  <richard@nod.at>, <dedekind1@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 2/5] mtd: ubi: use 'max_bad_blocks' to compute
- bad_peb_limit if available
-Date: Tue, 10 Jan 2017 13:30:18 -0600
-Message-ID: <1484076621-7789-3-git-send-email-zach.brown@ni.com>
+Subject: [PATCH v8 5/5] mtd: nand: set max_bb_per_die and blocks_per_die for
+ ONFI compliant chips
+Date: Tue, 10 Jan 2017 13:30:21 -0600
+Message-ID: <1484076621-7789-6-git-send-email-zach.brown@ni.com>
 In-Reply-To: <1484076621-7789-1-git-send-email-zach.brown@ni.com>
 References: <1484076621-7789-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
@@ -24,42 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jeff Westfahl <jeff.westfahl@ni.com>
+ONFI compliant chips contain the values for the max_bb_per_die and
+blocks_per_die fields in the parameter page. When the ONFI paged is
+retrieved/parsed the chip's fields are set by the corresponding fields
+in the param page.
 
-If the user has not set max_beb_per1024 using either the cmdline or
-Kconfig options for doing so, use the MTD function 'max_bad_blocks' to
-compute the UBI bad_peb_limit.
-
-Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 Signed-off-by: Zach Brown <zach.brown@ni.com>
 Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/ubi/build.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/nand_base.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 85d54f3..3029219 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -584,8 +584,17 @@ static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
- 	int limit, device_pebs;
- 	uint64_t device_size;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 522baa9..1492c12 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3628,6 +3628,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+ 	chip->bits_per_cell = p->bits_per_cell;
  
--	if (!max_beb_per1024)
--		return 0;
-+	if (!max_beb_per1024) {
-+		/*
-+		 * Since max_beb_per1024 has not been set by the user in either
-+		 * the cmdline or Kconfig, use mtd_max_bad_blocks to set the
-+		 * limit if it is supported by the device.
-+		 */
-+		limit = mtd_max_bad_blocks(ubi->mtd, 0, ubi->mtd->size);
-+		if (limit < 0)
-+			return 0;
-+		return limit;
-+	}
- 
- 	/*
- 	 * Here we are using size of the entire flash chip and
++	chip->max_bb_per_die = le16_to_cpu(p->bb_per_lun);
++	chip->blocks_per_die = le32_to_cpu(p->blocks_per_lun);
++
+ 	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
+ 		*busw = NAND_BUSWIDTH_16;
+ 	else
 -- 
 2.7.4
