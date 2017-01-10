@@ -1,17 +1,22 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cQu0J-0006QY-P6
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 10:50:14 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, richard@nod.at, dedekind1@gmail.com,
- adrian.hunter@intel.com, david@sigma-star.at, rockdotlee@gmail.com
-Subject: [PATCH 2/2] ubifs: Move tnc_read_hashed_node() to get rid of
- prototypes.
-Date: Tue, 10 Jan 2017 11:49:41 +0100
-Message-Id: <20170110104941.27067-2-richard@nod.at>
-In-Reply-To: <20170110104941.27067-1-richard@nod.at>
-References: <20170110104941.27067-1-richard@nod.at>
+Received: from mga04.intel.com ([192.55.52.120])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cQuru-0003iy-GS
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 11:45:36 +0000
+Message-ID: <1484048711.26691.51.camel@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] UBI: Fix section mismatch
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
+ <richard@nod.at>
+Date: Tue, 10 Jan 2017 13:45:11 +0200
+In-Reply-To: <20170110093705.6310e828@bbrezillon>
+References: <20170109181004.195157-1-andriy.shevchenko@linux.intel.com>
+ <1483990466.26691.47.camel@linux.intel.com>
+ <20170110093705.6310e828@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,133 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Reviewed-by: David Gstir <david@sigma-star.at>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/tnc.c | 97 ++++++++++++++++++++++++++++------------------------------
- 1 file changed, 46 insertions(+), 51 deletions(-)
+On Tue, 2017-01-10 at 09:37 +0100, Boris Brezillon wrote:
+> On Mon, 09 Jan 2017 21:34:26 +0200
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> 
+> > On Mon, 2017-01-09 at 20:10 +0200, Andy Shevchenko wrote:
+> > > WARNING: vmlinux.o(.text+0x1f2a80): Section mismatch in reference
+> > > from
+> > > the variable __param_ops_mtd to the function
+> > > .init.text:ubi_mtd_param_parse()
+> > > The function __param_ops_mtd() references
+> > > the function __init ubi_mtd_param_parse().
+> > > This is often because __param_ops_mtd lacks a __init
+> > > annotation or the annotation of ubi_mtd_param_parse is wrong.  
+> > 
+> > Please, discard this. It fixes one and add another.
+> 
+> Just remove the __initdata specifiers on mtd_devs and mtd_dev_param
+> and
+> you should be fine.
 
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 709aa098dd46..ce69f170b7c5 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -34,11 +34,6 @@
- #include <linux/slab.h>
- #include "ubifs.h"
- 
--static int try_read_node(const struct ubifs_info *c, void *buf, int type,
--			 int len, int lnum, int offs);
--static int fallible_read_node(struct ubifs_info *c, const union ubifs_key *key,
--			      struct ubifs_zbranch *zbr, void *node);
--
- /*
-  * Returned codes of 'matches_name()' and 'fallible_matches_name()' functions.
-  * @NAME_LESS: name corresponding to the first argument is less than second
-@@ -383,52 +378,6 @@ static void lnc_free(struct ubifs_zbranch *zbr)
- }
- 
- /**
-- * tnc_read_hashed_node - read a "hashed" leaf node.
-- * @c: UBIFS file-system description object
-- * @zbr: key and position of the node
-- * @node: node is returned here
-- *
-- * This function reads a "hashed" node defined by @zbr from the leaf node cache
-- * (in it is there) or from the hash media, in which case the node is also
-- * added to LNC. Returns zero in case of success or a negative negative error
-- * code in case of failure.
-- */
--static int tnc_read_hashed_node(struct ubifs_info *c, struct ubifs_zbranch *zbr,
--				void *node)
--{
--	int err;
--
--	ubifs_assert(is_hash_key(c, &zbr->key));
--
--	if (zbr->leaf) {
--		/* Read from the leaf node cache */
--		ubifs_assert(zbr->len != 0);
--		memcpy(node, zbr->leaf, zbr->len);
--		return 0;
--	}
--
--	if (c->replaying) {
--		err = fallible_read_node(c, &zbr->key, zbr, node);
--		/*
--		 * When the node was not found, return -ENOENT, 0 otherwise.
--		 * Negative return codes stay as-is.
--		 */
--		if (err == 0)
--			err = -ENOENT;
--		else if (err == 1)
--			err = 0;
--	} else {
--		err = ubifs_tnc_read_node(c, zbr, node);
--	}
--	if (err)
--		return err;
--
--	/* Add the node to the leaf node cache */
--	err = lnc_add(c, zbr, node);
--	return err;
--}
--
--/**
-  * try_read_node - read a node if it is a node.
-  * @c: UBIFS file-system description object
-  * @buf: buffer to read to
-@@ -525,6 +474,52 @@ static int fallible_read_node(struct ubifs_info *c, const union ubifs_key *key,
- }
- 
- /**
-+ * tnc_read_hashed_node - read a "hashed" leaf node.
-+ * @c: UBIFS file-system description object
-+ * @zbr: key and position of the node
-+ * @node: node is returned here
-+ *
-+ * This function reads a "hashed" node defined by @zbr from the leaf node cache
-+ * (in it is there) or from the hash media, in which case the node is also
-+ * added to LNC. Returns zero in case of success or a negative negative error
-+ * code in case of failure.
-+ */
-+static int tnc_read_hashed_node(struct ubifs_info *c, struct ubifs_zbranch *zbr,
-+				void *node)
-+{
-+	int err;
-+
-+	ubifs_assert(is_hash_key(c, &zbr->key));
-+
-+	if (zbr->leaf) {
-+		/* Read from the leaf node cache */
-+		ubifs_assert(zbr->len != 0);
-+		memcpy(node, zbr->leaf, zbr->len);
-+		return 0;
-+	}
-+
-+	if (c->replaying) {
-+		err = fallible_read_node(c, &zbr->key, zbr, node);
-+		/*
-+		 * When the node was not found, return -ENOENT, 0 otherwise.
-+		 * Negative return codes stay as-is.
-+		 */
-+		if (err == 0)
-+			err = -ENOENT;
-+		else if (err == 1)
-+			err = 0;
-+	} else {
-+		err = ubifs_tnc_read_node(c, zbr, node);
-+	}
-+	if (err)
-+		return err;
-+
-+	/* Add the node to the leaf node cache */
-+	err = lnc_add(c, zbr, node);
-+	return err;
-+}
-+
-+/**
-  * matches_name - determine if a direntry or xattr entry matches a given name.
-  * @c: UBIFS file-system description object
-  * @zbr: zbranch of dent
+Yes, I already have this patch.
+
+But I decided to talk to Artem and just talked.
+
+We thought about comment to explain what is going on there and why
+section mismatch is false positive, though a bit error prone (since you
+have to keep in mind 0000 permissions).
+
+So, one solution here is to unmark them and, what I would add, change
+permissions to read-only.
+
+If you are okay with this I will send series.
+
+> 
+> > 
+> > > 
+> > > Cc: Richard Weinberger <richard@nod.at>
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > ---
+> > >  drivers/mtd/ubi/build.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> > > index 85d54f37e28f..00a46ff61528 100644
+> > > --- a/drivers/mtd/ubi/build.c
+> > > +++ b/drivers/mtd/ubi/build.c
+> > > @@ -1389,7 +1389,7 @@ static int __init bytes_str_to_int(const
+> > > char
+> > > *str)
+> > >   * This function returns zero in case of success and a negative
+> > > error
+> > > code in
+> > >   * case of error.
+> > >   */
+> > > -static int __init ubi_mtd_param_parse(const char *val, struct
+> > > kernel_param *kp)
+> > > +static int ubi_mtd_param_parse(const char *val, struct
+> > > kernel_param
+> > > *kp)
+> > >  {
+> > >  	int i, len;
+> > >  	struct mtd_dev_param *p;  
+> 
+> 
+
 -- 
-2.10.2
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
