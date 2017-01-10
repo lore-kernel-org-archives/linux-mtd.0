@@ -1,28 +1,24 @@
-Received: from mail-wj0-x241.google.com ([2a00:1450:400c:c01::241])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cR0RI-0007bM-QL
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 17:42:30 +0000
-Received: by mail-wj0-x241.google.com with SMTP id dh1so7943023wjb.3
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2017 09:42:07 -0800 (PST)
-Subject: Re: [PATCH 1/2] mtd: bcm47xxpart: move TRX parsing code to separated
- function
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-References: <20170110115045.9134-1-zajec5@gmail.com>
- <7e15fb84-296b-e4d6-a965-b47921d5577c@gmail.com>
- <CACna6rz2=w74VXHC0qWZUb8gEa-ucg5cgXDFMB8vmOW8gMxahg@mail.gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
+ id 1cR0Tr-0000GN-33
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 17:45:12 +0000
+Received: by mail-wm0-x244.google.com with SMTP id r126so11124165wmr.3
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2017 09:44:46 -0800 (PST)
+Subject: Re: [PATCH v4 1/2] mtd: spi-nor: Fix whole chip erasing for stacked
+ chips.
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marcin Krzeminski <mar.krzeminski@gmail.com>, linux-mtd@lists.infradead.org
+References: <20170106171901.27565-1-mar.krzeminski@gmail.com>
+ <20170106171901.27565-2-mar.krzeminski@gmail.com>
+ <e9a447d9-da58-87ac-3136-d1dc0c75d591@gmail.com>
+ <d4bda462-ddcb-2ead-0e57-595aed633b67@atmel.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <43e94ec1-3abe-5979-f0c6-ba171a795a9a@gmail.com>
-Date: Tue, 10 Jan 2017 18:42:04 +0100
+Message-ID: <0eab4ac5-c27d-408f-956d-bf02d5996203@gmail.com>
+Date: Tue, 10 Jan 2017 18:44:43 +0100
 MIME-Version: 1.0
-In-Reply-To: <CACna6rz2=w74VXHC0qWZUb8gEa-ucg5cgXDFMB8vmOW8gMxahg@mail.gmail.com>
+In-Reply-To: <d4bda462-ddcb-2ead-0e57-595aed633b67@atmel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,87 +30,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/10/2017 05:27 PM, Rafał Miłecki wrote:
-> On 10 January 2017 at 17:19, Marek Vasut <marek.vasut@gmail.com> wrote:
->> On 01/10/2017 12:50 PM, Rafał Miłecki wrote:
->>> From: Rafał Miłecki <rafal@milecki.pl>
->>>
->>> This change simplifies main parsing loop logic a bit. In future it may
->>> be useful for moving TRX support to separated module / parser (if we
->>> implement support for them at some point).
->>> Finally parsing TRX at the end puts us in a better position as we have
->>> better flash layout knowledge. It may be useful e.g. if it appears there
->>> is more than 1 TRX partition.
->>>
->>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->>> ---
->>>  drivers/mtd/bcm47xxpart.c | 124 ++++++++++++++++++++++++++++------------------
->>>  1 file changed, 77 insertions(+), 47 deletions(-)
->>>
->>> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
->>> index 283ff7e..d7d1b6e 100644
->>> --- a/drivers/mtd/bcm47xxpart.c
->>> +++ b/drivers/mtd/bcm47xxpart.c
->>> @@ -83,6 +83,70 @@ static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
->>>       return "rootfs";
->>>  }
->>>
->>> +static int bcm47xxpart_parse_trx(struct mtd_info *master,
->>> +                              struct mtd_partition *trx,
->>> +                              struct mtd_partition *parts,
->>> +                              size_t parts_len)
->>> +{
->>> +     struct mtd_partition *part;
->>> +     struct trx_header header;
->>> +     size_t bytes_read;
->>> +     int curr_part = 0;
->>> +     int i, err;
->>> +
->>> +     if (parts_len < 3) {
->>> +             pr_warn("No enough space to add TRX partitions!\n");
->>> +             return -ENOMEM;
->>> +     }
->>> +
->>> +     err = mtd_read(master, trx->offset, sizeof(header), &bytes_read,
->>> +                    (uint8_t *)&header);
->>> +     if (err && !mtd_is_bitflip(err)) {
->>> +             pr_err("mtd_read error while reading TRX header: %d\n", err);
->>> +             return err;
->>> +     }
->>> +
->>> +     i = 0;
->>> +
->>> +     /* We have LZMA loader if offset[2] points to sth */
->>> +     if (header.offset[2]) {
->>> +             part = &parts[curr_part++];
->>> +             part->name = "loader";
->>> +             part->offset = trx->offset + header.offset[i];
->>> +             i++;
->>> +     }
->>> +
->>> +     if (header.offset[i]) {
->>> +             part = &parts[curr_part++];
->>> +             part->name = "linux";
->>> +             part->offset = trx->offset + header.offset[i];
->>> +             i++;
->>> +     }
->>> +
->>> +     if (header.offset[i]) {
->>> +             size_t offset = trx->offset + header.offset[i];
->>> +
->>> +             part = &parts[curr_part++];
->>> +             part->name = bcm47xxpart_trx_data_part_name(master, offset);
->>> +             part->offset = offset;
->>
->> Why don't you still use bcm47xxpart_add_part() here ?
+On 01/10/2017 06:24 PM, Cyrille Pitchen wrote:
+> Hi Marek,
 > 
-> Good point. I think I got two reasons:
-> 1) Making this function more generic to it can be moved to separated
-> module/parser as some point (without dependency)
-> 2) Sadly I'm not sure how bcm47xxpart_add_part is useful at all. Do
-> you think it really simplifies code?
+> Le 07/01/2017 à 00:45, Marek Vasut a écrit :
+>> On 01/06/2017 06:19 PM, Marcin Krzeminski wrote:
+>>> Currently it is possible to disable chip erase for spi-nor driver.
+>>> Some modern stacked (multi die) flash chips do not support chip
+>>> erase opcode at all but spi-nor framework needs to cope with them too.
+>>> This commit extends existing functionality to allow disable
+>>> chip erase for a single flash chip.
+>>
+>> I wonder whether this should really be opt-out flag. Since we'll see
+>> more multi-die chips (and chips with different die sizes), I'd say this
+>> should rather be opt-in flag.
+>>
+> 
+> Just to be sure I've understood what you propose: do you suggest something
+> like CAN_CHIP_ERASE instead of NO_CHIP_ERASE for the new info->flags bit?
 
-Not really, but at least it's consistent.
+Yes
+
+> If so, don't forget that info->flags value is tested for every single entry
+> of the spi_nor_ids[] array, including all legacy SPI memories such as AT25
+> or M25P80. Currently spi-nor.c calls erase_chip() from spi_nor_erase()
+> whenever the user tries to erase the whole memory (len == mtd->size),
+> whatever SPI memory is connected to the controller. This implementation is
+> not restricted to multi-die memory. Indeed, spi-nor.c is not currently
+> aware of multi-die memories.
+> 
+> Hence if we want an opt-in logic for the new flag and still want to be
+> backward compatible, we would have to add the new flag into each entry of
+> the spi_nor_ids[] array.
+
+Yeah
+
+> Also I asked Marcin to split his original patch into 2 parts because I
+> think there are 2 different topics:
+> 
+> 1 - disabling chip erase command on memories which don't support this SPI
+> command. This is a bug fix: we can still provide this chip erase feature
+> using only many regular sector/block erase commands. For sure it is not
+> optimal but at least it works hence the bug is fixed.
+> 
+> Some multi-die memories are examples of devices concerned by the bug but
+> maybe they are not the only one. S3AN memories also suffer from this bug
+> and it has already been dealt by some Ricardo's patches few weeks ago.
+> 
+> 2 - adding support to the die erase command: this one is an optimization so
+> for me, still useful but with a lower priority as we can still live without
+> it so this would let use more time to think about the proper way to
+> implement this feature. Also, as Marcin reported, we already have examples
+> of multi-die memories which do support the chip erase command.
+> 
+> Hence it shows us that (chip erase not supported != multi-die).
+
+I agree with this, my point was only about whether we should handle this
+as opt-in or out-out .
+
+> Best regards,
+> 
+> Cyrille
+> 
+>>> Signed-off-by: Marcin Krzeminski <mar.krzeminski@gmail.com>
+>>> ---
+>>>  drivers/mtd/spi-nor/spi-nor.c | 3 +++
+>>>  1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>>> index 2a643a1..595de54 100644
+>>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>>> @@ -85,6 +85,7 @@ struct flash_info {
+>>>  					 * Use dedicated 4byte address op codes
+>>>  					 * to support memory size above 128Mib.
+>>>  					 */
+>>> +#define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
+>>>  };
+>>>  
+>>>  #define JEDEC_MFR(info)	((info)->id[0])
+>>> @@ -1621,6 +1622,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>>>  		nor->flags |= SNOR_F_USE_FSR;
+>>>  	if (info->flags & SPI_NOR_HAS_TB)
+>>>  		nor->flags |= SNOR_F_HAS_SR_TB;
+>>> +	if (info->flags & NO_CHIP_ERASE)
+>>> +		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+>>>  
+>>>  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
+>>>  	/* prefer "small sector" erase if possible */
+>>>
+>>
+>>
+> 
+
 
 -- 
 Best regards,
