@@ -1,25 +1,18 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mail-eopbgr30139.outbound.protection.outlook.com
+ ([40.107.3.139] helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cQxWR-0003Z8-7B
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 14:35:40 +0000
-Message-ID: <1484058912.2133.22.camel@linux.intel.com>
-Subject: Re: [PATCH v2 2/2] UBI: Make mtd parameter readable
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 10 Jan 2017 16:35:12 +0200
-In-Reply-To: <adfd384d-edb7-1255-f614-174a6793a2a8@nod.at>
-References: <20170110125643.10990-1-andriy.shevchenko@linux.intel.com>
- <20170110125643.10990-2-andriy.shevchenko@linux.intel.com>
- <CAFLxGvyTKH-7X0byYOYardGZXGQZtpHTr=aRhqD6WunDqXbneg@mail.gmail.com>
- <1484056111.2133.16.camel@linux.intel.com>
- <71c71f00-dcb1-081b-ec55-bc7c39ad32d5@nod.at>
- <1484057496.2133.18.camel@linux.intel.com>
- <adfd384d-edb7-1255-f614-174a6793a2a8@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+ id 1cQxot-00039l-4d
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 14:54:42 +0000
+Subject: Re: On-die ECC support
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+References: <45d6eb07-d6f0-1ac1-bd50-ef913a2826d8@axentia.se>
+ <a00bb5bf-abdb-ce5f-e644-492b54d348c5@nod.at>
+From: Peter Rosin <peda@axentia.se>
+Message-ID: <2679512d-6646-18c0-d000-494642d66f32@axentia.se>
+Date: Tue, 10 Jan 2017 15:54:12 +0100
+MIME-Version: 1.0
+In-Reply-To: <a00bb5bf-abdb-ce5f-e644-492b54d348c5@nod.at>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,33 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2017-01-10 at 15:16 +0100, Richard Weinberger wrote:
-> Am 10.01.2017 um 15:11 schrieb Andy Shevchenko:
-> > On Tue, 2017-01-10 at 14:54 +0100, Richard Weinberger wrote:
-> > > Am 10.01.2017 um 14:48 schrieb Andy Shevchenko:
-
-> > > > Permissions 0000 are error prone.
-> > > 
-> > > Why?
-> > 
-> > Because of a trick is being used here.
+On 2017-01-09 22:46, Richard Weinberger wrote:
+> Peter,
 > 
-> You are not really the answering questions kind of guy? ;-)
+> Am 09.01.2017 um 22:37 schrieb Peter Rosin:
+>> Hi!
+>>
+>> AFAICT, on-die ECC support [1] (continues in [2]) was never upstreamed
+>> and the patches no longer applies. I wonder if someone has done the
+>> work to forward port them to recent kernels?
+> 
+> Nope.
+> 
+> Supporting On-die ECC in a proper way is with the current MTD NAND code
+> not possible.
 
-You see, you have to keep in mind that you are not allowed to use
-anything except 0 because parser is gone, variable is gone. I'm talking
-about module_param_cb(..., 0) cases only.
+Hmm, has something fundamental changed since the patches were proposed
+that makes it impossible? Or is it just the same as it was a couple of
+years ago, but different mechanics (changes to layout handling etc)?
 
-> > P.S. If you strongly against it I will give up, it doesn't cost my
-> > efforts anymore. That's why one of the possible "solution" is to put
-> > comment there for other brave guys.
+> I stopped working on it since I have no longer access to working
+> On-die ECC hardware and On-die ECC is a dead horse.
 
-> Did you check? Do other drivers in the kernel that have a parser
-> behind a non-trivial
-> module parameter also expose it to user space?
+Maybe so, but here I am with a desire to use a new kernel with old
+hardware...
 
-Just checked. The only one which is not, this one.
+> It is slow and no longer available for recent NANDs.
 
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+Cheers,
+peda
