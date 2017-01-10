@@ -1,21 +1,27 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cQyai-0007fE-1v
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 15:44:06 +0000
-Date: Tue, 10 Jan 2017 16:43:40 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Rosin <peda@axentia.se>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: On-die ECC support
-Message-ID: <20170110164340.6b3c1f7e@bbrezillon>
-In-Reply-To: <d2765cf2-2bf7-89e6-f7b0-19e5847bab24@nod.at>
-References: <45d6eb07-d6f0-1ac1-bd50-ef913a2826d8@axentia.se>
- <a00bb5bf-abdb-ce5f-e644-492b54d348c5@nod.at>
- <2679512d-6646-18c0-d000-494642d66f32@axentia.se>
- <d2765cf2-2bf7-89e6-f7b0-19e5847bab24@nod.at>
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cQz9i-0002Jb-6i
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 16:20:16 +0000
+Received: by mail-wm0-x241.google.com with SMTP id r126so10565565wmr.3
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2017 08:19:53 -0800 (PST)
+Subject: Re: [PATCH 1/2] mtd: bcm47xxpart: move TRX parsing code to separated
+ function
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <20170110115045.9134-1-zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <7e15fb84-296b-e4d6-a965-b47921d5577c@gmail.com>
+Date: Tue, 10 Jan 2017 17:19:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170110115045.9134-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,75 +31,190 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter,
-
-On Tue, 10 Jan 2017 16:30:01 +0100
-Richard Weinberger <richard@nod.at> wrote:
-
-> Peter,
+On 01/10/2017 12:50 PM, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> Am 10.01.2017 um 15:54 schrieb Peter Rosin:
-> > On 2017-01-09 22:46, Richard Weinberger wrote:  
-> >> Peter,
-> >>
-> >> Am 09.01.2017 um 22:37 schrieb Peter Rosin:  
-> >>> Hi!
-> >>>
-> >>> AFAICT, on-die ECC support [1] (continues in [2]) was never upstreamed
-> >>> and the patches no longer applies. I wonder if someone has done the
-> >>> work to forward port them to recent kernels?  
-> >>
-> >> Nope.
-> >>
-> >> Supporting On-die ECC in a proper way is with the current MTD NAND code
-> >> not possible.  
-> > 
-> > Hmm, has something fundamental changed since the patches were proposed
-> > that makes it impossible? Or is it just the same as it was a couple of
-> > years ago, but different mechanics (changes to layout handling etc)?  
+> This change simplifies main parsing loop logic a bit. In future it may
+> be useful for moving TRX support to separated module / parser (if we
+> implement support for them at some point).
+> Finally parsing TRX at the end puts us in a better position as we have
+> better flash layout knowledge. It may be useful e.g. if it appears there
+> is more than 1 TRX partition.
 > 
-> No, it turned out to be very complicated to support On-Die for all
-> possible NAND controllers.
-> Drivers can use existing helper functions or provide their own functions.
-> But for On-Die ECC you'd have to hook all of them.
-> That's why most On-Die ECC patches touch also a lot of driver code instead
-> only the NAND framework.
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+>  drivers/mtd/bcm47xxpart.c | 124 ++++++++++++++++++++++++++++------------------
+>  1 file changed, 77 insertions(+), 47 deletions(-)
 > 
-> Of course it is doable and not rocket science this but it needs more work.
-> AFAIK also Boris thought about that while re-factoring the code.
+> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+> index 283ff7e..d7d1b6e 100644
+> --- a/drivers/mtd/bcm47xxpart.c
+> +++ b/drivers/mtd/bcm47xxpart.c
+> @@ -83,6 +83,70 @@ static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
+>  	return "rootfs";
+>  }
+>  
+> +static int bcm47xxpart_parse_trx(struct mtd_info *master,
+> +				 struct mtd_partition *trx,
+> +				 struct mtd_partition *parts,
+> +				 size_t parts_len)
+> +{
+> +	struct mtd_partition *part;
+> +	struct trx_header header;
+> +	size_t bytes_read;
+> +	int curr_part = 0;
+> +	int i, err;
+> +
+> +	if (parts_len < 3) {
+> +		pr_warn("No enough space to add TRX partitions!\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	err = mtd_read(master, trx->offset, sizeof(header), &bytes_read,
+> +		       (uint8_t *)&header);
+> +	if (err && !mtd_is_bitflip(err)) {
+> +		pr_err("mtd_read error while reading TRX header: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	i = 0;
+> +
+> +	/* We have LZMA loader if offset[2] points to sth */
+> +	if (header.offset[2]) {
+> +		part = &parts[curr_part++];
+> +		part->name = "loader";
+> +		part->offset = trx->offset + header.offset[i];
+> +		i++;
+> +	}
+> +
+> +	if (header.offset[i]) {
+> +		part = &parts[curr_part++];
+> +		part->name = "linux";
+> +		part->offset = trx->offset + header.offset[i];
+> +		i++;
+> +	}
+> +
+> +	if (header.offset[i]) {
+> +		size_t offset = trx->offset + header.offset[i];
+> +
+> +		part = &parts[curr_part++];
+> +		part->name = bcm47xxpart_trx_data_part_name(master, offset);
+> +		part->offset = offset;
 
-Well, we have 2 problems here:
-1/ On-die ECC is usually vendor specific and each vendor implements it
-   with its own set of private cmd sequence. We thus need to provide
-   generic helpers and ask vendor drivers to implement them correctly.
-   Even if this is not enough, this series [1] should help address this
-   problem.
-2/ NAND controller drivers are free to support only a minimum set of
-   cmds (basically, read/program and erase), and the core has
-   currently no way to know what's supported by a NAND controller.
-   That's IMO the biggest problem here. We need to improve the NAND
-   framework to let NAND controller expose what they really support so
-   that a decision can be taken at the core level regarding on-die ECC.
-   We also need to dissociate the ECC/NAND controller concepts, which
-   are usually tightly linked together in NAND controller drivers
-   (with no way to disable the ECC engined embedded in the controller).
+Why don't you still use bcm47xxpart_add_part() here ?
 
+> +		i++;
+> +	}
+> +
+> +	/*
+> +	 * Assume that every partition ends at the beginning of the one it is
+> +	 * followed by.
+> +	 */
+> +	for (i = 0; i < curr_part; i++) {
+> +		u64 next_part_offset = (i < curr_part - 1) ?
+> +					parts[i + 1].offset :
+> +					trx->offset + trx->size;
+> +
+> +		parts[i].size = next_part_offset - parts[i].offset;
+> +	}
+> +
+> +	return curr_part;
+> +}
+> +
+>  static int bcm47xxpart_parse(struct mtd_info *master,
+>  			     const struct mtd_partition **pparts,
+>  			     struct mtd_part_parser_data *data)
+> @@ -93,9 +157,7 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+>  	size_t bytes_read;
+>  	uint32_t offset;
+>  	uint32_t blocksize = master->erasesize;
+> -	struct trx_header *trx;
+>  	int trx_part = -1;
+> -	int last_trx_part = -1;
+>  	int possible_nvram_sizes[] = { 0x8000, 0xF000, 0x10000, };
+>  	int err;
+>  
+> @@ -182,54 +244,14 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+>  
+>  		/* TRX */
+>  		if (buf[0x000 / 4] == TRX_MAGIC) {
+> -			if (BCM47XXPART_MAX_PARTS - curr_part < 4) {
+> -				pr_warn("Not enough partitions left to register trx, scanning stopped!\n");
+> -				break;
+> -			}
+> -
+> -			trx = (struct trx_header *)buf;
+> +			struct trx_header *trx;
+>  
+>  			trx_part = curr_part;
+>  			bcm47xxpart_add_part(&parts[curr_part++], "firmware",
+>  					     offset, 0);
+>  
+> -			i = 0;
+> -			/* We have LZMA loader if offset[2] points to sth */
+> -			if (trx->offset[2]) {
+> -				bcm47xxpart_add_part(&parts[curr_part++],
+> -						     "loader",
+> -						     offset + trx->offset[i],
+> -						     0);
+> -				i++;
+> -			}
+> -
+> -			if (trx->offset[i]) {
+> -				bcm47xxpart_add_part(&parts[curr_part++],
+> -						     "linux",
+> -						     offset + trx->offset[i],
+> -						     0);
+> -				i++;
+> -			}
+> -
+> -			/*
+> -			 * Pure rootfs size is known and can be calculated as:
+> -			 * trx->length - trx->offset[i]. We don't fill it as
+> -			 * we want to have jffs2 (overlay) in the same mtd.
+> -			 */
+> -			if (trx->offset[i]) {
+> -				const char *name;
+> -
+> -				name = bcm47xxpart_trx_data_part_name(master, offset + trx->offset[i]);
+> -				bcm47xxpart_add_part(&parts[curr_part++],
+> -						     name,
+> -						     offset + trx->offset[i],
+> -						     0);
+> -				i++;
+> -			}
+> -
+> -			last_trx_part = curr_part - 1;
+> -
+>  			/* Jump to the end of TRX */
+> +			trx = (struct trx_header *)buf;
+>  			offset = roundup(offset + trx->length, blocksize);
+>  			/* Next loop iteration will increase the offset */
+>  			offset -= blocksize;
+> @@ -307,9 +329,17 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+>  				       parts[i + 1].offset : master->size;
+>  
+>  		parts[i].size = next_part_offset - parts[i].offset;
+> -		if (i == last_trx_part && trx_part >= 0)
+> -			parts[trx_part].size = next_part_offset -
+> -					       parts[trx_part].offset;
+> +	}
+> +
+> +	/* If there was TRX parse it now */
+> +	if (trx_part >= 0) {
+> +		int num_parts;
+> +
+> +		num_parts = bcm47xxpart_parse_trx(master, &parts[trx_part],
+> +						  parts + curr_part,
+> +						  BCM47XXPART_MAX_PARTS - curr_part);
+> +		if (num_parts > 0)
+> +			curr_part += num_parts;
+>  	}
+>  
+>  	*pparts = parts;
 > 
-> >> I stopped working on it since I have no longer access to working
-> >> On-die ECC hardware and On-die ECC is a dead horse.  
-> > 
-> > Maybe so, but here I am with a desire to use a new kernel with old
-> > hardware...  
-> 
-> If you want to continue the work on the patches, you're very welcome.
-> Please see also the patches on BENAND support.
 
-Yep, that's really the kind of feature that can help us improve the
-NAND framework, so, as Richard said, I'd be happy to help anyone
-interested in working on this feature.
 
-Thanks,
-
-Boris
-
-[1]https://lkml.org/lkml/2017/1/9/270
+-- 
+Best regards,
+Marek Vasut
