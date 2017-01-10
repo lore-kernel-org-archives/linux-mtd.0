@@ -1,27 +1,18 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cR1p6-0006A4-Vz
- for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 19:11:11 +0000
-Received: by mail-wm0-x241.google.com with SMTP id l2so32050583wml.2
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2017 11:10:48 -0800 (PST)
-Subject: Re: [PATCH v3 5/7] mtd: nand: raw: create struct rawnand_device
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Peter Pan <peterpansjtu@gmail.com>
-References: <1479732328-18363-1-git-send-email-boris.brezillon@free-electrons.com>
- <1479732328-18363-6-git-send-email-boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Kelvin Cheung <keguang.zhang@gmail.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <480dca8c-993e-71ff-b37c-062a3de2f003@gmail.com>
-Date: Tue, 10 Jan 2017 20:09:15 +0100
+ id 1cR28V-0007ns-FE
+ for linux-mtd@lists.infradead.org; Tue, 10 Jan 2017 19:31:13 +0000
+From: Zach Brown <zach.brown@ni.com>
+To: <dwmw2@infradead.org>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <richard@nod.at>, <dedekind1@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v8 0/5] mtd: use ONFI bad blocks per LUN to calculate UBI bad
+ PEB limit
+Date: Tue, 10 Jan 2017 13:30:16 -0600
+Message-ID: <1484076621-7789-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-In-Reply-To: <1479732328-18363-6-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,74 +22,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/21/2016 01:45 PM, Boris Brezillon wrote:
-> Create the rawnand_device struct inheriting from nand_device and make
-> nand_chip inherit from this struct.
-> 
-> The rawnand_device object should be used for the new
-> rawnand-device/rawnand-controller model, and fields inside nand_chip
-> should progressively move to the future rawnand_controller or the existing
-> rawnand_device struct.
-> 
-> In the meantime, we make sure nand_device fields are properly initialized
-> by converting information stored in mtd_info and nand_chip into the
-> nand_memory_organization format.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/raw/nand_base.c | 40 ++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/rawnand.h      | 26 ++++++++++++++++++++------
->  2 files changed, 60 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 893ec615332a..77ca2dbee341 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -3999,6 +3999,43 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
->  	return false;
->  }
->  
-> +static int rawnand_erase(struct nand_device *nand, struct erase_info *einfo)
-> +{
-> +	struct mtd_info *mtd = nand_to_mtd(nand);
-> +
-> +	return nand_erase_nand(mtd, einfo, 1);
-> +}
-> +
-> +static int rawnand_markbad(struct nand_device *nand, int block)
-> +{
-> +	struct mtd_info *mtd = nand_to_mtd(nand);
-> +	struct nand_chip *chip = mtd_to_nandc(mtd);
-> +	loff_t offs = nand_eraseblock_to_offs(nand, block);
-> +
-> +	return chip->block_markbad(mtd, offs);
-> +}
-> +
-> +static const struct nand_ops rawnand_ops = {
-> +	.erase = rawnand_erase,
-> +	.markbad = rawnand_markbad,
-> +};
-> +
-> +static void nandc_fill_nandd(struct nand_chip *chip)
-> +{
-> +	struct mtd_info *mtd = nandc_to_mtd(chip);
-> +	struct nand_device *nand = mtd_to_nand(mtd);
-> +	struct nand_memory_organization *memorg = &nand->memorg;
-> +
-> +	memorg->pagesize = mtd->writesize;
-> +	memorg->oobsize = mtd->oobsize;
-> +	memorg->eraseblocksize = mtd->erasesize;
-> +	memorg->ndies = chip->numchips;
-> +	memorg->diesize = chip->chipsize;
-> +	/* TODO: fill ->planesize and ->nplanes */
+For ONFI-compliant NAND devices, the ONFI parameters report the maximum number
+of bad blocks per LUN that will be encountered over the lifetime of the device,
+so we can use that information to get a more accurate (and smaller) value for
+the UBI bad PEB limit.
 
-When will this be addressed ?
+The ONFI parameter "maxiumum number of bad blocks per LUN" is the max number of
+bad blocks that each individual LUN will ever ecounter. It is not the number of
+bad blocks to reserve for the nand device per LUN in the device.
 
-> +	nand->ops = &rawnand_ops;
-> +}
+This means that in the worst case a UBI device spanning X LUNs will encounter
+"maximum number of bad blocks per LUN" * X bad blocks. The implementation in
+this patch assumes this worst case and allocates bad block accordingly.
 
-[...]
+These patches are ordered in terms of their dependencies, but ideally, all 5
+would need to be applied for this to work as intended.
+
+v2:
+ * Changed commit message to address concerns from v1[1] about this patch set
+   making best case assumptions.
+v3:
+ * Provided helper function for _max_bad_blocks
+ * Two new patches
+ * First new patch adds bb_per_lun and blocks_per_lun to nand_chip struct
+ * Second new patch sets the new fields during nand_flash_detect_onfi
+ * Max bad blocks calculation now uses the new nand_chip fields
+v4:
+ * Changed bb_per_lun and blocks_per_lun to bb_per_die and blocks_per_die
+ * Corrected type of bb_per_die and blocks_per_die from little endian to host
+   unsigned int
+v5:
+ * Changed bb_per_die to max_bb_per_die
+ * Fixed spacing style issue
+v6:
+ * Moved bounds checking from "part_max_bad_blocks" to "mtd_max_bad_blocks"
+ * Added check for 'ofs < 0' to bounds checking mentioned in change above.
+ * Moved assignment of slave->mtd._max_bad_blocks up to be next to the other
+   bad-block-related assignments
+ * s/lun/die in "nand_max_bad_blocks"
+ * Fixed comment style in "nand_max_bad_blocks"
+ * In "get_bad_peb_limit" made call to "mtd_max_bad_blocks" occurr only if
+   !max_beb_per1024. This makes the ordering the three different ways to set
+   the bad_peb_limit: cmdline > Kconfig > automatic with mtd_max_bad_blocks
+v7:
+ * Moved mtd_max_bad_blocks function to be with other static inline functions
+   so it would not look like the odd man out.
+v8:
+ * Changed local variables in nand_max_bad_blocks /s/uint32_t/u32
+
+ 
+Jeff Westfahl (2):
+  mtd: introduce function max_bad_blocks
+  mtd: ubi: use 'max_bad_blocks' to compute bad_peb_limit if available
+
+Zach Brown (3):
+  mtd: nand: Add max_bb_per_die and blocks_per_die fields to nand_chip
+  mtd: nand: implement 'max_bad_blocks' mtd function
+  mtd: nand: set max_bb_per_die and blocks_per_die for ONFI compliant
+    chips
+
+ drivers/mtd/mtdpart.c        | 10 ++++++++++
+ drivers/mtd/nand/nand_base.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/build.c      | 13 +++++++++++--
+ include/linux/mtd/mtd.h      | 13 +++++++++++++
+ include/linux/mtd/nand.h     |  5 +++++
+ 5 files changed, 79 insertions(+), 2 deletions(-)
 
 -- 
-Best regards,
-Marek Vasut
+2.7.4
