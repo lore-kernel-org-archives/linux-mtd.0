@@ -1,34 +1,26 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from avasout05.plus.net ([84.93.230.250])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRIqm-0005WV-PO
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 13:22:02 +0000
-Received: by mail-wm0-x241.google.com with SMTP id r126so16442205wmr.3
- for <linux-mtd@lists.infradead.org>; Wed, 11 Jan 2017 05:21:40 -0800 (PST)
-Subject: Re: [PATCH v3 4/7] mtd: nand: raw: prefix conflicting names with
- nandc instead of nand
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1479732328-18363-1-git-send-email-boris.brezillon@free-electrons.com>
- <1479732328-18363-5-git-send-email-boris.brezillon@free-electrons.com>
- <8fb86bb7-425a-3897-2d1d-7277e94918ec@gmail.com>
- <20170111084613.69e80a40@bbrezillon>
- <47760b42-607c-bcae-18b9-3ede5773125a@gmail.com>
- <20170111133933.0752c003@bbrezillon>
- <71d834f0-ff23-4a0d-2554-83ebd4855999@gmail.com>
- <20170111141440.5f50f32d@bbrezillon>
-Cc: Kelvin Cheung <keguang.zhang@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Peter Pan <peterpansjtu@gmail.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <ba22e6f4-1a85-6e76-2d03-3f5a6f0f581d@gmail.com>
-Date: Wed, 11 Jan 2017 14:21:37 +0100
+ id 1cRLfy-0001yT-RU
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 16:23:06 +0000
+Date: Wed, 11 Jan 2017 16:22:35 +0000
+From: Mike Crowe <mac@mcrowe.com>
+To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 0/2] Support skipping bad blocks when seeking to start
+ address
+Message-ID: <20170111162235.GA32121@mcrowe.com>
+References: <1483539486-16165-1-git-send-email-mac@mcrowe.com>
+ <82d2fa84-c1ec-8791-9b50-c57314ad7a5e@sigma-star.at>
+ <20170105141834.GA3198@mcrowe.com>
+ <20170105154824.5c9e97ee@bbrezillon>
+ <20170105150402.GA3931@mcrowe.com>
+ <8f046052-f092-86a0-3375-8d5ddc7572b6@sigma-star.at>
+ <20170109145135.GA17740@mcrowe.com>
 MIME-Version: 1.0
-In-Reply-To: <20170111141440.5f50f32d@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170109145135.GA17740@mcrowe.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,50 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/11/2017 02:14 PM, Boris Brezillon wrote:
-> On Wed, 11 Jan 2017 14:08:02 +0100
-> Marek Vasut <marek.vasut@gmail.com> wrote:
+On Monday 09 January 2017 at 14:51:35 +0000, Mike Crowe wrote:
+> However, I can't say I understand how the main loop in nandwrite.c can work
+> if blockalign > 1. It contains the following lines of code:
 > 
->> On 01/11/2017 01:39 PM, Boris Brezillon wrote:
->>> On Wed, 11 Jan 2017 13:09:09 +0100
->>> Marek Vasut <marek.vasut@gmail.com> wrote:
->>>   
->>>> On 01/11/2017 08:46 AM, Boris Brezillon wrote:  
->>>>> On Tue, 10 Jan 2017 20:08:23 +0100
->>>>> Marek Vasut <marek.vasut@gmail.com> wrote:
->>>>>     
->>>>>> On 11/21/2016 01:45 PM, Boris Brezillon wrote:    
->>>>>>> Some raw NAND function names conflict with names defined in nand.h.
->>>>>>> Prefix all those functions with nandc (for nand chip) instead of nand so
->>>>>>> we can include nand.h from rawnand.h
->>>>>>>
->>>>>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>      
->>>>>>
->>>>>> Nit, nand and nandc is quite confusing, why not call it nand_chip in full?
->>>>>>    
->>>>>
->>>>> Indeed, the name is confusing as hell, I just tried to keep it
->>>>> short but that's probably not a good idea.
->>>>> Maybe I should just prefix/suffix the new functions with nanddev instead
->>>>> of changing the existing ones. What do you think?    
->>>>
->>>> That'd be less intrusive, but tbh, if the name is descriptive enough, I
->>>> don't care either way. What does 'nanddev' imply though ? NAND device as
->>>> in physical device or chip or just a kernel device object ? :-)
->>>>  
->>>
->>> Physical device, but it's also exposed as a kernel dev object by the
->>> MTD layer.  
->>
->> So I guess nandchip if it's supposed to be physical device then.
->>
+> |  ebsize_aligned = mtd.eb_size * blockalign;
+> |  ...
+> |  ret = mtd_is_bad(&mtd, fd, offs / ebsize_aligned);
+
+I believe that the above line should read:
+
+ ret = mtd_is_bad(&mtd, fd, offs / mtd.eb_size);
+
+so that...
+
+> |  ...		   
+> |  offs +=  ebsize_aligned / blockalign;
 > 
-> You mean s/nandc/nandchip/, right? I'm fine with that.
+> The implementation of mtd_is_bad in libmtd.c contains:
 > 
+> |  seek = (loff_t)eb * mtd->eb_size;
 
-Yes
+...the above line works correctly.
 
+This seems to have been introduced back in 2010 in
+15d811481cf1cf61ae23fabbd1e191ebdbcf3881 when a direct ioctl call was
+replaced by the call to mtd_is_bad.
 
--- 
-Best regards,
-Marek Vasut
+But, if it really has been broken since then, I think it's worth
+questioning how many people can actually be using the blockalign feature.
+
+Thanks.
+
+Mike.
