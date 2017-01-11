@@ -1,11 +1,11 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRQxo-0000sy-3X
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 22:01:49 +0000
-Received: by mail-wm0-x242.google.com with SMTP id c85so1056290wmi.1
- for <linux-mtd@lists.infradead.org>; Wed, 11 Jan 2017 14:01:24 -0800 (PST)
-Subject: Re: [PATCH 02/18] mtd-cfi_cmdset_0001: Improve another size
- determination in cfi_intelext_partition_fixup()
+ id 1cRQxo-0000t3-DZ
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 22:01:50 +0000
+Received: by mail-wm0-x244.google.com with SMTP id r144so1069285wme.0
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Jan 2017 14:01:26 -0800 (PST)
+Subject: Re: [PATCH 00/18] MTD-CFI: Fine-tuning for several function
+ implementations
 To: SF Markus Elfring <elfring@users.sourceforge.net>,
  linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -14,13 +14,12 @@ To: SF Markus Elfring <elfring@users.sourceforge.net>,
  David Woodhouse <dwmw2@infradead.org>, Denys Vlasenko <dvlasenk@redhat.com>,
  Richard Weinberger <richard@nod.at>
 References: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
- <6bc5e888-47e2-270c-10b7-9198513f1ca1@users.sourceforge.net>
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <e8317d2b-3940-eb1e-68c0-c503171bcf76@gmail.com>
-Date: Wed, 11 Jan 2017 22:57:31 +0100
+Message-ID: <f256de56-1815-2959-917d-7051319a65ac@gmail.com>
+Date: Wed, 11 Jan 2017 22:58:27 +0100
 MIME-Version: 1.0
-In-Reply-To: <6bc5e888-47e2-270c-10b7-9198513f1ca1@users.sourceforge.net>
+In-Reply-To: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,34 +31,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/11/2017 09:37 PM, SF Markus Elfring wrote:
+On 01/11/2017 09:34 PM, SF Markus Elfring wrote:
 > From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Tue, 10 Jan 2017 19:09:58 +0100
-
-Please drop this stuff ^^^^^ git send-email should do that for you.
-
-> Replace the specification of a data structure by a pointer dereference
-> as the parameter for the operator "sizeof" to make the corresponding size
-> determination a bit safer according to the Linux coding style convention.
+> Date: Wed, 11 Jan 2017 21:21:12 +0100
 > 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0001.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Several update suggestions were taken into account
+> from static source code analysis.
+
+The patch listing doesn't seem to match the content of the patchset ?
+The $subject are different ...
+
+> Markus Elfring (18):
+>   Use kmalloc_array() in cfi_intelext_partition_fixup()
+>   Improve another size determination in cfi_intelext_partition_fixup()
+>   cfi_cmdset_0001: Add some spaces for better code readability
+>   cfi_cmdset_0001: Delete an unnecessary variable initialisation in do_write_oneword()
+>   cfi_cmdset_0001: Use common error handling code in do_write_oneword()
+>   Use kcalloc() in cfi_intelext_setup()
+>   One function call and an unnecessary check less in cfi_intelext_setup()
+>   Rename a jump label in cfi_intelext_setup()
+>   Use kmalloc_array() in cfi_amdstd_setup()
+>   One function call less in cfi_amdstd_setup() after error detection
+>   Rename a jump label in cfi_amdstd_setup()
+>   cfi_cmdset_0002: Add some spaces for better code readability
+>   cfi_cmdset_0002: Delete an unnecessary variable initialisation in do_write_oneword()
+>   cfi_cmdset_0002: Use common error handling code in do_write_oneword()
+>   Use kcalloc() in cfi_ppb_unlock()
+>   Use kmalloc_array() in cfi_staa_setup()
+>   Use common error handling code in cfi_staa_setup()
+>   cfi_cmdset_0020: Add some spaces for better code readability
 > 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 68227aa74d22..0d7c2ef533d1 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -753,7 +753,7 @@ static int cfi_intelext_partition_fixup(struct mtd_info *mtd,
->  			kfree(newcfi);
->  			return -ENOMEM;
->  		}
-> -		memcpy(newcfi, cfi, sizeof(struct cfi_private));
-> +		memcpy(newcfi, cfi, sizeof(*cfi));
->  		newcfi->numchips = numvirtchips;
->  		newcfi->chipshift = partshift;
->  
+>  drivers/mtd/chips/cfi_cmdset_0001.c | 165 +++++++++++++++++++-----------------
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 110 +++++++++++++-----------
+>  drivers/mtd/chips/cfi_cmdset_0020.c | 127 ++++++++++++++-------------
+>  3 files changed, 214 insertions(+), 188 deletions(-)
 > 
 
 
