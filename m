@@ -1,22 +1,26 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cRDeV-0000Ht-8q
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 07:49:01 +0000
-Date: Wed, 11 Jan 2017 08:48:37 +0100
+ id 1cRDn3-00053X-C0
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 07:57:51 +0000
+Date: Wed, 11 Jan 2017 08:57:27 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Marek Vasut <marek.vasut@gmail.com>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Peter Pan <peterpansjtu@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Kelvin Cheung
- <keguang.zhang@gmail.com>
-Subject: Re: [PATCH v3 5/7] mtd: nand: raw: create struct rawnand_device
-Message-ID: <20170111084837.381dd806@bbrezillon>
-In-Reply-To: <480dca8c-993e-71ff-b37c-062a3de2f003@gmail.com>
-References: <1479732328-18363-1-git-send-email-boris.brezillon@free-electrons.com>
- <1479732328-18363-6-git-send-email-boris.brezillon@free-electrons.com>
- <480dca8c-993e-71ff-b37c-062a3de2f003@gmail.com>
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Icenowy Zheng <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 07/15] mtd: nand: move Samsung specific
+ init/detection logic in nand_samsung.c
+Message-ID: <20170111085727.314de956@bbrezillon>
+In-Reply-To: <27e81612-a7c4-9265-a608-3d5cf1180973@gmail.com>
+References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1483448495-31607-8-git-send-email-boris.brezillon@free-electrons.com>
+ <09da7377-1323-0794-fe61-34fd06e35404@gmail.com>
+ <20170104180813.700823eb@bbrezillon>
+ <4982cf88-ff7e-20c9-a158-e1e3826c0762@gmail.com>
+ <20170107084948.1d5d699c@bbrezillon>
+ <27e81612-a7c4-9265-a608-3d5cf1180973@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,80 +33,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 10 Jan 2017 20:09:15 +0100
+On Tue, 10 Jan 2017 20:00:28 +0100
 Marek Vasut <marek.vasut@gmail.com> wrote:
 
-> On 11/21/2016 01:45 PM, Boris Brezillon wrote:
-> > Create the rawnand_device struct inheriting from nand_device and make
-> > nand_chip inherit from this struct.
+> On 01/07/2017 08:49 AM, Boris Brezillon wrote:
+> > On Sat, 7 Jan 2017 00:53:24 +0100
+> > Marek Vasut <marek.vasut@gmail.com> wrote:
+> >   
+> >> On 01/04/2017 06:08 PM, Boris Brezillon wrote:  
+> >>> On Wed, 4 Jan 2017 16:14:07 +0100
+> >>> Marek Vasut <marek.vasut@gmail.com> wrote:
+> >>>     
+> >>>> On 01/03/2017 02:01 PM, Boris Brezillon wrote:    
+> >>>>> Move Samsung specific initialization and detection logic into
+> >>>>> nand_samsung.c. This is part of the "separate vendor specific code from
+> >>>>> core" cleanup process.
+> >>>>>
+> >>>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>      
+> >>>>
+> >>>> [...]
+> >>>>    
+> >>>>> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> >>>>> index b3a332f37e14..05e9366696c9 100644
+> >>>>> --- a/drivers/mtd/nand/nand_ids.c
+> >>>>> +++ b/drivers/mtd/nand/nand_ids.c
+> >>>>> @@ -10,7 +10,7 @@
+> >>>>>  #include <linux/mtd/nand.h>
+> >>>>>  #include <linux/sizes.h>
+> >>>>>  
+> >>>>> -#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
+> >>>>> +#define LP_OPTIONS 0
+> >>>>>  #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
+> >>>>>  
+> >>>>>  #define SP_OPTIONS NAND_NEED_READRDY
+> >>>>> @@ -169,10 +169,12 @@ struct nand_flash_dev nand_flash_ids[] = {
+> >>>>>  };
+> >>>>>  
+> >>>>>  /* Manufacturer IDs */
+> >>>>> +extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;      
+> >>>>
+> >>>> Is the extern needed ?    
+> >>>
+> >>> Yes, unless you have another solution. If you remove the extern keyword
+> >>> you just redeclare samsung_nand_manuf_ops here, which is not what we
+> >>> want.    
+> >>
+> >> Maybe some accessor function can help ?
+> >>  
 > > 
-> > The rawnand_device object should be used for the new
-> > rawnand-device/rawnand-controller model, and fields inside nand_chip
-> > should progressively move to the future rawnand_controller or the existing
-> > rawnand_device struct.
+> > You mean, in nand_ids.c
 > > 
-> > In the meantime, we make sure nand_device fields are properly initialized
-> > by converting information stored in mtd_info and nand_chip into the
-> > nand_memory_organization format.
+> >     const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops();
 > > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/raw/nand_base.c | 40 ++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/mtd/rawnand.h      | 26 ++++++++++++++++++++------
-> >  2 files changed, 60 insertions(+), 6 deletions(-)
+> >     struct nand_manufacturers nand_manuf_ids[] = {
+> >     ...
+> > 	{NAND_MFR_SAMSUNG, "Samsung", get_samsung_nand_mafuf_ops},
+> >     ...
+> >     };
 > > 
-> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> > index 893ec615332a..77ca2dbee341 100644
-> > --- a/drivers/mtd/nand/raw/nand_base.c
-> > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > @@ -3999,6 +3999,43 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
-> >  	return false;
-> >  }
-> >  
-> > +static int rawnand_erase(struct nand_device *nand, struct erase_info *einfo)
-> > +{
-> > +	struct mtd_info *mtd = nand_to_mtd(nand);
-> > +
-> > +	return nand_erase_nand(mtd, einfo, 1);
-> > +}
-> > +
-> > +static int rawnand_markbad(struct nand_device *nand, int block)
-> > +{
-> > +	struct mtd_info *mtd = nand_to_mtd(nand);
-> > +	struct nand_chip *chip = mtd_to_nandc(mtd);
-> > +	loff_t offs = nand_eraseblock_to_offs(nand, block);
-> > +
-> > +	return chip->block_markbad(mtd, offs);
-> > +}
-> > +
-> > +static const struct nand_ops rawnand_ops = {
-> > +	.erase = rawnand_erase,
-> > +	.markbad = rawnand_markbad,
-> > +};
-> > +
-> > +static void nandc_fill_nandd(struct nand_chip *chip)
-> > +{
-> > +	struct mtd_info *mtd = nandc_to_mtd(chip);
-> > +	struct nand_device *nand = mtd_to_nand(mtd);
-> > +	struct nand_memory_organization *memorg = &nand->memorg;
-> > +
-> > +	memorg->pagesize = mtd->writesize;
-> > +	memorg->oobsize = mtd->oobsize;
-> > +	memorg->eraseblocksize = mtd->erasesize;
-> > +	memorg->ndies = chip->numchips;
-> > +	memorg->diesize = chip->chipsize;
-> > +	/* TODO: fill ->planesize and ->nplanes */  
+> > and then, in nand_samsung.c
+> > 
+> >     const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops()
+> >     {
+> > 	return &samsung_nand_mafuf_ops;
+> >     }  
 > 
-> When will this be addressed ?
+> Yeah, something like that.
+> 
+> > What's the point of this extra indirection? I mean, in both cases you
+> > use a symbol that is not part of the same source file, so you'll have
+> > to define this symbol (using a function prototype or an extern object
+> > definition).
+> > Is this all about fixing checkpatch warnings, or do you have a problem
+> > with objects shared between different source files?  
+> 
+> The later, separating this with an accessor function feels a bit cleaner
+> to me than using extern foo.
+> 
+> > Now, I agree that the current approach is not ideal. A real improvement
+> > would be to let the NAND manufacturer drivers (nand_<vendor>.c) register
+> > themselves to the core. Something similar to CLK_OF_DECLARE() or
+> > IRQCHIP_DECLARE() for example. But that means creating a dedicated
+> > section for the nand_manufs_id table, and it's a lot more invasive than
+> > the current approach.  
+> 
+> Well this would be awesome, but this can also be done later. I presume
+> you'll get to it eventually anyway, as soon as you'll be annoyed enough
+> with the current ugly-ish implementation.
+> 
 
-We first need to extract these information from the NAND ID or the
-ONFI/JEDEC parameter page. I think I'll just drop those fields for now,
-and add them back when we have the proper infrastructure to extract
-this information.
+If we plan to rework it this way, I'd like to keep the existing
+approach (with the extern) to avoid changing the prototype of
+nand_manufacturer once again when we rework the nand_manufacturer
+registration logic.
 
-> 
-> > +	nand->ops = &rawnand_ops;
-> > +}  
-> 
-> [...]
-> 
+Also note that in v6 I'm keeping a pointer to the nand_manfucturer
+object in nand_chip, so that if we ever need to print the manufacturer
+name we don't have to search again in the NAND manufacturer table.
+After this rework, I no longer store the manufacturer_ops directly in
+nand_chip, and have to access them by doing
+chip->manufacturer.desc->ops->xxx.
+
+Which means, with your solution, I'll have to do
+
+	ops = nand_get_manufacturer_ops(chip->manufacturer.desc);
+	ops->xxx();
+
+instead of
+
+	chip->manufacturer.desc->ops->xxx();
