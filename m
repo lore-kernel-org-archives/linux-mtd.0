@@ -1,8 +1,8 @@
 Received: from mout.web.de ([212.227.17.11])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRPsG-000081-4d
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 20:52:01 +0000
-Subject: [PATCH 16/18] mtd-cfi_cmdset_0020: Use kmalloc_array() in
+ id 1cRPtC-0000Y3-UA
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 20:53:00 +0000
+Subject: [PATCH 17/18] mtd-cfi_cmdset_0020: Use common error handling code in
  cfi_staa_setup()
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -13,8 +13,8 @@ To: linux-mtd@lists.infradead.org,
 References: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Message-ID: <927b2449-3de4-83aa-8d23-ef0a6461ecfe@users.sourceforge.net>
-Date: Wed, 11 Jan 2017 21:51:25 +0100
+Message-ID: <128b121d-9b5e-8c71-6265-96110d6ca833@users.sourceforge.net>
+Date: Wed, 11 Jan 2017 21:52:27 +0100
 MIME-Version: 1.0
 In-Reply-To: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
@@ -29,38 +29,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 11 Jan 2017 19:33:48 +0100
+Date: Wed, 11 Jan 2017 20:02:40 +0100
 
-* A multiplication for the size determination of a memory allocation
-  indicated that an array data structure should be processed.
-  Thus use the corresponding function "kmalloc_array".
-
-  This issue was detected by using the Coccinelle software.
-
-* Replace the specification of a data structure by a pointer dereference
-  to make the corresponding size determination a bit safer according to
-  the Linux coding style convention.
+Add jump targets so that a bit of exception handling can be better reused
+at the end of this function.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- drivers/mtd/chips/cfi_cmdset_0020.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0020.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
-index 94d3eb42c4d5..9cd7b1c6faba 100644
+index 9cd7b1c6faba..60de9d58dcc6 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0020.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0020.c
-@@ -184,8 +184,9 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
- 	mtd->size = devsize * cfi->numchips;
+@@ -173,11 +173,8 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
  
- 	mtd->numeraseregions = cfi->cfiq->NumEraseRegions * cfi->numchips;
--	mtd->eraseregions = kmalloc(sizeof(struct mtd_erase_region_info)
--			* mtd->numeraseregions, GFP_KERNEL);
-+	mtd->eraseregions = kmalloc_array(mtd->numeraseregions,
-+					  sizeof(*mtd->eraseregions),
-+					  GFP_KERNEL);
- 	if (!mtd->eraseregions) {
- 		kfree(cfi->cmdset_priv);
- 		kfree(mtd);
+ 	mtd = kzalloc(sizeof(*mtd), GFP_KERNEL);
+ 	//printk(KERN_DEBUG "number of CFI chips: %d\n", cfi->numchips);
+-
+-	if (!mtd) {
+-		kfree(cfi->cmdset_priv);
+-		return NULL;
+-	}
++	if (!mtd)
++		goto free_priv;
+ 
+ 	mtd->priv = map;
+ 	mtd->type = MTD_NORFLASH;
+@@ -187,11 +184,8 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
+ 	mtd->eraseregions = kmalloc_array(mtd->numeraseregions,
+ 					  sizeof(*mtd->eraseregions),
+ 					  GFP_KERNEL);
+-	if (!mtd->eraseregions) {
+-		kfree(cfi->cmdset_priv);
+-		kfree(mtd);
+-		return NULL;
+-	}
++	if (!mtd->eraseregions)
++		goto free_mtd;
+ 
+ 	for (i=0; i<cfi->cfiq->NumEraseRegions; i++) {
+ 		unsigned long ernum, ersize;
+@@ -213,9 +207,7 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
+ 		/* Argh */
+ 		printk(KERN_WARNING "Sum of regions (%lx) != total size of set of interleaved chips (%lx)\n", offset, devsize);
+ 		kfree(mtd->eraseregions);
+-		kfree(cfi->cmdset_priv);
+-		kfree(mtd);
+-		return NULL;
++		goto free_mtd;
+ 	}
+ 
+ 	for (i=0; i<mtd->numeraseregions;i++){
+@@ -242,6 +234,11 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
+ 	__module_get(THIS_MODULE);
+ 	mtd->name = map->name;
+ 	return mtd;
++free_mtd:
++	kfree(mtd);
++free_priv:
++	kfree(cfi->cmdset_priv);
++	return NULL;
+ }
+ 
+ 
 -- 
 2.11.0
