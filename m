@@ -1,9 +1,9 @@
-Received: from mout.web.de ([217.72.192.78])
+Received: from mout.web.de ([212.227.17.11])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRPki-0001Kx-I6
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 20:44:14 +0000
-Subject: [PATCH 08/18] mtd-cfi_cmdset_0001: Rename a jump label in
- cfi_intelext_setup()
+ id 1cRPlX-0001xo-O5
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 20:45:10 +0000
+Subject: [PATCH 09/18] mtd-cfi_cmdset_0002: Use kmalloc_array() in
+ cfi_amdstd_setup()
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -13,8 +13,8 @@ To: linux-mtd@lists.infradead.org,
 References: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Message-ID: <6550d4b3-b024-247f-9954-c2bb67e3352a@users.sourceforge.net>
-Date: Wed, 11 Jan 2017 21:43:41 +0100
+Message-ID: <d821b061-db6b-aa10-8754-734b6c68ec03@users.sourceforge.net>
+Date: Wed, 11 Jan 2017 21:44:32 +0100
 MIME-Version: 1.0
 In-Reply-To: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
@@ -29,52 +29,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 11 Jan 2017 17:49:05 +0100
+Date: Wed, 11 Jan 2017 17:56:42 +0100
 
-Adjust a jump label according to the Linux coding style convention.
+* A multiplication for the size determination of a memory allocation
+  indicated that an array data structure should be processed.
+  Thus use the corresponding function "kmalloc_array".
+
+  This issue was detected by using the Coccinelle software.
+
+* Replace the specification of a data structure by a pointer dereference
+  to make the corresponding size determination a bit safer according to
+  the Linux coding style convention.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- drivers/mtd/chips/cfi_cmdset_0001.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 7f6ed7293e40..97329484555d 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -620,7 +620,7 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
- 			mtd->eraseregions[x].numblocks = ernum;
- 			mtd->eraseregions[x].lockmap = kmalloc(ernum / 8 + 1, GFP_KERNEL);
- 			if (!mtd->eraseregions[x].lockmap)
--				goto setup_err;
-+				goto free_regions;
- 		}
- 		offset += (ersize * ernum);
- 	}
-@@ -628,7 +628,7 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
- 	if (offset != devsize) {
- 		/* Argh */
- 		printk(KERN_WARNING "Sum of regions (%lx) != total size of set of interleaved chips (%lx)\n", offset, devsize);
--		goto setup_err;
-+		goto free_regions;
- 	}
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 9dca881bb378..3bed67e35692 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -688,8 +688,9 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+ 	mtd->size = devsize * cfi->numchips;
  
- 	for (i = 0; i < mtd->numeraseregions; i++) {
-@@ -650,13 +650,12 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
- 	/* This function has the potential to distort the reality
- 	   a bit and therefore should be called last. */
- 	if (cfi_intelext_partition_fixup(mtd, &cfi) != 0)
--		goto setup_err;
-+		goto free_regions;
+ 	mtd->numeraseregions = cfi->cfiq->NumEraseRegions * cfi->numchips;
+-	mtd->eraseregions = kmalloc(sizeof(struct mtd_erase_region_info)
+-				    * mtd->numeraseregions, GFP_KERNEL);
++	mtd->eraseregions = kmalloc_array(mtd->numeraseregions,
++					  sizeof(*mtd->eraseregions),
++					  GFP_KERNEL);
+ 	if (!mtd->eraseregions)
+ 		goto setup_err;
  
- 	__module_get(THIS_MODULE);
- 	register_reboot_notifier(&mtd->reboot_notifier);
- 	return mtd;
--
-- setup_err:
-+free_regions:
- 	for (i = 0; i < cfi->cfiq->NumEraseRegions; i++)
- 		for (j = 0; j < cfi->numchips; j++)
- 			kfree(mtd->eraseregions[j * cfi->cfiq->NumEraseRegions
 -- 
 2.11.0
