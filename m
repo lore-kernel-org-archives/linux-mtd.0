@@ -1,9 +1,9 @@
-Received: from mout.web.de ([212.227.17.11])
+Received: from mout.web.de ([212.227.17.12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRPga-0007CI-Ja
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 20:39:58 +0000
-Subject: [PATCH 04/18] mtd-cfi_cmdset_0001: Delete an unnecessary variable
- initialisation in do_write_oneword()
+ id 1cRPha-0000D6-Uh
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 20:41:00 +0000
+Subject: [PATCH 05/18] mtd-cfi_cmdset_0001: Use common error handling code in
+ do_write_oneword()
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -13,8 +13,8 @@ To: linux-mtd@lists.infradead.org,
 References: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Message-ID: <c9c2f1a9-59da-2459-bfcb-559731fcfd07@users.sourceforge.net>
-Date: Wed, 11 Jan 2017 21:39:21 +0100
+Message-ID: <98176d77-b469-d0e3-9364-4035b0254b11@users.sourceforge.net>
+Date: Wed, 11 Jan 2017 21:40:26 +0100
 MIME-Version: 1.0
 In-Reply-To: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
@@ -29,28 +29,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 11 Jan 2017 16:36:18 +0100
+Date: Wed, 11 Jan 2017 16:40:47 +0100
 
-The local variable "ret" will be set to an appropriate value a bit later.
-Thus omit the explicit initialisation at the beginning.
+Add a jump target so that a bit of exception handling can be better reused
+at the end of this function.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- drivers/mtd/chips/cfi_cmdset_0001.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/chips/cfi_cmdset_0001.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 0bcb785305d6..0c0fa918c9ff 100644
+index 0c0fa918c9ff..4b134e8beb93 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0001.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -1535,7 +1535,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	map_word status, write_cmd;
--	int ret=0;
-+	int ret;
+@@ -1552,10 +1552,8 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
  
- 	adr += chip->start;
+ 	mutex_lock(&chip->mutex);
+ 	ret = get_chip(map, chip, adr, mode);
+-	if (ret) {
+-		mutex_unlock(&chip->mutex);
+-		return ret;
+-	}
++	if (ret)
++		goto unlock;
  
+ 	XIP_INVAL_CACHED_RANGE(map, adr, map_bankwidth(map));
+ 	ENABLE_VPP(map);
+@@ -1600,6 +1598,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 	xip_enable(map, chip, adr);
+  out:	DISABLE_VPP(map);
+ 	put_chip(map, chip, adr);
++unlock:
+ 	mutex_unlock(&chip->mutex);
+ 	return ret;
+ }
 -- 
 2.11.0
