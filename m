@@ -1,38 +1,32 @@
-Date: Wed, 11 Jan 2017 13:42:02 +0100
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org,
- Nicolas Dichtel <nicolas.dichtel@6wind.com>,
- linux-mips@linux-mips.org, alsa-devel@alsa-project.org,
- linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
- airlied@linux.ie, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
- sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-am33-list@redhat.com,
- linux-c6x-dev@linux-c6x.org, linux-rdma@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org,
- coreteam@netfilter.org, fcoe-devel@open-fcoe.org,
- xen-devel@lists.xenproject.org, linux-snps-arc@lists.infradead.org,
- linux-media@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
- adi-buildroot-devel@lists.sourceforge.net,
- linux-raid@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- openrisc@lists.librecores.org, linux-metag@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com,
- netdev@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- mmarek@suse.com, netfilter-devel@vger.kernel.org,
- linux-alpha@vger.kernel.org, nios2-dev@lists.rocketboards.org,
- davem@davemloft.net
-Subject: Re: [PATCH v2 0/7] uapi: export all headers under uapi directories
-Message-ID: <20170111124202.GD7275@axis.com>
-References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
- <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
- <3131144.4Ej3KFWRbz@wuerfel>
+Received: from mail-wj0-x244.google.com ([2a00:1450:400c:c01::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cRIdn-0006lW-Ny
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 13:08:37 +0000
+Received: by mail-wj0-x244.google.com with SMTP id kp2so90743355wjc.0
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Jan 2017 05:08:15 -0800 (PST)
+Subject: Re: [PATCH v4 07/15] mtd: nand: move Samsung specific init/detection
+ logic in nand_samsung.c
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1483448495-31607-8-git-send-email-boris.brezillon@free-electrons.com>
+ <09da7377-1323-0794-fe61-34fd06e35404@gmail.com>
+ <20170104180813.700823eb@bbrezillon>
+ <4982cf88-ff7e-20c9-a158-e1e3826c0762@gmail.com>
+ <20170107084948.1d5d699c@bbrezillon>
+ <27e81612-a7c4-9265-a608-3d5cf1180973@gmail.com>
+ <20170111085727.314de956@bbrezillon>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Icenowy Zheng
+ <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <cc948f6b-c9b1-5a15-544c-962c894b7c7d@gmail.com>
+Date: Wed, 11 Jan 2017 14:02:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3131144.4Ej3KFWRbz@wuerfel>
+In-Reply-To: <20170111085727.314de956@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,81 +36,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 09, 2017 at 12:33:58PM +0100, Arnd Bergmann wrote:
-> On Friday, January 6, 2017 10:43:52 AM CET Nicolas Dichtel wrote:
-> > Here is the v2 of this series. The first 5 patches are just cleanup: some
-> > exported headers were still under a non-uapi directory.
+On 01/11/2017 08:57 AM, Boris Brezillon wrote:
+> On Tue, 10 Jan 2017 20:00:28 +0100
+> Marek Vasut <marek.vasut@gmail.com> wrote:
 > 
-> Since this is meant as a cleanup, I commented on this to point out a cleaner
-> way to do the same.
+>> On 01/07/2017 08:49 AM, Boris Brezillon wrote:
+>>> On Sat, 7 Jan 2017 00:53:24 +0100
+>>> Marek Vasut <marek.vasut@gmail.com> wrote:
+>>>   
+>>>> On 01/04/2017 06:08 PM, Boris Brezillon wrote:  
+>>>>> On Wed, 4 Jan 2017 16:14:07 +0100
+>>>>> Marek Vasut <marek.vasut@gmail.com> wrote:
+>>>>>     
+>>>>>> On 01/03/2017 02:01 PM, Boris Brezillon wrote:    
+>>>>>>> Move Samsung specific initialization and detection logic into
+>>>>>>> nand_samsung.c. This is part of the "separate vendor specific code from
+>>>>>>> core" cleanup process.
+>>>>>>>
+>>>>>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>      
+>>>>>>
+>>>>>> [...]
+>>>>>>    
+>>>>>>> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+>>>>>>> index b3a332f37e14..05e9366696c9 100644
+>>>>>>> --- a/drivers/mtd/nand/nand_ids.c
+>>>>>>> +++ b/drivers/mtd/nand/nand_ids.c
+>>>>>>> @@ -10,7 +10,7 @@
+>>>>>>>  #include <linux/mtd/nand.h>
+>>>>>>>  #include <linux/sizes.h>
+>>>>>>>  
+>>>>>>> -#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
+>>>>>>> +#define LP_OPTIONS 0
+>>>>>>>  #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
+>>>>>>>  
+>>>>>>>  #define SP_OPTIONS NAND_NEED_READRDY
+>>>>>>> @@ -169,10 +169,12 @@ struct nand_flash_dev nand_flash_ids[] = {
+>>>>>>>  };
+>>>>>>>  
+>>>>>>>  /* Manufacturer IDs */
+>>>>>>> +extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;      
+>>>>>>
+>>>>>> Is the extern needed ?    
+>>>>>
+>>>>> Yes, unless you have another solution. If you remove the extern keyword
+>>>>> you just redeclare samsung_nand_manuf_ops here, which is not what we
+>>>>> want.    
+>>>>
+>>>> Maybe some accessor function can help ?
+>>>>  
+>>>
+>>> You mean, in nand_ids.c
+>>>
+>>>     const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops();
+>>>
+>>>     struct nand_manufacturers nand_manuf_ids[] = {
+>>>     ...
+>>> 	{NAND_MFR_SAMSUNG, "Samsung", get_samsung_nand_mafuf_ops},
+>>>     ...
+>>>     };
+>>>
+>>> and then, in nand_samsung.c
+>>>
+>>>     const struct nand_manufacturer_ops *get_samsung_nand_mafuf_ops()
+>>>     {
+>>> 	return &samsung_nand_mafuf_ops;
+>>>     }  
+>>
+>> Yeah, something like that.
+>>
+>>> What's the point of this extra indirection? I mean, in both cases you
+>>> use a symbol that is not part of the same source file, so you'll have
+>>> to define this symbol (using a function prototype or an extern object
+>>> definition).
+>>> Is this all about fixing checkpatch warnings, or do you have a problem
+>>> with objects shared between different source files?  
+>>
+>> The later, separating this with an accessor function feels a bit cleaner
+>> to me than using extern foo.
+>>
+>>> Now, I agree that the current approach is not ideal. A real improvement
+>>> would be to let the NAND manufacturer drivers (nand_<vendor>.c) register
+>>> themselves to the core. Something similar to CLK_OF_DECLARE() or
+>>> IRQCHIP_DECLARE() for example. But that means creating a dedicated
+>>> section for the nand_manufs_id table, and it's a lot more invasive than
+>>> the current approach.  
+>>
+>> Well this would be awesome, but this can also be done later. I presume
+>> you'll get to it eventually anyway, as soon as you'll be annoyed enough
+>> with the current ugly-ish implementation.
+>>
 > 
-> > The patch 6 was spotted by code review: there is no in-tree user of this
-> > functionality.
-> > The last patch remove the use of header-y. Now all files under an uapi
-> > directory are exported.
+> If we plan to rework it this way, I'd like to keep the existing
+> approach (with the extern) to avoid changing the prototype of
+> nand_manufacturer once again when we rework the nand_manufacturer
+> registration logic.
 > 
-> Very nice!
+> Also note that in v6 I'm keeping a pointer to the nand_manfucturer
+> object in nand_chip, so that if we ever need to print the manufacturer
+> name we don't have to search again in the NAND manufacturer table.
+> After this rework, I no longer store the manufacturer_ops directly in
+> nand_chip, and have to access them by doing
+> chip->manufacturer.desc->ops->xxx.
 > 
-> > asm is a bit special, most of architectures export asm/<arch>/include/uapi/asm
-> > only, but there is two exceptions:
-> >  - cris which exports arch/cris/include/uapi/arch-v[10|32];
+> Which means, with your solution, I'll have to do
 > 
-> This is interesting, though not your problem. Maybe someone who understands
-> cris better can comment on this: How is the decision made about which of
-> the arch/user.h headers gets used? I couldn't find that in the sources,
-> but it appears to be based on kernel compile-time settings, which is
-> wrong for user space header files that should be independent of the kernel
-> config.
+> 	ops = nand_get_manufacturer_ops(chip->manufacturer.desc);
+> 	ops->xxx();
+> 
+> instead of
+> 
+> 	chip->manufacturer.desc->ops->xxx();
+> 
 
-I believe it's since the CRISv10 and CRISv32 are very different beasts,
-and that is selected via kernel config...
+All right, I think we can live with this either way.
 
-This part of the CRIS port has been transformed a couple of times from
-the original layout without uapi, and there's still some legacy silliness,
-where some files might have been exported but never used from userspace
-except for some corner cases.
-
-> >  - tile which exports arch/tile/include/uapi/arch.
-> > Because I don't know if the output of 'make headers_install_all' can be changed,
-> > I introduce subdir-y in Kbuild file. The headers_install_all target copies all
-> > asm/<arch>/include/uapi/asm to usr/include/asm-<arch> but
-> > arch/cris/include/uapi/arch-v[10|32] and arch/tile/include/uapi/arch are not
-> > prefixed (they are put asis in usr/include/). If it's acceptable to modify the
-> > output of 'make headers_install_all' to export asm headers in
-> > usr/include/asm-<arch>/asm, then I could remove this new subdir-y and exports
-> > everything under arch/<arch>/include/uapi/.
-> 
-> I don't know if anyone still uses "make headers_install_all", I suspect
-> distros these days all use "make headers_install", so it probably
-> doesn't matter much.
-> 
-> In case of cris, it should be easy enough to move all the contents of the
-> uapi/arch-*/*.h headers into the respective uapi/asm/*.h headers, they
-> only seem to be referenced from there.
-
-This would seem to be a reasonable change.
-
-> For tile, I suspect that would not work as the arch/*.h headers are
-> apparently defined as interfaces for both user space and kernel.
-> 
-> > Note also that exported files for asm are a mix of files listed by:
-> >  - include/uapi/asm-generic/Kbuild.asm;
-> >  - arch/x86/include/uapi/asm/Kbuild;
-> >  - arch/x86/include/asm/Kbuild.
-> > This complicates a lot the processing (arch/x86/include/asm/Kbuild is also
-> > used by scripts/Makefile.asm-generic).
-> > 
-> > This series has been tested with a 'make headers_install' on x86 and a
-> > 'make headers_install_all'. I've checked the result of both commands.
-> > 
-> > This patch is built against linus tree. I don't know if it should be
-> > made against antoher tree.
-> 
-> The series should probably get merged through the kbuild tree, but testing
-> it on mainline is fine here.
-> 
-> 	Arnd
-
-/^JN - Jesper Nilsson
 -- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+Best regards,
+Marek Vasut
