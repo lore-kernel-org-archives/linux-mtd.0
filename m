@@ -1,20 +1,22 @@
 Received: from mout.web.de ([212.227.15.4])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRPbu-00049Z-F7
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 20:35:08 +0000
+ id 1cRPdE-0006AE-8R
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 20:36:32 +0000
+Subject: [PATCH 01/18] mtd-cfi_cmdset_0001: Use kmalloc_array() in
+ cfi_intelext_partition_fixup()
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  David Woodhouse <dwmw2@infradead.org>, Denys Vlasenko <dvlasenk@redhat.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 00/18] MTD-CFI: Fine-tuning for several function
- implementations
+References: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-Message-ID: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
-Date: Wed, 11 Jan 2017 21:34:13 +0100
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Message-ID: <f74ef6ca-7159-ba15-b7a3-0a45e522729f@users.sourceforge.net>
+Date: Wed, 11 Jan 2017 21:35:55 +0100
 MIME-Version: 1.0
+In-Reply-To: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,35 +29,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 11 Jan 2017 21:21:12 +0100
+Date: Tue, 10 Jan 2017 18:48:34 +0100
 
-Several update suggestions were taken into account
-from static source code analysis.
+* A multiplication for the size determination of a memory allocation
+  indicated that an array data structure should be processed.
+  Thus use the corresponding function "kmalloc_array".
 
-Markus Elfring (18):
-  Use kmalloc_array() in cfi_intelext_partition_fixup()
-  Improve another size determination in cfi_intelext_partition_fixup()
-  cfi_cmdset_0001: Add some spaces for better code readability
-  cfi_cmdset_0001: Delete an unnecessary variable initialisation in do_write_oneword()
-  cfi_cmdset_0001: Use common error handling code in do_write_oneword()
-  Use kcalloc() in cfi_intelext_setup()
-  One function call and an unnecessary check less in cfi_intelext_setup()
-  Rename a jump label in cfi_intelext_setup()
-  Use kmalloc_array() in cfi_amdstd_setup()
-  One function call less in cfi_amdstd_setup() after error detection
-  Rename a jump label in cfi_amdstd_setup()
-  cfi_cmdset_0002: Add some spaces for better code readability
-  cfi_cmdset_0002: Delete an unnecessary variable initialisation in do_write_oneword()
-  cfi_cmdset_0002: Use common error handling code in do_write_oneword()
-  Use kcalloc() in cfi_ppb_unlock()
-  Use kmalloc_array() in cfi_staa_setup()
-  Use common error handling code in cfi_staa_setup()
-  cfi_cmdset_0020: Add some spaces for better code readability
+  This issue was detected by using the Coccinelle software.
 
- drivers/mtd/chips/cfi_cmdset_0001.c | 165 +++++++++++++++++++-----------------
- drivers/mtd/chips/cfi_cmdset_0002.c | 110 +++++++++++++-----------
- drivers/mtd/chips/cfi_cmdset_0020.c | 127 ++++++++++++++-------------
- 3 files changed, 214 insertions(+), 188 deletions(-)
+* Replace the specification of a data structure by a pointer dereference
+  to make the corresponding size determination a bit safer according to
+  the Linux coding style convention.
 
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 5e1b68cbcd0a..68227aa74d22 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -746,7 +746,9 @@ static int cfi_intelext_partition_fixup(struct mtd_info *mtd,
+ 		newcfi = kmalloc(sizeof(struct cfi_private) + numvirtchips * sizeof(struct flchip), GFP_KERNEL);
+ 		if (!newcfi)
+ 			return -ENOMEM;
+-		shared = kmalloc(sizeof(struct flchip_shared) * cfi->numchips, GFP_KERNEL);
++		shared = kmalloc_array(cfi->numchips,
++				       sizeof(*shared),
++				       GFP_KERNEL);
+ 		if (!shared) {
+ 			kfree(newcfi);
+ 			return -ENOMEM;
 -- 
 2.11.0
