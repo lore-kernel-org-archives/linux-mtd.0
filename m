@@ -1,20 +1,12 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cRIk3-0001EL-EO
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 13:15:10 +0000
-Date: Wed, 11 Jan 2017 14:14:40 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Peter Pan <peterpansjtu@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Kelvin Cheung
- <keguang.zhang@gmail.com>
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cRIqm-0005WV-PO
+ for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 13:22:02 +0000
+Received: by mail-wm0-x241.google.com with SMTP id r126so16442205wmr.3
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Jan 2017 05:21:40 -0800 (PST)
 Subject: Re: [PATCH v3 4/7] mtd: nand: raw: prefix conflicting names with
  nandc instead of nand
-Message-ID: <20170111141440.5f50f32d@bbrezillon>
-In-Reply-To: <71d834f0-ff23-4a0d-2554-83ebd4855999@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 References: <1479732328-18363-1-git-send-email-boris.brezillon@free-electrons.com>
  <1479732328-18363-5-git-send-email-boris.brezillon@free-electrons.com>
  <8fb86bb7-425a-3897-2d1d-7277e94918ec@gmail.com>
@@ -22,8 +14,20 @@ References: <1479732328-18363-1-git-send-email-boris.brezillon@free-electrons.co
  <47760b42-607c-bcae-18b9-3ede5773125a@gmail.com>
  <20170111133933.0752c003@bbrezillon>
  <71d834f0-ff23-4a0d-2554-83ebd4855999@gmail.com>
+ <20170111141440.5f50f32d@bbrezillon>
+Cc: Kelvin Cheung <keguang.zhang@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Peter Pan <peterpansjtu@gmail.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <ba22e6f4-1a85-6e76-2d03-3f5a6f0f581d@gmail.com>
+Date: Wed, 11 Jan 2017 14:21:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20170111141440.5f50f32d@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,41 +38,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 11 Jan 2017 14:08:02 +0100
-Marek Vasut <marek.vasut@gmail.com> wrote:
-
-> On 01/11/2017 01:39 PM, Boris Brezillon wrote:
-> > On Wed, 11 Jan 2017 13:09:09 +0100
-> > Marek Vasut <marek.vasut@gmail.com> wrote:
-> >   
-> >> On 01/11/2017 08:46 AM, Boris Brezillon wrote:  
-> >>> On Tue, 10 Jan 2017 20:08:23 +0100
-> >>> Marek Vasut <marek.vasut@gmail.com> wrote:
-> >>>     
-> >>>> On 11/21/2016 01:45 PM, Boris Brezillon wrote:    
-> >>>>> Some raw NAND function names conflict with names defined in nand.h.
-> >>>>> Prefix all those functions with nandc (for nand chip) instead of nand so
-> >>>>> we can include nand.h from rawnand.h
-> >>>>>
-> >>>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>      
-> >>>>
-> >>>> Nit, nand and nandc is quite confusing, why not call it nand_chip in full?
-> >>>>    
-> >>>
-> >>> Indeed, the name is confusing as hell, I just tried to keep it
-> >>> short but that's probably not a good idea.
-> >>> Maybe I should just prefix/suffix the new functions with nanddev instead
-> >>> of changing the existing ones. What do you think?    
-> >>
-> >> That'd be less intrusive, but tbh, if the name is descriptive enough, I
-> >> don't care either way. What does 'nanddev' imply though ? NAND device as
-> >> in physical device or chip or just a kernel device object ? :-)
-> >>  
-> > 
-> > Physical device, but it's also exposed as a kernel dev object by the
-> > MTD layer.  
+On 01/11/2017 02:14 PM, Boris Brezillon wrote:
+> On Wed, 11 Jan 2017 14:08:02 +0100
+> Marek Vasut <marek.vasut@gmail.com> wrote:
 > 
-> So I guess nandchip if it's supposed to be physical device then.
+>> On 01/11/2017 01:39 PM, Boris Brezillon wrote:
+>>> On Wed, 11 Jan 2017 13:09:09 +0100
+>>> Marek Vasut <marek.vasut@gmail.com> wrote:
+>>>   
+>>>> On 01/11/2017 08:46 AM, Boris Brezillon wrote:  
+>>>>> On Tue, 10 Jan 2017 20:08:23 +0100
+>>>>> Marek Vasut <marek.vasut@gmail.com> wrote:
+>>>>>     
+>>>>>> On 11/21/2016 01:45 PM, Boris Brezillon wrote:    
+>>>>>>> Some raw NAND function names conflict with names defined in nand.h.
+>>>>>>> Prefix all those functions with nandc (for nand chip) instead of nand so
+>>>>>>> we can include nand.h from rawnand.h
+>>>>>>>
+>>>>>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>      
+>>>>>>
+>>>>>> Nit, nand and nandc is quite confusing, why not call it nand_chip in full?
+>>>>>>    
+>>>>>
+>>>>> Indeed, the name is confusing as hell, I just tried to keep it
+>>>>> short but that's probably not a good idea.
+>>>>> Maybe I should just prefix/suffix the new functions with nanddev instead
+>>>>> of changing the existing ones. What do you think?    
+>>>>
+>>>> That'd be less intrusive, but tbh, if the name is descriptive enough, I
+>>>> don't care either way. What does 'nanddev' imply though ? NAND device as
+>>>> in physical device or chip or just a kernel device object ? :-)
+>>>>  
+>>>
+>>> Physical device, but it's also exposed as a kernel dev object by the
+>>> MTD layer.  
+>>
+>> So I guess nandchip if it's supposed to be physical device then.
+>>
+> 
+> You mean s/nandc/nandchip/, right? I'm fine with that.
 > 
 
-You mean s/nandc/nandchip/, right? I'm fine with that.
+Yes
+
+
+-- 
+Best regards,
+Marek Vasut
