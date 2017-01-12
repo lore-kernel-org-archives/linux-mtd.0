@@ -1,16 +1,21 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cRcdI-0006Fz-O1
- for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 10:29:32 +0000
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-To: linux-mtd@lists.infradead.org
-Cc: richard@nod.at, mac@mcrowe.com,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH 2/3] nandwrite: replace erase loop with mtd_erase_multi
-Date: Thu, 12 Jan 2017 11:28:27 +0100
-Message-Id: <20170112102828.13124-3-david.oberhollenzer@sigma-star.at>
-In-Reply-To: <20170112102828.13124-1-david.oberhollenzer@sigma-star.at>
-References: <20170112102828.13124-1-david.oberhollenzer@sigma-star.at>
+Received: from mout.web.de ([212.227.15.14])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cRchp-0004rW-0d
+ for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 10:34:07 +0000
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/3] MTD-FTL: Fine-tuning for two function implementations
+Message-ID: <4a5a265e-96c8-5fe6-487a-92a0d47a91da@users.sourceforge.net>
+Date: Thu, 12 Jan 2017 11:33:19 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
----
- nand-utils/nandwrite.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 12 Jan 2017 11:24:12 +0100
 
-diff --git a/nand-utils/nandwrite.c b/nand-utils/nandwrite.c
-index 998c68c..22c741d 100644
---- a/nand-utils/nandwrite.c
-+++ b/nand-utils/nandwrite.c
-@@ -540,7 +540,6 @@ int main(int argc, char * const argv[])
- 		}
- 
- 		if (ret) {
--			long long i;
- 			if (errno != EIO) {
- 				sys_errmsg("%s: MTD write failure", mtd_device);
- 				goto closeall;
-@@ -551,13 +550,13 @@ int main(int argc, char * const argv[])
- 
- 			fprintf(stderr, "Erasing failed write from %#08llx to %#08llx\n",
- 				blockstart, blockstart + ebsize_aligned - 1);
--			for (i = blockstart; i < blockstart + ebsize_aligned; i += mtd.eb_size) {
--				if (mtd_erase(mtd_desc, &mtd, fd, i / mtd.eb_size)) {
--					int errno_tmp = errno;
--					sys_errmsg("%s: MTD Erase failure", mtd_device);
--					if (errno_tmp != EIO)
--						goto closeall;
--				}
-+
-+			if (mtd_erase_multi(mtd_desc, &mtd, fd,
-+					blockstart / mtd.eb_size, blockalign)) {
-+				int errno_tmp = errno;
-+				sys_errmsg("%s: MTD Erase failure", mtd_device);
-+				if (errno_tmp != EIO)
-+					goto closeall;
- 			}
- 
- 			if (markbad) {
+A few update suggestions were taken into account
+from static source code analysis.
+
+Markus Elfring (3):
+  Use kmalloc_array() in build_maps()
+  Delete an error message for a failed memory allocation in ftl_add_mtd()
+  Improve another size determination in ftl_add_mtd()
+
+ drivers/mtd/ftl.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
+
 -- 
-2.10.2
+2.11.0
