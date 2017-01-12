@@ -1,16 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cRcdM-0004ez-UV
- for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 10:29:29 +0000
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-To: linux-mtd@lists.infradead.org
-Cc: richard@nod.at, mac@mcrowe.com,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH 3/3] nandwrite: fix/cleanup bad block skipping
-Date: Thu, 12 Jan 2017 11:28:28 +0100
-Message-Id: <20170112102828.13124-4-david.oberhollenzer@sigma-star.at>
-In-Reply-To: <20170112102828.13124-1-david.oberhollenzer@sigma-star.at>
-References: <20170112102828.13124-1-david.oberhollenzer@sigma-star.at>
+Received: from eusmtp01.atmel.com ([212.144.249.243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cRezT-00013S-BR
+ for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 13:00:31 +0000
+Subject: Re: [PATCH 1/3] mtd/ftl: Use kmalloc_array() in build_maps()
+To: SF Markus Elfring <elfring@users.sourceforge.net>,
+ <linux-mtd@lists.infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, "Marek
+ Vasut" <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
+References: <4a5a265e-96c8-5fe6-487a-92a0d47a91da@users.sourceforge.net>
+ <b379ba57-d926-2572-17ec-5bbe166b0e37@users.sourceforge.net>
+CC: LKML <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <4be87294-5e91-5ced-770f-8630ccab689a@atmel.com>
+Date: Thu, 12 Jan 2017 14:00:03 +0100
+MIME-Version: 1.0
+In-Reply-To: <b379ba57-d926-2572-17ec-5bbe166b0e37@users.sourceforge.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,118 +27,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-JFFS2 supports clustering erase blocks to virtual erase blocks.
-nandwrite supports this, but previously mixed up virtual and
-physical erase block numbers when checking for bad blocks.
+Le 12/01/2017 à 11:35, SF Markus Elfring a écrit :
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Thu, 12 Jan 2017 10:42:25 +0100
+> 
+> * Multiplications for the size determination of memory allocations
+>   indicated that array data structures should be processed.
+>   Thus use the corresponding function "kmalloc_array".
+> 
+>   This issue was detected by using the Coccinelle software.
+> 
+> * Replace the specification of data types by pointer dereferences
+>   to make the corresponding size determination a bit safer according to
+>   the Linux coding style convention.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  drivers/mtd/ftl.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
+> index 9fb3b0dcdac2..ef2f38b6a837 100644
+> --- a/drivers/mtd/ftl.c
+> +++ b/drivers/mtd/ftl.c
+> @@ -207,15 +207,14 @@ static int build_maps(partition_t *part)
+>      /* Set up erase unit maps */
+>      part->DataUnits = le16_to_cpu(part->header.NumEraseUnits) -
+>  	part->header.NumTransferUnits;
+> -    part->EUNInfo = kmalloc(part->DataUnits * sizeof(struct eun_info_t),
+> -			    GFP_KERNEL);
+> +	part->EUNInfo = kmalloc_array(part->DataUnits, sizeof(*part->EUNInfo),
+> +				      GFP_KERNEL);
 
-This patch adds a function for checking if a virtual erase block
-is bad and replaces the broken mtd_is_bad loop.
+The indentation has been changed and the new one looks wrong...
 
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
----
- nand-utils/nandwrite.c | 57 ++++++++++++++++++++++++++------------------------
- 1 file changed, 30 insertions(+), 27 deletions(-)
+I understand the original indentation, with spaces, doesn't follow the
+Linux coding style but at least it's consistent and readable.
 
-diff --git a/nand-utils/nandwrite.c b/nand-utils/nandwrite.c
-index 22c741d..c7a53d1 100644
---- a/nand-utils/nandwrite.c
-+++ b/nand-utils/nandwrite.c
-@@ -235,6 +235,20 @@ static void erase_buffer(void *buffer, size_t size)
- 		memset(buffer, kEraseByte, size);
- }
- 
-+static int is_virt_block_bad(struct mtd_dev_info *mtd, int fd,
-+				long long offset)
-+{
-+	int i, ret = 0;
-+
-+	for (i = 0; i < blockalign; ++i) {
-+		ret = mtd_is_bad(mtd, fd, offset / mtd->eb_size + i);
-+		if (ret)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
- /*
-  * Main program
-  */
-@@ -246,10 +260,8 @@ int main(int argc, char * const argv[])
- 	int ifd = -1;
- 	int pagelen;
- 	long long imglen = 0;
--	bool baderaseblock = false;
- 	long long blockstart = -1;
- 	struct mtd_dev_info mtd;
--	long long offs;
- 	int ret;
- 	bool failed = true;
- 	/* contains all the data read from the file so far for the current eraseblock */
-@@ -391,7 +403,6 @@ int main(int argc, char * const argv[])
- 		 */
- 		while (blockstart != (mtdoffset & (~ebsize_aligned + 1))) {
- 			blockstart = mtdoffset & (~ebsize_aligned + 1);
--			offs = blockstart;
- 
- 			/*
- 			 * if writebuf == filebuf, we are rewinding so we must
-@@ -403,40 +414,32 @@ int main(int argc, char * const argv[])
- 				writebuf = filebuf;
- 			}
- 
--			baderaseblock = false;
- 			if (!quiet)
- 				fprintf(stdout, "Writing data to block %lld at offset 0x%llx\n",
- 						 blockstart / ebsize_aligned, blockstart);
- 
--			/* Check all the blocks in an erase block for bad blocks */
- 			if (noskipbad)
- 				continue;
- 
--			do {
--				ret = mtd_is_bad(&mtd, fd, offs / ebsize_aligned);
--				if (ret < 0) {
--					sys_errmsg("%s: MTD get bad block failed", mtd_device);
--					goto closeall;
--				} else if (ret == 1) {
--					baderaseblock = true;
--					if (!quiet)
--						fprintf(stderr, "Bad block at %llx, %u block(s) "
--								"from %llx will be skipped\n",
--								offs, blockalign, blockstart);
--				}
-+			ret = is_virt_block_bad(&mtd, fd, blockstart);
- 
--				if (baderaseblock) {
--					mtdoffset = blockstart + ebsize_aligned;
--
--					if (mtdoffset > mtd.size) {
--						errmsg("too many bad blocks, cannot complete request");
--						goto closeall;
--					}
--				}
-+			if (ret < 0) {
-+				sys_errmsg("%s: MTD get bad block failed", mtd_device);
-+				goto closeall;
-+			} else if (ret == 1) {
-+				if (!quiet)
-+					fprintf(stderr,
-+						"Bad block at %llx, %u block(s) "
-+						"will be skipped\n",
-+						blockstart, blockalign);
- 
--				offs +=  ebsize_aligned / blockalign;
--			} while (offs < blockstart + ebsize_aligned);
-+				mtdoffset = blockstart + ebsize_aligned;
- 
-+				if (mtdoffset > mtd.size) {
-+					errmsg("too many bad blocks, cannot complete request");
-+					goto closeall;
-+				}
-+			}
- 		}
- 
- 		/* Read more data from the input if there isn't enough in the buffer */
--- 
-2.10.2
+Your patch uses a different indentation with tabs, which now mixes two
+different indentations: IMHO, this is worst than before.
+
+If you want to fix the indentation to make it compliant with the Linux
+coding style, do it on the whole file so every thing is uniform.
+
+Reviewing such dummy/automatic patches is a pure waste of time, so
+personally I think we should just ignore them.
+
+>      if (!part->EUNInfo)
+>  	    goto out;
+>      for (i = 0; i < part->DataUnits; i++)
+>  	part->EUNInfo[i].Offset = 0xffffffff;
+> -    part->XferInfo =
+> -	kmalloc(part->header.NumTransferUnits * sizeof(struct xfer_info_t),
+> -		GFP_KERNEL);
+> +	part->XferInfo = kmalloc_array(part->header.NumTransferUnits,
+> +				       sizeof(*part->XferInfo), GFP_KERNEL);
+
+Another indentation issue is introduced here too...
+
+>      if (!part->XferInfo)
+>  	    goto out_EUNInfo;
+>  
+> @@ -275,8 +274,8 @@ static int build_maps(partition_t *part)
+>      memset(part->VirtualBlockMap, 0xff, blocks * sizeof(uint32_t));
+>      part->BlocksPerUnit = (1 << header.EraseUnitSize) >> header.BlockSize;
+>  
+> -    part->bam_cache = kmalloc(part->BlocksPerUnit * sizeof(uint32_t),
+> -			      GFP_KERNEL);
+> +	part->bam_cache = kmalloc_array(part->BlocksPerUnit,
+> +					sizeof(*part->bam_cache), GFP_KERNEL);
+
++1
+>      if (!part->bam_cache)
+>  	    goto out_VirtualBlockMap;
+>  
+> 
