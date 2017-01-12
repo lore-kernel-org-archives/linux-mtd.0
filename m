@@ -1,15 +1,21 @@
-Received: from mail-it0-x230.google.com ([2607:f8b0:4001:c0b::230])
+Received: from mail-oi0-x230.google.com ([2607:f8b0:4003:c06::230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRm34-00086w-BT
- for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 20:32:40 +0000
-Received: by mail-it0-x230.google.com with SMTP id c7so19655237itd.1
- for <linux-mtd@lists.infradead.org>; Thu, 12 Jan 2017 12:32:17 -0800 (PST)
+ id 1cRmBU-0005Fg-JR
+ for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 20:41:23 +0000
+Received: by mail-oi0-x230.google.com with SMTP id m124so521377oif.1
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Jan 2017 12:40:58 -0800 (PST)
 MIME-Version: 1.0
-From: Travis Waters <waterstw@gmail.com>
-Date: Thu, 12 Jan 2017 13:32:16 -0700
-Message-ID: <CADRLR4HnkVM_W0W+Qtksb+ky+25xkqjhJRb40GyaL_wU8PCMyw@mail.gmail.com>
-Subject: Buildroot fastmap attaching
-To: linux-mtd@lists.infradead.org
+In-Reply-To: <1483519109-26279-1-git-send-email-peda@axentia.se>
+References: <1483519109-26279-1-git-send-email-peda@axentia.se>
+From: Kevin Hilman <khilman@baylibre.com>
+Date: Thu, 12 Jan 2017 12:40:57 -0800
+Message-ID: <CAOi56cXmDEcuhifgN4Dq2=wk9Hdwp3DwuhZhSEkBFvvMV8cC3g@mail.gmail.com>
+Subject: Re: [PATCH, REGRESSION] ubifs: fix unencrypted journal write
+To: Peter Rosin <peda@axentia.se>
+Cc: Richard Weinberger <richard@nod.at>, lkml <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ David Gstir <david@sigma-star.at>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,92 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-First-off, thanks for your work on UBI and the fastmap attaching -
-it's going to be an integral part of our system.
+On Wed, Jan 4, 2017 at 12:38 AM, Peter Rosin <peda@axentia.se> wrote:
+> Without this, I get the following on reboot:
+>
+> UBIFS error (ubi1:0 pid 703): ubifs_load_znode: bad target node (type 1) length (8240)
+> UBIFS error (ubi1:0 pid 703): ubifs_load_znode: have to be in range of 48-4144
+> UBIFS error (ubi1:0 pid 703): ubifs_load_znode: bad indexing node at LEB 13:11080, error 5
+>  magic          0x6101831
+>  crc            0xb1cb246f
+>  node_type      9 (indexing node)
+>  group_type     0 (no node group)
+>  sqnum          546
+>  len            128
+>  child_cnt      5
+>  level          0
+>  Branches:
+>  0: LEB 14:72088 len 161 key (133, inode)
+>  1: LEB 14:81120 len 160 key (134, inode)
+>  2: LEB 20:26624 len 8240 key (134, data, 0)
+>  3: LEB 14:81280 len 160 key (135, inode)
+>  4: LEB 20:34864 len 8240 key (135, data, 0)
+> UBIFS warning (ubi1:0 pid 703): ubifs_ro_mode.part.0: switched to read-only mode, error -22
+> CPU: 0 PID: 703 Comm: mount Not tainted 4.9.0-next-20161213+ #1197
+> Hardware name: Atmel SAMA5
+> [<c010d2ac>] (unwind_backtrace) from [<c010b250>] (show_stack+0x10/0x14)
+> [<c010b250>] (show_stack) from [<c024df94>] (ubifs_jnl_update+0x2e8/0x614)
+> [<c024df94>] (ubifs_jnl_update) from [<c0254bf8>] (ubifs_mkdir+0x160/0x204)
+> [<c0254bf8>] (ubifs_mkdir) from [<c01a6030>] (vfs_mkdir+0xb0/0x104)
+> [<c01a6030>] (vfs_mkdir) from [<c0286070>] (ovl_create_real+0x118/0x248)
+> [<c0286070>] (ovl_create_real) from [<c0283ed4>] (ovl_fill_super+0x994/0xaf4)
+> [<c0283ed4>] (ovl_fill_super) from [<c019c394>] (mount_nodev+0x44/0x9c)
+> [<c019c394>] (mount_nodev) from [<c019c4ac>] (mount_fs+0x14/0xa4)
+> [<c019c4ac>] (mount_fs) from [<c01b5338>] (vfs_kern_mount+0x4c/0xd4)
+> [<c01b5338>] (vfs_kern_mount) from [<c01b6b80>] (do_mount+0x154/0xac8)
+> [<c01b6b80>] (do_mount) from [<c01b782c>] (SyS_mount+0x74/0x9c)
+> [<c01b782c>] (SyS_mount) from [<c0107f80>] (ret_fast_syscall+0x0/0x3c)
+> UBIFS error (ubi1:0 pid 703): ubifs_mkdir: cannot create directory, error -22
+> overlayfs: failed to create directory /mnt/ovl/work/work (errno: 22); mounting read-only
+>
+> Fixes: 7799953b34d1 ("ubifs: Implement encrypt/decrypt for all IO")
+> Signed-off-by: Peter Rosin <peda@axentia.se>
 
+I just ran into this on v4.10-rc3, and this patch fixes the problem.
 
+Tested-by: Kevin Hilman <khilman@baylibre.com>
 
-I am working with a buildroot version of linux sitting on a 3.10.58
-kernel for an embedded SPARC device.  I'm working on an MTD driver for
-our FLASH device, and we are working to get UBIFS mounting on top of
-that.  The FLASH is a 16GB part, so we are targeting fastmap.
+Thanks!
 
+Kevin
 
-
-I've been running into stability issues when attaching with fastmap -
-the attaching fails with an occasional SPARC trap when counting the
-number of available PEBS:
-
-
-
-Unable to handle kernel NULL pointer dereference
-
-tsk->{mm,active_mm}->context = 00000077
-
-tsk->{mm,active_mm}->pgd = fc012400
-
-              \|/ ____ \|/
-
-              "@'/ ,. \`@"
-
-              /_| \__/ |_\
-
-                 \__U_/
-
-ubiattach(122): Oops [#1]
-
-CPU: 0 PID: 122 Comm: ubiattach Tainted: G           O
-3.10.58-00020-gc9dee3c-dirty #747
-
-task: fbd6c420 ti: fbe4e000 task.ti: fbe4e000
-
-PSR: f31000c6 PC: f0405de4 NPC: f0405de8 Y: 0000001c    Tainted: G           O
-
-PC: <count_fastmap_pebs+0x70/0x120>
-
-%G: 00000000 ffffffe0  00001ea2 fbd6a26c  00000094 f0f574b0  fbe4e000 000024e8
-
-%O: 0000000a 00000000  00000000 fbc004e0  f38000e6 fbc02e60  fbe4fba8 f0405dbc
-
-RPC: <count_fastmap_pebs+0x48/0x120>
-
-%L: fbf14000 00000000  fbe55000 0000000c  f050a398 00000000  0000000a fbf70000
-
-%I: fbd6a260 fbd6a260  fe9e9578 00000019  fbe4fcb0 fbe4fcc8  fbe4fc10
-f03186e0 Disabling lock debugging due to kernel taint
-
-Caller[f03186e0]: ubi_scan_fastmap+0x1494/0x18a0
-
-Caller[f0315af4]: ubi_attach+0x278/0x488
-
-Caller[f0306b98]: ubi_attach_mtd_dev+0xa28/0x118c
-
-Caller[f03088d8]: ctrl_cdev_ioctl+0x14c/0x1e4
-
-Caller[f00b1fbc]: do_vfs_ioctl+0x2a8/0x6b8
-
-Caller[f00b23f4]: SyS_ioctl+0x28/0x54
-
-Caller[f0007ed0]: do_syscall+0x34/0x40
-
-Caller[000117e0]: 0x117e0
-
-Instruction DUMP: 02800009  01000000  c407bffc <c2006020> 8400a001
-82007fe0  c427bffc  10bffff8  84006020 Killed
-
-
-
-It appears that the list is somehow getting corrupted.  I haven't been
-able to track down what would cause the corruption, so I'm hoping you
-have some insight.
-
-
-
-I'm also interested in patching the UBI/FASTMAP system to something
-more recent.  It looks like the latest buildroot has is a couple years
-old.  Could you help me identify what patches I need coming from the
-3.10 kernel?
-
-
-
-Thank you!
+> ---
+>  fs/ubifs/journal.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+> index a459211a1c21..a7932dcb2fc7 100644
+> --- a/fs/ubifs/journal.c
+> +++ b/fs/ubifs/journal.c
+> @@ -744,6 +744,7 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+>
+>         } else {
+>                 data->compr_size = 0;
+> +               out_len = compr_len;
+>         }
+>
+>         dlen = UBIFS_DATA_NODE_SZ + out_len;
+> --
+> 2.1.4
+>
