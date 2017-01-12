@@ -1,20 +1,10 @@
-Received: from mail-lf0-x235.google.com ([2a00:1450:4010:c07::235])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRhgs-0007xR-PV
- for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 15:53:32 +0000
-Received: by mail-lf0-x235.google.com with SMTP id v186so15933406lfa.1
- for <linux-mtd@lists.infradead.org>; Thu, 12 Jan 2017 07:53:05 -0800 (PST)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH v2 7/7] uapi: export all headers under uapi directories
-References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
- <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
- <1483695839-18660-8-git-send-email-nicolas.dichtel@6wind.com>
- <20170109125638.GA15506@infradead.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: arnd@arndb.de, mmarek@suse.com, linux-kbuild@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org,
+Date: Thu, 12 Jan 2017 17:28:13 +0100 (CET)
+From: Jan Engelhardt <jengelh@inai.de>
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+cc: Christoph Hellwig <hch@infradead.org>, arnd@arndb.de, mmarek@suse.com,
+ linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org,
  linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp,
  linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
@@ -33,13 +23,17 @@ Cc: arnd@arndb.de, mmarek@suse.com, linux-kbuild@vger.kernel.org,
  fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
  linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
  airlied@linux.ie, davem@davemloft.net
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Message-ID: <464a1323-4450-e563-ff59-9e6d57b75959@6wind.com>
-Date: Thu, 12 Jan 2017 16:52:57 +0100
+Subject: Re: [PATCH v2 7/7] uapi: export all headers under uapi directories
+In-Reply-To: <464a1323-4450-e563-ff59-9e6d57b75959@6wind.com>
+Message-ID: <alpine.LSU.2.20.1701121727180.19188@erq.vanv.qr>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
+ <1483695839-18660-8-git-send-email-nicolas.dichtel@6wind.com>
+ <20170109125638.GA15506@infradead.org>
+ <464a1323-4450-e563-ff59-9e6d57b75959@6wind.com>
 MIME-Version: 1.0
-In-Reply-To: <20170109125638.GA15506@infradead.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -49,36 +43,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 09/01/2017 à 13:56, Christoph Hellwig a écrit :
-> On Fri, Jan 06, 2017 at 10:43:59AM +0100, Nicolas Dichtel wrote:
->> Regularly, when a new header is created in include/uapi/, the developer
->> forgets to add it in the corresponding Kbuild file. This error is usually
->> detected after the release is out.
->>
->> In fact, all headers under uapi directories should be exported, thus it's
->> useless to have an exhaustive list.
->>
->> After this patch, the following files, which were not exported, are now
->> exported (with make headers_install_all):
-> 
-> ... snip ...
-> 
->> linux/genwqe/.install
->> linux/genwqe/..install.cmd
->> linux/cifs/.install
->> linux/cifs/..install.cmd
-> 
-> I'm pretty sure these should not be exported!
-> 
-Those files are created in every directory:
-$ find usr/include/ -name '\.\.install.cmd' | wc -l
-71
-$ find usr/include/ -name '\.install' | wc -l
-71
+On Thursday 2017-01-12 16:52, Nicolas Dichtel wrote:
 
-See also
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/scripts/Makefile.headersinst#n32
+>Le 09/01/2017 Ã  13:56, Christoph Hellwig a Ã©crit :
+>> On Fri, Jan 06, 2017 at 10:43:59AM +0100, Nicolas Dichtel wrote:
+>>> Regularly, when a new header is created in include/uapi/, the developer
+>>> forgets to add it in the corresponding Kbuild file. This error is usually
+>>> detected after the release is out.
+>>>
+>>> In fact, all headers under uapi directories should be exported, thus it's
+>>> useless to have an exhaustive list.
+>>>
+>>> After this patch, the following files, which were not exported, are now
+>>> exported (with make headers_install_all):
+>> 
+>> ... snip ...
+>> 
+>>> linux/genwqe/.install
+>>> linux/genwqe/..install.cmd
+>>> linux/cifs/.install
+>>> linux/cifs/..install.cmd
+>> 
+>> I'm pretty sure these should not be exported!
+>> 
+>Those files are created in every directory:
+>$ find usr/include/ -name '\.\.install.cmd' | wc -l
+>71
 
+That still does not mean they should be exported.
 
-Thank you,
-Nicolas
+Anything but headers (and directories as a skeleton structure) is maximally suspicious.
