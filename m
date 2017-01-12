@@ -1,27 +1,16 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRbgx-00016b-6t
- for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 09:29:09 +0000
-Date: Thu, 12 Jan 2017 12:27:44 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Denys Vlasenko <dvlasenk@redhat.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 18/18] mtd-cfi_cmdset_0020: Add some spaces for better
- code readability
-Message-ID: <20170112092744.GB15314@mwanda>
-References: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
- <0e5ee358-fb62-5d0b-81cf-d73a1a47f6d4@users.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e5ee358-fb62-5d0b-81cf-d73a1a47f6d4@users.sourceforge.net>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cRcdI-0006ER-NB
+ for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 10:29:31 +0000
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Cc: richard@nod.at, mac@mcrowe.com,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH 1/3] nandwrite: add stricter sanity checking for blockalign
+Date: Thu, 12 Jan 2017 11:28:26 +0100
+Message-Id: <20170112102828.13124-2-david.oberhollenzer@sigma-star.at>
+In-Reply-To: <20170112102828.13124-1-david.oberhollenzer@sigma-star.at>
+References: <20170112102828.13124-1-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,12 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 11, 2017 at 09:55:20PM +0100, SF Markus Elfring wrote:
-> -	timeo = jiffies + (HZ*2);
-> +	timeo = jiffies + HZ * 2;
+This patch makes sure that a virtual erase block is always
+composed of a postivie number of erase blocks (i.e. 1 or more)
+and enforces the block alignment to be a power of two as
+suggested by the help text and assumed throughout the program.
 
-You've done this a couple times already, but these parenthesis are there
-to make the code more readable don't delete them.
+Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+---
+ nand-utils/nandwrite.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-regards,
-dan carpenter
+diff --git a/nand-utils/nandwrite.c b/nand-utils/nandwrite.c
+index 9602a6e..998c68c 100644
+--- a/nand-utils/nandwrite.c
++++ b/nand-utils/nandwrite.c
+@@ -191,9 +191,13 @@ static void process_options(int argc, char * const argv[])
+ 		errmsg_die("Can't specify negative device offset with option"
+ 				" -s: %lld", mtdoffset);
+ 
+-	if (blockalign < 0)
+-		errmsg_die("Can't specify negative blockalign with option -b:"
+-				" %d", blockalign);
++	if (blockalign <= 0)
++		errmsg_die("Can't specify negative or zero blockalign with "
++				"option -b: %d", blockalign);
++
++	if (!is_power_of_2(blockalign))
++		errmsg_die("Can't specify a non-power-of-two blockalign with "
++				"option -b: %d", blockalign);
+ 
+ 	if (autoplace && noecc)
+ 		errmsg_die("Autoplacement and no-ECC are mutually exclusive");
+-- 
+2.10.2
