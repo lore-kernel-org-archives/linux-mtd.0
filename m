@@ -1,28 +1,27 @@
-Received: from mail-wj0-x241.google.com ([2a00:1450:400c:c01::241])
+Received: from userp1040.oracle.com ([156.151.31.81])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRQxo-0000tD-Gh
- for linux-mtd@lists.infradead.org; Wed, 11 Jan 2017 22:01:51 +0000
-Received: by mail-wj0-x241.google.com with SMTP id dh1so108034wjb.3
- for <linux-mtd@lists.infradead.org>; Wed, 11 Jan 2017 14:01:28 -0800 (PST)
-From: Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH 01/18] mtd-cfi_cmdset_0001: Use kmalloc_array() in
- cfi_intelext_partition_fixup()
-To: SF Markus Elfring <elfring@users.sourceforge.net>,
- linux-mtd@lists.infradead.org,
+ id 1cRbYq-0007YG-Bn
+ for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 09:20:47 +0000
+Date: Thu, 12 Jan 2017 12:19:26 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Cc: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>, Denys Vlasenko <dvlasenk@redhat.com>,
- Richard Weinberger <richard@nod.at>
+ David Woodhouse <dwmw2@infradead.org>,
+ Denys Vlasenko <dvlasenk@redhat.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 03/18] mtd-cfi_cmdset_0001: Add some spaces for better
+ code readability
+Message-ID: <20170112091926.GA15314@mwanda>
 References: <71189baa-8780-b80a-0b4d-9dae74763ba3@users.sourceforge.net>
- <f74ef6ca-7159-ba15-b7a3-0a45e522729f@users.sourceforge.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-Message-ID: <31f8448f-aba7-965a-e924-e1ec63eecbaf@gmail.com>
-Date: Wed, 11 Jan 2017 22:59:52 +0100
+ <a6f28358-3f8d-180e-9a59-b5ee276cb7d9@users.sourceforge.net>
 MIME-Version: 1.0
-In-Reply-To: <f74ef6ca-7159-ba15-b7a3-0a45e522729f@users.sourceforge.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a6f28358-3f8d-180e-9a59-b5ee276cb7d9@users.sourceforge.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,47 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/11/2017 09:35 PM, SF Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Tue, 10 Jan 2017 18:48:34 +0100
-> 
-> * A multiplication for the size determination of a memory allocation
->   indicated that an array data structure should be processed.
->   Thus use the corresponding function "kmalloc_array".
-> 
->   This issue was detected by using the Coccinelle software.
-> 
-> * Replace the specification of a data structure by a pointer dereference
->   to make the corresponding size determination a bit safer according to
->   the Linux coding style convention.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0001.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 5e1b68cbcd0a..68227aa74d22 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -746,7 +746,9 @@ static int cfi_intelext_partition_fixup(struct mtd_info *mtd,
->  		newcfi = kmalloc(sizeof(struct cfi_private) + numvirtchips * sizeof(struct flchip), GFP_KERNEL);
->  		if (!newcfi)
->  			return -ENOMEM;
-> -		shared = kmalloc(sizeof(struct flchip_shared) * cfi->numchips, GFP_KERNEL);
-> +		shared = kmalloc_array(cfi->numchips,
-> +				       sizeof(*shared),
-> +				       GFP_KERNEL);
+On Wed, Jan 11, 2017 at 09:38:18PM +0100, SF Markus Elfring wrote:
+> -		for (i=0; i<cfi->cfiq->NumEraseRegions; i++)
+> -			for (j=0; j<cfi->numchips; j++)
+> -				kfree(mtd->eraseregions[(j*cfi->cfiq->NumEraseRegions)+i].lockmap);
+> +		for (i = 0; i < cfi->cfiq->NumEraseRegions; i++)
+> +			for (j = 0; j < cfi->numchips; j++)
+> +				kfree(mtd->eraseregions[j
+> +							* cfi->cfiq
+> +							  ->NumEraseRegions
+> +							+ i].lockmap);
 
-You can keep this on a single line, no need for the linebreak. It
-doesn't violate the 80-chars per line rule IMO.
+No.
 
->  		if (!shared) {
->  			kfree(newcfi);
->  			return -ENOMEM;
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+regards,
+dan carpenter
