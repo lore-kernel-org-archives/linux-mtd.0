@@ -1,45 +1,22 @@
-Received: from mail-lf0-x22a.google.com ([2a00:1450:4010:c07::22a])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRiIp-0000yo-QW
- for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 16:32:40 +0000
-Received: by mail-lf0-x22a.google.com with SMTP id z134so13410448lff.3
- for <linux-mtd@lists.infradead.org>; Thu, 12 Jan 2017 08:32:18 -0800 (PST)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH v2 7/7] uapi: export all headers under uapi directories
-References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
- <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
- <1483695839-18660-8-git-send-email-nicolas.dichtel@6wind.com>
- <20170109125638.GA15506@infradead.org>
- <464a1323-4450-e563-ff59-9e6d57b75959@6wind.com>
- <alpine.LSU.2.20.1701121727180.19188@erq.vanv.qr>
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: Christoph Hellwig <hch@infradead.org>, arnd@arndb.de, mmarek@suse.com,
- linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org,
- linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp,
- linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org,
- linux-mips@linux-mips.org, linux-am33-list@redhat.com,
- nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
- linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
- netdev@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mmc@vger.kernel.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, linux-nfs@vger.kernel.org,
- linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
- fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
- linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
- airlied@linux.ie, davem@davemloft.net
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Message-ID: <9d68af8a-a609-d7b1-58a9-f1155313b077@6wind.com>
-Date: Thu, 12 Jan 2017 17:32:09 +0100
+Received: from mout.web.de ([212.227.17.12])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cRias-0006Bd-9G
+ for linux-mtd@lists.infradead.org; Thu, 12 Jan 2017 16:51:20 +0000
+Subject: Re: mtd/ftl: Use kmalloc_array() in build_maps()
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+References: <4a5a265e-96c8-5fe6-487a-92a0d47a91da@users.sourceforge.net>
+ <b379ba57-d926-2572-17ec-5bbe166b0e37@users.sourceforge.net>
+ <4be87294-5e91-5ced-770f-8630ccab689a@atmel.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, LKML <linux-kernel@vger.kernel.org>,
+ kernel-janitors@vger.kernel.org
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Message-ID: <e2e1d30e-b81f-d034-b266-37fec409350d@users.sourceforge.net>
+Date: Thu, 12 Jan 2017 17:50:36 +0100
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.20.1701121727180.19188@erq.vanv.qr>
+In-Reply-To: <4be87294-5e91-5ced-770f-8630ccab689a@atmel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -51,41 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 12/01/2017 à 17:28, Jan Engelhardt a écrit :
-> On Thursday 2017-01-12 16:52, Nicolas Dichtel wrote:
-> 
->> Le 09/01/2017 à 13:56, Christoph Hellwig a écrit :
->>> On Fri, Jan 06, 2017 at 10:43:59AM +0100, Nicolas Dichtel wrote:
->>>> Regularly, when a new header is created in include/uapi/, the developer
->>>> forgets to add it in the corresponding Kbuild file. This error is usually
->>>> detected after the release is out.
->>>>
->>>> In fact, all headers under uapi directories should be exported, thus it's
->>>> useless to have an exhaustive list.
->>>>
->>>> After this patch, the following files, which were not exported, are now
->>>> exported (with make headers_install_all):
->>>
->>> ... snip ...
->>>
->>>> linux/genwqe/.install
->>>> linux/genwqe/..install.cmd
->>>> linux/cifs/.install
->>>> linux/cifs/..install.cmd
->>>
->>> I'm pretty sure these should not be exported!
->>>
->> Those files are created in every directory:
->> $ find usr/include/ -name '\.\.install.cmd' | wc -l
->> 71
-> 
-> That still does not mean they should be exported.
-> 
-> Anything but headers (and directories as a skeleton structure) is maximally suspicious.
-> 
-What I was trying to say is that I export those directories like other are.
-Removing those files is not related to that series.
+> The indentation has been changed and the new one looks wrong...
 
+The source code formatting contained various open issues before already.
+
+
+> If you want to fix the indentation to make it compliant with the Linux
+> coding style, do it on the whole file so every thing is uniform.
+
+Such a development task is too much for me today.
+
+
+> Reviewing such dummy/automatic patches is a pure waste of time,
+> so personally I think we should just ignore them.
+
+How much do you care for the usage of a function like “kmalloc_array”?
 
 Regards,
-Nicolas
+Markus
