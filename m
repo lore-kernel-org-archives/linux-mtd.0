@@ -1,44 +1,26 @@
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cS4PY-0002rt-Lk
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 16:09:08 +0000
-Received: by mail-wm0-x236.google.com with SMTP id r144so77386121wme.1
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2017 08:08:44 -0800 (PST)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH v3 4/8] x86: stop exporting msr-index.h to userland
-References: <1484304406-10820-5-git-send-email-nicolas.dichtel@6wind.com>
- <3131144.4Ej3KFWRbz@wuerfel>
- <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
- <25483.1484322229@warthog.procyon.org.uk>
-To: David Howells <dhowells@redhat.com>
-Cc: arnd@arndb.de, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org,
- linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp,
- linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
- linux-m68k@vger.kernel.org, linux-metag@vger.kernel.org,
- linux-mips@linux-mips.org, linux-am33-list@redhat.com,
- nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
- linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
- netdev@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mmc@vger.kernel.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, linux-nfs@vger.kernel.org,
- linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
- fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
- linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
- linux@armlinux.org.uk, Borislav Petkov <bp@alien8.de>
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Message-ID: <dd826bc7-e1ef-be29-e0c3-692afb346036@6wind.com>
-Date: Fri, 13 Jan 2017 17:08:34 +0100
+Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
+To: Matthias Brugger <matthias.bgg@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Guochun Mao <guochun.mao@mediatek.com>
+References: <1484291609-20195-1-git-send-email-guochun.mao@mediatek.com>
+ <1484291609-20195-3-git-send-email-guochun.mao@mediatek.com>
+ <20170113151747.6bc85245@bbrezillon>
+ <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
+Date: Fri, 13 Jan 2017 17:13:55 +0100
 MIME-Version: 1.0
-In-Reply-To: <25483.1484322229@warthog.procyon.org.uk>
+In-Reply-To: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,17 +30,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 13/01/2017 à 16:43, David Howells a écrit :
->> -header-y += msr-index.h
+On 01/13/2017 04:12 PM, Matthias Brugger wrote:
 > 
-> I see it on my desktop as /usr/include/asm/msr-index.h and it's been there at
-> least four years - and as such it's part of the UAPI.  I don't think you can
-> remove it unless you can guarantee there are no userspace users.
-I keep it in the v2 of the series, but the maintainer, Borislav Petkov, asks me
-to un-export it.
+> 
+> On 13/01/17 15:17, Boris Brezillon wrote:
+>> On Fri, 13 Jan 2017 15:13:29 +0800
+>> Guochun Mao <guochun.mao@mediatek.com> wrote:
+>>
+>>> Add Mediatek nor flash node.
+>>>
+>>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+>>> ---
+>>>  arch/arm/boot/dts/mt2701-evb.dts |   25 +++++++++++++++++++++++++
+>>>  arch/arm/boot/dts/mt2701.dtsi    |   12 ++++++++++++
+>>>  2 files changed, 37 insertions(+)
+>>>
+>>> diff --git a/arch/arm/boot/dts/mt2701-evb.dts
+>>> b/arch/arm/boot/dts/mt2701-evb.dts
+>>> index 082ca88..85e5ae8 100644
+>>> --- a/arch/arm/boot/dts/mt2701-evb.dts
+>>> +++ b/arch/arm/boot/dts/mt2701-evb.dts
+>>> @@ -24,6 +24,31 @@
+>>>      };
+>>>  };
+>>>
+>>> +&nor_flash {
+>>> +    pinctrl-names = "default";
+>>> +    pinctrl-0 = <&nor_pins_default>;
+>>> +    status = "okay";
+>>> +    flash@0 {
+>>> +        compatible = "jedec,spi-nor";
+>>> +        reg = <0>;
+>>> +    };
+>>> +};
+>>> +
+>>> +&pio {
+>>> +    nor_pins_default: nor {
+>>> +        pins1 {
+>>> +            pinmux = <MT2701_PIN_240_EXT_XCS__FUNC_EXT_XCS>,
+>>> +                 <MT2701_PIN_241_EXT_SCK__FUNC_EXT_SCK>,
+>>> +                 <MT2701_PIN_239_EXT_SDIO0__FUNC_EXT_SDIO0>,
+>>> +                 <MT2701_PIN_238_EXT_SDIO1__FUNC_EXT_SDIO1>,
+>>> +                 <MT2701_PIN_237_EXT_SDIO2__FUNC_EXT_SDIO2>,
+>>> +                 <MT2701_PIN_236_EXT_SDIO3__FUNC_EXT_SDIO3>;
+>>> +            drive-strength = <MTK_DRIVE_4mA>;
+>>> +            bias-pull-up;
+>>> +        };
+>>> +    };
+>>> +};
+>>> +
+>>>  &uart0 {
+>>>      status = "okay";
+>>>  };
+>>> diff --git a/arch/arm/boot/dts/mt2701.dtsi
+>>> b/arch/arm/boot/dts/mt2701.dtsi
+>>> index bdf8954..1eefce4 100644
+>>> --- a/arch/arm/boot/dts/mt2701.dtsi
+>>> +++ b/arch/arm/boot/dts/mt2701.dtsi
+>>> @@ -227,6 +227,18 @@
+>>>          status = "disabled";
+>>>      };
+>>>
+>>> +    nor_flash: spi@11014000 {
+>>> +        compatible = "mediatek,mt2701-nor",
+>>> +                 "mediatek,mt8173-nor";
+>>
+>> Why define both here? Is "mediatek,mt8173-nor" really providing a
+>> subset of the features supported by "mediatek,mt2701-nor"?
+>>
+> 
+> I think even if the ip block is the same, we should provide both
+> bindings, just in case in the future we find out that mt2701 has some
+> hidden bug, feature or bug-feature. This way even if we update the
+> driver, we stay compatible with older device tree blobs in the wild.
+> 
+> We can drop the mt2701-nor in the bindings definition if you want.
 
-I will follow the maintainer decision.
+This exactly. We should have a DT compat in the form:
+compatible = "vendor,<soc>-block", "vendor,<oldest-compat-soc>-block";
+Then if we find a problem in the future, we can match on the
+"vendor,<soc>-block" and still support the old DTs.
 
+The question is, does the "vendor,<soc>-block" go into the binding
+document as well or do we only have "vendor,<oldest-compat-soc>-block"
+there ?
 
-Regards,
-Nicolas
+-- 
+Best regards,
+Marek Vasut
