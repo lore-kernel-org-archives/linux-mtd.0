@@ -1,19 +1,26 @@
-Received: from avasout05.plus.net ([84.93.230.250])
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cS67g-0006QY-1y
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 17:58:47 +0000
-Date: Fri, 13 Jan 2017 17:58:15 +0000
-From: Mike Crowe <mac@mcrowe.com>
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org, richard@nod.at
-Subject: Re: [PATCH 3/3] nandwrite: fix/cleanup bad block skipping
-Message-ID: <20170113175815.GA27998@mcrowe.com>
-References: <20170112102828.13124-1-david.oberhollenzer@sigma-star.at>
- <20170112102828.13124-4-david.oberhollenzer@sigma-star.at>
+ id 1cS6oT-0002lS-29
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 18:42:59 +0000
+Received: by mail-io0-x242.google.com with SMTP id m98so6437223iod.2
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2017 10:42:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170112102828.13124-4-david.oberhollenzer@sigma-star.at>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20170113093509.25737-1-u.kleine-koenig@pengutronix.de>
+References: <20170113093509.25737-1-u.kleine-koenig@pengutronix.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 13 Jan 2017 19:42:34 +0100
+Message-ID: <CAMuHMdXJi9hJrY0ZV37gejp2XC6fkuLF7i7BqX4CUYTB7j_q1A@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: don't claim mr25h40 to be JEDEC compatible
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>,
+ Jagan Teki <jagan@openedev.com>,
+ Marek Vasut <marex@denx.de>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <kernel@pengutronix.de>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,135 +30,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 12 January 2017 at 11:28:28 +0100, David Oberhollenzer wrote:
-> JFFS2 supports clustering erase blocks to virtual erase blocks.
-> nandwrite supports this, but previously mixed up virtual and
-> physical erase block numbers when checking for bad blocks.
-> 
-> This patch adds a function for checking if a virtual erase block
-> is bad and replaces the broken mtd_is_bad loop.
-> 
-> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Hi Uwe,
+
+CC devicetree
+
+On Fri, Jan 13, 2017 at 10:35 AM, Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+> Commit edd0c8f4932d ("mtd: spi-nor: Add support for mr25h40") made it
+> possible to use a mr25h40 by writing
+>
+>         compatible =3D "mr25h40", "jedec,spi-nor";
+
+No vendor prefix?
+
+>
+> in a device tree. This chip however isn't JEDEC compatible however, so
+> change the chip string and add a compatible entry to bless
+>
+>         compatible =3D "mr25h40-nonjedec";
+>
+> as the right way.
+
+This whole "-nonjedec" business looks wrong to me.
+If the device is called "mr25h40", its compatible value should be
+"everspin,mr25h40". Adding some (in)compatibility indicator violates the
+spirit of compatible values, IMHO.
+
+> Fixes: edd0c8f4932d ("mtd: spi-nor: Add support for mr25h40")
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 > ---
->  nand-utils/nandwrite.c | 57 ++++++++++++++++++++++++++------------------------
->  1 file changed, 30 insertions(+), 27 deletions(-)
-> 
-> diff --git a/nand-utils/nandwrite.c b/nand-utils/nandwrite.c
-> index 22c741d..c7a53d1 100644
-> --- a/nand-utils/nandwrite.c
-> +++ b/nand-utils/nandwrite.c
-> @@ -235,6 +235,20 @@ static void erase_buffer(void *buffer, size_t size)
->  		memset(buffer, kEraseByte, size);
->  }
->  
-> +static int is_virt_block_bad(struct mtd_dev_info *mtd, int fd,
-> +				long long offset)
-> +{
-> +	int i, ret = 0;
-> +
-> +	for (i = 0; i < blockalign; ++i) {
-> +		ret = mtd_is_bad(mtd, fd, offset / mtd->eb_size + i);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  /*
->   * Main program
->   */
-> @@ -246,10 +260,8 @@ int main(int argc, char * const argv[])
->  	int ifd = -1;
->  	int pagelen;
->  	long long imglen = 0;
-> -	bool baderaseblock = false;
->  	long long blockstart = -1;
->  	struct mtd_dev_info mtd;
-> -	long long offs;
->  	int ret;
->  	bool failed = true;
->  	/* contains all the data read from the file so far for the current eraseblock */
-> @@ -391,7 +403,6 @@ int main(int argc, char * const argv[])
->  		 */
->  		while (blockstart != (mtdoffset & (~ebsize_aligned + 1))) {
->  			blockstart = mtdoffset & (~ebsize_aligned + 1);
-> -			offs = blockstart;
->  
->  			/*
->  			 * if writebuf == filebuf, we are rewinding so we must
-> @@ -403,40 +414,32 @@ int main(int argc, char * const argv[])
->  				writebuf = filebuf;
->  			}
->  
-> -			baderaseblock = false;
->  			if (!quiet)
->  				fprintf(stdout, "Writing data to block %lld at offset 0x%llx\n",
->  						 blockstart / ebsize_aligned, blockstart);
->  
-> -			/* Check all the blocks in an erase block for bad blocks */
->  			if (noskipbad)
->  				continue;
->  
-> -			do {
-> -				ret = mtd_is_bad(&mtd, fd, offs / ebsize_aligned);
-> -				if (ret < 0) {
-> -					sys_errmsg("%s: MTD get bad block failed", mtd_device);
-> -					goto closeall;
-> -				} else if (ret == 1) {
-> -					baderaseblock = true;
-> -					if (!quiet)
-> -						fprintf(stderr, "Bad block at %llx, %u block(s) "
-> -								"from %llx will be skipped\n",
-> -								offs, blockalign, blockstart);
-> -				}
-> +			ret = is_virt_block_bad(&mtd, fd, blockstart);
->  
-> -				if (baderaseblock) {
-> -					mtdoffset = blockstart + ebsize_aligned;
-> -
-> -					if (mtdoffset > mtd.size) {
-> -						errmsg("too many bad blocks, cannot complete request");
-> -						goto closeall;
-> -					}
-> -				}
-> +			if (ret < 0) {
-> +				sys_errmsg("%s: MTD get bad block failed", mtd_device);
-> +				goto closeall;
-> +			} else if (ret == 1) {
-> +				if (!quiet)
-> +					fprintf(stderr,
-> +						"Bad block at %llx, %u block(s) "
-> +						"will be skipped\n",
-> +						blockstart, blockalign);
->  
-> -				offs +=  ebsize_aligned / blockalign;
-> -			} while (offs < blockstart + ebsize_aligned);
-> +				mtdoffset = blockstart + ebsize_aligned;
->  
-> +				if (mtdoffset > mtd.size) {
-> +					errmsg("too many bad blocks, cannot complete request");
-> +					goto closeall;
-> +				}
-> +			}
->  		}
->  
->  		/* Read more data from the input if there isn't enough in the buffer */
-> -- 
-> 2.10.2
+>  drivers/mtd/devices/m25p80.c  | 1 +
+>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 9cf7fcd28034..bd0c335692d2 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -304,6 +304,7 @@ static const struct spi_device_id m25p_ids[] =3D {
+>         {"m25p05-nonjedec"},    {"m25p10-nonjedec"},    {"m25p20-nonjedec=
+"},
+>         {"m25p40-nonjedec"},    {"m25p80-nonjedec"},    {"m25p16-nonjedec=
+"},
+>         {"m25p32-nonjedec"},    {"m25p64-nonjedec"},    {"m25p128-nonjede=
+c"},
+> +       {"mr25h40-nonjedec"},
+>
+>         { },
+>  };
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.=
+c
+> index bbdbbd763c9d..3a8042fe44f0 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -825,7 +825,7 @@ static const struct flash_info spi_nor_ids[] =3D {
+>         /* Everspin */
+>         { "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE =
+| SPI_NOR_NO_FR) },
+>         { "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE =
+| SPI_NOR_NO_FR) },
+> -       { "mr25h40",  CAT25_INFO(512 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE =
+| SPI_NOR_NO_FR) },
+> +       { "mr25h40-nonjedec",  CAT25_INFO(512 * 1024, 1, 256, 3, SPI_NOR_=
+NO_ERASE | SPI_NOR_NO_FR) },
+>
+>         /* Fujitsu */
+>         { "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE)=
+ },
+> --
+> 2.11.0
 
-I think that this change does probably fix the problems I raised in
-http://lists.infradead.org/pipermail/linux-mtd/2017-January/071516.html and
-its parents. I can't test it since we don't use virtual erase blocks.
+Gr{oetje,eeting}s,
 
-It might be worth is_virt_block_bad checking that it has been passed a
-multiple of ebsize_aligned. The caller in this patch is obviously aligned
-(so hopefully the compiler would throw away such a check when it inlines
-the static function) but that may not always be the case.
+                        Geert
 
-I will rebase my --skip-bad-blocks-to-start patch to make use of the new
-function.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-Thanks.
-
-Mike.
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
