@@ -1,19 +1,19 @@
-Received: from mail-ve1eur01on0111.outbound.protection.outlook.com
- ([104.47.1.111] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cS1wG-0006M7-Si
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 13:30:44 +0000
+Received: from mail-he1eur01on0131.outbound.protection.outlook.com
+ ([104.47.0.131] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cS1xL-0003Zt-Dy
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 13:31:50 +0000
 Subject: Re: UBI/UBIFS corruptions during random power-cuts
 To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
 References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
  <0500de05-b3d7-6cbc-0236-5d4c83a5f00f@nod.at>
  <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
- <72c9706f-e88c-e20b-2b60-eb2ca7445f4b@nod.at>
+ <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
 From: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>
-Message-ID: <f202a629-b208-c7e7-6d05-0a565e52b03b@toradex.com>
-Date: Fri, 13 Jan 2017 18:56:42 +0530
+Message-ID: <d513c979-c6ca-434c-7132-9e47f635736d@toradex.com>
+Date: Fri, 13 Jan 2017 18:57:52 +0530
 MIME-Version: 1.0
-In-Reply-To: <72c9706f-e88c-e20b-2b60-eb2ca7445f4b@nod.at>
+In-Reply-To: <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,9 +25,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/13/2017 04:45 PM, Richard Weinberger wrote:
+On 01/13/2017 04:48 PM, Richard Weinberger wrote:
 
-> Bhuvan,
 >
 > Am 13.01.2017 um 10:31 schrieb Bhuvanchandra DV:
 >> On 01/12/2017 07:42 PM, Richard Weinberger wrote:
@@ -136,12 +135,10 @@ On 01/13/2017 04:45 PM, Richard Weinberger wrote:
 >> Complete boot log is here[1]
 >>
 >> [1] http://pastebin.com/RZyT49yG
-> Hmm, not sure if this is related. Is this a vanilla kernel?
-> Can you please create a nanddump and share me the image.
+> Also apply this patch:
+> http://lists.infradead.org/pipermail/linux-mtd/2017-January/071264.html
 
-Yes it is vanilla kernel. Kindly find the nanddump image here[1]
-
-[1] https://share.toradex.com/4479wfosacotegj
+Okay.
 
 --
 Bhuvan
