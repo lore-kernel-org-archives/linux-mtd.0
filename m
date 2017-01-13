@@ -1,22 +1,20 @@
-Date: Fri, 13 Jan 2017 15:17:47 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Guochun Mao <guochun.mao@mediatek.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Russell King
- <linux@armlinux.org.uk>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
-Message-ID: <20170113151747.6bc85245@bbrezillon>
-In-Reply-To: <1484291609-20195-3-git-send-email-guochun.mao@mediatek.com>
-References: <1484291609-20195-1-git-send-email-guochun.mao@mediatek.com>
- <1484291609-20195-3-git-send-email-guochun.mao@mediatek.com>
+Received: from eusmtp01.atmel.com ([212.144.249.243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cS2sX-0004XV-Uu
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 14:30:56 +0000
+Subject: Re: [PATCH] mtd: spi-nor: don't claim mr25h40 to be JEDEC compatible
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>, Jagan Teki
+ <jagan@openedev.com>, Marek Vasut <marex@denx.de>
+References: <20170113093509.25737-1-u.kleine-koenig@pengutronix.de>
+CC: <linux-mtd@lists.infradead.org>, <kernel@pengutronix.de>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <2b0640c0-09ce-22d4-bd02-729fbed8c608@atmel.com>
+Date: Fri, 13 Jan 2017 15:30:30 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170113093509.25737-1-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,77 +24,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 13 Jan 2017 15:13:29 +0800
-Guochun Mao <guochun.mao@mediatek.com> wrote:
+Hi all,
 
-> Add Mediatek nor flash node.
+Le 13/01/2017 à 10:35, Uwe Kleine-König a écrit :
+> Commit edd0c8f4932d ("mtd: spi-nor: Add support for mr25h40") made it
+> possible to use a mr25h40 by writing
 > 
-> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> 	compatible = "mr25h40", "jedec,spi-nor";
+> 
+> in a device tree. This chip however isn't JEDEC compatible however, so
+
+That's true but it should not be the only one working combination. Indeed
+the m25p80.c driver doesn't care about the manufacturer prefix and only
+checks the device name to match some DT compatible string. Hence
+technically you could use something like:
+
+compatible = "everspin,mr25h40", "nonjedec,spi-nor";
+
+
+The "*,spi-nor" strings match the "spi-nor" entry of the m25p_ids[] array
+in m25p80.c so based on the DT compatible string, the kernel knows that the
+memory device can be handled by this m25p80.c driver.
+
+Then from m25p80.c, flash_name should point to the "mr25h40" string, which
+will be matched in spi_nor_scan() using the "mr25h40" entry of the
+spi_nor_ids[] array.
+
+The "nonjedec,spi-nor" DT compatible string in not documented yet but we
+could document it if this solution is chosen. This would be a first solution.
+
+Another solution is, like you did in this patch, to add the relevant
+entries in the m25p_ids[] array in m25p80.c. I have no problem with that.
+However I would just want some consistent naming scheme. I mean a
+"mr25h256" entry already exists in the m25p_ids[] array. We must keep this
+entry to be backward compatible with existing .dtb files. Then I think news
+entries should simply be named "mr25h10" and "mr25h40", without the
+"-nonjedec" suffix. This way, the naming scheme for Everspin memory would
+be consistent in both the m25p_ids[] and spi_nor_ids[] arrays.
+No change is needed in spi-nor.c
+
+Then the 3rd solution: adding a "-nonjedec" suffix to the "mr25h10" and
+"mr25h40" entries but keep the "mr25h256" name unchanged. Then add the
+"mr25h10-nonjedec" and "mr25h40-nonjedec" entries in m25p_ids[].
+Indeed, this is what you propose with your patch, except that you didn't
+handle the case of the mr25h10 devices then ;) , but honestly this is not
+the solution I prefer.
+
+I don't want to force anything, I just want this to be discussed a little
+bit more but maybe not so long because at some point we have to make a
+decision otherwise the patch would be forgotten.
+
+Marek, what do you think about that?
+
+> change the chip string and add a compatible entry to bless
+> 
+> 	compatible = "mr25h40-nonjedec";
+> 
+> as the right way.
+> 
+> Fixes: edd0c8f4932d ("mtd: spi-nor: Add support for mr25h40")
+
+I'm not sure whether this could really be considered as a bug since it is
+already possible to use this memory even with device trees.
+
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 > ---
->  arch/arm/boot/dts/mt2701-evb.dts |   25 +++++++++++++++++++++++++
->  arch/arm/boot/dts/mt2701.dtsi    |   12 ++++++++++++
->  2 files changed, 37 insertions(+)
+>  drivers/mtd/devices/m25p80.c  | 1 +
+>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm/boot/dts/mt2701-evb.dts b/arch/arm/boot/dts/mt2701-evb.dts
-> index 082ca88..85e5ae8 100644
-> --- a/arch/arm/boot/dts/mt2701-evb.dts
-> +++ b/arch/arm/boot/dts/mt2701-evb.dts
-> @@ -24,6 +24,31 @@
->  	};
->  };
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 9cf7fcd28034..bd0c335692d2 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -304,6 +304,7 @@ static const struct spi_device_id m25p_ids[] = {
+>  	{"m25p05-nonjedec"},	{"m25p10-nonjedec"},	{"m25p20-nonjedec"},
+>  	{"m25p40-nonjedec"},	{"m25p80-nonjedec"},	{"m25p16-nonjedec"},
+>  	{"m25p32-nonjedec"},	{"m25p64-nonjedec"},	{"m25p128-nonjedec"},
+> +	{"mr25h40-nonjedec"},
 >  
-> +&nor_flash {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&nor_pins_default>;
-> +	status = "okay";
-> +	flash@0 {
-> +		compatible = "jedec,spi-nor";
-> +		reg = <0>;
-> +	};
-> +};
-> +
-> +&pio {
-> +	nor_pins_default: nor {
-> +		pins1 {
-> +			pinmux = <MT2701_PIN_240_EXT_XCS__FUNC_EXT_XCS>,
-> +				 <MT2701_PIN_241_EXT_SCK__FUNC_EXT_SCK>,
-> +				 <MT2701_PIN_239_EXT_SDIO0__FUNC_EXT_SDIO0>,
-> +				 <MT2701_PIN_238_EXT_SDIO1__FUNC_EXT_SDIO1>,
-> +				 <MT2701_PIN_237_EXT_SDIO2__FUNC_EXT_SDIO2>,
-> +				 <MT2701_PIN_236_EXT_SDIO3__FUNC_EXT_SDIO3>;
-> +			drive-strength = <MTK_DRIVE_4mA>;
-> +			bias-pull-up;
-> +		};
-> +	};
-> +};
-> +
->  &uart0 {
->  	status = "okay";
+>  	{ },
 >  };
-> diff --git a/arch/arm/boot/dts/mt2701.dtsi b/arch/arm/boot/dts/mt2701.dtsi
-> index bdf8954..1eefce4 100644
-> --- a/arch/arm/boot/dts/mt2701.dtsi
-> +++ b/arch/arm/boot/dts/mt2701.dtsi
-> @@ -227,6 +227,18 @@
->  		status = "disabled";
->  	};
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index bbdbbd763c9d..3a8042fe44f0 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -825,7 +825,7 @@ static const struct flash_info spi_nor_ids[] = {
+>  	/* Everspin */
+>  	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+>  	{ "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+> -	{ "mr25h40",  CAT25_INFO(512 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+> +	{ "mr25h40-nonjedec",  CAT25_INFO(512 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+
+Removing the old entry might create regressions if people have already
+started to use the "mr25h40" name in their .dtb files or in some platform
+device structures. It is possible even if this entry is quite recent.
+
 >  
-> +	nor_flash: spi@11014000 {
-> +		compatible = "mediatek,mt2701-nor",
-> +			     "mediatek,mt8173-nor";
-
-Why define both here? Is "mediatek,mt8173-nor" really providing a
-subset of the features supported by "mediatek,mt2701-nor"?
-
-> +		reg = <0 0x11014000 0 0xe0>;
-> +		clocks = <&pericfg CLK_PERI_FLASH>,
-> +			 <&topckgen CLK_TOP_FLASH_SEL>;
-> +		clock-names = "spi", "sf";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		status = "disabled";
-> +	};
-> +
->  	mmsys: syscon@14000000 {
->  		compatible = "mediatek,mt2701-mmsys", "syscon";
->  		reg = <0 0x14000000 0 0x1000>;
+>  	/* Fujitsu */
+>  	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE) },
+> 
