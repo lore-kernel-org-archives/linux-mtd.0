@@ -1,24 +1,43 @@
-Date: Fri, 13 Jan 2017 16:21:04 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Guochun Mao <guochun.mao@mediatek.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Russell King <linux@armlinux.org.uk>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
-Message-ID: <20170113162104.4d2a624c@bbrezillon>
-In-Reply-To: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
-References: <1484291609-20195-1-git-send-email-guochun.mao@mediatek.com>
- <1484291609-20195-3-git-send-email-guochun.mao@mediatek.com>
- <20170113151747.6bc85245@bbrezillon>
- <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cS4IE-0004lI-O4
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 16:01:32 +0000
+Received: by mail-lf0-x233.google.com with SMTP id z134so37560013lff.3
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2017 08:01:09 -0800 (PST)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH v3 1/8] arm: put types.h in uapi
+References: <1484304406-10820-2-git-send-email-nicolas.dichtel@6wind.com>
+ <3131144.4Ej3KFWRbz@wuerfel>
+ <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
+ <25063.1484321803@warthog.procyon.org.uk>
+To: David Howells <dhowells@redhat.com>
+Cc: arnd@arndb.de, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org,
+ linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
+ alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ linux-mtd@lists.infradead.org, sparclinux@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-am33-list@redhat.com, linux-c6x-dev@linux-c6x.org,
+ linux-rdma@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux@armlinux.org.uk, coreteam@netfilter.org,
+ fcoe-devel@open-fcoe.org, xen-devel@lists.xenproject.org,
+ linux-snps-arc@lists.infradead.org, linux-media@vger.kernel.org,
+ uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org,
+ linux-kbuild@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net,
+ linux-raid@vger.kernel.org, openrisc@lists.librecores.org,
+ linux-fbdev@vger.kernel.org, linux-metag@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ linux-alpha@vger.kernel.org, nio2-dev@lists.rocketboards.org,
+ linuxppc-dev@lists.ozlabs.org
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Message-ID: <4633e475-47f2-5627-81a9-a1747dfddbc0@6wind.com>
+Date: Fri, 13 Jan 2017 17:01:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <25063.1484321803@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,99 +47,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 13 Jan 2017 16:12:20 +0100
-Matthias Brugger <matthias.bgg@gmail.com> wrote:
+Please, do not remove the email subject when you reply. I restore it to ease the
+thread follow-up.
 
-> On 13/01/17 15:17, Boris Brezillon wrote:
-> > On Fri, 13 Jan 2017 15:13:29 +0800
-> > Guochun Mao <guochun.mao@mediatek.com> wrote:
-> >  
-> >> Add Mediatek nor flash node.
-> >>
-> >> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> >> ---
-> >>  arch/arm/boot/dts/mt2701-evb.dts |   25 +++++++++++++++++++++++++
-> >>  arch/arm/boot/dts/mt2701.dtsi    |   12 ++++++++++++
-> >>  2 files changed, 37 insertions(+)
-> >>
-> >> diff --git a/arch/arm/boot/dts/mt2701-evb.dts b/arch/arm/boot/dts/mt2701-evb.dts
-> >> index 082ca88..85e5ae8 100644
-> >> --- a/arch/arm/boot/dts/mt2701-evb.dts
-> >> +++ b/arch/arm/boot/dts/mt2701-evb.dts
-> >> @@ -24,6 +24,31 @@
-> >>  	};
-> >>  };
-> >>
-> >> +&nor_flash {
-> >> +	pinctrl-names = "default";
-> >> +	pinctrl-0 = <&nor_pins_default>;
-> >> +	status = "okay";
-> >> +	flash@0 {
-> >> +		compatible = "jedec,spi-nor";
-> >> +		reg = <0>;
-> >> +	};
-> >> +};
-> >> +
-> >> +&pio {
-> >> +	nor_pins_default: nor {
-> >> +		pins1 {
-> >> +			pinmux = <MT2701_PIN_240_EXT_XCS__FUNC_EXT_XCS>,
-> >> +				 <MT2701_PIN_241_EXT_SCK__FUNC_EXT_SCK>,
-> >> +				 <MT2701_PIN_239_EXT_SDIO0__FUNC_EXT_SDIO0>,
-> >> +				 <MT2701_PIN_238_EXT_SDIO1__FUNC_EXT_SDIO1>,
-> >> +				 <MT2701_PIN_237_EXT_SDIO2__FUNC_EXT_SDIO2>,
-> >> +				 <MT2701_PIN_236_EXT_SDIO3__FUNC_EXT_SDIO3>;
-> >> +			drive-strength = <MTK_DRIVE_4mA>;
-> >> +			bias-pull-up;
-> >> +		};
-> >> +	};
-> >> +};
-> >> +
-> >>  &uart0 {
-> >>  	status = "okay";
-> >>  };
-> >> diff --git a/arch/arm/boot/dts/mt2701.dtsi b/arch/arm/boot/dts/mt2701.dtsi
-> >> index bdf8954..1eefce4 100644
-> >> --- a/arch/arm/boot/dts/mt2701.dtsi
-> >> +++ b/arch/arm/boot/dts/mt2701.dtsi
-> >> @@ -227,6 +227,18 @@
-> >>  		status = "disabled";
-> >>  	};
-> >>
-> >> +	nor_flash: spi@11014000 {
-> >> +		compatible = "mediatek,mt2701-nor",
-> >> +			     "mediatek,mt8173-nor";  
-> >
-> > Why define both here? Is "mediatek,mt8173-nor" really providing a
-> > subset of the features supported by "mediatek,mt2701-nor"?
-> >  
+Le 13/01/2017 à 16:36, David Howells a écrit :
+> Nicolas Dichtel <nicolas.dichtel@6wind.com> wrote:
 > 
-> I think even if the ip block is the same, we should provide both 
-> bindings, just in case in the future we find out that mt2701 has some 
-> hidden bug, feature or bug-feature. This way even if we update the 
-> driver, we stay compatible with older device tree blobs in the wild.
-
-I'm fine with this approach, but in this case, defining both is wrong.
-
+>> This header file is exported, thus move it to uapi.
 > 
-> We can drop the mt2701-nor in the bindings definition if you want.
+> Exported how?
+It is listed in include/uapi/asm-generic/Kbuild.asm, which is included by
+arch/arm/include/uapi/asm/Kbuild.
 
-Yes, please.
+You can also have a look at patch #5 to see why it was exported even if it was
+not in an uapi directory.
 
-> 
-> Regards,
-> Matthias
-> 
-> >> +		reg = <0 0x11014000 0 0xe0>;
-> >> +		clocks = <&pericfg CLK_PERI_FLASH>,
-> >> +			 <&topckgen CLK_TOP_FLASH_SEL>;
-> >> +		clock-names = "spi", "sf";
-> >> +		#address-cells = <1>;
-> >> +		#size-cells = <0>;
-> >> +		status = "disabled";
-> >> +	};
-> >> +
-> >>  	mmsys: syscon@14000000 {
-> >>  		compatible = "mediatek,mt2701-mmsys", "syscon";
-> >>  		reg = <0 0x14000000 0 0x1000>;  
-> >  
+Regards,
+Nicolas
