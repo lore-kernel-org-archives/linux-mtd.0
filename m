@@ -1,7 +1,7 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRzq7-0005TP-2a
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 11:16:15 +0000
+ id 1cRzt1-0006Yt-9x
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 11:19:14 +0000
 Subject: Re: UBI/UBIFS corruptions during random power-cuts
 To: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>,
  linux-mtd@lists.infradead.org
@@ -9,8 +9,8 @@ References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
  <0500de05-b3d7-6cbc-0236-5d4c83a5f00f@nod.at>
  <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <72c9706f-e88c-e20b-2b60-eb2ca7445f4b@nod.at>
-Date: Fri, 13 Jan 2017 12:15:45 +0100
+Message-ID: <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
+Date: Fri, 13 Jan 2017 12:18:48 +0100
 MIME-Version: 1.0
 In-Reply-To: <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
 Content-Type: text/plain; charset=windows-1252
@@ -24,7 +24,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bhuvan,
+
 
 Am 13.01.2017 um 10:31 schrieb Bhuvanchandra DV:
 > On 01/12/2017 07:42 PM, Richard Weinberger wrote:
@@ -135,8 +135,8 @@ Am 13.01.2017 um 10:31 schrieb Bhuvanchandra DV:
 > 
 > [1] http://pastebin.com/RZyT49yG
 
-Hmm, not sure if this is related. Is this a vanilla kernel?
-Can you please create a nanddump and share me the image.
+Also apply this patch:
+http://lists.infradead.org/pipermail/linux-mtd/2017-January/071264.html
 
 Thanks,
 //richard
