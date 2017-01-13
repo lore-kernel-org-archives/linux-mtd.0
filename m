@@ -1,46 +1,25 @@
-Received: from pandora.armlinux.org.uk
- ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cS4ax-0001dt-Hk
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 16:20:54 +0000
-Date: Fri, 13 Jan 2017 16:19:52 +0000
-From: Russell King - ARM Linux <linux@armlinux.org.uk>
-To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc: David Howells <dhowells@redhat.com>, arnd@arndb.de,
- linux-mips@linux-mips.org, linux-m68k@vger.kernel.org,
- linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- linux-mtd@lists.infradead.org, sparclinux@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-am33-list@redhat.com, linux-c6x-dev@linux-c6x.org,
- linux-rdma@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-sh@vger.kernel.org, coreteam@netfilter.org,
- fcoe-devel@open-fcoe.org, xen-devel@lists.xenproject.org,
- linux-snps-arc@lists.infradead.org, linux-media@vger.kernel.org,
- uclinux-h8-devel@lists.sourceforge.jp,
- linux-xtensa@linux-xtensa.org, linux-kbuild@vger.kernel.org,
- adi-buildroot-devel@lists.sourceforge.net,
- linux-raid@vger.kernel.org, openrisc@lists.librecores.org,
- linux-fbdev@vger.kernel.org, linux-metag@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, netfilter-devel@vger.kernel.org,
- linux-alpha@vger.kernel.org, nio2-dev@lists.rocketboards.org,
- linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 1/8] arm: put types.h in uapi
-Message-ID: <20170113161951.GT14217@n2100.armlinux.org.uk>
-References: <1484304406-10820-2-git-send-email-nicolas.dichtel@6wind.com>
- <3131144.4Ej3KFWRbz@wuerfel>
- <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
- <25063.1484321803@warthog.procyon.org.uk>
- <4633e475-47f2-5627-81a9-a1747dfddbc0@6wind.com>
+Date: Fri, 13 Jan 2017 17:28:25 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, Guochun Mao
+ <guochun.mao@mediatek.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King
+ <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
+Message-ID: <20170113172825.75d545a3@bbrezillon>
+In-Reply-To: <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
+References: <1484291609-20195-1-git-send-email-guochun.mao@mediatek.com>
+ <1484291609-20195-3-git-send-email-guochun.mao@mediatek.com>
+ <20170113151747.6bc85245@bbrezillon>
+ <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
+ <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4633e475-47f2-5627-81a9-a1747dfddbc0@6wind.com>
-Sender: Russell King - ARM Linux <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -50,46 +29,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 13, 2017 at 05:01:01PM +0100, Nicolas Dichtel wrote:
-> Please, do not remove the email subject when you reply. I restore it to
-> ease the thread follow-up.
+On Fri, 13 Jan 2017 17:13:55 +0100
+Marek Vasut <marek.vasut@gmail.com> wrote:
 
-I mentioned it to David, and he says it's because the long list of
-recipients is breaking his mailer.  I've already posed the question
-about whether that's exploitable!
+> On 01/13/2017 04:12 PM, Matthias Brugger wrote:
+> > 
+> > 
+> > On 13/01/17 15:17, Boris Brezillon wrote:  
+> >> On Fri, 13 Jan 2017 15:13:29 +0800
+> >> Guochun Mao <guochun.mao@mediatek.com> wrote:
+> >>  
+> >>> Add Mediatek nor flash node.
+> >>>
+> >>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> >>> ---
+> >>>  arch/arm/boot/dts/mt2701-evb.dts |   25 +++++++++++++++++++++++++
+> >>>  arch/arm/boot/dts/mt2701.dtsi    |   12 ++++++++++++
+> >>>  2 files changed, 37 insertions(+)
+> >>>
+> >>> diff --git a/arch/arm/boot/dts/mt2701-evb.dts
+> >>> b/arch/arm/boot/dts/mt2701-evb.dts
+> >>> index 082ca88..85e5ae8 100644
+> >>> --- a/arch/arm/boot/dts/mt2701-evb.dts
+> >>> +++ b/arch/arm/boot/dts/mt2701-evb.dts
+> >>> @@ -24,6 +24,31 @@
+> >>>      };
+> >>>  };
+> >>>
+> >>> +&nor_flash {
+> >>> +    pinctrl-names = "default";
+> >>> +    pinctrl-0 = <&nor_pins_default>;
+> >>> +    status = "okay";
+> >>> +    flash@0 {
+> >>> +        compatible = "jedec,spi-nor";
+> >>> +        reg = <0>;
+> >>> +    };
+> >>> +};
+> >>> +
+> >>> +&pio {
+> >>> +    nor_pins_default: nor {
+> >>> +        pins1 {
+> >>> +            pinmux = <MT2701_PIN_240_EXT_XCS__FUNC_EXT_XCS>,
+> >>> +                 <MT2701_PIN_241_EXT_SCK__FUNC_EXT_SCK>,
+> >>> +                 <MT2701_PIN_239_EXT_SDIO0__FUNC_EXT_SDIO0>,
+> >>> +                 <MT2701_PIN_238_EXT_SDIO1__FUNC_EXT_SDIO1>,
+> >>> +                 <MT2701_PIN_237_EXT_SDIO2__FUNC_EXT_SDIO2>,
+> >>> +                 <MT2701_PIN_236_EXT_SDIO3__FUNC_EXT_SDIO3>;
+> >>> +            drive-strength = <MTK_DRIVE_4mA>;
+> >>> +            bias-pull-up;
+> >>> +        };
+> >>> +    };
+> >>> +};
+> >>> +
+> >>>  &uart0 {
+> >>>      status = "okay";
+> >>>  };
+> >>> diff --git a/arch/arm/boot/dts/mt2701.dtsi
+> >>> b/arch/arm/boot/dts/mt2701.dtsi
+> >>> index bdf8954..1eefce4 100644
+> >>> --- a/arch/arm/boot/dts/mt2701.dtsi
+> >>> +++ b/arch/arm/boot/dts/mt2701.dtsi
+> >>> @@ -227,6 +227,18 @@
+> >>>          status = "disabled";
+> >>>      };
+> >>>
+> >>> +    nor_flash: spi@11014000 {
+> >>> +        compatible = "mediatek,mt2701-nor",
+> >>> +                 "mediatek,mt8173-nor";  
+> >>
+> >> Why define both here? Is "mediatek,mt8173-nor" really providing a
+> >> subset of the features supported by "mediatek,mt2701-nor"?
+> >>  
+> > 
+> > I think even if the ip block is the same, we should provide both
+> > bindings, just in case in the future we find out that mt2701 has some
+> > hidden bug, feature or bug-feature. This way even if we update the
+> > driver, we stay compatible with older device tree blobs in the wild.
+> > 
+> > We can drop the mt2701-nor in the bindings definition if you want. 
 
-> Le 13/01/2017 à 16:36, David Howells a écrit :
-> > Nicolas Dichtel <nicolas.dichtel@6wind.com> wrote:
-> > 
-> >> This header file is exported, thus move it to uapi.
-> > 
-> > Exported how?
+Oh, sorry, I misunderstood. What I meant is that if you want to
+list/support all possible compatibles, maybe you should just put one
+compatible in your DT and patch your driver (+ binding doc) to define
+all of them.
+
 > 
-> It is listed in include/uapi/asm-generic/Kbuild.asm, which is included by
-> arch/arm/include/uapi/asm/Kbuild.
+> This exactly. We should have a DT compat in the form:
+> compatible = "vendor,<soc>-block", "vendor,<oldest-compat-soc>-block";
+> Then if we find a problem in the future, we can match on the
+> "vendor,<soc>-block" and still support the old DTs.
 
-We really should not be installing non-uapi header files to userland
-under _any_ circumstance - this to me sounds like a bug in kbuild.
+Not sure it's only in term of whose IP appeared first. My understanding
+is that it's a way to provide inheritance. For example:
 
-The assumption is that headers outside of uapi directories are not
-part of the user visible API, and so can be freely modified - which
-in the presence of this bug is untrue.
+	"<soc-vendor>,<ip-version>", "<ip-vendor>,<ip-version>";
 
-However, as it's happening, and this header has been there since 2013
-(commit 09096f6a0ee2 - "ARM: 7822/1: add workaround for ambiguous C99
-stdint.h types") it's now well and truely part of the user API whether
-we intended it to be or not, so your patch looks to me like the correct
-thing to do.
+or
 
-I think it needs further evaluation to make sure kbuild isn't going to
-do something else silly, like subsitute include/asm-generic/types.h for
-the now missing arch/arm/include/asm/types.h
+	"<soc-vendor>,<full-featured-ip-version>","<soc-vendor>,<basic-feature-ip-version>";
 
-I wonder how many more headers are unintentionally exported.
-
-... what a mess. :(
-
--- 
-RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+BTW, which one is the oldest between mt8173 and mt2701? :-)
