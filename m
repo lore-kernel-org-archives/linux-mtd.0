@@ -1,27 +1,46 @@
-Date: Fri, 13 Jan 2017 17:56:28 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, Guochun Mao
- <guochun.mao@mediatek.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King
- <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
-Message-ID: <20170113175628.1793f433@bbrezillon>
-In-Reply-To: <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
-References: <1484291609-20195-1-git-send-email-guochun.mao@mediatek.com>
- <1484291609-20195-3-git-send-email-guochun.mao@mediatek.com>
- <20170113151747.6bc85245@bbrezillon>
- <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
- <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
- <20170113172825.75d545a3@bbrezillon>
- <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
+Received: from pandora.armlinux.org.uk
+ ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cS5Kn-00051v-4v
+ for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 17:08:16 +0000
+Date: Fri, 13 Jan 2017 17:06:10 +0000
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: arnd@arndb.de, mmarek@suse.com, linux-kbuild@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org,
+ adi-buildroot-devel@lists.sourceforge.net,
+ linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com,
+ uclinux-h8-devel@lists.sourceforge.jp,
+ linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org,
+ linux-mips@linux-mips.org, linux-am33-list@redhat.com,
+ nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+ linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ netdev@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mmc@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org, linux-nfs@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
+ fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
+ linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
+ airlied@linux.ie, davem@davemloft.net, bp@alien8.de,
+ slash.tmp@free.fr, daniel.vetter@ffwll.ch, msalter@redhat.com,
+ jengelh@inai.de, hch@infradead.org
+Subject: Re: [PATCH v3 1/8] arm: put types.h in uapi
+Message-ID: <20170113170610.GV14217@n2100.armlinux.org.uk>
+References: <3131144.4Ej3KFWRbz@wuerfel>
+ <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
+ <1484304406-10820-2-git-send-email-nicolas.dichtel@6wind.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1484304406-10820-2-git-send-email-nicolas.dichtel@6wind.com>
+Sender: Russell King - ARM Linux <linux@armlinux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,135 +50,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 13 Jan 2017 17:44:12 +0100
-Marek Vasut <marek.vasut@gmail.com> wrote:
+On Fri, Jan 13, 2017 at 11:46:39AM +0100, Nicolas Dichtel wrote:
+> This header file is exported, thus move it to uapi.
 
-> On 01/13/2017 05:28 PM, Boris Brezillon wrote:
-> > On Fri, 13 Jan 2017 17:13:55 +0100
-> > Marek Vasut <marek.vasut@gmail.com> wrote:
-> >   
-> >> On 01/13/2017 04:12 PM, Matthias Brugger wrote:  
-> >>>
-> >>>
-> >>> On 13/01/17 15:17, Boris Brezillon wrote:    
-> >>>> On Fri, 13 Jan 2017 15:13:29 +0800
-> >>>> Guochun Mao <guochun.mao@mediatek.com> wrote:
-> >>>>    
-> >>>>> Add Mediatek nor flash node.
-> >>>>>
-> >>>>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> >>>>> ---
-> >>>>>  arch/arm/boot/dts/mt2701-evb.dts |   25 +++++++++++++++++++++++++
-> >>>>>  arch/arm/boot/dts/mt2701.dtsi    |   12 ++++++++++++
-> >>>>>  2 files changed, 37 insertions(+)
-> >>>>>
-> >>>>> diff --git a/arch/arm/boot/dts/mt2701-evb.dts
-> >>>>> b/arch/arm/boot/dts/mt2701-evb.dts
-> >>>>> index 082ca88..85e5ae8 100644
-> >>>>> --- a/arch/arm/boot/dts/mt2701-evb.dts
-> >>>>> +++ b/arch/arm/boot/dts/mt2701-evb.dts
-> >>>>> @@ -24,6 +24,31 @@
-> >>>>>      };
-> >>>>>  };
-> >>>>>
-> >>>>> +&nor_flash {
-> >>>>> +    pinctrl-names = "default";
-> >>>>> +    pinctrl-0 = <&nor_pins_default>;
-> >>>>> +    status = "okay";
-> >>>>> +    flash@0 {
-> >>>>> +        compatible = "jedec,spi-nor";
-> >>>>> +        reg = <0>;
-> >>>>> +    };
-> >>>>> +};
-> >>>>> +
-> >>>>> +&pio {
-> >>>>> +    nor_pins_default: nor {
-> >>>>> +        pins1 {
-> >>>>> +            pinmux = <MT2701_PIN_240_EXT_XCS__FUNC_EXT_XCS>,
-> >>>>> +                 <MT2701_PIN_241_EXT_SCK__FUNC_EXT_SCK>,
-> >>>>> +                 <MT2701_PIN_239_EXT_SDIO0__FUNC_EXT_SDIO0>,
-> >>>>> +                 <MT2701_PIN_238_EXT_SDIO1__FUNC_EXT_SDIO1>,
-> >>>>> +                 <MT2701_PIN_237_EXT_SDIO2__FUNC_EXT_SDIO2>,
-> >>>>> +                 <MT2701_PIN_236_EXT_SDIO3__FUNC_EXT_SDIO3>;
-> >>>>> +            drive-strength = <MTK_DRIVE_4mA>;
-> >>>>> +            bias-pull-up;
-> >>>>> +        };
-> >>>>> +    };
-> >>>>> +};
-> >>>>> +
-> >>>>>  &uart0 {
-> >>>>>      status = "okay";
-> >>>>>  };
-> >>>>> diff --git a/arch/arm/boot/dts/mt2701.dtsi
-> >>>>> b/arch/arm/boot/dts/mt2701.dtsi
-> >>>>> index bdf8954..1eefce4 100644
-> >>>>> --- a/arch/arm/boot/dts/mt2701.dtsi
-> >>>>> +++ b/arch/arm/boot/dts/mt2701.dtsi
-> >>>>> @@ -227,6 +227,18 @@
-> >>>>>          status = "disabled";
-> >>>>>      };
-> >>>>>
-> >>>>> +    nor_flash: spi@11014000 {
-> >>>>> +        compatible = "mediatek,mt2701-nor",
-> >>>>> +                 "mediatek,mt8173-nor";    
-> >>>>
-> >>>> Why define both here? Is "mediatek,mt8173-nor" really providing a
-> >>>> subset of the features supported by "mediatek,mt2701-nor"?
-> >>>>    
-> >>>
-> >>> I think even if the ip block is the same, we should provide both
-> >>> bindings, just in case in the future we find out that mt2701 has some
-> >>> hidden bug, feature or bug-feature. This way even if we update the
-> >>> driver, we stay compatible with older device tree blobs in the wild.
-> >>>
-> >>> We can drop the mt2701-nor in the bindings definition if you want.   
-> > 
-> > Oh, sorry, I misunderstood. What I meant is that if you want to
-> > list/support all possible compatibles, maybe you should just put one
-> > compatible in your DT and patch your driver (+ binding doc) to define
-> > all of them.  
+I'm taking this patch, but with the following commit log:
+
+  Due to the way kbuild works, this header was unintentionally exported
+  back in 2013 when it was created, despite it not being in a uapi/
+  directory.  This is very non-intuitive behaviour by Kbuild.
+
+  However, we've had this include exported to userland for almost four
+  years, and searching google for "ARM types.h __UINTPTR_TYPE__" gives
+  no hint that anyone has complained about it.  So, let's make it
+  officially exported in this state.
+
+If anyone has any objections, they better shout sooner rather than
+later.
+
 > 
-> Uh, what ? I lost you here :-)
+> Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+> ---
+>  arch/arm/include/asm/types.h      | 40 ---------------------------------------
+>  arch/arm/include/uapi/asm/types.h | 40 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 40 insertions(+), 40 deletions(-)
+>  delete mode 100644 arch/arm/include/asm/types.h
+>  create mode 100644 arch/arm/include/uapi/asm/types.h
 > 
-> >> This exactly. We should have a DT compat in the form:
-> >> compatible = "vendor,<soc>-block", "vendor,<oldest-compat-soc>-block";
-> >> Then if we find a problem in the future, we can match on the
-> >> "vendor,<soc>-block" and still support the old DTs.  
-> > 
-> > Not sure it's only in term of whose IP appeared first. My understanding
-> > is that it's a way to provide inheritance. For example:
-> > 
-> > 	"<soc-vendor>,<ip-version>", "<ip-vendor>,<ip-version>";
-> > 
-> > or
-> > 
-> > 	"<soc-vendor>,<full-featured-ip-version>","<soc-vendor>,<basic-feature-ip-version>";
-> > 
-> > BTW, which one is the oldest between mt8173 and mt2701? :-)  
+> diff --git a/arch/arm/include/asm/types.h b/arch/arm/include/asm/types.h
+> deleted file mode 100644
+> index a53cdb8f068c..000000000000
+> --- a/arch/arm/include/asm/types.h
+> +++ /dev/null
+> @@ -1,40 +0,0 @@
+> -#ifndef _ASM_TYPES_H
+> -#define _ASM_TYPES_H
+> -
+> -#include <asm-generic/int-ll64.h>
+> -
+> -/*
+> - * The C99 types uintXX_t that are usually defined in 'stdint.h' are not as
+> - * unambiguous on ARM as you would expect. For the types below, there is a
+> - * difference on ARM between GCC built for bare metal ARM, GCC built for glibc
+> - * and the kernel itself, which results in build errors if you try to build with
+> - * -ffreestanding and include 'stdint.h' (such as when you include 'arm_neon.h'
+> - * in order to use NEON intrinsics)
+> - *
+> - * As the typedefs for these types in 'stdint.h' are based on builtin defines
+> - * supplied by GCC, we can tweak these to align with the kernel's idea of those
+> - * types, so 'linux/types.h' and 'stdint.h' can be safely included from the same
+> - * source file (provided that -ffreestanding is used).
+> - *
+> - *                    int32_t         uint32_t               uintptr_t
+> - * bare metal GCC     long            unsigned long          unsigned int
+> - * glibc GCC          int             unsigned int           unsigned int
+> - * kernel             int             unsigned int           unsigned long
+> - */
+> -
+> -#ifdef __INT32_TYPE__
+> -#undef __INT32_TYPE__
+> -#define __INT32_TYPE__		int
+> -#endif
+> -
+> -#ifdef __UINT32_TYPE__
+> -#undef __UINT32_TYPE__
+> -#define __UINT32_TYPE__	unsigned int
+> -#endif
+> -
+> -#ifdef __UINTPTR_TYPE__
+> -#undef __UINTPTR_TYPE__
+> -#define __UINTPTR_TYPE__	unsigned long
+> -#endif
+> -
+> -#endif /* _ASM_TYPES_H */
+> diff --git a/arch/arm/include/uapi/asm/types.h b/arch/arm/include/uapi/asm/types.h
+> new file mode 100644
+> index 000000000000..9435a42f575e
+> --- /dev/null
+> +++ b/arch/arm/include/uapi/asm/types.h
+> @@ -0,0 +1,40 @@
+> +#ifndef _UAPI_ASM_TYPES_H
+> +#define _UAPI_ASM_TYPES_H
+> +
+> +#include <asm-generic/int-ll64.h>
+> +
+> +/*
+> + * The C99 types uintXX_t that are usually defined in 'stdint.h' are not as
+> + * unambiguous on ARM as you would expect. For the types below, there is a
+> + * difference on ARM between GCC built for bare metal ARM, GCC built for glibc
+> + * and the kernel itself, which results in build errors if you try to build with
+> + * -ffreestanding and include 'stdint.h' (such as when you include 'arm_neon.h'
+> + * in order to use NEON intrinsics)
+> + *
+> + * As the typedefs for these types in 'stdint.h' are based on builtin defines
+> + * supplied by GCC, we can tweak these to align with the kernel's idea of those
+> + * types, so 'linux/types.h' and 'stdint.h' can be safely included from the same
+> + * source file (provided that -ffreestanding is used).
+> + *
+> + *                    int32_t         uint32_t               uintptr_t
+> + * bare metal GCC     long            unsigned long          unsigned int
+> + * glibc GCC          int             unsigned int           unsigned int
+> + * kernel             int             unsigned int           unsigned long
+> + */
+> +
+> +#ifdef __INT32_TYPE__
+> +#undef __INT32_TYPE__
+> +#define __INT32_TYPE__		int
+> +#endif
+> +
+> +#ifdef __UINT32_TYPE__
+> +#undef __UINT32_TYPE__
+> +#define __UINT32_TYPE__	unsigned int
+> +#endif
+> +
+> +#ifdef __UINTPTR_TYPE__
+> +#undef __UINTPTR_TYPE__
+> +#define __UINTPTR_TYPE__	unsigned long
+> +#endif
+> +
+> +#endif /* _UAPI_ASM_TYPES_H */
+> -- 
+> 2.8.1
 > 
-> And that's another thing and I agree with you, but I don't think that's
-> what we're discussing in this thread. But (!), OT, I think we should
-> codify the rules in Documentation/ . This discussion came up multiple
-> times recently.
-> 
-> And my question still stands, what do we put into the DT here, IMO
-> compatible = "mediatek,mt2701-nor", "mediatek,mt8173-nor";
 
-I'd say
-
-	compatible = "mediatek,mt8173-nor";
-
-because both compatible are referring to very specific IP version. It's
-not the same as
-
-	compatible = "mediatek,mt8173-nor", "mediatek,mt81xx-nor";
-
-where you clearly have a generic compatible which is overloaded by a
-specific one.
-
-But anyway, I'm not the one taking the decision here, let's wait for DT
-maintainers reviews.
-
-> and what goes into the binding document ? I guess both too ?
-
-If both exist, they should be both documented.
+-- 
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
