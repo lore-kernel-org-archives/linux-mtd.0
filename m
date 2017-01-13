@@ -1,21 +1,33 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRyhX-0004sz-IT
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 10:03:18 +0000
-Date: Fri, 13 Jan 2017 11:02:44 +0100
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>,
- Jagan Teki <jagan@openedev.com>, Marek Vasut <marex@denx.de>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
-Subject: Re: [PATCH] mtd: spi-nor: don't claim mr25h40 to be JEDEC compatible
-Message-ID: <20170113100244.zgg6g4yuhngpumf4@pengutronix.de>
-References: <20170113093509.25737-1-u.kleine-koenig@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170113093509.25737-1-u.kleine-koenig@pengutronix.de>
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+To: arnd@arndb.de
+Cc: mmarek@suse.com, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org,
+ linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp,
+ linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org,
+ linux-mips@linux-mips.org, linux-am33-list@redhat.com,
+ nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+ linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ netdev@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mmc@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org, linux-nfs@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
+ fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org,
+ linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org,
+ airlied@linux.ie, davem@davemloft.net, linux@armlinux.org.uk, bp@alien8.de,
+ slash.tmp@free.fr, daniel.vetter@ffwll.ch, rmk+kernel@armlinux.org.uk,
+ msalter@redhat.com, jengelh@inai.de, hch@infradead.org
+Subject: [PATCH v3 0/8] uapi: export all headers under uapi directories
+Date: Fri, 13 Jan 2017 11:46:38 +0100
+Message-Id: <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
+In-Reply-To: <3131144.4Ej3KFWRbz@wuerfel>
+References: <3131144.4Ej3KFWRbz@wuerfel>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +37,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 13, 2017 at 10:35:09AM +0100, Uwe Kleine-König wrote:
-> Commit edd0c8f4932d ("mtd: spi-nor: Add support for mr25h40") made it
-> possible to use a mr25h40 by writing
-> 
-> 	compatible = "mr25h40", "jedec,spi-nor";
-> 
-> in a device tree. This chip however isn't JEDEC compatible however, so
-> change the chip string and add a compatible entry to bless
-> 
-> 	compatible = "mr25h40-nonjedec";
-> 
-> as the right way.
-> 
-> Fixes: edd0c8f4932d ("mtd: spi-nor: Add support for mr25h40")
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
+Here is the v3 of this series. The first 5 patches are just cleanup: some
+exported headers were still under a non-uapi directory or (x86 case) were
+wrongly exported.
+The patch 6 was spotted by code review: there is no in-tree user of this
+functionality.
+Patches 7 and 8 remove the need to list explicitly headers. Now all files
+under an uapi directory are exported.
 
-I intended to write a note here, but sent out the mail before :w :-|
+This series has been tested with a 'make headers_install' on x86 and a
+'make headers_install_all'. I've checked the result of both commands.
 
-I wrote:
+This patch is built against linus tree. If I must rebase it against the kbuild
+tree, just tell me ;-)
 
-I wonder a bit about the "-nonjedec" suffix and only added it for
-consistency. AFAICT all mr25h40 don't support JEDEC, so "-nonjedec"
-doesn't really qualify as hardware description. Thoughts?
+v2 -> v3:
+ - patch #1: remove arch/arm/include/asm/types.h
+ - patch #2: remove arch/h8300/include/asm/bitsperlong.h
+ - patch #3: remove arch/nios2/include/uapi/asm/setup.h
+ - patch #4: don't export msr-index.h
+ - patch #5: fix a typo: s/unput-files3-name/input-files3-name
+ - patch #6: no change
+ - patch #7: fix include/uapi/asm-generic/Kbuild.asm by introducing mandatory-y
+ - add patch #8
 
-Best regards
-Uwe
+v1 -> v2:
+ - add patch #1 to #6
+ - patch #7: remove use of header-y
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Comments are welcomed,
+Nicolas
