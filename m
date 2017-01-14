@@ -1,26 +1,29 @@
-Received: from foss.arm.com ([217.140.101.70])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cS7lK-00054P-Sz
- for linux-mtd@lists.infradead.org; Fri, 13 Jan 2017 19:43:48 +0000
-Date: Fri, 13 Jan 2017 19:42:27 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>,
- Jagan Teki <jagan@openedev.com>, Marek Vasut <marex@denx.de>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Sascha Hauer <kernel@pengutronix.de>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: don't claim mr25h40 to be JEDEC compatible
-Message-ID: <20170113194226.GH2472@leverpostej>
-References: <20170113093509.25737-1-u.kleine-koenig@pengutronix.de>
- <CAMuHMdXJi9hJrY0ZV37gejp2XC6fkuLF7i7BqX4CUYTB7j_q1A@mail.gmail.com>
+Date: Sat, 14 Jan 2017 09:29:58 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, Guochun Mao
+ <guochun.mao@mediatek.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King
+ <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
+Message-ID: <20170114092958.022f2fc8@bbrezillon>
+In-Reply-To: <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
+References: <1484291609-20195-1-git-send-email-guochun.mao@mediatek.com>
+ <1484291609-20195-3-git-send-email-guochun.mao@mediatek.com>
+ <20170113151747.6bc85245@bbrezillon>
+ <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
+ <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
+ <20170113172825.75d545a3@bbrezillon>
+ <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
+ <20170113175628.1793f433@bbrezillon>
+ <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXJi9hJrY0ZV37gejp2XC6fkuLF7i7BqX4CUYTB7j_q1A@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,92 +33,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 13, 2017 at 07:42:34PM +0100, Geert Uytterhoeven wrote:
-> Hi Uwe,
-> 
-> CC devicetree
-> 
-> On Fri, Jan 13, 2017 at 10:35 AM, Uwe Kleine-König
-> <u.kleine-koenig@pengutronix.de> wrote:
-> > Commit edd0c8f4932d ("mtd: spi-nor: Add support for mr25h40") made it
-> > possible to use a mr25h40 by writing
-> >
-> >         compatible = "mr25h40", "jedec,spi-nor";
-> 
-> No vendor prefix?
-> 
-> >
-> > in a device tree. This chip however isn't JEDEC compatible however, so
-> > change the chip string and add a compatible entry to bless
-> >
-> >         compatible = "mr25h40-nonjedec";
-> >
-> > as the right way.
-> 
-> This whole "-nonjedec" business looks wrong to me.
-> If the device is called "mr25h40", its compatible value should be
-> "everspin,mr25h40". Adding some (in)compatibility indicator violates the
-> spirit of compatible values, IMHO.
+On Fri, 13 Jan 2017 18:33:40 +0100
+Marek Vasut <marek.vasut@gmail.com> wrote:
 
-Agreed on all counts.
+> On 01/13/2017 05:56 PM, Boris Brezillon wrote:
+> > On Fri, 13 Jan 2017 17:44:12 +0100
+> > Marek Vasut <marek.vasut@gmail.com> wrote:
+> >   
+> >> On 01/13/2017 05:28 PM, Boris Brezillon wrote:  
+> >>> On Fri, 13 Jan 2017 17:13:55 +0100
+> >>> Marek Vasut <marek.vasut@gmail.com> wrote:
+> >>>     
+> >>>> On 01/13/2017 04:12 PM, Matthias Brugger wrote:    
+> >>>>>
+> >>>>>
+> >>>>> On 13/01/17 15:17, Boris Brezillon wrote:      
+> >>>>>> On Fri, 13 Jan 2017 15:13:29 +0800
+> >>>>>> Guochun Mao <guochun.mao@mediatek.com> wrote:
+> >>>>>>      
+> >>>>>>> Add Mediatek nor flash node.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> >>>>>>> ---
+> >>>>>>>  arch/arm/boot/dts/mt2701-evb.dts |   25 +++++++++++++++++++++++++
+> >>>>>>>  arch/arm/boot/dts/mt2701.dtsi    |   12 ++++++++++++
+> >>>>>>>  2 files changed, 37 insertions(+)
+> >>>>>>>
+> >>>>>>> diff --git a/arch/arm/boot/dts/mt2701-evb.dts
+> >>>>>>> b/arch/arm/boot/dts/mt2701-evb.dts
+> >>>>>>> index 082ca88..85e5ae8 100644
+> >>>>>>> --- a/arch/arm/boot/dts/mt2701-evb.dts
+> >>>>>>> +++ b/arch/arm/boot/dts/mt2701-evb.dts
+> >>>>>>> @@ -24,6 +24,31 @@
+> >>>>>>>      };
+> >>>>>>>  };
+> >>>>>>>
+> >>>>>>> +&nor_flash {
+> >>>>>>> +    pinctrl-names = "default";
+> >>>>>>> +    pinctrl-0 = <&nor_pins_default>;
+> >>>>>>> +    status = "okay";
+> >>>>>>> +    flash@0 {
+> >>>>>>> +        compatible = "jedec,spi-nor";
+> >>>>>>> +        reg = <0>;
+> >>>>>>> +    };
+> >>>>>>> +};
+> >>>>>>> +
+> >>>>>>> +&pio {
+> >>>>>>> +    nor_pins_default: nor {
+> >>>>>>> +        pins1 {
+> >>>>>>> +            pinmux = <MT2701_PIN_240_EXT_XCS__FUNC_EXT_XCS>,
+> >>>>>>> +                 <MT2701_PIN_241_EXT_SCK__FUNC_EXT_SCK>,
+> >>>>>>> +                 <MT2701_PIN_239_EXT_SDIO0__FUNC_EXT_SDIO0>,
+> >>>>>>> +                 <MT2701_PIN_238_EXT_SDIO1__FUNC_EXT_SDIO1>,
+> >>>>>>> +                 <MT2701_PIN_237_EXT_SDIO2__FUNC_EXT_SDIO2>,
+> >>>>>>> +                 <MT2701_PIN_236_EXT_SDIO3__FUNC_EXT_SDIO3>;
+> >>>>>>> +            drive-strength = <MTK_DRIVE_4mA>;
+> >>>>>>> +            bias-pull-up;
+> >>>>>>> +        };
+> >>>>>>> +    };
+> >>>>>>> +};
+> >>>>>>> +
+> >>>>>>>  &uart0 {
+> >>>>>>>      status = "okay";
+> >>>>>>>  };
+> >>>>>>> diff --git a/arch/arm/boot/dts/mt2701.dtsi
+> >>>>>>> b/arch/arm/boot/dts/mt2701.dtsi
+> >>>>>>> index bdf8954..1eefce4 100644
+> >>>>>>> --- a/arch/arm/boot/dts/mt2701.dtsi
+> >>>>>>> +++ b/arch/arm/boot/dts/mt2701.dtsi
+> >>>>>>> @@ -227,6 +227,18 @@
+> >>>>>>>          status = "disabled";
+> >>>>>>>      };
+> >>>>>>>
+> >>>>>>> +    nor_flash: spi@11014000 {
+> >>>>>>> +        compatible = "mediatek,mt2701-nor",
+> >>>>>>> +                 "mediatek,mt8173-nor";      
+> >>>>>>
+> >>>>>> Why define both here? Is "mediatek,mt8173-nor" really providing a
+> >>>>>> subset of the features supported by "mediatek,mt2701-nor"?
+> >>>>>>      
+> >>>>>
+> >>>>> I think even if the ip block is the same, we should provide both
+> >>>>> bindings, just in case in the future we find out that mt2701 has some
+> >>>>> hidden bug, feature or bug-feature. This way even if we update the
+> >>>>> driver, we stay compatible with older device tree blobs in the wild.
+> >>>>>
+> >>>>> We can drop the mt2701-nor in the bindings definition if you want.     
+> >>>
+> >>> Oh, sorry, I misunderstood. What I meant is that if you want to
+> >>> list/support all possible compatibles, maybe you should just put one
+> >>> compatible in your DT and patch your driver (+ binding doc) to define
+> >>> all of them.    
+> >>
+> >> Uh, what ? I lost you here :-)
 
-The compatible string should specify the vendor and device, any
-compliance details should either be known for that string or derived
-from other properties.
+I mean adding a new entry in the mtk_nor_of_ids table (in
+mtk-quadspi.c) so that the mediatek,mt2701-nor compatible string can be
+matched directly, and you won't need to define 2 compatible strings in
+your device tree.
 
-IIUC this is following an existing pattern, which we should deprecate
-(retaining support for those strings so old DTBs work).
+> >>  
+> >>>> This exactly. We should have a DT compat in the form:
+> >>>> compatible = "vendor,<soc>-block", "vendor,<oldest-compat-soc>-block";
+> >>>> Then if we find a problem in the future, we can match on the
+> >>>> "vendor,<soc>-block" and still support the old DTs.    
+> >>>
+> >>> Not sure it's only in term of whose IP appeared first. My understanding
+> >>> is that it's a way to provide inheritance. For example:
+> >>>
+> >>> 	"<soc-vendor>,<ip-version>", "<ip-vendor>,<ip-version>";
+> >>>
+> >>> or
+> >>>
+> >>> 	"<soc-vendor>,<full-featured-ip-version>","<soc-vendor>,<basic-feature-ip-version>";
+> >>>
+> >>> BTW, which one is the oldest between mt8173 and mt2701? :-)    
+> >>
+> >> And that's another thing and I agree with you, but I don't think that's
+> >> what we're discussing in this thread. But (!), OT, I think we should
+> >> codify the rules in Documentation/ . This discussion came up multiple
+> >> times recently.
+> >>
+> >> And my question still stands, what do we put into the DT here, IMO
+> >> compatible = "mediatek,mt2701-nor", "mediatek,mt8173-nor";  
+> > 
+> > I'd say
+> > 
+> > 	compatible = "mediatek,mt8173-nor";
+> > 
+> > because both compatible are referring to very specific IP version. It's
+> > not the same as  
+> 
+> But then you don't have the ability to handle a block in this particular
+> SoC in case there's a bug found in it in the future,
+> so IMO it should be:
+> 
+> compatible = "mediatek,mt2701-nor", "mediatek,mt8173-nor";
 
-Thanks,
-Mark.
+Sorry again, I meant
+
+	compatible = "mediatek,mt2701-nor";
 
 > 
-> > Fixes: edd0c8f4932d ("mtd: spi-nor: Add support for mr25h40")
-> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > ---
-> >  drivers/mtd/devices/m25p80.c  | 1 +
-> >  drivers/mtd/spi-nor/spi-nor.c | 2 +-
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> > index 9cf7fcd28034..bd0c335692d2 100644
-> > --- a/drivers/mtd/devices/m25p80.c
-> > +++ b/drivers/mtd/devices/m25p80.c
-> > @@ -304,6 +304,7 @@ static const struct spi_device_id m25p_ids[] = {
-> >         {"m25p05-nonjedec"},    {"m25p10-nonjedec"},    {"m25p20-nonjedec"},
-> >         {"m25p40-nonjedec"},    {"m25p80-nonjedec"},    {"m25p16-nonjedec"},
-> >         {"m25p32-nonjedec"},    {"m25p64-nonjedec"},    {"m25p128-nonjedec"},
-> > +       {"mr25h40-nonjedec"},
-> >
-> >         { },
-> >  };
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index bbdbbd763c9d..3a8042fe44f0 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -825,7 +825,7 @@ static const struct flash_info spi_nor_ids[] = {
-> >         /* Everspin */
-> >         { "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> >         { "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> > -       { "mr25h40",  CAT25_INFO(512 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> > +       { "mr25h40-nonjedec",  CAT25_INFO(512 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> >
-> >         /* Fujitsu */
-> >         { "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE) },
-> > --
-> > 2.11.0
+> > 	compatible = "mediatek,mt8173-nor", "mediatek,mt81xx-nor";  
 > 
-> Gr{oetje,eeting}s,
+> This doesn't look right, since here we add two new compatibles ...
+
+That was just an example to describe how compatible inheritance works
+(at least that's my understanding of it), it does not apply to this
+particular use case.
+
 > 
->                         Geert
+> > where you clearly have a generic compatible which is overloaded by a
+> > specific one.
+> > 
+> > But anyway, I'm not the one taking the decision here, let's wait for DT
+> > maintainers reviews.
+> >   
+> >> and what goes into the binding document ? I guess both too ?  
+> > 
+> > If both exist, they should be both documented.
+> >   
 > 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 > 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
