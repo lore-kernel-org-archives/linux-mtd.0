@@ -1,17 +1,5 @@
-Date: Sat, 14 Jan 2017 09:29:58 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, Guochun Mao
- <guochun.mao@mediatek.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King
- <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
-Message-ID: <20170114092958.022f2fc8@bbrezillon>
-In-Reply-To: <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 References: <1484291609-20195-1-git-send-email-guochun.mao@mediatek.com>
  <1484291609-20195-3-git-send-email-guochun.mao@mediatek.com>
  <20170113151747.6bc85245@bbrezillon>
@@ -21,8 +9,22 @@ References: <1484291609-20195-1-git-send-email-guochun.mao@mediatek.com>
  <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
  <20170113175628.1793f433@bbrezillon>
  <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
+ <20170114092958.022f2fc8@bbrezillon>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ Guochun Mao <guochun.mao@mediatek.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <e7fa1542-f0e2-0e45-23b3-25d6491ae40d@gmail.com>
+Date: Sun, 15 Jan 2017 01:23:48 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20170114092958.022f2fc8@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,166 +35,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 13 Jan 2017 18:33:40 +0100
-Marek Vasut <marek.vasut@gmail.com> wrote:
-
-> On 01/13/2017 05:56 PM, Boris Brezillon wrote:
-> > On Fri, 13 Jan 2017 17:44:12 +0100
-> > Marek Vasut <marek.vasut@gmail.com> wrote:
-> >   
-> >> On 01/13/2017 05:28 PM, Boris Brezillon wrote:  
-> >>> On Fri, 13 Jan 2017 17:13:55 +0100
-> >>> Marek Vasut <marek.vasut@gmail.com> wrote:
-> >>>     
-> >>>> On 01/13/2017 04:12 PM, Matthias Brugger wrote:    
-> >>>>>
-> >>>>>
-> >>>>> On 13/01/17 15:17, Boris Brezillon wrote:      
-> >>>>>> On Fri, 13 Jan 2017 15:13:29 +0800
-> >>>>>> Guochun Mao <guochun.mao@mediatek.com> wrote:
-> >>>>>>      
-> >>>>>>> Add Mediatek nor flash node.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> >>>>>>> ---
-> >>>>>>>  arch/arm/boot/dts/mt2701-evb.dts |   25 +++++++++++++++++++++++++
-> >>>>>>>  arch/arm/boot/dts/mt2701.dtsi    |   12 ++++++++++++
-> >>>>>>>  2 files changed, 37 insertions(+)
-> >>>>>>>
-> >>>>>>> diff --git a/arch/arm/boot/dts/mt2701-evb.dts
-> >>>>>>> b/arch/arm/boot/dts/mt2701-evb.dts
-> >>>>>>> index 082ca88..85e5ae8 100644
-> >>>>>>> --- a/arch/arm/boot/dts/mt2701-evb.dts
-> >>>>>>> +++ b/arch/arm/boot/dts/mt2701-evb.dts
-> >>>>>>> @@ -24,6 +24,31 @@
-> >>>>>>>      };
-> >>>>>>>  };
-> >>>>>>>
-> >>>>>>> +&nor_flash {
-> >>>>>>> +    pinctrl-names = "default";
-> >>>>>>> +    pinctrl-0 = <&nor_pins_default>;
-> >>>>>>> +    status = "okay";
-> >>>>>>> +    flash@0 {
-> >>>>>>> +        compatible = "jedec,spi-nor";
-> >>>>>>> +        reg = <0>;
-> >>>>>>> +    };
-> >>>>>>> +};
-> >>>>>>> +
-> >>>>>>> +&pio {
-> >>>>>>> +    nor_pins_default: nor {
-> >>>>>>> +        pins1 {
-> >>>>>>> +            pinmux = <MT2701_PIN_240_EXT_XCS__FUNC_EXT_XCS>,
-> >>>>>>> +                 <MT2701_PIN_241_EXT_SCK__FUNC_EXT_SCK>,
-> >>>>>>> +                 <MT2701_PIN_239_EXT_SDIO0__FUNC_EXT_SDIO0>,
-> >>>>>>> +                 <MT2701_PIN_238_EXT_SDIO1__FUNC_EXT_SDIO1>,
-> >>>>>>> +                 <MT2701_PIN_237_EXT_SDIO2__FUNC_EXT_SDIO2>,
-> >>>>>>> +                 <MT2701_PIN_236_EXT_SDIO3__FUNC_EXT_SDIO3>;
-> >>>>>>> +            drive-strength = <MTK_DRIVE_4mA>;
-> >>>>>>> +            bias-pull-up;
-> >>>>>>> +        };
-> >>>>>>> +    };
-> >>>>>>> +};
-> >>>>>>> +
-> >>>>>>>  &uart0 {
-> >>>>>>>      status = "okay";
-> >>>>>>>  };
-> >>>>>>> diff --git a/arch/arm/boot/dts/mt2701.dtsi
-> >>>>>>> b/arch/arm/boot/dts/mt2701.dtsi
-> >>>>>>> index bdf8954..1eefce4 100644
-> >>>>>>> --- a/arch/arm/boot/dts/mt2701.dtsi
-> >>>>>>> +++ b/arch/arm/boot/dts/mt2701.dtsi
-> >>>>>>> @@ -227,6 +227,18 @@
-> >>>>>>>          status = "disabled";
-> >>>>>>>      };
-> >>>>>>>
-> >>>>>>> +    nor_flash: spi@11014000 {
-> >>>>>>> +        compatible = "mediatek,mt2701-nor",
-> >>>>>>> +                 "mediatek,mt8173-nor";      
-> >>>>>>
-> >>>>>> Why define both here? Is "mediatek,mt8173-nor" really providing a
-> >>>>>> subset of the features supported by "mediatek,mt2701-nor"?
-> >>>>>>      
-> >>>>>
-> >>>>> I think even if the ip block is the same, we should provide both
-> >>>>> bindings, just in case in the future we find out that mt2701 has some
-> >>>>> hidden bug, feature or bug-feature. This way even if we update the
-> >>>>> driver, we stay compatible with older device tree blobs in the wild.
-> >>>>>
-> >>>>> We can drop the mt2701-nor in the bindings definition if you want.     
-> >>>
-> >>> Oh, sorry, I misunderstood. What I meant is that if you want to
-> >>> list/support all possible compatibles, maybe you should just put one
-> >>> compatible in your DT and patch your driver (+ binding doc) to define
-> >>> all of them.    
-> >>
-> >> Uh, what ? I lost you here :-)
-
-I mean adding a new entry in the mtk_nor_of_ids table (in
-mtk-quadspi.c) so that the mediatek,mt2701-nor compatible string can be
-matched directly, and you won't need to define 2 compatible strings in
-your device tree.
-
-> >>  
-> >>>> This exactly. We should have a DT compat in the form:
-> >>>> compatible = "vendor,<soc>-block", "vendor,<oldest-compat-soc>-block";
-> >>>> Then if we find a problem in the future, we can match on the
-> >>>> "vendor,<soc>-block" and still support the old DTs.    
-> >>>
-> >>> Not sure it's only in term of whose IP appeared first. My understanding
-> >>> is that it's a way to provide inheritance. For example:
-> >>>
-> >>> 	"<soc-vendor>,<ip-version>", "<ip-vendor>,<ip-version>";
-> >>>
-> >>> or
-> >>>
-> >>> 	"<soc-vendor>,<full-featured-ip-version>","<soc-vendor>,<basic-feature-ip-version>";
-> >>>
-> >>> BTW, which one is the oldest between mt8173 and mt2701? :-)    
-> >>
-> >> And that's another thing and I agree with you, but I don't think that's
-> >> what we're discussing in this thread. But (!), OT, I think we should
-> >> codify the rules in Documentation/ . This discussion came up multiple
-> >> times recently.
-> >>
-> >> And my question still stands, what do we put into the DT here, IMO
-> >> compatible = "mediatek,mt2701-nor", "mediatek,mt8173-nor";  
-> > 
-> > I'd say
-> > 
-> > 	compatible = "mediatek,mt8173-nor";
-> > 
-> > because both compatible are referring to very specific IP version. It's
-> > not the same as  
+On 01/14/2017 09:29 AM, Boris Brezillon wrote:
+> On Fri, 13 Jan 2017 18:33:40 +0100
+> Marek Vasut <marek.vasut@gmail.com> wrote:
 > 
-> But then you don't have the ability to handle a block in this particular
-> SoC in case there's a bug found in it in the future,
-> so IMO it should be:
+>> On 01/13/2017 05:56 PM, Boris Brezillon wrote:
+>>> On Fri, 13 Jan 2017 17:44:12 +0100
+>>> Marek Vasut <marek.vasut@gmail.com> wrote:
+>>>   
+>>>> On 01/13/2017 05:28 PM, Boris Brezillon wrote:  
+>>>>> On Fri, 13 Jan 2017 17:13:55 +0100
+>>>>> Marek Vasut <marek.vasut@gmail.com> wrote:
+>>>>>     
+>>>>>> On 01/13/2017 04:12 PM, Matthias Brugger wrote:    
+>>>>>>>
+>>>>>>>
+>>>>>>> On 13/01/17 15:17, Boris Brezillon wrote:      
+>>>>>>>> On Fri, 13 Jan 2017 15:13:29 +0800
+>>>>>>>> Guochun Mao <guochun.mao@mediatek.com> wrote:
+>>>>>>>>      
+>>>>>>>>> Add Mediatek nor flash node.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+>>>>>>>>> ---
+>>>>>>>>>  arch/arm/boot/dts/mt2701-evb.dts |   25 +++++++++++++++++++++++++
+>>>>>>>>>  arch/arm/boot/dts/mt2701.dtsi    |   12 ++++++++++++
+>>>>>>>>>  2 files changed, 37 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/arch/arm/boot/dts/mt2701-evb.dts
+>>>>>>>>> b/arch/arm/boot/dts/mt2701-evb.dts
+>>>>>>>>> index 082ca88..85e5ae8 100644
+>>>>>>>>> --- a/arch/arm/boot/dts/mt2701-evb.dts
+>>>>>>>>> +++ b/arch/arm/boot/dts/mt2701-evb.dts
+>>>>>>>>> @@ -24,6 +24,31 @@
+>>>>>>>>>      };
+>>>>>>>>>  };
+>>>>>>>>>
+>>>>>>>>> +&nor_flash {
+>>>>>>>>> +    pinctrl-names = "default";
+>>>>>>>>> +    pinctrl-0 = <&nor_pins_default>;
+>>>>>>>>> +    status = "okay";
+>>>>>>>>> +    flash@0 {
+>>>>>>>>> +        compatible = "jedec,spi-nor";
+>>>>>>>>> +        reg = <0>;
+>>>>>>>>> +    };
+>>>>>>>>> +};
+>>>>>>>>> +
+>>>>>>>>> +&pio {
+>>>>>>>>> +    nor_pins_default: nor {
+>>>>>>>>> +        pins1 {
+>>>>>>>>> +            pinmux = <MT2701_PIN_240_EXT_XCS__FUNC_EXT_XCS>,
+>>>>>>>>> +                 <MT2701_PIN_241_EXT_SCK__FUNC_EXT_SCK>,
+>>>>>>>>> +                 <MT2701_PIN_239_EXT_SDIO0__FUNC_EXT_SDIO0>,
+>>>>>>>>> +                 <MT2701_PIN_238_EXT_SDIO1__FUNC_EXT_SDIO1>,
+>>>>>>>>> +                 <MT2701_PIN_237_EXT_SDIO2__FUNC_EXT_SDIO2>,
+>>>>>>>>> +                 <MT2701_PIN_236_EXT_SDIO3__FUNC_EXT_SDIO3>;
+>>>>>>>>> +            drive-strength = <MTK_DRIVE_4mA>;
+>>>>>>>>> +            bias-pull-up;
+>>>>>>>>> +        };
+>>>>>>>>> +    };
+>>>>>>>>> +};
+>>>>>>>>> +
+>>>>>>>>>  &uart0 {
+>>>>>>>>>      status = "okay";
+>>>>>>>>>  };
+>>>>>>>>> diff --git a/arch/arm/boot/dts/mt2701.dtsi
+>>>>>>>>> b/arch/arm/boot/dts/mt2701.dtsi
+>>>>>>>>> index bdf8954..1eefce4 100644
+>>>>>>>>> --- a/arch/arm/boot/dts/mt2701.dtsi
+>>>>>>>>> +++ b/arch/arm/boot/dts/mt2701.dtsi
+>>>>>>>>> @@ -227,6 +227,18 @@
+>>>>>>>>>          status = "disabled";
+>>>>>>>>>      };
+>>>>>>>>>
+>>>>>>>>> +    nor_flash: spi@11014000 {
+>>>>>>>>> +        compatible = "mediatek,mt2701-nor",
+>>>>>>>>> +                 "mediatek,mt8173-nor";      
+>>>>>>>>
+>>>>>>>> Why define both here? Is "mediatek,mt8173-nor" really providing a
+>>>>>>>> subset of the features supported by "mediatek,mt2701-nor"?
+>>>>>>>>      
+>>>>>>>
+>>>>>>> I think even if the ip block is the same, we should provide both
+>>>>>>> bindings, just in case in the future we find out that mt2701 has some
+>>>>>>> hidden bug, feature or bug-feature. This way even if we update the
+>>>>>>> driver, we stay compatible with older device tree blobs in the wild.
+>>>>>>>
+>>>>>>> We can drop the mt2701-nor in the bindings definition if you want.     
+>>>>>
+>>>>> Oh, sorry, I misunderstood. What I meant is that if you want to
+>>>>> list/support all possible compatibles, maybe you should just put one
+>>>>> compatible in your DT and patch your driver (+ binding doc) to define
+>>>>> all of them.    
+>>>>
+>>>> Uh, what ? I lost you here :-)
 > 
-> compatible = "mediatek,mt2701-nor", "mediatek,mt8173-nor";
+> I mean adding a new entry in the mtk_nor_of_ids table (in
+> mtk-quadspi.c) so that the mediatek,mt2701-nor compatible string can be
+> matched directly, and you won't need to define 2 compatible strings in
+> your device tree.
 
-Sorry again, I meant
+But then you grow the table in the driver, is that what we want if we
+can avoid that ?
 
-	compatible = "mediatek,mt2701-nor";
+>>>>  
+>>>>>> This exactly. We should have a DT compat in the form:
+>>>>>> compatible = "vendor,<soc>-block", "vendor,<oldest-compat-soc>-block";
+>>>>>> Then if we find a problem in the future, we can match on the
+>>>>>> "vendor,<soc>-block" and still support the old DTs.    
+>>>>>
+>>>>> Not sure it's only in term of whose IP appeared first. My understanding
+>>>>> is that it's a way to provide inheritance. For example:
+>>>>>
+>>>>> 	"<soc-vendor>,<ip-version>", "<ip-vendor>,<ip-version>";
+>>>>>
+>>>>> or
+>>>>>
+>>>>> 	"<soc-vendor>,<full-featured-ip-version>","<soc-vendor>,<basic-feature-ip-version>";
+>>>>>
+>>>>> BTW, which one is the oldest between mt8173 and mt2701? :-)    
+>>>>
+>>>> And that's another thing and I agree with you, but I don't think that's
+>>>> what we're discussing in this thread. But (!), OT, I think we should
+>>>> codify the rules in Documentation/ . This discussion came up multiple
+>>>> times recently.
+>>>>
+>>>> And my question still stands, what do we put into the DT here, IMO
+>>>> compatible = "mediatek,mt2701-nor", "mediatek,mt8173-nor";  
+>>>
+>>> I'd say
+>>>
+>>> 	compatible = "mediatek,mt8173-nor";
+>>>
+>>> because both compatible are referring to very specific IP version. It's
+>>> not the same as  
+>>
+>> But then you don't have the ability to handle a block in this particular
+>> SoC in case there's a bug found in it in the future,
+>> so IMO it should be:
+>>
+>> compatible = "mediatek,mt2701-nor", "mediatek,mt8173-nor";
+> 
+> Sorry again, I meant
+> 
+> 	compatible = "mediatek,mt2701-nor";
+> 
+>>
+>>> 	compatible = "mediatek,mt8173-nor", "mediatek,mt81xx-nor";  
+>>
+>> This doesn't look right, since here we add two new compatibles ...
+> 
+> That was just an example to describe how compatible inheritance works
+> (at least that's my understanding of it), it does not apply to this
+> particular use case.
 
-> 
-> > 	compatible = "mediatek,mt8173-nor", "mediatek,mt81xx-nor";  
-> 
-> This doesn't look right, since here we add two new compatibles ...
+Well this is OK I guess, but then you can also use "mediatek,mt8173-nor"
+as the oldest supported compatible and be done with it, no ? It looks a
+bit crappy though, I admit that ...
 
-That was just an example to describe how compatible inheritance works
-(at least that's my understanding of it), it does not apply to this
-particular use case.
-
-> 
-> > where you clearly have a generic compatible which is overloaded by a
-> > specific one.
-> > 
-> > But anyway, I'm not the one taking the decision here, let's wait for DT
-> > maintainers reviews.
-> >   
-> >> and what goes into the binding document ? I guess both too ?  
-> > 
-> > If both exist, they should be both documented.
-> >   
-> 
-> 
+-- 
+Best regards,
+Marek Vasut
