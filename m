@@ -1,22 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cT7ip-0002jP-IW
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 13:53:21 +0000
-Date: Mon, 16 Jan 2017 14:52:58 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org, Rob
- Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: add a common label property to
- all mtd devices
-Message-ID: <20170116145258.17707912@bbrezillon>
-In-Reply-To: <1484573225-19095-3-git-send-email-clg@kaod.org>
-References: <1484573225-19095-1-git-send-email-clg@kaod.org>
- <1484573225-19095-3-git-send-email-clg@kaod.org>
+Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cT7kp-0003Kw-BB
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 13:55:25 +0000
+Received: by mail-oi0-x244.google.com with SMTP id u143so12502708oif.3
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 05:55:02 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <20170116133503.13887-1-u.kleine-koenig@pengutronix.de>
+References: <20170116133503.13887-1-u.kleine-koenig@pengutronix.de>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date: Mon, 16 Jan 2017 14:55:01 +0100
+Message-ID: <CACna6ryLDwr0S=e-uUt+ZGcY8mNDnUtBPg_RmqtSVBziJkZd5w@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: add dt support for Everspin MRAMs
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>,
+ Jagan Teki <jagan@openedev.com>,
+ Marek Vasut <marex@denx.de>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,53 +30,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 16 Jan 2017 14:27:04 +0100
-C=C3=A9dric Le Goater <clg@kaod.org> wrote:
-
-> This can be used to easily identify a specific chip on a system with
-> multiple chips.
->=20
-> Signed-off-by: C=C3=A9dric Le Goater <clg@kaod.org>
+On 16 January 2017 at 14:35, Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+> The MR25 family doesn't support JEDEC, so they need explicit mentioning
+> in the list of supported spi IDs. This makes it possible to add these
+> using for example:
+>
+>         compatible =3D "everspin,mr25h40";
+>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 > ---
->  Documentation/devicetree/bindings/mtd/common.txt | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/common.txt
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documenta=
-tion/devicetree/bindings/mtd/common.txt
-> new file mode 100644
-> index 000000000000..a781641a3b00
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/common.txt
-> @@ -0,0 +1,12 @@
-> +* Common properties of all MTD devices
-> +
-> +Optional properties:
-> +- label : name to assign to mtd. If omitted, the label is the MTD device=
- name.
+> Hello,
+>
+> independent of the decision if -nonjedec is ok for m25p, this is needed
+> to make Everspin's MRAMs work.
+>
+> Best regards
+> Uwe
+>
+>  drivers/mtd/devices/m25p80.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -305,6 +305,11 @@ static const struct spi_device_id m25p_ids[] =3D {
+>         {"m25p40-nonjedec"},    {"m25p80-nonjedec"},    {"m25p16-nonjedec=
+"},
+>         {"m25p32-nonjedec"},    {"m25p64-nonjedec"},    {"m25p128-nonjede=
+c"},
+>
+> +       /* Everspin MRAMs without JEDEC support */
+> +       { "mr25h256" }, /* 256 kib, 40 MHz */
 
-Hm, the description is not really clear. How about:
+A trivial thing: I think it should be Kib
+https://en.wikipedia.org/wiki/Binary_prefix
 
-"
-- label: user-defined MTD device name. Can be used to assign user
-  friendly names to MTD devices (instead of the flash model or flash
-  controller based name) in order to ease flash device identification
-  and/or describe what they are used for.
-"
-
-Otherwise,
-
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-Thanks,
-
-Boris
-
-> +
-> +Example:
-> +
-> +	flash@0 {
-> +		label =3D "System-firmware";
-> +
-> +		/* flash type specific properties */
-> +	};
+--=20
+Rafa=C5=82
