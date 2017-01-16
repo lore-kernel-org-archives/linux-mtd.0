@@ -1,23 +1,23 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTEmL-000274-IU
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 21:25:27 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: add dt support for Everspin MRAMs
-To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
- Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>,
- Jagan Teki <jagan@openedev.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <CACna6ryLDwr0S=e-uUt+ZGcY8mNDnUtBPg_RmqtSVBziJkZd5w@mail.gmail.com>
- <20170116210039.25267-1-u.kleine-koenig@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
-From: Marek Vasut <marex@denx.de>
-Message-ID: <596c8ae0-06c5-5951-cf98-fa9eaffce374@denx.de>
-Date: Mon, 16 Jan 2017 22:24:33 +0100
+ id 1cTFTP-0008Nj-7O
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 22:09:56 +0000
+Received: by mail-lf0-x242.google.com with SMTP id q89so14209034lfi.1
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 14:09:34 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH] mtd: bcm47xxsflash: support reading flash out of mapping
+ window
+Date: Mon, 16 Jan 2017 23:09:16 +0100
+Message-Id: <20170116220916.2603-1-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20170116210039.25267-1-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,43 +28,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/16/2017 10:00 PM, Uwe Kleine-König wrote:
-> The MR25 family doesn't support JEDEC, so they need explicit mentioning
-> in the list of supported spi IDs. This makes it possible to add these
-> using for example:
-> 
-> 	compatible = "everspin,mr25h40";
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+For reading flash content we use MMIO but it's possible to read only
+first 16 MiB this way. It's simply an arch design/limitation.
+To support flash sizes bigger than 16 MiB implement indirect access
+using ChipCommon registers.
+This has been tested using MX25L25635F.
 
-> ---
-> Changes since (implicit) v1:
->  - use Kib instead of kib
-> 
->  drivers/mtd/devices/m25p80.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 9cf7fcd28034..aa50bd96de3a 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -305,6 +305,11 @@ static const struct spi_device_id m25p_ids[] = {
->  	{"m25p40-nonjedec"},	{"m25p80-nonjedec"},	{"m25p16-nonjedec"},
->  	{"m25p32-nonjedec"},	{"m25p64-nonjedec"},	{"m25p128-nonjedec"},
->  
-> +	/* Everspin MRAMs */
-> +	{ "mr25h256" }, /* 256 Kib, 40 MHz */
-> +	{ "mr25h10" },  /*   1 Mib, 40 MHz */
-> +	{ "mr25h40" },  /*   4 Mib, 40 MHz */
-> +
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(spi, m25p_ids);
-> 
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ drivers/mtd/devices/bcm47xxsflash.c | 12 +++++++++++-
+ drivers/mtd/devices/bcm47xxsflash.h |  3 +++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 4decd8c..5d57119 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -110,7 +110,17 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if ((from + len) > mtd->size)
+ 		return -EINVAL;
+ 
+-	memcpy_fromio(buf, b47s->window + from, len);
++	if (from + len <= BCM47XXSFLASH_WINDOW_SIZE) {
++		memcpy_fromio(buf, b47s->window + from, len);
++	} else {
++		size_t i;
++
++		for (i = 0; i < len; i++) {
++			b47s->cc_write(b47s, BCMA_CC_FLASHADDR, from++);
++			bcm47xxsflash_cmd(b47s, OPCODE_ST_READ4B);
++			*(buf++) = b47s->cc_read(b47s, BCMA_CC_FLASHDATA) & 0xff;
++		}
++	}
+ 	*retlen = len;
+ 
+ 	return len;
+diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
+index 1564b62..d8d1093 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.h
++++ b/drivers/mtd/devices/bcm47xxsflash.h
+@@ -3,6 +3,8 @@
+ 
+ #include <linux/mtd/mtd.h>
+ 
++#define BCM47XXSFLASH_WINDOW_SIZE		SZ_16M
++
+ /* Used for ST flashes only. */
+ #define OPCODE_ST_WREN		0x0006		/* Write Enable */
+ #define OPCODE_ST_WRDIS		0x0004		/* Write Disable */
+@@ -16,6 +18,7 @@
+ #define OPCODE_ST_RES		0x03ab		/* Read Electronic Signature */
+ #define OPCODE_ST_CSA		0x1000		/* Keep chip select asserted */
+ #define OPCODE_ST_SSE		0x0220		/* Sub-sector Erase */
++#define OPCODE_ST_READ4B	0x6313
+ 
+ /* Used for Atmel flashes only. */
+ #define OPCODE_AT_READ				0x07e8
 -- 
-Best regards,
-Marek Vasut
+2.10.1
