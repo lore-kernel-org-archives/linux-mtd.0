@@ -1,25 +1,20 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cT7PB-0000hk-8S
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 13:33:03 +0000
-Received: by mail-wm0-x241.google.com with SMTP id r144so30872112wme.0
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 05:32:40 -0800 (PST)
-Subject: Re: [PATCH] mtd: bcm47xxsflash: use platform_(set|get)_drvdata
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
+ id 1cT7Rk-0003HL-Cw
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 13:35:42 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>,
+ Jagan Teki <jagan@openedev.com>, Marek Vasut <marex@denx.de>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <20170116130409.2686-1-zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <976e2fab-e095-f7a8-97cb-ab9884d38115@gmail.com>
-Date: Mon, 16 Jan 2017 14:31:46 +0100
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: add dt support for Everspin MRAMs
+Date: Mon, 16 Jan 2017 14:35:03 +0100
+Message-Id: <20170116133503.13887-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20170116130409.2686-1-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,57 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/16/2017 02:04 PM, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> We have generic place & helpers for storing platform driver data so
-> there is no reason for using custom priv pointer.
-> 
-> This patch will be followed by cleaning struct bcma_sflash which will go
-> through another tree where bcma development happens.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+The MR25 family doesn't support JEDEC, so they need explicit mentioning
+in the list of supported spi IDs. This makes it possible to add these
+using for example:
 
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+	compatible = "everspin,mr25h40";
 
-> ---
->  drivers/mtd/devices/bcm47xxsflash.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-> index 514be04..4decd8c 100644
-> --- a/drivers/mtd/devices/bcm47xxsflash.c
-> +++ b/drivers/mtd/devices/bcm47xxsflash.c
-> @@ -284,7 +284,6 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
->  	b47s = devm_kzalloc(dev, sizeof(*b47s), GFP_KERNEL);
->  	if (!b47s)
->  		return -ENOMEM;
-> -	sflash->priv = b47s;
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	if (!res) {
-> @@ -334,6 +333,8 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
->  	b47s->size = sflash->size;
->  	bcm47xxsflash_fill_mtd(b47s, &pdev->dev);
->  
-> +	platform_set_drvdata(pdev, b47s);
-> +
->  	err = mtd_device_parse_register(&b47s->mtd, probes, NULL, NULL, 0);
->  	if (err) {
->  		pr_err("Failed to register MTD device: %d\n", err);
-> @@ -349,8 +350,7 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
->  
->  static int bcm47xxsflash_bcma_remove(struct platform_device *pdev)
->  {
-> -	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-> -	struct bcm47xxsflash *b47s = sflash->priv;
-> +	struct bcm47xxsflash *b47s = platform_get_drvdata(pdev);
->  
->  	mtd_device_unregister(&b47s->mtd);
->  	iounmap(b47s->window);
-> 
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
 
+independent of the decision if -nonjedec is ok for m25p, this is needed
+to make Everspin's MRAMs work.
 
+Best regards
+Uwe
+
+ drivers/mtd/devices/m25p80.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -305,6 +305,11 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{"m25p40-nonjedec"},	{"m25p80-nonjedec"},	{"m25p16-nonjedec"},
+ 	{"m25p32-nonjedec"},	{"m25p64-nonjedec"},	{"m25p128-nonjedec"},
+ 
++	/* Everspin MRAMs without JEDEC support */
++	{ "mr25h256" }, /* 256 kib, 40 MHz */
++	{ "mr25h10" },  /*   1 Mib, 40 MHz */
++	{ "mr25h40" },  /*   4 Mib, 40 MHz */
++
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(spi, m25p_ids);
 -- 
-Best regards,
-Marek Vasut
+2.11.0
