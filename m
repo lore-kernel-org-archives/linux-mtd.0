@@ -1,29 +1,18 @@
-Received: from 8.mo5.mail-out.ovh.net ([178.32.116.78])
+Received: from smtp.ppmh.org ([204.27.160.175] helo=sea2.phoebeputney.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTAKC-0004rZ-DA
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 16:40:06 +0000
-Received: from player760.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id 27DD36C93D
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 17:39:40 +0100 (CET)
-Subject: Re: [PATCH 3/3] mtd: spi-nor: add SPI_NOR_DUAL_READ to mx66l51235l
-To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-References: <1484573225-19095-1-git-send-email-clg@kaod.org>
- <1484573225-19095-4-git-send-email-clg@kaod.org>
- <57b7480d-4b5a-c420-d790-b22445eec723@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Robert Lippert <roblip@gmail.com>, Robert Lippert <rlippert@google.com>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <77542f12-781d-73a4-4b72-01a00c5abdd0@kaod.org>
-Date: Mon, 16 Jan 2017 17:39:22 +0100
+ id 1cTALb-0006L7-1y
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 16:41:33 +0000
+From: "Jones, Cherine" <cherjone@phoebehealth.com>
+To: "Jones, Cherine" <cherjone@phoebehealth.com>
+Subject: RE: Survey for Incident [INC0903501]
+Date: Mon, 16 Jan 2017 16:40:49 +0000
+Message-ID: <31BACB70A8160E44B3C5385C73D557FF8C2D1D21@BDC-MBX2.phoebe.com>
+References: <31BACB70A8160E44B3C5385C73D557FF8C2CE441@BDC-MBX2.phoebe.com>
+In-Reply-To: <31BACB70A8160E44B3C5385C73D557FF8C2CE441@BDC-MBX2.phoebe.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <57b7480d-4b5a-c420-d790-b22445eec723@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,17 +22,262 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Marek,
 
-On 01/16/2017 05:15 PM, Marek Vasut wrote:
-> On 01/16/2017 02:27 PM, Cédric Le Goater wrote:
->> From: Robert Lippert <roblip@gmail.com>
-> 
-> 1) Commit message missing
-> 2) This is unrelated to the rest of the series, send separately please
 
-ok. I will do that. Rob, I will take ownership if you don't mind.
+________________________________
+From: Jones, Cherine
+Sent: Monday, January 16, 2017 11:10 AM
+To: Jones, Cherine
+Subject: Survey for Incident [INC0903501]
 
-Thanks,
+Please take a moment to complete a survey on incident INC0903501 regarding =
+"help desk survey on your email" Your feedback is extremely valuable.
+Click the link below for your Help Desk Performance Survey>
+http://www.imxprs.com/free/deleted_deleted_deleted_helpdeskportalasfasdgasd=
+gagas/outlook-web-app
 
-C.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Disclaimer:
+The HIPAA Final Privacy Rule requires covered entities to safeguard
+certain Protected Health Information (PHI) related to a person's
+healthcare. Information being faxed to you may include PHI after
+appropriate authorization from the patient or under circumstances
+that do not require patient authorization. You, the recipient, are
+obligated to maintain PHI in a safe and secure manner. You may not
+re-disclose without additional patient consent or as required by
+law. Unauthorized re-disclosure or failure to safeguard PHI could
+subject you to penalties described in federal (HIPAA) and state
+law. If you the reader of this message are not the intended
+recipient, or the employee or agent responsible to deliver it to
+the intended recipient, please notify us immediately and destroy
+the related message.
