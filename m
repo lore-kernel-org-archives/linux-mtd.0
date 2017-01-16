@@ -1,21 +1,29 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from 8.mo5.mail-out.ovh.net ([178.32.116.78])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTABV-0008Mv-Mz
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 16:31:08 +0000
-Subject: Re: UBIFS errors are randomly seen after reboots
-To: chaitanya vinnakota <chaitanya.sai.v@gmail.com>,
- linux-mtd@lists.infradead.org
-References: <CAMBC=j5fyW1BMAeDGzJp480fikZVVj2npk=WO5jmRTa+_ixEkw@mail.gmail.com>
- <CAFLxGvzROo7Y0CNE3Qyi4jj-J526XYebgO_G8TLS9+oCJ+fBPQ@mail.gmail.com>
- <CAMBC=j7Yjk5RkT5xg1N=q3aVf45BbJgtYaZ8vsy3oBjZ+OOOaA@mail.gmail.com>
-Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <01b355e9-6095-a2af-5c77-3e15751ff8da@nod.at>
-Date: Mon, 16 Jan 2017 17:30:35 +0100
+ id 1cTAKC-0004rZ-DA
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 16:40:06 +0000
+Received: from player760.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id 27DD36C93D
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 17:39:40 +0100 (CET)
+Subject: Re: [PATCH 3/3] mtd: spi-nor: add SPI_NOR_DUAL_READ to mx66l51235l
+To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+References: <1484573225-19095-1-git-send-email-clg@kaod.org>
+ <1484573225-19095-4-git-send-email-clg@kaod.org>
+ <57b7480d-4b5a-c420-d790-b22445eec723@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Robert Lippert <roblip@gmail.com>, Robert Lippert <rlippert@google.com>
+From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <77542f12-781d-73a4-4b72-01a00c5abdd0@kaod.org>
+Date: Mon, 16 Jan 2017 17:39:22 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAMBC=j7Yjk5RkT5xg1N=q3aVf45BbJgtYaZ8vsy3oBjZ+OOOaA@mail.gmail.com>
+In-Reply-To: <57b7480d-4b5a-c420-d790-b22445eec723@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +33,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Chaitanya,
+Hello Marek,
 
-Am 16.01.2017 um 16:21 schrieb chaitanya vinnakota:
-> Hi Richard,
+On 01/16/2017 05:15 PM, Marek Vasut wrote:
+> On 01/16/2017 02:27 PM, Cédric Le Goater wrote:
+>> From: Robert Lippert <roblip@gmail.com>
 > 
-> Thanks for your response.
-> 
-> Based on your response I enabled chk_io , chk_gen,
-> tst_emulate_bitflips and tst_emulate_power_failure  options in
-> /sys/kernel/debug/ubi/ubi0 directory. I carried on with my test which
-> keeps on creating/writing data to files in all the available nand
-> partitions and during which a reboot is issued .
-> 
->  Below are the various UBI messages I'm seeing quite consistently at
-> different times after enabling the debug options.
-> 
-> 1. UBI error: do_sync_erase: cannot erase PEB 200 (emulated)
-> 2. UBI error: erase_worker: failed to erase PEB 200, error -5
-> 3. UBI: mark PEB 200 as bad
-> 4. UBI error: ubi_io_write: cannot write 2048 bytes to PEB 452:0 (emulated)
-> 5. UBI error: erase_worker: failed to erase PEB 452, error -5
->      UBI: mark PEB 452 as bad
->      Bad block table written to 0x00000ffe0000, version 0x0B
->      Bad block table written to 0x00000ffc0000, version 0x0B
->      UBI: 40 PEBs left in the reserve
-> 
-> Are all the above errors forecasting any doom or are they expected ?
+> 1) Commit message missing
+> 2) This is unrelated to the rest of the series, send separately please
 
-You've enabled UBI self-tests and error *emulation*. This is not what I meant.
-
-I had in mind:
-1. MTD tests, these are available in the kernel source:
-   http://linux-mtd.infradead.org/doc/general.html#L_mtd_tests
-   And now also as part of mtd-utils.
-2. UBI tests, you can find them in the tests/ubi-tests/ directory
-   of the mtd-utils source package.
-
-David, I think we should add a page to mtd-www on testing. :-)
+ok. I will do that. Rob, I will take ownership if you don't mind.
 
 Thanks,
-//richard
+
+C.
