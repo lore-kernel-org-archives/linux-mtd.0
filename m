@@ -1,28 +1,17 @@
-Received: from 12.mo5.mail-out.ovh.net ([46.105.39.65])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cT8j9-00078N-5y
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 14:57:44 +0000
-Received: from player760.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id 652166CAB1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 15:57:19 +0100 (CET)
-From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-To: linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1cT8yA-0004vE-4s
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 15:13:18 +0000
+From: Bastian Stender <bst@pengutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH v2 2/3] dt-bindings: mtd: add a common label property to all
- mtd devices
-Date: Mon, 16 Jan 2017 15:56:40 +0100
-Message-Id: <1484578600-25994-1-git-send-email-clg@kaod.org>
-In-Reply-To: <1484573225-19095-3-git-send-email-clg@kaod.org>
-References: <1484573225-19095-3-git-send-email-clg@kaod.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, Bastian Stender <bst@pengutronix.de>
+Subject: [PATCH 1/2] mtd: spi-nor: make n_sectors in flash_info 32 bit wide
+Date: Mon, 16 Jan 2017 16:12:13 +0100
+Message-Id: <20170116151214.11195-1-bst@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,36 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This can be used to easily identify a specific chip on a system with
-multiple chips.
+Since MRAM chips (like the Everspin mr25h40) are not sector organized
+they should be defined as n_sectors * 1 byte sectors. To be able to
+store the higher number of sectors n_sectors should be an unsigned 32
+bit integer just like sector_size.
 
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Bastian Stender <bst@pengutronix.de>
 ---
- Documentation/devicetree/bindings/mtd/common.txt | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/common.txt
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documentation/devicetree/bindings/mtd/common.txt
-new file mode 100644
-index 000000000000..fc068b923d7a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/common.txt
-@@ -0,0 +1,15 @@
-+* Common properties of all MTD devices
-+
-+Optional properties:
-+- label: user-defined MTD device name. Can be used to assign user
-+  friendly names to MTD devices (instead of the flash model or flash
-+  controller based name) in order to ease flash device identification
-+  and/or describe what they are used for.
-+
-+Example:
-+
-+	flash@0 {
-+		label = "System-firmware";
-+
-+		/* flash type specific properties */
-+	};
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index da7cd69d4857..c8399522c69d 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -55,7 +55,7 @@ struct flash_info {
+ 	 * necessarily called a "sector" by the vendor.
+ 	 */
+ 	unsigned	sector_size;
+-	u16		n_sectors;
++	unsigned	n_sectors;
+ 
+ 	u16		page_size;
+ 	u16		addr_width;
 -- 
-2.7.4
+2.11.0
