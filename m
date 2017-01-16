@@ -1,10 +1,10 @@
-Received: from 2.mo5.mail-out.ovh.net ([178.33.109.111])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cT7LH-0007jP-WB
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 13:29:00 +0000
+Received: from 20.mo5.mail-out.ovh.net ([91.121.55.239])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cT7LQ-0004H2-Bb
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 13:29:12 +0000
 Received: from player760.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id 21E476CB3E
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 14:28:33 +0100 (CET)
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id 933AE6CAE3
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 14:28:45 +0100 (CET)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -14,9 +14,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH 1/3] mtd: name the mtd device with an optional label property
-Date: Mon, 16 Jan 2017 14:27:03 +0100
-Message-Id: <1484573225-19095-2-git-send-email-clg@kaod.org>
+Subject: [PATCH 2/3] dt-bindings: mtd: add a common label property to all mtd
+ devices
+Date: Mon, 16 Jan 2017 14:27:04 +0100
+Message-Id: <1484573225-19095-3-git-send-email-clg@kaod.org>
 In-Reply-To: <1484573225-19095-1-git-send-email-clg@kaod.org>
 References: <1484573225-19095-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
@@ -34,29 +35,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 This can be used to easily identify a specific chip on a system with
 multiple chips.
 
-Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Cédric Le Goater <clg@kaod.org>
 ---
- drivers/mtd/mtdcore.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/devicetree/bindings/mtd/common.txt | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/common.txt
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 052772f7caef..bf61557b599d 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -654,6 +654,13 @@ static int mtd_add_device_partitions(struct mtd_info *mtd,
-  */
- static void mtd_set_dev_defaults(struct mtd_info *mtd)
- {
-+	/*
-+	 * If DT support is enabled and we have a valid of_node pointer, try to
-+	 * extract the MTD name from the label property.
-+	 */
-+	if (IS_ENABLED(CONFIG_OF) && mtd->dev.of_node)
-+		of_property_read_string(mtd->dev.of_node, "label", &mtd->name);
+diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documentation/devicetree/bindings/mtd/common.txt
+new file mode 100644
+index 000000000000..a781641a3b00
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/common.txt
+@@ -0,0 +1,12 @@
++* Common properties of all MTD devices
 +
- 	if (mtd->dev.parent) {
- 		if (!mtd->owner && mtd->dev.parent->driver)
- 			mtd->owner = mtd->dev.parent->driver->owner;
++Optional properties:
++- label : name to assign to mtd. If omitted, the label is the MTD device name.
++
++Example:
++
++	flash@0 {
++		label = "System-firmware";
++
++		/* flash type specific properties */
++	};
 -- 
 2.7.4
