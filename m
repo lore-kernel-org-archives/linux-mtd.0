@@ -1,24 +1,22 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTFTP-0008Nj-7O
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 22:09:56 +0000
-Received: by mail-lf0-x242.google.com with SMTP id q89so14209034lfi.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 14:09:34 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1cTFjG-0007Nl-RZ
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 22:26:20 +0000
+Received: by mail-pf0-x242.google.com with SMTP id f144so14789116pfa.2
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 14:25:57 -0800 (PST)
+Date: Mon, 16 Jan 2017 14:25:54 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] mtd: bcm47xxsflash: support reading flash out of mapping
- window
-Date: Mon, 16 Jan 2017 23:09:16 +0100
-Message-Id: <20170116220916.2603-1-zajec5@gmail.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: [GIT PULL] MTD fixes for 4.10
+Message-ID: <20170116222554.GA30118@brian-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,63 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Hi Linus,
 
-For reading flash content we use MMIO but it's possible to read only
-first 16 MiB this way. It's simply an arch design/limitation.
-To support flash sizes bigger than 16 MiB implement indirect access
-using ChipCommon registers.
-This has been tested using MX25L25635F.
+I've been holding onto this one a little too long.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- drivers/mtd/devices/bcm47xxsflash.c | 12 +++++++++++-
- drivers/mtd/devices/bcm47xxsflash.h |  3 +++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+The following changes since commit 0c744ea4f77d72b3dcebb7a8f2684633ec79be88:
 
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index 4decd8c..5d57119 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -110,7 +110,17 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if ((from + len) > mtd->size)
- 		return -EINVAL;
- 
--	memcpy_fromio(buf, b47s->window + from, len);
-+	if (from + len <= BCM47XXSFLASH_WINDOW_SIZE) {
-+		memcpy_fromio(buf, b47s->window + from, len);
-+	} else {
-+		size_t i;
-+
-+		for (i = 0; i < len; i++) {
-+			b47s->cc_write(b47s, BCMA_CC_FLASHADDR, from++);
-+			bcm47xxsflash_cmd(b47s, OPCODE_ST_READ4B);
-+			*(buf++) = b47s->cc_read(b47s, BCMA_CC_FLASHDATA) & 0xff;
-+		}
-+	}
- 	*retlen = len;
- 
- 	return len;
-diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
-index 1564b62..d8d1093 100644
---- a/drivers/mtd/devices/bcm47xxsflash.h
-+++ b/drivers/mtd/devices/bcm47xxsflash.h
-@@ -3,6 +3,8 @@
- 
- #include <linux/mtd/mtd.h>
- 
-+#define BCM47XXSFLASH_WINDOW_SIZE		SZ_16M
-+
- /* Used for ST flashes only. */
- #define OPCODE_ST_WREN		0x0006		/* Write Enable */
- #define OPCODE_ST_WRDIS		0x0004		/* Write Disable */
-@@ -16,6 +18,7 @@
- #define OPCODE_ST_RES		0x03ab		/* Read Electronic Signature */
- #define OPCODE_ST_CSA		0x1000		/* Keep chip select asserted */
- #define OPCODE_ST_SSE		0x0220		/* Sub-sector Erase */
-+#define OPCODE_ST_READ4B	0x6313
- 
- /* Used for Atmel flashes only. */
- #define OPCODE_AT_READ				0x07e8
--- 
-2.10.1
+  Linux 4.10-rc2 (2017-01-01 14:31:53 -0800)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20170116
+
+for you to fetch changes up to 5bdee5496978c6738dd90869b54c0f30c0344ccf:
+
+  Merge tag 'nand/fixes-for-4.10-rc3' of github.com:linux-nand/linux (2017-01-05 09:33:26 -0800)
+
+----------------------------------------------------------------
+MTD fixes for 4.10
+
+Just NAND updates from Boris:
+"   - Forbid compiling xway NAND controller driver as a module
+    - Fix tango NAND DT binding and make sure the controller is in a clean
+      state at probe time
+    - Add dependency on HAS_IOMEM to the oxnas NAND driver
+    - Fix irq number validity check in the lpc32xx driver
+"
+
+----------------------------------------------------------------
+Brian Norris (1):
+      Merge tag 'nand/fixes-for-4.10-rc3' of github.com:linux-nand/linux
+
+Hauke Mehrtens (2):
+      mtd: nand: xway: disable module support
+      mtd: nand: xway: fix build because of module functions
+
+Marc Gonzalez (2):
+      mtd: nand: tango: Update DT binding description
+      mtd: nand: tango: Reset pbus to raw mode in probe
+
+Randy Dunlap (1):
+      mtd: nand: oxnas_nand: fix build errors on arch/um, require HAS_IOMEM
+
+Vladimir Zapolskiy (1):
+      mtd: nand: lpc32xx: fix invalid error handling of a requested irq
+
+ Documentation/devicetree/bindings/mtd/tango-nand.txt | 6 +++---
+ drivers/mtd/nand/Kconfig                             | 3 ++-
+ drivers/mtd/nand/lpc32xx_mlc.c                       | 2 +-
+ drivers/mtd/nand/tango_nand.c                        | 4 +++-
+ drivers/mtd/nand/xway_nand.c                         | 5 +----
+ 5 files changed, 10 insertions(+), 10 deletions(-)
