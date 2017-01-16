@@ -1,25 +1,28 @@
 Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTBez-0000z1-Bx
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 18:05:39 +0000
-Received: by mail-lf0-x243.google.com with SMTP id x1so8286423lff.0
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 10:05:16 -0800 (PST)
-Subject: Re: [PATCH 2/2] mtd: spi-nor: fix mr25h* definitions
-To: Bastian Stender <bst@pengutronix.de>, David Woodhouse <dwmw2@infradead.org>
-References: <20170116151214.11195-1-bst@pengutronix.de>
- <20170116151214.11195-2-bst@pengutronix.de>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de
+ id 1cTBez-00014C-Bw
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 18:05:42 +0000
+Received: by mail-lf0-x243.google.com with SMTP id h65so13579302lfi.3
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 10:05:18 -0800 (PST)
+Subject: Re: [PATCH] mtd: spi-nor: add dt support for Everspin MRAMs
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+References: <20170116133503.13887-1-u.kleine-koenig@pengutronix.de>
+ <CACna6ryLDwr0S=e-uUt+ZGcY8mNDnUtBPg_RmqtSVBziJkZd5w@mail.gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Jagan Teki <jagan@openedev.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <371bf936-b854-68a1-2c65-69e426ad3aa3@gmail.com>
-Date: Mon, 16 Jan 2017 17:07:17 +0100
+Message-ID: <261f6372-ef71-8e6c-9b13-13e73140bb87@gmail.com>
+Date: Mon, 16 Jan 2017 17:08:02 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170116151214.11195-2-bst@pengutronix.de>
+In-Reply-To: <CACna6ryLDwr0S=e-uUt+ZGcY8mNDnUtBPg_RmqtSVBziJkZd5w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +32,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/16/2017 04:12 PM, Bastian Stender wrote:
-> The previous definitions for mr25h* chips lead to unnecessary limits
-> regarding writesize and eraseblocksize for MRAM. MRAM is random access
-> memory rather than page, sector, or block organized memory.
+On 01/16/2017 02:55 PM, Rafał Miłecki wrote:
+> On 16 January 2017 at 14:35, Uwe Kleine-König
+> <u.kleine-koenig@pengutronix.de> wrote:
+>> The MR25 family doesn't support JEDEC, so they need explicit mentioning
+>> in the list of supported spi IDs. This makes it possible to add these
+>> using for example:
+>>
+>>         compatible = "everspin,mr25h40";
+>>
+>> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+>> ---
+>> Hello,
+>>
+>> independent of the decision if -nonjedec is ok for m25p, this is needed
+>> to make Everspin's MRAMs work.
+>>
+>> Best regards
+>> Uwe
+>>
+>>  drivers/mtd/devices/m25p80.c | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>> --- a/drivers/mtd/devices/m25p80.c
+>> +++ b/drivers/mtd/devices/m25p80.c
+>> @@ -305,6 +305,11 @@ static const struct spi_device_id m25p_ids[] = {
+>>         {"m25p40-nonjedec"},    {"m25p80-nonjedec"},    {"m25p16-nonjedec"},
+>>         {"m25p32-nonjedec"},    {"m25p64-nonjedec"},    {"m25p128-nonjedec"},
+>>
+>> +       /* Everspin MRAMs without JEDEC support */
+>> +       { "mr25h256" }, /* 256 kib, 40 MHz */
 > 
-> Instead of 1 sector with 512KB the mr25h40 MRAM chip should be defined
-> as 512K sectors with 1 byte each. This makes it writesize and
-> eraseblocksize aligned and reflects MRAM functionality properly.
-
-Wouldn't this degrade the performance ? ie. if you write the flash, it
-will send PP opcode + 1 byte in a loop, right ?
-
-> Signed-off-by: Bastian Stender <bst@pengutronix.de>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> A trivial thing: I think it should be Kib
+> https://en.wikipedia.org/wiki/Binary_prefix
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index c8399522c69d..6a39b18baa70 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -824,9 +824,9 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
->  
->  	/* Everspin */
-> -	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> -	{ "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> -	{ "mr25h40",  CAT25_INFO(512 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> +	{ "mr25h256", CAT25_INFO(1,  32 * 1024, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> +	{ "mr25h10",  CAT25_INFO(1, 128 * 1024, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-> +	{ "mr25h40",  CAT25_INFO(1, 512 * 1024, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
->  
->  	/* Fujitsu */
->  	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE) },
-> 
-
+Except for that, it looks good IMO.
 
 -- 
 Best regards,
