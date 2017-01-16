@@ -1,19 +1,20 @@
-Received: from mail-oi0-x229.google.com ([2607:f8b0:4003:c06::229])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cT26H-0008LT-4R
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 07:53:10 +0000
-Received: by mail-oi0-x229.google.com with SMTP id w204so95729563oiw.0
- for <linux-mtd@lists.infradead.org>; Sun, 15 Jan 2017 23:52:48 -0800 (PST)
+ id 1cT2M8-0005ZC-Ap
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 08:09:34 +0000
+Subject: Re: Buildroot fastmap attaching
+To: Travis Waters <Travis.Waters@sdl.usu.edu>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <200126964.110948.1484244422358.JavaMail.administrator@mtom.nabble.com>
+ <cfb48c7f-f1ca-2016-aa62-e22153f50f8f@nod.at>
+ <007972525797451588d3774e9c93586e@Ek.usurf.usu.edu>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <84d71ba6-5586-8af9-4b97-3d0c7b7bc980@nod.at>
+Date: Mon, 16 Jan 2017 09:09:02 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAMBC=j5fyW1BMAeDGzJp480fikZVVj2npk=WO5jmRTa+_ixEkw@mail.gmail.com>
-References: <CAMBC=j5fyW1BMAeDGzJp480fikZVVj2npk=WO5jmRTa+_ixEkw@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Mon, 16 Jan 2017 08:52:47 +0100
-Message-ID: <CAFLxGvzROo7Y0CNE3Qyi4jj-J526XYebgO_G8TLS9+oCJ+fBPQ@mail.gmail.com>
-Subject: Re: UBIFS errors are randomly seen after reboots
-To: chaitanya vinnakota <chaitanya.sai.v@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <007972525797451588d3774e9c93586e@Ek.usurf.usu.edu>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Chaitanya,
+Travis,
 
-On Mon, Jan 16, 2017 at 6:28 AM, chaitanya vinnakota
-<chaitanya.sai.v@gmail.com> wrote:
-> Hi All,
->
-> We are observing  UBIFS and ECC errors randomly even after safe
-> reboots . We are using a 256M  spansion nand flash and the kernel
-> version is 3.2.54. These errors disappear upon next reboots and appear
-> again randomly.
+Am 12.01.2017 um 22:48 schrieb Travis Waters:
+> Richard,
+> 
+> I'm sorry I e-mailed you directly...I didn't see the list address until later (I've since e-mailed the list from a personal account).
+> 
+>> Hmm, fastmap saw a lot of fixes since it got merged, did you backport all of them?
+> 
+> Not yet, I haven't been able to find a list of what I'm missing.   Which repo/branch should I use to compare and merge in commits?
 
-Your log does not show ECC errors.
+I'd backport the whole UBI subsystem.
+Usually we mark critical fixes with the stable tag, but in the early
+days of fastmap we didn't because of reasons.
 
-> [   10.428162] UBIFS error (pid 1): ubifs_check_node: bad CRC:
-> calculated 0xa86e925a, read 0xd9a150bb
-
-Hmm, a bad CRC without ECC error? Odd.
-
-> Is the issue with UBIFS or with the nand driver ?
-
-I'd check the driver first. Does it pass mtd and ubi tests?
-
--- 
 Thanks,
 //richard
