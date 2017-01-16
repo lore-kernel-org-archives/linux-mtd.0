@@ -1,27 +1,24 @@
 Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cT9xL-0001lU-0J
- for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 16:16:28 +0000
-Received: by mail-lf0-x241.google.com with SMTP id h65so13207275lfi.3
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 08:16:00 -0800 (PST)
-Subject: Re: [PATCH 3/3] mtd: spi-nor: add SPI_NOR_DUAL_READ to mx66l51235l
-To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- linux-mtd@lists.infradead.org
-References: <1484573225-19095-1-git-send-email-clg@kaod.org>
- <1484573225-19095-4-git-send-email-clg@kaod.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+ id 1cTA9I-0006Ao-VD
+ for linux-mtd@lists.infradead.org; Mon, 16 Jan 2017 16:28:50 +0000
+Received: by mail-lf0-x241.google.com with SMTP id q89so13303257lfi.1
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 08:28:27 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Robert Lippert <roblip@gmail.com>, Robert Lippert <rlippert@google.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <57b7480d-4b5a-c420-d790-b22445eec723@gmail.com>
-Date: Mon, 16 Jan 2017 17:15:56 +0100
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-mtd@lists.infradead.org, linux-wireless@vger.kernel.org,
+ Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V2] mtd: bcm47xxsflash: use platform_(set|get)_drvdata
+Date: Mon, 16 Jan 2017 17:28:18 +0100
+Message-Id: <20170116162818.12094-1-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1484573225-19095-4-git-send-email-clg@kaod.org>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,34 +29,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/16/2017 02:27 PM, Cédric Le Goater wrote:
-> From: Robert Lippert <roblip@gmail.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-1) Commit message missing
-2) This is unrelated to the rest of the series, send separately please
+We have generic place & helpers for storing platform driver data so
+there is no reason for using custom priv pointer.
 
-> Signed-off-by: Robert Lippert <rlippert@google.com>
-> Signed-off-by: Cédric Le Goater <clg@kaod.org>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index da7cd69d4857..775788f9828a 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -876,7 +876,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
->  	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
->  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
-> -	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
-> +	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
->  
->  	/* Micron */
-> 
+This allows cleaning up struct bcma_sflash from unneeded fields.
 
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+Kalle: This is mtd focused patch, so I guess it should go through mtd tree. Do
+       you find bcma change important enough to care to Ack it? :)
+---
+ drivers/mtd/devices/bcm47xxsflash.c         | 6 +++---
+ include/linux/bcma/bcma_driver_chipcommon.h | 3 ---
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 514be04..4decd8c 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -284,7 +284,6 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 	b47s = devm_kzalloc(dev, sizeof(*b47s), GFP_KERNEL);
+ 	if (!b47s)
+ 		return -ENOMEM;
+-	sflash->priv = b47s;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res) {
+@@ -334,6 +333,8 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 	b47s->size = sflash->size;
+ 	bcm47xxsflash_fill_mtd(b47s, &pdev->dev);
+ 
++	platform_set_drvdata(pdev, b47s);
++
+ 	err = mtd_device_parse_register(&b47s->mtd, probes, NULL, NULL, 0);
+ 	if (err) {
+ 		pr_err("Failed to register MTD device: %d\n", err);
+@@ -349,8 +350,7 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 
+ static int bcm47xxsflash_bcma_remove(struct platform_device *pdev)
+ {
+-	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
+-	struct bcm47xxsflash *b47s = sflash->priv;
++	struct bcm47xxsflash *b47s = platform_get_drvdata(pdev);
+ 
+ 	mtd_device_unregister(&b47s->mtd);
+ 	iounmap(b47s->window);
+diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
+index b20e3d5..2f1c690 100644
+--- a/include/linux/bcma/bcma_driver_chipcommon.h
++++ b/include/linux/bcma/bcma_driver_chipcommon.h
+@@ -593,9 +593,6 @@ struct bcma_sflash {
+ 	u32 blocksize;
+ 	u16 numblocks;
+ 	u32 size;
+-
+-	struct mtd_info *mtd;
+-	void *priv;
+ };
+ #endif
+ 
 -- 
-Best regards,
-Marek Vasut
+2.10.1
