@@ -1,29 +1,25 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from exsmtp03.microchip.com ([198.175.253.49]
+ helo=email.microchip.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTQdw-0002wM-DC
- for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 10:05:34 +0000
-Received: by mail-lf0-x244.google.com with SMTP id h65so15460203lfi.3
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2017 02:05:11 -0800 (PST)
-Subject: Re: [PATCH] mtd: bcm47xxsflash: support reading flash out of mapping
- window
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-References: <20170116220916.2603-1-zajec5@gmail.com>
- <41e65a7a-e413-9e00-f629-98636ed76212@gmail.com>
- <CACna6ryLLwO54FBfqUekxrKVK0PNVQiHrwOPdnJToseKWw8POA@mail.gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <353656d9-d2a4-92b6-ce6c-9a3f1d69409f@gmail.com>
-Date: Tue, 17 Jan 2017 10:49:23 +0100
+ id 1cTR46-0006PZ-Jq
+ for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 10:32:41 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: add dt support for Everspin MRAMs
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>, Jagan Teki
+ <jagan@openedev.com>, Marek Vasut <marex@denx.de>
+References: <CACna6ryLDwr0S=e-uUt+ZGcY8mNDnUtBPg_RmqtSVBziJkZd5w@mail.gmail.com>
+ <20170116210039.25267-1-u.kleine-koenig@pengutronix.de>
+ <aa0fc197-c320-6d1c-a892-6e272e16366a@atmel.com>
+CC: <linux-mtd@lists.infradead.org>, <kernel@pengutronix.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Mark Rutland <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <480df61d-c949-b3b0-61a4-d9db17f09e7d@atmel.com>
+Date: Tue, 17 Jan 2017 11:32:11 +0100
 MIME-Version: 1.0
-In-Reply-To: <CACna6ryLLwO54FBfqUekxrKVK0PNVQiHrwOPdnJToseKWw8POA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <aa0fc197-c320-6d1c-a892-6e272e16366a@atmel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,115 +30,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/17/2017 07:58 AM, Rafał Miłecki wrote:
-> On 17 January 2017 at 04:18, Marek Vasut <marek.vasut@gmail.com> wrote:
->> On 01/16/2017 11:09 PM, Rafał Miłecki wrote:
->>> From: Rafał Miłecki <rafal@milecki.pl>
->>>
->>> For reading flash content we use MMIO but it's possible to read only
->>> first 16 MiB this way. It's simply an arch design/limitation.
->>> To support flash sizes bigger than 16 MiB implement indirect access
->>> using ChipCommon registers.
->>> This has been tested using MX25L25635F.
->>>
->>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->>> ---
->>>  drivers/mtd/devices/bcm47xxsflash.c | 12 +++++++++++-
->>>  drivers/mtd/devices/bcm47xxsflash.h |  3 +++
->>>  2 files changed, 14 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
->>> index 4decd8c..5d57119 100644
->>> --- a/drivers/mtd/devices/bcm47xxsflash.c
->>> +++ b/drivers/mtd/devices/bcm47xxsflash.c
->>> @@ -110,7 +110,17 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
->>>       if ((from + len) > mtd->size)
->>>               return -EINVAL;
->>>
->>> -     memcpy_fromio(buf, b47s->window + from, len);
->>> +     if (from + len <= BCM47XXSFLASH_WINDOW_SIZE) {
->>> +             memcpy_fromio(buf, b47s->window + from, len);
->>> +     } else {
->>> +             size_t i;
->>> +
->>> +             for (i = 0; i < len; i++) {
->>> +                     b47s->cc_write(b47s, BCMA_CC_FLASHADDR, from++);
->>> +                     bcm47xxsflash_cmd(b47s, OPCODE_ST_READ4B);
->>> +                     *(buf++) = b47s->cc_read(b47s, BCMA_CC_FLASHDATA) & 0xff;
+Le 17/01/2017 à 10:48, Cyrille Pitchen a écrit :
+> Hi,
+> 
+> Le 16/01/2017 à 22:00, Uwe Kleine-König a écrit :
+>> The MR25 family doesn't support JEDEC, so they need explicit mentioning
+>> in the list of supported spi IDs. This makes it possible to add these
+>> using for example:
 >>
->> Do you really need to send command on every write into the FLASHADDR
->> register ? Doesn't this hardware support some sort of seqeuntial reading?
-> 
-> Yes, I need to. If there is some other way it's undocumented and not
-> used by Broadcom. As a quick check I tried not writing to FLASHADDR
-> every time, but it didn't work.
-
-Oh well, that's a bit sad. Thanks for checking.
-
->> Are you sure this has no side-effects when you mix this with reading
->> from the flash window ?
-> 
-> No side effects. I also tried reading whole flash content using this
-> indirect access and it worked as well.
-
-Well, if you read the whole flash, you will trigger the first windowed
-read and then the new code, in sequence. Try doing some read pattern
-where you read from the beginning and mix it with reads from the end.
-That will alternate between these two bits of code.
-
->> Also, the parenthesis around buf++ are not needed and the & 0xff should
->> not be needed either.
-> 
-> You're right about buf. I'm not sure about & 0xff though. In theory
-> you're correct. This is 32b register and we use 32b read function to
-> access it but I never saw anything set in 0xffffff00. On the other
-> hand Broadcom /advises/ (does) this & 0xff so I'm wondering if there
-> can be some hardware with unexpected behavior in the world? What would
-> happen if we got 32b value with some bits in ~0xff?
-
-Well you're storing unsigned 32bit to unsigned 8bit, right ?
-
->>> +             }
->>> +     }
->>>       *retlen = len;
->>>
->>>       return len;
->>> diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
->>> index 1564b62..d8d1093 100644
->>> --- a/drivers/mtd/devices/bcm47xxsflash.h
->>> +++ b/drivers/mtd/devices/bcm47xxsflash.h
->>> @@ -3,6 +3,8 @@
->>>
->>>  #include <linux/mtd/mtd.h>
->>>
->>> +#define BCM47XXSFLASH_WINDOW_SIZE            SZ_16M
->>> +
->>>  /* Used for ST flashes only. */
->>>  #define OPCODE_ST_WREN               0x0006          /* Write Enable */
->>>  #define OPCODE_ST_WRDIS              0x0004          /* Write Disable */
+>> 	compatible = "everspin,mr25h40";
 >>
->> These look like standard opcodes, why don't you use standard opcodes in
->> this driver and instead redefine them here ?
-> 
-> I guess it's because these are the only 2 opcodes we could share.
-> Other than them Broadcom uses their magic 16b opcodes so I guess it
-> doesn't change that much since we need most of them defined locally
-> anyway.
-
-I see.
-
->>> @@ -16,6 +18,7 @@
->>>  #define OPCODE_ST_RES                0x03ab          /* Read Electronic Signature */
->>>  #define OPCODE_ST_CSA                0x1000          /* Keep chip select asserted */
->>>  #define OPCODE_ST_SSE                0x0220          /* Sub-sector Erase */
->>> +#define OPCODE_ST_READ4B     0x6313
+>> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+>> ---
+>> Changes since (implicit) v1:
+>>  - use Kib instead of kib
 >>
->> Needs a comment to keep this consistent I think.
+>>  drivers/mtd/devices/m25p80.c | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>> index 9cf7fcd28034..aa50bd96de3a 100644
+>> --- a/drivers/mtd/devices/m25p80.c
+>> +++ b/drivers/mtd/devices/m25p80.c
+>> @@ -305,6 +305,11 @@ static const struct spi_device_id m25p_ids[] = {
+>>  	{"m25p40-nonjedec"},	{"m25p80-nonjedec"},	{"m25p16-nonjedec"},
+>>  	{"m25p32-nonjedec"},	{"m25p64-nonjedec"},	{"m25p128-nonjedec"},
+>>  
+>> +	/* Everspin MRAMs */
+>> +	{ "mr25h256" }, /* 256 Kib, 40 MHz */
 > 
-> OK
+> There is already a "mr25h256" entry in the m25p_ids[] array.
+> It's a good idea to regroup everspin memories but it might be better to
+> reuse the existing entry.
 > 
+> The previous entry is between "at25df321a", ... and "mx25l4005a" so it
+> doesn't appear in your patch.
+> 
+>> +	{ "mr25h10" },  /*   1 Mib, 40 MHz */
+>> +	{ "mr25h40" },  /*   4 Mib, 40 MHz */
+>> +
 
+Also if you add new entries, I think you should update the "Supported chip
+names" section in Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt:
 
--- 
+"mr25h256" is already there.
+
 Best regards,
-Marek Vasut
+
+Cyrille
+
+
+>>  	{ },
+>>  };
+>>  MODULE_DEVICE_TABLE(spi, m25p_ids);
+>>
+> 
