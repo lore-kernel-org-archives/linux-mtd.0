@@ -1,28 +1,27 @@
-Date: Mon, 16 Jan 2017 22:01:18 -0500
-From: Theodore Ts'o <tytso@mit.edu>
-To: Michal Hocko <mhocko@kernel.org>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
- Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
- logfs@logfs.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
- Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 7/8] Revert "ext4: avoid deadlocks in the writeback path
- by using sb_getblk_gfp"
-Message-ID: <20170117030118.727jqyamjhojzajb@thunk.org>
-References: <20170106141107.23953-1-mhocko@kernel.org>
- <20170106141107.23953-8-mhocko@kernel.org>
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cTKIO-0003ed-9J
+ for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 03:18:54 +0000
+Received: by mail-wm0-x241.google.com with SMTP id d140so18836802wmd.2
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 19:18:31 -0800 (PST)
+Subject: Re: [PATCH] mtd: bcm47xxsflash: support reading flash out of mapping
+ window
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <20170116220916.2603-1-zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <41e65a7a-e413-9e00-f629-98636ed76212@gmail.com>
+Date: Tue, 17 Jan 2017 04:18:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170106141107.23953-8-mhocko@kernel.org>
+In-Reply-To: <20170116220916.2603-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,30 +31,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 06, 2017 at 03:11:06PM +0100, Michal Hocko wrote:
-> From: Michal Hocko <mhocko@suse.com>
+On 01/16/2017 11:09 PM, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> This reverts commit c45653c341f5c8a0ce19c8f0ad4678640849cb86 because
-> sb_getblk_gfp is not really needed as
-> sb_getblk
->   __getblk_gfp
->     __getblk_slow
->       grow_buffers
->         grow_dev_page
-> 	  gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS) | gfp
+> For reading flash content we use MMIO but it's possible to read only
+> first 16 MiB this way. It's simply an arch design/limitation.
+> To support flash sizes bigger than 16 MiB implement indirect access
+> using ChipCommon registers.
+> This has been tested using MX25L25635F.
 > 
-> so __GFP_FS is cleared unconditionally and therefore the above commit
-> didn't have any real effect in fact.
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+>  drivers/mtd/devices/bcm47xxsflash.c | 12 +++++++++++-
+>  drivers/mtd/devices/bcm47xxsflash.h |  3 +++
+>  2 files changed, 14 insertions(+), 1 deletion(-)
 > 
-> This patch should not introduce any functional change. The main point
-> of this change is to reduce explicit GFP_NOFS usage inside ext4 code to
-> make the review of the remaining usage easier.
-> 
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+> index 4decd8c..5d57119 100644
+> --- a/drivers/mtd/devices/bcm47xxsflash.c
+> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+> @@ -110,7 +110,17 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  	if ((from + len) > mtd->size)
+>  		return -EINVAL;
+>  
+> -	memcpy_fromio(buf, b47s->window + from, len);
+> +	if (from + len <= BCM47XXSFLASH_WINDOW_SIZE) {
+> +		memcpy_fromio(buf, b47s->window + from, len);
+> +	} else {
+> +		size_t i;
+> +
+> +		for (i = 0; i < len; i++) {
+> +			b47s->cc_write(b47s, BCMA_CC_FLASHADDR, from++);
+> +			bcm47xxsflash_cmd(b47s, OPCODE_ST_READ4B);
+> +			*(buf++) = b47s->cc_read(b47s, BCMA_CC_FLASHDATA) & 0xff;
 
-If I'm not mistaken, this patch is not dependent on any of the other
-patches in this series (and the other patches are not dependent on
-this one).  Hence, I could take this patch via the ext4 tree, correct?
+Do you really need to send command on every write into the FLASHADDR
+register ? Doesn't this hardware support some sort of seqeuntial reading?
 
-     	    	     	   	     - Ted
+Are you sure this has no side-effects when you mix this with reading
+from the flash window ?
+
+Also, the parenthesis around buf++ are not needed and the & 0xff should
+not be needed either.
+
+> +		}
+> +	}
+>  	*retlen = len;
+>  
+>  	return len;
+> diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
+> index 1564b62..d8d1093 100644
+> --- a/drivers/mtd/devices/bcm47xxsflash.h
+> +++ b/drivers/mtd/devices/bcm47xxsflash.h
+> @@ -3,6 +3,8 @@
+>  
+>  #include <linux/mtd/mtd.h>
+>  
+> +#define BCM47XXSFLASH_WINDOW_SIZE		SZ_16M
+> +
+>  /* Used for ST flashes only. */
+>  #define OPCODE_ST_WREN		0x0006		/* Write Enable */
+>  #define OPCODE_ST_WRDIS		0x0004		/* Write Disable */
+
+These look like standard opcodes, why don't you use standard opcodes in
+this driver and instead redefine them here ?
+
+> @@ -16,6 +18,7 @@
+>  #define OPCODE_ST_RES		0x03ab		/* Read Electronic Signature */
+>  #define OPCODE_ST_CSA		0x1000		/* Keep chip select asserted */
+>  #define OPCODE_ST_SSE		0x0220		/* Sub-sector Erase */
+> +#define OPCODE_ST_READ4B	0x6313
+
+Needs a comment to keep this consistent I think.
+
+>  /* Used for Atmel flashes only. */
+>  #define OPCODE_AT_READ				0x07e8
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
