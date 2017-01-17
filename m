@@ -1,25 +1,29 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ot0-x242.google.com ([2607:f8b0:4003:c0f::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTRc4-0002LK-9i
- for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 11:07:43 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-To: =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,  Brian Norris
- <computersforpeace@gmail.com>,  Boris Brezillon
- <boris.brezillon@free-electrons.com>,  Marek Vasut
- <marek.vasut@gmail.com>,  Richard Weinberger <richard@nod.at>,  Cyrille
- Pitchen <cyrille.pitchen@atmel.com>,  linux-mtd@lists.infradead.org,
- linux-wireless@vger.kernel.org,  Hauke Mehrtens <hauke@hauke-m.de>,
- =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: Re: [PATCH V2] mtd: bcm47xxsflash: use platform_(set|get)_drvdata
-References: <20170116162818.12094-1-zajec5@gmail.com>
-Date: Tue, 17 Jan 2017 13:07:12 +0200
-In-Reply-To: <20170116162818.12094-1-zajec5@gmail.com> (=?utf-8?Q?=22Rafa?=
- =?utf-8?Q?=C5=82_Mi=C5=82ecki=22's?=
- message of "Mon, 16 Jan 2017 17:28:18 +0100")
-Message-ID: <87fukiosgv.fsf@codeaurora.org>
+ id 1cTRck-0002e0-OV
+ for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 11:08:24 +0000
+Received: by mail-ot0-x242.google.com with SMTP id 73so8861108otj.1
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2017 03:08:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <31ca1f51-887d-fce4-400c-cc0f97353eb8@gmail.com>
+References: <20170116220916.2603-1-zajec5@gmail.com>
+ <20170117105110.26328-1-zajec5@gmail.com>
+ <31ca1f51-887d-fce4-400c-cc0f97353eb8@gmail.com>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date: Tue, 17 Jan 2017 12:08:01 +0100
+Message-ID: <CACna6rzHtNE-8YCAmydzhCytYQc53Jr9HGo=rdQt-KkD1YW-qA@mail.gmail.com>
+Subject: Re: [PATCH V2] mtd: bcm47xxsflash: support reading flash out of
+ mapping window
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,27 +34,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> writes:
-
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+On 17 January 2017 at 12:00, Marek Vasut <marek.vasut@gmail.com> wrote:
+> On 01/17/2017 11:51 AM, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>>
+>> For reading flash content we use MMIO but it's possible to read only
+>> first 16 MiB this way. It's simply an arch design/limitation.
+>> To support flash sizes bigger than 16 MiB implement indirect access
+>> using ChipCommon registers.
+>> This has been tested using MX25L25635F.
+>>
+>> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>> ---
+>> V2: Simplify line writing to buf
+>>     Add some trivial comment for OPCODE_ST_READ4B
+>>     Both requested by Marek
+>> ---
+>>  drivers/mtd/devices/bcm47xxsflash.c | 12 +++++++++++-
+>>  drivers/mtd/devices/bcm47xxsflash.h |  3 +++
+>>  2 files changed, 14 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/b=
+cm47xxsflash.c
+>> index 4decd8c..8d4c1db 100644
+>> --- a/drivers/mtd/devices/bcm47xxsflash.c
+>> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+>> @@ -110,7 +110,17 @@ static int bcm47xxsflash_read(struct mtd_info *mtd,=
+ loff_t from, size_t len,
+>>       if ((from + len) > mtd->size)
+>>               return -EINVAL;
+>>
+>> -     memcpy_fromio(buf, b47s->window + from, len);
+>> +     if (from + len <=3D BCM47XXSFLASH_WINDOW_SIZE) {
+>> +             memcpy_fromio(buf, b47s->window + from, len);
 >
-> We have generic place & helpers for storing platform driver data so
-> there is no reason for using custom priv pointer.
->
-> This allows cleaning up struct bcma_sflash from unneeded fields.
->
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> ---
-> Kalle: This is mtd focused patch, so I guess it should go through mtd tre=
-e. Do
->        you find bcma change important enough to care to Ack it? :)
+> One last nit, what if the read starts < 16 MiB and ends > 16 MiB ?
+> Shouldn't that use partly the windowed mode and partly the other mode?
 
-Sure :)
+You'll lost 10ns*... or not as splitting it into 2 code paths could
+take longer, who knows. Most access are block aligned anyway. I don't
+think such corner case with doubtful gain is much worth considering &
+optimizing.
 
-Feel free to take the patch via mtd tree, I'm not expecting to see any
-conflicts with this patch. For the bcma part:
-
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-
---=20
-Kalle Valo
+* Statistic from my mind
