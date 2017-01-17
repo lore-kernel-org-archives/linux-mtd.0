@@ -1,14 +1,14 @@
 Received: from relay101a.appriver.com ([207.97.230.14] helo=relay.appriver.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTSLs-0006zk-K9
- for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 11:55:02 +0000
+ id 1cTSLu-0006zk-Hp
+ for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 11:55:09 +0000
 From: Mike Crowe <mac@mcrowe.com>
 To: linux-mtd@lists.infradead.org
 Cc: Mike Crowe <mac@mcrowe.com>,
  David Oberhollenzer <david.oberhollenzer@sigma-star.at>, richard@nod.at
-Subject: [PATCH 1/2] nandwrite: Add --skip-bad-blocks-to-start option
-Date: Tue, 17 Jan 2017 11:54:03 +0000
-Message-Id: <1484654044-17722-2-git-send-email-mac@mcrowe.com>
+Subject: [PATCH 2/2] nanddump: Add --skip-bad-blocks-to-start option
+Date: Tue, 17 Jan 2017 11:54:04 +0000
+Message-Id: <1484654044-17722-3-git-send-email-mac@mcrowe.com>
 In-Reply-To: <1484654044-17722-1-git-send-email-mac@mcrowe.com>
 References: <1484654044-17722-1-git-send-email-mac@mcrowe.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,82 +20,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The --skip-bad-blocks-to-start option will increase the seek offset by the
-size of each bad block encountered between the start of the partition and
-the specified start address.
+The --skip-bad-blocks-to-start option will increase the start address by
+the size of each bad block encountered between the start of the partition
+and the specified start address.
 
-This can be useful when writing part way through a partition that will be
-read using a simple bad-block-skipping algorithm.
+This can be useful if other readers of the partition will be reading using
+a simple bad-block-skipping algorithm.
 
 Signed-off-by: Mike Crowe <mac@mcrowe.com>
 ---
- nand-utils/nandwrite.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ nand-utils/nanddump.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/nand-utils/nandwrite.c b/nand-utils/nandwrite.c
-index c7a53d1..f29fc67 100644
---- a/nand-utils/nandwrite.c
-+++ b/nand-utils/nandwrite.c
-@@ -56,6 +56,8 @@ static void display_help(int status)
- "  -o, --oob               Input contains oob data\n"
- "  -O, --onlyoob           Input contains oob data and only write the oob part\n"
- "  -s addr, --start=addr   Set output start address (default is 0)\n"
-+"  --skip-bad-blocks-to-start"
-+"                          Skip bad blocks when seeking to the start address\n"
- "  -p, --pad               Pad writes to page size\n"
- "  -b, --blockalign=1|2|4  Set multiple of eraseblocks to align to\n"
- "      --input-skip=length Skip |length| bytes of the input file\n"
-@@ -96,6 +98,7 @@ static bool		autoplace = false;
- static bool		skipallffs = false;
- static bool		noskipbad = false;
- static bool		pad = false;
-+static bool		skip_bad_blocks_to_start = false;
- static int		blockalign = 1; /* default to using actual block size */
+diff --git a/nand-utils/nanddump.c b/nand-utils/nanddump.c
+index a8ad334..bebb48e 100644
+--- a/nand-utils/nanddump.c
++++ b/nand-utils/nanddump.c
+@@ -52,6 +52,8 @@ static void display_help(int status)
+ "-p         --prettyprint        Print nice (hexdump)\n"
+ "-q         --quiet              Don't display progress and status messages\n"
+ "-s addr    --startaddress=addr  Start address\n"
++"           --skip-bad-blocks-to-start\n"
++"                                Skip bad blocks when seeking to the start address\n"
+ "\n"
+ "--bb=METHOD, where METHOD can be `padbad', `dumpbad', or `skipbad':\n"
+ "    padbad:  dump flash data, substituting 0xFF for any bad blocks\n"
+@@ -86,6 +88,7 @@ static const char		*dumpfile;		// dump file name
+ static bool			quiet = false;		// suppress diagnostic output
+ static bool			canonical = false;	// print nice + ascii
+ static bool			forcebinary = false;	// force printing binary to tty
++static bool			skip_bad_blocks_to_start = false;
  
- static void process_options(int argc, char * const argv[])
-@@ -110,6 +113,7 @@ static void process_options(int argc, char * const argv[])
+ static enum {
+ 	padbad,   // dump flash data, substituting 0xFF for any bad blocks
+@@ -105,6 +108,7 @@ static void process_options(int argc, char * const argv[])
  			{"version", no_argument, 0, 'V'},
- 			{"input-skip", required_argument, 0, 0},
- 			{"input-size", required_argument, 0, 0},
-+			{"skip-bad-blocks-to-start", no_argument, 0, 0},
+ 			{"bb", required_argument, 0, 0},
+ 			{"omitoob", no_argument, 0, 0},
++			{"skip-bad-blocks-to-start", no_argument, 0, 0 },
  			{"help", no_argument, 0, 'h'},
- 			{"blockalign", required_argument, 0, 'b'},
- 			{"markbad", no_argument, 0, 'm'},
-@@ -139,6 +143,9 @@ static void process_options(int argc, char * const argv[])
- 			case 2: /* --input-size */
- 				inputsize = simple_strtoll(optarg, &error);
+ 			{"forcebinary", no_argument, 0, 'a'},
+ 			{"canonicalprint", no_argument, 0, 'c'},
+@@ -146,6 +150,9 @@ static void process_options(int argc, char * const argv[])
+ 							errmsg_die("--oob and --oomitoob are mutually exclusive");
+ 						}
+ 						break;
++					case 3: /* --skip-bad-blocks-to-start */
++						skip_bad_blocks_to_start = true;
++						break;
+ 				}
  				break;
-+			case 3: /* --skip-bad-blocks-to-start */
-+				skip_bad_blocks_to_start = true;
-+				break;
- 			}
- 			break;
- 		case 'V':
-@@ -365,6 +372,25 @@ int main(int argc, char * const argv[])
+ 			case 'V':
+@@ -397,6 +404,22 @@ int main(int argc, char * const argv[])
+ 				mtd.min_io_size);
  		goto closeall;
  	}
- 
-+	/* Skip bad blocks on the way to the start address if necessary */
 +	if (skip_bad_blocks_to_start) {
 +		long long bbs_offset = 0;
-+		while (bbs_offset < mtdoffset) {
-+			ret = is_virt_block_bad(&mtd, fd, bbs_offset);
-+			if (ret < 0) {
-+				sys_errmsg("%s: MTD get bad block failed", mtd_device);
++		while (bbs_offset < start_addr) {
++			err = mtd_is_bad(&mtd, fd, bbs_offset / mtd.eb_size);
++			if (err < 0) {
++				sys_errmsg("%s: MTD get bad block failed", mtddev);
 +				goto closeall;
-+			} else if (ret == 1) {
++			} else if (err == 1) {
 +				if (!quiet)
-+					fprintf(stderr, "Bad block at %llx, %u block(s) "
-+						"from %llx will be skipped\n",
-+						bbs_offset, blockalign, bbs_offset);
-+				mtdoffset += ebsize_aligned;
++					fprintf(stderr, "Bad block at %llx\n", bbs_offset);
++				start_addr += mtd.eb_size;
 +			}
-+			bbs_offset += ebsize_aligned;
++			bbs_offset += mtd.eb_size;
 +		}
 +	}
 +
- 	/* Check, if length fits into device */
- 	if ((imglen / pagelen) * mtd.min_io_size > mtd.size - mtdoffset) {
- 		fprintf(stderr, "Image %lld bytes, NAND page %d bytes, OOB area %d"
+ 	if (length)
+ 		end_addr = start_addr + length;
+ 	if (!length || end_addr > mtd.size)
 -- 
 2.1.4
