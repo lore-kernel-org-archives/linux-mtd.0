@@ -1,29 +1,28 @@
-Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTNjL-00053A-Sv
- for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 06:58:57 +0000
-Received: by mail-oi0-x241.google.com with SMTP id w144so9860663oiw.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2017 22:58:35 -0800 (PST)
+Date: Tue, 17 Jan 2017 08:54:51 +0100
+From: Michal Hocko <mhocko@kernel.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
+ Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+ logfs@logfs.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 7/8] Revert "ext4: avoid deadlocks in the writeback path
+ by using sb_getblk_gfp"
+Message-ID: <20170117075450.GC19699@dhcp22.suse.cz>
+References: <20170106141107.23953-1-mhocko@kernel.org>
+ <20170106141107.23953-8-mhocko@kernel.org>
+ <20170117030118.727jqyamjhojzajb@thunk.org>
 MIME-Version: 1.0
-In-Reply-To: <41e65a7a-e413-9e00-f629-98636ed76212@gmail.com>
-References: <20170116220916.2603-1-zajec5@gmail.com>
- <41e65a7a-e413-9e00-f629-98636ed76212@gmail.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Tue, 17 Jan 2017 07:58:34 +0100
-Message-ID: <CACna6ryLLwO54FBfqUekxrKVK0PNVQiHrwOPdnJToseKWw8POA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxsflash: support reading flash out of mapping
- window
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170117030118.727jqyamjhojzajb@thunk.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,109 +32,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17 January 2017 at 04:18, Marek Vasut <marek.vasut@gmail.com> wrote:
-> On 01/16/2017 11:09 PM, Rafa=C5=82 Mi=C5=82ecki wrote:
->> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->>
->> For reading flash content we use MMIO but it's possible to read only
->> first 16 MiB this way. It's simply an arch design/limitation.
->> To support flash sizes bigger than 16 MiB implement indirect access
->> using ChipCommon registers.
->> This has been tested using MX25L25635F.
->>
->> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->> ---
->>  drivers/mtd/devices/bcm47xxsflash.c | 12 +++++++++++-
->>  drivers/mtd/devices/bcm47xxsflash.h |  3 +++
->>  2 files changed, 14 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/b=
-cm47xxsflash.c
->> index 4decd8c..5d57119 100644
->> --- a/drivers/mtd/devices/bcm47xxsflash.c
->> +++ b/drivers/mtd/devices/bcm47xxsflash.c
->> @@ -110,7 +110,17 @@ static int bcm47xxsflash_read(struct mtd_info *mtd,=
- loff_t from, size_t len,
->>       if ((from + len) > mtd->size)
->>               return -EINVAL;
->>
->> -     memcpy_fromio(buf, b47s->window + from, len);
->> +     if (from + len <=3D BCM47XXSFLASH_WINDOW_SIZE) {
->> +             memcpy_fromio(buf, b47s->window + from, len);
->> +     } else {
->> +             size_t i;
->> +
->> +             for (i =3D 0; i < len; i++) {
->> +                     b47s->cc_write(b47s, BCMA_CC_FLASHADDR, from++);
->> +                     bcm47xxsflash_cmd(b47s, OPCODE_ST_READ4B);
->> +                     *(buf++) =3D b47s->cc_read(b47s, BCMA_CC_FLASHDATA=
-) & 0xff;
->
-> Do you really need to send command on every write into the FLASHADDR
-> register ? Doesn't this hardware support some sort of seqeuntial reading?
+On Mon 16-01-17 22:01:18, Theodore Ts'o wrote:
+> On Fri, Jan 06, 2017 at 03:11:06PM +0100, Michal Hocko wrote:
+> > From: Michal Hocko <mhocko@suse.com>
+> > 
+> > This reverts commit c45653c341f5c8a0ce19c8f0ad4678640849cb86 because
+> > sb_getblk_gfp is not really needed as
+> > sb_getblk
+> >   __getblk_gfp
+> >     __getblk_slow
+> >       grow_buffers
+> >         grow_dev_page
+> > 	  gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS) | gfp
+> > 
+> > so __GFP_FS is cleared unconditionally and therefore the above commit
+> > didn't have any real effect in fact.
+> > 
+> > This patch should not introduce any functional change. The main point
+> > of this change is to reduce explicit GFP_NOFS usage inside ext4 code to
+> > make the review of the remaining usage easier.
+> > 
+> > Signed-off-by: Michal Hocko <mhocko@suse.com>
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> If I'm not mistaken, this patch is not dependent on any of the other
+> patches in this series (and the other patches are not dependent on
+> this one).  Hence, I could take this patch via the ext4 tree, correct?
 
-Yes, I need to. If there is some other way it's undocumented and not
-used by Broadcom. As a quick check I tried not writing to FLASHADDR
-every time, but it didn't work.
+Yes, that is correct
 
-
-> Are you sure this has no side-effects when you mix this with reading
-> from the flash window ?
-
-No side effects. I also tried reading whole flash content using this
-indirect access and it worked as well.
-
-
-> Also, the parenthesis around buf++ are not needed and the & 0xff should
-> not be needed either.
-
-You're right about buf. I'm not sure about & 0xff though. In theory
-you're correct. This is 32b register and we use 32b read function to
-access it but I never saw anything set in 0xffffff00. On the other
-hand Broadcom /advises/ (does) this & 0xff so I'm wondering if there
-can be some hardware with unexpected behavior in the world? What would
-happen if we got 32b value with some bits in ~0xff?
-
-
->> +             }
->> +     }
->>       *retlen =3D len;
->>
->>       return len;
->> diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/b=
-cm47xxsflash.h
->> index 1564b62..d8d1093 100644
->> --- a/drivers/mtd/devices/bcm47xxsflash.h
->> +++ b/drivers/mtd/devices/bcm47xxsflash.h
->> @@ -3,6 +3,8 @@
->>
->>  #include <linux/mtd/mtd.h>
->>
->> +#define BCM47XXSFLASH_WINDOW_SIZE            SZ_16M
->> +
->>  /* Used for ST flashes only. */
->>  #define OPCODE_ST_WREN               0x0006          /* Write Enable */
->>  #define OPCODE_ST_WRDIS              0x0004          /* Write Disable *=
-/
->
-> These look like standard opcodes, why don't you use standard opcodes in
-> this driver and instead redefine them here ?
-
-I guess it's because these are the only 2 opcodes we could share.
-Other than them Broadcom uses their magic 16b opcodes so I guess it
-doesn't change that much since we need most of them defined locally
-anyway.
-
-
->> @@ -16,6 +18,7 @@
->>  #define OPCODE_ST_RES                0x03ab          /* Read Electronic=
- Signature */
->>  #define OPCODE_ST_CSA                0x1000          /* Keep chip selec=
-t asserted */
->>  #define OPCODE_ST_SSE                0x0220          /* Sub-sector Eras=
-e */
->> +#define OPCODE_ST_READ4B     0x6313
->
-> Needs a comment to keep this consistent I think.
-
-OK
+-- 
+Michal Hocko
+SUSE Labs
