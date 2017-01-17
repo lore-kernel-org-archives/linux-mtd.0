@@ -1,24 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTV7H-0004EU-F3
- for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 14:52:09 +0000
-Subject: Re: [PATCH 2/2] mtd: spi-nor: fix mr25h* definitions
-To: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-References: <20170116151214.11195-1-bst@pengutronix.de>
- <20170116151214.11195-2-bst@pengutronix.de>
- <371bf936-b854-68a1-2c65-69e426ad3aa3@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de
-From: Bastian Stender <bst@pengutronix.de>
-Message-ID: <91baef8b-7831-9d16-d2ad-708ed297ad50@pengutronix.de>
-Date: Tue, 17 Jan 2017 15:51:43 +0100
+Date: Tue, 17 Jan 2017 16:18:17 +0100
+From: Michal Hocko <mhocko@kernel.org>
+To: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
+Message-ID: <20170117151817.GR19699@dhcp22.suse.cz>
+References: <20170106141107.23953-1-mhocko@kernel.org>
+ <20170106141107.23953-9-mhocko@kernel.org>
+ <20170117025607.frrcdbduthhutrzj@thunk.org>
+ <20170117082425.GD19699@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <371bf936-b854-68a1-2c65-69e426ad3aa3@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170117082425.GD19699@dhcp22.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +31,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
+On Tue 17-01-17 09:24:25, Michal Hocko wrote:
+> On Mon 16-01-17 21:56:07, Theodore Ts'o wrote:
+> > On Fri, Jan 06, 2017 at 03:11:07PM +0100, Michal Hocko wrote:
+> > > From: Michal Hocko <mhocko@suse.com>
+> > > 
+> > > This reverts commit 216553c4b7f3e3e2beb4981cddca9b2027523928. Now that
+> > > the transaction context uses memalloc_nofs_save and all allocations
+> > > within the this context inherit GFP_NOFS automatically, there is no
+> > > reason to mark specific allocations explicitly.
+> > > 
+> > > This patch should not introduce any functional change. The main point
+> > > of this change is to reduce explicit GFP_NOFS usage inside ext4 code
+> > > to make the review of the remaining usage easier.
+> > > 
+> > > Signed-off-by: Michal Hocko <mhocko@suse.com>
+> > > Reviewed-by: Jan Kara <jack@suse.cz>
+> > 
+> > Changes in the jbd2 layer aren't going to guarantee that
+> > memalloc_nofs_save() will be executed if we are running ext4 without a
+> > journal (aka in no journal mode).  And this is a *very* common
+> > configuration; it's how ext4 is used inside Google in our production
+> > servers.
+> 
+> OK, I wasn't aware of that.
+> 
+> > So that means the earlier patches will probably need to be changed so
+> > the nOFS scope is done in the ext4_journal_{start,stop} functions in
+> > fs/ext4/ext4_jbd2.c.
+> 
+> I could definitely appreciated some help here. The call paths are rather
+> complex and I am not familiar with the code enough. On of the biggest
+> problem I have currently is that there doesn't seem to be an easy place
+> to store the old allocation context. 
 
-On 01/16/2017 05:07 PM, Marek Vasut wrote:
-> On 01/16/2017 04:12 PM, Bastian Stender wrote:
->> The previous definitions for mr25h* chips lead to unnecessary limits
->> regarding writesize and eraseblocksize for MRAM. MRAM is random access
->> memory rather than page, sector, or block organized memory.
->>
->> Instead of 1 sector with 512KB the mr25h40 MRAM chip should be defined
->> as 512K sectors with 1 byte each. This makes it writesize and
->> eraseblocksize aligned and reflects MRAM functionality properly.
->
-> Wouldn't this degrade the performance ? ie. if you write the flash, it
-> will send PP opcode + 1 byte in a loop, right ?
+OK, so I've been staring into the code and AFAIU current->journal_info
+can contain my stored information. I could either hijack part of the
+word as the ref counting is only consuming low 12b. But that looks too
+ugly to live. Or I can allocate some placeholder.
 
-I don't think so, info->sector_size and info->n_sectors are used for 
-calculating mtd->size and setting mtd->erasesize only. mtd->erasesize 
-should be never used when SPI_NOR_NO_ERASE is set in info->flags as 
-Cyrille pointed out.
-
-Regards,
-Bastian
+But before going to play with that I am really wondering whether we need
+all this with no journal at all. AFAIU what Jack told me it is the
+journal lock(s) which is the biggest problem from the reclaim recursion
+point of view. What would cause a deadlock in no journal mode?
 
 -- 
-Pengutronix e.K.
-Industrial Linux Solutions
-http://www.pengutronix.de/
-Peiner Str. 6-8, 31137 Hildesheim, Germany
-Amtsgericht Hildesheim, HRA 2686
+Michal Hocko
+SUSE Labs
