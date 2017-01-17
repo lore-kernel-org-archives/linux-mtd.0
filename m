@@ -1,27 +1,25 @@
-Date: Tue, 17 Jan 2017 09:24:26 +0100
-From: Michal Hocko <mhocko@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
- Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
- logfs@logfs.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
-Message-ID: <20170117082425.GD19699@dhcp22.suse.cz>
-References: <20170106141107.23953-1-mhocko@kernel.org>
- <20170106141107.23953-9-mhocko@kernel.org>
- <20170117025607.frrcdbduthhutrzj@thunk.org>
+Received: from exsmtp03.microchip.com ([198.175.253.49]
+ helo=email.microchip.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cTQP3-000571-GL
+ for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 09:50:10 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: add dt support for Everspin MRAMs
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>, Jagan Teki
+ <jagan@openedev.com>, Marek Vasut <marex@denx.de>
+References: <CACna6ryLDwr0S=e-uUt+ZGcY8mNDnUtBPg_RmqtSVBziJkZd5w@mail.gmail.com>
+ <20170116210039.25267-1-u.kleine-koenig@pengutronix.de>
+CC: <linux-mtd@lists.infradead.org>, <kernel@pengutronix.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Mark Rutland <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <aa0fc197-c320-6d1c-a892-6e272e16366a@atmel.com>
+Date: Tue, 17 Jan 2017 10:48:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170117025607.frrcdbduthhutrzj@thunk.org>
+In-Reply-To: <20170116210039.25267-1-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,43 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon 16-01-17 21:56:07, Theodore Ts'o wrote:
-> On Fri, Jan 06, 2017 at 03:11:07PM +0100, Michal Hocko wrote:
-> > From: Michal Hocko <mhocko@suse.com>
-> > 
-> > This reverts commit 216553c4b7f3e3e2beb4981cddca9b2027523928. Now that
-> > the transaction context uses memalloc_nofs_save and all allocations
-> > within the this context inherit GFP_NOFS automatically, there is no
-> > reason to mark specific allocations explicitly.
-> > 
-> > This patch should not introduce any functional change. The main point
-> > of this change is to reduce explicit GFP_NOFS usage inside ext4 code
-> > to make the review of the remaining usage easier.
-> > 
-> > Signed-off-by: Michal Hocko <mhocko@suse.com>
-> > Reviewed-by: Jan Kara <jack@suse.cz>
+Hi,
+
+Le 16/01/2017 à 22:00, Uwe Kleine-König a écrit :
+> The MR25 family doesn't support JEDEC, so they need explicit mentioning
+> in the list of supported spi IDs. This makes it possible to add these
+> using for example:
 > 
-> Changes in the jbd2 layer aren't going to guarantee that
-> memalloc_nofs_save() will be executed if we are running ext4 without a
-> journal (aka in no journal mode).  And this is a *very* common
-> configuration; it's how ext4 is used inside Google in our production
-> servers.
+> 	compatible = "everspin,mr25h40";
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+> Changes since (implicit) v1:
+>  - use Kib instead of kib
+> 
+>  drivers/mtd/devices/m25p80.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 9cf7fcd28034..aa50bd96de3a 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -305,6 +305,11 @@ static const struct spi_device_id m25p_ids[] = {
+>  	{"m25p40-nonjedec"},	{"m25p80-nonjedec"},	{"m25p16-nonjedec"},
+>  	{"m25p32-nonjedec"},	{"m25p64-nonjedec"},	{"m25p128-nonjedec"},
+>  
+> +	/* Everspin MRAMs */
+> +	{ "mr25h256" }, /* 256 Kib, 40 MHz */
 
-OK, I wasn't aware of that.
+There is already a "mr25h256" entry in the m25p_ids[] array.
+It's a good idea to regroup everspin memories but it might be better to
+reuse the existing entry.
 
-> So that means the earlier patches will probably need to be changed so
-> the nOFS scope is done in the ext4_journal_{start,stop} functions in
-> fs/ext4/ext4_jbd2.c.
+The previous entry is between "at25df321a", ... and "mx25l4005a" so it
+doesn't appear in your patch.
 
-I could definitely appreciated some help here. The call paths are rather
-complex and I am not familiar with the code enough. On of the biggest
-problem I have currently is that there doesn't seem to be an easy place
-to store the old allocation context. The original patch had it inside
-the journal handle. I was thinking about putting it into superblock but
-ext4_journal_stop doesn't seem to have access to the sb if there is no
-handle. Now, if ext4_journal_start is never called from a nested context
-then this is not a big deal but there are just too many caller to
-check...
--- 
-Michal Hocko
-SUSE Labs
+> +	{ "mr25h10" },  /*   1 Mib, 40 MHz */
+> +	{ "mr25h40" },  /*   4 Mib, 40 MHz */
+> +
+>  	{ },
+>  };
+>  MODULE_DEVICE_TABLE(spi, m25p_ids);
+> 
