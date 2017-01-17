@@ -1,29 +1,28 @@
-Received: from mail-oi0-x22f.google.com ([2607:f8b0:4003:c06::22f])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTW1D-00018b-Q6
- for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 15:49:57 +0000
-Received: by mail-oi0-x22f.google.com with SMTP id u143so121818297oif.3
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2017 07:49:35 -0800 (PST)
+Date: Tue, 17 Jan 2017 10:59:16 -0500
+From: Theodore Ts'o <tytso@mit.edu>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
+Message-ID: <20170117155916.dcizr65bwa6behe7@thunk.org>
+References: <20170106141107.23953-1-mhocko@kernel.org>
+ <20170106141107.23953-9-mhocko@kernel.org>
+ <20170117025607.frrcdbduthhutrzj@thunk.org>
+ <20170117082425.GD19699@dhcp22.suse.cz>
+ <20170117151817.GR19699@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <82a0b0f7-a94b-70b5-1a5e-e5c04943a684@atmel.com>
-References: <480df61d-c949-b3b0-61a4-d9db17f09e7d@atmel.com>
- <20170117110338.10756-1-u.kleine-koenig@pengutronix.de>
- <CACna6rwSZH8697px46KitcsFTROhqAQa2Cm2-RCTH=L_5nQFYg@mail.gmail.com>
- <82a0b0f7-a94b-70b5-1a5e-e5c04943a684@atmel.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Tue, 17 Jan 2017 16:49:34 +0100
-Message-ID: <CACna6rz_g+N2rs=O-QRAka_BVMiMXhmC+O5KgeZJFmCe8bf1jQ@mail.gmail.com>
-Subject: Re: [PATCH v3] mtd: spi-nor: add dt support for Everspin MRAMs
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>,
- Jagan Teki <jagan@openedev.com>, Marek Vasut <marex@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Sascha Hauer <kernel@pengutronix.de>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170117151817.GR19699@dhcp22.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,71 +32,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17 January 2017 at 14:57, Cyrille Pitchen <cyrille.pitchen@atmel.com> wr=
-ote:
-> Le 17/01/2017 =C3=A0 14:16, Rafa=C5=82 Mi=C5=82ecki a =C3=A9crit :
->> On 17 January 2017 at 12:03, Uwe Kleine-K=C3=B6nig
->> <u.kleine-koenig@pengutronix.de> wrote:
->>> The MR25 family doesn't support JEDEC, so they need explicit mentioning
->>> in the list of supported spi IDs. This makes it possible to add these
->>> using for example:
->>>
->>>         compatible =3D "everspin,mr25h40";
->>
->> (...)
->>
->>> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/=
-Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
->>> index 2c91c03e7eb0..3e920ec5c4d3 100644
->>> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
->>> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
->>> @@ -14,6 +14,8 @@ Required properties:
->>>                   at25df641
->>>                   at26df081a
->>>                   mr25h256
->>> +                 mr25h10
->>> +                 mr25h40
->>>                   mx25l4005a
->>>                   mx25l1606e
->>>                   mx25l6405d
->>
->> Uh, this is getting a never-ending-story...
->> If these chipsets don't support JEDEC, should we keep them in jedec,spi-=
-nor.txt?
->>
->
-> Maybe not but I think the new compatible strings should be documented
-> somewhere. Currently jedec,spi-nor.txt already documents all the
-> "m25p*-nonjedec" memories. So maybe just renaming the jedec,spi-nor.txt
-> file into spi-nor.txt or mtd,spi-nor.txt could be a solution. Otherwise, =
-we
-> can let it as is. I have no idea of what would be the best solution.
->
-> To be honest, I don't always fully understand the DT policy/philosophy an=
-d
-> its requirements. I just thought when a new property or a new value is
-> introduced it has to be documented.
-> Generally speaking, when DT is involved in some series of patches, it oft=
-en
-> generates many discussions about the proper way to do thinks and about
-> choosing the best between many technically functional solutions.
->
-> If you think jedec,spi-nor.txt is not suited to document the new value fo=
-r
-> the compatible string, why not, I perfectly understand your point.
->
-> I don't mind choosing another way. I just want to be sure that, if not al=
-l,
-> most of people agree on that solution and if possible, it is compliant wi=
-th
-> DT policy so everybody is happy and works together.
-> That's why I involve DT people, even if it's a small detail, so they can
-> advise us.
->
-> Anyway, at some point we have to take a decision to carry on thinks.
-> So actually, I would like to avoid a never-ending story :)
+On Tue, Jan 17, 2017 at 04:18:17PM +0100, Michal Hocko wrote:
+> 
+> OK, so I've been staring into the code and AFAIU current->journal_info
+> can contain my stored information. I could either hijack part of the
+> word as the ref counting is only consuming low 12b. But that looks too
+> ugly to live. Or I can allocate some placeholder.
 
-Sounds OK to me, I'm not DT expert though ;)
+Yeah, I was looking at something similar.  Can you guarantee that the
+context will only take one or two bits?  (Looks like it only needs one
+bit ATM, even though at the moment you're storing the whole GFP mask,
+correct?)
 
---=20
-Rafa=C5=82
+> But before going to play with that I am really wondering whether we need
+> all this with no journal at all. AFAIU what Jack told me it is the
+> journal lock(s) which is the biggest problem from the reclaim recursion
+> point of view. What would cause a deadlock in no journal mode?
+
+We still have the original problem for why we need GFP_NOFS even in
+ext2.  If we are in a writeback path, and we need to allocate memory,
+we don't want to recurse back into the file system's writeback path.
+Certainly not for the same inode, and while we could make it work if
+the mm was writing back another inode, or another superblock, there
+are also stack depth considerations that would make this be a bad
+idea.  So we do need to be able to assert GFP_NOFS even in no journal
+mode, and for any file system including ext2, for that matter.
+
+Because of the fact that we're going to have to play games with
+current->journal_info, maybe this is something that I should take
+responsibility for, and to go through the the ext4 tree after the main
+patch series go through?  Maybe you could use xfs and ext2 as sample
+(simple) implementations?
+
+My only ask is that the memalloc nofs context be a well defined N
+bits, where N < 16, and I'll find some place to put them (probably
+journal_info).
+
+Thanks,
+
+					- Ted
