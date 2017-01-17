@@ -1,16 +1,32 @@
-Received: from relay101a.appriver.com ([207.97.230.14] helo=relay.appriver.com)
+Received: from mail-ot0-x241.google.com ([2607:f8b0:4003:c0f::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTSLu-0006zk-Hp
- for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 11:55:09 +0000
-From: Mike Crowe <mac@mcrowe.com>
-To: linux-mtd@lists.infradead.org
-Cc: Mike Crowe <mac@mcrowe.com>,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>, richard@nod.at
-Subject: [PATCH 2/2] nanddump: Add --skip-bad-blocks-to-start option
-Date: Tue, 17 Jan 2017 11:54:04 +0000
-Message-Id: <1484654044-17722-3-git-send-email-mac@mcrowe.com>
-In-Reply-To: <1484654044-17722-1-git-send-email-mac@mcrowe.com>
-References: <1484654044-17722-1-git-send-email-mac@mcrowe.com>
+ id 1cTSVW-0006CO-JN
+ for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 12:05:03 +0000
+Received: by mail-ot0-x241.google.com with SMTP id 65so8979772otq.2
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2017 04:04:38 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <4e268f6f-42fd-84a8-2b28-6ebb5129d945@gmail.com>
+References: <20170116220916.2603-1-zajec5@gmail.com>
+ <20170117105110.26328-1-zajec5@gmail.com>
+ <31ca1f51-887d-fce4-400c-cc0f97353eb8@gmail.com>
+ <CACna6rzHtNE-8YCAmydzhCytYQc53Jr9HGo=rdQt-KkD1YW-qA@mail.gmail.com>
+ <4e268f6f-42fd-84a8-2b28-6ebb5129d945@gmail.com>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date: Tue, 17 Jan 2017 13:04:37 +0100
+Message-ID: <CACna6ryfrDeYdMmLbOfeZNoA_EifPNKennXVBj3_bZk078c2Tw@mail.gmail.com>
+Subject: Re: [PATCH V2] mtd: bcm47xxsflash: support reading flash out of
+ mapping window
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,79 +36,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The --skip-bad-blocks-to-start option will increase the start address by
-the size of each bad block encountered between the start of the partition
-and the specified start address.
+On 17 January 2017 at 12:49, Marek Vasut <marek.vasut@gmail.com> wrote:
+> On 01/17/2017 12:08 PM, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> On 17 January 2017 at 12:00, Marek Vasut <marek.vasut@gmail.com> wrote:
+>>> On 01/17/2017 11:51 AM, Rafa=C5=82 Mi=C5=82ecki wrote:
+>>>> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>>>>
+>>>> For reading flash content we use MMIO but it's possible to read only
+>>>> first 16 MiB this way. It's simply an arch design/limitation.
+>>>> To support flash sizes bigger than 16 MiB implement indirect access
+>>>> using ChipCommon registers.
+>>>> This has been tested using MX25L25635F.
+>>>>
+>>>> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>>>> ---
+>>>> V2: Simplify line writing to buf
+>>>>     Add some trivial comment for OPCODE_ST_READ4B
+>>>>     Both requested by Marek
+>>>> ---
+>>>>  drivers/mtd/devices/bcm47xxsflash.c | 12 +++++++++++-
+>>>>  drivers/mtd/devices/bcm47xxsflash.h |  3 +++
+>>>>  2 files changed, 14 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices=
+/bcm47xxsflash.c
+>>>> index 4decd8c..8d4c1db 100644
+>>>> --- a/drivers/mtd/devices/bcm47xxsflash.c
+>>>> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+>>>> @@ -110,7 +110,17 @@ static int bcm47xxsflash_read(struct mtd_info *mt=
+d, loff_t from, size_t len,
+>>>>       if ((from + len) > mtd->size)
+>>>>               return -EINVAL;
+>>>>
+>>>> -     memcpy_fromio(buf, b47s->window + from, len);
+>>>> +     if (from + len <=3D BCM47XXSFLASH_WINDOW_SIZE) {
+>>>> +             memcpy_fromio(buf, b47s->window + from, len);
+>>>
+>>> One last nit, what if the read starts < 16 MiB and ends > 16 MiB ?
+>>> Shouldn't that use partly the windowed mode and partly the other mode?
+>>
+>> You'll lost 10ns*... or not as splitting it into 2 code paths could
+>> take longer, who knows. Most access are block aligned anyway. I don't
+>> think such corner case with doubtful gain is much worth considering &
+>> optimizing.
+>
+> So you can also read the first 16 MiB using the new method , right ?
 
-This can be useful if other readers of the partition will be reading using
-a simple bad-block-skipping algorithm.
+I could, but this could be noticeable in performance. Reading 16 MiB
+using slower method is different from reading what... a few KiB? Are
+you actually sure mtd does unaligned reads at all?
 
-Signed-off-by: Mike Crowe <mac@mcrowe.com>
----
- nand-utils/nanddump.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Please let's argue about real problems and not few % performance in
+some corner case on some obsolete hardware with poor design.
 
-diff --git a/nand-utils/nanddump.c b/nand-utils/nanddump.c
-index a8ad334..bebb48e 100644
---- a/nand-utils/nanddump.c
-+++ b/nand-utils/nanddump.c
-@@ -52,6 +52,8 @@ static void display_help(int status)
- "-p         --prettyprint        Print nice (hexdump)\n"
- "-q         --quiet              Don't display progress and status messages\n"
- "-s addr    --startaddress=addr  Start address\n"
-+"           --skip-bad-blocks-to-start\n"
-+"                                Skip bad blocks when seeking to the start address\n"
- "\n"
- "--bb=METHOD, where METHOD can be `padbad', `dumpbad', or `skipbad':\n"
- "    padbad:  dump flash data, substituting 0xFF for any bad blocks\n"
-@@ -86,6 +88,7 @@ static const char		*dumpfile;		// dump file name
- static bool			quiet = false;		// suppress diagnostic output
- static bool			canonical = false;	// print nice + ascii
- static bool			forcebinary = false;	// force printing binary to tty
-+static bool			skip_bad_blocks_to_start = false;
- 
- static enum {
- 	padbad,   // dump flash data, substituting 0xFF for any bad blocks
-@@ -105,6 +108,7 @@ static void process_options(int argc, char * const argv[])
- 			{"version", no_argument, 0, 'V'},
- 			{"bb", required_argument, 0, 0},
- 			{"omitoob", no_argument, 0, 0},
-+			{"skip-bad-blocks-to-start", no_argument, 0, 0 },
- 			{"help", no_argument, 0, 'h'},
- 			{"forcebinary", no_argument, 0, 'a'},
- 			{"canonicalprint", no_argument, 0, 'c'},
-@@ -146,6 +150,9 @@ static void process_options(int argc, char * const argv[])
- 							errmsg_die("--oob and --oomitoob are mutually exclusive");
- 						}
- 						break;
-+					case 3: /* --skip-bad-blocks-to-start */
-+						skip_bad_blocks_to_start = true;
-+						break;
- 				}
- 				break;
- 			case 'V':
-@@ -397,6 +404,22 @@ int main(int argc, char * const argv[])
- 				mtd.min_io_size);
- 		goto closeall;
- 	}
-+	if (skip_bad_blocks_to_start) {
-+		long long bbs_offset = 0;
-+		while (bbs_offset < start_addr) {
-+			err = mtd_is_bad(&mtd, fd, bbs_offset / mtd.eb_size);
-+			if (err < 0) {
-+				sys_errmsg("%s: MTD get bad block failed", mtddev);
-+				goto closeall;
-+			} else if (err == 1) {
-+				if (!quiet)
-+					fprintf(stderr, "Bad block at %llx\n", bbs_offset);
-+				start_addr += mtd.eb_size;
-+			}
-+			bbs_offset += mtd.eb_size;
-+		}
-+	}
-+
- 	if (length)
- 		end_addr = start_addr + length;
- 	if (!length || end_addr > mtd.size)
--- 
-2.1.4
+--=20
+Rafa=C5=82
