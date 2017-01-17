@@ -1,31 +1,30 @@
-Date: Tue, 17 Jan 2017 18:29:25 +0100
-From: Jan Kara <jack@suse.cz>
-To: Michal Hocko <mhocko@kernel.org>
-Cc: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
- linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
- ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, logfs@logfs.org,
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
-Message-ID: <20170117172925.GA2486@quack2.suse.cz>
-References: <20170106141107.23953-1-mhocko@kernel.org>
- <20170106141107.23953-9-mhocko@kernel.org>
- <20170117025607.frrcdbduthhutrzj@thunk.org>
- <20170117082425.GD19699@dhcp22.suse.cz>
- <20170117151817.GR19699@dhcp22.suse.cz>
- <20170117155916.dcizr65bwa6behe7@thunk.org>
- <20170117161618.GT19699@dhcp22.suse.cz>
+Received: from mail-qt0-x235.google.com ([2607:f8b0:400d:c0d::235])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cTYMF-0002dN-JU
+ for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 18:19:49 +0000
+Received: by mail-qt0-x235.google.com with SMTP id v23so171361821qtb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2017 10:19:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170117161618.GT19699@dhcp22.suse.cz>
+In-Reply-To: <77542f12-781d-73a4-4b72-01a00c5abdd0@kaod.org>
+References: <1484573225-19095-1-git-send-email-clg@kaod.org>
+ <1484573225-19095-4-git-send-email-clg@kaod.org>
+ <57b7480d-4b5a-c420-d790-b22445eec723@gmail.com>
+ <77542f12-781d-73a4-4b72-01a00c5abdd0@kaod.org>
+From: Rob Lippert <rlippert@google.com>
+Date: Tue, 17 Jan 2017 10:19:05 -0800
+Message-ID: <CAFRv3wxWL3yVHtcLhv+qhq52OwogHi0EGScCFo0ecnH+2yZ8Qg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd: spi-nor: add SPI_NOR_DUAL_READ to mx66l51235l
+To: =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>
+Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Robert Lippert <roblip@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,28 +34,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue 17-01-17 17:16:19, Michal Hocko wrote:
-> > > But before going to play with that I am really wondering whether we need
-> > > all this with no journal at all. AFAIU what Jack told me it is the
-> > > journal lock(s) which is the biggest problem from the reclaim recursion
-> > > point of view. What would cause a deadlock in no journal mode?
-> > 
-> > We still have the original problem for why we need GFP_NOFS even in
-> > ext2.  If we are in a writeback path, and we need to allocate memory,
-> > we don't want to recurse back into the file system's writeback path.
-> 
-> But we do not enter the writeback path from the direct reclaim. Or do
-> you mean something other than pageout()'s mapping->a_ops->writepage?
-> There is only try_to_release_page where we get back to the filesystems
-> but I do not see any NOFS protection in ext4_releasepage.
+On Mon, Jan 16, 2017 at 8:39 AM, C=C3=A9dric Le Goater <clg@kaod.org> wrote=
+:
+>
+> Hello Marek,
+>
+> On 01/16/2017 05:15 PM, Marek Vasut wrote:
+> > On 01/16/2017 02:27 PM, C=C3=A9dric Le Goater wrote:
+> >> From: Robert Lippert <roblip@gmail.com>
+> >
+> > 1) Commit message missing
+> > 2) This is unrelated to the rest of the series, send separately please
+>
+> ok. I will do that. Rob, I will take ownership if you don't mind.
 
-Maybe to expand a bit: These days, direct reclaim can call ->releasepage()
-callback, ->evict_inode() callback (and only for inodes with i_nlink > 0),
-shrinkers. That's it. So the recursion possibilities are rather more limited
-than they used to be several years ago and we likely do not need as much
-GFP_NOFS protection as we used to.
+Yep that sounds great to me, thanks for your help!
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+-Rob
