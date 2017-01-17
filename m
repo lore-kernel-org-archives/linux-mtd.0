@@ -1,22 +1,31 @@
-Received: from mail-ot0-x22a.google.com ([2607:f8b0:4003:c0f::22a])
+Received: from mail-wj0-x241.google.com ([2a00:1450:400c:c01::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTSEd-0004pZ-0a
- for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 11:47:33 +0000
-Received: by mail-ot0-x22a.google.com with SMTP id 65so61609164otq.2
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2017 03:47:10 -0800 (PST)
+ id 1cTSH3-0005UK-NO
+ for linux-mtd@lists.infradead.org; Tue, 17 Jan 2017 11:50:04 +0000
+Received: by mail-wj0-x241.google.com with SMTP id i7so1051567wjf.2
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2017 03:49:40 -0800 (PST)
+Subject: Re: [PATCH V2] mtd: bcm47xxsflash: support reading flash out of
+ mapping window
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+References: <20170116220916.2603-1-zajec5@gmail.com>
+ <20170117105110.26328-1-zajec5@gmail.com>
+ <31ca1f51-887d-fce4-400c-cc0f97353eb8@gmail.com>
+ <CACna6rzHtNE-8YCAmydzhCytYQc53Jr9HGo=rdQt-KkD1YW-qA@mail.gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <4e268f6f-42fd-84a8-2b28-6ebb5129d945@gmail.com>
+Date: Tue, 17 Jan 2017 12:49:37 +0100
 MIME-Version: 1.0
-In-Reply-To: <01b355e9-6095-a2af-5c77-3e15751ff8da@nod.at>
-References: <CAMBC=j5fyW1BMAeDGzJp480fikZVVj2npk=WO5jmRTa+_ixEkw@mail.gmail.com>
- <CAFLxGvzROo7Y0CNE3Qyi4jj-J526XYebgO_G8TLS9+oCJ+fBPQ@mail.gmail.com>
- <CAMBC=j7Yjk5RkT5xg1N=q3aVf45BbJgtYaZ8vsy3oBjZ+OOOaA@mail.gmail.com>
- <01b355e9-6095-a2af-5c77-3e15751ff8da@nod.at>
-From: chaitanya vinnakota <chaitanya.sai.v@gmail.com>
-Date: Tue, 17 Jan 2017 17:17:09 +0530
-Message-ID: <CAMBC=j7fn7tqouMD3ZQptZF_xRO5Xsx7HOXaGQahCQm2ug3RUw@mail.gmail.com>
-Subject: Re: UBIFS errors are randomly seen after reboots
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CACna6rzHtNE-8YCAmydzhCytYQc53Jr9HGo=rdQt-KkD1YW-qA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,95 +35,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
-
-Seems that the ubi-tests are failing work on my board. I'm getting the
-below output when I initiated the test.
-
-# ./runtests.sh /dev/ubi1
-
-Running mkvol_basic /dev/ubi1
-[mkvol_basic] __initial_check():74: insufficient available eraseblocks
-0 on UBI device, required 5
-
-# ./runtests.sh /dev/ubi1_0
-Running mkvol_basic /dev/ubi1_0
-[mkvol_basic] __initial_check():69: function ubi_get_dev_info() failed
-with error 19 (No such device)
-
-Which device should I pass as the argument , is that ubi1 or ubi1_0
-[the partition to mount rootfs ] ?
-
-Added ubinfo of /dev/ubi1_0 and /dev/ubi1 for further reference
-
-root@router6654A1:~/arm-openwrt-linux# ubinfo /dev/ubi1_0
-Volume ID:   0 (on ubi1)
-Type:        dynamic
-Alignment:   1
-Size:        680 LEBs (86343680 bytes, 82.3 MiB)
-State:       OK
-Name:        rootfs
-Character device major/minor: 248:1
-
-root@router6654A1:~/arm-openwrt-linux# ubinfo /dev/ubi1
-ubi1
-Volumes count:                           1
-Logical eraseblock size:                 126976 bytes, 124.0 KiB
-Total amount of logical eraseblocks:     736 (93454336 bytes, 89.1 MiB)
-Amount of available logical eraseblocks: 0 (0 bytes)
-Maximum count of volumes                 128
-Count of bad physical eraseblocks:       0
-Count of reserved physical eraseblocks:  50
-Current maximum erase counter value:     1
-Minimum input/output unit size:          2048 bytes
-Character device major/minor:            248:0
-Present volumes:                         0
-
-Can you please refer to any article/tutorial on understanding the
-output of ubi-tests ?
-
-Thanks
-Chaitanya
-
-On Mon, Jan 16, 2017 at 10:00 PM, Richard Weinberger <richard@nod.at> wrote:
-> Chaitanya,
->
-> Am 16.01.2017 um 16:21 schrieb chaitanya vinnakota:
->> Hi Richard,
+On 01/17/2017 12:08 PM, Rafał Miłecki wrote:
+> On 17 January 2017 at 12:00, Marek Vasut <marek.vasut@gmail.com> wrote:
+>> On 01/17/2017 11:51 AM, Rafał Miłecki wrote:
+>>> From: Rafał Miłecki <rafal@milecki.pl>
+>>>
+>>> For reading flash content we use MMIO but it's possible to read only
+>>> first 16 MiB this way. It's simply an arch design/limitation.
+>>> To support flash sizes bigger than 16 MiB implement indirect access
+>>> using ChipCommon registers.
+>>> This has been tested using MX25L25635F.
+>>>
+>>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>>> ---
+>>> V2: Simplify line writing to buf
+>>>     Add some trivial comment for OPCODE_ST_READ4B
+>>>     Both requested by Marek
+>>> ---
+>>>  drivers/mtd/devices/bcm47xxsflash.c | 12 +++++++++++-
+>>>  drivers/mtd/devices/bcm47xxsflash.h |  3 +++
+>>>  2 files changed, 14 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+>>> index 4decd8c..8d4c1db 100644
+>>> --- a/drivers/mtd/devices/bcm47xxsflash.c
+>>> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+>>> @@ -110,7 +110,17 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+>>>       if ((from + len) > mtd->size)
+>>>               return -EINVAL;
+>>>
+>>> -     memcpy_fromio(buf, b47s->window + from, len);
+>>> +     if (from + len <= BCM47XXSFLASH_WINDOW_SIZE) {
+>>> +             memcpy_fromio(buf, b47s->window + from, len);
 >>
->> Thanks for your response.
->>
->> Based on your response I enabled chk_io , chk_gen,
->> tst_emulate_bitflips and tst_emulate_power_failure  options in
->> /sys/kernel/debug/ubi/ubi0 directory. I carried on with my test which
->> keeps on creating/writing data to files in all the available nand
->> partitions and during which a reboot is issued .
->>
->>  Below are the various UBI messages I'm seeing quite consistently at
->> different times after enabling the debug options.
->>
->> 1. UBI error: do_sync_erase: cannot erase PEB 200 (emulated)
->> 2. UBI error: erase_worker: failed to erase PEB 200, error -5
->> 3. UBI: mark PEB 200 as bad
->> 4. UBI error: ubi_io_write: cannot write 2048 bytes to PEB 452:0 (emulated)
->> 5. UBI error: erase_worker: failed to erase PEB 452, error -5
->>      UBI: mark PEB 452 as bad
->>      Bad block table written to 0x00000ffe0000, version 0x0B
->>      Bad block table written to 0x00000ffc0000, version 0x0B
->>      UBI: 40 PEBs left in the reserve
->>
->> Are all the above errors forecasting any doom or are they expected ?
->
-> You've enabled UBI self-tests and error *emulation*. This is not what I meant.
->
-> I had in mind:
-> 1. MTD tests, these are available in the kernel source:
->    http://linux-mtd.infradead.org/doc/general.html#L_mtd_tests
->    And now also as part of mtd-utils.
-> 2. UBI tests, you can find them in the tests/ubi-tests/ directory
->    of the mtd-utils source package.
->
-> David, I think we should add a page to mtd-www on testing. :-)
->
-> Thanks,
-> //richard
+>> One last nit, what if the read starts < 16 MiB and ends > 16 MiB ?
+>> Shouldn't that use partly the windowed mode and partly the other mode?
+> 
+> You'll lost 10ns*... or not as splitting it into 2 code paths could
+> take longer, who knows. Most access are block aligned anyway. I don't
+> think such corner case with doubtful gain is much worth considering &
+> optimizing.
+
+So you can also read the first 16 MiB using the new method , right ?
+
+> * Statistic from my mind
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
