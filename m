@@ -1,20 +1,23 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-yw0-x22a.google.com ([2607:f8b0:4002:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTtHt-0006NI-Gn
- for linux-mtd@lists.infradead.org; Wed, 18 Jan 2017 16:40:43 +0000
-Received: by mail-lf0-x244.google.com with SMTP id q89so2502786lfi.1
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2017 08:40:21 -0800 (PST)
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-To: Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v2] mtd: spi-nor: Fix S3AN addressing calculation
-Date: Wed, 18 Jan 2017 17:40:16 +0100
-Message-Id: <20170118164016.27976-1-ricardo.ribalda@gmail.com>
+ id 1cTtmh-0005a8-W5
+ for linux-mtd@lists.infradead.org; Wed, 18 Jan 2017 17:12:33 +0000
+Received: by mail-yw0-x22a.google.com with SMTP id l19so12424395ywc.2
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2017 09:12:10 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <845374ff-62b0-983b-b399-4965421a9066@phrozen.org>
+References: <1484741452-27141-1-git-send-email-sebtx452@gmail.com>
+ <e5bb2245-a0d0-5b66-2c75-9af26c6ea846@phrozen.org>
+ <CA+hF=GeD0dhBUkR+wR_35pSXgSnU0kW6EfYWa9h2QrGOTReMnA@mail.gmail.com>
+ <845374ff-62b0-983b-b399-4965421a9066@phrozen.org>
+From: Seb <sebtx452@gmail.com>
+Date: Wed, 18 Jan 2017 18:12:09 +0100
+Message-ID: <CA+hF=Gc5ZBLqo65fbchZeqtyEUgH-kdqpf8i3A-Z5nFTt58a4A@mail.gmail.com>
+Subject: Re: [PATCH] mtd: maps: lantiq-flash: Check if the EBU endianness swap
+ is enabled
+To: John Crispin <john@phrozen.org>
+Cc: linux-mtd@lists.infradead.org, linux-mips@linux-mips.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The page calculation under spi_nor_s3an_addr_convert() was wrong. On
-Default Address Mode we need to perform a divide by page_size.
+> the bug is also fixed on the 300 and 500 series chips, so we would want
+> to check for that aswell.
+>
 
-Fixes: 61cba34bd6c1 ("mtd: spi-nor: Add support for S3AN spi-nor devices")
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
----
+I added this to the begin of "ltq_mtd_probe" function:
 
-v2: Suggested by Marek Vasut <marek.vasut@gmail.com>
-  -Use more descriptive name for page
+bool mtd_addr_swap;
 
- drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+        if ( ltq_ebu_r32(LTQ_EBU_BUSCON0) & EBU_ENDIAN_SWAP ) {
+                switch (ltq_soc_type()) {
+                        case SOC_TYPE_VR9_2 :
+                        case SOC_TYPE_AR10 :
+                                mtd_addr_swap = false;
+                                break;
+                        default :
+                                mtd_addr_swap = true;
+                }
+        } else mtd_addr_swap = true;
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 2a643a1bb45e..f5c3ce8ac48b 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -431,11 +431,14 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
-  */
- static loff_t spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
- {
--	unsigned int offset = addr;
-+	unsigned int offset;
-+	unsigned int page;
- 
--	offset %= nor->page_size;
-+	offset = addr % nor->page_size;
-+	page = addr / nor->page_size;
-+	page <<= (nor->page_size > 512) ? 10 : 9;
- 
--	return ((addr - offset) << 1) | offset;
-+	return page | offset;
- }
- 
- /*
--- 
-2.11.0
+
+It's easier to add other architectures as needed. I tried it on my
+OpenWrt release, and got it working fine. Is it correct in this way ?
