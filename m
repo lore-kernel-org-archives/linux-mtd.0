@@ -1,35 +1,24 @@
-Received: from mail-qt0-x236.google.com ([2607:f8b0:400d:c0d::236])
+Received: from mail-oi0-x232.google.com ([2607:f8b0:4003:c06::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTnIU-0004kg-Eh
- for linux-mtd@lists.infradead.org; Wed, 18 Jan 2017 10:16:57 +0000
-Received: by mail-qt0-x236.google.com with SMTP id l7so7265518qtd.1
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2017 02:16:33 -0800 (PST)
+ id 1cToWn-0006aD-Mi
+ for linux-mtd@lists.infradead.org; Wed, 18 Jan 2017 11:35:47 +0000
+Received: by mail-oi0-x232.google.com with SMTP id u143so5254425oif.3
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2017 03:35:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20170117231421.16310-3-paul@crapouillou.net>
-References: <20170117231421.16310-1-paul@crapouillou.net>
- <20170117231421.16310-3-paul@crapouillou.net>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 18 Jan 2017 11:16:32 +0100
-Message-ID: <CACRpkdYK7PAUZL9btuOM-FUvtWoHFi9juXaBUBhAhgncUUegXA@mail.gmail.com>
-Subject: Re: [PATCH 02/13] pinctrl-jz4740: add a pinctrl driver for the
- Ingenic jz4740 SoC
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
- "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux MIPS <linux-mips@linux-mips.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- James Hogan <james.hogan@imgtec.com>
+In-Reply-To: <10f4c447-f1e5-89dc-17b6-b5d450a473fe@nod.at>
+References: <CAMBC=j5fyW1BMAeDGzJp480fikZVVj2npk=WO5jmRTa+_ixEkw@mail.gmail.com>
+ <CAFLxGvzROo7Y0CNE3Qyi4jj-J526XYebgO_G8TLS9+oCJ+fBPQ@mail.gmail.com>
+ <CAMBC=j7Yjk5RkT5xg1N=q3aVf45BbJgtYaZ8vsy3oBjZ+OOOaA@mail.gmail.com>
+ <01b355e9-6095-a2af-5c77-3e15751ff8da@nod.at>
+ <CAMBC=j7fn7tqouMD3ZQptZF_xRO5Xsx7HOXaGQahCQm2ug3RUw@mail.gmail.com>
+ <0f04ed5e-e7fb-7bbf-678d-840fe0be4b16@nod.at>
+ <CAMBC=j6t2h_yB3wQbNUexrJto+O3ruTXo992JWFLH293OyH0Bg@mail.gmail.com>
+ <10f4c447-f1e5-89dc-17b6-b5d450a473fe@nod.at>
+From: chaitanya vinnakota <chaitanya.sai.v@gmail.com>
+Date: Wed, 18 Jan 2017 17:05:23 +0530
+Message-ID: <CAMBC=j5nyA=7vCb_AeM_oYAS+p_+mrcG=nwXVDO6WqD=Sg_nMg@mail.gmail.com>
+Subject: Re: UBIFS errors are randomly seen after reboots
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -40,490 +29,255 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-n Wed, Jan 18, 2017 at 12:14 AM, Paul Cercueil <paul@crapouillou.net> wrote:
+Hi Richard,
+io_basic test failed  whereas the rest of the tests i.e io_read
+,io_update,  io_paral,  volrefcnt passed.  I also ran mtd-tests and
+all of them passed.
 
-> From: Paul Burton <paul.burton@imgtec.com>
+To sum it up , we've rsvol and io_basic which failed and the rest all
+passed. Does this give any lead to the root cause of UBIFS errors or
+are there any pending tests which we need to perform ?
+
+
+Below is the output of io_basic test
+
+root@router6654A1:~/arm-openwrt-linux# ./io_basic /dev/ubi1
+[137176.494161] INFO: rcu_sched detected stall on CPU 0 (t=6000 jiffies)
+[137176.500628] Backtrace:
+[137176.503212] [<c40113a0>] (dump_backtrace+0x0/0x110) from
+[<c43fff28>] (dump_stack+0x18/0x1c)
+[137176.511765]  r6:c458e080
+[137176.514150] INFO: rcu_sched detected stalls on CPUs/tasks: { 0}
+(detected by 1, t=6002 jiffies)
+[137176.514166] Backtrace:
+[137176.514186] [<c40113a0>] (dump_backtrace+0x0/0x110) from
+[<c43fff28>] (dump_stack+0x18/0x1c)
+[137176.514196]  r6:c45a6680 r5:c45a6620 r4:c4e31674 r3:00000000
+[137176.514228] [<c43fff10>] (dump_stack+0x0/0x1c) from [<c4080368>]
+(__rcu_pending+0x210/0x38c)
+[137176.514248] [<c4080158>] (__rcu_pending+0x0/0x38c) from
+[<c4081270>] (rcu_check_callbacks+0xe8/0x17c)
+[137176.514269] [<c4081188>] (rcu_check_callbacks+0x0/0x17c) from
+[<c4041f70>] (update_process_times+0x40/0x64)
+[137176.514279]  r8:e5267595 r7:00000001 r6:e6049780 r5:00000000 r4:e6066000
+[137176.514294] r3:00010000
+[137176.514315] [<c4041f30>] (update_process_times+0x0/0x64) from
+[<c4063174>] (tick_sched_timer+0x9c/0xdc)
+[137176.514325]  r7:c4e314a0 r6:e6067f68 r5:e6066000 r4:c4e31598
+[137176.514351] [<c40630d8>] (tick_sched_timer+0x0/0xdc) from
+[<c40564f0>] (__run_hrtimer+0xf4/0x1c8)
+[137176.514360]  r9:e6067eb0 r8:e5266b80 r6:c4e314d8 r5:c4e314a0 r4:c4e31598
+[137176.514385] [<c40563fc>] (__run_hrtimer+0x0/0x1c8) from
+[<c4057248>] (hrtimer_interrupt+0x124/0x288)
+[137176.514404] [<c4057124>] (hrtimer_interrupt+0x0/0x288) from
+[<c4013640>] (twd_handler+0x28/0x30)
+[137176.514422] [<c4013618>] (twd_handler+0x0/0x30) from [<c407d8d8>]
+(handle_percpu_devid_irq+0xd0/0x150)
+[137176.514431]  r4:0000001d r3:c4013618
+[137176.514448] [<c407d808>] (handle_percpu_devid_irq+0x0/0x150) from
+[<c4079e88>] (generic_handle_irq+0x34/0x48)
+[137176.514466] [<c4079e54>] (generic_handle_irq+0x0/0x48) from
+[<c400e494>] (handle_IRQ+0x80/0xc0)
+[137176.514483] [<c400e414>] (handle_IRQ+0x0/0xc0) from [<c40081d0>]
+(asm_do_IRQ+0x10/0x14)
+[137176.514492]  r5:60000013 r4:c400e72c
+[137176.514507] [<c40081c0>] (asm_do_IRQ+0x0/0x14) from [<c400d738>]
+(__irq_svc+0x38/0x90)
+[137176.514518] Exception stack(0xe6067f68 to 0xe6067fb0)
+[137176.514529] 7f60:                   00000001 00000000 e6067fb0
+00000000 e6066000 c44058a8
+[137176.514544] 7f80: c45c6984 c45c6ab4 0400406a 412fc091 00000000
+e6067fbc e6067fc0 e6067fb0
+[137176.514555] 7fa0: c400e728 c400e72c 60000013 ffffffff
+[137176.514571] [<c400e700>] (default_idle+0x0/0x30) from [<c400e90c>]
+(cpu_idle+0x84/0xc8)
+[137176.514596] [<c400e888>] (cpu_idle+0x0/0xc8) from [<c43fcc0c>]
+(secondary_start_kernel+0x140/0x158)
+[137176.514606]  r6:10c03c7d r5:c45a8b14 r4:00000002 r3:c45988ac
+[137176.514693] [<c43fcacc>] (secondary_start_kernel+0x0/0x158) from
+[<043fc4b4>] (0x43fc4b4)
+[137176.514703]  r5:00000015 r4:2606806a
+[137176.739774]  r5:c45a6620 r4:c4e29674 r3:c45a2dbc
+[137176.744558] [<c43fff10>] (dump_stack+0x0/0x1c) from [<c40801e0>]
+(__rcu_pending+0x88/0x38c)
+[137176.753035] [<c4080158>] (__rcu_pending+0x0/0x38c) from
+[<c4081270>] (rcu_check_callbacks+0xe8/0x17c)
+[137176.762382] [<c4081188>] (rcu_check_callbacks+0x0/0x17c) from
+[<c4041f70>] (update_process_times+0x40/0x64)
+[137176.772240]  r8:e3f551f5 r7:00000000 r6:e4a71540 r5:00000000 r4:e2012000
+[137176.778925] r3:00010000
+[137176.781677] [<c4041f30>] (update_process_times+0x0/0x64) from
+[<c4063174>] (tick_sched_timer+0x9c/0xdc)
+[137176.791186]  r7:c4e294a0 r6:e2013c70 r5:e2012000 r4:c4e29598
+[137176.797011] [<c40630d8>] (tick_sched_timer+0x0/0xdc) from
+[<c40564f0>] (__run_hrtimer+0xf4/0x1c8)
+[137176.805998]  r9:e2013bb8 r8:e3f53e80 r6:c4e294d8 r5:c4e294a0 r4:c4e29598
+[137176.812875] [<c40563fc>] (__run_hrtimer+0x0/0x1c8) from
+[<c4057248>] (hrtimer_interrupt+0x124/0x288)
+[137176.822134] [<c4057124>] (hrtimer_interrupt+0x0/0x288) from
+[<c4013640>] (twd_handler+0x28/0x30)
+[137176.831042] [<c4013618>] (twd_handler+0x0/0x30) from [<c407d8d8>]
+(handle_percpu_devid_irq+0xd0/0x150)
+[137176.840465]  r4:0000001d r3:c4013618
+[137176.844170] [<c407d808>] (handle_percpu_devid_irq+0x0/0x150) from
+[<c4079e88>] (generic_handle_irq+0x34/0x48)
+[137176.854213] [<c4079e54>] (generic_handle_irq+0x0/0x48) from
+[<c400e494>] (handle_IRQ+0x80/0xc0)
+[137176.863032] [<c400e414>] (handle_IRQ+0x0/0xc0) from [<c40081d0>]
+(asm_do_IRQ+0x10/0x14)
+[137176.871148]  r5:20000013 r4:c41c330c
+[137176.874852] [<c40081c0>] (asm_do_IRQ+0x0/0x14) from [<c400d738>]
+(__irq_svc+0x38/0x90)
+[137176.882883] Exception stack(0xe2013c70 to 0xe2013cb8)
+[137176.888041] 3c60:                                     e8800000
+ec3cf580 00000270 a5a5a5a5
+[137176.896335] 3c80: a5a5a5a5 0000a5a5 000000a5 ec3cf400 00000001
+c4619aa8 00000400 e2013cd4
+[137176.904629] 3ca0: 000000a5 e2013cb8 000000a5 c41c330c 20000013 ffffffff
+[137176.911371] [<c42594c8>] (nand_read_buf+0x0/0x1c) from
+[<c425d8a4>] (comcerto_nand_read_page_hwecc+0x70/0x140)
+[137176.921498] [<c425d834>] (comcerto_nand_read_page_hwecc+0x0/0x140)
+from [<c4258e68>] (nand_do_read_ops+0x200/0x438)
+[137176.932062] [<c4258c68>] (nand_do_read_ops+0x0/0x438) from
+[<c425a950>] (nand_read+0x80/0xa4)
+[137176.940708] [<c425a8d0>] (nand_read+0x0/0xa4) from [<c42442ac>]
+(part_read+0x78/0xcc)
+[137176.948649]  r9:00000000 r8:04140000 r7:00000000 r6:06d40000 r5:00000003
+[137176.955334] r4:e6295c00
+[137176.958081] [<c4244234>] (part_read+0x0/0xcc) from [<c42675b0>]
+(ubi_io_read+0x120/0x2b0)
+[137176.966379] [<c4267490>] (ubi_io_read+0x0/0x2b0) from [<c426522c>]
+(ubi_eba_read_leb+0x2b8/0x3b0)
+[137176.975375] [<c4264f74>] (ubi_eba_read_leb+0x0/0x3b0) from
+[<c426ddd4>] (ubi_check_volume+0x78/0xbc)
+[137176.984630] [<c426dd5c>] (ubi_check_volume+0x0/0xbc) from
+[<c42639ec>] (vol_cdev_write+0x2d4/0x354)
+[137176.993806] [<c4263718>] (vol_cdev_write+0x0/0x354) from
+[<c40d7c00>] (vfs_write+0xbc/0x148)
+[137177.002364] [<c40d7b44>] (vfs_write+0x0/0x148) from [<c40d7e8c>]
+(sys_write+0x48/0x74)
+[137177.010392]  r8:c400dd44 r7:00000004 r6:00000200 r5:bebc3a18 r4:e4996e40
+[137177.017270] [<c40d7e44>] (sys_write+0x0/0x74) from [<c400dbc0>]
+(ret_fast_syscall+0x0/0x30)
+[137177.025734]  r6:00010ba0 r5:00000000 r4:bebc3ca8
+
+
+Thanks
+Chaitanya
+
+On Tue, Jan 17, 2017 at 8:09 PM, Richard Weinberger <richard@nod.at> wrote:
+> Chaitanya,
 >
-> This driver handles pin configuration, pin muxing, and GPIOs of the
-> jz4740 SoC from Ingenic.
+> Am 17.01.2017 um 15:32 schrieb chaitanya vinnakota:
+>> Now , I'm seeing altogether different form of errors.
+>>
+>> ./runtests.sh /dev/ubi1
+>> Running mkvol_basic /dev/ubi1
+>> Running mkvol_bad /dev/ubi1
 >
-> It is separated into two files:
-> - pinctrl-ingenic.c, which contains the core functions that can be
->   shared across all Ingenic SoCs,
-> - pinctrl-jz4740.c, which contains the jz4740-pinctrl driver.
+> _bad is supposed to return errors.
 >
-> The reason behind separating some functions out of the jz4740-pinctrl
-> driver, is that the pin/GPIO controllers of the Ingenic SoCs are
-> extremely similar across SoC versions, except that some have the
-> registers shuffled around. Making a distinct separation will permit the
-> reuse of large parts of the driver to support the other SoCs from
-> Ingenic.
+>> [77361.468670] UBI error: verify_mkvol_req: bad volume creation request
+>> [77361.475116] Volume creation request dump:
+>> [77361.479139]  vol_id    -2
+>> [77361.481768]  alignment 1
+>> [77361.484322]  bytes     86343680
+>> [77361.487473]  vol_type  3
+>> [77361.490013]  name_len  22
+>> [77361.492641]  1st 16 characters of name: mkvol_bad:test_m
+>> [77361.498235] UBI error: verify_mkvol_req: bad volume creation request
+>> [77361.504652] Volume creation request dump:
+>> [77361.508676]  vol_id    128
+>> [77361.511390]  alignment 1
+>> [77361.513930]  bytes     86343680
+>> [77361.517095]  vol_type  3
+>> [77361.519636]  name_len  22
+>> [77361.522265]  1st 16 characters of name: mkvol_bad:test_m
+>> [77361.527634] UBI error: verify_mkvol_req: bad volume creation request
+>> [77361.534009] Volume creation request dump:
+>> [77361.538064]  vol_id    0
+>> [77361.540606]  alignment 0
+>> [77361.543145]  bytes     86343680
+>> [77361.546316]  vol_type  3
+>> [77361.548857]  name_len  22
+>> [77361.551485]  1st 16 characters of name: mkvol_bad:test_m
+>> [77361.558437] UBI error: verify_mkvol_req: bad volume creation request
+>> [77361.564862] Volume creation request dump:
+>> [77361.568902]  vol_id    0
+>> [77361.571457]  alignment -1
+>> [77361.574101]  bytes     86343680
+>> [77361.577313]  vol_type  3
+>> [77361.579866]  name_len  22
+>> [77361.582504]  1st 16 characters of name: mkvol_bad:test_m
+>> [77361.587943] UBI error: verify_mkvol_req: bad volume creation request
+>> [77361.594355] Volume creation request dump:
+>> [77361.598394]  vol_id    0
+>> [77361.600945]  alignment 126977
+>> [77361.603936]  bytes     86343680
+>> [77361.607132]  vol_type  3
+>> [77361.609688]  name_len  22
+>> [77361.612329]  1st 16 characters of name: mkvol_bad:test_m
+>> [77361.617765] UBI error: verify_mkvol_req: bad volume creation request
+>> [77361.624199] Volume creation request dump:
+>> [77361.628241]  vol_id    0
+>> [77361.630800]  alignment 2049
+>> [77361.633617]  bytes     86343680
+>> [77361.636814]  vol_type  3
+>> [77361.639368]  name_len  22
+>> [77361.642010]  1st 16 characters of name: mkvol_bad:test_m
+>> [77361.647478] UBI error: verify_mkvol_req: bad volume creation request
+>> [77361.653868] Volume creation request dump:
+>> [77361.657940]  vol_id    0
+>> [77361.660510]  alignment 1
+>> [77361.663065]  bytes     -1
+>> [77361.665739]  vol_type  3
+>> [77361.668290]  name_len  22
+>> [77361.670930]  1st 16 characters of name: mkvol_bad:test_m
+>> [77361.676360] UBI error: verify_mkvol_req: bad volume creation request
+>> [77361.682748] Volume creation request dump:
+>> [77361.686826]  vol_id    0
+>> [77361.689383]  alignment 1
+>> [77361.691936]  bytes     0
+>> [77361.694513]  vol_type  3
+>> [77361.697068]  name_len  22
+>> [77361.699708]  1st 16 characters of name: mkvol_bad:test_m
+>> [77361.705119] UBI error: ubi_create_volume: not enough PEBs, only 680 available
+>> [77361.712293] UBI error: ubi_create_volume: cannot create volume 0, error -28
+>> [77361.719415] UBI error: ubi_create_volume: not enough PEBs, only 680 available
+>> [77361.726655] UBI error: ubi_create_volume: cannot create volume 0, error -28
+>> [77361.733804] UBI error: verify_mkvol_req: bad volume creation request
 >
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-
-> diff --git a/drivers/pinctrl/ingenic/Kconfig b/drivers/pinctrl/ingenic/Kconfig
-> new file mode 100644
-> index 000000000000..9923ce127183
-> --- /dev/null
-> +++ b/drivers/pinctrl/ingenic/Kconfig
-> @@ -0,0 +1,14 @@
-> +#
-> +# Ingenic SoCs pin control drivers
-> +#
-> +config PINCTRL_INGENIC
-> +       bool
-> +       select PINMUX
-> +       select GPIOLIB_IRQCHIP
-> +       select GENERIC_PINCONF
-
-I like it already when it looks like that :D
-
-> +#include <linux/compiler.h>
-> +#include <linux/gpio.h>
-
-For drivers, just
-#include <linux/gpio/driver.h>
-
-> +struct ingenic_gpio_chip {
-> +       char name[3];
-> +       unsigned int idx;
-> +       void __iomem *base;
-> +       struct gpio_chip gc;
-> +       struct irq_chip irq_chip;
-> +       struct ingenic_pinctrl *pinctrl;
-> +       const struct ingenic_pinctrl_ops *ops;
-> +       uint32_t pull_ups;
-> +       uint32_t pull_downs;
-> +       unsigned int irq;
-> +       struct pinctrl_gpio_range grange;
-
-Usually we add GPIO ranges from the device tree for device tree
-drivers, look at the syntax in:
-Documentation/devicetree/bindings/gpio/gpio.txt
-
-git grep gpio-ranges arch/arm/boot/dts/
-gives you a few examples.
-
-> +#define gc_to_jzgc(gpiochip) \
-> +       container_of(gpiochip, struct ingenic_gpio_chip, gc)
-
-Unless you must have this, please switch to using
-struct ingenic_gpio_chip *jzgc = gpiochip_get_data(gc);
-and use [devm_]gpiochip_add_data() in the probe so
-you can get the data from the gpiochip directly.
-
-> +static void ingenic_gpio_set(struct gpio_chip *gc,
-> +               unsigned int offset, int value)
-> +{
-> +       struct ingenic_gpio_chip *jzgc = gc_to_jzgc(gc);
-> +
-> +       jzgc->ops->gpio_set_value(jzgc->base, offset, value);
-> +}
-
-struct ingenic_gpio_chip *jzgc = gpiochip_get_data(gc);
-etc everywhere.
-
-> +static void ingenic_gpio_irq_ack(struct irq_data *irqd)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(irqd);
-> +       struct ingenic_gpio_chip *jzgc = gc_to_jzgc(gc);
-> +       unsigned int high;
-> +       int irq = irqd->hwirq;
-> +
-> +       if (irqd_get_trigger_type(irqd) == IRQ_TYPE_EDGE_BOTH) {
-> +               /*
-> +                * Switch to an interrupt for the opposite edge to the one that
-> +                * triggered the interrupt being ACKed.
-> +                */
-> +               high = jzgc->ops->gpio_get_value(jzgc->base, irq);
-> +               if (high)
-> +                       jzgc->ops->irq_set_type(jzgc->base, irq,
-> +                                       IRQ_TYPE_EDGE_FALLING);
-> +               else
-> +                       jzgc->ops->irq_set_type(jzgc->base, irq,
-> +                                       IRQ_TYPE_EDGE_RISING);
-
-Neat hack. This is often how you have to do it indeed.
-
-> +static int ingenic_gpio_irq_set_type(struct irq_data *irqd, unsigned int type)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(irqd);
-> +       struct ingenic_gpio_chip *jzgc = gc_to_jzgc(gc);
-> +
-> +       switch (type) {
-> +       case IRQ_TYPE_EDGE_BOTH:
-> +       case IRQ_TYPE_EDGE_RISING:
-> +       case IRQ_TYPE_EDGE_FALLING:
-> +       case IRQ_TYPE_LEVEL_HIGH:
-> +       case IRQ_TYPE_LEVEL_LOW:
-> +               break;
-> +       default:
-> +               pr_err("unsupported external interrupt type\n");
-
-Should you set the irq handlet to handle_bad_irq() in this case?
-That's what I usually do.
-
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (type & IRQ_TYPE_EDGE_BOTH)
-> +               irq_set_handler_locked(irqd, handle_edge_irq);
-> +       else
-> +               irq_set_handler_locked(irqd, handle_level_irq);
-
-Nice.
-
-> +       jzgc->ops->irq_set_type(jzgc->base, irqd->hwirq, type);
-
-Getting a bit of feeling that it's a bit much indirection vtable
-business going on here, but depends on the series as a whole.
-
-> +static int ingenic_gpio_irq_set_wake(struct irq_data *irqd, unsigned int on)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(irqd);
-> +       struct ingenic_gpio_chip *jzgc = gc_to_jzgc(gc);
-> +
-> +       return irq_set_irq_wake(jzgc->irq, on);
-> +}
-
-I'm uncertain with these. Allright I guess, I'm just too bad at understanding
-wakeup IRQs.
-
-> +static void ingenic_gpio_irq_handler(struct irq_desc *desc)
-> +{
-> +       struct gpio_chip *gc = irq_desc_get_handler_data(desc);
-> +       struct ingenic_gpio_chip *jzgc = gc_to_jzgc(gc);
-> +       struct irq_chip *irq_chip = irq_data_get_irq_chip(&desc->irq_data);
-> +       unsigned long flag, i;
-> +
-> +       chained_irq_enter(irq_chip, desc);
-> +       flag = jzgc->ops->irq_read(jzgc->base);
-> +
-> +       for_each_set_bit(i, &flag, 32)
-> +               generic_handle_irq(irq_linear_revmap(gc->irqdomain, i));
-> +       chained_irq_exit(irq_chip, desc);
-> +}
-
-Clean & nice.
-
-> +static int ingenic_pinctrl_dt_node_to_map(
-> +               struct pinctrl_dev *pctldev, struct device_node *np,
-> +               struct pinctrl_map **map, unsigned int *num_maps)
-> +{
-> +       struct ingenic_pinctrl *jzpc = pinctrl_dev_get_drvdata(pctldev);
-> +       struct ingenic_pinctrl_func *func;
-> +       struct ingenic_pinctrl_group *group;
-> +       struct pinctrl_map *new_map;
-> +       unsigned int map_num, i;
-> +
-> +       group = find_group_by_of_node(jzpc, np);
-> +       if (!group)
-> +               return -EINVAL;
-> +
-> +       func = find_func_by_of_node(jzpc, of_get_parent(np));
-> +       if (!func)
-> +               return -EINVAL;
-> +
-> +       map_num = 1 + group->num_pins;
-> +       new_map = devm_kzalloc(jzpc->dev,
-> +                               sizeof(*new_map) * map_num, GFP_KERNEL);
-> +       if (!new_map)
-> +               return -ENOMEM;
-> +
-> +       new_map[0].type = PIN_MAP_TYPE_MUX_GROUP;
-> +       new_map[0].data.mux.function = func->name;
-> +       new_map[0].data.mux.group = group->name;
-> +
-> +       for (i = 0; i < group->num_pins; i++) {
-> +               new_map[i + 1].type = PIN_MAP_TYPE_CONFIGS_PIN;
-> +               new_map[i + 1].data.configs.group_or_pin =
-> +                       jzpc->pdesc[group->pins[i].idx].name;
-> +               new_map[i + 1].data.configs.configs = group->pins[i].configs;
-> +               new_map[i + 1].data.configs.num_configs =
-> +                       group->pins[i].num_configs;
-> +       }
-> +
-> +       *map = new_map;
-> +       *num_maps = map_num;
-> +       return 0;
-> +}
-
-This may change due to DT bindings reviews. I would prefer if you use
-generic functions.
-
-> +static int ingenic_pinctrl_parse_dt_gpio(struct ingenic_pinctrl *jzpc,
-> +               struct ingenic_gpio_chip *jzgc, struct device_node *np)
-
-Naming here: parse or probe or init. This function is certainly not just
-parsing the DT. init() or probe() is better.
-
-> +       jzgc->gc.base = jzpc->base + (jzgc->idx * PINS_PER_GPIO_PORT);
-
-No. No hard-coded GPIO bases on new GPIO driver.
-Set this to -1 so it uses dynamic allocation of GPIO numbers.
-
-> +       if (of_property_read_u32_index(np, "ingenic,pull-ups", 0,
-> +                               &jzgc->pull_ups))
-> +               jzgc->pull_ups = 0;
-> +       if (of_property_read_u32_index(np, "ingenic,pull-downs", 0,
-> +                               &jzgc->pull_downs))
-> +               jzgc->pull_downs = 0;
-> +
-> +       if (jzgc->pull_ups & jzgc->pull_downs) {
-> +               dev_err(jzpc->dev, "GPIO port %c has overlapping pull ups & pull downs\n",
-> +                       'A' + jzgc->idx);
-> +               return -EINVAL;
-> +       }
-
-These bindings look suspicious. But I will review them in the binding
-document.
-
-> +static int ingenic_pinctrl_parse_dt_pincfg(struct ingenic_pinctrl *jzpc,
-> +               struct ingenic_pinctrl_pin *pin, phandle cfg_handle)
-> +{
-> +       struct device_node *cfg_node;
-> +       int err;
-> +
-> +       cfg_node = of_find_node_by_phandle(cfg_handle);
-> +       if (!cfg_node)
-> +               return -EINVAL;
-> +
-> +       err = pinconf_generic_parse_dt_config(cfg_node, NULL,
-> +                       &pin->configs, &pin->num_configs);
-> +       if (err)
-> +               return err;
-> +
-> +       err = devm_add_action(jzpc->dev, (void (*)(void *))kfree, pin->configs);
-
-That looks very clever.
-
-But when we have pinctrl_utils_free_map() and other helpers already
-this free:ing looks like some reinvented wheel.
-
-Can we create something that free:s the maps from
-pinctrl_utils_reserve_map() in a similar way and use that?
-Just thinking aloud.
-
-> +static int ingenic_pinctrl_parse_dt_func(struct ingenic_pinctrl *jzpc,
-> +               struct device_node *np, unsigned int *ifunc,
-> +               unsigned int *igroup)
-> +{
-> +       struct ingenic_pinctrl_func *func;
-> +       struct ingenic_pinctrl_group *grp;
-> +       struct device_node *group_node, *gpio_node;
-> +       struct gpio_chip *gpio_chip;
-> +       phandle gpio_handle, cfg_handle;
-> +       struct property *pp;
-> +       __be32 *plist;
-> +       unsigned int i, j;
-> +       int err;
-> +       const unsigned int vals_per_pin = 4;
-> +
-> +       func = &jzpc->funcs[(*ifunc)++];
-> +       func->of_node = np;
-> +       func->name = np->name;
-> +
-> +       func->num_groups = of_get_child_count(np);
-> +       func->groups = devm_kzalloc(jzpc->dev, sizeof(*func->groups) *
-> +                       func->num_groups, GFP_KERNEL);
-> +       func->group_names = devm_kzalloc(jzpc->dev,
-> +                       sizeof(*func->group_names) * func->num_groups,
-> +                       GFP_KERNEL);
-> +       if (!func->groups || !func->group_names)
-> +               return -ENOMEM;
-> +
-> +       i = 0;
-> +       for_each_child_of_node(np, group_node) {
-> +               pp = of_find_property(group_node, "ingenic,pins", NULL);
-> +               if (!pp)
-> +                       return -EINVAL;
-> +               if ((pp->length / sizeof(__be32)) % vals_per_pin)
-> +                       return -EINVAL;
-> +
-> +               grp = &jzpc->groups[(*igroup)++];
-> +               grp->of_node = group_node;
-> +               grp->name = group_node->name;
-> +               grp->num_pins = (pp->length / sizeof(__be32)) / vals_per_pin;
-> +               grp->pins = devm_kzalloc(jzpc->dev, sizeof(*grp->pins) *
-> +                               grp->num_pins, GFP_KERNEL);
-> +               grp->pin_indices = devm_kzalloc(jzpc->dev,
-> +                               sizeof(*grp->pin_indices) * grp->num_pins,
-> +                               GFP_KERNEL);
-> +               if (!grp->pins)
-> +                       return -EINVAL;
-> +
-> +               plist = pp->value;
-> +               for (j = 0; j < grp->num_pins; j++) {
-> +                       gpio_handle = be32_to_cpup(plist++);
-> +                       grp->pins[j].idx = be32_to_cpup(plist++);
-> +                       grp->pins[j].func = be32_to_cpup(plist++);
-> +                       cfg_handle = be32_to_cpup(plist++);
-> +
-> +                       gpio_node = of_find_node_by_phandle(gpio_handle);
-> +                       if (!gpio_node)
-> +                               return -EINVAL;
-> +
-> +                       gpio_chip = gpiochip_find(gpio_node,
-> +                                       find_gpio_chip_by_of_node);
-> +                       if (!gpio_chip)
-> +                               return -EINVAL;
-> +
-> +                       grp->pins[j].gpio_chip = gc_to_jzgc(gpio_chip);
-> +
-> +                       err = ingenic_pinctrl_parse_dt_pincfg(jzpc,
-> +                                       &grp->pins[j], cfg_handle);
-> +                       if (err)
-> +                               return err;
-> +
-> +                       grp->pins[j].idx += grp->pins[j].gpio_chip->idx *
-> +                               PINS_PER_GPIO_PORT;
-> +                       grp->pin_indices[j] = grp->pins[j].idx;
-> +               }
-> +
-> +               func->groups[i] = grp;
-> +               func->group_names[i] = grp->name;
-> +               i++;
-> +       }
-> +
-> +       return 0;
-> +}
-
-Tony Lindgren has added generic function and group parsing for drivers
-that keep functions and groups in the device tree. This code is committed
-and available in the pinctrl git tree.
-
-Look at commits:
-commit c7059c5ac70aea194b07b2d811df433eb0ca81b5
-pinctrl: core: Add generic pinctrl functions for managing groups
-commit a76edc89b100e4fefb2a5c00cd8cd557437659e7
-pinctrl: core: Add generic pinctrl functions for managing groups
-commit caeb774ea3b1bc25dc2f24681c27543aba6ca7ae
-pinctrl: single: Use generic pinctrl helpers for managing groups
-commit 571aec4df5b72a80f80d1e524da8fbd7ff525c98
-pinctrl: single: Use generic pinmux helpers for managing functions
-commit 3fd6d6ad73af90522321451a2d10b0a8967d47d1
-pinctrl: imx: use generic pinmux helpers for managing functions
-
-So two drivers already switch to generic code handling this.
-
-Please investigate and try out the above.
-
-> +int ingenic_pinctrl_probe(struct platform_device *pdev,
-> +               const struct ingenic_pinctrl_ops *ops)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +       struct ingenic_pinctrl *jzpc;
-> +       struct ingenic_gpio_chip *jzgc;
-> +       struct pinctrl_desc *pctl_desc;
-> +       struct device_node *np, *chips_node, *functions_node;
-> +       unsigned int i, j;
-> +       int err;
-> +
-> +       if (!dev->of_node) {
-> +               dev_err(dev, "device tree node not found\n");
-> +               return -ENODEV;
-> +       }
-
-I think this check is not necessary since you only probe from device tree.
-We usually skip it these days.
-
-> +       jzpc->base = 0;
-> +       of_property_read_u32(dev->of_node, "base", &jzpc->base);
-
-If this is the Linux GPIO number base then NACK, we don't define
-Linux-specific things in the device tree.
-
-Please use dynamic allocation of GPIO base anyways, as stated
-above.
-
-> +       chips_node = of_find_node_by_name(dev->of_node, "gpio-chips");
-
-This looks like a very dubious new DT bindings. Will review in that
-document.
-
-> +       jzpc->num_gpio_chips = of_get_available_child_count(chips_node);
-> +       if (!jzpc->num_gpio_chips) {
-> +               dev_err(dev, "No GPIO chips found\n");
-> +               return -EINVAL;
-> +       }
-
-Usually it is better to create one device per gpiochip.
-
-> +       /* register pinctrl GPIO ranges */
-> +       for (i = 0; i < jzpc->num_gpio_chips; i++) {
-> +               jzgc = &jzpc->gpio_chips[i];
-> +
-> +               jzgc->grange.name = jzgc->name;
-> +               jzgc->grange.id = jzgc->idx;
-> +               jzgc->grange.pin_base = jzgc->idx * PINS_PER_GPIO_PORT;
-> +               jzgc->grange.base = jzgc->gc.base;
-> +               jzgc->grange.npins = jzgc->gc.ngpio;
-> +               jzgc->grange.gc = &jzgc->gc;
-> +               pinctrl_add_gpio_range(jzpc->pctl, &jzgc->grange);
-> +       }
-
-I strongly recommend defining the GPIO ranges in the device tree
-and if not possible, to add the GPIO range from the gpiochip
-side and not the pinctrl side.
-
-> +struct ingenic_pinctrl_ops {
-> +       unsigned int nb_functions;
-> +
-> +       void (*set_function)(void __iomem *base,
-> +                       unsigned int offset, unsigned int function);
-> +       void (*set_gpio)(void __iomem *base, unsigned int offset, bool output);
-> +       int  (*get_bias)(void __iomem *base, unsigned int offset);
-> +       void (*set_bias)(void __iomem *base, unsigned int offset, bool enable);
-> +       void (*gpio_set_value)(void __iomem *base,
-> +                       unsigned int offset, int value);
-> +       int  (*gpio_get_value)(void __iomem *base, unsigned int offset);
-> +       u32  (*irq_read)(void __iomem *base);
-> +       void (*irq_mask)(void __iomem *base, unsigned int irq, bool mask);
-> +       void (*irq_ack)(void __iomem *base, unsigned int irq);
-> +       void (*irq_set_type)(void __iomem *base,
-> +                       unsigned int irq, unsigned int type);
-> +};
-
-This is a *lot* of vtable indirections. Are you sure this is a good
-idea?
-
-> +static void jz4740_set_gpio(void __iomem *base,
-> +               unsigned int offset, bool output)
-> +{
-> +       writel(1 << offset, base + GPIO_FUNCC);
-> +       writel(1 << offset, base + GPIO_SELECTC);
-> +       writel(1 << offset, base + GPIO_TRIGC);
-> +
-> +       if (output)
-> +               writel(1 << offset, base + GPIO_DIRS);
-> +       else
-> +               writel(1 << offset, base + GPIO_DIRC);
-> +}
-
-Replace all (1 << offset) things with:
-
-#include <linux/bitops.h>
-
-BIT(offset)
-
-Simple and clean.
-
-> +static int jz4740_get_bias(void __iomem *base, unsigned int offset)
-> +{
-> +       return !((readl(base + GPIO_PULL_DIS) >> offset) & 0x1);
-> +}
-
-Similarly:
-return !((readl(base + GPIO_PULL_DIR) & BIT(offset));
-
-Follow these patterns everywhere.
-
-> +static int jz4740_gpio_get_value(void __iomem *base, unsigned int offset)
-> +{
-> +       return (readl(base + GPIO_DATA) >> offset) & 0x1;
-> +}
-
-return !!(readl(base + GPIO_DATA) & BIT(offset));
-
-Yours,
-Linus Walleij
+> These are fine.
+>
+>> [77361.740243] Volume creation request dump:
+>> [77361.744301]  vol_id    0
+>> [77361.746854]  alignment 1
+>> [77361.749407]  bytes     126976
+>> [77361.752397]  vol_type  7
+>> [77361.754981]  name_len  22
+>> [77361.757622]  1st 16 characters of name: mkvol_bad:test_m
+>> [77361.926468] UBI error: ubi_create_volume: volume 0 already exists
+>> [77361.932606] UBI error: ubi_create_volume: cannot create volume 0, error -17
+>> [77361.939839] UBI error: ubi_create_volume: volume "mkvol_bad:test_mkvol()" exists (ID 0)
+>> [77361.947946] UBI error: ubi_create_volume: cannot create volume 1, error -17
+>> [77362.290898] UBI error: ubi_create_volume: volume "mkvol_bad:test_mkvol()" exists (ID 0)
+>> [77362.299021] UBI error: ubi_create_volume: cannot create volume 1, error -17
+>> [77405.406937] UBI error: ubi_open_volume: cannot open device 1, volume 128, error -22
+>> [77405.420226] UBI error: ubi_open_volume: cannot open device 1, volume -1, error -22
+>> [77405.427910] UBI error: ubi_open_volume: cannot open device 1, volume 128, error -22
+>> [77405.435657] UBI error: ubi_open_volume: cannot open device 1, volume 0, error -19
+>> [77405.774800] UBI error: ubi_open_volume: cannot open device 1, volume 0, error -19
+>
+> These are fine too.
+>
+>> Running mkvol_paral /dev/ubi1
+>> Running rsvol /dev/ubi1
+>> [rsvol] test_rsvol1():178: function open() failed with error 2 (No such file or directory)
+>> [rsvol] test_rsvol1():179: cannot open "/dev/ubi1_0"
+>
+> That's one is odd.
+> Do all other tests fail too?
+> io_basic and io_parallel are interesting. You can also start them by hand.
+>
+> Thanks,
+> //richard
