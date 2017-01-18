@@ -1,25 +1,33 @@
-Date: Wed, 18 Jan 2017 16:08:09 -0600
+Date: Wed, 18 Jan 2017 16:20:10 -0600
 From: Rob Herring <robh@kernel.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Guochun Mao <guochun.mao@mediatek.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Guochun Mao <guochun.mao@mediatek.com>,
+ Richard Weinberger <richard@nod.at>,
+ Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-mediatek@lists.infradead.org,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] Documentation: mtk-quadspi: update DT bindings
-Message-ID: <20170118220809.pmaa2f3kwiddehti@rob-hp-laptop>
-References: <1484291609-20195-1-git-send-email-guochun.mao@mediatek.com>
- <1484291609-20195-2-git-send-email-guochun.mao@mediatek.com>
- <20170113151326.11e9451a@bbrezillon>
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
+Message-ID: <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
+References: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
+ <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
+ <20170113172825.75d545a3@bbrezillon>
+ <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
+ <20170113175628.1793f433@bbrezillon>
+ <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
+ <20170114092958.022f2fc8@bbrezillon>
+ <e7fa1542-f0e2-0e45-23b3-25d6491ae40d@gmail.com>
+ <20170116094032.6f471f11@bbrezillon>
+ <20170117143650.5db87148@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170113151326.11e9451a@bbrezillon>
+In-Reply-To: <20170117143650.5db87148@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +37,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 13, 2017 at 03:13:26PM +0100, Boris Brezillon wrote:
-> On Fri, 13 Jan 2017 15:13:28 +0800
-> Guochun Mao <guochun.mao@mediatek.com> wrote:
+On Tue, Jan 17, 2017 at 02:36:50PM +1100, Thomas Petazzoni wrote:
+> Hello,
 > 
-> > Add "mediatek,mt2701-nor" for nor flash node's compatible.
-> > 
-> > Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> > ---
-> >  .../devicetree/bindings/mtd/mtk-quadspi.txt        |    4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > index fb314f0..f83d31d 100644
-> > --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > @@ -1,7 +1,9 @@
-> >  * Serial NOR flash controller for MTK MT81xx (and similar)
-> >  
-> >  Required properties:
-> > -- compatible: 	  should be "mediatek,mt8173-nor";
-> > +- compatible: 	  should contain:
-> > +		  "mediatek,mt2701-nor" for MT2701,
-> > +		  "mediatek,mt8173-nor" for MT8173.
+> (Side note: you guys should learn about stripping irrelevant parts of
+> an e-mail when replying!)
+>
+> On Mon, 16 Jan 2017 09:40:32 +0100, Boris Brezillon wrote:
 > 
-> Do you need to define a new compatible? If the IPs are exactly the same
-> in both SoCs it shouldn't be needed.
+> > > Well this is OK I guess, but then you can also use "mediatek,mt8173-nor"
+> > > as the oldest supported compatible and be done with it, no ? It looks a
+> > > bit crappy though, I admit that ...
+> > 
+> > Let's stop bikeshedding and wait for DT maintainers feedback
+> > before taking a decision ;-).
+> > 
+> > Rob, Mark, any opinion?
+>
 
-Rather the 2701 should contain both strings in that case.
+Sigh, is how to do compatibles really not yet understood?
+ 
+> I agree that a clarification would be good. There are really two
+> options:
+> 
+>  1. Have two compatible strings in the DT, the one that matches the
+>     exact SoC where the IP is found (first compatible string) and the
+>     one that matches some other SoC where the same IP is found (second
+>     compatible string). Originally, Linux only supports the second
+>     compatible string in its device driver, but if it happens that a
+>     difference is found between two IPs that we thought were the same,
+>     we can add support for the first compatible string in the driver,
+>     with a slightly different behavior.
+
+This. And no wildcards in the compatible string. 
+
+>  2. Have a single compatible string in the DT, matching the exact SoC
+>     where the IP is found. This involves adding immediately this
+>     compatible string in the corresponding driver.
+
+I wouldn't object to this from a DT perspective as I have no clue 
+generally if IP blocks are "the same" or not. Subsystem maintainers will 
+object though.
+
+> I've not really been able to figure out which of the two options is the
+> most future-proof/appropriate.
+
+They are both future-proof. #2 has the disadvantage of requiring a 
+kernel update for a new SoC. 
 
 Rob
