@@ -1,32 +1,35 @@
-Date: Thu, 19 Jan 2017 10:38:29 +1100
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- devicetree@vger.kernel.org, Guochun Mao <guochun.mao@mediatek.com>, Richard
- Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Matthias
- Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
-Message-ID: <20170119103829.524ce715@free-electrons.com>
-In-Reply-To: <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
-References: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
- <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
- <20170113172825.75d545a3@bbrezillon>
- <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
- <20170113175628.1793f433@bbrezillon>
- <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
- <20170114092958.022f2fc8@bbrezillon>
- <e7fa1542-f0e2-0e45-23b3-25d6491ae40d@gmail.com>
- <20170116094032.6f471f11@bbrezillon>
- <20170117143650.5db87148@free-electrons.com>
- <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
+Received: from mail-qt0-x22d.google.com ([2607:f8b0:400d:c0d::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cTzvB-00058E-Ni
+ for linux-mtd@lists.infradead.org; Wed, 18 Jan 2017 23:45:43 +0000
+Received: by mail-qt0-x22d.google.com with SMTP id x49so38122228qtc.2
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2017 15:45:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170117231421.16310-2-paul@crapouillou.net>
+References: <20170117231421.16310-1-paul@crapouillou.net>
+ <20170117231421.16310-2-paul@crapouillou.net>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 19 Jan 2017 00:45:19 +0100
+Message-ID: <CACRpkdZAGHHpCyR4d8dJv=hTRTS6-zkX-2-GarLXnNf_2QO2UQ@mail.gmail.com>
+Subject: Re: [PATCH 01/13] Documentation: dt/bindings: Document pinctrl-ingenic
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Maarten ter Huurne <maarten@treewalker.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux MIPS <linux-mips@linux-mips.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+ James Hogan <james.hogan@imgtec.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,74 +39,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Wed, Jan 18, 2017 at 12:14 AM, Paul Cercueil <paul@crapouillou.net> wrote:
 
-On Wed, 18 Jan 2017 16:20:10 -0600, Rob Herring wrote:
+> From: Paul Burton <paul.burton@imgtec.com>
+>
+> This commit adds documentation for the devicetree bidings of the
+> pinctrl-ingenic driver, which handles pin configuration, pin muxing
+> and GPIOs of the Ingenic SoCs currently supported by the Linux kernel.
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-> > > Rob, Mark, any opinion?  
-> >  
-> 
-> Sigh, is how to do compatibles really not yet understood?
+(...)
 
-Well, it seems like not everyone necessarily understands what is the
-best strategy to adopt (me included).
+> +##### 'gpio-chips' sub-node #####
+> +
+> +The gpio-chips node will contain sub-nodes that correspond to GPIO controllers
+> +(one sub-node per GPIO controller).
+> +
+> +Required properties:
+> +- #address-cells: Should contain the integer 1.
+> +- #size-cells: Should contain the integer 1.
+> +- ranges: Should be empty.
 
-> > I agree that a clarification would be good. There are really two
-> > options:
-> > 
-> >  1. Have two compatible strings in the DT, the one that matches the
-> >     exact SoC where the IP is found (first compatible string) and the
-> >     one that matches some other SoC where the same IP is found (second
-> >     compatible string). Originally, Linux only supports the second
-> >     compatible string in its device driver, but if it happens that a
-> >     difference is found between two IPs that we thought were the same,
-> >     we can add support for the first compatible string in the driver,
-> >     with a slightly different behavior.  
-> 
-> This. And no wildcards in the compatible string. 
+I do not see why the GPIO needs a special subnode. Can the pin controller
+and the GPIO not simply spawn from a single node?
 
-OK. So it means that today we do something like:
+> +##### GPIO controller node #####
+> +
+> +Each subnode of the 'gpio-chips' node is a GPIO controller node.
+> +
+> +Required properties:
+> +- gpio-controller: Identifies this node as a GPIO controller.
+> +- #gpio-cells: Should contain the integer 2.
+> +- reg: Should contain the physical address and length of the GPIO controller's
+> +  configuration registers.
+> +
+> +Optional properties:
+> +- interrupt-controller: The GPIO controllers can optionally configure the
+> +  GPIOs as interrupt sources. In this case, the 'interrupt-controller'
+> +  standalone property should be supplied.
+> +- #interrupt-cells: Required if 'interrupt-controller' is also specified.
+> +  In that case, it should contain the integer 2.
+> +- interrupts: Required if 'interrupt-controller' is also specified.
+> +  In that case, it should contain the IRQ number of this GPIO controller.
+> +- ingenic,pull-ups: A bit mask identifying the pins associated with this GPIO
+> +  port which feature a pull-up resistor. The default mask is 0x0.
+> +- ingenic,pull-downs: A bit mask identifying the pins associated with this GPIO
+> +  port which feature a pull-down resistor. The default mask is 0x0.
 
-	compatible = "baz,foo-12", "baz,foo-00";
+So these bits tell us which lines have a pull up and pull down resistor?
 
-and support only baz,foo-00 in the driver. If tomorrow we discover
-that there is in fact a difference between the two IP blocks, we can
-add support for baz,foo-12 in the driver, and handle the differences.
+Isn't that readily know from the compatible string? Then just hardcode
+that into the driver for each variant, there is no need to define that in
+the device tree.
 
-But then, the DT still contains:
+> +##### Pin function node #####
+> +
+> +Each subnode of the 'functions' node is a pin function node.
+> +
+> +These subnodes represent a functionality of the SoC which may be exposed
+> +through one or more groups of pins, represented as subnodes of the pin
+> +function node. For example a function may be uart0, which may be exposed
+> +through the group of pins PF0 to PF3.
+> +
+> +Required pin function node properties:
+> +- None.
+> +
+> +
+> +##### Pin group node #####
+> +
+> +Each subnode of a pin function node is a pin group node.
+> +
+> +Required pin group node properties:
+> +- ingenic,pins: A set of values representing the pins within this pin group and
+> +  their configuration.
 
-	compatible = "baz,foo-12", "baz,foo-00";
+Look into using the standard pins property from the pinctrl bindings
+if yoy want to do this.
 
-and therefore pretends that the IP block is compatible with
-"baz,foo-00" which is in fact *not* the case. It was a mistake to
-consider it as compatible. So we keep living with a DT that has
-incorrect information.
+> Four values should be provided for each pin:
+> +  - The phandle of the GPIO controller node for the GPIO port within which the
+> +    pin is found.
+> +  - The index of the pin within its GPIO port (an integer in the range 0 to 31
+> +    inclusive).
 
-> 
-> >  2. Have a single compatible string in the DT, matching the exact SoC
-> >     where the IP is found. This involves adding immediately this
-> >     compatible string in the corresponding driver.  
-> 
-> I wouldn't object to this from a DT perspective as I have no clue 
-> generally if IP blocks are "the same" or not. Subsystem maintainers will 
-> object though.
+This is already supported by gpio ranges, please do not reimplement
+stuff we already have.
 
-Knowing if IP blocks are "the same" is in fact not necessarily trivial.
-What appears to be identical IP blocks today might be discovered later
-as actually having subtle differences (sometimes not even visible in
-the datasheet).
+> +  - The index of the shared function port to be programmed in the GPIO port
+> +    registers for this pin.
 
-> > I've not really been able to figure out which of the two options is the
-> > most future-proof/appropriate.  
-> 
-> They are both future-proof. #2 has the disadvantage of requiring a 
-> kernel update for a new SoC. 
+I don't see why this can not be stored in the driver.
+But some people prefer to shovel everything into the device
+tree, I don't know. Can you elaborate why this should be in the
+device tree?
 
-Which is generally anyway needed because a new SoC will almost always
-require some new drivers, adjusting pin-muxing or clock drivers, etc.
+> +  - The phandle of a pin configuration node specifying the electrical
+> +    configuration that should be applied to the pin.
 
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Why? This is something the standard pin control states handles.
+I'm confused.
+
+> +For example the function 'msc0' may be exposed through 2 different pin groups,
+> +one in GPIO port A and one in GPIO port E:
+> +
+> +  bias-configs {
+> +    nobias: nobias {
+> +      bias-disable;
+> +    };
+> +  };
+> +
+> +  functions {
+> +    pinfunc_msc0: msc0 {
+> +      pins_msc0_pa: msc0-pa {
+> +        ingenic,pins = <&gpa  4 1 &nobias   /* d4 */
+> +                        &gpa  5 1 &nobias   /* d5 */
+> +                        &gpa  6 1 &nobias   /* d6 */
+> +                        &gpa  7 1 &nobias   /* d7 */
+> +                        &gpa 18 1 &nobias   /* clk */
+> +                        &gpa 19 1 &nobias   /* cmd */
+> +                        &gpa 20 1 &nobias   /* d0 */
+> +                        &gpa 21 1 &nobias   /* d1 */
+> +                        &gpa 22 1 &nobias   /* d2 */
+> +                        &gpa 23 1 &nobias   /* d3 */
+> +                        &gpa 24 1 &nobias>; /* rst */
+> +      };
+
+Please look at other bindings and drivers and read pinctrl.txt
+closely. This makes no sense to me compared to other
+examples.
+
+This is something that seems to cross-mix gpio ranges
+and pin config, that doesn't work for me, we can't have an
+idiomatic binding like this. I understand that it may fit your
+single usecase perfectly but it will be a maintenance nightmare
+for me.
+
+Yours,
+Linus Walleij
