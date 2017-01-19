@@ -1,25 +1,33 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cU8iY-0004nK-Pw
- for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 09:09:21 +0000
-Subject: Re: UBI/UBIFS corruptions during random power-cuts
-To: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>,
- linux-mtd@lists.infradead.org
-References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
- <0500de05-b3d7-6cbc-0236-5d4c83a5f00f@nod.at>
- <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
- <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
- <89cd8327-581b-4285-d9ae-138d800211cf@toradex.com>
- <bceb976b-0aac-fe04-a540-f24823366233@nod.at>
- <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5a769de2-31f1-f011-c6bc-e94427407751@nod.at>
-Date: Thu, 19 Jan 2017 10:08:49 +0100
+Date: Thu, 19 Jan 2017 10:22:36 +0100
+From: Jan Kara <jack@suse.cz>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
+Message-ID: <20170119092236.GC2565@quack2.suse.cz>
+References: <20170106141107.23953-1-mhocko@kernel.org>
+ <20170106141107.23953-9-mhocko@kernel.org>
+ <20170117025607.frrcdbduthhutrzj@thunk.org>
+ <20170117082425.GD19699@dhcp22.suse.cz>
+ <20170117151817.GR19699@dhcp22.suse.cz>
+ <20170117155916.dcizr65bwa6behe7@thunk.org>
+ <20170117161618.GT19699@dhcp22.suse.cz>
+ <20170117172925.GA2486@quack2.suse.cz>
+ <20170119083956.GE30786@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170119083956.GE30786@dhcp22.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,92 +37,219 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bhuvan,
+On Thu 19-01-17 09:39:56, Michal Hocko wrote:
+> On Tue 17-01-17 18:29:25, Jan Kara wrote:
+> > On Tue 17-01-17 17:16:19, Michal Hocko wrote:
+> > > > > But before going to play with that I am really wondering whether we need
+> > > > > all this with no journal at all. AFAIU what Jack told me it is the
+> > > > > journal lock(s) which is the biggest problem from the reclaim recursion
+> > > > > point of view. What would cause a deadlock in no journal mode?
+> > > > 
+> > > > We still have the original problem for why we need GFP_NOFS even in
+> > > > ext2.  If we are in a writeback path, and we need to allocate memory,
+> > > > we don't want to recurse back into the file system's writeback path.
+> > > 
+> > > But we do not enter the writeback path from the direct reclaim. Or do
+> > > you mean something other than pageout()'s mapping->a_ops->writepage?
+> > > There is only try_to_release_page where we get back to the filesystems
+> > > but I do not see any NOFS protection in ext4_releasepage.
+> > 
+> > Maybe to expand a bit: These days, direct reclaim can call ->releasepage()
+> > callback, ->evict_inode() callback (and only for inodes with i_nlink > 0),
+> > shrinkers. That's it. So the recursion possibilities are rather more limited
+> > than they used to be several years ago and we likely do not need as much
+> > GFP_NOFS protection as we used to.
+> 
+> Thanks for making my remark more clear Jack! I would just want to add
+> that I was playing with the patch below (it is basically
+> GFP_NOFS->GFP_KERNEL for all allocations which trigger warning from the
+> debugging patch which means they are called from within transaction) and
+> it didn't hit the lockdep when running xfstests both with or without the
+> enabled journal.
+> 
+> So am I still missing something or the nojournal mode is safe and the
+> current series is OK wrt. ext*?
 
-Am 19.01.2017 um 06:36 schrieb Bhuvanchandra DV:
-> Hi Richard,
-> 
-> On 01/18/2017 01:28 PM, Richard Weinberger wrote:
-> 
->> Am 18.01.2017 um 06:11 schrieb Bhuvanchandra DV:
->>>> Also apply this patch:
->>>> http://lists.infradead.org/pipermail/linux-mtd/2017-January/071264.html
->>> Along with this patch there are no corruptions occurred so far, power-cut tests are running fine
->>> since few days. Will update if any issues are observed.
->> Good to know. :-)
-> 
-> Unfortunately today in one of the test setup UBIFS got corrupted, this time the stack trace is with
-> 'ubifs_get_pnode'.
-> 
-> ...
-> [    3.885175] UBIFS error (ubi0:2 pid 1): ubifs_get_pnode.part.4: error -22 reading pnode at 8:28985
-> [    3.894717] (pid 1) dumping pnode:
-> [    3.898540]  address c3234680 parent c3234600 cnext 0
-> [    3.903749]  flags 0 iip 3 level 0 num 0
-> [    3.907973]  0: free 51200 dirty 131032 flags 1 lnum 0
-> [    3.913258]  1: free 0 dirty 118032 flags 34 lnum 0
-> [    3.918469]  2: free 92160 dirty 22752 flags 34 lnum 0
-> [    3.923755]  3: free 40960 dirty 71672 flags 34 lnum 0
-> [    3.929205] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.10.0-rc4-00016-g60124f7 #11
-> [    3.937052] Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
-> [    3.943621] Backtrace:
-> [    3.946247] [<c010c474>] (dump_backtrace) from [<c010c71c>] (show_stack+0x18/0x1c)
-> [    3.954009]  r7:00000000 r6:60000013 r5:00000000 r4:c0e29058
-> [    3.959822] [<c010c704>] (show_stack) from [<c03fcf38>] (dump_stack+0xb4/0xe8)
-> [    3.967250] [<c03fce84>] (dump_stack) from [<c037bc00>] (ubifs_get_pnode.part.4+0x230/0x2b0)
-> [    3.975882]  r10:c3210e00 r9:00000008 r8:00000006 r7:c3234600 r6:00000003 r5:c30dc000
-> [    3.983883]  r4:c3234680 r3:00000000
-> [    3.987584] [<c037b9d0>] (ubifs_get_pnode.part.4) from [<c037d604>] (ubifs_lpt_lookup_dirty+0x254/0x2a8)
-> [    3.997265]  r10:00000357 r9:00013800 r8:00000006 r7:c3232b80 r6:0000034c r5:c30dc000
-> [    4.005262]  r4:00000000
-> [    4.007915] [<c037d3b0>] (ubifs_lpt_lookup_dirty) from [<c0380a3c>] (ubifs_update_one_lp+0x40/0x150)
-> [    4.017246]  r10:00000357 r9:00013800 r8:80000001 r7:00000357 r6:c30dcc0c r5:c30dc000
-> [    4.025249]  r4:00000091 r3:00000000
-> [    4.028948] [<c03809fc>] (ubifs_update_one_lp) from [<c036dbc8>] (ubifs_tnc_add+0x124/0x140)
-> [    4.037578]  r8:c30dc000 r7:c323c830 r6:c323c830 r5:00000006 r4:c30dc478
-> [    4.044424] [<c036daa4>] (ubifs_tnc_add) from [<c0371814>] (ubifs_replay_journal+0xf68/0x145c)
-> [    4.053230]  r10:c30dc000 r9:00000000 r8:00200000 r7:0000006a r6:c30dcd40 r5:c30dcd24
-> [    4.061229]  r4:c321b980
-> [    4.063899] [<c03708ac>] (ubifs_replay_journal) from [<c03662ac>] (ubifs_mount+0x13d8/0x17d8)
-> [    4.072624]  r10:c30dc008 r9:c31d7d00 r8:c30dcb48 r7:00000000 r6:c30dc000 r5:c318a000
-> [    4.080625]  r4:00000000
-> [    4.083290] [<c0364ed4>] (ubifs_mount) from [<c022558c>] (mount_fs+0x1c/0xb0)
-> [    4.090578]  r10:00008001 r9:00000000 r8:c0248a04 r7:c0e2515c r6:c0e2515c r5:c31d7c80
-> [    4.098580]  r4:c3108b00
-> [    4.101245] [<c0225570>] (mount_fs) from [<c0244bd4>] (vfs_kern_mount+0x5c/0x134)
-> [    4.108912]  r6:00008001 r5:c31d7c80 r4:c3108b00
-> [    4.113675] [<c0244b78>] (vfs_kern_mount) from [<c0248a04>] (do_mount+0x150/0xc84)
-> [    4.121428]  r9:00000060 r8:c31d7300 r7:c02498e8 r6:c31d7c80 r5:00000000 r4:c0e2515c
-> [    4.129364] [<c02488b4>] (do_mount) from [<c02498e8>] (SyS_mount+0x7c/0xa4)
-> [    4.136471]  r10:c0d00604 r9:c0d60888 r8:00008001 r7:c0bf5644 r6:00000000 r5:c31d7c80
-> [    4.144465]  r4:c31d7300
-> [    4.147120] [<c024986c>] (SyS_mount) from [<c0d0121c>] (mount_block_root+0x10c/0x274)
-> [    4.155135]  r8:c0d60878 r7:c7d3cac0 r6:c31d6000 r5:c31d6000 r4:00008001
-> [    4.161987] [<c0d01110>] (mount_block_root) from [<c0d01644>] (prepare_namespace+0x98/0x1d0)
-> [    4.170616]  r10:c0d00604 r9:c0d60858 r8:c0d60854 r7:c0e78000 r6:c0d60878 r5:c0d60878
-> [    4.178616]  r4:c0d60888
-> [    4.181264] [<c0d015ac>] (prepare_namespace) from [<c0d00ec0>] (kernel_init_freeable+0x1ac/0x1f8)
-> [    4.190327]  r6:c0d73d5c r5:c0e78000 r4:00000008
-> [    4.195086] [<c0d00d14>] (kernel_init_freeable) from [<c0979bf0>] (kernel_init+0x10/0x120)
-> [    4.203543]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:c0979be0
-> [    4.211534]  r4:00000000
-> [    4.214185] [<c0979be0>] (kernel_init) from [<c0107ef0>] (ret_from_fork+0x14/0x24)
-> [    4.221931]  r5:c0979be0 r4:00000000
-> [    4.227189] UBIFS error (ubi0:2 pid 1): ubifs_get_pnode.part.4: calc num: 211
-> [    4.234585] UBIFS error (ubi0:2 pid 1): ubifs_update_one_lp: cannot update properties of LEB 855, error -22
-> ....
-> 
-> Complete boot log is available here[1]
-> 
-> [1] http://pastebin.com/2Sg3SQWg
+I'm convinced the current series is OK, only real life will tell us whether
+we missed something or not ;)
 
-Hmm, this is something different.
-A LPT entry accounts more dirty spaces than LEB size.
+> The following patch in its current form is WIP and needs a proper review
+> before I post it.
 
-Can you please enable the UBIFS debugfs "chk_lprops" knob?
-Either via userspace or just set the flag in source.
+So jbd2 changes look confusing (although technically correct) to me - we
+*always* should run in NOFS context in those place so having GFP_KERNEL
+there looks like it is unnecessarily hiding what is going on. So in those
+places I'd prefer to keep GFP_NOFS or somehow else make it very clear these
+allocations are expected to be GFP_NOFS (and assert that). Otherwise the
+changes look good to me.
 
-Please watch out of ubifs assert message. UBIFS will *not* abort.
+								Honza
 
-Thanks,
-//richard
+> ---
+>  fs/ext4/inode.c       |  4 ++--
+>  fs/ext4/mballoc.c     | 14 +++++++-------
+>  fs/ext4/xattr.c       |  2 +-
+>  fs/jbd2/journal.c     |  4 ++--
+>  fs/jbd2/revoke.c      |  2 +-
+>  fs/jbd2/transaction.c |  2 +-
+>  6 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index b7d141c3b810..841cb8c4cb5e 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -2085,7 +2085,7 @@ static int ext4_writepage(struct page *page,
+>  		return __ext4_journalled_writepage(page, len);
+>  
+>  	ext4_io_submit_init(&io_submit, wbc);
+> -	io_submit.io_end = ext4_init_io_end(inode, GFP_NOFS);
+> +	io_submit.io_end = ext4_init_io_end(inode, GFP_KERNEL);
+>  	if (!io_submit.io_end) {
+>  		redirty_page_for_writepage(wbc, page);
+>  		unlock_page(page);
+> @@ -3794,7 +3794,7 @@ static int __ext4_block_zero_page_range(handle_t *handle,
+>  	int err = 0;
+>  
+>  	page = find_or_create_page(mapping, from >> PAGE_SHIFT,
+> -				   mapping_gfp_constraint(mapping, ~__GFP_FS));
+> +				   mapping_gfp_mask(mapping));
+>  	if (!page)
+>  		return -ENOMEM;
+>  
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index d9fd184b049e..67b97cd6e3d6 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1251,7 +1251,7 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
+>  static int ext4_mb_load_buddy(struct super_block *sb, ext4_group_t group,
+>  			      struct ext4_buddy *e4b)
+>  {
+> -	return ext4_mb_load_buddy_gfp(sb, group, e4b, GFP_NOFS);
+> +	return ext4_mb_load_buddy_gfp(sb, group, e4b, GFP_KERNEL);
+>  }
+>  
+>  static void ext4_mb_unload_buddy(struct ext4_buddy *e4b)
+> @@ -2054,7 +2054,7 @@ static int ext4_mb_good_group(struct ext4_allocation_context *ac,
+>  
+>  	/* We only do this if the grp has never been initialized */
+>  	if (unlikely(EXT4_MB_GRP_NEED_INIT(grp))) {
+> -		int ret = ext4_mb_init_group(ac->ac_sb, group, GFP_NOFS);
+> +		int ret = ext4_mb_init_group(ac->ac_sb, group, GFP_KERNEL);
+>  		if (ret)
+>  			return ret;
+>  	}
+> @@ -3600,7 +3600,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  	BUG_ON(ac->ac_status != AC_STATUS_FOUND);
+>  	BUG_ON(!S_ISREG(ac->ac_inode->i_mode));
+>  
+> -	pa = kmem_cache_alloc(ext4_pspace_cachep, GFP_NOFS);
+> +	pa = kmem_cache_alloc(ext4_pspace_cachep, GFP_KERNEL);
+>  	if (pa == NULL)
+>  		return -ENOMEM;
+>  
+> @@ -3694,7 +3694,7 @@ ext4_mb_new_group_pa(struct ext4_allocation_context *ac)
+>  	BUG_ON(!S_ISREG(ac->ac_inode->i_mode));
+>  
+>  	BUG_ON(ext4_pspace_cachep == NULL);
+> -	pa = kmem_cache_alloc(ext4_pspace_cachep, GFP_NOFS);
+> +	pa = kmem_cache_alloc(ext4_pspace_cachep, GFP_KERNEL);
+>  	if (pa == NULL)
+>  		return -ENOMEM;
+>  
+> @@ -4479,7 +4479,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
+>  		}
+>  	}
+>  
+> -	ac = kmem_cache_zalloc(ext4_ac_cachep, GFP_NOFS);
+> +	ac = kmem_cache_zalloc(ext4_ac_cachep, GFP_KERNEL);
+>  	if (!ac) {
+>  		ar->len = 0;
+>  		*errp = -ENOMEM;
+> @@ -4813,7 +4813,7 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+>  
+>  	/* __GFP_NOFAIL: retry infinitely, ignore TIF_MEMDIE and memcg limit. */
+>  	err = ext4_mb_load_buddy_gfp(sb, block_group, &e4b,
+> -				     GFP_NOFS|__GFP_NOFAIL);
+> +				     GFP_KERNEL|__GFP_NOFAIL);
+>  	if (err)
+>  		goto error_return;
+>  
+> @@ -4832,7 +4832,7 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
+>  		 * to fail.
+>  		 */
+>  		new_entry = kmem_cache_alloc(ext4_free_data_cachep,
+> -				GFP_NOFS|__GFP_NOFAIL);
+> +				GFP_KERNEL|__GFP_NOFAIL);
+>  		new_entry->efd_start_cluster = bit;
+>  		new_entry->efd_group = block_group;
+>  		new_entry->efd_count = count_clusters;
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index 172317462238..f68e8c87f9f2 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -1650,7 +1650,7 @@ ext4_xattr_cache_insert(struct mb_cache *ext4_mb_cache, struct buffer_head *bh)
+>  		       EXT4_XATTR_REFCOUNT_MAX;
+>  	int error;
+>  
+> -	error = mb_cache_entry_create(ext4_mb_cache, GFP_NOFS, hash,
+> +	error = mb_cache_entry_create(ext4_mb_cache, GFP_KERNEL, hash,
+>  				      bh->b_blocknr, reusable);
+>  	if (error) {
+>  		if (error == -EBUSY)
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 3a449150f834..bd29daa975a5 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -379,7 +379,7 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>  	 */
+>  	J_ASSERT_BH(bh_in, buffer_jbddirty(bh_in));
+>  
+> -	new_bh = alloc_buffer_head(GFP_NOFS|__GFP_NOFAIL);
+> +	new_bh = alloc_buffer_head(GFP_KERNEL|__GFP_NOFAIL);
+>  
+>  	/* keep subsequent assertions sane */
+>  	atomic_set(&new_bh->b_count, 1);
+> @@ -2375,7 +2375,7 @@ static struct journal_head *journal_alloc_journal_head(void)
+>  #ifdef CONFIG_JBD2_DEBUG
+>  	atomic_inc(&nr_journal_heads);
+>  #endif
+> -	ret = kmem_cache_zalloc(jbd2_journal_head_cache, GFP_NOFS);
+> +	ret = kmem_cache_zalloc(jbd2_journal_head_cache, GFP_KERNEL);
+>  	if (!ret) {
+>  		jbd_debug(1, "out of memory for journal_head\n");
+>  		pr_notice_ratelimited("ENOMEM in %s, retrying.\n", __func__);
+> diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
+> index cfc38b552118..c9c347468c5b 100644
+> --- a/fs/jbd2/revoke.c
+> +++ b/fs/jbd2/revoke.c
+> @@ -141,7 +141,7 @@ static int insert_revoke_hash(journal_t *journal, unsigned long long blocknr,
+>  {
+>  	struct list_head *hash_list;
+>  	struct jbd2_revoke_record_s *record;
+> -	gfp_t gfp_mask = GFP_NOFS;
+> +	gfp_t gfp_mask = GFP_KERNEL;
+>  
+>  	if (journal_oom_retry)
+>  		gfp_mask |= __GFP_NOFAIL;
+> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+> index 35a5d3d76182..a7e50eb330a8 100644
+> --- a/fs/jbd2/transaction.c
+> +++ b/fs/jbd2/transaction.c
+> @@ -974,7 +974,7 @@ do_get_write_access(handle_t *handle, struct journal_head *jh,
+>  			JBUFFER_TRACE(jh, "allocate memory for buffer");
+>  			jbd_unlock_bh_state(bh);
+>  			frozen_buffer = jbd2_alloc(jh2bh(jh)->b_size,
+> -						   GFP_NOFS | __GFP_NOFAIL);
+> +						   GFP_KERNEL | __GFP_NOFAIL);
+>  			goto repeat;
+>  		}
+>  		jh->b_frozen_data = frozen_buffer;
+> -- 
+> 2.11.0
+> 
+> -- 
+> Michal Hocko
+> SUSE Labs
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
