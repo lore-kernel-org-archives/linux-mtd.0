@@ -1,24 +1,33 @@
-Received: from 3.mo179.mail-out.ovh.net ([178.33.251.175])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cU8nG-0005Xp-T4
- for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 09:14:08 +0000
-Received: from player698.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo179.mail-out.ovh.net (Postfix) with ESMTP id 3A7D414819
- for <linux-mtd@lists.infradead.org>; Thu, 19 Jan 2017 10:13:45 +0100 (CET)
-From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-To: linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH] mtd: aspeed: fix compile warning in aspeed_smc_read_from_ahb()
-Date: Thu, 19 Jan 2017 10:13:18 +0100
-Message-Id: <1484817198-22477-1-git-send-email-clg@kaod.org>
+Date: Thu, 19 Jan 2017 10:44:05 +0100
+From: Michal Hocko <mhocko@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Theodore Ts'o <tytso@mit.edu>, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
+Message-ID: <20170119094405.GK30786@dhcp22.suse.cz>
+References: <20170106141107.23953-1-mhocko@kernel.org>
+ <20170106141107.23953-9-mhocko@kernel.org>
+ <20170117025607.frrcdbduthhutrzj@thunk.org>
+ <20170117082425.GD19699@dhcp22.suse.cz>
+ <20170117151817.GR19699@dhcp22.suse.cz>
+ <20170117155916.dcizr65bwa6behe7@thunk.org>
+ <20170117161618.GT19699@dhcp22.suse.cz>
+ <20170117172925.GA2486@quack2.suse.cz>
+ <20170119083956.GE30786@dhcp22.suse.cz>
+ <20170119092236.GC2565@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170119092236.GC2565@quack2.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +37,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The first argument of ioread32_rep() and ioread8_rep is not
-const. Change aspeed_smc_read_from_ahb() prototype to fix compile
-warning :
+On Thu 19-01-17 10:22:36, Jan Kara wrote:
+> On Thu 19-01-17 09:39:56, Michal Hocko wrote:
+> > On Tue 17-01-17 18:29:25, Jan Kara wrote:
+> > > On Tue 17-01-17 17:16:19, Michal Hocko wrote:
+> > > > > > But before going to play with that I am really wondering whether we need
+> > > > > > all this with no journal at all. AFAIU what Jack told me it is the
+> > > > > > journal lock(s) which is the biggest problem from the reclaim recursion
+> > > > > > point of view. What would cause a deadlock in no journal mode?
+> > > > > 
+> > > > > We still have the original problem for why we need GFP_NOFS even in
+> > > > > ext2.  If we are in a writeback path, and we need to allocate memory,
+> > > > > we don't want to recurse back into the file system's writeback path.
+> > > > 
+> > > > But we do not enter the writeback path from the direct reclaim. Or do
+> > > > you mean something other than pageout()'s mapping->a_ops->writepage?
+> > > > There is only try_to_release_page where we get back to the filesystems
+> > > > but I do not see any NOFS protection in ext4_releasepage.
+> > > 
+> > > Maybe to expand a bit: These days, direct reclaim can call ->releasepage()
+> > > callback, ->evict_inode() callback (and only for inodes with i_nlink > 0),
+> > > shrinkers. That's it. So the recursion possibilities are rather more limited
+> > > than they used to be several years ago and we likely do not need as much
+> > > GFP_NOFS protection as we used to.
+> > 
+> > Thanks for making my remark more clear Jack! I would just want to add
+> > that I was playing with the patch below (it is basically
+> > GFP_NOFS->GFP_KERNEL for all allocations which trigger warning from the
+> > debugging patch which means they are called from within transaction) and
+> > it didn't hit the lockdep when running xfstests both with or without the
+> > enabled journal.
+> > 
+> > So am I still missing something or the nojournal mode is safe and the
+> > current series is OK wrt. ext*?
+> 
+> I'm convinced the current series is OK, only real life will tell us whether
+> we missed something or not ;)
 
-   drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
-   drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-      ioread32_rep(src, buf, len >> 2);
+I would like to extend the changelog of "jbd2: mark the transaction
+context with the scope GFP_NOFS context".
 
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
----
- drivers/mtd/spi-nor/aspeed-smc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-index 6bb4c7d1788c..7c86099450be 100644
---- a/drivers/mtd/spi-nor/aspeed-smc.c
-+++ b/drivers/mtd/spi-nor/aspeed-smc.c
-@@ -222,8 +222,7 @@ struct aspeed_smc_controller {
-  * the memory buffer pointer and count via explicit code. The final updates
-  * to len are optimistically suppressed.
-  */
--static int aspeed_smc_read_from_ahb(void *buf, const void __iomem *src,
--				    size_t len)
-+static int aspeed_smc_read_from_ahb(void *buf, void __iomem *src, size_t len)
- {
- 	size_t offset = 0;
+"
+Please note that setups without journal do not suffer from potential
+recursion problems and so they do not need the scope protection because
+neither ->releasepage nor ->evict_inode (which are the only fs entry
+points from the direct reclaim) can reenter a locked context which is
+doing the allocation currently.
+"
  
+> > The following patch in its current form is WIP and needs a proper review
+> > before I post it.
+> 
+> So jbd2 changes look confusing (although technically correct) to me - we
+> *always* should run in NOFS context in those place so having GFP_KERNEL
+> there looks like it is unnecessarily hiding what is going on. So in those
+> places I'd prefer to keep GFP_NOFS or somehow else make it very clear these
+> allocations are expected to be GFP_NOFS (and assert that). Otherwise the
+> changes look good to me.
+
+I would really like to get rid most of NOFS direct usage and only
+dictate it via the scope API otherwise I suspect we will just grow more
+users and end up in the same situation as we are now currently over time.
+In principle only the context which changes the reclaim reentrancy policy
+should care about NOFS and everybody else should just pretend nothing
+like that exists. There might be few exceptions of course, I am not yet
+sure whether jbd2 is that case. But I am not proposing this change yet
+(thanks for checking anyway)...
 -- 
-2.7.4
+Michal Hocko
+SUSE Labs
