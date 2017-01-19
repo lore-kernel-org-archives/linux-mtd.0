@@ -1,32 +1,34 @@
-Date: Thu, 19 Jan 2017 08:53:03 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- devicetree@vger.kernel.org, Guochun Mao <guochun.mao@mediatek.com>, Richard
- Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Matthias
- Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
-Message-ID: <20170119085303.24b8d462@bbrezillon>
-In-Reply-To: <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
-References: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
- <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
- <20170113172825.75d545a3@bbrezillon>
- <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
- <20170113175628.1793f433@bbrezillon>
- <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
- <20170114092958.022f2fc8@bbrezillon>
- <e7fa1542-f0e2-0e45-23b3-25d6491ae40d@gmail.com>
- <20170116094032.6f471f11@bbrezillon>
- <20170117143650.5db87148@free-electrons.com>
- <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
+Received: from mail-qt0-x22b.google.com ([2607:f8b0:400d:c0d::22b])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cU6PS-00076C-IZ
+ for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 06:41:24 +0000
+Received: by mail-qt0-x22b.google.com with SMTP id v23so52014535qtb.0
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2017 22:41:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170117231421.16310-1-paul@crapouillou.net>
+References: <20170117231421.16310-1-paul@crapouillou.net>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 19 Jan 2017 07:38:57 +0100
+Message-ID: <CACRpkdYJFsgVN4Q+7XbMcNC1topUan7+o6PCBWBC4aifM8sq-g@mail.gmail.com>
+Subject: Re: [PATCH 00/13] Ingenic JZ4740 / JZ4780 pinctrl driver
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Maarten ter Huurne <maarten@treewalker.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux MIPS <linux-mips@linux-mips.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+ James Hogan <james.hogan@imgtec.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,59 +38,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 18 Jan 2017 16:20:10 -0600
-Rob Herring <robh@kernel.org> wrote:
+On Wed, Jan 18, 2017 at 12:14 AM, Paul Cercueil <paul@crapouillou.net> wrote:
 
-> On Tue, Jan 17, 2017 at 02:36:50PM +1100, Thomas Petazzoni wrote:
-> > Hello,
-> > 
-> > (Side note: you guys should learn about stripping irrelevant parts of
-> > an e-mail when replying!)
-> >
-> > On Mon, 16 Jan 2017 09:40:32 +0100, Boris Brezillon wrote:
-> >   
-> > > > Well this is OK I guess, but then you can also use "mediatek,mt8173-nor"
-> > > > as the oldest supported compatible and be done with it, no ? It looks a
-> > > > bit crappy though, I admit that ...  
-> > > 
-> > > Let's stop bikeshedding and wait for DT maintainers feedback
-> > > before taking a decision ;-).
-> > > 
-> > > Rob, Mark, any opinion?  
-> >  
-> 
-> Sigh, is how to do compatibles really not yet understood?
+> One problem still unresolved: the pinctrl framework does not allow us to
+> configure each pin on demand (someone please prove me wrong), when the
+> various PWM channels are requested or released. For instance, the PWM
+> channels can be configured from sysfs, which would require all PWM pins
+> to be configured properly beforehand for the PWM function, eventually
+> causing conflicts with other platform or board drivers.
 
-Apparently not, and I fear this is not the last misunderstanding on my
-side ;-).
+Why do you think this?
 
->  
-> > I agree that a clarification would be good. There are really two
-> > options:
-> > 
-> >  1. Have two compatible strings in the DT, the one that matches the
-> >     exact SoC where the IP is found (first compatible string) and the
-> >     one that matches some other SoC where the same IP is found (second
-> >     compatible string). Originally, Linux only supports the second
-> >     compatible string in its device driver, but if it happens that a
-> >     difference is found between two IPs that we thought were the same,
-> >     we can add support for the first compatible string in the driver,
-> >     with a slightly different behavior.  
-> 
-> This. And no wildcards in the compatible string. 
-> 
-> >  2. Have a single compatible string in the DT, matching the exact SoC
-> >     where the IP is found. This involves adding immediately this
-> >     compatible string in the corresponding driver.  
-> 
-> I wouldn't object to this from a DT perspective as I have no clue 
-> generally if IP blocks are "the same" or not. Subsystem maintainers will 
-> object though.
-> 
-> > I've not really been able to figure out which of the two options is the
-> > most future-proof/appropriate.  
-> 
-> They are both future-proof. #2 has the disadvantage of requiring a 
-> kernel update for a new SoC. 
-> 
-> Rob
+- Pincontrol handles can be obtained at runtime.
+- Pincontrol states can be changed at runtime.
+
+The fact that a the handle is retrived by the device core and set to
+the states named "init" or "default" during boot is just a convenience.
+
+You can have as many and as fine-grained states as you want. They
+can pertain to just one pin too.
+
+Linus Walleij
