@@ -1,39 +1,28 @@
-MIME-Version: 1.0
-In-Reply-To: <20170119091428.598eb987@bbrezillon>
-References: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
- <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
- <20170113172825.75d545a3@bbrezillon>
- <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
- <20170113175628.1793f433@bbrezillon>
- <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
- <20170114092958.022f2fc8@bbrezillon>
- <e7fa1542-f0e2-0e45-23b3-25d6491ae40d@gmail.com>
- <20170116094032.6f471f11@bbrezillon>
- <20170117143650.5db87148@free-electrons.com>
- <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
- <20170119103829.524ce715@free-electrons.com>
- <CAL_Jsq+EyHtC7THLCJcwgtVtVESMOdmi3T3bBxgOqJt6BCtCHQ@mail.gmail.com>
- <20170119091428.598eb987@bbrezillon>
+Received: from mail-ot0-f196.google.com ([74.125.82.196])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cUFno-0002qc-CI
+ for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 16:43:09 +0000
+Received: by mail-ot0-f196.google.com with SMTP id f9so4826775otd.0
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Jan 2017 08:42:48 -0800 (PST)
+Date: Thu, 19 Jan 2017 10:42:46 -0600
 From: Rob Herring <robh@kernel.org>
-Date: Thu, 19 Jan 2017 08:18:41 -0600
-Message-ID: <CAL_Jsq+S-FYy4SmjJ3fWzBugw2zCj5TQkkfUA8QVL7SLJW3E1g@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Guochun Mao <guochun.mao@mediatek.com>,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- linux-mediatek@lists.infradead.org,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+To: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: mtd: add a common label property to
+ all mtd devices
+Message-ID: <20170119164246.bqkucct4pj76k27o@rob-hp-laptop>
+References: <1484573225-19095-3-git-send-email-clg@kaod.org>
+ <1484578600-25994-1-git-send-email-clg@kaod.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1484578600-25994-1-git-send-email-clg@kaod.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,85 +32,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 19, 2017 at 2:14 AM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hi Rob,
->
-> On Wed, 18 Jan 2017 20:51:08 -0600
-> Rob Herring <robh@kernel.org> wrote:
->
->> On Wed, Jan 18, 2017 at 5:38 PM, Thomas Petazzoni
->> <thomas.petazzoni@free-electrons.com> wrote:
->> > Hello,
->> >
->> > On Wed, 18 Jan 2017 16:20:10 -0600, Rob Herring wrote:
->> >
->> >> > > Rob, Mark, any opinion?
->> >> >
->> >>
->> >> Sigh, is how to do compatibles really not yet understood?
->> >
->> > Well, it seems like not everyone necessarily understands what is the
->> > best strategy to adopt (me included).
->> >
->> >> > I agree that a clarification would be good. There are really two
->> >> > options:
->> >> >
->> >> >  1. Have two compatible strings in the DT, the one that matches the
->> >> >     exact SoC where the IP is found (first compatible string) and the
->> >> >     one that matches some other SoC where the same IP is found (second
->> >> >     compatible string). Originally, Linux only supports the second
->> >> >     compatible string in its device driver, but if it happens that a
->> >> >     difference is found between two IPs that we thought were the same,
->> >> >     we can add support for the first compatible string in the driver,
->> >> >     with a slightly different behavior.
->> >>
->> >> This. And no wildcards in the compatible string.
->> >
->> > OK. So it means that today we do something like:
->> >
->> >         compatible = "baz,foo-12", "baz,foo-00";
->> >
->> > and support only baz,foo-00 in the driver. If tomorrow we discover
->> > that there is in fact a difference between the two IP blocks, we can
->> > add support for baz,foo-12 in the driver, and handle the differences.
->> >
->> > But then, the DT still contains:
->> >
->> >         compatible = "baz,foo-12", "baz,foo-00";
->> >
->> > and therefore pretends that the IP block is compatible with
->> > "baz,foo-00" which is in fact *not* the case. It was a mistake to
->> > consider it as compatible. So we keep living with a DT that has
->> > incorrect information.
->>
->> I wouldn't say it's a mistake necessarily. The old compatible would
->> probably work to some extent. I'd assume it was tested to some level.
->> Or it could be other changes exposing a difference.
->
-> One last question and I'm done: is something like that acceptable?
->
->         compatible = "<vendor>,<old-soc>","<vendor>,<new-soc>";
->
-> This can happen when someone adds support for an unsupported feature
-> on a brand new SoC, and then someone else use the same driver for an
-> older SoC embedding the same IP but still wants to add a new compatible
-> just in case these 2 IPs appear to be slightly different.
+On Mon, Jan 16, 2017 at 03:56:40PM +0100, Cédric Le Goater wrote:
+> This can be used to easily identify a specific chip on a system with
+> multiple chips.
+> 
+> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/common.txt | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/common.txt
 
-Yes, it's old and new compatible strings in this case and it's newest
-compatible string first.
-
-> Here the order of compat strings is no longer following a clear rule
-> like 'most-specific compatible first' or 'newest IP/SoC version first',
-> it's completely dependent on the order these IPs were supported in the
-> OS (Linux). I'm perfectly fine with that BTW, just want to make sure
-> this is authorized.
-
-I guess we should say "newest compatible for IP first" instead. There
-are some exceptions where we add fallbacks later on, but that falls
-under the most-specific part.
-
-It's order that the bindings are defined, not Linux support really,
-but in practice those are the same.
-
-Rob
+Acked-by: Rob Herring <robh@kernel.org>
