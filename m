@@ -1,24 +1,31 @@
 Received: from mail-wm0-f66.google.com ([74.125.82.66])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUGyU-0002QB-Lp
- for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 17:58:17 +0000
-Received: by mail-wm0-f66.google.com with SMTP id r126so657695wmr.3
- for <linux-mtd@lists.infradead.org>; Thu, 19 Jan 2017 09:57:53 -0800 (PST)
-Subject: Re: [PATCH] mtd: aspeed: fix compile warning in
- aspeed_smc_read_from_ahb()
-To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- linux-mtd@lists.infradead.org
-References: <1484817198-22477-1-git-send-email-clg@kaod.org>
+ id 1cUKJ7-00046U-Pv
+ for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 21:31:47 +0000
+Received: by mail-wm0-f66.google.com with SMTP id c85so2034727wmi.1
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Jan 2017 13:31:25 -0800 (PST)
+Subject: Re: [PATCH V2] mtd: bcm47xxsflash: support reading flash out of
+ mapping window
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+References: <20170116220916.2603-1-zajec5@gmail.com>
+ <20170117105110.26328-1-zajec5@gmail.com>
+ <31ca1f51-887d-fce4-400c-cc0f97353eb8@gmail.com>
+ <CACna6rzHtNE-8YCAmydzhCytYQc53Jr9HGo=rdQt-KkD1YW-qA@mail.gmail.com>
+ <4e268f6f-42fd-84a8-2b28-6ebb5129d945@gmail.com>
+ <CACna6ryfrDeYdMmLbOfeZNoA_EifPNKennXVBj3_bZk078c2Tw@mail.gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <a5b9d933-95db-2cb6-fb70-40bc21dd7298@gmail.com>
-Date: Thu, 19 Jan 2017 18:21:54 +0100
+Message-ID: <78f2d03d-e916-c5ea-aea3-c1d860921e7d@gmail.com>
+Date: Thu, 19 Jan 2017 22:30:21 +0100
 MIME-Version: 1.0
-In-Reply-To: <1484817198-22477-1-git-send-email-clg@kaod.org>
+In-Reply-To: <CACna6ryfrDeYdMmLbOfeZNoA_EifPNKennXVBj3_bZk078c2Tw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,41 +37,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/19/2017 10:13 AM, Cédric Le Goater wrote:
-> The first argument of ioread32_rep() and ioread8_rep is not
-> const. Change aspeed_smc_read_from_ahb() prototype to fix compile
-> warning :
+On 01/17/2017 01:04 PM, Rafał Miłecki wrote:
+> On 17 January 2017 at 12:49, Marek Vasut <marek.vasut@gmail.com> wrote:
+>> On 01/17/2017 12:08 PM, Rafał Miłecki wrote:
+>>> On 17 January 2017 at 12:00, Marek Vasut <marek.vasut@gmail.com> wrote:
+>>>> On 01/17/2017 11:51 AM, Rafał Miłecki wrote:
+>>>>> From: Rafał Miłecki <rafal@milecki.pl>
+>>>>>
+>>>>> For reading flash content we use MMIO but it's possible to read only
+>>>>> first 16 MiB this way. It's simply an arch design/limitation.
+>>>>> To support flash sizes bigger than 16 MiB implement indirect access
+>>>>> using ChipCommon registers.
+>>>>> This has been tested using MX25L25635F.
+>>>>>
+>>>>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>>>>> ---
+>>>>> V2: Simplify line writing to buf
+>>>>>     Add some trivial comment for OPCODE_ST_READ4B
+>>>>>     Both requested by Marek
+>>>>> ---
+>>>>>  drivers/mtd/devices/bcm47xxsflash.c | 12 +++++++++++-
+>>>>>  drivers/mtd/devices/bcm47xxsflash.h |  3 +++
+>>>>>  2 files changed, 14 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+>>>>> index 4decd8c..8d4c1db 100644
+>>>>> --- a/drivers/mtd/devices/bcm47xxsflash.c
+>>>>> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+>>>>> @@ -110,7 +110,17 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+>>>>>       if ((from + len) > mtd->size)
+>>>>>               return -EINVAL;
+>>>>>
+>>>>> -     memcpy_fromio(buf, b47s->window + from, len);
+>>>>> +     if (from + len <= BCM47XXSFLASH_WINDOW_SIZE) {
+>>>>> +             memcpy_fromio(buf, b47s->window + from, len);
+>>>>
+>>>> One last nit, what if the read starts < 16 MiB and ends > 16 MiB ?
+>>>> Shouldn't that use partly the windowed mode and partly the other mode?
+>>>
+>>> You'll lost 10ns*... or not as splitting it into 2 code paths could
+>>> take longer, who knows. Most access are block aligned anyway. I don't
+>>> think such corner case with doubtful gain is much worth considering &
+>>> optimizing.
+>>
+>> So you can also read the first 16 MiB using the new method , right ?
 > 
->    drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
->    drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->       ioread32_rep(src, buf, len >> 2);
-> 
-> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+> I could, but this could be noticeable in performance. Reading 16 MiB
+> using slower method is different from reading what... a few KiB? Are
+> you actually sure mtd does unaligned reads at all?
 
-In this case it's IMO OK:
+No, but I'm quite sure the code above can be pushed to misbehave and I'm
+trying to confirm/refute that.
 
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+> Please let's argue about real problems and not few % performance in
+> some corner case on some obsolete hardware with poor design.
 
-> ---
->  drivers/mtd/spi-nor/aspeed-smc.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-> index 6bb4c7d1788c..7c86099450be 100644
-> --- a/drivers/mtd/spi-nor/aspeed-smc.c
-> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
-> @@ -222,8 +222,7 @@ struct aspeed_smc_controller {
->   * the memory buffer pointer and count via explicit code. The final updates
->   * to len are optimistically suppressed.
->   */
-> -static int aspeed_smc_read_from_ahb(void *buf, const void __iomem *src,
-> -				    size_t len)
-> +static int aspeed_smc_read_from_ahb(void *buf, void __iomem *src, size_t len)
->  {
->  	size_t offset = 0;
->  
-> 
+OK, real issue:
+$ dd if=/dev/mtdX of=/dev/null bs=32M
 
+How will this driver handle it ?
 
 -- 
 Best regards,
