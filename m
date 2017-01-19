@@ -1,35 +1,35 @@
-Received: from mail-qt0-x235.google.com ([2607:f8b0:400d:c0d::235])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cU00B-0007NI-Ps
- for linux-mtd@lists.infradead.org; Wed, 18 Jan 2017 23:50:53 +0000
-Received: by mail-qt0-x235.google.com with SMTP id l7so38798067qtd.1
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2017 15:50:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20170117231421.16310-6-paul@crapouillou.net>
-References: <20170117231421.16310-1-paul@crapouillou.net>
- <20170117231421.16310-6-paul@crapouillou.net>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 19 Jan 2017 00:50:29 +0100
-Message-ID: <CACRpkdZ-2-mOiEwiRUoMU+X4RG1jik7edPK0nsu_kYy5Pi7N1g@mail.gmail.com>
-Subject: Re: [PATCH 05/13] MIPS: jz4740: DTS: Add node for the jz4740-pinctrl
- driver
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
- "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+In-Reply-To: <20170119103829.524ce715@free-electrons.com>
+References: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
+ <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
+ <20170113172825.75d545a3@bbrezillon>
+ <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
+ <20170113175628.1793f433@bbrezillon>
+ <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
+ <20170114092958.022f2fc8@bbrezillon>
+ <e7fa1542-f0e2-0e45-23b3-25d6491ae40d@gmail.com>
+ <20170116094032.6f471f11@bbrezillon>
+ <20170117143650.5db87148@free-electrons.com>
+ <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
+ <20170119103829.524ce715@free-electrons.com>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 18 Jan 2017 20:51:08 -0600
+Message-ID: <CAL_Jsq+EyHtC7THLCJcwgtVtVESMOdmi3T3bBxgOqJt6BCtCHQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Guochun Mao <guochun.mao@mediatek.com>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux MIPS <linux-mips@linux-mips.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- James Hogan <james.hogan@imgtec.com>
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-mediatek@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -40,101 +40,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 18, 2017 at 12:14 AM, Paul Cercueil <paul@crapouillou.net> wrote:
-
-> For a description of the devicetree node, please read
-> Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt
+On Wed, Jan 18, 2017 at 5:38 PM, Thomas Petazzoni
+<thomas.petazzoni@free-electrons.com> wrote:
+> Hello,
 >
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> On Wed, 18 Jan 2017 16:20:10 -0600, Rob Herring wrote:
+>
+>> > > Rob, Mark, any opinion?
+>> >
+>>
+>> Sigh, is how to do compatibles really not yet understood?
+>
+> Well, it seems like not everyone necessarily understands what is the
+> best strategy to adopt (me included).
+>
+>> > I agree that a clarification would be good. There are really two
+>> > options:
+>> >
+>> >  1. Have two compatible strings in the DT, the one that matches the
+>> >     exact SoC where the IP is found (first compatible string) and the
+>> >     one that matches some other SoC where the same IP is found (second
+>> >     compatible string). Originally, Linux only supports the second
+>> >     compatible string in its device driver, but if it happens that a
+>> >     difference is found between two IPs that we thought were the same,
+>> >     we can add support for the first compatible string in the driver,
+>> >     with a slightly different behavior.
+>>
+>> This. And no wildcards in the compatible string.
+>
+> OK. So it means that today we do something like:
+>
+>         compatible = "baz,foo-12", "baz,foo-00";
+>
+> and support only baz,foo-00 in the driver. If tomorrow we discover
+> that there is in fact a difference between the two IP blocks, we can
+> add support for baz,foo-12 in the driver, and handle the differences.
+>
+> But then, the DT still contains:
+>
+>         compatible = "baz,foo-12", "baz,foo-00";
+>
+> and therefore pretends that the IP block is compatible with
+> "baz,foo-00" which is in fact *not* the case. It was a mistake to
+> consider it as compatible. So we keep living with a DT that has
+> incorrect information.
 
-(...)
+I wouldn't say it's a mistake necessarily. The old compatible would
+probably work to some extent. I'd assume it was tested to some level.
+Or it could be other changes exposing a difference.
 
-> +       pinctrl: ingenic-pinctrl@10010000 {
-> +               compatible = "ingenic,jz4740-pinctrl";
-> +               #address-cells = <1>;
-> +               #size-cells = <1>;
-> +               ranges;
-> +
-> +               gpio-chips {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <1>;
-> +                       ranges;
-> +
-> +                       gpa: gpa {
-> +                               reg = <0x10010000 0x100>;
-> +
-> +                               gpio-controller;
-> +                               #gpio-cells = <2>;
-> +
-> +                               interrupt-controller;
-> +                               #interrupt-cells = <2>;
-> +
-> +                               interrupt-parent = <&intc>;
-> +                               interrupts = <28>;
-> +
-> +                               ingenic,pull-ups = <0xffffffff>;
-> +                       };
-> +
-> +                       gpb: gpb {
-> +                               reg = <0x10010100 0x100>;
-> +
-> +                               gpio-controller;
-> +                               #gpio-cells = <2>;
-> +
-> +                               interrupt-controller;
-> +                               #interrupt-cells = <2>;
-> +
-> +                               interrupt-parent = <&intc>;
-> +                               interrupts = <27>;
-> +
-> +                               ingenic,pull-ups = <0xffffffff>;
-> +                       };
-> +
-> +                       gpc: gpc {
-> +                               reg = <0x10010200 0x100>;
-> +
-> +                               gpio-controller;
-> +                               #gpio-cells = <2>;
-> +
-> +                               interrupt-controller;
-> +                               #interrupt-cells = <2>;
-> +
-> +                               interrupt-parent = <&intc>;
-> +                               interrupts = <26>;
-> +
-> +                               ingenic,pull-ups = <0xffffffff>;
-> +                       };
-> +
-> +                       gpd: gpd {
-> +                               reg = <0x10010300 0x100>;
-> +
-> +                               gpio-controller;
-> +                               #gpio-cells = <2>;
-> +
-> +                               interrupt-controller;
-> +                               #interrupt-cells = <2>;
-> +
-> +                               interrupt-parent = <&intc>;
-> +                               interrupts = <25>;
-> +
-> +                               ingenic,pull-ups = <0xdfffffff>;
-> +                       };
-> +               };
+>> >  2. Have a single compatible string in the DT, matching the exact SoC
+>> >     where the IP is found. This involves adding immediately this
+>> >     compatible string in the corresponding driver.
+>>
+>> I wouldn't object to this from a DT perspective as I have no clue
+>> generally if IP blocks are "the same" or not. Subsystem maintainers will
+>> object though.
+>
+> Knowing if IP blocks are "the same" is in fact not necessarily trivial.
+> What appears to be identical IP blocks today might be discovered later
+> as actually having subtle differences (sometimes not even visible in
+> the datasheet).
 
-Just pull all these down two levels and make them one device
-each instead of having them inside the pin controller node
-like this.
+Yes, I know. That's exactly when you should have multiple compatibles.
+Trying to guarantee things are the same is just going to get you in
+trouble. You only need to figure out if blocks are obviously different
+and only drop the old compatible in that case.
 
-Then make a pin controller node separately, it can reference the
-pin controller by phandles if necessary, and use the standard
-gpio-ranges property to cross make GPIO and pin control.
+>> > I've not really been able to figure out which of the two options is the
+>> > most future-proof/appropriate.
+>>
+>> They are both future-proof. #2 has the disadvantage of requiring a
+>> kernel update for a new SoC.
+>
+> Which is generally anyway needed because a new SoC will almost always
+> require some new drivers, adjusting pin-muxing or clock drivers, etc.
 
-It seems you driver is similar to for example the
-drivers/pinctrl/nomadik/* pin controller.
+Yes, but you don't want to have to update every single driver.
 
-Look in arch/arm/boot/dts/ste-dbx500.dtsi for examples,
-NB: I'm not fully using standard bindings in it, because they
-were not invented at the time.
-
-Yours,
-Linus Walleij
+Rob
