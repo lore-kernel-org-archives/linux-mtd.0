@@ -1,33 +1,17 @@
-Date: Thu, 19 Jan 2017 10:44:05 +0100
-From: Michal Hocko <mhocko@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Theodore Ts'o <tytso@mit.edu>, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
- ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, logfs@logfs.org,
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
-Message-ID: <20170119094405.GK30786@dhcp22.suse.cz>
-References: <20170106141107.23953-1-mhocko@kernel.org>
- <20170106141107.23953-9-mhocko@kernel.org>
- <20170117025607.frrcdbduthhutrzj@thunk.org>
- <20170117082425.GD19699@dhcp22.suse.cz>
- <20170117151817.GR19699@dhcp22.suse.cz>
- <20170117155916.dcizr65bwa6behe7@thunk.org>
- <20170117161618.GT19699@dhcp22.suse.cz>
- <20170117172925.GA2486@quack2.suse.cz>
- <20170119083956.GE30786@dhcp22.suse.cz>
- <20170119092236.GC2565@quack2.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170119092236.GC2565@quack2.suse.cz>
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cU9eR-0007jQ-Ne
+ for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 10:09:05 +0000
+Received: by mail-wm0-x241.google.com with SMTP id r144so10800049wme.0
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Jan 2017 02:08:42 -0800 (PST)
+From: Sebastien Decourriere <sebtx452@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: linux-mips@linux-mips.org,
+	Sebastien Decourriere <sebtx452@gmail.com>
+Subject: [PATCH] mtd: maps: lantiq-flash: Check if the EBU endianness swap is
+ enabled
+Date: Thu, 19 Jan 2017 11:06:55 +0100
+Message-Id: <1484820415-12439-1-git-send-email-sebtx452@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,72 +21,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu 19-01-17 10:22:36, Jan Kara wrote:
-> On Thu 19-01-17 09:39:56, Michal Hocko wrote:
-> > On Tue 17-01-17 18:29:25, Jan Kara wrote:
-> > > On Tue 17-01-17 17:16:19, Michal Hocko wrote:
-> > > > > > But before going to play with that I am really wondering whether we need
-> > > > > > all this with no journal at all. AFAIU what Jack told me it is the
-> > > > > > journal lock(s) which is the biggest problem from the reclaim recursion
-> > > > > > point of view. What would cause a deadlock in no journal mode?
-> > > > > 
-> > > > > We still have the original problem for why we need GFP_NOFS even in
-> > > > > ext2.  If we are in a writeback path, and we need to allocate memory,
-> > > > > we don't want to recurse back into the file system's writeback path.
-> > > > 
-> > > > But we do not enter the writeback path from the direct reclaim. Or do
-> > > > you mean something other than pageout()'s mapping->a_ops->writepage?
-> > > > There is only try_to_release_page where we get back to the filesystems
-> > > > but I do not see any NOFS protection in ext4_releasepage.
-> > > 
-> > > Maybe to expand a bit: These days, direct reclaim can call ->releasepage()
-> > > callback, ->evict_inode() callback (and only for inodes with i_nlink > 0),
-> > > shrinkers. That's it. So the recursion possibilities are rather more limited
-> > > than they used to be several years ago and we likely do not need as much
-> > > GFP_NOFS protection as we used to.
-> > 
-> > Thanks for making my remark more clear Jack! I would just want to add
-> > that I was playing with the patch below (it is basically
-> > GFP_NOFS->GFP_KERNEL for all allocations which trigger warning from the
-> > debugging patch which means they are called from within transaction) and
-> > it didn't hit the lockdep when running xfstests both with or without the
-> > enabled journal.
-> > 
-> > So am I still missing something or the nojournal mode is safe and the
-> > current series is OK wrt. ext*?
-> 
-> I'm convinced the current series is OK, only real life will tell us whether
-> we missed something or not ;)
+The purpose of this patch is to enable the software address endianness
+swapping only when the in SoC EBU endianness swapping is disabled.
+To perform this check, I look at Bit 30 of the EBU_CON_0 register.
+Actually, the driver expects that the in SoC swapping is disabled.
+This is the case with current bootloaders shuch as U-boot.
 
-I would like to extend the changelog of "jbd2: mark the transaction
-context with the scope GFP_NOFS context".
+This applies only to vr9 (xrx200) rev 1.2 and ar10 (xrx300).
 
-"
-Please note that setups without journal do not suffer from potential
-recursion problems and so they do not need the scope protection because
-neither ->releasepage nor ->evict_inode (which are the only fs entry
-points from the direct reclaim) can reenter a locked context which is
-doing the allocation currently.
-"
+I have a router which uses a proprietary bootloader which keeps
+the in SoC swapping enabled. The SoC in this router is a vrx200 v1.2.
+In this SoC version, I can keep the in SoC swapping without any problem.
+
+This patch replaces my previous broken patch.
+
+Signed-off-by: Sebastien Decourriere <sebtx452@gmail.com>
+---
+ drivers/mtd/maps/lantiq-flash.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index c8febb3..1cbbdcb 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -38,6 +38,8 @@ enum {
+ 	LTQ_NOR_NORMAL
+ };
  
-> > The following patch in its current form is WIP and needs a proper review
-> > before I post it.
-> 
-> So jbd2 changes look confusing (although technically correct) to me - we
-> *always* should run in NOFS context in those place so having GFP_KERNEL
-> there looks like it is unnecessarily hiding what is going on. So in those
-> places I'd prefer to keep GFP_NOFS or somehow else make it very clear these
-> allocations are expected to be GFP_NOFS (and assert that). Otherwise the
-> changes look good to me.
-
-I would really like to get rid most of NOFS direct usage and only
-dictate it via the scope API otherwise I suspect we will just grow more
-users and end up in the same situation as we are now currently over time.
-In principle only the context which changes the reclaim reentrancy policy
-should care about NOFS and everybody else should just pretend nothing
-like that exists. There might be few exceptions of course, I am not yet
-sure whether jbd2 is that case. But I am not proposing this change yet
-(thanks for checking anyway)...
++#define EBU_ENDIAN_SWAP		BIT(30)
++
+ struct ltq_mtd {
+ 	struct resource *res;
+ 	struct mtd_info *mtd;
+@@ -113,6 +115,20 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	struct ltq_mtd *ltq_mtd;
+ 	struct cfi_private *cfi;
+ 	int err;
++	bool mtd_addr_swap;
++
++	/* If SoC is vr9 >= 1.2 or ar10 and EBU endian swap
++	   is enabled, we don't need to do software address swap */
++	if ( ltq_ebu_r32(LTQ_EBU_BUSCON0) & EBU_ENDIAN_SWAP ) {
++		switch (ltq_soc_type()) {
++			case SOC_TYPE_VR9_2 :
++			case SOC_TYPE_AR10 :
++				mtd_addr_swap = false;
++				break;
++			default :
++				mtd_addr_swap = true;
++		}
++	} else mtd_addr_swap = true;
+ 
+ 	if (of_machine_is_compatible("lantiq,falcon") &&
+ 			(ltq_boot_select() != BS_FLASH)) {
+@@ -150,7 +166,10 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	ltq_mtd->map->copy_from = ltq_copy_from;
+ 	ltq_mtd->map->copy_to = ltq_copy_to;
+ 
+-	ltq_mtd->map->map_priv_1 = LTQ_NOR_PROBING;
++	if (mtd_addr_swap)
++		ltq_mtd->map->map_priv_1 = LTQ_NOR_PROBING;
++	else
++		ltq_mtd->map->map_priv_1 = LTQ_NOR_NORMAL;
+ 	ltq_mtd->mtd = do_map_probe("cfi_probe", ltq_mtd->map);
+ 	ltq_mtd->map->map_priv_1 = LTQ_NOR_NORMAL;
+ 
+@@ -163,8 +182,10 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	mtd_set_of_node(ltq_mtd->mtd, pdev->dev.of_node);
+ 
+ 	cfi = ltq_mtd->map->fldrv_priv;
+-	cfi->addr_unlock1 ^= 1;
+-	cfi->addr_unlock2 ^= 1;
++	if (mtd_addr_swap) {
++		cfi->addr_unlock1 ^= 1;
++		cfi->addr_unlock2 ^= 1;
++	}
+ 
+ 	err = mtd_device_register(ltq_mtd->mtd, NULL, 0);
+ 	if (err) {
 -- 
-Michal Hocko
-SUSE Labs
+2.1.4
