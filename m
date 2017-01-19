@@ -1,28 +1,26 @@
-Received: from mail-oi0-f65.google.com ([209.85.218.65])
+Received: from mail-wm0-f66.google.com ([74.125.82.66])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUGwq-0001E7-Dh
- for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 17:56:33 +0000
-Received: by mail-oi0-f65.google.com with SMTP id w144so3782253oiw.1
- for <linux-mtd@lists.infradead.org>; Thu, 19 Jan 2017 09:56:10 -0800 (PST)
-Date: Thu, 19 Jan 2017 11:56:08 -0600
-From: Rob Herring <robh@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Masahiko Iwamoto <iwamoto@allied-telesis.co.jp>,
- Jagan Teki <jagan@openedev.com>, Marek Vasut <marex@denx.de>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3] mtd: spi-nor: add dt support for Everspin MRAMs
-Message-ID: <20170119175608.5okfpsfutv7oawoo@rob-hp-laptop>
-References: <480df61d-c949-b3b0-61a4-d9db17f09e7d@atmel.com>
- <20170117110338.10756-1-u.kleine-koenig@pengutronix.de>
+ id 1cUGyU-0002QB-Lp
+ for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 17:58:17 +0000
+Received: by mail-wm0-f66.google.com with SMTP id r126so657695wmr.3
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Jan 2017 09:57:53 -0800 (PST)
+Subject: Re: [PATCH] mtd: aspeed: fix compile warning in
+ aspeed_smc_read_from_ahb()
+To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+ linux-mtd@lists.infradead.org
+References: <1484817198-22477-1-git-send-email-clg@kaod.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <a5b9d933-95db-2cb6-fb70-40bc21dd7298@gmail.com>
+Date: Thu, 19 Jan 2017 18:21:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <1484817198-22477-1-git-send-email-clg@kaod.org>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170117110338.10756-1-u.kleine-koenig@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 17, 2017 at 12:03:38PM +0100, Uwe Kleine-König wrote:
-> The MR25 family doesn't support JEDEC, so they need explicit mentioning
-> in the list of supported spi IDs. This makes it possible to add these
-> using for example:
+On 01/19/2017 10:13 AM, CÃ©dric Le Goater wrote:
+> The first argument of ioread32_rep() and ioread8_rep is not
+> const. Change aspeed_smc_read_from_ahb() prototype to fix compile
+> warning :
 > 
-> 	compatible = "everspin,mr25h40";
+>    drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
+>    drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>       ioread32_rep(src, buf, len >> 2);
 > 
-> There was already an entry for mr25h256. Move that one out of the "keep
-> for compatibility" section and put in a new group for Everspin MRAMs.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
-> Changes since (implicit) v1:
-> 
->  - use Kib instead of kib
-> 
-> Changes since v2:
-> 
->  - update dt docs
->  - handle already existing mr25h256 in m25p_ids[]
-> 
-> Thanks to Cyrille for catching these.
-> 
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 2 ++
->  drivers/mtd/devices/m25p80.c                            | 6 +++++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
+> Signed-off-by: CÃ©dric Le Goater <clg@kaod.org>
 
-Acked-by: Rob Herring <robh@kernel.org>
+In this case it's IMO OK:
+
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+
+> ---
+>  drivers/mtd/spi-nor/aspeed-smc.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+> index 6bb4c7d1788c..7c86099450be 100644
+> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+> @@ -222,8 +222,7 @@ struct aspeed_smc_controller {
+>   * the memory buffer pointer and count via explicit code. The final updates
+>   * to len are optimistically suppressed.
+>   */
+> -static int aspeed_smc_read_from_ahb(void *buf, const void __iomem *src,
+> -				    size_t len)
+> +static int aspeed_smc_read_from_ahb(void *buf, void __iomem *src, size_t len)
+>  {
+>  	size_t offset = 0;
+>  
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
