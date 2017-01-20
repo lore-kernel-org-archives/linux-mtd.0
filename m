@@ -1,25 +1,31 @@
-Received: from exsmtp01.microchip.com ([198.175.253.37]
- helo=email.microchip.com)
+Received: from mail-yw0-f195.google.com ([209.85.161.195])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUaR8-0005Hn-7w
- for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 14:45:07 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: Fix S3AN addressing calculation
-To: Marek Vasut <marek.vasut@gmail.com>, Ricardo Ribalda Delgado
- <ricardo.ribalda@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Richard
- Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-References: <20170118164016.27976-1-ricardo.ribalda@gmail.com>
- <b62e4978-3a99-248e-533f-7fde6a378dd7@atmel.com>
- <52628ae5-8b58-f704-a513-74092c0dfa3a@gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <297a9173-c20b-0b15-bfbb-141a7be5e315@atmel.com>
-Date: Fri, 20 Jan 2017 15:44:40 +0100
+ id 1cUc8t-0001GI-2p
+ for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 16:34:24 +0000
+Received: by mail-yw0-f195.google.com with SMTP id v73so11289396ywg.1
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Jan 2017 08:34:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <52628ae5-8b58-f704-a513-74092c0dfa3a@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <fa44881d-701b-195a-9617-239454645183@gmail.com>
+References: <1473710494-4084-1-git-send-email-kdasu.kdev@gmail.com>
+ <4fe502a4-ee01-3fb8-6697-161de814596e@atmel.com>
+ <CAKekbeubczM5NpQy-Umqx-SmDM+deMcgYciyST2Sgrh2_dOsAw@mail.gmail.com>
+ <c9198202-29d1-5e67-f675-5a53d926ede9@atmel.com>
+ <fa44881d-701b-195a-9617-239454645183@gmail.com>
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+Date: Fri, 20 Jan 2017 11:33:00 -0500
+Message-ID: <CAC=U0a3HRrx+0Y8YGSiDdfEigkQGa-QxHJ53tK1-Yo-iTj=yXA@mail.gmail.com>
+Subject: Re: [PATCH v2,
+ 1/1] mtd: devices: m25p80: Add PM suspend resume support
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Kamal Dasu <kamal.dasu@broadcom.com>,
+ Marek Vasut <marex@denx.de>, Florian Fainelli <f.fainelli@gmail.com>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ "Jayachandran C <jchandra@broadcom.com>,
+ bcm-kernel-feedback-list" <bcm-kernel-feedback-list@broadcom.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,61 +35,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 20/01/2017 à 14:48, Marek Vasut a écrit :
-> On 01/20/2017 02:26 PM, Cyrille Pitchen wrote:
->> Le 18/01/2017 à 17:40, Ricardo Ribalda Delgado a écrit :
->>> The page calculation under spi_nor_s3an_addr_convert() was wrong. On
->>> Default Address Mode we need to perform a divide by page_size.
->>>
->>> Fixes: 61cba34bd6c1 ("mtd: spi-nor: Add support for S3AN spi-nor devices")
-I've removed this "Fixes" tag since the commit ID refers to a commit in the
-spi-nor tree and the final commit ID in Linus tree is likely to be different.
+Marek,
 
->>> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
->> Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 >>
->> Marek, any comment on your side?
-> 
-> All good,
-> 
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
+>> OK, so I'm fine with leaving the patch as is for now but I would like Marek
+>> review just to be sure we didn't miss something: Marek, any comments?
+>>
+>> I just have one more comment below but it's only a detail.
+>
+> What would happen if you have a FS attached on this SPI NOR (like UBIFS)
+> and you suspend with this patch ? Will it survive ?
+>
 >
 
-Applied to git://github.com/spi-nor/linux.git
+I have tried with both jffs2 rw and ubifs rw rootfs on spi-nor
+booting from spi-nor partitions while  active filesystem operations
+were going on over suspend/resume cycles. And it survives.
 
-Thanks!
 
->>> ---
->>>
->>> v2: Suggested by Marek Vasut <marek.vasut@gmail.com>
->>>   -Use more descriptive name for page
->>>
->>>  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
->>>  1 file changed, 6 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>> index 2a643a1bb45e..f5c3ce8ac48b 100644
->>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -431,11 +431,14 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
->>>   */
->>>  static loff_t spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
->>>  {
->>> -	unsigned int offset = addr;
->>> +	unsigned int offset;
->>> +	unsigned int page;
->>>  
->>> -	offset %= nor->page_size;
->>> +	offset = addr % nor->page_size;
->>> +	page = addr / nor->page_size;
->>> +	page <<= (nor->page_size > 512) ? 10 : 9;
->>>  
->>> -	return ((addr - offset) << 1) | offset;
->>> +	return page | offset;
->>>  }
->>>  
->>>  /*
->>>
->>
-> 
-> 
+> --
+> Best regards,
+> Marek Vasut
+
+Thanks
+Kamal
