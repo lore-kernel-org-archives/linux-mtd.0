@@ -1,24 +1,25 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUZeF-00030A-Ru
- for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 13:54:36 +0000
-Received: by mail-wm0-x241.google.com with SMTP id d140so6905579wmd.2
- for <linux-mtd@lists.infradead.org>; Fri, 20 Jan 2017 05:54:13 -0800 (PST)
-Subject: Re: [PATCH v2] mtd: spi-nor: Fix S3AN addressing calculation
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20170118164016.27976-1-ricardo.ribalda@gmail.com>
- <b62e4978-3a99-248e-533f-7fde6a378dd7@atmel.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <52628ae5-8b58-f704-a513-74092c0dfa3a@gmail.com>
-Date: Fri, 20 Jan 2017 14:48:22 +0100
+Received: from smtpout.microchip.com ([198.175.253.82]
+ helo=email.microchip.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cUZym-0000Z6-Vx
+ for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 14:15:50 +0000
+Subject: Re: [PATCH 2/2] mtd: spi-nor: fix mr25h* definitions
+To: Marek Vasut <marek.vasut@gmail.com>, Bastian Stender <bst@pengutronix.de>,
+ David Woodhouse <dwmw2@infradead.org>
+References: <20170116151214.11195-1-bst@pengutronix.de>
+ <20170116151214.11195-2-bst@pengutronix.de>
+ <371bf936-b854-68a1-2c65-69e426ad3aa3@gmail.com>
+ <91baef8b-7831-9d16-d2ad-708ed297ad50@pengutronix.de>
+ <b224aef1-e24a-9ccf-9c20-aea701d30606@gmail.com>
+CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <kernel@pengutronix.de>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <ac4ff021-1384-e24a-f16c-a0a6038095fb@atmel.com>
+Date: Fri, 20 Jan 2017 15:15:24 +0100
 MIME-Version: 1.0
-In-Reply-To: <b62e4978-3a99-248e-533f-7fde6a378dd7@atmel.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <b224aef1-e24a-9ccf-9c20-aea701d30606@gmail.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,55 +30,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/20/2017 02:26 PM, Cyrille Pitchen wrote:
-> Le 18/01/2017 à 17:40, Ricardo Ribalda Delgado a écrit :
->> The page calculation under spi_nor_s3an_addr_convert() was wrong. On
->> Default Address Mode we need to perform a divide by page_size.
->>
->> Fixes: 61cba34bd6c1 ("mtd: spi-nor: Add support for S3AN spi-nor devices")
->> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-> Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Le 18/01/2017 à 16:57, Marek Vasut a écrit :
+> On 01/17/2017 03:51 PM, Bastian Stender wrote:
+>> Hi Marek,
 > 
-> Marek, any comment on your side?
-
-All good,
-
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
-
->> ---
+> Hi!
+> 
+>> On 01/16/2017 05:07 PM, Marek Vasut wrote:
+>>> On 01/16/2017 04:12 PM, Bastian Stender wrote:
+>>>> The previous definitions for mr25h* chips lead to unnecessary limits
+>>>> regarding writesize and eraseblocksize for MRAM. MRAM is random access
+>>>> memory rather than page, sector, or block organized memory.
+>>>>
+>>>> Instead of 1 sector with 512KB the mr25h40 MRAM chip should be defined
+>>>> as 512K sectors with 1 byte each. This makes it writesize and
+>>>> eraseblocksize aligned and reflects MRAM functionality properly.
+>>>
+>>> Wouldn't this degrade the performance ? ie. if you write the flash, it
+>>> will send PP opcode + 1 byte in a loop, right ?
 >>
->> v2: Suggested by Marek Vasut <marek.vasut@gmail.com>
->>   -Use more descriptive name for page
->>
->>  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
->>  1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 2a643a1bb45e..f5c3ce8ac48b 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -431,11 +431,14 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
->>   */
->>  static loff_t spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
->>  {
->> -	unsigned int offset = addr;
->> +	unsigned int offset;
->> +	unsigned int page;
->>  
->> -	offset %= nor->page_size;
->> +	offset = addr % nor->page_size;
->> +	page = addr / nor->page_size;
->> +	page <<= (nor->page_size > 512) ? 10 : 9;
->>  
->> -	return ((addr - offset) << 1) | offset;
->> +	return page | offset;
->>  }
->>  
->>  /*
->>
+>> I don't think so, info->sector_size and info->n_sectors are used for
+>> calculating mtd->size and setting mtd->erasesize only. mtd->erasesize
+>> should be never used when SPI_NOR_NO_ERASE is set in info->flags as
+>> Cyrille pointed out.
+> 
+> Hmmm, does that answer my second question ?
 > 
 
+Your second question is about Page Program with a single data byte, right?
 
--- 
+Once in spi-nor.c, spi_nor_write() checks nor->page_size (=
+info->page_size) to limit the amount of data written into the memory in a
+single SPI command: spi_nor_write() itself doesn't check nor->mtd.erasesize
+(= info->sector_size) but it doesn't mean that upper mtd layers had not
+clamped the 'len' parameter before based on the mtd->erasesize limit.
+
+Also I don't know whether the upper mtd layers expect cases where
+mtd->writebufsize (= nor->page_size == 256) > mtd->erasesize (=
+info->sector_size == 1).
+
+If we also changed the page size to 1, we would keep the relation (page
+size <= erase size) but for sure, spi-nor would also send many Page Program
+commands with single data byte, hence a huge performance loss.
+
+That's why I think we should take time to study to be sure the proposed
+modification won't introduce any unwanted side effect.
+
 Best regards,
-Marek Vasut
+
+Cyrille
