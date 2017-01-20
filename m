@@ -1,21 +1,36 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mail-it0-f46.google.com ([209.85.214.46])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUMTv-0001sY-7a
- for linux-mtd@lists.infradead.org; Thu, 19 Jan 2017 23:51:05 +0000
-From: "Langer, Thomas" <thomas.langer@intel.com>
-To: Sebastien Decourriere <sebtx452@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Subject: RE: [PATCH] mtd: maps: lantiq-flash: Check if the EBU endianness
- swap is enabled
-Date: Thu, 19 Jan 2017 23:50:39 +0000
-Message-ID: <0DAF21CFE1B20740AE23D6AF6E54843F1E6E2999@IRSMSX101.ger.corp.intel.com>
-References: <1484820415-12439-1-git-send-email-sebtx452@gmail.com>
-In-Reply-To: <1484820415-12439-1-git-send-email-sebtx452@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1cUUlc-0006hI-TW
+ for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 08:41:54 +0000
+Received: by mail-it0-f46.google.com with SMTP id 203so14757769ith.0
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Jan 2017 00:41:31 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
+References: <20170117231421.16310-1-paul@crapouillou.net>
+ <20170118071530.GA18989@ulmo.ba.sec>
+ <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 20 Jan 2017 09:40:30 +0100
+Message-ID: <CACRpkdaeu9OxaSPeOrkKtKNQGUQh4puCFw8A2h=xhqVdDWgoow@mail.gmail.com>
+Subject: Re: [PATCH 00/13] Ingenic JZ4740 / JZ4780 pinctrl driver
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Thierry Reding <thierry.reding@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Maarten ter Huurne <maarten@treewalker.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux MIPS <linux-mips@linux-mips.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+ James Hogan <james.hogan@imgtec.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,115 +40,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Sebastien,
+On Thu, Jan 19, 2017 at 12:19 PM, Paul Cercueil <paul@crapouillou.net> wrote:
 
-> -----Original Message-----
-> From: linux-mips-bounce@linux-mips.org [mailto:linux-mips-bounce@linux-
-> mips.org] On Behalf Of Sebastien Decourriere
-> Sent: Thursday, January 19, 2017 11:07 AM
-> To: linux-mtd@lists.infradead.org
-> Cc: linux-mips@linux-mips.org; Sebastien Decourriere <sebtx452@gmail.com>
-> Subject: [PATCH] mtd: maps: lantiq-flash: Check if the EBU endianness swa=
-p
-> is enabled
->=20
-> The purpose of this patch is to enable the software address endianness
-> swapping only when the in SoC EBU endianness swapping is disabled.
-> To perform this check, I look at Bit 30 of the EBU_CON_0 register.
-> Actually, the driver expects that the in SoC swapping is disabled.
-> This is the case with current bootloaders shuch as U-boot.
->=20
-> This applies only to vr9 (xrx200) rev 1.2 and ar10 (xrx300).
->=20
-> I have a router which uses a proprietary bootloader which keeps
-> the in SoC swapping enabled. The SoC in this router is a vrx200 v1.2.
-> In this SoC version, I can keep the in SoC swapping without any problem.
->=20
-> This patch replaces my previous broken patch.
->=20
-> Signed-off-by: Sebastien Decourriere <sebtx452@gmail.com>
-> ---
->  drivers/mtd/maps/lantiq-flash.c | 27 ++++++++++++++++++++++++---
->  1 file changed, 24 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-
-> flash.c
-> index c8febb3..1cbbdcb 100644
-> --- a/drivers/mtd/maps/lantiq-flash.c
-> +++ b/drivers/mtd/maps/lantiq-flash.c
-> @@ -38,6 +38,8 @@ enum {
->  	LTQ_NOR_NORMAL
->  };
->=20
-> +#define EBU_ENDIAN_SWAP		BIT(30)
-> +
->  struct ltq_mtd {
->  	struct resource *res;
->  	struct mtd_info *mtd;
-> @@ -113,6 +115,20 @@ ltq_mtd_probe(struct platform_device *pdev)
->  	struct ltq_mtd *ltq_mtd;
->  	struct cfi_private *cfi;
->  	int err;
-> +	bool mtd_addr_swap;
-> +
-> +	/* If SoC is vr9 >=3D 1.2 or ar10 and EBU endian swap
-> +	   is enabled, we don't need to do software address swap */
-> +	if ( ltq_ebu_r32(LTQ_EBU_BUSCON0) & EBU_ENDIAN_SWAP ) {
+> The problem with pinctrl and PWM, is that the pinctrl API works by "states".
+> A default state, sleep state, and basically any custom state that the
+> devicetree
+> provides. This works well until you need to control individually each pin;
+> with
+> 8 pins, you would need 2^8 states, each one corresponding to a given
+> configuration.
 
-This register does not exist for all Lantiq SoCs, even the definition
-is only in "arch/mips/include/asm/mach-lantiq/xway/lantiq_soc.h", but
-not in "arch/mips/include/asm/mach-lantiq/falcon/lantiq_soc.h"
+I do not really understand, do you really use all 2^8 states in a given
+system?
 
-Please add at least a compile check for the define.
+The pin control states are to be used for practical situations, not
+for all theoretical situations.
 
-> +		switch (ltq_soc_type()) {
-> +			case SOC_TYPE_VR9_2 :
-> +			case SOC_TYPE_AR10 :
-> +				mtd_addr_swap =3D false;
-> +				break;
-> +			default :
-> +				mtd_addr_swap =3D true;
-Missing break
+You should define in your device tree the states that your
+particular system will use. Not all possible states on all possible
+systems.
 
-> +		}
-> +	} else mtd_addr_swap =3D true;
-
-Has this been checked with checkpatch.pl?
-This line results in message "ERROR: trailing statements should be on next =
-line",
-some other warning about spaces are also in this patch.
-
->=20
->  	if (of_machine_is_compatible("lantiq,falcon") &&
->  			(ltq_boot_select() !=3D BS_FLASH)) {
-> @@ -150,7 +166,10 @@ ltq_mtd_probe(struct platform_device *pdev)
->  	ltq_mtd->map->copy_from =3D ltq_copy_from;
->  	ltq_mtd->map->copy_to =3D ltq_copy_to;
->=20
-> -	ltq_mtd->map->map_priv_1 =3D LTQ_NOR_PROBING;
-> +	if (mtd_addr_swap)
-> +		ltq_mtd->map->map_priv_1 =3D LTQ_NOR_PROBING;
-> +	else
-> +		ltq_mtd->map->map_priv_1 =3D LTQ_NOR_NORMAL;
->  	ltq_mtd->mtd =3D do_map_probe("cfi_probe", ltq_mtd->map);
->  	ltq_mtd->map->map_priv_1 =3D LTQ_NOR_NORMAL;
->=20
-> @@ -163,8 +182,10 @@ ltq_mtd_probe(struct platform_device *pdev)
->  	mtd_set_of_node(ltq_mtd->mtd, pdev->dev.of_node);
->=20
->  	cfi =3D ltq_mtd->map->fldrv_priv;
-> -	cfi->addr_unlock1 ^=3D 1;
-> -	cfi->addr_unlock2 ^=3D 1;
-> +	if (mtd_addr_swap) {
-> +		cfi->addr_unlock1 ^=3D 1;
-> +		cfi->addr_unlock2 ^=3D 1;
-> +	}
->=20
->  	err =3D mtd_device_register(ltq_mtd->mtd, NULL, 0);
->  	if (err) {
-> --
-> 2.1.4
->=20
-
-Regards,
-Thomas
+Yours,
+Linus Walleij
