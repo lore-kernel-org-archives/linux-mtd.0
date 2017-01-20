@@ -1,23 +1,24 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUZd6-0002Qa-3B
- for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 13:53:26 +0000
-Subject: Re: [PATCH 1/2] mtd: spi-nor: make n_sectors in flash_info 32 bit wide
-To: Bastian Stender <bst@pengutronix.de>, David Woodhouse <dwmw2@infradead.org>
-References: <20170116151214.11195-1-bst@pengutronix.de>
- <24d558a9-7e7b-8165-cd5d-f3a311deef17@atmel.com>
- <afb06b83-e97b-48db-9875-9f76b365a5f4@pengutronix.de>
-CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <kernel@pengutronix.de>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <3b30dea4-00db-3fd6-1414-19c8b4bad8af@atmel.com>
-Date: Fri, 20 Jan 2017 14:53:00 +0100
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cUZeF-00030A-Ru
+ for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 13:54:36 +0000
+Received: by mail-wm0-x241.google.com with SMTP id d140so6905579wmd.2
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Jan 2017 05:54:13 -0800 (PST)
+Subject: Re: [PATCH v2] mtd: spi-nor: Fix S3AN addressing calculation
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20170118164016.27976-1-ricardo.ribalda@gmail.com>
+ <b62e4978-3a99-248e-533f-7fde6a378dd7@atmel.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <52628ae5-8b58-f704-a513-74092c0dfa3a@gmail.com>
+Date: Fri, 20 Jan 2017 14:48:22 +0100
 MIME-Version: 1.0
-In-Reply-To: <afb06b83-e97b-48db-9875-9f76b365a5f4@pengutronix.de>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <b62e4978-3a99-248e-533f-7fde6a378dd7@atmel.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,79 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 17/01/2017 à 11:47, Bastian Stender a écrit :
-> Hi Cyrille,
-> 
-> On 01/16/2017 06:34 PM, Cyrille Pitchen wrote:
->> Le 16/01/2017 à 16:12, Bastian Stender a écrit :
->>> Since MRAM chips (like the Everspin mr25h40) are not sector
->>> organized they should be defined as n_sectors * 1 byte sectors. To
->>> be able to store the higher number of sectors n_sectors should be
->>> an unsigned 32 bit integer just like sector_size.
->>>
+On 01/20/2017 02:26 PM, Cyrille Pitchen wrote:
+> Le 18/01/2017 à 17:40, Ricardo Ribalda Delgado a écrit :
+>> The page calculation under spi_nor_s3an_addr_convert() was wrong. On
+>> Default Address Mode we need to perform a divide by page_size.
 >>
->> Could you comment a little bit more on what this series improves or
->> fixes?
+>> Fixes: 61cba34bd6c1 ("mtd: spi-nor: Add support for S3AN spi-nor devices")
+>> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 > 
-> Sure. I want to create multiple writeable partitions on a mr25h40 MRAM
-> chip. This does not currently work because drivers/mtd/mtdpart.c makes sure
-> that partitions start on erase block boundaries and end on erase blocks.
-> That is obviously not the case for multiple partitions with the current
-> definition:
->
+> Marek, any comment on your side?
 
-OK now I better understand your issue so let's take it as a bug since it
-prevents you from using full features of the memory. However we have to be
-cautious because the modification you propose may have unwanted side
-effects hence may introduce some regressions.
+All good,
 
-For instance, currently the erase size >= page size. After your patch it
-will no longer be the case: I guess it should be OK for spi-nor.c but I
-have no real idea whether the upper mtd layers expect such a thing. We have
-to study!
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
 
-
-> { "mr25h40",  CAT25_INFO(1, 512 * 1024, 256, 3, SPI_NOR_NO_ERASE |
-> SPI_NOR_NO_FR) },
-> 
-> So I get
-> 
-> mtd: partition "mtd2" doesn't start on an erase block boundary -- force
-> read-only
-> 
-> Adding a check for SPI_NOR_NO_ERASE does not seem to be the way to go:
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2017-January/071386.html
-> 
-> Setting the erasesize to 1 neither:
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052410.html
-> 
-> I could use SECT_4K, but I'd like to use the advantage of MRAM without
-> limitations.
-> 
->> Swapping the info->sector_size and info->n_sectors doesn't change the
->> value of mtd->size: mtd->size = info->sector_size * info->n_sectors;
-> 
-> To be clear: mtd->size is perfectly fine, no need to change it.
-> 
->> info->n_sectors is used nowhere else whereas info->sector_size is
->> only used once more to initialized mtd->erasesize but due to the
->> SPI_NOR_NO_ERASE info->flags, mtd->erasesize should be never used.
-> 
-> mtd->erasesize gets used even with SPI_NOR_NO_ERASE set in the check
-> mentioned above in mtd_mod_by_eb().
-> 
->> However changing the type of n_sectors from u16 to unsigned int
->> would increase the size of the struct flash_info hence the size of
->> the spi_nor_ids[] array. So I don't know whether it's worth it.
+>> ---
 >>
->> However maybe swapping the values would better respect the meaning
->> of sector "size" and "number".
+>> v2: Suggested by Marek Vasut <marek.vasut@gmail.com>
+>>   -Use more descriptive name for page
+>>
+>>  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
+>>  1 file changed, 6 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 2a643a1bb45e..f5c3ce8ac48b 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -431,11 +431,14 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+>>   */
+>>  static loff_t spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
+>>  {
+>> -	unsigned int offset = addr;
+>> +	unsigned int offset;
+>> +	unsigned int page;
+>>  
+>> -	offset %= nor->page_size;
+>> +	offset = addr % nor->page_size;
+>> +	page = addr / nor->page_size;
+>> +	page <<= (nor->page_size > 512) ? 10 : 9;
+>>  
+>> -	return ((addr - offset) << 1) | offset;
+>> +	return page | offset;
+>>  }
+>>  
+>>  /*
+>>
 > 
-> MRAM is not page, sector, or block organized memory, so I do not know about
-> this one.
-> 
-> Regards,
-> Bastian Stender
-> 
+
+
+-- 
+Best regards,
+Marek Vasut
