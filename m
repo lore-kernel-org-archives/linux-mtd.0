@@ -1,23 +1,22 @@
 Received: from smtpout.microchip.com ([198.175.253.82]
  helo=email.microchip.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUYzM-0002zN-Ve
- for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 13:12:22 +0000
-Subject: Re: [PATCH] mtd: aspeed: fix compile warning in
- aspeed_smc_read_from_ahb()
-To: Marek Vasut <marek.vasut@gmail.com>, =?UTF-8?Q?C=c3=a9dric_Le_Goater?=
- <clg@kaod.org>, <linux-mtd@lists.infradead.org>
-References: <1484817198-22477-1-git-send-email-clg@kaod.org>
- <a5b9d933-95db-2cb6-fb70-40bc21dd7298@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>
+ id 1cUZD5-000390-Fa
+ for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 13:26:32 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: Fix S3AN addressing calculation
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Richard
+ Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+References: <20170118164016.27976-1-ricardo.ribalda@gmail.com>
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <07276e8e-d7b3-8935-adb6-77260e004af5@atmel.com>
-Date: Fri, 20 Jan 2017 14:11:57 +0100
+Message-ID: <b62e4978-3a99-248e-533f-7fde6a378dd7@atmel.com>
+Date: Fri, 20 Jan 2017 14:26:08 +0100
 MIME-Version: 1.0
-In-Reply-To: <a5b9d933-95db-2cb6-fb70-40bc21dd7298@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20170118164016.27976-1-ricardo.ribalda@gmail.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,44 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 19/01/2017 à 18:21, Marek Vasut a écrit :
-> On 01/19/2017 10:13 AM, Cédric Le Goater wrote:
->> The first argument of ioread32_rep() and ioread8_rep is not
->> const. Change aspeed_smc_read_from_ahb() prototype to fix compile
->> warning :
->>
->>    drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
->>    drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->>       ioread32_rep(src, buf, len >> 2);
->>
->> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+Le 18/01/2017 � 17:40, Ricardo Ribalda Delgado a �crit :
+> The page calculation under spi_nor_s3an_addr_convert() was wrong. On
+> Default Address Mode we need to perform a divide by page_size.
 > 
-> In this case it's IMO OK:
-> 
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
->
-Applied to git://github.com/spi-nor/linux.git
+> Fixes: 61cba34bd6c1 ("mtd: spi-nor: Add support for S3AN spi-nor devices")
+> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
-Thanks!
+Marek, any comment on your side?
 
->> ---
->>  drivers/mtd/spi-nor/aspeed-smc.c | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
->> index 6bb4c7d1788c..7c86099450be 100644
->> --- a/drivers/mtd/spi-nor/aspeed-smc.c
->> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
->> @@ -222,8 +222,7 @@ struct aspeed_smc_controller {
->>   * the memory buffer pointer and count via explicit code. The final updates
->>   * to len are optimistically suppressed.
->>   */
->> -static int aspeed_smc_read_from_ahb(void *buf, const void __iomem *src,
->> -				    size_t len)
->> +static int aspeed_smc_read_from_ahb(void *buf, void __iomem *src, size_t len)
->>  {
->>  	size_t offset = 0;
->>  
->>
+> ---
 > 
+> v2: Suggested by Marek Vasut <marek.vasut@gmail.com>
+>   -Use more descriptive name for page
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 2a643a1bb45e..f5c3ce8ac48b 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -431,11 +431,14 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+>   */
+>  static loff_t spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
+>  {
+> -	unsigned int offset = addr;
+> +	unsigned int offset;
+> +	unsigned int page;
+>  
+> -	offset %= nor->page_size;
+> +	offset = addr % nor->page_size;
+> +	page = addr / nor->page_size;
+> +	page <<= (nor->page_size > 512) ? 10 : 9;
+>  
+> -	return ((addr - offset) << 1) | offset;
+> +	return page | offset;
+>  }
+>  
+>  /*
 > 
