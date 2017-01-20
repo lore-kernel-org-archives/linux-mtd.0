@@ -1,19 +1,20 @@
 Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUhpG-0004Y2-Sy
- for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 22:38:32 +0000
-Subject: Re: [PATCH, 1/2] mtd: m25p80: Let m25p80_read() fallback to spi
- transfer
+ id 1cUhr8-0006Hl-AB
+ for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 22:40:27 +0000
+Subject: Re: [PATCH, 2/2] spi: bcm-qspi: Fix return code from
+ bcm_qspi_flash_read()
 To: Kamal Dasu <kdasu.kdev@gmail.com>, cyrille.pitchen@atmel.com,
  broonie@kernel.org
 References: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
+ <1484949023-2085-2-git-send-email-kdasu.kdev@gmail.com>
 Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
  bcm-kernel-feedback-list@broadcom.com
 From: Marek Vasut <marex@denx.de>
-Message-ID: <3e1f1c8e-4a87-e186-20cb-2ba784bd58d5@denx.de>
-Date: Fri, 20 Jan 2017 23:38:05 +0100
+Message-ID: <d5d69672-8114-d891-e699-8e5f0fe46164@denx.de>
+Date: Fri, 20 Jan 2017 23:40:02 +0100
 MIME-Version: 1.0
-In-Reply-To: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
+In-Reply-To: <1484949023-2085-2-git-send-email-kdasu.kdev@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,51 +27,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 01/20/2017 10:50 PM, Kamal Dasu wrote:
-> In m25p80_read() even though spi_flash_read() is supported
-> by some drivers, under certain circumstances like unaligned
-> buffer, address or address range limitations on certain SoCs
-> let it fallback to core spi reads. Such drivers are expected
-> to return -EINVAL so that the m25p80_read() uses standard
-> spi transfer.
+> To properly fallback to normal mspi reads return appropriate return code to
+> m25p80_read() function. Changed return code to -EINVAL from -EAGAIN to match
+> what is expected by the m25p80 driver.
 > 
 > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 > ---
->  drivers/mtd/devices/m25p80.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+>  drivers/spi/spi-bcm-qspi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 9cf7fcd..7b7f2cc 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -155,9 +155,16 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  		msg.data_nbits = m25p80_rx_nbits(nor);
+> diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+> index 14f9dea..3e37b6b 100644
+> --- a/drivers/spi/spi-bcm-qspi.c
+> +++ b/drivers/spi/spi-bcm-qspi.c
+> @@ -919,7 +919,7 @@ static int bcm_qspi_flash_read(struct spi_device *spi,
 >  
->  		ret = spi_flash_read(spi, &msg);
-> -		if (ret < 0)
-> +
-> +		if (ret >= 0)
-> +			return msg.retlen;
+>  	if (mspi_read)
+>  		/* this will make the m25p80 read to fallback to mspi read */
+> -		return -EAGAIN;
+> +		return -EINVAL;
 
-ret can never be > 0 , it is only 0 or negative .
+This looks wrong, twice. First, why is the m25q80 driver mentioned in
+this driver at all ? Second, see my comment for 1/2 , I think if the
+read fails and it's because of some condition the block cannot handle,
+but can recover from, the driver should deal with that.
 
-> +		/*
-> +		 * some spi master drivers might need to fallback to
-> +		 * normal spi transfer
-> +		 */
-> +		if (ret != -EINVAL)
->  			return ret;
-
-This looks really fragile and special-casing EINVAL here doesn't scale.
-But still, if your controller driver is buggy, fix the driver, do not
-pollute core code with workarounds. If you do support this sort of
-accelerated read and it fails, it means something is seriously wrong.
-If you need to invoke regular SPI reads to complete under some obscure
-circumstances, do it from the driver, not here.
-
-> -		return msg.retlen;
->  	}
->  
->  	spi_message_init(&m);
+>  	io_width = msg->data_nbits ? msg->data_nbits : SPI_NBITS_SINGLE;
+>  	addrlen = msg->addr_width;
 > 
 
 
