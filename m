@@ -1,37 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUhiU-00081Y-5e
- for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 22:31:32 +0000
-Subject: Re: [PATCH v2, 1/1] mtd: devices: m25p80: Add PM suspend resume
- support
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-References: <1473710494-4084-1-git-send-email-kdasu.kdev@gmail.com>
- <4fe502a4-ee01-3fb8-6697-161de814596e@atmel.com>
- <CAKekbeubczM5NpQy-Umqx-SmDM+deMcgYciyST2Sgrh2_dOsAw@mail.gmail.com>
- <c9198202-29d1-5e67-f675-5a53d926ede9@atmel.com>
- <fa44881d-701b-195a-9617-239454645183@gmail.com>
- <CAC=U0a3HRrx+0Y8YGSiDdfEigkQGa-QxHJ53tK1-Yo-iTj=yXA@mail.gmail.com>
- <af540565-2347-4f51-a5a7-e65f3d26c258@denx.de>
- <CAC=U0a3Q_dBefFayi4G2TueZNXYAhdakduSwYdKPxDDL5Uoi_A@mail.gmail.com>
- <0b33765b-52b7-65f4-34d3-0a446a2df59e@denx.de>
- <fc4c2fc2-6779-6e42-8002-0d636156fe66@gmail.com>
- <8c07a138-0cdb-f278-a2a2-a26864685b3f@denx.de>
- <6fce946e-645a-3b94-1693-946e6a0c5616@gmail.com>
- <36831150-8147-2d6f-f5e6-57c675f4c875@denx.de>
- <CAC=U0a35M4_DqsJqyp0f-k7XzayvK7z5sQ+JTJ4qJAu=4P3dZw@mail.gmail.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Kamal Dasu <kamal.dasu@broadcom.com>, linux-spi <linux-spi@vger.kernel.org>,
- Jayachandran C <jchandra@broadcom.com>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
+ id 1cUhpG-0004Y2-Sy
+ for linux-mtd@lists.infradead.org; Fri, 20 Jan 2017 22:38:32 +0000
+Subject: Re: [PATCH, 1/2] mtd: m25p80: Let m25p80_read() fallback to spi
+ transfer
+To: Kamal Dasu <kdasu.kdev@gmail.com>, cyrille.pitchen@atmel.com,
+ broonie@kernel.org
+References: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
+Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com
 From: Marek Vasut <marex@denx.de>
-Message-ID: <6b1200f8-6138-1a34-6ec5-ced22fdea631@denx.de>
-Date: Fri, 20 Jan 2017 23:30:04 +0100
+Message-ID: <3e1f1c8e-4a87-e186-20cb-2ba784bd58d5@denx.de>
+Date: Fri, 20 Jan 2017 23:38:05 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAC=U0a35M4_DqsJqyp0f-k7XzayvK7z5sQ+JTJ4qJAu=4P3dZw@mail.gmail.com>
+In-Reply-To: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -43,102 +25,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/20/2017 10:15 PM, Kamal Dasu wrote:
-> "At least one problem I suspect will happen here is that if a command is
-> in progress on the SPI NOR and the controller suspends, resumes and
-> rescans, it is well possible the SPI NOR will be in undefined state."
+On 01/20/2017 10:50 PM, Kamal Dasu wrote:
+> In m25p80_read() even though spi_flash_read() is supported
+> by some drivers, under certain circumstances like unaligned
+> buffer, address or address range limitations on certain SoCs
+> let it fallback to core spi reads. Such drivers are expected
+> to return -EINVAL so that the m25p80_read() uses standard
+> spi transfer.
 > 
-> I don't think suspend would happen in middle of a command or transfer.
-> On suspend filesystem drivers do a sync and it is my understanding
-> that the mtd layer, spi masters will stop the queue before the m25p80
-> suspend will get called.
-
-Who does guarantee that ?
-
-> And on resume new transfers continue after
-> the spi-nor is setup in its probed state.
-
-Also please respect the ML netiquette and do NOT top-post.
-
-> Kamal
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+>  drivers/mtd/devices/m25p80.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
 > 
-> On Fri, Jan 20, 2017 at 3:42 PM, Marek Vasut <marex@denx.de> wrote:
->> On 01/20/2017 09:23 PM, Florian Fainelli wrote:
->>> On 01/20/2017 12:13 PM, Marek Vasut wrote:
->>>> On 01/20/2017 09:07 PM, Florian Fainelli wrote:
->>>>> On 01/20/2017 12:02 PM, Marek Vasut wrote:
->>>>>> On 01/20/2017 07:50 PM, Kamal Dasu wrote:
->>>>>>> On Fri, Jan 20, 2017 at 12:22 PM, Marek Vasut <marex@denx.de> wrote:
->>>>>>>> On 01/20/2017 05:33 PM, Kamal Dasu wrote:
->>>>>>>>> Marek,
->>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> OK, so I'm fine with leaving the patch as is for now but I would like Marek
->>>>>>>>>>> review just to be sure we didn't miss something: Marek, any comments?
->>>>>>>>>>>
->>>>>>>>>>> I just have one more comment below but it's only a detail.
->>>>>>>>>>
->>>>>>>>>> What would happen if you have a FS attached on this SPI NOR (like UBIFS)
->>>>>>>>>> and you suspend with this patch ? Will it survive ?
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> I have tried with both jffs2 rw and ubifs rw rootfs on spi-nor
->>>>>>>>> booting from spi-nor partitions while  active filesystem operations
->>>>>>>>> were going on over suspend/resume cycles. And it survives.
->>>>>>>>
->>>>>>>> Can you elaborate on your test a bit ?
->>>>>>>>
->>>>>>>
->>>>>>> The power management test  puts  board in standby mode,  during
->>>>>>> standby the DRAM is in refresh and power to the spi-nor is removed.
->>>>>>> After a set timeout the board wakes up again and resumes from where it
->>>>>>> left off. This pm test is run while a cp command is invoked where a
->>>>>>> file is transferred to the rw rootfs. The test loops through said
->>>>>>> number of iterations of suspend and resumes cycles. The copy
->>>>>>> operations is eventually done over a few cycles. Once the test is
->>>>>>> completed  filesystem should have no corruptions, the copied files
->>>>>>> should compare and rootfs should be intact.  This test was repeated
->>>>>>> with jffs2 as well as ubifs rootfs flashed on spi-nor device.
->>>>>>
->>>>>> Would be much nicer if you could just share the script you used.
->>>>>
->>>>> Not sure if this is even possible, but maybe we could. What part of
->>>>> Kamal's description of the test is not clear here?
->>>>
->>>> I cannot check the test and see what was really done, the code is the
->>>> best description. If someone tells me a script (which is likely about
->>>> 20 lines) cannot be shared, that's fishy.
->>>
->>> The reason why I mentioned that is that it's not like our test suite is
->>> somewhere out there on Github and we could just point you to it, it
->>> could take some time and effort to extract the script, period. It's not
->>> fishy, it's just not ideal, and it is a consequence of working in a
->>> corporate environment.
->>
->> Somehow, it feels like you're digging yourself in deeper and deeper ...
->> now I'm seriously curious how this was tested. Esp. since this patch
->> has potentially massive impact and could annoy a lot of people if it
->> breaks things, so a lot of testing will have to happen on this one.
->> Having a testcase would help ...
->>
->>>>> Even without doing actual copy across suspend/resume cycles, a device
->>>>> which has a power domain architecture where the SPI-NOR flash gets
->>>>> powered down during a suspend state, and the root filesystem is on that
->>>>> flash would expose issues without Kamal's patch here.
->>>>
->>>> At least one problem I suspect will happen here is that if a command is
->>>> in progress on the SPI NOR and the controller suspends, resumes and
->>>> rescans, it is well possible the SPI NOR will be in undefined state.
->>>>
->>>
->>> Fair enough.
->>>
->>
->>
->> --
->> Best regards,
->> Marek Vasut
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 9cf7fcd..7b7f2cc 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -155,9 +155,16 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  		msg.data_nbits = m25p80_rx_nbits(nor);
+>  
+>  		ret = spi_flash_read(spi, &msg);
+> -		if (ret < 0)
+> +
+> +		if (ret >= 0)
+> +			return msg.retlen;
+
+ret can never be > 0 , it is only 0 or negative .
+
+> +		/*
+> +		 * some spi master drivers might need to fallback to
+> +		 * normal spi transfer
+> +		 */
+> +		if (ret != -EINVAL)
+>  			return ret;
+
+This looks really fragile and special-casing EINVAL here doesn't scale.
+But still, if your controller driver is buggy, fix the driver, do not
+pollute core code with workarounds. If you do support this sort of
+accelerated read and it fails, it means something is seriously wrong.
+If you need to invoke regular SPI reads to complete under some obscure
+circumstances, do it from the driver, not here.
+
+> -		return msg.retlen;
+>  	}
+>  
+>  	spi_message_init(&m);
+> 
 
 
 -- 
