@@ -1,26 +1,27 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-wm0-f65.google.com ([74.125.82.65])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUjLh-0003EC-Ie
- for linux-mtd@lists.infradead.org; Sat, 21 Jan 2017 00:16:07 +0000
-Subject: Re: [PATCH, 1/2] mtd: m25p80: Let m25p80_read() fallback to spi
- transfer
-To: Michal Suchanek <hramrach@gmail.com>
-References: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
- <3e1f1c8e-4a87-e186-20cb-2ba784bd58d5@denx.de>
- <CAOMqctT-JMczFR4yZ0Ncy8f41aH-inOjaw8HoJv2MmSWM-AhSA@mail.gmail.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Mark Brown
- <broonie@kernel.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <06d8264e-5ddb-aa76-a83e-4c2c3af42f08@denx.de>
-Date: Sat, 21 Jan 2017 01:15:40 +0100
+ id 1cUjbJ-0008CD-KE
+ for linux-mtd@lists.infradead.org; Sat, 21 Jan 2017 00:32:15 +0000
+Received: by mail-wm0-f65.google.com with SMTP id r144so10494252wme.0
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Jan 2017 16:31:52 -0800 (PST)
+Subject: Re: [PATCH 1/2] mtd: spi-nor: make n_sectors in flash_info 32 bit wide
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Bastian Stender <bst@pengutronix.de>, David Woodhouse <dwmw2@infradead.org>
+References: <20170116151214.11195-1-bst@pengutronix.de>
+ <24d558a9-7e7b-8165-cd5d-f3a311deef17@atmel.com>
+ <afb06b83-e97b-48db-9875-9f76b365a5f4@pengutronix.de>
+ <3b30dea4-00db-3fd6-1414-19c8b4bad8af@atmel.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <aa4b2169-dab1-7f98-c4d4-0fd5585166c9@gmail.com>
+Date: Sat, 21 Jan 2017 01:25:15 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAOMqctT-JMczFR4yZ0Ncy8f41aH-inOjaw8HoJv2MmSWM-AhSA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <3b30dea4-00db-3fd6-1414-19c8b4bad8af@atmel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,54 +31,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/21/2017 12:53 AM, Michal Suchanek wrote:
-> On 20 January 2017 at 23:38, Marek Vasut <marex@denx.de> wrote:
->> On 01/20/2017 10:50 PM, Kamal Dasu wrote:
->>> In m25p80_read() even though spi_flash_read() is supported
->>> by some drivers, under certain circumstances like unaligned
->>> buffer, address or address range limitations on certain SoCs
->>> let it fallback to core spi reads. Such drivers are expected
->>> to return -EINVAL so that the m25p80_read() uses standard
->>> spi transfer.
->>>
->>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->>> ---
->>>  drivers/mtd/devices/m25p80.c | 11 +++++++++--
->>>  1 file changed, 9 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->>> index 9cf7fcd..7b7f2cc 100644
->>> --- a/drivers/mtd/devices/m25p80.c
->>> +++ b/drivers/mtd/devices/m25p80.c
->>> @@ -155,9 +155,16 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->>>               msg.data_nbits = m25p80_rx_nbits(nor);
->>>
->>>               ret = spi_flash_read(spi, &msg);
->>> -             if (ret < 0)
->>> +
->>> +             if (ret >= 0)
->>> +                     return msg.retlen;
+On 01/20/2017 02:53 PM, Cyrille Pitchen wrote:
+> Le 17/01/2017 à 11:47, Bastian Stender a écrit :
+>> Hi Cyrille,
 >>
->> ret can never be > 0 , it is only 0 or negative .
+>> On 01/16/2017 06:34 PM, Cyrille Pitchen wrote:
+>>> Le 16/01/2017 à 16:12, Bastian Stender a écrit :
+>>>> Since MRAM chips (like the Everspin mr25h40) are not sector
+>>>> organized they should be defined as n_sectors * 1 byte sectors. To
+>>>> be able to store the higher number of sectors n_sectors should be
+>>>> an unsigned 32 bit integer just like sector_size.
+>>>>
+>>>
+>>> Could you comment a little bit more on what this series improves or
+>>> fixes?
 >>
->>> +             /*
->>> +              * some spi master drivers might need to fallback to
->>> +              * normal spi transfer
->>> +              */
->>> +             if (ret != -EINVAL)
->>>                       return ret;
+>> Sure. I want to create multiple writeable partitions on a mr25h40 MRAM
+>> chip. This does not currently work because drivers/mtd/mtdpart.c makes sure
+>> that partitions start on erase block boundaries and end on erase blocks.
+>> That is obviously not the case for multiple partitions with the current
+>> definition:
 >>
->> This looks really fragile and special-casing EINVAL here doesn't scale.
->> But still, if your controller driver is buggy, fix the driver, do not
->> pollute core code with workarounds. If you do support this sort of
->> accelerated read and it fails, it means something is seriously wrong.
->> If you need to invoke regular SPI reads to complete under some obscure
->> circumstances, do it from the driver, not here.
 > 
-> I guess the other half of m25p80_read can be factored out and used as
-> fallback from either m25p80_read or the controller driver.
+> OK now I better understand your issue so let's take it as a bug since it
+> prevents you from using full features of the memory. However we have to be
+> cautious because the modification you propose may have unwanted side
+> effects hence may introduce some regressions.
 
-I think I see what you mean, but care to show an RFC patch ?
+This clearly feels like an improvement, not a bugfix .. unless I missed
+something?
+
+> For instance, currently the erase size >= page size. After your patch it
+> will no longer be the case: I guess it should be OK for spi-nor.c but I
+> have no real idea whether the upper mtd layers expect such a thing. We have
+> to study!
+> 
+[...]
+
 
 -- 
 Best regards,
