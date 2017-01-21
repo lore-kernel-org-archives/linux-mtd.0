@@ -1,37 +1,24 @@
 Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUjJo-0001Bo-1D
- for linux-mtd@lists.infradead.org; Sat, 21 Jan 2017 00:14:10 +0000
-Subject: Re: [PATCH v2, 1/1] mtd: devices: m25p80: Add PM suspend resume
- support
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Kamal Dasu <kdasu.kdev@gmail.com>
-References: <1473710494-4084-1-git-send-email-kdasu.kdev@gmail.com>
- <4fe502a4-ee01-3fb8-6697-161de814596e@atmel.com>
- <CAKekbeubczM5NpQy-Umqx-SmDM+deMcgYciyST2Sgrh2_dOsAw@mail.gmail.com>
- <c9198202-29d1-5e67-f675-5a53d926ede9@atmel.com>
- <fa44881d-701b-195a-9617-239454645183@gmail.com>
- <CAC=U0a3HRrx+0Y8YGSiDdfEigkQGa-QxHJ53tK1-Yo-iTj=yXA@mail.gmail.com>
- <af540565-2347-4f51-a5a7-e65f3d26c258@denx.de>
- <CAC=U0a3Q_dBefFayi4G2TueZNXYAhdakduSwYdKPxDDL5Uoi_A@mail.gmail.com>
- <0b33765b-52b7-65f4-34d3-0a446a2df59e@denx.de>
- <fc4c2fc2-6779-6e42-8002-0d636156fe66@gmail.com>
- <8c07a138-0cdb-f278-a2a2-a26864685b3f@denx.de>
- <6fce946e-645a-3b94-1693-946e6a0c5616@gmail.com>
- <36831150-8147-2d6f-f5e6-57c675f4c875@denx.de>
- <3bc8d8d3-936c-51c7-30c4-deac0b3bc7d8@broadcom.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Kamal Dasu <kamal.dasu@broadcom.com>, linux-spi <linux-spi@vger.kernel.org>,
- Jayachandran C <jchandra@broadcom.com>,
+ id 1cUjLh-0003EC-Ie
+ for linux-mtd@lists.infradead.org; Sat, 21 Jan 2017 00:16:07 +0000
+Subject: Re: [PATCH, 1/2] mtd: m25p80: Let m25p80_read() fallback to spi
+ transfer
+To: Michal Suchanek <hramrach@gmail.com>
+References: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
+ <3e1f1c8e-4a87-e186-20cb-2ba784bd58d5@denx.de>
+ <CAOMqctT-JMczFR4yZ0Ncy8f41aH-inOjaw8HoJv2MmSWM-AhSA@mail.gmail.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Mark Brown
+ <broonie@kernel.org>,
  bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
+ Florian Fainelli <f.fainelli@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
 From: Marek Vasut <marex@denx.de>
-Message-ID: <edcdc046-4fc3-69c0-7c92-419adc881091@denx.de>
-Date: Sat, 21 Jan 2017 01:13:42 +0100
+Message-ID: <06d8264e-5ddb-aa76-a83e-4c2c3af42f08@denx.de>
+Date: Sat, 21 Jan 2017 01:15:40 +0100
 MIME-Version: 1.0
-In-Reply-To: <3bc8d8d3-936c-51c7-30c4-deac0b3bc7d8@broadcom.com>
+In-Reply-To: <CAOMqctT-JMczFR4yZ0Ncy8f41aH-inOjaw8HoJv2MmSWM-AhSA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -43,110 +30,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/20/2017 11:58 PM, Florian Fainelli wrote:
-> On 01/20/2017 12:42 PM, Marek Vasut wrote:
->> On 01/20/2017 09:23 PM, Florian Fainelli wrote:
->>> On 01/20/2017 12:13 PM, Marek Vasut wrote:
->>>> On 01/20/2017 09:07 PM, Florian Fainelli wrote:
->>>>> On 01/20/2017 12:02 PM, Marek Vasut wrote:
->>>>>> On 01/20/2017 07:50 PM, Kamal Dasu wrote:
->>>>>>> On Fri, Jan 20, 2017 at 12:22 PM, Marek Vasut <marex@denx.de> wrote:
->>>>>>>> On 01/20/2017 05:33 PM, Kamal Dasu wrote:
->>>>>>>>> Marek,
->>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> OK, so I'm fine with leaving the patch as is for now but I would like Marek
->>>>>>>>>>> review just to be sure we didn't miss something: Marek, any comments?
->>>>>>>>>>>
->>>>>>>>>>> I just have one more comment below but it's only a detail.
->>>>>>>>>>
->>>>>>>>>> What would happen if you have a FS attached on this SPI NOR (like UBIFS)
->>>>>>>>>> and you suspend with this patch ? Will it survive ?
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> I have tried with both jffs2 rw and ubifs rw rootfs on spi-nor
->>>>>>>>> booting from spi-nor partitions while  active filesystem operations
->>>>>>>>> were going on over suspend/resume cycles. And it survives.
->>>>>>>>
->>>>>>>> Can you elaborate on your test a bit ?
->>>>>>>>
->>>>>>>
->>>>>>> The power management test  puts  board in standby mode,  during
->>>>>>> standby the DRAM is in refresh and power to the spi-nor is removed.
->>>>>>> After a set timeout the board wakes up again and resumes from where it
->>>>>>> left off. This pm test is run while a cp command is invoked where a
->>>>>>> file is transferred to the rw rootfs. The test loops through said
->>>>>>> number of iterations of suspend and resumes cycles. The copy
->>>>>>> operations is eventually done over a few cycles. Once the test is
->>>>>>> completed  filesystem should have no corruptions, the copied files
->>>>>>> should compare and rootfs should be intact.  This test was repeated
->>>>>>> with jffs2 as well as ubifs rootfs flashed on spi-nor device.
->>>>>>
->>>>>> Would be much nicer if you could just share the script you used.
->>>>>
->>>>> Not sure if this is even possible, but maybe we could. What part of
->>>>> Kamal's description of the test is not clear here?
->>>>
->>>> I cannot check the test and see what was really done, the code is the
->>>> best description. If someone tells me a script (which is likely about
->>>> 20 lines) cannot be shared, that's fishy.
+On 01/21/2017 12:53 AM, Michal Suchanek wrote:
+> On 20 January 2017 at 23:38, Marek Vasut <marex@denx.de> wrote:
+>> On 01/20/2017 10:50 PM, Kamal Dasu wrote:
+>>> In m25p80_read() even though spi_flash_read() is supported
+>>> by some drivers, under certain circumstances like unaligned
+>>> buffer, address or address range limitations on certain SoCs
+>>> let it fallback to core spi reads. Such drivers are expected
+>>> to return -EINVAL so that the m25p80_read() uses standard
+>>> spi transfer.
 >>>
->>> The reason why I mentioned that is that it's not like our test suite is
->>> somewhere out there on Github and we could just point you to it, it
->>> could take some time and effort to extract the script, period. It's not
->>> fishy, it's just not ideal, and it is a consequence of working in a
->>> corporate environment.
+>>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+>>> ---
+>>>  drivers/mtd/devices/m25p80.c | 11 +++++++++--
+>>>  1 file changed, 9 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>>> index 9cf7fcd..7b7f2cc 100644
+>>> --- a/drivers/mtd/devices/m25p80.c
+>>> +++ b/drivers/mtd/devices/m25p80.c
+>>> @@ -155,9 +155,16 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>>>               msg.data_nbits = m25p80_rx_nbits(nor);
+>>>
+>>>               ret = spi_flash_read(spi, &msg);
+>>> -             if (ret < 0)
+>>> +
+>>> +             if (ret >= 0)
+>>> +                     return msg.retlen;
 >>
->> Somehow, it feels like you're digging yourself in deeper and deeper ...
->> now I'm seriously curious how this was tested. Esp. since this patch
->> has potentially massive impact and could annoy a lot of people if it
->> breaks things, so a lot of testing will have to happen on this one.
+>> ret can never be > 0 , it is only 0 or negative .
+>>
+>>> +             /*
+>>> +              * some spi master drivers might need to fallback to
+>>> +              * normal spi transfer
+>>> +              */
+>>> +             if (ret != -EINVAL)
+>>>                       return ret;
+>>
+>> This looks really fragile and special-casing EINVAL here doesn't scale.
+>> But still, if your controller driver is buggy, fix the driver, do not
+>> pollute core code with workarounds. If you do support this sort of
+>> accelerated read and it fails, it means something is seriously wrong.
+>> If you need to invoke regular SPI reads to complete under some obscure
+>> circumstances, do it from the driver, not here.
 > 
-> And somehow it feels like you don't even try to understand that the test
-> may be part of an existing test framework thus making it harder to
-> extract and send as a standalone shell script. Not everything we do is
-> open source, and although there is not necessarily a reason why not, it
-> just is. Not saying this is impossible, or that our testsuite is the
-> best thing since we discovered hot water, just don't expect it to show
-> up instantly, period.
+> I guess the other half of m25p80_read can be factored out and used as
+> fallback from either m25p80_read or the controller driver.
 
-Probably what I don't like the most about this discussion is the use of
-"period" and "it just is" rhetoric.
-
-I don't mind if it takes a bit to get some/any test out, but as I
-already stated (and will restate that), this patch is potentially
-disruptive and can cause trouble for a lot of people, so I want to
-be sure this can and will get a lot of testing.
-
-> Keep in mind that asking for an explanation about how this was tested
-> initially is a perfectly reasonable thing to do, and you may, or may not
-> be satisfied with the answer, clearly you are not
-
-I'm not, indeed. It was pretty vague.
-
-> but asking for test
-> case is just not common thing
-
-Indeed, please see above (disruptive change).
-
-> it also indicates that you absolutely
-> don't trust Kamal's explanation and understanding of the problem, and
-> that can be misinterpreted at best.
-
-I cannot make any judgment based on the limited amount of code I saw
-from Kamal, sorry. It certainly takes time and patches to build any
-sort of trust.
-
->> Having a testcase would help ...
-> 
-> Agreed, just like having a proper test suite geared towards MTD/SPI that
-> we could contribute to (not necessarily LTP) would help as well. So,
-> where do we start now?
-
-Let's not mix a test framework into this discussion . My proposition
-would be to take a few days off, cool down and revisit the discussion
-next week earliest. Agreed ?
+I think I see what you mean, but care to show an RFC patch ?
 
 -- 
 Best regards,
