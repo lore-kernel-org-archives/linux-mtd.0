@@ -1,22 +1,39 @@
-Received: from mail-wm0-f68.google.com ([74.125.82.68])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUu7F-00020b-6v
- for linux-mtd@lists.infradead.org; Sat, 21 Jan 2017 11:45:54 +0000
-Received: by mail-wm0-f68.google.com with SMTP id r126so13082427wmr.3
- for <linux-mtd@lists.infradead.org>; Sat, 21 Jan 2017 03:45:31 -0800 (PST)
-Subject: Re: [PATCH, 1/1] mtd: spi-nor: Added support for gd25q16
-To: Kamal Dasu <kdasu.kdev@gmail.com>, linux-spi@vger.kernel.org,
- f.fainelli@gmail.com, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com
-References: <1484940351-8145-1-git-send-email-kdasu.kdev@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <8647a273-4ad8-264b-5dcd-a48662dae40d@gmail.com>
-Date: Sat, 21 Jan 2017 12:36:56 +0100
-MIME-Version: 1.0
-In-Reply-To: <1484940351-8145-1-git-send-email-kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Message-ID: <1485052600.19995.10.camel@mhfsdcap03>
+Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
+From: Guochun Mao <guochun.mao@mediatek.com>
+To: Rob Herring <robh@kernel.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+CC: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Richard Weinberger
+ <richard@nod.at>, "Russell King" <linux@armlinux.org.uk>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Date: Sun, 22 Jan 2017 10:36:40 +0800
+In-Reply-To: <CAL_Jsq+S-FYy4SmjJ3fWzBugw2zCj5TQkkfUA8QVL7SLJW3E1g@mail.gmail.com>
+References: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
+ <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
+ <20170113172825.75d545a3@bbrezillon>
+ <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
+ <20170113175628.1793f433@bbrezillon>
+ <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
+ <20170114092958.022f2fc8@bbrezillon>
+ <e7fa1542-f0e2-0e45-23b3-25d6491ae40d@gmail.com>
+ <20170116094032.6f471f11@bbrezillon>
+ <20170117143650.5db87148@free-electrons.com>
+ <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
+ <20170119103829.524ce715@free-electrons.com>
+ <CAL_Jsq+EyHtC7THLCJcwgtVtVESMOdmi3T3bBxgOqJt6BCtCHQ@mail.gmail.com>
+ <20170119091428.598eb987@bbrezillon>
+ <CAL_Jsq+S-FYy4SmjJ3fWzBugw2zCj5TQkkfUA8QVL7SLJW3E1g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +43,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/20/2017 08:25 PM, Kamal Dasu wrote:
-> Add GigaDevice GD25Q16 (16M-bit) to supported list.
+Hi,
+On Thu, 2017-01-19 at 08:18 -0600, Rob Herring wrote:
+> On Thu, Jan 19, 2017 at 2:14 AM, Boris Brezillon
+> > One last question and I'm done: is something like that acceptable?
+> >
+> >         compatible = "<vendor>,<old-soc>","<vendor>,<new-soc>";
+> >
+> > This can happen when someone adds support for an unsupported feature
+> > on a brand new SoC, and then someone else use the same driver for an
+> > older SoC embedding the same IP but still wants to add a new compatible
+> > just in case these 2 IPs appear to be slightly different.
 > 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
-
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> Yes, it's old and new compatible strings in this case and it's newest
+> compatible string first.
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index da7cd69..8530d51 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -833,6 +833,11 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  
->  	/* GigaDevice */
->  	{
-> +		"gd25q16", INFO(0xc84015, 0, 64 * 1024,  32,
-> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> +			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-> +	},
-> +	{
->  		"gd25q32", INFO(0xc84016, 0, 64 * 1024,  64,
->  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->  			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> > Here the order of compat strings is no longer following a clear rule
+> > like 'most-specific compatible first' or 'newest IP/SoC version first',
+> > it's completely dependent on the order these IPs were supported in the
+> > OS (Linux). I'm perfectly fine with that BTW, just want to make sure
+> > this is authorized.
 > 
+> I guess we should say "newest compatible for IP first" instead. There
+> are some exceptions where we add fallbacks later on, but that falls
+> under the most-specific part.
+> 
+> It's order that the bindings are defined, not Linux support really,
+> but in practice those are the same.
+> 
+> Rob
 
+Thanks for all your effort for code reviewing.
+Our mt2701-nor's hardware is designed base on mt8713-nor,
+even so, there would be some slight difference.
+If I don't misunderstand your viewpoint in this discussion,
+there's no need to drop mt2701-nor compatible.
+And if not, is there any other suggestion?
 
--- 
-Best regards,
-Marek Vasut
+Thanks.
