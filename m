@@ -1,39 +1,27 @@
-Message-ID: <1485052600.19995.10.camel@mhfsdcap03>
-Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
-From: Guochun Mao <guochun.mao@mediatek.com>
-To: Rob Herring <robh@kernel.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>
-CC: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Richard Weinberger
- <richard@nod.at>, "Russell King" <linux@armlinux.org.uk>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Date: Sun, 22 Jan 2017 10:36:40 +0800
-In-Reply-To: <CAL_Jsq+S-FYy4SmjJ3fWzBugw2zCj5TQkkfUA8QVL7SLJW3E1g@mail.gmail.com>
-References: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
- <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
- <20170113172825.75d545a3@bbrezillon>
- <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
- <20170113175628.1793f433@bbrezillon>
- <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
- <20170114092958.022f2fc8@bbrezillon>
- <e7fa1542-f0e2-0e45-23b3-25d6491ae40d@gmail.com>
- <20170116094032.6f471f11@bbrezillon>
- <20170117143650.5db87148@free-electrons.com>
- <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
- <20170119103829.524ce715@free-electrons.com>
- <CAL_Jsq+EyHtC7THLCJcwgtVtVESMOdmi3T3bBxgOqJt6BCtCHQ@mail.gmail.com>
- <20170119091428.598eb987@bbrezillon>
- <CAL_Jsq+S-FYy4SmjJ3fWzBugw2zCj5TQkkfUA8QVL7SLJW3E1g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-MIME-Version: 1.0
+Received: from mail-lf0-f50.google.com ([209.85.215.50])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cVHAU-0003Bt-JG
+ for linux-mtd@lists.infradead.org; Sun, 22 Jan 2017 12:22:48 +0000
+Received: by mail-lf0-f50.google.com with SMTP id n124so80495847lfd.2
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Jan 2017 04:22:26 -0800 (PST)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: linux-arm-kernel@lists.infradead.org,
+ Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Janos Laube <janos.dev@gmail.com>,
+ Paulius Zaleckas <paulius.zaleckas@gmail.com>, openwrt-devel@openwrt.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
+ devicetree@vger.kernel.org
+Subject: [PATCH 09/22] mtd: add DT bindings for the Cortina Systems Gemini
+ Flash
+Date: Sun, 22 Jan 2017 13:21:19 +0100
+Message-Id: <20170122122119.10510-1-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,41 +31,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-On Thu, 2017-01-19 at 08:18 -0600, Rob Herring wrote:
-> On Thu, Jan 19, 2017 at 2:14 AM, Boris Brezillon
-> > One last question and I'm done: is something like that acceptable?
-> >
-> >         compatible = "<vendor>,<old-soc>","<vendor>,<new-soc>";
-> >
-> > This can happen when someone adds support for an unsupported feature
-> > on a brand new SoC, and then someone else use the same driver for an
-> > older SoC embedding the same IP but still wants to add a new compatible
-> > just in case these 2 IPs appear to be slightly different.
-> 
-> Yes, it's old and new compatible strings in this case and it's newest
-> compatible string first.
-> 
-> > Here the order of compat strings is no longer following a clear rule
-> > like 'most-specific compatible first' or 'newest IP/SoC version first',
-> > it's completely dependent on the order these IPs were supported in the
-> > OS (Linux). I'm perfectly fine with that BTW, just want to make sure
-> > this is authorized.
-> 
-> I guess we should say "newest compatible for IP first" instead. There
-> are some exceptions where we add fallbacks later on, but that falls
-> under the most-specific part.
-> 
-> It's order that the bindings are defined, not Linux support really,
-> but in practice those are the same.
-> 
-> Rob
+This adds device tree bindings for the Cortina systems Gemini
+flash controller, a simple physmap which however need a few
+syscon bits to be poked to operate properly.
 
-Thanks for all your effort for code reviewing.
-Our mt2701-nor's hardware is designed base on mt8713-nor,
-even so, there would be some slight difference.
-If I don't misunderstand your viewpoint in this discussion,
-there's no need to drop mt2701-nor compatible.
-And if not, is there any other suggestion?
+Cc: Janos Laube <janos.dev@gmail.com>
+Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>
+Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+MTD maintainers: please just apply this to the MTD tree when
+you are happy with it. It is functionally orthogonal to the rest
+of the series and is just in the series for context.
+---
+ .../bindings/mtd/cortina,gemini-flash.txt          | 24 ++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cortina,gemini-flash.txt
 
-Thanks.
+diff --git a/Documentation/devicetree/bindings/mtd/cortina,gemini-flash.txt b/Documentation/devicetree/bindings/mtd/cortina,gemini-flash.txt
+new file mode 100644
+index 000000000000..3fa1b34d69ad
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/cortina,gemini-flash.txt
+@@ -0,0 +1,24 @@
++Flash device on Cortina Systems Gemini SoC
++
++This flash is regular CFI compatible (Intel or AMD extended) flash chips with
++some special bits that can be controlled by the machine's system controller.
++
++Required properties:
++- compatible : must be "cortina,gemini-flash", "cfi-flash";
++- reg : memory address for the flash chip
++- syscon : must be a phandle to the system controller
++- bank-width : width in bytes of flash interface, should be <2>
++
++For the rest of the properties, see mtd-physmap.txt.
++
++The device tree may optionally contain sub-nodes describing partitions of the
++address space. See partition.txt for more detail.
++
++Example:
++
++flash@30000000 {
++	compatible = "cortina,gemini-flash", "cfi-flash";
++	reg = <0x30000000 0x01000000>;
++	syscon = <&syscon>;
++	bank-width = <2>;
++};
+-- 
+2.9.3
