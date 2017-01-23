@@ -1,23 +1,20 @@
-Received: from mail-lf0-f67.google.com ([209.85.215.67])
+Received: from server.coly.li ([162.144.45.48])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cVdBh-0005sl-Nm
- for linux-mtd@lists.infradead.org; Mon, 23 Jan 2017 11:53:31 +0000
-Received: by mail-lf0-f67.google.com with SMTP id v186so13865137lfa.2
- for <linux-mtd@lists.infradead.org>; Mon, 23 Jan 2017 03:53:09 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V3] mtd: bcm47xxsflash: support reading flash out of mapping
- window
-Date: Mon, 23 Jan 2017 12:51:54 +0100
-Message-Id: <20170123115154.3364-1-zajec5@gmail.com>
+ id 1cVg0B-0006L7-HD
+ for linux-mtd@lists.infradead.org; Mon, 23 Jan 2017 14:53:49 +0000
+Subject: Re: [PATCH v3] romfs: use different way to generate fsid for BLOCK or
+ MTD
+To: Coly Li <colyli@suse.de>, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>
+References: <1482928596-115155-1-git-send-email-colyli@suse.de>
+Cc: nongli1031@gmail.com, Richard Weinberger <richard.weinberger@gmail.com>,
+ linux-mtd@lists.infradead.org
+From: Coly Li <i@coly.li>
+Message-ID: <09fe6908-348c-8f8b-c201-6e5d596b910f@coly.li>
+Date: Mon, 23 Jan 2017 22:52:09 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1482928596-115155-1-git-send-email-colyli@suse.de>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,85 +25,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Hi Andrew,
 
-For reading flash content we use MMIO but it's possible to read only
-first 16 MiB this way. It's simply an arch design/limitation.
-To support flash sizes bigger than 16 MiB implement indirect access
-using ChipCommon registers.
-This has been tested using MX25L25635F.
+This fix is verified by Nong Li, it works well in all three conditions,
+- CONFIG_ROMFS_ON_BLOCK defined	
+- CONFIG_ROMFS_ON_BLOCK undefined and CONFIG_ROMFS_ON_MTD defined
+- both CONFIG_ROMFS_ON_BLOCK and CONFIG_ROMFS_ON_MTD undefined
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-V2: Simplify line writing to buf
-    Add some trivial comment for OPCODE_ST_READ4B
-    Both requested by Marek
-V3: Use as much as possible MMIO access for read crossing boundary (performance)
----
- drivers/mtd/devices/bcm47xxsflash.c | 23 ++++++++++++++++++++---
- drivers/mtd/devices/bcm47xxsflash.h |  3 +++
- 2 files changed, 23 insertions(+), 3 deletions(-)
+Last time the original patch was picked by you, could you please take
+care it again this time.
 
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index 4decd8c0360a..138689619ab4 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -105,15 +105,32 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			      size_t *retlen, u_char *buf)
- {
- 	struct bcm47xxsflash *b47s = mtd->priv;
-+	size_t orig_len = len;
- 
- 	/* Check address range */
- 	if ((from + len) > mtd->size)
- 		return -EINVAL;
- 
--	memcpy_fromio(buf, b47s->window + from, len);
--	*retlen = len;
-+	/* Read as much as possible using fast MMIO window */
-+	if (from < BCM47XXSFLASH_WINDOW_SZ) {
-+		size_t memcpy_len;
- 
--	return len;
-+		memcpy_len = min(len, (size_t)(BCM47XXSFLASH_WINDOW_SZ - from));
-+		memcpy_fromio(buf, b47s->window + from, memcpy_len);
-+		from += memcpy_len;
-+		len -= memcpy_len;
-+	}
-+
-+	/* Use indirect access for content out of the window */
-+	for (; len; len--) {
-+		b47s->cc_write(b47s, BCMA_CC_FLASHADDR, from++);
-+		bcm47xxsflash_cmd(b47s, OPCODE_ST_READ4B);
-+		*buf++ = b47s->cc_read(b47s, BCMA_CC_FLASHDATA);
-+	}
-+
-+	*retlen = orig_len;
-+
-+	return orig_len;
- }
- 
- static int bcm47xxsflash_write_st(struct mtd_info *mtd, u32 offset, size_t len,
-diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
-index 1564b62b412e..b2d7b38f75fd 100644
---- a/drivers/mtd/devices/bcm47xxsflash.h
-+++ b/drivers/mtd/devices/bcm47xxsflash.h
-@@ -3,6 +3,8 @@
- 
- #include <linux/mtd/mtd.h>
- 
-+#define BCM47XXSFLASH_WINDOW_SZ			SZ_16M
-+
- /* Used for ST flashes only. */
- #define OPCODE_ST_WREN		0x0006		/* Write Enable */
- #define OPCODE_ST_WRDIS		0x0004		/* Write Disable */
-@@ -16,6 +18,7 @@
- #define OPCODE_ST_RES		0x03ab		/* Read Electronic Signature */
- #define OPCODE_ST_CSA		0x1000		/* Keep chip select asserted */
- #define OPCODE_ST_SSE		0x0220		/* Sub-sector Erase */
-+#define OPCODE_ST_READ4B	0x6313		/* Read Data Bytes in 4Byte addressing mode */
- 
- /* Used for Atmel flashes only. */
- #define OPCODE_AT_READ				0x07e8
+Thanks in advance.
+
+Coly Li
+
+On 2016/12/28 下午8:36, Coly Li wrote:
+> 'Commit 8a59f5d25265 ("fs/romfs: return f_fsid for statfs(2)")' generates
+> a 64bit id from sb->s_bdev->bd_dev. This is only correct when romfs is
+> defined with CONFIG_ROMFS_ON_BLOCK. If romfs is only defined with
+> CONFIG_ROMFS_ON_MTD, sb->s_bdev is NULL, referencing sb->s_bdev->bd_dev
+> will triger an oops.
+> 
+> Richard Weinberger points out that when CONFIG_ROMFS_BACKED_BY_BOTH=y,
+> both CONFIG_ROMFS_ON_BLOCK and CONFIG_ROMFS_ON_MTD are defined. Therefore
+> when calling huge_encode_dev() to generate a 64bit id, I use the follow
+> order to choose parameter,
+> - CONFIG_ROMFS_ON_BLOCK defined
+>   use sb->s_bdev->bd_dev
+> - CONFIG_ROMFS_ON_BLOCK undefined and CONFIG_ROMFS_ON_MTD defined
+>   use sb->s_dev when,
+> - both CONFIG_ROMFS_ON_BLOCK and CONFIG_ROMFS_ON_MTD undefined
+>   leave id as 0
+> 
+> When CONFIG_ROMFS_ON_MTD is defined and sb->s_mtd is not NULL, sb->s_dev
+> is set to a device ID generated by MTD_BLOCK_MAJOR and mtd index, otherwise
+> sb->s_dev is 0.
+> 
+> This is a try-best effort to generate a uniq file system ID, if all the
+> above conditions are not meet, f_fsid of this romfs instance will be 0.
+> Generally only one romfs can be built on single MTD block device, this
+> method is enough to identify multiple romfs instances in a computer.
+> 
+> Signed-off-by: Coly Li <colyli@suse.de>
+> Reported-by: Nong Li <nongli1031@gmail.com>
+> Tested-by: Nong Li <nongli1031@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Richard Weinberger <richard.weinberger@gmail.com>
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> ---
+>  fs/romfs/super.c | 23 ++++++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/romfs/super.c b/fs/romfs/super.c
+> index d0f8a38..0186fe6 100644
+> --- a/fs/romfs/super.c
+> +++ b/fs/romfs/super.c
+> @@ -74,6 +74,7 @@
+>  #include <linux/highmem.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/major.h>
+>  #include "internal.h"
+>  
+>  static struct kmem_cache *romfs_inode_cachep;
+> @@ -416,7 +417,22 @@ static void romfs_destroy_inode(struct inode *inode)
+>  static int romfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+>  {
+>  	struct super_block *sb = dentry->d_sb;
+> -	u64 id = huge_encode_dev(sb->s_bdev->bd_dev);
+> +	u64 id = 0;
+> +
+> +	/* When calling huge_encode_dev(),
+> +	 * use sb->s_bdev->bd_dev when,
+> +	 *   - CONFIG_ROMFS_ON_BLOCK defined
+> +	 * use sb->s_dev when,
+> +	 *   - CONFIG_ROMFS_ON_BLOCK undefined and
+> +	 *   - CONFIG_ROMFS_ON_MTD defined
+> +	 * leave id as 0 when,
+> +	 *   - CONFIG_ROMFS_ON_BLOCK undefined and
+> +	 *   - CONFIG_ROMFS_ON_MTD undefined
+> +	 */
+> +	if (sb->s_bdev)
+> +		id = huge_encode_dev(sb->s_bdev->bd_dev);
+> +	else if (sb->s_dev)
+> +		id = huge_encode_dev(sb->s_dev);
+>  
+>  	buf->f_type = ROMFS_MAGIC;
+>  	buf->f_namelen = ROMFS_MAXFN;
+> @@ -489,6 +505,11 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
+>  	sb->s_flags |= MS_RDONLY | MS_NOATIME;
+>  	sb->s_op = &romfs_super_ops;
+>  
+> +#ifdef CONFIG_ROMFS_ON_MTD
+> +	/* Use same dev ID from the underlying mtdblock device */
+> +	if (sb->s_mtd)
+> +		sb->s_dev = MKDEV(MTD_BLOCK_MAJOR, sb->s_mtd->index);
+> +#endif
+>  	/* read the image superblock and check it */
+>  	rsb = kmalloc(512, GFP_KERNEL);
+>  	if (!rsb)
+> 
+
+
 -- 
-2.11.0
+Coly Li
