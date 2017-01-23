@@ -1,27 +1,28 @@
-Date: Mon, 23 Jan 2017 14:13:47 -0600
-From: Rob Herring <robh@kernel.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org,
- Hans Ulli Kroll <ulli.kroll@googlemail.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Janos Laube <janos.dev@gmail.com>,
- Paulius Zaleckas <paulius.zaleckas@gmail.com>,
- openwrt-devel@openwrt.org, Arnd Bergmann <arnd@arndb.de>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH 09/22] mtd: add DT bindings for the Cortina Systems
- Gemini Flash
-Message-ID: <20170123201347.zjarugehax7zovig@rob-hp-laptop>
-References: <20170122122119.10510-1-linus.walleij@linaro.org>
+Received: from mail-qt0-f193.google.com ([209.85.216.193])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cVoFm-00072Z-2s
+ for linux-mtd@lists.infradead.org; Mon, 23 Jan 2017 23:42:27 +0000
+Received: by mail-qt0-f193.google.com with SMTP id n13so20984505qtc.0
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Jan 2017 15:42:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170122122119.10510-1-linus.walleij@linaro.org>
+In-Reply-To: <06d8264e-5ddb-aa76-a83e-4c2c3af42f08@denx.de>
+References: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
+ <3e1f1c8e-4a87-e186-20cb-2ba784bd58d5@denx.de>
+ <CAOMqctT-JMczFR4yZ0Ncy8f41aH-inOjaw8HoJv2MmSWM-AhSA@mail.gmail.com>
+ <06d8264e-5ddb-aa76-a83e-4c2c3af42f08@denx.de>
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+Date: Mon, 23 Jan 2017 18:41:03 -0500
+Message-ID: <CAC=U0a1ESxC__PBOjW5L6AE3W5ebs8tMf1T1P1cuDzgFzWdxbA@mail.gmail.com>
+Subject: Re: [PATCH,
+ 1/2] mtd: m25p80: Let m25p80_read() fallback to spi transfer
+To: Marek Vasut <marex@denx.de>
+Cc: Michal Suchanek <hramrach@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Mark Brown <broonie@kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,24 +32,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 22, 2017 at 01:21:19PM +0100, Linus Walleij wrote:
-> This adds device tree bindings for the Cortina systems Gemini
-> flash controller, a simple physmap which however need a few
-> syscon bits to be poked to operate properly.
-> 
-> Cc: Janos Laube <janos.dev@gmail.com>
-> Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>
-> Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> MTD maintainers: please just apply this to the MTD tree when
-> you are happy with it. It is functionally orthogonal to the rest
-> of the series and is just in the series for context.
-> ---
->  .../bindings/mtd/cortina,gemini-flash.txt          | 24 ++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/cortina,gemini-flash.txt
+"ret can never be > 0 , it is only 0 or negative "
 
-Acked-by: Rob Herring <robh@kernel.org>
+I can fix this.
+
+>>> This looks really fragile and special-casing EINVAL here doesn't scale.
+>>> But still, if your controller driver is buggy, fix the driver, do not
+>>> pollute core code with workarounds. If you do support this sort of
+>>> accelerated read and it fails, it means something is seriously wrong.
+>>> If you need to invoke regular SPI reads to complete under some obscure
+>>> circumstances, do it from the driver, not here.
+>>
+>> I guess the other half of m25p80_read can be factored out and used as
+>> fallback from either m25p80_read or the controller driver.
+>
+> I think I see what you mean, but care to show an RFC patch ?
+>
+> --
+
+Its not the controller driver, but he hardware limitation with older
+controller version. I have tried to see how I can do this better,
+however when spi_flash_read() is called  cannot handle it within my
+driver without returning from the function. I went over this with Mark
+previously and this current solution seemed reasonable. Any other
+solution outside of the generic driver would replicate a lot of code
+unnecessarily.
+
+> Best regards,
+> Marek Vasut
+
+
+Thanks
+Kamal
