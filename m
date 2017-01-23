@@ -1,30 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cVMHP-0003Jt-Dx
- for linux-mtd@lists.infradead.org; Sun, 22 Jan 2017 17:50:17 +0000
-Date: Mon, 23 Jan 2017 01:49:25 +0800
-From: kbuild test robot <lkp@intel.com>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: kbuild-all@01.org, Linus Walleij <linus.walleij@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Paul Burton <paul.burton@imgtec.com>, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@linux-mips.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
- linux-fbdev@vger.kernel.org, james.hogan@imgtec.com,
- Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 04/14] GPIO: Add gpio-ingenic driver
-Message-ID: <201701230130.T42P6EcW%fengguang.wu@intel.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cVYRn-0007ty-O9
+ for linux-mtd@lists.infradead.org; Mon, 23 Jan 2017 06:49:50 +0000
+Subject: Re: [PATCH 0/2] Support skipping bad blocks when seeking to start
+ address
+To: Mike Crowe <mac@mcrowe.com>, linux-mtd@lists.infradead.org
+References: <1484654044-17722-1-git-send-email-mac@mcrowe.com>
+Cc: richard@nod.at
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <1d5e298d-e8e4-4e09-b315-2f7af7361fbc@sigma-star.at>
+Date: Mon, 23 Jan 2017 07:47:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170122144947.16158-5-paul@crapouillou.net>
+In-Reply-To: <1484654044-17722-1-git-send-email-mac@mcrowe.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Paul,
+On 01/17/2017 12:54 PM, Mike Crowe wrote:
+> I found myself needing to write and verify part of a partition that
+> will be read by the bootloader by skipping blocks from the start of
+> the partition. Initially I added separate --input-skip and
+> --output-skip options but David Oberhollenzer suggested in
+> <cdfdbe5d-1aa8-e424-7691-338d0d63f7b1 at sigma-star.at>
+> http://lists.infradead.org/pipermail/linux-mtd/2016-December/070855.html
+> that a simple flag to indicate that the start address should skip bad
+> blocks would avoid ambiguity.
+> 
+> David also suggested that I skip the bad blocks in a separate step
+> before the already-cluttered main loop.
+> 
+> This version uses is_virt_block_bad in nandwrite, so the series now depends
+> on David Oberhollenzer's virtual block handling fixes from
+> <20170112102828.13124-1-david.oberhollenzer@sigma-star.at>
+> http://lists.infradead.org/pipermail/linux-mtd/2017-January/071544.html
+> 
+> Mike Crowe (2):
+>   nandwrite: Add --skip-bad-blocks-to-start option
+>   nanddump: Add --skip-bad-blocks-to-start option
+> 
+>  nand-utils/nanddump.c  | 23 +++++++++++++++++++++++
+>  nand-utils/nandwrite.c | 26 ++++++++++++++++++++++++++
+>  2 files changed, 49 insertions(+)
+> 
+Applied to mtd-utils.git.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v4.10-rc4 next-20170120]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
-url:    https://github.com/0day-ci/linux/commits/Paul-Cercueil/Ingenic-JZ4740-JZ4780-pinctrl-driver/20170122-232326
+Thanks,
 
-
-coccinelle warnings: (new ones prefixed by >>)
-
->> drivers/gpio/gpio-ingenic.c:101:2-3: Unneeded semicolon
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+David
