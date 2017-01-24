@@ -1,24 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cW24Q-0007LH-7K
- for linux-mtd@lists.infradead.org; Tue, 24 Jan 2017 14:27:39 +0000
-Date: Tue, 24 Jan 2017 15:27:04 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Richard
- Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>, Rob
- Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/3] mtd: name the mtd device with an optional label
- property
-Message-ID: <20170124152704.03598ae5@bbrezillon>
-In-Reply-To: <20170124151353.5bbffae0@bbrezillon>
-References: <1484573225-19095-1-git-send-email-clg@kaod.org>
- <1484573225-19095-2-git-send-email-clg@kaod.org>
- <20170124151353.5bbffae0@bbrezillon>
+Received: from mail-lf0-f66.google.com ([209.85.215.66])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cW2Tm-0002gJ-Le
+ for linux-mtd@lists.infradead.org; Tue, 24 Jan 2017 14:53:52 +0000
+Received: by mail-lf0-f66.google.com with SMTP id q89so17711959lfi.1
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Jan 2017 06:53:29 -0800 (PST)
+Subject: Re: fs/jffs2/readinode.c:189: faulty logic ?
+To: David Binderman <dcb314@hotmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <VI1PR08MB1022F25C7F26E465355F07149C750@VI1PR08MB1022.eurprd08.prod.outlook.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <8d72adf5-097f-0c72-edfc-d23d4199e9d4@gmail.com>
+Date: Tue, 24 Jan 2017 15:52:25 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <VI1PR08MB1022F25C7F26E465355F07149C750@VI1PR08MB1022.eurprd08.prod.outlook.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,49 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 24 Jan 2017 15:13:53 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> >  	if (mtd->dev.parent) {
-> >  		if (!mtd->owner && mtd->dev.parent->driver)
-> >  			mtd->owner = mtd->dev.parent->driver->owner;  
+On 01/24/2017 09:15 AM, David Binderman wrote:
+> Hello there,
 > 
-> --->8---  
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 13f8052b9ff9..a12b68f941e3 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -385,6 +385,8 @@ static inline void mtd_set_of_node(struct mtd_info *mtd,
->                                    struct device_node *np)
->  {
->         mtd->dev.of_node = np;
-> +
-> +       of_property_read_string(np, "label", mtd->name);
->  }
->  
->  static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
+> fs/jffs2/readinode.c:189]: (style) Condition 'tn.fn.ofs>=offset' is always true
+> 
+> Source code is
+> 
+>         if (tn->fn->ofs < offset)
+>             next = tn->rb.rb_right;
+>         else if (tn->fn->ofs >= offset)
+>             next = tn->rb.rb_left;
+>         else
+>             break;
+> 
+> Maybe better code
+> 
+>         if (tn->fn->ofs < offset)
+>             next = tn->rb.rb_right;
+>         else if (tn->fn->ofs > offset)
+>             next = tn->rb.rb_left;
+>         else
+>             break;
 
-Sorry, I forgot to compile test this change. Here is a valid version:
+This changes the logic of the code for equality case, please elaborate
+why this is OK.
 
---->8---
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 13f8052b9ff9..581057f8d9a5 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -24,6 +24,7 @@
- #include <linux/uio.h>
- #include <linux/notifier.h>
- #include <linux/device.h>
-+#include <linux/of.h>
- 
- #include <mtd/mtd-abi.h>
- 
-@@ -385,6 +386,8 @@ static inline void mtd_set_of_node(struct mtd_info *mtd,
-                                   struct device_node *np)
- {
-        mtd->dev.of_node = np;
-+
-+       of_property_read_string(np, "label", &mtd->name);
- }
- 
- static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
+> Regards
+> 
+> David Binderman
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
