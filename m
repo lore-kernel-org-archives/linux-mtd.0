@@ -1,21 +1,18 @@
-Received: from mail-ot0-f196.google.com ([74.125.82.196])
+Received: from bay004-omc4s24.hotmail.com ([65.54.190.226])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cVwDX-0004yu-FS
- for linux-mtd@lists.infradead.org; Tue, 24 Jan 2017 08:12:42 +0000
-Received: by mail-ot0-f196.google.com with SMTP id f9so18648005otd.0
- for <linux-mtd@lists.infradead.org>; Tue, 24 Jan 2017 00:12:18 -0800 (PST)
+ id 1cVwGq-00080L-TR
+ for linux-mtd@lists.infradead.org; Tue, 24 Jan 2017 08:16:06 +0000
+From: David Binderman <dcb314@hotmail.com>
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: fs/jffs2/readinode.c:189: faulty logic ?
+Date: Tue, 24 Jan 2017 08:15:41 +0000
+Message-ID: <VI1PR08MB1022F25C7F26E465355F07149C750@VI1PR08MB1022.eurprd08.prod.outlook.com>
+Content-Language: en-GB
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20170124085810.29afbfaf@bbrezillon>
-References: <8aa988fcc46c480d863cf4ee2ef40b2c@SGPMBX1023.APAC.bosch.com>
- <20170124085810.29afbfaf@bbrezillon>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 24 Jan 2017 09:11:17 +0100
-Message-ID: <CAFLxGvw1UfFYQU7G3J_E=as5Y=rxDGJwFOTVz4=grTOQy-nmzQ@mail.gmail.com>
-Subject: Re: Bad block Management Patch
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: "Anurag Raghavan (RBEI/ETW11)" <Raghavan.Anurag@in.bosch.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Raghavan Anurag,
+Hello there,
 
-On Tue, Jan 24, 2017 at 8:58 AM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Tue, 24 Jan 2017 04:56:47 +0000
-> "Anurag Raghavan (RBEI/ETW11)" <Raghavan.Anurag@in.bosch.com> wrote:
->
->> Hi Boris,
->>
->>
->> I am using kernel version-3.0.35
->> I am facing uncorrectable ECC error in ubifs. I am suspecting, it is because of bad blocks are not properly handled in my driver.
->> Is there any patches available to handle the bad block in the specified version...
+fs/jffs2/readinode.c:189]: (style) Condition 'tn.fn.ofs>=3Doffset' is alway=
+s true
 
-This is not how community support works.
-He happily help with recent kernels but debugging problems on
-outdated kernels with vendor patches applied is out of scope.
+Source code is
 
-What you expect from us is hard and takes a lot of time, we cannot
-do that for free in our spare time.
+        if (tn->fn->ofs < offset)
+            next =3D tn->rb.rb_right;
+        else if (tn->fn->ofs >=3D offset)
+            next =3D tn->rb.rb_left;
+        else
+            break;
 
--- 
-Thanks,
-//richard
+Maybe better code
+
+        if (tn->fn->ofs < offset)
+            next =3D tn->rb.rb_right;
+        else if (tn->fn->ofs > offset)
+            next =3D tn->rb.rb_left;
+        else
+            break;
+
+Regards
+
+David Binderman=
