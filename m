@@ -1,28 +1,40 @@
-Received: from exsmtp03.microchip.com ([198.175.253.49]
- helo=email.microchip.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cVy5J-0008MO-8O
- for linux-mtd@lists.infradead.org; Tue, 24 Jan 2017 10:12:19 +0000
-Subject: Re: [Lager(H2)-V4.10-rc2]: QSPI-FLASH: Warning message happened when
- writing a data file to SPI-FLASH
-To: Geert Uytterhoeven <geert@linux-m68k.org>, DongCV <cv-dong@jinso.co.jp>
-References: <b31104a5-afa2-06ab-e922-c4d9da5559ea@jinso.co.jp>
- <CAMuHMdWJ4JaKwPyaxKmqfVdLpAHT5bt2jrv5Qew8Fvuk4thg7w@mail.gmail.com>
-CC: Michal Suchanek <hramrach@gmail.com>, Magnus Damm <magnus.damm@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Cao Minh Hiep
- <cm-hiep@jinso.co.jp>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Ryusuke Sakato <ryusuke.sakato.bx@renesas.com>, Linux-Renesas
- <linux-renesas-soc@vger.kernel.org>, MTD Maling List
- <linux-mtd@lists.infradead.org>, Simon Horman <horms+renesas@verge.net.au>,
- =?UTF-8?B?56iy5ZCJ?= <h-inayoshi@jinso.co.jp>, duclm <lm-duc@jinso.co.jp>,
- =?UTF-8?B?RHVuZ++8muS6uuOCvQ==?= <nv-dung@jinso.co.jp>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <5091a43e-6671-66ad-1e02-d1af32d4921d@atmel.com>
-Date: Tue, 24 Jan 2017 11:11:47 +0100
+Date: Tue, 24 Jan 2017 11:31:18 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Guochun Mao <guochun.mao@mediatek.com>
+Cc: Rob Herring <robh@kernel.org>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Mark Rutland
+ <mark.rutland@arm.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Russell King
+ <linux@armlinux.org.uk>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, linux-mediatek@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v1 2/2] arm: dts: mt2701: add nor flash node
+Message-ID: <20170124113118.304a860c@bbrezillon>
+In-Reply-To: <1485052600.19995.10.camel@mhfsdcap03>
+References: <d7b866ad-5b2f-62d3-3aa3-6fa42803d625@gmail.com>
+ <b850b751-1d8d-0053-cf1f-d5314542e5c3@gmail.com>
+ <20170113172825.75d545a3@bbrezillon>
+ <86c997be-f500-eaa1-3ba5-d21cff6223b7@gmail.com>
+ <20170113175628.1793f433@bbrezillon>
+ <0fafcd8d-cf99-de6b-728f-5e3637810b68@gmail.com>
+ <20170114092958.022f2fc8@bbrezillon>
+ <e7fa1542-f0e2-0e45-23b3-25d6491ae40d@gmail.com>
+ <20170116094032.6f471f11@bbrezillon>
+ <20170117143650.5db87148@free-electrons.com>
+ <20170118222010.ivc6jxpnrumemvdf@rob-hp-laptop>
+ <20170119103829.524ce715@free-electrons.com>
+ <CAL_Jsq+EyHtC7THLCJcwgtVtVESMOdmi3T3bBxgOqJt6BCtCHQ@mail.gmail.com>
+ <20170119091428.598eb987@bbrezillon>
+ <CAL_Jsq+S-FYy4SmjJ3fWzBugw2zCj5TQkkfUA8QVL7SLJW3E1g@mail.gmail.com>
+ <1485052600.19995.10.camel@mhfsdcap03>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWJ4JaKwPyaxKmqfVdLpAHT5bt2jrv5Qew8Fvuk4thg7w@mail.gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,84 +44,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Sun, 22 Jan 2017 10:36:40 +0800
+Guochun Mao <guochun.mao@mediatek.com> wrote:
 
-Le 24/01/2017 à 08:43, Geert Uytterhoeven a écrit :
-> CC linux-mtd
+> Hi,
+> On Thu, 2017-01-19 at 08:18 -0600, Rob Herring wrote:
+> > On Thu, Jan 19, 2017 at 2:14 AM, Boris Brezillon  
+> > > One last question and I'm done: is something like that acceptable?
+> > >
+> > >         compatible = "<vendor>,<old-soc>","<vendor>,<new-soc>";
+> > >
+> > > This can happen when someone adds support for an unsupported feature
+> > > on a brand new SoC, and then someone else use the same driver for an
+> > > older SoC embedding the same IP but still wants to add a new compatible
+> > > just in case these 2 IPs appear to be slightly different.  
+> > 
+> > Yes, it's old and new compatible strings in this case and it's newest
+> > compatible string first.
+> >   
+> > > Here the order of compat strings is no longer following a clear rule
+> > > like 'most-specific compatible first' or 'newest IP/SoC version first',
+> > > it's completely dependent on the order these IPs were supported in the
+> > > OS (Linux). I'm perfectly fine with that BTW, just want to make sure
+> > > this is authorized.  
+> > 
+> > I guess we should say "newest compatible for IP first" instead. There
+> > are some exceptions where we add fallbacks later on, but that falls
+> > under the most-specific part.
+> > 
+> > It's order that the bindings are defined, not Linux support really,
+> > but in practice those are the same.
+> > 
+> > Rob  
 > 
-> On Tue, Jan 24, 2017 at 7:34 AM, DongCV <cv-dong@jinso.co.jp> wrote:
->> Dear Michal,
->> Cc: Geert,
->>
->> I've tested the linux v4.10-rc2 for Gen2 Lager and found an issues when
->> writing data to SPI-FLASH with jffs2 format
->>
->> "root@linaro-naro:~# cp test.dat /mnt/media
->> [  223.874078] ------------[ cut here ]------------
->> [  223.888017] WARNING: CPU: 2 PID: 2008 at
->> drivers/mtd/spi-nor/spi-nor.c:1182 spi_nor_write+0x84/0x160
->> [  223.915507] Writing at offset 12 into a NOR page. Writing partial pages
->> may decrease reliability and increase wear of NOR flash.
->> [  223.915543] CPU: 2 PID: 2008 Comm: cp Not tainted 4.10.0-rc2-dirty #166
->> [  223.970037] Hardware name: Generic R8A7790 (Flattened Device Tree)
->> [  223.988563] Backtrace:
->> [  223.995934] [<c010a8a0>] (dump_backtrace) from [<c010aad8>]
->> (show_stack+0x18/0x1c)
->> [  224.018639]  r6:c04786f0 r5:00000000 r4:600f0013 r3:00404000
->> [  224.035626] [<c010aac0>] (show_stack) from [<c033b154>]
->> (dump_stack+0x80/0xa0)
->> [  224.057294] [<c033b0d4>] (dump_stack) from [<c011e49c>]
->> (__warn+0xd4/0x104)
->> [  224.078169]  r5:00000000 r4:ef203ba8
->> [  224.088894] [<c011e3c8>] (__warn) from [<c011e50c>]
->> (warn_slowpath_fmt+0x40/0x48)
->> [  224.111337]  r9:c0a2a6cb r8:ef203c8c r7:0000000c r6:00000000 r5:00000000
->> r4:eebfa418
->> [  224.134564] [<c011e4d0>] (warn_slowpath_fmt) from [<c04786f0>]
->> (spi_nor_write+0x84/0x160)
->> ..."
->>
->> Please have a look at the attached testlog file for detail.
-> 
-> I didn't keep the attachment, the test just does
-> 
-> # flash_erase -j /dev/mtd2 0 0
-> # mount -t jffs2 /dev/mtdblock2 /mnt/media
-> # dd if=/dev/mtdblock2 of=test.dat bs=512 count=1
-> # cp test.dat /mnt/media
-> 
->> And I found the patch which I think it is the cause of this issues.
->> The commit name is 'e5d05cb mtd: spi-nor: simplify write loop'
->> If I reverted this patch and retested it on H2 board, the issue will be
->> gone!
->
+> Thanks for all your effort for code reviewing.
+> Our mt2701-nor's hardware is designed base on mt8713-nor,
+> even so, there would be some slight difference.
+> If I don't misunderstand your viewpoint in this discussion,
+> there's no need to drop mt2701-nor compatible.
 
-This is a known issue fixed by the patch "mtd: spi-nor: remove WARN_ONCE()
-message in spi_nor_write()", which is planned to be mainlined in 4.11.
+No, just update the documentation as suggested by Rob.
 
-This patch only removes the WARN_ONCE() introduced by commit e5d05cb ("mtd:
-spi-nor: simplify write loop"). All other modifications of commit e5d05cb
-are fine and can be kept. It's only the WARN_ONCE() message that is
-annoying and not so relevant.
+> And if not, is there any other suggestion?
 
-So don't worry about this (false) warning and sorry for the noise!
+Nope, and my apologies for being so insistent on something I obviously
+misunderstood.
 
-Best regards,
+Regards,
 
-Cyrille
-
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Boris
