@@ -1,18 +1,24 @@
-Received: from ns.omicron.at ([212.183.10.25])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cW1XS-0007yA-IJ
- for linux-mtd@lists.infradead.org; Tue, 24 Jan 2017 13:53:36 +0000
-From: <mark.marshall@omicronenergy.com>
-To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: <markmarshall14@gmail.com>, <cyrille.pitchen@atmel.com>,
- <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <boris.brezillon@free-electrons.com>, <richard@nod.at>, Mark Marshall
- <mark.marshall@omicronenergy.com>
-Subject: [PATCH] m25p80: Use a 512 byte page size for Spansion flash s25fl512s
-Date: Tue, 24 Jan 2017 14:52:09 +0100
-Message-ID: <1485265929-24020-1-git-send-email-mark.marshall@omicronenergy.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cW1ra-0008U3-NY
+ for linux-mtd@lists.infradead.org; Tue, 24 Jan 2017 14:14:24 +0000
+Date: Tue, 24 Jan 2017 15:13:53 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org, Rob
+ Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 1/3] mtd: name the mtd device with an optional label
+ property
+Message-ID: <20170124151353.5bbffae0@bbrezillon>
+In-Reply-To: <1484573225-19095-2-git-send-email-clg@kaod.org>
+References: <1484573225-19095-1-git-send-email-clg@kaod.org>
+ <1484573225-19095-2-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Mark Marshall <mark.marshall@omicronenergy.com>
+Hi C=C3=A9dric,
 
-The s25fl512s flash from Spansion has a 512 byte write page size,
-which means that we can write 512 bytes at a time (instead of 256).
+On Mon, 16 Jan 2017 14:27:03 +0100
+C=C3=A9dric Le Goater <clg@kaod.org> wrote:
 
-This single change makes writing to the flash about 2x faster.
+> This can be used to easily identify a specific chip on a system with
+> multiple chips.
+>=20
+> Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: C=C3=A9dric Le Goater <clg@kaod.org>
+> ---
+>  drivers/mtd/mtdcore.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 052772f7caef..bf61557b599d 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -654,6 +654,13 @@ static int mtd_add_device_partitions(struct mtd_info=
+ *mtd,
+>   */
+>  static void mtd_set_dev_defaults(struct mtd_info *mtd)
+>  {
+> +	/*
+> +	 * If DT support is enabled and we have a valid of_node pointer, try to
+> +	 * extract the MTD name from the label property.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_OF) && mtd->dev.of_node)
+> +		of_property_read_string(mtd->dev.of_node, "label", &mtd->name);
+> +
 
-Signed-off-by: Mark Marshall <mark.marshall@omicronenergy.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+I realize this kind of thing would be better placed in mtd_set_of_node()
+(see the patch below). Modifying the mtd->name pointer in the back of
+MTD drivers is not such a good idea (suppose the driver allocated the
+memory with a regular kmalloc() and tries to free mtd->name in the remove
+path).
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index da7cd69..c9ac0bf 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -775,6 +775,21 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 		.page_size = 256,					\
- 		.flags = (_flags),
- 
-+/* Used to set a custom (non 256) page_size */
-+#define INFOP(_jedec_id, _ext_id, _sector_size, _n_sectors, _pg_sz, _flags) \
-+		.id = {							\
-+			((_jedec_id) >> 16) & 0xff,			\
-+			((_jedec_id) >> 8) & 0xff,			\
-+			(_jedec_id) & 0xff,				\
-+			((_ext_id) >> 8) & 0xff,			\
-+			(_ext_id) & 0xff,				\
-+			},						\
-+		.id_len = (!(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0))), \
-+		.sector_size = (_sector_size),				\
-+		.n_sectors = (_n_sectors),				\
-+		.page_size = (_pg_sz),					\
-+		.flags = (_flags),					\
+If we move that to mtd_set_of_node(), drivers that wants to support this
+label property just have to check if mtd->name is NULL (after calling
+mtd_set_of_node() or nand_set_flash_node()) before assigning a default
+name.
+For unmodified drivers we keep the existing behavior: they'll just
+unconditionally override mtd->name with their own value (which might or
+might not be dynamically allocated).
+
+>  	if (mtd->dev.parent) {
+>  		if (!mtd->owner && mtd->dev.parent->driver)
+>  			mtd->owner =3D mtd->dev.parent->driver->owner;
+
+--->8---
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 13f8052b9ff9..a12b68f941e3 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -385,6 +385,8 @@ static inline void mtd_set_of_node(struct mtd_info *mtd,
+                                   struct device_node *np)
+ {
+        mtd->dev.of_node =3D np;
 +
- #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_width, _flags)	\
- 		.sector_size = (_sector_size),				\
- 		.n_sectors = (_n_sectors),				\
-@@ -905,7 +920,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
- 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "s25fl512s",  INFOP(0x010220, 0x4d00, 256 * 1024, 256, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
- 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
- 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
--- 
-2.7.4
++       of_property_read_string(np, "label", mtd->name);
+ }
+=20
+ static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
