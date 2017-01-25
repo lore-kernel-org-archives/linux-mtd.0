@@ -1,10 +1,10 @@
-Received: from 19.mo5.mail-out.ovh.net ([46.105.35.78])
+Received: from 6.mo5.mail-out.ovh.net ([178.32.119.138])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cWS9Y-00014A-Ud
- for linux-mtd@lists.infradead.org; Wed, 25 Jan 2017 18:18:42 +0000
+ id 1cWS9q-000168-QN
+ for linux-mtd@lists.infradead.org; Wed, 25 Jan 2017 18:19:00 +0000
 Received: from player695.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id A3279930D6
- for <linux-mtd@lists.infradead.org>; Wed, 25 Jan 2017 19:18:18 +0100 (CET)
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id 50BEE93DD6
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Jan 2017 19:18:36 +0100 (CET)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -14,10 +14,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH v2 1/2] mtd: name the mtd device with an optional label
- property
-Date: Wed, 25 Jan 2017 19:17:34 +0100
-Message-Id: <1485368255-12038-2-git-send-email-clg@kaod.org>
+Subject: [PATCH v2 2/2] dt-bindings: mtd: add a common label property to all
+ mtd devices
+Date: Wed, 25 Jan 2017 19:17:35 +0100
+Message-Id: <1485368255-12038-3-git-send-email-clg@kaod.org>
 In-Reply-To: <1485368255-12038-1-git-send-email-clg@kaod.org>
 References: <1485368255-12038-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
@@ -35,44 +35,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 This can be used to easily identify a specific chip on a system with
 multiple chips.
 
-Drivers wanting to support this new label property will benefit from
-it without a change. They might want to check in the future that
-mtd->name is NULL before assigning a default name to the mtd device.
-Other drivers will keep the current behavior, which is to override
-mtd->name with their own value.
-
-Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Cédric Le Goater <clg@kaod.org>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
+ Documentation/devicetree/bindings/mtd/common.txt | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/common.txt
 
- Changes since v1:
-
- - moved the use of the "label" property from mtd_set_dev_defaults()
-   to mtd_set_of_node() to let drivers keep control on how mtd->name
-   is set and allocated.
-
- include/linux/mtd/mtd.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 13f8052b9ff9..f4fe15517295 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -24,6 +24,7 @@
- #include <linux/uio.h>
- #include <linux/notifier.h>
- #include <linux/device.h>
-+#include <linux/of.h>
- 
- #include <mtd/mtd-abi.h>
- 
-@@ -385,6 +386,7 @@ static inline void mtd_set_of_node(struct mtd_info *mtd,
- 				   struct device_node *np)
- {
- 	mtd->dev.of_node = np;
-+	of_property_read_string(np, "label", &mtd->name);
- }
- 
- static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
+diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documentation/devicetree/bindings/mtd/common.txt
+new file mode 100644
+index 000000000000..fc068b923d7a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/common.txt
+@@ -0,0 +1,15 @@
++* Common properties of all MTD devices
++
++Optional properties:
++- label: user-defined MTD device name. Can be used to assign user
++  friendly names to MTD devices (instead of the flash model or flash
++  controller based name) in order to ease flash device identification
++  and/or describe what they are used for.
++
++Example:
++
++	flash@0 {
++		label = "System-firmware";
++
++		/* flash type specific properties */
++	};
 -- 
 2.7.4
