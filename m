@@ -1,24 +1,30 @@
-Subject: Re: [PATCH v2 1/2] Documentation: mtk-quadspi: update DT bindings
-To: Guochun Mao <guochun.mao@mediatek.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <1485315515-29942-1-git-send-email-guochun.mao@mediatek.com>
- <1485315515-29942-2-git-send-email-guochun.mao@mediatek.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-From: John Crispin <john@phrozen.org>
-Message-ID: <d2da6971-3b31-38c1-1dad-dba7f6ab759c@phrozen.org>
-Date: Wed, 25 Jan 2017 06:39:53 +0100
+Received: from mail-ua0-f193.google.com ([209.85.217.193])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cWH7G-0004Uw-LL
+ for linux-mtd@lists.infradead.org; Wed, 25 Jan 2017 06:31:36 +0000
+Received: by mail-ua0-f193.google.com with SMTP id i68so18351260uad.1
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Jan 2017 22:31:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1485315515-29942-2-git-send-email-guochun.mao@mediatek.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <62931580-f21f-e6a1-8e8b-d3c92195a2e0@denx.de>
+References: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
+ <3e1f1c8e-4a87-e186-20cb-2ba784bd58d5@denx.de>
+ <CAOMqctT-JMczFR4yZ0Ncy8f41aH-inOjaw8HoJv2MmSWM-AhSA@mail.gmail.com>
+ <06d8264e-5ddb-aa76-a83e-4c2c3af42f08@denx.de>
+ <CAC=U0a1ESxC__PBOjW5L6AE3W5ebs8tMf1T1P1cuDzgFzWdxbA@mail.gmail.com>
+ <62931580-f21f-e6a1-8e8b-d3c92195a2e0@denx.de>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Wed, 25 Jan 2017 07:29:31 +0100
+Message-ID: <CAOMqctS_izeoNJyN_7N=dmGMmvA8bpiqvmhQT2OmPR0H7btcXg@mail.gmail.com>
+Subject: Re: [PATCH,
+ 1/2] mtd: m25p80: Let m25p80_read() fallback to spi transfer
+To: Marek Vasut <marex@denx.de>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Mark Brown <broonie@kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +34,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 25 January 2017 at 03:08, Marek Vasut <marex@denx.de> wrote:
+> On 01/24/2017 12:41 AM, Kamal Dasu wrote:
+>> "ret can never be > 0 , it is only 0 or negative "
+>>
+>> I can fix this.
+>>
+>>>>> This looks really fragile and special-casing EINVAL here doesn't scale.
+>>>>> But still, if your controller driver is buggy, fix the driver, do not
+>>>>> pollute core code with workarounds. If you do support this sort of
+>>>>> accelerated read and it fails, it means something is seriously wrong.
+>>>>> If you need to invoke regular SPI reads to complete under some obscure
+>>>>> circumstances, do it from the driver, not here.
+>>>>
+>>>> I guess the other half of m25p80_read can be factored out and used as
+>>>> fallback from either m25p80_read or the controller driver.
+>>>
+>>> I think I see what you mean, but care to show an RFC patch ?
+>>>
+>>> --
+>>
+>> Its not the controller driver, but he hardware limitation with older
+>> controller version. I have tried to see how I can do this better,
+>> however when spi_flash_read() is called  cannot handle it within my
+>> driver without returning from the function. I went over this with Mark
+>> previously and this current solution seemed reasonable. Any other
+>> solution outside of the generic driver would replicate a lot of code
+>> unnecessarily.
+>
+> Hmmm, I kinda see the problem. I was thinking splitting the m25p80_read
+> function could be the solution and invoking the second part from the
+> driver if applicable, but this cannot work because the driver does not
+> know when it's interacting with SPI NOR and when with something else .
+>
+> Can you tell me about the conditions under which the bcm controller
+> fails and should fall back to standard spi read ?
 
+spi_flash_read is designed to perform what m25p80_read does in a
+controller-specific way. So how can you get to a point when you are
+in spi_flash_read, it fails, and you do not know you if you can call
+the bottom half of m25p80_read to finish the job?
 
-On 25/01/2017 04:38, Guochun Mao wrote:
-> Add "mediatek,mt2701-nor" for nor flash node's compatible.
-> 
-> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> ---
->  .../devicetree/bindings/mtd/mtk-quadspi.txt        |    8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> index fb314f0..5ded66a 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> @@ -1,7 +1,13 @@
->  * Serial NOR flash controller for MTK MT81xx (and similar)
->  
->  Required properties:
-> -- compatible: 	  should be "mediatek,mt8173-nor";
-> +- compatible: 	  The possible values are:
-> +		  "mediatek,mt2701-nor"
-> +		  "mediatek,mt7623-nor"
+Thanks
 
-Thanks !
-
-Acked-by: John Crispin <john@phrozen.org>
-
-
-> +		  "mediatek,mt8173-nor"
-> +		  For mt8173, compatible should be "mediatek,mt8173-nor".
-> +		  For every other SoC, should contain both the SoC-specific compatible string
-> +		  and "mediatek,mt8173-nor".
->  - reg: 		  physical base address and length of the controller's register
->  - clocks: 	  the phandle of the clocks needed by the nor controller
->  - clock-names: 	  the names of the clocks
-> 
+Michal
