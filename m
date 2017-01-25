@@ -1,23 +1,32 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mail-yb0-f169.google.com ([209.85.213.169])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cWQua-0005q8-BB
- for linux-mtd@lists.infradead.org; Wed, 25 Jan 2017 16:59:09 +0000
-From: "Langer, Thomas" <thomas.langer@intel.com>
-To: Seb <sebtx452@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Subject: RE: [PATCH] mtd: maps: lantiq-flash: Check if the EBU endianness
- swap is enabled
-Date: Wed, 25 Jan 2017 16:58:44 +0000
-Message-ID: <0DAF21CFE1B20740AE23D6AF6E54843F1E6F607C@IRSMSX101.ger.corp.intel.com>
-References: <1484904834-14980-1-git-send-email-sebtx452@gmail.com>
- <3304d64f-38aa-1a3c-0b5d-edb493abd61a@hauke-m.de>
- <CA+hF=GdKLEN2ue=Q7KpBp+W+bTnj5O_OAoPjuDOScga2efnjPA@mail.gmail.com>
-In-Reply-To: <CA+hF=GdKLEN2ue=Q7KpBp+W+bTnj5O_OAoPjuDOScga2efnjPA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1cWR7j-0004Sw-1L
+ for linux-mtd@lists.infradead.org; Wed, 25 Jan 2017 17:12:45 +0000
+Received: by mail-yb0-f169.google.com with SMTP id 123so16461307ybe.3
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Jan 2017 09:12:21 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <d38d4ee1-d222-9ebe-6432-f4b6167f80e2@denx.de>
+References: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
+ <3e1f1c8e-4a87-e186-20cb-2ba784bd58d5@denx.de>
+ <CAOMqctT-JMczFR4yZ0Ncy8f41aH-inOjaw8HoJv2MmSWM-AhSA@mail.gmail.com>
+ <06d8264e-5ddb-aa76-a83e-4c2c3af42f08@denx.de>
+ <CAC=U0a1ESxC__PBOjW5L6AE3W5ebs8tMf1T1P1cuDzgFzWdxbA@mail.gmail.com>
+ <62931580-f21f-e6a1-8e8b-d3c92195a2e0@denx.de>
+ <CAC=U0a3mhruPtHA-1y08noS_Vq1y2KrBYiEM-GbpwLn_Eou7=A@mail.gmail.com>
+ <d38d4ee1-d222-9ebe-6432-f4b6167f80e2@denx.de>
+From: Kamal Dasu <kamal.dasu@broadcom.com>
+Date: Wed, 25 Jan 2017 12:10:40 -0500
+Message-ID: <CAKekbevaUdn4BCVh+XdP9tRZiUgm6OdfBjqn4sS_Umr4qV-u1g@mail.gmail.com>
+Subject: Re: [PATCH,
+ 1/2] mtd: m25p80: Let m25p80_read() fallback to spi transfer
+To: Marek Vasut <marex@denx.de>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>, Michal Suchanek <hramrach@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Mark Brown <broonie@kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +36,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBIZWxsbywNCg0KSGkgU2ViYXN0aWFuDQoNCj4gDQo+IA0KPiA+IEkgd291bGQgcHJlZmVyIHRv
-IHVzZSBhIGRldmljZSB0cmVlIG9wdGlvbiB0byBhY3RpdmF0ZSB0aGlzIGNoZWNrIGFuZA0KPiA+
-IG9ubHkgYWNjZXNzIExUUV9FQlVfQlVTQ09OMCB3aGVuIHRoaXMgcHJvcGVydHkgaXMgc2V0Lg0K
-PiANCj4gSWYgSSB1bmRlcnN0YW5kIGNvcnJlY3RseSwgSSBoYXZlIHRvIG1ha2Ugc29tZXRoaW5n
-IGxpa2UgdGhpcyA6DQo+IA0KPiAtLS0NCj4gDQo+IGJvb2wgbXRkX2FkZHJfc3dhcD10cnVlOw0K
-PiANCj4gICAgICAgICBpZiAoIW9mX21hY2hpbmVfaXNfY29tcGF0aWJsZSgibGFudGlxLGZhbGNv
-biIpICYmDQo+ICAgICAgICAgICAgICAgICBvZl9maW5kX3Byb3BlcnR5KHBkZXYtPmRldi5vZl9u
-b2RlLA0KPiAibGFudGlxLGVidV9zd2FwX2NoZWNrIiwgTlVMTCkpDQo+ICAgICAgICAgICAgICAg
-ICBpZiAobHRxX2VidV9yMzIoTFRRX0VCVV9CVVNDT04wKSAmIEVCVV9GTEFTSF9FTkRJQU5fU1dB
-UCkNCj4gICAgICAgICAgICAgICAgICAgICAgICAgbXRkX2FkZHJfc3dhcCA9IGZhbHNlOw0KPiAN
-Cg0KTm8sIHBsZWFzZSBhdm9pZCAib2ZfbWFjaGluZV9pc19jb21wYXRpYmxlIiBpbiBkcml2ZXJz
-Lg0KDQo+IC0tLQ0KPiANCj4gQW5kIHRoZW4gc2V0IHRoaXMgcHJvcGVydHkgZGlyZWN0bHkgb24g
-bXkgZGV2aWNlLXNwZWNpZmljIGR0cyBmaWxlID8NCg0KV2Ugc2hvdWxkIGludHJvZHVjZSBzcGVj
-aWZpYyBjb21wYXRpYmxlIHN0cmluZ3MgZm9yIHRoaXMgZHJpdmVyLCB3aGljaCB0cmlnZ2VyIHRo
-aXMsDQplLmcuICJsYW50aXEsbm9yLXZyOSIgb3IgImxhbnRpcSxub3ItYXIxMCIgKG9yIGJldHRl
-ciB1c2luZyBmYW1pbHkgbmFtZXMgInhyeDIwMCIgYW5kICJ4cngzMDAiKQ0KDQpSZWdhcmRzLA0K
-VGhvbWFzDQo=
+On Wed, Jan 25, 2017 at 11:39 AM, Marek Vasut <marex@denx.de> wrote:
+> On 01/25/2017 05:28 PM, Kamal Dasu wrote:
+>> If the transfers are short and dest buffer or the flash address are
+>> unaligned.
+>
+> That sounds like a DMA problem where you're trying to fall back to PIO ?
+>
+>> Also in case of older version of the controller there are
+>> some address mapping limitations when a transfer crosses 4MB window
+>> (addr + len).  So in such cases  need to fallback to normal MSPI
+>> reads.
+>
+> But the driver can also detect this mode of failure before doing the
+> transfer and call it's internal functions to perform the transfer as
+> needed, right?
+>
+>> One other option is that controller divers implementation of
+>> bcm_qspi_spi_flash_read() can return msg.retlen = 0 and the
+>> m25p80_read() can fallback to normal mspi read.
+>
+> I'd much rather see the driver handling such detail internally instead
+> of patching the core code. Moreover, if you patch the core code, the SF
+> read will go - in case of a failure- all the way through the SPI
+> framework only to land in the same driver, which doesn't make much sense.
+
+Yes this is how the code was  organized before when I was making
+initial commits. However I had to change it so that spi_flash_read()
+can be exploited based on the review comments.  I was  handling code
+internally using spi generic msg handling code for mspi transfer
+fallback, but I was told that this code did not belong in the
+controller driver. Hence the current implementation is geared towards
+using spi transfer_one() in case of mspi transfers, without bothering
+with how the messages are formed and pumped by the spi layer. If I
+reorganize I am back to where I was before. Yes the code lands in the
+same driver but it returns back to the m25p80 and uses the  normal
+mspi reads.
+
+> btw please do NOT top-post:
+> http://www.arm.linux.org.uk/mailinglists/etiquette.php#e3
+>
+
+Sorry about that, I will make sure from this point forward I do not top-post.
+
+>> Kamal
+>>
+>>
+>>
+>> On Tue, Jan 24, 2017 at 9:08 PM, Marek Vasut <marex@denx.de> wrote:
+>>> On 01/24/2017 12:41 AM, Kamal Dasu wrote:
+>>>> "ret can never be > 0 , it is only 0 or negative "
+>>>>
+>>>> I can fix this.
+>>>>
+>>>>>>> This looks really fragile and special-casing EINVAL here doesn't scale.
+>>>>>>> But still, if your controller driver is buggy, fix the driver, do not
+>>>>>>> pollute core code with workarounds. If you do support this sort of
+>>>>>>> accelerated read and it fails, it means something is seriously wrong.
+>>>>>>> If you need to invoke regular SPI reads to complete under some obscure
+>>>>>>> circumstances, do it from the driver, not here.
+>>>>>>
+>>>>>> I guess the other half of m25p80_read can be factored out and used as
+>>>>>> fallback from either m25p80_read or the controller driver.
+>>>>>
+>>>>> I think I see what you mean, but care to show an RFC patch ?
+>>>>>
+>>>>> --
+>>>>
+>>>> Its not the controller driver, but he hardware limitation with older
+>>>> controller version. I have tried to see how I can do this better,
+>>>> however when spi_flash_read() is called  cannot handle it within my
+>>>> driver without returning from the function. I went over this with Mark
+>>>> previously and this current solution seemed reasonable. Any other
+>>>> solution outside of the generic driver would replicate a lot of code
+>>>> unnecessarily.
+>>>
+>>> Hmmm, I kinda see the problem. I was thinking splitting the m25p80_read
+>>> function could be the solution and invoking the second part from the
+>>> driver if applicable, but this cannot work because the driver does not
+>>> know when it's interacting with SPI NOR and when with something else .
+>>>
+>>> Can you tell me about the conditions under which the bcm controller
+>>> fails and should fall back to standard spi read ?
+>>>
+>>> --
+>>> Best regards,
+>>> Marek Vasut
+>
+>
+> --
+> Best regards,
+> Marek Vasut
