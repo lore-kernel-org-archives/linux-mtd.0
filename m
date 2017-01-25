@@ -1,27 +1,30 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mail-yb0-f193.google.com ([209.85.213.193])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cWPtP-0001YS-GN
- for linux-mtd@lists.infradead.org; Wed, 25 Jan 2017 15:53:53 +0000
-Date: Wed, 25 Jan 2017 17:51:16 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Immutable branch between MFD and MTD due for the
- v4.11 merge window
-Message-ID: <20170125155116.GW17297@lahna.fi.intel.com>
-References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
- <20170103173750.GA27589@dell>
+ id 1cWQSF-0008It-VU
+ for linux-mtd@lists.infradead.org; Wed, 25 Jan 2017 16:29:53 +0000
+Received: by mail-yb0-f193.google.com with SMTP id j82so9937639ybg.2
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Jan 2017 08:29:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170103173750.GA27589@dell>
+In-Reply-To: <62931580-f21f-e6a1-8e8b-d3c92195a2e0@denx.de>
+References: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
+ <3e1f1c8e-4a87-e186-20cb-2ba784bd58d5@denx.de>
+ <CAOMqctT-JMczFR4yZ0Ncy8f41aH-inOjaw8HoJv2MmSWM-AhSA@mail.gmail.com>
+ <06d8264e-5ddb-aa76-a83e-4c2c3af42f08@denx.de>
+ <CAC=U0a1ESxC__PBOjW5L6AE3W5ebs8tMf1T1P1cuDzgFzWdxbA@mail.gmail.com>
+ <62931580-f21f-e6a1-8e8b-d3c92195a2e0@denx.de>
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+Date: Wed, 25 Jan 2017 11:28:29 -0500
+Message-ID: <CAC=U0a3mhruPtHA-1y08noS_Vq1y2KrBYiEM-GbpwLn_Eou7=A@mail.gmail.com>
+Subject: Re: [PATCH,
+ 1/2] mtd: m25p80: Let m25p80_read() fallback to spi transfer
+To: Marek Vasut <marex@denx.de>
+Cc: Michal Suchanek <hramrach@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Mark Brown <broonie@kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +34,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 03, 2017 at 05:37:50PM +0000, Lee Jones wrote:
-> MTD Maintainers,
-> 
-> Enjoy!
-> 
-> The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
-> 
->   Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-mtd-v4.11
-> 
-> for you to fetch changes up to 87eb832ae9748fab00588b98c2e33e89de065438:
-> 
->   mfd: lpc_ich: Add support for Intel Apollo Lake SoC (2017-01-03 17:34:16 +0000)
-> 
-> ----------------------------------------------------------------
-> Immutable branch between MFD and MTD due for the v4.11 merge window
-> 
-> ----------------------------------------------------------------
-> Mika Westerberg (3):
->       spi-nor: Add support for Intel SPI serial flash controller
->       mfd: lpc_ich: Add support for SPI serial flash host controller
->       mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-> 
->  Documentation/mtd/intel-spi.txt          |  88 ++++
->  drivers/mfd/lpc_ich.c                    | 131 ++++++
->  drivers/mtd/spi-nor/Kconfig              |  20 +
->  drivers/mtd/spi-nor/Makefile             |   2 +
->  drivers/mtd/spi-nor/intel-spi-platform.c |  57 +++
->  drivers/mtd/spi-nor/intel-spi.c          | 777 +++++++++++++++++++++++++++++++
->  drivers/mtd/spi-nor/intel-spi.h          |  24 +
->  include/linux/mfd/lpc_ich.h              |   3 +
->  include/linux/platform_data/intel-spi.h  |  31 ++
->  9 files changed, 1133 insertions(+)
->  create mode 100644 Documentation/mtd/intel-spi.txt
->  create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
->  create mode 100644 drivers/mtd/spi-nor/intel-spi.c
->  create mode 100644 drivers/mtd/spi-nor/intel-spi.h
->  create mode 100644 include/linux/platform_data/intel-spi.h
+If the transfers are short and dest buffer or the flash address are
+unaligned. Also in case of older version of the controller there are
+some address mapping limitations when a transfer crosses 4MB window
+(addr + len).  So in such cases  need to fallback to normal MSPI
+reads.
 
-Hmm, I don't see the driver in linux-next. Is there something preventing
-you from merging the branch to your next branch?
+One other option is that controller divers implementation of
+bcm_qspi_spi_flash_read() can return msg.retlen = 0 and the
+m25p80_read() can fallback to normal mspi read.
+
+Kamal
+
+
+
+On Tue, Jan 24, 2017 at 9:08 PM, Marek Vasut <marex@denx.de> wrote:
+> On 01/24/2017 12:41 AM, Kamal Dasu wrote:
+>> "ret can never be > 0 , it is only 0 or negative "
+>>
+>> I can fix this.
+>>
+>>>>> This looks really fragile and special-casing EINVAL here doesn't scale.
+>>>>> But still, if your controller driver is buggy, fix the driver, do not
+>>>>> pollute core code with workarounds. If you do support this sort of
+>>>>> accelerated read and it fails, it means something is seriously wrong.
+>>>>> If you need to invoke regular SPI reads to complete under some obscure
+>>>>> circumstances, do it from the driver, not here.
+>>>>
+>>>> I guess the other half of m25p80_read can be factored out and used as
+>>>> fallback from either m25p80_read or the controller driver.
+>>>
+>>> I think I see what you mean, but care to show an RFC patch ?
+>>>
+>>> --
+>>
+>> Its not the controller driver, but he hardware limitation with older
+>> controller version. I have tried to see how I can do this better,
+>> however when spi_flash_read() is called  cannot handle it within my
+>> driver without returning from the function. I went over this with Mark
+>> previously and this current solution seemed reasonable. Any other
+>> solution outside of the generic driver would replicate a lot of code
+>> unnecessarily.
+>
+> Hmmm, I kinda see the problem. I was thinking splitting the m25p80_read
+> function could be the solution and invoking the second part from the
+> driver if applicable, but this cannot work because the driver does not
+> know when it's interacting with SPI NOR and when with something else .
+>
+> Can you tell me about the conditions under which the bcm controller
+> fails and should fall back to standard spi read ?
+>
+> --
+> Best regards,
+> Marek Vasut
