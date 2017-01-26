@@ -1,25 +1,31 @@
-Received: from mail-yb0-f194.google.com ([209.85.213.194])
+Received: from mail-wm0-f45.google.com ([74.125.82.45])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cWhpv-0007vq-7k
- for linux-mtd@lists.infradead.org; Thu, 26 Jan 2017 11:03:28 +0000
-Received: by mail-yb0-f194.google.com with SMTP id f67so4410103ybc.3
- for <linux-mtd@lists.infradead.org>; Thu, 26 Jan 2017 03:03:06 -0800 (PST)
+ id 1cWj4T-0000Au-UY
+ for linux-mtd@lists.infradead.org; Thu, 26 Jan 2017 12:22:35 +0000
+Received: by mail-wm0-f45.google.com with SMTP id c206so81118390wme.0
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Jan 2017 04:22:13 -0800 (PST)
+Date: Thu, 26 Jan 2017 12:21:08 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Immutable branch between MFD and MTD due for the
+ v4.11 merge window
+Message-ID: <20170126122108.zyt2atuumm4jiamv@dell>
+References: <20161128120626.130693-1-mika.westerberg@linux.intel.com>
+ <20170103173750.GA27589@dell>
+ <20170125155116.GW17297@lahna.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <0DAF21CFE1B20740AE23D6AF6E54843F1E6F607C@IRSMSX101.ger.corp.intel.com>
-References: <1484904834-14980-1-git-send-email-sebtx452@gmail.com>
- <3304d64f-38aa-1a3c-0b5d-edb493abd61a@hauke-m.de>
- <CA+hF=GdKLEN2ue=Q7KpBp+W+bTnj5O_OAoPjuDOScga2efnjPA@mail.gmail.com>
- <0DAF21CFE1B20740AE23D6AF6E54843F1E6F607C@IRSMSX101.ger.corp.intel.com>
-From: Seb <sebtx452@gmail.com>
-Date: Thu, 26 Jan 2017 12:02:04 +0100
-Message-ID: <CA+hF=GcW2W6T08BZYXoZQcpe=+QuPp0H7kT2ci+6Td-ZZL+ouQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: maps: lantiq-flash: Check if the EBU endianness swap
- is enabled
-To: "Langer, Thomas" <thomas.langer@intel.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170125155116.GW17297@lahna.fi.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +35,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thomas
+On Wed, 25 Jan 2017, Mika Westerberg wrote:
 
+> On Tue, Jan 03, 2017 at 05:37:50PM +0000, Lee Jones wrote:
+> > MTD Maintainers,
+> > 
+> > Enjoy!
+> > 
+> > The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
+> > 
+> >   Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
+> > 
+> > are available in the git repository at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-mtd-v4.11
+> > 
+> > for you to fetch changes up to 87eb832ae9748fab00588b98c2e33e89de065438:
+> > 
+> >   mfd: lpc_ich: Add support for Intel Apollo Lake SoC (2017-01-03 17:34:16 +0000)
+> > 
+> > ----------------------------------------------------------------
+> > Immutable branch between MFD and MTD due for the v4.11 merge window
+> > 
+> > ----------------------------------------------------------------
+> > Mika Westerberg (3):
+> >       spi-nor: Add support for Intel SPI serial flash controller
+> >       mfd: lpc_ich: Add support for SPI serial flash host controller
+> >       mfd: lpc_ich: Add support for Intel Apollo Lake SoC
+> > 
+> >  Documentation/mtd/intel-spi.txt          |  88 ++++
+> >  drivers/mfd/lpc_ich.c                    | 131 ++++++
+> >  drivers/mtd/spi-nor/Kconfig              |  20 +
+> >  drivers/mtd/spi-nor/Makefile             |   2 +
+> >  drivers/mtd/spi-nor/intel-spi-platform.c |  57 +++
+> >  drivers/mtd/spi-nor/intel-spi.c          | 777 +++++++++++++++++++++++++++++++
+> >  drivers/mtd/spi-nor/intel-spi.h          |  24 +
+> >  include/linux/mfd/lpc_ich.h              |   3 +
+> >  include/linux/platform_data/intel-spi.h  |  31 ++
+> >  9 files changed, 1133 insertions(+)
+> >  create mode 100644 Documentation/mtd/intel-spi.txt
+> >  create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
+> >  create mode 100644 drivers/mtd/spi-nor/intel-spi.c
+> >  create mode 100644 drivers/mtd/spi-nor/intel-spi.h
+> >  create mode 100644 include/linux/platform_data/intel-spi.h
+> 
+> Hmm, I don't see the driver in linux-next. Is there something preventing
+> you from merging the branch to your next branch?
 
-> No, please avoid "of_machine_is_compatible" in drivers.
+Should be in -next by tomorrow.
 
-OK
-
-
-> We should introduce specific compatible strings for this driver, which trigger this,
-> e.g. "lantiq,nor-vr9" or "lantiq,nor-ar10" (or better using family names "xrx200" and "xrx300")
-
-You mean we can use the same way as other drivers, for example in the
-physmap_of_versatile.c file :
-
-static const struct of_device_id syscon_match[] = {
-        {
-                .compatible = "arm,integrator-ap-syscon",
-                .data = (void *)INTEGRATOR_AP_FLASHPROT,
-        },
-        {
-                .compatible = "arm,integrator-cp-syscon",
-                .data = (void *)INTEGRATOR_CP_FLASHPROT,
-        },
-
-etc...
-
-
-We can't filter on xrx200 or vr9, but we have to know the VR9 version
-(as the VR9 < 1.2 is not compatible with this patch).
-
-Regards,
-
-Sebastien
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
