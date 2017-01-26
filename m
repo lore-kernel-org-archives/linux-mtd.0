@@ -1,27 +1,25 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-yb0-f194.google.com ([209.85.213.194])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cWfdm-0004Ao-Tn
- for linux-mtd@lists.infradead.org; Thu, 26 Jan 2017 08:42:48 +0000
-Subject: Re: UBIFS errors are randomly seen after reboots
-To: chaitanya vinnakota <chaitanya.sai.v@gmail.com>,
- linux-mtd@lists.infradead.org
-References: <CAMBC=j5fyW1BMAeDGzJp480fikZVVj2npk=WO5jmRTa+_ixEkw@mail.gmail.com>
- <CAFLxGvzROo7Y0CNE3Qyi4jj-J526XYebgO_G8TLS9+oCJ+fBPQ@mail.gmail.com>
- <CAMBC=j7Yjk5RkT5xg1N=q3aVf45BbJgtYaZ8vsy3oBjZ+OOOaA@mail.gmail.com>
- <01b355e9-6095-a2af-5c77-3e15751ff8da@nod.at>
- <CAMBC=j7fn7tqouMD3ZQptZF_xRO5Xsx7HOXaGQahCQm2ug3RUw@mail.gmail.com>
- <0f04ed5e-e7fb-7bbf-678d-840fe0be4b16@nod.at>
- <CAMBC=j6t2h_yB3wQbNUexrJto+O3ruTXo992JWFLH293OyH0Bg@mail.gmail.com>
- <10f4c447-f1e5-89dc-17b6-b5d450a473fe@nod.at>
- <CAMBC=j5nyA=7vCb_AeM_oYAS+p_+mrcG=nwXVDO6WqD=Sg_nMg@mail.gmail.com>
- <CAMBC=j74mtCsatQnhOLfouA6d58VCd69YY9W8c=Soa8CiCtTFA@mail.gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <d11de80d-7136-4113-d43f-dcb024f8c4ee@nod.at>
-Date: Thu, 26 Jan 2017 09:42:23 +0100
+ id 1cWhpv-0007vq-7k
+ for linux-mtd@lists.infradead.org; Thu, 26 Jan 2017 11:03:28 +0000
+Received: by mail-yb0-f194.google.com with SMTP id f67so4410103ybc.3
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Jan 2017 03:03:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMBC=j74mtCsatQnhOLfouA6d58VCd69YY9W8c=Soa8CiCtTFA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <0DAF21CFE1B20740AE23D6AF6E54843F1E6F607C@IRSMSX101.ger.corp.intel.com>
+References: <1484904834-14980-1-git-send-email-sebtx452@gmail.com>
+ <3304d64f-38aa-1a3c-0b5d-edb493abd61a@hauke-m.de>
+ <CA+hF=GdKLEN2ue=Q7KpBp+W+bTnj5O_OAoPjuDOScga2efnjPA@mail.gmail.com>
+ <0DAF21CFE1B20740AE23D6AF6E54843F1E6F607C@IRSMSX101.ger.corp.intel.com>
+From: Seb <sebtx452@gmail.com>
+Date: Thu, 26 Jan 2017 12:02:04 +0100
+Message-ID: <CA+hF=GcW2W6T08BZYXoZQcpe=+QuPp0H7kT2ci+6Td-ZZL+ouQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: maps: lantiq-flash: Check if the EBU endianness swap
+ is enabled
+To: "Langer, Thomas" <thomas.langer@intel.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,67 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Chaitanya,
+Hi Thomas
 
-Am 23.01.2017 um 11:48 schrieb chaitanya vinnakota:
-> Hi Richard,
-> 
-> We are seeing UBIFS errors even when the root-filesystem  is mounted
-> read-only. But , the error is reported only once.
-> Our test scenario is we are rebooting the device by calling "reboot"
-> from a script ,  during data-write operations to the mtd partitions
-> other than root-filesystem executed by another script.
-> 
-> What's more baffling is why root-filesystem UBIFS errors are seen when
-> the data-write operations are  performed on the other partitions and
-> most importantly when rootfs is mounted read-only,
-> 
-> [  155.121005] UBIFS error (pid 5040): ubifs_decompress: cannot
-> decompress 2434 bytes, compressor zlib, error -22
 
-The compressor fails to uncompress because the payload is corrupted.
-This can be due to a driver bug, not strong enough ECC, etc..
+> No, please avoid "of_machine_is_compatible" in drivers.
 
-> [  155.121017] UBIFS error (pid 5040): read_block: bad data node
-> (block 60, inode 3484)
-> [  155.121026] UBIFS error (pid 5040): do_readpage: cannot read page
-> 60 of inode 3484, error -22
-> 
-> ECC errors are also observed sometimes when the rootfs is mounted read-only
-> 
-> [  154.824361] ECC: uncorrectable error 2 !!!
-> [  154.824368] ECC correction failed for page 0x00014b58
-> [  154.825474] ECC: uncorrectable error 2 !!!
-> [  154.825479] ECC correction failed for page 0x00014b58
-> [  154.825604] UBI warning: ubi_io_read: error -74 (ECC error) while
+OK
 
-Here we have a classic ECC error. This should not happen on fresh
-NANDs.
 
-> reading 188 bytes from PEB 451:50368, read only 188 bytes, retry
-> 
-> The page 0x00014b58 falls in the rootfs partition. But , nanddump
-> utility is not reporting any bad blocks from the rootfs partition .
-> 
->  ~# nanddump /dev/mtd4
-> nanddump: warning!: you did not specify a default bad-block handling
->   method. In future versions, the default will change to
->   --bb=skipbad. Use "nanddump --help" for more information.
-> nanddump: warning!: in next release, nanddump will not dump OOB
->   by default. Use `nanddump --oob' explicitly to ensure
->   it is dumped.
-> ECC failed: 0
-> ECC corrected: 0
-> Number of bad blocks: 0
-> Number of bbt blocks: 0
-> 
->  We ran mtd and ubi tests , mtd all tests passed but UBI one test i.e
-> io_basic failed.
-> 
-> Can you please help us in this regard. Any inputs or suggestions ?
+> We should introduce specific compatible strings for this driver, which trigger this,
+> e.g. "lantiq,nor-vr9" or "lantiq,nor-ar10" (or better using family names "xrx200" and "xrx300")
 
-This is not easy. I suggest to double check all NAND/MTD settings from
-group up. Timings, ECC strength, basic driver testing...
+You mean we can use the same way as other drivers, for example in the
+physmap_of_versatile.c file :
 
-Thanks,
-//richard
+static const struct of_device_id syscon_match[] = {
+        {
+                .compatible = "arm,integrator-ap-syscon",
+                .data = (void *)INTEGRATOR_AP_FLASHPROT,
+        },
+        {
+                .compatible = "arm,integrator-cp-syscon",
+                .data = (void *)INTEGRATOR_CP_FLASHPROT,
+        },
+
+etc...
+
+
+We can't filter on xrx200 or vr9, but we have to know the VR9 version
+(as the VR9 < 1.2 is not compatible with this patch).
+
+Regards,
+
+Sebastien
