@@ -1,20 +1,26 @@
-Received: from ns.omicron.at ([212.183.10.25])
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cWlpx-0006u7-Nr
- for linux-mtd@lists.infradead.org; Thu, 26 Jan 2017 15:19:51 +0000
-From: <mark.marshall@omicronenergy.com>
-To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: <markmarshall14@gmail.com>, <raghav.dogra@nxp.com>,
- <boris.brezillon@free-electrons.com>, <leoyang.li@nxp.com>,
- <oss@buserror.net>, <prabhakar.kushwaha@nxp.com>,
- <linuxppc-dev@lists.ozlabs.org>, <raghav@freescale.com>,
- <b44839@freescale.com>, Mark Marshall <mark.marshall@omicronenergy.com>,
- <stable@vger.kernel.org>
-Subject: [PATCH V2] mtd/ifc: Fix location of eccstat registers for IFC V1.0
-Date: Thu, 26 Jan 2017 16:18:27 +0100
-Message-ID: <1485443907-11630-1-git-send-email-mark.marshall@omicronenergy.com>
+ id 1cWmUJ-0001Nl-89
+ for linux-mtd@lists.infradead.org; Thu, 26 Jan 2017 16:01:29 +0000
+From: "Langer, Thomas" <thomas.langer@intel.com>
+To: Seb <sebtx452@gmail.com>
+CC: Hauke Mehrtens <hauke@hauke-m.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-mips@linux-mips.org"
+ <linux-mips@linux-mips.org>
+Subject: RE: [PATCH] mtd: maps: lantiq-flash: Check if the EBU endianness
+ swap is enabled
+Date: Thu, 26 Jan 2017 16:01:04 +0000
+Message-ID: <0DAF21CFE1B20740AE23D6AF6E54843F1E6F9DE6@IRSMSX101.ger.corp.intel.com>
+References: <1484904834-14980-1-git-send-email-sebtx452@gmail.com>
+ <3304d64f-38aa-1a3c-0b5d-edb493abd61a@hauke-m.de>
+ <CA+hF=GdKLEN2ue=Q7KpBp+W+bTnj5O_OAoPjuDOScga2efnjPA@mail.gmail.com>
+ <0DAF21CFE1B20740AE23D6AF6E54843F1E6F607C@IRSMSX101.ger.corp.intel.com>
+ <CA+hF=GcW2W6T08BZYXoZQcpe=+QuPp0H7kT2ci+6Td-ZZL+ouQ@mail.gmail.com>
+In-Reply-To: <CA+hF=GcW2W6T08BZYXoZQcpe=+QuPp0H7kT2ci+6Td-ZZL+ouQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +30,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Mark Marshall <mark.marshall@omicronenergy.com>
-
-The commit 7a654172161c ("mtd/ifc: Add support for IFC controller
-version 2.0") added support for version 2.0 of the IFC controller.
-The version 2.0 controller has the ECC status registers at a different
-location to the previous versions.
-
-Correct the fsl_ifc_nand structure so that the ECC status can be read
-from the correct location for both version 1.0 and 2.0 of the controller.
-
-Cc: stable@vger.kernel.org
-Fixes: 7a654172161c ("mtd/ifc: Add support for IFC controller version 2.0")
-Signed-off-by: Mark Marshall <mark.marshall@omicronenergy.com>
----
-
-Changes since v1:
-
-- simplified the reading of the registers.
-
- drivers/mtd/nand/fsl_ifc_nand.c | 8 +++++++-
- include/linux/fsl_ifc.h         | 8 ++++++--
- 2 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 0a177b1..d1570f5 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -258,9 +258,15 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 		int bufnum = nctrl->page & priv->bufnum_mask;
- 		int sector = bufnum * chip->ecc.steps;
- 		int sector_end = sector + chip->ecc.steps - 1;
-+		__be32 *eccstat_regs;
-+
-+		if (ctrl->version >= FSL_IFC_VERSION_2_0_0)
-+			eccstat_regs = ifc->ifc_nand.v2_nand_eccstat;
-+		else
-+			eccstat_regs = ifc->ifc_nand.v1_nand_eccstat;
- 
- 		for (i = sector / 4; i <= sector_end / 4; i++)
--			eccstat[i] = ifc_in32(&ifc->ifc_nand.nand_eccstat[i]);
-+			eccstat[i] = ifc_in32(&eccstat_regs[i]);
- 
- 		for (i = sector; i <= sector_end; i++) {
- 			errors = check_read_ecc(mtd, ctrl, eccstat, i);
-diff --git a/include/linux/fsl_ifc.h b/include/linux/fsl_ifc.h
-index 3f9778c..c332f0a 100644
---- a/include/linux/fsl_ifc.h
-+++ b/include/linux/fsl_ifc.h
-@@ -733,8 +733,12 @@ struct fsl_ifc_nand {
- 	__be32 nand_erattr1;
- 	u32 res19[0x10];
- 	__be32 nand_fsr;
--	u32 res20[0x3];
--	__be32 nand_eccstat[6];
-+	u32 res20;
-+	/* The V1 nand_eccstat is actually 4 words that overlaps the
-+	 * V2 nand_eccstat.
-+	 */
-+	__be32 v1_nand_eccstat[2];
-+	__be32 v2_nand_eccstat[6];
- 	u32 res21[0x1c];
- 	__be32 nanndcr;
- 	u32 res22[0x2];
--- 
-2.7.4
+SGkgU2ViYXN0aWFuLA0KDQo+IA0KPiA+IFdlIHNob3VsZCBpbnRyb2R1Y2Ugc3BlY2lmaWMgY29t
+cGF0aWJsZSBzdHJpbmdzIGZvciB0aGlzIGRyaXZlciwgd2hpY2gNCj4gdHJpZ2dlciB0aGlzLA0K
+PiA+IGUuZy4gImxhbnRpcSxub3ItdnI5IiBvciAibGFudGlxLG5vci1hcjEwIiAob3IgYmV0dGVy
+IHVzaW5nIGZhbWlseSBuYW1lcw0KPiAieHJ4MjAwIiBhbmQgInhyeDMwMCIpDQo+IA0KPiBZb3Ug
+bWVhbiB3ZSBjYW4gdXNlIHRoZSBzYW1lIHdheSBhcyBvdGhlciBkcml2ZXJzLCBmb3IgZXhhbXBs
+ZSBpbiB0aGUNCj4gcGh5c21hcF9vZl92ZXJzYXRpbGUuYyBmaWxlIDoNCj4gDQo+IHN0YXRpYyBj
+b25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIHN5c2Nvbl9tYXRjaFtdID0gew0KPiAgICAgICAgIHsN
+Cj4gICAgICAgICAgICAgICAgIC5jb21wYXRpYmxlID0gImFybSxpbnRlZ3JhdG9yLWFwLXN5c2Nv
+biIsDQo+ICAgICAgICAgICAgICAgICAuZGF0YSA9ICh2b2lkICopSU5URUdSQVRPUl9BUF9GTEFT
+SFBST1QsDQo+ICAgICAgICAgfSwNCj4gICAgICAgICB7DQo+ICAgICAgICAgICAgICAgICAuY29t
+cGF0aWJsZSA9ICJhcm0saW50ZWdyYXRvci1jcC1zeXNjb24iLA0KPiAgICAgICAgICAgICAgICAg
+LmRhdGEgPSAodm9pZCAqKUlOVEVHUkFUT1JfQ1BfRkxBU0hQUk9ULA0KPiAgICAgICAgIH0sDQo+
+IA0KPiBldGMuLi4NCj4gDQo+IA0KPiBXZSBjYW4ndCBmaWx0ZXIgb24geHJ4MjAwIG9yIHZyOSwg
+YnV0IHdlIGhhdmUgdG8ga25vdyB0aGUgVlI5IHZlcnNpb24NCj4gKGFzIHRoZSBWUjkgPCAxLjIg
+aXMgbm90IGNvbXBhdGlibGUgd2l0aCB0aGlzIHBhdGNoKS4NCg0KVGhlbiBleHRlbmQgdGhlIGNv
+bXBhdGlibGUgc3RyaW5ncyB3aXRoIHZlcnNpb25zICh3aGVyZSBuZWNlc3NhcnkpLg0KVGhpcyBy
+ZXF1aXJlcyB0byBrbm93IHRoZSBTb0MgdmVyc2lvbiBmb3IgZWFjaCBib2FyZCwgYnV0IGl0IHNo
+b3VsZCBiZSANCm9rYXkgYW5kIGlzIGRvbmUgZm9yIG90aGVyIHN5c3RlbSBhbHJlYWR5IHRoaXMg
+d2F5Lg0KDQo+IA0KPiBSZWdhcmRzLA0KPiANCj4gU2ViYXN0aWVuDQoNClJlZ2FyZHMsDQpUaG9t
+YXMNCg==
