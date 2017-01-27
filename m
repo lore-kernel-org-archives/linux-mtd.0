@@ -1,20 +1,37 @@
-Subject: Re: [PATCH v3 2/9] mtd: fsl-quadspi: Rename SEQID_QUAD_READ to
- SEQID_READ
-To: Yunhui Cui <B56489@freescale.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <han.xu@freescale.com>,
- <jagannadh.teki@gmail.com>
-References: <1471505884-33996-1-git-send-email-B56489@freescale.com>
- <1471505884-33996-2-git-send-email-B56489@freescale.com>
-CC: Yunhui Cui <yunhui.cui@nxp.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <yao.yuan@nxp.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <5e88a319-1533-ed1c-0dae-f84df6fe4f7c@atmel.com>
-Date: Fri, 27 Jan 2017 11:35:31 +0100
+Received: from mail-it0-f53.google.com ([209.85.214.53])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cX4ZV-0004L5-6J
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2017 11:20:03 +0000
+Received: by mail-it0-f53.google.com with SMTP id 203so148895008ith.0
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2017 03:19:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1471505884-33996-2-git-send-email-B56489@freescale.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170122144947.16158-2-paul@crapouillou.net>
+References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
+ <20170122144947.16158-1-paul@crapouillou.net>
+ <20170122144947.16158-2-paul@crapouillou.net>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 27 Jan 2017 12:18:39 +0100
+Message-ID: <CACRpkdZFRH84c4x7HBwgmY3fH+=Qq4q167c9oPhvrJ70MQkjaA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/14] Documentation: dt/bindings: Document
+ pinctrl-ingenic
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Maarten ter Huurne <maarten@treewalker.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux MIPS <linux-mips@linux-mips.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+ James Hogan <james.hogan@imgtec.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +41,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 18/08/2016 à 09:37, Yunhui Cui a écrit :
-> There are some read modes for flash, such as NORMAL, FAST,
-> QUAD, DDR QUAD. These modes will use the identical lut table base
-> So rename SEQID_QUAD_READ to SEQID_READ.
-> 
-> Signed-off-by: Yunhui Cui <B56489@freescale.com>
-> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
+On Sun, Jan 22, 2017 at 3:49 PM, Paul Cercueil <paul@crapouillou.net> wrote:
 
-Applied to the spi-nor tree.
 
-Thanks!
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 5ad6402..21c77e8 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -193,7 +193,7 @@
->  #define QUADSPI_LUT_NUM		64
->  
->  /* SEQID -- we can have 16 seqids at most. */
-> -#define SEQID_QUAD_READ		0
-> +#define SEQID_READ		0
->  #define SEQID_WREN		1
->  #define SEQID_WRDI		2
->  #define SEQID_RDSR		3
-> @@ -386,8 +386,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	for (i = 0; i < QUADSPI_LUT_NUM; i++)
->  		qspi_writel(q, 0, base + QUADSPI_LUT_BASE + i * 4);
->  
-> -	/* Quad Read */
-> -	lut_base = SEQID_QUAD_READ * 4;
-> +	/* Read */
-> +	lut_base = SEQID_READ * 4;
->  
->  	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
->  			base + QUADSPI_LUT(lut_base));
-> @@ -468,7 +468,7 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
->  {
->  	switch (cmd) {
->  	case SPINOR_OP_READ_1_1_4:
-> -		return SEQID_QUAD_READ;
-> +		return SEQID_READ;
->  	case SPINOR_OP_WREN:
->  		return SEQID_WREN;
->  	case SPINOR_OP_WRDI:
-> 
+> +Required properties:
+> +- compatible: One of:
+> +  - "ingenic,jz4740-pinctrl"
+> +  - "ingenic,jz4780-pinctrl"
+> +
+> +Optional properties:
+> +- ingenic,pull-ups: A list of 32-bit bit fields, where each bit set tells the
+> +  driver that a pull-up resistor is available for this pin.
+> +  By default, the driver considers that all pins feature a pull-up resistor.
+> +- ingenic,pull-downs: A list of 32-bit bit fields, where each bit set tells
+> +  the driver that a pull-down resistor is available for this pin.
+> +  By default, the driver considers that all pins feature a pull-down
+> +  resistor.
+
+So I still don't understand these properties.
+
+Does this mean that there is a pull-up *inside* the SoC or *outside*
+on the board where it is mounted?
+
+If it is *outside* the SoC, on the board, the pulls should be set on
+the consumers, not on the controller.
+
+In the former case, if this pertains to the *inside* of the SoC:
+is it just different between jz4740 and jz4780?
+In that case, just code this into the driver as .data to the .compatible
+in the DT match. No special DT properties needed.
+
+If it is different between e.g. different versions of jz4740, why not
+make different compatible-properties? If there are different versions
+of the circuit, with different hard-wired hardware configuration, they
+are different devices and should have different compatible strings.
+
+> +                               /* CLK, CMD, D0 */
+> +                               ingenic,pins = <0x69 0 0x68 0 0x6a 0>;
+
+Standard bindings use just "pins". Why the custom ingenic,
+prefix?
+
+Yours,
+Linus Walleij
