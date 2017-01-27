@@ -1,37 +1,25 @@
-Received: from mail-it0-f53.google.com ([209.85.214.53])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cX4ZV-0004L5-6J
- for linux-mtd@lists.infradead.org; Fri, 27 Jan 2017 11:20:03 +0000
-Received: by mail-it0-f53.google.com with SMTP id 203so148895008ith.0
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2017 03:19:40 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20170122144947.16158-2-paul@crapouillou.net>
-References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
- <20170122144947.16158-1-paul@crapouillou.net>
- <20170122144947.16158-2-paul@crapouillou.net>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 27 Jan 2017 12:18:39 +0100
-Message-ID: <CACRpkdZFRH84c4x7HBwgmY3fH+=Qq4q167c9oPhvrJ70MQkjaA@mail.gmail.com>
-Subject: Re: [PATCH v2 01/14] Documentation: dt/bindings: Document
- pinctrl-ingenic
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
- "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux MIPS <linux-mips@linux-mips.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- James Hogan <james.hogan@imgtec.com>
-Content-Type: text/plain; charset=UTF-8
+ id 1cX4iv-0008EG-5p
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2017 11:29:47 +0000
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+ by mailout2.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
+ with ESMTP id <0OKF02SNNRWYR420@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Fri, 27 Jan 2017 20:29:22 +0900 (KST)
+From: Shailendra Verma <shailendra.v@samsung.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, p.shailesh@samsung.com,
+ ashish.kalra@samsung.com, Shailendra Verma <shailendra.v@samsung.com>,
+ Shailendra Verma <shailendra.capricorn@gmail.com>
+Subject: [PATCH] Mtd: nand - Fix possible NULL derefrence.
+Date: Fri, 27 Jan 2017 16:59:13 +0530
+Message-id: <1485516553-4438-1-git-send-email-shailendra.v@samsung.com>
+References: <CGME20170127112921epcas1p45999b22222202e8d98b6aecfc3cbeb39@epcas1p4.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,46 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 22, 2017 at 3:49 PM, Paul Cercueil <paul@crapouillou.net> wrote:
+of_match_device could return NULL, and so can cause a NULL
+pointer dereference later.
 
+Signed-off-by: Shailendra Verma <shailendra.v@samsung.com>
+---
+ drivers/mtd/nand/mxc_nand.c  |    4 ++++
+ drivers/mtd/nand/vf610_nfc.c |    4 ++++
+ 2 files changed, 8 insertions(+)
 
-> +Required properties:
-> +- compatible: One of:
-> +  - "ingenic,jz4740-pinctrl"
-> +  - "ingenic,jz4780-pinctrl"
-> +
-> +Optional properties:
-> +- ingenic,pull-ups: A list of 32-bit bit fields, where each bit set tells the
-> +  driver that a pull-up resistor is available for this pin.
-> +  By default, the driver considers that all pins feature a pull-up resistor.
-> +- ingenic,pull-downs: A list of 32-bit bit fields, where each bit set tells
-> +  the driver that a pull-down resistor is available for this pin.
-> +  By default, the driver considers that all pins feature a pull-down
-> +  resistor.
-
-So I still don't understand these properties.
-
-Does this mean that there is a pull-up *inside* the SoC or *outside*
-on the board where it is mounted?
-
-If it is *outside* the SoC, on the board, the pulls should be set on
-the consumers, not on the controller.
-
-In the former case, if this pertains to the *inside* of the SoC:
-is it just different between jz4740 and jz4780?
-In that case, just code this into the driver as .data to the .compatible
-in the DT match. No special DT properties needed.
-
-If it is different between e.g. different versions of jz4740, why not
-make different compatible-properties? If there are different versions
-of the circuit, with different hard-wired hardware configuration, they
-are different devices and should have different compatible strings.
-
-> +                               /* CLK, CMD, D0 */
-> +                               ingenic,pins = <0x69 0 0x68 0 0x6a 0>;
-
-Standard bindings use just "pins". Why the custom ingenic,
-prefix?
-
-Yours,
-Linus Walleij
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index d7f724b..ca1b8ad 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1596,6 +1596,10 @@ static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
+ 	if (!np)
+ 		return 1;
+ 
++	if (!of_id) {
++		dev_err(host->dev, "Error: No device match found\n");
++		return -ENODEV;
++	}
+ 	host->devtype_data = of_id->data;
+ 
+ 	return 0;
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+index 3ad514c..0e09c11 100644
+--- a/drivers/mtd/nand/vf610_nfc.c
++++ b/drivers/mtd/nand/vf610_nfc.c
+@@ -674,6 +674,10 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	of_id = of_match_device(vf610_nfc_dt_ids, &pdev->dev);
++	if (!of_id) {
++		dev_err(&pdev->dev, "Error: No device match found\n");
++		return -ENODEV;
++	}
+ 	nfc->variant = (enum vf610_nfc_variant)of_id->data;
+ 
+ 	for_each_available_child_of_node(nfc->dev->of_node, child) {
+-- 
+1.7.9.5
