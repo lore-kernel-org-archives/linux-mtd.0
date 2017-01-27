@@ -1,27 +1,33 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, linux-gpio@vger.kernel.org,
- Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>,
- dmaengine@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Haavard Skinnemoen <hskinnemoen@gmail.com>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>, linux-kernel@vger.kernel.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Subject: [PATCH RESEND 5/5] mtd: nand: Remove unused chip->write_page() hook
-Date: Fri, 27 Jan 2017 17:42:04 +0100
-Message-Id: <1485535324-28393-6-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1485535324-28393-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1485535324-28393-1-git-send-email-boris.brezillon@free-electrons.com>
+Date: Fri, 27 Jan 2017 11:40:42 -0500
+From: Theodore Ts'o <tytso@mit.edu>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
+Message-ID: <20170127164042.2o3bnyopihcb224g@thunk.org>
+References: <20170117151817.GR19699@dhcp22.suse.cz>
+ <20170117155916.dcizr65bwa6behe7@thunk.org>
+ <20170117161618.GT19699@dhcp22.suse.cz>
+ <20170117172925.GA2486@quack2.suse.cz>
+ <20170119083956.GE30786@dhcp22.suse.cz>
+ <20170119092236.GC2565@quack2.suse.cz>
+ <20170119094405.GK30786@dhcp22.suse.cz>
+ <20170126074455.GC8456@dhcp22.suse.cz>
+ <20170127061318.xd2qxashbl4dajez@thunk.org>
+ <20170127093735.GB4143@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170127093735.GB4143@dhcp22.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,66 +37,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The last/only user of the chip->write_page() hook (the Atmel NAND
-controller driver) has been reworked and is no longer specifying a custom
-->write_page() implementation.
-Drop this hook before someone else start abusing it.
+On Fri, Jan 27, 2017 at 10:37:35AM +0100, Michal Hocko wrote:
+> If this ever turn out to be a problem and with the vmapped stacks we
+> have good chances to get a proper stack traces on a potential overflow
+> we can add the scope API around the problematic code path with the
+> explanation why it is needed.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/nand_base.c | 10 ++++------
- include/linux/mtd/nand.h     |  4 ----
- 2 files changed, 4 insertions(+), 10 deletions(-)
+Yeah, or maybe we can automate it?  Can the reclaim code check how
+much stack space is left and do the right thing automatically?
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ec1c28aaaf23..c8894f31392e 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2839,9 +2839,10 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- 			/* We still need to erase leftover OOB data */
- 			memset(chip->oob_poi, 0xff, mtd->oobsize);
- 		}
--		ret = chip->write_page(mtd, chip, column, bytes, wbuf,
--					oob_required, page, cached,
--					(ops->mode == MTD_OPS_RAW));
-+
-+		ret = nand_write_page(mtd, chip, column, bytes, wbuf,
-+				      oob_required, page, cached,
-+				      (ops->mode == MTD_OPS_RAW));
- 		if (ret)
- 			break;
- 
-@@ -4623,9 +4624,6 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		}
- 	}
- 
--	if (!chip->write_page)
--		chip->write_page = nand_write_page;
--
- 	/*
- 	 * Check ECC mode, default to software if 3byte/512byte hardware ECC is
- 	 * selected and we have 256 byte pagesize fallback to software ECC
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index c5f3a012ae62..9d51dee53be4 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -818,7 +818,6 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
-  * @errstat:		[OPTIONAL] hardware specific function to perform
-  *			additional error status checks (determine if errors are
-  *			correctable).
-- * @write_page:		[REPLACEABLE] High-level page write function
-  */
- 
- struct nand_chip {
-@@ -843,9 +842,6 @@ struct nand_chip {
- 	int (*scan_bbt)(struct mtd_info *mtd);
- 	int (*errstat)(struct mtd_info *mtd, struct nand_chip *this, int state,
- 			int status, int page);
--	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
--			uint32_t offset, int data_len, const uint8_t *buf,
--			int oob_required, int page, int cached, int raw);
- 	int (*onfi_set_features)(struct mtd_info *mtd, struct nand_chip *chip,
- 			int feature_addr, uint8_t *subfeature_para);
- 	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
--- 
-2.7.4
+The reason why I'm nervous is that nojournal mode is not a common
+configuration, and "wait until production systems start failing" is
+not a strategy that I or many SRE-types find.... comforting.
+
+So if we can assure ourselves that the right thing will happen
+automatically, or that lockdep will detect a required GFP_NOFS when
+running tests, the happier I'll be.
+
+					- Ted
