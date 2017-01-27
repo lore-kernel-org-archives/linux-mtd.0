@@ -1,22 +1,20 @@
-Subject: Re: [PATCH v2 1/2] Documentation: mtk-quadspi: update DT bindings
-To: Guochun Mao <guochun.mao@mediatek.com>, Brian Norris
- <computersforpeace@gmail.com>, John Crispin <john@phrozen.org>
-References: <1485315515-29942-1-git-send-email-guochun.mao@mediatek.com>
- <1485315515-29942-2-git-send-email-guochun.mao@mediatek.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- Russell King <linux@armlinux.org.uk>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <bca4628c-b203-9464-5810-152facdc4a66@atmel.com>
-Date: Thu, 26 Jan 2017 17:38:27 +0100
-MIME-Version: 1.0
-In-Reply-To: <1485315515-29942-2-git-send-email-guochun.mao@mediatek.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Received: from mail4.hitachi.co.jp ([133.145.228.5])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cWvTZ-0006M0-2t
+ for linux-mtd@lists.infradead.org; Fri, 27 Jan 2017 01:37:19 +0000
+Received: from mlsw1.hitachi.co.jp (unknown [133.144.234.166])
+ by mail4.hitachi.co.jp (Postfix) with ESMTP id B5B032CF4C2
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2017 10:36:48 +0900 (JST)
+Received: from vshuts02.hitachi.co.jp (vshuts02.hitachi.co.jp [10.201.6.84])
+ by mfilter2.hitachi.co.jp (Switch-3.3.4/Switch-3.3.4) with ESMTP id
+ v0R1alkI007740
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2017 10:36:48 +0900
+From: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
+To: linux-mtd@lists.infradead.org
+Cc: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
+Subject: [PATCH] mtd: Fix typo: "occured" -> "occurred"
+Date: Fri, 27 Jan 2017 10:36:38 +0900
+Message-Id: <1485480998-5292-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 25/01/2017 à 04:38, Guochun Mao a écrit :
-> Add "mediatek,mt2701-nor" for nor flash node's compatible.
-> 
-> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> ---
->  .../devicetree/bindings/mtd/mtk-quadspi.txt        |    8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> index fb314f0..5ded66a 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> @@ -1,7 +1,13 @@
->  * Serial NOR flash controller for MTK MT81xx (and similar)
->  
->  Required properties:
-> -- compatible: 	  should be "mediatek,mt8173-nor";
-> +- compatible: 	  The possible values are:
-> +		  "mediatek,mt2701-nor"
-> +		  "mediatek,mt7623-nor"
-> +		  "mediatek,mt8173-nor"
-> +		  For mt8173, compatible should be "mediatek,mt8173-nor".
-> +		  For every other SoC, should contain both the SoC-specific compatible string
-> +		  and "mediatek,mt8173-nor".
->  - reg: 		  physical base address and length of the controller's register
->  - clocks: 	  the phandle of the clocks needed by the nor controller
->  - clock-names: 	  the names of the clocks
-> 
+Trivial typo fix in comment.
 
-Rob, is it ok for you if I take this patch in the spi-nor tree?
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
+---
+ drivers/mtd/mtdchar.c         | 2 +-
+ drivers/mtd/spi-nor/spi-nor.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Best regards,
-
-Cyrille
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index ce5ccc573a9c..3568294d4854 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -451,7 +451,7 @@ static int mtdchar_readoob(struct file *file, struct mtd_info *mtd,
+ 	 * data. For our userspace tools it is important to dump areas
+ 	 * with ECC errors!
+ 	 * For kernel internal usage it also might return -EUCLEAN
+-	 * to signal the caller that a bitflip has occured and has
++	 * to signal the caller that a bitflip has occurred and has
+ 	 * been corrected by the ECC algorithm.
+ 	 *
+ 	 * Note: currently the standard NAND function, nand_read_oob_std,
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index a2a6922e356f..5fb144bdeca6 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -122,7 +122,7 @@ static int read_fsr(struct spi_nor *nor)
+ /*
+  * Read configuration register, returning its value in the
+  * location. Return the configuration register value.
+- * Returns negative if error occured.
++ * Returns negative if error occurred.
+  */
+ static int read_cr(struct spi_nor *nor)
+ {
+@@ -1237,7 +1237,7 @@ static int macronix_quad_enable(struct spi_nor *nor)
+  * Write status Register and configuration register with 2 bytes
+  * The first byte will be written to the status register, while the
+  * second byte will be written to the configuration register.
+- * Return negative if error occured.
++ * Return negative if error occurred.
+  */
+ static int write_sr_cr(struct spi_nor *nor, u16 val)
+ {
+-- 
+2.11.0
