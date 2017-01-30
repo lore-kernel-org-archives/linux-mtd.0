@@ -1,29 +1,25 @@
-Received: from fllnx209.ext.ti.com ([198.47.19.16])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cXnV2-0003p6-8q
- for linux-mtd@lists.infradead.org; Sun, 29 Jan 2017 11:18:26 +0000
-Subject: Re: [PATCH, 1/2] mtd: m25p80: Let m25p80_read() fallback to spi
- transfer
-To: Kamal Dasu <kdasu.kdev@gmail.com>, Marek Vasut <marex@denx.de>
-References: <1484949023-2085-1-git-send-email-kdasu.kdev@gmail.com>
- <3e1f1c8e-4a87-e186-20cb-2ba784bd58d5@denx.de>
- <CAOMqctT-JMczFR4yZ0Ncy8f41aH-inOjaw8HoJv2MmSWM-AhSA@mail.gmail.com>
- <06d8264e-5ddb-aa76-a83e-4c2c3af42f08@denx.de>
- <CAC=U0a1ESxC__PBOjW5L6AE3W5ebs8tMf1T1P1cuDzgFzWdxbA@mail.gmail.com>
- <62931580-f21f-e6a1-8e8b-d3c92195a2e0@denx.de>
- <CAC=U0a3mhruPtHA-1y08noS_Vq1y2KrBYiEM-GbpwLn_Eou7=A@mail.gmail.com>
-CC: Florian Fainelli <f.fainelli@gmail.com>, Mark Brown <broonie@kernel.org>,
- Michal Suchanek <hramrach@gmail.com>, bcm-kernel-feedback-list
- <bcm-kernel-feedback-list@broadcom.com>, MTD Maling List
- <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-From: "R, Vignesh" <vigneshr@ti.com>
-Message-ID: <ae95a543-65cf-9e4b-ddc7-c5e60af11b3d@ti.com>
-Date: Sun, 29 Jan 2017 16:46:41 +0530
-MIME-Version: 1.0
-In-Reply-To: <CAC=U0a3mhruPtHA-1y08noS_Vq1y2KrBYiEM-GbpwLn_Eou7=A@mail.gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+ id 1cY3sI-0006fZ-5Q
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 04:47:32 +0000
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+ by mailout2.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
+ with ESMTP id <0OKK02UXWTADIL40@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 13:47:01 +0900 (KST)
+From: Shailendra Verma <shailendra.v@samsung.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, p.shailesh@samsung.com,
+ ashish.kalra@samsung.com, Shailendra Verma <shailendra.v@samsung.com>,
+ Shailendra Verma <shailendra.capricorn@gmail.com>
+Subject: [PATCH] Mtd: nand - Fix possible NULL derefrence.
+Date: Mon, 30 Jan 2017 10:16:52 +0530
+Message-id: <1485751612-28915-1-git-send-email-shailendra.v@samsung.com>
+References: <CGME20170130044701epcas2p327897c254334e190e982c208de1c034c@epcas2p3.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,82 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+of_match_device could return NULL, and so can cause a NULL
+pointer dereference later.
 
+Signed-off-by: Shailendra Verma <shailendra.v@samsung.com>
+---
+ drivers/mtd/nand/mxc_nand.c  |    4 ++++
+ drivers/mtd/nand/vf610_nfc.c |    4 ++++
+ 2 files changed, 8 insertions(+)
 
-On 1/25/2017 9:58 PM, Kamal Dasu wrote:
-> If the transfers are short and dest buffer or the flash address are
-> unaligned. 
-
-How about using using bounce buffer here? Using bounce buffer and doing
-double copy might still be faster than PIO.
-
-> Also in case of older version of the controller there are
-> some address mapping limitations when a transfer crosses 4MB window
-> (addr + len).  So in such cases  need to fallback to normal MSPI
-> reads.
-> 
-
-At least, this can be handled by breaking transfers and handle what
-falls within 4MB range. And then update msg.retlen equal to number of
-bytes read.
-
-Regards
-Vignesh
-
-
-> One other option is that controller divers implementation of
-> bcm_qspi_spi_flash_read() can return msg.retlen = 0 and the
-> m25p80_read() can fallback to normal mspi read.
-> 
-> Kamal
-> 
-> 
-> 
-> On Tue, Jan 24, 2017 at 9:08 PM, Marek Vasut <marex@denx.de> wrote:
->> On 01/24/2017 12:41 AM, Kamal Dasu wrote:
->>> "ret can never be > 0 , it is only 0 or negative "
->>>
->>> I can fix this.
->>>
->>>>>> This looks really fragile and special-casing EINVAL here doesn't scale.
->>>>>> But still, if your controller driver is buggy, fix the driver, do not
->>>>>> pollute core code with workarounds. If you do support this sort of
->>>>>> accelerated read and it fails, it means something is seriously wrong.
->>>>>> If you need to invoke regular SPI reads to complete under some obscure
->>>>>> circumstances, do it from the driver, not here.
->>>>>
->>>>> I guess the other half of m25p80_read can be factored out and used as
->>>>> fallback from either m25p80_read or the controller driver.
->>>>
->>>> I think I see what you mean, but care to show an RFC patch ?
->>>>
->>>> --
->>>
->>> Its not the controller driver, but he hardware limitation with older
->>> controller version. I have tried to see how I can do this better,
->>> however when spi_flash_read() is called  cannot handle it within my
->>> driver without returning from the function. I went over this with Mark
->>> previously and this current solution seemed reasonable. Any other
->>> solution outside of the generic driver would replicate a lot of code
->>> unnecessarily.
->>
->> Hmmm, I kinda see the problem. I was thinking splitting the m25p80_read
->> function could be the solution and invoking the second part from the
->> driver if applicable, but this cannot work because the driver does not
->> know when it's interacting with SPI NOR and when with something else .
->>
->> Can you tell me about the conditions under which the bcm controller
->> fails and should fall back to standard spi read ?
->>
->> --
->> Best regards,
->> Marek Vasut
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index d7f724b..ca1b8ad 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1596,6 +1596,10 @@ static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
+ 	if (!np)
+ 		return 1;
+ 
++	if (!of_id) {
++		dev_err(host->dev, "Error: No device match found\n");
++		return -ENODEV;
++	}
+ 	host->devtype_data = of_id->data;
+ 
+ 	return 0;
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+index 3ad514c..0e09c11 100644
+--- a/drivers/mtd/nand/vf610_nfc.c
++++ b/drivers/mtd/nand/vf610_nfc.c
+@@ -674,6 +674,10 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	of_id = of_match_device(vf610_nfc_dt_ids, &pdev->dev);
++	if (!of_id) {
++		dev_err(&pdev->dev, "Error: No device match found\n");
++		return -ENODEV;
++	}
+ 	nfc->variant = (enum vf610_nfc_variant)of_id->data;
+ 
+ 	for_each_available_child_of_node(nfc->dev->of_node, child) {
 -- 
-Regards
-Vignesh
+1.7.9.5
