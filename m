@@ -1,27 +1,19 @@
-Date: Mon, 30 Jan 2017 11:19:54 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cYBCG-0003dL-2X
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 12:36:37 +0000
+Date: Mon, 30 Jan 2017 13:36:14 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Alexandre Courbot <gnurou@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Richard
- Weinberger <richard@nod.at>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Wenyou Yang
- <wenyou.yang@atmel.com>, "linux-gpio@vger.kernel.org"
- <linux-gpio@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Josh Wu <rainyfeeling@outlook.com>,
- dmaengine@vger.kernel.org, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Dan Williams
- <dan.j.williams@intel.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- David Woodhouse <dwmw2@infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Haavard Skinnemoen
- <hskinnemoen@gmail.com>
-Subject: Re: [PATCH 1/5] gpio: Add the devm_get_index_gpiod_from_child() helper
-Message-ID: <20170130111954.0f7ef130@bbrezillon>
-In-Reply-To: <CACRpkdYsE_3twu6ZxTUD2A=YddU-Lq+0L+g12p7Ws99Aqjz97g@mail.gmail.com>
-References: <1485534846-28111-1-git-send-email-boris.brezillon@free-electrons.com>
- <1485534846-28111-2-git-send-email-boris.brezillon@free-electrons.com>
- <CACRpkdYsE_3twu6ZxTUD2A=YddU-Lq+0L+g12p7Ws99Aqjz97g@mail.gmail.com>
+To: Jean Delvare <jdelvare@suse.de>
+Cc: linux-mtd@lists.infradead.org, Rob Herring <robh@kernel.org>, Neil
+ Armstrong <narmstrong@baylibre.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH] mtd: nand: Add OX820 NAND hardware dependency
+Message-ID: <20170130133614.4e46c164@bbrezillon>
+In-Reply-To: <20170109115814.022fd08f@endymion>
+References: <20170109115814.022fd08f@endymion>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -34,74 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+On Mon, 9 Jan 2017 11:58:14 +0100
+Jean Delvare <jdelvare@suse.de> wrote:
 
-On Mon, 30 Jan 2017 10:49:23 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
+> The oxnas NAND driver is only needed for a specific platform, do
+> not propose it on other platforms unless build-testing.
+> 
 
-> On Fri, Jan 27, 2017 at 5:34 PM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> 
-> > devm_get_gpiod_from_child() currently allows GPIO users to request a GPIO
-> > that is defined in a child fwnode instead of directly in the device
-> > fwnode. Extend this API by adding the devm_get_index_gpiod_from_child()
-> > helpers which does the same except you can also specify an index in case
-> > the 'xx-gpios' property describe several GPIOs.
-> >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>  
-> 
-> Cc Russell who faced this problem in the mvebu PCI driver (IIRC).
-> 
-> (...)
-> 
-> > +struct gpio_desc *devm_get_index_gpiod_from_child(struct device *dev,
-> > +                                                 const char *con_id,
-> > +                                                 int index,
-> > +                                                 struct fwnode_handle *child)
-> >  {
-> >         static const char * const suffixes[] = { "gpios", "gpio" };
-> >         char prop_name[32]; /* 32 is max size of property name */
-> > @@ -154,7 +157,7 @@ struct gpio_desc *devm_get_gpiod_from_child(struct device *dev,
-> >                         snprintf(prop_name, sizeof(prop_name), "%s",
-> >                                                                suffixes[i]);
-> >
-> > -               desc = fwnode_get_named_gpiod(child, prop_name);
-> > +               desc = fwnode_get_named_gpiod(child, prop_name, index);
-> >                 if (!IS_ERR(desc) || (PTR_ERR(desc) != -ENOENT))
-> >                         break;
-> >         }
-> > @@ -168,6 +171,23 @@ struct gpio_desc *devm_get_gpiod_from_child(struct device *dev,
-> >
-> >         return desc;
-> >  }
-> > +EXPORT_SYMBOL(devm_get_index_gpiod_from_child);  
-> 
-> Rename this devm_fwnode_get_index_gpiod_from_child()
-> so that it fits the namespace of the other fwnode functions.
-
-Okay.
-
-> 
-> > + * devm_get_gpiod_from_child - get a GPIO descriptor from a device's child node
-> > + * @dev:       GPIO consumer
-> > + * @con_id:    function within the GPIO consumer
-> > + * @child:     firmware node (child of @dev)
-> > + *
-> > + * GPIO descriptors returned from this function are automatically disposed on
-> > + * driver detach.
-> > + */
-> > +struct gpio_desc *devm_get_gpiod_from_child(struct device *dev,
-> > +                                           const char *con_id,
-> > +                                           struct fwnode_handle *child)
-> > +{
-> > +       return devm_get_index_gpiod_from_child(dev, con_id, 0, child);
-> > +}  
-> 
-> Take the opportunity to rename this devm_fwnode_get_gpiod_from_child()
-> as well.
-
-Sure, I'll provide a separate patch renaming this function.
+Applied.
 
 Thanks,
 
 Boris
+
+> Signed-off-by: Jean Delvare <jdelvare@suse.de>
+> Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> ---
+>  drivers/mtd/nand/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- linux-4.10-rc2.orig/drivers/mtd/nand/Kconfig	2017-01-09 11:44:05.151733169 +0100
+> +++ linux-4.10-rc2/drivers/mtd/nand/Kconfig	2017-01-09 11:44:32.431065848 +0100
+> @@ -426,6 +426,7 @@ config MTD_NAND_ORION
+>  
+>  config MTD_NAND_OXNAS
+>  	tristate "NAND Flash support for Oxford Semiconductor SoC"
+> +	depends on ARCH_OXNAS || COMPILE_TEST
+>  	help
+>  	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
+>  
+> 
+> 
