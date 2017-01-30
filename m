@@ -1,20 +1,30 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
+Received: from mail-eopbgr30128.outbound.protection.outlook.com
+ ([40.107.3.128] helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cYC1V-0002yR-IO
- for linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 13:29:35 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for N25Q256A13 as N25Q256A
-To: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>,
- <linux-mtd@lists.infradead.org>
-References: <1485481897-6368-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
-CC: Marek Vasut <marek.vasut@gmail.com>, Jagan Teki <jagan@openedev.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <23f8030c-272c-1aab-2146-db45dfe77daf@atmel.com>
-Date: Mon, 30 Jan 2017 14:29:11 +0100
+ id 1cYC7g-0007vf-Tc
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 13:35:58 +0000
+Subject: Re: UBI/UBIFS corruptions during random power-cuts
+To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
+ <0500de05-b3d7-6cbc-0236-5d4c83a5f00f@nod.at>
+ <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
+ <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
+ <89cd8327-581b-4285-d9ae-138d800211cf@toradex.com>
+ <bceb976b-0aac-fe04-a540-f24823366233@nod.at>
+ <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
+ <5a769de2-31f1-f011-c6bc-e94427407751@nod.at>
+ <a27bc761-b8d2-4f69-468a-b9a4d61c68f8@toradex.com>
+ <306876cd-0855-b9ee-659d-2164cfc3b2c4@nod.at>
+ <877dea3c-717d-9b1a-c01d-537f3b46b2de@toradex.com>
+ <ff60b696-ffec-8ddd-16bd-407a9bacb3e0@nod.at>
+CC: Artem Bityutskiy <dedekind1@gmail.com>
+From: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>
+Message-ID: <47db4d54-f8f5-a663-75b3-d2cd5fd0769f@toradex.com>
+Date: Mon, 30 Jan 2017 19:01:29 +0530
 MIME-Version: 1.0
-In-Reply-To: <1485481897-6368-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ff60b696-ffec-8ddd-16bd-407a9bacb3e0@nod.at>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,63 +34,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nobuhiro,
+On 01/30/2017 01:27 PM, Richard Weinberger wrote:
 
-Le 27/01/2017 à 02:51, Nobuhiro Iwamatsu a écrit :
-> Add new Micron N25Q256A (N25Q256A13) 256Mbit NOR Flash in the list
-> of supported devices. This chip has the same structure as the N25Q256A
-> but ID is different. And this fixes N25Q256A to N25Q256 to fit chip
-> name to other n25q chip names.
-> 
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
-> CC: Jagan Teki <jagan@openedev.com>
-> CC: Marek Vasut <marek.vasut@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index da7cd69d4857..a2a6922e356f 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -887,7 +887,8 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
-> -	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
-> +	{ "n25q256",     INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
-> +	{ "n25q256a",    INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+> Bhuvan,
+>
+> Am 30.01.2017 um 06:48 schrieb Bhuvanchandra DV:
+>> [    9.823378] UBIFS (ubi0:2): background thread "ubifs_bgt0_2" started, PID 126
+>> [   10.190926] UBIFS assert failed in pack_bits at 242 (pid 120)
+>> [   10.197294] CPU: 0 PID: 120 Comm: mount Not tainted 4.10.0-rc4-00016-g60124f748422-dirty #13
+>> [   10.205952] Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
+>> [   10.212515] Backtrace:
+>> [   10.215142] [<c010c474>] (dump_backtrace) from [<c010c71c>] (show_stack+0x18/0x1c)
+>> [   10.222899]  r7:00000000 r6:600c0013 r5:00000000 r4:c0e29058
+>> [   10.228716] [<c010c704>] (show_stack) from [<c03fcf18>] (dump_stack+0xb4/0xe8)
+>> [   10.236150] [<c03fce64>] (dump_stack) from [<c037b2dc>] (pack_bits+0x1f4/0x200)
+>> [   10.243649]  r10:0000b800 r9:ffffffee r8:c32bdd50 r7:c32bdd54 r6:00000001 r5:c831c860
+>> [   10.251651]  r4:0000000e r3:00000000
+>> [   10.255352] [<c037b0e8>] (pack_bits) from [<c037bf90>] (ubifs_pack_pnode+0x84/0x104)
+>> [   10.263289]  r9:c831c853 r8:c831c851 r7:c32299e0 r6:c30dc000 r5:c32bdd54 r4:c32299c8
+>> [   10.271233] [<c037bf0c>] (ubifs_pack_pnode) from [<c0385d50>] (ubifs_lpt_end_commit+0x27c/0x6fc)
+>> [   10.280214]  r9:00000001 r8:c8311000 r7:00000011 r6:0000b862 r5:c3229980 r4:c30dc000
+>> [   10.288148] [<c0385ad4>] (ubifs_lpt_end_commit) from [<c0373658>] (do_commit+0x244/0x80c)
+>> [   10.296515]  r10:00000020 r9:00000020 r8:c3195dd4 r7:00000003 r6:c30dc2f0 r5:c30dc000
+>> [   10.304514]  r4:00000000
+>> [   10.307163] [<c0373414>] (do_commit) from [<c0373e70>] (ubifs_run_commit+0x9c/0xf0)
+>> [   10.315001]  r8:00000000 r7:c30dcb48 r6:c30dc3e4 r5:c30dc42c r4:c30dc000
+>> [   10.321856] [<c0373dd4>] (ubifs_run_commit) from [<c03823dc>] (ubifs_rcvry_gc_commit+0x7c/0x1d8)
+>> [   10.330830]  r7:c30dcb48 r6:c3195c00 r5:c30dcb8c r4:c30dc000
+>> [   10.336659] [<c0382360>] (ubifs_rcvry_gc_commit) from [<c0364700>] (ubifs_remount_fs+0x514/0x79c)
+>> [   10.345731]  r7:c30dcb48 r6:c32a3c00 r5:c30dcb8c r4:c30dc000
+>> [   10.351548] [<c03641ec>] (ubifs_remount_fs) from [<c0225188>] (do_remount_sb+0x6c/0x1d8)
+>> [   10.359825]  r9:00000020 r8:00000000 r7:00000000 r6:00000000 r5:00000000 r4:c318a000
+>> [   10.367783] [<c022511c>] (do_remount_sb) from [<c0248f4c>] (do_mount+0x698/0xc84)
+>> [   10.375452]  r8:c3108b10 r7:c02498e8 r6:c318a000 r5:00000000 r4:c318a044
+>> [   10.382306] [<c02488b4>] (do_mount) from [<c02498e8>] (SyS_mount+0x7c/0xa4)
+>> [   10.389416]  r10:00000000 r9:c32bc000 r8:c0ed0020 r7:01696860 r6:00000000 r5:c3214b40
+>> [   10.397418]  r4:c3214e80
+>> [   10.400075] [<c024986c>] (SyS_mount) from [<c0107e60>] (ret_fast_syscall+0x0/0x1c)
+>> [   10.407832]  r8:c0108004 r7:00000015 r6:00000000 r5:00000000 r4:00000000
+>> [   10.518251] systemd[1]: Started Journal Service.
+> This is what I was looking for! :)
+> Let's see whether I can find the root cause with that issue, otherwise I'll create
+> a debug patch for you.
 
-This patch changes the association "n25q256a" <-> 20 ba 19: "n25q256a"
-would be now associated to 20 bb 19.
-However some device trees use the "micron,n25q256a" as compatible string:
-- arch/arm/boot/dts/imx6sx-sbd.dts: compatible = "micron,n25q256a",
-"jedec,spi-nor";
-- arch/arm/boot/dts/socfpga_arria5_socdk.dts: compatible = "n25q256a";
-- arch/arm/boot/dts/socfpga_cyclone5_socrates.dts: compatible = "n25q256a";
-- arch/arm/boot/dts/imx6ul-14x14-evk.dts: compatible = "micron,n25q256a";
+Sure! Thank you.
 
-If the actual JEDEC ID read from the Micron SPI memory of one of these
-boards is 20 ba 19 and if you now associate the string "n25q256a" to the
-different JEDEC ID 20 bb 19, then spi_nor_scan() is likely to display the
-warning message during the boot:
+--
+Bhuvan
 
-dev_warn(dev, "found %s, expected %s\n", jinfo->name, info->name);
-
-
-Displaying such a warning during the boot process would be an unwanted side
-effect of this patch and users may complain or ask why such warning is now
-displayed in the boot log.
-
-You may create a new entry for the 20 bb 19 JEDEC ID but I don't think it
-is totally safe to remove the old n25q256a entry.
-
-Best regards,
-
-Cyrille
-
-
->  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> 
+>
+> Thanks,
+> //richard
