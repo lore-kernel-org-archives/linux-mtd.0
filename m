@@ -1,20 +1,36 @@
-Received: from metis.ext.4.pengutronix.de ([92.198.50.35])
+Received: from mail-io0-f174.google.com ([209.85.223.174])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cY8Bi-0002uv-87
- for linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 09:23:52 +0000
-References: <20161125113412.3ozyc7bjjecjahnb@pengutronix.de>
- <4d53ffff-a294-8238-bab1-004416e8d7be@nod.at>
- <20161125135152.f4npajnz5x76f5x7@pengutronix.de>
- <6708b0f4-63e4-663f-794a-13b95f38a928@nod.at>
-From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [BUG?] ubi.fm_autoconvert=1 on first boot
-In-reply-to: <6708b0f4-63e4-663f-794a-13b95f38a928@nod.at>
-Date: Mon, 30 Jan 2017 10:23:23 +0100
-Message-ID: <73k29cgaus.fsf@pengutronix.de>
+ id 1cY8bl-0004rJ-S4
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 09:50:47 +0000
+Received: by mail-io0-f174.google.com with SMTP id v96so6981290ioi.0
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Jan 2017 01:50:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1485534846-28111-2-git-send-email-boris.brezillon@free-electrons.com>
+References: <1485534846-28111-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1485534846-28111-2-git-send-email-boris.brezillon@free-electrons.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 30 Jan 2017 10:49:23 +0100
+Message-ID: <CACRpkdYsE_3twu6ZxTUD2A=YddU-Lq+0L+g12p7Ws99Aqjz97g@mail.gmail.com>
+Subject: Re: [PATCH 1/5] gpio: Add the devm_get_index_gpiod_from_child() helper
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Alexandre Courbot <gnurou@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Russell King <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,67 +40,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Jan 27, 2017 at 5:34 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
 
-Hi Richard!
-
-Richard Weinberger <richard@nod.at> writes:
-
-> Steffen,
+> devm_get_gpiod_from_child() currently allows GPIO users to request a GPIO
+> that is defined in a child fwnode instead of directly in the device
+> fwnode. Extend this API by adding the devm_get_index_gpiod_from_child()
+> helpers which does the same except you can also specify an index in case
+> the 'xx-gpios' property describe several GPIOs.
 >
-> Am 25.11.2016 um 14:51 schrieb Steffen Trumtrar:
->> [    3.167543] ubi1: scanning is finished
->> [    3.190860] ubi1 error: ubi_refill_pools: no free eraseblocks
->> [    3.196670] ubi1 error: ubi_update_fastmap: could not find any anchor PEB
->> [    3.203608] ubi1 warning: ubi_update_fastmap: Unable to write new fastmap, err=-28
->> [    3.211299] ubi1 error: ubi_refill_pools: no free eraseblocks
->> [    3.217082] ubi1 error: ubi_update_fastmap: could not find any anchor PEB
->> [    3.223965] ubi1 warning: ubi_update_fastmap: Unable to write new fastmap, err=-28
->> [    3.231632] ubi1 error: ubi_wl_get_peb: Unable to get a free PEB from user WL pool
->> [    3.239320] ubi1 warning: ubi_eba_atomic_leb_change: switch to read-only mode
->> [    3.246484] CPU: 0 PID: 1 Comm: swapper Not tainted 4.9.0-rc6 #45
->> [    3.255341] Hardware name: Freescale MXS (Device Tree)
->> [    3.260616] [<c000ed60>] (unwind_backtrace) from [<c000d0a4>] (show_stack+0x10/0x14)
->> [    3.268483] [<c000d0a4>] (show_stack) from [<c020d364>] (ubi_eba_atomic_leb_change+0x3c4/0x3e0)
->> [    3.277232] [<c020d364>] (ubi_eba_atomic_leb_change) from [<c020470c>] (ubi_update_layout_vol+0x38/0x54)
->> [    3.286826] [<c020470c>] (ubi_update_layout_vol) from [<c0204e00>] (ubi_change_vtbl_record+0x8c/0x110)
->> [    3.296247] [<c0204e00>] (ubi_change_vtbl_record) from [<c0206a60>] (ubi_resize_volume+0x158/0x2e0)
->> [    3.305406] [<c0206a60>] (ubi_resize_volume) from [<c02079f4>] (autoresize+0x68/0x130)
->> [    3.313437] [<c02079f4>] (autoresize) from [<c0208518>] (ubi_attach_mtd_dev+0x4c4/0xd54)
->> [    3.321641] [<c0208518>] (ubi_attach_mtd_dev) from [<c0452828>] (ubi_init+0x1bc/0x25c)
->> [    3.329688] [<c0452828>] (ubi_init) from [<c0009594>] (do_one_initcall+0x3c/0x17c)
->> [    3.337306] [<c0009594>] (do_one_initcall) from [<c0440cf0>] (kernel_init_freeable+0x108/0x1d0)
->> [    3.346123] [<c0440cf0>] (kernel_init_freeable) from [<c0345a98>] (kernel_init+0x8/0xf8)
->> [    3.354331] [<c0345a98>] (kernel_init) from [<c000a2d0>] (ret_from_fork+0x14/0x24)
->> [    3.362017] ubi1 error: autoresize: cannot auto-resize volume 0
->> [    3.369308] UBI error: cannot attach mtd8[    3.373284] stmp3xxx-rtc 80056000.rtc: setting system clock to 1970-01-01 00:57:18 UTC (3438)
->> [    3.382547] usb0_vbus: disabling
->> [    3.386189] uart-pl011 80074000.serial: no DMA platform data
->> [    3.394947] UBIFS (ubi0:0): background thread "ubifs_bgt0_0" started, PID 40
->> [    3.482996] UBIFS (ubi0:0): recovery needed
->> [    3.739605] UBIFS (ubi0:0): recovery completed
->> [    3.744224] UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0, name "root"
->> [    3.751583] UBIFS (ubi0:0): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
->> [    3.761600] UBIFS (ubi0:0): FS size: 61837312 bytes (58 MiB, 487 LEBs), journal size 9023488 bytes (8 MiB, 72 LEBs)
->> [    3.772122] UBIFS (ubi0:0): reserved for root: 0 bytes (0 KiB)
->> [    3.778051] UBIFS (ubi0:0): media format: w4/r0 (latest is w4/r0), UUID 79048B39-39D6-4BA2-89CF-8F2A0C699060, small LPT model
->> [    3.791974] VFS: Mounted root (ubifs filesystem) on device 0:14.
->> [    3.801380] devtmpfs: mounted
->> [    3.805096] Freeing unused kernel memory: 144K (c0440000 - c0464000)
->> [    3.811571] This architecture does not have kernel memory protection.
->> mounting filesystems...[    4.463895] UBIFS error (pid: 44): cannot open "ubi1:data", error -19done.
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Cc Russell who faced this problem in the mvebu PCI driver (IIRC).
+
+(...)
+
+> +struct gpio_desc *devm_get_index_gpiod_from_child(struct device *dev,
+> +                                                 const char *con_id,
+> +                                                 int index,
+> +                                                 struct fwnode_handle *child)
+>  {
+>         static const char * const suffixes[] = { "gpios", "gpio" };
+>         char prop_name[32]; /* 32 is max size of property name */
+> @@ -154,7 +157,7 @@ struct gpio_desc *devm_get_gpiod_from_child(struct device *dev,
+>                         snprintf(prop_name, sizeof(prop_name), "%s",
+>                                                                suffixes[i]);
 >
-> Can you please give the attached patch a try?
-> It is untested since I cannot reproduce.
+> -               desc = fwnode_get_named_gpiod(child, prop_name);
+> +               desc = fwnode_get_named_gpiod(child, prop_name, index);
+>                 if (!IS_ERR(desc) || (PTR_ERR(desc) != -ENOENT))
+>                         break;
+>         }
+> @@ -168,6 +171,23 @@ struct gpio_desc *devm_get_gpiod_from_child(struct device *dev,
 >
+>         return desc;
+>  }
+> +EXPORT_SYMBOL(devm_get_index_gpiod_from_child);
 
-Thank you for the patch, I will get back to you once I found the time
-to test it.
+Rename this devm_fwnode_get_index_gpiod_from_child()
+so that it fits the namespace of the other fwnode functions.
 
-Thanks,
-Steffen
+> + * devm_get_gpiod_from_child - get a GPIO descriptor from a device's child node
+> + * @dev:       GPIO consumer
+> + * @con_id:    function within the GPIO consumer
+> + * @child:     firmware node (child of @dev)
+> + *
+> + * GPIO descriptors returned from this function are automatically disposed on
+> + * driver detach.
+> + */
+> +struct gpio_desc *devm_get_gpiod_from_child(struct device *dev,
+> +                                           const char *con_id,
+> +                                           struct fwnode_handle *child)
+> +{
+> +       return devm_get_index_gpiod_from_child(dev, con_id, 0, child);
+> +}
 
--- 
-Pengutronix e.K.                           | Steffen Trumtrar            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Take the opportunity to rename this devm_fwnode_get_gpiod_from_child()
+as well.
+
+I don't remember exactly why this wasn't added earlier, there was some
+problem with referencing nodes that do not have devices.
+
+Yours,
+Linus Walleij
