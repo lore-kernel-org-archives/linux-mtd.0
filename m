@@ -1,21 +1,23 @@
-Date: Mon, 30 Jan 2017 13:36:47 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Wei Yongjun
- <weiyongjun1@huawei.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mtd: nand: mediatek: remove redundant dev_err
- call in mtk_nfc_probe()
-Message-ID: <20170130133647.1c383bd8@bbrezillon>
-In-Reply-To: <20170117142246.9607-1-weiyj.lk@gmail.com>
-References: <20170117142246.9607-1-weiyj.lk@gmail.com>
+Subject: Re: [PATCH v2 1/2] Documentation: mtk-quadspi: update DT bindings
+To: Rob Herring <robh@kernel.org>, Guochun Mao <guochun.mao@mediatek.com>
+References: <1485315515-29942-1-git-send-email-guochun.mao@mediatek.com>
+ <1485315515-29942-2-git-send-email-guochun.mao@mediatek.com>
+ <20170127222936.d342eloplti27p4s@rob-hp-laptop>
+CC: Brian Norris <computersforpeace@gmail.com>, John Crispin
+ <john@phrozen.org>, David Woodhouse <dwmw2@infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <90bfb55c-eb01-af2f-d2f7-49f1f33da3b2@atmel.com>
+Date: Mon, 30 Jan 2017 13:49:52 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170127222936.d342eloplti27p4s@rob-hp-laptop>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 17 Jan 2017 14:22:46 +0000
-Wei Yongjun <weiyj.lk@gmail.com> wrote:
+Le 27/01/2017 à 23:29, Rob Herring a écrit :
+> On Wed, Jan 25, 2017 at 11:38:34AM +0800, Guochun Mao wrote:
+>> Add "mediatek,mt2701-nor" for nor flash node's compatible.
+>>
+>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+>> ---
+>>  .../devicetree/bindings/mtd/mtk-quadspi.txt        |    8 +++++++-
+>>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
+> 
+Applied to the github spi-nor tree.
 
-> From: Wei Yongjun <weiyongjun1@huawei.com>
-> 
-> There is a error message within devm_ioremap_resource
-> already, so remove the dev_err call to avoid redundant
-> error message.
-> 
-
-Applied.
-
-Thanks,
-
-Boris
-
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  drivers/mtd/nand/mtk_nand.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-> index 6c3eed3..6c517c6 100644
-> --- a/drivers/mtd/nand/mtk_nand.c
-> +++ b/drivers/mtd/nand/mtk_nand.c
-> @@ -1383,7 +1383,6 @@ static int mtk_nfc_probe(struct platform_device *pdev)
->  	nfc->regs = devm_ioremap_resource(dev, res);
->  	if (IS_ERR(nfc->regs)) {
->  		ret = PTR_ERR(nfc->regs);
-> -		dev_err(dev, "no nfi base\n");
->  		goto release_ecc;
->  	}
->  
-> 
-> 
-> 
+Thanks!
