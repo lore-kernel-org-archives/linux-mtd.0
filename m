@@ -1,30 +1,36 @@
-Received: from mail-eopbgr30128.outbound.protection.outlook.com
- ([40.107.3.128] helo=EUR03-AM5-obe.outbound.protection.outlook.com)
+Received: from mailout2.samsung.com ([203.254.224.25])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cYC7g-0007vf-Tc
- for linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 13:35:58 +0000
-Subject: Re: UBI/UBIFS corruptions during random power-cuts
-To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
- <0500de05-b3d7-6cbc-0236-5d4c83a5f00f@nod.at>
- <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
- <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
- <89cd8327-581b-4285-d9ae-138d800211cf@toradex.com>
- <bceb976b-0aac-fe04-a540-f24823366233@nod.at>
- <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
- <5a769de2-31f1-f011-c6bc-e94427407751@nod.at>
- <a27bc761-b8d2-4f69-468a-b9a4d61c68f8@toradex.com>
- <306876cd-0855-b9ee-659d-2164cfc3b2c4@nod.at>
- <877dea3c-717d-9b1a-c01d-537f3b46b2de@toradex.com>
- <ff60b696-ffec-8ddd-16bd-407a9bacb3e0@nod.at>
-CC: Artem Bityutskiy <dedekind1@gmail.com>
-From: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>
-Message-ID: <47db4d54-f8f5-a663-75b3-d2cd5fd0769f@toradex.com>
-Date: Mon, 30 Jan 2017 19:01:29 +0530
-MIME-Version: 1.0
-In-Reply-To: <ff60b696-ffec-8ddd-16bd-407a9bacb3e0@nod.at>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+ id 1cYEho-0002k5-Eb
+ for linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 16:21:26 +0000
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+ by mailout2.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
+ with ESMTP id <0OKL020MHOYEDB90@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 31 Jan 2017 01:11:02 +0900 (KST)
+From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Maarten ter Huurne <maarten@treewalker.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mips@linux-mips.org,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pwm@vger.kernel.org, linux-fbdev@vger.kernel.org, james.hogan@imgtec.com
+Subject: Re: [PATCH v3 12/14] fbdev: jz4740-fb: Let the pinctrl driver
+ configure the pins
+Date: Mon, 30 Jan 2017 17:10:59 +0100
+Message-id: <4646116.fubHeuC3Nm@amdc3058>
+In-reply-to: <20170125185207.23902-13-paul@crapouillou.net>
+MIME-version: 1.0
+Content-transfer-encoding: 7Bit
+Content-type: text/plain; charset=us-ascii
+References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
+ <CGME20170125185254epcas5p15b40cad57649dc77afe8d2fd316687ff@epcas5p1.samsung.com>
+ <20170125185207.23902-13-paul@crapouillou.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,54 +40,190 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/30/2017 01:27 PM, Richard Weinberger wrote:
 
-> Bhuvan,
->
-> Am 30.01.2017 um 06:48 schrieb Bhuvanchandra DV:
->> [    9.823378] UBIFS (ubi0:2): background thread "ubifs_bgt0_2" started, PID 126
->> [   10.190926] UBIFS assert failed in pack_bits at 242 (pid 120)
->> [   10.197294] CPU: 0 PID: 120 Comm: mount Not tainted 4.10.0-rc4-00016-g60124f748422-dirty #13
->> [   10.205952] Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
->> [   10.212515] Backtrace:
->> [   10.215142] [<c010c474>] (dump_backtrace) from [<c010c71c>] (show_stack+0x18/0x1c)
->> [   10.222899]  r7:00000000 r6:600c0013 r5:00000000 r4:c0e29058
->> [   10.228716] [<c010c704>] (show_stack) from [<c03fcf18>] (dump_stack+0xb4/0xe8)
->> [   10.236150] [<c03fce64>] (dump_stack) from [<c037b2dc>] (pack_bits+0x1f4/0x200)
->> [   10.243649]  r10:0000b800 r9:ffffffee r8:c32bdd50 r7:c32bdd54 r6:00000001 r5:c831c860
->> [   10.251651]  r4:0000000e r3:00000000
->> [   10.255352] [<c037b0e8>] (pack_bits) from [<c037bf90>] (ubifs_pack_pnode+0x84/0x104)
->> [   10.263289]  r9:c831c853 r8:c831c851 r7:c32299e0 r6:c30dc000 r5:c32bdd54 r4:c32299c8
->> [   10.271233] [<c037bf0c>] (ubifs_pack_pnode) from [<c0385d50>] (ubifs_lpt_end_commit+0x27c/0x6fc)
->> [   10.280214]  r9:00000001 r8:c8311000 r7:00000011 r6:0000b862 r5:c3229980 r4:c30dc000
->> [   10.288148] [<c0385ad4>] (ubifs_lpt_end_commit) from [<c0373658>] (do_commit+0x244/0x80c)
->> [   10.296515]  r10:00000020 r9:00000020 r8:c3195dd4 r7:00000003 r6:c30dc2f0 r5:c30dc000
->> [   10.304514]  r4:00000000
->> [   10.307163] [<c0373414>] (do_commit) from [<c0373e70>] (ubifs_run_commit+0x9c/0xf0)
->> [   10.315001]  r8:00000000 r7:c30dcb48 r6:c30dc3e4 r5:c30dc42c r4:c30dc000
->> [   10.321856] [<c0373dd4>] (ubifs_run_commit) from [<c03823dc>] (ubifs_rcvry_gc_commit+0x7c/0x1d8)
->> [   10.330830]  r7:c30dcb48 r6:c3195c00 r5:c30dcb8c r4:c30dc000
->> [   10.336659] [<c0382360>] (ubifs_rcvry_gc_commit) from [<c0364700>] (ubifs_remount_fs+0x514/0x79c)
->> [   10.345731]  r7:c30dcb48 r6:c32a3c00 r5:c30dcb8c r4:c30dc000
->> [   10.351548] [<c03641ec>] (ubifs_remount_fs) from [<c0225188>] (do_remount_sb+0x6c/0x1d8)
->> [   10.359825]  r9:00000020 r8:00000000 r7:00000000 r6:00000000 r5:00000000 r4:c318a000
->> [   10.367783] [<c022511c>] (do_remount_sb) from [<c0248f4c>] (do_mount+0x698/0xc84)
->> [   10.375452]  r8:c3108b10 r7:c02498e8 r6:c318a000 r5:00000000 r4:c318a044
->> [   10.382306] [<c02488b4>] (do_mount) from [<c02498e8>] (SyS_mount+0x7c/0xa4)
->> [   10.389416]  r10:00000000 r9:c32bc000 r8:c0ed0020 r7:01696860 r6:00000000 r5:c3214b40
->> [   10.397418]  r4:c3214e80
->> [   10.400075] [<c024986c>] (SyS_mount) from [<c0107e60>] (ret_fast_syscall+0x0/0x1c)
->> [   10.407832]  r8:c0108004 r7:00000015 r6:00000000 r5:00000000 r4:00000000
->> [   10.518251] systemd[1]: Started Journal Service.
-> This is what I was looking for! :)
-> Let's see whether I can find the root cause with that issue, otherwise I'll create
-> a debug patch for you.
+Hi,
 
-Sure! Thank you.
+On Wednesday, January 25, 2017 07:52:05 PM Paul Cercueil wrote:
+> Now that the JZ4740 and similar SoCs have a pinctrl driver, we rely on
+> the pins being properly configured before the driver probes.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+
+Best regards,
 --
-Bhuvan
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
 
->
-> Thanks,
-> //richard
+> ---
+>  drivers/video/fbdev/jz4740_fb.c | 104 ++--------------------------------------
+>  1 file changed, 3 insertions(+), 101 deletions(-)
+> 
+> v2: No changes
+> v3: No changes
+> 
+> diff --git a/drivers/video/fbdev/jz4740_fb.c b/drivers/video/fbdev/jz4740_fb.c
+> index 87790e9644d0..b57df83fdbd3 100644
+> --- a/drivers/video/fbdev/jz4740_fb.c
+> +++ b/drivers/video/fbdev/jz4740_fb.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pinctrl/consumer.h>
+>  
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+> @@ -27,7 +28,6 @@
+>  #include <linux/dma-mapping.h>
+>  
+>  #include <asm/mach-jz4740/jz4740_fb.h>
+> -#include <asm/mach-jz4740/gpio.h>
+>  
+>  #define JZ_REG_LCD_CFG		0x00
+>  #define JZ_REG_LCD_VSYNC	0x04
+> @@ -146,93 +146,6 @@ static const struct fb_fix_screeninfo jzfb_fix = {
+>  	.accel		= FB_ACCEL_NONE,
+>  };
+>  
+> -static const struct jz_gpio_bulk_request jz_lcd_ctrl_pins[] = {
+> -	JZ_GPIO_BULK_PIN(LCD_PCLK),
+> -	JZ_GPIO_BULK_PIN(LCD_HSYNC),
+> -	JZ_GPIO_BULK_PIN(LCD_VSYNC),
+> -	JZ_GPIO_BULK_PIN(LCD_DE),
+> -	JZ_GPIO_BULK_PIN(LCD_PS),
+> -	JZ_GPIO_BULK_PIN(LCD_REV),
+> -	JZ_GPIO_BULK_PIN(LCD_CLS),
+> -	JZ_GPIO_BULK_PIN(LCD_SPL),
+> -};
+> -
+> -static const struct jz_gpio_bulk_request jz_lcd_data_pins[] = {
+> -	JZ_GPIO_BULK_PIN(LCD_DATA0),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA1),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA2),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA3),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA4),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA5),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA6),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA7),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA8),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA9),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA10),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA11),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA12),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA13),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA14),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA15),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA16),
+> -	JZ_GPIO_BULK_PIN(LCD_DATA17),
+> -};
+> -
+> -static unsigned int jzfb_num_ctrl_pins(struct jzfb *jzfb)
+> -{
+> -	unsigned int num;
+> -
+> -	switch (jzfb->pdata->lcd_type) {
+> -	case JZ_LCD_TYPE_GENERIC_16_BIT:
+> -		num = 4;
+> -		break;
+> -	case JZ_LCD_TYPE_GENERIC_18_BIT:
+> -		num = 4;
+> -		break;
+> -	case JZ_LCD_TYPE_8BIT_SERIAL:
+> -		num = 3;
+> -		break;
+> -	case JZ_LCD_TYPE_SPECIAL_TFT_1:
+> -	case JZ_LCD_TYPE_SPECIAL_TFT_2:
+> -	case JZ_LCD_TYPE_SPECIAL_TFT_3:
+> -		num = 8;
+> -		break;
+> -	default:
+> -		num = 0;
+> -		break;
+> -	}
+> -	return num;
+> -}
+> -
+> -static unsigned int jzfb_num_data_pins(struct jzfb *jzfb)
+> -{
+> -	unsigned int num;
+> -
+> -	switch (jzfb->pdata->lcd_type) {
+> -	case JZ_LCD_TYPE_GENERIC_16_BIT:
+> -		num = 16;
+> -		break;
+> -	case JZ_LCD_TYPE_GENERIC_18_BIT:
+> -		num = 18;
+> -		break;
+> -	case JZ_LCD_TYPE_8BIT_SERIAL:
+> -		num = 8;
+> -		break;
+> -	case JZ_LCD_TYPE_SPECIAL_TFT_1:
+> -	case JZ_LCD_TYPE_SPECIAL_TFT_2:
+> -	case JZ_LCD_TYPE_SPECIAL_TFT_3:
+> -		if (jzfb->pdata->bpp == 18)
+> -			num = 18;
+> -		else
+> -			num = 16;
+> -		break;
+> -	default:
+> -		num = 0;
+> -		break;
+> -	}
+> -	return num;
+> -}
+> -
+>  /* Based on CNVT_TOHW macro from skeletonfb.c */
+>  static inline uint32_t jzfb_convert_color_to_hw(unsigned val,
+>  	struct fb_bitfield *bf)
+> @@ -487,8 +400,7 @@ static void jzfb_enable(struct jzfb *jzfb)
+>  
+>  	clk_prepare_enable(jzfb->ldclk);
+>  
+> -	jz_gpio_bulk_resume(jz_lcd_ctrl_pins, jzfb_num_ctrl_pins(jzfb));
+> -	jz_gpio_bulk_resume(jz_lcd_data_pins, jzfb_num_data_pins(jzfb));
+> +	pinctrl_pm_select_default_state(&jzfb->pdev->dev);
+>  
+>  	writel(0, jzfb->base + JZ_REG_LCD_STATE);
+>  
+> @@ -511,8 +423,7 @@ static void jzfb_disable(struct jzfb *jzfb)
+>  		ctrl = readl(jzfb->base + JZ_REG_LCD_STATE);
+>  	} while (!(ctrl & JZ_LCD_STATE_DISABLED));
+>  
+> -	jz_gpio_bulk_suspend(jz_lcd_ctrl_pins, jzfb_num_ctrl_pins(jzfb));
+> -	jz_gpio_bulk_suspend(jz_lcd_data_pins, jzfb_num_data_pins(jzfb));
+> +	pinctrl_pm_select_sleep_state(&jzfb->pdev->dev);
+>  
+>  	clk_disable_unprepare(jzfb->ldclk);
+>  }
+> @@ -701,9 +612,6 @@ static int jzfb_probe(struct platform_device *pdev)
+>  	fb->mode = NULL;
+>  	jzfb_set_par(fb);
+>  
+> -	jz_gpio_bulk_request(jz_lcd_ctrl_pins, jzfb_num_ctrl_pins(jzfb));
+> -	jz_gpio_bulk_request(jz_lcd_data_pins, jzfb_num_data_pins(jzfb));
+> -
+>  	ret = register_framebuffer(fb);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "Failed to register framebuffer: %d\n", ret);
+> @@ -715,9 +623,6 @@ static int jzfb_probe(struct platform_device *pdev)
+>  	return 0;
+>  
+>  err_free_devmem:
+> -	jz_gpio_bulk_free(jz_lcd_ctrl_pins, jzfb_num_ctrl_pins(jzfb));
+> -	jz_gpio_bulk_free(jz_lcd_data_pins, jzfb_num_data_pins(jzfb));
+> -
+>  	fb_dealloc_cmap(&fb->cmap);
+>  	jzfb_free_devmem(jzfb);
+>  err_framebuffer_release:
+> @@ -731,9 +636,6 @@ static int jzfb_remove(struct platform_device *pdev)
+>  
+>  	jzfb_blank(FB_BLANK_POWERDOWN, jzfb->fb);
+>  
+> -	jz_gpio_bulk_free(jz_lcd_ctrl_pins, jzfb_num_ctrl_pins(jzfb));
+> -	jz_gpio_bulk_free(jz_lcd_data_pins, jzfb_num_data_pins(jzfb));
+> -
+>  	fb_dealloc_cmap(&jzfb->fb->cmap);
+>  	jzfb_free_devmem(jzfb);
