@@ -1,18 +1,35 @@
-Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cYJFk-0006rj-By
- for linux-mtd@lists.infradead.org; Mon, 30 Jan 2017 21:12:46 +0000
-Received: by mail-qk0-x242.google.com with SMTP id u25so20730974qki.2
- for <linux-mtd@lists.infradead.org>; Mon, 30 Jan 2017 13:12:23 -0800 (PST)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
- broonie@kernel.org
-Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH 1/1] spi: bcm-qspi: Added mspi read fallback in
- bcm_qspi_flash_read()
-Date: Mon, 30 Jan 2017 16:11:16 -0500
-Message-Id: <1485810676-19742-1-git-send-email-kdasu.kdev@gmail.com>
+Date: Tue, 31 Jan 2017 09:04:14 +0530
+From: Vinod Koul <vinod.koul@intel.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, linux-gpio@vger.kernel.org,
+ Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH RESEND 2/5] dmaengine: Provide a wrapper for memcpy
+ operations
+Message-ID: <20170131033414.GI19244@localhost>
+References: <1485535324-28393-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1485535324-28393-3-git-send-email-boris.brezillon@free-electrons.com>
+ <20170130165417.GF19244@localhost>
+ <20170130184721.072c0de1@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170130184721.072c0de1@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,194 +39,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added mspi read fallback under certain circumstances like unaligned
-buffer, address on short reads. Also takes care of version 3.0 spi
-controller where flash address crosses 4MB boundary on transfers the
-driver resorts to mspi reads.
+On Mon, Jan 30, 2017 at 06:47:21PM +0100, Boris Brezillon wrote:
+> Hi Vinod,
+> 
+> On Mon, 30 Jan 2017 22:24:17 +0530
+> Vinod Koul <vinod.koul@intel.com> wrote:
+> 
+> > On Fri, Jan 27, 2017 at 05:42:01PM +0100, Boris Brezillon wrote:
+> > > Almost all ->device_prep_dma_xx() methods have a wrapper defined in
+> > > dmaengine.h. Add one for  ->device_prep_dma_memcpy().  
+> > 
+> > Looks good to me.
+> > 
+> > Acked-by: Vinod Koul <vinod.koul@intel.com>
+> > 
+> > 
+> 
+> Maybe you can take this patch directly (the NAND related bits are for
+> 4.12).
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/spi/spi-bcm-qspi.c | 116 +++++++++++++++++++++++++++++++++------------
- 1 file changed, 85 insertions(+), 31 deletions(-)
+Good idea, applied now..
 
-diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
-index 14f9dea..b50b6df 100644
---- a/drivers/spi/spi-bcm-qspi.c
-+++ b/drivers/spi/spi-bcm-qspi.c
-@@ -192,9 +192,11 @@ struct bcm_qspi_dev_id {
- 	void *dev;
- };
- 
-+
- struct qspi_trans {
- 	struct spi_transfer *trans;
- 	int byte;
-+	bool mspi_last_trans;
- };
- 
- struct bcm_qspi {
-@@ -616,6 +618,16 @@ static int bcm_qspi_setup(struct spi_device *spi)
- 	return 0;
- }
- 
-+static bool bcm_qspi_mspi_transfer_is_last(struct bcm_qspi *qspi,
-+					   struct qspi_trans *qt)
-+{
-+	if (qt->mspi_last_trans &&
-+	    spi_transfer_is_last(qspi->master, qt->trans))
-+		return true;
-+	else
-+		return false;
-+}
-+
- static int update_qspi_trans_byte_count(struct bcm_qspi *qspi,
- 					struct qspi_trans *qt, int flags)
- {
-@@ -629,7 +641,6 @@ static int update_qspi_trans_byte_count(struct bcm_qspi *qspi,
- 
- 	if (qt->byte >= qt->trans->len) {
- 		/* we're at the end of the spi_transfer */
--
- 		/* in TX mode, need to pause for a delay or CS change */
- 		if (qt->trans->delay_usecs &&
- 		    (flags & TRANS_STATUS_BREAK_DELAY))
-@@ -641,7 +652,7 @@ static int update_qspi_trans_byte_count(struct bcm_qspi *qspi,
- 			goto done;
- 
- 		dev_dbg(&qspi->pdev->dev, "advance msg exit\n");
--		if (spi_transfer_is_last(qspi->master, qt->trans))
-+		if (bcm_qspi_mspi_transfer_is_last(qspi, qt))
- 			ret = TRANS_STATUS_BREAK_EOM;
- 		else
- 			ret = TRANS_STATUS_BREAK_NO_BYTES;
-@@ -885,6 +896,76 @@ static int bcm_qspi_bspi_flash_read(struct spi_device *spi,
- 	return ret;
- }
- 
-+static int bcm_qspi_transfer_one(struct spi_master *master,
-+				 struct spi_device *spi,
-+				 struct spi_transfer *trans)
-+{
-+	struct bcm_qspi *qspi = spi_master_get_devdata(master);
-+	int slots;
-+	unsigned long timeo = msecs_to_jiffies(100);
-+
-+	bcm_qspi_chip_select(qspi, spi->chip_select);
-+	qspi->trans_pos.trans = trans;
-+	qspi->trans_pos.byte = 0;
-+
-+	while (qspi->trans_pos.byte < trans->len) {
-+		reinit_completion(&qspi->mspi_done);
-+
-+		slots = write_to_hw(qspi, spi);
-+		if (!wait_for_completion_timeout(&qspi->mspi_done, timeo)) {
-+			dev_err(&qspi->pdev->dev, "timeout waiting for MSPI\n");
-+			return -ETIMEDOUT;
-+		}
-+
-+		read_from_hw(qspi, slots);
-+	}
-+
-+	return 0;
-+}
-+
-+static int bcm_qspi_mspi_flash_read(struct spi_device *spi,
-+				    struct spi_flash_read_message *msg)
-+{
-+	struct bcm_qspi *qspi = spi_master_get_devdata(spi->master);
-+	struct spi_transfer t[2];
-+	u8 cmd[6];
-+	int ret;
-+
-+	memset(cmd, 0, sizeof(cmd));
-+	memset(t, 0, sizeof(t));
-+
-+	/* tx */
-+	/* opcode is in cmd[0] */
-+	cmd[0] = msg->read_opcode;
-+	cmd[1] = msg->from >> (msg->addr_width * 8 -  8);
-+	cmd[2] = msg->from >> (msg->addr_width * 8 - 16);
-+	cmd[3] = msg->from >> (msg->addr_width * 8 - 24);
-+	cmd[4] = msg->from >> (msg->addr_width * 8 - 32);
-+	t[0].tx_buf = cmd;
-+	t[0].len = msg->addr_width + msg->dummy_bytes + 1;
-+	t[0].bits_per_word = spi->bits_per_word;
-+	t[0].tx_nbits = msg->opcode_nbits;
-+	/* lets mspi know that this is not last transfer */
-+	qspi->trans_pos.mspi_last_trans = false;
-+	ret = bcm_qspi_transfer_one(spi->master, spi, &t[0]);
-+
-+	/* rx */
-+	qspi->trans_pos.mspi_last_trans = true;
-+	if (!ret) {
-+		/* rx */
-+		t[1].rx_buf = msg->buf;
-+		t[1].len = msg->len;
-+		t[1].rx_nbits =  msg->data_nbits;
-+		t[1].bits_per_word = spi->bits_per_word;
-+		ret = bcm_qspi_transfer_one(spi->master, spi, &t[1]);
-+	}
-+
-+	if (!ret)
-+		msg->retlen = msg->len;
-+
-+	return ret;
-+}
-+
- static int bcm_qspi_flash_read(struct spi_device *spi,
- 			       struct spi_flash_read_message *msg)
- {
-@@ -918,8 +999,7 @@ static int bcm_qspi_flash_read(struct spi_device *spi,
- 		mspi_read = true;
- 
- 	if (mspi_read)
--		/* this will make the m25p80 read to fallback to mspi read */
--		return -EAGAIN;
-+		return bcm_qspi_mspi_flash_read(spi, msg);
- 
- 	io_width = msg->data_nbits ? msg->data_nbits : SPI_NBITS_SINGLE;
- 	addrlen = msg->addr_width;
-@@ -931,33 +1011,6 @@ static int bcm_qspi_flash_read(struct spi_device *spi,
- 	return ret;
- }
- 
--static int bcm_qspi_transfer_one(struct spi_master *master,
--				 struct spi_device *spi,
--				 struct spi_transfer *trans)
--{
--	struct bcm_qspi *qspi = spi_master_get_devdata(master);
--	int slots;
--	unsigned long timeo = msecs_to_jiffies(100);
--
--	bcm_qspi_chip_select(qspi, spi->chip_select);
--	qspi->trans_pos.trans = trans;
--	qspi->trans_pos.byte = 0;
--
--	while (qspi->trans_pos.byte < trans->len) {
--		reinit_completion(&qspi->mspi_done);
--
--		slots = write_to_hw(qspi, spi);
--		if (!wait_for_completion_timeout(&qspi->mspi_done, timeo)) {
--			dev_err(&qspi->pdev->dev, "timeout waiting for MSPI\n");
--			return -ETIMEDOUT;
--		}
--
--		read_from_hw(qspi, slots);
--	}
--
--	return 0;
--}
--
- static void bcm_qspi_cleanup(struct spi_device *spi)
- {
- 	struct bcm_qspi_parms *xp = spi_get_ctldata(spi);
-@@ -1187,6 +1240,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
- 	qspi->pdev = pdev;
- 	qspi->trans_pos.trans = NULL;
- 	qspi->trans_pos.byte = 0;
-+	qspi->trans_pos.mspi_last_trans = true;
- 	qspi->master = master;
- 
- 	master->bus_num = -1;
 -- 
-1.9.1
+~Vinod
