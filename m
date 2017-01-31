@@ -1,23 +1,21 @@
-Received: from mail-it0-x232.google.com ([2607:f8b0:4001:c0b::232])
+Received: from mail-io0-x22e.google.com ([2607:f8b0:4001:c06::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cYYCO-00010e-HD
- for linux-mtd@lists.infradead.org; Tue, 31 Jan 2017 13:10:20 +0000
-Received: by mail-it0-x232.google.com with SMTP id r185so124798944ita.0
- for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2017 05:09:56 -0800 (PST)
+ id 1cYZ4Q-0008Dz-J7
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2017 14:06:09 +0000
+Received: by mail-io0-x22e.google.com with SMTP id j18so131840753ioe.2
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2017 06:05:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <12dc62a7255bd453ff4e5e89f93ebc58@mail.crapouillou.net>
+In-Reply-To: <20170125185207.23902-4-paul@crapouillou.net>
 References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
  <20170125185207.23902-1-paul@crapouillou.net>
- <20170125185207.23902-2-paul@crapouillou.net>
- <20170130203617.hpljtcmzava3rq2n@rob-hp-laptop>
- <12dc62a7255bd453ff4e5e89f93ebc58@mail.crapouillou.net>
+ <20170125185207.23902-4-paul@crapouillou.net>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 31 Jan 2017 14:09:54 +0100
-Message-ID: <CACRpkdbAgy4sh6NT5DdQD6EQtOZEwevohEA6OGRcVz98yqS52Q@mail.gmail.com>
-Subject: Re: [PATCH v3 01/14] Documentation: dt/bindings: Document
- pinctrl-ingenic
+Date: Tue, 31 Jan 2017 15:05:43 +0100
+Message-ID: <CACRpkdZKNACkOYJtUcYavriSxSDMy0iLt2SUX+d8DcKPXofXyw@mail.gmail.com>
+Subject: Re: [PATCH v3 03/14] pinctrl-ingenic: add a pinctrl driver for the
+ Ingenic jz47xx SoCs
 To: Paul Cercueil <paul@crapouillou.net>
-Cc: Rob Herring <robh@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Thierry Reding <thierry.reding@gmail.com>,
@@ -43,48 +41,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 31, 2017 at 11:31 AM, Paul Cercueil <paul@crapouillou.net> wrote:
-> [Rob]:
->> From the overlapping register addresses in the examples and this
->> description, it looks like the pinctrlr and gpio controller are 1 block.
->> If so, then there should only be 1 node.
+On Wed, Jan 25, 2017 at 7:51 PM, Paul Cercueil <paul@crapouillou.net> wrote:
+
+> This driver handles pin configuration and pin muxing for the
+> JZ4740 and JZ4780 SoCs from Ingenic.
 >
-> Well, that's what I had until Linus W. just told me to do the opposite:
->
->> Just pull all these down two levels and make them one device
->> each instead of having them inside the pin controller node
->> like this.
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-I guess the argument is that they are in the same coherent memory
-range so they should be one device node. That is how we handle
-e.g. system controllers so it makes some sense.
+This is starting to look very nice.
 
-So can the two GPIO controllers be modeled as two subnodes of
-the pin controller then?
+> +#include <linux/compiler.h>
+> +#include <linux/gpio.h>
 
-Subnodes are certainly OK, we have that for many other devices
-such as interrupt controllers on PCI bridges and what not.
+Use <linux/gpio/driver.h> if it is a GPIO driver. I should
+be enough ... I think.
 
-So when the probing of the pin controller is ready it can just
-walk down and populate the GPIO subdevices with
-of_platform_default_populate() or simply by registering the
-device directly with platform_device_add_data() just like an
-MFD device does?
+> +static int ingenic_pinctrl_parse_dt_func(struct ingenic_pinctrl *jzpc,
+> +               struct device_node *np)
+> +{
+> +       unsigned int num_groups;
+> +       struct device_node *group_node;
+> +       unsigned int i, j;
+> +       int err, npins, *pins, *confs;
+> +       const char **groups;
+> +
+> +       num_groups = of_get_child_count(np);
+> +       groups = devm_kzalloc(jzpc->dev,
+> +                       sizeof(*groups) * num_groups, GFP_KERNEL);
+> +       if (!groups)
+> +               return -ENOMEM;
+> +
+> +       i = 0;
+> +       for_each_child_of_node(np, group_node) {
+> +               groups[i++] = group_node->name;
+> +
+> +               npins = of_property_count_elems_of_size(group_node,
+> +                               "ingenic,pins", 8);
+> +               if (npins < 0)
+> +                       return npins;
+> +
+> +               pins = devm_kzalloc(jzpc->dev,
+> +                               sizeof(*pins) * npins, GFP_KERNEL);
+> +               confs = devm_kzalloc(jzpc->dev,
+> +                               sizeof(*confs) * npins, GFP_KERNEL);
+> +               if (!pins || !confs)
+> +                       return -ENOMEM;
+> +
+> +               for (j = 0; j < npins; j++) {
+> +                       of_property_read_u32_index(group_node,
+> +                                       "ingenic,pins", j * 2, &pins[j]);
+> +
+> +                       of_property_read_u32_index(group_node,
+> +                                       "ingenic,pins", j * 2 + 1, &confs[j]);
 
-This is nice because we want to use the standard gpio ranges
-to map pins to GPIO lines.
+If I didn't mention before this could pperhaps just use "pins"?
 
-I'm sorry about the unclarities here, but it's essentially an intrinsic
-problem with GPIO that has been with us for years: do we model
-each "bank" as a device or do we just register each bank as a
-gpiochip, or do we even make one gpiochip to cover all the banks.
-All solutions can be found in the kernel... also the different DT bindings:
-one node for a whole slew of GPIO controllers, or seveal nodes
-and I bet also several nodes for memory ranges in close proximity.
+Or does these DT entries not match the generic bindings?
 
-I don't know for sure what is the most elegant solution, we might
-need to build some consensus here for the future so it doesn't
-get to heterogeneous.
+> +               }
+> +
+> +               err = pinctrl_generic_add_group(jzpc->pctl, group_node->name,
+> +                               pins, npins, confs);
+> +               if (err)
+> +                       return err;
+> +       }
+> +
+> +       return pinmux_generic_add_function(jzpc->pctl, np->name,
+> +                       groups, num_groups, NULL);
+> +}
+
+If you just use "pins" can this even be parsed by a generic parser function
+pinconf_generic_dt_subnode_to_map()?
 
 Yours,
 Linus Walleij
