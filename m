@@ -1,35 +1,22 @@
-Date: Tue, 31 Jan 2017 09:04:14 +0530
-From: Vinod Koul <vinod.koul@intel.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, linux-gpio@vger.kernel.org,
- Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Haavard Skinnemoen <hskinnemoen@gmail.com>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm-kernel@lists.infradead.org,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH RESEND 2/5] dmaengine: Provide a wrapper for memcpy
- operations
-Message-ID: <20170131033414.GI19244@localhost>
-References: <1485535324-28393-1-git-send-email-boris.brezillon@free-electrons.com>
- <1485535324-28393-3-git-send-email-boris.brezillon@free-electrons.com>
- <20170130165417.GF19244@localhost>
- <20170130184721.072c0de1@bbrezillon>
+Received: from mail4.hitachi.co.jp ([133.145.228.5])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cYQQN-0000Ta-Uy
+ for linux-mtd@lists.infradead.org; Tue, 31 Jan 2017 04:52:14 +0000
+From: =?gb2312?B?0dLLydDF0fMgLyBJV0FNQVRTVaOsTk9CVUhJUk8=?=
+ <nobuhiro.iwamatsu.kw@hitachi.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: Marek Vasut <marek.vasut@gmail.com>, Jagan Teki <jagan@openedev.com>
+Subject: RE: [PATCH v2] mtd: spi-nor: Add support for N25Q256A13 as N25Q256A
+Date: Tue, 31 Jan 2017 04:51:42 +0000
+Message-ID: <F89ECF87BC754A49BB74E794F6A0EC2F01074B11@GSjpTKYDCembx31.service.hitachi.net>
+References: <1485481897-6368-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
+ <23f8030c-272c-1aab-2146-db45dfe77daf@atmel.com>
+In-Reply-To: <23f8030c-272c-1aab-2146-db45dfe77daf@atmel.com>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170130184721.072c0de1@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,26 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 30, 2017 at 06:47:21PM +0100, Boris Brezillon wrote:
-> Hi Vinod,
-> 
-> On Mon, 30 Jan 2017 22:24:17 +0530
-> Vinod Koul <vinod.koul@intel.com> wrote:
-> 
-> > On Fri, Jan 27, 2017 at 05:42:01PM +0100, Boris Brezillon wrote:
-> > > Almost all ->device_prep_dma_xx() methods have a wrapper defined in
-> > > dmaengine.h. Add one for  ->device_prep_dma_memcpy().  
-> > 
-> > Looks good to me.
-> > 
-> > Acked-by: Vinod Koul <vinod.koul@intel.com>
-> > 
-> > 
-> 
-> Maybe you can take this patch directly (the NAND related bits are for
-> 4.12).
-
-Good idea, applied now..
-
--- 
-~Vinod
+SGksDQoNClRoYW5rcyBmb3IgeW91ciByZXZpZXcuDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdl
+LS0tLS0NCj4gRnJvbTogQ3lyaWxsZSBQaXRjaGVuIFttYWlsdG86Y3lyaWxsZS5waXRjaGVuQGF0
+bWVsLmNvbV0NCj4gU2VudDogTW9uZGF5LCBKYW51YXJ5IDMwLCAyMDE3IDEwOjI5IFBNDQo+IFRv
+OiDR0svJ0MXR8yAvIElXQU1BVFNVo6xOT0JVSElSTzsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVh
+ZC5vcmcNCj4gQ2M6IE1hcmVrIFZhc3V0OyBKYWdhbiBUZWtpDQo+IFN1YmplY3Q6IFJlOiBbUEFU
+Q0ggdjJdIG10ZDogc3BpLW5vcjogQWRkIHN1cHBvcnQgZm9yIE4yNVEyNTZBMTMgYXMgTjI1UTI1
+NkENCj4gDQo+IEhpIE5vYnVoaXJvLA0KPiANCj4gTGUgMjcvMDEvMjAxNyCopCAwMjo1MSwgTm9i
+dWhpcm8gSXdhbWF0c3UgYSCopmNyaXQgOg0KPiA+IEFkZCBuZXcgTWljcm9uIE4yNVEyNTZBIChO
+MjVRMjU2QTEzKSAyNTZNYml0IE5PUiBGbGFzaCBpbiB0aGUgbGlzdCBvZg0KPiA+IHN1cHBvcnRl
+ZCBkZXZpY2VzLiBUaGlzIGNoaXAgaGFzIHRoZSBzYW1lIHN0cnVjdHVyZSBhcyB0aGUgTjI1UTI1
+NkENCj4gPiBidXQgSUQgaXMgZGlmZmVyZW50LiBBbmQgdGhpcyBmaXhlcyBOMjVRMjU2QSB0byBO
+MjVRMjU2IHRvIGZpdCBjaGlwDQo+ID4gbmFtZSB0byBvdGhlciBuMjVxIGNoaXAgbmFtZXMuDQo+
+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBOb2J1aGlybyBJd2FtYXRzdSA8bm9idWhpcm8uaXdhbWF0
+c3Uua3dAaGl0YWNoaS5jb20+DQo+ID4gQ0M6IEphZ2FuIFRla2kgPGphZ2FuQG9wZW5lZGV2LmNv
+bT4NCj4gPiBDQzogTWFyZWsgVmFzdXQgPG1hcmVrLnZhc3V0QGdtYWlsLmNvbT4NCj4gPiAtLS0N
+Cj4gPiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAzICsrLQ0KPiA+ICAxIGZpbGUg
+Y2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4NCj4gPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPiBiL2RyaXZlcnMvbXRkL3Nw
+aS1ub3Ivc3BpLW5vci5jIGluZGV4IGRhN2NkNjlkNDg1Ny4uYTJhNjkyMmUzNTZmDQo+ID4gMTAw
+NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPiArKysgYi9k
+cml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiA+IEBAIC04ODcsNyArODg3LDggQEAgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIHNwaV9ub3JfaWRzW10gPSB7DQo+ID4gIAl7ICJu
+MjVxMDY0YSIsICAgIElORk8oMHgyMGJiMTcsIDAsIDY0ICogMTAyNCwgIDEyOCwgU0VDVF80SyB8
+DQo+IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+ICAJeyAibjI1cTEyOGExMSIsICBJTkZPKDB4
+MjBiYjE4LCAwLCA2NCAqIDEwMjQsICAyNTYsIFNFQ1RfNEsgfA0KPiBTUElfTk9SX1FVQURfUkVB
+RCkgfSwNCj4gPiAgCXsgIm4yNXExMjhhMTMiLCAgSU5GTygweDIwYmExOCwgMCwgNjQgKiAxMDI0
+LCAgMjU2LCBTRUNUXzRLIHwNCj4gU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ID4gLQl7ICJuMjVx
+MjU2YSIsICAgIElORk8oMHgyMGJhMTksIDAsIDY0ICogMTAyNCwgIDUxMiwgU0VDVF80SyB8DQo+
+IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+ICsJeyAibjI1cTI1NiIsICAgICBJTkZPKDB4MjBi
+YTE5LCAwLCA2NCAqIDEwMjQsICA1MTIsIFNFQ1RfNEsgfA0KPiBTUElfTk9SX1FVQURfUkVBRCkg
+fSwNCj4gPiArCXsgIm4yNXEyNTZhIiwgICAgSU5GTygweDIwYmIxOSwgMCwgNjQgKiAxMDI0LCAg
+NTEyLCBTRUNUXzRLIHwNCj4gU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+IA0KPiBUaGlzIHBhdGNo
+IGNoYW5nZXMgdGhlIGFzc29jaWF0aW9uICJuMjVxMjU2YSIgPC0+IDIwIGJhIDE5OiAibjI1cTI1
+NmEiDQo+IHdvdWxkIGJlIG5vdyBhc3NvY2lhdGVkIHRvIDIwIGJiIDE5Lg0KPiBIb3dldmVyIHNv
+bWUgZGV2aWNlIHRyZWVzIHVzZSB0aGUgIm1pY3JvbixuMjVxMjU2YSIgYXMgY29tcGF0aWJsZSBz
+dHJpbmc6DQo+IC0gYXJjaC9hcm0vYm9vdC9kdHMvaW14NnN4LXNiZC5kdHM6IGNvbXBhdGlibGUg
+PSAibWljcm9uLG4yNXEyNTZhIiwNCj4gImplZGVjLHNwaS1ub3IiOw0KPiAtIGFyY2gvYXJtL2Jv
+b3QvZHRzL3NvY2ZwZ2FfYXJyaWE1X3NvY2RrLmR0czogY29tcGF0aWJsZSA9ICJuMjVxMjU2YSI7
+DQo+IC0gYXJjaC9hcm0vYm9vdC9kdHMvc29jZnBnYV9jeWNsb25lNV9zb2NyYXRlcy5kdHM6IGNv
+bXBhdGlibGUgPQ0KPiAibjI1cTI1NmEiOw0KPiAtIGFyY2gvYXJtL2Jvb3QvZHRzL2lteDZ1bC0x
+NHgxNC1ldmsuZHRzOiBjb21wYXRpYmxlID0NCj4gIm1pY3JvbixuMjVxMjU2YSI7DQo+IA0KPiBJ
+ZiB0aGUgYWN0dWFsIEpFREVDIElEIHJlYWQgZnJvbSB0aGUgTWljcm9uIFNQSSBtZW1vcnkgb2Yg
+b25lIG9mIHRoZXNlIGJvYXJkcw0KPiBpcyAyMCBiYSAxOSBhbmQgaWYgeW91IG5vdyBhc3NvY2lh
+dGUgdGhlIHN0cmluZyAibjI1cTI1NmEiIHRvIHRoZSBkaWZmZXJlbnQNCj4gSkVERUMgSUQgMjAg
+YmIgMTksIHRoZW4gc3BpX25vcl9zY2FuKCkgaXMgbGlrZWx5IHRvIGRpc3BsYXkgdGhlIHdhcm5p
+bmcNCj4gbWVzc2FnZSBkdXJpbmcgdGhlIGJvb3Q6DQo+IA0KPiBkZXZfd2FybihkZXYsICJmb3Vu
+ZCAlcywgZXhwZWN0ZWQgJXNcbiIsIGppbmZvLT5uYW1lLCBpbmZvLT5uYW1lKTsNCj4gDQo+IA0K
+PiBEaXNwbGF5aW5nIHN1Y2ggYSB3YXJuaW5nIGR1cmluZyB0aGUgYm9vdCBwcm9jZXNzIHdvdWxk
+IGJlIGFuIHVud2FudGVkIHNpZGUNCj4gZWZmZWN0IG9mIHRoaXMgcGF0Y2ggYW5kIHVzZXJzIG1h
+eSBjb21wbGFpbiBvciBhc2sgd2h5IHN1Y2ggd2FybmluZyBpcyBub3cNCj4gZGlzcGxheWVkIGlu
+IHRoZSBib290IGxvZy4NCj4gDQoNCkkgc2VlLg0KDQo+IFlvdSBtYXkgY3JlYXRlIGEgbmV3IGVu
+dHJ5IGZvciB0aGUgMjAgYmIgMTkgSkVERUMgSUQgYnV0IEkgZG9uJ3QgdGhpbmsgaXQNCj4gaXMg
+dG90YWxseSBzYWZlIHRvIHJlbW92ZSB0aGUgb2xkIG4yNXEyNTZhIGVudHJ5Lg0KDQpXZSBjYW4g
+bm90IHNvbHZlIHRoaXMgcHJvYmxlbSBpZiB3ZSB1c2UgYW4gb2xkIERUQiwgYnV0IEkgdGhpbmsg
+dGhhdCB0aGlzDQpwcm9ibGVtIGNhbiBiZSBzb2x2ZWQgYnkgdXBkYXRpbmcgRFRTLg0KSW4gb3Jk
+ZXIgbm90IHRvIG91dHB1dCB0aGlzIHdhcm5pbmcsIEkgdGhpbmsgdGhhdCBpdCBpcyBuZWNlc3Nh
+cnkgdG8gY2hhbmdlIHRoZQ0KRFRTIG9mIHRoZSB0YXJnZXQgYm9hcmRzLg0KSXMgdGhpcyByaWdo
+dD8NCg0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiANCj4gQ3lyaWxsZQ0KDQpCZXN0IHJlZ2FyZHMs
+DQogIE5vYnVoaXJvDQo=
