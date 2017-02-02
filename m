@@ -1,24 +1,18 @@
-Received: from exsmtp01.microchip.com ([198.175.253.37]
- helo=email.microchip.com)
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZDza-0001fu-CI
- for linux-mtd@lists.infradead.org; Thu, 02 Feb 2017 09:47:51 +0000
-Subject: Re: [PATCH] mtd: spi-nor: cqspi: remove redundant dead code on error
- return check
-To: Colin King <colin.king@canonical.com>, Marek Vasut
- <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- <linux-mtd@lists.infradead.org>
-References: <20170131155317.20106-1-colin.king@canonical.com>
-CC: <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <5b9ebe65-d572-0162-3984-8e7a7800148d@atmel.com>
-Date: Thu, 2 Feb 2017 10:47:24 +0100
-MIME-Version: 1.0
-In-Reply-To: <20170131155317.20106-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+ id 1cZLJ2-0002Nh-H5
+ for linux-mtd@lists.infradead.org; Thu, 02 Feb 2017 17:36:27 +0000
+From: Jan Kara <jack@suse.cz>
+To: <linux-fsdevel@vger.kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
+ Jan Kara <jack@suse.cz>, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 22/24] ubifs: Convert to separately allocated bdi
+Date: Thu,  2 Feb 2017 18:34:20 +0100
+Message-Id: <20170202173422.3240-23-jack@suse.cz>
+In-Reply-To: <20170202173422.3240-1-jack@suse.cz>
+References: <20170202173422.3240-1-jack@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +22,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 31/01/2017 à 16:53, Colin King a écrit :
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Checking for ret < 0 is redundant because a previous check on ret
-> being non-zero already handles the ret < 0 case. Remove the redundant
-> code. Found by CoverityScan, CID#1398863, CID#1398864
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Allocate struct backing_dev_info separately instead of embedding it
+inside the superblock. This unifies handling of bdi among users.
 
-Applied to the github spi-nor tree.
+CC: Richard Weinberger <richard@nod.at>
+CC: Artem Bityutskiy <dedekind1@gmail.com>
+CC: Adrian Hunter <adrian.hunter@intel.com>
+CC: linux-mtd@lists.infradead.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ubifs/super.c | 23 +++++++----------------
+ fs/ubifs/ubifs.h |  3 ---
+ 2 files changed, 7 insertions(+), 19 deletions(-)
 
-Thanks!
-> ---
->  drivers/mtd/spi-nor/cadence-quadspi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-> index 3fb7be8..9f8102d 100644
-> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
-> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-> @@ -893,7 +893,7 @@ static ssize_t cqspi_write(struct spi_nor *nor, loff_t to,
->  	if (ret)
->  		return ret;
->  
-> -	return (ret < 0) ? ret : len;
-> +	return len;
->  }
->  
->  static ssize_t cqspi_read(struct spi_nor *nor, loff_t from,
-> @@ -913,7 +913,7 @@ static ssize_t cqspi_read(struct spi_nor *nor, loff_t from,
->  	if (ret)
->  		return ret;
->  
-> -	return (ret < 0) ? ret : len;
-> +	return len;
->  }
->  
->  static int cqspi_erase(struct spi_nor *nor, loff_t offs)
-> 
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index e08aa04fc835..34810eb52b22 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1827,7 +1827,6 @@ static void ubifs_put_super(struct super_block *sb)
+ 	}
+ 
+ 	ubifs_umount(c);
+-	bdi_destroy(&c->bdi);
+ 	ubi_close_volume(c->ubi);
+ 	mutex_unlock(&c->umount_mutex);
+ }
+@@ -2019,29 +2018,23 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto out;
+ 	}
+ 
++	err = ubifs_parse_options(c, data, 0);
++	if (err)
++		goto out_close;
++
+ 	/*
+ 	 * UBIFS provides 'backing_dev_info' in order to disable read-ahead. For
+ 	 * UBIFS, I/O is not deferred, it is done immediately in readpage,
+ 	 * which means the user would have to wait not just for their own I/O
+ 	 * but the read-ahead I/O as well i.e. completely pointless.
+ 	 *
+-	 * Read-ahead will be disabled because @c->bdi.ra_pages is 0.
++	 * Read-ahead will be disabled because @sb->s_bdi->ra_pages is 0.
+ 	 */
+-	c->bdi.name = "ubifs",
+-	c->bdi.capabilities = 0;
+-	err  = bdi_init(&c->bdi);
++	err = super_setup_bdi_name(sb, "ubifs_%d_%d", c->vi.ubi_num,
++				   c->vi.vol_id);
+ 	if (err)
+ 		goto out_close;
+-	err = bdi_register(&c->bdi, NULL, "ubifs_%d_%d",
+-			   c->vi.ubi_num, c->vi.vol_id);
+-	if (err)
+-		goto out_bdi;
+-
+-	err = ubifs_parse_options(c, data, 0);
+-	if (err)
+-		goto out_bdi;
+ 
+-	sb->s_bdi = &c->bdi;
+ 	sb->s_fs_info = c;
+ 	sb->s_magic = UBIFS_SUPER_MAGIC;
+ 	sb->s_blocksize = UBIFS_BLOCK_SIZE;
+@@ -2080,8 +2073,6 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 	ubifs_umount(c);
+ out_unlock:
+ 	mutex_unlock(&c->umount_mutex);
+-out_bdi:
+-	bdi_destroy(&c->bdi);
+ out_close:
+ 	ubi_close_volume(c->ubi);
+ out:
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index ca72382ce6cc..41b42a425b42 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -968,7 +968,6 @@ struct ubifs_debug_info;
+  * struct ubifs_info - UBIFS file-system description data structure
+  * (per-superblock).
+  * @vfs_sb: VFS @struct super_block object
+- * @bdi: backing device info object to make VFS happy and disable read-ahead
+  *
+  * @highest_inum: highest used inode number
+  * @max_sqnum: current global sequence number
+@@ -1216,7 +1215,6 @@ struct ubifs_debug_info;
+  */
+ struct ubifs_info {
+ 	struct super_block *vfs_sb;
+-	struct backing_dev_info bdi;
+ 
+ 	ino_t highest_inum;
+ 	unsigned long long max_sqnum;
+@@ -1457,7 +1455,6 @@ extern const struct inode_operations ubifs_file_inode_operations;
+ extern const struct file_operations ubifs_dir_operations;
+ extern const struct inode_operations ubifs_dir_inode_operations;
+ extern const struct inode_operations ubifs_symlink_inode_operations;
+-extern struct backing_dev_info ubifs_backing_dev_info;
+ extern struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
+ 
+ /* io.c */
+-- 
+2.10.2
