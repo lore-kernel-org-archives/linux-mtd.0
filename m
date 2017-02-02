@@ -1,15 +1,24 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cZ1hg-0004uD-KZ
- for linux-mtd@lists.infradead.org; Wed, 01 Feb 2017 20:40:35 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, david@sigma-star.at,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] ubifs: fix data node size for truncating uncompressed nodes
-Date: Wed,  1 Feb 2017 21:40:00 +0100
-Message-Id: <20170201204000.17890-1-richard@nod.at>
+Message-ID: <1486005698.3370.1.camel@mhfsdcap03>
+Subject: Re: [PATCH v2 1/2] Documentation: mtk-quadspi: update DT bindings
+From: Guochun Mao <guochun.mao@mediatek.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring <robh@kernel.org>
+CC: Brian Norris <computersforpeace@gmail.com>, John Crispin
+ <john@phrozen.org>, David Woodhouse <dwmw2@infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Date: Thu, 2 Feb 2017 11:21:38 +0800
+In-Reply-To: <90bfb55c-eb01-af2f-d2f7-49f1f33da3b2@atmel.com>
+References: <1485315515-29942-1-git-send-email-guochun.mao@mediatek.com>
+ <1485315515-29942-2-git-send-email-guochun.mao@mediatek.com>
+ <20170127222936.d342eloplti27p4s@rob-hp-laptop>
+ <90bfb55c-eb01-af2f-d2f7-49f1f33da3b2@atmel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,35 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+On Mon, 2017-01-30 at 13:49 +0100, Cyrille Pitchen wrote:
+> Le 27/01/2017 à 23:29, Rob Herring a écrit :
+> > On Wed, Jan 25, 2017 at 11:38:34AM +0800, Guochun Mao wrote:
+> >> Add "mediatek,mt2701-nor" for nor flash node's compatible.
+> >>
+> >> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> >> ---
+> >>  .../devicetree/bindings/mtd/mtk-quadspi.txt        |    8 +++++++-
+> >>  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > 
+> Applied to the github spi-nor tree.
+> 
+> Thanks!
 
-Currently, the function truncate_data_node only updates the
-destination data node size if compression is used. For
-uncompressed nodes, the old length is incorrectly retained.
-
-This patch makes sure that the length is correctly set when
-compression is disabled.
-
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/journal.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 294519b98874..f3b620cbdda4 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1298,7 +1298,9 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
- 			goto out;
- 	}
- 
--	if (compr_type != UBIFS_COMPR_NONE) {
-+	if (compr_type == UBIFS_COMPR_NONE) {
-+		out_len = *new_len;
-+	} else {
- 		err = ubifs_decompress(c, &dn->data, dlen, buf, &out_len, compr_type);
- 		if (err)
- 			goto out;
--- 
-2.10.2
+Thank you very much!
