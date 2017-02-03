@@ -1,33 +1,27 @@
-Date: Fri, 3 Feb 2017 16:32:22 +0100
-From: Michal Hocko <mhocko@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Jan Kara <jack@suse.cz>, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
- ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, logfs@logfs.org,
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
-Message-ID: <20170203153222.GH19325@dhcp22.suse.cz>
-References: <20170117161618.GT19699@dhcp22.suse.cz>
- <20170117172925.GA2486@quack2.suse.cz>
- <20170119083956.GE30786@dhcp22.suse.cz>
- <20170119092236.GC2565@quack2.suse.cz>
- <20170119094405.GK30786@dhcp22.suse.cz>
- <20170126074455.GC8456@dhcp22.suse.cz>
- <20170127061318.xd2qxashbl4dajez@thunk.org>
- <20170127093735.GB4143@dhcp22.suse.cz>
- <20170127164042.2o3bnyopihcb224g@thunk.org>
- <20170130081210.GD8443@dhcp22.suse.cz>
+Date: Fri, 3 Feb 2017 10:31:56 -0800
+From: Liu Bo <bo.li.liu@oracle.com>
+To: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+ linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-nfs@vger.kernel.org, Petr Vandrovec <petr@vandrovec.name>,
+ linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+ osd-dev@open-osd.org, codalist@TELEMANN.coda.cs.cmu.edu,
+ linux-afs@lists.infradead.org, ecryptfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+ lustre-devel@lists.lustre.org
+Subject: Re: [PATCH 04/24] fs: Provide infrastructure for dynamic BDIs in
+ filesystems
+Message-ID: <20170203183155.GA30842@localhost.localdomain>
+Reply-To: bo.li.liu@oracle.com
+References: <20170202173422.3240-1-jack@suse.cz>
+ <20170202173422.3240-5-jack@suse.cz>
+ <20170202192827.GF6550@localhost.localdomain>
+ <20170203135042.GB5844@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170130081210.GD8443@dhcp22.suse.cz>
+In-Reply-To: <20170203135042.GB5844@quack2.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,35 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon 30-01-17 09:12:10, Michal Hocko wrote:
-> On Fri 27-01-17 11:40:42, Theodore Ts'o wrote:
-> > On Fri, Jan 27, 2017 at 10:37:35AM +0100, Michal Hocko wrote:
-> > > If this ever turn out to be a problem and with the vmapped stacks we
-> > > have good chances to get a proper stack traces on a potential overflow
-> > > we can add the scope API around the problematic code path with the
-> > > explanation why it is needed.
+On Fri, Feb 03, 2017 at 02:50:42PM +0100, Jan Kara wrote:
+> On Thu 02-02-17 11:28:27, Liu Bo wrote:
+> > Hi,
 > > 
-> > Yeah, or maybe we can automate it?  Can the reclaim code check how
-> > much stack space is left and do the right thing automatically?
+> > On Thu, Feb 02, 2017 at 06:34:02PM +0100, Jan Kara wrote:
+> > > Provide helper functions for setting up dynamically allocated
+> > > backing_dev_info structures for filesystems and cleaning them up on
+> > > superblock destruction.
+> > 
+> > Just one concern, will this cause problems for multiple superblock cases
+> > like nfs with nosharecache?
 > 
-> I am not sure how to do that. Checking for some magic value sounds quite
-> fragile to me. It also sounds a bit strange to focus only on the reclaim
-> while other code paths might suffer from the same problem.
-> 
-> What is actually the deepest possible call chain from the slab reclaim
-> where I stopped? I have tried to follow that path but hit the callback
-> wall quite early.
->  
-> > The reason why I'm nervous is that nojournal mode is not a common
-> > configuration, and "wait until production systems start failing" is
-> > not a strategy that I or many SRE-types find.... comforting.
-> 
-> I understand that but I would be much more happier if we did the
-> decision based on the actual data rather than a fear something would
-> break down.
+> Can you ellaborate a bit? I've looked for a while what nfs with
+> nosharecache does but I didn't see how it would influence anything with
+> bdis...
 
-ping on this. I would really like to move forward here and target 4.11
-merge window. Is your concern so serious to block this patch?
--- 
-Michal Hocko
-SUSE Labs
+Oh, I missed that bdi_seq was static, then it should be fine.
+
+(I was worried about that nfs with nosharecache would have multiple
+superblocks and if each superblock has a bdi using the same bdi name,
+nfs-xx.)
+
+Thanks for the reply.
+
+Thanks,
+
+-liubo
