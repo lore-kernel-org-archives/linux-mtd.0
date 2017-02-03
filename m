@@ -1,27 +1,17 @@
-Date: Fri, 3 Feb 2017 10:31:56 -0800
-From: Liu Bo <bo.li.liu@oracle.com>
-To: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
- linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-nfs@vger.kernel.org, Petr Vandrovec <petr@vandrovec.name>,
- linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
- osd-dev@open-osd.org, codalist@TELEMANN.coda.cs.cmu.edu,
- linux-afs@lists.infradead.org, ecryptfs@vger.kernel.org,
- linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
- lustre-devel@lists.lustre.org
-Subject: Re: [PATCH 04/24] fs: Provide infrastructure for dynamic BDIs in
- filesystems
-Message-ID: <20170203183155.GA30842@localhost.localdomain>
-Reply-To: bo.li.liu@oracle.com
-References: <20170202173422.3240-1-jack@suse.cz>
- <20170202173422.3240-5-jack@suse.cz>
- <20170202192827.GF6550@localhost.localdomain>
- <20170203135042.GB5844@quack2.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170203135042.GB5844@quack2.suse.cz>
+Received: from mail-qt0-f196.google.com ([209.85.216.196])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cZnLZ-0004oy-KS
+ for linux-mtd@lists.infradead.org; Fri, 03 Feb 2017 23:32:55 +0000
+Received: by mail-qt0-f196.google.com with SMTP id n13so7744412qtc.0
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2017 15:32:32 -0800 (PST)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
+ broonie@kernel.org
+Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH v1 0/5] Added support for spi-nor device pm in m25p80
+Date: Fri,  3 Feb 2017 18:31:11 -0500
+Message-Id: <1486164676-12912-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 03, 2017 at 02:50:42PM +0100, Jan Kara wrote:
-> On Thu 02-02-17 11:28:27, Liu Bo wrote:
-> > Hi,
-> > 
-> > On Thu, Feb 02, 2017 at 06:34:02PM +0100, Jan Kara wrote:
-> > > Provide helper functions for setting up dynamically allocated
-> > > backing_dev_info structures for filesystems and cleaning them up on
-> > > superblock destruction.
-> > 
-> > Just one concern, will this cause problems for multiple superblock cases
-> > like nfs with nosharecache?
-> 
-> Can you ellaborate a bit? I've looked for a while what nfs with
-> nosharecache does but I didn't see how it would influence anything with
-> bdis...
+The changes below implements power management support in m25p80.
+m25p80 pm resume() calls newly a implemented spi_nor_pm_rescan()
+function that sets up the spi-nor flash to its probed state. 
+This is needed on platfroms that turn off power to the spi-nor
+part on suspend, in such cases some parts might need to: 
+1. remove flash protection (if applicable)
+2. set the address width and/or
+3. set the read mode to quad mode depending on the probed configuration
 
-Oh, I missed that bdi_seq was static, then it should be fine.
+The changes use existing spi-nor framework by refactoring code a bit so
+that it can be reused in scan and rescan functions. Changes also ensures
+that for platforms that do not need pm support shall not be affected. 
 
-(I was worried about that nfs with nosharecache would have multiple
-superblocks and if each superblock has a bdi using the same bdi name,
-nfs-xx.)
+Kamal Dasu (5):
+  mtd: spi-nor: Added way to rescan spi-nor device
+  mtd: m25p80: Added pm ops support
+  spi: Added way to check for pm support for flash devices
+  mtd: m25p80: Check if the spi flash device has pm support
+  spi: bcm-qspi: Implement the master flash_pm_supported() call
 
-Thanks for the reply.
+ drivers/mtd/devices/m25p80.c  | 21 ++++++++++
+ drivers/mtd/spi-nor/spi-nor.c | 93 +++++++++++++++++++++++++++++++++++++------
+ drivers/spi/spi-bcm-qspi.c    |  6 +++
+ include/linux/mtd/spi-nor.h   | 17 ++++++++
+ include/linux/spi/spi.h       |  8 ++++
+ 5 files changed, 133 insertions(+), 12 deletions(-)
 
-Thanks,
-
--liubo
+-- 
+1.9.1
