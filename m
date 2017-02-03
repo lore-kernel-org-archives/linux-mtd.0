@@ -1,18 +1,18 @@
-Received: from mail-qt0-f195.google.com ([209.85.216.195])
+Received: from mail-qt0-f193.google.com ([209.85.216.193])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZnLn-0004pD-A1
- for linux-mtd@lists.infradead.org; Fri, 03 Feb 2017 23:33:09 +0000
-Received: by mail-qt0-f195.google.com with SMTP id s58so7709770qtc.2
- for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2017 15:32:46 -0800 (PST)
+ id 1cZnLp-0004pE-2B
+ for linux-mtd@lists.infradead.org; Fri, 03 Feb 2017 23:33:12 +0000
+Received: by mail-qt0-f193.google.com with SMTP id s58so7709954qtc.2
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2017 15:32:49 -0800 (PST)
 From: Kamal Dasu <kdasu.kdev@gmail.com>
 To: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
  broonie@kernel.org
 Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
  bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH v1 4/5] mtd: m25p80: Check if the spi flash device has pm
- support
-Date: Fri,  3 Feb 2017 18:31:15 -0500
-Message-Id: <1486164676-12912-5-git-send-email-kdasu.kdev@gmail.com>
+Subject: [PATCH v1 5/5] spi: bcm-qspi: Implement the master
+ flash_pm_supported() call
+Date: Fri,  3 Feb 2017 18:31:16 -0500
+Message-Id: <1486164676-12912-6-git-send-email-kdasu.kdev@gmail.com>
 In-Reply-To: <1486164676-12912-1-git-send-email-kdasu.kdev@gmail.com>
 References: <1486164676-12912-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,32 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Call the spi_nor_rescan() only if the controller driver needs this
-support. This way SoCs that need this feature can use it.
+The Broadcom SoCs needs pm rescan support for the flash device to
+to be cofgured in the probed state on pm resume. Implement
+flash_pm_supported() spi core interface to return true.
 
 Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/spi/spi-bcm-qspi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 4528e33..ffdec60 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -328,8 +328,13 @@ static int m25p_suspend(struct device *dev)
- static int m25p_resume(struct device *dev)
- {
- 	struct m25p *flash = dev_get_drvdata(dev);
-+	struct spi_device *spi = flash->spi;
-+	int ret = 0;
-+
-+	if (spi_flash_pm_supported(spi))
-+		ret = spi_nor_pm_rescan(&flash->spi_nor, NULL);
- 
--	return spi_nor_pm_rescan(&flash->spi-nor, NULL);
-+	return ret;
+diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+index 14f9dea..0abcde6 100644
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -958,6 +958,11 @@ static int bcm_qspi_transfer_one(struct spi_master *master,
+ 	return 0;
  }
- #endif
- static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
+ 
++static bool bcm_qspi_flash_pm_supported(struct spi_device *spi)
++{
++	return true;
++}
++
+ static void bcm_qspi_cleanup(struct spi_device *spi)
+ {
+ 	struct bcm_qspi_parms *xp = spi_get_ctldata(spi);
+@@ -1194,6 +1199,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
+ 	master->setup = bcm_qspi_setup;
+ 	master->transfer_one = bcm_qspi_transfer_one;
+ 	master->spi_flash_read = bcm_qspi_flash_read;
++	master->flash_pm_supported = bcm_qspi_flash_pm_supported;
+ 	master->cleanup = bcm_qspi_cleanup;
+ 	master->dev.of_node = dev->of_node;
+ 	master->num_chipselect = NUM_CHIPSELECT;
 -- 
 1.9.1
