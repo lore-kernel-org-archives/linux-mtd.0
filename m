@@ -1,39 +1,33 @@
-Received: from mail-io0-f177.google.com ([209.85.223.177])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZePM-00008U-Da
- for linux-mtd@lists.infradead.org; Fri, 03 Feb 2017 14:00:17 +0000
-Received: by mail-io0-f177.google.com with SMTP id l66so17892348ioi.1
- for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2017 05:59:51 -0800 (PST)
+Date: Fri, 3 Feb 2017 16:32:22 +0100
+From: Michal Hocko <mhocko@kernel.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 8/8] Revert "ext4: fix wrong gfp type under transaction"
+Message-ID: <20170203153222.GH19325@dhcp22.suse.cz>
+References: <20170117161618.GT19699@dhcp22.suse.cz>
+ <20170117172925.GA2486@quack2.suse.cz>
+ <20170119083956.GE30786@dhcp22.suse.cz>
+ <20170119092236.GC2565@quack2.suse.cz>
+ <20170119094405.GK30786@dhcp22.suse.cz>
+ <20170126074455.GC8456@dhcp22.suse.cz>
+ <20170127061318.xd2qxashbl4dajez@thunk.org>
+ <20170127093735.GB4143@dhcp22.suse.cz>
+ <20170127164042.2o3bnyopihcb224g@thunk.org>
+ <20170130081210.GD8443@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <699f0c63e95ecdafe6946fdcdbb97a37@mail.crapouillou.net>
-References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
- <20170125185207.23902-1-paul@crapouillou.net>
- <20170125185207.23902-5-paul@crapouillou.net>
- <CACRpkdbcO+1c7izYpn0sb1mkE1ORFETMq=xtzVi1hKbJz0EWfw@mail.gmail.com>
- <699f0c63e95ecdafe6946fdcdbb97a37@mail.crapouillou.net>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 3 Feb 2017 14:58:50 +0100
-Message-ID: <CACRpkdZNodsRJ33wTJGgrAJpSs=_bXa0yv5ate_7XwjKR0xEnw@mail.gmail.com>
-Subject: Re: [PATCH v3 04/14] GPIO: Add gpio-ingenic driver
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
- "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux MIPS <linux-mips@linux-mips.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- James Hogan <james.hogan@imgtec.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170130081210.GD8443@dhcp22.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,52 +37,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 31, 2017 at 4:29 PM, Paul Cercueil <paul@crapouillou.net> wrote=
-:
-> Le 2017-01-31 15:20, Linus Walleij a =C3=A9crit :
->
->>> + of_property_read_u32(dev->of_node, "base", &jzgc->gc.base);
->>
->>
->> Remove this. Dynamic allocation should be fine, if you're using the
->> new userspace ABI like tools/gpio/* or libgpiod and only that and
->> in-kernel
->> consumers, dynamic numbers are just fine.
->
->
-> The problem is that the QI_LB60 board code still have a lot of references
-> to global GPIO numbers. Just grep for JZ_GPIO_PORT in
-> arch/mips/jz4740/board-qi_lb60.c to see what I mean...
+On Mon 30-01-17 09:12:10, Michal Hocko wrote:
+> On Fri 27-01-17 11:40:42, Theodore Ts'o wrote:
+> > On Fri, Jan 27, 2017 at 10:37:35AM +0100, Michal Hocko wrote:
+> > > If this ever turn out to be a problem and with the vmapped stacks we
+> > > have good chances to get a proper stack traces on a potential overflow
+> > > we can add the scope API around the problematic code path with the
+> > > explanation why it is needed.
+> > 
+> > Yeah, or maybe we can automate it?  Can the reclaim code check how
+> > much stack space is left and do the right thing automatically?
+> 
+> I am not sure how to do that. Checking for some magic value sounds quite
+> fragile to me. It also sounds a bit strange to focus only on the reclaim
+> while other code paths might suffer from the same problem.
+> 
+> What is actually the deepest possible call chain from the slab reclaim
+> where I stopped? I have tried to follow that path but hit the callback
+> wall quite early.
+>  
+> > The reason why I'm nervous is that nojournal mode is not a common
+> > configuration, and "wait until production systems start failing" is
+> > not a strategy that I or many SRE-types find.... comforting.
+> 
+> I understand that but I would be much more happier if we did the
+> decision based on the actual data rather than a fear something would
+> break down.
 
-OK I understand we might need a compromise here to get the code moving.
-
-But we need to keep it out of the device tree.
-
-I think it's better to put a base table relative to the memory base in
-the driver in that case:
-
-unsigned int gpio_global_base;
-
-switch (memory_base_address) {
-case 0x41000000:
-    gpio_global_base =3D 0x00;
-    break;
-case 0x42000000:
-    gpio_global_base =3D 0x20;
-
-(...)
-
-etc. (Those are not your base addresses but you get the idea).
-
-Include a few comments like:
-
-/*
- * DO NOT EXPAND THIS: FOR BACKWARD GPIO NUMBERSPACE
- * COMPATIBIBILITY ONLY: WORK TO TRANSITION CONSUMERS TO
- * USE THE GPIO DESCRIPTOR API IN <linux/gpio/consumer.h> INSTEAD.
- */
-
-Then I'll be happy :)
-
-Yours,
-Linus Walleij
+ping on this. I would really like to move forward here and target 4.11
+merge window. Is your concern so serious to block this patch?
+-- 
+Michal Hocko
+SUSE Labs
