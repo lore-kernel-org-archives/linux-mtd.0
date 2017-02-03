@@ -1,23 +1,25 @@
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZeBt-00036Z-2Q
- for linux-mtd@lists.infradead.org; Fri, 03 Feb 2017 13:46:19 +0000
-Date: Fri, 3 Feb 2017 14:45:47 +0100
+Date: Fri, 3 Feb 2017 14:50:42 +0100
 From: Jan Kara <jack@suse.cz>
-To: Richard Weinberger <richard@nod.at>
+To: Liu Bo <bo.li.liu@oracle.com>
 Cc: Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
  Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 22/24] ubifs: Convert to separately allocated bdi
-Message-ID: <20170203134547.GA5844@quack2.suse.cz>
+ linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+ Petr Vandrovec <petr@vandrovec.name>, linux-nilfs@vger.kernel.org,
+ cluster-devel@redhat.com, osd-dev@open-osd.org,
+ codalist@TELEMANN.coda.cs.cmu.edu, linux-afs@lists.infradead.org,
+ ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ v9fs-developer@lists.sourceforge.net, lustre-devel@lists.lustre.org
+Subject: Re: [PATCH 04/24] fs: Provide infrastructure for dynamic BDIs in
+ filesystems
+Message-ID: <20170203135042.GB5844@quack2.suse.cz>
 References: <20170202173422.3240-1-jack@suse.cz>
- <20170202173422.3240-23-jack@suse.cz>
- <26c70615-f98c-23a6-abb7-de675fb658b6@nod.at>
+ <20170202173422.3240-5-jack@suse.cz>
+ <20170202192827.GF6550@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <26c70615-f98c-23a6-abb7-de675fb658b6@nod.at>
+In-Reply-To: <20170202192827.GF6550@localhost.localdomain>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu 02-02-17 21:34:32, Richard Weinberger wrote:
-> Jan,
+On Thu 02-02-17 11:28:27, Liu Bo wrote:
+> Hi,
 > 
-> Am 02.02.2017 um 18:34 schrieb Jan Kara:
-> > Allocate struct backing_dev_info separately instead of embedding it
-> > inside the superblock. This unifies handling of bdi among users.
-> > 
-> > CC: Richard Weinberger <richard@nod.at>
-> > CC: Artem Bityutskiy <dedekind1@gmail.com>
-> > CC: Adrian Hunter <adrian.hunter@intel.com>
-> > CC: linux-mtd@lists.infradead.org
-> > Signed-off-by: Jan Kara <jack@suse.cz>
+> On Thu, Feb 02, 2017 at 06:34:02PM +0100, Jan Kara wrote:
+> > Provide helper functions for setting up dynamically allocated
+> > backing_dev_info structures for filesystems and cleaning them up on
+> > superblock destruction.
 > 
-> Is this series available at some git tree, please?
+> Just one concern, will this cause problems for multiple superblock cases
+> like nfs with nosharecache?
 
-I've pushed it out to:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdi
+Can you ellaborate a bit? I've looked for a while what nfs with
+nosharecache does but I didn't see how it would influence anything with
+bdis...
 
 								Honza
 -- 
