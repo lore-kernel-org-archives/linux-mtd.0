@@ -1,20 +1,23 @@
-Received: from mail-qt0-f193.google.com ([209.85.216.193])
+Received: from mezzanine.sirena.org.uk ([106.187.55.193])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZnLp-0004pE-2B
- for linux-mtd@lists.infradead.org; Fri, 03 Feb 2017 23:33:12 +0000
-Received: by mail-qt0-f193.google.com with SMTP id s58so7709954qtc.2
- for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2017 15:32:49 -0800 (PST)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
- broonie@kernel.org
-Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH v1 5/5] spi: bcm-qspi: Implement the master
- flash_pm_supported() call
-Date: Fri,  3 Feb 2017 18:31:16 -0500
-Message-Id: <1486164676-12912-6-git-send-email-kdasu.kdev@gmail.com>
-In-Reply-To: <1486164676-12912-1-git-send-email-kdasu.kdev@gmail.com>
+ id 1cZyWP-0006uF-Mt
+ for linux-mtd@lists.infradead.org; Sat, 04 Feb 2017 11:28:51 +0000
+Date: Sat, 4 Feb 2017 12:25:55 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
+ linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com
+Message-ID: <20170204112555.p77votp5m7klygbe@sirena.org.uk>
 References: <1486164676-12912-1-git-send-email-kdasu.kdev@gmail.com>
+ <1486164676-12912-4-git-send-email-kdasu.kdev@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="uhzquobfemza2aic"
+Content-Disposition: inline
+In-Reply-To: <1486164676-12912-4-git-send-email-kdasu.kdev@gmail.com>
+Subject: Re: [PATCH v1 3/5] spi: Added way to check for pm support for flash
+ devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Broadcom SoCs needs pm rescan support for the flash device to
-to be cofgured in the probed state on pm resume. Implement
-flash_pm_supported() spi core interface to return true.
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/spi/spi-bcm-qspi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+--uhzquobfemza2aic
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
-index 14f9dea..0abcde6 100644
---- a/drivers/spi/spi-bcm-qspi.c
-+++ b/drivers/spi/spi-bcm-qspi.c
-@@ -958,6 +958,11 @@ static int bcm_qspi_transfer_one(struct spi_master *master,
- 	return 0;
- }
- 
-+static bool bcm_qspi_flash_pm_supported(struct spi_device *spi)
-+{
-+	return true;
-+}
-+
- static void bcm_qspi_cleanup(struct spi_device *spi)
- {
- 	struct bcm_qspi_parms *xp = spi_get_ctldata(spi);
-@@ -1194,6 +1199,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
- 	master->setup = bcm_qspi_setup;
- 	master->transfer_one = bcm_qspi_transfer_one;
- 	master->spi_flash_read = bcm_qspi_flash_read;
-+	master->flash_pm_supported = bcm_qspi_flash_pm_supported;
- 	master->cleanup = bcm_qspi_cleanup;
- 	master->dev.of_node = dev->of_node;
- 	master->num_chipselect = NUM_CHIPSELECT;
--- 
-1.9.1
+On Fri, Feb 03, 2017 at 06:31:14PM -0500, Kamal Dasu wrote:
+
+> Device drivers can check if the master controller driver has to support
+> flash pm. The controller driver indicates this using flash_pm_supported()
+> spi master interface.
+
+What is "flash pm" and how would a client use it given that no API for
+actually managing power is being added here?  Someone looking at the API
+needs to be able to figure these things out and right now I can't see
+how they'd do that...
+
+--uhzquobfemza2aic
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliVukIACgkQJNaLcl1U
+h9CaFwf/fI0j+4+tXplMhLnprqxa06Pm8LD5JMkgsZYszNi3hsu7GTuI6NjMl/Ur
+Av9KozbatHQj1X25rl2WOdGMWpFKMDY+CcZjNap14APM+nYjOBzYk57Xn+qBklnB
+FMFg6e+4VR7DJxS+Um63zEldVHW4+sBFjU4jojwgUqsAS08dLcbyQFHfmE8yzFG6
+gDs1O/bnS0nfTHxQnRxxiIa6whHyJYS7OE5ndksXXFJWvVOkRAflZQyIOtSe4sOr
+GXicySd3xXYYa/ZBRrNcGT8ETgsutM9DLABqXMmy0oXge40BV7VlVdLCmJSOesN7
+7KRcgneo4+1eK6Uwpy+9Uo6aej61Kg==
+=3fGF
+-----END PGP SIGNATURE-----
+
+--uhzquobfemza2aic--
