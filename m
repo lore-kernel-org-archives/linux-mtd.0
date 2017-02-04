@@ -1,27 +1,24 @@
-Received: from mail-qt0-f194.google.com ([209.85.216.194])
+Received: from mail-wm0-f68.google.com ([74.125.82.68])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ca7Gg-0004eD-1s
- for linux-mtd@lists.infradead.org; Sat, 04 Feb 2017 20:49:11 +0000
-Received: by mail-qt0-f194.google.com with SMTP id w20so10140104qtb.1
- for <linux-mtd@lists.infradead.org>; Sat, 04 Feb 2017 12:48:49 -0800 (PST)
+ id 1ca7yc-0003R4-OX
+ for linux-mtd@lists.infradead.org; Sat, 04 Feb 2017 21:34:37 +0000
+Received: by mail-wm0-f68.google.com with SMTP id v77so13121268wmv.0
+ for <linux-mtd@lists.infradead.org>; Sat, 04 Feb 2017 13:34:14 -0800 (PST)
+Subject: Re: [PATCH] mtd: pmcmsp: use kstrndup instead of kmalloc+strncpy
+To: Arnd Bergmann <arnd@arndb.de>, Brian Norris <computersforpeace@gmail.com>
+References: <20170203094946.2112158-1-arnd@arndb.de>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <0e6b1dc1-5311-91ba-10e3-1a13f866df6b@gmail.com>
+Date: Sat, 4 Feb 2017 22:12:35 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170204112555.p77votp5m7klygbe@sirena.org.uk>
-References: <1486164676-12912-1-git-send-email-kdasu.kdev@gmail.com>
- <1486164676-12912-4-git-send-email-kdasu.kdev@gmail.com>
- <20170204112555.p77votp5m7klygbe@sirena.org.uk>
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-Date: Sat, 4 Feb 2017 15:47:48 -0500
-Message-ID: <CAC=U0a0o21taio6jYzTCx1ix85aFNtikXHs=O99OW1pChbG4TA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/5] spi: Added way to check for pm support for flash
- devices
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-spi <linux-spi@vger.kernel.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marex@denx.de>, MTD Maling List <linux-mtd@lists.infradead.org>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "Jayachandran C <jchandra@broadcom.com>,
- bcm-kernel-feedback-list" <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20170203094946.2112158-1-arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 4, 2017 at 6:25 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Feb 03, 2017 at 06:31:14PM -0500, Kamal Dasu wrote:
->
->> Device drivers can check if the master controller driver has to support
->> flash pm. The controller driver indicates this using flash_pm_supported()
->> spi master interface.
->
-> What is "flash pm" and how would a client use it given that no API for
-> actually managing power is being added here?  Someone looking at the API
-> needs to be able to figure these things out and right now I can't see
-> how they'd do that...o
+On 02/03/2017 10:49 AM, Arnd Bergmann wrote:
+> kernelci.org reports a warning for this driver, as it copies a local
+> variable into a 'const char *' string:
+> 
+>     drivers/mtd/maps/pmcmsp-flash.c:149:30: warning: passing argument 1 of 'strncpy' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+> 
+> Using kstrndup() simplifies the code and avoids the warning.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-The flash_pm function just indicates if  m25p80 resume op that does a
-spi_nor_pm_rescan() is needed, and by default will do nothing for
-other platforms. So the basic idea of the patches was to execute the
-only necessary spi_nor_pm_rescan() on resume when flash parts are
-reset on suspend. So from controller perspective there is no
-additional pm activity to be done. Patches 1/5-2/5 is what is needed
-actually. And Patches 3/3 - 5/5 only add a check if m25p80 resume
-should call spi_nor_pm_rescan(). And the controller driver shall
-implement the flash_pm function and return true if it does need a
-rescan to be done on resume.
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+
+> ---
+>  drivers/mtd/maps/pmcmsp-flash.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
+> index f9fa3fad728e..2051f28ddac6 100644
+> --- a/drivers/mtd/maps/pmcmsp-flash.c
+> +++ b/drivers/mtd/maps/pmcmsp-flash.c
+> @@ -139,15 +139,13 @@ static int __init init_msp_flash(void)
+>  		}
+>  
+>  		msp_maps[i].bankwidth = 1;
+> -		msp_maps[i].name = kmalloc(7, GFP_KERNEL);
+> +		msp_maps[i].name = kstrndup(flash_name, 7, GFP_KERNEL);
+>  		if (!msp_maps[i].name) {
+>  			iounmap(msp_maps[i].virt);
+>  			kfree(msp_parts[i]);
+>  			goto cleanup_loop;
+>  		}
+>  
+> -		msp_maps[i].name = strncpy(msp_maps[i].name, flash_name, 7);
+> -
+>  		for (j = 0; j < pcnt; j++) {
+>  			part_name[5] = '0' + i;
+>  			part_name[7] = '0' + j;
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
