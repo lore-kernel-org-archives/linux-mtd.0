@@ -1,25 +1,24 @@
-Received: from mail-wm0-f66.google.com ([74.125.82.66])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ca87r-0006px-EV
- for linux-mtd@lists.infradead.org; Sat, 04 Feb 2017 21:44:09 +0000
-Received: by mail-wm0-f66.google.com with SMTP id v77so13155678wmv.0
- for <linux-mtd@lists.infradead.org>; Sat, 04 Feb 2017 13:43:47 -0800 (PST)
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for N25Q256A13 as N25Q256A
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>,
- linux-mtd@lists.infradead.org
-References: <1485481897-6368-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
- <23f8030c-272c-1aab-2146-db45dfe77daf@atmel.com>
- <32a30d91-4f42-6c64-45b7-d0abc9f3d91e@gmail.com>
- <994fa7e6-1927-16ef-82c1-79a538319833@atmel.com>
-Cc: Jagan Teki <jagan@openedev.com>
+Subject: Re: [PATCH 10/22 v2] mtd: physmap_of: add a hook for Gemini flash
+ probing
+To: Linus Walleij <linus.walleij@linaro.org>,
+ Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <20170128215048.11676-1-linus.walleij@linaro.org>
+Cc: Janos Laube <janos.dev@gmail.com>,
+ Paulius Zaleckas <paulius.zaleckas@gmail.com>, openwrt-devel@openwrt.org,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <38800099-7dc5-fbaa-b8a2-c8b646c3a60a@gmail.com>
-Date: Sat, 4 Feb 2017 22:32:50 +0100
+Message-ID: <8f7e75c9-3457-c1b1-5719-a4efb64bf66c@gmail.com>
+Date: Sat, 4 Feb 2017 22:52:38 +0100
 MIME-Version: 1.0
-In-Reply-To: <994fa7e6-1927-16ef-82c1-79a538319833@atmel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170128215048.11676-1-linus.walleij@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,106 +28,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/31/2017 11:18 AM, Cyrille Pitchen wrote:
-> Le 30/01/2017 à 21:38, Marek Vasut a écrit :
->> On 01/30/2017 02:29 PM, Cyrille Pitchen wrote:
->>> Hi Nobuhiro,
->>>
->>> Le 27/01/2017 à 02:51, Nobuhiro Iwamatsu a écrit :
->>>> Add new Micron N25Q256A (N25Q256A13) 256Mbit NOR Flash in the list
->>>> of supported devices. This chip has the same structure as the N25Q256A
->>>> but ID is different. And this fixes N25Q256A to N25Q256 to fit chip
->>>> name to other n25q chip names.
->>>>
->>>> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
->>>> CC: Jagan Teki <jagan@openedev.com>
->>>> CC: Marek Vasut <marek.vasut@gmail.com>
->>>> ---
->>>>  drivers/mtd/spi-nor/spi-nor.c | 3 ++-
->>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>>> index da7cd69d4857..a2a6922e356f 100644
->>>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>>> @@ -887,7 +887,8 @@ static const struct flash_info spi_nor_ids[] = {
->>>>  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
->>>>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
->>>>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
->>>> -	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->>>> +	{ "n25q256",     INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->>>> +	{ "n25q256a",    INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->>>
->>> This patch changes the association "n25q256a" <-> 20 ba 19: "n25q256a"
->>> would be now associated to 20 bb 19.
->>> However some device trees use the "micron,n25q256a" as compatible string:
->>> - arch/arm/boot/dts/imx6sx-sbd.dts: compatible = "micron,n25q256a",
->>> "jedec,spi-nor";
->>> - arch/arm/boot/dts/socfpga_arria5_socdk.dts: compatible = "n25q256a";
->>> - arch/arm/boot/dts/socfpga_cyclone5_socrates.dts: compatible = "n25q256a";
->>> - arch/arm/boot/dts/imx6ul-14x14-evk.dts: compatible = "micron,n25q256a";
->>>
->>> If the actual JEDEC ID read from the Micron SPI memory of one of these
->>> boards is 20 ba 19 and if you now associate the string "n25q256a" to the
->>> different JEDEC ID 20 bb 19, then spi_nor_scan() is likely to display the
->>> warning message during the boot:
->>>
->>> dev_warn(dev, "found %s, expected %s\n", jinfo->name, info->name);
->>>
->>>
->>> Displaying such a warning during the boot process would be an unwanted side
->>> effect of this patch and users may complain or ask why such warning is now
->>> displayed in the boot log.
->>>
->>> You may create a new entry for the 20 bb 19 JEDEC ID but I don't think it
->>> is totally safe to remove the old n25q256a entry.
->>
->> If the old DTs were lazy and are now broken, then I think the warning is
->> justified ?
->>
+On 01/28/2017 10:50 PM, Linus Walleij wrote:
+> In order to support device tree probing of Gemini NOR flash
+> chips, a certain register in the syscon needs to be poked
+> to enable parallel flash mode.
 > 
-> I'm reading a Micron datasheet for n25q256*:
-> 1 - it states that the JEDEC ID is 20 BA 19.
-> 2 - it explains the part number encoding
+> Such things used to happen in "necessarily different" board
+> file code, and this indeed was also done for the Gemini, so
+> the MTD driver could treat it as any memory-mapped NOR flash,
+> but this is not the way in the future: board files need to
+> go, and hardware concerns distributed down to the applicable
+> drivers.
 > 
-> Device Type    N25Q: Serial NOR Flash Memory, Multiple Input/Output
->                      (Single, Dual, Quad I/O, XIP)
-> Density        256: 256Mb
-> Technology     A: 65nm (this is the only value provided by the datasheet)
-> ...
+> This adds a hook in the same way that the Versatile did: if
+> the Kconfig symbol is not selected the net total of supporting
+> Gemini should be zero bytes of added code. To live up to this
+> promise, also the return value error print from the Versatile
+> extra probe call get to be removed in this patch, all printing
+> need to happen in the add-ons.
 > 
-> So this datasheet applies to Micron n25q256a memory and its JEDEC ID is 20
-> BA 19. Hence the current "n25q256a" entry in the spi_nor_ids[] array and
-> the DTs using this string for the compatible value are all correct and
-> should not be changed.
-> 
-> Then, I'm sure Nobuhiro is right too when he claims that the JEDEC ID of
-> his Micron n25q256a sample is 20 BB 19 (and not 20 BA 19). This just means
-> that Micron has produced different samples of n25q256a with different JEDEC
-> ID. However this is nothing new with Micron memories.
+> Cc: Janos Laube <janos.dev@gmail.com>
+> Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>
+> Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> ChangeLog v1->v2:
+> - Put a more elaborate description of the Kconfig option into
+>   the Kconfig item, take this opportunity to also modify the
+>   Versatile Kconfig entry which is equally terse.
 
-Isn't the BA a 3V3 part and the BB a 1V8 part ? I recall something like
-that.
+Thanks!
 
-> We should keep the current entry as is since it is perfectly correct but we
-> can add another entry with a different name for the JEDEC ID 20 BB 19.
-> 
-> If we look at the entries for the other Micron memories, we see for each
-> memory density there are 2 different ID: 20 BA xx and 20 BB xx.
-> 
-> Besides the "rule" 20 BA xx -> n25q__ , 20 BB xx -> n25q__a is not always
-> respected and is not relevant to the actual hardware. I guess this is just
-> a legacy naming scheme to provide 2 different names, one for the 20 BB xx
-> entry and the other for the 20 BA xx entry but from a hardware point of
-> view, I think this naming scheme doesn't make sense.
+> - Modify the Makefile to build the Gemini and Versatile drivers
+>   based on their own config symbols and not based on an if on
+>   their symbol, should have been done like that from the start.
+> - Move a dev_info() to dev_dbg() in the driver.
 
-The micron ID/naming scheme does not make sense, it's complete chaos,
-that is no news.
+[...]
 
-> So don't worry about the accuracy of the name you will choose to add a new
-> entry. For instance let's take "n25q256" since it is available.
+> +	if (val & FLASH_WIDTH_16BIT) {
+> +		if (map->bankwidth != 2)
+> +			dev_warn(dev, "flash hardware say flash is 16 bit wide "
+> +				 "but DT says it is %d bits wide\n",
 
-Or we can add "n25q256ax3" ?
+Nit, please do not break printed strings, it is not possible to 'git
+grep' for them if you do.
+
+> +				 map->bankwidth * 8);
+> +	} else {
+> +		if (map->bankwidth != 1)
+> +			dev_warn(dev, "flash hardware say flash is 8 bit wide "
+> +				 "but DT says it is %d bits wide\n",
+
+DTTO
+
+> +				 map->bankwidth * 8);
+> +	}
+> +
+> +	/* Activate parallel (NOR flash) mode */
+> +	ret = regmap_update_bits(rmap, GLOBAL_MISC_CTRL,
+> +				 FLASH_PADS_MASK,
+> +				 SFLASH_PADS_DISABLE | NAND_PADS_DISABLE);
+> +	if (ret) {
+> +		dev_err(dev, "unable to set up physmap pads\n");
+> +		return -ENODEV;
+> +	}
+
+[...]
+
+Once you fix the nit above, add my:
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
 
 -- 
 Best regards,
