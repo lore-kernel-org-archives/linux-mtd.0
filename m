@@ -1,21 +1,23 @@
-Date: Mon, 6 Feb 2017 08:45:44 +0100
+Date: Mon, 6 Feb 2017 10:05:42 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Guochun Mao <guochun.mao@mediatek.com>, Matthias Brugger
- <matthias.bgg@gmail.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Mark Rutland
- <mark.rutland@arm.com>, devicetree@vger.kernel.org, Richard Weinberger
- <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, John Crispin <john@phrozen.org>,
- linux-mediatek@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] arm: dts: mt2701: add nor flash node
-Message-ID: <20170206084544.24878633@bbrezillon>
-In-Reply-To: <1486267249.10417.9.camel@mhfsdcap03>
-References: <1485315515-29942-1-git-send-email-guochun.mao@mediatek.com>
- <1485315515-29942-3-git-send-email-guochun.mao@mediatek.com>
- <1486267249.10417.9.camel@mhfsdcap03>
+To: Alison Wang <alison.wang@nxp.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Alison Wang <b18965@freescale.com>,
+ "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 2/2] mtd: nand: Update dependency of IFC for LS1021A
+Message-ID: <20170206100542.65f19dc5@bbrezillon>
+In-Reply-To: <DB6PR0401MB2584DBE5D6496F44B7169B49F4600@DB6PR0401MB2584.eurprd04.prod.outlook.com>
+References: <1483411266-45875-1-git-send-email-b18965@freescale.com>
+ <1483411266-45875-2-git-send-email-b18965@freescale.com>
+ <4e04eb5e-fb53-f71e-ee49-0872a6c11e97@gmail.com>
+ <DB6PR0401MB2584606EC932BF1FAED788E1F4610@DB6PR0401MB2584.eurprd04.prod.outlook.com>
+ <ffb2c20d-3aeb-6f5a-1880-3bed0c964821@gmail.com>
+ <DB6PR0401MB2584DBE5D6496F44B7169B49F4600@DB6PR0401MB2584.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,35 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Guochun,
+Hi Alison,
 
-On Sun, 5 Feb 2017 12:00:49 +0800
-Guochun Mao <guochun.mao@mediatek.com> wrote:
+On Thu, 5 Jan 2017 02:02:30 +0000
+Alison Wang <alison.wang@nxp.com> wrote:
 
+> > On 01/04/2017 02:46 AM, Alison Wang wrote:  
+> > >> On 01/03/2017 03:41 AM, Alison Wang wrote:  
+> > >>> As NAND support for Freescale/NXP IFC controller is available on
+> > >>> LS1021A, the dependency for LS1021A is added.  
+> > >>
+> > >> Does LS stand for LayerScape ? Yes it does. So why does
+> > >> ARCH_LAYERSCAPE not cover LS1021 ?  
+> > > [Alison Wang] LS1021A is an earlier product and is not compatible  
+> > with later Layerscape architecture. So ARCH_LAYERSCAPE can't cover
+> > LS1021A.
+> > 
+> > Ah ok, I see. That information would be useful in the commit message ;-)
+> >   
+> [Alison Wang] Ok. :)
 
-> >  
-> > +	nor_flash: spi@11014000 {
-> > +		compatible = "mediatek,mt2701-nor",
-> > +			     "mediatek,mt8173-nor";
-> > +		reg = <0 0x11014000 0 0xe0>;
-> > +		clocks = <&pericfg CLK_PERI_FLASH>,
-> > +			 <&topckgen CLK_TOP_FLASH_SEL>;
-> > +		clock-names = "spi", "sf";
-> > +		#address-cells = <1>;
-> > +		#size-cells = <0>;
-> > +		status = "disabled";
-> > +	};
-> > +
-> >  	mmsys: syscon@14000000 {
-> >  		compatible = "mediatek,mt2701-mmsys", "syscon";
-> >  		reg = <0 0x14000000 0 0x1000>;  
-> 
-> Hi,
-> mtk-quadspi.txt had been updated as suggested.
-> Is there suggestion about this patch?
+Would you mind sending a v3 with the updated commit message?
 
-It should probably go through the Mediatek tree. Matthias, any opinion?
-
-Regards,
+Thanks,
 
 Boris
