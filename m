@@ -1,25 +1,33 @@
-Received: from mail-qt0-f193.google.com ([209.85.216.193])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1capyv-0007ba-IP
- for linux-mtd@lists.infradead.org; Mon, 06 Feb 2017 20:33:54 +0000
-Received: by mail-qt0-f193.google.com with SMTP id n13so16523235qtc.0
- for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2017 12:33:29 -0800 (PST)
+Date: Mon, 6 Feb 2017 22:18:00 +0100
+From: Michal Hocko <mhocko@kernel.org>
+To: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ Theodore Ts'o <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.cz>, Jan Kara <jack@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/6] xfs: use memalloc_nofs_{save,restore} instead of
+ memalloc_noio*
+Message-ID: <20170206211759.GC20731@dhcp22.suse.cz>
+References: <20170206140718.16222-1-mhocko@kernel.org>
+ <20170206140718.16222-5-mhocko@kernel.org>
+ <20170206153923.GL2267@bombadil.infradead.org>
+ <20170206174415.GA20731@dhcp22.suse.cz>
+ <20170206183237.GE3580@birch.djwong.org>
+ <20170206184743.GB20731@dhcp22.suse.cz>
+ <20170206195111.GH3580@birch.djwong.org>
 MIME-Version: 1.0
-In-Reply-To: <05a60f60-f404-7761-4079-c6e7d1d08aed@atmel.com>
-References: <1486164676-12912-1-git-send-email-kdasu.kdev@gmail.com>
- <1486164676-12912-2-git-send-email-kdasu.kdev@gmail.com>
- <05a60f60-f404-7761-4079-c6e7d1d08aed@atmel.com>
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-Date: Mon, 6 Feb 2017 15:32:28 -0500
-Message-ID: <CAC=U0a1CTRa+5z=eSqBOLWfAx7OcS55vhxqNqUUxPJf2xoLtSw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] mtd: spi-nor: Added way to rescan spi-nor device
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-spi <linux-spi@vger.kernel.org>, Marek Vasut <marex@denx.de>,
- Mark Brown <broonie@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list@broadcom.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170206195111.GH3580@birch.djwong.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,376 +37,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 6, 2017 at 6:46 AM, Cyrille Pitchen
-<cyrille.pitchen@atmel.com> wrote:
-> Hi Kamal,
->
-> Le 04/02/2017 =C3=A0 00:31, Kamal Dasu a =C3=A9crit :
->> On pm resume op spi-nor flash may need to be reconfigured on a power
->> reset, however there is no need to go through a full spi_nor_scan().
->> The driver might need to disable protection, program the address width a=
-nd
->> transfer mode where applicable. The spi-nor framework has all the generi=
-c
->> code to do this. Refactored a few pieces and added a spi_nor_pm_rescan()
->> to be called by the mtd device driver's pm resume() op.
->>
->> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 93 ++++++++++++++++++++++++++++++++++++=
-+------
->>  include/linux/mtd/spi-nor.h   | 17 ++++++++
->>  2 files changed, 98 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor=
-.c
->> index da7cd69..e72233b 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -1312,26 +1312,28 @@ static int spi_nor_check(struct spi_nor *nor)
->>       return 0;
->>  }
->>
->> -int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode =
-mode)
->> +static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *=
-nor,
->> +                                                    const char *name,
->> +                                                    int *retval)
->> +
->>  {
->>       const struct flash_info *info =3D NULL;
->>       struct device *dev =3D nor->dev;
->> -     struct mtd_info *mtd =3D &nor->mtd;
->> -     struct device_node *np =3D spi_nor_get_flash_node(nor);
->> -     int ret;
->> -     int i;
->> +     int ret =3D 0;
->>
->>       ret =3D spi_nor_check(nor);
->>       if (ret)
->> -             return ret;
->> +             goto info_out;
->>
->>       if (name)
->>               info =3D spi_nor_match_id(name);
->>       /* Try to auto-detect if chip name wasn't specified or not found *=
-/
->>       if (!info)
->>               info =3D spi_nor_read_id(nor);
->> -     if (IS_ERR_OR_NULL(info))
->> -             return -ENOENT;
->> +     if (IS_ERR_OR_NULL(info)) {
->> +             ret =3D -ENOENT;
->> +             goto info_out;
->> +     }
->>
->>       /*
->>        * If caller has specified name of flash model that can normally b=
-e
->> @@ -1342,7 +1344,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *=
-name, enum read_mode mode)
->>
->>               jinfo =3D spi_nor_read_id(nor);
->>               if (IS_ERR(jinfo)) {
->> -                     return PTR_ERR(jinfo);
->> +                     ret =3D PTR_ERR(jinfo);
->> +                     goto info_out;
->>               } else if (jinfo !=3D info) {
->>                       /*
->>                        * JEDEC knows better, so overwrite platform ID. W=
-e
->> @@ -1357,8 +1360,15 @@ int spi_nor_scan(struct spi_nor *nor, const char =
-*name, enum read_mode mode)
->>               }
->>       }
->>
->> -     mutex_init(&nor->lock);
->> +info_out:
->> +
->> +     *retval =3D ret;
->> +     return info;
->> +}
->>
->> +static void spi_nor_unprotect(struct spi_nor *nor,
->> +                           const struct flash_info *info)
->> +{
->>       /*
->>        * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power =
-up
->>        * with the software protection bits set
->> @@ -1372,6 +1382,35 @@ int spi_nor_scan(struct spi_nor *nor, const char =
-*name, enum read_mode mode)
->>               write_sr(nor, 0);
->>               spi_nor_wait_till_ready(nor);
->>       }
->> +}
->> +
->> +static inline void spi_nor_print_flash_info(struct spi_nor *nor,
->> +                                         const struct flash_info *info)
->> +{
->> +     struct mtd_info *mtd =3D &nor->mtd;
->> +     struct device *dev =3D nor->dev;
->> +
->> +     dev_info(dev, "%s (%lld Kbytes)\n", info->name,
->> +                     (long long)mtd->size >> 10);
->> +
->> +}
->> +
->> +int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode =
-mode)
->> +{
->> +     const struct flash_info *info;
->> +     struct device *dev =3D nor->dev;
->> +     struct mtd_info *mtd =3D &nor->mtd;
->> +     struct device_node *np =3D spi_nor_get_flash_node(nor);
->> +     int ret;
->> +     int i;
->> +
->> +     info =3D spi_nor_get_flash_info(nor, name, &ret);
->> +     if (ret)
->> +             return ret;
->> +
->> +     mutex_init(&nor->lock);
->> +
->> +     spi_nor_unprotect(nor, info);
->>
->>       if (!mtd->name)
->>               mtd->name =3D dev_name(dev);
->> @@ -1517,8 +1556,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *=
-name, enum read_mode mode)
->>
->>       nor->read_dummy =3D spi_nor_read_dummy_cycles(nor);
->>
->> -     dev_info(dev, "%s (%lld Kbytes)\n", info->name,
->> -                     (long long)mtd->size >> 10);
->> +     spi_nor_print_flash_info(nor, info);
->>
->>       dev_dbg(dev,
->>               "mtd .name =3D %s, .size =3D 0x%llx (%lldMiB), "
->> @@ -1540,6 +1578,37 @@ int spi_nor_scan(struct spi_nor *nor, const char =
-*name, enum read_mode mode)
->>  }
->>  EXPORT_SYMBOL_GPL(spi_nor_scan);
->>
->> +int spi_nor_pm_rescan(struct spi_nor *nor, const char *name)
->> +{
->> +     int ret =3D 0;
->> +     const struct flash_info *info;
->> +     struct device *dev =3D nor->dev;
->> +
->> +     info =3D spi_nor_get_flash_info(nor, name, &ret);
->> +     if (ret)
->> +             return ret;
->
-> Why don't we save the info pointer in the spi_nor structure from
-> spi_nor_scan()?
->
-> in include/linux/mtd/spi-nor.h
->
-> +struct flash_info;
->
->  struct spi_nor {
-> +       const struct flash_info *info;
->         struct mtd_info         mtd;
->         struct mutex            lock;
->
-> I would avoid scanning the SPI flash again and again just to always
-> retrieve the very same settings.
->
-> Besides, when the parsing of the SFDP tables will be added, the scan
-> procedure will cost more than a single Read JEDEC ID command.
->
-> Hence if we can skip this step I guess it would be better!
->
+On Mon 06-02-17 11:51:11, Darrick J. Wong wrote:
+> On Mon, Feb 06, 2017 at 07:47:43PM +0100, Michal Hocko wrote:
+> > On Mon 06-02-17 10:32:37, Darrick J. Wong wrote:
+> > > On Mon, Feb 06, 2017 at 06:44:15PM +0100, Michal Hocko wrote:
+> > > > On Mon 06-02-17 07:39:23, Matthew Wilcox wrote:
+> > > > > On Mon, Feb 06, 2017 at 03:07:16PM +0100, Michal Hocko wrote:
+> > > > > > +++ b/fs/xfs/xfs_buf.c
+> > > > > > @@ -442,17 +442,17 @@ _xfs_buf_map_pages(
+> > > > > >  		bp->b_addr = NULL;
+> > > > > >  	} else {
+> > > > > >  		int retried = 0;
+> > > > > > -		unsigned noio_flag;
+> > > > > > +		unsigned nofs_flag;
+> > > > > >  
+> > > > > >  		/*
+> > > > > >  		 * vm_map_ram() will allocate auxillary structures (e.g.
+> > > > > >  		 * pagetables) with GFP_KERNEL, yet we are likely to be under
+> > > > > >  		 * GFP_NOFS context here. Hence we need to tell memory reclaim
+> > > > > > -		 * that we are in such a context via PF_MEMALLOC_NOIO to prevent
+> > > > > > +		 * that we are in such a context via PF_MEMALLOC_NOFS to prevent
+> > > > > >  		 * memory reclaim re-entering the filesystem here and
+> > > > > >  		 * potentially deadlocking.
+> > > > > >  		 */
+> > > > > 
+> > > > > This comment feels out of date ... how about:
+> > > > 
+> > > > which part is out of date?
+> > > > 
+> > > > > 
+> > > > > 		/*
+> > > > > 		 * vm_map_ram will allocate auxiliary structures (eg page
+> > > > > 		 * tables) with GFP_KERNEL.  If that tries to reclaim memory
+> > > > > 		 * by calling back into this filesystem, we may deadlock.
+> > > > > 		 * Prevent that by setting the NOFS flag.
+> > > > > 		 */
+> > > > 
+> > > > dunno, the previous wording seems clear enough to me. Maybe little bit
+> > > > more chatty than yours but I am not sure this is worth changing.
+> > > 
+> > > I prefer to keep the "...yet we are likely to be under GFP_NOFS..."
+> > > wording of the old comment because it captures the uncertainty of
+> > > whether or not we actually are already under NOFS.  If someone actually
+> > > has audited this code well enough to know for sure then yes let's change
+> > > the comment, but I haven't gone that far.
+> 
+> Ugh, /me hands himself another cup of coffee...
+> 
+> Somehow I mixed up _xfs_buf_map_pages and kmem_zalloc_large in this
+> discussion.  Probably because they have similar code snippets with very
+> similar comments to two totally different parts of xfs.
+> 
+> The _xfs_buf_map_pages can be called inside or outside of
+> transaction context, so I think we still have to memalloc_nofs_save for
+> that to avoid the lockdep complaints and deadlocks referenced in the
+> commit that added all that (to _xfs_buf_map_pages) in the first place.
+> ae687e58b3 ("xfs: use NOIO contexts for vm_map_ram")
 
-That's a great suggestion. I will make the necessary changes.
+Yes, and that memalloc_nofs_save would start with the transaction
+context so this (_xfs_buf_map_pages) call would be already covered so
+additional memalloc_nofs_save would be unnecessary. Right now I am not
+sure whether this is always the case so I have kept this "just to be
+sure" measure. Checking that would be in the next step when I would like
+to remove other KM_NOFS usage so that we would always rely on the scope
+inside the transaction or other potentially dangerous (e.g. from the
+stack usage POV and who knows what else) contexts.
 
->> +
->> +     spi_nor_unprotect(nor, info);
->> +
->> +     if (nor->flash_read =3D=3D SPI_NOR_QUAD) {
->> +             ret =3D set_quad_mode(nor, info);
->> +             if (ret) {
->> +                     dev_err(dev, "quad mode not supported\n");
->> +                     return ret;
->> +             }
->> +     }
->> +
->> +     if (nor->addr_width =3D=3D 4 && JEDEC_MFR(info) !=3D CFI_MFR_AMD)
->> +             set_4byte(nor, info, 1);
->
-> You have forgotten the case where spi_nor_set_4byte_opcodes() is to be
-> called instead of set_4byte(), that is when we want to use the stateless
-> 4-byte address instruction set instead of the stateful 4-byte address mod=
-e.
->
-
-Actually instruction set applies to SNOR_MFR_SPANSION only and is set
-in the spi-nor structure. Is there a need to implement and call
-spi_nor_set_4byte_opcodes().
-
->> +
->> +     spi_nor_print_flash_info(nor, info);
->
-> IMHO, there is no reason to print this message a second time. It has
-> already been displayed from spi_nor_scan() then I guess it's enough.
-> Nothing has changed since spi_nor_scan().
->
->> +     dev_dbg(dev, "addr width %d read mode %d",
->> +             nor->addr_width, nor->flash_read);
->
-> Why should we display those settings here in spi_nor_pm_rescan() but not =
-in
-> spi_nor_scan() ?
->
-
-Will fix this in v2 version as well.
-
->> +
->> +     return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(spi_nor_pm_rescan);
->> +
->
-> Actually most of the spi_nor_pm_rescan() code can be removed. We only nee=
-d
-> to keep:
-> - unlock the flash
-> - check the Quad Enable requirement
-> - for memory > 128 Mbit, either make it enter its 4-byte address mode or
-> use the 4-byte address instruction set.
->
-
-Yes I agree the above is all that is needed on reset.
-
-> Moreover, for the ease of the maintenance, I think something like
->
->
-> int spi_nor_reset(...)
-> {
->         /* unlock the flash */
->         ...
->
->         /* check the Quad Enable requirement */
->         ...
->
->         /* handle memory > 128 Mbit */
->         ...
-> }
-> EXPORT_SYMBOL_GPL(spi_nor_reset);
->
-> int spi_nor_scan(...)
-> {
->         /* scan */
->         ...
->
->         /* reset */
->         spi_nor_reset();
->
->         ...
-> }
-> EXPORT_SYMBOL_GPL(spi_nor_scan);
->
-> could be better than
->
-
-I can get rid of unnecessary refactoring and implement a single
-
-> int func1()
-> {
->
-> }
->
-> int func2()
-> {
->
-> }
->
-> int func3()
-> {
->
-> }
->
-> int func4()
-> {
->
-> }
->
-> int spi_nor_scan(...)
-> {
->         func1();
->         func2();
->         func3();
->         func4();
->         ...
-> }
-> EXPORT_SYMBOL_GPL(spi_nor_scan);
->
-> int spi_nor_pm_rescan(...)
-> {
->         func2();
->         func3();
-> }
-> EXPORT_SYMBOL_GPL(spi_nor_pm_rescan);
->
-> because in the 2nd case it's more difficult to figure out whether some
-> piece of code should be called from either spi_nor_scan() or
-> spi_nor_pm_rescan() only or from both.
->
-> For instance, you have forgotten to call spi_nor_set_4byte_opcodes() when
-> needed from spi_nor_pm_rescan().
->
-> The reset function should only be a subset of spi_nor_scan().
->
-> IMHO, the spi_nor_pm_rescan() approach is a little bit more confusing.
->
->
-
-I will make the necessary changes. Thanks for the detailed review and
-explanation.
-
-
-> Best regards,
->
-> Cyrille
->
-
-Thanks
-Kamal
-
->>  static const struct flash_info *spi_nor_match_id(const char *name)
->>  {
->>       const struct flash_info *id =3D spi_nor_ids;
->> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
->> index c425c7b..487b473 100644
->> --- a/include/linux/mtd/spi-nor.h
->> +++ b/include/linux/mtd/spi-nor.h
->> @@ -213,4 +213,21 @@ static inline struct device_node *spi_nor_get_flash=
-_node(struct spi_nor *nor)
->>   */
->>  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode =
-mode);
->>
->> +/**
->> + * spi_nor_pm_rescan() - rescan the SPI NOR
->> + * @nor:     the spi_nor structure
->> + * @name:    the chip type name
->> + *
->> + * The drivers can use this function to set the SPI NOR flash device to
->> + * its initial scanned state, it shall use all nor information set on p=
-oweron
->> + * for the read mode, address width and enabling write mode for certain
->> + * manufacturers. This would be needed to be called for flash devices t=
-hat are
->> + * reset during power management.
->> + *
->> + * The chip type name can be provided through the @name parameter.
->> + *
->> + * Return: 0 for success, others for failure.
->> + */
->> +int spi_nor_pm_rescan(struct spi_nor *nor, const char *name);
->> +
->>  #endif
->>
->
+Does that make more sense now?
+-- 
+Michal Hocko
+SUSE Labs
