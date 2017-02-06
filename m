@@ -1,21 +1,20 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
+Received: from exsmtp03.microchip.com ([198.175.253.49]
  helo=email.microchip.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cah3O-0006iD-PZ
- for linux-mtd@lists.infradead.org; Mon, 06 Feb 2017 11:01:56 +0000
-Subject: Re: [PATCH v1 4/5] mtd: m25p80: Check if the spi flash device has pm
- support
+ id 1cahlL-0008Dc-2j
+ for linux-mtd@lists.infradead.org; Mon, 06 Feb 2017 11:47:17 +0000
+Subject: Re: [PATCH v1 1/5] mtd: spi-nor: Added way to rescan spi-nor device
 To: Kamal Dasu <kdasu.kdev@gmail.com>, <linux-spi@vger.kernel.org>,
  <marex@denx.de>, <broonie@kernel.org>
 References: <1486164676-12912-1-git-send-email-kdasu.kdev@gmail.com>
- <1486164676-12912-5-git-send-email-kdasu.kdev@gmail.com>
+ <1486164676-12912-2-git-send-email-kdasu.kdev@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, <f.fainelli@gmail.com>,
  <bcm-kernel-feedback-list@broadcom.com>
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <9108d13d-0f06-172f-5e8d-91ff80fdd510@atmel.com>
-Date: Mon, 6 Feb 2017 12:01:27 +0100
+Message-ID: <05a60f60-f404-7761-4079-c6e7d1d08aed@atmel.com>
+Date: Mon, 6 Feb 2017 12:46:48 +0100
 MIME-Version: 1.0
-In-Reply-To: <1486164676-12912-5-git-send-email-kdasu.kdev@gmail.com>
+In-Reply-To: <1486164676-12912-2-git-send-email-kdasu.kdev@gmail.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,55 +29,321 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hi Kamal,
 
 Le 04/02/2017 à 00:31, Kamal Dasu a écrit :
-> Call the spi_nor_rescan() only if the controller driver needs this
-> support. This way SoCs that need this feature can use it.
+> On pm resume op spi-nor flash may need to be reconfigured on a power
+> reset, however there is no need to go through a full spi_nor_scan().
+> The driver might need to disable protection, program the address width and
+> transfer mode where applicable. The spi-nor framework has all the generic
+> code to do this. Refactored a few pieces and added a spi_nor_pm_rescan()
+> to be called by the mtd device driver's pm resume() op.
 > 
 > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 > ---
->  drivers/mtd/devices/m25p80.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 93 +++++++++++++++++++++++++++++++++++++------
+>  include/linux/mtd/spi-nor.h   | 17 ++++++++
+>  2 files changed, 98 insertions(+), 12 deletions(-)
 > 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 4528e33..ffdec60 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -328,8 +328,13 @@ static int m25p_suspend(struct device *dev)
->  static int m25p_resume(struct device *dev)
->  {
->  	struct m25p *flash = dev_get_drvdata(dev);
-> +	struct spi_device *spi = flash->spi;
-> +	int ret = 0;
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index da7cd69..e72233b 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1312,26 +1312,28 @@ static int spi_nor_check(struct spi_nor *nor)
+>  	return 0;
+>  }
+>  
+> -int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+> +static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+> +						       const char *name,
+> +						       int *retval)
 > +
-> +	if (spi_flash_pm_supported(spi))
-> +		ret = spi_nor_pm_rescan(&flash->spi_nor, NULL);
->
+>  {
+>  	const struct flash_info *info = NULL;
+>  	struct device *dev = nor->dev;
+> -	struct mtd_info *mtd = &nor->mtd;
+> -	struct device_node *np = spi_nor_get_flash_node(nor);
+> -	int ret;
+> -	int i;
+> +	int ret = 0;
+>  
+>  	ret = spi_nor_check(nor);
+>  	if (ret)
+> -		return ret;
+> +		goto info_out;
+>  
+>  	if (name)
+>  		info = spi_nor_match_id(name);
+>  	/* Try to auto-detect if chip name wasn't specified or not found */
+>  	if (!info)
+>  		info = spi_nor_read_id(nor);
+> -	if (IS_ERR_OR_NULL(info))
+> -		return -ENOENT;
+> +	if (IS_ERR_OR_NULL(info)) {
+> +		ret = -ENOENT;
+> +		goto info_out;
+> +	}
+>  
+>  	/*
+>  	 * If caller has specified name of flash model that can normally be
+> @@ -1342,7 +1344,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  
+>  		jinfo = spi_nor_read_id(nor);
+>  		if (IS_ERR(jinfo)) {
+> -			return PTR_ERR(jinfo);
+> +			ret = PTR_ERR(jinfo);
+> +			goto info_out;
+>  		} else if (jinfo != info) {
+>  			/*
+>  			 * JEDEC knows better, so overwrite platform ID. We
+> @@ -1357,8 +1360,15 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  		}
+>  	}
+>  
+> -	mutex_init(&nor->lock);
+> +info_out:
+> +
+> +	*retval = ret;
+> +	return info;
+> +}
+>  
+> +static void spi_nor_unprotect(struct spi_nor *nor,
+> +			      const struct flash_info *info)
+> +{
+>  	/*
+>  	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
+>  	 * with the software protection bits set
+> @@ -1372,6 +1382,35 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  		write_sr(nor, 0);
+>  		spi_nor_wait_till_ready(nor);
+>  	}
+> +}
+> +
+> +static inline void spi_nor_print_flash_info(struct spi_nor *nor,
+> +					    const struct flash_info *info)
+> +{
+> +	struct mtd_info *mtd = &nor->mtd;
+> +	struct device *dev = nor->dev;
+> +
+> +	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+> +			(long long)mtd->size >> 10);
+> +
+> +}
+> +
+> +int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+> +{
+> +	const struct flash_info *info;
+> +	struct device *dev = nor->dev;
+> +	struct mtd_info *mtd = &nor->mtd;
+> +	struct device_node *np = spi_nor_get_flash_node(nor);
+> +	int ret;
+> +	int i;
+> +
+> +	info = spi_nor_get_flash_info(nor, name, &ret);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mutex_init(&nor->lock);
+> +
+> +	spi_nor_unprotect(nor, info);
+>  
+>  	if (!mtd->name)
+>  		mtd->name = dev_name(dev);
+> @@ -1517,8 +1556,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  
+>  	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
+>  
+> -	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+> -			(long long)mtd->size >> 10);
+> +	spi_nor_print_flash_info(nor, info);
+>  
+>  	dev_dbg(dev,
+>  		"mtd .name = %s, .size = 0x%llx (%lldMiB), "
+> @@ -1540,6 +1578,37 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  }
+>  EXPORT_SYMBOL_GPL(spi_nor_scan);
+>  
+> +int spi_nor_pm_rescan(struct spi_nor *nor, const char *name)
+> +{
+> +	int ret = 0;
+> +	const struct flash_info *info;
+> +	struct device *dev = nor->dev;
+> +
+> +	info = spi_nor_get_flash_info(nor, name, &ret);
+> +	if (ret)
+> +		return ret;
 
-Why don't you squash patch 2 into this one? Patch 2 suggests that
-spi_nor_pm_rescan() could safely be called in any case but now this patch
-suggests that calling that function is not so safe.
+Why don't we save the info pointer in the spi_nor structure from
+spi_nor_scan()?
 
-I see two cases:
+in include/linux/mtd/spi-nor.h
 
-1/ either calling spi_nor_pm_rescan() is safe in any case, then patches 3,
-4 and 5 are needless.
++struct flash_info;
 
-2/ or calling spi_nor_pm_rescan() has unwanted side effects in some cases,
-then patch 2 should be squashed into this patch: patch 2 will never be
-taken alone in the spi-nor tree if it may introduce bugs or regressions.
+ struct spi_nor {
++	const struct flash_info	*info;
+ 	struct mtd_info		mtd;
+ 	struct mutex		lock;
 
-If something has to be done in the SPI sub-system, I guess it should be
-done first: for sure applying patches 3 and 5 would not create any issue.
-Then patches 2 and 4 squashed into a single patch may be safely applied after.
+I would avoid scanning the SPI flash again and again just to always
+retrieve the very same settings.
 
-However, patches 3 and 5 still need to be discussed first.
+Besides, when the parsing of the SFDP tables will be added, the scan
+procedure will cost more than a single Read JEDEC ID command.
+
+Hence if we can skip this step I guess it would be better!
+
+> +
+> +	spi_nor_unprotect(nor, info);
+> +
+> +	if (nor->flash_read == SPI_NOR_QUAD) {
+> +		ret = set_quad_mode(nor, info);
+> +		if (ret) {
+> +			dev_err(dev, "quad mode not supported\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	if (nor->addr_width == 4 && JEDEC_MFR(info) != CFI_MFR_AMD)
+> +		set_4byte(nor, info, 1);
+
+You have forgotten the case where spi_nor_set_4byte_opcodes() is to be
+called instead of set_4byte(), that is when we want to use the stateless
+4-byte address instruction set instead of the stateful 4-byte address mode.
+
+> +
+> +	spi_nor_print_flash_info(nor, info);
+
+IMHO, there is no reason to print this message a second time. It has
+already been displayed from spi_nor_scan() then I guess it's enough.
+Nothing has changed since spi_nor_scan().
+
+> +	dev_dbg(dev, "addr width %d read mode %d",
+> +		nor->addr_width, nor->flash_read);
+
+Why should we display those settings here in spi_nor_pm_rescan() but not in
+spi_nor_scan() ?
+
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(spi_nor_pm_rescan);
+> +
+
+Actually most of the spi_nor_pm_rescan() code can be removed. We only need
+to keep:
+- unlock the flash
+- check the Quad Enable requirement
+- for memory > 128 Mbit, either make it enter its 4-byte address mode or
+use the 4-byte address instruction set.
+
+Moreover, for the ease of the maintenance, I think something like
+
+
+int spi_nor_reset(...)
+{
+	/* unlock the flash */
+	...
+
+	/* check the Quad Enable requirement */
+	...
+
+	/* handle memory > 128 Mbit */
+	...
+}
+EXPORT_SYMBOL_GPL(spi_nor_reset);
+
+int spi_nor_scan(...)
+{
+	/* scan */
+	...
+
+	/* reset */
+	spi_nor_reset();
+
+	...
+}
+EXPORT_SYMBOL_GPL(spi_nor_scan);
+
+could be better than
+
+int func1()
+{
+
+}
+
+int func2()
+{
+
+}
+
+int func3()
+{
+
+}
+
+int func4()
+{
+
+}
+
+int spi_nor_scan(...)
+{
+	func1();
+	func2();
+	func3();
+	func4();
+	...
+}
+EXPORT_SYMBOL_GPL(spi_nor_scan);
+
+int spi_nor_pm_rescan(...)
+{
+	func2();
+	func3();
+}
+EXPORT_SYMBOL_GPL(spi_nor_pm_rescan);
+
+because in the 2nd case it's more difficult to figure out whether some
+piece of code should be called from either spi_nor_scan() or
+spi_nor_pm_rescan() only or from both.
+
+For instance, you have forgotten to call spi_nor_set_4byte_opcodes() when
+needed from spi_nor_pm_rescan().
+
+The reset function should only be a subset of spi_nor_scan().
+
+IMHO, the spi_nor_pm_rescan() approach is a little bit more confusing.
+
 
 Best regards,
 
 Cyrille
 
-> -	return spi_nor_pm_rescan(&flash->spi-nor, NULL);
-> +	return ret;
->  }
+>  static const struct flash_info *spi_nor_match_id(const char *name)
+>  {
+>  	const struct flash_info *id = spi_nor_ids;
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index c425c7b..487b473 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -213,4 +213,21 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
+>   */
+>  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode);
+>  
+> +/**
+> + * spi_nor_pm_rescan() - rescan the SPI NOR
+> + * @nor:	the spi_nor structure
+> + * @name:	the chip type name
+> + *
+> + * The drivers can use this function to set the SPI NOR flash device to
+> + * its initial scanned state, it shall use all nor information set on poweron
+> + * for the read mode, address width and enabling write mode for certain
+> + * manufacturers. This would be needed to be called for flash devices that are
+> + * reset during power management.
+> + *
+> + * The chip type name can be provided through the @name parameter.
+> + *
+> + * Return: 0 for success, others for failure.
+> + */
+> +int spi_nor_pm_rescan(struct spi_nor *nor, const char *name);
+> +
 >  #endif
->  static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
 > 
