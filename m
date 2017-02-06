@@ -1,24 +1,30 @@
-Received: from exsmtp03.microchip.com ([198.175.253.49]
- helo=email.microchip.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1canTi-0001Au-1R
- for linux-mtd@lists.infradead.org; Mon, 06 Feb 2017 17:53:28 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for N25Q256A13 as N25Q256A
-To: Marek Vasut <marek.vasut@gmail.com>, Nobuhiro Iwamatsu
- <nobuhiro.iwamatsu.kw@hitachi.com>, <linux-mtd@lists.infradead.org>
-References: <1485481897-6368-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
- <23f8030c-272c-1aab-2146-db45dfe77daf@atmel.com>
- <32a30d91-4f42-6c64-45b7-d0abc9f3d91e@gmail.com>
- <994fa7e6-1927-16ef-82c1-79a538319833@atmel.com>
- <38800099-7dc5-fbaa-b8a2-c8b646c3a60a@gmail.com>
-CC: Jagan Teki <jagan@openedev.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <081dbb46-2e4d-953e-77b8-f91bbb5796bb@atmel.com>
-Date: Mon, 6 Feb 2017 18:53:00 +0100
+Date: Mon, 6 Feb 2017 10:32:37 -0800
+From: "Darrick J. Wong" <darrick.wong@oracle.com>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ "Theodore Ts'o" <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.cz>, Jan Kara <jack@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/6] xfs: use memalloc_nofs_{save,restore} instead of
+ memalloc_noio*
+Message-ID: <20170206183237.GE3580@birch.djwong.org>
+References: <20170206140718.16222-1-mhocko@kernel.org>
+ <20170206140718.16222-5-mhocko@kernel.org>
+ <20170206153923.GL2267@bombadil.infradead.org>
+ <20170206174415.GA20731@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <38800099-7dc5-fbaa-b8a2-c8b646c3a60a@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170206174415.GA20731@dhcp22.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,130 +34,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 04/02/2017 à 22:32, Marek Vasut a écrit :
-> On 01/31/2017 11:18 AM, Cyrille Pitchen wrote:
->> Le 30/01/2017 à 21:38, Marek Vasut a écrit :
->>> On 01/30/2017 02:29 PM, Cyrille Pitchen wrote:
->>>> Hi Nobuhiro,
->>>>
->>>> Le 27/01/2017 à 02:51, Nobuhiro Iwamatsu a écrit :
->>>>> Add new Micron N25Q256A (N25Q256A13) 256Mbit NOR Flash in the list
->>>>> of supported devices. This chip has the same structure as the N25Q256A
->>>>> but ID is different. And this fixes N25Q256A to N25Q256 to fit chip
->>>>> name to other n25q chip names.
->>>>>
->>>>> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
->>>>> CC: Jagan Teki <jagan@openedev.com>
->>>>> CC: Marek Vasut <marek.vasut@gmail.com>
->>>>> ---
->>>>>  drivers/mtd/spi-nor/spi-nor.c | 3 ++-
->>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>>>> index da7cd69d4857..a2a6922e356f 100644
->>>>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>>>> @@ -887,7 +887,8 @@ static const struct flash_info spi_nor_ids[] = {
->>>>>  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
->>>>>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
->>>>>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
->>>>> -	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->>>>> +	{ "n25q256",     INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->>>>> +	{ "n25q256a",    INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->>>>
->>>> This patch changes the association "n25q256a" <-> 20 ba 19: "n25q256a"
->>>> would be now associated to 20 bb 19.
->>>> However some device trees use the "micron,n25q256a" as compatible string:
->>>> - arch/arm/boot/dts/imx6sx-sbd.dts: compatible = "micron,n25q256a",
->>>> "jedec,spi-nor";
->>>> - arch/arm/boot/dts/socfpga_arria5_socdk.dts: compatible = "n25q256a";
->>>> - arch/arm/boot/dts/socfpga_cyclone5_socrates.dts: compatible = "n25q256a";
->>>> - arch/arm/boot/dts/imx6ul-14x14-evk.dts: compatible = "micron,n25q256a";
->>>>
->>>> If the actual JEDEC ID read from the Micron SPI memory of one of these
->>>> boards is 20 ba 19 and if you now associate the string "n25q256a" to the
->>>> different JEDEC ID 20 bb 19, then spi_nor_scan() is likely to display the
->>>> warning message during the boot:
->>>>
->>>> dev_warn(dev, "found %s, expected %s\n", jinfo->name, info->name);
->>>>
->>>>
->>>> Displaying such a warning during the boot process would be an unwanted side
->>>> effect of this patch and users may complain or ask why such warning is now
->>>> displayed in the boot log.
->>>>
->>>> You may create a new entry for the 20 bb 19 JEDEC ID but I don't think it
->>>> is totally safe to remove the old n25q256a entry.
->>>
->>> If the old DTs were lazy and are now broken, then I think the warning is
->>> justified ?
->>>
->>
->> I'm reading a Micron datasheet for n25q256*:
->> 1 - it states that the JEDEC ID is 20 BA 19.
->> 2 - it explains the part number encoding
->>
->> Device Type    N25Q: Serial NOR Flash Memory, Multiple Input/Output
->>                      (Single, Dual, Quad I/O, XIP)
->> Density        256: 256Mb
->> Technology     A: 65nm (this is the only value provided by the datasheet)
->> ...
->>
->> So this datasheet applies to Micron n25q256a memory and its JEDEC ID is 20
->> BA 19. Hence the current "n25q256a" entry in the spi_nor_ids[] array and
->> the DTs using this string for the compatible value are all correct and
->> should not be changed.
->>
->> Then, I'm sure Nobuhiro is right too when he claims that the JEDEC ID of
->> his Micron n25q256a sample is 20 BB 19 (and not 20 BA 19). This just means
->> that Micron has produced different samples of n25q256a with different JEDEC
->> ID. However this is nothing new with Micron memories.
+On Mon, Feb 06, 2017 at 06:44:15PM +0100, Michal Hocko wrote:
+> On Mon 06-02-17 07:39:23, Matthew Wilcox wrote:
+> > On Mon, Feb 06, 2017 at 03:07:16PM +0100, Michal Hocko wrote:
+> > > +++ b/fs/xfs/xfs_buf.c
+> > > @@ -442,17 +442,17 @@ _xfs_buf_map_pages(
+> > >  		bp->b_addr = NULL;
+> > >  	} else {
+> > >  		int retried = 0;
+> > > -		unsigned noio_flag;
+> > > +		unsigned nofs_flag;
+> > >  
+> > >  		/*
+> > >  		 * vm_map_ram() will allocate auxillary structures (e.g.
+> > >  		 * pagetables) with GFP_KERNEL, yet we are likely to be under
+> > >  		 * GFP_NOFS context here. Hence we need to tell memory reclaim
+> > > -		 * that we are in such a context via PF_MEMALLOC_NOIO to prevent
+> > > +		 * that we are in such a context via PF_MEMALLOC_NOFS to prevent
+> > >  		 * memory reclaim re-entering the filesystem here and
+> > >  		 * potentially deadlocking.
+> > >  		 */
+> > 
+> > This comment feels out of date ... how about:
 > 
-> Isn't the BA a 3V3 part and the BB a 1V8 part ? I recall something like
-> that.
->
-
-I've just looked at 2 Micron's datasheets, the first one for 3V3 and the
-other for some 1V8 memory and I guess you're right.
-
-About the part numbers, voltage and JEDEC ID:
-N25Q*Ax1 -> 1V8, 20 BB __
-N25Q*Ax3 -> 3V3, 20 BA __
-
->> We should keep the current entry as is since it is perfectly correct but we
->> can add another entry with a different name for the JEDEC ID 20 BB 19.
->>
->> If we look at the entries for the other Micron memories, we see for each
->> memory density there are 2 different ID: 20 BA xx and 20 BB xx.
->>
->> Besides the "rule" 20 BA xx -> n25q__ , 20 BB xx -> n25q__a is not always
->> respected and is not relevant to the actual hardware. I guess this is just
->> a legacy naming scheme to provide 2 different names, one for the 20 BB xx
->> entry and the other for the 20 BA xx entry but from a hardware point of
->> view, I think this naming scheme doesn't make sense.
+> which part is out of date?
 > 
-> The micron ID/naming scheme does not make sense, it's complete chaos,
-> that is no news.
+> > 
+> > 		/*
+> > 		 * vm_map_ram will allocate auxiliary structures (eg page
+> > 		 * tables) with GFP_KERNEL.  If that tries to reclaim memory
+> > 		 * by calling back into this filesystem, we may deadlock.
+> > 		 * Prevent that by setting the NOFS flag.
+> > 		 */
 > 
->> So don't worry about the accuracy of the name you will choose to add a new
->> entry. For instance let's take "n25q256" since it is available.
-> 
-> Or we can add "n25q256ax3" ?
-> 
+> dunno, the previous wording seems clear enough to me. Maybe little bit
+> more chatty than yours but I am not sure this is worth changing.
 
-Indeed, it sounds like a good idea, so I vote for it :)
+I prefer to keep the "...yet we are likely to be under GFP_NOFS..."
+wording of the old comment because it captures the uncertainty of
+whether or not we actually are already under NOFS.  If someone actually
+has audited this code well enough to know for sure then yes let's change
+the comment, but I haven't gone that far.
 
-Just a small comment: the JEDEC ID 20 BA 19 is already associated to the
-string "n25q256a" and we have to keep this string for DT backward
-compatibility purpose. However the JEDEC ID 20 BB 19 is not handled yet so
-we can associate it to the string "n25q256ax1".
+The way the kmem_zalloc_large code is structured suggests to me that
+callers don't have to be especially aware of the NOFS state -- they can
+just call the function and it'll take care of making it work.
 
-So if we all agree, let the "n25q256a" entry as is and just add a new
-"n25q256ax1" entry for the JEDEC ID 20 BB 19.
+> > 
+> > > -		noio_flag = memalloc_noio_save();
+> > > +		nofs_flag = memalloc_nofs_save();
+> > >  		do {
+> > >  			bp->b_addr = vm_map_ram(bp->b_pages, bp->b_page_count,
+> > >  						-1, PAGE_KERNEL);
+> > 
+> > Also, I think it shows that this is the wrong place in XFS to be calling
+> > memalloc_nofs_save().  I'm not arguing against including this patch;
+> > it's a step towards where we want to be.  I also don't know XFS well
+> > enough to know where to set that flag ;-)  Presumably when we start a
+> > transaction ... ?
 
-In the future, for new Micron memories we could use the patterns "n25q*ax1"
-for 1V8 and "n25q*ax3" for 3V3 memories.
+None of the current kmem_zalloc_large callers actually have a
+transaction, at least not at that point.
 
-Best regards,
+> Yes that is what I would like to achieve longterm. And the reason why I
+> didn't want to mimic this pattern in kvmalloc as some have suggested.
+> It just takes much more time to get there from the past experience and
+> we should really start somewhere.
 
-Cyrille
+--D
+
+> -- 
+> Michal Hocko
+> SUSE Labs
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-xfs" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
