@@ -1,28 +1,19 @@
-Received: from mail-qt0-f193.google.com ([209.85.216.193])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cap64-0007VE-B3
- for linux-mtd@lists.infradead.org; Mon, 06 Feb 2017 19:37:10 +0000
-Received: by mail-qt0-f193.google.com with SMTP id n13so16322141qtc.0
- for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2017 11:36:47 -0800 (PST)
+Date: Mon, 6 Feb 2017 20:44:10 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marek.vasut@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/3] mtd: nand: sunxi: Perfs improvements
+Message-ID: <20170206204410.316ce645@bbrezillon>
+In-Reply-To: <1483695727-17415-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1483695727-17415-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <9108d13d-0f06-172f-5e8d-91ff80fdd510@atmel.com>
-References: <1486164676-12912-1-git-send-email-kdasu.kdev@gmail.com>
- <1486164676-12912-5-git-send-email-kdasu.kdev@gmail.com>
- <9108d13d-0f06-172f-5e8d-91ff80fdd510@atmel.com>
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-Date: Mon, 6 Feb 2017 14:35:46 -0500
-Message-ID: <CAC=U0a3V9fPnee6yYPw6CarFiKnwFw1aA-tm=+K4RQSm_bgVSg@mail.gmail.com>
-Subject: Re: [PATCH v1 4/5] mtd: m25p80: Check if the spi flash device has pm
- support
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-spi <linux-spi@vger.kernel.org>, Marek Vasut <marex@denx.de>,
- Mark Brown <broonie@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "Jayachandran C <jchandra@broadcom.com>,
- bcm-kernel-feedback-list" <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,74 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 6, 2017 at 6:01 AM, Cyrille Pitchen
-<cyrille.pitchen@atmel.com> wrote:
-> Hi Kamal,
->
-> Le 04/02/2017 =C3=A0 00:31, Kamal Dasu a =C3=A9crit :
->> Call the spi_nor_rescan() only if the controller driver needs this
->> support. This way SoCs that need this feature can use it.
->>
->> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->> ---
->>  drivers/mtd/devices/m25p80.c | 7 ++++++-
->>  1 file changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index 4528e33..ffdec60 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -328,8 +328,13 @@ static int m25p_suspend(struct device *dev)
->>  static int m25p_resume(struct device *dev)
->>  {
->>       struct m25p *flash =3D dev_get_drvdata(dev);
->> +     struct spi_device *spi =3D flash->spi;
->> +     int ret =3D 0;
->> +
->> +     if (spi_flash_pm_supported(spi))
->> +             ret =3D spi_nor_pm_rescan(&flash->spi_nor, NULL);
->>
->
-> Why don't you squash patch 2 into this one? Patch 2 suggests that
-> spi_nor_pm_rescan() could safely be called in any case but now this patch
-> suggests that calling that function is not so safe.
->
-> I see two cases:
->
-> 1/ either calling spi_nor_pm_rescan() is safe in any case, then patches 3=
-,
-> 4 and 5 are needless.
->
+On Fri,  6 Jan 2017 10:42:04 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-I agree it should be safe to call resume after implementing your
-suggestions for patch 1 itself.
+> Hello,
+> 
+> These 3 patches aims at improving the sunxi NAND driver perfs and
+> avoiding busy waits on long operations to improve system reactivity.
 
-> 2/ or calling spi_nor_pm_rescan() has unwanted side effects in some cases=
-,
-> then patch 2 should be squashed into this patch: patch 2 will never be
-> taken alone in the spi-nor tree if it may introduce bugs or regressions.
->
-> If something has to be done in the SPI sub-system, I guess it should be
-> done first: for sure applying patches 3 and 5 would not create any issue.
-> Then patches 2 and 4 squashed into a single patch may be safely applied a=
-fter.
->
-> However, patches 3 and 5 still need to be discussed first.
->
+Applied.
 
-I agree that these are not needed.
-
-> Best regards,
->
-> Cyrille
->
->> -     return spi_nor_pm_rescan(&flash->spi-nor, NULL);
->> +     return ret;
->>  }
->>  #endif
->>  static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
->>
->
-
-Thanks
-Kamal
+> 
+> Regards,
+> 
+> Boris
+> 
+> Boris Brezillon (3):
+>   mtd: nand: sunxi: Fix the non-polling case in sunxi_nfc_wait_events()
+>   mtd: nand: sunxi: Stop using polling mode when waiting for long
+>     operations
+>   mtd: nand: sunxi: Improve sunxi_nfc_cmd_ctrl()
+> 
+>  drivers/mtd/nand/sunxi_nand.c | 36 ++++++++++++++++++++++++++----------
+>  1 file changed, 26 insertions(+), 10 deletions(-)
+> 
