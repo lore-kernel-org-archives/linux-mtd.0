@@ -1,22 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1capGv-0005f7-0b
- for linux-mtd@lists.infradead.org; Mon, 06 Feb 2017 19:48:23 +0000
-Date: Mon, 6 Feb 2017 20:47:30 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: <mark.marshall@omicronenergy.com>
-Cc: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>,
- markmarshall14@gmail.com, prabhakar.kushwaha@nxp.com,
- stable@vger.kernel.org, leoyang.li@nxp.com, oss@buserror.net,
- raghav.dogra@nxp.com, linuxppc-dev@lists.ozlabs.org, raghav@freescale.com,
- b44839@freescale.com
-Subject: Re: [PATCH V2] mtd/ifc: Fix location of eccstat registers for IFC V1.0
-Message-ID: <20170206204730.05882b11@bbrezillon>
-In-Reply-To: <1485443907-11630-1-git-send-email-mark.marshall@omicronenergy.com>
-References: <1485443907-11630-1-git-send-email-mark.marshall@omicronenergy.com>
+Date: Mon, 6 Feb 2017 11:51:11 -0800
+From: "Darrick J. Wong" <darrick.wong@oracle.com>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+ "Theodore Ts'o" <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.cz>, Jan Kara <jack@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/6] xfs: use memalloc_nofs_{save,restore} instead of
+ memalloc_noio*
+Message-ID: <20170206195111.GH3580@birch.djwong.org>
+References: <20170206140718.16222-1-mhocko@kernel.org>
+ <20170206140718.16222-5-mhocko@kernel.org>
+ <20170206153923.GL2267@bombadil.infradead.org>
+ <20170206174415.GA20731@dhcp22.suse.cz>
+ <20170206183237.GE3580@birch.djwong.org>
+ <20170206184743.GB20731@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170206184743.GB20731@dhcp22.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,75 +36,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 26 Jan 2017 16:18:27 +0100
-<mark.marshall@omicronenergy.com> wrote:
+On Mon, Feb 06, 2017 at 07:47:43PM +0100, Michal Hocko wrote:
+> On Mon 06-02-17 10:32:37, Darrick J. Wong wrote:
+> > On Mon, Feb 06, 2017 at 06:44:15PM +0100, Michal Hocko wrote:
+> > > On Mon 06-02-17 07:39:23, Matthew Wilcox wrote:
+> > > > On Mon, Feb 06, 2017 at 03:07:16PM +0100, Michal Hocko wrote:
+> > > > > +++ b/fs/xfs/xfs_buf.c
+> > > > > @@ -442,17 +442,17 @@ _xfs_buf_map_pages(
+> > > > >  		bp->b_addr = NULL;
+> > > > >  	} else {
+> > > > >  		int retried = 0;
+> > > > > -		unsigned noio_flag;
+> > > > > +		unsigned nofs_flag;
+> > > > >  
+> > > > >  		/*
+> > > > >  		 * vm_map_ram() will allocate auxillary structures (e.g.
+> > > > >  		 * pagetables) with GFP_KERNEL, yet we are likely to be under
+> > > > >  		 * GFP_NOFS context here. Hence we need to tell memory reclaim
+> > > > > -		 * that we are in such a context via PF_MEMALLOC_NOIO to prevent
+> > > > > +		 * that we are in such a context via PF_MEMALLOC_NOFS to prevent
+> > > > >  		 * memory reclaim re-entering the filesystem here and
+> > > > >  		 * potentially deadlocking.
+> > > > >  		 */
+> > > > 
+> > > > This comment feels out of date ... how about:
+> > > 
+> > > which part is out of date?
+> > > 
+> > > > 
+> > > > 		/*
+> > > > 		 * vm_map_ram will allocate auxiliary structures (eg page
+> > > > 		 * tables) with GFP_KERNEL.  If that tries to reclaim memory
+> > > > 		 * by calling back into this filesystem, we may deadlock.
+> > > > 		 * Prevent that by setting the NOFS flag.
+> > > > 		 */
+> > > 
+> > > dunno, the previous wording seems clear enough to me. Maybe little bit
+> > > more chatty than yours but I am not sure this is worth changing.
+> > 
+> > I prefer to keep the "...yet we are likely to be under GFP_NOFS..."
+> > wording of the old comment because it captures the uncertainty of
+> > whether or not we actually are already under NOFS.  If someone actually
+> > has audited this code well enough to know for sure then yes let's change
+> > the comment, but I haven't gone that far.
 
-> From: Mark Marshall <mark.marshall@omicronenergy.com>
-> 
-> The commit 7a654172161c ("mtd/ifc: Add support for IFC controller
-> version 2.0") added support for version 2.0 of the IFC controller.
-> The version 2.0 controller has the ECC status registers at a different
-> location to the previous versions.
-> 
-> Correct the fsl_ifc_nand structure so that the ECC status can be read
-> from the correct location for both version 1.0 and 2.0 of the controller.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 7a654172161c ("mtd/ifc: Add support for IFC controller version 2.0")
-> Signed-off-by: Mark Marshall <mark.marshall@omicronenergy.com>
+Ugh, /me hands himself another cup of coffee...
 
-Applied after fixing the subject prefix: s/mtd\/ifc/mtd: nand: ifc:/.
-Next time, please make sure to add 'nand' in the prefix, I don't care
-if it's mtd/nand/xxxx or mtd: nand: xxx or mtd: nand/xxx, as long as
-mtd and nand keywords are present ;-).
+Somehow I mixed up _xfs_buf_map_pages and kmem_zalloc_large in this
+discussion.  Probably because they have similar code snippets with very
+similar comments to two totally different parts of xfs.
 
-> ---
-> 
-> Changes since v1:
-> 
-> - simplified the reading of the registers.
-> 
->  drivers/mtd/nand/fsl_ifc_nand.c | 8 +++++++-
->  include/linux/fsl_ifc.h         | 8 ++++++--
->  2 files changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-> index 0a177b1..d1570f5 100644
-> --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> @@ -258,9 +258,15 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
->  		int bufnum = nctrl->page & priv->bufnum_mask;
->  		int sector = bufnum * chip->ecc.steps;
->  		int sector_end = sector + chip->ecc.steps - 1;
-> +		__be32 *eccstat_regs;
-> +
-> +		if (ctrl->version >= FSL_IFC_VERSION_2_0_0)
-> +			eccstat_regs = ifc->ifc_nand.v2_nand_eccstat;
-> +		else
-> +			eccstat_regs = ifc->ifc_nand.v1_nand_eccstat;
->  
->  		for (i = sector / 4; i <= sector_end / 4; i++)
-> -			eccstat[i] = ifc_in32(&ifc->ifc_nand.nand_eccstat[i]);
-> +			eccstat[i] = ifc_in32(&eccstat_regs[i]);
->  
->  		for (i = sector; i <= sector_end; i++) {
->  			errors = check_read_ecc(mtd, ctrl, eccstat, i);
-> diff --git a/include/linux/fsl_ifc.h b/include/linux/fsl_ifc.h
-> index 3f9778c..c332f0a 100644
-> --- a/include/linux/fsl_ifc.h
-> +++ b/include/linux/fsl_ifc.h
-> @@ -733,8 +733,12 @@ struct fsl_ifc_nand {
->  	__be32 nand_erattr1;
->  	u32 res19[0x10];
->  	__be32 nand_fsr;
-> -	u32 res20[0x3];
-> -	__be32 nand_eccstat[6];
-> +	u32 res20;
-> +	/* The V1 nand_eccstat is actually 4 words that overlaps the
-> +	 * V2 nand_eccstat.
-> +	 */
-> +	__be32 v1_nand_eccstat[2];
-> +	__be32 v2_nand_eccstat[6];
->  	u32 res21[0x1c];
->  	__be32 nanndcr;
->  	u32 res22[0x2];
+The _xfs_buf_map_pages can be called inside or outside of
+transaction context, so I think we still have to memalloc_nofs_save for
+that to avoid the lockdep complaints and deadlocks referenced in the
+commit that added all that (to _xfs_buf_map_pages) in the first place.
+ae687e58b3 ("xfs: use NOIO contexts for vm_map_ram")
+
+My comments about kmem_zalloc_large still stand, even though the part
+of the patch you two were discussing was the _xfs_buf_map_pages.  I
+probably should have clarified that I think both functions actually
+/are/ doing the right thing wrt calling (or not calling)
+memalloc_nofs_save().
+
+> I believe we can drop the memalloc_nofs_save then as well because either
+> we are called from a potentially dangerous context and thus we are in
+> the nofs scope we we do not need the protection at all.
+
+Uh, now that I've muddied up the waters, which part are you referring to?
+
+--D
+
+> -- 
+> Michal Hocko
+> SUSE Labs
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-xfs" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
