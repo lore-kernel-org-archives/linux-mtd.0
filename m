@@ -1,22 +1,29 @@
-Received: from imap.thunk.org ([74.207.234.97])
+Received: from conssluserg-06.nifty.com ([210.131.2.91])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1caxbf-00064N-UE
- for linux-mtd@lists.infradead.org; Tue, 07 Feb 2017 04:42:21 +0000
-Date: Mon, 6 Feb 2017 23:39:39 -0500
-From: Theodore Ts'o <tytso@mit.edu>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH] fscrypt: split supp and notsupp declarations into their
- own headers
-Message-ID: <20170207043938.52b4ta3pt6xyjlel@thunk.org>
-References: <20170124185806.125261-1-ebiggers3@gmail.com>
+ id 1caxrV-0003Qc-Oq
+ for linux-mtd@lists.infradead.org; Tue, 07 Feb 2017 04:58:44 +0000
+Received: from mail-yw0-f170.google.com (mail-yw0-f170.google.com
+ [209.85.161.170]) (authenticated)
+ by conssluserg-06.nifty.com with ESMTP id v174w44p027251
+ for <linux-mtd@lists.infradead.org>; Tue, 7 Feb 2017 13:58:05 +0900
+Received: by mail-yw0-f170.google.com with SMTP id v200so60759224ywc.3
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2017 20:58:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170124185806.125261-1-ebiggers3@gmail.com>
+In-Reply-To: <20161214080657.60e658cf@bbrezillon>
+References: <1481675461-19364-1-git-send-email-yamada.masahiro@socionext.com>
+ <20161214080657.60e658cf@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 7 Feb 2017 13:58:03 +0900
+Message-ID: <CAK7LNATQiN-u2rwGciQfHWtOJeir9TMpzcXPW+YO=B=HhtvEQQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: fix typos in ooblayout comment blocks
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,22 +33,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 24, 2017 at 10:58:06AM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Previously, each filesystem configured without encryption support would
-> define all the public fscrypt functions to their notsupp_* stubs.  This
-> list of #defines had to be updated in every filesystem whenever a change
-> was made to the public fscrypt functions.  To make things more
-> maintainable now that we have three filesystems using fscrypt, split the
-> old header fscrypto.h into several new headers.  fscrypt_supp.h contains
-> the real declarations and is included by filesystems when configured
-> with encryption support, whereas fscrypt_notsupp.h contains the inline
-> stubs and is included by filesystems when configured without encryption
-> support.  fscrypt_common.h contains common declarations needed by both.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Hi Boris,
 
-Nice.  Thanks, applied.
+2016-12-14 16:06 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Wed, 14 Dec 2016 09:31:01 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>>  - "This functions return ..." -> "This function returns ..."
+>>  - "I you want ..." -> "If you want ..."
+>>
+>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>
+> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-					- Ted
+
+Is this patch applicable?
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
