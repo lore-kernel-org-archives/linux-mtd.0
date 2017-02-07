@@ -1,20 +1,22 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cb7kM-0000Gj-K1
- for linux-mtd@lists.infradead.org; Tue, 07 Feb 2017 15:32:01 +0000
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [GIT PULL] mtd: spi-nor: Changes for 4.11
-To: Brian Norris <computersforpeace@gmail.com>
-CC: Marek Vasut <marek.vasut@gmail.com>, Boris BREZILLON
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, MTD Maling List
- <linux-mtd@lists.infradead.org>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
-Date: Tue, 7 Feb 2017 16:31:33 +0100
+ id 1cbBWt-0003Jf-Sz
+ for linux-mtd@lists.infradead.org; Tue, 07 Feb 2017 19:34:22 +0000
+Subject: Re: [PATCH v8 2/5] mtd: ubi: use 'max_bad_blocks' to compute
+ bad_peb_limit if available
+To: Zach Brown <zach.brown@ni.com>, dwmw2@infradead.org
+References: <1484076621-7789-1-git-send-email-zach.brown@ni.com>
+ <1484076621-7789-3-git-send-email-zach.brown@ni.com>
+Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <acc83b35-6dd6-9cd0-6f7c-e0aa3f866ed0@nod.at>
+Date: Tue, 7 Feb 2017 20:33:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1484076621-7789-3-git-send-email-zach.brown@ni.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,115 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Am 10.01.2017 um 20:30 schrieb Zach Brown:
+> From: Jeff Westfahl <jeff.westfahl@ni.com>
+> 
+> If the user has not set max_beb_per1024 using either the cmdline or
+> Kconfig options for doing so, use the MTD function 'max_bad_blocks' to
+> compute the UBI bad_peb_limit.
+> 
+> Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+> Signed-off-by: Zach Brown <zach.brown@ni.com>
+> Acked-by: Boris Brezillon <boris.brezillon@free-electron.com>
 
-this is the spi-nor PR for 4.11. There are few new controller drivers and
-support to some memory parts. Otherwise about the spi-nor framework itself,
-the main update is the support of the 4-byte address instruction set, which
-is stateless, as opposed to the 4-byte address mode, which is stateful hence
-creates issues with some bootloaders when spurious reboot occurs.
+Does this patch go via the MTD tree?
+In this case:
+Acked-by: Richard Weinberger <richard@nod.at>
 
-Best regards,
-
-Cyrille
-
-The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
-
-  Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
-
-are available in the git repository at:
-
-  git://github.com/spi-nor/linux.git tags/spi-nor/for-4.11
-
-for you to fetch changes up to dc12bcccadafb5441170e6b7c8a438c91d4f385b:
-
-  mtd: spi-nor: cqspi: remove redundant dead code on error return check (2017-02-02 10:42:36 +0100)
-
-----------------------------------------------------------------
-This pull request contains the following notable changes:
-- add support to the 4-byte address instruction set.
-- add support to new memory parts.
-- add support to S3AN memories.
-- add support to the Intel SPI controller.
-- add support to the Aspeed AST2400 and AST2550 controllers.
-- fix max SPI transfer and message sizes in m25p80_read().
-- fix the Candence QSPI driver.
-- fix the Freescale QSPI driver.
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      mtd: spi-nor: cqspi: remove redundant dead code on error return check
-
-Cyrille Pitchen (5):
-      mtd: spi-nor: improve macronix_quad_enable()
-      mtd: spi-nor: remove WARN_ONCE() message in spi_nor_write()
-      mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte address op codes
-      mtd: spi-nor: add a stateless method to support memory size above 128Mib
-      Merge tag 'ib-mfd-mtd-v4.11' of git://git.kernel.org/.../lee/mfd
-
-Cédric Le Goater (4):
-      mtd: spi-nor: add memory controllers for the Aspeed AST2500 SoC
-      mtd: aspeed: add memory controllers for the Aspeed AST2400 SoC
-      mtd: spi-nor: bindings for the Aspeed memory controllers
-      mtd: aspeed: fix compile warning in aspeed_smc_read_from_ahb()
-
-Guochun Mao (1):
-      Documentation: mtk-quadspi: update DT bindings
-
-Heiner Kallweit (1):
-      mtd: m25p80: consider max message size in m25p80_read
-
-Kamal Dasu (1):
-      mtd: spi-nor: Add support for gd25q16
-
-Marek Vasut (1):
-      mtd: spi-nor: cqspi: Fix build on arches missing readsl/writesl
-
-Mika Westerberg (3):
-      spi-nor: Add support for Intel SPI serial flash controller
-      mfd: lpc_ich: Add support for SPI serial flash host controller
-      mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-
-Ricardo Ribalda Delgado (2):
-      mtd: spi-nor: Add support for S3AN spi-nor devices
-      mtd: spi-nor: Fix S3AN addressing calculation
-
-Uwe Kleine-König (1):
-      mtd: spi-nor: add dt support for Everspin MRAMs
-
-Victor Shyba (1):
-      mtd: spi-nor: Add lock/unlock support for f25l32pa
-
-Yunhui Cui (2):
-      mtd:fsl-quadspi:use the property fields of SPI-NOR
-      mtd: fsl-quadspi: Rename SEQID_QUAD_READ to SEQID_READ
-
- Documentation/devicetree/bindings/mtd/aspeed-smc.txt    |  51 +++++
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt |   2 +
- Documentation/devicetree/bindings/mtd/mtk-quadspi.txt   |   8 +-
- Documentation/mtd/intel-spi.txt                         |  88 +++++++++
- drivers/mfd/lpc_ich.c                                   | 131 +++++++++++++
- drivers/mtd/devices/m25p80.c                            |   9 +-
- drivers/mtd/devices/serial_flash_cmds.h                 |   7 -
- drivers/mtd/devices/st_spi_fsm.c                        |  28 +--
- drivers/mtd/spi-nor/Kconfig                             |  32 +++-
- drivers/mtd/spi-nor/Makefile                            |   3 +
- drivers/mtd/spi-nor/aspeed-smc.c                        | 758 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/cadence-quadspi.c                   |  10 +-
- drivers/mtd/spi-nor/fsl-quadspi.c                       |  48 ++---
- drivers/mtd/spi-nor/intel-spi-platform.c                |  57 ++++++
- drivers/mtd/spi-nor/intel-spi.c                         | 777 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/intel-spi.h                         |  24 +++
- drivers/mtd/spi-nor/spi-nor.c                           | 271 ++++++++++++++++++++++++---
- drivers/spi/spi-bcm-qspi.c                              |   6 +-
- include/linux/mfd/lpc_ich.h                             |   3 +
- include/linux/mtd/spi-nor.h                             |  34 +++-
- include/linux/platform_data/intel-spi.h                 |  31 +++
- 21 files changed, 2278 insertions(+), 100 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
- create mode 100644 Documentation/mtd/intel-spi.txt
- create mode 100644 drivers/mtd/spi-nor/aspeed-smc.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi.h
- create mode 100644 include/linux/platform_data/intel-spi.h
+Thanks,
+//richard
