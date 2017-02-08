@@ -1,24 +1,17 @@
-Received: from mail-pg0-f66.google.com ([74.125.83.66])
+Received: from mail-pg0-f65.google.com ([74.125.83.65])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbV2s-0000aC-3c
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 16:24:40 +0000
-Received: by mail-pg0-f66.google.com with SMTP id 75so15578169pgf.3
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 08:24:17 -0800 (PST)
-From: Wei Yongjun <weiyj.lk@gmail.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Cc: Wei Yongjun <weiyongjun1@huawei.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH -next] mtd: aspeed: remove redundant dev_err call in
- aspeed_smc_probe()
-Date: Wed,  8 Feb 2017 16:23:10 +0000
-Message-Id: <20170208162310.6048-1-weiyj.lk@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+ id 1cbVYf-0007HO-RD
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 16:57:32 +0000
+Received: by mail-pg0-f65.google.com with SMTP id 194so15645853pgd.0
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 08:57:09 -0800 (PST)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
+ broonie@kernel.org
+Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH v2 0/2] Added support for spi-nor device pm in m25p80
+Date: Wed,  8 Feb 2017 11:52:59 -0500
+Message-Id: <1486572781-28808-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,38 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+The changes below implements power management support in m25p80 driver.
+m25p80 pm resume() calls newly a implemented spi_nor_reset() function
+that sets up the spi-nor flash to its probed state. This is needed on
+platfroms that turn off power to the spi-nor flash on pm suspend. 
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Kamal Dasu (2):
+  mtd: spi-nor: Added spi-nor reset function
+  mtd: m25p80: Added pm ops support
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/mtd/spi-nor/aspeed-smc.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/mtd/devices/m25p80.c  | 16 +++++++++++
+ drivers/mtd/spi-nor/spi-nor.c | 62 ++++++++++++++++++++++++++++---------------
+ include/linux/mtd/spi-nor.h   | 21 ++++++++++++++-
+ 3 files changed, 77 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-index 7c86099..56051d3 100644
---- a/drivers/mtd/spi-nor/aspeed-smc.c
-+++ b/drivers/mtd/spi-nor/aspeed-smc.c
-@@ -723,17 +723,13 @@ static int aspeed_smc_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	controller->regs = devm_ioremap_resource(dev, res);
--	if (IS_ERR(controller->regs)) {
--		dev_err(dev, "Cannot remap controller address.\n");
-+	if (IS_ERR(controller->regs))
- 		return PTR_ERR(controller->regs);
--	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
- 	controller->ahb_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(controller->ahb_base)) {
--		dev_err(dev, "Cannot remap controller address.\n");
-+	if (IS_ERR(controller->ahb_base))
- 		return PTR_ERR(controller->ahb_base);
--	}
- 
- 	ret = aspeed_smc_setup_flash(controller, np, res);
- 	if (ret)
+-- 
+1.9.1
