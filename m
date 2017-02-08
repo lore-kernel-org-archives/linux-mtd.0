@@ -1,32 +1,31 @@
-Received: from mail-wm0-f68.google.com ([74.125.82.68])
+Received: from mezzanine.sirena.org.uk ([106.187.55.193])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbYU0-0001L7-5Z
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 20:04:54 +0000
-Received: by mail-wm0-f68.google.com with SMTP id c85so35002027wmi.1
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 12:04:29 -0800 (PST)
-Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
-To: Michal Suchanek <hramrach@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
+ id 1cbYVM-0002vc-IT
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 20:06:18 +0000
+Date: Wed, 8 Feb 2017 20:05:42 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <20170208200542.cnsyl2oasxfyifbh@sirena.org.uk>
 References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
  <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
  <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
  <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
  <20170208190939.GA97840@google.com>
  <CAOMqctTGCWoD-DqKUR3u1cLrQZPy3i1dLKXwoMkLP+hYfEtTyw@mail.gmail.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <effa593b-db1a-68ea-6c34-4b711583f955@gmail.com>
-Date: Wed, 8 Feb 2017 21:03:17 +0100
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="q4fhgwc34wd7hb7f"
+Content-Disposition: inline
 In-Reply-To: <CAOMqctTGCWoD-DqKUR3u1cLrQZPy3i1dLKXwoMkLP+hYfEtTyw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,75 +35,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 08.02.2017 um 20:40 schrieb Michal Suchanek:
-> On 8 February 2017 at 20:09, Brian Norris <computersforpeace@gmail.com> wrote:
->> + Mark, as the disagreement touches his area
->>
->> Hi,
->>
->> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
->>> Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
->>>> Am 08.02.2017 um 02:09 schrieb Marek Vasut:
->>>>> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
->>> [...]
->>>>>> Heiner Kallweit (1):
->>>>>>       mtd: m25p80: consider max message size in m25p80_read
-> [...]
->> One example that shows both sides of this coin:
->>
->> 5185a81c02d4 "spi: rockchip: limit transfers to (64K - 1) bytes"
->>
->> The hardware has a hard limit on transfers, at least, which can only be
->> 64K. For some reason there's an off-by-one error (probably a driver
->> bug?), so I cheated and made it one smaller.
->>
->> [...]
->>
->> (snip the rest about trying to split spi_messages within the SPI driver;
->> I agree that would be awful.)
->>
->> But one question: *why* exactly is the transfer or message limit so
->> fixed? If a SPI controller allows manual control over the CS line, then
->> why would anybody care if a sequence of data gets split up into multiple
->> HW sequences (e.g., for a long spi_transfer, why can't we split it into
->> 2 sub-transfers, while keeping the CS asserted?).
->>
->> For the above rockchip SPI controller, AIUI we could actually support
->> the "transfer limit" by doing this. And in fact, it could probably be
->> done within the SPI core code, instead either the SPI driver or the MTD
->> driver.
-> 
+
+--q4fhgwc34wd7hb7f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Feb 08, 2017 at 08:40:17PM +0100, Michal Suchanek wrote:
+
 > Yes, this is something repeatedly open-coded in SPI drivers, unfortunately.
-> 
+
 > In this case limiting the transfer size to 64k rather than doing
 > another clone of the manual CS handling actually looks reasonable.
 > It's not like anything but mtd_debug normally triggers that limit.
-> 
->>
->> Now, in this case, *transfer* vs. *message* seems to have a difference,
->> in whether or not you have guarantees about the CS line. The CS must
->> stay asserted (barring the 'cs_change' flag) between transfers, but not
->> between messages.
->>
->> So the one thing I can see that might support Marek's disagreement here:
->> does the FSL ESPI hardware support controlling the CS line? It seems
->> like currently, the driver just uses a few fixed settings for its CSMODE
->> register fields, whereas it might be able to support ->transfer_one()
->> (and flexible CS assertion, and splitting large transactions into
->> smaller chunks) if you handled that differently...
-> 
-> It was argued that while this is the case with most SPI controllers it
-> is not the case with FSL ESPI. I do not recall anybody producing any
-> datasheet/manual supporting this, though. It's not like this is a
-> confidential piece of hardware, right?
-> 
 
-The datasheet (here called Reference Manual) is available on the NXP
-(ex Freescale) website, you just have to register.
+Any driver that's open coding this is buggy and should be fixed, it
+should mainly be legacy drivers - some of the older drivers have a lot
+of problems.
 
-http://www.nxp.com/products/microcontrollers-and-processors/power-architecture-processors/qoriq-platforms/p-series/qoriq-p1010-and-p1014-low-power-communications-processors-with-trust-architecture:P1010?tab=Documentation_Tab
+--q4fhgwc34wd7hb7f
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> Thanks
-> 
-> Michal
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlibehUACgkQJNaLcl1U
+h9BPCAf/SM2TKWASXWmPjiiqi24ka8Z7Af4PzqCntet8w6Brr+RpCdnYGpO54sTe
+WsvQ1QB1INOZa1r2DjuAYimuqwEK5GOKIXhpiz9a33GagXNLvOCGuEZqGaRzpnUs
+XOkj89YW/BOUEbTE+OKijVQZ1JEFRahjD1PBLTbLK2IdjzxWK40jz3/TD5pRDJpg
+8MbBPcVN91w5pLpZ+c4NUZhWbcMj0+d7ub6HEDxEIdEiF/cnFk4tiP71FlJ5CsVp
+fXIdqmJkeG+gQ++kRWCJ9aV5nmy3Qq+m0ccHYI8Gz1YpP9vu6C9uXgoWtdR4oAZH
+CnAjjuIJlVUwWZRnPqx59cjM/XrX+g==
+=CnWw
+-----END PGP SIGNATURE-----
+
+--q4fhgwc34wd7hb7f--
