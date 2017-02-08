@@ -1,29 +1,25 @@
-Received: from mail-pg0-f65.google.com ([74.125.83.65])
+Received: from mail-pf0-f194.google.com ([209.85.192.194])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbbRG-0000dK-PE
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 23:14:17 +0000
-Received: by mail-pg0-f65.google.com with SMTP id 204so16048994pge.2
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 15:13:54 -0800 (PST)
-Date: Wed, 8 Feb 2017 15:12:51 -0800
+ id 1cbbp6-0000AE-Vu
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 23:38:54 +0000
+Received: by mail-pf0-f194.google.com with SMTP id y143so12412032pfb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 15:38:32 -0800 (PST)
+Date: Wed, 8 Feb 2017 15:37:28 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+To: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V4] mtd: bcm47xxsflash: support reading flash out of
- mapping window
-Message-ID: <20170208231251.GM94627@google.com>
-References: <20170123115154.3364-1-zajec5@gmail.com>
- <20170208225344.24010-1-zajec5@gmail.com>
- <20170208230921.GL94627@google.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH] mtd: aspeed: fix compile warning in
+ aspeed_smc_read_from_ahb()
+Message-ID: <20170208233728.GN94627@google.com>
+References: <1484817198-22477-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170208230921.GL94627@google.com>
+In-Reply-To: <1484817198-22477-1-git-send-email-clg@kaod.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,25 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 08, 2017 at 03:09:21PM -0800, Brian Norris wrote:
-> On Wed, Feb 08, 2017 at 11:53:44PM +0100, Rafał Miłecki wrote:
-> > From: Rafał Miłecki <rafal@milecki.pl>
-> > 
-> > For reading flash content we use MMIO but it's possible to read only
-> > first 16 MiB this way. It's simply an arch design/limitation.
-> > To support flash sizes bigger than 16 MiB implement indirect access
-> > using ChipCommon registers.
-> > This has been tested using MX25L25635F.
-> > 
-> > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> > Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> > ---
-> > V2: Simplify line writing to buf
-> >     Add some trivial comment for OPCODE_ST_READ4B
-> >     Both requested by Marek
-> > V3: Use as much as possible MMIO access for reads crossing boundary
-> > V4: Add missing buf increment (thanks Brian!)
+On Thu, Jan 19, 2017 at 10:13:18AM +0100, C�dric Le Goater wrote:
+> The first argument of ioread32_rep() and ioread8_rep is not
+> const. Change aspeed_smc_read_from_ahb() prototype to fix compile
+> warning :
 > 
-> Presumably you tested for this case now? Seems like quick turnaround :)
+>    drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
+>    drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>       ioread32_rep(src, buf, len >> 2);
 
-Anyway, LGTM. Applied to l2-mtd.git.
+But why isn't that param constant? Seems like that's a bug in the
+ioread* APIs. Some of their implementations are const, but some are not.
+
+I see for instance that the implementation in lib/iomap.c is not const,
+where there's zero reason it shouldn't be (if we also fix, e.g., its
+mmio_insl()).
+
+Brian
