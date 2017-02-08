@@ -1,24 +1,26 @@
-Received: from mail-pf0-f194.google.com ([209.85.192.194])
+Received: from mail-pg0-f66.google.com ([74.125.83.66])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbaZJ-0006Zy-9o
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 22:18:31 +0000
-Received: by mail-pf0-f194.google.com with SMTP id 19so12291680pfo.3
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 14:18:08 -0800 (PST)
-Date: Wed, 8 Feb 2017 14:17:05 -0800
+ id 1cbad8-0008Uo-IS
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 22:22:28 +0000
+Received: by mail-pg0-f66.google.com with SMTP id 194so15954554pgd.0
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 14:22:05 -0800 (PST)
+Date: Wed, 8 Feb 2017 14:21:03 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
- Julia Lawall <julia.lawall@lip6.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: ichxrom: maybe-uninitialized with gcc-4.9
-Message-ID: <20170208221705.GH94627@google.com>
-References: <20161024152853.2673518-1-arnd@arndb.de>
- <470c5483-949c-6e2a-cd52-73d99748b312@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Zach Brown <zach.brown@ni.com>, dwmw2@infradead.org,
+ boris.brezillon@free-electrons.com, dedekind1@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 2/5] mtd: ubi: use 'max_bad_blocks' to compute
+ bad_peb_limit if available
+Message-ID: <20170208222103.GI94627@google.com>
+References: <1484076621-7789-1-git-send-email-zach.brown@ni.com>
+ <1484076621-7789-3-git-send-email-zach.brown@ni.com>
+ <acc83b35-6dd6-9cd0-6f7c-e0aa3f866ed0@nod.at>
+ <20170208220345.GG94627@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <470c5483-949c-6e2a-cd52-73d99748b312@gmail.com>
+In-Reply-To: <20170208220345.GG94627@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +30,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 24, 2016 at 10:47:59PM +0200, Marek Vasut wrote:
-> On 10/24/2016 05:28 PM, Arnd Bergmann wrote:
-> > pci_read_config_word() might fail and not initialize its output,
-> > as pointed out by older versions of gcc when using the -Wmaybe-unintialized
-> > flag:
-> > 
-> > drivers/mtd/maps/ichxrom.c: In function ‘ichxrom_cleanup’:
-> > drivers/mtd/maps/ichxrom.c:63:2: error: ‘word’ is used uninitialized in this function [-Werror=uninitialized]
-> > 
-> > This is apparently a correct warning, though it does not show up
-> > with newer compilers. Changing the code to not attempt to write
-> > back uninitialized data into PCI config space is a correct
-> > fix for the problem and avoids the warning.
-> > 
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> Reviewed-by: Marek Vasut <marex@denx.de>
+On Wed, Feb 08, 2017 at 02:03:45PM -0800, Brian Norris wrote:
+> I'm not sure what's happening with patches 3-5 yet either.
 
-Applied to l2-mtd.git
+Never mind, those were reviewed and ready for me (not the NAND tree).
+Applied 3 to 5 to l2-mtd.git.
