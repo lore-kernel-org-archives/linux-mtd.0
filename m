@@ -1,24 +1,31 @@
-Date: Wed, 8 Feb 2017 11:40:36 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Janos Laube <janos.dev@gmail.com>,
- Paulius Zaleckas <paulius.zaleckas@gmail.com>,
- openwrt-devel@openwrt.org, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 09/22 v2] mtd: add DT bindings for the Cortina Systems
- Gemini Flash
-Message-ID: <20170208194036.GC94627@google.com>
-References: <20170128215004.11532-1-linus.walleij@linaro.org>
+Received: from mail-ua0-f175.google.com ([209.85.217.175])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cbY8C-0000TS-0s
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 19:42:24 +0000
+Received: by mail-ua0-f175.google.com with SMTP id 96so117607314uaq.3
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 11:41:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170128215004.11532-1-linus.walleij@linaro.org>
+In-Reply-To: <20170208190939.GA97840@google.com>
+References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
+ <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
+ <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
+ <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
+ <20170208190939.GA97840@google.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Wed, 8 Feb 2017 20:40:17 +0100
+Message-ID: <CAOMqctTGCWoD-DqKUR3u1cLrQZPy3i1dLKXwoMkLP+hYfEtTyw@mail.gmail.com>
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +35,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jan 28, 2017 at 10:50:04PM +0100, Linus Walleij wrote:
-> This adds device tree bindings for the Cortina systems Gemini
-> flash controller, a simple physmap which however need a few
-> syscon bits to be poked to operate properly.
-> 
-> Cc: Janos Laube <janos.dev@gmail.com>
-> Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>
-> Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: devicetree@vger.kernel.org
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v1->v2:
-> - Add Marek's and Rob's ACK tags.
-> 
-> MTD maintainers: please just apply this to the MTD tree when
-> you are happy with it. It is functionally orthogonal to the rest
-> of the series and is just in the series for context.
+On 8 February 2017 at 20:09, Brian Norris <computersforpeace@gmail.com> wro=
+te:
+> + Mark, as the disagreement touches his area
+>
+> Hi,
+>
+> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
+>> Le 08/02/2017 =C3=A0 06:52, Heiner Kallweit a =C3=A9crit :
+>> > Am 08.02.2017 um 02:09 schrieb Marek Vasut:
+>> >> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
+>> [...]
+>> >>> Heiner Kallweit (1):
+>> >>>       mtd: m25p80: consider max message size in m25p80_read
+[...]
+> One example that shows both sides of this coin:
+>
+> 5185a81c02d4 "spi: rockchip: limit transfers to (64K - 1) bytes"
+>
+> The hardware has a hard limit on transfers, at least, which can only be
+> 64K. For some reason there's an off-by-one error (probably a driver
+> bug?), so I cheated and made it one smaller.
+>
+> [...]
+>
+> (snip the rest about trying to split spi_messages within the SPI driver;
+> I agree that would be awful.)
+>
+> But one question: *why* exactly is the transfer or message limit so
+> fixed? If a SPI controller allows manual control over the CS line, then
+> why would anybody care if a sequence of data gets split up into multiple
+> HW sequences (e.g., for a long spi_transfer, why can't we split it into
+> 2 sub-transfers, while keeping the CS asserted?).
+>
+> For the above rockchip SPI controller, AIUI we could actually support
+> the "transfer limit" by doing this. And in fact, it could probably be
+> done within the SPI core code, instead either the SPI driver or the MTD
+> driver.
 
-I can't seem to find the rest of the series "for context", but this is
-pretty harmless, so...
+Yes, this is something repeatedly open-coded in SPI drivers, unfortunately.
 
-applied to l2-mtd.git.
+In this case limiting the transfer size to 64k rather than doing
+another clone of the manual CS handling actually looks reasonable.
+It's not like anything but mtd_debug normally triggers that limit.
+
+>
+> Now, in this case, *transfer* vs. *message* seems to have a difference,
+> in whether or not you have guarantees about the CS line. The CS must
+> stay asserted (barring the 'cs_change' flag) between transfers, but not
+> between messages.
+>
+> So the one thing I can see that might support Marek's disagreement here:
+> does the FSL ESPI hardware support controlling the CS line? It seems
+> like currently, the driver just uses a few fixed settings for its CSMODE
+> register fields, whereas it might be able to support ->transfer_one()
+> (and flexible CS assertion, and splitting large transactions into
+> smaller chunks) if you handled that differently...
+
+It was argued that while this is the case with most SPI controllers it
+is not the case with FSL ESPI. I do not recall anybody producing any
+datasheet/manual supporting this, though. It's not like this is a
+confidential piece of hardware, right?
+
+Thanks
+
+Michal
