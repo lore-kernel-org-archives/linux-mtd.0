@@ -1,22 +1,26 @@
-Received: from mail-io0-f195.google.com ([209.85.223.195])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbZDe-0006x3-SK
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 20:52:05 +0000
-Received: by mail-io0-f195.google.com with SMTP id m98so77970iod.2
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 12:51:42 -0800 (PST)
-Date: Wed, 8 Feb 2017 12:50:39 -0800
+Date: Wed, 8 Feb 2017 13:04:51 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: John Crispin <john@phrozen.org>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: update my email address
-Message-ID: <20170208205039.GA124632@google.com>
-References: <1482260606-61784-1-git-send-email-john@phrozen.org>
- <20161229174302.5fcc42c2@bbrezillon>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Janos Laube <janos.dev@gmail.com>,
+ Paulius Zaleckas <paulius.zaleckas@gmail.com>,
+ openwrt-devel@openwrt.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 10/22 v2] mtd: physmap_of: add a hook for Gemini flash
+ probing
+Message-ID: <20170208210451.GD94627@google.com>
+References: <20170128215048.11676-1-linus.walleij@linaro.org>
+ <8f7e75c9-3457-c1b1-5719-a4efb64bf66c@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20161229174302.5fcc42c2@bbrezillon>
+In-Reply-To: <8f7e75c9-3457-c1b1-5719-a4efb64bf66c@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +30,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 29, 2016 at 05:43:02PM +0100, Boris Brezillon wrote:
-> On Tue, 20 Dec 2016 20:03:26 +0100
-> John Crispin <john@phrozen.org> wrote:
-> 
-> > This patch updates my email address as I no longer have access to the old
-> > one.
+On Sat, Feb 04, 2017 at 10:52:38PM +0100, Marek Vasut wrote:
+> On 01/28/2017 10:50 PM, Linus Walleij wrote:
+> > In order to support device tree probing of Gemini NOR flash
+> > chips, a certain register in the syscon needs to be poked
+> > to enable parallel flash mode.
 > > 
-> > Signed-off-by: John Crispin <john@phrozen.org>
-> 
-> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> 
+> > Such things used to happen in "necessarily different" board
+> > file code, and this indeed was also done for the Gemini, so
+> > the MTD driver could treat it as any memory-mapped NOR flash,
+> > but this is not the way in the future: board files need to
+> > go, and hardware concerns distributed down to the applicable
+> > drivers.
+> > 
+> > This adds a hook in the same way that the Versatile did: if
+> > the Kconfig symbol is not selected the net total of supporting
+> > Gemini should be zero bytes of added code. To live up to this
+> > promise, also the return value error print from the Versatile
+> > extra probe call get to be removed in this patch, all printing
+> > need to happen in the add-ons.
+> > 
+> > Cc: Janos Laube <janos.dev@gmail.com>
+> > Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>
+> > Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>
+> > Cc: Florian Fainelli <f.fainelli@gmail.com>
+> > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > > ---
-> >  drivers/mtd/maps/lantiq-flash.c |    4 ++--
-> >  drivers/mtd/nand/xway_nand.c    |    2 +-
-> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> > ChangeLog v1->v2:
+> > - Put a more elaborate description of the Kconfig option into
+> >   the Kconfig item, take this opportunity to also modify the
+> >   Versatile Kconfig entry which is equally terse.
+> 
+> Thanks!
+> 
+> > - Modify the Makefile to build the Gemini and Versatile drivers
+> >   based on their own config symbols and not based on an if on
+> >   their symbol, should have been done like that from the start.
+> > - Move a dev_info() to dev_dbg() in the driver.
+> 
+> [...]
+> 
+> > +	if (val & FLASH_WIDTH_16BIT) {
+> > +		if (map->bankwidth != 2)
+> > +			dev_warn(dev, "flash hardware say flash is 16 bit wide "
+> > +				 "but DT says it is %d bits wide\n",
+> 
+> Nit, please do not break printed strings, it is not possible to 'git
+> grep' for them if you do.
+> 
+> > +				 map->bankwidth * 8);
+> > +	} else {
+> > +		if (map->bankwidth != 1)
+> > +			dev_warn(dev, "flash hardware say flash is 8 bit wide "
+> > +				 "but DT says it is %d bits wide\n",
+> 
+> DTTO
 
-Huh, I think I filed this away as "for Boris to handle" due to the NAND
-file touched. Oops.
+I've fixed these up myself.
 
-Applied to l2-mtd.git.
+> > +				 map->bankwidth * 8);
+> > +	}
+> > +
+> > +	/* Activate parallel (NOR flash) mode */
+> > +	ret = regmap_update_bits(rmap, GLOBAL_MISC_CTRL,
+> > +				 FLASH_PADS_MASK,
+> > +				 SFLASH_PADS_DISABLE | NAND_PADS_DISABLE);
+> > +	if (ret) {
+> > +		dev_err(dev, "unable to set up physmap pads\n");
+> > +		return -ENODEV;
+> > +	}
+> 
+> [...]
+> 
+> Once you fix the nit above, add my:
+> Acked-by: Marek Vasut <marek.vasut@gmail.com>
+
+smatch also noticed one new problem:
+
+drivers/mtd/maps/physmap_of.c:248 of_flash_probe() warn: possible memory leak of 'mtd_list' [smatch]
+
+This matches an existing leak seen in this function already, but my
+scripts look for new warnings. Would be nice to fix this sometime.
+
+Applied to l2-mtd.git, with the above 2 fixed.
+
+Brian
