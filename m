@@ -1,33 +1,24 @@
-From: "Dilger, Andreas" <andreas.dilger@intel.com>
-To: Jan Kara <jack@suse.cz>
-CC: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
- "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
- "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
- "ecryptfs@vger.kernel.org" <ecryptfs@vger.kernel.org>,
- "codalist@coda.cs.cmu.edu" <codalist@coda.cs.cmu.edu>, Christoph Hellwig
- <hch@infradead.org>, "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "osd-dev@open-osd.org" <osd-dev@open-osd.org>,
- "v9fs-developer@lists.sourceforge.net"
- <v9fs-developer@lists.sourceforge.net>, "ceph-devel@vger.kernel.org"
- <ceph-devel@vger.kernel.org>, Petr Vandrovec <petr@vandrovec.name>,
- "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- "lustre-devel@lists.lustre.org" <lustre-devel@lists.lustre.org>
-Subject: Re: [lustre-devel] [PATCH 04/24] fs: Provide infrastructure for
- dynamic	BDIs in filesystems
-Date: Wed, 8 Feb 2017 00:38:17 +0000
-Message-ID: <C01BF300-AD67-4A3E-810F-AAB2EEB90B97@intel.com>
-References: <20170202173422.3240-1-jack@suse.cz>
- <20170202173422.3240-5-jack@suse.cz>
-In-Reply-To: <20170202173422.3240-5-jack@suse.cz>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <12E5AAE438FFD045A134C624E0411E7E@intel.com>
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-wj0-f194.google.com ([209.85.210.194])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cbGmZ-0000b0-Vx
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 01:10:53 +0000
+Received: by mail-wj0-f194.google.com with SMTP id kq3so4862042wjc.3
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Feb 2017 17:10:30 -0800 (PST)
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
+Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
+Date: Wed, 8 Feb 2017 02:09:27 +0100
 MIME-Version: 1.0
+In-Reply-To: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,158 +28,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Feb 2, 2017, at 10:34, Jan Kara <jack@suse.cz> wrote:
->=20
-> Provide helper functions for setting up dynamically allocated
-> backing_dev_info structures for filesystems and cleaning them up on
-> superblock destruction.
->=20
-> CC: linux-mtd@lists.infradead.org
-> CC: linux-nfs@vger.kernel.org
-> CC: Petr Vandrovec <petr@vandrovec.name>
-> CC: linux-nilfs@vger.kernel.org
-> CC: cluster-devel@redhat.com
-> CC: osd-dev@open-osd.org
-> CC: codalist@coda.cs.cmu.edu
-> CC: linux-afs@lists.infradead.org
-> CC: ecryptfs@vger.kernel.org
-> CC: linux-cifs@vger.kernel.org
-> CC: ceph-devel@vger.kernel.org
-> CC: linux-btrfs@vger.kernel.org
-> CC: v9fs-developer@lists.sourceforge.net
-> CC: lustre-devel@lists.lustre.org
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
-> fs/super.c                       | 49 +++++++++++++++++++++++++++++++++++=
-+++++
-> include/linux/backing-dev-defs.h |  2 +-
-> include/linux/fs.h               |  6 +++++
-> 3 files changed, 56 insertions(+), 1 deletion(-)
->=20
-> diff --git a/fs/super.c b/fs/super.c
-> index ea662b0e5e78..31dc4c6450ef 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -446,6 +446,11 @@ void generic_shutdown_super(struct super_block *sb)
-> 	hlist_del_init(&sb->s_instances);
-> 	spin_unlock(&sb_lock);
-> 	up_write(&sb->s_umount);
-> +	if (sb->s_iflags & SB_I_DYNBDI) {
-> +		bdi_put(sb->s_bdi);
-> +		sb->s_bdi =3D &noop_backing_dev_info;
-> +		sb->s_iflags &=3D ~SB_I_DYNBDI;
-> +	}
-> }
->=20
-> EXPORT_SYMBOL(generic_shutdown_super);
-> @@ -1249,6 +1254,50 @@ mount_fs(struct file_system_type *type, int flags,=
- const char *name, void *data)
-> }
->=20
-> /*
-> + * Setup private BDI for given superblock. I gets automatically cleaned =
-up
+On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
+> Hi Brian,
+> 
+> this is the spi-nor PR for 4.11. There are few new controller drivers and
+> support to some memory parts. Otherwise about the spi-nor framework itself,
+> the main update is the support of the 4-byte address instruction set, which
+> is stateless, as opposed to the 4-byte address mode, which is stateful hence
+> creates issues with some bootloaders when spurious reboot occurs.
+> 
+> Best regards,
+> 
+> Cyrille
+> 
+> The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
+> 
+>   Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
+> 
+> are available in the git repository at:
+> 
+>   git://github.com/spi-nor/linux.git tags/spi-nor/for-4.11
+> 
+> for you to fetch changes up to dc12bcccadafb5441170e6b7c8a438c91d4f385b:
+> 
+>   mtd: spi-nor: cqspi: remove redundant dead code on error return check (2017-02-02 10:42:36 +0100)
+> 
+> ----------------------------------------------------------------
+> This pull request contains the following notable changes:
+> - add support to the 4-byte address instruction set.
+> - add support to new memory parts.
+> - add support to S3AN memories.
+> - add support to the Intel SPI controller.
+> - add support to the Aspeed AST2400 and AST2550 controllers.
+> - fix max SPI transfer and message sizes in m25p80_read().
+> - fix the Candence QSPI driver.
+> - fix the Freescale QSPI driver.
+> 
+> ----------------------------------------------------------------
+> Colin Ian King (1):
+>       mtd: spi-nor: cqspi: remove redundant dead code on error return check
+> 
+> Cyrille Pitchen (5):
+>       mtd: spi-nor: improve macronix_quad_enable()
+>       mtd: spi-nor: remove WARN_ONCE() message in spi_nor_write()
+>       mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte address op codes
+>       mtd: spi-nor: add a stateless method to support memory size above 128Mib
+>       Merge tag 'ib-mfd-mtd-v4.11' of git://git.kernel.org/.../lee/mfd
+> 
+> Cédric Le Goater (4):
+>       mtd: spi-nor: add memory controllers for the Aspeed AST2500 SoC
+>       mtd: aspeed: add memory controllers for the Aspeed AST2400 SoC
+>       mtd: spi-nor: bindings for the Aspeed memory controllers
+>       mtd: aspeed: fix compile warning in aspeed_smc_read_from_ahb()
+> 
+> Guochun Mao (1):
+>       Documentation: mtk-quadspi: update DT bindings
+> 
+> Heiner Kallweit (1):
+>       mtd: m25p80: consider max message size in m25p80_read
 
-(typo) s/I/It/
+I cannot say I'm super-happy about this particular patch, still ...
 
-Looks fine otherwise.
+> Kamal Dasu (1):
+>       mtd: spi-nor: Add support for gd25q16
+> 
+> Marek Vasut (1):
+>       mtd: spi-nor: cqspi: Fix build on arches missing readsl/writesl
+> 
+> Mika Westerberg (3):
+>       spi-nor: Add support for Intel SPI serial flash controller
+>       mfd: lpc_ich: Add support for SPI serial flash host controller
+>       mfd: lpc_ich: Add support for Intel Apollo Lake SoC
+> 
+> Ricardo Ribalda Delgado (2):
+>       mtd: spi-nor: Add support for S3AN spi-nor devices
+>       mtd: spi-nor: Fix S3AN addressing calculation
+> 
+> Uwe Kleine-König (1):
+>       mtd: spi-nor: add dt support for Everspin MRAMs
+> 
+> Victor Shyba (1):
+>       mtd: spi-nor: Add lock/unlock support for f25l32pa
+> 
+> Yunhui Cui (2):
+>       mtd:fsl-quadspi:use the property fields of SPI-NOR
+>       mtd: fsl-quadspi: Rename SEQID_QUAD_READ to SEQID_READ
+> 
+>  Documentation/devicetree/bindings/mtd/aspeed-smc.txt    |  51 +++++
+>  Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt |   2 +
+>  Documentation/devicetree/bindings/mtd/mtk-quadspi.txt   |   8 +-
+>  Documentation/mtd/intel-spi.txt                         |  88 +++++++++
+>  drivers/mfd/lpc_ich.c                                   | 131 +++++++++++++
+>  drivers/mtd/devices/m25p80.c                            |   9 +-
+>  drivers/mtd/devices/serial_flash_cmds.h                 |   7 -
+>  drivers/mtd/devices/st_spi_fsm.c                        |  28 +--
+>  drivers/mtd/spi-nor/Kconfig                             |  32 +++-
+>  drivers/mtd/spi-nor/Makefile                            |   3 +
+>  drivers/mtd/spi-nor/aspeed-smc.c                        | 758 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/cadence-quadspi.c                   |  10 +-
+>  drivers/mtd/spi-nor/fsl-quadspi.c                       |  48 ++---
+>  drivers/mtd/spi-nor/intel-spi-platform.c                |  57 ++++++
+>  drivers/mtd/spi-nor/intel-spi.c                         | 777 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/intel-spi.h                         |  24 +++
+>  drivers/mtd/spi-nor/spi-nor.c                           | 271 ++++++++++++++++++++++++---
+>  drivers/spi/spi-bcm-qspi.c                              |   6 +-
+>  include/linux/mfd/lpc_ich.h                             |   3 +
+>  include/linux/mtd/spi-nor.h                             |  34 +++-
+>  include/linux/platform_data/intel-spi.h                 |  31 +++
+>  21 files changed, 2278 insertions(+), 100 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
+>  create mode 100644 Documentation/mtd/intel-spi.txt
+>  create mode 100644 drivers/mtd/spi-nor/aspeed-smc.c
+>  create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
+>  create mode 100644 drivers/mtd/spi-nor/intel-spi.c
+>  create mode 100644 drivers/mtd/spi-nor/intel-spi.h
+>  create mode 100644 include/linux/platform_data/intel-spi.h
+> 
 
-> + * in generic_shutdown_super().
-> + */
-> +int super_setup_bdi_name(struct super_block *sb, char *fmt, ...)
-> +{
-> +	struct backing_dev_info *bdi;
-> +	int err;
-> +	va_list args;
-> +
-> +	bdi =3D bdi_alloc(GFP_KERNEL);
-> +	if (!bdi)
-> +		return -ENOMEM;
-> +
-> +	bdi->name =3D sb->s_type->name;
-> +
-> +	va_start(args, fmt);
-> +	err =3D bdi_register_va(bdi, NULL, fmt, args);
-> +	va_end(args);
-> +	if (err) {
-> +		bdi_put(bdi);
-> +		return err;
-> +	}
-> +	WARN_ON(sb->s_bdi !=3D &noop_backing_dev_info);
-> +	sb->s_bdi =3D bdi;
-> +	sb->s_iflags |=3D SB_I_DYNBDI;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(super_setup_bdi_name);
-> +
-> +/*
-> + * Setup private BDI for given superblock. I gets automatically cleaned =
-up
-> + * in generic_shutdown_super().
-> + */
-> +int super_setup_bdi(struct super_block *sb)
-> +{
-> +	static atomic_long_t bdi_seq =3D ATOMIC_LONG_INIT(0);
-> +
-> +	return super_setup_bdi_name(sb, "%.28s-%ld", sb->s_type->name,
-> +				    atomic_long_inc_return(&bdi_seq));
-> +}
-> +EXPORT_SYMBOL(super_setup_bdi);
-> +
-> +/*
->  * This is an internal function, please use sb_end_{write,pagefault,intwr=
-ite}
->  * instead.
->  */
-> diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev=
--defs.h
-> index 2ecafc8a2d06..70080b4217f4 100644
-> --- a/include/linux/backing-dev-defs.h
-> +++ b/include/linux/backing-dev-defs.h
-> @@ -143,7 +143,7 @@ struct backing_dev_info {
-> 	congested_fn *congested_fn; /* Function pointer if device is md/dm */
-> 	void *congested_data;	/* Pointer to aux data for congested func */
->=20
-> -	char *name;
-> +	const char *name;
->=20
-> 	struct kref refcnt;	/* Reference counter for the structure */
-> 	unsigned int registered:1;	/* Is bdi registered? */
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index c930cbc19342..8ed8b6d1bc54 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -1267,6 +1267,9 @@ struct mm_struct;
-> /* sb->s_iflags to limit user namespace mounts */
-> #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
->=20
-> +/* Temporary flag until all filesystems are converted to dynamic bdis */
-> +#define SB_I_DYNBDI	0x00000100
-> +
-> /* Possible states of 'frozen' field */
-> enum {
-> 	SB_UNFROZEN =3D 0,		/* FS is unfrozen */
-> @@ -2103,6 +2106,9 @@ extern int vfs_ustat(dev_t, struct kstatfs *);
-> extern int freeze_super(struct super_block *super);
-> extern int thaw_super(struct super_block *super);
-> extern bool our_mnt(struct vfsmount *mnt);
-> +extern __printf(2, 3)
-> +int super_setup_bdi_name(struct super_block *sb, char *fmt, ...);
-> +extern int super_setup_bdi(struct super_block *sb);
->=20
-> extern int current_umask(void);
->=20
-> --=20
-> 2.10.2
->=20
-> _______________________________________________
-> lustre-devel mailing list
-> lustre-devel@lists.lustre.org
-> http://lists.lustre.org/listinfo.cgi/lustre-devel-lustre.org
 
-Cheers, Andreas
---
-Andreas Dilger
-Lustre Principal Architect
-Intel Corporation
+-- 
+Best regards,
+Marek Vasut
