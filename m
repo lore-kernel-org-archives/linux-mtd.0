@@ -1,19 +1,30 @@
-Received: from mail-pf0-f195.google.com ([209.85.192.195])
+Received: from mail-pg0-f66.google.com ([74.125.83.66])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbVYl-0007HT-L5
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 16:57:39 +0000
-Received: by mail-pf0-f195.google.com with SMTP id 19so12024624pfo.3
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 08:57:15 -0800 (PST)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
- broonie@kernel.org
-Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH v2 2/2] mtd: m25p80: Added pm ops support
-Date: Wed,  8 Feb 2017 11:53:01 -0500
-Message-Id: <1486572781-28808-3-git-send-email-kdasu.kdev@gmail.com>
-In-Reply-To: <1486572781-28808-1-git-send-email-kdasu.kdev@gmail.com>
-References: <1486572781-28808-1-git-send-email-kdasu.kdev@gmail.com>
+ id 1cbXdv-0004mM-AB
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 19:11:05 +0000
+Received: by mail-pg0-f66.google.com with SMTP id 75so15914983pgf.3
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 11:10:42 -0800 (PST)
+Date: Wed, 8 Feb 2017 11:09:39 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
+Message-ID: <20170208190939.GA97840@google.com>
+References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
+ <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
+ <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
+ <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +34,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added power management ops for resume to be able to resan spi-nor
-device and set it to right transfer modes in its probed state after
-poweron. Some SoC implementations might  power down the spi-nor flash
-and loose its initial settings on suspend. A resume should retore the
-part to its probed state.
++ Mark, as the disagreement touches his area
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/mtd/devices/m25p80.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Hi,
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 9cf7fcd..69d309b 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -319,10 +319,26 @@ static int m25p_remove(struct spi_device *spi)
- };
- MODULE_DEVICE_TABLE(of, m25p_of_table);
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int m25p_suspend(struct device *dev)
-+{
-+	return 0;
-+}
-+
-+static int m25p_resume(struct device *dev)
-+{
-+	struct m25p *flash = dev_get_drvdata(dev);
-+
-+	return spi_nor_reset(&flash->spi_nor);
-+}
-+#endif
-+static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
-+
- static struct spi_driver m25p80_driver = {
- 	.driver = {
- 		.name	= "m25p80",
- 		.of_match_table = m25p_of_table,
-+		.pm     = &m25p_pm_ops,
- 	},
- 	.id_table	= m25p_ids,
- 	.probe	= m25p_probe,
--- 
-1.9.1
+On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
+> Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
+> > Am 08.02.2017 um 02:09 schrieb Marek Vasut:
+> >> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
+> [...]
+> >>> Heiner Kallweit (1):
+> >>>       mtd: m25p80: consider max message size in m25p80_read
+> >>
+> >> I cannot say I'm super-happy about this particular patch, still ...
+> >>
+> > W/o it at least the fsl-espi driver is broken for transfers >= 64kB.
+> > 
+> 
+> We asked Mark Brown about the need to check the limits for the size of SPI
+> transfers and messages and I've understood his answer correctly, he told us
+> we should check those limits:
+> 
+> http://patchwork.ozlabs.org/patch/688176/
+> 
+> "> Does this imply that we have to fix every single driver this way ?"
+> 
+> "Ideally.  Any SPI driver that has an upper limit really ought to export
+> it, and any driver that might bump into one of those limits should
+> check.  A lot of drivers are either unlikely to be deployed in a system
+> that has relevant limits or tend to only do short enough transfers
+> though - if systems are currently working it's just neatening things up
+> really"
+> 
+> Then the discussion ended there. I didn't see any comment after that so I
+> just thought the discussion was over and everybody agreed.
+
+I thought we more or less settled on this a while ago. But I could be
+wrong.
+
+> Besides, this patch doesn't introduce the check of SPI controller limits
+> but only extend this check. What I mean is that the m25p80 driver already
+> checks the maximum transfer size. This check was introduced by commit
+> 
+> 95193796256c ("mtd: m25p80: read in spi_max_transfer_size chunks")
+> 
+> Then if we already check the SPI max transfer size, I guess it make sense
+> to also test other limits such as the SPI max message size.
+
+Yes, if this patch is wrong, then I'd expect commit 95193796256c was
+also wrong.
+
+The central disagreement seems to be on the existence of upper limits
+for transfer and/or message size. Marek seemed to suggest elsewhere that
+there is usually no upper limit (or that "upper limits" are usually just
+driver bugs that are being worked around). I don't disagree that often
+these might just be driver bugs, but I *do* disagree that there are
+never limits. I think Mark (? or somebody else, not reading too closely)
+suggested that there are just few drivers that tickle the limits.
+
+One example that shows both sides of this coin:
+
+5185a81c02d4 "spi: rockchip: limit transfers to (64K - 1) bytes"
+
+The hardware has a hard limit on transfers, at least, which can only be
+64K. For some reason there's an off-by-one error (probably a driver
+bug?), so I cheated and made it one smaller.
+
+[...]
+
+(snip the rest about trying to split spi_messages within the SPI driver;
+I agree that would be awful.)
+
+But one question: *why* exactly is the transfer or message limit so
+fixed? If a SPI controller allows manual control over the CS line, then
+why would anybody care if a sequence of data gets split up into multiple
+HW sequences (e.g., for a long spi_transfer, why can't we split it into
+2 sub-transfers, while keeping the CS asserted?).
+
+For the above rockchip SPI controller, AIUI we could actually support
+the "transfer limit" by doing this. And in fact, it could probably be
+done within the SPI core code, instead either the SPI driver or the MTD
+driver.
+
+Now, in this case, *transfer* vs. *message* seems to have a difference,
+in whether or not you have guarantees about the CS line. The CS must
+stay asserted (barring the 'cs_change' flag) between transfers, but not
+between messages.
+
+So the one thing I can see that might support Marek's disagreement here:
+does the FSL ESPI hardware support controlling the CS line? It seems
+like currently, the driver just uses a few fixed settings for its CSMODE
+register fields, whereas it might be able to support ->transfer_one()
+(and flexible CS assertion, and splitting large transactions into
+smaller chunks) if you handled that differently...
+
+Heiner (or others), any thoughts on the above? I might be very mistaken,
+especially since I'm not intimately familiar with a lot of SPI drivers.
+
+Regardless, I think this patch is OK, given the established practice,
+and we should take it. We might want to push back to handle this better
+in the SPI layer, if at all possible.
+
+One thing I do object to: why is this change marked for stable? It's not
+our fault you broke your duct-taped-together SPI driver in 4.9. I don't
+think backporting features is the way to satisfy the -stable
+requirements. Maybe some reverts would be the right way...
+
+Brian
