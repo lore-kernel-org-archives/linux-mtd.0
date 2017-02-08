@@ -1,24 +1,28 @@
-Received: from mail-pf0-f193.google.com ([209.85.192.193])
+Received: from mail-pg0-f66.google.com ([74.125.83.66])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbbKQ-0005Ob-4i
- for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 23:07:13 +0000
-Received: by mail-pf0-f193.google.com with SMTP id e4so12349763pfg.0
- for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 15:06:50 -0800 (PST)
-Date: Wed, 8 Feb 2017 15:05:47 -0800
+ id 1cbbNs-00005H-EN
+ for linux-mtd@lists.infradead.org; Wed, 08 Feb 2017 23:10:50 +0000
+Received: by mail-pg0-f66.google.com with SMTP id v184so16033242pgv.1
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Feb 2017 15:10:24 -0800 (PST)
+Date: Wed, 8 Feb 2017 15:09:21 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PULL] mtd: nand: Changes for 4.11
-Message-ID: <20170208230547.GA117657@google.com>
-References: <20170207100934.74c85386@bbrezillon>
- <ba8bb8d2-d2e2-a3ac-d452-028f2d072860@denx.de>
+ linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH V4] mtd: bcm47xxsflash: support reading flash out of
+ mapping window
+Message-ID: <20170208230921.GL94627@google.com>
+References: <20170123115154.3364-1-zajec5@gmail.com>
+ <20170208225344.24010-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ba8bb8d2-d2e2-a3ac-d452-028f2d072860@denx.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170208225344.24010-1-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +32,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 07, 2017 at 10:46:21AM +0100, Marek Vasut wrote:
-> On 02/07/2017 10:09 AM, Boris Brezillon wrote:
-> > Hi Brian,
-> > 
-> > Here is a rather small PR for 4.11. No fancy things in this release, and
-> > not even a single new driver (which is completely my fault since I failed
-> > to review the Arasan driver in time :-().
-> > 
-> > As usual, let me know if I did something wrong.
-> > 
-> > Marek, Richard, Cyrille, don't hesitate to point any patches I may have
-> > missed.
+On Wed, Feb 08, 2017 at 11:53:44PM +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> >From my side, the PR looks fine. If I find something missing, I will
-> yell. Thanks
+> For reading flash content we use MMIO but it's possible to read only
+> first 16 MiB this way. It's simply an arch design/limitation.
+> To support flash sizes bigger than 16 MiB implement indirect access
+> using ChipCommon registers.
+> This has been tested using MX25L25635F.
 > 
-> > Thanks,
-> > 
-> > Boris
-> > 
-> > The following changes since commit 566cf877a1fcb6d6dc0126b076aad062054c2637:
-> > 
-> >   Linux 4.10-rc6 (2017-01-29 14:25:17 -0800)
-> > 
-> > are available in the git repository at:
-> > 
-> >   git@github.com:linux-nand/linux.git tags/nand/for-4.11
-> > 
-> > for you to fetch changes up to a4077ce5871304f8a78f80b74b18b6052a410f1a:
-> > 
-> >   mtd: nand: Add Winbond manufacturer id (2017-02-06 11:42:43 +0100)
-> > 
-> > ----------------------------------------------------------------
-> > This pull request contains minor fixes/improvements on existing drivers:
-> > - sunxi: avoid busy-waiting for NAND events
-> > - ifc: fix ECC handling on IFC v1.0
-> > - OX820: add explicit dependency on ARCH_OXNAS in Kconfig
-> > - core: add a new manufacture ID and fix a kernel-doc warning
-> > - fsmc: kill pdata support
-> > - lpc32xx_slc: remove unneeded NULL check
-> > 
-> > ----------------------------------------------------------------
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> Acked-by: Marek Vasut <marek.vasut@gmail.com>
+> ---
+> V2: Simplify line writing to buf
+>     Add some trivial comment for OPCODE_ST_READ4B
+>     Both requested by Marek
+> V3: Use as much as possible MMIO access for reads crossing boundary
+> V4: Add missing buf increment (thanks Brian!)
 
-Pulled into l2-mtd.git. Thanks!
-
-There was a trivial conflict in nand.h, in the kerneldoc, due to
-recently-applied changes.
-
-Brian
+Presumably you tested for this case now? Seems like quick turnaround :)
