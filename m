@@ -1,23 +1,28 @@
-Received: from mail-wr0-f196.google.com ([209.85.128.196])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbqQt-0001SQ-Py
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 15:14:53 +0000
-Received: by mail-wr0-f196.google.com with SMTP id 89so12232874wrr.1
- for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2017 07:14:30 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Added spi-nor reset function
-To: Kamal Dasu <kdasu.kdev@gmail.com>, linux-spi@vger.kernel.org,
- cyrille.pitchen@atmel.com, marex@denx.de, broonie@kernel.org
-References: <1486572781-28808-1-git-send-email-kdasu.kdev@gmail.com>
- <1486572781-28808-2-git-send-email-kdasu.kdev@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com, f.fainelli@gmail.com,
- linux-mtd@lists.infradead.org
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cbqIR-0005jn-Vd
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 15:06:10 +0000
+Received: by mail-wm0-x241.google.com with SMTP id u63so3293067wmu.2
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2017 07:05:47 -0800 (PST)
+Subject: Re: [PATCH] mtd: aspeed: fix compile warning in
+ aspeed_smc_read_from_ahb()
+To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1484817198-22477-1-git-send-email-clg@kaod.org>
+ <20170208233728.GN94627@google.com>
+ <19aa7cbb-8691-36d3-47a3-7a1029e66ecf@gmail.com>
+ <19bcab6c-baf6-d34c-67bb-a5e655241e5e@kaod.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <51e4e497-535f-fd1a-8a20-17183691799b@gmail.com>
-Date: Thu, 9 Feb 2017 16:13:03 +0100
+Message-ID: <277b0a51-8384-09f4-6745-7d284a92b3e9@gmail.com>
+Date: Thu, 9 Feb 2017 16:04:45 +0100
 MIME-Version: 1.0
-In-Reply-To: <1486572781-28808-2-git-send-email-kdasu.kdev@gmail.com>
+In-Reply-To: <19bcab6c-baf6-d34c-67bb-a5e655241e5e@kaod.org>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,185 +32,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/08/2017 05:53 PM, Kamal Dasu wrote:
-> Refactored spi_nor_scan() code to add spi_nor_reset() function that
-> programs the nand device to:
-
-nand device ?
-
-> 1) remove flash protection if applicable
-> 2) set read mode to quad mode if configured such
-> 3) set the address width based on the flash size and vendor
+On 02/09/2017 10:59 AM, Cédric Le Goater wrote:
+> On 02/09/2017 10:05 AM, Marek Vasut wrote:
+>> On 02/09/2017 12:37 AM, Brian Norris wrote:
+>>> On Thu, Jan 19, 2017 at 10:13:18AM +0100, Cédric Le Goater wrote:
+>>>> The first argument of ioread32_rep() and ioread8_rep is not
+>>>> const. Change aspeed_smc_read_from_ahb() prototype to fix compile
+>>>> warning :
+>>>>
+>>>>    drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
+>>>>    drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>>>>       ioread32_rep(src, buf, len >> 2);
+>>>
+>>> But why isn't that param constant? Seems like that's a bug in the
+>>> ioread* APIs. Some of their implementations are const, but some are not.
+>>>
+>>> I see for instance that the implementation in lib/iomap.c is not const,
+>>> where there's zero reason it shouldn't be (if we also fix, e.g., its
+>>> mmio_insl()).
+>>
+>> Maybe it's worth fixing the ioread*_rep then ? Then again, that seems to
+>> be way far off the scope of this patch.
 > 
-> On pm resume spi-nor flash may need to be reconfigured after power
-> reset, there is no need to go through a full spi_nor_scan(), flash
-> device driver needs to call spi_nor_reset() to reprogram the flash
-> to its probed state.
-> 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 62 ++++++++++++++++++++++++++++---------------
->  include/linux/mtd/spi-nor.h   | 21 ++++++++++++++-
->  2 files changed, 61 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index da7cd69..8e3d8bd 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1312,6 +1312,41 @@ static int spi_nor_check(struct spi_nor *nor)
->  	return 0;
->  }
->  
-> +int spi_nor_reset(struct spi_nor *nor)
-> +{
-> +	int ret = 0;
-> +	const struct flash_info *info = nor->info;
-> +	struct device *dev = nor->dev;
+> Looking closer at where this comes from, the compile warning was 
+> reported on x86 which pulls a different file for the definitions 
+> of the ioread routines.
 
-Does this reset the SPI NOR (as in, really send a reset opcode) ? It
-doesn't, so the naming is confusing. This should probably be something
-like "spi_nor_init()" or "spi_nor_setup()" , no ?
+Well yes, intel is a special snowflake in the io accessor area.
 
-> +	/*
-> +	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
-> +	 * with the software protection bits set
-> +	 */
-> +
-> +	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_SST ||
-> +	    info->flags & SPI_NOR_HAS_LOCK) {
-> +		write_enable(nor);
-> +		write_sr(nor, 0);
-> +		spi_nor_wait_till_ready(nor);
-> +	}
-> +
-> +	if (nor->flash_read == SPI_NOR_QUAD) {
-> +		ret = set_quad_mode(nor, info);
-> +		if (ret) {
-> +			dev_err(dev, "quad mode not supported\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (nor->addr_width == 4 && JEDEC_MFR(info) != SNOR_MFR_SPANSION)
-> +		set_4byte(nor, info, 1);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(spi_nor_reset);
-> +
->  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  {
->  	const struct flash_info *info = NULL;
-> @@ -1357,22 +1392,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  		}
->  	}
->  
-> +	nor->info = info;
->  	mutex_init(&nor->lock);
->  
-> -	/*
-> -	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
-> -	 * with the software protection bits set
-> -	 */
-> -
-> -	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
-> -	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
-> -	    JEDEC_MFR(info) == SNOR_MFR_SST ||
-> -	    info->flags & SPI_NOR_HAS_LOCK) {
-> -		write_enable(nor);
-> -		write_sr(nor, 0);
-> -		spi_nor_wait_till_ready(nor);
-> -	}
-> -
->  	if (!mtd->name)
->  		mtd->name = dev_name(dev);
->  	mtd->priv = nor;
-> @@ -1447,11 +1469,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  
->  	/* Quad/Dual-read mode takes precedence over fast/normal */
->  	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
-> -		ret = set_quad_mode(nor, info);
-> -		if (ret) {
-> -			dev_err(dev, "quad mode not supported\n");
-> -			return ret;
-> -		}
->  		nor->flash_read = SPI_NOR_QUAD;
->  	} else if (mode == SPI_NOR_DUAL && info->flags & SPI_NOR_DUAL_READ) {
->  		nor->flash_read = SPI_NOR_DUAL;
-> @@ -1503,8 +1520,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  			/* No small sector erase for 4-byte command set */
->  			nor->erase_opcode = SPINOR_OP_SE_4B;
->  			mtd->erasesize = info->sector_size;
-> -		} else
-> -			set_4byte(nor, info, 1);
-> +		}
->  	} else {
->  		nor->addr_width = 3;
->  	}
-> @@ -1517,6 +1533,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  
->  	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
->  
-> +	ret = spi_nor_reset(nor);
-> +	if (ret)
-> +		return ret;
-> +
->  	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
->  			(long long)mtd->size >> 10);
->  
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index c425c7b..4733c04 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -121,6 +121,8 @@ enum spi_nor_option_flags {
->  	SNOR_F_HAS_SR_TB	= BIT(1),
->  };
->  
-> +struct flash_info;
-> +
->  /**
->   * struct spi_nor - Structure for defining a the SPI NOR layer
->   * @mtd:		point to a mtd_info structure
-> @@ -154,6 +156,7 @@ enum spi_nor_option_flags {
->   * @priv:		the private data
->   */
->  struct spi_nor {
-> +	const struct flash_info *info;
->  	struct mtd_info		mtd;
->  	struct mutex		lock;
->  	struct device		*dev;
-> @@ -198,12 +201,28 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
->  }
->  
->  /**
-> + * spi_nor_reset() - reset scan the SPI NOR
-> + * @nor:	the spi_nor structure
-> + *
-> + * The drivers uses this function to reset the SPI NOR flash device to
-> + * its initial scanned state, it shall use all nor information set on poweron
-> + * for the read mode, address width and enabling write mode for certain
-> + * manufacturers. This would be needed to be called for flash devices that are
-> + * reset during power management.
-> + *
-> + * The chip type name can be provided through the @name parameter.
-> + *
-> + * Return: 0 for success, others for failure.
-> + */
-> +int spi_nor_reset(struct spi_nor *nor);
-> +
-> +/**
->   * spi_nor_scan() - scan the SPI NOR
->   * @nor:	the spi_nor structure
->   * @name:	the chip type name
->   * @mode:	the read mode supported by the driver
->   *
-> - * The drivers can use this fuction to scan the SPI NOR.
-> + * The drivers can use this function to scan the SPI NOR.
->   * In the scanning, it will try to get all the necessary information to
->   * fill the mtd_info{} and the spi_nor{}.
->   *
+> On x86, arch/x86/include/asm/io.h includes <asm-generic/iomap.h>
+> which contains prototypes of the ioread routines without 'const'.
+> 
+> On ARM, arch/arm/include/asm/io.h includes <asm-generic/io.h>
+> which contains the 'const' definitions.
+
+Can you check if any of those arches needs it without const ?
+
+> So may be, we should just drop that patch and fix iomap.h instead,
+> but quite a few arches use it :
+> 
+> arch/sh/include/asm/io.h:#include <asm-generic/iomap.h>
+> arch/mips/include/asm/io.h:#include <asm-generic/iomap.h>
+> arch/ia64/include/asm/io.h:#include <asm-generic/iomap.h>
+> arch/cris/include/asm/io.h:#include <asm-generic/iomap.h>
+> arch/x86/include/asm/io.h:#include <asm-generic/iomap.h>
+> arch/alpha/include/asm/io.h:#include <asm-generic/iomap.h>
+> arch/powerpc/include/asm/io.h:#include <asm-generic/iomap.h>
+> arch/m68k/include/asm/io_mm.h:#include <asm-generic/iomap.h>
+> arch/m68k/include/asm/io_no.h:#include <asm-generic/iomap.h>
+> arch/parisc/include/asm/io.h:#include <asm-generic/iomap.h>
+> include/asm-generic/io.h:#include <asm-generic/iomap.h>
+> 
+> Thanks,
+> 
+> C.
 > 
 
 
