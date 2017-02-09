@@ -1,22 +1,29 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
+Received: from 17.mo1.mail-out.ovh.net ([87.98.179.142])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbsrN-0001C7-G7
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 17:50:24 +0000
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Added spi-nor reset function
-To: Kamal Dasu <kdasu.kdev@gmail.com>, <linux-spi@vger.kernel.org>,
- <marex@denx.de>, <broonie@kernel.org>
-References: <1486572781-28808-1-git-send-email-kdasu.kdev@gmail.com>
- <1486572781-28808-2-git-send-email-kdasu.kdev@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <f.fainelli@gmail.com>,
- <bcm-kernel-feedback-list@broadcom.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <b749da59-587e-c2a6-b08b-5c60f4b57101@atmel.com>
-Date: Thu, 9 Feb 2017 18:49:56 +0100
+ id 1cbt6f-0007K5-43
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 18:06:11 +0000
+Received: from player770.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo1.mail-out.ovh.net (Postfix) with ESMTP id C100650BF8
+ for <linux-mtd@lists.infradead.org>; Thu,  9 Feb 2017 19:05:39 +0100 (CET)
 MIME-Version: 1.0
-In-Reply-To: <1486572781-28808-2-git-send-email-kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date: Thu, 09 Feb 2017 19:05:30 +0100
+From: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Re: [PATCH V2 1/2] mtd: bcm47xxpart: move TRX parsing code to
+ separated function
+In-Reply-To: <d42baa4c-1ab3-2a43-0adc-2ed10022d084@gmail.com>
+References: <20170110115045.9134-1-zajec5@gmail.com>
+ <20170110221525.9216-1-zajec5@gmail.com>
+ <d42baa4c-1ab3-2a43-0adc-2ed10022d084@gmail.com>
+Message-ID: <cc2c7b030467be49a713574c4ac4422f@milecki.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,233 +33,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kamal,
-
-Le 08/02/2017 � 17:53, Kamal Dasu a �crit :
-> Refactored spi_nor_scan() code to add spi_nor_reset() function that
-> programs the nand device to:
-> 1) remove flash protection if applicable
-> 2) set read mode to quad mode if configured such
-> 3) set the address width based on the flash size and vendor
+On 2017-02-09 18:28, Marek Vasut wrote:
+> On 01/10/2017 11:15 PM, Rafał Miłecki wrote:
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>> 
+>> This change simplifies main parsing loop logic a bit. In future it may
+>> be useful for moving TRX support to separated module / parser (if we
+>> implement support for them at some point).
+>> Finally parsing TRX at the end puts us in a better position as we have
+>> better flash layout knowledge. It may be useful e.g. if it appears 
+>> there
+>> is more than 1 TRX partition.
+>> 
+>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>> ---
+>> V2: Keep using bcm47xxpart_add_part in new parsing function
+>> ---
+>>  drivers/mtd/bcm47xxpart.c | 121 
+>> ++++++++++++++++++++++++++++------------------
+>>  1 file changed, 74 insertions(+), 47 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+>> index 283ff7e..1093025 100644
+>> --- a/drivers/mtd/bcm47xxpart.c
+>> +++ b/drivers/mtd/bcm47xxpart.c
+>> @@ -83,6 +83,67 @@ static const char 
+>> *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
+>>  	return "rootfs";
+>>  }
+>> 
+>> +static int bcm47xxpart_parse_trx(struct mtd_info *master,
+>> +				 struct mtd_partition *trx,
+>> +				 struct mtd_partition *parts,
+>> +				 size_t parts_len)
+>> +{
+>> +	struct trx_header header;
+>> +	size_t bytes_read;
+>> +	int curr_part = 0;
+>> +	int i, err;
+>> +
+>> +	if (parts_len < 3) {
+>> +		pr_warn("No enough space to add TRX partitions!\n");
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	err = mtd_read(master, trx->offset, sizeof(header), &bytes_read,
+>> +		       (uint8_t *)&header);
+>> +	if (err && !mtd_is_bitflip(err)) {
+>> +		pr_err("mtd_read error while reading TRX header: %d\n", err);
 > 
-> On pm resume spi-nor flash may need to be reconfigured after power
-> reset, there is no need to go through a full spi_nor_scan(), flash
-> device driver needs to call spi_nor_reset() to reprogram the flash
-> to its probed state.
-> 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 62 ++++++++++++++++++++++++++++---------------
->  include/linux/mtd/spi-nor.h   | 21 ++++++++++++++-
->  2 files changed, 61 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index da7cd69..8e3d8bd 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1312,6 +1312,41 @@ static int spi_nor_check(struct spi_nor *nor)
->  	return 0;
->  }
->  
-> +int spi_nor_reset(struct spi_nor *nor)
-> +{
-> +	int ret = 0;
-> +	const struct flash_info *info = nor->info;
-> +	struct device *dev = nor->dev;
-> +
-> +	/*
-> +	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
-> +	 * with the software protection bits set
-> +	 */
-> +
-> +	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_SST ||
-> +	    info->flags & SPI_NOR_HAS_LOCK) {
-> +		write_enable(nor);
-> +		write_sr(nor, 0);
-> +		spi_nor_wait_till_ready(nor);
-> +	}
-> +
-> +	if (nor->flash_read == SPI_NOR_QUAD) {
-> +		ret = set_quad_mode(nor, info);
-> +		if (ret) {
-> +			dev_err(dev, "quad mode not supported\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (nor->addr_width == 4 && JEDEC_MFR(info) != SNOR_MFR_SPANSION)
-> +		set_4byte(nor, info, 1);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(spi_nor_reset);
-> +
->  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  {
->  	const struct flash_info *info = NULL;
-> @@ -1357,22 +1392,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  		}
->  	}
->  
-> +	nor->info = info;
->  	mutex_init(&nor->lock);
->  
-> -	/*
-> -	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
-> -	 * with the software protection bits set
-> -	 */
-> -
-> -	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
-> -	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
-> -	    JEDEC_MFR(info) == SNOR_MFR_SST ||
-> -	    info->flags & SPI_NOR_HAS_LOCK) {
-> -		write_enable(nor);
-> -		write_sr(nor, 0);
-> -		spi_nor_wait_till_ready(nor);
-> -	}
-> -
->  	if (!mtd->name)
->  		mtd->name = dev_name(dev);
->  	mtd->priv = nor;
-> @@ -1447,11 +1469,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  
->  	/* Quad/Dual-read mode takes precedence over fast/normal */
->  	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
-> -		ret = set_quad_mode(nor, info);
-> -		if (ret) {
-> -			dev_err(dev, "quad mode not supported\n");
-> -			return ret;
-> -		}
->  		nor->flash_read = SPI_NOR_QUAD;
->  	} else if (mode == SPI_NOR_DUAL && info->flags & SPI_NOR_DUAL_READ) {
->  		nor->flash_read = SPI_NOR_DUAL;
-> @@ -1503,8 +1520,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  			/* No small sector erase for 4-byte command set */
->  			nor->erase_opcode = SPINOR_OP_SE_4B;
->  			mtd->erasesize = info->sector_size;
+> Minor nit -- Can we make this dev_err() ?
 
-It seems that you didn't base your patch on the spi-nor tree. Before your
-patch, you should have something like:
+The problem is parsers receive struct mtd_info (as an argument) with has 
+empty
+dev. I just tried
+dev_info(&master->dev, "TEST TEST TEST :)\n");
+and got this:
+[    0.491576]  (null): TEST TEST TEST :)
 
-	else if (mtd->size > 0x1000000) {
-		/* enable 4-byte addressing if the device exceeds 16MiB */
-		nor->addr_width = 4;
-		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
-		    info->flags & SPI_NOR_4B_OPCODES)
-			spi_nor_set_4byte_opcodes(nor, info);
-		else
-			set_4byte(nor, info, 1);
-	} else {
-		nor->addr_width = 3;
-	}
+I guess that's the reason why parse_mtd_partitions and 
+mtd_device_parse_register
+also use pr_* functions.
 
-That's why in my comment of review 1, I was talking about handling the
-case where spi_nor_set_4byte_opcodes() is called instead of set_4byte():
-indeed when the manufacturer id is Spansion or when the SPI_NOR_4B_OPCODES
-flag is set.
-
-Hence in spi_nor_reset(), or whatever name you choose, set_4byte() must not
-be called if the SPI_NOR_4B_OPCODES flag is set in info->flags.
-
-Besides, for now I don't know that much about how power management is
-handled by the Linux kernel, especially which events trigger the call of
-.suspend() or .resume().
-I've started to read documentation about that topic so please be patient
-because I need some time to figure out the potential side effects this
-series may introduce.
-I know you test your patches before submitting them, so this is not a
-question of trust but I'd rather understand what patches actually do
-instead of blindly merge them! :)
-
-Also maybe this patch can help you:
-http://patchwork.ozlabs.org/patch/719777/
-
-It's not related to power management but it also reworks spi_nor_scan()
-so all settings (op codes, protocols, number of dummy cycles, ...) are
-chosen once for all by spi_nor_init_params() then the actual memory device
-is configured by spi_nor_setup().
-
-I can rework spi_nor_setup() a little bit as the first part of its code is
-needed to be done only once from spi_nor_scan() whereas the final part
-almost matches what's your "spi_nor_reset()" function will do in term.
-
-We should regroup {unlock sectors, enable_quad_io() and set_4byte() (if not
-set_nor_set_4byte_opcodes)} codes. That is to say, the minimum set of SPI
-commands we have to send to the memory at each power on.
-
-Best regards,
-
-Cyrille
-
-
-> -		} else
-> -			set_4byte(nor, info, 1);
-> +		}
->  	} else {
->  		nor->addr_width = 3;
->  	}
-> @@ -1517,6 +1533,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  
->  	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
->  
-> +	ret = spi_nor_reset(nor);
-> +	if (ret)
-> +		return ret;
-> +
->  	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
->  			(long long)mtd->size >> 10);
->  
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index c425c7b..4733c04 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -121,6 +121,8 @@ enum spi_nor_option_flags {
->  	SNOR_F_HAS_SR_TB	= BIT(1),
->  };
->  
-> +struct flash_info;
-> +
->  /**
->   * struct spi_nor - Structure for defining a the SPI NOR layer
->   * @mtd:		point to a mtd_info structure
-> @@ -154,6 +156,7 @@ enum spi_nor_option_flags {
->   * @priv:		the private data
->   */
->  struct spi_nor {
-> +	const struct flash_info *info;
->  	struct mtd_info		mtd;
->  	struct mutex		lock;
->  	struct device		*dev;
-> @@ -198,12 +201,28 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
->  }
->  
->  /**
-> + * spi_nor_reset() - reset scan the SPI NOR
-> + * @nor:	the spi_nor structure
-> + *
-> + * The drivers uses this function to reset the SPI NOR flash device to
-> + * its initial scanned state, it shall use all nor information set on poweron
-> + * for the read mode, address width and enabling write mode for certain
-> + * manufacturers. This would be needed to be called for flash devices that are
-> + * reset during power management.
-> + *
-> + * The chip type name can be provided through the @name parameter.
-> + *
-> + * Return: 0 for success, others for failure.
-> + */
-> +int spi_nor_reset(struct spi_nor *nor);
-> +
-> +/**
->   * spi_nor_scan() - scan the SPI NOR
->   * @nor:	the spi_nor structure
->   * @name:	the chip type name
->   * @mode:	the read mode supported by the driver
->   *
-> - * The drivers can use this fuction to scan the SPI NOR.
-> + * The drivers can use this function to scan the SPI NOR.
->   * In the scanning, it will try to get all the necessary information to
->   * fill the mtd_info{} and the spi_nor{}.
->   *
-> 
+So this should be improved at mtd core subsystem first, then we can use 
+it in
+drivers as well.
