@@ -1,10 +1,10 @@
-Received: from 5.mo53.mail-out.ovh.net ([46.105.48.2])
+Received: from 9.mo53.mail-out.ovh.net ([87.98.186.128])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbkvT-0003Sl-5y
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 09:22:06 +0000
+ id 1cbkvf-0003av-NW
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 09:22:19 +0000
 Received: from player158.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo53.mail-out.ovh.net (Postfix) with ESMTP id 9A78438448
- for <linux-mtd@lists.infradead.org>; Thu,  9 Feb 2017 10:21:40 +0100 (CET)
+ by mo53.mail-out.ovh.net (Postfix) with ESMTP id 56200384A7
+ for <linux-mtd@lists.infradead.org>; Thu,  9 Feb 2017 10:21:52 +0100 (CET)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -14,9 +14,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH v3 0/2] Add a "label" property to the mtd device
-Date: Thu,  9 Feb 2017 10:21:06 +0100
-Message-Id: <1486632068-14894-1-git-send-email-clg@kaod.org>
+Subject: [PATCH v3 1/2] mtd: name the mtd device with an optional label
+ property
+Date: Thu,  9 Feb 2017 10:21:07 +0100
+Message-Id: <1486632068-14894-2-git-send-email-clg@kaod.org>
+In-Reply-To: <1486632068-14894-1-git-send-email-clg@kaod.org>
+References: <1486632068-14894-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -29,17 +32,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+This can be used to easily identify a specific chip on a system with
+multiple chips.
 
-Herer are a couple of patches adding a "label" property to the mtd
-device, which can be used to identify a specific chip on a system with
-multiple chips. This is common on the OpenPower boards, there can be
-four chips holding the firmware for the BMC and the firmware for the
-host, plus chips with golden images for recovery.
-
-Thanks,
-
-C.
+Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Cédric Le Goater <clg@kaod.org>
+---
 
  Changes since v2:
 
@@ -51,14 +49,29 @@ C.
    to mtd_set_of_node() to let drivers keep control on how mtd->name
    is set and allocated.
 
-Cédric Le Goater (2):
-  mtd: name the mtd device with an optional label property
-  dt-bindings: mtd: add a common label property to all mtd devices
+ include/linux/mtd/mtd.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
- Documentation/devicetree/bindings/mtd/common.txt | 15 +++++++++++++++
- include/linux/mtd/mtd.h                          |  3 +++
- 2 files changed, 18 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/common.txt
-
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 13f8052b9ff9..5a08ddff4f51 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -24,6 +24,7 @@
+ #include <linux/uio.h>
+ #include <linux/notifier.h>
+ #include <linux/device.h>
++#include <linux/of.h>
+ 
+ #include <mtd/mtd-abi.h>
+ 
+@@ -385,6 +386,8 @@ static inline void mtd_set_of_node(struct mtd_info *mtd,
+ 				   struct device_node *np)
+ {
+ 	mtd->dev.of_node = np;
++	if (!mtd->name)
++		of_property_read_string(np, "label", &mtd->name);
+ }
+ 
+ static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
 -- 
 2.7.4
