@@ -1,23 +1,26 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from smtpout.microchip.com ([198.175.253.82]
+ helo=email.microchip.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbnfb-0004AA-Pi
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 12:17:57 +0000
-Date: Thu, 9 Feb 2017 13:17:28 +0100
-From: Jan Kara <jack@suse.cz>
-To: Richard Weinberger <richard@nod.at>
-Cc: Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
- Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 22/24] ubifs: Convert to separately allocated bdi
-Message-ID: <20170209121728.GE16825@quack2.suse.cz>
-References: <20170202173422.3240-1-jack@suse.cz>
- <20170202173422.3240-23-jack@suse.cz>
- <d0d1d396-a340-866b-c931-974fa8ea53a1@nod.at>
+ id 1cbp7B-0001s8-RJ
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 13:50:27 +0000
+Subject: Re: [PATCH 1/1] mtd: spi-nor: remove WARN_ONCE() message in
+ spi_nor_write()
+To: Brian Norris <computersforpeace@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+References: <0078578d0f5d2402ac623afabf601d25998f84a9.1481044434.git.cyrille.pitchen@atmel.com>
+ <20161208163109.17429627@bbrezillon>
+ <4ffbad4b-f1a5-a998-fe5b-f73b934435e4@wedev4u.fr>
+ <20170209022347.GO94627@google.com>
+CC: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <richard@nod.at>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <4420829e-6d08-111f-685c-65ea7f2d215c@atmel.com>
+Date: Thu, 9 Feb 2017 14:50:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d0d1d396-a340-866b-c931-974fa8ea53a1@nod.at>
+In-Reply-To: <20170209022347.GO94627@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,71 +30,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 08-02-17 12:24:00, Richard Weinberger wrote:
-> Am 02.02.2017 um 18:34 schrieb Jan Kara:
-> > Allocate struct backing_dev_info separately instead of embedding it
-> > inside the superblock. This unifies handling of bdi among users.
-> > 
-> > CC: Richard Weinberger <richard@nod.at>
-> > CC: Artem Bityutskiy <dedekind1@gmail.com>
-> > CC: Adrian Hunter <adrian.hunter@intel.com>
-> > CC: linux-mtd@lists.infradead.org
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> > ---
-> >  fs/ubifs/super.c | 23 +++++++----------------
-> >  fs/ubifs/ubifs.h |  3 ---
-> >  2 files changed, 7 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-> > index e08aa04fc835..34810eb52b22 100644
-> > --- a/fs/ubifs/super.c
-> > +++ b/fs/ubifs/super.c
-> > @@ -1827,7 +1827,6 @@ static void ubifs_put_super(struct super_block *sb)
-> >  	}
-> >  
-> >  	ubifs_umount(c);
-> > -	bdi_destroy(&c->bdi);
-> >  	ubi_close_volume(c->ubi);
-> >  	mutex_unlock(&c->umount_mutex);
-> >  }
-> > @@ -2019,29 +2018,23 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
-> >  		goto out;
-> >  	}
-> >  
-> > +	err = ubifs_parse_options(c, data, 0);
-> > +	if (err)
-> > +		goto out_close;
-> > +
-> >  	/*
-> >  	 * UBIFS provides 'backing_dev_info' in order to disable read-ahead. For
-> >  	 * UBIFS, I/O is not deferred, it is done immediately in readpage,
-> >  	 * which means the user would have to wait not just for their own I/O
-> >  	 * but the read-ahead I/O as well i.e. completely pointless.
-> >  	 *
-> > -	 * Read-ahead will be disabled because @c->bdi.ra_pages is 0.
-> > +	 * Read-ahead will be disabled because @sb->s_bdi->ra_pages is 0.
-> >  	 */
-> > -	c->bdi.name = "ubifs",
-> > -	c->bdi.capabilities = 0;
+Hi Brian,
+
+Le 09/02/2017 à 03:23, Brian Norris a écrit :
+> On Tue, Dec 13, 2016 at 05:43:52PM +0100, Cyrille Pitchen wrote:
+>> Le 08/12/2016 à 16:31, Boris Brezillon a écrit :
+>>> On Tue, 6 Dec 2016 18:14:24 +0100
+>>> Cyrille Pitchen <cyrille.pitchen@atmel.com> wrote:
+>>>
+>>>> This patch removes the WARN_ONCE() test in spi_nor_write().
+>>>> This macro triggers the display of a warning message almost every time we
+>>>> use a UBI file-system because a write operation is performed at offset 64,
+>>>> which is in the middle of the SPI NOR memory page. This is a valid
+>>>> operation for ubifs.
+>>>>
+>>>> Hence this warning is pretty annoying and useless so we just remove it.
+>>>>
+>>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>>>> Suggested-by: Richard Weinberger <richard@nod.at>
+>>>> Suggested-by: Andras Szemzo <szemzo.andras@gmail.com>
+>>>
+>>> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>>>
+>> Applied to git://github.com/spi-nor/linux.git
 > 
-> So ->capabilities is now zero by default since you use __GFP_ZERO in
-> bdi_alloc().
-> At least for UBIFS I'll add a comment on this, otherwise it is not so
-> clear that UBIFS wants a BDI with no capabilities and how it achieves that.
+> Do you have any idea on how to handle or communicate this better? I
+> recall Michal added this because he was adding new write looping that
+> didn't previously exist; we might create partial-page writes because his
+> SPI controller was too dumb to make larger ones.
+> 
+> Anyway, since this is hitting real (and more or less false positive)
+> use cases, then this patch is probably good.
+> 
+> Brian
+> 
 
-OK, I've modified the comment to:
+Some people had complained and reported "bugs" about this warning during
+kernel boot especially when using ubifs.
+If I remember, someone even suggested that Michal's patch should be
+reverted but I think except for the WARN_ONCE() his patch is good and
+should be kept. So I proposed the remove only the WARN_ONCE() line.
 
-         * Read-ahead will be disabled because @sb->s_bdi->ra_pages is 0. Also
-         * @sb->s_bdi->capabilities are initialized to 0 so there won't be any
-         * writeback happening.
-         */
+spi_nor_scan() sets mtd->writesize to 1, so for upper mtd layers such as
+ubi, it is a valid operation to write less than a page size. Besides, if we
+changed the mtd->writesize value to nor->page_size for instance, it would
+have an impact on existing ubi file systems which may then appear as
+corrupted if I've understood correctly. Maybe Richard can confirm this point?
 
+Also, the warning doesn't fix anything: everything works just as before.
+So IF the driver was buggy before, it is still buggy today.
+Displaying such an intrusive warning (backtrace and so on) "scares" people
+(at the first look, we think a kernel oops/crash has occurred) but
+currently we are not able to propose any solution.
 
-> Acked-by: Richard Weinberger <richard@nod.at>
+In most, if not all, cases this warning is a false positive as for most
+memories it is valid to write a single page with more than one Page Program
+commands or to write data starting from the middle of the page.
 
-Thanks.
+The only hardware limitation at the SPI NOR side is that we can't cross the
+page boundary. If we would do so, internally the SPI NOR memory would wrap
+the address instead of incrementing it hence the additional data would be
+written at the beginning of the same page and not at the beginning of the
+next one.
+That why Michal's patch should be kept, IMHO.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I hope those additional explanations will help you :)
+
+Best regards,
+
+Cyrille
