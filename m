@@ -1,27 +1,26 @@
 Received: from mail-wr0-f195.google.com ([209.85.128.195])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbkUf-00088D-Gs
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 08:54:23 +0000
-Received: by mail-wr0-f195.google.com with SMTP id o16so11202014wra.2
- for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2017 00:54:00 -0800 (PST)
-Subject: Re: [PATCH -next] mtd: aspeed: remove redundant dev_err call in
- aspeed_smc_probe()
-To: Wei Yongjun <weiyj.lk@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1cbkuQ-0002ma-Hy
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 09:21:00 +0000
+Received: by mail-wr0-f195.google.com with SMTP id 89so11248787wrr.1
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2017 01:20:38 -0800 (PST)
+Subject: Re: [PATCH] mtd: aspeed: fix compile warning in
+ aspeed_smc_read_from_ahb()
+To: Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+References: <1484817198-22477-1-git-send-email-clg@kaod.org>
+ <20170208233728.GN94627@google.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-References: <20170208162310.6048-1-weiyj.lk@gmail.com>
-Cc: Wei Yongjun <weiyongjun1@huawei.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <6c10cdf0-5b91-000c-a8c3-78f41d47bac3@gmail.com>
-Date: Thu, 9 Feb 2017 09:50:23 +0100
+Message-ID: <19aa7cbb-8691-36d3-47a3-7a1029e66ecf@gmail.com>
+Date: Thu, 9 Feb 2017 10:05:39 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170208162310.6048-1-weiyj.lk@gmail.com>
+In-Reply-To: <20170208233728.GN94627@google.com>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,49 +30,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/08/2017 05:23 PM, Wei Yongjun wrote:
-> From: Wei Yongjun <weiyongjun1@huawei.com>
+On 02/09/2017 12:37 AM, Brian Norris wrote:
+> On Thu, Jan 19, 2017 at 10:13:18AM +0100, Cédric Le Goater wrote:
+>> The first argument of ioread32_rep() and ioread8_rep is not
+>> const. Change aspeed_smc_read_from_ahb() prototype to fix compile
+>> warning :
+>>
+>>    drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
+>>    drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>>       ioread32_rep(src, buf, len >> 2);
 > 
-> There is a error message within devm_ioremap_resource
-> already, so remove the dev_err call to avoid redundant
-> error message.
+> But why isn't that param constant? Seems like that's a bug in the
+> ioread* APIs. Some of their implementations are const, but some are not.
 > 
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> I see for instance that the implementation in lib/iomap.c is not const,
+> where there's zero reason it shouldn't be (if we also fix, e.g., its
+> mmio_insl()).
 
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-
-> ---
->  drivers/mtd/spi-nor/aspeed-smc.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-> index 7c86099..56051d3 100644
-> --- a/drivers/mtd/spi-nor/aspeed-smc.c
-> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
-> @@ -723,17 +723,13 @@ static int aspeed_smc_probe(struct platform_device *pdev)
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	controller->regs = devm_ioremap_resource(dev, res);
-> -	if (IS_ERR(controller->regs)) {
-> -		dev_err(dev, "Cannot remap controller address.\n");
-> +	if (IS_ERR(controller->regs))
->  		return PTR_ERR(controller->regs);
-> -	}
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->  	controller->ahb_base = devm_ioremap_resource(dev, res);
-> -	if (IS_ERR(controller->ahb_base)) {
-> -		dev_err(dev, "Cannot remap controller address.\n");
-> +	if (IS_ERR(controller->ahb_base))
->  		return PTR_ERR(controller->ahb_base);
-> -	}
->  
->  	ret = aspeed_smc_setup_flash(controller, np, res);
->  	if (ret)
-> 
-> 
-> 
-
+Maybe it's worth fixing the ioread*_rep then ? Then again, that seems to
+be way far off the scope of this patch.
 
 -- 
 Best regards,
