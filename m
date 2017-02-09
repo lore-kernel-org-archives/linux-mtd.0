@@ -1,27 +1,20 @@
-Received: from 10.mo53.mail-out.ovh.net ([87.98.189.210])
+Received: from metis.ext.4.pengutronix.de ([92.198.50.35])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cblW8-0006dE-KN
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 09:59:58 +0000
-Received: from player158.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo53.mail-out.ovh.net (Postfix) with ESMTP id 3B699384E2
- for <linux-mtd@lists.infradead.org>; Thu,  9 Feb 2017 10:59:33 +0100 (CET)
-Subject: Re: [PATCH] mtd: aspeed: fix compile warning in
- aspeed_smc_read_from_ahb()
-To: Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <1484817198-22477-1-git-send-email-clg@kaod.org>
- <20170208233728.GN94627@google.com>
- <19aa7cbb-8691-36d3-47a3-7a1029e66ecf@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ id 1cbmOz-0006o5-ML
+ for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 10:56:39 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <19bcab6c-baf6-d34c-67bb-a5e655241e5e@kaod.org>
-Date: Thu, 9 Feb 2017 10:59:25 +0100
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] mtd: Add partition device node to mtd partition devices
+Date: Thu,  9 Feb 2017 11:50:24 +0100
+Message-Id: <20170209105024.1579-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <19aa7cbb-8691-36d3-47a3-7a1029e66ecf@gmail.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,53 +25,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/09/2017 10:05 AM, Marek Vasut wrote:
-> On 02/09/2017 12:37 AM, Brian Norris wrote:
->> On Thu, Jan 19, 2017 at 10:13:18AM +0100, Cédric Le Goater wrote:
->>> The first argument of ioread32_rep() and ioread8_rep is not
->>> const. Change aspeed_smc_read_from_ahb() prototype to fix compile
->>> warning :
->>>
->>>    drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
->>>    drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->>>       ioread32_rep(src, buf, len >> 2);
->>
->> But why isn't that param constant? Seems like that's a bug in the
->> ioread* APIs. Some of their implementations are const, but some are not.
->>
->> I see for instance that the implementation in lib/iomap.c is not const,
->> where there's zero reason it shouldn't be (if we also fix, e.g., its
->> mmio_insl()).
-> 
-> Maybe it's worth fixing the ioread*_rep then ? Then again, that seems to
-> be way far off the scope of this patch.
+From: Sascha Hauer <s.hauer@pengutronix.de>
 
-Looking closer at where this comes from, the compile warning was 
-reported on x86 which pulls a different file for the definitions 
-of the ioread routines.
+The user visible change here is that mtd partitions get an of_node link
+in sysfs.
 
-On x86, arch/x86/include/asm/io.h includes <asm-generic/iomap.h>
-which contains prototypes of the ioread routines without 'const'.
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Uwe Kleine-KÃ¶nig <u.kleine-koenig@pengutronix.de>
+---
+ drivers/mtd/mtdpart.c          | 1 +
+ drivers/mtd/ofpart.c           | 1 +
+ include/linux/mtd/partitions.h | 1 +
+ 3 files changed, 3 insertions(+)
 
-On ARM, arch/arm/include/asm/io.h includes <asm-generic/io.h>
-which contains the 'const' definitions.
-
-
-So may be, we should just drop that patch and fix iomap.h instead,
-but quite a few arches use it :
-
-arch/sh/include/asm/io.h:#include <asm-generic/iomap.h>
-arch/mips/include/asm/io.h:#include <asm-generic/iomap.h>
-arch/ia64/include/asm/io.h:#include <asm-generic/iomap.h>
-arch/cris/include/asm/io.h:#include <asm-generic/iomap.h>
-arch/x86/include/asm/io.h:#include <asm-generic/iomap.h>
-arch/alpha/include/asm/io.h:#include <asm-generic/iomap.h>
-arch/powerpc/include/asm/io.h:#include <asm-generic/iomap.h>
-arch/m68k/include/asm/io_mm.h:#include <asm-generic/iomap.h>
-arch/m68k/include/asm/io_no.h:#include <asm-generic/iomap.h>
-arch/parisc/include/asm/io.h:#include <asm-generic/iomap.h>
-include/asm-generic/io.h:#include <asm-generic/iomap.h>
-
-Thanks,
-
-C.
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index fccdd49bb964..d0b919ab85c0 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -424,6 +424,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 	slave->mtd.dev.parent = IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) ?
+ 				&master->dev :
+ 				master->dev.parent;
++	slave->mtd.dev.of_node = part->of_node;
+ 
+ 	slave->mtd._read = part_read;
+ 	slave->mtd._write = part_write;
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index ede407d6e106..464470122493 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -108,6 +108,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 
+ 		parts[i].offset = of_read_number(reg, a_cells);
+ 		parts[i].size = of_read_number(reg + a_cells, s_cells);
++		parts[i].of_node = pp;
+ 
+ 		partname = of_get_property(pp, "label", &len);
+ 		if (!partname)
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 70736e1e6c8f..06df1e06b6e0 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -41,6 +41,7 @@ struct mtd_partition {
+ 	uint64_t size;			/* partition size */
+ 	uint64_t offset;		/* offset within the master MTD space */
+ 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
++	struct device_node *of_node;
+ };
+ 
+ #define MTDPART_OFS_RETAIN	(-3)
+-- 
+2.11.0
