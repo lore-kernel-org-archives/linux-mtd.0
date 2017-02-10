@@ -1,20 +1,31 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cc16i-0000v8-O0
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 02:38:47 +0000
-Received: by mail-pf0-x241.google.com with SMTP id e4so1440020pfg.0
- for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2017 18:38:22 -0800 (PST)
-Date: Thu, 9 Feb 2017 18:38:19 -0800
+ id 1cc1EX-0005Tg-6p
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 02:46:51 +0000
+Received: by mail-pf0-x242.google.com with SMTP id 19so1441855pfo.3
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2017 18:46:27 -0800 (PST)
+Date: Thu, 9 Feb 2017 18:46:24 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH] mtd: physmap_of: fixup gemini/versatile dependencies
-Message-ID: <20170210023819.GP94627@google.com>
-References: <20170209020937.62339-1-computersforpeace@gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
+Message-ID: <20170210024624.GA142725@google.com>
+References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
+ <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
+ <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
+ <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
+ <20170208190939.GA97840@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20170209020937.62339-1-computersforpeace@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170208190939.GA97840@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,70 +35,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+On Wed, Feb 08, 2017 at 11:09:39AM -0800, Brian Norris wrote:
+> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
+> > Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
+> > > Am 08.02.2017 um 02:09 schrieb Marek Vasut:
+> > >> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
+> > [...]
+> > >>> Heiner Kallweit (1):
+> > >>>       mtd: m25p80: consider max message size in m25p80_read
+> > >>
+> > >> I cannot say I'm super-happy about this particular patch, still ...
+> > >>
+> > > W/o it at least the fsl-espi driver is broken for transfers >= 64kB.
+> > > 
+[...]
 
-Any thoughts? It's either revert your patches, or apply something like
-this. I'm going to need to decide that in the next <24 hours or so.
+> One thing I do object to: why is this change marked for stable? It's not
+> our fault you broke your duct-taped-together SPI driver in 4.9. I don't
+> think backporting features is the way to satisfy the -stable
+> requirements. Maybe some reverts would be the right way...
 
-On Wed, Feb 08, 2017 at 06:09:37PM -0800, Brian Norris wrote:
-> physmap_of sort of depends on the gemini and versatile modules (when
-> they're enabled), but this isn't expressed in Kconfig. Let's just merge
-> the modules all together, when enabled. Then we can avoid exporting a
-> few symbols, and the versatile and gemini code can now be modular again
-> (the below commit accidentally made them built-in only).
-> 
-> Resolves errors like this:
-> 
-> ERROR: "of_flash_probe_versatile" [drivers/mtd/maps/physmap_of.ko] undefined!
-> ERROR: "of_flash_probe_gemini" [drivers/mtd/maps/physmap_of.ko] undefined!
-> 
-> Fixes: 56ff337ea433 ("mtd: physmap_of: add a hook for Gemini flash probing")
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/maps/Makefile               | 8 ++++++--
->  drivers/mtd/maps/physmap_of_gemini.c    | 1 -
->  drivers/mtd/maps/physmap_of_versatile.c | 1 -
->  3 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-> index 2fec1e0c2371..aef1846b4de2 100644
-> --- a/drivers/mtd/maps/Makefile
-> +++ b/drivers/mtd/maps/Makefile
-> @@ -17,9 +17,13 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
->  obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
->  obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
->  obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
-> +ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
-> +physmap_of-objs += physmap_of_versatile.o
-> +endif
-> +ifdef CONFIG_MTD_PHYSMAP_OF_GEMINI
-> +physmap_of-objs += physmap_of_gemini.o
-> +endif
->  obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
-> -obj-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE)	+= physmap_of_versatile.o
-> -obj-$(CONFIG_MTD_PHYSMAP_OF_GEMINI)	+= physmap_of_gemini.o
->  obj-$(CONFIG_MTD_PISMO)		+= pismo.o
->  obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
->  obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
-> diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
-> index e99db772143b..9d371cd728ea 100644
-> --- a/drivers/mtd/maps/physmap_of_gemini.c
-> +++ b/drivers/mtd/maps/physmap_of_gemini.c
-> @@ -115,4 +115,3 @@ int of_flash_probe_gemini(struct platform_device *pdev,
->  
->  	return 0;
->  }
-> -EXPORT_SYMBOL_GPL(of_flash_probe_gemini);
-> diff --git a/drivers/mtd/maps/physmap_of_versatile.c b/drivers/mtd/maps/physmap_of_versatile.c
-> index 0f39b2a015f4..8c6ccded9be8 100644
-> --- a/drivers/mtd/maps/physmap_of_versatile.c
-> +++ b/drivers/mtd/maps/physmap_of_versatile.c
-> @@ -252,4 +252,3 @@ int of_flash_probe_versatile(struct platform_device *pdev,
->  
->  	return 0;
->  }
-> -EXPORT_SYMBOL_GPL(of_flash_probe_versatile);
-> -- 
-> 2.11.0.483.g087da7b7c-goog
-> 
+OK, I've reviewed the rest of the pull request as well as I care for.
+I still have this one objection: I don't think this belongs in -stable.
+
+Am I crazy? Or else Cyrille, can you remove the stable tag and resend?
+Or I can go rewrite your history for you and do this...
+
+Brian
+
+P.S. Also, this stuck out at me in the diffs, and checkpatch complained
+too. Not a real big deal:
+
+WARNING:BLOCK_COMMENT_STYLE: Block comments should align the * on each
+line
+#42: FILE: drivers/mtd/spi-nor/spi-nor.c:83:
++					 * ATMEL flashes)
++					*/
+
+total: 0 errors, 1 warnings, 264 lines checked
