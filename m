@@ -1,14 +1,32 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ccEL8-00011G-Vo
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 16:46:34 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, dedekind1@gmail.com,
- david.oberhollenzer@sigma-star.at, Richard Weinberger <richard@nod.at>
-Subject: [PATCH] ubifs: Fix memory leak in error path in ubifs_mknod
-Date: Fri, 10 Feb 2017 17:46:01 +0100
-Message-Id: <20170210164601.29218-1-richard@nod.at>
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ccFRp-0007GL-IY
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 17:57:33 +0000
+Received: by mail-wr0-x242.google.com with SMTP id 89so15879713wrr.1
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 09:57:08 -0800 (PST)
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
+To: Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
+ <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
+ <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
+ <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
+ <20170208190939.GA97840@google.com> <20170210024624.GA142725@google.com>
+ <85f9f5e3-dc2f-40de-9932-e99f0c0a1721@gmail.com>
+ <b0da3e92-3734-62dc-e112-8541d61cf986@gmail.com>
+Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <2a38abcf-648c-537d-1135-93efc7aa7e52@gmail.com>
+Date: Fri, 10 Feb 2017 18:56:52 +0100
+MIME-Version: 1.0
+In-Reply-To: <b0da3e92-3734-62dc-e112-8541d61cf986@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,28 +36,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When fscrypt_setup_filename() fails we have to free dev.
-
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/dir.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 528369f3e472..e164782f8bc8 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1068,8 +1068,10 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
- 	}
- 
- 	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
--	if (err)
-+	if (err) {
-+		kfree(dev);
- 		goto out_budg;
-+	}
- 
- 	sz_change = CALC_DENT_SIZE(fname_len(&nm));
- 
--- 
-2.10.2
+Am 10.02.2017 um 14:07 schrieb Marek Vasut:
+> On 02/10/2017 07:39 AM, Heiner Kallweit wrote:
+>> Am 10.02.2017 um 03:46 schrieb Brian Norris:
+>>> On Wed, Feb 08, 2017 at 11:09:39AM -0800, Brian Norris wrote:
+>>>> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
+>>>>> Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
+>>>>>> Am 08.02.2017 um 02:09 schrieb Marek Vasut:
+>>>>>>> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
+>>>>> [...]
+>>>>>>>> Heiner Kallweit (1):
+>>>>>>>>       mtd: m25p80: consider max message size in m25p80_read
+>>>>>>>
+>>>>>>> I cannot say I'm super-happy about this particular patch, still ...
+>>>>>>>
+>>>>>> W/o it at least the fsl-espi driver is broken for transfers >= 64kB.
+>>>>>>
+>>> [...]
+>>>
+>>>> One thing I do object to: why is this change marked for stable? It's not
+>>>> our fault you broke your duct-taped-together SPI driver in 4.9. I don't
+>>>> think backporting features is the way to satisfy the -stable
+>>>> requirements. Maybe some reverts would be the right way...
+>>>
+>> The patch was submitted in Aug 2016 already and there was also an inquiry
+>> to get it into 4.9:
+>> http://lists.infradead.org/pipermail/linux-mtd/2016-September/069363.html
+>>
+>> But due to whatever circumstances nothing happened and there was no
+>> response.
+> 
+> Is that a bugfix ?
+> 
+Certain changes to the fsl-espi driver and the patch we're talking about
+here were supposed to go into the same kernel release.
+The driver changes made it to mainline months ago, the m25p80 patch not.
+So yes, we have a bug in 4.9, transfers >= 64k fail on fsl-espi.
