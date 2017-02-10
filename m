@@ -1,28 +1,28 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccFyp-0005x3-5R
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 18:31:40 +0000
-Received: by mail-pg0-x243.google.com with SMTP id 194so3691807pgd.0
- for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 10:31:14 -0800 (PST)
-Date: Fri, 10 Feb 2017 10:31:11 -0800
+ id 1ccGl2-0001PL-Ox
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 19:21:27 +0000
+Received: by mail-pf0-x244.google.com with SMTP id 68so1115893pfx.2
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 11:21:03 -0800 (PST)
+Date: Fri, 10 Feb 2017 11:20:59 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Marek Vasut <marek.vasut@gmail.com>
-Cc: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+Cc: Wei Yongjun <weiyj.lk@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v3 0/2] Add a "label" property to the mtd device
-Message-ID: <20170210183111.GB125303@google.com>
-References: <1486632068-14894-1-git-send-email-clg@kaod.org>
- <ceb3ad29-a5fc-86d5-a2f3-dd2c1620fc57@gmail.com>
+ Wei Yongjun <weiyongjun1@huawei.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mtd: aspeed: remove redundant dev_err call in
+ aspeed_smc_probe()
+Message-ID: <20170210192059.GC125303@google.com>
+References: <20170208162310.6048-1-weiyj.lk@gmail.com>
+ <6c10cdf0-5b91-000c-a8c3-78f41d47bac3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ceb3ad29-a5fc-86d5-a2f3-dd2c1620fc57@gmail.com>
+In-Reply-To: <6c10cdf0-5b91-000c-a8c3-78f41d47bac3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +32,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 09, 2017 at 09:25:32PM +0100, Marek Vasut wrote:
-> On 02/09/2017 10:21 AM, Cédric Le Goater wrote:
-> > Hello,
+On Thu, Feb 09, 2017 at 09:50:23AM +0100, Marek Vasut wrote:
+> On 02/08/2017 05:23 PM, Wei Yongjun wrote:
+> > From: Wei Yongjun <weiyongjun1@huawei.com>
 > > 
-> > Herer are a couple of patches adding a "label" property to the mtd
-> > device, which can be used to identify a specific chip on a system with
-> > multiple chips. This is common on the OpenPower boards, there can be
-> > four chips holding the firmware for the BMC and the firmware for the
-> > host, plus chips with golden images for recovery.
+> > There is a error message within devm_ioremap_resource
+> > already, so remove the dev_err call to avoid redundant
+> > error message.
+> > 
+> > Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 > 
-> Series is
 > Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
+The driver is new for 4.11, so I'll just take this now, directly.
 Applied to l2-mtd.git.
