@@ -1,32 +1,21 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccFRp-0007GL-IY
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 17:57:33 +0000
-Received: by mail-wr0-x242.google.com with SMTP id 89so15879713wrr.1
- for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 09:57:08 -0800 (PST)
-Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
-To: Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
- <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
- <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
- <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
- <20170208190939.GA97840@google.com> <20170210024624.GA142725@google.com>
- <85f9f5e3-dc2f-40de-9932-e99f0c0a1721@gmail.com>
- <b0da3e92-3734-62dc-e112-8541d61cf986@gmail.com>
-Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <2a38abcf-648c-537d-1135-93efc7aa7e52@gmail.com>
-Date: Fri, 10 Feb 2017 18:56:52 +0100
+ id 1ccFY4-0001SJ-If
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 18:03:59 +0000
+Received: by mail-pg0-x243.google.com with SMTP id v184so3647098pgv.1
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 10:03:35 -0800 (PST)
+Date: Fri, 10 Feb 2017 10:03:31 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: physmap_of: fixup gemini/versatile dependencies
+Message-ID: <20170210180331.GB67059@google.com>
+References: <20170209020937.62339-1-computersforpeace@gmail.com>
+ <CACRpkdbQZ3PW_iqj6Zn1+b+wKs9eSQ4GHmhN6KTEJLZYMOfc8g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b0da3e92-3734-62dc-e112-8541d61cf986@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdbQZ3PW_iqj6Zn1+b+wKs9eSQ4GHmhN6KTEJLZYMOfc8g@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,39 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 10.02.2017 um 14:07 schrieb Marek Vasut:
-> On 02/10/2017 07:39 AM, Heiner Kallweit wrote:
->> Am 10.02.2017 um 03:46 schrieb Brian Norris:
->>> On Wed, Feb 08, 2017 at 11:09:39AM -0800, Brian Norris wrote:
->>>> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
->>>>> Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
->>>>>> Am 08.02.2017 um 02:09 schrieb Marek Vasut:
->>>>>>> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
->>>>> [...]
->>>>>>>> Heiner Kallweit (1):
->>>>>>>>       mtd: m25p80: consider max message size in m25p80_read
->>>>>>>
->>>>>>> I cannot say I'm super-happy about this particular patch, still ...
->>>>>>>
->>>>>> W/o it at least the fsl-espi driver is broken for transfers >= 64kB.
->>>>>>
->>> [...]
->>>
->>>> One thing I do object to: why is this change marked for stable? It's not
->>>> our fault you broke your duct-taped-together SPI driver in 4.9. I don't
->>>> think backporting features is the way to satisfy the -stable
->>>> requirements. Maybe some reverts would be the right way...
->>>
->> The patch was submitted in Aug 2016 already and there was also an inquiry
->> to get it into 4.9:
->> http://lists.infradead.org/pipermail/linux-mtd/2016-September/069363.html
->>
->> But due to whatever circumstances nothing happened and there was no
->> response.
+On Fri, Feb 10, 2017 at 01:19:15PM +0100, Linus Walleij wrote:
+> On Thu, Feb 9, 2017 at 3:09 AM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
 > 
-> Is that a bugfix ?
+> > physmap_of sort of depends on the gemini and versatile modules (when
+> > they're enabled), but this isn't expressed in Kconfig. Let's just merge
+> > the modules all together, when enabled. Then we can avoid exporting a
+> > few symbols, and the versatile and gemini code can now be modular again
+> > (the below commit accidentally made them built-in only).
+> >
+> > Resolves errors like this:
+> >
+> > ERROR: "of_flash_probe_versatile" [drivers/mtd/maps/physmap_of.ko] undefined!
+> > ERROR: "of_flash_probe_gemini" [drivers/mtd/maps/physmap_of.ko] undefined!
+> >
+> > Fixes: 56ff337ea433 ("mtd: physmap_of: add a hook for Gemini flash probing")
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > 
-Certain changes to the fsl-espi driver and the patch we're talking about
-here were supposed to go into the same kernel release.
-The driver changes made it to mainline months ago, the m25p80 patch not.
-So yes, we have a bug in 4.9, transfers >= 64k fail on fsl-espi.
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> Sorry for not responding quicker.
+
+Eh, no problem. It's mostly my fault for batch processing within the
+last week before the merge window :)
+
+I've applied my solution to l2-mtd.git. Thanks for reviewing.
+
+> I hacked up this not entirely optimal solution to the same problem
+> but I think what you're doing is better:
+> 
+>  config MTD_PHYSMAP_OF_VERSATILE
+> -       bool "Support ARM Versatile physmap OF"
+> -       depends on MTD_PHYSMAP_OF
+> -       depends on MFD_SYSCON
+> +       bool "ARM Versatile OF-based physical memory map handling"
+> +       depends on MTD_PHYSMAP_OF=y
+> +       depends on MFD_SYSCON=y
+>         default y if (ARCH_INTEGRATOR || ARCH_VERSATILE || ARCH_REALVIEW)
+>         help
+>           This provides some extra DT physmap parsing for the ARM Versatile
+>           platforms, basically to add a VPP (write protection) callback so
+>           the flash can be taken out of write protection.
+> 
+> +config MTD_PHYSMAP_OF_GEMINI
+> +       bool "Cortina Gemini OF-based physical memory map handling"
+> +       depends on MTD_PHYSMAP_OF=y
+> +       depends on MFD_SYSCON=y
+> +       default ARCH_GEMINI
+> +       help
+> +         This provides some extra DT physmap parsing for the Gemini
+> +         platforms, some detection and setting up parallel mode on the
+> +         external interface.
+> 
+> I.e. I made the modules be only accessible when compiled-in.
+> 
+> Either solution is fine with me, but someone else might be annoyed
+> by my solution so let's go with yours.
+
+Sounds good.
+
+> And by the way: thanks for merging this!
+
+No problem.
+
+Brian
