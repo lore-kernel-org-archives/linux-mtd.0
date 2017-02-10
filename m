@@ -1,36 +1,17 @@
-Date: Fri, 10 Feb 2017 15:00:48 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, "linux-gpio@vger.kernel.org"
- <linux-gpio@vger.kernel.org>, Vinod Koul <vinod.koul@intel.com>, Dan
- Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org, Nicolas
- Ferre <nicolas.ferre@atmel.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Wenyou Yang
- <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Haavard
- Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt
- <egtvedt@samfundet.no>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH RESEND 4/5] mtd: nand: atmel: Document the new DT bindings
-Message-ID: <20170210150048.40295070@bbrezillon>
-In-Reply-To: <CAL_Jsq+cmS=o-ZN2PUCreRrWAEdEgV4pRCfWaJ9jHy_oSHMPfg@mail.gmail.com>
-References: <1485535324-28393-1-git-send-email-boris.brezillon@free-electrons.com>
- <1485535324-28393-5-git-send-email-boris.brezillon@free-electrons.com>
- <20170201153920.g26erfzxnxrmsu4z@rob-hp-laptop>
- <20170201164711.27e4b600@bbrezillon>
- <20170210135528.4ee6807b@bbrezillon>
- <CAL_Jsq+cmS=o-ZN2PUCreRrWAEdEgV4pRCfWaJ9jHy_oSHMPfg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from pegase1.c-s.fr ([93.17.236.30])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ccBla-0000El-El
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 14:01:44 +0000
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [PATCH] mtd: nand: gpio: make nCE GPIO optional
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-Id: <20170210140110.87903682E7@localhost.localdomain>
+Date: Fri, 10 Feb 2017 15:01:10 +0100 (CET)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,37 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 Feb 2017 07:58:15 -0600
-Rob Herring <robh@kernel.org> wrote:
+On some hardware, the nCE signal is wired to the ChipSelect associated
+to bus address of the NAND, so it is automatically driven during the
+memory access and it is not managed by a GPIO.
 
-> On Fri, Feb 10, 2017 at 6:55 AM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > Hi Rob,
-> >
-> > On Wed, 1 Feb 2017 16:47:11 +0100
-> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> >  
-> >> On Wed, 1 Feb 2017 09:39:20 -0600
-> >> Rob Herring <robh@kernel.org> wrote:
-> >>  
-> >> > On Fri, Jan 27, 2017 at 05:42:03PM +0100, Boris Brezillon wrote:  
-> >> > > Document the new DT bindings for the Atmel NAND controller and
-> >> > > deprecate the old ones.  
-> >> >
-> >> > Why?  
-> >>
-> >> Because the existing representation is not only wrong, it also causes
-> >> pinmux conflicts between the NAND controller and other devices present
-> >> on the EBI bus.
-> >> It's explained in the cover letter, but maybe you want me to put that
-> >> in the commit message.  
-> >
-> > Do you need more explanation (A.K.A. ping).  
-> 
-> No, but it should be in the commit msg.
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+---
+ drivers/mtd/nand/gpio.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-Okay, will add more details in the commit msg then.
-
-Thanks,
-
-Boris
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 0d24857..85294f1 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -78,7 +78,9 @@ static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ 	gpio_nand_dosync(gpiomtd);
+ 
+ 	if (ctrl & NAND_CTRL_CHANGE) {
+-		gpio_set_value(gpiomtd->plat.gpio_nce, !(ctrl & NAND_NCE));
++		if (gpio_is_valid(gpiomtd->plat.gpio_nce))
++			gpio_set_value(gpiomtd->plat.gpio_nce,
++				       !(ctrl & NAND_NCE));
+ 		gpio_set_value(gpiomtd->plat.gpio_cle, !!(ctrl & NAND_CLE));
+ 		gpio_set_value(gpiomtd->plat.gpio_ale, !!(ctrl & NAND_ALE));
+ 		gpio_nand_dosync(gpiomtd);
+@@ -201,7 +203,8 @@ static int gpio_nand_remove(struct platform_device *pdev)
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+ 		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
+-	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
++	if (gpio_is_valid(gpiomtd->plat.gpio_nce))
++		gpio_set_value(gpiomtd->plat.gpio_nce, 1);
+ 
+ 	return 0;
+ }
+@@ -239,10 +242,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
+-	if (ret)
+-		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
++	if (gpio_is_valid(gpiomtd->plat.gpio_nce)) {
++		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce,
++					"NAND NCE");
++		if (ret)
++			return ret;
++		gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
++	}
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
+ 		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
+-- 
+2.10.1
