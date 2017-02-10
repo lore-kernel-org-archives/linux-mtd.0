@@ -1,20 +1,24 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccC1e-00009T-Tf
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 14:18:17 +0000
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [GIT PULL v2] mtd: spi-nor: Changes for 4.11
-To: Brian Norris <computersforpeace@gmail.com>
-CC: Boris BREZILLON <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>, MTD Maling List
- <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <6cdd261f-ad1c-9875-6776-fd10d68ea4c3@atmel.com>
-Date: Fri, 10 Feb 2017 15:17:48 +0100
+ id 1ccCs4-0003Nt-DQ
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 15:12:27 +0000
+Received: by mail-wr0-x244.google.com with SMTP id i10so15452596wrb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 07:12:03 -0800 (PST)
+Subject: Re: [PATCH] mtd: nand: gpio: make nCE GPIO optional
+To: Christophe Leroy <christophe.leroy@c-s.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <20170210140110.87903682E7@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <d506cb49-5145-a529-2ce9-fd71ed7f715b@gmail.com>
+Date: Fri, 10 Feb 2017 16:12:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170210140110.87903682E7@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,119 +28,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On 02/10/2017 03:01 PM, Christophe Leroy wrote:
+> On some hardware,
 
-I've rewritten the spi-nor history as asked so this is the new PR.
+Can you be more specific or is that confidential ? Anyway, that's just
+my curiosity, what hardware is done like that.
 
-ChangeLog for the PR:
+> the nCE signal is wired to the ChipSelect associated
+> to bus address of the NAND, so it is automatically driven during the
+> memory access and it is not managed by a GPIO.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 
-v1 -> v2
-- create new tag: spi-nor/for-4.11-v2
-- remove the stable tag from "mtd: m25p80: consider max message size in m25p80_read"
-- fix * alignment in comment block in "mtd: spi-nor: Add support for S3AN spi-nor devices"
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
+but please wait for the NAND experts ...
+
+> ---
+>  drivers/mtd/nand/gpio.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+> index 0d24857..85294f1 100644
+> --- a/drivers/mtd/nand/gpio.c
+> +++ b/drivers/mtd/nand/gpio.c
+> @@ -78,7 +78,9 @@ static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  	gpio_nand_dosync(gpiomtd);
+>  
+>  	if (ctrl & NAND_CTRL_CHANGE) {
+> -		gpio_set_value(gpiomtd->plat.gpio_nce, !(ctrl & NAND_NCE));
+> +		if (gpio_is_valid(gpiomtd->plat.gpio_nce))
+> +			gpio_set_value(gpiomtd->plat.gpio_nce,
+> +				       !(ctrl & NAND_NCE));
+>  		gpio_set_value(gpiomtd->plat.gpio_cle, !!(ctrl & NAND_CLE));
+>  		gpio_set_value(gpiomtd->plat.gpio_ale, !!(ctrl & NAND_ALE));
+>  		gpio_nand_dosync(gpiomtd);
+> @@ -201,7 +203,8 @@ static int gpio_nand_remove(struct platform_device *pdev)
+>  
+>  	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+>  		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
+> -	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
+> +	if (gpio_is_valid(gpiomtd->plat.gpio_nce))
+> +		gpio_set_value(gpiomtd->plat.gpio_nce, 1);
+>  
+>  	return 0;
+>  }
+> @@ -239,10 +242,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
+> -	if (ret)
+> -		return ret;
+> -	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+> +	if (gpio_is_valid(gpiomtd->plat.gpio_nce)) {
+> +		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce,
+> +					"NAND NCE");
+> +		if (ret)
+> +			return ret;
+> +		gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+> +	}
+>  
+>  	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
+>  		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
+> 
+
+
+-- 
 Best regards,
-
-Cyrille
-
-
-The following changes since commit 7ce7d89f48834cefece7804d38fc5d85382edf77:
-
-  Linux 4.10-rc1 (2016-12-25 16:13:08 -0800)
-
-are available in the git repository at:
-
-  git://github.com/spi-nor/linux.git tags/spi-nor/for-4.11-v2
-
-for you to fetch changes up to 7fa2c7038cc0ec16ae5d8eee347ea136de0f4b65:
-
-  mtd: spi-nor: cqspi: remove redundant dead code on error return check (2017-02-10 14:22:00 +0100)
-
-----------------------------------------------------------------
-This pull request contains the following notable changes:
-- add support to the 4-byte address instruction set.
-- add support to new memory parts.
-- add support to S3AN memories.
-- add support to the Intel SPI controller.
-- add support to the Aspeed AST2400 and AST2550 controllers.
-- fix max SPI transfer and message sizes in m25p80_read().
-- fix the Candence QSPI driver.
-- fix the Freescale QSPI driver.
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      mtd: spi-nor: cqspi: remove redundant dead code on error return check
-
-Cyrille Pitchen (5):
-      mtd: spi-nor: improve macronix_quad_enable()
-      mtd: spi-nor: remove WARN_ONCE() message in spi_nor_write()
-      mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte address op codes
-      mtd: spi-nor: add a stateless method to support memory size above 128Mib
-      Merge tag 'ib-mfd-mtd-v4.11' of git://git.kernel.org/.../lee/mfd
-
-Cédric Le Goater (4):
-      mtd: spi-nor: add memory controllers for the Aspeed AST2500 SoC
-      mtd: aspeed: add memory controllers for the Aspeed AST2400 SoC
-      mtd: spi-nor: bindings for the Aspeed memory controllers
-      mtd: aspeed: fix compile warning in aspeed_smc_read_from_ahb()
-
-Guochun Mao (1):
-      Documentation: mtk-quadspi: update DT bindings
-
-Heiner Kallweit (1):
-      mtd: m25p80: consider max message size in m25p80_read
-
-Kamal Dasu (1):
-      mtd: spi-nor: Add support for gd25q16
-
-Marek Vasut (1):
-      mtd: spi-nor: cqspi: Fix build on arches missing readsl/writesl
-
-Mika Westerberg (3):
-      spi-nor: Add support for Intel SPI serial flash controller
-      mfd: lpc_ich: Add support for SPI serial flash host controller
-      mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-
-Ricardo Ribalda Delgado (2):
-      mtd: spi-nor: Add support for S3AN spi-nor devices
-      mtd: spi-nor: Fix S3AN addressing calculation
-
-Uwe Kleine-König (1):
-      mtd: spi-nor: add dt support for Everspin MRAMs
-
-Victor Shyba (1):
-      mtd: spi-nor: Add lock/unlock support for f25l32pa
-
-Yunhui Cui (2):
-      mtd:fsl-quadspi:use the property fields of SPI-NOR
-      mtd: fsl-quadspi: Rename SEQID_QUAD_READ to SEQID_READ
-
- Documentation/devicetree/bindings/mtd/aspeed-smc.txt    |  51 +++++
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt |   2 +
- Documentation/devicetree/bindings/mtd/mtk-quadspi.txt   |   8 +-
- Documentation/mtd/intel-spi.txt                         |  88 +++++++++
- drivers/mfd/lpc_ich.c                                   | 131 +++++++++++++
- drivers/mtd/devices/m25p80.c                            |   9 +-
- drivers/mtd/devices/serial_flash_cmds.h                 |   7 -
- drivers/mtd/devices/st_spi_fsm.c                        |  28 +--
- drivers/mtd/spi-nor/Kconfig                             |  32 +++-
- drivers/mtd/spi-nor/Makefile                            |   3 +
- drivers/mtd/spi-nor/aspeed-smc.c                        | 758 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/cadence-quadspi.c                   |  10 +-
- drivers/mtd/spi-nor/fsl-quadspi.c                       |  48 ++---
- drivers/mtd/spi-nor/intel-spi-platform.c                |  57 ++++++
- drivers/mtd/spi-nor/intel-spi.c                         | 777 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/intel-spi.h                         |  24 +++
- drivers/mtd/spi-nor/spi-nor.c                           | 271 ++++++++++++++++++++++++---
- drivers/spi/spi-bcm-qspi.c                              |   6 +-
- include/linux/mfd/lpc_ich.h                             |   3 +
- include/linux/mtd/spi-nor.h                             |  34 +++-
- include/linux/platform_data/intel-spi.h                 |  31 +++
- 21 files changed, 2278 insertions(+), 100 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
- create mode 100644 Documentation/mtd/intel-spi.txt
- create mode 100644 drivers/mtd/spi-nor/aspeed-smc.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi.h
- create mode 100644 include/linux/platform_data/intel-spi.h
+Marek Vasut
