@@ -1,28 +1,28 @@
-Received: from 18.mo4.mail-out.ovh.net ([188.165.54.143])
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cc46h-0006Pf-1c
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 05:50:59 +0000
-Received: from player762.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo4.mail-out.ovh.net (Postfix) with ESMTP id A3CEE48EC1
- for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 06:50:30 +0100 (CET)
-Subject: Re: [PATCH] mtd: aspeed: fix compile warning in
- aspeed_smc_read_from_ahb()
-To: Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <1484817198-22477-1-git-send-email-clg@kaod.org>
- <20170208233728.GN94627@google.com>
- <19aa7cbb-8691-36d3-47a3-7a1029e66ecf@gmail.com>
- <19bcab6c-baf6-d34c-67bb-a5e655241e5e@kaod.org>
- <277b0a51-8384-09f4-6745-7d284a92b3e9@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
+ id 1cc4sS-0000Hj-Rh
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 06:40:19 +0000
+Received: by mail-wm0-x234.google.com with SMTP id r141so39777457wmg.1
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2017 22:39:56 -0800 (PST)
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
+To: Brian Norris <computersforpeace@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <c8e66f0f-9b83-8192-8a1e-11af03beb350@kaod.org>
-Date: Fri, 10 Feb 2017 06:50:23 +0100
+References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
+ <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
+ <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
+ <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
+ <20170208190939.GA97840@google.com> <20170210024624.GA142725@google.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <85f9f5e3-dc2f-40de-9932-e99f0c0a1721@gmail.com>
+Date: Fri, 10 Feb 2017 07:39:39 +0100
 MIME-Version: 1.0
-In-Reply-To: <277b0a51-8384-09f4-6745-7d284a92b3e9@gmail.com>
+In-Reply-To: <20170210024624.GA142725@google.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,70 +34,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/09/2017 04:04 PM, Marek Vasut wrote:
-> On 02/09/2017 10:59 AM, Cédric Le Goater wrote:
->> On 02/09/2017 10:05 AM, Marek Vasut wrote:
->>> On 02/09/2017 12:37 AM, Brian Norris wrote:
->>>> On Thu, Jan 19, 2017 at 10:13:18AM +0100, Cédric Le Goater wrote:
->>>>> The first argument of ioread32_rep() and ioread8_rep is not
->>>>> const. Change aspeed_smc_read_from_ahb() prototype to fix compile
->>>>> warning :
+Am 10.02.2017 um 03:46 schrieb Brian Norris:
+> On Wed, Feb 08, 2017 at 11:09:39AM -0800, Brian Norris wrote:
+>> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
+>>> Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
+>>>> Am 08.02.2017 um 02:09 schrieb Marek Vasut:
+>>>>> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
+>>> [...]
+>>>>>> Heiner Kallweit (1):
+>>>>>>       mtd: m25p80: consider max message size in m25p80_read
 >>>>>
->>>>>    drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
->>>>>    drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->>>>>       ioread32_rep(src, buf, len >> 2);
+>>>>> I cannot say I'm super-happy about this particular patch, still ...
+>>>>>
+>>>> W/o it at least the fsl-espi driver is broken for transfers >= 64kB.
 >>>>
->>>> But why isn't that param constant? Seems like that's a bug in the
->>>> ioread* APIs. Some of their implementations are const, but some are not.
->>>>
->>>> I see for instance that the implementation in lib/iomap.c is not const,
->>>> where there's zero reason it shouldn't be (if we also fix, e.g., its
->>>> mmio_insl()).
->>>
->>> Maybe it's worth fixing the ioread*_rep then ? Then again, that seems to
->>> be way far off the scope of this patch.
->>
->> Looking closer at where this comes from, the compile warning was 
->> reported on x86 which pulls a different file for the definitions 
->> of the ioread routines.
+> [...]
 > 
-> Well yes, intel is a special snowflake in the io accessor area.
+>> One thing I do object to: why is this change marked for stable? It's not
+>> our fault you broke your duct-taped-together SPI driver in 4.9. I don't
+>> think backporting features is the way to satisfy the -stable
+>> requirements. Maybe some reverts would be the right way...
 > 
->> On x86, arch/x86/include/asm/io.h includes <asm-generic/iomap.h>
->> which contains prototypes of the ioread routines without 'const'.
->>
->> On ARM, arch/arm/include/asm/io.h includes <asm-generic/io.h>
->> which contains the 'const' definitions.
+The patch was submitted in Aug 2016 already and there was also an inquiry
+to get it into 4.9:
+http://lists.infradead.org/pipermail/linux-mtd/2016-September/069363.html
+
+But due to whatever circumstances nothing happened and there was no
+response.
+
+> OK, I've reviewed the rest of the pull request as well as I care for.
+> I still have this one objection: I don't think this belongs in -stable.
 > 
-> Can you check if any of those arches needs it without const ?
-
-ok. I have checked over ppc, all defconfigs compile fine. 
-I will send a patch to linuxppc to see how we can merged it 
-in powerpc-next. The other arches would then be checked 
-by the Intel 0-day bot.
-
-C. 
-
-
+> Am I crazy? Or else Cyrille, can you remove the stable tag and resend?
+> Or I can go rewrite your history for you and do this...
 > 
->> So may be, we should just drop that patch and fix iomap.h instead,
->> but quite a few arches use it :
->>
->> arch/sh/include/asm/io.h:#include <asm-generic/iomap.h>
->> arch/mips/include/asm/io.h:#include <asm-generic/iomap.h>
->> arch/ia64/include/asm/io.h:#include <asm-generic/iomap.h>
->> arch/cris/include/asm/io.h:#include <asm-generic/iomap.h>
->> arch/x86/include/asm/io.h:#include <asm-generic/iomap.h>
->> arch/alpha/include/asm/io.h:#include <asm-generic/iomap.h>
->> arch/powerpc/include/asm/io.h:#include <asm-generic/iomap.h>
->> arch/m68k/include/asm/io_mm.h:#include <asm-generic/iomap.h>
->> arch/m68k/include/asm/io_no.h:#include <asm-generic/iomap.h>
->> arch/parisc/include/asm/io.h:#include <asm-generic/iomap.h>
->> include/asm-generic/io.h:#include <asm-generic/iomap.h>
->>
->> Thanks,
->>
->> C.
->>
+> Brian
+> 
+> P.S. Also, this stuck out at me in the diffs, and checkpatch complained
+> too. Not a real big deal:
+> 
+> WARNING:BLOCK_COMMENT_STYLE: Block comments should align the * on each
+> line
+> #42: FILE: drivers/mtd/spi-nor/spi-nor.c:83:
+> +					 * ATMEL flashes)
+> +					*/
+> 
+> total: 0 errors, 1 warnings, 264 lines checked
 > 
 > 
