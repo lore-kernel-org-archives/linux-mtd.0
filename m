@@ -1,28 +1,35 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccAoV-0004h2-SW
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 13:00:38 +0000
-Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
-To: Brian Norris <computersforpeace@gmail.com>
-References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
- <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
- <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
- <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
- <20170208190939.GA97840@google.com> <20170210024624.GA142725@google.com>
-CC: Heiner Kallweit <hkallweit1@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Boris BREZILLON
- <boris.brezillon@free-electrons.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>, MTD
- Maling List <linux-mtd@lists.infradead.org>, Richard Weinberger
- <richard@nod.at>, Mark Brown <broonie@kernel.org>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <da21420a-e90a-d873-8f59-e376e4dac37b@atmel.com>
-Date: Fri, 10 Feb 2017 14:00:10 +0100
+ id 1ccAph-0005jN-Qz
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 13:01:53 +0000
+Subject: Re: UBI/UBIFS corruptions during random power-cuts
+To: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>,
+ linux-mtd@lists.infradead.org
+References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
+ <0500de05-b3d7-6cbc-0236-5d4c83a5f00f@nod.at>
+ <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
+ <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
+ <89cd8327-581b-4285-d9ae-138d800211cf@toradex.com>
+ <bceb976b-0aac-fe04-a540-f24823366233@nod.at>
+ <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
+ <5a769de2-31f1-f011-c6bc-e94427407751@nod.at>
+ <a27bc761-b8d2-4f69-468a-b9a4d61c68f8@toradex.com>
+ <306876cd-0855-b9ee-659d-2164cfc3b2c4@nod.at>
+ <877dea3c-717d-9b1a-c01d-537f3b46b2de@toradex.com>
+ <ff60b696-ffec-8ddd-16bd-407a9bacb3e0@nod.at>
+ <47db4d54-f8f5-a663-75b3-d2cd5fd0769f@toradex.com>
+ <c3c9dcff-5738-d36c-189d-8aa0e9be98ca@nod.at>
+ <17f16834-e200-60c7-62d4-b083b00335ac@toradex.com>
+ <24fa997a-ba80-efb7-231d-8d4fddcd954d@nod.at>
+ <ce043ab8-2a2b-804d-ac22-67d404fc5578@toradex.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <f64c07b7-3cb2-2667-7e20-fb751c54fdea@nod.at>
+Date: Fri, 10 Feb 2017 14:01:21 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170210024624.GA142725@google.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ce043ab8-2a2b-804d-ac22-67d404fc5578@toradex.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,58 +39,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 10/02/2017 à 03:46, Brian Norris a écrit :
-> On Wed, Feb 08, 2017 at 11:09:39AM -0800, Brian Norris wrote:
->> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
->>> Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
->>>> Am 08.02.2017 um 02:09 schrieb Marek Vasut:
->>>>> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
->>> [...]
->>>>>> Heiner Kallweit (1):
->>>>>>       mtd: m25p80: consider max message size in m25p80_read
->>>>>
->>>>> I cannot say I'm super-happy about this particular patch, still ...
->>>>>
->>>> W/o it at least the fsl-espi driver is broken for transfers >= 64kB.
->>>>
-> [...]
-> 
->> One thing I do object to: why is this change marked for stable? It's not
->> our fault you broke your duct-taped-together SPI driver in 4.9. I don't
->> think backporting features is the way to satisfy the -stable
->> requirements. Maybe some reverts would be the right way...
-> 
-> OK, I've reviewed the rest of the pull request as well as I care for.
-> I still have this one objection: I don't think this belongs in -stable.
-> 
-> Am I crazy? Or else Cyrille, can you remove the stable tag and resend?
-> Or I can go rewrite your history for you and do this...
->
+Bhuvan,
 
-No problem, I'm rewriting the history to prepare a new PR :)
-
-So 2 modifications:
-1 - remove the stable tag from "mtd: spi-nor: rename SPINOR_OP_* macros of
-the 4-byte address op codes"
-2 - fix * alignment in comment in "mtd: spi-nor: Add support for S3AN
-spi-nor devices"
-
-Best regards,
-
-Cyrille
-
-
-> Brian
+Am 09.02.2017 um 05:59 schrieb Bhuvanchandra DV:
+>> Just in case, you can trigger this also with a fresh filesystem?
+>> Or did you always keep the same one?
 > 
-> P.S. Also, this stuck out at me in the diffs, and checkpatch complained
-> too. Not a real big deal:
-> 
-> WARNING:BLOCK_COMMENT_STYLE: Block comments should align the * on each
-> line
-> #42: FILE: drivers/mtd/spi-nor/spi-nor.c:83:
-> +					 * ATMEL flashes)
-> +					*/
-> 
-> total: 0 errors, 1 warnings, 264 lines checked
-> 
-> 
+> Yes, I triggered it with fresh filesystem.
+
+Okay. Not good.
+
+How do you trigger this? What workload is running while the power-cut
+happens?
+Did you try also kernel 4.9?
+Does it also only happen then xattrs are used?
+
+Thanks,
+//richard
