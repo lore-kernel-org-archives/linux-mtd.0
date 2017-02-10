@@ -1,28 +1,17 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccGl2-0001PL-Ox
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 19:21:27 +0000
-Received: by mail-pf0-x244.google.com with SMTP id 68so1115893pfx.2
- for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 11:21:03 -0800 (PST)
-Date: Fri, 10 Feb 2017 11:20:59 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Wei Yongjun <weiyj.lk@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Wei Yongjun <weiyongjun1@huawei.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mtd: aspeed: remove redundant dev_err call in
- aspeed_smc_probe()
-Message-ID: <20170210192059.GC125303@google.com>
-References: <20170208162310.6048-1-weiyj.lk@gmail.com>
- <6c10cdf0-5b91-000c-a8c3-78f41d47bac3@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6c10cdf0-5b91-000c-a8c3-78f41d47bac3@gmail.com>
+ id 1ccJOe-0005zE-PK
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 22:10:31 +0000
+Received: by mail-wr0-x244.google.com with SMTP id i10so16485844wrb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 14:10:07 -0800 (PST)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
+ broonie@kernel.org
+Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH v3 0/2]  Added support for spi-nor device pm in m25p80
+Date: Fri, 10 Feb 2017 16:49:27 -0500
+Message-Id: <1486763369-31969-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 09, 2017 at 09:50:23AM +0100, Marek Vasut wrote:
-> On 02/08/2017 05:23 PM, Wei Yongjun wrote:
-> > From: Wei Yongjun <weiyongjun1@huawei.com>
-> > 
-> > There is a error message within devm_ioremap_resource
-> > already, so remove the dev_err call to avoid redundant
-> > error message.
-> > 
-> > Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> 
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+The V3 changes below implements power management support in m25p80 driver.
+m25p80 pm resume() calls newly a implemented spi_nor_init() function
+that sets up the spi-nor flash to its probed state. This is needed on
+platfroms that turn off power to the spi-nor flash on pm suspend.
+The code has been rebased to git://github.com/spi-nor/linux.git next
+branch.
 
-The driver is new for 4.11, so I'll just take this now, directly.
-Applied to l2-mtd.git.
+Kamal Dasu (2):
+  mtd: spi-nor: Added spi-nor reset function
+  mtd: m25p80: Added pm ops support
+
+ drivers/mtd/devices/m25p80.c  | 16 ++++++++++
+ drivers/mtd/spi-nor/spi-nor.c | 72 +++++++++++++++++++++++++++----------------
+ include/linux/mtd/spi-nor.h   | 21 ++++++++++++-
+ 3 files changed, 81 insertions(+), 28 deletions(-)
+
+-- 
+1.9.1
