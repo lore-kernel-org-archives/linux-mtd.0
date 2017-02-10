@@ -1,31 +1,37 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccAw0-0000F9-RL
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 13:08:25 +0000
-Received: by mail-wm0-x243.google.com with SMTP id v77so7285571wmv.0
- for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 05:07:59 -0800 (PST)
-Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
-To: Heiner Kallweit <hkallweit1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
- <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
- <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
- <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
- <20170208190939.GA97840@google.com> <20170210024624.GA142725@google.com>
- <85f9f5e3-dc2f-40de-9932-e99f0c0a1721@gmail.com>
-Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <b0da3e92-3734-62dc-e112-8541d61cf986@gmail.com>
-Date: Fri, 10 Feb 2017 14:07:56 +0100
 MIME-Version: 1.0
-In-Reply-To: <85f9f5e3-dc2f-40de-9932-e99f0c0a1721@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170210135528.4ee6807b@bbrezillon>
+References: <1485535324-28393-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1485535324-28393-5-git-send-email-boris.brezillon@free-electrons.com>
+ <20170201153920.g26erfzxnxrmsu4z@rob-hp-laptop>
+ <20170201164711.27e4b600@bbrezillon>
+ <20170210135528.4ee6807b@bbrezillon>
+From: Rob Herring <robh@kernel.org>
+Date: Fri, 10 Feb 2017 07:58:15 -0600
+Message-ID: <CAL_Jsq+cmS=o-ZN2PUCreRrWAEdEgV4pRCfWaJ9jHy_oSHMPfg@mail.gmail.com>
+Subject: Re: [PATCH RESEND 4/5] mtd: nand: atmel: Document the new DT bindings
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,37 +41,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/10/2017 07:39 AM, Heiner Kallweit wrote:
-> Am 10.02.2017 um 03:46 schrieb Brian Norris:
->> On Wed, Feb 08, 2017 at 11:09:39AM -0800, Brian Norris wrote:
->>> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
->>>> Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
->>>>> Am 08.02.2017 um 02:09 schrieb Marek Vasut:
->>>>>> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
->>>> [...]
->>>>>>> Heiner Kallweit (1):
->>>>>>>       mtd: m25p80: consider max message size in m25p80_read
->>>>>>
->>>>>> I cannot say I'm super-happy about this particular patch, still ...
->>>>>>
->>>>> W/o it at least the fsl-espi driver is broken for transfers >= 64kB.
->>>>>
->> [...]
+On Fri, Feb 10, 2017 at 6:55 AM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> Hi Rob,
+>
+> On Wed, 1 Feb 2017 16:47:11 +0100
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+>
+>> On Wed, 1 Feb 2017 09:39:20 -0600
+>> Rob Herring <robh@kernel.org> wrote:
 >>
->>> One thing I do object to: why is this change marked for stable? It's not
->>> our fault you broke your duct-taped-together SPI driver in 4.9. I don't
->>> think backporting features is the way to satisfy the -stable
->>> requirements. Maybe some reverts would be the right way...
+>> > On Fri, Jan 27, 2017 at 05:42:03PM +0100, Boris Brezillon wrote:
+>> > > Document the new DT bindings for the Atmel NAND controller and
+>> > > deprecate the old ones.
+>> >
+>> > Why?
 >>
-> The patch was submitted in Aug 2016 already and there was also an inquiry
-> to get it into 4.9:
-> http://lists.infradead.org/pipermail/linux-mtd/2016-September/069363.html
-> 
-> But due to whatever circumstances nothing happened and there was no
-> response.
+>> Because the existing representation is not only wrong, it also causes
+>> pinmux conflicts between the NAND controller and other devices present
+>> on the EBI bus.
+>> It's explained in the cover letter, but maybe you want me to put that
+>> in the commit message.
+>
+> Do you need more explanation (A.K.A. ping).
 
-Is that a bugfix ?
+No, but it should be in the commit msg.
 
--- 
-Best regards,
-Marek Vasut
+Rob
