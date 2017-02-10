@@ -1,16 +1,20 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cbwH3-0006Aw-SX
- for linux-mtd@lists.infradead.org; Thu, 09 Feb 2017 21:29:12 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, dedekind1@gmail.com,
- david.oberhollenzer@sigma-star.at, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 2/4] ubifs: Fix unlink code wrt. double hash lookups
-Date: Thu,  9 Feb 2017 22:28:35 +0100
-Message-Id: <20170209212837.14197-2-richard@nod.at>
-In-Reply-To: <20170209212837.14197-1-richard@nod.at>
-References: <20170209212837.14197-1-richard@nod.at>
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cc16i-0000v8-O0
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 02:38:47 +0000
+Received: by mail-pf0-x241.google.com with SMTP id e4so1440020pfg.0
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2017 18:38:22 -0800 (PST)
+Date: Thu, 9 Feb 2017 18:38:19 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH] mtd: physmap_of: fixup gemini/versatile dependencies
+Message-ID: <20170210023819.GP94627@google.com>
+References: <20170209020937.62339-1-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170209020937.62339-1-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,225 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When removing an encrypted file with a long anem and without having
-the key we have to be able to locate and remove the directory entry
-via a double hash. This corner case was simply forgotten.
+Hi Linus,
 
-Reported-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/journal.c |  10 ++++-
- fs/ubifs/tnc.c     | 129 ++++++++++++++++++++++++++++++++++++++++++++---------
- fs/ubifs/ubifs.h   |   2 +
- 3 files changed, 117 insertions(+), 24 deletions(-)
+Any thoughts? It's either revert your patches, or apply something like
+this. I'm going to need to decide that in the next <24 hours or so.
 
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index f3b620cbdda4..7aef413ea2a9 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -585,7 +585,10 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 
- 	if (!xent) {
- 		dent->ch.node_type = UBIFS_DENT_NODE;
--		dent_key_init(c, &dent_key, dir->i_ino, nm);
-+		if (nm->hash)
-+			dent_key_init_hash(c, &dent_key, dir->i_ino, nm->hash);
-+		else
-+			dent_key_init(c, &dent_key, dir->i_ino, nm);
- 	} else {
- 		dent->ch.node_type = UBIFS_XENT_NODE;
- 		xent_key_init(c, &dent_key, dir->i_ino, nm);
-@@ -629,7 +632,10 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 	kfree(dent);
- 
- 	if (deletion) {
--		err = ubifs_tnc_remove_nm(c, &dent_key, nm);
-+		if (nm->hash)
-+			err = ubifs_tnc_remove_dh(c, &dent_key, nm->minor_hash);
-+		else
-+			err = ubifs_tnc_remove_nm(c, &dent_key, nm);
- 		if (err)
- 			goto out_ro;
- 		err = ubifs_add_dirt(c, lnum, dlen);
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 709aa098dd46..d84f4ba467a3 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -1880,48 +1880,65 @@ int ubifs_tnc_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
- 	return do_lookup_nm(c, key, node, nm);
- }
- 
--static int do_lookup_dh(struct ubifs_info *c, const union ubifs_key *key,
--			struct ubifs_dent_node *dent, uint32_t cookie)
-+static int search_dh_cookie(struct ubifs_info *c, const union ubifs_key *key,
-+			    struct ubifs_dent_node *dent, uint32_t cookie,
-+			    struct ubifs_znode **zn, int *n)
- {
--	int n, err, type = key_type(c, key);
--	struct ubifs_znode *znode;
-+	int err;
-+	struct ubifs_znode *znode = *zn;
- 	struct ubifs_zbranch *zbr;
--	union ubifs_key *dkey, start_key;
--
--	ubifs_assert(is_hash_key(c, key));
--
--	lowest_dent_key(c, &start_key, key_inum(c, key));
--
--	mutex_lock(&c->tnc_mutex);
--	err = ubifs_lookup_level0(c, &start_key, &znode, &n);
--	if (unlikely(err < 0))
--		goto out_unlock;
-+	union ubifs_key *dkey;
- 
- 	for (;;) {
- 		if (!err) {
--			err = tnc_next(c, &znode, &n);
-+			err = tnc_next(c, &znode, n);
- 			if (err)
--				goto out_unlock;
-+				goto out;
- 		}
- 
--		zbr = &znode->zbranch[n];
-+		zbr = &znode->zbranch[*n];
- 		dkey = &zbr->key;
- 
- 		if (key_inum(c, dkey) != key_inum(c, key) ||
--		    key_type(c, dkey) != type) {
-+		    key_type(c, dkey) != key_type(c, key)) {
- 			err = -ENOENT;
--			goto out_unlock;
-+			goto out;
- 		}
- 
- 		err = tnc_read_hashed_node(c, zbr, dent);
- 		if (err)
--			goto out_unlock;
-+			goto out;
- 
- 		if (key_hash(c, key) == key_hash(c, dkey) &&
--		    le32_to_cpu(dent->cookie) == cookie)
--			goto out_unlock;
-+		    le32_to_cpu(dent->cookie) == cookie) {
-+			*zn = znode;
-+			goto out;
-+		}
- 	}
- 
-+out:
-+
-+	return err;
-+}
-+
-+static int do_lookup_dh(struct ubifs_info *c, const union ubifs_key *key,
-+			struct ubifs_dent_node *dent, uint32_t cookie)
-+{
-+	int n, err;
-+	struct ubifs_znode *znode;
-+	union ubifs_key start_key;
-+
-+	ubifs_assert(is_hash_key(c, key));
-+
-+	lowest_dent_key(c, &start_key, key_inum(c, key));
-+
-+	mutex_lock(&c->tnc_mutex);
-+	err = ubifs_lookup_level0(c, &start_key, &znode, &n);
-+	if (unlikely(err < 0))
-+		goto out_unlock;
-+
-+	err = search_dh_cookie(c, key, dent, cookie, &znode, &n);
-+
- out_unlock:
- 	mutex_unlock(&c->tnc_mutex);
- 	return err;
-@@ -2663,6 +2680,74 @@ int ubifs_tnc_remove_nm(struct ubifs_info *c, const union ubifs_key *key,
- }
- 
- /**
-+ * ubifs_tnc_remove_dh - remove an index entry for a "double hashed" node.
-+ * @c: UBIFS file-system description object
-+ * @key: key of node
-+ * @cookie: node cookie for collision resolution
-+ *
-+ * Returns %0 on success or negative error code on failure.
-+ */
-+int ubifs_tnc_remove_dh(struct ubifs_info *c, const union ubifs_key *key,
-+			uint32_t cookie)
-+{
-+	int n, err;
-+	struct ubifs_znode *znode;
-+	struct ubifs_dent_node *dent;
-+	struct ubifs_zbranch *zbr;
-+
-+	if (!c->double_hash)
-+		return -EOPNOTSUPP;
-+
-+	mutex_lock(&c->tnc_mutex);
-+	err = lookup_level0_dirty(c, key, &znode, &n);
-+	if (err <= 0)
-+		goto out_unlock;
-+
-+	zbr = &znode->zbranch[n];
-+	dent = kmalloc(UBIFS_MAX_DENT_NODE_SZ, GFP_NOFS);
-+	if (!dent) {
-+		err = -ENOMEM;
-+		goto out_unlock;
-+	}
-+
-+	err = tnc_read_hashed_node(c, zbr, dent);
-+	if (err)
-+		goto out_free;
-+
-+	/* If the cookie does not match, we're facing a hash collision. */
-+	if (le32_to_cpu(dent->cookie) != cookie) {
-+		union ubifs_key start_key;
-+
-+		lowest_dent_key(c, &start_key, key_inum(c, key));
-+
-+		err = ubifs_lookup_level0(c, &start_key, &znode, &n);
-+		if (unlikely(err < 0))
-+			goto out_unlock;
-+
-+		err = search_dh_cookie(c, key, dent, cookie, &znode, &n);
-+		if (err)
-+			goto out_free;
-+	}
-+
-+	if (znode->cnext || !ubifs_zn_dirty(znode)) {
-+		znode = dirty_cow_bottom_up(c, znode);
-+		if (IS_ERR(znode)) {
-+			err = PTR_ERR(znode);
-+			goto out_unlock;
-+		}
-+	}
-+	err = tnc_delete(c, znode, n);
-+
-+out_free:
-+	kfree(dent);
-+out_unlock:
-+	if (!err)
-+		err = dbg_check_tnc(c, 0);
-+	mutex_unlock(&c->tnc_mutex);
-+	return err;
-+}
-+
-+/**
-  * key_in_range - determine if a key falls within a range of keys.
-  * @c: UBIFS file-system description object
-  * @key: key to check
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index ca72382ce6cc..36df4613b803 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1589,6 +1589,8 @@ int ubifs_tnc_add_nm(struct ubifs_info *c, const union ubifs_key *key,
- int ubifs_tnc_remove(struct ubifs_info *c, const union ubifs_key *key);
- int ubifs_tnc_remove_nm(struct ubifs_info *c, const union ubifs_key *key,
- 			const struct fscrypt_name *nm);
-+int ubifs_tnc_remove_dh(struct ubifs_info *c, const union ubifs_key *key,
-+			uint32_t cookie);
- int ubifs_tnc_remove_range(struct ubifs_info *c, union ubifs_key *from_key,
- 			   union ubifs_key *to_key);
- int ubifs_tnc_remove_ino(struct ubifs_info *c, ino_t inum);
--- 
-2.10.2
+On Wed, Feb 08, 2017 at 06:09:37PM -0800, Brian Norris wrote:
+> physmap_of sort of depends on the gemini and versatile modules (when
+> they're enabled), but this isn't expressed in Kconfig. Let's just merge
+> the modules all together, when enabled. Then we can avoid exporting a
+> few symbols, and the versatile and gemini code can now be modular again
+> (the below commit accidentally made them built-in only).
+> 
+> Resolves errors like this:
+> 
+> ERROR: "of_flash_probe_versatile" [drivers/mtd/maps/physmap_of.ko] undefined!
+> ERROR: "of_flash_probe_gemini" [drivers/mtd/maps/physmap_of.ko] undefined!
+> 
+> Fixes: 56ff337ea433 ("mtd: physmap_of: add a hook for Gemini flash probing")
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/maps/Makefile               | 8 ++++++--
+>  drivers/mtd/maps/physmap_of_gemini.c    | 1 -
+>  drivers/mtd/maps/physmap_of_versatile.c | 1 -
+>  3 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+> index 2fec1e0c2371..aef1846b4de2 100644
+> --- a/drivers/mtd/maps/Makefile
+> +++ b/drivers/mtd/maps/Makefile
+> @@ -17,9 +17,13 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
+>  obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+>  obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+>  obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+> +ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
+> +physmap_of-objs += physmap_of_versatile.o
+> +endif
+> +ifdef CONFIG_MTD_PHYSMAP_OF_GEMINI
+> +physmap_of-objs += physmap_of_gemini.o
+> +endif
+>  obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
+> -obj-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE)	+= physmap_of_versatile.o
+> -obj-$(CONFIG_MTD_PHYSMAP_OF_GEMINI)	+= physmap_of_gemini.o
+>  obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+>  obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+>  obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+> diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
+> index e99db772143b..9d371cd728ea 100644
+> --- a/drivers/mtd/maps/physmap_of_gemini.c
+> +++ b/drivers/mtd/maps/physmap_of_gemini.c
+> @@ -115,4 +115,3 @@ int of_flash_probe_gemini(struct platform_device *pdev,
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL_GPL(of_flash_probe_gemini);
+> diff --git a/drivers/mtd/maps/physmap_of_versatile.c b/drivers/mtd/maps/physmap_of_versatile.c
+> index 0f39b2a015f4..8c6ccded9be8 100644
+> --- a/drivers/mtd/maps/physmap_of_versatile.c
+> +++ b/drivers/mtd/maps/physmap_of_versatile.c
+> @@ -252,4 +252,3 @@ int of_flash_probe_versatile(struct platform_device *pdev,
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL_GPL(of_flash_probe_versatile);
+> -- 
+> 2.11.0.483.g087da7b7c-goog
+> 
