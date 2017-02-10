@@ -1,26 +1,30 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from 18.mo4.mail-out.ovh.net ([188.165.54.143])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cc1kq-0000di-PP
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 03:20:15 +0000
-Received: by mail-pf0-x243.google.com with SMTP id o64so534263pfb.1
- for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2017 19:19:51 -0800 (PST)
-Date: Thu, 9 Feb 2017 19:19:48 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+ id 1cc46h-0006Pf-1c
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 05:50:59 +0000
+Received: from player762.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo4.mail-out.ovh.net (Postfix) with ESMTP id A3CEE48EC1
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 06:50:30 +0100 (CET)
+Subject: Re: [PATCH] mtd: aspeed: fix compile warning in
+ aspeed_smc_read_from_ahb()
+To: Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1484817198-22477-1-git-send-email-clg@kaod.org>
+ <20170208233728.GN94627@google.com>
+ <19aa7cbb-8691-36d3-47a3-7a1029e66ecf@gmail.com>
+ <19bcab6c-baf6-d34c-67bb-a5e655241e5e@kaod.org>
+ <277b0a51-8384-09f4-6745-7d284a92b3e9@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH] mtd: Add partition device node to mtd partition devices
-Message-ID: <20170210031948.GA67059@google.com>
-References: <20170209105024.1579-1-u.kleine-koenig@pengutronix.de>
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <c8e66f0f-9b83-8192-8a1e-11af03beb350@kaod.org>
+Date: Fri, 10 Feb 2017 06:50:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <277b0a51-8384-09f4-6745-7d284a92b3e9@gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170209105024.1579-1-u.kleine-koenig@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,13 +34,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 09, 2017 at 11:50:24AM +0100, Uwe Kleine-König wrote:
-> From: Sascha Hauer <s.hauer@pengutronix.de>
+On 02/09/2017 04:04 PM, Marek Vasut wrote:
+> On 02/09/2017 10:59 AM, Cédric Le Goater wrote:
+>> On 02/09/2017 10:05 AM, Marek Vasut wrote:
+>>> On 02/09/2017 12:37 AM, Brian Norris wrote:
+>>>> On Thu, Jan 19, 2017 at 10:13:18AM +0100, Cédric Le Goater wrote:
+>>>>> The first argument of ioread32_rep() and ioread8_rep is not
+>>>>> const. Change aspeed_smc_read_from_ahb() prototype to fix compile
+>>>>> warning :
+>>>>>
+>>>>>    drivers/mtd/spi-nor/aspeed-smc.c: In function 'aspeed_smc_read_from_ahb':
+>>>>>    drivers/mtd/spi-nor/aspeed-smc.c:212:16: warning: passing argument 1 of 'ioread32_rep' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>>>>>       ioread32_rep(src, buf, len >> 2);
+>>>>
+>>>> But why isn't that param constant? Seems like that's a bug in the
+>>>> ioread* APIs. Some of their implementations are const, but some are not.
+>>>>
+>>>> I see for instance that the implementation in lib/iomap.c is not const,
+>>>> where there's zero reason it shouldn't be (if we also fix, e.g., its
+>>>> mmio_insl()).
+>>>
+>>> Maybe it's worth fixing the ioread*_rep then ? Then again, that seems to
+>>> be way far off the scope of this patch.
+>>
+>> Looking closer at where this comes from, the compile warning was 
+>> reported on x86 which pulls a different file for the definitions 
+>> of the ioread routines.
 > 
-> The user visible change here is that mtd partitions get an of_node link
-> in sysfs.
+> Well yes, intel is a special snowflake in the io accessor area.
 > 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+>> On x86, arch/x86/include/asm/io.h includes <asm-generic/iomap.h>
+>> which contains prototypes of the ioread routines without 'const'.
+>>
+>> On ARM, arch/arm/include/asm/io.h includes <asm-generic/io.h>
+>> which contains the 'const' definitions.
+> 
+> Can you check if any of those arches needs it without const ?
 
-Appled to l2-mtd.git
+ok. I have checked over ppc, all defconfigs compile fine. 
+I will send a patch to linuxppc to see how we can merged it 
+in powerpc-next. The other arches would then be checked 
+by the Intel 0-day bot.
+
+C. 
+
+
+> 
+>> So may be, we should just drop that patch and fix iomap.h instead,
+>> but quite a few arches use it :
+>>
+>> arch/sh/include/asm/io.h:#include <asm-generic/iomap.h>
+>> arch/mips/include/asm/io.h:#include <asm-generic/iomap.h>
+>> arch/ia64/include/asm/io.h:#include <asm-generic/iomap.h>
+>> arch/cris/include/asm/io.h:#include <asm-generic/iomap.h>
+>> arch/x86/include/asm/io.h:#include <asm-generic/iomap.h>
+>> arch/alpha/include/asm/io.h:#include <asm-generic/iomap.h>
+>> arch/powerpc/include/asm/io.h:#include <asm-generic/iomap.h>
+>> arch/m68k/include/asm/io_mm.h:#include <asm-generic/iomap.h>
+>> arch/m68k/include/asm/io_no.h:#include <asm-generic/iomap.h>
+>> arch/parisc/include/asm/io.h:#include <asm-generic/iomap.h>
+>> include/asm-generic/io.h:#include <asm-generic/iomap.h>
+>>
+>> Thanks,
+>>
+>> C.
+>>
+> 
+> 
