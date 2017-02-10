@@ -1,28 +1,28 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccFxB-0004GP-2g
- for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 18:29:56 +0000
-Received: by mail-pf0-x243.google.com with SMTP id e4so3004175pfg.0
- for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 10:29:32 -0800 (PST)
-Date: Fri, 10 Feb 2017 10:29:28 -0800
+ id 1ccFyp-0005x3-5R
+ for linux-mtd@lists.infradead.org; Fri, 10 Feb 2017 18:31:40 +0000
+Received: by mail-pg0-x243.google.com with SMTP id 194so3691807pgd.0
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Feb 2017 10:31:14 -0800 (PST)
+Date: Fri, 10 Feb 2017 10:31:11 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, richard@nod.at,
- "Krzeminski, Marcin (Nokia - PL/Wroclaw)" <marcin.krzeminski@nokia.com>
-Subject: Re: [PATCH 1/1] mtd: spi-nor: remove WARN_ONCE() message in
- spi_nor_write()
-Message-ID: <20170210182928.GA125303@google.com>
-References: <0078578d0f5d2402ac623afabf601d25998f84a9.1481044434.git.cyrille.pitchen@atmel.com>
- <20161208163109.17429627@bbrezillon>
- <4ffbad4b-f1a5-a998-fe5b-f73b934435e4@wedev4u.fr>
- <20170209022347.GO94627@google.com>
- <4420829e-6d08-111f-685c-65ea7f2d215c@atmel.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v3 0/2] Add a "label" property to the mtd device
+Message-ID: <20170210183111.GB125303@google.com>
+References: <1486632068-14894-1-git-send-email-clg@kaod.org>
+ <ceb3ad29-a5fc-86d5-a2f3-dd2c1620fc57@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <4420829e-6d08-111f-685c-65ea7f2d215c@atmel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ceb3ad29-a5fc-86d5-a2f3-dd2c1620fc57@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,35 +32,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 09, 2017 at 02:50:02PM +0100, Cyrille Pitchen wrote:
-> In most, if not all, cases this warning is a false positive as for most
-> memories it is valid to write a single page with more than one Page Program
-> commands or to write data starting from the middle of the page.
+On Thu, Feb 09, 2017 at 09:25:32PM +0100, Marek Vasut wrote:
+> On 02/09/2017 10:21 AM, Cédric Le Goater wrote:
+> > Hello,
+> > 
+> > Herer are a couple of patches adding a "label" property to the mtd
+> > device, which can be used to identify a specific chip on a system with
+> > multiple chips. This is common on the OpenPower boards, there can be
+> > four chips holding the firmware for the BMC and the firmware for the
+> > host, plus chips with golden images for recovery.
+> 
+> Series is
+> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
-Right, I agree that many cases were false positives, and the WARN is
-rather scary, so it's definitely good to drop the WARN. And I've already
-pulled that patch in, so we're good :)
-
-> The only hardware limitation at the SPI NOR side is that we can't cross the
-> page boundary.
-
-Is it the *only* limitation? Marcin pointed out that at least for some
-Macronix flash:
-
-http://www.macronix.com/Lists/ApplicationNote/Attachments/1606/AN0302V1%20-%20MX25L_G%20Serial%20Flash%20Programming%20Guide.pdf
-
-  "it is strongly recommended that data be written to the MX25L_G using
-  full 256-byte pages"
-
-.
-
-Now I don't claim the original WARN captured this recommendation
-correctly, but I was just nudging people to consider the original
-intention.
-
-> If we would do so, internally the SPI NOR memory would wrap
-> the address instead of incrementing it hence the additional data would be
-> written at the beginning of the same page and not at the beginning of the
-> next one.
-
-Brian
+Applied to l2-mtd.git.
