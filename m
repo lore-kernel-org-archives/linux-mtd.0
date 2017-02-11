@@ -1,21 +1,17 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mailout04.t-online.de ([194.25.134.18])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccWWX-00047c-5d
- for linux-mtd@lists.infradead.org; Sat, 11 Feb 2017 12:11:31 +0000
-Subject: Re: [PATCH v3 2/2] mtd: m25p80: Added pm ops support
-To: Kamal Dasu <kdasu.kdev@gmail.com>, linux-spi@vger.kernel.org,
- cyrille.pitchen@atmel.com, broonie@kernel.org
-References: <1486763369-31969-1-git-send-email-kdasu.kdev@gmail.com>
- <1486763369-31969-3-git-send-email-kdasu.kdev@gmail.com>
-Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com
-From: Marek Vasut <marex@denx.de>
-Message-ID: <0e0edea3-7dfe-bc10-eaa3-18330ae06874@denx.de>
-Date: Sat, 11 Feb 2017 13:10:35 +0100
-MIME-Version: 1.0
-In-Reply-To: <1486763369-31969-3-git-send-email-kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ id 1ccamR-0003bh-Rn
+ for linux-mtd@lists.infradead.org; Sat, 11 Feb 2017 16:44:16 +0000
+From: torfl@t-online.de
+To: linux-mtd@lists.infradead.org
+Cc: Torsten Fleischer <torfl@t-online.de>,
+ Torsten Fleischer <torfl6749@gmail.com>
+Subject: [PATCH 1/2] mtd-utils: Fix format specifier definitions for off_t and
+ loff_t.
+Date: Sat, 11 Feb 2017 17:43:31 +0100
+Message-Id: <1486831412-30409-2-git-send-email-torfl@t-online.de>
+In-Reply-To: <1486831412-30409-1-git-send-email-torfl@t-online.de>
+References: <1486831412-30409-1-git-send-email-torfl@t-online.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +21,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/10/2017 10:49 PM, Kamal Dasu wrote:
-> Added power management ops for resume to be able to resan spi-nor
-> device and set it to right transfer modes in its probed state after
-> poweron. Some SoC implementations might  power down the spi-nor flash
-> and loose its initial settings on suspend. A resume should retore the
-> part to its probed state.
-> 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> ---
->  drivers/mtd/devices/m25p80.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index c4df3b1..be94fba 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -324,10 +324,26 @@ static int m25p_remove(struct spi_device *spi)
->  };
->  MODULE_DEVICE_TABLE(of, m25p_of_table);
->  
-> +#ifdef CONFIG_PM_SLEEP
-> +static int m25p_suspend(struct device *dev)
-> +{
-> +	return 0;
+From: Torsten Fleischer <torfl@t-online.de>
 
-Can't you omit this function ?
+On 32bit systems (e.g. ARM) the size of off_t can be 4 byte and the size of loff_t 8 byte.
 
-> +}
-> +
-> +static int m25p_resume(struct device *dev)
-> +{
-> +	struct m25p *flash = dev_get_drvdata(dev);
-> +
-> +	return spi_nor_init(&flash->spi_nor);
-> +}
-> +#endif
-> +static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
-> +
->  static struct spi_driver m25p80_driver = {
->  	.driver = {
->  		.name	= "m25p80",
->  		.of_match_table = m25p_of_table,
-> +		.pm     = &m25p_pm_ops,
->  	},
->  	.id_table	= m25p_ids,
->  	.probe	= m25p_probe,
-> 
+This causes compiler warnings like the following:
 
+flash_erase.c: In function 'show_progress':
+flash_erase.c:56:22: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 3 has type 'off_t {aka long int}' [-Wformat=]
+  bareverbose(!quiet, "\rErasing %d Kibyte @ %"PRIxoff_t" -- %2i %% complete ",
 
+and an output like this:
+
+~# flash_erase /dev/mtd2 0 1
+Erasing 64 Kibyte @ 6400000000 -- 0 % complete
+
+~#
+
+Since the size of off_t and loff_t can differ from each other, the
+printf format specifier should be determined separately for both.
+Further the format specifiers should be based directly on the size of the
+particular data type.
+
+Signed-off-by: Torsten Fleischer <torfl6749@gmail.com>
+---
+ configure.ac                   |  2 +-
+ include/common.h               | 14 +++++++++-----
+ tests/mtd-tests/nandpagetest.c |  2 +-
+ 3 files changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index a5fc3a5..fbef15c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -149,7 +149,7 @@ AM_COND_IF([WITHOUT_LZO], [], [
+ 	test "${have_lzo}" != "yes" && AC_MSG_ERROR([lzo missing])
+ ])
+ 
+-AC_CHECK_SIZEOF([long])
++AC_CHECK_SIZEOF([off_t])
+ 
+ AC_CHECK_SIZEOF([loff_t])
+ 
+diff --git a/include/common.h b/include/common.h
+index 2812f49..d0c706d 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -70,17 +70,21 @@ extern "C" {
+ #endif
+ 
+ /* define a print format specifier for off_t */
+-#ifdef __USE_FILE_OFFSET64
++#if (SIZEOF_OFF_T >= 8)
+ #define PRIxoff_t PRIx64
+ #define PRIdoff_t PRId64
+ #else
+-#if (SIZEOF_LONG == SIZEOF_LOFF_T)
+ #define PRIxoff_t "l"PRIx32
+ #define PRIdoff_t "l"PRId32
+-#else
+-#define PRIxoff_t "ll"PRIx32
+-#define PRIdoff_t "ll"PRId32
+ #endif
++
++/* define a print format specifier for loff_t */
++#if (SIZEOF_LOFF_T >= 8)
++#define PRIxloff_t PRIx64
++#define PRIdloff_t PRId64
++#else
++#define PRIxloff_t "l"PRIx32
++#define PRIdloff_t "l"PRId32
+ #endif
+ 
+ /* Verbose messages */
+diff --git a/tests/mtd-tests/nandpagetest.c b/tests/mtd-tests/nandpagetest.c
+index faf5fe3..4145ef7 100644
+--- a/tests/mtd-tests/nandpagetest.c
++++ b/tests/mtd-tests/nandpagetest.c
+@@ -230,7 +230,7 @@ static int verify_eraseblock(int ebnum)
+ 			return err;
+ 
+ 		if (lseek(fd, addr, SEEK_SET) != addr) {
+-			fprintf(stderr, "cannot seek mtd%d to offset %"PRIdoff_t,
++			fprintf(stderr, "cannot seek mtd%d to offset %"PRIdloff_t,
+ 	 				mtd.mtd_num, addr);
+ 			return -1;
+ 		}
 -- 
-Best regards,
-Marek Vasut
+2.1.4
