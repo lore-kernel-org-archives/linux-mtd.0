@@ -1,18 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cd1yC-00077y-R2
- for linux-mtd@lists.infradead.org; Sun, 12 Feb 2017 21:46:11 +0000
-Date: Sun, 12 Feb 2017 22:45:43 +0100
+ id 1cd230-0000xC-5c
+ for linux-mtd@lists.infradead.org; Sun, 12 Feb 2017 21:51:08 +0000
+Date: Sun, 12 Feb 2017 22:50:44 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Nicholas Mc Guire <der.herr@hofr.at>
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut
  <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
  Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi-nor: use ERR_CAST in return
-Message-ID: <20170212224543.34f4227a@bbrezillon>
-In-Reply-To: <1486917823-23569-1-git-send-email-der.herr@hofr.at>
-References: <1486917823-23569-1-git-send-email-der.herr@hofr.at>
+Subject: Re: [PATCH] spi-nor: use true/false for bool
+Message-ID: <20170212225044.17a10ee1@bbrezillon>
+In-Reply-To: <1486917811-23525-1-git-send-email-der.herr@hofr.at>
+References: <1486917811-23525-1-git-send-email-der.herr@hofr.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,25 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 12 Feb 2017 17:43:43 +0100
+On Sun, 12 Feb 2017 17:43:31 +0100
 Nicholas Mc Guire <der.herr@hofr.at> wrote:
 
-> This fixes a sparse warning about 
-
-Your commit message seems to be incomplete.
-
-Once fixed,
-
-Acked-by: Boris Brezillon <boris.brezilon@free-electrons.com>
-
+> writeable in struct intel_spi is a boolean and assignment should be to 
+> true/false not 1/0 as recommended by boolinit.cocci.
 > 
 > Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
+
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
 > ---
 > 
-> sparse complained about:
-> drivers/mtd/spi-nor/intel-spi.c:731:28: warning: incorrect type in return expression (different address spaces)
-> drivers/mtd/spi-nor/intel-spi.c:731:28:    expected struct intel_spi *
-> drivers/mtd/spi-nor/intel-spi.c:731:28:    got void [noderef] <asn:2>*base
+> make coccicheck complained with:
+>  ./drivers/mtd/spi-nor/intel-spi.c:707:3-18: WARNING: Assignment of bool to 0/1
 > 
 > Patch was compile tested with: multi_v7_defconfig (implies CONFIG_MTD_SPI_NOR=y)
 > 
@@ -53,15 +48,15 @@ Acked-by: Boris Brezillon <boris.brezilon@free-electrons.com>
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-> index e43ce63..986a3d0 100644
+> index a10f602..e43ce63 100644
 > --- a/drivers/mtd/spi-nor/intel-spi.c
 > +++ b/drivers/mtd/spi-nor/intel-spi.c
-> @@ -728,7 +728,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+> @@ -704,7 +704,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
+>  		 * whole partition read-only to be on the safe side.
+>  		 */
+>  		if (intel_spi_is_protected(ispi, base, limit))
+> -			ispi->writeable = 0;
+> +			ispi->writeable = false;
 >  
->  	ispi->base = devm_ioremap_resource(dev, mem);
->  	if (IS_ERR(ispi->base))
-> -		return ispi->base;
-> +		return ERR_CAST(ispi->base);
->  
->  	ispi->dev = dev;
->  	ispi->info = info;
+>  		end = (limit << 12) + 4096;
+>  		if (end > part->size)
