@@ -1,7 +1,7 @@
 Received: from www.osadl.org ([62.245.132.105])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccxFB-0001Ku-Pt
- for linux-mtd@lists.infradead.org; Sun, 12 Feb 2017 16:43:25 +0000
+ id 1ccxFS-0001Lk-6J
+ for linux-mtd@lists.infradead.org; Sun, 12 Feb 2017 16:43:43 +0000
 From: Nicholas Mc Guire <der.herr@hofr.at>
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
@@ -9,9 +9,9 @@ Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Nicholas Mc Guire <der.herr@hofr.at>
-Subject: [PATCH RFC] spi-nor: provide a range for poll_timout
-Date: Sun, 12 Feb 2017 17:42:57 +0100
-Message-Id: <1486917777-23479-1-git-send-email-der.herr@hofr.at>
+Subject: [PATCH] spi-nor: use ERR_CAST in return
+Date: Sun, 12 Feb 2017 17:43:43 +0100
+Message-Id: <1486917823-23569-1-git-send-email-der.herr@hofr.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The overall poll time here is INTEL_SPI_TIMEOUT * 1000 which is 
-5000 * 1000 - so 5seconds and it is coded as a tight loop here delay_us
-to readl_poll_timeout() is set to 0. As this is never called in an atomic
-context sleeping should be no issue and there is no reasons for the
-tight-loop here.
+This fixes a sparse warning about 
 
 Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
 ---
 
-Problem located by experimental coccinelle script:
-./drivers/mtd/spi-nor/intel-spi.c:265:8-26: WARNING: usleep_range min=0 for delay INTEL_SPI_TIMEOUT * 1000
-./drivers/mtd/spi-nor/intel-spi.c:274:8-26: WARNING: usleep_range min=0 for delay INTEL_SPI_TIMEOUT * 1000
-
-The rational for setting the delay_us here to 40 is that readx_poll_timeout()
-will take delay_us >> 2 + 1 as min value and that should be at least 10us (see
-Documentation/timers/timers-howto.txt). Ideally the delay would be made
-even larger to keep the load on the hrtimer subsystem low as these delays
-here do not seem to be critical. Someone that knows the details of this device
-would need to check if a larger delay would be ok here.
+sparse complained about:
+drivers/mtd/spi-nor/intel-spi.c:731:28: warning: incorrect type in return expression (different address spaces)
+drivers/mtd/spi-nor/intel-spi.c:731:28:    expected struct intel_spi *
+drivers/mtd/spi-nor/intel-spi.c:731:28:    got void [noderef] <asn:2>*base
 
 Patch was compile tested with: multi_v7_defconfig (implies CONFIG_MTD_SPI_NOR=y)
-one coccicheck finding reported and one spars finding (in separate patches)
 
 Patch is against 4.10-rc6 (localversion-next is next-20170210)
 
- drivers/mtd/spi-nor/intel-spi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/intel-spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index a10f602..371bcf9 100644
+index e43ce63..986a3d0 100644
 --- a/drivers/mtd/spi-nor/intel-spi.c
 +++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -263,7 +263,7 @@ static int intel_spi_wait_hw_busy(struct intel_spi *ispi)
- 	u32 val;
+@@ -728,7 +728,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
  
- 	return readl_poll_timeout(ispi->base + HSFSTS_CTL, val,
--				  !(val & HSFSTS_CTL_SCIP), 0,
-+				  !(val & HSFSTS_CTL_SCIP), 40,
- 				  INTEL_SPI_TIMEOUT * 1000);
- }
+ 	ispi->base = devm_ioremap_resource(dev, mem);
+ 	if (IS_ERR(ispi->base))
+-		return ispi->base;
++		return ERR_CAST(ispi->base);
  
-@@ -272,7 +272,7 @@ static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
- 	u32 val;
- 
- 	return readl_poll_timeout(ispi->sregs + SSFSTS_CTL, val,
--				  !(val & SSFSTS_CTL_SCIP), 0,
-+				  !(val & SSFSTS_CTL_SCIP), 40,
- 				  INTEL_SPI_TIMEOUT * 1000);
- }
- 
+ 	ispi->dev = dev;
+ 	ispi->info = info;
 -- 
 2.1.4
