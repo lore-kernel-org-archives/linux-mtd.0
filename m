@@ -1,17 +1,39 @@
-Received: from www.osadl.org ([62.245.132.105])
+Received: from mail-it0-x22f.google.com ([2607:f8b0:4001:c0b::22f])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccxFS-0001Lk-6J
- for linux-mtd@lists.infradead.org; Sun, 12 Feb 2017 16:43:43 +0000
-From: Nicholas Mc Guire <der.herr@hofr.at>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1cd15G-0001fI-8P
+ for linux-mtd@lists.infradead.org; Sun, 12 Feb 2017 20:49:25 +0000
+Received: by mail-it0-x22f.google.com with SMTP id 203so167592268ith.0
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Feb 2017 12:49:01 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <b032ad924ae905ce4fd11535d08c29a8@mail.crapouillou.net>
+References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
+ <20170125185207.23902-1-paul@crapouillou.net>
+ <20170125185207.23902-5-paul@crapouillou.net>
+ <CACRpkdaqQ2==B1_o-Ru81Nbu_kUF+Kxn=XFYms-1e=nAtHiJ4A@mail.gmail.com>
+ <b032ad924ae905ce4fd11535d08c29a8@mail.crapouillou.net>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 12 Feb 2017 21:48:59 +0100
+Message-ID: <CACRpkdbusY=gsZ=a9yGfRMi5t=+539OwKt0i5FNczxNyEVPHwg@mail.gmail.com>
+Subject: Re: [PATCH v3 04/14] GPIO: Add gpio-ingenic driver
+To: Paul Cercueil <paul@crapouillou.net>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Nicholas Mc Guire <der.herr@hofr.at>
-Subject: [PATCH] spi-nor: use ERR_CAST in return
-Date: Sun, 12 Feb 2017 17:43:43 +0100
-Message-Id: <1486917823-23569-1-git-send-email-der.herr@hofr.at>
+ Thierry Reding <thierry.reding@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Maarten ter Huurne <maarten@treewalker.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux MIPS <linux-mips@linux-mips.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+ James Hogan <james.hogan@imgtec.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +43,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes a sparse warning about 
+On Thu, Feb 9, 2017 at 6:14 PM, Paul Cercueil <paul@crapouillou.net> wrote:
 
-Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
----
+>> If you're not just replacing these with GPIO_GENERIC, please also
+>> include a .get_direction() callback.
+>
+> My .direction_input() and .direction_output() callbacks just call into
+> the pinctrl driver, using pinctrl_gpio_direction_[in,out]put().
+> I didn't find a way to get the direction info from the pinctrl driver,
+> is that something that the core should provide?
 
-sparse complained about:
-drivers/mtd/spi-nor/intel-spi.c:731:28: warning: incorrect type in return expression (different address spaces)
-drivers/mtd/spi-nor/intel-spi.c:731:28:    expected struct intel_spi *
-drivers/mtd/spi-nor/intel-spi.c:731:28:    got void [noderef] <asn:2>*base
+Hm OK you have a clear point there, there is no such callback.
 
-Patch was compile tested with: multi_v7_defconfig (implies CONFIG_MTD_SPI_NOR=y)
+OK I do not require you to fix that at this time.
 
-Patch is against 4.10-rc6 (localversion-next is next-20170210)
+I am hesitant about providing ever more callbacks from GPIO
+to pin control, I might need some help for consolidation here.
 
- drivers/mtd/spi-nor/intel-spi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+With Mika's patches we have a .set_config() call to
+pinctrl_gpio_set_config() so essentially
+we *could* actually refactor all pin control drivers providing
+a GPIO back-end to use:
 
-diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index e43ce63..986a3d0 100644
---- a/drivers/mtd/spi-nor/intel-spi.c
-+++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -728,7 +728,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
- 
- 	ispi->base = devm_ioremap_resource(dev, mem);
- 	if (IS_ERR(ispi->base))
--		return ispi->base;
-+		return ERR_CAST(ispi->base);
- 
- 	ispi->dev = dev;
- 	ispi->info = info;
--- 
-2.1.4
+pinctrl_gpio_set_config(gpio, PIN_CONF_PACKED(PIN_CONFIG_INPUT_ENABLE, 0));
+pinctrl_gpio_set_config(gpio, PIN_CONF_PACKED(PIN_CONFIG_OUTPUT, val));
+
+And replace the calls to pinctrl_gpio_direction_input()
+and pinctrl_gpio_direction_output() with this throughout.
+
+It makes things a bit simpler. If we need to figure things
+out the reverse direction then pinctrl_gpio_get_config()
+should be implemented and used as back-end for
+figuring out direction.
+
+Yours,
+Linus Walleij
