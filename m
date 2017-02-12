@@ -1,24 +1,17 @@
-Subject: Re: [PATCH v2 2/2] arm: dts: mt2701: add nor flash node
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Guochun Mao <guochun.mao@mediatek.com>
-References: <1485315515-29942-1-git-send-email-guochun.mao@mediatek.com>
- <1485315515-29942-3-git-send-email-guochun.mao@mediatek.com>
- <1486267249.10417.9.camel@mhfsdcap03> <20170206084544.24878633@bbrezillon>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- John Crispin <john@phrozen.org>, linux-mediatek@lists.infradead.org,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+Received: from www.osadl.org ([62.245.132.105])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ccxFD-0001LT-4x
+ for linux-mtd@lists.infradead.org; Sun, 12 Feb 2017 16:43:25 +0000
+From: Nicholas Mc Guire <der.herr@hofr.at>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <77e0e3b0-2fe4-b32b-9099-11ce9811ba15@gmail.com>
-Date: Sun, 12 Feb 2017 00:35:34 +0100
-MIME-Version: 1.0
-In-Reply-To: <20170206084544.24878633@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Nicholas Mc Guire <der.herr@hofr.at>
+Subject: [PATCH] spi-nor: use true/false for bool
+Date: Sun, 12 Feb 2017 17:43:31 +0100
+Message-Id: <1486917811-23525-1-git-send-email-der.herr@hofr.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+writeable in struct intel_spi is a boolean and assignment should be to 
+true/false not 1/0 as recommended by boolinit.cocci.
 
+Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
+---
 
-On 02/06/2017 08:45 AM, Boris Brezillon wrote:
-> Hi Guochun,
->
-> On Sun, 5 Feb 2017 12:00:49 +0800
-> Guochun Mao <guochun.mao@mediatek.com> wrote:
->
->
->>>
->>> +	nor_flash: spi@11014000 {
->>> +		compatible = "mediatek,mt2701-nor",
->>> +			     "mediatek,mt8173-nor";
->>> +		reg = <0 0x11014000 0 0xe0>;
->>> +		clocks = <&pericfg CLK_PERI_FLASH>,
->>> +			 <&topckgen CLK_TOP_FLASH_SEL>;
->>> +		clock-names = "spi", "sf";
->>> +		#address-cells = <1>;
->>> +		#size-cells = <0>;
->>> +		status = "disabled";
->>> +	};
->>> +
->>>  	mmsys: syscon@14000000 {
->>>  		compatible = "mediatek,mt2701-mmsys", "syscon";
->>>  		reg = <0 0x14000000 0 0x1000>;
->>
->> Hi,
->> mtk-quadspi.txt had been updated as suggested.
->> Is there suggestion about this patch?
->
-> It should probably go through the Mediatek tree. Matthias, any opinion?
->
+make coccicheck complained with:
+ ./drivers/mtd/spi-nor/intel-spi.c:707:3-18: WARNING: Assignment of bool to 0/1
 
-Yes, I will take this one through mine tree.
+Patch was compile tested with: multi_v7_defconfig (implies CONFIG_MTD_SPI_NOR=y)
 
-Thanks,
-Matthias
+Patch is against 4.10-rc6 (localversion-next is next-20170210)
+
+ drivers/mtd/spi-nor/intel-spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
+index a10f602..e43ce63 100644
+--- a/drivers/mtd/spi-nor/intel-spi.c
++++ b/drivers/mtd/spi-nor/intel-spi.c
+@@ -704,7 +704,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
+ 		 * whole partition read-only to be on the safe side.
+ 		 */
+ 		if (intel_spi_is_protected(ispi, base, limit))
+-			ispi->writeable = 0;
++			ispi->writeable = false;
+ 
+ 		end = (limit << 12) + 4096;
+ 		if (end > part->size)
+-- 
+2.1.4
