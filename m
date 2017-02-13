@@ -1,36 +1,27 @@
-Received: from mail-eopbgr50103.outbound.protection.outlook.com
- ([40.107.5.103] helo=EUR03-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cd7TR-0001gd-QA
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 03:38:48 +0000
-Subject: Re: UBI/UBIFS corruptions during random power-cuts
-To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
- <0500de05-b3d7-6cbc-0236-5d4c83a5f00f@nod.at>
- <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
- <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
- <89cd8327-581b-4285-d9ae-138d800211cf@toradex.com>
- <bceb976b-0aac-fe04-a540-f24823366233@nod.at>
- <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
- <5a769de2-31f1-f011-c6bc-e94427407751@nod.at>
- <a27bc761-b8d2-4f69-468a-b9a4d61c68f8@toradex.com>
- <306876cd-0855-b9ee-659d-2164cfc3b2c4@nod.at>
- <877dea3c-717d-9b1a-c01d-537f3b46b2de@toradex.com>
- <ff60b696-ffec-8ddd-16bd-407a9bacb3e0@nod.at>
- <47db4d54-f8f5-a663-75b3-d2cd5fd0769f@toradex.com>
- <c3c9dcff-5738-d36c-189d-8aa0e9be98ca@nod.at>
- <17f16834-e200-60c7-62d4-b083b00335ac@toradex.com>
- <24fa997a-ba80-efb7-231d-8d4fddcd954d@nod.at>
- <ce043ab8-2a2b-804d-ac22-67d404fc5578@toradex.com>
- <f64c07b7-3cb2-2667-7e20-fb751c54fdea@nod.at>
-CC: Artem Bityutskiy <dedekind1@gmail.com>
-From: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>
-Message-ID: <750f1307-de2d-8735-d407-ac92b001d009@toradex.com>
-Date: Mon, 13 Feb 2017 09:04:14 +0530
+From: Alison Wang <alison.wang@nxp.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Marek Vasut <marek.vasut@gmail.com>, Alison Wang <b18965@freescale.com>,
+ "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>
+Subject: RE: [PATCH v2 2/2] mtd: nand: Update dependency of IFC for LS1021A
+Date: Mon, 13 Feb 2017 06:59:49 +0000
+Message-ID: <DB6PR0401MB25847A37C6EED9A531A51F36F4590@DB6PR0401MB2584.eurprd04.prod.outlook.com>
+References: <1483411266-45875-1-git-send-email-b18965@freescale.com>
+ <1483411266-45875-2-git-send-email-b18965@freescale.com>
+ <4e04eb5e-fb53-f71e-ee49-0872a6c11e97@gmail.com>
+ <DB6PR0401MB2584606EC932BF1FAED788E1F4610@DB6PR0401MB2584.eurprd04.prod.outlook.com>
+ <ffb2c20d-3aeb-6f5a-1880-3bed0c964821@gmail.com>
+ <DB6PR0401MB2584DBE5D6496F44B7169B49F4600@DB6PR0401MB2584.eurprd04.prod.outlook.com>
+ <20170206100542.65f19dc5@bbrezillon>
+In-Reply-To: <20170206100542.65f19dc5@bbrezillon>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <f64c07b7-3cb2-2667-7e20-fb751c54fdea@nod.at>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,35 +31,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/10/2017 06:31 PM, Richard Weinberger wrote:
+Hi, Boris,
 
-> Bhuvan,
->
-> Am 09.02.2017 um 05:59 schrieb Bhuvanchandra DV:
->>> Just in case, you can trigger this also with a fresh filesystem?
->>> Or did you always keep the same one?
->> Yes, I triggered it with fresh filesystem.
-> Okay. Not good.
->
-> How do you trigger this? What workload is running while the power-cut
-> happens?
+> On Thu, 5 Jan 2017 02:02:30 +0000
+> Alison Wang <alison.wang@nxp.com> wrote:
+>=20
+> > > On 01/04/2017 02:46 AM, Alison Wang wrote:
+> > > >> On 01/03/2017 03:41 AM, Alison Wang wrote:
+> > > >>> As NAND support for Freescale/NXP IFC controller is available
+> on
+> > > >>> LS1021A, the dependency for LS1021A is added.
+> > > >>
+> > > >> Does LS stand for LayerScape ? Yes it does. So why does
+> > > >> ARCH_LAYERSCAPE not cover LS1021 ?
+> > > > [Alison Wang] LS1021A is an earlier product and is not compatible
+> > > with later Layerscape architecture. So ARCH_LAYERSCAPE can't cover
+> > > LS1021A.
+> > >
+> > > Ah ok, I see. That information would be useful in the commit
+> message
+> > > ;-)
+> > >
+> > [Alison Wang] Ok. :)
+>=20
+> Would you mind sending a v3 with the updated commit message?
+>=20
+[Alison Wang] I will send the v3 patches at once. :)
 
-The issue is triggered when doing a continous external power-cut for every
-25sec since power ON. After a week or two observed this issue. There is no
-additional work load on CPU during the test, it just boots to a lxde desktop.
 
-> Did you try also kernel 4.9?
-
-I did ran similar testes on our downstream kernel 4.4 and 4.9 kernel few weeks
-back, observed similar issues.
-
-> Does it also only happen then xattrs are used?
-
-Didn't check that. How exactly to check whether xattr is used ?
-
---
-Bhuvan
-
->
-> Thanks,
-> //richard
+Best Regards,
+Alison Wang
