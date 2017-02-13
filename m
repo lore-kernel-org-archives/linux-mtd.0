@@ -1,23 +1,36 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-eopbgr50103.outbound.protection.outlook.com
+ ([40.107.5.103] helo=EUR03-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cd6aR-0002NJ-Os
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 02:41:58 +0000
-Received: by mail-pg0-x243.google.com with SMTP id v184so8440252pgv.1
- for <linux-mtd@lists.infradead.org>; Sun, 12 Feb 2017 18:41:34 -0800 (PST)
-Date: Sun, 12 Feb 2017 18:41:31 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marex@denx.de>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- Lee Jones <lee.jones@linaro.org>
-Subject: [GIT PULL] MTD updates for 4.11
-Message-ID: <20170213024131.GB30118@brian-ubuntu>
+ id 1cd7TR-0001gd-QA
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 03:38:48 +0000
+Subject: Re: UBI/UBIFS corruptions during random power-cuts
+To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
+ <0500de05-b3d7-6cbc-0236-5d4c83a5f00f@nod.at>
+ <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
+ <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
+ <89cd8327-581b-4285-d9ae-138d800211cf@toradex.com>
+ <bceb976b-0aac-fe04-a540-f24823366233@nod.at>
+ <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
+ <5a769de2-31f1-f011-c6bc-e94427407751@nod.at>
+ <a27bc761-b8d2-4f69-468a-b9a4d61c68f8@toradex.com>
+ <306876cd-0855-b9ee-659d-2164cfc3b2c4@nod.at>
+ <877dea3c-717d-9b1a-c01d-537f3b46b2de@toradex.com>
+ <ff60b696-ffec-8ddd-16bd-407a9bacb3e0@nod.at>
+ <47db4d54-f8f5-a663-75b3-d2cd5fd0769f@toradex.com>
+ <c3c9dcff-5738-d36c-189d-8aa0e9be98ca@nod.at>
+ <17f16834-e200-60c7-62d4-b083b00335ac@toradex.com>
+ <24fa997a-ba80-efb7-231d-8d4fddcd954d@nod.at>
+ <ce043ab8-2a2b-804d-ac22-67d404fc5578@toradex.com>
+ <f64c07b7-3cb2-2667-7e20-fb751c54fdea@nod.at>
+CC: Artem Bityutskiy <dedekind1@gmail.com>
+From: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>
+Message-ID: <750f1307-de2d-8735-d407-ac92b001d009@toradex.com>
+Date: Mon, 13 Feb 2017 09:04:14 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f64c07b7-3cb2-2667-7e20-fb751c54fdea@nod.at>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,237 +40,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+On 02/10/2017 06:31 PM, Richard Weinberger wrote:
 
-I refuse to acknowledge the existence of 4.10-rc8 and am therefore
-sending our MTD changes for 4.11 now.
+> Bhuvan,
+>
+> Am 09.02.2017 um 05:59 schrieb Bhuvanchandra DV:
+>>> Just in case, you can trigger this also with a fresh filesystem?
+>>> Or did you always keep the same one?
+>> Yes, I triggered it with fresh filesystem.
+> Okay. Not good.
+>
+> How do you trigger this? What workload is running while the power-cut
+> happens?
 
-One thing I didn't note in the tag summary: we've pulled in an MFD
-subtree from Lee Jones as a dependency for a new Intel SPI NOR driver.
-Shouldn't be a big deal.
+The issue is triggered when doing a continous external power-cut for every
+25sec since power ON. After a week or two observed this issue. There is no
+additional work load on CPU during the test, it just boots to a lxde desktop.
 
-The following changes since commit 566cf877a1fcb6d6dc0126b076aad062054c2637:
+> Did you try also kernel 4.9?
 
-  Linux 4.10-rc6 (2017-01-29 14:25:17 -0800)
+I did ran similar testes on our downstream kernel 4.4 and 4.9 kernel few weeks
+back, observed similar issues.
 
-are available in the git repository at:
+> Does it also only happen then xattrs are used?
 
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20170212
+Didn't check that. How exactly to check whether xattr is used ?
 
-for you to fetch changes up to d91f6cee98b6e0ef5a05209ca9b741d23086cdb2:
+--
+Bhuvan
 
-  mtd: aspeed: remove redundant dev_err call in aspeed_smc_probe() (2017-02-10 11:20:22 -0800)
-
-----------------------------------------------------------------
-MTD updates for 4.11:
-
-General:
- - new kernel API for retrieving max bad blocks per die (not used yet)
- - track (and expose via sysfs) a partition's device tree node
- - support a "label" device tree property for naming an MTD
-
-NAND:
- - sunxi: avoid busy-waiting for NAND events
- - ifc: fix ECC handling on IFC v1.0
- - OX820: add explicit dependency on ARCH_OXNAS in Kconfig
- - core: add a new manufacture ID and fix a kernel-doc warning
- - fsmc: kill pdata support
- - lpc32xx_slc: remove unneeded NULL check
- - support dynamic "max bad blocks" detection via ONFI
-
-SPI NOR:
- - add support for the 4-byte address instruction set
- - add support for new memory parts
- - add support to S3AN memories
- - add support to the Intel SPI controller
- - add support to the Aspeed AST2400 and AST2550 controllers
- - support max SPI message sizes in m25p80_read()
- - fixes for the Candence and Freescale QSPI drivers
-
-Other:
- - add support for Gemini flash probing
- - bcm47xxsflash: add support for reading outside memory-mapped window
- - bcm47xxparts: extend to support multiple TRX partitions
- - misc fixes and typos
-
-----------------------------------------------------------------
-Andrey Jr. Melnikov (1):
-      mtd: nand: Add Winbond manufacturer id
-
-Arnd Bergmann (2):
-      mtd: pmcmsp: use kstrndup instead of kmalloc+strncpy
-      mtd: ichxrom: maybe-uninitialized with gcc-4.9
-
-Boris Brezillon (3):
-      mtd: nand: sunxi: Fix the non-polling case in sunxi_nfc_wait_events()
-      mtd: nand: sunxi: Stop using polling mode when waiting for long operations
-      mtd: nand: sunxi: Improve sunxi_nfc_cmd_ctrl()
-
-Brian Norris (3):
-      Merge tag 'nand/for-4.11' of github.com:linux-nand/linux
-      mtd: physmap_of: fixup gemini/versatile dependencies
-      Merge tag 'spi-nor/for-4.11-v2' of git://github.com/spi-nor/linux
-
-Colin Ian King (1):
-      mtd: spi-nor: cqspi: remove redundant dead code on error return check
-
-Cyrille Pitchen (5):
-      mtd: spi-nor: improve macronix_quad_enable()
-      mtd: spi-nor: remove WARN_ONCE() message in spi_nor_write()
-      mtd: spi-nor: rename SPINOR_OP_* macros of the 4-byte address op codes
-      mtd: spi-nor: add a stateless method to support memory size above 128Mib
-      Merge tag 'ib-mfd-mtd-v4.11' of git://git.kernel.org/.../lee/mfd
-
-Cédric Le Goater (6):
-      mtd: spi-nor: add memory controllers for the Aspeed AST2500 SoC
-      mtd: aspeed: add memory controllers for the Aspeed AST2400 SoC
-      mtd: spi-nor: bindings for the Aspeed memory controllers
-      mtd: aspeed: fix compile warning in aspeed_smc_read_from_ahb()
-      mtd: name the mtd device with an optional label property
-      dt-bindings: mtd: add a common label property to all mtd devices
-
-Fabio Estevam (1):
-      mtd: nand: lpc32xx_slc: Remove unneeded NULL check on 'rc'
-
-Guochun Mao (1):
-      Documentation: mtk-quadspi: update DT bindings
-
-Heiner Kallweit (1):
-      mtd: m25p80: consider max message size in m25p80_read
-
-Jean Delvare (1):
-      mtd: nand: Add OX820 NAND hardware dependency
-
-Jeff Westfahl (1):
-      mtd: introduce function max_bad_blocks
-
-John Crispin (1):
-      mtd: update my email address
-
-Kamal Dasu (1):
-      mtd: spi-nor: Add support for gd25q16
-
-Linus Walleij (3):
-      mtd: nand: fsmc: remove stale non-DT probe path
-      mtd: add DT bindings for the Cortina Systems Gemini Flash
-      mtd: physmap_of: add a hook for Gemini flash probing
-
-Marek Vasut (1):
-      mtd: spi-nor: cqspi: Fix build on arches missing readsl/writesl
-
-Mark Marshall (1):
-      mtd: nand: ifc: Fix location of eccstat registers for IFC V1.0
-
-Masahiro Yamada (1):
-      mtd: fix typos in ooblayout comment blocks
-
-Mika Westerberg (3):
-      spi-nor: Add support for Intel SPI serial flash controller
-      mfd: lpc_ich: Add support for SPI serial flash host controller
-      mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-
-Nobuhiro Iwamatsu (1):
-      mtd: Fix typo: "occured" -> "occurred"
-
-Rafał Miłecki (4):
-      mtd: bcm47xxsflash: use platform_(set|get)_drvdata
-      mtd: bcm47xxsflash: support reading flash out of mapping window
-      mtd: bcm47xxpart: move TRX parsing code to separated function
-      mtd: bcm47xxpart: support layouts with multiple TRX partitions
-
-Randy Dunlap (1):
-      mtd: nand: fix nand.h kernel-doc warnings
-
-Ricardo Ribalda Delgado (2):
-      mtd: spi-nor: Add support for S3AN spi-nor devices
-      mtd: spi-nor: Fix S3AN addressing calculation
-
-Sascha Hauer (1):
-      mtd: Add partition device node to mtd partition devices
-
-Uwe Kleine-König (1):
-      mtd: spi-nor: add dt support for Everspin MRAMs
-
-Victor Shyba (1):
-      mtd: spi-nor: Add lock/unlock support for f25l32pa
-
-Wei Yongjun (2):
-      mtd: nand: mediatek: remove redundant dev_err call in mtk_nfc_probe()
-      mtd: aspeed: remove redundant dev_err call in aspeed_smc_probe()
-
-Yunhui Cui (2):
-      mtd:fsl-quadspi:use the property fields of SPI-NOR
-      mtd: fsl-quadspi: Rename SEQID_QUAD_READ to SEQID_READ
-
-Zach Brown (3):
-      mtd: nand: Add max_bb_per_die and blocks_per_die fields to nand_chip
-      mtd: nand: implement 'max_bad_blocks' mtd function
-      mtd: nand: set max_bb_per_die and blocks_per_die for ONFI compliant chips
-
- .../devicetree/bindings/mtd/aspeed-smc.txt         |  51 ++
- Documentation/devicetree/bindings/mtd/common.txt   |  15 +
- .../bindings/mtd/cortina,gemini-flash.txt          |  24 +
- .../devicetree/bindings/mtd/jedec,spi-nor.txt      |   2 +
- .../devicetree/bindings/mtd/mtk-quadspi.txt        |   8 +-
- Documentation/mtd/intel-spi.txt                    |  88 +++
- drivers/mfd/lpc_ich.c                              | 131 ++++
- drivers/mtd/bcm47xxpart.c                          | 161 +++--
- drivers/mtd/devices/bcm47xxsflash.c                |  30 +-
- drivers/mtd/devices/bcm47xxsflash.h                |   3 +
- drivers/mtd/devices/m25p80.c                       |   9 +-
- drivers/mtd/devices/serial_flash_cmds.h            |   7 -
- drivers/mtd/devices/st_spi_fsm.c                   |  28 +-
- drivers/mtd/maps/Kconfig                           |  12 +-
- drivers/mtd/maps/Makefile                          |   7 +-
- drivers/mtd/maps/ichxrom.c                         |   6 +-
- drivers/mtd/maps/lantiq-flash.c                    |   4 +-
- drivers/mtd/maps/physmap_of.c                      |   9 +-
- drivers/mtd/maps/physmap_of_gemini.c               | 117 ++++
- drivers/mtd/maps/physmap_of_gemini.h               |  16 +
- drivers/mtd/maps/physmap_of_versatile.c            |   1 -
- drivers/mtd/maps/pmcmsp-flash.c                    |   4 +-
- drivers/mtd/mtdchar.c                              |   2 +-
- drivers/mtd/mtdcore.c                              |   6 +-
- drivers/mtd/mtdpart.c                              |  11 +
- drivers/mtd/nand/Kconfig                           |   2 +
- drivers/mtd/nand/fsl_ifc_nand.c                    |   8 +-
- drivers/mtd/nand/fsmc_nand.c                       | 153 +++-
- drivers/mtd/nand/lpc32xx_slc.c                     |   9 +-
- drivers/mtd/nand/mtk_nand.c                        |   1 -
- drivers/mtd/nand/nand_base.c                       |  40 ++
- drivers/mtd/nand/nand_ids.c                        |   1 +
- drivers/mtd/nand/sunxi_nand.c                      |  36 +-
- drivers/mtd/nand/xway_nand.c                       |   2 +-
- drivers/mtd/ofpart.c                               |   1 +
- drivers/mtd/spi-nor/Kconfig                        |  32 +-
- drivers/mtd/spi-nor/Makefile                       |   3 +
- drivers/mtd/spi-nor/aspeed-smc.c                   | 754 ++++++++++++++++++++
- drivers/mtd/spi-nor/cadence-quadspi.c              |  10 +-
- drivers/mtd/spi-nor/fsl-quadspi.c                  |  48 +-
- drivers/mtd/spi-nor/intel-spi-platform.c           |  57 ++
- drivers/mtd/spi-nor/intel-spi.c                    | 777 +++++++++++++++++++++
- drivers/mtd/spi-nor/intel-spi.h                    |  24 +
- drivers/mtd/spi-nor/spi-nor.c                      | 275 +++++++-
- drivers/spi/spi-bcm-qspi.c                         |   6 +-
- include/linux/bcma/bcma_driver_chipcommon.h        |   3 -
- include/linux/fsl_ifc.h                            |   8 +-
- include/linux/mfd/lpc_ich.h                        |   3 +
- include/linux/mtd/fsmc.h                           | 156 -----
- include/linux/mtd/mtd.h                            |  16 +
- include/linux/mtd/nand.h                           |   9 +-
- include/linux/mtd/partitions.h                     |   1 +
- include/linux/mtd/spi-nor.h                        |  34 +-
- include/linux/platform_data/intel-spi.h            |  31 +
- 54 files changed, 2874 insertions(+), 378 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/aspeed-smc.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/common.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/cortina,gemini-flash.txt
- create mode 100644 Documentation/mtd/intel-spi.txt
- create mode 100644 drivers/mtd/maps/physmap_of_gemini.c
- create mode 100644 drivers/mtd/maps/physmap_of_gemini.h
- create mode 100644 drivers/mtd/spi-nor/aspeed-smc.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi-platform.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi.c
- create mode 100644 drivers/mtd/spi-nor/intel-spi.h
- delete mode 100644 include/linux/mtd/fsmc.h
- create mode 100644 include/linux/platform_data/intel-spi.h
+>
+> Thanks,
+> //richard
