@@ -1,7 +1,7 @@
 Received: from www.osadl.org ([62.245.132.105])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdBlc-0001EC-4m
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 08:13:51 +0000
+ id 1cdBn6-00023K-2e
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 08:15:26 +0000
 From: Nicholas Mc Guire <der.herr@hofr.at>
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
@@ -11,9 +11,9 @@ Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
  Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Nicholas Mc Guire <der.herr@hofr.at>
-Subject: [PATCH V2] mtd: spi-nor: intel: use true/false for boolean
-Date: Mon, 13 Feb 2017 09:13:56 +0100
-Message-Id: <1486973636-1117-1-git-send-email-der.herr@hofr.at>
+Subject: [PATCH] mtd: spi-nor: intel: use ERR_CAST in return statement
+Date: Mon, 13 Feb 2017 09:14:21 +0100
+Message-Id: <1486973661-1164-1-git-send-email-der.herr@hofr.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-writeable in struct intel_spi is a boolean and assignment should be to
-true/false not 1/0 as recommended by boolinit.cocci.
+This fixes a sparse warning about incorrect type in retrun expression
 
 Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
 ---
 
-make coccicheck complained with:
- ./drivers/mtd/spi-nor/intel-spi.c:707:3-18: WARNING: Assignment of bool to 0/1
+V2: fixed prefix and the truncated commit message noted by Boris Brezillon
+    <boris.brezillon@free-electrons.com> - thanks!
+
+sparse complained about:
+drivers/mtd/spi-nor/intel-spi.c:731:28: warning: incorrect type in return expression (different address spaces)
+drivers/mtd/spi-nor/intel-spi.c:731:28:    expected struct intel_spi *
+drivers/mtd/spi-nor/intel-spi.c:731:28:    got void [noderef] <asn:2>*base
 
 Patch was compile tested with: multi_v7_defconfig (implies CONFIG_MTD_SPI_NOR=y)
 
@@ -40,17 +44,17 @@ Patch is against 4.10-rc7 (localversion-next is next-20170213)
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 4630716..2956f2c 100644
+index 2956f2c..1a6de4b 100644
 --- a/drivers/mtd/spi-nor/intel-spi.c
 +++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -704,7 +704,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
- 		 * whole partition read-only to be on the safe side.
- 		 */
- 		if (intel_spi_is_protected(ispi, base, limit))
--			ispi->writeable = 0;
-+			ispi->writeable = false;
+@@ -728,7 +728,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
  
- 		end = (limit << 12) + 4096;
- 		if (end > part->size)
+ 	ispi->base = devm_ioremap_resource(dev, mem);
+ 	if (IS_ERR(ispi->base))
+-		return ispi->base;
++		return ERR_CAST(ispi->base);
+ 
+ 	ispi->dev = dev;
+ 	ispi->info = info;
 -- 
 2.1.4
