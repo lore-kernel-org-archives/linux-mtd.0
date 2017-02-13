@@ -1,22 +1,37 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-eopbgr40139.outbound.protection.outlook.com
+ ([40.107.4.139] helo=EUR03-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdEHm-0003e5-Fh
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 10:55:13 +0000
-Subject: Re: [PATCH] mtd: nand: tango: Enforce DMA direction type
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-References: <1486979107-15362-1-git-send-email-boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm-kernel@lists.infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <bef98482-c562-57c1-785b-087a720e3807@nod.at>
-Date: Mon, 13 Feb 2017 11:54:46 +0100
+ id 1cdF9G-0005Cy-7S
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 11:50:28 +0000
+Subject: Re: UBI/UBIFS corruptions during random power-cuts
+To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
+ <0500de05-b3d7-6cbc-0236-5d4c83a5f00f@nod.at>
+ <961abad6-7d46-4427-fb2b-97477a4a6a10@toradex.com>
+ <2be57b2b-8fad-a987-8257-18f8ea024621@nod.at>
+ <89cd8327-581b-4285-d9ae-138d800211cf@toradex.com>
+ <bceb976b-0aac-fe04-a540-f24823366233@nod.at>
+ <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
+ <5a769de2-31f1-f011-c6bc-e94427407751@nod.at>
+ <a27bc761-b8d2-4f69-468a-b9a4d61c68f8@toradex.com>
+ <306876cd-0855-b9ee-659d-2164cfc3b2c4@nod.at>
+ <877dea3c-717d-9b1a-c01d-537f3b46b2de@toradex.com>
+ <ff60b696-ffec-8ddd-16bd-407a9bacb3e0@nod.at>
+ <47db4d54-f8f5-a663-75b3-d2cd5fd0769f@toradex.com>
+ <c3c9dcff-5738-d36c-189d-8aa0e9be98ca@nod.at>
+ <17f16834-e200-60c7-62d4-b083b00335ac@toradex.com>
+ <24fa997a-ba80-efb7-231d-8d4fddcd954d@nod.at>
+ <ce043ab8-2a2b-804d-ac22-67d404fc5578@toradex.com>
+ <f64c07b7-3cb2-2667-7e20-fb751c54fdea@nod.at>
+ <750f1307-de2d-8735-d407-ac92b001d009@toradex.com>
+ <c3f9049e-545b-5740-56a8-973034df00e6@nod.at>
+CC: Artem Bityutskiy <dedekind1@gmail.com>
+From: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>
+Message-ID: <fa7157e6-5bdf-f366-f13e-6df9ae3bfecf@toradex.com>
+Date: Mon, 13 Feb 2017 17:15:51 +0530
 MIME-Version: 1.0
-In-Reply-To: <1486979107-15362-1-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <c3f9049e-545b-5740-56a8-973034df00e6@nod.at>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,53 +42,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 13.02.2017 um 10:45 schrieb Boris Brezillon:
-> do_dma() use an integer to pass the DMA data direction information and
-> pass the same value to dmaengine_prep_slave_sg().
-> 
-> Currently, DMA_{FROM,TO}_DEVICE match DMA_{DEV_TO_MEM,MEM_TO_DEV}
-> definitions so it works fine, but assuming this will always be the case
-> is not safe.
-> 
-> Enforce enum dma_data_direction type in the function prototype and make
-> the enum dma_data_direction -> enum dma_transfer_direction conversion
-> explicit.
-> 
-> Reported-by: Richard Weinberger <richard@nod.at>
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/tango_nand.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-> index 4a5e948c62df..9a0e2f85d865 100644
-> --- a/drivers/mtd/nand/tango_nand.c
-> +++ b/drivers/mtd/nand/tango_nand.c
-> @@ -223,8 +223,8 @@ static void tango_dma_callback(void *arg)
->  	complete(arg);
->  }
->  
-> -static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
-> -		  int len, int page)
-> +static int do_dma(struct tango_nfc *nfc, enum dma_data_direction dir, int cmd,
-> +		  const void *buf, int len, int page)
->  {
->  	void __iomem *addr = nfc->reg_base + NFC_STATUS;
->  	struct dma_chan *chan = nfc->chan;
-> @@ -238,7 +238,10 @@ static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
->  	if (dma_map_sg(chan->device->dev, &sg, 1, dir) != 1)
->  		return -EIO;
->  
-> -	desc = dmaengine_prep_slave_sg(chan, &sg, 1, dir, DMA_PREP_INTERRUPT);
-> +	desc = dmaengine_prep_slave_sg(chan, &sg, 1,
-> +				       dir == DMA_FROM_DEVICE ?
-> +				       DMA_DEV_TO_MEM : DMA_MEM_TO_DEV,
-> +				       DMA_PREP_INTERRUPT);
->  	if (!desc)
->  		goto dma_unmap;
->  
+On 02/13/2017 01:27 PM, Richard Weinberger wrote:
 
-Reviewed-by: Richard Weinberger <richard@nod.at>
+> Bhuvan,
+>
+> Am 13.02.2017 um 04:34 schrieb Bhuvanchandra DV:
+>> On 02/10/2017 06:31 PM, Richard Weinberger wrote:
+>>
+>>> Bhuvan,
+>>>
+>>> Am 09.02.2017 um 05:59 schrieb Bhuvanchandra DV:
+>>>>> Just in case, you can trigger this also with a fresh filesystem?
+>>>>> Or did you always keep the same one?
+>>>> Yes, I triggered it with fresh filesystem.
+>>> Okay. Not good.
+>>>
+>>> How do you trigger this? What workload is running while the power-cut
+>>> happens?
+>> The issue is triggered when doing a continous external power-cut for every
+>> 25sec since power ON. After a week or two observed this issue. There is no
+>> additional work load on CPU during the test, it just boots to a lxde desktop.
+> So, the power-cut happens while the system is idle? Hmm.
 
-Thanks,
-//richard
+May be not, sometimes power-cut might happen during boot. Sometimes I observed
+journalctl logging just before power-cut.
+
+>
+>>> Did you try also kernel 4.9?
+>> I did ran similar testes on our downstream kernel 4.4 and 4.9 kernel few weeks
+>> back, observed similar issues.
+> Okay, so I didn't break it lately. Puh... ;)
+
+:)
+
+>
+>>> Does it also only happen then xattrs are used?
+>> Didn't check that. How exactly to check whether xattr is used ?
+> i.e. is a LSM such das SELinux being used?
+
+No, not used so far.
+
+--
+Bhuvan
+
+>
+> Thanks,
+> //richard
