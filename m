@@ -1,15 +1,28 @@
-Received: from www.osadl.org ([62.245.132.105])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdJrJ-0004vd-1R
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 16:52:14 +0000
-From: Nicholas Mc Guire <der.herr@hofr.at>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-clk@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Nicholas Mc Guire <der.herr@hofr.at>
-Subject: [PATCH RFC] iopoll: allow for poll_timeout to back-off
-Date: Mon, 13 Feb 2017 17:52:04 +0100
-Message-Id: <1487004724-2806-1-git-send-email-der.herr@hofr.at>
+Subject: Re: [PATCH RESEND 4/5] mtd: nand: atmel: Document the new DT bindings
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>, Linus Walleij
+ <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>,
+ <linux-gpio@vger.kernel.org>, Vinod Koul <vinod.koul@intel.com>, Dan Williams
+ <dan.j.williams@intel.com>, <dmaengine@vger.kernel.org>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Haavard Skinnemoen
+ <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ <linux-kernel@vger.kernel.org>
+References: <1485535324-28393-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1485535324-28393-5-git-send-email-boris.brezillon@free-electrons.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, <devicetree@vger.kernel.org>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Message-ID: <494ca322-09c9-b782-8bb7-2eb3663779df@atmel.com>
+Date: Mon, 13 Feb 2017 18:31:02 +0100
+MIME-Version: 1.0
+In-Reply-To: <1485535324-28393-5-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,163 +32,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Provide an exponential back-off after initial busy-loop
-to prvent extremly long busy-looping respectively arming
-of many highresolution timers.
+Le 27/01/2017 à 17:42, Boris Brezillon a écrit :
+> Document the new DT bindings for the Atmel NAND controller and
+> deprecate the old ones.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
----
+Ok with the binding:
+Reviewed-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-During a review of hieghrestimer users I have been looking at the users
-of read*_poll_timemout that have a tight loop declared (i.e. passing in 
-sleep_us as 0) most of them have quite large timeouts defined. At least
-in some cases it is documented to be a tight loop intentionally as the 
-expectation is that it will normally succeed e.g.  commit ae02ab00aa3c 
-("mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs")
+> ---
+>  .../devicetree/bindings/mtd/atmel-nand.txt         | 106 ++++++++++++++++++++-
+>  1 file changed, 105 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> index 3e7ee99d3949..2a86ef2332dc 100644
+> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> @@ -1,4 +1,108 @@
+> -Atmel NAND flash
+> +Atmel NAND flash controller bindings
+> +
+> +The NAND flash controller node should be defined under the EBI bus (see
+> +Documentation/devicetree/bindings/memory-controllers/atmel,ebi.txt).
+> +One or several NAND devices can be defined under this NAND controller.
+> +The NAND controller might be connected to an ECC engine.
+> +
+> +* NAND controller bindings:
+> +
+> +Required properties:
+> +- compatible: should be one of the following
+> +	"atmel,at91rm9200-nand-controller"
+> +	"atmel,at91sam9261-nand-controller"
+> +	"atmel,at91sam9g45-nand-controller"
+> +	"atmel,sama5d3-nand-controller"
+> +- ranges: empty ranges property to forward EBI ranges definitions.
+> +- #address-cells: should be set to 2.
+> +- #size-cells: should be set to 1.
+> +- atmel,nfc-io: phandle to the NFC IO block. Only required for sama5d3
+> +		controllers.
+> +- atmel,nfc-sram: phandle to the NFC SRAM block. Only required for sama5d3
+> +		  controllers.
+> +
+> +Optional properties:
+> +- ecc-engine: phandle to the PMECC block. Only meaningful if the SoC embeds
+> +	      a PMECC engine.
+> +
+> +* NAND device/chip bindings:
+> +
+> +Required properties:
+> +- reg: describes the CS lines assigned to the NAND device. If the NAND device
+> +       exposes multiple CS lines (multi-dies chips), your reg property will
+> +       contain X tuples of 3 entries.
+> +       1st entry: the CS line this NAND chip is connected to
+> +       2nd entry: the base offset of the memory region assigned to this
+> +		  device (always 0)
+> +       3rd entry: the memory region size (always 0x800000)
+> +
+> +Optional properties:
+> +- rb-gpios: the GPIO(s) used to check the Ready/Busy status of the NAND.
+> +- cs-gpios: the GPIO(s) used to control the CS line.
+> +- det-gpios: the GPIO used to detect if a Smartmedia Card is present.
+> +- atmel,rb: an integer identifying the native Ready/Busy pin. Only meaningful
+> +	    on sama5 SoCs.
+> +
+> +All generic properties described in
+> +Documentation/devicetree/bindings/mtd/{common,nand}.txt also apply to the NAND
+> +device node, and NAND partitions should be defined under the NAND node as
+> +described in Documentation/devicetree/bindings/mtd/partition.txt.
+> +
+> +* ECC engine (PMECC) bindings:
+> +
+> +Required properties:
+> +- compatible: should be one of the following
+> +	"atmel,at91sam9g45-pmecc"
+> +	"atmel,sama5d4-pmecc"
+> +	"atmel,sama5d2-pmecc"
+> +- reg: should contain 2 register ranges. The first one is pointing to the PMECC
+> +       block, and the second one to the PMECC_ERRLOC block.
+> +
+> +Example:
+> +
+> +	pmecc: ecc-engine@ffffc070 {
+> +		compatible = "atmel,at91sam9g45-pmecc";
+> +                reg = <0xffffc070 0x490>,
+> +                      <0xffffc500 0x100>;
+> +	};
+> +
+> +	ebi: ebi@10000000 {
+> +		compatible = "atmel,sama5d3-ebi";
+> +		#address-cells = <2>;
+> +		#size-cells = <1>;
+> +		atmel,smc = <&hsmc>;
+> +		reg = <0x10000000 0x10000000
+> +		       0x40000000 0x30000000>;
+> +		ranges = <0x0 0x0 0x10000000 0x10000000
+> +			  0x1 0x0 0x40000000 0x10000000
+> +			  0x2 0x0 0x50000000 0x10000000
+> +			  0x3 0x0 0x60000000 0x10000000>;
+> +		clocks = <&mck>;
+> +
+> +                nand_controller: nand-controller {
+> +			compatible = "atmel,sama5d3-nand-controller";
+> +			atmel,nfc-sram = <&nfc_sram>;
+> +			atmel,nfc-io = <&nfc_io>;
+> +			ecc-engine = <&pmecc>;
+> +			#address-cells = <2>;
+> +			#size-cells = <1>;
+> +			ranges;
+> +
+> +			nand@3 {
+> +				reg = <0x3 0x0 0x800000>;
+> +				atmel,rb = <0>;
+> +
+> +				/*
+> +				 * Put generic NAND/MTD properties and
+> +				 * subnodes here.
+> +				 */
+> +			};
+> +		};
+> +	};
+> +
+> +-----------------------------------------------------------------------
+> +
+> +Deprecated bindings (should not be used in new device trees):
+>  
+>  Required properties:
+>  - compatible: The possible values are:
+> 
 
-<snip drivers/mtd/nand/jz4780_bch.c>
-        /*
-         * While we could use interrupts here and sleep until the operation
-         * completes, the controller works fairly quickly (usually a few
-         * microseconds) and so the overhead of sleeping until we get an
-         * interrupt quite noticeably decreases performance.
-         */
-        ret = readl_poll_timeout(bch->base + BCH_BHINT, reg,
-                                 (reg & irq) == irq, 0, BCH_TIMEOUT_US);
-<snip>
 
-While this seems justified here to have a tight loop the problem is that 
-BCH_TIMEOUT_US is 100000 - so in the case of failure this would busyloop
-for 100ms and in some cases tightloops of 5 seconds can be found (e.g.
-drivers/mtd/spi-nor/intel-spi.c:intel_spi_wait_hw_busy())
-
-There currently are (if my coccinelle script is correct) 7 files with 
-read*_poll_timeout where sleep_us is set to 0 (busy-loop)
-  timeout_us                value    file
-  INTEL_SPI_TIMEOUT * 1000  5000000  intel-spi.c
-  FMC_WAIT_TIMEOUT          1000000  hisi-sfc.c
-  BCH_TIMEOUT_US             100000  z4780_bch.c
-  numeric const.              10000  clkgen-pll.c
-  numeric const.              10000  clk-stm32f4.c
-  numeric const.               1000  tango_nand.c
-  numeric const.               1000  mxsfb_crtc.c
-  numeric const.                100  clk.c
-
-One case in /drivers/mmc/host/sdhci-cadence.c has a timeout_us of 1 and
-sleep_us of 0 which might actually be a bug as it means that the poll loop
-would do a single read OP in many cases (this is non-atomic context) so it
-would have to be robust for a single read, thus the poll_timeout might not
-be suitable - not sure though - but thats a different problem.
-
-If we now look at those cases where sleep_us is using a min < the recommended
-10 us: that can be found in 68 cases (as of 4.10-rc6) and that is probably
-also not that sensible given that the timeout_us are in the same ranges as
-the cases above (minimum is 20 max is 5000000). So in the error case again
-that would result in thousands of high-resolution timers being initialized
-- presumably that is not that reasonable.
-
-The problem thus is not the success case but the failure case. A possible 
-mitigation of this would be to have something like an exponential back-off
-built into the non-atomic poll_timeout function:
-
-#define readx_poll_timeout(op, addr, val, cond, sleep_us, timeout_us)   \
-({ \
-        ktime_t timeout = ktime_add_us(ktime_get(), timeout_us); \
-        might_sleep(); \
-	unsigned long min = 0; \
-	unsigned long max = sleep_us | 1; \
-        for (;;) { \
-                (val) = op(addr); \
-                if (cond) \
-                        break; \
-                if (timeout_us && ktime_compare(ktime_get(), timeout) > 0) { \
-                        (val) = op(addr); \
-                        break; \
-                } \
-                if (min >= 10) \
-                        usleep_range(min, max); \
-                max <<= 1; \
-		min = max >> 2; \
-        } \
-        (cond) ? 0 : -ETIMEDOUT; \
-})
-
- which results in min,max values for the initial iterations of:
-      min  max
-      0    1
-      0    2
-      1    4
-      2    8
-      4    16
-      8    32
-      16   64
-      32   128
-      ...
-
- for sleep_us being passed in as 0 and would thus effectively be a 
-busy-loop for the first 6 iterations and then switch to sleeping.
-The above code proposal would busy-loop at most 6 times and the
-busy-wait would reduce if sleep_us > 0 is passed in:
-
-      sleep_us  busy-loops
-      0-1       6
-      2-3       4
-      4-9       3
-      10-19     2
-      20-39     1
-      40+       0
-
-which should be a resonable behavior for the current use cases and eliminate
-side effects of very long busy-wait-loops in the failure cases as well.
-
-Pleas let me know if this sounds reasonable or what might have been 
-overlooked here. The only downside located is that some of the constant
-folding that would be possible now would no longer be doable (e.g. 
-(sleep_us >> 2) + 1 in case of passing in a compile-time constant.
-Also I guess readx_poll_timeout() could (should?) be converted to an
-inline function.
-
-I did compile test this but actually the key issue is to get feedback on the
-concept rather than if the patch is usable in the below form.
-
-Patch was compile tested with: x86_64_defconfig
-
-Patch is against 4.10-rc7 (localversion-next is next-20170213)
-
- include/linux/iopoll.h | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/iopoll.h b/include/linux/iopoll.h
-index d29e1e2..788c6b1 100644
---- a/include/linux/iopoll.h
-+++ b/include/linux/iopoll.h
-@@ -40,10 +40,12 @@
-  * When available, you'll probably want to use one of the specialized
-  * macros defined below rather than this macro directly.
-  */
--#define readx_poll_timeout(op, addr, val, cond, sleep_us, timeout_us)	\
-+#define readx_poll_timeout(op, addr, val, cond, sleep_us, timeout_us)   \
- ({ \
- 	ktime_t timeout = ktime_add_us(ktime_get(), timeout_us); \
--	might_sleep_if(sleep_us); \
-+	might_sleep(); \
-+	unsigned long min = 0; \
-+	unsigned long max = sleep_us | 1; \
- 	for (;;) { \
- 		(val) = op(addr); \
- 		if (cond) \
-@@ -52,8 +54,10 @@
- 			(val) = op(addr); \
- 			break; \
- 		} \
--		if (sleep_us) \
--			usleep_range((sleep_us >> 2) + 1, sleep_us); \
-+		if (min >= 10) \
-+			usleep_range(min, max); \
-+		max <<= 1; \
-+		min = max >> 2; \
- 	} \
- 	(cond) ? 0 : -ETIMEDOUT; \
- })
 -- 
-2.1.4
+Nicolas Ferre
