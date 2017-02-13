@@ -1,19 +1,15 @@
-Received: from www.osadl.org ([62.245.132.105])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdBn6-00023K-2e
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 08:15:26 +0000
-From: Nicholas Mc Guire <der.herr@hofr.at>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Nicholas Mc Guire <der.herr@hofr.at>
-Subject: [PATCH] mtd: spi-nor: intel: use ERR_CAST in return statement
-Date: Mon, 13 Feb 2017 09:14:21 +0100
-Message-Id: <1486973661-1164-1-git-send-email-der.herr@hofr.at>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] mtd: nand: tango: Enforce DMA direction type
+Date: Mon, 13 Feb 2017 10:45:07 +0100
+Message-Id: <1486979107-15362-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +19,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes a sparse warning about incorrect type in retrun expression
+do_dma() use an integer to pass the DMA data direction information and
+pass the same value to dmaengine_prep_slave_sg().
 
-Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
+Currently, DMA_{FROM,TO}_DEVICE match DMA_{DEV_TO_MEM,MEM_TO_DEV}
+definitions so it works fine, but assuming this will always be the case
+is not safe.
+
+Enforce enum dma_data_direction type in the function prototype and make
+the enum dma_data_direction -> enum dma_transfer_direction conversion
+explicit.
+
+Reported-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
+ drivers/mtd/nand/tango_nand.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-V2: fixed prefix and the truncated commit message noted by Boris Brezillon
-    <boris.brezillon@free-electrons.com> - thanks!
-
-sparse complained about:
-drivers/mtd/spi-nor/intel-spi.c:731:28: warning: incorrect type in return expression (different address spaces)
-drivers/mtd/spi-nor/intel-spi.c:731:28:    expected struct intel_spi *
-drivers/mtd/spi-nor/intel-spi.c:731:28:    got void [noderef] <asn:2>*base
-
-Patch was compile tested with: multi_v7_defconfig (implies CONFIG_MTD_SPI_NOR=y)
-
-Patch is against 4.10-rc7 (localversion-next is next-20170213)
-
- drivers/mtd/spi-nor/intel-spi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 2956f2c..1a6de4b 100644
---- a/drivers/mtd/spi-nor/intel-spi.c
-+++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -728,7 +728,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+index 4a5e948c62df..9a0e2f85d865 100644
+--- a/drivers/mtd/nand/tango_nand.c
++++ b/drivers/mtd/nand/tango_nand.c
+@@ -223,8 +223,8 @@ static void tango_dma_callback(void *arg)
+ 	complete(arg);
+ }
  
- 	ispi->base = devm_ioremap_resource(dev, mem);
- 	if (IS_ERR(ispi->base))
--		return ispi->base;
-+		return ERR_CAST(ispi->base);
+-static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
+-		  int len, int page)
++static int do_dma(struct tango_nfc *nfc, enum dma_data_direction dir, int cmd,
++		  const void *buf, int len, int page)
+ {
+ 	void __iomem *addr = nfc->reg_base + NFC_STATUS;
+ 	struct dma_chan *chan = nfc->chan;
+@@ -238,7 +238,10 @@ static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
+ 	if (dma_map_sg(chan->device->dev, &sg, 1, dir) != 1)
+ 		return -EIO;
  
- 	ispi->dev = dev;
- 	ispi->info = info;
+-	desc = dmaengine_prep_slave_sg(chan, &sg, 1, dir, DMA_PREP_INTERRUPT);
++	desc = dmaengine_prep_slave_sg(chan, &sg, 1,
++				       dir == DMA_FROM_DEVICE ?
++				       DMA_DEV_TO_MEM : DMA_MEM_TO_DEV,
++				       DMA_PREP_INTERRUPT);
+ 	if (!desc)
+ 		goto dma_unmap;
+ 
 -- 
-2.1.4
+2.7.4
