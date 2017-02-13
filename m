@@ -1,20 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cdDuA-0005cN-Tg
- for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 10:30:52 +0000
-Date: Mon, 13 Feb 2017 11:30:24 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: gpio: make nCE GPIO optional
-Message-ID: <20170213113024.6033990a@bbrezillon>
-In-Reply-To: <20170210140110.87903682E7@localhost.localdomain>
-References: <20170210140110.87903682E7@localhost.localdomain>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cdEHm-0003e5-Fh
+ for linux-mtd@lists.infradead.org; Mon, 13 Feb 2017 10:55:13 +0000
+Subject: Re: [PATCH] mtd: nand: tango: Enforce DMA direction type
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+References: <1486979107-15362-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-arm-kernel@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <bef98482-c562-57c1-785b-087a720e3807@nod.at>
+Date: Mon, 13 Feb 2017 11:54:46 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1486979107-15362-1-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,65 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 Feb 2017 15:01:10 +0100 (CET)
-Christophe Leroy <christophe.leroy@c-s.fr> wrote:
-
-> On some hardware, the nCE signal is wired to the ChipSelect associated
-> to bus address of the NAND, so it is automatically driven during the
-> memory access and it is not managed by a GPIO.
-
-Hm, I'm not sure how this can work, because, AFAIR, the nCE line needs
-to stay low for the whole CMD+ADDR[+CMD] cycle, and with your patch
-it's not guaranteed.
-
-Can you tell us more about your NAND controller?
-
+Am 13.02.2017 um 10:45 schrieb Boris Brezillon:
+> do_dma() use an integer to pass the DMA data direction information and
+> pass the same value to dmaengine_prep_slave_sg().
 > 
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> Currently, DMA_{FROM,TO}_DEVICE match DMA_{DEV_TO_MEM,MEM_TO_DEV}
+> definitions so it works fine, but assuming this will always be the case
+> is not safe.
+> 
+> Enforce enum dma_data_direction type in the function prototype and make
+> the enum dma_data_direction -> enum dma_transfer_direction conversion
+> explicit.
+> 
+> Reported-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  drivers/mtd/nand/gpio.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
+>  drivers/mtd/nand/tango_nand.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-> index 0d24857..85294f1 100644
-> --- a/drivers/mtd/nand/gpio.c
-> +++ b/drivers/mtd/nand/gpio.c
-> @@ -78,7 +78,9 @@ static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
->  	gpio_nand_dosync(gpiomtd);
->  
->  	if (ctrl & NAND_CTRL_CHANGE) {
-> -		gpio_set_value(gpiomtd->plat.gpio_nce, !(ctrl & NAND_NCE));
-> +		if (gpio_is_valid(gpiomtd->plat.gpio_nce))
-> +			gpio_set_value(gpiomtd->plat.gpio_nce,
-> +				       !(ctrl & NAND_NCE));
->  		gpio_set_value(gpiomtd->plat.gpio_cle, !!(ctrl & NAND_CLE));
->  		gpio_set_value(gpiomtd->plat.gpio_ale, !!(ctrl & NAND_ALE));
->  		gpio_nand_dosync(gpiomtd);
-> @@ -201,7 +203,8 @@ static int gpio_nand_remove(struct platform_device *pdev)
->  
->  	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
->  		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
-> -	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
-> +	if (gpio_is_valid(gpiomtd->plat.gpio_nce))
-> +		gpio_set_value(gpiomtd->plat.gpio_nce, 1);
->  
->  	return 0;
+> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+> index 4a5e948c62df..9a0e2f85d865 100644
+> --- a/drivers/mtd/nand/tango_nand.c
+> +++ b/drivers/mtd/nand/tango_nand.c
+> @@ -223,8 +223,8 @@ static void tango_dma_callback(void *arg)
+>  	complete(arg);
 >  }
-> @@ -239,10 +242,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
 >  
-> -	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
-> -	if (ret)
-> -		return ret;
-> -	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
-> +	if (gpio_is_valid(gpiomtd->plat.gpio_nce)) {
-> +		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce,
-> +					"NAND NCE");
-> +		if (ret)
-> +			return ret;
-> +		gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
-> +	}
+> -static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
+> -		  int len, int page)
+> +static int do_dma(struct tango_nfc *nfc, enum dma_data_direction dir, int cmd,
+> +		  const void *buf, int len, int page)
+>  {
+>  	void __iomem *addr = nfc->reg_base + NFC_STATUS;
+>  	struct dma_chan *chan = nfc->chan;
+> @@ -238,7 +238,10 @@ static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
+>  	if (dma_map_sg(chan->device->dev, &sg, 1, dir) != 1)
+>  		return -EIO;
 >  
->  	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
->  		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
+> -	desc = dmaengine_prep_slave_sg(chan, &sg, 1, dir, DMA_PREP_INTERRUPT);
+> +	desc = dmaengine_prep_slave_sg(chan, &sg, 1,
+> +				       dir == DMA_FROM_DEVICE ?
+> +				       DMA_DEV_TO_MEM : DMA_MEM_TO_DEV,
+> +				       DMA_PREP_INTERRUPT);
+>  	if (!desc)
+>  		goto dma_unmap;
+>  
+
+Reviewed-by: Richard Weinberger <richard@nod.at>
+
+Thanks,
+//richard
