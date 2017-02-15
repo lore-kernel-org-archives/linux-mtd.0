@@ -1,12 +1,11 @@
-Received: from mail-eopbgr50099.outbound.protection.outlook.com ([40.107.5.99]
- helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ce1Eg-0002Ek-Ip
- for linux-mtd@lists.infradead.org; Wed, 15 Feb 2017 15:11:16 +0000
+ id 1ce1IO-0003DN-9r
+ for linux-mtd@lists.infradead.org; Wed, 15 Feb 2017 15:15:06 +0000
 Subject: Re: UBI/UBIFS corruptions during random power-cuts
-To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+To: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>,
+ linux-mtd@lists.infradead.org
 References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
- <89cd8327-581b-4285-d9ae-138d800211cf@toradex.com>
  <bceb976b-0aac-fe04-a540-f24823366233@nod.at>
  <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
  <5a769de2-31f1-f011-c6bc-e94427407751@nod.at>
@@ -25,13 +24,14 @@ References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
  <fa7157e6-5bdf-f366-f13e-6df9ae3bfecf@toradex.com>
  <1b2da57c-a202-df5d-f906-2e0d865d2dbb@toradex.com>
  <ad766a48-e3f5-c932-56fe-4777bf871d7c@nod.at>
-CC: Artem Bityutskiy <dedekind1@gmail.com>, <bhuvanchandra.dv@toradex.com>
-From: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>
-Message-ID: <00e8f39a-81d3-c593-0c1d-9d2614189409@toradex.com>
-Date: Wed, 15 Feb 2017 20:36:53 +0530
+ <00e8f39a-81d3-c593-0c1d-9d2614189409@toradex.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <428bf369-22b7-42e0-519c-4b98af8a845a@nod.at>
+Date: Wed, 15 Feb 2017 16:14:36 +0100
 MIME-Version: 1.0
-In-Reply-To: <ad766a48-e3f5-c932-56fe-4777bf871d7c@nod.at>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <00e8f39a-81d3-c593-0c1d-9d2614189409@toradex.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -42,50 +42,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/15/2017 02:42 PM, Richard Weinberger wrote:
+Am 15.02.2017 um 16:06 schrieb Bhuvanchandra DV:
+> On 02/15/2017 02:42 PM, Richard Weinberger wrote:
+> 
+>> Am 15.02.2017 um 08:22 schrieb Bhuvanchandra DV:
+>>> I was wrong, systemd version which we use lately is enabled with access control lists(ACL).
+>>> ...
+>>> [    3.324846] systemd[1]: systemd 230 running in system mode. (+PAM -AUDIT -SELINUX +IMA -APPARMOR +SMACK +SYSVINIT +UTMP -LIBCRYPTSETUP -GCRYPT -GNUTLS +ACL +XZ -LZ4 -SECCOMP
+>>> +BLKI)
+>>> ...
+>>>
+>>> Will do the test with a systemd without ACL support.
+>> Well, do files have xattrs?
+>> See getfattr.
+>> I'm trying to understand why your system makes so different.
+> 
+> systemd's journald uses ACL, the journald's logs files seems to have extended attributes.
+> 
+> root@colibri-vf:~# getfattr -R /var/log/journal/3e283b492ea046a29683c0801ceaba91
+> getfattr: Removing leading '/' from absolute path names
+> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ec00621f43-a0f5cd8e864efc36.journal~
+> user.crtime_usec
+> 
+> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ec25f38147-3ede62d61071df3c.journal~
+> user.crtime_usec
+> 
+> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@0820e4037f504446ad35bb362be7b809-0000000000000001-l
+> user.crtime_usec
+> 
+> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system.journal
+> user.crtime_usec
+> 
+> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@37549ee306da42479500fb717cb2dada-0000000000000001-l
+> user.crtime_usec
+> 
+> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ecafe0f654-e0c2574255c05aed.journal~
+> user.crtime_usec
+> 
+> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ec78bce8a1-02b48f08c5d6a410.journal~
+> user.crtime_usec
+> 
+> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@0005488c6421da38-c4690dc0bb71068f.journal~
+> user.crtime_usec
 
-> Am 15.02.2017 um 08:22 schrieb Bhuvanchandra DV:
->> I was wrong, systemd version which we use lately is enabled with access control lists(ACL).
->> ...
->> [    3.324846] systemd[1]: systemd 230 running in system mode. (+PAM -AUDIT -SELINUX +IMA -APPARMOR +SMACK +SYSVINIT +UTMP -LIBCRYPTSETUP -GCRYPT -GNUTLS +ACL +XZ -LZ4 -SECCOMP +BLKI)
->> ...
->>
->> Will do the test with a systemd without ACL support.
-> Well, do files have xattrs?
-> See getfattr.
-> I'm trying to understand why your system makes so different.
+Hmm, not sure whether systemd journal triggers such a bug in UBIFS.
+Anyway, can you provide me a UBIFS image after a failure?
+A dd from the UBI volume (i.e. /dev/ubiX_Y) will do it.
 
-systemd's journald uses ACL, the journald's logs files seems to have extended attributes.
+Maybe it can give me some hint.
 
-root@colibri-vf:~# getfattr -R /var/log/journal/3e283b492ea046a29683c0801ceaba91
-getfattr: Removing leading '/' from absolute path names
-# file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ec00621f43-a0f5cd8e864efc36.journal~
-user.crtime_usec
-
-# file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ec25f38147-3ede62d61071df3c.journal~
-user.crtime_usec
-
-# file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@0820e4037f504446ad35bb362be7b809-0000000000000001-l
-user.crtime_usec
-
-# file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system.journal
-user.crtime_usec
-
-# file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@37549ee306da42479500fb717cb2dada-0000000000000001-l
-user.crtime_usec
-
-# file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ecafe0f654-e0c2574255c05aed.journal~
-user.crtime_usec
-
-# file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ec78bce8a1-02b48f08c5d6a410.journal~
-user.crtime_usec
-
-# file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@0005488c6421da38-c4690dc0bb71068f.journal~
-user.crtime_usec
-
---
-Bhuvan
-
->
-> Thanks,
-> //richard
+Thanks,
+//richard
