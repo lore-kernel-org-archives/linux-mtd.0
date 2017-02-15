@@ -1,15 +1,20 @@
-Received: from mail-ot0-x241.google.com ([2607:f8b0:4003:c0f::241])
+Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdlZZ-00034W-Ab
- for linux-mtd@lists.infradead.org; Tue, 14 Feb 2017 22:27:47 +0000
-Received: by mail-ot0-x241.google.com with SMTP id t47so4016970ota.0
- for <linux-mtd@lists.infradead.org>; Tue, 14 Feb 2017 14:27:24 -0800 (PST)
-From: "L. D. Pinney" <ldpinney@gmail.com>
-To: Linux MTD Development List <linux-mtd@lists.infradead.org>
-Cc: "L . D . Pinney" <ldpinney@gmail.com>
-Subject: [PATCH v2] mtd: spi-nor: Add support for ESMT F25L32QA and F25L64QA
-Date: Tue, 14 Feb 2017 16:27:13 -0600
-Message-Id: <20170214222713.30913-1-ldpinney@gmail.com>
+ id 1cdqrH-0000xV-9i
+ for linux-mtd@lists.infradead.org; Wed, 15 Feb 2017 04:06:24 +0000
+Received: by mail-oi0-x241.google.com with SMTP id j15so2899944oih.0
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Feb 2017 20:06:02 -0800 (PST)
+Date: Tue, 14 Feb 2017 22:06:47 -0600
+From: Marty Plummer <netz.kernel@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: cyrille.pitchen@atmel.com, marek.vasut@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ richard@nod.at
+Subject: mtd: spi-nor: hisi-sfc compatibility report
+Message-ID: <20170215040646.hscl2kuc5nuvbel3@tha-monstah.mydomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,24 +24,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Support for the ESMT F25L32QA and F25L64QA
-These are 4MB and 8MB SPI-NOR Chips from Elite Semiconductor Memory Technology
+Greetings.
 
-Signed-off-by: L. D. Pinney <ldpinney@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 70e52ffc2203..205efab4746c 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -960,6 +960,8 @@ static const struct flash_info spi_nor_ids[] = {
- 
- 	/* ESMT */
- 	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "f25l32qa", INFO(0x8c4116, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_HAS_LOCK) },
- 
- 	/* Everspin */
- 	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+Just wanted to report that the hisi-sfc spi nor driver is compatible
+with the Hi3521av100 SoC from Hisilicon. Odd that no hisilicon or huawei
+emails are listed as a maintainer for it.
