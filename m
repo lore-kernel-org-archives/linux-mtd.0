@@ -1,28 +1,33 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ce6xK-00073F-4i
- for linux-mtd@lists.infradead.org; Wed, 15 Feb 2017 21:17:44 +0000
-Received: by mail-wm0-x244.google.com with SMTP id r18so278747wmd.3
- for <linux-mtd@lists.infradead.org>; Wed, 15 Feb 2017 13:17:22 -0800 (PST)
-Subject: Re: [PATCH V2] mtd: spi-nor: intel: use true/false for boolean
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-References: <1486973636-1117-1-git-send-email-der.herr@hofr.at>
- <e6f01423-4ec7-33b3-b7a4-6af275525d2c@gmail.com>
- <20170214095725.GD15721@lahna.fi.intel.com>
-Cc: Nicholas Mc Guire <der.herr@hofr.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>,
+ id 1ce80Z-0003xP-Sa
+ for linux-mtd@lists.infradead.org; Wed, 15 Feb 2017 22:25:10 +0000
+Received: by mail-wm0-x241.google.com with SMTP id v77so503467wmv.0
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Feb 2017 14:24:46 -0800 (PST)
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
+To: Heiner Kallweit <hkallweit1@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
+ <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
+ <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
+ <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
+ <20170208190939.GA97840@google.com> <20170210024624.GA142725@google.com>
+ <85f9f5e3-dc2f-40de-9932-e99f0c0a1721@gmail.com>
+ <b0da3e92-3734-62dc-e112-8541d61cf986@gmail.com>
+ <2a38abcf-648c-537d-1135-93efc7aa7e52@gmail.com>
+Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <fa765ed1-ef9f-d0c5-34f9-4fc0f02e0727@gmail.com>
-Date: Wed, 15 Feb 2017 22:08:06 +0100
+Message-ID: <a91d0c84-a349-d28d-0c4e-8446569a1b3e@gmail.com>
+Date: Wed, 15 Feb 2017 23:24:42 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170214095725.GD15721@lahna.fi.intel.com>
+In-Reply-To: <2a38abcf-648c-537d-1135-93efc7aa7e52@gmail.com>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,54 +37,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/14/2017 10:57 AM, Mika Westerberg wrote:
-> On Tue, Feb 14, 2017 at 05:52:48AM +0100, Marek Vasut wrote:
->> On 02/13/2017 09:13 AM, Nicholas Mc Guire wrote:
->>> writeable in struct intel_spi is a boolean and assignment should be to
->>> true/false not 1/0 as recommended by boolinit.cocci.
+On 02/10/2017 06:56 PM, Heiner Kallweit wrote:
+> Am 10.02.2017 um 14:07 schrieb Marek Vasut:
+>> On 02/10/2017 07:39 AM, Heiner Kallweit wrote:
+>>> Am 10.02.2017 um 03:46 schrieb Brian Norris:
+>>>> On Wed, Feb 08, 2017 at 11:09:39AM -0800, Brian Norris wrote:
+>>>>> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
+>>>>>> Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
+>>>>>>> Am 08.02.2017 um 02:09 schrieb Marek Vasut:
+>>>>>>>> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
+>>>>>> [...]
+>>>>>>>>> Heiner Kallweit (1):
+>>>>>>>>>       mtd: m25p80: consider max message size in m25p80_read
+>>>>>>>>
+>>>>>>>> I cannot say I'm super-happy about this particular patch, still ...
+>>>>>>>>
+>>>>>>> W/o it at least the fsl-espi driver is broken for transfers >= 64kB.
+>>>>>>>
+>>>> [...]
+>>>>
+>>>>> One thing I do object to: why is this change marked for stable? It's not
+>>>>> our fault you broke your duct-taped-together SPI driver in 4.9. I don't
+>>>>> think backporting features is the way to satisfy the -stable
+>>>>> requirements. Maybe some reverts would be the right way...
+>>>>
+>>> The patch was submitted in Aug 2016 already and there was also an inquiry
+>>> to get it into 4.9:
+>>> http://lists.infradead.org/pipermail/linux-mtd/2016-September/069363.html
 >>>
->>> Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
->>> ---
->>>
->>> make coccicheck complained with:
->>>  ./drivers/mtd/spi-nor/intel-spi.c:707:3-18: WARNING: Assignment of bool to 0/1
->>>
->>> Patch was compile tested with: multi_v7_defconfig (implies CONFIG_MTD_SPI_NOR=y)
->>>
->>> Patch is against 4.10-rc7 (localversion-next is next-20170213)
->>>
->>>  drivers/mtd/spi-nor/intel-spi.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
->>> index 4630716..2956f2c 100644
->>> --- a/drivers/mtd/spi-nor/intel-spi.c
->>> +++ b/drivers/mtd/spi-nor/intel-spi.c
->>> @@ -704,7 +704,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
->>>  		 * whole partition read-only to be on the safe side.
->>>  		 */
->>>  		if (intel_spi_is_protected(ispi, base, limit))
->>> -			ispi->writeable = 0;
->>> +			ispi->writeable = false;
->>>  
->>>  		end = (limit << 12) + 4096;
->>>  		if (end > part->size)
->>>
+>>> But due to whatever circumstances nothing happened and there was no
+>>> response.
 >>
->> Looks OK, also this is the only place in the driver where writeable is
->> assigned to an explicit true/false value.
+>> Is that a bugfix ?
 >>
->> Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> 
-> Also
-> 
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> 
->> btw the variable should be renamed from writeable to writable ;-)
-> 
-> It is named like that because it follows MTD_WRITEABLE flag.
-> 
-Now there are two things which might need fixing ^_^'
+> Certain changes to the fsl-espi driver and the patch we're talking about
+> here were supposed to go into the same kernel release.
+> The driver changes made it to mainline months ago, the m25p80 patch not.
+> So yes, we have a bug in 4.9, transfers >= 64k fail on fsl-espi.
+
+Maybe the fsl-espi change should be reverted for 4.9 ...
 
 -- 
 Best regards,
