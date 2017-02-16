@@ -1,33 +1,38 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-eopbgr40107.outbound.protection.outlook.com
+ ([40.107.4.107] helo=EUR03-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ce80Z-0003xP-Sa
- for linux-mtd@lists.infradead.org; Wed, 15 Feb 2017 22:25:10 +0000
-Received: by mail-wm0-x241.google.com with SMTP id v77so503467wmv.0
- for <linux-mtd@lists.infradead.org>; Wed, 15 Feb 2017 14:24:46 -0800 (PST)
-Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.11
-To: Heiner Kallweit <hkallweit1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <2f46eee5-35c1-291a-52e9-132ced5749a9@atmel.com>
- <1e124883-d21a-8066-2c22-e9aae98dd775@gmail.com>
- <0e2e8e2b-4003-5dae-2f6d-f72375d9ca03@gmail.com>
- <c89577f7-2908-3a75-6be4-78455c5cffcb@atmel.com>
- <20170208190939.GA97840@google.com> <20170210024624.GA142725@google.com>
- <85f9f5e3-dc2f-40de-9932-e99f0c0a1721@gmail.com>
- <b0da3e92-3734-62dc-e112-8541d61cf986@gmail.com>
- <2a38abcf-648c-537d-1135-93efc7aa7e52@gmail.com>
-Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <a91d0c84-a349-d28d-0c4e-8446569a1b3e@gmail.com>
-Date: Wed, 15 Feb 2017 23:24:42 +0100
+ id 1ceDZF-0007j6-Of
+ for linux-mtd@lists.infradead.org; Thu, 16 Feb 2017 04:21:21 +0000
+Subject: Re: UBI/UBIFS corruptions during random power-cuts
+To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <b5608215-347a-f9a0-aa71-33546d7eab1b@toradex.com>
+ <c5cc6f86-fb4e-cdb4-8b0b-10d4dfd33735@toradex.com>
+ <5a769de2-31f1-f011-c6bc-e94427407751@nod.at>
+ <a27bc761-b8d2-4f69-468a-b9a4d61c68f8@toradex.com>
+ <306876cd-0855-b9ee-659d-2164cfc3b2c4@nod.at>
+ <877dea3c-717d-9b1a-c01d-537f3b46b2de@toradex.com>
+ <ff60b696-ffec-8ddd-16bd-407a9bacb3e0@nod.at>
+ <47db4d54-f8f5-a663-75b3-d2cd5fd0769f@toradex.com>
+ <c3c9dcff-5738-d36c-189d-8aa0e9be98ca@nod.at>
+ <17f16834-e200-60c7-62d4-b083b00335ac@toradex.com>
+ <24fa997a-ba80-efb7-231d-8d4fddcd954d@nod.at>
+ <ce043ab8-2a2b-804d-ac22-67d404fc5578@toradex.com>
+ <f64c07b7-3cb2-2667-7e20-fb751c54fdea@nod.at>
+ <750f1307-de2d-8735-d407-ac92b001d009@toradex.com>
+ <c3f9049e-545b-5740-56a8-973034df00e6@nod.at>
+ <fa7157e6-5bdf-f366-f13e-6df9ae3bfecf@toradex.com>
+ <1b2da57c-a202-df5d-f906-2e0d865d2dbb@toradex.com>
+ <ad766a48-e3f5-c932-56fe-4777bf871d7c@nod.at>
+ <00e8f39a-81d3-c593-0c1d-9d2614189409@toradex.com>
+ <428bf369-22b7-42e0-519c-4b98af8a845a@nod.at>
+CC: Artem Bityutskiy <dedekind1@gmail.com>
+From: Bhuvanchandra DV <bhuvanchandra.dv@toradex.com>
+Message-ID: <48d2f2b5-28e4-8d90-5fe6-6e3e4cbc383d@toradex.com>
+Date: Thu, 16 Feb 2017 09:46:50 +0530
 MIME-Version: 1.0
-In-Reply-To: <2a38abcf-648c-537d-1135-93efc7aa7e52@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <428bf369-22b7-42e0-519c-4b98af8a845a@nod.at>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,46 +42,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/10/2017 06:56 PM, Heiner Kallweit wrote:
-> Am 10.02.2017 um 14:07 schrieb Marek Vasut:
->> On 02/10/2017 07:39 AM, Heiner Kallweit wrote:
->>> Am 10.02.2017 um 03:46 schrieb Brian Norris:
->>>> On Wed, Feb 08, 2017 at 11:09:39AM -0800, Brian Norris wrote:
->>>>> On Wed, Feb 08, 2017 at 11:36:10AM +0100, Cyrille Pitchen wrote:
->>>>>> Le 08/02/2017 à 06:52, Heiner Kallweit a écrit :
->>>>>>> Am 08.02.2017 um 02:09 schrieb Marek Vasut:
->>>>>>>> On 02/07/2017 04:31 PM, Cyrille Pitchen wrote:
->>>>>> [...]
->>>>>>>>> Heiner Kallweit (1):
->>>>>>>>>       mtd: m25p80: consider max message size in m25p80_read
->>>>>>>>
->>>>>>>> I cannot say I'm super-happy about this particular patch, still ...
->>>>>>>>
->>>>>>> W/o it at least the fsl-espi driver is broken for transfers >= 64kB.
->>>>>>>
->>>> [...]
->>>>
->>>>> One thing I do object to: why is this change marked for stable? It's not
->>>>> our fault you broke your duct-taped-together SPI driver in 4.9. I don't
->>>>> think backporting features is the way to satisfy the -stable
->>>>> requirements. Maybe some reverts would be the right way...
->>>>
->>> The patch was submitted in Aug 2016 already and there was also an inquiry
->>> to get it into 4.9:
->>> http://lists.infradead.org/pipermail/linux-mtd/2016-September/069363.html
->>>
->>> But due to whatever circumstances nothing happened and there was no
->>> response.
->>
->> Is that a bugfix ?
->>
-> Certain changes to the fsl-espi driver and the patch we're talking about
-> here were supposed to go into the same kernel release.
-> The driver changes made it to mainline months ago, the m25p80 patch not.
-> So yes, we have a bug in 4.9, transfers >= 64k fail on fsl-espi.
+On 02/15/2017 08:44 PM, Richard Weinberger wrote:
 
-Maybe the fsl-espi change should be reverted for 4.9 ...
+> Am 15.02.2017 um 16:06 schrieb Bhuvanchandra DV:
+>> On 02/15/2017 02:42 PM, Richard Weinberger wrote:
+>>
+>>> Am 15.02.2017 um 08:22 schrieb Bhuvanchandra DV:
+>>>> I was wrong, systemd version which we use lately is enabled with access control lists(ACL).
+>>>> ...
+>>>> [    3.324846] systemd[1]: systemd 230 running in system mode. (+PAM -AUDIT -SELINUX +IMA -APPARMOR +SMACK +SYSVINIT +UTMP -LIBCRYPTSETUP -GCRYPT -GNUTLS +ACL +XZ -LZ4 -SECCOMP
+>>>> +BLKI)
+>>>> ...
+>>>>
+>>>> Will do the test with a systemd without ACL support.
+>>> Well, do files have xattrs?
+>>> See getfattr.
+>>> I'm trying to understand why your system makes so different.
+>> systemd's journald uses ACL, the journald's logs files seems to have extended attributes.
+>>
+>> root@colibri-vf:~# getfattr -R /var/log/journal/3e283b492ea046a29683c0801ceaba91
+>> getfattr: Removing leading '/' from absolute path names
+>> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ec00621f43-a0f5cd8e864efc36.journal~
+>> user.crtime_usec
+>>
+>> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ec25f38147-3ede62d61071df3c.journal~
+>> user.crtime_usec
+>>
+>> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@0820e4037f504446ad35bb362be7b809-0000000000000001-l
+>> user.crtime_usec
+>>
+>> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system.journal
+>> user.crtime_usec
+>>
+>> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@37549ee306da42479500fb717cb2dada-0000000000000001-l
+>> user.crtime_usec
+>>
+>> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ecafe0f654-e0c2574255c05aed.journal~
+>> user.crtime_usec
+>>
+>> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@000547ec78bce8a1-02b48f08c5d6a410.journal~
+>> user.crtime_usec
+>>
+>> # file: var/log/journal/3e283b492ea046a29683c0801ceaba91/system@0005488c6421da38-c4690dc0bb71068f.journal~
+>> user.crtime_usec
+> Hmm, not sure whether systemd journal triggers such a bug in UBIFS.
+> Anyway, can you provide me a UBIFS image after a failure?
+> A dd from the UBI volume (i.e. /dev/ubiX_Y) will do it.
+>
+> Maybe it can give me some hint.
 
--- 
-Best regards,
-Marek Vasut
+Here[1] is the raw image of the corrupted UBI volume.
+
+
+[1] https://share.toradex.com/xbczmjz0b2pntfv
+
+--
+Bhuvan
+
+>
+> Thanks,
+> //richard
