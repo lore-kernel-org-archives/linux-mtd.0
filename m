@@ -1,23 +1,19 @@
-Received: from mail-ot0-x242.google.com ([2607:f8b0:4003:c0f::242])
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ceOuu-0002lT-3R
- for linux-mtd@lists.infradead.org; Thu, 16 Feb 2017 16:28:26 +0000
-Received: by mail-ot0-x242.google.com with SMTP id t47so2099983ota.0
- for <linux-mtd@lists.infradead.org>; Thu, 16 Feb 2017 08:28:03 -0800 (PST)
-Date: Thu, 16 Feb 2017 10:28:55 -0600
-From: Marty Plummer <netz.kernel@gmail.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com,
+ id 1ceR6b-00006X-DW
+ for linux-mtd@lists.infradead.org; Thu, 16 Feb 2017 18:48:39 +0000
+Received: by mail-wr0-x241.google.com with SMTP id c4so3109703wrd.1
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Feb 2017 10:48:12 -0800 (PST)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
  dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at
-Subject: Re: mtd: spi-nor: hisi-sfc compatibility report
-Message-ID: <20170216162854.hagnxukontcgkykn@tha-monstah.mydomain>
-References: <20170215040646.hscl2kuc5nuvbel3@tha-monstah.mydomain>
- <e90185e2-db9e-0f1f-df44-1015f8950b36@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e90185e2-db9e-0f1f-df44-1015f8950b36@gmail.com>
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@atmel.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH V2,
+ 1/2] mtd: nand: brcmnand: Change brcmnand_set_wp() prototype
+Date: Thu, 16 Feb 2017 13:46:51 -0500
+Message-Id: <1487270812-6882-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +23,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 15, 2017 at 10:05:33PM +0100, Marek Vasut wrote:
-> On 02/15/2017 05:06 AM, Marty Plummer wrote:
-> > Greetings.
-> > 
-> > Just wanted to report that the hisi-sfc spi nor driver is compatible
-> > with the Hi3521av100 SoC from Hisilicon. Odd that no hisilicon or huawei
-> > emails are listed as a maintainer for it.
-> > 
-> 
-> What does scripts/get-maintainer.pl show ?
-> 
-> -- 
-> Best regards,
-> Marek Vasut
+Changing brcmnand_set_wp() prototype in prepration for refactoring the nand
+write protect logic to add flash status byte check for the protection bit.
 
-Cyrille Pitchen <cyrille.pitchen@atmel.com> (maintainer:SPI NOR SUBSYSTEM)
-Marek Vasut <marek.vasut@gmail.com> (maintainer:SPI NOR SUBSYSTEM)
-David Woodhouse <dwmw2@infradead.org> (maintainer:MEMORY TECHNOLOGY DEVICES (MTD))
-Brian Norris <computersforpeace@gmail.com> (maintainer:MEMORY TECHNOLOGY DEVICES (MTD))
-Boris Brezillon <boris.brezillon@free-electrons.com> (maintainer:MEMORY TECHNOLOGY DEVICES (MTD))
-Richard Weinberger <richard@nod.at> (maintainer:MEMORY TECHNOLOGY DEVICES (MTD))
-linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM)
-linux-kernel@vger.kernel.org (open list)
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+ drivers/mtd/nand/brcmnand/brcmnand.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-^ exactly this.
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index 42ebd73..c7c4efe 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -765,11 +765,14 @@ enum {
+ 	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+ };
+ 
+-static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
++static int brcmnand_set_wp(struct brcmnand_host *host, int en)
+ {
++	struct brcmnand_controller *ctrl = host->ctrl;
+ 	u32 val = en ? CS_SELECT_NAND_WP : 0;
+ 
+ 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_SELECT, CS_SELECT_NAND_WP, 0, val);
++
++	return 0;
+ }
+ 
+ /***********************************************************************
+@@ -1029,7 +1032,7 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
+ 			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
+ 			old_wp = wp;
+ 		}
+-		brcmnand_set_wp(ctrl, wp);
++		brcmnand_set_wp(host, wp);
+ 	}
+ }
+ 
+@@ -2462,14 +2465,6 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 	/* Disable XOR addressing */
+ 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_XOR, 0xff, 0, 0);
+ 
+-	if (ctrl->features & BRCMNAND_HAS_WP) {
+-		/* Permanently disable write protection */
+-		if (wp_on == 2)
+-			brcmnand_set_wp(ctrl, false);
+-	} else {
+-		wp_on = 0;
+-	}
+-
+ 	/* IRQ */
+ 	ctrl->irq = platform_get_irq(pdev, 0);
+ 	if ((int)ctrl->irq < 0) {
+@@ -2522,6 +2517,18 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 			}
+ 
+ 			list_add_tail(&host->node, &ctrl->host_list);
++
++			if (ctrl->features & BRCMNAND_HAS_WP) {
++				/* Permanently disable write protection */
++				if (wp_on == 2) {
++					ret = brcmnand_set_wp(host, false);
++					if (ret)
++						goto err;
++				}
++			} else {
++				wp_on = 0;
++			}
++
+ 		}
+ 	}
+ 
+-- 
+1.9.1
