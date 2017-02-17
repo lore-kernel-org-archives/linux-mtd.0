@@ -1,28 +1,22 @@
+Received: from smtprelay0187.hostedemail.com ([216.40.44.187]
+ helo=smtprelay.hostedemail.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cecjI-0003j1-8e
+ for linux-mtd@lists.infradead.org; Fri, 17 Feb 2017 07:13:23 +0000
 From: Joe Perches <joe@perches.com>
-To: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Karol Herbst <karolherbst@gmail.com>, Pekka Paalanen <ppaalanen@gmail.com>,
- Richard Weinberger <richard@nod.at>, Fabio Estevam <fabio.estevam@nxp.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, tboot-devel@lists.sourceforge.net,
- nouveau@lists.freedesktop.org, oprofile-list@lists.sf.net,
- sfi-devel@simplefirmware.org, xen-devel@lists.xenproject.org,
- linux-acpi@vger.kernel.org, drbd-dev@lists.linbit.com,
- virtualization@lists.linux-foundation.org, linux-crypto@vger.kernel.org,
- linux-ide@vger.kernel.org, gigaset307x-common@lists.sourceforge.net,
- linux-media@vger.kernel.org, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- acpi4asus-user@lists.sourceforge.net, platform-driver-x86@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org
-Cc: linux-alpha@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net,
- linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: [PATCH 00/35] treewide trivial patches converting pr_warning to
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 24/35] drivers/mtd: Convert remaining uses of pr_warning to
  pr_warn
-Date: Thu, 16 Feb 2017 23:11:13 -0800
-Message-Id: <cover.1487314666.git.joe@perches.com>
+Date: Thu, 16 Feb 2017 23:11:37 -0800
+Message-Id: <10bf2a94655fb273ec96ec7b5e93bab8d0c8d17f.1487314667.git.joe@perches.com>
+In-Reply-To: <cover.1487314666.git.joe@perches.com>
+References: <cover.1487314666.git.joe@perches.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,183 +26,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are ~4300 uses of pr_warn and ~250 uses of the older
-pr_warning in the kernel source tree.
+To enable eventual removal of pr_warning
 
-Make the use of pr_warn consistent across all kernel files.
+This makes pr_warn use consistent for drivers/mtd
 
-This excludes all files in tools/ as there is a separate
-define pr_warning for that directory tree and pr_warn is
-not used in tools/.
+Prior to this patch, there were 7 uses of pr_warning and
+31 uses of pr_warn in drivers/mtd
 
-Done with 'sed s/\bpr_warning\b/pr_warn/' and some emacsing.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 12 ++++++++----
+ drivers/mtd/nand/cmx270_nand.c      |  4 ++--
+ drivers/mtd/ofpart.c                |  4 ++--
+ 3 files changed, 12 insertions(+), 8 deletions(-)
 
-Miscellanea:
-
-o Coalesce formats and realign arguments
-
-Some files not compiled - no cross-compilers
-
-Joe Perches (35):
-  alpha: Convert remaining uses of pr_warning to pr_warn
-  ARM: ep93xx: Convert remaining uses of pr_warning to pr_warn
-  arm64: Convert remaining uses of pr_warning to pr_warn
-  arch/blackfin: Convert remaining uses of pr_warning to pr_warn
-  ia64: Convert remaining use of pr_warning to pr_warn
-  powerpc: Convert remaining uses of pr_warning to pr_warn
-  sh: Convert remaining uses of pr_warning to pr_warn
-  sparc: Convert remaining use of pr_warning to pr_warn
-  x86: Convert remaining uses of pr_warning to pr_warn
-  drivers/acpi: Convert remaining uses of pr_warning to pr_warn
-  block/drbd: Convert remaining uses of pr_warning to pr_warn
-  gdrom: Convert remaining uses of pr_warning to pr_warn
-  drivers/char: Convert remaining use of pr_warning to pr_warn
-  clocksource: Convert remaining use of pr_warning to pr_warn
-  drivers/crypto: Convert remaining uses of pr_warning to pr_warn
-  fmc: Convert remaining use of pr_warning to pr_warn
-  drivers/gpu: Convert remaining uses of pr_warning to pr_warn
-  drivers/ide: Convert remaining uses of pr_warning to pr_warn
-  drivers/input: Convert remaining uses of pr_warning to pr_warn
-  drivers/isdn: Convert remaining uses of pr_warning to pr_warn
-  drivers/macintosh: Convert remaining uses of pr_warning to pr_warn
-  drivers/media: Convert remaining use of pr_warning to pr_warn
-  drivers/mfd: Convert remaining uses of pr_warning to pr_warn
-  drivers/mtd: Convert remaining uses of pr_warning to pr_warn
-  drivers/of: Convert remaining uses of pr_warning to pr_warn
-  drivers/oprofile: Convert remaining uses of pr_warning to pr_warn
-  drivers/platform: Convert remaining uses of pr_warning to pr_warn
-  drivers/rapidio: Convert remaining use of pr_warning to pr_warn
-  drivers/scsi: Convert remaining use of pr_warning to pr_warn
-  drivers/sh: Convert remaining use of pr_warning to pr_warn
-  drivers/tty: Convert remaining uses of pr_warning to pr_warn
-  drivers/video: Convert remaining uses of pr_warning to pr_warn
-  kernel/trace: Convert remaining uses of pr_warning to pr_warn
-  lib: Convert remaining uses of pr_warning to pr_warn
-  sound/soc: Convert remaining uses of pr_warning to pr_warn
-
- arch/alpha/kernel/perf_event.c                     |  4 +-
- arch/arm/mach-ep93xx/core.c                        |  4 +-
- arch/arm64/include/asm/syscall.h                   |  8 ++--
- arch/arm64/kernel/hw_breakpoint.c                  |  8 ++--
- arch/arm64/kernel/smp.c                            |  4 +-
- arch/blackfin/kernel/nmi.c                         |  2 +-
- arch/blackfin/kernel/ptrace.c                      |  2 +-
- arch/blackfin/mach-bf533/boards/stamp.c            |  2 +-
- arch/blackfin/mach-bf537/boards/cm_bf537e.c        |  2 +-
- arch/blackfin/mach-bf537/boards/cm_bf537u.c        |  2 +-
- arch/blackfin/mach-bf537/boards/stamp.c            |  2 +-
- arch/blackfin/mach-bf537/boards/tcm_bf537.c        |  2 +-
- arch/blackfin/mach-bf561/boards/cm_bf561.c         |  2 +-
- arch/blackfin/mach-bf561/boards/ezkit.c            |  2 +-
- arch/blackfin/mm/isram-driver.c                    |  4 +-
- arch/ia64/kernel/setup.c                           |  6 +--
- arch/powerpc/kernel/pci-common.c                   |  4 +-
- arch/powerpc/mm/init_64.c                          |  5 +--
- arch/powerpc/mm/mem.c                              |  3 +-
- arch/powerpc/platforms/512x/mpc512x_shared.c       |  4 +-
- arch/powerpc/platforms/85xx/socrates_fpga_pic.c    |  7 ++--
- arch/powerpc/platforms/86xx/mpc86xx_hpcn.c         |  2 +-
- arch/powerpc/platforms/pasemi/dma_lib.c            |  4 +-
- arch/powerpc/platforms/powernv/opal.c              |  8 ++--
- arch/powerpc/platforms/powernv/pci-ioda.c          | 10 ++---
- arch/powerpc/platforms/ps3/device-init.c           | 14 +++----
- arch/powerpc/platforms/ps3/mm.c                    |  4 +-
- arch/powerpc/platforms/ps3/os-area.c               |  2 +-
- arch/powerpc/platforms/pseries/iommu.c             |  8 ++--
- arch/powerpc/platforms/pseries/setup.c             |  4 +-
- arch/powerpc/sysdev/fsl_pci.c                      |  9 ++---
- arch/powerpc/sysdev/mpic.c                         | 10 ++---
- arch/powerpc/sysdev/xics/icp-native.c              | 10 ++---
- arch/powerpc/sysdev/xics/ics-opal.c                |  4 +-
- arch/powerpc/sysdev/xics/ics-rtas.c                |  4 +-
- arch/powerpc/sysdev/xics/xics-common.c             |  8 ++--
- arch/sh/boards/mach-sdk7786/nmi.c                  |  2 +-
- arch/sh/drivers/pci/fixups-sdk7786.c               |  2 +-
- arch/sh/kernel/io_trapped.c                        |  2 +-
- arch/sh/kernel/setup.c                             |  2 +-
- arch/sh/mm/consistent.c                            |  5 +--
- arch/sparc/kernel/smp_64.c                         |  5 +--
- arch/x86/kernel/amd_gart_64.c                      | 12 ++----
- arch/x86/kernel/apic/apic.c                        | 46 ++++++++++------------
- arch/x86/kernel/apic/apic_noop.c                   |  2 +-
- arch/x86/kernel/setup_percpu.c                     |  4 +-
- arch/x86/kernel/tboot.c                            | 15 ++++---
- arch/x86/kernel/tsc_sync.c                         |  8 ++--
- arch/x86/mm/kmmio.c                                |  8 ++--
- arch/x86/mm/mmio-mod.c                             |  5 +--
- arch/x86/mm/numa.c                                 | 12 +++---
- arch/x86/mm/numa_emulation.c                       |  6 +--
- arch/x86/mm/testmmiotrace.c                        |  5 +--
- arch/x86/oprofile/op_x86_model.h                   |  6 +--
- arch/x86/platform/olpc/olpc-xo15-sci.c             |  2 +-
- arch/x86/platform/sfi/sfi.c                        |  3 +-
- arch/x86/xen/debugfs.c                             |  2 +-
- arch/x86/xen/setup.c                               |  2 +-
- drivers/acpi/apei/apei-base.c                      | 32 +++++++--------
- drivers/acpi/apei/einj.c                           |  4 +-
- drivers/acpi/apei/erst-dbg.c                       |  4 +-
- drivers/acpi/apei/ghes.c                           | 30 +++++++-------
- drivers/acpi/apei/hest.c                           | 10 ++---
- drivers/acpi/resource.c                            |  4 +-
- drivers/block/drbd/drbd_nl.c                       | 13 +++---
- drivers/cdrom/gdrom.c                              |  4 +-
- drivers/char/virtio_console.c                      |  2 +-
- drivers/clocksource/samsung_pwm_timer.c            |  4 +-
- drivers/crypto/n2_core.c                           | 12 +++---
- drivers/fmc/fmc-fakedev.c                          |  2 +-
- drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c   |  2 +-
- drivers/gpu/drm/amd/powerplay/inc/pp_debug.h       |  2 +-
- drivers/gpu/drm/amd/powerplay/smumgr/fiji_smc.c    |  4 +-
- drivers/gpu/drm/amd/powerplay/smumgr/iceland_smc.c | 14 +++----
- .../gpu/drm/amd/powerplay/smumgr/polaris10_smc.c   |  4 +-
- drivers/gpu/drm/amd/powerplay/smumgr/tonga_smc.c   |  4 +-
- drivers/ide/tx4938ide.c                            |  2 +-
- drivers/ide/tx4939ide.c                            |  5 +--
- drivers/input/gameport/gameport.c                  |  4 +-
- drivers/input/joystick/gamecon.c                   |  3 +-
- drivers/input/misc/apanel.c                        |  3 +-
- drivers/input/misc/xen-kbdfront.c                  |  8 ++--
- drivers/input/serio/serio.c                        |  8 ++--
- drivers/isdn/gigaset/interface.c                   |  2 +-
- drivers/isdn/hardware/mISDN/avmfritz.c             | 17 ++++----
- drivers/isdn/hardware/mISDN/hfcmulti.c             |  8 ++--
- drivers/isdn/hardware/mISDN/hfcpci.c               |  4 +-
- drivers/isdn/hardware/mISDN/hfcsusb.c              |  4 +-
- drivers/isdn/hardware/mISDN/mISDNipac.c            |  4 +-
- drivers/isdn/hardware/mISDN/mISDNisar.c            | 10 ++---
- drivers/isdn/hardware/mISDN/netjet.c               |  8 ++--
- drivers/isdn/hardware/mISDN/w6692.c                | 12 +++---
- drivers/isdn/mISDN/hwchannel.c                     |  8 ++--
- drivers/macintosh/windfarm_fcu_controls.c          |  5 +--
- drivers/macintosh/windfarm_lm87_sensor.c           |  4 +-
- drivers/macintosh/windfarm_pm72.c                  | 22 +++++------
- drivers/macintosh/windfarm_rm31.c                  |  6 +--
- drivers/media/platform/sh_vou.c                    |  4 +-
- drivers/mfd/db8500-prcmu.c                         |  2 +-
- drivers/mfd/sta2x11-mfd.c                          |  4 +-
- drivers/mfd/twl4030-power.c                        |  7 +---
- drivers/mtd/chips/cfi_cmdset_0002.c                | 12 ++++--
- drivers/mtd/nand/cmx270_nand.c                     |  4 +-
- drivers/mtd/ofpart.c                               |  4 +-
- drivers/of/fdt.c                                   | 20 +++++-----
- drivers/oprofile/oprofile_perf.c                   |  8 ++--
- drivers/platform/x86/asus-laptop.c                 |  2 +-
- drivers/platform/x86/eeepc-laptop.c                |  2 +-
- drivers/platform/x86/intel_oaktrail.c              | 10 ++---
- drivers/rapidio/rio-sysfs.c                        |  4 +-
- drivers/scsi/a3000.c                               |  2 +-
- drivers/sh/intc/core.c                             |  4 +-
- drivers/tty/hvc/hvcs.c                             |  2 +-
- drivers/tty/tty_io.c                               |  4 +-
- drivers/video/fbdev/aty/radeon_base.c              |  4 +-
- drivers/video/fbdev/core/fbmon.c                   |  4 +-
- drivers/video/fbdev/pxafb.c                        |  7 ++--
- kernel/trace/trace_benchmark.c                     |  4 +-
- lib/cpu_rmap.c                                     |  2 +-
- lib/dma-debug.c                                    |  2 +-
- sound/soc/fsl/imx-audmux.c                         |  6 +--
- sound/soc/samsung/s3c-i2s-v2.c                     |  6 +--
- 122 files changed, 367 insertions(+), 397 deletions(-)
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 9dca881bb378..56aa6b75213d 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -323,7 +323,8 @@ static void fixup_sst38vf640x_sectorsize(struct mtd_info *mtd)
+ 	 * it should report a size of 8KBytes (0x0020*256).
+ 	 */
+ 	cfi->cfiq->EraseRegionInfo[0] = 0x002003ff;
+-	pr_warning("%s: Bad 38VF640x CFI data; adjusting sector size from 64 to 8KiB\n", mtd->name);
++	pr_warn("%s: Bad 38VF640x CFI data; adjusting sector size from 64 to 8KiB\n",
++		mtd->name);
+ }
+ 
+ static void fixup_s29gl064n_sectors(struct mtd_info *mtd)
+@@ -333,7 +334,8 @@ static void fixup_s29gl064n_sectors(struct mtd_info *mtd)
+ 
+ 	if ((cfi->cfiq->EraseRegionInfo[0] & 0xffff) == 0x003f) {
+ 		cfi->cfiq->EraseRegionInfo[0] |= 0x0040;
+-		pr_warning("%s: Bad S29GL064N CFI data; adjust from 64 to 128 sectors\n", mtd->name);
++		pr_warn("%s: Bad S29GL064N CFI data; adjust from 64 to 128 sectors\n",
++			mtd->name);
+ 	}
+ }
+ 
+@@ -344,7 +346,8 @@ static void fixup_s29gl032n_sectors(struct mtd_info *mtd)
+ 
+ 	if ((cfi->cfiq->EraseRegionInfo[1] & 0xffff) == 0x007e) {
+ 		cfi->cfiq->EraseRegionInfo[1] &= ~0x0040;
+-		pr_warning("%s: Bad S29GL032N CFI data; adjust from 127 to 63 sectors\n", mtd->name);
++		pr_warn("%s: Bad S29GL032N CFI data; adjust from 127 to 63 sectors\n",
++			mtd->name);
+ 	}
+ }
+ 
+@@ -358,7 +361,8 @@ static void fixup_s29ns512p_sectors(struct mtd_info *mtd)
+ 	 * which is not permitted by CFI.
+ 	 */
+ 	cfi->cfiq->EraseRegionInfo[0] = 0x020001ff;
+-	pr_warning("%s: Bad S29NS512P CFI data; adjust to 512 sectors\n", mtd->name);
++	pr_warn("%s: Bad S29NS512P CFI data; adjust to 512 sectors\n",
++		mtd->name);
+ }
+ 
+ /* Used to fix CFI-Tables of chips without Extended Query Tables */
+diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
+index 226ac0bcafc6..949b9400dcb7 100644
+--- a/drivers/mtd/nand/cmx270_nand.c
++++ b/drivers/mtd/nand/cmx270_nand.c
+@@ -145,7 +145,7 @@ static int __init cmx270_init(void)
+ 
+ 	ret = gpio_request(GPIO_NAND_CS, "NAND CS");
+ 	if (ret) {
+-		pr_warning("CM-X270: failed to request NAND CS gpio\n");
++		pr_warn("CM-X270: failed to request NAND CS gpio\n");
+ 		return ret;
+ 	}
+ 
+@@ -153,7 +153,7 @@ static int __init cmx270_init(void)
+ 
+ 	ret = gpio_request(GPIO_NAND_RB, "NAND R/B");
+ 	if (ret) {
+-		pr_warning("CM-X270: failed to request NAND R/B gpio\n");
++		pr_warn("CM-X270: failed to request NAND R/B gpio\n");
+ 		goto err_gpio_request;
+ 	}
+ 
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 464470122493..2861c7079d7b 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -166,8 +166,8 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
+ 	if (!part)
+ 		return 0; /* No partitions found */
+ 
+-	pr_warning("Device tree uses obsolete partition map binding: %s\n",
+-			dp->full_name);
++	pr_warn("Device tree uses obsolete partition map binding: %s\n",
++		dp->full_name);
+ 
+ 	nr_parts = plen / sizeof(part[0]);
+ 
 -- 
 2.10.0.rc2.1.g053435c
