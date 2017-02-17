@@ -1,22 +1,41 @@
-Received: from smtprelay0187.hostedemail.com ([216.40.44.187]
- helo=smtprelay.hostedemail.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cecjI-0003j1-8e
- for linux-mtd@lists.infradead.org; Fri, 17 Feb 2017 07:13:23 +0000
-From: Joe Perches <joe@perches.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 24/35] drivers/mtd: Convert remaining uses of pr_warning to
- pr_warn
-Date: Thu, 16 Feb 2017 23:11:37 -0800
-Message-Id: <10bf2a94655fb273ec96ec7b5e93bab8d0c8d17f.1487314667.git.joe@perches.com>
+MIME-Version: 1.0
+Sender: rjwysocki@gmail.com
 In-Reply-To: <cover.1487314666.git.joe@perches.com>
 References: <cover.1487314666.git.joe@perches.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 17 Feb 2017 13:27:00 +0100
+Message-ID: <CAJZ5v0gNcGtnXpE1n6LSq7ey+UDKx+oQfmTg0_PgFwzB0Dd_5A@mail.gmail.com>
+Subject: Re: [PATCH 00/35] treewide trivial patches converting pr_warning to
+ pr_warn
+To: Joe Perches <joe@perches.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Karol Herbst <karolherbst@gmail.com>, Pekka Paalanen <ppaalanen@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Fabio Estevam <fabio.estevam@nxp.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, tboot-devel@lists.sourceforge.net,
+ nouveau@lists.freedesktop.org, oprofile-list@lists.sf.net,
+ sfi-devel@simplefirmware.org, xen-devel@lists.xenproject.org,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>, drbd-dev@lists.linbit.com,
+ virtualization@lists.linux-foundation.org, linux-crypto@vger.kernel.org,
+ linux-ide@vger.kernel.org, gigaset307x-common@lists.sourceforge.net,
+ linux-media@vger.kernel.org,
+ Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+ linux-mtd@lists.infradead.org,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ acpi4asus-user@lists.sourceforge.net,
+ platform-driver-x86@vger.kernel.org,
+ "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+ "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+ "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, linux-alpha@vger.kernel.org,
+ adi-buildroot-devel@lists.sourceforge.net,
+ "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ sparclinux@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ dri-devel <dri-devel@lists.freedesktop.org>, linux-input@vger.kernel.org,
+ netdev@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,100 +45,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To enable eventual removal of pr_warning
+On Fri, Feb 17, 2017 at 8:11 AM, Joe Perches <joe@perches.com> wrote:
+> There are ~4300 uses of pr_warn and ~250 uses of the older
+> pr_warning in the kernel source tree.
+>
+> Make the use of pr_warn consistent across all kernel files.
+>
+> This excludes all files in tools/ as there is a separate
+> define pr_warning for that directory tree and pr_warn is
+> not used in tools/.
+>
+> Done with 'sed s/\bpr_warning\b/pr_warn/' and some emacsing.
 
-This makes pr_warn use consistent for drivers/mtd
+Sorry about asking if that has been asked already.
 
-Prior to this patch, there were 7 uses of pr_warning and
-31 uses of pr_warn in drivers/mtd
+Wouldn't it be slightly less intrusive to simply redefined
+pr_warning() as a synonym for pr_warn()?
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 12 ++++++++----
- drivers/mtd/nand/cmx270_nand.c      |  4 ++--
- drivers/mtd/ofpart.c                |  4 ++--
- 3 files changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 9dca881bb378..56aa6b75213d 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -323,7 +323,8 @@ static void fixup_sst38vf640x_sectorsize(struct mtd_info *mtd)
- 	 * it should report a size of 8KBytes (0x0020*256).
- 	 */
- 	cfi->cfiq->EraseRegionInfo[0] = 0x002003ff;
--	pr_warning("%s: Bad 38VF640x CFI data; adjusting sector size from 64 to 8KiB\n", mtd->name);
-+	pr_warn("%s: Bad 38VF640x CFI data; adjusting sector size from 64 to 8KiB\n",
-+		mtd->name);
- }
- 
- static void fixup_s29gl064n_sectors(struct mtd_info *mtd)
-@@ -333,7 +334,8 @@ static void fixup_s29gl064n_sectors(struct mtd_info *mtd)
- 
- 	if ((cfi->cfiq->EraseRegionInfo[0] & 0xffff) == 0x003f) {
- 		cfi->cfiq->EraseRegionInfo[0] |= 0x0040;
--		pr_warning("%s: Bad S29GL064N CFI data; adjust from 64 to 128 sectors\n", mtd->name);
-+		pr_warn("%s: Bad S29GL064N CFI data; adjust from 64 to 128 sectors\n",
-+			mtd->name);
- 	}
- }
- 
-@@ -344,7 +346,8 @@ static void fixup_s29gl032n_sectors(struct mtd_info *mtd)
- 
- 	if ((cfi->cfiq->EraseRegionInfo[1] & 0xffff) == 0x007e) {
- 		cfi->cfiq->EraseRegionInfo[1] &= ~0x0040;
--		pr_warning("%s: Bad S29GL032N CFI data; adjust from 127 to 63 sectors\n", mtd->name);
-+		pr_warn("%s: Bad S29GL032N CFI data; adjust from 127 to 63 sectors\n",
-+			mtd->name);
- 	}
- }
- 
-@@ -358,7 +361,8 @@ static void fixup_s29ns512p_sectors(struct mtd_info *mtd)
- 	 * which is not permitted by CFI.
- 	 */
- 	cfi->cfiq->EraseRegionInfo[0] = 0x020001ff;
--	pr_warning("%s: Bad S29NS512P CFI data; adjust to 512 sectors\n", mtd->name);
-+	pr_warn("%s: Bad S29NS512P CFI data; adjust to 512 sectors\n",
-+		mtd->name);
- }
- 
- /* Used to fix CFI-Tables of chips without Extended Query Tables */
-diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
-index 226ac0bcafc6..949b9400dcb7 100644
---- a/drivers/mtd/nand/cmx270_nand.c
-+++ b/drivers/mtd/nand/cmx270_nand.c
-@@ -145,7 +145,7 @@ static int __init cmx270_init(void)
- 
- 	ret = gpio_request(GPIO_NAND_CS, "NAND CS");
- 	if (ret) {
--		pr_warning("CM-X270: failed to request NAND CS gpio\n");
-+		pr_warn("CM-X270: failed to request NAND CS gpio\n");
- 		return ret;
- 	}
- 
-@@ -153,7 +153,7 @@ static int __init cmx270_init(void)
- 
- 	ret = gpio_request(GPIO_NAND_RB, "NAND R/B");
- 	if (ret) {
--		pr_warning("CM-X270: failed to request NAND R/B gpio\n");
-+		pr_warn("CM-X270: failed to request NAND R/B gpio\n");
- 		goto err_gpio_request;
- 	}
- 
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 464470122493..2861c7079d7b 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -166,8 +166,8 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
- 	if (!part)
- 		return 0; /* No partitions found */
- 
--	pr_warning("Device tree uses obsolete partition map binding: %s\n",
--			dp->full_name);
-+	pr_warn("Device tree uses obsolete partition map binding: %s\n",
-+		dp->full_name);
- 
- 	nr_parts = plen / sizeof(part[0]);
- 
--- 
-2.10.0.rc2.1.g053435c
+Thanks,
+Rafael
