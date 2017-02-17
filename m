@@ -1,22 +1,28 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ceR6l-0000Dk-PH
- for linux-mtd@lists.infradead.org; Thu, 16 Feb 2017 18:48:53 +0000
-Received: by mail-wr0-x241.google.com with SMTP id z61so2324979wrc.3
- for <linux-mtd@lists.infradead.org>; Thu, 16 Feb 2017 10:48:27 -0800 (PST)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@atmel.com, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH V2,
- 2/2] mtd: nand: brcmnand: Check flash #WP pin status before nand
- erase/program
-Date: Thu, 16 Feb 2017 13:46:52 -0500
-Message-Id: <1487270812-6882-2-git-send-email-kdasu.kdev@gmail.com>
-In-Reply-To: <1487270812-6882-1-git-send-email-kdasu.kdev@gmail.com>
-References: <1487270812-6882-1-git-send-email-kdasu.kdev@gmail.com>
+From: Joe Perches <joe@perches.com>
+To: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Karol Herbst <karolherbst@gmail.com>, Pekka Paalanen <ppaalanen@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Fabio Estevam <fabio.estevam@nxp.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, tboot-devel@lists.sourceforge.net,
+ nouveau@lists.freedesktop.org, oprofile-list@lists.sf.net,
+ sfi-devel@simplefirmware.org, xen-devel@lists.xenproject.org,
+ linux-acpi@vger.kernel.org, drbd-dev@lists.linbit.com,
+ virtualization@lists.linux-foundation.org, linux-crypto@vger.kernel.org,
+ linux-ide@vger.kernel.org, gigaset307x-common@lists.sourceforge.net,
+ linux-media@vger.kernel.org, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ acpi4asus-user@lists.sourceforge.net, platform-driver-x86@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Cc: linux-alpha@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net,
+ linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: [PATCH 00/35] treewide trivial patches converting pr_warning to
+ pr_warn
+Date: Thu, 16 Feb 2017 23:11:13 -0800
+Message-Id: <cover.1487314666.git.joe@perches.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,103 +32,183 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-brcmnand controller v6.x and v7.x lets driver to enable disable #WP pin
-via NAND_WP bit in CS_SELECT register. Driver implementation assumes that
-setting/resetting the bit would assert/de-assert  #WP pin instantaneously
-from the flash part's perspective, and was proceeding to erase/program
-without verifying flash status byte for protection bit. In rigorous
-testing this was causing rare data corruptions with erase and/or
-subsequent programming. To fix this added verification logic to
-brcmandn_wp_set() by reading  flash status and verifying protection bit
-indicating #WP pin status.  The new logic makes sure controller as well
-as the flash is ready to accept commands.
+There are ~4300 uses of pr_warn and ~250 uses of the older
+pr_warning in the kernel source tree.
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/mtd/nand/brcmnand/brcmnand.c | 53 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 51 insertions(+), 2 deletions(-)
+Make the use of pr_warn consistent across all kernel files.
 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index c7c4efe..2f082a3 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
- #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
- #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
- 
-+#define FLASH_RDY	(NAND_STATUS_READY)
-+#define NAND_CTRL_RDY	(INTFC_CTLR_READY | INTFC_FLASH_READY)
-+
- /* Controller feature flags */
- enum {
- 	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
-@@ -765,12 +768,57 @@ enum {
- 	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
- };
- 
--static int brcmnand_set_wp(struct brcmnand_host *host, int en)
-+static void bcmnand_ctrl_busy_poll(struct brcmnand_controller *ctrl, u32 mask)
-+{
-+	unsigned long timeout = jiffies + msecs_to_jiffies(200);
-+
-+	while ((brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS) & mask) !=
-+		mask) {
-+		if (time_after(jiffies, timeout)) {
-+			dev_warn(ctrl->dev, "timeout on ctrl_ready\n");
-+			break;
-+		}
-+		cpu_relax();
-+	}
-+}
-+
-+static inline void brcmnand_set_wp_reg(struct brcmnand_controller *ctrl, int en)
- {
--	struct brcmnand_controller *ctrl = host->ctrl;
- 	u32 val = en ? CS_SELECT_NAND_WP : 0;
- 
- 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_SELECT, CS_SELECT_NAND_WP, 0, val);
-+}
-+
-+static int brcmnand_set_wp(struct brcmnand_host *host, int en)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	struct mtd_info *mtd = nand_to_mtd(&host->chip);
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	u32 sts_reg;
-+	bool is_wp;
-+
-+	/*
-+	 * make sure ctrl/flash ready before and after
-+	 * changing state of WP PIN
-+	 */
-+	bcmnand_ctrl_busy_poll(ctrl, NAND_CTRL_RDY | FLASH_RDY);
-+	brcmnand_set_wp_reg(ctrl, en);
-+	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-+	bcmnand_ctrl_busy_poll(ctrl, NAND_CTRL_RDY | FLASH_RDY);
-+	sts_reg = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
-+	/* NAND_STATUS_WP 0x80 = not protected, 0x00 = protected */
-+	is_wp = (sts_reg & NAND_STATUS_WP) ? false : true;
-+
-+	if (is_wp != en) {
-+		u32 nand_wp = brcmnand_read_reg(ctrl, BRCMNAND_CS_SELECT);
-+
-+		nand_wp &= CS_SELECT_NAND_WP;
-+		dev_err_ratelimited(&host->pdev->dev,
-+				    "#WP %s sts:0x%x expected %s NAND_WP 0x%x\n",
-+				    is_wp ? "On" : "Off",  sts_reg & 0xff,
-+				    en ? "On" : "Off", nand_wp ? 1 : 0);
-+		return -EINVAL;
-+	}
- 
- 	return 0;
- }
-@@ -1167,6 +1215,7 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
- 	BUG_ON(ctrl->cmd_pending != 0);
- 	ctrl->cmd_pending = cmd;
- 
-+	bcmnand_ctrl_busy_poll(ctrl, NAND_CTRL_RDY);
- 	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
- 	WARN_ON(!(intfc & INTFC_CTLR_READY));
- 
+This excludes all files in tools/ as there is a separate
+define pr_warning for that directory tree and pr_warn is
+not used in tools/.
+
+Done with 'sed s/\bpr_warning\b/pr_warn/' and some emacsing.
+
+Miscellanea:
+
+o Coalesce formats and realign arguments
+
+Some files not compiled - no cross-compilers
+
+Joe Perches (35):
+  alpha: Convert remaining uses of pr_warning to pr_warn
+  ARM: ep93xx: Convert remaining uses of pr_warning to pr_warn
+  arm64: Convert remaining uses of pr_warning to pr_warn
+  arch/blackfin: Convert remaining uses of pr_warning to pr_warn
+  ia64: Convert remaining use of pr_warning to pr_warn
+  powerpc: Convert remaining uses of pr_warning to pr_warn
+  sh: Convert remaining uses of pr_warning to pr_warn
+  sparc: Convert remaining use of pr_warning to pr_warn
+  x86: Convert remaining uses of pr_warning to pr_warn
+  drivers/acpi: Convert remaining uses of pr_warning to pr_warn
+  block/drbd: Convert remaining uses of pr_warning to pr_warn
+  gdrom: Convert remaining uses of pr_warning to pr_warn
+  drivers/char: Convert remaining use of pr_warning to pr_warn
+  clocksource: Convert remaining use of pr_warning to pr_warn
+  drivers/crypto: Convert remaining uses of pr_warning to pr_warn
+  fmc: Convert remaining use of pr_warning to pr_warn
+  drivers/gpu: Convert remaining uses of pr_warning to pr_warn
+  drivers/ide: Convert remaining uses of pr_warning to pr_warn
+  drivers/input: Convert remaining uses of pr_warning to pr_warn
+  drivers/isdn: Convert remaining uses of pr_warning to pr_warn
+  drivers/macintosh: Convert remaining uses of pr_warning to pr_warn
+  drivers/media: Convert remaining use of pr_warning to pr_warn
+  drivers/mfd: Convert remaining uses of pr_warning to pr_warn
+  drivers/mtd: Convert remaining uses of pr_warning to pr_warn
+  drivers/of: Convert remaining uses of pr_warning to pr_warn
+  drivers/oprofile: Convert remaining uses of pr_warning to pr_warn
+  drivers/platform: Convert remaining uses of pr_warning to pr_warn
+  drivers/rapidio: Convert remaining use of pr_warning to pr_warn
+  drivers/scsi: Convert remaining use of pr_warning to pr_warn
+  drivers/sh: Convert remaining use of pr_warning to pr_warn
+  drivers/tty: Convert remaining uses of pr_warning to pr_warn
+  drivers/video: Convert remaining uses of pr_warning to pr_warn
+  kernel/trace: Convert remaining uses of pr_warning to pr_warn
+  lib: Convert remaining uses of pr_warning to pr_warn
+  sound/soc: Convert remaining uses of pr_warning to pr_warn
+
+ arch/alpha/kernel/perf_event.c                     |  4 +-
+ arch/arm/mach-ep93xx/core.c                        |  4 +-
+ arch/arm64/include/asm/syscall.h                   |  8 ++--
+ arch/arm64/kernel/hw_breakpoint.c                  |  8 ++--
+ arch/arm64/kernel/smp.c                            |  4 +-
+ arch/blackfin/kernel/nmi.c                         |  2 +-
+ arch/blackfin/kernel/ptrace.c                      |  2 +-
+ arch/blackfin/mach-bf533/boards/stamp.c            |  2 +-
+ arch/blackfin/mach-bf537/boards/cm_bf537e.c        |  2 +-
+ arch/blackfin/mach-bf537/boards/cm_bf537u.c        |  2 +-
+ arch/blackfin/mach-bf537/boards/stamp.c            |  2 +-
+ arch/blackfin/mach-bf537/boards/tcm_bf537.c        |  2 +-
+ arch/blackfin/mach-bf561/boards/cm_bf561.c         |  2 +-
+ arch/blackfin/mach-bf561/boards/ezkit.c            |  2 +-
+ arch/blackfin/mm/isram-driver.c                    |  4 +-
+ arch/ia64/kernel/setup.c                           |  6 +--
+ arch/powerpc/kernel/pci-common.c                   |  4 +-
+ arch/powerpc/mm/init_64.c                          |  5 +--
+ arch/powerpc/mm/mem.c                              |  3 +-
+ arch/powerpc/platforms/512x/mpc512x_shared.c       |  4 +-
+ arch/powerpc/platforms/85xx/socrates_fpga_pic.c    |  7 ++--
+ arch/powerpc/platforms/86xx/mpc86xx_hpcn.c         |  2 +-
+ arch/powerpc/platforms/pasemi/dma_lib.c            |  4 +-
+ arch/powerpc/platforms/powernv/opal.c              |  8 ++--
+ arch/powerpc/platforms/powernv/pci-ioda.c          | 10 ++---
+ arch/powerpc/platforms/ps3/device-init.c           | 14 +++----
+ arch/powerpc/platforms/ps3/mm.c                    |  4 +-
+ arch/powerpc/platforms/ps3/os-area.c               |  2 +-
+ arch/powerpc/platforms/pseries/iommu.c             |  8 ++--
+ arch/powerpc/platforms/pseries/setup.c             |  4 +-
+ arch/powerpc/sysdev/fsl_pci.c                      |  9 ++---
+ arch/powerpc/sysdev/mpic.c                         | 10 ++---
+ arch/powerpc/sysdev/xics/icp-native.c              | 10 ++---
+ arch/powerpc/sysdev/xics/ics-opal.c                |  4 +-
+ arch/powerpc/sysdev/xics/ics-rtas.c                |  4 +-
+ arch/powerpc/sysdev/xics/xics-common.c             |  8 ++--
+ arch/sh/boards/mach-sdk7786/nmi.c                  |  2 +-
+ arch/sh/drivers/pci/fixups-sdk7786.c               |  2 +-
+ arch/sh/kernel/io_trapped.c                        |  2 +-
+ arch/sh/kernel/setup.c                             |  2 +-
+ arch/sh/mm/consistent.c                            |  5 +--
+ arch/sparc/kernel/smp_64.c                         |  5 +--
+ arch/x86/kernel/amd_gart_64.c                      | 12 ++----
+ arch/x86/kernel/apic/apic.c                        | 46 ++++++++++------------
+ arch/x86/kernel/apic/apic_noop.c                   |  2 +-
+ arch/x86/kernel/setup_percpu.c                     |  4 +-
+ arch/x86/kernel/tboot.c                            | 15 ++++---
+ arch/x86/kernel/tsc_sync.c                         |  8 ++--
+ arch/x86/mm/kmmio.c                                |  8 ++--
+ arch/x86/mm/mmio-mod.c                             |  5 +--
+ arch/x86/mm/numa.c                                 | 12 +++---
+ arch/x86/mm/numa_emulation.c                       |  6 +--
+ arch/x86/mm/testmmiotrace.c                        |  5 +--
+ arch/x86/oprofile/op_x86_model.h                   |  6 +--
+ arch/x86/platform/olpc/olpc-xo15-sci.c             |  2 +-
+ arch/x86/platform/sfi/sfi.c                        |  3 +-
+ arch/x86/xen/debugfs.c                             |  2 +-
+ arch/x86/xen/setup.c                               |  2 +-
+ drivers/acpi/apei/apei-base.c                      | 32 +++++++--------
+ drivers/acpi/apei/einj.c                           |  4 +-
+ drivers/acpi/apei/erst-dbg.c                       |  4 +-
+ drivers/acpi/apei/ghes.c                           | 30 +++++++-------
+ drivers/acpi/apei/hest.c                           | 10 ++---
+ drivers/acpi/resource.c                            |  4 +-
+ drivers/block/drbd/drbd_nl.c                       | 13 +++---
+ drivers/cdrom/gdrom.c                              |  4 +-
+ drivers/char/virtio_console.c                      |  2 +-
+ drivers/clocksource/samsung_pwm_timer.c            |  4 +-
+ drivers/crypto/n2_core.c                           | 12 +++---
+ drivers/fmc/fmc-fakedev.c                          |  2 +-
+ drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c   |  2 +-
+ drivers/gpu/drm/amd/powerplay/inc/pp_debug.h       |  2 +-
+ drivers/gpu/drm/amd/powerplay/smumgr/fiji_smc.c    |  4 +-
+ drivers/gpu/drm/amd/powerplay/smumgr/iceland_smc.c | 14 +++----
+ .../gpu/drm/amd/powerplay/smumgr/polaris10_smc.c   |  4 +-
+ drivers/gpu/drm/amd/powerplay/smumgr/tonga_smc.c   |  4 +-
+ drivers/ide/tx4938ide.c                            |  2 +-
+ drivers/ide/tx4939ide.c                            |  5 +--
+ drivers/input/gameport/gameport.c                  |  4 +-
+ drivers/input/joystick/gamecon.c                   |  3 +-
+ drivers/input/misc/apanel.c                        |  3 +-
+ drivers/input/misc/xen-kbdfront.c                  |  8 ++--
+ drivers/input/serio/serio.c                        |  8 ++--
+ drivers/isdn/gigaset/interface.c                   |  2 +-
+ drivers/isdn/hardware/mISDN/avmfritz.c             | 17 ++++----
+ drivers/isdn/hardware/mISDN/hfcmulti.c             |  8 ++--
+ drivers/isdn/hardware/mISDN/hfcpci.c               |  4 +-
+ drivers/isdn/hardware/mISDN/hfcsusb.c              |  4 +-
+ drivers/isdn/hardware/mISDN/mISDNipac.c            |  4 +-
+ drivers/isdn/hardware/mISDN/mISDNisar.c            | 10 ++---
+ drivers/isdn/hardware/mISDN/netjet.c               |  8 ++--
+ drivers/isdn/hardware/mISDN/w6692.c                | 12 +++---
+ drivers/isdn/mISDN/hwchannel.c                     |  8 ++--
+ drivers/macintosh/windfarm_fcu_controls.c          |  5 +--
+ drivers/macintosh/windfarm_lm87_sensor.c           |  4 +-
+ drivers/macintosh/windfarm_pm72.c                  | 22 +++++------
+ drivers/macintosh/windfarm_rm31.c                  |  6 +--
+ drivers/media/platform/sh_vou.c                    |  4 +-
+ drivers/mfd/db8500-prcmu.c                         |  2 +-
+ drivers/mfd/sta2x11-mfd.c                          |  4 +-
+ drivers/mfd/twl4030-power.c                        |  7 +---
+ drivers/mtd/chips/cfi_cmdset_0002.c                | 12 ++++--
+ drivers/mtd/nand/cmx270_nand.c                     |  4 +-
+ drivers/mtd/ofpart.c                               |  4 +-
+ drivers/of/fdt.c                                   | 20 +++++-----
+ drivers/oprofile/oprofile_perf.c                   |  8 ++--
+ drivers/platform/x86/asus-laptop.c                 |  2 +-
+ drivers/platform/x86/eeepc-laptop.c                |  2 +-
+ drivers/platform/x86/intel_oaktrail.c              | 10 ++---
+ drivers/rapidio/rio-sysfs.c                        |  4 +-
+ drivers/scsi/a3000.c                               |  2 +-
+ drivers/sh/intc/core.c                             |  4 +-
+ drivers/tty/hvc/hvcs.c                             |  2 +-
+ drivers/tty/tty_io.c                               |  4 +-
+ drivers/video/fbdev/aty/radeon_base.c              |  4 +-
+ drivers/video/fbdev/core/fbmon.c                   |  4 +-
+ drivers/video/fbdev/pxafb.c                        |  7 ++--
+ kernel/trace/trace_benchmark.c                     |  4 +-
+ lib/cpu_rmap.c                                     |  2 +-
+ lib/dma-debug.c                                    |  2 +-
+ sound/soc/fsl/imx-audmux.c                         |  6 +--
+ sound/soc/samsung/s3c-i2s-v2.c                     |  6 +--
+ 122 files changed, 367 insertions(+), 397 deletions(-)
+
 -- 
-1.9.1
+2.10.0.rc2.1.g053435c
