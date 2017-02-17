@@ -1,49 +1,24 @@
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ceqJr-00034n-I2
+ for linux-mtd@lists.infradead.org; Fri, 17 Feb 2017 21:44:01 +0000
+Received: by mail-wr0-x242.google.com with SMTP id q39so6494161wrb.2
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Feb 2017 13:43:38 -0800 (PST)
+Subject: Re: mtd: spi-nor: hisi-sfc compatibility report
+To: Marty Plummer <netz.kernel@gmail.com>
+References: <20170215040646.hscl2kuc5nuvbel3@tha-monstah.mydomain>
+ <e90185e2-db9e-0f1f-df44-1015f8950b36@gmail.com>
+ <20170216162854.hagnxukontcgkykn@tha-monstah.mydomain>
+Cc: linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <77ad543d-3436-0151-c22c-23966cb6f34d@gmail.com>
+Date: Fri, 17 Feb 2017 22:28:07 +0100
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <CAJZ5v0gNcGtnXpE1n6LSq7ey+UDKx+oQfmTg0_PgFwzB0Dd_5A@mail.gmail.com>
-References: <cover.1487314666.git.joe@perches.com>
- <CAJZ5v0gNcGtnXpE1n6LSq7ey+UDKx+oQfmTg0_PgFwzB0Dd_5A@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 17 Feb 2017 13:37:33 +0100
-Message-ID: <CAMuHMdWsG0DboaLqXag53Vejwvc5PPY2k2gy9PSdHWbNEx6nRQ@mail.gmail.com>
-Subject: Re: [PATCH 00/35] treewide trivial patches converting pr_warning to
- pr_warn
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Joe Perches <joe@perches.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Karol Herbst <karolherbst@gmail.com>,
- Pekka Paalanen <ppaalanen@gmail.com>, Richard Weinberger <richard@nod.at>,
- Fabio Estevam <fabio.estevam@nxp.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, tboot-devel@lists.sourceforge.net,
- nouveau@lists.freedesktop.org, oprofile-list@lists.sf.net,
- sfi-devel@simplefirmware.org, xen-devel@lists.xenproject.org,
- ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
- Lars Ellenberg <drbd-dev@lists.linbit.com>,
- virtualization@lists.linux-foundation.org,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
- gigaset307x-common@lists.sourceforge.net,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- acpi4asus-user@lists.sourceforge.net,
- platform-driver-x86@vger.kernel.org,
- "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
- "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, alpha <linux-alpha@vger.kernel.org>,
- "adi-buildroot-devel@lists.sourceforge.net"
- <adi-buildroot-devel@lists.sourceforge.net>,
- "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- sparclinux <sparclinux@vger.kernel.org>, amd-gfx@lists.freedesktop.org,
- dri-devel <dri-devel@lists.freedesktop.org>,
- "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20170216162854.hagnxukontcgkykn@tha-monstah.mydomain>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -53,38 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rafael,
-
-On Fri, Feb 17, 2017 at 1:27 PM, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> On Fri, Feb 17, 2017 at 8:11 AM, Joe Perches <joe@perches.com> wrote:
->> There are ~4300 uses of pr_warn and ~250 uses of the older
->> pr_warning in the kernel source tree.
+On 02/16/2017 05:28 PM, Marty Plummer wrote:
+> On Wed, Feb 15, 2017 at 10:05:33PM +0100, Marek Vasut wrote:
+>> On 02/15/2017 05:06 AM, Marty Plummer wrote:
+>>> Greetings.
+>>>
+>>> Just wanted to report that the hisi-sfc spi nor driver is compatible
+>>> with the Hi3521av100 SoC from Hisilicon. Odd that no hisilicon or huawei
+>>> emails are listed as a maintainer for it.
+>>>
 >>
->> Make the use of pr_warn consistent across all kernel files.
+>> What does scripts/get-maintainer.pl show ?
 >>
->> This excludes all files in tools/ as there is a separate
->> define pr_warning for that directory tree and pr_warn is
->> not used in tools/.
->>
->> Done with 'sed s/\bpr_warning\b/pr_warn/' and some emacsing.
->
-> Sorry about asking if that has been asked already.
->
-> Wouldn't it be slightly less intrusive to simply redefined
-> pr_warning() as a synonym for pr_warn()?
+>> -- 
+>> Best regards,
+>> Marek Vasut
+> 
+> Cyrille Pitchen <cyrille.pitchen@atmel.com> (maintainer:SPI NOR SUBSYSTEM)
+> Marek Vasut <marek.vasut@gmail.com> (maintainer:SPI NOR SUBSYSTEM)
+> David Woodhouse <dwmw2@infradead.org> (maintainer:MEMORY TECHNOLOGY DEVICES (MTD))
+> Brian Norris <computersforpeace@gmail.com> (maintainer:MEMORY TECHNOLOGY DEVICES (MTD))
+> Boris Brezillon <boris.brezillon@free-electrons.com> (maintainer:MEMORY TECHNOLOGY DEVICES (MTD))
+> Richard Weinberger <richard@nod.at> (maintainer:MEMORY TECHNOLOGY DEVICES (MTD))
+> linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM)
+> linux-kernel@vger.kernel.org (open list)
+> 
+> ^ exactly this.
 
-That's already the case.
+Crap ... that's kinda surprising. I would've expected to see the two
+hisilicon contributors I see in the git log to pop up there . Can you
+add them and send a patch please ?
 
-This series cleans up the cruft, so we can catch all users with
-"git grep -w pr_warn".
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Best regards,
+Marek Vasut
