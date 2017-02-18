@@ -1,17 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cezqL-00058y-4Q
- for linux-mtd@lists.infradead.org; Sat, 18 Feb 2017 07:54:11 +0000
-Date: Sat, 18 Feb 2017 08:53:43 +0100
+ id 1cezxZ-0000HI-Vp
+ for linux-mtd@lists.infradead.org; Sat, 18 Feb 2017 08:01:39 +0000
+Date: Sat, 18 Feb 2017 09:01:16 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Lepton Wu <ytht.net@gmail.com>
-Cc: dwmw2@infradead.org, richard@nod.at, linux-kernel@vger.kernel.org,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- cyrille.pitchen@atmel.com, computersforpeace@gmail.com
-Subject: Re: [PATCH] Make mtdblock can handle partition bigger than 4G.
-Message-ID: <20170218085343.6e8ab57f@bbrezillon>
-In-Reply-To: <20170217233733.31363-1-ytht.net@gmail.com>
-References: <20170217233733.31363-1-ytht.net@gmail.com>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com, richard@nod.at,
+ marek.vasut@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+ cyrille.pitchen@atmel.com, computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH V2, 2/2] mtd: nand: brcmnand: Check flash #WP pin status
+ before nand erase/programAAs
+Message-ID: <20170218090116.62dec83a@bbrezillon>
+In-Reply-To: <1487270812-6882-2-git-send-email-kdasu.kdev@gmail.com>
+References: <1487270812-6882-1-git-send-email-kdasu.kdev@gmail.com>
+ <1487270812-6882-2-git-send-email-kdasu.kdev@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,150 +26,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lepton,
+On Thu, 16 Feb 2017 13:46:52 -0500
+Kamal Dasu <kdasu.kdev@gmail.com> wrote:
 
-On Fri, 17 Feb 2017 15:37:33 -0800
-Lepton Wu <ytht.net@gmail.com> wrote:
-
-Can you please add a commit message and prefix the subject with 'mtd: '.
-Something like 'mtd: Fix mtdblock for >4GB MTD devices'.
-
-> Signed-off-by: Lepton Wu <ytht.net@gmail.com>
-> ---
->  drivers/mtd/mtdblock.c    | 33 +++++++++++++++++----------------
->  drivers/mtd/mtdblock_ro.c |  4 ++--
->  2 files changed, 19 insertions(+), 18 deletions(-)
+> brcmnand controller v6.x and v7.x lets driver to enable disable #WP pin
+> via NAND_WP bit in CS_SELECT register. Driver implementation assumes that
+> setting/resetting the bit would assert/de-assert  #WP pin instantaneously
+> from the flash part's perspective, and was proceeding to erase/program
+> without verifying flash status byte for protection bit. In rigorous
+> testing this was causing rare data corruptions with erase and/or
+> subsequent programming. To fix this added verification logic to
+> brcmandn_wp_set() by reading  flash status and verifying protection bit
+> indicating #WP pin status.  The new logic makes sure controller as well
+> as the flash is ready to accept commands.
 > 
-> diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-> index bb4c14f83c75..3d2da76287a7 100644
-> --- a/drivers/mtd/mtdblock.c
-> +++ b/drivers/mtd/mtdblock.c
-> @@ -61,8 +61,8 @@ static void erase_callback(struct erase_info *done)
->  	wake_up(wait_q);
->  }
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 53 ++++++++++++++++++++++++++++++++++--
+>  1 file changed, 51 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index c7c4efe..2f082a3 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
+>  #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
+>  #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
 >  
-> -static int erase_write (struct mtd_info *mtd, unsigned long pos,
-> -			int len, const char *buf)
-> +static int erase_write(struct mtd_info *mtd, loff_t pos, int len,
-> +		       const char *buf)
->  {
->  	struct erase_info erase;
->  	DECLARE_WAITQUEUE(wait, current);
-> @@ -88,8 +88,7 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
->  	if (ret) {
->  		set_current_state(TASK_RUNNING);
->  		remove_wait_queue(&wait_q, &wait);
-> -		printk (KERN_WARNING "mtdblock: erase of region [0x%lx, 0x%x] "
-> -				     "on \"%s\" failed\n",
-> +		pr_warn("mtdblock: erase of region [0x%llx, 0x%x] on \"%s\" failed\n",
->  			pos, len, mtd->name);
->  		return ret;
->  	}
-> @@ -139,23 +138,24 @@ static int write_cached_data (struct mtdblk_dev *mtdblk)
->  }
->  
->  
-> -static int do_cached_write (struct mtdblk_dev *mtdblk, unsigned long pos,
-> -			    int len, const char *buf)
-> +static int do_cached_write(struct mtdblk_dev *mtdblk, loff_t pos,
-> +			   int len, const char *buf)
->  {
->  	struct mtd_info *mtd = mtdblk->mbd.mtd;
->  	unsigned int sect_size = mtdblk->cache_size;
->  	size_t retlen;
->  	int ret;
->  
-> -	pr_debug("mtdblock: write on \"%s\" at 0x%lx, size 0x%x\n",
-> +	pr_debug("mtdblock: write on \"%s\" at 0x%llx, size 0x%x\n",
->  		mtd->name, pos, len);
->  
->  	if (!sect_size)
->  		return mtd_write(mtd, pos, len, &retlen, buf);
->  
->  	while (len > 0) {
-> -		unsigned long sect_start = (pos/sect_size)*sect_size;
-> -		unsigned int offset = pos - sect_start;
-> +		unsigned int offset;
-> +		loff_t sect_start =
-> +			div_u64_rem(pos, sect_size, &offset) * sect_size;
->  		unsigned int size = sect_size - offset;
->  		if( size > len )
->  			size = len;
-> @@ -209,23 +209,24 @@ static int do_cached_write (struct mtdblk_dev *mtdblk, unsigned long pos,
->  }
->  
->  
-> -static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
-> -			   int len, char *buf)
-> +static int do_cached_read(struct mtdblk_dev *mtdblk, loff_t pos,
-> +			  int len, char *buf)
->  {
->  	struct mtd_info *mtd = mtdblk->mbd.mtd;
->  	unsigned int sect_size = mtdblk->cache_size;
->  	size_t retlen;
->  	int ret;
->  
-> -	pr_debug("mtdblock: read on \"%s\" at 0x%lx, size 0x%x\n",
-> +	pr_debug("mtdblock: read on \"%s\" at 0x%llx, size 0x%x\n",
->  			mtd->name, pos, len);
+> +#define FLASH_RDY	(NAND_STATUS_READY)
 
-Align the parameters on the open parenthesis.
+Drop FLASH_RDY and use NAND_STATUS_READY directly. This re-definition
+just adds more confusion.
 
+> +#define NAND_CTRL_RDY	(INTFC_CTLR_READY | INTFC_FLASH_READY)
+> +
+>  /* Controller feature flags */
+>  enum {
+>  	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
+> @@ -765,12 +768,57 @@ enum {
+>  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+>  };
 >  
->  	if (!sect_size)
->  		return mtd_read(mtd, pos, len, &retlen, buf);
->  
->  	while (len > 0) {
-> -		unsigned long sect_start = (pos/sect_size)*sect_size;
-> -		unsigned int offset = pos - sect_start;
-> +		unsigned int offset;
-> +		loff_t sect_start =
-> +			div_u64_rem(pos, sect_size, &offset) * sect_size;
->  		unsigned int size = sect_size - offset;
->  		if (size > len)
->  			size = len;
-> @@ -259,7 +260,7 @@ static int mtdblock_readsect(struct mtd_blktrans_dev *dev,
->  			      unsigned long block, char *buf)
+> -static int brcmnand_set_wp(struct brcmnand_host *host, int en)
+> +static void bcmnand_ctrl_busy_poll(struct brcmnand_controller *ctrl, u32 mask)
+> +{
+> +	unsigned long timeout = jiffies + msecs_to_jiffies(200);
+> +
+> +	while ((brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS) & mask) !=
+> +		mask) {
+> +		if (time_after(jiffies, timeout)) {
+> +			dev_warn(ctrl->dev, "timeout on ctrl_ready\n");
+> +			break;
+> +		}
+> +		cpu_relax();
+> +	}
+> +}
+> +
+> +static inline void brcmnand_set_wp_reg(struct brcmnand_controller *ctrl, int en)
 >  {
->  	struct mtdblk_dev *mtdblk = container_of(dev, struct mtdblk_dev, mbd);
-> -	return do_cached_read(mtdblk, block<<9, 512, buf);
-> +	return do_cached_read(mtdblk, (loff_t)block<<9, 512, buf);
-
-					      ^ block << 9
->  }
+> -	struct brcmnand_controller *ctrl = host->ctrl;
+>  	u32 val = en ? CS_SELECT_NAND_WP : 0;
 >  
->  static int mtdblock_writesect(struct mtd_blktrans_dev *dev,
-> @@ -275,7 +276,7 @@ static int mtdblock_writesect(struct mtd_blktrans_dev *dev,
->  		 * return -EAGAIN sometimes, but why bother?
->  		 */
->  	}
-> -	return do_cached_write(mtdblk, block<<9, 512, buf);
-> +	return do_cached_write(mtdblk, (loff_t)block<<9, 512, buf);
-
-Ditto.
-
->  }
+>  	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_SELECT, CS_SELECT_NAND_WP, 0, val);
+> +}
+> +
+> +static int brcmnand_set_wp(struct brcmnand_host *host, int en)
+> +{
+> +	struct brcmnand_controller *ctrl = host->ctrl;
+> +	struct mtd_info *mtd = nand_to_mtd(&host->chip);
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	u32 sts_reg;
+> +	bool is_wp;
+> +
+> +	/*
+> +	 * make sure ctrl/flash ready before and after
+> +	 * changing state of WP PIN
+> +	 */
+> +	bcmnand_ctrl_busy_poll(ctrl, NAND_CTRL_RDY | FLASH_RDY);
+> +	brcmnand_set_wp_reg(ctrl, en);
+> +	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+> +	bcmnand_ctrl_busy_poll(ctrl, NAND_CTRL_RDY | FLASH_RDY);
+> +	sts_reg = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+> +	/* NAND_STATUS_WP 0x80 = not protected, 0x00 = protected */
+> +	is_wp = (sts_reg & NAND_STATUS_WP) ? false : true;
+> +
+> +	if (is_wp != en) {
+> +		u32 nand_wp = brcmnand_read_reg(ctrl, BRCMNAND_CS_SELECT);
+> +
+> +		nand_wp &= CS_SELECT_NAND_WP;
+> +		dev_err_ratelimited(&host->pdev->dev,
+> +				    "#WP %s sts:0x%x expected %s NAND_WP 0x%x\n",
+> +				    is_wp ? "On" : "Off",  sts_reg & 0xff,
+> +				    en ? "On" : "Off", nand_wp ? 1 : 0);
+> +		return -EINVAL;
+> +	}
 >  
->  static int mtdblock_open(struct mtd_blktrans_dev *mbd)
-> diff --git a/drivers/mtd/mtdblock_ro.c b/drivers/mtd/mtdblock_ro.c
-> index fb5dc89369de..92829e3fb3b7 100644
-> --- a/drivers/mtd/mtdblock_ro.c
-> +++ b/drivers/mtd/mtdblock_ro.c
-> @@ -31,7 +31,7 @@ static int mtdblock_readsect(struct mtd_blktrans_dev *dev,
->  {
->  	size_t retlen;
->  
-> -	if (mtd_read(dev->mtd, (block * 512), 512, &retlen, buf))
-> +	if (mtd_read(dev->mtd, (loff_t)block << 9, 512, &retlen, buf))
->  		return 1;
 >  	return 0;
 >  }
-> @@ -41,7 +41,7 @@ static int mtdblock_writesect(struct mtd_blktrans_dev *dev,
->  {
->  	size_t retlen;
+> @@ -1167,6 +1215,7 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
+>  	BUG_ON(ctrl->cmd_pending != 0);
+>  	ctrl->cmd_pending = cmd;
 >  
-> -	if (mtd_write(dev->mtd, (block * 512), 512, &retlen, buf))
-> +	if (mtd_write(dev->mtd, (loff_t)block << 9, 512, &retlen, buf))
->  		return 1;
->  	return 0;
->  }
+> +	bcmnand_ctrl_busy_poll(ctrl, NAND_CTRL_RDY);
+>  	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+>  	WARN_ON(!(intfc & INTFC_CTLR_READY));
+>  
