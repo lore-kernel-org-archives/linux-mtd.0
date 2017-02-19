@@ -1,27 +1,25 @@
-Received: from mail-ot0-x242.google.com ([2607:f8b0:4003:c0f::242])
+Received: from mail-yw0-x230.google.com ([2607:f8b0:4002:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cfHZz-0004OC-D8
- for linux-mtd@lists.infradead.org; Sun, 19 Feb 2017 02:50:29 +0000
-Received: by mail-ot0-x242.google.com with SMTP id l26so7892164ota.3
- for <linux-mtd@lists.infradead.org>; Sat, 18 Feb 2017 18:50:06 -0800 (PST)
-Date: Sat, 18 Feb 2017 20:51:03 -0600
-From: Marty Plummer <netz.kernel@gmail.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at
-Subject: Re: mtd: spi-nor: hisi-sfc compatibility report
-Message-ID: <20170219025103.z26d3iydmzm2mrgh@tha-monstah.mydomain>
-References: <20170215040646.hscl2kuc5nuvbel3@tha-monstah.mydomain>
- <e90185e2-db9e-0f1f-df44-1015f8950b36@gmail.com>
- <20170216162854.hagnxukontcgkykn@tha-monstah.mydomain>
- <77ad543d-3436-0151-c22c-23966cb6f34d@gmail.com>
- <20170219004841.qrqs3kbbtbflickw@tha-monstah.mydomain>
- <5e012080-8e31-61fa-ee59-3657c2eac5dc@gmail.com>
+ id 1cfO6Q-0005Xk-GP
+ for linux-mtd@lists.infradead.org; Sun, 19 Feb 2017 09:48:24 +0000
+Received: by mail-yw0-x230.google.com with SMTP id v200so39265709ywc.3
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Feb 2017 01:47:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e012080-8e31-61fa-ee59-3657c2eac5dc@gmail.com>
+In-Reply-To: <b6079dbb-82fc-7579-32b2-b8c071ef02ef@denx.de>
+References: <1487086368-4118-1-git-send-email-kdasu.kdev@gmail.com>
+ <1487086368-4118-2-git-send-email-kdasu.kdev@gmail.com>
+ <b6079dbb-82fc-7579-32b2-b8c071ef02ef@denx.de>
+From: Kamal Dasu <kamal.dasu@broadcom.com>
+Date: Sun, 19 Feb 2017 04:47:17 -0500
+Message-ID: <CAKekbesKKS_s873D=xy2tQcVYei_26gYipn2ru1rVY4ihXbsXw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] mtd: spi-nor: Added spi-nor init function
+To: Marek Vasut <marex@denx.de>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-spi@vger.kernel.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Mark Brown <broonie@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,33 +29,220 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Feb 19, 2017 at 03:31:13AM +0100, Marek Vasut wrote:
-> On 02/19/2017 01:48 AM, Marty Plummer wrote:
-> > On Fri, Feb 17, 2017 at 10:28:07PM +0100, Marek Vasut wrote:
-> >> Crap ... that's kinda surprising. I would've expected to see the two
-> >> hisilicon contributors I see in the git log to pop up there . Can you
-> >> add them and send a patch please ?
-> >>
-> >> -- 
-> >> Best regards,
-> >> Marek Vasut
-> > 
-> > To Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt,
-> > then? Actual code needs no changes I can see, and works out of box.
-> 
-> To MAINTAINERS , right ? Or maybe I don't quite get what your complaint
-> is all about.
-> 
-> > In fact, as far as I can see, it doesn't even check for
-> > "hisilicon,hi3519-spi-nor" at all.
-> 
-> It could be it's using DT compatible with some older SoC , but yes, if
-> this SoC is compatible and it is not listed in the binding document, it
-> should be added.
-> 
-> -- 
+On Sat, Feb 18, 2017 at 5:29 PM, Marek Vasut <marex@denx.de> wrote:
+> On 02/14/2017 04:32 PM, Kamal Dasu wrote:
+>> Refactored spi_nor_scan() code to add spi_nor_init() function that
+>> programs the spi-nor flash to:
+>> 1) remove flash protection if applicable
+>> 2) set read mode to quad mode if configured such
+>> 3) set the address width based on the flash size and vendor
+>>
+>> spi_nor_scan() now calls spi_nor_init() to setup nor flash.
+>>
+>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+>
+> Changelog missing ?
+
+Yes will add it and resend.
+
+>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 72 +++++++++++++++++++++++++++----------------
+>>  include/linux/mtd/spi-nor.h   | 18 ++++++++++-
+>>  2 files changed, 62 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 70e52ff..2bf7f4f 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1526,6 +1526,44 @@ static int s3an_nor_scan(const struct flash_info *info, struct spi_nor *nor)
+>>       return 0;
+>>  }
+>>
+>> +int spi_nor_init(struct spi_nor *nor)
+>> +{
+>> +     int ret = 0;
+>> +     const struct flash_info *info = nor->info;
+>> +     struct device *dev = nor->dev;
+>> +
+>> +     /*
+>> +      * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
+>> +      * with the software protection bits set
+>> +      */
+>> +
+>> +     if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
+>> +         JEDEC_MFR(info) == SNOR_MFR_INTEL ||
+>> +         JEDEC_MFR(info) == SNOR_MFR_SST ||
+>> +         info->flags & SPI_NOR_HAS_LOCK) {
+>> +             write_enable(nor);
+>> +             write_sr(nor, 0);
+>> +             spi_nor_wait_till_ready(nor);
+>> +     }
+>> +
+>> +     if (nor->flash_read == SPI_NOR_QUAD) {
+>> +             ret = set_quad_mode(nor, info);
+>> +             if (ret) {
+>> +                     dev_err(dev, "quad mode not supported\n");
+>> +                     return ret;
+>> +             }
+>> +     }
+
+quad mode is being set in the above block of code.
+
+>> +
+>> +     if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+>> +         info->flags & SPI_NOR_4B_OPCODES)
+>> +             spi_nor_set_4byte_opcodes(nor, info);
+>> +     else
+>> +             set_4byte(nor, info, 1);
+>> +
+>> +     return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(spi_nor_init);
+>> +
+>>  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>>  {
+>>       const struct flash_info *info = NULL;
+>> @@ -1571,6 +1609,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>>               }
+>>       }
+>>
+>> +     nor->info = info;
+>>       mutex_init(&nor->lock);
+>>
+>>       /*
+>> @@ -1581,20 +1620,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>>       if (info->flags & SPI_S3AN)
+>>               nor->flags |=  SNOR_F_READY_XSR_RDY;
+>>
+>> -     /*
+>> -      * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
+>> -      * with the software protection bits set
+>> -      */
+>> -
+>> -     if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
+>> -         JEDEC_MFR(info) == SNOR_MFR_INTEL ||
+>> -         JEDEC_MFR(info) == SNOR_MFR_SST ||
+>> -         info->flags & SPI_NOR_HAS_LOCK) {
+>> -             write_enable(nor);
+>> -             write_sr(nor, 0);
+>> -             spi_nor_wait_till_ready(nor);
+>> -     }
+>> -
+>>       if (!mtd->name)
+>>               mtd->name = dev_name(dev);
+>>       mtd->priv = nor;
+>> @@ -1669,11 +1694,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>>
+>>       /* Quad/Dual-read mode takes precedence over fast/normal */
+>>       if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+>> -             ret = set_quad_mode(nor, info);
+>> -             if (ret) {
+>> -                     dev_err(dev, "quad mode not supported\n");
+>> -                     return ret;
+>> -             }
+>>               nor->flash_read = SPI_NOR_QUAD;
+>
+> So from here on, any user will expect quad mode to be correctly set, but
+> it really isn't. Is that OK ?
+
+It is being set in spi_nor_init() based on the  nor->flash_read == SPI_NOR_QUAD;
+
+>
+>>       } else if (mode == SPI_NOR_DUAL && info->flags & SPI_NOR_DUAL_READ) {
+>>               nor->flash_read = SPI_NOR_DUAL;
+>> @@ -1702,17 +1722,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>>
+>>       if (info->addr_width)
+>>               nor->addr_width = info->addr_width;
+>> -     else if (mtd->size > 0x1000000) {
+>> +     else if (mtd->size > 0x1000000)
+>>               /* enable 4-byte addressing if the device exceeds 16MiB */
+>>               nor->addr_width = 4;
+>> -             if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+>> -                 info->flags & SPI_NOR_4B_OPCODES)
+>> -                     spi_nor_set_4byte_opcodes(nor, info);
+>> -             else
+>> -                     set_4byte(nor, info, 1);
+>> -     } else {
+>> +     else
+>>               nor->addr_width = 3;
+>> -     }
+>>
+>>       if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
+>>               dev_err(dev, "address width is too large: %u\n",
+>> @@ -1728,6 +1742,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>>                       return ret;
+>>       }
+>>
+>> +     ret = spi_nor_init(nor);
+>> +     if (ret)
+>> +             return ret;
+>> +
+>>       dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+>>                       (long long)mtd->size >> 10);
+>>
+>> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+>> index f2a7180..29a8283 100644
+>> --- a/include/linux/mtd/spi-nor.h
+>> +++ b/include/linux/mtd/spi-nor.h
+>> @@ -143,6 +143,8 @@ enum spi_nor_option_flags {
+>>       SNOR_F_READY_XSR_RDY    = BIT(4),
+>>  };
+>>
+>> +struct flash_info;
+>> +
+>>  /**
+>>   * struct spi_nor - Structure for defining a the SPI NOR layer
+>>   * @mtd:             point to a mtd_info structure
+>> @@ -174,6 +176,7 @@ enum spi_nor_option_flags {
+>>   * @flash_is_locked: [FLASH-SPECIFIC] check if a region of the SPI NOR is
+>>   *                   completely locked
+>>   * @priv:            the private data
+>> + * @info:            points to the flash_info structure
+>>   */
+>>  struct spi_nor {
+>>       struct mtd_info         mtd;
+>> @@ -206,6 +209,7 @@ struct spi_nor {
+>>       int (*flash_is_locked)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+>>
+>>       void *priv;
+>> +     const struct flash_info *info;
+>>  };
+>>
+>>  static inline void spi_nor_set_flash_node(struct spi_nor *nor,
+>> @@ -220,12 +224,24 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
+>>  }
+>>
+>>  /**
+>> + * spi_nor_init() - initialize SPI NOR
+>> + * @nor:     the spi_nor structure
+>> + *
+>> + * The drivers uses this function to initialize the SPI NOR flash device to
+>> + * settings in spi_nor structure. The functions sets read mode, address width
+>> + * and removes protection on the flash device based on those settings.
+>> + *
+>> + * Return: 0 for success, others for failure.
+>> + */
+>> +int spi_nor_init(struct spi_nor *nor);
+>> +
+>> +/**
+>>   * spi_nor_scan() - scan the SPI NOR
+>>   * @nor:     the spi_nor structure
+>>   * @name:    the chip type name
+>>   * @mode:    the read mode supported by the driver
+>>   *
+>> - * The drivers can use this fuction to scan the SPI NOR.
+>> + * The drivers can use this function to scan the SPI NOR.
+>>   * In the scanning, it will try to get all the necessary information to
+>>   * fill the mtd_info{} and the spi_nor{}.
+>>   *
+>>
+>
+>
+> --
 > Best regards,
 > Marek Vasut
 
-Ok, got it. Will send a patch in the near future, and add whoever
-get_maintainer.pl shows for arch/arm/mach-hisi
+Thanks
+Kamal
