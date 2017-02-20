@@ -1,26 +1,19 @@
-Date: Mon, 20 Feb 2017 21:50:09 +0100
+Date: Mon, 20 Feb 2017 21:59:34 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, "open list:MEMORY TECHNOLOGY..."
- <linux-mtd@lists.infradead.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>, Haavard
- Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt
- <egtvedt@samfundet.no>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh
- Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-arm Mailing List
- <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian
- Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala
- <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-Message-ID: <20170220215009.0ecbf5a1@bbrezillon>
-In-Reply-To: <20170220213803.7ba5591e@bbrezillon>
-References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
- <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
- <CAHp75VdwQGP-qa0c0KQwrdpZmCGc3RuEsJ-E-XLbBzQSn4Yxcg@mail.gmail.com>
- <20170220213803.7ba5591e@bbrezillon>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, Sascha Hauer
+ <s.hauer@pengutronix.de>, Sergio Prado <sergio.prado@e-labworks.com>, Marc
+ Gonzalez <marc_gonzalez@sigmadesigns.com>, Wenyou Yang
+ <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 0/3] mtd: nand: atmel: Add
+ ->setup_data_interface() + PM ops
+Message-ID: <20170220215934.53961d69@bbrezillon>
+In-Reply-To: <1487611322-12688-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1487611322-12688-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,25 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 20 Feb 2017 21:38:03 +0100
+On Mon, 20 Feb 2017 18:21:59 +0100
 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> On Mon, 20 Feb 2017 22:27:17 +0200
-> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> Hello,
 > 
-> > On Mon, Feb 20, 2017 at 2:28 PM, Boris Brezillon
-> > <boris.brezillon@free-electrons.com> wrote:
-> >   
-> > >  drivers/mtd/nand/atmel/nand-controller.c | 2269 +++++++++++++++++++++++++++
-> > >  drivers/mtd/nand/atmel_nand.c            | 2479 ------------------------------    
-> > 
-> > Does -M -C help you?
-> > At least it would help reviewers
-> >   
-> 
-> No it doesn't, because files were not just moved around using git mv,
-> it's a complete rewrite of the driver. IIUC, you're about to review
-> this submission, or are you just trolling like last time?
+> Sorry for the noise, but I forgot to remove old patches before using
+> git send-email on the directory containing the patches generated with
+> git format-patch :-/.
 
-My bad, I mistaken you with someone else. Sorry for being harsh, but my
-explanation stands ;-).
+And ignore this version as well. These are still not the patches I
+wanted to send :-(.
+
+> 
+> This patch series is adding to important features to the new Atmel NAND
+> controller driver:
+> 1/ automatic SMC timings configuration based on information retrieved
+>    during NAND detection
+> 2/ proper ->suspend()/->resume(). Timings are properly restored when
+>    resuming the system
+> 
+> This series depends on [1] and [2].
+> 
+> Regards,
+> 
+> Boris
+> 
+> [1]https://www.spinics.net/lists/arm-kernel/msg563780.html
+> [2]https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1337235.html
+> 
+> Boris Brezillon (3):
+>   memory: atmel-ebi: Change naming scheme
+>   memory: atmel-ebi: Add missing ->numcs assignment
+>   memory: atmel-ebi: Add PM ops
+> 
+>  drivers/memory/atmel-ebi.c | 141 ++++++++++++++++++++++++++-------------------
+>  1 file changed, 81 insertions(+), 60 deletions(-)
+> 
