@@ -11,11 +11,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Krzysztof Kozlowski <krzk@kernel.org>,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] memory: atmel-ebi: Add missing ->numcs assignment
-Date: Mon, 20 Feb 2017 18:16:15 +0100
-Message-Id: <1487610978-12423-4-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1487610978-12423-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1487610978-12423-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 0/3] mtd: nand: atmel: Add ->setup_data_interface() + PM ops
+Date: Mon, 20 Feb 2017 18:16:12 +0100
+Message-Id: <1487610978-12423-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ebid->numcs is never assigned, set it to numcs after allocating the
-EBI dev object.
+Hello,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/memory/atmel-ebi.c | 1 +
- 1 file changed, 1 insertion(+)
+This patch series is adding to important features to the new Atmel NAND
+controller driver:
+1/ automatic SMC timings configuration based on information retrieved
+   during NAND detection
+2/ proper ->suspend()/->resume(). Timings are properly restored when
+   resuming the system
 
-diff --git a/drivers/memory/atmel-ebi.c b/drivers/memory/atmel-ebi.c
-index 833af8d02424..06a1a136d448 100644
---- a/drivers/memory/atmel-ebi.c
-+++ b/drivers/memory/atmel-ebi.c
-@@ -331,6 +331,7 @@ static int atmel_ebi_dev_setup(struct atmel_ebi *ebi, struct device_node *np,
- 		return -ENOMEM;
- 
- 	ebid->ebi = ebi;
-+	ebid->numcs = numcs;
- 
- 	ret = caps->xlate_config(ebid, np, &conf);
- 	if (ret < 0)
+This series depends on [1] and [2].
+
+Regards,
+
+Boris
+
+[1]https://www.spinics.net/lists/arm-kernel/msg563780.html
+[2]https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1337235.html
+
+Boris Brezillon (3):
+  memory: atmel-ebi: Change naming scheme
+  memory: atmel-ebi: Add missing ->numcs assignment
+  memory: atmel-ebi: Add PM ops
+
+ drivers/memory/atmel-ebi.c | 141 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 81 insertions(+), 60 deletions(-)
+
 -- 
 2.7.4
