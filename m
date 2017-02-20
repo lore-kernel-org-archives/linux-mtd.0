@@ -1,18 +1,16 @@
-Subject: [PATCH v2] mtd: nand: tango: Enforce DMA direction type
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, "Cyrille
- Pitchen" <cyrille.pitchen@atmel.com>, <linux-arm-kernel@lists.infradead.org>
-References: <1486979107-15362-1-git-send-email-boris.brezillon@free-electrons.com>
- <aebe65d0-19c9-e1a7-b98a-c25ff616dad0@sigmadesigns.com>
- <20170220133547.06c17a12@bbrezillon>
-From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Message-ID: <72b68483-8a02-f6b8-f6b7-da492585c802@sigmadesigns.com>
-Date: Mon, 20 Feb 2017 14:10:07 +0100
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cfnu6-00037e-7j
+ for linux-mtd@lists.infradead.org; Mon, 20 Feb 2017 13:21:25 +0000
+Subject: Re: [PATCH] ubirename: trivial fixes to the help text
+To: Luca Ceresoli <luca@lucaceresoli.net>, linux-mtd@lists.infradead.org
+References: <1486936554-14274-1-git-send-email-luca@lucaceresoli.net>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <42b16035-84c9-be61-0c54-f110fd493e97@sigma-star.at>
+Date: Mon, 20 Feb 2017 14:20:57 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170220133547.06c17a12@bbrezillon>
-Content-Type: text/plain; charset="ISO-8859-15"
+In-Reply-To: <1486936554-14274-1-git-send-email-luca@lucaceresoli.net>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,55 +21,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+On 02/12/2017 10:55 PM, Luca Ceresoli wrote:
+> Add a missing space after PROGRAM_NAME and fix a typo.
+> 
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> ---
+>  ubi-utils/ubirename.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+Applied to mtd-utils.git.
 
-do_dma() uses an int to pass the DMA data direction information and
-pass the same value to dmaengine_prep_slave_sg().
 
-Currently, DMA_{FROM,TO}_DEVICE match DMA_{DEV_TO_MEM,MEM_TO_DEV}
-definitions so it works fine, but assuming this will always be the case
-is not safe.
+Thanks,
 
-Enforce enum dma_data_direction type in the function prototype and make
-the enum dma_data_direction -> enum dma_transfer_direction conversion
-explicit.
-
-Reported-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Acked-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
----
- drivers/mtd/nand/tango_nand.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-index 4a5e948c62df..05b6e1065203 100644
---- a/drivers/mtd/nand/tango_nand.c
-+++ b/drivers/mtd/nand/tango_nand.c
-@@ -223,12 +223,13 @@ static void tango_dma_callback(void *arg)
- 	complete(arg);
- }
- 
--static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
--		  int len, int page)
-+static int do_dma(struct tango_nfc *nfc, enum dma_data_direction dir, int cmd,
-+		  const void *buf, int len, int page)
- {
- 	void __iomem *addr = nfc->reg_base + NFC_STATUS;
- 	struct dma_chan *chan = nfc->chan;
- 	struct dma_async_tx_descriptor *desc;
-+	enum dma_transfer_direction tdir;
- 	struct scatterlist sg;
- 	struct completion tx_done;
- 	int err = -EIO;
-@@ -238,7 +239,8 @@ static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
- 	if (dma_map_sg(chan->device->dev, &sg, 1, dir) != 1)
- 		return -EIO;
- 
--	desc = dmaengine_prep_slave_sg(chan, &sg, 1, dir, DMA_PREP_INTERRUPT);
-+	tdir = dir == DMA_TO_DEVICE ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
-+	desc = dmaengine_prep_slave_sg(chan, &sg, 1, tdir, DMA_PREP_INTERRUPT);
- 	if (!desc)
- 		goto dma_unmap;
- 
--- 
-3.14159265358979
+David
