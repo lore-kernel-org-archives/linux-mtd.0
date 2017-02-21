@@ -1,23 +1,24 @@
-Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg5Xg-0004MK-IN
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 08:11:26 +0000
-Received: by mail-lf0-x22e.google.com with SMTP id g134so16869128lfe.1
- for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 00:11:03 -0800 (PST)
+Date: Tue, 21 Feb 2017 09:13:40 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Sascha Hauer <s.hauer@pengutronix.de>, Sergio Prado
+ <sergio.prado@e-labworks.com>, Marc Gonzalez
+ <marc_gonzalez@sigmadesigns.com>, Wenyou Yang <wenyou.yang@atmel.com>, Josh
+ Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/3] mtd: nand: atmel: Add
+ ->setup_data_interface() hooks
+Message-ID: <20170221091340.2d6d3fdf@bbrezillon>
+In-Reply-To: <4db51424-0e59-bad7-45ff-92516424dead@gmail.com>
+References: <1487625149-7234-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1487625149-7234-3-git-send-email-boris.brezillon@free-electrons.com>
+ <4db51424-0e59-bad7-45ff-92516424dead@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <8d67a301-cc8d-276a-12f5-4e5db24a8abc@nod.at>
-References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
- <8d67a301-cc8d-276a-12f5-4e5db24a8abc@nod.at>
-From: Peter Pan <peterpansjtu@gmail.com>
-Date: Tue, 21 Feb 2017 16:11:01 +0800
-Message-ID: <CAAyFORKkCdw2WhOOZXV1U+LzvvUuniDCxoShwv9TEt5XZJRqxw@mail.gmail.com>
-Subject: Re: [PATCH 00/11] Introduction to SPI NAND framework
-To: Richard Weinberger <richard@nod.at>
-Cc: Peter Pan <peterpandong@micron.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- "linshunquan (A)" <linshunquan1@hisilicon.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +28,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+On Mon, 20 Feb 2017 23:47:10 +0100
+Marek Vasut <marek.vasut@gmail.com> wrote:
 
+> On 02/20/2017 10:12 PM, Boris Brezillon wrote:
+> > The NAND controller IP can adapt the NAND controller timings dynamically.
+> > Implement the ->setup_data_interface() hook to support this feature.
+> > 
+> > Note that it's not supported on at91rm9200 because this SoC has a
+> > completely different SMC block, which is not supported yet.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/atmel/nand-controller.c | 333 ++++++++++++++++++++++++++++++-
+> >  1 file changed, 328 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+> > index 4207c0d37826..ae46ef711d67 100644
+> > --- a/drivers/mtd/nand/atmel/nand-controller.c
+> > +++ b/drivers/mtd/nand/atmel/nand-controller.c
+> > @@ -57,6 +57,7 @@
+> >  #include <linux/interrupt.h>
+> >  #include <linux/mfd/syscon.h>
+> >  #include <linux/mfd/syscon/atmel-matrix.h>
+> > +#include <linux/mfd/syscon/atmel-smc.h>
+> >  #include <linux/module.h>
+> >  #include <linux/mtd/nand.h>
+> >  #include <linux/of_address.h>
+> > @@ -147,6 +148,8 @@ struct atmel_nand_cs {
+> >  		void __iomem *virt;
+> >  		dma_addr_t dma;
+> >  	} io;
+> > +
+> > +	struct atmel_smc_cs_conf smcconf;
+> >  };
+> >  
+> >  struct atmel_nand {
+> > @@ -190,6 +193,8 @@ struct atmel_nand_controller_ops {
+> >  	void (*nand_init)(struct atmel_nand_controller *nc,
+> >  			  struct atmel_nand *nand);
+> >  	int (*ecc_init)(struct atmel_nand *nand);
+> > +	int (*setup_data_interface)(struct atmel_nand *nand, int csline,
+> > +				    const struct nand_data_interface *conf);
+> >  };
+> >  
+> >  struct atmel_nand_controller_caps {
+> > @@ -1144,6 +1149,293 @@ static int atmel_hsmc_nand_ecc_init(struct atmel_nand *nand)
+> >  	return 0;
+> >  }
+> >  
+> > +static int atmel_smc_nand_prepare_smcconf(struct atmel_nand *nand,
+> > +					const struct nand_data_interface *conf,
+> > +					struct atmel_smc_cs_conf *smcconf)
+> > +{
+> > +	u32 ncycles, totalcycles, timeps, mckperiodps;
+> > +	struct atmel_nand_controller *nc;
+> > +	int ret;
+> > +
+> > +	nc = to_nand_controller(nand->base.controller);
+> > +
+> > +	/* DDR interface not supported. */
+> > +	if (conf->type != NAND_SDR_IFACE)
+> > +		return -ENOTSUPP;
+> > +
+> > +	/*
+> > +	 * tRC < 30ns implies EDO mode. This controller does not support this
+> > +	 * mode.
+> > +	 */
+> > +	if (conf->timings.sdr.tRC_min < 30)
+> > +		return -ENOTSUPP;
+> > +
+> > +	atmel_smc_cs_conf_init(smcconf);
+> > +
+> > +	mckperiodps = NSEC_PER_SEC / clk_get_rate(nc->mck);
+> > +	mckperiodps *= 1000;  
+> 
+> You probably want to multiply before dividing to retain precision.
 
-On Tue, Feb 21, 2017 at 4:05 PM, Richard Weinberger <richard@nod.at> wrote:
-> Peter,
->
-> Am 21.02.2017 um 08:59 schrieb Peter Pan:
->> This serie introductes a SPI NAND framework.
->> SPI NAND is a new NAND family device with SPI protocol as
->> its interface. And its command set is totally different
->> with parallel NAND.
->>
->> Our first attempt was more than 2 years ago[1]. At that
->> time, I didn't make BBT shareable and there were too many
->> duplicate code with parallel NAND, so that serie stoped.
->> But the discussion never stops. Now Boris has a plan to
->> make a generic NAND framework which can be shared with
->> both parallel and SPI NAND. Now the first step of the
->> new generic NAND framework is finished. And it is waiting
->> for a user. After discussion with Boris. We both think it's
->> time to rebuild SPI NAND framework based on the new NAND
->> framework and send out for reviewing.
->>
->> This serie is based on Boris's nand/generic branch[2], which
->> is on 4.9-rc1. In this serie, BBT code is totally shared.
->> Of course SPI NAND can share more code with parallel, this
->> requires to put more in new NAND core (now only BBT included).
->> I'd like to send this serie out first, then we can decide
->> which part should be in new NAND core.
->>
->> This serie only supports basic SPI NAND features and uses
->> generic spi controller for data transfer, on-die ECC for data
->> correction. Support advanced features and specific SPI NAND
->> controller with hardware ECC is the next step.
->
-> Can you please share on which SPI NAND chips this got tested?
+Doing the multiplication first implies using an u64, and nanosecond
+granularity is fine here (AFAIR, mck <= 166MHz).
 
-Sorry for missing this part in cover letter... This series is tested on
-Xilinx Zedboard with Micron MT29F2G01AAAED SPI NAND chip.
+> 
+> > +	/*
+> > +	 * Set write pulse timing. This one is easy to extract:
+> > +	 *
+> > +	 * NWE_PULSE = tWP
+> > +	 */
+> > +	ncycles = DIV_ROUND_UP(conf->timings.sdr.tWP_min, mckperiodps);
+> > +	totalcycles = ncycles;
+> > +	ret = atmel_smc_cs_conf_set_pulse(smcconf, ATMEL_SMC_NWE_SHIFT,
+> > +					  ncycles);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/*
+> > +	 * The write setup timing depends on the operation done on the NAND.
+> > +	 * All operations goes through the same data bus, but the operation
+> > +	 * type depends on the address we are writing to (ALE/CLE address
+> > +	 * lines).
+> > +	 * Since we have no way to differentiate the different operations at
+> > +	 * the SMC level, we must consider the worst case (the biggest setup
+> > +	 * time among all operation types):
+> > +	 *
+> > +	 * NWE_SETUP = max(tCLS, tCS, tALS, tDS) - NWE_PULSE
+> > +	 */
+> > +	timeps = max3(conf->timings.sdr.tCLS_min, conf->timings.sdr.tCS_min,
+> > +		      conf->timings.sdr.tALS_min);
+> > +	timeps = max(timeps, conf->timings.sdr.tDS_min);
+> > +	ncycles = DIV_ROUND_UP(timeps, mckperiodps);
+> > +	ncycles = ncycles > totalcycles ? ncycles - totalcycles : 0;  
+> 
+> Ew, that's totally cryptic here ...
 
-Thanks,
-Peter Pan
+totalcycles contains the NWE_PULSE value (see above), and we don't want
+to end up with a negative value in ncycles, hence the
+ncycles > totalcycles test before doing the subtraction.
+
+> 
+> > +	totalcycles += ncycles;
+> > +	ret = atmel_smc_cs_conf_set_setup(smcconf, ATMEL_SMC_NWE_SHIFT,
+> > +					  ncycles);
+> > +	if (ret)
+> > +		return ret;  
+> 
+> [...]
+> 
+> > +static const struct atmel_nand_controller_caps atmel_sam9260_nc_caps = {
+> > +	.ale_offs = 1 << 21,
+> > +	.cle_offs = 1 << 22,  
+> 
+> BIT(22) ?
+
+Yep. Actually, this should be changed in [1].
+
+[1]https://www.spinics.net/lists/arm-kernel/msg563780.html
