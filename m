@@ -1,18 +1,18 @@
-Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
+Received: from mail-lf0-x22c.google.com ([2a00:1450:4010:c07::22c])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg5dr-0007Of-V7
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 08:17:49 +0000
-Received: by mail-lf0-x22f.google.com with SMTP id l12so22986244lfe.0
- for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 00:17:27 -0800 (PST)
+ id 1cg5eh-0007iz-Ps
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 08:18:45 +0000
+Received: by mail-lf0-x22c.google.com with SMTP id g134so16952115lfe.1
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 00:18:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2ad6a42c-598d-b1e9-8487-63dbeae5e0bb@nod.at>
+In-Reply-To: <CAAyFORKkCdw2WhOOZXV1U+LzvvUuniDCxoShwv9TEt5XZJRqxw@mail.gmail.com>
 References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
- <1487664010-25926-11-git-send-email-peterpandong@micron.com>
- <2ad6a42c-598d-b1e9-8487-63dbeae5e0bb@nod.at>
+ <8d67a301-cc8d-276a-12f5-4e5db24a8abc@nod.at>
+ <CAAyFORKkCdw2WhOOZXV1U+LzvvUuniDCxoShwv9TEt5XZJRqxw@mail.gmail.com>
 From: Peter Pan <peterpansjtu@gmail.com>
-Date: Tue, 21 Feb 2017 16:17:25 +0800
-Message-ID: <CAAyFORJVjcEWP0s8FMiTU+pDp5BP3RN9VjjciEQ4seUNRmp4yg@mail.gmail.com>
-Subject: Re: [PATCH 10/11] nand: spi: Add generic SPI controller support
+Date: Tue, 21 Feb 2017 16:18:17 +0800
+Message-ID: <CAAyFORJYVQmDja+MfsDbC-Uovh==SAePRWp=0WT0OV6Ungnq6w@mail.gmail.com>
+Subject: Re: [PATCH 00/11] Introduction to SPI NAND framework
 To: Richard Weinberger <richard@nod.at>
 Cc: Peter Pan <peterpandong@micron.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -28,57 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
-
-
-On Tue, Feb 21, 2017 at 4:03 PM, Richard Weinberger <richard@nod.at> wrote:
-> Peter,
+On Tue, Feb 21, 2017 at 4:11 PM, Peter Pan <peterpansjtu@gmail.com> wrote:
+> Hi Richard,
 >
-> Am 21.02.2017 um 09:00 schrieb Peter Pan:
->> This commit supports to use generic spi controller
->> as SPI NAND controller.
+>
+> On Tue, Feb 21, 2017 at 4:05 PM, Richard Weinberger <richard@nod.at> wrote:
+>> Peter,
 >>
->> Signed-off-by: Peter Pan <peterpandong@micron.com>
+>> Am 21.02.2017 um 08:59 schrieb Peter Pan:
+>>> This serie introductes a SPI NAND framework.
+>>> SPI NAND is a new NAND family device with SPI protocol as
+>>> its interface. And its command set is totally different
+>>> with parallel NAND.
+>>>
+>>> Our first attempt was more than 2 years ago[1]. At that
+>>> time, I didn't make BBT shareable and there were too many
+>>> duplicate code with parallel NAND, so that serie stoped.
+>>> But the discussion never stops. Now Boris has a plan to
+>>> make a generic NAND framework which can be shared with
+>>> both parallel and SPI NAND. Now the first step of the
+>>> new generic NAND framework is finished. And it is waiting
+>>> for a user. After discussion with Boris. We both think it's
+>>> time to rebuild SPI NAND framework based on the new NAND
+>>> framework and send out for reviewing.
+>>>
+>>> This serie is based on Boris's nand/generic branch[2], which
+>>> is on 4.9-rc1. In this serie, BBT code is totally shared.
+>>> Of course SPI NAND can share more code with parallel, this
+>>> requires to put more in new NAND core (now only BBT included).
+>>> I'd like to send this serie out first, then we can decide
+>>> which part should be in new NAND core.
+>>>
+>>> This serie only supports basic SPI NAND features and uses
+>>> generic spi controller for data transfer, on-die ECC for data
+>>> correction. Support advanced features and specific SPI NAND
+>>> controller with hardware ECC is the next step.
+>>
+>> Can you please share on which SPI NAND chips this got tested?
 >
-> ...
->
->> +static void spi_nand_mt29f_ecc_status(struct spi_nand_chip *chip,
->> +                                     unsigned int status,
->> +                                     unsigned int *corrected,
->> +                                     unsigned int *ecc_error)
->> +{
->> +     unsigned int ecc_status = status & SPI_NAND_MT29F_ECC_MASK;
->> +
->> +     *ecc_error = (ecc_status == SPI_NAND_MT29F_ECC_UNCORR);
->> +     switch (ecc_status) {
->> +     case SPI_NAND_MT29F_ECC_0_BIT:
->> +             *corrected = 0;
->> +             break;
->> +     case SPI_NAND_MT29F_ECC_1_3_BIT:
->> +             *corrected = 3;
->> +             break;
->> +     case SPI_NAND_MT29F_ECC_4_6_BIT:
->> +             *corrected = 6;
->> +             break;
->> +     case SPI_NAND_MT29F_ECC_7_8_BIT:
->> +             *corrected = 8;
->> +             break;
->> +     }
->> +}
->
-> I'm confused. What value will the corrected value be when only 1 bit flipped and got corrected?
+> Sorry for missing this part in cover letter... This series is tested on
+> Xilinx Zedboard with Micron MT29F2G01AAAED SPI NAND chip.
 
-According to Micron data sheet, Micron MT29F SPI NAND series only
-report 5 level ECC status:
-     No errors
-     1-3 bit errors detected and corrected
-     4-6 bit errors detected and corrected. This indicates data
-refreshment might be taken
-     7-8 bit errors detected and corrected. This indicates data
-refreshment must be taken to guarantee the data retention
-     Bit errors greater than 8 bits detected and not corrected
-
-So I report 3 when only 1 bit flipped.
+Sorry for mistake, the chip should be MT29F2G01ABAGDSF
 
 Thanks,
 Peter Pan
