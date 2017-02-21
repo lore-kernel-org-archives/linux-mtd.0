@@ -1,6 +1,6 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg2bi-0002q6-MV
+ id 1cg2bi-0002pg-Me
  for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:27 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -49,12 +49,11 @@ Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon, 20 Feb 2017 22:00:45 -0700
-Message-Id: <1487653253-11497-7-git-send-email-logang@deltatee.com>
+Date: Mon, 20 Feb 2017 22:00:53 -0700
+Message-Id: <1487653253-11497-15-git-send-email-logang@deltatee.com>
 In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
 References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH 06/14] platform/chrome: utilize new device_add_cdev helper
- function
+Subject: [PATCH 14/14] switchtec: utilize new device_add_cdev helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -66,46 +65,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/platform/chrome/cros_ec_dev.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/pci/switch/switchtec.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/platform/chrome/cros_ec_dev.c b/drivers/platform/chrome/cros_ec_dev.c
-index 47268ec..658fb99 100644
---- a/drivers/platform/chrome/cros_ec_dev.c
-+++ b/drivers/platform/chrome/cros_ec_dev.c
-@@ -388,7 +388,6 @@ static int ec_device_probe(struct platform_device *pdev)
- 	int retval = -ENOMEM;
- 	struct device *dev = &pdev->dev;
- 	struct cros_ec_platform *ec_platform = dev_get_platdata(dev);
--	dev_t devno = MKDEV(ec_major, pdev->id);
- 	struct cros_ec_dev *ec = kzalloc(sizeof(*ec), GFP_KERNEL);
+diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
+index 82bfd18..95aabd0 100644
+--- a/drivers/pci/switch/switchtec.c
++++ b/drivers/pci/switch/switchtec.c
+@@ -1233,9 +1233,8 @@ static struct switchtec_dev *stdev_create(struct pci_dev *pdev)
+ 	cdev = &stdev->cdev;
+ 	cdev_init(cdev, &switchtec_fops);
+ 	cdev->owner = THIS_MODULE;
+-	cdev->kobj.parent = &dev->kobj;
  
- 	if (!ec)
-@@ -401,6 +400,7 @@ static int ec_device_probe(struct platform_device *pdev)
- 	ec->features[0] = -1U; /* Not cached yet */
- 	ec->features[1] = -1U; /* Not cached yet */
- 	device_initialize(&ec->class_dev);
-+	ec->class_dev.devt = MKDEV(ec_major, pdev->id);
- 	cdev_init(&ec->cdev, &fops);
+-	rc = cdev_add(&stdev->cdev, dev->devt, 1);
++	rc = device_add_cdev(dev, cdev);
+ 	if (rc)
+ 		goto err_cdev;
  
- 	/*
-@@ -408,8 +408,7 @@ static int ec_device_probe(struct platform_device *pdev)
- 	 * Link cdev to the class device to be sure device is not used
- 	 * before unbinding it.
- 	 */
--	ec->cdev.kobj.parent = &ec->class_dev.kobj;
--	retval = cdev_add(&ec->cdev, devno, 1);
-+	retval = device_add_cdev(&ec->class_dev, &ec->cdev);
- 	if (retval) {
- 		dev_err(dev, ": failed to add character device\n");
- 		goto cdev_add_failed;
-@@ -420,7 +419,6 @@ static int ec_device_probe(struct platform_device *pdev)
- 	 * Link to the character device for creating the /dev entry
- 	 * in devtmpfs.
- 	 */
--	ec->class_dev.devt = ec->cdev.dev;
- 	ec->class_dev.class = &cros_class;
- 	ec->class_dev.parent = dev;
- 	ec->class_dev.release = __remove;
 -- 
 2.1.4
