@@ -1,32 +1,19 @@
-MIME-Version: 1.0
-In-Reply-To: <CAHp75VczsC9WdZWR9iCRh2JoNLFZyOtodrsDRYQoyaN7nkyf=A@mail.gmail.com>
-References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
- <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
- <CAHp75VdwQGP-qa0c0KQwrdpZmCGc3RuEsJ-E-XLbBzQSn4Yxcg@mail.gmail.com>
- <20170220213803.7ba5591e@bbrezillon> <20170220215009.0ecbf5a1@bbrezillon>
- <CAHp75VczsC9WdZWR9iCRh2JoNLFZyOtodrsDRYQoyaN7nkyf=A@mail.gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 21 Feb 2017 01:54:37 +0200
-Message-ID: <CAHp75Vc_q-bEzA2-hVpHyR0GZ8mXxwJ8-UjECe31T04mb67q4w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Haavard Skinnemoen <hskinnemoen@gmail.com>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cg1AN-0003t5-L0
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 03:31:05 +0000
+Received: by mail-pg0-x242.google.com with SMTP id s67so5215980pgb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Feb 2017 19:30:42 -0800 (PST)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: f.fainelli@gmail.com, richard@nod.at, marek.vasut@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com, cyrille.pitchen@atmel.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH V3,
+ 1/2] mtd: nand: brcmnand: Change brcmnand_set_wp() prototype
+Date: Mon, 20 Feb 2017 22:30:31 -0500
+Message-Id: <1487647832-10544-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,49 +23,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 21, 2017 at 1:40 AM, Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Mon, Feb 20, 2017 at 10:50 PM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
->> On Mon, 20 Feb 2017 21:38:03 +0100
->> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->>
->>> On Mon, 20 Feb 2017 22:27:17 +0200
->>> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
->>>
->>> > On Mon, Feb 20, 2017 at 2:28 PM, Boris Brezillon
->>> > <boris.brezillon@free-electrons.com> wrote:
->>> >
->>> > >  drivers/mtd/nand/atmel/nand-controller.c | 2269 +++++++++++++++++++++++++++
->>> > >  drivers/mtd/nand/atmel_nand.c            | 2479 ------------------------------
->>> >
->>> > Does -M -C help you?
->>> > At least it would help reviewers
->>> >
->>>
->>> No it doesn't, because files were not just moved around using git mv,
->>> it's a complete rewrite of the driver. IIUC, you're about to review
->>> this submission, or are you just trolling like last time?
->>
->> My bad, I mistaken you with someone else. Sorry for being harsh, but my
->> explanation stands ;-).
->
-> No problem. I was asking since it so big and on first glance looks
-> like a partial copy (I dunno if parameter to -C makes it somehow
-> useful), though I can't review this. It's too big to me. Sorry I'm
-> really not trolling, just didn't read commit message carefully.
+Changing brcmnand_set_wp() prototype in prepration for refactoring the nand
+write protect logic to add flash status byte check for the protection bit.
 
-Okay, I very quickly looked into the code, what I noticed
-- you like extra parens and empty lines in some cases (not big deal)
-- some functions perhaps might have been refactored to have common
-pieces in error handling, though I didn't read core carefully.
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+ drivers/mtd/nand/brcmnand/brcmnand.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-Most important part I have noticed is a GPIO request.
-I didn't get why you almost repeat gpiod_get() in case of platform data?
-Shouldn't we have GPIO look up table?
-Can we use builtin device properties (for GPIO and/or overall)?
-
-
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index 42ebd73..c7c4efe 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -765,11 +765,14 @@ enum {
+ 	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+ };
+ 
+-static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
++static int brcmnand_set_wp(struct brcmnand_host *host, int en)
+ {
++	struct brcmnand_controller *ctrl = host->ctrl;
+ 	u32 val = en ? CS_SELECT_NAND_WP : 0;
+ 
+ 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_SELECT, CS_SELECT_NAND_WP, 0, val);
++
++	return 0;
+ }
+ 
+ /***********************************************************************
+@@ -1029,7 +1032,7 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
+ 			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
+ 			old_wp = wp;
+ 		}
+-		brcmnand_set_wp(ctrl, wp);
++		brcmnand_set_wp(host, wp);
+ 	}
+ }
+ 
+@@ -2462,14 +2465,6 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 	/* Disable XOR addressing */
+ 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_XOR, 0xff, 0, 0);
+ 
+-	if (ctrl->features & BRCMNAND_HAS_WP) {
+-		/* Permanently disable write protection */
+-		if (wp_on == 2)
+-			brcmnand_set_wp(ctrl, false);
+-	} else {
+-		wp_on = 0;
+-	}
+-
+ 	/* IRQ */
+ 	ctrl->irq = platform_get_irq(pdev, 0);
+ 	if ((int)ctrl->irq < 0) {
+@@ -2522,6 +2517,18 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 			}
+ 
+ 			list_add_tail(&host->node, &ctrl->host_list);
++
++			if (ctrl->features & BRCMNAND_HAS_WP) {
++				/* Permanently disable write protection */
++				if (wp_on == 2) {
++					ret = brcmnand_set_wp(host, false);
++					if (ret)
++						goto err;
++				}
++			} else {
++				wp_on = 0;
++			}
++
+ 		}
+ 	}
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+1.9.1
