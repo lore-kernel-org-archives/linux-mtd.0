@@ -1,8 +1,26 @@
-MIME-Version: 1.0
-In-Reply-To: <CAHp75VeB4eVuN5NMfAfQUtssuHezTyAM8FUswuR8FheUk1V-oA@mail.gmail.com>
-References: <20170220213803.7ba5591e@bbrezillon>
- <20170220215009.0ecbf5a1@bbrezillon>
- <CAHp75VczsC9WdZWR9iCRh2JoNLFZyOtodrsDRYQoyaN7nkyf=A@mail.gmail.com>
+Date: Tue, 21 Feb 2017 18:05:22 +0100
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
+Message-ID: <20170221170522.fphb37d266fyg3to@piout.net>
+References: <CAHp75VczsC9WdZWR9iCRh2JoNLFZyOtodrsDRYQoyaN7nkyf=A@mail.gmail.com>
  <CAHp75Vc_q-bEzA2-hVpHyR0GZ8mXxwJ8-UjECe31T04mb67q4w@mail.gmail.com>
  <20170221090610.6d531b94@bbrezillon>
  <CAHp75VfZfj-8ih3vg63w_dAq8xXE2Whu1bANXRcXS1_EGNq43A@mail.gmail.com>
@@ -12,28 +30,10 @@ References: <20170220213803.7ba5591e@bbrezillon>
  <CAHp75VcKjYYAw8gw8yYXrd-vzZo50WOQ06AzPx+0g9Zakzjm-w@mail.gmail.com>
  <20170221162133.jch6yzpotj4s7zob@piout.net>
  <CAHp75VeB4eVuN5NMfAfQUtssuHezTyAM8FUswuR8FheUk1V-oA@mail.gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 21 Feb 2017 18:43:35 +0200
-Message-ID: <CAHp75Vc54+GR99qM8vUDfQnehFx0g5q137k-w5XY3023UZyr5w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Haavard Skinnemoen <hskinnemoen@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeB4eVuN5NMfAfQUtssuHezTyAM8FUswuR8FheUk1V-oA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,101 +43,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 21, 2017 at 6:32 PM, Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Tue, Feb 21, 2017 at 6:21 PM, Alexandre Belloni
-> <alexandre.belloni@free-electrons.com> wrote:
->> On 21/02/2017 at 18:09:09 +0200, Andy Shevchenko wrote:
->>> On Tue, Feb 21, 2017 at 1:27 PM, Alexandre Belloni
->>> <alexandre.belloni@free-electrons.com> wrote:
->>> > On 21/02/2017 at 13:02:21 +0200, Andy Shevchenko wrote:
->>> >> Abusing platform data with pointers is also not welcome.
->
->>> >> > (in this case, avr32).
->>> >>
->>> >> It's dead de facto.
->>> >>
->>> >> When last time did you compile kernel for it? What was the version of kernel?
->>> >> Did it get successfully?
->>> >>
->>> >
->>> > v4.10-rc3 was building successfully but had some issues in the network
->>> > code.
->>>
->>> Newer kernel doesn't link...
->>>
->>> >> When are we going to remove avr32 support from kernel completely?
->>>
->>> > Ask that to the avr32 maintainers. It still builds and is still booted
->>> > by some people. And that actually seems to be you as you reported a bug
->>> > we introduced in 4.3. I don't think we had any other report after that.
->>>
->>> https://patchwork.kernel.org/patch/9505727/
->>>
->>> After that I gave up on it. Next time I will escalate directly to
->>> Linus. It's a complete necrophilia. I spent already enough time to
->>> look at that code. It brings now more burden than supports someone
->>> somewhere.
->>>
->>
->> As said, it builds fine without networking.
->
-> It sounds a bit sarcastic. Irony is that I *have* hardware here which
-> was dedicated as Network Gateway (ATNGW100). I'm accessing to it
-> remotely.
-> How useful it would be?
->
->> Maybe the first step is to
->> ask the avr32 maintainers. If you already did so,
->
+On 21/02/2017 at 18:32:26 +0200, Andy Shevchenko wrote:
 > I did it ~year or so before where another relocation bug was discovered (fixed).
->
->> please feel free to
->> send a patch to remove the whole architecture.
->> The benefits for atmel will be: proper big endian support, removal of
->> platform data from all the drivers, better clocksource handling.
->
+> 
+> > please feel free to
+> > send a patch to remove the whole architecture.
+> > The benefits for atmel will be: proper big endian support, removal of
+> > platform data from all the drivers, better clocksource handling.
+> 
 > That is good point, but if maintainers don't care, why anyone else should?
 > Neither do I.
->
->>> > It can be frustrating at times to handle that platform but if it is
->>> > working for someone, I don't see why we would remove it.
->>>
->>> How it's working if it's not linked?
->>>
->>
->> Come on, v4.10 has just been release and
-
-It doesn't build anymore. And current case even worse
-Face it. It's dead.
-
-  MODPOST vmlinux.o
-WARNING: vmlinux.o(.text+0x1f2bd4): Section mismatch in reference from
-the variable __param_ops_mtd to the functio
-n .init.text:ubi_mtd_param_parse()
-The function __param_ops_mtd() references
-the function __init ubi_mtd_param_parse().
-This is often because __param_ops_mtd lacks a __init
-annotation or the annotation of ubi_mtd_param_parse is wrong.
-
-crypto/built-in.o: warning: input is not relaxable
-virt/built-in.o: warning: input is not relaxable
-net/built-in.o: In function `rtnl_fill_ifinfo':
-net/socket.c:451: relocation truncated to fit: R_AVR32_11H_PCREL
-against `.text'+22768
-Makefile:969: recipe for target 'vmlinux' failed
-
-
-> v4.9 was building just fine. Do
->> you really expect everybody to closely follow linux-next or update
->> overnight?
->
+> 
+> >> > It can be frustrating at times to handle that platform but if it is
+> >> > working for someone, I don't see why we would remove it.
+> >>
+> >> How it's working if it's not linked?
+> >>
+> >
+> > Come on, v4.10 has just been release and v4.9 was building just fine. Do
+> > you really expect everybody to closely follow linux-next or update
+> > overnight?
+> 
 > What version do you use as compiler?
->
+> 
 > Today's linux-next:
 > $ make O=~/prj/TMP/out/avr32 C=1 CF=-D__CHECK_ENDIAN__ -j64 CONFIG_DEBUG_INFO=
 > y CONFIG_DEBUG_SECTION_MISMATCH=y
->
+> 
 >   CC      lib/sbitmap.o
 > {standard input}: Assembler messages:
 > {standard input}:378: Warning: Unary operator + ignored because bad
@@ -147,10 +79,21 @@ Makefile:969: recipe for target 'vmlinux' failed
 > Assertion failure in finish_insn at .././gas/config/tc-avr32.c line 3498.
 > Please report this bug.
 > scripts/Makefile.build:294: recipe for target 'lib/sbitmap.o' failed
->
+> 
 > $ avr32-linux-gcc --version
 > avr32-linux-gcc (GCC) 4.2.2-atmel.1.0.8
+> 
+
+avr32-linux-gcc (GCC) 4.2.4-atmel.1.1.3.avr32linux.1
+
+Today's linux-next built without network support, the issue still being:
+virt/built-in.o: warning: input is not relaxable net/built-in.o: In function `rtnl_fill_vfinfo':
+rtnetlink.c:(.text+0x21974): relocation truncated to fit: R_AVR32_11H_PCREL against `.text'+2156c
+rtnetlink.c:(.text+0x2198a): relocation truncated to fit: R_AVR32_11H_PCREL against `.text'+2156c
+Makefile:983: recipe for target 'vmlinux' failed
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
