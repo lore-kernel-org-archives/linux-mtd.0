@@ -1,18 +1,17 @@
 Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg6RE-0004kb-QW
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 09:08:51 +0000
-Received: by mail-lf0-x244.google.com with SMTP id z127so8554767lfa.2
- for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 01:08:28 -0800 (PST)
+ id 1cg6Xj-0001i4-Pd
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 09:15:34 +0000
+Received: by mail-lf0-x244.google.com with SMTP id z127so8569076lfa.2
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 01:15:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20170221093445.712ec39d@bbrezillon>
+In-Reply-To: <20170221094314.189d8014@bbrezillon>
 References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
- <1487664010-25926-3-git-send-email-peterpandong@micron.com>
- <20170221093445.712ec39d@bbrezillon>
+ <20170221094314.189d8014@bbrezillon>
 From: Peter Pan <peterpansjtu@gmail.com>
-Date: Tue, 21 Feb 2017 17:08:26 +0800
-Message-ID: <CAAyFORJ6mDivPfuKVHDov_mZGCSDsFkEpPsTyo0jkY=KA7JPkQ@mail.gmail.com>
-Subject: Re: [PATCH 02/11] nand: spi: create spi_nand_chip struct
+Date: Tue, 21 Feb 2017 17:15:09 +0800
+Message-ID: <CAAyFORLdFb5_-BrP3w_mfECVZ+-iiL+U2PDQ2w6MTnYtHHVLtA@mail.gmail.com>
+Subject: Re: [PATCH 00/11] Introduction to SPI NAND framework
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -29,168 +28,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-First, thanks for you comments. I regret I send it out too late!!
-
-On Tue, Feb 21, 2017 at 4:34 PM, Boris Brezillon
+On Tue, Feb 21, 2017 at 4:43 PM, Boris Brezillon
 <boris.brezillon@free-electrons.com> wrote:
-> On Tue, 21 Feb 2017 16:00:01 +0800
+> On Tue, 21 Feb 2017 15:59:59 +0800
 > Peter Pan <peterpandong@micron.com> wrote:
 >
->> Create spi_nand_chip struct and helper functions.
+>> This serie introductes a SPI NAND framework.
+>> SPI NAND is a new NAND family device with SPI protocol as
+>> its interface. And its command set is totally different
+>> with parallel NAND.
 >>
->> Signed-off-by: Peter Pan <peterpandong@micron.com>
->> ---
->>  include/linux/mtd/spi-nand.h | 67 ++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 67 insertions(+)
+>> Our first attempt was more than 2 years ago[1]. At that
+>> time, I didn't make BBT shareable and there were too many
+>> duplicate code with parallel NAND, so that serie stoped.
+>> But the discussion never stops. Now Boris has a plan to
+>> make a generic NAND framework which can be shared with
+>> both parallel and SPI NAND. Now the first step of the
+>> new generic NAND framework is finished. And it is waiting
+>> for a user. After discussion with Boris. We both think it's
+>> time to rebuild SPI NAND framework based on the new NAND
+>> framework and send out for reviewing.
 >>
->> diff --git a/include/linux/mtd/spi-nand.h b/include/linux/mtd/spi-nand.h
->> index 68442e08..23b16f0 100644
->> --- a/include/linux/mtd/spi-nand.h
->> +++ b/include/linux/mtd/spi-nand.h
->> @@ -16,6 +16,12 @@
->>  #ifndef __LINUX_MTD_SPI_NAND_H
->>  #define __LINUX_MTD_SPI_NAND_H
+>> This serie is based on Boris's nand/generic branch[2], which
+>> is on 4.9-rc1. In this serie, BBT code is totally shared.
+>> Of course SPI NAND can share more code with parallel, this
+>> requires to put more in new NAND core (now only BBT included).
+>> I'd like to send this serie out first, then we can decide
+>> which part should be in new NAND core.
+>
+> Thanks for doing that.
+>
 >>
->> +#include <linux/wait.h>
->> +#include <linux/spinlock.h>
->> +#include <linux/mtd/mtd.h>
->> +#include <linux/mtd/flashchip.h>
->> +#include <linux/mtd/nand.h>
->> +
->>  /*
->>   * Standard SPI-NAND flash commands
->>   */
->> @@ -109,4 +115,65 @@
->>  #define SPI_NAND_MT29F_ECC_7_8_BIT   0x50
->>  #define SPI_NAND_MT29F_ECC_UNCORR    0x20
+>> This serie only supports basic SPI NAND features and uses
+>> generic spi controller for data transfer, on-die ECC for data
+>> correction. Support advanced features and specific SPI NAND
+>> controller with hardware ECC is the next step.
+>
+> Okay, that's actually a good start. We should definitely take support
+> for external ECC engine into account when designing the framework, but
+> we don't need to support it right now.
+
+I totally agree with you.
+
+>
 >>
->> +/**
->> + * struct spi_nand_chip - SPI-NAND Private Flash Chip Data
->> + * @base:            [INTERN] NAND device instance
+>>
+>> [1]http://lists.infradead.org/pipermail/linux-mtd/2015-January/057223.html
+>> [2]https://github.com/bbrezillon/linux-0day/tree/nand/generic
+>>
+>>
+>> Peter Pan (11):
+>>   nand: Add SPI NAND cmd set and register definition
+>>   nand: spi: create spi_nand_chip struct
+>>   nand: spi: Abstract SPI NAND cmd set to functions
+>>   nand: spi: Add read function support
+>>   nand: spi: Add write function support
+>>   nand: spi: Add erase function support
+>>   nand: spi: Add init/release function
+>>   nand: spi: Add bad block support
+>>   nand: spi: Add BBT support
+>>   nand: spi: Add generic SPI controller support
+>>   nand: spi: Add arguments check for read/write
 >
-> Drop extra tabs after the field name, and please drop these
-> [INTERN/BOARDSPECIFIC] specifiers.
+> First comment: I think you're trying to separate things that should
+> not be. I mean, adding support for spi-nand means adding support for all
+> basic features at once (read/write/erase). Please squash patches 1 to 6
+> into a single patch. I'm not sure yet about patch 7 and 8, but according
+> to the title, they should also be part of this "add basic support for
+> SPI NANDs" commit.
+> Then, BBT is clearly an optional feature that should be added in a
+> separate patch.
 
-Fix this in v2.
+The reason I split patch like this is the patch is too long for reviewing.
+Maybe I should remove some from framework :). I will follow you suggestion
+in v2.
 
->
->> + * @chip_lock:               [INTERN] protection lock
->> + * @name:            name of the chip
->> + * @wq:                      [INTERN] wait queue to sleep on if a SPI-NAND operation
->> + *                   is in progress used instead of the per chip wait queue
->> + *                   when a hw controller is available.
->> + * @mfr_id:          [BOARDSPECIFIC] manufacture id
->> + * @dev_id:          [BOARDSPECIFIC] device id
->> + * @state:           [INTERN] the current state of the SPI-NAND device
->> + * @read_cache_op:   [REPLACEABLE] Opcode of read from cache
->> + * @write_cache_op:  [REPLACEABLE] Opcode of program load
->> + * @buf:             [INTERN] buffer for read/write data
->> + * @oobbuf:          [INTERN] buffer for read/write oob
->> + * @controller_caps: [INTERN] capacities of SPI NAND controller
->> + * @size:            [INTERN] the size of chip
->> + * @options:         [BOARDSPECIFIC] various chip options. They can partly
->> + *                   be set to inform nand_scan about special functionality.
->> + * @ecc_strength:    [INTERN] ECC correctability from the datasheet.
->> + * @priv:            [BOARDSPECIFIC] pointer to controller data
->> + */
->> +struct spi_nand_chip {
->
-> s/spi_nand_chip/spinand_device/
->
-> Let's try to be consistent with the rawnand_device naming scheme. So in
-> general s/spi_nand/spinand/
-
-Fix this in v2.
-
->
->> +     struct nand_device      base;
->
-> No tabs, just a single space.
-
-Fix this in v2.
-
->
->> +     spinlock_t      chip_lock;
->
-> s/chip_lock/lock/, why do you need a spinlock here?
-
-Fix this in v2. The spinlock is used for get/put device. nand_get_device also
-has a lock. I'll put this lock in controller struct, is this OK?
-
->
->> +     char            *name;
->> +     wait_queue_head_t wq;
->> +     u8              mfr_id;
->> +     u8              dev_id;
->
-> Can we make it an array of u8 and then have pre-defined indexes like
-
-Fix this in v2.
-
->
-> #define SPINAND_MFR_ID          0
-> #define SPINAND_DEV_ID          1
-> ...
->
->> +     flstate_t       state;
->> +     u8              read_cache_op;
->> +     u8              write_cache_op;
->
-> Hm, so these operations are manufacturer specific.
-
-SPI NAND has x1/x2/x4/dual IO/quad IO modes for read/write. These two
-are used to store opcode for read and write. The opcode for read and write
-are uniform for vendors.
-
->
->> +     u8              *buf;
->> +     u8              *oobbuf;
->> +     u32             controller_caps;
->
-> What flags do you plan to put here ^?
-
-RIght now, the flags include support read/write mode(x1/x2/x4/dual/quad).
-
->
->> +     u64             size;
->
-> Isn't it already defined in nand_device?
-
-Yes you're right. Fix this in v2.
-
->
->> +     u32             options;
->
-> Again, what do you plan to put in this field?
-
-Some Micron chips need to select plane and die when read/write.
-
->
->> +     u32             ecc_strength;
->> +     void            *priv;
->
-> Ok, it seems that ->priv is actually used to store controller specific
-> data. Please rename it or do something like:
->
->         struct {
->                 void *priv;
->         } controller;
->
-> It will avoid the kind of confusion we have in the rawnand framework.
->
-> Since you also have controller caps, you could do:
->
->         struct {
->                 u32 caps;
->                 void *priv;
->                 /*
->                  * whatever is controller specific. probably a pointer
->                  * to the SPI controller or something like that.
->                  */
->         } controller;
->
-
-Really valuable comment. Fix this in v2.
-
-Thanks,
+Thanks
 Peter Pan
