@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg2bd-0002pG-NK
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:19 +0000
+ id 1cg2bi-0002pp-MV
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:24 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -49,11 +49,11 @@ Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon, 20 Feb 2017 22:00:42 -0700
-Message-Id: <1487653253-11497-4-git-send-email-logang@deltatee.com>
+Date: Mon, 20 Feb 2017 22:00:43 -0700
+Message-Id: <1487653253-11497-5-git-send-email-logang@deltatee.com>
 In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
 References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH 03/14] input: utilize new device_add_cdev helper function
+Subject: [PATCH 04/14] gpiolib: utilize new device_add_cdev helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -65,52 +65,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/input/evdev.c    | 3 +--
- drivers/input/joydev.c   | 3 +--
- drivers/input/mousedev.c | 3 +--
- 3 files changed, 3 insertions(+), 6 deletions(-)
+ drivers/gpio/gpiolib.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
-index e9ae3d5..a3407ea 100644
---- a/drivers/input/evdev.c
-+++ b/drivers/input/evdev.c
-@@ -1416,8 +1416,7 @@ static int evdev_connect(struct input_handler *handler, struct input_dev *dev,
- 		goto err_free_evdev;
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index a07ae9e..04dbc4a 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -1036,9 +1036,8 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
  
- 	cdev_init(&evdev->cdev, &evdev_fops);
--	evdev->cdev.kobj.parent = &evdev->dev.kobj;
--	error = cdev_add(&evdev->cdev, evdev->dev.devt, 1);
-+	error = device_add_cdev(&evdev->dev, &evdev->cdev);
- 	if (error)
- 		goto err_unregister_handle;
- 
-diff --git a/drivers/input/joydev.c b/drivers/input/joydev.c
-index abd18f3..012e06f 100644
---- a/drivers/input/joydev.c
-+++ b/drivers/input/joydev.c
-@@ -905,8 +905,7 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
- 		goto err_free_joydev;
- 
- 	cdev_init(&joydev->cdev, &joydev_fops);
--	joydev->cdev.kobj.parent = &joydev->dev.kobj;
--	error = cdev_add(&joydev->cdev, joydev->dev.devt, 1);
-+	error = device_add_cdev(&joydev->dev, &joydev->cdev);
- 	if (error)
- 		goto err_unregister_handle;
- 
-diff --git a/drivers/input/mousedev.c b/drivers/input/mousedev.c
-index b604564..efd8666 100644
---- a/drivers/input/mousedev.c
-+++ b/drivers/input/mousedev.c
-@@ -901,8 +901,7 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
- 	}
- 
- 	cdev_init(&mousedev->cdev, &mousedev_fops);
--	mousedev->cdev.kobj.parent = &mousedev->dev.kobj;
--	error = cdev_add(&mousedev->cdev, mousedev->dev.devt, 1);
-+	error = device_add_cdev(&mousedev->dev, &mousedev->cdev);
- 	if (error)
- 		goto err_unregister_handle;
- 
+ 	cdev_init(&gdev->chrdev, &gpio_fileops);
+ 	gdev->chrdev.owner = THIS_MODULE;
+-	gdev->chrdev.kobj.parent = &gdev->dev.kobj;
+ 	gdev->dev.devt = MKDEV(MAJOR(gpio_devt), gdev->id);
+-	status = cdev_add(&gdev->chrdev, gdev->dev.devt, 1);
++	status = device_add_cdev(&gdev->dev, &gdev->chrdev);
+ 	if (status < 0)
+ 		chip_warn(gdev->chip, "failed to add char device %d:%d\n",
+ 			  MAJOR(gpio_devt), gdev->id);
 -- 
 2.1.4
