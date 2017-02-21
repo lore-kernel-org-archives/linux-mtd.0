@@ -1,64 +1,25 @@
-Received: from mail-wr0-f196.google.com ([209.85.128.196])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg9vi-0002Cl-6A
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 12:52:32 +0000
-Received: by mail-wr0-f196.google.com with SMTP id z61so14341572wrc.3
- for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 04:52:09 -0800 (PST)
-Subject: Re: [PATCH 13/14] scsi: utilize new device_add_cdev helper function
-To: Logan Gunthorpe <logang@deltatee.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dan Williams <dan.j.williams@intel.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
- Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
- Marcel Selhorst <tpmdd@selhorst.net>,
- Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
- Sean Hefty <sean.hefty@intel.com>, Hal Rosenstock
- <hal.rosenstock@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Haggai Eran <haggaie@mellanox.com>, Parav Pandit <pandit.parav@gmail.com>,
- Leon Romanovsky <leon@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
- Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>,
- Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
- Hans Verkuil <hans.verkuil@cisco.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Matt Porter <mporter@kernel.crashing.org>,
- Alexandre Bounine <alexandre.bounine@idt.com>,
- Andrew Morton <akpm@linux-foundation.org>, Joe Perches <joe@perches.com>,
- Lorenzo Stoakes <lstoakes@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>,
- Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Boaz Harrosh <ooo@electrozaur.com>, Benny Halevy <bhalevy@primarydata.com>,
- "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Stephen Bates <stephen.bates@microsemi.com>,
- Bjorn Helgaas <bhelgaas@google.com>
-References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
- <1487653253-11497-14-git-send-email-logang@deltatee.com>
-Cc: linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
- linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-nvdimm@lists.01.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- tpmdd-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- osd-dev@open-osd.org, linux-input@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org
-From: Boaz Harrosh <ooo@electrozaur.com>
-Message-ID: <eeedf346-32a8-d503-e6ba-649c7a0a17f1@electrozaur.com>
-Date: Tue, 21 Feb 2017 14:52:00 +0200
+Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Haavard Skinnemoen
+ <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ <linux-kernel@vger.kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu
+ <rainyfeeling@outlook.com>
+References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, <devicetree@vger.kernel.org>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Message-ID: <4fc857bb-f4a1-e507-54bb-82c71bb7edca@microchip.com>
+Date: Tue, 21 Feb 2017 14:02:57 +0100
 MIME-Version: 1.0
-In-Reply-To: <1487653253-11497-14-git-send-email-logang@deltatee.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -68,55 +29,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/21/2017 07:00 AM, Logan Gunthorpe wrote:
-> Note: the chardev instance in osd_uld.c originally did not
-> set the kobject parent. Thus, I'm reasonably confident that because
-> of this, this code  would have suffered from a minor use after free
-> bug if the cdev was open when the backing device was released.
+Le 20/02/2017 à 13:28, Boris Brezillon a écrit :
+> This is a complete rewrite of the driver whose main purpose is to
+> support the new DT representation where the NAND controller node is now
+> really visible in the DT and appears under the EBI bus. With this new
+> representation, we can add other devices under the EBI bus without
+> risking pinmuxing conflicts (the NAND controller is under the EBI
+> bus logic and as such, share some of its pins with other devices
+> connected on this bus).
 > 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-
-Cool thanks. And even a bug fix
-ACK-by: Boaz Harrosh <ooo@electrozaur.com>
-
+> Even though the goal of this rework was not necessarily to add new
+> features, the new driver has been designed with this in mind. With a
+> clearer separation between the different blocks and different IP
+> revisions, adding new functionalities should be easier (we already
+> have plans to support SMC timing configuration so that we no longer
+> have to rely on the configuration done by the bootloader/bootstrap).
+> 
+> Also note that we no longer have a custom ->cmdfunc() implementation,
+> which means we can now benefit from new features added in the core
+> implementation for free (support for new NAND operations for example).
+> 
+> The last thing that we gain with this rework is support for multi-chips
+> and multi-dies chips, thanks to the clean NAND controller <-> NAND
+> devices representation.
+> 
+> This new driver has been tested on several platforms (at91sam9261,
+> at91sam9g45, at91sam9x5, sama5d3 and sama5d4) to make sure it did not
+> introduce regressions, and it's worth mentioning that old bindings are
+> still supported (which partly explain the positive diffstat).
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  drivers/scsi/osd/osd_uld.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/scsi/osd/osd_uld.c b/drivers/scsi/osd/osd_uld.c
-> index 243eab3..519be56 100644
-> --- a/drivers/scsi/osd/osd_uld.c
-> +++ b/drivers/scsi/osd/osd_uld.c
-> @@ -473,18 +473,19 @@ static int osd_probe(struct device *dev)
->  		goto err_put_disk;
->  	}
->  
-> +	device_initialize(&oud->class_dev);
-> +	oud->class_dev.devt = MKDEV(SCSI_OSD_MAJOR, oud->minor);
+>  MAINTAINERS                              |    2 +-
+>  drivers/mtd/nand/Makefile                |    2 +-
+>  drivers/mtd/nand/atmel/Makefile          |    4 +
+>  drivers/mtd/nand/atmel/nand-controller.c | 2269 +++++++++++++++++++++++++++
+>  drivers/mtd/nand/atmel/pmecc.c           | 1020 ++++++++++++
+>  drivers/mtd/nand/atmel/pmecc.h           |   73 +
+>  drivers/mtd/nand/atmel_nand.c            | 2479 ------------------------------
+>  drivers/mtd/nand/atmel_nand_ecc.h        |  163 --
+>  drivers/mtd/nand/atmel_nand_nfc.h        |  103 --
+>  9 files changed, 3368 insertions(+), 2747 deletions(-)
+>  create mode 100644 drivers/mtd/nand/atmel/Makefile
+>  create mode 100644 drivers/mtd/nand/atmel/nand-controller.c
+>  create mode 100644 drivers/mtd/nand/atmel/pmecc.c
+>  create mode 100644 drivers/mtd/nand/atmel/pmecc.h
+>  delete mode 100644 drivers/mtd/nand/atmel_nand.c
+>  delete mode 100644 drivers/mtd/nand/atmel_nand_ecc.h
+>  delete mode 100644 drivers/mtd/nand/atmel_nand_nfc.h
+
+[..]
+
+> + * A few words about the naming convention in this file. This convention
+> + * applies to structure and function names.
+> + *
+> + * Prefixes:
+> + *
+> + * - atmel_nand_: all generic structures/functions
+> + * - atmel_smc_nand_: all structures/functions specific to the SMC interface
+> + *		      (at91sam9 and avr32 SoCs)
+> + * - atmel_hsmc_nand_: all structures/functions specific to the HSMC interface
+> + *		       (sama5 SoCs and later)
+> + * - atmel_nfc_: all structures/functions used to manipulate the NFC sub-block
+> + *		 that is available in the HSMC block
+> + * - <soc>_nand_: all SoC specific structures/functions
+
+Ok, good.
+
+> + */
+
+[..]
+
+> +static irqreturn_t atmel_nfc_interrupt(int irq, void *data)
+> +{
+> +	struct atmel_hsmc_nand_controller *nc = data;
+> +	u32 imr, sr;
 > +
->  	/* init the char-device for communication with user-mode */
->  	cdev_init(&oud->cdev, &osd_fops);
->  	oud->cdev.owner = THIS_MODULE;
-> -	error = cdev_add(&oud->cdev,
-> -			 MKDEV(SCSI_OSD_MAJOR, oud->minor), 1);
-> +	error = device_add_cdev(&oud->class_dev, &oud->cdev);
->  	if (error) {
->  		OSD_ERR("cdev_add failed\n");
->  		goto err_put_disk;
->  	}
->  
->  	/* class device member */
-> -	oud->class_dev.devt = oud->cdev.dev;
->  	oud->class_dev.class = &osd_uld_class;
->  	oud->class_dev.parent = dev;
->  	oud->class_dev.release = __remove;
-> @@ -494,7 +495,7 @@ static int osd_probe(struct device *dev)
->  		goto err_put_cdev;
->  	}
->  
-> -	error = device_register(&oud->class_dev);
-> +	error = device_add(&oud->class_dev);
->  	if (error) {
->  		OSD_ERR("device_register failed => %d\n", error);
->  		goto err_put_cdev;
-> 
+> +	regmap_read(nc->base.smc, ATMEL_HSMC_NFC_IMR, &imr);
+> +	regmap_read(nc->base.smc, ATMEL_HSMC_NFC_SR, &sr);
+> +
+> +	sr &= imr;
+> +
+> +	if (sr)
+> +		regmap_write(nc->base.smc, ATMEL_HSMC_NFC_IDR, sr);
+> +
+> +	if (sr == imr)
+> +		complete(&nc->complete);
+> +
+> +	return sr ? IRQ_HANDLED : IRQ_NONE;
+> +}
+
+It can be good as well to print out the error conditions. Not that it
+changes the behavior of the driver but it can warn us about issues like
+in the old function nfc_read_status().
+
+Othewise, I'm okay with the patch, so you can add my:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+
+Best regards,
+-- 
+Nicolas Ferre
