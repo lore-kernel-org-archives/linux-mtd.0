@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg2cD-0002va-8s
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:55 +0000
+ id 1cg2cN-00034W-9s
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:04:05 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -49,11 +49,11 @@ Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon, 20 Feb 2017 22:00:51 -0700
-Message-Id: <1487653253-11497-13-git-send-email-logang@deltatee.com>
+Date: Mon, 20 Feb 2017 22:00:41 -0700
+Message-Id: <1487653253-11497-3-git-send-email-logang@deltatee.com>
 In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
 References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH 12/14] rtc: utilize new device_add_cdev helper function
+Subject: [PATCH 02/14] device-dax: utilize new device_add_cdev helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -65,26 +65,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/rtc/rtc-dev.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/dax/dax.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/rtc/rtc-dev.c b/drivers/rtc/rtc-dev.c
-index a6d9434..e4012bb 100644
---- a/drivers/rtc/rtc-dev.c
-+++ b/drivers/rtc/rtc-dev.c
-@@ -477,12 +477,11 @@ void rtc_dev_prepare(struct rtc_device *rtc)
+diff --git a/drivers/dax/dax.c b/drivers/dax/dax.c
+index ed758b7..0d24822 100644
+--- a/drivers/dax/dax.c
++++ b/drivers/dax/dax.c
+@@ -701,12 +701,12 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
  
- 	cdev_init(&rtc->char_dev, &rtc_dev_fops);
- 	rtc->char_dev.owner = rtc->owner;
--	rtc->char_dev.kobj.parent = &rtc->dev.kobj;
- }
+ 	/* device_initialize() so cdev can reference kobj parent */
+ 	device_initialize(dev);
++	dev->devt = dev_t;
  
- void rtc_dev_add_device(struct rtc_device *rtc)
- {
--	if (cdev_add(&rtc->char_dev, rtc->dev.devt, 1))
-+	if (device_add_cdev(&rtc->dev, &rtc->char_dev))
- 		dev_warn(&rtc->dev, "%s: failed to add char device %d:%d\n",
- 			rtc->name, MAJOR(rtc_devt), rtc->id);
- 	else
+ 	cdev = &dax_dev->cdev;
+ 	cdev_init(cdev, &dax_fops);
+ 	cdev->owner = parent->driver->owner;
+-	cdev->kobj.parent = &dev->kobj;
+-	rc = cdev_add(&dax_dev->cdev, dev_t, 1);
++	rc = device_add_cdev(dev, cdev);
+ 	if (rc)
+ 		goto err_cdev;
+ 
+@@ -716,7 +716,6 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+ 	dax_dev->region = dax_region;
+ 	kref_get(&dax_region->kref);
+ 
+-	dev->devt = dev_t;
+ 	dev->class = dax_class;
+ 	dev->parent = parent;
+ 	dev->groups = dax_attribute_groups;
 -- 
 2.1.4
