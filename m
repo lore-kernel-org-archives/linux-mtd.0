@@ -1,20 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cg64R-0001k6-NW
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 08:45:18 +0000
-Date: Tue, 21 Feb 2017 09:44:44 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpandong@micron.com>
-Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
- <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH 01/11] nand: Add SPI NAND cmd set and register definition
-Message-ID: <20170221094444.68b006c1@bbrezillon>
-In-Reply-To: <1487664010-25926-2-git-send-email-peterpandong@micron.com>
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cg6KI-0001eo-32
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 09:01:39 +0000
+Received: by mail-wr0-x242.google.com with SMTP id 89so7782281wrr.1
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 01:01:17 -0800 (PST)
+Subject: Re: [PATCH 03/11] nand: spi: Abstract SPI NAND cmd set to functions
+To: Peter Pan <peterpandong@micron.com>, boris.brezillon@free-electrons.com,
+ richard@nod.at, computersforpeace@gmail.com, linux-mtd@lists.infradead.org
 References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
- <1487664010-25926-2-git-send-email-peterpandong@micron.com>
+ <1487664010-25926-4-git-send-email-peterpandong@micron.com>
+Cc: peterpansjtu@gmail.com, linshunquan1@hisilicon.com
+From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
+Message-ID: <93b3dd4d-426e-3165-8316-73108847d123@gmail.com>
+Date: Tue, 21 Feb 2017 10:01:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1487664010-25926-4-git-send-email-peterpandong@micron.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,134 +26,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Feb 2017 16:00:00 +0800
-Peter Pan <peterpandong@micron.com> wrote:
+Hello Peter.
+First thank you for this effort to finally bring the spinand framework 
+back on stage.
 
-> This commit adds SPI NAND command set and register
-> definition according Micron SPI NAND data sheet.
-> 
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> ---
->  include/linux/mtd/spi-nand.h | 112 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 112 insertions(+)
->  create mode 100644 include/linux/mtd/spi-nand.h
-> 
-> diff --git a/include/linux/mtd/spi-nand.h b/include/linux/mtd/spi-nand.h
-> new file mode 100644
-> index 0000000..68442e08
-> --- /dev/null
-> +++ b/include/linux/mtd/spi-nand.h
-> @@ -0,0 +1,112 @@
+On 21/02/2017 09:00, Peter Pan wrote:
+> This commit abstracts basic SPI NAND commands to
+> functions in spi-nand-base.c. Because command sets
+> have difference by vendors, we create spi-nand-cmd.c
+> to define this difference by command config table.
+>
+> [...]
+> +
 > +/**
-> +* spi-nand.h
-> +*
-> +* Copyright (c) 2009-2017 Micron Technology, Inc.
-> +*
-> +* This program is free software; you can redistribute it and/or
-> +* modify it under the terms of the GNU General Public License
-> +* as published by the Free Software Foundation; either version 2
-> +* of the License, or (at your option) any later version.
-> +*
-> +* This program is distributed in the hope that it will be useful,
-> +* but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +* GNU General Public License for more details.
-> +*/
-> +#ifndef __LINUX_MTD_SPI_NAND_H
-> +#define __LINUX_MTD_SPI_NAND_H
-> +
-> +/*
-> + * Standard SPI-NAND flash commands
+> + * spi_nand_read_page_to_cache - send command 13h to read data from Nand
+> + * to cache
+> + * @chip: SPI-NAND device structure
+> + * @page_addr: page to read
 > + */
-> +#define SPINAND_CMD_RESET			0xff
-> +#define SPINAND_CMD_GET_FEATURE			0x0f
-> +#define SPINAND_CMD_SET_FEATURE			0x1f
-> +#define SPINAND_CMD_PAGE_READ			0x13
-> +#define SPINAND_CMD_READ_PAGE_CACHE_RDM		0x30
-> +#define SPINAND_CMD_READ_PAGE_CACHE_LAST	0x3f
-> +#define SPINAND_CMD_READ_FROM_CACHE		0x03
-> +#define SPINAND_CMD_READ_FROM_CACHE_FAST	0x0b
-> +#define SPINAND_CMD_READ_FROM_CACHE_X2		0x3b
-> +#define SPINAND_CMD_READ_FROM_CACHE_DUAL_IO	0xbb
-> +#define SPINAND_CMD_READ_FROM_CACHE_X4		0x6b
-> +#define SPINAND_CMD_READ_FROM_CACHE_QUAD_IO	0xeb
-> +#define SPINAND_CMD_BLK_ERASE			0xd8
-> +#define SPINAND_CMD_PROG_EXC			0x10
-> +#define SPINAND_CMD_PROG_LOAD			0x02
-> +#define SPINAND_CMD_PROG_LOAD_RDM_DATA		0x84
-> +#define SPINAND_CMD_PROG_LOAD_X4		0x32
-> +#define SPINAND_CMD_PROG_LOAD_RDM_DATA_X4	0x34
-> +#define SPINAND_CMD_READ_ID			0x9f
-> +#define SPINAND_CMD_WR_DISABLE			0x04
-> +#define SPINAND_CMD_WR_ENABLE			0x06
-> +#define SPINAND_CMD_END				0x0
+> +static int spi_nand_read_page_to_cache(struct spi_nand_chip *chip,
+> +					u32 page_addr)
+> +{
+> +	struct spi_nand_cmd cmd;
 > +
+> +	memset(&cmd, 0, sizeof(struct spi_nand_cmd));
+> +	cmd.cmd = SPINAND_CMD_PAGE_READ;
+> +	cmd.n_addr = 3;
+> +	cmd.addr[0] = (u8)(page_addr >> 16);
+> +	cmd.addr[1] = (u8)(page_addr >> 8);
+> +	cmd.addr[2] = (u8)page_addr;
 > +
-> +/* feature registers */
-> +#define REG_BLOCK_LOCK		0xa0
-> +#define REG_CFG			0xb0
-> +#define REG_STATUS		0xc0
-> +#define REG_DIE_SELECT		0xd0
-> +
-> +/* status */
-> +#define STATUS_OIP_MASK		0x01
-> +#define STATUS_CRBSY_MASK	0x80
-> +#define STATUS_READY		(0 << 0)
-> +#define STATUS_BUSY		(1 << 0)
-> +
-> +#define STATUS_E_FAIL_MASK	0x04
-> +#define STATUS_E_FAIL		(1 << 2)
-> +
-> +#define STATUS_P_FAIL_MASK	0x08
-> +#define STATUS_P_FAIL		(1 << 3)
-> +
-> +
-> +/*Configuration register defines*/
-> +#define CFG_QE_MASK		0x01
-> +#define CFG_QE_ENABLE		0x01
-> +#define CFG_ECC_MASK		0x10
-> +#define CFG_ECC_ENABLE		0x10
-> +#define CFG_LOT_MASK		0x20
-> +#define CFG_LOT_ENABLE		0x20
-> +#define CFG_OTP_MASK		0xc2
-> +#define CFG_OTP_ENTER		0x40
-> +#define CFG_OTP_EXIT		0x00
-> +
-> +/* block lock */
-> +#define BL_ALL_LOCKED		0x7c
-> +#define BL_U_1_1024_LOCKED		0x08
-> +#define BL_U_1_512_LOCKED		0x10
-> +#define BL_U_1_256_LOCKED		0x18
-> +#define BL_U_1_128_LOCKED		0x20
-> +#define BL_U_1_64_LOCKED		0x28
-> +#define BL_U_1_32_LOCKED		0x30
-> +#define BL_U_1_16_LOCKED		0x38
-> +#define BL_U_1_8_LOCKED		0x40
-> +#define BL_U_1_4_LOCKED		0x48
-> +#define BL_U_1_2_LOCKED		0x50
-> +#define BL_L_1_1024_LOCKED		0x0c
-> +#define BL_L_1_512_LOCKED		0x14
-> +#define BL_L_1_256_LOCKED		0x1c
-> +#define BL_L_1_128_LOCKED		0x24
-> +#define BL_L_1_64_LOCKED		0x2c
-> +#define BL_L_1_32_LOCKED		0x34
-> +#define BL_L_1_16_LOCKED		0x3c
-> +#define BL_L_1_8_LOCKED		0x44
-> +#define BL_L_1_4_LOCKED		0x4c
-> +#define BL_L_1_2_LOCKED		0x54
-> +#define BL_ALL_UNLOCKED		0X00
-> +
-> +/* die select */
-> +#define DIE_SELECT_MASK		0x40
-> +#define DIE_SELECT_DS0		0x00
-> +#define DIE_SELECT_DS1		0x40
-> +
-> +#define SPI_NAND_MT29F_ECC_MASK		0x70
-> +#define SPI_NAND_MT29F_ECC_0_BIT	0x00
-> +#define SPI_NAND_MT29F_ECC_1_3_BIT	0x10
-> +#define SPI_NAND_MT29F_ECC_4_6_BIT	0x30
-> +#define SPI_NAND_MT29F_ECC_7_8_BIT	0x50
-> +#define SPI_NAND_MT29F_ECC_UNCORR	0x20
+> +	return spi_nand_issue_cmd(chip, &cmd);
+> +}
 
-These are manufacturer specific definitions, and I don't think they
-should be exposed in the generic header.
+Just a question. Don't you try to map too exactly the spi_nand_cmd to 
+the internal micron SPI command ?
+Why "cmd.addr" should be a byte array, and not a u32, leaving each chip 
+to details to handle the u32 to SPI byte stream mapping.
+
+
+> +
+> +/**
+> + * spi_nand_read_from_cache - read data out from cache register
+> + * @chip: SPI-NAND device structure
+> + * @page_addr: page to read
+> + * @column: the location to read from the cache
+> + * @len: number of bytes to read
+> + * @rbuf: buffer held @len bytes
+> + * Description:
+> + *   Command can be 03h, 0Bh, 3Bh, 6Bh, BBh, EBh
+> + *   The read can specify 1 to (page size + spare size) bytes of data read at
+> + *   the corresponding locations.
+> + *   No tRd delay.
+> + */
+> +static int spi_nand_read_from_cache(struct spi_nand_chip *chip,
+> +		u32 page_addr, u32 column, size_t len, u8 *rbuf)
+> +{
+> +	struct nand_device *nand = &chip->base;
+> +	struct spi_nand_cmd cmd;
+> +
+> +	memset(&cmd, 0, sizeof(struct spi_nand_cmd));
+> +	cmd.cmd = chip->read_cache_op;
+> +	cmd.n_addr = 2;
+> +	cmd.addr[0] = (u8)(column >> 8);
+> +	if (chip->options & SPINAND_NEED_PLANE_SELECT)
+> +		cmd.addr[0] |= (u8)((nand_page_to_eraseblock(nand, page_addr)
+> +				& 0x1) << 4);
+> +	cmd.addr[1] = (u8)column;
+> +	cmd.n_rx = len;
+> +	cmd.rx_buf = rbuf;
+> +
+> +	return spi_nand_issue_cmd(chip, &cmd);
+> +}
+> +
+Some reasons to handle the plane concept (Micron specific), and even 
+move the fact that it touch the bit 4 of cdm.addr[0], in common code ?
+
+Regards,
+Arnaud
