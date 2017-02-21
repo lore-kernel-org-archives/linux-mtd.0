@@ -1,32 +1,23 @@
-Date: Tue, 21 Feb 2017 09:06:10 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, "open list:MEMORY TECHNOLOGY..."
- <linux-mtd@lists.infradead.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>, Haavard
- Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt
- <egtvedt@samfundet.no>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh
- Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-arm Mailing List
- <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian
- Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala
- <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-Message-ID: <20170221090610.6d531b94@bbrezillon>
-In-Reply-To: <CAHp75Vc_q-bEzA2-hVpHyR0GZ8mXxwJ8-UjECe31T04mb67q4w@mail.gmail.com>
-References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
- <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
- <CAHp75VdwQGP-qa0c0KQwrdpZmCGc3RuEsJ-E-XLbBzQSn4Yxcg@mail.gmail.com>
- <20170220213803.7ba5591e@bbrezillon>
- <20170220215009.0ecbf5a1@bbrezillon>
- <CAHp75VczsC9WdZWR9iCRh2JoNLFZyOtodrsDRYQoyaN7nkyf=A@mail.gmail.com>
- <CAHp75Vc_q-bEzA2-hVpHyR0GZ8mXxwJ8-UjECe31T04mb67q4w@mail.gmail.com>
+Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cg5Xg-0004MK-IN
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 08:11:26 +0000
+Received: by mail-lf0-x22e.google.com with SMTP id g134so16869128lfe.1
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 00:11:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <8d67a301-cc8d-276a-12f5-4e5db24a8abc@nod.at>
+References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
+ <8d67a301-cc8d-276a-12f5-4e5db24a8abc@nod.at>
+From: Peter Pan <peterpansjtu@gmail.com>
+Date: Tue, 21 Feb 2017 16:11:01 +0800
+Message-ID: <CAAyFORKkCdw2WhOOZXV1U+LzvvUuniDCxoShwv9TEt5XZJRqxw@mail.gmail.com>
+Subject: Re: [PATCH 00/11] Introduction to SPI NAND framework
+To: Richard Weinberger <richard@nod.at>
+Cc: Peter Pan <peterpandong@micron.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ "linshunquan (A)" <linshunquan1@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,60 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Feb 2017 01:54:37 +0200
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Hi Richard,
 
-> On Tue, Feb 21, 2017 at 1:40 AM, Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Mon, Feb 20, 2017 at 10:50 PM, Boris Brezillon
-> > <boris.brezillon@free-electrons.com> wrote:  
-> >> On Mon, 20 Feb 2017 21:38:03 +0100
-> >> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> >>  
-> >>> On Mon, 20 Feb 2017 22:27:17 +0200
-> >>> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> >>>  
-> >>> > On Mon, Feb 20, 2017 at 2:28 PM, Boris Brezillon
-> >>> > <boris.brezillon@free-electrons.com> wrote:
-> >>> >  
-> >>> > >  drivers/mtd/nand/atmel/nand-controller.c | 2269 +++++++++++++++++++++++++++
-> >>> > >  drivers/mtd/nand/atmel_nand.c            | 2479 ------------------------------  
-> >>> >
-> >>> > Does -M -C help you?
-> >>> > At least it would help reviewers
-> >>> >  
-> >>>
-> >>> No it doesn't, because files were not just moved around using git mv,
-> >>> it's a complete rewrite of the driver. IIUC, you're about to review
-> >>> this submission, or are you just trolling like last time?  
-> >>
-> >> My bad, I mistaken you with someone else. Sorry for being harsh, but my
-> >> explanation stands ;-).  
-> >
-> > No problem. I was asking since it so big and on first glance looks
-> > like a partial copy (I dunno if parameter to -C makes it somehow
-> > useful), though I can't review this. It's too big to me. Sorry I'm
-> > really not trolling, just didn't read commit message carefully.  
-> 
-> Okay, I very quickly looked into the code, what I noticed
-> - you like extra parens and empty lines in some cases (not big deal)
 
-Can you point specific places where you think these are not needed?
+On Tue, Feb 21, 2017 at 4:05 PM, Richard Weinberger <richard@nod.at> wrote:
+> Peter,
+>
+> Am 21.02.2017 um 08:59 schrieb Peter Pan:
+>> This serie introductes a SPI NAND framework.
+>> SPI NAND is a new NAND family device with SPI protocol as
+>> its interface. And its command set is totally different
+>> with parallel NAND.
+>>
+>> Our first attempt was more than 2 years ago[1]. At that
+>> time, I didn't make BBT shareable and there were too many
+>> duplicate code with parallel NAND, so that serie stoped.
+>> But the discussion never stops. Now Boris has a plan to
+>> make a generic NAND framework which can be shared with
+>> both parallel and SPI NAND. Now the first step of the
+>> new generic NAND framework is finished. And it is waiting
+>> for a user. After discussion with Boris. We both think it's
+>> time to rebuild SPI NAND framework based on the new NAND
+>> framework and send out for reviewing.
+>>
+>> This serie is based on Boris's nand/generic branch[2], which
+>> is on 4.9-rc1. In this serie, BBT code is totally shared.
+>> Of course SPI NAND can share more code with parallel, this
+>> requires to put more in new NAND core (now only BBT included).
+>> I'd like to send this serie out first, then we can decide
+>> which part should be in new NAND core.
+>>
+>> This serie only supports basic SPI NAND features and uses
+>> generic spi controller for data transfer, on-die ECC for data
+>> correction. Support advanced features and specific SPI NAND
+>> controller with hardware ECC is the next step.
+>
+> Can you please share on which SPI NAND chips this got tested?
 
-> - some functions perhaps might have been refactored to have common
-> pieces in error handling, though I didn't read core carefully.
-
-Again, be more precise.
-
-> 
-> Most important part I have noticed is a GPIO request.
-> I didn't get why you almost repeat gpiod_get() in case of platform data?
-> Shouldn't we have GPIO look up table?
-> Can we use builtin device properties (for GPIO and/or overall)?
-
-Sorry but I don't get it. Can give an example of what you'd like me to
-do?
+Sorry for missing this part in cover letter... This series is tested on
+Xilinx Zedboard with Micron MT29F2G01AAAED SPI NAND chip.
 
 Thanks,
-
-Boris
+Peter Pan
