@@ -1,18 +1,18 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg6tM-0003tj-99
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 09:37:54 +0000
-Received: by mail-lf0-x243.google.com with SMTP id z127so8619899lfa.2
- for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 01:37:31 -0800 (PST)
+ id 1cg6wf-0005YF-NB
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 09:41:19 +0000
+Received: by mail-lf0-x22e.google.com with SMTP id b80so24665662lfe.3
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 01:40:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <b9e88910-c883-394d-09eb-0e29d0f297aa@gmail.com>
+In-Reply-To: <93b3dd4d-426e-3165-8316-73108847d123@gmail.com>
 References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
- <1487664010-25926-11-git-send-email-peterpandong@micron.com>
- <b9e88910-c883-394d-09eb-0e29d0f297aa@gmail.com>
+ <1487664010-25926-4-git-send-email-peterpandong@micron.com>
+ <93b3dd4d-426e-3165-8316-73108847d123@gmail.com>
 From: Peter Pan <peterpansjtu@gmail.com>
-Date: Tue, 21 Feb 2017 17:37:29 +0800
-Message-ID: <CAAyFORJevzfjqi99zsU_dkzn=-EaoakYRPQPUUe+rKEw3Bjj6g@mail.gmail.com>
-Subject: Re: [PATCH 10/11] nand: spi: Add generic SPI controller support
+Date: Tue, 21 Feb 2017 17:40:55 +0800
+Message-ID: <CAAyFORJtSxNp-yVF0cRz0R1B3Z9xBm72Wv9Ph3boQERHsafGwQ@mail.gmail.com>
+Subject: Re: [PATCH 03/11] nand: spi: Abstract SPI NAND cmd set to functions
 To: Arnaud Mouiche <arnaud.mouiche@gmail.com>
 Cc: Peter Pan <peterpandong@micron.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -31,92 +31,92 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Arnaud,
 
-On Tue, Feb 21, 2017 at 5:25 PM, Arnaud Mouiche
+On Tue, Feb 21, 2017 at 5:01 PM, Arnaud Mouiche
 <arnaud.mouiche@gmail.com> wrote:
->
+> Hello Peter.
+> First thank you for this effort to finally bring the spinand framework back
+> on stage.
 >
 > On 21/02/2017 09:00, Peter Pan wrote:
 >>
->> This commit supports to use generic spi controller
->> as SPI NAND controller.
+>> This commit abstracts basic SPI NAND commands to
+>> functions in spi-nand-base.c. Because command sets
+>> have difference by vendors, we create spi-nand-cmd.c
+>> to define this difference by command config table.
 >>
->> Signed-off-by: Peter Pan <peterpandong@micron.com>
->> ---
->>   drivers/mtd/nand/spi/Kconfig             |   2 +
->>   drivers/mtd/nand/spi/Makefile            |   1 +
->>   drivers/mtd/nand/spi/chips/Kconfig       |   5 +
->>   drivers/mtd/nand/spi/chips/Makefile      |   1 +
->>   drivers/mtd/nand/spi/chips/generic_spi.c | 269
->> +++++++++++++++++++++++++++++++
->>   5 files changed, 278 insertions(+)
->>   create mode 100644 drivers/mtd/nand/spi/chips/Kconfig
->>   create mode 100644 drivers/mtd/nand/spi/chips/Makefile
->>   create mode 100644 drivers/mtd/nand/spi/chips/generic_spi.c
->
-> [...]
->
->> +/*
->> + * generic_spi_nand_cmd_fn - to process a command to send to the SPI-NAND
->> + * by generic SPI bus
+>> [...]
+>> +
+>> +/**
+>> + * spi_nand_read_page_to_cache - send command 13h to read data from Nand
+>> + * to cache
 >> + * @chip: SPI-NAND device structure
->> + * @cmd: command structure
->> + * Description:
->> + *   Set up the command buffer to send to the SPI controller.
->> + *   The command buffer has to initialized to 0.
+>> + * @page_addr: page to read
 >> + */
->> +static int generic_spi_nand_cmd_fn(struct spi_nand_chip *chip,
->> +                               struct spi_nand_cmd *cmd)
+>> +static int spi_nand_read_page_to_cache(struct spi_nand_chip *chip,
+>> +                                       u32 page_addr)
 >> +{
->> +       struct spi_nand_cmd_cfg *cmd_cfg = spi_nand_get_cmd_cfg(cmd->cmd);
->> +       struct spi_message message;
->> +       struct spi_transfer x[3];
->> +       struct spi_device *spi = chip->priv;
->> +       u8 buf[SPINAND_MAX_ADDR_LEN];
+>> +       struct spi_nand_cmd cmd;
 >> +
->> +       spi_message_init(&message);
->> +       memset(x, 0, sizeof(x));
->> +       x[0].len = 1;
->> +       x[0].tx_nbits = 1;
->> +       x[0].tx_buf = &cmd->cmd;
->> +       spi_message_add_tail(&x[0], &message);
+>> +       memset(&cmd, 0, sizeof(struct spi_nand_cmd));
+>> +       cmd.cmd = SPINAND_CMD_PAGE_READ;
+>> +       cmd.n_addr = 3;
+>> +       cmd.addr[0] = (u8)(page_addr >> 16);
+>> +       cmd.addr[1] = (u8)(page_addr >> 8);
+>> +       cmd.addr[2] = (u8)page_addr;
 >> +
->> +       if (cmd_cfg->addr_bytes || cmd_cfg->dummy_bytes) {
->> +               if (cmd_cfg->addr_bytes > cmd->n_addr) {
->> +                       memcpy(buf, cmd->addr, cmd->n_addr);
->> +                       memset(cmd->addr, 0, cmd->n_addr);
->> +                       memcpy(cmd->addr + cmd_cfg->addr_bytes -
->> cmd->n_addr,
->> +                               buf, cmd->n_addr);
->> +               }
->> +               x[1].len = cmd_cfg->addr_bytes + cmd_cfg->dummy_bytes;
->> +               x[1].tx_nbits = cmd_cfg->addr_bits;
->> +               x[1].tx_buf = cmd->addr;
->> +               spi_message_add_tail(&x[1], &message);
->> +       }
->> +       if (cmd->n_tx) {
->> +               x[2].len = cmd->n_tx;
->> +               x[2].tx_nbits = cmd_cfg->data_bits;
->> +               x[2].tx_buf = cmd->tx_buf;
->> +               spi_message_add_tail(&x[2], &message);
->> +       } else if (cmd->n_rx) {
->> +               x[2].len = cmd->n_rx;
->> +               x[2].rx_nbits = cmd_cfg->data_bits;
->> +               x[2].rx_buf = cmd->rx_buf;
->> +               spi_message_add_tail(&x[2], &message);
->> +       }
->> +       return spi_sync(spi, &message);
+>> +       return spi_nand_issue_cmd(chip, &cmd);
+>> +}
+>
+>
+> Just a question. Don't you try to map too exactly the spi_nand_cmd to the
+> internal micron SPI command ?
+> Why "cmd.addr" should be a byte array, and not a u32, leaving each chip to
+> details to handle the u32 to SPI byte stream mapping.
+>
+>
+>
+>> +
+>> +/**
+>> + * spi_nand_read_from_cache - read data out from cache register
+>> + * @chip: SPI-NAND device structure
+>> + * @page_addr: page to read
+>> + * @column: the location to read from the cache
+>> + * @len: number of bytes to read
+>> + * @rbuf: buffer held @len bytes
+>> + * Description:
+>> + *   Command can be 03h, 0Bh, 3Bh, 6Bh, BBh, EBh
+>> + *   The read can specify 1 to (page size + spare size) bytes of data
+>> read at
+>> + *   the corresponding locations.
+>> + *   No tRd delay.
+>> + */
+>> +static int spi_nand_read_from_cache(struct spi_nand_chip *chip,
+>> +               u32 page_addr, u32 column, size_t len, u8 *rbuf)
+>> +{
+>> +       struct nand_device *nand = &chip->base;
+>> +       struct spi_nand_cmd cmd;
+>> +
+>> +       memset(&cmd, 0, sizeof(struct spi_nand_cmd));
+>> +       cmd.cmd = chip->read_cache_op;
+>> +       cmd.n_addr = 2;
+>> +       cmd.addr[0] = (u8)(column >> 8);
+>> +       if (chip->options & SPINAND_NEED_PLANE_SELECT)
+>> +               cmd.addr[0] |= (u8)((nand_page_to_eraseblock(nand,
+>> page_addr)
+>> +                               & 0x1) << 4);
+>> +       cmd.addr[1] = (u8)column;
+>> +       cmd.n_rx = len;
+>> +       cmd.rx_buf = rbuf;
+>> +
+>> +       return spi_nand_issue_cmd(chip, &cmd);
 >> +}
 >> +
->>
-> Just a spi speed consideration.
-> All the spi drivers I've work with are not very good for scatter/gather, and
-> performance are dropping especially when you gather only 1 to 3 bytes parts.
-> But we can manage this optimization later anyway, with proper speed figures,
-> once the spinand framework will be merged.
+>
+> Some reasons to handle the plane concept (Micron specific), and even move
+> the fact that it touch the bit 4 of cdm.addr[0], in common code ?
 
-I also found the speed issue when debugging. For opcode and address transfer
-and get/set feature, CPU polling is better than DMA while CPU resource
-is wasted.
+Let me try to remove this from framework when separate controller and device
+related code. Any suggestion on this?
 
 Thanks,
 Peter Pan
