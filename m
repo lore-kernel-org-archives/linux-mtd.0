@@ -1,22 +1,59 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg1AQ-00040f-6i
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 03:31:07 +0000
-Received: by mail-pg0-x241.google.com with SMTP id s67so5216159pgb.1
- for <linux-mtd@lists.infradead.org>; Mon, 20 Feb 2017 19:30:46 -0800 (PST)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: f.fainelli@gmail.com, richard@nod.at, marek.vasut@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, cyrille.pitchen@atmel.com,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH V3,
- 2/2] mtd: nand: brcmnand: Check flash #WP pin status before nand
- erase/program
-Date: Mon, 20 Feb 2017 22:30:32 -0500
-Message-Id: <1487647832-10544-2-git-send-email-kdasu.kdev@gmail.com>
-In-Reply-To: <1487647832-10544-1-git-send-email-kdasu.kdev@gmail.com>
-References: <1487647832-10544-1-git-send-email-kdasu.kdev@gmail.com>
+ id 1cg2bY-0002mF-MV
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:14 +0000
+From: Logan Gunthorpe <logang@deltatee.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>, Leon Romanovsky <leon@kernel.org>,
+ Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Joe Perches <joe@perches.com>,
+ Lorenzo Stoakes <lstoakes@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>, Benny Halevy <bhalevy@primarydata.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
+ linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
+ linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
+ tpmdd-devel@lists.sourceforge.net, linux-gpio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Logan Gunthorpe <logang@deltatee.com>
+Date: Mon, 20 Feb 2017 22:00:49 -0700
+Message-Id: <1487653253-11497-11-git-send-email-logang@deltatee.com>
+In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
+References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
+Subject: [PATCH 10/14] mtd: utilize new device_add_cdev helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,117 +63,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-brcmnand controller v6.x and v7.x lets driver to enable disable #WP pin
-via NAND_WP bit in CS_SELECT register. Driver implementation assumes that
-setting/resetting the bit would assert/de-assert  #WP pin instantaneously
-from the flash part's perspective, and was proceeding to erase/program
-without verifying flash status byte for protection bit. In rigorous
-testing this was causing rare data corruptions with erase and/or
-subsequent programming. To fix this added verification logic to
-brcmandn_wp_set() by reading  flash status and verifying protection bit
-indicating #WP pin status.  The new logic makes sure controller as well
-as the flash is ready to accept commands.
+Note: neither of the cdev instances in the mtd tree originally
+set the kobject parent. Thus, I'm reasonably confident that
+both these instances would have suffered from a minor use after
+free bug if the cdevs were open when the backing device was released.
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/mtd/nand/brcmnand/brcmnand.c | 60 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 57 insertions(+), 3 deletions(-)
+ drivers/mtd/ubi/build.c |  8 +++++---
+ drivers/mtd/ubi/vmt.c   | 10 +++++-----
+ 2 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index c7c4efe..ad8733f 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -24,6 +24,7 @@
- #include <linux/spinlock.h>
- #include <linux/dma-mapping.h>
- #include <linux/ioport.h>
-+#include <linux/iopoll.h>
- #include <linux/bug.h>
- #include <linux/kernel.h>
- #include <linux/bitops.h>
-@@ -101,6 +102,8 @@ struct brcm_nand_dma_desc {
- #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
- #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 85d54f3..a509f15 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -434,11 +434,10 @@ static int ubi_sysfs_init(struct ubi_device *ubi, int *ref)
+ 	int err;
  
-+#define NAND_CTRL_RDY	(INTFC_CTLR_READY | INTFC_FLASH_READY)
-+
- /* Controller feature flags */
- enum {
- 	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
-@@ -765,12 +768,63 @@ enum {
- 	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
- };
+ 	ubi->dev.release = dev_release;
+-	ubi->dev.devt = ubi->cdev.dev;
+ 	ubi->dev.class = &ubi_class;
+ 	ubi->dev.groups = ubi_dev_groups;
+ 	dev_set_name(&ubi->dev, UBI_NAME_STR"%d", ubi->ubi_num);
+-	err = device_register(&ubi->dev);
++	err = device_add(&ubi->dev);
+ 	if (err)
+ 		return err;
  
--static int brcmnand_set_wp(struct brcmnand_host *host, int en)
-+static void bcmnand_ctrl_busy_poll(struct brcmnand_controller *ctrl, u32 mask,
-+				   u32 *reg_val)
-+{
-+	unsigned long timeout = jiffies + msecs_to_jiffies(200);
-+	u32 val;
-+
-+	while (1) {
-+		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
-+		if ((val & mask) == mask)
-+			break;
-+
-+		if (time_after(jiffies, timeout)) {
-+			dev_warn(ctrl->dev, "timeout on ctrl_ready %x\n", val);
-+			break;
-+		}
-+		cpu_relax();
-+	}
-+
-+	*reg_val = val;
-+}
-+
-+static inline void brcmnand_set_wp_reg(struct brcmnand_controller *ctrl, int en)
- {
--	struct brcmnand_controller *ctrl = host->ctrl;
- 	u32 val = en ? CS_SELECT_NAND_WP : 0;
+@@ -508,12 +507,15 @@ static int uif_init(struct ubi_device *ubi, int *ref)
+ 		return err;
+ 	}
  
- 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_SELECT, CS_SELECT_NAND_WP, 0, val);
-+}
++	device_initialize(&ubi->dev);
++	ubi->dev.devt = dev;
 +
-+static int brcmnand_set_wp(struct brcmnand_host *host, int en)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	struct mtd_info *mtd = nand_to_mtd(&host->chip);
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	u32 val;
-+	bool is_wp;
-+
-+	/*
-+	 * make sure ctrl/flash ready before and after
-+	 * changing state of WP PIN
-+	 */
-+	bcmnand_ctrl_busy_poll(ctrl, NAND_CTRL_RDY | NAND_STATUS_READY, &val);
-+	brcmnand_set_wp_reg(ctrl, en);
-+	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-+	bcmnand_ctrl_busy_poll(ctrl, NAND_CTRL_RDY | NAND_STATUS_READY, &val);
-+	/* NAND_STATUS_WP 0x80 = not protected, 0x00 = protected */
-+	is_wp = !(val & NAND_STATUS_WP);
-+
-+	if (is_wp != en) {
-+		u32 nand_wp = brcmnand_read_reg(ctrl, BRCMNAND_CS_SELECT);
-+
-+		nand_wp &= CS_SELECT_NAND_WP;
-+		dev_err_ratelimited(&host->pdev->dev,
-+				    "#WP %s sts:0x%x expected %s NAND_WP %d\n",
-+				    is_wp ? "On" : "Off", val & 0xff,
-+				    en ? "On" : "Off", nand_wp ? 1 : 0);
-+		return -EINVAL;
-+	}
+ 	ubi_assert(MINOR(dev) == 0);
+ 	cdev_init(&ubi->cdev, &ubi_cdev_operations);
+ 	dbg_gen("%s major is %u", ubi->ubi_name, MAJOR(dev));
+ 	ubi->cdev.owner = THIS_MODULE;
  
- 	return 0;
- }
-@@ -1167,7 +1221,7 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
- 	BUG_ON(ctrl->cmd_pending != 0);
- 	ctrl->cmd_pending = cmd;
+-	err = cdev_add(&ubi->cdev, dev, 1);
++	err = device_add_cdev(&ubi->dev, &ubi->cdev);
+ 	if (err) {
+ 		ubi_err(ubi, "cannot add character device");
+ 		goto out_unreg;
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 7ac78c1..df84ba7 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -159,7 +159,6 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 	struct ubi_volume *vol;
+ 	struct ubi_vtbl_record vtbl_rec;
+ 	struct ubi_eba_table *eba_tbl = NULL;
+-	dev_t dev;
  
--	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
-+	bcmnand_ctrl_busy_poll(ctrl, NAND_CTRL_RDY, &intfc);
- 	WARN_ON(!(intfc & INTFC_CTLR_READY));
+ 	if (ubi->ro_mode)
+ 		return -EROFS;
+@@ -265,11 +264,13 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 			vol->last_eb_bytes = vol->usable_leb_size;
+ 	}
  
- 	mb(); /* flush previous writes */
++	device_initialize(&vol->dev);
++	vol->dev.devt = MKDEV(MAJOR(ubi->cdev.dev), vol_id + 1);
++
+ 	/* Register character device for the volume */
+ 	cdev_init(&vol->cdev, &ubi_vol_cdev_operations);
+ 	vol->cdev.owner = THIS_MODULE;
+-	dev = MKDEV(MAJOR(ubi->cdev.dev), vol_id + 1);
+-	err = cdev_add(&vol->cdev, dev, 1);
++	err = device_add_cdev(&vol->dev, &vol->cdev);
+ 	if (err) {
+ 		ubi_err(ubi, "cannot add character device");
+ 		goto out_mapping;
+@@ -277,12 +278,11 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 
+ 	vol->dev.release = vol_release;
+ 	vol->dev.parent = &ubi->dev;
+-	vol->dev.devt = dev;
+ 	vol->dev.class = &ubi_class;
+ 	vol->dev.groups = volume_dev_groups;
+ 
+ 	dev_set_name(&vol->dev, "%s_%d", ubi->ubi_name, vol->vol_id);
+-	err = device_register(&vol->dev);
++	err = device_add(&vol->dev);
+ 	if (err) {
+ 		ubi_err(ubi, "cannot register device");
+ 		goto out_cdev;
 -- 
-1.9.1
+2.1.4
