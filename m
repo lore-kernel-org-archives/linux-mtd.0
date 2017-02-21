@@ -1,26 +1,33 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg7bI-0007ey-D6
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 10:23:18 +0000
-Received: by mail-wm0-x243.google.com with SMTP id r18so18848867wmd.3
- for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 02:22:55 -0800 (PST)
-Subject: Re: [PATCH 03/11] nand: spi: Abstract SPI NAND cmd set to functions
-To: Peter Pan <peterpansjtu@gmail.com>
-References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
- <1487664010-25926-4-git-send-email-peterpandong@micron.com>
- <93b3dd4d-426e-3165-8316-73108847d123@gmail.com>
- <CAAyFORJtSxNp-yVF0cRz0R1B3Z9xBm72Wv9Ph3boQERHsafGwQ@mail.gmail.com>
-Cc: Peter Pan <peterpandong@micron.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- "linshunquan (A)" <linshunquan1@hisilicon.com>
-From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
-Message-ID: <434dfc69-1358-3e51-9ff4-d8e07deb0161@gmail.com>
-Date: Tue, 21 Feb 2017 11:22:52 +0100
+Date: Tue, 21 Feb 2017 11:26:41 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, "open list:MEMORY TECHNOLOGY..."
+ <linux-mtd@lists.infradead.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>, Haavard
+ Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt
+ <egtvedt@samfundet.no>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh
+ Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-arm Mailing List
+ <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian
+ Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala
+ <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
+Message-ID: <20170221112641.6276c001@bbrezillon>
+In-Reply-To: <CAHp75VfZfj-8ih3vg63w_dAq8xXE2Whu1bANXRcXS1_EGNq43A@mail.gmail.com>
+References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
+ <CAHp75VdwQGP-qa0c0KQwrdpZmCGc3RuEsJ-E-XLbBzQSn4Yxcg@mail.gmail.com>
+ <20170220213803.7ba5591e@bbrezillon>
+ <20170220215009.0ecbf5a1@bbrezillon>
+ <CAHp75VczsC9WdZWR9iCRh2JoNLFZyOtodrsDRYQoyaN7nkyf=A@mail.gmail.com>
+ <CAHp75Vc_q-bEzA2-hVpHyR0GZ8mXxwJ8-UjECe31T04mb67q4w@mail.gmail.com>
+ <20170221090610.6d531b94@bbrezillon>
+ <CAHp75VfZfj-8ih3vg63w_dAq8xXE2Whu1bANXRcXS1_EGNq43A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAyFORJtSxNp-yVF0cRz0R1B3Z9xBm72Wv9Ph3boQERHsafGwQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,115 +38,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 21 Feb 2017 12:03:45 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
+> On Tue, Feb 21, 2017 at 10:06 AM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > On Tue, 21 Feb 2017 01:54:37 +0200
+> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> >  
+> >> On Tue, Feb 21, 2017 at 1:40 AM, Andy Shevchenko
+> >> <andy.shevchenko@gmail.com> wrote:  
+> >> > On Mon, Feb 20, 2017 at 10:50 PM, Boris Brezillon
+> >> > <boris.brezillon@free-electrons.com> wrote:  
+> >> >> On Mon, 20 Feb 2017 21:38:03 +0100
+> >> >> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> >> >>  
+> >> >>> On Mon, 20 Feb 2017 22:27:17 +0200
+> >> >>> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> >> >>>  
+> >> >>> > On Mon, Feb 20, 2017 at 2:28 PM, Boris Brezillon
+> >> >>> > <boris.brezillon@free-electrons.com> wrote:
+> >> >>> >  
+> >> >>> > >  drivers/mtd/nand/atmel/nand-controller.c | 2269 +++++++++++++++++++++++++++
+> >> >>> > >  drivers/mtd/nand/atmel_nand.c            | 2479 ------------------------------  
+> >> >>> >
+> >> >>> > Does -M -C help you?
+> >> >>> > At least it would help reviewers
+> >> >>> >  
+> >> >>>
+> >> >>> No it doesn't, because files were not just moved around using git mv,
+> >> >>> it's a complete rewrite of the driver. IIUC, you're about to review
+> >> >>> this submission, or are you just trolling like last time?  
+> >> >>
+> >> >> My bad, I mistaken you with someone else. Sorry for being harsh, but my
+> >> >> explanation stands ;-).  
+> >> >
+> >> > No problem. I was asking since it so big and on first glance looks
+> >> > like a partial copy (I dunno if parameter to -C makes it somehow
+> >> > useful), though I can't review this. It's too big to me. Sorry I'm
+> >> > really not trolling, just didn't read commit message carefully.  
+> >>
+> >> Okay, I very quickly looked into the code, what I noticed
+> >> - you like extra parens and empty lines in some cases (not big deal)  
+> >
+> > Can you point specific places where you think these are not needed?  
+> 
+> 1. For example,
+> 
+> #define ATMEL_NFC_CMD(pos, cmd)                        ((cmd) <<
+> (((pos) * 8) + 2))
 
-On 21/02/2017 10:40, Peter Pan wrote:
-> Hi Arnaud,
->
-> On Tue, Feb 21, 2017 at 5:01 PM, Arnaud Mouiche
-> <arnaud.mouiche@gmail.com> wrote:
->> Hello Peter.
->> First thank you for this effort to finally bring the spinand framework back
->> on stage.
->>
->> On 21/02/2017 09:00, Peter Pan wrote:
->>> This commit abstracts basic SPI NAND commands to
->>> functions in spi-nand-base.c. Because command sets
->>> have difference by vendors, we create spi-nand-cmd.c
->>> to define this difference by command config table.
->>>
->>> [...]
->>> +
->>> +/**
->>> + * spi_nand_read_page_to_cache - send command 13h to read data from Nand
->>> + * to cache
->>> + * @chip: SPI-NAND device structure
->>> + * @page_addr: page to read
->>> + */
->>> +static int spi_nand_read_page_to_cache(struct spi_nand_chip *chip,
->>> +                                       u32 page_addr)
->>> +{
->>> +       struct spi_nand_cmd cmd;
->>> +
->>> +       memset(&cmd, 0, sizeof(struct spi_nand_cmd));
->>> +       cmd.cmd = SPINAND_CMD_PAGE_READ;
->>> +       cmd.n_addr = 3;
->>> +       cmd.addr[0] = (u8)(page_addr >> 16);
->>> +       cmd.addr[1] = (u8)(page_addr >> 8);
->>> +       cmd.addr[2] = (u8)page_addr;
->>> +
->>> +       return spi_nand_issue_cmd(chip, &cmd);
->>> +}
->>
->> Just a question. Don't you try to map too exactly the spi_nand_cmd to the
->> internal micron SPI command ?
->> Why "cmd.addr" should be a byte array, and not a u32, leaving each chip to
->> details to handle the u32 to SPI byte stream mapping.
->>
->>
->>
->>> +
->>> +/**
->>> + * spi_nand_read_from_cache - read data out from cache register
->>> + * @chip: SPI-NAND device structure
->>> + * @page_addr: page to read
->>> + * @column: the location to read from the cache
->>> + * @len: number of bytes to read
->>> + * @rbuf: buffer held @len bytes
->>> + * Description:
->>> + *   Command can be 03h, 0Bh, 3Bh, 6Bh, BBh, EBh
->>> + *   The read can specify 1 to (page size + spare size) bytes of data
->>> read at
->>> + *   the corresponding locations.
->>> + *   No tRd delay.
->>> + */
->>> +static int spi_nand_read_from_cache(struct spi_nand_chip *chip,
->>> +               u32 page_addr, u32 column, size_t len, u8 *rbuf)
->>> +{
->>> +       struct nand_device *nand = &chip->base;
->>> +       struct spi_nand_cmd cmd;
->>> +
->>> +       memset(&cmd, 0, sizeof(struct spi_nand_cmd));
->>> +       cmd.cmd = chip->read_cache_op;
->>> +       cmd.n_addr = 2;
->>> +       cmd.addr[0] = (u8)(column >> 8);
->>> +       if (chip->options & SPINAND_NEED_PLANE_SELECT)
->>> +               cmd.addr[0] |= (u8)((nand_page_to_eraseblock(nand,
->>> page_addr)
->>> +                               & 0x1) << 4);
->>> +       cmd.addr[1] = (u8)column;
->>> +       cmd.n_rx = len;
->>> +       cmd.rx_buf = rbuf;
->>> +
->>> +       return spi_nand_issue_cmd(chip, &cmd);
->>> +}
->>> +
->> Some reasons to handle the plane concept (Micron specific), and even move
->> the fact that it touch the bit 4 of cdm.addr[0], in common code ?
-> Let me try to remove this from framework when separate controller and device
-> related code. Any suggestion on this?
-I know, Micron was the first spinand chipset available, will be the 
-first chipset supported by this framework, but it is already not so 
-generic regarding to the page addressing compared with winbond, esmt, 
-gigadevice or micronix...
+Well, I like to explicitly put parenthesis even when operator
+precedence guarantees the order of the calculation ('*' is preceding
+'+').
 
-But may be this the sign that "generic_spi_nand_cmd_fn" if "too" 
-straight in your implementation and just try to map the "struct 
-spi_nand_cmd" into the SPI frame without any more place for chip 
-specialization.
+For the parenthesis around (cmd) and (pos), they are required to
+guarantee that things like ATMEL_NFC_CMD(x + y, cmd) are working
+correctly.
 
-I guess I would prefer to see multiple 'command primitive' inside each 
-chip structures (eg. chip->read_from_cache() and so on).
-But in the meantime, spinand chipset are made to be generic and behave 
-mostly the same way, which would make this primitive declaration a 
-little bit redundant.
+> 
+>  *events ^= (status & *events);
 
-The other way is to already have a "Micron_spi_nand_cmd_fn" that will 
-patch the address fields for "read cache op", and then call the 
-"generic_spi_nand_cmd_fn" to finalize the job.
+I agree with this one, it's uneeded.
 
-Arnaud
+> 
+>  (((x) * 0x4) + 0x28)
 
->
-> Thanks,
-> Peter Pan
+See my comment about ATMEL_NFC_CMD().
+
+> 
+>   memset(&si[1], 0, sizeof(s16) * ((2 * strength) - 1));
+
+Ditto.
+
+> 
+> Perhaps more in the code. I'm not a LISP programmer.
+> 
+> 2. For empty lines it's solely matter of style, I don't care. My motto
+> "less LOC better, but keep common sense in mind".
+> 
+> >> - some functions perhaps might have been refactored to have common
+> >> pieces in error handling, though I didn't read core carefully.  
+> >
+> > Again, be more precise.  
+> 
+> 3. I don't remember anymore, sorry. Something I would refactor.
+> 
+> >> Most important part I have noticed is a GPIO request.
+> >> I didn't get why you almost repeat gpiod_get() in case of platform data?
+> >> Shouldn't we have GPIO look up table?
+> >> Can we use builtin device properties (for GPIO and/or overall)?  
+> >
+> > Sorry but I don't get it. Can give an example of what you'd like me to
+> > do?
+> >  
+> 
+> 4. First of all, why do you need this function in the first place?
+> 
+> +struct gpio_desc *
+> +atmel_nand_pdata_get_gpio(struct atmel_nand_controller *nc, int gpioid,
+> +                         const char *name, bool active_low,
+> +                         enum gpiod_flags flags)
+
+Because I don't want to duplicate the code done in
+atmel_nand_pdata_get_gpio() each time I have to convert a GPIO number
+into a GPIO descriptor, and that is needed to support platforms that
+haven't moved to DT yet (in this case, avr32).
+
+> 
+> 5. BIT() macro:
+> 
+>    const unsigned int k = 1 << deg(poly);
+>    unsigned int nn = (1 << mm) - 1;
+
+Yes, I must admit I didn't polish the code in PMECC, and most of it has
+been copied from the old driver.
+We could probably use BIT() in a few places.
+
+> 
+> 6. Why this casting (unsigned int) ?
+> 
+>  dev_dbg(pmecc->dev,
+>                        "Bit flip in %s area, byte %d: 0x%02x -> 0x%02x\n",
+>                        area, byte, *ptr, (unsigned int)(*ptr ^ BIT(bit)));
+
+Again, this has been copied from the old driver. I'll have a closer
+look.
+
+> 
+> 7. Question to all that distribution or whatever functions, don't you
+> have a common helper? Or each vendor requires different logic behind
+> it?
+
+What are you talking about? nand_chip hooks?
+
+> 
+> 8. Have you checked what kernel library provides?
+
+I think so, but again, this is really vague, what kind of
+open-coded functions do you think could be replaced with core libraries
+helpers?
+
+> 
+> And I believe there are still issues like those. After, who is on
+> topic, might even find some logical and other issues...
+> 
+> P.S. TBH, so big change is unreviewable in meaningful time. To have a
+> comprehensive review I, for example, spend ~1h/250LOC, and
+> ~2.5h/1000LOC, I would estimate ~4h/2000LOC. Imagine one to spend one
+> day for this. Any volunteer? Not me.
+
+I'm not asking you to review the whole driver, but you started to
+comment on the code without pointing clearly to the things you wanted
+me to address.
