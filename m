@@ -1,26 +1,26 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg9kE-0004i1-QT
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 12:40:40 +0000
-Received: by mail-lf0-x241.google.com with SMTP id 90so3516588lfr.3
- for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2017 04:40:20 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2 2/2] mtd: extract TRX parser out of bcm47xxpart into a
- separated module
-Date: Tue, 21 Feb 2017 13:40:02 +0100
-Message-Id: <20170221124002.585-2-zajec5@gmail.com>
-In-Reply-To: <20170221124002.585-1-zajec5@gmail.com>
-References: <20170221124002.585-1-zajec5@gmail.com>
+Date: Tue, 21 Feb 2017 13:47:43 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Sergio Prado
+ <sergio.prado@e-labworks.com>, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu
+ <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Krzysztof Kozlowski
+ <krzk@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH 1/3] mtd: nand: Pass the CS line to
+ ->setup_data_interface()
+Message-ID: <20170221134743.3c88472e@bbrezillon>
+In-Reply-To: <45a843fb-c43e-711f-ce3a-4c0d44c48144@sigmadesigns.com>
+References: <1487625149-7234-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1487625149-7234-2-git-send-email-boris.brezillon@free-electrons.com>
+ <a5a9d822-a73c-4fd1-201c-7a17d9517f24@sigmadesigns.com>
+ <20170221120648.19e0d32c@bbrezillon>
+ <45a843fb-c43e-711f-ce3a-4c0d44c48144@sigmadesigns.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,325 +30,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Tue, 21 Feb 2017 13:02:48 +0100
+Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
 
-This makes TRX parsing code reusable with other platforms and parsers.
+> On 21/02/2017 12:06, Boris Brezillon wrote:
+> 
+> > Marc Gonzalez wrote:
+> >   
+> >> On 20/02/2017 22:12, Boris Brezillon wrote:
+> >>  
+> >>> Some NAND controllers can assign different NAND timings to different
+> >>> CS lines. Pass the CS line information to ->setup_data_interface() so
+> >>> that the NAND controller driver knows which CS line is concerned by
+> >>> the setup_data_interface() request.    
+> >>
+> >> I'm confused, because I thought I was already doing that.
+> >> On my platform, I have different timings for each chip.
+> >> (thus, for each CS, right?)
+> >>
+> >> In chip->select_chip, I program the appropriate timings
+> >> which the controller will be using.
+> >>
+> >> What am I missing?  
+> > 
+> > Maybe you don't have multi-dies chips, which is the case I'm fixing
+> > here. If you have 2 separate chips, the existing hook should work just
+> > fine.  
+> 
+> Right. You asked me to add an explicit:
+> 
+> 	res = of_property_count_u32_elems(np, "reg");
+> 	if (res < 0)
+> 		return res;
+> 
+> 	if (res != 1)
+> 		return -ENOTSUPP; /* Multi-CS chips are not supported */
+> 
+> I was under the impression that multi-die chips are seen as a single
+> larger "composite" chip. And I had assumed that different dies would
+> not only require identical timings, but would also be identical in
+> all other aspects. This it incorrect?
 
-Please note this patch doesn't really change anything in the existing
-code, just moves it. There is still some place for improvement (e.g.
-working on non-hacky method of checking rootfs format) but it's not
-really a subject of this change.
+This is correct, except some chips (that's true at least for ONFI
+compatible ones) allow dynamic configuration of timings, and each die
+can be configured in a different timing mode.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-V2: A totally rebased & refreshed version.
----
- drivers/mtd/Kconfig              |   4 ++
- drivers/mtd/Makefile             |   1 +
- drivers/mtd/bcm47xxpart.c        |  97 +------------------------------
- drivers/mtd/parsers/Kconfig      |   8 +++
- drivers/mtd/parsers/Makefile     |   1 +
- drivers/mtd/parsers/parser_trx.c | 119 +++++++++++++++++++++++++++++++++++++++
- 6 files changed, 136 insertions(+), 94 deletions(-)
- create mode 100644 drivers/mtd/parsers/Kconfig
- create mode 100644 drivers/mtd/parsers/Makefile
- create mode 100644 drivers/mtd/parsers/parser_trx.c
-
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index e83a279f1217..5a2d71729b9a 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -155,6 +155,10 @@ config MTD_BCM47XX_PARTS
- 	  This provides partitions parser for devices based on BCM47xx
- 	  boards.
- 
-+menu "Partition parsers"
-+source "drivers/mtd/parsers/Kconfig"
-+endmenu
-+
- comment "User Modules And Translation Layers"
- 
- #
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 99bb9a1f6e16..151d60df303a 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
- obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
- obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
- obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
-+obj-y				+= parsers/
- 
- # 'Users' - code which presents functionality to userspace.
- obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index d10fa6c8f074..66ce72fd1426 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -43,7 +43,6 @@
- #define ML_MAGIC2			0x26594131
- #define TRX_MAGIC			0x30524448
- #define SHSQ_MAGIC			0x71736873	/* shsq (weird ZTE H218N endianness) */
--#define UBI_EC_MAGIC			0x23494255	/* UBI# */
- 
- struct trx_header {
- 	uint32_t magic;
-@@ -62,89 +61,6 @@ static void bcm47xxpart_add_part(struct mtd_partition *part, const char *name,
- 	part->mask_flags = mask_flags;
- }
- 
--static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
--						  size_t offset)
--{
--	uint32_t buf;
--	size_t bytes_read;
--	int err;
--
--	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
--			(uint8_t *)&buf);
--	if (err && !mtd_is_bitflip(err)) {
--		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
--			offset, err);
--		goto out_default;
--	}
--
--	if (buf == UBI_EC_MAGIC)
--		return "ubi";
--
--out_default:
--	return "rootfs";
--}
--
--static int bcm47xxpart_parse_trx(struct mtd_info *master,
--				 struct mtd_partition *trx,
--				 struct mtd_partition *parts,
--				 size_t parts_len)
--{
--	struct trx_header header;
--	size_t bytes_read;
--	int curr_part = 0;
--	int i, err;
--
--	if (parts_len < 3) {
--		pr_warn("No enough space to add TRX partitions!\n");
--		return -ENOMEM;
--	}
--
--	err = mtd_read(master, trx->offset, sizeof(header), &bytes_read,
--		       (uint8_t *)&header);
--	if (err && !mtd_is_bitflip(err)) {
--		pr_err("mtd_read error while reading TRX header: %d\n", err);
--		return err;
--	}
--
--	i = 0;
--
--	/* We have LZMA loader if offset[2] points to sth */
--	if (header.offset[2]) {
--		bcm47xxpart_add_part(&parts[curr_part++], "loader",
--				     trx->offset + header.offset[i], 0);
--		i++;
--	}
--
--	if (header.offset[i]) {
--		bcm47xxpart_add_part(&parts[curr_part++], "linux",
--				     trx->offset + header.offset[i], 0);
--		i++;
--	}
--
--	if (header.offset[i]) {
--		size_t offset = trx->offset + header.offset[i];
--		const char *name = bcm47xxpart_trx_data_part_name(master,
--								  offset);
--
--		bcm47xxpart_add_part(&parts[curr_part++], name, offset, 0);
--		i++;
--	}
--
--	/*
--	 * Assume that every partition ends at the beginning of the one it is
--	 * followed by.
--	 */
--	for (i = 0; i < curr_part; i++) {
--		u64 next_part_offset = (i < curr_part - 1) ?
--					parts[i + 1].offset :
--					trx->offset + trx->size;
--
--		parts[i].size = next_part_offset - parts[i].offset;
--	}
--
--	return curr_part;
--}
--
- /**
-  * bcm47xxpart_bootpartition - gets index of TRX partition used by bootloader
-  *
-@@ -362,17 +278,10 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	for (i = 0; i < trx_num; i++) {
- 		struct mtd_partition *trx = &parts[trx_parts[i]];
- 
--		if (i == bcm47xxpart_bootpartition()) {
--			int num_parts;
--
--			num_parts = bcm47xxpart_parse_trx(master, trx,
--							  parts + curr_part,
--							  BCM47XXPART_MAX_PARTS - curr_part);
--			if (num_parts > 0)
--				curr_part += num_parts;
--		} else {
-+		if (i == bcm47xxpart_bootpartition())
-+			trx->format = "trx";
-+		else
- 			trx->name = "failsafe";
--		}
- 	}
- 
- 	*pparts = parts;
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-new file mode 100644
-index 000000000000..ebb697a52698
---- /dev/null
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -0,0 +1,8 @@
-+config MTD_PARSER_TRX
-+	tristate "Parser for TRX format partitions"
-+	depends on MTD && (BCM47XX || ARCH_BCM_5301X)
-+	help
-+	  TRX is a firmware format used by Broadcom on their devices. It
-+	  may contain up to 3/4 partitions (depending on the version).
-+	  This driver will parse TRX header and report at least two partitions:
-+	  kernel and rootfs.
-diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-new file mode 100644
-index 000000000000..4d9024e0be3b
---- /dev/null
-+++ b/drivers/mtd/parsers/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
-diff --git a/drivers/mtd/parsers/parser_trx.c b/drivers/mtd/parsers/parser_trx.c
-new file mode 100644
-index 000000000000..f35e28148808
---- /dev/null
-+++ b/drivers/mtd/parsers/parser_trx.c
-@@ -0,0 +1,119 @@
-+/*
-+ * Parser for TRX format partitions
-+ *
-+ * Copyright (C) 2012 - 2017 Rafał Miłecki <rafal@milecki.pl>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+
-+#define TRX_PARSER_MAX_PARTS		4
-+
-+/* Magics */
-+#define UBI_EC_MAGIC			0x23494255	/* UBI# */
-+
-+struct trx_header {
-+	uint32_t magic;
-+	uint32_t length;
-+	uint32_t crc32;
-+	uint16_t flags;
-+	uint16_t version;
-+	uint32_t offset[3];
-+} __packed;
-+
-+static const char *parser_trx_data_part_name(struct mtd_info *master,
-+					     size_t offset)
-+{
-+	uint32_t buf;
-+	size_t bytes_read;
-+	int err;
-+
-+	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
-+			(uint8_t *)&buf);
-+	if (err && !mtd_is_bitflip(err)) {
-+		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
-+			offset, err);
-+		goto out_default;
-+	}
-+
-+	if (buf == UBI_EC_MAGIC)
-+		return "ubi";
-+
-+out_default:
-+	return "rootfs";
-+}
-+
-+static int parser_trx_parse(struct mtd_info *mtd,
-+			    const struct mtd_partition **pparts,
-+			    struct mtd_part_parser_data *data)
-+{
-+	struct mtd_partition *parts;
-+	struct mtd_partition *part;
-+	struct trx_header trx;
-+	size_t bytes_read;
-+	uint8_t curr_part = 0, i = 0;
-+	int err;
-+
-+	parts = kzalloc(sizeof(struct mtd_partition) * TRX_PARSER_MAX_PARTS,
-+			GFP_KERNEL);
-+	if (!parts)
-+		return -ENOMEM;
-+
-+	err = mtd_read(mtd, 0, sizeof(trx), &bytes_read, (uint8_t *)&trx);
-+	if (err) {
-+		pr_err("MTD reading error: %d\n", err);
-+		return err;
-+	}
-+
-+	/* We have LZMA loader if offset[2] points to sth */
-+	if (trx.offset[2]) {
-+		part = &parts[curr_part++];
-+		part->name = "loader";
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	if (trx.offset[i]) {
-+		part = &parts[curr_part++];
-+		part->name = "linux";
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	if (trx.offset[i]) {
-+		part = &parts[curr_part++];
-+		part->name = parser_trx_data_part_name(mtd, trx.offset[i]);
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	/*
-+	 * Assume that every partition ends at the beginning of the one it is
-+	 * followed by.
-+	 */
-+	for (i = 0; i < curr_part; i++) {
-+		u64 next_part_offset = (i < curr_part - 1) ?
-+				       parts[i + 1].offset : mtd->size;
-+
-+		parts[i].size = next_part_offset - parts[i].offset;
-+	}
-+
-+	*pparts = parts;
-+	return i;
-+};
-+
-+static struct mtd_part_parser mtd_parser_trx = {
-+	.parse_fn = parser_trx_parse,
-+	.name = "trx",
-+};
-+module_mtd_part_parser(mtd_parser_trx);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Parser for TRX format partitions");
--- 
-2.11.0
+That's what's happening when you reset dies. They will automatically
+enter timing mode 0 (the slowest mode), and you have to explicitly set
+them back to timing mode X (the fastest supported mode). While doing
+that, you'll have some of your dies configured in timing 0, while
+others have already been switched to timing mode X, and that's the main
+reason for having per-die timing configuration.
