@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg2bY-0002mN-Ma
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:16 +0000
+ id 1cg2bY-0002mG-MZ
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:17 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -49,11 +49,11 @@ Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon, 20 Feb 2017 22:00:52 -0700
-Message-Id: <1487653253-11497-14-git-send-email-logang@deltatee.com>
+Date: Mon, 20 Feb 2017 22:00:50 -0700
+Message-Id: <1487653253-11497-12-git-send-email-logang@deltatee.com>
 In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
 References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH 13/14] scsi: utilize new device_add_cdev helper function
+Subject: [PATCH 11/14] rapidio: utilize new device_add_cdev helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -63,51 +63,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Note: the chardev instance in osd_uld.c originally did not
+Note: the chardev instance in rio_mport_cdev originally did not
 set the kobject parent. Thus, I'm reasonably confident that because
 of this, this code  would have suffered from a minor use after free
 bug if the cdev was open when the backing device was released.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/scsi/osd/osd_uld.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/rapidio/devices/rio_mport_cdev.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/osd/osd_uld.c b/drivers/scsi/osd/osd_uld.c
-index 243eab3..519be56 100644
---- a/drivers/scsi/osd/osd_uld.c
-+++ b/drivers/scsi/osd/osd_uld.c
-@@ -473,18 +473,19 @@ static int osd_probe(struct device *dev)
- 		goto err_put_disk;
- 	}
- 
-+	device_initialize(&oud->class_dev);
-+	oud->class_dev.devt = MKDEV(SCSI_OSD_MAJOR, oud->minor);
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index 9013a58..10a6b54 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -2445,23 +2445,26 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
+ 	mutex_init(&md->buf_mutex);
+ 	mutex_init(&md->file_mutex);
+ 	INIT_LIST_HEAD(&md->file_list);
 +
- 	/* init the char-device for communication with user-mode */
- 	cdev_init(&oud->cdev, &osd_fops);
- 	oud->cdev.owner = THIS_MODULE;
--	error = cdev_add(&oud->cdev,
--			 MKDEV(SCSI_OSD_MAJOR, oud->minor), 1);
-+	error = device_add_cdev(&oud->class_dev, &oud->cdev);
- 	if (error) {
- 		OSD_ERR("cdev_add failed\n");
- 		goto err_put_disk;
++	device_initialize(&md->dev);
++	md->dev.devt = MKDEV(MAJOR(dev_number), mport->id);
++
+ 	cdev_init(&md->cdev, &mport_fops);
+ 	md->cdev.owner = THIS_MODULE;
+-	ret = cdev_add(&md->cdev, MKDEV(MAJOR(dev_number), mport->id), 1);
++	ret = device_add_cdev(&md->dev, &md->cdev);
+ 	if (ret < 0) {
+ 		kfree(md);
+ 		rmcd_error("Unable to register a device, err=%d", ret);
+ 		return NULL;
  	}
  
- 	/* class device member */
--	oud->class_dev.devt = oud->cdev.dev;
- 	oud->class_dev.class = &osd_uld_class;
- 	oud->class_dev.parent = dev;
- 	oud->class_dev.release = __remove;
-@@ -494,7 +495,7 @@ static int osd_probe(struct device *dev)
- 		goto err_put_cdev;
- 	}
+-	md->dev.devt = md->cdev.dev;
+ 	md->dev.class = dev_class;
+ 	md->dev.parent = &mport->dev;
+ 	md->dev.release = mport_device_release;
+ 	dev_set_name(&md->dev, DEV_NAME "%d", mport->id);
+ 	atomic_set(&md->active, 1);
  
--	error = device_register(&oud->class_dev);
-+	error = device_add(&oud->class_dev);
- 	if (error) {
- 		OSD_ERR("device_register failed => %d\n", error);
- 		goto err_put_cdev;
+-	ret = device_register(&md->dev);
++	ret = device_add(&md->dev);
+ 	if (ret) {
+ 		rmcd_error("Failed to register mport %d (err=%d)",
+ 		       mport->id, ret);
 -- 
 2.1.4
