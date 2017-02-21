@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg2bY-0002mC-MX
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:14 +0000
+ id 1cg2bY-0002mN-Ma
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:16 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -49,9 +49,11 @@ Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon, 20 Feb 2017 22:00:39 -0700
-Message-Id: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH 00/14] Cleanup chardev instances with helper function
+Date: Mon, 20 Feb 2017 22:00:52 -0700
+Message-Id: <1487653253-11497-14-git-send-email-logang@deltatee.com>
+In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
+References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
+Subject: [PATCH 13/14] scsi: utilize new device_add_cdev helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -61,91 +63,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Note: the chardev instance in osd_uld.c originally did not
+set the kobject parent. Thus, I'm reasonably confident that because
+of this, this code  would have suffered from a minor use after free
+bug if the cdev was open when the backing device was released.
 
-Our story for this patch-set begins with a new driver I wrote and am in
-the process of submitting upstream. That driver creates a fairly
-standard char device and the code for it was copied from a similar
-instance in device-dax. However, upon review, Greg Kroah-Hartman
-noticed [1] a suspicious line that assigned to the parent field of
-the underlying kobject for the char device.
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+---
+ drivers/scsi/osd/osd_uld.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-I removed that from my code and endeavoured to remove it from the
-code I copied as well. However, Dan Williams pointed out [2] that this
-code is necessary for correct reference counting of the underlying
-structures. This prompted me to do a fair bit more research and
-investigation into whats going on and I found it to be a common pattern.
-(Although misleading and though required to be correct, frequently
-forgotten.) This pattern is used in at least 15 places in the kernel
-and probably should have been used in at least 5 more.
-
-This patch-set aims to correct this and hopefully prevent future
-developers from wasting their time on it. The first patch introduces
-a new helper API as originally proposed by Dan Williams [3]. Please
-see the commit message for that patch for a longer description of the
-problem and history.
-
-The subsequent patches either update correct instances to use the
-new API or fix incorrect usages to ensure the cdev correctly takes
-a reference count using the new API (this is noted in those patches).
-
-This moves all except four of the cdev.kobj.parent usages into the one
-cdev function, the remaining four are in the infiniband subsystem and
-I've left alone because that subsystem seems to make use of kobjects
-directly (instead of struct devices). These are noted in patch 7 of
-this series.
-
-This series is based on v4.10 with the exception of the last patch
-which is for my new driver which, as yet, has not been accepted
-upstream.
-
-@Dan the first patch in this series will need your sign-off.
-
-Thanks,
-
-Logan
-
-[1] https://lkml.org/lkml/2017/2/10/370
-[2] https://lkml.org/lkml/2017/2/10/607
-[3] https://lkml.org/lkml/2017/2/13/700
-
-Logan Gunthorpe (14):
-  chardev: add helper function to register char devs with a struct
-    device
-  device-dax: utilize new device_add_cdev helper function
-  input: utilize new device_add_cdev helper function
-  gpiolib: utilize new device_add_cdev helper function
-  tpm-chip: utilize new device_add_cdev helper function
-  platform/chrome: utilize new device_add_cdev helper function
-  infiniband: utilize new device_add_cdev helper function
-  iio:core: utilize new device_add_cdev helper function
-  media: utilize new device_add_cdev helper function
-  mtd: utilize new device_add_cdev helper function
-  rapidio: utilize new device_add_cdev helper function
-  rtc: utilize new device_add_cdev helper function
-  scsi: utilize new device_add_cdev helper function
-  switchtec: utilize new device_add_cdev helper function
-
- drivers/char/tpm/tpm-chip.c              |  3 +--
- drivers/dax/dax.c                        |  5 ++---
- drivers/gpio/gpiolib.c                   |  3 +--
- drivers/iio/industrialio-core.c          |  3 +--
- drivers/infiniband/core/ucm.c            |  8 +++++---
- drivers/input/evdev.c                    |  3 +--
- drivers/input/joydev.c                   |  3 +--
- drivers/input/mousedev.c                 |  3 +--
- drivers/media/cec/cec-core.c             |  3 +--
- drivers/media/media-devnode.c            |  3 +--
- drivers/mtd/ubi/build.c                  |  8 +++++---
- drivers/mtd/ubi/vmt.c                    | 10 +++++-----
- drivers/pci/switch/switchtec.c           |  3 +--
- drivers/platform/chrome/cros_ec_dev.c    |  6 ++----
- drivers/rapidio/devices/rio_mport_cdev.c |  9 ++++++---
- drivers/rtc/rtc-dev.c                    |  3 +--
- drivers/scsi/osd/osd_uld.c               |  9 +++++----
- fs/char_dev.c                            | 24 ++++++++++++++++++++++++
- include/linux/cdev.h                     |  1 +
- 19 files changed, 65 insertions(+), 45 deletions(-)
-
---
+diff --git a/drivers/scsi/osd/osd_uld.c b/drivers/scsi/osd/osd_uld.c
+index 243eab3..519be56 100644
+--- a/drivers/scsi/osd/osd_uld.c
++++ b/drivers/scsi/osd/osd_uld.c
+@@ -473,18 +473,19 @@ static int osd_probe(struct device *dev)
+ 		goto err_put_disk;
+ 	}
+ 
++	device_initialize(&oud->class_dev);
++	oud->class_dev.devt = MKDEV(SCSI_OSD_MAJOR, oud->minor);
++
+ 	/* init the char-device for communication with user-mode */
+ 	cdev_init(&oud->cdev, &osd_fops);
+ 	oud->cdev.owner = THIS_MODULE;
+-	error = cdev_add(&oud->cdev,
+-			 MKDEV(SCSI_OSD_MAJOR, oud->minor), 1);
++	error = device_add_cdev(&oud->class_dev, &oud->cdev);
+ 	if (error) {
+ 		OSD_ERR("cdev_add failed\n");
+ 		goto err_put_disk;
+ 	}
+ 
+ 	/* class device member */
+-	oud->class_dev.devt = oud->cdev.dev;
+ 	oud->class_dev.class = &osd_uld_class;
+ 	oud->class_dev.parent = dev;
+ 	oud->class_dev.release = __remove;
+@@ -494,7 +495,7 @@ static int osd_probe(struct device *dev)
+ 		goto err_put_cdev;
+ 	}
+ 
+-	error = device_register(&oud->class_dev);
++	error = device_add(&oud->class_dev);
+ 	if (error) {
+ 		OSD_ERR("device_register failed => %d\n", error);
+ 		goto err_put_cdev;
+-- 
 2.1.4
