@@ -1,40 +1,63 @@
-Date: Tue, 21 Feb 2017 12:27:20 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cg8lE-0001hj-8t
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 11:37:39 +0000
+Date: Tue, 21 Feb 2017 12:37:04 +0100
 From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Haavard Skinnemoen <hskinnemoen@gmail.com>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- David Woodhouse <dwmw2@infradead.org>,
+To: Logan Gunthorpe <logang@deltatee.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>, Leon Romanovsky <leon@kernel.org>,
+ Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-Message-ID: <20170221112720.ynehsryprhrhzjla@piout.net>
-References: <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
- <CAHp75VdwQGP-qa0c0KQwrdpZmCGc3RuEsJ-E-XLbBzQSn4Yxcg@mail.gmail.com>
- <20170220213803.7ba5591e@bbrezillon>
- <20170220215009.0ecbf5a1@bbrezillon>
- <CAHp75VczsC9WdZWR9iCRh2JoNLFZyOtodrsDRYQoyaN7nkyf=A@mail.gmail.com>
- <CAHp75Vc_q-bEzA2-hVpHyR0GZ8mXxwJ8-UjECe31T04mb67q4w@mail.gmail.com>
- <20170221090610.6d531b94@bbrezillon>
- <CAHp75VfZfj-8ih3vg63w_dAq8xXE2Whu1bANXRcXS1_EGNq43A@mail.gmail.com>
- <20170221112641.6276c001@bbrezillon>
- <CAHp75Vcb9gtzF7LvH74JwL4dTUyQvKmg=dnTXKfjhVHuyK3WXg@mail.gmail.com>
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
+ Boaz Harrosh <ooo@electrozaur.com>, Benny Halevy <bhalevy@primarydata.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+ osd-dev@open-osd.org, linux-scsi@vger.kernel.org,
+ rtc-linux@googlegroups.com, linux-mtd@lists.infradead.org,
+ linux-media@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-rdma@vger.kernel.org, tpmdd-devel@lists.sourceforge.net,
+ linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/14] device-dax: utilize new device_add_cdev helper
+ function
+Message-ID: <20170221113704.ibwkk2vuc5imkmae@piout.net>
+References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
+ <1487653253-11497-3-git-send-email-logang@deltatee.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75Vcb9gtzF7LvH74JwL4dTUyQvKmg=dnTXKfjhVHuyK3WXg@mail.gmail.com>
+In-Reply-To: <1487653253-11497-3-git-send-email-logang@deltatee.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,32 +67,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(adding Hans-Christian)
+Hi,
 
-On 21/02/2017 at 13:02:21 +0200, Andy Shevchenko wrote:
-> Abusing platform data with pointers is also not welcome.
+A small comment, you must always have a commit message. Even if it is
+small.
+
+On 20/02/2017 at 22:00:41 -0700, Logan Gunthorpe wrote:
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
+>  drivers/dax/dax.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> > (in this case, avr32).
+> diff --git a/drivers/dax/dax.c b/drivers/dax/dax.c
+> index ed758b7..0d24822 100644
+> --- a/drivers/dax/dax.c
+> +++ b/drivers/dax/dax.c
+> @@ -701,12 +701,12 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+>  
+>  	/* device_initialize() so cdev can reference kobj parent */
+>  	device_initialize(dev);
+> +	dev->devt = dev_t;
+>  
+>  	cdev = &dax_dev->cdev;
+>  	cdev_init(cdev, &dax_fops);
+>  	cdev->owner = parent->driver->owner;
+> -	cdev->kobj.parent = &dev->kobj;
+> -	rc = cdev_add(&dax_dev->cdev, dev_t, 1);
+> +	rc = device_add_cdev(dev, cdev);
+>  	if (rc)
+>  		goto err_cdev;
+>  
+> @@ -716,7 +716,6 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+>  	dax_dev->region = dax_region;
+>  	kref_get(&dax_region->kref);
+>  
+> -	dev->devt = dev_t;
+>  	dev->class = dax_class;
+>  	dev->parent = parent;
+>  	dev->groups = dax_attribute_groups;
+> -- 
+> 2.1.4
 > 
-> It's dead de facto.
-> 
-> When last time did you compile kernel for it? What was the version of kernel?
-> Did it get successfully?
-> 
-
-v4.10-rc3 was building successfully but had some issues in the network
-code.
-
-> When are we going to remove avr32 support from kernel completely?
-> 
-
-Ask that to the avr32 maintainers. It still builds and is still booted
-by some people. And that actually seems to be you as you reported a bug
-we introduced in 4.3. I don't think we had any other report after that.
-
-It can be frustrating at times to handle that platform but if it is
-working for someone, I don't see why we would remove it.
-
 
 -- 
 Alexandre Belloni, Free Electrons
