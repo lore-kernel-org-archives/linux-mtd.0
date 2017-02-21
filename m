@@ -1,6 +1,6 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg2bY-0002mF-MV
+ id 1cg2bY-0002mC-MX
  for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:14 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -49,11 +49,9 @@ Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon, 20 Feb 2017 22:00:49 -0700
-Message-Id: <1487653253-11497-11-git-send-email-logang@deltatee.com>
-In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH 10/14] mtd: utilize new device_add_cdev helper function
+Date: Mon, 20 Feb 2017 22:00:39 -0700
+Message-Id: <1487653253-11497-1-git-send-email-logang@deltatee.com>
+Subject: [PATCH 00/14] Cleanup chardev instances with helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -63,92 +61,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Note: neither of the cdev instances in the mtd tree originally
-set the kobject parent. Thus, I'm reasonably confident that
-both these instances would have suffered from a minor use after
-free bug if the cdevs were open when the backing device was released.
+Hello,
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
----
- drivers/mtd/ubi/build.c |  8 +++++---
- drivers/mtd/ubi/vmt.c   | 10 +++++-----
- 2 files changed, 10 insertions(+), 8 deletions(-)
+Our story for this patch-set begins with a new driver I wrote and am in
+the process of submitting upstream. That driver creates a fairly
+standard char device and the code for it was copied from a similar
+instance in device-dax. However, upon review, Greg Kroah-Hartman
+noticed [1] a suspicious line that assigned to the parent field of
+the underlying kobject for the char device.
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 85d54f3..a509f15 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -434,11 +434,10 @@ static int ubi_sysfs_init(struct ubi_device *ubi, int *ref)
- 	int err;
- 
- 	ubi->dev.release = dev_release;
--	ubi->dev.devt = ubi->cdev.dev;
- 	ubi->dev.class = &ubi_class;
- 	ubi->dev.groups = ubi_dev_groups;
- 	dev_set_name(&ubi->dev, UBI_NAME_STR"%d", ubi->ubi_num);
--	err = device_register(&ubi->dev);
-+	err = device_add(&ubi->dev);
- 	if (err)
- 		return err;
- 
-@@ -508,12 +507,15 @@ static int uif_init(struct ubi_device *ubi, int *ref)
- 		return err;
- 	}
- 
-+	device_initialize(&ubi->dev);
-+	ubi->dev.devt = dev;
-+
- 	ubi_assert(MINOR(dev) == 0);
- 	cdev_init(&ubi->cdev, &ubi_cdev_operations);
- 	dbg_gen("%s major is %u", ubi->ubi_name, MAJOR(dev));
- 	ubi->cdev.owner = THIS_MODULE;
- 
--	err = cdev_add(&ubi->cdev, dev, 1);
-+	err = device_add_cdev(&ubi->dev, &ubi->cdev);
- 	if (err) {
- 		ubi_err(ubi, "cannot add character device");
- 		goto out_unreg;
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 7ac78c1..df84ba7 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -159,7 +159,6 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	struct ubi_volume *vol;
- 	struct ubi_vtbl_record vtbl_rec;
- 	struct ubi_eba_table *eba_tbl = NULL;
--	dev_t dev;
- 
- 	if (ubi->ro_mode)
- 		return -EROFS;
-@@ -265,11 +264,13 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 			vol->last_eb_bytes = vol->usable_leb_size;
- 	}
- 
-+	device_initialize(&vol->dev);
-+	vol->dev.devt = MKDEV(MAJOR(ubi->cdev.dev), vol_id + 1);
-+
- 	/* Register character device for the volume */
- 	cdev_init(&vol->cdev, &ubi_vol_cdev_operations);
- 	vol->cdev.owner = THIS_MODULE;
--	dev = MKDEV(MAJOR(ubi->cdev.dev), vol_id + 1);
--	err = cdev_add(&vol->cdev, dev, 1);
-+	err = device_add_cdev(&vol->dev, &vol->cdev);
- 	if (err) {
- 		ubi_err(ubi, "cannot add character device");
- 		goto out_mapping;
-@@ -277,12 +278,11 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 
- 	vol->dev.release = vol_release;
- 	vol->dev.parent = &ubi->dev;
--	vol->dev.devt = dev;
- 	vol->dev.class = &ubi_class;
- 	vol->dev.groups = volume_dev_groups;
- 
- 	dev_set_name(&vol->dev, "%s_%d", ubi->ubi_name, vol->vol_id);
--	err = device_register(&vol->dev);
-+	err = device_add(&vol->dev);
- 	if (err) {
- 		ubi_err(ubi, "cannot register device");
- 		goto out_cdev;
--- 
+I removed that from my code and endeavoured to remove it from the
+code I copied as well. However, Dan Williams pointed out [2] that this
+code is necessary for correct reference counting of the underlying
+structures. This prompted me to do a fair bit more research and
+investigation into whats going on and I found it to be a common pattern.
+(Although misleading and though required to be correct, frequently
+forgotten.) This pattern is used in at least 15 places in the kernel
+and probably should have been used in at least 5 more.
+
+This patch-set aims to correct this and hopefully prevent future
+developers from wasting their time on it. The first patch introduces
+a new helper API as originally proposed by Dan Williams [3]. Please
+see the commit message for that patch for a longer description of the
+problem and history.
+
+The subsequent patches either update correct instances to use the
+new API or fix incorrect usages to ensure the cdev correctly takes
+a reference count using the new API (this is noted in those patches).
+
+This moves all except four of the cdev.kobj.parent usages into the one
+cdev function, the remaining four are in the infiniband subsystem and
+I've left alone because that subsystem seems to make use of kobjects
+directly (instead of struct devices). These are noted in patch 7 of
+this series.
+
+This series is based on v4.10 with the exception of the last patch
+which is for my new driver which, as yet, has not been accepted
+upstream.
+
+@Dan the first patch in this series will need your sign-off.
+
+Thanks,
+
+Logan
+
+[1] https://lkml.org/lkml/2017/2/10/370
+[2] https://lkml.org/lkml/2017/2/10/607
+[3] https://lkml.org/lkml/2017/2/13/700
+
+Logan Gunthorpe (14):
+  chardev: add helper function to register char devs with a struct
+    device
+  device-dax: utilize new device_add_cdev helper function
+  input: utilize new device_add_cdev helper function
+  gpiolib: utilize new device_add_cdev helper function
+  tpm-chip: utilize new device_add_cdev helper function
+  platform/chrome: utilize new device_add_cdev helper function
+  infiniband: utilize new device_add_cdev helper function
+  iio:core: utilize new device_add_cdev helper function
+  media: utilize new device_add_cdev helper function
+  mtd: utilize new device_add_cdev helper function
+  rapidio: utilize new device_add_cdev helper function
+  rtc: utilize new device_add_cdev helper function
+  scsi: utilize new device_add_cdev helper function
+  switchtec: utilize new device_add_cdev helper function
+
+ drivers/char/tpm/tpm-chip.c              |  3 +--
+ drivers/dax/dax.c                        |  5 ++---
+ drivers/gpio/gpiolib.c                   |  3 +--
+ drivers/iio/industrialio-core.c          |  3 +--
+ drivers/infiniband/core/ucm.c            |  8 +++++---
+ drivers/input/evdev.c                    |  3 +--
+ drivers/input/joydev.c                   |  3 +--
+ drivers/input/mousedev.c                 |  3 +--
+ drivers/media/cec/cec-core.c             |  3 +--
+ drivers/media/media-devnode.c            |  3 +--
+ drivers/mtd/ubi/build.c                  |  8 +++++---
+ drivers/mtd/ubi/vmt.c                    | 10 +++++-----
+ drivers/pci/switch/switchtec.c           |  3 +--
+ drivers/platform/chrome/cros_ec_dev.c    |  6 ++----
+ drivers/rapidio/devices/rio_mport_cdev.c |  9 ++++++---
+ drivers/rtc/rtc-dev.c                    |  3 +--
+ drivers/scsi/osd/osd_uld.c               |  9 +++++----
+ fs/char_dev.c                            | 24 ++++++++++++++++++++++++
+ include/linux/cdev.h                     |  1 +
+ 19 files changed, 65 insertions(+), 45 deletions(-)
+
+--
 2.1.4
