@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg2bi-0002pl-Md
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:24 +0000
+ id 1cg2bi-0002q6-MV
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:03:27 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -49,11 +49,12 @@ Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon, 20 Feb 2017 22:00:44 -0700
-Message-Id: <1487653253-11497-6-git-send-email-logang@deltatee.com>
+Date: Mon, 20 Feb 2017 22:00:45 -0700
+Message-Id: <1487653253-11497-7-git-send-email-logang@deltatee.com>
 In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
 References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH 05/14] tpm-chip: utilize new device_add_cdev helper function
+Subject: [PATCH 06/14] platform/chrome: utilize new device_add_cdev helper
+ function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -65,29 +66,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/char/tpm/tpm-chip.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/platform/chrome/cros_ec_dev.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-index a77262d..dc90b45 100644
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -187,7 +187,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *dev,
+diff --git a/drivers/platform/chrome/cros_ec_dev.c b/drivers/platform/chrome/cros_ec_dev.c
+index 47268ec..658fb99 100644
+--- a/drivers/platform/chrome/cros_ec_dev.c
++++ b/drivers/platform/chrome/cros_ec_dev.c
+@@ -388,7 +388,6 @@ static int ec_device_probe(struct platform_device *pdev)
+ 	int retval = -ENOMEM;
+ 	struct device *dev = &pdev->dev;
+ 	struct cros_ec_platform *ec_platform = dev_get_platdata(dev);
+-	dev_t devno = MKDEV(ec_major, pdev->id);
+ 	struct cros_ec_dev *ec = kzalloc(sizeof(*ec), GFP_KERNEL);
  
- 	cdev_init(&chip->cdev, &tpm_fops);
- 	chip->cdev.owner = THIS_MODULE;
--	chip->cdev.kobj.parent = &chip->dev.kobj;
+ 	if (!ec)
+@@ -401,6 +400,7 @@ static int ec_device_probe(struct platform_device *pdev)
+ 	ec->features[0] = -1U; /* Not cached yet */
+ 	ec->features[1] = -1U; /* Not cached yet */
+ 	device_initialize(&ec->class_dev);
++	ec->class_dev.devt = MKDEV(ec_major, pdev->id);
+ 	cdev_init(&ec->cdev, &fops);
  
- 	return chip;
- 
-@@ -230,7 +229,7 @@ static int tpm_add_char_device(struct tpm_chip *chip)
- {
- 	int rc;
- 
--	rc = cdev_add(&chip->cdev, chip->dev.devt, 1);
-+	rc = device_add_cdev(&chip->dev, &chip->cdev);
- 	if (rc) {
- 		dev_err(&chip->dev,
- 			"unable to cdev_add() %s, major %d, minor %d, err=%d\n",
+ 	/*
+@@ -408,8 +408,7 @@ static int ec_device_probe(struct platform_device *pdev)
+ 	 * Link cdev to the class device to be sure device is not used
+ 	 * before unbinding it.
+ 	 */
+-	ec->cdev.kobj.parent = &ec->class_dev.kobj;
+-	retval = cdev_add(&ec->cdev, devno, 1);
++	retval = device_add_cdev(&ec->class_dev, &ec->cdev);
+ 	if (retval) {
+ 		dev_err(dev, ": failed to add character device\n");
+ 		goto cdev_add_failed;
+@@ -420,7 +419,6 @@ static int ec_device_probe(struct platform_device *pdev)
+ 	 * Link to the character device for creating the /dev entry
+ 	 * in devtmpfs.
+ 	 */
+-	ec->class_dev.devt = ec->cdev.dev;
+ 	ec->class_dev.class = &cros_class;
+ 	ec->class_dev.parent = dev;
+ 	ec->class_dev.release = __remove;
 -- 
 2.1.4
