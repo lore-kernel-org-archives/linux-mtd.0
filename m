@@ -1,21 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cg8DV-0002hw-UB
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 11:02:47 +0000
-Date: Tue, 21 Feb 2017 12:02:13 +0100
+Date: Tue, 21 Feb 2017 12:06:48 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger
- <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, "linshunquan (A)"
- <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH 04/11] nand: spi: Add read function support
-Message-ID: <20170221120213.1f7c7728@bbrezillon>
-In-Reply-To: <CAAyFORKDNpkycQ-n5yg=H+fmu6v4teUhwzcXEa-SROV_8kVOBA@mail.gmail.com>
-References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
- <1487664010-25926-5-git-send-email-peterpandong@micron.com>
- <20170221105153.75772e25@bbrezillon>
- <CAAyFORKDNpkycQ-n5yg=H+fmu6v4teUhwzcXEa-SROV_8kVOBA@mail.gmail.com>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Sergio Prado
+ <sergio.prado@e-labworks.com>, "Wenyou Yang" <wenyou.yang@atmel.com>, Josh
+ Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ "Cyrille Pitchen" <cyrille.pitchen@atmel.com>, Krzysztof Kozlowski
+ <krzk@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH 1/3] mtd: nand: Pass the CS line to
+ ->setup_data_interface()
+Message-ID: <20170221120648.19e0d32c@bbrezillon>
+In-Reply-To: <a5a9d822-a73c-4fd1-201c-7a17d9517f24@sigmadesigns.com>
+References: <1487625149-7234-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1487625149-7234-2-git-send-email-boris.brezillon@free-electrons.com>
+ <a5a9d822-a73c-4fd1-201c-7a17d9517f24@sigmadesigns.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,55 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Feb 2017 18:06:03 +0800
-Peter Pan <peterpansjtu@gmail.com> wrote:
+On Tue, 21 Feb 2017 11:57:23 +0100
+Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
 
-
-
-> >> +/**
-> >> + * spi_nand_transfer_oob - transfer oob to client buffer
-> >> + * @chip: SPI-NAND device structure
-> >> + * @oob: oob destination address
-> >> + * @ops: oob ops structure
-> >> + * @len: size of oob to transfer
-> >> + */
-> >> +static void spi_nand_transfer_oob(struct spi_nand_chip *chip, u8 *oob,
-> >> +                               struct mtd_oob_ops *ops, size_t len)
-> >> +{
-> >> +     struct mtd_info *mtd = spi_nand_to_mtd(chip);
-> >> +     int ret;
-> >> +
-> >> +     switch (ops->mode) {
-> >> +
-> >> +     case MTD_OPS_PLACE_OOB:
-> >> +     case MTD_OPS_RAW:
-> >> +             memcpy(oob, chip->oobbuf + ops->ooboffs, len);
-> >> +             return;
-> >> +
-> >> +     case MTD_OPS_AUTO_OOB:
-> >> +             ret = mtd_ooblayout_get_databytes(mtd, oob, chip->oobbuf,
-> >> +                                               ops->ooboffs, len);
-> >> +             BUG_ON(ret);
-> >> +             return;
-> >> +
-> >> +     default:
-> >> +             BUG();  
-> >
-> > Let's try to avoid these BUG_ON() calls. If you want transfer_oob() to
-> > report an error, change the function prototype and check the ret code
-> > in the caller.  
+> On 20/02/2017 22:12, Boris Brezillon wrote:
 > 
-> I will remove the BUG_ON()s in v2. Boris, I think this part can be put in
-> new NAND core, what do you think?
+> > Some NAND controllers can assign different NAND timings to different
+> > CS lines. Pass the CS line information to ->setup_data_interface() so
+> > that the NAND controller driver knows which CS line is concerned by
+> > the setup_data_interface() request.  
+> 
+> I'm confused, because I thought I was already doing that.
+> On my platform, I have different timings for each chip.
+> (thus, for each CS, right?)
+> 
+> In chip->select_chip, I program the appropriate timings
+> which the controller will be using.
+> 
+> What am I missing?
 
-Well, assuming we move the ->oob buffer in nand_device struct, then
-yes. That's exactly for this reason I wanted to see a version of the
-SPI NAND framework before merging the "interface-agnostic NAND layer".
-I guess we'll find other candidates for factorization, but I also think
-we should not try to get the perfect implementation before merging
-something (IOW, let's keep this improvement on our TODO list).
+Maybe you don't have multi-dies chips, which is the case I'm fixing
+here. If you have 2 separate chips, the existing hook should work just
+fine.
 
 > 
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index c8894f31392e..d62a1c7c5c5c 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -1100,8 +1102,10 @@ static int nand_init_data_interface(struct nand_chip *chip)
+> >  		if (ret)
+> >  			continue;
 > >  
-> >> +     }
-> >> +}
+> > -		ret = chip->setup_data_interface(mtd, chip->data_interface,
+> > -						 true);
+> > +		/* Pass -1 to only */  
+> 
+> "Pass -1 to only" what?
+> 
+> I suppose -1 means NAND_DATA_IFACE_CHECK_ONLY since
+> #define NAND_DATA_IFACE_CHECK_ONLY -1
+> 
+> Maybe you meant "Pass -1 to check only" here?
+> The comment may need a slight rework.
+
+Yep, didn't finish my sentence.
+Since I decided to define a macro with a self-descriptive name, I
+don't think I need this comment anymore.
+
+> 
+> > +		ret = chip->setup_data_interface(mtd,
+> > +						 NAND_DATA_IFACE_CHECK_ONLY,
+> > +						 chip->data_interface);
+> >  		if (!ret) {
+> >  			chip->onfi_timing_mode_default = mode;
+> >  			break;  
