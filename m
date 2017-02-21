@@ -1,24 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cg82c-0005rR-Es
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 10:51:33 +0000
-Date: Tue, 21 Feb 2017 11:50:59 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Arnaud Mouiche <arnaud.mouiche@gmail.com>
-Cc: Peter Pan <peterpansjtu@gmail.com>, Peter Pan <peterpandong@micron.com>,
- Richard Weinberger <richard@nod.at>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, "linshunquan
- (A)" <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH 03/11] nand: spi: Abstract SPI NAND cmd set to functions
-Message-ID: <20170221115059.7908939a@bbrezillon>
-In-Reply-To: <434dfc69-1358-3e51-9ff4-d8e07deb0161@gmail.com>
-References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
- <1487664010-25926-4-git-send-email-peterpandong@micron.com>
- <93b3dd4d-426e-3165-8316-73108847d123@gmail.com>
- <CAAyFORJtSxNp-yVF0cRz0R1B3Z9xBm72Wv9Ph3boQERHsafGwQ@mail.gmail.com>
- <434dfc69-1358-3e51-9ff4-d8e07deb0161@gmail.com>
+From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Subject: Re: [RESEND PATCH 1/3] mtd: nand: Pass the CS line to
+ ->setup_data_interface()
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Sergio Prado <sergio.prado@e-labworks.com>,
+ "Wenyou Yang" <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, "Cyrille
+ Pitchen" <cyrille.pitchen@atmel.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <1487625149-7234-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1487625149-7234-2-git-send-email-boris.brezillon@free-electrons.com>
+Message-ID: <a5a9d822-a73c-4fd1-201c-7a17d9517f24@sigmadesigns.com>
+Date: Tue, 21 Feb 2017 11:57:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1487625149-7234-2-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,133 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Feb 2017 11:22:52 +0100
-Arnaud Mouiche <arnaud.mouiche@gmail.com> wrote:
+On 20/02/2017 22:12, Boris Brezillon wrote:
 
-> On 21/02/2017 10:40, Peter Pan wrote:
-> > Hi Arnaud,
-> >
-> > On Tue, Feb 21, 2017 at 5:01 PM, Arnaud Mouiche
-> > <arnaud.mouiche@gmail.com> wrote:  
-> >> Hello Peter.
-> >> First thank you for this effort to finally bring the spinand framework back
-> >> on stage.
-> >>
-> >> On 21/02/2017 09:00, Peter Pan wrote:  
-> >>> This commit abstracts basic SPI NAND commands to
-> >>> functions in spi-nand-base.c. Because command sets
-> >>> have difference by vendors, we create spi-nand-cmd.c
-> >>> to define this difference by command config table.
-> >>>
-> >>> [...]
-> >>> +
-> >>> +/**
-> >>> + * spi_nand_read_page_to_cache - send command 13h to read data from Nand
-> >>> + * to cache
-> >>> + * @chip: SPI-NAND device structure
-> >>> + * @page_addr: page to read
-> >>> + */
-> >>> +static int spi_nand_read_page_to_cache(struct spi_nand_chip *chip,
-> >>> +                                       u32 page_addr)
-> >>> +{
-> >>> +       struct spi_nand_cmd cmd;
-> >>> +
-> >>> +       memset(&cmd, 0, sizeof(struct spi_nand_cmd));
-> >>> +       cmd.cmd = SPINAND_CMD_PAGE_READ;
-> >>> +       cmd.n_addr = 3;
-> >>> +       cmd.addr[0] = (u8)(page_addr >> 16);
-> >>> +       cmd.addr[1] = (u8)(page_addr >> 8);
-> >>> +       cmd.addr[2] = (u8)page_addr;
-> >>> +
-> >>> +       return spi_nand_issue_cmd(chip, &cmd);
-> >>> +}  
-> >>
-> >> Just a question. Don't you try to map too exactly the spi_nand_cmd to the
-> >> internal micron SPI command ?
-> >> Why "cmd.addr" should be a byte array, and not a u32, leaving each chip to
-> >> details to handle the u32 to SPI byte stream mapping.
-> >>
-> >>
-> >>  
-> >>> +
-> >>> +/**
-> >>> + * spi_nand_read_from_cache - read data out from cache register
-> >>> + * @chip: SPI-NAND device structure
-> >>> + * @page_addr: page to read
-> >>> + * @column: the location to read from the cache
-> >>> + * @len: number of bytes to read
-> >>> + * @rbuf: buffer held @len bytes
-> >>> + * Description:
-> >>> + *   Command can be 03h, 0Bh, 3Bh, 6Bh, BBh, EBh
-> >>> + *   The read can specify 1 to (page size + spare size) bytes of data
-> >>> read at
-> >>> + *   the corresponding locations.
-> >>> + *   No tRd delay.
-> >>> + */
-> >>> +static int spi_nand_read_from_cache(struct spi_nand_chip *chip,
-> >>> +               u32 page_addr, u32 column, size_t len, u8 *rbuf)
-> >>> +{
-> >>> +       struct nand_device *nand = &chip->base;
-> >>> +       struct spi_nand_cmd cmd;
-> >>> +
-> >>> +       memset(&cmd, 0, sizeof(struct spi_nand_cmd));
-> >>> +       cmd.cmd = chip->read_cache_op;
-> >>> +       cmd.n_addr = 2;
-> >>> +       cmd.addr[0] = (u8)(column >> 8);
-> >>> +       if (chip->options & SPINAND_NEED_PLANE_SELECT)
-> >>> +               cmd.addr[0] |= (u8)((nand_page_to_eraseblock(nand,
-> >>> page_addr)
-> >>> +                               & 0x1) << 4);
-> >>> +       cmd.addr[1] = (u8)column;
-> >>> +       cmd.n_rx = len;
-> >>> +       cmd.rx_buf = rbuf;
-> >>> +
-> >>> +       return spi_nand_issue_cmd(chip, &cmd);
-> >>> +}
-> >>> +  
-> >> Some reasons to handle the plane concept (Micron specific), and even move
-> >> the fact that it touch the bit 4 of cdm.addr[0], in common code ?  
-> > Let me try to remove this from framework when separate controller and device
-> > related code. Any suggestion on this?  
-> I know, Micron was the first spinand chipset available, will be the 
-> first chipset supported by this framework, but it is already not so 
-> generic regarding to the page addressing compared with winbond, esmt, 
-> gigadevice or micronix...
-> 
-> But may be this the sign that "generic_spi_nand_cmd_fn" if "too" 
-> straight in your implementation and just try to map the "struct 
-> spi_nand_cmd" into the SPI frame without any more place for chip 
-> specialization.
-> 
-> I guess I would prefer to see multiple 'command primitive' inside each 
-> chip structures (eg. chip->read_from_cache() and so on).
+> Some NAND controllers can assign different NAND timings to different
+> CS lines. Pass the CS line information to ->setup_data_interface() so
+> that the NAND controller driver knows which CS line is concerned by
+> the setup_data_interface() request.
 
-I'm not against the idea, but I'd prefer to see these operations in a
-separate struct:
+I'm confused, because I thought I was already doing that.
+On my platform, I have different timings for each chip.
+(thus, for each CS, right?)
 
-struct spinand_manufacturer_ops {
-	int (*read_from_cache)();
-	/* ... */
-};
+In chip->select_chip, I program the appropriate timings
+which the controller will be using.
 
-struct spinand_device {
-	/* ... */
+What am I missing?
 
-	struct {
-		struct spinand_manufacturer_ops *ops;
-		void *priv;
-		/* ... */
-	} manufacturer;
-};
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index c8894f31392e..d62a1c7c5c5c 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1100,8 +1102,10 @@ static int nand_init_data_interface(struct nand_chip *chip)
+>  		if (ret)
+>  			continue;
+>  
+> -		ret = chip->setup_data_interface(mtd, chip->data_interface,
+> -						 true);
+> +		/* Pass -1 to only */
 
-> But in the meantime, spinand chipset are made to be generic and behave 
-> mostly the same way, which would make this primitive declaration a 
-> little bit redundant.
+"Pass -1 to only" what?
 
-Well, for the generic case, you could either provide generic helpers
-that could be used by NAND manufacturer drivers in their
-spinand_manufacturer_ops definition, or you could let the core do
+I suppose -1 means NAND_DATA_IFACE_CHECK_ONLY since
+#define NAND_DATA_IFACE_CHECK_ONLY -1
 
-	if (!nand->manufacturer->ops || !nand->manufacturer->ops->func)
-		default_func();
-		
+Maybe you meant "Pass -1 to check only" here?
+The comment may need a slight rework.
+
+> +		ret = chip->setup_data_interface(mtd,
+> +						 NAND_DATA_IFACE_CHECK_ONLY,
+> +						 chip->data_interface);
+>  		if (!ret) {
+>  			chip->onfi_timing_mode_default = mode;
+>  			break;
