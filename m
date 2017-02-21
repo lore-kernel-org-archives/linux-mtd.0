@@ -1,6 +1,6 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg2cN-00034W-9s
+ id 1cg2cN-00030H-8t
  for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:04:05 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -49,11 +49,11 @@ Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon, 20 Feb 2017 22:00:41 -0700
-Message-Id: <1487653253-11497-3-git-send-email-logang@deltatee.com>
+Date: Mon, 20 Feb 2017 22:00:46 -0700
+Message-Id: <1487653253-11497-8-git-send-email-logang@deltatee.com>
 In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
 References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH 02/14] device-dax: utilize new device_add_cdev helper function
+Subject: [PATCH 07/14] infiniband: utilize new device_add_cdev helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -63,37 +63,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch updates core/ucm.c which didn't originally use the
+cdev.kobj.parent with it's parent device. I did not look heavily into
+whether this was a bug or not, but it seems likely to me there would
+be a use before free.
+
+I also took a look at core/uverbs_main.c, core/user_mad.c and
+hw/hfi1/device.c which utilize cdev.kobj.parent but because the
+infiniband core seems to use kobjs internally instead of struct devices
+they could not be converted to use the new helper API and still
+directly manipulate the internals of the kobj.
+
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/dax/dax.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/ucm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/dax/dax.c b/drivers/dax/dax.c
-index ed758b7..0d24822 100644
---- a/drivers/dax/dax.c
-+++ b/drivers/dax/dax.c
-@@ -701,12 +701,12 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+diff --git a/drivers/infiniband/core/ucm.c b/drivers/infiniband/core/ucm.c
+index e0a995b..38ea316 100644
+--- a/drivers/infiniband/core/ucm.c
++++ b/drivers/infiniband/core/ucm.c
+@@ -1283,18 +1283,20 @@ static void ib_ucm_add_one(struct ib_device *device)
+ 		set_bit(devnum, dev_map);
+ 	}
  
- 	/* device_initialize() so cdev can reference kobj parent */
- 	device_initialize(dev);
-+	dev->devt = dev_t;
++	device_initialize(&ucm_dev->dev);
++	ucm_dev->dev.devt = base;
++
+ 	cdev_init(&ucm_dev->cdev, &ucm_fops);
+ 	ucm_dev->cdev.owner = THIS_MODULE;
+ 	kobject_set_name(&ucm_dev->cdev.kobj, "ucm%d", ucm_dev->devnum);
+-	if (cdev_add(&ucm_dev->cdev, base, 1))
++	if (device_add_cdev(&ucm_dev->dev, &ucm_dev->cdev))
+ 		goto err;
  
- 	cdev = &dax_dev->cdev;
- 	cdev_init(cdev, &dax_fops);
- 	cdev->owner = parent->driver->owner;
--	cdev->kobj.parent = &dev->kobj;
--	rc = cdev_add(&dax_dev->cdev, dev_t, 1);
-+	rc = device_add_cdev(dev, cdev);
- 	if (rc)
+ 	ucm_dev->dev.class = &cm_class;
+ 	ucm_dev->dev.parent = device->dma_device;
+-	ucm_dev->dev.devt = ucm_dev->cdev.dev;
+ 	ucm_dev->dev.release = ib_ucm_release_dev;
+ 	dev_set_name(&ucm_dev->dev, "ucm%d", ucm_dev->devnum);
+-	if (device_register(&ucm_dev->dev))
++	if (device_add(&ucm_dev->dev))
  		goto err_cdev;
  
-@@ -716,7 +716,6 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
- 	dax_dev->region = dax_region;
- 	kref_get(&dax_region->kref);
- 
--	dev->devt = dev_t;
- 	dev->class = dax_class;
- 	dev->parent = parent;
- 	dev->groups = dax_attribute_groups;
+ 	if (device_create_file(&ucm_dev->dev, &dev_attr_ibdev))
 -- 
 2.1.4
