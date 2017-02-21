@@ -1,21 +1,33 @@
-Date: Tue, 21 Feb 2017 12:06:48 +0100
+Date: Tue, 21 Feb 2017 12:20:50 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, Sergio Prado
- <sergio.prado@e-labworks.com>, "Wenyou Yang" <wenyou.yang@atmel.com>, Josh
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, "open list:MEMORY TECHNOLOGY..."
+ <linux-mtd@lists.infradead.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>, Haavard
+ Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt
+ <egtvedt@samfundet.no>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh
  Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Brian
  Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- "Cyrille Pitchen" <cyrille.pitchen@atmel.com>, Krzysztof Kozlowski
- <krzk@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH 1/3] mtd: nand: Pass the CS line to
- ->setup_data_interface()
-Message-ID: <20170221120648.19e0d32c@bbrezillon>
-In-Reply-To: <a5a9d822-a73c-4fd1-201c-7a17d9517f24@sigmadesigns.com>
-References: <1487625149-7234-1-git-send-email-boris.brezillon@free-electrons.com>
- <1487625149-7234-2-git-send-email-boris.brezillon@free-electrons.com>
- <a5a9d822-a73c-4fd1-201c-7a17d9517f24@sigmadesigns.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-arm Mailing List
+ <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian
+ Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala
+ <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
+Message-ID: <20170221122050.421dae48@bbrezillon>
+In-Reply-To: <CAHp75Vcb9gtzF7LvH74JwL4dTUyQvKmg=dnTXKfjhVHuyK3WXg@mail.gmail.com>
+References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
+ <CAHp75VdwQGP-qa0c0KQwrdpZmCGc3RuEsJ-E-XLbBzQSn4Yxcg@mail.gmail.com>
+ <20170220213803.7ba5591e@bbrezillon>
+ <20170220215009.0ecbf5a1@bbrezillon>
+ <CAHp75VczsC9WdZWR9iCRh2JoNLFZyOtodrsDRYQoyaN7nkyf=A@mail.gmail.com>
+ <CAHp75Vc_q-bEzA2-hVpHyR0GZ8mXxwJ8-UjECe31T04mb67q4w@mail.gmail.com>
+ <20170221090610.6d531b94@bbrezillon>
+ <CAHp75VfZfj-8ih3vg63w_dAq8xXE2Whu1bANXRcXS1_EGNq43A@mail.gmail.com>
+ <20170221112641.6276c001@bbrezillon>
+ <CAHp75Vcb9gtzF7LvH74JwL4dTUyQvKmg=dnTXKfjhVHuyK3WXg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,58 +40,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Feb 2017 11:57:23 +0100
-Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+On Tue, 21 Feb 2017 13:02:21 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-> On 20/02/2017 22:12, Boris Brezillon wrote:
+> On Tue, Feb 21, 2017 at 12:26 PM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > On Tue, 21 Feb 2017 12:03:45 +0200
+> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:  
 > 
-> > Some NAND controllers can assign different NAND timings to different
-> > CS lines. Pass the CS line information to ->setup_data_interface() so
-> > that the NAND controller driver knows which CS line is concerned by
-> > the setup_data_interface() request.  
+> >> 1. For example,
+> >>
+> >> #define ATMEL_NFC_CMD(pos, cmd)                        ((cmd) <<
+> >> (((pos) * 8) + 2))  
+> >
+> > Well, I like to explicitly put parenthesis even when operator
+> > precedence guarantees the order of the calculation ('*' is preceding
+> > '+').  
 > 
-> I'm confused, because I thought I was already doing that.
-> On my platform, I have different timings for each chip.
-> (thus, for each CS, right?)
-> 
-> In chip->select_chip, I program the appropriate timings
-> which the controller will be using.
-> 
-> What am I missing?
+> That's my point. I'm not a LISP programmer.
+> Personally I think it makes readability worse.
 
-Maybe you don't have multi-dies chips, which is the case I'm fixing
-here. If you have 2 separate chips, the existing hook should work just
-fine.
+So, it's a matter of taste.
+> >>
+> >> 4. First of all, why do you need this function in the first place?
+> >>
+> >> +struct gpio_desc *
+> >> +atmel_nand_pdata_get_gpio(struct atmel_nand_controller *nc, int gpioid,
+> >> +                         const char *name, bool active_low,
+> >> +                         enum gpiod_flags flags)  
+> >
+> > Because I don't want to duplicate the code done in
+> > atmel_nand_pdata_get_gpio() each time I have to convert a GPIO number
+> > into a GPIO descriptor, and that is needed to support platforms that
+> > haven't moved to DT yet  
+> 
+> They should use GPIO lookup tables.
+> 
+> We don't encourage people to use platform data anymore.
+> 
+> We have unified device properties for something like "timeout-us", we
+> have look up tables when you need specifics like pwm, gpio, pinctrl,
+> ...
+> 
+> Abusing platform data with pointers is also not welcome.
+> 
+> > (in this case, avr32).  
+> 
+> It's dead de facto.
+> 
+> When last time did you compile kernel for it? What was the version of kernel?
+> Did it get successfully?
+> 
+> When are we going to remove avr32 support from kernel completely?
+
+I'll let Nicolas answer that one.
 
 > 
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index c8894f31392e..d62a1c7c5c5c 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -1100,8 +1102,10 @@ static int nand_init_data_interface(struct nand_chip *chip)
-> >  		if (ret)
-> >  			continue;
-> >  
-> > -		ret = chip->setup_data_interface(mtd, chip->data_interface,
-> > -						 true);
-> > +		/* Pass -1 to only */  
+> >> 5. BIT() macro:  
 > 
-> "Pass -1 to only" what?
+> > We could probably use BIT() in a few places.  
 > 
-> I suppose -1 means NAND_DATA_IFACE_CHECK_ONLY since
-> #define NAND_DATA_IFACE_CHECK_ONLY -1
-> 
-> Maybe you meant "Pass -1 to check only" here?
-> The comment may need a slight rework.
+> There are more places including data structures assignments.
 
-Yep, didn't finish my sentence.
-Since I decided to define a macro with a self-descriptive name, I
-don't think I need this comment anymore.
+Yes. These are minor changes. I'll try to fix them.
+Note that I sometime prefer to keep (1 << X).
+
+Example:
+
+#define PMECC_CFG_READ_OP			(0 << 12)
+#define PMECC_CFG_WRITE_OP			(1 << 12)
 
 > 
-> > +		ret = chip->setup_data_interface(mtd,
-> > +						 NAND_DATA_IFACE_CHECK_ONLY,
-> > +						 chip->data_interface);
-> >  		if (!ret) {
-> >  			chip->onfi_timing_mode_default = mode;
-> >  			break;  
+> > Again, this has been copied from the old driver. I'll have a closer
+> > look.  
+> 
+> Exactly. You overlooked due to enormous LOC in the one change. See my
+> point below.
+> 
+> >> 7. Question to all that distribution or whatever functions, don't you
+> >> have a common helper? Or each vendor requires different logic behind
+> >> it?  
+> >
+> > What are you talking about? nand_chip hooks?  
+> 
+> That long arithmetic with some data.
+
+Okay, so the code in pmecc.c. See, it's hard to follow a review when
+you don't comment inline.
+
+> 
+> >> 8. Have you checked what kernel library provides?  
+> >
+> > I think so, but again, this is really vague, what kind of
+> > open-coded functions do you think could be replaced with core libraries
+> > helpers?  
+> 
+> I dunno, I'm asking you. Usually if I see a pattern I got a clue to
+> check lib/ and similar places. From time to time I discover something
+> new and interesting there.
+
+If you're talking about the code in pmecc.c, yes, I already mentioned
+in the header that it should be reworked to use some helpers from
+lib/bch.c, but that's not the point of this series, and is left as
+future improvements.
+
+> 
+> >> And I believe there are still issues like those. After, who is on
+> >> topic, might even find some logical and other issues...
+> >>
+> >> P.S. TBH, so big change is unreviewable in meaningful time. To have a
+> >> comprehensive review I, for example, spend ~1h/250LOC, and
+> >> ~2.5h/1000LOC, I would estimate ~4h/2000LOC. Imagine one to spend one
+> >> day for this. Any volunteer? Not me.  
+> >
+> > I'm not asking you to review the whole driver, but you started to
+> > comment on the code without pointing clearly to the things you wanted
+> > me to address.  
+> 
+> Yes, because my point is *split* this to be reviewable.
+> 
+
+And how do you do with new drivers? Do you ask people to split their
+submissions in micro changes? I'm regularly reviewing drivers that are
+several thousands LOC, and I don't ask people to split things just
+because it's too long. When I ask them to split in different commits,
+it's because they are doing several unrelated changes at once.
+
+Note that I considered refactoring the existing driver in smaller
+steps, but it's almost impossible, because the code is too messy and I
+would end up with a huge series of patches that is not easier to review.
