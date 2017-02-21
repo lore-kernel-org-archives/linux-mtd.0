@@ -1,47 +1,38 @@
-Received: from pandora.armlinux.org.uk
- ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgAvk-00009D-Ti
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 13:56:39 +0000
-Date: Tue, 21 Feb 2017 13:55:41 +0000
-From: Russell King - ARM Linux <linux@armlinux.org.uk>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Mark Rutland <mark.rutland@arm.com>,
- devicetree <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Richard Weinberger <richard@nod.at>, Kumar Gala <galak@codeaurora.org>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Marek Vasut <marek.vasut@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Josh Wu <rainyfeeling@outlook.com>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Haavard Skinnemoen <hskinnemoen@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>
-Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-Message-ID: <20170221135541.GV21222@n2100.armlinux.org.uk>
-References: <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
+MIME-Version: 1.0
+In-Reply-To: <20170221122050.421dae48@bbrezillon>
+References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1487593718-20752-2-git-send-email-boris.brezillon@free-electrons.com>
  <CAHp75VdwQGP-qa0c0KQwrdpZmCGc3RuEsJ-E-XLbBzQSn4Yxcg@mail.gmail.com>
- <20170220213803.7ba5591e@bbrezillon>
- <20170220215009.0ecbf5a1@bbrezillon>
+ <20170220213803.7ba5591e@bbrezillon> <20170220215009.0ecbf5a1@bbrezillon>
  <CAHp75VczsC9WdZWR9iCRh2JoNLFZyOtodrsDRYQoyaN7nkyf=A@mail.gmail.com>
  <CAHp75Vc_q-bEzA2-hVpHyR0GZ8mXxwJ8-UjECe31T04mb67q4w@mail.gmail.com>
  <20170221090610.6d531b94@bbrezillon>
  <CAHp75VfZfj-8ih3vg63w_dAq8xXE2Whu1bANXRcXS1_EGNq43A@mail.gmail.com>
  <20170221112641.6276c001@bbrezillon>
  <CAHp75Vcb9gtzF7LvH74JwL4dTUyQvKmg=dnTXKfjhVHuyK3WXg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vcb9gtzF7LvH74JwL4dTUyQvKmg=dnTXKfjhVHuyK3WXg@mail.gmail.com>
-Sender: Russell King - ARM Linux <linux@armlinux.org.uk>
+ <20170221122050.421dae48@bbrezillon>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 21 Feb 2017 17:55:15 +0200
+Message-ID: <CAHp75VfHf9qN+sRd6cymr9ziO9Xi7gw+O-yOp+1zEAduxEMfJg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,27 +42,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 21, 2017 at 01:02:21PM +0200, Andy Shevchenko wrote:
-> On Tue, Feb 21, 2017 at 12:26 PM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > On Tue, 21 Feb 2017 12:03:45 +0200
-> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> 
-> >> 1. For example,
-> >>
-> >> #define ATMEL_NFC_CMD(pos, cmd)                        ((cmd) <<
-> >> (((pos) * 8) + 2))
-> >
-> > Well, I like to explicitly put parenthesis even when operator
-> > precedence guarantees the order of the calculation ('*' is preceding
-> > '+').
-> 
-> That's my point. I'm not a LISP programmer.
-> Personally I think it makes readability worse.
+On Tue, Feb 21, 2017 at 1:20 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Tue, 21 Feb 2017 13:02:21 +0200
+> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>> On Tue, Feb 21, 2017 at 12:26 PM, Boris Brezillon
+>> <boris.brezillon@free-electrons.com> wrote:
+>> > On Tue, 21 Feb 2017 12:03:45 +0200
+>> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-+1.  I find unnecessary parenthesis is an effective obfuscation technique.
+> So, it's a matter of taste.
+
+Yes, and I'm not objecting this.
+
+>> >> 4. First of all, why do you need this function in the first place?
+>> >>
+>> >> +struct gpio_desc *
+>> >> +atmel_nand_pdata_get_gpio(struct atmel_nand_controller *nc, int gpioid,
+>> >> +                         const char *name, bool active_low,
+>> >> +                         enum gpiod_flags flags)
+>> >
+>> > Because I don't want to duplicate the code done in
+>> > atmel_nand_pdata_get_gpio() each time I have to convert a GPIO number
+>> > into a GPIO descriptor, and that is needed to support platforms that
+>> > haven't moved to DT yet
+>>
+>> They should use GPIO lookup tables.
+>>
+>> We don't encourage people to use platform data anymore.
+>>
+>> We have unified device properties for something like "timeout-us", we
+>> have look up tables when you need specifics like pwm, gpio, pinctrl,
+>> ...
+>>
+>> Abusing platform data with pointers is also not welcome.
+>>
+>> > (in this case, avr32).
+>>
+>> It's dead de facto.
+>>
+>> When last time did you compile kernel for it? What was the version of kernel?
+>> Did it get successfully?
+>>
+>> When are we going to remove avr32 support from kernel completely?
+>
+> I'll let Nicolas answer that one.
+
+In any case it's discouraging to use platform data for GPIOs and plain
+GPIO pin numbering.
+
+> Note that I sometime prefer to keep (1 << X).
+>
+> Example:
+>
+> #define PMECC_CFG_READ_OP                       (0 << 12)
+> #define PMECC_CFG_WRITE_OP                      (1 << 12)
+
+I understand that.
+
+> Okay, so the code in pmecc.c. See, it's hard to follow a review when
+> you don't comment inline.
+
+It's hard to review (n+1) thousands of LOC.
+
+>> >> 8. Have you checked what kernel library provides?
+>> >
+>> > I think so, but again, this is really vague, what kind of
+>> > open-coded functions do you think could be replaced with core libraries
+>> > helpers?
+>>
+>> I dunno, I'm asking you. Usually if I see a pattern I got a clue to
+>> check lib/ and similar places. From time to time I discover something
+>> new and interesting there.
+>
+> If you're talking about the code in pmecc.c, yes, I already mentioned
+> in the header that it should be reworked to use some helpers from
+> lib/bch.c, but that's not the point of this series, and is left as
+> future improvements.
+
+OK.
+
+>> Yes, because my point is *split* this to be reviewable.
+
+> And how do you do with new drivers?
+
+To be more pedantic the new drivers do not have "minus" thousands LOC.
+
+> Do you ask people to split their
+> submissions in micro changes?
+
+To logical ones.
+
+> I'm regularly reviewing drivers that are
+> several thousands LOC, and I don't ask people to split things just
+> because it's too long. When I ask them to split in different commits,
+> it's because they are doing several unrelated changes at once.
+
+What did prevent you to:
+1. Introduce new driver
+2. Switch to new driver
+3. Remove old one.
+
+...if you are not splitting it in the first place?
+
+> Note that I considered refactoring the existing driver in smaller
+> steps, but it's almost impossible, because the code is too messy and I
+> would end up with a huge series of patches that is not easier to review.
+
+I can object this, but it will be no point except waste of time to
+this discussion.
+
+It's good that you considered several options. I suppose someone who
+is on topic can do comprehensive review.
 
 -- 
-RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+With Best Regards,
+Andy Shevchenko
