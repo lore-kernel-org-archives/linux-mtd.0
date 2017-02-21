@@ -1,15 +1,15 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg5D1-0007tL-33
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 07:50:06 +0000
+ id 1cg5D6-0007tv-2h
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 07:50:10 +0000
 From: Peter Pan <peterpandong@micron.com>
 To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: [PATCH 07/11] nand: spi: Add init/release function
-Date: Tue, 21 Feb 2017 16:00:06 +0800
-Message-ID: <1487664010-25926-8-git-send-email-peterpandong@micron.com>
+Subject: [PATCH 09/11] nand: spi: Add BBT support
+Date: Tue, 21 Feb 2017 16:00:08 +0800
+Message-ID: <1487664010-25926-10-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
 References: <1487664010-25926-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
@@ -23,347 +23,299 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add SPI NAND initialization and release functions.
+This commit enables BBT for SPI NAND. We also define
+SPINAND_SKIP_BBTSCAN to skip to use BBT for some
+chipset vendors' request.
 
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- drivers/mtd/nand/spi/spi-nand-base.c | 220 +++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nand.h         |  52 +++++++++
- 2 files changed, 272 insertions(+)
+ drivers/mtd/nand/spi/spi-nand-base.c | 195 +++++++++++++++++++++++++++++++----
+ include/linux/mtd/spi-nand.h         |   1 +
+ 2 files changed, 176 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/mtd/nand/spi/spi-nand-base.c b/drivers/mtd/nand/spi/spi-nand-base.c
-index 5c335e2..c77721d 100644
+index 57986d5..5ac4b26 100644
 --- a/drivers/mtd/nand/spi/spi-nand-base.c
 +++ b/drivers/mtd/nand/spi/spi-nand-base.c
-@@ -22,6 +22,17 @@
- #include <linux/delay.h>
- #include <linux/jiffies.h>
- #include <linux/mtd/spi-nand.h>
-+#include <linux/slab.h>
-+
-+static struct spi_nand_flash spi_nand_table[] = {
-+	SPI_NAND_INFO("MT29F4G01ABAGD", 0x2C, 0x36, 2048, 128, 64, 2048,
-+			2, 8, SPINAND_NEED_PLANE_SELECT,
-+			SPINAND_OP_COMMON),
-+	SPI_NAND_INFO("MT29F2G01ABAGD", 0x2C, 0x24, 2048, 128, 64, 2048,
-+			1, 8, SPINAND_NEED_PLANE_SELECT,
-+			SPINAND_OP_COMMON),
-+	{.name = NULL},
-+};
- 
- /**
-  * spi_nand_get_device - [GENERIC] Get chip for selected access
-@@ -993,6 +1004,215 @@ static int spi_nand_erase(struct mtd_info *mtd, struct erase_info *einfo)
- 	/* Return more or less happy */
+@@ -960,6 +960,27 @@ static int spi_nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
  	return ret;
  }
-+
-+/**
-+ * spi_nand_scan_id_table - scan chip info in id table
-+ * @chip: SPI-NAND device structure
-+ * @id: point to manufacture id and device id
-+ * Description:
-+ *   If found in id table, config chip with table information.
-+ */
-+static bool spi_nand_scan_id_table(struct spi_nand_chip *chip, u8 *id)
-+{
-+	struct nand_device *nand = &chip->base;
-+	struct spi_nand_flash *type = spi_nand_table;
-+	struct nand_memory_organization *memorg = &nand->memorg;
-+
-+	for (; type->name; type++) {
-+		if (id[0] == type->mfr_id && id[1] == type->dev_id) {
-+			chip->name = type->name;
-+			chip->size = type->page_size * type->pages_per_blk
-+				* type->blks_per_lun * type->luns_per_chip;
-+			memorg->eraseblocksize = type->page_size
-+					* type->pages_per_blk;
-+			memorg->pagesize = type->page_size;
-+			memorg->oobsize = type->oob_size;
-+			memorg->diesize =
-+				memorg->eraseblocksize * type->blks_per_lun;
-+			memorg->ndies = type->luns_per_chip;
-+			chip->ecc_strength = type->ecc_strength;
-+			chip->options = type->options;
-+			chip->rw_mode = type->rw_mode;
-+
-+			return true;
-+		}
-+	}
-+
-+	return false;
-+}
-+
-+/**
-+ * spi_nand_set_rd_wr_op - Chose the best read write command
-+ * @chip: SPI-NAND device structure
-+ * Description:
-+ *   Chose the fastest r/w command according to spi controller's ability.
-+ * Note:
-+ *   If 03h/0Bh follows SPI NAND protocol, there is no difference,
-+ *   while if follows SPI NOR protocol, 03h command is working under
-+ *   <=20Mhz@3.3V,<=5MHz@1.8V; 0Bh command is working under
-+ *   133Mhz@3.3v, 83Mhz@1.8V.
-+ */
-+static void spi_nand_set_rd_wr_op(struct spi_nand_chip *chip)
-+{
-+	u32 mode = SPINAND_OP_MASK & chip->controller_caps & chip->rw_mode;
-+
-+	if (mode & SPINAND_RD_QUAD)
-+		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_QUAD_IO;
-+	else if (mode & SPINAND_RD_X4)
-+		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_X4;
-+	else if (mode & SPINAND_RD_DUAL)
-+		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_DUAL_IO;
-+	else if (mode & SPINAND_RD_X2)
-+		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_X2;
-+	else
-+		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_FAST;
-+
-+	if (mode & SPINAND_WR_X4)
-+		chip->write_cache_op = SPINAND_CMD_PROG_LOAD_X4;
-+	else
-+		chip->write_cache_op = SPINAND_CMD_PROG_LOAD;
-+}
-+
-+/**
-+ * spi_nand_scan_ident - [SPI-NAND Interface] Scan for the SPI-NAND device
-+ * @chip: SPI-NAND device structure
-+ * Description:
-+ *   This is the first phase of the initiazation. It reads the flash ID and
-+ *   sets up spi_nand_chip fields accordingly.
-+ */
-+int spi_nand_scan_ident(struct spi_nand_chip *chip)
-+{
-+	struct nand_device *nand = &chip->base;
-+	u8 id[SPINAND_MAX_ID_LEN] = {0};
-+	int id_retry = 2;
-+
-+	spi_nand_reset(chip);
-+read_id:
-+	spi_nand_read_id(chip, id);
-+	if (spi_nand_scan_id_table(chip, id))
-+		goto ident_done;
-+	if (id_retry--)
-+		goto read_id;
-+	pr_info("SPI-NAND type mfr_id: %x, dev_id: %x is not in id table.\n",
-+				id[0], id[1]);
-+
-+	return -ENODEV;
-+
-+ident_done:
-+	pr_info("SPI-NAND: %s is found.\n", chip->name);
-+	pr_info("Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n", id[0], id[1]);
-+	pr_info("%d MiB, block size: %d KiB, page size: %d, OOB size: %d\n",
-+		(int)(chip->size >> 20), nand_eraseblock_size(nand) >> 10,
-+		nand_page_size(nand), nand_per_page_oobsize(nand));
-+
-+	chip->mfr_id = id[0];
-+	chip->dev_id = id[1];
-+	spi_nand_set_rd_wr_op(chip);
-+
-+	chip->buf = kzalloc(nand_page_size(nand) + nand_per_page_oobsize(nand), GFP_KERNEL);
-+	if (!chip->buf)
-+		return -ENOMEM;
-+
-+	chip->oobbuf = chip->buf + nand_page_size(nand);
-+	spi_nand_lock_block(chip, BL_ALL_UNLOCKED);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(spi_nand_scan_ident);
-+
-+/**
-+ * spi_nand_scan_tail - [SPI-NAND Interface] Scan for the SPI-NAND device
-+ * @chip: SPI-NAND device structure
-+ * Description:
-+ *   This is the second phase of the initiazation. It fills out all the
-+ *   uninitialized fields of spi_nand_chip and mtd fields.
-+ */
-+int spi_nand_scan_tail(struct spi_nand_chip *chip)
-+{
-+	struct mtd_info *mtd = spi_nand_to_mtd(chip);
-+	struct nand_device *nand = mtd_to_nand(mtd);
-+	int ret;
-+
-+	/* Initialize state */
-+	chip->state = FL_READY;
-+
-+	init_waitqueue_head(&chip->wq);
-+	spin_lock_init(&chip->chip_lock);
-+
-+	mtd->name = chip->name;
-+	mtd->size = chip->size;
-+	mtd->erasesize = nand_eraseblock_size(nand);
-+	mtd->writesize = nand_page_size(nand);
-+	mtd->writebufsize = mtd->writesize;
-+	mtd->owner = THIS_MODULE;
-+	mtd->type = MTD_NANDFLASH;
-+	mtd->flags = MTD_CAP_NANDFLASH;
-+	if (!mtd->ecc_strength)
-+		mtd->ecc_strength = chip->ecc_strength ?
-+				chip->ecc_strength : 1;
-+
-+	mtd->oobsize = nand_per_page_oobsize(nand);
-+	ret = mtd_ooblayout_count_freebytes(mtd);
-+	if (ret < 0)
-+		ret = 0;
-+	mtd->oobavail = ret;
-+	mtd->_erase = spi_nand_erase;
-+	mtd->_read = spi_nand_read;
-+	mtd->_write = spi_nand_write;
-+	mtd->_read_oob = spi_nand_read_oob;
-+	mtd->_write_oob = spi_nand_write_oob;
-+
-+	if (!mtd->bitflip_threshold)
-+		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3, 4);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(spi_nand_scan_tail);
-+
-+/**
-+ * spi_nand_scan_ident_release - [SPI-NAND Interface] Free resources
-+ * applied by spi_nand_scan_ident
-+ * @chip: SPI-NAND device structure
-+ */
-+int spi_nand_scan_ident_release(struct spi_nand_chip *chip)
-+{
-+	kfree(chip->buf);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(spi_nand_scan_ident_release);
-+
-+/**
-+ * spi_nand_scan_tail_release - [SPI-NAND Interface] Free resources
-+ * applied by spi_nand_scan_tail
-+ * @chip: SPI-NAND device structure
-+ */
-+int spi_nand_scan_tail_release(struct spi_nand_chip *chip)
-+{
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(spi_nand_scan_tail_release);
-+
-+/**
-+ * spi_nand_release - [SPI-NAND Interface] Free resources held by the SPI-NAND
-+ * device
-+ * @chip: SPI-NAND device structure
-+ */
-+int spi_nand_release(struct spi_nand_chip *chip)
-+{
-+	struct mtd_info *mtd = spi_nand_to_mtd(chip);
-+	struct nand_device *nand = mtd_to_nand(mtd);
-+	struct nand_bbt_descr *bd = nand->bbt.bbp;
-+
-+	mtd_device_unregister(mtd);
-+	kfree(chip->buf);
-+	kfree(nand->bbt.bbt);
-+	if (bd->options & NAND_BBT_DYNAMICSTRUCT)
-+		kfree(bd);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(spi_nand_release);
-+
- MODULE_DESCRIPTION("SPI NAND framework");
- MODULE_AUTHOR("Peter Pan<peterpandong@micron.com>");
- MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/mtd/spi-nand.h b/include/linux/mtd/spi-nand.h
-index b61045b..cdacec4 100644
---- a/include/linux/mtd/spi-nand.h
-+++ b/include/linux/mtd/spi-nand.h
-@@ -116,6 +116,25 @@
- #define SPI_NAND_MT29F_ECC_UNCORR	0x20
  
- 
-+/* SPI NAND controller and chip supported OP mode */
-+#define SPINAND_OP_MASK		0x0000ffff
-+#define SPINAND_RD_X1		0x00000001
-+#define SPINAND_RD_X2		0x00000002
-+#define SPINAND_RD_X4		0x00000004
-+#define SPINAND_RD_DUAL		0x00000008
-+#define SPINAND_RD_QUAD		0x00000010
-+#define SPINAND_WR_X1		0x00000020
-+#define SPINAND_WR_X2		0x00000040
-+#define SPINAND_WR_X4		0x00000080
-+#define SPINAND_WR_DUAL		0x00000100
-+#define SPINAND_WR_QUAD		0x00000200
++/**
++ * spi_nand_block_checkbad - Check if a block is marked bad
++ * @mtd: MTD device structure
++ * @ofs: offset from device start
++ * @getchip: 0, if the chip is already selected
++ * @allowbbt: 1, if its allowed to access the bbt area
++ *
++ * Check, if the block is bad. Either by reading the bad block table or
++ * calling of the scan function.
++ */
++static int spi_nand_block_checkbad(struct mtd_info *mtd, loff_t ofs,
++			int getchip, int allowbbt)
++{
++	struct nand_device *nand = mtd_to_nand(mtd);
 +
-+#define SPINAND_RD_COMMON	SPINAND_RD_X1 | SPINAND_RD_X2 | \
-+				SPINAND_RD_X4 | SPINAND_RD_DUAL | \
-+				SPINAND_RD_QUAD
-+#define SPINAND_WR_COMMON	SPINAND_WR_X1 | SPINAND_WR_X4
-+#define SPINAND_OP_COMMON	SPINAND_RD_COMMON | SPINAND_WR_COMMON
++	if (!nand->bbt.bbt)
++		return spi_nand_block_bad(mtd, ofs, getchip);
 +
- struct spi_nand_cmd;
++	/* Return info from the table */
++	return nand_isbad_bbt(nand, ofs, allowbbt);
++}
  
  /**
-@@ -136,6 +155,7 @@
-  * @buf:		[INTERN] buffer for read/write data
-  * @oobbuf:		[INTERN] buffer for read/write oob
-  * @controller_caps:	[INTERN] capacities of SPI NAND controller
-+ * @rw_mode:		[BOARDSPECIFIC] read/write mode of SPI NAND chip
-  * @size:		[INTERN] the size of chip
-  * @options:		[BOARDSPECIFIC] various chip options. They can partly
-  *			be set to inform nand_scan about special functionality.
-@@ -159,6 +179,7 @@ struct spi_nand_chip {
- 	u8		*buf;
- 	u8		*oobbuf;
- 	u32		controller_caps;
-+	u32		rw_mode;
- 	u64		size;
- 	u32		options;
- 	u32		ecc_strength;
-@@ -186,6 +207,20 @@ static inline void spi_nand_set_controller_data(struct spi_nand_chip *chip,
- 	chip->priv = priv;
+  * spi_nand_block_isbad - [MTD Interface] Check if block at offset is bad
+@@ -968,7 +989,7 @@ static int spi_nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+  */
+ static int spi_nand_block_isbad(struct mtd_info *mtd, loff_t offs)
+ {
+-	return spi_nand_block_bad(mtd, offs, 1);
++	return spi_nand_block_checkbad(mtd, offs, 1, 0);
  }
  
-+struct spi_nand_flash {
-+	char		*name;
-+	u8		mfr_id;
-+	u8		dev_id;
-+	u32		page_size;
-+	u32		oob_size;
-+	u32		pages_per_blk;
-+	u32		blks_per_lun;
-+	u32		luns_per_chip;
-+	u32		ecc_strength;
-+	u32		options;
-+	u32		rw_mode;
+ /**
+@@ -995,22 +1016,31 @@ static int spi_nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
+ 	struct erase_info einfo = {0};
+ 	u32 block_addr;
+ 	u8 buf[2] = {0, 0};
+-	int ret = 0;
+-
+-	/*erase bad block before mark bad block*/
+-	einfo.mtd = mtd;
+-	einfo.addr = ofs;
+-	einfo.len = nand_eraseblock_size(nand);
+-	spi_nand_erase(mtd, &einfo);
++	int res, ret = 0;
++
++	if (!nand->bbt.bbt || !(nand->bbt.options & NAND_BBT_NO_OOB_BBM)) {
++		/*erase bad block before mark bad block*/
++		einfo.mtd = mtd;
++		einfo.addr = ofs;
++		einfo.len = nand_eraseblock_size(nand);
++		spi_nand_erase(mtd, &einfo);
++
++		block_addr = nand_offs_to_eraseblock(nand, ofs);
++		ops.mode = MTD_OPS_PLACE_OOB;
++		ops.ooblen = 2;
++		ops.oobbuf = buf;
++		spi_nand_get_device(mtd, FL_WRITING);
++		ret = spi_nand_do_write_ops(mtd,
++			nand_eraseblock_to_offs(nand, block_addr), &ops);
++		spi_nand_release_device(mtd);
++	}
+ 
+-	block_addr = nand_offs_to_eraseblock(nand, ofs);
+-	ops.mode = MTD_OPS_PLACE_OOB;
+-	ops.ooblen = 2;
+-	ops.oobbuf = buf;
+-	spi_nand_get_device(mtd, FL_WRITING);
+-	ret = spi_nand_do_write_ops(mtd,
+-		nand_eraseblock_to_offs(nand, block_addr), &ops);
+-	spi_nand_release_device(mtd);
++	/* Mark block bad in BBT */
++	if (nand->bbt.bbt) {
++		res = nand_markbad_bbt(nand, ofs);
++		if (!ret)
++			ret = res;
++	}
+ 
+ 	if (!ret)
+ 		mtd->ecc_stats.badblocks++;
+@@ -1040,13 +1070,15 @@ static int spi_nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ }
+ 
+ /**
+- * spi_nand_erase - [MTD Interface] erase block(s)
++ * __spi_nand_erase - erase block(s)
+  * @mtd: MTD device structure
+  * @einfo: erase instruction
++ * @allowbbt: allow to access bbt
+  *
+  * Erase one ore more blocks
+  */
+-static int spi_nand_erase(struct mtd_info *mtd, struct erase_info *einfo)
++static int __spi_nand_erase(struct mtd_info *mtd, struct erase_info *einfo,
++			int allowbbt)
+ {
+ 	struct spi_nand_chip *chip = mtd_to_spi_nand(mtd);
+ 	struct nand_device *nand = mtd_to_nand(mtd);
+@@ -1081,7 +1113,7 @@ static int spi_nand_erase(struct mtd_info *mtd, struct erase_info *einfo)
+ 
+ 	while (len) {
+ 		/* Check if we have a bad block, we do not erase bad blocks! */
+-		if (spi_nand_block_bad(mtd, offs, 0)) {
++		if (spi_nand_block_checkbad(mtd, offs, 0, allowbbt)) {
+ 			pr_warn("%s: attempt to erase a bad block at 0x%012llx\n",
+ 			__func__, offs);
+ 			einfo->state = MTD_ERASE_FAILED;
+@@ -1124,6 +1156,55 @@ static int spi_nand_erase(struct mtd_info *mtd, struct erase_info *einfo)
+ }
+ 
+ /**
++ * spi_nand_erase - [MTD Interface] erase block(s)
++ * @mtd: MTD device structure
++ * @einfo: erase instruction
++ *
++ * Erase one ore more blocks
++ */
++static int spi_nand_erase(struct mtd_info *mtd, struct erase_info *einfo)
++{
++	return __spi_nand_erase(mtd, einfo, 0);
++}
++
++
++static int spi_nand_erase_bbt(struct nand_device *nand, struct erase_info *einfo)
++{
++	return __spi_nand_erase(nand_to_mtd(nand), einfo, 1);
++}
++
++static int spi_nand_markbad(struct nand_device *nand, int block)
++{
++	struct mtd_oob_ops ops = {0};
++	u8 buf[2] = {0, 0};
++
++	ops.mode = MTD_OPS_PLACE_OOB;
++	ops.ooboffs = 0;
++	ops.ooblen = 2;
++	ops.oobbuf = buf;
++
++	return spi_nand_do_write_ops(nand_to_mtd(nand),
++		nand_eraseblock_to_offs(nand, block), &ops);
++
++}
++
++/**
++ * spi_nand_block_isreserved - [MTD Interface] Check if a block is
++ * marked reserved.
++ * @mtd: MTD device structure
++ * @ofs: offset from device start
++ */
++static int spi_nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
++{
++	struct nand_device *nand = mtd_to_nand(mtd);
++
++	if (!nand->bbt.bbt)
++		return 0;
++	/* Return info from the table */
++	return nand_isreserved_bbt(nand, ofs);
++}
++
++/**
+  * spi_nand_scan_id_table - scan chip info in id table
+  * @chip: SPI-NAND device structure
+  * @id: point to manufacture id and device id
+@@ -1191,6 +1272,74 @@ static void spi_nand_set_rd_wr_op(struct spi_nand_chip *chip)
+ 		chip->write_cache_op = SPINAND_CMD_PROG_LOAD;
+ }
+ 
++static const struct nand_ops spi_nand_ops = {
++	.erase = spi_nand_erase_bbt,
++	.markbad = spi_nand_markbad,
 +};
 +
- #define SPINAND_MAX_ADDR_LEN		4
- 
- struct spi_nand_cmd {
-@@ -206,11 +241,28 @@ struct spi_nand_cmd_cfg {
- 	u8		data_bits;
- };
- 
-+#define SPI_NAND_INFO(nm, mid, did, pagesz, oobsz, pg_per_blk,\
-+	blk_per_lun, lun_per_chip, ecc_stren, opts, rwmode)	\
-+	{ .name = (nm), .mfr_id = (mid), .dev_id = (did),\
-+	.page_size = (pagesz), .oob_size = (oobsz),\
-+	.pages_per_blk = (pg_per_blk), .blks_per_lun = (blk_per_lun),\
-+	.luns_per_chip = (lun_per_chip), .ecc_strength = (ecc_stren),\
-+	.options = (opts), .rw_mode = (rwmode) }
++/*
++ * Define some generic bad / good block scan pattern which are used
++ * while scanning a device for factory marked good / bad blocks.
++ */
++static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
 +
++#define BADBLOCK_SCAN_MASK (~NAND_BBT_NO_OOB)
++
++/**
++ * nand_create_badblock_pattern - [INTERN] Creates a BBT descriptor structure
++ * @this: NAND chip to create descriptor for
++ * @chip: SPI-NAND device structure
++ *
++ * This function allocates and initializes a nand_bbt_descr for BBM detection
++ * based on the properties of @this. The new descriptor is stored in
++ * this->badblock_pattern. Thus, this->badblock_pattern should be NULL when
++ * passed to this function.
++ */
++static int spi_nand_create_badblock_pattern(struct spi_nand_chip *chip)
++{
++	struct nand_device *nand = &chip->base;
++	struct nand_bbt_descr *bd;
++
++	if (nand->bbt.bbp) {
++		pr_warn("Bad block pattern already allocated; not replacing\n");
++		return -EINVAL;
++	}
++	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
++	if (!bd)
++		return -ENOMEM;
++	bd->options = nand->bbt.options & BADBLOCK_SCAN_MASK;
++	bd->offs = 0;
++	bd->len = 2;
++	bd->pattern = scan_ff_pattern;
++	bd->options |= NAND_BBT_DYNAMICSTRUCT;
++	nand->bbt.bbp = bd;
++	return 0;
++}
++
++static int spi_nand_default_bbt(struct mtd_info *mtd)
++{
++	struct nand_device *nand = mtd_to_nand(mtd);
++	struct spi_nand_chip *chip = mtd_to_spi_nand(mtd);
++	int ret;
++
++	nand->bbt.options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
++	nand->bbt.td = NULL;
++	nand->bbt.md = NULL;
++
++	ret = spi_nand_create_badblock_pattern(chip);
++	if (ret)
++		return ret;
++
++	return nand_scan_bbt(nand);
++}
++
++static void spi_nand_fill_nandd(struct spi_nand_chip *chip)
++{
++	struct nand_device *nand = &chip->base;
++
++	nand->ops = &spi_nand_ops;
++}
++
+ /**
+  * spi_nand_scan_ident - [SPI-NAND Interface] Scan for the SPI-NAND device
+  * @chip: SPI-NAND device structure
+@@ -1232,6 +1381,7 @@ int spi_nand_scan_ident(struct spi_nand_chip *chip)
+ 		return -ENOMEM;
+ 
+ 	chip->oobbuf = chip->buf + nand_page_size(nand);
++	spi_nand_fill_nandd(chip);
+ 	spi_nand_lock_block(chip, BL_ALL_UNLOCKED);
+ 
+ 	return 0;
+@@ -1281,11 +1431,16 @@ int spi_nand_scan_tail(struct spi_nand_chip *chip)
+ 	mtd->_write_oob = spi_nand_write_oob;
+ 	mtd->_block_isbad = spi_nand_block_isbad;
+ 	mtd->_block_markbad = spi_nand_block_markbad;
++	mtd->_block_isreserved = spi_nand_block_isreserved;
+ 
+ 	if (!mtd->bitflip_threshold)
+ 		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3, 4);
+ 
+-	return 0;
++	/* Check, if we should skip the bad block table scan */
++	if (chip->options & SPINAND_SKIP_BBTSCAN)
++		return 0;
++	/* Build bad block table */
++	return spi_nand_default_bbt(mtd);
+ }
+ EXPORT_SYMBOL_GPL(spi_nand_scan_tail);
+ 
+diff --git a/include/linux/mtd/spi-nand.h b/include/linux/mtd/spi-nand.h
+index cdacec4..5f362b6 100644
+--- a/include/linux/mtd/spi-nand.h
++++ b/include/linux/mtd/spi-nand.h
+@@ -251,6 +251,7 @@ struct spi_nand_cmd_cfg {
+ 
  /*SPI NAND chip options*/
  #define SPINAND_NEED_PLANE_SELECT	(1 << 0)
++#define SPINAND_SKIP_BBTSCAN		(1 << 3)
  
  /*SPI NAND manufacture ID definition*/
  #define SPINAND_MFR_MICRON		0x2C
-+
-+#define SPINAND_MAX_ID_LEN		2
-+
-+
-+int spi_nand_scan_ident(struct spi_nand_chip *chip);
-+int spi_nand_scan_tail(struct spi_nand_chip *chip);
-+int spi_nand_scan_ident_release(struct spi_nand_chip *chip);
-+int spi_nand_scan_tail_release(struct spi_nand_chip *chip);
-+int spi_nand_release(struct spi_nand_chip *chip);
- int spi_nand_set_cmd_cfg_table(int mfr);
- struct spi_nand_cmd_cfg *spi_nand_get_cmd_cfg(u8 opcode);
- #endif /* __LINUX_MTD_SPI_NAND_H */
 -- 
 1.9.1
