@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg2ey-0002bb-CF
- for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:06:44 +0000
+ id 1cg2da-0002Z3-OK
+ for linux-mtd@lists.infradead.org; Tue, 21 Feb 2017 05:05:19 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -49,11 +49,11 @@ Cc: linux-pci@vger.kernel.org, osd-dev@open-osd.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon, 20 Feb 2017 22:00:47 -0700
-Message-Id: <1487653253-11497-9-git-send-email-logang@deltatee.com>
+Date: Mon, 20 Feb 2017 22:00:48 -0700
+Message-Id: <1487653253-11497-10-git-send-email-logang@deltatee.com>
 In-Reply-To: <1487653253-11497-1-git-send-email-logang@deltatee.com>
 References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH 08/14] iio:core: utilize new device_add_cdev helper function
+Subject: [PATCH 09/14] media: utilize new device_add_cdev helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -65,22 +65,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/iio/industrialio-core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/media/cec/cec-core.c  | 3 +--
+ drivers/media/media-devnode.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index aaca428..b0ef245 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1718,8 +1718,7 @@ int iio_device_register(struct iio_dev *indio_dev)
+diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
+index aca3ab8..a475aa5 100644
+--- a/drivers/media/cec/cec-core.c
++++ b/drivers/media/cec/cec-core.c
+@@ -137,10 +137,9 @@ static int __must_check cec_devnode_register(struct cec_devnode *devnode,
  
- 	cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
- 	indio_dev->chrdev.owner = indio_dev->info->driver_module;
--	indio_dev->chrdev.kobj.parent = &indio_dev->dev.kobj;
--	ret = cdev_add(&indio_dev->chrdev, indio_dev->dev.devt, 1);
-+	ret = device_add_cdev(&indio_dev->dev, &indio_dev->chrdev);
- 	if (ret < 0)
- 		goto error_unreg_eventset;
+ 	/* Part 2: Initialize and register the character device */
+ 	cdev_init(&devnode->cdev, &cec_devnode_fops);
+-	devnode->cdev.kobj.parent = &devnode->dev.kobj;
+ 	devnode->cdev.owner = owner;
  
+-	ret = cdev_add(&devnode->cdev, devnode->dev.devt, 1);
++	ret = device_add_cdev(&devnode->dev, &devnode->cdev);
+ 	if (ret < 0) {
+ 		pr_err("%s: cdev_add failed\n", __func__);
+ 		goto clr_bit;
+diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
+index f2772ba..8d4718c 100644
+--- a/drivers/media/media-devnode.c
++++ b/drivers/media/media-devnode.c
+@@ -255,9 +255,8 @@ int __must_check media_devnode_register(struct media_device *mdev,
+ 	/* Part 2: Initialize and register the character device */
+ 	cdev_init(&devnode->cdev, &media_devnode_fops);
+ 	devnode->cdev.owner = owner;
+-	devnode->cdev.kobj.parent = &devnode->dev.kobj;
+ 
+-	ret = cdev_add(&devnode->cdev, MKDEV(MAJOR(media_dev_t), devnode->minor), 1);
++	ret = device_add_cdev(&devnode->dev, &devnode->cdev);
+ 	if (ret < 0) {
+ 		pr_err("%s: cdev_add failed\n", __func__);
+ 		goto cdev_add_error;
 -- 
 2.1.4
