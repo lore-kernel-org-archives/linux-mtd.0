@@ -1,19 +1,16 @@
-Received: from mail-he1eur01on0127.outbound.protection.outlook.com
- ([104.47.0.127] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from galois.linutronix.de ([2a01:7a0:2:106d:700::1])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgSXK-0005dw-6k
- for linux-mtd@lists.infradead.org; Wed, 22 Feb 2017 08:44:37 +0000
-From: "Zhang, Fan (F.)" <fzhang14@yfve.com.cn>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Richard
- Weinberger" <richard@nod.at>
-CC: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: FW: power cut test failed on kernel 3.0.35 with imx6 
-Date: Wed, 22 Feb 2017 08:44:08 +0000
-Message-ID: <HE1PR0602MB2972891C2F90EBC8B4ACA52983500@HE1PR0602MB2972.eurprd06.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1cgZZz-0003mp-1s
+ for linux-mtd@lists.infradead.org; Wed, 22 Feb 2017 16:15:49 +0000
+Date: Wed, 22 Feb 2017 17:15:21 +0100
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH] ubi/upd: always flush after prepared for an update
+Message-ID: <20170222161521.4foobhoyelnrad7h@linutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +20,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCAmdWJpZnMgZGV2ZWxvcGVycw0K44CA44CAV2UgaGF2ZSBzb21lIHF1ZXN0aW9u
-cyBhYm91dCB1YmlmcywgYW5kIGhvcGUgY2FuIGdldCBzb21lIGFkdmlzZXMgZnJvbSB5b3UuDQrj
-gIDjgIBOb3csIHdlIGFyZSBkb2luZyB0aGUgcG93ZXIgY3V0IHRlc3QgYmFzZSBvbiBsaW51eCAz
-LjAuMzUsYmVsb3cgaXMgb3VyIHRlc3QgZW52aXJvbm1lbnQ6DQovKj09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09Ki8NCsKgIFNPQzogSU1YNi1TT0xPDQrCoCBLRVJORUw6My4wLjM1DQrCoCBO
-QU5ERkxBU0g6UzM0TUwwMkcxIChzcGFuc2lvbikNCsKgIFRFU1QgQ0FTRTogY3JlYXRlIGFuZCB3
-cml0ZSBkYXRhIGludG8gZmlsZXMsIHRoZW4gcmVtb3ZlIHRoZW0uIHBvd2VyIGN1dCBhdCBhbiBy
-YW5kb20gbW9tZW50Lg0KLyo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PSovDQoNCsKgwqDC
-oMKgwqDCoMKgIHdlIGhhdmUgZmluaXNoIHR3byBwaGFzZXMgdGVzdCwgVGhlIHJlc3VsdHMgb2Yg
-dGhlIHRlc3RzIGRpZCBub3QgbWVldCBvdXIgZXhwZWN0YXRpb25zLCBhbmQgaXQgaXMgc3RyYW5n
-ZS4gYmVsb3cgaXMgb3VyIHRlc3QgZGVzY3JpcHRpb24uDQrCoCB0ZXN0IGRlc2NyaXB0aW9u77ya
-DQovKj09PT09PT09PT09PT1QSEFTRSBJPT09PT09PT09PT09PT0qLw0K44CA44CAVGhlIG1vc3Rs
-eSB0YXJnZXRzIGZhaWxlZCB0YXJnZXQgd2l0aCBiZWxvdyBsb2c6DQrjgIDjgIANClvCoMKgwqAg
-MC4wMDAwMDBdIEdhdGluZyBHUE1JIENsb2NrIFNvdXJjZSBiZWZvcmUgSW5pdGlhbGl6YXRpb24N
-ClvCoMKgwqAgMC45MjQ4NzFdwqDCoCBbc2RoY2lfZGV0ZWN0X3NkX3ByZXNlbnRdIHNkIGNhcmQg
-aXMgbm90IHByZXNlbnQgDQpbwqDCoMKgIDEuMDU1NjkxXSBVQkkgZXJyb3I6IHViaV9pb19yZWFk
-OiBlcnJvciAtNzQgKEVDQyBlcnJvcikgd2hpbGUgcmVhZGluZyA0MDk2MCBieXRlcyBmcm9tIFBF
-QiAxMTYzOjkwMTEyLCByZWFkIDQwOTYwIGJ5dGVzDQpbwqDCoMKgIDEuMDY2NzA3XSBVQklGUyBl
-cnJvciAocGlkIDEpOiB1Ymlmc19yZWNvdmVyX2xlYjogY29ycnVwdCBlbXB0eSBzcGFjZSBMRUIg
-OTYzOjg2MDE2LCBjb3JydXB0aW9uIHN0YXJ0cyBhdCAxMDY1DQpbwqDCoMKgIDEuMDc2OTA1XSBV
-QklGUyBlcnJvciAocGlkIDEpOiB1Ymlmc19zY2FubmVkX2NvcnJ1cHRpb246IGNvcnJ1cHRpb24g
-YXQgTEVCIDk2Mzo4NzA4MQ0KW8KgwqDCoCAxLjA4OTcxOF0gVUJJRlMgZXJyb3IgKHBpZCAxKTog
-dWJpZnNfcmVjb3Zlcl9sZWI6IExFQiA5NjMgc2Nhbm5pbmcgZmFpbGVkDQpbwqDCoMKgIDEuMTMy
-NTEwXSBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogVkZTOiBVbmFibGUgdG8gbW91bnQgcm9v
-dCBmcyBvbiB1bmtub3duLWJsb2NrKDAsMCkNClvCoMKgwqAgMS4xNDA4MjFdIFs8ODAwM2M4MzQ+
-XSAodW53aW5kX2JhY2t0cmFjZSsweDAvMHhmOCkgZnJvbSBbPDgwM2YyZjRjPl0gKHBhbmljKzB4
-NzQvMHgxOGMpDQpbwqDCoMKgIDEuMTQ5MDM4XSBbPDgwM2YyZjRjPl0gKHBhbmljKzB4NzQvMHgx
-OGMpIGZyb20gWzw4MDAwOGRiND5dIChtb3VudF9ibG9ja19yb290KzB4MWQ0LzB4Mjk0KQ0KW8Kg
-wqDCoCAxLjE1NzUwOF0gWzw4MDAwOGRiND5dIChtb3VudF9ibG9ja19yb290KzB4MWQ0LzB4Mjk0
-KSBmcm9tIFs8ODAwMDkwNGM+XSAocHJlcGFyZV9uYW1lc3BhY2UrMHg4Yy8weDFiYykNClvCoMKg
-wqAgMS4xNjcwMTNdIFs8ODAwMDkwNGM+XSAocHJlcGFyZV9uYW1lc3BhY2UrMHg4Yy8weDFiYykg
-ZnJvbSBbPDgwMDA4YTgwPl0gKGtlcm5lbF9pbml0KzB4MTM4LzB4MTkwKQ0KDQrjgIDjgIBBZnRl
-ciB3ZSBhbmFseXNpcywgd2UgZm91bmQgdGhhdCB0aGUgcm9vdCBjYXVzZSB3YXMgYmVjYXVzZSB0
-aGUgYml0LWxpcCBoYXBwZW4gYXQgYW4gZW1wdHkgcGFnZSwgc28gd2UgYXBwbHkgYmVsb3cgcGF0
-Y2ggdG8gZml4IHRoaXMgaXNzdWUuDQpodHRwOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcGF0Y2gv
-MzA5NzYzLywNCg0KLyo9PT09PT09PT09PT09UEhBU0UgSUk9PT09PT09PT09PT09PSovDQrCoCDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBBZnRlciB3ZSBhcHBseSB0aGlzIHBhdGNoLCB3ZSBj
-YW4ndCBvYnNlcnZlIGFueSBiaXQtbGlwIEAgZW1wdHkgcGFnZSBsb2cgaXNzdWUsIGJ1dCB0aGUg
-cG93ZXIgY3V0IHRlc3Qgc3RpbGwgZmFpbGVkIHdpdGggYmVsb3cgbG9nOg0KwqAgKG1vc3Qgb2Yg
-dGhlbSBpcyBtYXN0ZXIgbm9kZSByZWNvdmVyIGZhaWxlZCkNCg0KW8KgwqDCoCAwLjAwMDAwMF0g
-R2F0aW5nIEdQTUkgQ2xvY2sgU291cmNlIGJlZm9yZSBJbml0aWFsaXphdGlvbg0KW8KgwqDCoCAw
-LjkyNDg5MV3CoMKgIFtzZGhjaV9kZXRlY3Rfc2RfcHJlc2VudF0gc2QgY2FyZCBpcyBub3QgcHJl
-c2VudCANClvCoMKgwqAgMS4wMzUxMDldIFVCSSBlcnJvcjogdWJpX2lvX3JlYWQ6IGVycm9yIC03
-NCAoRUNDIGVycm9yKSB3aGlsZSByZWFkaW5nIDEyNjk3NiBieXRlcyBmcm9tIFBFQiAxMDk4OjQw
-OTYsIHJlYWQgMTI2OTc2IGJ5dGVzDQpbwqDCoMKgIDEuMDg5MzE1XSBVQkkgZXJyb3I6IHViaV9p
-b19yZWFkOiBlcnJvciAtNzQgKEVDQyBlcnJvcikgd2hpbGUgcmVhZGluZyAxMjY5NzYgYnl0ZXMg
-ZnJvbSBQRUIgMTA5ODo0MDk2LCByZWFkIDEyNjk3NiBieXRlcw0KW8KgwqDCoCAxLjEwMDQzOV0g
-VUJJRlMgZXJyb3IgKHBpZCAxKTogdWJpZnNfcmVjb3Zlcl9tYXN0ZXJfbm9kZTogZmFpbGVkIHRv
-IHJlY292ZXIgbWFzdGVyIG5vZGUNClvCoMKgwqAgMS4xNDI1MzVdIEtlcm5lbCBwYW5pYyAtIG5v
-dCBzeW5jaW5nOiBWRlM6IFVuYWJsZSB0byBtb3VudCByb290IGZzIG9uIHVua25vd24tYmxvY2so
-MCwwKQ0KW8KgwqDCoCAxLjE1MDg0N10gWzw4MDAzYzgzND5dICh1bndpbmRfYmFja3RyYWNlKzB4
-MC8weGY4KSBmcm9tIFs8ODAzZjMxMGM+XSAocGFuaWMrMHg3NC8weDE4YykNClvCoMKgwqAgMS4x
-NTkwNjVdIFs8ODAzZjMxMGM+XSAocGFuaWMrMHg3NC8weDE4YykgZnJvbSBbPDgwMDA4ZTI0Pl0g
-KG1vdW50X2Jsb2NrX3Jvb3QrMHgyNDQvMHgyOTQpDQpbwqDCoMKgIDEuMTY3NTM0XSBbPDgwMDA4
-ZTI0Pl0gKG1vdW50X2Jsb2NrX3Jvb3QrMHgyNDQvMHgyOTQpIGZyb20gWzw4MDAwOTA0Yz5dIChw
-cmVwYXJlX25hbWVzcGFjZSsweDhjLzB4MWJjKQ0KW8KgwqDCoCAxLjE3NzA0Ml0gWzw4MDAwOTA0
-Yz5dIChwcmVwYXJlX25hbWVzcGFjZSsweDhjLzB4MWJjKSBmcm9tIFs8ODAwMDhhODA+XSAoa2Vy
-bmVsX2luaXQrMHgxMzgvMHgxOTApDQpbwqDCoMKgIDEuMTg2MTIyXSBbPDgwMDA4YTgwPl0gKGtl
-cm5lbF9pbml0KzB4MTM4LzB4MTkwKSBmcm9tIFs8ODAwMzZiNjQ+XSAoa2VybmVsX3RocmVhZF9l
-eGl0KzB4MC8weDgpDQoNCm91ciBxdWVzdGlvbjoNCndlIG9ic2VydmUgdGhhdCBiZWZvcmUgdGhl
-IHBhdGNoLCB0aGUgcG93ZXIgY3V0IGZhaWxlZCBhbHdheXMgYmVjYXVzZSB0aGUgYml0LWxpcC4g
-YnV0IGFmdGVyIHdlIGFwcGx5IHRoZSBwYXRjaCwgdGhlIHBvd2VyIGN1dCBmYWlsZWQgYWx3YXlz
-IGNhdXNlIGJ5IG1hc3RlciBub2RlIHJlY292ZXJ5IGZhaWxlZC4gVGhlIHJlc3VsdHMgb2YgdGhl
-IHRlc3RzIGRpZCBub3QgbWVldCBvdXIgZXhwZWN0YXRpb25zLCBhbmQgaXQgaXMgc3RyYW5nZS4N
-CjEsd2hldGhlciB0aGlzIHBhdGNoIGlzIE9LIG9yIE5PVCwgd2hldGhlciB0aGlzIHBhdGNoIGNh
-biBmaXggdGhlIGJpdC1saXAgaXNzdWUgQlVUIGNhdXNlIG1hc3RlciBub2RlIGlzc3VlDQoyLHdo
-eSB0aGUgbWFzdGVyIG5vZGUgcmVjb3ZlcnkgbWVjaGFuaXNtIGNhbuKAmXQgY292ZXIgRUNDIGVy
-cm9yIGNhc2UgZnJvbSB0aGUgZnVuY3Rpb24gdWJpZnNfZ2V0X21hc3Rlcl9ub2RlKCkNCg0KwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFRoYW5rcyB5b3VyIGhlbHAhDQoNCg0K
-DQo=
+In commit 6afaf8a484cb ("UBI: flush wl before clearing update marker") I
+managed to trigger and fix a similar bug. Now here is another version of
+which I assumed it wouldn't matter back then but it turns out UBI has a
+check for it and will error out like this:
+
+|ubi0 warning: validate_vid_hdr: inconsistent used_ebs
+|ubi0 error: validate_vid_hdr: inconsistent VID header at PEB 592
+
+All you need to trigger this is? "ubiupdatevol /dev/ubi0_0 file" + a
+powercut in the middle of the operation.
+ubi_start_update() sets the update-marker and puts all EBs on the erase
+list. After that userland can proceed to write new data while the old EB
+aren't erased completely. A powercut at this point is usually not that
+much of a tragedy. UBI won't give read access to the static volume
+because it has the update marker. It will most likely set the corrupted
+flag because it misses some EBs.
+So we are all good. Unless the size of the image that has been written
+differs from the old image in the magnitude of at least one EB. In that
+case UBI will find two different values for `used_ebs' and refuse to
+attach the image with the error message mentioned above.
+
+So in order not to get in the situation, the patch will ensure that we
+wait until everything is removed before it tries to write any data.
+The alternative would be to detect such a case and remove all EBs at the
+attached time after we processed the volume-table and see the
+update-marker set. The patch looks bigger and I doubt it is worth it
+since usually the write() will wait from time to time for a new EB since
+usually there not that many spare EB that can be used.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ drivers/mtd/ubi/upd.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
+index 0134ba32a057..39712560b4c1 100644
+--- a/drivers/mtd/ubi/upd.c
++++ b/drivers/mtd/ubi/upd.c
+@@ -148,11 +148,11 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
+ 			return err;
+ 	}
+ 
+-	if (bytes == 0) {
+-		err = ubi_wl_flush(ubi, UBI_ALL, UBI_ALL);
+-		if (err)
+-			return err;
++	err = ubi_wl_flush(ubi, UBI_ALL, UBI_ALL);
++	if (err)
++		return err;
+ 
++	if (bytes == 0) {
+ 		err = clear_update_marker(ubi, vol, 0);
+ 		if (err)
+ 			return err;
+-- 
+2.11.0
