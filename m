@@ -1,19 +1,24 @@
-Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
+Received: from 3.mo5.mail-out.ovh.net ([46.105.40.108])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgcSv-00080Z-9t
- for linux-mtd@lists.infradead.org; Wed, 22 Feb 2017 19:20:44 +0000
-Received: by mail-qk0-x243.google.com with SMTP id s186so1824180qkb.1
- for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2017 11:20:20 -0800 (PST)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
- broonie@kernel.org
-Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH v5 2/2] mtd: m25p80: Added pm ops support
-Date: Wed, 22 Feb 2017 14:19:33 -0500
-Message-Id: <1487791173-22159-3-git-send-email-kdasu.kdev@gmail.com>
-In-Reply-To: <1487791173-22159-1-git-send-email-kdasu.kdev@gmail.com>
+ id 1cgdgQ-0002SU-Uf
+ for linux-mtd@lists.infradead.org; Wed, 22 Feb 2017 20:38:45 +0000
+Received: from player773.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id 40F27D97FA
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2017 21:38:09 +0100 (CET)
+Subject: Re: [PATCH v5 2/2] mtd: m25p80: Added pm ops support
+To: Kamal Dasu <kdasu.kdev@gmail.com>, linux-spi@vger.kernel.org,
+ cyrille.pitchen@atmel.com, marex@denx.de, broonie@kernel.org
 References: <1487791173-22159-1-git-send-email-kdasu.kdev@gmail.com>
+ <1487791173-22159-3-git-send-email-kdasu.kdev@gmail.com>
+Cc: bcm-kernel-feedback-list@broadcom.com, f.fainelli@gmail.com,
+ linux-mtd@lists.infradead.org
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <a414f2cc-7e3d-f25d-cfc7-cab1d259a01e@wedev4u.fr>
+Date: Wed, 22 Feb 2017 21:38:00 +0100
+MIME-Version: 1.0
+In-Reply-To: <1487791173-22159-3-git-send-email-kdasu.kdev@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +28,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added power management ops for resume to be able to reinitialize
-spi-nor device and set it to right transfer mode in its pre-suspend
-state. Some SoC implementations might power down the spi-nor flash
-and loose its initial settings on suspend. A resume should restore
-part settings to its original pre-suspend state.
+Hi Kamal,
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/mtd/devices/m25p80.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Le 22/02/2017 à 20:19, Kamal Dasu a écrit :
+> Added power management ops for resume to be able to reinitialize
+> spi-nor device and set it to right transfer mode in its pre-suspend
+> state. Some SoC implementations might power down the spi-nor flash
+> and loose its initial settings on suspend. A resume should restore
+> part settings to its original pre-suspend state.
+> 
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+>  drivers/mtd/devices/m25p80.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index c4df3b1..3ab30b2 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -324,10 +324,21 @@ static int m25p_remove(struct spi_device *spi)
+>  };
+>  MODULE_DEVICE_TABLE(of, m25p_of_table);
+>  
+> +#ifdef CONFIG_PM_SLEEP
+> +static int m25p_resume(struct device *dev)
+> +{
+> +	struct m25p *flash = dev_get_drvdata(dev);
+> +
+> +	return spi_nor_init(&flash->spi_nor);
+> +}
+> +#endif
+> +static SIMPLE_DEV_PM_OPS(m25p_pm_ops, NULL, m25p_resume);
+> +
+>  static struct spi_driver m25p80_driver = {
+>  	.driver = {
+>  		.name	= "m25p80",
+>  		.of_match_table = m25p_of_table,
+> +		.pm     = &m25p_pm_ops,
+>  	},
+>  	.id_table	= m25p_ids,
+>  	.probe	= m25p_probe,
+> 
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index c4df3b1..3ab30b2 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -324,10 +324,21 @@ static int m25p_remove(struct spi_device *spi)
- };
- MODULE_DEVICE_TABLE(of, m25p_of_table);
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int m25p_resume(struct device *dev)
-+{
-+	struct m25p *flash = dev_get_drvdata(dev);
-+
-+	return spi_nor_init(&flash->spi_nor);
-+}
-+#endif
-+static SIMPLE_DEV_PM_OPS(m25p_pm_ops, NULL, m25p_resume);
-+
- static struct spi_driver m25p80_driver = {
- 	.driver = {
- 		.name	= "m25p80",
- 		.of_match_table = m25p_of_table,
-+		.pm     = &m25p_pm_ops,
- 	},
- 	.id_table	= m25p_ids,
- 	.probe	= m25p_probe,
--- 
-1.9.1
+I'm still studying the runtime_pm documentation and source code to
+understand how the power management works in the Linux kernel.
+I didn't finish but for what I have understood until now, I think there
+is an issue.
+
+Here you add suspend/resume handlers on the SPI device. So the SPI
+sub-system is aware of the power state of the SPI flash memory, that
+fine. However what about the MTD sub-system? I don't see any
+synchronization between the SPI device and the MTD device. Hence I guess
+the MTD sub-system is not aware of the actual power state of the
+hardware memory. So I think that mtd->_read() or mtd->_write() handlers
+could be called from some mtd driver when the SPI device has already
+been suspended. For instance, let's image the root file-system is
+mounted from a ubifs stored a SPI NOR flash: what if the kernel tries to
+perform some file access when the SPI device has already been suspended?
+
+The 'struct m25p' instance makes the link between the SPI device the the
+spi_nor->mtd device. Sync could be done using this object.
+
+That why I think this patch is currently incomplete as the
+synchronization of the power states of both the SPI and MTD devices is
+missing.
+
+I think the feature you're trying to implement is interesting but some
+rework seems to needed. I can't tell you more for now since, as I said,
+I'm still lacking strong knowledge about the runtime_pm framework.
+
+Best regards,
+
+Cyrille
