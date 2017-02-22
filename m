@@ -1,24 +1,26 @@
-Received: from 7.mo5.mail-out.ovh.net ([178.32.124.100])
+Received: from mail-yw0-x22d.google.com ([2607:f8b0:4002:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgdyb-0004QJ-Id
- for linux-mtd@lists.infradead.org; Wed, 22 Feb 2017 20:57:33 +0000
-Received: from player773.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id 05F64D9330
- for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2017 21:57:05 +0100 (CET)
-Subject: Re: [PATCH v5 1/2] mtd: spi-nor: Added spi-nor init function
-To: Kamal Dasu <kdasu.kdev@gmail.com>, linux-spi@vger.kernel.org,
- cyrille.pitchen@atmel.com, marex@denx.de, broonie@kernel.org
-References: <1487791173-22159-1-git-send-email-kdasu.kdev@gmail.com>
- <1487791173-22159-2-git-send-email-kdasu.kdev@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com, f.fainelli@gmail.com,
- linux-mtd@lists.infradead.org
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <96a6c1a1-984b-ecdf-047c-4ed6feb7283a@wedev4u.fr>
-Date: Wed, 22 Feb 2017 21:56:57 +0100
+ id 1cgeRZ-00082P-06
+ for linux-mtd@lists.infradead.org; Wed, 22 Feb 2017 21:27:27 +0000
+Received: by mail-yw0-x22d.google.com with SMTP id l19so7982082ywc.2
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2017 13:27:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1487791173-22159-2-git-send-email-kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a414f2cc-7e3d-f25d-cfc7-cab1d259a01e@wedev4u.fr>
+References: <1487791173-22159-1-git-send-email-kdasu.kdev@gmail.com>
+ <1487791173-22159-3-git-send-email-kdasu.kdev@gmail.com>
+ <a414f2cc-7e3d-f25d-cfc7-cab1d259a01e@wedev4u.fr>
+From: Kamal Dasu <kamal.dasu@broadcom.com>
+Date: Wed, 22 Feb 2017 16:26:22 -0500
+Message-ID: <CAKekbes3haHZ1BSwt9_-yxwp9igyxZhGUyaTcLg0_+td5e5K3Q@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] mtd: m25p80: Added pm ops support
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-spi@vger.kernel.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
+ Mark Brown <broonie@kernel.org>, bcm-kernel-feedback-list@broadcom.com,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,232 +30,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kamal,
+On Wed, Feb 22, 2017 at 3:38 PM, Cyrille Pitchen
+<cyrille.pitchen@wedev4u.fr> wrote:
+> Hi Kamal,
+>
+> Le 22/02/2017 =C3=A0 20:19, Kamal Dasu a =C3=A9crit :
+>> Added power management ops for resume to be able to reinitialize
+>> spi-nor device and set it to right transfer mode in its pre-suspend
+>> state. Some SoC implementations might power down the spi-nor flash
+>> and loose its initial settings on suspend. A resume should restore
+>> part settings to its original pre-suspend state.
+>>
+>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+>> ---
+>>  drivers/mtd/devices/m25p80.c | 11 +++++++++++
+>>  1 file changed, 11 insertions(+)
+>>
+>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>> index c4df3b1..3ab30b2 100644
+>> --- a/drivers/mtd/devices/m25p80.c
+>> +++ b/drivers/mtd/devices/m25p80.c
+>> @@ -324,10 +324,21 @@ static int m25p_remove(struct spi_device *spi)
+>>  };
+>>  MODULE_DEVICE_TABLE(of, m25p_of_table);
+>>
+>> +#ifdef CONFIG_PM_SLEEP
+>> +static int m25p_resume(struct device *dev)
+>> +{
+>> +     struct m25p *flash =3D dev_get_drvdata(dev);
+>> +
+>> +     return spi_nor_init(&flash->spi_nor);
+>> +}
+>> +#endif
+>> +static SIMPLE_DEV_PM_OPS(m25p_pm_ops, NULL, m25p_resume);
+>> +
+>>  static struct spi_driver m25p80_driver =3D {
+>>       .driver =3D {
+>>               .name   =3D "m25p80",
+>>               .of_match_table =3D m25p_of_table,
+>> +             .pm     =3D &m25p_pm_ops,
+>>       },
+>>       .id_table       =3D m25p_ids,
+>>       .probe  =3D m25p_probe,
+>>
+>
+> I'm still studying the runtime_pm documentation and source code to
+> understand how the power management works in the Linux kernel.
+> I didn't finish but for what I have understood until now, I think there
+> is an issue.
+>
+> Here you add suspend/resume handlers on the SPI device. So the SPI
+> sub-system is aware of the power state of the SPI flash memory, that
+> fine. However what about the MTD sub-system? I don't see any
+> synchronization between the SPI device and the MTD device. Hence I guess
+> the MTD sub-system is not aware of the actual power state of the
+> hardware memory. So I think that mtd->_read() or mtd->_write() handlers
+> could be called from some mtd driver when the SPI device has already
+> been suspended. For instance, let's image the root file-system is
+> mounted from a ubifs stored a SPI NOR flash: what if the kernel tries to
+> perform some file access when the SPI device has already been suspended?
+>
 
-just few comments, maybe not a full review, sorry!
+However in the current stack based on spi master bus driver and m25p80
+flash device the spi-bcm-qspi does call the spi_master_suspend(),
+which stops the queue so there should not be any activity.
 
-First, about the subject line, I know this a small detail but according
-to Documentation/SubmittingPatches, it should be "mtd: spi-nor: add ..."
+spi-nor may implement something on the lines of the nand_base where it
+simply sets a state and locks the device in a certain state using
+nand_get_device() call.  But does not actually do any thing with the
+mtd structures as far as I can tell.
 
-"""
-Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-to do frotz", as if you are giving orders to the codebase to change
-its behaviour.
-"""
+mtd->_suspend =3D spi_nor_suspend;
+mtd->_resume =3D spi_nor_resume;
+mtd->_reboot =3D spi_nor_shutdown;
 
-Le 22/02/2017 à 20:19, Kamal Dasu a écrit :
-> Refactored spi_nor_scan() code to add spi_nor_init() function that
-> programs the spi-nor flash to:
-> 1) remove flash protection if applicable
-> 2) set read mode to quad mode if configured such
-> 3) set the address width based on the flash size and vendor
-> 
-> spi_nor_scan() now calls spi_nor_init() to setup nor flash.
-> The init function can also be called by flash device driver
-> to reinitialize spi-nor flash.
-> 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 77 ++++++++++++++++++++++++++++---------------
->  include/linux/mtd/spi-nor.h   | 18 +++++++++-
->  2 files changed, 67 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 70e52ff..8b71c11 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1526,6 +1526,44 @@ static int s3an_nor_scan(const struct flash_info *info, struct spi_nor *nor)
->  	return 0;
->  }
->  
-> +int spi_nor_init(struct spi_nor *nor)
-> +{
-> +	int ret = 0;
-> +	const struct flash_info *info = nor->info;
-> +	struct device *dev = nor->dev;
-> +
-> +	/*
-> +	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
-> +	 * with the software protection bits set
-> +	 */
-> +
-> +	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_SST ||
-> +	    info->flags & SPI_NOR_HAS_LOCK) {
-> +		write_enable(nor);
-> +		write_sr(nor, 0);
-> +		spi_nor_wait_till_ready(nor);
-> +	}
-> +
-> +	if (nor->flash_read == SPI_NOR_QUAD) {
-> +		ret = set_quad_mode(nor, info);
-> +		if (ret) {
-> +			dev_err(dev, "quad mode not supported\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
-> +	    info->flags & SPI_NOR_4B_OPCODES)
-> +		spi_nor_set_4byte_opcodes(nor, info);
-> +	else
-> +		set_4byte(nor, info, 1);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(spi_nor_init);
-> +
+I am not sure what spi_nor_suspend() or spi_nor_shutdown() will
+actually do. As mtd layer is just an abstraction in memory and does
+not change state. But spi-nor can be made aware of the states by
+maintaining it in the nor structure. Both spi and m25p80 and the
+controller driver are aware.
 
-When this code was called only from spi_nor_scan(), the nor->mtd object
-has not been registered yet into the MTD sub-system. There was no need
-to lock the 'nor->lock' mutex because spi_nor_scan() can't compete with
-spi_nor_read(), spi_nor_write(), and so on...
+> The 'struct m25p' instance makes the link between the SPI device the the
+> spi_nor->mtd device. Sync could be done using this object.
+>
+> That why I think this patch is currently incomplete as the
+> synchronization of the power states of both the SPI and MTD devices is
+> missing.
+>
+> I think the feature you're trying to implement is interesting but some
+> rework seems to needed. I can't tell you more for now since, as I said,
+> I'm still lacking strong knowledge about the runtime_pm framework.
+>
 
-However, now you plan to call this new spi_nor_init() function from the
-resume() handler in m25p80: the MTD device has already been registered
-so spi_nor_init() can now compete with spi_nor_read() and other
-nor->mtd.<handlers>. I guess locking the mutex might be needed now
-unless we have another mechanism to guarantee nor->mtd._<handlers> could
-never be called by the MTD sub-system when the SPI device is suspended.
-So, as said in my comment of patch 2 of this series, synchronization of
-their power states is needed between the SPI and MTD devices.
+Ideally spi-nor driver should handle the mtd ops I thought fro the framewor=
+k.
 
+> Best regards,
+>
+> Cyrille
 
->  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  {
->  	const struct flash_info *info = NULL;
-> @@ -1571,6 +1609,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  		}
->  	}
->  
-> +	/* update pointer to flash_info in the nor structure */
-> +	nor->info = info;
->  	mutex_init(&nor->lock);
->  
->  	/*
-> @@ -1581,20 +1621,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  	if (info->flags & SPI_S3AN)
->  		nor->flags |=  SNOR_F_READY_XSR_RDY;
->  
-> -	/*
-> -	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
-> -	 * with the software protection bits set
-> -	 */
-> -
-> -	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
-> -	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
-> -	    JEDEC_MFR(info) == SNOR_MFR_SST ||
-> -	    info->flags & SPI_NOR_HAS_LOCK) {
-> -		write_enable(nor);
-> -		write_sr(nor, 0);
-> -		spi_nor_wait_till_ready(nor);
-> -	}
-> -
->  	if (!mtd->name)
->  		mtd->name = dev_name(dev);
->  	mtd->priv = nor;
-> @@ -1669,11 +1695,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  
->  	/* Quad/Dual-read mode takes precedence over fast/normal */
->  	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
-> -		ret = set_quad_mode(nor, info);
-> -		if (ret) {
-> -			dev_err(dev, "quad mode not supported\n");
-> -			return ret;
-> -		}
->  		nor->flash_read = SPI_NOR_QUAD;
->  	} else if (mode == SPI_NOR_DUAL && info->flags & SPI_NOR_DUAL_READ) {
->  		nor->flash_read = SPI_NOR_DUAL;
-> @@ -1702,17 +1723,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  
->  	if (info->addr_width)
->  		nor->addr_width = info->addr_width;
-> -	else if (mtd->size > 0x1000000) {
-> +	else if (mtd->size > 0x1000000)
->  		/* enable 4-byte addressing if the device exceeds 16MiB */
->  		nor->addr_width = 4;
-> -		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
-> -		    info->flags & SPI_NOR_4B_OPCODES)
-> -			spi_nor_set_4byte_opcodes(nor, info);
-> -		else
-> -			set_4byte(nor, info, 1);
-> -	} else {
-> +	else
->  		nor->addr_width = 3;
-> -	}
->  
->  	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
->  		dev_err(dev, "address width is too large: %u\n",
-> @@ -1728,6 +1743,14 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  			return ret;
->  	}
->  
-> +	/*
-> +	 * call init function to send necessary spi-nor read/write config
-> +	 * commands to nor flash based on above nor settings
-> +	 */
-> +	ret = spi_nor_init(nor);
-> +	if (ret)
-> +		return ret;
-> +
->  	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
->  			(long long)mtd->size >> 10);
->  
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index f2a7180..29a8283 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -143,6 +143,8 @@ enum spi_nor_option_flags {
->  	SNOR_F_READY_XSR_RDY	= BIT(4),
->  };
->  
-> +struct flash_info;
-> +
->  /**
->   * struct spi_nor - Structure for defining a the SPI NOR layer
->   * @mtd:		point to a mtd_info structure
-> @@ -174,6 +176,7 @@ enum spi_nor_option_flags {
->   * @flash_is_locked:	[FLASH-SPECIFIC] check if a region of the SPI NOR is
->   *			completely locked
->   * @priv:		the private data
-> + * @info:		points to the flash_info structure
->   */
->  struct spi_nor {
->  	struct mtd_info		mtd;
-> @@ -206,6 +209,7 @@ struct spi_nor {
->  	int (*flash_is_locked)(struct spi_nor *nor, loff_t ofs, uint64_t len);
->  
->  	void *priv;
-> +	const struct flash_info *info;
->  };
->  
->  static inline void spi_nor_set_flash_node(struct spi_nor *nor,
-> @@ -220,12 +224,24 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
->  }
->  
->  /**
-> + * spi_nor_init() - initialize SPI NOR
-> + * @nor:	the spi_nor structure
-> + *
-> + * The drivers uses this function to initialize the SPI NOR flash device to
-> + * settings in spi_nor structure. The functions sets read mode, address width
-> + * and removes protection on the flash device based on those settings.
-> + *
-> + * Return: 0 for success, others for failure.
-> + */
-> +int spi_nor_init(struct spi_nor *nor);
-> +
-> +/**
->   * spi_nor_scan() - scan the SPI NOR
->   * @nor:	the spi_nor structure
->   * @name:	the chip type name
->   * @mode:	the read mode supported by the driver
->   *
-> - * The drivers can use this fuction to scan the SPI NOR.
-> + * The drivers can use this function to scan the SPI NOR.
->   * In the scanning, it will try to get all the necessary information to
->   * fill the mtd_info{} and the spi_nor{}.
->   *
-> 
+Thanks
+Kamal
