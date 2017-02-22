@@ -1,16 +1,17 @@
-Received: from galois.linutronix.de ([2a01:7a0:2:106d:700::1])
+Received: from mail-qt0-x243.google.com ([2607:f8b0:400d:c0d::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgZZz-0003mp-1s
- for linux-mtd@lists.infradead.org; Wed, 22 Feb 2017 16:15:49 +0000
-Date: Wed, 22 Feb 2017 17:15:21 +0100
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH] ubi/upd: always flush after prepared for an update
-Message-ID: <20170222161521.4foobhoyelnrad7h@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+ id 1cgcSJ-0006fW-N5
+ for linux-mtd@lists.infradead.org; Wed, 22 Feb 2017 19:20:05 +0000
+Received: by mail-qt0-x243.google.com with SMTP id b16so1642880qte.2
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2017 11:19:42 -0800 (PST)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-spi@vger.kernel.org, cyrille.pitchen@atmel.com, marex@denx.de,
+ broonie@kernel.org
+Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH v5 0/2] Added support for spi-nor device pm in m25p80
+Date: Wed, 22 Feb 2017 14:19:31 -0500
+Message-Id: <1487791173-22159-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In commit 6afaf8a484cb ("UBI: flush wl before clearing update marker") I
-managed to trigger and fix a similar bug. Now here is another version of
-which I assumed it wouldn't matter back then but it turns out UBI has a
-check for it and will error out like this:
+Changes since v4 based on review comments:
 
-|ubi0 warning: validate_vid_hdr: inconsistent used_ebs
-|ubi0 error: validate_vid_hdr: inconsistent VID header at PEB 592
+spi-nor.c
+- Added comments to make it clear that spi_nor_init() sends all spi-nor
+  flash configuration commands based on nor stucture settings for read
+  in the refactored code
 
-All you need to trigger this is? "ubiupdatevol /dev/ubi0_0 file" + a
-powercut in the middle of the operation.
-ubi_start_update() sets the update-marker and puts all EBs on the erase
-list. After that userland can proceed to write new data while the old EB
-aren't erased completely. A powercut at this point is usually not that
-much of a tragedy. UBI won't give read access to the static volume
-because it has the update marker. It will most likely set the corrupted
-flag because it misses some EBs.
-So we are all good. Unless the size of the image that has been written
-differs from the old image in the magnitude of at least one EB. In that
-case UBI will find two different values for `used_ebs' and refuse to
-attach the image with the error message mentioned above.
+m25p80.c:
+- fix typos
+- Updated description
 
-So in order not to get in the situation, the patch will ensure that we
-wait until everything is removed before it tries to write any data.
-The alternative would be to detect such a case and remove all EBs at the
-attached time after we processed the volume-table and see the
-update-marker set. The patch looks bigger and I doubt it is worth it
-since usually the write() will wait from time to time for a new EB since
-usually there not that many spare EB that can be used.
+The V4 changes below implements power management support in m25p80 driver.
+m25p80 pm resume() calls newly a implemented spi_nor_init() function
+that sets up the spi-nor flash to its pre-suspend state. This is needed on
+platfroms that turn off power to the spi-nor flash on pm suspend.
+The code has been rebased to git://github.com/spi-nor/linux.git next
+branch.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/mtd/ubi/upd.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Kamal Dasu (2):
+  mtd: spi-nor: Added spi-nor init function
+  mtd: m25p80: Added pm ops support
 
-diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
-index 0134ba32a057..39712560b4c1 100644
---- a/drivers/mtd/ubi/upd.c
-+++ b/drivers/mtd/ubi/upd.c
-@@ -148,11 +148,11 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
- 			return err;
- 	}
- 
--	if (bytes == 0) {
--		err = ubi_wl_flush(ubi, UBI_ALL, UBI_ALL);
--		if (err)
--			return err;
-+	err = ubi_wl_flush(ubi, UBI_ALL, UBI_ALL);
-+	if (err)
-+		return err;
- 
-+	if (bytes == 0) {
- 		err = clear_update_marker(ubi, vol, 0);
- 		if (err)
- 			return err;
+ drivers/mtd/devices/m25p80.c  | 11 +++++++
+ drivers/mtd/spi-nor/spi-nor.c | 77 ++++++++++++++++++++++++++++---------------
+ include/linux/mtd/spi-nor.h   | 18 +++++++++-
+ 3 files changed, 78 insertions(+), 28 deletions(-)
+
 -- 
-2.11.0
+1.9.1
