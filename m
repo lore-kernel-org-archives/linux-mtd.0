@@ -1,17 +1,25 @@
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cghMU-0001LM-Fu
- for linux-mtd@lists.infradead.org; Thu, 23 Feb 2017 00:34:24 +0000
-From: Colin King <colin.king@canonical.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH] jffs2: fix spelling mistake: "requestied" -> "requested"
-Date: Thu, 23 Feb 2017 00:34:00 +0000
-Message-Id: <20170223003400.9617-1-colin.king@canonical.com>
+ id 1cgomY-0002Lv-65
+ for linux-mtd@lists.infradead.org; Thu, 23 Feb 2017 08:29:49 +0000
+Received: from mail-yw0-f170.google.com (mail-yw0-f170.google.com
+ [209.85.161.170]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id v1N8T4O1007439
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2017 17:29:05 +0900
+Received: by mail-yw0-f170.google.com with SMTP id q127so13450050ywg.0
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2017 00:29:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1487004724-2806-1-git-send-email-der.herr@hofr.at>
+References: <1487004724-2806-1-git-send-email-der.herr@hofr.at>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Thu, 23 Feb 2017 17:29:03 +0900
+Message-ID: <CAK7LNATjV39QfXJH=pfXnMF-vHmJHhSu+RyFC7BuBWqcpqZWDA@mail.gmail.com>
+Subject: Re: [PATCH RFC] iopoll: allow for poll_timeout to back-off
+To: Nicholas Mc Guire <der.herr@hofr.at>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ linux-clk <linux-clk@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +29,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Nicholas,
 
-trivial fix to spelling mistake in JFFS2_ERROR message
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- fs/jffs2/readinode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+2017-02-14 1:52 GMT+09:00 Nicholas Mc Guire <der.herr@hofr.at>:
 
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 06a71db..40f3fd4 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -1366,7 +1366,7 @@ int jffs2_do_read_inode(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 		jffs2_add_ino_cache(c, f->inocache);
- 	}
- 	if (!f->inocache) {
--		JFFS2_ERROR("requestied to read an nonexistent ino %u\n", ino);
-+		JFFS2_ERROR("requested to read an nonexistent ino %u\n", ino);
- 		return -ENOENT;
- 	}
- 
+>
+> One case in /drivers/mmc/host/sdhci-cadence.c has a timeout_us of 1 and
+> sleep_us of 0 which might actually be a bug as it means that the poll loop
+> would do a single read OP in many cases (this is non-atomic context) so it
+> would have to be robust for a single read, thus the poll_timeout might not
+> be suitable - not sure though - but thats a different problem.
+
+Sorry, I could not understand why you thought sdhci-cadence.c seemed a bug.
+
+The SDHCI_CDNS_HRS06_TUNE_UP is auto-cleared by the hardware.
+This will normally be done really soon (within 1us),
+but it may not be cleared if the hardware is in trouble.
+It is the intention of the code:
+
+    readl_poll_timeout(reg, tmp, !(tmp & SDHCI_CDNS_HRS06_TUNE_UP),
+                       0, 1);
+
+
+
+
+>  which results in min,max values for the initial iterations of:
+>       min  max
+>       0    1
+>       0    2
+>       1    4
+>       2    8
+>       4    16
+>       8    32
+>       16   64
+>       32   128
+>       ...
+
+
+I notice you were sending this to me, but
+please notice I am not responsible for this file
+(include/linux/iopoll.h) in any way.
+
+Please take my comments for grain of salt:
+
+With this patch, the sleep range is doubled in each iteration.
+Let's say this routine is called with delay_us=1, timeout_us=50,
+then it slept 16 us, then 32 us.
+If it sleeps 64 us in the next iteration,
+it ends up with sleeping 112 us (=16 + 32 + 64) in total
+where we know waiting 50 us is enough.
+So, the sleep range granularity may get bigger than
+users' intention.
+
+Probably, waiting too long is not a problem in most cases.
+If so, what is the meaning of the argument "sleep_us" after all?
+
+
+
+
 -- 
-2.10.2
+Best Regards
+Masahiro Yamada
