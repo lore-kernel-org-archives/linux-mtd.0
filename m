@@ -1,64 +1,44 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-it0-x232.google.com ([2607:f8b0:4001:c0b::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgou0-0007VZ-IR
- for linux-mtd@lists.infradead.org; Thu, 23 Feb 2017 08:37:30 +0000
-Received: by mail-pg0-x241.google.com with SMTP id 5so3806643pgj.0
- for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2017 00:37:07 -0800 (PST)
-Date: Thu, 23 Feb 2017 00:37:03 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Logan Gunthorpe <logang@deltatee.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dan Williams <dan.j.williams@intel.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
- Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
- Marcel Selhorst <tpmdd@selhorst.net>,
- Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
- Sean Hefty <sean.hefty@intel.com>,
- Hal Rosenstock <hal.rosenstock@gmail.com>,
- Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
- Parav Pandit <pandit.parav@gmail.com>, Leon Romanovsky <leon@kernel.org>,
- Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
- Hans Verkuil <hans.verkuil@cisco.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Matt Porter <mporter@kernel.crashing.org>,
- Alexandre Bounine <alexandre.bounine@idt.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
- Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Boaz Harrosh <ooo@electrozaur.com>, Benny Halevy <bhalevy@primarydata.com>,
- "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Stephen Bates <stephen.bates@microsemi.com>,
- Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
- osd-dev@open-osd.org, linux-scsi@vger.kernel.org,
- rtc-linux@googlegroups.com, linux-mtd@lists.infradead.org,
- linux-media@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-rdma@vger.kernel.org, tpmdd-devel@lists.sourceforge.net,
- linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
- linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/14] input: utilize new device_add_cdev helper function
-Message-ID: <20170223083703.GF18639@dtor-ws>
-References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
- <1487653253-11497-4-git-send-email-logang@deltatee.com>
+ id 1cgqBU-0000YL-Uj
+ for linux-mtd@lists.infradead.org; Thu, 23 Feb 2017 09:59:38 +0000
+Received: by mail-it0-x232.google.com with SMTP id 203so10466659ith.0
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2017 01:59:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1487653253-11497-4-git-send-email-logang@deltatee.com>
+In-Reply-To: <f19fea79c2616455f5f08070923428cc@crapouillou.net>
+References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
+ <20170125185207.23902-1-paul@crapouillou.net>
+ <20170125185207.23902-2-paul@crapouillou.net>
+ <20170130203617.hpljtcmzava3rq2n@rob-hp-laptop>
+ <12dc62a7255bd453ff4e5e89f93ebc58@mail.crapouillou.net>
+ <CACRpkdbAgy4sh6NT5DdQD6EQtOZEwevohEA6OGRcVz98yqS52Q@mail.gmail.com>
+ <fd3c507484a9ee34a08c9f92e60624db@mail.crapouillou.net>
+ <CACRpkdbAA33FFrMgx-eZPmpBBfQ_hF+=dSu0hANVthdbadicDg@mail.gmail.com>
+ <f19fea79c2616455f5f08070923428cc@crapouillou.net>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 23 Feb 2017 10:59:14 +0100
+Message-ID: <CACRpkdYiA157afJW2hnJzRgWOT02pCuU5rPCdHC-G5qb-FrxQA@mail.gmail.com>
+Subject: Re: [PATCH v3 01/14] Documentation: dt/bindings: Document
+ pinctrl-ingenic
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Rob Herring <robh@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Maarten ter Huurne <maarten@treewalker.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux MIPS <linux-mips@linux-mips.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+ James Hogan <james.hogan@imgtec.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -68,65 +48,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 20, 2017 at 10:00:42PM -0700, Logan Gunthorpe wrote:
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> ---
+On Tue, Feb 21, 2017 at 12:20 PM, Paul Cercueil <paul@crapouillou.net> wrot=
+e:
+> Le 2017-02-20 14:56, Linus Walleij a =C3=A9crit :
+>>
+>> On Thu, Feb 9, 2017 at 6:28 PM, Paul Cercueil <paul@crapouillou.net>
+>> wrote:
+>>
+>>> I was thinking that instead of having one pinctrl-ingenic instance
+>>> covering
+>>> 0x600 of register space, and 6 instances of gpio-ingenic having 0x100
+>>> each,
+>>> I could just have 6 instances of pinctrl-ingenic, each one with an
+>>> instance
+>>> of gpio-ingenic declared as a sub-node, each handling just 0x100 of
+>>> memory
+>>> space.
+>>
+>>
+>> My head is spinning,  but I think I get it. What is wrong with the
+>> solution
+>> I proposed with one pin control instance covering the whole 0x600 and wi=
+th
+>> 6
+>> subnodes of GPIO?
+>>
+>> The GPIO nodes do not even have to have an address range associated with
+>> them you know, that can be distributed out with regmap code accessing
+>> the parent regmap.
+>
+>
+> OK, but then each GPIO chip 'X' still need to know its offset in the
+> register
+> area, which is (pinctrl_base + X * 0x100).
+> What's the best way to pass that info to the driver? (I assume it's not w=
+ith
+> a custom DT binding...).
 
-Please add some more verbage, otherwise
+I do not really understand what driver you are referring to.
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+If the pin controller node is overarching and spawning children for
+the gpiochips, you use the design pattern from MFD to pass data
+from parents to children, e.g.:
 
+#include <linux/regmap.h>
 
->  drivers/input/evdev.c    | 3 +--
->  drivers/input/joydev.c   | 3 +--
->  drivers/input/mousedev.c | 3 +--
->  3 files changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
-> index e9ae3d5..a3407ea 100644
-> --- a/drivers/input/evdev.c
-> +++ b/drivers/input/evdev.c
-> @@ -1416,8 +1416,7 @@ static int evdev_connect(struct input_handler *handler, struct input_dev *dev,
->  		goto err_free_evdev;
->  
->  	cdev_init(&evdev->cdev, &evdev_fops);
-> -	evdev->cdev.kobj.parent = &evdev->dev.kobj;
-> -	error = cdev_add(&evdev->cdev, evdev->dev.devt, 1);
-> +	error = device_add_cdev(&evdev->dev, &evdev->cdev);
->  	if (error)
->  		goto err_unregister_handle;
->  
-> diff --git a/drivers/input/joydev.c b/drivers/input/joydev.c
-> index abd18f3..012e06f 100644
-> --- a/drivers/input/joydev.c
-> +++ b/drivers/input/joydev.c
-> @@ -905,8 +905,7 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
->  		goto err_free_joydev;
->  
->  	cdev_init(&joydev->cdev, &joydev_fops);
-> -	joydev->cdev.kobj.parent = &joydev->dev.kobj;
-> -	error = cdev_add(&joydev->cdev, joydev->dev.devt, 1);
-> +	error = device_add_cdev(&joydev->dev, &joydev->cdev);
->  	if (error)
->  		goto err_unregister_handle;
->  
-> diff --git a/drivers/input/mousedev.c b/drivers/input/mousedev.c
-> index b604564..efd8666 100644
-> --- a/drivers/input/mousedev.c
-> +++ b/drivers/input/mousedev.c
-> @@ -901,8 +901,7 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
->  	}
->  
->  	cdev_init(&mousedev->cdev, &mousedev_fops);
-> -	mousedev->cdev.kobj.parent = &mousedev->dev.kobj;
-> -	error = cdev_add(&mousedev->cdev, mousedev->dev.devt, 1);
-> +	error = device_add_cdev(&mousedev->dev, &mousedev->cdev);
->  	if (error)
->  		goto err_unregister_handle;
->  
-> -- 
-> 2.1.4
-> 
+pinctrl driver:
+     struct regmap_config mapconf =3D {
+                .reg_bits =3D 32,
+                .val_bits =3D 32,
+                .reg_stride =3D 4,
+     };
+    struct regmap *map;
 
--- 
-Dmitry
+    map =3D regmap_init_mmio(dev, base, &mapconf);
+    if (IS_ERR(map))
+          ....
+    dev_set_drvdata(dev, map);
+    of_populate_children(dev,)..
+    (can also use platform_device_add_data() or "simple-bus" etc)
+
+gpio subdrivers:
+     struct regmap *map;
+
+     map =3D dev_get_drvdata(dev->parent);
+
+There are examples of drivers passing more complex things to
+their children than a regmap, just put some struct in a <linux/*/*.h>
+file and pass it with drvdata as per above.
+
+PS i2c_set_drvdata(), platform_set_drvdata() are just aliases
+for dev_set_drvdata().
+
+Yours,
+Linus Walleij
