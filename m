@@ -1,25 +1,64 @@
-Received: from conssluserg-01.nifty.com ([210.131.2.80])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgomY-0002Lv-65
- for linux-mtd@lists.infradead.org; Thu, 23 Feb 2017 08:29:49 +0000
-Received: from mail-yw0-f170.google.com (mail-yw0-f170.google.com
- [209.85.161.170]) (authenticated)
- by conssluserg-01.nifty.com with ESMTP id v1N8T4O1007439
- for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2017 17:29:05 +0900
-Received: by mail-yw0-f170.google.com with SMTP id q127so13450050ywg.0
- for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2017 00:29:05 -0800 (PST)
+ id 1cgou0-0007VZ-IR
+ for linux-mtd@lists.infradead.org; Thu, 23 Feb 2017 08:37:30 +0000
+Received: by mail-pg0-x241.google.com with SMTP id 5so3806643pgj.0
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2017 00:37:07 -0800 (PST)
+Date: Thu, 23 Feb 2017 00:37:03 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Logan Gunthorpe <logang@deltatee.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>, Leon Romanovsky <leon@kernel.org>,
+ Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>, Benny Halevy <bhalevy@primarydata.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+ osd-dev@open-osd.org, linux-scsi@vger.kernel.org,
+ rtc-linux@googlegroups.com, linux-mtd@lists.infradead.org,
+ linux-media@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-rdma@vger.kernel.org, tpmdd-devel@lists.sourceforge.net,
+ linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/14] input: utilize new device_add_cdev helper function
+Message-ID: <20170223083703.GF18639@dtor-ws>
+References: <1487653253-11497-1-git-send-email-logang@deltatee.com>
+ <1487653253-11497-4-git-send-email-logang@deltatee.com>
 MIME-Version: 1.0
-In-Reply-To: <1487004724-2806-1-git-send-email-der.herr@hofr.at>
-References: <1487004724-2806-1-git-send-email-der.herr@hofr.at>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 23 Feb 2017 17:29:03 +0900
-Message-ID: <CAK7LNATjV39QfXJH=pfXnMF-vHmJHhSu+RyFC7BuBWqcpqZWDA@mail.gmail.com>
-Subject: Re: [PATCH RFC] iopoll: allow for poll_timeout to back-off
-To: Nicholas Mc Guire <der.herr@hofr.at>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- linux-clk <linux-clk@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1487653253-11497-4-git-send-email-logang@deltatee.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,65 +68,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nicholas,
+On Mon, Feb 20, 2017 at 10:00:42PM -0700, Logan Gunthorpe wrote:
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
+
+Please add some more verbage, otherwise
+
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
 
-2017-02-14 1:52 GMT+09:00 Nicholas Mc Guire <der.herr@hofr.at>:
-
->
-> One case in /drivers/mmc/host/sdhci-cadence.c has a timeout_us of 1 and
-> sleep_us of 0 which might actually be a bug as it means that the poll loop
-> would do a single read OP in many cases (this is non-atomic context) so it
-> would have to be robust for a single read, thus the poll_timeout might not
-> be suitable - not sure though - but thats a different problem.
-
-Sorry, I could not understand why you thought sdhci-cadence.c seemed a bug.
-
-The SDHCI_CDNS_HRS06_TUNE_UP is auto-cleared by the hardware.
-This will normally be done really soon (within 1us),
-but it may not be cleared if the hardware is in trouble.
-It is the intention of the code:
-
-    readl_poll_timeout(reg, tmp, !(tmp & SDHCI_CDNS_HRS06_TUNE_UP),
-                       0, 1);
-
-
-
-
->  which results in min,max values for the initial iterations of:
->       min  max
->       0    1
->       0    2
->       1    4
->       2    8
->       4    16
->       8    32
->       16   64
->       32   128
->       ...
-
-
-I notice you were sending this to me, but
-please notice I am not responsible for this file
-(include/linux/iopoll.h) in any way.
-
-Please take my comments for grain of salt:
-
-With this patch, the sleep range is doubled in each iteration.
-Let's say this routine is called with delay_us=1, timeout_us=50,
-then it slept 16 us, then 32 us.
-If it sleeps 64 us in the next iteration,
-it ends up with sleeping 112 us (=16 + 32 + 64) in total
-where we know waiting 50 us is enough.
-So, the sleep range granularity may get bigger than
-users' intention.
-
-Probably, waiting too long is not a problem in most cases.
-If so, what is the meaning of the argument "sleep_us" after all?
-
-
-
+>  drivers/input/evdev.c    | 3 +--
+>  drivers/input/joydev.c   | 3 +--
+>  drivers/input/mousedev.c | 3 +--
+>  3 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
+> index e9ae3d5..a3407ea 100644
+> --- a/drivers/input/evdev.c
+> +++ b/drivers/input/evdev.c
+> @@ -1416,8 +1416,7 @@ static int evdev_connect(struct input_handler *handler, struct input_dev *dev,
+>  		goto err_free_evdev;
+>  
+>  	cdev_init(&evdev->cdev, &evdev_fops);
+> -	evdev->cdev.kobj.parent = &evdev->dev.kobj;
+> -	error = cdev_add(&evdev->cdev, evdev->dev.devt, 1);
+> +	error = device_add_cdev(&evdev->dev, &evdev->cdev);
+>  	if (error)
+>  		goto err_unregister_handle;
+>  
+> diff --git a/drivers/input/joydev.c b/drivers/input/joydev.c
+> index abd18f3..012e06f 100644
+> --- a/drivers/input/joydev.c
+> +++ b/drivers/input/joydev.c
+> @@ -905,8 +905,7 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
+>  		goto err_free_joydev;
+>  
+>  	cdev_init(&joydev->cdev, &joydev_fops);
+> -	joydev->cdev.kobj.parent = &joydev->dev.kobj;
+> -	error = cdev_add(&joydev->cdev, joydev->dev.devt, 1);
+> +	error = device_add_cdev(&joydev->dev, &joydev->cdev);
+>  	if (error)
+>  		goto err_unregister_handle;
+>  
+> diff --git a/drivers/input/mousedev.c b/drivers/input/mousedev.c
+> index b604564..efd8666 100644
+> --- a/drivers/input/mousedev.c
+> +++ b/drivers/input/mousedev.c
+> @@ -901,8 +901,7 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
+>  	}
+>  
+>  	cdev_init(&mousedev->cdev, &mousedev_fops);
+> -	mousedev->cdev.kobj.parent = &mousedev->dev.kobj;
+> -	error = cdev_add(&mousedev->cdev, mousedev->dev.devt, 1);
+> +	error = device_add_cdev(&mousedev->dev, &mousedev->cdev);
+>  	if (error)
+>  		goto err_unregister_handle;
+>  
+> -- 
+> 2.1.4
+> 
 
 -- 
-Best Regards
-Masahiro Yamada
+Dmitry
