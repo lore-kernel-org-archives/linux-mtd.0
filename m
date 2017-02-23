@@ -1,44 +1,21 @@
-Received: from mail-it0-x232.google.com ([2607:f8b0:4001:c0b::232])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgqBU-0000YL-Uj
- for linux-mtd@lists.infradead.org; Thu, 23 Feb 2017 09:59:38 +0000
-Received: by mail-it0-x232.google.com with SMTP id 203so10466659ith.0
- for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2017 01:59:16 -0800 (PST)
+Received: from [92.243.34.74] (helo=mail.osadl.at)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cgqIO-000495-RP
+ for linux-mtd@lists.infradead.org; Thu, 23 Feb 2017 10:06:48 +0000
+Date: Thu, 23 Feb 2017 10:06:04 +0000
+From: Nicholas Mc Guire <der.herr@hofr.at>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ linux-clk <linux-clk@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] iopoll: allow for poll_timeout to back-off
+Message-ID: <20170223100604.GC6457@osadl.at>
+References: <1487004724-2806-1-git-send-email-der.herr@hofr.at>
+ <CAK7LNATjV39QfXJH=pfXnMF-vHmJHhSu+RyFC7BuBWqcpqZWDA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f19fea79c2616455f5f08070923428cc@crapouillou.net>
-References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
- <20170125185207.23902-1-paul@crapouillou.net>
- <20170125185207.23902-2-paul@crapouillou.net>
- <20170130203617.hpljtcmzava3rq2n@rob-hp-laptop>
- <12dc62a7255bd453ff4e5e89f93ebc58@mail.crapouillou.net>
- <CACRpkdbAgy4sh6NT5DdQD6EQtOZEwevohEA6OGRcVz98yqS52Q@mail.gmail.com>
- <fd3c507484a9ee34a08c9f92e60624db@mail.crapouillou.net>
- <CACRpkdbAA33FFrMgx-eZPmpBBfQ_hF+=dSu0hANVthdbadicDg@mail.gmail.com>
- <f19fea79c2616455f5f08070923428cc@crapouillou.net>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 23 Feb 2017 10:59:14 +0100
-Message-ID: <CACRpkdYiA157afJW2hnJzRgWOT02pCuU5rPCdHC-G5qb-FrxQA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/14] Documentation: dt/bindings: Document
- pinctrl-ingenic
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Rob Herring <robh@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
- "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux MIPS <linux-mips@linux-mips.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- James Hogan <james.hogan@imgtec.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNATjV39QfXJH=pfXnMF-vHmJHhSu+RyFC7BuBWqcpqZWDA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,77 +25,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 21, 2017 at 12:20 PM, Paul Cercueil <paul@crapouillou.net> wrot=
-e:
-> Le 2017-02-20 14:56, Linus Walleij a =C3=A9crit :
->>
->> On Thu, Feb 9, 2017 at 6:28 PM, Paul Cercueil <paul@crapouillou.net>
->> wrote:
->>
->>> I was thinking that instead of having one pinctrl-ingenic instance
->>> covering
->>> 0x600 of register space, and 6 instances of gpio-ingenic having 0x100
->>> each,
->>> I could just have 6 instances of pinctrl-ingenic, each one with an
->>> instance
->>> of gpio-ingenic declared as a sub-node, each handling just 0x100 of
->>> memory
->>> space.
->>
->>
->> My head is spinning,  but I think I get it. What is wrong with the
->> solution
->> I proposed with one pin control instance covering the whole 0x600 and wi=
-th
->> 6
->> subnodes of GPIO?
->>
->> The GPIO nodes do not even have to have an address range associated with
->> them you know, that can be distributed out with regmap code accessing
->> the parent regmap.
+On Thu, Feb 23, 2017 at 05:29:03PM +0900, Masahiro Yamada wrote:
+> Hi Nicholas,
+> 
+> 
+> 2017-02-14 1:52 GMT+09:00 Nicholas Mc Guire <der.herr@hofr.at>:
+> 
+> >
+> > One case in /drivers/mmc/host/sdhci-cadence.c has a timeout_us of 1 and
+> > sleep_us of 0 which might actually be a bug as it means that the poll loop
+> > would do a single read OP in many cases (this is non-atomic context) so it
+> > would have to be robust for a single read, thus the poll_timeout might not
+> > be suitable - not sure though - but thats a different problem.
+> 
+> Sorry, I could not understand why you thought sdhci-cadence.c seemed a bug.
+> 
+> The SDHCI_CDNS_HRS06_TUNE_UP is auto-cleared by the hardware.
+> This will normally be done really soon (within 1us),
+> but it may not be cleared if the hardware is in trouble.
+> It is the intention of the code:
+> 
+>     readl_poll_timeout(reg, tmp, !(tmp & SDHCI_CDNS_HRS06_TUNE_UP),
+>                        0, 1);
 >
->
-> OK, but then each GPIO chip 'X' still need to know its offset in the
-> register
-> area, which is (pinctrl_base + X * 0x100).
-> What's the best way to pass that info to the driver? (I assume it's not w=
-ith
-> a custom DT binding...).
 
-I do not really understand what driver you are referring to.
+Im not sure my selfe but as this would need to be robust for a single read try
+to be reliable I did not see the point in using a pool loop of 1 microsecond
+on x86 I tried this and timeout_us of 1 will resulted in a single
+read in more than 10% on the idle system and in almost 100% doing
+a single read on loaded systems. So if the poll loop was introduced with
+the assumption that just reading once imediately could miss the ritical
+event with resonable probability then timeout_us==1 does not change that.
 
-If the pin controller node is overarching and spawning children for
-the gpiochips, you use the design pattern from MFD to pass data
-from parents to children, e.g.:
+ 
+> 
+> 
+> 
+> >  which results in min,max values for the initial iterations of:
+> >       min  max
+> >       0    1
+> >       0    2
+> >       1    4
+> >       2    8
+> >       4    16
+> >       8    32
+> >       16   64
+> >       32   128
+> >       ...
+> 
+> 
+> I notice you were sending this to me, but
+> please notice I am not responsible for this file
+> (include/linux/iopoll.h) in any way.
 
-#include <linux/regmap.h>
+I included you as your it showed up with:
+scripts/get_maintainer.pl -f include/linux/iopoll.h
 
-pinctrl driver:
-     struct regmap_config mapconf =3D {
-                .reg_bits =3D 32,
-                .val_bits =3D 32,
-                .reg_stride =3D 4,
-     };
-    struct regmap *map;
+> 
+> Please take my comments for grain of salt:
+> 
+> With this patch, the sleep range is doubled in each iteration.
+> Let's say this routine is called with delay_us=1, timeout_us=50,
+> then it slept 16 us, then 32 us.
+> If it sleeps 64 us in the next iteration,
+> it ends up with sleeping 112 us (=16 + 32 + 64) in total
+> where we know waiting 50 us is enough.
 
-    map =3D regmap_init_mmio(dev, base, &mapconf);
-    if (IS_ERR(map))
-          ....
-    dev_set_drvdata(dev, map);
-    of_populate_children(dev,)..
-    (can also use platform_device_add_data() or "simple-bus" etc)
+that is right - but the assumption of poll_timeout is that the
+timeout case would actually be rare and if you look at the actual
+timings that one has of poll_timout routines (that are based on
+usleep_range()) on loaded systems they overrun by 100s of microseconds
+very frequnently. 
 
-gpio subdrivers:
-     struct regmap *map;
+But you are right that in the 50us case this is not ideal - the 
+focus I had was on the very long timeouts that in some cases were set
+to up to 5 seconds with tight-loops (or close to timght-loops)
 
-     map =3D dev_get_drvdata(dev->parent);
+> So, the sleep range granularity may get bigger than
+> users' intention.
+> 
+> Probably, waiting too long is not a problem in most cases.
+> If so, what is the meaning of the argument "sleep_us" after all?
 
-There are examples of drivers passing more complex things to
-their children than a regmap, just put some struct in a <linux/*/*.h>
-file and pass it with drvdata as per above.
+The problem really is that on idle ssytems the sleep_us argument
+works ok and the overruns are not that dramatic - but on loaded
+systems the sleep_us routlinely overruns significantly
 
-PS i2c_set_drvdata(), platform_set_drvdata() are just aliases
-for dev_set_drvdata().
+usleep_range() 5000 samples - idle system
+ 100,200         200,200         190,200
+ Min.   :188481  Min.   :201917  Min.   :197793
+ 1st Qu.:207062  1st Qu.:207057  1st Qu.:207051
+ Median :207139  Median :207133  Median :207133
+ Mean   :207254  Mean   :207233  Mean   :207244
+ 3rd Qu.:207341  erd Qu.:207262  3rd Qu.:207610
+ Max.   :225340  Max.   :214222  Max.   :214885
 
-Yours,
-Linus Walleij
+CONFIG_PREEMPT_VOLUNTARY=y
+usleep_range() 5000 samples - load ~ 8
+ 100,200         190,200          200,200
+ Min.   : 107812 Min.   :  203307 Min.   :  203432
+ 1st Qu.: 558221 1st Qu.:  557490 1st Qu.:  510356
+ Median :1123425 Median : 1121939 Median : 1123316
+ Mean   :1103718 Mean   : 1100965 Mean   : 1100542
+ 3rd Qu.:1541986 3rd Qu.: 1531478 3rd Qu.: 1517414
+ Max.   :8979183 Max.   :13765789 Max.   :12476136
+
+CONFIG_PREEMPT=y
+usleep_range() 5000 samples - load ~ 8
+ 100,200          190,200          200,200
+ Min.   :  115321 Min.   :  203963 Min.   :  203864
+ 1st Qu.:  510296 1st Qu.:  451479 1st Qu.:  548131
+ Median : 1148660 Median : 1062576 Median : 1145228
+ Mean   : 1193449 Mean   : 1079379 Mean   : 1154728
+ 3rd Qu.: 1601552 3rd Qu.: 1378622 3rd Qu.: 1570742
+ Max.   :12936192 Max.   :12346313 Max.   :13858732
+
+so really small sleep_us make no sense I think - setting it to 0
+tight-loop might be justified for small timeout_us (say 10us)
+but long busy-wait loops are bad (and probably technically not
+that sensible ither). If a busy-wait loop does not get the data/state
+it wants within a few loops then busy-waiting is nonsentical and
+that is why the intent of the exponential back-off solution does
+a few tight-loops and then switches to sleeping delays.
+
+It might be necessary to set it to a more fine grain stepping than
+the brute-force *2 - but the principle I think would be better
+than what is being done now.
+
+and thanks for your comments !
+
+thx!
+hofrat
