@@ -1,43 +1,24 @@
-Message-ID: <1487872421.14159.38.camel@perches.com>
-Subject: Re: [PATCH 00/35] treewide trivial patches converting pr_warning to
- pr_warn
-From: Joe Perches <joe@perches.com>
-To: Emil Velikov <emil.l.velikov@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, "linux-fbdev@vger.kernel.org"
- <linux-fbdev@vger.kernel.org>, linux-ia64@vger.kernel.org, SH-Linux
- <linux-sh@vger.kernel.org>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, ML nouveau
- <nouveau@lists.freedesktop.org>,  Linux-ALSA <alsa-devel@alsa-project.org>,
- dri-devel <dri-devel@lists.freedesktop.org>, "open list:VIRTIO GPU DRIVER"
- <virtualization@lists.linux-foundation.org>, "linux-ide@vger.kernel.org"
- <linux-ide@vger.kernel.org>,  "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, sparclinux@vger.kernel.org,
- drbd-dev@lists.linbit.com, linux-scsi@vger.kernel.org, Richard Weinberger
- <richard@nod.at>, sfi-devel@simplefirmware.org, amd-gfx mailing list
- <amd-gfx@lists.freedesktop.org>, "linux-acpi@vger.kernel.org"
- <linux-acpi@vger.kernel.org>, tboot-devel@lists.sourceforge.net,
- oprofile-list@lists.sf.net, "linux-input@vger.kernel.org"
- <linux-input@vger.kernel.org>, xen-devel@lists.xenproject.org,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- platform-driver-x86@vger.kernel.org,  "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, gigaset307x-common@lists.sourceforge.net,
- acpi4asus-user@lists.sourceforge.net,
- adi-buildroot-devel@lists.sourceforge.net, Pekka Paalanen
- <ppaalanen@gmail.com>,  linux-omap <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, netdev <netdev@vger.kernel.org>,
- Karol Herbst <karolherbst@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>,  linux-crypto@vger.kernel.org,
- linux-alpha@vger.kernel.org, Fabio Estevam <fabio.estevam@nxp.com>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Date: Thu, 23 Feb 2017 09:53:41 -0800
-In-Reply-To: <CACvgo50LUm5VSn_F=Dh8kL5zCPpCQDoCyUEL=Z+=1+6hJpfTaw@mail.gmail.com>
-References: <cover.1487314666.git.joe@perches.com>
- <CAL_JsqLTaq-QLTqfyDO8EVJYpgeUx1e4J0Fo2NvfFWqVoiVedQ@mail.gmail.com>
- <1487870304.14159.29.camel@perches.com>
- <CACvgo50LUm5VSn_F=Dh8kL5zCPpCQDoCyUEL=Z+=1+6hJpfTaw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ch1TV-0008CL-1c
+ for linux-mtd@lists.infradead.org; Thu, 23 Feb 2017 22:03:00 +0000
+Received: by mail-wr0-x242.google.com with SMTP id q39so419767wrb.2
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2017 14:02:34 -0800 (PST)
+Subject: Re: [PATCH] mtd: nand: nandsim: fix spelling mistake: "weakpagess" ->
+ "weakpages"
+To: Colin King <colin.king@canonical.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+References: <20170223113048.13208-1-colin.king@canonical.com>
+Cc: linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <bb00b531-3e12-1881-731c-bca745fb56fe@gmail.com>
+Date: Thu, 23 Feb 2017 23:00:18 +0100
+MIME-Version: 1.0
+In-Reply-To: <20170223113048.13208-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -48,37 +29,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2017-02-23 at 17:41 +0000, Emil Velikov wrote:
-> On 23 February 2017 at 17:18, Joe Perches <joe@perches.com> wrote:
-> > On Thu, 2017-02-23 at 09:28 -0600, Rob Herring wrote:
-> > > On Fri, Feb 17, 2017 at 1:11 AM, Joe Perches <joe@perches.com> wrote:
-> > > > There are ~4300 uses of pr_warn and ~250 uses of the older
-> > > > pr_warning in the kernel source tree.
-> > > > 
-> > > > Make the use of pr_warn consistent across all kernel files.
-> > > > 
-> > > > This excludes all files in tools/ as there is a separate
-> > > > define pr_warning for that directory tree and pr_warn is
-> > > > not used in tools/.
-> > > > 
-> > > > Done with 'sed s/\bpr_warning\b/pr_warn/' and some emacsing.
-> > 
-> > []
-> > > Where's the removal of pr_warning so we don't have more sneak in?
-> > 
-> > After all of these actually get applied,
-> > and maybe a cycle or two later, one would
-> > get sent.
-> > 
+On 02/23/2017 12:30 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> By which point you'll get a few reincarnation of it. So you'll have to
-> do the same exercise again :-(
+> trivial fix to spelling mistake in NS_ERR error message
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Maybe to one or two files.  Not a big deal.
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
 
-> I guess the question is - are you expecting to get the series merged
-> all together/via one tree ?
+Thanks
 
-No.  The only person that could do that effectively is Linus.
+> ---
+>  drivers/mtd/nand/nandsim.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+> index c847426..cef818f 100644
+> --- a/drivers/mtd/nand/nandsim.c
+> +++ b/drivers/mtd/nand/nandsim.c
+> @@ -901,7 +901,7 @@ static int parse_weakpages(void)
+>  		zero_ok = (*w == '0' ? 1 : 0);
+>  		page_no = simple_strtoul(w, &w, 0);
+>  		if (!zero_ok && !page_no) {
+> -			NS_ERR("invalid weakpagess.\n");
+> +			NS_ERR("invalid weakpages.\n");
+>  			return -EINVAL;
+>  		}
+>  		max_writes = 3;
+> 
 
-> If not, your plan is perfectly reasonable.
+
+-- 
+Best regards,
+Marek Vasut
