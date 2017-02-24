@@ -1,9 +1,9 @@
-Date: Fri, 24 Feb 2017 10:28:41 +0100
+Date: Fri, 24 Feb 2017 10:51:05 +0100
 From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 To: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
-Cc: =?iso-8859-1?Q?H=E5vard?= Skinnemoen <hskinnemoen@gmail.com>,
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ =?iso-8859-1?Q?H=E5vard?= Skinnemoen <hskinnemoen@gmail.com>,
  Andy Shevchenko <andy.shevchenko@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
  "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
  Nicolas Ferre <nicolas.ferre@atmel.com>,
@@ -19,22 +19,21 @@ Cc: =?iso-8859-1?Q?H=E5vard?= Skinnemoen <hskinnemoen@gmail.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
 Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-Message-ID: <20170224092841.umpec3dsoabfoxwm@piout.net>
-References: <20170221112641.6276c001@bbrezillon>
- <CAHp75Vcb9gtzF7LvH74JwL4dTUyQvKmg=dnTXKfjhVHuyK3WXg@mail.gmail.com>
- <20170221112720.ynehsryprhrhzjla@piout.net>
- <CAHp75VcKjYYAw8gw8yYXrd-vzZo50WOQ06AzPx+0g9Zakzjm-w@mail.gmail.com>
- <20170221162133.jch6yzpotj4s7zob@piout.net>
+Message-ID: <20170224095105.s4svpysgju3uhb3z@piout.net>
+References: <20170221162133.jch6yzpotj4s7zob@piout.net>
  <CAHp75VeB4eVuN5NMfAfQUtssuHezTyAM8FUswuR8FheUk1V-oA@mail.gmail.com>
  <CAHp75Vc54+GR99qM8vUDfQnehFx0g5q137k-w5XY3023UZyr5w@mail.gmail.com>
  <20170221171438.e5hvruoixafpcdps@piout.net>
  <CACiLriSdRM4ZfoDsxFhf6ZVwAtacJOJ28M8CvOg6kC_XN0T-Mw@mail.gmail.com>
  <20170224081430.GB19663@samfundet.no>
+ <20170224092742.3ce205e2@bbrezillon>
+ <20170224085209.GA27812@samfundet.no>
+ <20170224095509.777da771@bbrezillon>
+ <20170224090435.GA11313@samfundet.no>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170224081430.GB19663@samfundet.no>
+In-Reply-To: <20170224090435.GA11313@samfundet.no>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,40 +43,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24/02/2017 at 09:14:30 +0100, Hans-Christian Noren Egtvedt wrote:
-> Around Thu 23 Feb 2017 21:18:13 -0800 or thereabout, Håvard Skinnemoen wrote:
-> > On Tue, Feb 21, 2017 at 9:14 AM, Alexandre Belloni
-> > <alexandre.belloni@free-electrons.com> wrote:
-> >> On 21/02/2017 at 18:43:35 +0200, Andy Shevchenko wrote:
-> 
-> <snipp>
-> 
-> >> A few weeks ago, I was telling Boris to let it not build for a while and
-> >> then remove it. You already went out of your way to make it work. Again,
-> >> feel free to send a patch removing avr32. I can only see a lot of
-> >> benefits for the Atmel ARM SoCs and the many cleanups that will follow.
+On 24/02/2017 at 10:04:35 +0100, Hans-Christian Noren Egtvedt wrote:
+> Around Fri 24 Feb 2017 09:55:09 +0100 or thereabout, Boris Brezillon wrote:
+> > On Fri, 24 Feb 2017 09:52:09 +0100
+> > Hans-Christian Noren Egtvedt <egtvedt@samfundet.no> wrote:
+> >> OK, I will try to prepare it during the weekend.
+> >> 
+> >> Any reason to wait for 4.11-rc1? AFAIK Linus prefers the larger changes
+> >> before he starts tagging rc's.
+> >> 
 > > 
-> > Agree, I can't help but feel that the AVR32 support is doing more harm
-> > than good at this point.
+> > Oh, so you want to queue it for 4.11, that's even better.
 > 
-> I also agree on this, I can relate to Nicolas (and Atmel friends) having to
-> always think about the less-maintained AVR32 parts when improving drivers.
+> Perhaps I misunderstood you, by after 4.11-rc1 you mean queue it for 4.12?
 > 
-> >> If nobody complains about the 4.10 breakage, You'll have plenty of time
-> >> to remove it for 4.12
-> > 
-> > I'm fine with that, but I haven't put much effort into keeping it
-> > alive lately. If Hans-Christian agrees, I'm willing to post a patch to
-> > remove it, or ack someone else's patch.
-> 
-> Then lets plan this for 4.12, either you Håvard whip up a patch or I can
-> eventually do it.
-> 
-> I can push it through the linux-avr32 git tree on kernel.org.
+> I will see what I get around to do in the weekend, it should be pretty
+> straightforward, just want to make sure we remove all the bits.
 > 
 
-I think think it is fair to have one of you two prepare the patch. It is
-definitively a sad decision :( but it will help us immensely! Thank you!
+I think the main task is removing arch/avr32 and update MAINTAINERS
+(don't forget to add yourself to CREDITS) and Documentation/ anything
+else will have to go through the driver maintainers tree.
+
+If you feel like it, you can also prepare patches for the avr32 only
+drivers. I'll be happy to help with the individual drivers if you can't
+find the time to do it. We will definitively take care of the shared
+avr32/at91 drivers.
+
 
 -- 
 Alexandre Belloni, Free Electrons
