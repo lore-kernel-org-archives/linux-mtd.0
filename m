@@ -1,25 +1,22 @@
-Date: Fri, 24 Feb 2017 09:14:30 +0100
-From: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
-To: =?iso-8859-1?Q?H=E5vard?= Skinnemoen <hskinnemoen@gmail.com>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
+Date: Fri, 24 Feb 2017 09:27:42 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
+Cc: =?UTF-8?B?SMOldmFyZA==?= Skinnemoen <hskinnemoen@gmail.com>, Alexandre
+ Belloni <alexandre.belloni@free-electrons.com>, Andy Shevchenko
+ <andy.shevchenko@gmail.com>, Richard Weinberger <richard@nod.at>, "open
+ list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, Nicolas Ferre
+ <nicolas.ferre@atmel.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh
+ Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-arm Mailing List
+ <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian
+ Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala
+ <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
 Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-Message-ID: <20170224081430.GB19663@samfundet.no>
+Message-ID: <20170224092742.3ce205e2@bbrezillon>
+In-Reply-To: <20170224081430.GB19663@samfundet.no>
 References: <CAHp75VfZfj-8ih3vg63w_dAq8xXE2Whu1bANXRcXS1_EGNq43A@mail.gmail.com>
  <20170221112641.6276c001@bbrezillon>
  <CAHp75Vcb9gtzF7LvH74JwL4dTUyQvKmg=dnTXKfjhVHuyK3WXg@mail.gmail.com>
@@ -30,11 +27,10 @@ References: <CAHp75VfZfj-8ih3vg63w_dAq8xXE2Whu1bANXRcXS1_EGNq43A@mail.gmail.com>
  <CAHp75Vc54+GR99qM8vUDfQnehFx0g5q137k-w5XY3023UZyr5w@mail.gmail.com>
  <20170221171438.e5hvruoixafpcdps@piout.net>
  <CACiLriSdRM4ZfoDsxFhf6ZVwAtacJOJ28M8CvOg6kC_XN0T-Mw@mail.gmail.com>
+ <20170224081430.GB19663@samfundet.no>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACiLriSdRM4ZfoDsxFhf6ZVwAtacJOJ28M8CvOg6kC_XN0T-Mw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,36 +40,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Around Thu 23 Feb 2017 21:18:13 -0800 or thereabout, Håvard Skinnemoen wrote:
-> On Tue, Feb 21, 2017 at 9:14 AM, Alexandre Belloni
-> <alexandre.belloni@free-electrons.com> wrote:
->> On 21/02/2017 at 18:43:35 +0200, Andy Shevchenko wrote:
+Hi Hans-Cristrian,
 
-<snipp>
+On Fri, 24 Feb 2017 09:14:30 +0100
+Hans-Christian Noren Egtvedt <egtvedt@samfundet.no> wrote:
 
->> A few weeks ago, I was telling Boris to let it not build for a while and
->> then remove it. You already went out of your way to make it work. Again,
->> feel free to send a patch removing avr32. I can only see a lot of
->> benefits for the Atmel ARM SoCs and the many cleanups that will follow.
-> 
-> Agree, I can't help but feel that the AVR32 support is doing more harm
-> than good at this point.
+> Around Thu 23 Feb 2017 21:18:13 -0800 or thereabout, H=C3=A5vard Skinnemo=
+en wrote:
+> > On Tue, Feb 21, 2017 at 9:14 AM, Alexandre Belloni
+> > <alexandre.belloni@free-electrons.com> wrote: =20
+> >> On 21/02/2017 at 18:43:35 +0200, Andy Shevchenko wrote: =20
+>=20
+> <snipp>
+>=20
+> >> A few weeks ago, I was telling Boris to let it not build for a while a=
+nd
+> >> then remove it. You already went out of your way to make it work. Agai=
+n,
+> >> feel free to send a patch removing avr32. I can only see a lot of
+> >> benefits for the Atmel ARM SoCs and the many cleanups that will follow=
+. =20
+> >=20
+> > Agree, I can't help but feel that the AVR32 support is doing more harm
+> > than good at this point. =20
+>=20
+> I also agree on this, I can relate to Nicolas (and Atmel friends) having =
+to
+> always think about the less-maintained AVR32 parts when improving drivers.
 
-I also agree on this, I can relate to Nicolas (and Atmel friends) having to
-always think about the less-maintained AVR32 parts when improving drivers.
+Indeed, that should make atmel drivers maintainance a bit easier.
 
->> If nobody complains about the 4.10 breakage, You'll have plenty of time
->> to remove it for 4.12
-> 
-> I'm fine with that, but I haven't put much effort into keeping it
-> alive lately. If Hans-Christian agrees, I'm willing to post a patch to
-> remove it, or ack someone else's patch.
+>=20
+> >> If nobody complains about the 4.10 breakage, You'll have plenty of time
+> >> to remove it for 4.12 =20
+> >=20
+> > I'm fine with that, but I haven't put much effort into keeping it
+> > alive lately. If Hans-Christian agrees, I'm willing to post a patch to
+> > remove it, or ack someone else's patch. =20
+>=20
+> Then lets plan this for 4.12, either you H=C3=A5vard whip up a patch or I=
+ can
+> eventually do it.
+>=20
+> I can push it through the linux-avr32 git tree on kernel.org.
+>=20
 
-Then lets plan this for 4.12, either you Håvard whip up a patch or I can
-eventually do it.
+Can you do that just after 4.11-rc1 is released and provide a topic
+branch I can pull in my nand/next branch, so that I can rework this
+patch and drop all the pdata-compat code (as suggested by Andy).
 
-I can push it through the linux-avr32 git tree on kernel.org.
+Thanks,
 
--- 
-mvh
-Hans-Christian Noren Egtvedt
+Boris
