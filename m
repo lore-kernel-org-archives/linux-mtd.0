@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1chsWU-00010B-J0
- for linux-mtd@lists.infradead.org; Sun, 26 Feb 2017 06:41:40 +0000
+ id 1chsWj-00017r-KT
+ for linux-mtd@lists.infradead.org; Sun, 26 Feb 2017 06:41:55 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -47,11 +47,11 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Sat, 25 Feb 2017 23:38:06 -0700
-Message-Id: <1488091097-12328-6-git-send-email-logang@deltatee.com>
+Date: Sat, 25 Feb 2017 23:38:11 -0700
+Message-Id: <1488091097-12328-11-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488091097-12328-1-git-send-email-logang@deltatee.com>
 References: <1488091097-12328-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v2 05/16] gpiolib: utilize new cdev_device_add helper function
+Subject: [PATCH v2 10/16] iio:core: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -66,60 +66,51 @@ new device_add_cdev() helper. The helper replaces a common pattern by
 taking the proper reference against the parent device and adding both
 the cdev and the device.
 
+In doing so we have to remove a guard statement from cdev_del,
+but this doesn't appear to be required in any way.
+
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/gpio/gpiolib.c | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+ drivers/iio/industrialio-core.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index a07ae9e..208d032 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -1036,18 +1036,14 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index aaca428..f9ac301 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -1718,18 +1718,13 @@ int iio_device_register(struct iio_dev *indio_dev)
  
- 	cdev_init(&gdev->chrdev, &gpio_fileops);
- 	gdev->chrdev.owner = THIS_MODULE;
--	gdev->chrdev.kobj.parent = &gdev->dev.kobj;
- 	gdev->dev.devt = MKDEV(MAJOR(gpio_devt), gdev->id);
--	status = cdev_add(&gdev->chrdev, gdev->dev.devt, 1);
--	if (status < 0)
--		chip_warn(gdev->chip, "failed to add char device %d:%d\n",
--			  MAJOR(gpio_devt), gdev->id);
--	else
--		chip_dbg(gdev->chip, "added GPIO chardev (%d:%d)\n",
--			 MAJOR(gpio_devt), gdev->id);
--	status = device_add(&gdev->dev);
-+
-+	status = cdev_device_add(&gdev->chrdev, &gdev->dev);
- 	if (status)
--		goto err_remove_chardev;
-+		return status;
-+
-+	chip_dbg(gdev->chip, "added GPIO chardev (%d:%d)\n",
-+		 MAJOR(gpio_devt), gdev->id);
+ 	cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
+ 	indio_dev->chrdev.owner = indio_dev->info->driver_module;
+-	indio_dev->chrdev.kobj.parent = &indio_dev->dev.kobj;
+-	ret = cdev_add(&indio_dev->chrdev, indio_dev->dev.devt, 1);
+-	if (ret < 0)
+-		goto error_unreg_eventset;
  
- 	status = gpiochip_sysfs_register(gdev);
- 	if (status)
-@@ -1062,9 +1058,7 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
+-	ret = device_add(&indio_dev->dev);
++	ret = cdev_device_add(&indio_dev->chrdev, &indio_dev->dev);
+ 	if (ret < 0)
+-		goto error_cdev_del;
++		goto error_unreg_eventset;
+ 
  	return 0;
+-error_cdev_del:
+-	cdev_del(&indio_dev->chrdev);
++
+ error_unreg_eventset:
+ 	iio_device_unregister_eventset(indio_dev);
+ error_free_sysfs:
+@@ -1750,10 +1745,8 @@ void iio_device_unregister(struct iio_dev *indio_dev)
+ {
+ 	mutex_lock(&indio_dev->info_exist_lock);
  
- err_remove_device:
--	device_del(&gdev->dev);
--err_remove_chardev:
--	cdev_del(&gdev->chrdev);
-+	cdev_device_del(&gdev->chrdev, &gdev->dev);
- 	return status;
- }
+-	device_del(&indio_dev->dev);
++	cdev_device_del(&indio_dev->chrdev, &indio_dev->dev);
  
-@@ -1348,8 +1342,7 @@ void gpiochip_remove(struct gpio_chip *chip)
- 	 * be removed, else it will be dangling until the last user is
- 	 * gone.
- 	 */
--	cdev_del(&gdev->chrdev);
--	device_del(&gdev->dev);
-+	cdev_device_del(&gdev->chrdev, &gdev->dev);
- 	put_device(&gdev->dev);
- }
- EXPORT_SYMBOL_GPL(gpiochip_remove);
+-	if (indio_dev->chrdev.dev)
+-		cdev_del(&indio_dev->chrdev);
+ 	iio_device_unregister_debugfs(indio_dev);
+ 
+ 	iio_disable_all_buffers(indio_dev);
 -- 
 2.1.4
