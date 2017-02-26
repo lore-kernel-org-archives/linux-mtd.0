@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1chsVS-0000hS-6l
- for linux-mtd@lists.infradead.org; Sun, 26 Feb 2017 06:40:31 +0000
+ id 1chsVa-0000kW-Ol
+ for linux-mtd@lists.infradead.org; Sun, 26 Feb 2017 06:40:40 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -47,11 +47,11 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Sat, 25 Feb 2017 23:38:14 -0700
-Message-Id: <1488091097-12328-14-git-send-email-logang@deltatee.com>
+Date: Sat, 25 Feb 2017 23:38:16 -0700
+Message-Id: <1488091097-12328-16-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488091097-12328-1-git-send-email-logang@deltatee.com>
 References: <1488091097-12328-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v2 13/16] rapidio: utilize new cdev_device_add helper function
+Subject: [PATCH v2 15/16] scsi: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -61,86 +61,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver did not originally set kobj.parent so it likely had
-potential a use after free bug which this patch fixes.
+This driver did not set kobj.parent so it likely suffered from
+a potential use after free race if the user unregistered the
+device while it was in use.
 
-We convert from device_register to device_initialize/cdev_device_add.
-While we are at it we use put_device instead of kfree (as recommended
-by the device_initialize documentation). We also remove an unnecessary
-extra get_device from the code.
+This was not so straightforward a conversion but I think this patch
+cleans up its probe's error path significantly.
+
+This patch adds device_initialize, which is required for
+cdev_device_add. Then it switches to put_device instead of kfree as
+recommended by device_initialize's documentation. This removes a lot
+from the error path which was already in __remove.
+A couple things needed to be re-ordered to be entirely correct, though.
+ida_remove is also moved out of __remove and into unregister to
+simplify things and follow the pattern other devices are using.
+
+This also drop an extra unnecessary get_device/put_device in the code.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/rapidio/devices/rio_mport_cdev.c | 24 ++++++++----------------
- 1 file changed, 8 insertions(+), 16 deletions(-)
+ drivers/scsi/osd/osd_uld.c | 56 +++++++++++++++++-----------------------------
+ 1 file changed, 20 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
-index 9013a58..b8165e9 100644
---- a/drivers/rapidio/devices/rio_mport_cdev.c
-+++ b/drivers/rapidio/devices/rio_mport_cdev.c
-@@ -2445,31 +2445,25 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
- 	mutex_init(&md->buf_mutex);
- 	mutex_init(&md->file_mutex);
- 	INIT_LIST_HEAD(&md->file_list);
--	cdev_init(&md->cdev, &mport_fops);
--	md->cdev.owner = THIS_MODULE;
--	ret = cdev_add(&md->cdev, MKDEV(MAJOR(dev_number), mport->id), 1);
--	if (ret < 0) {
--		kfree(md);
--		rmcd_error("Unable to register a device, err=%d", ret);
--		return NULL;
--	}
+diff --git a/drivers/scsi/osd/osd_uld.c b/drivers/scsi/osd/osd_uld.c
+index 243eab3..66b8805 100644
+--- a/drivers/scsi/osd/osd_uld.c
++++ b/drivers/scsi/osd/osd_uld.c
+@@ -399,9 +399,6 @@ static void __remove(struct device *dev)
  
--	md->dev.devt = md->cdev.dev;
-+	device_initialize(&md->dev);
-+	md->dev.devt = MKDEV(MAJOR(dev_number), mport->id);
- 	md->dev.class = dev_class;
- 	md->dev.parent = &mport->dev;
- 	md->dev.release = mport_device_release;
- 	dev_set_name(&md->dev, DEV_NAME "%d", mport->id);
- 	atomic_set(&md->active, 1);
+ 	kfree(oud->odi.osdname);
  
--	ret = device_register(&md->dev);
-+	cdev_init(&md->cdev, &mport_fops);
-+	md->cdev.owner = THIS_MODULE;
+-	if (oud->cdev.owner)
+-		cdev_del(&oud->cdev);
+-
+ 	osd_dev_fini(&oud->od);
+ 	scsi_device_put(scsi_device);
+ 
+@@ -410,7 +407,6 @@ static void __remove(struct device *dev)
+ 
+ 	if (oud->disk)
+ 		put_disk(oud->disk);
+-	ida_remove(&osd_minor_ida, oud->minor);
+ 
+ 	kfree(oud);
+ }
+@@ -445,8 +441,20 @@ static int osd_probe(struct device *dev)
+ 	if (NULL == oud)
+ 		goto err_retract_minor;
+ 
++	/* class device member */
++	device_initialize(&oud->class_dev);
+ 	dev_set_drvdata(dev, oud);
+ 	oud->minor = minor;
++	oud->class_dev.devt = MKDEV(SCSI_OSD_MAJOR, oud->minor);
++	oud->class_dev.class = &osd_uld_class;
++	oud->class_dev.parent = dev;
++	oud->class_dev.release = __remove;
 +
-+	ret = cdev_device_add(&md->cdev, &md->dev);
- 	if (ret) {
- 		rmcd_error("Failed to register mport %d (err=%d)",
- 		       mport->id, ret);
- 		goto err_cdev;
++	/* hold one more reference to the scsi_device that will get released
++	 * in __release, in case a logout is happening while fs is mounted
++	 */
++	scsi_device_get(scsi_device);
++	osd_dev_init(&oud->od, scsi_device);
+ 
+ 	/* allocate a disk and set it up */
+ 	/* FIXME: do we need this since sg has already done that */
+@@ -460,59 +468,34 @@ static int osd_probe(struct device *dev)
+ 	sprintf(disk->disk_name, "osd%d", oud->minor);
+ 	oud->disk = disk;
+ 
+-	/* hold one more reference to the scsi_device that will get released
+-	 * in __release, in case a logout is happening while fs is mounted
+-	 */
+-	scsi_device_get(scsi_device);
+-	osd_dev_init(&oud->od, scsi_device);
+-
+ 	/* Detect the OSD Version */
+ 	error = __detect_osd(oud);
+ 	if (error) {
+ 		OSD_ERR("osd detection failed, non-compatible OSD device\n");
+-		goto err_put_disk;
++		goto err_free_osd;
  	}
  
--	get_device(&md->dev);
+ 	/* init the char-device for communication with user-mode */
+ 	cdev_init(&oud->cdev, &osd_fops);
+ 	oud->cdev.owner = THIS_MODULE;
+-	error = cdev_add(&oud->cdev,
+-			 MKDEV(SCSI_OSD_MAJOR, oud->minor), 1);
+-	if (error) {
+-		OSD_ERR("cdev_add failed\n");
+-		goto err_put_disk;
+-	}
+ 
+-	/* class device member */
+-	oud->class_dev.devt = oud->cdev.dev;
+-	oud->class_dev.class = &osd_uld_class;
+-	oud->class_dev.parent = dev;
+-	oud->class_dev.release = __remove;
+ 	error = dev_set_name(&oud->class_dev, "%s", disk->disk_name);
+ 	if (error) {
+ 		OSD_ERR("dev_set_name failed => %d\n", error);
+-		goto err_put_cdev;
++		goto err_free_osd;
+ 	}
+ 
+-	error = device_register(&oud->class_dev);
++	error = cdev_device_add(&oud->cdev, &oud->class_dev);
+ 	if (error) {
+ 		OSD_ERR("device_register failed => %d\n", error);
+-		goto err_put_cdev;
++		goto err_free_osd;
+ 	}
+ 
+-	get_device(&oud->class_dev);
 -
- 	INIT_LIST_HEAD(&md->doorbells);
- 	spin_lock_init(&md->db_lock);
- 	INIT_LIST_HEAD(&md->portwrites);
-@@ -2514,8 +2508,7 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
- 	return md;
+ 	OSD_INFO("osd_probe %s\n", disk->disk_name);
+ 	return 0;
  
- err_cdev:
--	cdev_del(&md->cdev);
--	kfree(md);
-+	put_device(&md->dev);
- 	return NULL;
- }
+-err_put_cdev:
+-	cdev_del(&oud->cdev);
+-err_put_disk:
+-	scsi_device_put(scsi_device);
+-	put_disk(disk);
+ err_free_osd:
+-	dev_set_drvdata(dev, NULL);
+-	kfree(oud);
++	put_device(&oud->class_dev);
+ err_retract_minor:
+ 	ida_remove(&osd_minor_ida, minor);
+ 	return error;
+@@ -529,9 +512,10 @@ static int osd_remove(struct device *dev)
+ 			scsi_device);
+ 	}
  
-@@ -2579,7 +2572,7 @@ static void mport_cdev_remove(struct mport_dev *md)
- 	atomic_set(&md->active, 0);
- 	mport_cdev_terminate_dma(md);
- 	rio_del_mport_pw_handler(md->mport, md, rio_mport_pw_handler);
--	cdev_del(&(md->cdev));
-+	cdev_device_del(&md->cdev, &md->dev);
- 	mport_cdev_kill_fasync(md);
- 
- 	flush_workqueue(dma_wq);
-@@ -2604,7 +2597,6 @@ static void mport_cdev_remove(struct mport_dev *md)
- 
- 	rio_release_inb_dbell(md->mport, 0, 0x0fff);
- 
--	device_unregister(&md->dev);
- 	put_device(&md->dev);
+-	device_unregister(&oud->class_dev);
+-
++	cdev_device_del(&oud->cdev, &oud->class_dev);
++	ida_remove(&osd_minor_ida, oud->minor);
+ 	put_device(&oud->class_dev);
++
+ 	return 0;
  }
  
 -- 
