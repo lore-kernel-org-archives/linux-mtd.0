@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1chsVa-0000kV-Oj
- for linux-mtd@lists.infradead.org; Sun, 26 Feb 2017 06:40:43 +0000
+ id 1chsVf-0000kj-Ol
+ for linux-mtd@lists.infradead.org; Sun, 26 Feb 2017 06:40:45 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -46,12 +46,12 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- Logan Gunthorpe <logang@deltatee.com>
-Date: Sat, 25 Feb 2017 23:38:07 -0700
-Message-Id: <1488091097-12328-7-git-send-email-logang@deltatee.com>
+ <stable@vger.kernel.org>, Logan Gunthorpe <logang@deltatee.com>
+Date: Sat, 25 Feb 2017 23:38:03 -0700
+Message-Id: <1488091097-12328-3-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488091097-12328-1-git-send-email-logang@deltatee.com>
 References: <1488091097-12328-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v2 06/16] tpm-chip: utilize new cdev_device_add helper function
+Subject: [PATCH v2 02/16] device-dax: fix cdev leak
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -61,67 +61,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace the open coded registration of the cdev and dev with the
-new device_add_cdev() helper. The helper replaces a common pattern by
-taking the proper reference against the parent device and adding both
-the cdev and the device.
+From: Dan Williams <dan.j.williams@intel.com>
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+If device_add() fails, cleanup the cdev. Otherwise, we leak a kobj_map()
+with a stale device number.
+
+As Jason points out, there is a small possibility that userspace has
+opened and mapped the device in the time between cdev_add() and the
+device_add() failure. We need a new kill_dax_dev() helper to invalidate
+any established mappings.
+
+Fixes: ba09c01d2fa8 ("dax: convert to the cdev api")
+Cc: <stable@vger.kernel.org>
+Cc: Logan Gunthorpe <logang@deltatee.com>
+Reported-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
- drivers/char/tpm/tpm-chip.c | 19 +++----------------
- 1 file changed, 3 insertions(+), 16 deletions(-)
+ drivers/dax/dax.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-index a77262d..933f96e 100644
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -187,7 +187,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *dev,
+diff --git a/drivers/dax/dax.c b/drivers/dax/dax.c
+index ed758b7..b62a52f 100644
+--- a/drivers/dax/dax.c
++++ b/drivers/dax/dax.c
+@@ -630,13 +630,10 @@ static void dax_dev_release(struct device *dev)
+ 	kfree(dax_dev);
+ }
  
- 	cdev_init(&chip->cdev, &tpm_fops);
- 	chip->cdev.owner = THIS_MODULE;
--	chip->cdev.kobj.parent = &chip->dev.kobj;
- 
- 	return chip;
- 
-@@ -230,27 +229,16 @@ static int tpm_add_char_device(struct tpm_chip *chip)
+-static void unregister_dax_dev(void *dev)
++static void kill_dax_dev(struct dax_dev *dax_dev)
  {
- 	int rc;
+-	struct dax_dev *dax_dev = to_dax_dev(dev);
+ 	struct cdev *cdev = &dax_dev->cdev;
  
--	rc = cdev_add(&chip->cdev, chip->dev.devt, 1);
-+	rc = cdev_device_add(&chip->cdev, &chip->dev);
+-	dev_dbg(dev, "%s\n", __func__);
+-
+ 	/*
+ 	 * Note, rcu is not protecting the liveness of dax_dev, rcu is
+ 	 * ensuring that any fault handlers that might have seen
+@@ -648,6 +645,15 @@ static void unregister_dax_dev(void *dev)
+ 	synchronize_rcu();
+ 	unmap_mapping_range(dax_dev->inode->i_mapping, 0, 0, 1);
+ 	cdev_del(cdev);
++}
++
++static void unregister_dax_dev(void *dev)
++{
++	struct dax_dev *dax_dev = to_dax_dev(dev);
++
++	dev_dbg(dev, "%s\n", __func__);
++
++	kill_dax_dev(dax_dev);
+ 	device_unregister(dev);
+ }
+ 
+@@ -724,6 +730,7 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+ 	dev_set_name(dev, "dax%d.%d", dax_region->id, dax_dev->id);
+ 	rc = device_add(dev);
  	if (rc) {
- 		dev_err(&chip->dev,
--			"unable to cdev_add() %s, major %d, minor %d, err=%d\n",
-+			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
- 			dev_name(&chip->dev), MAJOR(chip->dev.devt),
- 			MINOR(chip->dev.devt), rc);
- 
- 		return rc;
++		kill_dax_dev(dax_dev);
+ 		put_device(dev);
+ 		return ERR_PTR(rc);
  	}
- 
--	rc = device_add(&chip->dev);
--	if (rc) {
--		dev_err(&chip->dev,
--			"unable to device_register() %s, major %d, minor %d, err=%d\n",
--			dev_name(&chip->dev), MAJOR(chip->dev.devt),
--			MINOR(chip->dev.devt), rc);
--
--		cdev_del(&chip->cdev);
--		return rc;
--	}
--
- 	/* Make the chip available. */
- 	mutex_lock(&idr_lock);
- 	idr_replace(&dev_nums_idr, chip, chip->dev_num);
-@@ -261,8 +249,7 @@ static int tpm_add_char_device(struct tpm_chip *chip)
- 
- static void tpm_del_char_device(struct tpm_chip *chip)
- {
--	cdev_del(&chip->cdev);
--	device_del(&chip->dev);
-+	cdev_device_del(&chip->cdev, &chip->dev);
- 
- 	/* Make the chip unavailable. */
- 	mutex_lock(&idr_lock);
 -- 
 2.1.4
