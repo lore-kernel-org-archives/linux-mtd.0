@@ -1,34 +1,57 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1chShV-0001JA-R2
- for linux-mtd@lists.infradead.org; Sat, 25 Feb 2017 03:07:16 +0000
-Received: by mail-wm0-x242.google.com with SMTP id u63so5458594wmu.2
- for <linux-mtd@lists.infradead.org>; Fri, 24 Feb 2017 19:06:52 -0800 (PST)
-MIME-Version: 1.0
-Sender: kalluripunnaiahchoudary@gmail.com
-In-Reply-To: <20170219112603.42317e1b@bbrezillon>
-References: <1483930734-10309-1-git-send-email-punnaia@xilinx.com>
- <1483930734-10309-2-git-send-email-punnaia@xilinx.com>
- <20170219112603.42317e1b@bbrezillon>
-From: punnaiah choudary kalluri <punnaia@xilinx.com>
-Date: Sat, 25 Feb 2017 08:36:50 +0530
-Message-ID: <CAGnW=BZgh4=LN=oFbDU5pbu6DcVZDMAXTRzbDwW+UZ0U6UDyVQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] mtd: nand: Add support for Arasan NAND Flash
- Controller
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- marek.vasut@gmail.com,
- Richard Weinberger <richard@nod.at>, cyrille.pitchen@atmel.com,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "michals@xilinx.com" <michals@xilinx.com>,
- "kpc528@gmail.com" <kpc528@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+ id 1chsVS-0000hS-6l
+ for linux-mtd@lists.infradead.org; Sun, 26 Feb 2017 06:40:31 +0000
+From: Logan Gunthorpe <logang@deltatee.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>, Leon Romanovsky <leon@kernel.org>,
+ Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Joe Perches <joe@perches.com>,
+ Lorenzo Stoakes <lstoakes@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
+ rtc-linux@googlegroups.com, linux-mtd@lists.infradead.org,
+ linux-media@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Logan Gunthorpe <logang@deltatee.com>
+Date: Sat, 25 Feb 2017 23:38:14 -0700
+Message-Id: <1488091097-12328-14-git-send-email-logang@deltatee.com>
+In-Reply-To: <1488091097-12328-1-git-send-email-logang@deltatee.com>
+References: <1488091097-12328-1-git-send-email-logang@deltatee.com>
+Subject: [PATCH v2 13/16] rapidio: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,521 +61,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+This driver did not originally set kobj.parent so it likely had
+potential a use after free bug which this patch fixes.
 
-  Thanks for the review
+We convert from device_register to device_initialize/cdev_device_add.
+While we are at it we use put_device instead of kfree (as recommended
+by the device_initialize documentation). We also remove an unnecessary
+extra get_device from the code.
 
-On Sun, Feb 19, 2017 at 3:56 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hi Punnaiah,
->
-> Sorry for the late reply.
->
-> On Mon, 9 Jan 2017 08:28:54 +0530
-> Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com> wrote:
->
->> Added the basic driver for Arasan NAND Flash Controller used in
->> Zynq UltraScale+ MPSoC. It supports only Hw ECC and upto 24bit
->> correction.
->>
->> Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
->> ---
->> Changes in v7:
->> - Implemented Marek suggestions and comments
->> - Corrected the acronyms those should be in caps
->> - Modified kconfig/Make file to keep arasan entry in sorted order
->> - Added is_vmlloc_addr check
->> - Used ioread/write32_rep variants to avoid compilation error for intel
->>   platforms
->> - separated PIO and DMA mode read/write functions
->> - Minor cleanup
->> Chnages in v6:
->> - Addressed most of the Brian and Boris comments
->> - Separated the nandchip from the nand controller
->> - Removed the ecc lookup table from driver
->> - Now use framework nand waitfunction and readoob
->> - Fixed the compiler warning
->> - Adapted the new frameowrk changes related to ecc and ooblayout
->> - Disabled the clocks after the nand_reelase
->> - Now using only one completion object
->> - Boris suggessions like adapting cmd_ctrl and rework on read/write byte
->>   are not implemented and i will patch them later
->> - Also check_erased_ecc_chunk for erase and check for is_vmalloc_addr will
->>   implement later once the basic driver is mainlined.
->> Changes in v5:
->> - Renamed the driver filei as arasan_nand.c
->> - Fixed all comments relaqted coding style
->> - Fixed comments related to propagating the errors
->> - Modified the anfc_write_page_hwecc as per the write_page
->>   prototype
->> Changes in v4:
->> - Added support for onfi timing mode configuration
->> - Added clock supppport
->> - Added support for multiple chipselects
->> Changes in v3:
->> - Removed unused variables
->> - Avoided busy loop and used jifies based implementation
->> - Fixed compiler warnings "right shift count >= width of type"
->> - Removed unneeded codei and improved error reporting
->> - Added onfi version check to ensure reading the valid address cycles
->> Changes in v2:
->> - Added missing of.h to avoid kbuild system report erro
->> ---
->>  drivers/mtd/nand/Kconfig       |   8 +
->>  drivers/mtd/nand/Makefile      |   1 +
->>  drivers/mtd/nand/arasan_nand.c | 932 +++++++++++++++++++++++++++++++++++++++++
->>  3 files changed, 941 insertions(+)
->>  create mode 100644 drivers/mtd/nand/arasan_nand.c
->
-> checkpatch.pl --strict reports a few coding style problems. Can you fix
-> them?
->
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+---
+ drivers/rapidio/devices/rio_mport_cdev.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
-Ok.
-
-> [...]
->
->> +#define PROG_PGRD                    BIT(0)
->> +#define PROG_ERASE                   BIT(2)
->> +#define PROG_STATUS                  BIT(3)
->> +#define PROG_PGPROG                  BIT(4)
->> +#define PROG_RDID                    BIT(6)
->> +#define PROG_RDPARAM                 BIT(7)
->> +#define PROG_RST                     BIT(8)
->> +#define PROG_GET_FEATURE             BIT(9)
->> +#define PROG_SET_FEATURE             BIT(10)
->
-> I know I'm being insistent on this, but I don't understand what these
-> different prog modes are meant for. You still have to set the NAND
-> command and address cycles, so it probably has to do with timing
-> sequences, but that's not clearly described in the doc you pointed.
->
-
-As per the spec, deepening on the operation to be perform,
-the corresponding program bit need to be set. After this step, the controller
-will initiate the cmd and data phase sequence.But even i am not sure why
-we need to program though the required parameters are already configured
-probably the controller internal state machine might need this information.
-
-
-> [...]
->
->> +static void anfc_rw_buf_dma(struct mtd_info *mtd, uint8_t *buf, int len,
->> +                         int operation, u32 prog)
->> +{
->> +     dma_addr_t paddr;
->> +     struct nand_chip *chip = mtd_to_nand(mtd);
->> +     struct anfc *nfc = to_anfc(chip->controller);
->> +     struct anfc_nand_chip *achip = to_anfc_nand(chip);
->> +     u32 eccintr = 0, dir;
->> +     u32 pktsize = len, pktcount = 1;
->> +
->> +     if ((nfc->curr_cmd == NAND_CMD_READ0) ||
->> +             ((nfc->curr_cmd == NAND_CMD_SEQIN) && !nfc->iswriteoob)) {
->> +             pktsize = achip->pktsize;
->> +             pktcount = DIV_ROUND_UP(mtd->writesize, pktsize);
->> +     }
->
-> I really don't like what's done here (the fact that you test
-> ->curr_cmd in something that is supposed to be command agnostic). Maybe
-> you should just avoid using ->write_buf() when programming a page, and
-> have a custom function doing that.
->
-
-Since we are overriding the write_buf/read_buf function because of the reason it
-requires custom implementation. Also if we see nand transactions it
-always follow the
-COMMAND and DATA phase sequence. so, i didn't see any thing harm if
-you keep track
-of the command while reading the data in DATA phase. Please suggest.
-
-> Let's try to keep ->read/write_buf() as generic as possible.
->
->> +     anfc_setpktszcnt(nfc, pktsize, pktcount);
->> +
->> +     if (!achip->bch && (nfc->curr_cmd == NAND_CMD_READ0))
->> +             eccintr = MBIT_ERROR;
->
-> Ditto.
->
->> +
->> +     if (operation)
->> +             dir = DMA_FROM_DEVICE;
->> +     else
->> +             dir = DMA_TO_DEVICE;
->> +
->> +     paddr = dma_map_single(nfc->dev, buf, len, dir);
->> +     if (dma_mapping_error(nfc->dev, paddr)) {
->> +             dev_err(nfc->dev, "Read buffer mapping error");
->> +             return;
->> +     }
->> +     lo_hi_writeq(paddr, nfc->base + DMA_ADDR0_OFST);
->> +     anfc_enable_intrs(nfc, (XFER_COMPLETE | eccintr));
->> +     writel(prog, nfc->base + PROG_OFST);
->> +     anfc_wait_for_event(nfc);
->> +     dma_unmap_single(nfc->dev, paddr, len, dir);
->> +}
->> +
->> +static void anfc_rw_buf_pio(struct mtd_info *mtd, uint8_t *buf, int len,
->> +                         int operation, int prog)
->> +{
->> +     struct nand_chip *chip = mtd_to_nand(mtd);
->> +     struct anfc *nfc = to_anfc(chip->controller);
->> +     struct anfc_nand_chip *achip = to_anfc_nand(chip);
->> +     u32 *bufptr = (u32 *)buf;
->> +     u32 cnt = 0, intr = 0;
->> +     u32 pktsize = len, pktcount = 1;
->> +
->> +     anfc_config_dma(nfc, 0);
->> +
->> +     if ((nfc->curr_cmd == NAND_CMD_READ0) ||
->> +             ((nfc->curr_cmd == NAND_CMD_SEQIN) && !nfc->iswriteoob)) {
->> +             pktsize = achip->pktsize;
->> +             pktcount = DIV_ROUND_UP(mtd->writesize, pktsize);
->> +     }
->
-> Ditto.
->
->> +     anfc_setpktszcnt(nfc, pktsize, pktcount);
->> +
->> +     if (!achip->bch && (nfc->curr_cmd == NAND_CMD_READ0))
->> +             intr = MBIT_ERROR;
->> +
->> +     if (operation)
->> +             intr |= READ_READY;
->> +     else
->> +             intr |= WRITE_READY;
->> +
->> +     anfc_enable_intrs(nfc, intr);
->> +     writel(prog, nfc->base + PROG_OFST);
->> +
->> +     while (cnt < pktcount) {
->> +             anfc_wait_for_event(nfc);
->> +             cnt++;
->> +             if (cnt == pktcount)
->> +                     anfc_enable_intrs(nfc, XFER_COMPLETE);
->> +             if (operation)
->> +                     ioread32_rep(nfc->base + DATA_PORT_OFST, bufptr,
->> +                                  pktsize/4);
->> +             else
->> +                     iowrite32_rep(nfc->base + DATA_PORT_OFST, bufptr,
->> +                                   pktsize/4);
->> +             bufptr += (pktsize / 4);
->> +             if (cnt < pktcount)
->> +                     anfc_enable_intrs(nfc, intr);
->> +     }
->> +
->> +     anfc_wait_for_event(nfc);
->> +}
->> +
->> +static void anfc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
->> +{
->> +     struct nand_chip *chip = mtd_to_nand(mtd);
->> +     struct anfc *nfc = to_anfc(chip->controller);
->> +
->> +     if (nfc->dma && !is_vmalloc_addr(buf))
->
->                         ^ virt_addr_valid(buf) ?
->
->> +             anfc_rw_buf_dma(mtd, buf, len, 1, PROG_PGRD);
->> +     else
->> +             anfc_rw_buf_pio(mtd, buf, len, 1, PROG_PGRD);
->> +}
->> +
->> +static void anfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
->> +{
->> +     struct nand_chip *chip = mtd_to_nand(mtd);
->> +     struct anfc *nfc = to_anfc(chip->controller);
->> +
->> +     if (nfc->dma && !is_vmalloc_addr(buf))
->> +             anfc_rw_buf_dma(mtd, (char *)buf, len, 0, PROG_PGPROG);
->> +     else
->> +             anfc_rw_buf_pio(mtd, (char *)buf, len, 0, PROG_PGPROG);
->> +}
->> +
->> +static int anfc_read_page_hwecc(struct mtd_info *mtd,
->> +                             struct nand_chip *chip, uint8_t *buf,
->> +                             int oob_required, int page)
->> +{
->> +     u32 val;
->> +     struct anfc *nfc = to_anfc(chip->controller);
->> +     struct anfc_nand_chip *achip = to_anfc_nand(chip);
->> +
->> +     anfc_set_eccsparecmd(nfc, achip, NAND_CMD_RNDOUT, NAND_CMD_RNDOUTSTART);
->> +     anfc_config_ecc(nfc, 1);
->> +
->> +     val = readl(nfc->base + CMD_OFST);
->> +     val = val | ECC_ENABLE;
->> +     writel(val, nfc->base + CMD_OFST);
->
-> Hm, isn't it done in anfc_config_ecc()?
->
-
-oops. sorry missed it.
-
->> +
->> +     chip->read_buf(mtd, buf, mtd->writesize);
->> +
->> +     val = readl(nfc->base + ECC_ERR_CNT_OFST);
->> +     if (achip->bch) {
->> +             mtd->ecc_stats.corrected += val & PAGE_ERR_CNT_MASK;
->> +     } else {
->> +             val = readl(nfc->base + ECC_ERR_CNT_1BIT_OFST);
->> +             mtd->ecc_stats.corrected += val;
->> +             val = readl(nfc->base + ECC_ERR_CNT_2BIT_OFST);
->> +             mtd->ecc_stats.failed += val;
->> +             /* Clear ecc error count register 1Bit, 2Bit */
->> +             writel(0x0, nfc->base + ECC_ERR_CNT_1BIT_OFST);
->> +             writel(0x0, nfc->base + ECC_ERR_CNT_2BIT_OFST);
->> +     }
->> +
->> +     if (oob_required)
->> +             chip->ecc.read_oob(mtd, chip, page);
->> +
->
-> Shouldn't you disable the ECC engine here (anfc_config_ecc(nfc, 0))?
->
-
-Not required really, while forming the new command this will be cleared and
-it can be enabled only when there is a need.
-But for uniformity i will include the suggested change.
-
->> +     return 0;
->> +}
->> +
->> +static int anfc_write_page_hwecc(struct mtd_info *mtd,
->> +                              struct nand_chip *chip, const uint8_t *buf,
->> +                              int oob_required, int page)
->> +{
->> +     int ret;
->> +     struct anfc *nfc = to_anfc(chip->controller);
->> +     struct anfc_nand_chip *achip = to_anfc_nand(chip);
->> +     uint8_t *ecc_calc = chip->buffers->ecccalc;
->> +
->> +     anfc_set_eccsparecmd(nfc, achip, NAND_CMD_RNDIN, 0);
->> +     anfc_config_ecc(nfc, 1);
->> +
->> +     chip->write_buf(mtd, buf, mtd->writesize);
->> +
->> +     if (oob_required) {
->> +             chip->waitfunc(mtd, chip);
->> +             chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
->> +             chip->read_buf(mtd, ecc_calc, mtd->oobsize);
->> +             ret = mtd_ooblayout_set_eccbytes(mtd, ecc_calc, chip->oob_poi,
->> +                                              0, chip->ecc.total);
->> +             if (ret)
->> +                     return ret;
->> +             chip->ecc.write_oob(mtd, chip, page);
->> +     }
->
-> Ditto:
->
->         anfc_config_ecc(nfc, 0);
->
->
->> +
->> +     return 0;
->> +}
->> +
->> +static u8 anfc_read_byte(struct mtd_info *mtd)
->> +{
->> +     struct nand_chip *chip = mtd_to_nand(mtd);
->> +     struct anfc *nfc = to_anfc(chip->controller);
->> +
->> +     return nfc->buf[nfc->bufshift++];
->
-> I'm still not happy with this intermediate buffer. Can't you just call
-> anfc_read_buf() with len = 1 ?
->
-
-As i said previously, the controller will read 4 bytes at a time. So,
-for read byte
-case, driver need to return the current byte and keep track of other bytes for
-next read_byte call. this case is same even for read_buf with len=1
-
-
->> +}
->
-> [...]
->
->> +
->> +static void anfc_cmd_function(struct mtd_info *mtd,
->> +                           unsigned int cmd, int column, int page_addr)
->> +{
->> +     struct nand_chip *chip = mtd_to_nand(mtd);
->> +     struct anfc_nand_chip *achip = to_anfc_nand(chip);
->> +     struct anfc *nfc = to_anfc(chip->controller);
->> +     bool wait = false, read = false;
->> +     u32 addrcycles, prog;
->> +     u32 *bufptr = (u32 *)nfc->buf;
->> +
->> +     nfc->bufshift = 0;
->> +     nfc->curr_cmd = cmd;
->> +
->> +     if (page_addr == -1)
->> +             page_addr = 0;
->> +     if (column == -1)
->> +             column = 0;
->> +
->> +     switch (cmd) {
->> +     case NAND_CMD_RESET:
->> +             anfc_prepare_cmd(nfc, cmd, 0, 0, 0, 0);
->> +             prog = PROG_RST;
->> +             wait = true;
->> +             break;
->> +     case NAND_CMD_SEQIN:
->> +             addrcycles = achip->raddr_cycles + achip->caddr_cycles;
->> +             anfc_prepare_cmd(nfc, cmd, NAND_CMD_PAGEPROG, 1,
->> +                              mtd->writesize, addrcycles);
->> +             anfc_setpagecoladdr(nfc, page_addr, column);
->> +             break;
->> +     case NAND_CMD_READOOB:
->> +             column += mtd->writesize;
->> +     case NAND_CMD_READ0:
->> +     case NAND_CMD_READ1:
->> +             addrcycles = achip->raddr_cycles + achip->caddr_cycles;
->> +             anfc_prepare_cmd(nfc, NAND_CMD_READ0, NAND_CMD_READSTART, 1,
->> +                              mtd->writesize, addrcycles);
->> +             anfc_setpagecoladdr(nfc, page_addr, column);
->> +             break;
->> +     case NAND_CMD_RNDOUT:
->> +             anfc_prepare_cmd(nfc, cmd, NAND_CMD_RNDOUTSTART, 1,
->> +                              mtd->writesize, 2);
->> +             anfc_setpagecoladdr(nfc, page_addr, column);
->> +             break;
->> +     case NAND_CMD_PARAM:
->> +             anfc_prepare_cmd(nfc, cmd, 0, 0, 0, 1);
->> +             anfc_setpagecoladdr(nfc, page_addr, column);
->> +             anfc_rw_buf_pio(mtd, nfc->buf,
->> +                             (4 * sizeof(struct nand_onfi_params)),
->> +                             1, PROG_RDPARAM);
->> +             break;
->> +     case NAND_CMD_READID:
->> +             anfc_prepare_cmd(nfc, cmd, 0, 0, 0, 1);
->> +             anfc_setpagecoladdr(nfc, page_addr, column);
->> +             anfc_rw_buf_pio(mtd, nfc->buf, ONFI_ID_LEN, 1, PROG_RDID);
->> +             break;
->> +     case NAND_CMD_ERASE1:
->> +             addrcycles = achip->raddr_cycles;
->> +             prog = PROG_ERASE;
->> +             anfc_prepare_cmd(nfc, cmd, NAND_CMD_ERASE2, 0, 0, addrcycles);
->> +             column = page_addr & 0xffff;
->> +             page_addr = (page_addr >> PG_ADDR_SHIFT) & 0xffff;
->> +             anfc_setpagecoladdr(nfc, page_addr, column);
->> +             wait = true;
->> +             break;
->> +     case NAND_CMD_STATUS:
->> +             anfc_prepare_cmd(nfc, cmd, 0, 0, 0, 0);
->> +             anfc_setpktszcnt(nfc, achip->spktsize/4, 1);
->> +             anfc_setpagecoladdr(nfc, page_addr, column);
->> +             prog = PROG_STATUS;
->> +             wait = read = true;
->> +             break;
->> +     case NAND_CMD_GET_FEATURES:
->> +             anfc_prepare_cmd(nfc, cmd, 0, 0, 0, 1);
->> +             anfc_setpagecoladdr(nfc, page_addr, column);
->> +             anfc_rw_buf_pio(mtd, nfc->buf, achip->spktsize, 1,
->> +                             PROG_GET_FEATURE);
->
-> As already mentioned above, I don't understand why do you sometime do
-> the data xfer (READID, CMDPARAM, GET/SET_FEATURES) in ->cmdfunc()
-> instead of ->read/write_byte/buf()?
-
-Because for all these commands the framework expects data in bytes and it is
-reading byte by byte using read_byte function. So, capturing the data to
-intermediate buffer and the read_byte call will shift this buffer.
-i have tried many options to avoid reading data in command function
-but i couldn't
-find the better way than the current.
-
->
->> +             break;
->> +     case NAND_CMD_SET_FEATURES:
->> +             anfc_prepare_cmd(nfc, cmd, 0, 0, 0, 1);
->> +             anfc_setpagecoladdr(nfc, page_addr, column);
->> +             break;
->> +     default:
->
-> Please put a dev/pr_warn() here.
-
-Ok.
-
->
->> +             return;
->> +     }
->> +
->> +     if (wait) {
->> +             anfc_enable_intrs(nfc, XFER_COMPLETE);
->> +             writel(prog, nfc->base + PROG_OFST);
->> +             anfc_wait_for_event(nfc);
->> +     }
->> +
->> +     if (read)
->> +             bufptr[0] = readl(nfc->base + FLASH_STS_OFST);
->
-> Hm, I'm pretty sure that won't always work. The core sometime send
-> the NAND_CMD_STATUS once and then polls the status by calling
-> ->read_byte() several times. Here, you're only storing the status byte
-> when the command is sent.
-
-This issue i have reproduced. so, now i need to keep track of command
-and read it from read_byte
-
-> This tend to confirm my previous statement: doing I/Os in ->cmdfunc()
-> is a bad idea.
->
->> +}
->> +
->
-> [...]
->
->> +
->> +static int anfc_init_timing_mode(struct anfc *nfc,
->> +                              struct anfc_nand_chip *achip)
->> +{
->> +     int mode, err;
->> +     unsigned int feature[2];
->> +     u32 inftimeval;
->> +     struct nand_chip *chip = &achip->chip;
->> +     struct mtd_info *mtd = nand_to_mtd(chip);
->> +
->> +     memset(feature, 0, NVDDR_MODE_PACKET_SIZE);
->> +     /* Get nvddr timing modes */
->> +     mode = onfi_get_sync_timing_mode(chip) & 0xff;
->> +     if (!mode) {
->> +             mode = fls(onfi_get_async_timing_mode(chip)) - 1;
->> +             inftimeval = mode;
->> +     } else {
->> +             mode = fls(mode) - 1;
->> +             inftimeval = NVDDR_MODE | (mode << NVDDR_TIMING_MODE_SHIFT);
->> +             mode |= ONFI_DATA_INTERFACE_NVDDR;
->> +     }
->> +
->> +     feature[0] = mode;
->> +     chip->select_chip(mtd, achip->csnum);
->> +     err = chip->onfi_set_features(mtd, chip, ONFI_FEATURE_ADDR_TIMING_MODE,
->> +                                   (uint8_t *)feature);
->> +     chip->select_chip(mtd, -1);
->> +     if (err)
->> +             return err;
->> +
->> +     achip->inftimeval = inftimeval;
->> +
->> +     if (mode & ONFI_DATA_INTERFACE_NVDDR)
->> +             achip->spktsize = NVDDR_MODE_PACKET_SIZE;
->> +
->> +     return 0;
->> +}
->
-> The ->setup_data_interface() hook has been added in 4.9. Can you
-> enhance the core to support DDR interfaces?
->
-
-Sure
-
-
-Thanks,
-Punnaiah
-> Regards,
->
-> Boris
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index 9013a58..b8165e9 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -2445,31 +2445,25 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
+ 	mutex_init(&md->buf_mutex);
+ 	mutex_init(&md->file_mutex);
+ 	INIT_LIST_HEAD(&md->file_list);
+-	cdev_init(&md->cdev, &mport_fops);
+-	md->cdev.owner = THIS_MODULE;
+-	ret = cdev_add(&md->cdev, MKDEV(MAJOR(dev_number), mport->id), 1);
+-	if (ret < 0) {
+-		kfree(md);
+-		rmcd_error("Unable to register a device, err=%d", ret);
+-		return NULL;
+-	}
+ 
+-	md->dev.devt = md->cdev.dev;
++	device_initialize(&md->dev);
++	md->dev.devt = MKDEV(MAJOR(dev_number), mport->id);
+ 	md->dev.class = dev_class;
+ 	md->dev.parent = &mport->dev;
+ 	md->dev.release = mport_device_release;
+ 	dev_set_name(&md->dev, DEV_NAME "%d", mport->id);
+ 	atomic_set(&md->active, 1);
+ 
+-	ret = device_register(&md->dev);
++	cdev_init(&md->cdev, &mport_fops);
++	md->cdev.owner = THIS_MODULE;
++
++	ret = cdev_device_add(&md->cdev, &md->dev);
+ 	if (ret) {
+ 		rmcd_error("Failed to register mport %d (err=%d)",
+ 		       mport->id, ret);
+ 		goto err_cdev;
+ 	}
+ 
+-	get_device(&md->dev);
+-
+ 	INIT_LIST_HEAD(&md->doorbells);
+ 	spin_lock_init(&md->db_lock);
+ 	INIT_LIST_HEAD(&md->portwrites);
+@@ -2514,8 +2508,7 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
+ 	return md;
+ 
+ err_cdev:
+-	cdev_del(&md->cdev);
+-	kfree(md);
++	put_device(&md->dev);
+ 	return NULL;
+ }
+ 
+@@ -2579,7 +2572,7 @@ static void mport_cdev_remove(struct mport_dev *md)
+ 	atomic_set(&md->active, 0);
+ 	mport_cdev_terminate_dma(md);
+ 	rio_del_mport_pw_handler(md->mport, md, rio_mport_pw_handler);
+-	cdev_del(&(md->cdev));
++	cdev_device_del(&md->cdev, &md->dev);
+ 	mport_cdev_kill_fasync(md);
+ 
+ 	flush_workqueue(dma_wq);
+@@ -2604,7 +2597,6 @@ static void mport_cdev_remove(struct mport_dev *md)
+ 
+ 	rio_release_inb_dbell(md->mport, 0, 0x0fff);
+ 
+-	device_unregister(&md->dev);
+ 	put_device(&md->dev);
+ }
+ 
+-- 
+2.1.4
