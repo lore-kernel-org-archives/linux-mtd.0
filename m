@@ -1,21 +1,65 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-ot0-x236.google.com ([2607:f8b0:4003:c0f::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ci1BV-0003XP-AR
- for linux-mtd@lists.infradead.org; Sun, 26 Feb 2017 15:56:32 +0000
-Subject: Re: Handling vmalloc'd buffers in spi-nor
-To: Vignesh R <vigneshr@ti.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <8cf1d1d9-38a1-cbef-9a9b-07d2ecf2727f@ti.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Mark Brown <broonie@kernel.org>, linux-spi <linux-spi@vger.kernel.org>,
- Frode Isaksen <fisaksen@baylibre.com>, Sekhar Nori <nsekhar@ti.com>,
- Russell King <linux@armlinux.org.uk>
-From: Marek Vasut <marex@denx.de>
-Message-ID: <14c04e25-cba3-ce68-3177-5afb4fab6cc2@denx.de>
-Date: Sun, 26 Feb 2017 16:55:58 +0100
+ id 1ci3S7-0008LG-NH
+ for linux-mtd@lists.infradead.org; Sun, 26 Feb 2017 18:21:51 +0000
+Received: by mail-ot0-x236.google.com with SMTP id j38so40131646otb.3
+ for <linux-mtd@lists.infradead.org>; Sun, 26 Feb 2017 10:21:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8cf1d1d9-38a1-cbef-9a9b-07d2ecf2727f@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1488091097-12328-2-git-send-email-logang@deltatee.com>
+References: <1488091097-12328-1-git-send-email-logang@deltatee.com>
+ <1488091097-12328-2-git-send-email-logang@deltatee.com>
+From: Dan Williams <dan.j.williams@intel.com>
+Date: Sun, 26 Feb 2017 10:21:25 -0800
+Message-ID: <CAPcyv4i91_esBtBxbnDH3ZDd8Mnz4HoJEW2yeEvQ4QikFBjapA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/16] chardev: add helper function to register char
+ devs with a struct device
+To: Logan Gunthorpe <logang@deltatee.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>,
+ Peter Huewe <peterhuewe@gmx.de>, Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>,
+ Doug Ledford <dledford@redhat.com>, Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Haggai Eran <haggaie@mellanox.com>, Parav Pandit <pandit.parav@gmail.com>,
+ Leon Romanovsky <leon@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ linux-pci@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
+ rtc-linux@googlegroups.com, linux-mtd@lists.infradead.org,
+ "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ linux-iio@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-input@vger.kernel.org,
+ "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +69,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/21/2017 09:37 AM, Vignesh R wrote:
-> Hi all,
+On Sat, Feb 25, 2017 at 10:38 PM, Logan Gunthorpe <logang@deltatee.com> wrote:
+> Credit for this patch goes is shared with Dan Williams [1]. I've
+> taken things one step further to make the helper function more
+> useful and clean up calling code.
+>
+> There's a common pattern in the kernel whereby a struct cdev is placed
+> in a structure along side a struct device which manages the life-cycle
+> of both. In the naive approach, the reference counting is broken and
+> the struct device can free everything before the chardev code
+> is entirely released.
+>
+> Many developers have solved this problem by linking the internal kobjs
+> in this fashion:
+>
+> cdev.kobj.parent = &parent_dev.kobj;
+>
+> The cdev code explicitly gets and puts a reference to it's kobj parent.
+> So this seems like it was intended to be used this way. Dmitrty Torokhov
+> first put this in place in 2012 with this commit:
+>
+> 2f0157f char_dev: pin parent kobject
+>
+> and the first instance of the fix was then done in the input subsystem
+> in the following commit:
+>
+> 4a215aa Input: fix use-after-free introduced with dynamic minor changes
+>
+> Subsequently over the years, however, this issue seems to have tripped
+> up multiple developers independently. For example, see these commits:
+>
+> 0d5b7da iio: Prevent race between IIO chardev opening and IIO device
+> (by Lars-Peter Clausen in 2013)
+>
+> ba0ef85 tpm: Fix initialization of the cdev
+> (by Jason Gunthorpe in 2015)
+>
+> 5b28dde [media] media: fix use-after-free in cdev_put() when app exits
+> after driver unbind
+> (by Shauh Khan in 2016)
+>
+> This technique is similarly done in at least 15 places within the kernel
+> and probably should have been done so in another, at least, 5 places.
+> The kobj line also looks very suspect in that one would not expect
+> drivers to have to mess with kobject internals in this way.
+> Even highly experienced kernel developers can be surprised by this
+> code, as seen in [2].
 
-Hi!
+Nice history!
 
-> I have come across couple of problems[1] when using m25p80 driver with
-> SPI flash over SPI bus with DMA. Basically filesystems like UBIFS may
-> pass vmalloc'd buffers to SPI NOR layer which will end up in SPI layer.
-> SPI core does try to handle such buffers (see spi_map_buf()) by doing
-> vmalloc_to_page() and creating scatterlist.
-> But, its known that this does not work well with VIVT/aliasing cache
-> architectures.
-> This also fails when buffers are addressed using LPAE (buffers in region
-> higher than 32 bit addressable region), if DMA is 32bit only.
-> 
-> IMO, it would be better if vmalloc'd buffers are handled in SPI NOR
-> layer, just like nand, instead of passing them onto SPI layer.
-> In order to deal with vmalloc'd buffers passed by higher layers (like
-> UBIFS), I propose to use pre-allocated per flash bounce buffer equal to
-> the sector size of the flash. This feature can be enabled using a flag
-> similar to NAND_USE_BOUNCE_BUFFER. The changes will be mostly restricted
-> to spi_nor_read/write functions. This will help SPI drivers to use DMA
-> with NOR flashes with filesystems.
-> 
-> This would also enable other SPI NOR drivers to safely use DMA in their
-> read/write callbacks.
-> 
-> Any thoughts/comments?
+>
+> To help alleviate this situation, and hopefully prevent future
+> wasted effort on this problem, this patch introduces a helper function
+> to register a char device along with its parent struct device.
+> This creates a more regular API for tying a char device to its parent
+> without the developer having to set members in the underlying kobject.
+>
+> This patch introduce cdev_device_add and cdev_device_del which
+> replaces a common pattern including setting the kobj parent, calling
+> cdev_add and then calling device_add. It also introduces cdev_set_parent
+> for the few cases that set the kobject parent without using device_add.
+>
+> [1] https://lkml.org/lkml/2017/2/13/700
+> [2] https://lkml.org/lkml/2017/2/10/370
+>
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+>  fs/char_dev.c        | 67 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/cdev.h |  4 ++++
+>  2 files changed, 71 insertions(+)
+>
+> diff --git a/fs/char_dev.c b/fs/char_dev.c
+> index 44a240c..471d480 100644
+> --- a/fs/char_dev.c
+> +++ b/fs/char_dev.c
+> @@ -471,6 +471,70 @@ int cdev_add(struct cdev *p, dev_t dev, unsigned count)
+>         return 0;
+>  }
+>
+> +/**
+> + * cdev_set_parent() - set the parent kobject for a char device
+> + * @p: the cdev structure
+> + * @kobj: the kobject to take a reference to
+> + *
+> + * cdev_set_parent() sets a parent kobject which will be referenced
+> + * appropriately so the parent is not freed before the cdev. This
+> + * should be called before cdev_add.
+> + */
+> +void cdev_set_parent(struct cdev *p, struct kobject *kobj)
+> +{
+> +       WARN_ON(!kobj->state_initialized);
+> +       p->kobj.parent = kobj;
+> +}
+> +
+> +/**
+> + * cdev_device_add() - add a char device and it's corresponding
+> + *     struct device, linkink
 
-Code please :-)
+"add a cdev and it's corresponding struct device"
 
-Let's discuss this over a patch. With the recent spi-nor and spi-nand
-controllers, I think this makes sense though.
+> + * @dev: the device structure
+> + * @cdev: the cdev structure
+> + *
+> + * cdev_device_add() adds the char device represented by @cdev to the system,
+> + * just as cdev_add does. It then adds @dev to the system using device_add
+> + * The dev_t for the char device will be taken from the struct device which
+> + * needs to be initialized first. This helper function correctly takes a
+> + * reference to the parent device so the parent will not get released until
+> + * all references to the cdev are released.
+> + *
+> + * This function should be used whenever the struct cdev and the
+> + * struct device are members of the same structure whose lifetime is
+> + * managed by the struct device.
+> + */
 
-> Thanks!
-> 
-> [1]https://www.spinics.net/lists/arm-kernel/msg563773.html
-> 
+Perhaps add a note here that userspace may have invoked file
+operations between cdev_add() and a failing device_add(), so
+additional cleanup beyond put_device() (like mmap invalidation) might
+be needed. That can be a later follow-on patch.
 
-
--- 
-Best regards,
-Marek Vasut
+> +int cdev_device_add(struct cdev *cdev, struct device *dev)
+> +{
+> +       int rc = 0;
+> +
+> +       cdev_set_parent(cdev, &dev->kobj);
+> +
+> +       rc = cdev_add(cdev, dev->devt, 1);
+> +       if (rc)
+> +               return rc;
+> +
+> +       rc = device_add(dev);
+> +       if (rc)
+> +               cdev_del(cdev);
+> +
+> +       return rc;
+> +}
+> +
