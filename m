@@ -1,24 +1,20 @@
-Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ciLuX-0001iL-8w
- for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 14:04:23 +0000
-Received: by mail-wm0-x22a.google.com with SMTP id v77so63324716wmv.0
- for <linux-mtd@lists.infradead.org>; Mon, 27 Feb 2017 06:04:00 -0800 (PST)
-Subject: Re: [RFC PATCH 0/2] mtd: spi-nor: Handle vmalloc'd buffers
-To: Vignesh R <vigneshr@ti.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <20170227120839.16545-1-vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-spi@vger.kernel.org
-From: Frode Isaksen <fisaksen@baylibre.com>
-Message-ID: <884efafc-6b34-0cb6-4c9f-e3a926114130@baylibre.com>
-Date: Mon, 27 Feb 2017 15:03:57 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ciNsC-0004Kt-QW
+ for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 16:10:07 +0000
+Date: Mon, 27 Feb 2017 17:09:11 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com, richard@nod.at,
+ marek.vasut@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+ cyrille.pitchen@atmel.com, computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH V3, 1/2] mtd: nand: brcmnand: Change brcmnand_set_wp()
+ prototype
+Message-ID: <20170227170911.5b0fa0a7@bbrezillon>
+In-Reply-To: <1487647832-10544-1-git-send-email-kdasu.kdev@gmail.com>
+References: <1487647832-10544-1-git-send-email-kdasu.kdev@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20170227120839.16545-1-vigneshr@ti.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,31 +25,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Kamal,
 
-
-On 27/02/2017 13:08, Vignesh R wrote:
-> This series implements bounce buffer support to handle vmalloc'd buffers
-> in case of drivers use DMA, similar to what is done in MTD NAND
-> framework.
->
-> I have tested this on two platform:
-> DRA74 SoC (cortex a15 @1GHz) with s25fl256s1 QSPI (SPI bus frequency
-> 76.8 MHz) and I don't see any performance degradation with UBIFS
-> read/write(10MB file).
-> AM437x SoC (cortex a9 @1GHz) with macronix mx66l51235l QSPI flash (SPI bus
-> frequency 48MHz) and performance degradation is <4% for UBIFS.
->
->
-> Vignesh R (2):
->   mtd: spi-nor: Introduce bounce buffer to handle vmalloc'd buffers
->   mtd: devices: m25p80: Enable spi-nor bounce buffer support
->
->  drivers/mtd/devices/m25p80.c  |  1 +
->  drivers/mtd/spi-nor/spi-nor.c | 30 +++++++++++++++++++++++++++---
->  include/linux/mtd/spi-nor.h   |  4 ++++
->  3 files changed, 32 insertions(+), 3 deletions(-)
->
-I have tested this on a daVinci EVM board with SPI DMA enabled and the UBIFS tests all passed.
+This time I'm not even in the recipients list :-(. Can you please make
+sure you Cc all the relevant maintainers when sending a patch (this is
+not the first time it happens).
 
 Thanks,
-Frode
+
+Boris
+
+On Mon, 20 Feb 2017 22:30:31 -0500
+Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+
+> Changing brcmnand_set_wp() prototype in prepration for refactoring the nand
+> write protect logic to add flash status byte check for the protection bit.
+> 
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 27 +++++++++++++++++----------
+>  1 file changed, 17 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index 42ebd73..c7c4efe 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -765,11 +765,14 @@ enum {
+>  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+>  };
+>  
+> -static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
+> +static int brcmnand_set_wp(struct brcmnand_host *host, int en)
+>  {
+> +	struct brcmnand_controller *ctrl = host->ctrl;
+>  	u32 val = en ? CS_SELECT_NAND_WP : 0;
+>  
+>  	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_SELECT, CS_SELECT_NAND_WP, 0, val);
+> +
+> +	return 0;
+>  }
+>  
+>  /***********************************************************************
+> @@ -1029,7 +1032,7 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
+>  			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
+>  			old_wp = wp;
+>  		}
+> -		brcmnand_set_wp(ctrl, wp);
+> +		brcmnand_set_wp(host, wp);
+>  	}
+>  }
+>  
+> @@ -2462,14 +2465,6 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+>  	/* Disable XOR addressing */
+>  	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_XOR, 0xff, 0, 0);
+>  
+> -	if (ctrl->features & BRCMNAND_HAS_WP) {
+> -		/* Permanently disable write protection */
+> -		if (wp_on == 2)
+> -			brcmnand_set_wp(ctrl, false);
+> -	} else {
+> -		wp_on = 0;
+> -	}
+> -
+>  	/* IRQ */
+>  	ctrl->irq = platform_get_irq(pdev, 0);
+>  	if ((int)ctrl->irq < 0) {
+> @@ -2522,6 +2517,18 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+>  			}
+>  
+>  			list_add_tail(&host->node, &ctrl->host_list);
+> +
+> +			if (ctrl->features & BRCMNAND_HAS_WP) {
+> +				/* Permanently disable write protection */
+> +				if (wp_on == 2) {
+> +					ret = brcmnand_set_wp(host, false);
+> +					if (ret)
+> +						goto err;
+> +				}
+> +			} else {
+> +				wp_on = 0;
+> +			}
+> +
+>  		}
+>  	}
+>  
