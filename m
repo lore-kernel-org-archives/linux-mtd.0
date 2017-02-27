@@ -1,12 +1,12 @@
 Received: from quartz.orcorp.ca ([184.70.90.242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ciOQ4-0008Vp-SS
- for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 16:45:08 +0000
-Date: Mon, 27 Feb 2017 09:42:09 -0700
+ id 1ciOd1-0006jG-6n
+ for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 16:58:29 +0000
+Date: Mon, 27 Feb 2017 09:56:18 -0700
 From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-To: Logan Gunthorpe <logang@deltatee.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dan Williams <dan.j.williams@intel.com>,
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Logan Gunthorpe <logang@deltatee.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Alexander Viro <viro@zeniv.linux.org.uk>,
  Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
  Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
@@ -42,21 +42,24 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  "Martin K. Petersen" <martin.petersen@oracle.com>,
  Stephen Bates <stephen.bates@microsemi.com>,
  Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
- linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
- linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
+ linux-scsi <linux-scsi@vger.kernel.org>, rtc-linux@googlegroups.com,
+ linux-mtd@lists.infradead.org,
+ "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
  linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
  linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
- linux-nvdimm@ml01.01.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 06/16] tpm-chip: utilize new cdev_device_add helper
- function
-Message-ID: <20170227164209.GD5891@obsidianresearch.com>
+ "linux-nvdimm@lists.01.org" <linux-nvdimm@ml01.01.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 01/16] chardev: add helper function to register char
+ devs with a struct device
+Message-ID: <20170227165618.GE5891@obsidianresearch.com>
 References: <1488091097-12328-1-git-send-email-logang@deltatee.com>
- <1488091097-12328-7-git-send-email-logang@deltatee.com>
+ <1488091097-12328-2-git-send-email-logang@deltatee.com>
+ <CAPcyv4i91_esBtBxbnDH3ZDd8Mnz4HoJEW2yeEvQ4QikFBjapA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1488091097-12328-7-git-send-email-logang@deltatee.com>
+In-Reply-To: <CAPcyv4i91_esBtBxbnDH3ZDd8Mnz4HoJEW2yeEvQ4QikFBjapA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -66,61 +69,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 25, 2017 at 11:38:07PM -0700, Logan Gunthorpe wrote:
-> Replace the open coded registration of the cdev and dev with the
-> new device_add_cdev() helper. The helper replaces a common pattern by
-> taking the proper reference against the parent device and adding both
-> the cdev and the device.
+On Sun, Feb 26, 2017 at 10:21:25AM -0800, Dan Williams wrote:
+> > + * cdev_device_add() adds the char device represented by @cdev to the system,
+> > + * just as cdev_add does. It then adds @dev to the system using device_add
+> > + * The dev_t for the char device will be taken from the struct device which
+> > + * needs to be initialized first. This helper function correctly takes a
+> > + * reference to the parent device so the parent will not get released until
+> > + * all references to the cdev are released.
+> > + *
+> > + * This function should be used whenever the struct cdev and the
+> > + * struct device are members of the same structure whose lifetime is
+> > + * managed by the struct device.
+> > + */
 > 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->  drivers/char/tpm/tpm-chip.c | 19 +++----------------
->  1 file changed, 3 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index a77262d..933f96e 100644
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -187,7 +187,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *dev,
->  
->  	cdev_init(&chip->cdev, &tpm_fops);
->  	chip->cdev.owner = THIS_MODULE;
-> -	chip->cdev.kobj.parent = &chip->dev.kobj;
->  
->  	return chip;
->  
-> @@ -230,27 +229,16 @@ static int tpm_add_char_device(struct tpm_chip *chip)
->  {
->  	int rc;
->  
-> -	rc = cdev_add(&chip->cdev, chip->dev.devt, 1);
-> +	rc = cdev_device_add(&chip->cdev, &chip->dev);
->  	if (rc) {
->  		dev_err(&chip->dev,
-> -			"unable to cdev_add() %s, major %d, minor %d, err=%d\n",
-> +			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
->  			dev_name(&chip->dev), MAJOR(chip->dev.devt),
->  			MINOR(chip->dev.devt), rc);
->  
->  		return rc;
->  	}
->  
-> -	rc = device_add(&chip->dev);
-> -	if (rc) {
-> -		dev_err(&chip->dev,
-> -			"unable to device_register() %s, major %d, minor %d, err=%d\n",
-> -			dev_name(&chip->dev), MAJOR(chip->dev.devt),
-> -			MINOR(chip->dev.devt), rc);
-> -
-> -		cdev_del(&chip->cdev);
-> -		return rc;
-> -	}
+> Perhaps add a note here that userspace may have invoked file
+> operations between cdev_add() and a failing device_add(), so
+> additional cleanup beyond put_device() (like mmap invalidation) might
+> be needed. That can be a later follow-on patch.
 
-This will collide with the patch I sent:
+Yes please, that is way too subtle. Suggest:
 
-https://patchwork.kernel.org/patch/9589001/
+NOTE: Callers must assume that userspace was able to open the cdev and
+can call cdev fops callbacks at any time, even if this function fails.
 
-Jarkko: The resolution will be to continue to call tpm_del_char_device
-from the cdev_device_add error path and drop all calls to cdev_del
+I would also add a note to cdev_device_del:
 
-Reviewed-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+NOTE: This guarantees that associated sysfs callbacks are not running
+or runnable, however any open cdevs will remain and their fops remain
+callable even after this returns.
+
+Since I have seen a lot of confusion on that point as well..
 
 Jason
