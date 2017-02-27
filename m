@@ -1,27 +1,62 @@
-Received: from mail-yw0-x230.google.com ([2607:f8b0:4002:c05::230])
+Received: from quartz.orcorp.ca ([184.70.90.242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ciONP-0005Tz-Ou
- for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 16:42:26 +0000
-Received: by mail-yw0-x230.google.com with SMTP id l138so15663415ywc.0
- for <linux-mtd@lists.infradead.org>; Mon, 27 Feb 2017 08:41:56 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20170227170911.5b0fa0a7@bbrezillon>
-References: <1487647832-10544-1-git-send-email-kdasu.kdev@gmail.com>
- <20170227170911.5b0fa0a7@bbrezillon>
-From: Kamal Dasu <kamal.dasu@broadcom.com>
-Date: Mon, 27 Feb 2017 11:41:15 -0500
-Message-ID: <CAKekbet3_Mv1oRybrQ6m01GFioNfy=e8-2h=yn-3qEB=4dN9qw@mail.gmail.com>
-Subject: Re: [PATCH V3,
- 1/2] mtd: nand: brcmnand: Change brcmnand_set_wp() prototype
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Florian Fainelli <f.fainelli@gmail.com>, Richard Weinberger <richard@nod.at>,
- marek.vasut@gmail.com, bcm-kernel-feedback-list@broadcom.com,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ id 1ciOQ4-0008Vp-SS
+ for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 16:45:08 +0000
+Date: Mon, 27 Feb 2017 09:42:09 -0700
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: Logan Gunthorpe <logang@deltatee.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>,
+ Leon Romanovsky <leon@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+ linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
+ linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-nvdimm@ml01.01.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/16] tpm-chip: utilize new cdev_device_add helper
+ function
+Message-ID: <20170227164209.GD5891@obsidianresearch.com>
+References: <1488091097-12328-1-git-send-email-logang@deltatee.com>
+ <1488091097-12328-7-git-send-email-logang@deltatee.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1488091097-12328-7-git-send-email-logang@deltatee.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,95 +66,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ok will make sure the mtd email list is up-to-date.
+On Sat, Feb 25, 2017 at 11:38:07PM -0700, Logan Gunthorpe wrote:
+> Replace the open coded registration of the cdev and dev with the
+> new device_add_cdev() helper. The helper replaces a common pattern by
+> taking the proper reference against the parent device and adding both
+> the cdev and the device.
+> 
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>  drivers/char/tpm/tpm-chip.c | 19 +++----------------
+>  1 file changed, 3 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index a77262d..933f96e 100644
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -187,7 +187,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *dev,
+>  
+>  	cdev_init(&chip->cdev, &tpm_fops);
+>  	chip->cdev.owner = THIS_MODULE;
+> -	chip->cdev.kobj.parent = &chip->dev.kobj;
+>  
+>  	return chip;
+>  
+> @@ -230,27 +229,16 @@ static int tpm_add_char_device(struct tpm_chip *chip)
+>  {
+>  	int rc;
+>  
+> -	rc = cdev_add(&chip->cdev, chip->dev.devt, 1);
+> +	rc = cdev_device_add(&chip->cdev, &chip->dev);
+>  	if (rc) {
+>  		dev_err(&chip->dev,
+> -			"unable to cdev_add() %s, major %d, minor %d, err=%d\n",
+> +			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
+>  			dev_name(&chip->dev), MAJOR(chip->dev.devt),
+>  			MINOR(chip->dev.devt), rc);
+>  
+>  		return rc;
+>  	}
+>  
+> -	rc = device_add(&chip->dev);
+> -	if (rc) {
+> -		dev_err(&chip->dev,
+> -			"unable to device_register() %s, major %d, minor %d, err=%d\n",
+> -			dev_name(&chip->dev), MAJOR(chip->dev.devt),
+> -			MINOR(chip->dev.devt), rc);
+> -
+> -		cdev_del(&chip->cdev);
+> -		return rc;
+> -	}
 
-Thanks
-Kamal
+This will collide with the patch I sent:
 
-On Mon, Feb 27, 2017 at 11:09 AM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hi Kamal,
->
-> This time I'm not even in the recipients list :-(. Can you please make
-> sure you Cc all the relevant maintainers when sending a patch (this is
-> not the first time it happens).
->
-> Thanks,
->
-> Boris
->
-> On Mon, 20 Feb 2017 22:30:31 -0500
-> Kamal Dasu <kdasu.kdev@gmail.com> wrote:
->
->> Changing brcmnand_set_wp() prototype in prepration for refactoring the nand
->> write protect logic to add flash status byte check for the protection bit.
->>
->> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->> ---
->>  drivers/mtd/nand/brcmnand/brcmnand.c | 27 +++++++++++++++++----------
->>  1 file changed, 17 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
->> index 42ebd73..c7c4efe 100644
->> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
->> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
->> @@ -765,11 +765,14 @@ enum {
->>       CS_SELECT_AUTO_DEVICE_ID_CFG            = BIT(30),
->>  };
->>
->> -static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
->> +static int brcmnand_set_wp(struct brcmnand_host *host, int en)
->>  {
->> +     struct brcmnand_controller *ctrl = host->ctrl;
->>       u32 val = en ? CS_SELECT_NAND_WP : 0;
->>
->>       brcmnand_rmw_reg(ctrl, BRCMNAND_CS_SELECT, CS_SELECT_NAND_WP, 0, val);
->> +
->> +     return 0;
->>  }
->>
->>  /***********************************************************************
->> @@ -1029,7 +1032,7 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
->>                       dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
->>                       old_wp = wp;
->>               }
->> -             brcmnand_set_wp(ctrl, wp);
->> +             brcmnand_set_wp(host, wp);
->>       }
->>  }
->>
->> @@ -2462,14 +2465,6 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
->>       /* Disable XOR addressing */
->>       brcmnand_rmw_reg(ctrl, BRCMNAND_CS_XOR, 0xff, 0, 0);
->>
->> -     if (ctrl->features & BRCMNAND_HAS_WP) {
->> -             /* Permanently disable write protection */
->> -             if (wp_on == 2)
->> -                     brcmnand_set_wp(ctrl, false);
->> -     } else {
->> -             wp_on = 0;
->> -     }
->> -
->>       /* IRQ */
->>       ctrl->irq = platform_get_irq(pdev, 0);
->>       if ((int)ctrl->irq < 0) {
->> @@ -2522,6 +2517,18 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
->>                       }
->>
->>                       list_add_tail(&host->node, &ctrl->host_list);
->> +
->> +                     if (ctrl->features & BRCMNAND_HAS_WP) {
->> +                             /* Permanently disable write protection */
->> +                             if (wp_on == 2) {
->> +                                     ret = brcmnand_set_wp(host, false);
->> +                                     if (ret)
->> +                                             goto err;
->> +                             }
->> +                     } else {
->> +                             wp_on = 0;
->> +                     }
->> +
->>               }
->>       }
->>
->
+https://patchwork.kernel.org/patch/9589001/
+
+Jarkko: The resolution will be to continue to call tpm_del_char_device
+from the cdev_device_add error path and drop all calls to cdev_del
+
+Reviewed-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+
+Jason
