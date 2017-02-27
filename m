@@ -1,26 +1,61 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ciHlO-0004Aa-4m
- for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 09:38:39 +0000
-Received: by mail-wm0-x244.google.com with SMTP id r18so12473943wmd.3
- for <linux-mtd@lists.infradead.org>; Mon, 27 Feb 2017 01:38:18 -0800 (PST)
-Subject: Re: [PATCH V2 1/2] mtd: add support for partition parsers
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ciHta-000077-SK
+ for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 09:47:09 +0000
+Date: Mon, 27 Feb 2017 10:46:43 +0100
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: Logan Gunthorpe <logang@deltatee.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>,
+ Leon Romanovsky <leon@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <20170221124002.585-1-zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <4ae7952d-8e2f-b512-7da4-a654a7435272@gmail.com>
-Date: Mon, 27 Feb 2017 10:36:03 +0100
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
+ Boaz Harrosh <ooo@electrozaur.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+ linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
+ linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 14/16] rtc: utilize new cdev_device_add helper function
+Message-ID: <20170227094643.pag5preyj2dueabd@piout.net>
+References: <1488091097-12328-1-git-send-email-logang@deltatee.com>
+ <1488091097-12328-15-git-send-email-logang@deltatee.com>
 MIME-Version: 1.0
-In-Reply-To: <20170221124002.585-1-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1488091097-12328-15-git-send-email-logang@deltatee.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,132 +65,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/21/2017 01:40 PM, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On 25/02/2017 at 23:38:15 -0700, Logan Gunthorpe wrote:
+> Mostly straightforward, but we had to remove the rtc_dev_add/del_device
+> functions as they split up the cdev_add and the device_add.
 > 
-> Some devices have partitions that are kind of containers with extra
-> subpartitions / volumes instead of e.g. simple filesystem data. To
-> support such cases we need to first create normal flash partitions and
-> then take care of these special ones.
+> Doing this also revealed that there was likely another subtle bug:
+> seeing cdev_add was done after device_register, the cdev probably
+> was not ready before device_add when the uevent occurs. This would
+> race with userspace, if it tried to use the device directly after
+> the uevent. This is fixed just by using the new helper function.
 > 
-> It's very common case for home routers. Depending on the vendor there
-> are formats like TRX, Seama, uImage
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 
-uImage is file format, not partition type. It's just a blob of data
-(usually kernel) with small header, I don't think we should represent
-the content of it as a partition.
-
-> , WRGG and more. All of them are used
-> to embed few partitions into a single one / single firmware file.
-> 
-> Ideally all vendors would use some well documented / standardized format
-> like UBI (and some probably start doing so), but there are still
-> countless devices on the market using these poor vendor specific
-> formats.
-> 
-> This patch extends MTD subsystem by allowing to specify partition format
-> and trying to use a proper parser when needed. Supporting such poor
-> formats is highly unlikely to be the top priority so these changes try
-> to minimize maintenance cost to the minimum. It reuses existing code for
-> these new parsers and just adds a one property and one new function.
-> 
-> This implementation requires setting partition format in a flash parser.
-> A proper change of bcm47xxpart will follow and in the future we will
-> hopefully also find a solution for doing it with ofpart
-> ("fixed-partitions").
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 > ---
-> V2: A totally rebased & refreshed version.
-> ---
->  drivers/mtd/mtdpart.c          | 38 ++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/partitions.h |  7 +++++++
->  2 files changed, 45 insertions(+)
+>  drivers/rtc/class.c   | 14 ++++++++++----
+>  drivers/rtc/rtc-dev.c | 17 -----------------
+>  2 files changed, 10 insertions(+), 21 deletions(-)
 > 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index ea5e5307f667..9a40c3ea384b 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -363,6 +363,42 @@ static inline void free_partition(struct mtd_part *p)
->  	kfree(p);
+> diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
+> index 74fd974..5fb4398 100644
+> --- a/drivers/rtc/class.c
+> +++ b/drivers/rtc/class.c
+> @@ -195,6 +195,8 @@ struct rtc_device *rtc_device_register(const char *name, struct device *dev,
+>  		goto exit_ida;
+>  	}
+>  
+> +	device_initialize(&rtc->dev);
+> +
+>  	rtc->id = id;
+>  	rtc->ops = ops;
+>  	rtc->owner = owner;
+> @@ -233,14 +235,19 @@ struct rtc_device *rtc_device_register(const char *name, struct device *dev,
+>  
+>  	rtc_dev_prepare(rtc);
+>  
+> -	err = device_register(&rtc->dev);
+> +	err = cdev_device_add(&rtc->char_dev, &rtc->dev);
+>  	if (err) {
+> +		dev_warn(&rtc->dev, "%s: failed to add char device %d:%d\n",
+> +			 rtc->name, MAJOR(rtc->dev.devt), rtc->id);
+> +
+>  		/* This will free both memory and the ID */
+>  		put_device(&rtc->dev);
+>  		goto exit;
+> +	} else {
+> +		dev_dbg(&rtc->dev, "%s: dev (%d:%d)\n", rtc->name,
+> +			MAJOR(rtc->dev.devt), rtc->id);
+>  	}
+>  
+> -	rtc_dev_add_device(rtc);
+>  	rtc_proc_add_device(rtc);
+>  
+>  	dev_info(dev, "rtc core: registered %s as %s\n",
+> @@ -271,9 +278,8 @@ void rtc_device_unregister(struct rtc_device *rtc)
+>  	 * Remove innards of this RTC, then disable it, before
+>  	 * letting any rtc_class_open() users access it again
+>  	 */
+> -	rtc_dev_del_device(rtc);
+>  	rtc_proc_del_device(rtc);
+> -	device_del(&rtc->dev);
+> +	cdev_device_del(&rtc->char_dev, &rtc->dev);
+>  	rtc->ops = NULL;
+>  	mutex_unlock(&rtc->ops_lock);
+>  	put_device(&rtc->dev);
+> diff --git a/drivers/rtc/rtc-dev.c b/drivers/rtc/rtc-dev.c
+> index a6d9434..fdd071f 100644
+> --- a/drivers/rtc/rtc-dev.c
+> +++ b/drivers/rtc/rtc-dev.c
+> @@ -477,23 +477,6 @@ void rtc_dev_prepare(struct rtc_device *rtc)
+>  
+>  	cdev_init(&rtc->char_dev, &rtc_dev_fops);
+>  	rtc->char_dev.owner = rtc->owner;
+> -	rtc->char_dev.kobj.parent = &rtc->dev.kobj;
+> -}
+> -
+> -void rtc_dev_add_device(struct rtc_device *rtc)
+> -{
+> -	if (cdev_add(&rtc->char_dev, rtc->dev.devt, 1))
+> -		dev_warn(&rtc->dev, "%s: failed to add char device %d:%d\n",
+> -			rtc->name, MAJOR(rtc_devt), rtc->id);
+> -	else
+> -		dev_dbg(&rtc->dev, "%s: dev (%d:%d)\n", rtc->name,
+> -			MAJOR(rtc_devt), rtc->id);
+> -}
+> -
+> -void rtc_dev_del_device(struct rtc_device *rtc)
+> -{
+> -	if (rtc->dev.devt)
+> -		cdev_del(&rtc->char_dev);
 >  }
 >  
-> +/**
-> + * mtd_parse_part - parse MTD partition with a matching parser
-> + *
-> + * Some partitions use a specific format to describe contained subpartitions
-> + * (volumes). This function tries to use a proper parser for a given format and
-> + * registers found (sub)partitions.
-> + */
-> +static int mtd_parse_part(struct mtd_part *slave, const char *format)
-> +{
-> +	struct mtd_partitions parsed;
-> +	const char *probes[2];
-> +	int i;
-> +	int err;
-> +
-> +	probes[0] = format; /* Use parser with name matching the format */
-> +	probes[1] = NULL; /* End of parsers */
-> +	err = parse_mtd_partitions(&slave->mtd, probes, &parsed, NULL);
-> +	if (err)
-> +		return err;
-> +	else if (!parsed.nr_parts)
-> +		return -ENOENT;
-> +
-> +	for (i = 0; i < parsed.nr_parts; i++) {
-> +		struct mtd_partition *part;
-> +
-> +		part = (struct mtd_partition *)&parsed.parts[i];
-> +		part->offset += slave->offset;
-> +	}
-> +
-> +	err = add_mtd_partitions(slave->master, parsed.parts, parsed.nr_parts);
-> +
-> +	mtd_part_parser_cleanup(&parsed);
-> +
-> +	return err;
-> +}
-> +
->  /*
->   * This function unregisters and destroy all slave MTD objects which are
->   * attached to the given master MTD object.
-> @@ -724,6 +760,8 @@ int add_mtd_partitions(struct mtd_info *master,
->  
->  		add_mtd_device(&slave->mtd);
->  		mtd_add_partition_attrs(slave);
-> +		if (parts[i].format)
-> +			mtd_parse_part(slave, parts[i].format);
->  
->  		cur_offset = slave->offset + slave->mtd.size;
->  	}
-> diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-> index 06df1e06b6e0..2787e76c030f 100644
-> --- a/include/linux/mtd/partitions.h
-> +++ b/include/linux/mtd/partitions.h
-> @@ -20,6 +20,12 @@
->   *
->   * For each partition, these fields are available:
->   * name: string that will be used to label the partition's MTD device.
-> + * format: some partitions can be containers using specific format to describe
-> + *	embedded subpartitions / volumes. E.g. many home routers use "firmware"
-> + *	partition that contains at least kernel and rootfs. In such case an
-> + *	extra parser is needed that will detect these dynamic partitions and
-> + *	report them to the MTD subsystem. This property describes partition
-> + *	format and allows MTD core to call a proper parser.
->   * size: the partition size; if defined as MTDPART_SIZ_FULL, the partition
->   * 	will extend to the end of the master MTD device.
->   * offset: absolute starting position within the master MTD device; if
-> @@ -38,6 +44,7 @@
->  
->  struct mtd_partition {
->  	const char *name;		/* identifier string */
-> +	const char *format;		/* partition format */
->  	uint64_t size;			/* partition size */
->  	uint64_t offset;		/* offset within the master MTD space */
->  	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+>  void __init rtc_dev_init(void)
+> -- 
+> 2.1.4
 > 
 
-
 -- 
-Best regards,
-Marek Vasut
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
