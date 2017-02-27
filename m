@@ -1,28 +1,18 @@
-Date: Mon, 27 Feb 2017 13:12:31 -0600
-From: Rob Herring <robh@kernel.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Haavard Skinnemoen <hskinnemoen@gmail.com>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- linux-kernel@vger.kernel.org, Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>,
+Received: from smtp5-g21.free.fr ([212.27.42.5])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ciRun-0003vW-3c
+ for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 20:29:05 +0000
+From: Alban <albeu@free.fr>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm-kernel@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] mtd: nand: atmel: Document the new DT bindings
-Message-ID: <20170227191231.qub5boyro2scb362@rob-hp-laptop>
-References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
- <1487593718-20752-3-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1487593718-20752-3-git-send-email-boris.brezillon@free-electrons.com>
+ David Woodhouse <dwmw2@infradead.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Alban <albeu@free.fr>
+Subject: [RFC 0/3] drivers: Add an API to read device specific config data
+Date: Mon, 27 Feb 2017 21:28:09 +0100
+Message-Id: <1488227292-18906-1-git-send-email-albeu@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,19 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 20, 2017 at 01:28:37PM +0100, Boris Brezillon wrote:
-> The old NAND bindings were not exactly describing the hardware topology
-> and were preventing definitions of several NAND chips under the same
-> NAND controller.
-> 
-> New bindings address these limitations and should be preferred over the
-> old ones for new SoCs/boards.
-> Old bindings are still supported for backward compatibility but are
-> marked deprecated in the doc.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  .../devicetree/bindings/mtd/atmel-nand.txt         | 107 ++++++++++++++++++++-
->  1 file changed, 106 insertions(+), 1 deletion(-)
+Hi all,
 
-Acked-by: Rob Herring <robh@kernel.org>
+while looking at adding OF support for the ath9k driver I had the problem of
+reading the EEPROM data. On the SoC platforms this data is stored in an SPI
+flash along with a few other things. In OpenWRT/LEDE this data is read from
+the board init code using the fact that the flash is (normaly) readable from
+a memory map. A bit too hackish for my taste.
+
+This is just one example, there is various other similar cases, mostly with
+MAC addresses. I thought it would be nicer if we had a clean API for this,
+similar to the firmware API but per device instance instead of beeing per
+driver. The device driver wouldn't have to care where the data is stored,
+they just request it and the backend take care of reading the EEPROM, MTD
+or whatever is used on the board.
+
+This series implement such an API along with an implementation for MTD
+devices and a use in the ath9k driver. As this is an RFC I didn't yet
+write the OF binding documentation, that will come later if the feedback
+is positive.
+
+Alban Bedel (3):
+  drivers: Add an API to read device specific config data
+  mtd: Add support for reading device data out of MTD devices
+  ath9k: ahb: Add OF support
+
+ drivers/base/Kconfig                   |   6 +
+ drivers/base/Makefile                  |   1 +
+ drivers/base/devdata.c                 | 204 +++++++++++++++++++++++++++++++++
+ drivers/mtd/Kconfig                    |   9 ++
+ drivers/mtd/Makefile                   |   1 +
+ drivers/mtd/devdata.c                  |  70 +++++++++++
+ drivers/net/wireless/ath/ath9k/Kconfig |   1 +
+ drivers/net/wireless/ath/ath9k/ahb.c   |  55 +++++++--
+ drivers/net/wireless/ath/ath9k/init.c  |  41 ++++++-
+ include/linux/devdata.h                |  79 +++++++++++++
+ 10 files changed, 459 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/base/devdata.c
+ create mode 100644 drivers/mtd/devdata.c
+ create mode 100644 include/linux/devdata.h
+
+-- 
+2.7.4
