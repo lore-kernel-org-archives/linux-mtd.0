@@ -1,27 +1,21 @@
-Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
+Received: from lelnx193.ext.ti.com ([198.47.27.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ciHyX-00030u-49
- for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 09:52:14 +0000
-Received: by mail-oi0-x241.google.com with SMTP id f192so207023oic.3
- for <linux-mtd@lists.infradead.org>; Mon, 27 Feb 2017 01:51:51 -0800 (PST)
+ id 1ciK7v-0006Pw-OX
+ for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 12:10:06 +0000
+From: Vignesh R <vigneshr@ti.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, Vignesh R <vigneshr@ti.com>, Frode Isaksen
+ <fisaksen@baylibre.com>, <linux-spi@vger.kernel.org>
+Subject: [RFC PATCH 0/2] mtd: spi-nor: Handle vmalloc'd buffers
+Date: Mon, 27 Feb 2017 17:38:37 +0530
+Message-ID: <20170227120839.16545-1-vigneshr@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <4ae7952d-8e2f-b512-7da4-a654a7435272@gmail.com>
-References: <20170221124002.585-1-zajec5@gmail.com>
- <4ae7952d-8e2f-b512-7da4-a654a7435272@gmail.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Mon, 27 Feb 2017 10:51:50 +0100
-Message-ID: <CACna6ryqsTdUFogeneK2wFBLVwDXS4dCbaAf7UgyDUwbWKvMQA@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] mtd: add support for partition parsers
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 27 February 2017 at 10:36, Marek Vasut <marek.vasut@gmail.com> wrote:
-> On 02/21/2017 01:40 PM, Rafa=C5=82 Mi=C5=82ecki wrote:
->> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->>
->> Some devices have partitions that are kind of containers with extra
->> subpartitions / volumes instead of e.g. simple filesystem data. To
->> support such cases we need to first create normal flash partitions and
->> then take care of these special ones.
->>
->> It's very common case for home routers. Depending on the vendor there
->> are formats like TRX, Seama, uImage
->
-> uImage is file format, not partition type. It's just a blob of data
-> (usually kernel) with small header, I don't think we should represent
-> the content of it as a partition.
+This series implements bounce buffer support to handle vmalloc'd buffers
+in case of drivers use DMA, similar to what is done in MTD NAND
+framework.
 
-You are correct, this isn't any standard container with
-subpartitions/volumes. This shouldn't be listed in this commit
-message, sorry. I'll drop it in V2.
+I have tested this on two platform:
+DRA74 SoC (cortex a15 @1GHz) with s25fl256s1 QSPI (SPI bus frequency
+76.8 MHz) and I don't see any performance degradation with UBIFS
+read/write(10MB file).
+AM437x SoC (cortex a9 @1GHz) with macronix mx66l51235l QSPI flash (SPI bus
+frequency 48MHz) and performance degradation is <4% for UBIFS.
 
---=20
-Rafa=C5=82
+
+Vignesh R (2):
+  mtd: spi-nor: Introduce bounce buffer to handle vmalloc'd buffers
+  mtd: devices: m25p80: Enable spi-nor bounce buffer support
+
+ drivers/mtd/devices/m25p80.c  |  1 +
+ drivers/mtd/spi-nor/spi-nor.c | 30 +++++++++++++++++++++++++++---
+ include/linux/mtd/spi-nor.h   |  4 ++++
+ 3 files changed, 32 insertions(+), 3 deletions(-)
+
+-- 
+2.11.0
