@@ -1,27 +1,25 @@
-Received: from mail-ot0-x242.google.com ([2607:f8b0:4003:c0f::242])
+Received: from mail-qk0-x231.google.com ([2607:f8b0:400d:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ciSc3-0004sU-0m
- for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 21:13:52 +0000
-Received: by mail-ot0-x242.google.com with SMTP id i1so3115049ota.3
- for <linux-mtd@lists.infradead.org>; Mon, 27 Feb 2017 13:13:22 -0800 (PST)
+ id 1ciTkN-00018h-6Z
+ for linux-mtd@lists.infradead.org; Mon, 27 Feb 2017 22:26:26 +0000
+Received: by mail-qk0-x231.google.com with SMTP id n127so121109479qkf.0
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Feb 2017 14:26:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1488227292-18906-4-git-send-email-albeu@free.fr>
+In-Reply-To: <20170227214230.53f05677@bbrezillon>
 References: <1488227292-18906-1-git-send-email-albeu@free.fr>
- <1488227292-18906-4-git-send-email-albeu@free.fr>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Mon, 27 Feb 2017 22:13:21 +0100
-Message-ID: <CACna6rzZ-UiJR8oBJ9oHE+ZNT=nm6oLiKyW4bsiZ34TMRDh5Xw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ath9k: ahb: Add OF support
-To: Alban <albeu@free.fr>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
+ <20170227214230.53f05677@bbrezillon>
+From: Moritz Fischer <moritz.fischer@ettus.com>
+Date: Mon, 27 Feb 2017 14:26:01 -0800
+Message-ID: <CAAtXAHfqDzeaHsbTzF=Ki0gafJXoxhtRYm3BUG_CycSP+vhP0g@mail.gmail.com>
+Subject: Re: [RFC 0/3] drivers: Add an API to read device specific config data
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Alban <albeu@free.fr>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
- "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,41 +30,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Why you didn't cc linux-wireless?!?!
+Hi all,
 
-On 27 February 2017 at 21:28, Alban <albeu@free.fr> wrote:
-> @@ -513,6 +515,43 @@ static void ath9k_eeprom_release(struct ath_softc *sc)
->         release_firmware(sc->sc_ah->eeprom_blob);
->  }
+On Mon, Feb 27, 2017 at 12:42 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> +Moritz
 >
-> +#ifdef CONFIG_OF
-> +static int ath9k_init_of(struct ath_softc *sc)
-> +{
-> +       struct device_node *np = sc->dev->of_node;
-> +       struct ath_hw *ah = sc->sc_ah;
-> +       const void *macaddr;
-> +       struct clk *clk;
-> +       int ret = 0;
-> +
-> +       if (!np) {
-> +               dev_err(sc->dev, "no platform data or OF node\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       clk = clk_get(sc->dev, "ref");
-> +       if (!IS_ERR(clk)) {
-> +               ah->is_clk_25mhz = (clk_get_rate(clk) == 25000000);
-> +               clk_put(clk);
-> +       }
-> +
-> +       ah->disable_2ghz = of_property_read_bool(np, "qca,disable-2ghz");
-> +       ah->disable_5ghz = of_property_read_bool(np, "qca,disable-5ghz");
+> Hi Alban,
+>
+> On Mon, 27 Feb 2017 21:28:09 +0100
+> Alban <albeu@free.fr> wrote:
+>
+>> Hi all,
+>>
+>> while looking at adding OF support for the ath9k driver I had the problem of
+>> reading the EEPROM data. On the SoC platforms this data is stored in an SPI
+>> flash along with a few other things. In OpenWRT/LEDE this data is read from
+>> the board init code using the fact that the flash is (normaly) readable from
+>> a memory map. A bit too hackish for my taste.
+>>
+>> This is just one example, there is various other similar cases, mostly with
+>> MAC addresses. I thought it would be nicer if we had a clean API for this,
+>> similar to the firmware API but per device instance instead of beeing per
+>> driver. The device driver wouldn't have to care where the data is stored,
+>> they just request it and the backend take care of reading the EEPROM, MTD
+>> or whatever is used on the board.
+>>
+>> This series implement such an API along with an implementation for MTD
+>> devices and a use in the ath9k driver. As this is an RFC I didn't yet
+>> write the OF binding documentation, that will come later if the feedback
+>> is positive.
+>
+> What you're looking for already exists and it's called nvmem[1]. Some
+> work has been done to expose MTD partitions as nvmem cells [2], but
+> it's never been finished.
+> Can you please finish Moritz implementation instead of creating a new
+> API?
 
-Please use ieee80211-freq-limit:
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=b330b25eaabda00d74e47566d9200907da381896
+Whoops ... this totally fell off my radar (project got axed for $REASONS).
+I could potentially take another look at this this weekend, otherwise I'm
+happy to review whatever you come up with Alban.
 
-Most likely with the wiphy_read_of_freq_limits helper:
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=e691ac2f75b69bee743f0370d79454ba4429b17
+Cheers,
 
-Example:
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=0f83ff69735651cc7a3d150466a5257ff829b62b
+Moritz
