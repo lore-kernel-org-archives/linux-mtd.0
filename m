@@ -1,24 +1,24 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cipVE-0006rA-Oq
- for linux-mtd@lists.infradead.org; Tue, 28 Feb 2017 21:40:16 +0000
-Subject: Re: [RFC PATCH 1/2] mtd: spi-nor: Introduce bounce buffer to handle
- vmalloc'd buffers
+ id 1cipX3-00008d-Ih
+ for linux-mtd@lists.infradead.org; Tue, 28 Feb 2017 21:42:07 +0000
+Subject: Re: [RFC PATCH 2/2] mtd: devices: m25p80: Enable spi-nor bounce
+ buffer support
 To: Vignesh R <vigneshr@ti.com>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
 References: <20170227120839.16545-1-vigneshr@ti.com>
- <20170227120839.16545-2-vigneshr@ti.com>
+ <20170227120839.16545-3-vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-omap@vger.kernel.org, Frode Isaksen <fisaksen@baylibre.com>,
  linux-spi@vger.kernel.org
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <8e441369-5c15-d711-1789-b55eadf33c8f@nod.at>
-Date: Tue, 28 Feb 2017 22:39:47 +0100
+Message-ID: <aa967f6a-0526-3e33-1de7-fbe7d4264f34@nod.at>
+Date: Tue, 28 Feb 2017 22:41:11 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170227120839.16545-2-vigneshr@ti.com>
+In-Reply-To: <20170227120839.16545-3-vigneshr@ti.com>
 Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,110 +33,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Vignesh,
 
 Am 27.02.2017 um 13:08 schrieb Vignesh R:
-> Filesystems like UBIFS may pass vmalloc'd buffers to SPI NOR layer which
-> will end up in SPI layer. SPI core does try to handle such buffers (see
-> spi_map_buf()) by doing vmalloc_to_page() and creating scatterlist. But,
-> its known that this does not work well with VIVT/aliasing cache
-> architectures.
-> This also fails when buffers are addressed using LPAE (buffers in region
-> higher than 32 bit addressable region), if DMA is 32bit only.
-> 
-> Introduce bounce buffers support in SPI NOR framework to handle
-> vmalloc'd buffers. Use a pre-allocated per flash bounce buffer equal to
-> the sector size of the flash. Flash drivers can enable this feature by
-> setting SNOR_F_USE_BOUNCE_BUFFER flag.
-> This would also enable SPI NOR drivers to safely use DMA in their
-> read/write callbacks.
+> Many SPI controller drivers use DMA to read/write from m25p80 compatible
+> flashes. Therefore enable bounce buffers support provided by spi-nor
+> framework to take care of handling vmalloc'd buffers which may not be
+> DMA'able.
 > 
 > Signed-off-by: Vignesh R <vigneshr@ti.com>
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 30 +++++++++++++++++++++++++++---
->  include/linux/mtd/spi-nor.h   |  4 ++++
->  2 files changed, 31 insertions(+), 3 deletions(-)
+>  drivers/mtd/devices/m25p80.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 747645c74134..c241fefa5aff 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -17,6 +17,7 @@
->  #include <linux/mutex.h>
->  #include <linux/math64.h>
->  #include <linux/sizes.h>
-> +#include <linux/mm.h>
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index c4df3b1bded0..d05acf22eadf 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -241,6 +241,7 @@ static int m25p_probe(struct spi_device *spi)
+>  	else
+>  		flash_name = spi->modalias;
 >  
->  #include <linux/mtd/mtd.h>
->  #include <linux/of_platform.h>
-> @@ -1205,11 +1206,21 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
->  
->  	while (len) {
->  		loff_t addr = from;
-> +		bool use_bb = false;
-> +		u_char *dst_buf = buf;
-> +		size_t buf_len = len;
->  
->  		if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
->  			addr = spi_nor_s3an_addr_convert(nor, addr);
->  
-> -		ret = nor->read(nor, addr, len, buf);
-> +		if (!virt_addr_valid(buf) && nor->bounce_buf) {
-> +			use_bb = true;
-> +			dst_buf = nor->bounce_buf;
-> +			if (len > mtd->erasesize)
-> +				buf_len = mtd->erasesize;
+> +	nor->flags |= SNOR_F_USE_BOUNCE_BUFFER;
 
-Doesn't this degrade the read operation to a short read?
-Not sure whether this is harmless or not.
-Cyrille?
-
-> +		}
-> +
-> +		ret = nor->read(nor, from, buf_len, dst_buf);
->  		if (ret == 0) {
->  			/* We shouldn't see 0-length reads */
->  			ret = -EIO;
-> @@ -1217,7 +1228,8 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
->  		}
->  		if (ret < 0)
->  			goto read_err;
-> -
-> +		if (use_bb)
-> +			memcpy(buf, dst_buf, ret);
->  		WARN_ON(ret > len);
->  		*retlen += ret;
->  		buf += ret;
-> @@ -1329,6 +1341,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  		return ret;
->  
->  	for (i = 0; i < len; ) {
-> +		const u_char *src_buf = buf + i;
->  		ssize_t written;
->  		loff_t addr = to + i;
->  
-> @@ -1354,8 +1367,13 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  		if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
->  			addr = spi_nor_s3an_addr_convert(nor, addr);
->  
-> +		if (!virt_addr_valid(buf) && nor->bounce_buf) {
-> +			memcpy(nor->bounce_buf, buf + i, page_remain);
-> +			src_buf = nor->bounce_buf;
-> +		}
-> +
->  		write_enable(nor);
-> -		ret = nor->write(nor, addr, page_remain, buf + i);
-> +		ret = nor->write(nor, addr, page_remain, src_buf);
->  		if (ret < 0)
->  			goto write_err;
->  		written = ret;
-> @@ -1720,6 +1738,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  		return -EINVAL;
->  	}
->  
-> +	if (nor->flags & SNOR_F_USE_BOUNCE_BUFFER) {
-> +		nor->bounce_buf = devm_kmalloc(dev, mtd->erasesize, GFP_KERNEL);
-> +		if (!nor->bounce_buf)
-> +			dev_err(dev, "unable to allocated bounce buffer\n");
-
-I think we should return here and not continue.
+Isn't there a better way to detect whether a bounce buffer is needed or not?
 
 Thanks,
 //richard
