@@ -1,16 +1,23 @@
-Received: from lgeamrelo13.lge.com ([156.147.23.53])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ciaOv-0006sv-Lc
- for linux-mtd@lists.infradead.org; Tue, 28 Feb 2017 05:32:47 +0000
-From: Hyunchul Lee <hyc.lee@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-CC: Artem Bityutskiy <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-doc@vger.kernel.org>, Hyunchul Lee <cheol.lee@lge.com>
-Subject: [PATCH 3/3] ubifs: add "compr=lz4hc" into ubifs.txt
-Date: Tue, 28 Feb 2017 14:17:17 +0900
-Message-ID: <1488259037-12565-1-git-send-email-hyc.lee@gmail.com>
+Received: from conssluserg-06.nifty.com ([210.131.2.91])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cic7N-00056D-P3
+ for linux-mtd@lists.infradead.org; Tue, 28 Feb 2017 07:22:44 +0000
+Received: from mail-yw0-f179.google.com (mail-yw0-f179.google.com
+ [209.85.161.179]) (authenticated)
+ by conssluserg-06.nifty.com with ESMTP id v1S7LpAB011679
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2017 16:21:52 +0900
+Received: by mail-yw0-f179.google.com with SMTP id p77so2511410ywg.1
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Feb 2017 23:21:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 28 Feb 2017 16:21:50 +0900
+Message-ID: <CAK7LNARAURP5-vbFZUUo1Wm9hudHw5DTuaQHz-TJGjdsXij38g@mail.gmail.com>
+Subject: [NAND Question] When oob_required is used?
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org
+Cc: masahiroy@kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hyunchul Lee <cheol.lee@lge.com>
+Hi.
 
-Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
----
- Documentation/filesystems/ubifs.txt | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/filesystems/ubifs.txt b/Documentation/filesystems/ubifs.txt
-index a0a61d2..1133200 100644
---- a/Documentation/filesystems/ubifs.txt
-+++ b/Documentation/filesystems/ubifs.txt
-@@ -91,6 +91,7 @@ chk_data_crc		do not skip checking CRCs on data nodes
- compr=none              override default compressor and set it to "none"
- compr=lzo               override default compressor and set it to "lzo"
- compr=zlib              override default compressor and set it to "zlib"
-+compr=lz4hc             override default compressor and set it to "lz4hc"
- 
- 
- Quick usage instructions
+I am seeing the reference implementations for the callback
+in drivers/mtd/nand/nand_base.c
+
+
+I see only some of them use the argument "oob_required".
+
+
+- oob_required is used
+nand_read_page_raw()
+nand_write_page_raw()
+nand_write_subpage_hwecc()
+
+
+- oob_required is ignored
+nand_read_page_raw_syndrome()
+nand_read_page_swecc()
+nand_read_page_hwecc()
+nand_read_page_hwecc_oob_first()
+nand_read_page_syndrome()
+nand_write_page_raw_syndrome()
+nand_write_page_swecc()
+nand_write_page_hwecc()
+nand_write_page_syndrome()
+
+
+
+I could not get the logic
+when "oob_required" is used.
+
+
+
+When implementing drivers, the "oob_required"
+should be respected (i.e. oob_poi should be transferred as well),
+or is it OK to ignore it?
+
+
+
+
 -- 
-1.9.1
+Best Regards
+Masahiro Yamada
