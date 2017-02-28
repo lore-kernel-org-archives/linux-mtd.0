@@ -1,23 +1,64 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cimSw-0003M7-BA
- for linux-mtd@lists.infradead.org; Tue, 28 Feb 2017 18:25:40 +0000
-Received: by mail-wm0-x241.google.com with SMTP id u63so3691642wmu.2
- for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2017 10:25:16 -0800 (PST)
-Subject: Re: [PATCH V4, 1/2] mtd: nand: brcmnand: Change brcmnand_set_wp()
- prototype
-To: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org
-References: <1488300926-3517-1-git-send-email-kdasu.kdev@gmail.com>
-Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at, cyrille.pitchen@atmel.com
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <08fbd1bb-6e3b-40c4-e1ff-c1edebee625a@gmail.com>
-Date: Tue, 28 Feb 2017 19:25:13 +0100
+ id 1cimVD-0003ux-13
+ for linux-mtd@lists.infradead.org; Tue, 28 Feb 2017 18:28:01 +0000
+Received: by mail-pg0-x241.google.com with SMTP id s67so2489374pgb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2017 10:27:38 -0800 (PST)
+Date: Tue, 28 Feb 2017 10:27:34 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Logan Gunthorpe <logang@deltatee.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>,
+ Leon Romanovsky <leon@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+ linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
+ linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/16] input: utilize new cdev_device_add helper
+ function
+Message-ID: <20170228182734.GC20776@dtor-ws>
+References: <1488091097-12328-1-git-send-email-logang@deltatee.com>
+ <1488091097-12328-5-git-send-email-logang@deltatee.com>
 MIME-Version: 1.0
-In-Reply-To: <1488300926-3517-1-git-send-email-kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1488091097-12328-5-git-send-email-logang@deltatee.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,87 +68,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/28/2017 05:55 PM, Kamal Dasu wrote:
-> Changing brcmnand_set_wp() prototype in prepration for refactoring the nand
-> write protect logic to add flash status byte check for the protection bit.
+On Sat, Feb 25, 2017 at 11:38:05PM -0700, Logan Gunthorpe wrote:
+> Replace the open coded registration of the cdev and dev with the
+> new device_add_cdev() helper in evdev, joydev and mousedev. The helper
+> replaces a common pattern by taking the proper reference against the
+> parent device and adding both the cdev and the device.
 > 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
 > ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 27 +++++++++++++++++----------
->  1 file changed, 17 insertions(+), 10 deletions(-)
+>  drivers/input/evdev.c    | 11 ++---------
+>  drivers/input/joydev.c   | 11 ++---------
+>  drivers/input/mousedev.c | 11 ++---------
+>  3 files changed, 6 insertions(+), 27 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index 42ebd73..c7c4efe 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -765,11 +765,14 @@ enum {
->  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
->  };
+> diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
+> index e9ae3d5..9255714 100644
+> --- a/drivers/input/evdev.c
+> +++ b/drivers/input/evdev.c
+> @@ -1354,8 +1354,6 @@ static void evdev_cleanup(struct evdev *evdev)
+>  	evdev_mark_dead(evdev);
+>  	evdev_hangup(evdev);
 >  
-> -static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
-> +static int brcmnand_set_wp(struct brcmnand_host *host, int en)
->  {
-> +	struct brcmnand_controller *ctrl = host->ctrl;
->  	u32 val = en ? CS_SELECT_NAND_WP : 0;
->  
->  	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_SELECT, CS_SELECT_NAND_WP, 0, val);
-> +
-> +	return 0;
->  }
->  
->  /***********************************************************************
-> @@ -1029,7 +1032,7 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
->  			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
->  			old_wp = wp;
->  		}
-> -		brcmnand_set_wp(ctrl, wp);
-> +		brcmnand_set_wp(host, wp);
->  	}
->  }
->  
-> @@ -2462,14 +2465,6 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
->  	/* Disable XOR addressing */
->  	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_XOR, 0xff, 0, 0);
->  
-> -	if (ctrl->features & BRCMNAND_HAS_WP) {
-> -		/* Permanently disable write protection */
-> -		if (wp_on == 2)
-> -			brcmnand_set_wp(ctrl, false);
-> -	} else {
-> -		wp_on = 0;
-> -	}
+> -	cdev_del(&evdev->cdev);
 > -
->  	/* IRQ */
->  	ctrl->irq = platform_get_irq(pdev, 0);
->  	if ((int)ctrl->irq < 0) {
-> @@ -2522,6 +2517,18 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
->  			}
+>  	/* evdev is marked dead so no one else accesses evdev->open */
+>  	if (evdev->open) {
+>  		input_flush_device(handle, NULL);
+> @@ -1416,12 +1414,8 @@ static int evdev_connect(struct input_handler *handler, struct input_dev *dev,
+>  		goto err_free_evdev;
 >  
->  			list_add_tail(&host->node, &ctrl->host_list);
-> +
-> +			if (ctrl->features & BRCMNAND_HAS_WP) {
-> +				/* Permanently disable write protection */
-> +				if (wp_on == 2) {
-> +					ret = brcmnand_set_wp(host, false);
-> +					if (ret)
-> +						goto err;
-> +				}
-> +			} else {
-> +				wp_on = 0;
-> +			}
-> +
-
-Would it be worth it to move this into separate function ? Or maybe make
-brcmnand_set_wp() check for BRCMNAND_HAS_WP and only set the WP
-if the controller is actually capable of that ? I think that might make
-the code readability a bit better ...
-
->  		}
+>  	cdev_init(&evdev->cdev, &evdev_fops);
+> -	evdev->cdev.kobj.parent = &evdev->dev.kobj;
+> -	error = cdev_add(&evdev->cdev, evdev->dev.devt, 1);
+> -	if (error)
+> -		goto err_unregister_handle;
+>  
+> -	error = device_add(&evdev->dev);
+> +	error = cdev_device_add(&evdev->cdev, &evdev->dev);
+>  	if (error)
+>  		goto err_cleanup_evdev;
+>  
+> @@ -1429,7 +1423,6 @@ static int evdev_connect(struct input_handler *handler, struct input_dev *dev,
+>  
+>   err_cleanup_evdev:
+>  	evdev_cleanup(evdev);
+> - err_unregister_handle:
+>  	input_unregister_handle(&evdev->handle);
+>   err_free_evdev:
+>  	put_device(&evdev->dev);
+> @@ -1442,7 +1435,7 @@ static void evdev_disconnect(struct input_handle *handle)
+>  {
+>  	struct evdev *evdev = handle->private;
+>  
+> -	device_del(&evdev->dev);
+> +	cdev_device_del(&evdev->cdev, &evdev->dev);
+>  	evdev_cleanup(evdev);
+>  	input_free_minor(MINOR(evdev->dev.devt));
+>  	input_unregister_handle(handle);
+> diff --git a/drivers/input/joydev.c b/drivers/input/joydev.c
+> index abd18f3..e38b84f 100644
+> --- a/drivers/input/joydev.c
+> +++ b/drivers/input/joydev.c
+> @@ -729,8 +729,6 @@ static void joydev_cleanup(struct joydev *joydev)
+>  	joydev_mark_dead(joydev);
+>  	joydev_hangup(joydev);
+>  
+> -	cdev_del(&joydev->cdev);
+> -
+>  	/* joydev is marked dead so no one else accesses joydev->open */
+>  	if (joydev->open)
+>  		input_close_device(handle);
+> @@ -905,12 +903,8 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
+>  		goto err_free_joydev;
+>  
+>  	cdev_init(&joydev->cdev, &joydev_fops);
+> -	joydev->cdev.kobj.parent = &joydev->dev.kobj;
+> -	error = cdev_add(&joydev->cdev, joydev->dev.devt, 1);
+> -	if (error)
+> -		goto err_unregister_handle;
+>  
+> -	error = device_add(&joydev->dev);
+> +	error = cdev_device_add(&joydev->cdev, &joydev->dev);
+>  	if (error)
+>  		goto err_cleanup_joydev;
+>  
+> @@ -918,7 +912,6 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
+>  
+>   err_cleanup_joydev:
+>  	joydev_cleanup(joydev);
+> - err_unregister_handle:
+>  	input_unregister_handle(&joydev->handle);
+>   err_free_joydev:
+>  	put_device(&joydev->dev);
+> @@ -931,7 +924,7 @@ static void joydev_disconnect(struct input_handle *handle)
+>  {
+>  	struct joydev *joydev = handle->private;
+>  
+> -	device_del(&joydev->dev);
+> +	cdev_device_del(&joydev->cdev, &joydev->dev);
+>  	joydev_cleanup(joydev);
+>  	input_free_minor(MINOR(joydev->dev.devt));
+>  	input_unregister_handle(handle);
+> diff --git a/drivers/input/mousedev.c b/drivers/input/mousedev.c
+> index b604564..0e0ff84 100644
+> --- a/drivers/input/mousedev.c
+> +++ b/drivers/input/mousedev.c
+> @@ -812,8 +812,6 @@ static void mousedev_cleanup(struct mousedev *mousedev)
+>  	mousedev_mark_dead(mousedev);
+>  	mousedev_hangup(mousedev);
+>  
+> -	cdev_del(&mousedev->cdev);
+> -
+>  	/* mousedev is marked dead so no one else accesses mousedev->open */
+>  	if (mousedev->open)
+>  		input_close_device(handle);
+> @@ -901,12 +899,8 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
 >  	}
 >  
+>  	cdev_init(&mousedev->cdev, &mousedev_fops);
+> -	mousedev->cdev.kobj.parent = &mousedev->dev.kobj;
+> -	error = cdev_add(&mousedev->cdev, mousedev->dev.devt, 1);
+> -	if (error)
+> -		goto err_unregister_handle;
+>  
+> -	error = device_add(&mousedev->dev);
+> +	error = cdev_device_add(&mousedev->cdev, &mousedev->dev);
+>  	if (error)
+>  		goto err_cleanup_mousedev;
+>  
+> @@ -914,7 +908,6 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
+>  
+>   err_cleanup_mousedev:
+>  	mousedev_cleanup(mousedev);
+> - err_unregister_handle:
+>  	if (!mixdev)
+>  		input_unregister_handle(&mousedev->handle);
+>   err_free_mousedev:
+> @@ -927,7 +920,7 @@ static struct mousedev *mousedev_create(struct input_dev *dev,
+>  
+>  static void mousedev_destroy(struct mousedev *mousedev)
+>  {
+> -	device_del(&mousedev->dev);
+> +	cdev_device_del(&mousedev->cdev, &mousedev->dev);
+>  	mousedev_cleanup(mousedev);
+>  	input_free_minor(MINOR(mousedev->dev.devt));
+>  	if (mousedev != mousedev_mix)
+> -- 
+> 2.1.4
 > 
-
 
 -- 
-Best regards,
-Marek Vasut
+Dmitry
