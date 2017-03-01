@@ -1,15 +1,15 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cizpT-0002NX-O4
- for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 08:41:59 +0000
+ id 1cizpi-0002Ot-Ny
+ for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 08:42:09 +0000
 From: Peter Pan <peterpandong@micron.com>
 To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: [PATCH v2 6/6] nand: spi: Add generic SPI controller support
-Date: Wed, 1 Mar 2017 16:52:10 +0800
-Message-ID: <1488358330-23832-7-git-send-email-peterpandong@micron.com>
+Subject: [PATCH v2 2/6] nand: spi: add basic operations support
+Date: Wed, 1 Mar 2017 16:52:06 +0800
+Message-ID: <1488358330-23832-3-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
 References: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
@@ -23,221 +23,946 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit supports to use generic spi controller
-as spi nand controller.
+This commit is to support read, readoob, write,
+writeoob and erase operations in spi nand framwork.
 
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- drivers/mtd/nand/spi/Kconfig             |   2 +
- drivers/mtd/nand/spi/Makefile            |   1 +
- drivers/mtd/nand/spi/chips/Kconfig       |   5 +
- drivers/mtd/nand/spi/chips/Makefile      |   1 +
- drivers/mtd/nand/spi/chips/generic_spi.c | 158 +++++++++++++++++++++++++++++++
- 5 files changed, 167 insertions(+)
- create mode 100644 drivers/mtd/nand/spi/chips/Kconfig
- create mode 100644 drivers/mtd/nand/spi/chips/Makefile
- create mode 100644 drivers/mtd/nand/spi/chips/generic_spi.c
+ drivers/mtd/nand/spi/spinand_base.c | 887 ++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h         |   2 +
+ 2 files changed, 889 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/Kconfig b/drivers/mtd/nand/spi/Kconfig
-index 04a7b71..07ebbb0 100644
---- a/drivers/mtd/nand/spi/Kconfig
-+++ b/drivers/mtd/nand/spi/Kconfig
-@@ -3,3 +3,5 @@ menuconfig MTD_SPI_NAND
- 	depends on MTD_NAND
- 	help
- 	  This is the framework for the SPI NAND device drivers.
+diff --git a/drivers/mtd/nand/spi/spinand_base.c b/drivers/mtd/nand/spi/spinand_base.c
+index 97d47146..1bc57e9 100644
+--- a/drivers/mtd/nand/spi/spinand_base.c
++++ b/drivers/mtd/nand/spi/spinand_base.c
+@@ -25,6 +25,31 @@
+ #include <linux/slab.h>
+ 
+ 
++static int spinand_erase(struct mtd_info *mtd, struct erase_info *einfo);
 +
-+source "drivers/mtd/nand/spi/chips/Kconfig"
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 84b9bcc..700878d 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,4 @@
- obj-$(CONFIG_MTD_SPI_NAND) += spinand_base.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand_ids.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand_micron.o
-+obj-$(CONFIG_MTD_SPI_NAND) += chips/
-diff --git a/drivers/mtd/nand/spi/chips/Kconfig b/drivers/mtd/nand/spi/chips/Kconfig
-new file mode 100644
-index 0000000..337a94f
---- /dev/null
-+++ b/drivers/mtd/nand/spi/chips/Kconfig
-@@ -0,0 +1,5 @@
-+config GENERIC_SPI_NAND
-+	tristate "SPI-NAND with generic SPI bus Support"
-+	depends on MTD_SPI_NAND && SPI
-+	help
-+	  This is to support SPI NAND device with generic SPI bus.
-diff --git a/drivers/mtd/nand/spi/chips/Makefile b/drivers/mtd/nand/spi/chips/Makefile
-new file mode 100644
-index 0000000..2cb7763
---- /dev/null
-+++ b/drivers/mtd/nand/spi/chips/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_GENERIC_SPI_NAND) += generic_spi.o
-diff --git a/drivers/mtd/nand/spi/chips/generic_spi.c b/drivers/mtd/nand/spi/chips/generic_spi.c
-new file mode 100644
-index 0000000..4f47144
---- /dev/null
-+++ b/drivers/mtd/nand/spi/chips/generic_spi.c
-@@ -0,0 +1,158 @@
-+/*
-+ * Copyright (c) 2009-2017 Micron Technology, Inc.
++/**
++ * spinand_get_device - [GENERIC] Get chip for selected access
++ * @mtd: MTD device structure
++ * @new_state: the state which is requested
 + *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * as published by the Free Software Foundation; either version 2
-+ * of the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
++ * Get the device and lock it for exclusive access
 + */
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/spi/spi.h>
-+#include <linux/mtd/spinand.h>
++static void spinand_get_device(struct spinand_device *chip)
++{
++	mutex_lock(&chip->lock);
++}
 +
-+/*
-+ * generic_spinand_cmd_fn - to process a command to send to the SPI-NAND
-+ * by generic SPI bus
++/**
++ * spinand_release_device - [GENERIC] release chip
++ * @mtd: MTD device structure
++ *
++ * Deselect, release chip lock and wake up anyone waiting on the device
++ */
++static void spinand_release_device(struct spinand_device *chip)
++{
++	mutex_unlock(&chip->lock);
++}
++
+ static u64 spinand_get_chip_size(struct spinand_device *chip)
+ {
+ 	struct nand_device *nand = &chip->base;
+@@ -115,6 +140,258 @@ static int spinand_read_status(struct spinand_device *chip, uint8_t *status)
+ }
+ 
+ /**
++ * spinand_get_cfg - get configuration register value
 + * @chip: SPI-NAND device structure
-+ * @cmd: command structure
++ * @cfg: buffer to store value
 + * Description:
-+ *   Set up the command buffer to send to the SPI controller.
-+ *   The command buffer has to initialized to 0.
++ *   Configuration register includes OTP config, Lock Tight enable/disable
++ *   and Internal ECC enable/disable.
 + */
-+static int generic_spinand_cmd_fn(struct spinand_device *chip,
-+				struct spinand_op *cmd)
++static int spinand_get_cfg(struct spinand_device *chip, u8 *cfg)
 +{
-+	struct spi_message message;
-+	struct spi_transfer x[3];
-+	struct spi_device *spi = spinand_get_controller_data(chip);
-+
-+	spi_message_init(&message);
-+	memset(x, 0, sizeof(x));
-+	x[0].len = 1;
-+	x[0].tx_nbits = 1;
-+	x[0].tx_buf = &cmd->cmd;
-+	spi_message_add_tail(&x[0], &message);
-+
-+	if (cmd->n_addr + cmd->dummy_bytes) {
-+		x[1].len = cmd->n_addr + cmd->dummy_bytes;
-+		x[1].tx_nbits = cmd->addr_nbits;
-+		x[1].tx_buf = cmd->addr;
-+		spi_message_add_tail(&x[1], &message);
-+	}
-+	if (cmd->n_tx) {
-+		x[2].len = cmd->n_tx;
-+		x[2].tx_nbits = cmd->data_nbits;
-+		x[2].tx_buf = cmd->tx_buf;
-+		spi_message_add_tail(&x[2], &message);
-+	} else if (cmd->n_rx) {
-+		x[2].len = cmd->n_rx;
-+		x[2].rx_nbits = cmd->data_nbits;
-+		x[2].rx_buf = cmd->rx_buf;
-+		spi_message_add_tail(&x[2], &message);
-+	}
-+	return spi_sync(spi, &message);
++	return spinand_read_reg(chip, REG_CFG, cfg);
 +}
 +
-+static struct spinand_controller_ops generic_spi_ops = {
-+	.exec_op = generic_spinand_cmd_fn,
-+};
-+
-+static int generic_spinand_probe(struct spi_device *spi)
++/**
++ * spinand_set_cfg - set value to configuration register
++ * @chip: SPI-NAND device structure
++ * @cfg: buffer stored value
++ * Description:
++ *   Configuration register includes OTP config, Lock Tight enable/disable
++ *   and Internal ECC enable/disable.
++ */
++static int spinand_set_cfg(struct spinand_device *chip, u8 *cfg)
 +{
-+	struct spinand_device *chip;
-+	int mfr;
-+	struct mtd_info *mtd;
-+	int ret;
-+	u32 max_speed_hz = spi->max_speed_hz;
-+
-+	chip = kzalloc(sizeof(struct spinand_device), GFP_KERNEL);
-+	if (!chip) {
-+		ret = -ENOMEM;
-+		goto err1;
-+	}
-+	mtd = spinand_to_mtd(chip);
-+	chip->controller.ops = &generic_spi_ops;
-+	chip->controller.caps = SPINAND_CAP_RD_X1 | SPINAND_CAP_WR_X1;
-+	if (spi->mode & SPI_RX_QUAD)
-+		chip->controller.caps |= SPINAND_CAP_RD_QUAD | SPINAND_CAP_RD_X4;
-+	if (spi->mode & SPI_RX_DUAL)
-+		chip->controller.caps |= SPINAND_CAP_RD_DUAL | SPINAND_CAP_RD_X2;
-+	if (spi->mode & SPI_TX_QUAD)
-+		chip->controller.caps |= SPINAND_CAP_WR_QUAD | SPINAND_CAP_WR_X4;
-+	if (spi->mode & SPI_TX_DUAL)
-+		chip->controller.caps |= SPINAND_CAP_WR_DUAL | SPINAND_CAP_WR_X2;
-+
-+	spinand_set_controller_data(chip, spi);
-+	spi_set_drvdata(spi, chip);
-+	/*
-+	 * read ID command format might be different for different manufactory
-+	 * such as, Micron SPI NAND need extra one dummy byte after perform
-+	 * read ID command but Giga device don't need.
-+	 *
-+	 * So, specify manufactory of device in device tree is obligatory
-+	 */
-+	mfr = spi_get_device_id(spi)->driver_data;
-+	spi->max_speed_hz = min_t(int, 25000000, max_speed_hz);
-+	ret = spinand_scan_ident(chip, mfr);
-+	if (ret)
-+		goto err2;
-+
-+	spi->max_speed_hz = max_speed_hz;
-+	ret = spinand_scan_tail(chip);
-+	if (ret)
-+		goto err3;
-+
-+	mtd_set_of_node(mtd, spi->dev.of_node);
-+
-+	ret = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-+	if (!ret)
-+		return 0;
-+
-+	spinand_scan_tail_release(chip);
-+err3:
-+	spinand_scan_ident_release(chip);
-+err2:
-+	kfree(chip);
-+err1:
-+	return ret;
++	return spinand_write_reg(chip, REG_CFG, cfg);
 +}
 +
-+static int generic_spinand_remove(struct spi_device *spi)
++/**
++ * spinand_enable_ecc - enable internal ECC
++ * @chip: SPI-NAND device structure
++ * Description:
++ *   There is one bit( bit 0x10 ) to set or to clear the internal ECC.
++ *   Enable chip internal ECC, set the bit to 1
++ *   Disable chip internal ECC, clear the bit to 0
++ */
++static void spinand_enable_ecc(struct spinand_device *chip)
 +{
-+	struct spinand_device *chip = spi_get_drvdata(spi);
++	u8 cfg = 0;
 +
-+	spinand_release(chip);
-+	kfree(chip);
++	spinand_get_cfg(chip, &cfg);
++	if ((cfg & CFG_ECC_MASK) == CFG_ECC_ENABLE)
++		return;
++	cfg |= CFG_ECC_ENABLE;
++	spinand_set_cfg(chip, &cfg);
++}
++
++/**
++ * spinand_disable_ecc - disable internal ECC
++ * @chip: SPI-NAND device structure
++ * Description:
++ *   There is one bit( bit 0x10 ) to set or to clear the internal ECC.
++ *   Enable chip internal ECC, set the bit to 1
++ *   Disable chip internal ECC, clear the bit to 0
++ */
++static void spinand_disable_ecc(struct spinand_device *chip)
++{
++	u8 cfg = 0;
++
++	spinand_get_cfg(chip, &cfg);
++	if ((cfg & CFG_ECC_MASK) == CFG_ECC_ENABLE) {
++		cfg &= ~CFG_ECC_ENABLE;
++		spinand_set_cfg(chip, &cfg);
++	}
++}
++
++/**
++ * spinand_write_enable - send command 06h to enable write or erase the
++ * Nand cells
++ * @chip: SPI-NAND device structure
++ * Description:
++ *   Before write and erase the Nand cells, the write enable has to be set.
++ *   After the write or erase, the write enable bit is automatically
++ *   cleared (status register bit 2)
++ *   Set the bit 2 of the status register has the same effect
++ */
++static int spinand_write_enable(struct spinand_device *chip)
++{
++	struct spinand_op cmd;
++
++	spinand_op_init(&cmd);
++	cmd.cmd = SPINAND_CMD_WR_ENABLE;
++
++	return spinand_exec_cmd(chip, &cmd);
++}
++
++/**
++ * spinand_read_page_to_cache - send command 13h to read data from Nand
++ * to cache
++ * @chip: SPI-NAND device structure
++ * @page_addr: page to read
++ */
++static int spinand_read_page_to_cache(struct spinand_device *chip,
++					u32 page_addr)
++{
++	struct spinand_op cmd;
++
++	spinand_op_init(&cmd);
++	cmd.cmd = SPINAND_CMD_PAGE_READ;
++	cmd.n_addr = 3;
++	cmd.addr[0] = (u8)(page_addr >> 16);
++	cmd.addr[1] = (u8)(page_addr >> 8);
++	cmd.addr[2] = (u8)page_addr;
++
++	return spinand_exec_cmd(chip, &cmd);
++}
++
++static int spinand_get_address_bits(u8 opcode)
++{
++	switch (opcode) {
++	case SPINAND_CMD_READ_FROM_CACHE_QUAD_IO:
++		return 4;
++	case SPINAND_CMD_READ_FROM_CACHE_DUAL_IO:
++		return 2;
++	default:
++		return 1;
++	}
++}
++
++static int spinand_get_data_bits(u8 opcode)
++{
++	switch (opcode) {
++	case SPINAND_CMD_READ_FROM_CACHE_QUAD_IO:
++	case SPINAND_CMD_READ_FROM_CACHE_X4:
++	case SPINAND_CMD_PROG_LOAD_X4:
++	case SPINAND_CMD_PROG_LOAD_RDM_DATA_X4:
++		return 4;
++	case SPINAND_CMD_READ_FROM_CACHE_DUAL_IO:
++	case SPINAND_CMD_READ_FROM_CACHE_X2:
++		return 2;
++	default:
++		return 1;
++	}
++}
++
++/**
++ * spinand_read_from_cache - read data out from cache register
++ * @chip: SPI-NAND device structure
++ * @page_addr: page to read
++ * @column: the location to read from the cache
++ * @len: number of bytes to read
++ * @rbuf: buffer held @len bytes
++ * Description:
++ *   Command can be 03h, 0Bh, 3Bh, 6Bh, BBh, EBh
++ *   The read can specify 1 to (page size + spare size) bytes of data read at
++ *   the corresponding locations.
++ *   No tRd delay.
++ */
++static int spinand_read_from_cache(struct spinand_device *chip,
++		u32 page_addr, u32 column, size_t len, u8 *rbuf)
++{
++	struct spinand_op cmd;
++
++	spinand_op_init(&cmd);
++	cmd.cmd = chip->read_cache_op;
++	if (chip->manufacturer.ops->build_column_addr) {
++		chip->manufacturer.ops->build_column_addr(chip, &cmd,
++						          page_addr, column);
++	} else {
++		cmd.n_addr = 2;
++		cmd.addr[0] = (u8)(column >> 8);
++		cmd.addr[1] = (u8)column;
++	}
++	if (chip->manufacturer.ops->get_dummy)
++		cmd.dummy_bytes = chip->manufacturer.ops->get_dummy(chip, &cmd);
++	cmd.addr_nbits = spinand_get_address_bits(chip->read_cache_op);
++	cmd.n_rx = len;
++	cmd.rx_buf = rbuf;
++	cmd.data_nbits = spinand_get_data_bits(chip->read_cache_op);
++
++	return spinand_exec_cmd(chip, &cmd);
++}
++
++/**
++ * spinand_program_data_to_cache - write data to cache register
++ * @chip: SPI-NAND device structure
++ * @page_addr: page to write
++ * @column: the location to write to the cache
++ * @len: number of bytes to write
++ * @wrbuf: buffer held @len bytes
++ * @clr_cache: clear cache register or not
++ * Description:
++ *   Command can be 02h, 32h, 84h, 34h
++ *   02h and 32h will clear the cache with 0xff value first
++ *   Since it is writing the data to cache, there is no tPROG time.
++ */
++static int spinand_program_data_to_cache(struct spinand_device *chip,
++			u32 page_addr, u32 column, size_t len, const u8 *wbuf)
++{
++	struct spinand_op cmd;
++
++	spinand_op_init(&cmd);
++	cmd.cmd = chip->write_cache_op;
++	if (chip->manufacturer.ops->build_column_addr) {
++		chip->manufacturer.ops->build_column_addr(chip, &cmd,
++						          page_addr, column);
++	} else {
++		cmd.n_addr = 2;
++		cmd.addr[0] = (u8)(column >> 8);
++		cmd.addr[1] = (u8)column;
++	}
++	cmd.addr_nbits = spinand_get_address_bits(chip->write_cache_op);
++	cmd.n_tx = len;
++	cmd.tx_buf = wbuf;
++	cmd.data_nbits = spinand_get_data_bits(chip->write_cache_op);
++
++	return spinand_exec_cmd(chip, &cmd);
++}
++
++/**
++ * spinand_program_execute - send command 10h to write a page from
++ * cache to the Nand array
++ * @chip: SPI-NAND device structure
++ * @page_addr: the physical page location to write the page.
++ * Description:
++ *   Need to wait for tPROG time to finish the transaction.
++ */
++static int spinand_program_execute(struct spinand_device *chip, u32 page_addr)
++{
++	struct spinand_op cmd;
++
++	spinand_op_init(&cmd);
++	cmd.cmd = SPINAND_CMD_PROG_EXC;
++	cmd.n_addr = 3;
++	cmd.addr[0] = (u8)(page_addr >> 16);
++	cmd.addr[1] = (u8)(page_addr >> 8);
++	cmd.addr[2] = (u8)page_addr;
++
++	return spinand_exec_cmd(chip, &cmd);
++}
++
++
++/**
++ * spinand_erase_block_erase - send command D8h to erase a block
++ * @chip: SPI-NAND device structure
++ * @page_addr: the page to erase.
++ * Description:
++ *   Need to wait for tERS.
++ */
++static int spinand_erase_block(struct spinand_device *chip,
++					u32 page_addr)
++{
++	struct spinand_op cmd;
++
++	spinand_op_init(&cmd);
++	cmd.cmd = SPINAND_CMD_BLK_ERASE;
++	cmd.n_addr = 3;
++	cmd.addr[0] = (u8)(page_addr >> 16);
++	cmd.addr[1] = (u8)(page_addr >> 8);
++	cmd.addr[2] = (u8)page_addr;
++
++	return spinand_exec_cmd(chip, &cmd);
++}
++
++/**
+  * spinand_wait - wait until the command is done
+  * @chip: SPI-NAND device structure
+  * @s: buffer to store status register(can be NULL)
+@@ -197,6 +474,611 @@ static int spinand_lock_block(struct spinand_device *chip, u8 lock)
+ 	return spinand_write_reg(chip, REG_BLOCK_LOCK, &lock);
+ }
+ 
++static void spinand_get_ecc_status(struct spinand_device *chip,
++	unsigned int status, unsigned int *corrected, unsigned int *ecc_errors)
++{
++	return chip->ecc_engine.ops->get_ecc_status(chip, status, corrected, ecc_errors);
++}
++
++/**
++ * spinand_do_read_page - read page from flash to buffer
++ * @mtd: MTD device structure
++ * @page_addr: page address/raw address
++ * @column: column address
++ * @ecc_off: without ecc or not
++ * @corrected: how many bit error corrected
++ * @buf: data buffer
++ * @len: data length to read
++ */
++static int spinand_do_read_page(struct mtd_info *mtd, u32 page_addr,
++			bool ecc_off, int *corrected, bool oob_only)
++{
++	struct spinand_device *chip = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	int ret, ecc_error = 0;
++	u8 status;
++
++	spinand_read_page_to_cache(chip, page_addr);
++	ret = spinand_wait(chip, &status);
++	if (ret < 0) {
++		pr_err("error %d waiting page 0x%x to cache\n",
++			ret, page_addr);
++		return ret;
++	}
++	if (!oob_only)
++		spinand_read_from_cache(chip, page_addr, 0,
++		nand_page_size(nand) + nand_per_page_oobsize(nand), chip->buf);
++	else
++		spinand_read_from_cache(chip, page_addr, nand_page_size(nand),
++				nand_per_page_oobsize(nand), chip->oobbuf);
++	if (!ecc_off) {
++		spinand_get_ecc_status(chip, status, corrected, &ecc_error);
++		/*
++		 * If there's an ECC error, print a message and notify MTD
++		 * about it. Then complete the read, to load actual data on
++		 * the buffer (instead of the status result).
++		 */
++		if (ecc_error) {
++			pr_err("internal ECC error reading page 0x%x\n",
++				page_addr);
++			mtd->ecc_stats.failed++;
++		} else if (*corrected) {
++			mtd->ecc_stats.corrected += *corrected;
++		}
++	}
 +
 +	return 0;
 +}
 +
++/**
++ * spinand_do_write_page - write data from buffer to flash
++ * @mtd: MTD device structure
++ * @page_addr: page address/raw address
++ * @column: column address
++ * @buf: data buffer
++ * @len: data length to write
++ * @clr_cache: clear cache register with 0xFF or not
++ */
++static int spinand_do_write_page(struct mtd_info *mtd, u32 page_addr,
++						bool oob_only)
++{
++	struct spinand_device *chip = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	u8 status;
++	int ret = 0;
 +
-+static const struct spi_device_id spinand_id_table[] = {
-+	{ "mt29f", SPINAND_MFR_MICRON },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(spi, spinand_id_table);
++	spinand_write_enable(chip);
++	if (!oob_only)
++		spinand_program_data_to_cache(chip, page_addr, 0,
++		nand_page_size(nand) + nand_per_page_oobsize(nand), chip->buf);
++	else
++		spinand_program_data_to_cache(chip, page_addr, nand_page_size(nand),
++				nand_per_page_oobsize(nand), chip->oobbuf);
++	spinand_program_execute(chip, page_addr);
++	ret = spinand_wait(chip, &status);
++	if (ret < 0) {
++		pr_err("error %d reading page 0x%x from cache\n",
++			ret, page_addr);
++		return ret;
++	}
++	if ((status & STATUS_P_FAIL_MASK) == STATUS_P_FAIL) {
++		pr_err("program page 0x%x failed\n", page_addr);
++		ret = -EIO;
++	}
++	return ret;
++}
 +
-+static struct spi_driver generic_spinand_driver = {
-+	.driver = {
-+		.name	= "generic_spinand",
-+		.owner	= THIS_MODULE,
-+	},
-+	.id_table = spinand_id_table,
-+	.probe	= generic_spinand_probe,
-+	.remove	= generic_spinand_remove,
-+};
-+module_spi_driver(generic_spinand_driver);
++/**
++ * spinand_transfer_oob - transfer oob to client buffer
++ * @chip: SPI-NAND device structure
++ * @oob: oob destination address
++ * @ops: oob ops structure
++ * @len: size of oob to transfer
++ */
++static int spinand_transfer_oob(struct spinand_device *chip, u8 *oob,
++				  struct mtd_oob_ops *ops, size_t len)
++{
++	struct mtd_info *mtd = spinand_to_mtd(chip);
++	int ret = 0;
++
++	switch (ops->mode) {
++	case MTD_OPS_PLACE_OOB:
++	case MTD_OPS_RAW:
++		memcpy(oob, chip->oobbuf + ops->ooboffs, len);
++		break;
++	case MTD_OPS_AUTO_OOB:
++		ret = mtd_ooblayout_get_databytes(mtd, oob, chip->oobbuf,
++						  ops->ooboffs, len);
++		break;
++	default:
++		ret = -EINVAL;
++	}
++	return ret;
++}
++
++/**
++ * spinand_fill_oob - transfer client buffer to oob
++ * @chip: SPI-NAND device structure
++ * @oob: oob data buffer
++ * @len: oob data write length
++ * @ops: oob ops structure
++ */
++static int spinand_fill_oob(struct spinand_device *chip, uint8_t *oob,
++				size_t len, struct mtd_oob_ops *ops)
++{
++	struct mtd_info *mtd = spinand_to_mtd(chip);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	int ret = 0;
++
++	memset(chip->oobbuf, 0xff, nand_per_page_oobsize(nand));
++	switch (ops->mode) {
++	case MTD_OPS_PLACE_OOB:
++	case MTD_OPS_RAW:
++		memcpy(chip->oobbuf + ops->ooboffs, oob, len);
++		break;
++	case MTD_OPS_AUTO_OOB:
++		ret = mtd_ooblayout_set_databytes(mtd, oob, chip->oobbuf,
++						  ops->ooboffs, len);
++		break;
++	default:
++		ret = -EINVAL;
++	}
++	return ret;
++}
++
++/**
++ * spinand_read_pages - read data from flash to buffer
++ * @mtd: MTD device structure
++ * @from: offset to read from
++ * @ops: oob operations description structure
++ * @max_bitflips: maximum bitflip count
++ * Description:
++ *   Normal read function, read one page to buffer before issue
++ *   another.
++ */
++static int spinand_read_pages(struct mtd_info *mtd, loff_t from,
++			  struct mtd_oob_ops *ops, unsigned int *max_bitflips)
++{
++	struct spinand_device *chip = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	int page_addr, page_offset, size, ret;
++	unsigned int corrected = 0;
++	int readlen = ops->len;
++	int oobreadlen = ops->ooblen;
++	bool ecc_off = ops->mode == MTD_OPS_RAW;
++	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
++		mtd->oobavail : mtd->oobsize;
++	bool oob_only = ops->datbuf == NULL;
++
++	page_addr = nand_offs_to_page(nand, from);
++	page_offset = from & (nand_page_size(nand) - 1);
++	ops->retlen = 0;
++	*max_bitflips = 0;
++
++	while (1) {
++		ret = spinand_do_read_page(mtd, page_addr, ecc_off,
++						&corrected, oob_only);
++		if (ret)
++			break;
++		*max_bitflips = max(*max_bitflips, corrected);
++		if (ops->datbuf) {
++			size = min_t(int, readlen, nand_page_size(nand) - page_offset);
++			memcpy(ops->datbuf + ops->retlen,
++				chip->buf + page_offset, size);
++			ops->retlen += size;
++			readlen -= size;
++			page_offset = 0;
++			if (!readlen)
++				break;
++		}
++		if (ops->oobbuf) {
++			size = min(oobreadlen, ooblen);
++			ret = spinand_transfer_oob(chip,
++				ops->oobbuf + ops->oobretlen, ops, size);
++			if (ret) {
++				pr_err("Transfer oob error %d\n", ret);
++				return ret;
++			}
++			ops->oobretlen += size;
++			oobreadlen -= size;
++			if (!oobreadlen)
++				break;
++		}
++		page_addr++;
++	}
++
++	return ret;
++}
++
++/**
++ * spinand_do_read_ops - read data from flash to buffer
++ * @mtd: MTD device structure
++ * @from: offset to read from
++ * @ops: oob ops structure
++ * Description:
++ *   Disable internal ECC before reading when MTD_OPS_RAW set.
++ */
++static int spinand_do_read_ops(struct mtd_info *mtd, loff_t from,
++			  struct mtd_oob_ops *ops)
++{
++	struct spinand_device *chip = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	int ret;
++	struct mtd_ecc_stats stats;
++	unsigned int max_bitflips = 0;
++	int oobreadlen = ops->ooblen;
++	bool ecc_off = ops->mode == MTD_OPS_RAW;
++	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
++		mtd->oobavail : mtd->oobsize;
++
++	if (unlikely(from >= mtd->size)) {
++		pr_err("%s: attempt to read beyond end of device\n",
++				__func__);
++		return -EINVAL;
++	}
++	if (oobreadlen > 0) {
++		if (unlikely(ops->ooboffs >= ooblen)) {
++			pr_err("%s: attempt to start read outside oob\n",
++					__func__);
++			return -EINVAL;
++		}
++		if (unlikely(ops->ooboffs + oobreadlen >
++		(nand_len_to_pages(nand, mtd->size) - nand_offs_to_page(nand, from))
++		* ooblen)) {
++			pr_err("%s: attempt to read beyond end of device\n",
++					__func__);
++			return -EINVAL;
++		}
++		ooblen -= ops->ooboffs;
++		ops->oobretlen = 0;
++	}
++	stats = mtd->ecc_stats;
++	if (ecc_off)
++		spinand_disable_ecc(chip);
++	ret = spinand_read_pages(mtd, from, ops, &max_bitflips);
++	if (ecc_off)
++		spinand_enable_ecc(chip);
++	if (ret)
++		return ret;
++
++	if (mtd->ecc_stats.failed - stats.failed)
++		return -EBADMSG;
++
++	return max_bitflips;
++}
++
++/**
++ * spinand_write_pages - write data from buffer to flash
++ * @mtd: MTD device structure
++ * @to: offset to write to
++ * @ops: oob operations description structure
++ * @max_bitflips: maximum bitflip count
++ * Description:
++ *   Normal read function, read one page to buffer before issue
++ *   another.
++ */
++static int spinand_write_pages(struct mtd_info *mtd, loff_t to,
++			  struct mtd_oob_ops *ops)
++{
++	struct spinand_device *chip = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	int page_addr, page_offset, ret;
++	int size = 0;
++	int oob_size = 0;
++	int writelen = ops->len;
++	int oobwritelen = ops->ooblen;
++	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
++		mtd->oobavail : mtd->oobsize;
++	bool oob_only = ops->datbuf == NULL;
++
++	page_addr = nand_offs_to_page(nand, to);
++	page_offset = to & (nand_page_size(nand) - 1);
++	ops->retlen = 0;
++
++	while (1) {
++		memset(chip->buf, 0xff, nand_page_size(nand) + nand_per_page_oobsize(nand));
++		if (ops->oobbuf) {
++			oob_size = min(oobwritelen, ooblen);
++			ret = spinand_fill_oob(chip, ops->oobbuf + ops->oobretlen,
++					oob_size, ops);
++			if (ret) {
++				pr_err("Fill oob error %d\n", ret);
++				return ret;
++			}
++		}
++		if (ops->datbuf) {
++			size = min_t(int, writelen, nand_page_size(nand) - page_offset);
++			memcpy(chip->buf + page_offset,
++				ops->datbuf + ops->retlen, size);
++		}
++		ret = spinand_do_write_page(mtd, page_addr, oob_only);
++		if (ret) {
++			pr_err("error %d writing page 0x%x\n",
++				ret, page_addr);
++			return ret;
++		}
++		if (ops->datbuf) {
++			ops->retlen += size;
++			writelen -= size;
++			page_offset = 0;
++			if (!writelen)
++				break;
++		}
++		if (ops->oobbuf) {
++			ops->oobretlen += oob_size;
++			oobwritelen -= oob_size;
++			if (!oobwritelen)
++				break;
++		}
++		page_addr++;
++	}
++
++	return ret;
++}
++
++/**
++ * spinand_do_write_ops - write data from buffer to flash
++ * @mtd: MTD device structure
++ * @to: offset to write to
++ * @ops: oob operations description structure
++ * Description:
++ *   Disable internal ECC before writing when MTD_OPS_RAW set.
++ */
++static int spinand_do_write_ops(struct mtd_info *mtd, loff_t to,
++			 struct mtd_oob_ops *ops)
++{
++	struct spinand_device *chip = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	int page_addr, page_offset;
++	int oobwritelen = ops->ooblen;
++	int ret = 0;
++	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
++		mtd->oobavail : mtd->oobsize;
++	bool ecc_off = ops->mode == MTD_OPS_RAW;
++
++	/* Do not allow reads past end of device */
++	if (unlikely(to >= mtd->size)) {
++		pr_err("%s: attempt to write beyond end of device\n",
++				__func__);
++		return -EINVAL;
++	}
++
++	page_addr = nand_offs_to_page(nand, to);
++	page_offset = to & (nand_page_size(nand) - 1);
++	ops->retlen = 0;
++
++	/* for oob */
++	if (oobwritelen > 0) {
++		/* Do not allow write past end of page */
++		if ((ops->ooboffs + oobwritelen) > ooblen) {
++			pr_err("%s: attempt to write past end of page\n",
++					__func__);
++			return -EINVAL;
++		}
++
++		if (unlikely(ops->ooboffs >= ooblen)) {
++			pr_err("%s: attempt to start write outside oob\n",
++					__func__);
++			return -EINVAL;
++		}
++		if (unlikely(ops->ooboffs + oobwritelen >
++		(nand_len_to_pages(nand, mtd->size) - nand_offs_to_page(nand, to))
++			* ooblen)) {
++			pr_err("%s: attempt to write beyond end of device\n",
++					__func__);
++			return -EINVAL;
++		}
++		ooblen -= ops->ooboffs;
++		ops->oobretlen = 0;
++	}
++
++	if (ecc_off)
++		spinand_disable_ecc(chip);
++	ret = spinand_write_pages(mtd, to, ops);
++	if (ecc_off)
++		spinand_enable_ecc(chip);
++
++	return ret;
++}
++
++/**
++ * spinand_read - [MTD Interface] SPI-NAND read
++ * @mtd: MTD device structure
++ * @from: offset to read from
++ * @len: number of bytes to read
++ * @retlen: pointer to variable to store the number of read bytes
++ * @buf: the databuffer to put data
++ */
++static int spinand_read(struct mtd_info *mtd, loff_t from, size_t len,
++	size_t *retlen, u8 *buf)
++{
++	struct mtd_oob_ops ops;
++	int ret;
++
++	spinand_get_device(mtd_to_spinand(mtd));
++
++	memset(&ops, 0, sizeof(ops));
++	ops.len = len;
++	ops.datbuf = buf;
++	ops.mode = MTD_OPS_PLACE_OOB;
++	ret = spinand_do_read_ops(mtd, from, &ops);
++
++	*retlen = ops.retlen;
++
++	spinand_release_device(mtd_to_spinand(mtd));
++
++	return ret;
++}
++
++/**
++ * spinand_write - [MTD Interface] SPI-NAND write
++ * @mtd: MTD device structure
++ * @to: offset to write to
++ * @len: number of bytes to write
++ * @retlen: pointer to variable to store the number of written bytes
++ * @buf: the data to write
++ */
++static int spinand_write(struct mtd_info *mtd, loff_t to, size_t len,
++	size_t *retlen, const u8 *buf)
++{
++	struct mtd_oob_ops ops;
++	int ret;
++
++	spinand_get_device(mtd_to_spinand(mtd));
++
++	memset(&ops, 0, sizeof(ops));
++	ops.len = len;
++	ops.datbuf = (uint8_t *)buf;
++	ops.mode = MTD_OPS_PLACE_OOB;
++	ret =  spinand_do_write_ops(mtd, to, &ops);
++
++	*retlen = ops.retlen;
++
++	spinand_release_device(mtd_to_spinand(mtd));
++
++	return ret;
++}
++
++/**
++ * spinand_read_oob - [MTD Interface] read data and/or out-of-band
++ * @mtd: MTD device structure
++ * @from: offset to read from
++ * @ops: oob operation description structure
++ */
++static int spinand_read_oob(struct mtd_info *mtd, loff_t from,
++			struct mtd_oob_ops *ops)
++{
++	int ret = -ENOTSUPP;
++
++	ops->retlen = 0;
++	spinand_get_device(mtd_to_spinand(mtd));
++
++	switch (ops->mode) {
++	case MTD_OPS_PLACE_OOB:
++	case MTD_OPS_AUTO_OOB:
++	case MTD_OPS_RAW:
++		break;
++
++	default:
++		goto out;
++	}
++
++	ret = spinand_do_read_ops(mtd, from, ops);
++
++out:
++	spinand_release_device(mtd_to_spinand(mtd));
++
++	return ret;
++}
++
++/**
++ * spinand_write_oob - [MTD Interface] write data and/or out-of-band
++ * @mtd: MTD device structure
++ * @to: offset to write to
++ * @ops: oob operation description structure
++ */
++static int spinand_write_oob(struct mtd_info *mtd, loff_t to,
++			  struct mtd_oob_ops *ops)
++{
++	int ret = -ENOTSUPP;
++
++	ops->retlen = 0;
++	spinand_get_device(mtd_to_spinand(mtd));
++
++	switch (ops->mode) {
++	case MTD_OPS_PLACE_OOB:
++	case MTD_OPS_AUTO_OOB:
++	case MTD_OPS_RAW:
++		break;
++
++	default:
++		goto out;
++	}
++
++	ret = spinand_do_write_ops(mtd, to, ops);
++
++out:
++	spinand_release_device(mtd_to_spinand(mtd));
++
++	return ret;
++}
 +
 +
-+MODULE_DESCRIPTION("Generic SPI controller to support SPI NAND");
-+MODULE_AUTHOR("Peter Pan<peterpandong@micron.com>");
-+MODULE_LICENSE("GPL v2");
++/**
++ * spinand_erase - [MTD Interface] erase block(s)
++ * @mtd: MTD device structure
++ * @einfo: erase instruction
++ *
++ * Erase one ore more blocks
++ */
++static int spinand_erase(struct mtd_info *mtd, struct erase_info *einfo)
++{
++	struct spinand_device *chip = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	loff_t offs = einfo->addr, len = einfo->len;
++	u8 status;
++	int ret = 0;
++
++	/* check address align on block boundary */
++	if (offs & (nand_eraseblock_size(nand) - 1)) {
++		pr_err("%s: Unaligned address\n", __func__);
++		return -EINVAL;
++	}
++
++	if (len & (nand_eraseblock_size(nand) - 1)) {
++		pr_err("%s: Length not block aligned\n", __func__);
++		return -EINVAL;
++	}
++
++	/* Do not allow erase past end of device */
++	if ((offs + len) > mtd->size) {
++		pr_err("%s: Erase past end of device\n", __func__);
++		return -EINVAL;
++	}
++
++	einfo->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
++
++	/* Grab the lock and see if the device is available */
++	spinand_get_device(chip);
++
++	einfo->state = MTD_ERASING;
++
++	while (len) {
++		spinand_write_enable(chip);
++		spinand_erase_block(chip, nand_offs_to_page(nand, offs));
++		ret = spinand_wait(chip, &status);
++		if (ret < 0) {
++			pr_err("block erase command wait failed\n");
++			einfo->state = MTD_ERASE_FAILED;
++			goto erase_exit;
++		}
++		if ((status & STATUS_E_FAIL_MASK) == STATUS_E_FAIL) {
++			pr_err("erase block 0x%012llx failed\n", offs);
++			einfo->state = MTD_ERASE_FAILED;
++			einfo->fail_addr = offs;
++			goto erase_exit;
++		}
++
++		/* Increment page address and decrement length */
++		len -= nand_eraseblock_size(nand);
++		offs += nand_eraseblock_size(nand);
++	}
++
++	einfo->state = MTD_ERASE_DONE;
++
++erase_exit:
++
++	ret = einfo->state == MTD_ERASE_DONE ? 0 : -EIO;
++
++	spinand_release_device(mtd_to_spinand(mtd));
++
++	/* Do call back function */
++	if (!ret)
++		mtd_erase_callback(einfo);
++
++	/* Return more or less happy */
++	return ret;
++}
+ /**
+  * spinand_scan_id_table - scan chip info in id table
+  * @chip: SPI-NAND device structure
+@@ -415,6 +1297,11 @@ int spinand_scan_tail(struct spinand_device *chip)
+ 	if (ret < 0)
+ 		ret = 0;
+ 	mtd->oobavail = ret;
++	mtd->_erase = spinand_erase;
++	mtd->_read = spinand_read;
++	mtd->_write = spinand_write;
++	mtd->_read_oob = spinand_read_oob;
++	mtd->_write_oob = spinand_write_oob;
+ 
+ 	if (!mtd->bitflip_threshold)
+ 		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3, 4);
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index f3d0351..ee447c1 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -135,6 +135,8 @@ struct spinand_manufacturer_ops {
+ 	bool(*detect)(struct spinand_device *chip);
+ 	int (*init)(struct spinand_device *chip);
+ 	void (*cleanup)(struct spinand_device *chip);
++	void (*build_column_addr)(struct spinand_device *chip,
++				  struct spinand_op *op, u32 page, u32 column);
+ 	int (*get_dummy)(struct spinand_device *chip, struct spinand_op *op);
+ };
+ 
 -- 
 1.9.1
