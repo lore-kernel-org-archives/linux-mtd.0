@@ -1,21 +1,27 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from exsmtp01.microchip.com ([198.175.253.37]
+ helo=email.microchip.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cj1c2-0001Sw-SK
- for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 10:36:07 +0000
-Message-ID: <1488364538.3583.6.camel@gmail.com>
-Subject: Re: [PATCH 0/3] ubifs: add lz4hc compression
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Hyunchul Lee <hyc.lee@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Hyunchul Lee <cheol.lee@lge.com>, kernel-team@lge.com
-Date: Wed, 01 Mar 2017 12:35:38 +0200
-In-Reply-To: <20170301011224.GC15972@Hyeoncheol-PC00>
-References: <1488259008-12510-1-git-send-email-hyc.lee@gmail.com>
- <1488277025.3583.2.camel@gmail.com>
- <20170301011224.GC15972@Hyeoncheol-PC00>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+ id 1cj1jz-0004do-UP
+ for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 10:44:17 +0000
+Subject: Re: [RFC PATCH 2/2] mtd: devices: m25p80: Enable spi-nor bounce
+ buffer support
+To: Vignesh R <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>
+References: <20170227120839.16545-1-vigneshr@ti.com>
+ <20170227120839.16545-3-vigneshr@ti.com>
+ <aa967f6a-0526-3e33-1de7-fbe7d4264f34@nod.at>
+ <8f999a27-c3ce-2650-452c-b21c3e44989d@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, Frode Isaksen <fisaksen@baylibre.com>,
+ <linux-spi@vger.kernel.org>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <aeaf87ca-e8f5-72d0-997d-494df86abf68@atmel.com>
+Date: Wed, 1 Mar 2017 11:43:48 +0100
+MIME-Version: 1.0
+In-Reply-To: <8f999a27-c3ce-2650-452c-b21c3e44989d@ti.com>
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,15 +32,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2017-03-01 at 10:12 +0900, Hyunchul Lee wrote:
-> yes, it is an in-memory inode. but i think that there can be problem
-> ofÂ 
-> backward compatibility. for example, if ubifs_ino_node's compr_type
-> is
-> 4 in flash, the previous version of ubifs could misinterpret it as 0,
-> because ubifs_inode's compr_type(2-bit) is assigned
-> ubifs_ino_nodes' compr_type at ubifs_iget.
+Le 01/03/2017 à 05:54, Vignesh R a écrit :
+> 
+> 
+> On Wednesday 01 March 2017 03:11 AM, Richard Weinberger wrote:
+>> Vignesh,
+>>
+>> Am 27.02.2017 um 13:08 schrieb Vignesh R:
+>>> Many SPI controller drivers use DMA to read/write from m25p80 compatible
+>>> flashes. Therefore enable bounce buffers support provided by spi-nor
+>>> framework to take care of handling vmalloc'd buffers which may not be
+>>> DMA'able.
+>>>
+>>> Signed-off-by: Vignesh R <vigneshr@ti.com>
+>>> ---
+>>>  drivers/mtd/devices/m25p80.c | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>>> index c4df3b1bded0..d05acf22eadf 100644
+>>> --- a/drivers/mtd/devices/m25p80.c
+>>> +++ b/drivers/mtd/devices/m25p80.c
+>>> @@ -241,6 +241,7 @@ static int m25p_probe(struct spi_device *spi)
+>>>  	else
+>>>  		flash_name = spi->modalias;
+>>>  
+>>> +	nor->flags |= SNOR_F_USE_BOUNCE_BUFFER;
+>>
+>> Isn't there a better way to detect whether a bounce buffer is needed or not?
+>
 
-Good point. I guess changing the in-memoryÂ compr_type to something
-wider right away would be a good idea, even if no new compressors are
-added.
+I agree with Richard: the bounce buffer should be enabled only if needed
+by the SPI controller.
+
+> Yes, I can poke the spi->master struct to see of dma channels are
+> populated and request SNOR_F_USE_BOUNCE_BUFFER accordingly:
+> 
+> -       nor->flags |= SNOR_F_USE_BOUNCE_BUFFER;
+> +       if (spi->master->dma_tx || spi->master->dma_rx)
+> +               nor->flags |= SNOR_F_USE_BOUNCE_BUFFER;
+> +
+> 
+
+However I don't agree with this solution: master->dma_{tx|rx} can be set
+for SPI controllers which already rely on spi_map_msg() to handle
+vmalloc'ed memory during DMA transfers.
+Such SPI controllers don't need the spi-nor bounce buffer.
+
+spi_map_msg() can build a scatter-gather list from vmalloc'ed buffer
+then map this sg list with dma_map_sg(). AFAIK, It is safe to do so for
+architectures using PIPT caches since the possible cache aliases issue
+present for VIPT or VIVT caches is always avoided for PIPT caches.
+
+For instance, the drivers/spi/spi-atmel.c driver relies on spi_map_sg()
+to be called from the SPI sub-system to handle vmalloc'ed buffers and
+both master->dma_tx and master->dma_rx are set by the this driver.
+
+
+By the way, Is there any case where the same physical page is actually
+mapped into two different virtual addresses for the buffers allocated by
+the MTD sub-system? Because for a long time now I wonder whether the
+cache aliases issue is a real or only theoretical issue but I have no
+answer to that question.
+
+Then my next question: is spi_map_msg() enough in every case, even with
+VIPT or VIVT caches?
+
+Best regards,
+
+Cyrille
