@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cj6kJ-0005a7-94
- for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 16:04:57 +0000
-Date: Wed, 1 Mar 2017 17:04:19 +0100
+ id 1cj7XG-0004dT-Bq
+ for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 16:55:33 +0000
+Date: Wed, 1 Mar 2017 17:55:06 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Vignesh R <vigneshr@ti.com>
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Richard Weinberger
@@ -13,7 +13,7 @@ Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Richard Weinberger
  <linux-spi@vger.kernel.org>
 Subject: Re: [RFC PATCH 2/2] mtd: devices: m25p80: Enable spi-nor bounce
  buffer support
-Message-ID: <20170301170419.7b6b2f81@bbrezillon>
+Message-ID: <20170301175506.202cb478@bbrezillon>
 In-Reply-To: <a6c61bf7-1f26-41db-9a6b-bcae87274cb9@ti.com>
 References: <20170227120839.16545-1-vigneshr@ti.com>
  <20170227120839.16545-3-vigneshr@ti.com>
@@ -128,20 +128,15 @@ or not? =20
 > time something pops up.
 >=20
 
-Hm, I had a discussion with Cyrille on the spi-nor/m25p80 architecture,
-and I must admit I don't understand why the decision to use a bounce
-buffer is done at the m25p80 level.
-While it make sense to do that for dedicated spi-flash controllers,
-which can decide by themselves if they need a bounce buffer for non
-kmalloc-ed buffers, I don't understand why we have to do that for
-regular SPI controllers. I mean, the same problem can arise for other
-SPI device drivers if they decide to use vmalloc-ed or kmap-ed buffers,
-so this should be handled at the SPI level.
+Ok, I had a closer look at the SPI framework, and it seems there's a
+way to tell to the core that a specific transfer cannot use DMA
+(->can_dam()). The first thing you should do is fix the spi-davinci
+driver:
 
-If the SPI framework does not impose any restriction on the buffers it
-is passed, it should either take care of this, or ask SPI controller
-drivers to do so (which implies checking the buffer address directly
-inside the SPI controller driver and decide to use a bounce buffer or
-use PIO mode).
+1/ implement ->can_dma()
+2/ patch davinci_spi_bufs() to take the decision to do DMA or not on a
+   per-xfer basis and not on a per-device basis
 
-Am I misunderstanding something here?
+Then we can start thinking about how to improve perfs by using a bounce
+buffer for large transfers, but I'm still not sure this should be done
+at the MTD level...
