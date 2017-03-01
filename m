@@ -1,23 +1,23 @@
-Received: from mail-pg0-x234.google.com ([2607:f8b0:400e:c05::234])
+Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cisp1-0001jo-UO
- for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 01:12:53 +0000
-Received: by mail-pg0-x234.google.com with SMTP id p5so13316897pga.1
- for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2017 17:12:31 -0800 (PST)
-Date: Wed, 1 Mar 2017 10:12:24 +0900
-From: Hyunchul Lee <hyc.lee@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Hyunchul Lee <cheol.lee@lge.com>, kernel-team@lge.com
-Subject: Re: [PATCH 0/3] ubifs: add lz4hc compression
-Message-ID: <20170301011224.GC15972@Hyeoncheol-PC00>
-References: <1488259008-12510-1-git-send-email-hyc.lee@gmail.com>
- <1488277025.3583.2.camel@gmail.com>
+ id 1civf2-0001Pa-P0
+ for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 04:14:46 +0000
+Received: by mail-it0-x241.google.com with SMTP id 203so3753495ith.2
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Feb 2017 20:14:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1488277025.3583.2.camel@gmail.com>
+In-Reply-To: <254c5202-64cd-ddae-2e76-8db6a4486b80@gmail.com>
+References: <20170222021558.710-1-ytht.net@gmail.com>
+ <254c5202-64cd-ddae-2e76-8db6a4486b80@gmail.com>
+From: lepton <ytht.net@gmail.com>
+Date: Tue, 28 Feb 2017 20:14:23 -0800
+Message-ID: <CALqoU4xRhjFY7=qz1toJsJff8rsZn+vS7gpb0C2Lp++_Rt3BHg@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: Fix mtdblock for >4GB MTD devices
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ boris.brezillon@free-electrons.com, richard@nod.at, cyrille.pitchen@atmel.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 28, 2017 at 12:17:05PM +0200, Artem Bityutskiy wrote:
-> On Tue, 2017-02-28 at 14:16 +0900, Hyunchul Lee wrote:
-> > Another compression type cannot be added any more in respect that
-> > type of
-> > ubifs_inode's compr_type is "unsigned:2" and there are 4 compression
-> > types.  There may be overflow in assignment to compr_type, and
-> > prevision 
-> > version of ubifs is trying to decompress file with wrong compression
-> > type.
-> 
-> But this is just an in-memory inode structure, and you can change it,
-> just increase the size of 'compr_type'.
+If checking some calling side,  the len is from cache_size of struct
+mtdblk_dev, it's defined as unsigned int now. So it's not 64bit yet.
 
-yes, it is an in-memory inode. but i think that there can be problem of 
-backward compatibility. for example, if ubifs_ino_node's compr_type is
-4 in flash, the previous version of ubifs could misinterpret it as 0,
-because ubifs_inode's compr_type(2-bit) is assigned
-ubifs_ino_nodes' compr_type at ubifs_iget.
+BTW, seems it's just block size (512) at some other calling side.
 
-thank you for comment.
-Hyunchul
+(Sorry for previous same content email, just found out it's html
+format and rejected by mail list)
+
+On Mon, Feb 27, 2017 at 1:31 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
+> On 02/22/2017 03:15 AM, Lepton Wu wrote:
+>> Change to use loff_t instead of unsigned long in some functions
+>> to make sure mtdblock can handle offset bigger than 4G in 32 bits mode.
+>>
+>> Signed-off-by: Lepton Wu <ytht.net@gmail.com>
+>> ---
+>>  Changes in v2:
+>>   - Make the commit message more clearer and fix some format issues.
+>>
+>>  drivers/mtd/mtdblock.c    | 35 ++++++++++++++++++-----------------
+>>  drivers/mtd/mtdblock_ro.c |  4 ++--
+>>  2 files changed, 20 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+>> index bb4c14f83c75..373c0edca803 100644
+>> --- a/drivers/mtd/mtdblock.c
+>> +++ b/drivers/mtd/mtdblock.c
+>> @@ -61,8 +61,8 @@ static void erase_callback(struct erase_info *done)
+>>       wake_up(wait_q);
+>>  }
+>>
+>> -static int erase_write (struct mtd_info *mtd, unsigned long pos,
+>> -                     int len, const char *buf)
+>> +static int erase_write(struct mtd_info *mtd, loff_t pos, int len,
+>> +                    const char *buf)
+>
+> Can the length be 64bit too now ?
+>
+> [...]
+>
+> --
+> Best regards,
+> Marek Vasut
