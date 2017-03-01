@@ -1,40 +1,19 @@
-Date: Wed, 1 Mar 2017 09:38:07 +0100
-From: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: =?iso-8859-1?Q?H=E5vard?= Skinnemoen <hskinnemoen@gmail.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-Message-ID: <20170301083807.GA12981@samfundet.no>
-References: <CAHp75VeB4eVuN5NMfAfQUtssuHezTyAM8FUswuR8FheUk1V-oA@mail.gmail.com>
- <CAHp75Vc54+GR99qM8vUDfQnehFx0g5q137k-w5XY3023UZyr5w@mail.gmail.com>
- <20170221171438.e5hvruoixafpcdps@piout.net>
- <CACiLriSdRM4ZfoDsxFhf6ZVwAtacJOJ28M8CvOg6kC_XN0T-Mw@mail.gmail.com>
- <20170224081430.GB19663@samfundet.no>
- <20170224092742.3ce205e2@bbrezillon>
- <20170224085209.GA27812@samfundet.no>
- <20170224095509.777da771@bbrezillon>
- <20170224090435.GA11313@samfundet.no>
- <20170301092224.169dc7ae@bbrezillon>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cizpF-0002LT-QL
+ for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 08:41:37 +0000
+From: Peter Pan <peterpandong@micron.com>
+To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
+ <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
+ <linshunquan1@hisilicon.com>
+Subject: [PATCH v2 3/6] nand: spi: Add bad block support
+Date: Wed, 1 Mar 2017 16:52:07 +0800
+Message-ID: <1488358330-23832-4-git-send-email-peterpandong@micron.com>
+In-Reply-To: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
+References: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170301092224.169dc7ae@bbrezillon>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,68 +23,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Around Wed 01 Mar 2017 09:22:24 +0100 or thereabout, Boris Brezillon wrote:
-> Hi Hans-Christian,
-> 
-> On Fri, 24 Feb 2017 10:04:35 +0100
-> Hans-Christian Noren Egtvedt <egtvedt@samfundet.no> wrote:
-> 
->> Around Fri 24 Feb 2017 09:55:09 +0100 or thereabout, Boris Brezillon wrote:
->> > On Fri, 24 Feb 2017 09:52:09 +0100
->> > Hans-Christian Noren Egtvedt <egtvedt@samfundet.no> wrote:  
->> >> Around Fri 24 Feb 2017 09:27:42 +0100 or thereabout, Boris Brezillon wrote:  
->> >> > On Fri, 24 Feb 2017 09:14:30 +0100 Hans-Christian Noren Egtvedt <egtvedt@samfundet.no> wrote:    
->> >> >> Around Thu 23 Feb 2017 21:18:13 -0800 or thereabout, Håvard Skinnemoen wrote:    
->> >> >> > On Tue, Feb 21, 2017 at 9:14 AM, Alexandre Belloni
->> >> >> > <alexandre.belloni@free-electrons.com> wrote:      
->> >> >> >> On 21/02/2017 at 18:43:35 +0200, Andy Shevchenko wrote:      
->> >> 
->> >> <snipp>
->> >>   
->> >> >> >> If nobody complains about the 4.10 breakage, You'll have plenty of time
->> >> >> >> to remove it for 4.12      
->> >> >> > 
->> >> >> > I'm fine with that, but I haven't put much effort into keeping it
->> >> >> > alive lately. If Hans-Christian agrees, I'm willing to post a patch to
->> >> >> > remove it, or ack someone else's patch.      
->> >> >> 
->> >> >> Then lets plan this for 4.12, either you Håvard whip up a patch or I can
->> >> >> eventually do it.
->> >> >> 
->> >> >> I can push it through the linux-avr32 git tree on kernel.org.
->> >> >>     
->> >> > 
->> >> > Can you do that just after 4.11-rc1 is released and provide a topic
->> >> > branch I can pull in my nand/next branch, so that I can rework this
->> >> > patch and drop all the pdata-compat code (as suggested by Andy).    
->> >> 
->> >> OK, I will try to prepare it during the weekend.
->> >> 
->> >> Any reason to wait for 4.11-rc1? AFAIK Linus prefers the larger changes
->> >> before he starts tagging rc's.
->> >>   
->> > 
->> > Oh, so you want to queue it for 4.11, that's even better.  
->> 
->> Perhaps I misunderstood you, by after 4.11-rc1 you mean queue it for 4.12?
->> 
->> I will see what I get around to do in the weekend, it should be pretty
->> straightforward, just want to make sure we remove all the bits.
->> 
-> 
-> Any progress on this? I plan to send a new version of this series soon
-> and I'd like to know if I should drop pdata/avr32 support or not. Note
-> that I'm targeting 4.12, so, as long as you drop avr32 support in 4.12
-> we should be good.
+Add isbad and markbad support for SPI NAND. And do not
+erase bad blocks in spi_nand_erase.
 
-I got around to make the patch series during the weekend, but I thought it
-would be a good idea sending them to the kernel mailing list as a FYI.
+Signed-off-by: Peter Pan <peterpandong@micron.com>
+---
+ drivers/mtd/nand/spi/spinand_base.c | 116 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 116 insertions(+)
 
-Also, I was unsure if I should send the driver removals through the
-sub-maintainers trees, or if I can push them through linux-avr32 tree.
-
-I have a patch removing the pata driver for AVR32.
-
+diff --git a/drivers/mtd/nand/spi/spinand_base.c b/drivers/mtd/nand/spi/spinand_base.c
+index 1bc57e9..442997d 100644
+--- a/drivers/mtd/nand/spi/spinand_base.c
++++ b/drivers/mtd/nand/spi/spinand_base.c
+@@ -1003,6 +1003,113 @@ static int spinand_write_oob(struct mtd_info *mtd, loff_t to,
+ 	return ret;
+ }
+ 
++/**
++ * spinand_block_bad - Check if block at offset is bad
++ * @mtd: MTD device structure
++ * @offs: offset relative to mtd start
++ * @getchip: 0, if the chip is already selected
++ */
++static int spinand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
++{
++	struct nand_device *nand = mtd_to_nand(mtd);
++	struct mtd_oob_ops ops = {0};
++	u32 block_addr;
++	u8 bad[2] = {0, 0};
++	u8 ret = 0;
++
++	block_addr = nand_offs_to_eraseblock(nand, ofs);
++	ops.mode = MTD_OPS_PLACE_OOB;
++	ops.ooblen = 2;
++	ops.oobbuf = bad;
++
++	if (getchip)
++		spinand_get_device(mtd_to_spinand(mtd));
++	spinand_do_read_ops(mtd, nand_eraseblock_to_offs(nand, block_addr), &ops);
++	if (getchip)
++		spinand_release_device(mtd_to_spinand(mtd));
++	if (bad[0] != 0xFF || bad[1] != 0xFF)
++		ret =  1;
++
++	return ret;
++}
++
++/**
++ * spinand_block_isbad - [MTD Interface] Check if block at offset is bad
++ * @mtd: MTD device structure
++ * @offs: offset relative to mtd start
++ */
++static int spinand_block_isbad(struct mtd_info *mtd, loff_t offs)
++{
++	return spinand_block_bad(mtd, offs, 1);
++}
++
++/**
++ * spinand_block_markbad_lowlevel - mark a block bad
++ * @mtd: MTD device structure
++ * @ofs: offset from device start
++ *
++ * This function performs the generic bad block marking steps (i.e., bad
++ * block table(s) and/or marker(s)). We only allow the hardware driver to
++ * specify how to write bad block markers to OOB (chip->block_markbad).
++ *
++ * We try operations in the following order:
++ *  (1) erase the affected block, to allow OOB marker to be written cleanly
++ *  (2) write bad block marker to OOB area of affected block (unless flag
++ *      NAND_BBT_NO_OOB_BBM is present)
++ *  (3) update the BBT
++ * Note that we retain the first error encountered in (2) or (3), finish the
++ * procedures, and dump the error in the end.
++*/
++static int spinand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
++{
++	struct nand_device *nand = mtd_to_nand(mtd);
++	struct mtd_oob_ops ops = {0};
++	struct erase_info einfo = {0};
++	u32 block_addr;
++	u8 buf[2] = {0, 0};
++	int ret = 0;
++
++	/*erase bad block before mark bad block*/
++	einfo.mtd = mtd;
++	einfo.addr = ofs;
++	einfo.len = nand_eraseblock_size(nand);
++	spinand_erase(mtd, &einfo);
++
++	block_addr = nand_offs_to_eraseblock(nand, ofs);
++	ops.mode = MTD_OPS_PLACE_OOB;
++	ops.ooblen = 2;
++	ops.oobbuf = buf;
++	spinand_get_device(mtd_to_spinand(mtd));
++	ret = spinand_do_write_ops(mtd,
++		nand_eraseblock_to_offs(nand, block_addr), &ops);
++	spinand_release_device(mtd_to_spinand(mtd));
++
++	if (!ret)
++		mtd->ecc_stats.badblocks++;
++
++	return ret;
++}
++
++/**
++ * spinand_block_markbad - [MTD Interface] Mark block at the given offset
++ * as bad
++ * @mtd: MTD device structure
++ * @ofs: offset relative to mtd start
++ */
++static int spinand_block_markbad(struct mtd_info *mtd, loff_t ofs)
++{
++	int ret;
++
++	ret = spinand_block_isbad(mtd, ofs);
++	if (ret) {
++		/* If it was bad already, return success and do nothing */
++		if (ret > 0)
++			return 0;
++		return ret;
++	}
++
++	return spinand_block_markbad_lowlevel(mtd, ofs);
++}
+ 
+ /**
+  * spinand_erase - [MTD Interface] erase block(s)
+@@ -1044,6 +1151,13 @@ static int spinand_erase(struct mtd_info *mtd, struct erase_info *einfo)
+ 	einfo->state = MTD_ERASING;
+ 
+ 	while (len) {
++		/* Check if we have a bad block, we do not erase bad blocks! */
++		if (spinand_block_bad(mtd, offs, 0)) {
++			pr_warn("%s: attempt to erase a bad block at 0x%012llx\n",
++			__func__, offs);
++			einfo->state = MTD_ERASE_FAILED;
++			goto erase_exit;
++		}
+ 		spinand_write_enable(chip);
+ 		spinand_erase_block(chip, nand_offs_to_page(nand, offs));
+ 		ret = spinand_wait(chip, &status);
+@@ -1302,6 +1416,8 @@ int spinand_scan_tail(struct spinand_device *chip)
+ 	mtd->_write = spinand_write;
+ 	mtd->_read_oob = spinand_read_oob;
+ 	mtd->_write_oob = spinand_write_oob;
++	mtd->_block_isbad = spinand_block_isbad;
++	mtd->_block_markbad = spinand_block_markbad;
+ 
+ 	if (!mtd->bitflip_threshold)
+ 		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3, 4);
 -- 
-mvh
-Hans-Christian Noren Egtvedt
+1.9.1
