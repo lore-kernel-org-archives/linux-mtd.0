@@ -1,29 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cj7XG-0004dT-Bq
- for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 16:55:33 +0000
-Date: Wed, 1 Mar 2017 17:55:06 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-omap@vger.kernel.org>, Frode Isaksen <fisaksen@baylibre.com>,
- <linux-spi@vger.kernel.org>
-Subject: Re: [RFC PATCH 2/2] mtd: devices: m25p80: Enable spi-nor bounce
- buffer support
-Message-ID: <20170301175506.202cb478@bbrezillon>
-In-Reply-To: <a6c61bf7-1f26-41db-9a6b-bcae87274cb9@ti.com>
-References: <20170227120839.16545-1-vigneshr@ti.com>
- <20170227120839.16545-3-vigneshr@ti.com>
- <aa967f6a-0526-3e33-1de7-fbe7d4264f34@nod.at>
- <8f999a27-c3ce-2650-452c-b21c3e44989d@ti.com>
- <aeaf87ca-e8f5-72d0-997d-494df86abf68@atmel.com>
- <a6c61bf7-1f26-41db-9a6b-bcae87274cb9@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cj9vM-0000Us-93
+ for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 19:29:02 +0000
+Received: by mail-qk0-x243.google.com with SMTP id s186so13327194qkb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2017 11:28:16 -0800 (PST)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@atmel.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH V5,
+ ] mtd: nand: brcmnand: Check flash #WP pin status before nand
+ erase/program
+Date: Wed,  1 Mar 2017 14:27:30 -0500
+Message-Id: <1488396450-9820-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,110 +24,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 1 Mar 2017 17:16:30 +0530
-Vignesh R <vigneshr@ti.com> wrote:
+brcmnand controller v6.x and v7.x lets driver to enable disable #WP pin
+via NAND_WP bit in CS_SELECT register. Driver implementation assumes that
+setting/resetting the bit would assert/de-assert  #WP pin instantaneously
+from the flash part's perspective, and was proceeding to erase/program
+without verifying flash status byte for protection bit. In rigorous
+testing this was causing rare data corruptions with erase and/or
+subsequent programming. To fix this check NAND status in addition to
+controller #WP pin status. This change makes sure both sides are ready
+to accept new commands.
 
-> On Wednesday 01 March 2017 04:13 PM, Cyrille Pitchen wrote:
-> > Le 01/03/2017 =C3=A0 05:54, Vignesh R a =C3=A9crit : =20
-> >>
-> >>
-> >> On Wednesday 01 March 2017 03:11 AM, Richard Weinberger wrote: =20
-> >>> Vignesh,
-> >>>
-> >>> Am 27.02.2017 um 13:08 schrieb Vignesh R: =20
-> >>>> Many SPI controller drivers use DMA to read/write from m25p80 compat=
-ible
-> >>>> flashes. Therefore enable bounce buffers support provided by spi-nor
-> >>>> framework to take care of handling vmalloc'd buffers which may not be
-> >>>> DMA'able.
-> >>>>
-> >>>> Signed-off-by: Vignesh R <vigneshr@ti.com>
-> >>>> ---
-> >>>>  drivers/mtd/devices/m25p80.c | 1 +
-> >>>>  1 file changed, 1 insertion(+)
-> >>>>
-> >>>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p=
-80.c
-> >>>> index c4df3b1bded0..d05acf22eadf 100644
-> >>>> --- a/drivers/mtd/devices/m25p80.c
-> >>>> +++ b/drivers/mtd/devices/m25p80.c
-> >>>> @@ -241,6 +241,7 @@ static int m25p_probe(struct spi_device *spi)
-> >>>>  	else
-> >>>>  		flash_name =3D spi->modalias;
-> >>>> =20
-> >>>> +	nor->flags |=3D SNOR_F_USE_BOUNCE_BUFFER; =20
-> >>>
-> >>> Isn't there a better way to detect whether a bounce buffer is needed =
-or not? =20
-> >> =20
-> >=20
-> > I agree with Richard: the bounce buffer should be enabled only if needed
-> > by the SPI controller.
-> >  =20
-> >> Yes, I can poke the spi->master struct to see of dma channels are
-> >> populated and request SNOR_F_USE_BOUNCE_BUFFER accordingly:
-> >>
-> >> -       nor->flags |=3D SNOR_F_USE_BOUNCE_BUFFER;
-> >> +       if (spi->master->dma_tx || spi->master->dma_rx)
-> >> +               nor->flags |=3D SNOR_F_USE_BOUNCE_BUFFER;
-> >> +
-> >> =20
-> >=20
-> > However I don't agree with this solution: master->dma_{tx|rx} can be set
-> > for SPI controllers which already rely on spi_map_msg() to handle
-> > vmalloc'ed memory during DMA transfers.
-> > Such SPI controllers don't need the spi-nor bounce buffer.
-> >=20
-> > spi_map_msg() can build a scatter-gather list from vmalloc'ed buffer
-> > then map this sg list with dma_map_sg(). AFAIK, It is safe to do so for
-> > architectures using PIPT caches since the possible cache aliases issue
-> > present for VIPT or VIVT caches is always avoided for PIPT caches.
-> >=20
-> > For instance, the drivers/spi/spi-atmel.c driver relies on spi_map_sg()
-> > to be called from the SPI sub-system to handle vmalloc'ed buffers and
-> > both master->dma_tx and master->dma_rx are set by the this driver.
-> >
-> >=20
-> > By the way, Is there any case where the same physical page is actually
-> > mapped into two different virtual addresses for the buffers allocated by
-> > the MTD sub-system? Because for a long time now I wonder whether the
-> > cache aliases issue is a real or only theoretical issue but I have no
-> > answer to that question.
-> >  =20
->=20
-> I have atleast one evidence of VIVT aliasing causing problem. Please see
-> this thread on DMA issues with davinci-spi driver
-> https://www.spinics.net/lists/arm-kernel/msg563420.html
-> https://www.spinics.net/lists/arm-kernel/msg563445.html
->=20
-> > Then my next question: is spi_map_msg() enough in every case, even with
-> > VIPT or VIVT caches?
-> >  =20
->=20
-> Not really, I am debugging another issue with UBIFS on DRA74 EVM (ARM
-> cortex-a15) wherein pages allocated by vmalloc are in highmem region
-> that are not addressable using 32 bit addresses and is backed by LPAE.
-> So, a 32 bit DMA cannot access these buffers at all.
-> When dma_map_sg() is called to map these pages by spi_map_buf() the
-> physical address is just truncated to 32 bit in pfn_to_dma() (as part of
-> dma_map_sg() call). This results in random crashes as DMA starts
-> accessing random memory during SPI read.
->=20
-> IMO, there may be more undiscovered caveat with using dma_map_sg() for
-> non kmalloc'd buffers and its better that spi-nor starts handling these
-> buffers instead of relying on spi_map_msg() and working around every
-> time something pops up.
->=20
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+ drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 58 insertions(+), 3 deletions(-)
 
-Ok, I had a closer look at the SPI framework, and it seems there's a
-way to tell to the core that a specific transfer cannot use DMA
-(->can_dam()). The first thing you should do is fix the spi-davinci
-driver:
-
-1/ implement ->can_dma()
-2/ patch davinci_spi_bufs() to take the decision to do DMA or not on a
-   per-xfer basis and not on a per-device basis
-
-Then we can start thinking about how to improve perfs by using a bounce
-buffer for large transfers, but I'm still not sure this should be done
-at the MTD level...
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index 42ebd73..7419c5c 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
+ #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
+ #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
+ 
++#define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
++#define NAND_POLL_STATUS_TIMEOUT_MS	100
++
+ /* Controller feature flags */
+ enum {
+ 	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
+@@ -765,6 +768,31 @@ enum {
+ 	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+ };
+ 
++static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
++				    u32 mask, u32 expected_val,
++				    unsigned long timeout_ms)
++{
++	unsigned long limit;
++	u32 val;
++
++	if (!timeout_ms)
++		timeout_ms = NAND_POLL_STATUS_TIMEOUT_MS;
++
++	limit = jiffies + msecs_to_jiffies(timeout_ms);
++	do {
++		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
++		if ((val & mask) == expected_val)
++			return 0;
++
++		cpu_relax();
++	} while (time_after(limit, jiffies));
++
++	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
++		 expected_val, val & mask);
++
++	return -ETIMEDOUT;
++}
++
+ static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
+ {
+ 	u32 val = en ? CS_SELECT_NAND_WP : 0;
+@@ -1024,12 +1052,39 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
+ 
+ 	if ((ctrl->features & BRCMNAND_HAS_WP) && wp_on == 1) {
+ 		static int old_wp = -1;
++		int ret;
+ 
+ 		if (old_wp != wp) {
+ 			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
+ 			old_wp = wp;
+ 		}
++
++		/*
++		 * make sure ctrl/flash ready before and after
++		 * changing state of #WP pin
++		 */
++		ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY |
++					       NAND_STATUS_READY,
++					       NAND_CTRL_RDY |
++					       NAND_STATUS_READY, 0);
++		if (ret)
++			return;
++
+ 		brcmnand_set_wp(ctrl, wp);
++		chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
++		/* NAND_STATUS_WP 0x00 = protected, 0x80 = not protected */
++		ret = bcmnand_ctrl_poll_status(ctrl,
++					       NAND_CTRL_RDY |
++					       NAND_STATUS_READY |
++					       NAND_STATUS_WP,
++					       NAND_CTRL_RDY |
++					       NAND_STATUS_READY |
++					       (wp ? 0 : NAND_STATUS_WP), 0);
++
++		if (ret)
++			dev_err_ratelimited(&host->pdev->dev,
++					    "nand #WP expected %s\n",
++					    wp ? "on" : "off");
+ 	}
+ }
+ 
+@@ -1157,15 +1212,15 @@ static irqreturn_t brcmnand_dma_irq(int irq, void *data)
+ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
+ {
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+-	u32 intfc;
++	int ret;
+ 
+ 	dev_dbg(ctrl->dev, "send native cmd %d addr_lo 0x%x\n", cmd,
+ 		brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS));
+ 	BUG_ON(ctrl->cmd_pending != 0);
+ 	ctrl->cmd_pending = cmd;
+ 
+-	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+-	WARN_ON(!(intfc & INTFC_CTLR_READY));
++	ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
++	WARN_ON(ret);
+ 
+ 	mb(); /* flush previous writes */
+ 	brcmnand_write_reg(ctrl, BRCMNAND_CMD_START,
+-- 
+1.9.1
