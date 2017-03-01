@@ -1,16 +1,18 @@
-Received: from [45.249.212.189] (helo=dggrg03-dlp.huawei.com)
+Received: from twosheds.infradead.org ([90.155.92.209])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cizyc-0007TF-Kt
- for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 08:51:23 +0000
-To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-From: yangshukui <yangshukui@huawei.com>
-Subject: Bug fix for uid/gid in jffs2
-Message-ID: <58B689F1.3000000@huawei.com>
-Date: Wed, 1 Mar 2017 16:44:33 +0800
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+ id 1cj0ZR-0000P4-Ut
+ for linux-mtd@lists.infradead.org; Wed, 01 Mar 2017 09:29:18 +0000
+Message-ID: <1488360553.5629.43.camel@infradead.org>
+Subject: Re: Bug fix for uid/gid in jffs2
+From: David Woodhouse <dwmw2@infradead.org>
+To: yangshukui <yangshukui@huawei.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <58B689F1.3000000@huawei.com>
+References: <58B689F1.3000000@huawei.com>
+Content-Type: multipart/signed; micalg="sha-256";
+ protocol="application/x-pkcs7-signature"; boundary="=-IWLCef7rRaIhZ4bStc0S"
+Date: Wed, 01 Mar 2017 09:29:13 +0000
+Mime-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,247 +22,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As we kown that uid is u32(__kernel_uid32_t)  in linux, but uid is 
-u16(jint16_t) in jffs2 ，so jffs2 has the following problem,
 
-mount -t jffs2 /dev/mtdblock0 /mnt
-touch /mnt/a
+--=-IWLCef7rRaIhZ4bStc0S
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-chown 65535.65535 /mnt/a;ls -n /mnt
-total 1
--rw-r--r-- 1 65535 65535 2 Mar  1 11:53 a
+On Wed, 2017-03-01 at 16:44 +0800, yangshukui wrote:
+>=20
+> @@ -146,8 +146,8 @@ struct jffs2_raw_inode
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 jint32_t ino;=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 /* Inode number.=C2=A0 */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 jint32_t version;=C2=A0=C2=A0=C2=A0 /* Ver=
+sion number.=C2=A0 */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 jmode_t mode;=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 /* The file's type or mode.=C2=A0 */
+> -=C2=A0=C2=A0=C2=A0 jint16_t uid;=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 /* The file's owner.=C2=A0 */
+> -=C2=A0=C2=A0=C2=A0 jint16_t gid;=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 /* The file's group.=C2=A0 */
+> +=C2=A0=C2=A0=C2=A0 jint32_t uid;=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 /* The file's owner.=C2=A0 */
+> +=C2=A0=C2=A0=C2=A0 jint32_t gid;=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 /* The file's group.=C2=A0 */
 
-chown 65536.65536 /mnt/a;ls -n /mnt
-total 1
--rw-r--r-- 1 0 0 2 Mar  1 11:53 a
+This is changing the binary data structures on the flash, and breaking
+compatibility with all existing file systems. Your modified kernel
+won't be able to mount existing JFFS2 images.
 
-chown 65537.65537 /mnt/a;ls -n /mnt
-total 1
--rw-r--r-- 1 1 1 2 Mar  1 11:53 a
+The way to do this, if we really do need 32-bit ugid support in JFFS2,
+is to define a *new* node (JFFS2_NODE_INCOMPAT) type, and then support
+reading both. You could even contrive a way to make it
+JFFS2_NODE_ROCOMPAT; perhaps a new node type which contains *only* the
+(32-bit) ownership information and overrides the 16-bit ones in the
+original data nodes?=C2=A0
+--=-IWLCef7rRaIhZ4bStc0S
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-The patch bellow will fix it.
-
- From 0ab0c9a341e642345b8cf02a029ddc44421379c3 Mon Sep 17 00:00:00 2001
-From: Shukui Yang <yangshukui@huawei.com>
-Date: Wed, 1 Mar 2017 16:06:33 +0800
-Subject: [PATCH] uid/gid use jint32_t in jffs2
-
-Signed-off-by: Shukui Yang <yangshukui@huawei.com>
----
-  fs/jffs2/debug.c           |  4 ++--
-  fs/jffs2/file.c            |  8 ++++----
-  fs/jffs2/fs.c              | 22 +++++++++++-----------
-  fs/jffs2/gc.c              | 12 ++++++------
-  fs/jffs2/readinode.c       |  4 ++--
-  fs/jffs2/super.c           |  2 +-
-  include/uapi/linux/jffs2.h |  4 ++--
-  7 files changed, 28 insertions(+), 28 deletions(-)
-
-diff --git a/fs/jffs2/debug.c b/fs/jffs2/debug.c
-index 9d26b1b9..5e37393 100644
---- a/fs/jffs2/debug.c
-+++ b/fs/jffs2/debug.c
-@@ -814,8 +814,8 @@ void __jffs2_dbg_superblock_counts(struct 
-jffs2_sb_info *c)
-          printk(JFFS2_DBG "ino:\t%#08x\n", je32_to_cpu(node.i.ino));
-          printk(JFFS2_DBG "version:\t%#08x\n", 
-je32_to_cpu(node.i.version));
-          printk(JFFS2_DBG "mode:\t%#08x\n", node.i.mode.m);
--        printk(JFFS2_DBG "uid:\t%#04x\n", je16_to_cpu(node.i.uid));
--        printk(JFFS2_DBG "gid:\t%#04x\n", je16_to_cpu(node.i.gid));
-+        printk(JFFS2_DBG "uid:\t%#08x\n", je32_to_cpu(node.i.uid));
-+        printk(JFFS2_DBG "gid:\t%#08x\n", je32_to_cpu(node.i.gid));
-          printk(JFFS2_DBG "isize:\t%#08x\n", je32_to_cpu(node.i.isize));
-          printk(JFFS2_DBG "atime:\t%#08x\n", je32_to_cpu(node.i.atime));
-          printk(JFFS2_DBG "mtime:\t%#08x\n", je32_to_cpu(node.i.mtime));
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index c12476e..c5266ba 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -172,8 +172,8 @@ static int jffs2_write_begin(struct file *filp, 
-struct address_space *mapping,
-          ri.ino = cpu_to_je32(f->inocache->ino);
-          ri.version = cpu_to_je32(++f->highest_version);
-          ri.mode = cpu_to_jemode(inode->i_mode);
--        ri.uid = cpu_to_je16(i_uid_read(inode));
--        ri.gid = cpu_to_je16(i_gid_read(inode));
-+        ri.uid = cpu_to_je32(i_uid_read(inode));
-+        ri.gid = cpu_to_je32(i_gid_read(inode));
-          ri.isize = cpu_to_je32(max((uint32_t)inode->i_size, pageofs));
-          ri.atime = ri.ctime = ri.mtime = cpu_to_je32(get_seconds());
-          ri.offset = cpu_to_je32(inode->i_size);
-@@ -280,8 +280,8 @@ static int jffs2_write_end(struct file *filp, struct 
-address_space *mapping,
-      /* Set the fields that the generic jffs2_write_inode_range() code 
-can't find */
-      ri->ino = cpu_to_je32(inode->i_ino);
-      ri->mode = cpu_to_jemode(inode->i_mode);
--    ri->uid = cpu_to_je16(i_uid_read(inode));
--    ri->gid = cpu_to_je16(i_gid_read(inode));
-+    ri->uid = cpu_to_je32(i_uid_read(inode));
-+    ri->gid = cpu_to_je32(i_gid_read(inode));
-      ri->isize = cpu_to_je32((uint32_t)inode->i_size);
-      ri->atime = ri->ctime = ri->mtime = cpu_to_je32(get_seconds());
-
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index 567653f..f75ab395 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -99,9 +99,9 @@ int jffs2_do_setattr (struct inode *inode, struct 
-iattr *iattr)
-      ri->ino = cpu_to_je32(inode->i_ino);
-      ri->version = cpu_to_je32(++f->highest_version);
-
--    ri->uid = cpu_to_je16((ivalid & ATTR_UID)?
-+    ri->uid = cpu_to_je32((ivalid & ATTR_UID)?
-          from_kuid(&init_user_ns, iattr->ia_uid):i_uid_read(inode));
--    ri->gid = cpu_to_je16((ivalid & ATTR_GID)?
-+    ri->gid = cpu_to_je32((ivalid & ATTR_GID)?
-          from_kgid(&init_user_ns, iattr->ia_gid):i_gid_read(inode));
-
-      if (ivalid & ATTR_MODE)
-@@ -149,8 +149,8 @@ int jffs2_do_setattr (struct inode *inode, struct 
-iattr *iattr)
-      inode->i_ctime = ITIME(je32_to_cpu(ri->ctime));
-      inode->i_mtime = ITIME(je32_to_cpu(ri->mtime));
-      inode->i_mode = jemode_to_cpu(ri->mode);
--    i_uid_write(inode, je16_to_cpu(ri->uid));
--    i_gid_write(inode, je16_to_cpu(ri->gid));
-+    i_uid_write(inode, je32_to_cpu(ri->uid));
-+    i_gid_write(inode, je32_to_cpu(ri->gid));
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCDzUw
+ggSvMIIDl6ADAgECAhEA4CPLFRKDU4mtYW56VGdrITANBgkqhkiG9w0BAQsFADBvMQswCQYDVQQG
+EwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxJjAkBgNVBAsTHUFkZFRydXN0IEV4dGVybmFsIFRU
+UCBOZXR3b3JrMSIwIAYDVQQDExlBZGRUcnVzdCBFeHRlcm5hbCBDQSBSb290MB4XDTE0MTIyMjAw
+MDAwMFoXDTIwMDUzMDEwNDgzOFowgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1h
+bmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEw
+PwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
+bWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAImxDdp6UxlOcFIdvFamBia3
+uEngludRq/HwWhNJFaO0jBtgvHpRQqd5jKQi3xdhTpHVdiMKFNNKAn+2HQmAbqUEPdm6uxb+oYep
+LkNSQxZ8rzJQyKZPWukI2M+TJZx7iOgwZOak+FaA/SokFDMXmaxE5WmLo0YGS8Iz1OlAnwawsayT
+QLm1CJM6nCpToxDbPSBhPFUDjtlOdiUCISn6o3xxdk/u4V+B6ftUgNvDezVSt4TeIj0sMC0xf1m9
+UjewM2ktQ+v61qXxl3dnUYzZ7ifrvKUHOHaMpKk4/9+M9QOsSb7K93OZOg8yq5yVOhM9DkY6V3Rh
+UL7GQD/L5OKfoiECAwEAAaOCARcwggETMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1Qa
+MB0GA1UdDgQWBBSSYWuC4aKgqk/sZ/HCo/e0gADB7DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/
+BAgwBgEB/wIBADAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYDVR0gBAowCDAGBgRV
+HSAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9BZGRUcnVzdEV4
+dGVybmFsQ0FSb290LmNybDA1BggrBgEFBQcBAQQpMCcwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3Nw
+LnVzZXJ0cnVzdC5jb20wDQYJKoZIhvcNAQELBQADggEBABsqbqxVwTqriMXY7c1V86prYSvACRAj
+mQ/FZmpvsfW0tXdeDwJhAN99Bf4Ss6SAgAD8+x1banICCkG8BbrBWNUmwurVTYT7/oKYz1gb4yJj
+nFL4uwU2q31Ypd6rO2Pl2tVz7+zg+3vio//wQiOcyraNTT7kSxgDsqgt1Ni7QkuQaYUQ26Y3NOh7
+4AEQpZzKOsefT4g0bopl0BqKu6ncyso20fT8wmQpNa/WsadxEdIDQ7GPPprsnjJT9HaSyoY0B7ks
+yuYcStiZDcGG4pCS+1pCaiMhEOllx/XVu37qjIUgAmLq0ToHLFnFmTPyOInltukWeh95FPZKEBom
++nyK+5swggU9MIIEJaADAgECAhBqC1BYlVMtBFBN4igR/howMA0GCSqGSIb3DQEBCwUAMIGbMQsw
+CQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3Jk
+MRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDFBMD8GA1UEAxM4Q09NT0RPIFNIQS0yNTYgQ2xp
+ZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTYxMjIwMDAwMDAwWhcN
+MTcxMjIwMjM1OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjAN
+BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwbTrFaiGdvN2pThnR9q+4eaXB2wQZQNqhter5ZrJ
+pPO47e87bZ+f1tmYoh6+rB90G/XN24NErPRfvU4zVzNT9pCtCzSSVnBlZQBpaEYMKhcXo5PGKNsm
+An8BoGwNXjlxwbBNRaNO+ky0wNCaMNd1JLxEuvqg9J7rrcpHhWmnpXD5IKa8gv9GyVAJgOpiBOts
+p91sShc2kHvWJ5waPEWPCHDH9J+twGGKqKIIU7fdbURLUgUL1wlDSAHf/lgIAVCSj2H2HpoGqHpy
+HgOAClX9iRSLNa0Znj8HTaqfOwxXevsz1KkLFY+Ahm426GIEqdfkK2iT6Hhgc7tjNO3f8i5ALQID
+AQABo4IB8TCCAe0wHwYDVR0jBBgwFoAUkmFrguGioKpP7GfxwqP3tIAAwewwHQYDVR0OBBYEFILE
+dmHLtK6oxmFJZvBhTQhvqrS0MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZ
+MBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMFAjARBglghkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7
+BgwrBgEEAbIxAQIBAQEwKzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9D
+UFMwXQYDVR0fBFYwVDBSoFCgToZMaHR0cDovL2NybC5jb21vZG9jYS5jb20vQ09NT0RPU0hBMjU2
+Q2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNybDCBkAYIKwYBBQUHAQEEgYMw
+gYAwWAYIKwYBBQUHMAKGTGh0dHA6Ly9jcnQuY29tb2RvY2EuY29tL0NPTU9ET1NIQTI1NkNsaWVu
+dEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYIKwYBBQUHMAGGGGh0dHA6Ly9v
+Y3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRlYWQub3JnMA0GCSqGSIb3
+DQEBCwUAA4IBAQA+AfvNhFwtapF5Lzjapgul3zYuEnMfR538Ya1vhP8wuOkcoJeT2gEFXzVO2WUu
+eWM0g0/DumnRB53htV/Qq/+vsL0i6a2+iOO7kHi5O7bZkgbdNv0t2lzonDUHi6LTa7NUj+tv+j6y
+hW+iNquC3ACP1dIZH8gJmicHblW63qRgp6wxhn315MLBeavi3uiSag2eeKFePiTIwJjN2UYq6kWg
+PL5G/Ycf9x/xN1XBTfJiURc0FsXhrA98VMWnt52C5Lo4txhGjzTI+IZg40b3YDs6E7mTYb5KKmbc
+QZA9priOFDdj1z5W9BdWhU6I/D0P9y8Z4Tr6+ZscMUVD0RqWy2LeMIIFPTCCBCWgAwIBAgIQagtQ
+WJVTLQRQTeIoEf4aMDANBgkqhkiG9w0BAQsFADCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdy
+ZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExp
+bWl0ZWQxQTA/BgNVBAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQg
+U2VjdXJlIEVtYWlsIENBMB4XDTE2MTIyMDAwMDAwMFoXDTE3MTIyMDIzNTk1OVowJDEiMCAGCSqG
+SIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAMG06xWohnbzdqU4Z0favuHmlwdsEGUDaobXq+WayaTzuO3vO22fn9bZmKIevqwfdBv1zduD
+RKz0X71OM1czU/aQrQs0klZwZWUAaWhGDCoXF6OTxijbJgJ/AaBsDV45ccGwTUWjTvpMtMDQmjDX
+dSS8RLr6oPSe663KR4Vpp6Vw+SCmvIL/RslQCYDqYgTrbKfdbEoXNpB71iecGjxFjwhwx/SfrcBh
+iqiiCFO33W1ES1IFC9cJQ0gB3/5YCAFQko9h9h6aBqh6ch4DgApV/YkUizWtGZ4/B02qnzsMV3r7
+M9SpCxWPgIZuNuhiBKnX5Ctok+h4YHO7YzTt3/IuQC0CAwEAAaOCAfEwggHtMB8GA1UdIwQYMBaA
+FJJha4LhoqCqT+xn8cKj97SAAMHsMB0GA1UdDgQWBBSCxHZhy7SuqMZhSWbwYU0Ib6q0tDAOBgNV
+HQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAgBgNVHSUEGTAXBggrBgEFBQcDBAYLKwYBBAGyMQED
+BQIwEQYJYIZIAYb4QgEBBAQDAgUgMEYGA1UdIAQ/MD0wOwYMKwYBBAGyMQECAQEBMCswKQYIKwYB
+BQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9kby5uZXQvQ1BTMF0GA1UdHwRWMFQwUqBQoE6GTGh0
+dHA6Ly9jcmwuY29tb2RvY2EuY29tL0NPTU9ET1NIQTI1NkNsaWVudEF1dGhlbnRpY2F0aW9uYW5k
+U2VjdXJlRW1haWxDQS5jcmwwgZAGCCsGAQUFBwEBBIGDMIGAMFgGCCsGAQUFBzAChkxodHRwOi8v
+Y3J0LmNvbW9kb2NhLmNvbS9DT01PRE9TSEEyNTZDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3Vy
+ZUVtYWlsQ0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0R
+BBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAPgH7zYRcLWqReS84
+2qYLpd82LhJzH0ed/GGtb4T/MLjpHKCXk9oBBV81TtllLnljNINPw7pp0Qed4bVf0Kv/r7C9Iumt
+vojju5B4uTu22ZIG3Tb9Ldpc6Jw1B4ui02uzVI/rb/o+soVvojargtwAj9XSGR/ICZonB25Vut6k
+YKesMYZ99eTCwXmr4t7okmoNnnihXj4kyMCYzdlGKupFoDy+Rv2HH/cf8TdVwU3yYlEXNBbF4awP
+fFTFp7edguS6OLcYRo80yPiGYONG92A7OhO5k2G+Sipm3EGQPaa4jhQ3Y9c+VvQXVoVOiPw9D/cv
+GeE6+vmbHDFFQ9Ealsti3jGCA9MwggPPAgEBMIGwMIGbMQswCQYDVQQGEwJHQjEbMBkGA1UECBMS
+R3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0Eg
+TGltaXRlZDFBMD8GA1UEAxM4Q09NT0RPIFNIQS0yNTYgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFu
+ZCBTZWN1cmUgRW1haWwgQ0ECEGoLUFiVUy0EUE3iKBH+GjAwDQYJYIZIAWUDBAIBBQCgggHzMBgG
+CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE3MDMwMTA5MjkxM1owLwYJ
+KoZIhvcNAQkEMSIEILT5g98Q+/o+tATVg+bST5wNs6tM9in9ljrfXzoWmwYYMIHBBgkrBgEEAYI3
+EAQxgbMwgbAwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAO
+BgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01P
+RE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQagtQ
+WJVTLQRQTeIoEf4aMDCBwwYLKoZIhvcNAQkQAgsxgbOggbAwgZsxCzAJBgNVBAYTAkdCMRswGQYD
+VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
+TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRp
+b24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQagtQWJVTLQRQTeIoEf4aMDANBgkqhkiG9w0BAQEFAASC
+AQBeHoHeRXeaNWE4gpEGAnEaHCnVNo2YZHMyhF1TuJqCe4Vz/5ndXR3QsOvZKqQzWWUZE5vNIP+P
+kvmT1m0W00WCWV37ZwBYPdW6ZjZWFAYnfYrJJ4bXbxtoT1N/BT7zZmoElz6Ry0ysUpvtJXK2MRwc
+YtIeyPpVH+ABIJEuxYIE0VZxLAz7wpSgJIrJwfHyZbNOLVcWpEXcg5moLuuWAbHiax3OX0AQE3J/
+emPuacPglwa4YUauc3vxo8lIEJIP9ORlJk97Rzcl9gC+Hm8NJuyC0aDSV9VuS+AG9QkzBVePufOD
+TYyRWis+NEzO7SqqiyLtAs6rhxuItGVamgJcdtteAAAAAAAA
 
 
-      old_metadata = f->metadata;
-@@ -276,8 +276,8 @@ struct inode *jffs2_iget(struct super_block *sb, 
-unsigned long ino)
-          goto error;
-
-      inode->i_mode = jemode_to_cpu(latest_node.mode);
--    i_uid_write(inode, je16_to_cpu(latest_node.uid));
--    i_gid_write(inode, je16_to_cpu(latest_node.gid));
-+    i_uid_write(inode, je32_to_cpu(latest_node.uid));
-+    i_gid_write(inode, je32_to_cpu(latest_node.gid));
-      inode->i_size = je32_to_cpu(latest_node.isize);
-      inode->i_atime = ITIME(je32_to_cpu(latest_node.atime));
-      inode->i_mtime = ITIME(je32_to_cpu(latest_node.mtime));
-@@ -441,14 +441,14 @@ struct inode *jffs2_new_inode (struct inode 
-*dir_i, umode_t mode, struct jffs2_r
-
-      memset(ri, 0, sizeof(*ri));
-      /* Set OS-specific defaults for new inodes */
--    ri->uid = cpu_to_je16(from_kuid(&init_user_ns, current_fsuid()));
-+    ri->uid = cpu_to_je32(from_kuid(&init_user_ns, current_fsuid()));
-
-      if (dir_i->i_mode & S_ISGID) {
--        ri->gid = cpu_to_je16(i_gid_read(dir_i));
-+        ri->gid = cpu_to_je32(i_gid_read(dir_i));
-          if (S_ISDIR(mode))
-              mode |= S_ISGID;
-      } else {
--        ri->gid = cpu_to_je16(from_kgid(&init_user_ns, current_fsgid()));
-+        ri->gid = cpu_to_je32(from_kgid(&init_user_ns, current_fsgid()));
-      }
-
-      /* POSIX ACLs have to be processed now, at least partly.
-@@ -470,8 +470,8 @@ struct inode *jffs2_new_inode (struct inode *dir_i, 
-umode_t mode, struct jffs2_r
-      set_nlink(inode, 1);
-      inode->i_ino = je32_to_cpu(ri->ino);
-      inode->i_mode = jemode_to_cpu(ri->mode);
--    i_gid_write(inode, je16_to_cpu(ri->gid));
--    i_uid_write(inode, je16_to_cpu(ri->uid));
-+    i_gid_write(inode, je32_to_cpu(ri->gid));
-+    i_uid_write(inode, je32_to_cpu(ri->uid));
-      inode->i_atime = inode->i_ctime = inode->i_mtime = 
-current_time(inode);
-      ri->atime = ri->mtime = ri->ctime = 
-cpu_to_je32(I_SEC(inode->i_mtime));
-
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index 9ed0f26..ff43ea4 100644
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -818,8 +818,8 @@ static int jffs2_garbage_collect_metadata(struct 
-jffs2_sb_info *c, struct jffs2_
-      ri.ino = cpu_to_je32(f->inocache->ino);
-      ri.version = cpu_to_je32(++f->highest_version);
-      ri.mode = cpu_to_jemode(JFFS2_F_I_MODE(f));
--    ri.uid = cpu_to_je16(JFFS2_F_I_UID(f));
--    ri.gid = cpu_to_je16(JFFS2_F_I_GID(f));
-+    ri.uid = cpu_to_je32(JFFS2_F_I_UID(f));
-+    ri.gid = cpu_to_je32(JFFS2_F_I_GID(f));
-      ri.isize = cpu_to_je32(ilen);
-      ri.atime = cpu_to_je32(JFFS2_F_I_ATIME(f));
-      ri.ctime = cpu_to_je32(JFFS2_F_I_CTIME(f));
-@@ -1089,8 +1089,8 @@ static int jffs2_garbage_collect_hole(struct 
-jffs2_sb_info *c, struct jffs2_eras
-          ilen = JFFS2_F_I_SIZE(f);
-
-      ri.mode = cpu_to_jemode(JFFS2_F_I_MODE(f));
--    ri.uid = cpu_to_je16(JFFS2_F_I_UID(f));
--    ri.gid = cpu_to_je16(JFFS2_F_I_GID(f));
-+    ri.uid = cpu_to_je32(JFFS2_F_I_UID(f));
-+    ri.gid = cpu_to_je32(JFFS2_F_I_GID(f));
-      ri.isize = cpu_to_je32(ilen);
-      ri.atime = cpu_to_je32(JFFS2_F_I_ATIME(f));
-      ri.ctime = cpu_to_je32(JFFS2_F_I_CTIME(f));
-@@ -1363,8 +1363,8 @@ static int jffs2_garbage_collect_dnode(struct 
-jffs2_sb_info *c, struct jffs2_era
-          ri.ino = cpu_to_je32(f->inocache->ino);
-          ri.version = cpu_to_je32(++f->highest_version);
-          ri.mode = cpu_to_jemode(JFFS2_F_I_MODE(f));
--        ri.uid = cpu_to_je16(JFFS2_F_I_UID(f));
--        ri.gid = cpu_to_je16(JFFS2_F_I_GID(f));
-+        ri.uid = cpu_to_je32(JFFS2_F_I_UID(f));
-+        ri.gid = cpu_to_je32(JFFS2_F_I_GID(f));
-          ri.isize = cpu_to_je32(JFFS2_F_I_SIZE(f));
-          ri.atime = cpu_to_je32(JFFS2_F_I_ATIME(f));
-          ri.ctime = cpu_to_je32(JFFS2_F_I_CTIME(f));
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 06a71db..74306bb 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -1195,8 +1195,8 @@ static int jffs2_do_read_inode_internal(struct 
-jffs2_sb_info *c,
-          latest_node->version = cpu_to_je32(0);
-          latest_node->atime = latest_node->ctime = latest_node->mtime = 
-cpu_to_je32(0);
-          latest_node->isize = cpu_to_je32(0);
--        latest_node->gid = cpu_to_je16(0);
--        latest_node->uid = cpu_to_je16(0);
-+        latest_node->gid = cpu_to_je32(0);
-+        latest_node->uid = cpu_to_je32(0);
-          if (f->inocache->state == INO_STATE_READING)
-              jffs2_set_inocache_state(c, f->inocache, INO_STATE_PRESENT);
-          return 0;
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 5ef21f4..2a29ba2 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -369,7 +369,7 @@ static int __init init_jffs2_fs(void)
-         hope the structs are the right sizes, instead. */
-      BUILD_BUG_ON(sizeof(struct jffs2_unknown_node) != 12);
-      BUILD_BUG_ON(sizeof(struct jffs2_raw_dirent) != 40);
--    BUILD_BUG_ON(sizeof(struct jffs2_raw_inode) != 68);
-+    BUILD_BUG_ON(sizeof(struct jffs2_raw_inode) != 72);
-      BUILD_BUG_ON(sizeof(struct jffs2_raw_summary) != 32);
-
-      pr_info("version 2.2."
-diff --git a/include/uapi/linux/jffs2.h b/include/uapi/linux/jffs2.h
-index a18b719..2d4f04f 100644
---- a/include/uapi/linux/jffs2.h
-+++ b/include/uapi/linux/jffs2.h
-@@ -146,8 +146,8 @@ struct jffs2_raw_inode
-      jint32_t ino;        /* Inode number.  */
-      jint32_t version;    /* Version number.  */
-      jmode_t mode;       /* The file's type or mode.  */
--    jint16_t uid;        /* The file's owner.  */
--    jint16_t gid;        /* The file's group.  */
-+    jint32_t uid;        /* The file's owner.  */
-+    jint32_t gid;        /* The file's group.  */
-      jint32_t isize;      /* Total resultant size of this inode (used 
-for truncations)  */
-      jint32_t atime;      /* Last access time.  */
-      jint32_t mtime;      /* Last modification time.  */
--- 
-1.9.1
+--=-IWLCef7rRaIhZ4bStc0S--
