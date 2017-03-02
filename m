@@ -1,12 +1,18 @@
-Received: from smtpout.microchip.com ([198.175.253.82]
- helo=email.microchip.com)
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjTrm-0003As-7i
- for linux-mtd@lists.infradead.org; Thu, 02 Mar 2017 16:46:12 +0000
-Subject: Re: [RFC PATCH 2/2] mtd: devices: m25p80: Enable spi-nor bounce
- buffer support
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Vignesh R
- <vigneshr@ti.com>
+ id 1cjU6d-00014S-Px
+ for linux-mtd@lists.infradead.org; Thu, 02 Mar 2017 17:01:33 +0000
+Date: Thu, 2 Mar 2017 17:00:41 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Vignesh R <vigneshr@ti.com>, Frode Isaksen <fisaksen@baylibre.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+ linux-spi@vger.kernel.org
+Message-ID: <20170302170041.hfix33mhzgqydmvh@sirena.org.uk>
 References: <20170227120839.16545-1-vigneshr@ti.com>
  <20170227120839.16545-3-vigneshr@ti.com>
  <aa967f6a-0526-3e33-1de7-fbe7d4264f34@nod.at>
@@ -17,19 +23,13 @@ References: <20170227120839.16545-1-vigneshr@ti.com>
  <09ffe06d-565d-afe8-8b7d-d1a0b575595b@baylibre.com>
  <4cd22ddd-b108-f697-0bde-ad844a386e62@ti.com>
  <20170302152921.1c031b57@bbrezillon>
-CC: Frode Isaksen <fisaksen@baylibre.com>, Mark Brown <broonie@kernel.org>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-spi@vger.kernel.org>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <5e83b0c0-f1c3-399f-f4f5-afb92af7d7ae@atmel.com>
-Date: Thu, 2 Mar 2017 17:45:41 +0100
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="dimhxuakwsly4kwb"
+Content-Disposition: inline
 In-Reply-To: <20170302152921.1c031b57@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Subject: Re: [RFC PATCH 2/2] mtd: devices: m25p80: Enable spi-nor bounce
+ buffer support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,119 +39,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 02/03/2017 à 15:29, Boris Brezillon a écrit :
-> On Thu, 2 Mar 2017 19:24:43 +0530
+
+--dimhxuakwsly4kwb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Mar 02, 2017 at 03:29:21PM +0100, Boris Brezillon wrote:
 > Vignesh R <vigneshr@ti.com> wrote:
-> 
->>>>>>     
->>>>> Not really, I am debugging another issue with UBIFS on DRA74 EVM (ARM
->>>>> cortex-a15) wherein pages allocated by vmalloc are in highmem region
->>>>> that are not addressable using 32 bit addresses and is backed by LPAE.
->>>>> So, a 32 bit DMA cannot access these buffers at all.
->>>>> When dma_map_sg() is called to map these pages by spi_map_buf() the
->>>>> physical address is just truncated to 32 bit in pfn_to_dma() (as part of
->>>>> dma_map_sg() call). This results in random crashes as DMA starts
->>>>> accessing random memory during SPI read.
->>>>>
->>>>> IMO, there may be more undiscovered caveat with using dma_map_sg() for
->>>>> non kmalloc'd buffers and its better that spi-nor starts handling these
->>>>> buffers instead of relying on spi_map_msg() and working around every
->>>>> time something pops up.
->>>>>  
->>>> Ok, I had a closer look at the SPI framework, and it seems there's a
->>>> way to tell to the core that a specific transfer cannot use DMA
->>>> (->can_dam()). The first thing you should do is fix the spi-davinci
->>>> driver:
->>>>
->>>> 1/ implement ->can_dma()
->>>> 2/ patch davinci_spi_bufs() to take the decision to do DMA or not on a
->>>>    per-xfer basis and not on a per-device basis
->>>>  
->>
->> This would lead to poor perf defeating entire purpose of using DMA.
-> 
-> Hm, that's not really true. For all cases where you have a DMA-able
-> buffer it would still use DMA. For other cases (like the UBI+SPI-NOR
-> case we're talking about here), yes, it will be slower, but slower is
-> still better than buggy.
-> So, in any case, I think the fixes pointed by Frode are needed.
-> 
->>
->>>> Then we can start thinking about how to improve perfs by using a bounce
->>>> buffer for large transfers, but I'm still not sure this should be done
->>>> at the MTD level...  
->>
->> If its at SPI level, then I guess each individual drivers which cannot
->> handle vmalloc'd buffers will have to implement bounce buffer logic.
-> 
-> Well, that's my opinion. The only one that can decide when to do
-> PIO, when to use DMA or when to use a bounce buffer+DMA is the SPI
-> controller.
-> If you move this logic to the SPI NOR layer, you'll have to guess what
-> is the best approach, and I fear the decision will be wrong on some
-> platforms (leading to perf degradation).
->
 
-True. For instance, Atmel SAMA5* SoCs don't need this bounce buffer
-since their L1 data cache uses a PIPT scheme.
+> > Or SPI core can be extended in a way similar to this RFC. That is, SPI
+> > master driver will set a flag to request SPI core to use of bounce
+> > buffer for vmalloc'd buffers. And spi_map_buf() just uses bounce buffer
+> > in case buf does not belong to kmalloc region based on the flag.
 
-http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0433c/CHDFAHBD.html
-
-"""
-2.1.4. Data side memory system
-
-Data Cache Unit
-
-The Data Cache Unit (DCU) consists of the following sub-blocks:
-
-    The Level 1 (L1) data cache controller, which generates the control
-signals for the associated embedded tag, data, and dirty memory (RAMs)
-and arbitrates between the different sources requesting access to the
-memory resources. The data cache is 4-way set associative and uses a
-Physically Indexed Physically Tagged (PIPT) scheme for lookup which
-enables unambiguous address management in the system.
-"""
-
-So for those SoCs, spi_map_msg() should be safe to handle vmalloc'ed
-buffers since they don't have to worry about the cache aliases issue or
-address truncation.
-
-That's why I don't think setting the SNOR_F_USE_BOUNCE_BUFFER in *all*
-cases in m25p80 is the right solution since it would not fair to degrade
-the performances of some devices when it's not needed hence not justified.
-
-I still agree with the idea of patch 1 but about patch 2, if m25p80
-users want to take advantage of this new spi-nor bounce buffer, we have
-to agree on a reliable mechanism that clearly tells whether or not the
-SNOR_F_USE_BOUNCE_BUFFER is to be set from m25p80.
-
-
-> You're mentioning code duplication in each SPI controller, I agree,
-> this is far from ideal, but what you're suggesting is not necessarily
-> better. What if another SPI user starts passing vmalloc-ed buffers to
-> the SPI controller? You'll have to duplicate the bounce-buffer logic in
-> this user as well.
-> 
->>
->> Or SPI core can be extended in a way similar to this RFC. That is, SPI
->> master driver will set a flag to request SPI core to use of bounce
->> buffer for vmalloc'd buffers. And spi_map_buf() just uses bounce buffer
->> in case buf does not belong to kmalloc region based on the flag.
-> 
 > That's a better approach IMHO. Note that the decision should not only
+
+I don't understand how the driver is supposed to tell if it might need a
+bounce buffer due to where the memory is allocated and the caches used
+by the particular system it is used on?  The suggestion to pass via
+scatterlists seems a bit more likely to work but even then I'm not clear
+that drivers doing PIO would play well.
+
 > be based on the buffer type, but also on the transfer length and/or
 > whether the controller supports transferring non physically contiguous
 > buffers.
-> 
-> Maybe we should just extend ->can_dma() to let the core know if it
-> should use a bounce buffer.
-> 
-> Regarding the bounce buffer allocation logic, I'm not sure how it
-> should be done. The SPI user should be able to determine a max transfer
-> len (at least this is the case for SPI NORs) and inform the SPI layer
-> about this boundary so that the SPI core can allocate a bounce buffer
-> of this size. But we also have limitations at the SPI master level
-> (->max_transfer_size(), ->max_message_size()).
-> 
-> 
-> 
+
+The reason most drivers only look at the transfer length when deciding
+that they can DMA is that most controllers are paired with DMA
+controllers that are sensibly implemented, the only factor they're
+selecting on is the copybreak for performance.
+
+--dimhxuakwsly4kwb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli4T7gACgkQJNaLcl1U
+h9DkeQf+Je/mIX+uX365cUiNExxxlw3ghoWdng0aEQUX8yQqkakX2384XdrSynVq
+HyiMRD0tOdSmnRJK3wjLtD+DinEpktUtlxs1y+hlckAJdLMQGDHiEJcMF4AU50rj
+yaoPdW5N1o9UrmqEPleN72Eoau7VmwSOiA6LhpeZ+4wL1C8dT+BGZmaEQ9UV2GTX
+vr2CcTureD11SrCYcKTU1uKG2nYdgiOo2S3GsveISWAcjowviFdEc3PZmW5BE0kp
+E595bLWdEzhPIK2kuaVgqmz1rCpryuVtUVMQm3eOwWyY/LajrtVKY1CSxkMAQOIG
+z2jGLojhxjbTr6tT0uDy31G3CSLJCg==
+=abQ9
+-----END PGP SIGNATURE-----
+
+--dimhxuakwsly4kwb--
