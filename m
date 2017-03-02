@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cjWxd-0007yW-8R
- for linux-mtd@lists.infradead.org; Thu, 02 Mar 2017 20:04:26 +0000
-Date: Thu, 2 Mar 2017 21:03:51 +0100
+ id 1cjXFL-0007tG-Jk
+ for linux-mtd@lists.infradead.org; Thu, 02 Mar 2017 20:22:45 +0000
+Date: Thu, 2 Mar 2017 21:22:20 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Alban <albeu@free.fr>
 Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
@@ -13,12 +13,12 @@ Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
  <robh+dt@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Moritz Fischer
  <moritz.fischer@ettus.com>
-Subject: Re: [PATCH 3/3] nvmem: core: Allow allocating several anonymous
- nvmem devices
-Message-ID: <20170302210351.1f740ffc@bbrezillon>
-In-Reply-To: <1488484223-844-4-git-send-email-albeu@free.fr>
+Subject: Re: [PATCH 1/3] doc: bindings: Add bindings documentation for mtd
+ nvmem
+Message-ID: <20170302212220.4c3c7bef@bbrezillon>
+In-Reply-To: <1488484223-844-2-git-send-email-albeu@free.fr>
 References: <1488484223-844-1-git-send-email-albeu@free.fr>
- <1488484223-844-4-git-send-email-albeu@free.fr>
+ <1488484223-844-2-git-send-email-albeu@free.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -31,37 +31,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  2 Mar 2017 20:50:23 +0100
+On Thu,  2 Mar 2017 20:50:21 +0100
 Alban <albeu@free.fr> wrote:
 
-> Currently the nvmem core expect the config to provide a name and ID
-> that are then used to create the device name. When no device name is
-> given 'nvmem' is used. However if there is several such anonymous
-> devices they all get named 'nvmem0', which doesn't work.
-> 
-> To fix this problem use the ID from the config only when the config
-> also provides a name. When no name is provided take the uinque ID of
-> the nvmem device instead.
+> Add the binding to expose MTD partitions as nvmem providers.
+
+Looks good. Maybe you should take the case you describe in your
+cover-letter into account and add an extra layer: add an nvmem sub-node
+containing the nvmem cells, so that you can expose nvmem cells directly
+under master MTD devices (and not only partitions). 
+
 > 
 > Signed-off-by: Alban <albeu@free.fr>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
 > ---
->  drivers/nvmem/core.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  .../devicetree/bindings/nvmem/mtd-nvmem.txt        | 29 ++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
 > 
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index 408b521..8c830a8 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -468,7 +468,8 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
->  	np = config->dev->of_node;
->  	nvmem->dev.of_node = np;
->  	dev_set_name(&nvmem->dev, "%s%d",
-> -		     config->name ? : "nvmem", config->id);
-> +		     config->name ? : "nvmem",
-> +		     config->name ? config->id : nvmem->id);
->  
->  	nvmem->read_only = of_property_read_bool(np, "read-only") |
->  			   config->read_only;
+> diff --git a/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
+> new file mode 100644
+> index 0000000..47602f7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
+> @@ -0,0 +1,29 @@
+> += NVMEM in MTD =
+> +
+> +Config data for drivers is often stored in MTD devices. This binding
+> +define how such data can be represented in device tree.
+> +
+> +An MTD can be defined as an NVMEM provider by adding the `nvmem-provider`
+> +property to their node. Data cells can then be defined as child nodes
+> +of the partition as defined in nvmem.txt.
+> +
+> +Example:
+> +
+> +	flash@0 {
+> +		...
+> +
+> +		partition@2 {
+> +			label = "art";
+> +			reg = <0x7F0000 0x010000>;
+> +			read-only;
+> +
+> +			nvmem-provider;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			eeprom@1000 {
+> +				label = "wmac-eeprom";
+> +				reg = <0x1000 0x1000>;
+> +			};
+> +		};
+> +	};
