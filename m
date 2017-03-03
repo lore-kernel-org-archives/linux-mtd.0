@@ -1,28 +1,28 @@
-Received: from smtp6-g21.free.fr ([212.27.42.6])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjm9t-00030Z-KO
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 12:18:07 +0000
-Date: Fri, 3 Mar 2017 13:17:05 +0100
-From: Alban <albeu@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org,
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cjmB8-0003WC-O3
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 12:19:24 +0000
+Date: Fri, 3 Mar 2017 13:19:01 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Alban <albeu@free.fr>, linux-kernel@vger.kernel.org,
  devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, Cyrille Pitchen
  <cyrille.pitchen@atmel.com>, Richard Weinberger <richard@nod.at>, Marek
  Vasut <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
  Rob Herring <robh+dt@kernel.org>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Moritz Fischer <moritz.fischer@ettus.com>
+ <maxime.ripard@free-electrons.com>, Moritz Fischer
+ <moritz.fischer@ettus.com>
 Subject: Re: [PATCH 1/3] doc: bindings: Add bindings documentation for mtd
  nvmem
-Message-ID: <20170303131705.119021f4@tock>
-In-Reply-To: <20170302212220.4c3c7bef@bbrezillon>
+Message-ID: <20170303131901.391b0700@bbrezillon>
+In-Reply-To: <6d5ef869-a1d5-c8d2-847d-1c7aaafa74cf@linaro.org>
 References: <1488484223-844-1-git-send-email-albeu@free.fr>
  <1488484223-844-2-git-send-email-albeu@free.fr>
- <20170302212220.4c3c7bef@bbrezillon>
+ <6d5ef869-a1d5-c8d2-847d-1c7aaafa74cf@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_//WcVBIwnCqlfkEDj3C3PmZa"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,72 +32,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_//WcVBIwnCqlfkEDj3C3PmZa
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, 3 Mar 2017 11:27:34 +0000
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
 
-On Thu, 2 Mar 2017 21:22:20 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> On 02/03/17 19:50, Alban wrote:
+> > Add the binding to expose MTD partitions as nvmem providers.  
+> 
+> It would be nice to see more description of this patch, explaining the 
+> real use case.
+> >
+> > Signed-off-by: Alban <albeu@free.fr>
+> > ---
+> >  .../devicetree/bindings/nvmem/mtd-nvmem.txt        | 29 ++++++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
+> >
+> > diff --git a/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
+> > new file mode 100644
+> > index 0000000..47602f7
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
+> > @@ -0,0 +1,29 @@
+> > += NVMEM in MTD =
+> > +
+> > +Config data for drivers is often stored in MTD devices. This binding
+> > +define how such data can be represented in device tree.
+> > +
+> > +An MTD can be defined as an NVMEM provider by adding the `nvmem-provider`  
+> We should prefix this property with "mtd" to make it more explicit that 
+> this is specific to mtd devices.
 
-> On Thu,  2 Mar 2017 20:50:21 +0100
-> Alban <albeu@free.fr> wrote:
->=20
-> > Add the binding to expose MTD partitions as nvmem providers. =20
->=20
-> Looks good. Maybe you should take the case you describe in your
-> cover-letter into account and add an extra layer: add an nvmem sub-node
-> containing the nvmem cells, so that you can expose nvmem cells directly
-> under master MTD devices (and not only partitions).=20
+MTD is a linux-ism, not sure DT maintainers will like it ;-).
 
-I think that would be the better solution. This can be done
-independently, once we agree on a binding we just have to fix
-of_nvmem_cell_get(). My suggestion would be to have the new binding
-looking like this:
+> 
+> May be we should put this under "Required Properties" section, marking 
+> it as mandatory for mtd nvmem providers.
 
-nvmem-device@10 {
-	...
-	nvmem-provider;
-	nvmem-cells {
-		compatible =3D "nvmem-cells";
-		#address-cells =3D <1>;
-		#size-cells =3D <1>;
+It's definitely optional. It's really a choice to provide a nvmem cells
+under an MTD partition.
 
-		nvmem-cell@100 {
-			label =3D "mac-address";
-			reg =3D <0x100 0x200>;
-		}
-
-		...
-	}
-}
-
-I would also suggest making the "nvmem-provider" property mandatory
-to indicate that the device provides this capability. Up to now all
-nvmem providers only support this API but I think there might be more
-multi function devices in the future.
-
-Alban
-
---Sig_//WcVBIwnCqlfkEDj3C3PmZa
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJYuV7BAAoJEHSUmkuduC28F5cP/R8xJyu2TL6rMp7ZuE1TkTYr
-/lw1pQhEVnQcNiIFGzJsWv6gVOvDBXsy985hC/sp847twtUSBzy4DSagNHSR8Cui
-NByS2M8IrfzF/yb11pGLoJIhzD825u8f51N/TpLpOE8jK8+T+sO+ZvjlyUi1wf18
-QZUPdXrVSCAeJyfvLh4uYUaoUkD72OFGLCw8my729gQ7sLLKJeSBaD/+SU1WoTPA
-0umOEdp6BHJPLcrlrejzk4JHsQMW0t2TFooJF1xeBr7yDjNoBGwlrmLfqtVYjNUj
-n7OsYUn8GtM9SOqTZS32InkseOEuVYp85FHSjqMy5nLgUe0pG6aREYN0VTWKxy9l
-KymY9kYOnXCBU/C+wr54eo/BcfHJ45rcnHqqI79JMcAqrgFSZSpnIWVS4ZAqIbkU
-FEaL3aJH1FUH3zIsZIRaFFxswVHvfnGCqR5dNhpk0F9LOWRk5BHkytPVIgiAUo+C
-zOgSoXaBBbSWEWyH+9cda1tSVXfdrb8UvjBidKAJo1CjYonupmH5ojHMU/hfzeYT
-UTkgIXRNjN7d215FSQ8wzeuXlzs0NTo6eN2Qxnz3nPdidY87PfqNAN58XAfQu/mH
-AmjXnQTDIndKpJ4XvHsUTohGwMKJHsAQB/3D/Aann20sGrn9yEd0e+n7DnclNShq
-7j9qCzFLObp2bYQBaspn
-=aa3s
------END PGP SIGNATURE-----
-
---Sig_//WcVBIwnCqlfkEDj3C3PmZa--
+> 
+> > +property to their node. Data cells can then be defined as child nodes
+> > +of the partition as defined in nvmem.txt.
+> > +
+> > +Example:
+> > +
+> > +	flash@0 {
+> > +		...
+> > +
+> > +		partition@2 {
+> > +			label = "art";
+> > +			reg = <0x7F0000 0x010000>;
+> > +			read-only;
+> > +
+> > +			nvmem-provider;
+> > +			#address-cells = <1>;
+> > +			#size-cells = <1>;
+> > +
+> > +			eeprom@1000 {
+> > +				label = "wmac-eeprom";
+> > +				reg = <0x1000 0x1000>;
+> > +			};
+> > +		};
+> > +	};
+> >  
