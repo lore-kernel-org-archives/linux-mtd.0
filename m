@@ -1,35 +1,29 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjmg4-0001VZ-EY
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 12:51:22 +0000
-Date: Fri, 3 Mar 2017 12:50:07 +0000
-From: Mark Brown <broonie@kernel.org>
+ id 1cjn1e-0001nu-MK
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 13:13:40 +0000
+Date: Fri, 3 Mar 2017 14:12:37 +0100
+From: Alban <albeu@free.fr>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Vignesh R <vigneshr@ti.com>, Frode Isaksen <fisaksen@baylibre.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
- linux-spi@vger.kernel.org
-Message-ID: <20170303125007.xekpiyvvvfgwto6p@sirena.org.uk>
-References: <aa967f6a-0526-3e33-1de7-fbe7d4264f34@nod.at>
- <8f999a27-c3ce-2650-452c-b21c3e44989d@ti.com>
- <aeaf87ca-e8f5-72d0-997d-494df86abf68@atmel.com>
- <a6c61bf7-1f26-41db-9a6b-bcae87274cb9@ti.com>
- <20170301175506.202cb478@bbrezillon>
- <09ffe06d-565d-afe8-8b7d-d1a0b575595b@baylibre.com>
- <4cd22ddd-b108-f697-0bde-ad844a386e62@ti.com>
- <20170302152921.1c031b57@bbrezillon>
- <20170302170041.hfix33mhzgqydmvh@sirena.org.uk>
- <20170302204900.2ab4bf65@bbrezillon>
+Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Richard Weinberger <richard@nod.at>, Marek
+ Vasut <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
+ Rob Herring <robh+dt@kernel.org>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Moritz Fischer <moritz.fischer@ettus.com>
+Subject: Re: [PATCH 1/3] doc: bindings: Add bindings documentation for mtd
+ nvmem
+Message-ID: <20170303141237.0cc2faf0@tock>
+In-Reply-To: <20170303133744.152cf3ca@bbrezillon>
+References: <1488484223-844-1-git-send-email-albeu@free.fr>
+ <1488484223-844-2-git-send-email-albeu@free.fr>
+ <20170302212220.4c3c7bef@bbrezillon> <20170303131705.119021f4@tock>
+ <20170303133744.152cf3ca@bbrezillon>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="orjnje3x2lgg3nh7"
-Content-Disposition: inline
-In-Reply-To: <20170302204900.2ab4bf65@bbrezillon>
-Subject: Re: [RFC PATCH 2/2] mtd: devices: m25p80: Enable spi-nor bounce
- buffer support
+ boundary="Sig_/H3wJg3H6395NTzvKv=aEOgR"; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,72 +33,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--Sig_/H3wJg3H6395NTzvKv=aEOgR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
---orjnje3x2lgg3nh7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Fri, 3 Mar 2017 13:37:44 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-On Thu, Mar 02, 2017 at 08:49:00PM +0100, Boris Brezillon wrote:
+> On Fri, 3 Mar 2017 13:17:05 +0100
+> Alban <albeu@free.fr> wrote:
+>=20
+> > On Thu, 2 Mar 2017 21:22:20 +0100
+> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> >  =20
+> > > On Thu,  2 Mar 2017 20:50:21 +0100
+> > > Alban <albeu@free.fr> wrote:
+> > >    =20
+> > > > Add the binding to expose MTD partitions as nvmem providers.     =20
+> > >=20
+> > > Looks good. Maybe you should take the case you describe in your
+> > > cover-letter into account and add an extra layer: add an nvmem sub-no=
+de
+> > > containing the nvmem cells, so that you can expose nvmem cells direct=
+ly
+> > > under master MTD devices (and not only partitions).    =20
+> >=20
+> > I think that would be the better solution. This can be done
+> > independently, once we agree on a binding we just have to fix
+> > of_nvmem_cell_get(). My suggestion would be to have the new binding
+> > looking like this:
+> >=20
+> > nvmem-device@10 {
+> > 	...
+> > 	nvmem-provider;
+> > 	nvmem-cells {
+> > 		compatible =3D "nvmem-cells";
+> > 		#address-cells =3D <1>;
+> > 		#size-cells =3D <1>;
+> >=20
+> > 		nvmem-cell@100 {
+> > 			label =3D "mac-address";
+> > 			reg =3D <0x100 0x200>;
+> > 		}
+> >=20
+> > 		...
+> > 	}
+> > }
+> >=20
+> > I would also suggest making the "nvmem-provider" property mandatory
+> > to indicate that the device provides this capability. Up to now all
+> > nvmem providers only support this API but I think there might be more
+> > multi function devices in the future. =20
+>=20
+> If you enforce the name of the child node (here nvmem-cells), you don't
+> need this extra nvmem-provider property. Am I missing something?
 
-> 1/ for big transfers, dynamically allocating a bounce buffer on demand
->    (and freeing it after the DMA operation) might fail, or might induce
->    some latency, especially when the system is under high mem pressure.
->    Allocating these bounce buffers once during the SPI device driver
->    ->probe() guarantees that the bounce buffer will always be available
->    when needed, but OTOH, we don't know if it's really needed.
+That property would define the capability to be used as nvmem-provider,
+furthermore it would cover the case where no cell is defined. Also in
+the case of MTD devices it would avoid an ambiguity when there is no
+'partitions' sub node, as then the nvmem-cells node could be interpreted
+as a partition following the old binding.
 
-Yeah, but then the bounces are going to slow things down anyway.  This
-does seem fixable if we do something with caching the buffer once we
-create it, and if it's implemented elsewhere the same problem will
-exist.  We can't just allocate the maximum possible buffer size because
-some devices have effectively unlimited transfer sizes so you could
-waste huge amounts of memory, especially in the common case where we
-don't use vmalloc() at all.
+=46rom what I understand most of such "implicit" binding have sooner or
+later proved to be too limited, or worth, clashing with another one.
+They then had to be deprecated and replaced by explicit ones. The MTD
+partitions binding is a good example of such evolution.
 
-> 2/ only the SPI and/or DMA engine know when using DMA with a bounce
->    buffer is better than using PIO mode. The limit is probably
->    different from the DMA vs PIO mode (dma_min_len <
->    dma_bounce_min_len). Thanks to ->can_dma() we can let drivers decide
->    when preparing the buffer for a DMA transfer is needed.
+Alban
 
-I'm not so worried about that, the numbers are basically an educated
-guess anyway.  It's a concern though, yes.
-
-> 3/ if the DMA engine does not support chaining DMA descriptor, and the
->    vmalloc-ed buffer spans several non-contiguous pages, doing DMA
->    is simply not possible. That one can probably handled with the
->    ->can_dma() hook too.
-
-Anything that doesn't support chaining is in trouble already (or should
-be soon hopefully), but mostly the controllers will have no idea about
-that as they're just asking their DMA controller to do things.  We'd be
-better off having the core query the capabilities of the DMA controllers
-directly.
-
-> >  The suggestion to pass via
-> > scatterlists seems a bit more likely to work but even then I'm not clear
-> > that drivers doing PIO would play well.
-
-> You mean that SPI device drivers would directly pass an sg list instead
-> of a virtual pointer? Not sure that would help, we're just moving the
-> decision one level up without providing more information to help decide
-> what to do.
-
-I think the idea was to ensure you only use one mapping type at once.
-
---orjnje3x2lgg3nh7
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/H3wJg3H6395NTzvKv=aEOgR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli5Zn8ACgkQJNaLcl1U
-h9CTXAf+Lu3iYHxq+1CUTFPDcoKroaC9B1Mhpj3vG1ZON/K+ZUjtd4kGF/tGQLDk
-yYu6zqv7KgeDvmet4WirUwuFXzirtExPAyJmTAz4Hgc/vc2mJr9owcjzsrdIZAIY
-rIAKRR17qCrbebKJPivvgMANgyMHX8yqoeeHQu1dLdPJmqhokUdLvjr800oTHK7q
-cm+uAqkzbhYIUBrkutYG3SYFoTy/m1+8b2B6Fpl+yIBkVumGpKSxqehTouP2jtmh
-cku0qICvexRBUntESgU5XQo8A6uocElEu00+QWbDS3xXWM08F04+GgXNCCz+kyFl
-wTY/hjjj8i5Zo6IeOM1G35pfZ65blg==
-=gugT
+iQIcBAEBCAAGBQJYuWvFAAoJEHSUmkuduC28t3IP/0n7qavMxpyo3yo5TqBPnDym
+HtgXmsBDigdzfo6be9J4SaFXr5tigqPBYNMLy/c0NgFHqJUO1eB0Jj7Vg10T6Nw7
+2KHMxON9LRTULOaKryly+WDocN1Vzdokspjo+Xy8heHhPS/7R4WFifvPSCNTisGX
+BXScYgyLyWtvljHpLaI5getaSJUV1fkHo0FFUy0eXEQmwMqwEfav9jhh3olCJFPF
+TKfrWtAX1bhz2BC6zLIJfoCs8zIwwxYiLj6H6vzuhyLqRzxR1nlMVfOFUry6C+EA
+z2/yZ5Gx3Xq3p/6n7B7ZtPvRJSS2dHihJLYDg9USWDepEhZ6V+d4OcPcaAKHiec6
+ukq+fvt5DdSIx607CuMsgAPYgAU3gvm5Xvf6Xoctv5RXmrkpuTKX5akc5p+jlt0D
+QtA4f4aYMoSE8PkClnEaYh5m8lwgx1cUADp3qQ8Pi5uDB9/XTUTaGG/DaqWkmx//
+4xNG+X3fD1VdGdb1GTkVUNf0Lh7JVXF3WhG5dM66PiRsycL4nS+BHLGDFhrYWCx1
+Z7nq3hkoe8Y61vdotRa24VLt4lEA08/yiAEEY3WJnn+8oB8gWLlZdHFoC2agV+w9
+XXlD9yQZUX7+ZsiCFWl6fag2nfJmTwZ9Hbl9IWrpcEPwhaHQQkhiY+8LwwmKctEs
+IVwg/SJHjn6YFXALuD6g
+=him3
 -----END PGP SIGNATURE-----
 
---orjnje3x2lgg3nh7--
+--Sig_/H3wJg3H6395NTzvKv=aEOgR--
