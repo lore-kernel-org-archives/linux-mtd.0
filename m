@@ -1,29 +1,30 @@
 Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjn1e-0001nu-MK
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 13:13:40 +0000
-Date: Fri, 3 Mar 2017 14:12:37 +0100
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cjnIk-00073f-Vj
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 13:31:21 +0000
+Date: Fri, 3 Mar 2017 14:30:21 +0100
 From: Alban <albeu@free.fr>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org,
+Cc: Aban Bedel <albeu@free.fr>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, linux-kernel@vger.kernel.org,
  devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, Cyrille Pitchen
  <cyrille.pitchen@atmel.com>, Richard Weinberger <richard@nod.at>, Marek
  Vasut <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
  Rob Herring <robh+dt@kernel.org>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Moritz Fischer <moritz.fischer@ettus.com>
-Subject: Re: [PATCH 1/3] doc: bindings: Add bindings documentation for mtd
- nvmem
-Message-ID: <20170303141237.0cc2faf0@tock>
-In-Reply-To: <20170303133744.152cf3ca@bbrezillon>
+ <maxime.ripard@free-electrons.com>, Moritz Fischer
+ <moritz.fischer@ettus.com>
+Subject: Re: [PATCH 2/3] mtd: Add support for reading MTD devices via the
+ nvmem API
+Message-ID: <20170303143021.46381429@tock>
+In-Reply-To: <20170303133419.2383dbce@bbrezillon>
 References: <1488484223-844-1-git-send-email-albeu@free.fr>
- <1488484223-844-2-git-send-email-albeu@free.fr>
- <20170302212220.4c3c7bef@bbrezillon> <20170303131705.119021f4@tock>
- <20170303133744.152cf3ca@bbrezillon>
+ <1488484223-844-3-git-send-email-albeu@free.fr>
+ <b2df74bb-dd86-bac1-ab8b-cbff6ca29b6f@linaro.org>
+ <20170303133419.2383dbce@bbrezillon>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/H3wJg3H6395NTzvKv=aEOgR"; protocol="application/pgp-signature"
+ boundary="Sig_/m9S=jHwykYWTowWyRBAGNZR"; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,94 +34,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_/H3wJg3H6395NTzvKv=aEOgR
+--Sig_/m9S=jHwykYWTowWyRBAGNZR
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 3 Mar 2017 13:37:44 +0100
+On Fri, 3 Mar 2017 13:34:19 +0100
 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> On Fri, 3 Mar 2017 13:17:05 +0100
-> Alban <albeu@free.fr> wrote:
+> On Fri, 3 Mar 2017 11:23:16 +0000
+> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
 >=20
-> > On Thu, 2 Mar 2017 21:22:20 +0100
-> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+>=20
 > >  =20
-> > > On Thu,  2 Mar 2017 20:50:21 +0100
-> > > Alban <albeu@free.fr> wrote:
-> > >    =20
-> > > > Add the binding to expose MTD partitions as nvmem providers.     =20
-> > >=20
-> > > Looks good. Maybe you should take the case you describe in your
-> > > cover-letter into account and add an extra layer: add an nvmem sub-no=
-de
-> > > containing the nvmem cells, so that you can expose nvmem cells direct=
-ly
-> > > under master MTD devices (and not only partitions).    =20
+> > > +	mutex_lock(&mtd_nvmem_list_lock);
+> > > +	list_for_each_entry(mtd_nvmem, &mtd_nvmem_list, list) {
+> > > +		if (mtd_nvmem->mtd =3D=3D mtd) {
+> > > +			list_del(&mtd_nvmem->list);
+> > > +			found =3D true;
+> > > +			break;
+> > > +		}
+> > > +	}
+> > > +	mutex_unlock(&mtd_nvmem_list_lock);
+> > > +
+> > > +	if (found) {
+> > > +		if (nvmem_unregister(mtd_nvmem->nvmem))
+> > > +			dev_err(&mtd->dev,
+> > > +				"Failed to unregister NVMEM device\n");   =20
 > >=20
-> > I think that would be the better solution. This can be done
-> > independently, once we agree on a binding we just have to fix
-> > of_nvmem_cell_get(). My suggestion would be to have the new binding
-> > looking like this:
+> > I will be nice to feedback error to top layer, as it does not make sens=
+e=20
+> > to remove providers if there are active consumers using it.
 > >=20
-> > nvmem-device@10 {
-> > 	...
-> > 	nvmem-provider;
-> > 	nvmem-cells {
-> > 		compatible =3D "nvmem-cells";
-> > 		#address-cells =3D <1>;
-> > 		#size-cells =3D <1>;
-> >=20
-> > 		nvmem-cell@100 {
-> > 			label =3D "mac-address";
-> > 			reg =3D <0x100 0x200>;
-> > 		}
-> >=20
-> > 		...
-> > 	}
-> > }
-> >=20
-> > I would also suggest making the "nvmem-provider" property mandatory
-> > to indicate that the device provides this capability. Up to now all
-> > nvmem providers only support this API but I think there might be more
-> > multi function devices in the future. =20
+> > del_mtd_device(), unregister_mtd_user() have return values, I see no=20
+> > reason why notifiers  should not return errors.
+> > May be if we should fix the remove() call backs to handle and return er=
+rors. =20
 >=20
-> If you enforce the name of the child node (here nvmem-cells), you don't
-> need this extra nvmem-provider property. Am I missing something?
+> It's more complicated than that. What should you do if one of the
+> ->remove() notifier in the middle of the list is returning an error? =20
+> Some of them have already taken the remove notification into account.
+> Should we call ->add() back on those notifiers? Also, I'm not sure they
+> are all safe against double ->remove() calls, so if we might be in
+> trouble when the removal is retried.
 
-That property would define the capability to be used as nvmem-provider,
-furthermore it would cover the case where no cell is defined. Also in
-the case of MTD devices it would avoid an ambiguity when there is no
-'partitions' sub node, as then the nvmem-cells node could be interpreted
-as a partition following the old binding.
-
-=46rom what I understand most of such "implicit" binding have sooner or
-later proved to be too limited, or worth, clashing with another one.
-They then had to be deprecated and replaced by explicit ones. The MTD
-partitions binding is a good example of such evolution.
+Re-adding make no sense as that could also fails. Keep it simple,
+remove the notifier from the list when remove() succeed, abort when one
+fails. In such a scenario that mean there is a dependency, the sys
+admin should then solve this dependency and re-trigger the MTD removal.
 
 Alban
 
---Sig_/H3wJg3H6395NTzvKv=aEOgR
+--Sig_/m9S=jHwykYWTowWyRBAGNZR
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCAAGBQJYuWvFAAoJEHSUmkuduC28t3IP/0n7qavMxpyo3yo5TqBPnDym
-HtgXmsBDigdzfo6be9J4SaFXr5tigqPBYNMLy/c0NgFHqJUO1eB0Jj7Vg10T6Nw7
-2KHMxON9LRTULOaKryly+WDocN1Vzdokspjo+Xy8heHhPS/7R4WFifvPSCNTisGX
-BXScYgyLyWtvljHpLaI5getaSJUV1fkHo0FFUy0eXEQmwMqwEfav9jhh3olCJFPF
-TKfrWtAX1bhz2BC6zLIJfoCs8zIwwxYiLj6H6vzuhyLqRzxR1nlMVfOFUry6C+EA
-z2/yZ5Gx3Xq3p/6n7B7ZtPvRJSS2dHihJLYDg9USWDepEhZ6V+d4OcPcaAKHiec6
-ukq+fvt5DdSIx607CuMsgAPYgAU3gvm5Xvf6Xoctv5RXmrkpuTKX5akc5p+jlt0D
-QtA4f4aYMoSE8PkClnEaYh5m8lwgx1cUADp3qQ8Pi5uDB9/XTUTaGG/DaqWkmx//
-4xNG+X3fD1VdGdb1GTkVUNf0Lh7JVXF3WhG5dM66PiRsycL4nS+BHLGDFhrYWCx1
-Z7nq3hkoe8Y61vdotRa24VLt4lEA08/yiAEEY3WJnn+8oB8gWLlZdHFoC2agV+w9
-XXlD9yQZUX7+ZsiCFWl6fag2nfJmTwZ9Hbl9IWrpcEPwhaHQQkhiY+8LwwmKctEs
-IVwg/SJHjn6YFXALuD6g
-=him3
+iQIcBAEBCAAGBQJYuW/tAAoJEHSUmkuduC28FR4QAKkZDGpJu9pxKg990lTjTVzT
+N86Wi7OUzhIoBbAnE99Q7a92ZuT/nlgCqyuMvq8RdH+G1UqNiApsBJpr13YRMDKy
+c12GHdjgjOllwhIlG+Q+59yCTi2cIPEwXlBQQ3iIXZFsZb1FKO4jKOGIRQt+JJmj
+/J1KTP7ruHj/7yuZuTRuq7xDr2mZErDi8uY5bw46PRRwpQxrQdhpFeiDbSm60dg7
+mkzFLYD9IujoxrBfghlZH7ItNTXeFE2FPdkXIFPyz1Ts7Urq/cw3XSi2zMPM30qE
+HadaF2y8+9d7qGYHD0nvio2EgQvuiOF3DayFXA5oh6oMtHRUDe/eFSHg+m4ok0kM
+3XFLrZUxz+4QPN8br7TWUgP3xicmxpOnRZ3RZeoYwHdNeG67uZ+YFjaP5otevhj4
+fwTz1jE1y7s3RtATpLyEpZcEyi3rXkdfCNAOxHKLPY/b0A2nLPordhKPEfzfA/Dy
+j9PCZqwIJMQdCoMgixbHKf5gyw12b5Agn6IjJY9cICT2C9qcZut4BnQy9iFlyrvY
+9yyjqHmArF/yUJlhu0N2HxxOfPsJ21vvCPNd1i3sj1se81OYOCbvbXEVuDtop9LV
+xFiRa4pbcLlUEnQ+AwQhVNrthSbN63ZPpZTCCRXquWWSFTOWg2/QBxjzBWrIDLX2
+nM1owW0SqubBHs7Mqod8
+=00YK
 -----END PGP SIGNATURE-----
 
---Sig_/H3wJg3H6395NTzvKv=aEOgR--
+--Sig_/m9S=jHwykYWTowWyRBAGNZR--
