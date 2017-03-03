@@ -1,27 +1,25 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjjeS-0006ih-Gz
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 09:37:30 +0000
-Received: by mail-wm0-x242.google.com with SMTP id u63so2186243wmu.2
- for <linux-mtd@lists.infradead.org>; Fri, 03 Mar 2017 01:37:07 -0800 (PST)
-Subject: Re: [PATCH v2 1/6] nand: spi: Add init/release function
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Peter Pan <peterpansjtu@gmail.com>
-References: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
- <1488358330-23832-2-git-send-email-peterpandong@micron.com>
- <20170301105851.5bc9eb0d@bbrezillon>
- <CAAyFORL67p4y8ZeoZg1iD4SOF5e+d6u8tC=--eHdPWgvBWTE9g@mail.gmail.com>
- <20170303102831.4d6fac6c@bbrezillon>
-Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- "linshunquan (A)" <linshunquan1@hisilicon.com>
-From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
-Message-ID: <eeae52f3-e446-4865-d0c6-2c97b5d9842e@gmail.com>
-Date: Fri, 3 Mar 2017 10:37:04 +0100
+ id 1cjjnV-0002Cb-85
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 09:46:51 +0000
+Date: Fri, 3 Mar 2017 10:46:27 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+ linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [BUG?] ubi.fm_autoconvert=1 on first boot
+Message-ID: <20170303094627.phm6oofazfyxj4l3@pengutronix.de>
+References: <20161125113412.3ozyc7bjjecjahnb@pengutronix.de>
+ <4d53ffff-a294-8238-bab1-004416e8d7be@nod.at>
+ <20161125135152.f4npajnz5x76f5x7@pengutronix.de>
+ <6708b0f4-63e4-663f-794a-13b95f38a928@nod.at>
+ <20170228145045.jlutsmkbrzrq4zam@pengutronix.de>
+ <20170301094243.4x6nivi55wy5qiqi@pengutronix.de>
+ <036b186e-45e8-8b32-d594-845617c29052@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <20170303102831.4d6fac6c@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <036b186e-45e8-8b32-d594-845617c29052@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,61 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Richard,
 
+On Fri, Mar 03, 2017 at 09:15:55AM +0100, Richard Weinberger wrote:
+> Sascha,
+> 
+> Am 01.03.2017 um 10:42 schrieb Sascha Hauer:
+> >> The patch works.
+> > 
+> > Hm, this patch works on mainline, but not on my 3.10 Frankenkernel. I
+> > wonder if there's anything in mainline that makes sure that the wearlevel
+> > worker has actually produced free PEBs before they are needed?
+> 
+> So it works every tine on mainline but never on 3.10?
+> Just trying to make sure that it is not a timing issue.
 
-On 03/03/2017 10:28, Boris Brezillon wrote:
-> On Fri, 3 Mar 2017 16:37:55 +0800
-> Peter Pan <peterpansjtu@gmail.com> wrote:
->
-> [..]
->> BTW, there is another question. read id method is not unique. Micron spi nand
->> need a dummy byte before reading ID while some vendors don't. Now I define
->> vendor alias in DTS and use this info to choose right manufacture ops. Do you
->> have a better idea?
-> Ouch. That's bad news. How about letting the manufacturer code read the
-> ID and detect the NAND?
->
-> That means you'll iterate over all manufacturer entries in the
-> manufacturer table and call ->detect(). The ->detect() hook will be
-> responsible for reading the ID (with the proper read-id sequence) and
-> initialize the NAND parameters.
->
-> If we find a common pattern between different vendors, we can then
-> provide default helpers for the read-id and/or detect implementation.
-A effective way will be to read the up to 4 bytes of ID response, and 
-ask every manufacturer to provide an ID and mask to compare with.
-Here is the list of ID/MASK I have compiled.
+It works on 3.10 when I add a mdelay(100) between starting the wearlevel
+thread and autoresizing the volume, so indeed I assume it's a timing
+issue.
+Maybe I can provoke the failure on mainline with your patch applied by
+adding a delay in the wear level thread.
 
-         "MT29F1G01AAADD",
-         .id = 0x002C1200,  .id_mask = 0x00FFFF00,
+> 
+> In 3.10 Fastmap was very buggy and saw in later kernels many fixes,
+> did you backport all of them? Sadly in the early days of Fastmap
+> we did not mark patches for stable because it was experimental.
+> ...which was a major error on our side.
+> In doubt you can backport the whole UBI subsystem.
+> This is rather easy because it has not much dependencies and does not change
+> that fast.
 
-         "MT29F2G01AAAED",
+My 3.10 has UBI/UBIFS patches backported from roughly 4.0, so
+Frankenkernel is the right term to call it ;)
+I remember backporting newer UBI patches at some point becomes difficult
+because some newer kernel functions/macros are missing.
 
-         "MT29F4G01AAADD",
-         .id = 0x002C3200,  .id_mask = 0x00FFFF00,
+Sascha
 
-         "GD5F1GQ4xC", /* version U (3.3V) or R (1.8) */
-         .id = 0xC8A14800,  .id_mask = 0xffefff00, /* 0xC8A148 or 
-0xC8B148 */
-
-         "GD5F2GQ4xC", /* version U (3.3V) or R (1.8) */
-         .id = 0xC8A24800,  .id_mask = 0xffefff00, /* 0xC8A248 or 
-0xC8B248 */
-
-         "GD5F1GQ4xBYIG", /* version U (3.3V) or R (1.8) */
-         .id = 0x00C8D100,  .id_mask = 0x00ffef00, /* C8D1 or C8C1 */
-
-         "GD5F2GQ4xBYIG", /* version U (3.3V) or R (1.8) */
-         .id = 0x00C8D200,  .id_mask = 0x00ffef00, /* C8D2 or C8C2 */
-
-         "F50L1G41A", /* ESMT */
-         .id = 0x00C8217F,  .id_mask = 0x00ffffff,
-
-         "W25N01GVZEIG", /* Winbond */
-         .id = 0x00EFAA21,  .id_mask = 0x00ffffff,
-
-         "MX35LF1GE4AB", /* Micronix */
-         .id = 0x00C21200,  .id_mask = 0x00ffff00,
-
-
-Arnaud
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
