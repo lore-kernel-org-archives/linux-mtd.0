@@ -1,19 +1,18 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cji8G-0001O8-Nz
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 08:00:10 +0000
-Subject: Re: [PATCH] ubi/upd: always flush after prepared for an update
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <20170222161521.4foobhoyelnrad7h@linutronix.de>
- <a0902bd5-b4d9-5b2d-c909-115c4523c370@nod.at>
- <20170301095145.47n6kyjrjmok5sk2@linutronix.de>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
+ id 1cjiH6-0005Ol-Jy
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 08:09:18 +0000
+Subject: Re: [PATCH 0/3] ubifs: add lz4hc compression
+To: Hyunchul Lee <hyc.lee@gmail.com>
+References: <1488259008-12510-1-git-send-email-hyc.lee@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
+ Hyunchul Lee <cheol.lee@lge.com>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <35903792-1dec-0882-4c66-aed14932b71d@nod.at>
-Date: Fri, 3 Mar 2017 08:59:45 +0100
+Message-ID: <5766cc86-d4cc-230c-9d3c-073d9b8d6ec5@nod.at>
+Date: Fri, 3 Mar 2017 09:08:51 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170301095145.47n6kyjrjmok5sk2@linutronix.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1488259008-12510-1-git-send-email-hyc.lee@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,41 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sebastian,
+Hyunchul Lee,
 
-Am 01.03.2017 um 10:51 schrieb Sebastian Andrzej Siewior:
-> On 2017-02-28 22:02:14 [+0100], Richard Weinberger wrote:
->> Sebastian,
-> Hi Richard,
+Am 28.02.2017 um 06:16 schrieb Hyunchul Lee:
+> From: Hyunchul Lee <cheol.lee@lge.com>
 > 
->>> diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
->>> index 0134ba32a057..39712560b4c1 100644
->>> --- a/drivers/mtd/ubi/upd.c
->>> +++ b/drivers/mtd/ubi/upd.c
->>> @@ -148,11 +148,11 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
->>>  			return err;
->>>  	}
->>>  
->>> -	if (bytes == 0) {
->>> -		err = ubi_wl_flush(ubi, UBI_ALL, UBI_ALL);
->>> -		if (err)
->>> -			return err;
->>> +	err = ubi_wl_flush(ubi, UBI_ALL, UBI_ALL);
->>> +	if (err)
->>> +		return err;
->>
->> Unconditionally calling ubi_wl_flush() will slow down ubiupdatevol.
->> Wouldn't it make sense to flush only if bytes is 0 or differs from the old value?
-> 
-> Do you think it will slow down the whole process as such? Usually you
-> don't have a lot of empty PEBs around so at some point you will force
-> one worker to get an empty PEB. And even if you could write everything
-> without the need to complete the erase process then
-> ubi_more_update_data() will also invoke ubi_wl_flush() before
-> clear_update_marker() which completes the process.
+> This patch set is for adding support for lz4hc compression.  lz4hc's
+> compression ratio is comparable to zlib, but its compression/decompression
+> speed is faster than zlib[1].
 
-Agreed, that makes sense. So the only change is that we block now
-on a different location.
+Do you have performance numbers that show the speedup on a common embedded
+system with NAND?
+
+> Another compression type cannot be added any more in respect that type of
+> ubifs_inode's compr_type is "unsigned:2" and there are 4 compression
+> types.  There may be overflow in assignment to compr_type, and prevision 
+> version of ubifs is trying to decompress file with wrong compression type.
+
+As Artem noted this is only an in-memory struct.
+
+What happens when you compress a file with lz4hc and try to access this
+UBIFS file with an older kernel?
+AFAICT ubifs_iget() will notice and return -EINVAL but please double check.
 
 Thanks,
 //richard
