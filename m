@@ -1,30 +1,20 @@
-Received: from mail-wr0-x234.google.com ([2a00:1450:400c:c0c::234])
+Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjlNN-0006xh-R5
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 11:27:59 +0000
-Received: by mail-wr0-x234.google.com with SMTP id l37so71672630wrc.1
- for <linux-mtd@lists.infradead.org>; Fri, 03 Mar 2017 03:27:37 -0800 (PST)
-Subject: Re: [PATCH 1/3] doc: bindings: Add bindings documentation for mtd
- nvmem
-To: Alban <albeu@free.fr>, linux-kernel@vger.kernel.org
-References: <1488484223-844-1-git-send-email-albeu@free.fr>
- <1488484223-844-2-git-send-email-albeu@free.fr>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
- Rob Herring <robh+dt@kernel.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Moritz Fischer <moritz.fischer@ettus.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <6d5ef869-a1d5-c8d2-847d-1c7aaafa74cf@linaro.org>
-Date: Fri, 3 Mar 2017 11:27:34 +0000
-MIME-Version: 1.0
-In-Reply-To: <1488484223-844-2-git-send-email-albeu@free.fr>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+ id 1cjltU-0004mW-2Q
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 12:01:11 +0000
+Message-ID: <1488542438.3583.107.camel@gmail.com>
+Subject: Re: [PATCH 0/3] ubifs: add lz4hc compression
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Hyunchul Lee <hyc.lee@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, kernel-team@lge.com
+Date: Fri, 03 Mar 2017 14:00:38 +0200
+In-Reply-To: <58B94E55.3080209@gmail.com>
+References: <1488259008-12510-1-git-send-email-hyc.lee@gmail.com>
+ <5766cc86-d4cc-230c-9d3c-073d9b8d6ec5@nod.at> <58B94E55.3080209@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,59 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 2017-03-03 at 20:07 +0900, Hyunchul Lee wrote:
+> yes, ubifs detects this. but I mean that if another compression type
+> except lz4hc
+> is added, ubifs cannot. because ubifs_iget() assigns ubifs_ino_node's
+> compr_type(16-bit) 
+> to ubifs_inode's compr_type(2-bit).
+> I guess that the disk format version should be incremented.
 
+Let's say that some day in the future you add the new XYZ compression
+support, and its type is 5. Let's say the new compressor is supported
+in kernel version 5.0.
 
-On 02/03/17 19:50, Alban wrote:
-> Add the binding to expose MTD partitions as nvmem providers.
+Now I get your device which is running kernel 5.0 and uses XYZ
+compression. I downgrade the kernel to version 4.0 on this device, v4.0
+does not support XYZ. What happens?
 
-It would be nice to see more description of this patch, explaining the 
-real use case.
->
-> Signed-off-by: Alban <albeu@free.fr>
-> ---
->  .../devicetree/bindings/nvmem/mtd-nvmem.txt        | 29 ++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
->
-> diff --git a/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
-> new file mode 100644
-> index 0000000..47602f7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
-> @@ -0,0 +1,29 @@
-> += NVMEM in MTD =
-> +
-> +Config data for drivers is often stored in MTD devices. This binding
-> +define how such data can be represented in device tree.
-> +
-> +An MTD can be defined as an NVMEM provider by adding the `nvmem-provider`
-We should prefix this property with "mtd" to make it more explicit that 
-this is specific to mtd devices.
+Well, not a very good thing. UBIFS will read the inode, truncate
+compr_type in ubifs_iget():
 
-May be we should put this under "Required Properties" section, marking 
-it as mandatory for mtd nvmem providers.
+        ui->compr_type  = le16_to_cpu(ino->compr_type);
 
-> +property to their node. Data cells can then be defined as child nodes
-> +of the partition as defined in nvmem.txt.
-> +
-> +Example:
-> +
-> +	flash@0 {
-> +		...
-> +
-> +		partition@2 {
-> +			label = "art";
-> +			reg = <0x7F0000 0x010000>;
-> +			read-only;
-> +
-> +			nvmem-provider;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +
-> +			eeprom@1000 {
-> +				label = "wmac-eeprom";
-> +				reg = <0x1000 0x1000>;
-> +			};
-> +		};
-> +	};
->
+and happily continue, and later on failing to decompress.
+
+Is this ideal? No. But we can lessen the future problem by making
+compr_type to be full u16 already today.
+
+Should we change on-flash format? I think no, because UBIFS will still
+fail when it tries to decompress.
+
+Artem.
