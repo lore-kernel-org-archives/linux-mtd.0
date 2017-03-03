@@ -1,18 +1,23 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjiH6-0005Ol-Jy
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 08:09:18 +0000
-Subject: Re: [PATCH 0/3] ubifs: add lz4hc compression
-To: Hyunchul Lee <hyc.lee@gmail.com>
-References: <1488259008-12510-1-git-send-email-hyc.lee@gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
- Hyunchul Lee <cheol.lee@lge.com>
+ id 1cjiNu-0000RN-K2
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 08:16:20 +0000
+Subject: Re: [BUG?] ubi.fm_autoconvert=1 on first boot
+To: Sascha Hauer <s.hauer@pengutronix.de>
+References: <20161125113412.3ozyc7bjjecjahnb@pengutronix.de>
+ <4d53ffff-a294-8238-bab1-004416e8d7be@nod.at>
+ <20161125135152.f4npajnz5x76f5x7@pengutronix.de>
+ <6708b0f4-63e4-663f-794a-13b95f38a928@nod.at>
+ <20170228145045.jlutsmkbrzrq4zam@pengutronix.de>
+ <20170301094243.4x6nivi55wy5qiqi@pengutronix.de>
+Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+ linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <5766cc86-d4cc-230c-9d3c-073d9b8d6ec5@nod.at>
-Date: Fri, 3 Mar 2017 09:08:51 +0100
+Message-ID: <036b186e-45e8-8b32-d594-845617c29052@nod.at>
+Date: Fri, 3 Mar 2017 09:15:55 +0100
 MIME-Version: 1.0
-In-Reply-To: <1488259008-12510-1-git-send-email-hyc.lee@gmail.com>
-Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <20170301094243.4x6nivi55wy5qiqi@pengutronix.de>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,28 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hyunchul Lee,
+Sascha,
 
-Am 28.02.2017 um 06:16 schrieb Hyunchul Lee:
-> From: Hyunchul Lee <cheol.lee@lge.com>
+Am 01.03.2017 um 10:42 schrieb Sascha Hauer:
+>> The patch works.
 > 
-> This patch set is for adding support for lz4hc compression.  lz4hc's
-> compression ratio is comparable to zlib, but its compression/decompression
-> speed is faster than zlib[1].
+> Hm, this patch works on mainline, but not on my 3.10 Frankenkernel. I
+> wonder if there's anything in mainline that makes sure that the wearlevel
+> worker has actually produced free PEBs before they are needed?
 
-Do you have performance numbers that show the speedup on a common embedded
-system with NAND?
+So it works every tine on mainline but never on 3.10?
+Just trying to make sure that it is not a timing issue.
 
-> Another compression type cannot be added any more in respect that type of
-> ubifs_inode's compr_type is "unsigned:2" and there are 4 compression
-> types.  There may be overflow in assignment to compr_type, and prevision 
-> version of ubifs is trying to decompress file with wrong compression type.
-
-As Artem noted this is only an in-memory struct.
-
-What happens when you compress a file with lz4hc and try to access this
-UBIFS file with an older kernel?
-AFAICT ubifs_iget() will notice and return -EINVAL but please double check.
+In 3.10 Fastmap was very buggy and saw in later kernels many fixes,
+did you backport all of them? Sadly in the early days of Fastmap
+we did not mark patches for stable because it was experimental.
+...which was a major error on our side.
+In doubt you can backport the whole UBI subsystem.
+This is rather easy because it has not much dependencies and does not change
+that fast.
 
 Thanks,
 //richard
