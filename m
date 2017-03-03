@@ -1,20 +1,18 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjnvv-0002k2-K6
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 14:11:50 +0000
-Subject: Re: ubifs change to read-only
-To: YUAN Linyu <Linyu.Yuan@alcatel-sbell.com.cn>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-References: <8729016553E3654398EA69218DA29EEF15A8569B@cnshjmbx02>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <3319dcfc-55fb-1e93-43e3-0a976d5c1924@nod.at>
-Date: Fri, 3 Mar 2017 15:11:21 +0100
-MIME-Version: 1.0
-In-Reply-To: <8729016553E3654398EA69218DA29EEF15A8569B@cnshjmbx02>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1cjub6-0004fw-OB
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 21:18:46 +0000
+Received: by mail-qk0-x242.google.com with SMTP id g129so2033374qkd.1
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Mar 2017 13:18:23 -0800 (PST)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@atmel.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH V6, 0/1] mtd: nand: brcmnand: Add flash #WP pin status check
+Date: Fri,  3 Mar 2017 16:16:52 -0500
+Message-Id: <1488575813-12660-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-YUAN Linyu,
+V6 changes:
 
-Am 03.03.2017 um 09:46 schrieb YUAN Linyu:
-> Hi,
-> 
-> I got following two error report and ubifs on NAND flash become RO, but I can't reproduce it.
-> 
-> Linux version is 3.12.37.
-> 
-> could you have a look ? 
-> 
-> how it happen or if any patch can fix it ?
+- Modified commit message
+- Added 'Fixes:' tag for backporting changes
 
-I'm afraid without more details we cannot help much without further detail.
-Your kernel is also rather old, maybe you miss some fixes in the MTD stack.
-Some area turned in 0xff bytes and UBIFS got confused.
+Kamal Dasu (1):
+  mtd: nand: brcmnand: Check flash #WP pin status before nand
+    erase/program
 
-Thanks,
-//richard
+ drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 58 insertions(+), 3 deletions(-)
+
+-- 
+1.9.1
