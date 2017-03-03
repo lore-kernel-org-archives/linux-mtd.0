@@ -1,30 +1,28 @@
-Received: from smtp6-g21.free.fr ([2a01:e0c:1:1599::15])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjnIk-00073f-Vj
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 13:31:21 +0000
-Date: Fri, 3 Mar 2017 14:30:21 +0100
-From: Alban <albeu@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Aban Bedel <albeu@free.fr>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Richard Weinberger <richard@nod.at>, Marek
- Vasut <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
- Rob Herring <robh+dt@kernel.org>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Moritz Fischer
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cjnOa-0003Re-KG
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 13:37:23 +0000
+Date: Fri, 3 Mar 2017 14:36:58 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Alban <albeu@free.fr>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>, Rob Herring
+ <robh+dt@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Moritz Fischer
  <moritz.fischer@ettus.com>
 Subject: Re: [PATCH 2/3] mtd: Add support for reading MTD devices via the
  nvmem API
-Message-ID: <20170303143021.46381429@tock>
-In-Reply-To: <20170303133419.2383dbce@bbrezillon>
+Message-ID: <20170303143658.5d89a329@bbrezillon>
+In-Reply-To: <20170303133629.3aac2945@tock>
 References: <1488484223-844-1-git-send-email-albeu@free.fr>
  <1488484223-844-3-git-send-email-albeu@free.fr>
- <b2df74bb-dd86-bac1-ab8b-cbff6ca29b6f@linaro.org>
- <20170303133419.2383dbce@bbrezillon>
+ <20170302221803.223ff23b@bbrezillon> <20170303133629.3aac2945@tock>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/m9S=jHwykYWTowWyRBAGNZR"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,23 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_/m9S=jHwykYWTowWyRBAGNZR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, 3 Mar 2017 13:36:29 +0100
+Alban <albeu@free.fr> wrote:
 
-On Fri, 3 Mar 2017 13:34:19 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> On Fri, 3 Mar 2017 11:23:16 +0000
-> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
->=20
->=20
-> >  =20
+> On Thu, 2 Mar 2017 22:18:03 +0100
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> 
+> > On Thu,  2 Mar 2017 20:50:22 +0100
+> > Alban <albeu@free.fr> wrote:
+> > 
+> > [snip]
+> >  
+> > > +static void mtd_nvmem_add(struct mtd_info *mtd)
+> > > +{
+> > > +	struct device *dev = &mtd->dev;
+> > > +	struct device_node *np = dev_of_node(dev);
+> > > +	struct nvmem_config config = {};
+> > > +	struct mtd_nvmem *mtd_nvmem;
+> > > +
+> > > +	/* OF devices have to provide the nvmem node */
+> > > +	if (np && !of_property_read_bool(np, "nvmem-provider"))
+> > > +		return;    
+> > 
+> > Might have to be adapted according to the DT binding if we decide to
+> > add an extra subnode, but then, I'm not sure the nvmem cells creation
+> > will work correctly, because the framework expect nvmem cells to be
+> > direct children of the nvmem device, which will no longer be the case
+> > if you add an intermediate node between the MTD device node and the
+> > nvmem cell nodes.  
+> 
+> Yes to support such a binding we would have to fix of_nvmem_cell_get(),
+> but that should be quiet simple to have it support both the new and old
+> binding.
+> 
+> >
+> > [snip]
+> >  
+> > > +static void mtd_nvmem_remove(struct mtd_info *mtd)
+> > > +{
+> > > +	struct mtd_nvmem *mtd_nvmem;
+> > > +	bool found = false;
+> > > +
 > > > +	mutex_lock(&mtd_nvmem_list_lock);
 > > > +	list_for_each_entry(mtd_nvmem, &mtd_nvmem_list, list) {
-> > > +		if (mtd_nvmem->mtd =3D=3D mtd) {
+> > > +		if (mtd_nvmem->mtd == mtd) {
 > > > +			list_del(&mtd_nvmem->list);
-> > > +			found =3D true;
+> > > +			found = true;
 > > > +			break;
 > > > +		}
 > > > +	}
@@ -59,51 +86,49 @@ Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 > > > +	if (found) {
 > > > +		if (nvmem_unregister(mtd_nvmem->nvmem))
 > > > +			dev_err(&mtd->dev,
-> > > +				"Failed to unregister NVMEM device\n");   =20
-> >=20
-> > I will be nice to feedback error to top layer, as it does not make sens=
-e=20
-> > to remove providers if there are active consumers using it.
-> >=20
-> > del_mtd_device(), unregister_mtd_user() have return values, I see no=20
-> > reason why notifiers  should not return errors.
-> > May be if we should fix the remove() call backs to handle and return er=
-rors. =20
->=20
-> It's more complicated than that. What should you do if one of the
-> ->remove() notifier in the middle of the list is returning an error? =20
-> Some of them have already taken the remove notification into account.
-> Should we call ->add() back on those notifiers? Also, I'm not sure they
-> are all safe against double ->remove() calls, so if we might be in
-> trouble when the removal is retried.
+> > > +				"Failed to unregister NVMEM device\n");    
+> > 
+> > Ouch! You failed to unregister the NVMEM device but you have no way to
+> > stop MTD dev removal, which means you have a potential use-after-free
+> > bug. Not sure this can happen in real life, but I don't like that.  
+> 
+> Yes, I'm aware of this problem. Sorry, I forgot to mention this in the
+> cover letter.
 
-Re-adding make no sense as that could also fails. Keep it simple,
-remove the notifier from the list when remove() succeed, abort when one
-fails. In such a scenario that mean there is a dependency, the sys
-admin should then solve this dependency and re-trigger the MTD removal.
+No problem.
 
-Alban
+> 
+> > Maybe we should let notifiers return an error if they want to cancel
+> > the removal, or maybe this is a good reason to put the nvmem pointer
+> > directly in mtd_info and call mtd_nvmem_add/remove() directly from
+> > add/del_mtd_device() and allow them to return an error.
+> > 
+> > Not that, if you go for this solution, you'll also get rid of the
+> > global mtd_nvmem_list list and the associated lock.  
+> 
+> IMHO the MTD users framework has to be re-worked to be useful. First
+> both the add and remove callbacks should have return values. Users where
+> the add failed shouldn't be removed later and users where the remove
+> fails should block the removal of the MTD.
 
---Sig_/m9S=jHwykYWTowWyRBAGNZR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+As said in my previous reply, it's not just about returning an error. I
+had a closer look at the code, and it seems that using
+__get_mtd_device() properly should prevent the problem we are talking
+about (call __get_mtd_device() after your nvmem_register() and call
+__put_mtd_device() only if nvmem_unregister() succeed).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+> 
+> Furthermore only passing the MTD device to the add/remove callback
+> force the users to keep their own list, which is annoying to say the
+> least. A simple fix would be to have the add callback return a pointer
+> that would be passed back to the remove callback. Trivial to implement
+> and the MTD user wouldn't have to keep any list. I will look into this
+> in the next days.
 
-iQIcBAEBCAAGBQJYuW/tAAoJEHSUmkuduC28FR4QAKkZDGpJu9pxKg990lTjTVzT
-N86Wi7OUzhIoBbAnE99Q7a92ZuT/nlgCqyuMvq8RdH+G1UqNiApsBJpr13YRMDKy
-c12GHdjgjOllwhIlG+Q+59yCTi2cIPEwXlBQQ3iIXZFsZb1FKO4jKOGIRQt+JJmj
-/J1KTP7ruHj/7yuZuTRuq7xDr2mZErDi8uY5bw46PRRwpQxrQdhpFeiDbSm60dg7
-mkzFLYD9IujoxrBfghlZH7ItNTXeFE2FPdkXIFPyz1Ts7Urq/cw3XSi2zMPM30qE
-HadaF2y8+9d7qGYHD0nvio2EgQvuiOF3DayFXA5oh6oMtHRUDe/eFSHg+m4ok0kM
-3XFLrZUxz+4QPN8br7TWUgP3xicmxpOnRZ3RZeoYwHdNeG67uZ+YFjaP5otevhj4
-fwTz1jE1y7s3RtATpLyEpZcEyi3rXkdfCNAOxHKLPY/b0A2nLPordhKPEfzfA/Dy
-j9PCZqwIJMQdCoMgixbHKf5gyw12b5Agn6IjJY9cICT2C9qcZut4BnQy9iFlyrvY
-9yyjqHmArF/yUJlhu0N2HxxOfPsJ21vvCPNd1i3sj1se81OYOCbvbXEVuDtop9LV
-xFiRa4pbcLlUEnQ+AwQhVNrthSbN63ZPpZTCCRXquWWSFTOWg2/QBxjzBWrIDLX2
-nM1owW0SqubBHs7Mqod8
-=00YK
------END PGP SIGNATURE-----
+That's a different problem, and I'm not sure I like the idea of
+changing the ->add() prototype into
 
---Sig_/m9S=jHwykYWTowWyRBAGNZR--
+	void *(*add)(struct mtd_info *);
+
+If we want to do that, I'd rather see an API extension allowing one to
+attach/detach/query/update user data to an MTD device.
