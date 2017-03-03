@@ -1,25 +1,29 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cjk0o-00019d-EN
- for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 10:00:36 +0000
-Date: Fri, 3 Mar 2017 11:00:03 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Arnaud Mouiche <arnaud.mouiche@gmail.com>
-Cc: Peter Pan <peterpansjtu@gmail.com>, Peter Pan <peterpandong@micron.com>,
- Richard Weinberger <richard@nod.at>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, "linshunquan
- (A)" <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH v2 1/6] nand: spi: Add init/release function
-Message-ID: <20170303110003.5d734f1e@bbrezillon>
-In-Reply-To: <eeae52f3-e446-4865-d0c6-2c97b5d9842e@gmail.com>
-References: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
- <1488358330-23832-2-git-send-email-peterpandong@micron.com>
- <20170301105851.5bc9eb0d@bbrezillon>
- <CAAyFORL67p4y8ZeoZg1iD4SOF5e+d6u8tC=--eHdPWgvBWTE9g@mail.gmail.com>
- <20170303102831.4d6fac6c@bbrezillon>
- <eeae52f3-e446-4865-d0c6-2c97b5d9842e@gmail.com>
+Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cjk98-0004MH-UK
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 10:09:13 +0000
+Received: by mail-wm0-x229.google.com with SMTP id n11so11398658wma.1
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Mar 2017 02:08:49 -0800 (PST)
+Subject: Re: [PATCH 3/3] nvmem: core: Allow allocating several anonymous nvmem
+ devices
+To: Alban <albeu@free.fr>, linux-kernel@vger.kernel.org
+References: <1488484223-844-1-git-send-email-albeu@free.fr>
+ <1488484223-844-4-git-send-email-albeu@free.fr>
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Moritz Fischer <moritz.fischer@ettus.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <4440721f-c66d-c3bf-812b-da4defeeacce@linaro.org>
+Date: Fri, 3 Mar 2017 10:08:46 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1488484223-844-4-git-send-email-albeu@free.fr>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,69 +34,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 3 Mar 2017 10:37:04 +0100
-Arnaud Mouiche <arnaud.mouiche@gmail.com> wrote:
 
-> On 03/03/2017 10:28, Boris Brezillon wrote:
-> > On Fri, 3 Mar 2017 16:37:55 +0800
-> > Peter Pan <peterpansjtu@gmail.com> wrote:
-> >
-> > [..]  
-> >> BTW, there is another question. read id method is not unique. Micron spi nand
-> >> need a dummy byte before reading ID while some vendors don't. Now I define
-> >> vendor alias in DTS and use this info to choose right manufacture ops. Do you
-> >> have a better idea?  
-> > Ouch. That's bad news. How about letting the manufacturer code read the
-> > ID and detect the NAND?
-> >
-> > That means you'll iterate over all manufacturer entries in the
-> > manufacturer table and call ->detect(). The ->detect() hook will be
-> > responsible for reading the ID (with the proper read-id sequence) and
-> > initialize the NAND parameters.
-> >
-> > If we find a common pattern between different vendors, we can then
-> > provide default helpers for the read-id and/or detect implementation.  
-> A effective way will be to read the up to 4 bytes of ID response, and 
-> ask every manufacturer to provide an ID and mask to compare with.
-> Here is the list of ID/MASK I have compiled.
-> 
->          "MT29F1G01AAADD",
->          .id = 0x002C1200,  .id_mask = 0x00FFFF00,
-> 
->          "MT29F2G01AAAED",
-> 
->          "MT29F4G01AAADD",
->          .id = 0x002C3200,  .id_mask = 0x00FFFF00,
-> 
->          "GD5F1GQ4xC", /* version U (3.3V) or R (1.8) */
->          .id = 0xC8A14800,  .id_mask = 0xffefff00, /* 0xC8A148 or 
-> 0xC8B148 */
-> 
->          "GD5F2GQ4xC", /* version U (3.3V) or R (1.8) */
->          .id = 0xC8A24800,  .id_mask = 0xffefff00, /* 0xC8A248 or 
-> 0xC8B248 */
-> 
->          "GD5F1GQ4xBYIG", /* version U (3.3V) or R (1.8) */
->          .id = 0x00C8D100,  .id_mask = 0x00ffef00, /* C8D1 or C8C1 */
-> 
->          "GD5F2GQ4xBYIG", /* version U (3.3V) or R (1.8) */
->          .id = 0x00C8D200,  .id_mask = 0x00ffef00, /* C8D2 or C8C2 */
-> 
->          "F50L1G41A", /* ESMT */
->          .id = 0x00C8217F,  .id_mask = 0x00ffffff,
-> 
->          "W25N01GVZEIG", /* Winbond */
->          .id = 0x00EFAA21,  .id_mask = 0x00ffffff,
-> 
->          "MX35LF1GE4AB", /* Micronix */
->          .id = 0x00C21200,  .id_mask = 0x00ffff00,
 
-I'm not a big fan of this approach. See how each vendor seems to have
-its own scheme, and we're not even sure they will use the same for
-their next chips. That's what happened with raw NANDs, and the NAND ID
-parsing just became a huge pile of hacks like that:
+On 02/03/17 19:50, Alban wrote:
+> Currently the nvmem core expect the config to provide a name and ID
+> that are then used to create the device name. When no device name is
+> given 'nvmem' is used. However if there is several such anonymous
+> devices they all get named 'nvmem0', which doesn't work.
+>
+> To fix this problem use the ID from the config only when the config
+> also provides a name. When no name is provided take the uinque ID of
+> the nvmem device instead.
+>
+> Signed-off-by: Alban <albeu@free.fr>
+> ---
 
-	if(vendorX and revisionY) then id-should-decoded-like-that;
+Thanks for the Fix, looks good to me, I will queue this up once rc1 is out.
 
-By letting the detection process to manufacturer code, we just get rid
-of this complexity in the core, which is a good thing IMO.
+
+>  drivers/nvmem/core.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> index 408b521..8c830a8 100644
+> --- a/drivers/nvmem/core.c
+> +++ b/drivers/nvmem/core.c
+> @@ -468,7 +468,8 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+>  	np = config->dev->of_node;
+>  	nvmem->dev.of_node = np;
+>  	dev_set_name(&nvmem->dev, "%s%d",
+> -		     config->name ? : "nvmem", config->id);
+> +		     config->name ? : "nvmem",
+> +		     config->name ? config->id : nvmem->id);
+>
+>  	nvmem->read_only = of_property_read_bool(np, "read-only") |
+>  			   config->read_only;
+>
