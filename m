@@ -1,17 +1,40 @@
-Received: from vs81.iboxed.net ([185.82.85.146])
+Received: from mail.kernel.org ([198.145.29.136])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjYlz-0000wT-EW
- for linux-mtd@lists.infradead.org; Thu, 02 Mar 2017 22:00:34 +0000
-From: Alexander Kurz <akurz@blala.de>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Alexander Kurz <akurz@blala.de>
-Subject: [PATCH v2] drivers mtd: spi-nor: add new variants
-Date: Thu,  2 Mar 2017 22:59:06 +0100
-Message-Id: <1488491946-12176-1-git-send-email-akurz@blala.de>
+ id 1cjcNE-0002lc-Cg
+ for linux-mtd@lists.infradead.org; Fri, 03 Mar 2017 01:51:13 +0000
+Received: from mail.kernel.org (localhost [127.0.0.1])
+ by mail.kernel.org (Postfix) with ESMTP id 9ED452034B
+ for <linux-mtd@lists.infradead.org>; Fri,  3 Mar 2017 01:50:49 +0000 (UTC)
+Received: from mail-qk0-f172.google.com (mail-qk0-f172.google.com
+ [209.85.220.172])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 8A77020376
+ for <linux-mtd@lists.infradead.org>; Fri,  3 Mar 2017 01:50:46 +0000 (UTC)
+Received: by mail-qk0-f172.google.com with SMTP id h9so265954qke.2
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Mar 2017 17:50:46 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20170302210351.1f740ffc@bbrezillon>
+References: <1488484223-844-1-git-send-email-albeu@free.fr>
+ <1488484223-844-4-git-send-email-albeu@free.fr>
+ <20170302210351.1f740ffc@bbrezillon>
+From: Moritz Fischer <mdf@kernel.org>
+Date: Thu, 2 Mar 2017 17:50:45 -0800
+Message-ID: <CAAtXAHdbhVe1jOj_v8+DbNp3cbL-tfWiWdteP6Vr5uvePCJR9w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] nvmem: core: Allow allocating several anonymous nvmem
+ devices
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Alban <albeu@free.fr>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Devicetree List <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +44,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Macronix MX25U4035 and Winbond 25Q20BW devices are used in 4/5th
-generation Kindle ebook readers. Add those spi-nor variants.
-Also add similar devices found in the same datasheets.
+On Thu, Mar 2, 2017 at 12:03 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Thu,  2 Mar 2017 20:50:23 +0100
+> Alban <albeu@free.fr> wrote:
+>
+>> Currently the nvmem core expect the config to provide a name and ID
+>> that are then used to create the device name. When no device name is
+>> given 'nvmem' is used. However if there is several such anonymous
+>> devices they all get named 'nvmem0', which doesn't work.
+>>
+>> To fix this problem use the ID from the config only when the config
+>> also provides a name. When no name is provided take the uinque ID of
+>> the nvmem device instead.
+>>
+>> Signed-off-by: Alban <albeu@free.fr>
+>
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Reviewed-by: Moritz Fischer <mdf@kernel.org>
 
-Signed-off-by: Alexander Kurz <akurz@blala.de>
----
- drivers/mtd/spi-nor/spi-nor.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 1ae872b..802dc49 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1013,6 +1013,8 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
-+	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
- 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-@@ -1128,6 +1130,9 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "w25x80", INFO(0xef3014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
- 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
-+	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
-+	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
-+	{ "w25q20ew", INFO(0xef6012, 0, 64 * 1024,  4, SECT_4K) },
- 	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
- 	{
- 		"w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64,
--- 
-2.1.4
+Thanks,
+Moritz
