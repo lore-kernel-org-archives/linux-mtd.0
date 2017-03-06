@@ -1,62 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckzoW-0000fm-36
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 21:05:06 +0000
-Date: Mon, 6 Mar 2017 23:04:26 +0200
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To: Logan Gunthorpe <logang@deltatee.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dan Williams <dan.j.williams@intel.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
- Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
- Marcel Selhorst <tpmdd@selhorst.net>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
- Sean Hefty <sean.hefty@intel.com>,
- Hal Rosenstock <hal.rosenstock@gmail.com>,
- Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
- Parav Pandit <pandit.parav@gmail.com>,
- Leon Romanovsky <leon@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
- Hans Verkuil <hans.verkuil@cisco.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Matt Porter <mporter@kernel.crashing.org>,
- Alexandre Bounine <alexandre.bounine@idt.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
- Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Boaz Harrosh <ooo@electrozaur.com>,
- "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Stephen Bates <stephen.bates@microsemi.com>,
- Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
- linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
- linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
- linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 06/16] tpm-chip: utilize new cdev_device_add helper
- function
-Message-ID: <20170306210426.qeftgujergryutie@intel.com>
-References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
- <1488783873-2614-7-git-send-email-logang@deltatee.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ckzum-00044p-7n
+ for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 21:11:35 +0000
+Date: Mon, 6 Mar 2017 22:11:07 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Artur Jedrysek <jartur@cadence.com>
+Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 1/3] mtd: spi-nor: Add support for Octal SPI mode.
+Message-ID: <20170306221107.0ef74f5a@bbrezillon>
+In-Reply-To: <1488803423-10767-1-git-send-email-jartur@cadence.com>
+References: <1488803423-10767-1-git-send-email-jartur@cadence.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1488783873-2614-7-git-send-email-logang@deltatee.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -66,78 +25,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 06, 2017 at 12:04:22AM -0700, Logan Gunthorpe wrote:
-> Replace the open coded registration of the cdev and dev with the
-> new device_add_cdev() helper. The helper replaces a common pattern by
-> taking the proper reference against the parent device and adding both
-> the cdev and the device.
+Hi Artur,
+
+Can you please make sure all patches of a patch series are part of the
+same thread? git send-email should take care of that for you.
+
+On Mon, 6 Mar 2017 12:30:23 +0000
+Artur Jedrysek <jartur@cadence.com> wrote:
+
+> This patch adds support for Octal SPI data reads in SPI NOR framework.
+> Opcodes for programming using octal interface are also present for the
+> sake of completeness, despite not being used.
 > 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> Reviewed-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+> Micron mt35xu512 flash is added as an example chip supporting that mode.
+> 
+> Signed-off-by: Artur Jedrysek <jartur@cadence.com>
 > ---
->  drivers/char/tpm/tpm-chip.c | 19 +++----------------
->  1 file changed, 3 insertions(+), 16 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++++++--
+>  include/linux/mtd/spi-nor.h   |  9 +++++++++
+>  2 files changed, 27 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index c406343..935f0e9 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -187,7 +187,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 1ae872b..db188e2 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -85,6 +85,7 @@ struct flash_info {
+>  					 * Use dedicated 4byte address op codes
+>  					 * to support memory size above 128Mib.
+>  					 */
+> +#define SPI_NOR_OCTAL_READ	BIT(12)	/* Flash supports Octal Read */
+>  };
 >  
->  	cdev_init(&chip->cdev, &tpm_fops);
->  	chip->cdev.owner = THIS_MODULE;
-> -	chip->cdev.kobj.parent = &chip->dev.kobj;
+>  #define JEDEC_MFR(info)	((info)->id[0])
+> @@ -159,6 +160,7 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
+>  	case SPI_NOR_FAST:
+>  	case SPI_NOR_DUAL:
+>  	case SPI_NOR_QUAD:
+> +	case SPI_NOR_OCTAL:
+>  		return 8;
+>  	case SPI_NOR_NORMAL:
+>  		return 0;
+> @@ -220,6 +222,8 @@ static inline u8 spi_nor_convert_3to4_read(u8 opcode)
+>  		{ SPINOR_OP_READ_1_2_2,	SPINOR_OP_READ_1_2_2_4B },
+>  		{ SPINOR_OP_READ_1_1_4,	SPINOR_OP_READ_1_1_4_4B },
+>  		{ SPINOR_OP_READ_1_4_4,	SPINOR_OP_READ_1_4_4_4B },
+> +		{ SPINOR_OP_READ_1_1_8,	SPINOR_OP_READ_1_1_8_4B },
+> +		{ SPINOR_OP_READ_1_8_8,	SPINOR_OP_READ_1_8_8_4B },
+>  	};
 >  
->  	return chip;
+>  	return spi_nor_convert_opcode(opcode, spi_nor_3to4_read,
+> @@ -232,6 +236,8 @@ static inline u8 spi_nor_convert_3to4_program(u8 opcode)
+>  		{ SPINOR_OP_PP,		SPINOR_OP_PP_4B },
+>  		{ SPINOR_OP_PP_1_1_4,	SPINOR_OP_PP_1_1_4_4B },
+>  		{ SPINOR_OP_PP_1_4_4,	SPINOR_OP_PP_1_4_4_4B },
+> +		{ SPINOR_OP_PP_1_1_8,	SPINOR_OP_PP_1_1_8_4B },
+> +		{ SPINOR_OP_PP_1_8_8,	SPINOR_OP_PP_1_8_8_4B },
+>  	};
 >  
-> @@ -230,27 +229,16 @@ static int tpm_add_char_device(struct tpm_chip *chip)
->  {
->  	int rc;
+>  	return spi_nor_convert_opcode(opcode, spi_nor_3to4_program,
+> @@ -1035,6 +1041,11 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+> +	{
+> +		"mt35xu512", INFO(0x2c5b1a, 0, 128 * 1024, 512,
+> +			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+> +			SPI_NOR_4B_OPCODES)
+> +	},
 >  
-> -	rc = cdev_add(&chip->cdev, chip->dev.devt, 1);
-> +	rc = cdev_device_add(&chip->cdev, &chip->dev);
->  	if (rc) {
->  		dev_err(&chip->dev,
-> -			"unable to cdev_add() %s, major %d, minor %d, err=%d\n",
-> +			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
->  			dev_name(&chip->dev), MAJOR(chip->dev.devt),
->  			MINOR(chip->dev.devt), rc);
+>  	/* PMC */
+>  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+> @@ -1667,8 +1678,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  	if (info->flags & SPI_NOR_NO_FR)
+>  		nor->flash_read = SPI_NOR_NORMAL;
 >  
->  		return rc;
->  	}
+> -	/* Quad/Dual-read mode takes precedence over fast/normal */
+> -	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+> +	/* Octal/Quad/Dual-read mode takes precedence over fast/normal */
+> +	if (mode == SPI_NOR_OCTAL && info->flags & SPI_NOR_OCTAL_READ) {
+> +		nor->flash_read = SPI_NOR_OCTAL;
+> +	} else if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+>  		ret = set_quad_mode(nor, info);
+>  		if (ret) {
+>  			dev_err(dev, "quad mode not supported\n");
+> @@ -1681,6 +1694,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
 >  
-> -	rc = device_add(&chip->dev);
-> -	if (rc) {
-> -		dev_err(&chip->dev,
-> -			"unable to device_register() %s, major %d, minor %d, err=%d\n",
-> -			dev_name(&chip->dev), MAJOR(chip->dev.devt),
-> -			MINOR(chip->dev.devt), rc);
-> -
-> -		cdev_del(&chip->cdev);
-> -		return rc;
-> -	}
-> -
->  	/* Make the chip available. */
->  	mutex_lock(&idr_lock);
->  	idr_replace(&dev_nums_idr, chip, chip->dev_num);
-> @@ -261,8 +249,7 @@ static int tpm_add_char_device(struct tpm_chip *chip)
+>  	/* Default commands */
+>  	switch (nor->flash_read) {
+> +	case SPI_NOR_OCTAL:
+> +		nor->read_opcode = SPINOR_OP_READ_1_1_8;
+> +		break;
+>  	case SPI_NOR_QUAD:
+>  		nor->read_opcode = SPINOR_OP_READ_1_1_4;
+>  		break;
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index f2a7180..aad6318 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -47,9 +47,13 @@
+>  #define SPINOR_OP_READ_1_2_2	0xbb	/* Read data bytes (Dual I/O SPI) */
+>  #define SPINOR_OP_READ_1_1_4	0x6b	/* Read data bytes (Quad Output SPI) */
+>  #define SPINOR_OP_READ_1_4_4	0xeb	/* Read data bytes (Quad I/O SPI) */
+> +#define SPINOR_OP_READ_1_1_8	0x8b	/* Read data bytes (Octal Output SPI) */
+> +#define SPINOR_OP_READ_1_8_8	0xcb	/* Read data bytes (Octal I/O SPI) */
+>  #define SPINOR_OP_PP		0x02	/* Page program (up to 256 bytes) */
+>  #define SPINOR_OP_PP_1_1_4	0x32	/* Quad page program */
+>  #define SPINOR_OP_PP_1_4_4	0x38	/* Quad page program */
+> +#define SPINOR_OP_PP_1_1_8	0x82	/* Octal page program */
+> +#define SPINOR_OP_PP_1_8_8	0xc2	/* Octal page program */
+>  #define SPINOR_OP_BE_4K		0x20	/* Erase 4KiB block */
+>  #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
+>  #define SPINOR_OP_BE_32K	0x52	/* Erase 32KiB block */
+> @@ -66,9 +70,13 @@
+>  #define SPINOR_OP_READ_1_2_2_4B	0xbc	/* Read data bytes (Dual I/O SPI) */
+>  #define SPINOR_OP_READ_1_1_4_4B	0x6c	/* Read data bytes (Quad Output SPI) */
+>  #define SPINOR_OP_READ_1_4_4_4B	0xec	/* Read data bytes (Quad I/O SPI) */
+> +#define SPINOR_OP_READ_1_1_8_4B	0x7c	/* Read data bytes (Octal Output SPI) */
+> +#define SPINOR_OP_READ_1_8_8_4B	0xcc	/* Read data bytes (Octal I/O SPI) */
+>  #define SPINOR_OP_PP_4B		0x12	/* Page program (up to 256 bytes) */
+>  #define SPINOR_OP_PP_1_1_4_4B	0x34	/* Quad page program */
+>  #define SPINOR_OP_PP_1_4_4_4B	0x3e	/* Quad page program */
+> +#define SPINOR_OP_PP_1_1_8_4B	0x84	/* Octal page program */
+> +#define SPINOR_OP_PP_1_8_8_4B	0x8e	/* Octal page program */
+>  #define SPINOR_OP_BE_4K_4B	0x21	/* Erase 4KiB block */
+>  #define SPINOR_OP_BE_32K_4B	0x5c	/* Erase 32KiB block */
+>  #define SPINOR_OP_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
+> @@ -124,6 +132,7 @@ enum read_mode {
+>  	SPI_NOR_FAST,
+>  	SPI_NOR_DUAL,
+>  	SPI_NOR_QUAD,
+> +	SPI_NOR_OCTAL,
+>  };
 >  
->  static void tpm_del_char_device(struct tpm_chip *chip)
->  {
-> -	cdev_del(&chip->cdev);
-> -	device_del(&chip->dev);
-> +	cdev_device_del(&chip->cdev, &chip->dev);
->  
->  	/* Make the chip unavailable. */
->  	mutex_lock(&idr_lock);
-> -- 
-> 2.1.4
-> 
-
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-
-I cannot test this at this point as security tree does not include
-the commit that is dependent on this. I'm also wondering if this
-commit is even going through my tree to upstream?
-
-/Jarkko
+>  #define SPI_NOR_MAX_CMD_SIZE	8
