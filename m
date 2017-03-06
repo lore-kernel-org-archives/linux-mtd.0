@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckmjd-0006QZ-Bq
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:12 +0000
+ id 1ckmji-0006Ra-C2
+ for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:15 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -47,11 +47,12 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon,  6 Mar 2017 00:04:22 -0700
-Message-Id: <1488783873-2614-7-git-send-email-logang@deltatee.com>
+Date: Mon,  6 Mar 2017 00:04:23 -0700
+Message-Id: <1488783873-2614-8-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488783873-2614-1-git-send-email-logang@deltatee.com>
 References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v3 06/16] tpm-chip: utilize new cdev_device_add helper function
+Subject: [PATCH v3 07/16] platform/chrome: cros_ec_dev - utilize new
+ cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -66,63 +67,84 @@ new device_add_cdev() helper. The helper replaces a common pattern by
 taking the proper reference against the parent device and adding both
 the cdev and the device.
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
----
- drivers/char/tpm/tpm-chip.c | 19 +++----------------
- 1 file changed, 3 insertions(+), 16 deletions(-)
+At the same time we cleanup the error path through device_probe
+function: we use put_device instead of kfree directly as recommended
+by the device_initialize documentation.
 
-diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-index c406343..935f0e9 100644
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -187,7 +187,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+---
+ drivers/platform/chrome/cros_ec_dev.c | 31 +++++++------------------------
+ 1 file changed, 7 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/platform/chrome/cros_ec_dev.c b/drivers/platform/chrome/cros_ec_dev.c
+index 6f09da4..6aa120c 100644
+--- a/drivers/platform/chrome/cros_ec_dev.c
++++ b/drivers/platform/chrome/cros_ec_dev.c
+@@ -391,7 +391,6 @@ static int ec_device_probe(struct platform_device *pdev)
+ 	int retval = -ENOMEM;
+ 	struct device *dev = &pdev->dev;
+ 	struct cros_ec_platform *ec_platform = dev_get_platdata(dev);
+-	dev_t devno = MKDEV(ec_major, pdev->id);
+ 	struct cros_ec_dev *ec = kzalloc(sizeof(*ec), GFP_KERNEL);
  
- 	cdev_init(&chip->cdev, &tpm_fops);
- 	chip->cdev.owner = THIS_MODULE;
--	chip->cdev.kobj.parent = &chip->dev.kobj;
+ 	if (!ec)
+@@ -407,23 +406,11 @@ static int ec_device_probe(struct platform_device *pdev)
+ 	cdev_init(&ec->cdev, &fops);
  
- 	return chip;
- 
-@@ -230,27 +229,16 @@ static int tpm_add_char_device(struct tpm_chip *chip)
- {
- 	int rc;
- 
--	rc = cdev_add(&chip->cdev, chip->dev.devt, 1);
-+	rc = cdev_device_add(&chip->cdev, &chip->dev);
- 	if (rc) {
- 		dev_err(&chip->dev,
--			"unable to cdev_add() %s, major %d, minor %d, err=%d\n",
-+			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
- 			dev_name(&chip->dev), MAJOR(chip->dev.devt),
- 			MINOR(chip->dev.devt), rc);
- 
- 		return rc;
- 	}
- 
--	rc = device_add(&chip->dev);
--	if (rc) {
--		dev_err(&chip->dev,
--			"unable to device_register() %s, major %d, minor %d, err=%d\n",
--			dev_name(&chip->dev), MAJOR(chip->dev.devt),
--			MINOR(chip->dev.devt), rc);
--
--		cdev_del(&chip->cdev);
--		return rc;
+ 	/*
+-	 * Add the character device
+-	 * Link cdev to the class device to be sure device is not used
+-	 * before unbinding it.
+-	 */
+-	ec->cdev.kobj.parent = &ec->class_dev.kobj;
+-	retval = cdev_add(&ec->cdev, devno, 1);
+-	if (retval) {
+-		dev_err(dev, ": failed to add character device\n");
+-		goto cdev_add_failed;
 -	}
 -
- 	/* Make the chip available. */
- 	mutex_lock(&idr_lock);
- 	idr_replace(&dev_nums_idr, chip, chip->dev_num);
-@@ -261,8 +249,7 @@ static int tpm_add_char_device(struct tpm_chip *chip)
+-	/*
+ 	 * Add the class device
+ 	 * Link to the character device for creating the /dev entry
+ 	 * in devtmpfs.
+ 	 */
+-	ec->class_dev.devt = ec->cdev.dev;
++	ec->class_dev.devt = MKDEV(ec_major, pdev->id);
+ 	ec->class_dev.class = &cros_class;
+ 	ec->class_dev.parent = dev;
+ 	ec->class_dev.release = __remove;
+@@ -431,13 +418,13 @@ static int ec_device_probe(struct platform_device *pdev)
+ 	retval = dev_set_name(&ec->class_dev, "%s", ec_platform->ec_name);
+ 	if (retval) {
+ 		dev_err(dev, "dev_set_name failed => %d\n", retval);
+-		goto set_named_failed;
++		goto failed;
+ 	}
  
- static void tpm_del_char_device(struct tpm_chip *chip)
- {
--	cdev_del(&chip->cdev);
--	device_del(&chip->dev);
-+	cdev_device_del(&chip->cdev, &chip->dev);
+-	retval = device_add(&ec->class_dev);
++	retval = cdev_device_add(&ec->cdev, &ec->class_dev);
+ 	if (retval) {
+-		dev_err(dev, "device_register failed => %d\n", retval);
+-		goto dev_reg_failed;
++		dev_err(dev, "cdev_device_add failed => %d\n", retval);
++		goto failed;
+ 	}
  
- 	/* Make the chip unavailable. */
- 	mutex_lock(&idr_lock);
+ 	/* check whether this EC is a sensor hub. */
+@@ -446,12 +433,8 @@ static int ec_device_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
+-dev_reg_failed:
+-set_named_failed:
+-	dev_set_drvdata(dev, NULL);
+-	cdev_del(&ec->cdev);
+-cdev_add_failed:
+-	kfree(ec);
++failed:
++	put_device(&ec->class_dev);
+ 	return retval;
+ }
+ 
 -- 
 2.1.4
