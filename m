@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckmjO-0006DY-Bx
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:06:55 +0000
+ id 1ckmjT-0006Fa-Bq
+ for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:00 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -47,12 +47,11 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon,  6 Mar 2017 00:04:32 -0700
-Message-Id: <1488783873-2614-17-git-send-email-logang@deltatee.com>
+Date: Mon,  6 Mar 2017 00:04:26 -0700
+Message-Id: <1488783873-2614-11-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488783873-2614-1-git-send-email-logang@deltatee.com>
 References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v3 16/16] switchtec: utilize new device_add_cdev helper
- function
+Subject: [PATCH v3 10/16] iio:core: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -62,56 +61,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Very straightforward conversion to device_add_cdev. Drop cdev_add and
-device_add and use cdev_device_add.
+Replace the open coded registration of the cdev and dev with the
+new device_add_cdev() helper. The helper replaces a common pattern by
+taking the proper reference against the parent device and adding both
+the cdev and the device.
+
+In doing so we have to remove a guard statement from cdev_del,
+but this doesn't appear to be required in any way.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/pci/switch/switchtec.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ drivers/iio/industrialio-core.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-index 1f045c9..e27fd29 100644
---- a/drivers/pci/switch/switchtec.c
-+++ b/drivers/pci/switch/switchtec.c
-@@ -1291,7 +1291,6 @@ static struct switchtec_dev *stdev_create(struct pci_dev *pdev)
- 	cdev = &stdev->cdev;
- 	cdev_init(cdev, &switchtec_fops);
- 	cdev->owner = THIS_MODULE;
--	cdev->kobj.parent = &dev->kobj;
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index d18ded4..26a03c6 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -1720,18 +1720,13 @@ int iio_device_register(struct iio_dev *indio_dev)
  
- 	return stdev;
+ 	cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
+ 	indio_dev->chrdev.owner = indio_dev->info->driver_module;
+-	indio_dev->chrdev.kobj.parent = &indio_dev->dev.kobj;
+-	ret = cdev_add(&indio_dev->chrdev, indio_dev->dev.devt, 1);
+-	if (ret < 0)
+-		goto error_unreg_eventset;
  
-@@ -1479,11 +1478,7 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
- 		  SWITCHTEC_EVENT_EN_IRQ,
- 		  &stdev->mmio_part_cfg->mrpc_comp_hdr);
+-	ret = device_add(&indio_dev->dev);
++	ret = cdev_device_add(&indio_dev->chrdev, &indio_dev->dev);
+ 	if (ret < 0)
+-		goto error_cdev_del;
++		goto error_unreg_eventset;
  
--	rc = cdev_add(&stdev->cdev, stdev->dev.devt, 1);
--	if (rc)
--		goto err_put;
--
--	rc = device_add(&stdev->dev);
-+	rc = cdev_device_add(&stdev->cdev, &stdev->dev);
- 	if (rc)
- 		goto err_devadd;
- 
-@@ -1492,7 +1487,6 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
  	return 0;
+-error_cdev_del:
+-	cdev_del(&indio_dev->chrdev);
++
+ error_unreg_eventset:
+ 	iio_device_unregister_eventset(indio_dev);
+ error_free_sysfs:
+@@ -1752,10 +1747,8 @@ void iio_device_unregister(struct iio_dev *indio_dev)
+ {
+ 	mutex_lock(&indio_dev->info_exist_lock);
  
- err_devadd:
--	cdev_del(&stdev->cdev);
- 	stdev_kill(stdev);
- err_put:
- 	ida_simple_remove(&switchtec_minor_ida, MINOR(stdev->dev.devt));
-@@ -1506,8 +1500,7 @@ static void switchtec_pci_remove(struct pci_dev *pdev)
+-	device_del(&indio_dev->dev);
++	cdev_device_del(&indio_dev->chrdev, &indio_dev->dev);
  
- 	pci_set_drvdata(pdev, NULL);
+-	if (indio_dev->chrdev.dev)
+-		cdev_del(&indio_dev->chrdev);
+ 	iio_device_unregister_debugfs(indio_dev);
  
--	device_del(&stdev->dev);
--	cdev_del(&stdev->cdev);
-+	cdev_device_del(&stdev->cdev, &stdev->dev);
- 	ida_simple_remove(&switchtec_minor_ida, MINOR(stdev->dev.devt));
- 	dev_info(&stdev->dev, "unregistered.\n");
- 
+ 	iio_disable_all_buffers(indio_dev);
 -- 
 2.1.4
