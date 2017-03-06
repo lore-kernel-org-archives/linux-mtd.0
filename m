@@ -1,20 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cl04a-0007BS-Oa
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 21:21:44 +0000
-Date: Mon, 6 Mar 2017 22:21:18 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Artur Jedrysek <jartur@cadence.com>
-Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 2/3] mtd: spi-nor: Add Octal SPI support to Cadence QSPI
- driver.
-Message-ID: <20170306222118.6cfca9f7@bbrezillon>
-In-Reply-To: <1488803545-22461-1-git-send-email-jartur@cadence.com>
-References: <1488803545-22461-1-git-send-email-jartur@cadence.com>
-MIME-Version: 1.0
+Date: Mon, 6 Mar 2017 13:22:14 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>, Dave Chinner
+ <david@fromorbit.com>, djwong@kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>, Jan Kara
+ <jack@suse.cz>, ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org, LKML
+ <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>, Vlastimil
+ Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 4/7] mm: introduce memalloc_nofs_{save,restore} API
+Message-Id: <20170306132214.1769368301d9e671e1bc68be@linux-foundation.org>
+In-Reply-To: <20170306131408.9828-5-mhocko@kernel.org>
+References: <20170306131408.9828-1-mhocko@kernel.org>
+ <20170306131408.9828-5-mhocko@kernel.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,127 +29,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 6 Mar 2017 12:32:25 +0000
-Artur Jedrysek <jartur@cadence.com> wrote:
+On Mon,  6 Mar 2017 14:14:05 +0100 Michal Hocko <mhocko@kernel.org> wrote:
 
-> Recent versions of Cadence QSPI controller support Octal SPI transfers
-> as well. This patch updates existing driver to support such feature.
+> From: Michal Hocko <mhocko@suse.com>
 > 
-> It is not possible to determine whether or not octal mode is supported
-> just by looking at revision register alone. To solve that, an additional
-> property in Device Tree is added to indicate such capability.
-> Both (revision and DT property) are used to determine, which mode to
-> pass to spi_nor_scan() call.
-
-Hm, can we add a new compatible instead? Adding extra properties to
-describe the set of functionalities supported by an IP is usually a
-bad idea.
-
+> GFP_NOFS context is used for the following 5 reasons currently
+> 	- to prevent from deadlocks when the lock held by the allocation
+> 	  context would be needed during the memory reclaim
+> 	- to prevent from stack overflows during the reclaim because
+> 	  the allocation is performed from a deep context already
+> 	- to prevent lockups when the allocation context depends on
+> 	  other reclaimers to make a forward progress indirectly
+> 	- just in case because this would be safe from the fs POV
+> 	- silence lockdep false positives
 > 
-> Additionally, the driver works on Xtensa CPU, hence Kconfig update.
-
-This should be done in a separate commit (it has nothing to do with
-octal mode support).
-
+> Unfortunately overuse of this allocation context brings some problems
+> to the MM. Memory reclaim is much weaker (especially during heavy FS
+> metadata workloads), OOM killer cannot be invoked because the MM layer
+> doesn't have enough information about how much memory is freeable by the
+> FS layer.
 > 
-> Signed-off-by: Artur Jedrysek <jartur@cadence.com>
-> ---
->  drivers/mtd/spi-nor/Kconfig           |  2 +-
->  drivers/mtd/spi-nor/cadence-quadspi.c | 40 ++++++++++++++++++++++++++++++++++-
->  2 files changed, 40 insertions(+), 2 deletions(-)
+> In many cases it is far from clear why the weaker context is even used
+> and so it might be used unnecessarily. We would like to get rid of
+> those as much as possible. One way to do that is to use the flag in
+> scopes rather than isolated cases. Such a scope is declared when really
+> necessary, tracked per task and all the allocation requests from within
+> the context will simply inherit the GFP_NOFS semantic.
 > 
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 7252087..f195749 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -50,7 +50,7 @@ config SPI_ATMEL_QUADSPI
->  
->  config SPI_CADENCE_QUADSPI
->  	tristate "Cadence Quad SPI controller"
-> -	depends on OF && (ARM || COMPILE_TEST)
-> +	depends on OF && (ARM || XTENSA || COMPILE_TEST)
->  	help
->  	  Enable support for the Cadence Quad SPI Flash controller.
->  
-> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-> index 9f8102d..5c06102 100644
-> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
-> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-> @@ -87,6 +87,7 @@ struct cqspi_st {
->  #define CQSPI_INST_TYPE_SINGLE			0
->  #define CQSPI_INST_TYPE_DUAL			1
->  #define CQSPI_INST_TYPE_QUAD			2
-> +#define CQSPI_INST_TYPE_OCTAL			3
->  
->  #define CQSPI_DUMMY_CLKS_PER_BYTE		8
->  #define CQSPI_DUMMY_BYTES_MAX			4
-> @@ -204,6 +205,14 @@ struct cqspi_st {
->  #define CQSPI_REG_CMDWRITEDATALOWER		0xA8
->  #define CQSPI_REG_CMDWRITEDATAUPPER		0xAC
->  
-> +#define CQSPI_REG_MODULEID			0xFC
-> +#define CQSPI_REG_MODULEID_CONF_ID_MASK		0x3
-> +#define CQSPI_REG_MODULEID_CONF_ID_LSB		0
-> +#define CQSPI_REG_MODULEID_CONF_ID_OCTAL_PHY	0x0
-> +#define CQSPI_REG_MODULEID_CONF_ID_OCTAL	0x1
-> +#define CQSPI_REG_MODULEID_CONF_ID_QUAD_PHY	0x2
-> +#define CQSPI_REG_MODULEID_CONF_ID_QUAD		0x3
-> +
->  /* Interrupt status bits */
->  #define CQSPI_REG_IRQ_MODE_ERR			BIT(0)
->  #define CQSPI_REG_IRQ_UNDERFLOW			BIT(1)
-> @@ -866,6 +875,9 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
->  		case SPI_NOR_QUAD:
->  			f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
->  			break;
-> +		case SPI_NOR_OCTAL:
-> +			f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
-> +			break;
->  		default:
->  			return -EINVAL;
->  		}
-> @@ -1074,9 +1086,35 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
->  	struct cqspi_flash_pdata *f_pdata;
->  	struct spi_nor *nor;
->  	struct mtd_info *mtd;
-> +	enum read_mode mode;
-> +	enum read_mode dt_mode = SPI_NOR_QUAD;
->  	unsigned int cs;
-> +	unsigned int rev_reg;
->  	int i, ret;
->  
-> +	/* Determine, whether or not octal transfer MAY be supported */
-> +	rev_reg = readl(cqspi->iobase + CQSPI_REG_MODULEID);
-> +	dev_info(dev, "CQSPI Module id %x\n", rev_reg);
-> +
-> +	switch (rev_reg & CQSPI_REG_MODULEID_CONF_ID_MASK) {
-> +	case CQSPI_REG_MODULEID_CONF_ID_OCTAL_PHY:
-> +	case CQSPI_REG_MODULEID_CONF_ID_OCTAL:
-> +		mode = SPI_NOR_OCTAL;
-> +		break;
-> +	case CQSPI_REG_MODULEID_CONF_ID_QUAD:
-> +	case CQSPI_REG_MODULEID_CONF_ID_QUAD_PHY:
-> +		mode = SPI_NOR_QUAD;
-> +		break;
-> +	}
-> +
-> +	if (of_property_read_bool(np, "cdns,octal-controller"))
-> +		dt_mode = SPI_NOR_OCTAL;
-> +
-> +	if (mode == SPI_NOR_QUAD && dt_mode == SPI_NOR_OCTAL)
-> +		dev_warn(dev, "Requested octal mode is not supported by the device.");
-> +	else if (mode == SPI_NOR_OCTAL && dt_mode == SPI_NOR_QUAD)
-> +		mode = SPI_NOR_QUAD;
-> +
->  	/* Get flash device data */
->  	for_each_available_child_of_node(dev->of_node, np) {
->  		ret = of_property_read_u32(np, "reg", &cs);
-> @@ -1123,7 +1161,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
->  			goto err;
->  		}
->  
-> -		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> +		ret = spi_nor_scan(nor, NULL, mode);
->  		if (ret)
->  			goto err;
->  
+> Not only this is easier to understand and maintain because there are
+> much less problematic contexts than specific allocation requests, this
+> also helps code paths where FS layer interacts with other layers (e.g.
+> crypto, security modules, MM etc...) and there is no easy way to convey
+> the allocation context between the layers.
+> 
+> Introduce memalloc_nofs_{save,restore} API to control the scope
+> of GFP_NOFS allocation context. This is basically copying
+> memalloc_noio_{save,restore} API we have for other restricted allocation
+> context GFP_NOIO. The PF_MEMALLOC_NOFS flag already exists and it is
+> just an alias for PF_FSTRANS which has been xfs specific until recently.
+> There are no more PF_FSTRANS users anymore so let's just drop it.
+> 
+> PF_MEMALLOC_NOFS is now checked in the MM layer and drops __GFP_FS
+> implicitly same as PF_MEMALLOC_NOIO drops __GFP_IO. memalloc_noio_flags
+> is renamed to current_gfp_context because it now cares about both
+> PF_MEMALLOC_NOFS and PF_MEMALLOC_NOIO contexts. Xfs code paths preserve
+> their semantic. kmem_flags_convert() doesn't need to evaluate the flag
+> anymore.
+> 
+> This patch shouldn't introduce any functional changes.
+> 
+> Let's hope that filesystems will drop direct GFP_NOFS (resp. ~__GFP_FS)
+> usage as much as possible and only use a properly documented
+> memalloc_nofs_{save,restore} checkpoints where they are appropriate.
+> 
+> ....
+>
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -210,8 +210,16 @@ struct vm_area_struct;
+>   *
+>   * GFP_NOIO will use direct reclaim to discard clean pages or slab pages
+>   *   that do not require the starting of any physical IO.
+> + *   Please try to avoid using this flag directly and instead use
+> + *   memalloc_noio_{save,restore} to mark the whole scope which cannot
+> + *   perform any IO with a short explanation why. All allocation requests
+> + *   will inherit GFP_NOIO implicitly.
+>   *
+>   * GFP_NOFS will use direct reclaim but will not use any filesystem interfaces.
+> + *   Please try to avoid using this flag directly and instead use
+> + *   memalloc_nofs_{save,restore} to mark the whole scope which cannot/shouldn't
+> + *   recurse into the FS layer with a short explanation why. All allocation
+> + *   requests will inherit GFP_NOFS implicitly.
+
+I wonder if these are worth a checkpatch rule.
