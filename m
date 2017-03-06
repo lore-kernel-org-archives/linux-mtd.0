@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckmji-0006SB-C1
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:16 +0000
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ckmjn-00046O-4z
+ for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:20 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -46,12 +46,12 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- Logan Gunthorpe <logang@deltatee.com>
-Date: Mon,  6 Mar 2017 00:04:30 -0700
-Message-Id: <1488783873-2614-15-git-send-email-logang@deltatee.com>
+ <stable@vger.kernel.org>, Logan Gunthorpe <logang@deltatee.com>
+Date: Mon,  6 Mar 2017 00:04:18 -0700
+Message-Id: <1488783873-2614-3-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488783873-2614-1-git-send-email-logang@deltatee.com>
 References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v3 14/16] rtc: utilize new cdev_device_add helper function
+Subject: [PATCH v3 02/16] device-dax: fix cdev leak
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -61,94 +61,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mostly straightforward, but we had to remove the rtc_dev_add/del_device
-functions as they split up the cdev_add and the device_add.
+From: Dan Williams <dan.j.williams@intel.com>
 
-Doing this also revealed that there was likely another subtle bug:
-seeing cdev_add was done after device_register, the cdev probably
-was not ready before device_add when the uevent occurs. This would
-race with userspace, if it tried to use the device directly after
-the uevent. This is fixed just by using the new helper function.
+If device_add() fails, cleanup the cdev. Otherwise, we leak a kobj_map()
+with a stale device number.
 
+As Jason points out, there is a small possibility that userspace has
+opened and mapped the device in the time between cdev_add() and the
+device_add() failure. We need a new kill_dax_dev() helper to invalidate
+any established mappings.
+
+Fixes: ba09c01d2fa8 ("dax: convert to the cdev api")
+Cc: <stable@vger.kernel.org>
+Reported-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/rtc/class.c   | 14 ++++++++++----
- drivers/rtc/rtc-dev.c | 17 -----------------
- 2 files changed, 10 insertions(+), 21 deletions(-)
+ drivers/dax/dax.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
-index 74fd974..5fb4398 100644
---- a/drivers/rtc/class.c
-+++ b/drivers/rtc/class.c
-@@ -195,6 +195,8 @@ struct rtc_device *rtc_device_register(const char *name, struct device *dev,
- 		goto exit_ida;
- 	}
- 
-+	device_initialize(&rtc->dev);
-+
- 	rtc->id = id;
- 	rtc->ops = ops;
- 	rtc->owner = owner;
-@@ -233,14 +235,19 @@ struct rtc_device *rtc_device_register(const char *name, struct device *dev,
- 
- 	rtc_dev_prepare(rtc);
- 
--	err = device_register(&rtc->dev);
-+	err = cdev_device_add(&rtc->char_dev, &rtc->dev);
- 	if (err) {
-+		dev_warn(&rtc->dev, "%s: failed to add char device %d:%d\n",
-+			 rtc->name, MAJOR(rtc->dev.devt), rtc->id);
-+
- 		/* This will free both memory and the ID */
- 		put_device(&rtc->dev);
- 		goto exit;
-+	} else {
-+		dev_dbg(&rtc->dev, "%s: dev (%d:%d)\n", rtc->name,
-+			MAJOR(rtc->dev.devt), rtc->id);
- 	}
- 
--	rtc_dev_add_device(rtc);
- 	rtc_proc_add_device(rtc);
- 
- 	dev_info(dev, "rtc core: registered %s as %s\n",
-@@ -271,9 +278,8 @@ void rtc_device_unregister(struct rtc_device *rtc)
- 	 * Remove innards of this RTC, then disable it, before
- 	 * letting any rtc_class_open() users access it again
- 	 */
--	rtc_dev_del_device(rtc);
- 	rtc_proc_del_device(rtc);
--	device_del(&rtc->dev);
-+	cdev_device_del(&rtc->char_dev, &rtc->dev);
- 	rtc->ops = NULL;
- 	mutex_unlock(&rtc->ops_lock);
- 	put_device(&rtc->dev);
-diff --git a/drivers/rtc/rtc-dev.c b/drivers/rtc/rtc-dev.c
-index 6dc8f29..e81a871 100644
---- a/drivers/rtc/rtc-dev.c
-+++ b/drivers/rtc/rtc-dev.c
-@@ -477,23 +477,6 @@ void rtc_dev_prepare(struct rtc_device *rtc)
- 
- 	cdev_init(&rtc->char_dev, &rtc_dev_fops);
- 	rtc->char_dev.owner = rtc->owner;
--	rtc->char_dev.kobj.parent = &rtc->dev.kobj;
--}
--
--void rtc_dev_add_device(struct rtc_device *rtc)
--{
--	if (cdev_add(&rtc->char_dev, rtc->dev.devt, 1))
--		dev_warn(&rtc->dev, "%s: failed to add char device %d:%d\n",
--			rtc->name, MAJOR(rtc_devt), rtc->id);
--	else
--		dev_dbg(&rtc->dev, "%s: dev (%d:%d)\n", rtc->name,
--			MAJOR(rtc_devt), rtc->id);
--}
--
--void rtc_dev_del_device(struct rtc_device *rtc)
--{
--	if (rtc->dev.devt)
--		cdev_del(&rtc->char_dev);
+diff --git a/drivers/dax/dax.c b/drivers/dax/dax.c
+index 8d9829f..a5ed59a 100644
+--- a/drivers/dax/dax.c
++++ b/drivers/dax/dax.c
+@@ -675,13 +675,10 @@ static void dax_dev_release(struct device *dev)
+ 	kfree(dax_dev);
  }
  
- void __init rtc_dev_init(void)
+-static void unregister_dax_dev(void *dev)
++static void kill_dax_dev(struct dax_dev *dax_dev)
+ {
+-	struct dax_dev *dax_dev = to_dax_dev(dev);
+ 	struct cdev *cdev = &dax_dev->cdev;
+ 
+-	dev_dbg(dev, "%s\n", __func__);
+-
+ 	/*
+ 	 * Note, rcu is not protecting the liveness of dax_dev, rcu is
+ 	 * ensuring that any fault handlers that might have seen
+@@ -693,6 +690,15 @@ static void unregister_dax_dev(void *dev)
+ 	synchronize_rcu();
+ 	unmap_mapping_range(dax_dev->inode->i_mapping, 0, 0, 1);
+ 	cdev_del(cdev);
++}
++
++static void unregister_dax_dev(void *dev)
++{
++	struct dax_dev *dax_dev = to_dax_dev(dev);
++
++	dev_dbg(dev, "%s\n", __func__);
++
++	kill_dax_dev(dax_dev);
+ 	device_unregister(dev);
+ }
+ 
+@@ -769,6 +775,7 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+ 	dev_set_name(dev, "dax%d.%d", dax_region->id, dax_dev->id);
+ 	rc = device_add(dev);
+ 	if (rc) {
++		kill_dax_dev(dax_dev);
+ 		put_device(dev);
+ 		return ERR_PTR(rc);
+ 	}
 -- 
 2.1.4
