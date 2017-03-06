@@ -1,6 +1,6 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckmjn-00046O-4z
+ id 1ckmjn-00046P-Ja
  for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:20 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -46,12 +46,12 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- <stable@vger.kernel.org>, Logan Gunthorpe <logang@deltatee.com>
-Date: Mon,  6 Mar 2017 00:04:18 -0700
-Message-Id: <1488783873-2614-3-git-send-email-logang@deltatee.com>
+ Logan Gunthorpe <logang@deltatee.com>
+Date: Mon,  6 Mar 2017 00:04:21 -0700
+Message-Id: <1488783873-2614-6-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488783873-2614-1-git-send-email-logang@deltatee.com>
 References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v3 02/16] device-dax: fix cdev leak
+Subject: [PATCH v3 05/16] gpiolib: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -61,67 +61,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Dan Williams <dan.j.williams@intel.com>
+Replace the open coded registration of the cdev and dev with the
+new device_add_cdev() helper. The helper replaces a common pattern by
+taking the proper reference against the parent device and adding both
+the cdev and the device.
 
-If device_add() fails, cleanup the cdev. Otherwise, we leak a kobj_map()
-with a stale device number.
-
-As Jason points out, there is a small possibility that userspace has
-opened and mapped the device in the time between cdev_add() and the
-device_add() failure. We need a new kill_dax_dev() helper to invalidate
-any established mappings.
-
-Fixes: ba09c01d2fa8 ("dax: convert to the cdev api")
-Cc: <stable@vger.kernel.org>
-Reported-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/dax/dax.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/gpio/gpiolib.c | 23 ++++++++---------------
+ 1 file changed, 8 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/dax/dax.c b/drivers/dax/dax.c
-index 8d9829f..a5ed59a 100644
---- a/drivers/dax/dax.c
-+++ b/drivers/dax/dax.c
-@@ -675,13 +675,10 @@ static void dax_dev_release(struct device *dev)
- 	kfree(dax_dev);
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 8b4d721..3ce2a27 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -1035,18 +1035,14 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
+ 
+ 	cdev_init(&gdev->chrdev, &gpio_fileops);
+ 	gdev->chrdev.owner = THIS_MODULE;
+-	gdev->chrdev.kobj.parent = &gdev->dev.kobj;
+ 	gdev->dev.devt = MKDEV(MAJOR(gpio_devt), gdev->id);
+-	status = cdev_add(&gdev->chrdev, gdev->dev.devt, 1);
+-	if (status < 0)
+-		chip_warn(gdev->chip, "failed to add char device %d:%d\n",
+-			  MAJOR(gpio_devt), gdev->id);
+-	else
+-		chip_dbg(gdev->chip, "added GPIO chardev (%d:%d)\n",
+-			 MAJOR(gpio_devt), gdev->id);
+-	status = device_add(&gdev->dev);
++
++	status = cdev_device_add(&gdev->chrdev, &gdev->dev);
+ 	if (status)
+-		goto err_remove_chardev;
++		return status;
++
++	chip_dbg(gdev->chip, "added GPIO chardev (%d:%d)\n",
++		 MAJOR(gpio_devt), gdev->id);
+ 
+ 	status = gpiochip_sysfs_register(gdev);
+ 	if (status)
+@@ -1061,9 +1057,7 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
+ 	return 0;
+ 
+ err_remove_device:
+-	device_del(&gdev->dev);
+-err_remove_chardev:
+-	cdev_del(&gdev->chrdev);
++	cdev_device_del(&gdev->chrdev, &gdev->dev);
+ 	return status;
  }
  
--static void unregister_dax_dev(void *dev)
-+static void kill_dax_dev(struct dax_dev *dax_dev)
- {
--	struct dax_dev *dax_dev = to_dax_dev(dev);
- 	struct cdev *cdev = &dax_dev->cdev;
- 
--	dev_dbg(dev, "%s\n", __func__);
--
- 	/*
- 	 * Note, rcu is not protecting the liveness of dax_dev, rcu is
- 	 * ensuring that any fault handlers that might have seen
-@@ -693,6 +690,15 @@ static void unregister_dax_dev(void *dev)
- 	synchronize_rcu();
- 	unmap_mapping_range(dax_dev->inode->i_mapping, 0, 0, 1);
- 	cdev_del(cdev);
-+}
-+
-+static void unregister_dax_dev(void *dev)
-+{
-+	struct dax_dev *dax_dev = to_dax_dev(dev);
-+
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	kill_dax_dev(dax_dev);
- 	device_unregister(dev);
+@@ -1347,8 +1341,7 @@ void gpiochip_remove(struct gpio_chip *chip)
+ 	 * be removed, else it will be dangling until the last user is
+ 	 * gone.
+ 	 */
+-	cdev_del(&gdev->chrdev);
+-	device_del(&gdev->dev);
++	cdev_device_del(&gdev->chrdev, &gdev->dev);
+ 	put_device(&gdev->dev);
  }
- 
-@@ -769,6 +775,7 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
- 	dev_set_name(dev, "dax%d.%d", dax_region->id, dax_dev->id);
- 	rc = device_add(dev);
- 	if (rc) {
-+		kill_dax_dev(dax_dev);
- 		put_device(dev);
- 		return ERR_PTR(rc);
- 	}
+ EXPORT_SYMBOL_GPL(gpiochip_remove);
 -- 
 2.1.4
