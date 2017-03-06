@@ -1,6 +1,6 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckmjd-0006Qm-Bs
+ id 1ckmjd-0006Qw-Bt
  for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:11 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -47,11 +47,11 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon,  6 Mar 2017 00:04:27 -0700
-Message-Id: <1488783873-2614-12-git-send-email-logang@deltatee.com>
+Date: Mon,  6 Mar 2017 00:04:31 -0700
+Message-Id: <1488783873-2614-16-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488783873-2614-1-git-send-email-logang@deltatee.com>
 References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v3 11/16] media: utilize new cdev_device_add helper function
+Subject: [PATCH v3 15/16] scsi: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -61,110 +61,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace the open coded registration of the cdev and dev with the
-new device_add_cdev() helper. The helper replaces a common pattern by
-taking the proper reference against the parent device and adding both
-the cdev and the device.
+This driver did not set kobj.parent so it likely suffered from
+a potential use after free race if the user unregistered the
+device while it was in use.
+
+This was not so straightforward a conversion but I think this patch
+cleans up its probe's error path significantly.
+
+This patch adds device_initialize, which is required for
+cdev_device_add. Then it switches to put_device instead of kfree as
+recommended by device_initialize's documentation. This removes a lot
+from the error path which was already in __remove.
+A couple things needed to be re-ordered to be entirely correct, though.
+ida_remove is also moved out of __remove and into unregister to
+simplify things and follow the pattern other devices are using.
+
+This also drop an extra unnecessary get_device/put_device in the code.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
 ---
- drivers/media/cec/cec-core.c  | 16 ++++------------
- drivers/media/media-devnode.c | 20 +++++---------------
- 2 files changed, 9 insertions(+), 27 deletions(-)
+ drivers/scsi/osd/osd_uld.c | 56 +++++++++++++++++-----------------------------
+ 1 file changed, 20 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
-index 37217e2..3163e03 100644
---- a/drivers/media/cec/cec-core.c
-+++ b/drivers/media/cec/cec-core.c
-@@ -137,24 +137,17 @@ static int __must_check cec_devnode_register(struct cec_devnode *devnode,
+diff --git a/drivers/scsi/osd/osd_uld.c b/drivers/scsi/osd/osd_uld.c
+index e0ce5d2..4101c31 100644
+--- a/drivers/scsi/osd/osd_uld.c
++++ b/drivers/scsi/osd/osd_uld.c
+@@ -400,9 +400,6 @@ static void __remove(struct device *dev)
  
- 	/* Part 2: Initialize and register the character device */
- 	cdev_init(&devnode->cdev, &cec_devnode_fops);
--	devnode->cdev.kobj.parent = &devnode->dev.kobj;
- 	devnode->cdev.owner = owner;
+ 	kfree(oud->odi.osdname);
  
--	ret = cdev_add(&devnode->cdev, devnode->dev.devt, 1);
--	if (ret < 0) {
--		pr_err("%s: cdev_add failed\n", __func__);
-+	ret = cdev_device_add(&devnode->cdev, &devnode->dev);
-+	if (ret) {
-+		pr_err("%s: cdev_device_add failed\n", __func__);
- 		goto clr_bit;
- 	}
- 
--	ret = device_add(&devnode->dev);
--	if (ret)
--		goto cdev_del;
+-	if (oud->cdev.owner)
+-		cdev_del(&oud->cdev);
 -
- 	devnode->registered = true;
- 	return 0;
+ 	osd_dev_fini(&oud->od);
+ 	scsi_device_put(scsi_device);
  
--cdev_del:
--	cdev_del(&devnode->cdev);
- clr_bit:
- 	mutex_lock(&cec_devnode_lock);
- 	clear_bit(devnode->minor, cec_devnode_nums);
-@@ -190,8 +183,7 @@ static void cec_devnode_unregister(struct cec_devnode *devnode)
- 	devnode->unregistered = true;
- 	mutex_unlock(&devnode->lock);
+@@ -411,7 +408,6 @@ static void __remove(struct device *dev)
  
--	device_del(&devnode->dev);
--	cdev_del(&devnode->cdev);
-+	cdev_device_del(&devnode->cdev, &devnode->dev);
- 	put_device(&devnode->dev);
+ 	if (oud->disk)
+ 		put_disk(oud->disk);
+-	ida_remove(&osd_minor_ida, oud->minor);
+ 
+ 	kfree(oud);
  }
+@@ -446,8 +442,20 @@ static int osd_probe(struct device *dev)
+ 	if (NULL == oud)
+ 		goto err_retract_minor;
  
-diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
-index ae46753..423248f 100644
---- a/drivers/media/media-devnode.c
-+++ b/drivers/media/media-devnode.c
-@@ -248,31 +248,22 @@ int __must_check media_devnode_register(struct media_device *mdev,
- 	dev_set_name(&devnode->dev, "media%d", devnode->minor);
- 	device_initialize(&devnode->dev);
++	/* class device member */
++	device_initialize(&oud->class_dev);
+ 	dev_set_drvdata(dev, oud);
+ 	oud->minor = minor;
++	oud->class_dev.devt = MKDEV(SCSI_OSD_MAJOR, oud->minor);
++	oud->class_dev.class = &osd_uld_class;
++	oud->class_dev.parent = dev;
++	oud->class_dev.release = __remove;
++
++	/* hold one more reference to the scsi_device that will get released
++	 * in __release, in case a logout is happening while fs is mounted
++	 */
++	scsi_device_get(scsi_device);
++	osd_dev_init(&oud->od, scsi_device);
  
--	/* Part 2: Initialize and register the character device */
-+	/* Part 2: Initialize the character device */
- 	cdev_init(&devnode->cdev, &media_devnode_fops);
- 	devnode->cdev.owner = owner;
--	devnode->cdev.kobj.parent = &devnode->dev.kobj;
+ 	/* allocate a disk and set it up */
+ 	/* FIXME: do we need this since sg has already done that */
+@@ -461,59 +469,34 @@ static int osd_probe(struct device *dev)
+ 	sprintf(disk->disk_name, "osd%d", oud->minor);
+ 	oud->disk = disk;
  
--	ret = cdev_add(&devnode->cdev, MKDEV(MAJOR(media_dev_t), devnode->minor), 1);
-+	/* Part 3: Add the media and char device */
-+	ret = cdev_device_add(&devnode->cdev, &devnode->dev);
- 	if (ret < 0) {
--		pr_err("%s: cdev_add failed\n", __func__);
-+		pr_err("%s: cdev_device_add failed\n", __func__);
- 		goto cdev_add_error;
+-	/* hold one more reference to the scsi_device that will get released
+-	 * in __release, in case a logout is happening while fs is mounted
+-	 */
+-	scsi_device_get(scsi_device);
+-	osd_dev_init(&oud->od, scsi_device);
+-
+ 	/* Detect the OSD Version */
+ 	error = __detect_osd(oud);
+ 	if (error) {
+ 		OSD_ERR("osd detection failed, non-compatible OSD device\n");
+-		goto err_put_disk;
++		goto err_free_osd;
  	}
  
--	/* Part 3: Add the media device */
--	ret = device_add(&devnode->dev);
--	if (ret < 0) {
--		pr_err("%s: device_add failed\n", __func__);
--		goto device_add_error;
+ 	/* init the char-device for communication with user-mode */
+ 	cdev_init(&oud->cdev, &osd_fops);
+ 	oud->cdev.owner = THIS_MODULE;
+-	error = cdev_add(&oud->cdev,
+-			 MKDEV(SCSI_OSD_MAJOR, oud->minor), 1);
+-	if (error) {
+-		OSD_ERR("cdev_add failed\n");
+-		goto err_put_disk;
 -	}
--
- 	/* Part 4: Activate this minor. The char device can now be used. */
- 	set_bit(MEDIA_FLAG_REGISTERED, &devnode->flags);
  
+-	/* class device member */
+-	oud->class_dev.devt = oud->cdev.dev;
+-	oud->class_dev.class = &osd_uld_class;
+-	oud->class_dev.parent = dev;
+-	oud->class_dev.release = __remove;
+ 	error = dev_set_name(&oud->class_dev, "%s", disk->disk_name);
+ 	if (error) {
+ 		OSD_ERR("dev_set_name failed => %d\n", error);
+-		goto err_put_cdev;
++		goto err_free_osd;
+ 	}
+ 
+-	error = device_register(&oud->class_dev);
++	error = cdev_device_add(&oud->cdev, &oud->class_dev);
+ 	if (error) {
+ 		OSD_ERR("device_register failed => %d\n", error);
+-		goto err_put_cdev;
++		goto err_free_osd;
+ 	}
+ 
+-	get_device(&oud->class_dev);
+-
+ 	OSD_INFO("osd_probe %s\n", disk->disk_name);
  	return 0;
  
--device_add_error:
--	cdev_del(&devnode->cdev);
- cdev_add_error:
- 	mutex_lock(&media_devnode_lock);
- 	clear_bit(devnode->minor, media_devnode_nums);
-@@ -298,9 +289,8 @@ void media_devnode_unregister(struct media_devnode *devnode)
- {
- 	mutex_lock(&media_devnode_lock);
- 	/* Delete the cdev on this minor as well */
--	cdev_del(&devnode->cdev);
-+	cdev_device_del(&devnode->cdev, &devnode->dev);
- 	mutex_unlock(&media_devnode_lock);
--	device_del(&devnode->dev);
- 	devnode->media_dev = NULL;
- 	put_device(&devnode->dev);
+-err_put_cdev:
+-	cdev_del(&oud->cdev);
+-err_put_disk:
+-	scsi_device_put(scsi_device);
+-	put_disk(disk);
+ err_free_osd:
+-	dev_set_drvdata(dev, NULL);
+-	kfree(oud);
++	put_device(&oud->class_dev);
+ err_retract_minor:
+ 	ida_remove(&osd_minor_ida, minor);
+ 	return error;
+@@ -530,9 +513,10 @@ static int osd_remove(struct device *dev)
+ 			scsi_device);
+ 	}
+ 
+-	device_unregister(&oud->class_dev);
+-
++	cdev_device_del(&oud->cdev, &oud->class_dev);
++	ida_remove(&osd_minor_ida, oud->minor);
+ 	put_device(&oud->class_dev);
++
+ 	return 0;
  }
+ 
 -- 
 2.1.4
