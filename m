@@ -1,13 +1,17 @@
-Received: from nbd.name ([2a01:4f8:131:30e2::2])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckoZW-0005AZ-9Q
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 09:04:52 +0000
-From: Felix Fietkau <nbd@nbd.name>
-To: linux-mtd@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>
-Subject: [PATCH] ubifs: fix RENAME_WHITEOUT support
-Date: Mon,  6 Mar 2017 10:04:25 +0100
-Message-Id: <20170306090425.61855-1-nbd@nbd.name>
+ id 1ckp3V-0000w4-9N
+ for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 09:35:51 +0000
+Subject: Re: [PATCH] ubifs: fix RENAME_WHITEOUT support
+To: Felix Fietkau <nbd@nbd.name>, linux-mtd@lists.infradead.org
+References: <20170306090425.61855-1-nbd@nbd.name>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <ed7c16ef-108a-bf57-2df5-f988d52fefa3@nod.at>
+Date: Mon, 6 Mar 2017 10:35:22 +0100
+MIME-Version: 1.0
+In-Reply-To: <20170306090425.61855-1-nbd@nbd.name>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,30 +21,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove faulty leftover check in do_rename(), apparently introduced in a
-merge that combined whiteout support changes with commit f03b8ad8d386
-("fs: support RENAME_NOREPLACE for local filesystems")
+Am 06.03.2017 um 10:04 schrieb Felix Fietkau:
+> Remove faulty leftover check in do_rename(), apparently introduced in a
+> merge that combined whiteout support changes with commit f03b8ad8d386
+> ("fs: support RENAME_NOREPLACE for local filesystems")
 
-Fixes: 9e0a1fff8db5 ("ubifs: Implement RENAME_WHITEOUT")
-Cc: stable@vger.kernel.org
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
----
- fs/ubifs/dir.c | 3 ---
- 1 file changed, 3 deletions(-)
+Good find, thank you Felix.
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 528369f3e472..f131898b7d2b 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1316,9 +1316,6 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	unsigned int uninitialized_var(saved_nlink);
- 	struct fscrypt_name old_nm, new_nm;
- 
--	if (flags & ~RENAME_NOREPLACE)
--		return -EINVAL;
--
- 	/*
- 	 * Budget request settings: deletion direntry, new direntry, removing
- 	 * the old inode, and changing old and new parent directory inodes.
--- 
-2.11.0
+> Fixes: 9e0a1fff8db5 ("ubifs: Implement RENAME_WHITEOUT")
+
+Why not f03b8ad8d386?
+This commit adds the check and I oversaw that. ;-\
+
+Thanks,
+//richard
