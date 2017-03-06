@@ -1,26 +1,58 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckKjv-0006pE-0L
- for linux-mtd@lists.infradead.org; Sun, 05 Mar 2017 01:13:38 +0000
-Subject: Re: [PATCH v6 2/3] mtd: spi-nor: Add spi-nor flash device
- synchronization between flash states
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-References: <1487967399-28967-1-git-send-email-kdasu.kdev@gmail.com>
- <1487967399-28967-3-git-send-email-kdasu.kdev@gmail.com>
- <7500eaf2-082d-2902-b6b5-768189d1aae9@denx.de>
- <CAC=U0a04jNhP1uWB6jMvDE-D7j7cgvdSG1DazQiU+mJmTwC7eQ@mail.gmail.com>
-Cc: linux-spi <linux-spi@vger.kernel.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Mark Brown
- <broonie@kernel.org>, MTD Maling List <linux-mtd@lists.infradead.org>,
- Florian Fainelli <f.fainelli@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com
-From: Marek Vasut <marex@denx.de>
-Message-ID: <d0bfefa9-4a53-3ee9-fe92-c008dd4e9199@denx.de>
-Date: Sun, 5 Mar 2017 02:11:59 +0100
-MIME-Version: 1.0
-In-Reply-To: <CAC=U0a04jNhP1uWB6jMvDE-D7j7cgvdSG1DazQiU+mJmTwC7eQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ id 1ckmjO-0006DY-Bx
+ for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:06:55 +0000
+From: Logan Gunthorpe <logang@deltatee.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>, Leon Romanovsky <leon@kernel.org>,
+ Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Joe Perches <joe@perches.com>,
+ Lorenzo Stoakes <lstoakes@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
+ rtc-linux@googlegroups.com, linux-mtd@lists.infradead.org,
+ linux-media@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Logan Gunthorpe <logang@deltatee.com>
+Date: Mon,  6 Mar 2017 00:04:32 -0700
+Message-Id: <1488783873-2614-17-git-send-email-logang@deltatee.com>
+In-Reply-To: <1488783873-2614-1-git-send-email-logang@deltatee.com>
+References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
+Subject: [PATCH v3 16/16] switchtec: utilize new device_add_cdev helper
+ function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,103 +62,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/03/2017 10:38 PM, Kamal Dasu wrote:
-> Marek,
->
-> On Sun, Feb 26, 2017 at 7:18 AM, Marek Vasut <marex@denx.de> wrote:
->> On 02/24/2017 09:16 PM, Kamal Dasu wrote:
->>> Added flash access synchronization methods spi_nor_get/release_device(). This
->>
->> Should be get/put to be consistent with the rest of the kernel ...
->>
->
-> Can change that.
->
->>> change allows spi-nor driver to maintain flash states in spi-nor stucture for
->>> read, write, erase, lock, unlock nor ops. Only when the flash state is FL_READY
->>> a new state is set and spi-nor flash op is initiated. The state change is done
->>> with a spin_lock held and released as soon as the state is changed. Else the
->>> current process for spi-nor transfer is queued till the flash is in FL_READY
->>> state. This change allows us to add mtd layer synchronization when the mtd
->>> resume suspend handlers are added.
->>>
->>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->>> ---
->>>  drivers/mtd/spi-nor/spi-nor.c | 69 +++++++++++++++++++++++++++++++++++++++++++
->>>  include/linux/mtd/spi-nor.h   |  4 +++
->>>  2 files changed, 73 insertions(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>> index 8b71c11..5363807 100644
->>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -89,6 +89,15 @@ struct flash_info {
->>>
->>>  #define JEDEC_MFR(info)      ((info)->id[0])
->>>
->>> +/* map table for spi_nor op to flashchip state  */
->>> +static int spi_nor_state[] = {
->>> +     [SPI_NOR_OPS_READ]      = FL_READING,
->>> +     [SPI_NOR_OPS_WRITE]     = FL_WRITING,
->>> +     [SPI_NOR_OPS_ERASE]     = FL_ERASING,
->>> +     [SPI_NOR_OPS_LOCK]      = FL_LOCKING,
->>> +     [SPI_NOR_OPS_UNLOCK]    = FL_UNLOCKING,
->>> +};
->>
->> Can't you just retain which instruction is in progress instead of adding
->> yet another orthogonal FL_FOO ?
->>
->
-> I just used what other mtd flash drivers use. I could use the ops, but
-> will have to add the missing ops/states.
+Very straightforward conversion to device_add_cdev. Drop cdev_add and
+device_add and use cdev_device_add.
 
-What is missing ?
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+---
+ drivers/pci/switch/switchtec.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
->>>  static const struct flash_info *spi_nor_match_id(const char *name);
->>>
->>>  /*
->>> @@ -396,10 +405,64 @@ static int erase_chip(struct spi_nor *nor)
->>>       return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
->>>  }
->>>
->>> +/**
->>> + * spi_nor_get_device - [GENERIC] Get chip for selected access
->>> + * @param mtd                MTD device structure
->>> + * @param new_state  the state which is requested
->>> + *
->>> + * Get the nor flash device and lock it for exclusive access
->>> + */
->>> +static int spi_nor_get_device(struct mtd_info *mtd, int new_state)
->>> +{
->>> +     struct spi_nor *nor = mtd_to_spi_nor(mtd);
->>> +     DECLARE_WAITQUEUE(wait, current);
->>> +
->>> +     /*
->>> +      * Grab the lock and see if the device is available
->>> +      */
->>> +     while (1) {
->>> +             spin_lock(&nor->chip_lock);
->>> +             if (nor->state == FL_READY) {
->>> +                     nor->state = new_state;
->>> +                     spin_unlock(&nor->chip_lock);
->>> +                     break;
->>> +             }
->>> +             if (new_state == FL_PM_SUSPENDED) {
->>> +                     spin_unlock(&nor->chip_lock);
->>> +                     return (nor->state == FL_PM_SUSPENDED) ? 0 : -EAGAIN;
->>> +             }
->>> +             set_current_state(TASK_UNINTERRUPTIBLE);
->>> +             add_wait_queue(&nor->wq, &wait);
->>> +             spin_unlock(&nor->chip_lock);
->>> +             schedule();
->>> +             remove_wait_queue(&nor->wq, &wait);
->>
->> Somehow, I have to wonder, doesn't runtime PM implement this sort of
->> functionality already ?
->>
->
-> I did not see any API I could apply here.
-
-Does runtime_pm_get()/runtime_pm_put() help here ?
-
-[...]
+diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
+index 1f045c9..e27fd29 100644
+--- a/drivers/pci/switch/switchtec.c
++++ b/drivers/pci/switch/switchtec.c
+@@ -1291,7 +1291,6 @@ static struct switchtec_dev *stdev_create(struct pci_dev *pdev)
+ 	cdev = &stdev->cdev;
+ 	cdev_init(cdev, &switchtec_fops);
+ 	cdev->owner = THIS_MODULE;
+-	cdev->kobj.parent = &dev->kobj;
+ 
+ 	return stdev;
+ 
+@@ -1479,11 +1478,7 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
+ 		  SWITCHTEC_EVENT_EN_IRQ,
+ 		  &stdev->mmio_part_cfg->mrpc_comp_hdr);
+ 
+-	rc = cdev_add(&stdev->cdev, stdev->dev.devt, 1);
+-	if (rc)
+-		goto err_put;
+-
+-	rc = device_add(&stdev->dev);
++	rc = cdev_device_add(&stdev->cdev, &stdev->dev);
+ 	if (rc)
+ 		goto err_devadd;
+ 
+@@ -1492,7 +1487,6 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
+ 	return 0;
+ 
+ err_devadd:
+-	cdev_del(&stdev->cdev);
+ 	stdev_kill(stdev);
+ err_put:
+ 	ida_simple_remove(&switchtec_minor_ida, MINOR(stdev->dev.devt));
+@@ -1506,8 +1500,7 @@ static void switchtec_pci_remove(struct pci_dev *pdev)
+ 
+ 	pci_set_drvdata(pdev, NULL);
+ 
+-	device_del(&stdev->dev);
+-	cdev_del(&stdev->cdev);
++	cdev_device_del(&stdev->cdev, &stdev->dev);
+ 	ida_simple_remove(&switchtec_minor_ida, MINOR(stdev->dev.devt));
+ 	dev_info(&stdev->dev, "unregistered.\n");
+ 
+-- 
+2.1.4
