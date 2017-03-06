@@ -1,25 +1,35 @@
-Date: Mon, 6 Mar 2017 13:22:14 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Michal Hocko <mhocko@kernel.org>
-Cc: <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>, Dave Chinner
- <david@fromorbit.com>, djwong@kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>, Jan Kara
- <jack@suse.cz>, ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, logfs@logfs.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org, LKML
- <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>, Vlastimil
- Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 4/7] mm: introduce memalloc_nofs_{save,restore} API
-Message-Id: <20170306132214.1769368301d9e671e1bc68be@linux-foundation.org>
-In-Reply-To: <20170306131408.9828-5-mhocko@kernel.org>
-References: <20170306131408.9828-1-mhocko@kernel.org>
- <20170306131408.9828-5-mhocko@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from [2a01:e0c:1:1599::18] (helo=smtpfb1-g21.free.fr)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cl4m9-0002ZE-HE
+ for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 02:22:59 +0000
+Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
+ by smtpfb1-g21.free.fr (Postfix) with ESMTP id 897C97E6870
+ for <linux-mtd@lists.infradead.org>; Mon,  6 Mar 2017 18:26:35 +0100 (CET)
+Date: Mon, 6 Mar 2017 18:21:47 +0100
+From: Alban <albeu@free.fr>
+To: Richard Weinberger <richard@nod.at>
+Cc: Alban <albeu@free.fr>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Marek Vasut <marek.vasut@gmail.com>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>, Rob Herring
+ <robh+dt@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Moritz Fischer
+ <moritz.fischer@ettus.com>
+Subject: Re: [PATCH 2/3] mtd: Add support for reading MTD devices via the
+ nvmem API
+Message-ID: <20170306182147.65d59d33@avionic-0020>
+In-Reply-To: <54c76650-b61f-8a4c-70c7-febe76e16d3b@nod.at>
+References: <1488484223-844-1-git-send-email-albeu@free.fr>
+ <1488484223-844-3-git-send-email-albeu@free.fr>
+ <20170302221803.223ff23b@bbrezillon> <20170303133629.3aac2945@tock>
+ <20170303143658.5d89a329@bbrezillon> <20170303145726.16cd67fd@tock>
+ <20170303151107.36754d19@bbrezillon>
+ <54c76650-b61f-8a4c-70c7-febe76e16d3b@nod.at>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/l7dWwI+Jrsu9BvxOJC+_QSw"; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,76 +39,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  6 Mar 2017 14:14:05 +0100 Michal Hocko <mhocko@kernel.org> wrote:
+--Sig_/l7dWwI+Jrsu9BvxOJC+_QSw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> From: Michal Hocko <mhocko@suse.com>
-> 
-> GFP_NOFS context is used for the following 5 reasons currently
-> 	- to prevent from deadlocks when the lock held by the allocation
-> 	  context would be needed during the memory reclaim
-> 	- to prevent from stack overflows during the reclaim because
-> 	  the allocation is performed from a deep context already
-> 	- to prevent lockups when the allocation context depends on
-> 	  other reclaimers to make a forward progress indirectly
-> 	- just in case because this would be safe from the fs POV
-> 	- silence lockdep false positives
-> 
-> Unfortunately overuse of this allocation context brings some problems
-> to the MM. Memory reclaim is much weaker (especially during heavy FS
-> metadata workloads), OOM killer cannot be invoked because the MM layer
-> doesn't have enough information about how much memory is freeable by the
-> FS layer.
-> 
-> In many cases it is far from clear why the weaker context is even used
-> and so it might be used unnecessarily. We would like to get rid of
-> those as much as possible. One way to do that is to use the flag in
-> scopes rather than isolated cases. Such a scope is declared when really
-> necessary, tracked per task and all the allocation requests from within
-> the context will simply inherit the GFP_NOFS semantic.
-> 
-> Not only this is easier to understand and maintain because there are
-> much less problematic contexts than specific allocation requests, this
-> also helps code paths where FS layer interacts with other layers (e.g.
-> crypto, security modules, MM etc...) and there is no easy way to convey
-> the allocation context between the layers.
-> 
-> Introduce memalloc_nofs_{save,restore} API to control the scope
-> of GFP_NOFS allocation context. This is basically copying
-> memalloc_noio_{save,restore} API we have for other restricted allocation
-> context GFP_NOIO. The PF_MEMALLOC_NOFS flag already exists and it is
-> just an alias for PF_FSTRANS which has been xfs specific until recently.
-> There are no more PF_FSTRANS users anymore so let's just drop it.
-> 
-> PF_MEMALLOC_NOFS is now checked in the MM layer and drops __GFP_FS
-> implicitly same as PF_MEMALLOC_NOIO drops __GFP_IO. memalloc_noio_flags
-> is renamed to current_gfp_context because it now cares about both
-> PF_MEMALLOC_NOFS and PF_MEMALLOC_NOIO contexts. Xfs code paths preserve
-> their semantic. kmem_flags_convert() doesn't need to evaluate the flag
-> anymore.
-> 
-> This patch shouldn't introduce any functional changes.
-> 
-> Let's hope that filesystems will drop direct GFP_NOFS (resp. ~__GFP_FS)
-> usage as much as possible and only use a properly documented
-> memalloc_nofs_{save,restore} checkpoints where they are appropriate.
-> 
-> ....
->
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -210,8 +210,16 @@ struct vm_area_struct;
->   *
->   * GFP_NOIO will use direct reclaim to discard clean pages or slab pages
->   *   that do not require the starting of any physical IO.
-> + *   Please try to avoid using this flag directly and instead use
-> + *   memalloc_noio_{save,restore} to mark the whole scope which cannot
-> + *   perform any IO with a short explanation why. All allocation requests
-> + *   will inherit GFP_NOIO implicitly.
->   *
->   * GFP_NOFS will use direct reclaim but will not use any filesystem interfaces.
-> + *   Please try to avoid using this flag directly and instead use
-> + *   memalloc_nofs_{save,restore} to mark the whole scope which cannot/shouldn't
-> + *   recurse into the FS layer with a short explanation why. All allocation
-> + *   requests will inherit GFP_NOFS implicitly.
+On Fri, 3 Mar 2017 23:21:29 +0100
+Richard Weinberger <richard@nod.at> wrote:
 
-I wonder if these are worth a checkpatch rule.
+> Am 03.03.2017 um 15:11 schrieb Boris Brezillon:
+> >> And add a list of successfully added notifiers, along with their
+> >> data pointer, to the MTD device. That's simple and would also remove
+> >> the need for notifier to have a private list of their instances as I
+> >> had to do here. =20
+> >=20
+> > And then you're abusing the notifier concept. As said earlier, a
+> > notifier is not necessarily using the device, and thus, don't
+> > necessarily need private data.
+> > It's not only about what is the simplest solution for your use case,
+> > but also what other users want/need. =20
+>=20
+> Yes, please don't use the mtd_notifier.
+> I strongly vote to embed the nvmem pointer into struct mtd_info.
+
+Ok, I'll do that. However it mean it will have to stays in
+drivers/mtd as it then become part of the MTD core.
+
+Alban
+
+--Sig_/l7dWwI+Jrsu9BvxOJC+_QSw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJYvZqrAAoJEHSUmkuduC28S5EP/0bO3Eskc4K+JgOmDjek7rGD
+QXt3w4TPPm1KphK8MAdH2s0jofNVI7gM1gTme0zIrRTbdc2zx6QWk8BTMR4gWv3G
+f0yDzsNM4kvdNGc1xPnlqy2d1KR2CfG6/+QPM2Tw0HHYJwJ7KloSmiTs8VKc7fpa
+TJrLCX56tvzl3Usv5kNAzXg9mDPHEkRn8YRle6h327/JgiK+i+3aFyEODzYA1ECJ
+Ia4fkcUZXDe1Td+fMDAau5wjlWi4lz991F+k29ra3LXJ2GGHTdBjxh9jAtgpZ9w3
+WVq1LpeeJ050mSBWjLkhIWCGnNDhSa3cxGOWxVMzz0du3NtGF6Eoo1bIM+efhiKo
+IMhmLySZZNPufjV7QDeVo1dfcZshJ7EMR/veu37qzoSPuqCFKXafGxk5CNTm4W8g
+/4IgWeYmBVedv+VgG0YPjLKCqo/AMG1pl14Tc58lcdo/d2dfsQIOaKooLdK0SUWN
+xHDsUCKFYwiqtLGhdPTiX7V9xc0JqavGcMdDQlfv+kRwnSHIknRAOixMqCJpRIB8
+dopMIyV3DNdGztFx9UVdw7SMGpMlby0ObRoc8fA7dxP5Z7GFjTHA8bd5A9uRKlkz
+CMiF8qRYHqUvi8w7383mHbsuH+HHK+dpJYzBCdvVu/l2idDd7iW8mEcQtSiIMO67
+9PIDTjYXcZsuKpBVaY+e
+=IEpt
+-----END PGP SIGNATURE-----
+
+--Sig_/l7dWwI+Jrsu9BvxOJC+_QSw--
