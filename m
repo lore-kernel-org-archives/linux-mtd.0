@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckmjY-0006QJ-C1
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:06 +0000
+ id 1ckmjd-0006Qm-Bs
+ for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:11 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -47,11 +47,11 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon,  6 Mar 2017 00:04:25 -0700
-Message-Id: <1488783873-2614-10-git-send-email-logang@deltatee.com>
+Date: Mon,  6 Mar 2017 00:04:27 -0700
+Message-Id: <1488783873-2614-12-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488783873-2614-1-git-send-email-logang@deltatee.com>
 References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v3 09/16] infiniband: utilize the new cdev_set_parent function
+Subject: [PATCH v3 11/16] media: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -61,65 +61,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This replaces the suspect looking cdev.kobj.parent lines with the
-equivalent cdev_set_parent function. This is a straightforward change
-that's largely cosmetic but it does push the kobj.parent ownership
-into char_dev.c where it belongs.
+Replace the open coded registration of the cdev and dev with the
+new device_add_cdev() helper. The helper replaces a common pattern by
+taking the proper reference against the parent device and adding both
+the cdev and the device.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
 ---
- drivers/infiniband/core/user_mad.c    | 4 ++--
- drivers/infiniband/core/uverbs_main.c | 2 +-
- drivers/infiniband/hw/hfi1/device.c   | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/media/cec/cec-core.c  | 16 ++++------------
+ drivers/media/media-devnode.c | 20 +++++---------------
+ 2 files changed, 9 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index aca7ff7..25071b8 100644
---- a/drivers/infiniband/core/user_mad.c
-+++ b/drivers/infiniband/core/user_mad.c
-@@ -1183,7 +1183,7 @@ static int ib_umad_init_port(struct ib_device *device, int port_num,
+diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
+index 37217e2..3163e03 100644
+--- a/drivers/media/cec/cec-core.c
++++ b/drivers/media/cec/cec-core.c
+@@ -137,24 +137,17 @@ static int __must_check cec_devnode_register(struct cec_devnode *devnode,
  
- 	cdev_init(&port->cdev, &umad_fops);
- 	port->cdev.owner = THIS_MODULE;
--	port->cdev.kobj.parent = &umad_dev->kobj;
-+	cdev_set_parent(&port->cdev, &umad_dev->kobj);
- 	kobject_set_name(&port->cdev.kobj, "umad%d", port->dev_num);
- 	if (cdev_add(&port->cdev, base, 1))
- 		goto err_cdev;
-@@ -1202,7 +1202,7 @@ static int ib_umad_init_port(struct ib_device *device, int port_num,
- 	base += IB_UMAD_MAX_PORTS;
- 	cdev_init(&port->sm_cdev, &umad_sm_fops);
- 	port->sm_cdev.owner = THIS_MODULE;
--	port->sm_cdev.kobj.parent = &umad_dev->kobj;
-+	cdev_set_parent(&port->sm_cdev, &umad_dev->kobj);
- 	kobject_set_name(&port->sm_cdev.kobj, "issm%d", port->dev_num);
- 	if (cdev_add(&port->sm_cdev, base, 1))
- 		goto err_sm_cdev;
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 35c788a..f02d7b9 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -1189,7 +1189,7 @@ static void ib_uverbs_add_one(struct ib_device *device)
- 	cdev_init(&uverbs_dev->cdev, NULL);
- 	uverbs_dev->cdev.owner = THIS_MODULE;
- 	uverbs_dev->cdev.ops = device->mmap ? &uverbs_mmap_fops : &uverbs_fops;
--	uverbs_dev->cdev.kobj.parent = &uverbs_dev->kobj;
-+	cdev_set_parent(&uverbs_dev->cdev, &uverbs_dev->kobj);
- 	kobject_set_name(&uverbs_dev->cdev.kobj, "uverbs%d", uverbs_dev->devnum);
- 	if (cdev_add(&uverbs_dev->cdev, base, 1))
- 		goto err_cdev;
-diff --git a/drivers/infiniband/hw/hfi1/device.c b/drivers/infiniband/hw/hfi1/device.c
-index bf64b5a..bbb6069 100644
---- a/drivers/infiniband/hw/hfi1/device.c
-+++ b/drivers/infiniband/hw/hfi1/device.c
-@@ -69,7 +69,7 @@ int hfi1_cdev_init(int minor, const char *name,
+ 	/* Part 2: Initialize and register the character device */
+ 	cdev_init(&devnode->cdev, &cec_devnode_fops);
+-	devnode->cdev.kobj.parent = &devnode->dev.kobj;
+ 	devnode->cdev.owner = owner;
  
- 	cdev_init(cdev, fops);
- 	cdev->owner = THIS_MODULE;
--	cdev->kobj.parent = parent;
-+	cdev_set_parent(cdev, parent);
- 	kobject_set_name(&cdev->kobj, name);
+-	ret = cdev_add(&devnode->cdev, devnode->dev.devt, 1);
+-	if (ret < 0) {
+-		pr_err("%s: cdev_add failed\n", __func__);
++	ret = cdev_device_add(&devnode->cdev, &devnode->dev);
++	if (ret) {
++		pr_err("%s: cdev_device_add failed\n", __func__);
+ 		goto clr_bit;
+ 	}
  
- 	ret = cdev_add(cdev, dev, 1);
+-	ret = device_add(&devnode->dev);
+-	if (ret)
+-		goto cdev_del;
+-
+ 	devnode->registered = true;
+ 	return 0;
+ 
+-cdev_del:
+-	cdev_del(&devnode->cdev);
+ clr_bit:
+ 	mutex_lock(&cec_devnode_lock);
+ 	clear_bit(devnode->minor, cec_devnode_nums);
+@@ -190,8 +183,7 @@ static void cec_devnode_unregister(struct cec_devnode *devnode)
+ 	devnode->unregistered = true;
+ 	mutex_unlock(&devnode->lock);
+ 
+-	device_del(&devnode->dev);
+-	cdev_del(&devnode->cdev);
++	cdev_device_del(&devnode->cdev, &devnode->dev);
+ 	put_device(&devnode->dev);
+ }
+ 
+diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
+index ae46753..423248f 100644
+--- a/drivers/media/media-devnode.c
++++ b/drivers/media/media-devnode.c
+@@ -248,31 +248,22 @@ int __must_check media_devnode_register(struct media_device *mdev,
+ 	dev_set_name(&devnode->dev, "media%d", devnode->minor);
+ 	device_initialize(&devnode->dev);
+ 
+-	/* Part 2: Initialize and register the character device */
++	/* Part 2: Initialize the character device */
+ 	cdev_init(&devnode->cdev, &media_devnode_fops);
+ 	devnode->cdev.owner = owner;
+-	devnode->cdev.kobj.parent = &devnode->dev.kobj;
+ 
+-	ret = cdev_add(&devnode->cdev, MKDEV(MAJOR(media_dev_t), devnode->minor), 1);
++	/* Part 3: Add the media and char device */
++	ret = cdev_device_add(&devnode->cdev, &devnode->dev);
+ 	if (ret < 0) {
+-		pr_err("%s: cdev_add failed\n", __func__);
++		pr_err("%s: cdev_device_add failed\n", __func__);
+ 		goto cdev_add_error;
+ 	}
+ 
+-	/* Part 3: Add the media device */
+-	ret = device_add(&devnode->dev);
+-	if (ret < 0) {
+-		pr_err("%s: device_add failed\n", __func__);
+-		goto device_add_error;
+-	}
+-
+ 	/* Part 4: Activate this minor. The char device can now be used. */
+ 	set_bit(MEDIA_FLAG_REGISTERED, &devnode->flags);
+ 
+ 	return 0;
+ 
+-device_add_error:
+-	cdev_del(&devnode->cdev);
+ cdev_add_error:
+ 	mutex_lock(&media_devnode_lock);
+ 	clear_bit(devnode->minor, media_devnode_nums);
+@@ -298,9 +289,8 @@ void media_devnode_unregister(struct media_devnode *devnode)
+ {
+ 	mutex_lock(&media_devnode_lock);
+ 	/* Delete the cdev on this minor as well */
+-	cdev_del(&devnode->cdev);
++	cdev_device_del(&devnode->cdev, &devnode->dev);
+ 	mutex_unlock(&media_devnode_lock);
+-	device_del(&devnode->dev);
+ 	devnode->media_dev = NULL;
+ 	put_device(&devnode->dev);
+ }
 -- 
 2.1.4
