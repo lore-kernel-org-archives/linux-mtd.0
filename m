@@ -1,21 +1,23 @@
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckrri-000439-QO
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 12:35:52 +0000
-From: Artur Jedrysek <jartur@cadence.com>
-To: <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-CC: <linux-kernel@vger.kernel.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Marek Vasut <marek.vasut@gmail.com>, David
- Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Artur Jedrysek <jartur@cadence.com>
-Subject: [PATCH 3/3] dt-bindings: mtd: Add Octal SPI support to Cadence QSPI.
-Date: Mon, 6 Mar 2017 12:34:31 +0000
-Message-ID: <1488803671-418-1-git-send-email-jartur@cadence.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+From: Michal Hocko <mhocko@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>, <linux-fsdevel@vger.kernel.org>
+Cc: <linux-mm@kvack.org>, Dave Chinner <david@fromorbit.com>,
+ djwong@kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.cz>,
+ Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org, logfs@logfs.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>, Brian Foster <bfoster@redhat.com>,
+ "Darrick J. Wong" <darrick.wong@oracle.com>,
+ Michal Hocko <mhocko@suse.com>, Michal Hocko <mhocko@suse.cz>,
+ Nikolay Borisov <nborisov@suse.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH 0/7 v5] scope GFP_NOFS api
+Date: Mon,  6 Mar 2017 14:14:01 +0100
+Message-Id: <20170306131408.9828-1-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch updates Cadence QSPI Device Tree documentation to include
-information about new property used to indicate, whether or not
-Octal SPI transfers are supported by the device.
+Hi,
+I have posted the previous version here [1]. There are no real changes
+in the implementation since then. I've just added "lockdep: teach
+lockdep about memalloc_noio_save" from Nikolay which is a lockdep bugfix
+developed independently but "mm: introduce memalloc_nofs_{save,restore}
+API" depends on it so I added it here. Then I've rebased the series on
+top of 4.11-rc1 which contains sched.h split up which required to add
+sched/mm.h include.
 
-Signed-off-by: Artur Jedrysek <jartur@cadence.com>
----
- Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+There didn't seem to be any real objections and so I think we should go
+and finally merge this - ideally in this release cycle as it doesn't
+really introduce any functional changes. Those were separated out and
+will be posted later. The risk of regressions should really be small
+because we do not remove any real GFP_NOFS users yet.
 
-diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-index f248056..8438184 100644
---- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-@@ -14,6 +14,9 @@ Required properties:
- 
- Optional properties:
- - cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
-+- cdns,octal-controller : Flag to indicate, that used controller supports Octal
-+                          SPI transfer mode. May be intentionally omitted to
-+                          switch it back to Quad SPI mode.
- 
- Optional subnodes:
- Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
-@@ -44,6 +47,7 @@ Example:
- 		cdns,fifo-depth = <128>;
- 		cdns,fifo-width = <4>;
- 		cdns,trigger-address = <0x00000000>;
-+		#cdns,octal-controller
- 
- 		flash0: n25q00@0 {
- 			...
--- 
-2.2.2
+Diffstat says
+ fs/jbd2/journal.c         |  8 ++++++++
+ fs/jbd2/transaction.c     | 12 ++++++++++++
+ fs/xfs/kmem.c             | 12 ++++++------
+ fs/xfs/kmem.h             |  2 +-
+ fs/xfs/libxfs/xfs_btree.c |  2 +-
+ fs/xfs/xfs_aops.c         |  6 +++---
+ fs/xfs/xfs_buf.c          |  8 ++++----
+ fs/xfs/xfs_trans.c        | 12 ++++++------
+ include/linux/gfp.h       | 18 +++++++++++++++++-
+ include/linux/jbd2.h      |  2 ++
+ include/linux/sched.h     |  6 +++---
+ include/linux/sched/mm.h  | 26 +++++++++++++++++++++++---
+ kernel/locking/lockdep.c  | 11 +++++++++--
+ lib/radix-tree.c          |  2 ++
+ mm/page_alloc.c           | 10 ++++++----
+ mm/vmscan.c               |  6 +++---
+ 16 files changed, 106 insertions(+), 37 deletions(-)
+
+Shortlog:
+Michal Hocko (6):
+      lockdep: allow to disable reclaim lockup detection
+      xfs: abstract PF_FSTRANS to PF_MEMALLOC_NOFS
+      mm: introduce memalloc_nofs_{save,restore} API
+      xfs: use memalloc_nofs_{save,restore} instead of memalloc_noio*
+      jbd2: mark the transaction context with the scope GFP_NOFS context
+      jbd2: make the whole kjournald2 kthread NOFS safe
+
+Nikolay Borisov (1):
+      lockdep: teach lockdep about memalloc_noio_save
+
+
+[1] http://lkml.kernel.org/r/20170206140718.16222-1-mhocko@kernel.org
+[2] http://lkml.kernel.org/r/20170117030118.727jqyamjhojzajb@thunk.org
