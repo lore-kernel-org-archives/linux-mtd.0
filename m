@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckmji-0006Ra-C2
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:15 +0000
+ id 1ckmji-0006SB-C1
+ for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:16 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -47,12 +47,11 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon,  6 Mar 2017 00:04:23 -0700
-Message-Id: <1488783873-2614-8-git-send-email-logang@deltatee.com>
+Date: Mon,  6 Mar 2017 00:04:30 -0700
+Message-Id: <1488783873-2614-15-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488783873-2614-1-git-send-email-logang@deltatee.com>
 References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v3 07/16] platform/chrome: cros_ec_dev - utilize new
- cdev_device_add helper function
+Subject: [PATCH v3 14/16] rtc: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -62,89 +61,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace the open coded registration of the cdev and dev with the
-new device_add_cdev() helper. The helper replaces a common pattern by
-taking the proper reference against the parent device and adding both
-the cdev and the device.
+Mostly straightforward, but we had to remove the rtc_dev_add/del_device
+functions as they split up the cdev_add and the device_add.
 
-At the same time we cleanup the error path through device_probe
-function: we use put_device instead of kfree directly as recommended
-by the device_initialize documentation.
+Doing this also revealed that there was likely another subtle bug:
+seeing cdev_add was done after device_register, the cdev probably
+was not ready before device_add when the uevent occurs. This would
+race with userspace, if it tried to use the device directly after
+the uevent. This is fixed just by using the new helper function.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/platform/chrome/cros_ec_dev.c | 31 +++++++------------------------
- 1 file changed, 7 insertions(+), 24 deletions(-)
+ drivers/rtc/class.c   | 14 ++++++++++----
+ drivers/rtc/rtc-dev.c | 17 -----------------
+ 2 files changed, 10 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/platform/chrome/cros_ec_dev.c b/drivers/platform/chrome/cros_ec_dev.c
-index 6f09da4..6aa120c 100644
---- a/drivers/platform/chrome/cros_ec_dev.c
-+++ b/drivers/platform/chrome/cros_ec_dev.c
-@@ -391,7 +391,6 @@ static int ec_device_probe(struct platform_device *pdev)
- 	int retval = -ENOMEM;
- 	struct device *dev = &pdev->dev;
- 	struct cros_ec_platform *ec_platform = dev_get_platdata(dev);
--	dev_t devno = MKDEV(ec_major, pdev->id);
- 	struct cros_ec_dev *ec = kzalloc(sizeof(*ec), GFP_KERNEL);
+diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
+index 74fd974..5fb4398 100644
+--- a/drivers/rtc/class.c
++++ b/drivers/rtc/class.c
+@@ -195,6 +195,8 @@ struct rtc_device *rtc_device_register(const char *name, struct device *dev,
+ 		goto exit_ida;
+ 	}
  
- 	if (!ec)
-@@ -407,23 +406,11 @@ static int ec_device_probe(struct platform_device *pdev)
- 	cdev_init(&ec->cdev, &fops);
++	device_initialize(&rtc->dev);
++
+ 	rtc->id = id;
+ 	rtc->ops = ops;
+ 	rtc->owner = owner;
+@@ -233,14 +235,19 @@ struct rtc_device *rtc_device_register(const char *name, struct device *dev,
  
- 	/*
--	 * Add the character device
--	 * Link cdev to the class device to be sure device is not used
--	 * before unbinding it.
--	 */
--	ec->cdev.kobj.parent = &ec->class_dev.kobj;
--	retval = cdev_add(&ec->cdev, devno, 1);
--	if (retval) {
--		dev_err(dev, ": failed to add character device\n");
--		goto cdev_add_failed;
--	}
--
--	/*
- 	 * Add the class device
- 	 * Link to the character device for creating the /dev entry
- 	 * in devtmpfs.
+ 	rtc_dev_prepare(rtc);
+ 
+-	err = device_register(&rtc->dev);
++	err = cdev_device_add(&rtc->char_dev, &rtc->dev);
+ 	if (err) {
++		dev_warn(&rtc->dev, "%s: failed to add char device %d:%d\n",
++			 rtc->name, MAJOR(rtc->dev.devt), rtc->id);
++
+ 		/* This will free both memory and the ID */
+ 		put_device(&rtc->dev);
+ 		goto exit;
++	} else {
++		dev_dbg(&rtc->dev, "%s: dev (%d:%d)\n", rtc->name,
++			MAJOR(rtc->dev.devt), rtc->id);
+ 	}
+ 
+-	rtc_dev_add_device(rtc);
+ 	rtc_proc_add_device(rtc);
+ 
+ 	dev_info(dev, "rtc core: registered %s as %s\n",
+@@ -271,9 +278,8 @@ void rtc_device_unregister(struct rtc_device *rtc)
+ 	 * Remove innards of this RTC, then disable it, before
+ 	 * letting any rtc_class_open() users access it again
  	 */
--	ec->class_dev.devt = ec->cdev.dev;
-+	ec->class_dev.devt = MKDEV(ec_major, pdev->id);
- 	ec->class_dev.class = &cros_class;
- 	ec->class_dev.parent = dev;
- 	ec->class_dev.release = __remove;
-@@ -431,13 +418,13 @@ static int ec_device_probe(struct platform_device *pdev)
- 	retval = dev_set_name(&ec->class_dev, "%s", ec_platform->ec_name);
- 	if (retval) {
- 		dev_err(dev, "dev_set_name failed => %d\n", retval);
--		goto set_named_failed;
-+		goto failed;
- 	}
+-	rtc_dev_del_device(rtc);
+ 	rtc_proc_del_device(rtc);
+-	device_del(&rtc->dev);
++	cdev_device_del(&rtc->char_dev, &rtc->dev);
+ 	rtc->ops = NULL;
+ 	mutex_unlock(&rtc->ops_lock);
+ 	put_device(&rtc->dev);
+diff --git a/drivers/rtc/rtc-dev.c b/drivers/rtc/rtc-dev.c
+index 6dc8f29..e81a871 100644
+--- a/drivers/rtc/rtc-dev.c
++++ b/drivers/rtc/rtc-dev.c
+@@ -477,23 +477,6 @@ void rtc_dev_prepare(struct rtc_device *rtc)
  
--	retval = device_add(&ec->class_dev);
-+	retval = cdev_device_add(&ec->cdev, &ec->class_dev);
- 	if (retval) {
--		dev_err(dev, "device_register failed => %d\n", retval);
--		goto dev_reg_failed;
-+		dev_err(dev, "cdev_device_add failed => %d\n", retval);
-+		goto failed;
- 	}
- 
- 	/* check whether this EC is a sensor hub. */
-@@ -446,12 +433,8 @@ static int ec_device_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
--dev_reg_failed:
--set_named_failed:
--	dev_set_drvdata(dev, NULL);
--	cdev_del(&ec->cdev);
--cdev_add_failed:
--	kfree(ec);
-+failed:
-+	put_device(&ec->class_dev);
- 	return retval;
+ 	cdev_init(&rtc->char_dev, &rtc_dev_fops);
+ 	rtc->char_dev.owner = rtc->owner;
+-	rtc->char_dev.kobj.parent = &rtc->dev.kobj;
+-}
+-
+-void rtc_dev_add_device(struct rtc_device *rtc)
+-{
+-	if (cdev_add(&rtc->char_dev, rtc->dev.devt, 1))
+-		dev_warn(&rtc->dev, "%s: failed to add char device %d:%d\n",
+-			rtc->name, MAJOR(rtc_devt), rtc->id);
+-	else
+-		dev_dbg(&rtc->dev, "%s: dev (%d:%d)\n", rtc->name,
+-			MAJOR(rtc_devt), rtc->id);
+-}
+-
+-void rtc_dev_del_device(struct rtc_device *rtc)
+-{
+-	if (rtc->dev.devt)
+-		cdev_del(&rtc->char_dev);
  }
  
+ void __init rtc_dev_init(void)
 -- 
 2.1.4
