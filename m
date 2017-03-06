@@ -13,10 +13,9 @@ Cc: <linux-mm@kvack.org>, Dave Chinner <david@fromorbit.com>,
  Brian Foster <bfoster@redhat.com>,
  "Darrick J. Wong" <darrick.wong@oracle.com>,
  Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH 5/7] xfs: use memalloc_nofs_{save,
- restore} instead of memalloc_noio*
-Date: Mon,  6 Mar 2017 14:14:06 +0100
-Message-Id: <20170306131408.9828-6-mhocko@kernel.org>
+Subject: [PATCH 3/7] xfs: abstract PF_FSTRANS to PF_MEMALLOC_NOFS
+Date: Mon,  6 Mar 2017 14:14:04 +0100
+Message-Id: <20170306131408.9828-4-mhocko@kernel.org>
 In-Reply-To: <20170306131408.9828-1-mhocko@kernel.org>
 References: <20170306131408.9828-1-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,96 +29,177 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Michal Hocko <mhocko@suse.com>
 
-kmem_zalloc_large and _xfs_buf_map_pages use memalloc_noio_{save,restore}
-API to prevent from reclaim recursion into the fs because vmalloc can
-invoke unconditional GFP_KERNEL allocations and these functions might be
-called from the NOFS contexts. The memalloc_noio_save will enforce
-GFP_NOIO context which is even weaker than GFP_NOFS and that seems to be
-unnecessary. Let's use memalloc_nofs_{save,restore} instead as it should
-provide exactly what we need here - implicit GFP_NOFS context.
+xfs has defined PF_FSTRANS to declare a scope GFP_NOFS semantic quite
+some time ago. We would like to make this concept more generic and use
+it for other filesystems as well. Let's start by giving the flag a
+more generic name PF_MEMALLOC_NOFS which is in line with an exiting
+PF_MEMALLOC_NOIO already used for the same purpose for GFP_NOIO
+contexts. Replace all PF_FSTRANS usage from the xfs code in the first
+step before we introduce a full API for it as xfs uses the flag directly
+anyway.
 
-Changes since v1
-- s@memalloc_noio_restore@memalloc_nofs_restore@ in _xfs_buf_map_pages
-  as per Brian Foster
+This patch doesn't introduce any functional change.
 
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Brian Foster <bfoster@redhat.com>
 Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 Signed-off-by: Michal Hocko <mhocko@suse.com>
 ---
- fs/xfs/kmem.c    | 12 ++++++------
- fs/xfs/xfs_buf.c |  8 ++++----
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ fs/xfs/kmem.c             |  4 ++--
+ fs/xfs/kmem.h             |  2 +-
+ fs/xfs/libxfs/xfs_btree.c |  2 +-
+ fs/xfs/xfs_aops.c         |  6 +++---
+ fs/xfs/xfs_trans.c        | 12 ++++++------
+ include/linux/sched.h     |  2 ++
+ 6 files changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
-index e14da724a0b5..6b7b04468aa8 100644
+index 2dfdc62f795e..e14da724a0b5 100644
 --- a/fs/xfs/kmem.c
 +++ b/fs/xfs/kmem.c
-@@ -66,7 +66,7 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
- void *
- kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
- {
--	unsigned noio_flag = 0;
-+	unsigned nofs_flag = 0;
- 	void	*ptr;
- 	gfp_t	lflags;
- 
-@@ -78,17 +78,17 @@ kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
- 	 * __vmalloc() will allocate data pages and auxillary structures (e.g.
- 	 * pagetables) with GFP_KERNEL, yet we may be under GFP_NOFS context
- 	 * here. Hence we need to tell memory reclaim that we are in such a
--	 * context via PF_MEMALLOC_NOIO to prevent memory reclaim re-entering
-+	 * context via PF_MEMALLOC_NOFS to prevent memory reclaim re-entering
+@@ -81,13 +81,13 @@ kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
+ 	 * context via PF_MEMALLOC_NOIO to prevent memory reclaim re-entering
  	 * the filesystem here and potentially deadlocking.
  	 */
--	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
--		noio_flag = memalloc_noio_save();
-+	if (flags & KM_NOFS)
-+		nofs_flag = memalloc_nofs_save();
+-	if ((current->flags & PF_FSTRANS) || (flags & KM_NOFS))
++	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
+ 		noio_flag = memalloc_noio_save();
  
  	lflags = kmem_flags_convert(flags);
  	ptr = __vmalloc(size, lflags | __GFP_HIGHMEM | __GFP_ZERO, PAGE_KERNEL);
  
--	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
--		memalloc_noio_restore(noio_flag);
-+	if (flags & KM_NOFS)
-+		memalloc_nofs_restore(nofs_flag);
+-	if ((current->flags & PF_FSTRANS) || (flags & KM_NOFS))
++	if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
+ 		memalloc_noio_restore(noio_flag);
  
  	return ptr;
- }
-diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index b6208728ba39..ca09061369cb 100644
---- a/fs/xfs/xfs_buf.c
-+++ b/fs/xfs/xfs_buf.c
-@@ -443,17 +443,17 @@ _xfs_buf_map_pages(
- 		bp->b_addr = NULL;
+diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
+index 689f746224e7..d973dbfc2bfa 100644
+--- a/fs/xfs/kmem.h
++++ b/fs/xfs/kmem.h
+@@ -50,7 +50,7 @@ kmem_flags_convert(xfs_km_flags_t flags)
+ 		lflags = GFP_ATOMIC | __GFP_NOWARN;
  	} else {
- 		int retried = 0;
--		unsigned noio_flag;
-+		unsigned nofs_flag;
+ 		lflags = GFP_KERNEL | __GFP_NOWARN;
+-		if ((current->flags & PF_FSTRANS) || (flags & KM_NOFS))
++		if ((current->flags & PF_MEMALLOC_NOFS) || (flags & KM_NOFS))
+ 			lflags &= ~__GFP_FS;
+ 	}
  
- 		/*
- 		 * vm_map_ram() will allocate auxillary structures (e.g.
- 		 * pagetables) with GFP_KERNEL, yet we are likely to be under
- 		 * GFP_NOFS context here. Hence we need to tell memory reclaim
--		 * that we are in such a context via PF_MEMALLOC_NOIO to prevent
-+		 * that we are in such a context via PF_MEMALLOC_NOFS to prevent
- 		 * memory reclaim re-entering the filesystem here and
- 		 * potentially deadlocking.
- 		 */
--		noio_flag = memalloc_noio_save();
-+		nofs_flag = memalloc_nofs_save();
- 		do {
- 			bp->b_addr = vm_map_ram(bp->b_pages, bp->b_page_count,
- 						-1, PAGE_KERNEL);
-@@ -461,7 +461,7 @@ _xfs_buf_map_pages(
- 				break;
- 			vm_unmap_aliases();
- 		} while (retried++ <= 1);
--		memalloc_noio_restore(noio_flag);
-+		memalloc_nofs_restore(nofs_flag);
+diff --git a/fs/xfs/libxfs/xfs_btree.c b/fs/xfs/libxfs/xfs_btree.c
+index c3decedc9455..3059a3ec7ecb 100644
+--- a/fs/xfs/libxfs/xfs_btree.c
++++ b/fs/xfs/libxfs/xfs_btree.c
+@@ -2886,7 +2886,7 @@ xfs_btree_split_worker(
+ 	struct xfs_btree_split_args	*args = container_of(work,
+ 						struct xfs_btree_split_args, work);
+ 	unsigned long		pflags;
+-	unsigned long		new_pflags = PF_FSTRANS;
++	unsigned long		new_pflags = PF_MEMALLOC_NOFS;
  
- 		if (!bp->b_addr)
- 			return -ENOMEM;
+ 	/*
+ 	 * we are in a transaction context here, but may also be doing work
+diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
+index bf65a9ea8642..330c6019120e 100644
+--- a/fs/xfs/xfs_aops.c
++++ b/fs/xfs/xfs_aops.c
+@@ -189,7 +189,7 @@ xfs_setfilesize_trans_alloc(
+ 	 * We hand off the transaction to the completion thread now, so
+ 	 * clear the flag here.
+ 	 */
+-	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
++	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+ 	return 0;
+ }
+ 
+@@ -252,7 +252,7 @@ xfs_setfilesize_ioend(
+ 	 * thus we need to mark ourselves as being in a transaction manually.
+ 	 * Similarly for freeze protection.
+ 	 */
+-	current_set_flags_nested(&tp->t_pflags, PF_FSTRANS);
++	current_set_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+ 	__sb_writers_acquired(VFS_I(ip)->i_sb, SB_FREEZE_FS);
+ 
+ 	/* we abort the update if there was an IO error */
+@@ -1021,7 +1021,7 @@ xfs_do_writepage(
+ 	 * Given that we do not allow direct reclaim to call us, we should
+ 	 * never be called while in a filesystem transaction.
+ 	 */
+-	if (WARN_ON_ONCE(current->flags & PF_FSTRANS))
++	if (WARN_ON_ONCE(current->flags & PF_MEMALLOC_NOFS))
+ 		goto redirty;
+ 
+ 	/*
+diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
+index 70f42ea86dfb..f5969c8274fc 100644
+--- a/fs/xfs/xfs_trans.c
++++ b/fs/xfs/xfs_trans.c
+@@ -134,7 +134,7 @@ xfs_trans_reserve(
+ 	bool		rsvd = (tp->t_flags & XFS_TRANS_RESERVE) != 0;
+ 
+ 	/* Mark this thread as being in a transaction */
+-	current_set_flags_nested(&tp->t_pflags, PF_FSTRANS);
++	current_set_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+ 
+ 	/*
+ 	 * Attempt to reserve the needed disk blocks by decrementing
+@@ -144,7 +144,7 @@ xfs_trans_reserve(
+ 	if (blocks > 0) {
+ 		error = xfs_mod_fdblocks(tp->t_mountp, -((int64_t)blocks), rsvd);
+ 		if (error != 0) {
+-			current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
++			current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+ 			return -ENOSPC;
+ 		}
+ 		tp->t_blk_res += blocks;
+@@ -221,7 +221,7 @@ xfs_trans_reserve(
+ 		tp->t_blk_res = 0;
+ 	}
+ 
+-	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
++	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+ 
+ 	return error;
+ }
+@@ -914,7 +914,7 @@ __xfs_trans_commit(
+ 
+ 	xfs_log_commit_cil(mp, tp, &commit_lsn, regrant);
+ 
+-	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
++	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+ 	xfs_trans_free(tp);
+ 
+ 	/*
+@@ -944,7 +944,7 @@ __xfs_trans_commit(
+ 		if (commit_lsn == -1 && !error)
+ 			error = -EIO;
+ 	}
+-	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
++	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+ 	xfs_trans_free_items(tp, NULLCOMMITLSN, !!error);
+ 	xfs_trans_free(tp);
+ 
+@@ -998,7 +998,7 @@ xfs_trans_cancel(
+ 		xfs_log_done(mp, tp->t_ticket, NULL, false);
+ 
+ 	/* mark this thread as no longer being in a transaction */
+-	current_restore_flags_nested(&tp->t_pflags, PF_FSTRANS);
++	current_restore_flags_nested(&tp->t_pflags, PF_MEMALLOC_NOFS);
+ 
+ 	xfs_trans_free_items(tp, NULLCOMMITLSN, dirty);
+ 	xfs_trans_free(tp);
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index d67eee84fd43..4528f7c9789f 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1224,6 +1224,8 @@ extern struct pid *cad_pid;
+ #define PF_FREEZER_SKIP		0x40000000	/* Freezer should not count it as freezable */
+ #define PF_SUSPEND_TASK		0x80000000      /* This thread called freeze_processes() and should not be frozen */
+ 
++#define PF_MEMALLOC_NOFS PF_FSTRANS	/* Transition to a more generic GFP_NOFS scope semantic */
++
+ /*
+  * Only the _current_ task can read/write to tsk->flags, but other
+  * tasks can access tsk->flags in readonly mode for example
 -- 
 2.11.0
