@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckmjd-0006Qw-Bt
- for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:11 +0000
+ id 1ckmjd-0006QZ-Bq
+ for linux-mtd@lists.infradead.org; Mon, 06 Mar 2017 07:07:12 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -47,11 +47,11 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Mon,  6 Mar 2017 00:04:31 -0700
-Message-Id: <1488783873-2614-16-git-send-email-logang@deltatee.com>
+Date: Mon,  6 Mar 2017 00:04:22 -0700
+Message-Id: <1488783873-2614-7-git-send-email-logang@deltatee.com>
 In-Reply-To: <1488783873-2614-1-git-send-email-logang@deltatee.com>
 References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v3 15/16] scsi: utilize new cdev_device_add helper function
+Subject: [PATCH v3 06/16] tpm-chip: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -61,148 +61,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver did not set kobj.parent so it likely suffered from
-a potential use after free race if the user unregistered the
-device while it was in use.
-
-This was not so straightforward a conversion but I think this patch
-cleans up its probe's error path significantly.
-
-This patch adds device_initialize, which is required for
-cdev_device_add. Then it switches to put_device instead of kfree as
-recommended by device_initialize's documentation. This removes a lot
-from the error path which was already in __remove.
-A couple things needed to be re-ordered to be entirely correct, though.
-ida_remove is also moved out of __remove and into unregister to
-simplify things and follow the pattern other devices are using.
-
-This also drop an extra unnecessary get_device/put_device in the code.
+Replace the open coded registration of the cdev and dev with the
+new device_add_cdev() helper. The helper replaces a common pattern by
+taking the proper reference against the parent device and adding both
+the cdev and the device.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
 ---
- drivers/scsi/osd/osd_uld.c | 56 +++++++++++++++++-----------------------------
- 1 file changed, 20 insertions(+), 36 deletions(-)
+ drivers/char/tpm/tpm-chip.c | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/scsi/osd/osd_uld.c b/drivers/scsi/osd/osd_uld.c
-index e0ce5d2..4101c31 100644
---- a/drivers/scsi/osd/osd_uld.c
-+++ b/drivers/scsi/osd/osd_uld.c
-@@ -400,9 +400,6 @@ static void __remove(struct device *dev)
+diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+index c406343..935f0e9 100644
+--- a/drivers/char/tpm/tpm-chip.c
++++ b/drivers/char/tpm/tpm-chip.c
+@@ -187,7 +187,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
  
- 	kfree(oud->odi.osdname);
+ 	cdev_init(&chip->cdev, &tpm_fops);
+ 	chip->cdev.owner = THIS_MODULE;
+-	chip->cdev.kobj.parent = &chip->dev.kobj;
  
--	if (oud->cdev.owner)
--		cdev_del(&oud->cdev);
--
- 	osd_dev_fini(&oud->od);
- 	scsi_device_put(scsi_device);
+ 	return chip;
  
-@@ -411,7 +408,6 @@ static void __remove(struct device *dev)
+@@ -230,27 +229,16 @@ static int tpm_add_char_device(struct tpm_chip *chip)
+ {
+ 	int rc;
  
- 	if (oud->disk)
- 		put_disk(oud->disk);
--	ida_remove(&osd_minor_ida, oud->minor);
+-	rc = cdev_add(&chip->cdev, chip->dev.devt, 1);
++	rc = cdev_device_add(&chip->cdev, &chip->dev);
+ 	if (rc) {
+ 		dev_err(&chip->dev,
+-			"unable to cdev_add() %s, major %d, minor %d, err=%d\n",
++			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
+ 			dev_name(&chip->dev), MAJOR(chip->dev.devt),
+ 			MINOR(chip->dev.devt), rc);
  
- 	kfree(oud);
- }
-@@ -446,8 +442,20 @@ static int osd_probe(struct device *dev)
- 	if (NULL == oud)
- 		goto err_retract_minor;
- 
-+	/* class device member */
-+	device_initialize(&oud->class_dev);
- 	dev_set_drvdata(dev, oud);
- 	oud->minor = minor;
-+	oud->class_dev.devt = MKDEV(SCSI_OSD_MAJOR, oud->minor);
-+	oud->class_dev.class = &osd_uld_class;
-+	oud->class_dev.parent = dev;
-+	oud->class_dev.release = __remove;
-+
-+	/* hold one more reference to the scsi_device that will get released
-+	 * in __release, in case a logout is happening while fs is mounted
-+	 */
-+	scsi_device_get(scsi_device);
-+	osd_dev_init(&oud->od, scsi_device);
- 
- 	/* allocate a disk and set it up */
- 	/* FIXME: do we need this since sg has already done that */
-@@ -461,59 +469,34 @@ static int osd_probe(struct device *dev)
- 	sprintf(disk->disk_name, "osd%d", oud->minor);
- 	oud->disk = disk;
- 
--	/* hold one more reference to the scsi_device that will get released
--	 * in __release, in case a logout is happening while fs is mounted
--	 */
--	scsi_device_get(scsi_device);
--	osd_dev_init(&oud->od, scsi_device);
--
- 	/* Detect the OSD Version */
- 	error = __detect_osd(oud);
- 	if (error) {
- 		OSD_ERR("osd detection failed, non-compatible OSD device\n");
--		goto err_put_disk;
-+		goto err_free_osd;
+ 		return rc;
  	}
  
- 	/* init the char-device for communication with user-mode */
- 	cdev_init(&oud->cdev, &osd_fops);
- 	oud->cdev.owner = THIS_MODULE;
--	error = cdev_add(&oud->cdev,
--			 MKDEV(SCSI_OSD_MAJOR, oud->minor), 1);
--	if (error) {
--		OSD_ERR("cdev_add failed\n");
--		goto err_put_disk;
+-	rc = device_add(&chip->dev);
+-	if (rc) {
+-		dev_err(&chip->dev,
+-			"unable to device_register() %s, major %d, minor %d, err=%d\n",
+-			dev_name(&chip->dev), MAJOR(chip->dev.devt),
+-			MINOR(chip->dev.devt), rc);
+-
+-		cdev_del(&chip->cdev);
+-		return rc;
 -	}
- 
--	/* class device member */
--	oud->class_dev.devt = oud->cdev.dev;
--	oud->class_dev.class = &osd_uld_class;
--	oud->class_dev.parent = dev;
--	oud->class_dev.release = __remove;
- 	error = dev_set_name(&oud->class_dev, "%s", disk->disk_name);
- 	if (error) {
- 		OSD_ERR("dev_set_name failed => %d\n", error);
--		goto err_put_cdev;
-+		goto err_free_osd;
- 	}
- 
--	error = device_register(&oud->class_dev);
-+	error = cdev_device_add(&oud->cdev, &oud->class_dev);
- 	if (error) {
- 		OSD_ERR("device_register failed => %d\n", error);
--		goto err_put_cdev;
-+		goto err_free_osd;
- 	}
- 
--	get_device(&oud->class_dev);
 -
- 	OSD_INFO("osd_probe %s\n", disk->disk_name);
- 	return 0;
+ 	/* Make the chip available. */
+ 	mutex_lock(&idr_lock);
+ 	idr_replace(&dev_nums_idr, chip, chip->dev_num);
+@@ -261,8 +249,7 @@ static int tpm_add_char_device(struct tpm_chip *chip)
  
--err_put_cdev:
--	cdev_del(&oud->cdev);
--err_put_disk:
--	scsi_device_put(scsi_device);
--	put_disk(disk);
- err_free_osd:
--	dev_set_drvdata(dev, NULL);
--	kfree(oud);
-+	put_device(&oud->class_dev);
- err_retract_minor:
- 	ida_remove(&osd_minor_ida, minor);
- 	return error;
-@@ -530,9 +513,10 @@ static int osd_remove(struct device *dev)
- 			scsi_device);
- 	}
+ static void tpm_del_char_device(struct tpm_chip *chip)
+ {
+-	cdev_del(&chip->cdev);
+-	device_del(&chip->dev);
++	cdev_device_del(&chip->cdev, &chip->dev);
  
--	device_unregister(&oud->class_dev);
--
-+	cdev_device_del(&oud->cdev, &oud->class_dev);
-+	ida_remove(&osd_minor_ida, oud->minor);
- 	put_device(&oud->class_dev);
-+
- 	return 0;
- }
- 
+ 	/* Make the chip unavailable. */
+ 	mutex_lock(&idr_lock);
 -- 
 2.1.4
