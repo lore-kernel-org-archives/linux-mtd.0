@@ -1,61 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1clNo3-0003s7-8x
- for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 22:42:14 +0000
-Date: Tue, 7 Mar 2017 23:41:35 +0100
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-To: Logan Gunthorpe <logang@deltatee.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dan Williams <dan.j.williams@intel.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
- Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
- Marcel Selhorst <tpmdd@selhorst.net>,
- Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
- Sean Hefty <sean.hefty@intel.com>,
- Hal Rosenstock <hal.rosenstock@gmail.com>,
- Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
- Parav Pandit <pandit.parav@gmail.com>,
- Leon Romanovsky <leon@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
- Hans Verkuil <hans.verkuil@cisco.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Matt Porter <mporter@kernel.crashing.org>,
- Alexandre Bounine <alexandre.bounine@idt.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
- Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
- Boaz Harrosh <ooo@electrozaur.com>,
- "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Stephen Bates <stephen.bates@microsemi.com>,
- Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
- linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
- linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
- linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 14/16] rtc: utilize new cdev_device_add helper function
-Message-ID: <20170307224135.eyi62jgnmic5ordb@piout.net>
-References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
- <1488783873-2614-15-git-send-email-logang@deltatee.com>
+Received: from 5.mo2.mail-out.ovh.net ([87.98.181.248])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1clOE1-0004WL-Ce
+ for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 23:09:05 +0000
+Received: from player718.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo2.mail-out.ovh.net (Postfix) with ESMTP id 7D2365DAEA
+ for <linux-mtd@lists.infradead.org>; Wed,  8 Mar 2017 00:08:36 +0100 (CET)
+Subject: Re: [PATCH v6 2/3] mtd: spi-nor: Add spi-nor flash device
+ synchronization between flash states
+To: Kamal Dasu <kdasu.kdev@gmail.com>, linux-spi@vger.kernel.org,
+ cyrille.pitchen@atmel.com, marex@denx.de, broonie@kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1487967399-28967-1-git-send-email-kdasu.kdev@gmail.com>
+ <1487967399-28967-3-git-send-email-kdasu.kdev@gmail.com>
+Cc: bcm-kernel-feedback-list@broadcom.com, f.fainelli@gmail.com,
+ linux-mtd@lists.infradead.org
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <79e81e11-3073-7078-05ca-3201f6dac15f@wedev4u.fr>
+Date: Wed, 8 Mar 2017 00:08:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1488783873-2614-15-git-send-email-logang@deltatee.com>
+In-Reply-To: <1487967399-28967-3-git-send-email-kdasu.kdev@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -65,22 +30,207 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/03/2017 at 00:04:30 -0700, Logan Gunthorpe wrote:
-> Mostly straightforward, but we had to remove the rtc_dev_add/del_device
-> functions as they split up the cdev_add and the device_add.
-> 
-> Doing this also revealed that there was likely another subtle bug:
-> seeing cdev_add was done after device_register, the cdev probably
-> was not ready before device_add when the uevent occurs. This would
-> race with userspace, if it tried to use the device directly after
-> the uevent. This is fixed just by using the new helper function.
-> 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Hi Kamal,
 
-I think I already acked v2 but
-Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
++Boris for his knowledge on power management.
 
--- 
-Alexandre Belloni, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Le 24/02/2017 à 21:16, Kamal Dasu a écrit :
+> Added flash access synchronization methods spi_nor_get/release_device(). This
+> change allows spi-nor driver to maintain flash states in spi-nor stucture for
+> read, write, erase, lock, unlock nor ops. Only when the flash state is FL_READY
+> a new state is set and spi-nor flash op is initiated. The state change is done
+> with a spin_lock held and released as soon as the state is changed. Else the
+> current process for spi-nor transfer is queued till the flash is in FL_READY
+> state. This change allows us to add mtd layer synchronization when the mtd
+> resume suspend handlers are added.
+>
+
+This version goes the wrong way, IMHO. This is not what I meant when I
+was talking about synchronizing MTD and SPI devices: when accessing the
+MTD device we should wake the SPI device up instead of blocking the MTD
+handlers when the SPI device enters its suspended mode.
+
+However, the good news is that looking closer at how the runtime pm
+works, this synchronization should already be managed:
+
+in drivers/mtd/devices/m25p80.c:
+
+	nor->dev = &spi->dev;
+
+and in drivers/mtd/spi-nor/spi-nor.c:
+
+	struct device *dev = nor->dev;
+	[...]
+	mtd->dev.parent = dev;
+
+Hence the SPI device is the parent of the MTD device.
+Then by default, when resuming a device, the runtime pm framework wakes
+the device parent up too: see rmp_resume() from drivers/base/power/runtime.c
+
+About the SPI controller, by default SPI masters ignore their children,
+so the SPI controller won't be resumed by the m25p80 SPI device. However
+spi_sync() can resume the controller when master->auto_runtime_pm is true.
+
+Then back to the MTD subsystem, maybe you should patch the mtdcore.c
+file rather than m25p80.c so the whole MTD subsystem could take
+advantage of your work on power management:
+you could update the .pm member of 'struct class' mtd_class to add
+runtime pm support to the already existing system-wide power management
+support. I guess you will have to add new hooks such mtd->_pm_suspend
+and mtd->_pm_resume. Finally spi-nor.c will implement those 2 hooks (and
+the NAND subsystem may also implement them as needed).
+
+Boris, does it make sense?
+
+Also, one last comment: I guess a call to pm_runtime_enable() is missing
+somewhere is this series, otherwise I don't think this could work.
+Besides, depending on where it will be added, we should not call
+pm_runtime_enable() unconditionally thinking of users who don't want to
+use this feature sending unneeded SPI commands to the memory.
+
+Best regards,
+
+Cyrille
+
+
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 69 +++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spi-nor.h   |  4 +++
+>  2 files changed, 73 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 8b71c11..5363807 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -89,6 +89,15 @@ struct flash_info {
+>  
+>  #define JEDEC_MFR(info)	((info)->id[0])
+>  
+> +/* map table for spi_nor op to flashchip state  */
+> +static int spi_nor_state[] = {
+> +	[SPI_NOR_OPS_READ]	= FL_READING,
+> +	[SPI_NOR_OPS_WRITE]	= FL_WRITING,
+> +	[SPI_NOR_OPS_ERASE]	= FL_ERASING,
+> +	[SPI_NOR_OPS_LOCK]	= FL_LOCKING,
+> +	[SPI_NOR_OPS_UNLOCK]	= FL_UNLOCKING,
+> +};
+> +
+>  static const struct flash_info *spi_nor_match_id(const char *name);
+>  
+>  /*
+> @@ -396,10 +405,64 @@ static int erase_chip(struct spi_nor *nor)
+>  	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
+>  }
+>  
+> +/**
+> + * spi_nor_get_device - [GENERIC] Get chip for selected access
+> + * @param mtd		MTD device structure
+> + * @param new_state	the state which is requested
+> + *
+> + * Get the nor flash device and lock it for exclusive access
+> + */
+> +static int spi_nor_get_device(struct mtd_info *mtd, int new_state)
+> +{
+> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> +	DECLARE_WAITQUEUE(wait, current);
+> +
+> +	/*
+> +	 * Grab the lock and see if the device is available
+> +	 */
+> +	while (1) {
+> +		spin_lock(&nor->chip_lock);
+> +		if (nor->state == FL_READY) {
+> +			nor->state = new_state;
+> +			spin_unlock(&nor->chip_lock);
+> +			break;
+> +		}
+> +		if (new_state == FL_PM_SUSPENDED) {
+> +			spin_unlock(&nor->chip_lock);
+> +			return (nor->state == FL_PM_SUSPENDED) ? 0 : -EAGAIN;
+> +		}
+> +		set_current_state(TASK_UNINTERRUPTIBLE);
+> +		add_wait_queue(&nor->wq, &wait);
+> +		spin_unlock(&nor->chip_lock);
+> +		schedule();
+> +		remove_wait_queue(&nor->wq, &wait);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * spi_nor_release_device - [GENERIC] release chip
+> + * @mtd: MTD device structure
+> + *
+> + * Release nor flash chip lock and wake up anyone waiting on the device.
+> + */
+> +static void spi_nor_release_device(struct mtd_info *mtd)
+> +{
+> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> +
+> +	/* Release the controller and the chip */
+> +	spin_lock(&nor->chip_lock);
+> +	nor->state = FL_READY;
+> +	wake_up(&nor->wq);
+> +	spin_unlock(&nor->chip_lock);
+> +}
+> +
+>  static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+>  {
+>  	int ret = 0;
+>  
+> +	spi_nor_get_device(&nor->mtd, spi_nor_state[ops]);
+>  	mutex_lock(&nor->lock);
+>  
+>  	if (nor->prepare) {
+> @@ -407,6 +470,7 @@ static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+>  		if (ret) {
+>  			dev_err(nor->dev, "failed in the preparation.\n");
+>  			mutex_unlock(&nor->lock);
+> +			spi_nor_release_device(&nor->mtd);
+>  			return ret;
+>  		}
+>  	}
+> @@ -418,6 +482,7 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+>  	if (nor->unprepare)
+>  		nor->unprepare(nor, ops);
+>  	mutex_unlock(&nor->lock);
+> +	spi_nor_release_device(&nor->mtd);
+>  }
+>  
+>  /*
+> @@ -1743,6 +1808,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  			return ret;
+>  	}
+>  
+> +	nor->state = FL_READY;
+> +	init_waitqueue_head(&nor->wq);
+> +	spin_lock_init(&nor->chip_lock);
+> +
+>  	/*
+>  	 * call init function to send necessary spi-nor read/write config
+>  	 * commands to nor flash based on above nor settings
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 29a8283..244d98d 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -13,6 +13,7 @@
+>  #include <linux/bitops.h>
+>  #include <linux/mtd/cfi.h>
+>  #include <linux/mtd/mtd.h>
+> +#include <linux/mtd/flashchip.h>
+>  
+>  /*
+>   * Manufacturer IDs
+> @@ -210,6 +211,9 @@ struct spi_nor {
+>  
+>  	void *priv;
+>  	const struct flash_info *info;
+> +	spinlock_t		chip_lock;
+> +	wait_queue_head_t	wq;
+> +	flstate_t		state;
+>  };
+>  
+>  static inline void spi_nor_set_flash_node(struct spi_nor *nor,
+> 
