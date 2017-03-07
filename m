@@ -1,22 +1,21 @@
-Received: from 2.mo2.mail-out.ovh.net ([188.165.53.149])
+Received: from mo2.mail-out.ovh.net ([178.32.228.2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clN8V-0001Bd-Rv
- for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 21:59:18 +0000
+ id 1clNKl-0008Si-C0
+ for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 22:11:58 +0000
 Received: from player718.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo2.mail-out.ovh.net (Postfix) with ESMTP id 1F71E5F63F
- for <linux-mtd@lists.infradead.org>; Tue,  7 Mar 2017 22:58:50 +0100 (CET)
-Subject: Re: [PATCH v3] mtd: spi-nor: add support for GD25Q256
-To: Andy Yan <andy.yan@rock-chips.com>, cyrille.pitchen@atmel.com,
- marek.vasut@gmail.com
-References: <1487153738-1096-1-git-send-email-andy.yan@rock-chips.com>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
+ by mo2.mail-out.ovh.net (Postfix) with ESMTP id 4FE465D96C
+ for <linux-mtd@lists.infradead.org>; Tue,  7 Mar 2017 23:11:28 +0100 (CET)
+Subject: Re: [PATCH v3] mtd: spi-nor: Add support for N25Q256A13
+To: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>,
+ linux-mtd@lists.infradead.org
+References: <1488422554-7644-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Jagan Teki <jagan@openedev.com>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <75bf48fe-e149-b101-5776-cef16baccda5@wedev4u.fr>
-Date: Tue, 7 Mar 2017 22:58:40 +0100
+Message-ID: <a6888235-c6be-53f3-7787-7fafcb56b8b4@wedev4u.fr>
+Date: Tue, 7 Mar 2017 23:11:22 +0100
 MIME-Version: 1.0
-In-Reply-To: <1487153738-1096-1-git-send-email-andy.yan@rock-chips.com>
+In-Reply-To: <1488422554-7644-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,51 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andy,
+Hi Nobuhiro,
 
-Le 15/02/2017 à 11:15, Andy Yan a écrit :
-> GD25Q256 is a 32MiB SPI Nor flash from Gigadevice.
-> 
-> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
-> 
-> ---
-> 
-> Changes in v3:
-> - rebase on top of spi-nor tree
-> - add SPI_NOR_4B_OPCODES flag
-> 
-> Changes in v2:
-> - drop one line unnecessary modification
-> 
->  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 70e52ff..34327ab 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -995,6 +995,11 @@ static const struct flash_info spi_nor_ids[] = {
->  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->  			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->  	},
-> +	{
-> +		"gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
-> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> +			SPI_NOR_4B_OPCODES)
-> +	},
+Le 02/03/2017 à 03:42, Nobuhiro Iwamatsu a écrit :
+> Add new Micron N25Q256A (N25Q256A13) 256Mbit NOR Flash in the list
+                            ^
+You mean N25Q256A11, don't you? Otherwise it's not consistent with the
+actual patch!
 
-I didn't check in the GD25Q256 datasheet to confirm but I guess we
-should also add the SPI_NOR_HAS_LOCK and SPI_NOR_HAS_TB info->flags as
-for all other GigaDevice SPI NOR memories. Could you please check this
-point?
+> of supported devices. This chip has the same structure as the N25Q256A
+> but ID and voltage (1V8) to use is different. Therefore, this adds
+> N25Q256A13 as n25q256ax1.
 
-Otherwise, the patch looks good and almost ready to be merged :)
+  ^
+N25Q256A11 as n25q256ax1
+
+> 
+> In the future, for new Micron memories we could use the patterns
+> "n25q*ax1" for 1V8 and "n25q*ax3" for 3V3 memories.
+> 
+
+Sound like a good idea :)
+Marek, do you agree with that?
 
 Best regards,
 
 Cyrille
 
->  
->  	/* Intel/Numonyx -- xxxs33b */
->  	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
+> CC: Jagan Teki <jagan@openedev.com>
+> CC: Marek Vasut <marek.vasut@gmail.com>
+> CC: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 1ae872bfc3ba..2e02991d93aa 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1031,6 +1031,7 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+> +	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
 > 
