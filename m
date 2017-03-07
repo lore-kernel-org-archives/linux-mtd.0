@@ -1,27 +1,29 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1clMEm-0007tz-59
- for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 21:01:48 +0000
-Date: Tue, 7 Mar 2017 22:01:07 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alban <albeu@free.fr>
-Cc: linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
- Moritz Fischer <moritz.fischer@ettus.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, linux-mtd@lists.infradead.org, Maxime
- Ripard <maxime.ripard@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH v2 1/2] doc: bindings: Add bindings documentation for
- mtd nvmem
-Message-ID: <20170307220107.03436537@bbrezillon>
-In-Reply-To: <1488875164-30440-2-git-send-email-albeu@free.fr>
-References: <1488875164-30440-1-git-send-email-albeu@free.fr>
- <1488875164-30440-2-git-send-email-albeu@free.fr>
+Received: from 1.mo2.mail-out.ovh.net ([46.105.63.121])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1clMKC-0003Hb-5b
+ for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 21:07:21 +0000
+Received: from player718.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo2.mail-out.ovh.net (Postfix) with ESMTP id 03ADC5F0B9
+ for <linux-mtd@lists.infradead.org>; Tue,  7 Mar 2017 22:06:53 +0100 (CET)
+Subject: Re: [PATCH V2] mtd: spi-nor: intel: use true/false for boolean
+To: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+References: <1486973636-1117-1-git-send-email-der.herr@hofr.at>
+ <e6f01423-4ec7-33b3-b7a4-6af275525d2c@gmail.com>
+ <20170214095725.GD15721@lahna.fi.intel.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Nicholas Mc Guire <der.herr@hofr.at>, linux-mtd@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <b48e8b6b-9cbc-fa69-5583-981cd9f2ef3f@wedev4u.fr>
+Date: Tue, 7 Mar 2017 22:06:42 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170214095725.GD15721@lahna.fi.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,97 +33,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  7 Mar 2017 09:26:03 +0100
-Alban <albeu@free.fr> wrote:
-
-> Config data for drivers, like MAC addresses, is often stored in MTD.
-> Add a binding that define how such data storage can be represented in
-> device tree.
+Le 14/02/2017 à 10:57, Mika Westerberg a écrit :
+> On Tue, Feb 14, 2017 at 05:52:48AM +0100, Marek Vasut wrote:
+>> On 02/13/2017 09:13 AM, Nicholas Mc Guire wrote:
+>>> writeable in struct intel_spi is a boolean and assignment should be to
+>>> true/false not 1/0 as recommended by boolinit.cocci.
+>>>
+>>> Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
+>>> ---
+>>>
+>>> make coccicheck complained with:
+>>>  ./drivers/mtd/spi-nor/intel-spi.c:707:3-18: WARNING: Assignment of bool to 0/1
+>>>
+>>> Patch was compile tested with: multi_v7_defconfig (implies CONFIG_MTD_SPI_NOR=y)
+>>>
+>>> Patch is against 4.10-rc7 (localversion-next is next-20170213)
+>>>
+>>>  drivers/mtd/spi-nor/intel-spi.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
+>>> index 4630716..2956f2c 100644
+>>> --- a/drivers/mtd/spi-nor/intel-spi.c
+>>> +++ b/drivers/mtd/spi-nor/intel-spi.c
+>>> @@ -704,7 +704,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
+>>>  		 * whole partition read-only to be on the safe side.
+>>>  		 */
+>>>  		if (intel_spi_is_protected(ispi, base, limit))
+>>> -			ispi->writeable = 0;
+>>> +			ispi->writeable = false;
+>>>  
+>>>  		end = (limit << 12) + 4096;
+>>>  		if (end > part->size)
+>>>
+>>
+>> Looks OK, also this is the only place in the driver where writeable is
+>> assigned to an explicit true/false value.
+>>
+>> Acked-by: Marek Vasut <marek.vasut@gmail.com>
 > 
-> Signed-off-by: Alban <albeu@free.fr>
-> ---
-> Changelog:
-> v2: * Added a "Required properties" section with the nvmem-provider
->       property
-> ---
->  .../devicetree/bindings/nvmem/mtd-nvmem.txt        | 33 ++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
+> Also
 > 
-> diff --git a/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
-> new file mode 100644
-> index 0000000..8ed25e6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
-> @@ -0,0 +1,33 @@
-> += NVMEM in MTD =
-> +
-> +Config data for drivers, like MAC addresses, is often stored in MTD.
-> +This binding define how such data storage can be represented in device tree.
-> +
-> +An MTD can be defined as an NVMEM provider by adding the `nvmem-provider`
-> +property to their node.
+> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-If everyone agrees that this is actually needed, then it should
-definitely go in the nvmem binding doc, and we should patch all nvmem
-providers to define this property (even if we keep supporting nodes
-that are not defining it). I'm not fully convinced yet, but I might be
-wrong.
+Applied to spi-nor/next
 
-I also think we should take the "nvmem under flash node without partitions"
-into account now, or at least have a clear plan on how we want to represent
-it.
-
-Something like that?
-
-	flash {
-		partitions {
-			part@X {
-				nvmem {
-					#address-cells = <1>;
-					#size-cells = <1>;
-
-					cell@Y {
-					};
-				};
-			};
-		};
-
-		nvmem {
-			#address-cells = <1>;
-			#size-cells = <1>;
-
-			cell@X {
-			};
-		};
-	};
-
-Note that patching nvmem core to support the subnode case should be
-pretty easy (see below).
-
---->8---
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 408b521ee520..507c6190505b 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -465,7 +465,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
-        nvmem->priv = config->priv;
-        nvmem->reg_read = config->reg_read;
-        nvmem->reg_write = config->reg_write;
--       np = config->dev->of_node;
-+       np = config->of_node ? : config->dev->of_node;
-        nvmem->dev.of_node = np;
-        dev_set_name(&nvmem->dev, "%s%d",
-                     config->name ? : "nvmem", config->id);
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index cd93416d762e..ec2f5116d62d 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -21,6 +21,7 @@ typedef int (*nvmem_reg_write_t)(void *priv, unsigned int offset,
- 
- struct nvmem_config {
-        struct device           *dev;
-+       struct device_node      *of_node;
-        const char              *name;
-        int                     id;
-        struct module           *owner;
+Thanks!
+> 
+>> btw the variable should be renamed from writeable to writable ;-)
+> 
+> It is named like that because it follows MTD_WRITEABLE flag.
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
