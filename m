@@ -1,28 +1,19 @@
-Received: from outbound01.mx-relay.com ([5.39.185.33]
- helo=outbound01-a.mx-relay.com)
+Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clBE8-000583-O2
- for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 09:16:19 +0000
-Received: from [145.131.171.178] (rt171bb131-145-178.routit.net
- [145.131.171.178]) by outbound01-a.mx-relay.com with ESMTP id
- u0bL8mQilgt94kzy (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <linux-mtd@lists.infradead.org>; Tue, 07 Mar 2017 10:15:47 +0100 (CET)
-Received: from localhost (localhost.localhost [127.0.0.1])
- by router38.aimvalley.nl (Postfix) with ESMTP id 02911639F5
- for <linux-mtd@lists.infradead.org>; Tue,  7 Mar 2017 10:15:47 +0100 (CET)
-Received: from mail3.aimsys.nl (mail.aimsys.nl [10.10.0.114])
- by router38.aimvalley.nl (Postfix) with ESMTPS id A0971639F1
- for <linux-mtd@lists.infradead.org>; Tue,  7 Mar 2017 10:15:46 +0100 (CET)
-From: Kees Trommel <ctrommel@aimvalley.nl>
-Subject: One bit flip in erased page causes uncorrectable error using
- (LS1020A) HW ECC
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Cc: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-Message-ID: <8f214368-48d1-ae21-b303-b36431abbeb9@aimvalley.nl>
-Date: Tue, 7 Mar 2017 10:15:46 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ id 1clDEl-0000zg-Ut
+ for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 11:25:05 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH] mtd: nand: fix write accessor sanity checks
+Date: Tue,  7 Mar 2017 20:23:59 +0900
+Message-Id: <1488885839-18470-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,28 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+If the higher level accessor chip->write_page() is implemented,
+ecc->write_page() and ecc->write_page_raw() are not required.
 
-I am doing development on a custom board with a NXP LS1020A of which the 
-NAND controller supports HW ECC. Unfortunately the implementation of the 
-HW ECC does not do the final XOR with the ECC of an empty page (like the 
-Linux SW implementation does). This causes that a read of an empty page 
-(both data and OOB) causes the HW to report an uncorrectable error. The 
-Linux driver of this NAND controller (drivers/mtd/nand/fsl_ifc_nand.c) 
-tries to workaround this by checking whether a page with an 
-uncorrectable error is erased and if so the uncorrectable error is 
-suppressed. However this work around does not work when a bit flips in 
-an erased page because the page is no longer regarded as empty:(
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-I observed a few times that UBI reports uncorrectable errors for the 
-above reason and I am wondering whether this can cause a corruption of 
-the UBI/UBIFS on top of the NAND mtd?
+ drivers/mtd/nand/nand_base.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-Until now I did not observe an UBI/UBIFS corruption but I am not sure 
-whether I am just lucky or whether UBI/UBIFS can deal with uncorrectable 
-errors in erased pages. I am  hoping that someone with a more in depth 
-knowledge of UBI/UBIFS can answer this.
-
-Regards,
-
-Kees Trommel.
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index a3c0f47..c32e700 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4585,11 +4585,12 @@ static bool invalid_ecc_page_accessors(struct nand_chip *chip)
+ 	 * default helpers are not suitable when the core does not
+ 	 * send the READ0/PAGEPROG commands.
+ 	 */
+-	return (!ecc->read_page || !ecc->write_page ||
+-		!ecc->read_page_raw || !ecc->write_page_raw ||
++	return !ecc->read_page || !ecc->read_page_raw ||
+ 		(NAND_HAS_SUBPAGE_READ(chip) && !ecc->read_subpage) ||
+-		(NAND_HAS_SUBPAGE_WRITE(chip) && !ecc->write_subpage &&
+-		 ecc->hwctl && ecc->calculate));
++		(!chip->write_page &&
++		 (!ecc->write_page || !ecc->write_page_raw ||
++		  (NAND_HAS_SUBPAGE_WRITE(chip) && !ecc->write_subpage &&
++		   ecc->hwctl && ecc->calculate)));
+ }
+ 
+ /**
+@@ -4699,8 +4700,9 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		if ((!ecc->calculate || !ecc->correct || !ecc->hwctl) &&
+ 		    (!ecc->read_page ||
+ 		     ecc->read_page == nand_read_page_hwecc ||
+-		     !ecc->write_page ||
+-		     ecc->write_page == nand_write_page_hwecc)) {
++		     (!chip->write_page &&
++		      (!ecc->write_page ||
++		       ecc->write_page == nand_write_page_hwecc)))) {
+ 			WARN(1, "No ECC functions supplied; hardware ECC not possible\n");
+ 			ret = -EINVAL;
+ 			goto err_free;
+-- 
+2.7.4
