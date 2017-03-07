@@ -1,27 +1,29 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1clKEk-0004Rt-CS
- for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 18:53:32 +0000
-Date: Tue, 7 Mar 2017 19:52:57 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alban <albeu@free.fr>
-Cc: linux-kernel@vger.kernel.org, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, Moritz Fischer <moritz.fischer@ettus.com>
-Subject: Re: [PATCH v2 2/2] mtd: Add support for reading MTD devices via the
- nvmem API
-Message-ID: <20170307195257.10d1fd06@bbrezillon>
-In-Reply-To: <1488875164-30440-3-git-send-email-albeu@free.fr>
-References: <1488875164-30440-1-git-send-email-albeu@free.fr>
- <1488875164-30440-3-git-send-email-albeu@free.fr>
+Received: from mo2.mail-out.ovh.net ([178.32.228.2])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1clMB7-0003xp-L1
+ for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 20:57:57 +0000
+Received: from player718.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo2.mail-out.ovh.net (Postfix) with ESMTP id 0550A5F600
+ for <linux-mtd@lists.infradead.org>; Tue,  7 Mar 2017 21:57:26 +0100 (CET)
+Subject: Re: [PATCH] mtd: spi-nor: hisi: do not ignore clk_prepare_enable()
+ failure
+To: Marek Vasut <marek.vasut@gmail.com>,
+ Alexey Khoroshilov <khoroshilov@ispras.ru>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <1487369297-5810-1-git-send-email-khoroshilov@ispras.ru>
+ <0066fec2-492a-52de-3c2e-ebce4b9f452a@gmail.com>
+Cc: ldv-project@linuxtesting.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <483ebb87-1b22-be6a-780d-66b73cdaff72@wedev4u.fr>
+Date: Tue, 7 Mar 2017 21:57:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <0066fec2-492a-52de-3c2e-ebce4b9f452a@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,248 +33,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  7 Mar 2017 09:26:04 +0100
-Alban <albeu@free.fr> wrote:
-
-> Allow drivers that use the nvmem API to read data stored on MTD devices.
-> Add an option to the MTD core that allow registering the MTD as
-> read-only NVMEM providers.
+Le 18/02/2017 à 16:23, Marek Vasut a écrit :
+> On 02/17/2017 11:08 PM, Alexey Khoroshilov wrote:
+>> hisi_spi_nor_probe() ignores clk_prepare_enable() error code.
+>> The patch fixes that.
+>>
+>> Found by Linux Driver Verification project (linuxtesting.org).
+>>
+>> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
 > 
-> Signed-off-by: Alban <albeu@free.fr>
-> ---
-> Changelog:
-> v2: * Moved to the MTD core instead of using notifiers
->     * Fixed the Kconfig description
-> ---
->  drivers/mtd/Kconfig     |  9 +++++++
->  drivers/mtd/Makefile    |  1 +
->  drivers/mtd/mtdcore.c   | 13 +++++++++
->  drivers/mtd/mtdnvmem.c  | 72 +++++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/mtdnvmem.h  | 25 +++++++++++++++++
->  include/linux/mtd/mtd.h |  4 +++
->  6 files changed, 124 insertions(+)
->  create mode 100644 drivers/mtd/mtdnvmem.c
->  create mode 100644 drivers/mtd/mtdnvmem.h
+> Acked-by: Marek Vasut <marek.vasut@gmail.com>
 > 
-> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-> index e83a279..5a34c6a 100644
-> --- a/drivers/mtd/Kconfig
-> +++ b/drivers/mtd/Kconfig
-> @@ -322,6 +322,15 @@ config MTD_PARTITIONED_MASTER
->  	  the parent of the partition device be the master device, rather than
->  	  what lies behind the master.
->  
-> +config MTD_NVMEM
-> +	bool "Register MTD devices as NVMEM providers"
-> +	default y
-> +	depends on NVMEM || COMPILE_TEST
-> +	help
-> +	  Provides support for reading config data from MTD devices. This can
-> +	  be used by drivers to read device specific data such as MAC addresses
-> +	  or calibration results.
-> +
->  source "drivers/mtd/chips/Kconfig"
->  
->  source "drivers/mtd/maps/Kconfig"
-> diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-> index 99bb9a1..879a542 100644
-> --- a/drivers/mtd/Makefile
-> +++ b/drivers/mtd/Makefile
-> @@ -5,6 +5,7 @@
->  # Core functionality.
->  obj-$(CONFIG_MTD)		+= mtd.o
->  mtd-y				:= mtdcore.o mtdsuper.o mtdconcat.o mtdpart.o mtdchar.o
-> +mtd-$(CONFIG_MTD_NVMEM)		+= mtdnvmem.o
->  
->  obj-$(CONFIG_MTD_OF_PARTS)	+= ofpart.o
->  obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 66a9ded..bb88997 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -45,6 +45,7 @@
->  #include <linux/mtd/partitions.h>
->  
->  #include "mtdcore.h"
-> +#include "mtdnvmem.h"
->  
->  static struct backing_dev_info *mtd_bdi;
->  
-> @@ -554,6 +555,11 @@ int add_mtd_device(struct mtd_info *mtd)
->  	if (error)
->  		goto fail_added;
->  
-> +	/* Add the nvmem provider */
-> +	error = mtd_nvmem_add(mtd);
-> +	if (error)
-> +		goto fail_nvmem_add;
-> +
->  	device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
->  		      "mtd%dro", i);
->  
-> @@ -571,6 +577,8 @@ int add_mtd_device(struct mtd_info *mtd)
->  	__module_get(THIS_MODULE);
->  	return 0;
->  
-> +fail_nvmem_add:
-> +	device_unregister(&mtd->dev);
->  fail_added:
->  	of_node_put(mtd_get_of_node(mtd));
->  	idr_remove(&mtd_idr, i);
-> @@ -611,6 +619,11 @@ int del_mtd_device(struct mtd_info *mtd)
->  		       mtd->index, mtd->name, mtd->usecount);
->  		ret = -EBUSY;
->  	} else {
-> +		/* Try to remove the NVMEM provider */
-> +		ret = mtd_nvmem_remove(mtd);
-> +		if (ret)
-> +			goto out_error;
-> +
->  		device_unregister(&mtd->dev);
->  
->  		idr_remove(&mtd_idr, mtd->index);
-> diff --git a/drivers/mtd/mtdnvmem.c b/drivers/mtd/mtdnvmem.c
-> new file mode 100644
-> index 0000000..d6bc402
-> --- /dev/null
-> +++ b/drivers/mtd/mtdnvmem.c
-> @@ -0,0 +1,72 @@
-> +/*
-> + * Copyright (C) 2017 Alban Bedel <albeu@free.fr>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/nvmem-provider.h>
-> +#include <linux/of.h>
-> +
-> +static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
-> +			      void *val, size_t bytes)
-> +{
-> +	struct mtd_info *mtd = priv;
-> +	size_t retlen;
-> +	int err;
-> +
-> +	err = mtd_read(mtd, offset, bytes, &retlen, val);
-> +	if (err && err != -EUCLEAN)
-> +		return err;
-> +
-> +	return retlen == bytes ? 0 : -EIO;
-> +}
-> +
-> +int mtd_nvmem_add(struct mtd_info *mtd)
-> +{
-> +	struct device_node *np = dev_of_node(&mtd->dev);
-> +	struct nvmem_config config = {};
-> +
-> +	/* OF devices must have the nvmem-provider property */
-> +	if (np && !of_property_read_bool(np, "nvmem-provider"))
-> +		return 0;
-> +
-> +	config.dev = &mtd->dev;
-> +	config.owner = THIS_MODULE;
-> +	config.reg_read = mtd_nvmem_reg_read;
-> +	config.size = mtd->size;
-> +	config.word_size = 1;
-> +	config.stride = 1;
-> +	config.read_only = true;
-> +	config.priv = mtd;
-> +
-> +	mtd->nvmem = nvmem_register(&config);
-> +	if (IS_ERR(mtd->nvmem)) {
-> +		dev_err(&mtd->dev, "Failed to register NVMEM device\n");
-> +		return PTR_ERR(mtd->nvmem);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int mtd_nvmem_remove(struct mtd_info *mtd)
-> +{
-> +	int ret;
-> +
-> +	if (!mtd->nvmem)
-> +		return 0;
-> +
-> +	ret = nvmem_unregister(mtd->nvmem);
-> +	if (ret)
-> +		dev_err(&mtd->dev, "Failed to unregister NVMEM device\n");
-> +
-> +	return ret;
-> +}
+Applied to spi-nor/next
 
-Given the amount of code I wonder if this shouldn't be integrated in
-mtdcore.c and unconditionally compiled in.
+Thanks!
 
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Alban Bedel <albeu@free.fr>");
-> +MODULE_DESCRIPTION("Driver to read config data from MTD devices");
-> diff --git a/drivers/mtd/mtdnvmem.h b/drivers/mtd/mtdnvmem.h
-> new file mode 100644
-> index 0000000..a49d8bd
-> --- /dev/null
-> +++ b/drivers/mtd/mtdnvmem.h
-> @@ -0,0 +1,25 @@
-> +/*
-> + * Copyright (C) 2017 Alban Bedel <albeu@free.fr>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + */
-> +#ifndef MTD_NVMEM_H
-> +#define MTD_NVMEM_H 1
-> +
-> +struct mtd_info;
-> +
-> +#ifdef CONFIG_MTD_NVMEM
-> +int mtd_nvmem_add(struct mtd_info *mtd);
-> +int mtd_nvmem_remove(struct mtd_info *mtd);
-> +#else
-> +static inline int mtd_nvmem_add(struct mtd_info *mtd)
-> +{ return 0; }
-> +
-> +static inline int mtd_nvmem_remove(struct mtd_info *mtd)
-> +{ return 0; }
-> +#endif
-> +
-> +#endif /* MTD_NVMEM_H */
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index eebdc63..e06c6e6 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -205,6 +205,7 @@ struct mtd_pairing_scheme {
->  };
->  
->  struct module;	/* only needed for owner field in mtd_info */
-> +struct nvmem_device;
-
-Include nvmem-provider.h instead of re-defining struct nvmem_device
-here.
-
->  
->  struct mtd_info {
->  	u_char type;
-> @@ -351,6 +352,9 @@ struct mtd_info {
->  	struct module *owner;
->  	struct device dev;
->  	int usecount;
-> +#if IS_ENABLED(CONFIG_MTD_NVMEM)
-> +	struct nvmem_device *nvmem;
-> +#endif
-
-Hm, I don't see any #if IS_ENABLED() or #ifdef CONFIG_ statements in
-this file. I know it adds an extra 32/64 bits field for nothing if the
-feature is disabled, but how about keeping the struct definition simple
-by unconditionally adding the nvmem field. 
-
->  };
->  
->  int mtd_ooblayout_ecc(struct mtd_info *mtd, int section,
+>> ---
+>>  drivers/mtd/spi-nor/hisi-sfc.c | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
+>> index 20378b0d55e9..a286350627a6 100644
+>> --- a/drivers/mtd/spi-nor/hisi-sfc.c
+>> +++ b/drivers/mtd/spi-nor/hisi-sfc.c
+>> @@ -448,8 +448,11 @@ static int hisi_spi_nor_probe(struct platform_device *pdev)
+>>  	if (!host->buffer)
+>>  		return -ENOMEM;
+>>  
+>> +	ret = clk_prepare_enable(host->clk);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>>  	mutex_init(&host->lock);
+>> -	clk_prepare_enable(host->clk);
+>>  	hisi_spi_nor_init(host);
+>>  	ret = hisi_spi_nor_register_all(host);
+>>  	if (ret)
+>>
+> 
+> 
