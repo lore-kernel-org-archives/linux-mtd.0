@@ -1,15 +1,24 @@
-From: Franklin S Cooper Jr <fcooper@ti.com>
-To: <linux-arm-kernel@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <tony@atomide.com>, <robh+dt@kernel.org>
-CC: Franklin S Cooper Jr <fcooper@ti.com>, Sekhar Nori <nsekhar@ti.com>
-Subject: [PATCH 2/2] ARM: dts: am335x-icev2: Add SPI based NOR
-Date: Tue, 7 Mar 2017 15:57:51 -0600
-Message-ID: <20170307215751.29266-3-fcooper@ti.com>
-In-Reply-To: <20170307215751.29266-1-fcooper@ti.com>
-References: <20170307215751.29266-1-fcooper@ti.com>
+Received: from 2.mo2.mail-out.ovh.net ([188.165.53.149])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1clN8V-0001Bd-Rv
+ for linux-mtd@lists.infradead.org; Tue, 07 Mar 2017 21:59:18 +0000
+Received: from player718.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo2.mail-out.ovh.net (Postfix) with ESMTP id 1F71E5F63F
+ for <linux-mtd@lists.infradead.org>; Tue,  7 Mar 2017 22:58:50 +0100 (CET)
+Subject: Re: [PATCH v3] mtd: spi-nor: add support for GD25Q256
+To: Andy Yan <andy.yan@rock-chips.com>, cyrille.pitchen@atmel.com,
+ marek.vasut@gmail.com
+References: <1487153738-1096-1-git-send-email-andy.yan@rock-chips.com>
+Cc: boris.brezillon@free-electrons.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <75bf48fe-e149-b101-5776-cef16baccda5@wedev4u.fr>
+Date: Tue, 7 Mar 2017 22:58:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1487153738-1096-1-git-send-email-andy.yan@rock-chips.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,64 +28,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable support for W25Q64CVSSIG which is a Winbond 64 Mbit SPI NOR.
+Hi Andy,
 
-At boot you will see the following message:
-m25p80 spi1.0: found s25fl064k, expected w25q64
+Le 15/02/2017 à 11:15, Andy Yan a écrit :
+> GD25Q256 is a 32MiB SPI Nor flash from Gigadevice.
+> 
+> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+> 
+> ---
+> 
+> Changes in v3:
+> - rebase on top of spi-nor tree
+> - add SPI_NOR_4B_OPCODES flag
+> 
+> Changes in v2:
+> - drop one line unnecessary modification
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 70e52ff..34327ab 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -995,6 +995,11 @@ static const struct flash_info spi_nor_ids[] = {
+>  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>  			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+>  	},
+> +	{
+> +		"gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
+> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +			SPI_NOR_4B_OPCODES)
+> +	},
 
-This is because the JEDEC ID for this chip is the same as s25fl064k.
-However, this should be harmless since both chips are essentially the
-same.
+I didn't check in the GD25Q256 datasheet to confirm but I guess we
+should also add the SPI_NOR_HAS_LOCK and SPI_NOR_HAS_TB info->flags as
+for all other GigaDevice SPI NOR memories. Could you please check this
+point?
 
-Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-Signed-off-by: Sekhar Nori <nsekhar@ti.com>
----
- arch/arm/boot/dts/am335x-icev2.dts | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+Otherwise, the patch looks good and almost ready to be merged :)
 
-diff --git a/arch/arm/boot/dts/am335x-icev2.dts b/arch/arm/boot/dts/am335x-icev2.dts
-index a2ad076..1e643dc 100644
---- a/arch/arm/boot/dts/am335x-icev2.dts
-+++ b/arch/arm/boot/dts/am335x-icev2.dts
-@@ -245,6 +245,39 @@
- 		spi-max-frequency = <1000000>;
- 		spi-cpol;
- 	};
-+
-+	spi_nor: flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "winbond,w25q64", "jedec,spi-nor";
-+		spi-max-frequency = <80000000>;
-+		m25p,fast-read;
-+		reg = <0>;
-+
-+		partition@0 {
-+			label = "u-boot-spl";
-+			reg = <0x0 0x80000>;
-+			read-only;
-+		};
-+
-+		partition@1 {
-+			label = "u-boot";
-+			reg = <0x80000 0x100000>;
-+			read-only;
-+		};
-+
-+		partition@2 {
-+			label = "u-boot-env";
-+			reg = <0x180000 0x20000>;
-+			read-only;
-+		};
-+
-+		partition@3 {
-+			label = "misc";
-+			reg = <0x1A0000 0x660000>;
-+		};
-+	};
-+
- };
- 
- &tscadc {
--- 
-2.10.0
+Best regards,
+
+Cyrille
+
+>  
+>  	/* Intel/Numonyx -- xxxs33b */
+>  	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+> 
