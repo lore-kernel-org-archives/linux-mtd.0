@@ -1,8 +1,7 @@
-Received: from keymaster.cadence.com ([158.140.2.26]
- helo=mx-sanjose5.cadence.com)
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clWY0-0005Wc-Fr
- for linux-mtd@lists.infradead.org; Wed, 08 Mar 2017 08:02:16 +0000
+ id 1clWa2-00066N-Ax
+ for linux-mtd@lists.infradead.org; Wed, 08 Mar 2017 08:04:21 +0000
 From: Artur Jedrysek <jartur@cadence.com>
 To: <linux-mtd@lists.infradead.org>
 CC: <linux-kernel@vger.kernel.org>, Cyrille Pitchen
@@ -11,11 +10,11 @@ CC: <linux-kernel@vger.kernel.org>, Cyrille Pitchen
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
  <richard@nod.at>, Artur Jedrysek <jartur@cadence.com>
-Subject: [v2, 1/4] mtd: spi-nor: Add support for Octal SPI mode.
-Date: Wed, 8 Mar 2017 07:58:52 +0000
-Message-ID: <1488959932-6657-1-git-send-email-jartur@cadence.com>
-In-Reply-To: <1488803423-10767-1-git-send-email-jartur@cadence.com>
-References: <1488803423-10767-1-git-send-email-jartur@cadence.com>
+Subject: [v2, 2/4] mtd: spi-nor: Add Octal SPI support to Cadence QSPI driver.
+Date: Wed, 8 Mar 2017 08:02:58 +0000
+Message-ID: <1488960178-11079-1-git-send-email-jartur@cadence.com>
+In-Reply-To: <1488959932-6657-1-git-send-email-jartur@cadence.com>
+References: <1488959932-6657-1-git-send-email-jartur@cadence.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,133 +26,163 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds support for Octal SPI data reads in SPI NOR framework.
-Opcodes for programming using octal interface are also present for the
-sake of completeness, despite not being used.
+Recent versions of Cadence QSPI controller support Octal SPI transfers
+as well. This patch updates existing driver to support such feature.
 
-Micron mt35xu512 flash is added as an example chip supporting that mode.
+It is not possible to determine whether or not octal mode is supported
+just by looking at revision register alone. To solve that, an additional
+compatible in Device Tree is added to indicate such capability.
+Both (revision and compatible) are used to determine, which mode to
+pass to spi_nor_scan() call.
 
 Signed-off-by: Artur Jedrysek <jartur@cadence.com>
 ---
 Changelog:
-v2: None.
+v2: Use new compatible in DT, instead of boolean property, to indicate
+Octal SPI support.
+Extracted Kconfig update to seperate patch.
 ---
- drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++++++--
- include/linux/mtd/spi-nor.h   |  9 +++++++++
- 2 files changed, 27 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/cadence-quadspi.c | 69 +++++++++++++++++++++++++++++++----
+ 1 file changed, 61 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 1ae872b..db188e2 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -85,6 +85,7 @@ struct flash_info {
- 					 * Use dedicated 4byte address op codes
- 					 * to support memory size above 128Mib.
- 					 */
-+#define SPI_NOR_OCTAL_READ	BIT(12)	/* Flash supports Octal Read */
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index 9f8102d..a96471d 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -76,6 +76,7 @@ struct cqspi_st {
+ 	u32			fifo_depth;
+ 	u32			fifo_width;
+ 	u32			trigger_address;
++	u32			max_mode;
+ 	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
  };
  
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -159,6 +160,7 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
- 	case SPI_NOR_FAST:
- 	case SPI_NOR_DUAL:
- 	case SPI_NOR_QUAD:
-+	case SPI_NOR_OCTAL:
- 		return 8;
- 	case SPI_NOR_NORMAL:
- 		return 0;
-@@ -220,6 +222,8 @@ static inline u8 spi_nor_convert_3to4_read(u8 opcode)
- 		{ SPINOR_OP_READ_1_2_2,	SPINOR_OP_READ_1_2_2_4B },
- 		{ SPINOR_OP_READ_1_1_4,	SPINOR_OP_READ_1_1_4_4B },
- 		{ SPINOR_OP_READ_1_4_4,	SPINOR_OP_READ_1_4_4_4B },
-+		{ SPINOR_OP_READ_1_1_8,	SPINOR_OP_READ_1_1_8_4B },
-+		{ SPINOR_OP_READ_1_8_8,	SPINOR_OP_READ_1_8_8_4B },
- 	};
+@@ -87,6 +88,10 @@ struct cqspi_st {
+ #define CQSPI_INST_TYPE_SINGLE			0
+ #define CQSPI_INST_TYPE_DUAL			1
+ #define CQSPI_INST_TYPE_QUAD			2
++#define CQSPI_INST_TYPE_OCTAL			3
++
++#define CQSPI_MAX_MODE_QUAD			0
++#define CQSPI_MAX_MODE_OCTAL			1
  
- 	return spi_nor_convert_opcode(opcode, spi_nor_3to4_read,
-@@ -232,6 +236,8 @@ static inline u8 spi_nor_convert_3to4_program(u8 opcode)
- 		{ SPINOR_OP_PP,		SPINOR_OP_PP_4B },
- 		{ SPINOR_OP_PP_1_1_4,	SPINOR_OP_PP_1_1_4_4B },
- 		{ SPINOR_OP_PP_1_4_4,	SPINOR_OP_PP_1_4_4_4B },
-+		{ SPINOR_OP_PP_1_1_8,	SPINOR_OP_PP_1_1_8_4B },
-+		{ SPINOR_OP_PP_1_8_8,	SPINOR_OP_PP_1_8_8_4B },
- 	};
+ #define CQSPI_DUMMY_CLKS_PER_BYTE		8
+ #define CQSPI_DUMMY_BYTES_MAX			4
+@@ -204,6 +209,14 @@ struct cqspi_st {
+ #define CQSPI_REG_CMDWRITEDATALOWER		0xA8
+ #define CQSPI_REG_CMDWRITEDATAUPPER		0xAC
  
- 	return spi_nor_convert_opcode(opcode, spi_nor_3to4_program,
-@@ -1035,6 +1041,11 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
- 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
- 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-+	{
-+		"mt35xu512", INFO(0x2c5b1a, 0, 128 * 1024, 512,
-+			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
-+			SPI_NOR_4B_OPCODES)
-+	},
++#define CQSPI_REG_MODULEID			0xFC
++#define CQSPI_REG_MODULEID_CONF_ID_MASK		0x3
++#define CQSPI_REG_MODULEID_CONF_ID_LSB		0
++#define CQSPI_REG_MODULEID_CONF_ID_OCTAL_PHY	0x0
++#define CQSPI_REG_MODULEID_CONF_ID_OCTAL	0x1
++#define CQSPI_REG_MODULEID_CONF_ID_QUAD_PHY	0x2
++#define CQSPI_REG_MODULEID_CONF_ID_QUAD		0x3
++
+ /* Interrupt status bits */
+ #define CQSPI_REG_IRQ_MODE_ERR			BIT(0)
+ #define CQSPI_REG_IRQ_UNDERFLOW			BIT(1)
+@@ -866,6 +879,9 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
+ 		case SPI_NOR_QUAD:
+ 			f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
+ 			break;
++		case SPI_NOR_OCTAL:
++			f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -977,6 +993,17 @@ static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	return ret;
+ }
  
- 	/* PMC */
- 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-@@ -1667,8 +1678,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 	if (info->flags & SPI_NOR_NO_FR)
- 		nor->flash_read = SPI_NOR_NORMAL;
++static const u32 cqspi_max_mode_quad = CQSPI_MAX_MODE_QUAD;
++static const u32 cqspi_max_mode_octal = CQSPI_MAX_MODE_OCTAL;
++
++static struct of_device_id const cqspi_dt_ids[] = {
++	{ .compatible = "cdns,qspi-nor", .data = &cqspi_max_mode_quad },
++	{ .compatible = "cdns,ospi-nor", .data = &cqspi_max_mode_octal },
++	{ /* end of table */ }
++};
++
++MODULE_DEVICE_TABLE(of, cqspi_dt_ids);
++
+ static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
+ 				    struct cqspi_flash_pdata *f_pdata,
+ 				    struct device_node *np)
+@@ -1018,6 +1045,13 @@ static int cqspi_of_get_pdata(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct cqspi_st *cqspi = platform_get_drvdata(pdev);
++	const struct of_device_id *match;
++
++	cqspi->max_mode = CQSPI_MAX_MODE_QUAD;
++
++	match = of_match_node(cqspi_dt_ids, np);
++	if (match && match->data)
++		cqspi->max_mode = *((u32 *)match->data);
  
--	/* Quad/Dual-read mode takes precedence over fast/normal */
--	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
-+	/* Octal/Quad/Dual-read mode takes precedence over fast/normal */
-+	if (mode == SPI_NOR_OCTAL && info->flags & SPI_NOR_OCTAL_READ) {
-+		nor->flash_read = SPI_NOR_OCTAL;
-+	} else if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
- 		ret = set_quad_mode(nor, info);
- 		if (ret) {
- 			dev_err(dev, "quad mode not supported\n");
-@@ -1681,6 +1694,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	cqspi->is_decoded_cs = of_property_read_bool(np, "cdns,is-decoded-cs");
  
- 	/* Default commands */
- 	switch (nor->flash_read) {
-+	case SPI_NOR_OCTAL:
-+		nor->read_opcode = SPINOR_OP_READ_1_1_8;
+@@ -1074,9 +1108,35 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+ 	struct cqspi_flash_pdata *f_pdata;
+ 	struct spi_nor *nor;
+ 	struct mtd_info *mtd;
++	enum read_mode mode;
++	enum read_mode dt_mode = SPI_NOR_QUAD;
+ 	unsigned int cs;
++	unsigned int rev_reg;
+ 	int i, ret;
+ 
++	/* Determine, whether or not octal transfer MAY be supported */
++	rev_reg = readl(cqspi->iobase + CQSPI_REG_MODULEID);
++	dev_info(dev, "CQSPI Module id %x\n", rev_reg);
++
++	switch (rev_reg & CQSPI_REG_MODULEID_CONF_ID_MASK) {
++	case CQSPI_REG_MODULEID_CONF_ID_OCTAL_PHY:
++	case CQSPI_REG_MODULEID_CONF_ID_OCTAL:
++		mode = SPI_NOR_OCTAL;
 +		break;
- 	case SPI_NOR_QUAD:
- 		nor->read_opcode = SPINOR_OP_READ_1_1_4;
- 		break;
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index f2a7180..aad6318 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -47,9 +47,13 @@
- #define SPINOR_OP_READ_1_2_2	0xbb	/* Read data bytes (Dual I/O SPI) */
- #define SPINOR_OP_READ_1_1_4	0x6b	/* Read data bytes (Quad Output SPI) */
- #define SPINOR_OP_READ_1_4_4	0xeb	/* Read data bytes (Quad I/O SPI) */
-+#define SPINOR_OP_READ_1_1_8	0x8b	/* Read data bytes (Octal Output SPI) */
-+#define SPINOR_OP_READ_1_8_8	0xcb	/* Read data bytes (Octal I/O SPI) */
- #define SPINOR_OP_PP		0x02	/* Page program (up to 256 bytes) */
- #define SPINOR_OP_PP_1_1_4	0x32	/* Quad page program */
- #define SPINOR_OP_PP_1_4_4	0x38	/* Quad page program */
-+#define SPINOR_OP_PP_1_1_8	0x82	/* Octal page program */
-+#define SPINOR_OP_PP_1_8_8	0xc2	/* Octal page program */
- #define SPINOR_OP_BE_4K		0x20	/* Erase 4KiB block */
- #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
- #define SPINOR_OP_BE_32K	0x52	/* Erase 32KiB block */
-@@ -66,9 +70,13 @@
- #define SPINOR_OP_READ_1_2_2_4B	0xbc	/* Read data bytes (Dual I/O SPI) */
- #define SPINOR_OP_READ_1_1_4_4B	0x6c	/* Read data bytes (Quad Output SPI) */
- #define SPINOR_OP_READ_1_4_4_4B	0xec	/* Read data bytes (Quad I/O SPI) */
-+#define SPINOR_OP_READ_1_1_8_4B	0x7c	/* Read data bytes (Octal Output SPI) */
-+#define SPINOR_OP_READ_1_8_8_4B	0xcc	/* Read data bytes (Octal I/O SPI) */
- #define SPINOR_OP_PP_4B		0x12	/* Page program (up to 256 bytes) */
- #define SPINOR_OP_PP_1_1_4_4B	0x34	/* Quad page program */
- #define SPINOR_OP_PP_1_4_4_4B	0x3e	/* Quad page program */
-+#define SPINOR_OP_PP_1_1_8_4B	0x84	/* Octal page program */
-+#define SPINOR_OP_PP_1_8_8_4B	0x8e	/* Octal page program */
- #define SPINOR_OP_BE_4K_4B	0x21	/* Erase 4KiB block */
- #define SPINOR_OP_BE_32K_4B	0x5c	/* Erase 32KiB block */
- #define SPINOR_OP_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
-@@ -124,6 +132,7 @@ enum read_mode {
- 	SPI_NOR_FAST,
- 	SPI_NOR_DUAL,
- 	SPI_NOR_QUAD,
-+	SPI_NOR_OCTAL,
- };
++	case CQSPI_REG_MODULEID_CONF_ID_QUAD:
++	case CQSPI_REG_MODULEID_CONF_ID_QUAD_PHY:
++		mode = SPI_NOR_QUAD;
++		break;
++	}
++
++	if (cqspi->max_mode == CQSPI_MAX_MODE_OCTAL)
++		dt_mode = SPI_NOR_OCTAL;
++
++	if (mode == SPI_NOR_QUAD && dt_mode == SPI_NOR_OCTAL)
++		dev_warn(dev, "Requested octal mode is not supported by the device.");
++	else if (mode == SPI_NOR_OCTAL && dt_mode == SPI_NOR_QUAD)
++		mode = SPI_NOR_QUAD;
++
+ 	/* Get flash device data */
+ 	for_each_available_child_of_node(dev->of_node, np) {
+ 		ret = of_property_read_u32(np, "reg", &cs);
+@@ -1123,7 +1183,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+ 			goto err;
+ 		}
  
- #define SPI_NOR_MAX_CMD_SIZE	8
+-		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
++		ret = spi_nor_scan(nor, NULL, mode);
+ 		if (ret)
+ 			goto err;
+ 
+@@ -1277,13 +1337,6 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
+ #define CQSPI_DEV_PM_OPS	NULL
+ #endif
+ 
+-static struct of_device_id const cqspi_dt_ids[] = {
+-	{.compatible = "cdns,qspi-nor",},
+-	{ /* end of table */ }
+-};
+-
+-MODULE_DEVICE_TABLE(of, cqspi_dt_ids);
+-
+ static struct platform_driver cqspi_platform_driver = {
+ 	.probe = cqspi_probe,
+ 	.remove = cqspi_remove,
 -- 
 2.2.2
