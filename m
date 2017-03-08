@@ -1,31 +1,21 @@
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1clVOW-0006VH-9p
+ for linux-mtd@lists.infradead.org; Wed, 08 Mar 2017 06:48:22 +0000
+Received: by mail-lf0-x244.google.com with SMTP id v2so1686704lfi.2
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Mar 2017 22:47:58 -0800 (PST)
+Subject: Re: [PATCH] mtd: mchp23k256: Add driver for this SPI SRAM device
+To: Andrew Lunn <andrew@lunn.ch>, dwmw2@infradead.org,
+ boris.brezillon@free-electrons.com
+References: <1488823117-30270-1-git-send-email-andrew@lunn.ch>
+Cc: linux-mtd@lists.infradead.org
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <e837a6f9-b6b3-1215-6d8c-90b3d5a3f607@gmail.com>
+Date: Wed, 8 Mar 2017 07:47:55 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170307193441.0c6fd555@bbrezillon>
-References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
- <1487593718-20752-4-git-send-email-boris.brezillon@free-electrons.com>
- <CAK7LNASNFJ6_LJBS7jyyJ3-Uv_ExTYAj+tkJTCYrpDz8_BXa3Q@mail.gmail.com>
- <20170307193441.0c6fd555@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Wed, 8 Mar 2017 10:31:25 +0900
-Message-ID: <CAK7LNAQP56_XUPhGfMX7EGb29SyNCBKkxt43sRXbU6C27mOUQA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] mtd: nand: Remove unused chip->write_page() hook
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Haavard Skinnemoen <hskinnemoen@gmail.com>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1488823117-30270-1-git-send-email-andrew@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,42 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-03-08 3:34 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Tue, 7 Mar 2017 21:04:50 +0900
-> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->
->> Hi Boris,
->>
->> 2017-02-20 21:28 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
->> > The last/only user of the chip->write_page() hook (the Atmel NAND
->> > controller driver) has been reworked and is no longer specifying a custom
->> > ->write_page() implementation.
->> > Drop this hook before someone else start abusing it.
->> >
->> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->>
->>
->> Just a minor comment.
->>
->>
->> /**
->>  * nand_write_page - [REPLACEABLE] write one page
->>  * @mtd: MTD device structure
->>
->>
->> Can you update the comment block for nand_write_page(), too?
->>
->>   [REPLACEABLE]  ->  [INTERNAL]
->
-> I think I'll just drop it, it does not mean anything to flag a static
-> function as replaceable (the ->write_page() method could be overloaded,
-> but not the nand_write_page() implementation itself).
->
+On 03/06/2017 06:58 PM, Andrew Lunn wrote:
+> diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
+> new file mode 100644
+> index 000000000000..482a101fe887
+> --- /dev/null
+> +++ b/drivers/mtd/devices/mchp23k256.c
+> @@ -0,0 +1,183 @@
+> +/*
+> + * mchp23k256.c
+> + *
+> + * Driver for Microchip 23k256 SPI RAM chips
+> + *
+> + * Copyright © 20016 Andrew Lunn <andrew@lunn.ch>
+> + *
+> + * This code is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + */
 
-Sounds good to me.   Thank you!
+So is this driver GPL v2 licensed?
 
 
+> +/* Set the device into sequential mode. This allows read/writes to
+> + * the entire SRAM in a single operation
+> + */
+> +static int mchp23k256_set_mode(struct spi_device *spi)
+> +{
+> +	struct spi_transfer transfer = {};
+> +	struct spi_message message;
+> +	unsigned char command[2];
+> +
+> +	spi_message_init(&message);
+> +
+> +	command[0] = MCHP23K256_CMD_WRITE_STATUS;
+> +	command[1] = MCHP23K256_MODE_SEQ;
+> +
+> +	transfer.tx_buf = command;
+> +	transfer.len = sizeof(command);
+> +	spi_message_add_tail(&transfer, &message);
+> +
+> +	return spi_sync(spi, &message);
+> +}
+> +
+> +
+> +
+> +static int mchp23k256_probe(struct spi_device *spi)
 
--- 
-Best Regards
-Masahiro Yamada
+Just one empty line between functions please.
+
+
+> +MODULE_DESCRIPTION("MTD SPI driver for MCHP23K256 RAM chips");
+> +MODULE_AUTHOR("Andrew Lunn <andre@lunn.ch>");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("spi:mchp23k256");
+
+Or is it GPL v2 or later? Please pick one and be consistent.
