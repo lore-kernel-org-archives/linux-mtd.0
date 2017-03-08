@@ -1,11 +1,31 @@
-To: linux-mtd@bombadil.infradead.org
-Subject: We could not deliver your parcel, #001498560
-Date: Wed, 8 Mar 2017 01:19:57 +0300
-Content-Type: multipart/mixed;
- boundary="bound1_da39992f7730b257ba48bef331aeed82"
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1clNSZ-0003vI-S0@fb-sys10.camelhost.net>
-From: mmutab@mail.ru
+MIME-Version: 1.0
+In-Reply-To: <20170307193441.0c6fd555@bbrezillon>
+References: <1487593718-20752-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1487593718-20752-4-git-send-email-boris.brezillon@free-electrons.com>
+ <CAK7LNASNFJ6_LJBS7jyyJ3-Uv_ExTYAj+tkJTCYrpDz8_BXa3Q@mail.gmail.com>
+ <20170307193441.0c6fd555@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 8 Mar 2017 10:31:25 +0900
+Message-ID: <CAK7LNAQP56_XUPhGfMX7EGb29SyNCBKkxt43sRXbU6C27mOUQA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] mtd: nand: Remove unused chip->write_page() hook
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,38 +35,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---bound1_da39992f7730b257ba48bef331aeed82
-Content-Type: text/plain; charset=us-ascii
+2017-03-08 3:34 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Tue, 7 Mar 2017 21:04:50 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> Hi Boris,
+>>
+>> 2017-02-20 21:28 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+>> > The last/only user of the chip->write_page() hook (the Atmel NAND
+>> > controller driver) has been reworked and is no longer specifying a custom
+>> > ->write_page() implementation.
+>> > Drop this hook before someone else start abusing it.
+>> >
+>> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>>
+>>
+>> Just a minor comment.
+>>
+>>
+>> /**
+>>  * nand_write_page - [REPLACEABLE] write one page
+>>  * @mtd: MTD device structure
+>>
+>>
+>> Can you update the comment block for nand_write_page(), too?
+>>
+>>   [REPLACEABLE]  ->  [INTERNAL]
+>
+> I think I'll just drop it, it does not mean anything to flag a static
+> function as replaceable (the ->write_page() method could be overloaded,
+> but not the nand_write_page() implementation itself).
+>
 
-Dear Customer,
-
-Your parcel was successfully delivered March 05 to UPS Station, but our courier cound not contact you.
-
-Please check the attachment for complete details!
-
-Kind thoughts,
-Ben Maynard,
-UPS Chief Support Manager.
+Sounds good to me.   Thank you!
 
 
---bound1_da39992f7730b257ba48bef331aeed82
-Content-Type: application/zip; name="UPS-Parcel-ID-001498560.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=UPS-Parcel-ID-001498560.zip
 
-UEsDBBQAAAAIAN0z8TawHkmFNAIAAF8CAAAfAAAAVVBTLVBhcmNlbC1JRC0wMDE0OTg1NjAuZG9j
-LnppcAvwZmYRYWBg4GB4XR3lOKkuVvIgIwNDDhMDgxxQNDQgWDcgsSg5NUfX00XXwMDQxNLC1MxA
-LyU/WS+r2DTgff4tA4G/4WtqVjRpNLIEvYgwb2y4FDTLbIl0xi32ZL4kjzcnyuomZP6vniukE73r
-e837d3dTIxZs6pab8NGCt0fxlEmf9o2fVt80vv+tK3+9fP1k1/ojL7rYsh5M03/3q3ab7bp5c3tn
-y3j3vP9zYbttjdzzy5XrvZ8zP9t+aZ753whvo7rW0F2/blTopm+aob/HtPJWjszXM8fZ7a1dE/PN
-uC9xzuw4uil9/33HCWfrvhc/tMmb4l33dO6tsJdZ8dUynjsSLkxw7HNzuchz7d43DpeZx4LECp9E
-vH562objXo+b7rbVC2+1LPdpzPhvMuvj08U7wgSZ5vs6t1dLNW5J6Zi5qPPB7pDrz32iWo4fW7vQ
-YVVE+pUJLZqWhceSvdZJznGd4qjdnus9V/gUn6m+YuCUu7e/iV/b9y1GYfMnB3krZ5f94mEsbxY4
-yZrP5v3yPunOyp52L9X7t96+VquapT037WP7v9xp3wQ0C6+9TPjIMiOyLL+0rW7dO8ZpLNuMX+ty
-rGX2bvD54iDgsLBkva2R613Jvw5/D9ru2ul4aFEOe+t288dtadFlT5dP4vZWEwydde2osUzm24nB
-aVI3MjKytBnmt73Yv68jwdVJWCu1tX1+gDcjMKJxRz8EKEBp/IkhwJuVDaSKEQh9gPRfRhAPAFBL
-AQIAABQAAAAIAN0z8TawHkmFNAIAAF8CAAAfAAAAAAAAAAAAIAAAAAAAAABVUFMtUGFyY2VsLUlE
-LTAwMTQ5ODU2MC5kb2MuemlwUEsFBgAAAAABAAEATQAAAHECAAAAAA==
-
-
---bound1_da39992f7730b257ba48bef331aeed82--
+-- 
+Best Regards
+Masahiro Yamada
