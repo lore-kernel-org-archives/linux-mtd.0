@@ -1,30 +1,27 @@
-Date: Thu, 9 Mar 2017 12:42:53 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Michal Hocko <mhocko@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
- Theodore Ts'o <tytso@mit.edu>, Chris Mason <clm@fb.com>,
- David Sterba <dsterba@suse.cz>, Jan Kara <jack@suse.cz>,
- ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, logfs@logfs.org,
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
- Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 4/7] mm: introduce memalloc_nofs_{save,restore} API
-Message-ID: <20170309114253.GA14605@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20170306131408.9828-1-mhocko@kernel.org>
- <20170306131408.9828-5-mhocko@kernel.org>
- <20170306132214.1769368301d9e671e1bc68be@linux-foundation.org>
- <20170307150956.GM28642@dhcp22.suse.cz>
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cm1Zz-0001vI-Dj
+ for linux-mtd@lists.infradead.org; Thu, 09 Mar 2017 17:10:21 +0000
+Received: by mail-wr0-x244.google.com with SMTP id u48so8721600wrc.1
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Mar 2017 09:09:58 -0800 (PST)
+Subject: Re: [PATCH v2 2/6] nand: spi: add basic operations support
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Peter Pan <peterpansjtu@gmail.com>
+References: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
+ <1488358330-23832-3-git-send-email-peterpandong@micron.com>
+ <20170307185740.327ed9d0@bbrezillon>
+ <CAAyFOR+vSOSGH_XoZt5Tr5h1fetFUvkMFKGo-iG68obP9eNujg@mail.gmail.com>
+ <20170309070213.3eaaa44e@bbrezillon>
+Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ "linshunquan (A)" <linshunquan1@hisilicon.com>
+From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
+Message-ID: <ff44417c-303b-576a-d2df-2870b8e67ecb@gmail.com>
+Date: Thu, 9 Mar 2017 18:09:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170307150956.GM28642@dhcp22.suse.cz>
+In-Reply-To: <20170309070213.3eaaa44e@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,45 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 07, 2017 at 04:09:56PM +0100, Michal Hocko wrote:
-> On Mon 06-03-17 13:22:14, Andrew Morton wrote:
-> > On Mon,  6 Mar 2017 14:14:05 +0100 Michal Hocko <mhocko@kernel.org> wrote:
-> [...]
-> > > --- a/include/linux/gfp.h
-> > > +++ b/include/linux/gfp.h
-> > > @@ -210,8 +210,16 @@ struct vm_area_struct;
-> > >   *
-> > >   * GFP_NOIO will use direct reclaim to discard clean pages or slab pages
-> > >   *   that do not require the starting of any physical IO.
-> > > + *   Please try to avoid using this flag directly and instead use
-> > > + *   memalloc_noio_{save,restore} to mark the whole scope which cannot
-> > > + *   perform any IO with a short explanation why. All allocation requests
-> > > + *   will inherit GFP_NOIO implicitly.
-> > >   *
-> > >   * GFP_NOFS will use direct reclaim but will not use any filesystem interfaces.
-> > > + *   Please try to avoid using this flag directly and instead use
-> > > + *   memalloc_nofs_{save,restore} to mark the whole scope which cannot/shouldn't
-> > > + *   recurse into the FS layer with a short explanation why. All allocation
-> > > + *   requests will inherit GFP_NOFS implicitly.
-> > 
-> > I wonder if these are worth a checkpatch rule.
-> 
-> I am not really sure, to be honest. This may easilly end up people
-> replacing
-> 
-> do_alloc(GFP_NOFS)
-> 
-> with
-> 
-> memalloc_nofs_save()
-> do_alloc(GFP_KERNEL)
-> memalloc_nofs_restore()
-> 
-> which doesn't make any sense of course. From my experience, people tend
-> to do stupid things just to silent checkpatch warnings very often.
-> Moreover I believe we need to do the transition to the new api first
-> before we can push back on the explicit GFP_NOFS usage. Maybe then we
-> can think about the a checkpatch warning.
 
-I agree will all your objections against adding that to checkpatch, at
-this point it's less harmful to use GFP_NOFS.
+
+On 09/03/2017 07:02, Boris Brezillon wrote:
+> [...]
+>>>   
+>>>> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+>>>> index f3d0351..ee447c1 100644
+>>>> --- a/include/linux/mtd/spinand.h
+>>>> +++ b/include/linux/mtd/spinand.h
+>>>> @@ -135,6 +135,8 @@ struct spinand_manufacturer_ops {
+>>>>        bool(*detect)(struct spinand_device *chip);
+>>>>        int (*init)(struct spinand_device *chip);
+>>>>        void (*cleanup)(struct spinand_device *chip);
+>>>> +     void (*build_column_addr)(struct spinand_device *chip,
+>>>> +                               struct spinand_op *op, u32 page, u32 column);
+>>> Okay, I think Arnaud was right, maybe we should have vendor specific
+>>> ops for basic operations like ->prepare_read/write_op(), instead of
+>>> having these ->get_dummy() and ->build_column_addr() hooks.
+>>> Or maybe just a ->prepare_op() hook that can prepare things for any
+>>> basic operation (read, write, ...).
+>> I prefer ->prepare_read_op() and ->prepare_write_op. Fix this in v3
+> I'd like to have Arnaud's feedback on this. Can you wait a bit before
+> sending a new version?
+
+->prepare_read_op() and ->prepare_write_op
+looks fine to me.
+
+FYI: I have prepared a imx6sl board which can run vanilla mtd/master kernels.
+On this board, I can swap the various spinand samples I have:
+- Micron (the one supported by those patches)
+- winbond
+- macronix
+- ESMT
+
+Looking forward to test v3 ;)
+Arnaud
