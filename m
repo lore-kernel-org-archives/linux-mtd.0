@@ -1,18 +1,18 @@
-Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clnMu-0000bw-Ru
- for linux-mtd@lists.infradead.org; Thu, 09 Mar 2017 01:59:55 +0000
-Received: by mail-lf0-x233.google.com with SMTP id j90so22199137lfk.2
- for <linux-mtd@lists.infradead.org>; Wed, 08 Mar 2017 17:59:31 -0800 (PST)
+ id 1clnPN-0002Yw-Ld
+ for linux-mtd@lists.infradead.org; Thu, 09 Mar 2017 02:02:27 +0000
+Received: by mail-lf0-x243.google.com with SMTP id y193so3573495lfd.1
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Mar 2017 18:02:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20170308093239.67235da9@bbrezillon>
+In-Reply-To: <20170308094425.694c5e07@bbrezillon>
 References: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
- <1488358330-23832-6-git-send-email-peterpandong@micron.com>
- <20170308093239.67235da9@bbrezillon>
+ <1488358330-23832-7-git-send-email-peterpandong@micron.com>
+ <20170308094425.694c5e07@bbrezillon>
 From: Peter Pan <peterpansjtu@gmail.com>
-Date: Thu, 9 Mar 2017 09:59:29 +0800
-Message-ID: <CAAyFOR+SO6u1vmzLaB7VPR=H5pX1XFEhBDxm2yGZkDHqXmuQAw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] nand: spi: add Micron spi nand support
+Date: Thu, 9 Mar 2017 10:02:03 +0800
+Message-ID: <CAAyFORLpv7QoBDz5MQ8g98MEVsKrnN3fnoB-7s1XaEttFkOXHw@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] nand: spi: Add generic SPI controller support
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -29,23 +29,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-On Wed, Mar 8, 2017 at 4:32 PM, Boris Brezillon
+On Wed, Mar 8, 2017 at 4:44 PM, Boris Brezillon
 <boris.brezillon@free-electrons.com> wrote:
-> On Wed, 1 Mar 2017 16:52:09 +0800
+> On Wed, 1 Mar 2017 16:52:10 +0800
 > Peter Pan <peterpandong@micron.com> wrote:
 >
->> This commit is to add support for Micron MT29F2G01ABAGD
->> spi nand chip.
+>> This commit supports to use generic spi controller
+>> as spi nand controller.
 >>
 >> Signed-off-by: Peter Pan <peterpandong@micron.com>
 >> ---
->>  drivers/mtd/nand/spi/Makefile         |   1 +
->>  drivers/mtd/nand/spi/spinand_ids.c    |   5 ++
->>  drivers/mtd/nand/spi/spinand_micron.c | 133 ++++++++++++++++++++++++++++++++++
+>>  drivers/mtd/nand/spi/Kconfig             |   2 +
+>>  drivers/mtd/nand/spi/Makefile            |   1 +
+>>  drivers/mtd/nand/spi/chips/Kconfig       |   5 +
+>>  drivers/mtd/nand/spi/chips/Makefile      |   1 +
+>>  drivers/mtd/nand/spi/chips/generic_spi.c | 158 +++++++++++++++++++++++++++++++
 >
-> micron.c should be enough.
+> Hm, I would name the directory controllers and not chips. What could go
+> into chips are all the vendor specific drivers.
 
-Noted. Fix this in v3
+You are right. Should be controllers. Fix this in v3
 
-Thanks
+>
+>>  5 files changed, 167 insertions(+)
+>>  create mode 100644 drivers/mtd/nand/spi/chips/Kconfig
+>>  create mode 100644 drivers/mtd/nand/spi/chips/Makefile
+>>  create mode 100644 drivers/mtd/nand/spi/chips/generic_spi.c
+>
+> Just controllers/generic.c?
+
+generic.c or just spi.c?
+
+Thanks,
 Peter Pan
