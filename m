@@ -1,23 +1,25 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clnPN-0002Yw-Ld
- for linux-mtd@lists.infradead.org; Thu, 09 Mar 2017 02:02:27 +0000
-Received: by mail-lf0-x243.google.com with SMTP id y193so3573495lfd.1
- for <linux-mtd@lists.infradead.org>; Wed, 08 Mar 2017 18:02:05 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20170308094425.694c5e07@bbrezillon>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1clr9p-0002ZX-58
+ for linux-mtd@lists.infradead.org; Thu, 09 Mar 2017 06:02:39 +0000
+Date: Thu, 9 Mar 2017 07:02:13 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpansjtu@gmail.com>, Arnaud Mouiche
+ <arnaud.mouiche@gmail.com>
+Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger
+ <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, "linshunquan (A)"
+ <linshunquan1@hisilicon.com>
+Subject: Re: [PATCH v2 2/6] nand: spi: add basic operations support
+Message-ID: <20170309070213.3eaaa44e@bbrezillon>
+In-Reply-To: <CAAyFOR+vSOSGH_XoZt5Tr5h1fetFUvkMFKGo-iG68obP9eNujg@mail.gmail.com>
 References: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
- <1488358330-23832-7-git-send-email-peterpandong@micron.com>
- <20170308094425.694c5e07@bbrezillon>
-From: Peter Pan <peterpansjtu@gmail.com>
-Date: Thu, 9 Mar 2017 10:02:03 +0800
-Message-ID: <CAAyFORLpv7QoBDz5MQ8g98MEVsKrnN3fnoB-7s1XaEttFkOXHw@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] nand: spi: Add generic SPI controller support
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- "linshunquan (A)" <linshunquan1@hisilicon.com>
-Content-Type: text/plain; charset=UTF-8
+ <1488358330-23832-3-git-send-email-peterpandong@micron.com>
+ <20170307185740.327ed9d0@bbrezillon>
+ <CAAyFOR+vSOSGH_XoZt5Tr5h1fetFUvkMFKGo-iG68obP9eNujg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +29,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Thu, 9 Mar 2017 09:43:36 +0800
+Peter Pan <peterpansjtu@gmail.com> wrote:
 
-On Wed, Mar 8, 2017 at 4:44 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Wed, 1 Mar 2017 16:52:10 +0800
-> Peter Pan <peterpandong@micron.com> wrote:
->
->> This commit supports to use generic spi controller
->> as spi nand controller.
->>
->> Signed-off-by: Peter Pan <peterpandong@micron.com>
->> ---
->>  drivers/mtd/nand/spi/Kconfig             |   2 +
->>  drivers/mtd/nand/spi/Makefile            |   1 +
->>  drivers/mtd/nand/spi/chips/Kconfig       |   5 +
->>  drivers/mtd/nand/spi/chips/Makefile      |   1 +
->>  drivers/mtd/nand/spi/chips/generic_spi.c | 158 +++++++++++++++++++++++++++++++
->
-> Hm, I would name the directory controllers and not chips. What could go
-> into chips are all the vendor specific drivers.
+> >> +
+> >> +/**
+> >> + * spinand_do_read_ops - read data from flash to buffer
+> >> + * @mtd: MTD device structure
+> >> + * @from: offset to read from
+> >> + * @ops: oob ops structure
+> >> + * Description:
+> >> + *   Disable internal ECC before reading when MTD_OPS_RAW set.
+> >> + */
+> >> +static int spinand_do_read_ops(struct mtd_info *mtd, loff_t from,
+> >> +                       struct mtd_oob_ops *ops)
+> >> +{
+> >> +     struct spinand_device *chip = mtd_to_spinand(mtd);
+> >> +     struct nand_device *nand = mtd_to_nand(mtd);
+> >> +     int ret;
+> >> +     struct mtd_ecc_stats stats;
+> >> +     unsigned int max_bitflips = 0;
+> >> +     int oobreadlen = ops->ooblen;
+> >> +     bool ecc_off = ops->mode == MTD_OPS_RAW;
+> >> +     int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
+> >> +             mtd->oobavail : mtd->oobsize;
+> >> +
+> >> +     if (unlikely(from >= mtd->size)) {
+> >> +             pr_err("%s: attempt to read beyond end of device\n",
+> >> +                             __func__);
+> >> +             return -EINVAL;
+> >> +     }  
+> >
+> > Again, we can an helper to check the boundaries in the generic NAND
+> > code.  
+> 
+> Let's keep the code the same and move to generic NAND code later.
+> What do you think Boris?
 
-You are right. Should be controllers. Fix this in v3
+For things we know will be needed and are simple enough to provide, I'd
+recommend doing the modifications now. That's a bit different when it
+comes to providing a generic ECC engine infrastructure or trying to
+move part of the page read/write logic into the generic NAND layer,
+because we don't know where we're going yet.
 
->
->>  5 files changed, 167 insertions(+)
->>  create mode 100644 drivers/mtd/nand/spi/chips/Kconfig
->>  create mode 100644 drivers/mtd/nand/spi/chips/Makefile
->>  create mode 100644 drivers/mtd/nand/spi/chips/generic_spi.c
->
-> Just controllers/generic.c?
+> 
+> >  
+> >> +     if (oobreadlen > 0) {
+> >> +             if (unlikely(ops->ooboffs >= ooblen)) {
+> >> +                     pr_err("%s: attempt to start read outside oob\n",
+> >> +                                     __func__);
+> >> +                     return -EINVAL;
+> >> +             }
+> >> +             if (unlikely(ops->ooboffs + oobreadlen >
+> >> +             (nand_len_to_pages(nand, mtd->size) - nand_offs_to_page(nand, from))
+> >> +             * ooblen)) {
+> >> +                     pr_err("%s: attempt to read beyond end of device\n",
+> >> +                                     __func__);
+> >> +                     return -EINVAL;
+> >> +             }
+> >> +             ooblen -= ops->ooboffs;
+> >> +             ops->oobretlen = 0;
+> >> +     }
+> >> +     stats = mtd->ecc_stats;
+> >> +     if (ecc_off)
+> >> +             spinand_disable_ecc(chip);
+> >> +     ret = spinand_read_pages(mtd, from, ops, &max_bitflips);
+> >> +     if (ecc_off)
+> >> +             spinand_enable_ecc(chip);
+> >> +     if (ret)
+> >> +             return ret;
+> >> +
+> >> +     if (mtd->ecc_stats.failed - stats.failed)
+> >> +             return -EBADMSG;
+> >> +
+> >> +     return max_bitflips;
+> >> +}
+> >> +  
+> >
+> > [...]
+> >  
+> >> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> >> index f3d0351..ee447c1 100644
+> >> --- a/include/linux/mtd/spinand.h
+> >> +++ b/include/linux/mtd/spinand.h
+> >> @@ -135,6 +135,8 @@ struct spinand_manufacturer_ops {
+> >>       bool(*detect)(struct spinand_device *chip);
+> >>       int (*init)(struct spinand_device *chip);
+> >>       void (*cleanup)(struct spinand_device *chip);
+> >> +     void (*build_column_addr)(struct spinand_device *chip,
+> >> +                               struct spinand_op *op, u32 page, u32 column);  
+> >
+> > Okay, I think Arnaud was right, maybe we should have vendor specific
+> > ops for basic operations like ->prepare_read/write_op(), instead of
+> > having these ->get_dummy() and ->build_column_addr() hooks.
+> > Or maybe just a ->prepare_op() hook that can prepare things for any
+> > basic operation (read, write, ...).  
+> 
+> I prefer ->prepare_read_op() and ->prepare_write_op. Fix this in v3
 
-generic.c or just spi.c?
-
-Thanks,
-Peter Pan
+I'd like to have Arnaud's feedback on this. Can you wait a bit before
+sending a new version?
