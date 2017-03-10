@@ -1,24 +1,29 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from mail-cys01nam02on0084.outbound.protection.outlook.com
+ ([104.47.37.84] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmKVb-0007sr-5P
- for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 13:23:09 +0000
-Received: by mail-wr0-x243.google.com with SMTP id g10so11607579wrg.0
- for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2017 05:22:42 -0800 (PST)
-Subject: Re: [PATCH V6, 1/1] mtd: nand: brcmnand: Check flash #WP pin status
- before nand erase/program
-To: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org
-References: <1488575813-12660-1-git-send-email-kdasu.kdev@gmail.com>
- <1488575813-12660-2-git-send-email-kdasu.kdev@gmail.com>
-Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at, cyrille.pitchen@atmel.com
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <25484b94-341f-300d-474e-a272f249f0a2@gmail.com>
-Date: Fri, 10 Mar 2017 14:22:39 +0100
+ id 1cmLFG-0005hw-Ae
+ for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 14:10:17 +0000
+From: Artur Jedrysek <jartur@cadence.com>
+To: Marek Vasut <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>
+Subject: RE: [v2, 2/4] mtd: spi-nor: Add Octal SPI support to Cadence QSPI
+ driver.
+Date: Fri, 10 Mar 2017 14:09:51 +0000
+Message-ID: <DM5PR07MB2780DC9981927880E1ED1B37D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
+References: <1488959932-6657-1-git-send-email-jartur@cadence.com>
+ <1488960178-11079-1-git-send-email-jartur@cadence.com>
+ <891f9177-e03c-85e0-ebab-2dc7df2ce9e0@gmail.com>
+ <DM5PR07MB278038D86D5AD05FA2F5AAA1D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
+ <8315061c-716d-89c9-3f04-687b48fbac22@gmail.com>
+In-Reply-To: <8315061c-716d-89c9-3f04-687b48fbac22@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <1488575813-12660-2-git-send-email-kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,138 +33,160 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/03/2017 10:16 PM, Kamal Dasu wrote:
-> On brcmnand controller v6.x and v7.x, the #WP pin is controlled through
-> the NAND_WP bit in CS_SELECT register.
-> 
-> The driver currently assumes that toggling the #WP pin is
-> instantaneously enabling/disabling write-protection, but it actually
-> takes some time to propagate the new state to the internal NAND chip
-> logic. This behavior is sometime causing data corruptions when an
-> erase/program operation is executed before write-protection has really
-> been disabled.
-> 
-> Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++--
->  1 file changed, 58 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index 42ebd73..7419c5c 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
->  #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
->  #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
->  
-> +#define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
-> +#define NAND_POLL_STATUS_TIMEOUT_MS	100
-> +
->  /* Controller feature flags */
->  enum {
->  	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
-> @@ -765,6 +768,31 @@ enum {
->  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
->  };
->  
-> +static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
-> +				    u32 mask, u32 expected_val,
-> +				    unsigned long timeout_ms)
-> +{
-> +	unsigned long limit;
-> +	u32 val;
-> +
-> +	if (!timeout_ms)
-> +		timeout_ms = NAND_POLL_STATUS_TIMEOUT_MS;
-> +
-> +	limit = jiffies + msecs_to_jiffies(timeout_ms);
-> +	do {
-> +		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
-> +		if ((val & mask) == expected_val)
-> +			return 0;
-> +
-> +		cpu_relax();
-> +	} while (time_after(limit, jiffies));
-> +
-> +	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
-> +		 expected_val, val & mask);
-> +
-> +	return -ETIMEDOUT;
-> +}
-> +
->  static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
->  {
->  	u32 val = en ? CS_SELECT_NAND_WP : 0;
-> @@ -1024,12 +1052,39 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
->  
->  	if ((ctrl->features & BRCMNAND_HAS_WP) && wp_on == 1) {
->  		static int old_wp = -1;
-
-Unrelated to this patch, but this static variable should be moved to
-driver's private data instead.
-
-> +		int ret;
->  
->  		if (old_wp != wp) {
->  			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
->  			old_wp = wp;
->  		}
-> +
-> +		/*
-> +		 * make sure ctrl/flash ready before and after
-> +		 * changing state of #WP pin
-> +		 */
-
-Shouldn't the brcmnand_set_wp() do this ?
-
-> +		ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY |
-> +					       NAND_STATUS_READY,
-> +					       NAND_CTRL_RDY |
-> +					       NAND_STATUS_READY, 0);
-> +		if (ret)
-> +			return;
-> +
->  		brcmnand_set_wp(ctrl, wp);
-> +		chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-> +		/* NAND_STATUS_WP 0x00 = protected, 0x80 = not protected */
-> +		ret = bcmnand_ctrl_poll_status(ctrl,
-> +					       NAND_CTRL_RDY |
-> +					       NAND_STATUS_READY |
-> +					       NAND_STATUS_WP,
-> +					       NAND_CTRL_RDY |
-> +					       NAND_STATUS_READY |
-> +					       (wp ? 0 : NAND_STATUS_WP), 0);
-> +
-> +		if (ret)
-> +			dev_err_ratelimited(&host->pdev->dev,
-> +					    "nand #WP expected %s\n",
-> +					    wp ? "on" : "off");
->  	}
->  }
->  
-> @@ -1157,15 +1212,15 @@ static irqreturn_t brcmnand_dma_irq(int irq, void *data)
->  static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
->  {
->  	struct brcmnand_controller *ctrl = host->ctrl;
-> -	u32 intfc;
-> +	int ret;
->  
->  	dev_dbg(ctrl->dev, "send native cmd %d addr_lo 0x%x\n", cmd,
->  		brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS));
->  	BUG_ON(ctrl->cmd_pending != 0);
->  	ctrl->cmd_pending = cmd;
->  
-> -	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
-> -	WARN_ON(!(intfc & INTFC_CTLR_READY));
-> +	ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
-> +	WARN_ON(ret);
->  
->  	mb(); /* flush previous writes */
->  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_START,
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+RnJvbTogTWFyZWsgVmFzdXQgW21haWx0bzptYXJlay52YXN1dEBnbWFpbC5jb21dDQpTZW50OiAx
+MCBNYXJjaCAyMDE3IDEzOjUwDQo+IE9uIDAzLzEwLzIwMTcgMDE6MDAgUE0sIEFydHVyIEplZHJ5
+c2VrIHdyb3RlOg0KPiA+DQo+ID4gRnJvbTogTWFyZWsgVmFzdXQgW21haWx0bzptYXJlay52YXN1
+dEBnbWFpbC5jb21dDQo+ID4gU2VudDogMTAgTWFyY2ggMjAxNyAwNDozNw0KPiA+PiBPbiAwMy8w
+OC8yMDE3IDA5OjAyIEFNLCBBcnR1ciBKZWRyeXNlayB3cm90ZToNCj4gPj4+IFJlY2VudCB2ZXJz
+aW9ucyBvZiBDYWRlbmNlIFFTUEkgY29udHJvbGxlciBzdXBwb3J0IE9jdGFsIFNQSSB0cmFuc2Zl
+cnMNCj4gPj4+IGFzIHdlbGwuIFRoaXMgcGF0Y2ggdXBkYXRlcyBleGlzdGluZyBkcml2ZXIgdG8g
+c3VwcG9ydCBzdWNoIGZlYXR1cmUuDQo+ID4+Pg0KPiA+Pj4gSXQgaXMgbm90IHBvc3NpYmxlIHRv
+IGRldGVybWluZSB3aGV0aGVyIG9yIG5vdCBvY3RhbCBtb2RlIGlzIHN1cHBvcnRlZA0KPiA+Pj4g
+anVzdCBieSBsb29raW5nIGF0IHJldmlzaW9uIHJlZ2lzdGVyIGFsb25lLiBUbyBzb2x2ZSB0aGF0
+LCBhbiBhZGRpdGlvbmFsDQo+ID4+PiBjb21wYXRpYmxlIGluIERldmljZSBUcmVlIGlzIGFkZGVk
+IHRvIGluZGljYXRlIHN1Y2ggY2FwYWJpbGl0eS4NCj4gPj4+IEJvdGggKHJldmlzaW9uIGFuZCBj
+b21wYXRpYmxlKSBhcmUgdXNlZCB0byBkZXRlcm1pbmUsIHdoaWNoIG1vZGUgdG8NCj4gPj4+IHBh
+c3MgdG8gc3BpX25vcl9zY2FuKCkgY2FsbC4NCj4gPj4+DQo+ID4+PiBTaWduZWQtb2ZmLWJ5OiBB
+cnR1ciBKZWRyeXNlayA8amFydHVyQGNhZGVuY2UuY29tPg0KPiA+Pj4gLS0tDQo+ID4+PiBDaGFu
+Z2Vsb2c6DQo+ID4+PiB2MjogVXNlIG5ldyBjb21wYXRpYmxlIGluIERULCBpbnN0ZWFkIG9mIGJv
+b2xlYW4gcHJvcGVydHksIHRvIGluZGljYXRlDQo+ID4+PiBPY3RhbCBTUEkgc3VwcG9ydC4NCj4g
+Pj4+IEV4dHJhY3RlZCBLY29uZmlnIHVwZGF0ZSB0byBzZXBlcmF0ZSBwYXRjaC4NCj4gPj4+IC0t
+LQ0KPiA+Pj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvY2FkZW5jZS1xdWFkc3BpLmMgfCA2OSArKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQ0KPiA+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA2
+MSBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KPiA+Pj4NCj4gPj4+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9zcGktbm9yL2NhZGVuY2UtcXVhZHNwaS5jIGIvZHJpdmVycy9tdGQvc3Bp
+LW5vci9jYWRlbmNlLXF1YWRzcGkuYw0KPiA+Pj4gaW5kZXggOWY4MTAyZC4uYTk2NDcxZCAxMDA2
+NDQNCj4gPj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY2FkZW5jZS1xdWFkc3BpLmMNCj4g
+Pj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY2FkZW5jZS1xdWFkc3BpLmMNCj4gPj4+IEBA
+IC03Niw2ICs3Niw3IEBAIHN0cnVjdCBjcXNwaV9zdCB7DQo+ID4+PiAgCXUzMgkJCWZpZm9fZGVw
+dGg7DQo+ID4+PiAgCXUzMgkJCWZpZm9fd2lkdGg7DQo+ID4+PiAgCXUzMgkJCXRyaWdnZXJfYWRk
+cmVzczsNCj4gPj4+ICsJdTMyCQkJbWF4X21vZGU7DQo+ID4+DQo+ID4+IEkgdGhpbmsgaXQncyB0
+aW1lIHRvIGludHJvZHVjZSBmbGFncyBpbnN0ZWFkLA0KPiA+PiBpZS4gI2RlZmluZSBDUVNQSV9G
+TEFHX1NVUFBPUlRTX09DVEFMIEJJVCgwKQ0KPiA+Pg0KPiA+Pj4gIAlzdHJ1Y3QgY3FzcGlfZmxh
+c2hfcGRhdGEgZl9wZGF0YVtDUVNQSV9NQVhfQ0hJUFNFTEVDVF07DQo+ID4+PiAgfTsNCj4gPj4+
+DQo+ID4+PiBAQCAtODcsNiArODgsMTAgQEAgc3RydWN0IGNxc3BpX3N0IHsNCj4gPj4+ICAjZGVm
+aW5lIENRU1BJX0lOU1RfVFlQRV9TSU5HTEUJCQkwDQo+ID4+PiAgI2RlZmluZSBDUVNQSV9JTlNU
+X1RZUEVfRFVBTAkJCTENCj4gPj4+ICAjZGVmaW5lIENRU1BJX0lOU1RfVFlQRV9RVUFECQkJMg0K
+PiA+Pj4gKyNkZWZpbmUgQ1FTUElfSU5TVF9UWVBFX09DVEFMCQkJMw0KPiA+Pj4gKw0KPiA+Pj4g
+KyNkZWZpbmUgQ1FTUElfTUFYX01PREVfUVVBRAkJCTANCj4gPj4+ICsjZGVmaW5lIENRU1BJX01B
+WF9NT0RFX09DVEFMCQkJMQ0KPiA+Pj4NCj4gPj4+ICAjZGVmaW5lIENRU1BJX0RVTU1ZX0NMS1Nf
+UEVSX0JZVEUJCTgNCj4gPj4+ICAjZGVmaW5lIENRU1BJX0RVTU1ZX0JZVEVTX01BWAkJCTQNCj4g
+Pj4+IEBAIC0yMDQsNiArMjA5LDE0IEBAIHN0cnVjdCBjcXNwaV9zdCB7DQo+ID4+PiAgI2RlZmlu
+ZSBDUVNQSV9SRUdfQ01EV1JJVEVEQVRBTE9XRVIJCTB4QTgNCj4gPj4+ICAjZGVmaW5lIENRU1BJ
+X1JFR19DTURXUklURURBVEFVUFBFUgkJMHhBQw0KPiA+Pj4NCj4gPj4+ICsjZGVmaW5lIENRU1BJ
+X1JFR19NT0RVTEVJRAkJCTB4RkMNCj4gPj4+ICsjZGVmaW5lIENRU1BJX1JFR19NT0RVTEVJRF9D
+T05GX0lEX01BU0sJCTB4Mw0KPiA+Pj4gKyNkZWZpbmUgQ1FTUElfUkVHX01PRFVMRUlEX0NPTkZf
+SURfTFNCCQkwDQo+ID4+PiArI2RlZmluZSBDUVNQSV9SRUdfTU9EVUxFSURfQ09ORl9JRF9PQ1RB
+TF9QSFkJMHgwDQo+ID4+PiArI2RlZmluZSBDUVNQSV9SRUdfTU9EVUxFSURfQ09ORl9JRF9PQ1RB
+TAkweDENCj4gPj4+ICsjZGVmaW5lIENRU1BJX1JFR19NT0RVTEVJRF9DT05GX0lEX1FVQURfUEhZ
+CTB4Mg0KPiA+Pj4gKyNkZWZpbmUgQ1FTUElfUkVHX01PRFVMRUlEX0NPTkZfSURfUVVBRAkJMHgz
+DQo+ID4+PiArDQo+ID4+PiAgLyogSW50ZXJydXB0IHN0YXR1cyBiaXRzICovDQo+ID4+PiAgI2Rl
+ZmluZSBDUVNQSV9SRUdfSVJRX01PREVfRVJSCQkJQklUKDApDQo+ID4+PiAgI2RlZmluZSBDUVNQ
+SV9SRUdfSVJRX1VOREVSRkxPVwkJCUJJVCgxKQ0KPiA+Pj4gQEAgLTg2Niw2ICs4NzksOSBAQCBz
+dGF0aWMgaW50IGNxc3BpX3NldF9wcm90b2NvbChzdHJ1Y3Qgc3BpX25vciAqbm9yLCBjb25zdCBp
+bnQgcmVhZCkNCj4gPj4+ICAJCWNhc2UgU1BJX05PUl9RVUFEOg0KPiA+Pj4gIAkJCWZfcGRhdGEt
+PmRhdGFfd2lkdGggPSBDUVNQSV9JTlNUX1RZUEVfUVVBRDsNCj4gPj4+ICAJCQlicmVhazsNCj4g
+Pj4+ICsJCWNhc2UgU1BJX05PUl9PQ1RBTDoNCj4gPj4+ICsJCQlmX3BkYXRhLT5kYXRhX3dpZHRo
+ID0gQ1FTUElfSU5TVF9UWVBFX09DVEFMOw0KPiA+Pj4gKwkJCWJyZWFrOw0KPiA+Pj4gIAkJZGVm
+YXVsdDoNCj4gPj4+ICAJCQlyZXR1cm4gLUVJTlZBTDsNCj4gPj4+ICAJCX0NCj4gPj4+IEBAIC05
+NzcsNiArOTkzLDE3IEBAIHN0YXRpYyBpbnQgY3FzcGlfd3JpdGVfcmVnKHN0cnVjdCBzcGlfbm9y
+ICpub3IsIHU4IG9wY29kZSwgdTggKmJ1ZiwgaW50IGxlbikNCj4gPj4+ICAJcmV0dXJuIHJldDsN
+Cj4gPj4+ICB9DQo+ID4+Pg0KPiA+Pj4gK3N0YXRpYyBjb25zdCB1MzIgY3FzcGlfbWF4X21vZGVf
+cXVhZCA9IENRU1BJX01BWF9NT0RFX1FVQUQ7DQo+ID4+PiArc3RhdGljIGNvbnN0IHUzMiBjcXNw
+aV9tYXhfbW9kZV9vY3RhbCA9IENRU1BJX01BWF9NT0RFX09DVEFMOw0KPiA+Pj4gKw0KPiA+Pj4g
+K3N0YXRpYyBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIGNvbnN0IGNxc3BpX2R0X2lkc1tdID0gew0KPiA+
+Pj4gKwl7IC5jb21wYXRpYmxlID0gImNkbnMscXNwaS1ub3IiLCAuZGF0YSA9ICZjcXNwaV9tYXhf
+bW9kZV9xdWFkIH0sDQo+ID4+PiArCXsgLmNvbXBhdGlibGUgPSAiY2Rucyxvc3BpLW5vciIsIC5k
+YXRhID0gJmNxc3BpX21heF9tb2RlX29jdGFsIH0sDQo+ID4+DQo+ID4+IC5kYXRhID0gKHZvaWQg
+KilDUVNQSV9GTEFHX1NVUFBPUlRTX09DVEFMICwgdGhlbiB5b3UgZG9uJ3QgbmVlZCB0aGF0DQo+
+ID4+IHN0YXRpYyBjb25zdCBzdHVmZiAuLi4NCj4gPj4NCj4gPg0KPiA+IEkgaGFkIHNvbWUgZG91
+YnRzIHJlZ2FyZGluZyB0aGF0IGFwcHJvYWNoLCBhcyBpdCBtYXkgYmUgZGVwZW5kZW50IG9uIHRo
+ZQ0KPiA+IENQVSBhcmNoaXRlY3R1cmUgKDMyLWJpdCwgNjQtYml0KSBhbmQgZW5kaWFubmVzcy4g
+LmRhdGEgbmVlZHMgdG8gYmUgZmlyc3QNCj4gPiBjYXN0ZWQgdG8gdW5zaWduZWQgbG9uZyBmb3Ig
+cmVhZGluZywgdG8gZW5zdXJlIGNvcnJlY3QgYWNjZXNzIGFuZCB0bw0KPiA+IGFsbG93IGJpdHdp
+c2Ugb3BlcmF0aW9ucyBvbiBpdC4gVGhhdCBzb2x1dGlvbiB3b3JrcywgYW5kIGlmIHN1Y2ggYXBw
+cm9hY2gNCj4gPiBpcyBwcmVmZXJyZWQsIHRoZW4gaXQgd2lsbCBiZSB1c2VkIGluIG5leHQgdmVy
+c2lvbiBvZiB0aGUgcGF0Y2guDQo+IA0KPiBHb29kDQo+IA0KPiA+Pj4gKwl7IC8qIGVuZCBvZiB0
+YWJsZSAqLyB9DQo+ID4+PiArfTsNCj4gPj4+ICsNCj4gPj4+ICtNT0RVTEVfREVWSUNFX1RBQkxF
+KG9mLCBjcXNwaV9kdF9pZHMpOw0KPiA+Pj4gKw0KPiA+Pj4gIHN0YXRpYyBpbnQgY3FzcGlfb2Zf
+Z2V0X2ZsYXNoX3BkYXRhKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYsDQo+ID4+PiAgCQkJ
+CSAgICBzdHJ1Y3QgY3FzcGlfZmxhc2hfcGRhdGEgKmZfcGRhdGEsDQo+ID4+PiAgCQkJCSAgICBz
+dHJ1Y3QgZGV2aWNlX25vZGUgKm5wKQ0KPiA+Pj4gQEAgLTEwMTgsNiArMTA0NSwxMyBAQCBzdGF0
+aWMgaW50IGNxc3BpX29mX2dldF9wZGF0YShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0K
+PiA+Pj4gIHsNCj4gPj4+ICAJc3RydWN0IGRldmljZV9ub2RlICpucCA9IHBkZXYtPmRldi5vZl9u
+b2RlOw0KPiA+Pj4gIAlzdHJ1Y3QgY3FzcGlfc3QgKmNxc3BpID0gcGxhdGZvcm1fZ2V0X2RydmRh
+dGEocGRldik7DQo+ID4+PiArCWNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgKm1hdGNoOw0KPiA+
+Pj4gKw0KPiA+Pj4gKwljcXNwaS0+bWF4X21vZGUgPSBDUVNQSV9NQVhfTU9ERV9RVUFEOw0KPiA+
+Pj4gKw0KPiA+Pj4gKwltYXRjaCA9IG9mX21hdGNoX25vZGUoY3FzcGlfZHRfaWRzLCBucCk7DQo+
+ID4+PiArCWlmIChtYXRjaCAmJiBtYXRjaC0+ZGF0YSkNCj4gPj4+ICsJCWNxc3BpLT5tYXhfbW9k
+ZSA9ICooKHUzMiAqKW1hdGNoLT5kYXRhKTsNCj4gPj4NCj4gPj4gVXNlIGZsYWdzIGluc3RlYWQs
+IHNlZSBhYm92ZS4NCj4gPj4NCj4gPj4+ICAJY3FzcGktPmlzX2RlY29kZWRfY3MgPSBvZl9wcm9w
+ZXJ0eV9yZWFkX2Jvb2wobnAsICJjZG5zLGlzLWRlY29kZWQtY3MiKTsNCj4gPj4+DQo+ID4+PiBA
+QCAtMTA3NCw5ICsxMTA4LDM1IEBAIHN0YXRpYyBpbnQgY3FzcGlfc2V0dXBfZmxhc2goc3RydWN0
+IGNxc3BpX3N0ICpjcXNwaSwgc3RydWN0IGRldmljZV9ub2RlDQo+ICpucCkNCj4gPj4+ICAJc3Ry
+dWN0IGNxc3BpX2ZsYXNoX3BkYXRhICpmX3BkYXRhOw0KPiA+Pj4gIAlzdHJ1Y3Qgc3BpX25vciAq
+bm9yOw0KPiA+Pj4gIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZDsNCj4gPj4+ICsJZW51bSByZWFkX21v
+ZGUgbW9kZTsNCj4gPj4+ICsJZW51bSByZWFkX21vZGUgZHRfbW9kZSA9IFNQSV9OT1JfUVVBRDsN
+Cj4gPj4+ICAJdW5zaWduZWQgaW50IGNzOw0KPiA+Pj4gKwl1bnNpZ25lZCBpbnQgcmV2X3JlZzsN
+Cj4gPj4+ICAJaW50IGksIHJldDsNCj4gPj4+DQo+ID4+PiArCS8qIERldGVybWluZSwgd2hldGhl
+ciBvciBub3Qgb2N0YWwgdHJhbnNmZXIgTUFZIGJlIHN1cHBvcnRlZCAqLw0KPiA+Pg0KPiA+PiBC
+dXQgeW91IGFscmVhZHkga25vdyB0aGF0IGZyb20gRFQsIG5vID8NCj4gPj4NCj4gPg0KPiA+IENh
+ZGVuY2UgT2N0YWwgKGZvcm1lcmx5IFF1YWQpIFNQSSBDb250cm9sbGVyIGlzIHNvbGQgYXMgYW4g
+SVAsIGFuZCBpcw0KPiA+IGNvbmZpZ3VyYWJsZS4gVGhpcyBpbmNsdWRlcyBtYXggU1BJIG1vZGUu
+IEl0IGlzIHBvc3NpYmxlIHRvIGRldGVjdCwgdGhhdA0KPiA+IE9jdGFsIFNQSSBjb250cm9sbGVy
+IGlzIGNvbmZpZ3VyZWQgKGR1cmluZyBoYXJkd2FyZSBjb21waWxhdGlvbikgdG8gc3VwcG9ydA0K
+PiA+IHVwIHRvIFF1YWQgbW9kZSwgdXNpbmcgcmV2aXNpb24gcmVnaXN0ZXIuDQo+IA0KPiBTbyB0
+aGUgb2N0YWwtc3BpIGNvbnRyb2xsZXIgYWx3YXlzIGhhcyB0aGlzIGNvbmZpZyByZWdpc3Rlciwg
+YnV0IHRoZQ0KPiBxdWFkLXNwaSBjb250cm9sbGVyIG1heSBvciBtYXkgbm90IGhhdmUgdGhpcyBy
+ZWdpc3RlciA/DQo+IA0KDQpUaGlzIHJlZ2lzdGVyIHdhcyBhbHdheXMgcHJlc2VudC4gSW4gUXVh
+ZC1TUEksIGhvd2V2ZXIsIGl0IGRpZG4ndCBjb250YWluDQppbmZvcm1hdGlvbiBhYm91dCBtYXhp
+bXVtIHBvc3NpYmxlIG1vZGUsIGFzIG9ubHkgcXVhZCB3YXMgcG9zc2libGUsIGFuZA0KbWVhbmlu
+ZyBvZiBiaXRzIGNoZWNrZWQgaGVyZSB3YXMgZGlmZmVyZW50Lg0KDQo+ID4+PiArCXJldl9yZWcg
+PSByZWFkbChjcXNwaS0+aW9iYXNlICsgQ1FTUElfUkVHX01PRFVMRUlEKTsNCj4gPj4+ICsJZGV2
+X2luZm8oZGV2LCAiQ1FTUEkgTW9kdWxlIGlkICV4XG4iLCByZXZfcmVnKTsNCj4gPj4+ICsNCj4g
+Pj4+ICsJc3dpdGNoIChyZXZfcmVnICYgQ1FTUElfUkVHX01PRFVMRUlEX0NPTkZfSURfTUFTSykg
+ew0KPiA+Pj4gKwljYXNlIENRU1BJX1JFR19NT0RVTEVJRF9DT05GX0lEX09DVEFMX1BIWToNCj4g
+Pj4+ICsJY2FzZSBDUVNQSV9SRUdfTU9EVUxFSURfQ09ORl9JRF9PQ1RBTDoNCj4gPj4+ICsJCW1v
+ZGUgPSBTUElfTk9SX09DVEFMOw0KPiA+Pj4gKwkJYnJlYWs7DQo+ID4+PiArCWNhc2UgQ1FTUElf
+UkVHX01PRFVMRUlEX0NPTkZfSURfUVVBRDoNCj4gPj4+ICsJY2FzZSBDUVNQSV9SRUdfTU9EVUxF
+SURfQ09ORl9JRF9RVUFEX1BIWToNCj4gPj4NCj4gPj4gRG9lcyB0aGlzIHdvcmsgb24gYWxsIHJl
+dmlzaW9ucyBvZiBDUVNQSSA/DQo+ID4+DQo+ID4NCj4gPiBBZnRlciBoYXZpbmcgYSBtb3JlIHRo
+b3JvdWdoIGxvb2sgYXQgc3BlY2lmaWNhdGlvbiBvZiBvbGRlciBJUCB2ZXJzaW9uDQo+ID4gKHF1
+YWQgb25seSkgaXQgc2VlbXMsIHRoYXQgcmV2aXNpb24gcmVnaXN0ZXIgZm9ybWF0IGhhcyBpbmRl
+ZWQgY2hhbmdlZC4NCj4gPiBUaGlzIHdpbGwgYmUgZml4ZWQgaW4gdGhlIG5leHQgdmVyc2lvbiBv
+ZiB0aGUgcGF0Y2guDQo+IA0KPiBDYW4gdGhlIHF1YWQtc3BpIGNvbnRyb2xsZXIgYmUgY29uZmln
+dXJlZCBvbmx5IGFzIGR1YWwgb3Igc2luZ2xlID8NCj4gV2hhdCBhYm91dCB0aGUgb2N0YWwgb25l
+ID8gVGhlc2UgY2FzZXMgc2hvdWxkIHByb2JhYmx5IGJlIGhhbmRsZWQNCj4gc29tZWhvdyB0b28s
+IHJpZ2h0ID8NCj4gDQoNClF1YWQtU1BJIGNvbnRyb2xsZXIgY2FuIGFsd2F5cyBzdXBwb3J0IHNp
+bmdsZSwgZHVhbCBhbmQgcXVhZC4gVGhlcmUgd2FzDQpubyBvcHRpb24gdG8gY29uZmlndXJlIG1h
+eCBtb2RlLiBPY3RhbC1TUEkgY29udHJvbGxlciBjYW4gYmUgY29uZmlndXJlZA0KdG8gc3VwcG9y
+dCBlaXRoZXIgb2N0YWwgb3IgcXVhZCBtb2RlLiBObyBjb250cm9sbGVyIGNvdWxkIGJlIGNvbmZp
+Z3VyZWQgDQooZHVyaW5nIGhhcmR3YXJlIGNvbXBpbGF0aW9uL3N5bnRoZXNpcykgdG8gc3VwcG9y
+dCBvbmx5IHNpbmdsZS9kdWFsIA0KU1BJIG1vZGUuIFRvIHB1dCBpdCBzaG9ydGx5OiBzaW5nbGUs
+IGR1YWwgYW5kIHF1YWQgaXMgYWx3YXlzIHN1cHBvcnRlZC4NCg0KPiA+Pj4gKwkJbW9kZSA9IFNQ
+SV9OT1JfUVVBRDsNCj4gPj4+ICsJCWJyZWFrOw0KPiA+Pj4gKwl9DQo+ID4+PiArDQo+ID4+PiAr
+CWlmIChjcXNwaS0+bWF4X21vZGUgPT0gQ1FTUElfTUFYX01PREVfT0NUQUwpDQo+ID4+PiArCQlk
+dF9tb2RlID0gU1BJX05PUl9PQ1RBTDsNCj4gPj4+ICsNCj4gPj4+ICsJaWYgKG1vZGUgPT0gU1BJ
+X05PUl9RVUFEICYmIGR0X21vZGUgPT0gU1BJX05PUl9PQ1RBTCkNCj4gPj4+ICsJCWRldl93YXJu
+KGRldiwgIlJlcXVlc3RlZCBvY3RhbCBtb2RlIGlzIG5vdCBzdXBwb3J0ZWQgYnkgdGhlIGRldmlj
+ZS4iKTsNCj4gPj4+ICsJZWxzZSBpZiAobW9kZSA9PSBTUElfTk9SX09DVEFMICYmIGR0X21vZGUg
+PT0gU1BJX05PUl9RVUFEKQ0KPiA+Pj4gKwkJbW9kZSA9IFNQSV9OT1JfUVVBRDsNCj4gPj4+ICsN
+Cj4gPj4+ICAJLyogR2V0IGZsYXNoIGRldmljZSBkYXRhICovDQo+ID4+PiAgCWZvcl9lYWNoX2F2
+YWlsYWJsZV9jaGlsZF9vZl9ub2RlKGRldi0+b2Zfbm9kZSwgbnApIHsNCj4gPj4+ICAJCXJldCA9
+IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wLCAicmVnIiwgJmNzKTsNCj4gPj4+IEBAIC0xMTIzLDcg
+KzExODMsNyBAQCBzdGF0aWMgaW50IGNxc3BpX3NldHVwX2ZsYXNoKHN0cnVjdCBjcXNwaV9zdCAq
+Y3FzcGksIHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnApDQo+ID4+PiAgCQkJZ290byBlcnI7DQo+ID4+
+PiAgCQl9DQo+ID4+Pg0KPiA+Pj4gLQkJcmV0ID0gc3BpX25vcl9zY2FuKG5vciwgTlVMTCwgU1BJ
+X05PUl9RVUFEKTsNCj4gPj4+ICsJCXJldCA9IHNwaV9ub3Jfc2Nhbihub3IsIE5VTEwsIG1vZGUp
+Ow0KPiA+Pj4gIAkJaWYgKHJldCkNCj4gPj4+ICAJCQlnb3RvIGVycjsNCj4gPj4+DQo+ID4+PiBA
+QCAtMTI3NywxMyArMTMzNyw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZGV2X3BtX29wcyBjcXNw
+aV9fZGV2X3BtX29wcyA9IHsNCj4gPj4+ICAjZGVmaW5lIENRU1BJX0RFVl9QTV9PUFMJTlVMTA0K
+PiA+Pj4gICNlbmRpZg0KPiA+Pj4NCj4gPj4+IC1zdGF0aWMgc3RydWN0IG9mX2RldmljZV9pZCBj
+b25zdCBjcXNwaV9kdF9pZHNbXSA9IHsNCj4gPj4+IC0Jey5jb21wYXRpYmxlID0gImNkbnMscXNw
+aS1ub3IiLH0sDQo+ID4+PiAtCXsgLyogZW5kIG9mIHRhYmxlICovIH0NCj4gPj4+IC19Ow0KPiA+
+Pj4gLQ0KPiA+Pj4gLU1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIGNxc3BpX2R0X2lkcyk7DQo+ID4+
+PiAtDQo+ID4+PiAgc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgY3FzcGlfcGxhdGZvcm1f
+ZHJpdmVyID0gew0KPiA+Pj4gIAkucHJvYmUgPSBjcXNwaV9wcm9iZSwNCj4gPj4+ICAJLnJlbW92
+ZSA9IGNxc3BpX3JlbW92ZSwNCj4gPj4+DQo+ID4+DQo+ID4+DQo+ID4+IC0tDQo+ID4+IEJlc3Qg
+cmVnYXJkcywNCj4gPj4gTWFyZWsgVmFzdXQNCj4gDQo+IA0KPiAtLQ0KPiBCZXN0IHJlZ2FyZHMs
+DQo+IE1hcmVrIFZhc3V0DQo=
