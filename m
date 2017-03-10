@@ -1,32 +1,26 @@
-Received: from mail-sn1nam02on0078.outbound.protection.outlook.com
- ([104.47.36.78] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+Received: from mail-qk0-x241.google.com ([2607:f8b0:400d:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmLRC-0003zI-Ho
- for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 14:22:36 +0000
-From: Artur Jedrysek <jartur@cadence.com>
-To: Marek Vasut <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- Dinh Nguyen <dinguyen@kernel.org>
-Subject: RE: [v2, 2/4] mtd: spi-nor: Add Octal SPI support to Cadence QSPI
- driver.
-Date: Fri, 10 Mar 2017 14:22:11 +0000
-Message-ID: <DM5PR07MB27801B207247AB49B4E352F5D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
-References: <1488959932-6657-1-git-send-email-jartur@cadence.com>
- <1488960178-11079-1-git-send-email-jartur@cadence.com>
- <891f9177-e03c-85e0-ebab-2dc7df2ce9e0@gmail.com>
- <DM5PR07MB278038D86D5AD05FA2F5AAA1D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
- <8315061c-716d-89c9-3f04-687b48fbac22@gmail.com>
- <DM5PR07MB2780DC9981927880E1ED1B37D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
- <23371579-495a-1336-cce9-3860a2e2a4c1@gmail.com>
-In-Reply-To: <23371579-495a-1336-cce9-3860a2e2a4c1@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1cmOcv-0005mW-DA
+ for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 17:46:55 +0000
+Received: by mail-qk0-x241.google.com with SMTP id n141so28949902qke.3
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2017 09:46:33 -0800 (PST)
+Subject: Re: [PATCH V6, 1/1] mtd: nand: brcmnand: Check flash #WP pin status
+ before nand erase/program
+To: Marek Vasut <marek.vasut@gmail.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ linux-mtd@lists.infradead.org
+References: <1488575813-12660-1-git-send-email-kdasu.kdev@gmail.com>
+ <1488575813-12660-2-git-send-email-kdasu.kdev@gmail.com>
+ <25484b94-341f-300d-474e-a272f249f0a2@gmail.com>
+Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at, cyrille.pitchen@atmel.com
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <74ac0886-769c-feab-836d-f782535d8592@gmail.com>
+Date: Fri, 10 Mar 2017 09:46:29 -0800
 MIME-Version: 1.0
+In-Reply-To: <25484b94-341f-300d-474e-a272f249f0a2@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,50 +30,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQpGcm9tOiBNYXJlayBWYXN1dCBbbWFpbHRvOm1hcmVrLnZhc3V0QGdtYWlsLmNvbV0NClNlbnQ6
-IDEwIG1hcmNhIDIwMTcgMTU6MTUNCg0KPiBPbiAwMy8xMC8yMDE3IDAzOjA5IFBNLCBBcnR1ciBK
-ZWRyeXNlayB3cm90ZToNCj4gDQo+IENDaW5nIERpbmguDQo+IA0KPiBbLi4uXQ0KPiANCj4gPj4+
-Pj4gKwkvKiBEZXRlcm1pbmUsIHdoZXRoZXIgb3Igbm90IG9jdGFsIHRyYW5zZmVyIE1BWSBiZSBz
-dXBwb3J0ZWQgKi8NCj4gPj4+Pg0KPiA+Pj4+IEJ1dCB5b3UgYWxyZWFkeSBrbm93IHRoYXQgZnJv
-bSBEVCwgbm8gPw0KPiA+Pj4+DQo+ID4+Pg0KPiA+Pj4gQ2FkZW5jZSBPY3RhbCAoZm9ybWVybHkg
-UXVhZCkgU1BJIENvbnRyb2xsZXIgaXMgc29sZCBhcyBhbiBJUCwgYW5kIGlzDQo+ID4+PiBjb25m
-aWd1cmFibGUuIFRoaXMgaW5jbHVkZXMgbWF4IFNQSSBtb2RlLiBJdCBpcyBwb3NzaWJsZSB0byBk
-ZXRlY3QsIHRoYXQNCj4gPj4+IE9jdGFsIFNQSSBjb250cm9sbGVyIGlzIGNvbmZpZ3VyZWQgKGR1
-cmluZyBoYXJkd2FyZSBjb21waWxhdGlvbikgdG8gc3VwcG9ydA0KPiA+Pj4gdXAgdG8gUXVhZCBt
-b2RlLCB1c2luZyByZXZpc2lvbiByZWdpc3Rlci4NCj4gPj4NCj4gPj4gU28gdGhlIG9jdGFsLXNw
-aSBjb250cm9sbGVyIGFsd2F5cyBoYXMgdGhpcyBjb25maWcgcmVnaXN0ZXIsIGJ1dCB0aGUNCj4g
-Pj4gcXVhZC1zcGkgY29udHJvbGxlciBtYXkgb3IgbWF5IG5vdCBoYXZlIHRoaXMgcmVnaXN0ZXIg
-Pw0KPiA+Pg0KPiA+DQo+ID4gVGhpcyByZWdpc3RlciB3YXMgYWx3YXlzIHByZXNlbnQuIEluIFF1
-YWQtU1BJLCBob3dldmVyLCBpdCBkaWRuJ3QgY29udGFpbg0KPiA+IGluZm9ybWF0aW9uIGFib3V0
-IG1heGltdW0gcG9zc2libGUgbW9kZSwgYXMgb25seSBxdWFkIHdhcyBwb3NzaWJsZSwgYW5kDQo+
-ID4gbWVhbmluZyBvZiBiaXRzIGNoZWNrZWQgaGVyZSB3YXMgZGlmZmVyZW50Lg0KPiANCj4gT0sN
-Cj4gDQo+ID4+Pj4+ICsJcmV2X3JlZyA9IHJlYWRsKGNxc3BpLT5pb2Jhc2UgKyBDUVNQSV9SRUdf
-TU9EVUxFSUQpOw0KPiA+Pj4+PiArCWRldl9pbmZvKGRldiwgIkNRU1BJIE1vZHVsZSBpZCAleFxu
-IiwgcmV2X3JlZyk7DQo+ID4+Pj4+ICsNCj4gPj4+Pj4gKwlzd2l0Y2ggKHJldl9yZWcgJiBDUVNQ
-SV9SRUdfTU9EVUxFSURfQ09ORl9JRF9NQVNLKSB7DQo+ID4+Pj4+ICsJY2FzZSBDUVNQSV9SRUdf
-TU9EVUxFSURfQ09ORl9JRF9PQ1RBTF9QSFk6DQo+ID4+Pj4+ICsJY2FzZSBDUVNQSV9SRUdfTU9E
-VUxFSURfQ09ORl9JRF9PQ1RBTDoNCj4gPj4+Pj4gKwkJbW9kZSA9IFNQSV9OT1JfT0NUQUw7DQo+
-ID4+Pj4+ICsJCWJyZWFrOw0KPiA+Pj4+PiArCWNhc2UgQ1FTUElfUkVHX01PRFVMRUlEX0NPTkZf
-SURfUVVBRDoNCj4gPj4+Pj4gKwljYXNlIENRU1BJX1JFR19NT0RVTEVJRF9DT05GX0lEX1FVQURf
-UEhZOg0KPiA+Pj4+DQo+ID4+Pj4gRG9lcyB0aGlzIHdvcmsgb24gYWxsIHJldmlzaW9ucyBvZiBD
-UVNQSSA/DQo+ID4+Pj4NCj4gPj4+DQo+ID4+PiBBZnRlciBoYXZpbmcgYSBtb3JlIHRob3JvdWdo
-IGxvb2sgYXQgc3BlY2lmaWNhdGlvbiBvZiBvbGRlciBJUCB2ZXJzaW9uDQo+ID4+PiAocXVhZCBv
-bmx5KSBpdCBzZWVtcywgdGhhdCByZXZpc2lvbiByZWdpc3RlciBmb3JtYXQgaGFzIGluZGVlZCBj
-aGFuZ2VkLg0KPiA+Pj4gVGhpcyB3aWxsIGJlIGZpeGVkIGluIHRoZSBuZXh0IHZlcnNpb24gb2Yg
-dGhlIHBhdGNoLg0KPiA+Pg0KPiA+PiBDYW4gdGhlIHF1YWQtc3BpIGNvbnRyb2xsZXIgYmUgY29u
-ZmlndXJlZCBvbmx5IGFzIGR1YWwgb3Igc2luZ2xlID8NCj4gPj4gV2hhdCBhYm91dCB0aGUgb2N0
-YWwgb25lID8gVGhlc2UgY2FzZXMgc2hvdWxkIHByb2JhYmx5IGJlIGhhbmRsZWQNCj4gPj4gc29t
-ZWhvdyB0b28sIHJpZ2h0ID8NCj4gPj4NCj4gPg0KPiA+IFF1YWQtU1BJIGNvbnRyb2xsZXIgY2Fu
-IGFsd2F5cyBzdXBwb3J0IHNpbmdsZSwgZHVhbCBhbmQgcXVhZC4gVGhlcmUgd2FzDQo+ID4gbm8g
-b3B0aW9uIHRvIGNvbmZpZ3VyZSBtYXggbW9kZS4gT2N0YWwtU1BJIGNvbnRyb2xsZXIgY2FuIGJl
-IGNvbmZpZ3VyZWQNCj4gPiB0byBzdXBwb3J0IGVpdGhlciBvY3RhbCBvciBxdWFkIG1vZGUuIE5v
-IGNvbnRyb2xsZXIgY291bGQgYmUgY29uZmlndXJlZA0KPiA+IChkdXJpbmcgaGFyZHdhcmUgY29t
-cGlsYXRpb24vc3ludGhlc2lzKSB0byBzdXBwb3J0IG9ubHkgc2luZ2xlL2R1YWwNCj4gPiBTUEkg
-bW9kZS4gVG8gcHV0IGl0IHNob3J0bHk6IHNpbmdsZSwgZHVhbCBhbmQgcXVhZCBpcyBhbHdheXMg
-c3VwcG9ydGVkLg0KPiANCj4gU28gYmFzaWNhbGx5IHRoZSB3aG9sZSBjaGVjayB5b3UgbmVlZCB0
-byBwZXJmb3JtIGhlcmUgaXMNCj4gDQo+IG1vZGUgPSBxdWFkOw0KPiBpZiAoY29udHJvbGxlci0+
-ZmxhZ3MgJiBDQU5fRE9fT0NUQUwpIHsNCj4gIGlmIChyZWFkbChJRF9SRUdJU1RFUikgJiBJU19D
-T05GSUdVUkVEX0FTX09DVEFMKQ0KPiAgICBtb2RlID0gb2N0YWw7DQo+IH0NCj4gDQoNClllcy4g
-U29tZXRoaW5nIHNpbWlsYXIgd2FzIGFscmVhZHkgd3JpdHRlbiBhbmQgdGVzdGVkLCBhbmQgd2ls
-bCBiZSBzZW50DQppbiB0aGUgbmV4dCB2ZXJzaW9uIG9mIHRoZSBwYXRjaCBpbnN0ZWFkLg0KDQo+
-IC0tDQo+IEJlc3QgcmVnYXJkcywNCj4gTWFyZWsgVmFzdXQNCg==
+On 03/10/2017 05:22 AM, Marek Vasut wrote:
+> On 03/03/2017 10:16 PM, Kamal Dasu wrote:
+>> On brcmnand controller v6.x and v7.x, the #WP pin is controlled through
+>> the NAND_WP bit in CS_SELECT register.
+>>
+>> The driver currently assumes that toggling the #WP pin is
+>> instantaneously enabling/disabling write-protection, but it actually
+>> takes some time to propagate the new state to the internal NAND chip
+>> logic. This behavior is sometime causing data corruptions when an
+>> erase/program operation is executed before write-protection has really
+>> been disabled.
+>>
+>> Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+>> ---
+>>  drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++--
+>>  1 file changed, 58 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+>> index 42ebd73..7419c5c 100644
+>> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+>> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+>> @@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
+>>  #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
+>>  #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
+>>  
+>> +#define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
+>> +#define NAND_POLL_STATUS_TIMEOUT_MS	100
+>> +
+>>  /* Controller feature flags */
+>>  enum {
+>>  	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
+>> @@ -765,6 +768,31 @@ enum {
+>>  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+>>  };
+>>  
+>> +static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
+>> +				    u32 mask, u32 expected_val,
+>> +				    unsigned long timeout_ms)
+>> +{
+>> +	unsigned long limit;
+>> +	u32 val;
+>> +
+>> +	if (!timeout_ms)
+>> +		timeout_ms = NAND_POLL_STATUS_TIMEOUT_MS;
+>> +
+>> +	limit = jiffies + msecs_to_jiffies(timeout_ms);
+>> +	do {
+>> +		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+>> +		if ((val & mask) == expected_val)
+>> +			return 0;
+>> +
+>> +		cpu_relax();
+>> +	} while (time_after(limit, jiffies));
+>> +
+>> +	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
+>> +		 expected_val, val & mask);
+>> +
+>> +	return -ETIMEDOUT;
+>> +}
+>> +
+>>  static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
+>>  {
+>>  	u32 val = en ? CS_SELECT_NAND_WP : 0;
+>> @@ -1024,12 +1052,39 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
+>>  
+>>  	if ((ctrl->features & BRCMNAND_HAS_WP) && wp_on == 1) {
+>>  		static int old_wp = -1;
+> 
+> Unrelated to this patch, but this static variable should be moved to
+> driver's private data instead.
+
+Does that mean you are okay with this patch as-is as a fix which can be
+backported and code refactoring can be submitted as follow up patches?
+-- 
+Florian
