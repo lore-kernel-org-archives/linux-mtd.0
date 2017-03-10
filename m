@@ -1,27 +1,24 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmBSs-0002sI-JE
- for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 03:43:40 +0000
-Received: by mail-wm0-x243.google.com with SMTP id z63so318184wmg.2
- for <linux-mtd@lists.infradead.org>; Thu, 09 Mar 2017 19:43:18 -0800 (PST)
-Subject: Re: [v2, 4/4] dt-bindings: mtd: Add Octal SPI support to Cadence QSPI.
-To: Artur Jedrysek <jartur@cadence.com>, devicetree@vger.kernel.org,
+ id 1cmBSs-0002s0-DG
+ for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 03:43:41 +0000
+Received: by mail-wm0-x244.google.com with SMTP id v190so314871wme.3
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Mar 2017 19:43:16 -0800 (PST)
+Subject: Re: [PATCH v3] mtd: spi-nor: Add support for N25Q256A13
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>,
  linux-mtd@lists.infradead.org
-References: <1488959932-6657-1-git-send-email-jartur@cadence.com>
- <1488960326-13858-1-git-send-email-jartur@cadence.com>
-Cc: linux-kernel@vger.kernel.org, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>
+References: <1488422554-7644-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
+ <a6888235-c6be-53f3-7787-7fafcb56b8b4@wedev4u.fr>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Jagan Teki <jagan@openedev.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <132a4818-11d1-263f-aae4-bac4e76c14c8@gmail.com>
-Date: Fri, 10 Mar 2017 04:39:27 +0100
+Message-ID: <d095f785-e092-c474-44f8-e6776c7b8caf@gmail.com>
+Date: Fri, 10 Mar 2017 04:19:14 +0100
 MIME-Version: 1.0
-In-Reply-To: <1488960326-13858-1-git-send-email-jartur@cadence.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <a6888235-c6be-53f3-7787-7fafcb56b8b4@wedev4u.fr>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,45 +28,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/08/2017 09:05 AM, Artur Jedrysek wrote:
-> This patch updates Cadence QSPI Device Tree documentation to include
-> information about new compatible used to indicate, whether or not
-> Octal SPI transfers are supported by the device.
+On 03/07/2017 11:11 PM, Cyrille Pitchen wrote:
+> Hi Nobuhiro,
 > 
-> Signed-off-by: Artur Jedrysek <jartur@cadence.com>
-> ---
-> Changelog:
-> v2: Use new compatible, instead of boolean property, to indicate
-> Octal SPI support.
-> ---
->  Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Le 02/03/2017 à 03:42, Nobuhiro Iwamatsu a écrit :
+>> Add new Micron N25Q256A (N25Q256A13) 256Mbit NOR Flash in the list
+>                             ^
+> You mean N25Q256A11, don't you? Otherwise it's not consistent with the
+> actual patch!
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> index f248056..41d1e98 100644
-> --- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> +++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> @@ -1,7 +1,9 @@
->  * Cadence Quad SPI controller
->  
->  Required properties:
-> -- compatible : Should be "cdns,qspi-nor".
-> +- compatible : Should be "cdns,{qspi|ospi}-nor".
-
-Please explicitly list all compatibles , ie.
-Should be "cdns,qspi-nor" or "cdns,ospi-nor".
-
-But I think the ospi is backward compatible with qspi, right ? So the
-binding for ospi should list both, ie.
-compatible = "cdns,ospi-nor", "cdns,qspi-nor";
-
-> +  Use "cdns,qspi-nor" for Quad SPI controller.
-> +  Use "cdns,ospi-nor" for Octal SPI controller.
->  - reg : Contains two entries, each of which is a tuple consisting of a
->  	physical address and length. The first entry is the address and
->  	length of the controller register set. The second entry is the
+>> of supported devices. This chip has the same structure as the N25Q256A
+>> but ID and voltage (1V8) to use is different. Therefore, this adds
+>> N25Q256A13 as n25q256ax1.
 > 
+>   ^
+> N25Q256A11 as n25q256ax1
+> 
+>>
+>> In the future, for new Micron memories we could use the patterns
+>> "n25q*ax1" for 1V8 and "n25q*ax3" for 3V3 memories.
+>>
+> 
+> Sound like a good idea :)
+> Marek, do you agree with that?
 
+How would that work ?
 
 -- 
 Best regards,
