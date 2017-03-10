@@ -1,28 +1,29 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmJzZ-0005wT-KU
- for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 12:50:00 +0000
-Received: by mail-wm0-x241.google.com with SMTP id n11so2153576wma.0
- for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2017 04:49:37 -0800 (PST)
-Subject: Re: [v2, 2/4] mtd: spi-nor: Add Octal SPI support to Cadence QSPI
- driver.
+ id 1cmK2R-00007d-8o
+ for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 12:52:58 +0000
+Received: by mail-wm0-x243.google.com with SMTP id u132so2159764wmg.1
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2017 04:52:34 -0800 (PST)
+Subject: Re: [v2, 4/4] dt-bindings: mtd: Add Octal SPI support to Cadence QSPI.
 To: Artur Jedrysek <jartur@cadence.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 References: <1488959932-6657-1-git-send-email-jartur@cadence.com>
- <1488960178-11079-1-git-send-email-jartur@cadence.com>
- <891f9177-e03c-85e0-ebab-2dc7df2ce9e0@gmail.com>
- <DM5PR07MB278038D86D5AD05FA2F5AAA1D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
+ <1488960326-13858-1-git-send-email-jartur@cadence.com>
+ <132a4818-11d1-263f-aae4-bac4e76c14c8@gmail.com>
+ <DM5PR07MB2780A784F8973310542FDBE3D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <8315061c-716d-89c9-3f04-687b48fbac22@gmail.com>
-Date: Fri, 10 Mar 2017 13:49:34 +0100
+Message-ID: <7d303436-77cf-fb11-30b6-c59014950ae6@gmail.com>
+Date: Fri, 10 Mar 2017 13:52:31 +0100
 MIME-Version: 1.0
-In-Reply-To: <DM5PR07MB278038D86D5AD05FA2F5AAA1D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
+In-Reply-To: <DM5PR07MB2780A784F8973310542FDBE3D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,212 +35,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/10/2017 01:00 PM, Artur Jedrysek wrote:
+On 03/10/2017 01:03 PM, Artur Jedrysek wrote:
 > 
-> From: Marek Vasut [mailto:marek.vasut@gmail.com]
-> Sent: 10 March 2017 04:37
->> On 03/08/2017 09:02 AM, Artur Jedrysek wrote:
->>> Recent versions of Cadence QSPI controller support Octal SPI transfers
->>> as well. This patch updates existing driver to support such feature.
->>>
->>> It is not possible to determine whether or not octal mode is supported
->>> just by looking at revision register alone. To solve that, an additional
->>> compatible in Device Tree is added to indicate such capability.
->>> Both (revision and compatible) are used to determine, which mode to
->>> pass to spi_nor_scan() call.
+>> From: Marek Vasut [mailto:marek.vasut@gmail.com]
+>> Sent: 10 March 2017 04:39
+>> On 03/08/2017 09:05 AM, Artur Jedrysek wrote:
+>>> This patch updates Cadence QSPI Device Tree documentation to include
+>>> information about new compatible used to indicate, whether or not
+>>> Octal SPI transfers are supported by the device.
 >>>
 >>> Signed-off-by: Artur Jedrysek <jartur@cadence.com>
 >>> ---
 >>> Changelog:
->>> v2: Use new compatible in DT, instead of boolean property, to indicate
+>>> v2: Use new compatible, instead of boolean property, to indicate
 >>> Octal SPI support.
->>> Extracted Kconfig update to seperate patch.
 >>> ---
->>>  drivers/mtd/spi-nor/cadence-quadspi.c | 69 +++++++++++++++++++++++++++++++----
->>>  1 file changed, 61 insertions(+), 8 deletions(-)
+>>>  Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 4 +++-
+>>>  1 file changed, 3 insertions(+), 1 deletion(-)
 >>>
->>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
->>> index 9f8102d..a96471d 100644
->>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
->>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
->>> @@ -76,6 +76,7 @@ struct cqspi_st {
->>>  	u32			fifo_depth;
->>>  	u32			fifo_width;
->>>  	u32			trigger_address;
->>> +	u32			max_mode;
+>>> diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+>> b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+>>> index f248056..41d1e98 100644
+>>> --- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+>>> +++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+>>> @@ -1,7 +1,9 @@
+>>>  * Cadence Quad SPI controller
+>>>
+>>>  Required properties:
+>>> -- compatible : Should be "cdns,qspi-nor".
+>>> +- compatible : Should be "cdns,{qspi|ospi}-nor".
 >>
->> I think it's time to introduce flags instead,
->> ie. #define CQSPI_FLAG_SUPPORTS_OCTAL BIT(0)
->>
->>>  	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
->>>  };
->>>
->>> @@ -87,6 +88,10 @@ struct cqspi_st {
->>>  #define CQSPI_INST_TYPE_SINGLE			0
->>>  #define CQSPI_INST_TYPE_DUAL			1
->>>  #define CQSPI_INST_TYPE_QUAD			2
->>> +#define CQSPI_INST_TYPE_OCTAL			3
->>> +
->>> +#define CQSPI_MAX_MODE_QUAD			0
->>> +#define CQSPI_MAX_MODE_OCTAL			1
->>>
->>>  #define CQSPI_DUMMY_CLKS_PER_BYTE		8
->>>  #define CQSPI_DUMMY_BYTES_MAX			4
->>> @@ -204,6 +209,14 @@ struct cqspi_st {
->>>  #define CQSPI_REG_CMDWRITEDATALOWER		0xA8
->>>  #define CQSPI_REG_CMDWRITEDATAUPPER		0xAC
->>>
->>> +#define CQSPI_REG_MODULEID			0xFC
->>> +#define CQSPI_REG_MODULEID_CONF_ID_MASK		0x3
->>> +#define CQSPI_REG_MODULEID_CONF_ID_LSB		0
->>> +#define CQSPI_REG_MODULEID_CONF_ID_OCTAL_PHY	0x0
->>> +#define CQSPI_REG_MODULEID_CONF_ID_OCTAL	0x1
->>> +#define CQSPI_REG_MODULEID_CONF_ID_QUAD_PHY	0x2
->>> +#define CQSPI_REG_MODULEID_CONF_ID_QUAD		0x3
->>> +
->>>  /* Interrupt status bits */
->>>  #define CQSPI_REG_IRQ_MODE_ERR			BIT(0)
->>>  #define CQSPI_REG_IRQ_UNDERFLOW			BIT(1)
->>> @@ -866,6 +879,9 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
->>>  		case SPI_NOR_QUAD:
->>>  			f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
->>>  			break;
->>> +		case SPI_NOR_OCTAL:
->>> +			f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
->>> +			break;
->>>  		default:
->>>  			return -EINVAL;
->>>  		}
->>> @@ -977,6 +993,17 @@ static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
->>>  	return ret;
->>>  }
->>>
->>> +static const u32 cqspi_max_mode_quad = CQSPI_MAX_MODE_QUAD;
->>> +static const u32 cqspi_max_mode_octal = CQSPI_MAX_MODE_OCTAL;
->>> +
->>> +static struct of_device_id const cqspi_dt_ids[] = {
->>> +	{ .compatible = "cdns,qspi-nor", .data = &cqspi_max_mode_quad },
->>> +	{ .compatible = "cdns,ospi-nor", .data = &cqspi_max_mode_octal },
->>
->> .data = (void *)CQSPI_FLAG_SUPPORTS_OCTAL , then you don't need that
->> static const stuff ...
+>> Please explicitly list all compatibles , ie.
+>> Should be "cdns,qspi-nor" or "cdns,ospi-nor".
 >>
 > 
-> I had some doubts regarding that approach, as it may be dependent on the
-> CPU architecture (32-bit, 64-bit) and endianness. .data needs to be first
-> casted to unsigned long for reading, to ensure correct access and to 
-> allow bitwise operations on it. That solution works, and if such approach
-> is preferred, then it will be used in next version of the patch.
+> Two possible options are also explicitly listed right below. I did that
+> in the way it was done in other driver for Cadence IP:
+> /Documentation/devicetree/bindings/net/macb.txt
+> Should I remove all of that and replace it with both options, separated
+> by an "or" word?
 
-Good
+Wait for Rob to confirm.
 
->>> +	{ /* end of table */ }
->>> +};
->>> +
->>> +MODULE_DEVICE_TABLE(of, cqspi_dt_ids);
->>> +
->>>  static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
->>>  				    struct cqspi_flash_pdata *f_pdata,
->>>  				    struct device_node *np)
->>> @@ -1018,6 +1045,13 @@ static int cqspi_of_get_pdata(struct platform_device *pdev)
->>>  {
->>>  	struct device_node *np = pdev->dev.of_node;
->>>  	struct cqspi_st *cqspi = platform_get_drvdata(pdev);
->>> +	const struct of_device_id *match;
->>> +
->>> +	cqspi->max_mode = CQSPI_MAX_MODE_QUAD;
->>> +
->>> +	match = of_match_node(cqspi_dt_ids, np);
->>> +	if (match && match->data)
->>> +		cqspi->max_mode = *((u32 *)match->data);
->>
->> Use flags instead, see above.
->>
->>>  	cqspi->is_decoded_cs = of_property_read_bool(np, "cdns,is-decoded-cs");
->>>
->>> @@ -1074,9 +1108,35 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
->>>  	struct cqspi_flash_pdata *f_pdata;
->>>  	struct spi_nor *nor;
->>>  	struct mtd_info *mtd;
->>> +	enum read_mode mode;
->>> +	enum read_mode dt_mode = SPI_NOR_QUAD;
->>>  	unsigned int cs;
->>> +	unsigned int rev_reg;
->>>  	int i, ret;
->>>
->>> +	/* Determine, whether or not octal transfer MAY be supported */
->>
->> But you already know that from DT, no ?
+>> But I think the ospi is backward compatible with qspi, right ? So the
+>> binding for ospi should list both, ie.
+>> compatible = "cdns,ospi-nor", "cdns,qspi-nor";
 >>
 > 
-> Cadence Octal (formerly Quad) SPI Controller is sold as an IP, and is
-> configurable. This includes max SPI mode. It is possible to detect, that
-> Octal SPI controller is configured (during hardware compilation) to support
-> up to Quad mode, using revision register.
+> Yes, the ospi is backwards compatible with qspi. However, the sole point
+> of introducing new compatible was to differentiate between them (which
+> was previously done using a boolean flag, but that was criticized).
+> Listing both bindings for ospi would only help for kernels not
+> containing driver update being subject of this patch series, as both
+> ospi and qspi are handled by the same driver - just with a slight
+> difference. I apologize if I got something wrong here.
 
-So the octal-spi controller always has this config register, but the
-quad-spi controller may or may not have this register ?
+You got it right, I was just curious about the compatibility.
 
->>> +	rev_reg = readl(cqspi->iobase + CQSPI_REG_MODULEID);
->>> +	dev_info(dev, "CQSPI Module id %x\n", rev_reg);
->>> +
->>> +	switch (rev_reg & CQSPI_REG_MODULEID_CONF_ID_MASK) {
->>> +	case CQSPI_REG_MODULEID_CONF_ID_OCTAL_PHY:
->>> +	case CQSPI_REG_MODULEID_CONF_ID_OCTAL:
->>> +		mode = SPI_NOR_OCTAL;
->>> +		break;
->>> +	case CQSPI_REG_MODULEID_CONF_ID_QUAD:
->>> +	case CQSPI_REG_MODULEID_CONF_ID_QUAD_PHY:
->>
->> Does this work on all revisions of CQSPI ?
->>
-> 
-> After having a more thorough look at specification of older IP version
-> (quad only) it seems, that revision register format has indeed changed.
-> This will be fixed in the next version of the patch.
-
-Can the quad-spi controller be configured only as dual or single ?
-What about the octal one ? These cases should probably be handled
-somehow too, right ?
-
->>> +		mode = SPI_NOR_QUAD;
->>> +		break;
->>> +	}
->>> +
->>> +	if (cqspi->max_mode == CQSPI_MAX_MODE_OCTAL)
->>> +		dt_mode = SPI_NOR_OCTAL;
->>> +
->>> +	if (mode == SPI_NOR_QUAD && dt_mode == SPI_NOR_OCTAL)
->>> +		dev_warn(dev, "Requested octal mode is not supported by the device.");
->>> +	else if (mode == SPI_NOR_OCTAL && dt_mode == SPI_NOR_QUAD)
->>> +		mode = SPI_NOR_QUAD;
->>> +
->>>  	/* Get flash device data */
->>>  	for_each_available_child_of_node(dev->of_node, np) {
->>>  		ret = of_property_read_u32(np, "reg", &cs);
->>> @@ -1123,7 +1183,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
->>>  			goto err;
->>>  		}
->>>
->>> -		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
->>> +		ret = spi_nor_scan(nor, NULL, mode);
->>>  		if (ret)
->>>  			goto err;
->>>
->>> @@ -1277,13 +1337,6 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
->>>  #define CQSPI_DEV_PM_OPS	NULL
->>>  #endif
->>>
->>> -static struct of_device_id const cqspi_dt_ids[] = {
->>> -	{.compatible = "cdns,qspi-nor",},
->>> -	{ /* end of table */ }
->>> -};
->>> -
->>> -MODULE_DEVICE_TABLE(of, cqspi_dt_ids);
->>> -
->>>  static struct platform_driver cqspi_platform_driver = {
->>>  	.probe = cqspi_probe,
->>>  	.remove = cqspi_remove,
+>>> +  Use "cdns,qspi-nor" for Quad SPI controller.
+>>> +  Use "cdns,ospi-nor" for Octal SPI controller.
+>>>  - reg : Contains two entries, each of which is a tuple consisting of a
+>>>  	physical address and length. The first entry is the address and
+>>>  	length of the controller register set. The second entry is the
 >>>
 >>
 >>
