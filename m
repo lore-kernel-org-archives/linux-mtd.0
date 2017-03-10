@@ -1,35 +1,24 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmEzB-0002zE-2y
- for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 07:29:15 +0000
-Received: by mail-wm0-x243.google.com with SMTP id u132so846671wmg.1
- for <linux-mtd@lists.infradead.org>; Thu, 09 Mar 2017 23:28:50 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] doc: bindings: Add bindings documentation for mtd
- nvmem
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-References: <1488875164-30440-1-git-send-email-albeu@free.fr>
- <1488875164-30440-2-git-send-email-albeu@free.fr>
- <9f54978c-6d61-cf2c-fb2d-f5ef2af19e0f@gmail.com>
- <CAAtXAHc34fG_TZbHrRp=oB_e=-o18zDesT73YSEx1Tr5ZE0oSw@mail.gmail.com>
- <eb8f93fd-0534-2b91-7fec-7d40ddf7b8cb@gmail.com>
- <20170310063810.2efkb6j2kdgadalv@lukather>
-Cc: Moritz Fischer <moritz.fischer@ettus.com>, Alban <albeu@free.fr>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Devicetree List <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <26333808-3740-31ca-12ee-e4c6afc9ef29@gmail.com>
-Date: Fri, 10 Mar 2017 08:28:47 +0100
+ id 1cmFJl-0003VH-Gh
+ for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 07:50:32 +0000
+Received: by mail-lf0-x242.google.com with SMTP id y193so6225455lfd.1
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Mar 2017 23:50:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20170310063810.2efkb6j2kdgadalv@lukather>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170301105851.5bc9eb0d@bbrezillon>
+References: <1488358330-23832-1-git-send-email-peterpandong@micron.com>
+ <1488358330-23832-2-git-send-email-peterpandong@micron.com>
+ <20170301105851.5bc9eb0d@bbrezillon>
+From: Peter Pan <peterpansjtu@gmail.com>
+Date: Fri, 10 Mar 2017 15:50:06 +0800
+Message-ID: <CAAyFORLoRLAJeC=1AUXiK5XiDg0t1qjcn-1Qe9DhvWug_O_5Ag@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] nand: spi: Add init/release function
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Arnaud Mouiche <arnaud.mouiche@gmail.com>
+Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ "linshunquan (A)" <linshunquan1@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,54 +28,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/10/2017 07:38 AM, Maxime Ripard wrote:
-> Hi Marek,
-> 
-> On Fri, Mar 10, 2017 at 05:52:36AM +0100, Marek Vasut wrote:
->> On 03/10/2017 05:06 AM, Moritz Fischer wrote:
->>> On Thu, Mar 9, 2017 at 7:17 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
->>>> On 03/07/2017 09:26 AM, Alban wrote:
->>>>> Config data for drivers, like MAC addresses, is often stored in MTD.
->>>>> Add a binding that define how such data storage can be represented in
->>>>> device tree.
->>>>>
->>>>> Signed-off-by: Alban <albeu@free.fr>
->>>>> ---
->>>>> Changelog:
->>>>> v2: * Added a "Required properties" section with the nvmem-provider
->>>>>       property
->>>>> ---
->>>>>  .../devicetree/bindings/nvmem/mtd-nvmem.txt        | 33 ++++++++++++++++++++++
->>>>>  1 file changed, 33 insertions(+)
->>>>>  create mode 100644 Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
->>>>> new file mode 100644
->>>>> index 0000000..8ed25e6
->>>>> --- /dev/null
->>>>> +++ b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
->>>>> @@ -0,0 +1,33 @@
->>>>> += NVMEM in MTD =
->>>>> +
->>>>> +Config data for drivers, like MAC addresses, is often stored in MTD.
->>>>> +This binding define how such data storage can be represented in device tree.
->>>>> +
->>>>> +An MTD can be defined as an NVMEM provider by adding the `nvmem-provider`
->>>>> +property to their node. Data cells can then be defined as child nodes
->>>>> +of the partition as defined in nvmem.txt.
->>>>
->>>> Why don't we just read the data from MTD and be done with it ? What's
->>>> the benefit of complicating things by using nvmem ?
->>>
->>> Well because usually stuff like MAC addresses etc are stored in eeproms.
+On Wed, Mar 1, 2017 at 5:58 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> +Arnaud
+>
+> Hi Peter,
+>
+> Can you please Cc Arnaud (and in general all reviewers) each time you
+> send a new version.
+>
+> On Wed, 1 Mar 2017 16:52:05 +0800
+> Peter Pan <peterpandong@micron.com> wrote:
+>
+>> This is the first commit for spi nand framkework.
+>> This commit is to add spi nand initialization and
+>> release functions.
+>
+> Hm, actually you're doing more than that. Just say that you add basic
+> building blocks for the SPI NAND infrastructure.
+>
 >>
->> But eeproms are already supported, see drivers/misc/ .
-> 
-> This the old, free for all, way to support eeproms. We have a proper
-> framework for them now, and it's called nvmem.
+>> Signed-off-by: Peter Pan <peterpandong@micron.com>
+>> ---
+>>  drivers/mtd/nand/Kconfig            |   1 +
+>>  drivers/mtd/nand/Makefile           |   1 +
+>>  drivers/mtd/nand/spi/Kconfig        |   5 +
+>>  drivers/mtd/nand/spi/Makefile       |   2 +
+>>  drivers/mtd/nand/spi/spinand_base.c | 469 ++++++++++++++++++++++++++++++++++++
+>>  drivers/mtd/nand/spi/spinand_ids.c  |  29 +++
+>>  include/linux/mtd/spinand.h         | 315 ++++++++++++++++++++++++
+>
+> If you're okay with that, I'd like you to add an entry in MAINTAINERS
+> for the spinand sub-sub-sub-system :-). This way you'll be tagged as
+> the maintainer of this code and will be Cc when a patch is submitted.
+>
+>>  7 files changed, 822 insertions(+)
+>>  create mode 100644 drivers/mtd/nand/spi/Kconfig
+>>  create mode 100644 drivers/mtd/nand/spi/Makefile
+>>  create mode 100644 drivers/mtd/nand/spi/spinand_base.c
+>>  create mode 100644 drivers/mtd/nand/spi/spinand_ids.c
+>>  create mode 100644 include/linux/mtd/spinand.h
+>>
+[...]
+>> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+>> new file mode 100644
+>> index 0000000..f3d0351
+>> --- /dev/null
+>> +++ b/include/linux/mtd/spinand.h
+>> @@ -0,0 +1,315 @@
+>> +/**
+>> +* spinand.h
+>> +*
+>> +* Copyright (c) 2009-2017 Micron Technology, Inc.
+>> +*
+>> +* This program is free software; you can redistribute it and/or
+>> +* modify it under the terms of the GNU General Public License
+>> +* as published by the Free Software Foundation; either version 2
+>> +* of the License, or (at your option) any later version.
+>> +*
+>> +* This program is distributed in the hope that it will be useful,
+>> +* but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> +* GNU General Public License for more details.
+>> +*/
+>> +#ifndef __LINUX_MTD_SPINAND_H
+>> +#define __LINUX_MTD_SPINAND_H
+>> +
+>> +#include <linux/wait.h>
+>> +#include <linux/spinlock.h>
+>> +#include <linux/mtd/mtd.h>
+>> +#include <linux/mtd/flashchip.h>
+>> +#include <linux/mtd/nand.h>
 
-Ha, so that's why this patchset, I see. Thanks for clarifying.
+[...]
 
--- 
-Best regards,
-Marek Vasut
+>> +
+>> +/*SPI NAND manufacture ID definition*/
+>> +#define SPINAND_MFR_MICRON           0x2C
+>
+> Should not be exposed here (keep it in your vendor source file.
+
+Boris and Arnaud,
+
+I'm thinking about where to keep these SPINAND_MFR_XXX macros.
+Now the case is both spinand_ids.c and spinand_micron(vendor).c need
+this macro. spinand_ids.c stores struct spinand_manufacturer
+spinand_manuf_ids[] table
+and spinand_micron(vendor).c need this macro when detecting device by
+4 bytes data from read ID. Of course we can create a spinand-manufacture.h
+to keep these macros. Another way is spinand_vendor.c defines own
+struct spinand_manufacturer (instead of struct spinand_manufacturer_ops), in
+this way, the table in spinand_ids.c only contains pointers to these
+struct spinand_manufacturer.
+What's your opinion?
+
+Thanks,
+Peter Pan
