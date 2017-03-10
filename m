@@ -1,32 +1,32 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-sn1nam02on0078.outbound.protection.outlook.com
+ ([104.47.36.78] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmLKT-0001ck-7c
- for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 14:15:40 +0000
-Received: by mail-wm0-x244.google.com with SMTP id v190so2507622wme.3
- for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2017 06:15:16 -0800 (PST)
-Subject: Re: [v2, 2/4] mtd: spi-nor: Add Octal SPI support to Cadence QSPI
+ id 1cmLRC-0003zI-Ho
+ for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 14:22:36 +0000
+From: Artur Jedrysek <jartur@cadence.com>
+To: Marek Vasut <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Dinh Nguyen <dinguyen@kernel.org>
+Subject: RE: [v2, 2/4] mtd: spi-nor: Add Octal SPI support to Cadence QSPI
  driver.
-To: Artur Jedrysek <jartur@cadence.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 10 Mar 2017 14:22:11 +0000
+Message-ID: <DM5PR07MB27801B207247AB49B4E352F5D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
 References: <1488959932-6657-1-git-send-email-jartur@cadence.com>
  <1488960178-11079-1-git-send-email-jartur@cadence.com>
  <891f9177-e03c-85e0-ebab-2dc7df2ce9e0@gmail.com>
  <DM5PR07MB278038D86D5AD05FA2F5AAA1D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
  <8315061c-716d-89c9-3f04-687b48fbac22@gmail.com>
  <DM5PR07MB2780DC9981927880E1ED1B37D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Dinh Nguyen <dinguyen@kernel.org>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <23371579-495a-1336-cce9-3860a2e2a4c1@gmail.com>
-Date: Fri, 10 Mar 2017 15:15:13 +0100
+ <23371579-495a-1336-cce9-3860a2e2a4c1@gmail.com>
+In-Reply-To: <23371579-495a-1336-cce9-3860a2e2a4c1@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <DM5PR07MB2780DC9981927880E1ED1B37D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,69 +36,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/10/2017 03:09 PM, Artur Jedrysek wrote:
-
-CCing Dinh.
-
-[...]
-
->>>>> +	/* Determine, whether or not octal transfer MAY be supported */
->>>>
->>>> But you already know that from DT, no ?
->>>>
->>>
->>> Cadence Octal (formerly Quad) SPI Controller is sold as an IP, and is
->>> configurable. This includes max SPI mode. It is possible to detect, that
->>> Octal SPI controller is configured (during hardware compilation) to support
->>> up to Quad mode, using revision register.
->>
->> So the octal-spi controller always has this config register, but the
->> quad-spi controller may or may not have this register ?
->>
-> 
-> This register was always present. In Quad-SPI, however, it didn't contain
-> information about maximum possible mode, as only quad was possible, and
-> meaning of bits checked here was different.
-
-OK
-
->>>>> +	rev_reg = readl(cqspi->iobase + CQSPI_REG_MODULEID);
->>>>> +	dev_info(dev, "CQSPI Module id %x\n", rev_reg);
->>>>> +
->>>>> +	switch (rev_reg & CQSPI_REG_MODULEID_CONF_ID_MASK) {
->>>>> +	case CQSPI_REG_MODULEID_CONF_ID_OCTAL_PHY:
->>>>> +	case CQSPI_REG_MODULEID_CONF_ID_OCTAL:
->>>>> +		mode = SPI_NOR_OCTAL;
->>>>> +		break;
->>>>> +	case CQSPI_REG_MODULEID_CONF_ID_QUAD:
->>>>> +	case CQSPI_REG_MODULEID_CONF_ID_QUAD_PHY:
->>>>
->>>> Does this work on all revisions of CQSPI ?
->>>>
->>>
->>> After having a more thorough look at specification of older IP version
->>> (quad only) it seems, that revision register format has indeed changed.
->>> This will be fixed in the next version of the patch.
->>
->> Can the quad-spi controller be configured only as dual or single ?
->> What about the octal one ? These cases should probably be handled
->> somehow too, right ?
->>
-> 
-> Quad-SPI controller can always support single, dual and quad. There was
-> no option to configure max mode. Octal-SPI controller can be configured
-> to support either octal or quad mode. No controller could be configured 
-> (during hardware compilation/synthesis) to support only single/dual 
-> SPI mode. To put it shortly: single, dual and quad is always supported.
-
-So basically the whole check you need to perform here is
-
-mode = quad;
-if (controller->flags & CAN_DO_OCTAL) {
- if (readl(ID_REGISTER) & IS_CONFIGURED_AS_OCTAL)
-   mode = octal;
-}
-
--- 
-Best regards,
-Marek Vasut
+DQpGcm9tOiBNYXJlayBWYXN1dCBbbWFpbHRvOm1hcmVrLnZhc3V0QGdtYWlsLmNvbV0NClNlbnQ6
+IDEwIG1hcmNhIDIwMTcgMTU6MTUNCg0KPiBPbiAwMy8xMC8yMDE3IDAzOjA5IFBNLCBBcnR1ciBK
+ZWRyeXNlayB3cm90ZToNCj4gDQo+IENDaW5nIERpbmguDQo+IA0KPiBbLi4uXQ0KPiANCj4gPj4+
+Pj4gKwkvKiBEZXRlcm1pbmUsIHdoZXRoZXIgb3Igbm90IG9jdGFsIHRyYW5zZmVyIE1BWSBiZSBz
+dXBwb3J0ZWQgKi8NCj4gPj4+Pg0KPiA+Pj4+IEJ1dCB5b3UgYWxyZWFkeSBrbm93IHRoYXQgZnJv
+bSBEVCwgbm8gPw0KPiA+Pj4+DQo+ID4+Pg0KPiA+Pj4gQ2FkZW5jZSBPY3RhbCAoZm9ybWVybHkg
+UXVhZCkgU1BJIENvbnRyb2xsZXIgaXMgc29sZCBhcyBhbiBJUCwgYW5kIGlzDQo+ID4+PiBjb25m
+aWd1cmFibGUuIFRoaXMgaW5jbHVkZXMgbWF4IFNQSSBtb2RlLiBJdCBpcyBwb3NzaWJsZSB0byBk
+ZXRlY3QsIHRoYXQNCj4gPj4+IE9jdGFsIFNQSSBjb250cm9sbGVyIGlzIGNvbmZpZ3VyZWQgKGR1
+cmluZyBoYXJkd2FyZSBjb21waWxhdGlvbikgdG8gc3VwcG9ydA0KPiA+Pj4gdXAgdG8gUXVhZCBt
+b2RlLCB1c2luZyByZXZpc2lvbiByZWdpc3Rlci4NCj4gPj4NCj4gPj4gU28gdGhlIG9jdGFsLXNw
+aSBjb250cm9sbGVyIGFsd2F5cyBoYXMgdGhpcyBjb25maWcgcmVnaXN0ZXIsIGJ1dCB0aGUNCj4g
+Pj4gcXVhZC1zcGkgY29udHJvbGxlciBtYXkgb3IgbWF5IG5vdCBoYXZlIHRoaXMgcmVnaXN0ZXIg
+Pw0KPiA+Pg0KPiA+DQo+ID4gVGhpcyByZWdpc3RlciB3YXMgYWx3YXlzIHByZXNlbnQuIEluIFF1
+YWQtU1BJLCBob3dldmVyLCBpdCBkaWRuJ3QgY29udGFpbg0KPiA+IGluZm9ybWF0aW9uIGFib3V0
+IG1heGltdW0gcG9zc2libGUgbW9kZSwgYXMgb25seSBxdWFkIHdhcyBwb3NzaWJsZSwgYW5kDQo+
+ID4gbWVhbmluZyBvZiBiaXRzIGNoZWNrZWQgaGVyZSB3YXMgZGlmZmVyZW50Lg0KPiANCj4gT0sN
+Cj4gDQo+ID4+Pj4+ICsJcmV2X3JlZyA9IHJlYWRsKGNxc3BpLT5pb2Jhc2UgKyBDUVNQSV9SRUdf
+TU9EVUxFSUQpOw0KPiA+Pj4+PiArCWRldl9pbmZvKGRldiwgIkNRU1BJIE1vZHVsZSBpZCAleFxu
+IiwgcmV2X3JlZyk7DQo+ID4+Pj4+ICsNCj4gPj4+Pj4gKwlzd2l0Y2ggKHJldl9yZWcgJiBDUVNQ
+SV9SRUdfTU9EVUxFSURfQ09ORl9JRF9NQVNLKSB7DQo+ID4+Pj4+ICsJY2FzZSBDUVNQSV9SRUdf
+TU9EVUxFSURfQ09ORl9JRF9PQ1RBTF9QSFk6DQo+ID4+Pj4+ICsJY2FzZSBDUVNQSV9SRUdfTU9E
+VUxFSURfQ09ORl9JRF9PQ1RBTDoNCj4gPj4+Pj4gKwkJbW9kZSA9IFNQSV9OT1JfT0NUQUw7DQo+
+ID4+Pj4+ICsJCWJyZWFrOw0KPiA+Pj4+PiArCWNhc2UgQ1FTUElfUkVHX01PRFVMRUlEX0NPTkZf
+SURfUVVBRDoNCj4gPj4+Pj4gKwljYXNlIENRU1BJX1JFR19NT0RVTEVJRF9DT05GX0lEX1FVQURf
+UEhZOg0KPiA+Pj4+DQo+ID4+Pj4gRG9lcyB0aGlzIHdvcmsgb24gYWxsIHJldmlzaW9ucyBvZiBD
+UVNQSSA/DQo+ID4+Pj4NCj4gPj4+DQo+ID4+PiBBZnRlciBoYXZpbmcgYSBtb3JlIHRob3JvdWdo
+IGxvb2sgYXQgc3BlY2lmaWNhdGlvbiBvZiBvbGRlciBJUCB2ZXJzaW9uDQo+ID4+PiAocXVhZCBv
+bmx5KSBpdCBzZWVtcywgdGhhdCByZXZpc2lvbiByZWdpc3RlciBmb3JtYXQgaGFzIGluZGVlZCBj
+aGFuZ2VkLg0KPiA+Pj4gVGhpcyB3aWxsIGJlIGZpeGVkIGluIHRoZSBuZXh0IHZlcnNpb24gb2Yg
+dGhlIHBhdGNoLg0KPiA+Pg0KPiA+PiBDYW4gdGhlIHF1YWQtc3BpIGNvbnRyb2xsZXIgYmUgY29u
+ZmlndXJlZCBvbmx5IGFzIGR1YWwgb3Igc2luZ2xlID8NCj4gPj4gV2hhdCBhYm91dCB0aGUgb2N0
+YWwgb25lID8gVGhlc2UgY2FzZXMgc2hvdWxkIHByb2JhYmx5IGJlIGhhbmRsZWQNCj4gPj4gc29t
+ZWhvdyB0b28sIHJpZ2h0ID8NCj4gPj4NCj4gPg0KPiA+IFF1YWQtU1BJIGNvbnRyb2xsZXIgY2Fu
+IGFsd2F5cyBzdXBwb3J0IHNpbmdsZSwgZHVhbCBhbmQgcXVhZC4gVGhlcmUgd2FzDQo+ID4gbm8g
+b3B0aW9uIHRvIGNvbmZpZ3VyZSBtYXggbW9kZS4gT2N0YWwtU1BJIGNvbnRyb2xsZXIgY2FuIGJl
+IGNvbmZpZ3VyZWQNCj4gPiB0byBzdXBwb3J0IGVpdGhlciBvY3RhbCBvciBxdWFkIG1vZGUuIE5v
+IGNvbnRyb2xsZXIgY291bGQgYmUgY29uZmlndXJlZA0KPiA+IChkdXJpbmcgaGFyZHdhcmUgY29t
+cGlsYXRpb24vc3ludGhlc2lzKSB0byBzdXBwb3J0IG9ubHkgc2luZ2xlL2R1YWwNCj4gPiBTUEkg
+bW9kZS4gVG8gcHV0IGl0IHNob3J0bHk6IHNpbmdsZSwgZHVhbCBhbmQgcXVhZCBpcyBhbHdheXMg
+c3VwcG9ydGVkLg0KPiANCj4gU28gYmFzaWNhbGx5IHRoZSB3aG9sZSBjaGVjayB5b3UgbmVlZCB0
+byBwZXJmb3JtIGhlcmUgaXMNCj4gDQo+IG1vZGUgPSBxdWFkOw0KPiBpZiAoY29udHJvbGxlci0+
+ZmxhZ3MgJiBDQU5fRE9fT0NUQUwpIHsNCj4gIGlmIChyZWFkbChJRF9SRUdJU1RFUikgJiBJU19D
+T05GSUdVUkVEX0FTX09DVEFMKQ0KPiAgICBtb2RlID0gb2N0YWw7DQo+IH0NCj4gDQoNClllcy4g
+U29tZXRoaW5nIHNpbWlsYXIgd2FzIGFscmVhZHkgd3JpdHRlbiBhbmQgdGVzdGVkLCBhbmQgd2ls
+bCBiZSBzZW50DQppbiB0aGUgbmV4dCB2ZXJzaW9uIG9mIHRoZSBwYXRjaCBpbnN0ZWFkLg0KDQo+
+IC0tDQo+IEJlc3QgcmVnYXJkcywNCj4gTWFyZWsgVmFzdXQNCg==
