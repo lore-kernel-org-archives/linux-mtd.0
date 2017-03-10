@@ -1,28 +1,30 @@
-Received: from mail-by2nam03on0072.outbound.protection.outlook.com
- ([104.47.42.72] helo=NAM03-BY2-obe.outbound.protection.outlook.com)
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmJGh-0001Ad-F8
- for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 12:03:37 +0000
-From: Artur Jedrysek <jartur@cadence.com>
-To: Marek Vasut <marek.vasut@gmail.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: RE: [v2, 4/4] dt-bindings: mtd: Add Octal SPI support to Cadence QSPI.
-Date: Fri, 10 Mar 2017 12:03:12 +0000
-Message-ID: <DM5PR07MB2780A784F8973310542FDBE3D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
+ id 1cmJzZ-0005wT-KU
+ for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 12:50:00 +0000
+Received: by mail-wm0-x241.google.com with SMTP id n11so2153576wma.0
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2017 04:49:37 -0800 (PST)
+Subject: Re: [v2, 2/4] mtd: spi-nor: Add Octal SPI support to Cadence QSPI
+ driver.
+To: Artur Jedrysek <jartur@cadence.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 References: <1488959932-6657-1-git-send-email-jartur@cadence.com>
- <1488960326-13858-1-git-send-email-jartur@cadence.com>
- <132a4818-11d1-263f-aae4-bac4e76c14c8@gmail.com>
-In-Reply-To: <132a4818-11d1-263f-aae4-bac4e76c14c8@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <1488960178-11079-1-git-send-email-jartur@cadence.com>
+ <891f9177-e03c-85e0-ebab-2dc7df2ce9e0@gmail.com>
+ <DM5PR07MB278038D86D5AD05FA2F5AAA1D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <8315061c-716d-89c9-3f04-687b48fbac22@gmail.com>
+Date: Fri, 10 Mar 2017 13:49:34 +0100
 MIME-Version: 1.0
+In-Reply-To: <DM5PR07MB278038D86D5AD05FA2F5AAA1D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,48 +34,220 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQo+IEZyb206IE1hcmVrIFZhc3V0IFttYWlsdG86bWFyZWsudmFzdXRAZ21haWwuY29tXQ0KPiBT
-ZW50OiAxMCBNYXJjaCAyMDE3IDA0OjM5DQo+IE9uIDAzLzA4LzIwMTcgMDk6MDUgQU0sIEFydHVy
-IEplZHJ5c2VrIHdyb3RlOg0KPiA+IFRoaXMgcGF0Y2ggdXBkYXRlcyBDYWRlbmNlIFFTUEkgRGV2
-aWNlIFRyZWUgZG9jdW1lbnRhdGlvbiB0byBpbmNsdWRlDQo+ID4gaW5mb3JtYXRpb24gYWJvdXQg
-bmV3IGNvbXBhdGlibGUgdXNlZCB0byBpbmRpY2F0ZSwgd2hldGhlciBvciBub3QNCj4gPiBPY3Rh
-bCBTUEkgdHJhbnNmZXJzIGFyZSBzdXBwb3J0ZWQgYnkgdGhlIGRldmljZS4NCj4gPg0KPiA+IFNp
-Z25lZC1vZmYtYnk6IEFydHVyIEplZHJ5c2VrIDxqYXJ0dXJAY2FkZW5jZS5jb20+DQo+ID4gLS0t
-DQo+ID4gQ2hhbmdlbG9nOg0KPiA+IHYyOiBVc2UgbmV3IGNvbXBhdGlibGUsIGluc3RlYWQgb2Yg
-Ym9vbGVhbiBwcm9wZXJ0eSwgdG8gaW5kaWNhdGUNCj4gPiBPY3RhbCBTUEkgc3VwcG9ydC4NCj4g
-PiAtLS0NCj4gPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9jYWRlbmNl
-LXF1YWRzcGkudHh0IHwgNCArKystDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMo
-KyksIDEgZGVsZXRpb24oLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvbXRkL2NhZGVuY2UtcXVhZHNwaS50eHQNCj4gYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2NhZGVuY2UtcXVhZHNwaS50eHQNCj4gPiBpbmRl
-eCBmMjQ4MDU2Li40MWQxZTk4IDEwMDY0NA0KPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9tdGQvY2FkZW5jZS1xdWFkc3BpLnR4dA0KPiA+ICsrKyBiL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvY2FkZW5jZS1xdWFkc3BpLnR4dA0KPiA+IEBA
-IC0xLDcgKzEsOSBAQA0KPiA+ICAqIENhZGVuY2UgUXVhZCBTUEkgY29udHJvbGxlcg0KPiA+DQo+
-ID4gIFJlcXVpcmVkIHByb3BlcnRpZXM6DQo+ID4gLS0gY29tcGF0aWJsZSA6IFNob3VsZCBiZSAi
-Y2Rucyxxc3BpLW5vciIuDQo+ID4gKy0gY29tcGF0aWJsZSA6IFNob3VsZCBiZSAiY2Rucyx7cXNw
-aXxvc3BpfS1ub3IiLg0KPiANCj4gUGxlYXNlIGV4cGxpY2l0bHkgbGlzdCBhbGwgY29tcGF0aWJs
-ZXMgLCBpZS4NCj4gU2hvdWxkIGJlICJjZG5zLHFzcGktbm9yIiBvciAiY2Rucyxvc3BpLW5vciIu
-DQo+IA0KDQpUd28gcG9zc2libGUgb3B0aW9ucyBhcmUgYWxzbyBleHBsaWNpdGx5IGxpc3RlZCBy
-aWdodCBiZWxvdy4gSSBkaWQgdGhhdA0KaW4gdGhlIHdheSBpdCB3YXMgZG9uZSBpbiBvdGhlciBk
-cml2ZXIgZm9yIENhZGVuY2UgSVA6DQovRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L25ldC9tYWNiLnR4dA0KU2hvdWxkIEkgcmVtb3ZlIGFsbCBvZiB0aGF0IGFuZCByZXBsYWNlIGl0
-IHdpdGggYm90aCBvcHRpb25zLCBzZXBhcmF0ZWQNCmJ5IGFuICJvciIgd29yZD8NCg0KPiBCdXQg
-SSB0aGluayB0aGUgb3NwaSBpcyBiYWNrd2FyZCBjb21wYXRpYmxlIHdpdGggcXNwaSwgcmlnaHQg
-PyBTbyB0aGUNCj4gYmluZGluZyBmb3Igb3NwaSBzaG91bGQgbGlzdCBib3RoLCBpZS4NCj4gY29t
-cGF0aWJsZSA9ICJjZG5zLG9zcGktbm9yIiwgImNkbnMscXNwaS1ub3IiOw0KPiANCg0KWWVzLCB0
-aGUgb3NwaSBpcyBiYWNrd2FyZHMgY29tcGF0aWJsZSB3aXRoIHFzcGkuIEhvd2V2ZXIsIHRoZSBz
-b2xlIHBvaW50DQpvZiBpbnRyb2R1Y2luZyBuZXcgY29tcGF0aWJsZSB3YXMgdG8gZGlmZmVyZW50
-aWF0ZSBiZXR3ZWVuIHRoZW0gKHdoaWNoDQp3YXMgcHJldmlvdXNseSBkb25lIHVzaW5nIGEgYm9v
-bGVhbiBmbGFnLCBidXQgdGhhdCB3YXMgY3JpdGljaXplZCkuDQpMaXN0aW5nIGJvdGggYmluZGlu
-Z3MgZm9yIG9zcGkgd291bGQgb25seSBoZWxwIGZvciBrZXJuZWxzIG5vdA0KY29udGFpbmluZyBk
-cml2ZXIgdXBkYXRlIGJlaW5nIHN1YmplY3Qgb2YgdGhpcyBwYXRjaCBzZXJpZXMsIGFzIGJvdGgN
-Cm9zcGkgYW5kIHFzcGkgYXJlIGhhbmRsZWQgYnkgdGhlIHNhbWUgZHJpdmVyIC0ganVzdCB3aXRo
-IGEgc2xpZ2h0DQpkaWZmZXJlbmNlLiBJIGFwb2xvZ2l6ZSBpZiBJIGdvdCBzb21ldGhpbmcgd3Jv
-bmcgaGVyZS4NCg0KPiA+ICsgIFVzZSAiY2Rucyxxc3BpLW5vciIgZm9yIFF1YWQgU1BJIGNvbnRy
-b2xsZXIuDQo+ID4gKyAgVXNlICJjZG5zLG9zcGktbm9yIiBmb3IgT2N0YWwgU1BJIGNvbnRyb2xs
-ZXIuDQo+ID4gIC0gcmVnIDogQ29udGFpbnMgdHdvIGVudHJpZXMsIGVhY2ggb2Ygd2hpY2ggaXMg
-YSB0dXBsZSBjb25zaXN0aW5nIG9mIGENCj4gPiAgCXBoeXNpY2FsIGFkZHJlc3MgYW5kIGxlbmd0
-aC4gVGhlIGZpcnN0IGVudHJ5IGlzIHRoZSBhZGRyZXNzIGFuZA0KPiA+ICAJbGVuZ3RoIG9mIHRo
-ZSBjb250cm9sbGVyIHJlZ2lzdGVyIHNldC4gVGhlIHNlY29uZCBlbnRyeSBpcyB0aGUNCj4gPg0K
-PiANCj4gDQo+IC0tDQo+IEJlc3QgcmVnYXJkcywNCj4gTWFyZWsgVmFzdXQNCg==
+On 03/10/2017 01:00 PM, Artur Jedrysek wrote:
+> 
+> From: Marek Vasut [mailto:marek.vasut@gmail.com]
+> Sent: 10 March 2017 04:37
+>> On 03/08/2017 09:02 AM, Artur Jedrysek wrote:
+>>> Recent versions of Cadence QSPI controller support Octal SPI transfers
+>>> as well. This patch updates existing driver to support such feature.
+>>>
+>>> It is not possible to determine whether or not octal mode is supported
+>>> just by looking at revision register alone. To solve that, an additional
+>>> compatible in Device Tree is added to indicate such capability.
+>>> Both (revision and compatible) are used to determine, which mode to
+>>> pass to spi_nor_scan() call.
+>>>
+>>> Signed-off-by: Artur Jedrysek <jartur@cadence.com>
+>>> ---
+>>> Changelog:
+>>> v2: Use new compatible in DT, instead of boolean property, to indicate
+>>> Octal SPI support.
+>>> Extracted Kconfig update to seperate patch.
+>>> ---
+>>>  drivers/mtd/spi-nor/cadence-quadspi.c | 69 +++++++++++++++++++++++++++++++----
+>>>  1 file changed, 61 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+>>> index 9f8102d..a96471d 100644
+>>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+>>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+>>> @@ -76,6 +76,7 @@ struct cqspi_st {
+>>>  	u32			fifo_depth;
+>>>  	u32			fifo_width;
+>>>  	u32			trigger_address;
+>>> +	u32			max_mode;
+>>
+>> I think it's time to introduce flags instead,
+>> ie. #define CQSPI_FLAG_SUPPORTS_OCTAL BIT(0)
+>>
+>>>  	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
+>>>  };
+>>>
+>>> @@ -87,6 +88,10 @@ struct cqspi_st {
+>>>  #define CQSPI_INST_TYPE_SINGLE			0
+>>>  #define CQSPI_INST_TYPE_DUAL			1
+>>>  #define CQSPI_INST_TYPE_QUAD			2
+>>> +#define CQSPI_INST_TYPE_OCTAL			3
+>>> +
+>>> +#define CQSPI_MAX_MODE_QUAD			0
+>>> +#define CQSPI_MAX_MODE_OCTAL			1
+>>>
+>>>  #define CQSPI_DUMMY_CLKS_PER_BYTE		8
+>>>  #define CQSPI_DUMMY_BYTES_MAX			4
+>>> @@ -204,6 +209,14 @@ struct cqspi_st {
+>>>  #define CQSPI_REG_CMDWRITEDATALOWER		0xA8
+>>>  #define CQSPI_REG_CMDWRITEDATAUPPER		0xAC
+>>>
+>>> +#define CQSPI_REG_MODULEID			0xFC
+>>> +#define CQSPI_REG_MODULEID_CONF_ID_MASK		0x3
+>>> +#define CQSPI_REG_MODULEID_CONF_ID_LSB		0
+>>> +#define CQSPI_REG_MODULEID_CONF_ID_OCTAL_PHY	0x0
+>>> +#define CQSPI_REG_MODULEID_CONF_ID_OCTAL	0x1
+>>> +#define CQSPI_REG_MODULEID_CONF_ID_QUAD_PHY	0x2
+>>> +#define CQSPI_REG_MODULEID_CONF_ID_QUAD		0x3
+>>> +
+>>>  /* Interrupt status bits */
+>>>  #define CQSPI_REG_IRQ_MODE_ERR			BIT(0)
+>>>  #define CQSPI_REG_IRQ_UNDERFLOW			BIT(1)
+>>> @@ -866,6 +879,9 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
+>>>  		case SPI_NOR_QUAD:
+>>>  			f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
+>>>  			break;
+>>> +		case SPI_NOR_OCTAL:
+>>> +			f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
+>>> +			break;
+>>>  		default:
+>>>  			return -EINVAL;
+>>>  		}
+>>> @@ -977,6 +993,17 @@ static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+>>>  	return ret;
+>>>  }
+>>>
+>>> +static const u32 cqspi_max_mode_quad = CQSPI_MAX_MODE_QUAD;
+>>> +static const u32 cqspi_max_mode_octal = CQSPI_MAX_MODE_OCTAL;
+>>> +
+>>> +static struct of_device_id const cqspi_dt_ids[] = {
+>>> +	{ .compatible = "cdns,qspi-nor", .data = &cqspi_max_mode_quad },
+>>> +	{ .compatible = "cdns,ospi-nor", .data = &cqspi_max_mode_octal },
+>>
+>> .data = (void *)CQSPI_FLAG_SUPPORTS_OCTAL , then you don't need that
+>> static const stuff ...
+>>
+> 
+> I had some doubts regarding that approach, as it may be dependent on the
+> CPU architecture (32-bit, 64-bit) and endianness. .data needs to be first
+> casted to unsigned long for reading, to ensure correct access and to 
+> allow bitwise operations on it. That solution works, and if such approach
+> is preferred, then it will be used in next version of the patch.
+
+Good
+
+>>> +	{ /* end of table */ }
+>>> +};
+>>> +
+>>> +MODULE_DEVICE_TABLE(of, cqspi_dt_ids);
+>>> +
+>>>  static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
+>>>  				    struct cqspi_flash_pdata *f_pdata,
+>>>  				    struct device_node *np)
+>>> @@ -1018,6 +1045,13 @@ static int cqspi_of_get_pdata(struct platform_device *pdev)
+>>>  {
+>>>  	struct device_node *np = pdev->dev.of_node;
+>>>  	struct cqspi_st *cqspi = platform_get_drvdata(pdev);
+>>> +	const struct of_device_id *match;
+>>> +
+>>> +	cqspi->max_mode = CQSPI_MAX_MODE_QUAD;
+>>> +
+>>> +	match = of_match_node(cqspi_dt_ids, np);
+>>> +	if (match && match->data)
+>>> +		cqspi->max_mode = *((u32 *)match->data);
+>>
+>> Use flags instead, see above.
+>>
+>>>  	cqspi->is_decoded_cs = of_property_read_bool(np, "cdns,is-decoded-cs");
+>>>
+>>> @@ -1074,9 +1108,35 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+>>>  	struct cqspi_flash_pdata *f_pdata;
+>>>  	struct spi_nor *nor;
+>>>  	struct mtd_info *mtd;
+>>> +	enum read_mode mode;
+>>> +	enum read_mode dt_mode = SPI_NOR_QUAD;
+>>>  	unsigned int cs;
+>>> +	unsigned int rev_reg;
+>>>  	int i, ret;
+>>>
+>>> +	/* Determine, whether or not octal transfer MAY be supported */
+>>
+>> But you already know that from DT, no ?
+>>
+> 
+> Cadence Octal (formerly Quad) SPI Controller is sold as an IP, and is
+> configurable. This includes max SPI mode. It is possible to detect, that
+> Octal SPI controller is configured (during hardware compilation) to support
+> up to Quad mode, using revision register.
+
+So the octal-spi controller always has this config register, but the
+quad-spi controller may or may not have this register ?
+
+>>> +	rev_reg = readl(cqspi->iobase + CQSPI_REG_MODULEID);
+>>> +	dev_info(dev, "CQSPI Module id %x\n", rev_reg);
+>>> +
+>>> +	switch (rev_reg & CQSPI_REG_MODULEID_CONF_ID_MASK) {
+>>> +	case CQSPI_REG_MODULEID_CONF_ID_OCTAL_PHY:
+>>> +	case CQSPI_REG_MODULEID_CONF_ID_OCTAL:
+>>> +		mode = SPI_NOR_OCTAL;
+>>> +		break;
+>>> +	case CQSPI_REG_MODULEID_CONF_ID_QUAD:
+>>> +	case CQSPI_REG_MODULEID_CONF_ID_QUAD_PHY:
+>>
+>> Does this work on all revisions of CQSPI ?
+>>
+> 
+> After having a more thorough look at specification of older IP version
+> (quad only) it seems, that revision register format has indeed changed.
+> This will be fixed in the next version of the patch.
+
+Can the quad-spi controller be configured only as dual or single ?
+What about the octal one ? These cases should probably be handled
+somehow too, right ?
+
+>>> +		mode = SPI_NOR_QUAD;
+>>> +		break;
+>>> +	}
+>>> +
+>>> +	if (cqspi->max_mode == CQSPI_MAX_MODE_OCTAL)
+>>> +		dt_mode = SPI_NOR_OCTAL;
+>>> +
+>>> +	if (mode == SPI_NOR_QUAD && dt_mode == SPI_NOR_OCTAL)
+>>> +		dev_warn(dev, "Requested octal mode is not supported by the device.");
+>>> +	else if (mode == SPI_NOR_OCTAL && dt_mode == SPI_NOR_QUAD)
+>>> +		mode = SPI_NOR_QUAD;
+>>> +
+>>>  	/* Get flash device data */
+>>>  	for_each_available_child_of_node(dev->of_node, np) {
+>>>  		ret = of_property_read_u32(np, "reg", &cs);
+>>> @@ -1123,7 +1183,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+>>>  			goto err;
+>>>  		}
+>>>
+>>> -		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
+>>> +		ret = spi_nor_scan(nor, NULL, mode);
+>>>  		if (ret)
+>>>  			goto err;
+>>>
+>>> @@ -1277,13 +1337,6 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
+>>>  #define CQSPI_DEV_PM_OPS	NULL
+>>>  #endif
+>>>
+>>> -static struct of_device_id const cqspi_dt_ids[] = {
+>>> -	{.compatible = "cdns,qspi-nor",},
+>>> -	{ /* end of table */ }
+>>> -};
+>>> -
+>>> -MODULE_DEVICE_TABLE(of, cqspi_dt_ids);
+>>> -
+>>>  static struct platform_driver cqspi_platform_driver = {
+>>>  	.probe = cqspi_probe,
+>>>  	.remove = cqspi_remove,
+>>>
+>>
+>>
+>> --
+>> Best regards,
+>> Marek Vasut
+
+
+-- 
+Best regards,
+Marek Vasut
