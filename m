@@ -1,24 +1,33 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-qk0-x22e.google.com ([2607:f8b0:400d:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmBSt-0002sJ-Ro
- for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 03:43:43 +0000
-Received: by mail-wm0-x241.google.com with SMTP id z63so318216wmg.2
- for <linux-mtd@lists.infradead.org>; Thu, 09 Mar 2017 19:43:19 -0800 (PST)
-Subject: Re: [PATCH v2] drivers mtd: spi-nor: add new variants
-To: Alexander Kurz <akurz@blala.de>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <1488491946-12176-1-git-send-email-akurz@blala.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+ id 1cmBp2-0003nf-7Y
+ for linux-mtd@lists.infradead.org; Fri, 10 Mar 2017 04:06:34 +0000
+Received: by mail-qk0-x22e.google.com with SMTP id 1so150939042qkl.3
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Mar 2017 20:06:11 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <9f54978c-6d61-cf2c-fb2d-f5ef2af19e0f@gmail.com>
+References: <1488875164-30440-1-git-send-email-albeu@free.fr>
+ <1488875164-30440-2-git-send-email-albeu@free.fr>
+ <9f54978c-6d61-cf2c-fb2d-f5ef2af19e0f@gmail.com>
+From: Moritz Fischer <moritz.fischer@ettus.com>
+Date: Thu, 9 Mar 2017 20:06:09 -0800
+Message-ID: <CAAtXAHc34fG_TZbHrRp=oB_e=-o18zDesT73YSEx1Tr5ZE0oSw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] doc: bindings: Add bindings documentation for mtd
+ nvmem
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Alban <albeu@free.fr>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <13bcdcc3-8a7b-3cba-d69d-110fa948a7c3@gmail.com>
-Date: Fri, 10 Mar 2017 04:42:40 +0100
-MIME-Version: 1.0
-In-Reply-To: <1488491946-12176-1-git-send-email-akurz@blala.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Devicetree List <devicetree@vger.kernel.org>,
+ linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,46 +37,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/02/2017 10:59 PM, Alexander Kurz wrote:
-> Macronix MX25U4035 and Winbond 25Q20BW devices are used in 4/5th
-> generation Kindle ebook readers. Add those spi-nor variants.
-> Also add similar devices found in the same datasheets.
+On Thu, Mar 9, 2017 at 7:17 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
+> On 03/07/2017 09:26 AM, Alban wrote:
+>> Config data for drivers, like MAC addresses, is often stored in MTD.
+>> Add a binding that define how such data storage can be represented in
+>> device tree.
+>>
+>> Signed-off-by: Alban <albeu@free.fr>
+>> ---
+>> Changelog:
+>> v2: * Added a "Required properties" section with the nvmem-provider
+>>       property
+>> ---
+>>  .../devicetree/bindings/nvmem/mtd-nvmem.txt        | 33 ++++++++++++++++++++++
+>>  1 file changed, 33 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
+>> new file mode 100644
+>> index 0000000..8ed25e6
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/nvmem/mtd-nvmem.txt
+>> @@ -0,0 +1,33 @@
+>> += NVMEM in MTD =
+>> +
+>> +Config data for drivers, like MAC addresses, is often stored in MTD.
+>> +This binding define how such data storage can be represented in device tree.
+>> +
+>> +An MTD can be defined as an NVMEM provider by adding the `nvmem-provider`
+>> +property to their node. Data cells can then be defined as child nodes
+>> +of the partition as defined in nvmem.txt.
+>
+> Why don't we just read the data from MTD and be done with it ? What's
+> the benefit of complicating things by using nvmem ?
 
-It'd be nice to split it into two separate patches, each one adding one
-manufacturer of devices and having $subject reflect that. Otherwise it's
-IMO OK.
+Well because usually stuff like MAC addresses etc are stored in eeproms.
+This gives a nice abstraction with making them both look like nvmem (that was my
+reasoning back then when I submitted a patch to support the OTP part in a
+SPI NOR part.
 
-> Signed-off-by: Alexander Kurz <akurz@blala.de>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 1ae872b..802dc49 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1013,6 +1013,8 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
->  	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
->  	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-> +	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
-> +	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
->  	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
->  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
->  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-> @@ -1128,6 +1130,9 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "w25x80", INFO(0xef3014, 0, 64 * 1024,  16, SECT_4K) },
->  	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
->  	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
-> +	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
-> +	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
-> +	{ "w25q20ew", INFO(0xef6012, 0, 64 * 1024,  4, SECT_4K) },
->  	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
->  	{
->  		"w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64,
-> 
+>> +Required properties:
+>> +nvmem-provider:      Indicate that the device should be registered as
+>> +             NVMEM provider
+>> +
+>> +Example:
+>> +
+>> +     flash@0 {
+>> +             ...
+>> +
+>> +             partition@2 {
+>> +                     label = "art";
+>> +                     reg = <0x7F0000 0x010000>;
+>> +                     read-only;
+>> +
+>> +                     nvmem-provider;
+>> +                     #address-cells = <1>;
+>> +                     #size-cells = <1>;
+>> +
+>> +                     eeprom@1000 {
+>> +                             label = "wmac-eeprom";
+>> +                             reg = <0x1000 0x1000>;
+>> +                     };
+>> +             };
+>> +     };
+>>
+>
+>
+> --
+> Best regards,
+> Marek Vasut
 
-
--- 
-Best regards,
-Marek Vasut
+Cheers,
+Moritz
