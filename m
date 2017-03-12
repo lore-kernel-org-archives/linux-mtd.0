@@ -1,14 +1,11 @@
-Received: from mail.base45.de ([2001:67c:2050:310::a:2])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cn9iD-0001bt-PS
- for linux-mtd@lists.infradead.org; Sun, 12 Mar 2017 20:03:33 +0000
-From: Alexander Couzens <lynxis@fe80.eu>
+From: Simon Baatz <gmbnomis@gmail.com>
 To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Alexander Couzens <lynxis@fe80.eu>
-Subject: [PATCH] nand_base: fix regression on nand with 64/128 oob size
-Date: Sun, 12 Mar 2017 21:02:32 +0100
-Message-Id: <20170312200232.19269-1-lynxis@fe80.eu>
+Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ richard@nod.at, jason@lakedaemon.net, andrew@lunn.ch,
+ dan.carpenter@oracle.com
+Subject: [PATCH] mtd: nand: orion: fix clk handling
+Date: Sun, 12 Mar 2017 22:34:06 +0100
+Message-Id: <20170312213406.20987-1-gmbnomis@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,57 +15,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-41b207a70d3a accidently changed the oob layout for nand when ECC doesn't use
-the full available ecc reserved data.
-This only affects controllers which use the default large page ops
-nand_ooblayout_ecc_lp.
+The clk handling in orion_nand.c had two problems:
 
-E.g. for davinci:
-- nand has 2048 byte page, 64 byte oob
-- 3 byte ecc every 512 byte using 1bit hw ecc
-- requires 12 byte of oob space for ecc
-- old layout reserved 24 byte based on 64 byte oob
+- In the probe function, clk_put() was called for an enabled clock,
+  which violates the API (see documentation for clk_put() in
+  include/linux/clk.h)
 
-Old layout started using byte from offset 40 while new layout
-uses the last X bytes so it fits into the end of oob.
-Meaning in this example the old layout uses byte 40-51, while
-the new layout use byte 52-63.
+- In the error path of the probe function, clk_put() could be called
+  twice for the same clock.
 
-Signed-off-by: Alexander Couzens <lynxis@fe80.eu>
+In order to clean this up, use the managed function devm_clk_get() and
+store the pointer to the clk in the driver data.
+
+Fixes: baffab28b13120694fa3ebab08d3e99667a851d2 ('ARM: Orion: fix driver probe error handling with respect to clk')
+Cc: <stable@vger.kernel.org> # v4.5+
+Signed-off-by: Simon Baatz <gmbnomis@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/orion_nand.c | 42 +++++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b0524f8accb6..ba88345fd334 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -112,8 +112,25 @@ static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
- 	if (section)
- 		return -ERANGE;
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index 4a91c5d000be..b355aa738fae 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -23,6 +23,11 @@
+ #include <asm/sizes.h>
+ #include <linux/platform_data/mtd-orion_nand.h>
  
-+	/* to be compatible with previous layouts
-+	 * 64 byte oob must have ecc data at byte 40,
-+	 * 128 byte oob must have ecc data at byte 80 */
-+	switch (mtd->oobsize) {
-+	case 64:
-+		oobregion->offset = 40;
-+		break;
-+	case 128:
-+		oobregion->offset = 80;
-+		break;
-+	default:
-+		oobregion->offset = mtd->oobsize - oobregion->length;
-+		break;
-+	}
++struct orion_nand_info {
++	struct nand_chip chip;
++	struct clk       *clk;
++};
 +
- 	oobregion->length = ecc->total;
--	oobregion->offset = mtd->oobsize - oobregion->length;
-+	if (oobregion->offset + oobregion->length > mtd->oobsize) {
-+		return -ERANGE;
-+	}
+ static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ {
+ 	struct nand_chip *nc = mtd_to_nand(mtd);
+@@ -75,20 +80,21 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ 
+ static int __init orion_nand_probe(struct platform_device *pdev)
+ {
++	struct orion_nand_info *info;
+ 	struct mtd_info *mtd;
+ 	struct nand_chip *nc;
+ 	struct orion_nand_data *board;
+ 	struct resource *res;
+-	struct clk *clk;
+ 	void __iomem *io_base;
+ 	int ret = 0;
+ 	u32 val = 0;
+ 
+-	nc = devm_kzalloc(&pdev->dev,
+-			sizeof(struct nand_chip),
++	info = devm_kzalloc(&pdev->dev,
++			sizeof(struct orion_nand_info),
+ 			GFP_KERNEL);
+-	if (!nc)
++	if (!info)
+ 		return -ENOMEM;
++	nc = &info->chip;
+ 	mtd = nand_to_mtd(nc);
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+@@ -145,15 +151,13 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 	if (board->dev_ready)
+ 		nc->dev_ready = board->dev_ready;
+ 
+-	platform_set_drvdata(pdev, mtd);
++	platform_set_drvdata(pdev, info);
+ 
+ 	/* Not all platforms can gate the clock, so it is not
+ 	   an error if the clock does not exists. */
+-	clk = clk_get(&pdev->dev, NULL);
+-	if (!IS_ERR(clk)) {
+-		clk_prepare_enable(clk);
+-		clk_put(clk);
+-	}
++	info->clk = devm_clk_get(&pdev->dev, NULL);
++	if (!IS_ERR(info->clk))
++		clk_prepare_enable(info->clk);
+ 
+ 	ret = nand_scan(mtd, 1);
+ 	if (ret)
+@@ -169,26 +173,22 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ no_dev:
+-	if (!IS_ERR(clk)) {
+-		clk_disable_unprepare(clk);
+-		clk_put(clk);
+-	}
++	if (!IS_ERR(info->clk))
++		clk_disable_unprepare(info->clk);
+ 
+ 	return ret;
+ }
+ 
+ static int orion_nand_remove(struct platform_device *pdev)
+ {
+-	struct mtd_info *mtd = platform_get_drvdata(pdev);
+-	struct clk *clk;
++	struct orion_nand_info *info = platform_get_drvdata(pdev);
++	struct nand_chip *chip = &info->chip;
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 
+ 	nand_release(mtd);
+ 
+-	clk = clk_get(&pdev->dev, NULL);
+-	if (!IS_ERR(clk)) {
+-		clk_disable_unprepare(clk);
+-		clk_put(clk);
+-	}
++	if (!IS_ERR(info->clk))
++		clk_disable_unprepare(info->clk);
  
  	return 0;
  }
 -- 
-2.12.0
+2.9.3
