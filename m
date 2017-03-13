@@ -53,9 +53,12 @@ Cc: linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, linux-aio@kvack.org, linux-mm@kvack.org,
  linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [RFC PATCH 00/13] Introduce first class virtual address spaces
-Date: Mon, 13 Mar 2017 15:14:02 -0700
-Message-Id: <20170313221415.9375-1-till.smejkal@gmail.com>
+Subject: [RFC PATCH 02/13] mm: Add mm_struct argument to 'do_mmap' and
+ 'do_mmap_pgoff'
+Date: Mon, 13 Mar 2017 15:14:04 -0700
+Message-Id: <20170313221415.9375-3-till.smejkal@gmail.com>
+In-Reply-To: <20170313221415.9375-1-till.smejkal@gmail.com>
+References: <20170313221415.9375-1-till.smejkal@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -65,205 +68,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-First class virtual address spaces (also called VAS) are a new functionality of
-the Linux kernel allowing address spaces to exist independently of processes.
-The general idea behind this feature is described in a paper at ASPLOS16 with
-the title 'SpaceJMP: Programming with Multiple Virtual Address Spaces' [1].
+Add to the 'do_mmap' and 'do_mmap_pgoff' functions the mm_struct they
+should operate on as additional argument. Before, both functions simply
+used the memory map of the current task. However, with the introduction of
+first class virtual address spaces, these functions also need to be usable
+for other memory maps than just the one of the current process. Hence,
+explicitly define during the function call which memory map to use.
 
-This patchset extends the kernel memory management subsystem with a new
-type of address spaces (called VAS) which can be created and destroyed
-independently of processes by a user in the system. During its lifetime
-such a VAS can be attached to processes by the user which allows a process
-to have multiple address spaces and thereby multiple, potentially
-different, views on the system's main memory. During its execution the
-threads belonging to the process are able to switch freely between the
-different attached VAS and the process' original AS enabling them to
-utilize the different available views on the memory. These multiple virtual
-address spaces per process and the possibility to switch between them
-freely can be used in multiple interesting ways as also outlined in the
-mentioned paper. Some of the many possible applications are for example to
-compartmentalize a process for security reasons, to improve the performance
-of data-centric applications and to introduce new application models [1].
+Signed-off-by: Till Smejkal <till.smejkal@gmail.com>
+---
+ arch/x86/mm/mpx.c  |  4 ++--
+ fs/aio.c           |  4 ++--
+ include/linux/mm.h | 11 ++++++-----
+ ipc/shm.c          |  3 ++-
+ mm/mmap.c          | 16 ++++++++--------
+ mm/nommu.c         |  7 ++++---
+ mm/util.c          |  2 +-
+ 7 files changed, 25 insertions(+), 22 deletions(-)
 
-In addition to the concept of first class virtual address spaces, this
-patchset introduces yet another feature called VAS segments. VAS segments
-are memory regions which have a fixed size and position in the virtual
-address space and can be shared between multiple first class virtual
-address spaces. Such shareable memory regions are especially useful for
-in-memory pointer-based data structures or other pure in-memory data.
-
-First class virtual address spaces have a significant advantage compared to
-forking a process and using inter process communication mechanism, namely
-that creating and switching between VAS is significant faster than creating
-and switching between processes. As it can be seen in the following table,
-measured on an Intel Xeon E5620 CPU with 2.40GHz, creating a VAS is about 7
-times faster than forking and switching between VAS is up to 4 times faster
-than switching between processes.
-
-            |     VAS     |  processes  |
-    -------------------------------------
-    switch  |       468ns |      1944ns |
-    create  |     20003ns |    150491ns |
-
-Hence, first class virtual address spaces provide a fast mechanism for
-applications to utilize multiple virtual address spaces in parallel with a
-higher performance than splitting up the application into multiple
-independent processes.
-
-Both VAS and VAS segments have another significant advantage when combined
-with non-volatile memory. Because of their independent life cycle from
-processes and other kernel data structures, they can be used to save
-special memory regions or even whole AS into non-volatile memory making it
-possible to reuse them across multiple system reboots.
-
-At the current state of the development, first class virtual address spaces
-have one limitation, that we haven't been able to solve so far. The feature
-allows, that different threads of the same process can execute in different
-AS at the same time. This is possible, because the VAS-switch operation
-only changes the active mm_struct for the task_struct of the calling
-thread. However, when a thread switches into a first class virtual address
-space, some parts of its original AS are duplicated into the new one to
-allow the thread to continue its execution at its current state.
-Accordingly, parts of the processes AS (e.g. the code section, data
-section, heap section and stack sections) exist in multiple AS if the
-process has a VAS attached to it. Changes to these shared memory regions
-are synchronized between the address spaces whenever a thread switches
-between two of them. Unfortunately, in some scenarios the kernel is not
-able to properly synchronize all these shared memory regions because of
-conflicting changes. One such example happens if there are two threads, one
-executing in an attached first class virtual address space, the other in
-the tasks original address space. If both threads make changes to the heap
-section that cause expansion of the underlying vm_area_struct, the kernel
-cannot correctly synchronize these changes, because that would cause parts
-of the virtual address space to be overwritten with unrelated data. In the
-current implementation such conflicts are only detected but not resolved
-and result in an error code being returned by the kernel during the VAS
-switch operation. Unfortunately, that means for the particular thread that
-tried to make the switch, that it cannot do this anymore in the future and
-accordingly has to be killed.
-
-This code was developed during an internship at Hewlett Packard Enterprise.
-
-[1] http://impact.crhc.illinois.edu/shared/Papers/ASPLOS16-SpaceJMP.pdf
-
-Till Smejkal (13):
-  mm: Add mm_struct argument to 'mmap_region'
-  mm: Add mm_struct argument to 'do_mmap' and 'do_mmap_pgoff'
-  mm: Rename 'unmap_region' and add mm_struct argument
-  mm: Add mm_struct argument to 'get_unmapped_area' and
-    'vm_unmapped_area'
-  mm: Add mm_struct argument to 'mm_populate' and '__mm_populate'
-  mm/mmap: Export 'vma_link' and 'find_vma_links' to mm subsystem
-  kernel/fork: Split and export 'mm_alloc' and 'mm_init'
-  kernel/fork: Define explicitly which mm_struct to duplicate during
-    fork
-  mm/memory: Add function to one-to-one duplicate page ranges
-  mm: Introduce first class virtual address spaces
-  mm/vas: Introduce VAS segments - shareable address space regions
-  mm/vas: Add lazy-attach support for first class virtual address spaces
-  fs/proc: Add procfs support for first class virtual address spaces
-
- MAINTAINERS                                  |   10 +
- arch/alpha/kernel/osf_sys.c                  |   19 +-
- arch/arc/mm/mmap.c                           |    8 +-
- arch/arm/kernel/process.c                    |    2 +-
- arch/arm/mach-rpc/ecard.c                    |    2 +-
- arch/arm/mm/mmap.c                           |   19 +-
- arch/arm64/kernel/vdso.c                     |    2 +-
- arch/blackfin/include/asm/pgtable.h          |    3 +-
- arch/blackfin/kernel/sys_bfin.c              |    5 +-
- arch/frv/mm/elf-fdpic.c                      |   11 +-
- arch/hexagon/kernel/vdso.c                   |    2 +-
- arch/ia64/kernel/perfmon.c                   |    3 +-
- arch/ia64/kernel/sys_ia64.c                  |    6 +-
- arch/ia64/mm/hugetlbpage.c                   |    7 +-
- arch/metag/mm/hugetlbpage.c                  |   11 +-
- arch/mips/kernel/vdso.c                      |    4 +-
- arch/mips/mm/mmap.c                          |   27 +-
- arch/parisc/kernel/sys_parisc.c              |   19 +-
- arch/parisc/mm/hugetlbpage.c                 |    7 +-
- arch/powerpc/include/asm/book3s/64/hugetlb.h |    6 +-
- arch/powerpc/include/asm/page_64.h           |    3 +-
- arch/powerpc/kernel/vdso.c                   |    2 +-
- arch/powerpc/mm/hugetlbpage-radix.c          |    9 +-
- arch/powerpc/mm/hugetlbpage.c                |    9 +-
- arch/powerpc/mm/mmap.c                       |   17 +-
- arch/powerpc/mm/slice.c                      |   25 +-
- arch/s390/kernel/vdso.c                      |    3 +-
- arch/s390/mm/mmap.c                          |   42 +-
- arch/sh/kernel/vsyscall/vsyscall.c           |    2 +-
- arch/sh/mm/mmap.c                            |   19 +-
- arch/sparc/include/asm/pgtable_64.h          |    4 +-
- arch/sparc/kernel/sys_sparc_32.c             |    6 +-
- arch/sparc/kernel/sys_sparc_64.c             |   31 +-
- arch/sparc/mm/hugetlbpage.c                  |   26 +-
- arch/tile/kernel/vdso.c                      |    2 +-
- arch/tile/mm/elf.c                           |    2 +-
- arch/tile/mm/hugetlbpage.c                   |   26 +-
- arch/x86/entry/syscalls/syscall_32.tbl       |   16 +
- arch/x86/entry/syscalls/syscall_64.tbl       |   16 +
- arch/x86/entry/vdso/vma.c                    |    2 +-
- arch/x86/kernel/sys_x86_64.c                 |   19 +-
- arch/x86/mm/hugetlbpage.c                    |   26 +-
- arch/x86/mm/mpx.c                            |    6 +-
- arch/xtensa/kernel/syscall.c                 |    7 +-
- drivers/char/mem.c                           |   15 +-
- drivers/dax/dax.c                            |   10 +-
- drivers/media/usb/uvc/uvc_v4l2.c             |    6 +-
- drivers/media/v4l2-core/v4l2-dev.c           |    8 +-
- drivers/media/v4l2-core/videobuf2-v4l2.c     |    5 +-
- drivers/mtd/mtdchar.c                        |    3 +-
- drivers/usb/gadget/function/uvc_v4l2.c       |    3 +-
- fs/aio.c                                     |    4 +-
- fs/exec.c                                    |    5 +-
- fs/hugetlbfs/inode.c                         |    8 +-
- fs/proc/base.c                               |  528 ++++
- fs/proc/inode.c                              |   11 +-
- fs/proc/internal.h                           |    1 +
- fs/ramfs/file-mmu.c                          |    5 +-
- fs/ramfs/file-nommu.c                        |   10 +-
- fs/romfs/mmap-nommu.c                        |    3 +-
- include/linux/fs.h                           |    2 +-
- include/linux/huge_mm.h                      |   12 +-
- include/linux/hugetlb.h                      |   10 +-
- include/linux/mm.h                           |   53 +-
- include/linux/mm_types.h                     |   16 +-
- include/linux/sched.h                        |   34 +-
- include/linux/shmem_fs.h                     |    5 +-
- include/linux/syscalls.h                     |   21 +
- include/linux/vas.h                          |  322 +++
- include/linux/vas_types.h                    |  173 ++
- include/media/v4l2-dev.h                     |    3 +-
- include/media/videobuf2-v4l2.h               |    5 +-
- include/uapi/asm-generic/unistd.h            |   34 +-
- include/uapi/linux/Kbuild                    |    1 +
- include/uapi/linux/vas.h                     |   28 +
- init/main.c                                  |    2 +
- ipc/shm.c                                    |   22 +-
- kernel/events/uprobes.c                      |    2 +-
- kernel/exit.c                                |    2 +
- kernel/fork.c                                |   99 +-
- kernel/sys_ni.c                              |   18 +
- mm/Kconfig                                   |   47 +
- mm/Makefile                                  |    1 +
- mm/gup.c                                     |    4 +-
- mm/huge_memory.c                             |   83 +-
- mm/hugetlb.c                                 |  205 +-
- mm/internal.h                                |   19 +
- mm/memory.c                                  |  469 +++-
- mm/mlock.c                                   |   21 +-
- mm/mmap.c                                    |  124 +-
- mm/mremap.c                                  |   13 +-
- mm/nommu.c                                   |   17 +-
- mm/shmem.c                                   |   14 +-
- mm/util.c                                    |    4 +-
- mm/vas.c                                     | 3466 ++++++++++++++++++++++++++
- sound/core/pcm_native.c                      |    3 +-
- 96 files changed, 5927 insertions(+), 545 deletions(-)
- create mode 100644 include/linux/vas.h
- create mode 100644 include/linux/vas_types.h
- create mode 100644 include/uapi/linux/vas.h
- create mode 100644 mm/vas.c
-
+diff --git a/arch/x86/mm/mpx.c b/arch/x86/mm/mpx.c
+index af59f808742f..99c664a97c35 100644
+--- a/arch/x86/mm/mpx.c
++++ b/arch/x86/mm/mpx.c
+@@ -50,8 +50,8 @@ static unsigned long mpx_mmap(unsigned long len)
+ 		return -EINVAL;
+ 
+ 	down_write(&mm->mmap_sem);
+-	addr = do_mmap(NULL, 0, len, PROT_READ | PROT_WRITE,
+-			MAP_ANONYMOUS | MAP_PRIVATE, VM_MPX, 0, &populate);
++	addr = do_mmap(mm, NULL, 0, len, PROT_READ | PROT_WRITE,
++		       MAP_ANONYMOUS | MAP_PRIVATE, VM_MPX, 0, &populate);
+ 	up_write(&mm->mmap_sem);
+ 	if (populate)
+ 		mm_populate(addr, populate);
+diff --git a/fs/aio.c b/fs/aio.c
+index 873b4ca82ccb..df9bba5a2aff 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -510,8 +510,8 @@ static int aio_setup_ring(struct kioctx *ctx)
+ 		return -EINTR;
+ 	}
+ 
+-	ctx->mmap_base = do_mmap_pgoff(ctx->aio_ring_file, 0, ctx->mmap_size,
+-				       PROT_READ | PROT_WRITE,
++	ctx->mmap_base = do_mmap_pgoff(current->mm, ctx->aio_ring_file, 0,
++				       ctx->mmap_size, PROT_READ | PROT_WRITE,
+ 				       MAP_SHARED, 0, &unused);
+ 	up_write(&mm->mmap_sem);
+ 	if (IS_ERR((void *)ctx->mmap_base)) {
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index fa483d2ff3eb..fb11be77545f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2019,17 +2019,18 @@ extern unsigned long get_unmapped_area(struct file *, unsigned long, unsigned lo
+ extern unsigned long mmap_region(struct mm_struct *mm, struct file *file,
+ 				 unsigned long addr, unsigned long len,
+ 				 vm_flags_t vm_flags, unsigned long pgoff);
+-extern unsigned long do_mmap(struct file *file, unsigned long addr,
+-	unsigned long len, unsigned long prot, unsigned long flags,
+-	vm_flags_t vm_flags, unsigned long pgoff, unsigned long *populate);
++extern unsigned long do_mmap(struct mm_struct *mm, struct file *file,
++	unsigned long addr, unsigned long len, unsigned long prot,
++	unsigned long flags, vm_flags_t vm_flags, unsigned long pgoff,
++	unsigned long *populate);
+ extern int do_munmap(struct mm_struct *, unsigned long, size_t);
+ 
+ static inline unsigned long
+-do_mmap_pgoff(struct file *file, unsigned long addr,
++do_mmap_pgoff(struct mm_struct *mm, struct file *file, unsigned long addr,
+ 	unsigned long len, unsigned long prot, unsigned long flags,
+ 	unsigned long pgoff, unsigned long *populate)
+ {
+-	return do_mmap(file, addr, len, prot, flags, 0, pgoff, populate);
++	return do_mmap(mm, file, addr, len, prot, flags, 0, pgoff, populate);
+ }
+ 
+ #ifdef CONFIG_MMU
+diff --git a/ipc/shm.c b/ipc/shm.c
+index 81203e8ba013..64c21fb32ca9 100644
+--- a/ipc/shm.c
++++ b/ipc/shm.c
+@@ -1222,7 +1222,8 @@ long do_shmat(int shmid, char __user *shmaddr, int shmflg, ulong *raddr,
+ 			goto invalid;
+ 	}
+ 
+-	addr = do_mmap_pgoff(file, addr, size, prot, flags, 0, &populate);
++	addr = do_mmap_pgoff(mm, file, addr, size, prot, flags, 0,
++			     &populate);
+ 	*raddr = addr;
+ 	err = 0;
+ 	if (IS_ERR_VALUE(addr))
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 5ac276ac9807..70028bf7b58d 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1299,14 +1299,14 @@ static inline int mlock_future_check(struct mm_struct *mm,
+ }
+ 
+ /*
+- * The caller must hold down_write(&current->mm->mmap_sem).
++ * The caller must hold down_write(&mm->mmap_sem).
+  */
+-unsigned long do_mmap(struct file *file, unsigned long addr,
+-			unsigned long len, unsigned long prot,
+-			unsigned long flags, vm_flags_t vm_flags,
+-			unsigned long pgoff, unsigned long *populate)
++unsigned long do_mmap(struct mm_struct *mm, struct file *file,
++		      unsigned long addr, unsigned long len,
++		      unsigned long prot, unsigned long flags,
++		      vm_flags_t vm_flags, unsigned long pgoff,
++		      unsigned long *populate)
+ {
+-	struct mm_struct *mm = current->mm;
+ 	int pkey = 0;
+ 
+ 	*populate = 0;
+@@ -2779,8 +2779,8 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 	}
+ 
+ 	file = get_file(vma->vm_file);
+-	ret = do_mmap_pgoff(vma->vm_file, start, size,
+-			prot, flags, pgoff, &populate);
++	ret = do_mmap_pgoff(mm, vma->vm_file, start, size,
++			    prot, flags, pgoff, &populate);
+ 	fput(file);
+ out:
+ 	up_write(&mm->mmap_sem);
+diff --git a/mm/nommu.c b/mm/nommu.c
+index 24f9f5f39145..54825d29f50b 100644
+--- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -1198,7 +1198,8 @@ static int do_mmap_private(struct vm_area_struct *vma,
+ /*
+  * handle mapping creation for uClinux
+  */
+-unsigned long do_mmap(struct file *file,
++unsigned long do_mmap(struct mm_struct *mm,
++			struct file *file,
+ 			unsigned long addr,
+ 			unsigned long len,
+ 			unsigned long prot,
+@@ -1375,10 +1376,10 @@ unsigned long do_mmap(struct file *file,
+ 	/* okay... we have a mapping; now we have to register it */
+ 	result = vma->vm_start;
+ 
+-	current->mm->total_vm += len >> PAGE_SHIFT;
++	mm->total_vm += len >> PAGE_SHIFT;
+ 
+ share:
+-	add_vma_to_mm(current->mm, vma);
++	add_vma_to_mm(mm, vma);
+ 
+ 	/* we flush the region from the icache only when the first executable
+ 	 * mapping of it is made  */
+diff --git a/mm/util.c b/mm/util.c
+index 3cb2164f4099..46d05eef9a6b 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -302,7 +302,7 @@ unsigned long vm_mmap_pgoff(struct file *file, unsigned long addr,
+ 	if (!ret) {
+ 		if (down_write_killable(&mm->mmap_sem))
+ 			return -EINTR;
+-		ret = do_mmap_pgoff(file, addr, len, prot, flag, pgoff,
++		ret = do_mmap_pgoff(mm, file, addr, len, prot, flag, pgoff,
+ 				    &populate);
+ 		up_write(&mm->mmap_sem);
+ 		if (populate)
 -- 
 2.12.0
