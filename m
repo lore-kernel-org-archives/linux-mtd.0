@@ -1,23 +1,63 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cnX34-0007pV-J6
- for linux-mtd@lists.infradead.org; Mon, 13 Mar 2017 20:58:38 +0000
-Date: Mon, 13 Mar 2017 21:58:08 +0100
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Simon Baatz <gmbnomis@gmail.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- jason@lakedaemon.net, andrew@lunn.ch, richard@nod.at,
- linux-arm-kernel@lists.infradead.org, dan.carpenter@oracle.com
-Subject: Re: [PATCH] mtd: nand: orion: fix clk handling
-Message-ID: <20170313205808.tpov2l4cd7b7b54p@pengutronix.de>
-References: <20170312213406.20987-1-gmbnomis@gmail.com>
- <20170313071241.y5ydl274t22awrys@pengutronix.de>
- <20170313204344.GA24471@gandalf>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170313204344.GA24471@gandalf>
+From: Till Smejkal <till.smejkal@googlemail.com>
+To: Richard Henderson <rth@twiddle.net>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+ Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>,
+ Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>,
+ Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>,
+ Ralf Baechle <ralf@linux-mips.org>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ Helge Deller <deller@gmx.de>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Martin Schwidefsky <schwidefsky@de.ibm.com>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Chris Metcalf <cmetcalf@mellanox.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+ Andy Lutomirski <luto@amacapital.net>, Chris Zankel <chris@zankel.net>,
+ Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Pawel Osciak <pawel@osciak.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Benjamin LaHaise <bcrl@kvack.org>,
+ Nadia Yvette Chambers <nyc@holomorphy.com>,
+ Jeff Layton <jlayton@poochiereds.net>,
+ "J. Bruce Fields" <bfields@fieldses.org>,
+ Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org,
+ linux-ia64@vger.kernel.org, linux-metag@vger.kernel.org,
+ linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-xtensa@linux-xtensa.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-usb@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-aio@kvack.org, linux-mm@kvack.org,
+ linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Subject: [RFC PATCH 01/13] mm: Add mm_struct argument to 'mmap_region'
+Date: Mon, 13 Mar 2017 15:14:03 -0700
+Message-Id: <20170313221415.9375-2-till.smejkal@gmail.com>
+In-Reply-To: <20170313221415.9375-1-till.smejkal@gmail.com>
+References: <20170313221415.9375-1-till.smejkal@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,73 +67,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Simon,
+Add to the 'mmap_region' function the mm_struct that it should operate on
+as additional argument. Before, the function simply used the memory map of
+the current task. However, with the introduction of first class virtual
+address spaces, mmap_region needs also be able to operate on other memory
+maps than only the current task ones. By adding it as argument we can now
+explicitly define which memory map to use.
 
-On Mon, Mar 13, 2017 at 09:43:44PM +0100, Simon Baatz wrote:
-> Hello Uwe,
-> 
-> On Mon, Mar 13, 2017 at 08:12:41AM +0100, Uwe Kleine-K?nig wrote:
-> > Hello Simon,
-> > 
-> > On Sun, Mar 12, 2017 at 10:34:06PM +0100, Simon Baatz wrote:
-> > > The clk handling in orion_nand.c had two problems:
-> > > 
-> > > - In the probe function, clk_put() was called for an enabled clock,
-> > >   which violates the API (see documentation for clk_put() in
-> > >   include/linux/clk.h)
-> > > 
-> > > - In the error path of the probe function, clk_put() could be called
-> > >   twice for the same clock.
-> > > 
-> > > In order to clean this up, use the managed function devm_clk_get() and
-> > > store the pointer to the clk in the driver data.
-> 
-> ...
-> 
-> > >  	/* Not all platforms can gate the clock, so it is not
-> > >  	   an error if the clock does not exists. */
-> > > -	clk = clk_get(&pdev->dev, NULL);
-> > > -	if (!IS_ERR(clk)) {
-> > > -		clk_prepare_enable(clk);
-> > > -		clk_put(clk);
-> > > -	}
-> > > +	info->clk = devm_clk_get(&pdev->dev, NULL);
-> > > +	if (!IS_ERR(info->clk))
-> > > +		clk_prepare_enable(info->clk);
-> > 
-> > Orthogonal to your patch I suggest:
-> > 
-> > -	info->clk = devm_clk_get(&pdev->dev, NULL);
-> > -	if (!IS_ERR(info->clk))
-> > -		clk_prepare_enable(info->clk);
-> > +	info->clk = devm_clk_get_optional(&pdev->dev, NULL);
-> > +	if (IS_ERR(info->clk)) {
-> > +		ret = PTR_ERR(info->clk);
-> > +		if (ret != -EPROBE_DEFER)
-> > +			dev_err(...);
-> > +		return ret;
-> > +	}
-> > 
-> > to correct error handling.
-> > (I didn't check if a plain return is right here, and also other users of
-> > info->clk need adaption.)
-> 
-> Nice! However, I can't find a devm_clk_get_optional() anywhere(?) Is
-> it in some upcoming patch?
+Signed-off-by: Till Smejkal <till.smejkal@gmail.com>
+---
+ arch/mips/kernel/vdso.c |  2 +-
+ arch/tile/mm/elf.c      |  2 +-
+ include/linux/mm.h      |  5 +++--
+ mm/mmap.c               | 10 +++++-----
+ 4 files changed, 10 insertions(+), 9 deletions(-)
 
-Oh really. I was sure I already made use of it. Probably consfused it
-with the gpio or regulator API which have such variants. (But be aware,
-they are sematically different. If you look for a place to copy from
-please stick to the gpio sematic.)
-
-Then either send a patch creating clk_get_optional and friends, or only
-ignore -ENODEV but propagate the other error values. (Maybe the most
-rational path is to do both and switch the driver once clk_get_optional
-is available.)
-
-Best regards
-Uwe
-
+diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
+index f9dbfb14af33..9631b42908f3 100644
+--- a/arch/mips/kernel/vdso.c
++++ b/arch/mips/kernel/vdso.c
+@@ -108,7 +108,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 		return -EINTR;
+ 
+ 	/* Map delay slot emulation page */
+-	base = mmap_region(NULL, STACK_TOP, PAGE_SIZE,
++	base = mmap_region(mm, NULL, STACK_TOP, PAGE_SIZE,
+ 			   VM_READ|VM_WRITE|VM_EXEC|
+ 			   VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
+ 			   0);
+diff --git a/arch/tile/mm/elf.c b/arch/tile/mm/elf.c
+index 6225cc998db1..a22768059b7a 100644
+--- a/arch/tile/mm/elf.c
++++ b/arch/tile/mm/elf.c
+@@ -141,7 +141,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
+ 	 */
+ 	if (!retval) {
+ 		unsigned long addr = MEM_USER_INTRPT;
+-		addr = mmap_region(NULL, addr, INTRPT_SIZE,
++		addr = mmap_region(mm, NULL, addr, INTRPT_SIZE,
+ 				   VM_READ|VM_EXEC|
+ 				   VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC, 0);
+ 		if (addr > (unsigned long) -PAGE_SIZE)
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index b84615b0f64c..fa483d2ff3eb 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2016,8 +2016,9 @@ extern int install_special_mapping(struct mm_struct *mm,
+ 
+ extern unsigned long get_unmapped_area(struct file *, unsigned long, unsigned long, unsigned long, unsigned long);
+ 
+-extern unsigned long mmap_region(struct file *file, unsigned long addr,
+-	unsigned long len, vm_flags_t vm_flags, unsigned long pgoff);
++extern unsigned long mmap_region(struct mm_struct *mm, struct file *file,
++				 unsigned long addr, unsigned long len,
++				 vm_flags_t vm_flags, unsigned long pgoff);
+ extern unsigned long do_mmap(struct file *file, unsigned long addr,
+ 	unsigned long len, unsigned long prot, unsigned long flags,
+ 	vm_flags_t vm_flags, unsigned long pgoff, unsigned long *populate);
+diff --git a/mm/mmap.c b/mm/mmap.c
+index dc4291dcc99b..5ac276ac9807 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1447,7 +1447,7 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
+ 			vm_flags |= VM_NORESERVE;
+ 	}
+ 
+-	addr = mmap_region(file, addr, len, vm_flags, pgoff);
++	addr = mmap_region(mm, file, addr, len, vm_flags, pgoff);
+ 	if (!IS_ERR_VALUE(addr) &&
+ 	    ((vm_flags & VM_LOCKED) ||
+ 	     (flags & (MAP_POPULATE | MAP_NONBLOCK)) == MAP_POPULATE))
+@@ -1582,10 +1582,10 @@ static inline int accountable_mapping(struct file *file, vm_flags_t vm_flags)
+ 	return (vm_flags & (VM_NORESERVE | VM_SHARED | VM_WRITE)) == VM_WRITE;
+ }
+ 
+-unsigned long mmap_region(struct file *file, unsigned long addr,
+-		unsigned long len, vm_flags_t vm_flags, unsigned long pgoff)
++unsigned long mmap_region(struct mm_struct *mm, struct file *file,
++		unsigned long addr, unsigned long len, vm_flags_t vm_flags,
++		unsigned long pgoff)
+ {
+-	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma, *prev;
+ 	int error;
+ 	struct rb_node **rb_link, *rb_parent;
+@@ -1704,7 +1704,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+ 	vm_stat_account(mm, vm_flags, len >> PAGE_SHIFT);
+ 	if (vm_flags & VM_LOCKED) {
+ 		if (!((vm_flags & VM_SPECIAL) || is_vm_hugetlb_page(vma) ||
+-					vma == get_gate_vma(current->mm)))
++					vma == get_gate_vma(mm)))
+ 			mm->locked_vm += (len >> PAGE_SHIFT);
+ 		else
+ 			vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
 -- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+2.12.0
