@@ -1,18 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cnJl3-0006Xu-RP
- for linux-mtd@lists.infradead.org; Mon, 13 Mar 2017 06:47:08 +0000
-Date: Mon, 13 Mar 2017 07:46:41 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alexander Couzens <lynxis@fe80.eu>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] nand_base: fix regression on nand with 64/128 oob size
-Message-ID: <20170313074641.28b383e7@bbrezillon>
-In-Reply-To: <20170312200232.19269-1-lynxis@fe80.eu>
-References: <20170312200232.19269-1-lynxis@fe80.eu>
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cnKAI-0008SH-OE
+ for linux-mtd@lists.infradead.org; Mon, 13 Mar 2017 07:13:13 +0000
+Date: Mon, 13 Mar 2017 08:12:41 +0100
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Simon Baatz <gmbnomis@gmail.com>
+Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
+ jason@lakedaemon.net, andrew@lunn.ch, richard@nod.at,
+ linux-arm-kernel@lists.infradead.org, dan.carpenter@oracle.com
+Subject: Re: [PATCH] mtd: nand: orion: fix clk handling
+Message-ID: <20170313071241.y5ydl274t22awrys@pengutronix.de>
+References: <20170312213406.20987-1-gmbnomis@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170312213406.20987-1-gmbnomis@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,83 +25,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexander,
+Hello Simon,
 
-On Sun, 12 Mar 2017 21:02:32 +0100
-Alexander Couzens <lynxis@fe80.eu> wrote:
-
-> 41b207a70d3a
-
-When you refer to a commit, please put the commit description as well:
-
-41b207a70d3a ("mtd: nand: implement the default mtd_ooblayout_ops")
-
-> accidently changed the oob layout for nand when ECC doesn't use
-> the full available ecc reserved data.
-
-Oh crap! I didn't notice that when switching to the ooblayout approach.
-
-> This only affects controllers which use the default large page ops
-> nand_ooblayout_ecc_lp.
+On Sun, Mar 12, 2017 at 10:34:06PM +0100, Simon Baatz wrote:
+> The clk handling in orion_nand.c had two problems:
 > 
-> E.g. for davinci:
-> - nand has 2048 byte page, 64 byte oob
-> - 3 byte ecc every 512 byte using 1bit hw ecc
-> - requires 12 byte of oob space for ecc
-> - old layout reserved 24 byte based on 64 byte oob
+> - In the probe function, clk_put() was called for an enabled clock,
+>   which violates the API (see documentation for clk_put() in
+>   include/linux/clk.h)
 > 
-> Old layout started using byte from offset 40 while new layout
-> uses the last X bytes so it fits into the end of oob.
-> Meaning in this example the old layout uses byte 40-51, while
-> the new layout use byte 52-63.
+> - In the error path of the probe function, clk_put() could be called
+>   twice for the same clock.
 > 
-> Signed-off-by: Alexander Couzens <lynxis@fe80.eu>
-
-Fixes + Cc-stable tags please.
-
+> In order to clean this up, use the managed function devm_clk_get() and
+> store the pointer to the clk in the driver data.
+> 
+> Fixes: baffab28b13120694fa3ebab08d3e99667a851d2 ('ARM: Orion: fix driver probe error handling with respect to clk')
+> Cc: <stable@vger.kernel.org> # v4.5+
+> Signed-off-by: Simon Baatz <gmbnomis@gmail.com>
 > ---
->  drivers/mtd/nand/nand_base.c | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/orion_nand.c | 42 +++++++++++++++++++++---------------------
+>  1 file changed, 21 insertions(+), 21 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index b0524f8accb6..ba88345fd334 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -112,8 +112,25 @@ static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
->  	if (section)
->  		return -ERANGE;
+> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+> index 4a91c5d000be..b355aa738fae 100644
+> --- a/drivers/mtd/nand/orion_nand.c
+> +++ b/drivers/mtd/nand/orion_nand.c
+> @@ -23,6 +23,11 @@
+>  #include <asm/sizes.h>
+>  #include <linux/platform_data/mtd-orion_nand.h>
 >  
-> +	/* to be compatible with previous layouts
-> +	 * 64 byte oob must have ecc data at byte 40,
-> +	 * 128 byte oob must have ecc data at byte 80 */
-> +	switch (mtd->oobsize) {
-> +	case 64:
-> +		oobregion->offset = 40;
-> +		break;
-> +	case 128:
-> +		oobregion->offset = 80;
-> +		break;
-> +	default:
-> +		oobregion->offset = mtd->oobsize - oobregion->length;
-> +		break;
-> +	}
+> +struct orion_nand_info {
+> +	struct nand_chip chip;
+> +	struct clk       *clk;
+> +};
 > +
->  	oobregion->length = ecc->total;
-> -	oobregion->offset = mtd->oobsize - oobregion->length;
-> +	if (oobregion->offset + oobregion->length > mtd->oobsize) {
-> +		return -ERANGE;
-> +	}
+>  static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  {
+>  	struct nand_chip *nc = mtd_to_nand(mtd);
+> @@ -75,20 +80,21 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+>  
+>  static int __init orion_nand_probe(struct platform_device *pdev)
+>  {
+> +	struct orion_nand_info *info;
+>  	struct mtd_info *mtd;
+>  	struct nand_chip *nc;
+>  	struct orion_nand_data *board;
+>  	struct resource *res;
+> -	struct clk *clk;
+>  	void __iomem *io_base;
+>  	int ret = 0;
+>  	u32 val = 0;
+>  
+> -	nc = devm_kzalloc(&pdev->dev,
+> -			sizeof(struct nand_chip),
+> +	info = devm_kzalloc(&pdev->dev,
+> +			sizeof(struct orion_nand_info),
+>  			GFP_KERNEL);
+> -	if (!nc)
+> +	if (!info)
+>  		return -ENOMEM;
+> +	nc = &info->chip;
+>  	mtd = nand_to_mtd(nc);
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> @@ -145,15 +151,13 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+>  	if (board->dev_ready)
+>  		nc->dev_ready = board->dev_ready;
+>  
+> -	platform_set_drvdata(pdev, mtd);
+> +	platform_set_drvdata(pdev, info);
+>  
+>  	/* Not all platforms can gate the clock, so it is not
+>  	   an error if the clock does not exists. */
+> -	clk = clk_get(&pdev->dev, NULL);
+> -	if (!IS_ERR(clk)) {
+> -		clk_prepare_enable(clk);
+> -		clk_put(clk);
+> -	}
+> +	info->clk = devm_clk_get(&pdev->dev, NULL);
+> +	if (!IS_ERR(info->clk))
+> +		clk_prepare_enable(info->clk);
 
-By doing that you break new users of the standard large page layout
-which expect all ECC bytes to be placed at the end of the OOB region.
-In all cases except the one you're fixing (Hamming in 1bit/512bytes) we
-want the ECC start offset to be calculated based on the actual number
-of ECC bytes, and not the max number of ECC bytes considering the
-strongest case.
+Orthogonal to your patch I suggest:
 
-I'd recommend that you add a new layout for Hamming ECC in the 64 or 128
-OOB bytes situation to fix the problem.
+-	info->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (!IS_ERR(info->clk))
+-		clk_prepare_enable(info->clk);
++	info->clk = devm_clk_get_optional(&pdev->dev, NULL);
++	if (IS_ERR(info->clk)) {
++		ret = PTR_ERR(info->clk);
++		if (ret != -EPROBE_DEFER)
++			dev_err(...);
++		return ret;
++	}
 
-Thanks,
+to correct error handling.
+(I didn't check if a plain return is right here, and also other users of
+info->clk need adaption.)
 
-Boris
+Best regards
+Uwe
+
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
