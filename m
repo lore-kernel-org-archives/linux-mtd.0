@@ -1,70 +1,21 @@
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Till Smejkal' <till.smejkal@googlemail.com>, Richard Henderson
- <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, "Will
- Deacon" <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo
- <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu
- <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle
- <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge
- Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>, "Michael Ellerman" <mpe@ellerman.id.au>,
- Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens
- <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Chris
- Metcalf <cmetcalf@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org"
- <x86@kernel.org>, "Andy Lutomirski" <luto@amacapital.net>, Chris Zankel
- <chris@zankel.net>, "Max Filippov" <jcmvbkbc@gmail.com>, Arnd Bergmann
- <arnd@arndb.de>, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, Laurent
- Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab
- <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Felipe Balbi <balbi@kernel.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Benjamin LaHaise <bcrl@kvack.org>, "Nadia Yvette
- Chambers" <nyc@holomorphy.com>, Jeff Layton <jlayton@poochiereds.net>, "J.
- Bruce Fields" <bfields@fieldses.org>, Peter Zijlstra <peterz@infradead.org>,
- Hugh Dickins <hughd@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- "linux-aio@kvack.org" <linux-aio@kvack.org>, "linux-mm@kvack.org"
- <linux-mm@kvack.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "sparclinux@vger.kernel.org"
- <sparclinux@vger.kernel.org>, "linux-arch@vger.kernel.org"
- <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org"
- <linux-s390@vger.kernel.org>, "linux-hexagon@vger.kernel.org"
- <linux-hexagon@vger.kernel.org>, "linux-sh@vger.kernel.org"
- <linux-sh@vger.kernel.org>, "linux-snps-arc@lists.infradead.org"
- <linux-snps-arc@lists.infradead.org>, "linux-media@vger.kernel.org"
- <linux-media@vger.kernel.org>, "linux-xtensa@linux-xtensa.org"
- <linux-xtensa@linux-xtensa.org>, "adi-buildroot-devel@lists.sourceforge.net"
- <adi-buildroot-devel@lists.sourceforge.net>, "linux-metag@vger.kernel.org"
- <linux-metag@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-parisc@vger.kernel.org"
- <linux-parisc@vger.kernel.org>, "linux-api@vger.kernel.org"
- <linux-api@vger.kernel.org>, "linux-usb@vger.kernel.org"
- <linux-usb@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-alpha@vger.kernel.org"
- <linux-alpha@vger.kernel.org>, "linux-fsdevel@vger.kernel.org"
- <linux-fsdevel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org"
- <linuxppc-dev@lists.ozlabs.org>
-Subject: RE: [RFC PATCH 07/13] kernel/fork: Split and export 'mm_alloc' and
- 'mm_init'
-Date: Tue, 14 Mar 2017 10:18:03 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6DCFFB03F4@AcuExch.aculab.com>
-References: <20170313221415.9375-1-till.smejkal@gmail.com>
- <20170313221415.9375-8-till.smejkal@gmail.com>
-In-Reply-To: <20170313221415.9375-8-till.smejkal@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Received: from smtp-sh.infomaniak.ch ([128.65.195.4])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cnkOH-0002G1-8l
+ for linux-mtd@lists.infradead.org; Tue, 14 Mar 2017 11:13:23 +0000
+Subject: Re: Timeout in denali.c on Micron nandflash (Altera SoC)
+To: Richard Weinberger <richard.weinberger@gmail.com>
+References: <58BEB65B.3050003@idquantique.com>
+ <CAFLxGvy=PHU1Yc74TgQ-S9+Q_jRnYEUVywzYqbhdmQRGHk_vJA@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "laurent.monat@idquantique.com" <laurent.monat@idquantique.com>,
+ David Oberhollenzer <goliath@sigma-star.at>
+From: Thorsten Christiansson <thorsten.christiansson@idquantique.com>
+Message-ID: <58C7D033.4030902@idquantique.com>
+Date: Tue, 14 Mar 2017 12:12:51 +0100
 MIME-Version: 1.0
+In-Reply-To: <CAFLxGvy=PHU1Yc74TgQ-S9+Q_jRnYEUVywzYqbhdmQRGHk_vJA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -74,32 +25,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Linuxppc-dev Till Smejkal
-> Sent: 13 March 2017 22:14
-> The only way until now to create a new memory map was via the exported
-> function 'mm_alloc'. Unfortunately, this function not only allocates a ne=
-w
-> memory map, but also completely initializes it. However, with the
-> introduction of first class virtual address spaces, some initialization
-> steps done in 'mm_alloc' are not applicable to the memory maps needed for
-> this feature and hence would lead to errors in the kernel code.
->=20
-> Instead of introducing a new function that can allocate and initialize
-> memory maps for first class virtual address spaces and potentially
-> duplicate some code, I decided to split the mm_alloc function as well as
-> the 'mm_init' function that it uses.
->=20
-> Now there are four functions exported instead of only one. The new
-> 'mm_alloc' function only allocates a new mm_struct and zeros it out. If o=
-ne
-> want to have the old behavior of mm_alloc one can use the newly introduce=
-d
-> function 'mm_alloc_and_setup' which not only allocates a new mm_struct bu=
-t
-> also fully initializes it.
-...
+Hello Richard,
 
-That looks like bugs waiting to happen.
-You need unchanged code to fail to compile.
+On advice from Altera, I have been testing using JFFS2 directly on top
+of MTD, and thereby bypassing the UBI completely. At first it looked
+promising, but I have seen the same 'timeout' here as well.
 
-	David
+I will get back to running some tests with an up-to-date kernel, and will
+keep you posted.
+
+
+Thanks,
+
+Thorsten
+
+On 03/09/2017 11:09 PM, Richard Weinberger wrote:
+> Thorsten,
+>
+> On Tue, Mar 7, 2017 at 2:32 PM, Thorsten Christiansson
+> <thorsten.christiansson@idquantique.com> wrote:
+>> Hi all,
+>>
+>> I'm using Linux on an Altera SoC (Arria V), on which I'm using UBIFS on a
+>> nandflash from Micron (MT29F8G08ADADAH4).  I have a 400Mb r/w partition on
+>> which I have a sqlite3-based database. We're running an application that
+>> reads/writes fairly small blocks. After running for about a week at moderate
+>> load, I get an error message, and the filesystem becomes read-only.
+>>
+>> The message I get is a timeout, originating in the denali.c driver.
+>> [11744.733748] timeout occurred, status = 0x0, mask = 0x4
+>> [11745.733685] timeout occurred, status = 0x0, mask = 0x120
+>>
+>> I can also reproduce the error much faster (in ~1h) using the GNU 'stress'
+>> command, writing/reading small files continuously.
+>>
+>> I'm using Linux 4.4, with some patches from Altera. I have compared the
+>> denali.c that I'm using with the current HEAD on github, and the differences
+>> appear to be only cosmetic.
+>>
+>> I have asked Altera for help, but their only response so far has been that
+>> they can reproduce the issue on their latest SoCs (it apparently appears on
+>> both Arria10 and CycloneV) with the same flash. (We have also tested with a
+>> Macronix MX66U51235FMI-10G, with the same results.)
+>>
+>> At first we used the FASTMAP feature of the UBIFS, but then we ran into this
+>> issue after only a couple of hours running at moderate load. When we
+>> disabled
+>> that, we thought the problem was gone, but it appears that it was only
+>> hiding,
+>> and now comes out to bite us after about a week.
+>>
+>>
+>> My questions are the following:
+>> - Are there any known issues with the denali driver that could cause this?
+> Well, 4.4. is not very fresh. Maybe it saw fixes in recent version.
+>
+>> - Could it be an issue in the MTD/UBI/UBIFS layers?
+> Since the denali driver prints the timeouts I'd say the root of the
+> problem is there.
+>
+>> - Are there any other parameters that can be tuned in order to alleviate the
+>>   problem?
+>>
+>> and of course
+>> - Have I missed something obvious? I'm pulling my hair here...
+> Can you please give MTD tests a try?
+>
+
+-- 
+Thorsten Christiansson
+Security Engineer
+ID Quantique
+thorsten.christiansson@idquantique.com
+<mailto:thorsten.christiansson@idquantique.com>
+Tel: +41 22 301 8373 Fax: +41 22 301 8379
+www.idquantique.com <https://www.idquantique.com>
+https://twitter.com/IDQuantique
+https://www.linkedin.com/company/id-quantique-sa
