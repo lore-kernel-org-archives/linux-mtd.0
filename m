@@ -1,82 +1,20 @@
-From: Till Smejkal <till.smejkal@googlemail.com>
-Date: Tue, 14 Mar 2017 09:18:55 -0700
-To: David Laight <David.Laight@ACULAB.COM>
-Cc: 'Till Smejkal' <till.smejkal@googlemail.com>,
- Richard Henderson <rth@twiddle.net>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>,
- Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>,
- Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>,
- Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>,
- Ralf Baechle <ralf@linux-mips.org>,
- "James E.J. Bottomley" <jejb@parisc-linux.org>,
- Helge Deller <deller@gmx.de>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Martin Schwidefsky <schwidefsky@de.ibm.com>,
- Heiko Carstens <heiko.carstens@de.ibm.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- "David S. Miller" <davem@davemloft.net>,
- Chris Metcalf <cmetcalf@mellanox.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
- "x86@kernel.org" <x86@kernel.org>, Andy Lutomirski <luto@amacapital.net>,
- Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Pawel Osciak <pawel@osciak.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+Received: from conuserg-11.nifty.com ([210.131.2.78])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cnqXG-0007J8-Mb
+ for linux-mtd@lists.infradead.org; Tue, 14 Mar 2017 17:47:05 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Benjamin LaHaise <bcrl@kvack.org>,
- Nadia Yvette Chambers <nyc@holomorphy.com>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- "linux-aio@kvack.org" <linux-aio@kvack.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
- "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
- "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
- "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
- "adi-buildroot-devel@lists.sourceforge.net"
- <adi-buildroot-devel@lists.sourceforge.net>,
- "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
- "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [RFC PATCH 07/13] kernel/fork: Split and export 'mm_alloc' and
- 'mm_init'
-Message-ID: <20170314161855.2g2gc3ff4ifj2lqt@arch-dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6DCFFB03F4@AcuExch.aculab.com>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH] mtd: nand: use .read_oob() instead of .cmdfunc() for bad
+ block check
+Date: Wed, 15 Mar 2017 02:45:48 +0900
+Message-Id: <1489513548-3248-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -86,38 +24,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 14 Mar 2017, David Laight wrote:
-> From: Linuxppc-dev Till Smejkal
-> > Sent: 13 March 2017 22:14
-> > The only way until now to create a new memory map was via the exported
-> > function 'mm_alloc'. Unfortunately, this function not only allocates a new
-> > memory map, but also completely initializes it. However, with the
-> > introduction of first class virtual address spaces, some initialization
-> > steps done in 'mm_alloc' are not applicable to the memory maps needed for
-> > this feature and hence would lead to errors in the kernel code.
-> > 
-> > Instead of introducing a new function that can allocate and initialize
-> > memory maps for first class virtual address spaces and potentially
-> > duplicate some code, I decided to split the mm_alloc function as well as
-> > the 'mm_init' function that it uses.
-> > 
-> > Now there are four functions exported instead of only one. The new
-> > 'mm_alloc' function only allocates a new mm_struct and zeros it out. If one
-> > want to have the old behavior of mm_alloc one can use the newly introduced
-> > function 'mm_alloc_and_setup' which not only allocates a new mm_struct but
-> > also fully initializes it.
-> ...
-> 
-> That looks like bugs waiting to happen.
-> You need unchanged code to fail to compile.
+The nand_default_block_markbad() is the default implementation of
+chip->block_markbad().  This is called for marking a block as bad.
+It invokes nand_do_write_oob(), then calls a higher level accessor
+ecc->write_oob().
 
-Thank you for this hint. I can give the new mm_alloc function a different name so
-that code that uses the *old* mm_alloc function will fail to compile. I just reused
-the old name when I wrote the code, because mm_alloc was only used in very few
-locations in the kernel (2 times in the whole kernel source) which made identifying
-and changing them very easy. I also don't think that there will be many users in the
-kernel for mm_alloc in the future because it is a relatively low level data
-structure. But if it is better to use a different name for the new function, I am
-very happy to change this.
+On the other hand, when reading BBM from the OOB, chip->block_bad()
+is called, and nand_block_bad() is the default implementation.  This
+function calls a lower level chip->cmdfunc().  If a driver wants to
+re-use nand_block_bad(), it is required to support NAND_CMD_READOOB
+in its cmdfunc().  This is strange.  If the controller supports
+optimized read operation and the driver has its own ecc->read_oob(),
+it should be able to use it.  Besides, NAND_CMD_READOOB (0x50) is
+not a real command for large page devices.  So, recent drivers may
+not be happy to handle this command.
 
-Till
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+At first, I tried to call nand_do_read_oob() from nand_block_bad()
+in order to make to make things symmetry, but it did not work.
+chip->select_chip() is handled outside of nand_block_bad(), so
+nand_do_read_oob() can not be used there.
+
+
+ drivers/mtd/nand/nand_base.c | 38 +++++++++++++++++---------------------
+ 1 file changed, 17 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index a3c0f47..78c5cd6 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -354,9 +354,9 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
+  */
+ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
+ {
+-	int page, res = 0, i = 0;
++	int page, res = 0, ret = 0, i = 0;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	u16 bad;
++	u8 bad;
+ 
+ 	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
+ 		ofs += mtd->erasesize - mtd->writesize;
+@@ -364,30 +364,26 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
+ 	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+ 
+ 	do {
+-		if (chip->options & NAND_BUSWIDTH_16) {
+-			chip->cmdfunc(mtd, NAND_CMD_READOOB,
+-					chip->badblockpos & 0xFE, page);
+-			bad = cpu_to_le16(chip->read_word(mtd));
+-			if (chip->badblockpos & 0x1)
+-				bad >>= 8;
++		res = chip->ecc.read_oob(mtd, chip, page);
++		if (!res) {
++			bad = chip->oob_poi[chip->badblockpos];
++
++			if (likely(chip->badblockbits == 8))
++				res = bad != 0xFF;
+ 			else
+-				bad &= 0xFF;
+-		} else {
+-			chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos,
+-					page);
+-			bad = chip->read_byte(mtd);
++				res = hweight8(bad) < chip->badblockbits;
++			if (res)
++				return res;
+ 		}
+ 
+-		if (likely(chip->badblockbits == 8))
+-			res = bad != 0xFF;
+-		else
+-			res = hweight8(bad) < chip->badblockbits;
+-		ofs += mtd->writesize;
+-		page = (int)(ofs >> chip->page_shift) & chip->pagemask;
++		if (!ret)
++			ret = res;
++
++		page++;
+ 		i++;
+-	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
++	} while (chip->bbt_options & NAND_BBT_SCAN2NDPAGE && i < 2);
+ 
+-	return res;
++	return ret;
+ }
+ 
+ /**
+-- 
+2.7.4
