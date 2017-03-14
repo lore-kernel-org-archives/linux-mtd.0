@@ -1,38 +1,67 @@
-Received: from lelnx193.ext.ti.com ([198.47.27.77])
+Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cnmPk-00013U-No
- for linux-mtd@lists.infradead.org; Tue, 14 Mar 2017 13:23:03 +0000
-Subject: Re: [RFC PATCH 2/2] mtd: devices: m25p80: Enable spi-nor bounce
- buffer support
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Mark Brown
- <broonie@kernel.org>
-References: <20170227120839.16545-1-vigneshr@ti.com>
- <20170227120839.16545-3-vigneshr@ti.com>
- <aa967f6a-0526-3e33-1de7-fbe7d4264f34@nod.at>
- <8f999a27-c3ce-2650-452c-b21c3e44989d@ti.com>
- <aeaf87ca-e8f5-72d0-997d-494df86abf68@atmel.com>
- <a6c61bf7-1f26-41db-9a6b-bcae87274cb9@ti.com>
- <20170301175506.202cb478@bbrezillon>
- <09ffe06d-565d-afe8-8b7d-d1a0b575595b@baylibre.com>
- <4cd22ddd-b108-f697-0bde-ad844a386e62@ti.com>
- <20170302152921.1c031b57@bbrezillon>
- <03b185f6-e70a-beda-5b7f-776a03fa14c0@ti.com>
-CC: Frode Isaksen <fisaksen@baylibre.com>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org"
- <linux-omap@vger.kernel.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <40a824c2-012c-df55-feb4-ded1fff543cb@ti.com>
-Date: Tue, 14 Mar 2017 18:51:38 +0530
+ id 1cnoNW-00081j-S8
+ for linux-mtd@lists.infradead.org; Tue, 14 Mar 2017 15:28:53 +0000
+Received: by mail-io0-x232.google.com with SMTP id l7so1625544ioe.3
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Mar 2017 08:28:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <03b185f6-e70a-beda-5b7f-776a03fa14c0@ti.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1488783873-2614-6-git-send-email-logang@deltatee.com>
+References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
+ <1488783873-2614-6-git-send-email-logang@deltatee.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 14 Mar 2017 16:28:28 +0100
+Message-ID: <CACRpkdaNW+kexYNOZiVTRywHpwndKLbXmP1NXDjOifKY3JUURQ@mail.gmail.com>
+Subject: Re: [rtc-linux] [PATCH v3 05/16] gpiolib: utilize new cdev_device_add
+ helper function
+To: "rtc-linux@googlegroups.com" <rtc-linux@googlegroups.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Alexandre Courbot <gnurou@gmail.com>,
+ Peter Huewe <peterhuewe@gmx.de>, Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>,
+ Doug Ledford <dledford@redhat.com>, Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Haggai Eran <haggaie@mellanox.com>, Parav Pandit <pandit.parav@gmail.com>,
+ Leon Romanovsky <leon@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ linux-pci <linux-pci@vger.kernel.org>, linux-scsi@vger.kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+ linux-rdma@vger.kernel.org,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ Linux Input <linux-input@vger.kernel.org>,
+ linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Logan Gunthorpe <logang@deltatee.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,76 +71,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Mar 6, 2017 at 8:04 AM, Logan Gunthorpe <logang@deltatee.com> wrote:
 
+> Replace the open coded registration of the cdev and dev with the
+> new device_add_cdev() helper. The helper replaces a common pattern by
+> taking the proper reference against the parent device and adding both
+> the cdev and the device.
+>
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 
-On 3/6/2017 5:17 PM, Vignesh R wrote:
-> 
-> 
-> On Thursday 02 March 2017 07:59 PM, Boris Brezillon wrote:
->> On Thu, 2 Mar 2017 19:24:43 +0530
->> Vignesh R <vigneshr@ti.com> wrote:
-[...]
->>>
->>> If its at SPI level, then I guess each individual drivers which cannot
->>> handle vmalloc'd buffers will have to implement bounce buffer logic.
->>
->> Well, that's my opinion. The only one that can decide when to do
->> PIO, when to use DMA or when to use a bounce buffer+DMA is the SPI
->> controller.
->> If you move this logic to the SPI NOR layer, you'll have to guess what
->> is the best approach, and I fear the decision will be wrong on some
->> platforms (leading to perf degradation).
->>
->> You're mentioning code duplication in each SPI controller, I agree,
->> this is far from ideal, but what you're suggesting is not necessarily
->> better. What if another SPI user starts passing vmalloc-ed buffers to
->> the SPI controller? You'll have to duplicate the bounce-buffer logic in
->> this user as well.
->>
-> 
-> Hmm... Yes, there are ways to by pass SPI core.
-> 
->>>
->>> Or SPI core can be extended in a way similar to this RFC. That is, SPI
->>> master driver will set a flag to request SPI core to use of bounce
->>> buffer for vmalloc'd buffers. And spi_map_buf() just uses bounce buffer
->>> in case buf does not belong to kmalloc region based on the flag.
->>
->> That's a better approach IMHO. Note that the decision should not only
->> be based on the buffer type, but also on the transfer length and/or
->> whether the controller supports transferring non physically contiguous
->> buffers.
->>
->> Maybe we should just extend ->can_dma() to let the core know if it
->> should use a bounce buffer.
->>
-> 
-> Yes, this is definitely needed. ->can_dma() currently returns bool. We
-> need a better interface that returns different error codes for
-> restriction on buffer length vs buffer type (I dont see any appropriate
-> error codes) or make ->can_dma() return flag asking for bounce buffer.
-> SPI controller drivers may use cache_is_*() and virt_addr_valid() to
-> decide whether or not request bounce buffer.
-> 
->> Regarding the bounce buffer allocation logic, I'm not sure how it
->> should be done. The SPI user should be able to determine a max transfer
->> len (at least this is the case for SPI NORs) and inform the SPI layer
->> about this boundary so that the SPI core can allocate a bounce buffer
->> of this size. But we also have limitations at the SPI master level
->> (->max_transfer_size(), ->max_message_size()).
->>
-> 
-> Again, I guess only SPI controller can suggest the appropriate size of
-> bounce buffer based on its internal constraints and use cases that its
-> known to support.
-> 
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-I will work on a patch series implementing bounce buffer support in SPI
-core and extend ->can_dma() to inform when bounce buffer needs to be
-used. This will make sure that SPI controller drivers that are not
-affected by cache aliasing problem or LPAE buffers don't have
-performance impact. Any comments appreciated!
+Please inform me if you plan to merge this into the device core
+tree or similar, or whether I should apply it for like v4.13 after merging
+the core patch or so.
 
--- 
-Regards
-Vignesh
+Yours,
+Linus Walleij
