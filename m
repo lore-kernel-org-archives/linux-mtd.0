@@ -1,59 +1,21 @@
-Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
-To: Andy Lutomirski <luto@amacapital.net>, Andy Lutomirski <luto@kernel.org>,
- Till Smejkal <till.smejkal@googlemail.com>, Richard Henderson
- <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo
- <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu
- <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle
- <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge
- Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens
- <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H.
- Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Chris Zankel
- <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann
- <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Laurent
- Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab
- <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Felipe Balbi <balbi@kernel.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Benjamin LaHaise <bcrl@kvack.org>, Nadia Yvette
- Chambers <nyc@holomorphy.com>, Jeff Layton <jlayton@poochiereds.net>, "J.
- Bruce Fields" <bfields@fieldses.org>, Peter Zijlstra <peterz@infradead.org>,
- Hugh Dickins <hughd@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- <linux-alpha@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- <adi-buildroot-devel@lists.sourceforge.net>, <linux-hexagon@vger.kernel.org>,
- "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- <linux-metag@vger.kernel.org>, Linux MIPS Mailing List
- <linux-mips@linux-mips.org>, <linux-parisc@vger.kernel.org>, linuxppc-dev
- <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org"
- <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org"
- <linux-sh@vger.kernel.org>, <sparclinux@vger.kernel.org>,
- <linux-xtensa@linux-xtensa.org>, Linux Media Mailing List
- <linux-media@vger.kernel.org>, <linux-mtd@lists.infradead.org>, USB list
- <linux-usb@vger.kernel.org>, Linux FS Devel <linux-fsdevel@vger.kernel.org>,
- <linux-aio@kvack.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, Linux API
- <linux-api@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, ALSA
- development <alsa-devel@alsa-project.org>
-References: <20170314161229.tl6hsmian2gdep47@arch-dev>
-From: Chris Metcalf <cmetcalf@mellanox.com>
-Message-ID: <8d9333d6-2f81-a9de-484e-e1d655e1d3c3@mellanox.com>
-Date: Tue, 14 Mar 2017 15:53:44 -0400
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cntX3-00060m-PV
+ for linux-mtd@lists.infradead.org; Tue, 14 Mar 2017 20:59:05 +0000
+Date: Tue, 14 Mar 2017 21:58:39 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH] mtd: nand: use .read_oob() instead of .cmdfunc() for
+ bad block check
+Message-ID: <20170314215839.1df07d13@bbrezillon>
+In-Reply-To: <1489513548-3248-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1489513548-3248-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
-In-Reply-To: <20170314161229.tl6hsmian2gdep47@arch-dev>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -64,44 +26,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/14/2017 12:12 PM, Till Smejkal wrote:
-> On Mon, 13 Mar 2017, Andy Lutomirski wrote:
->> On Mon, Mar 13, 2017 at 7:07 PM, Till Smejkal
->> <till.smejkal@googlemail.com> wrote:
->>> On Mon, 13 Mar 2017, Andy Lutomirski wrote:
->>>> This sounds rather complicated.  Getting TLB flushing right seems
->>>> tricky.  Why not just map the same thing into multiple mms?
->>> This is exactly what happens at the end. The memory region that is described by the
->>> VAS segment will be mapped in the ASes that use the segment.
->> So why is this kernel feature better than just doing MAP_SHARED
->> manually in userspace?
-> One advantage of VAS segments is that they can be globally queried by user programs
-> which means that VAS segments can be shared by applications that not necessarily have
-> to be related. If I am not mistaken, MAP_SHARED of pure in memory data will only work
-> if the tasks that share the memory region are related (aka. have a common parent that
-> initialized the shared mapping). Otherwise, the shared mapping have to be backed by a
-> file.
+On Wed, 15 Mar 2017 02:45:48 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-True, but why is this bad?  The shared mapping will be memory resident
-regardless, even if backed by a file (unless swapped out under heavy
-memory pressure, but arguably that's a feature anyway).  More importantly,
-having a file name is a simple and consistent way of identifying such
-shared memory segments.
+> The nand_default_block_markbad() is the default implementation of
+> chip->block_markbad().  This is called for marking a block as bad.
+> It invokes nand_do_write_oob(), then calls a higher level accessor
+> ecc->write_oob().
+> 
+> On the other hand, when reading BBM from the OOB, chip->block_bad()
+> is called, and nand_block_bad() is the default implementation.  This
+> function calls a lower level chip->cmdfunc().  If a driver wants to
+> re-use nand_block_bad(), it is required to support NAND_CMD_READOOB
+> in its cmdfunc().
 
-With a little work, you can also arrange to map such files into memory
-at a fixed address in all participating processes, thus making internal
-pointers work correctly.
+This is part of the basic/mandatory operations that should be supported
+by all drivers.
 
-> VAS segments on the other side allow sharing of pure in memory data by
-> arbitrary related tasks without the need of a file. This becomes especially
-> interesting if one combines VAS segments with non-volatile memory since one can keep
-> data structures in the NVM and still be able to share them between multiple tasks.
+> This is strange.  If the controller supports
+> optimized read operation and the driver has its own ecc->read_oob(),
+> it should be able to use it.
 
-I am not fully up to speed on NV/pmem stuff, but isn't that exactly what
-the DAX mode is supposed to allow you to do?  If so, isn't sharing a
-mapped file on a DAX filesystem on top of pmem equivalent to what
-you're proposing?
+I agree with this one. I guess the idea behind this default
+implementation was to avoid reading the whole OOB area, or maybe this
+function was implemented before we had ECC support. Anyway, the
+overhead should be negligible with your approach.
 
--- 
-Chris Metcalf, Mellanox Technologies
-http://www.mellanox.com
+> Besides, NAND_CMD_READOOB (0x50) is
+> not a real command for large page devices.  So, recent drivers may
+> not be happy to handle this command.
+
+Well, that's the whole problem with the ->cmdfunc() hook, even if it's
+passed raw NAND command identifiers, these are actually encoding NAND
+operations, and not necessarily the exact command that should be sent to
+the NAND.
+
+See what's done in nand_command_lp(), and how some commands are
+actually generating a sequence of 2 commands [1], or how
+NAND_CMD_READOOB is transformed into NAND_CMD_READ0 [2].
+
+My plan was to add a ->exec_op() hook that would be passed the whole
+operation description (cmds+addrs+data info) and progressively get rid
+of ->cmdfunc(), but I never had time to finish the implementation[3].
+
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
+> 
+> At first, I tried to call nand_do_read_oob() from nand_block_bad()
+> in order to make to make things symmetry, but it did not work.
+> chip->select_chip() is handled outside of nand_block_bad(), so
+> nand_do_read_oob() can not be used there.
+> 
+> 
+>  drivers/mtd/nand/nand_base.c | 38 +++++++++++++++++---------------------
+>  1 file changed, 17 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index a3c0f47..78c5cd6 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -354,9 +354,9 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
+>   */
+>  static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
+>  {
+> -	int page, res = 0, i = 0;
+> +	int page, res = 0, ret = 0, i = 0;
+>  	struct nand_chip *chip = mtd_to_nand(mtd);
+> -	u16 bad;
+> +	u8 bad;
+>  
+>  	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
+>  		ofs += mtd->erasesize - mtd->writesize;
+> @@ -364,30 +364,26 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
+>  	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+>  
+>  	do {
+> -		if (chip->options & NAND_BUSWIDTH_16) {
+> -			chip->cmdfunc(mtd, NAND_CMD_READOOB,
+> -					chip->badblockpos & 0xFE, page);
+> -			bad = cpu_to_le16(chip->read_word(mtd));
+> -			if (chip->badblockpos & 0x1)
+> -				bad >>= 8;
+> +		res = chip->ecc.read_oob(mtd, chip, page);
+> +		if (!res) {
+> +			bad = chip->oob_poi[chip->badblockpos];
+
+Hm, even if the current code is only testing one byte, I wonder
+if we shouldn't test the 2 bytes here when we're dealing with 16bits
+NANDs.
+
+> +
+> +			if (likely(chip->badblockbits == 8))
+> +				res = bad != 0xFF;
+>  			else
+> -				bad &= 0xFF;
+> -		} else {
+> -			chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos,
+> -					page);
+> -			bad = chip->read_byte(mtd);
+> +				res = hweight8(bad) < chip->badblockbits;
+> +			if (res)
+> +				return res;
+>  		}
+>  
+> -		if (likely(chip->badblockbits == 8))
+> -			res = bad != 0xFF;
+> -		else
+> -			res = hweight8(bad) < chip->badblockbits;
+> -		ofs += mtd->writesize;
+> -		page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+> +		if (!ret)
+> +			ret = res;
+
+Hm, I'm not sure I understand what you're doing here. If res is != 0,
+then an error occurred when reading the OOB area and you should
+probably return the error code directly instead of trying to read the
+OOB from next page. On the other hand, if res is 0, then ret will
+always be 0, so I don't think this extra ret variable is needed.
+
+> +
+> +		page++;
+>  		i++;
+> -	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
+> +	} while (chip->bbt_options & NAND_BBT_SCAN2NDPAGE && i < 2);
+
+A for loop would probably make more sense here, but that's just a
+detail.
+
+>  
+> -	return res;
+> +	return ret;
+>  }
+>  
+>  /**
+
+[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/nand_base.c#L824
+[2]http://lxr.free-electrons.com/source/drivers/mtd/nand/nand_base.c#L747
+[3]https://github.com/bbrezillon/linux-sunxi/blob/nand-core-rework-v2/include/linux/mtd/nand2.h
