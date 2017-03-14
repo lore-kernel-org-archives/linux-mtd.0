@@ -1,43 +1,74 @@
-From: Till Smejkal <till.smejkal@googlemail.com>
-Date: Mon, 13 Mar 2017 19:34:27 -0700
-To: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc: Till Smejkal <till.smejkal@googlemail.com>,
- Richard Henderson <rth@twiddle.net>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>,
+Received: from mail-ua0-x232.google.com ([2607:f8b0:400c:c08::232])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cnf9v-0004NJ-3h
+ for linux-mtd@lists.infradead.org; Tue, 14 Mar 2017 05:38:12 +0000
+Received: by mail-ua0-x232.google.com with SMTP id u30so165944605uau.0
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Mar 2017 22:37:49 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20170314020709.vxeglus54k76i7rn@arch-dev>
+References: <CALCETrWe8uOi3m8qXUbMA4017+rxbi1C8hzZ0bwjVHmfdE4FnQ@mail.gmail.com>
+ <20170314020709.vxeglus54k76i7rn@arch-dev>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Mon, 13 Mar 2017 22:37:27 -0700
+Message-ID: <CALCETrXKvNWv1OtoSo_HWf5ZHSvyGS1NsuQod6Zt+tEg3MT5Sg@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
+To: Andy Lutomirski <luto@kernel.org>,
+ Till Smejkal <till.smejkal@googlemail.com>,
+ Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+ Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>,
+ Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>,
  Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>,
  Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>,
  Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>,
  Ralf Baechle <ralf@linux-mips.org>,
- "James E.J.  Bottomley" <jejb@parisc-linux.org>,
- Helge Deller <deller@gmx.de>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
  Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
  Martin Schwidefsky <schwidefsky@de.ibm.com>,
  Heiko Carstens <heiko.carstens@de.ibm.com>,
  Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- "David S. Miller" <davem@synopsys.COM>,
- linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- adi-buildroot-devel@lists.sourceforge.net,
- linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
- linux-metag@vger.kernel.org, linux-mips@linux-mips.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ X86 ML <x86@kernel.org>, Chris Zankel <chris@zankel.net>,
+ Max Filippov <jcmvbkbc@gmail.com>,
+ Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Benjamin LaHaise <bcrl@kvack.org>, Nadia Yvette Chambers <nyc@holomorphy.com>,
+ Jeff Layton <jlayton@poochiereds.net>, "J. Bruce Fields" <bfields@fieldses.org>,
+ Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org,
+ "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+ linux-metag@vger.kernel.org,
+ Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+ linux-parisc@vger.kernel.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+ "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
  sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
- linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-usb@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-aio@kvack.org, linux-mm@kvack.org, linux-api@vger.kernel.org,
- linux-arch@vger.kernel.org, alsa-devel@alsa-project.org,
- Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Andy Lutomirski <luto@amacapital.net>
-Subject: Re: [RFC PATCH 10/13] mm: Introduce first class virtual address spaces
-Message-ID: <20170314023427.3p4a5qxtl5eh5epi@arch-dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd1adda8-bf6a-47ad-bff3-5bc6626ac100@synopsys.com>
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, USB list <linux-usb@vger.kernel.org>,
+ Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+ linux-aio@kvack.org, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ Linux API <linux-api@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
+ ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,47 +78,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vineet,
+On Mon, Mar 13, 2017 at 7:07 PM, Till Smejkal
+<till.smejkal@googlemail.com> wrote:
+> On Mon, 13 Mar 2017, Andy Lutomirski wrote:
+>> This sounds rather complicated.  Getting TLB flushing right seems
+>> tricky.  Why not just map the same thing into multiple mms?
+>
+> This is exactly what happens at the end. The memory region that is descri=
+bed by the
+> VAS segment will be mapped in the ASes that use the segment.
 
-On Mon, 13 Mar 2017, Vineet Gupta wrote:
-> I've not looked at the patches closely (or read the references paper fully yet),
-> but at first glance it seems on ARC architecture, we can can potentially
-> use/leverage this mechanism to implement the shared TLB entries. Before anyone
-> shouts these are not same as the IA64/x86 protection keys which allow TLB entries
-> with different protection bits across processes etc. These TLB entries are
-> actually *shared* by processes.
-> 
-> Conceptually there's shared address spaces, independent of processes. e.g. ldso
-> code is shared address space #1, libc (code) #2 .... System can support a limited
-> number of shared addr spaces (say 64, enough for typical embedded sys).
-> 
-> While Normal TLB entries are tagged with ASID (Addr space ID) to keep them unique
-> across processes, Shared TLB entries are tagged with Shared address space ID.
-> 
-> A process MMU context consists of ASID (a single number) and a SASID bitmap (to
-> allow "subscription" to multiple Shared spaces. The subscriptions are set up bu
-> userspace ld.so which knows about the libs process wants to map.
-> 
-> The restriction ofcourse is that the spaces are mapped at *same* vaddr is all
-> participating processes. I know this goes against whole security, address space
-> randomization - but it gives much better real time performance. Why does each
-> process need to take a MMU exception for libc code...
-> 
-> So long story short - it seems there can be multiple uses of this infrastructure !
+So why is this kernel feature better than just doing MAP_SHARED
+manually in userspace?
 
-During the development of this code, we also looked at shared TLB entries, but
-the other way around. We wanted to use them to prevent flushing of TLB entries of
-shared memory regions when switching between multiple ASes. Unfortunately, we never
-finished this part of the code.
 
-However, we also investigated into a different use-case for first class virtual
-address spaces that is related to what you propose if I didn't understand something
-wrong. The idea is to move shared libraries into their own first class virtual
-address space and only load some small trampoline code in the application AS. This
-trampoline code performs the VAS switch in the libraries AS and execute the requested
-function there. If we combine this architecture with tagged TLB entries to prevent
-TLB flushes during the switch operation, it can also reach an acceptable performance.
-A side effect of moving the shared library into its own AS is that it can not be used
-by ROP-attacks because it is not accessible in the application's AS.
+>> Ick.  Please don't do this.  Can we please keep an mm as just an mm
+>> and not make it look magically different depending on which process
+>> maps it?  If you need a trampoline (which you do, of course), just
+>> write a trampoline in regular user code and map it manually.
+>
+> Did I understand you correctly that you are proposing that the switching =
+thread
+> should make sure by itself that its code, stack, =E2=80=A6 memory regions=
+ are properly setup
+> in the new AS before/after switching into it? I think, this would make us=
+ing first
+> class virtual address spaces much more difficult for user applications to=
+ the extend
+> that I am not even sure if they can be used at all. At the moment, switch=
+ing into a
+> VAS is a very simple operation for an application because the kernel will=
+ just simply
+> do the right thing.
 
-Till
+Yes.  I think that having the same mm_struct look different from
+different tasks is problematic.  Getting it right in the arch code is
+going to be nasty.  The heuristics of what to share are also tough --
+why would text + data + stack or whatever you're doing be adequate?
+What if you're in a thread?  What if two tasks have their stacks in
+the same place?
+
+I could imagine something like a sigaltstack() mode that lets you set
+a signal up to also switch mm could be useful.
