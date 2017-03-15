@@ -1,20 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1co8RE-0005d3-Jr
- for linux-mtd@lists.infradead.org; Wed, 15 Mar 2017 12:54:02 +0000
-Date: Wed, 15 Mar 2017 13:53:28 +0100
+ id 1co9VC-0000aI-44
+ for linux-mtd@lists.infradead.org; Wed, 15 Mar 2017 14:02:14 +0000
+Date: Wed, 15 Mar 2017 15:01:47 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Thorsten Christiansson <thorsten.christiansson@idquantique.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- "laurent.monat@idquantique.com" <laurent.monat@idquantique.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Timeout in denali.c on Micron nandflash (Altera SoC)
-Message-ID: <20170315135328.58ec040f@bbrezillon>
-In-Reply-To: <58C92E56.90207@idquantique.com>
-References: <58BEB65B.3050003@idquantique.com>
- <CAFLxGvy=PHU1Yc74TgQ-S9+Q_jRnYEUVywzYqbhdmQRGHk_vJA@mail.gmail.com>
- <58C92E56.90207@idquantique.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org,
+ f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
+ cyrille.pitchen@atmel.com
+Subject: Re: [PATCH V6, 1/1] mtd: nand: brcmnand: Check flash #WP pin status
+ before nand erase/program
+Message-ID: <20170315150147.337ddd04@bbrezillon>
+In-Reply-To: <25484b94-341f-300d-474e-a272f249f0a2@gmail.com>
+References: <1488575813-12660-1-git-send-email-kdasu.kdev@gmail.com>
+ <1488575813-12660-2-git-send-email-kdasu.kdev@gmail.com>
+ <25484b94-341f-300d-474e-a272f249f0a2@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,67 +28,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Masahiro
+On Fri, 10 Mar 2017 14:22:39 +0100
+Marek Vasut <marek.vasut@gmail.com> wrote:
 
-On Wed, 15 Mar 2017 13:06:46 +0100
-Thorsten Christiansson <thorsten.christiansson@idquantique.com> wrote:
+> On 03/03/2017 10:16 PM, Kamal Dasu wrote:
+> > On brcmnand controller v6.x and v7.x, the #WP pin is controlled through
+> > the NAND_WP bit in CS_SELECT register.
+> > 
+> > The driver currently assumes that toggling the #WP pin is
+> > instantaneously enabling/disabling write-protection, but it actually
+> > takes some time to propagate the new state to the internal NAND chip
+> > logic. This behavior is sometime causing data corruptions when an
+> > erase/program operation is executed before write-protection has really
+> > been disabled.
+> > 
+> > Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+> > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> > ---
+> >  drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 58 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> > index 42ebd73..7419c5c 100644
+> > --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> > +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> > @@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
+> >  #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
+> >  #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
+> >  
+> > +#define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
+> > +#define NAND_POLL_STATUS_TIMEOUT_MS	100
+> > +
+> >  /* Controller feature flags */
+> >  enum {
+> >  	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
+> > @@ -765,6 +768,31 @@ enum {
+> >  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+> >  };
+> >  
+> > +static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
+> > +				    u32 mask, u32 expected_val,
+> > +				    unsigned long timeout_ms)
+> > +{
+> > +	unsigned long limit;
+> > +	u32 val;
+> > +
+> > +	if (!timeout_ms)
+> > +		timeout_ms = NAND_POLL_STATUS_TIMEOUT_MS;
+> > +
+> > +	limit = jiffies + msecs_to_jiffies(timeout_ms);
+> > +	do {
+> > +		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+> > +		if ((val & mask) == expected_val)
+> > +			return 0;
+> > +
+> > +		cpu_relax();
+> > +	} while (time_after(limit, jiffies));
+> > +
+> > +	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
+> > +		 expected_val, val & mask);
+> > +
+> > +	return -ETIMEDOUT;
+> > +}
+> > +
+> >  static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
+> >  {
+> >  	u32 val = en ? CS_SELECT_NAND_WP : 0;
+> > @@ -1024,12 +1052,39 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
+> >  
+> >  	if ((ctrl->features & BRCMNAND_HAS_WP) && wp_on == 1) {
+> >  		static int old_wp = -1;  
+> 
+> Unrelated to this patch, but this static variable should be moved to
+> driver's private data instead.
+> 
+> > +		int ret;
+> >  
+> >  		if (old_wp != wp) {
+> >  			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
+> >  			old_wp = wp;
+> >  		}
+> > +
+> > +		/*
+> > +		 * make sure ctrl/flash ready before and after
+> > +		 * changing state of #WP pin
+> > +		 */  
+> 
+> Shouldn't the brcmnand_set_wp() do this ?
 
-> Hi all,
-> 
-> Follow-up:
-> 
-> > > I'm using Linux on an Altera SoC (Arria V), on which I'm using UBIFS  
-> on a
-> > > nandflash from Micron (MT29F8G08ADADAH4).  I have a 400Mb r/w  
-> partition on
-> > > which I have a sqlite3-based database. We're running an application that
-> > > reads/writes fairly small blocks. After running for about a week at  
-> moderate
-> > > load, I get an error message, and the filesystem becomes read-only.
-> > >
-> > > The message I get is a timeout, originating in the denali.c driver.
-> > > [11744.733748] timeout occurred, status = 0x0, mask = 0x4
-> > > [11745.733685] timeout occurred, status = 0x0, mask = 0x120  
-> 
-> > Well, 4.4. is not very fresh. Maybe it saw fixes in recent version.
-> > Can you please give MTD tests a try?  
-> 
-> I have now got a clean 4.10 up and running, and the MTD tests show the
-> same error even quicker:
-> # insmod /lib/modules/4.10.0/kernel/drivers/mtd/tests/mtd_stresstest.ko
-> dev=1
-> [  488.721072]
-> [  488.722575] =================================================
-> [  488.728337] mtd_stresstest: MTD device: 1
-> [  488.732342] mtd_stresstest: MTD device size 536870912, eraseblock
-> size 131072, page size 2048, count of eraseblocks 4096, pages per
-> eraseblock 64, OOB size 64
-> [  488.748845] mtd_test: scanning for bad eraseblocks
-> [  488.756947] mtd_test: scanned 4096 eraseblocks, 0 are bad
-> [  488.762322] mtd_stresstest: doing operations
-> [  488.766601] mtd_stresstest: 0 operations done
-> [  490.243583] timeout occurred, status = 0x4, mask = 0x3
-> [  492.003933] timeout occurred, status = 0x4, mask = 0x3
-> [  493.363590] timeout occurred, status = 0x4, mask = 0x3
-> [  494.483584] timeout occurred, status = 0x4, mask = 0x3
-> [  495.603585] timeout occurred, status = 0x4, mask = 0x3
-> [  496.723582] timeout occurred, status = 0x4, mask = 0x3
-> [  498.083600] timeout occurred, status = 0x4, mask = 0x3
-> [  499.203582] timeout occurred, status = 0x4, mask = 0x3
-> [  500.323921] timeout occurred, status = 0x4, mask = 0x3
-> [  501.523590] timeout occurred, status = 0x4, mask = 0x3
-> [  502.723584] timeout occurred, status = 0x4, mask = 0x3
-> [  503.843583] timeout occurred, status = 0x4, mask = 0x3
-> [  505.203584] timeout occurred, status = 0x4, mask = 0x3
-> ^C[  506.883588] timeout occurred, status = 0x4, mask = 0x3
-> [  506.913867] mtd_stresstest: aborting test due to pending signal!
-> [  506.919940] mtd_stresstest: error -4 occurred
-> [  506.924320] =================================================
-> 
-> Any ideas on how to go forwards from here are very welcome.
+Hm, AFAIU, brcmnand_set_wp() is only controlling the WP pin from the
+controller side, so maybe we should rename the function
+brcmnand_ctrl_set_wp() to clarify that.
 
-Masahiro is currently reworking the driver, maybe he'll have some ideas.
-
-Regards,
-
-Boris
+> 
+> > +		ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY |
+> > +					       NAND_STATUS_READY,
+> > +					       NAND_CTRL_RDY |
+> > +					       NAND_STATUS_READY, 0);
+> > +		if (ret)
+> > +			return;
+> > +
+> >  		brcmnand_set_wp(ctrl, wp);
+> > +		chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+> > +		/* NAND_STATUS_WP 0x00 = protected, 0x80 = not protected */
+> > +		ret = bcmnand_ctrl_poll_status(ctrl,
+> > +					       NAND_CTRL_RDY |
+> > +					       NAND_STATUS_READY |
+> > +					       NAND_STATUS_WP,
+> > +					       NAND_CTRL_RDY |
+> > +					       NAND_STATUS_READY |
+> > +					       (wp ? 0 : NAND_STATUS_WP), 0);
+> > +
+> > +		if (ret)
+> > +			dev_err_ratelimited(&host->pdev->dev,
+> > +					    "nand #WP expected %s\n",
+> > +					    wp ? "on" : "off");
+> >  	}
+> >  }
+> >  
+> > @@ -1157,15 +1212,15 @@ static irqreturn_t brcmnand_dma_irq(int irq, void *data)
+> >  static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
+> >  {
+> >  	struct brcmnand_controller *ctrl = host->ctrl;
+> > -	u32 intfc;
+> > +	int ret;
+> >  
+> >  	dev_dbg(ctrl->dev, "send native cmd %d addr_lo 0x%x\n", cmd,
+> >  		brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS));
+> >  	BUG_ON(ctrl->cmd_pending != 0);
+> >  	ctrl->cmd_pending = cmd;
+> >  
+> > -	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+> > -	WARN_ON(!(intfc & INTFC_CTLR_READY));
+> > +	ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
+> > +	WARN_ON(ret);
+> >  
+> >  	mb(); /* flush previous writes */
+> >  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_START,
+> >   
+> 
+> 
