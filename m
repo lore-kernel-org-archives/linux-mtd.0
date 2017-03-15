@@ -1,28 +1,75 @@
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+Received: from mail-vk0-x234.google.com ([2607:f8b0:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1coBlm-0006EC-7v
- for linux-mtd@lists.infradead.org; Wed, 15 Mar 2017 16:27:32 +0000
-Received: by mail-wm0-x229.google.com with SMTP id t189so27356825wmt.1
- for <linux-mtd@lists.infradead.org>; Wed, 15 Mar 2017 09:27:05 -0700 (PDT)
-Subject: Re: [PATCH V6, 1/1] mtd: nand: brcmnand: Check flash #WP pin status
- before nand erase/program
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>
-References: <1488575813-12660-1-git-send-email-kdasu.kdev@gmail.com>
- <1488575813-12660-2-git-send-email-kdasu.kdev@gmail.com>
- <25484b94-341f-300d-474e-a272f249f0a2@gmail.com>
- <20170315150147.337ddd04@bbrezillon>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org,
- f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
- cyrille.pitchen@atmel.com
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Message-ID: <f30527a7-6885-65f4-9c7f-e2f7e0d81af0@broadcom.com>
-Date: Wed, 15 Mar 2017 09:26:57 -0700
+ id 1coC9m-0003Rn-Lh
+ for linux-mtd@lists.infradead.org; Wed, 15 Mar 2017 16:52:20 +0000
+Received: by mail-vk0-x234.google.com with SMTP id t8so11817797vke.3
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Mar 2017 09:51:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170315150147.337ddd04@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170314161229.tl6hsmian2gdep47@arch-dev>
+References: <CALCETrXKvNWv1OtoSo_HWf5ZHSvyGS1NsuQod6Zt+tEg3MT5Sg@mail.gmail.com>
+ <20170314161229.tl6hsmian2gdep47@arch-dev>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Wed, 15 Mar 2017 09:51:31 -0700
+Message-ID: <CALCETrX5gv+zdhOYro4-u3wGWjVCab28DFHPSm5=BVG_hKxy3A@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
+To: Andy Lutomirski <luto@amacapital.net>, Andy Lutomirski <luto@kernel.org>,
+ Till Smejkal <till.smejkal@googlemail.com>,
+ Richard Henderson <rth@twiddle.net>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>,
+ Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
+ Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>,
+ Tony Luck <tony.luck@intel.com>,
+ Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>,
+ Ralf Baechle <ralf@linux-mips.org>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Martin Schwidefsky <schwidefsky@de.ibm.com>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ X86 ML <x86@kernel.org>, Chris Zankel <chris@zankel.net>,
+ Max Filippov <jcmvbkbc@gmail.com>,
+ Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Benjamin LaHaise <bcrl@kvack.org>, Nadia Yvette Chambers <nyc@holomorphy.com>,
+ Jeff Layton <jlayton@poochiereds.net>, "J. Bruce Fields" <bfields@fieldses.org>,
+ Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org,
+ "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+ linux-metag@vger.kernel.org,
+ Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+ linux-parisc@vger.kernel.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+ "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+ sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, USB list <linux-usb@vger.kernel.org>,
+ Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+ linux-aio@kvack.org, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ Linux API <linux-api@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
+ ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,103 +79,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 03/15/2017 07:01 AM, Boris Brezillon wrote:
-> On Fri, 10 Mar 2017 14:22:39 +0100
-> Marek Vasut <marek.vasut@gmail.com> wrote:
-> 
->> On 03/03/2017 10:16 PM, Kamal Dasu wrote:
->>> On brcmnand controller v6.x and v7.x, the #WP pin is controlled through
->>> the NAND_WP bit in CS_SELECT register.
->>>
->>> The driver currently assumes that toggling the #WP pin is
->>> instantaneously enabling/disabling write-protection, but it actually
->>> takes some time to propagate the new state to the internal NAND chip
->>> logic. This behavior is sometime causing data corruptions when an
->>> erase/program operation is executed before write-protection has really
->>> been disabled.
->>>
->>> Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
->>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->>> ---
->>>  drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++--
->>>  1 file changed, 58 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
->>> index 42ebd73..7419c5c 100644
->>> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
->>> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
->>> @@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
->>>  #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
->>>  #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
->>>  
->>> +#define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
->>> +#define NAND_POLL_STATUS_TIMEOUT_MS	100
->>> +
->>>  /* Controller feature flags */
->>>  enum {
->>>  	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
->>> @@ -765,6 +768,31 @@ enum {
->>>  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
->>>  };
->>>  
->>> +static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
->>> +				    u32 mask, u32 expected_val,
->>> +				    unsigned long timeout_ms)
->>> +{
->>> +	unsigned long limit;
->>> +	u32 val;
->>> +
->>> +	if (!timeout_ms)
->>> +		timeout_ms = NAND_POLL_STATUS_TIMEOUT_MS;
->>> +
->>> +	limit = jiffies + msecs_to_jiffies(timeout_ms);
->>> +	do {
->>> +		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
->>> +		if ((val & mask) == expected_val)
->>> +			return 0;
->>> +
->>> +		cpu_relax();
->>> +	} while (time_after(limit, jiffies));
->>> +
->>> +	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
->>> +		 expected_val, val & mask);
->>> +
->>> +	return -ETIMEDOUT;
->>> +}
->>> +
->>>  static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
->>>  {
->>>  	u32 val = en ? CS_SELECT_NAND_WP : 0;
->>> @@ -1024,12 +1052,39 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
->>>  
->>>  	if ((ctrl->features & BRCMNAND_HAS_WP) && wp_on == 1) {
->>>  		static int old_wp = -1;  
+On Tue, Mar 14, 2017 at 9:12 AM, Till Smejkal
+<till.smejkal@googlemail.com> wrote:
+> On Mon, 13 Mar 2017, Andy Lutomirski wrote:
+>> On Mon, Mar 13, 2017 at 7:07 PM, Till Smejkal
+>> <till.smejkal@googlemail.com> wrote:
+>> > On Mon, 13 Mar 2017, Andy Lutomirski wrote:
+>> >> This sounds rather complicated.  Getting TLB flushing right seems
+>> >> tricky.  Why not just map the same thing into multiple mms?
+>> >
+>> > This is exactly what happens at the end. The memory region that is des=
+cribed by the
+>> > VAS segment will be mapped in the ASes that use the segment.
 >>
->> Unrelated to this patch, but this static variable should be moved to
->> driver's private data instead.
->>
->>> +		int ret;
->>>  
->>>  		if (old_wp != wp) {
->>>  			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
->>>  			old_wp = wp;
->>>  		}
->>> +
->>> +		/*
->>> +		 * make sure ctrl/flash ready before and after
->>> +		 * changing state of #WP pin
->>> +		 */  
->>
->> Shouldn't the brcmnand_set_wp() do this ?
-> 
-> Hm, AFAIU, brcmnand_set_wp() is only controlling the WP pin from the
-> controller side, so maybe we should rename the function
-> brcmnand_ctrl_set_wp() to clarify that.
+>> So why is this kernel feature better than just doing MAP_SHARED
+>> manually in userspace?
+>
+> One advantage of VAS segments is that they can be globally queried by use=
+r programs
+> which means that VAS segments can be shared by applications that not nece=
+ssarily have
+> to be related. If I am not mistaken, MAP_SHARED of pure in memory data wi=
+ll only work
+> if the tasks that share the memory region are related (aka. have a common=
+ parent that
+> initialized the shared mapping). Otherwise, the shared mapping have to be=
+ backed by a
+> file.
 
-While I don't object that this change should be made, we are already at
-version 6 here, and this is a bugfix, so what else needs to be done to
-get this included?
--- 
-Florian
+What's wrong with memfd_create()?
+
+> VAS segments on the other side allow sharing of pure in memory data by
+> arbitrary related tasks without the need of a file. This becomes especial=
+ly
+> interesting if one combines VAS segments with non-volatile memory since o=
+ne can keep
+> data structures in the NVM and still be able to share them between multip=
+le tasks.
+
+What's wrong with regular mmap?
+
+>
+>> >> Ick.  Please don't do this.  Can we please keep an mm as just an mm
+>> >> and not make it look magically different depending on which process
+>> >> maps it?  If you need a trampoline (which you do, of course), just
+>> >> write a trampoline in regular user code and map it manually.
+>> >
+>> > Did I understand you correctly that you are proposing that the switchi=
+ng thread
+>> > should make sure by itself that its code, stack, =E2=80=A6 memory regi=
+ons are properly setup
+>> > in the new AS before/after switching into it? I think, this would make=
+ using first
+>> > class virtual address spaces much more difficult for user applications=
+ to the extend
+>> > that I am not even sure if they can be used at all. At the moment, swi=
+tching into a
+>> > VAS is a very simple operation for an application because the kernel w=
+ill just simply
+>> > do the right thing.
+>>
+>> Yes.  I think that having the same mm_struct look different from
+>> different tasks is problematic.  Getting it right in the arch code is
+>> going to be nasty.  The heuristics of what to share are also tough --
+>> why would text + data + stack or whatever you're doing be adequate?
+>> What if you're in a thread?  What if two tasks have their stacks in
+>> the same place?
+>
+> The different ASes that a task now can have when it uses first class virt=
+ual address
+> spaces are not realized in the kernel by using only one mm_struct per tas=
+k that just
+> looks differently but by using multiple mm_structs - one for each AS that=
+ the task
+> can execute in. When a task attaches a first class virtual address space =
+to itself to
+> be able to use another AS, the kernel adds a temporary mm_struct to this =
+task that
+> contains the mappings of the first class virtual address space and the on=
+e shared
+> with the task's original AS. If a thread now wants to switch into this at=
+tached first
+> class virtual address space the kernel only changes the 'mm' and 'active_=
+mm' pointers
+> in the task_struct of the thread to the temporary mm_struct and performs =
+the
+> corresponding mm_switch operation. The original mm_struct of the thread w=
+ill not be
+> changed.
+>
+> Accordingly, I do not magically make mm_structs look differently dependin=
+g on the
+> task that uses it, but create temporary mm_structs that only contain mapp=
+ings to the
+> same memory regions.
+
+This sounds complicated and fragile.  What happens if a heuristically
+shared region coincides with a region in the "first class address
+space" being selected?
+
+I think the right solution is "you're a user program playing virtual
+address games -- make sure you do it right".
+
+--Andy
