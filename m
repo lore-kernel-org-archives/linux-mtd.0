@@ -1,25 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1co3mr-0001Cp-5B
- for linux-mtd@lists.infradead.org; Wed, 15 Mar 2017 07:56:03 +0000
-Date: Wed, 15 Mar 2017 08:55:21 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH] mtd: nand: use .read_oob() instead of .cmdfunc() for
- bad block check
-Message-ID: <20170315085521.16914ec2@bbrezillon>
-In-Reply-To: <CAK7LNAT3dBOHxFUWJ9Tvs7cQ9sAi71RDBHu3MkqJf2LHPQzYZQ@mail.gmail.com>
-References: <1489513548-3248-1-git-send-email-yamada.masahiro@socionext.com>
- <20170314215839.1df07d13@bbrezillon>
- <CAK7LNAT3dBOHxFUWJ9Tvs7cQ9sAi71RDBHu3MkqJf2LHPQzYZQ@mail.gmail.com>
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1co6MD-0003wd-GQ
+ for linux-mtd@lists.infradead.org; Wed, 15 Mar 2017 10:40:43 +0000
+Subject: Re: [PATCH] [v2] mtd: spi-nor: don't include linux/mtd/cfi.h from
+ header
+To: Arnd Bergmann <arnd@arndb.de>, Marek Vasut <marek.vasut@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>
+References: <20170314214239.3921342-1-arnd@arndb.de>
+CC: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Michal Suchanek
+ <hramrach@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Kamal Dasu
+ <kamal.dasu@broadcom.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <c0685146-7a60-355d-708a-2a8f5016c199@atmel.com>
+Date: Wed, 15 Mar 2017 11:40:08 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170314214239.3921342-1-arnd@arndb.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,214 +30,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 15 Mar 2017 09:55:13 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+Hi Arnd,
 
-> Hi Boris,
-> 
-> Thanks for your review.
-> 
-> 2017-03-15 5:58 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> > On Wed, 15 Mar 2017 02:45:48 +0900
-> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> >  
-> >> The nand_default_block_markbad() is the default implementation of
-> >> chip->block_markbad().  This is called for marking a block as bad.
-> >> It invokes nand_do_write_oob(), then calls a higher level accessor
-> >> ecc->write_oob().
-> >>
-> >> On the other hand, when reading BBM from the OOB, chip->block_bad()
-> >> is called, and nand_block_bad() is the default implementation.  This
-> >> function calls a lower level chip->cmdfunc().  If a driver wants to
-> >> re-use nand_block_bad(), it is required to support NAND_CMD_READOOB
-> >> in its cmdfunc().  
-> >
-> > This is part of the basic/mandatory operations that should be supported
-> > by all drivers.  
-> 
-> 
-> My main motivation of this patch is to save NAND_CMD_READOOB
-> implemenation in cmdfunc().
-> 
-> 
-> Please look at line 1292 of drivers/mtd/nand/denali.c
-> 
->         case NAND_CMD_READOOB:
->                 /* TODO: Read OOB data */
->                 break;
-> 
++Mark Brown and Kamal Dasu
 
-Yes, I know, and unfortunately that's not the only driver to partially
-implement the set of operation the core assume to be always supported.
+Le 14/03/2017 à 22:42, Arnd Bergmann a écrit :
+> The newly added broadcom qspi driver in drivers/spi produces a build
+> warning when CONFIG_MTD is disabled:
+> 
+> include/linux/mtd/cfi.h:76:2: #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work. [-Werror=cpp]
+> 
+> Since drivers like this one don't actually need the cfi.h header,
+> we can just remove it from the spi-nor.h file and add it to
+> the only place that actually needs it.
+>
 
-> 
-> Currently, this driver can not check BBM at all.
-> 
-> 
-> If all drivers should support NAND_CMD_READOOB
-> regardless of this patch, my main motivation of this patch will be lost.
+Actually this build warning highlights an issue in the broadcom qspi
+driver. Indeed this driver implements the ->spi_flash_read handler with
+bcm_qspi_flash_read() but this latest function is not correct.
 
-Well, I see another reason to move to the ecc->read_oob() approach:
-some NAND controllers are protecting the BBM with ECC, if you just use
-->cmdfunc(READOOB) + ->read_buf() you don't get this ECC protection.
+I will provide more details and explanations below, mainly for SPI guys,
+but if you want to go directly to my conclusion, please just skip the
+""" section :)
 
-> 
-> 
-> >> This is strange.  If the controller supports
-> >> optimized read operation and the driver has its own ecc->read_oob(),
-> >> it should be able to use it.  
-> >
-> > I agree with this one. I guess the idea behind this default
-> > implementation was to avoid reading the whole OOB area, or maybe this
-> > function was implemented before we had ECC support. Anyway, the
-> > overhead should be negligible with your approach.
-> >  
-> >> Besides, NAND_CMD_READOOB (0x50) is
-> >> not a real command for large page devices.  So, recent drivers may
-> >> not be happy to handle this command.  
-> >
-> > Well, that's the whole problem with the ->cmdfunc() hook, even if it's
-> > passed raw NAND command identifiers, these are actually encoding NAND
-> > operations, and not necessarily the exact command that should be sent to
-> > the NAND.  
-> 
-> 
-> I was misunderstanding this.
-> 
-> If operations are hooked by higher level accessors
-> and some low-level commands never get chance to be executed,
-> I thought I need not implement them.
 
-That's true for some of them (for example ->onfi_set/get_features()),
-but there's no clear rule saying which commands have to be supported in
-->cmdfunc() and which one can be implemented as high-level hooks.
+""""
+The second argument of the ->spi_flash_read handler is a pointer to a
+'struct spi_flash_read_message'. This structure has a 'read_opcode'
+member providing the SPI controller driver with the value of the op code
+to be sent at the very beginning of the SPI message.
 
-Most of the time, I recommend to implement ->cmd_ctrl() and rely on the
-default ->cmdfunc() implementation, so that, each time a new feature
-(support for a new NAND operation) is added to the core your driver will
-support it natively.
+This 'read_opcode' depends on many parameters such as the memory
+manufacturer, the number of I/O lines used to send the SPI message, the
+number of bytes of the address, ...
+The spi-nor framework is responsible for selecting the right settings
+for (Fast) Read, hence read_opcode, Page Program and Sector Erase
+operations. Those choices are made according to both the SPI memory and
+controller hardware capabilities. This process can be a little bit
+complex to always find a working combination.
 
-I know some controllers are not fitting so well in this model, but most
-of them do.
+Hence SPI controller drivers implementing the ->spi_flash_read handler
+should use the settings provided inside the 'struct
+spi_flash_read_message' parameter but should never try to guess or
+override those settings. So there is no reason for
+bcm_qspi_bspi_set_flex_mode() to initialize its 'command' local variable
+with SPINOR_OP_READ* macros. Instead, this 'command' variable should be
+initialize with msg->read_opcode.
 
-> 
-> > See what's done in nand_command_lp(), and how some commands are
-> > actually generating a sequence of 2 commands [1], or how
-> > NAND_CMD_READOOB is transformed into NAND_CMD_READ0 [2].  
-> 
-> So, what should I do for denali.c?
-> 
-> Maybe, copy the most logic of nand_command_lp() into denali_cmdfunc()?
+Also the actual number of dummy cycles depends on both the read opcode
+and the memory manufacturer. So the values hardcoded in
+bcm_qspi_bspi_set_flex_mode() work for some manufacturers but not all.
+Once again, the spi-nor framework is responsible for filling the
+'dummy_bytes' member of the 'struct spi_flash_read_message' with the
+right value.
 
-Ideally, get rid of denali_cmdfunc() and implement denali_cmd_ctrl(),
-but I'm not sure how feasible this is.
+For instance, the factory settings for the Fast Read 1-4-4 (Quad I/O)
+command are:
 
-> 
-> 
-> 
-> >>       if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
-> >>               ofs += mtd->erasesize - mtd->writesize;
-> >> @@ -364,30 +364,26 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
-> >>       page = (int)(ofs >> chip->page_shift) & chip->pagemask;
-> >>
-> >>       do {
-> >> -             if (chip->options & NAND_BUSWIDTH_16) {
-> >> -                     chip->cmdfunc(mtd, NAND_CMD_READOOB,
-> >> -                                     chip->badblockpos & 0xFE, page);
-> >> -                     bad = cpu_to_le16(chip->read_word(mtd));
-> >> -                     if (chip->badblockpos & 0x1)
-> >> -                             bad >>= 8;
-> >> +             res = chip->ecc.read_oob(mtd, chip, page);
-> >> +             if (!res) {
-> >> +                     bad = chip->oob_poi[chip->badblockpos];  
-> >
-> > Hm, even if the current code is only testing one byte, I wonder
-> > if we shouldn't test the 2 bytes here when we're dealing with 16bits
-> > NANDs.  
-> 
-> 
-> 
-> I was not quite sure about this, so I tried my best
-> to keep the current behavior.
+                        Mode cycles  Wait state cycles   Dummy cycles
+Macronix MX25L25673G:             2                  4              6
+Spansion S25FL512S:               2                  4              6
+Micron N25Q512:                   1                  9             10
 
-I'll check in the ONFI spec.
+The number of dummy clock cycles being the sum of the numbers of mode
+and wait state cycles. This shows that the spi-bcm-qspi driver uses
+wrong settings for Fast Read 1-4-4 commands at least with Micron memories.
 
-> 
-> 
-> 
-> >>
-> >> -             if (likely(chip->badblockbits == 8))
-> >> -                     res = bad != 0xFF;
-> >> -             else
-> >> -                     res = hweight8(bad) < chip->badblockbits;
-> >> -             ofs += mtd->writesize;
-> >> -             page = (int)(ofs >> chip->page_shift) & chip->pagemask;
-> >> +             if (!ret)
-> >> +                     ret = res;  
-> >
-> > Hm, I'm not sure I understand what you're doing here. If res is != 0,
-> > then an error occurred when reading the OOB area and you should
-> > probably return the error code directly instead of trying to read the
-> > OOB from next page. On the other hand, if res is 0, then ret will
-> > always be 0, so I don't think this extra ret variable is needed.  
-> 
-> My understanding of NAND_BBT_SCAN2NDPAGE is,
-> if at least one page can be read as bad,
-> the corresponding block should be assumed bad.
-> 
-> So, I tried to save this case:
->    1st loop fails to execute chip->ecc.read_oob()
->    2nd loop succeeds, and the page is marked as bad.
-> 
-> 
-> nand_default_block_markbad() does a similar thing; it continues
-> even if the first loop fails.
-> 
-> 
-> If this is a over-care, the code can be more simplified.
+Besides, even for a given memory part, the 'read_opcode', 'addr_width'
+and 'dummy_bytes' values of the 'struct spi_flash_read_message' are not
+fixed. Indeed, the spi_flash_read() function can be used by the spi-nor
+framework to perform Read SFDP commands. The Read SFDP command has a
+dedicated op code (5Ah), a fixed number of address bytes (always 3, even
+for memories > 128Mbit using 4-byte address commands), and a fixed
+number of dummy clock cycles (8).
+So this is another good reason not to hardcode the memory settings in
+any SPI controller driver.
+"""
 
-Actually, I think this is the opposite. Hiding the fact ->read_oob()
-failed sounds dangerous to me. If we don't return directly we should at
-least have an error message.
 
-> 
-> 
-> 
-> >> +
-> >> +             page++;
-> >>               i++;
-> >> -     } while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
-> >> +     } while (chip->bbt_options & NAND_BBT_SCAN2NDPAGE && i < 2);  
-> >
-> > A for loop would probably make more sense here, but that's just a
-> > detail.
-> >  
-> 
-> I just chose less-invasive approach.
-> I do not have a strong opinion about this.
+All this to say that the spi-bcm-qspi.c driver includes the
+<linux/mtd/spi-nor.h> file only to use the SPINOR_OP_READ* macros and,
+as explained above, this is not a needed. Once the spi-bcm-qspi.c fixed,
+we could simply remove the #include <linux/mtd/spi-nor.h> line then the
+build warning would disappear as well.
+Actually, IMHO, no SPI controller driver should include the
+<linux/mtd/spi-nor.h> file at all. If it is included anyway, well I
+guess we should not be surprised to find dependencies to the MTD sub-system.
 
-Yep, as I said, I'm just nitpicking, but I think the loop would be
-clearer with a for loop.
+So I think this patch only hides the real issue in the broadcom driver
+but doesn't fix it. Then I'm sorry but I won't accept it.
 
-> 
-> 
-> >[3]https://github.com/bbrezillon/linux-sunxi/blob/nand-core-rework-v2/include/linux/mtd/nand2.h  
-> 
-> 
-> Is this related to your talk in ELCE 2016?
 
-Yep.
+Best regards,
 
-> http://events.linuxfoundation.org/sites/events/files/slides/brezillon-nand-framework.pdf
+Cyrille
+
+> Fixes: fa236a7ef240 ("spi: bcm-qspi: Add Broadcom MSPI driver")
+> Link: https://patchwork.kernel.org/patch/9334097/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v2: move definitions as suggested by Ezequiel
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 16 ++++++++++++++++
+>  include/linux/mtd/spi-nor.h   | 16 ----------------
+>  2 files changed, 16 insertions(+), 16 deletions(-)
 > 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 747645c74134..7d7ad84f739f 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -21,8 +21,24 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/spi/flash.h>
+> +#include <linux/mtd/cfi.h>
+>  #include <linux/mtd/spi-nor.h>
+>  
+> +/*
+> + * Manufacturer IDs
+> + *
+> + * The first byte returned from the flash after sending opcode SPINOR_OP_RDID.
+> + * Sometimes these are the same as CFI IDs, but sometimes they aren't.
+> + */
+> +#define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
+> +#define SNOR_MFR_GIGADEVICE	0xc8
+> +#define SNOR_MFR_INTEL		CFI_MFR_INTEL
+> +#define SNOR_MFR_MICRON		CFI_MFR_ST /* ST Micro <--> Micron */
+> +#define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
+> +#define SNOR_MFR_SPANSION	CFI_MFR_AMD
+> +#define SNOR_MFR_SST		CFI_MFR_SST
+> +#define SNOR_MFR_WINBOND	0xef /* Also used by some Spansion */
+> +
+>  /* Define max times to check status register before we give up. */
+>  
+>  /*
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index f2a718030476..716a8f79784e 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -11,25 +11,9 @@
+>  #define __LINUX_MTD_SPI_NOR_H
+>  
+>  #include <linux/bitops.h>
+> -#include <linux/mtd/cfi.h>
+>  #include <linux/mtd/mtd.h>
+>  
+>  /*
+> - * Manufacturer IDs
+> - *
+> - * The first byte returned from the flash after sending opcode SPINOR_OP_RDID.
+> - * Sometimes these are the same as CFI IDs, but sometimes they aren't.
+> - */
+> -#define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
+> -#define SNOR_MFR_GIGADEVICE	0xc8
+> -#define SNOR_MFR_INTEL		CFI_MFR_INTEL
+> -#define SNOR_MFR_MICRON		CFI_MFR_ST /* ST Micro <--> Micron */
+> -#define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
+> -#define SNOR_MFR_SPANSION	CFI_MFR_AMD
+> -#define SNOR_MFR_SST		CFI_MFR_SST
+> -#define SNOR_MFR_WINBOND	0xef /* Also used by some Spansion */
+> -
+> -/*
+>   * Note on opcode nomenclature: some opcodes have a format like
+>   * SPINOR_OP_FUNCTION{4,}_x_y_z. The numbers x, y, and z stand for the number
+>   * of I/O lines used for the opcode, address, and data (respectively). The
 > 
-> Unfortunately I could not attend the last ELCE,
-> but I just skimmed over your slides, and your work looks exciting.
-
-As I said at the end of the talk, any help is welcome, so, if you feel
-your denali driver could benefit from this approach and you have time,
-don't hesitate to work on it.
-
-Regards,
-
-Boris
