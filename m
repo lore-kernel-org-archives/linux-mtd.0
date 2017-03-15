@@ -1,32 +1,74 @@
-Received: from mail-pf0-f194.google.com ([209.85.192.194])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1coFSW-0007Pp-5r
- for linux-mtd@lists.infradead.org; Wed, 15 Mar 2017 20:23:50 +0000
-Received: by mail-pf0-f194.google.com with SMTP id v190so3266619pfb.0
- for <linux-mtd@lists.infradead.org>; Wed, 15 Mar 2017 13:23:26 -0700 (PDT)
-Date: Wed, 15 Mar 2017 15:23:24 -0500
-From: Rob Herring <robh@kernel.org>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Artur Jedrysek <jartur@cadence.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+From: Till Smejkal <till.smejkal@googlemail.com>
+Date: Wed, 15 Mar 2017 14:30:43 -0700
+To: Rich Felker <dalias@libc.org>
+Cc: Andy Lutomirski <luto@amacapital.net>, Andy Lutomirski <luto@kernel.org>,
+ Till Smejkal <till.smejkal@googlemail.com>,
+ Richard Henderson <rth@twiddle.net>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+ Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>,
+ Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>,
+ Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>,
+ Ralf Baechle <ralf@linux-mips.org>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ Helge Deller <deller@gmx.de>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Martin Schwidefsky <schwidefsky@de.ibm.com>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ "David S. Miller" <davem@davemloft.net>,
+ Chris Metcalf <cmetcalf@mellanox.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ X86 ML <x86@kernel.org>, Chris Zankel <chris@zankel.net>,
+ Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Pawel Osciak <pawel@osciak.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [v2, 4/4] dt-bindings: mtd: Add Octal SPI support to Cadence QSPI.
-Message-ID: <20170315202324.44k43sjn5qnobins@rob-hp-laptop>
-References: <1488959932-6657-1-git-send-email-jartur@cadence.com>
- <1488960326-13858-1-git-send-email-jartur@cadence.com>
- <132a4818-11d1-263f-aae4-bac4e76c14c8@gmail.com>
- <DM5PR07MB2780A784F8973310542FDBE3D4200@DM5PR07MB2780.namprd07.prod.outlook.com>
- <7d303436-77cf-fb11-30b6-c59014950ae6@gmail.com>
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Benjamin LaHaise <bcrl@kvack.org>,
+ Nadia Yvette Chambers <nyc@holomorphy.com>,
+ Jeff Layton <jlayton@poochiereds.net>,
+ "J. Bruce Fields" <bfields@fieldses.org>,
+ Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org,
+ "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+ linux-metag@vger.kernel.org,
+ Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+ linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+ "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+ sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, USB list <linux-usb@vger.kernel.org>,
+ Linux FS Devel <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ Linux API <linux-api@vger.kernel.org>,
+ linux-arch <linux-arch@vger.kernel.org>,
+ ALSA development <alsa-devel@alsa-project.org>
+Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
+Message-ID: <20170315213042.e5q6daqkqoam2iun@arch-dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7d303436-77cf-fb11-30b6-c59014950ae6@gmail.com>
+In-Reply-To: <20170315194723.GJ1693@brightrain.aerifal.cx>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,69 +78,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 10, 2017 at 01:52:31PM +0100, Marek Vasut wrote:
-> On 03/10/2017 01:03 PM, Artur Jedrysek wrote:
+On Wed, 15 Mar 2017, Rich Felker wrote:
+> On Wed, Mar 15, 2017 at 12:44:47PM -0700, Till Smejkal wrote:
+> > On Wed, 15 Mar 2017, Andy Lutomirski wrote:
+> > > > One advantage of VAS segments is that they can be globally queried by user programs
+> > > > which means that VAS segments can be shared by applications that not necessarily have
+> > > > to be related. If I am not mistaken, MAP_SHARED of pure in memory data will only work
+> > > > if the tasks that share the memory region are related (aka. have a common parent that
+> > > > initialized the shared mapping). Otherwise, the shared mapping have to be backed by a
+> > > > file.
+> > > 
+> > > What's wrong with memfd_create()?
+> > > 
+> > > > VAS segments on the other side allow sharing of pure in memory data by
+> > > > arbitrary related tasks without the need of a file. This becomes especially
+> > > > interesting if one combines VAS segments with non-volatile memory since one can keep
+> > > > data structures in the NVM and still be able to share them between multiple tasks.
+> > > 
+> > > What's wrong with regular mmap?
 > > 
-> >> From: Marek Vasut [mailto:marek.vasut@gmail.com]
-> >> Sent: 10 March 2017 04:39
-> >> On 03/08/2017 09:05 AM, Artur Jedrysek wrote:
-> >>> This patch updates Cadence QSPI Device Tree documentation to include
-> >>> information about new compatible used to indicate, whether or not
-> >>> Octal SPI transfers are supported by the device.
-> >>>
-> >>> Signed-off-by: Artur Jedrysek <jartur@cadence.com>
-> >>> ---
-> >>> Changelog:
-> >>> v2: Use new compatible, instead of boolean property, to indicate
-> >>> Octal SPI support.
-> >>> ---
-> >>>  Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 4 +++-
-> >>>  1 file changed, 3 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> >> b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> >>> index f248056..41d1e98 100644
-> >>> --- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> >>> +++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> >>> @@ -1,7 +1,9 @@
-> >>>  * Cadence Quad SPI controller
-> >>>
-> >>>  Required properties:
-> >>> -- compatible : Should be "cdns,qspi-nor".
-> >>> +- compatible : Should be "cdns,{qspi|ospi}-nor".
-> >>
-> >> Please explicitly list all compatibles , ie.
-> >> Should be "cdns,qspi-nor" or "cdns,ospi-nor".
-> >>
+> > I never wanted to say that there is something wrong with regular mmap. We just
+> > figured that with VAS segments you could remove the need to mmap your shared data but
+> > instead can keep everything purely in memory.
 > > 
-> > Two possible options are also explicitly listed right below. I did that
-> > in the way it was done in other driver for Cadence IP:
-> > /Documentation/devicetree/bindings/net/macb.txt
-> > Should I remove all of that and replace it with both options, separated
-> > by an "or" word?
+> > Unfortunately, I am not at full speed with memfds. Is my understanding correct that
+> > if the last user of such a file descriptor closes it, the corresponding memory is
+> > freed? Accordingly, memfd cannot be used to keep data in memory while no program is
+> > currently using it, can it? To be able to do this you need again some representation
 > 
-> Wait for Rob to confirm.
+> I have a name for application-allocated kernel resources that persist
+> without a process holding a reference to them or a node in the
+> filesystem: a bug. See: sysvipc.
 
-As Marek suggested, but with one valid combination per line. I don't 
-think checkpatch.pl will work with it as is.
+VAS segments are first class citizens of the OS similar to processes. Accordingly, I
+would not see this behavior as a bug. VAS segments are a kernel handle to
+"persistent" memory (in the sense that they are independent of the lifetime of the
+application that created them). That means the memory that is described by VAS
+segments can be reused by other applications even if the VAS segment was not used by
+any application in between. It is very much like a pure in-memory file. An
+application creates a VAS segment, fills it with content and if it does not delete it
+again, can reuse/open it again later. This also means, that if you know that you
+never want to use this memory again you have to remove it explicitly, like you have
+to remove a file, if you don't want to use it anymore.
 
-> 
-> >> But I think the ospi is backward compatible with qspi, right ? So the
-> >> binding for ospi should list both, ie.
-> >> compatible = "cdns,ospi-nor", "cdns,qspi-nor";
-> >>
-> > 
-> > Yes, the ospi is backwards compatible with qspi. However, the sole point
-> > of introducing new compatible was to differentiate between them (which
-> > was previously done using a boolean flag, but that was criticized).
-> > Listing both bindings for ospi would only help for kernels not
-> > containing driver update being subject of this patch series, as both
-> > ospi and qspi are handled by the same driver - just with a slight
-> > difference. I apologize if I got something wrong here.
-> 
-> You got it right, I was just curious about the compatibility.
+I think it really might be better to implement VAS segments (if I should keep this
+feature at all) with a special purpose filesystem. The way I've designed it seams to
+be very misleading.
 
-You are assuming every OS/user everywhere is updated. It doesn't hurt to 
-have the backwards compatibility.
-
-Rob
+Till
