@@ -1,20 +1,29 @@
-Date: Thu, 16 Mar 2017 22:50:31 +0100
-From: Simon Baatz <gmbnomis@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
- linux-mtd@lists.infradead.org, jason@lakedaemon.net, andrew@lunn.ch,
- richard@nod.at, linux-arm-kernel@lists.infradead.org,
- dan.carpenter@oracle.com
-Subject: Re: [PATCH] mtd: nand: orion: fix clk handling
-Message-ID: <20170316215031.GB27118@gandalf>
-References: <20170312213406.20987-1-gmbnomis@gmail.com>
- <20170313071241.y5ydl274t22awrys@pengutronix.de>
- <20170316101211.332a53e0@bbrezillon>
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1codyP-0008Ai-OL
+ for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 22:34:24 +0000
+Received: by mail-wm0-x242.google.com with SMTP id z133so622274wmb.2
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Mar 2017 15:34:00 -0700 (PDT)
+Subject: Re: [PATCH V6, 1/1] mtd: nand: brcmnand: Check flash #WP pin status
+ before nand erase/program
+To: Florian Fainelli <florian.fainelli@broadcom.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1488575813-12660-1-git-send-email-kdasu.kdev@gmail.com>
+ <1488575813-12660-2-git-send-email-kdasu.kdev@gmail.com>
+ <25484b94-341f-300d-474e-a272f249f0a2@gmail.com>
+ <20170315150147.337ddd04@bbrezillon>
+ <f30527a7-6885-65f4-9c7f-e2f7e0d81af0@broadcom.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org,
+ f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
+ cyrille.pitchen@atmel.com
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <3bd30ffc-fa89-40ed-81ba-069158412630@gmail.com>
+Date: Thu, 16 Mar 2017 23:33:58 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170316101211.332a53e0@bbrezillon>
+In-Reply-To: <f30527a7-6885-65f4-9c7f-e2f7e0d81af0@broadcom.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,132 +33,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 16, 2017 at 10:12:11AM +0100, Boris Brezillon wrote:
-> On Mon, 13 Mar 2017 08:12:41 +0100
-> Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
+On 03/15/2017 05:26 PM, Florian Fainelli wrote:
 > 
-> > Hello Simon,
-> > 
-> > On Sun, Mar 12, 2017 at 10:34:06PM +0100, Simon Baatz wrote:
-> > > The clk handling in orion_nand.c had two problems:
-> > > 
-> > > - In the probe function, clk_put() was called for an enabled clock,
-> > >   which violates the API (see documentation for clk_put() in
-> > >   include/linux/clk.h)
-> > > 
-> > > - In the error path of the probe function, clk_put() could be called
-> > >   twice for the same clock.
-> > > 
-> > > In order to clean this up, use the managed function devm_clk_get() and
-> > > store the pointer to the clk in the driver data.
-> > > 
-> > > Fixes: baffab28b13120694fa3ebab08d3e99667a851d2 ('ARM: Orion: fix driver probe error handling with respect to clk')
-> > > Cc: <stable@vger.kernel.org> # v4.5+
-> > > Signed-off-by: Simon Baatz <gmbnomis@gmail.com>
-> > > ---
-> > >  drivers/mtd/nand/orion_nand.c | 42 +++++++++++++++++++++---------------------
-> > >  1 file changed, 21 insertions(+), 21 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> > > index 4a91c5d000be..b355aa738fae 100644
-> > > --- a/drivers/mtd/nand/orion_nand.c
-> > > +++ b/drivers/mtd/nand/orion_nand.c
-> > > @@ -23,6 +23,11 @@
-> > >  #include <asm/sizes.h>
-> > >  #include <linux/platform_data/mtd-orion_nand.h>
-> > >  
-> > > +struct orion_nand_info {
-> > > +	struct nand_chip chip;
-> > > +	struct clk       *clk;
-> > > +};
-> > > +
-> > >  static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
-> > >  {
-> > >  	struct nand_chip *nc = mtd_to_nand(mtd);
-> > > @@ -75,20 +80,21 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
-> > >  
-> > >  static int __init orion_nand_probe(struct platform_device *pdev)
-> > >  {
-> > > +	struct orion_nand_info *info;
-> > >  	struct mtd_info *mtd;
-> > >  	struct nand_chip *nc;
-> > >  	struct orion_nand_data *board;
-> > >  	struct resource *res;
-> > > -	struct clk *clk;
-> > >  	void __iomem *io_base;
-> > >  	int ret = 0;
-> > >  	u32 val = 0;
-> > >  
-> > > -	nc = devm_kzalloc(&pdev->dev,
-> > > -			sizeof(struct nand_chip),
-> > > +	info = devm_kzalloc(&pdev->dev,
-> > > +			sizeof(struct orion_nand_info),
-> > >  			GFP_KERNEL);
-> > > -	if (!nc)
-> > > +	if (!info)
-> > >  		return -ENOMEM;
-> > > +	nc = &info->chip;
-> > >  	mtd = nand_to_mtd(nc);
-> > >  
-> > >  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > > @@ -145,15 +151,13 @@ static int __init orion_nand_probe(struct platform_device *pdev)
-> > >  	if (board->dev_ready)
-> > >  		nc->dev_ready = board->dev_ready;
-> > >  
-> > > -	platform_set_drvdata(pdev, mtd);
-> > > +	platform_set_drvdata(pdev, info);
-> > >  
-> > >  	/* Not all platforms can gate the clock, so it is not
-> > >  	   an error if the clock does not exists. */
-> > > -	clk = clk_get(&pdev->dev, NULL);
-> > > -	if (!IS_ERR(clk)) {
-> > > -		clk_prepare_enable(clk);
-> > > -		clk_put(clk);
-> > > -	}
-> > > +	info->clk = devm_clk_get(&pdev->dev, NULL);
-> > > +	if (!IS_ERR(info->clk))
-> > > +		clk_prepare_enable(info->clk);  
-> > 
-> > Orthogonal to your patch I suggest:
-> > 
-> > -	info->clk = devm_clk_get(&pdev->dev, NULL);
-> > -	if (!IS_ERR(info->clk))
-> > -		clk_prepare_enable(info->clk);
-> > +	info->clk = devm_clk_get_optional(&pdev->dev, NULL);
-> > +	if (IS_ERR(info->clk)) {
-> > +		ret = PTR_ERR(info->clk);
-> > +		if (ret != -EPROBE_DEFER)
-> > +			dev_err(...);
-> > +		return ret;
-> > +	}
-> > 
 > 
-> In the meantime, maybe you can do:
+> On 03/15/2017 07:01 AM, Boris Brezillon wrote:
+>> On Fri, 10 Mar 2017 14:22:39 +0100
+>> Marek Vasut <marek.vasut@gmail.com> wrote:
+>>
+>>> On 03/03/2017 10:16 PM, Kamal Dasu wrote:
+>>>> On brcmnand controller v6.x and v7.x, the #WP pin is controlled through
+>>>> the NAND_WP bit in CS_SELECT register.
+>>>>
+>>>> The driver currently assumes that toggling the #WP pin is
+>>>> instantaneously enabling/disabling write-protection, but it actually
+>>>> takes some time to propagate the new state to the internal NAND chip
+>>>> logic. This behavior is sometime causing data corruptions when an
+>>>> erase/program operation is executed before write-protection has really
+>>>> been disabled.
+>>>>
+>>>> Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+>>>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+>>>> ---
+>>>>  drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++--
+>>>>  1 file changed, 58 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+>>>> index 42ebd73..7419c5c 100644
+>>>> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+>>>> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+>>>> @@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
+>>>>  #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
+>>>>  #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
+>>>>  
+>>>> +#define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
+>>>> +#define NAND_POLL_STATUS_TIMEOUT_MS	100
+>>>> +
+>>>>  /* Controller feature flags */
+>>>>  enum {
+>>>>  	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
+>>>> @@ -765,6 +768,31 @@ enum {
+>>>>  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+>>>>  };
+>>>>  
+>>>> +static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
+>>>> +				    u32 mask, u32 expected_val,
+>>>> +				    unsigned long timeout_ms)
+>>>> +{
+>>>> +	unsigned long limit;
+>>>> +	u32 val;
+>>>> +
+>>>> +	if (!timeout_ms)
+>>>> +		timeout_ms = NAND_POLL_STATUS_TIMEOUT_MS;
+>>>> +
+>>>> +	limit = jiffies + msecs_to_jiffies(timeout_ms);
+>>>> +	do {
+>>>> +		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+>>>> +		if ((val & mask) == expected_val)
+>>>> +			return 0;
+>>>> +
+>>>> +		cpu_relax();
+>>>> +	} while (time_after(limit, jiffies));
+>>>> +
+>>>> +	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
+>>>> +		 expected_val, val & mask);
+>>>> +
+>>>> +	return -ETIMEDOUT;
+>>>> +}
+>>>> +
+>>>>  static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
+>>>>  {
+>>>>  	u32 val = en ? CS_SELECT_NAND_WP : 0;
+>>>> @@ -1024,12 +1052,39 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
+>>>>  
+>>>>  	if ((ctrl->features & BRCMNAND_HAS_WP) && wp_on == 1) {
+>>>>  		static int old_wp = -1;  
+>>>
+>>> Unrelated to this patch, but this static variable should be moved to
+>>> driver's private data instead.
+>>>
+>>>> +		int ret;
+>>>>  
+>>>>  		if (old_wp != wp) {
+>>>>  			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
+>>>>  			old_wp = wp;
+>>>>  		}
+>>>> +
+>>>> +		/*
+>>>> +		 * make sure ctrl/flash ready before and after
+>>>> +		 * changing state of #WP pin
+>>>> +		 */  
+>>>
+>>> Shouldn't the brcmnand_set_wp() do this ?
+>>
+>> Hm, AFAIU, brcmnand_set_wp() is only controlling the WP pin from the
+>> controller side, so maybe we should rename the function
+>> brcmnand_ctrl_set_wp() to clarify that.
 > 
-> 	info->clk = devm_clk_get(&pdev->dev, NULL);
-> 	if (IS_ERR(info->clk)) {
-> 		ret = PTR_ERR(info->clk);
-> 
-> 		if (ret == -ENOENT) {
-> 			/*
-> 			 * This clk is optional, assign it to NULL when
-> 			 * it's not present.
-> 			 */
-> 			info->clk = NULL;
-> 		} else {
-> 			if (ret == -EPROBE_DEFER)
-> 				dev_err(...);
-> 
-> 			return ret;
-> 		}
-> 	}
-> 
-> This way, you won't have to check the info->clk value when you call
-> clk_prepare_enable() or clk_disable_unprepare().
+> While I don't object that this change should be made, we are already at
+> version 6 here, and this is a bugfix, so what else needs to be done to
+> get this included?
 > 
 
-Yes, this makes things simpler. I will add a second patch improving
-the error handling in v2 as you and Uwe suggested.
+Follow the maintainers' advice , just like everyone else , just like we
+did it ever since ?
 
-
-- Simon
+-- 
+Best regards,
+Marek Vasut
