@@ -1,20 +1,27 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1coP1f-0008Tb-Rd
- for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 06:36:45 +0000
-From: Peter Pan <peterpandong@micron.com>
-To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
- <computersforpeace@gmail.com>, <arnaud.mouiche@gmail.com>,
- <thomas.petazzoni@free-electrons.com>, <linux-mtd@lists.infradead.org>
-CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
- <linshunquan1@hisilicon.com>
-Subject: [PATCH v3 8/8] MAINTAINERS: Add SPI NAND entry
-Date: Thu, 16 Mar 2017 14:47:37 +0800
-Message-ID: <1489646857-10112-9-git-send-email-peterpandong@micron.com>
-In-Reply-To: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
-References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ linux-kernel@vger.kernel.org, Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v3 3/3] mtd: nand: Remove unused chip->write_page() hook
+Date: Thu, 16 Mar 2017 09:02:42 +0100
+Message-Id: <1489651362-17077-4-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1489651362-17077-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1489651362-17077-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +31,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add maintainer information for SPI NAND.
+The last/only user of the chip->write_page() hook (the Atmel NAND
+controller driver) has been reworked and is no longer specifying a custom
+->write_page() implementation.
+Drop this hook before someone else start abusing it.
 
-Signed-off-by: Peter Pan <peterpandong@micron.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/mtd/nand/nand_base.c | 12 +++++-------
+ include/linux/mtd/nand.h     |  4 ----
+ 2 files changed, 5 insertions(+), 11 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 09ec991..dc38bda 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8610,6 +8610,15 @@ S:	Maintained
- F:	drivers/mtd/nand/
- F:	include/linux/mtd/*nand*.h
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index b0524f8accb6..a28be471ebe0 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2637,7 +2637,7 @@ static int nand_write_page_syndrome(struct mtd_info *mtd,
+ }
  
-+SPI NAND FLASH DRIVER
-+M:	Peter Pan <peterpandong@micron.com>
-+L:	linux-mtd@lists.infradead.org
-+W:	http://www.linux-mtd.infradead.org/
-+Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-+S:	Maintained
-+F:	drivers/mtd/nand/spi/
-+F:	include/linux/mtd/spinand.h
+ /**
+- * nand_write_page - [REPLACEABLE] write one page
++ * nand_write_page - write one page
+  * @mtd: MTD device structure
+  * @chip: NAND chip descriptor
+  * @offset: address offset within the page
+@@ -2840,9 +2840,10 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 			/* We still need to erase leftover OOB data */
+ 			memset(chip->oob_poi, 0xff, mtd->oobsize);
+ 		}
+-		ret = chip->write_page(mtd, chip, column, bytes, wbuf,
+-					oob_required, page, cached,
+-					(ops->mode == MTD_OPS_RAW));
 +
- NATSEMI ETHERNET DRIVER (DP8381x)
- S:	Orphan
- F:	drivers/net/ethernet/natsemi/natsemi.c
++		ret = nand_write_page(mtd, chip, column, bytes, wbuf,
++				      oob_required, page, cached,
++				      (ops->mode == MTD_OPS_RAW));
+ 		if (ret)
+ 			break;
+ 
+@@ -4663,9 +4664,6 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		}
+ 	}
+ 
+-	if (!chip->write_page)
+-		chip->write_page = nand_write_page;
+-
+ 	/*
+ 	 * Check ECC mode, default to software if 3byte/512byte hardware ECC is
+ 	 * selected and we have 256 byte pagesize fallback to software ECC
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 9591e0fbe5bd..37f02cbb7a06 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -822,7 +822,6 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+  * @errstat:		[OPTIONAL] hardware specific function to perform
+  *			additional error status checks (determine if errors are
+  *			correctable).
+- * @write_page:		[REPLACEABLE] High-level page write function
+  */
+ 
+ struct nand_chip {
+@@ -847,9 +846,6 @@ struct nand_chip {
+ 	int (*scan_bbt)(struct mtd_info *mtd);
+ 	int (*errstat)(struct mtd_info *mtd, struct nand_chip *this, int state,
+ 			int status, int page);
+-	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
+-			uint32_t offset, int data_len, const uint8_t *buf,
+-			int oob_required, int page, int cached, int raw);
+ 	int (*onfi_set_features)(struct mtd_info *mtd, struct nand_chip *chip,
+ 			int feature_addr, uint8_t *subfeature_para);
+ 	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
 -- 
-1.9.1
+2.7.4
