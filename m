@@ -1,18 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1coRpS-0007Zy-BG
- for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 09:36:19 +0000
-Date: Thu, 16 Mar 2017 10:35:56 +0100
+ id 1coS8R-0001Tl-1u
+ for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 09:55:56 +0000
+Date: Thu, 16 Mar 2017 10:55:33 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: gpio: make nCE GPIO optional
-Message-ID: <20170316103556.3fdfbdc9@bbrezillon>
-In-Reply-To: <20170210140110.87903682E7@localhost.localdomain>
-References: <20170210140110.87903682E7@localhost.localdomain>
+To: Peter Pan <peterpandong@micron.com>
+Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
+ <arnaud.mouiche@gmail.com>, <thomas.petazzoni@free-electrons.com>,
+ <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
+ <linshunquan1@hisilicon.com>
+Subject: Re: [PATCH v3 3/8] nand: spi: add basic blocks for infrastructure
+Message-ID: <20170316105533.343e183a@bbrezillon>
+In-Reply-To: <1489646857-10112-4-git-send-email-peterpandong@micron.com>
+References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
+ <1489646857-10112-4-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,65 +26,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 Feb 2017 15:01:10 +0100 (CET)
-Christophe Leroy <christophe.leroy@c-s.fr> wrote:
+On Thu, 16 Mar 2017 14:47:32 +0800
+Peter Pan <peterpandong@micron.com> wrote:
 
-> On some hardware, the nCE signal is wired to the ChipSelect associated
-> to bus address of the NAND, so it is automatically driven during the
-> memory access and it is not managed by a GPIO.
+> +
+> +#define SPINAND_CAP_RD_X1 BIT(0)
+> +#define SPINAND_CAP_RD_X2 BIT(1)
+> +#define SPINAND_CAP_RD_X4 BIT(2)
+> +#define SPINAND_CAP_RD_DUAL BIT(3)
+> +#define SPINAND_CAP_RD_QUAD BIT(4)
+> +#define SPINAND_CAP_WR_X1 BIT(5)
+> +#define SPINAND_CAP_WR_X2 BIT(6)
+> +#define SPINAND_CAP_WR_X4 BIT(7)
+> +#define SPINAND_CAP_WR_DUAL BIT(8)
+> +#define SPINAND_CAP_WR_QUAD BIT(9)
+> +#define SPINAND_CAP_HW_ECC BIT(10)
 
-Applied.
+Empty line please.
 
-Thanks,
+> +struct spinand_controller {
+> +	struct spinand_controller_ops *ops;
+> +	u32 caps;
+> +	void *priv;
 
-Boris
+Nope, the ->priv field is a per-device private data, so it should be
+placed in struct spinand_device (see below), otherwise, if you have the
+same controller connected to 2 different chips, each time you call
+spinand_set_controller_data() you will overwrite the ->priv value.
 
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-> ---
->  drivers/mtd/nand/gpio.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-> index 0d24857..85294f1 100644
-> --- a/drivers/mtd/nand/gpio.c
-> +++ b/drivers/mtd/nand/gpio.c
-> @@ -78,7 +78,9 @@ static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
->  	gpio_nand_dosync(gpiomtd);
->  
->  	if (ctrl & NAND_CTRL_CHANGE) {
-> -		gpio_set_value(gpiomtd->plat.gpio_nce, !(ctrl & NAND_NCE));
-> +		if (gpio_is_valid(gpiomtd->plat.gpio_nce))
-> +			gpio_set_value(gpiomtd->plat.gpio_nce,
-> +				       !(ctrl & NAND_NCE));
->  		gpio_set_value(gpiomtd->plat.gpio_cle, !!(ctrl & NAND_CLE));
->  		gpio_set_value(gpiomtd->plat.gpio_ale, !!(ctrl & NAND_ALE));
->  		gpio_nand_dosync(gpiomtd);
-> @@ -201,7 +203,8 @@ static int gpio_nand_remove(struct platform_device *pdev)
->  
->  	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
->  		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
-> -	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
-> +	if (gpio_is_valid(gpiomtd->plat.gpio_nce))
-> +		gpio_set_value(gpiomtd->plat.gpio_nce, 1);
->  
->  	return 0;
->  }
-> @@ -239,10 +242,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
->  
-> -	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
-> -	if (ret)
-> -		return ret;
-> -	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
-> +	if (gpio_is_valid(gpiomtd->plat.gpio_nce)) {
-> +		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce,
-> +					"NAND NCE");
-> +		if (ret)
-> +			return ret;
-> +		gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
-> +	}
->  
->  	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
->  		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
+Each spinand_controller should then inherit from struct
+spinand_controller:
+
+struct my_spinand_controller {
+	struct spinand_controller base;
+
+	/* put your SPI NAND controller specific fields here. */
+};
+
+> +};
+> +
+> +/**
+> + * struct spinand_device - SPI-NAND Private Flash Chip Data
+> + * @base: NAND device instance
+> + * @lock: protection lock
+> + * @name: name of the chip
+> + * @id: ID structure
+> + * @read_cache_op: Opcode of read from cache
+> + * @write_cache_op: Opcode of program load
+> + * @buf: buffer for read/write data
+> + * @oobbuf: buffer for read/write oob
+> + * @rw_mode: read/write mode of SPI NAND chip
+> + * @controller: SPI NAND controller instance
+> + * @manufacturer: SPI NAND manufacturer instance, describe
+> + *                manufacturer related objects
+> + * @ecc_engine: SPI NAND ECC engine instance
+> + */
+> +struct spinand_device {
+> +	struct nand_device base;
+> +	struct mutex lock;
+> +	char *name;
+> +	struct spinand_id id;
+> +	u8 read_cache_op;
+> +	u8 write_cache_op;
+> +	u8 *buf;
+> +	u8 *oobbuf;
+> +	u32 rw_mode;
+> +	struct spinand_controller *controller;
+
+	struct {
+		struct spinand_controller *controller;
+		void *priv;
+	} controller;
+
+> +	struct {
+> +		const struct spinand_manufacturer *manu;
+> +		void *priv;
+> +	} manufacturer;
+> +	struct {
+> +		struct spinand_ecc_engine *engine;
+> +		void *context;
+> +	} ecc;
+> +};
