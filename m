@@ -1,73 +1,20 @@
-From: Till Smejkal <till.smejkal@googlemail.com>
-Date: Wed, 15 Mar 2017 16:18:43 -0700
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, Andy Lutomirski <luto@kernel.org>,
- Till Smejkal <till.smejkal@googlemail.com>,
- Richard Henderson <rth@twiddle.net>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>,
- Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>,
- Richard Kuo <rkuo@codeaurora.org>, Fenghua Yu <fenghua.yu@intel.com>,
- James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>,
- "James E.J. Bottomley" <jejb@parisc-linux.org>,
- Helge Deller <deller@gmx.de>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Martin Schwidefsky <schwidefsky@de.ibm.com>,
- Heiko Carstens <heiko.carstens@de.ibm.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- "David S. Miller" <davem@davemloft.net>,
- Chris Metcalf <cmetcalf@mellanox.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
- X86 ML <x86@kernel.org>, Chris Zankel <chris@zankel.net>,
- Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Pawel Osciak <pawel@osciak.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Benjamin LaHaise <bcrl@kvack.org>,
- Nadia Yvette Chambers <nyc@holomorphy.com>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org,
- "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- linux-metag@vger.kernel.org,
- Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
- sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- linux-mtd@lists.infradead.org, USB list <linux-usb@vger.kernel.org>,
- Linux FS Devel <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- Linux API <linux-api@vger.kernel.org>,
- linux-arch <linux-arch@vger.kernel.org>,
- ALSA development <alsa-devel@alsa-project.org>
-Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
-Message-ID: <20170315231843.sgxzg6qj34anyirs@arch-dev>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1coP1S-0008Rh-7t
+ for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 06:36:31 +0000
+From: Peter Pan <peterpandong@micron.com>
+To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
+ <computersforpeace@gmail.com>, <arnaud.mouiche@gmail.com>,
+ <thomas.petazzoni@free-electrons.com>, <linux-mtd@lists.infradead.org>
+CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
+ <linshunquan1@hisilicon.com>
+Subject: [PATCH v3 1/8] mtd: nand: add more helpers in nand.h
+Date: Thu, 16 Mar 2017 14:47:30 +0800
+Message-ID: <1489646857-10112-2-git-send-email-peterpandong@micron.com>
+In-Reply-To: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
+References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170315220952.GA1435@intel.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -77,33 +24,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 15 Mar 2017, Luck, Tony wrote:
-> On Wed, Mar 15, 2017 at 03:02:34PM -0700, Till Smejkal wrote:
-> > I don't agree here. VAS segments are basically in-memory files that are handled by
-> > the kernel directly without using a file system. Hence, if an application uses a VAS
-> > segment to store data the same rules apply as if it uses a file. Everything that it
-> > saves in the VAS segment might be accessible by other applications. An application
-> > using VAS segments should be aware of this fact. In addition, the resources that are
-> > represented by a VAS segment are not leaked. As I said, VAS segments are much like
-> > files. Hence, if you don't want to use them any more, delete them. But as with files,
-> > the kernel will not delete them for you (although something like this can be added).
-> 
-> So how do they differ from shmget(2), shmat(2), shmdt(2), shmctl(2)?
-> 
-> Apart from VAS having better names, instead of silly "key_t key" ones.
+This commit adds some helpers in nand.h
+    nand_size()
+    valid_nand_address()
+    valid_nand_oob_ops()
+    nand_oob_ops_across_page()
+    valid_nand_erase_ops()
 
-Unfortunately, I have to admit that the VAS segments don't differ from shm* a lot.
-The implementation is differently, but the functionality that you can achieve with it
-is very similar. I am sorry. We should have looked more closely at the whole
-functionality that is provided by the shmem subsystem before working on VAS segments.
+Signed-off-by: Peter Pan <peterpandong@micron.com>
+---
+ include/linux/mtd/nand.h | 59 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
 
-However, VAS segments are not the key part of this patch set. The more interesting
-functionality in our opinion is the introduction of first class virtual address
-spaces and what they can be used for. VAS segments were just another logical step for
-us (from first class virtual address spaces to first class virtual address space
-segments) but since their functionality can be achieved with various other already
-existing features of the Linux kernel, I will probably drop them in future versions
-of the patchset.
-
-Thanks
-Till
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index c2197b4..4a812e6 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -410,6 +410,65 @@ static inline int nand_neraseblocks(struct nand_device *nand)
+ }
+ 
+ /**
++ * nand_size - Get NAND size
++ * @nand: NAND device
++ *
++ * Returns the total size exposed by @nand.
++ */
++static inline u64 nand_size(struct nand_device *nand)
++{
++	return nand->memorg.ndies * nand->memorg.diesize;
++}
++
++static inline bool valid_nand_address(struct nand_device *nand, loff_t addr)
++{
++	return addr < nand_size(nand);
++}
++
++static inline bool valid_nand_oob_ops(struct nand_device *nand, loff_t start,
++				      struct mtd_oob_ops *ops)
++{
++	struct mtd_info *mtd = nand_to_mtd(nand);
++	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
++		mtd->oobavail : mtd->oobsize;
++
++	if (ops->ooboffs >= ooblen)
++		return false;
++	if (ops->ooboffs + ops->ooblen >
++	    (nand_len_to_pages(nand, nand_size(nand)) -
++			       nand_offs_to_page(nand, start)) * ooblen)
++		return false;
++
++	return true;
++}
++
++static inline bool nand_oob_ops_across_page(struct nand_device *nand,
++					    struct mtd_oob_ops *ops)
++{
++	struct mtd_info *mtd = nand_to_mtd(nand);
++	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
++		     mtd->oobavail : mtd->oobsize;
++
++	return (ops->ooboffs + ops->ooblen) > ooblen;
++}
++
++static inline bool valid_nand_erase_ops(struct nand_device *nand,
++					struct erase_info *einfo)
++{
++	/* check address align on block boundary */
++	if (einfo->addr & (nand_eraseblock_size(nand) - 1))
++		return false;
++	/* check lendth align on block boundary */
++	if (einfo->len & (nand_eraseblock_size(nand) - 1))
++		return false;
++	/* Do not allow erase past end of device */
++	if ((einfo->addr + einfo->len) > nand_size(nand))
++		return false;
++
++	return true;
++}
++
++/**
+  * nand_register - Register a NAND device
+  * @nand: NAND device
+  *
+-- 
+1.9.1
