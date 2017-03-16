@@ -1,72 +1,30 @@
-Date: Thu, 16 Mar 2017 09:21:38 +0100 (CET)
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Till Smejkal <till.smejkal@googlemail.com>
-cc: Andy Lutomirski <luto@amacapital.net>, Andy Lutomirski <luto@kernel.org>,
- Richard Henderson <rth@twiddle.net>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>,
- Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>,
- Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>,
- Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>,
- Ralf Baechle <ralf@linux-mips.org>,
- "James E.J. Bottomley" <jejb@parisc-linux.org>,
- Helge Deller <deller@gmx.de>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Martin Schwidefsky <schwidefsky@de.ibm.com>,
- Heiko Carstens <heiko.carstens@de.ibm.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- "David S. Miller" <davem@davemloft.net>,
- Chris Metcalf <cmetcalf@mellanox.com>, Ingo Molnar <mingo@redhat.com>,
- "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
- Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Pawel Osciak <pawel@osciak.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
+MIME-Version: 1.0
+In-Reply-To: <1489651362-17077-4-git-send-email-boris.brezillon@free-electrons.com>
+References: <1489651362-17077-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1489651362-17077-4-git-send-email-boris.brezillon@free-electrons.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Thu, 16 Mar 2017 17:31:10 +0900
+Message-ID: <CAK7LNAQsvwjrp32bZTV95cGRGa7Tq+hEfF89Z9W66aSrb9rLcg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] mtd: nand: Remove unused chip->write_page() hook
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Benjamin LaHaise <bcrl@kvack.org>,
- Nadia Yvette Chambers <nyc@holomorphy.com>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org,
- "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
- linux-metag@vger.kernel.org,
- Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
- sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- linux-mtd@lists.infradead.org, USB list <linux-usb@vger.kernel.org>,
- Linux FS Devel <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- Linux API <linux-api@vger.kernel.org>,
- linux-arch <linux-arch@vger.kernel.org>,
- ALSA development <alsa-devel@alsa-project.org>
-Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
-In-Reply-To: <20170315220234.mooiyrzqdsglo4lp@arch-dev>
-Message-ID: <alpine.DEB.2.20.1703160919170.3586@nanos>
-References: <20170315220234.mooiyrzqdsglo4lp@arch-dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
+ Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -76,23 +34,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 15 Mar 2017, Till Smejkal wrote:
-> On Wed, 15 Mar 2017, Andy Lutomirski wrote:
+2017-03-16 17:02 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> The last/only user of the chip->write_page() hook (the Atmel NAND
+> controller driver) has been reworked and is no longer specifying a custom
+> ->write_page() implementation.
+> Drop this hook before someone else start abusing it.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> > > VAS segments on the other side would provide a functionality to
-> > > achieve the same without the need of any mounted filesystem. However,
-> > > I agree, that this is just a small advantage compared to what can
-> > > already be achieved with the existing functionality provided by the
-> > > Linux kernel.
-> > 
-> > I see this "small advantage" as "resource leak and security problem".
-> 
-> I don't agree here. VAS segments are basically in-memory files that are
-> handled by the kernel directly without using a file system. Hence, if an
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-Why do we need yet another mechanism to represent something which looks
-like a file instead of simply using existing mechanisms and extend them?
 
-Thanks,
-
-	tglx
+-- 
+Best Regards
+Masahiro Yamada
