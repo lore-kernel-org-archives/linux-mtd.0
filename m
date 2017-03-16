@@ -1,22 +1,18 @@
-Date: Thu, 16 Mar 2017 10:31:33 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1coRpS-0007Zy-BG
+ for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 09:36:19 +0000
+Date: Thu, 16 Mar 2017 10:35:56 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alison Wang <alison.wang@nxp.com>
-Cc: Alison Wang <b18965@freescale.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "cyrille.pitchen@atmel.com"
- <cyrille.pitchen@atmel.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 1/2] mtd: ifc: Update dependency of IFC for LS1021A
-Message-ID: <20170316103133.6bc7574b@bbrezillon>
-In-Reply-To: <DB6PR0401MB2584CFFA50BD3B9A4205DE9FF4590@DB6PR0401MB2584.eurprd04.prod.outlook.com>
-References: <1486968416-13536-1-git-send-email-b18965@freescale.com>
- <20170213083401.5adf8c31@bbrezillon>
- <DB6PR0401MB258411171005499F70EAE505F4590@DB6PR0401MB2584.eurprd04.prod.outlook.com>
- <20170213085546.026865b8@bbrezillon>
- <DB6PR0401MB2584CFFA50BD3B9A4205DE9FF4590@DB6PR0401MB2584.eurprd04.prod.outlook.com>
+To: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: gpio: make nCE GPIO optional
+Message-ID: <20170316103556.3fdfbdc9@bbrezillon>
+In-Reply-To: <20170210140110.87903682E7@localhost.localdomain>
+References: <20170210140110.87903682E7@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,25 +25,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 13 Feb 2017 08:01:17 +0000
-Alison Wang <alison.wang@nxp.com> wrote:
+On Fri, 10 Feb 2017 15:01:10 +0100 (CET)
+Christophe Leroy <christophe.leroy@c-s.fr> wrote:
 
-> > On Mon, 13 Feb 2017 07:39:41 +0000
-> > Alison Wang <alison.wang@nxp.com> wrote:
-> >   
-> > > Hi, Boris,
-> > >
-> > > 	Sorry, I forgot to change them. Should I resend them or you help  
-> > to fix that when applying?
-> > 
-> > I can fix that when applying, no need to resend.
-> > Note that you missed 4.11 (already sent my PR to Brian), I'll queue it
-> > for 4.12.
-> >   
-> [Alison Wang] Ok, I see. Thanks a lot.
+> On some hardware, the nCE signal is wired to the ChipSelect associated
+> to bus address of the NAND, so it is automatically driven during the
+> memory access and it is not managed by a GPIO.
 
-Applied both.
+Applied.
 
 Thanks,
 
 Boris
+
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> ---
+>  drivers/mtd/nand/gpio.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+> index 0d24857..85294f1 100644
+> --- a/drivers/mtd/nand/gpio.c
+> +++ b/drivers/mtd/nand/gpio.c
+> @@ -78,7 +78,9 @@ static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  	gpio_nand_dosync(gpiomtd);
+>  
+>  	if (ctrl & NAND_CTRL_CHANGE) {
+> -		gpio_set_value(gpiomtd->plat.gpio_nce, !(ctrl & NAND_NCE));
+> +		if (gpio_is_valid(gpiomtd->plat.gpio_nce))
+> +			gpio_set_value(gpiomtd->plat.gpio_nce,
+> +				       !(ctrl & NAND_NCE));
+>  		gpio_set_value(gpiomtd->plat.gpio_cle, !!(ctrl & NAND_CLE));
+>  		gpio_set_value(gpiomtd->plat.gpio_ale, !!(ctrl & NAND_ALE));
+>  		gpio_nand_dosync(gpiomtd);
+> @@ -201,7 +203,8 @@ static int gpio_nand_remove(struct platform_device *pdev)
+>  
+>  	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+>  		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
+> -	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
+> +	if (gpio_is_valid(gpiomtd->plat.gpio_nce))
+> +		gpio_set_value(gpiomtd->plat.gpio_nce, 1);
+>  
+>  	return 0;
+>  }
+> @@ -239,10 +242,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
+> -	if (ret)
+> -		return ret;
+> -	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+> +	if (gpio_is_valid(gpiomtd->plat.gpio_nce)) {
+> +		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce,
+> +					"NAND NCE");
+> +		if (ret)
+> +			return ret;
+> +		gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+> +	}
+>  
+>  	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
+>  		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
