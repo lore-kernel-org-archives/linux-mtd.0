@@ -1,19 +1,18 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1coReP-0008GG-D9
- for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 09:24:54 +0000
-Date: Thu, 16 Mar 2017 10:24:32 +0100
+Date: Thu, 16 Mar 2017 10:27:19 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Colin King <colin.king@canonical.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: nandsim: fix spelling mistake: "weakpagess"
- -> "weakpages"
-Message-ID: <20170316102432.2fe610cb@bbrezillon>
-In-Reply-To: <20170223113048.13208-1-colin.king@canonical.com>
-References: <20170223113048.13208-1-colin.king@canonical.com>
+To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Cc: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ "Cyrille Pitchen" <cyrille.pitchen@atmel.com>,
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2] mtd: nand: tango: Enforce DMA direction type
+Message-ID: <20170316102719.199d0f5f@bbrezillon>
+In-Reply-To: <72b68483-8a02-f6b8-f6b7-da492585c802@sigmadesigns.com>
+References: <1486979107-15362-1-git-send-email-boris.brezillon@free-electrons.com>
+ <aebe65d0-19c9-e1a7-b98a-c25ff616dad0@sigmadesigns.com>
+ <20170220133547.06c17a12@bbrezillon>
+ <72b68483-8a02-f6b8-f6b7-da492585c802@sigmadesigns.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,35 +25,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Feb 2017 11:30:48 +0000
-Colin King <colin.king@canonical.com> wrote:
+On Mon, 20 Feb 2017 14:10:07 +0100
+Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
 
-> From: Colin Ian King <colin.king@canonical.com>
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
 > 
-> trivial fix to spelling mistake in NS_ERR error message
+> do_dma() uses an int to pass the DMA data direction information and
+> pass the same value to dmaengine_prep_slave_sg().
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Currently, DMA_{FROM,TO}_DEVICE match DMA_{DEV_TO_MEM,MEM_TO_DEV}
+> definitions so it works fine, but assuming this will always be the case
+> is not safe.
+> 
+> Enforce enum dma_data_direction type in the function prototype and make
+> the enum dma_data_direction -> enum dma_transfer_direction conversion
+> explicit.
+> 
+> Reported-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Acked-by: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
 
 Applied.
 
-Thanks,
-
-Boris
-
 > ---
->  drivers/mtd/nand/nandsim.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/nand/tango_nand.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> index c847426..cef818f 100644
-> --- a/drivers/mtd/nand/nandsim.c
-> +++ b/drivers/mtd/nand/nandsim.c
-> @@ -901,7 +901,7 @@ static int parse_weakpages(void)
->  		zero_ok = (*w == '0' ? 1 : 0);
->  		page_no = simple_strtoul(w, &w, 0);
->  		if (!zero_ok && !page_no) {
-> -			NS_ERR("invalid weakpagess.\n");
-> +			NS_ERR("invalid weakpages.\n");
->  			return -EINVAL;
->  		}
->  		max_writes = 3;
+> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+> index 4a5e948c62df..05b6e1065203 100644
+> --- a/drivers/mtd/nand/tango_nand.c
+> +++ b/drivers/mtd/nand/tango_nand.c
+> @@ -223,12 +223,13 @@ static void tango_dma_callback(void *arg)
+>  	complete(arg);
+>  }
+>  
+> -static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
+> -		  int len, int page)
+> +static int do_dma(struct tango_nfc *nfc, enum dma_data_direction dir, int cmd,
+> +		  const void *buf, int len, int page)
+>  {
+>  	void __iomem *addr = nfc->reg_base + NFC_STATUS;
+>  	struct dma_chan *chan = nfc->chan;
+>  	struct dma_async_tx_descriptor *desc;
+> +	enum dma_transfer_direction tdir;
+>  	struct scatterlist sg;
+>  	struct completion tx_done;
+>  	int err = -EIO;
+> @@ -238,7 +239,8 @@ static int do_dma(struct tango_nfc *nfc, int dir, int cmd, const void *buf,
+>  	if (dma_map_sg(chan->device->dev, &sg, 1, dir) != 1)
+>  		return -EIO;
+>  
+> -	desc = dmaengine_prep_slave_sg(chan, &sg, 1, dir, DMA_PREP_INTERRUPT);
+> +	tdir = dir == DMA_TO_DEVICE ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
+> +	desc = dmaengine_prep_slave_sg(chan, &sg, 1, tdir, DMA_PREP_INTERRUPT);
+>  	if (!desc)
+>  		goto dma_unmap;
+>  
