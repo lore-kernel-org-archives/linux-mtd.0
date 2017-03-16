@@ -1,22 +1,62 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1coS8R-0001Tl-1u
- for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 09:55:56 +0000
-Date: Thu, 16 Mar 2017 10:55:33 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpandong@micron.com>
-Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
- <arnaud.mouiche@gmail.com>, <thomas.petazzoni@free-electrons.com>,
- <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
- <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH v3 3/8] nand: spi: add basic blocks for infrastructure
-Message-ID: <20170316105533.343e183a@bbrezillon>
-In-Reply-To: <1489646857-10112-4-git-send-email-peterpandong@micron.com>
-References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
- <1489646857-10112-4-git-send-email-peterpandong@micron.com>
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1coVMp-0004mQ-Pd
+ for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 13:23:04 +0000
+Date: Thu, 16 Mar 2017 22:22:22 +0900
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Logan Gunthorpe <logang@deltatee.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>,
+ Leon Romanovsky <leon@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+ linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
+ linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/16] chardev: add helper function to register char
+ devs with a struct device
+Message-ID: <20170316132222.GA9923@kroah.com>
+References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
+ <1488783873-2614-2-git-send-email-logang@deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1488783873-2614-2-git-send-email-logang@deltatee.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,84 +66,200 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 16 Mar 2017 14:47:32 +0800
-Peter Pan <peterpandong@micron.com> wrote:
-
-> +
-> +#define SPINAND_CAP_RD_X1 BIT(0)
-> +#define SPINAND_CAP_RD_X2 BIT(1)
-> +#define SPINAND_CAP_RD_X4 BIT(2)
-> +#define SPINAND_CAP_RD_DUAL BIT(3)
-> +#define SPINAND_CAP_RD_QUAD BIT(4)
-> +#define SPINAND_CAP_WR_X1 BIT(5)
-> +#define SPINAND_CAP_WR_X2 BIT(6)
-> +#define SPINAND_CAP_WR_X4 BIT(7)
-> +#define SPINAND_CAP_WR_DUAL BIT(8)
-> +#define SPINAND_CAP_WR_QUAD BIT(9)
-> +#define SPINAND_CAP_HW_ECC BIT(10)
-
-Empty line please.
-
-> +struct spinand_controller {
-> +	struct spinand_controller_ops *ops;
-> +	u32 caps;
-> +	void *priv;
-
-Nope, the ->priv field is a per-device private data, so it should be
-placed in struct spinand_device (see below), otherwise, if you have the
-same controller connected to 2 different chips, each time you call
-spinand_set_controller_data() you will overwrite the ->priv value.
-
-Each spinand_controller should then inherit from struct
-spinand_controller:
-
-struct my_spinand_controller {
-	struct spinand_controller base;
-
-	/* put your SPI NAND controller specific fields here. */
-};
-
-> +};
+On Mon, Mar 06, 2017 at 12:04:17AM -0700, Logan Gunthorpe wrote:
+> Credit for this patch goes is shared with Dan Williams [1]. I've
+> taken things one step further to make the helper function more
+> useful and clean up calling code.
+> 
+> There's a common pattern in the kernel whereby a struct cdev is placed
+> in a structure along side a struct device which manages the life-cycle
+> of both. In the naive approach, the reference counting is broken and
+> the struct device can free everything before the chardev code
+> is entirely released.
+> 
+> Many developers have solved this problem by linking the internal kobjs
+> in this fashion:
+> 
+> cdev.kobj.parent = &parent_dev.kobj;
+> 
+> The cdev code explicitly gets and puts a reference to it's kobj parent.
+> So this seems like it was intended to be used this way. Dmitrty Torokhov
+> first put this in place in 2012 with this commit:
+> 
+> 2f0157f char_dev: pin parent kobject
+> 
+> and the first instance of the fix was then done in the input subsystem
+> in the following commit:
+> 
+> 4a215aa Input: fix use-after-free introduced with dynamic minor changes
+> 
+> Subsequently over the years, however, this issue seems to have tripped
+> up multiple developers independently. For example, see these commits:
+> 
+> 0d5b7da iio: Prevent race between IIO chardev opening and IIO device
+> (by Lars-Peter Clausen in 2013)
+> 
+> ba0ef85 tpm: Fix initialization of the cdev
+> (by Jason Gunthorpe in 2015)
+> 
+> 5b28dde [media] media: fix use-after-free in cdev_put() when app exits
+> after driver unbind
+> (by Shauh Khan in 2016)
+> 
+> This technique is similarly done in at least 15 places within the kernel
+> and probably should have been done so in another, at least, 5 places.
+> The kobj line also looks very suspect in that one would not expect
+> drivers to have to mess with kobject internals in this way.
+> Even highly experienced kernel developers can be surprised by this
+> code, as seen in [2].
+> 
+> To help alleviate this situation, and hopefully prevent future
+> wasted effort on this problem, this patch introduces a helper function
+> to register a char device along with its parent struct device.
+> This creates a more regular API for tying a char device to its parent
+> without the developer having to set members in the underlying kobject.
+> 
+> This patch introduce cdev_device_add and cdev_device_del which
+> replaces a common pattern including setting the kobj parent, calling
+> cdev_add and then calling device_add. It also introduces cdev_set_parent
+> for the few cases that set the kobject parent without using device_add.
+> 
+> [1] https://lkml.org/lkml/2017/2/13/700
+> [2] https://lkml.org/lkml/2017/2/10/370
+> 
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> Reviewed-by: Hans Verkuil <hans.verkuil@cisco.com>
+> Reviewed-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+> ---
+>  fs/char_dev.c        | 77 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/cdev.h |  4 +++
+>  2 files changed, 81 insertions(+)
+> 
+> diff --git a/fs/char_dev.c b/fs/char_dev.c
+> index 44a240c..09b93fb 100644
+> --- a/fs/char_dev.c
+> +++ b/fs/char_dev.c
+> @@ -471,6 +471,76 @@ int cdev_add(struct cdev *p, dev_t dev, unsigned count)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * cdev_set_parent() - set the parent kobject for a char device
+> + * @p: the cdev structure
+> + * @kobj: the kobject to take a reference to
+> + *
+> + * cdev_set_parent() sets a parent kobject which will be referenced
+> + * appropriately so the parent is not freed before the cdev. This
+> + * should be called before cdev_add.
+> + */
+> +void cdev_set_parent(struct cdev *p, struct kobject *kobj)
+> +{
+> +	WARN_ON(!kobj->state_initialized);
+> +	p->kobj.parent = kobj;
+> +}
 > +
 > +/**
-> + * struct spinand_device - SPI-NAND Private Flash Chip Data
-> + * @base: NAND device instance
-> + * @lock: protection lock
-> + * @name: name of the chip
-> + * @id: ID structure
-> + * @read_cache_op: Opcode of read from cache
-> + * @write_cache_op: Opcode of program load
-> + * @buf: buffer for read/write data
-> + * @oobbuf: buffer for read/write oob
-> + * @rw_mode: read/write mode of SPI NAND chip
-> + * @controller: SPI NAND controller instance
-> + * @manufacturer: SPI NAND manufacturer instance, describe
-> + *                manufacturer related objects
-> + * @ecc_engine: SPI NAND ECC engine instance
+> + * cdev_device_add() - add a char device and it's corresponding
+> + *	struct device, linkink
+> + * @dev: the device structure
+> + * @cdev: the cdev structure
+> + *
+> + * cdev_device_add() adds the char device represented by @cdev to the system,
+> + * just as cdev_add does. It then adds @dev to the system using device_add
+> + * The dev_t for the char device will be taken from the struct device which
+> + * needs to be initialized first. This helper function correctly takes a
+> + * reference to the parent device so the parent will not get released until
+> + * all references to the cdev are released.
+> + *
+> + * This function should be used whenever the struct cdev and the
+> + * struct device are members of the same structure whose lifetime is
+> + * managed by the struct device.
+> + *
+> + * NOTE: Callers must assume that userspace was able to open the cdev and
+> + * can call cdev fops callbacks at any time, even if this function fails.
 > + */
-> +struct spinand_device {
-> +	struct nand_device base;
-> +	struct mutex lock;
-> +	char *name;
-> +	struct spinand_id id;
-> +	u8 read_cache_op;
-> +	u8 write_cache_op;
-> +	u8 *buf;
-> +	u8 *oobbuf;
-> +	u32 rw_mode;
-> +	struct spinand_controller *controller;
+> +int cdev_device_add(struct cdev *cdev, struct device *dev)
+> +{
+> +	int rc = 0;
+> +
+> +	cdev_set_parent(cdev, &dev->kobj);
+> +
+> +	rc = cdev_add(cdev, dev->devt, 1);
+> +	if (rc)
+> +		return rc;
+> +
+> +	rc = device_add(dev);
+> +	if (rc)
+> +		cdev_del(cdev);
+> +
+> +	return rc;
+> +}
+> +
+> +/**
+> + * cdev_device_del() - inverse of cdev_device_add
+> + * @dev: the device structure
+> + * @cdev: the cdev structure
+> + *
+> + * cdev_device_del() is a helper function to call cdev_del and device_del.
+> + * It should be used whenever cdev_device_add is used.
+> + *
+> + * NOTE: This guarantees that associated sysfs callbacks are not running
+> + * or runnable, however any cdevs already open will remain and their fops
+> + * will still be callable even after this function returns.
+> + */
+> +void cdev_device_del(struct cdev *cdev, struct device *dev)
+> +{
+> +	device_del(dev);
+> +	cdev_del(cdev);
+> +}
+> +
+>  static void cdev_unmap(dev_t dev, unsigned count)
+>  {
+>  	kobj_unmap(cdev_map, dev, count);
+> @@ -482,6 +552,10 @@ static void cdev_unmap(dev_t dev, unsigned count)
+>   *
+>   * cdev_del() removes @p from the system, possibly freeing the structure
+>   * itself.
+> + *
+> + * NOTE: This guarantees that cdev device will no longer be able to be
+> + * opened, however any cdevs already open will remain and their fops will
+> + * still be callable even after cdev_del returns.
+>   */
+>  void cdev_del(struct cdev *p)
+>  {
+> @@ -570,5 +644,8 @@ EXPORT_SYMBOL(cdev_init);
+>  EXPORT_SYMBOL(cdev_alloc);
+>  EXPORT_SYMBOL(cdev_del);
+>  EXPORT_SYMBOL(cdev_add);
+> +EXPORT_SYMBOL(cdev_set_parent);
+> +EXPORT_SYMBOL(cdev_device_add);
+> +EXPORT_SYMBOL(cdev_device_del);
+>  EXPORT_SYMBOL(__register_chrdev);
+>  EXPORT_SYMBOL(__unregister_chrdev);
+> diff --git a/include/linux/cdev.h b/include/linux/cdev.h
+> index f876361..4c99579 100644
+> --- a/include/linux/cdev.h
+> +++ b/include/linux/cdev.h
+> @@ -26,6 +26,10 @@ void cdev_put(struct cdev *p);
+>  
+>  int cdev_add(struct cdev *, dev_t, unsigned);
+>  
+> +void cdev_set_parent(struct cdev *p, struct kobject *kobj);
+> +int cdev_device_add(struct cdev *cdev, struct device *dev);
+> +void cdev_device_del(struct cdev *cdev, struct device *dev);
+> +
+>  void cdev_del(struct cdev *);
+>  
+>  void cd_forget(struct inode *);
 
-	struct {
-		struct spinand_controller *controller;
-		void *priv;
-	} controller;
+I don't know why kbuild didn't catch these before, but it looks like we
+really need to include device.h in cdev.h now to fix up these build
+warnings, right?
 
-> +	struct {
-> +		const struct spinand_manufacturer *manu;
-> +		void *priv;
-> +	} manufacturer;
-> +	struct {
-> +		struct spinand_ecc_engine *engine;
-> +		void *context;
-> +	} ecc;
-> +};
+I'll try that out and rebase the char-misc-testing tree in the morning
+to see if that fixes the build problems...
+
+thanks,
+
+greg k-h
