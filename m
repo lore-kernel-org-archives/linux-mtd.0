@@ -1,17 +1,20 @@
-Date: Thu, 16 Mar 2017 10:12:11 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1coRao-0007E1-LG
+ for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 09:21:12 +0000
+Date: Thu, 16 Mar 2017 10:20:49 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
-Cc: Simon Baatz <gmbnomis@gmail.com>, linux-mtd@lists.infradead.org,
- jason@lakedaemon.net, andrew@lunn.ch, richard@nod.at,
- linux-arm-kernel@lists.infradead.org, dan.carpenter@oracle.com
-Subject: Re: [PATCH] mtd: nand: orion: fix clk handling
-Message-ID: <20170316101211.332a53e0@bbrezillon>
-In-Reply-To: <20170313071241.y5ydl274t22awrys@pengutronix.de>
-References: <20170312213406.20987-1-gmbnomis@gmail.com>
- <20170313071241.y5ydl274t22awrys@pengutronix.de>
+To: chenwy <chenwy-fnst@cn.fujitsu.com>
+Cc: <linux-mtd@lists.infradead.org>, fnstml-fjl@cn.fujitsu.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: mtdram: check offs and len in mtdram->point
+ madram->unpoint, mtdram->write and mtdram->read
+Message-ID: <20170316102049.4bcc2b7d@bbrezillon>
+In-Reply-To: <20170303073100.27590-1-chenwy-fnst@cn.fujitsu.com>
+References: <20170303073100.27590-1-chenwy-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,130 +24,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 13 Mar 2017 08:12:41 +0100
-Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> wrote:
+Hi Chen,
 
-> Hello Simon,
->=20
-> On Sun, Mar 12, 2017 at 10:34:06PM +0100, Simon Baatz wrote:
-> > The clk handling in orion_nand.c had two problems:
-> >=20
-> > - In the probe function, clk_put() was called for an enabled clock,
-> >   which violates the API (see documentation for clk_put() in
-> >   include/linux/clk.h)
-> >=20
-> > - In the error path of the probe function, clk_put() could be called
-> >   twice for the same clock.
-> >=20
-> > In order to clean this up, use the managed function devm_clk_get() and
-> > store the pointer to the clk in the driver data.
-> >=20
-> > Fixes: baffab28b13120694fa3ebab08d3e99667a851d2 ('ARM: Orion: fix drive=
-r probe error handling with respect to clk')
-> > Cc: <stable@vger.kernel.org> # v4.5+
-> > Signed-off-by: Simon Baatz <gmbnomis@gmail.com>
-> > ---
-> >  drivers/mtd/nand/orion_nand.c | 42 +++++++++++++++++++++--------------=
--------
-> >  1 file changed, 21 insertions(+), 21 deletions(-)
-> >=20
-> > diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nan=
-d.c
-> > index 4a91c5d000be..b355aa738fae 100644
-> > --- a/drivers/mtd/nand/orion_nand.c
-> > +++ b/drivers/mtd/nand/orion_nand.c
-> > @@ -23,6 +23,11 @@
-> >  #include <asm/sizes.h>
-> >  #include <linux/platform_data/mtd-orion_nand.h>
-> > =20
-> > +struct orion_nand_info {
-> > +	struct nand_chip chip;
-> > +	struct clk       *clk;
-> > +};
-> > +
-> >  static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigne=
-d int ctrl)
-> >  {
-> >  	struct nand_chip *nc =3D mtd_to_nand(mtd);
-> > @@ -75,20 +80,21 @@ static void orion_nand_read_buf(struct mtd_info *mt=
-d, uint8_t *buf, int len)
-> > =20
-> >  static int __init orion_nand_probe(struct platform_device *pdev)
-> >  {
-> > +	struct orion_nand_info *info;
-> >  	struct mtd_info *mtd;
-> >  	struct nand_chip *nc;
-> >  	struct orion_nand_data *board;
-> >  	struct resource *res;
-> > -	struct clk *clk;
-> >  	void __iomem *io_base;
-> >  	int ret =3D 0;
-> >  	u32 val =3D 0;
-> > =20
-> > -	nc =3D devm_kzalloc(&pdev->dev,
-> > -			sizeof(struct nand_chip),
-> > +	info =3D devm_kzalloc(&pdev->dev,
-> > +			sizeof(struct orion_nand_info),
-> >  			GFP_KERNEL);
-> > -	if (!nc)
-> > +	if (!info)
-> >  		return -ENOMEM;
-> > +	nc =3D &info->chip;
-> >  	mtd =3D nand_to_mtd(nc);
-> > =20
-> >  	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > @@ -145,15 +151,13 @@ static int __init orion_nand_probe(struct platfor=
-m_device *pdev)
-> >  	if (board->dev_ready)
-> >  		nc->dev_ready =3D board->dev_ready;
-> > =20
-> > -	platform_set_drvdata(pdev, mtd);
-> > +	platform_set_drvdata(pdev, info);
-> > =20
-> >  	/* Not all platforms can gate the clock, so it is not
-> >  	   an error if the clock does not exists. */
-> > -	clk =3D clk_get(&pdev->dev, NULL);
-> > -	if (!IS_ERR(clk)) {
-> > -		clk_prepare_enable(clk);
-> > -		clk_put(clk);
-> > -	}
-> > +	info->clk =3D devm_clk_get(&pdev->dev, NULL);
-> > +	if (!IS_ERR(info->clk))
-> > +		clk_prepare_enable(info->clk); =20
->=20
-> Orthogonal to your patch I suggest:
->=20
-> -	info->clk =3D devm_clk_get(&pdev->dev, NULL);
-> -	if (!IS_ERR(info->clk))
-> -		clk_prepare_enable(info->clk);
-> +	info->clk =3D devm_clk_get_optional(&pdev->dev, NULL);
-> +	if (IS_ERR(info->clk)) {
-> +		ret =3D PTR_ERR(info->clk);
-> +		if (ret !=3D -EPROBE_DEFER)
-> +			dev_err(...);
-> +		return ret;
-> +	}
->=20
+Can you use something shorter for your commit title. Something like
 
-In the meantime, maybe you can do:
+"mtd: mtdram: check offs and len where appropriate"
 
-	info->clk =3D devm_clk_get(&pdev->dev, NULL);
-	if (IS_ERR(info->clk)) {
-		ret =3D PTR_ERR(info->clk);
+On Fri, 3 Mar 2017 15:31:00 +0800
+chenwy <chenwy-fnst@cn.fujitsu.com> wrote:
 
-		if (ret =3D=3D -ENOENT) {
-			/*
-			 * This clk is optional, assign it to NULL when
-			 * it's not present.
-			 */
-			info->clk =3D NULL;
-		} else {
-			if (ret =3D=3D -EPROBE_DEFER)
-				dev_err(...);
+>     We should prevent user to erasing mtd device with
 
-			return ret;
-		}
-	}
+			     ^ from
 
-This way, you won't have to check the info->clk value when you call
-clk_prepare_enable() or clk_disable_unprepare().
+>     an unaligned offset or length.
+
+Why are you putting 5 spaces before each line of your commit message?
+
+> 
+> Signed-off-by: Chen  Wenyong <chenwy-fnst@cn.fujitsu.com>
+> ---
+>  drivers/mtd/devices/mtdram.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
+> index cbd8547..b0468c1 100644
+> --- a/drivers/mtd/devices/mtdram.c
+> +++ b/drivers/mtd/devices/mtdram.c
+> @@ -67,6 +67,8 @@ static int ram_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  static int ram_point(struct mtd_info *mtd, loff_t from, size_t len,
+>  		size_t *retlen, void **virt, resource_size_t *phys)
+>  {
+> +	if (check_offs_len(mtd, from, len))
+> +		return -EINVAL;
+
+Add an empty line.
+
+>  	*virt = mtd->priv + from;
+>  	*retlen = len;
+>  	return 0;
+> @@ -74,6 +76,8 @@ static int ram_point(struct mtd_info *mtd, loff_t from, size_t len,
+>  
+>  static int ram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+>  {
+> +	if (check_offs_len(mtd, from, len))
+> +		return -EINVAL;
+
+Ditto.
+
+>  	return 0;
+>  }
+>  
+> @@ -93,6 +97,8 @@ static unsigned long ram_get_unmapped_area(struct mtd_info *mtd,
+>  static int ram_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  		size_t *retlen, u_char *buf)
+>  {
+> +	if (check_offs_len(mtd, from, len))
+> +		return -EINVAL;
+
+Ditto.
+
+>  	memcpy(buf, mtd->priv + from, len);
+>  	*retlen = len;
+>  	return 0;
+> @@ -101,6 +107,8 @@ static int ram_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  static int ram_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  		size_t *retlen, const u_char *buf)
+>  {
+> +	if (check_offs_len(mtd, to, len))
+> +		return -EINVAL;
+
+Ditto.
+
+>  	memcpy((char *)mtd->priv + to, buf, len);
+>  	*retlen = len;
+>  	return 0;
