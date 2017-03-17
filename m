@@ -1,29 +1,64 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1codyP-0008Ai-OL
- for linux-mtd@lists.infradead.org; Thu, 16 Mar 2017 22:34:24 +0000
-Received: by mail-wm0-x242.google.com with SMTP id z133so622274wmb.2
- for <linux-mtd@lists.infradead.org>; Thu, 16 Mar 2017 15:34:00 -0700 (PDT)
-Subject: Re: [PATCH V6, 1/1] mtd: nand: brcmnand: Check flash #WP pin status
- before nand erase/program
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1488575813-12660-1-git-send-email-kdasu.kdev@gmail.com>
- <1488575813-12660-2-git-send-email-kdasu.kdev@gmail.com>
- <25484b94-341f-300d-474e-a272f249f0a2@gmail.com>
- <20170315150147.337ddd04@bbrezillon>
- <f30527a7-6885-65f4-9c7f-e2f7e0d81af0@broadcom.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org,
- f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
- cyrille.pitchen@atmel.com
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <3bd30ffc-fa89-40ed-81ba-069158412630@gmail.com>
-Date: Thu, 16 Mar 2017 23:33:58 +0100
+ id 1cofiM-0005qg-FK
+ for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 00:25:56 +0000
+Date: Fri, 17 Mar 2017 09:24:49 +0900
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Logan Gunthorpe <logang@deltatee.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Johannes Thumshirn <jthumshirn@suse.de>, Jan Kara <jack@suse.cz>,
+ Arnd Bergmann <arnd@arndb.de>, Sajjan Vikas C <vikas.cha.sajjan@hpe.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Marcel Selhorst <tpmdd@selhorst.net>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Olof Johansson <olof@lixom.net>, Doug Ledford <dledford@redhat.com>,
+ Sean Hefty <sean.hefty@intel.com>,
+ Hal Rosenstock <hal.rosenstock@gmail.com>,
+ Dmitry Vyukov <dvyukov@google.com>, Haggai Eran <haggaie@mellanox.com>,
+ Parav Pandit <pandit.parav@gmail.com>,
+ Leon Romanovsky <leon@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alexandre.bounine@idt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Joe Perches <joe@perches.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boaz Harrosh <ooo@electrozaur.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Stephen Bates <stephen.bates@microsemi.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+ linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
+ linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/16] chardev: add helper function to register char
+ devs with a struct device
+Message-ID: <20170317002449.GA23896@kroah.com>
+References: <1488783873-2614-1-git-send-email-logang@deltatee.com>
+ <1488783873-2614-2-git-send-email-logang@deltatee.com>
+ <20170316132222.GA9923@kroah.com>
+ <98d81155-5290-b251-4728-43781d45c23b@deltatee.com>
 MIME-Version: 1.0
-In-Reply-To: <f30527a7-6885-65f4-9c7f-e2f7e0d81af0@broadcom.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98d81155-5290-b251-4728-43781d45c23b@deltatee.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,110 +68,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/15/2017 05:26 PM, Florian Fainelli wrote:
+On Thu, Mar 16, 2017 at 11:38:40AM -0600, Logan Gunthorpe wrote:
+> > I don't know why kbuild didn't catch these before, but it looks like we
+> > really need to include device.h in cdev.h now to fix up these build
+> > warnings, right?
+> 
+> > I'll try that out and rebase the char-misc-testing tree in the morning
+> > to see if that fixes the build problems...
 > 
 > 
-> On 03/15/2017 07:01 AM, Boris Brezillon wrote:
->> On Fri, 10 Mar 2017 14:22:39 +0100
->> Marek Vasut <marek.vasut@gmail.com> wrote:
->>
->>> On 03/03/2017 10:16 PM, Kamal Dasu wrote:
->>>> On brcmnand controller v6.x and v7.x, the #WP pin is controlled through
->>>> the NAND_WP bit in CS_SELECT register.
->>>>
->>>> The driver currently assumes that toggling the #WP pin is
->>>> instantaneously enabling/disabling write-protection, but it actually
->>>> takes some time to propagate the new state to the internal NAND chip
->>>> logic. This behavior is sometime causing data corruptions when an
->>>> erase/program operation is executed before write-protection has really
->>>> been disabled.
->>>>
->>>> Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
->>>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->>>> ---
->>>>  drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++--
->>>>  1 file changed, 58 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
->>>> index 42ebd73..7419c5c 100644
->>>> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
->>>> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
->>>> @@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
->>>>  #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
->>>>  #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
->>>>  
->>>> +#define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
->>>> +#define NAND_POLL_STATUS_TIMEOUT_MS	100
->>>> +
->>>>  /* Controller feature flags */
->>>>  enum {
->>>>  	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
->>>> @@ -765,6 +768,31 @@ enum {
->>>>  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
->>>>  };
->>>>  
->>>> +static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
->>>> +				    u32 mask, u32 expected_val,
->>>> +				    unsigned long timeout_ms)
->>>> +{
->>>> +	unsigned long limit;
->>>> +	u32 val;
->>>> +
->>>> +	if (!timeout_ms)
->>>> +		timeout_ms = NAND_POLL_STATUS_TIMEOUT_MS;
->>>> +
->>>> +	limit = jiffies + msecs_to_jiffies(timeout_ms);
->>>> +	do {
->>>> +		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
->>>> +		if ((val & mask) == expected_val)
->>>> +			return 0;
->>>> +
->>>> +		cpu_relax();
->>>> +	} while (time_after(limit, jiffies));
->>>> +
->>>> +	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
->>>> +		 expected_val, val & mask);
->>>> +
->>>> +	return -ETIMEDOUT;
->>>> +}
->>>> +
->>>>  static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
->>>>  {
->>>>  	u32 val = en ? CS_SELECT_NAND_WP : 0;
->>>> @@ -1024,12 +1052,39 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
->>>>  
->>>>  	if ((ctrl->features & BRCMNAND_HAS_WP) && wp_on == 1) {
->>>>  		static int old_wp = -1;  
->>>
->>> Unrelated to this patch, but this static variable should be moved to
->>> driver's private data instead.
->>>
->>>> +		int ret;
->>>>  
->>>>  		if (old_wp != wp) {
->>>>  			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
->>>>  			old_wp = wp;
->>>>  		}
->>>> +
->>>> +		/*
->>>> +		 * make sure ctrl/flash ready before and after
->>>> +		 * changing state of #WP pin
->>>> +		 */  
->>>
->>> Shouldn't the brcmnand_set_wp() do this ?
->>
->> Hm, AFAIU, brcmnand_set_wp() is only controlling the WP pin from the
->> controller side, so maybe we should rename the function
->> brcmnand_ctrl_set_wp() to clarify that.
+> Yeah, I think the kbuild robot missed the series because the vger
+> mailing lists were dropping this series :(
 > 
-> While I don't object that this change should be made, we are already at
-> version 6 here, and this is a bugfix, so what else needs to be done to
-> get this included?
-> 
+> I also don't know why my kernel config didn't catch this warning but
+> I reproduced and fixed it with the kbuild's config. I'll send an updated
+> patch which adds a include device.h line to cdev.h momentarily.
 
-Follow the maintainers' advice , just like everyone else , just like we
-did it ever since ?
+Thanks, I've updated my tree with your new patch, let's see what breaks
+this time :)
 
--- 
-Best regards,
-Marek Vasut
+greg k-h
