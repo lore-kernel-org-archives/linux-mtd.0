@@ -1,20 +1,22 @@
-Date: Fri, 17 Mar 2017 07:36:57 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Simon Baatz <gmbnomis@gmail.com>
-Cc: Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
- linux-mtd@lists.infradead.org, jason@lakedaemon.net, andrew@lunn.ch,
- richard@nod.at, linux-arm-kernel@lists.infradead.org,
- dan.carpenter@oracle.com
-Subject: Re: [PATCH] mtd: nand: orion: fix clk handling
-Message-ID: <20170317073657.7dee7c51@bbrezillon>
-In-Reply-To: <20170316215031.GB27118@gandalf>
-References: <20170312213406.20987-1-gmbnomis@gmail.com>
- <20170313071241.y5ydl274t22awrys@pengutronix.de>
- <20170316101211.332a53e0@bbrezillon>
- <20170316215031.GB27118@gandalf>
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cooie-0004He-MV
+ for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 10:02:54 +0000
+Received: by mail-wr0-x241.google.com with SMTP id l37so8890802wrc.3
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Mar 2017 03:02:28 -0700 (PDT)
+Subject: Re: [PATCH v3 0/8] Introduction to SPI NAND framework
+To: Peter Pan <peterpandong@micron.com>, boris.brezillon@free-electrons.com,
+ richard@nod.at, computersforpeace@gmail.com,
+ thomas.petazzoni@free-electrons.com, linux-mtd@lists.infradead.org
+References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
+Cc: peterpansjtu@gmail.com, linshunquan1@hisilicon.com
+From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
+Message-ID: <da605583-7d98-186a-b42e-1417d8217cd1@gmail.com>
+Date: Fri, 17 Mar 2017 11:02:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,145 +26,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 16 Mar 2017 22:50:31 +0100
-Simon Baatz <gmbnomis@gmail.com> wrote:
+Hi All,
 
-> On Thu, Mar 16, 2017 at 10:12:11AM +0100, Boris Brezillon wrote:
-> > On Mon, 13 Mar 2017 08:12:41 +0100
-> > Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> wrote:
-> >  =20
-> > > Hello Simon,
-> > >=20
-> > > On Sun, Mar 12, 2017 at 10:34:06PM +0100, Simon Baatz wrote: =20
-> > > > The clk handling in orion_nand.c had two problems:
-> > > >=20
-> > > > - In the probe function, clk_put() was called for an enabled clock,
-> > > >   which violates the API (see documentation for clk_put() in
-> > > >   include/linux/clk.h)
-> > > >=20
-> > > > - In the error path of the probe function, clk_put() could be called
-> > > >   twice for the same clock.
-> > > >=20
-> > > > In order to clean this up, use the managed function devm_clk_get() =
-and
-> > > > store the pointer to the clk in the driver data.
-> > > >=20
-> > > > Fixes: baffab28b13120694fa3ebab08d3e99667a851d2 ('ARM: Orion: fix d=
-river probe error handling with respect to clk')
-> > > > Cc: <stable@vger.kernel.org> # v4.5+
-> > > > Signed-off-by: Simon Baatz <gmbnomis@gmail.com>
-> > > > ---
-> > > >  drivers/mtd/nand/orion_nand.c | 42 +++++++++++++++++++++----------=
------------
-> > > >  1 file changed, 21 insertions(+), 21 deletions(-)
-> > > >=20
-> > > > diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion=
-_nand.c
-> > > > index 4a91c5d000be..b355aa738fae 100644
-> > > > --- a/drivers/mtd/nand/orion_nand.c
-> > > > +++ b/drivers/mtd/nand/orion_nand.c
-> > > > @@ -23,6 +23,11 @@
-> > > >  #include <asm/sizes.h>
-> > > >  #include <linux/platform_data/mtd-orion_nand.h>
-> > > > =20
-> > > > +struct orion_nand_info {
-> > > > +	struct nand_chip chip;
-> > > > +	struct clk       *clk;
-> > > > +};
-> > > > +
-> > > >  static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, uns=
-igned int ctrl)
-> > > >  {
-> > > >  	struct nand_chip *nc =3D mtd_to_nand(mtd);
-> > > > @@ -75,20 +80,21 @@ static void orion_nand_read_buf(struct mtd_info=
- *mtd, uint8_t *buf, int len)
-> > > > =20
-> > > >  static int __init orion_nand_probe(struct platform_device *pdev)
-> > > >  {
-> > > > +	struct orion_nand_info *info;
-> > > >  	struct mtd_info *mtd;
-> > > >  	struct nand_chip *nc;
-> > > >  	struct orion_nand_data *board;
-> > > >  	struct resource *res;
-> > > > -	struct clk *clk;
-> > > >  	void __iomem *io_base;
-> > > >  	int ret =3D 0;
-> > > >  	u32 val =3D 0;
-> > > > =20
-> > > > -	nc =3D devm_kzalloc(&pdev->dev,
-> > > > -			sizeof(struct nand_chip),
-> > > > +	info =3D devm_kzalloc(&pdev->dev,
-> > > > +			sizeof(struct orion_nand_info),
-> > > >  			GFP_KERNEL);
-> > > > -	if (!nc)
-> > > > +	if (!info)
-> > > >  		return -ENOMEM;
-> > > > +	nc =3D &info->chip;
-> > > >  	mtd =3D nand_to_mtd(nc);
-> > > > =20
-> > > >  	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > > > @@ -145,15 +151,13 @@ static int __init orion_nand_probe(struct pla=
-tform_device *pdev)
-> > > >  	if (board->dev_ready)
-> > > >  		nc->dev_ready =3D board->dev_ready;
-> > > > =20
-> > > > -	platform_set_drvdata(pdev, mtd);
-> > > > +	platform_set_drvdata(pdev, info);
-> > > > =20
-> > > >  	/* Not all platforms can gate the clock, so it is not
-> > > >  	   an error if the clock does not exists. */
-> > > > -	clk =3D clk_get(&pdev->dev, NULL);
-> > > > -	if (!IS_ERR(clk)) {
-> > > > -		clk_prepare_enable(clk);
-> > > > -		clk_put(clk);
-> > > > -	}
-> > > > +	info->clk =3D devm_clk_get(&pdev->dev, NULL);
-> > > > +	if (!IS_ERR(info->clk))
-> > > > +		clk_prepare_enable(info->clk);   =20
-> > >=20
-> > > Orthogonal to your patch I suggest:
-> > >=20
-> > > -	info->clk =3D devm_clk_get(&pdev->dev, NULL);
-> > > -	if (!IS_ERR(info->clk))
-> > > -		clk_prepare_enable(info->clk);
-> > > +	info->clk =3D devm_clk_get_optional(&pdev->dev, NULL);
-> > > +	if (IS_ERR(info->clk)) {
-> > > +		ret =3D PTR_ERR(info->clk);
-> > > +		if (ret !=3D -EPROBE_DEFER)
-> > > +			dev_err(...);
-> > > +		return ret;
-> > > +	}
-> > >  =20
-> >=20
-> > In the meantime, maybe you can do:
-> >=20
-> > 	info->clk =3D devm_clk_get(&pdev->dev, NULL);
-> > 	if (IS_ERR(info->clk)) {
-> > 		ret =3D PTR_ERR(info->clk);
-> >=20
-> > 		if (ret =3D=3D -ENOENT) {
-> > 			/*
-> > 			 * This clk is optional, assign it to NULL when
-> > 			 * it's not present.
-> > 			 */
-> > 			info->clk =3D NULL;
-> > 		} else {
-> > 			if (ret =3D=3D -EPROBE_DEFER)
+Do some test on MT29F1G01AAADD.
+Finally, I don't have MT29F1G01AAADD spares
+(Peter, If you have 1 or 2 MT29F1G01AAADD samples to send to me, I would 
+be pleased).
 
-I meant !=3D -EPROBE_DEFER here.
+MT29Fn1G01AAADD are little different. They have 64bytes oob and ecc 
+layout is different. But all the rest should be the nearly same.
+I did some change to support this device, and I'm now locked in the bad 
+block scan, as for some reasons, the scan tries to read all pages from 
+all blocks...
 
-> > 				dev_err(...);
-> >=20
-> > 			return ret;
-> > 		}
-> > 	}
-> >=20
-> > This way, you won't have to check the info->clk value when you call
-> > clk_prepare_enable() or clk_disable_unprepare().
-> >  =20
->=20
-> Yes, this makes things simpler. I will add a second patch improving
-> the error handling in v2 as you and Uwe suggested.
->=20
->=20
-> - Simon
+I will comment the different things I have seen in the various patches.
+
+Arnaud
+
+On 16/03/2017 07:47, Peter Pan wrote:
+> First of all, thanks for Boris Brezillon, Arnaud Mouiche and
+> Thomas Petazzoni. This v3 cannot come out without your valuable
+> comments on v2.
+>
+> This series introductes a SPI NAND framework.
+> SPI NAND is a new NAND family device with SPI protocol as
+> its interface. And its command set is totally different
+> with parallel NAND.
+>
+> Our first attempt was more than 2 years ago[1]. At that
+> time, I didn't make BBT shareable and there were too many
+> duplicate code with parallel NAND, so that serie stoped.
+> But the discussion never stops. Now Boris has a plan to
+> make a generic NAND framework which can be shared with
+> both parallel and SPI NAND. Now the first step of the
+> new generic NAND framework is finished. And it is waiting
+> for a user. After discussion with Boris. We both think it's
+> time to rebuild SPI NAND framework based on the new NAND
+> framework and send out for reviewing.
+>
+> This series is based on Boris's nand/generic branch[2], which
+> is on 4.11-rc1. In this serie, BBT code is totally shared.
+> Of course SPI NAND can share more code with parallel, this
+> requires to put more in new NAND core (now only BBT included).
+> I'd like to send this serie out first, then we can decide
+> which part should be in new NAND core.
+>
+> This series only supports basic SPI NAND features and uses
+> generic spi controller for data transfer, on-die ECC for data
+> correction. Support advanced features and specific SPI NAND
+> controller with hardware ECC is the next step.
+>
+> This series is tested on Xilinx Zedboard with Micron
+> MT29F2G01ABAGDSF SPI NAND chip.
+>
+>
+> [1]http://lists.infradead.org/pipermail/linux-mtd/2015-January/057223.html
+> [2]https://github.com/bbrezillon/linux-0day/tree/nand/generic
+>
+> v3 changes:
+> - rebase patch on 4.11-rc1[1]
+> - change read ID method. read 4 bytes ID out then let ->detect() of each
+>    manufacutre driver to decode ID and detect the device.
+> - make SPI NAND id table private to each manufacutre driver
+> - fix coding style to make checkpatch.pl happy
+> - update the MAINTAINERS file for spi nand code
+> - add nand_size() helper in nand.h
+> - use nand_for_each_page() helper in spinand_do_read/write_ops()
+> - create helper to check boundaries in generic NAND code and use it
+>    in SPI NAND core
+> - rename spinand_base.c to core.c
+> - manufactures' drivers expose spinand_manufacturer struct instead of
+>    spinand_manufacturer_ops struct to keep Manufacture ID macro in
+>    manufactures' drivers and rename spinand_ids.c to manufacture.c
+> - rename spinand_micron.c to micron.c
+> - rename chips/ directory to controllers/
+> - rename generic_spi.c to generic-spi.c
+> - replace ->build_column_addr() and ->get_dummy() hooks with ->prepare_op() in
+>    spinand_manufacturer_ops struct
+> - rename __spinand_erase() to spinand_erase()
+> - rename spinand_erase() to spinand_erase_skip_bbt()
+> - rename spinand_scan_ident() to spinand_detect()
+> - rename spinand_scan_tail() to spinand_init()
+> - move non detect related code from spinand_detect() to spinand_init()
+> - remove spinand_fill_nandd, assign nand->ops in spinand_detect()
+> - merge v2 patch 3(bad block support) and patch 4(BBT support)
+> - drop getchip parameter, remove spinand_get/remove_device(), take the lock
+>    by caller directly
+> - fix function comment headers
+> - use nand_bbt_is_initialized() helper
+> - replace spinand_ecc_engine and spinand_controller object in spinand_device
+>    struct with pointer
+> - replace struct spinand_manufacturer_ops pointer in spinand_device struct
+>    with spinand_manufacturer struct
+>
+>
+> v2 changes:
+> - replace "spi_nand" with "spinand".
+> - rename spi nand related structs for better understanding.
+> - introduce spi nand controller, manufacturer and ecc_engine struct.
+> - add spi nand manufacturer initialization function refer to Boris's
+>    manuf-init branch.
+> - remove NAND_SKIP_BBTSCAN from series. Add it later when enabling HW ECC.
+> - reorganize series according to Boris's suggestion.
+>
+> Peter Pan (8):
+>    mtd: nand: add more helpers in nand.h
+>    mtd: nand: add oob iterator in nand_for_each_page
+>    nand: spi: add basic blocks for infrastructure
+>    nand: spi: add basic operations support
+>    nand: spi: Add bad block support
+>    nand: spi: add Micron spi nand support
+>    nand: spi: Add generic SPI controller support
+>    MAINTAINERS: Add SPI NAND entry
+>
+>   MAINTAINERS                                    |    9 +
+>   drivers/mtd/nand/Kconfig                       |    1 +
+>   drivers/mtd/nand/Makefile                      |    1 +
+>   drivers/mtd/nand/spi/Kconfig                   |    7 +
+>   drivers/mtd/nand/spi/Makefile                  |    4 +
+>   drivers/mtd/nand/spi/controllers/Kconfig       |    5 +
+>   drivers/mtd/nand/spi/controllers/Makefile      |    1 +
+>   drivers/mtd/nand/spi/controllers/generic-spi.c |  158 +++
+>   drivers/mtd/nand/spi/core.c                    | 1456 ++++++++++++++++++++++++
+>   drivers/mtd/nand/spi/manufactures.c            |   27 +
+>   drivers/mtd/nand/spi/micron.c                  |  243 ++++
+>   include/linux/mtd/nand.h                       |   87 +-
+>   include/linux/mtd/spinand.h                    |  285 +++++
+>   13 files changed, 2281 insertions(+), 3 deletions(-)
+>   create mode 100644 drivers/mtd/nand/spi/Kconfig
+>   create mode 100644 drivers/mtd/nand/spi/Makefile
+>   create mode 100644 drivers/mtd/nand/spi/controllers/Kconfig
+>   create mode 100644 drivers/mtd/nand/spi/controllers/Makefile
+>   create mode 100644 drivers/mtd/nand/spi/controllers/generic-spi.c
+>   create mode 100644 drivers/mtd/nand/spi/core.c
+>   create mode 100644 drivers/mtd/nand/spi/manufactures.c
+>   create mode 100644 drivers/mtd/nand/spi/micron.c
+>   create mode 100644 include/linux/mtd/spinand.h
+>
