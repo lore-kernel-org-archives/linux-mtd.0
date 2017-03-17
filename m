@@ -1,27 +1,23 @@
-Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cop2G-0002Ts-Uk
- for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 10:23:06 +0000
-Received: by mail-lf0-x234.google.com with SMTP id y193so31173079lfd.3
- for <linux-mtd@lists.infradead.org>; Fri, 17 Mar 2017 03:22:44 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <43bedbd0-0a0c-e30d-2158-fcf7c936480d@gmail.com>
+ id 1copDB-0008Pf-2d
+ for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 10:34:27 +0000
+Received: by mail-wm0-x243.google.com with SMTP id z133so2525831wmb.2
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Mar 2017 03:34:00 -0700 (PDT)
+Subject: Re: [PATCH v3 4/8] nand: spi: add basic operations support
+To: Peter Pan <peterpandong@micron.com>, boris.brezillon@free-electrons.com,
+ richard@nod.at, computersforpeace@gmail.com,
+ thomas.petazzoni@free-electrons.com, linux-mtd@lists.infradead.org
 References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
- <1489646857-10112-4-git-send-email-peterpandong@micron.com>
- <43bedbd0-0a0c-e30d-2158-fcf7c936480d@gmail.com>
-From: Peter Pan <peterpansjtu@gmail.com>
-Date: Fri, 17 Mar 2017 18:22:42 +0800
-Message-ID: <CAAyFORKVzMC9N9GMO0Ryh161mF9HoqVkgVKwDqc2FY9o+3d_KQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/8] nand: spi: add basic blocks for infrastructure
-To: Arnaud Mouiche <arnaud.mouiche@gmail.com>
-Cc: Peter Pan <peterpandong@micron.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- "linshunquan (A)" <linshunquan1@hisilicon.com>
-Content-Type: text/plain; charset=UTF-8
+ <1489646857-10112-5-git-send-email-peterpandong@micron.com>
+Cc: peterpansjtu@gmail.com, linshunquan1@hisilicon.com
+From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
+Message-ID: <66c56e27-56e1-1352-6804-4e1e402b4d1a@gmail.com>
+Date: Fri, 17 Mar 2017 11:33:56 +0100
+MIME-Version: 1.0
+In-Reply-To: <1489646857-10112-5-git-send-email-peterpandong@micron.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,38 +27,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnaud,
 
-On Fri, Mar 17, 2017 at 6:20 PM, Arnaud Mouiche
-<arnaud.mouiche@gmail.com> wrote:
+
+On 16/03/2017 07:47, Peter Pan wrote:
 > [...]
->>
->> +/*
->> + * spinand_detect - [SPI NAND Interface] detect the SPI NAND device
->> + * @chip: SPI NAND device structure
->> + */
->> +int spinand_detect(struct spinand_device *chip)
->> +{
->> +       struct nand_device *nand = &chip->base;
->> +       u8 raw_id[SPINAND_MAX_ID_LEN] = {0};
->> +       u8 id[SPINAND_MAX_ID_LEN] = {0};
->> +       int ret;
->> +
->> +       spinand_reset(chip);
->> +       spinand_read_id(chip, raw_id);
->> +       ret = spinand_manufacturer_detect(chip, raw_id, id);
->> +       if (ret)
->
->
-> Would be great to return an error or warning message when the raw_id doesn't
-> match any known manufacturer, or when the manufacturer doesn't know about
-> this device.
-> something like:
->
->     pr_err("SPI NAND: unknown raw ID %*phN\n", SPINAND_MAX_ID_LEN, raw_id);
->
+> +
+> +/*
+> + * spinand_read_pages - read data from device to buffer
+> + * @mtd: MTD device structure
+> + * @from: offset to read from
+> + * @ops: oob operations description structure
+> + * @max_bitflips: maximum bitflip count
+> + */
+> +static int spinand_read_pages(struct mtd_info *mtd, loff_t from,
+> +			      struct mtd_oob_ops *ops,
+> +			      unsigned int *max_bitflips)
+> +{
+> +	struct spinand_device *chip = mtd_to_spinand(mtd);
+> +	struct nand_device *nand = mtd_to_nand(mtd);
+> +	int size, ret;
+> +	unsigned int corrected = 0;
+> +	bool ecc_off = ops->mode == MTD_OPS_RAW;
+> +	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
+> +		     mtd->oobavail : mtd->oobsize;
+> +	bool oob_only = !ops->datbuf;
+> +	struct nand_page_iter iter;
+> +
+> +	ops->retlen = 0;
+> +	ops->oobretlen = 0;
+> +	*max_bitflips = 0;
+> +
 
-Yes, you are right. I missed this part! I will add it in v4
+I'm stuck in a infinite bad block scan on the very first nand bad block 
+mark read attempt.
+Indeed, here I'm in the first page read attempt of scan_block_fast() 
+where scan_block_fast() fills "struct mtd_oob_ops ops" the following way
+     struct mtd_oob_ops ops;
 
-Thanks
-Peter Pan
+     ops.ooblen = nand_per_page_oobsize(this);   <= 64
+     ops.oobbuf = buf;
+     ops.ooboffs = 0;
+     ops.datbuf = NULL;
+     ops.mode = MTD_OPS_PLACE_OOB;
+
+It just forget to also set ops.len which is left to its uninitialized 
+value, and is equal to 0xFFFFFFFF in my case.
+Since we only try to read from oob, obviously retlen is never increased, 
+and we never except the loop.
+But more obviously, either ops.len should have been set to zero 
+somewhere because we only read oob, either nand_for_each_page() should 
+take in count this fact.
+
+Arnaud
+> +	nand_for_each_page(nand, from, ops->len, ops->ooboffs, ops->ooblen,
+> +			   ooblen, &iter) {
+> +		ret = spinand_do_read_page(mtd, iter.page, ecc_off,
+> +					   &corrected, oob_only);
+> +		if (ret)
+> +			break;
+> +		*max_bitflips = max(*max_bitflips, corrected);
+> +		if (ops->datbuf) {
+> +			size = min_t(int, from + ops->len - iter.offs,
+> +				     nand_page_size(nand) - iter.pageoffs);
+> +			memcpy(ops->datbuf + ops->retlen,
+> +			       chip->buf + iter.pageoffs, size);
+> +			ops->retlen += size;
+> +		}
+> +		if (ops->oobbuf) {
+> +			size = min_t(int, iter.oobleft, ooblen);
+> +			ret = spinand_transfer_oob(chip,
+> +						   ops->oobbuf + ops->oobretlen,
+> +						   ops, size);
+> +			if (ret) {
+> +				pr_err("Transfer oob error %d\n", ret);
+> +				return ret;
+> +			}
+> +			ops->oobretlen += size;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +/*
+> + * spinand_do_read_ops - read data from device to buffer
+> + * @mtd: MTD device structure
+> + * @from: offset to read from
+> + * @ops: oob operations description structure
+> + */
+> +static int spinand_do_read_ops(struct mtd_info *mtd, loff_t from,
+> +			       struct mtd_oob_ops *ops)
+> +{
+> +	struct spinand_device *chip = mtd_to_spinand(mtd);
+> +	struct nand_device *nand = mtd_to_nand(mtd);
+> +	int ret;
+> +	struct mtd_ecc_stats stats;
+> +	unsigned int max_bitflips = 0;
+> +	bool ecc_off = ops->mode == MTD_OPS_RAW;
+> +
+> +	if (!valid_nand_address(nand, from)) {
+> +		pr_err("%s: invalid read address\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +	if ((ops->ooblen > 0) && !valid_nand_oob_ops(nand, from, ops)) {
+> +		pr_err("%s: invalid oob operation input\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +	mutex_lock(&chip->lock);
+> +	stats = mtd->ecc_stats;
+> +	if (ecc_off)
+> +		spinand_disable_ecc(chip);
+> +	ret = spinand_read_pages(mtd, from, ops, &max_bitflips);
+> +	if (ecc_off)
+> +		spinand_enable_ecc(chip);
+> +	if (ret)
+> +		goto out;
+> +
+> +	if (mtd->ecc_stats.failed - stats.failed) {
+> +		ret = -EBADMSG;
+> +		goto out;
+> +	}
+> +	ret = max_bitflips;
+> +
+> +out:
+> +	mutex_unlock(&chip->lock);
+> +	return ret;
+> +}
+> +
