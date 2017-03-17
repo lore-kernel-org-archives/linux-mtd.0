@@ -1,7 +1,7 @@
 Received: from mailapp01.imgtec.com ([195.59.15.196])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1corGB-0003pC-1d
- for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 12:45:37 +0000
+ id 1corGE-00048Q-P3
+ for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 12:45:40 +0000
 From: Rahul Bedarkar <rahul.bedarkar@imgtec.com>
 To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 CC: Rahul Bedarkar <rahul.bedarkar@imgtec.com>, David Woodhouse
@@ -9,9 +9,12 @@ CC: Rahul Bedarkar <rahul.bedarkar@imgtec.com>, David Woodhouse
  Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
  <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
  <cyrille.pitchen@atmel.com>
-Subject: [RFC 0/6] Add user OTP support in SPI-NOR
-Date: Fri, 17 Mar 2017 18:13:50 +0530
-Message-ID: <1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com>
+Subject: [RFC 1/6] Revert "mtd: spi-nor: remove unused read_xfer/write_xfer
+ hooks"
+Date: Fri, 17 Mar 2017 18:13:51 +0530
+Message-ID: <1489754636-21461-2-git-send-email-rahul.bedarkar@imgtec.com>
+In-Reply-To: <1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com>
+References: <1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,68 +26,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Many NOR flash chips comes with One-Time-Programmable area a.k.a
-security registers. This RFC patchset aims at adding generic OTP
-support in SPI-NOR to read/write user OTP area.
+This reverts commit 79c452adb159dc9abc507ea13faec8d115a78758.
 
-In SPI-NOR framework, OTP specific read/write methods will use
-read_xfer/write_xfer hooks. So PATCH 1, reverts "unused read_xfer/
-write_xfer hooks."
+This was removed because hooks were never used by any driver. But
+with upcoming OTP support in SPI-NOR, m25p80 driver will implement
+it and will be used for reading/writing OTP area.
 
-PATCH 2 changes return value of read_xfer/write_xfer to allow
-returning amount of data transferred and errors as read(2)/write(2).
-This makes them inline with current read/write hooks.
-
-PATCH 3 modified helpers in m25p80.c so that those can be used
-from read_xfer/write_xfer methods.
-
-PATCH 4 implements read_xfer/write_xfer in m25p80.c
-
-PATCH 5 implements generic support to read/write user OTP.
-
-And finally in PATCH 6 user OTP support for s25fl016k is enabled.
-
-Overall changes are as follows:
-
-New flag SPI_NOR_HAS_OTP is added to specify chip has OTP area. Using
-OTP_INFO macro, details of OTP area can be specified. It includes size
-of area, number of OTP areas/banks, starting address and difference
-between consecutive OTP banks. OTP framework will give user linear
-address view from 0 to size of OTP area. User don't need to specify
-actual physical address of OTP area for reading/writing.
-
-Details which could be specific to manufacturer like opcodes for
-read/write/erase can be specified based on manufacturer.
-
-Generic OTP read/write methods are added so as it can be used for OTP
-support from other manufacturer.
-
-This complete patchset is tested with Winbond NOR flash W25Q16DV which
-is detected as "s25fl016k" by SPI-NOR.
-
-I've plans to add support for locking these OTP areas and reading
-factory OTP area as well. But before that I would to get comments
-on this initial part to understand if I'm going in right direction.
-
+Signed-off-by: Rahul Bedarkar <rahul.bedarkar@imgtec.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Marek Vasut <marek.vasut@gmail.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+---
+ include/linux/mtd/spi-nor.h | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-Rahul Bedarkar (6):
-  Revert "mtd: spi-nor: remove unused read_xfer/write_xfer hooks"
-  mtd: spi-nor: change return value of read_xfer and write_xfer
-  mtd: m25p80: don't pass spi_nor to helper methods
-  mtd: m25p80: implement read_xfer and write_xfer
-  mtd: spi-nor: add support to read/write user OTP
-  mtd: spi-nor: enable OTP support for s25fl016k
-
- drivers/mtd/devices/m25p80.c  | 111 ++++++++++++---
- drivers/mtd/spi-nor/spi-nor.c | 314 +++++++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/spi-nor.h   |  52 +++++++
- 3 files changed, 460 insertions(+), 17 deletions(-)
-
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index f2a7180..0be3f86 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -126,6 +126,33 @@ enum read_mode {
+ 	SPI_NOR_QUAD,
+ };
+ 
++/**
++ * struct spi_nor_xfer_cfg - Structure for defining a Serial Flash transfer
++ * @wren:		command for "Write Enable", or 0x00 for not required
++ * @cmd:		command for operation
++ * @cmd_pins:		number of pins to send @cmd (1, 2, 4)
++ * @addr:		address for operation
++ * @addr_pins:		number of pins to send @addr (1, 2, 4)
++ * @addr_width:		number of address bytes
++ *			(3,4, or 0 for address not required)
++ * @mode:		mode data
++ * @mode_pins:		number of pins to send @mode (1, 2, 4)
++ * @mode_cycles:	number of mode cycles (0 for mode not required)
++ * @dummy_cycles:	number of dummy cycles (0 for dummy not required)
++ */
++struct spi_nor_xfer_cfg {
++	u8		wren;
++	u8		cmd;
++	u8		cmd_pins;
++	u32		addr;
++	u8		addr_pins;
++	u8		addr_width;
++	u8		mode;
++	u8		mode_pins;
++	u8		mode_cycles;
++	u8		dummy_cycles;
++};
++
+ #define SPI_NOR_MAX_CMD_SIZE	8
+ enum spi_nor_ops {
+ 	SPI_NOR_OPS_READ = 0,
+@@ -157,11 +184,14 @@ enum spi_nor_option_flags {
+  * @flash_read:		the mode of the read
+  * @sst_write_second:	used by the SST write operation
+  * @flags:		flag options for the current SPI-NOR (SNOR_F_*)
++ * @cfg:		used by the read_xfer/write_xfer
+  * @cmd_buf:		used by the write_reg
+  * @prepare:		[OPTIONAL] do some preparations for the
+  *			read/write/erase/lock/unlock operations
+  * @unprepare:		[OPTIONAL] do some post work after the
+  *			read/write/erase/lock/unlock operations
++ * @read_xfer:		[OPTIONAL] the read fundamental primitive
++ * @write_xfer:		[OPTIONAL] the writefundamental primitive
+  * @read_reg:		[DRIVER-SPECIFIC] read out the register
+  * @write_reg:		[DRIVER-SPECIFIC] write data to the register
+  * @read:		[DRIVER-SPECIFIC] read data from the SPI NOR
+@@ -188,10 +218,15 @@ struct spi_nor {
+ 	enum read_mode		flash_read;
+ 	bool			sst_write_second;
+ 	u32			flags;
++	struct spi_nor_xfer_cfg	cfg;
+ 	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
+ 
+ 	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
+ 	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
++	int (*read_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
++			 u8 *buf, size_t len);
++	int (*write_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
++			  u8 *buf, size_t len);
+ 	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+ 	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+ 
 -- 
 2.6.2
