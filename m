@@ -1,7 +1,7 @@
 Received: from mailapp01.imgtec.com ([195.59.15.196])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1corGd-0004KL-Pn
- for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 12:46:07 +0000
+ id 1corGs-0004Y9-PP
+ for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 12:46:25 +0000
 From: Rahul Bedarkar <rahul.bedarkar@imgtec.com>
 To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 CC: Rahul Bedarkar <rahul.bedarkar@imgtec.com>, David Woodhouse
@@ -9,9 +9,9 @@ CC: Rahul Bedarkar <rahul.bedarkar@imgtec.com>, David Woodhouse
  Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
  <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
  <cyrille.pitchen@atmel.com>
-Subject: [RFC 4/6] mtd: m25p80: implement read_xfer and write_xfer
-Date: Fri, 17 Mar 2017 18:13:54 +0530
-Message-ID: <1489754636-21461-5-git-send-email-rahul.bedarkar@imgtec.com>
+Subject: [RFC 6/6] mtd: spi-nor: enable OTP support for s25fl016k
+Date: Fri, 17 Mar 2017 18:13:56 +0530
+Message-ID: <1489754636-21461-7-git-send-email-rahul.bedarkar@imgtec.com>
 In-Reply-To: <1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com>
 References: <1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com>
 MIME-Version: 1.0
@@ -25,9 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Implement read_xfer and write_xfer interfaces provided by SPI-NOR.
-These will be used in upcoming OTP support in SPI-NOR to read/write
-OTP area.
+s25fl016k has 3 OTP areas of 256 bytes each. First bank starts at
+0x1000, second at 0x2000 and third at 0x3000.
+
+When OTP area is unlocked, it can be rewritten. Lock bit for first,
+second and third area is bit 3, 4, 5 of Status Register 2.
 
 Signed-off-by: Rahul Bedarkar <rahul.bedarkar@imgtec.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
@@ -37,105 +39,69 @@ Cc: Marek Vasut <marek.vasut@gmail.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 ---
- drivers/mtd/devices/m25p80.c | 79 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
+ drivers/mtd/spi-nor/spi-nor.c | 36 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 8368249..a3ba907 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -186,6 +186,83 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	return ret;
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index a91fa4c..0fd7573 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1077,7 +1077,11 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s25sl064a",  INFO(0x010216,      0,  64 * 1024, 128, 0) },
+ 	{ "s25fl004k",  INFO(0xef4013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{
++		"s25fl016k", INFO(0xef4015, 0, 64 * 1024, 32,
++		SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_OTP)
++		OTP_INFO(256, 3, 0x1000, 0x1000)
++	},
+ 	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
+ 	{ "s25fl116k",  INFO(0x014015,      0,  64 * 1024,  32, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, SECT_4K) },
+@@ -1586,6 +1590,28 @@ static loff_t spi_nor_otp_offset_to_addr(struct spi_nor *nor, loff_t offset)
+ 	return addr;
  }
  
-+static ssize_t m25p80_read_xfer(struct spi_nor *nor,
-+				struct spi_nor_xfer_cfg *cfg,
-+				u8 *buf, size_t len)
++static int winbond_get_user_otp_info(struct mtd_info *mtd, size_t len,
++	size_t *retlen, struct otp_info *otpinfo)
 +{
-+	struct m25p *flash = nor->priv;
-+	struct spi_device *spi = flash->spi;
-+	struct spi_transfer t[2] = {};
-+	struct spi_message m;
-+	unsigned int dummy = cfg->dummy_cycles;
-+	ssize_t ret;
++	int i, ret;
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
 +
-+	/* convert the dummy cycles to the number of bytes */
-+	dummy /= 8;
-+
-+	spi_message_init(&m);
-+
-+	flash->command[0] = cfg->cmd;
-+	m25p_addr2cmd(cfg->addr, cfg->addr_width, flash->command);
-+
-+	t[0].tx_buf = flash->command;
-+	t[0].len = m25p_cmdsz(cfg->addr_width) + dummy;
-+	spi_message_add_tail(&t[0], &m);
-+
-+	t[1].rx_buf = buf;
-+	t[1].rx_nbits = m25p80_rx_nbits(cfg->mode);
-+	t[1].len = len;
-+	spi_message_add_tail(&t[1], &m);
-+
-+	ret = spi_sync(spi, &m);
-+	if (ret)
++	ret = read_cr(nor);
++	if (ret < 0)
 +		return ret;
 +
-+	ret = m.actual_length - m25p_cmdsz(cfg->addr_width) - dummy;
-+	if (ret < 0)
-+		return -EIO;
-+	return ret;
-+}
++#define WINBOND_SR2_LB1_BIT	3	/* Lock bit for security register 1 */
 +
-+static ssize_t m25p80_write_xfer(struct spi_nor *nor,
-+				 struct spi_nor_xfer_cfg *cfg,
-+				 u8 *buf, size_t len)
-+{
-+	struct m25p *flash = nor->priv;
-+	struct spi_device *spi = flash->spi;
-+	struct spi_transfer t[2] = {};
-+	struct spi_message m;
-+	unsigned int dummy = cfg->dummy_cycles;
-+	ssize_t ret;
-+
-+	/* convert the dummy cycles to the number of bytes */
-+	dummy /= 8;
-+
-+	spi_message_init(&m);
-+
-+	flash->command[0] = cfg->cmd;
-+	m25p_addr2cmd(cfg->addr, cfg->addr_width, flash->command);
-+
-+	t[0].tx_buf = flash->command;
-+	t[0].len = m25p_cmdsz(cfg->addr_width) + dummy;
-+	spi_message_add_tail(&t[0], &m);
-+
-+	if (len) {
-+		t[1].tx_buf = buf;
-+		t[1].len = len;
-+		spi_message_add_tail(&t[1], &m);
++	for (i = 0; i < nor->n_otps; i++) {
++		otpinfo[i].start = i * nor->otp_size;
++		otpinfo[i].length = nor->otp_size;
++		otpinfo[i].locked = !!(ret & BIT(WINBOND_SR2_LB1_BIT + i));
 +	}
 +
-+	ret = spi_sync(spi, &m);
-+	if (ret)
-+		return ret;
-+
-+	ret = m.actual_length - m25p_cmdsz(cfg->addr_width) - dummy;
-+	if (ret < 0)
-+		return -EIO;
-+	return ret;
++	*retlen = nor->n_otps * sizeof(*otpinfo);
++	return 0;
 +}
 +
- /*
-  * board specific setup should have ensured the SPI clock used here
-  * matches what the READ command supports, at least until this driver
-@@ -213,6 +290,8 @@ static int m25p_probe(struct spi_device *spi)
- 	nor->write = m25p80_write;
- 	nor->write_reg = m25p80_write_reg;
- 	nor->read_reg = m25p80_read_reg;
-+	nor->read_xfer = m25p80_read_xfer;
-+	nor->write_xfer = m25p80_write_xfer;
+ static ssize_t spi_nor_read_security_reg(struct spi_nor *nor, loff_t from,
+ 	size_t len, u_char *buf)
+ {
+@@ -1783,6 +1809,14 @@ static int spi_nor_set_otp_info(struct spi_nor *nor,
+ 	}
  
- 	nor->dev = &spi->dev;
- 	spi_nor_set_flash_node(nor, spi->dev.of_node);
+ 	switch (JEDEC_MFR(info)) {
++	case SNOR_MFR_WINBOND:
++		nor->otp_read_opcode = 0x48;
++		nor->otp_program_opcode = 0x42;
++		nor->otp_erase_opcode = 0x44;
++		nor->otp_read_dummy = 8;
++
++		mtd->_get_user_prot_info = winbond_get_user_otp_info;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
 -- 
 2.6.2
