@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cowwx-0007Yt-LL
- for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 18:50:09 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cowwu-0002TM-Kj
+ for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 18:50:11 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -26,12 +26,12 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- <stable@vger.kernel.org>, Logan Gunthorpe <logang@deltatee.com>
-Date: Fri, 17 Mar 2017 12:48:09 -0600
-Message-Id: <1489776503-3151-3-git-send-email-logang@deltatee.com>
+ Logan Gunthorpe <logang@deltatee.com>
+Date: Fri, 17 Mar 2017 12:48:20 -0600
+Message-Id: <1489776503-3151-14-git-send-email-logang@deltatee.com>
 In-Reply-To: <1489776503-3151-1-git-send-email-logang@deltatee.com>
 References: <1489776503-3151-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v5 02/16] device-dax: fix cdev leak
+Subject: [PATCH v5 13/16] rapidio: utilize new cdev_device_add helper function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,68 +41,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Dan Williams <dan.j.williams@intel.com>
+This driver did not originally set kobj.parent so it likely had
+potential a use after free bug which this patch fixes.
 
-If device_add() fails, cleanup the cdev. Otherwise, we leak a kobj_map()
-with a stale device number.
+We convert from device_register to device_initialize/cdev_device_add.
+While we are at it we use put_device instead of kfree (as recommended
+by the device_initialize documentation). We also remove an unnecessary
+extra get_device from the code.
 
-As Jason points out, there is a small possibility that userspace has
-opened and mapped the device in the time between cdev_add() and the
-device_add() failure. We need a new kill_dax_dev() helper to invalidate
-any established mappings.
-
-Fixes: ba09c01d2fa8 ("dax: convert to the cdev api")
-Cc: <stable@vger.kernel.org>
-Reported-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
 ---
- drivers/dax/dax.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/rapidio/devices/rio_mport_cdev.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/dax/dax.c b/drivers/dax/dax.c
-index 8d9829f..a5ed59a 100644
---- a/drivers/dax/dax.c
-+++ b/drivers/dax/dax.c
-@@ -675,13 +675,10 @@ static void dax_dev_release(struct device *dev)
- 	kfree(dax_dev);
- }
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index 50b617a..5beb0c3 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -2444,31 +2444,25 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
+ 	mutex_init(&md->buf_mutex);
+ 	mutex_init(&md->file_mutex);
+ 	INIT_LIST_HEAD(&md->file_list);
+-	cdev_init(&md->cdev, &mport_fops);
+-	md->cdev.owner = THIS_MODULE;
+-	ret = cdev_add(&md->cdev, MKDEV(MAJOR(dev_number), mport->id), 1);
+-	if (ret < 0) {
+-		kfree(md);
+-		rmcd_error("Unable to register a device, err=%d", ret);
+-		return NULL;
+-	}
  
--static void unregister_dax_dev(void *dev)
-+static void kill_dax_dev(struct dax_dev *dax_dev)
- {
--	struct dax_dev *dax_dev = to_dax_dev(dev);
- 	struct cdev *cdev = &dax_dev->cdev;
+-	md->dev.devt = md->cdev.dev;
++	device_initialize(&md->dev);
++	md->dev.devt = MKDEV(MAJOR(dev_number), mport->id);
+ 	md->dev.class = dev_class;
+ 	md->dev.parent = &mport->dev;
+ 	md->dev.release = mport_device_release;
+ 	dev_set_name(&md->dev, DEV_NAME "%d", mport->id);
+ 	atomic_set(&md->active, 1);
  
--	dev_dbg(dev, "%s\n", __func__);
--
- 	/*
- 	 * Note, rcu is not protecting the liveness of dax_dev, rcu is
- 	 * ensuring that any fault handlers that might have seen
-@@ -693,6 +690,15 @@ static void unregister_dax_dev(void *dev)
- 	synchronize_rcu();
- 	unmap_mapping_range(dax_dev->inode->i_mapping, 0, 0, 1);
- 	cdev_del(cdev);
-+}
+-	ret = device_register(&md->dev);
++	cdev_init(&md->cdev, &mport_fops);
++	md->cdev.owner = THIS_MODULE;
 +
-+static void unregister_dax_dev(void *dev)
-+{
-+	struct dax_dev *dax_dev = to_dax_dev(dev);
-+
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	kill_dax_dev(dax_dev);
- 	device_unregister(dev);
- }
- 
-@@ -769,6 +775,7 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
- 	dev_set_name(dev, "dax%d.%d", dax_region->id, dax_dev->id);
- 	rc = device_add(dev);
- 	if (rc) {
-+		kill_dax_dev(dax_dev);
- 		put_device(dev);
- 		return ERR_PTR(rc);
++	ret = cdev_device_add(&md->cdev, &md->dev);
+ 	if (ret) {
+ 		rmcd_error("Failed to register mport %d (err=%d)",
+ 		       mport->id, ret);
+ 		goto err_cdev;
  	}
+ 
+-	get_device(&md->dev);
+-
+ 	INIT_LIST_HEAD(&md->doorbells);
+ 	spin_lock_init(&md->db_lock);
+ 	INIT_LIST_HEAD(&md->portwrites);
+@@ -2513,8 +2507,7 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
+ 	return md;
+ 
+ err_cdev:
+-	cdev_del(&md->cdev);
+-	kfree(md);
++	put_device(&md->dev);
+ 	return NULL;
+ }
+ 
+@@ -2578,7 +2571,7 @@ static void mport_cdev_remove(struct mport_dev *md)
+ 	atomic_set(&md->active, 0);
+ 	mport_cdev_terminate_dma(md);
+ 	rio_del_mport_pw_handler(md->mport, md, rio_mport_pw_handler);
+-	cdev_del(&(md->cdev));
++	cdev_device_del(&md->cdev, &md->dev);
+ 	mport_cdev_kill_fasync(md);
+ 
+ 	flush_workqueue(dma_wq);
+@@ -2603,7 +2596,6 @@ static void mport_cdev_remove(struct mport_dev *md)
+ 
+ 	rio_release_inb_dbell(md->mport, 0, 0x0fff);
+ 
+-	device_unregister(&md->dev);
+ 	put_device(&md->dev);
+ }
+ 
 -- 
 2.1.4
