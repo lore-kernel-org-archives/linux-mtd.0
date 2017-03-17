@@ -1,24 +1,38 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cow02-0008Ia-Vx
- for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 17:49:17 +0000
-Date: Fri, 17 Mar 2017 18:48:52 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Arnaud Mouiche <arnaud.mouiche@gmail.com>
-Cc: Peter Pan <peterpandong@micron.com>, richard@nod.at,
- computersforpeace@gmail.com, thomas.petazzoni@free-electrons.com,
- linux-mtd@lists.infradead.org, peterpansjtu@gmail.com,
- linshunquan1@hisilicon.com
-Subject: Re: [PATCH v3 7/8] nand: spi: Add generic SPI controller support
-Message-ID: <20170317184852.030709de@bbrezillon>
-In-Reply-To: <3efc4b1f-7391-03f9-497d-8ea5f89f5d59@gmail.com>
-References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
- <1489646857-10112-8-git-send-email-peterpandong@micron.com>
- <20170317152048.1eca677e@bbrezillon>
- <3efc4b1f-7391-03f9-497d-8ea5f89f5d59@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from ale.deltatee.com ([207.54.116.67])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cowwu-0002TU-Ko
+ for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 18:50:07 +0000
+From: Logan Gunthorpe <logang@deltatee.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Johannes Thumshirn <jthumshirn@suse.de>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
+ rtc-linux@googlegroups.com, linux-mtd@lists.infradead.org,
+ linux-media@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Logan Gunthorpe <logang@deltatee.com>
+Date: Fri, 17 Mar 2017 12:48:23 -0600
+Message-Id: <1489776503-3151-17-git-send-email-logang@deltatee.com>
+In-Reply-To: <1489776503-3151-1-git-send-email-logang@deltatee.com>
+References: <1489776503-3151-1-git-send-email-logang@deltatee.com>
+Subject: [PATCH v5 16/16] switchtec: utilize new device_add_cdev helper
+ function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +42,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Mar 2017 18:32:28 +0100
-Arnaud Mouiche <arnaud.mouiche@gmail.com> wrote:
+Very straightforward conversion to device_add_cdev. Drop cdev_add and
+device_add and use cdev_device_add.
 
-> On 17/03/2017 15:20, Boris Brezillon wrote:
-> > [...]
-> > Should be done before calling spinand_detect(), just in case some DT
-> > props need to be parsed before the detection step.
-> >
-> > This being said, I'm not sure we should let the spinand controller
-> > driver do the registration step. I'm currently trying to rework the
-> > parallel NAND framework to act like all other busses, and I think SPI
-> > NAND controllers should also follow this road:
-> >
-> > 1/ spinand controller driver register a controller to the spinand core
-> >    (spinand_controller_register())
-> > 2/ the core parses the DT (or board info if DT is not available) and
-> >     creates N spinand devices (the N value depends on the number of SPI
-> >     nands connected to the controller)
-> > 3/ for each spinand device the detection/initialization takes place
-> >     directly in the core (the spinand_controller_ops should contain
-> >     anything required to do the detection)
-> > 4/ for each spinand dev the spinand_controller_ops->add() is called, to
-> >     let the controller driver attach private data to the device (if
-> >     required), and/or let it use it's own ECC engine (optional as well).
-> > 5/ underlying MTD device registered by spinand core code and spinand
-> >     dev added to the list of devices controlled by this controller (done
-> >     in the core)
-> >
-> > When removing a device, you just have the reverse steps:
-> >
-> > 1/ remove from list and unregister the MTD dev
-> > 2/ call spinand_controller_ops->remove()
-> > 3/ core/manufacturer cleanup
-> >
-> > Not sure how feasible this is, especially for the generic SPI NAND
-> > controller case where the SPI NAND controller does not have a node in
-> > the DT, but that would avoid all this boiler-plate duplication we have
-> > in the // NAND framework.  
-> 
-> Since the probe for generic spi devices is generally triggered by the 
-> SPI layer, it will not match easily in the way you would like the 
-> registration done.
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+---
+ drivers/pci/switch/switchtec.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-That's true, but I think we can find something to handle this case.
-
-> Can we let this registration question not be a showstopper for Peter's 
-> effort ?
-
-Sure, I was just thinking out loud.
+diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
+index 1f045c9..e27fd29 100644
+--- a/drivers/pci/switch/switchtec.c
++++ b/drivers/pci/switch/switchtec.c
+@@ -1291,7 +1291,6 @@ static struct switchtec_dev *stdev_create(struct pci_dev *pdev)
+ 	cdev = &stdev->cdev;
+ 	cdev_init(cdev, &switchtec_fops);
+ 	cdev->owner = THIS_MODULE;
+-	cdev->kobj.parent = &dev->kobj;
+ 
+ 	return stdev;
+ 
+@@ -1479,11 +1478,7 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
+ 		  SWITCHTEC_EVENT_EN_IRQ,
+ 		  &stdev->mmio_part_cfg->mrpc_comp_hdr);
+ 
+-	rc = cdev_add(&stdev->cdev, stdev->dev.devt, 1);
+-	if (rc)
+-		goto err_put;
+-
+-	rc = device_add(&stdev->dev);
++	rc = cdev_device_add(&stdev->cdev, &stdev->dev);
+ 	if (rc)
+ 		goto err_devadd;
+ 
+@@ -1492,7 +1487,6 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
+ 	return 0;
+ 
+ err_devadd:
+-	cdev_del(&stdev->cdev);
+ 	stdev_kill(stdev);
+ err_put:
+ 	ida_simple_remove(&switchtec_minor_ida, MINOR(stdev->dev.devt));
+@@ -1506,8 +1500,7 @@ static void switchtec_pci_remove(struct pci_dev *pdev)
+ 
+ 	pci_set_drvdata(pdev, NULL);
+ 
+-	device_del(&stdev->dev);
+-	cdev_del(&stdev->cdev);
++	cdev_device_del(&stdev->cdev, &stdev->dev);
+ 	ida_simple_remove(&switchtec_minor_ida, MINOR(stdev->dev.devt));
+ 	dev_info(&stdev->dev, "unregistered.\n");
+ 
+-- 
+2.1.4
