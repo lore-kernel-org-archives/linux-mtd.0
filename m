@@ -1,7 +1,7 @@
 Received: from ale.deltatee.com ([207.54.116.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cowwu-0002TU-Ko
- for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 18:50:07 +0000
+ id 1cowwu-0002TY-Kn
+ for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 18:50:08 +0000
 From: Logan Gunthorpe <logang@deltatee.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dan Williams <dan.j.williams@intel.com>,
@@ -27,11 +27,11 @@ Cc: linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
  linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Logan Gunthorpe <logang@deltatee.com>
-Date: Fri, 17 Mar 2017 12:48:23 -0600
-Message-Id: <1489776503-3151-17-git-send-email-logang@deltatee.com>
+Date: Fri, 17 Mar 2017 12:48:10 -0600
+Message-Id: <1489776503-3151-4-git-send-email-logang@deltatee.com>
 In-Reply-To: <1489776503-3151-1-git-send-email-logang@deltatee.com>
 References: <1489776503-3151-1-git-send-email-logang@deltatee.com>
-Subject: [PATCH v5 16/16] switchtec: utilize new device_add_cdev helper
+Subject: [PATCH v5 03/16] device-dax: utilize new cdev_device_add helper
  function
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -42,56 +42,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Very straightforward conversion to device_add_cdev. Drop cdev_add and
-device_add and use cdev_device_add.
+Replace the open coded registration of the cdev and dev with the
+new device_add_cdev() helper. The helper replaces a common pattern by
+taking the proper reference against the parent device and adding both
+the cdev and the device.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
 ---
- drivers/pci/switch/switchtec.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ drivers/dax/dax.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-index 1f045c9..e27fd29 100644
---- a/drivers/pci/switch/switchtec.c
-+++ b/drivers/pci/switch/switchtec.c
-@@ -1291,7 +1291,6 @@ static struct switchtec_dev *stdev_create(struct pci_dev *pdev)
- 	cdev = &stdev->cdev;
- 	cdev_init(cdev, &switchtec_fops);
- 	cdev->owner = THIS_MODULE;
--	cdev->kobj.parent = &dev->kobj;
+diff --git a/drivers/dax/dax.c b/drivers/dax/dax.c
+index a5ed59a..e5f8555 100644
+--- a/drivers/dax/dax.c
++++ b/drivers/dax/dax.c
+@@ -677,8 +677,6 @@ static void dax_dev_release(struct device *dev)
  
- 	return stdev;
- 
-@@ -1479,11 +1478,7 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
- 		  SWITCHTEC_EVENT_EN_IRQ,
- 		  &stdev->mmio_part_cfg->mrpc_comp_hdr);
- 
--	rc = cdev_add(&stdev->cdev, stdev->dev.devt, 1);
--	if (rc)
--		goto err_put;
+ static void kill_dax_dev(struct dax_dev *dax_dev)
+ {
+-	struct cdev *cdev = &dax_dev->cdev;
 -
--	rc = device_add(&stdev->dev);
-+	rc = cdev_device_add(&stdev->cdev, &stdev->dev);
- 	if (rc)
- 		goto err_devadd;
+ 	/*
+ 	 * Note, rcu is not protecting the liveness of dax_dev, rcu is
+ 	 * ensuring that any fault handlers that might have seen
+@@ -689,7 +687,6 @@ static void kill_dax_dev(struct dax_dev *dax_dev)
+ 	dax_dev->alive = false;
+ 	synchronize_rcu();
+ 	unmap_mapping_range(dax_dev->inode->i_mapping, 0, 0, 1);
+-	cdev_del(cdev);
+ }
  
-@@ -1492,7 +1487,6 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
- 	return 0;
+ static void unregister_dax_dev(void *dev)
+@@ -699,7 +696,8 @@ static void unregister_dax_dev(void *dev)
+ 	dev_dbg(dev, "%s\n", __func__);
  
- err_devadd:
--	cdev_del(&stdev->cdev);
- 	stdev_kill(stdev);
- err_put:
- 	ida_simple_remove(&switchtec_minor_ida, MINOR(stdev->dev.devt));
-@@ -1506,8 +1500,7 @@ static void switchtec_pci_remove(struct pci_dev *pdev)
+ 	kill_dax_dev(dax_dev);
+-	device_unregister(dev);
++	cdev_device_del(&dax_dev->cdev, dev);
++	put_device(dev);
+ }
  
- 	pci_set_drvdata(pdev, NULL);
+ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+@@ -750,18 +748,13 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+ 		goto err_inode;
+ 	}
  
--	device_del(&stdev->dev);
--	cdev_del(&stdev->cdev);
-+	cdev_device_del(&stdev->cdev, &stdev->dev);
- 	ida_simple_remove(&switchtec_minor_ida, MINOR(stdev->dev.devt));
- 	dev_info(&stdev->dev, "unregistered.\n");
+-	/* device_initialize() so cdev can reference kobj parent */
++	/* from here on we're committed to teardown via dax_dev_release() */
+ 	device_initialize(dev);
  
+ 	cdev = &dax_dev->cdev;
+ 	cdev_init(cdev, &dax_fops);
+ 	cdev->owner = parent->driver->owner;
+-	cdev->kobj.parent = &dev->kobj;
+-	rc = cdev_add(&dax_dev->cdev, dev_t, 1);
+-	if (rc)
+-		goto err_cdev;
+ 
+-	/* from here on we're committed to teardown via dax_dev_release() */
+ 	dax_dev->num_resources = count;
+ 	dax_dev->alive = true;
+ 	dax_dev->region = dax_region;
+@@ -773,7 +766,8 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+ 	dev->groups = dax_attribute_groups;
+ 	dev->release = dax_dev_release;
+ 	dev_set_name(dev, "dax%d.%d", dax_region->id, dax_dev->id);
+-	rc = device_add(dev);
++
++	rc = cdev_device_add(cdev, dev);
+ 	if (rc) {
+ 		kill_dax_dev(dax_dev);
+ 		put_device(dev);
+@@ -786,8 +780,6 @@ struct dax_dev *devm_create_dax_dev(struct dax_region *dax_region,
+ 
+ 	return dax_dev;
+ 
+- err_cdev:
+-	iput(dax_dev->inode);
+  err_inode:
+ 	ida_simple_remove(&dax_minor_ida, minor);
+  err_minor:
 -- 
 2.1.4
