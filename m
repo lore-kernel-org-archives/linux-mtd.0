@@ -1,23 +1,26 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-lf0-x22b.google.com ([2a00:1450:4010:c07::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1copDB-0008Pf-2d
- for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 10:34:27 +0000
-Received: by mail-wm0-x243.google.com with SMTP id z133so2525831wmb.2
- for <linux-mtd@lists.infradead.org>; Fri, 17 Mar 2017 03:34:00 -0700 (PDT)
-Subject: Re: [PATCH v3 4/8] nand: spi: add basic operations support
-To: Peter Pan <peterpandong@micron.com>, boris.brezillon@free-electrons.com,
- richard@nod.at, computersforpeace@gmail.com,
- thomas.petazzoni@free-electrons.com, linux-mtd@lists.infradead.org
-References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
- <1489646857-10112-5-git-send-email-peterpandong@micron.com>
-Cc: peterpansjtu@gmail.com, linshunquan1@hisilicon.com
-From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
-Message-ID: <66c56e27-56e1-1352-6804-4e1e402b4d1a@gmail.com>
-Date: Fri, 17 Mar 2017 11:33:56 +0100
+ id 1copDd-0008T2-Qw
+ for linux-mtd@lists.infradead.org; Fri, 17 Mar 2017 10:34:51 +0000
+Received: by mail-lf0-x22b.google.com with SMTP id j90so31358748lfk.2
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Mar 2017 03:34:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1489646857-10112-5-git-send-email-peterpandong@micron.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <da605583-7d98-186a-b42e-1417d8217cd1@gmail.com>
+References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
+ <da605583-7d98-186a-b42e-1417d8217cd1@gmail.com>
+From: Peter Pan <peterpansjtu@gmail.com>
+Date: Fri, 17 Mar 2017 18:34:26 +0800
+Message-ID: <CAAyFORJs00VPqLQ5djFgg142Yfy1MrZjDPF0LQx=bnkzDFN7uA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] Introduction to SPI NAND framework
+To: Arnaud Mouiche <arnaud.mouiche@gmail.com>
+Cc: Peter Pan <peterpandong@micron.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ "linshunquan (A)" <linshunquan1@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,130 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Arnaud,
+
+First of all, thanks a lot for your effort to test the patches.
+
+On Fri, Mar 17, 2017 at 6:02 PM, Arnaud Mouiche
+<arnaud.mouiche@gmail.com> wrote:
+> Hi All,
+>
+> Do some test on MT29F1G01AAADD.
+> Finally, I don't have MT29F1G01AAADD spares
+> (Peter, If you have 1 or 2 MT29F1G01AAADD samples to send to me, I would be
+> pleased).
+
+Unfortunately, I don't have extra MT29F1G01AAADD on my hand, but I will ask
+my college to send you some if sample is available. Could you send me
+the ship info
+please?
+
+>
+> MT29Fn1G01AAADD are little different. They have 64bytes oob and ecc layout
+> is different. But all the rest should be the nearly same.
+
+Yes, the only difference is oob size, ecc layout and ecc strength as
+far as I can see.
+
+> I did some change to support this device, and I'm now locked in the bad
+> block scan, as for some reasons, the scan tries to read all pages from all
+> blocks...
+
+Actually I met the same issue when testing v3. And I should fix it once.
+Maybe I lost some code when making patches, I didn't use an empty chip
+for testing
+before sending patches out, so BBT scan could be broken. I'm sorry for
+missing this part...
+I will check it next Monday.
 
 
-On 16/03/2017 07:47, Peter Pan wrote:
-> [...]
-> +
-> +/*
-> + * spinand_read_pages - read data from device to buffer
-> + * @mtd: MTD device structure
-> + * @from: offset to read from
-> + * @ops: oob operations description structure
-> + * @max_bitflips: maximum bitflip count
-> + */
-> +static int spinand_read_pages(struct mtd_info *mtd, loff_t from,
-> +			      struct mtd_oob_ops *ops,
-> +			      unsigned int *max_bitflips)
-> +{
-> +	struct spinand_device *chip = mtd_to_spinand(mtd);
-> +	struct nand_device *nand = mtd_to_nand(mtd);
-> +	int size, ret;
-> +	unsigned int corrected = 0;
-> +	bool ecc_off = ops->mode == MTD_OPS_RAW;
-> +	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
-> +		     mtd->oobavail : mtd->oobsize;
-> +	bool oob_only = !ops->datbuf;
-> +	struct nand_page_iter iter;
-> +
-> +	ops->retlen = 0;
-> +	ops->oobretlen = 0;
-> +	*max_bitflips = 0;
-> +
-
-I'm stuck in a infinite bad block scan on the very first nand bad block 
-mark read attempt.
-Indeed, here I'm in the first page read attempt of scan_block_fast() 
-where scan_block_fast() fills "struct mtd_oob_ops ops" the following way
-     struct mtd_oob_ops ops;
-
-     ops.ooblen = nand_per_page_oobsize(this);   <= 64
-     ops.oobbuf = buf;
-     ops.ooboffs = 0;
-     ops.datbuf = NULL;
-     ops.mode = MTD_OPS_PLACE_OOB;
-
-It just forget to also set ops.len which is left to its uninitialized 
-value, and is equal to 0xFFFFFFFF in my case.
-Since we only try to read from oob, obviously retlen is never increased, 
-and we never except the loop.
-But more obviously, either ops.len should have been set to zero 
-somewhere because we only read oob, either nand_for_each_page() should 
-take in count this fact.
-
-Arnaud
-> +	nand_for_each_page(nand, from, ops->len, ops->ooboffs, ops->ooblen,
-> +			   ooblen, &iter) {
-> +		ret = spinand_do_read_page(mtd, iter.page, ecc_off,
-> +					   &corrected, oob_only);
-> +		if (ret)
-> +			break;
-> +		*max_bitflips = max(*max_bitflips, corrected);
-> +		if (ops->datbuf) {
-> +			size = min_t(int, from + ops->len - iter.offs,
-> +				     nand_page_size(nand) - iter.pageoffs);
-> +			memcpy(ops->datbuf + ops->retlen,
-> +			       chip->buf + iter.pageoffs, size);
-> +			ops->retlen += size;
-> +		}
-> +		if (ops->oobbuf) {
-> +			size = min_t(int, iter.oobleft, ooblen);
-> +			ret = spinand_transfer_oob(chip,
-> +						   ops->oobbuf + ops->oobretlen,
-> +						   ops, size);
-> +			if (ret) {
-> +				pr_err("Transfer oob error %d\n", ret);
-> +				return ret;
-> +			}
-> +			ops->oobretlen += size;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * spinand_do_read_ops - read data from device to buffer
-> + * @mtd: MTD device structure
-> + * @from: offset to read from
-> + * @ops: oob operations description structure
-> + */
-> +static int spinand_do_read_ops(struct mtd_info *mtd, loff_t from,
-> +			       struct mtd_oob_ops *ops)
-> +{
-> +	struct spinand_device *chip = mtd_to_spinand(mtd);
-> +	struct nand_device *nand = mtd_to_nand(mtd);
-> +	int ret;
-> +	struct mtd_ecc_stats stats;
-> +	unsigned int max_bitflips = 0;
-> +	bool ecc_off = ops->mode == MTD_OPS_RAW;
-> +
-> +	if (!valid_nand_address(nand, from)) {
-> +		pr_err("%s: invalid read address\n", __func__);
-> +		return -EINVAL;
-> +	}
-> +	if ((ops->ooblen > 0) && !valid_nand_oob_ops(nand, from, ops)) {
-> +		pr_err("%s: invalid oob operation input\n", __func__);
-> +		return -EINVAL;
-> +	}
-> +	mutex_lock(&chip->lock);
-> +	stats = mtd->ecc_stats;
-> +	if (ecc_off)
-> +		spinand_disable_ecc(chip);
-> +	ret = spinand_read_pages(mtd, from, ops, &max_bitflips);
-> +	if (ecc_off)
-> +		spinand_enable_ecc(chip);
-> +	if (ret)
-> +		goto out;
-> +
-> +	if (mtd->ecc_stats.failed - stats.failed) {
-> +		ret = -EBADMSG;
-> +		goto out;
-> +	}
-> +	ret = max_bitflips;
-> +
-> +out:
-> +	mutex_unlock(&chip->lock);
-> +	return ret;
-> +}
-> +
+Thanks,
+Peter Pan
