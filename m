@@ -1,20 +1,19 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cphiq-00057M-4t
- for linux-mtd@lists.infradead.org; Sun, 19 Mar 2017 20:46:42 +0000
-Subject: Re: [PATCH 2/4] ubifs: Fix unlink code wrt. double hash lookups
-To: Hyunchul Lee <hyc.lee@gmail.com>
-References: <20170209212837.14197-1-richard@nod.at>
- <20170209212837.14197-2-richard@nod.at> <20170309070439.GA31469@sebu>
-Cc: linux-mtd@lists.infradead.org, david.oberhollenzer@sigma-star.at,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com, kernel-team@lge.com
+ id 1cpi7G-00008C-2q
+ for linux-mtd@lists.infradead.org; Sun, 19 Mar 2017 21:11:55 +0000
+Subject: Re: [PATCH] ubi/upd: always flush after prepared for an update
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+References: <20170222161521.4foobhoyelnrad7h@linutronix.de>
+Cc: linux-mtd@lists.infradead.org
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <cd4c5713-d091-3445-071e-d880c40710d9@nod.at>
-Date: Sun, 19 Mar 2017 21:46:16 +0100
+Message-ID: <bb9f69da-c1da-dddb-9a73-0070c203e622@nod.at>
+Date: Sun, 19 Mar 2017 22:11:31 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170309070439.GA31469@sebu>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170222161521.4foobhoyelnrad7h@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,87 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hyunchul,
-
-Am 09.03.2017 um 08:04 schrieb Hyunchul Lee:
->> -	int n, err, type = key_type(c, key);
->> -	struct ubifs_znode *znode;
->> +	int err;
+Am 22.02.2017 um 17:15 schrieb Sebastian Andrzej Siewior:
+> In commit 6afaf8a484cb ("UBI: flush wl before clearing update marker") I
+> managed to trigger and fix a similar bug. Now here is another version of
+> which I assumed it wouldn't matter back then but it turns out UBI has a
+> check for it and will error out like this:
 > 
-> i guess that err should be initialized with -ENOENT to avoid the first call of  
-> tnc_next(c, &znode, n). 
-
-Yes. err is used unitialized. Happened most likely while moving the code block around.
-
-[...]
-
->>  /**
->> + * ubifs_tnc_remove_dh - remove an index entry for a "double hashed" node.
->> + * @c: UBIFS file-system description object
->> + * @key: key of node
->> + * @cookie: node cookie for collision resolution
->> + *
->> + * Returns %0 on success or negative error code on failure.
->> + */
->> +int ubifs_tnc_remove_dh(struct ubifs_info *c, const union ubifs_key *key,
->> +			uint32_t cookie)
->> +{
->> +	int n, err;
->> +	struct ubifs_znode *znode;
->> +	struct ubifs_dent_node *dent;
->> +	struct ubifs_zbranch *zbr;
->> +
->> +	if (!c->double_hash)
->> +		return -EOPNOTSUPP;
->> +
->> +	mutex_lock(&c->tnc_mutex);
->> +	err = lookup_level0_dirty(c, key, &znode, &n);
->> +	if (err <= 0)
->> +		goto out_unlock;
->> +
->> +	zbr = &znode->zbranch[n];
->> +	dent = kmalloc(UBIFS_MAX_DENT_NODE_SZ, GFP_NOFS);
->> +	if (!dent) {
->> +		err = -ENOMEM;
->> +		goto out_unlock;
->> +	}
->> +
->> +	err = tnc_read_hashed_node(c, zbr, dent);
->> +	if (err)
->> +		goto out_free;
->> +
->> +	/* If the cookie does not match, we're facing a hash collision. */
->> +	if (le32_to_cpu(dent->cookie) != cookie) {
->> +		union ubifs_key start_key;
->> +
->> +		lowest_dent_key(c, &start_key, key_inum(c, key));
->> +
->> +		err = ubifs_lookup_level0(c, &start_key, &znode, &n);
->> +		if (unlikely(err < 0))
->> +			goto out_unlock;
+> |ubi0 warning: validate_vid_hdr: inconsistent used_ebs
+> |ubi0 error: validate_vid_hdr: inconsistent VID header at PEB 592
 > 
-> i guess that out_unlock should be replaced with out_free to free dent.
->
-
-Ohhh, correct.
-
->> +
->> +		err = search_dh_cookie(c, key, dent, cookie, &znode, &n);
->> +		if (err)
->> +			goto out_free;
->> +	}
->> +
->> +	if (znode->cnext || !ubifs_zn_dirty(znode)) {
->> +		znode = dirty_cow_bottom_up(c, znode);
->> +		if (IS_ERR(znode)) {
->> +			err = PTR_ERR(znode);
->> +			goto out_unlock;
+> All you need to trigger this is? "ubiupdatevol /dev/ubi0_0 file" + a
+> powercut in the middle of the operation.
+> ubi_start_update() sets the update-marker and puts all EBs on the erase
+> list. After that userland can proceed to write new data while the old EB
+> aren't erased completely. A powercut at this point is usually not that
+> much of a tragedy. UBI won't give read access to the static volume
+> because it has the update marker. It will most likely set the corrupted
+> flag because it misses some EBs.
+> So we are all good. Unless the size of the image that has been written
+> differs from the old image in the magnitude of at least one EB. In that
+> case UBI will find two different values for `used_ebs' and refuse to
+> attach the image with the error message mentioned above.
 > 
-> this out_unlock should also be.
+> So in order not to get in the situation, the patch will ensure that we
+> wait until everything is removed before it tries to write any data.
+> The alternative would be to detect such a case and remove all EBs at the
+> attached time after we processed the volume-table and see the
+> update-marker set. The patch looks bigger and I doubt it is worth it
+> since usually the write() will wait from time to time for a new EB since
+> usually there not that many spare EB that can be used.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Yep. Both are copy&paste errors. :-(
-
-Thanks a lot for pointing this out, your help is much appreciated!
+Applied.
 
 Thanks,
 //richard
