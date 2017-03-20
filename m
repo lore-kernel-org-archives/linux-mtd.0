@@ -1,18 +1,16 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from secvs02.rockwellcollins.com ([205.175.225.241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cq057-00023b-90
- for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 16:22:55 +0000
-Subject: Re: [PATCH] ubi: fastmap: fix slab corruption
-To: Rabin Vincent <rabin.vincent@axis.com>, dedekind1@gmail.com
-References: <1490023026-6327-1-git-send-email-rabin.vincent@axis.com>
-Cc: linux-mtd@lists.infradead.org, Rabin Vincent <rabinv@axis.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <3aa6a9f4-97a2-9fc9-9080-6a86ff51bcd8@nod.at>
-Date: Mon, 20 Mar 2017 17:22:24 +0100
+ id 1cq59n-000456-2x
+ for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 21:48:05 +0000
+Received: by mail-it0-f72.google.com with SMTP id z70so33710460itb.6
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Mar 2017 14:47:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1490023026-6327-1-git-send-email-rabin.vincent@axis.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
+From: Ronak Desai <ronak.desai@rockwellcollins.com>
+Date: Mon, 20 Mar 2017 16:47:35 -0500
+Message-ID: <CADFuHZ6xb=M_zRkktnq2b8QBOhq-WDsqgzViPHU1g8Gj9M3E-g@mail.gmail.com>
+Subject: Regarding UBI fastmap data CRC failure
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rabin,
+Hi All,
 
-Am 20.03.2017 um 16:17 schrieb Rabin Vincent:
-> From: Rabin Vincent <rabinv@axis.com>
-> 
-> Booting with UBI fastmap and SLUB debugging enabled results in the
-> following splats.  The problem is that ubi_scan_fastmap() moves the
-> fastmap blocks from the scan_ai (allocated in scan_fast()) to the ai
-> allocated in ubi_attach().  This results in two problems:
-> 
->  - When the scan_ai is freed, aebs which were allocated from its slab
->    cache are still in use.
-> 
->  - When the other ai is being destroyed in destroy_ai(), the
->    arguments to kmem_cache_free() call are incorrect since aebs on its
->    ->fastmap list were allocated with a slab cache from a differnt ai.
-> 
-> Fix this by making a copy of the aebs in ubi_scan_fastmap() instead of
-> moving them.
+In one of the products with MLC NAND flash, we are using UBI
+filesystem with kernel 3.12.
 
-Is this new in 4.9? I'm a bit confused because I fixed such SLUB related
-issues some time ago already in Fastmap.
+Fastmap is enabled to reduce the attach time and it works as expected.
+We performed number of powercycles on the unit and never seen a
+continuous failure of attached by fastmap. But, at one occurrence I
+observed that there was a  "fastmap data CRC failure". UBI was
+complaining about not find anchor node error when performing detach
+(that's why was not able to write new fastmap data). It was a
+permanent failure until I reformatted that NAND partition.
 
-Thanks,
-//richard
+I understand that UBI stores fastmap data in initial few KBs of that
+NAND device and it was not able to find spare block in that region to
+store fastmap data. But, I am not able to understand that why UBI end
+up with this situation when it already manages the erasure of the bad
+fastmap blocks?
+
+I would like to know that how I can avoid this situation or get a
+workaround of it. Any advice will be appreciated.
+
+Best Regards,
+Ronak Desai
