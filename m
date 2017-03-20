@@ -1,18 +1,18 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cpz7P-00085V-Do
- for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 15:21:13 +0000
-Date: Mon, 20 Mar 2017 16:20:48 +0100
-From: Rabin Vincent <rabin.vincent@axis.com>
-To: dedekind1@gmail.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cq057-00023b-90
+ for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 16:22:55 +0000
 Subject: Re: [PATCH] ubi: fastmap: fix slab corruption
-Message-ID: <20170320152048.GA8958@axis.com>
+To: Rabin Vincent <rabin.vincent@axis.com>, dedekind1@gmail.com
 References: <1490023026-6327-1-git-send-email-rabin.vincent@axis.com>
+Cc: linux-mtd@lists.infradead.org, Rabin Vincent <rabinv@axis.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <3aa6a9f4-97a2-9fc9-9080-6a86ff51bcd8@nod.at>
+Date: Mon, 20 Mar 2017 17:22:24 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <1490023026-6327-1-git-send-email-rabin.vincent@axis.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 20, 2017 at 04:17:06PM +0100, Rabin Vincent wrote:
->  /**
->   * ubi_scan_fastmap - scan the fastmap.
->   * @ubi: UBI device object
-> @@ -847,7 +865,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
->  	struct ubi_vid_hdr *vh;
->  	struct ubi_ec_hdr *ech;
->  	struct ubi_fastmap_layout *fm;
-> -	struct ubi_ainf_peb *tmp_aeb, *aeb;
-> +	struct ubi_ainf_peb *aeb;
->  	int i, used_blocks, pnum, fm_anchor, ret = 0;
->  	size_t fm_size;
->  	__be32 crc, tmp_crc;
-> @@ -857,9 +875,18 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
->  	if (fm_anchor < 0)
->  		return UBI_NO_FASTMAP;
->  
-> -	/* Move all (possible) fastmap blocks into our new attach structure. */
-> -	list_for_each_entry_safe(aeb, tmp_aeb, &scan_ai->fastmap, u.list)
-> -		list_move_tail(&aeb->u.list, &ai->fastmap);
-> +	/* Copy all (possible) fastmap blocks into our new attach structure. */
-> +	list_for_each_entry(aeb, &scan_ai->fastmap, u.list) {
-> +		struct ubi_ainf_peb *new;
-> +
-> +		new = clone_aeb(ai, aeb);
-> +		if (!new) {
-> +			ret = -ENOMEM;
-> +			goto out;
+Rabin,
 
-I just noticed that this should be just a return instead of a goto out
-since we haven't locked the semaphore yet.  I'll send a v2 with that
-fixed if you think that the rest of the patch look sane.
+Am 20.03.2017 um 16:17 schrieb Rabin Vincent:
+> From: Rabin Vincent <rabinv@axis.com>
+> 
+> Booting with UBI fastmap and SLUB debugging enabled results in the
+> following splats.  The problem is that ubi_scan_fastmap() moves the
+> fastmap blocks from the scan_ai (allocated in scan_fast()) to the ai
+> allocated in ubi_attach().  This results in two problems:
+> 
+>  - When the scan_ai is freed, aebs which were allocated from its slab
+>    cache are still in use.
+> 
+>  - When the other ai is being destroyed in destroy_ai(), the
+>    arguments to kmem_cache_free() call are incorrect since aebs on its
+>    ->fastmap list were allocated with a slab cache from a differnt ai.
+> 
+> Fix this by making a copy of the aebs in ubi_scan_fastmap() instead of
+> moving them.
+
+Is this new in 4.9? I'm a bit confused because I fixed such SLUB related
+issues some time ago already in Fastmap.
+
+Thanks,
+//richard
