@@ -1,18 +1,20 @@
-Received: from mxfz.ruijie.com.cn ([120.35.11.201] helo=FZEX4.ruijie.com.cn)
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cpsbx-0006gp-L4
- for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 08:24:21 +0000
-From: <yhb@ruijie.com.cn>
-To: <linux-mtd@lists.infradead.org>
-CC: <richard@nod.at>, <dedekind1@gmail.com>, <yushouhua@ruijie.com.cn>,
- <dengwenjie@ruijie.com.cn>, <huangcb@ruijie.com.cn>, <jiangxh@ruijie.com.cn>
-Subject: UBIFS: Failed to read/write file when contiguous pages are not enough
-Date: Mon, 20 Mar 2017 08:23:45 +0000
-Message-ID: <80B78A8B8FEE6145A87579E8435D78C307980BFA@FZEX3.ruijie.com.cn>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ id 1cptCV-0002hR-CS
+ for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 09:02:27 +0000
+Subject: Re: UBIFS: Failed to read/write file when contiguous pages are not
+ enough
+To: yhb@ruijie.com.cn, linux-mtd@lists.infradead.org
+References: <80B78A8B8FEE6145A87579E8435D78C307980BFA@FZEX3.ruijie.com.cn>
+Cc: dedekind1@gmail.com, yushouhua@ruijie.com.cn, dengwenjie@ruijie.com.cn,
+ huangcb@ruijie.com.cn, jiangxh@ruijie.com.cn
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <92df8ed2-ba8f-c419-d82a-d85672c9d145@nod.at>
+Date: Mon, 20 Mar 2017 10:01:36 +0100
 MIME-Version: 1.0
+In-Reply-To: <80B78A8B8FEE6145A87579E8435D78C307980BFA@FZEX3.ruijie.com.cn>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhlcmUgaXMgb25seSBvbmUgbWVtb3J5IHpvbmU6DQpETUEzMiBmcmVlOjg4NzEya0IgbWluOjQ1
-NTY4a0IgbG93OjU2OTYwa0IgaGlnaDo2ODM1MmtCIGFjdGl2ZV9hbm9uOjQ5MDI0OGtCIGluYWN0
-aXZlX2Fub246MTkyNzEya0IgYWN0aXZlX2ZpbGU6ODg1MmtCIGluYWN0aXZlX2ZpbGU6MjEyNjhr
-QiB1bmV2aWN0YWJsZTowa0IgaXNvbGF0ZWQoYW5vbik6NTZrQiBpc29sYXRlZChmaWxlKTozMjcy
-a0IgcHJlc2VudDoyMDI4NjYwa0IgbWxvY2tlZDowa0IgZGlydHk6MjQ1MTJrQiB3cml0ZWJhY2s6
-MjBrQiBtYXBwZWQ6MTY5NjBrQiBzaG1lbToxNzkzNmtCIHNsYWJfcmVjbGFpbWFibGU6NTE2MGtC
-IHNsYWJfdW5yZWNsYWltYWJsZToxMTQ3Mzg0a0Iga2VybmVsX3N0YWNrOjEyNzM2a0IgcGFnZXRh
-Ymxlczo4NDI4a0IgdW5zdGFibGU6MGtCIGJvdW5jZTowa0Igd3JpdGViYWNrX3RtcDowa0IgcGFn
-ZXNfc2Nhbm5lZDo1MjcyMyBhbGxfdW5yZWNsYWltYWJsZT8geWVzDQpsb3dtZW1fcmVzZXJ2ZVtd
-OiAwIDAgMA0KRE1BMzI6IDE5MzE0KjRrQiA5ODIqOGtCIDE5MSoxNmtCIDE1KjMya0IgMSo2NGtC
-IDAqMTI4a0IgMCoyNTZrQiAwKjUxMmtCIDAqMTAyNGtCIDAqMjA0OGtCIDAqNDA5NmtCIDAqODE5
-MmtCIDAqMTYzODRrQiAwKjMyNzY4a0IgPSA4ODcxMmtCDQpUaGUgbnVtYmVyIG9mIGZyZWUgcGFn
-ZXMgaXMgYWJvdmUgaGlnaCB3YXRlcm1hcmssIGJ1dCB0aGUgbnVtYmVyIG9mIHRoZSBmcmVlIHBh
-Z2VzIHdpdGggb3JkZXIgPj0gMSBpcyBiZWxvdyBoYWxmIG9mIG1pbiB3YXRlcm1hcmsuDQoNClVC
-SUZTIG5lZWQgYWxsb2NhdGUgdHdvIGNvbnRpZ3VvdXMgcGFnZXMgd2hlbiBpdCByZWFkcyBmaWxl
-Lg0KZG9fcmVhZHBhZ2UoKToNCmRuID0ga21hbGxvYyhVQklGU19NQVhfREFUQV9OT0RFX1NaLCBH
-RlBfTk9GUyk7DQoNClVCSUZTIG5lZWQgYWxsb2NhdGUgZm91ciBjb250aWd1b3VzIHBhZ2VzIHdo
-ZW4gaXQgd3JpdGVzIGZpbGUuDQpkb193cml0ZXBhZ2UgLT4gdWJpZnNfam5sX3dyaXRlX2RhdGE6
-DQpkYXRhID0ga21hbGxvYyhkbGVuLCBHRlBfTk9GUyB8IF9fR0ZQX05PV0FSTik7DQoNCldoZW4g
-dGhlIGZyZWUgcGFnZXMgd2l0aCBvcmRlciA+PSAxIGFyZSBub3QgZW5vdWdoLCBtYW55IHByb2Nl
-c3NlcyBoYW5nIGluIHRoZSBwYWdlIGZhdWx0IGhhbmRsZXIuDQogQ2FsbCBUcmFjZToNCls8YTgw
-MDAwMDA4YTk0NzU2MCA6IGZmZmZmZmZmODAxMGQ0Yzg+XSBzY2hlZHVsZSsweDM0OC8weDk4MA0K
-WzxhODAwMDAwMDhhOTQ3NjIwIDogZmZmZmZmZmY4MDEwZGU5Yz5dIHNjaGVkdWxlX3RpbWVvdXQr
-MHgxNzQvMHgyMjgNCls8YTgwMDAwMDA4YTk0NzZhMCA6IGZmZmZmZmZmODAxMGNkNTQ+XSBpb19z
-Y2hlZHVsZV90aW1lb3V0KzB4NmMvMHgxMDgNCls8YTgwMDAwMDA4YTk0NzZjMCA6IGZmZmZmZmZm
-ODAzNTM5NGM+XSBjb25nZXN0aW9uX3dhaXQrMHg3Yy8weGE4DQpbPGE4MDAwMDAwOGE5NDc3MTAg
-OiBmZmZmZmZmZjgwMzRiZjY0Pl0gc2hyaW5rX3pvbmUrMHhiYWMvMHhlYTgNCls8YTgwMDAwMDA4
-YTk0NzhmMCA6IGZmZmZmZmZmODAzNGNjZmM+XSBkb190cnlfdG9fZnJlZV9wYWdlcysweGY0LzB4
-NDI4DQpbPGE4MDAwMDAwOGE5NDc5NjAgOiBmZmZmZmZmZjgwMzRkMTI4Pl0gdHJ5X3RvX2ZyZWVf
-cGFnZXMrMHg2OC8weDc4DQpbPGE4MDAwMDAwOGE5NDc5YzAgOiBmZmZmZmZmZjgwMzQ0NzMwPl0g
-X19hbGxvY19wYWdlc19ub2RlbWFzaysweDM1OC8weDVmOA0KWzxhODAwMDAwMDhhOTQ3YWEwIDog
-ZmZmZmZmZmY4MDM2ZmFmND5dIGNhY2hlX2FsbG9jX3JlZmlsbCsweDNhYy8weDczMA0KWzxhODAw
-MDAwMDhhOTQ3YjEwIDogZmZmZmZmZmY4MDM3MDA5OD5dIGttZW1fY2FjaGVfYWxsb2MrMHhkMC8w
-eGQ4DQpbPGE4MDAwMDAwOGE5NDdiNDAgOiBmZmZmZmZmZjgwNDEwYzU0Pl0gZG9fcmVhZHBhZ2Ur
-MHgxNWMvMHgzZDgNCls8YTgwMDAwMDA4YTk0N2JhMCA6IGZmZmZmZmZmODA0MTE4YTQ+XSB1Ymlm
-c19yZWFkcGFnZSsweDVjLzB4M2YwDQpbPGE4MDAwMDAwOGE5NDdjNDAgOiBmZmZmZmZmZjgwMzNk
-ZjJjPl0gZmlsZW1hcF9mYXVsdCsweDI5NC8weDQxMA0KWzxhODAwMDAwMDhhOTQ3YzkwIDogZmZm
-ZmZmZmY4MDM1NjhjMD5dIF9fZG9fZmF1bHQrMHg3MC8weDczOA0KWzxhODAwMDAwMDhhOTQ3ZDMw
-IDogZmZmZmZmZmY4MDM1OTZiOD5dIGhhbmRsZV9tbV9mYXVsdCsweDFlMC8weGY4MA0KWzxhODAw
-MDAwMDhhOTQ3ZGMwIDogZmZmZmZmZmY4MDJkZWU1Yz5dIGRvX3BhZ2VfZmF1bHQrMHgxM2MvMHgz
-ODgNCls8YTgwMDAwMDA4YTk0N2U4MCA6IGZmZmZmZmZmODAxMDA5ODA+XSByZXRfZnJvbV9leGNl
-cHRpb24rMHgwLzB4OA0KDQpVQklGUyBuZWVkcyBpbXByb3ZlbWVudDogZG8gbm90IGFsbG9jYXRl
-IGNvbnRpZ3VvdXMgcGFnZXMuDQoNCg==
+Hi!
+
+Am 20.03.2017 um 09:23 schrieb yhb@ruijie.com.cn:
+> There is only one memory zone:
+> DMA32 free:88712kB min:45568kB low:56960kB high:68352kB active_anon:490248kB inactive_anon:192712kB active_file:8852kB inactive_file:21268kB unevictable:0kB isolated(anon):56kB isolated(file):3272kB present:2028660kB mlocked:0kB dirty:24512kB writeback:20kB mapped:16960kB shmem:17936kB slab_reclaimable:5160kB slab_unreclaimable:1147384kB kernel_stack:12736kB pagetables:8428kB unstable:0kB bounce:0kB writeback_tmp:0kB pages_scanned:52723 all_unreclaimable? yes
+> lowmem_reserve[]: 0 0 0
+> DMA32: 19314*4kB 982*8kB 191*16kB 15*32kB 1*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB 0*8192kB 0*16384kB 0*32768kB = 88712kB
+> The number of free pages is above high watermark, but the number of the free pages with order >= 1 is below half of min watermark.
+> 
+> UBIFS need allocate two contiguous pages when it reads file.
+> do_readpage():
+> dn = kmalloc(UBIFS_MAX_DATA_NODE_SZ, GFP_NOFS);
+> 
+> UBIFS need allocate four contiguous pages when it writes file.
+> do_writepage -> ubifs_jnl_write_data:
+> data = kmalloc(dlen, GFP_NOFS | __GFP_NOWARN);
+> 
+> When the free pages with order >= 1 are not enough, many processes hang in the page fault handler.
+>  Call Trace:
+> [<a80000008a947560 : ffffffff8010d4c8>] schedule+0x348/0x980
+> [<a80000008a947620 : ffffffff8010de9c>] schedule_timeout+0x174/0x228
+> [<a80000008a9476a0 : ffffffff8010cd54>] io_schedule_timeout+0x6c/0x108
+> [<a80000008a9476c0 : ffffffff8035394c>] congestion_wait+0x7c/0xa8
+> [<a80000008a947710 : ffffffff8034bf64>] shrink_zone+0xbac/0xea8
+> [<a80000008a9478f0 : ffffffff8034ccfc>] do_try_to_free_pages+0xf4/0x428
+> [<a80000008a947960 : ffffffff8034d128>] try_to_free_pages+0x68/0x78
+> [<a80000008a9479c0 : ffffffff80344730>] __alloc_pages_nodemask+0x358/0x5f8
+> [<a80000008a947aa0 : ffffffff8036faf4>] cache_alloc_refill+0x3ac/0x730
+> [<a80000008a947b10 : ffffffff80370098>] kmem_cache_alloc+0xd0/0xd8
+> [<a80000008a947b40 : ffffffff80410c54>] do_readpage+0x15c/0x3d8
+> [<a80000008a947ba0 : ffffffff804118a4>] ubifs_readpage+0x5c/0x3f0
+> [<a80000008a947c40 : ffffffff8033df2c>] filemap_fault+0x294/0x410
+> [<a80000008a947c90 : ffffffff803568c0>] __do_fault+0x70/0x738
+> [<a80000008a947d30 : ffffffff803596b8>] handle_mm_fault+0x1e0/0xf80
+> [<a80000008a947dc0 : ffffffff802dee5c>] do_page_fault+0x13c/0x388
+> [<a80000008a947e80 : ffffffff80100980>] ret_from_exception+0x0/0x8
+> 
+> UBIFS needs improvement: do not allocate contiguous pages.
+
+Please more details. :)
+
+>From a quick review I assume that your machine ran out of memory and the
+kmalloc() in UBIFS was the first one that noticed. Another kmalloc()
+what needs more than one page would fail too.
+
+Or does this only happen when the kernel tries to produce free memory
+in the writeback path?
+
+Thanks,
+//richard
