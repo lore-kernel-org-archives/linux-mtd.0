@@ -1,19 +1,27 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cpi7G-00008C-2q
- for linux-mtd@lists.infradead.org; Sun, 19 Mar 2017 21:11:55 +0000
-Subject: Re: [PATCH] ubi/upd: always flush after prepared for an update
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Artem Bityutskiy <dedekind1@gmail.com>
-References: <20170222161521.4foobhoyelnrad7h@linutronix.de>
-Cc: linux-mtd@lists.infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <bb9f69da-c1da-dddb-9a73-0070c203e622@nod.at>
-Date: Sun, 19 Mar 2017 22:11:31 +0100
+ id 1cppGm-0006Hq-1e
+ for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 04:50:14 +0000
+Received: by mail-lf0-x241.google.com with SMTP id v2so9136095lfi.2
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Mar 2017 21:49:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170222161521.4foobhoyelnrad7h@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170317133142.3815f9d0@bbrezillon>
+References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
+ <1489646857-10112-6-git-send-email-peterpandong@micron.com>
+ <911b755d-87a1-26c1-8b75-84383b7c0076@gmail.com>
+ <20170317133142.3815f9d0@bbrezillon>
+From: Peter Pan <peterpansjtu@gmail.com>
+Date: Mon, 20 Mar 2017 12:49:43 +0800
+Message-ID: <CAAyFORJsa7_BDk=k-p=zDMeRFHmQxzLa0S31meCG_=f+OAqx7Q@mail.gmail.com>
+Subject: Re: [PATCH v3 5/8] nand: spi: Add bad block support
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Arnaud Mouiche <arnaud.mouiche@gmail.com>,
+ Peter Pan <peterpandong@micron.com>,
+ Richard Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ "linshunquan (A)" <linshunquan1@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +31,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 22.02.2017 um 17:15 schrieb Sebastian Andrzej Siewior:
-> In commit 6afaf8a484cb ("UBI: flush wl before clearing update marker") I
-> managed to trigger and fix a similar bug. Now here is another version of
-> which I assumed it wouldn't matter back then but it turns out UBI has a
-> check for it and will error out like this:
-> 
-> |ubi0 warning: validate_vid_hdr: inconsistent used_ebs
-> |ubi0 error: validate_vid_hdr: inconsistent VID header at PEB 592
-> 
-> All you need to trigger this is? "ubiupdatevol /dev/ubi0_0 file" + a
-> powercut in the middle of the operation.
-> ubi_start_update() sets the update-marker and puts all EBs on the erase
-> list. After that userland can proceed to write new data while the old EB
-> aren't erased completely. A powercut at this point is usually not that
-> much of a tragedy. UBI won't give read access to the static volume
-> because it has the update marker. It will most likely set the corrupted
-> flag because it misses some EBs.
-> So we are all good. Unless the size of the image that has been written
-> differs from the old image in the magnitude of at least one EB. In that
-> case UBI will find two different values for `used_ebs' and refuse to
-> attach the image with the error message mentioned above.
-> 
-> So in order not to get in the situation, the patch will ensure that we
-> wait until everything is removed before it tries to write any data.
-> The alternative would be to detect such a case and remove all EBs at the
-> attached time after we processed the volume-table and see the
-> update-marker set. The patch looks bigger and I doubt it is worth it
-> since usually the write() will wait from time to time for a new EB since
-> usually there not that many spare EB that can be used.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Hi Arnaud and Boris,
 
-Applied.
+On Fri, Mar 17, 2017 at 8:31 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Fri, 17 Mar 2017 13:22:17 +0100
+> Arnaud Mouiche <arnaud.mouiche@gmail.com> wrote:
+>
+>> On 16/03/2017 07:47, Peter Pan wrote:
+>> > [...]
+>> > +
+>> > +/*
+>> > + * spinand_scan_bbt - scan BBT in SPI NAND device
+>> > + * @chip: SPI NAND device structure
+>> > + */
+>> > +static int spinand_scan_bbt(struct spinand_device *chip)
+>> > +{
+>> > +   struct nand_device *nand = &chip->base;
+>> > +   int ret;
+>> > +
+>> > +   nand->bbt.options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+>> > +   nand->bbt.td = NULL;
+>> > +   nand->bbt.md = NULL;
+>> > +
+>> > +   ret = spinand_create_badblock_pattern(chip);
+>> > +   if (ret)
+>> > +           return ret;
+>> > +
+>> > +   return nand_scan_bbt(nand);
+>> > +}
+>> > +
+>>
+>> Boris, Peter,
+>>
+>> I'm not a big fan of NAND_BBT_USE_FLASH for small capacity nand flash
+>> (eg. 1Gb with 1024 blocks, where a complete bad block scan on boot is
+>> fast enough).
+>> Do you consider NAND_BBT_USE_FLASH as mandatory, or does a optional
+>> "of_get_nand_on_flash_bbt(dn))" device tree configuration is something
+>> possible ?
+>
+> It should be optional indeed.
+
+I agree with you. Let's make it optional.
 
 Thanks,
-//richard
+Peter Pan
