@@ -1,22 +1,24 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cppMS-0001rt-MO
- for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 04:56:06 +0000
-Received: by mail-lf0-x242.google.com with SMTP id v2so9140907lfi.2
- for <linux-mtd@lists.infradead.org>; Sun, 19 Mar 2017 21:55:43 -0700 (PDT)
+ id 1cppP7-0002Jr-8w
+ for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 04:58:50 +0000
+Received: by mail-lf0-x233.google.com with SMTP id a6so50833474lfa.0
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Mar 2017 21:58:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170317143819.0ac3049c@bbrezillon>
+In-Reply-To: <20170317184852.030709de@bbrezillon>
 References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
- <1489646857-10112-4-git-send-email-peterpandong@micron.com>
- <20170317143819.0ac3049c@bbrezillon>
+ <1489646857-10112-8-git-send-email-peterpandong@micron.com>
+ <20170317152048.1eca677e@bbrezillon>
+ <3efc4b1f-7391-03f9-497d-8ea5f89f5d59@gmail.com>
+ <20170317184852.030709de@bbrezillon>
 From: Peter Pan <peterpansjtu@gmail.com>
-Date: Mon, 20 Mar 2017 12:55:41 +0800
-Message-ID: <CAAyFOR+=2Y_niC0rcgxzzwFmqdro=qMO+f8iRb=oXHZH9YKgPA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/8] nand: spi: add basic blocks for infrastructure
+Date: Mon, 20 Mar 2017 12:58:26 +0800
+Message-ID: <CAAyFOR+yCBdigLb_-duQ9fkRsk_rpwbez--C0Cw0MwT_HWsJ+Q@mail.gmail.com>
+Subject: Re: [PATCH v3 7/8] nand: spi: Add generic SPI controller support
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- Arnaud Mouiche <arnaud.mouiche@gmail.com>,
+Cc: Arnaud Mouiche <arnaud.mouiche@gmail.com>,
+ Peter Pan <peterpandong@micron.com>,
+ Richard Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  linux-mtd@lists.infradead.org,
  "linshunquan (A)" <linshunquan1@hisilicon.com>
@@ -30,186 +32,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Boris and Arnaud,
 
-On Fri, Mar 17, 2017 at 9:38 PM, Boris Brezillon
+On Sat, Mar 18, 2017 at 1:48 AM, Boris Brezillon
 <boris.brezillon@free-electrons.com> wrote:
-> On Thu, 16 Mar 2017 14:47:32 +0800
-> Peter Pan <peterpandong@micron.com> wrote:
+> On Fri, 17 Mar 2017 18:32:28 +0100
+> Arnaud Mouiche <arnaud.mouiche@gmail.com> wrote:
 >
+>> On 17/03/2017 15:20, Boris Brezillon wrote:
+>> > [...]
+>> > Should be done before calling spinand_detect(), just in case some DT
+>> > props need to be parsed before the detection step.
+>> >
+>> > This being said, I'm not sure we should let the spinand controller
+>> > driver do the registration step. I'm currently trying to rework the
+>> > parallel NAND framework to act like all other busses, and I think SPI
+>> > NAND controllers should also follow this road:
+>> >
+>> > 1/ spinand controller driver register a controller to the spinand core
+>> >    (spinand_controller_register())
+>> > 2/ the core parses the DT (or board info if DT is not available) and
+>> >     creates N spinand devices (the N value depends on the number of SPI
+>> >     nands connected to the controller)
+>> > 3/ for each spinand device the detection/initialization takes place
+>> >     directly in the core (the spinand_controller_ops should contain
+>> >     anything required to do the detection)
+>> > 4/ for each spinand dev the spinand_controller_ops->add() is called, to
+>> >     let the controller driver attach private data to the device (if
+>> >     required), and/or let it use it's own ECC engine (optional as well).
+>> > 5/ underlying MTD device registered by spinand core code and spinand
+>> >     dev added to the list of devices controlled by this controller (done
+>> >     in the core)
+>> >
+>> > When removing a device, you just have the reverse steps:
+>> >
+>> > 1/ remove from list and unregister the MTD dev
+>> > 2/ call spinand_controller_ops->remove()
+>> > 3/ core/manufacturer cleanup
+>> >
+>> > Not sure how feasible this is, especially for the generic SPI NAND
+>> > controller case where the SPI NAND controller does not have a node in
+>> > the DT, but that would avoid all this boiler-plate duplication we have
+>> > in the // NAND framework.
+>>
+>> Since the probe for generic spi devices is generally triggered by the
+>> SPI layer, it will not match easily in the way you would like the
+>> registration done.
 >
->> +
->> +/*
->> + * spinand_manufacturer_detect - detect SPI NAND device by each manufacturer
->> + * @chip: SPI NAND device structure
->> + * @raw_id: raw id buffer. raw id is read by spinand_read_id(), should be
->> + *          decoded by manufacturers
->> + * @id: real id buffer. manufacturer's ->detect() should put real id in
->> + *      this buffer.
->> + *
->> + * ->detect() should decode raw id and initialize device related part in
->> + * spinand_device structure if it is the right device.
->> + * ->detect() can not be NULL.
->> + */
->> +static int spinand_manufacturer_detect(struct spinand_device *chip,
->> +                                    u8 *raw_id, u8 *id)
->> +{
->> +     int i = 0;
->> +
->> +     for (; spinand_manufacturers[i]->id != 0x0; i++) {
->> +             if (spinand_manufacturers[i]->ops &&
->> +                 spinand_manufacturers[i]->ops->detect) {
+> That's true, but I think we can find something to handle this case.
 >
-> AFAIU, ->detect() is mandatory, otherwise you have no way to attach a
-> NAND to this manufacturer which makes it useless.
-> Am I missing something?
+>> Can we let this registration question not be a showstopper for Peter's
+>> effort ?
 >
-> If I'm right, you should assume that ->detect() is never NULL and
-> complain loudly if it is.
+> Sure, I was just thinking out loud.
 
-You are totally right. Actually I said ->detect() cannot be NULL in
-function header....
-I will fix this in v4.
-
->
->> +                     if (spinand_manufacturers[i]->ops->detect(chip,
->> +                                                               raw_id, id))
->> +                             return 0;
->> +             }
->> +     }
->> +
->> +     return -ENODEV;
->> +}
->> +
->> +/*
->> + * spinand_manufacturer_init - manufacturer initialization function.
->> + * @chip: SPI NAND device structure
->> + *
->> + * Manufacturer drivers should put all their specific initialization code in
->> + * their ->init() hook.
->> + */
->> +static int spinand_manufacturer_init(struct spinand_device *chip)
->> +{
->> +     if (chip->manufacturer.manu->ops && chip->manufacturer.manu->ops->init)
->> +             return chip->manufacturer.manu->ops->init(chip);
->> +
->> +     return 0;
->> +}
->> +
->> +/*
->> + * spinand_manufacturer_cleanup - manufacturer cleanup function.
->> + * @chip: SPI NAND device structure
->> + *
->> + * Manufacturer drivers should put all their specific cleanup code in their
->> + * ->cleanup() hook.
->> + */
->> +static void spinand_manufacturer_cleanup(struct spinand_device *chip)
->> +{
->> +     /* Release manufacturer private data */
->> +     if (chip->manufacturer.manu->ops &&
->> +         chip->manufacturer.manu->ops->cleanup)
->> +             return chip->manufacturer.manu->ops->cleanup(chip);
->> +}
->> +
->> +/*
->> + * spinand_fill_id - fill id in spinand_device structure.
->> + * @chip: SPI NAND device structure
->> + * @id: id buffer
->> + */
->> +static void spinand_fill_id(struct spinand_device *chip, u8 *id)
->> +{
->> +     memcpy(chip->id.data, id, SPINAND_MAX_ID_LEN);
->> +     chip->id.len = SPINAND_MAX_ID_LEN;
->> +}
->> +
->> +/*
->> + * spinand_get_mfr_id - get device's manufacturer ID.
->> + * @chip: SPI NAND device structure
->> + */
->> +static u8 spinand_get_mfr_id(struct spinand_device *chip)
->> +{
->> +     return chip->id.data[SPINAND_MFR_ID];
->> +}
->> +
->> +/*
->> + * spinand_get_dev_id - get device's device ID.
->> + * @chip: SPI NAND device structure
->> + */
->> +static u8 spinand_get_dev_id(struct spinand_device *chip)
->> +{
->> +     return chip->id.data[SPINAND_DEV_ID];
->> +}
->
-> As said below, I'm not sure we need to identify the manufacturer and
-> device ID bytes if we go for the raw-id approach.
->
->> +
->> +/*
->> + * spinand_set_manufacturer_ops - set manufacture ops in spinand_device
->> + * structure.
->> + * @chip: SPI NAND device structure
->> + * @mfr_id: device's manufacturer ID
->> + */
->> +static void spinand_set_manufacturer_ops(struct spinand_device *chip,
->> +                                      u8 mfr_id)
->> +{
->> +     int i = 0;
->> +
->> +     for (; spinand_manufacturers[i]->id != 0x0; i++) {
->> +             if (spinand_manufacturers[i]->id == mfr_id)
->> +                     break;
->> +     }
->> +
->> +     chip->manufacturer.manu = spinand_manufacturers[i];
->
-> Clearly something that should be done in spinand_manufacturer_detect()
-> when the ->detect() method returns true.
-
-Yes. Fix this in v4.
-
->
->> +}
->> +
->> +/*
->> + * spinand_detect - [SPI NAND Interface] detect the SPI NAND device
->> + * @chip: SPI NAND device structure
->> + */
->> +int spinand_detect(struct spinand_device *chip)
->> +{
->> +     struct nand_device *nand = &chip->base;
->> +     u8 raw_id[SPINAND_MAX_ID_LEN] = {0};
->> +     u8 id[SPINAND_MAX_ID_LEN] = {0};
->> +     int ret;
->> +
->> +     spinand_reset(chip);
->> +     spinand_read_id(chip, raw_id);
->
-> Directly store the raw id in chip->id.data.
->
->> +     ret = spinand_manufacturer_detect(chip, raw_id, id);
->
-> Why do you need to differentiate raw and non-raw IDs. If we consider the
-> ID to be the 4 first bytes without any dummy-cycles, then we'd better
-> store this one in chip->id.data and let manufacturer code parse it.
-
-Fix this in v4
-
->
->> +     if (ret)
->> +             return ret;
->> +
->> +     spinand_fill_id(chip, id);
->> +
->> +     pr_info("SPI NAND: %s is found.\n", chip->name);
->> +     pr_info("Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
->> +             spinand_get_mfr_id(chip), spinand_get_dev_id(chip));
->
-> Is this really important to print those raw IDs? How about printing the
-> manufacturer name (which should be part of struct spinand_manufacturer)
-> and the model name (a readable string that can be extracted from the
-> device id during detect).
-
-Fix this in v4
+Excellent idea, It's a quite big change, Let me try to how far I can go in v4.
 
 Thanks,
 Peter Pan
