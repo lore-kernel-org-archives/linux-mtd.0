@@ -1,24 +1,23 @@
-Received: from mail-eopbgr30099.outbound.protection.outlook.com ([40.107.3.99]
- helo=EUR03-AM5-obe.outbound.protection.outlook.com)
+Received: from keymaster.cadence.com ([158.140.2.26]
+ helo=mx-sanjose5.cadence.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cptwM-0005Bl-Fq
- for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 09:49:31 +0000
-Subject: Re: [PATCH] mtd:avoid blktrans_open/release race and avoid insmod
- ftl.ko deadlock
-To: Gu Zheng <guzheng1@huawei.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-References: <1489714387-21089-1-git-send-email-guzheng1@huawei.com>
-CC: <yi.zhang@huawei.com>, <zhaohongjiang@huawei.com>, <miaoxie@huawei.com>,
- <zhangxingcai@huawei.com>, <giuseppe.cantavenera.ext@nokia.com>,
- <gregkh@linuxfoundation.org>
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <76ef9c83-6db1-aad5-78d2-d1834e69190e@nokia.com>
-Date: Mon, 20 Mar 2017 10:47:13 +0100
+ id 1cpvQM-0004Nm-C5
+ for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 11:24:32 +0000
+From: Artur Jedrysek <jartur@cadence.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <linux-kernel@vger.kernel.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Marek Vasut <marek.vasut@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, Artur Jedrysek <jartur@cadence.com>
+Subject: [PATCH v3, 1/4] mtd: spi-nor: Add support for Octal SPI mode.
+Date: Mon, 20 Mar 2017 11:22:15 +0000
+Message-ID: <1490008935-28900-1-git-send-email-jartur@cadence.com>
+In-Reply-To: <1488959932-6657-1-git-send-email-jartur@cadence.com>
+References: <1488959932-6657-1-git-send-email-jartur@cadence.com>
 MIME-Version: 1.0
-In-Reply-To: <1489714387-21089-1-git-send-email-guzheng1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,385 +27,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+This patch adds support for Octal SPI data reads in SPI NOR framework.
+Opcodes for programming using octal interface are also present for the
+sake of completeness, despite not being used.
 
-On 17/03/17 02:33, Gu Zheng wrote:
-> this modification can fix the is issue in commit
-> 857814ee65dbc942b18b2dc713124ffff043035e "mtd: fix: avoid race condition
+Micron mt35xu512 flash is added as an example chip supporting that mode.
 
-I would propose to revert both above commit and the original offender 008c751e,
-which aims for questionable module removal relaxation, but for the costs of subtle
-race which can only be solved introducing first recursive lock in the kernel.
+Signed-off-by: Artur Jedrysek <jartur@cadence.com>
+---
+Changelog:
+v2: None.
+---
+v3: None
+---
+ drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++++++--
+ include/linux/mtd/spi-nor.h   |  9 +++++++++
+ 2 files changed, 27 insertions(+), 2 deletions(-)
 
-> when accessing mtd->usecount ",also can solve the issue about it happen
-> dealock when ismod ftl.ko. the original process is as follows:
-> init_ftl
-> register_mtd_blktrans
-> mutex_lock(&mtd_table_mutex) //mtd_table_mutex locked
-> ftl_add_mtd
-> add_mtd_blktrans_dev
-> device_add_disk
-> register_disk
-> blkdev_get
-> __blkdev_get
-> blktrans_open
-> mutex_lock(&mtd_table_mutex) //dead lock
-> 
-> this patch can prevent some mtd_table_mutex lock race undiscovered.
-> 
-> Signed-off-by: Gu Zheng <guzheng1@huawei.com>
-> ---
->  drivers/mtd/mtd_blkdevs.c | 31 ++++++++------------
->  drivers/mtd/mtdcore.c     | 74 +++++++++++++++++++++++++++++++++++------------
->  drivers/mtd/mtdcore.h     |  4 ++-
->  3 files changed, 71 insertions(+), 38 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> index 6b8d5cd..c194208 100644
-> --- a/drivers/mtd/mtd_blkdevs.c
-> +++ b/drivers/mtd/mtd_blkdevs.c
-> @@ -191,7 +191,7 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
->  	if (!dev)
->  		return -ERESTARTSYS; /* FIXME: busy loop! -arnd*/
->  
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  	mutex_lock(&dev->lock);
->  
->  	if (dev->open)
-> @@ -217,7 +217,7 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
->  unlock:
->  	dev->open++;
->  	mutex_unlock(&dev->lock);
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	blktrans_dev_put(dev);
->  	return ret;
->  
-> @@ -228,7 +228,7 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
->  	module_put(dev->tr->owner);
->  	kref_put(&dev->ref, blktrans_dev_release);
->  	mutex_unlock(&dev->lock);
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	blktrans_dev_put(dev);
->  	return ret;
->  }
-> @@ -240,7 +240,7 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
->  	if (!dev)
->  		return;
->  
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  	mutex_lock(&dev->lock);
->  
->  	if (--dev->open)
-> @@ -256,7 +256,7 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
->  	}
->  unlock:
->  	mutex_unlock(&dev->lock);
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	blktrans_dev_put(dev);
->  }
->  
-> @@ -323,10 +323,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
->  	struct gendisk *gd;
->  	int ret;
->  
-> -	if (mutex_trylock(&mtd_table_mutex)) {
-> -		mutex_unlock(&mtd_table_mutex);
-> -		BUG();
-> -	}
-> +	mtd_table_assert_mutex_locked();
->  
->  	mutex_lock(&blktrans_ref_mutex);
->  	list_for_each_entry(d, &tr->devs, list) {
-> @@ -455,11 +452,7 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
->  {
->  	unsigned long flags;
->  
-> -	if (mutex_trylock(&mtd_table_mutex)) {
-> -		mutex_unlock(&mtd_table_mutex);
-> -		BUG();
-> -	}
-> -
-> +	mtd_table_assert_mutex_locked();
->  	if (old->disk_attributes)
->  		sysfs_remove_group(&disk_to_dev(old->disk)->kobj,
->  						old->disk_attributes);
-> @@ -531,13 +524,13 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
->  		register_mtd_user(&blktrans_notifier);
->  
->  
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  
->  	ret = register_blkdev(tr->major, tr->name);
->  	if (ret < 0) {
->  		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
->  		       tr->name, tr->major, ret);
-> -		mutex_unlock(&mtd_table_mutex);
-> +		mtd_table_mutex_unlock();
->  		return ret;
->  	}
->  
-> @@ -553,7 +546,7 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
->  		if (mtd->type != MTD_ABSENT)
->  			tr->add_mtd(tr, mtd);
->  
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	return 0;
->  }
->  
-> @@ -561,7 +554,7 @@ int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
->  {
->  	struct mtd_blktrans_dev *dev, *next;
->  
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  
->  	/* Remove it from the list of active majors */
->  	list_del(&tr->list);
-> @@ -570,7 +563,7 @@ int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
->  		tr->remove_dev(dev);
->  
->  	unregister_blkdev(tr->major, tr->name);
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  
->  	BUG_ON(!list_empty(&tr->devs));
->  	return 0;
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 66a9ded..f3d5470 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -84,6 +84,8 @@ static DEFINE_IDR(mtd_idr);
->     should not use them for _anything_ else */
->  DEFINE_MUTEX(mtd_table_mutex);
->  EXPORT_SYMBOL_GPL(mtd_table_mutex);
-> +int mtd_table_mutex_depth;
-> +struct task_struct *mtd_table_mutex_owner;
->  
->  struct mtd_info *__mtd_next_device(int i)
->  {
-> @@ -96,6 +98,42 @@ static LIST_HEAD(mtd_notifiers);
->  
->  #define MTD_DEVT(index) MKDEV(MTD_CHAR_MAJOR, (index)*2)
->  
-> +void mtd_table_mutex_lock(void)
-> +{
-> +	if (mtd_table_mutex_owner != current) {
-> +		mutex_lock(&mtd_table_mutex);
-> +		mtd_table_mutex_owner =  current;
-> +	}
-> +	mtd_table_mutex_depth++;
-> +
-> +}
-> +EXPORT_SYMBOL_GPL(mtd_table_mutex_lock);
-> +
-> +
-> +void mtd_table_mutex_unlock(void)
-> +{
-> +	if (mtd_table_mutex_owner != current) {
-> +		pr_err("MTD:lock_owner is %s, but current is %s\n",
-> +				mtd_table_mutex_owner->comm, current->comm);
-> +		BUG();
-> +	}
-> +	if (--mtd_table_mutex_depth == 0) {
-> +		mtd_table_mutex_owner =  NULL;
-> +		mutex_unlock(&mtd_table_mutex);
-> +	}
-> +
-> +}
-> +EXPORT_SYMBOL_GPL(mtd_table_mutex_unlock);
-> +
-> +void mtd_table_assert_mutex_locked(void)
-> +{
-> +	if (mtd_table_mutex_owner != current) {
-> +		pr_err("MTD:lock_owner is %s, but current is %s\n",
-> +				mtd_table_mutex_owner->comm, current->comm);
-> +		BUG();
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(mtd_table_assert_mutex_locked);
->  /* REVISIT once MTD uses the driver model better, whoever allocates
->   * the mtd_info will probably want to use the release() hook...
->   */
-> @@ -502,7 +540,7 @@ int add_mtd_device(struct mtd_info *mtd)
->  	mtd->backing_dev_info = mtd_bdi;
->  
->  	BUG_ON(mtd->writesize == 0);
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  
->  	i = idr_alloc(&mtd_idr, mtd, 0, 0, GFP_KERNEL);
->  	if (i < 0) {
-> @@ -563,7 +601,7 @@ int add_mtd_device(struct mtd_info *mtd)
->  	list_for_each_entry(not, &mtd_notifiers, list)
->  		not->add(mtd);
->  
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	/* We _know_ we aren't being removed, because
->  	   our caller is still holding us here. So none
->  	   of this try_ nonsense, and no bitching about it
-> @@ -575,7 +613,7 @@ int add_mtd_device(struct mtd_info *mtd)
->  	of_node_put(mtd_get_of_node(mtd));
->  	idr_remove(&mtd_idr, i);
->  fail_locked:
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	return error;
->  }
->  
-> @@ -594,7 +632,7 @@ int del_mtd_device(struct mtd_info *mtd)
->  	int ret;
->  	struct mtd_notifier *not;
->  
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  
->  	if (idr_find(&mtd_idr, mtd->index) != mtd) {
->  		ret = -ENODEV;
-> @@ -621,7 +659,7 @@ int del_mtd_device(struct mtd_info *mtd)
->  	}
->  
->  out_error:
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	return ret;
->  }
->  
-> @@ -782,7 +820,7 @@ void register_mtd_user (struct mtd_notifier *new)
->  {
->  	struct mtd_info *mtd;
->  
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  
->  	list_add(&new->list, &mtd_notifiers);
->  
-> @@ -791,7 +829,7 @@ void register_mtd_user (struct mtd_notifier *new)
->  	mtd_for_each_device(mtd)
->  		new->add(mtd);
->  
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  }
->  EXPORT_SYMBOL_GPL(register_mtd_user);
->  
-> @@ -808,7 +846,7 @@ int unregister_mtd_user (struct mtd_notifier *old)
->  {
->  	struct mtd_info *mtd;
->  
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  
->  	module_put(THIS_MODULE);
->  
-> @@ -816,7 +854,7 @@ int unregister_mtd_user (struct mtd_notifier *old)
->  		old->remove(mtd);
->  
->  	list_del(&old->list);
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	return 0;
->  }
->  EXPORT_SYMBOL_GPL(unregister_mtd_user);
-> @@ -837,7 +875,7 @@ struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num)
->  	struct mtd_info *ret = NULL, *other;
->  	int err = -ENODEV;
->  
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  
->  	if (num == -1) {
->  		mtd_for_each_device(other) {
-> @@ -861,7 +899,7 @@ struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num)
->  	if (err)
->  		ret = ERR_PTR(err);
->  out:
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(get_mtd_device);
-> @@ -900,7 +938,7 @@ struct mtd_info *get_mtd_device_nm(const char *name)
->  	int err = -ENODEV;
->  	struct mtd_info *mtd = NULL, *other;
->  
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  
->  	mtd_for_each_device(other) {
->  		if (!strcmp(name, other->name)) {
-> @@ -916,20 +954,20 @@ struct mtd_info *get_mtd_device_nm(const char *name)
->  	if (err)
->  		goto out_unlock;
->  
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	return mtd;
->  
->  out_unlock:
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	return ERR_PTR(err);
->  }
->  EXPORT_SYMBOL_GPL(get_mtd_device_nm);
->  
->  void put_mtd_device(struct mtd_info *mtd)
->  {
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  	__put_mtd_device(mtd);
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  
->  }
->  EXPORT_SYMBOL_GPL(put_mtd_device);
-> @@ -1744,13 +1782,13 @@ static int mtd_proc_show(struct seq_file *m, void *v)
->  	struct mtd_info *mtd;
->  
->  	seq_puts(m, "dev:    size   erasesize  name\n");
-> -	mutex_lock(&mtd_table_mutex);
-> +	mtd_table_mutex_lock();
->  	mtd_for_each_device(mtd) {
->  		seq_printf(m, "mtd%d: %8.8llx %8.8x \"%s\"\n",
->  			   mtd->index, (unsigned long long)mtd->size,
->  			   mtd->erasesize, mtd->name);
->  	}
-> -	mutex_unlock(&mtd_table_mutex);
-> +	mtd_table_mutex_unlock();
->  	return 0;
->  }
->  
-> diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
-> index 55fdb8e..cb1d8fa 100644
-> --- a/drivers/mtd/mtdcore.h
-> +++ b/drivers/mtd/mtdcore.h
-> @@ -3,7 +3,6 @@
->   * You should not use them for _anything_ else.
->   */
->  
-> -extern struct mutex mtd_table_mutex;
->  
->  struct mtd_info *__mtd_next_device(int i);
->  int add_mtd_device(struct mtd_info *mtd);
-> @@ -21,6 +20,9 @@ void mtd_part_parser_cleanup(struct mtd_partitions *parts);
->  
->  int __init init_mtdchar(void);
->  void __exit cleanup_mtdchar(void);
-> +extern void mtd_table_mutex_lock(void);
-> +extern void mtd_table_mutex_unlock(void);
-> +extern void mtd_table_assert_mutex_locked(void);
->  
->  #define mtd_for_each_device(mtd)			\
->  	for ((mtd) = __mtd_next_device(0);		\
-> 
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 1ae872b..db188e2 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -85,6 +85,7 @@ struct flash_info {
+ 					 * Use dedicated 4byte address op codes
+ 					 * to support memory size above 128Mib.
+ 					 */
++#define SPI_NOR_OCTAL_READ	BIT(12)	/* Flash supports Octal Read */
+ };
+ 
+ #define JEDEC_MFR(info)	((info)->id[0])
+@@ -159,6 +160,7 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
+ 	case SPI_NOR_FAST:
+ 	case SPI_NOR_DUAL:
+ 	case SPI_NOR_QUAD:
++	case SPI_NOR_OCTAL:
+ 		return 8;
+ 	case SPI_NOR_NORMAL:
+ 		return 0;
+@@ -220,6 +222,8 @@ static inline u8 spi_nor_convert_3to4_read(u8 opcode)
+ 		{ SPINOR_OP_READ_1_2_2,	SPINOR_OP_READ_1_2_2_4B },
+ 		{ SPINOR_OP_READ_1_1_4,	SPINOR_OP_READ_1_1_4_4B },
+ 		{ SPINOR_OP_READ_1_4_4,	SPINOR_OP_READ_1_4_4_4B },
++		{ SPINOR_OP_READ_1_1_8,	SPINOR_OP_READ_1_1_8_4B },
++		{ SPINOR_OP_READ_1_8_8,	SPINOR_OP_READ_1_8_8_4B },
+ 	};
+ 
+ 	return spi_nor_convert_opcode(opcode, spi_nor_3to4_read,
+@@ -232,6 +236,8 @@ static inline u8 spi_nor_convert_3to4_program(u8 opcode)
+ 		{ SPINOR_OP_PP,		SPINOR_OP_PP_4B },
+ 		{ SPINOR_OP_PP_1_1_4,	SPINOR_OP_PP_1_1_4_4B },
+ 		{ SPINOR_OP_PP_1_4_4,	SPINOR_OP_PP_1_4_4_4B },
++		{ SPINOR_OP_PP_1_1_8,	SPINOR_OP_PP_1_1_8_4B },
++		{ SPINOR_OP_PP_1_8_8,	SPINOR_OP_PP_1_8_8_4B },
+ 	};
+ 
+ 	return spi_nor_convert_opcode(opcode, spi_nor_3to4_program,
+@@ -1035,6 +1041,11 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+ 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+ 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
++	{
++		"mt35xu512", INFO(0x2c5b1a, 0, 128 * 1024, 512,
++			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
++			SPI_NOR_4B_OPCODES)
++	},
+ 
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+@@ -1667,8 +1678,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	if (info->flags & SPI_NOR_NO_FR)
+ 		nor->flash_read = SPI_NOR_NORMAL;
+ 
+-	/* Quad/Dual-read mode takes precedence over fast/normal */
+-	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
++	/* Octal/Quad/Dual-read mode takes precedence over fast/normal */
++	if (mode == SPI_NOR_OCTAL && info->flags & SPI_NOR_OCTAL_READ) {
++		nor->flash_read = SPI_NOR_OCTAL;
++	} else if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+ 		ret = set_quad_mode(nor, info);
+ 		if (ret) {
+ 			dev_err(dev, "quad mode not supported\n");
+@@ -1681,6 +1694,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 
+ 	/* Default commands */
+ 	switch (nor->flash_read) {
++	case SPI_NOR_OCTAL:
++		nor->read_opcode = SPINOR_OP_READ_1_1_8;
++		break;
+ 	case SPI_NOR_QUAD:
+ 		nor->read_opcode = SPINOR_OP_READ_1_1_4;
+ 		break;
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index f2a7180..aad6318 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -47,9 +47,13 @@
+ #define SPINOR_OP_READ_1_2_2	0xbb	/* Read data bytes (Dual I/O SPI) */
+ #define SPINOR_OP_READ_1_1_4	0x6b	/* Read data bytes (Quad Output SPI) */
+ #define SPINOR_OP_READ_1_4_4	0xeb	/* Read data bytes (Quad I/O SPI) */
++#define SPINOR_OP_READ_1_1_8	0x8b	/* Read data bytes (Octal Output SPI) */
++#define SPINOR_OP_READ_1_8_8	0xcb	/* Read data bytes (Octal I/O SPI) */
+ #define SPINOR_OP_PP		0x02	/* Page program (up to 256 bytes) */
+ #define SPINOR_OP_PP_1_1_4	0x32	/* Quad page program */
+ #define SPINOR_OP_PP_1_4_4	0x38	/* Quad page program */
++#define SPINOR_OP_PP_1_1_8	0x82	/* Octal page program */
++#define SPINOR_OP_PP_1_8_8	0xc2	/* Octal page program */
+ #define SPINOR_OP_BE_4K		0x20	/* Erase 4KiB block */
+ #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
+ #define SPINOR_OP_BE_32K	0x52	/* Erase 32KiB block */
+@@ -66,9 +70,13 @@
+ #define SPINOR_OP_READ_1_2_2_4B	0xbc	/* Read data bytes (Dual I/O SPI) */
+ #define SPINOR_OP_READ_1_1_4_4B	0x6c	/* Read data bytes (Quad Output SPI) */
+ #define SPINOR_OP_READ_1_4_4_4B	0xec	/* Read data bytes (Quad I/O SPI) */
++#define SPINOR_OP_READ_1_1_8_4B	0x7c	/* Read data bytes (Octal Output SPI) */
++#define SPINOR_OP_READ_1_8_8_4B	0xcc	/* Read data bytes (Octal I/O SPI) */
+ #define SPINOR_OP_PP_4B		0x12	/* Page program (up to 256 bytes) */
+ #define SPINOR_OP_PP_1_1_4_4B	0x34	/* Quad page program */
+ #define SPINOR_OP_PP_1_4_4_4B	0x3e	/* Quad page program */
++#define SPINOR_OP_PP_1_1_8_4B	0x84	/* Octal page program */
++#define SPINOR_OP_PP_1_8_8_4B	0x8e	/* Octal page program */
+ #define SPINOR_OP_BE_4K_4B	0x21	/* Erase 4KiB block */
+ #define SPINOR_OP_BE_32K_4B	0x5c	/* Erase 32KiB block */
+ #define SPINOR_OP_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
+@@ -124,6 +132,7 @@ enum read_mode {
+ 	SPI_NOR_FAST,
+ 	SPI_NOR_DUAL,
+ 	SPI_NOR_QUAD,
++	SPI_NOR_OCTAL,
+ };
+ 
+ #define SPI_NOR_MAX_CMD_SIZE	8
 -- 
-Best regards,
-Alexander Sverdlin.
+2.2.2
