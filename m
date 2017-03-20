@@ -1,31 +1,18 @@
-Received: from mail-lf0-x22a.google.com ([2a00:1450:4010:c07::22a])
+Received: from mxfz.ruijie.com.cn ([120.35.11.201] helo=FZEX4.ruijie.com.cn)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cprXd-0007aA-Ol
- for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 07:15:47 +0000
-Received: by mail-lf0-x22a.google.com with SMTP id j90so51679969lfk.2
- for <linux-mtd@lists.infradead.org>; Mon, 20 Mar 2017 00:15:25 -0700 (PDT)
+ id 1cpsbx-0006gp-L4
+ for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 08:24:21 +0000
+From: <yhb@ruijie.com.cn>
+To: <linux-mtd@lists.infradead.org>
+CC: <richard@nod.at>, <dedekind1@gmail.com>, <yushouhua@ruijie.com.cn>,
+ <dengwenjie@ruijie.com.cn>, <huangcb@ruijie.com.cn>, <jiangxh@ruijie.com.cn>
+Subject: UBIFS: Failed to read/write file when contiguous pages are not enough
+Date: Mon, 20 Mar 2017 08:23:45 +0000
+Message-ID: <80B78A8B8FEE6145A87579E8435D78C307980BFA@FZEX3.ruijie.com.cn>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20170320065604.18a6340d@bbrezillon>
-References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
- <1489646857-10112-8-git-send-email-peterpandong@micron.com>
- <20170317152048.1eca677e@bbrezillon>
- <3efc4b1f-7391-03f9-497d-8ea5f89f5d59@gmail.com>
- <20170317184852.030709de@bbrezillon>
- <CAAyFOR+yCBdigLb_-duQ9fkRsk_rpwbez--C0Cw0MwT_HWsJ+Q@mail.gmail.com>
- <20170320065604.18a6340d@bbrezillon>
-From: Peter Pan <peterpansjtu@gmail.com>
-Date: Mon, 20 Mar 2017 15:15:23 +0800
-Message-ID: <CAAyFOR+sxahcW6aSiJC03UkmCk6nP5Ri7aPNo-rVPM_Cs4brZA@mail.gmail.com>
-Subject: Re: [PATCH v3 7/8] nand: spi: Add generic SPI controller support
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marex@denx.de>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Arnaud Mouiche <arnaud.mouiche@gmail.com>,
- Peter Pan <peterpandong@micron.com>,
- Richard Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- "linshunquan (A)" <linshunquan1@hisilicon.com>
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,74 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 20, 2017 at 1:56 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> +Cyrille and Marek.
->
-> On Mon, 20 Mar 2017 12:58:26 +0800
-> Peter Pan <peterpansjtu@gmail.com> wrote:
->
->> Hi Boris and Arnaud,
->>
->> On Sat, Mar 18, 2017 at 1:48 AM, Boris Brezillon
->> <boris.brezillon@free-electrons.com> wrote:
->> > On Fri, 17 Mar 2017 18:32:28 +0100
->> > Arnaud Mouiche <arnaud.mouiche@gmail.com> wrote:
->> >
->> >> On 17/03/2017 15:20, Boris Brezillon wrote:
->> >> > [...]
->> >> > Should be done before calling spinand_detect(), just in case some DT
->> >> > props need to be parsed before the detection step.
->> >> >
->> >> > This being said, I'm not sure we should let the spinand controller
->> >> > driver do the registration step. I'm currently trying to rework the
->> >> > parallel NAND framework to act like all other busses, and I think SPI
->> >> > NAND controllers should also follow this road:
->> >> >
->> >> > 1/ spinand controller driver register a controller to the spinand core
->> >> >    (spinand_controller_register())
->> >> > 2/ the core parses the DT (or board info if DT is not available) and
->> >> >     creates N spinand devices (the N value depends on the number of SPI
->> >> >     nands connected to the controller)
->> >> > 3/ for each spinand device the detection/initialization takes place
->> >> >     directly in the core (the spinand_controller_ops should contain
->> >> >     anything required to do the detection)
->> >> > 4/ for each spinand dev the spinand_controller_ops->add() is called, to
->> >> >     let the controller driver attach private data to the device (if
->> >> >     required), and/or let it use it's own ECC engine (optional as well).
->> >> > 5/ underlying MTD device registered by spinand core code and spinand
->> >> >     dev added to the list of devices controlled by this controller (done
->> >> >     in the core)
->> >> >
->> >> > When removing a device, you just have the reverse steps:
->> >> >
->> >> > 1/ remove from list and unregister the MTD dev
->> >> > 2/ call spinand_controller_ops->remove()
->> >> > 3/ core/manufacturer cleanup
->> >> >
->> >> > Not sure how feasible this is, especially for the generic SPI NAND
->> >> > controller case where the SPI NAND controller does not have a node in
->> >> > the DT, but that would avoid all this boiler-plate duplication we have
->> >> > in the // NAND framework.
->> >>
->> >> Since the probe for generic spi devices is generally triggered by the
->> >> SPI layer, it will not match easily in the way you would like the
->> >> registration done.
->> >
->> > That's true, but I think we can find something to handle this case.
->> >
->> >> Can we let this registration question not be a showstopper for Peter's
->> >> effort ?
->> >
->> > Sure, I was just thinking out loud.
->>
->> Excellent idea, It's a quite big change, Let me try to how far I can go in v4.
->
-> Let's keep that for later. Also, can you wait a bit before sending a
-> v4, I know Cyrille wanted to comment on the SPI/dual-SPI/quad-SPI
-> handling. Actually, I'd like to have feedback from both SPI NOR
-> maintainers (Cyrille and Marek), can you Cc them in your next version?
-
-Yes, Let's wait for their feed back.
-
-Peter Pan
+VGhlcmUgaXMgb25seSBvbmUgbWVtb3J5IHpvbmU6DQpETUEzMiBmcmVlOjg4NzEya0IgbWluOjQ1
+NTY4a0IgbG93OjU2OTYwa0IgaGlnaDo2ODM1MmtCIGFjdGl2ZV9hbm9uOjQ5MDI0OGtCIGluYWN0
+aXZlX2Fub246MTkyNzEya0IgYWN0aXZlX2ZpbGU6ODg1MmtCIGluYWN0aXZlX2ZpbGU6MjEyNjhr
+QiB1bmV2aWN0YWJsZTowa0IgaXNvbGF0ZWQoYW5vbik6NTZrQiBpc29sYXRlZChmaWxlKTozMjcy
+a0IgcHJlc2VudDoyMDI4NjYwa0IgbWxvY2tlZDowa0IgZGlydHk6MjQ1MTJrQiB3cml0ZWJhY2s6
+MjBrQiBtYXBwZWQ6MTY5NjBrQiBzaG1lbToxNzkzNmtCIHNsYWJfcmVjbGFpbWFibGU6NTE2MGtC
+IHNsYWJfdW5yZWNsYWltYWJsZToxMTQ3Mzg0a0Iga2VybmVsX3N0YWNrOjEyNzM2a0IgcGFnZXRh
+Ymxlczo4NDI4a0IgdW5zdGFibGU6MGtCIGJvdW5jZTowa0Igd3JpdGViYWNrX3RtcDowa0IgcGFn
+ZXNfc2Nhbm5lZDo1MjcyMyBhbGxfdW5yZWNsYWltYWJsZT8geWVzDQpsb3dtZW1fcmVzZXJ2ZVtd
+OiAwIDAgMA0KRE1BMzI6IDE5MzE0KjRrQiA5ODIqOGtCIDE5MSoxNmtCIDE1KjMya0IgMSo2NGtC
+IDAqMTI4a0IgMCoyNTZrQiAwKjUxMmtCIDAqMTAyNGtCIDAqMjA0OGtCIDAqNDA5NmtCIDAqODE5
+MmtCIDAqMTYzODRrQiAwKjMyNzY4a0IgPSA4ODcxMmtCDQpUaGUgbnVtYmVyIG9mIGZyZWUgcGFn
+ZXMgaXMgYWJvdmUgaGlnaCB3YXRlcm1hcmssIGJ1dCB0aGUgbnVtYmVyIG9mIHRoZSBmcmVlIHBh
+Z2VzIHdpdGggb3JkZXIgPj0gMSBpcyBiZWxvdyBoYWxmIG9mIG1pbiB3YXRlcm1hcmsuDQoNClVC
+SUZTIG5lZWQgYWxsb2NhdGUgdHdvIGNvbnRpZ3VvdXMgcGFnZXMgd2hlbiBpdCByZWFkcyBmaWxl
+Lg0KZG9fcmVhZHBhZ2UoKToNCmRuID0ga21hbGxvYyhVQklGU19NQVhfREFUQV9OT0RFX1NaLCBH
+RlBfTk9GUyk7DQoNClVCSUZTIG5lZWQgYWxsb2NhdGUgZm91ciBjb250aWd1b3VzIHBhZ2VzIHdo
+ZW4gaXQgd3JpdGVzIGZpbGUuDQpkb193cml0ZXBhZ2UgLT4gdWJpZnNfam5sX3dyaXRlX2RhdGE6
+DQpkYXRhID0ga21hbGxvYyhkbGVuLCBHRlBfTk9GUyB8IF9fR0ZQX05PV0FSTik7DQoNCldoZW4g
+dGhlIGZyZWUgcGFnZXMgd2l0aCBvcmRlciA+PSAxIGFyZSBub3QgZW5vdWdoLCBtYW55IHByb2Nl
+c3NlcyBoYW5nIGluIHRoZSBwYWdlIGZhdWx0IGhhbmRsZXIuDQogQ2FsbCBUcmFjZToNCls8YTgw
+MDAwMDA4YTk0NzU2MCA6IGZmZmZmZmZmODAxMGQ0Yzg+XSBzY2hlZHVsZSsweDM0OC8weDk4MA0K
+WzxhODAwMDAwMDhhOTQ3NjIwIDogZmZmZmZmZmY4MDEwZGU5Yz5dIHNjaGVkdWxlX3RpbWVvdXQr
+MHgxNzQvMHgyMjgNCls8YTgwMDAwMDA4YTk0NzZhMCA6IGZmZmZmZmZmODAxMGNkNTQ+XSBpb19z
+Y2hlZHVsZV90aW1lb3V0KzB4NmMvMHgxMDgNCls8YTgwMDAwMDA4YTk0NzZjMCA6IGZmZmZmZmZm
+ODAzNTM5NGM+XSBjb25nZXN0aW9uX3dhaXQrMHg3Yy8weGE4DQpbPGE4MDAwMDAwOGE5NDc3MTAg
+OiBmZmZmZmZmZjgwMzRiZjY0Pl0gc2hyaW5rX3pvbmUrMHhiYWMvMHhlYTgNCls8YTgwMDAwMDA4
+YTk0NzhmMCA6IGZmZmZmZmZmODAzNGNjZmM+XSBkb190cnlfdG9fZnJlZV9wYWdlcysweGY0LzB4
+NDI4DQpbPGE4MDAwMDAwOGE5NDc5NjAgOiBmZmZmZmZmZjgwMzRkMTI4Pl0gdHJ5X3RvX2ZyZWVf
+cGFnZXMrMHg2OC8weDc4DQpbPGE4MDAwMDAwOGE5NDc5YzAgOiBmZmZmZmZmZjgwMzQ0NzMwPl0g
+X19hbGxvY19wYWdlc19ub2RlbWFzaysweDM1OC8weDVmOA0KWzxhODAwMDAwMDhhOTQ3YWEwIDog
+ZmZmZmZmZmY4MDM2ZmFmND5dIGNhY2hlX2FsbG9jX3JlZmlsbCsweDNhYy8weDczMA0KWzxhODAw
+MDAwMDhhOTQ3YjEwIDogZmZmZmZmZmY4MDM3MDA5OD5dIGttZW1fY2FjaGVfYWxsb2MrMHhkMC8w
+eGQ4DQpbPGE4MDAwMDAwOGE5NDdiNDAgOiBmZmZmZmZmZjgwNDEwYzU0Pl0gZG9fcmVhZHBhZ2Ur
+MHgxNWMvMHgzZDgNCls8YTgwMDAwMDA4YTk0N2JhMCA6IGZmZmZmZmZmODA0MTE4YTQ+XSB1Ymlm
+c19yZWFkcGFnZSsweDVjLzB4M2YwDQpbPGE4MDAwMDAwOGE5NDdjNDAgOiBmZmZmZmZmZjgwMzNk
+ZjJjPl0gZmlsZW1hcF9mYXVsdCsweDI5NC8weDQxMA0KWzxhODAwMDAwMDhhOTQ3YzkwIDogZmZm
+ZmZmZmY4MDM1NjhjMD5dIF9fZG9fZmF1bHQrMHg3MC8weDczOA0KWzxhODAwMDAwMDhhOTQ3ZDMw
+IDogZmZmZmZmZmY4MDM1OTZiOD5dIGhhbmRsZV9tbV9mYXVsdCsweDFlMC8weGY4MA0KWzxhODAw
+MDAwMDhhOTQ3ZGMwIDogZmZmZmZmZmY4MDJkZWU1Yz5dIGRvX3BhZ2VfZmF1bHQrMHgxM2MvMHgz
+ODgNCls8YTgwMDAwMDA4YTk0N2U4MCA6IGZmZmZmZmZmODAxMDA5ODA+XSByZXRfZnJvbV9leGNl
+cHRpb24rMHgwLzB4OA0KDQpVQklGUyBuZWVkcyBpbXByb3ZlbWVudDogZG8gbm90IGFsbG9jYXRl
+IGNvbnRpZ3VvdXMgcGFnZXMuDQoNCg==
