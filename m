@@ -1,23 +1,22 @@
 Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cppGm-0006Hq-1e
- for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 04:50:14 +0000
-Received: by mail-lf0-x241.google.com with SMTP id v2so9136095lfi.2
- for <linux-mtd@lists.infradead.org>; Sun, 19 Mar 2017 21:49:45 -0700 (PDT)
+ id 1cppIp-0008FG-7X
+ for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 04:52:21 +0000
+Received: by mail-lf0-x241.google.com with SMTP id v2so9137902lfi.2
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Mar 2017 21:51:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170317133142.3815f9d0@bbrezillon>
+In-Reply-To: <20170317140750.463d1d32@bbrezillon>
 References: <1489646857-10112-1-git-send-email-peterpandong@micron.com>
- <1489646857-10112-6-git-send-email-peterpandong@micron.com>
- <911b755d-87a1-26c1-8b75-84383b7c0076@gmail.com>
- <20170317133142.3815f9d0@bbrezillon>
+ <1489646857-10112-2-git-send-email-peterpandong@micron.com>
+ <20170317140750.463d1d32@bbrezillon>
 From: Peter Pan <peterpansjtu@gmail.com>
-Date: Mon, 20 Mar 2017 12:49:43 +0800
-Message-ID: <CAAyFORJsa7_BDk=k-p=zDMeRFHmQxzLa0S31meCG_=f+OAqx7Q@mail.gmail.com>
-Subject: Re: [PATCH v3 5/8] nand: spi: Add bad block support
+Date: Mon, 20 Mar 2017 12:51:57 +0800
+Message-ID: <CAAyFORLdB93oC9uhxWFkKYbbiMmYjMr1BqUqaXuqG7m-n8+V0A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/8] mtd: nand: add more helpers in nand.h
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Arnaud Mouiche <arnaud.mouiche@gmail.com>,
- Peter Pan <peterpandong@micron.com>,
- Richard Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
+Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Arnaud Mouiche <arnaud.mouiche@gmail.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  linux-mtd@lists.infradead.org,
  "linshunquan (A)" <linshunquan1@hisilicon.com>
@@ -31,49 +30,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnaud and Boris,
+Hi Boris,
 
-On Fri, Mar 17, 2017 at 8:31 PM, Boris Brezillon
+On Fri, Mar 17, 2017 at 9:07 PM, Boris Brezillon
 <boris.brezillon@free-electrons.com> wrote:
-> On Fri, 17 Mar 2017 13:22:17 +0100
-> Arnaud Mouiche <arnaud.mouiche@gmail.com> wrote:
+> On Thu, 16 Mar 2017 14:47:30 +0800
+> Peter Pan <peterpandong@micron.com> wrote:
 >
->> On 16/03/2017 07:47, Peter Pan wrote:
->> > [...]
->> > +
->> > +/*
->> > + * spinand_scan_bbt - scan BBT in SPI NAND device
->> > + * @chip: SPI NAND device structure
->> > + */
->> > +static int spinand_scan_bbt(struct spinand_device *chip)
->> > +{
->> > +   struct nand_device *nand = &chip->base;
->> > +   int ret;
->> > +
->> > +   nand->bbt.options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
->> > +   nand->bbt.td = NULL;
->> > +   nand->bbt.md = NULL;
->> > +
->> > +   ret = spinand_create_badblock_pattern(chip);
->> > +   if (ret)
->> > +           return ret;
->> > +
->> > +   return nand_scan_bbt(nand);
->> > +}
->> > +
+>> This commit adds some helpers in nand.h
+>>     nand_size()
+>>     valid_nand_address()
+>>     valid_nand_oob_ops()
+>>     nand_oob_ops_across_page()
+>>     valid_nand_erase_ops()
 >>
->> Boris, Peter,
+>> Signed-off-by: Peter Pan <peterpandong@micron.com>
+>> ---
+>>  include/linux/mtd/nand.h | 59 ++++++++++++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 59 insertions(+)
 >>
->> I'm not a big fan of NAND_BBT_USE_FLASH for small capacity nand flash
->> (eg. 1Gb with 1024 blocks, where a complete bad block scan on boot is
->> fast enough).
->> Do you consider NAND_BBT_USE_FLASH as mandatory, or does a optional
->> "of_get_nand_on_flash_bbt(dn))" device tree configuration is something
->> possible ?
+>> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+>> index c2197b4..4a812e6 100644
+>> --- a/include/linux/mtd/nand.h
+>> +++ b/include/linux/mtd/nand.h
+>> @@ -410,6 +410,65 @@ static inline int nand_neraseblocks(struct nand_device *nand)
+>>  }
+>>
+>>  /**
+>> + * nand_size - Get NAND size
+>> + * @nand: NAND device
+>> + *
+>> + * Returns the total size exposed by @nand.
+>> + */
+>> +static inline u64 nand_size(struct nand_device *nand)
+>> +{
+>> +     return nand->memorg.ndies * nand->memorg.diesize;
+>> +}
+>> +
+>> +static inline bool valid_nand_address(struct nand_device *nand, loff_t addr)
 >
-> It should be optional indeed.
+> Please keep consistent prefixes. Maybe we should name it
+> nand_check_address(), return -EINVAL if it's wrong and 0 otherwise:
+>
+> static inline int nand_check_address(struct nand_device *nand,
+>                                      loff_t addr)
+> {
+>         return addr < nand_size(nand) ? 0 : -EINVAL;
+> }
 
-I agree with you. Let's make it optional.
+Fix this in v4
 
-Thanks,
+>
+>> +{
+>> +     return addr < nand_size(nand);
+>> +}
+>> +
+>> +static inline bool valid_nand_oob_ops(struct nand_device *nand, loff_t start,
+>> +                                   struct mtd_oob_ops *ops)
+>> +{
+>> +     struct mtd_info *mtd = nand_to_mtd(nand);
+>> +     int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
+>> +             mtd->oobavail : mtd->oobsize;
+>> +
+>> +     if (ops->ooboffs >= ooblen)
+>> +             return false;
+>> +     if (ops->ooboffs + ops->ooblen >
+>> +         (nand_len_to_pages(nand, nand_size(nand)) -
+>> +                            nand_offs_to_page(nand, start)) * ooblen)
+>> +             return false;
+>> +
+>> +     return true;
+>> +}
+>
+> Ditto.
+
+Fix this in v4.
+BTW, I considered to put check the mtd ops consistency here. What do you think?
+
+>
+>> +
+>> +static inline bool nand_oob_ops_across_page(struct nand_device *nand,
+>> +                                         struct mtd_oob_ops *ops)
+>> +{
+>> +     struct mtd_info *mtd = nand_to_mtd(nand);
+>> +     int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
+>> +                  mtd->oobavail : mtd->oobsize;
+>> +
+>> +     return (ops->ooboffs + ops->ooblen) > ooblen;
+>> +}
+>> +
+>> +static inline bool valid_nand_erase_ops(struct nand_device *nand,
+>> +                                     struct erase_info *einfo)
+>
+> Ditto.
+
+Fix this in v4.
+
+Thanks
 Peter Pan
