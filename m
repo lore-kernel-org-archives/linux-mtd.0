@@ -1,24 +1,15 @@
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cpvUl-00082m-St
- for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 11:29:05 +0000
-From: Artur Jedrysek <jartur@cadence.com>
-To: <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-CC: <linux-kernel@vger.kernel.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Marek Vasut <marek.vasut@gmail.com>, David
- Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Artur Jedrysek <jartur@cadence.com>
-Subject: [PATCH v3,
- 4/4] dt-bindings: mtd: Add Octal SPI support to Cadence QSPI.
-Date: Mon, 20 Mar 2017 11:27:34 +0000
-Message-ID: <1490009254-4284-1-git-send-email-jartur@cadence.com>
-In-Reply-To: <1490008935-28900-1-git-send-email-jartur@cadence.com>
-References: <1490008935-28900-1-git-send-email-jartur@cadence.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cpz43-0006DO-UL
+ for linux-mtd@lists.infradead.org; Mon, 20 Mar 2017 15:17:48 +0000
+From: Rabin Vincent <rabin.vincent@axis.com>
+To: dedekind1@gmail.com,
+	richard@nod.at
+Cc: linux-mtd@lists.infradead.org,
+	Rabin Vincent <rabinv@axis.com>
+Subject: [PATCH] ubi: fastmap: fix slab corruption
+Date: Mon, 20 Mar 2017 16:17:06 +0100
+Message-Id: <1490023026-6327-1-git-send-email-rabin.vincent@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +19,183 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch updates Cadence QSPI Device Tree documentation to include
-information about new compatible used to indicate, whether or not
-Octal SPI transfers are supported by the device.
+From: Rabin Vincent <rabinv@axis.com>
 
-Signed-off-by: Artur Jedrysek <jartur@cadence.com>
----
-Changelog:
-v2: Use new compatible, instead of boolean property, to indicate
-Octal SPI support.
----
-v3: Changes according to comments.
----
- Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Booting with UBI fastmap and SLUB debugging enabled results in the
+following splats.  The problem is that ubi_scan_fastmap() moves the
+fastmap blocks from the scan_ai (allocated in scan_fast()) to the ai
+allocated in ubi_attach().  This results in two problems:
 
-diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-index f248056..298b0a3 100644
---- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-@@ -1,7 +1,9 @@
- * Cadence Quad SPI controller
+ - When the scan_ai is freed, aebs which were allocated from its slab
+   cache are still in use.
+
+ - When the other ai is being destroyed in destroy_ai(), the
+   arguments to kmem_cache_free() call are incorrect since aebs on its
+   ->fastmap list were allocated with a slab cache from a differnt ai.
+
+Fix this by making a copy of the aebs in ubi_scan_fastmap() instead of
+moving them.
+
+ =============================================================================
+ BUG ubi_aeb_slab_cache (Not tainted): Objects remaining in ubi_aeb_slab_cache on __kmem_cache_shutdown()
+ -----------------------------------------------------------------------------
+
+ INFO: Slab 0xbfd2da3c objects=17 used=1 fp=0xb33d7748 flags=0x40000080
+ CPU: 1 PID: 118 Comm: ubiattach Tainted: G    B           4.9.15 #3
+ [<80111910>] (unwind_backtrace) from [<8010d498>] (show_stack+0x18/0x1c)
+ [<8010d498>] (show_stack) from [<804a3274>] (dump_stack+0xb4/0xe0)
+ [<804a3274>] (dump_stack) from [<8026c47c>] (slab_err+0x78/0x88)
+ [<8026c47c>] (slab_err) from [<802735bc>] (__kmem_cache_shutdown+0x180/0x3e0)
+ [<802735bc>] (__kmem_cache_shutdown) from [<8024e13c>] (shutdown_cache+0x1c/0x60)
+ [<8024e13c>] (shutdown_cache) from [<8024ed64>] (kmem_cache_destroy+0x19c/0x20c)
+ [<8024ed64>] (kmem_cache_destroy) from [<8057cc14>] (destroy_ai+0x1dc/0x1e8)
+ [<8057cc14>] (destroy_ai) from [<8057f04c>] (ubi_attach+0x3f4/0x450)
+ [<8057f04c>] (ubi_attach) from [<8056fe70>] (ubi_attach_mtd_dev+0x60c/0xff8)
+ [<8056fe70>] (ubi_attach_mtd_dev) from [<80571d78>] (ctrl_cdev_ioctl+0x110/0x2b8)
+ [<80571d78>] (ctrl_cdev_ioctl) from [<8029c77c>] (do_vfs_ioctl+0xac/0xa00)
+ [<8029c77c>] (do_vfs_ioctl) from [<8029d10c>] (SyS_ioctl+0x3c/0x64)
+ [<8029d10c>] (SyS_ioctl) from [<80108860>] (ret_fast_syscall+0x0/0x1c)
+ INFO: Object 0xb33d7e88 @offset=3720
+ INFO: Allocated in scan_peb+0x608/0x81c age=72 cpu=1 pid=118
+ 	kmem_cache_alloc+0x3b0/0x43c
+ 	scan_peb+0x608/0x81c
+ 	ubi_attach+0x124/0x450
+ 	ubi_attach_mtd_dev+0x60c/0xff8
+ 	ctrl_cdev_ioctl+0x110/0x2b8
+ 	do_vfs_ioctl+0xac/0xa00
+ 	SyS_ioctl+0x3c/0x64
+ 	ret_fast_syscall+0x0/0x1c
+ kmem_cache_destroy ubi_aeb_slab_cache: Slab cache still has objects
+ CPU: 1 PID: 118 Comm: ubiattach Tainted: G    B           4.9.15 #3
+ [<80111910>] (unwind_backtrace) from [<8010d498>] (show_stack+0x18/0x1c)
+ [<8010d498>] (show_stack) from [<804a3274>] (dump_stack+0xb4/0xe0)
+ [<804a3274>] (dump_stack) from [<8024ed80>] (kmem_cache_destroy+0x1b8/0x20c)
+ [<8024ed80>] (kmem_cache_destroy) from [<8057cc14>] (destroy_ai+0x1dc/0x1e8)
+ [<8057cc14>] (destroy_ai) from [<8057f04c>] (ubi_attach+0x3f4/0x450)
+ [<8057f04c>] (ubi_attach) from [<8056fe70>] (ubi_attach_mtd_dev+0x60c/0xff8)
+ [<8056fe70>] (ubi_attach_mtd_dev) from [<80571d78>] (ctrl_cdev_ioctl+0x110/0x2b8)
+ [<80571d78>] (ctrl_cdev_ioctl) from [<8029c77c>] (do_vfs_ioctl+0xac/0xa00)
+ [<8029c77c>] (do_vfs_ioctl) from [<8029d10c>] (SyS_ioctl+0x3c/0x64)
+ [<8029d10c>] (SyS_ioctl) from [<80108860>] (ret_fast_syscall+0x0/0x1c)
+ cache_from_obj: Wrong slab cache. ubi_aeb_slab_cache but object is from ubi_aeb_slab_cache
+ ------------[ cut here ]------------
+ WARNING: CPU: 1 PID: 118 at mm/slab.h:354 kmem_cache_free+0x39c/0x450
+ Modules linked in:
+ CPU: 1 PID: 118 Comm: ubiattach Tainted: G    B           4.9.15 #3
+ [<80111910>] (unwind_backtrace) from [<8010d498>] (show_stack+0x18/0x1c)
+ [<8010d498>] (show_stack) from [<804a3274>] (dump_stack+0xb4/0xe0)
+ [<804a3274>] (dump_stack) from [<80120e40>] (__warn+0xf4/0x10c)
+ [<80120e40>] (__warn) from [<80120f20>] (warn_slowpath_null+0x28/0x30)
+ [<80120f20>] (warn_slowpath_null) from [<80271fe0>] (kmem_cache_free+0x39c/0x450)
+ [<80271fe0>] (kmem_cache_free) from [<8057cb88>] (destroy_ai+0x150/0x1e8)
+ [<8057cb88>] (destroy_ai) from [<8057ef1c>] (ubi_attach+0x2c4/0x450)
+ [<8057ef1c>] (ubi_attach) from [<8056fe70>] (ubi_attach_mtd_dev+0x60c/0xff8)
+ [<8056fe70>] (ubi_attach_mtd_dev) from [<80571d78>] (ctrl_cdev_ioctl+0x110/0x2b8)
+ [<80571d78>] (ctrl_cdev_ioctl) from [<8029c77c>] (do_vfs_ioctl+0xac/0xa00)
+ [<8029c77c>] (do_vfs_ioctl) from [<8029d10c>] (SyS_ioctl+0x3c/0x64)
+ [<8029d10c>] (SyS_ioctl) from [<80108860>] (ret_fast_syscall+0x0/0x1c)
+ ---[ end trace 2bd8396277fd0a0b ]---
+ =============================================================================
+ BUG ubi_aeb_slab_cache (Tainted: G    B   W      ): page slab pointer corrupt.
+ -----------------------------------------------------------------------------
+
+ INFO: Allocated in scan_peb+0x608/0x81c age=104 cpu=1 pid=118
+ 	kmem_cache_alloc+0x3b0/0x43c
+ 	scan_peb+0x608/0x81c
+ 	ubi_attach+0x124/0x450
+ 	ubi_attach_mtd_dev+0x60c/0xff8
+ 	ctrl_cdev_ioctl+0x110/0x2b8
+ 	do_vfs_ioctl+0xac/0xa00
+ 	SyS_ioctl+0x3c/0x64
+ 	ret_fast_syscall+0x0/0x1c
+ INFO: Slab 0xbfd2da3c objects=17 used=1 fp=0xb33d7748 flags=0x40000081
+ INFO: Object 0xb33d7e88 @offset=3720 fp=0xb33d7da0
+
+ Redzone b33d7e80: cc cc cc cc cc cc cc cc                          ........
+ Object b33d7e88: 02 00 00 00 01 00 00 00 00 f0 ff 7f ff ff ff ff  ................
+ Object b33d7e98: 00 00 00 00 00 00 00 00 bd 16 00 00 00 00 00 00  ................
+ Object b33d7ea8: 00 01 00 00 00 02 00 00 00 00 00 00 00 00 00 00  ................
+ Redzone b33d7eb8: cc cc cc cc                                      ....
+ Padding b33d7f60: 5a 5a 5a 5a 5a 5a 5a 5a                          ZZZZZZZZ
+ CPU: 1 PID: 118 Comm: ubiattach Tainted: G    B   W       4.9.15 #3
+ [<80111910>] (unwind_backtrace) from [<8010d498>] (show_stack+0x18/0x1c)
+ [<8010d498>] (show_stack) from [<804a3274>] (dump_stack+0xb4/0xe0)
+ [<804a3274>] (dump_stack) from [<80271770>] (free_debug_processing+0x320/0x3c4)
+ [<80271770>] (free_debug_processing) from [<80271ad0>] (__slab_free+0x2bc/0x430)
+ [<80271ad0>] (__slab_free) from [<80272024>] (kmem_cache_free+0x3e0/0x450)
+ [<80272024>] (kmem_cache_free) from [<8057cb88>] (destroy_ai+0x150/0x1e8)
+ [<8057cb88>] (destroy_ai) from [<8057ef1c>] (ubi_attach+0x2c4/0x450)
+ [<8057ef1c>] (ubi_attach) from [<8056fe70>] (ubi_attach_mtd_dev+0x60c/0xff8)
+ [<8056fe70>] (ubi_attach_mtd_dev) from [<80571d78>] (ctrl_cdev_ioctl+0x110/0x2b8)
+ [<80571d78>] (ctrl_cdev_ioctl) from [<8029c77c>] (do_vfs_ioctl+0xac/0xa00)
+ [<8029c77c>] (do_vfs_ioctl) from [<8029d10c>] (SyS_ioctl+0x3c/0x64)
+ [<8029d10c>] (SyS_ioctl) from [<80108860>] (ret_fast_syscall+0x0/0x1c)
+ FIX ubi_aeb_slab_cache: Object at 0xb33d7e88 not freed
+
+Signed-off-by: Rabin Vincent <rabinv@axis.com>
+---
+ drivers/mtd/ubi/fastmap.c | 35 +++++++++++++++++++++++++++++++----
+ 1 file changed, 31 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index c1f5c29..89af3711 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -828,6 +828,24 @@ static int find_fm_anchor(struct ubi_attach_info *ai)
+ 	return ret;
+ }
  
- Required properties:
--- compatible : Should be "cdns,qspi-nor".
-+- compatible : Should be one of:
-+  - "cdns,qspi-nor" for Quad SPI controller.
-+  - "cdns,ospi-nor", "cdns,qspi-nor" for Octal SPI controller.
- - reg : Contains two entries, each of which is a tuple consisting of a
- 	physical address and length. The first entry is the address and
- 	length of the controller register set. The second entry is the
++static struct ubi_ainf_peb *clone_aeb(struct ubi_attach_info *ai,
++				      struct ubi_ainf_peb *old)
++{
++	struct ubi_ainf_peb *new;
++
++	new = ubi_alloc_aeb(ai, old->pnum, old->ec);
++	if (!new)
++		return NULL;
++
++	new->vol_id = old->vol_id;
++	new->sqnum = old->sqnum;
++	new->lnum = old->lnum;
++	new->scrub = old->scrub;
++	new->copy_flag = old->copy_flag;
++
++	return new;
++}
++
+ /**
+  * ubi_scan_fastmap - scan the fastmap.
+  * @ubi: UBI device object
+@@ -847,7 +865,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	struct ubi_vid_hdr *vh;
+ 	struct ubi_ec_hdr *ech;
+ 	struct ubi_fastmap_layout *fm;
+-	struct ubi_ainf_peb *tmp_aeb, *aeb;
++	struct ubi_ainf_peb *aeb;
+ 	int i, used_blocks, pnum, fm_anchor, ret = 0;
+ 	size_t fm_size;
+ 	__be32 crc, tmp_crc;
+@@ -857,9 +875,18 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	if (fm_anchor < 0)
+ 		return UBI_NO_FASTMAP;
+ 
+-	/* Move all (possible) fastmap blocks into our new attach structure. */
+-	list_for_each_entry_safe(aeb, tmp_aeb, &scan_ai->fastmap, u.list)
+-		list_move_tail(&aeb->u.list, &ai->fastmap);
++	/* Copy all (possible) fastmap blocks into our new attach structure. */
++	list_for_each_entry(aeb, &scan_ai->fastmap, u.list) {
++		struct ubi_ainf_peb *new;
++
++		new = clone_aeb(ai, aeb);
++		if (!new) {
++			ret = -ENOMEM;
++			goto out;
++		}
++
++		list_add(&new->u.list, &ai->fastmap);
++	}
+ 
+ 	down_write(&ubi->fm_protect);
+ 	memset(ubi->fm_buf, 0, ubi->fm_size);
 -- 
-2.2.2
+2.7.0
