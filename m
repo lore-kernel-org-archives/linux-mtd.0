@@ -1,20 +1,26 @@
-Received: from ch3vs01.rockwellcollins.com ([205.175.226.27])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqMh9-0004PM-Ka
- for linux-mtd@lists.infradead.org; Tue, 21 Mar 2017 16:31:41 +0000
-Received: by mail-it0-f72.google.com with SMTP id 187so16422366itk.2
- for <linux-mtd@lists.infradead.org>; Tue, 21 Mar 2017 09:31:16 -0700 (PDT)
+ id 1cqSM5-0008Mc-4S
+ for linux-mtd@lists.infradead.org; Tue, 21 Mar 2017 22:34:24 +0000
+Subject: Re: [PATCH 0/5] mtd: nand: add support for on-die ECC
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Pawel Moll
+ <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Kumar Gala <galak@codeaurora.org>
+References: <1490092686-16509-1-git-send-email-thomas.petazzoni@free-electrons.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <c6ffc948-85ba-21dc-871c-3fd0b7b4b97b@nod.at>
+Date: Tue, 21 Mar 2017 23:33:50 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvx6S8V7c8YYR2-G7+hDDcRi-0Cnk+EWeWWN9i2oy-DVvQ@mail.gmail.com>
-References: <CADFuHZ6xb=M_zRkktnq2b8QBOhq-WDsqgzViPHU1g8Gj9M3E-g@mail.gmail.com>
- <CAFLxGvx6S8V7c8YYR2-G7+hDDcRi-0Cnk+EWeWWN9i2oy-DVvQ@mail.gmail.com>
-From: Ronak Desai <ronak.desai@rockwellcollins.com>
-Date: Tue, 21 Mar 2017 11:31:15 -0500
-Message-ID: <CADFuHZ54cG32S1-3PA5q_5P1od1rBa5=3YeB1jLhB+Jzm2f0Ng@mail.gmail.com>
-Subject: Re: Regarding UBI fastmap data CRC failure
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1490092686-16509-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,62 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 20, 2017 at 5:56 PM, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
-> On Mon, Mar 20, 2017 at 10:47 PM, Ronak Desai
-> <ronak.desai@rockwellcollins.com> wrote:
->> Hi All,
->>
->> In one of the products with MLC NAND flash, we are using UBI
->> filesystem with kernel 3.12.
->
-> MLC NAND is currently not supported.
+Thomas,
 
-First of all, thanks for your response and your truly amazing
-contribution in UBI.
+Am 21.03.2017 um 11:38 schrieb Thomas Petazzoni:
+> Hello,
+> 
+> This patch series adds support for on-die ECC, i.e ECC performed by
+> the NAND chip itself, as opposed to having the ECC calculated by the
+> NAND controller or in software.
+> 
+> It is useful in situations where the NAND chip has an ECC requirement
+> that is not met by the ECC capabilities of the NAND controller.
+> 
+> Patch 1 adjusts the NAND generic DT binding to add "on-die" as an
+> nand-ecc-mode.
+> 
+> Patch 2 adds the core support for on-die ECC, which is really simple
+> and minimal: all the work is really done in the vendor-specific NAND
+> code.
+> 
+> Patch 3 and 4 adds the on-die ECC implementation for Micron NANDs.
+> 
+> Patch 5 allows the FSMC NAND driver to use on-die ECC.
+> 
+> This series was tested on a SPEAr600 platform, with a Micron
+> MT29F1G08ABADAWP NAND. The mtd_nandbiterrs.ko test is passing
+> successfully, which shows that the on-die ECC is correcting bitflips
+> as expected.
 
-I know that UBIFS requires a whole lot of changes to handle "program
-disturb", "read distrurb" and "paired pages" problem on MLC NANDs.
-But, apart from this, we have makesure that we use 256 wear-leveling
-threshold.
+This series looks good to me. Great job!
 
->
->> Fastmap is enabled to reduce the attach time and it works as expected.
->> We performed number of powercycles on the unit and never seen a
->> continuous failure of attached by fastmap. But, at one occurrence I
->> observed that there was a  "fastmap data CRC failure". UBI was
->> complaining about not find anchor node error when performing detach
->> (that's why was not able to write new fastmap data). It was a
->> permanent failure until I reformatted that NAND partition.
->>
->> I understand that UBI stores fastmap data in initial few KBs of that
->> NAND device and it was not able to find spare block in that region to
->> store fastmap data. But, I am not able to understand that why UBI end
->> up with this situation when it already manages the erasure of the bad
->> fastmap blocks?
->>
->> I would like to know that how I can avoid this situation or get a
->> workaround of it. Any advice will be appreciated.
->
-> Maybe the error you're facing is due to the lack of MLC support.
->
-> Another point is your kernel version, Fastmap saw tons of fixes
-> and updates in recent kernel. Please make sure that you have
-> all these fixes. Ideally backport the whole UBI subsystem.
->
+Reviewed-by: Richard Weinberger <richard@nod.at>
 
-That is true that our kernel is old but at this point and time it's
-not a viable options for us to upgrade the kernel version. And agree
-with your point about MLC but in months of use, we have seen this
-continuous fastmap failure issue only once and apart from that UBIFS
-works without any other issues.
-
-I see your changes on base fastmap implementation, which I am planning
-to backport but it will be really difficult to backport the whole UBI
-subsystem. So, if you can point to specific patches/changes to avoid
-"fastmap data CRC failure" issue then it will be a great help.
-
-
-> --
-> Thanks,
-> //richard
+Thanks,
+//richard
