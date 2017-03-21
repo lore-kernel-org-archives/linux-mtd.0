@@ -1,6 +1,6 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqGej-0000NQ-TA
+ id 1cqGej-0000NU-TM
  for linux-mtd@lists.infradead.org; Tue, 21 Mar 2017 10:04:50 +0000
 From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -10,11 +10,10 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
 Cc: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
  Stefan Roese <sr@denx.de>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- stable@vger.kernel.org
-Subject: [PATCH 01/13] mtd: nand: fsmc: fix NAND width handling
-Date: Tue, 21 Mar 2017 11:03:53 +0100
-Message-Id: <1490090645-8576-2-git-send-email-thomas.petazzoni@free-electrons.com>
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: [PATCH 03/13] mtd: nand: fsmc: add support to use NAND timings
+Date: Tue, 21 Mar 2017 11:03:55 +0100
+Message-Id: <1490090645-8576-4-git-send-email-thomas.petazzoni@free-electrons.com>
 In-Reply-To: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
 References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,81 +25,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In commit eea628199d5b ("mtd: Add device-tree support to fsmc_nand"),
-Device Tree support was added to the fmsc_nand driver. However, this
-code has a bug in how it handles the bank-width DT property to set the
-bus width.
+Until now, the fsmc_nand driver was either using controller timings
+specified in the Device Tree (through FSMC specific DT properties) or
+alternatively default/fallback timings.
 
-Indeed, in the function fsmc_nand_probe_config_dt() that parses the
-Device Tree, it sets pdata->width to either 8 or 16 depending on the
-value of the bank-width DT property.
+This commit implements support to use the timings advertised by the NAND
+chip itself, and passed by the NAND core to the ->setup_data_interface()
+callback.
 
-Then, the ->probe() function will test if pdata->width is equal to
-FSMC_NAND_BW16 (which is 2) to set NAND_BUSWIDTH_16 in
-nand->options. Therefore, with the DT probing, this condition will never
-match.
+Many thanks to Boris Brezillon for coming up with the logic to convert
+the NAND chip timings into the timings expected by the FSMC controller.
 
-This commit fixes that by removing the "width" field from
-fsmc_nand_platform_data and instead have the fsmc_nand_probe_config_dt()
-function directly set the appropriate nand->options value.
+Also, since the timings are now not only coming from the DT, the message
+warning that default timings will be used is removed.
 
-It is worth mentioning that if this commit gets backported to older
-kernels, prior to the drop of non-DT probing, then non-DT probing will
-be broken because nand->options will no longer be set to
-NAND_BUSWIDTH_16.
-
-Fixes: eea628199d5b ("mtd: Add device-tree support to fsmc_nand")
-Cc: <stable@vger.kernel.org>
 Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 ---
- drivers/mtd/nand/fsmc_nand.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c | 78 ++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 72 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index bda1e46..66aece9 100644
+index 4a98433..d2e85c6 100644
 --- a/drivers/mtd/nand/fsmc_nand.c
 +++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -150,7 +150,6 @@ struct fsmc_nand_platform_data {
- 	struct mtd_partition	*partitions;
- 	unsigned int		nr_partitions;
- 	unsigned int		options;
--	unsigned int		width;
- 	unsigned int		bank;
+@@ -364,6 +364,62 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ 		writeb_relaxed(cmd, this->IO_ADDR_W);
+ }
  
- 	enum access_mode	mode;
-@@ -844,18 +843,19 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
- 	u32 val;
++static int fsmc_calc_timings(struct fsmc_nand_data *host,
++			     const struct nand_sdr_timings *sdrt,
++			     struct fsmc_nand_timings *tims)
++{
++	unsigned long hclk = clk_get_rate(host->clk);
++	unsigned long hclkn = NSEC_PER_SEC / hclk;
++	uint32_t thiz, thold, twait, tset;
++
++	if (sdrt->tRC_min < 30000)
++		return -EOPNOTSUPP;
++
++	tims->tar = DIV_ROUND_UP(sdrt->tAR_min / 1000, hclkn) - 1;
++	if (tims->tar > FSMC_TAR_MASK)
++		tims->tar = FSMC_TAR_MASK;
++	tims->tclr = DIV_ROUND_UP(sdrt->tCLR_min / 1000, hclkn) - 1;
++	if (tims->tclr > FSMC_TCLR_MASK)
++		tims->tclr = FSMC_TCLR_MASK;
++
++	thiz = sdrt->tCS_min - sdrt->tWP_min;
++	tims->thiz = DIV_ROUND_UP(thiz / 1000, hclkn);
++
++	thold = sdrt->tDH_min;
++	if (thold < sdrt->tCH_min)
++		thold = sdrt->tCH_min;
++	if (thold < sdrt->tCLH_min)
++		thold = sdrt->tCLH_min;
++	if (thold < sdrt->tWH_min)
++		thold = sdrt->tWH_min;
++	if (thold < sdrt->tALH_min)
++		thold = sdrt->tALH_min;
++	if (thold < sdrt->tREH_min)
++		thold = sdrt->tREH_min;
++	tims->thold = DIV_ROUND_UP(thold / 1000, hclkn);
++	if (tims->thold == 0)
++		tims->thold = 1;
++	else if (tims->thold > FSMC_THOLD_MASK)
++		tims->thold = FSMC_THOLD_MASK;
++
++	twait = max(sdrt->tRP_min, sdrt->tWP_min);
++	tims->twait = DIV_ROUND_UP(twait / 1000, hclkn) - 1;
++	if (tims->twait == 0)
++		tims->twait = 1;
++	else if (tims->twait > FSMC_TWAIT_MASK)
++		tims->twait = FSMC_TWAIT_MASK;
++
++	tset = max(sdrt->tCS_min - sdrt->tWP_min,
++		   sdrt->tCEA_max - sdrt->tREA_max);
++	tims->tset = DIV_ROUND_UP(tset / 1000, hclkn) - 1;
++	if (tims->tset == 0)
++		tims->tset = 1;
++	else if (tims->tset > FSMC_TSET_MASK)
++		tims->tset = FSMC_TSET_MASK;
++
++	return 0;
++}
++
+ /*
+  * fsmc_nand_setup - FSMC (Flexible Static Memory Controller) init routine
+  *
+@@ -387,14 +443,26 @@ static int fsmc_setup_data_interface(struct mtd_info *mtd,
+ 		.twait	= FSMC_TWAIT_6,
+ 		.tset	= FSMC_TSET_0,
+ 	};
++	struct fsmc_nand_timings nand_timings;
+ 	unsigned int bank = host->bank;
+ 	void __iomem *regs = host->regs_va;
  	int ret;
  
--	/* Set default NAND width to 8 bits */
--	pdata->width = 8;
-+	pdata->options = 0;
+-	if (host->dev_timings)
++	if (host->dev_timings) {
+ 		tims = host->dev_timings;
+-	else
+-		tims = &default_timings;
++	} else {
++		const struct nand_sdr_timings *sdrt;
 +
- 	if (!of_property_read_u32(np, "bank-width", &val)) {
- 		if (val == 2) {
--			pdata->width = 16;
-+			pdata->options |= NAND_BUSWIDTH_16;
- 		} else if (val != 1) {
- 			dev_err(&pdev->dev, "invalid bank-width %u\n", val);
- 			return -EINVAL;
- 		}
- 	}
-+
- 	if (of_get_property(np, "nand-skip-bbtscan", NULL))
--		pdata->options = NAND_SKIP_BBTSCAN;
-+		pdata->options |= NAND_SKIP_BBTSCAN;
++		sdrt = nand_get_sdr_timings(conf);
++		if (IS_ERR(sdrt)) {
++			tims = &default_timings;
++		} else {
++			ret = fsmc_calc_timings(host, sdrt, &nand_timings);
++			if (ret)
++				return ret;
++			tims = &nand_timings;
++		}
++	}
  
- 	pdata->nand_timings = devm_kzalloc(&pdev->dev,
- 				sizeof(*pdata->nand_timings), GFP_KERNEL);
-@@ -992,9 +992,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	nand->badblockbits = 7;
- 	nand_set_flash_node(nand, np);
+ 	if (check_only)
+ 		return 0;
+@@ -874,10 +942,8 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
+ 		return -ENOMEM;
+ 	ret = of_property_read_u8_array(np, "timings", (u8 *)pdata->nand_timings,
+ 						sizeof(*pdata->nand_timings));
+-	if (ret) {
+-		dev_info(&pdev->dev, "No timings in dts specified, using default timings!\n");
++	if (ret)
+ 		pdata->nand_timings = NULL;
+-	}
  
--	if (pdata->width == FSMC_NAND_BW16)
--		nand->options |= NAND_BUSWIDTH_16;
--
- 	switch (host->mode) {
- 	case USE_DMA_ACCESS:
- 		dma_cap_zero(mask);
+ 	/* Set default NAND bank to 0 */
+ 	pdata->bank = 0;
 -- 
 2.7.4
