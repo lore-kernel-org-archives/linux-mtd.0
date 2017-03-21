@@ -1,7 +1,7 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqHBb-0004MW-01
- for linux-mtd@lists.infradead.org; Tue, 21 Mar 2017 10:38:47 +0000
+ id 1cqHBb-0004Md-05
+ for linux-mtd@lists.infradead.org; Tue, 21 Mar 2017 10:38:48 +0000
 From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
@@ -13,9 +13,11 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
  Kumar Gala <galak@codeaurora.org>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: [PATCH 0/5] mtd: nand: add support for on-die ECC
-Date: Tue, 21 Mar 2017 11:38:01 +0100
-Message-Id: <1490092686-16509-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Subject: [PATCH 2/5] mtd: nand: add core support for on-die ECC
+Date: Tue, 21 Mar 2017 11:38:03 +0100
+Message-Id: <1490092686-16509-3-git-send-email-thomas.petazzoni@free-electrons.com>
+In-Reply-To: <1490092686-16509-1-git-send-email-thomas.petazzoni@free-electrons.com>
+References: <1490092686-16509-1-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +27,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+A number of NAND flashes have a capability called "on-die ECC" where the
+NAND chip itself is capable of detecting and correcting errors.
 
-This patch series adds support for on-die ECC, i.e ECC performed by
-the NAND chip itself, as opposed to having the ECC calculated by the
-NAND controller or in software.
+Linux already has support for using the ECC implementation of the NAND
+controller, or a software based ECC implementation, but not for using
+the ECC implementation of the NAND controller. However, such an
+implementation is sometimes useful in situations where the NAND
+controller provides ECC algorithms that are not strong enough for the
+NAND chip used on the system. A typical case is a NAND chip that
+requires a 4-bit ECC, while the NAND controller only provides a 1-bit
+ECC algorithm.
 
-It is useful in situations where the NAND chip has an ECC requirement
-that is not met by the ECC capabilities of the NAND controller.
+This commit introduces the support for the NAND_ECC_ON_DIE ECC mode:
 
-Patch 1 adjusts the NAND generic DT binding to add "on-die" as an
-nand-ecc-mode.
+ - Parsing of the "on-die" value for the "nand-ecc-mode" Device Tree
+   property
 
-Patch 2 adds the core support for on-die ECC, which is really simple
-and minimal: all the work is really done in the vendor-specific NAND
-code.
+ - Handling NAND_ECC_ON_DIE case in nand_scan_tail(). The idea is that
+   the vendor specific code for the NAND chip must implement
+   ->read_page() and ->write_page(). It may optionally provide its own
+   ->read_page_raw() and ->write_page_raw() as well. For OOB operation,
+   we assume the standard operations are good enough, but they can be
+   overridden by the vendor specific code if needed.
 
-Patch 3 and 4 adds the on-die ECC implementation for Micron NANDs.
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 13 +++++++++++++
+ include/linux/mtd/nand.h     |  1 +
+ 2 files changed, 14 insertions(+)
 
-Patch 5 allows the FSMC NAND driver to use on-die ECC.
-
-This series was tested on a SPEAr600 platform, with a Micron
-MT29F1G08ABADAWP NAND. The mtd_nandbiterrs.ko test is passing
-successfully, which shows that the on-die ECC is correcting bitflips
-as expected.
-
-This series is based on the current nand-next branch, as it depends on
-the rework from Boris of the vendor-specific NAND code.
-
-Many thanks to Boris from providing lots of useful feedback and
-discussion during the development of this patch series.
-
-Best regards,
-
-Thomas
-
-Thomas Petazzoni (5):
-  dt-bindings: mtd: document new "on-die" nand-ecc-mode
-  mtd: nand: add core support for on-die ECC
-  mtd: nand: export nand_{read,write}_page_raw()
-  mtd: nand: add support for Micron on-die ECC
-  mtd: nand: fsmc_nand: handle on-die ECC case
-
- Documentation/devicetree/bindings/mtd/nand.txt |   2 +-
- drivers/mtd/nand/fsmc_nand.c                   |   3 +
- drivers/mtd/nand/nand_base.c                   |  23 +++-
- drivers/mtd/nand/nand_micron.c                 | 147 +++++++++++++++++++++++++
- include/linux/mtd/nand.h                       |  11 ++
- 5 files changed, 181 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 685376d..3a5512a 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4107,6 +4107,7 @@ static const char * const nand_ecc_modes[] = {
+ 	[NAND_ECC_HW]		= "hw",
+ 	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
+ 	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
++	[NAND_ECC_ON_DIE]	= "on-die",
+ };
+ 
+ static int of_get_nand_ecc_mode(struct device_node *np)
+@@ -4641,6 +4642,18 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		}
+ 		break;
+ 
++	case NAND_ECC_ON_DIE:
++		if (!ecc->read_page || !ecc->write_page) {
++			WARN(1, "No ECC functions supplied; on-die ECC not possible\n");
++			ret = -EINVAL;
++			goto err_free;
++		}
++		if (!ecc->read_oob)
++			ecc->read_oob = nand_read_oob_std;
++		if (!ecc->write_oob)
++			ecc->write_oob = nand_write_oob_std;
++		break;
++
+ 	case NAND_ECC_NONE:
+ 		pr_warn("NAND_ECC_NONE selected by board driver. This is not recommended!\n");
+ 		ecc->read_page = nand_read_page_raw;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index c7de017..d27374c 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -116,6 +116,7 @@ typedef enum {
+ 	NAND_ECC_HW,
+ 	NAND_ECC_HW_SYNDROME,
+ 	NAND_ECC_HW_OOB_FIRST,
++	NAND_ECC_ON_DIE,
+ } nand_ecc_modes_t;
+ 
+ enum nand_ecc_algo {
 -- 
 2.7.4
