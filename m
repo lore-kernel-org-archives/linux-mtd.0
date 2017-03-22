@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZx-0008Lj-SA
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:10:06 +0000
+ id 1cqmZx-0008Li-S7
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:10:04 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -19,10 +19,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RESEND PATCH v2 24/53] mtd: nand: denali: remove meaningless writes
- to read-only registers
-Date: Thu, 23 Mar 2017 05:07:23 +0900
-Message-Id: <1490213273-8571-25-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 23/53] mtd: nand: denali: set DEVICES_CONNECTED 1 if
+ not set
+Date: Thu, 23 Mar 2017 05:07:22 +0900
+Message-Id: <1490213273-8571-24-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,66 +34,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The write accesses to LOGICAL_PAGE_{DATA,SPARE}_SIZE have no effect
-because the Denali User's Guide says these registers are read-only.
-
-The hardware automatically multiplies the main/spare size by the
-number of devices and update LOGICAL_PAGE_{DATA,SPARE}_SIZE.
+Currently, the driver expects DEVICE_CONNECTED is automatically set
+by the hardware, but this feature is disabled in some cases.
+In such cases, it is the software's responsibility to set up the
+DEVICES_CONNECTED register.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v2: None
 
- drivers/mtd/nand/denali.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ drivers/mtd/nand/denali.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 3da0a0e..5e89709 100644
+index abf8997..3da0a0e 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -342,8 +342,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
+@@ -1472,6 +1472,15 @@ static int denali_multidev_fixup(struct denali_nand_info *denali)
+ 	 */
+ 	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
  
- static void get_toshiba_nand_para(struct denali_nand_info *denali)
- {
--	uint32_t tmp;
--
- 	/*
- 	 * Workaround to fix a controller bug which reports a wrong
- 	 * spare area size for some kind of Toshiba NAND device
-@@ -351,10 +349,6 @@ static void get_toshiba_nand_para(struct denali_nand_info *denali)
- 	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
- 		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64)) {
- 		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		tmp = ioread32(denali->flash_reg + DEVICES_CONNECTED) *
--			ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		iowrite32(tmp,
--				denali->flash_reg + LOGICAL_PAGE_SPARE_SIZE);
- #if SUPPORT_15BITECC
- 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
- #elif SUPPORT_8BITECC
-@@ -366,22 +360,12 @@ static void get_toshiba_nand_para(struct denali_nand_info *denali)
- static void get_hynix_nand_para(struct denali_nand_info *denali,
- 							uint8_t device_id)
- {
--	uint32_t main_size, spare_size;
--
- 	switch (device_id) {
- 	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
- 	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
- 		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
- 		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
- 		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		main_size = 4096 *
--			ioread32(denali->flash_reg + DEVICES_CONNECTED);
--		spare_size = 224 *
--			ioread32(denali->flash_reg + DEVICES_CONNECTED);
--		iowrite32(main_size,
--				denali->flash_reg + LOGICAL_PAGE_DATA_SIZE);
--		iowrite32(spare_size,
--				denali->flash_reg + LOGICAL_PAGE_SPARE_SIZE);
- 		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
- #if SUPPORT_15BITECC
- 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
++	/*
++	 * On some SoCs, DEVICES_CONNECTED is not auto-detected.
++	 * For those, DEVICES_CONNECTED is left to 0.  Set 1 if it is the case.
++	 */
++	if (denali->devnum == 0) {
++		denali->devnum = 1;
++		iowrite32(1, denali->flash_reg + DEVICES_CONNECTED);
++	}
++
+ 	if (denali->devnum == 1)
+ 		return 0;
+ 
 -- 
 2.7.4
