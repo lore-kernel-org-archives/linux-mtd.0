@@ -1,23 +1,20 @@
-Received: from mail9.hitachi.co.jp ([133.145.228.44])
+Received: from userp1040.oracle.com ([156.151.31.81])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqZFU-00029d-G9
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 05:55:58 +0000
-From: =?gb2312?B?0dLLydDF0fMgLyBJV0FNQVRTVaOsTk9CVUhJUk8=?=
- <nobuhiro.iwamatsu.kw@hitachi.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Jagan Teki <jagan@openedev.com>
-Subject: RE: [PATCH v3] mtd: spi-nor: Add support for N25Q256A13
-Date: Wed, 22 Mar 2017 05:55:29 +0000
-Message-ID: <F89ECF87BC754A49BB74E794F6A0EC2F010CC8F7@GSjpTKYDCembx31.service.hitachi.net>
-References: <1488422554-7644-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
- <a6888235-c6be-53f3-7787-7fafcb56b8b4@wedev4u.fr>
-In-Reply-To: <a6888235-c6be-53f3-7787-7fafcb56b8b4@wedev4u.fr>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ id 1cqcAN-0004O9-Ur
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 09:02:53 +0000
+Date: Wed, 22 Mar 2017 12:01:45 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: [patch] mtd: nand: hynix: Fix an error code in init
+Message-ID: <20170322090145.GA14520@mwanda>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ3lyaWxsZSBQaXRj
-aGVuIFttYWlsdG86Y3lyaWxsZS5waXRjaGVuQHdlZGV2NHUuZnJdDQo+IFNlbnQ6IFdlZG5lc2Rh
-eSwgTWFyY2ggMDgsIDIwMTcgNzoxMSBBTQ0KPiBUbzog0dLLydDF0fMgLyBJV0FNQVRTVaOsTk9C
-VUhJUk87IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IENjOiBNYXJlayBWYXN1dDsg
-Q3lyaWxsZSBQaXRjaGVuOyBKYWdhbiBUZWtpDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjNdIG10
-ZDogc3BpLW5vcjogQWRkIHN1cHBvcnQgZm9yIE4yNVEyNTZBMTMNCj4gDQo+IEhpIE5vYnVoaXJv
-LA0KPiANCj4gTGUgMDIvMDMvMjAxNyCopCAwMzo0MiwgTm9idWhpcm8gSXdhbWF0c3UgYSCopmNy
-aXQgOg0KPiA+IEFkZCBuZXcgTWljcm9uIE4yNVEyNTZBIChOMjVRMjU2QTEzKSAyNTZNYml0IE5P
-UiBGbGFzaCBpbiB0aGUgbGlzdA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXg0KPiBZ
-b3UgbWVhbiBOMjVRMjU2QTExLCBkb24ndCB5b3U/IE90aGVyd2lzZSBpdCdzIG5vdCBjb25zaXN0
-ZW50IHdpdGggdGhlDQo+IGFjdHVhbCBwYXRjaCENCj4gDQoNClllcywgdGhpcyBpcyBteSBiYWQu
-DQoNCj4gPiBvZiBzdXBwb3J0ZWQgZGV2aWNlcy4gVGhpcyBjaGlwIGhhcyB0aGUgc2FtZSBzdHJ1
-Y3R1cmUgYXMgdGhlIE4yNVEyNTZBDQo+ID4gYnV0IElEIGFuZCB2b2x0YWdlICgxVjgpIHRvIHVz
-ZSBpcyBkaWZmZXJlbnQuIFRoZXJlZm9yZSwgdGhpcyBhZGRzDQo+ID4gTjI1UTI1NkExMyBhcyBu
-MjVxMjU2YXgxLg0KPiANCj4gICBeDQo+IE4yNVEyNTZBMTEgYXMgbjI1cTI1NmF4MQ0KDQpJbmRl
-ZWQsIHRoYW5rcy4NCg0KDQo+IA0KPiA+DQo+ID4gSW4gdGhlIGZ1dHVyZSwgZm9yIG5ldyBNaWNy
-b24gbWVtb3JpZXMgd2UgY291bGQgdXNlIHRoZSBwYXR0ZXJucw0KPiA+ICJuMjVxKmF4MSIgZm9y
-IDFWOCBhbmQgIm4yNXEqYXgzIiBmb3IgM1YzIG1lbW9yaWVzLg0KPiA+DQo+IA0KPiBTb3VuZCBs
-aWtlIGEgZ29vZCBpZGVhIDopDQo+IE1hcmVrLCBkbyB5b3UgYWdyZWUgd2l0aCB0aGF0Pw0KPiAN
-Cj4gQmVzdCByZWdhcmRzLA0KPiANCj4gQ3lyaWxsZQ0KPiANCg0KSSB3aWxsIHNlbmQgNHRoIHBh
-dGNoIHNvb24uDQoNClRoYW5rcywNCiAgTm9idWhpcm8NCg0KPiA+IFNpZ25lZC1vZmYtYnk6IE5v
-YnVoaXJvIEl3YW1hdHN1IDxub2J1aGlyby5pd2FtYXRzdS5rd0BoaXRhY2hpLmNvbT4NCj4gPiBD
-QzogSmFnYW4gVGVraSA8amFnYW5Ab3BlbmVkZXYuY29tPg0KPiA+IENDOiBNYXJlayBWYXN1dCA8
-bWFyZWsudmFzdXRAZ21haWwuY29tPg0KPiA+IENDOiBDeXJpbGxlIFBpdGNoZW4gPGN5cmlsbGUu
-cGl0Y2hlbkBhdG1lbC5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3Bp
-LW5vci5jIHwgMSArDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPiA+DQo+
-ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ID4gYi9kcml2
-ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBpbmRleCAxYWU4NzJiZmMzYmEuLjJlMDI5OTFkOTNh
-YQ0KPiA+IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+
-ID4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPiBAQCAtMTAzMSw2ICsx
-MDMxLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIHNwaV9ub3JfaWRzW10gPSB7
-DQo+ID4gIAl7ICJuMjVxMTI4YTExIiwgIElORk8oMHgyMGJiMTgsIDAsIDY0ICogMTAyNCwgIDI1
-NiwgU0VDVF80SyB8DQo+IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+ICAJeyAibjI1cTEyOGEx
-MyIsICBJTkZPKDB4MjBiYTE4LCAwLCA2NCAqIDEwMjQsICAyNTYsIFNFQ1RfNEsgfA0KPiBTUElf
-Tk9SX1FVQURfUkVBRCkgfSwNCj4gPiAgCXsgIm4yNXEyNTZhIiwgICAgSU5GTygweDIwYmExOSwg
-MCwgNjQgKiAxMDI0LCAgNTEyLCBTRUNUXzRLIHwNCj4gU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+
-ID4gKwl7ICJuMjVxMjU2YXgxIiwgIElORk8oMHgyMGJiMTksIDAsIDY0ICogMTAyNCwgIDUxMiwg
-U0VDVF80SyB8DQo+ID4gK1NQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+ICAJeyAibjI1cTUxMmEi
-LCAgICBJTkZPKDB4MjBiYjIwLCAwLCA2NCAqIDEwMjQsIDEwMjQsIFNFQ1RfNEsgfA0KPiBVU0Vf
-RlNSIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ID4gIAl7ICJuMjVxNTEyYXgzIiwgIElORk8o
-MHgyMGJhMjAsIDAsIDY0ICogMTAyNCwgMTAyNCwgU0VDVF80SyB8DQo+IFVTRV9GU1IgfCBTUElf
-Tk9SX1FVQURfUkVBRCkgfSwNCj4gPiAgCXsgIm4yNXEwMCIsICAgICAgSU5GTygweDIwYmEyMSwg
-MCwgNjQgKiAxMDI0LCAyMDQ4LCBTRUNUXzRLIHwNCj4gVVNFX0ZTUiB8IFNQSV9OT1JfUVVBRF9S
-RUFEKSB9LA0KPiA+DQoNCg==
+We should be return -ENOMEM instead of success.
+
+Fixes: 626994e07480 ("mtd: nand: hynix: Add read-retry support for 1x nm MLC NANDs")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
+index 2a5d0efea498..b12dc7325378 100644
+--- a/drivers/mtd/nand/nand_hynix.c
++++ b/drivers/mtd/nand/nand_hynix.c
+@@ -270,8 +270,10 @@ static int hynix_mlc_1xnm_rr_init(struct nand_chip *chip,
+ 		goto out;
+ 
+ 	rr = kzalloc(sizeof(*rr) + (nregs * nmodes), GFP_KERNEL);
+-	if (!rr)
++	if (!rr) {
++		ret = -ENOMEM;
+ 		goto out;
++	}
+ 
+ 	for (i = 0; i < nmodes; i++) {
+ 		for (j = 0; j < nregs; j++) {
