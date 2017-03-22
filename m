@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZV-0001SP-3j
+ id 1cqmZV-0001SM-3k
  for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:33 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -19,10 +19,9 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RESEND PATCH v2 16/53] mtd: nand: denali_dt: use pdev instead of
- ofdev for platform_device
-Date: Thu, 23 Mar 2017 05:07:15 +0900
-Message-Id: <1490213273-8571-17-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 10/53] mtd: nand: denali: fix erased page checking
+Date: Thu, 23 Mar 2017 05:07:09 +0900
+Message-Id: <1490213273-8571-11-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,103 +33,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"pdev" is much more often used to point a platform_device, so this
-will help the driver code look consistent across the kernel.
+This part is wrong in multiple ways:
 
-While we are here, fix "line over 80 characters" coding style
-violations.
+[1] is_erased() is called against "buf" twice, so the second one is
+meaningless.  The second call should check chip->oob_poi.
+
+[2] This code block is nested by double "if (check_erase_page)".
+The inner one is redundant.
+
+[3] Erased page checking without threshold is false-positive.
+Basically, there are two ways for erased page checking:
+- read the whole of page + oob in raw transfer, then check if all
+  the data are 0xFF.
+- read the ECC-corrected page + oob, then check if *almost* all the
+  data are 0xFF (bit-flips less than ecc.strength are allowed)
+While here, it checks if all data in ECC-corrected page are 0xFF.
+This is too strong because not all of the data are 0xFF after they
+are manipulated by the ECC engine.  Proper threshold must be taken
+into account to avoid false-positive ecc_stats.failed increments.
+
+[4] positive return value for uncorrectable bitflips
+
+The comment of ecc->read_page() says it should return "0 if bitflips
+uncorrectable", but the current code could return a positive value
+in the case.
+
+This commit solves the problems above.  The nand framework provides
+a helper nand_check_erased_ecc_chunk() for erased page check with
+threshold.  The driver's own helper is unneeded.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - Squash some patches into one.
+  - Use nand_check_erased_ecc_chunk() with threshold
 
- drivers/mtd/nand/denali_dt.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ drivers/mtd/nand/denali.c | 29 ++++++++++-------------------
+ 1 file changed, 10 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index b8a8284..ada3863 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -46,7 +46,7 @@ static const struct of_device_id denali_nand_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
- 
--static int denali_dt_probe(struct platform_device *ofdev)
-+static int denali_dt_probe(struct platform_device *pdev)
- {
- 	struct resource *denali_reg, *nand_data;
- 	struct denali_dt *dt;
-@@ -54,36 +54,38 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	struct denali_nand_info *denali;
- 	int ret;
- 
--	dt = devm_kzalloc(&ofdev->dev, sizeof(*dt), GFP_KERNEL);
-+	dt = devm_kzalloc(&pdev->dev, sizeof(*dt), GFP_KERNEL);
- 	if (!dt)
- 		return -ENOMEM;
- 	denali = &dt->denali;
- 
--	data = of_device_get_match_data(&ofdev->dev);
-+	data = of_device_get_match_data(&pdev->dev);
- 	if (data)
- 		denali->caps = data->caps;
- 
- 	denali->platform = DT;
--	denali->dev = &ofdev->dev;
--	denali->irq = platform_get_irq(ofdev, 0);
-+	denali->dev = &pdev->dev;
-+	denali->irq = platform_get_irq(pdev, 0);
- 	if (denali->irq < 0) {
--		dev_err(&ofdev->dev, "no irq defined\n");
-+		dev_err(&pdev->dev, "no irq defined\n");
- 		return denali->irq;
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 2c59eb3..86381ac 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -883,19 +883,6 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
  	}
- 
--	denali_reg = platform_get_resource_byname(ofdev, IORESOURCE_MEM, "denali_reg");
--	denali->flash_reg = devm_ioremap_resource(&ofdev->dev, denali_reg);
-+	denali_reg = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+						  "denali_reg");
-+	denali->flash_reg = devm_ioremap_resource(&pdev->dev, denali_reg);
- 	if (IS_ERR(denali->flash_reg))
- 		return PTR_ERR(denali->flash_reg);
- 
--	nand_data = platform_get_resource_byname(ofdev, IORESOURCE_MEM, "nand_data");
--	denali->flash_mem = devm_ioremap_resource(&ofdev->dev, nand_data);
-+	nand_data = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+						 "nand_data");
-+	denali->flash_mem = devm_ioremap_resource(&pdev->dev, nand_data);
- 	if (IS_ERR(denali->flash_mem))
- 		return PTR_ERR(denali->flash_mem);
- 
--	dt->clk = devm_clk_get(&ofdev->dev, NULL);
-+	dt->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(dt->clk)) {
--		dev_err(&ofdev->dev, "no clk available\n");
-+		dev_err(&pdev->dev, "no clk available\n");
- 		return PTR_ERR(dt->clk);
- 	}
- 	clk_prepare_enable(dt->clk);
-@@ -92,7 +94,7 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	if (ret)
- 		goto out_disable_clk;
- 
--	platform_set_drvdata(ofdev, dt);
-+	platform_set_drvdata(pdev, dt);
- 	return 0;
- 
- out_disable_clk:
-@@ -101,9 +103,9 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	return ret;
  }
  
--static int denali_dt_remove(struct platform_device *ofdev)
-+static int denali_dt_remove(struct platform_device *pdev)
- {
--	struct denali_dt *dt = platform_get_drvdata(ofdev);
-+	struct denali_dt *dt = platform_get_drvdata(pdev);
+-/*
+- * this function examines buffers to see if they contain data that
+- * indicate that the buffer is part of an erased region of flash.
+- */
+-static bool is_erased(uint8_t *buf, int len)
+-{
+-	int i;
+-
+-	for (i = 0; i < len; i++)
+-		if (buf[i] != 0xFF)
+-			return false;
+-	return true;
+-}
+ #define ECC_SECTOR_SIZE 512
  
- 	denali_remove(&dt->denali);
- 	clk_disable_unprepare(dt->clk);
+ #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
+@@ -1119,6 +1106,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	uint32_t irq_status;
+ 	uint32_t irq_mask = INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
+ 	bool check_erased_page = false;
++	int stat;
+ 
+ 	if (page != denali->page) {
+ 		dev_err(denali->dev,
+@@ -1148,12 +1136,15 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	if (check_erased_page) {
+ 		read_oob_data(mtd, chip->oob_poi, denali->page);
+ 
+-		/* check ECC failures that may have occurred on erased pages */
+-		if (check_erased_page) {
+-			if (!is_erased(buf, mtd->writesize))
+-				mtd->ecc_stats.failed++;
+-			if (!is_erased(buf, mtd->oobsize))
+-				mtd->ecc_stats.failed++;
++		stat = nand_check_erased_ecc_chunk(
++					buf, mtd->writesize,
++					chip->oob_poi, mtd->oobsize,
++					NULL, 0,
++					chip->ecc.strength * chip->ecc.steps);
++		if (stat < 0) {
++			mtd->ecc_stats.failed++;
++			/* return 0 for uncorrectable bitflips */
++			max_bitflips = 0;
+ 		}
+ 	}
+ 	return max_bitflips;
 -- 
 2.7.4
