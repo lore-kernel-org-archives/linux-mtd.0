@@ -1,19 +1,19 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqoyh-0005Ag-F8
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 22:43:42 +0000
-Subject: Re: [RESEND v1] UBI: add debugfs file for tracking PEB state
-To: Zach Brown <zach.brown@ni.com>, dwmw2@infradead.org
-References: <1490198669-20986-1-git-send-email-zach.brown@ni.com>
-Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, cyrille.pitchen@atmel.com, dedekind1@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+ id 1cqp4L-00077P-HE
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 22:49:31 +0000
+Subject: Re: Regarding UBI fastmap data CRC failure
+To: Ronak Desai <ronak.desai@rockwellcollins.com>
+References: <CADFuHZ6xb=M_zRkktnq2b8QBOhq-WDsqgzViPHU1g8Gj9M3E-g@mail.gmail.com>
+ <CAFLxGvx6S8V7c8YYR2-G7+hDDcRi-0Cnk+EWeWWN9i2oy-DVvQ@mail.gmail.com>
+ <CADFuHZ54cG32S1-3PA5q_5P1od1rBa5=3YeB1jLhB+Jzm2f0Ng@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <47dcf386-b363-6f02-4ce4-c98439ab110e@nod.at>
-Date: Wed, 22 Mar 2017 23:43:09 +0100
+Message-ID: <c9b139cc-7bf0-836d-69cf-4889a6c35ec2@nod.at>
+Date: Wed, 22 Mar 2017 23:49:06 +0100
 MIME-Version: 1.0
-In-Reply-To: <1490198669-20986-1-git-send-email-zach.brown@ni.com>
-Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <CADFuHZ54cG32S1-3PA5q_5P1od1rBa5=3YeB1jLhB+Jzm2f0Ng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,161 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Zach,
+Ronak Desai,
 
-I think we can merge this in the next merge window, I have only some
-minor comments.
-
-Am 22.03.2017 um 17:04 schrieb Zach Brown:
-> From: Ben Shelton <ben.shelton@ni.com>
+Am 21.03.2017 um 17:31 schrieb Ronak Desai:
+> On Mon, Mar 20, 2017 at 5:56 PM, Richard Weinberger
+> <richard.weinberger@gmail.com> wrote:
+>> On Mon, Mar 20, 2017 at 10:47 PM, Ronak Desai
+>> <ronak.desai@rockwellcollins.com> wrote:
+>>> Hi All,
+>>>
+>>> In one of the products with MLC NAND flash, we are using UBI
+>>> filesystem with kernel 3.12.
+>>
+>> MLC NAND is currently not supported.
 > 
-> Add a file under debugfs to allow easy access to the erase count for
-> each physical erase block on an UBI device.  This is useful when
-> debugging data integrity issues with UBIFS on NAND flash devices.
+> First of all, thanks for your response and your truly amazing
+> contribution in UBI.
+
+Thanks. :-)
+
+> I know that UBIFS requires a whole lot of changes to handle "program
+> disturb", "read distrurb" and "paired pages" problem on MLC NANDs.
+> But, apart from this, we have makesure that we use 256 wear-leveling
+> threshold.
+
+How do you handle paired pages?
+A powercut can still damage UBI and UBIFS.
+
+[...]
+
+> That is true that our kernel is old but at this point and time it's
+> not a viable options for us to upgrade the kernel version. And agree
+> with your point about MLC but in months of use, we have seen this
+> continuous fastmap failure issue only once and apart from that UBIFS
+> works without any other issues.
 > 
-> Signed-off-by: Ben Shelton <ben.shelton@ni.com>
-> Signed-off-by: Zach Brown <zach.brown@ni.com>
-> ---
->  drivers/mtd/ubi/debug.c | 151 +++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 150 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-> index f101a49..6086822 100644
-> --- a/drivers/mtd/ubi/debug.c
-> +++ b/drivers/mtd/ubi/debug.c
-> @@ -22,6 +22,7 @@
->  #include <linux/debugfs.h>
->  #include <linux/uaccess.h>
->  #include <linux/module.h>
-> +#include <linux/seq_file.h>
->  
->  
->  /**
-> @@ -386,7 +387,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
->  	return count;
->  }
->  
-> -/* File operations for all UBI debugfs files */
-> +/* File operations for all UBI debugfs files except
-> + * detailed_erase_block_info
-> + */
->  static const struct file_operations dfs_fops = {
->  	.read   = dfs_file_read,
->  	.write  = dfs_file_write,
-> @@ -395,6 +398,146 @@ static const struct file_operations dfs_fops = {
->  	.owner  = THIS_MODULE,
->  };
->  
-> +/* As long as the position is less then that total number of erase blocks,
-> + * we still have more to print.
-> + */
-> +static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
-> +{
-> +	struct ubi_device *ubi = s->private;
-> +
-> +	if (*pos == 0)
-> +		return SEQ_START_TOKEN;
-> +
-> +	if (*pos < ubi->peb_count)
-> +		return pos;
-> +
-> +	return NULL;
-> +}
-> +
-> +/* Since we are using the position as the iterator, we just need to check if we
-> + * are done and increment the position.
-> + */
-> +static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
-> +{
-> +	struct ubi_device *ubi = s->private;
-> +
-> +	if (v == SEQ_START_TOKEN)
-> +		return pos;
-> +	(*pos)++;
-> +
-> +	if (*pos < ubi->peb_count)
-> +		return pos;
-> +
-> +	return NULL;
-> +}
-> +
-> +static void eraseblk_count_seq_stop(struct seq_file *s, void *v)
-> +{
-> +}
-> +
-> +enum block_status {
-> +	BLOCK_STATUS_OK,
-> +	BLOCK_STATUS_BAD_BLOCK,
-> +	BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX
-> +};
-> +
-> +static char const *block_status_names[] = {"OK", "marked_bad",
-> +					   "erase_count_beyond_max"};
-> +
-> +enum read_status {
-> +	READ_STATUS_OK,
-> +	READ_STATUS_ERR_READING_BLOCK,
-> +};
-> +
-> +static char const *read_status_names[] = {"OK", "err_reading_block"};
-> +
-> +static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
-> +{
-> +	struct ubi_device *ubi = s->private;
-> +	struct ubi_wl_entry *wl;
-> +	int *block_number = iter;
-> +	int erase_count = -1;
-> +	enum block_status b_sts = BLOCK_STATUS_OK;
-> +	enum read_status r_sts = READ_STATUS_OK;
-> +	int err;
-> +
-> +	/* If this is the start, print a header */
-> +	if (iter == SEQ_START_TOKEN) {
-> +		seq_puts(s,
-> +			 "physical_block_number\terase_count\tblock_status\tread_status\n");
-> +		return 0;
-> +	}
-> +
-> +	err = ubi_io_is_bad(ubi, *block_number);
-> +	if (err) {
-> +		if (err < 0)
-> +			r_sts = READ_STATUS_ERR_READING_BLOCK;
+> I see your changes on base fastmap implementation, which I am planning
+> to backport but it will be really difficult to backport the whole UBI
+> subsystem. So, if you can point to specific patches/changes to avoid
+> "fastmap data CRC failure" issue then it will be a great help.
 
-When ubi_io_is_bad() returns an error, something really bad happened.
-I'd just return this error in eraseblk_count_seq_show.
+I fear it is not that easy. Fastmap saw many fixes and improvements
+other the time. The first version was rather buggy.
+And we made a stupid mistake at the beginning, we did not mark fixes
+for stable processing since Fastmap was considered
+as experimental. That's why you can't just backport all patches that
+have a stable tag.
+On the other hand, backporting the whole UBI subsystem is not that
+complicated. It has very few dependencies.
+U-Boot folks do this on a regular basis.
 
-> +		else
-> +			b_sts = BLOCK_STATUS_BAD_BLOCK;
-> +	} else {
-> +		spin_lock(&ubi->wl_lock);
-> +
-> +		wl = ubi->lookuptbl[*block_number];
-> +		if (wl)
-> +			erase_count = wl->ec;
-> +		else
-> +			r_sts = READ_STATUS_ERR_READING_BLOCK;
-
-This is not really an error. It just means that UBI gave up on this
-block and "forgot" about it.
-
-> +
-> +		spin_unlock(&ubi->wl_lock);
-> +
-> +		if (erase_count > UBI_MAX_ERASECOUNTER)
-> +			b_sts = BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX;
-
-I don't think we need this case. UBI_MAX_ERASECOUNTER is the maximum
-that the UBI implementation can handle. I'm very sure that it is impossible
-to hit this ever on real hardware. So that information is useless.
-
-> +	}
-> +
-> +	seq_printf(s, "%-22d\t%-11d\t%-12s\t%-12s\n", *block_number,
-> +		   erase_count, block_status_names[b_sts],
-> +		   read_status_names[r_sts]);
-
-Wouldn't it make more sense to just print a line for each present PEB?
-i.e. "PEB0: 1234", if a PEB is bad, just don't print it.
-
-Thanks,
+HTH,
 //richard
