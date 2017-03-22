@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZV-0001SU-3o
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:34 +0000
+ id 1cqmZV-0001SS-3f
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:35 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -19,10 +19,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RESEND PATCH v2 18/53] mtd: nand: denali: use nand_chip to hold
- frequently accessed data
-Date: Thu, 23 Mar 2017 05:07:17 +0900
-Message-Id: <1490213273-8571-19-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 12/53] mtd: nand: denali: support HW_ECC_FIXUP
+ capability
+Date: Thu, 23 Mar 2017 05:07:11 +0900
+Message-Id: <1490213273-8571-13-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,146 +34,190 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The denali_init() needs to setup a bunch of parameters of nand_chip.
-Replace denali->nand.(member) with chip->(member) for shorter code.
+Some old versions of the Denali IP (perhaps used only for Intel?)
+detects ECC errors and provides correct data via a register, but
+does not touch the transferred data.  So, the software must fixup
+the data in the buffer according to the provided ECC correction
+information.
+
+Newer versions perform ECC correction before transferring the data.
+No more software intervention is needed.  The ECC_ERROR_ADDRESS and
+ECC_CORRECTION_INFO registers were deprecated.  Instead, the number
+of corrected bit-flips can be read from the ECC_COR_INFO register.
+When an uncorrectable ECC error happens, a status flag is set to the
+INTR_STATUS and ECC_COR_INFO registers.
+
+As is often the case with this IP, the register view of INTR_STATUS
+had broken compatibility.
+
+For older versions (SW ECC fixup):
+  bit 0:  ECC_TRANSACTION_DONE
+  bit 1:  ECC_ERR
+
+For newer versions (HW ECC fixup):
+  bit 0:  ECC_UNCOR_ERR
+  bit 1:  Reserved
+
+Due to this difference, the irq_mask must be fixed too.  The comment
+block in handle_ecc() has been moved to the common part because the
+comment applies to both cases.  The existing handle_ecc() has been
+renamed to denali_sw_ecc_fixup() for clarification.
+
+The U-Boot port of this driver already supports the HW ECC fixup.  I
+borrowed the comment "Some versions of ..." in denali.h from U-Boot.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - Change the capability prefix DENALI_CAPS_ -> DENALI_CAP_
 
- drivers/mtd/nand/denali.c | 68 +++++++++++++++++++++++------------------------
- 1 file changed, 34 insertions(+), 34 deletions(-)
+ drivers/mtd/nand/denali.c | 52 ++++++++++++++++++++++++++++++++++++-----------
+ drivers/mtd/nand/denali.h | 14 +++++++++++++
+ 2 files changed, 54 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index ff6af1d..24c35a6 100644
+index 608fe6f..91f0def 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1460,7 +1460,8 @@ static void denali_drv_init(struct denali_nand_info *denali)
- 
- int denali_init(struct denali_nand_info *denali)
- {
--	struct mtd_info *mtd = nand_to_mtd(&denali->nand);
-+	struct nand_chip *chip = &denali->nand;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int ret;
- 
- 	if (denali->platform == INTEL_CE4100) {
-@@ -1497,10 +1498,10 @@ int denali_init(struct denali_nand_info *denali)
- 	mtd->name = "denali-nand";
- 
- 	/* register the driver with the NAND core subsystem */
--	denali->nand.select_chip = denali_select_chip;
--	denali->nand.cmdfunc = denali_cmdfunc;
--	denali->nand.read_byte = denali_read_byte;
--	denali->nand.waitfunc = denali_waitfunc;
-+	chip->select_chip = denali_select_chip;
-+	chip->cmdfunc = denali_cmdfunc;
-+	chip->read_byte = denali_read_byte;
-+	chip->waitfunc = denali_waitfunc;
- 
- 	/*
- 	 * scan for NAND devices attached to the controller
-@@ -1544,17 +1545,16 @@ int denali_init(struct denali_nand_info *denali)
- 	 * the real pagesize and anything necessery
- 	 */
- 	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
--	denali->nand.chipsize <<= denali->devnum - 1;
--	denali->nand.page_shift += denali->devnum - 1;
--	denali->nand.pagemask = (denali->nand.chipsize >>
--						denali->nand.page_shift) - 1;
--	denali->nand.bbt_erase_shift += denali->devnum - 1;
--	denali->nand.phys_erase_shift = denali->nand.bbt_erase_shift;
--	denali->nand.chip_shift += denali->devnum - 1;
-+	chip->chipsize <<= denali->devnum - 1;
-+	chip->page_shift += denali->devnum - 1;
-+	chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
-+	chip->bbt_erase_shift += denali->devnum - 1;
-+	chip->phys_erase_shift = chip->bbt_erase_shift;
-+	chip->chip_shift += denali->devnum - 1;
- 	mtd->writesize <<= denali->devnum - 1;
- 	mtd->oobsize <<= denali->devnum - 1;
- 	mtd->erasesize <<= denali->devnum - 1;
--	mtd->size = denali->nand.numchips * denali->nand.chipsize;
-+	mtd->size = chip->numchips * chip->chipsize;
- 	denali->bbtskipbytes *= denali->devnum;
- 
- 	/*
-@@ -1564,29 +1564,29 @@ int denali_init(struct denali_nand_info *denali)
- 	 */
- 
- 	/* Bad block management */
--	denali->nand.bbt_td = &bbt_main_descr;
--	denali->nand.bbt_md = &bbt_mirror_descr;
-+	chip->bbt_td = &bbt_main_descr;
-+	chip->bbt_md = &bbt_mirror_descr;
- 
- 	/* skip the scan for now until we have OOB read and write support */
--	denali->nand.bbt_options |= NAND_BBT_USE_FLASH;
--	denali->nand.options |= NAND_SKIP_BBTSCAN;
--	denali->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
-+	chip->bbt_options |= NAND_BBT_USE_FLASH;
-+	chip->options |= NAND_SKIP_BBTSCAN;
-+	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
- 
- 	/* no subpage writes on denali */
--	denali->nand.options |= NAND_NO_SUBPAGE_WRITE;
-+	chip->options |= NAND_NO_SUBPAGE_WRITE;
- 
- 	/*
- 	 * Denali Controller only support 15bit and 8bit ECC in MRST,
- 	 * so just let controller do 15bit ECC for MLC and 8bit ECC for
- 	 * SLC if possible.
- 	 * */
--	if (!nand_is_slc(&denali->nand) &&
-+	if (!nand_is_slc(chip) &&
- 			(mtd->oobsize > (denali->bbtskipbytes +
- 			ECC_15BITS * (mtd->writesize /
- 			ECC_SECTOR_SIZE)))) {
- 		/* if MLC OOB size is large enough, use 15bit ECC*/
--		denali->nand.ecc.strength = 15;
--		denali->nand.ecc.bytes = ECC_15BITS;
-+		chip->ecc.strength = 15;
-+		chip->ecc.bytes = ECC_15BITS;
- 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
- 	} else if (mtd->oobsize < (denali->bbtskipbytes +
- 			ECC_8BITS * (mtd->writesize /
-@@ -1594,24 +1594,24 @@ int denali_init(struct denali_nand_info *denali)
- 		pr_err("Your NAND chip OOB is not large enough to contain 8bit ECC correction codes");
- 		goto failed_req_irq;
- 	} else {
--		denali->nand.ecc.strength = 8;
--		denali->nand.ecc.bytes = ECC_8BITS;
-+		chip->ecc.strength = 8;
-+		chip->ecc.bytes = ECC_8BITS;
- 		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
+@@ -883,6 +883,32 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
  	}
+ }
  
- 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
--	denali->nand.ecc.bytes *= denali->devnum;
--	denali->nand.ecc.strength *= denali->devnum;
-+	chip->ecc.bytes *= denali->devnum;
-+	chip->ecc.strength *= denali->devnum;
++static int denali_hw_ecc_fixup(struct mtd_info *mtd,
++			       struct denali_nand_info *denali)
++{
++	int bank = denali->flash_bank;
++	uint32_t ecc_cor;
++	unsigned int max_bitflips;
++
++	ecc_cor = ioread32(denali->flash_reg + ECC_COR_INFO(bank));
++	ecc_cor >>= ECC_COR_INFO__SHIFT(bank);
++
++	if (ecc_cor & ECC_COR_INFO__UNCOR_ERR)
++		return -EBADMSG;
++
++	max_bitflips = ecc_cor & ECC_COR_INFO__MAX_ERRORS;
++
++	/*
++	 * The register holds the maximum of the number of corrected bitflips
++	 * per sector.  This can be returned from ecc->read_page() as-is.
++	 * Unfortunately, we can not know the total number of corrected bits
++	 * in the page.  mtd->ecc_stats.corrected is compromised here.
++	 */
++	mtd->ecc_stats.corrected += max_bitflips;
++
++	return max_bitflips;
++}
++
+ #define ECC_SECTOR_SIZE 512
  
- 	/* override the default read operations */
--	denali->nand.ecc.size = ECC_SECTOR_SIZE * denali->devnum;
--	denali->nand.ecc.read_page = denali_read_page;
--	denali->nand.ecc.read_page_raw = denali_read_page_raw;
--	denali->nand.ecc.write_page = denali_write_page;
--	denali->nand.ecc.write_page_raw = denali_write_page_raw;
--	denali->nand.ecc.read_oob = denali_read_oob;
--	denali->nand.ecc.write_oob = denali_write_oob;
--	denali->nand.erase = denali_erase;
-+	chip->ecc.size = ECC_SECTOR_SIZE * denali->devnum;
-+	chip->ecc.read_page = denali_read_page;
-+	chip->ecc.read_page_raw = denali_read_page_raw;
-+	chip->ecc.write_page = denali_write_page;
-+	chip->ecc.write_page_raw = denali_write_page_raw;
-+	chip->ecc.read_oob = denali_read_oob;
-+	chip->ecc.write_oob = denali_write_oob;
-+	chip->erase = denali_erase;
+ #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
+@@ -892,8 +918,8 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ #define ECC_ERR_DEVICE(x)	(((x) & ERR_CORRECTION_INFO__DEVICE_NR) >> 8)
+ #define ECC_LAST_ERR(x)		((x) & ERR_CORRECTION_INFO__LAST_ERR_INFO)
  
- 	ret = nand_scan_tail(mtd);
- 	if (ret)
+-static int handle_ecc(struct mtd_info *mtd,
+-		      struct denali_nand_info *denali, uint8_t *buf)
++static int denali_sw_ecc_fixup(struct mtd_info *mtd,
++			       struct denali_nand_info *denali, uint8_t *buf)
+ {
+ 	unsigned int bitflips = 0;
+ 	unsigned int max_bitflips = 0;
+@@ -921,11 +947,6 @@ static int handle_ecc(struct mtd_info *mtd,
+ 			bitflips = 0;
+ 
+ 		if (ECC_ERROR_UNCORRECTABLE(err_cor_info)) {
+-			/*
+-			 * if the error is not correctable, need to look at the
+-			 * page to see if it is an erased page. if so, then
+-			 * it's not a real ECC error
+-			 */
+ 			ret = -EBADMSG;
+ 		} else if (err_byte < ECC_SECTOR_SIZE) {
+ 			/*
+@@ -1105,12 +1126,12 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 			    uint8_t *buf, int oob_required, int page)
+ {
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+-
+ 	dma_addr_t addr = denali->buf.dma_buf;
+ 	size_t size = mtd->writesize + mtd->oobsize;
+-
+ 	uint32_t irq_status;
+-	uint32_t irq_mask = INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
++	uint32_t irq_mask = denali->caps & DENALI_CAP_HW_ECC_FIXUP ?
++				INTR__DMA_CMD_COMP | INTR__ECC_UNCOR_ERR :
++				INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
+ 	int stat = 0;
+ 
+ 	if (page != denali->page) {
+@@ -1135,11 +1156,18 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 	memcpy(buf, denali->buf.buf, mtd->writesize);
+ 
+-	if (irq_status & INTR__ECC_ERR)
+-		stat = handle_ecc(mtd, denali, buf);
++	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
++		stat = denali_hw_ecc_fixup(mtd, denali);
++	else if (irq_status & INTR__ECC_ERR)
++		stat = denali_sw_ecc_fixup(mtd, denali, buf);
+ 	denali_enable_dma(denali, false);
+ 
+ 	if (stat == -EBADMSG) {
++		/*
++		 * If the error is not correctable, need to look at the page to
++		 * see if it is an erased page. If so, then it's not a real ECC
++		 * error.
++		 */
+ 		read_oob_data(mtd, chip->oob_poi, denali->page);
+ 
+ 		stat = nand_check_erased_ecc_chunk(
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index 7b2d785..ed42b16 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -20,6 +20,7 @@
+ #ifndef __DENALI_H__
+ #define __DENALI_H__
+ 
++#include <linux/bitops.h>
+ #include <linux/mtd/nand.h>
+ 
+ #define DEVICE_RESET				0x0
+@@ -218,6 +219,13 @@
+ 
+ #define INTR_STATUS(__bank)	(0x410 + ((__bank) * 0x50))
+ #define INTR_EN(__bank)		(0x420 + ((__bank) * 0x50))
++/*
++ * Some versions of the IP have the ECC fixup handled in hardware.  In this
++ * configuration we only get interrupted when the error is uncorrectable.
++ * Unfortunately this bit replaces INTR_STATUS__ECC_TRANSACTION_DONE from the
++ * old IP.
++ */
++#define     INTR__ECC_UNCOR_ERR				0x0001
+ #define     INTR__ECC_TRANSACTION_DONE			0x0001
+ #define     INTR__ECC_ERR				0x0002
+ #define     INTR__DMA_CMD_COMP				0x0004
+@@ -259,6 +267,11 @@
+ #define     ERR_CORRECTION_INFO__ERROR_TYPE		0x4000
+ #define     ERR_CORRECTION_INFO__LAST_ERR_INFO		0x8000
+ 
++#define ECC_COR_INFO(bank)			(0x650 + (bank) / 2 * 0x10)
++#define     ECC_COR_INFO__SHIFT(bank)			((bank) % 2 * 8)
++#define     ECC_COR_INFO__MAX_ERRORS			0x007f
++#define     ECC_COR_INFO__UNCOR_ERR			0x0080
++
+ #define DMA_ENABLE				0x700
+ #define     DMA_ENABLE__FLAG				0x0001
+ 
+@@ -339,6 +352,7 @@ struct denali_nand_info {
+ 	int bbtskipbytes;
+ 	int max_banks;
+ 	unsigned int caps;
++#define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
+ };
+ 
+ extern int denali_init(struct denali_nand_info *denali);
 -- 
 2.7.4
