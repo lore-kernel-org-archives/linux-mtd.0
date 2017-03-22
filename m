@@ -1,21 +1,23 @@
-Received: from 3.mo177.mail-out.ovh.net ([46.105.36.172])
+Received: from 7.mo177.mail-out.ovh.net ([46.105.61.149])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqnNK-0004da-Mf
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 21:01:01 +0000
+ id 1cqnTD-0006cx-UB
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 21:07:06 +0000
 Received: from player714.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo177.mail-out.ovh.net (Postfix) with ESMTP id 8CAA9433A7
- for <linux-mtd@lists.infradead.org>; Wed, 22 Mar 2017 22:00:30 +0100 (CET)
-Subject: Re: [PATCH v4 0/2] mtd: spi-nor: Add possibility to disable chip erase
-To: Marcin Krzeminski <mar.krzeminski@gmail.com>, cyrille.pitchen@atmel.com,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org
-References: <20170106171901.27565-1-mar.krzeminski@gmail.com>
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
+ by mo177.mail-out.ovh.net (Postfix) with ESMTP id 87B9F433C0
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Mar 2017 22:06:40 +0100 (CET)
+Subject: Re: [PATCH v3 1/2] drivers mtd: spi-nor: add Winbond W25Q20 variants
+To: Alexander Kurz <akurz@blala.de>, Marek Vasut <marek.vasut@gmail.com>
+References: <1489258865-831-1-git-send-email-akurz@blala.de>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <2c733c67-836e-03f9-93cd-19966e2e3685@wedev4u.fr>
-Date: Wed, 22 Mar 2017 22:00:22 +0100
+Message-ID: <0d7e4325-901b-a6ca-9f96-e9a227fe7f10@wedev4u.fr>
+Date: Wed, 22 Mar 2017 22:06:32 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170106171901.27565-1-mar.krzeminski@gmail.com>
+In-Reply-To: <1489258865-831-1-git-send-email-akurz@blala.de>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,22 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 06/01/2017 à 18:18, Marcin Krzeminski a écrit :
-> v4:
-> * Rebased to git://github.com/spi-nor/linux.git next branch.
-> * Typos corrected.
-> v3:
-> * Fix/reword commit messages.
-> v2:
-> * Rebased to git://github.com/spi-nor/linux.git
+Le 11/03/2017 à 20:01, Alexander Kurz a écrit :
+> Winbond W25Q20BW devices are used in 4/5th generation Kindle ebook readers.
+> Add this spi-nor device and the similar W25Q20 devices to the list of known
+> devices.
 > 
-> Marcin Krzeminski (2):
->   mtd: spi-nor: Fix whole chip erasing for stacked chips.
->   mtd: spi-nor: Disable chip erase for Micron n25q00.
-> 
->  drivers/mtd/spi-nor/spi-nor.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-series applied to github/spi-nor
+> Signed-off-by: Alexander Kurz <akurz@blala.de>
+Applied to github/spi-nor
 
 Thanks!
+
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 1ae872b..4fbd98c 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1128,6 +1128,9 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "w25x80", INFO(0xef3014, 0, 64 * 1024,  16, SECT_4K) },
+>  	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
+>  	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
+> +	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
+> +	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
+> +	{ "w25q20ew", INFO(0xef6012, 0, 64 * 1024,  4, SECT_4K) },
+>  	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
+>  	{
+>  		"w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64,
+> 
