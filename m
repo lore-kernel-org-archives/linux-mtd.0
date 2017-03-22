@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqgxI-000638-Mp
+ id 1cqgxI-00063C-Mr
  for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:09:45 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -20,9 +20,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 22/53] mtd: nand: denali: simplify multi device fixup code
-Date: Wed, 22 Mar 2017 23:07:29 +0900
-Message-Id: <1490191680-14481-23-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 16/53] mtd: nand: denali_dt: use pdev instead of ofdev for
+ platform_device
+Date: Wed, 22 Mar 2017 23:07:23 +0900
+Message-Id: <1490191680-14481-17-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,91 +35,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The available configuration of the IP bus width is x8 or x16, so the
-possible value for denali->devnum is 1 or 2.
+"pdev" is much more often used to point a platform_device, so this
+will help the driver code look consistent across the kernel.
 
-If the value is 1, there is nothing to do.  Fixup parameters only
-when denali->devnum is 2.
+While we are here, fix "line over 80 characters" coding style
+violations.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2:
-  - Simplify the code given 1 or 2 is possible for denali->devnum
+Changes in v2: None
 
- drivers/mtd/nand/denali.c | 46 ++++++++++++++++++++++++++++++----------------
- 1 file changed, 30 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/denali_dt.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 4e63d57..abf8997 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1458,7 +1458,7 @@ static void denali_drv_init(struct denali_nand_info *denali)
- 	denali->irq_status = 0;
- }
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index b8a8284..ada3863 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -46,7 +46,7 @@ static const struct of_device_id denali_nand_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
  
--static void denali_multidev_fixup(struct denali_nand_info *denali)
-+static int denali_multidev_fixup(struct denali_nand_info *denali)
+-static int denali_dt_probe(struct platform_device *ofdev)
++static int denali_dt_probe(struct platform_device *pdev)
  {
- 	struct nand_chip *chip = &denali->nand;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-@@ -1472,20 +1472,32 @@ static void denali_multidev_fixup(struct denali_nand_info *denali)
- 	 */
- 	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
+ 	struct resource *denali_reg, *nand_data;
+ 	struct denali_dt *dt;
+@@ -54,36 +54,38 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 	struct denali_nand_info *denali;
+ 	int ret;
  
--	mtd->size <<= denali->devnum - 1;
--	mtd->erasesize <<= denali->devnum - 1;
--	mtd->writesize <<= denali->devnum - 1;
--	mtd->oobsize <<= denali->devnum - 1;
--	chip->chipsize <<= denali->devnum - 1;
--	chip->page_shift += denali->devnum - 1;
--	chip->phys_erase_shift += denali->devnum - 1;
--	chip->bbt_erase_shift += denali->devnum - 1;
--	chip->chip_shift += denali->devnum - 1;
--	chip->pagemask <<= denali->devnum - 1;
--	chip->ecc.size *= denali->devnum;
--	chip->ecc.bytes *= denali->devnum;
--	chip->ecc.strength *= denali->devnum;
--	denali->bbtskipbytes *= denali->devnum;
-+	if (denali->devnum == 1)
-+		return 0;
-+
-+	if (denali->devnum != 2) {
-+		dev_err(denali->dev, "unsupported number of devices %d\n",
-+			denali->devnum);
-+		return -EINVAL;
-+	}
-+
-+	/* 2 chips in parallel */
-+	mtd->size <<= 1;
-+	mtd->erasesize <<= 1;
-+	mtd->writesize <<= 1;
-+	mtd->oobsize <<= 1;
-+	chip->chipsize <<= 1;
-+	chip->page_shift += 1;
-+	chip->phys_erase_shift += 1;
-+	chip->bbt_erase_shift += 1;
-+	chip->chip_shift += 1;
-+	chip->pagemask <<= 1;
-+	chip->ecc.size <<= 1;
-+	chip->ecc.bytes <<= 1;
-+	chip->ecc.strength <<= 1;
-+	denali->bbtskipbytes <<= 1;
-+
-+	return 0;
+-	dt = devm_kzalloc(&ofdev->dev, sizeof(*dt), GFP_KERNEL);
++	dt = devm_kzalloc(&pdev->dev, sizeof(*dt), GFP_KERNEL);
+ 	if (!dt)
+ 		return -ENOMEM;
+ 	denali = &dt->denali;
+ 
+-	data = of_device_get_match_data(&ofdev->dev);
++	data = of_device_get_match_data(&pdev->dev);
+ 	if (data)
+ 		denali->caps = data->caps;
+ 
+ 	denali->platform = DT;
+-	denali->dev = &ofdev->dev;
+-	denali->irq = platform_get_irq(ofdev, 0);
++	denali->dev = &pdev->dev;
++	denali->irq = platform_get_irq(pdev, 0);
+ 	if (denali->irq < 0) {
+-		dev_err(&ofdev->dev, "no irq defined\n");
++		dev_err(&pdev->dev, "no irq defined\n");
+ 		return denali->irq;
+ 	}
+ 
+-	denali_reg = platform_get_resource_byname(ofdev, IORESOURCE_MEM, "denali_reg");
+-	denali->flash_reg = devm_ioremap_resource(&ofdev->dev, denali_reg);
++	denali_reg = platform_get_resource_byname(pdev, IORESOURCE_MEM,
++						  "denali_reg");
++	denali->flash_reg = devm_ioremap_resource(&pdev->dev, denali_reg);
+ 	if (IS_ERR(denali->flash_reg))
+ 		return PTR_ERR(denali->flash_reg);
+ 
+-	nand_data = platform_get_resource_byname(ofdev, IORESOURCE_MEM, "nand_data");
+-	denali->flash_mem = devm_ioremap_resource(&ofdev->dev, nand_data);
++	nand_data = platform_get_resource_byname(pdev, IORESOURCE_MEM,
++						 "nand_data");
++	denali->flash_mem = devm_ioremap_resource(&pdev->dev, nand_data);
+ 	if (IS_ERR(denali->flash_mem))
+ 		return PTR_ERR(denali->flash_mem);
+ 
+-	dt->clk = devm_clk_get(&ofdev->dev, NULL);
++	dt->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(dt->clk)) {
+-		dev_err(&ofdev->dev, "no clk available\n");
++		dev_err(&pdev->dev, "no clk available\n");
+ 		return PTR_ERR(dt->clk);
+ 	}
+ 	clk_prepare_enable(dt->clk);
+@@ -92,7 +94,7 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 	if (ret)
+ 		goto out_disable_clk;
+ 
+-	platform_set_drvdata(ofdev, dt);
++	platform_set_drvdata(pdev, dt);
+ 	return 0;
+ 
+ out_disable_clk:
+@@ -101,9 +103,9 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 	return ret;
  }
  
- int denali_init(struct denali_nand_info *denali)
-@@ -1623,7 +1635,9 @@ int denali_init(struct denali_nand_info *denali)
- 	chip->ecc.write_oob = denali_write_oob;
- 	chip->erase = denali_erase;
+-static int denali_dt_remove(struct platform_device *ofdev)
++static int denali_dt_remove(struct platform_device *pdev)
+ {
+-	struct denali_dt *dt = platform_get_drvdata(ofdev);
++	struct denali_dt *dt = platform_get_drvdata(pdev);
  
--	denali_multidev_fixup(denali);
-+	ret = denali_multidev_fixup(denali);
-+	if (ret)
-+		goto failed_req_irq;
- 
- 	ret = nand_scan_tail(mtd);
- 	if (ret)
+ 	denali_remove(&dt->denali);
+ 	clk_disable_unprepare(dt->clk);
 -- 
 2.7.4
