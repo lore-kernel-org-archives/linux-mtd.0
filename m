@@ -1,21 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqo21-0000Ed-An
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 21:43:03 +0000
-Date: Wed, 22 Mar 2017 22:42:37 +0100
+ id 1cqoFJ-0005N0-IG
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 21:56:48 +0000
+Date: Wed, 22 Mar 2017 22:56:17 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
  Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
- Stefan Roese <sr@denx.de>, stable@vger.kernel.org
-Subject: Re: [PATCH 01/13] mtd: nand: fsmc: fix NAND width handling
-Message-ID: <20170322224237.3cc00c7f@bbrezillon>
-In-Reply-To: <1490090645-8576-2-git-send-email-thomas.petazzoni@free-electrons.com>
+ Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH 02/13] mtd: nand: fsmc: rework fsmc_nand_setup() to use
+ ->setup_data_interface()
+Message-ID: <20170322225617.313aa805@bbrezillon>
+In-Reply-To: <1490090645-8576-3-git-send-email-thomas.petazzoni@free-electrons.com>
 References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1490090645-8576-2-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1490090645-8576-3-git-send-email-thomas.petazzoni@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,93 +28,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Greg for the backport to stable question.
-
-On Tue, 21 Mar 2017 11:03:53 +0100
+On Tue, 21 Mar 2017 11:03:54 +0100
 Thomas Petazzoni <thomas.petazzoni@free-electrons.com> wrote:
 
-> In commit eea628199d5b ("mtd: Add device-tree support to fsmc_nand"),
-> Device Tree support was added to the fmsc_nand driver. However, this
-> code has a bug in how it handles the bank-width DT property to set the
-> bus width.
+> Since a few kernel versions, the NAND subsystem has introduced a
+> callback called ->setup_data_interface(), which NAND controller drivers
+> are supposed to use to perform all the NAND data interface.
 > 
-> Indeed, in the function fsmc_nand_probe_config_dt() that parses the
-> Device Tree, it sets pdata->width to either 8 or 16 depending on the
-> value of the bank-width DT property.
+> This commit therefore converts the fsmc_nand driver to use this callback
+> instead of the home-grown fsmc_nand_setup() function.
 > 
-> Then, the ->probe() function will test if pdata->width is equal to
-> FSMC_NAND_BW16 (which is 2) to set NAND_BUSWIDTH_16 in
-> nand->options. Therefore, with the DT probing, this condition will never
-> match.
+> For now, the NAND timings are not used, and we simply use the timings
+> provided from the Device Tree, or otherwise the default timings. Support
+> for the NAND timings is added in a follow-up patch.
 > 
-> This commit fixes that by removing the "width" field from
-> fsmc_nand_platform_data and instead have the fsmc_nand_probe_config_dt()
-> function directly set the appropriate nand->options value.
+> The call to fsmc_nand_setup() in the ->resume() hook is simply replaced
+> by a call to nand_reset(), which internally will call the
+> ->setup_data_interface() callback.  
 > 
-> It is worth mentioning that if this commit gets backported to older
-> kernels, prior to the drop of non-DT probing, then non-DT probing will
-> be broken because nand->options will no longer be set to
-> NAND_BUSWIDTH_16.
-
-Then maybe we should the drop the Cc-stable tag, or put # vX.Y+ to
-prevent this patch from being applied to versions where it could break
-things.
-
-Note that no-one complained about this bug so far, so I guess no-one
-cares about this fix (probably because 16-bits NANDs are not widely
-used) ;-).
-
-> 
-> Fixes: eea628199d5b ("mtd: Add device-tree support to fsmc_nand")
-> Cc: <stable@vger.kernel.org>
 > Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 > ---
->  drivers/mtd/nand/fsmc_nand.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
+>  drivers/mtd/nand/fsmc_nand.c | 31 +++++++++++++++++++------------
+>  1 file changed, 19 insertions(+), 12 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-> index bda1e46..66aece9 100644
+> index 66aece9..4a98433 100644
 > --- a/drivers/mtd/nand/fsmc_nand.c
 > +++ b/drivers/mtd/nand/fsmc_nand.c
-> @@ -150,7 +150,6 @@ struct fsmc_nand_platform_data {
->  	struct mtd_partition	*partitions;
->  	unsigned int		nr_partitions;
->  	unsigned int		options;
-> -	unsigned int		width;
->  	unsigned int		bank;
+> @@ -370,9 +370,12 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>   * This routine initializes timing parameters related to NAND memory access in
+>   * FSMC registers
+>   */
+> -static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
+> -			   uint32_t busw, struct fsmc_nand_timings *timings)
+> +static int fsmc_setup_data_interface(struct mtd_info *mtd,
+> +				     const struct nand_data_interface *conf,
+> +				     bool check_only)
+>  {
+> +	struct nand_chip *nand = mtd_to_nand(mtd);
+> +	struct fsmc_nand_data *host = nand_get_controller_data(nand);
+>  	uint32_t value = FSMC_DEVTYPE_NAND | FSMC_ENABLE | FSMC_WAITON;
+>  	uint32_t tclr, tar, thiz, thold, twait, tset;
+>  	struct fsmc_nand_timings *tims;
+> @@ -384,12 +387,18 @@ static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
+>  		.twait	= FSMC_TWAIT_6,
+>  		.tset	= FSMC_TSET_0,
+>  	};
+> +	unsigned int bank = host->bank;
+> +	void __iomem *regs = host->regs_va;
+> +	int ret;
 >  
->  	enum access_mode	mode;
-> @@ -844,18 +843,19 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
->  	u32 val;
->  	int ret;
+> -	if (timings)
+> -		tims = timings;
+> +	if (host->dev_timings)
+> +		tims = host->dev_timings;
+>  	else
+>  		tims = &default_timings;
 >  
-> -	/* Set default NAND width to 8 bits */
-> -	pdata->width = 8;
-> +	pdata->options = 0;
+> +	if (check_only)
+> +		return 0;
 > +
->  	if (!of_property_read_u32(np, "bank-width", &val)) {
->  		if (val == 2) {
-> -			pdata->width = 16;
-> +			pdata->options |= NAND_BUSWIDTH_16;
->  		} else if (val != 1) {
->  			dev_err(&pdev->dev, "invalid bank-width %u\n", val);
->  			return -EINVAL;
->  		}
->  	}
-> +
->  	if (of_get_property(np, "nand-skip-bbtscan", NULL))
-> -		pdata->options = NAND_SKIP_BBTSCAN;
-> +		pdata->options |= NAND_SKIP_BBTSCAN;
+
+I'm not sure this is such a good idea to move default and DT timings
+setting in the ->setup_data_interface() hook.
+
+ONFI NANDs are changing an internal parameter to switch to a specific
+timing mode. If you let the core think that you configured the
+controller to support this timing mode, while you actually configured
+it with the default or DT timings it might not work as expected.
+
+>  	tclr = (tims->tclr & FSMC_TCLR_MASK) << FSMC_TCLR_SHIFT;
+>  	tar = (tims->tar & FSMC_TAR_MASK) << FSMC_TAR_SHIFT;
+>  	thiz = (tims->thiz & FSMC_THIZ_MASK) << FSMC_THIZ_SHIFT;
+> @@ -397,7 +406,7 @@ static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
+>  	twait = (tims->twait & FSMC_TWAIT_MASK) << FSMC_TWAIT_SHIFT;
+>  	tset = (tims->tset & FSMC_TSET_MASK) << FSMC_TSET_SHIFT;
 >  
->  	pdata->nand_timings = devm_kzalloc(&pdev->dev,
->  				sizeof(*pdata->nand_timings), GFP_KERNEL);
-> @@ -992,9 +992,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+> -	if (busw)
+> +	if (nand->options & NAND_BUSWIDTH_16)
+>  		writel_relaxed(value | FSMC_DEVWID_16,
+>  				FSMC_NAND_REG(regs, bank, PC));
+>  	else
+> @@ -410,6 +419,8 @@ static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
+>  			FSMC_NAND_REG(regs, bank, COMM));
+>  	writel_relaxed(thiz | thold | twait | tset,
+>  			FSMC_NAND_REG(regs, bank, ATTRIB));
+> +
+> +	return 0;
+>  }
+>  
+>  /*
+> @@ -991,6 +1002,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+>  	nand->select_chip = fsmc_select_chip;
 >  	nand->badblockbits = 7;
 >  	nand_set_flash_node(nand, np);
+> +	nand->setup_data_interface = fsmc_setup_data_interface;
 >  
-> -	if (pdata->width == FSMC_NAND_BW16)
-> -		nand->options |= NAND_BUSWIDTH_16;
-> -
 >  	switch (host->mode) {
 >  	case USE_DMA_ACCESS:
->  		dma_cap_zero(mask);
+> @@ -1019,10 +1031,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+>  		break;
+>  	}
+>  
+> -	fsmc_nand_setup(host->regs_va, host->bank,
+> -			nand->options & NAND_BUSWIDTH_16,
+> -			host->dev_timings);
+> -
+>  	if (AMBA_REV_BITS(host->pid) >= 8) {
+>  		nand->ecc.read_page = fsmc_read_page_hwecc;
+>  		nand->ecc.calculate = fsmc_read_hwecc_ecc4;
+> @@ -1121,6 +1129,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, host);
+>  	dev_info(&pdev->dev, "FSMC NAND driver registration successful\n");
+> +
+>  	return 0;
+>  
+>  err_probe:
+> @@ -1172,9 +1181,7 @@ static int fsmc_nand_resume(struct device *dev)
+>  	struct fsmc_nand_data *host = dev_get_drvdata(dev);
+>  	if (host) {
+>  		clk_prepare_enable(host->clk);
+> -		fsmc_nand_setup(host->regs_va, host->bank,
+> -				host->nand.options & NAND_BUSWIDTH_16,
+> -				host->dev_timings);
+> +		nand_reset(&host->nand, 0);
+>  	}
+>  	return 0;
+>  }
