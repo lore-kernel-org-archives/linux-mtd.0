@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZa-0001Sk-4x
+ id 1cqmZV-0001SQ-3h
  for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:36 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,15 +16,13 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
+ linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: [RESEND PATCH v2 15/53] mtd: nand: denali_dt: remove dma-mask DT
- property
-Date: Thu, 23 Mar 2017 05:07:14 +0900
-Message-Id: <1490213273-8571-16-git-send-email-yamada.masahiro@socionext.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [RESEND PATCH v2 11/53] mtd: nand: denali: fix bitflips calculation
+ in handle_ecc()
+Date: Thu, 23 Mar 2017 05:07:10 +0900
+Message-Id: <1490213273-8571-12-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,65 +34,250 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The driver sets appropriate DMA mask.  Delete the "dma-mask" DT
-property.  See [1] for negative comments for this binding.
+This function is wrong in multiple ways:
 
-[1] https://lkml.org/lkml/2016/2/8/57
+[1] Counting corrected bytes instead of corrected bits.
+
+The following code is counting the number of corrected _bytes_.
+
+    /* correct the ECC error */
+    buf[offset] ^= err_cor_value;
+    mtd->ecc_stats.corrected++;
+    bitflips++;
+
+What the core framework expects is the number of corrected _bits_.
+They can be different if multiple bitflips occur within one byte.
+
+[2] total number of errors instead of max of per-sector errors
+
+The core framework expects that corrected errors are counted per
+sector, then the max value should be taken.  The current code simply
+iterates over the whole page, i.e. counts the total number of
+correction in the page.  This means "too many bitflips" is triggered
+earlier than it should be, i.e. the NAND device is worn out sooner.
+
+Besides those bugs, this function is unreadable due to the deep
+nesting.  Notice the whole code in this function is wrapped in
+if (irq_status & INTR__ECC_ERR), so this conditional can be moved
+out of the function.  Also, use shorter names for local variables.
+
+Re-work the function to fix all the issues.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - Use shorter names for local variables.
+  - Fix bugs addressed by [1], [2]
 
- Documentation/devicetree/bindings/mtd/denali-nand.txt | 2 --
- drivers/mtd/nand/denali_dt.c                          | 9 ---------
- 2 files changed, 11 deletions(-)
+ drivers/mtd/nand/denali.c | 157 ++++++++++++++++++++++++----------------------
+ 1 file changed, 82 insertions(+), 75 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-index 6f4ab4c..e593bbe 100644
---- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-@@ -6,7 +6,6 @@ Required properties:
-   - reg : should contain registers location and length for data and reg.
-   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
-   - interrupts : The interrupt number.
--  - dm-mask : DMA bit mask
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 86381ac..608fe6f 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -888,80 +888,87 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
+ #define ECC_BYTE(x)	(((x) & ECC_ERROR_ADDRESS__OFFSET))
+ #define ECC_CORRECTION_VALUE(x) ((x) & ERR_CORRECTION_INFO__BYTEMASK)
+-#define ECC_ERROR_CORRECTABLE(x) (!((x) & ERR_CORRECTION_INFO__ERROR_TYPE))
++#define ECC_ERROR_UNCORRECTABLE(x) ((x) & ERR_CORRECTION_INFO__ERROR_TYPE)
+ #define ECC_ERR_DEVICE(x)	(((x) & ERR_CORRECTION_INFO__DEVICE_NR) >> 8)
+ #define ECC_LAST_ERR(x)		((x) & ERR_CORRECTION_INFO__LAST_ERR_INFO)
  
- The device tree may optionally contain sub-nodes describing partitions of the
- address space. See partition.txt for more detail.
-@@ -20,5 +19,4 @@ nand: nand@ff900000 {
- 	reg = <0xff900000 0x100000>, <0xffb80000 0x10000>;
- 	reg-names = "nand_data", "denali_reg";
- 	interrupts = <0 144 4>;
--	dma-mask = <0xffffffff>;
- };
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 9577bfd..b8a8284 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -46,8 +46,6 @@ static const struct of_device_id denali_nand_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
- 
--static u64 denali_dma_mask;
--
- static int denali_dt_probe(struct platform_device *ofdev)
+-static bool handle_ecc(struct denali_nand_info *denali, uint8_t *buf,
+-		       uint32_t irq_status, unsigned int *max_bitflips)
++static int handle_ecc(struct mtd_info *mtd,
++		      struct denali_nand_info *denali, uint8_t *buf)
  {
- 	struct resource *denali_reg, *nand_data;
-@@ -83,13 +81,6 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	if (IS_ERR(denali->flash_mem))
- 		return PTR_ERR(denali->flash_mem);
+-	bool check_erased_page = false;
+ 	unsigned int bitflips = 0;
++	unsigned int max_bitflips = 0;
++	unsigned int total_bitflips = 0;
++	uint32_t err_addr, err_cor_info;
++	unsigned int err_byte, err_sector, err_device;
++	uint8_t err_cor_value;
++	unsigned int prev_sector = 0;
++	int ret = 0;
++
++	/* read the ECC errors. we'll ignore them for now */
++	denali_set_intr_modes(denali, false);
  
--	if (!of_property_read_u32(ofdev->dev.of_node,
--		"dma-mask", (u32 *)&denali_dma_mask)) {
--		denali->dev->dma_mask = &denali_dma_mask;
--	} else {
--		denali->dev->dma_mask = NULL;
--	}
+-	if (irq_status & INTR__ECC_ERR) {
+-		/* read the ECC errors. we'll ignore them for now */
+-		uint32_t err_address, err_correction_info, err_byte,
+-			 err_sector, err_device, err_correction_value;
+-		denali_set_intr_modes(denali, false);
 -
- 	dt->clk = devm_clk_get(&ofdev->dev, NULL);
- 	if (IS_ERR(dt->clk)) {
- 		dev_err(&ofdev->dev, "no clk available\n");
+-		do {
+-			err_address = ioread32(denali->flash_reg +
+-						ECC_ERROR_ADDRESS);
+-			err_sector = ECC_SECTOR(err_address);
+-			err_byte = ECC_BYTE(err_address);
+-
+-			err_correction_info = ioread32(denali->flash_reg +
+-						ERR_CORRECTION_INFO);
+-			err_correction_value =
+-				ECC_CORRECTION_VALUE(err_correction_info);
+-			err_device = ECC_ERR_DEVICE(err_correction_info);
+-
+-			if (ECC_ERROR_CORRECTABLE(err_correction_info)) {
+-				/*
+-				 * If err_byte is larger than ECC_SECTOR_SIZE,
+-				 * means error happened in OOB, so we ignore
+-				 * it. It's no need for us to correct it
+-				 * err_device is represented the NAND error
+-				 * bits are happened in if there are more
+-				 * than one NAND connected.
+-				 */
+-				if (err_byte < ECC_SECTOR_SIZE) {
+-					struct mtd_info *mtd =
+-						nand_to_mtd(&denali->nand);
+-					int offset;
+-
+-					offset = (err_sector *
+-							ECC_SECTOR_SIZE +
+-							err_byte) *
+-							denali->devnum +
+-							err_device;
+-					/* correct the ECC error */
+-					buf[offset] ^= err_correction_value;
+-					mtd->ecc_stats.corrected++;
+-					bitflips++;
+-				}
+-			} else {
+-				/*
+-				 * if the error is not correctable, need to
+-				 * look at the page to see if it is an erased
+-				 * page. if so, then it's not a real ECC error
+-				 */
+-				check_erased_page = true;
+-			}
+-		} while (!ECC_LAST_ERR(err_correction_info));
+-		/*
+-		 * Once handle all ecc errors, controller will triger
+-		 * a ECC_TRANSACTION_DONE interrupt, so here just wait
+-		 * for a while for this interrupt
+-		 */
+-		while (!(read_interrupt_status(denali) &
+-				INTR__ECC_TRANSACTION_DONE))
+-			cpu_relax();
+-		clear_interrupts(denali);
+-		denali_set_intr_modes(denali, true);
+-	}
+-	*max_bitflips = bitflips;
+-	return check_erased_page;
++	do {
++		err_addr = ioread32(denali->flash_reg + ECC_ERROR_ADDRESS);
++		err_sector = ECC_SECTOR(err_addr);
++		err_byte = ECC_BYTE(err_addr);
++
++		err_cor_info = ioread32(denali->flash_reg + ERR_CORRECTION_INFO);
++		err_cor_value = ECC_CORRECTION_VALUE(err_cor_info);
++		err_device = ECC_ERR_DEVICE(err_cor_info);
++
++		/* reset the bitflip counter when crossing ECC sector */
++		if (err_sector != prev_sector)
++			bitflips = 0;
++
++		if (ECC_ERROR_UNCORRECTABLE(err_cor_info)) {
++			/*
++			 * if the error is not correctable, need to look at the
++			 * page to see if it is an erased page. if so, then
++			 * it's not a real ECC error
++			 */
++			ret = -EBADMSG;
++		} else if (err_byte < ECC_SECTOR_SIZE) {
++			/*
++			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
++			 * happened in OOB, so we ignore it. It's no need for
++			 * us to correct it err_device is represented the NAND
++			 * error bits are happened in if there are more than
++			 * one NAND connected.
++			 */
++			int offset;
++			unsigned int flips_in_byte;
++
++			offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
++						denali->devnum + err_device;
++
++			/* correct the ECC error */
++			flips_in_byte = hweight8(buf[offset] ^ err_cor_value);
++			bitflips += flips_in_byte;
++			total_bitflips += flips_in_byte;
++			buf[offset] ^= err_cor_value;
++
++			max_bitflips = max(max_bitflips, bitflips);
++		}
++
++		prev_sector = err_sector;
++	} while (!ECC_LAST_ERR(err_cor_info));
++
++	/*
++	 * Once handle all ecc errors, controller will trigger a
++	 * ECC_TRANSACTION_DONE interrupt, so here just wait for
++	 * a while for this interrupt
++	 */
++	while (!(read_interrupt_status(denali) & INTR__ECC_TRANSACTION_DONE))
++		cpu_relax();
++	clear_interrupts(denali);
++	denali_set_intr_modes(denali, true);
++
++	if (ret)
++		return ret;
++
++	mtd->ecc_stats.corrected += total_bitflips;
++
++	return max_bitflips;
+ }
+ 
+ /* programs the controller to either enable/disable DMA transfers */
+@@ -1097,7 +1104,6 @@ static int denali_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 			    uint8_t *buf, int oob_required, int page)
+ {
+-	unsigned int max_bitflips;
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+ 
+ 	dma_addr_t addr = denali->buf.dma_buf;
+@@ -1105,8 +1111,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 	uint32_t irq_status;
+ 	uint32_t irq_mask = INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
+-	bool check_erased_page = false;
+-	int stat;
++	int stat = 0;
+ 
+ 	if (page != denali->page) {
+ 		dev_err(denali->dev,
+@@ -1130,10 +1135,11 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 	memcpy(buf, denali->buf.buf, mtd->writesize);
+ 
+-	check_erased_page = handle_ecc(denali, buf, irq_status, &max_bitflips);
++	if (irq_status & INTR__ECC_ERR)
++		stat = handle_ecc(mtd, denali, buf);
+ 	denali_enable_dma(denali, false);
+ 
+-	if (check_erased_page) {
++	if (stat == -EBADMSG) {
+ 		read_oob_data(mtd, chip->oob_poi, denali->page);
+ 
+ 		stat = nand_check_erased_ecc_chunk(
+@@ -1144,10 +1150,11 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 		if (stat < 0) {
+ 			mtd->ecc_stats.failed++;
+ 			/* return 0 for uncorrectable bitflips */
+-			max_bitflips = 0;
++			stat = 0;
+ 		}
+ 	}
+-	return max_bitflips;
++
++	return stat;
+ }
+ 
+ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
 -- 
 2.7.4
