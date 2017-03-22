@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqdQm-0007BT-Ja
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 10:23:56 +0000
+ id 1cqdR9-0007S8-R3
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 10:24:18 +0000
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: Yuanjie.Huang@windriver.com, raj.khem@gmail.com,
  David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH 1/5] Fix alignment trap triggered by NEON instructions
-Date: Wed, 22 Mar 2017 11:22:53 +0100
-Message-Id: <20170322102257.7605-2-david.oberhollenzer@sigma-star.at>
+Subject: [PATCH 5/5] Return correct error number in ubi_get_vol_info1
+Date: Wed, 22 Mar 2017 11:22:57 +0100
+Message-Id: <20170322102257.7605-6-david.oberhollenzer@sigma-star.at>
 In-Reply-To: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
 References: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,53 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Yuanjie Huang <Yuanjie.Huang@windriver.com>
+If the specified UBI device or volume does not exist, the function
+is supposed to set errno to ENODEV.
 
-NEON instruction VLD1.64 was used to copy 64 bits data after type
-casting, and they will trigger alignment trap.
-This patch uses memcpy to avoid alignment problem.
+This patch adds a check to ubi_get_vol_info1 to change the errno
+to ENODEV if vol_get_major cannot access the underlying sysfs file,
+so the function propperly returns that the device or volume does
+not exist, instead of failing with errno set to ENOENT.
 
-Signed-off-by: Yuanjie Huang <Yuanjie.Huang@windriver.com>
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 ---
- ubifs-utils/mkfs.ubifs/key.h | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ lib/libubi.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/key.h b/ubifs-utils/mkfs.ubifs/key.h
-index 39379fd..118858b 100644
---- a/ubifs-utils/mkfs.ubifs/key.h
-+++ b/ubifs-utils/mkfs.ubifs/key.h
-@@ -159,10 +159,12 @@ static inline void data_key_init(union ubifs_key *key, ino_t inum,
-  */
- static inline void key_write(const union ubifs_key *from, void *to)
- {
--	union ubifs_key *t = to;
-+	__le32 x[2];
+diff --git a/lib/libubi.c b/lib/libubi.c
+index 99022dd..f1cc37a 100644
+--- a/lib/libubi.c
++++ b/lib/libubi.c
+@@ -1242,8 +1242,11 @@ int ubi_get_vol_info1(libubi_t desc, int dev_num, int vol_id,
+ 	info->dev_num = dev_num;
+ 	info->vol_id = vol_id;
  
--	t->j32[0] = cpu_to_le32(from->u32[0]);
--	t->j32[1] = cpu_to_le32(from->u32[1]);
-+	x[0] = cpu_to_le32(from->u32[0]);
-+	x[1] = cpu_to_le32(from->u32[1]);
-+
-+	memcpy(to, &x, 8);
- 	memset(to + 8, 0, UBIFS_MAX_KEY_LEN - 8);
- }
+-	if (vol_get_major(lib, dev_num, vol_id, &info->major, &info->minor))
++	if (vol_get_major(lib, dev_num, vol_id, &info->major, &info->minor)) {
++		if (errno == ENOENT)
++			errno = ENODEV;
+ 		return -1;
++	}
  
-@@ -174,10 +176,12 @@ static inline void key_write(const union ubifs_key *from, void *to)
-  */
- static inline void key_write_idx(const union ubifs_key *from, void *to)
- {
--	union ubifs_key *t = to;
-+	__le32 x[2];
-+
-+	x[0] = cpu_to_le32(from->u32[0]);
-+	x[1] = cpu_to_le32(from->u32[1]);
- 
--	t->j32[0] = cpu_to_le32(from->u32[0]);
--	t->j32[1] = cpu_to_le32(from->u32[1]);
-+	memcpy(to, &x, 8);
- }
- 
- /**
+ 	ret = vol_read_data(lib->vol_type, dev_num, vol_id, buf, 50);
+ 	if (ret < 0)
 -- 
 2.10.2
