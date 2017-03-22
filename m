@@ -1,28 +1,15 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqp8L-0000Nn-Ro
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 22:53:39 +0000
-Date: Wed, 22 Mar 2017 23:53:11 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
- Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH 02/13] mtd: nand: fsmc: rework fsmc_nand_setup() to use
- ->setup_data_interface()
-Message-ID: <20170322235311.0da031f3@bbrezillon>
-In-Reply-To: <20170322233915.29bf2514@free-electrons.com>
-References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1490090645-8576-3-git-send-email-thomas.petazzoni@free-electrons.com>
- <20170322225617.313aa805@bbrezillon>
- <20170322230553.5daf0562@free-electrons.com>
- <20170322232333.23ae18ab@bbrezillon>
- <20170322233915.29bf2514@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail7.hitachi.co.jp ([133.145.228.42])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqpJI-0004Qq-2N
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 23:04:58 +0000
+From: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
+To: linux-mtd@lists.infradead.org
+Cc: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>,
+ Jagan Teki <jagan@openedev.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v4] mtd: spi-nor: Add support for N25Q256A11
+Date: Thu, 23 Mar 2017 08:04:14 +0900
+Message-Id: <1490223854-6936-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,49 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 22 Mar 2017 23:39:15 +0100
-Thomas Petazzoni <thomas.petazzoni@free-electrons.com> wrote:
+Add new Micron N25Q256A (N25Q256A11) 256Mbit NOR Flash in the list
+of supported devices. This chip has the same structure as the N25Q256A
+but ID and voltage (1V8) to use is different. Therefore, this adds
+N25Q256A11 as n25q256ax1.
 
-> Hello,
-> 
-> On Wed, 22 Mar 2017 23:23:33 +0100, Boris Brezillon wrote:
-> 
-> > > So what do you suggest to keep the compatibility with the existing DT
-> > > binding for this NAND controller?    
-> > 
-> > We have 2 choices here:
-> > 1/ drop the old/static timings config and only rely on the dynamic
-> >    config. This is a bit risky, because we've only tested the new
-> >    timing conversion logic on one board.
-> > 2/ keep both solutions around until all boards have switched to the new
-> >    solution. In this case, you'll only set the ->setup_data_interface()
-> >    hook if timings are not defined in the DT  
-> 
-> What about the "default" timings that are currently hardcoded in the
-> driver, if no timings are specified in the DT? My patch currently does
-> the following:
-> 
->  - Use DT timings if provided
->  - Use NAND timings if provided
->  - Use "default" timing otherwise
+In the future, for new Micron memories we could use the patterns
+"n25q*ax1" for 1V8 and "n25q*ax3" for 3V3 memories.
 
-Okay, I didn't notice the 'fallback to "default" timings' in patch 3.
-This portion of code will actually never be reached, because the core
-always provide valid SDR timings. If the NAND does not support ONFI
-timing modes and nothing is specified in the NAND ids table (or the in
-vendor specific init code), then the lowest timing mode is assumed
-(timing mode 0), and if you implement ->setup_data_interface(), this is
-what you will end-up with.
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
+CC: Jagan Teki <jagan@openedev.com>
+CC: Marek Vasut <marek.vasut@gmail.com>
+CC: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
-> 
-> Should we drop the "default" timing thing?
+v4: Update description and fix typo.
+v3: Use new name space.
+    n25q*ax1" for 1V8 and "n25q*ax3" for 3V3 memories.
+v2: Set 0x20bb1b as n25q256a, and 0x20bb1b as n25q256.
 
-I think so.
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> If not, how does it fit in
-> your proposal? Indeed your proposal is simply: if no timings in DT, use
-> the NAND timings. But my patch does more than that.
-
-If we really want to keep "default" timmings around, then we'll have to
-add an extra Kconfig option, a kernel parameter (or a DT property :-)),
-but I'm not a big fan of these solutions.
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 1ae872bfc3ba..2e02991d93aa 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1031,6 +1031,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+ 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
++	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+ 	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+ 	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+ 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+-- 
+2.11.0
