@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZV-0001ST-3l
+ id 1cqmZV-0001SO-3m
  for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:33 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -19,10 +19,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RESEND PATCH v2 17/53] mtd: nand: denali: allow to override revision
- number
-Date: Thu, 23 Mar 2017 05:07:16 +0900
-Message-Id: <1490213273-8571-18-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 14/53] mtd: nand: denali: support 64bit capable DMA
+ engine
+Date: Thu, 23 Mar 2017 05:07:13 +0900
+Message-Id: <1490213273-8571-15-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,115 +34,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
-changed in revision 5.1") added a revision check to support the
-new max_banks encoding.  Its git-log states "The encoding of
-max_banks changed in Denali revision 5.1".
+The current driver only supports the DMA engine up to 32 bit
+physical address, but there also exists 64 bit capable DMA engine
+for this IP.
 
-There are exceptional cases, for example, the revision register on
-some UniPhier SoCs says the IP is 5.0 but the max_banks is encoded
-in the new format.
-
-This IP updates the resister specification from time to time (often
-breaking the backward compatibility), but the revision number is not
-incremented correctly.
-
-The max_banks is not only the case that needs revision checking.
-Let's allow to override an incorrect revision number.
+The data DMA setup sequence is completely different, so I added the
+64 bit DMA code as a new function denali_setup_dma64().  The 32 bit
+one has been renamed to denali_setup_dma32().
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v2:
-  - Replace the NEW_N_BANKS_FORMAT approach
+  - Change the capability prefix DENALI_CAPS_ -> DENALI_CAP_
 
- drivers/mtd/nand/denali.c    | 19 +++++++++----------
- drivers/mtd/nand/denali.h    |  3 +--
- drivers/mtd/nand/denali_dt.c |  5 ++++-
- 3 files changed, 14 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/denali.c | 39 +++++++++++++++++++++++++++++++++++----
+ drivers/mtd/nand/denali.h |  1 +
+ 2 files changed, 36 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 513292f..ff6af1d 100644
+index 91f0def..513292f 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -449,17 +449,12 @@ static void find_valid_banks(struct denali_nand_info *denali)
- static void detect_max_banks(struct denali_nand_info *denali)
- {
- 	uint32_t features = ioread32(denali->flash_reg + FEATURES);
--	/*
--	 * Read the revision register, so we can calculate the max_banks
--	 * properly: the encoding changed from rev 5.0 to 5.1
--	 */
--	u32 revision = MAKE_COMPARABLE_REVISION(
--				ioread32(denali->flash_reg + REVISION));
- 
--	if (revision < REVISION_5_1)
--		denali->max_banks = 2 << (features & FEATURES__N_BANKS);
--	else
--		denali->max_banks = 1 << (features & FEATURES__N_BANKS);
-+	denali->max_banks = 1 << (features & FEATURES__N_BANKS);
-+
-+	/* the encoding changed from rev 5.0 to 5.1 */
-+	if (denali->revision < 0x0501)
-+		denali->max_banks <<= 1;
+@@ -999,8 +999,30 @@ static void denali_enable_dma(struct denali_nand_info *denali, bool en)
+ 	ioread32(denali->flash_reg + DMA_ENABLE);
  }
  
- static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
-@@ -1348,6 +1343,10 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- /* Initialization code to bring the device up to a known good state */
- static void denali_hw_init(struct denali_nand_info *denali)
- {
-+	if (!denali->revision)
-+		denali->revision =
-+				swab16(ioread32(denali->flash_reg + REVISION));
+-/* setups the HW to perform the data DMA */
+-static void denali_setup_dma(struct denali_nand_info *denali, int op)
++static void denali_setup_dma64(struct denali_nand_info *denali, int op)
++{
++	uint32_t mode;
++	const int page_count = 1;
++	uint64_t addr = denali->buf.dma_buf;
 +
- 	/*
- 	 * tell driver how many bit controller will skip before
- 	 * writing ECC code in OOB, this register may be already
++	mode = MODE_10 | BANK(denali->flash_bank) | denali->page;
++
++	/* DMA is a three step process */
++
++	/*
++	 * 1. setup transfer type, interrupt when complete,
++	 *    burst len = 64 bytes, the number of pages
++	 */
++	index_addr(denali, mode, 0x01002000 | (64 << 16) | op | page_count);
++
++	/* 2. set memory low address */
++	index_addr(denali, mode, addr);
++
++	/* 3. set memory high address */
++	index_addr(denali, mode, addr >> 32);
++}
++
++static void denali_setup_dma32(struct denali_nand_info *denali, int op)
+ {
+ 	uint32_t mode;
+ 	const int page_count = 1;
+@@ -1023,6 +1045,14 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
+ 	index_addr(denali, mode | 0x14000, 0x2400);
+ }
+ 
++static void denali_setup_dma(struct denali_nand_info *denali, int op)
++{
++	if (denali->caps & DENALI_CAP_DMA_64BIT)
++		denali_setup_dma64(denali, op);
++	else
++		denali_setup_dma32(denali, op);
++}
++
+ /*
+  * writes a page. user specifies type, and this function handles the
+  * configuration details.
+@@ -1492,8 +1522,9 @@ int denali_init(struct denali_nand_info *denali)
+ 		goto failed_req_irq;
+ 	}
+ 
+-	/* Is 32-bit DMA supported? */
+-	ret = dma_set_mask(denali->dev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(denali->dev,
++			   DMA_BIT_MASK(denali->caps & DENALI_CAP_DMA_64BIT ?
++					64 : 32));
+ 	if (ret) {
+ 		dev_err(denali->dev, "No usable DMA configuration\n");
+ 		goto failed_req_irq;
 diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index a8e8d68..58a8042 100644
+index ed42b16..a8e8d68 100644
 --- a/drivers/mtd/nand/denali.h
 +++ b/drivers/mtd/nand/denali.h
-@@ -179,8 +179,6 @@
- 
- #define REVISION				0x370
- #define     REVISION__VALUE				0xffff
--#define MAKE_COMPARABLE_REVISION(x)		swab16((x) & REVISION__VALUE)
--#define REVISION_5_1				0x00000501
- 
- #define ONFI_DEVICE_FEATURES			0x380
- #define     ONFI_DEVICE_FEATURES__VALUE			0x003f
-@@ -351,6 +349,7 @@ struct denali_nand_info {
- 	int devnum;	/* represent how many nands connected */
- 	int bbtskipbytes;
+@@ -353,6 +353,7 @@ struct denali_nand_info {
  	int max_banks;
-+	unsigned int revision;
  	unsigned int caps;
  #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
- #define DENALI_CAP_DMA_64BIT			BIT(1)
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index ada3863..df9ef36 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -30,6 +30,7 @@ struct denali_dt {
++#define DENALI_CAP_DMA_64BIT			BIT(1)
  };
  
- struct denali_dt_data {
-+	unsigned int revision;
- 	unsigned int caps;
- };
- 
-@@ -60,8 +61,10 @@ static int denali_dt_probe(struct platform_device *pdev)
- 	denali = &dt->denali;
- 
- 	data = of_device_get_match_data(&pdev->dev);
--	if (data)
-+	if (data) {
-+		denali->revision = data->revision;
- 		denali->caps = data->caps;
-+	}
- 
- 	denali->platform = DT;
- 	denali->dev = &pdev->dev;
+ extern int denali_init(struct denali_nand_info *denali);
 -- 
 2.7.4
