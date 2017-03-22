@@ -1,20 +1,22 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqoKZ-0007D5-UR
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 22:02:14 +0000
-Date: Wed, 22 Mar 2017 23:01:47 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+ id 1cqoOV-0000Ph-4v
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 22:06:17 +0000
+Date: Wed, 22 Mar 2017 23:05:53 +0100
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
  Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
  Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH 13/13] mtd: nand: fsmc: remove CONFIG_OF conditional
-Message-ID: <20170322230147.397094b4@bbrezillon>
-In-Reply-To: <1490090645-8576-14-git-send-email-thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH 02/13] mtd: nand: fsmc: rework fsmc_nand_setup() to use
+ ->setup_data_interface()
+Message-ID: <20170322230553.5daf0562@free-electrons.com>
+In-Reply-To: <20170322225617.313aa805@bbrezillon>
 References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1490090645-8576-14-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1490090645-8576-3-git-send-email-thomas.petazzoni@free-electrons.com>
+ <20170322225617.313aa805@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,41 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Mar 2017 11:04:05 +0100
-Thomas Petazzoni <thomas.petazzoni@free-electrons.com> wrote:
+Hello,
 
-> Since commit 4404d7d821c33 ("mtd: nand: fsmc: remove stale non-DT probe
-> path"), the fsmc NAND driver only supports Device Tree probing, and
-> therefore has a "depends on OF" in its Kconfig option.
-> 
-> Due to this the #ifdef CONFIG_OF ... #endif condition in the driver code
-> is no longer necessary.
-> 
-> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-> ---
->  drivers/mtd/nand/fsmc_nand.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-> index c50c3ed5..fbab0bb 100644
-> --- a/drivers/mtd/nand/fsmc_nand.c
-> +++ b/drivers/mtd/nand/fsmc_nand.c
-> @@ -1157,14 +1157,12 @@ static int fsmc_nand_resume(struct device *dev)
->  
->  static SIMPLE_DEV_PM_OPS(fsmc_nand_pm_ops, fsmc_nand_suspend, fsmc_nand_resume);
->  
-> -#ifdef CONFIG_OF
->  static const struct of_device_id fsmc_nand_id_table[] = {
->  	{ .compatible = "st,spear600-fsmc-nand" },
->  	{ .compatible = "stericsson,fsmc-nand" },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, fsmc_nand_id_table);
-> -#endif
->  
->  static struct platform_driver fsmc_nand_driver = {
->  	.remove = fsmc_nand_remove,
+On Wed, 22 Mar 2017 22:56:17 +0100, Boris Brezillon wrote:
 
-You probably also want to remove of_match_ptr() in
+> I'm not sure this is such a good idea to move default and DT timings
+> setting in the ->setup_data_interface() hook.
+> 
+> ONFI NANDs are changing an internal parameter to switch to a specific
+> timing mode. If you let the core think that you configured the
+> controller to support this timing mode, while you actually configured
+> it with the default or DT timings it might not work as expected.
 
-		.of_match_table = of_match_ptr(fsmc_nand_id_table),
+So what do you suggest to keep the compatibility with the existing DT
+binding for this NAND controller?
+
+We also need to take into account that the timings need to be
+reconfigured upon ->resume().
+
+Thanks!
+
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
