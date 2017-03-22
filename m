@@ -1,20 +1,28 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqp4L-00077P-HE
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 22:49:31 +0000
-Subject: Re: Regarding UBI fastmap data CRC failure
-To: Ronak Desai <ronak.desai@rockwellcollins.com>
-References: <CADFuHZ6xb=M_zRkktnq2b8QBOhq-WDsqgzViPHU1g8Gj9M3E-g@mail.gmail.com>
- <CAFLxGvx6S8V7c8YYR2-G7+hDDcRi-0Cnk+EWeWWN9i2oy-DVvQ@mail.gmail.com>
- <CADFuHZ54cG32S1-3PA5q_5P1od1rBa5=3YeB1jLhB+Jzm2f0Ng@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <c9b139cc-7bf0-836d-69cf-4889a6c35ec2@nod.at>
-Date: Wed, 22 Mar 2017 23:49:06 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqp8L-0000Nn-Ro
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 22:53:39 +0000
+Date: Wed, 22 Mar 2017 23:53:11 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
+ Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH 02/13] mtd: nand: fsmc: rework fsmc_nand_setup() to use
+ ->setup_data_interface()
+Message-ID: <20170322235311.0da031f3@bbrezillon>
+In-Reply-To: <20170322233915.29bf2514@free-electrons.com>
+References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1490090645-8576-3-git-send-email-thomas.petazzoni@free-electrons.com>
+ <20170322225617.313aa805@bbrezillon>
+ <20170322230553.5daf0562@free-electrons.com>
+ <20170322232333.23ae18ab@bbrezillon>
+ <20170322233915.29bf2514@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <CADFuHZ54cG32S1-3PA5q_5P1od1rBa5=3YeB1jLhB+Jzm2f0Ng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +32,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ronak Desai,
+On Wed, 22 Mar 2017 23:39:15 +0100
+Thomas Petazzoni <thomas.petazzoni@free-electrons.com> wrote:
 
-Am 21.03.2017 um 17:31 schrieb Ronak Desai:
-> On Mon, Mar 20, 2017 at 5:56 PM, Richard Weinberger
-> <richard.weinberger@gmail.com> wrote:
->> On Mon, Mar 20, 2017 at 10:47 PM, Ronak Desai
->> <ronak.desai@rockwellcollins.com> wrote:
->>> Hi All,
->>>
->>> In one of the products with MLC NAND flash, we are using UBI
->>> filesystem with kernel 3.12.
->>
->> MLC NAND is currently not supported.
+> Hello,
 > 
-> First of all, thanks for your response and your truly amazing
-> contribution in UBI.
-
-Thanks. :-)
-
-> I know that UBIFS requires a whole lot of changes to handle "program
-> disturb", "read distrurb" and "paired pages" problem on MLC NANDs.
-> But, apart from this, we have makesure that we use 256 wear-leveling
-> threshold.
-
-How do you handle paired pages?
-A powercut can still damage UBI and UBIFS.
-
-[...]
-
-> That is true that our kernel is old but at this point and time it's
-> not a viable options for us to upgrade the kernel version. And agree
-> with your point about MLC but in months of use, we have seen this
-> continuous fastmap failure issue only once and apart from that UBIFS
-> works without any other issues.
+> On Wed, 22 Mar 2017 23:23:33 +0100, Boris Brezillon wrote:
 > 
-> I see your changes on base fastmap implementation, which I am planning
-> to backport but it will be really difficult to backport the whole UBI
-> subsystem. So, if you can point to specific patches/changes to avoid
-> "fastmap data CRC failure" issue then it will be a great help.
+> > > So what do you suggest to keep the compatibility with the existing DT
+> > > binding for this NAND controller?    
+> > 
+> > We have 2 choices here:
+> > 1/ drop the old/static timings config and only rely on the dynamic
+> >    config. This is a bit risky, because we've only tested the new
+> >    timing conversion logic on one board.
+> > 2/ keep both solutions around until all boards have switched to the new
+> >    solution. In this case, you'll only set the ->setup_data_interface()
+> >    hook if timings are not defined in the DT  
+> 
+> What about the "default" timings that are currently hardcoded in the
+> driver, if no timings are specified in the DT? My patch currently does
+> the following:
+> 
+>  - Use DT timings if provided
+>  - Use NAND timings if provided
+>  - Use "default" timing otherwise
 
-I fear it is not that easy. Fastmap saw many fixes and improvements
-other the time. The first version was rather buggy.
-And we made a stupid mistake at the beginning, we did not mark fixes
-for stable processing since Fastmap was considered
-as experimental. That's why you can't just backport all patches that
-have a stable tag.
-On the other hand, backporting the whole UBI subsystem is not that
-complicated. It has very few dependencies.
-U-Boot folks do this on a regular basis.
+Okay, I didn't notice the 'fallback to "default" timings' in patch 3.
+This portion of code will actually never be reached, because the core
+always provide valid SDR timings. If the NAND does not support ONFI
+timing modes and nothing is specified in the NAND ids table (or the in
+vendor specific init code), then the lowest timing mode is assumed
+(timing mode 0), and if you implement ->setup_data_interface(), this is
+what you will end-up with.
 
-HTH,
-//richard
+> 
+> Should we drop the "default" timing thing?
+
+I think so.
+
+> If not, how does it fit in
+> your proposal? Indeed your proposal is simply: if no timings in DT, use
+> the NAND timings. But my patch does more than that.
+
+If we really want to keep "default" timmings around, then we'll have to
+add an extra Kconfig option, a kernel parameter (or a DT property :-)),
+but I'm not a big fan of these solutions.
