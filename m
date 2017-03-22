@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZV-0001SL-3l
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:32 +0000
+ id 1cqmZV-0001SP-3j
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:33 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -19,9 +19,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RESEND PATCH v2 20/53] mtd: nand: denali: do not set mtd->name
-Date: Thu, 23 Mar 2017 05:07:19 +0900
-Message-Id: <1490213273-8571-21-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 16/53] mtd: nand: denali_dt: use pdev instead of
+ ofdev for platform_device
+Date: Thu, 23 Mar 2017 05:07:15 +0900
+Message-Id: <1490213273-8571-17-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,27 +34,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This will be filled by nand_scan_ident() later.
+"pdev" is much more often used to point a platform_device, so this
+will help the driver code look consistent across the kernel.
+
+While we are here, fix "line over 80 characters" coding style
+violations.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v2: None
 
- drivers/mtd/nand/denali.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/denali_dt.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 3badb1d..1706975 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1495,7 +1495,6 @@ int denali_init(struct denali_nand_info *denali)
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index b8a8284..ada3863 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -46,7 +46,7 @@ static const struct of_device_id denali_nand_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
  
- 	/* now that our ISR is registered, we can enable interrupts */
- 	denali_set_intr_modes(denali, true);
--	mtd->name = "denali-nand";
- 	nand_set_flash_node(chip, denali->dev->of_node);
+-static int denali_dt_probe(struct platform_device *ofdev)
++static int denali_dt_probe(struct platform_device *pdev)
+ {
+ 	struct resource *denali_reg, *nand_data;
+ 	struct denali_dt *dt;
+@@ -54,36 +54,38 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 	struct denali_nand_info *denali;
+ 	int ret;
  
- 	/* register the driver with the NAND core subsystem */
+-	dt = devm_kzalloc(&ofdev->dev, sizeof(*dt), GFP_KERNEL);
++	dt = devm_kzalloc(&pdev->dev, sizeof(*dt), GFP_KERNEL);
+ 	if (!dt)
+ 		return -ENOMEM;
+ 	denali = &dt->denali;
+ 
+-	data = of_device_get_match_data(&ofdev->dev);
++	data = of_device_get_match_data(&pdev->dev);
+ 	if (data)
+ 		denali->caps = data->caps;
+ 
+ 	denali->platform = DT;
+-	denali->dev = &ofdev->dev;
+-	denali->irq = platform_get_irq(ofdev, 0);
++	denali->dev = &pdev->dev;
++	denali->irq = platform_get_irq(pdev, 0);
+ 	if (denali->irq < 0) {
+-		dev_err(&ofdev->dev, "no irq defined\n");
++		dev_err(&pdev->dev, "no irq defined\n");
+ 		return denali->irq;
+ 	}
+ 
+-	denali_reg = platform_get_resource_byname(ofdev, IORESOURCE_MEM, "denali_reg");
+-	denali->flash_reg = devm_ioremap_resource(&ofdev->dev, denali_reg);
++	denali_reg = platform_get_resource_byname(pdev, IORESOURCE_MEM,
++						  "denali_reg");
++	denali->flash_reg = devm_ioremap_resource(&pdev->dev, denali_reg);
+ 	if (IS_ERR(denali->flash_reg))
+ 		return PTR_ERR(denali->flash_reg);
+ 
+-	nand_data = platform_get_resource_byname(ofdev, IORESOURCE_MEM, "nand_data");
+-	denali->flash_mem = devm_ioremap_resource(&ofdev->dev, nand_data);
++	nand_data = platform_get_resource_byname(pdev, IORESOURCE_MEM,
++						 "nand_data");
++	denali->flash_mem = devm_ioremap_resource(&pdev->dev, nand_data);
+ 	if (IS_ERR(denali->flash_mem))
+ 		return PTR_ERR(denali->flash_mem);
+ 
+-	dt->clk = devm_clk_get(&ofdev->dev, NULL);
++	dt->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(dt->clk)) {
+-		dev_err(&ofdev->dev, "no clk available\n");
++		dev_err(&pdev->dev, "no clk available\n");
+ 		return PTR_ERR(dt->clk);
+ 	}
+ 	clk_prepare_enable(dt->clk);
+@@ -92,7 +94,7 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 	if (ret)
+ 		goto out_disable_clk;
+ 
+-	platform_set_drvdata(ofdev, dt);
++	platform_set_drvdata(pdev, dt);
+ 	return 0;
+ 
+ out_disable_clk:
+@@ -101,9 +103,9 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 	return ret;
+ }
+ 
+-static int denali_dt_remove(struct platform_device *ofdev)
++static int denali_dt_remove(struct platform_device *pdev)
+ {
+-	struct denali_dt *dt = platform_get_drvdata(ofdev);
++	struct denali_dt *dt = platform_get_drvdata(pdev);
+ 
+ 	denali_remove(&dt->denali);
+ 	clk_disable_unprepare(dt->clk);
 -- 
 2.7.4
