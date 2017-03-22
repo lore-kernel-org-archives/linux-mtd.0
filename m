@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqnsP-0004W1-0h
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 21:33:07 +0000
-Date: Wed, 22 Mar 2017 22:32:39 +0100
+ id 1cqnvR-0006VB-J5
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 21:36:16 +0000
+Date: Wed, 22 Mar 2017 22:35:50 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
 Cc: linux-mtd@lists.infradead.org, laurent.monat@idquantique.com,
@@ -16,12 +16,11 @@ Cc: linux-mtd@lists.infradead.org, laurent.monat@idquantique.com,
  <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
  Pitchen <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark
  Rutland <mark.rutland@arm.com>
-Subject: Re: [RESEND PATCH v2 26/53] mtd: nand: denali: support 1024 byte
- ECC step size
-Message-ID: <20170322223239.70a45053@bbrezillon>
-In-Reply-To: <1490213273-8571-27-git-send-email-yamada.masahiro@socionext.com>
+Subject: Re: [RESEND PATCH v2 00/53] mtd: nand: denali: 2nd round of Denali
+ NAND IP patch bomb
+Message-ID: <20170322223550.1f1c97ae@bbrezillon>
+In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
- <1490213273-8571-27-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -34,154 +33,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Mar 2017 05:07:25 +0900
+Hi Masahiro,
+
+On Thu, 23 Mar 2017 05:06:59 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> This driver was originally written for the Intel MRST platform with
-> several platform specific parameters hard-coded.  Another thing we
-> need to fix is the hard-coded ECC step size.  Currently, it is
-> defined as follows:
+> It took a couple months to update this series, but finally here is v2.
+> (v1: https://lkml.org/lkml/2016/11/26/144 )
 > 
->   #define ECC_SECTOR_SIZE 512
+> This driver includes many problems.
 > 
-> (somehow, it is defined in both denali.c and denali.h)
+> One of the biggest one is a bunch of hard-coded parameters.  This IP
+> has many parameters that can be customized when a delivery RTL is
+> generated.  However, this driver was upstreamed by Intel, with
+> Intel parameters hard-coded.  Later, Altera added denali_dt.c to use
+> this driver for embedded boards, but they did not fix the code in
+> denali.c  So, this driver has never worked.  Even some DT bindings
+> actually turned out wrong.
 > 
-> This must be avoided because the Denali IP supports 1024B ECC size
-> as well.  The Denali User's Guide also says supporting both 512B and
-> 1024B ECC sectors is possible, though it would require instantiation
-> of two different ECC circuits.  So, possible cases are:
+> There are more problems: [1] The driver just retrieves the OOB area as-is
+> whereas the controller uses syndrome page layout. [2] Many NAND chip
+> specific parameters are hard-coded in the driver. [3] ONFi devices are
+> not working  [4] It can not read Bad Block Marker
 > 
->  [1] only 512B ECC size is supported
->  [2] only 1024B ECC size is supported
->  [3] both 512B and 1024B ECC sizes are supported
+> This patch series intends to solve those problems.
 > 
-> For [3], the actually used ECC size is specified by some registers.
-> 
-> Newer versions of this IP have the following registers:
->   CFG_DATA_BLOCK_SIZE       (0x6b0)
->   CFG_LAST_DATA_BLOCK_SIZE  (0x6c0)
->   CFG_NUM_DATA_BLOCKS       (0x6d0)
-> 
-> For those versions, the software should set ecc.size and ecc.steps
-> to these registers.  Old versions do not have such registers, but
-> they are "reserved", so write accesses are safely ignored.
-> 
-> This commit adds new flags DENALI_CAP_ECC_SIZE_{512,1024}.
-> 
-> The DT property "nand-ecc-step-size" is still optional; a reasonable
-> default will be chosen for [1] and [2].  For case [3], if exists, it
-> is recommended to specify the desired ECC size explicitly.
+> Since v1, here are more fixes/improvements:
+>  - Fix raw/oob callbacks for syndrome page layout
+>  - Implement setup_data_interface() callback
+>  - Fix/implement more commands for ONFi devices
+>  - Allow to skip the driver internal bounce buffer
+>  - Support PIO in case DMA is not supported
+>  - Switch from ->cmdfunc over to ->cmd_ctrl
 
-Actually, the NAND chip gives some hints to help controller drivers
-decide which ecc-block-size/strength is appropriate
-(chip->ecc_strength_ds, chip->ecc_step_ds), so, in most cases
-nand-ecc-step-size is unneeded (unless you want to force a specific
-setting).
+I'll probably pick a few patches for 4.12, so please wait a bit before
+sending a v4.
+
+Thanks,
+
+Boris
 
 > 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
 > 
-> Changes in v2:
->   - Change the capability prefix DENALI_CAPS_ -> DENALI_CAP_
->   - Make ECC 512 cap and ECC 1024 cap independent
->   - Set up three CFG_... registers
+> Masahiro Yamada (53):
+>   mtd: nand: allow to set only one of ECC size and ECC strength from DT
+>   mtd: nand: use read_oob() instead of cmdfunc() for bad block check
+>   mtd: nand: denali: remove unused CONFIG option and macros
+>   mtd: nand: denali: remove redundant define of BANK(x)
+>   mtd: nand: denali: remove more unused struct members
+>   mtd: nand: denali: fix comment of denali_nand_info::flash_mem
+>   mtd: nand: denali: consolidate INTR_STATUS__* and INTR_EN__* macros
+>   mtd: nand: denali: introduce capability flag
+>   mtd: nand: denali: use int where no reason to use fixed width variable
+>   mtd: nand: denali: fix erased page checking
+>   mtd: nand: denali: fix bitflips calculation in handle_ecc()
+>   mtd: nand: denali: support HW_ECC_FIXUP capability
+>   mtd: nand: denali_dt: enable HW_ECC_FIXUP for Altera SOCFPGA variant
+>   mtd: nand: denali: support 64bit capable DMA engine
+>   mtd: nand: denali_dt: remove dma-mask DT property
+>   mtd: nand: denali_dt: use pdev instead of ofdev for platform_device
+>   mtd: nand: denali: allow to override revision number
+>   mtd: nand: denali: use nand_chip to hold frequently accessed data
+>   mtd: nand: denali: call nand_set_flash_node() to set DT node
+>   mtd: nand: denali: do not set mtd->name
+>   mtd: nand: denali: move multi device fixup code to a helper function
+>   mtd: nand: denali: simplify multi device fixup code
+>   mtd: nand: denali: set DEVICES_CONNECTED 1 if not set
+>   mtd: nand: denali: remove meaningless writes to read-only registers
+>   mtd: nand: denali: remove unnecessary writes to ECC_CORRECTION
+>   mtd: nand: denali: support 1024 byte ECC step size
+>   mtd: nand: denali: avoid hard-coding ecc.strength and ecc.bytes
+>   mtd: nand: denali: support "nand-ecc-strength" DT property
+>   mtd: nand: denali: remove Toshiba and Hynix specific fixup code
+>   mtd: nand: denali_dt: add compatible strings for UniPhier SoC variants
+>   mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
+>   mtd: nand: denali: do not propagate NAND_STATUS_FAIL to waitfunc()
+>   mtd: nand: denali: use BIT() and GENMASK() for register macros
+>   mtd: nand: denali: remove unneeded find_valid_banks()
+>   mtd: nand: denali: handle timing parameters by setup_data_interface()
+>   mtd: nand: denali: remove meaningless pipeline read-ahead operation
+>   mtd: nand: denali: rework interrupt handling
+>   mtd: nand: denali: fix NAND_CMD_STATUS handling
+>   mtd: nand: denali: fix NAND_CMD_PARAM handling
+>   mtd: nand: do not check R/B# for CMD_READID in nand_command(_lp)
+>   mtd: nand: do not check R/B# for CMD_SET_FEATURES in nand_command(_lp)
+>   mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
+>   mtd: nand: denali: fix bank reset function
+>   mtd: nand: denali: use interrupt instead of polling for bank reset
+>   mtd: nand: denali: propagate page to helpers via function argument
+>   mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
+>   mtd: nand: denali: use flag instead of register macro for direction
+>   mtd: nand: denali: fix raw and oob accessors for syndrome page layout
+>   mtd: nand: denali: support hardware-assisted erased page detection
+>   mtd: nand: allocate aligned buffers if NAND_OWN_BUFFERS is unset
+>   mtd: nand: denali: skip driver internal bounce buffer when possible
+>   mtd: nand: denali: use non-managed kmalloc() for DMA buffer
+>   mtd: nand: denali: enable bad block table scan
 > 
->  .../devicetree/bindings/mtd/denali-nand.txt        |  5 +++
->  drivers/mtd/nand/denali.c                          | 44 +++++++++++++++-------
->  drivers/mtd/nand/denali.h                          | 12 +++++-
->  drivers/mtd/nand/denali_dt.c                       |  3 +-
->  drivers/mtd/nand/denali_pci.c                      |  2 +
->  5 files changed, 50 insertions(+), 16 deletions(-)
+>  .../devicetree/bindings/mtd/denali-nand.txt        |   24 +-
+>  drivers/mtd/nand/Kconfig                           |   11 -
+>  drivers/mtd/nand/denali.c                          | 2073 +++++++++-----------
+>  drivers/mtd/nand/denali.h                          |  453 ++---
+>  drivers/mtd/nand/denali_dt.c                       |  104 +-
+>  drivers/mtd/nand/denali_pci.c                      |   10 +-
+>  drivers/mtd/nand/nand_base.c                       |   78 +-
+>  7 files changed, 1278 insertions(+), 1475 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> index e593bbe..25313c7 100644
-> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> @@ -7,6 +7,11 @@ Required properties:
->    - reg-names: Should contain the reg names "nand_data" and "denali_reg"
->    - interrupts : The interrupt number.
->  
-> +Optional properties:
-> +  - nand-ecc-step-size: must be 512 or 1024.  If not specified, default to:
-> +      512   for "altr,socfpga-denali-nand"
-> +    see nand.txt for details.
-> +
->  The device tree may optionally contain sub-nodes describing partitions of the
->  address space. See partition.txt for more detail.
->  
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index a190cb2..cf8daba 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -875,8 +875,6 @@ static int denali_hw_ecc_fixup(struct mtd_info *mtd,
->  	return max_bitflips;
->  }
->  
-> -#define ECC_SECTOR_SIZE 512
-> -
->  #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
->  #define ECC_BYTE(x)	(((x) & ECC_ERROR_ADDRESS__OFFSET))
->  #define ECC_CORRECTION_VALUE(x) ((x) & ERR_CORRECTION_INFO__BYTEMASK)
-> @@ -887,6 +885,7 @@ static int denali_hw_ecc_fixup(struct mtd_info *mtd,
->  static int denali_sw_ecc_fixup(struct mtd_info *mtd,
->  			       struct denali_nand_info *denali, uint8_t *buf)
->  {
-> +	unsigned int ecc_size = denali->nand.ecc.size;
->  	unsigned int bitflips = 0;
->  	unsigned int max_bitflips = 0;
->  	unsigned int total_bitflips = 0;
-> @@ -914,9 +913,9 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
->  
->  		if (ECC_ERROR_UNCORRECTABLE(err_cor_info)) {
->  			ret = -EBADMSG;
-> -		} else if (err_byte < ECC_SECTOR_SIZE) {
-> +		} else if (err_byte < ecc_size) {
->  			/*
-> -			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
-> +			 * If err_byte is larger than ecc_size, means error
->  			 * happened in OOB, so we ignore it. It's no need for
->  			 * us to correct it err_device is represented the NAND
->  			 * error bits are happened in if there are more than
-> @@ -925,7 +924,7 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
->  			int offset;
->  			unsigned int flips_in_byte;
->  
-> -			offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
-> +			offset = (err_sector * ecc_size + err_byte) *
->  						denali->devnum + err_device;
->  
->  			/* correct the ECC error */
-> @@ -1579,22 +1578,37 @@ int denali_init(struct denali_nand_info *denali)
->  	/* no subpage writes on denali */
->  	chip->options |= NAND_NO_SUBPAGE_WRITE;
->  
-> +	if (!chip->ecc.size) {
-
-You should set it to chip->ecc_step_ds and pick a default value only if
-it's still 0 after that. Same goes for ecc.strength.
-
-> +		if (denali->caps & DENALI_CAP_ECC_SIZE_512)
-> +			chip->ecc.size = 512;
-> +		if (denali->caps & DENALI_CAP_ECC_SIZE_1024)
-> +			chip->ecc.size = 1024;
-> +		if (WARN(!chip->ecc.size, "must support at least 512 or 1024 ECC size"))
-> +			goto failed_req_irq;
-> +	}
-> +
-> +	if ((chip->ecc.size != 512 && chip->ecc.size != 1024) ||
-> +	    (chip->ecc.size == 512 && !(denali->caps & DENALI_CAP_ECC_SIZE_512)) ||
-> +	    (chip->ecc.size == 1024 && !(denali->caps & DENALI_CAP_ECC_SIZE_1024))) {
-> +		dev_err(denali->dev, "specified ECC size %d in not supported",
-> +			chip->ecc.size);
-> +		goto failed_req_irq;
-> +	}
-> +
->  	/*
->  	 * Denali Controller only support 15bit and 8bit ECC in MRST,
->  	 * so just let controller do 15bit ECC for MLC and 8bit ECC for
->  	 * SLC if possible.
-
-Usually the NAND chips expose the ECC requirements, so basing our
-decision only on the type of NAND sounds a bit weird.
