@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqgxk-0007tq-S4
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:10:10 +0000
+ id 1cqgxZ-0007so-12
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:10:01 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -18,12 +18,14 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 24/53] mtd: nand: denali: remove meaningless writes to
- read-only registers
-Date: Wed, 22 Mar 2017 23:07:31 +0900
-Message-Id: <1490191680-14481-25-git-send-email-yamada.masahiro@socionext.com>
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2 13/53] mtd: nand: denali_dt: enable HW_ECC_FIXUP for Altera
+ SOCFPGA variant
+Date: Wed, 22 Mar 2017 23:07:20 +0900
+Message-Id: <1490191680-14481-14-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,66 +37,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The write accesses to LOGICAL_PAGE_{DATA,SPARE}_SIZE have no effect
-because the Denali User's Guide says these registers are read-only.
+There are various customizable parameters, so several variants for
+this IP.  A generic compatible like "denali,denali-nand-dt" is
+useless.  Moreover, there are multiple things wrong with this string.
+(Refer to Rob's comment [1])
 
-The hardware automatically multiplies the main/spare size by the
-number of devices and update LOGICAL_PAGE_{DATA,SPARE}_SIZE.
+The denali_dt.c was split out and this compatible was added by Altera
+for the SOCFPGA port.  So, replace it with a more specific string.
+
+The Denali IP on SOCFPGA incorporates the hardware ECC fixup feature.
+So, this capability should be associated with the compatible string.
+
+[1] https://lkml.org/lkml/2016/12/1/450
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - Add caps flag to of_device_id data, not hard-code in driver code
+  - Add Altera-specific compatible.
 
- drivers/mtd/nand/denali.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ Documentation/devicetree/bindings/mtd/denali-nand.txt |  5 +++--
+ drivers/mtd/nand/denali_dt.c                          | 14 ++++++++++----
+ 2 files changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 3da0a0e..5e89709 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -342,8 +342,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index b04d03a..6f4ab4c 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -1,7 +1,8 @@
+ * Denali NAND controller
  
- static void get_toshiba_nand_para(struct denali_nand_info *denali)
- {
--	uint32_t tmp;
--
- 	/*
- 	 * Workaround to fix a controller bug which reports a wrong
- 	 * spare area size for some kind of Toshiba NAND device
-@@ -351,10 +349,6 @@ static void get_toshiba_nand_para(struct denali_nand_info *denali)
- 	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
- 		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64)) {
- 		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		tmp = ioread32(denali->flash_reg + DEVICES_CONNECTED) *
--			ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		iowrite32(tmp,
--				denali->flash_reg + LOGICAL_PAGE_SPARE_SIZE);
- #if SUPPORT_15BITECC
- 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
- #elif SUPPORT_8BITECC
-@@ -366,22 +360,12 @@ static void get_toshiba_nand_para(struct denali_nand_info *denali)
- static void get_hynix_nand_para(struct denali_nand_info *denali,
- 							uint8_t device_id)
- {
--	uint32_t main_size, spare_size;
--
- 	switch (device_id) {
- 	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
- 	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
- 		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
- 		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
- 		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		main_size = 4096 *
--			ioread32(denali->flash_reg + DEVICES_CONNECTED);
--		spare_size = 224 *
--			ioread32(denali->flash_reg + DEVICES_CONNECTED);
--		iowrite32(main_size,
--				denali->flash_reg + LOGICAL_PAGE_DATA_SIZE);
--		iowrite32(spare_size,
--				denali->flash_reg + LOGICAL_PAGE_SPARE_SIZE);
- 		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
- #if SUPPORT_15BITECC
- 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
+ Required properties:
+-  - compatible : should be "denali,denali-nand-dt"
++  - compatible : should be one of the following:
++      "altr,socfpga-denali-nand"            - for Altera SOCFPGA
+   - reg : should contain registers location and length for data and reg.
+   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
+   - interrupts : The interrupt number.
+@@ -15,7 +16,7 @@ Examples:
+ nand: nand@ff900000 {
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+-	compatible = "denali,denali-nand-dt";
++	compatible = "altr,socfpga-denali-nand";
+ 	reg = <0xff900000 0x100000>, <0xffb80000 0x10000>;
+ 	reg-names = "nand_data", "denali_reg";
+ 	interrupts = <0 144 4>;
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 293ddb8..9577bfd 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -33,11 +33,17 @@ struct denali_dt_data {
+ 	unsigned int caps;
+ };
+ 
+-static const struct of_device_id denali_nand_dt_ids[] = {
+-		{ .compatible = "denali,denali-nand-dt" },
+-		{ /* sentinel */ }
+-	};
++static const struct denali_dt_data denali_socfpga_data = {
++	.caps = DENALI_CAP_HW_ECC_FIXUP,
++};
+ 
++static const struct of_device_id denali_nand_dt_ids[] = {
++	{
++		.compatible = "altr,socfpga-denali-nand",
++		.data = &denali_socfpga_data,
++	},
++	{ /* sentinel */ }
++};
+ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
+ 
+ static u64 denali_dma_mask;
 -- 
 2.7.4
