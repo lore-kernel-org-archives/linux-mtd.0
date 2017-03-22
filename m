@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqgwz-0005uH-1w
+ id 1cqgwz-0005uF-1x
  for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:09:25 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -20,9 +20,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 04/53] mtd: nand: denali: remove redundant define of BANK(x)
-Date: Wed, 22 Mar 2017 23:07:11 +0900
-Message-Id: <1490191680-14481-5-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 02/53] mtd: nand: use read_oob() instead of cmdfunc() for
+ bad block check
+Date: Wed, 22 Mar 2017 23:07:09 +0900
+Message-Id: <1490191680-14481-3-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,28 +35,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This macro is defined twice in denali.c (around line 98 and
-line 651), so remove the second one.
+The nand_default_block_markbad() and scan_block_fast() use high
+level APIs to get access to the BBM.
+
+On the other hand, nand_block_bad (the default implementation of
+->block_bad) calls the lower level ->cmdfunc hook.  This prevents
+drivers from using ->ecc.read_oob() even if optimized read operation
+is implemented.  Besides, some NAND controllers may protect the BBM
+with ECC.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - Error out immediately if the first page access fails
+  - Use for() {} instead of do {} while()
+  - Update git-log
 
- drivers/mtd/nand/denali.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/nand_base.c | 34 +++++++++++++---------------------
+ 1 file changed, 13 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index f993e13..c9806e6 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -648,7 +648,6 @@ static irqreturn_t denali_isr(int irq, void *dev_id)
- 	spin_unlock(&denali->irq_lock);
- 	return result;
- }
--#define BANK(x) ((x) << 24)
- 
- static uint32_t wait_for_irq(struct denali_nand_info *denali, uint32_t irq_mask)
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index a3c0f47..807398d 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -354,40 +354,32 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
+  */
+ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
  {
+-	int page, res = 0, i = 0;
++	int page, page_end, res;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	u16 bad;
++	u8 bad;
+ 
+ 	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
+ 		ofs += mtd->erasesize - mtd->writesize;
+ 
+ 	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
++	page_end = page + (chip->bbt_options & NAND_BBT_SCAN2NDPAGE ? 2 : 1);
+ 
+-	do {
+-		if (chip->options & NAND_BUSWIDTH_16) {
+-			chip->cmdfunc(mtd, NAND_CMD_READOOB,
+-					chip->badblockpos & 0xFE, page);
+-			bad = cpu_to_le16(chip->read_word(mtd));
+-			if (chip->badblockpos & 0x1)
+-				bad >>= 8;
+-			else
+-				bad &= 0xFF;
+-		} else {
+-			chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos,
+-					page);
+-			bad = chip->read_byte(mtd);
+-		}
++	for (; page < page_end; page++) {
++		res = chip->ecc.read_oob(mtd, chip, page);
++		if (res)
++			return res;
++
++		bad = chip->oob_poi[chip->badblockpos];
+ 
+ 		if (likely(chip->badblockbits == 8))
+ 			res = bad != 0xFF;
+ 		else
+ 			res = hweight8(bad) < chip->badblockbits;
+-		ofs += mtd->writesize;
+-		page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+-		i++;
+-	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
++		if (res)
++			return res;
++	}
+ 
+-	return res;
++	return 0;
+ }
+ 
+ /**
 -- 
 2.7.4
