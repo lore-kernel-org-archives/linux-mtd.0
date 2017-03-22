@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqgwz-0005w8-1z
+ id 1cqgx3-0005xD-N9
  for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:09:27 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -18,14 +18,14 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v2 00/53] mtd: nand: denali: 2nd round of Denali NAND IP patch
- bomb
-Date: Wed, 22 Mar 2017 23:07:07 +0900
-Message-Id: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v2 09/53] mtd: nand: denali: use int where no reason to use
+ fixed width variable
+Date: Wed, 22 Mar 2017 23:07:16 +0900
+Message-Id: <1490191680-14481-10-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,99 +35,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The page number is generally stored in an integer type variable.
+The uint16_t does not have enough width.  I see no reason to use
+uint32_t for other members, either.  Just use int.
 
-It took a couple months to update this series, but finally here is v2.
-(v1: https://lkml.org/lkml/2016/11/26/144 )
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-This driver includes many problems.
+Changes in v2: None
 
-One of the biggest one is a bunch of hard-coded parameters.  This IP
-has many parameters that can be customized when a delivery RTL is
-generated.  However, this driver was upstreamed by Intel, with
-Intel parameters hard-coded.  Later, Altera added denali_dt.c to use
-this driver for embedded boards, but they did not fix the code in
-denali.c  So, this driver has never worked.  Even some DT bindings
-actually turned out wrong.
+ drivers/mtd/nand/denali.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-There are more problems: [1] The driver just retrieves the OOB area as-is
-whereas the controller uses syndrome page layout. [2] Many NAND chip
-specific parameters are hard-coded in the driver. [3] ONFi devices are
-not working  [4] It can not read Bad Block Marker
-
-This patch series intends to solve those problems.
-
-Since v1, here are more fixes/improvements:
- - Fix raw/oob callbacks for syndrome page layout
- - Implement setup_data_interface() callback
- - Fix/implement more commands for ONFi devices
- - Allow to skip the driver internal bounce buffer
- - Support PIO in case DMA is not supported
- - Switch from ->cmdfunc over to ->cmd_ctrl
-
-
-Masahiro Yamada (53):
-  mtd: nand: allow to set only one of ECC size and ECC strength from DT
-  mtd: nand: use read_oob() instead of cmdfunc() for bad block check
-  mtd: nand: denali: remove unused CONFIG option and macros
-  mtd: nand: denali: remove redundant define of BANK(x)
-  mtd: nand: denali: remove more unused struct members
-  mtd: nand: denali: fix comment of denali_nand_info::flash_mem
-  mtd: nand: denali: consolidate INTR_STATUS__* and INTR_EN__* macros
-  mtd: nand: denali: introduce capability flag
-  mtd: nand: denali: use int where no reason to use fixed width variable
-  mtd: nand: denali: fix erased page checking
-  mtd: nand: denali: fix bitflips calculation in handle_ecc()
-  mtd: nand: denali: support HW_ECC_FIXUP capability
-  mtd: nand: denali_dt: enable HW_ECC_FIXUP for Altera SOCFPGA variant
-  mtd: nand: denali: support 64bit capable DMA engine
-  mtd: nand: denali_dt: remove dma-mask DT property
-  mtd: nand: denali_dt: use pdev instead of ofdev for platform_device
-  mtd: nand: denali: allow to override revision number
-  mtd: nand: denali: use nand_chip to hold frequently accessed data
-  mtd: nand: denali: call nand_set_flash_node() to set DT node
-  mtd: nand: denali: do not set mtd->name
-  mtd: nand: denali: move multi device fixup code to a helper function
-  mtd: nand: denali: simplify multi device fixup code
-  mtd: nand: denali: set DEVICES_CONNECTED 1 if not set
-  mtd: nand: denali: remove meaningless writes to read-only registers
-  mtd: nand: denali: remove unnecessary writes to ECC_CORRECTION
-  mtd: nand: denali: support 1024 byte ECC step size
-  mtd: nand: denali: avoid hard-coding ecc.strength and ecc.bytes
-  mtd: nand: denali: support "nand-ecc-strength" DT property
-  mtd: nand: denali: remove Toshiba and Hynix specific fixup code
-  mtd: nand: denali_dt: add compatible strings for UniPhier SoC variants
-  mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
-  mtd: nand: denali: do not propagate NAND_STATUS_FAIL to waitfunc()
-  mtd: nand: denali: use BIT() and GENMASK() for register macros
-  mtd: nand: denali: remove unneeded find_valid_banks()
-  mtd: nand: denali: handle timing parameters by setup_data_interface()
-  mtd: nand: denali: remove meaningless pipeline read-ahead operation
-  mtd: nand: denali: rework interrupt handling
-  mtd: nand: denali: fix NAND_CMD_STATUS handling
-  mtd: nand: denali: fix NAND_CMD_PARAM handling
-  mtd: nand: do not check R/B# for CMD_READID in nand_command(_lp)
-  mtd: nand: do not check R/B# for CMD_SET_FEATURES in nand_command(_lp)
-  mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
-  mtd: nand: denali: fix bank reset function
-  mtd: nand: denali: use interrupt instead of polling for bank reset
-  mtd: nand: denali: propagate page to helpers via function argument
-  mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
-  mtd: nand: denali: use flag instead of register macro for direction
-  mtd: nand: denali: fix raw and oob accessors for syndrome page layout
-  mtd: nand: denali: support hardware-assisted erased page detection
-  mtd: nand: allocate aligned buffers if NAND_OWN_BUFFERS is unset
-  mtd: nand: denali: skip driver internal bounce buffer when possible
-  mtd: nand: denali: use non-managed kmalloc() for DMA buffer
-  mtd: nand: denali: enable bad block table scan
-
- .../devicetree/bindings/mtd/denali-nand.txt        |   24 +-
- drivers/mtd/nand/Kconfig                           |   11 -
- drivers/mtd/nand/denali.c                          | 2073 +++++++++-----------
- drivers/mtd/nand/denali.h                          |  453 ++---
- drivers/mtd/nand/denali_dt.c                       |  104 +-
- drivers/mtd/nand/denali_pci.c                      |   10 +-
- drivers/mtd/nand/nand_base.c                       |   78 +-
- 7 files changed, 1278 insertions(+), 1475 deletions(-)
-
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index eed001d..7b2d785 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -325,7 +325,7 @@ struct denali_nand_info {
+ 	struct nand_buf buf;
+ 	struct device *dev;
+ 	int total_used_banks;
+-	uint16_t page;
++	int page;
+ 	void __iomem *flash_reg;	/* Register Interface */
+ 	void __iomem *flash_mem;	/* Host Data/Command Interface */
+ 
+@@ -335,9 +335,9 @@ struct denali_nand_info {
+ 	uint32_t irq_status;
+ 	int irq;
+ 
+-	uint32_t devnum;	/* represent how many nands connected */
+-	uint32_t bbtskipbytes;
+-	uint32_t max_banks;
++	int devnum;	/* represent how many nands connected */
++	int bbtskipbytes;
++	int max_banks;
+ 	unsigned int caps;
+ };
+ 
 -- 
 2.7.4
