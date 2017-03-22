@@ -1,19 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqhxT-0000sM-Pn
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 15:13:57 +0000
-Date: Wed, 22 Mar 2017 16:13:23 +0100
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org, Yuanjie.Huang@windriver.com,
- raj.khem@gmail.com
-Subject: Re: mtd-utils: various fixes, apply OpenEmbedded patches
-Message-ID: <20170322161323.22b7489c@free-electrons.com>
-In-Reply-To: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
-References: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
+Received: from mx0a-00010702.pphosted.com ([148.163.156.75]
+ helo=mx0b-00010702.pphosted.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqimr-000563-VC
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 16:07:04 +0000
+From: Zach Brown <zach.brown@ni.com>
+To: <dwmw2@infradead.org>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <marek.vasut@gmail.com>, <richard@nod.at>, <cyrille.pitchen@atmel.com>,
+ <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [RESEND v1] UBI: add debugfs file for tracking PEB state
+Date: Wed, 22 Mar 2017 11:04:29 -0500
+Message-ID: <1490198669-20986-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +23,200 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+From: Ben Shelton <ben.shelton@ni.com>
 
-On Wed, 22 Mar 2017 11:22:52 +0100, David Oberhollenzer wrote:
+Add a file under debugfs to allow easy access to the erase count for
+each physical erase block on an UBI device.  This is useful when
+debugging data integrity issues with UBIFS on NAND flash devices.
 
-> The series mainly includes some of the patches applied localy by
-> the OpenEmbedded project that haven't been submitted upstream so
-> far.
+Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+Signed-off-by: Zach Brown <zach.brown@ni.com>
+---
+ drivers/mtd/ubi/debug.c | 151 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 150 insertions(+), 1 deletion(-)
 
-In Buildroot, we're still using the old 1.5.2 mtd-utils version, but we
-have three patches on it, you might be interested in having a look to
-see if any of those patches are still relevant or not:
-
-  https://git.buildroot.org/buildroot/tree/package/mtd/
-
-We'll try to move to the 2.x version soon.
-
-Thanks for all this work on mtd-utils, very nice to see the project
-more active!
-
-Best regards,
-
-Thomas
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index f101a49..6086822 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -22,6 +22,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/uaccess.h>
+ #include <linux/module.h>
++#include <linux/seq_file.h>
+ 
+ 
+ /**
+@@ -386,7 +387,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+ 	return count;
+ }
+ 
+-/* File operations for all UBI debugfs files */
++/* File operations for all UBI debugfs files except
++ * detailed_erase_block_info
++ */
+ static const struct file_operations dfs_fops = {
+ 	.read   = dfs_file_read,
+ 	.write  = dfs_file_write,
+@@ -395,6 +398,146 @@ static const struct file_operations dfs_fops = {
+ 	.owner  = THIS_MODULE,
+ };
+ 
++/* As long as the position is less then that total number of erase blocks,
++ * we still have more to print.
++ */
++static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
++
++	if (*pos == 0)
++		return SEQ_START_TOKEN;
++
++	if (*pos < ubi->peb_count)
++		return pos;
++
++	return NULL;
++}
++
++/* Since we are using the position as the iterator, we just need to check if we
++ * are done and increment the position.
++ */
++static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
++
++	if (v == SEQ_START_TOKEN)
++		return pos;
++	(*pos)++;
++
++	if (*pos < ubi->peb_count)
++		return pos;
++
++	return NULL;
++}
++
++static void eraseblk_count_seq_stop(struct seq_file *s, void *v)
++{
++}
++
++enum block_status {
++	BLOCK_STATUS_OK,
++	BLOCK_STATUS_BAD_BLOCK,
++	BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX
++};
++
++static char const *block_status_names[] = {"OK", "marked_bad",
++					   "erase_count_beyond_max"};
++
++enum read_status {
++	READ_STATUS_OK,
++	READ_STATUS_ERR_READING_BLOCK,
++};
++
++static char const *read_status_names[] = {"OK", "err_reading_block"};
++
++static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
++{
++	struct ubi_device *ubi = s->private;
++	struct ubi_wl_entry *wl;
++	int *block_number = iter;
++	int erase_count = -1;
++	enum block_status b_sts = BLOCK_STATUS_OK;
++	enum read_status r_sts = READ_STATUS_OK;
++	int err;
++
++	/* If this is the start, print a header */
++	if (iter == SEQ_START_TOKEN) {
++		seq_puts(s,
++			 "physical_block_number\terase_count\tblock_status\tread_status\n");
++		return 0;
++	}
++
++	err = ubi_io_is_bad(ubi, *block_number);
++	if (err) {
++		if (err < 0)
++			r_sts = READ_STATUS_ERR_READING_BLOCK;
++		else
++			b_sts = BLOCK_STATUS_BAD_BLOCK;
++	} else {
++		spin_lock(&ubi->wl_lock);
++
++		wl = ubi->lookuptbl[*block_number];
++		if (wl)
++			erase_count = wl->ec;
++		else
++			r_sts = READ_STATUS_ERR_READING_BLOCK;
++
++		spin_unlock(&ubi->wl_lock);
++
++		if (erase_count > UBI_MAX_ERASECOUNTER)
++			b_sts = BLOCK_STATUS_ERASE_COUNT_BEYOND_MAX;
++	}
++
++	seq_printf(s, "%-22d\t%-11d\t%-12s\t%-12s\n", *block_number,
++		   erase_count, block_status_names[b_sts],
++		   read_status_names[r_sts]);
++	return 0;
++}
++
++static const struct seq_operations eraseblk_count_seq_ops = {
++	.start = eraseblk_count_seq_start,
++	.next = eraseblk_count_seq_next,
++	.stop = eraseblk_count_seq_stop,
++	.show = eraseblk_count_seq_show
++};
++
++static int eraseblk_count_open(struct inode *inode, struct file *f)
++{
++	struct seq_file *s;
++	int err;
++
++	err = seq_open(f, &eraseblk_count_seq_ops);
++	if (err)
++		return err;
++
++	s = f->private_data;
++	s->private = ubi_get_device((unsigned long)inode->i_private);
++
++	if (!s->private)
++		return -ENODEV;
++	else
++		return 0;
++}
++
++static int eraseblk_count_release(struct inode *inode, struct file *f)
++{
++	struct seq_file *s = f->private_data;
++	struct ubi_device *ubi = s->private;
++
++	ubi_put_device(ubi);
++
++	return seq_release(inode, f);
++}
++
++static const struct file_operations eraseblk_count_fops = {
++	.owner = THIS_MODULE,
++	.open = eraseblk_count_open,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = eraseblk_count_release,
++};
++
+ /**
+  * ubi_debugfs_init_dev - initialize debugfs for an UBI device.
+  * @ubi: UBI device description object
+@@ -491,6 +634,12 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 		goto out_remove;
+ 	d->dfs_power_cut_max = dent;
+ 
++	fname = "detailed_erase_block_info";
++	dent = debugfs_create_file(fname, S_IRUSR, d->dfs_dir, (void *)ubi_num,
++				   &eraseblk_count_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++
+ 	return 0;
+ 
+ out_remove:
 -- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.7.4
