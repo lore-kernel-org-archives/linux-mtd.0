@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqgxI-00063D-NC
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:09:53 +0000
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqgxZ-0007sp-13
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:10:01 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -18,12 +18,13 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 18/53] mtd: nand: denali: use nand_chip to hold frequently
- accessed data
-Date: Wed, 22 Mar 2017 23:07:25 +0900
-Message-Id: <1490191680-14481-19-git-send-email-yamada.masahiro@socionext.com>
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2 15/53] mtd: nand: denali_dt: remove dma-mask DT property
+Date: Wed, 22 Mar 2017 23:07:22 +0900
+Message-Id: <1490191680-14481-16-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,146 +36,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The denali_init() needs to setup a bunch of parameters of nand_chip.
-Replace denali->nand.(member) with chip->(member) for shorter code.
+The driver sets appropriate DMA mask.  Delete the "dma-mask" DT
+property.  See [1] for negative comments for this binding.
+
+[1] https://lkml.org/lkml/2016/2/8/57
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
 
 Changes in v2: None
 
- drivers/mtd/nand/denali.c | 68 +++++++++++++++++++++++------------------------
- 1 file changed, 34 insertions(+), 34 deletions(-)
+ Documentation/devicetree/bindings/mtd/denali-nand.txt | 2 --
+ drivers/mtd/nand/denali_dt.c                          | 9 ---------
+ 2 files changed, 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index ff6af1d..24c35a6 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1460,7 +1460,8 @@ static void denali_drv_init(struct denali_nand_info *denali)
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index 6f4ab4c..e593bbe 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -6,7 +6,6 @@ Required properties:
+   - reg : should contain registers location and length for data and reg.
+   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
+   - interrupts : The interrupt number.
+-  - dm-mask : DMA bit mask
  
- int denali_init(struct denali_nand_info *denali)
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+@@ -20,5 +19,4 @@ nand: nand@ff900000 {
+ 	reg = <0xff900000 0x100000>, <0xffb80000 0x10000>;
+ 	reg-names = "nand_data", "denali_reg";
+ 	interrupts = <0 144 4>;
+-	dma-mask = <0xffffffff>;
+ };
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 9577bfd..b8a8284 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -46,8 +46,6 @@ static const struct of_device_id denali_nand_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
+ 
+-static u64 denali_dma_mask;
+-
+ static int denali_dt_probe(struct platform_device *ofdev)
  {
--	struct mtd_info *mtd = nand_to_mtd(&denali->nand);
-+	struct nand_chip *chip = &denali->nand;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int ret;
+ 	struct resource *denali_reg, *nand_data;
+@@ -83,13 +81,6 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 	if (IS_ERR(denali->flash_mem))
+ 		return PTR_ERR(denali->flash_mem);
  
- 	if (denali->platform == INTEL_CE4100) {
-@@ -1497,10 +1498,10 @@ int denali_init(struct denali_nand_info *denali)
- 	mtd->name = "denali-nand";
- 
- 	/* register the driver with the NAND core subsystem */
--	denali->nand.select_chip = denali_select_chip;
--	denali->nand.cmdfunc = denali_cmdfunc;
--	denali->nand.read_byte = denali_read_byte;
--	denali->nand.waitfunc = denali_waitfunc;
-+	chip->select_chip = denali_select_chip;
-+	chip->cmdfunc = denali_cmdfunc;
-+	chip->read_byte = denali_read_byte;
-+	chip->waitfunc = denali_waitfunc;
- 
- 	/*
- 	 * scan for NAND devices attached to the controller
-@@ -1544,17 +1545,16 @@ int denali_init(struct denali_nand_info *denali)
- 	 * the real pagesize and anything necessery
- 	 */
- 	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
--	denali->nand.chipsize <<= denali->devnum - 1;
--	denali->nand.page_shift += denali->devnum - 1;
--	denali->nand.pagemask = (denali->nand.chipsize >>
--						denali->nand.page_shift) - 1;
--	denali->nand.bbt_erase_shift += denali->devnum - 1;
--	denali->nand.phys_erase_shift = denali->nand.bbt_erase_shift;
--	denali->nand.chip_shift += denali->devnum - 1;
-+	chip->chipsize <<= denali->devnum - 1;
-+	chip->page_shift += denali->devnum - 1;
-+	chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
-+	chip->bbt_erase_shift += denali->devnum - 1;
-+	chip->phys_erase_shift = chip->bbt_erase_shift;
-+	chip->chip_shift += denali->devnum - 1;
- 	mtd->writesize <<= denali->devnum - 1;
- 	mtd->oobsize <<= denali->devnum - 1;
- 	mtd->erasesize <<= denali->devnum - 1;
--	mtd->size = denali->nand.numchips * denali->nand.chipsize;
-+	mtd->size = chip->numchips * chip->chipsize;
- 	denali->bbtskipbytes *= denali->devnum;
- 
- 	/*
-@@ -1564,29 +1564,29 @@ int denali_init(struct denali_nand_info *denali)
- 	 */
- 
- 	/* Bad block management */
--	denali->nand.bbt_td = &bbt_main_descr;
--	denali->nand.bbt_md = &bbt_mirror_descr;
-+	chip->bbt_td = &bbt_main_descr;
-+	chip->bbt_md = &bbt_mirror_descr;
- 
- 	/* skip the scan for now until we have OOB read and write support */
--	denali->nand.bbt_options |= NAND_BBT_USE_FLASH;
--	denali->nand.options |= NAND_SKIP_BBTSCAN;
--	denali->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
-+	chip->bbt_options |= NAND_BBT_USE_FLASH;
-+	chip->options |= NAND_SKIP_BBTSCAN;
-+	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
- 
- 	/* no subpage writes on denali */
--	denali->nand.options |= NAND_NO_SUBPAGE_WRITE;
-+	chip->options |= NAND_NO_SUBPAGE_WRITE;
- 
- 	/*
- 	 * Denali Controller only support 15bit and 8bit ECC in MRST,
- 	 * so just let controller do 15bit ECC for MLC and 8bit ECC for
- 	 * SLC if possible.
- 	 * */
--	if (!nand_is_slc(&denali->nand) &&
-+	if (!nand_is_slc(chip) &&
- 			(mtd->oobsize > (denali->bbtskipbytes +
- 			ECC_15BITS * (mtd->writesize /
- 			ECC_SECTOR_SIZE)))) {
- 		/* if MLC OOB size is large enough, use 15bit ECC*/
--		denali->nand.ecc.strength = 15;
--		denali->nand.ecc.bytes = ECC_15BITS;
-+		chip->ecc.strength = 15;
-+		chip->ecc.bytes = ECC_15BITS;
- 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
- 	} else if (mtd->oobsize < (denali->bbtskipbytes +
- 			ECC_8BITS * (mtd->writesize /
-@@ -1594,24 +1594,24 @@ int denali_init(struct denali_nand_info *denali)
- 		pr_err("Your NAND chip OOB is not large enough to contain 8bit ECC correction codes");
- 		goto failed_req_irq;
- 	} else {
--		denali->nand.ecc.strength = 8;
--		denali->nand.ecc.bytes = ECC_8BITS;
-+		chip->ecc.strength = 8;
-+		chip->ecc.bytes = ECC_8BITS;
- 		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
- 	}
- 
- 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
--	denali->nand.ecc.bytes *= denali->devnum;
--	denali->nand.ecc.strength *= denali->devnum;
-+	chip->ecc.bytes *= denali->devnum;
-+	chip->ecc.strength *= denali->devnum;
- 
- 	/* override the default read operations */
--	denali->nand.ecc.size = ECC_SECTOR_SIZE * denali->devnum;
--	denali->nand.ecc.read_page = denali_read_page;
--	denali->nand.ecc.read_page_raw = denali_read_page_raw;
--	denali->nand.ecc.write_page = denali_write_page;
--	denali->nand.ecc.write_page_raw = denali_write_page_raw;
--	denali->nand.ecc.read_oob = denali_read_oob;
--	denali->nand.ecc.write_oob = denali_write_oob;
--	denali->nand.erase = denali_erase;
-+	chip->ecc.size = ECC_SECTOR_SIZE * denali->devnum;
-+	chip->ecc.read_page = denali_read_page;
-+	chip->ecc.read_page_raw = denali_read_page_raw;
-+	chip->ecc.write_page = denali_write_page;
-+	chip->ecc.write_page_raw = denali_write_page_raw;
-+	chip->ecc.read_oob = denali_read_oob;
-+	chip->ecc.write_oob = denali_write_oob;
-+	chip->erase = denali_erase;
- 
- 	ret = nand_scan_tail(mtd);
- 	if (ret)
+-	if (!of_property_read_u32(ofdev->dev.of_node,
+-		"dma-mask", (u32 *)&denali_dma_mask)) {
+-		denali->dev->dma_mask = &denali_dma_mask;
+-	} else {
+-		denali->dev->dma_mask = NULL;
+-	}
+-
+ 	dt->clk = devm_clk_get(&ofdev->dev, NULL);
+ 	if (IS_ERR(dt->clk)) {
+ 		dev_err(&ofdev->dev, "no clk available\n");
 -- 
 2.7.4
