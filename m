@@ -1,31 +1,29 @@
-Received: from conuserg-07.nifty.com ([210.131.2.74])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqgxJ-00063d-Th
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:09:43 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
- Enrico Jorns <ejo@pengutronix.de>,
- Jason Roberts <jason.e.roberts@intel.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Graham Moore <grmoore@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 11/53] mtd: nand: denali: fix bitflips calculation in
- handle_ecc()
-Date: Wed, 22 Mar 2017 23:07:18 +0900
-Message-Id: <1490191680-14481-12-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqhRO-0005q3-Rx
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:40:51 +0000
+From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, "richard@nod.at"
+ <richard@nod.at>, "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "Cyrille
+ Pitchen" <cyrille.pitchen@atmel.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Campbell
+ <ijc+devicetree@hellion.org.uk>, "pawel.moll@arm.com" <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>, "galak@codeaurora.org"
+ <galak@codeaurora.org>
+Subject: RE: [PATCH 4/5] mtd: nand: add support for Micron on-die ECC
+Date: Wed, 22 Mar 2017 14:39:59 +0000
+Message-ID: <0dccc0abcf234e98be6d340027cf1a30@SIWEX5A.sing.micron.com>
+References: <538805ebf8e64015a8b833de755652b3@SIWEX5A.sing.micron.com>
+ <8a171dacd20c45bd8285ecc5dbe8854a@SIWEX5A.sing.micron.com>
+ <20170322144507.4d80d2cc@bbrezillon>
+In-Reply-To: <20170322144507.4d80d2cc@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,250 +33,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This function is wrong in multiple ways:
-
-[1] Counting corrected bytes instead of corrected bits.
-
-The following code is counting the number of corrected _bytes_.
-
-    /* correct the ECC error */
-    buf[offset] ^= err_cor_value;
-    mtd->ecc_stats.corrected++;
-    bitflips++;
-
-What the core framework expects is the number of corrected _bits_.
-They can be different if multiple bitflips occur within one byte.
-
-[2] total number of errors instead of max of per-sector errors
-
-The core framework expects that corrected errors are counted per
-sector, then the max value should be taken.  The current code simply
-iterates over the whole page, i.e. counts the total number of
-correction in the page.  This means "too many bitflips" is triggered
-earlier than it should be, i.e. the NAND device is worn out sooner.
-
-Besides those bugs, this function is unreadable due to the deep
-nesting.  Notice the whole code in this function is wrapped in
-if (irq_status & INTR__ECC_ERR), so this conditional can be moved
-out of the function.  Also, use shorter names for local variables.
-
-Re-work the function to fix all the issues.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
-Changes in v2:
-  - Use shorter names for local variables.
-  - Fix bugs addressed by [1], [2]
-
- drivers/mtd/nand/denali.c | 157 ++++++++++++++++++++++++----------------------
- 1 file changed, 82 insertions(+), 75 deletions(-)
-
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 86381ac..608fe6f 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -888,80 +888,87 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
- #define ECC_BYTE(x)	(((x) & ECC_ERROR_ADDRESS__OFFSET))
- #define ECC_CORRECTION_VALUE(x) ((x) & ERR_CORRECTION_INFO__BYTEMASK)
--#define ECC_ERROR_CORRECTABLE(x) (!((x) & ERR_CORRECTION_INFO__ERROR_TYPE))
-+#define ECC_ERROR_UNCORRECTABLE(x) ((x) & ERR_CORRECTION_INFO__ERROR_TYPE)
- #define ECC_ERR_DEVICE(x)	(((x) & ERR_CORRECTION_INFO__DEVICE_NR) >> 8)
- #define ECC_LAST_ERR(x)		((x) & ERR_CORRECTION_INFO__LAST_ERR_INFO)
- 
--static bool handle_ecc(struct denali_nand_info *denali, uint8_t *buf,
--		       uint32_t irq_status, unsigned int *max_bitflips)
-+static int handle_ecc(struct mtd_info *mtd,
-+		      struct denali_nand_info *denali, uint8_t *buf)
- {
--	bool check_erased_page = false;
- 	unsigned int bitflips = 0;
-+	unsigned int max_bitflips = 0;
-+	unsigned int total_bitflips = 0;
-+	uint32_t err_addr, err_cor_info;
-+	unsigned int err_byte, err_sector, err_device;
-+	uint8_t err_cor_value;
-+	unsigned int prev_sector = 0;
-+	int ret = 0;
-+
-+	/* read the ECC errors. we'll ignore them for now */
-+	denali_set_intr_modes(denali, false);
- 
--	if (irq_status & INTR__ECC_ERR) {
--		/* read the ECC errors. we'll ignore them for now */
--		uint32_t err_address, err_correction_info, err_byte,
--			 err_sector, err_device, err_correction_value;
--		denali_set_intr_modes(denali, false);
--
--		do {
--			err_address = ioread32(denali->flash_reg +
--						ECC_ERROR_ADDRESS);
--			err_sector = ECC_SECTOR(err_address);
--			err_byte = ECC_BYTE(err_address);
--
--			err_correction_info = ioread32(denali->flash_reg +
--						ERR_CORRECTION_INFO);
--			err_correction_value =
--				ECC_CORRECTION_VALUE(err_correction_info);
--			err_device = ECC_ERR_DEVICE(err_correction_info);
--
--			if (ECC_ERROR_CORRECTABLE(err_correction_info)) {
--				/*
--				 * If err_byte is larger than ECC_SECTOR_SIZE,
--				 * means error happened in OOB, so we ignore
--				 * it. It's no need for us to correct it
--				 * err_device is represented the NAND error
--				 * bits are happened in if there are more
--				 * than one NAND connected.
--				 */
--				if (err_byte < ECC_SECTOR_SIZE) {
--					struct mtd_info *mtd =
--						nand_to_mtd(&denali->nand);
--					int offset;
--
--					offset = (err_sector *
--							ECC_SECTOR_SIZE +
--							err_byte) *
--							denali->devnum +
--							err_device;
--					/* correct the ECC error */
--					buf[offset] ^= err_correction_value;
--					mtd->ecc_stats.corrected++;
--					bitflips++;
--				}
--			} else {
--				/*
--				 * if the error is not correctable, need to
--				 * look at the page to see if it is an erased
--				 * page. if so, then it's not a real ECC error
--				 */
--				check_erased_page = true;
--			}
--		} while (!ECC_LAST_ERR(err_correction_info));
--		/*
--		 * Once handle all ecc errors, controller will triger
--		 * a ECC_TRANSACTION_DONE interrupt, so here just wait
--		 * for a while for this interrupt
--		 */
--		while (!(read_interrupt_status(denali) &
--				INTR__ECC_TRANSACTION_DONE))
--			cpu_relax();
--		clear_interrupts(denali);
--		denali_set_intr_modes(denali, true);
--	}
--	*max_bitflips = bitflips;
--	return check_erased_page;
-+	do {
-+		err_addr = ioread32(denali->flash_reg + ECC_ERROR_ADDRESS);
-+		err_sector = ECC_SECTOR(err_addr);
-+		err_byte = ECC_BYTE(err_addr);
-+
-+		err_cor_info = ioread32(denali->flash_reg + ERR_CORRECTION_INFO);
-+		err_cor_value = ECC_CORRECTION_VALUE(err_cor_info);
-+		err_device = ECC_ERR_DEVICE(err_cor_info);
-+
-+		/* reset the bitflip counter when crossing ECC sector */
-+		if (err_sector != prev_sector)
-+			bitflips = 0;
-+
-+		if (ECC_ERROR_UNCORRECTABLE(err_cor_info)) {
-+			/*
-+			 * if the error is not correctable, need to look at the
-+			 * page to see if it is an erased page. if so, then
-+			 * it's not a real ECC error
-+			 */
-+			ret = -EBADMSG;
-+		} else if (err_byte < ECC_SECTOR_SIZE) {
-+			/*
-+			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
-+			 * happened in OOB, so we ignore it. It's no need for
-+			 * us to correct it err_device is represented the NAND
-+			 * error bits are happened in if there are more than
-+			 * one NAND connected.
-+			 */
-+			int offset;
-+			unsigned int flips_in_byte;
-+
-+			offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
-+						denali->devnum + err_device;
-+
-+			/* correct the ECC error */
-+			flips_in_byte = hweight8(buf[offset] ^ err_cor_value);
-+			bitflips += flips_in_byte;
-+			total_bitflips += flips_in_byte;
-+			buf[offset] ^= err_cor_value;
-+
-+			max_bitflips = max(max_bitflips, bitflips);
-+		}
-+
-+		prev_sector = err_sector;
-+	} while (!ECC_LAST_ERR(err_cor_info));
-+
-+	/*
-+	 * Once handle all ecc errors, controller will trigger a
-+	 * ECC_TRANSACTION_DONE interrupt, so here just wait for
-+	 * a while for this interrupt
-+	 */
-+	while (!(read_interrupt_status(denali) & INTR__ECC_TRANSACTION_DONE))
-+		cpu_relax();
-+	clear_interrupts(denali);
-+	denali_set_intr_modes(denali, true);
-+
-+	if (ret)
-+		return ret;
-+
-+	mtd->ecc_stats.corrected += total_bitflips;
-+
-+	return max_bitflips;
- }
- 
- /* programs the controller to either enable/disable DMA transfers */
-@@ -1097,7 +1104,6 @@ static int denali_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
- static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			    uint8_t *buf, int oob_required, int page)
- {
--	unsigned int max_bitflips;
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
- 
- 	dma_addr_t addr = denali->buf.dma_buf;
-@@ -1105,8 +1111,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
--	bool check_erased_page = false;
--	int stat;
-+	int stat = 0;
- 
- 	if (page != denali->page) {
- 		dev_err(denali->dev,
-@@ -1130,10 +1135,11 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	memcpy(buf, denali->buf.buf, mtd->writesize);
- 
--	check_erased_page = handle_ecc(denali, buf, irq_status, &max_bitflips);
-+	if (irq_status & INTR__ECC_ERR)
-+		stat = handle_ecc(mtd, denali, buf);
- 	denali_enable_dma(denali, false);
- 
--	if (check_erased_page) {
-+	if (stat == -EBADMSG) {
- 		read_oob_data(mtd, chip->oob_poi, denali->page);
- 
- 		stat = nand_check_erased_ecc_chunk(
-@@ -1144,10 +1150,11 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 		if (stat < 0) {
- 			mtd->ecc_stats.failed++;
- 			/* return 0 for uncorrectable bitflips */
--			max_bitflips = 0;
-+			stat = 0;
- 		}
- 	}
--	return max_bitflips;
-+
-+	return stat;
- }
- 
- static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
--- 
-2.7.4
+IEhpIEJvcmlzDQoNCj5IaSBCZWFuLA0KPg0KPk9uIFdlZCwgMjIgTWFyIDIwMTcgMTM6MjA6MDQg
+KzAwMDANCj4iQmVhbiBIdW8gKGJlYW5odW8pIiA8YmVhbmh1b0BtaWNyb24uY29tPiB3cm90ZToN
+Cj4NCj4+ID4rbWljcm9uX25hbmRfcmVhZF9wYWdlX29uX2RpZV9lY2Moc3RydWN0IG10ZF9pbmZv
+ICptdGQsIHN0cnVjdA0KPj4gPituYW5kX2NoaXANCj4+ID4qY2hpcCwNCj4+ID4rwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1aW50OF90DQo+
+PiA+KypidWYsIGludCBvb2JfcmVxdWlyZWQsDQo+PiA+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW50IHBhZ2UpIHsNCj4+ID4rwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGludCBzdGF0dXM7DQo+PiA+K8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBpbnQgbWF4X2JpdGZsaXBzID0gMDsNCj4+ID4rDQo+PiA+K8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBtaWNyb25fbmFuZF9vbl9kaWVfZWNjX3NldHVwKGNoaXAsIHRydWUpOw0KPj4gPisN
+Cj4+ID4rwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNoaXAtPmNtZGZ1bmMobXRkLCBOQU5EX0NN
+RF9SRUFEMCwgMHgwMCwgcGFnZSk7DQo+PiA+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjaGlw
+LT5jbWRmdW5jKG10ZCwgTkFORF9DTURfU1RBVFVTLCAtMSwgLTEpOw0KPj4gPivCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgc3RhdHVzID0gY2hpcC0+cmVhZF9ieXRlKG10ZCk7DQo+PiA+K8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoc3RhdHVzICYgTkFORF9TVEFUVVNfRkFJTCkNCj4+ID4r
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtdGQt
+PmVjY19zdGF0cy5mYWlsZWQrKzsNCj4+ID4rwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qDQo+
+PiA+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIFRoZSBpbnRlcm5hbCBFQ0MgZG9lc24ndCB0
+ZWxsIHVzIHRoZSBudW1iZXIgb2YNCj4+ID4rYml0ZmxpcHMNCj4+ID4rwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgICogdGhhdCBoYXZlIGJlZW4gY29ycmVjdGVkLCBidXQgdGVsbHMgdXMgaWYgaXQN
+Cj4+ID4rcmVjb21tZW5kcyB0bw0KPj4gPivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiByZXdy
+aXRlIHRoZSBibG9jay4gSWYgaXQncyB0aGUgY2FzZSwgdGhlbiB3ZSBwcmV0ZW5kDQo+PiA+K3dl
+IGhhZA0KPj4gPivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBhIG51bWJlciBvZiBiaXRmbGlw
+cyBlcXVhbCB0byB0aGUgRUNDIHN0cmVuZ3RoLCB3aGljaA0KPj4gPit3aWxsDQo+PiA+K8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCAqIGhpbnQgdGhlIE5BTkQgY29yZSB0byByZXdyaXRlIHRoZSBi
+bG9jay4NCj4+ID4rwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICovDQo+PiA+K8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBlbHNlIGlmIChzdGF0dXMgJiBOQU5EX1NUQVRVU19XUklURV9SRUNPTU1F
+TkRFRCkNCj4+ID4rwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBtYXhfYml0ZmxpcHMgPSBjaGlwLT5lY2Muc3RyZW5ndGg7DQo+PiA+Kw0KPj4gPivC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2hpcC0+Y21kZnVuYyhtdGQsIE5BTkRfQ01EX1JFQUQw
+LCAtMSwgLTEpOw0KPj4gPisNCj4+ID4rwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG5hbmRfcmVh
+ZF9wYWdlX3JhdyhtdGQsIGNoaXAsIGJ1Ziwgb29iX3JlcXVpcmVkLCBwYWdlKTsNCj4+ID4rDQo+
+PiA+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtaWNyb25fbmFuZF9vbl9kaWVfZWNjX3NldHVw
+KGNoaXAsIGZhbHNlKTsNCj4+ID4rDQo+PiA+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1
+cm4gbWF4X2JpdGZsaXBzOw0KPj4gPit9DQo+Pg0KPj4NCj4+IEhpLA0KPj4gTGV0IG1lIGdpdmUg
+eW91IHNvbWUgaW5mb3JtYXRpb24sIGhvcGVmdWxseSB5b3UgY2FuIGRvIHNvbWUgbW9kaWZpY2F0
+aW9uDQo+YmFzZWQgb24gYWJvdmUgY29kZXMuDQo+Pg0KPj4gSSBub3RpY2VkIHRoYXQgdGhpcyBw
+YXRjaGVzIGFyZSBiYXNlZCBvbiBNVDI5RjFHMDhBQkFEQVdQIFNMQyBOQU5ELCBpdCBpcw0KPm91
+ciA2MHMgMzRubSBTTEMgTkFORC4NCj4+IFNvIGZhciwgd2UgaGF2ZSAyIHNlcmllcyBTTEMgTkFO
+RCB3aXRoIGltcGxlbWVudGF0aW9ucyBvZiBvbiBkaWUgRUNDLg0KPj4gMS4gTTc5QSBmb3IgYWxs
+IDI1bm0gKDcwc2VyaWVzKSBTTEMgTkFORCB3aXRoIG9uLWRpZSBFQ0MgKE03OEEsIE03OUEsDQo+
+PiBhbmQgZnV0dXJlIGRlc2lnbiBNNzBBKSAyLiBNNjBBIGZvciBhbGwgMzRubSAoNjBzZXJpZXMp
+IFNMQyBOQU5EIHdpdGgNCj4+IG9uLWRpZSBFQ0MNCj4NCj5EbyB5b3UgaGF2ZSBhbiBlYXN5IHdh
+eSB0byBkaWZmZXJlbnRpYXRlIHRob3NlIDIgZ2VuZXJhdGlvbnMgb2YgY2hpcCwgb3Igc2hvdWxk
+DQo+d2UgYmFzZSBvdXIgZGV0ZWN0aW9uIG9uIHRoZSBtb2RlbCBuYW1lIHByb3ZpZGVkIGluIHRo
+ZSBPTkZJIHBhcmFtZXRlciBwYWdlPw0KPg0KT2YgY291cnNlLCB5b3UgY2FuIHVzZSBtb2RlbCBu
+YW1lLCBidXQgSSB0aGluayB3ZSB3aWxsIGtlZXAgYSBiaWcgdGFibGUgdG8gaW5jbHVkZSBldmVy
+eSBOQU5EIGluZm9ybWF0aW9uLg0KQWxzbywgaXQgZG9lc24ndCBsb29rIG5pY2UgYW5kIGFsd2F5
+cyBjaGFuZ2VzLg0KDQpUaGUgYmV0dGVyIHNvbHV0aW9uIGlzOg0KDQpGb3IgdGhlIE1pY3JvbiBT
+TEMgTkFORCB3aXRoIG9uIERpZSBFQ0MsIHBsZWFzZSBub3RlIG9ubHkgZm9yIHRoZSAiU0xDIE5B
+TkQgd2l0aCBvbiBEaWUgRUNDIiwNCllvdSBjYW4gYWx3YXlzIGRpZmZlcmVudGlhdGUgdGhlc2Ug
+dHdvIGdlbmVyYXRpb24gTkFORCBieSBPTkZJIHRhYmxlIGJ5dGUgMTEyICJOdW1iZXIgb2YgYml0
+cw0KRUNDIGNvcnJlY3RhYmlsaXR5ICIsIGlmIGl0cyB2YWx1ZSBpcyA0LCBpdCBpcyA2MHM7IGlm
+IGl0J3MgOCwgaXQgaXMgNzBzLiB0aGlzIGlzIGEgcGVybWFuZW50IG1ldGhvZCBmb3IgYm90aA0K
+NjBzIGFuZCA3MHMgIlNMQyBOQU5EIHdpdGggb24gRGllIEVDQyIuDQoNCj4+DQo+PiBOQU5EX1NU
+QVRVU19GQUlMOg0KPj4gRm9yIHRoZSBib3RoIG9mIHNlcmllcyBTTEMgTkFORCB3aXRoIG9uLWRp
+ZSBFQ0MsIFNSIGJpdCAwDQo+PiAoTkFORF9TVEFUVVNfRkFJTCkgaW5kaWNhdGVzIGFuIHVuY29y
+cmVjdGFibGUgcmVhZCBmYWlsLCBkYXRhIGlzIGxvc3QsDQo+PiBubyByZWNvdmVyeSBwb3NzaWJs
+ZSwgdW5sZXNzIHdlIGhhdmUgc29mdHdhcmUgYWRkaXRpb25hbCBwcm90ZWN0aW9uLCB0aGUgYmxv
+Y2sNCj5pcyBub3QgbmVjZXNzYXJpbHkgYmFkIGJ1dCB0aGUgZGF0YSBpcyBsb3N0Lg0KPj4NCj4+
+IE5BTkRfU1RBVFVTX1dSSVRFX1JFQ09NTUVOREVEOg0KPj4NCj4+IEZvciB0aGUgTkFORF9TVEFU
+VVNfV1JJVEVfUkVDT01NRU5ERUQsIGl0IG9ubHkgd29ya3Mgb24gNjBzIE5BTkQsIGl0DQo+PiBp
+cyA0IGJpdCBFQ0MsIHRoZSBzdGF0dXMgcmVnaXN0ZXIgb25seSBpbmRpY2F0ZXMgaWYgdGhlcmUg
+aXMgMCBvciAxLTQgY29ycmVjdGFibGUNCj5lcnJvciBiaXRzLiBXZSBkb24ndCB3YW50IHRvIHRy
+aWdnZXIgcmVmcmVzaCBpZiBvbmx5IDEgb3IgMiBiaXRzIGZhaWwuDQo+PiB0aGUgYmFzZSByZWZy
+ZXNoIGlzIHRoYXQgaWYgdGhlcmUgMyBvciA0IGJpdGZsaXBzLiBCdXQgdW5mb3J0dW5hdGVseSB3
+ZSBjYW4ndCBnZXQNCj5mYWlsZWQgYml0IGNvdW50IHRyb3VnaCByZWFkIHN0YXR1cyByZWdpc3Rl
+ci4NCj4+IFNXIHdvcmthcm91bmQgcHJvcG9zYWw6DQo+PiAxLiBJZiBTUiBiaXQgMyBpcyBzZXQg
+dG8gMSBpdCBtZWFucyAxfjQgYml0ZmxpcHMgYW5kIGNvcnJlY3RhYmxlLg0KPj4gMi4gUmVhZCBv
+dXQgdGhlIHBhZ2Ugd2l0aCBFQ0MgT04NCj4+IDMuIFJlYWQgb3V0IHRoZSBwYWdlIHdpdGggRUND
+IE9GRg0KPj4gNC4gQ29tcGFyZSB0aGUgZGF0YQ0KPj4gNS4gQ291bnQgdGhlIG51bWJlciBvZiBi
+aXRmbGlwcyBmb3IgdGhlIHNlY3RvcnMgKHRoZXJlIGFyZSA0IEVDQw0KPj4gc2VjdG9ycykgNi4g
+aWYgMyBvciBtb3JlIGZhaWwgYml0cywgdHJpZ2dlciBmcmVzaC4NCj4+IEkga25vdyB0aGlzIGlz
+IG5vdCBnb29kIHNvbHV0aW9uLCBidXQgaWYgYXMgbG9uZyBhcw0KPj4gTkFORF9TVEFUVVNfV1JJ
+VEVfUkVDT01NRU5ERUQgaXMgc2V0LCBhbmQgdHJpZ2dlciByZWZyZXNoLCB0aGlzIHdpbGwNCj5k
+ZWZpbml0ZWx5IGluY3JlYXNlIE5BTkQgUEUgY3ljbGUuDQo+DQo+V2UgZGlzY3Vzc2VkIHRoYXQg
+d2l0aCBUaG9tYXMgd2hlbiBkZXZlbG9waW5nIHRoZSBzb2x1dGlvbi4gSSBzdWdnZXN0ZWQgdG8g
+Zmlyc3QNCj5nbyBmb3IgYSBzaW1wbGUgc29sdXRpb24gZXZlbiBpZiBpdCBpbXBsaWVzIHVubmVl
+ZGVkIFBFIGN5Y2xlcyB3aGVuIGJpdGZsaXBzIGFyZQ0KPmRldGVjdGVkLCBidXQgbWF5YmUgSSB3
+YXMgd3JvbmcuIEluIGFueSBjYXNlLCBpdCBzaG91bGRuJ3QgYmUgdG8gaGFyZCB0byBkbyB3aGF0
+DQo+eW91IHN1Z2dlc3QuDQo+DQoNCk9rLCBidXQgSSByZWNvbW1lbmQgdGhhdCA3MHMgc2hvdWxk
+IGJlIHRoZSBmaXJzdCBjaG9pY2Ugb24gdGhpcyBzaW5nbGUgc29sdXRpb24sDQppdCBkb2Vzbid0
+IG5lZWQgdG8gcmVhZCB0d2ljZSB0byBkZXRlY3QgaXRzIGJpdGZsaXBzIGNvdW50LiANCg0KPj4N
+Cj4+IEZvciB0aGUgNzBzLCBpdCBpcyA4IGJpdHMgb24tZGllIEVDQywgdGhlIHN0YXR1cyByZWdp
+c3RlciBjYW4gcmVwb3J0IDctOCBiaXRmbGlwcw0KPihyZWZyZXNoIHJlY29tbWVuZGVkKSwgNC02
+IGJpdGZsaXBzIGFuZCAxLTMgYml0ZmxpcHMuDQo+PiBTbyB3ZSBjYW4gdHJpZ2dlciByZWZyZXNo
+IGFjY29yZGluZyB0byBpdHMgYml0ZmxpcHMgc3RhdHVzLg0KPg0KPlRoYXQncyBnb29kIG5ld3Mh
+DQo+DQo+VGhhbmtzIGZvciB5b3VyIGZlZWRiYWNrLg0KPg0KPkJvcmlzDQoNCg0KLy9CZWFuaHVv
+DQo=
