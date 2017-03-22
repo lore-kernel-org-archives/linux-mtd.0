@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqgxJ-00063e-Tg
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:09:44 +0000
+ id 1cqgxX-00063l-SS
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:09:57 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -20,10 +20,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 06/53] mtd: nand: denali: fix comment of
- denali_nand_info::flash_mem
-Date: Wed, 22 Mar 2017 23:07:13 +0900
-Message-Id: <1490191680-14481-7-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 21/53] mtd: nand: denali: move multi device fixup code to a
+ helper function
+Date: Wed, 22 Mar 2017 23:07:28 +0900
+Message-Id: <1490191680-14481-22-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,34 +35,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The same comment "Mapped io reg base address" for flash_reg and
-flash_mem probably due to the mistake of copy-paste work.
-Of course, the latter is not the register base address.
+Collect multi NAND fixups into a helper function instead of
+scattering them in denali_init().
 
-Reword the comments using the terminology in the Denali User's Guide.
+I am rewording the comment block to clearly explain what is called
+"multi device".
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - Reword the comment block for clarification
 
- drivers/mtd/nand/denali.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/denali.c | 54 +++++++++++++++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 6573ea5..403a7c8 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -351,8 +351,8 @@ struct denali_nand_info {
- 	struct device *dev;
- 	int total_used_banks;
- 	uint16_t page;
--	void __iomem *flash_reg;  /* Mapped io reg base address */
--	void __iomem *flash_mem;  /* Mapped io reg base address */
-+	void __iomem *flash_reg;	/* Register Interface */
-+	void __iomem *flash_mem;	/* Host Data/Command Interface */
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 1706975..4e63d57 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1458,6 +1458,36 @@ static void denali_drv_init(struct denali_nand_info *denali)
+ 	denali->irq_status = 0;
+ }
  
- 	/* elements used by ISR */
- 	struct completion complete;
++static void denali_multidev_fixup(struct denali_nand_info *denali)
++{
++	struct nand_chip *chip = &denali->nand;
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
++	/*
++	 * Support for multi device:
++	 * When the IP configuration is x16 capable and two x8 chips are
++	 * connected in parallel, DEVICES_CONNECTED should be set to 2.
++	 * In this case, the core framework knows nothing about this fact,
++	 * so we should tell it the _logical_ pagesize and anything necessary.
++	 */
++	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
++
++	mtd->size <<= denali->devnum - 1;
++	mtd->erasesize <<= denali->devnum - 1;
++	mtd->writesize <<= denali->devnum - 1;
++	mtd->oobsize <<= denali->devnum - 1;
++	chip->chipsize <<= denali->devnum - 1;
++	chip->page_shift += denali->devnum - 1;
++	chip->phys_erase_shift += denali->devnum - 1;
++	chip->bbt_erase_shift += denali->devnum - 1;
++	chip->chip_shift += denali->devnum - 1;
++	chip->pagemask <<= denali->devnum - 1;
++	chip->ecc.size *= denali->devnum;
++	chip->ecc.bytes *= denali->devnum;
++	chip->ecc.strength *= denali->devnum;
++	denali->bbtskipbytes *= denali->devnum;
++}
++
+ int denali_init(struct denali_nand_info *denali)
+ {
+ 	struct nand_chip *chip = &denali->nand;
+@@ -1540,24 +1570,6 @@ int denali_init(struct denali_nand_info *denali)
+ 	}
+ 
+ 	/*
+-	 * support for multi nand
+-	 * MTD known nothing about multi nand, so we should tell it
+-	 * the real pagesize and anything necessery
+-	 */
+-	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
+-	chip->chipsize <<= denali->devnum - 1;
+-	chip->page_shift += denali->devnum - 1;
+-	chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
+-	chip->bbt_erase_shift += denali->devnum - 1;
+-	chip->phys_erase_shift = chip->bbt_erase_shift;
+-	chip->chip_shift += denali->devnum - 1;
+-	mtd->writesize <<= denali->devnum - 1;
+-	mtd->oobsize <<= denali->devnum - 1;
+-	mtd->erasesize <<= denali->devnum - 1;
+-	mtd->size = chip->numchips * chip->chipsize;
+-	denali->bbtskipbytes *= denali->devnum;
+-
+-	/*
+ 	 * second stage of the NAND scan
+ 	 * this stage requires information regarding ECC and
+ 	 * bad block management.
+@@ -1600,11 +1612,9 @@ int denali_init(struct denali_nand_info *denali)
+ 	}
+ 
+ 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
+-	chip->ecc.bytes *= denali->devnum;
+-	chip->ecc.strength *= denali->devnum;
+ 
+ 	/* override the default read operations */
+-	chip->ecc.size = ECC_SECTOR_SIZE * denali->devnum;
++	chip->ecc.size = ECC_SECTOR_SIZE;
+ 	chip->ecc.read_page = denali_read_page;
+ 	chip->ecc.read_page_raw = denali_read_page_raw;
+ 	chip->ecc.write_page = denali_write_page;
+@@ -1613,6 +1623,8 @@ int denali_init(struct denali_nand_info *denali)
+ 	chip->ecc.write_oob = denali_write_oob;
+ 	chip->erase = denali_erase;
+ 
++	denali_multidev_fixup(denali);
++
+ 	ret = nand_scan_tail(mtd);
+ 	if (ret)
+ 		goto failed_req_irq;
 -- 
 2.7.4
