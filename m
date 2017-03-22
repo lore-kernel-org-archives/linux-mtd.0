@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqgxI-000637-Mo
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:09:52 +0000
+ id 1cqgxI-00063D-NC
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 14:09:53 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -20,9 +20,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v2 17/53] mtd: nand: denali: allow to override revision number
-Date: Wed, 22 Mar 2017 23:07:24 +0900
-Message-Id: <1490191680-14481-18-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 18/53] mtd: nand: denali: use nand_chip to hold frequently
+ accessed data
+Date: Wed, 22 Mar 2017 23:07:25 +0900
+Message-Id: <1490191680-14481-19-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,115 +35,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
-changed in revision 5.1") added a revision check to support the
-new max_banks encoding.  Its git-log states "The encoding of
-max_banks changed in Denali revision 5.1".
-
-There are exceptional cases, for example, the revision register on
-some UniPhier SoCs says the IP is 5.0 but the max_banks is encoded
-in the new format.
-
-This IP updates the resister specification from time to time (often
-breaking the backward compatibility), but the revision number is not
-incremented correctly.
-
-The max_banks is not only the case that needs revision checking.
-Let's allow to override an incorrect revision number.
+The denali_init() needs to setup a bunch of parameters of nand_chip.
+Replace denali->nand.(member) with chip->(member) for shorter code.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2:
-  - Replace the NEW_N_BANKS_FORMAT approach
+Changes in v2: None
 
- drivers/mtd/nand/denali.c    | 19 +++++++++----------
- drivers/mtd/nand/denali.h    |  3 +--
- drivers/mtd/nand/denali_dt.c |  5 ++++-
- 3 files changed, 14 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/denali.c | 68 +++++++++++++++++++++++------------------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 513292f..ff6af1d 100644
+index ff6af1d..24c35a6 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -449,17 +449,12 @@ static void find_valid_banks(struct denali_nand_info *denali)
- static void detect_max_banks(struct denali_nand_info *denali)
- {
- 	uint32_t features = ioread32(denali->flash_reg + FEATURES);
--	/*
--	 * Read the revision register, so we can calculate the max_banks
--	 * properly: the encoding changed from rev 5.0 to 5.1
--	 */
--	u32 revision = MAKE_COMPARABLE_REVISION(
--				ioread32(denali->flash_reg + REVISION));
+@@ -1460,7 +1460,8 @@ static void denali_drv_init(struct denali_nand_info *denali)
  
--	if (revision < REVISION_5_1)
--		denali->max_banks = 2 << (features & FEATURES__N_BANKS);
--	else
--		denali->max_banks = 1 << (features & FEATURES__N_BANKS);
-+	denali->max_banks = 1 << (features & FEATURES__N_BANKS);
-+
-+	/* the encoding changed from rev 5.0 to 5.1 */
-+	if (denali->revision < 0x0501)
-+		denali->max_banks <<= 1;
- }
- 
- static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
-@@ -1348,6 +1343,10 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- /* Initialization code to bring the device up to a known good state */
- static void denali_hw_init(struct denali_nand_info *denali)
+ int denali_init(struct denali_nand_info *denali)
  {
-+	if (!denali->revision)
-+		denali->revision =
-+				swab16(ioread32(denali->flash_reg + REVISION));
-+
+-	struct mtd_info *mtd = nand_to_mtd(&denali->nand);
++	struct nand_chip *chip = &denali->nand;
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int ret;
+ 
+ 	if (denali->platform == INTEL_CE4100) {
+@@ -1497,10 +1498,10 @@ int denali_init(struct denali_nand_info *denali)
+ 	mtd->name = "denali-nand";
+ 
+ 	/* register the driver with the NAND core subsystem */
+-	denali->nand.select_chip = denali_select_chip;
+-	denali->nand.cmdfunc = denali_cmdfunc;
+-	denali->nand.read_byte = denali_read_byte;
+-	denali->nand.waitfunc = denali_waitfunc;
++	chip->select_chip = denali_select_chip;
++	chip->cmdfunc = denali_cmdfunc;
++	chip->read_byte = denali_read_byte;
++	chip->waitfunc = denali_waitfunc;
+ 
  	/*
- 	 * tell driver how many bit controller will skip before
- 	 * writing ECC code in OOB, this register may be already
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index a8e8d68..58a8042 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -179,8 +179,6 @@
+ 	 * scan for NAND devices attached to the controller
+@@ -1544,17 +1545,16 @@ int denali_init(struct denali_nand_info *denali)
+ 	 * the real pagesize and anything necessery
+ 	 */
+ 	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
+-	denali->nand.chipsize <<= denali->devnum - 1;
+-	denali->nand.page_shift += denali->devnum - 1;
+-	denali->nand.pagemask = (denali->nand.chipsize >>
+-						denali->nand.page_shift) - 1;
+-	denali->nand.bbt_erase_shift += denali->devnum - 1;
+-	denali->nand.phys_erase_shift = denali->nand.bbt_erase_shift;
+-	denali->nand.chip_shift += denali->devnum - 1;
++	chip->chipsize <<= denali->devnum - 1;
++	chip->page_shift += denali->devnum - 1;
++	chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
++	chip->bbt_erase_shift += denali->devnum - 1;
++	chip->phys_erase_shift = chip->bbt_erase_shift;
++	chip->chip_shift += denali->devnum - 1;
+ 	mtd->writesize <<= denali->devnum - 1;
+ 	mtd->oobsize <<= denali->devnum - 1;
+ 	mtd->erasesize <<= denali->devnum - 1;
+-	mtd->size = denali->nand.numchips * denali->nand.chipsize;
++	mtd->size = chip->numchips * chip->chipsize;
+ 	denali->bbtskipbytes *= denali->devnum;
  
- #define REVISION				0x370
- #define     REVISION__VALUE				0xffff
--#define MAKE_COMPARABLE_REVISION(x)		swab16((x) & REVISION__VALUE)
--#define REVISION_5_1				0x00000501
+ 	/*
+@@ -1564,29 +1564,29 @@ int denali_init(struct denali_nand_info *denali)
+ 	 */
  
- #define ONFI_DEVICE_FEATURES			0x380
- #define     ONFI_DEVICE_FEATURES__VALUE			0x003f
-@@ -351,6 +349,7 @@ struct denali_nand_info {
- 	int devnum;	/* represent how many nands connected */
- 	int bbtskipbytes;
- 	int max_banks;
-+	unsigned int revision;
- 	unsigned int caps;
- #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
- #define DENALI_CAP_DMA_64BIT			BIT(1)
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index ada3863..df9ef36 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -30,6 +30,7 @@ struct denali_dt {
- };
+ 	/* Bad block management */
+-	denali->nand.bbt_td = &bbt_main_descr;
+-	denali->nand.bbt_md = &bbt_mirror_descr;
++	chip->bbt_td = &bbt_main_descr;
++	chip->bbt_md = &bbt_mirror_descr;
  
- struct denali_dt_data {
-+	unsigned int revision;
- 	unsigned int caps;
- };
+ 	/* skip the scan for now until we have OOB read and write support */
+-	denali->nand.bbt_options |= NAND_BBT_USE_FLASH;
+-	denali->nand.options |= NAND_SKIP_BBTSCAN;
+-	denali->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
++	chip->bbt_options |= NAND_BBT_USE_FLASH;
++	chip->options |= NAND_SKIP_BBTSCAN;
++	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
  
-@@ -60,8 +61,10 @@ static int denali_dt_probe(struct platform_device *pdev)
- 	denali = &dt->denali;
+ 	/* no subpage writes on denali */
+-	denali->nand.options |= NAND_NO_SUBPAGE_WRITE;
++	chip->options |= NAND_NO_SUBPAGE_WRITE;
  
- 	data = of_device_get_match_data(&pdev->dev);
--	if (data)
-+	if (data) {
-+		denali->revision = data->revision;
- 		denali->caps = data->caps;
-+	}
+ 	/*
+ 	 * Denali Controller only support 15bit and 8bit ECC in MRST,
+ 	 * so just let controller do 15bit ECC for MLC and 8bit ECC for
+ 	 * SLC if possible.
+ 	 * */
+-	if (!nand_is_slc(&denali->nand) &&
++	if (!nand_is_slc(chip) &&
+ 			(mtd->oobsize > (denali->bbtskipbytes +
+ 			ECC_15BITS * (mtd->writesize /
+ 			ECC_SECTOR_SIZE)))) {
+ 		/* if MLC OOB size is large enough, use 15bit ECC*/
+-		denali->nand.ecc.strength = 15;
+-		denali->nand.ecc.bytes = ECC_15BITS;
++		chip->ecc.strength = 15;
++		chip->ecc.bytes = ECC_15BITS;
+ 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
+ 	} else if (mtd->oobsize < (denali->bbtskipbytes +
+ 			ECC_8BITS * (mtd->writesize /
+@@ -1594,24 +1594,24 @@ int denali_init(struct denali_nand_info *denali)
+ 		pr_err("Your NAND chip OOB is not large enough to contain 8bit ECC correction codes");
+ 		goto failed_req_irq;
+ 	} else {
+-		denali->nand.ecc.strength = 8;
+-		denali->nand.ecc.bytes = ECC_8BITS;
++		chip->ecc.strength = 8;
++		chip->ecc.bytes = ECC_8BITS;
+ 		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
+ 	}
  
- 	denali->platform = DT;
- 	denali->dev = &pdev->dev;
+ 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
+-	denali->nand.ecc.bytes *= denali->devnum;
+-	denali->nand.ecc.strength *= denali->devnum;
++	chip->ecc.bytes *= denali->devnum;
++	chip->ecc.strength *= denali->devnum;
+ 
+ 	/* override the default read operations */
+-	denali->nand.ecc.size = ECC_SECTOR_SIZE * denali->devnum;
+-	denali->nand.ecc.read_page = denali_read_page;
+-	denali->nand.ecc.read_page_raw = denali_read_page_raw;
+-	denali->nand.ecc.write_page = denali_write_page;
+-	denali->nand.ecc.write_page_raw = denali_write_page_raw;
+-	denali->nand.ecc.read_oob = denali_read_oob;
+-	denali->nand.ecc.write_oob = denali_write_oob;
+-	denali->nand.erase = denali_erase;
++	chip->ecc.size = ECC_SECTOR_SIZE * denali->devnum;
++	chip->ecc.read_page = denali_read_page;
++	chip->ecc.read_page_raw = denali_read_page_raw;
++	chip->ecc.write_page = denali_write_page;
++	chip->ecc.write_page_raw = denali_write_page_raw;
++	chip->ecc.read_oob = denali_read_oob;
++	chip->ecc.write_oob = denali_write_oob;
++	chip->erase = denali_erase;
+ 
+ 	ret = nand_scan_tail(mtd);
+ 	if (ret)
 -- 
 2.7.4
