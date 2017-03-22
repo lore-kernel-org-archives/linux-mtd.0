@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZV-0001SR-3c
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:30 +0000
+ id 1cqmZV-0001SL-3l
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:32 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -19,10 +19,9 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RESEND PATCH v2 09/53] mtd: nand: denali: use int where no reason to
- use fixed width variable
-Date: Thu, 23 Mar 2017 05:07:08 +0900
-Message-Id: <1490213273-8571-10-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 20/53] mtd: nand: denali: do not set mtd->name
+Date: Thu, 23 Mar 2017 05:07:19 +0900
+Message-Id: <1490213273-8571-21-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,43 +33,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The page number is generally stored in an integer type variable.
-The uint16_t does not have enough width.  I see no reason to use
-uint32_t for other members, either.  Just use int.
+This will be filled by nand_scan_ident() later.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v2: None
 
- drivers/mtd/nand/denali.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/denali.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index eed001d..7b2d785 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -325,7 +325,7 @@ struct denali_nand_info {
- 	struct nand_buf buf;
- 	struct device *dev;
- 	int total_used_banks;
--	uint16_t page;
-+	int page;
- 	void __iomem *flash_reg;	/* Register Interface */
- 	void __iomem *flash_mem;	/* Host Data/Command Interface */
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 3badb1d..1706975 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1495,7 +1495,6 @@ int denali_init(struct denali_nand_info *denali)
  
-@@ -335,9 +335,9 @@ struct denali_nand_info {
- 	uint32_t irq_status;
- 	int irq;
+ 	/* now that our ISR is registered, we can enable interrupts */
+ 	denali_set_intr_modes(denali, true);
+-	mtd->name = "denali-nand";
+ 	nand_set_flash_node(chip, denali->dev->of_node);
  
--	uint32_t devnum;	/* represent how many nands connected */
--	uint32_t bbtskipbytes;
--	uint32_t max_banks;
-+	int devnum;	/* represent how many nands connected */
-+	int bbtskipbytes;
-+	int max_banks;
- 	unsigned int caps;
- };
- 
+ 	/* register the driver with the NAND core subsystem */
 -- 
 2.7.4
