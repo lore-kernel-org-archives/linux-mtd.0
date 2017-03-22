@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZN-0001Rg-Ea
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:26 +0000
+ id 1cqmZN-0001Rc-EV
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:28 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -19,9 +19,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RESEND PATCH v2 08/53] mtd: nand: denali: introduce capability flag
-Date: Thu, 23 Mar 2017 05:07:07 +0900
-Message-Id: <1490213273-8571-9-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 01/53] mtd: nand: allow to set only one of ECC size
+ and ECC strength from DT
+Date: Thu, 23 Mar 2017 05:07:00 +0900
+Message-Id: <1490213273-8571-2-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,90 +34,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Denali NAND controller IP has various customizable features.
-SoC vendors can choose desired functions when a delivery RTL is
-created.  It means there are several variants for this IP.  For
-example, the Intel version is equipped with 32bit DMA, whereas the
-IP for UniPhier SoC family with 64bit DMA.
+Currently, it is valid to specify both "nand-ecc-step-size" and
+"nand-ecc-strength", but not allowed to set only one of them.
 
-This driver was originally written for some Intel platforms with
-Intel specific things hard-coded.  What is worse, the revision
-register of this IP does not work to distinguish such features.
-We need to do something to make the driver available for other SoCs.
+This requirement has a conflict with "nand-ecc-maximize"; this flag
+is used when you want the driver to choose the best ECC strength.
+If "nand-ecc-maximize" is set, "nand-ecc-strength" is very likely to
+be unset.
 
-Let's introduce a caps member to the denali_nand_info structure to
-switch on/off various features.  Also, add struct denali_dt_data to
-store the capability associated with compatible string.
-
-Boris suggested this approach in discussion [1] instead of a new DT
-property for every feature.
-
-[1] https://lkml.org/lkml/2016/3/29/142
+It would be possible to make the if-conditional more complex by
+adding the check for the NAND_ECC_MAXIMIZE flag, but I chose to drop
+the check entirely.  I thought of the situation where the hardware
+has a fixed ECC step size (so it can be hard-coded in the driver),
+whereas the ECC strength is configurable by software.  In that case,
+we may want to only set "nand-ecc-strength" (or "nand-ecc-maximize")
+in DT.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
+The Denali NAND is the case.
+
+The ecc.size is fixed when the RTL is delivered, while the
+driver can choose ecc.strength from some supported values.
+
+ For Intel and Altera, available ecc.strength are 8, 15.
+ For Socionext UniPhier, available ecc.strength are 8, 16, 24.
+
+
 Changes in v2: None
 
- drivers/mtd/nand/denali.h    |  1 +
- drivers/mtd/nand/denali_dt.c | 18 +++++++++---------
- 2 files changed, 10 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/nand_base.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 8df2285..eed001d 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -338,6 +338,7 @@ struct denali_nand_info {
- 	uint32_t devnum;	/* represent how many nands connected */
- 	uint32_t bbtskipbytes;
- 	uint32_t max_banks;
-+	unsigned int caps;
- };
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index b0524f8..a3c0f47 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4333,12 +4333,6 @@ static int nand_dt_init(struct nand_chip *chip)
+ 	ecc_strength = of_get_nand_ecc_strength(dn);
+ 	ecc_step = of_get_nand_ecc_step_size(dn);
  
- extern int denali_init(struct denali_nand_info *denali);
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 5607fcd..293ddb8 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -29,6 +29,10 @@ struct denali_dt {
- 	struct clk		*clk;
- };
- 
-+struct denali_dt_data {
-+	unsigned int caps;
-+};
-+
- static const struct of_device_id denali_nand_dt_ids[] = {
- 		{ .compatible = "denali,denali-nand-dt" },
- 		{ /* sentinel */ }
-@@ -42,23 +46,19 @@ static int denali_dt_probe(struct platform_device *ofdev)
- {
- 	struct resource *denali_reg, *nand_data;
- 	struct denali_dt *dt;
-+	const struct denali_dt_data *data;
- 	struct denali_nand_info *denali;
- 	int ret;
--	const struct of_device_id *of_id;
--
--	of_id = of_match_device(denali_nand_dt_ids, &ofdev->dev);
--	if (of_id) {
--		ofdev->id_entry = of_id->data;
--	} else {
--		pr_err("Failed to find the right device id.\n");
--		return -ENOMEM;
+-	if ((ecc_step >= 0 && !(ecc_strength >= 0)) ||
+-	    (!(ecc_step >= 0) && ecc_strength >= 0)) {
+-		pr_err("must set both strength and step size in DT\n");
+-		return -EINVAL;
 -	}
+-
+ 	if (ecc_mode >= 0)
+ 		chip->ecc.mode = ecc_mode;
  
- 	dt = devm_kzalloc(&ofdev->dev, sizeof(*dt), GFP_KERNEL);
- 	if (!dt)
- 		return -ENOMEM;
- 	denali = &dt->denali;
- 
-+	data = of_device_get_match_data(&ofdev->dev);
-+	if (data)
-+		denali->caps = data->caps;
-+
- 	denali->platform = DT;
- 	denali->dev = &ofdev->dev;
- 	denali->irq = platform_get_irq(ofdev, 0);
 -- 
 2.7.4
