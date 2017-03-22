@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZt-0002C3-7L
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:54 +0000
+ id 1cqmZo-0002C2-Jz
+ for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:50 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
@@ -16,13 +16,15 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RESEND PATCH v2 25/53] mtd: nand: denali: remove unnecessary writes
- to ECC_CORRECTION
-Date: Thu, 23 Mar 2017 05:07:24 +0900
-Message-Id: <1490213273-8571-26-git-send-email-yamada.masahiro@socionext.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: [RESEND PATCH v2 13/53] mtd: nand: denali_dt: enable HW_ECC_FIXUP for
+ Altera SOCFPGA variant
+Date: Thu, 23 Mar 2017 05:07:12 +0900
+Message-Id: <1490213273-8571-14-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,80 +36,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Because SUPPORT_15BITECC is defined, the following is dead code:
+There are various customizable parameters, so several variants for
+this IP.  A generic compatible like "denali,denali-nand-dt" is
+useless.  Moreover, there are multiple things wrong with this string.
+(Refer to Rob's comment [1])
 
-  #elif SUPPORT_8BITECC
-          iowrite32(8, denali->flash_reg + ECC_CORRECTION);
-  #endif
+The denali_dt.c was split out and this compatible was added by Altera
+for the SOCFPGA port.  So, replace it with a more specific string.
 
-Such ifdefs are useless and unacceptable coding style.
+The Denali IP on SOCFPGA incorporates the hardware ECC fixup feature.
+So, this capability should be associated with the compatible string.
 
-These writes are not needed in the first place since ECC_CORRECTION
-is set up by the nand_init() function.
+[1] https://lkml.org/lkml/2016/12/1/450
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - Add caps flag to of_device_id data, not hard-code in driver code
+  - Add Altera-specific compatible.
 
- drivers/mtd/nand/denali.c | 15 +--------------
- drivers/mtd/nand/denali.h |  3 ---
- 2 files changed, 1 insertion(+), 17 deletions(-)
+ Documentation/devicetree/bindings/mtd/denali-nand.txt |  5 +++--
+ drivers/mtd/nand/denali_dt.c                          | 14 ++++++++++----
+ 2 files changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 5e89709..a190cb2 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -62,8 +62,6 @@ MODULE_PARM_DESC(onfi_timing_mode,
-  */
- #define CHIP_SELECT_INVALID	-1
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index b04d03a..6f4ab4c 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -1,7 +1,8 @@
+ * Denali NAND controller
  
--#define SUPPORT_8BITECC		1
--
- /*
-  * This macro divides two integers and rounds fractional values up
-  * to the nearest integer value.
-@@ -347,14 +345,8 @@ static void get_toshiba_nand_para(struct denali_nand_info *denali)
- 	 * spare area size for some kind of Toshiba NAND device
- 	 */
- 	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
--		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64)) {
-+		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
- 		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--#if SUPPORT_15BITECC
--		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
--#elif SUPPORT_8BITECC
--		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
--#endif
--	}
- }
+ Required properties:
+-  - compatible : should be "denali,denali-nand-dt"
++  - compatible : should be one of the following:
++      "altr,socfpga-denali-nand"            - for Altera SOCFPGA
+   - reg : should contain registers location and length for data and reg.
+   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
+   - interrupts : The interrupt number.
+@@ -15,7 +16,7 @@ Examples:
+ nand: nand@ff900000 {
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+-	compatible = "denali,denali-nand-dt";
++	compatible = "altr,socfpga-denali-nand";
+ 	reg = <0xff900000 0x100000>, <0xffb80000 0x10000>;
+ 	reg-names = "nand_data", "denali_reg";
+ 	interrupts = <0 144 4>;
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 293ddb8..9577bfd 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -33,11 +33,17 @@ struct denali_dt_data {
+ 	unsigned int caps;
+ };
  
- static void get_hynix_nand_para(struct denali_nand_info *denali,
-@@ -367,11 +359,6 @@ static void get_hynix_nand_para(struct denali_nand_info *denali,
- 		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
- 		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
- 		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
--#if SUPPORT_15BITECC
--		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
--#elif SUPPORT_8BITECC
--		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
--#endif
- 		break;
- 	default:
- 		dev_warn(denali->dev,
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 58a8042..d9232e4 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -303,9 +303,6 @@
- #define CLK_X  5
- #define CLK_MULTI 4
+-static const struct of_device_id denali_nand_dt_ids[] = {
+-		{ .compatible = "denali,denali-nand-dt" },
+-		{ /* sentinel */ }
+-	};
++static const struct denali_dt_data denali_socfpga_data = {
++	.caps = DENALI_CAP_HW_ECC_FIXUP,
++};
  
--#define SUPPORT_15BITECC        1
--#define SUPPORT_8BITECC         1
--
- #define ONFI_BLOOM_TIME         1
- #define MODE5_WORKAROUND        0
++static const struct of_device_id denali_nand_dt_ids[] = {
++	{
++		.compatible = "altr,socfpga-denali-nand",
++		.data = &denali_socfpga_data,
++	},
++	{ /* sentinel */ }
++};
+ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
  
+ static u64 denali_dma_mask;
 -- 
 2.7.4
