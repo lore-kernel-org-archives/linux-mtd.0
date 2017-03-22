@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqmZV-0001SM-3k
+ id 1cqmZV-0001ST-3l
  for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 20:09:33 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -19,9 +19,10 @@ Cc: laurent.monat@idquantique.com, thorsten.christiansson@idquantique.com,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RESEND PATCH v2 10/53] mtd: nand: denali: fix erased page checking
-Date: Thu, 23 Mar 2017 05:07:09 +0900
-Message-Id: <1490213273-8571-11-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 17/53] mtd: nand: denali: allow to override revision
+ number
+Date: Thu, 23 Mar 2017 05:07:16 +0900
+Message-Id: <1490213273-8571-18-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,98 +34,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This part is wrong in multiple ways:
+Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
+changed in revision 5.1") added a revision check to support the
+new max_banks encoding.  Its git-log states "The encoding of
+max_banks changed in Denali revision 5.1".
 
-[1] is_erased() is called against "buf" twice, so the second one is
-meaningless.  The second call should check chip->oob_poi.
+There are exceptional cases, for example, the revision register on
+some UniPhier SoCs says the IP is 5.0 but the max_banks is encoded
+in the new format.
 
-[2] This code block is nested by double "if (check_erase_page)".
-The inner one is redundant.
+This IP updates the resister specification from time to time (often
+breaking the backward compatibility), but the revision number is not
+incremented correctly.
 
-[3] Erased page checking without threshold is false-positive.
-Basically, there are two ways for erased page checking:
-- read the whole of page + oob in raw transfer, then check if all
-  the data are 0xFF.
-- read the ECC-corrected page + oob, then check if *almost* all the
-  data are 0xFF (bit-flips less than ecc.strength are allowed)
-While here, it checks if all data in ECC-corrected page are 0xFF.
-This is too strong because not all of the data are 0xFF after they
-are manipulated by the ECC engine.  Proper threshold must be taken
-into account to avoid false-positive ecc_stats.failed increments.
-
-[4] positive return value for uncorrectable bitflips
-
-The comment of ecc->read_page() says it should return "0 if bitflips
-uncorrectable", but the current code could return a positive value
-in the case.
-
-This commit solves the problems above.  The nand framework provides
-a helper nand_check_erased_ecc_chunk() for erased page check with
-threshold.  The driver's own helper is unneeded.
+The max_banks is not only the case that needs revision checking.
+Let's allow to override an incorrect revision number.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v2:
-  - Squash some patches into one.
-  - Use nand_check_erased_ecc_chunk() with threshold
+  - Replace the NEW_N_BANKS_FORMAT approach
 
- drivers/mtd/nand/denali.c | 29 ++++++++++-------------------
- 1 file changed, 10 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/denali.c    | 19 +++++++++----------
+ drivers/mtd/nand/denali.h    |  3 +--
+ drivers/mtd/nand/denali_dt.c |  5 ++++-
+ 3 files changed, 14 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 2c59eb3..86381ac 100644
+index 513292f..ff6af1d 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -883,19 +883,6 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- 	}
+@@ -449,17 +449,12 @@ static void find_valid_banks(struct denali_nand_info *denali)
+ static void detect_max_banks(struct denali_nand_info *denali)
+ {
+ 	uint32_t features = ioread32(denali->flash_reg + FEATURES);
+-	/*
+-	 * Read the revision register, so we can calculate the max_banks
+-	 * properly: the encoding changed from rev 5.0 to 5.1
+-	 */
+-	u32 revision = MAKE_COMPARABLE_REVISION(
+-				ioread32(denali->flash_reg + REVISION));
+ 
+-	if (revision < REVISION_5_1)
+-		denali->max_banks = 2 << (features & FEATURES__N_BANKS);
+-	else
+-		denali->max_banks = 1 << (features & FEATURES__N_BANKS);
++	denali->max_banks = 1 << (features & FEATURES__N_BANKS);
++
++	/* the encoding changed from rev 5.0 to 5.1 */
++	if (denali->revision < 0x0501)
++		denali->max_banks <<= 1;
  }
  
--/*
-- * this function examines buffers to see if they contain data that
-- * indicate that the buffer is part of an erased region of flash.
-- */
--static bool is_erased(uint8_t *buf, int len)
--{
--	int i;
--
--	for (i = 0; i < len; i++)
--		if (buf[i] != 0xFF)
--			return false;
--	return true;
--}
- #define ECC_SECTOR_SIZE 512
+ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+@@ -1348,6 +1343,10 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+ /* Initialization code to bring the device up to a known good state */
+ static void denali_hw_init(struct denali_nand_info *denali)
+ {
++	if (!denali->revision)
++		denali->revision =
++				swab16(ioread32(denali->flash_reg + REVISION));
++
+ 	/*
+ 	 * tell driver how many bit controller will skip before
+ 	 * writing ECC code in OOB, this register may be already
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index a8e8d68..58a8042 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -179,8 +179,6 @@
  
- #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
-@@ -1119,6 +1106,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
- 	bool check_erased_page = false;
-+	int stat;
+ #define REVISION				0x370
+ #define     REVISION__VALUE				0xffff
+-#define MAKE_COMPARABLE_REVISION(x)		swab16((x) & REVISION__VALUE)
+-#define REVISION_5_1				0x00000501
  
- 	if (page != denali->page) {
- 		dev_err(denali->dev,
-@@ -1148,12 +1136,15 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (check_erased_page) {
- 		read_oob_data(mtd, chip->oob_poi, denali->page);
+ #define ONFI_DEVICE_FEATURES			0x380
+ #define     ONFI_DEVICE_FEATURES__VALUE			0x003f
+@@ -351,6 +349,7 @@ struct denali_nand_info {
+ 	int devnum;	/* represent how many nands connected */
+ 	int bbtskipbytes;
+ 	int max_banks;
++	unsigned int revision;
+ 	unsigned int caps;
+ #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
+ #define DENALI_CAP_DMA_64BIT			BIT(1)
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index ada3863..df9ef36 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -30,6 +30,7 @@ struct denali_dt {
+ };
  
--		/* check ECC failures that may have occurred on erased pages */
--		if (check_erased_page) {
--			if (!is_erased(buf, mtd->writesize))
--				mtd->ecc_stats.failed++;
--			if (!is_erased(buf, mtd->oobsize))
--				mtd->ecc_stats.failed++;
-+		stat = nand_check_erased_ecc_chunk(
-+					buf, mtd->writesize,
-+					chip->oob_poi, mtd->oobsize,
-+					NULL, 0,
-+					chip->ecc.strength * chip->ecc.steps);
-+		if (stat < 0) {
-+			mtd->ecc_stats.failed++;
-+			/* return 0 for uncorrectable bitflips */
-+			max_bitflips = 0;
- 		}
- 	}
- 	return max_bitflips;
+ struct denali_dt_data {
++	unsigned int revision;
+ 	unsigned int caps;
+ };
+ 
+@@ -60,8 +61,10 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 	denali = &dt->denali;
+ 
+ 	data = of_device_get_match_data(&pdev->dev);
+-	if (data)
++	if (data) {
++		denali->revision = data->revision;
+ 		denali->caps = data->caps;
++	}
+ 
+ 	denali->platform = DT;
+ 	denali->dev = &pdev->dev;
 -- 
 2.7.4
