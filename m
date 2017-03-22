@@ -1,17 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqdQm-0007CQ-K9
+ id 1cqdQm-0007AD-J8
  for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 10:23:55 +0000
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 To: linux-mtd@lists.infradead.org
-Cc: Yuanjie.Huang@windriver.com, raj.khem@gmail.com,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH 2/5] Replace rpmatch() usage with checking first character of
- line
-Date: Wed, 22 Mar 2017 11:22:54 +0100
-Message-Id: <20170322102257.7605-3-david.oberhollenzer@sigma-star.at>
-In-Reply-To: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
-References: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
+Cc: Yuanjie.Huang@windriver.com,
+	raj.khem@gmail.com
+Subject: mtd-utils: various fixes, apply OpenEmbedded patches
+Date: Wed, 22 Mar 2017 11:22:52 +0100
+Message-Id: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +18,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is based on the patch from Khem Raj used by openembedded. In
-addition to the original patch, this also removes the fallback
-implementation that was provided for C libraries that don't implement
-rpmatch.
+This patch series mostly consists of minor fixes that have piled
+up on my end.
 
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
----
- include/common.h | 25 ++++++-------------------
- 1 file changed, 6 insertions(+), 19 deletions(-)
+The series mainly includes some of the patches applied localy by
+the OpenEmbedded project that haven't been submitted upstream so
+far.
 
-diff --git a/include/common.h b/include/common.h
-index d0c706d..d609257 100644
---- a/include/common.h
-+++ b/include/common.h
-@@ -129,21 +129,6 @@ extern "C" {
- 	fprintf(stderr, "%s: warning!: " fmt "\n", PROGRAM_NAME, ##__VA_ARGS__); \
- } while(0)
- 
--/* uClibc versions before 0.9.34 and musl don't have rpmatch() */
--#if defined(__UCLIBC__) && \
--		(__UCLIBC_MAJOR__ == 0 && \
--		(__UCLIBC_MINOR__ < 9 || \
--		(__UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ < 34))) || \
--	!defined(__GLIBC__)
--#undef rpmatch
--#define rpmatch __rpmatch
--static inline int __rpmatch(const char *resp)
--{
--    return (resp[0] == 'y' || resp[0] == 'Y') ? 1 :
--	(resp[0] == 'n' || resp[0] == 'N') ? 0 : -1;
--}
--#endif
--
- /**
-  * prompt the user for confirmation
-  */
-@@ -164,10 +149,12 @@ static inline bool prompt(const char *msg, bool def)
- 		}
- 
- 		if (strcmp("\n", line) != 0) {
--			switch (rpmatch(line)) {
--			case 0: ret = false; break;
--			case 1: ret = true; break;
--			case -1:
-+			switch (line[0]) {
-+			case 'N':
-+			case 'n': ret = false; break;
-+			case 'Y':
-+			case 'y': ret = true; break;
-+			default:
- 				puts("unknown response; please try again");
- 				continue;
- 			}
--- 
-2.10.2
+Two more patches that OpenEmbedded supposedly applies to recent
+mtd-utils have not been included:
+ - One that fixes logic in flash_erase that doesn't exist anymore.
+ - One that adds an excluion flag to mkfs.jffs2. It doesn't apply
+   and is sprinkled with debug prints.
+
+
+Regards,
+
+David
+
+--
+ include/common.h             | 25 ++++++-------------------
+ include/libmtd.h             |  3 +--
+ jffsX-utils/mkfs.jffs2.c     |  1 +
+ lib/libmtd.c                 | 12 ++++++------
+ lib/libmtd_int.h             |  1 +
+ lib/libmtd_legacy.c          | 18 ++++++++++++++++++
+ lib/libubi.c                 |  5 ++++-
+ ubi-utils/mtdinfo.c          |  5 +----
+ ubi-utils/ubiformat.c        |  2 --
+ ubifs-utils/mkfs.ubifs/key.h | 16 ++++++++++------
+ 10 files changed, 48 insertions(+), 40 deletions(-)
