@@ -1,21 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqzJu-0000lI-Om
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 09:46:18 +0000
-Date: Thu, 23 Mar 2017 10:45:56 +0100
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org, Yuanjie.Huang@windriver.com,
- raj.khem@gmail.com, Richard Weinberger <richard@nod.at>
-Subject: Re: mtd-utils: various fixes, apply OpenEmbedded patches
-Message-ID: <20170323104556.185f92e0@free-electrons.com>
-In-Reply-To: <1b4bbd29-c93e-3e75-b01d-7b7b2ac93385@sigma-star.at>
-References: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
- <20170322161323.22b7489c@free-electrons.com>
- <1b4bbd29-c93e-3e75-b01d-7b7b2ac93385@sigma-star.at>
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqzOY-0003Jy-0G
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 09:51:03 +0000
+Received: by mail-oi0-x22a.google.com with SMTP id w81so61490634oig.1
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 02:50:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
+References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 23 Mar 2017 10:50:39 +0100
+Message-ID: <CACRpkdbGoO0B2EyLch=bL5N0guU11u+KLHzBvcRTf1LFF-A0Lg@mail.gmail.com>
+Subject: Re: [PATCH 00/13] mtd: nand: fsmc: fixes, improvements and cleanups
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Stefan Roese <sr@denx.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Tue, Mar 21, 2017 at 11:03 AM, Thomas Petazzoni
+<thomas.petazzoni@free-electrons.com> wrote:
 
-On Thu, 23 Mar 2017 10:33:21 +0100, David Oberhollenzer wrote:
+> This patch series brings a number of fixes, improvements and cleanups
+> to the fsmc MTD NAND driver.
 
-> The first one (ubinize return status) has been applied shortly after
-> the mtd-utils 1.5.2 release.
-> 
-> The second patch (about execinfo.h) sparked a discussion with Richard
-> prefering a libmissing implementation instead. A libmissing has been
-> added in August last year that provides a dummy implementation of the
-> backtrace family of functions for libraries like musl that don't
-> provided them.
-> 
-> The third patch, that removes the bits/stdio_lim.h inclusion was also
-> applied already between the 1.5.2 and 2.0.0-rc1 releases.
+Are you testing this on some specific hardware?
 
-Awesome, thanks a lot!
+I can give it a spin on the Nomadik later, will review
+the series.
 
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Yours,
+Linus Walleij
