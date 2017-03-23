@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqxrl-0004Qc-QN
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 08:13:07 +0000
-Date: Thu, 23 Mar 2017 09:12:43 +0100
+ id 1cqxvJ-0006Wn-HD
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 08:16:47 +0000
+Date: Thu, 23 Mar 2017 09:16:24 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
 Cc: linux-mtd@lists.infradead.org, Laurent Monat
@@ -17,14 +17,14 @@ Cc: linux-mtd@lists.infradead.org, Laurent Monat
  <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>, Linux
  Kernel Mailing List <linux-kernel@vger.kernel.org>, Richard Weinberger
  <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH v2 11/53] mtd: nand: denali: fix bitflips calculation in
- handle_ecc()
-Message-ID: <20170323091243.52994427@bbrezillon>
-In-Reply-To: <CAK7LNASC8VvNgMV5CGq5BJGUknPEP51R_RBfCy+K2ZiVm2Qxtg@mail.gmail.com>
+Subject: Re: [PATCH v2 12/53] mtd: nand: denali: support HW_ECC_FIXUP
+ capability
+Message-ID: <20170323091624.6894b07c@bbrezillon>
+In-Reply-To: <CAK7LNAS0uGyADQoshT_pt8d=wZ+rW8Ha4LCjckdPOOX9s_x2XA@mail.gmail.com>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
- <1490191680-14481-12-git-send-email-yamada.masahiro@socionext.com>
- <20170322215728.69e8b566@bbrezillon>
- <CAK7LNASC8VvNgMV5CGq5BJGUknPEP51R_RBfCy+K2ZiVm2Qxtg@mail.gmail.com>
+ <1490191680-14481-13-git-send-email-yamada.masahiro@socionext.com>
+ <20170322220937.202c5180@bbrezillon>
+ <CAK7LNAS0uGyADQoshT_pt8d=wZ+rW8Ha4LCjckdPOOX9s_x2XA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -37,61 +37,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Mar 2017 16:02:02 +0900
+On Thu, 23 Mar 2017 16:06:19 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
 > Hi Boris,
 > 
-> 2017-03-23 5:57 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> > On Wed, 22 Mar 2017 23:07:18 +0900
+> 2017-03-23 6:09 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> > On Wed, 22 Mar 2017 23:07:19 +0900
 > > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 > >  
-> >> +     do {
-> >> +             err_addr = ioread32(denali->flash_reg + ECC_ERROR_ADDRESS);
-> >> +             err_sector = ECC_SECTOR(err_addr);
-> >> +             err_byte = ECC_BYTE(err_addr);
-> >> +
-> >> +             err_cor_info = ioread32(denali->flash_reg + ERR_CORRECTION_INFO);
-> >> +             err_cor_value = ECC_CORRECTION_VALUE(err_cor_info);
-> >> +             err_device = ECC_ERR_DEVICE(err_cor_info);
-> >> +
-> >> +             /* reset the bitflip counter when crossing ECC sector */
-> >> +             if (err_sector != prev_sector)
-> >> +                     bitflips = 0;
-> >> +
-> >> +             if (ECC_ERROR_UNCORRECTABLE(err_cor_info)) {
-> >> +                     /*
-> >> +                      * if the error is not correctable, need to look at the
-> >> +                      * page to see if it is an erased page. if so, then
-> >> +                      * it's not a real ECC error
-> >> +                      */
-> >> +                     ret = -EBADMSG;  
+> >> @@ -339,6 +352,7 @@ struct denali_nand_info {
+> >>       int bbtskipbytes;
+> >>       int max_banks;
+> >>       unsigned int caps;
+> >> +#define DENALI_CAP_HW_ECC_FIXUP                      BIT(0)  
 > >
-> > You should never return -EBADMSG directly. Just increment
-> > ecc_stats.failed and let the core return -EBADMSG to the upper layer.
-> >  
-> 
-> Here, -EBADMSG is used like that returned from  ->ecc.correct()
+> > Can you move this definition outside of the struct denali_nand_info
+> > definition?  
 > 
 > 
-> Please notice denali_read_page() never returns -EBADMSG.
+> My idea was to put relevant macros close to the "caps" member.
+> Actually, "struct mmc_host" does similar.
 > 
->  -EBADMSG is used as a mark "we need erased page check".
+> 
+> If you do not like it, yes, I can move it.
+> Anyway, this is a matter of taste,
+> and I do not have a strong opinion about this.
 > 
 > 
-> I think nand_read_page_syndrome() does similar;
-> -EBADMSG is used internally.
 
-That's not exactly what happens. nand_read_page_syndrome() calls
-ecc->correct() for each chunk, and if this method returns -EBADMSG (and
-nand_check_erased_ecc_chunk() returns -EBADMSG too) it increments the
-ecc_stats.failed counter.
-
-Here you check all chunks in the same function and only increment
-ecc_stats.failed once in denali_read_page() even if several chunks are
-uncorrectable.
-You handle_ecc() should act like nand_read_page_syndrome() WRT ECC
-checking: check each block one by one, call
-nand_check_erased_ecc_chunk() if needed, increment ecc_stats.failed
-when an uncorrectable error is detected, and return max_bitflips at the
-end.
+Indeed, I prefer when macro and struct definitions are clearly
+separated.
