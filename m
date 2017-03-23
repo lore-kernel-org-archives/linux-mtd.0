@@ -1,21 +1,21 @@
-Received: from conssluserg-02.nifty.com ([210.131.2.81])
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cquwE-0006Zc-Lg
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 05:05:32 +0000
+ id 1cqv6w-0001KP-Fi
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 05:16:36 +0000
 Received: from mail-yw0-f173.google.com (mail-yw0-f173.google.com
  [209.85.161.173]) (authenticated)
- by conssluserg-02.nifty.com with ESMTP id v2N54khX007715
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 14:04:46 +0900
-Received: by mail-yw0-f173.google.com with SMTP id v76so139505849ywg.0
- for <linux-mtd@lists.infradead.org>; Wed, 22 Mar 2017 22:04:46 -0700 (PDT)
+ by conssluserg-04.nifty.com with ESMTP id v2N5G0UG009479
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 14:16:01 +0900
+Received: by mail-yw0-f173.google.com with SMTP id d191so12637932ywe.2
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Mar 2017 22:16:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170322215623.531e9690@bbrezillon>
+In-Reply-To: <20170322213625.4d2cf783@bbrezillon>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
  <1490191680-14481-11-git-send-email-yamada.masahiro@socionext.com>
- <20170322215623.531e9690@bbrezillon>
+ <20170322213625.4d2cf783@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 23 Mar 2017 14:04:44 +0900
-Message-ID: <CAK7LNAT-7XHTYYfXCQCwk3za=juAEFuGBWxa4XG6Zm+g8=04Yw@mail.gmail.com>
+Date: Thu, 23 Mar 2017 14:15:59 +0900
+Message-ID: <CAK7LNAQSjL88L5SDd+p15mXOJ2M-5E=0PAe8R=zJw=5FSy6O6g@mail.gmail.com>
 Subject: Re: [PATCH v2 10/53] mtd: nand: denali: fix erased page checking
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
@@ -45,85 +45,97 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-2017-03-23 5:56 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+
+2017-03-23 5:36 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
 > On Wed, 22 Mar 2017 23:07:17 +0900
 > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->>               dev_err(denali->dev,
->> @@ -1148,12 +1136,15 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->>       if (check_erased_page) {
->>               read_oob_data(mtd, chip->oob_poi, denali->page);
+>
+>> This part is wrong in multiple ways:
 >>
->> -             /* check ECC failures that may have occurred on erased pages */
->> -             if (check_erased_page) {
->> -                     if (!is_erased(buf, mtd->writesize))
->> -                             mtd->ecc_stats.failed++;
->> -                     if (!is_erased(buf, mtd->oobsize))
->> -                             mtd->ecc_stats.failed++;
->> +             stat = nand_check_erased_ecc_chunk(
->> +                                     buf, mtd->writesize,
->> +                                     chip->oob_poi, mtd->oobsize,
->> +                                     NULL, 0,
->> +                                     chip->ecc.strength * chip->ecc.steps);
+>> [1] is_erased() is called against "buf" twice, so the second one is
+>> meaningless.  The second call should check chip->oob_poi.
+>>
+>> [2] This code block is nested by double "if (check_erase_page)".
+>> The inner one is redundant.
+>>
+>> [3] Erased page checking without threshold is false-positive.
+>> Basically, there are two ways for erased page checking:
+>> - read the whole of page + oob in raw transfer, then check if all
+>>   the data are 0xFF.
+>> - read the ECC-corrected page + oob, then check if *almost* all the
+>>   data are 0xFF (bit-flips less than ecc.strength are allowed)
+>> While here, it checks if all data in ECC-corrected page are 0xFF.
+>> This is too strong because not all of the data are 0xFF after they
+>> are manipulated by the ECC engine.  Proper threshold must be taken
+>> into account to avoid false-positive ecc_stats.failed increments.
 >
-> That's not how it's supposed to be done. Each chunk should be checked
-> independently. Here is a simple example explaining why this is
-> important:
+> Hm, the ECC engine should not introduce extra bitflips. I've seen 3
+> different cases in the various ECC engine I worked with:
 >
-> Let's consider the following setup:
-> - 4k pages
-> - 16bits/1024bytes ECC
+> 1/ the ECC engine is able to correct bitflips in erased pages. In this
+>    case you should trust it and return the number of corrected
+>    bitflips or increment the ECC failed counter if it reports
+>    uncorrectable errors.
+> 2/ the ECC engine is able to detect erased pages, but fails to detect
+>    those containing bitflips in it. In this case, you should rely on
+>    the default "empty page" detection and only manually check if the
+>    page is almost filled with 0xff when an error is reported.
+> 3/ the ECC engine does not detect empty pages at all. In this case, you
+>    should check if the page empty (or almost empty) each time an ECC
+>    error is reported
+
+
+I think the Denali is case 3.
+But, very new versions of this IP support erased page detection by hardware.
+Please see 49/53:
+http://patchwork.ozlabs.org/patch/742414/
+
+Unfortunately this feature is not exactly what we want.
+We want to detect per-sector empty'ness,
+but this features is actually page oriented.
+
+If you are unhappy about this,
+it is possible to always turn off this feature
+and use software detection (with nand_check_erased_ecc_chunk)
+
+
+
+> In any case, if the ECC engine reports uncorrectable errors, it should
+> keep the data untouched, which means you don't have to re-read the whole
+> page in raw mode, only the OOB bytes.
+
+
+OK.  We should respect the result from the ECC engine,
+but we still need to fill the buffer with 0xff
+if the page turned out to be empty.
+(nand_check_erased_ecc_chunk() does this for us.)
+
+
+
+
+
+>>
+>> [4] positive return value for uncorrectable bitflips
+>>
+>> The comment of ecc->read_page() says it should return "0 if bitflips
+>> uncorrectable", but the current code could return a positive value
+>> in the case.
 >
-> With your approach, you turn this into:
-> - 4k pages
-> - 64bits/4096bytes ECC
+> This one should probably be fixed in the core. Returning a negative
+> error core for uncorrectable errors is forbidden, but reporting the
+> maximum number of bitflips that have been corrected in each valid
+> ECC sector of the page (even if the page contains uncorrectable
+> sectors) does not sound like a bad idea to me.
 >
-> Now suppose you have 32 bitflips in the first 1024 bytes. The real ECC
-> config is expected to report uncorrectable errors, but your approach
-> will just report that 32 bits have been fixed, which is wrong.
+> The reason the core asks drivers to return 0 in case of uncorrectable
+> errors is because it updates the max_bitflips variable before testing
+> if the page contains uncorrectable errors [1]. Moving this statement
+> here [2] (in an else branch) should solve the problem for all drivers
+> returning positive numbers even when uncorrectable errors are detected
+> in one of the ECC chunk contained in a page.
 
 
-OK.  How about adding a helper like follows:
-
-static int denali_check_erased_page(struct mtd_info *mtd,
-                                    struct nand_chip *chip, uint8_t *buf)
-{
-        uint8_t *ecc_code = chip->buffers->ecccode;
-        int ecc_steps = chip->ecc.steps;
-        int ecc_size = chip->ecc.size;
-        int ecc_bytes = chip->ecc.bytes;
-        int i, ret;
-
-        ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
-                                         chip->ecc.total);
-        if (ret)
-                return ret;
-
-        for (i = 0; i < ecc_steps; i++) {
-                ret = nand_check_erased_ecc_chunk(buf, ecc_size,
-                                                  ecc_code, ecc_bytes,
-                                                  NULL, 0,
-                                                  chip->ecc.strength);
-                if (ret < 0)
-                        return ret;
-                buf += ecc_size;
-                ecc_code += ecc_bytes;
-        }
-
-        return 0;
-}
-
-
-
-Then,
-
-                stat = denali_check_erased_page(mtd, chip, buf);
-                if (stat < 0) {
-                        mtd->ecc_stats.failed++;
-                        /* return 0 for uncorrectable bitflips */
-                        stat = 0;
-                }
-
-
+I understood your idea, but do you want this change in this series?
 
 
 
