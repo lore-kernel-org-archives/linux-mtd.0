@@ -1,21 +1,21 @@
-Received: from conssluserg-05.nifty.com ([210.131.2.90])
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqwoV-0003wW-UG
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 07:05:41 +0000
-Received: from mail-yw0-f177.google.com (mail-yw0-f177.google.com
- [209.85.161.177]) (authenticated)
- by conssluserg-05.nifty.com with ESMTP id v2N753wl031695
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 16:05:04 +0900
-Received: by mail-yw0-f177.google.com with SMTP id i203so26440096ywc.3
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 00:05:04 -0700 (PDT)
+ id 1cqwpv-0004G1-RS
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 07:07:09 +0000
+Received: from mail-yw0-f169.google.com (mail-yw0-f169.google.com
+ [209.85.161.169]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id v2N76K9s020772
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 16:06:21 +0900
+Received: by mail-yw0-f169.google.com with SMTP id d191so13782277ywe.2
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 00:06:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170322221216.26539147@bbrezillon>
+In-Reply-To: <20170322220937.202c5180@bbrezillon>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
  <1490191680-14481-13-git-send-email-yamada.masahiro@socionext.com>
- <20170322221216.26539147@bbrezillon>
+ <20170322220937.202c5180@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 23 Mar 2017 16:05:02 +0900
-Message-ID: <CAK7LNARd0sKyqvZO_Tp6LV6V7p1pcWWdjfU2QJCmnT0hdeBTXg@mail.gmail.com>
+Date: Thu, 23 Mar 2017 16:06:19 +0900
+Message-ID: <CAK7LNAS0uGyADQoshT_pt8d=wZ+rW8Ha4LCjckdPOOX9s_x2XA@mail.gmail.com>
 Subject: Re: [PATCH v2 12/53] mtd: nand: denali: support HW_ECC_FIXUP
  capability
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
@@ -46,30 +46,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-
-2017-03-23 6:12 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+2017-03-23 6:09 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
 > On Wed, 22 Mar 2017 23:07:19 +0900
 > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 >
->> +static int denali_hw_ecc_fixup(struct mtd_info *mtd,
->> +                            struct denali_nand_info *denali)
->> +{
->> +     int bank = denali->flash_bank;
->> +     uint32_t ecc_cor;
->> +     unsigned int max_bitflips;
->> +
->> +     ecc_cor = ioread32(denali->flash_reg + ECC_COR_INFO(bank));
->> +     ecc_cor >>= ECC_COR_INFO__SHIFT(bank);
->> +
->> +     if (ecc_cor & ECC_COR_INFO__UNCOR_ERR)
->> +             return -EBADMSG;
+>> @@ -339,6 +352,7 @@ struct denali_nand_info {
+>>       int bbtskipbytes;
+>>       int max_banks;
+>>       unsigned int caps;
+>> +#define DENALI_CAP_HW_ECC_FIXUP                      BIT(0)
 >
-> As previously mentioned, just increment ecc_stats.failed.
->
+> Can you move this definition outside of the struct denali_nand_info
+> definition?
 
-I explained the intention of -EBADMSG in 11/53.
 
-ecc_stats.failed is incremented in denali_read_page().
+My idea was to put relevant macros close to the "caps" member.
+Actually, "struct mmc_host" does similar.
+
+
+If you do not like it, yes, I can move it.
+Anyway, this is a matter of taste,
+and I do not have a strong opinion about this.
 
 
 -- 
