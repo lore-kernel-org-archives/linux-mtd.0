@@ -1,17 +1,18 @@
-Received: from mail-ot0-x22a.google.com ([2607:f8b0:4003:c0f::22a])
+Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqzZI-0000q7-IB
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 10:02:10 +0000
-Received: by mail-ot0-x22a.google.com with SMTP id i1so183910618ota.3
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 03:01:48 -0700 (PDT)
+ id 1cqzaN-0001Cl-3d
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 10:03:16 +0000
+Received: by mail-oi0-x236.google.com with SMTP id r203so57466573oib.3
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 03:02:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1490090645-8576-7-git-send-email-thomas.petazzoni@free-electrons.com>
+In-Reply-To: <1490090645-8576-8-git-send-email-thomas.petazzoni@free-electrons.com>
 References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1490090645-8576-7-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1490090645-8576-8-git-send-email-thomas.petazzoni@free-electrons.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 23 Mar 2017 11:01:46 +0100
-Message-ID: <CACRpkdZhx0MX7xxMue7Gy8XYHeZL2sMy4U84qhZWWkwouW86Fg@mail.gmail.com>
-Subject: Re: [PATCH 06/13] mtd: nand: fsmc: remove fsmc_select_chip()
+Date: Thu, 23 Mar 2017 11:02:53 +0100
+Message-ID: <CACRpkdbvFL9HacS-KeuQ0f+VZBZ_zWVp6yiyvmKkFJXUDLvCrw@mail.gmail.com>
+Subject: Re: [PATCH 07/13] mtd: nand: fmsc: kill {read,
+ write}_dma_priv from fsmc_nand_platform_data
 To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
@@ -34,21 +35,11 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Tue, Mar 21, 2017 at 11:03 AM, Thomas Petazzoni
 <thomas.petazzoni@free-electrons.com> wrote:
 
-> host->select_chip used to point to the ->select_bank() function provided
-> by the platform data, but the latter no longer exists. Therefore
-> host->select_chip is always NULL.
->
-> Due to this, the fsmc_select_chip() does nothing, except:
->
->   chip->cmd_ctrl(mtd, NAND_CMD_NONE, 0 | NAND_CTRL_CHANGE);
->
-> when chipnr is -1, which is exactly what the default implementation of
-> ->select_chip() does in the NAND framework. So, this commit kills
-> fsmc_select_chip() entirely.
+> The read_dma_priv and write_dma_priv fields of fsmc_nand_platform_data
+> are never set, so this commit removes them.
 >
 > Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 
-As usual, less is more.
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
