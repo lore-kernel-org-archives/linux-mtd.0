@@ -1,17 +1,18 @@
-Received: from mail-ot0-x22f.google.com ([2607:f8b0:4003:c0f::22f])
+Received: from mail-ot0-x231.google.com ([2607:f8b0:4003:c0f::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqzXa-0007Ql-CY
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 10:00:27 +0000
-Received: by mail-ot0-x22f.google.com with SMTP id y88so28272207ota.2
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 03:00:02 -0700 (PDT)
+ id 1cqzYN-0000To-Ke
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 10:01:18 +0000
+Received: by mail-ot0-x231.google.com with SMTP id y88so28285232ota.2
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 03:00:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1490090645-8576-5-git-send-email-thomas.petazzoni@free-electrons.com>
+In-Reply-To: <1490090645-8576-6-git-send-email-thomas.petazzoni@free-electrons.com>
 References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1490090645-8576-5-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1490090645-8576-6-git-send-email-thomas.petazzoni@free-electrons.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 23 Mar 2017 11:00:01 +0100
-Message-ID: <CACRpkdYsY1eJP49ftaUXK9veTMk1_pQ3d_OLTU4bHD3kuXKAng@mail.gmail.com>
-Subject: Re: [PATCH 04/13] mtd: nand: fsmc: move fsmc_nand_data definition
+Date: Thu, 23 Mar 2017 11:00:49 +0100
+Message-ID: <CACRpkdaw2i_zBQHSb9FmU9KQ3xwjTk1G6uQ77=LwASe7SMAN8Q@mail.gmail.com>
+Subject: Re: [PATCH 05/13] mtd: nand: fsmc: remove ->select_bank() from
+ fsmc_nand_platform_data
 To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
@@ -34,10 +35,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Tue, Mar 21, 2017 at 11:03 AM, Thomas Petazzoni
 <thomas.petazzoni@free-electrons.com> wrote:
 
-> This commit simply moves the "struct fsmc_nand_data" definition to be
-> towards the beginning of the file, with the other defines and type
-> definitions, instead of in the middle of the driver code. This is much
-> more consistent with what most Linux drivers do.
+> Since commit 4404d7d821c3 ("mtd: nand: fsmc: remove stale non-DT probe
+> path"), only DT probing is used for the fsmc_nand driver. Due to this,
+> the ->select_bank() field of fsmc_nand_platform_data is never used, so
+> this commit gets rid of it.
 >
 > Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 
