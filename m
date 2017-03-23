@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqqT6-0004a3-Ah
+ id 1cqqT6-0004Zt-Al
  for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:12 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,10 +16,10 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [RESEND PATCH v2 36/53] mtd: nand: denali: remove meaningless
- pipeline read-ahead operation
-Date: Thu, 23 Mar 2017 09:17:45 +0900
-Message-Id: <1490228282-10805-10-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 31/53] mtd: nand: denali: set
+ NAND_ECC_CUSTOM_PAGE_ACCESS
+Date: Thu, 23 Mar 2017 09:17:40 +0900
+Message-Id: <1490228282-10805-5-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,18 +31,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The pipeline read-ahead function of the Denali IP enables continuous
-reading from the device; while data is being read out by a CPU, the
-controller maintains additional commands for streaming data from the
-device.  This will reduce the latency of the second page or later.
+The denali_cmdfunc() actually does nothing variable for
+NAND_CMD_{PAGEPROG,READ0,SEQIN}.
 
-This feature is obviously no help for per-page accessors of Linux
-NAND driver interface.
+For NAND_CMD_{READ0,SEQIN}, it copies "page" to "denali->page", then
+denali_read_page() and denali_read_page_raw() compare them to check
+if the NAND framework called the callbacks in correct order.
+(Inconsistetly, this check is missing from the denali_write_page()
+and denali_write_page_raw().)
 
-In the current implementation, the pipeline command is issued to
-load a single page, then data are read out immediately.  The use of
-the pipeline operation is not adding any advantage, but just adding
-complexity to the code.  Remove.
+The framework is widely tested by many drivers, so this kind of
+sanity check is unneeded.  The Denali controller is equipped with
+high level interface for read/write, so let's skip unneeded call
+of cmdfunc().
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -50,75 +51,104 @@ Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 42 +++---------------------------------------
- 1 file changed, 3 insertions(+), 39 deletions(-)
+ drivers/mtd/nand/denali.c | 29 ++++++++---------------------
+ 1 file changed, 8 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 332d520..01a35ec 100644
+index fba1908..ca00f22 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -67,7 +67,6 @@ static inline struct denali_nand_info *mtd_to_denali(struct mtd_info *mtd)
- #define SPARE_ACCESS		0x41
- #define MAIN_ACCESS		0x42
- #define MAIN_SPARE_ACCESS	0x43
--#define PIPELINE_ACCESS		0x2000
- 
- #define DENALI_READ	0
- #define DENALI_WRITE	0x100
-@@ -394,15 +393,7 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
- 				    int access_type, int op)
+@@ -989,7 +989,7 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
+  * configuration details.
+  */
+ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+-			const uint8_t *buf, bool raw_xfer)
++			const uint8_t *buf, int page, bool raw_xfer)
  {
- 	int status = PASS;
--	uint32_t page_count = 1;
--	uint32_t addr, cmd, irq_status, irq_mask;
--
--	if (op == DENALI_READ)
--		irq_mask = INTR__LOAD_COMP;
--	else if (op == DENALI_WRITE)
--		irq_mask = 0;
--	else
--		BUG();
-+	uint32_t addr, cmd;
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+ 	dma_addr_t addr = denali->buf.dma_buf;
+@@ -997,6 +997,8 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	uint32_t irq_status;
+ 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
  
- 	setup_ecc_for_xfer(denali, ecc_en, transfer_spare);
- 
-@@ -425,35 +416,8 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
- 		cmd = MODE_10 | addr;
- 		index_addr(denali, cmd, access_type);
- 
--		/*
--		 * page 33 of the NAND controller spec indicates we should not
--		 * use the pipeline commands in Spare area only mode.
--		 * So we don't.
--		 */
--		if (access_type == SPARE_ACCESS) {
--			cmd = MODE_01 | addr;
--			iowrite32(cmd, denali->flash_mem);
--		} else {
--			index_addr(denali, cmd,
--					PIPELINE_ACCESS | op | page_count);
--
--			/*
--			 * wait for command to be accepted
--			 * can always use status0 bit as the
--			 * mask is identical for each bank.
--			 */
--			irq_status = wait_for_irq(denali, irq_mask);
--
--			if (irq_status == 0) {
--				dev_err(denali->dev,
--					"cmd, page, addr on timeout (0x%x, 0x%x, 0x%x)\n",
--					cmd, denali->page, addr);
--				status = FAIL;
--			} else {
--				cmd = MODE_01 | addr;
--				iowrite32(cmd, denali->flash_mem);
--			}
--		}
-+		cmd = MODE_01 | addr;
-+		iowrite32(cmd, denali->flash_mem);
- 	}
- 	return status;
++	denali->page = page;
++
+ 	/*
+ 	 * if it is a raw xfer, we want to disable ecc and send the spare area.
+ 	 * !raw_xfer - enable ecc
+@@ -1050,7 +1052,7 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	 * for regular page writes, we let HW handle all the ECC
+ 	 * data written to the device.
+ 	 */
+-	return write_page(mtd, chip, buf, false);
++	return write_page(mtd, chip, buf, page, false);
  }
+ 
+ /*
+@@ -1066,7 +1068,7 @@ static int denali_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	 * for raw page writes, we want to disable ECC and simply write
+ 	 * whatever data is in the buffer.
+ 	 */
+-	return write_page(mtd, chip, buf, true);
++	return write_page(mtd, chip, buf, page, true);
+ }
+ 
+ static int denali_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -1095,12 +1097,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 				INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
+ 	int stat = 0;
+ 
+-	if (page != denali->page) {
+-		dev_err(denali->dev,
+-			"IN %s: page %d is not equal to denali->page %d",
+-			__func__, page, denali->page);
+-		BUG();
+-	}
++	denali->page = page;
+ 
+ 	setup_ecc_for_xfer(denali, true, false);
+ 
+@@ -1154,12 +1151,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	size_t size = mtd->writesize + mtd->oobsize;
+ 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
+ 
+-	if (page != denali->page) {
+-		dev_err(denali->dev,
+-			"IN %s: page %d is not equal to denali->page %d",
+-			__func__, page, denali->page);
+-		BUG();
+-	}
++	denali->page = page;
+ 
+ 	setup_ecc_for_xfer(denali, false, true);
+ 	denali_enable_dma(denali, true);
+@@ -1238,8 +1230,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+ 	int i;
+ 
+ 	switch (cmd) {
+-	case NAND_CMD_PAGEPROG:
+-		break;
+ 	case NAND_CMD_STATUS:
+ 		read_status(denali);
+ 		break;
+@@ -1259,10 +1249,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+ 			write_byte_to_buf(denali, id);
+ 		}
+ 		break;
+-	case NAND_CMD_READ0:
+-	case NAND_CMD_SEQIN:
+-		denali->page = page;
+-		break;
+ 	case NAND_CMD_RESET:
+ 		reset_bank(denali);
+ 		break;
+@@ -1630,6 +1616,7 @@ int denali_init(struct denali_nand_info *denali)
+ 
+ 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
+ 
++	chip->ecc.options |= NAND_ECC_CUSTOM_PAGE_ACCESS;
+ 	chip->ecc.read_page = denali_read_page;
+ 	chip->ecc.read_page_raw = denali_read_page_raw;
+ 	chip->ecc.write_page = denali_write_page;
 -- 
 2.7.4
