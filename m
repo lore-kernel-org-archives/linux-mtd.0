@@ -1,17 +1,17 @@
-Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
+Received: from mail-oi0-x22f.google.com ([2607:f8b0:4003:c06::22f])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqzdI-0003fe-NF
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 10:06:18 +0000
-Received: by mail-oi0-x234.google.com with SMTP id w81so61664930oig.1
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 03:05:56 -0700 (PDT)
+ id 1cqzdu-0003wf-Lr
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 10:06:56 +0000
+Received: by mail-oi0-x22f.google.com with SMTP id f193so3398405oib.2
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 03:06:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1490090645-8576-12-git-send-email-thomas.petazzoni@free-electrons.com>
+In-Reply-To: <1490090645-8576-13-git-send-email-thomas.petazzoni@free-electrons.com>
 References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1490090645-8576-12-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1490090645-8576-13-git-send-email-thomas.petazzoni@free-electrons.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 23 Mar 2017 11:05:55 +0100
-Message-ID: <CACRpkdYe3pBz9fPycgdTdT7pYCYic3c0TeX+LBd5OV6_4UcKDg@mail.gmail.com>
-Subject: Re: [PATCH 11/13] mtd: nand: fsmc: use devm_clk_get()
+Date: Thu, 23 Mar 2017 11:06:32 +0100
+Message-ID: <CACRpkdY7=-jeS51hwj7KHmi83wWhk2o+Rgre1b8Yk4QwuygWTg@mail.gmail.com>
+Subject: Re: [PATCH 12/13] mtd: nand: fsmc: remove unused definitions
 To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
@@ -34,8 +34,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Tue, Mar 21, 2017 at 11:04 AM, Thomas Petazzoni
 <thomas.petazzoni@free-electrons.com> wrote:
 
-> This commit switches the fsmc_nand driver from clk_get() to
-> devm_clk_get(), which saves a few clk_put().
+> These definitions are not used anywhere in the driver, so remove them.
 >
 > Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 
