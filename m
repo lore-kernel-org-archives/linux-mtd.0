@@ -1,23 +1,23 @@
 Received: from conssluserg-05.nifty.com ([210.131.2.90])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqwlc-0002H6-KD
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 07:02:42 +0000
-Received: from mail-yw0-f172.google.com (mail-yw0-f172.google.com
- [209.85.161.172]) (authenticated)
- by conssluserg-05.nifty.com with ESMTP id v2N723CX029926
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 16:02:04 +0900
-Received: by mail-yw0-f172.google.com with SMTP id i203so26402578ywc.3
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 00:02:04 -0700 (PDT)
+ id 1cqwoV-0003wW-UG
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 07:05:41 +0000
+Received: from mail-yw0-f177.google.com (mail-yw0-f177.google.com
+ [209.85.161.177]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id v2N753wl031695
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 16:05:04 +0900
+Received: by mail-yw0-f177.google.com with SMTP id i203so26440096ywc.3
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 00:05:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170322215728.69e8b566@bbrezillon>
+In-Reply-To: <20170322221216.26539147@bbrezillon>
 References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
- <1490191680-14481-12-git-send-email-yamada.masahiro@socionext.com>
- <20170322215728.69e8b566@bbrezillon>
+ <1490191680-14481-13-git-send-email-yamada.masahiro@socionext.com>
+ <20170322221216.26539147@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 23 Mar 2017 16:02:02 +0900
-Message-ID: <CAK7LNASC8VvNgMV5CGq5BJGUknPEP51R_RBfCy+K2ZiVm2Qxtg@mail.gmail.com>
-Subject: Re: [PATCH v2 11/53] mtd: nand: denali: fix bitflips calculation in
- handle_ecc()
+Date: Thu, 23 Mar 2017 16:05:02 +0900
+Message-ID: <CAK7LNARd0sKyqvZO_Tp6LV6V7p1pcWWdjfU2QJCmnT0hdeBTXg@mail.gmail.com>
+Subject: Re: [PATCH v2 12/53] mtd: nand: denali: support HW_ECC_FIXUP
+ capability
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
  Laurent Monat <laurent.monat@idquantique.com>,
@@ -46,46 +46,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-2017-03-23 5:57 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Wed, 22 Mar 2017 23:07:18 +0900
+
+2017-03-23 6:12 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Wed, 22 Mar 2017 23:07:19 +0900
 > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 >
->> +     do {
->> +             err_addr = ioread32(denali->flash_reg + ECC_ERROR_ADDRESS);
->> +             err_sector = ECC_SECTOR(err_addr);
->> +             err_byte = ECC_BYTE(err_addr);
+>> +static int denali_hw_ecc_fixup(struct mtd_info *mtd,
+>> +                            struct denali_nand_info *denali)
+>> +{
+>> +     int bank = denali->flash_bank;
+>> +     uint32_t ecc_cor;
+>> +     unsigned int max_bitflips;
 >> +
->> +             err_cor_info = ioread32(denali->flash_reg + ERR_CORRECTION_INFO);
->> +             err_cor_value = ECC_CORRECTION_VALUE(err_cor_info);
->> +             err_device = ECC_ERR_DEVICE(err_cor_info);
+>> +     ecc_cor = ioread32(denali->flash_reg + ECC_COR_INFO(bank));
+>> +     ecc_cor >>= ECC_COR_INFO__SHIFT(bank);
 >> +
->> +             /* reset the bitflip counter when crossing ECC sector */
->> +             if (err_sector != prev_sector)
->> +                     bitflips = 0;
->> +
->> +             if (ECC_ERROR_UNCORRECTABLE(err_cor_info)) {
->> +                     /*
->> +                      * if the error is not correctable, need to look at the
->> +                      * page to see if it is an erased page. if so, then
->> +                      * it's not a real ECC error
->> +                      */
->> +                     ret = -EBADMSG;
+>> +     if (ecc_cor & ECC_COR_INFO__UNCOR_ERR)
+>> +             return -EBADMSG;
 >
-> You should never return -EBADMSG directly. Just increment
-> ecc_stats.failed and let the core return -EBADMSG to the upper layer.
+> As previously mentioned, just increment ecc_stats.failed.
 >
 
-Here, -EBADMSG is used like that returned from  ->ecc.correct()
+I explained the intention of -EBADMSG in 11/53.
 
-
-Please notice denali_read_page() never returns -EBADMSG.
-
- -EBADMSG is used as a mark "we need erased page check".
-
-
-I think nand_read_page_syndrome() does similar;
--EBADMSG is used internally.
-
+ecc_stats.failed is incremented in denali_read_page().
 
 
 -- 
