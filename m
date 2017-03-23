@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqqT6-0004Zt-Al
+ id 1cqqT6-0004a2-Am
  for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:12 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,10 +16,10 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [RESEND PATCH v2 31/53] mtd: nand: denali: set
- NAND_ECC_CUSTOM_PAGE_ACCESS
-Date: Thu, 23 Mar 2017 09:17:40 +0900
-Message-Id: <1490228282-10805-5-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 40/53] mtd: nand: do not check R/B# for CMD_READID
+ in nand_command(_lp)
+Date: Thu, 23 Mar 2017 09:17:49 +0900
+Message-Id: <1490228282-10805-14-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,19 +31,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The denali_cmdfunc() actually does nothing variable for
-NAND_CMD_{PAGEPROG,READ0,SEQIN}.
-
-For NAND_CMD_{READ0,SEQIN}, it copies "page" to "denali->page", then
-denali_read_page() and denali_read_page_raw() compare them to check
-if the NAND framework called the callbacks in correct order.
-(Inconsistetly, this check is missing from the denali_write_page()
-and denali_write_page_raw().)
-
-The framework is widely tested by many drivers, so this kind of
-sanity check is unneeded.  The Denali controller is equipped with
-high level interface for read/write, so let's skip unneeded call
-of cmdfunc().
+Read ID (0x90) command does not toggle the R/B# pin.  Without this
+patch, NAND_CMD_READID falls into the default: label, then R/B# is
+checked by chip->dev_ready().
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -51,104 +41,28 @@ Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 29 ++++++++---------------------
- 1 file changed, 8 insertions(+), 21 deletions(-)
+ drivers/mtd/nand/nand_base.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index fba1908..ca00f22 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -989,7 +989,7 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
-  * configuration details.
-  */
- static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
--			const uint8_t *buf, bool raw_xfer)
-+			const uint8_t *buf, int page, bool raw_xfer)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
- 	dma_addr_t addr = denali->buf.dma_buf;
-@@ -997,6 +997,8 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
- 
-+	denali->page = page;
-+
- 	/*
- 	 * if it is a raw xfer, we want to disable ecc and send the spare area.
- 	 * !raw_xfer - enable ecc
-@@ -1050,7 +1052,7 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	 * for regular page writes, we let HW handle all the ECC
- 	 * data written to the device.
- 	 */
--	return write_page(mtd, chip, buf, false);
-+	return write_page(mtd, chip, buf, page, false);
- }
- 
- /*
-@@ -1066,7 +1068,7 @@ static int denali_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	 * for raw page writes, we want to disable ECC and simply write
- 	 * whatever data is in the buffer.
- 	 */
--	return write_page(mtd, chip, buf, true);
-+	return write_page(mtd, chip, buf, page, true);
- }
- 
- static int denali_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
-@@ -1095,12 +1097,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
- 	int stat = 0;
- 
--	if (page != denali->page) {
--		dev_err(denali->dev,
--			"IN %s: page %d is not equal to denali->page %d",
--			__func__, page, denali->page);
--		BUG();
--	}
-+	denali->page = page;
- 
- 	setup_ecc_for_xfer(denali, true, false);
- 
-@@ -1154,12 +1151,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
- 
--	if (page != denali->page) {
--		dev_err(denali->dev,
--			"IN %s: page %d is not equal to denali->page %d",
--			__func__, page, denali->page);
--		BUG();
--	}
-+	denali->page = page;
- 
- 	setup_ecc_for_xfer(denali, false, true);
- 	denali_enable_dma(denali, true);
-@@ -1238,8 +1230,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 	int i;
- 
- 	switch (cmd) {
--	case NAND_CMD_PAGEPROG:
--		break;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 807398d..c4c3329 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -668,6 +668,7 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
+ 	case NAND_CMD_ERASE2:
+ 	case NAND_CMD_SEQIN:
  	case NAND_CMD_STATUS:
- 		read_status(denali);
- 		break;
-@@ -1259,10 +1249,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 			write_byte_to_buf(denali, id);
- 		}
- 		break;
--	case NAND_CMD_READ0:
--	case NAND_CMD_SEQIN:
--		denali->page = page;
--		break;
++	case NAND_CMD_READID:
+ 		return;
+ 
  	case NAND_CMD_RESET:
- 		reset_bank(denali);
- 		break;
-@@ -1630,6 +1616,7 @@ int denali_init(struct denali_nand_info *denali)
+@@ -786,6 +787,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 	case NAND_CMD_ERASE2:
+ 	case NAND_CMD_SEQIN:
+ 	case NAND_CMD_STATUS:
++	case NAND_CMD_READID:
+ 		return;
  
- 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
- 
-+	chip->ecc.options |= NAND_ECC_CUSTOM_PAGE_ACCESS;
- 	chip->ecc.read_page = denali_read_page;
- 	chip->ecc.read_page_raw = denali_read_page_raw;
- 	chip->ecc.write_page = denali_write_page;
+ 	case NAND_CMD_RNDIN:
 -- 
 2.7.4
