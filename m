@@ -1,23 +1,25 @@
-Received: from 10.mo177.mail-out.ovh.net ([46.105.73.133])
+Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqpqr-0000VI-Rn
- for linux-mtd@lists.infradead.org; Wed, 22 Mar 2017 23:39:39 +0000
-Received: from player714.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo177.mail-out.ovh.net (Postfix) with ESMTP id 8E2F2435D3
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 00:39:16 +0100 (CET)
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: marek.vasut@gmail.com, linux-mtd@lists.infradead.org, jartur@cadence.com,
- kdasu.kdev@gmail.com, mar.krzeminski@gmail.com
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RFC PATCH v5 6/6] mtd: spi-nor: parse SFDP 4-byte Address
- Instruction Table
-Date: Thu, 23 Mar 2017 00:39:02 +0100
-Message-Id: <a8ec3a70dc9c49ced1a1191a65c177048143e3c3.1490220411.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1490220411.git.cyrille.pitchen@atmel.com>
-References: <cover.1490220411.git.cyrille.pitchen@atmel.com>
+ id 1cqqSr-0004Z4-Mk
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:18:56 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ thorsten.christiansson@idquantique.com, laurent.monat@idquantique.com,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Enrico Jorns <ejo@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 27/53] mtd: nand: denali: avoid hard-coding
+ ecc.strength and ecc.bytes
+Date: Thu, 23 Mar 2017 09:17:36 +0900
+Message-Id: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,214 +29,188 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds supports for SFDP (JESD216B) 4-byte Address Instruction
-Table. This table is optional but when available, we parse it to get the
-4-byte address op codes supported by the memory.
-Using these op codes is stateless as opposed to entering the 4-byte
-address mode or setting the Base Address Register (BAR).
+Another problem of this driver is hard-coded ecc.strength and
+ecc.bytes.  Currently ecc.bytes is defined as follows:
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+  #define ECC_8BITS	14
+  #define ECC_15BITS	26
+
+The parameters were hard-coded because only the following two cases
+are possible on Intel platforms:
+
+ - ecc.size = 512, ecc.strength = 8    --> ecc.bytes = 14
+ - ecc.size = 512, ecc.strength = 15   --> ecc.bytes = 26
+
+However, they are actually customizable parameters, for example,
+UniPhier platform supports the following:
+
+ - ecc.size = 1024, ecc.strength = 8   --> ecc.bytes = 14
+ - ecc.size = 1024, ecc.strength = 16  --> ecc.bytes = 28
+ - ecc.size = 1024, ecc.strength = 24  --> ecc.bytes = 42
+
+So, we need to handle these parameters in a more generic manner.
+Fortunately, the Denali User's Guide explains how to calculate the
+ecc.bytes.  The formula is:
+
+  ecc.bytes = 2 * CEIL(13 * ecc.strength / 16)  (for ecc.size = 512)
+  ecc.bytes = 2 * CEIL(14 * ecc.strength / 16)  (for ecc.size = 1024)
+
+This commit allows platforms to specify denali->ecc_strength_avail,
+each bit of which represents supported ECC strength.  I am not using
+the bitmap here because "unsigned long" should be enough to cover
+the ECC strength of this IP.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 166 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 165 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index ce8722055a9c..ea044efc4e6d 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1899,6 +1899,7 @@ struct sfdp_parameter_header {
- 
- 
- #define SFDP_BFPT_ID		0xff00u	/* Basic Flash Parameter Table */
-+#define SFDP_4BAIT_ID		0xff84u	/* 4-byte Address Instruction Table */
- 
- #define SFDP_SIGNATURE		0x50444653u
- #define SFDP_JESD216_MAJOR	1
-@@ -2241,6 +2242,149 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	return 0;
+Changes in v2: None
+
+ drivers/mtd/nand/denali.c     | 73 +++++++++++++++++++++++++++----------------
+ drivers/mtd/nand/denali.h     |  1 +
+ drivers/mtd/nand/denali_dt.c  |  3 ++
+ drivers/mtd/nand/denali_pci.c |  1 +
+ 4 files changed, 51 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index cf8daba..96074b8 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1340,13 +1340,45 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	denali_irq_init(denali);
  }
  
-+struct sfdp_4bait {
-+	/* The hardware capability. */
-+	u32		hwcaps;
-+
-+	/*
-+	 * The <supported_bit> bit in DWORD1 of the 4BAIT tells us whether
-+	 * the associated 4-byte address op code is supported.
-+	 */
-+	u32		supported_bit;
-+};
-+
-+static int spi_nor_parse_4bait(struct spi_nor *nor,
-+			       const struct sfdp_parameter_header *param_header,
-+			       struct spi_nor_flash_parameter *params)
+-/*
+- * Althogh controller spec said SLC ECC is forceb to be 4bit,
+- * but denali controller in MRST only support 15bit and 8bit ECC
+- * correction
+- */
+-#define ECC_8BITS	14
+-#define ECC_15BITS	26
++static int denali_calc_ecc_bytes(int ecc_size, int ecc_strength)
 +{
-+	static const struct sfdp_4bait reads[] = {
-+		{ SNOR_HWCAPS_READ,		BIT(0) },
-+		{ SNOR_HWCAPS_READ_FAST,	BIT(1) },
-+		{ SNOR_HWCAPS_READ_1_1_2,	BIT(2) },
-+		{ SNOR_HWCAPS_READ_1_2_2,	BIT(3) },
-+		{ SNOR_HWCAPS_READ_1_1_4,	BIT(4) },
-+		{ SNOR_HWCAPS_READ_1_4_4,	BIT(5) },
-+		{ SNOR_HWCAPS_READ_1_1_1_DTR,	BIT(13) },
-+		{ SNOR_HWCAPS_READ_1_2_2_DTR,	BIT(14) },
-+		{ SNOR_HWCAPS_READ_1_4_4_DTR,	BIT(15) },
-+	};
-+	static const struct sfdp_4bait programs[] = {
-+		{ SNOR_HWCAPS_PP,		BIT(6) },
-+		{ SNOR_HWCAPS_PP_1_1_4,		BIT(7) },
-+		{ SNOR_HWCAPS_PP_1_4_4,		BIT(8) },
-+	};
-+	static const struct sfdp_4bait erases[SNOR_CMD_ERASE_MAX] = {
-+		{ 0u /* not used */,		BIT(9) },
-+		{ 0u /* not used */,		BIT(10) },
-+		{ 0u /* not used */,		BIT(11) },
-+		{ 0u /* not used */,		BIT(12) },
-+	};
-+	u32 dwords[2], addr, discard_hwcaps, read_hwcaps, pp_hwcaps, erase_mask;
-+	struct spi_nor_erase_map *map = &nor->erase_map;
-+	int i, err;
++	WARN_ON(ecc_size != 512 && ecc_size != 1024);
 +
-+	if (param_header->major != SFDP_JESD216_MAJOR ||
-+	    param_header->length < ARRAY_SIZE(dwords))
-+		return -EINVAL;
-+
-+	/* Read the 4-byte Address Instruction Table. */
-+	addr = SFDP_PARAM_HEADER_PTP(param_header);
-+	err = spi_nor_read_sfdp(nor, addr, sizeof(dwords), dwords);
-+	if (err)
-+		return err;
-+
-+	/* Fix endianness of the 4BAIT DWORDs. */
-+	for (i = 0; i < ARRAY_SIZE(dwords); i++)
-+		dwords[i] = le32_to_cpu(dwords[i]);
-+
-+	/*
-+	 * Compute the subset of (Fast) Read commands for which the 4-byte
-+	 * version is supported.
-+	 */
-+	discard_hwcaps = 0;
-+	read_hwcaps = 0;
-+	for (i = 0; i < ARRAY_SIZE(reads); i++) {
-+		const struct sfdp_4bait *read = &reads[i];
-+
-+		discard_hwcaps |= read->hwcaps;
-+		if ((params->hwcaps.mask & read->hwcaps) &&
-+		    (dwords[0] & read->supported_bit))
-+			read_hwcaps |= read->hwcaps;
-+	}
-+
-+	/*
-+	 * Compute the subset of Page Program commands for which the 4-byte
-+	 * version is supported.
-+	 */
-+	pp_hwcaps = 0;
-+	for (i = 0; i < ARRAY_SIZE(programs); i++) {
-+		const struct sfdp_4bait *program = &programs[i];
-+
-+		discard_hwcaps |= program->hwcaps;
-+		if ((params->hwcaps.mask & program->hwcaps) &&
-+		    (dwords[0] & program->supported_bit))
-+			pp_hwcaps |= program->hwcaps;
-+	}
-+
-+	/*
-+	 * Compute the subet of Sector Erase commands for which the 4-byte
-+	 * version is supported.
-+	 */
-+	erase_mask = 0;
-+	for (i = 0; i < SNOR_CMD_ERASE_MAX; i++) {
-+		const struct sfdp_4bait *erase = &erases[i];
-+
-+		if ((map->commands[i].size > 0) &&
-+		    (dwords[0] & erase->supported_bit))
-+			erase_mask |= BIT(i);
-+	}
-+
-+	/*
-+	 * We need at least one 4-byte op code per read, program and erase
-+	 * operation; the .read(), .write() and .erase() hooks share the
-+	 * nor->addr_width value.
-+	 */
-+	if (!read_hwcaps || !pp_hwcaps || !erase_mask)
-+		return 0;
-+
-+	/*
-+	 * Discard all operations from the 4-byte instruction set which are
-+	 * not supported by this memory.
-+	 */
-+	params->hwcaps.mask &= ~discard_hwcaps;
-+	params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
-+
-+	/* Use the 4-byte address instruction set. */
-+	for (i = 0; i < SNOR_CMD_READ_MAX; i++) {
-+		struct spi_nor_read_command *read_cmd = &params->reads[i];
-+
-+		read_cmd->opcode = spi_nor_convert_3to4_read(read_cmd->opcode);
-+	}
-+	for (i = 0; i < SNOR_CMD_PP_MAX; i++) {
-+		struct spi_nor_pp_command *pp_cmd = &params->page_programs[i];
-+
-+		pp_cmd->opcode = spi_nor_convert_3to4_program(pp_cmd->opcode);
-+	}
-+	for (i = 0; i < SNOR_CMD_ERASE_MAX; i++) {
-+		struct spi_nor_erase_command *erase_cmd = &map->commands[i];
-+
-+		if (erase_mask & BIT(i))
-+			erase_cmd->opcode = (dwords[1] >> (i * 8)) & 0xFF;
-+		else
-+			spi_nor_set_erase_command(erase_cmd, 0u, 0xFF);
-+	}
-+
-+	/*
-+	 * We set nor->addr_width here to skip spi_nor_set_4byte_opcodes()
-+	 * later because this latest function implements a legacy quirk for
-+	 * the erase size of Spansion memory. However this quirk is no longer
-+	 * needed with new SFDP compliant memories.
-+	 */
-+	nor->addr_width = 4;
-+	nor->flags |= SNOR_F_4B_OPCODES;
-+	return 0;
++	return DIV_ROUND_UP(ecc_strength * (ecc_size == 512 ? 13 : 14), 16) * 2;
 +}
 +
- static int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			      struct spi_nor_flash_parameter *params)
- {
-@@ -2308,6 +2452,23 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
- 	if (err)
- 		goto exit;
- 
-+	/* Parse other parameter headers. */
-+	for (i = 0; i < header.nph; i++) {
-+		param_header = &param_headers[i];
++static int denali_set_max_ecc_strength(struct denali_nand_info *denali)
++{
++	struct nand_chip *chip = &denali->nand;
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	int oobsize = mtd->oobsize;
++	int ecc_size = chip->ecc.size;
++	int ecc_steps = mtd->writesize / chip->ecc.size;
++	int ecc_strength, ecc_bytes;
++	int max_strength = 0;
 +
-+		switch (SFDP_PARAM_HEADER_ID(param_header)) {
-+		case SFDP_4BAIT_ID:
-+			err = spi_nor_parse_4bait(nor, param_header, params);
++	/* carve out the BBM area */
++	oobsize -= denali->bbtskipbytes;
++
++	for_each_set_bit(ecc_strength, &denali->ecc_strength_avail,
++			 sizeof(denali->ecc_strength_avail) * BITS_PER_BYTE) {
++		ecc_bytes = denali_calc_ecc_bytes(ecc_size, ecc_strength);
++		if (ecc_bytes * ecc_steps > oobsize)
 +			break;
 +
-+		default:
-+			break;
-+		}
-+
-+		if (err)
-+			goto exit;
++		max_strength = ecc_strength;
 +	}
 +
- exit:
- 	kfree(param_headers);
- 	return err;
-@@ -2885,7 +3046,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	if (ret)
- 		return ret;
++	if (!max_strength) {
++		dev_err(denali->dev,
++			"Your NAND chip OOB is too small. No available ECC strength.\n");
++		return -EINVAL;
++	}
++
++	chip->ecc.strength = max_strength;
++
++	return 0;
++}
  
--	if (info->addr_width)
-+	if (nor->addr_width)
-+		/* already configured by spi_nor_setup() */
-+		;
-+	else if (info->addr_width)
- 		nor->addr_width = info->addr_width;
- 	else if (mtd->size > 0x1000000) {
- 		/* enable 4-byte addressing if the device exceeds 16MiB */
+ static int denali_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				struct mtd_oob_region *oobregion)
+@@ -1595,27 +1627,14 @@ int denali_init(struct denali_nand_info *denali)
+ 		goto failed_req_irq;
+ 	}
+ 
+-	/*
+-	 * Denali Controller only support 15bit and 8bit ECC in MRST,
+-	 * so just let controller do 15bit ECC for MLC and 8bit ECC for
+-	 * SLC if possible.
+-	 * */
+-	if (!nand_is_slc(chip) &&
+-			mtd->oobsize > denali->bbtskipbytes +
+-			ECC_15BITS * (mtd->writesize / chip->ecc.size)) {
+-		/* if MLC OOB size is large enough, use 15bit ECC*/
+-		chip->ecc.strength = 15;
+-		chip->ecc.bytes = ECC_15BITS;
+-		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
+-	} else if (mtd->oobsize <
+-		   denali->bbtskipbytes + ECC_8BITS * (mtd->writesize / chip->ecc.size)) {
+-		pr_err("Your NAND chip OOB is not large enough to contain 8bit ECC correction codes");
++	ret = denali_set_max_ecc_strength(denali);
++	if (ret)
+ 		goto failed_req_irq;
+-	} else {
+-		chip->ecc.strength = 8;
+-		chip->ecc.bytes = ECC_8BITS;
+-		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
+-	}
++
++	chip->ecc.bytes = denali_calc_ecc_bytes(chip->ecc.size,
++						chip->ecc.strength);
++
++	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
+ 
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index aa6548a..003d234a 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -353,6 +353,7 @@ struct denali_nand_info {
+ 	int bbtskipbytes;
+ 	int max_banks;
+ 	unsigned int revision;
++	unsigned long ecc_strength_avail;
+ 	unsigned int caps;
+ #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
+ #define DENALI_CAP_DMA_64BIT			BIT(1)
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 1681a30..c3bc333 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -31,10 +31,12 @@ struct denali_dt {
+ 
+ struct denali_dt_data {
+ 	unsigned int revision;
++	unsigned long ecc_strength_avail;
+ 	unsigned int caps;
+ };
+ 
+ static const struct denali_dt_data denali_socfpga_data = {
++	.ecc_strength_avail = BIT(15) | BIT(8),
+ 	.caps = DENALI_CAP_HW_ECC_FIXUP |
+ 		DENALI_CAP_ECC_SIZE_512,
+ };
+@@ -64,6 +66,7 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 	data = of_device_get_match_data(&pdev->dev);
+ 	if (data) {
+ 		denali->revision = data->revision;
++		denali->ecc_strength_avail = data->ecc_strength_avail;
+ 		denali->caps = data->caps;
+ 	}
+ 
+diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
+index 5202a11..a1ee9f8 100644
+--- a/drivers/mtd/nand/denali_pci.c
++++ b/drivers/mtd/nand/denali_pci.c
+@@ -85,6 +85,7 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 		goto failed_remap_reg;
+ 	}
+ 
++	denali->ecc_strength_avail = BIT(15) | BIT(8);
+ 	denali->caps |= DENALI_CAP_ECC_SIZE_512;
+ 
+ 	ret = denali_init(denali);
 -- 
-2.9.3
+2.7.4
