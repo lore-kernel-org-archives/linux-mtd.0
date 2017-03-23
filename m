@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqqT6-0004Zv-Am
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:15 +0000
+ id 1cqqT9-0004Zs-K7
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:17 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -16,10 +16,10 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [RESEND PATCH v2 38/53] mtd: nand: denali: fix NAND_CMD_STATUS
- handling
-Date: Thu, 23 Mar 2017 09:17:47 +0900
-Message-Id: <1490228282-10805-12-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 28/53] mtd: nand: denali: support
+ "nand-ecc-strength" DT property
+Date: Thu, 23 Mar 2017 09:17:37 +0900
+Message-Id: <1490228282-10805-2-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,59 +31,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current NAND_CMD_STATUS handling is weird; it just reads the
-WRITE_PROTECT register, and returns NAND_STATUS_WP if it is set.
+Historically, this driver tried to choose as big ECC strength as
+possible, but it would be reasonable to allow DT to set a particular
+ECC strength with "nand-ecc-strength" property.
 
-It does not send Read Status (0x70) command, so it is not helpful
-for checking the current device status.
+Going forward, DT platforms should specify "nand-ecc-strength" or
+"nand-ecc-maximize" to show the ECC strength strategy explicitly.
+
+If nothing is specified in DT, "nand-ecc-maximize" is implied since
+this was the original behavior.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
 
 Changes in v2:
-  - Newly added
+  - Add available values in the binding document
 
- drivers/mtd/nand/denali.c | 21 +++++----------------
- 1 file changed, 5 insertions(+), 16 deletions(-)
+ Documentation/devicetree/bindings/mtd/denali-nand.txt |  6 ++++++
+ drivers/mtd/nand/denali.c                             | 18 ++++++++++++++++--
+ drivers/mtd/nand/denali_pci.c                         |  1 +
+ 3 files changed, 23 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index 25313c7..647618e 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -11,6 +11,12 @@ Optional properties:
+   - nand-ecc-step-size: must be 512 or 1024.  If not specified, default to:
+       512   for "altr,socfpga-denali-nand"
+     see nand.txt for details.
++  - nand-ecc-strength: see nand.txt for details.  Available values are:
++      8, 15      for "altr,socfpga-denali-nand"
++  - nand-ecc-maximize: see nand.txt for details
++
++Note:
++Either nand-ecc-strength or nand-ecc-maximize should be specified.
+ 
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 5aafa59..275f1fa 100644
+index 96074b8..70e9f06 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -107,21 +107,6 @@ static void write_byte_to_buf(struct denali_nand_info *denali, uint8_t byte)
- 	denali->buf.buf[denali->buf.tail++] = byte;
- }
+@@ -1627,9 +1627,23 @@ int denali_init(struct denali_nand_info *denali)
+ 		goto failed_req_irq;
+ 	}
  
--/* reads the status of the device */
--static void read_status(struct denali_nand_info *denali)
--{
--	uint32_t cmd;
--
--	/* initialize the data buffer to store status */
--	reset_buf(denali);
--
--	cmd = ioread32(denali->flash_reg + WRITE_PROTECT);
--	if (cmd)
--		write_byte_to_buf(denali, NAND_STATUS_WP);
--	else
--		write_byte_to_buf(denali, 0);
--}
--
- /* Reset the flash controller */
- static uint16_t denali_nand_reset(struct denali_nand_info *denali)
- {
-@@ -857,7 +842,11 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+-	ret = denali_set_max_ecc_strength(denali);
+-	if (ret)
++	if (!chip->ecc.strength && !(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
++		dev_info(denali->dev,
++			 "No ECC strength strategy is specified. Maximizing ECC strength\n");
++		chip->ecc.options |= NAND_ECC_MAXIMIZE;
++	}
++
++	if (chip->ecc.options & NAND_ECC_MAXIMIZE) {
++		ret = denali_set_max_ecc_strength(denali);
++		if (ret)
++			goto failed_req_irq;
++	} else if (!(denali->ecc_strength_avail & BIT(chip->ecc.strength))) {
++		dev_err(denali->dev,
++			"Specified ECC strength (%d) is not supported for this controller.\n",
++			chip->ecc.strength);
++		ret = -EINVAL;
+ 		goto failed_req_irq;
++	}
  
- 	switch (cmd) {
- 	case NAND_CMD_STATUS:
--		read_status(denali);
-+		reset_buf(denali);
-+		addr = MODE_11 | BANK(denali->flash_bank);
-+		index_addr(denali, addr | 0, cmd);
-+		index_addr_read_data(denali, addr | 2, &id);
-+		write_byte_to_buf(denali, id);
- 		break;
- 	case NAND_CMD_READID:
- 	case NAND_CMD_PARAM:
+ 	chip->ecc.bytes = denali_calc_ecc_bytes(chip->ecc.size,
+ 						chip->ecc.strength);
+diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
+index a1ee9f8..a39682a5 100644
+--- a/drivers/mtd/nand/denali_pci.c
++++ b/drivers/mtd/nand/denali_pci.c
+@@ -87,6 +87,7 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 
+ 	denali->ecc_strength_avail = BIT(15) | BIT(8);
+ 	denali->caps |= DENALI_CAP_ECC_SIZE_512;
++	denali->nand.ecc.options |= NAND_ECC_MAXIMIZE;
+ 
+ 	ret = denali_init(denali);
+ 	if (ret)
 -- 
 2.7.4
