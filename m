@@ -1,18 +1,17 @@
-Received: from mail-ot0-x230.google.com ([2607:f8b0:4003:c0f::230])
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqzUy-0006lt-0N
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 09:57:41 +0000
-Received: by mail-ot0-x230.google.com with SMTP id y88so28234624ota.2
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 02:57:19 -0700 (PDT)
+ id 1cqzWt-0007AM-OM
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 09:59:41 +0000
+Received: by mail-oi0-x22a.google.com with SMTP id w81so61584775oig.1
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 02:59:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1490090645-8576-3-git-send-email-thomas.petazzoni@free-electrons.com>
+In-Reply-To: <1490090645-8576-4-git-send-email-thomas.petazzoni@free-electrons.com>
 References: <1490090645-8576-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1490090645-8576-3-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1490090645-8576-4-git-send-email-thomas.petazzoni@free-electrons.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 23 Mar 2017 10:57:17 +0100
-Message-ID: <CACRpkdZWJKw1=UbJZcAbXn7Z==6F7cT_nfrUjK3XnPzCEqgOdg@mail.gmail.com>
-Subject: Re: [PATCH 02/13] mtd: nand: fsmc: rework fsmc_nand_setup() to use
- ->setup_data_interface()
+Date: Thu, 23 Mar 2017 10:59:17 +0100
+Message-ID: <CACRpkdZ9kGNfe0LXJAdWjXi1WC5dAw7L-B-p6rtcUnk8bm7ONA@mail.gmail.com>
+Subject: Re: [PATCH 03/13] mtd: nand: fsmc: add support to use NAND timings
 To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
@@ -35,25 +34,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Tue, Mar 21, 2017 at 11:03 AM, Thomas Petazzoni
 <thomas.petazzoni@free-electrons.com> wrote:
 
-> Since a few kernel versions, the NAND subsystem has introduced a
-> callback called ->setup_data_interface(), which NAND controller drivers
-> are supposed to use to perform all the NAND data interface.
+> Until now, the fsmc_nand driver was either using controller timings
+> specified in the Device Tree (through FSMC specific DT properties) or
+> alternatively default/fallback timings.
 >
-> This commit therefore converts the fsmc_nand driver to use this callback
-> instead of the home-grown fsmc_nand_setup() function.
+> This commit implements support to use the timings advertised by the NAND
+> chip itself, and passed by the NAND core to the ->setup_data_interface()
+> callback.
 >
-> For now, the NAND timings are not used, and we simply use the timings
-> provided from the Device Tree, or otherwise the default timings. Support
-> for the NAND timings is added in a follow-up patch.
+> Many thanks to Boris Brezillon for coming up with the logic to convert
+> the NAND chip timings into the timings expected by the FSMC controller.
 >
-> The call to fsmc_nand_setup() in the ->resume() hook is simply replaced
-> by a call to nand_reset(), which internally will call the
-> ->setup_data_interface() callback.
+> Also, since the timings are now not only coming from the DT, the message
+> warning that default timings will be used is removed.
 >
 > Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 
-Looks good to me, whether you go with Boris' suggestion or not.
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Obviously the right thing to do. If NAND manufacturers give us
+plug-n-play capabilities, we should use it.
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
