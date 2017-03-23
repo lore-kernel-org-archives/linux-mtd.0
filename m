@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqyLp-0001iL-39
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 08:44:10 +0000
-Date: Thu, 23 Mar 2017 09:43:47 +0100
+ id 1cqyTm-0005wH-Ck
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 08:52:24 +0000
+Date: Thu, 23 Mar 2017 09:52:00 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
@@ -14,12 +14,12 @@ Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Chuanxiao Dong <chuanxiao.dong@intel.com>, Masami Hiramatsu
  <mhiramat@kernel.org>, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring
  <robh@kernel.org>
-Subject: Re: [RESEND PATCH v2 28/53] mtd: nand: denali: support
- "nand-ecc-strength" DT property
-Message-ID: <20170323094347.27866d26@bbrezillon>
-In-Reply-To: <1490228282-10805-2-git-send-email-yamada.masahiro@socionext.com>
+Subject: Re: [RESEND PATCH v2 42/53] mtd: nand: denali: switch over to
+ cmd_ctrl instead of cmdfunc
+Message-ID: <20170323095200.282c50e5@bbrezillon>
+In-Reply-To: <1490228282-10805-16-git-send-email-yamada.masahiro@socionext.com>
 References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
- <1490228282-10805-2-git-send-email-yamada.masahiro@socionext.com>
+ <1490228282-10805-16-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,92 +32,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Mar 2017 09:17:37 +0900
+On Thu, 23 Mar 2017 09:17:51 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Historically, this driver tried to choose as big ECC strength as
-> possible, but it would be reasonable to allow DT to set a particular
-> ECC strength with "nand-ecc-strength" property.
+> The NAND_CMD_SET_FEATURES support is missing from denali_cmdfunc().
+> This is needed for nand_onfi_set_features().  It would be possible
+> to add it in the current implementation, but having ->cmd_ctrl()
+> seems a better approach from the discussion with Boris [1].
 > 
-> Going forward, DT platforms should specify "nand-ecc-strength" or
-> "nand-ecc-maximize" to show the ECC strength strategy explicitly.
+> Rely on the default implementation for ->cmdfunc() and implement
+> the driver's own ->cmd_ctrl().
 > 
-> If nothing is specified in DT, "nand-ecc-maximize" is implied since
-> this was the original behavior.
+> Also add ->write_byte(), which is needed to write parameters for
+> NAND_CMD_SET_FEATURES.
 
-I would expect the ->ecc_xxx_ds information to be taken into account
-when nand-ecc-strength and nand-ecc-maximize are missing (see my reply
-to patch 26).
+I'll review more carefully, but it goes in the right direction.
 
+Thanks a lot for doing that!
+
+> 
+> [1] https://lkml.org/lkml/2017/3/15/97
 > 
 > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Acked-by: Rob Herring <robh@kernel.org>
 > ---
 > 
 > Changes in v2:
->   - Add available values in the binding document
+>   - Newly added
 > 
->  Documentation/devicetree/bindings/mtd/denali-nand.txt |  6 ++++++
->  drivers/mtd/nand/denali.c                             | 18 ++++++++++++++++--
->  drivers/mtd/nand/denali_pci.c                         |  1 +
->  3 files changed, 23 insertions(+), 2 deletions(-)
+>  drivers/mtd/nand/denali.c | 104 +++++++++++++++++++++++-----------------------
+>  1 file changed, 52 insertions(+), 52 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> index 25313c7..647618e 100644
-> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> @@ -11,6 +11,12 @@ Optional properties:
->    - nand-ecc-step-size: must be 512 or 1024.  If not specified, default to:
->        512   for "altr,socfpga-denali-nand"
->      see nand.txt for details.
-> +  - nand-ecc-strength: see nand.txt for details.  Available values are:
-> +      8, 15      for "altr,socfpga-denali-nand"
-> +  - nand-ecc-maximize: see nand.txt for details
-> +
-> +Note:
-> +Either nand-ecc-strength or nand-ecc-maximize should be specified.
->  
->  The device tree may optionally contain sub-nodes describing partitions of the
->  address space. See partition.txt for more detail.
 > diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 96074b8..70e9f06 100644
+> index c0b8179..2d25b2f 100644
 > --- a/drivers/mtd/nand/denali.c
 > +++ b/drivers/mtd/nand/denali.c
-> @@ -1627,9 +1627,23 @@ int denali_init(struct denali_nand_info *denali)
->  		goto failed_req_irq;
->  	}
+> @@ -230,20 +230,16 @@ static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
+>  	return denali->irq_status;
+>  }
 >  
-> -	ret = denali_set_max_ecc_strength(denali);
-> -	if (ret)
-> +	if (!chip->ecc.strength && !(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
-> +		dev_info(denali->dev,
-> +			 "No ECC strength strategy is specified. Maximizing ECC strength\n");
-> +		chip->ecc.options |= NAND_ECC_MAXIMIZE;
-> +	}
+> -/* resets a specific device connected to the core */
+> -static void reset_bank(struct denali_nand_info *denali)
+> +static uint32_t denali_check_irq(struct denali_nand_info *denali)
+>  {
+> +	unsigned long flags;
+>  	uint32_t irq_status;
+>  
+> -	denali_reset_irq(denali);
+> -
+> -	iowrite32(1 << denali->flash_bank, denali->flash_reg + DEVICE_RESET);
+> -
+> -	irq_status = denali_wait_for_irq(denali,
+> -					 INTR__RST_COMP | INTR__TIME_OUT);
+> +	spin_lock_irqsave(&denali->irq_lock, flags);
+> +	irq_status = denali->irq_status;
+> +	spin_unlock_irqrestore(&denali->irq_lock, flags);
+>  
+> -	if (!(irq_status & INTR__RST_COMP))
+> -		dev_err(denali->dev, "reset bank failed.\n");
+> +	return irq_status;
+>  }
+>  
+>  /*
+> @@ -273,6 +269,42 @@ static uint8_t denali_read_byte(struct mtd_info *mtd)
+>  	return ioread32(denali->flash_mem + 0x10);
+>  }
+>  
+> +static void denali_write_byte(struct mtd_info *mtd, uint8_t byte)
+> +{
+> +	struct denali_nand_info *denali = mtd_to_denali(mtd);
 > +
-> +	if (chip->ecc.options & NAND_ECC_MAXIMIZE) {
-> +		ret = denali_set_max_ecc_strength(denali);
-> +		if (ret)
-> +			goto failed_req_irq;
-> +	} else if (!(denali->ecc_strength_avail & BIT(chip->ecc.strength))) {
-> +		dev_err(denali->dev,
-> +			"Specified ECC strength (%d) is not supported for this controller.\n",
-> +			chip->ecc.strength);
-> +		ret = -EINVAL;
->  		goto failed_req_irq;
-> +	}
+> +	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | 2, byte);
+> +}
+> +
+> +static void denali_cmd_ctrl(struct mtd_info *mtd, int dat, unsigned int ctrl)
+> +{
+> +	struct denali_nand_info *denali = mtd_to_denali(mtd);
+> +	uint32_t type;
+> +
+> +	if (ctrl & NAND_CLE)
+> +		type = 0;
+> +	else if (ctrl & NAND_ALE)
+> +		type = 1;
+> +	else
+> +		return;
+> +
+> +	/*
+> +	 * Some commands are followed by chip->dev_ready or chip->waitfunc.
+> +	 * irq_status must be cleared here to catch the R/B# interrupt later.
+> +	 */
+> +	if (ctrl & NAND_CTRL_CHANGE)
+> +		denali_reset_irq(denali);
+> +
+> +	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | type, dat);
+> +}
+> +
+> +static int denali_dev_ready(struct mtd_info *mtd)
+> +{
+> +	struct denali_nand_info *denali = mtd_to_denali(mtd);
+> +
+> +	return !!(denali_check_irq(denali) & INTR__INT_ACT);
+> +}
+> +
+>  /*
+>   * sends a pipeline command operation to the controller. See the Denali NAND
+>   * controller's user guide for more information (section 4.2.3.6).
+> @@ -788,7 +820,13 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
 >  
->  	chip->ecc.bytes = denali_calc_ecc_bytes(chip->ecc.size,
->  						chip->ecc.strength);
-> diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-> index a1ee9f8..a39682a5 100644
-> --- a/drivers/mtd/nand/denali_pci.c
-> +++ b/drivers/mtd/nand/denali_pci.c
-> @@ -87,6 +87,7 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>  static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
+>  {
+> -	return 0;
+> +	struct denali_nand_info *denali = mtd_to_denali(mtd);
+> +	uint32_t irq_status;
+> +
+> +	/* R/B# pin transitioned from low to high? */
+> +	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
+> +
+> +	return irq_status & INTR__INT_ACT ? 0 : NAND_STATUS_FAIL;
+>  }
 >  
->  	denali->ecc_strength_avail = BIT(15) | BIT(8);
->  	denali->caps |= DENALI_CAP_ECC_SIZE_512;
-> +	denali->nand.ecc.options |= NAND_ECC_MAXIMIZE;
+>  static int denali_erase(struct mtd_info *mtd, int page)
+> @@ -809,46 +847,6 @@ static int denali_erase(struct mtd_info *mtd, int page)
+>  	return irq_status & INTR__ERASE_COMP ? 0 : NAND_STATUS_FAIL;
+>  }
 >  
->  	ret = denali_init(denali);
->  	if (ret)
+> -static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+> -			   int page)
+> -{
+> -	struct denali_nand_info *denali = mtd_to_denali(mtd);
+> -	uint32_t addr, irq_status;
+> -	int wait_ready = 0;
+> -
+> -	switch (cmd) {
+> -	case NAND_CMD_PARAM:
+> -		wait_ready = 1;
+> -		break;
+> -	case NAND_CMD_STATUS:
+> -	case NAND_CMD_READID:
+> -		break;
+> -	case NAND_CMD_RESET:
+> -		reset_bank(denali);
+> -		break;
+> -	case NAND_CMD_READOOB:
+> -		/* TODO: Read OOB data */
+> -		return;
+> -	default:
+> -		pr_err(": unsupported command received 0x%x\n", cmd);
+> -		return;
+> -	}
+> -
+> -	denali_reset_irq(denali);
+> -
+> -	addr = MODE_11 | BANK(denali->flash_bank);
+> -	index_addr(denali, addr | 0, cmd);
+> -	if (col != -1)
+> -		index_addr(denali, addr | 1, col);
+> -
+> -	if (!wait_ready)
+> -		return;
+> -
+> -	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
+> -	if (!(irq_status & INTR__INT_ACT))
+> -		dev_err(denali->dev, "failed to issue command 0x%x\n", cmd);
+> -}
+> -
+>  #define DIV_ROUND_DOWN_ULL(ll, d) \
+>  	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
+>  
+> @@ -1187,8 +1185,10 @@ int denali_init(struct denali_nand_info *denali)
+>  
+>  	/* register the driver with the NAND core subsystem */
+>  	chip->select_chip = denali_select_chip;
+> -	chip->cmdfunc = denali_cmdfunc;
+>  	chip->read_byte = denali_read_byte;
+> +	chip->write_byte = denali_write_byte;
+> +	chip->cmd_ctrl = denali_cmd_ctrl;
+> +	chip->dev_ready = denali_dev_ready;
+>  	chip->waitfunc = denali_waitfunc;
+>  	/* clk rate info is needed for setup_data_interface */
+>  	if (denali->clk_x_rate)
