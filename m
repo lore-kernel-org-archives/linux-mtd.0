@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqqT6-0004Zw-Ae
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:14 +0000
+ id 1cqqT6-0004Zr-Ad
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:15 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -16,10 +16,10 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [RESEND PATCH v2 30/53] mtd: nand: denali_dt: add compatible strings
- for UniPhier SoC variants
-Date: Thu, 23 Mar 2017 09:17:39 +0900
-Message-Id: <1490228282-10805-4-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 29/53] mtd: nand: denali: remove Toshiba and Hynix
+ specific fixup code
+Date: Thu, 23 Mar 2017 09:17:38 +0900
+Message-Id: <1490228282-10805-3-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,91 +31,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add two compatible strings for UniPhier SoCs.
+The Denali IP can automatically detect device parameters such as
+page size, oob size, device width, etc. and this driver currently
+relies on it.  However, this hardware function is problematic.
 
-"socionext,uniphier-denali-nand-v5a" is used on UniPhier sLD3, LD4,
-Pro4, sLD8 SoCs.
+[1] Due to a hardware bug, various misdetected cases are known.
+    That is why get_toshiba_nand_para() and get_hynix_nand_para()
+    exist to fix-up the misdetected parameters.  It is not realistic
+    to add a new NAND device to the *black list* every time we are
+    hit by a misdetected case.  We would never be able to guarantee
+    that all cases are covered.
 
-"socionext,uniphier-denali-nand-v5b" is used on UniPhier Pro5, PXs2,
-LD6b, LD11, LD20 SoCs.
+[2] Because this feature is unreliable, it is disabled on some
+    platforms.
+
+The nand_scan_ident() detects device parameters in a more tested
+way.  The hardware should not set the device parameter registers in
+a different, unreliable way.  Instead, set the parameters from the
+nand_scan_ident() back to the registers.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2:
-  - Change the compatible strings
-  - Fix the ecc_strength_capability
-  - Override revision number for the newer one
+Changes in v2: None
 
- .../devicetree/bindings/mtd/denali-nand.txt        |  6 ++++++
- drivers/mtd/nand/denali_dt.c                       | 23 ++++++++++++++++++++++
- 2 files changed, 29 insertions(+)
+ drivers/mtd/nand/denali.c | 40 ++++++----------------------------------
+ 1 file changed, 6 insertions(+), 34 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-index 647618e..0b08ea5 100644
---- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-@@ -3,6 +3,8 @@
- Required properties:
-   - compatible : should be one of the following:
-       "altr,socfpga-denali-nand"            - for Altera SOCFPGA
-+      "socionext,uniphier-denali-nand-v5a"  - for Socionext UniPhier (v5a)
-+      "socionext,uniphier-denali-nand-v5b"  - for Socionext UniPhier (v5b)
-   - reg : should contain registers location and length for data and reg.
-   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
-   - interrupts : The interrupt number.
-@@ -10,9 +12,13 @@ Required properties:
- Optional properties:
-   - nand-ecc-step-size: must be 512 or 1024.  If not specified, default to:
-       512   for "altr,socfpga-denali-nand"
-+      1024  for "socionext,uniphier-denali-nand-v5a"
-+      1024  for "socionext,uniphier-denali-nand-v5b"
-     see nand.txt for details.
-   - nand-ecc-strength: see nand.txt for details.  Available values are:
-       8, 15      for "altr,socfpga-denali-nand"
-+      8, 16, 24  for "socionext,uniphier-denali-nand-v5a"
-+      8, 16      for "socionext,uniphier-denali-nand-v5b"
-   - nand-ecc-maximize: see nand.txt for details
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 70e9f06..fba1908 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -338,36 +338,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
+ 	}
+ }
  
- Note:
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index c3bc333..1f2f68a 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -41,11 +41,34 @@ static const struct denali_dt_data denali_socfpga_data = {
- 		DENALI_CAP_ECC_SIZE_512,
- };
+-static void get_toshiba_nand_para(struct denali_nand_info *denali)
+-{
+-	/*
+-	 * Workaround to fix a controller bug which reports a wrong
+-	 * spare area size for some kind of Toshiba NAND device
+-	 */
+-	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
+-		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
+-		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+-}
+-
+-static void get_hynix_nand_para(struct denali_nand_info *denali,
+-							uint8_t device_id)
+-{
+-	switch (device_id) {
+-	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
+-	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
+-		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
+-		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
+-		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+-		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
+-		break;
+-	default:
+-		dev_warn(denali->dev,
+-			 "Unknown Hynix NAND (Device ID: 0x%x).\n"
+-			 "Will use default parameter values instead.\n",
+-			 device_id);
+-	}
+-}
+-
+ /*
+  * determines how many NAND chips are connected to the controller. Note for
+  * Intel CE4100 devices we don't support more than one device.
+@@ -454,10 +424,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ 			return FAIL;
+ 	} else if (maf_id == 0xEC) { /* Samsung NAND */
+ 		get_samsung_nand_para(denali, device_id);
+-	} else if (maf_id == 0x98) { /* Toshiba NAND */
+-		get_toshiba_nand_para(denali);
+-	} else if (maf_id == 0xAD) { /* Hynix NAND */
+-		get_hynix_nand_para(denali, device_id);
+ 	}
  
-+static const struct denali_dt_data denali_uniphier_v5a_data = {
-+	.ecc_strength_avail = BIT(24) | BIT(16) | BIT(8),
-+	.caps = DENALI_CAP_HW_ECC_FIXUP |
-+		DENALI_CAP_DMA_64BIT |
-+		DENALI_CAP_ECC_SIZE_1024,
-+};
-+
-+static const struct denali_dt_data denali_uniphier_v5b_data = {
-+	.revision = 0x0501,
-+	.ecc_strength_avail = BIT(16) | BIT(8),
-+	.caps = DENALI_CAP_HW_ECC_FIXUP |
-+		DENALI_CAP_DMA_64BIT |
-+		DENALI_CAP_ECC_SIZE_1024,
-+};
-+
- static const struct of_device_id denali_nand_dt_ids[] = {
- 	{
- 		.compatible = "altr,socfpga-denali-nand",
- 		.data = &denali_socfpga_data,
- 	},
-+	{
-+		.compatible = "socionext,uniphier-denali-nand-v5a",
-+		.data = &denali_uniphier_v5a_data,
-+	},
-+	{
-+		.compatible = "socionext,uniphier-denali-nand-v5b",
-+		.data = &denali_uniphier_v5b_data,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
+ 	dev_info(denali->dev,
+@@ -1649,6 +1615,12 @@ int denali_init(struct denali_nand_info *denali)
+ 						chip->ecc.strength);
+ 
+ 	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
++	iowrite32(mtd->erasesize / mtd->writesize,
++		  denali->flash_reg + PAGES_PER_BLOCK);
++	iowrite32(denali->nand.options & NAND_BUSWIDTH_16 ? 1 : 0,
++		  denali->flash_reg + DEVICE_WIDTH);
++	iowrite32(mtd->writesize, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
++	iowrite32(mtd->oobsize, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+ 
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
 -- 
 2.7.4
