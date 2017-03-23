@@ -1,6 +1,6 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqz6i-0000rV-0Z
+ id 1cqz6i-0000rS-5h
  for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 09:32:40 +0000
 From: Peter Pan <peterpandong@micron.com>
 To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
@@ -9,9 +9,9 @@ To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <cyrille.pitchen@atmel.com>, <linux-mtd@lists.infradead.org>
 CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: [PATCH v4 2/9] mtd: nand: make sure mtd_oob_ops consistent in bbt
-Date: Thu, 23 Mar 2017 17:43:39 +0800
-Message-ID: <1490262226-29092-3-git-send-email-peterpandong@micron.com>
+Subject: [PATCH v4 3/9] mtd: nand: add more helpers in nand.h
+Date: Thu, 23 Mar 2017 17:43:40 +0800
+Message-ID: <1490262226-29092-4-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
 References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
@@ -25,72 +25,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit makes sure struct mtd_oob_ops passed to mtd_read/write_ops()
-is consistent, which means .datbuf = NULL and .len = 0 when not reading
-page; .oobbuf = NULL and .ooblen = 0 when not reading oob. If no, (ie.
-ops.datbuf = NULL, while ops.len != 0.), nand_for_each_page() will run
-forever.
+This commit adds some helpers in nand.h
+    nand_size()
+    nand_check_address()
+    nand_check_oob_ops()
+    nand_oob_ops_across_page()
+    nand_check_erase_ops()
 
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- drivers/mtd/nand/bbt.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ include/linux/mtd/nand.h | 62 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
-diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
-index 94cd3e5..c35a6e8 100644
---- a/drivers/mtd/nand/bbt.c
-+++ b/drivers/mtd/nand/bbt.c
-@@ -328,7 +328,7 @@ static int scan_read_oob(struct nand_device *this, uint8_t *buf, loff_t offs,
- 			 size_t len)
- {
- 	struct mtd_info *mtd = nand_to_mtd(this);
--	struct mtd_oob_ops ops;
-+	struct mtd_oob_ops ops = {0};
- 	int res, ret = 0;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 54ded4c..0c52401 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -434,6 +434,68 @@ static inline int nand_neraseblocks(struct nand_device *nand)
+ }
  
- 	ops.mode = MTD_OPS_PLACE_OOB;
-@@ -369,11 +369,12 @@ static int scan_write_bbt(struct nand_device *this, loff_t offs, size_t len,
- 			  uint8_t *buf, uint8_t *oob)
- {
- 	struct mtd_info *mtd = nand_to_mtd(this);
--	struct mtd_oob_ops ops;
-+	struct mtd_oob_ops ops = {0};
- 
- 	ops.mode = MTD_OPS_PLACE_OOB;
- 	ops.ooboffs = 0;
--	ops.ooblen = nand_per_page_oobsize(this);
-+	/* oob from caller may be NULL */
-+	ops.ooblen = oob ? nand_per_page_oobsize(this) : 0;
- 	ops.datbuf = buf;
- 	ops.oobbuf = oob;
- 	ops.len = len;
-@@ -428,13 +429,12 @@ static int scan_block_fast(struct nand_device *this, struct nand_bbt_descr *bd,
- 			   loff_t offs, uint8_t *buf, int numpages)
- {
- 	struct mtd_info *mtd = nand_to_mtd(this);
--	struct mtd_oob_ops ops;
-+	struct mtd_oob_ops ops = {0};
- 	int j, ret;
- 
- 	ops.ooblen = nand_per_page_oobsize(this);
- 	ops.oobbuf = buf;
- 	ops.ooboffs = 0;
--	ops.datbuf = NULL;
- 	ops.mode = MTD_OPS_PLACE_OOB;
- 
- 	for (j = 0; j < numpages; j++) {
-@@ -734,11 +734,10 @@ static int write_bbt(struct nand_device *this, uint8_t *buf,
- 	uint8_t rcode = td->reserved_block_code;
- 	size_t retlen, len = 0;
- 	loff_t to;
--	struct mtd_oob_ops ops;
-+	struct mtd_oob_ops ops = {0};
- 
- 	ops.ooblen = nand_per_page_oobsize(this);
- 	ops.ooboffs = 0;
--	ops.datbuf = NULL;
- 	ops.mode = MTD_OPS_PLACE_OOB;
- 
- 	if (!rcode)
+ /**
++ * nand_size - Get NAND size
++ * @nand: NAND device
++ *
++ * Returns the total size exposed by @nand.
++ */
++static inline u64 nand_size(struct nand_device *nand)
++{
++	return nand->memorg.ndies * nand->memorg.diesize;
++}
++
++static inline int nand_check_address(struct nand_device *nand, loff_t addr)
++{
++	return addr < nand_size(nand) ? 0 : -EINVAL;
++}
++
++static inline int nand_check_oob_ops(struct nand_device *nand, loff_t start,
++				     struct mtd_oob_ops *ops)
++{
++	struct mtd_info *mtd = nand_to_mtd(nand);
++	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
++		mtd->oobavail : mtd->oobsize;
++
++	if ((!!ops->datbuf != !!ops->len) ||
++	    (!!ops->oobbuf != !!ops->ooblen))
++		return -EINVAL;
++	if (ops->ooboffs >= ooblen)
++		return -EINVAL;
++	if (ops->ooboffs + ops->ooblen >
++	    (nand_len_to_pages(nand, nand_size(nand)) -
++			       nand_offs_to_page(nand, start)) * ooblen)
++		return -EINVAL;
++
++	return 0;
++}
++
++static inline bool nand_oob_ops_across_page(struct nand_device *nand,
++					    struct mtd_oob_ops *ops)
++{
++	struct mtd_info *mtd = nand_to_mtd(nand);
++	int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
++		     mtd->oobavail : mtd->oobsize;
++
++	return (ops->ooboffs + ops->ooblen) > ooblen;
++}
++
++static inline int nand_check_erase_ops(struct nand_device *nand,
++				       struct erase_info *einfo)
++{
++	/* check address align on block boundary */
++	if (einfo->addr & (nand_eraseblock_size(nand) - 1))
++		return -EINVAL;
++	/* check lendth align on block boundary */
++	if (einfo->len & (nand_eraseblock_size(nand) - 1))
++		return -EINVAL;
++	/* Do not allow erase past end of device */
++	if ((einfo->addr + einfo->len) > nand_size(nand))
++		return -EINVAL;
++
++	return 0;
++}
++
++/**
+  * nand_register - Register a NAND device
+  * @nand: NAND device
+  *
 -- 
 1.9.1
