@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqqTT-0001GT-AI
+ id 1cqqTT-0001GU-AE
  for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:35 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,10 +16,9 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [RESEND PATCH v2 51/53] mtd: nand: denali: skip driver internal
- bounce buffer when possible
-Date: Thu, 23 Mar 2017 09:18:00 +0900
-Message-Id: <1490228282-10805-25-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 53/53] mtd: nand: denali: enable bad block table scan
+Date: Thu, 23 Mar 2017 09:18:02 +0900
+Message-Id: <1490228282-10805-27-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,9 +30,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For ecc->read_page() and ecc->write_page(), it is possible to call
-dma_map_single() against the given buffer.  This bypasses the driver
-internal bounce buffer and save the memcpy().
+Now this driver is ready to remove NAND_SKIP_BBTSCAN.
+
+The BBT descriptors in denali.c are equivalent to the ones in
+nand_bbt.c.  There is no need to duplicate the equivalent structures.
+The with-oob decriptors do not work for this driver anyway.
+
+The bbt_pattern (offs = 8) and the version (veroffs = 12) area
+overlaps the ECC area.  Set NAND_BBT_NO_OOB flag to use the no_oob
+variant of the BBT descriptors.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -41,85 +46,58 @@ Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 31 ++++++++++++-------------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/denali.c | 31 ++-----------------------------
+ 1 file changed, 2 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index c3a7f7b..4900745 100644
+index 28622a9..9cfc374 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -601,12 +601,16 @@ static int denali_pio_xfer(struct denali_nand_info *denali, void *buf,
- static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
- 			   size_t size, int page, int raw, int write)
- {
--	dma_addr_t dma_addr = denali->dma_addr;
-+	dma_addr_t dma_addr;
- 	uint32_t irq_mask, irq_status, ecc_err_mask;
- 	enum dma_data_direction dir = write ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
- 	int ret = 0;
+@@ -1207,29 +1207,6 @@ static const struct mtd_ooblayout_ops denali_ooblayout_ops = {
+ 	.free = denali_ooblayout_free,
+ };
  
--	dma_sync_single_for_device(denali->dev, dma_addr, size, dir);
-+	dma_addr = dma_map_single(denali->dev, buf, size, dir);
-+	if (dma_mapping_error(denali->dev, dma_addr)) {
-+		dev_dbg(denali->dev, "Failed to DMA-map buffer. Trying PIO.\n");
-+		return denali_pio_xfer(denali, buf, size, page, raw, write);
-+	}
- 
- 	if (write) {
- 		irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
-@@ -632,7 +636,7 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
- 		ret = -EBADMSG;
- 
- 	denali_enable_dma(denali, false);
--	dma_sync_single_for_cpu(denali->dev, dma_addr, size, dir);
-+	dma_unmap_single(denali->dev, dma_addr, size, dir);
- 
- 	if (irq_status & INTR__ERASED_PAGE)
- 		memset(buf, 0xff, size);
-@@ -807,12 +811,10 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	int stat = 0;
- 	int ret;
- 
--	ret = denali_data_xfer(denali, denali->buf, mtd->writesize, page, 0, 0);
-+	ret = denali_data_xfer(denali, buf, mtd->writesize, page, 0, 0);
- 	if (ret && ret != -EBADMSG)
- 		return ret;
- 
--	memcpy(buf, denali->buf, mtd->writesize);
+-static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
+-static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
 -
- 	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
- 		stat = denali_hw_ecc_fixup(mtd, denali);
- 	else if (ret == -EBADMSG)
-@@ -924,10 +926,8 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
- 
--	memcpy(denali->buf, buf, mtd->writesize);
+-static struct nand_bbt_descr bbt_main_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = 4,
+-	.pattern = bbt_pattern,
+-};
 -
--	return denali_data_xfer(denali, denali->buf, mtd->writesize, page,
--				0, 1);
-+	return denali_data_xfer(denali, (void *)buf, mtd->writesize,
-+				page, 0, 1);
- }
+-static struct nand_bbt_descr bbt_mirror_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = 4,
+-	.pattern = mirror_pattern,
+-};
+-
+ /* initialize driver data structures */
+ static void denali_drv_init(struct denali_nand_info *denali)
+ {
+@@ -1366,13 +1343,9 @@ int denali_init(struct denali_nand_info *denali)
+ 	 * bad block management.
+ 	 */
  
- static void denali_select_chip(struct mtd_info *mtd, int chip)
-@@ -1363,15 +1363,8 @@ int denali_init(struct denali_nand_info *denali)
- 		}
- 	}
+-	/* Bad block management */
+-	chip->bbt_td = &bbt_main_descr;
+-	chip->bbt_md = &bbt_mirror_descr;
+-
+-	/* skip the scan for now until we have OOB read and write support */
+ 	chip->bbt_options |= NAND_BBT_USE_FLASH;
+-	chip->options |= NAND_SKIP_BBTSCAN;
++	chip->bbt_options |= NAND_BBT_NO_OOB;
++
+ 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
  
--	if (denali->dma_avail) {
--		denali->dma_addr = dma_map_single(denali->dev, denali->buf,
--						  mtd->writesize + mtd->oobsize,
--						  DMA_BIDIRECTIONAL);
--		if (dma_mapping_error(denali->dev, denali->dma_addr)) {
--			dev_info(denali->dev, "Failed to map DMA buffer. Disabling DMA.\n");
--			denali->dma_avail = 0;
--		};
--	}
-+	if (denali->dma_avail)
-+		chip->options |= NAND_USE_BOUNCE_BUFFER;
- 
- 	/*
- 	 * second stage of the NAND scan
+ 	/* no subpage writes on denali */
 -- 
 2.7.4
