@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqqTT-0001GU-AE
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:35 +0000
+ id 1cqqTT-0001GV-AJ
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:34 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -16,9 +16,10 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [RESEND PATCH v2 53/53] mtd: nand: denali: enable bad block table scan
-Date: Thu, 23 Mar 2017 09:18:02 +0900
-Message-Id: <1490228282-10805-27-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+Date: Thu, 23 Mar 2017 09:17:59 +0900
+Message-Id: <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,15 +31,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now this driver is ready to remove NAND_SKIP_BBTSCAN.
+Commit 66507c7bc889 ("mtd: nand: Add support to use nand_base poi
+databuf as bounce buffer") fixed the issue that drivers can be
+passed with a kmap()'d buffer.  This addressed the use_bufpoi = 0
+case.
 
-The BBT descriptors in denali.c are equivalent to the ones in
-nand_bbt.c.  There is no need to duplicate the equivalent structures.
-The with-oob decriptors do not work for this driver anyway.
+When use_bufpoi = 1, chip->buffers->databuf is used.  The databuf
+allocated by nand_scan_tail() is not suitable for DMA due to the
+offset, sizeof(*chip->buffers).
 
-The bbt_pattern (offs = 8) and the version (veroffs = 12) area
-overlaps the ECC area.  Set NAND_BBT_NO_OOB flag to use the no_oob
-variant of the BBT descriptors.
+So, drivers using DMA are very likely to end up with setting the
+NAND_OWN_BUFFERS flag and allocate buffers by themselves.  Drivers
+tend to use devm_k*alloc to simplify the probe failure path, but
+devm_k*alloc() does not return a cache line aligned buffer.
+
+If used, it could violate the DMA-API requirement stated in
+Documentation/DMA-API.txt:
+  Warnings:  Memory coherency operates at a granularity called the
+  cache line width.  In order for memory mapped by this API to
+  operate correctly, the mapped region must begin exactly on a cache
+  line boundary and end exactly on one (to prevent two separately
+  mapped regions from sharing a single cache line).
+
+To sum up, NAND_OWN_BUFFERS is not very convenient for drivers.
+nand_scan_tail() can give a separate buffer for each of ecccalc,
+ecccode, databuf.  It is guaranteed kmalloc'ed memory is aligned
+with ARCH_DMA_MINALIGN.  This is enough for most drivers because
+it is rare that DMA engines require larger alignment than CPU's
+cache line.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -46,58 +66,71 @@ Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 31 ++-----------------------------
- 1 file changed, 2 insertions(+), 29 deletions(-)
+ drivers/mtd/nand/nand_base.c | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 28622a9..9cfc374 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1207,29 +1207,6 @@ static const struct mtd_ooblayout_ops denali_ooblayout_ops = {
- 	.free = denali_ooblayout_free,
- };
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index e13f959..6fc0422 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4614,13 +4614,25 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	}
  
--static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
--static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
--
--static struct nand_bbt_descr bbt_main_descr = {
--	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
--		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
--	.offs =	8,
--	.len = 4,
--	.veroffs = 12,
--	.maxblocks = 4,
--	.pattern = bbt_pattern,
--};
--
--static struct nand_bbt_descr bbt_mirror_descr = {
--	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
--		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
--	.offs =	8,
--	.len = 4,
--	.veroffs = 12,
--	.maxblocks = 4,
--	.pattern = mirror_pattern,
--};
--
- /* initialize driver data structures */
- static void denali_drv_init(struct denali_nand_info *denali)
- {
-@@ -1366,13 +1343,9 @@ int denali_init(struct denali_nand_info *denali)
- 	 * bad block management.
- 	 */
+ 	if (!(chip->options & NAND_OWN_BUFFERS)) {
+-		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
+-				+ mtd->oobsize * 3, GFP_KERNEL);
++		nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
+ 		if (!nbuf)
+ 			return -ENOMEM;
+-		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
+-		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
+-		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
++		nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
++		if (!nbuf->ecccalc) {
++			ret = -EINVAL;
++			goto err_free;
++		}
++		nbuf->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
++		if (!nbuf->ecccode) {
++			ret = -EINVAL;
++			goto err_free;
++		}
++		nbuf->databuf = kmalloc(mtd->writesize + mtd->oobsize,
++					GFP_KERNEL);
++		if (!nbuf->databuf) {
++			ret = -EINVAL;
++			goto err_free;
++		}
  
--	/* Bad block management */
--	chip->bbt_td = &bbt_main_descr;
--	chip->bbt_md = &bbt_mirror_descr;
--
--	/* skip the scan for now until we have OOB read and write support */
- 	chip->bbt_options |= NAND_BBT_USE_FLASH;
--	chip->options |= NAND_SKIP_BBTSCAN;
-+	chip->bbt_options |= NAND_BBT_NO_OOB;
-+
- 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
+ 		chip->buffers = nbuf;
+ 	} else {
+@@ -4863,8 +4875,12 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	/* Build bad block table */
+ 	return chip->scan_bbt(mtd);
+ err_free:
+-	if (!(chip->options & NAND_OWN_BUFFERS))
++	if (!(chip->options & NAND_OWN_BUFFERS)) {
++		kfree(chip->buffers->databuf);
++		kfree(chip->buffers->ecccode);
++		kfree(chip->buffers->ecccalc);
+ 		kfree(chip->buffers);
++	}
+ 	return ret;
+ }
+ EXPORT_SYMBOL(nand_scan_tail);
+@@ -4915,8 +4931,12 @@ void nand_cleanup(struct nand_chip *chip)
  
- 	/* no subpage writes on denali */
+ 	/* Free bad block table memory */
+ 	kfree(chip->bbt);
+-	if (!(chip->options & NAND_OWN_BUFFERS))
++	if (!(chip->options & NAND_OWN_BUFFERS)) {
++		kfree(chip->buffers->databuf);
++		kfree(chip->buffers->ecccode);
++		kfree(chip->buffers->ecccalc);
+ 		kfree(chip->buffers);
++	}
+ 
+ 	/* Free bad block descriptor memory */
+ 	if (chip->badblock_pattern && chip->badblock_pattern->options
 -- 
 2.7.4
