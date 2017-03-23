@@ -1,21 +1,31 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cr0gQ-0007wy-CY
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 11:13:36 +0000
-Subject: Re: [PATCH v4 1/9] mtd: nand: add oob iterator in nand_for_each_page
-To: Peter Pan <peterpandong@micron.com>, boris.brezillon@free-electrons.com,
- richard@nod.at, computersforpeace@gmail.com, arnaud.mouiche@gmail.com,
- thomas.petazzoni@free-electrons.com, cyrille.pitchen@atmel.com,
+Received: from foss.arm.com ([217.140.101.70])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cr10K-0000st-L8
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 11:34:10 +0000
+Subject: Re: [RESEND PATCH v2 52/53] mtd: nand: denali: use non-managed
+ kmalloc() for DMA buffer
+To: Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-mtd@lists.infradead.org
-References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
- <1490262226-29092-2-git-send-email-peterpandong@micron.com>
-Cc: peterpansjtu@gmail.com, linshunquan1@hisilicon.com
-From: Marek Vasut <marex@denx.de>
-Message-ID: <37c3dc9e-55a1-2a91-075d-587d3ffb9b0b@denx.de>
-Date: Thu, 23 Mar 2017 12:13:04 +0100
+References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490228282-10805-26-git-send-email-yamada.masahiro@socionext.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ thorsten.christiansson@idquantique.com, laurent.monat@idquantique.com,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Enrico Jorns <ejo@pengutronix.de>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
+ Russell King <rmk+kernel@armlinux.org.uk>,
+ Lars-Peter Clausen <lars@metafoo.de>
+From: Robin Murphy <robin.murphy@arm.com>
+Message-ID: <8fa877a7-c43a-76e7-2252-3463c8c3afcd@arm.com>
+Date: Thu, 23 Mar 2017 11:33:42 +0000
 MIME-Version: 1.0
-In-Reply-To: <1490262226-29092-2-git-send-email-peterpandong@micron.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1490228282-10805-26-git-send-email-yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,101 +36,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/23/2017 10:43 AM, Peter Pan wrote:
-> Iterate nand pages by both page and oob operation.
+On 23/03/17 00:18, Masahiro Yamada wrote:
+> As Russell and Lars stated in the discussion [1], using
+> devm_k*alloc() with DMA is not a good idea.
 > 
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> Let's use kmalloc (not kzalloc because no need for zero-out).
+> Also, allocate the buffer as late as possible because it must be
+> freed for any error that follows.
+
+I still think the way the driver actually uses this buffer looks very
+suspect - keeping it permanently mapped for bidirectional (AKA "I don't
+know") streaming DMA across multiple operations doesn't add up. If the
+device might access it at any time (or the driver simply doesn't want to
+have to care) it should be a coherent allocation. Otherwise, it should
+just be mapped/unmapped with the appropriate direction around each
+operation.
+
+Either way though, this patch at least makes things somewhat *less*
+incorrect, so:
+
+Acked-by: Robin Murphy <robin.murphy@arm.com>
+
+> [1] https://lkml.org/lkml/2017/3/8/693
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Russell King <rmk+kernel@armlinux.org.uk>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Robin Murphy <robin.murphy@arm.com>
 > ---
->  include/linux/mtd/nand.h | 38 +++++++++++++++++++++++++++++++-------
->  1 file changed, 31 insertions(+), 7 deletions(-)
 > 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index c2197b4..54ded4c 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -84,9 +84,12 @@ struct nand_device {
->   * @pageoffset: the offset within a page
->   */
->  struct nand_page_iter {
-> -	loff_t offs;
->  	int page;
->  	int pageoffs;
-> +	size_t dataleft;
-> +	int ooboffs;
-> +	int oobsize;
-> +	size_t oobleft;
->  };
+> Changes in v2:
+>   - Newly added
+> 
+>  drivers/mtd/nand/denali.c | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+> index 4900745..28622a9 100644
+> --- a/drivers/mtd/nand/denali.c
+> +++ b/drivers/mtd/nand/denali.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/module.h>
+> +#include <linux/slab.h>
 >  
->  /**
-> @@ -193,14 +196,19 @@ static inline int nand_per_page_oobsize(struct nand_device *nand)
->   * @offs: absolute offset
->   * @iter: page iterator
->   */
-> -static inline void nand_page_iter_init(struct nand_device *nand, loff_t offs,
-> +static inline void nand_page_iter_init(struct nand_device *nand,
-> +				       loff_t offs, size_t len, u32 ooboffs,
-> +				       size_t ooblen, u32 oobsize,
->  				       struct nand_page_iter *iter)
->  {
->  	u64 page = offs;
+>  #include "denali.h"
 >  
->  	iter->pageoffs = do_div(page, nand->memorg.pagesize);
->  	iter->page = page;
-> -	iter->offs = offs;
-> +	iter->dataleft = len;
-> +	iter->ooboffs = ooboffs;
-> +	iter->oobsize = oobsize;
-> +	iter->oobleft = ooblen;
->  }
+> @@ -1343,13 +1344,6 @@ int denali_init(struct denali_nand_info *denali)
+>  	if (ret)
+>  		goto disable_irq;
 >  
->  /**
-> @@ -212,13 +220,29 @@ static inline void nand_page_iter_next(struct nand_device *nand,
->  				       struct nand_page_iter *iter)
->  {
->  	iter->page++;
-> -	iter->offs += nand_page_size(nand) - iter->pageoffs;
->  	iter->pageoffs = 0;
-> +	if (iter->dataleft)
-> +		iter->dataleft -= min_t (int,
-                                         ^^^
-                                         shouldn't this be size_t ?
-
-> +					 nand_page_size(nand) - iter->pageoffs,
-> +					 iter->dataleft);
-> +	if (iter->oobleft)
-> +		iter->oobleft -= min_t(int, iter->oobsize - iter->ooboffs,
-
-DTTO here ?
-
-> +				       iter->oobleft);
-> +}
+> -	denali->buf = devm_kzalloc(denali->dev, mtd->writesize + mtd->oobsize,
+> -				   GFP_KERNEL);
+> -	if (!denali->buf) {
+> -		ret = -ENOMEM;
+> -		goto disable_irq;
+> -	}
+> -
+>  	if (ioread32(denali->flash_reg + FEATURES) & FEATURES__DMA)
+>  		denali->dma_avail = 1;
+>  
+> @@ -1460,17 +1454,29 @@ int denali_init(struct denali_nand_info *denali)
+>  	if (ret)
+>  		goto disable_irq;
+>  
+> +	/*
+> +	 * This buffer may be DMA-mapped.  Do not use devm_kmalloc() because
+> +	 * the memory allocated by devm_ is not cache line aligned.
+> +	 */
+> +	denali->buf = kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
+> +	if (!denali->buf) {
+> +		ret = -ENOMEM;
+> +		goto disable_irq;
+> +	}
 > +
-> +static inline bool nand_page_iter_end(struct nand_device *nand,
-> +				      struct nand_page_iter *iter)
-> +{
-> +	if (iter->dataleft || iter->oobleft)
-> +		return false;
-> +	return true;
->  }
+>  	ret = nand_scan_tail(mtd);
+>  	if (ret)
+> -		goto disable_irq;
+> +		goto free_buf;
 >  
-> -#define nand_for_each_page(nand, start, len, iter)		\
-> -	for (nand_page_iter_init(nand, start, iter);		\
-> -	     (iter)->offs < (start) + (len);			\
-> +#define nand_for_each_page(nand, start, len, ooboffs, ooblen,	\
-> +			   oobsize, iter)	\
-
-What's the difference between ooblen and oobsize ? That is totally
-confusing , so add a comment explaining that ...
-
-> +	for (nand_page_iter_init(nand, start, len, ooboffs,	\
-> +				 ooblen, oobsize, iter);	\
-> +	     !nand_page_iter_end(nand, iter);		\
->  	     nand_page_iter_next(nand, iter))
+>  	ret = mtd_device_register(mtd, NULL, 0);
+>  	if (ret) {
+>  		dev_err(denali->dev, "Failed to register MTD: %d\n", ret);
+> -		goto disable_irq;
+> +		goto free_buf;
+>  	}
+>  	return 0;
 >  
->  /**
+> +free_buf:
+> +	kfree(denali->buf);
+>  disable_irq:
+>  	denali_disable_irq(denali);
+>  
+> @@ -1490,6 +1496,7 @@ void denali_remove(struct denali_nand_info *denali)
+>  	int bufsize = mtd->writesize + mtd->oobsize;
+>  
+>  	nand_release(mtd);
+> +	kfree(denali->buf);
+>  	denali_disable_irq(denali);
+>  	dma_unmap_single(denali->dev, denali->dma_addr, bufsize,
+>  			 DMA_BIDIRECTIONAL);
 > 
-
-
--- 
-Best regards,
-Marek Vasut
