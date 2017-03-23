@@ -1,27 +1,38 @@
-Received: from conuserg-09.nifty.com ([210.131.2.76])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqqTV-00043F-TP
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:35 +0000
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqrxe-0001xO-8B
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 01:54:48 +0000
+Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
+ [209.85.161.176]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id v2N1s9Oi026095
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 10:54:10 +0900
+Received: by mail-yw0-f176.google.com with SMTP id v76so137701052ywg.0
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Mar 2017 18:54:10 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20170322223550.1f1c97ae@bbrezillon>
+References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
+ <20170322223550.1f1c97ae@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- thorsten.christiansson@idquantique.com, laurent.monat@idquantique.com,
- Dinh Nguyen <dinguyen@kernel.org>,
+Date: Thu, 23 Mar 2017 10:54:08 +0900
+Message-ID: <CAK7LNATT9uz+vqRx6Fndyxm=TeVVRseM1rsA+8tNw7un5bkB6A@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 00/53] mtd: nand: denali: 2nd round of Denali
+ NAND IP patch bomb
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, laurent.monat@idquantique.com,
+ thorsten.christiansson@idquantique.com, Enrico Jorns <ejo@pengutronix.de>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
  Graham Moore <grmoore@opensource.altera.com>,
- Enrico Jorns <ejo@pengutronix.de>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Masami Hiramatsu <mhiramat@kernel.org>,
- Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [RESEND PATCH v2 47/53] mtd: nand: denali: use flag instead of
- register macro for direction
-Date: Thu, 23 Mar 2017 09:17:56 +0900
-Message-Id: <1490228282-10805-21-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>, devicetree@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,165 +42,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is not a good idea to re-use macros that represent a specific
-register bit field for the transfer direction.
+Hi Boris,
 
-It is true that bit 8 indicates the direction for the MAP10 pipeline
-operation and the data DMA operation, but this is not valid across
-the IP.
 
-Use a simple flag (write: 1, read: 0) for the direction.
+2017-03-23 6:35 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> Hi Masahiro,
+>
+> On Thu, 23 Mar 2017 05:06:59 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> It took a couple months to update this series, but finally here is v2.
+>> (v1: https://lkml.org/lkml/2016/11/26/144 )
+>>
+>> This driver includes many problems.
+>>
+>> One of the biggest one is a bunch of hard-coded parameters.  This IP
+>> has many parameters that can be customized when a delivery RTL is
+>> generated.  However, this driver was upstreamed by Intel, with
+>> Intel parameters hard-coded.  Later, Altera added denali_dt.c to use
+>> this driver for embedded boards, but they did not fix the code in
+>> denali.c  So, this driver has never worked.  Even some DT bindings
+>> actually turned out wrong.
+>>
+>> There are more problems: [1] The driver just retrieves the OOB area as-is
+>> whereas the controller uses syndrome page layout. [2] Many NAND chip
+>> specific parameters are hard-coded in the driver. [3] ONFi devices are
+>> not working  [4] It can not read Bad Block Marker
+>>
+>> This patch series intends to solve those problems.
+>>
+>> Since v1, here are more fixes/improvements:
+>>  - Fix raw/oob callbacks for syndrome page layout
+>>  - Implement setup_data_interface() callback
+>>  - Fix/implement more commands for ONFi devices
+>>  - Allow to skip the driver internal bounce buffer
+>>  - Support PIO in case DMA is not supported
+>>  - Switch from ->cmdfunc over to ->cmd_ctrl
+>
+> I'll probably pick a few patches for 4.12, so please wait a bit before
+> sending a v4.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
 
-Changes in v2:
-  - Newly added
+This will be helpful.
 
- drivers/mtd/nand/denali.c | 36 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+I was refused by the SMTP server I use
+(probably due to too much volume at once).
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index e9e164c..9049583 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -53,9 +53,6 @@ static inline struct denali_nand_info *mtd_to_denali(struct mtd_info *mtd)
- #define MAIN_ACCESS		0x42
- #define MAIN_SPARE_ACCESS	0x43
- 
--#define DENALI_READ	0
--#define DENALI_WRITE	0x100
--
- #define DENALI_NR_BANKS		4
- 
- /*
-@@ -284,7 +281,7 @@ static int denali_dev_ready(struct mtd_info *mtd)
-  */
- static int denali_send_pipeline_cmd(struct denali_nand_info *denali, int page,
- 				    bool ecc_en, bool transfer_spare,
--				    int access_type, int op)
-+				    int access_type, int write)
- {
- 	int status = PASS;
- 	uint32_t addr, cmd;
-@@ -295,17 +292,17 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali, int page,
- 
- 	addr = BANK(denali->flash_bank) | page;
- 
--	if (op == DENALI_WRITE && access_type != SPARE_ACCESS) {
-+	if (write && access_type != SPARE_ACCESS) {
- 		cmd = MODE_01 | addr;
- 		iowrite32(cmd, denali->flash_mem);
--	} else if (op == DENALI_WRITE && access_type == SPARE_ACCESS) {
-+	} else if (write && access_type == SPARE_ACCESS) {
- 		/* read spare area */
- 		cmd = MODE_10 | addr;
- 		index_addr(denali, cmd, access_type);
- 
- 		cmd = MODE_01 | addr;
- 		iowrite32(cmd, denali->flash_mem);
--	} else if (op == DENALI_READ) {
-+	} else {
- 		/* setup page read request for access type */
- 		cmd = MODE_10 | addr;
- 		index_addr(denali, cmd, access_type);
-@@ -367,7 +364,7 @@ static int write_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- 	int status = 0;
- 
- 	if (denali_send_pipeline_cmd(denali, page, false, false, SPARE_ACCESS,
--							DENALI_WRITE) == PASS) {
-+							1) == PASS) {
- 		write_data_to_flash_mem(denali, buf, mtd->oobsize);
- 
- 		/* wait for operation to complete */
-@@ -392,7 +389,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- 	uint32_t irq_status, addr, cmd;
- 
- 	if (denali_send_pipeline_cmd(denali, page, false, true, SPARE_ACCESS,
--							DENALI_READ) == PASS) {
-+							0) == PASS) {
- 		read_data_from_flash_mem(denali, buf, mtd->oobsize);
- 
- 		/*
-@@ -533,7 +530,7 @@ static void denali_enable_dma(struct denali_nand_info *denali, bool en)
- }
- 
- static void denali_setup_dma64(struct denali_nand_info *denali,
--			       dma_addr_t dma_addr, int page, int op)
-+			       dma_addr_t dma_addr, int page, int write)
- {
- 	uint32_t mode;
- 	const int page_count = 1;
-@@ -546,7 +543,8 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
- 	 * 1. setup transfer type, interrupt when complete,
- 	 *    burst len = 64 bytes, the number of pages
- 	 */
--	index_addr(denali, mode, 0x01002000 | (64 << 16) | op | page_count);
-+	index_addr(denali, mode,
-+		   0x01002000 | (64 << 16) | (write << 8) | page_count);
- 
- 	/* 2. set memory low address */
- 	index_addr(denali, mode, dma_addr);
-@@ -556,7 +554,7 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
- }
- 
- static void denali_setup_dma32(struct denali_nand_info *denali,
--			       dma_addr_t dma_addr, int page, int op)
-+			       dma_addr_t dma_addr, int page, int write)
- {
- 	uint32_t mode;
- 	const int page_count = 1;
-@@ -566,7 +564,7 @@ static void denali_setup_dma32(struct denali_nand_info *denali,
- 	/* DMA is a four step process */
- 
- 	/* 1. setup transfer type and # of pages */
--	index_addr(denali, mode | page, 0x2000 | op | page_count);
-+	index_addr(denali, mode | page, 0x2000 | (write << 8) | page_count);
- 
- 	/* 2. set memory high address bits 23:8 */
- 	index_addr(denali, mode | ((dma_addr >> 16) << 8), 0x2200);
-@@ -579,12 +577,12 @@ static void denali_setup_dma32(struct denali_nand_info *denali,
- }
- 
- static void denali_setup_dma(struct denali_nand_info *denali,
--			     dma_addr_t dma_addr, int page, int op)
-+			     dma_addr_t dma_addr, int page, int write)
- {
- 	if (denali->caps & DENALI_CAP_DMA_64BIT)
--		denali_setup_dma64(denali, dma_addr, page, op);
-+		denali_setup_dma64(denali, dma_addr, page, write);
- 	else
--		denali_setup_dma32(denali, dma_addr, page, op);
-+		denali_setup_dma32(denali, dma_addr, page, write);
- }
- 
- /*
-@@ -623,7 +621,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	denali_reset_irq(denali);
- 	denali_enable_dma(denali, true);
- 
--	denali_setup_dma(denali, addr, page, DENALI_WRITE);
-+	denali_setup_dma(denali, addr, page, 1);
- 
- 	/* wait for operation to complete */
- 	irq_status = denali_wait_for_irq(denali, irq_mask);
-@@ -704,7 +702,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
- 	denali_reset_irq(denali);
--	denali_setup_dma(denali, addr, page, DENALI_READ);
-+	denali_setup_dma(denali, addr, page, 0);
- 
- 	/* wait for operation to complete */
- 	irq_status = denali_wait_for_irq(denali, irq_mask);
-@@ -757,7 +755,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
- 	denali_reset_irq(denali);
--	denali_setup_dma(denali, addr, page, DENALI_READ);
-+	denali_setup_dma(denali, addr, page, 0);
- 
- 	/* wait for operation to complete */
- 	irq_status = denali_wait_for_irq(denali, irq_mask);
+
+
+
+Please check the following as well.
+
+>>   mtd: nand: do not check R/B# for CMD_READID in nand_command(_lp)
+>>   mtd: nand: do not check R/B# for CMD_SET_FEATURES in nand_command(_lp)
+
+I noticed them when I switched from ->cmdfunc to ->cmd_ctrl hook.
+
+
+
 -- 
-2.7.4
+Best Regards
+Masahiro Yamada
