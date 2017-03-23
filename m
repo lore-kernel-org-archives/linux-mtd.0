@@ -1,39 +1,39 @@
-Received: from conssluserg-02.nifty.com ([210.131.2.81])
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqwdE-0007IP-8Y
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 06:54:02 +0000
-Received: from mail-yw0-f180.google.com (mail-yw0-f180.google.com
- [209.85.161.180]) (authenticated)
- by conssluserg-02.nifty.com with ESMTP id v2N6rGtE004437
- for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 15:53:16 +0900
-Received: by mail-yw0-f180.google.com with SMTP id d191so13629341ywe.2
- for <linux-mtd@lists.infradead.org>; Wed, 22 Mar 2017 23:53:16 -0700 (PDT)
+ id 1cqwlc-0002H6-KD
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 07:02:42 +0000
+Received: from mail-yw0-f172.google.com (mail-yw0-f172.google.com
+ [209.85.161.172]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id v2N723CX029926
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 16:02:04 +0900
+Received: by mail-yw0-f172.google.com with SMTP id i203so26402578ywc.3
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2017 00:02:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170322223239.70a45053@bbrezillon>
-References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
- <1490213273-8571-27-git-send-email-yamada.masahiro@socionext.com>
- <20170322223239.70a45053@bbrezillon>
+In-Reply-To: <20170322215728.69e8b566@bbrezillon>
+References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490191680-14481-12-git-send-email-yamada.masahiro@socionext.com>
+ <20170322215728.69e8b566@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 23 Mar 2017 15:53:14 +0900
-Message-ID: <CAK7LNARafOYZ54k2QZhTKgt-KLFs7Rz5X=GzDVkZkkXOchtGNQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 26/53] mtd: nand: denali: support 1024 byte ECC
- step size
+Date: Thu, 23 Mar 2017 16:02:02 +0900
+Message-ID: <CAK7LNASC8VvNgMV5CGq5BJGUknPEP51R_RBfCy+K2ZiVm2Qxtg@mail.gmail.com>
+Subject: Re: [PATCH v2 11/53] mtd: nand: denali: fix bitflips calculation in
+ handle_ecc()
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
  Laurent Monat <laurent.monat@idquantique.com>,
  thorsten.christiansson@idquantique.com, Enrico Jorns <ejo@pengutronix.de>,
+ Jason Roberts <jason.e.roberts@intel.com>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Dinh Nguyen <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  Graham Moore <grmoore@opensource.altera.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>, devicetree@vger.kernel.org,
+ Jassi Brar <jaswinder.singh@linaro.org>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -46,131 +46,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-2017-03-23 6:32 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Thu, 23 Mar 2017 05:07:25 +0900
+2017-03-23 5:57 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Wed, 22 Mar 2017 23:07:18 +0900
 > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 >
->> This driver was originally written for the Intel MRST platform with
->> several platform specific parameters hard-coded.  Another thing we
->> need to fix is the hard-coded ECC step size.  Currently, it is
->> defined as follows:
->>
->>   #define ECC_SECTOR_SIZE 512
->>
->> (somehow, it is defined in both denali.c and denali.h)
->>
->> This must be avoided because the Denali IP supports 1024B ECC size
->> as well.  The Denali User's Guide also says supporting both 512B and
->> 1024B ECC sectors is possible, though it would require instantiation
->> of two different ECC circuits.  So, possible cases are:
->>
->>  [1] only 512B ECC size is supported
->>  [2] only 1024B ECC size is supported
->>  [3] both 512B and 1024B ECC sizes are supported
->>
->> For [3], the actually used ECC size is specified by some registers.
->>
->> Newer versions of this IP have the following registers:
->>   CFG_DATA_BLOCK_SIZE       (0x6b0)
->>   CFG_LAST_DATA_BLOCK_SIZE  (0x6c0)
->>   CFG_NUM_DATA_BLOCKS       (0x6d0)
->>
->> For those versions, the software should set ecc.size and ecc.steps
->> to these registers.  Old versions do not have such registers, but
->> they are "reserved", so write accesses are safely ignored.
->>
->> This commit adds new flags DENALI_CAP_ECC_SIZE_{512,1024}.
->>
->> The DT property "nand-ecc-step-size" is still optional; a reasonable
->> default will be chosen for [1] and [2].  For case [3], if exists, it
->> is recommended to specify the desired ECC size explicitly.
->
-> Actually, the NAND chip gives some hints to help controller drivers
-> decide which ecc-block-size/strength is appropriate
-> (chip->ecc_strength_ds, chip->ecc_step_ds), so, in most cases
-> nand-ecc-step-size is unneeded (unless you want to force a specific
-> setting).
-
-
-But, if we look at nand_flash_detect_onfi(),
-->ecc_step_ds is almost a fixed value, 512, right?
-
-if (p->ecc_bits != 0xff) {
-        chip->ecc_strength_ds = p->ecc_bits;
-        chip->ecc_step_ds = 512;
-
-
-As far as I understood,
-->ecc_step_ds is not a hint for drivers to decide ->ecc.size.
-
-Rather, ->ecc_step_ds just specifies the unit of ->ecc_strength_ds.
-
-
-
->>                       int offset;
->>                       unsigned int flips_in_byte;
->>
->> -                     offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
->> +                     offset = (err_sector * ecc_size + err_byte) *
->>                                               denali->devnum + err_device;
->>
->>                       /* correct the ECC error */
->> @@ -1579,22 +1578,37 @@ int denali_init(struct denali_nand_info *denali)
->>       /* no subpage writes on denali */
->>       chip->options |= NAND_NO_SUBPAGE_WRITE;
->>
->> +     if (!chip->ecc.size) {
->
-> You should set it to chip->ecc_step_ds and pick a default value only if
-> it's still 0 after that. Same goes for ecc.strength.
-
-Sorry, I still do not understand this.
-
-->ecc_strength_ds and ->ecc_step_ds
-shows how often bit-flip occurs in this device.
-
-So, nand_ecc_strength_good() is a typical usage of these.
-
-How many sectors the driver actually splits the device into
-is a different issue, I think.
-
-
-
->> +             if (denali->caps & DENALI_CAP_ECC_SIZE_512)
->> +                     chip->ecc.size = 512;
->> +             if (denali->caps & DENALI_CAP_ECC_SIZE_1024)
->> +                     chip->ecc.size = 1024;
->> +             if (WARN(!chip->ecc.size, "must support at least 512 or 1024 ECC size"))
->> +                     goto failed_req_irq;
->> +     }
+>> +     do {
+>> +             err_addr = ioread32(denali->flash_reg + ECC_ERROR_ADDRESS);
+>> +             err_sector = ECC_SECTOR(err_addr);
+>> +             err_byte = ECC_BYTE(err_addr);
 >> +
->> +     if ((chip->ecc.size != 512 && chip->ecc.size != 1024) ||
->> +         (chip->ecc.size == 512 && !(denali->caps & DENALI_CAP_ECC_SIZE_512)) ||
->> +         (chip->ecc.size == 1024 && !(denali->caps & DENALI_CAP_ECC_SIZE_1024))) {
->> +             dev_err(denali->dev, "specified ECC size %d in not supported",
->> +                     chip->ecc.size);
->> +             goto failed_req_irq;
->> +     }
+>> +             err_cor_info = ioread32(denali->flash_reg + ERR_CORRECTION_INFO);
+>> +             err_cor_value = ECC_CORRECTION_VALUE(err_cor_info);
+>> +             err_device = ECC_ERR_DEVICE(err_cor_info);
 >> +
->>       /*
->>        * Denali Controller only support 15bit and 8bit ECC in MRST,
->>        * so just let controller do 15bit ECC for MLC and 8bit ECC for
->>        * SLC if possible.
+>> +             /* reset the bitflip counter when crossing ECC sector */
+>> +             if (err_sector != prev_sector)
+>> +                     bitflips = 0;
+>> +
+>> +             if (ECC_ERROR_UNCORRECTABLE(err_cor_info)) {
+>> +                     /*
+>> +                      * if the error is not correctable, need to look at the
+>> +                      * page to see if it is an erased page. if so, then
+>> +                      * it's not a real ECC error
+>> +                      */
+>> +                     ret = -EBADMSG;
 >
-> Usually the NAND chips expose the ECC requirements, so basing our
-> decision only on the type of NAND sounds a bit weird.
+> You should never return -EBADMSG directly. Just increment
+> ecc_stats.failed and let the core return -EBADMSG to the upper layer.
+>
+
+Here, -EBADMSG is used like that returned from  ->ecc.correct()
 
 
-chip->ecc.size is one of the configuration of this controller IP.
+Please notice denali_read_page() never returns -EBADMSG.
 
-SoC vendors choose 512, 1024, or both of them
-when they buy this IP.
-
-If both 512 and 1024 are supported, 1024 is usually a better choice
-because bigger ecc.size uses ECC more efficiently.
+ -EBADMSG is used as a mark "we need erased page check".
 
 
-It is unrelated to the chips' requirements.
+I think nand_read_page_syndrome() does similar;
+-EBADMSG is used internally.
 
 
 
