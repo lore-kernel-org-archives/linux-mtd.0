@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqqSr-0004Z4-Mk
- for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:18:56 +0000
+ id 1cqqT6-0004a1-Ai
+ for linux-mtd@lists.infradead.org; Thu, 23 Mar 2017 00:19:10 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -16,10 +16,11 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh@kernel.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [RESEND PATCH v2 27/53] mtd: nand: denali: avoid hard-coding
- ecc.strength and ecc.bytes
-Date: Thu, 23 Mar 2017 09:17:36 +0900
-Message-Id: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v2 43/53] mtd: nand: denali: fix bank reset function
+Date: Thu, 23 Mar 2017 09:17:52 +0900
+Message-Id: <1490228282-10805-17-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,188 +30,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Another problem of this driver is hard-coded ecc.strength and
-ecc.bytes.  Currently ecc.bytes is defined as follows:
+The function denali_nand_reset() is called during the driver probe,
+and polls the INTR__RST_COMP and INTR__TIME_OUT bits.  However,
+INTR__RST_COMP is set anyway even if no NAND device is connected to
+that bank.
 
-  #define ECC_8BITS	14
-  #define ECC_15BITS	26
+This can be a problem for ONFi devices.  The nand_scan_ident()
+iterates over maxchips, and calls nand_reset() for each chip.
+Now, this driver implements ->setup_data_interface() method, so
+nand_setup_data_interface() issues Set Features (0xEF) command to
+each chip.  This can cause time-out error since denali_nand_reset()
+did not check the chip existence.  If no chip there, the controller
+will wait long for R/B# response, which never happens.  (The timeout
+error is correctly handled in this driver, so the driver will be
+successfully probed anyway, but it will take longer than needed.)
 
-The parameters were hard-coded because only the following two cases
-are possible on Intel platforms:
-
- - ecc.size = 512, ecc.strength = 8    --> ecc.bytes = 14
- - ecc.size = 512, ecc.strength = 15   --> ecc.bytes = 26
-
-However, they are actually customizable parameters, for example,
-UniPhier platform supports the following:
-
- - ecc.size = 1024, ecc.strength = 8   --> ecc.bytes = 14
- - ecc.size = 1024, ecc.strength = 16  --> ecc.bytes = 28
- - ecc.size = 1024, ecc.strength = 24  --> ecc.bytes = 42
-
-So, we need to handle these parameters in a more generic manner.
-Fortunately, the Denali User's Guide explains how to calculate the
-ecc.bytes.  The formula is:
-
-  ecc.bytes = 2 * CEIL(13 * ecc.strength / 16)  (for ecc.size = 512)
-  ecc.bytes = 2 * CEIL(14 * ecc.strength / 16)  (for ecc.size = 1024)
-
-This commit allows platforms to specify denali->ecc_strength_avail,
-each bit of which represents supported ECC strength.  I am not using
-the bitmap here because "unsigned long" should be enough to cover
-the ECC strength of this IP.
+The Reset (0xFF) command also toggles the R/B# pin, and it sets
+INTR__INT_ACT bit.  The driver should check this bit to see if the
+chip has responded, then it can update denali->max_banks.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - Newly added
 
- drivers/mtd/nand/denali.c     | 73 +++++++++++++++++++++++++++----------------
- drivers/mtd/nand/denali.h     |  1 +
- drivers/mtd/nand/denali_dt.c  |  3 ++
- drivers/mtd/nand/denali_pci.c |  1 +
- 4 files changed, 51 insertions(+), 27 deletions(-)
+ drivers/mtd/nand/denali.c | 52 +++++++++++++++++++++--------------------------
+ 1 file changed, 23 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index cf8daba..96074b8 100644
+index 2d25b2f..ef28411 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1340,13 +1340,45 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 	denali_irq_init(denali);
+@@ -85,33 +85,6 @@ static void index_addr(struct denali_nand_info *denali,
+ 	iowrite32(data, denali->flash_mem + 0x10);
  }
  
--/*
-- * Althogh controller spec said SLC ECC is forceb to be 4bit,
-- * but denali controller in MRST only support 15bit and 8bit ECC
-- * correction
-- */
--#define ECC_8BITS	14
--#define ECC_15BITS	26
-+static int denali_calc_ecc_bytes(int ecc_size, int ecc_strength)
-+{
-+	WARN_ON(ecc_size != 512 && ecc_size != 1024);
-+
-+	return DIV_ROUND_UP(ecc_strength * (ecc_size == 512 ? 13 : 14), 16) * 2;
-+}
-+
-+static int denali_set_max_ecc_strength(struct denali_nand_info *denali)
-+{
-+	struct nand_chip *chip = &denali->nand;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int oobsize = mtd->oobsize;
-+	int ecc_size = chip->ecc.size;
-+	int ecc_steps = mtd->writesize / chip->ecc.size;
-+	int ecc_strength, ecc_bytes;
-+	int max_strength = 0;
-+
-+	/* carve out the BBM area */
-+	oobsize -= denali->bbtskipbytes;
-+
-+	for_each_set_bit(ecc_strength, &denali->ecc_strength_avail,
-+			 sizeof(denali->ecc_strength_avail) * BITS_PER_BYTE) {
-+		ecc_bytes = denali_calc_ecc_bytes(ecc_size, ecc_strength);
-+		if (ecc_bytes * ecc_steps > oobsize)
-+			break;
-+
-+		max_strength = ecc_strength;
-+	}
-+
-+	if (!max_strength) {
-+		dev_err(denali->dev,
-+			"Your NAND chip OOB is too small. No available ECC strength.\n");
-+		return -EINVAL;
-+	}
-+
-+	chip->ecc.strength = max_strength;
-+
-+	return 0;
-+}
- 
- static int denali_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				struct mtd_oob_region *oobregion)
-@@ -1595,27 +1627,14 @@ int denali_init(struct denali_nand_info *denali)
- 		goto failed_req_irq;
- 	}
- 
--	/*
--	 * Denali Controller only support 15bit and 8bit ECC in MRST,
--	 * so just let controller do 15bit ECC for MLC and 8bit ECC for
--	 * SLC if possible.
--	 * */
--	if (!nand_is_slc(chip) &&
--			mtd->oobsize > denali->bbtskipbytes +
--			ECC_15BITS * (mtd->writesize / chip->ecc.size)) {
--		/* if MLC OOB size is large enough, use 15bit ECC*/
--		chip->ecc.strength = 15;
--		chip->ecc.bytes = ECC_15BITS;
--		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
--	} else if (mtd->oobsize <
--		   denali->bbtskipbytes + ECC_8BITS * (mtd->writesize / chip->ecc.size)) {
--		pr_err("Your NAND chip OOB is not large enough to contain 8bit ECC correction codes");
-+	ret = denali_set_max_ecc_strength(denali);
-+	if (ret)
- 		goto failed_req_irq;
--	} else {
--		chip->ecc.strength = 8;
--		chip->ecc.bytes = ECC_8BITS;
--		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
+-/* Reset the flash controller */
+-static uint16_t denali_nand_reset(struct denali_nand_info *denali)
+-{
+-	int i;
+-
+-	for (i = 0; i < denali->max_banks; i++)
+-		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
+-		denali->flash_reg + INTR_STATUS(i));
+-
+-	for (i = 0; i < denali->max_banks; i++) {
+-		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
+-		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
+-			(INTR__RST_COMP | INTR__TIME_OUT)))
+-			cpu_relax();
+-		if (ioread32(denali->flash_reg + INTR_STATUS(i)) &
+-			INTR__TIME_OUT)
+-			dev_dbg(denali->dev,
+-			"NAND Reset operation timed out on bank %d\n", i);
 -	}
+-
+-	for (i = 0; i < denali->max_banks; i++)
+-		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
+-			  denali->flash_reg + INTR_STATUS(i));
+-
+-	return PASS;
+-}
+-
+ /*
+  * Use the configuration feature register to determine the maximum number of
+  * banks that the hardware supports.
+@@ -963,7 +936,28 @@ static int denali_setup_data_interface(struct mtd_info *mtd,
+ 	return 0;
+ }
+ 
+-/* Initialization code to bring the device up to a known good state */
++static void denali_reset_banks(struct denali_nand_info *denali)
++{
++	int i;
 +
-+	chip->ecc.bytes = denali_calc_ecc_bytes(chip->ecc.size,
-+						chip->ecc.strength);
++	denali_clear_irq_all(denali);
 +
-+	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
- 
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index aa6548a..003d234a 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -353,6 +353,7 @@ struct denali_nand_info {
- 	int bbtskipbytes;
- 	int max_banks;
- 	unsigned int revision;
-+	unsigned long ecc_strength_avail;
- 	unsigned int caps;
- #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
- #define DENALI_CAP_DMA_64BIT			BIT(1)
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 1681a30..c3bc333 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -31,10 +31,12 @@ struct denali_dt {
- 
- struct denali_dt_data {
- 	unsigned int revision;
-+	unsigned long ecc_strength_avail;
- 	unsigned int caps;
- };
- 
- static const struct denali_dt_data denali_socfpga_data = {
-+	.ecc_strength_avail = BIT(15) | BIT(8),
- 	.caps = DENALI_CAP_HW_ECC_FIXUP |
- 		DENALI_CAP_ECC_SIZE_512,
- };
-@@ -64,6 +66,7 @@ static int denali_dt_probe(struct platform_device *pdev)
- 	data = of_device_get_match_data(&pdev->dev);
- 	if (data) {
- 		denali->revision = data->revision;
-+		denali->ecc_strength_avail = data->ecc_strength_avail;
- 		denali->caps = data->caps;
- 	}
- 
-diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-index 5202a11..a1ee9f8 100644
---- a/drivers/mtd/nand/denali_pci.c
-+++ b/drivers/mtd/nand/denali_pci.c
-@@ -85,6 +85,7 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 		goto failed_remap_reg;
- 	}
- 
-+	denali->ecc_strength_avail = BIT(15) | BIT(8);
- 	denali->caps |= DENALI_CAP_ECC_SIZE_512;
- 
- 	ret = denali_init(denali);
++	for (i = 0; i < denali->max_banks; i++) {
++		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
++		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
++			(INTR__RST_COMP | INTR__TIME_OUT)))
++			cpu_relax();
++		if (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
++		      INTR__INT_ACT))
++			break;
++	}
++
++	dev_dbg(denali->dev, "%d chips connected\n", i);
++	denali->max_banks = i;
++
++	denali_clear_irq_all(denali);
++}
++
+ static void denali_hw_init(struct denali_nand_info *denali)
+ {
+ 	if (!denali->revision)
+@@ -979,7 +973,7 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	denali->bbtskipbytes = ioread32(denali->flash_reg +
+ 						SPARE_AREA_SKIP_BYTES);
+ 	detect_max_banks(denali);
+-	denali_nand_reset(denali);
++	denali_reset_banks(denali);
+ 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
+ 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
+ 			denali->flash_reg + CHIP_ENABLE_DONT_CARE);
 -- 
 2.7.4
