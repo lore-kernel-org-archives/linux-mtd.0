@@ -1,19 +1,29 @@
-Received: from mx0a-00010702.pphosted.com ([148.163.156.75]
- helo=mx0b-00010702.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1crTtC-00070P-Da
- for linux-mtd@lists.infradead.org; Fri, 24 Mar 2017 18:24:44 +0000
-From: Zach Brown <zach.brown@ni.com>
-To: <dwmw2@infradead.org>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <marek.vasut@gmail.com>, <richard@nod.at>, <cyrille.pitchen@atmel.com>,
- <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] UBI: add debugfs file for tracking PEB state
-Date: Fri, 24 Mar 2017 13:23:44 -0500
-Message-ID: <1490379824-1872-1-git-send-email-zach.brown@ni.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1crVb1-0002Cd-RF
+ for linux-mtd@lists.infradead.org; Fri, 24 Mar 2017 20:14:06 +0000
+Date: Fri, 24 Mar 2017 21:13:30 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, laurent.monat@idquantique.com,
+ thorsten.christiansson@idquantique.com, Enrico Jorns <ejo@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>
+Subject: Re: [RESEND PATCH v2 00/53] mtd: nand: denali: 2nd round of Denali
+ NAND IP patch bomb
+Message-ID: <20170324211330.0e463621@bbrezillon>
+In-Reply-To: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,184 +33,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Ben Shelton <ben.shelton@ni.com>
+Hi Masahiro,
 
-Add a file under debugfs to allow easy access to the erase count for
-each physical erase block on an UBI device.  This is useful when
-debugging data integrity issues with UBIFS on NAND flash devices.
+On Thu, 23 Mar 2017 05:06:59 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-Signed-off-by: Ben Shelton <ben.shelton@ni.com>
-Signed-off-by: Zach Brown <zach.brown@ni.com>
+> It took a couple months to update this series, but finally here is v2.
+> (v1: https://lkml.org/lkml/2016/11/26/144 )
+> 
+> This driver includes many problems.
+> 
+> One of the biggest one is a bunch of hard-coded parameters.  This IP
+> has many parameters that can be customized when a delivery RTL is
+> generated.  However, this driver was upstreamed by Intel, with
+> Intel parameters hard-coded.  Later, Altera added denali_dt.c to use
+> this driver for embedded boards, but they did not fix the code in
+> denali.c  So, this driver has never worked.  Even some DT bindings
+> actually turned out wrong.
+> 
+> There are more problems: [1] The driver just retrieves the OOB area as-is
+> whereas the controller uses syndrome page layout. [2] Many NAND chip
+> specific parameters are hard-coded in the driver. [3] ONFi devices are
+> not working  [4] It can not read Bad Block Marker
+> 
+> This patch series intends to solve those problems.
+> 
+> Since v1, here are more fixes/improvements:
+>  - Fix raw/oob callbacks for syndrome page layout
+>  - Implement setup_data_interface() callback
+>  - Fix/implement more commands for ONFi devices
+>  - Allow to skip the driver internal bounce buffer
+>  - Support PIO in case DMA is not supported
+>  - Switch from ->cmdfunc over to ->cmd_ctrl
+> 
+> 
+> Masahiro Yamada (53):
+>   mtd: nand: allow to set only one of ECC size and ECC strength from DT
+>   mtd: nand: use read_oob() instead of cmdfunc() for bad block check
+>   mtd: nand: denali: remove unused CONFIG option and macros
+>   mtd: nand: denali: remove redundant define of BANK(x)
+>   mtd: nand: denali: remove more unused struct members
+>   mtd: nand: denali: fix comment of denali_nand_info::flash_mem
+>   mtd: nand: denali: consolidate INTR_STATUS__* and INTR_EN__* macros
+>   mtd: nand: denali: introduce capability flag
+>   mtd: nand: denali: use int where no reason to use fixed width variable
+>   mtd: nand: denali: fix erased page checking
+>   mtd: nand: denali: fix bitflips calculation in handle_ecc()
+>   mtd: nand: denali: support HW_ECC_FIXUP capability
+>   mtd: nand: denali_dt: enable HW_ECC_FIXUP for Altera SOCFPGA variant
+>   mtd: nand: denali: support 64bit capable DMA engine
+>   mtd: nand: denali_dt: remove dma-mask DT property
+>   mtd: nand: denali_dt: use pdev instead of ofdev for platform_device
+>   mtd: nand: denali: allow to override revision number
+>   mtd: nand: denali: use nand_chip to hold frequently accessed data
+>   mtd: nand: denali: call nand_set_flash_node() to set DT node
+>   mtd: nand: denali: do not set mtd->name
+>   mtd: nand: denali: move multi device fixup code to a helper function
+>   mtd: nand: denali: simplify multi device fixup code
+>   mtd: nand: denali: set DEVICES_CONNECTED 1 if not set
+>   mtd: nand: denali: remove meaningless writes to read-only registers
+>   mtd: nand: denali: remove unnecessary writes to ECC_CORRECTION
+>   mtd: nand: denali: support 1024 byte ECC step size
+>   mtd: nand: denali: avoid hard-coding ecc.strength and ecc.bytes
+>   mtd: nand: denali: support "nand-ecc-strength" DT property
+>   mtd: nand: denali: remove Toshiba and Hynix specific fixup code
+>   mtd: nand: denali_dt: add compatible strings for UniPhier SoC variants
+>   mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
+>   mtd: nand: denali: do not propagate NAND_STATUS_FAIL to waitfunc()
+>   mtd: nand: denali: use BIT() and GENMASK() for register macros
+>   mtd: nand: denali: remove unneeded find_valid_banks()
+>   mtd: nand: denali: handle timing parameters by setup_data_interface()
+>   mtd: nand: denali: remove meaningless pipeline read-ahead operation
+>   mtd: nand: denali: rework interrupt handling
+>   mtd: nand: denali: fix NAND_CMD_STATUS handling
+>   mtd: nand: denali: fix NAND_CMD_PARAM handling
+>   mtd: nand: do not check R/B# for CMD_READID in nand_command(_lp)
+>   mtd: nand: do not check R/B# for CMD_SET_FEATURES in nand_command(_lp)
+>   mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
+>   mtd: nand: denali: fix bank reset function
+>   mtd: nand: denali: use interrupt instead of polling for bank reset
+>   mtd: nand: denali: propagate page to helpers via function argument
+>   mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
+>   mtd: nand: denali: use flag instead of register macro for direction
+>   mtd: nand: denali: fix raw and oob accessors for syndrome page layout
+>   mtd: nand: denali: support hardware-assisted erased page detection
+>   mtd: nand: allocate aligned buffers if NAND_OWN_BUFFERS is unset
+>   mtd: nand: denali: skip driver internal bounce buffer when possible
+>   mtd: nand: denali: use non-managed kmalloc() for DMA buffer
+>   mtd: nand: denali: enable bad block table scan
 
-v2:
-* If ubi_io_is_bad eraseblk_count_seq_show just returns the err.
-* if ubi->lookuptbl returns null, its no longer treated as an error
-  instead info for that block is not printeded
-* Removed check for UBI_MAX_ERASECOUNTER since it is impossible to hit
-* Removed block state from print, if a block is printed then it is good and if
-  it is not printed, then it is bad.
+Applied patch 1 to 9, 40 and 41. I'll see what else I can apply so that
+you don't have to re-post the remaining 42 patches, but I fear some of
+them won't apply correctly without patch 10 on which I had comments.
 
----
- drivers/mtd/ubi/debug.c | 126 +++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 125 insertions(+), 1 deletion(-)
+Thanks,
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index f101a49..5f2b65d 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -22,6 +22,7 @@
- #include <linux/debugfs.h>
- #include <linux/uaccess.h>
- #include <linux/module.h>
-+#include <linux/seq_file.h>
-
-
- /**
-@@ -386,7 +387,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
- 	return count;
- }
-
--/* File operations for all UBI debugfs files */
-+/* File operations for all UBI debugfs files except
-+ * detailed_erase_block_info
-+ */
- static const struct file_operations dfs_fops = {
- 	.read   = dfs_file_read,
- 	.write  = dfs_file_write,
-@@ -395,6 +398,121 @@ static const struct file_operations dfs_fops = {
- 	.owner  = THIS_MODULE,
- };
-
-+/* As long as the position is less then that total number of erase blocks,
-+ * we still have more to print.
-+ */
-+static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
-+{
-+	struct ubi_device *ubi = s->private;
-+
-+	if (*pos == 0)
-+		return SEQ_START_TOKEN;
-+
-+	if (*pos < ubi->peb_count)
-+		return pos;
-+
-+	return NULL;
-+}
-+
-+/* Since we are using the position as the iterator, we just need to check if we
-+ * are done and increment the position.
-+ */
-+static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
-+{
-+	struct ubi_device *ubi = s->private;
-+
-+	if (v == SEQ_START_TOKEN)
-+		return pos;
-+	(*pos)++;
-+
-+	if (*pos < ubi->peb_count)
-+		return pos;
-+
-+	return NULL;
-+}
-+
-+static void eraseblk_count_seq_stop(struct seq_file *s, void *v)
-+{
-+}
-+
-+static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
-+{
-+	struct ubi_device *ubi = s->private;
-+	struct ubi_wl_entry *wl;
-+	int *block_number = iter;
-+	int erase_count = -1;
-+	int err;
-+
-+	/* If this is the start, print a header */
-+	if (iter == SEQ_START_TOKEN) {
-+		seq_puts(s,
-+			 "physical_block_number\terase_count\tblock_status\tread_status\n");
-+		return 0;
-+	}
-+
-+	err = ubi_io_is_bad(ubi, *block_number);
-+	if (err)
-+		return err;
-+
-+	spin_lock(&ubi->wl_lock);
-+
-+	wl = ubi->lookuptbl[*block_number];
-+	if (wl)
-+		erase_count = wl->ec;
-+
-+	spin_unlock(&ubi->wl_lock);
-+
-+	if (!erase_count < 0)
-+		return 0;
-+
-+	seq_printf(s, "%-22d\t%-11d\n", *block_number, erase_count);
-+
-+	return 0;
-+}
-+
-+static const struct seq_operations eraseblk_count_seq_ops = {
-+	.start = eraseblk_count_seq_start,
-+	.next = eraseblk_count_seq_next,
-+	.stop = eraseblk_count_seq_stop,
-+	.show = eraseblk_count_seq_show
-+};
-+
-+static int eraseblk_count_open(struct inode *inode, struct file *f)
-+{
-+	struct seq_file *s;
-+	int err;
-+
-+	err = seq_open(f, &eraseblk_count_seq_ops);
-+	if (err)
-+		return err;
-+
-+	s = f->private_data;
-+	s->private = ubi_get_device((unsigned long)inode->i_private);
-+
-+	if (!s->private)
-+		return -ENODEV;
-+	else
-+		return 0;
-+}
-+
-+static int eraseblk_count_release(struct inode *inode, struct file *f)
-+{
-+	struct seq_file *s = f->private_data;
-+	struct ubi_device *ubi = s->private;
-+
-+	ubi_put_device(ubi);
-+
-+	return seq_release(inode, f);
-+}
-+
-+static const struct file_operations eraseblk_count_fops = {
-+	.owner = THIS_MODULE,
-+	.open = eraseblk_count_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = eraseblk_count_release,
-+};
-+
- /**
-  * ubi_debugfs_init_dev - initialize debugfs for an UBI device.
-  * @ubi: UBI device description object
-@@ -491,6 +609,12 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
- 		goto out_remove;
- 	d->dfs_power_cut_max = dent;
-
-+	fname = "detailed_erase_block_info";
-+	dent = debugfs_create_file(fname, S_IRUSR, d->dfs_dir, (void *)ubi_num,
-+				   &eraseblk_count_fops);
-+	if (IS_ERR_OR_NULL(dent))
-+		goto out_remove;
-+
- 	return 0;
-
- out_remove:
---
-2.7.4
+Boris
