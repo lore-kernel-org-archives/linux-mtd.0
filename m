@@ -1,28 +1,19 @@
-Received: from foss.arm.com ([217.140.101.70])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1crSig-0001tC-EI
- for linux-mtd@lists.infradead.org; Fri, 24 Mar 2017 17:09:48 +0000
-Subject: Re: [RESEND PATCH v2 52/53] mtd: nand: denali: use non-managed
- kmalloc() for DMA buffer
-To: yamada.masahiro@socionext.com, linux-mtd@lists.infradead.org
-References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
- <1490228282-10805-26-git-send-email-yamada.masahiro@socionext.com>
- <8fa877a7-c43a-76e7-2252-3463c8c3afcd@arm.com>
- <98e3485292cf45bf8c63547c3c1790c2@SOC-EX02V.e01.socionext.com>
-Cc: boris.brezillon@free-electrons.com, dwmw2@infradead.org,
- marek.vasut@gmail.com, computersforpeace@gmail.com,
- thorsten.christiansson@idquantique.com, laurent.monat@idquantique.com,
- dinguyen@kernel.org, artem.bityutskiy@linux.intel.com,
- grmoore@opensource.altera.com, ejo@pengutronix.de, chuanxiao.dong@intel.com,
- mhiramat@kernel.org, jaswinder.singh@linaro.org, robh@kernel.org,
- rmk+kernel@armlinux.org.uk, lars@metafoo.de
-From: Robin Murphy <robin.murphy@arm.com>
-Message-ID: <eb091d81-b60e-0a5a-aa34-2e4d09ad238d@arm.com>
-Date: Fri, 24 Mar 2017 17:09:20 +0000
+Received: from mx0a-00010702.pphosted.com ([148.163.156.75]
+ helo=mx0b-00010702.pphosted.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1crTtC-00070P-Da
+ for linux-mtd@lists.infradead.org; Fri, 24 Mar 2017 18:24:44 +0000
+From: Zach Brown <zach.brown@ni.com>
+To: <dwmw2@infradead.org>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <marek.vasut@gmail.com>, <richard@nod.at>, <cyrille.pitchen@atmel.com>,
+ <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] UBI: add debugfs file for tracking PEB state
+Date: Fri, 24 Mar 2017 13:23:44 -0500
+Message-ID: <1490379824-1872-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-In-Reply-To: <98e3485292cf45bf8c63547c3c1790c2@SOC-EX02V.e01.socionext.com>
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,52 +23,184 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24/03/17 01:41, yamada.masahiro@socionext.com wrote:
-> Hi Robin,
-> 
->> I still think the way the driver actually uses this buffer looks very
->> suspect - keeping it permanently mapped for bidirectional (AKA "I don't
->> know") streaming DMA across multiple operations doesn't add up. If the
->> device might access it at any time (or the driver simply doesn't want to
->> have to care) it should be a coherent allocation. Otherwise, it should
->> just be mapped/unmapped with the appropriate direction around each
->> operation.
-> 
-> This buffer is not permanently mapped for bidirectional any more.
-> 
-> I fixed it in 51/53:
-> http://patchwork.ozlabs.org/patch/742411/
-> 
-> When possible, the read/write callbacks
-> directly calls dma_map_single() for the buffer
-> passed from the core framework.
-> (either DMA_TO_DEVICE or DMA_FROM_DEVICE)
-> 
-> This will bypass the memcpy() to/from the internal buffer.
-> 
-> 
-> 
-> This driver internal buffer is still needed for raw read/write.
-> The Denali IP uses syndrome page layout.
-> So, the raw accessors must arrange the payload/ECC data layout.
-> 
-> This problem is addressed by 48/53:
-> http://patchwork.ozlabs.org/patch/742416/
-> 
-> 
-> I also examined the possibility for coherent allocation.
-> Even if I use dma_alloc_coherent, I need another bounce buffer anyway
-> for the syndrome page shuffling.  So, this way seems less efficient.
+From: Ben Shelton <ben.shelton@ni.com>
 
-Ah, so it's only a visibility issue at my end, then. Great stuff!
+Add a file under debugfs to allow easy access to the erase count for
+each physical erase block on an UBI device.  This is useful when
+debugging data integrity issues with UBIFS on NAND flash devices.
 
-(on balance, I'm fine with not being sent the other 52 patches just for
-the sake of this one!)
+Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+Signed-off-by: Zach Brown <zach.brown@ni.com>
 
-Thanks,
-Robin.
+v2:
+* If ubi_io_is_bad eraseblk_count_seq_show just returns the err.
+* if ubi->lookuptbl returns null, its no longer treated as an error
+  instead info for that block is not printeded
+* Removed check for UBI_MAX_ERASECOUNTER since it is impossible to hit
+* Removed block state from print, if a block is printed then it is good and if
+  it is not printed, then it is bad.
 
-> 
-> 
-> Masahiro
-> 
+---
+ drivers/mtd/ubi/debug.c | 126 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 125 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index f101a49..5f2b65d 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -22,6 +22,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/uaccess.h>
+ #include <linux/module.h>
++#include <linux/seq_file.h>
+
+
+ /**
+@@ -386,7 +387,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+ 	return count;
+ }
+
+-/* File operations for all UBI debugfs files */
++/* File operations for all UBI debugfs files except
++ * detailed_erase_block_info
++ */
+ static const struct file_operations dfs_fops = {
+ 	.read   = dfs_file_read,
+ 	.write  = dfs_file_write,
+@@ -395,6 +398,121 @@ static const struct file_operations dfs_fops = {
+ 	.owner  = THIS_MODULE,
+ };
+
++/* As long as the position is less then that total number of erase blocks,
++ * we still have more to print.
++ */
++static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
++
++	if (*pos == 0)
++		return SEQ_START_TOKEN;
++
++	if (*pos < ubi->peb_count)
++		return pos;
++
++	return NULL;
++}
++
++/* Since we are using the position as the iterator, we just need to check if we
++ * are done and increment the position.
++ */
++static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
++
++	if (v == SEQ_START_TOKEN)
++		return pos;
++	(*pos)++;
++
++	if (*pos < ubi->peb_count)
++		return pos;
++
++	return NULL;
++}
++
++static void eraseblk_count_seq_stop(struct seq_file *s, void *v)
++{
++}
++
++static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
++{
++	struct ubi_device *ubi = s->private;
++	struct ubi_wl_entry *wl;
++	int *block_number = iter;
++	int erase_count = -1;
++	int err;
++
++	/* If this is the start, print a header */
++	if (iter == SEQ_START_TOKEN) {
++		seq_puts(s,
++			 "physical_block_number\terase_count\tblock_status\tread_status\n");
++		return 0;
++	}
++
++	err = ubi_io_is_bad(ubi, *block_number);
++	if (err)
++		return err;
++
++	spin_lock(&ubi->wl_lock);
++
++	wl = ubi->lookuptbl[*block_number];
++	if (wl)
++		erase_count = wl->ec;
++
++	spin_unlock(&ubi->wl_lock);
++
++	if (!erase_count < 0)
++		return 0;
++
++	seq_printf(s, "%-22d\t%-11d\n", *block_number, erase_count);
++
++	return 0;
++}
++
++static const struct seq_operations eraseblk_count_seq_ops = {
++	.start = eraseblk_count_seq_start,
++	.next = eraseblk_count_seq_next,
++	.stop = eraseblk_count_seq_stop,
++	.show = eraseblk_count_seq_show
++};
++
++static int eraseblk_count_open(struct inode *inode, struct file *f)
++{
++	struct seq_file *s;
++	int err;
++
++	err = seq_open(f, &eraseblk_count_seq_ops);
++	if (err)
++		return err;
++
++	s = f->private_data;
++	s->private = ubi_get_device((unsigned long)inode->i_private);
++
++	if (!s->private)
++		return -ENODEV;
++	else
++		return 0;
++}
++
++static int eraseblk_count_release(struct inode *inode, struct file *f)
++{
++	struct seq_file *s = f->private_data;
++	struct ubi_device *ubi = s->private;
++
++	ubi_put_device(ubi);
++
++	return seq_release(inode, f);
++}
++
++static const struct file_operations eraseblk_count_fops = {
++	.owner = THIS_MODULE,
++	.open = eraseblk_count_open,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = eraseblk_count_release,
++};
++
+ /**
+  * ubi_debugfs_init_dev - initialize debugfs for an UBI device.
+  * @ubi: UBI device description object
+@@ -491,6 +609,12 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 		goto out_remove;
+ 	d->dfs_power_cut_max = dent;
+
++	fname = "detailed_erase_block_info";
++	dent = debugfs_create_file(fname, S_IRUSR, d->dfs_dir, (void *)ubi_num,
++				   &eraseblk_count_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++
+ 	return 0;
+
+ out_remove:
+--
+2.7.4
