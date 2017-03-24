@@ -1,29 +1,28 @@
-Received: from mail-ot0-f195.google.com ([74.125.82.195])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1crRvr-00017C-QK
- for linux-mtd@lists.infradead.org; Fri, 24 Mar 2017 16:19:21 +0000
-Received: by mail-ot0-f195.google.com with SMTP id y88so800490ota.1
- for <linux-mtd@lists.infradead.org>; Fri, 24 Mar 2017 09:18:59 -0700 (PDT)
-Date: Fri, 24 Mar 2017 11:18:57 -0500
-From: Rob Herring <robh@kernel.org>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Kumar Gala <galak@codeaurora.org>
-Subject: Re: [PATCH 1/5] dt-bindings: mtd: document new "on-die" nand-ecc-mode
-Message-ID: <20170324161857.vojqlt2l2u7pwbqm@rob-hp-laptop>
-References: <1490092686-16509-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1490092686-16509-2-git-send-email-thomas.petazzoni@free-electrons.com>
+Received: from foss.arm.com ([217.140.101.70])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1crSig-0001tC-EI
+ for linux-mtd@lists.infradead.org; Fri, 24 Mar 2017 17:09:48 +0000
+Subject: Re: [RESEND PATCH v2 52/53] mtd: nand: denali: use non-managed
+ kmalloc() for DMA buffer
+To: yamada.masahiro@socionext.com, linux-mtd@lists.infradead.org
+References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490228282-10805-26-git-send-email-yamada.masahiro@socionext.com>
+ <8fa877a7-c43a-76e7-2252-3463c8c3afcd@arm.com>
+ <98e3485292cf45bf8c63547c3c1790c2@SOC-EX02V.e01.socionext.com>
+Cc: boris.brezillon@free-electrons.com, dwmw2@infradead.org,
+ marek.vasut@gmail.com, computersforpeace@gmail.com,
+ thorsten.christiansson@idquantique.com, laurent.monat@idquantique.com,
+ dinguyen@kernel.org, artem.bityutskiy@linux.intel.com,
+ grmoore@opensource.altera.com, ejo@pengutronix.de, chuanxiao.dong@intel.com,
+ mhiramat@kernel.org, jaswinder.singh@linaro.org, robh@kernel.org,
+ rmk+kernel@armlinux.org.uk, lars@metafoo.de
+From: Robin Murphy <robin.murphy@arm.com>
+Message-ID: <eb091d81-b60e-0a5a-aa34-2e4d09ad238d@arm.com>
+Date: Fri, 24 Mar 2017 17:09:20 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1490092686-16509-2-git-send-email-thomas.petazzoni@free-electrons.com>
+In-Reply-To: <98e3485292cf45bf8c63547c3c1790c2@SOC-EX02V.e01.socionext.com>
+Content-Type: text/plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,15 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 21, 2017 at 11:38:02AM +0100, Thomas Petazzoni wrote:
-> A number of NAND chips support a feature called on-die ECC, where the
-> NAND chip itself is capable of doing error detection and correction. The
-> new "on-die" value for nand-ecc-mode indicates that we want this
-> functionality to be used.
+On 24/03/17 01:41, yamada.masahiro@socionext.com wrote:
+> Hi Robin,
 > 
-> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-> ---
->  Documentation/devicetree/bindings/mtd/nand.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>> I still think the way the driver actually uses this buffer looks very
+>> suspect - keeping it permanently mapped for bidirectional (AKA "I don't
+>> know") streaming DMA across multiple operations doesn't add up. If the
+>> device might access it at any time (or the driver simply doesn't want to
+>> have to care) it should be a coherent allocation. Otherwise, it should
+>> just be mapped/unmapped with the appropriate direction around each
+>> operation.
+> 
+> This buffer is not permanently mapped for bidirectional any more.
+> 
+> I fixed it in 51/53:
+> http://patchwork.ozlabs.org/patch/742411/
+> 
+> When possible, the read/write callbacks
+> directly calls dma_map_single() for the buffer
+> passed from the core framework.
+> (either DMA_TO_DEVICE or DMA_FROM_DEVICE)
+> 
+> This will bypass the memcpy() to/from the internal buffer.
+> 
+> 
+> 
+> This driver internal buffer is still needed for raw read/write.
+> The Denali IP uses syndrome page layout.
+> So, the raw accessors must arrange the payload/ECC data layout.
+> 
+> This problem is addressed by 48/53:
+> http://patchwork.ozlabs.org/patch/742416/
+> 
+> 
+> I also examined the possibility for coherent allocation.
+> Even if I use dma_alloc_coherent, I need another bounce buffer anyway
+> for the syndrome page shuffling.  So, this way seems less efficient.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Ah, so it's only a visibility issue at my end, then. Great stuff!
+
+(on balance, I'm fine with not being sent the other 52 patches just for
+the sake of this one!)
+
+Thanks,
+Robin.
+
+> 
+> 
+> Masahiro
+> 
