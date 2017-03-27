@@ -1,29 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1csWcq-0005Ip-I4
- for linux-mtd@lists.infradead.org; Mon, 27 Mar 2017 15:32:10 +0000
-Date: Mon, 27 Mar 2017 17:31:46 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, laurent.monat@idquantique.com,
- thorsten.christiansson@idquantique.com, Enrico Jorns <ejo@pengutronix.de>,
- Jason Roberts <jason.e.roberts@intel.com>, Artem Bityutskiy
- <artem.bityutskiy@linux.intel.com>, Dinh Nguyen <dinguyen@kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, Graham Moore
- <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
- <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH v2 20/53] mtd: nand: denali: do not set mtd->name
-Message-ID: <20170327173146.655f090f@bbrezillon>
-In-Reply-To: <1490191680-14481-21-git-send-email-yamada.masahiro@socionext.com>
-References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
- <1490191680-14481-21-git-send-email-yamada.masahiro@socionext.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-wr0-f193.google.com ([209.85.128.193])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1csX9g-0002uW-VO
+ for linux-mtd@lists.infradead.org; Mon, 27 Mar 2017 16:06:37 +0000
+Received: by mail-wr0-f193.google.com with SMTP id w43so11729460wrb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Mar 2017 09:05:43 -0700 (PDT)
+From: Jan Glauber <jglauber@cavium.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-mtd@lists.infradead.org,
+	Jan Glauber <jglauber@cavium.com>
+Subject: [RFC PATCH 0/2] Cavium NAND flash driver
+Date: Mon, 27 Mar 2017 18:05:22 +0200
+Message-Id: <20170327160524.29019-1-jglauber@cavium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,33 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 22 Mar 2017 23:07:27 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+This series adds a driver for the nand flash controller as found on Cavium's
+ARM64 SOCs. For details about the controller see description of patch #2.
 
-> This will be filled by nand_scan_ident() later.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
-> Changes in v2: None
-> 
->  drivers/mtd/nand/denali.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 3badb1d..1706975 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -1495,7 +1495,6 @@ int denali_init(struct denali_nand_info *denali)
->  
->  	/* now that our ISR is registered, we can enable interrupts */
->  	denali_set_intr_modes(denali, true);
-> -	mtd->name = "denali-nand";
+The nand flash chip on the board I used for testing is:
 
-Are you sure this is safe to do that? When mtd->name is NULL, the core
-takes the parent name, and in the denali_dt case it's not "denali-nand",
-which means you're breaking mtdparts compat.
+[   12.775877] nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
+[   12.782242] nand: Macronix MX30LF1GE8AB
+[   12.786072] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
 
->  	nand_set_flash_node(chip, denali->dev->of_node);
->  
->  	/* register the driver with the NAND core subsystem */
+This chip has internal on-die ECC (which cannot be disabled). Data
+sheet can be found here:
+http://www.macronix.com/en-us/products/NAND-Flash/SLC-NAND-Flash/Pages/spec.aspx?p=MX30LF1GE8AB
+
+I've tested with ecc-mode="none" but will use the new ecc-mode "on-die" when
+it is available (already described it in DTS).
+
+Passed tests:
+- mtd-utils nandtest
+- mtd kernel test modules (minus oob writetest)
+- ubifs works :)
+
+Known issues:
+- OOB write is broken (read works)
+- only one nand chip is supported currently
+- 16 bit bus support probably broken
+
+Feedback welcome!
+
+thanks,
+Jan
+
+---
+
+Jan Glauber (2):
+  dt-bindings: mtd: Add Cavium SOCs NAND bindings
+  nand: cavium: Nand flash controller for Cavium ARM64 SOCs
+
+ .../devicetree/bindings/mtd/cavium_nand.txt        |   32 +
+ drivers/mtd/nand/Kconfig                           |    6 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/cavium_nand.c                     | 1160 ++++++++++++++++++++
+ drivers/mtd/nand/cavium_nand.h                     |  231 ++++
+ 5 files changed, 1430 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cavium_nand.txt
+ create mode 100644 drivers/mtd/nand/cavium_nand.c
+ create mode 100644 drivers/mtd/nand/cavium_nand.h
+
+-- 
+2.9.0.rc0.21.g7777322
