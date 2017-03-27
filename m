@@ -1,23 +1,29 @@
-Received: from mail-wr0-f193.google.com ([209.85.128.193])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1csX9g-0002w2-UX
- for linux-mtd@lists.infradead.org; Mon, 27 Mar 2017 16:06:42 +0000
-Received: by mail-wr0-f193.google.com with SMTP id u1so14634641wra.3
- for <linux-mtd@lists.infradead.org>; Mon, 27 Mar 2017 09:05:44 -0700 (PDT)
-From: Jan Glauber <jglauber@cavium.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: linux-mtd@lists.infradead.org, Jan Glauber <jglauber@cavium.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- devicetree@vger.kernel.org
-Subject: [RFC PATCH 1/2] dt-bindings: mtd: Add Cavium SOCs NAND bindings
-Date: Mon, 27 Mar 2017 18:05:23 +0200
-Message-Id: <20170327160524.29019-2-jglauber@cavium.com>
-In-Reply-To: <20170327160524.29019-1-jglauber@cavium.com>
-References: <20170327160524.29019-1-jglauber@cavium.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1csXHC-0006Sg-0y
+ for linux-mtd@lists.infradead.org; Mon, 27 Mar 2017 16:13:52 +0000
+Date: Mon, 27 Mar 2017 18:13:26 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, laurent.monat@idquantique.com,
+ thorsten.christiansson@idquantique.com, Enrico Jorns <ejo@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
+ linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: Re: [RESEND PATCH v2 21/53] mtd: nand: denali: move multi device
+ fixup code to a helper function
+Message-ID: <20170327181326.1c6596fc@bbrezillon>
+In-Reply-To: <1490213273-8571-22-git-send-email-yamada.masahiro@socionext.com>
+References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490213273-8571-22-git-send-email-yamada.masahiro@socionext.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +33,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add device tree binding description for Cavium SOC nand flash controller.
+On Thu, 23 Mar 2017 05:07:20 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-CC: Rob Herring <robh+dt@kernel.org>
-CC: Mark Rutland <mark.rutland@arm.com>
-CC: devicetree@vger.kernel.org
+> Collect multi NAND fixups into a helper function instead of
+> scattering them in denali_init().
+> 
+> I am rewording the comment block to clearly explain what is called
+> "multi device".
 
-Signed-off-by: Jan Glauber <jglauber@cavium.com>
----
- .../devicetree/bindings/mtd/cavium_nand.txt        | 32 ++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/cavium_nand.txt
+I will take the patch (and the next one too), but I might reconsider
+supporting this kind of thing (2 x 8bits devices connected on a 16bits
+bus) in the core.
 
-diff --git a/Documentation/devicetree/bindings/mtd/cavium_nand.txt b/Documentation/devicetree/bindings/mtd/cavium_nand.txt
-new file mode 100644
-index 0000000..4698d1f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/cavium_nand.txt
-@@ -0,0 +1,32 @@
-+* Cavium NAND controller
-+
-+Required properties:
-+
-+- compatible:		should be "cavium,cn8xxx-nand"
-+- reg:			PCI devfn
-+- clocks:		must contain system clock
-+- #address-cells:	<1>
-+- #size-cells:		<0>
-+
-+The nand flash controller may contain up to 8 subnodes representing
-+NAND flash chips. Their properties are as follows.
-+
-+Required properties:
-+- compatible:		should be "cavium,nandcs"
-+- reg:			a single integer representing the chip-select number
-+- nand-ecc-mode:	see nand.txt
-+
-+Example:
-+
-+nfc: nand@b,0 {
-+	compatible = "cavium,cn8xxx-nand";
-+	reg = <0x5800 0 0 0 0>;
-+	clocks = <&sclk>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	nand@1 {
-+		compatible = "cavium,nandcs";
-+		reg = <1>;
-+		nand-ecc-mode = "on-die";
-+};
--- 
-2.9.0.rc0.21.g7777322
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
+> 
+> Changes in v2:
+>   - Reword the comment block for clarification
+> 
+>  drivers/mtd/nand/denali.c | 54 +++++++++++++++++++++++++++++------------------
+>  1 file changed, 33 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+> index 1706975..4e63d57 100644
+> --- a/drivers/mtd/nand/denali.c
+> +++ b/drivers/mtd/nand/denali.c
+> @@ -1458,6 +1458,36 @@ static void denali_drv_init(struct denali_nand_info *denali)
+>  	denali->irq_status = 0;
+>  }
+>  
+> +static void denali_multidev_fixup(struct denali_nand_info *denali)
+> +{
+> +	struct nand_chip *chip = &denali->nand;
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +
+> +	/*
+> +	 * Support for multi device:
+> +	 * When the IP configuration is x16 capable and two x8 chips are
+> +	 * connected in parallel, DEVICES_CONNECTED should be set to 2.
+> +	 * In this case, the core framework knows nothing about this fact,
+> +	 * so we should tell it the _logical_ pagesize and anything necessary.
+> +	 */
+> +	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
+> +
+> +	mtd->size <<= denali->devnum - 1;
+> +	mtd->erasesize <<= denali->devnum - 1;
+> +	mtd->writesize <<= denali->devnum - 1;
+> +	mtd->oobsize <<= denali->devnum - 1;
+> +	chip->chipsize <<= denali->devnum - 1;
+> +	chip->page_shift += denali->devnum - 1;
+> +	chip->phys_erase_shift += denali->devnum - 1;
+> +	chip->bbt_erase_shift += denali->devnum - 1;
+> +	chip->chip_shift += denali->devnum - 1;
+> +	chip->pagemask <<= denali->devnum - 1;
+> +	chip->ecc.size *= denali->devnum;
+> +	chip->ecc.bytes *= denali->devnum;
+> +	chip->ecc.strength *= denali->devnum;
+> +	denali->bbtskipbytes *= denali->devnum;
+> +}
+> +
+>  int denali_init(struct denali_nand_info *denali)
+>  {
+>  	struct nand_chip *chip = &denali->nand;
+> @@ -1540,24 +1570,6 @@ int denali_init(struct denali_nand_info *denali)
+>  	}
+>  
+>  	/*
+> -	 * support for multi nand
+> -	 * MTD known nothing about multi nand, so we should tell it
+> -	 * the real pagesize and anything necessery
+> -	 */
+> -	denali->devnum = ioread32(denali->flash_reg + DEVICES_CONNECTED);
+> -	chip->chipsize <<= denali->devnum - 1;
+> -	chip->page_shift += denali->devnum - 1;
+> -	chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
+> -	chip->bbt_erase_shift += denali->devnum - 1;
+> -	chip->phys_erase_shift = chip->bbt_erase_shift;
+> -	chip->chip_shift += denali->devnum - 1;
+> -	mtd->writesize <<= denali->devnum - 1;
+> -	mtd->oobsize <<= denali->devnum - 1;
+> -	mtd->erasesize <<= denali->devnum - 1;
+> -	mtd->size = chip->numchips * chip->chipsize;
+> -	denali->bbtskipbytes *= denali->devnum;
+> -
+> -	/*
+>  	 * second stage of the NAND scan
+>  	 * this stage requires information regarding ECC and
+>  	 * bad block management.
+> @@ -1600,11 +1612,9 @@ int denali_init(struct denali_nand_info *denali)
+>  	}
+>  
+>  	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
+> -	chip->ecc.bytes *= denali->devnum;
+> -	chip->ecc.strength *= denali->devnum;
+>  
+>  	/* override the default read operations */
+> -	chip->ecc.size = ECC_SECTOR_SIZE * denali->devnum;
+> +	chip->ecc.size = ECC_SECTOR_SIZE;
+>  	chip->ecc.read_page = denali_read_page;
+>  	chip->ecc.read_page_raw = denali_read_page_raw;
+>  	chip->ecc.write_page = denali_write_page;
+> @@ -1613,6 +1623,8 @@ int denali_init(struct denali_nand_info *denali)
+>  	chip->ecc.write_oob = denali_write_oob;
+>  	chip->erase = denali_erase;
+>  
+> +	denali_multidev_fixup(denali);
+> +
+>  	ret = nand_scan_tail(mtd);
+>  	if (ret)
+>  		goto failed_req_irq;
