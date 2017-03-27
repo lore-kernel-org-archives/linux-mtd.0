@@ -1,20 +1,28 @@
-Received: from mail-lf0-x22a.google.com ([2a00:1450:4010:c07::22a])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cs7HO-0007On-2K
- for linux-mtd@lists.infradead.org; Sun, 26 Mar 2017 12:28:19 +0000
-Received: by mail-lf0-x22a.google.com with SMTP id h125so9904037lfe.0
- for <linux-mtd@lists.infradead.org>; Sun, 26 Mar 2017 05:27:56 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org,
- Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH] mtd: physmap_of: really fix the physmap add-ons
-Date: Sun, 26 Mar 2017 14:27:25 +0200
-Message-Id: <20170326122725.5594-1-linus.walleij@linaro.org>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1csPaa-00059q-DS
+ for linux-mtd@lists.infradead.org; Mon, 27 Mar 2017 08:01:22 +0000
+Date: Mon, 27 Mar 2017 10:00:39 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>, thorsten.christiansson@idquantique.com,
+ laurent.monat@idquantique.com, Dinh Nguyen <dinguyen@kernel.org>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>, Graham Moore
+ <grmoore@opensource.altera.com>, Enrico Jorns <ejo@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring
+ <robh@kernel.org>
+Subject: Re: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+Message-ID: <20170327100039.480b8d8d@bbrezillon>
+In-Reply-To: <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
+References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,80 +32,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current way of building the of_physmap add-ons result in just
-the add-on being in the object code, and not the actual core
-implementation and regress the Gemini and Versatile.
+Hi Masahiro,
 
-There is no way around exporting these functions. If they are
-built as modules, they will become modules with exported functions,
-if they are builtins they will become builtins.
+On Thu, 23 Mar 2017 09:17:59 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-Fixes: 4f04f68e1598 ("mtd: physmap_of: fixup gemini/versatile dependencies")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-The previous attempts to bake a single module from several *optional*
-pieces doesn't play well with tristate, and if there is a way to
-achieve that except making everything an #ifdef in the same file,
-I sure haven't figured it out. I guess #include "physmap_addon.c"
-directly into the C file would work but ugh that is ugly.
----
- drivers/mtd/maps/Makefile               | 8 ++------
- drivers/mtd/maps/physmap_of_gemini.c    | 2 ++
- drivers/mtd/maps/physmap_of_versatile.c | 2 ++
- 3 files changed, 6 insertions(+), 6 deletions(-)
+> Commit 66507c7bc889 ("mtd: nand: Add support to use nand_base poi
+> databuf as bounce buffer") fixed the issue that drivers can be
+> passed with a kmap()'d buffer.  This addressed the use_bufpoi = 0
+> case.
+> 
+> When use_bufpoi = 1, chip->buffers->databuf is used.  The databuf
+> allocated by nand_scan_tail() is not suitable for DMA due to the
+> offset, sizeof(*chip->buffers).
 
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index aef1846b4de2..608bdd37ac99 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -17,12 +17,8 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
- obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
- obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
- obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
--ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
--physmap_of-objs += physmap_of_versatile.o
--endif
--ifdef CONFIG_MTD_PHYSMAP_OF_GEMINI
--physmap_of-objs += physmap_of_gemini.o
--endif
-+obj-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
-+obj-$(CONFIG_MTD_PHYSMAP_OF_GEMINI) += physmap_of_gemini.o
- obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
- obj-$(CONFIG_MTD_PISMO)		+= pismo.o
- obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
-diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
-index 9d371cd728ea..616f162c4da1 100644
---- a/drivers/mtd/maps/physmap_of_gemini.c
-+++ b/drivers/mtd/maps/physmap_of_gemini.c
-@@ -6,6 +6,7 @@
-  * detect and set it up when booting on this platform.
-  */
- #include <linux/export.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/mtd/map.h>
-@@ -115,3 +116,4 @@ int of_flash_probe_gemini(struct platform_device *pdev,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(of_flash_probe_gemini);
-diff --git a/drivers/mtd/maps/physmap_of_versatile.c b/drivers/mtd/maps/physmap_of_versatile.c
-index 8c6ccded9be8..0583876bc053 100644
---- a/drivers/mtd/maps/physmap_of_versatile.c
-+++ b/drivers/mtd/maps/physmap_of_versatile.c
-@@ -21,6 +21,7 @@
-  */
- #include <linux/export.h>
- #include <linux/io.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_device.h>
-@@ -252,3 +253,4 @@ int of_flash_probe_versatile(struct platform_device *pdev,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(of_flash_probe_versatile);
--- 
-2.9.3
+As said earlier, I'm fine with the patch content, but I'm not sure
+about your explanation. Alignment requirements are DMA controller
+dependent so you're not exactly fixing a bug for all NAND controller
+drivers, just those that require >4 bytes alignment.
+
+Regarding the cache line alignment issue, in this case it shouldn't be
+a problem, because the driver and the core shouldn't touch the
+chip->buffers object during a DMA transfer, so dma_map/unmap_single()
+should work fine (they may flush/invalidate one cache line entry that
+contains non-payload data, but that's not a problem as long as nothing
+is modified during the DMA transfer).
+
+> 
+> So, drivers using DMA are very likely to end up with setting the
+> NAND_OWN_BUFFERS flag and allocate buffers by themselves.  Drivers
+> tend to use devm_k*alloc to simplify the probe failure path, but
+> devm_k*alloc() does not return a cache line aligned buffer.
+
+Oh, I didn't know that. I had a closer look at the code, and indeed,
+devm_kmalloc() does not guarantee any alignment.
+
+> 
+> If used, it could violate the DMA-API requirement stated in
+> Documentation/DMA-API.txt:
+>   Warnings:  Memory coherency operates at a granularity called the
+>   cache line width.  In order for memory mapped by this API to
+>   operate correctly, the mapped region must begin exactly on a cache
+>   line boundary and end exactly on one (to prevent two separately
+>   mapped regions from sharing a single cache line).
+> 
+> To sum up, NAND_OWN_BUFFERS is not very convenient for drivers.
+> nand_scan_tail() can give a separate buffer for each of ecccalc,
+> ecccode, databuf.  It is guaranteed kmalloc'ed memory is aligned
+> with ARCH_DMA_MINALIGN.
+
+Maybe I'm wrong, but AFAIU, kmalloc&co do not guarantee cache line
+alignment for small buffers (< cache line), so even kmalloc can return
+a buffer that is not cache line aligned.
+This being said, we should be good because most NAND controllers are
+only manipulating the page buffer (->databuf) which is large enough to
+be cache line aligned.
+
+Anyway, I'm not discussing the need for this patch, just the reasons we
+need it ;-).
+
+To me, it's more that we want to support as many cases as possible, no
+matter the DMA controller requirements, and allocating each buffer
+independently allows us to do that for almost no overhead.
+
+How about simplifying the commit message to only focus on what this
+patch is really fixing/improving?
+
+"
+Some NAND controllers are using DMA engine requiring a specific buffer
+alignment. The core provides no guarantee on the nand_buffers pointers,
+which forces some drivers to allocate their own buffers and pass the
+NAND_OWN_BUFFERS flag.
+
+Rework the nand_buffers allocation logic to allocate each buffer
+independently. This should make most NAND controllers/DMA engine
+happy, and allow us to get rid of these custom buf allocation in NAND
+controller drivers.
+"
+
+> This is enough for most drivers because
+> it is rare that DMA engines require larger alignment than CPU's
+> cache line.
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
+> 
+> Changes in v2:
+>   - Newly added
+> 
+>  drivers/mtd/nand/nand_base.c | 34 +++++++++++++++++++++++++++-------
+>  1 file changed, 27 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index e13f959..6fc0422 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4614,13 +4614,25 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  	}
+>  
+>  	if (!(chip->options & NAND_OWN_BUFFERS)) {
+> -		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
+> -				+ mtd->oobsize * 3, GFP_KERNEL);
+> +		nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
+>  		if (!nbuf)
+>  			return -ENOMEM;
+> -		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
+> -		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
+> -		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
+> +		nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
+> +		if (!nbuf->ecccalc) {
+> +			ret = -EINVAL;
+> +			goto err_free;
+> +		}
+> +		nbuf->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
+> +		if (!nbuf->ecccode) {
+> +			ret = -EINVAL;
+> +			goto err_free;
+> +		}
+> +		nbuf->databuf = kmalloc(mtd->writesize + mtd->oobsize,
+> +					GFP_KERNEL);
+> +		if (!nbuf->databuf) {
+> +			ret = -EINVAL;
+> +			goto err_free;
+> +		}
+>  
+>  		chip->buffers = nbuf;
+>  	} else {
+> @@ -4863,8 +4875,12 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  	/* Build bad block table */
+>  	return chip->scan_bbt(mtd);
+>  err_free:
+> -	if (!(chip->options & NAND_OWN_BUFFERS))
+> +	if (!(chip->options & NAND_OWN_BUFFERS)) {
+> +		kfree(chip->buffers->databuf);
+> +		kfree(chip->buffers->ecccode);
+> +		kfree(chip->buffers->ecccalc);
+>  		kfree(chip->buffers);
+> +	}
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(nand_scan_tail);
+> @@ -4915,8 +4931,12 @@ void nand_cleanup(struct nand_chip *chip)
+>  
+>  	/* Free bad block table memory */
+>  	kfree(chip->bbt);
+> -	if (!(chip->options & NAND_OWN_BUFFERS))
+> +	if (!(chip->options & NAND_OWN_BUFFERS)) {
+> +		kfree(chip->buffers->databuf);
+> +		kfree(chip->buffers->ecccode);
+> +		kfree(chip->buffers->ecccalc);
+>  		kfree(chip->buffers);
+> +	}
+>  
+>  	/* Free bad block descriptor memory */
+>  	if (chip->badblock_pattern && chip->badblock_pattern->options
