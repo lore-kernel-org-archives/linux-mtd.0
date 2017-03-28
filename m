@@ -1,29 +1,22 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from secvs02.rockwellcollins.com ([205.175.225.241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1csq3M-0001c7-Gw
- for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 12:16:50 +0000
-Received: by mail-wr0-x242.google.com with SMTP id p52so19217379wrc.2
- for <linux-mtd@lists.infradead.org>; Tue, 28 Mar 2017 05:16:25 -0700 (PDT)
-Date: Tue, 28 Mar 2017 14:16:21 +0200
-From: Ralph Sennhauser <ralph.sennhauser@gmail.com>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
- linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- regressions@leemhuis.info, Richard Weinberger <richard@nod.at>, Artem
- Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [REGRESSION 4.11] Commit d8514d8edb5b ("ovl: copy up regular
- file using O_TMPFILE") breaks ubifs
-Message-ID: <20170328141621.6bb2d639@gmail.com>
-In-Reply-To: <CAOQ4uxiC=RXPwSy7NGt+Ri=Eie4-_WsUPk7Sy-sh9RdrGQuesw@mail.gmail.com>
-References: <20170328100107.25095af6@gmail.com>
- <CAOQ4uxisw5vWYsdMTNemw=MqNyS2nxfAUkg+UfoGmbE3-he1Ug@mail.gmail.com>
- <20170328124545.3c4b87ff@gmail.com>
- <CAOQ4uxgNfuLN93owdCUJ=9VcU4DKGVEKkEGT7siiem8quVwCsQ@mail.gmail.com>
- <20170328132818.05871b73@gmail.com>
- <CAOQ4uxiC=RXPwSy7NGt+Ri=Eie4-_WsUPk7Sy-sh9RdrGQuesw@mail.gmail.com>
+ id 1csrdj-0008DV-St
+ for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 13:58:31 +0000
+Received: by mail-it0-f72.google.com with SMTP id 133so15173480itu.17
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Mar 2017 06:58:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <c9b139cc-7bf0-836d-69cf-4889a6c35ec2@nod.at>
+References: <CADFuHZ6xb=M_zRkktnq2b8QBOhq-WDsqgzViPHU1g8Gj9M3E-g@mail.gmail.com>
+ <CAFLxGvx6S8V7c8YYR2-G7+hDDcRi-0Cnk+EWeWWN9i2oy-DVvQ@mail.gmail.com>
+ <CADFuHZ54cG32S1-3PA5q_5P1od1rBa5=3YeB1jLhB+Jzm2f0Ng@mail.gmail.com>
+ <c9b139cc-7bf0-836d-69cf-4889a6c35ec2@nod.at>
+From: Ronak Desai <ronak.desai@rockwellcollins.com>
+Date: Tue, 28 Mar 2017 08:58:01 -0500
+Message-ID: <CADFuHZ6oRRKFnbvJqQDywaLO=P=WR+q33AAve=y5AmdVkeUKPQ@mail.gmail.com>
+Subject: Re: Regarding UBI fastmap data CRC failure
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,47 +26,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 28 Mar 2017 08:08:51 -0400
-Amir Goldstein <amir73il@gmail.com> wrote:
+On Wed, Mar 22, 2017 at 5:49 PM, Richard Weinberger <richard@nod.at> wrote:
+> Ronak Desai,
+>
+> Am 21.03.2017 um 17:31 schrieb Ronak Desai:
+>> On Mon, Mar 20, 2017 at 5:56 PM, Richard Weinberger
+>> <richard.weinberger@gmail.com> wrote:
+>>> On Mon, Mar 20, 2017 at 10:47 PM, Ronak Desai
+>>> <ronak.desai@rockwellcollins.com> wrote:
+>>>> Hi All,
+>>>>
+>>>> In one of the products with MLC NAND flash, we are using UBI
+>>>> filesystem with kernel 3.12.
+>>>
+>>> MLC NAND is currently not supported.
+>>
+>> First of all, thanks for your response and your truly amazing
+>> contribution in UBI.
+>
+> Thanks. :-)
+>
+>> I know that UBIFS requires a whole lot of changes to handle "program
+>> disturb", "read distrurb" and "paired pages" problem on MLC NANDs.
+>> But, apart from this, we have makesure that we use 256 wear-leveling
+>> threshold.
+>
+> How do you handle paired pages?
+> A powercut can still damage UBI and UBIFS.
+>
+We received patch-sets from Micron for paired page issue.
+> [...]
+>
+>> That is true that our kernel is old but at this point and time it's
+>> not a viable options for us to upgrade the kernel version. And agree
+>> with your point about MLC but in months of use, we have seen this
+>> continuous fastmap failure issue only once and apart from that UBIFS
+>> works without any other issues.
+>>
+>> I see your changes on base fastmap implementation, which I am planning
+>> to backport but it will be really difficult to backport the whole UBI
+>> subsystem. So, if you can point to specific patches/changes to avoid
+>> "fastmap data CRC failure" issue then it will be a great help.
+>
+> I fear it is not that easy. Fastmap saw many fixes and improvements
+> other the time. The first version was rather buggy.
+> And we made a stupid mistake at the beginning, we did not mark fixes
+> for stable processing since Fastmap was considered
+> as experimental. That's why you can't just backport all patches that
+> have a stable tag.
+> On the other hand, backporting the whole UBI subsystem is not that
+> complicated. It has very few dependencies.
+> U-Boot folks do this on a regular basis.
+>
+So, I found out a way to reproduce and fix it. If I powercycle around
+the time when UBI performs recovery then it ends up with the CRC
+failure issue and it can not recover from it. This behavior is with
+3.12 kernel. Then I started patching UBI with the fixes related to
+fastmap and fastmap WL, and got a state where UBI encounters the same
+problem but on subsequent boot it recovers from it.
 
-> On Tue, Mar 28, 2017 at 7:28 AM, Ralph Sennhauser
-> <ralph.sennhauser@gmail.com> wrote:
-> > Hi Amir,
-> >
-> > On Tue, 28 Mar 2017 07:03:11 -0400
-> > Amir Goldstein <amir73il@gmail.com> wrote:
-> >  
-> >> Overlayfs now uses O_TMPFILE for copy up and it works fine with all
-> >> the file systems I tested (tmpfs, xfs, ext4).
-> >> If I am right and O_TMPFILE is broken in ubifs, you are most likely
-> >> the first person to test it (indirectly by overlayfs).
-> >>
-> >> Please try to reproduce the bug with following patch to disable
-> >> ubifs O_TMPFILE support:
-> >>
-> >> --- a/fs/ubifs/dir.c
-> >> +++ b/fs/ubifs/dir.c
-> >> @@ -1685,7 +1685,7 @@ const struct inode_operations
-> >> ubifs_dir_inode_operations = {
-> >>  #ifdef CONFIG_UBIFS_ATIME_SUPPORT
-> >>         .update_time = ubifs_update_time,
-> >>  #endif
-> >> -       .tmpfile     = ubifs_tmpfile,
-> >> +       //.tmpfile     = ubifs_tmpfile,
-> >>  };  
-> >
-> > Get a unused warning during build but all seems to be working fine
-> > now. 
-> 
-> OK. I'll wait for ubifs developers to fix the bug.
-> Otherwise, I'll send a proper patch to disable ubifs O_TMPFILE
-> support. Will add tested-by you.
+I need to perform more testing to finalize the changes though. I
+appreciate your time for answering my questions.
 
-Sounds like a good plan, there is still time for 4.11-rc5. Fine with
-you adding my tested-by in case it will come to this.
+Thanks,
+Ronak
 
-Appreciated
-Ralph
-
-> 
-> Thanks!
+> HTH,
+> //richard
