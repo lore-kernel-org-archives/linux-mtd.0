@@ -1,19 +1,28 @@
-Received: from mx0a-00010702.pphosted.com ([148.163.156.75]
- helo=mx0b-00010702.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1csZMG-00067T-Gk
- for linux-mtd@lists.infradead.org; Mon, 27 Mar 2017 18:27:14 +0000
-From: Zach Brown <zach.brown@ni.com>
-To: <dwmw2@infradead.org>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <marek.vasut@gmail.com>, <richard@nod.at>, <cyrille.pitchen@atmel.com>,
- <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] UBI: add debugfs file for tracking PEB state
-Date: Mon, 27 Mar 2017 13:24:44 -0500
-Message-ID: <1490639084-9486-1-git-send-email-zach.brown@ni.com>
+Received: from mx.socionext.com ([202.248.49.38])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1csfhX-0005rp-Bg
+ for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 01:13:38 +0000
+From: <yamada.masahiro@socionext.com>
+To: <boris.brezillon@free-electrons.com>
+CC: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
+ <marek.vasut@gmail.com>, <computersforpeace@gmail.com>,
+ <thorsten.christiansson@idquantique.com>, <laurent.monat@idquantique.com>,
+ <dinguyen@kernel.org>, <artem.bityutskiy@linux.intel.com>,
+ <grmoore@opensource.altera.com>, <ejo@pengutronix.de>,
+ <chuanxiao.dong@intel.com>, <mhiramat@kernel.org>,
+ <jaswinder.singh@linaro.org>, <robh@kernel.org>
+Subject: RE: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+Date: Tue, 28 Mar 2017 01:13:10 +0000
+Message-ID: <831da313d194457db7bd02fd8ea5b291@SOC-EX02V.e01.socionext.com>
+References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
+ <20170327100039.480b8d8d@bbrezillon>
+In-Reply-To: <20170327100039.480b8d8d@bbrezillon>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,187 +32,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Ben Shelton <ben.shelton@ni.com>
-
-Add a file under debugfs to allow easy access to the erase count for
-each physical erase block on an UBI device.  This is useful when
-debugging data integrity issues with UBIFS on NAND flash devices.
-
-Signed-off-by: Ben Shelton <ben.shelton@ni.com>
-Signed-off-by: Zach Brown <zach.brown@ni.com>
-
-v2:
-* If ubi_io_is_bad eraseblk_count_seq_show just returns the err.
-* if ubi->lookuptbl returns null, its no longer treated as an error
-  instead info for that block is not printeded
-* Removed check for UBI_MAX_ERASECOUNTER since it is impossible to hit
-* Removed block state from print, if a block is printed then it is good and
-  if it is not printed, then it is bad.
-
-v3:
-* Remove errant ! symbol from if statement checking if erase count is valid.
-
----
- drivers/mtd/ubi/debug.c | 126 +++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 125 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index f101a49..7bc9629 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -22,6 +22,7 @@
- #include <linux/debugfs.h>
- #include <linux/uaccess.h>
- #include <linux/module.h>
-+#include <linux/seq_file.h>
- 
- 
- /**
-@@ -386,7 +387,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
- 	return count;
- }
- 
--/* File operations for all UBI debugfs files */
-+/* File operations for all UBI debugfs files except
-+ * detailed_erase_block_info
-+ */
- static const struct file_operations dfs_fops = {
- 	.read   = dfs_file_read,
- 	.write  = dfs_file_write,
-@@ -395,6 +398,121 @@ static const struct file_operations dfs_fops = {
- 	.owner  = THIS_MODULE,
- };
- 
-+/* As long as the position is less then that total number of erase blocks,
-+ * we still have more to print.
-+ */
-+static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
-+{
-+	struct ubi_device *ubi = s->private;
-+
-+	if (*pos == 0)
-+		return SEQ_START_TOKEN;
-+
-+	if (*pos < ubi->peb_count)
-+		return pos;
-+
-+	return NULL;
-+}
-+
-+/* Since we are using the position as the iterator, we just need to check if we
-+ * are done and increment the position.
-+ */
-+static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
-+{
-+	struct ubi_device *ubi = s->private;
-+
-+	if (v == SEQ_START_TOKEN)
-+		return pos;
-+	(*pos)++;
-+
-+	if (*pos < ubi->peb_count)
-+		return pos;
-+
-+	return NULL;
-+}
-+
-+static void eraseblk_count_seq_stop(struct seq_file *s, void *v)
-+{
-+}
-+
-+static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
-+{
-+	struct ubi_device *ubi = s->private;
-+	struct ubi_wl_entry *wl;
-+	int *block_number = iter;
-+	int erase_count = -1;
-+	int err;
-+
-+	/* If this is the start, print a header */
-+	if (iter == SEQ_START_TOKEN) {
-+		seq_puts(s,
-+			 "physical_block_number\terase_count\tblock_status\tread_status\n");
-+		return 0;
-+	}
-+
-+	err = ubi_io_is_bad(ubi, *block_number);
-+	if (err)
-+		return err;
-+
-+	spin_lock(&ubi->wl_lock);
-+
-+	wl = ubi->lookuptbl[*block_number];
-+	if (wl)
-+		erase_count = wl->ec;
-+
-+	spin_unlock(&ubi->wl_lock);
-+
-+	if (erase_count < 0)
-+		return 0;
-+
-+	seq_printf(s, "%-22d\t%-11d\n", *block_number, erase_count);
-+
-+	return 0;
-+}
-+
-+static const struct seq_operations eraseblk_count_seq_ops = {
-+	.start = eraseblk_count_seq_start,
-+	.next = eraseblk_count_seq_next,
-+	.stop = eraseblk_count_seq_stop,
-+	.show = eraseblk_count_seq_show
-+};
-+
-+static int eraseblk_count_open(struct inode *inode, struct file *f)
-+{
-+	struct seq_file *s;
-+	int err;
-+
-+	err = seq_open(f, &eraseblk_count_seq_ops);
-+	if (err)
-+		return err;
-+
-+	s = f->private_data;
-+	s->private = ubi_get_device((unsigned long)inode->i_private);
-+
-+	if (!s->private)
-+		return -ENODEV;
-+	else
-+		return 0;
-+}
-+
-+static int eraseblk_count_release(struct inode *inode, struct file *f)
-+{
-+	struct seq_file *s = f->private_data;
-+	struct ubi_device *ubi = s->private;
-+
-+	ubi_put_device(ubi);
-+
-+	return seq_release(inode, f);
-+}
-+
-+static const struct file_operations eraseblk_count_fops = {
-+	.owner = THIS_MODULE,
-+	.open = eraseblk_count_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = eraseblk_count_release,
-+};
-+
- /**
-  * ubi_debugfs_init_dev - initialize debugfs for an UBI device.
-  * @ubi: UBI device description object
-@@ -491,6 +609,12 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
- 		goto out_remove;
- 	d->dfs_power_cut_max = dent;
- 
-+	fname = "detailed_erase_block_info";
-+	dent = debugfs_create_file(fname, S_IRUSR, d->dfs_dir, (void *)ubi_num,
-+				   &eraseblk_count_fops);
-+	if (IS_ERR_OR_NULL(dent))
-+		goto out_remove;
-+
- 	return 0;
- 
- out_remove:
--- 
-2.7.4
+SGkgQm9yaXMsDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCb3Jp
+cyBCcmV6aWxsb24gW21haWx0bzpib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tXQ0K
+PiBTZW50OiBNb25kYXksIE1hcmNoIDI3LCAyMDE3IDU6MDEgUE0NCj4gVG86IFlhbWFkYSwgTWFz
+YWhpcm8vGyRCOzNFRBsoQiAbJEI/PzkwGyhCIDx5YW1hZGEubWFzYWhpcm9Ac29jaW9uZXh0LmNv
+bT4NCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBEYXZpZCBXb29kaG91c2UN
+Cj4gPGR3bXcyQGluZnJhZGVhZC5vcmc+OyBNYXJlayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwu
+Y29tPjsgQnJpYW4gTm9ycmlzDQo+IDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+OyB0aG9y
+c3Rlbi5jaHJpc3RpYW5zc29uQGlkcXVhbnRpcXVlLmNvbTsNCj4gbGF1cmVudC5tb25hdEBpZHF1
+YW50aXF1ZS5jb207IERpbmggTmd1eWVuIDxkaW5ndXllbkBrZXJuZWwub3JnPjsgQXJ0ZW0NCj4g
+Qml0eXV0c2tpeSA8YXJ0ZW0uYml0eXV0c2tpeUBsaW51eC5pbnRlbC5jb20+OyBHcmFoYW0gTW9v
+cmUNCj4gPGdybW9vcmVAb3BlbnNvdXJjZS5hbHRlcmEuY29tPjsgRW5yaWNvIEpvcm5zIDxlam9A
+cGVuZ3V0cm9uaXguZGU+Ow0KPiBDaHVhbnhpYW8gRG9uZyA8Y2h1YW54aWFvLmRvbmdAaW50ZWwu
+Y29tPjsgTWFzYW1pIEhpcmFtYXRzdQ0KPiA8bWhpcmFtYXRAa2VybmVsLm9yZz47IEphc3NpIEJy
+YXIgPGphc3dpbmRlci5zaW5naEBsaW5hcm8ub3JnPjsgUm9iDQo+IEhlcnJpbmcgPHJvYmhAa2Vy
+bmVsLm9yZz4NCj4gU3ViamVjdDogUmU6IFtSRVNFTkQgUEFUQ0ggdjIgNTAvNTNdIG10ZDogbmFu
+ZDogYWxsb2NhdGUgYWxpZ25lZCBidWZmZXJzDQo+IGlmIE5BTkRfT1dOX0JVRkZFUlMgaXMgdW5z
+ZXQNCj4gDQo+IEhpIE1hc2FoaXJvLA0KPiANCj4gT24gVGh1LCAyMyBNYXIgMjAxNyAwOToxNzo1
+OSArMDkwMA0KPiBNYXNhaGlybyBZYW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQuY29t
+PiB3cm90ZToNCj4gDQo+ID4gQ29tbWl0IDY2NTA3YzdiYzg4OSAoIm10ZDogbmFuZDogQWRkIHN1
+cHBvcnQgdG8gdXNlIG5hbmRfYmFzZSBwb2kNCj4gPiBkYXRhYnVmIGFzIGJvdW5jZSBidWZmZXIi
+KSBmaXhlZCB0aGUgaXNzdWUgdGhhdCBkcml2ZXJzIGNhbiBiZQ0KPiA+IHBhc3NlZCB3aXRoIGEg
+a21hcCgpJ2QgYnVmZmVyLiAgVGhpcyBhZGRyZXNzZWQgdGhlIHVzZV9idWZwb2kgPSAwDQo+ID4g
+Y2FzZS4NCj4gPg0KPiA+IFdoZW4gdXNlX2J1ZnBvaSA9IDEsIGNoaXAtPmJ1ZmZlcnMtPmRhdGFi
+dWYgaXMgdXNlZC4gIFRoZSBkYXRhYnVmDQo+ID4gYWxsb2NhdGVkIGJ5IG5hbmRfc2Nhbl90YWls
+KCkgaXMgbm90IHN1aXRhYmxlIGZvciBETUEgZHVlIHRvIHRoZQ0KPiA+IG9mZnNldCwgc2l6ZW9m
+KCpjaGlwLT5idWZmZXJzKS4NCj4gDQo+IEFzIHNhaWQgZWFybGllciwgSSdtIGZpbmUgd2l0aCB0
+aGUgcGF0Y2ggY29udGVudCwgYnV0IEknbSBub3Qgc3VyZQ0KPiBhYm91dCB5b3VyIGV4cGxhbmF0
+aW9uLiBBbGlnbm1lbnQgcmVxdWlyZW1lbnRzIGFyZSBETUEgY29udHJvbGxlcg0KPiBkZXBlbmRl
+bnQgc28geW91J3JlIG5vdCBleGFjdGx5IGZpeGluZyBhIGJ1ZyBmb3IgYWxsIE5BTkQgY29udHJv
+bGxlcg0KPiBkcml2ZXJzLCBqdXN0IHRob3NlIHRoYXQgcmVxdWlyZSA+NCBieXRlcyBhbGlnbm1l
+bnQuDQoNCg0KV2UgaGF2ZSB0d28gY29udGV4dHMgd2hlbiB3ZSB0YWxrIGFib3V0IGFsaWdubWVu
+dCBmb3IgRE1BOg0KDQpbQV0gUmVxdWlyZW1lbnQgYnkgQ1BVIGFyY2hpdGVjdHVyZSAgKGNhY2hl
+IGFsaWdubWVudCkNCltCXSBSZXF1aXJlbWVudCBieSB0aGUgY29udHJvbGxlcidzIERNQSBlbmdp
+bmUNCg0KDQpBcyBJIHdpbGwgc3RhdGUgYmVsb3csIGhhdmluZyBzaXplb2YoKmNoaXAtPmJ1ZmZl
+cnMpIGluIHRoZSBzYW1lIGNhY2hlDQpsaW5lIGlzIG5vIGdvb2QuICBUaGlzIGlzIHRoZSBzYW1l
+IHJlYXNvbiBhcyBkZXZtXyogaXMgbm90IHJlY29tbWVuZGVkIGZvciBETUEuDQooaHR0cHM6Ly9s
+a21sLm9yZy9sa21sLzIwMTcvMy84LzY5MykNCg0KDQpUaGUgY3VycmVudCBzaXR1YXRpb24gdmlv
+bGF0ZXMgW0FdLg0KDQpVc3VhbGx5IFtCXSBpcyBsZXNzIHRoYW4gW0FdLg0KU28sIGlmIHdlIG1l
+ZXQgW0FdIChieSB1c2luZyBrbWFsbG9jKSwgW0JdIHdpbGwgYmUgbWV0IGFzIHdlbGwuDQoNCg0K
+DQo+IFJlZ2FyZGluZyB0aGUgY2FjaGUgbGluZSBhbGlnbm1lbnQgaXNzdWUsIGluIHRoaXMgY2Fz
+ZSBpdCBzaG91bGRuJ3QgYmUNCj4gYSBwcm9ibGVtLCBiZWNhdXNlIHRoZSBkcml2ZXIgYW5kIHRo
+ZSBjb3JlIHNob3VsZG4ndCB0b3VjaCB0aGUNCj4gY2hpcC0+YnVmZmVycyBvYmplY3QgZHVyaW5n
+IGEgRE1BIHRyYW5zZmVyLCBzbyBkbWFfbWFwL3VubWFwX3NpbmdsZSgpDQo+IHNob3VsZCB3b3Jr
+IGZpbmUgKHRoZXkgbWF5IGZsdXNoL2ludmFsaWRhdGUgb25lIGNhY2hlIGxpbmUgZW50cnkgdGhh
+dA0KPiBjb250YWlucyBub24tcGF5bG9hZCBkYXRhLCBidXQgdGhhdCdzIG5vdCBhIHByb2JsZW0g
+YXMgbG9uZyBhcyBub3RoaW5nDQo+IGlzIG1vZGlmaWVkIGR1cmluZyB0aGUgRE1BIHRyYW5zZmVy
+KS4NCg0KDQpUaGlzIGlzIHJlbGF0ZWQgdG8gNTIvNTM6DQpodHRwOi8vcGF0Y2h3b3JrLm96bGFi
+cy5vcmcvcGF0Y2gvNzQyNDA5Lw0KDQpDYW4geW91IGFsc28gcmVhZCB0aGlzPw0KaHR0cHM6Ly9s
+a21sLm9yZy9sa21sLzIwMTcvMy84LzY5Mw0KDQpZb3VyIGNvbW1lbnQgaXMgdmVyeSBzaW1pbGFy
+IHRvIHdoYXQgd2FzIGRpc2N1c3NlZCBpbiB0aGUgdGhyZWFkLg0KDQoNCg0KPiA+DQo+ID4gU28s
+IGRyaXZlcnMgdXNpbmcgRE1BIGFyZSB2ZXJ5IGxpa2VseSB0byBlbmQgdXAgd2l0aCBzZXR0aW5n
+IHRoZQ0KPiA+IE5BTkRfT1dOX0JVRkZFUlMgZmxhZyBhbmQgYWxsb2NhdGUgYnVmZmVycyBieSB0
+aGVtc2VsdmVzLiAgRHJpdmVycw0KPiA+IHRlbmQgdG8gdXNlIGRldm1fayphbGxvYyB0byBzaW1w
+bGlmeSB0aGUgcHJvYmUgZmFpbHVyZSBwYXRoLCBidXQNCj4gPiBkZXZtX2sqYWxsb2MoKSBkb2Vz
+IG5vdCByZXR1cm4gYSBjYWNoZSBsaW5lIGFsaWduZWQgYnVmZmVyLg0KPiANCj4gT2gsIEkgZGlk
+bid0IGtub3cgdGhhdC4gSSBoYWQgYSBjbG9zZXIgbG9vayBhdCB0aGUgY29kZSwgYW5kIGluZGVl
+ZCwNCj4gZGV2bV9rbWFsbG9jKCkgZG9lcyBub3QgZ3VhcmFudGVlIGFueSBhbGlnbm1lbnQuDQo+
+IA0KPiA+DQo+ID4gSWYgdXNlZCwgaXQgY291bGQgdmlvbGF0ZSB0aGUgRE1BLUFQSSByZXF1aXJl
+bWVudCBzdGF0ZWQgaW4NCj4gPiBEb2N1bWVudGF0aW9uL0RNQS1BUEkudHh0Og0KPiA+ICAgV2Fy
+bmluZ3M6ICBNZW1vcnkgY29oZXJlbmN5IG9wZXJhdGVzIGF0IGEgZ3JhbnVsYXJpdHkgY2FsbGVk
+IHRoZQ0KPiA+ICAgY2FjaGUgbGluZSB3aWR0aC4gIEluIG9yZGVyIGZvciBtZW1vcnkgbWFwcGVk
+IGJ5IHRoaXMgQVBJIHRvDQo+ID4gICBvcGVyYXRlIGNvcnJlY3RseSwgdGhlIG1hcHBlZCByZWdp
+b24gbXVzdCBiZWdpbiBleGFjdGx5IG9uIGEgY2FjaGUNCj4gPiAgIGxpbmUgYm91bmRhcnkgYW5k
+IGVuZCBleGFjdGx5IG9uIG9uZSAodG8gcHJldmVudCB0d28gc2VwYXJhdGVseQ0KPiA+ICAgbWFw
+cGVkIHJlZ2lvbnMgZnJvbSBzaGFyaW5nIGEgc2luZ2xlIGNhY2hlIGxpbmUpLg0KPiA+DQo+ID4g
+VG8gc3VtIHVwLCBOQU5EX09XTl9CVUZGRVJTIGlzIG5vdCB2ZXJ5IGNvbnZlbmllbnQgZm9yIGRy
+aXZlcnMuDQo+ID4gbmFuZF9zY2FuX3RhaWwoKSBjYW4gZ2l2ZSBhIHNlcGFyYXRlIGJ1ZmZlciBm
+b3IgZWFjaCBvZiBlY2NjYWxjLA0KPiA+IGVjY2NvZGUsIGRhdGFidWYuICBJdCBpcyBndWFyYW50
+ZWVkIGttYWxsb2MnZWQgbWVtb3J5IGlzIGFsaWduZWQNCj4gPiB3aXRoIEFSQ0hfRE1BX01JTkFM
+SUdOLg0KPiANCj4gTWF5YmUgSSdtIHdyb25nLCBidXQgQUZBSVUsIGttYWxsb2MmY28gZG8gbm90
+IGd1YXJhbnRlZSBjYWNoZSBsaW5lDQo+IGFsaWdubWVudCBmb3Igc21hbGwgYnVmZmVycyAoPCBj
+YWNoZSBsaW5lKSwgc28gZXZlbiBrbWFsbG9jIGNhbiByZXR1cm4NCj4gYSBidWZmZXIgdGhhdCBp
+cyBub3QgY2FjaGUgbGluZSBhbGlnbmVkLg0KPiBUaGlzIGJlaW5nIHNhaWQsIHdlIHNob3VsZCBi
+ZSBnb29kIGJlY2F1c2UgbW9zdCBOQU5EIGNvbnRyb2xsZXJzIGFyZQ0KPiBvbmx5IG1hbmlwdWxh
+dGluZyB0aGUgcGFnZSBidWZmZXIgKC0+ZGF0YWJ1Zikgd2hpY2ggaXMgbGFyZ2UgZW5vdWdoIHRv
+DQo+IGJlIGNhY2hlIGxpbmUgYWxpZ25lZC4NCg0KDQpJbiBteSB1bmRlcnN0YW5kaW5nIGttYWxs
+b2MoKSByZXR1cm5zIGNhY2hlIGFsaWduZWQgYWRkcmVzcyBldmVuIGZvciAxIGJ5dGUgbWVtb3J5
+Lg0KDQpDYW4geW91IHJlYWQgdGhlIGZvbGxvd2luZyBwYXJ0IG9mIERvY3VtZW50YXRpb24vRE1B
+LUFQSS1IT1dUTy50eHQ/DQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLT44
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KMikgQVJDSF9ETUFfTUlO
+QUxJR04NCg0KICAgQXJjaGl0ZWN0dXJlcyBtdXN0IGVuc3VyZSB0aGF0IGttYWxsb2MnZWQgYnVm
+ZmVyIGlzDQogICBETUEtc2FmZS4gRHJpdmVycyBhbmQgc3Vic3lzdGVtcyBkZXBlbmQgb24gaXQu
+IElmIGFuIGFyY2hpdGVjdHVyZQ0KICAgaXNuJ3QgZnVsbHkgRE1BLWNvaGVyZW50IChpLmUuIGhh
+cmR3YXJlIGRvZXNuJ3QgZW5zdXJlIHRoYXQgZGF0YSBpbg0KICAgdGhlIENQVSBjYWNoZSBpcyBp
+ZGVudGljYWwgdG8gZGF0YSBpbiBtYWluIG1lbW9yeSksDQogICBBUkNIX0RNQV9NSU5BTElHTiBt
+dXN0IGJlIHNldCBzbyB0aGF0IHRoZSBtZW1vcnkgYWxsb2NhdG9yDQogICBtYWtlcyBzdXJlIHRo
+YXQga21hbGxvYydlZCBidWZmZXIgZG9lc24ndCBzaGFyZSBhIGNhY2hlIGxpbmUgd2l0aA0KICAg
+dGhlIG90aGVycy4gU2VlIGFyY2gvYXJtL2luY2x1ZGUvYXNtL2NhY2hlLmggYXMgYW4gZXhhbXBs
+ZS4NCg0KICAgTm90ZSB0aGF0IEFSQ0hfRE1BX01JTkFMSUdOIGlzIGFib3V0IERNQSBtZW1vcnkg
+YWxpZ25tZW50DQogICBjb25zdHJhaW50cy4gWW91IGRvbid0IG5lZWQgdG8gd29ycnkgYWJvdXQg
+dGhlIGFyY2hpdGVjdHVyZSBkYXRhDQogICBhbGlnbm1lbnQgY29uc3RyYWludHMgKGUuZy4gdGhl
+IGFsaWdubWVudCBjb25zdHJhaW50cyBhYm91dCA2NC1iaXQNCiAgIG9iamVjdHMpLg0KLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tPjgtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tDQoNCg0KDQoNCg0KDQo+IEFueXdheSwgSSdtIG5vdCBkaXNjdXNzaW5n
+IHRoZSBuZWVkIGZvciB0aGlzIHBhdGNoLCBqdXN0IHRoZSByZWFzb25zIHdlDQo+IG5lZWQgaXQg
+Oy0pLg0KPiANCj4gVG8gbWUsIGl0J3MgbW9yZSB0aGF0IHdlIHdhbnQgdG8gc3VwcG9ydCBhcyBt
+YW55IGNhc2VzIGFzIHBvc3NpYmxlLCBubw0KPiBtYXR0ZXIgdGhlIERNQSBjb250cm9sbGVyIHJl
+cXVpcmVtZW50cywgYW5kIGFsbG9jYXRpbmcgZWFjaCBidWZmZXINCj4gaW5kZXBlbmRlbnRseSBh
+bGxvd3MgdXMgdG8gZG8gdGhhdCBmb3IgYWxtb3N0IG5vIG92ZXJoZWFkLg0KPiANCj4gSG93IGFi
+b3V0IHNpbXBsaWZ5aW5nIHRoZSBjb21taXQgbWVzc2FnZSB0byBvbmx5IGZvY3VzIG9uIHdoYXQg
+dGhpcw0KPiBwYXRjaCBpcyByZWFsbHkgZml4aW5nL2ltcHJvdmluZz8NCg0KDQpJIGFtIE9LIHRv
+IHJld29yZCB0aGUgZ2l0LWxvZywNCmJ1dCBjYW4geW91IHJlYWQgdGhlIHJlZmVyZW5jZXMgSSBz
+dWdnZXN0ZWQgZmlyc3Q/DQoNClBsZWFzZSBsZXQgbWUga25vdyBpZiB5b3Ugc3VzcGljaW91cyBz
+b21ldGhpbmcuDQoNCk1hc2FoaXJvDQoNCg0KDQoNCg0KPiAiDQo+IFNvbWUgTkFORCBjb250cm9s
+bGVycyBhcmUgdXNpbmcgRE1BIGVuZ2luZSByZXF1aXJpbmcgYSBzcGVjaWZpYyBidWZmZXINCj4g
+YWxpZ25tZW50LiBUaGUgY29yZSBwcm92aWRlcyBubyBndWFyYW50ZWUgb24gdGhlIG5hbmRfYnVm
+ZmVycyBwb2ludGVycywNCj4gd2hpY2ggZm9yY2VzIHNvbWUgZHJpdmVycyB0byBhbGxvY2F0ZSB0
+aGVpciBvd24gYnVmZmVycyBhbmQgcGFzcyB0aGUNCj4gTkFORF9PV05fQlVGRkVSUyBmbGFnLg0K
+PiANCj4gUmV3b3JrIHRoZSBuYW5kX2J1ZmZlcnMgYWxsb2NhdGlvbiBsb2dpYyB0byBhbGxvY2F0
+ZSBlYWNoIGJ1ZmZlcg0KPiBpbmRlcGVuZGVudGx5LiBUaGlzIHNob3VsZCBtYWtlIG1vc3QgTkFO
+RCBjb250cm9sbGVycy9ETUEgZW5naW5lDQo+IGhhcHB5LCBhbmQgYWxsb3cgdXMgdG8gZ2V0IHJp
+ZCBvZiB0aGVzZSBjdXN0b20gYnVmIGFsbG9jYXRpb24gaW4gTkFORA0KPiBjb250cm9sbGVyIGRy
+aXZlcnMuDQo+ICINCj4gDQo+ID4gVGhpcyBpcyBlbm91Z2ggZm9yIG1vc3QgZHJpdmVycyBiZWNh
+dXNlDQo+ID4gaXQgaXMgcmFyZSB0aGF0IERNQSBlbmdpbmVzIHJlcXVpcmUgbGFyZ2VyIGFsaWdu
+bWVudCB0aGFuIENQVSdzDQo+ID4gY2FjaGUgbGluZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5jb20+DQo+ID4gLS0t
+DQo+ID4NCj4gPiBDaGFuZ2VzIGluIHYyOg0KPiA+ICAgLSBOZXdseSBhZGRlZA0KPiA+DQo+ID4g
+IGRyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMgfCAzNCArKysrKysrKysrKysrKysrKysrKysr
+KysrKystLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyNyBpbnNlcnRpb25zKCspLCA3IGRl
+bGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9i
+YXNlLmMNCj4gYi9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jDQo+ID4gaW5kZXggZTEzZjk1
+OS4uNmZjMDQyMiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5j
+DQo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYw0KPiA+IEBAIC00NjE0LDEz
+ICs0NjE0LDI1IEBAIGludCBuYW5kX3NjYW5fdGFpbChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkNCj4g
+PiAgCX0NCj4gPg0KPiA+ICAJaWYgKCEoY2hpcC0+b3B0aW9ucyAmIE5BTkRfT1dOX0JVRkZFUlMp
+KSB7DQo+ID4gLQkJbmJ1ZiA9IGt6YWxsb2Moc2l6ZW9mKCpuYnVmKSArIG10ZC0+d3JpdGVzaXpl
+DQo+ID4gLQkJCQkrIG10ZC0+b29ic2l6ZSAqIDMsIEdGUF9LRVJORUwpOw0KPiA+ICsJCW5idWYg
+PSBremFsbG9jKHNpemVvZigqbmJ1ZiksIEdGUF9LRVJORUwpOw0KPiA+ICAJCWlmICghbmJ1ZikN
+Cj4gPiAgCQkJcmV0dXJuIC1FTk9NRU07DQo+ID4gLQkJbmJ1Zi0+ZWNjY2FsYyA9ICh1aW50OF90
+ICopKG5idWYgKyAxKTsNCj4gPiAtCQluYnVmLT5lY2Njb2RlID0gbmJ1Zi0+ZWNjY2FsYyArIG10
+ZC0+b29ic2l6ZTsNCj4gPiAtCQluYnVmLT5kYXRhYnVmID0gbmJ1Zi0+ZWNjY29kZSArIG10ZC0+
+b29ic2l6ZTsNCj4gPiArCQluYnVmLT5lY2NjYWxjID0ga21hbGxvYyhtdGQtPm9vYnNpemUsIEdG
+UF9LRVJORUwpOw0KPiA+ICsJCWlmICghbmJ1Zi0+ZWNjY2FsYykgew0KPiA+ICsJCQlyZXQgPSAt
+RUlOVkFMOw0KPiA+ICsJCQlnb3RvIGVycl9mcmVlOw0KPiA+ICsJCX0NCj4gPiArCQluYnVmLT5l
+Y2Njb2RlID0ga21hbGxvYyhtdGQtPm9vYnNpemUsIEdGUF9LRVJORUwpOw0KPiA+ICsJCWlmICgh
+bmJ1Zi0+ZWNjY29kZSkgew0KPiA+ICsJCQlyZXQgPSAtRUlOVkFMOw0KPiA+ICsJCQlnb3RvIGVy
+cl9mcmVlOw0KPiA+ICsJCX0NCj4gPiArCQluYnVmLT5kYXRhYnVmID0ga21hbGxvYyhtdGQtPndy
+aXRlc2l6ZSArIG10ZC0+b29ic2l6ZSwNCj4gPiArCQkJCQlHRlBfS0VSTkVMKTsNCj4gPiArCQlp
+ZiAoIW5idWYtPmRhdGFidWYpIHsNCj4gPiArCQkJcmV0ID0gLUVJTlZBTDsNCj4gPiArCQkJZ290
+byBlcnJfZnJlZTsNCj4gPiArCQl9DQo+ID4NCj4gPiAgCQljaGlwLT5idWZmZXJzID0gbmJ1ZjsN
+Cj4gPiAgCX0gZWxzZSB7DQo+ID4gQEAgLTQ4NjMsOCArNDg3NSwxMiBAQCBpbnQgbmFuZF9zY2Fu
+X3RhaWwoc3RydWN0IG10ZF9pbmZvICptdGQpDQo+ID4gIAkvKiBCdWlsZCBiYWQgYmxvY2sgdGFi
+bGUgKi8NCj4gPiAgCXJldHVybiBjaGlwLT5zY2FuX2JidChtdGQpOw0KPiA+ICBlcnJfZnJlZToN
+Cj4gPiAtCWlmICghKGNoaXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSkNCj4gPiArCWlm
+ICghKGNoaXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSkgew0KPiA+ICsJCWtmcmVlKGNo
+aXAtPmJ1ZmZlcnMtPmRhdGFidWYpOw0KPiA+ICsJCWtmcmVlKGNoaXAtPmJ1ZmZlcnMtPmVjY2Nv
+ZGUpOw0KPiA+ICsJCWtmcmVlKGNoaXAtPmJ1ZmZlcnMtPmVjY2NhbGMpOw0KPiA+ICAJCWtmcmVl
+KGNoaXAtPmJ1ZmZlcnMpOw0KPiA+ICsJfQ0KPiA+ICAJcmV0dXJuIHJldDsNCj4gPiAgfQ0KPiA+
+ICBFWFBPUlRfU1lNQk9MKG5hbmRfc2Nhbl90YWlsKTsNCj4gPiBAQCAtNDkxNSw4ICs0OTMxLDEy
+IEBAIHZvaWQgbmFuZF9jbGVhbnVwKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApDQo+ID4NCj4gPiAg
+CS8qIEZyZWUgYmFkIGJsb2NrIHRhYmxlIG1lbW9yeSAqLw0KPiA+ICAJa2ZyZWUoY2hpcC0+YmJ0
+KTsNCj4gPiAtCWlmICghKGNoaXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSkNCj4gPiAr
+CWlmICghKGNoaXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSkgew0KPiA+ICsJCWtmcmVl
+KGNoaXAtPmJ1ZmZlcnMtPmRhdGFidWYpOw0KPiA+ICsJCWtmcmVlKGNoaXAtPmJ1ZmZlcnMtPmVj
+Y2NvZGUpOw0KPiA+ICsJCWtmcmVlKGNoaXAtPmJ1ZmZlcnMtPmVjY2NhbGMpOw0KPiA+ICAJCWtm
+cmVlKGNoaXAtPmJ1ZmZlcnMpOw0KPiA+ICsJfQ0KPiA+DQo+ID4gIAkvKiBGcmVlIGJhZCBibG9j
+ayBkZXNjcmlwdG9yIG1lbW9yeSAqLw0KPiA+ICAJaWYgKGNoaXAtPmJhZGJsb2NrX3BhdHRlcm4g
+JiYgY2hpcC0+YmFkYmxvY2tfcGF0dGVybi0+b3B0aW9ucw0KDQo=
