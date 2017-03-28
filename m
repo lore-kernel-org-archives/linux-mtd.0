@@ -1,22 +1,31 @@
-Received: from mail-ot0-x234.google.com ([2607:f8b0:4003:c0f::234])
+Received: from pandora.armlinux.org.uk
+ ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1csnPR-0001in-IH
- for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 09:27:34 +0000
-Received: by mail-ot0-x234.google.com with SMTP id a5so47976587oth.1
- for <linux-mtd@lists.infradead.org>; Tue, 28 Mar 2017 02:27:04 -0700 (PDT)
+ id 1csoCR-0003sd-2y
+ for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 10:18:07 +0000
+Date: Tue, 28 Mar 2017 11:17:20 +0100
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: yamada.masahiro@socionext.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, marek.vasut@gmail.com,
+ computersforpeace@gmail.com, thorsten.christiansson@idquantique.com,
+ laurent.monat@idquantique.com, dinguyen@kernel.org,
+ artem.bityutskiy@linux.intel.com, grmoore@opensource.altera.com,
+ ejo@pengutronix.de, chuanxiao.dong@intel.com, mhiramat@kernel.org,
+ jaswinder.singh@linaro.org, robh@kernel.org
+Subject: Re: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+Message-ID: <20170328101720.GW7909@n2100.armlinux.org.uk>
+References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
+ <20170327100039.480b8d8d@bbrezillon>
+ <831da313d194457db7bd02fd8ea5b291@SOC-EX02V.e01.socionext.com>
+ <20170328095907.76d02ce9@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <20170328100107.25095af6@gmail.com>
-References: <20170328100107.25095af6@gmail.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 28 Mar 2017 05:27:03 -0400
-Message-ID: <CAOQ4uxisw5vWYsdMTNemw=MqNyS2nxfAUkg+UfoGmbE3-he1Ug@mail.gmail.com>
-Subject: Re: [REGRESSION 4.11] Commit d8514d8edb5b ("ovl: copy up regular file
- using O_TMPFILE") breaks ubifs
-To: Ralph Sennhauser <ralph.sennhauser@gmail.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
- linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- regressions@leemhuis.info
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170328095907.76d02ce9@bbrezillon>
+Sender: Russell King - ARM Linux <linux@armlinux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,70 +35,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 28, 2017 at 4:01 AM, Ralph Sennhauser
-<ralph.sennhauser@gmail.com> wrote:
-> Hi Amir
->
-> Commit d8514d8edb5b ("ovl: copy up regular file using O_TMPFILE")
-> breaks squashfs with an ubifs overlay (both ubi volumes of the same
-> container).
->
+On Tue, Mar 28, 2017 at 09:59:07AM +0200, Boris Brezillon wrote:
+> Having non-cache line aligned buffers is definitely more dangerous,
+> but, AFAIU, it's not impossible.
+> 
+> Let's consider this case:
+> 
+> 
+> |        cache line        |        cache line        | ... |
+> -------------------------------------------------------------
+> | nand_buffers size |                    data               |
+> 
+> 
+> If you call dma_map_single(dev, data, size, DMA_TO_DEVICE), the first
+> cache line will be flushed (content written back to memory), and
+> assuming you don't touch nand_buffers content between dma_map_single()
+> and dma_unmap_single() you shouldn't have any problem (the cache line
+> cannot magically turn dirty and thus cannot be flushed in the
+> background).
 
-Hi Ralph,
+In the DMA_TO_DEVICE case, you're not going to be modifying the data
+to be DMA'd.  The DMA certainly is not going to modify the data it's
+supposed to be reading.
 
-I am confused by the description above. Which are the 'both ubi volumes'?
+So, reality is that reading and writing the "data" part including the
+overlapping cache line should cause no problem to the DMA activity,
+even if that cache line gets written back - the part that overlaps
+the DMA data should _not_ modify that data.
 
-Can you provide exact command of overlayfs mount, preferably
-also a script to generate the lower/upper images and mount them
-to remove any mkfs option doubts from test setup.
+More of an issue is the DMA_FROM_DEVICE case...
 
-> Renaming a file results in an error "UBIFS error (ubi0:1 pid 1394):
-> ubifs_add_orphan: orphaned twice". This corrupts the the filesystem and
-> the next attempt to mount the overlay will fail.
->
+> For the DMA_FROM_DEVICE direction, the cache line is invalidated when
+> dma_unmap_single() is called, which means your nand_buffers content
+> might be updated with what is present in SDRAM, but it shouldn't have
+> changed since nand_buffers is only touched at initialization time (when
+> the buffer is created).
 
-Does that happen on any attempt to rename a file?
-A file that was only is lower I suppose?
-Can you provide a simple script with your test, setting up the lower/upper
-files and triggering the bug.
+This is exactly where it matters.  When mapping for DMA from the device,
+we obviously have to ensure that we aren't going to have any writebacks
+from the cache into the DMA area.  Since we don't know whether the
+overlapping cache lines contain important data, we write those back, but
+invalidate the rest of the buffer when mapping it.
 
-Thanks,
-Amir.
+Reading from those cache lines while DMA is in progress is pretty benign,
+just like the DMA_TO_DEVICE case.  However, writing to those cache lines
+while DMA is in progress is disasterous, because we end up with a choice:
 
+1. if we invalidate the overlapping cache lines, we lose updates that
+   the CPU has made.
 
->
->
-> Bisect log:
->
->   git bisect start
->   # bad: [c02ed2e75ef4c74e41e421acb4ef1494671585e8] Linux 4.11-rc4
->   git bisect bad c02ed2e75ef4c74e41e421acb4ef1494671585e8
->   # good: [c470abd4fde40ea6a0846a2beab642a578c0b8cd] Linux 4.10
->   git bisect good c470abd4fde40ea6a0846a2beab642a578c0b8cd
->   # good: [bc49a7831b1137ce1c2dda1c57e3631655f5d2ae] Merge branch 'akpm' (patches from Andrew)
->   git bisect good bc49a7831b1137ce1c2dda1c57e3631655f5d2ae
->   # good: [738bc38d49e017fe7acb3596712518e22c225816] kernel/ksysfs.c: add __ro_after_init to bin_attribute structure
->   git bisect good 738bc38d49e017fe7acb3596712518e22c225816
->   # good: [3f80dd67c367878aaad16e458eebc3c8980bb841] Merge tag 'acpi-extra-4.11-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
->   git bisect good 3f80dd67c367878aaad16e458eebc3c8980bb841
->   # bad: [4495c08e84729385774601b5146d51d9e5849f81] Linux 4.11-rc2
->   git bisect bad 4495c08e84729385774601b5146d51d9e5849f81
->   # bad: [2d62e0768d3c28536d4cfe4c40ba1e5e8e442a93] Merge tag 'kvm-4.11-2' of git://git.kernel.org/pub/scm/virt/kvm/kvm
->   git bisect bad 2d62e0768d3c28536d4cfe4c40ba1e5e8e442a93
->   # good: [1827adb11ad26b2290dc9fe2aaf54976b2439865] Merge branch 'WIP.sched-core-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
->   git bisect good 1827adb11ad26b2290dc9fe2aaf54976b2439865
->   # bad: [0b94da8dfc26ec2eb3e6640726e434abf8c53e49] Merge branch 'libnvdimm-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
->   git bisect bad 0b94da8dfc26ec2eb3e6640726e434abf8c53e49
->   # bad: [0a040b2113ec226bcf56fcbe02d035bb5b30c35e] Merge branch 'for-next' of git://git.samba.org/sfrench/cifs-2.6
->   git bisect bad 0a040b2113ec226bcf56fcbe02d035bb5b30c35e
->   # good: [590dce2d4934fb909b112cd80c80486362337744] Merge branch 'rebased-statx' of git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs
->   git bisect good 590dce2d4934fb909b112cd80c80486362337744
->   # bad: [4e66c42c60fdf9be81837857454a41b39bf1b773] Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse
->   git bisect bad 4e66c42c60fdf9be81837857454a41b39bf1b773
->   # bad: [e593b2bf513dd4d3fbfa0f435392eea2c7f776f0] ovl: properly implement sync_filesystem()
->   git bisect bad e593b2bf513dd4d3fbfa0f435392eea2c7f776f0
->   # bad: [d8514d8edb5b045cf7f708e14f888ce760d60f0b] ovl: copy up regular file using O_TMPFILE
->   git bisect bad d8514d8edb5b045cf7f708e14f888ce760d60f0b
->   # good: [42f269b925405d9dd45014823e5057786d6ca452] ovl: rearrange code in ovl_copy_up_locked()
->   git bisect good 42f269b925405d9dd45014823e5057786d6ca452
->   # first bad commit: [d8514d8edb5b045cf7f708e14f888ce760d60f0b] ovl: copy up regular file using O_TMPFILE
+2. if we write-back the overlapping cache lines, we lose updates that
+   the DMA has made.
+
+So either way, there is a data loss risk - there's no getting away from
+that.  I've chosen to implement (2) in the ARM code, but either is
+equally valid.  (I note in your description above that you think (1)
+applies...)
+
+The only solution to that is to avoid all writes to these cache lines
+while DMA from the device is in progress.
+
+> So, for our use case where nand_buffers is never modified between
+> dma_map_single() and dma_unmap_single(), it should be safe to have
+> non-cache line aligned buffers.
+
+Correct, with the exception of what happens at unmap.
+
+> Russell, please let me know if my reasoning is incorrect.
+> Note that I'm not arguing against the new approach where we allocate
+> each buffer independently using kmalloc (having cache line aligned
+> buffers is definitely safer and does not imply any significant
+> overhead), I just want to make sure I understand things correctly.
+
+Cache line aligned buffers is definitely preferable, but at the arch
+level it's not something that can be relied upon.  Historically, if
+I'd have chosen (1) then various drivers would have broken (like SCSI
+drivers DMAing sense data directly into the scsi_cmnd struct, something
+that has now been resolved.)
+
+-- 
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
