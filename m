@@ -1,18 +1,18 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1csg3W-0007Ry-Ir
- for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 01:36:20 +0000
-Received: by mail-lf0-x241.google.com with SMTP id n78so9025509lfi.3
- for <linux-mtd@lists.infradead.org>; Mon, 27 Mar 2017 18:35:57 -0700 (PDT)
+ id 1csg6D-0007qW-GT
+ for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 01:39:07 +0000
+Received: by mail-lf0-x242.google.com with SMTP id v2so9035987lfi.2
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Mar 2017 18:38:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <37c3dc9e-55a1-2a91-075d-587d3ffb9b0b@denx.de>
+In-Reply-To: <ec582e0d-8aa3-0694-12ed-12173a436bcc@denx.de>
 References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
- <1490262226-29092-2-git-send-email-peterpandong@micron.com>
- <37c3dc9e-55a1-2a91-075d-587d3ffb9b0b@denx.de>
+ <1490262226-29092-9-git-send-email-peterpandong@micron.com>
+ <ec582e0d-8aa3-0694-12ed-12173a436bcc@denx.de>
 From: Peter Pan <peterpansjtu@gmail.com>
-Date: Tue, 28 Mar 2017 09:35:55 +0800
-Message-ID: <CAAyFOR+ZVHRatBL+6uAjJLjvqMR47eJBeP7+_7xdfCvTir1vmA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/9] mtd: nand: add oob iterator in nand_for_each_page
+Date: Tue, 28 Mar 2017 09:38:43 +0800
+Message-ID: <CAAyFORJdzH4fMXSR1ByTztdh38GFui9bxDqtQyK5K73netDXMg@mail.gmail.com>
+Subject: Re: [PATCH v4 8/9] nand: spi: Add generic SPI controller support
 To: Marek Vasut <marex@denx.de>
 Cc: Peter Pan <peterpandong@micron.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -34,112 +34,107 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Marek,
 
-
-On Thu, Mar 23, 2017 at 7:13 PM, Marek Vasut <marex@denx.de> wrote:
+On Thu, Mar 23, 2017 at 7:33 PM, Marek Vasut <marex@denx.de> wrote:
 > On 03/23/2017 10:43 AM, Peter Pan wrote:
->> Iterate nand pages by both page and oob operation.
+>> This commit supports to use generic spi controller
+>> as spi nand controller.
 >>
 >> Signed-off-by: Peter Pan <peterpandong@micron.com>
->> ---
->>  include/linux/mtd/nand.h | 38 +++++++++++++++++++++++++++++++-------
->>  1 file changed, 31 insertions(+), 7 deletions(-)
->>
->> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
->> index c2197b4..54ded4c 100644
->> --- a/include/linux/mtd/nand.h
->> +++ b/include/linux/mtd/nand.h
->> @@ -84,9 +84,12 @@ struct nand_device {
->>   * @pageoffset: the offset within a page
->>   */
->>  struct nand_page_iter {
->> -     loff_t offs;
->>       int page;
->>       int pageoffs;
->> +     size_t dataleft;
->> +     int ooboffs;
->> +     int oobsize;
->> +     size_t oobleft;
->>  };
->>
->>  /**
->> @@ -193,14 +196,19 @@ static inline int nand_per_page_oobsize(struct nand_device *nand)
->>   * @offs: absolute offset
->>   * @iter: page iterator
->>   */
->> -static inline void nand_page_iter_init(struct nand_device *nand, loff_t offs,
->> +static inline void nand_page_iter_init(struct nand_device *nand,
->> +                                    loff_t offs, size_t len, u32 ooboffs,
->> +                                    size_t ooblen, u32 oobsize,
->>                                      struct nand_page_iter *iter)
->>  {
->>       u64 page = offs;
->>
->>       iter->pageoffs = do_div(page, nand->memorg.pagesize);
->>       iter->page = page;
->> -     iter->offs = offs;
->> +     iter->dataleft = len;
->> +     iter->ooboffs = ooboffs;
->> +     iter->oobsize = oobsize;
->> +     iter->oobleft = ooblen;
->>  }
->>
->>  /**
->> @@ -212,13 +220,29 @@ static inline void nand_page_iter_next(struct nand_device *nand,
->>                                      struct nand_page_iter *iter)
->>  {
->>       iter->page++;
->> -     iter->offs += nand_page_size(nand) - iter->pageoffs;
->>       iter->pageoffs = 0;
->> +     if (iter->dataleft)
->> +             iter->dataleft -= min_t (int,
->                                          ^^^
->                                          shouldn't this be size_t ?
+> [...]
+>> +static int gen_spi_spinand_probe(struct spi_device *spi)
+>> +{
+>> +     struct spinand_device *chip;
+>> +     struct gen_spi_spinand_controller *controller;
+>> +     struct spinand_controller *spinand_controller;
+>> +     int ret;
+>> +     u32 max_speed_hz = spi->max_speed_hz;
+>> +
+>> +     chip = spinand_alloc(&spi->dev);
+>> +     if (IS_ERR(chip)) {
+>> +             ret = PTR_ERR(chip);
+>> +             goto err1;
+>> +     }
+>> +     controller = kzalloc(sizeof(*controller), GFP_KERNEL);
+>> +     if (!controller) {
+>> +             ret = -ENOMEM;
+>> +             goto err2;
+>> +     }
+>> +     controller->spi = spi;
+>> +     spinand_controller = &controller->ctrl;
+>> +     spinand_controller->ops = &gen_spi_spinand_ops;
+>> +     spinand_controller->caps = SPINAND_CAP_RD_X1 | SPINAND_CAP_WR_X1;
+>> +     if (spi->mode & SPI_RX_QUAD)
+>> +             spinand_controller->caps |= SPINAND_CAP_RD_QUAD |
+>> +                                         SPINAND_CAP_RD_X4;
+>> +     if (spi->mode & SPI_RX_DUAL)
+>> +             spinand_controller->caps |= SPINAND_CAP_RD_DUAL |
+>> +                                         SPINAND_CAP_RD_X2;
+>> +     if (spi->mode & SPI_TX_QUAD)
+>> +             spinand_controller->caps |= SPINAND_CAP_WR_QUAD |
+>> +                                         SPINAND_CAP_WR_X4;
+>> +     if (spi->mode & SPI_TX_DUAL)
+>> +             spinand_controller->caps |= SPINAND_CAP_WR_DUAL |
+>> +                                         SPINAND_CAP_WR_X2;
+>> +     chip->controller.controller = spinand_controller;
+>> +     spi_set_drvdata(spi, chip);
+>> +     spi->max_speed_hz = min_t(int, 25000000, max_speed_hz);
+>
+> Please avoid hard-coding random numbers, make the 25 MHz into a macro
+> and add a comment explaining why you use 25 MHz
 
-Yes, you are right, Fix this in v5
+Yes, I forgot the comment. Fix this in v5
 
 >
->> +                                      nand_page_size(nand) - iter->pageoffs,
->> +                                      iter->dataleft);
->> +     if (iter->oobleft)
->> +             iter->oobleft -= min_t(int, iter->oobsize - iter->ooboffs,
+>> +
+>> +     ret = spinand_register(chip);
+>> +     if (ret)
+>> +             goto err3;
+>> +
+>> +     spi->max_speed_hz = max_speed_hz;
+>> +
+>> +     return 0;
+>> +
+>> +err3:
+>> +     kfree(controller);
+>> +err2:
+>> +     spinand_free(chip);
+>> +err1:
+>> +     return ret;
+>> +}
+>> +
+>> +static int gen_spi_spinand_remove(struct spi_device *spi)
+>> +{
+>> +     struct spinand_device *chip = spi_get_drvdata(spi);
+>> +
+>> +     spinand_unregister(chip);
+>> +     kfree(to_gen_spi_spinand_controller(chip->controller.controller));
 >
-> DTTO here ?
+> This looks pretty awful, introduce a variable maybe ?
 
 Fix this in v5
 
->
->> +                                    iter->oobleft);
->> +}
->> +
->> +static inline bool nand_page_iter_end(struct nand_device *nand,
->> +                                   struct nand_page_iter *iter)
->> +{
->> +     if (iter->dataleft || iter->oobleft)
->> +             return false;
->> +     return true;
->>  }
->>
->> -#define nand_for_each_page(nand, start, len, iter)           \
->> -     for (nand_page_iter_init(nand, start, iter);            \
->> -          (iter)->offs < (start) + (len);                    \
->> +#define nand_for_each_page(nand, start, len, ooboffs, ooblen,        \
->> +                        oobsize, iter)       \
->
-> What's the difference between ooblen and oobsize ? That is totally
-> confusing , so add a comment explaining that ...
-
-Yes, A comment is needed. Fix this in v5
-
-Thanks
+Thanks,
 Peter Pan
 
 >
->> +     for (nand_page_iter_init(nand, start, len, ooboffs,     \
->> +                              ooblen, oobsize, iter);        \
->> +          !nand_page_iter_end(nand, iter);           \
->>            nand_page_iter_next(nand, iter))
->>
->>  /**
+>> +     spinand_free(chip);
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static struct spi_driver gen_spi_spinand_driver = {
+>> +     .driver = {
+>> +             .name   = "generic_spinand",
+>> +             .owner  = THIS_MODULE,
+>> +     },
+>> +     .probe  = gen_spi_spinand_probe,
+>> +     .remove = gen_spi_spinand_remove,
+>> +};
+>> +module_spi_driver(gen_spi_spinand_driver);
+>> +
+>> +MODULE_DESCRIPTION("Generic SPI controller to support SPI NAND");
+>> +MODULE_AUTHOR("Peter Pan<peterpandong@micron.com>");
+>> +MODULE_LICENSE("GPL v2");
 >>
 >
 >
