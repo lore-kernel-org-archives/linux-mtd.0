@@ -1,28 +1,28 @@
-Received: from mx.socionext.com ([202.248.49.38])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1csfhX-0005rp-Bg
- for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 01:13:38 +0000
-From: <yamada.masahiro@socionext.com>
-To: <boris.brezillon@free-electrons.com>
-CC: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
- <marek.vasut@gmail.com>, <computersforpeace@gmail.com>,
- <thorsten.christiansson@idquantique.com>, <laurent.monat@idquantique.com>,
- <dinguyen@kernel.org>, <artem.bityutskiy@linux.intel.com>,
- <grmoore@opensource.altera.com>, <ejo@pengutronix.de>,
- <chuanxiao.dong@intel.com>, <mhiramat@kernel.org>,
- <jaswinder.singh@linaro.org>, <robh@kernel.org>
-Subject: RE: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers if
- NAND_OWN_BUFFERS is unset
-Date: Tue, 28 Mar 2017 01:13:10 +0000
-Message-ID: <831da313d194457db7bd02fd8ea5b291@SOC-EX02V.e01.socionext.com>
-References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
- <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
- <20170327100039.480b8d8d@bbrezillon>
-In-Reply-To: <20170327100039.480b8d8d@bbrezillon>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: base64
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1csg3W-0007Ry-Ir
+ for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 01:36:20 +0000
+Received: by mail-lf0-x241.google.com with SMTP id n78so9025509lfi.3
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Mar 2017 18:35:57 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <37c3dc9e-55a1-2a91-075d-587d3ffb9b0b@denx.de>
+References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
+ <1490262226-29092-2-git-send-email-peterpandong@micron.com>
+ <37c3dc9e-55a1-2a91-075d-587d3ffb9b0b@denx.de>
+From: Peter Pan <peterpansjtu@gmail.com>
+Date: Tue, 28 Mar 2017 09:35:55 +0800
+Message-ID: <CAAyFOR+ZVHRatBL+6uAjJLjvqMR47eJBeP7+_7xdfCvTir1vmA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/9] mtd: nand: add oob iterator in nand_for_each_page
+To: Marek Vasut <marex@denx.de>
+Cc: Peter Pan <peterpandong@micron.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Arnaud Mouiche <arnaud.mouiche@gmail.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ "linshunquan (A)" <linshunquan1@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,161 +32,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQm9yaXMsDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCb3Jp
-cyBCcmV6aWxsb24gW21haWx0bzpib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tXQ0K
-PiBTZW50OiBNb25kYXksIE1hcmNoIDI3LCAyMDE3IDU6MDEgUE0NCj4gVG86IFlhbWFkYSwgTWFz
-YWhpcm8vGyRCOzNFRBsoQiAbJEI/PzkwGyhCIDx5YW1hZGEubWFzYWhpcm9Ac29jaW9uZXh0LmNv
-bT4NCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBEYXZpZCBXb29kaG91c2UN
-Cj4gPGR3bXcyQGluZnJhZGVhZC5vcmc+OyBNYXJlayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwu
-Y29tPjsgQnJpYW4gTm9ycmlzDQo+IDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+OyB0aG9y
-c3Rlbi5jaHJpc3RpYW5zc29uQGlkcXVhbnRpcXVlLmNvbTsNCj4gbGF1cmVudC5tb25hdEBpZHF1
-YW50aXF1ZS5jb207IERpbmggTmd1eWVuIDxkaW5ndXllbkBrZXJuZWwub3JnPjsgQXJ0ZW0NCj4g
-Qml0eXV0c2tpeSA8YXJ0ZW0uYml0eXV0c2tpeUBsaW51eC5pbnRlbC5jb20+OyBHcmFoYW0gTW9v
-cmUNCj4gPGdybW9vcmVAb3BlbnNvdXJjZS5hbHRlcmEuY29tPjsgRW5yaWNvIEpvcm5zIDxlam9A
-cGVuZ3V0cm9uaXguZGU+Ow0KPiBDaHVhbnhpYW8gRG9uZyA8Y2h1YW54aWFvLmRvbmdAaW50ZWwu
-Y29tPjsgTWFzYW1pIEhpcmFtYXRzdQ0KPiA8bWhpcmFtYXRAa2VybmVsLm9yZz47IEphc3NpIEJy
-YXIgPGphc3dpbmRlci5zaW5naEBsaW5hcm8ub3JnPjsgUm9iDQo+IEhlcnJpbmcgPHJvYmhAa2Vy
-bmVsLm9yZz4NCj4gU3ViamVjdDogUmU6IFtSRVNFTkQgUEFUQ0ggdjIgNTAvNTNdIG10ZDogbmFu
-ZDogYWxsb2NhdGUgYWxpZ25lZCBidWZmZXJzDQo+IGlmIE5BTkRfT1dOX0JVRkZFUlMgaXMgdW5z
-ZXQNCj4gDQo+IEhpIE1hc2FoaXJvLA0KPiANCj4gT24gVGh1LCAyMyBNYXIgMjAxNyAwOToxNzo1
-OSArMDkwMA0KPiBNYXNhaGlybyBZYW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQuY29t
-PiB3cm90ZToNCj4gDQo+ID4gQ29tbWl0IDY2NTA3YzdiYzg4OSAoIm10ZDogbmFuZDogQWRkIHN1
-cHBvcnQgdG8gdXNlIG5hbmRfYmFzZSBwb2kNCj4gPiBkYXRhYnVmIGFzIGJvdW5jZSBidWZmZXIi
-KSBmaXhlZCB0aGUgaXNzdWUgdGhhdCBkcml2ZXJzIGNhbiBiZQ0KPiA+IHBhc3NlZCB3aXRoIGEg
-a21hcCgpJ2QgYnVmZmVyLiAgVGhpcyBhZGRyZXNzZWQgdGhlIHVzZV9idWZwb2kgPSAwDQo+ID4g
-Y2FzZS4NCj4gPg0KPiA+IFdoZW4gdXNlX2J1ZnBvaSA9IDEsIGNoaXAtPmJ1ZmZlcnMtPmRhdGFi
-dWYgaXMgdXNlZC4gIFRoZSBkYXRhYnVmDQo+ID4gYWxsb2NhdGVkIGJ5IG5hbmRfc2Nhbl90YWls
-KCkgaXMgbm90IHN1aXRhYmxlIGZvciBETUEgZHVlIHRvIHRoZQ0KPiA+IG9mZnNldCwgc2l6ZW9m
-KCpjaGlwLT5idWZmZXJzKS4NCj4gDQo+IEFzIHNhaWQgZWFybGllciwgSSdtIGZpbmUgd2l0aCB0
-aGUgcGF0Y2ggY29udGVudCwgYnV0IEknbSBub3Qgc3VyZQ0KPiBhYm91dCB5b3VyIGV4cGxhbmF0
-aW9uLiBBbGlnbm1lbnQgcmVxdWlyZW1lbnRzIGFyZSBETUEgY29udHJvbGxlcg0KPiBkZXBlbmRl
-bnQgc28geW91J3JlIG5vdCBleGFjdGx5IGZpeGluZyBhIGJ1ZyBmb3IgYWxsIE5BTkQgY29udHJv
-bGxlcg0KPiBkcml2ZXJzLCBqdXN0IHRob3NlIHRoYXQgcmVxdWlyZSA+NCBieXRlcyBhbGlnbm1l
-bnQuDQoNCg0KV2UgaGF2ZSB0d28gY29udGV4dHMgd2hlbiB3ZSB0YWxrIGFib3V0IGFsaWdubWVu
-dCBmb3IgRE1BOg0KDQpbQV0gUmVxdWlyZW1lbnQgYnkgQ1BVIGFyY2hpdGVjdHVyZSAgKGNhY2hl
-IGFsaWdubWVudCkNCltCXSBSZXF1aXJlbWVudCBieSB0aGUgY29udHJvbGxlcidzIERNQSBlbmdp
-bmUNCg0KDQpBcyBJIHdpbGwgc3RhdGUgYmVsb3csIGhhdmluZyBzaXplb2YoKmNoaXAtPmJ1ZmZl
-cnMpIGluIHRoZSBzYW1lIGNhY2hlDQpsaW5lIGlzIG5vIGdvb2QuICBUaGlzIGlzIHRoZSBzYW1l
-IHJlYXNvbiBhcyBkZXZtXyogaXMgbm90IHJlY29tbWVuZGVkIGZvciBETUEuDQooaHR0cHM6Ly9s
-a21sLm9yZy9sa21sLzIwMTcvMy84LzY5MykNCg0KDQpUaGUgY3VycmVudCBzaXR1YXRpb24gdmlv
-bGF0ZXMgW0FdLg0KDQpVc3VhbGx5IFtCXSBpcyBsZXNzIHRoYW4gW0FdLg0KU28sIGlmIHdlIG1l
-ZXQgW0FdIChieSB1c2luZyBrbWFsbG9jKSwgW0JdIHdpbGwgYmUgbWV0IGFzIHdlbGwuDQoNCg0K
-DQo+IFJlZ2FyZGluZyB0aGUgY2FjaGUgbGluZSBhbGlnbm1lbnQgaXNzdWUsIGluIHRoaXMgY2Fz
-ZSBpdCBzaG91bGRuJ3QgYmUNCj4gYSBwcm9ibGVtLCBiZWNhdXNlIHRoZSBkcml2ZXIgYW5kIHRo
-ZSBjb3JlIHNob3VsZG4ndCB0b3VjaCB0aGUNCj4gY2hpcC0+YnVmZmVycyBvYmplY3QgZHVyaW5n
-IGEgRE1BIHRyYW5zZmVyLCBzbyBkbWFfbWFwL3VubWFwX3NpbmdsZSgpDQo+IHNob3VsZCB3b3Jr
-IGZpbmUgKHRoZXkgbWF5IGZsdXNoL2ludmFsaWRhdGUgb25lIGNhY2hlIGxpbmUgZW50cnkgdGhh
-dA0KPiBjb250YWlucyBub24tcGF5bG9hZCBkYXRhLCBidXQgdGhhdCdzIG5vdCBhIHByb2JsZW0g
-YXMgbG9uZyBhcyBub3RoaW5nDQo+IGlzIG1vZGlmaWVkIGR1cmluZyB0aGUgRE1BIHRyYW5zZmVy
-KS4NCg0KDQpUaGlzIGlzIHJlbGF0ZWQgdG8gNTIvNTM6DQpodHRwOi8vcGF0Y2h3b3JrLm96bGFi
-cy5vcmcvcGF0Y2gvNzQyNDA5Lw0KDQpDYW4geW91IGFsc28gcmVhZCB0aGlzPw0KaHR0cHM6Ly9s
-a21sLm9yZy9sa21sLzIwMTcvMy84LzY5Mw0KDQpZb3VyIGNvbW1lbnQgaXMgdmVyeSBzaW1pbGFy
-IHRvIHdoYXQgd2FzIGRpc2N1c3NlZCBpbiB0aGUgdGhyZWFkLg0KDQoNCg0KPiA+DQo+ID4gU28s
-IGRyaXZlcnMgdXNpbmcgRE1BIGFyZSB2ZXJ5IGxpa2VseSB0byBlbmQgdXAgd2l0aCBzZXR0aW5n
-IHRoZQ0KPiA+IE5BTkRfT1dOX0JVRkZFUlMgZmxhZyBhbmQgYWxsb2NhdGUgYnVmZmVycyBieSB0
-aGVtc2VsdmVzLiAgRHJpdmVycw0KPiA+IHRlbmQgdG8gdXNlIGRldm1fayphbGxvYyB0byBzaW1w
-bGlmeSB0aGUgcHJvYmUgZmFpbHVyZSBwYXRoLCBidXQNCj4gPiBkZXZtX2sqYWxsb2MoKSBkb2Vz
-IG5vdCByZXR1cm4gYSBjYWNoZSBsaW5lIGFsaWduZWQgYnVmZmVyLg0KPiANCj4gT2gsIEkgZGlk
-bid0IGtub3cgdGhhdC4gSSBoYWQgYSBjbG9zZXIgbG9vayBhdCB0aGUgY29kZSwgYW5kIGluZGVl
-ZCwNCj4gZGV2bV9rbWFsbG9jKCkgZG9lcyBub3QgZ3VhcmFudGVlIGFueSBhbGlnbm1lbnQuDQo+
-IA0KPiA+DQo+ID4gSWYgdXNlZCwgaXQgY291bGQgdmlvbGF0ZSB0aGUgRE1BLUFQSSByZXF1aXJl
-bWVudCBzdGF0ZWQgaW4NCj4gPiBEb2N1bWVudGF0aW9uL0RNQS1BUEkudHh0Og0KPiA+ICAgV2Fy
-bmluZ3M6ICBNZW1vcnkgY29oZXJlbmN5IG9wZXJhdGVzIGF0IGEgZ3JhbnVsYXJpdHkgY2FsbGVk
-IHRoZQ0KPiA+ICAgY2FjaGUgbGluZSB3aWR0aC4gIEluIG9yZGVyIGZvciBtZW1vcnkgbWFwcGVk
-IGJ5IHRoaXMgQVBJIHRvDQo+ID4gICBvcGVyYXRlIGNvcnJlY3RseSwgdGhlIG1hcHBlZCByZWdp
-b24gbXVzdCBiZWdpbiBleGFjdGx5IG9uIGEgY2FjaGUNCj4gPiAgIGxpbmUgYm91bmRhcnkgYW5k
-IGVuZCBleGFjdGx5IG9uIG9uZSAodG8gcHJldmVudCB0d28gc2VwYXJhdGVseQ0KPiA+ICAgbWFw
-cGVkIHJlZ2lvbnMgZnJvbSBzaGFyaW5nIGEgc2luZ2xlIGNhY2hlIGxpbmUpLg0KPiA+DQo+ID4g
-VG8gc3VtIHVwLCBOQU5EX09XTl9CVUZGRVJTIGlzIG5vdCB2ZXJ5IGNvbnZlbmllbnQgZm9yIGRy
-aXZlcnMuDQo+ID4gbmFuZF9zY2FuX3RhaWwoKSBjYW4gZ2l2ZSBhIHNlcGFyYXRlIGJ1ZmZlciBm
-b3IgZWFjaCBvZiBlY2NjYWxjLA0KPiA+IGVjY2NvZGUsIGRhdGFidWYuICBJdCBpcyBndWFyYW50
-ZWVkIGttYWxsb2MnZWQgbWVtb3J5IGlzIGFsaWduZWQNCj4gPiB3aXRoIEFSQ0hfRE1BX01JTkFM
-SUdOLg0KPiANCj4gTWF5YmUgSSdtIHdyb25nLCBidXQgQUZBSVUsIGttYWxsb2MmY28gZG8gbm90
-IGd1YXJhbnRlZSBjYWNoZSBsaW5lDQo+IGFsaWdubWVudCBmb3Igc21hbGwgYnVmZmVycyAoPCBj
-YWNoZSBsaW5lKSwgc28gZXZlbiBrbWFsbG9jIGNhbiByZXR1cm4NCj4gYSBidWZmZXIgdGhhdCBp
-cyBub3QgY2FjaGUgbGluZSBhbGlnbmVkLg0KPiBUaGlzIGJlaW5nIHNhaWQsIHdlIHNob3VsZCBi
-ZSBnb29kIGJlY2F1c2UgbW9zdCBOQU5EIGNvbnRyb2xsZXJzIGFyZQ0KPiBvbmx5IG1hbmlwdWxh
-dGluZyB0aGUgcGFnZSBidWZmZXIgKC0+ZGF0YWJ1Zikgd2hpY2ggaXMgbGFyZ2UgZW5vdWdoIHRv
-DQo+IGJlIGNhY2hlIGxpbmUgYWxpZ25lZC4NCg0KDQpJbiBteSB1bmRlcnN0YW5kaW5nIGttYWxs
-b2MoKSByZXR1cm5zIGNhY2hlIGFsaWduZWQgYWRkcmVzcyBldmVuIGZvciAxIGJ5dGUgbWVtb3J5
-Lg0KDQpDYW4geW91IHJlYWQgdGhlIGZvbGxvd2luZyBwYXJ0IG9mIERvY3VtZW50YXRpb24vRE1B
-LUFQSS1IT1dUTy50eHQ/DQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLT44
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KMikgQVJDSF9ETUFfTUlO
-QUxJR04NCg0KICAgQXJjaGl0ZWN0dXJlcyBtdXN0IGVuc3VyZSB0aGF0IGttYWxsb2MnZWQgYnVm
-ZmVyIGlzDQogICBETUEtc2FmZS4gRHJpdmVycyBhbmQgc3Vic3lzdGVtcyBkZXBlbmQgb24gaXQu
-IElmIGFuIGFyY2hpdGVjdHVyZQ0KICAgaXNuJ3QgZnVsbHkgRE1BLWNvaGVyZW50IChpLmUuIGhh
-cmR3YXJlIGRvZXNuJ3QgZW5zdXJlIHRoYXQgZGF0YSBpbg0KICAgdGhlIENQVSBjYWNoZSBpcyBp
-ZGVudGljYWwgdG8gZGF0YSBpbiBtYWluIG1lbW9yeSksDQogICBBUkNIX0RNQV9NSU5BTElHTiBt
-dXN0IGJlIHNldCBzbyB0aGF0IHRoZSBtZW1vcnkgYWxsb2NhdG9yDQogICBtYWtlcyBzdXJlIHRo
-YXQga21hbGxvYydlZCBidWZmZXIgZG9lc24ndCBzaGFyZSBhIGNhY2hlIGxpbmUgd2l0aA0KICAg
-dGhlIG90aGVycy4gU2VlIGFyY2gvYXJtL2luY2x1ZGUvYXNtL2NhY2hlLmggYXMgYW4gZXhhbXBs
-ZS4NCg0KICAgTm90ZSB0aGF0IEFSQ0hfRE1BX01JTkFMSUdOIGlzIGFib3V0IERNQSBtZW1vcnkg
-YWxpZ25tZW50DQogICBjb25zdHJhaW50cy4gWW91IGRvbid0IG5lZWQgdG8gd29ycnkgYWJvdXQg
-dGhlIGFyY2hpdGVjdHVyZSBkYXRhDQogICBhbGlnbm1lbnQgY29uc3RyYWludHMgKGUuZy4gdGhl
-IGFsaWdubWVudCBjb25zdHJhaW50cyBhYm91dCA2NC1iaXQNCiAgIG9iamVjdHMpLg0KLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tPjgtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tDQoNCg0KDQoNCg0KDQo+IEFueXdheSwgSSdtIG5vdCBkaXNjdXNzaW5n
-IHRoZSBuZWVkIGZvciB0aGlzIHBhdGNoLCBqdXN0IHRoZSByZWFzb25zIHdlDQo+IG5lZWQgaXQg
-Oy0pLg0KPiANCj4gVG8gbWUsIGl0J3MgbW9yZSB0aGF0IHdlIHdhbnQgdG8gc3VwcG9ydCBhcyBt
-YW55IGNhc2VzIGFzIHBvc3NpYmxlLCBubw0KPiBtYXR0ZXIgdGhlIERNQSBjb250cm9sbGVyIHJl
-cXVpcmVtZW50cywgYW5kIGFsbG9jYXRpbmcgZWFjaCBidWZmZXINCj4gaW5kZXBlbmRlbnRseSBh
-bGxvd3MgdXMgdG8gZG8gdGhhdCBmb3IgYWxtb3N0IG5vIG92ZXJoZWFkLg0KPiANCj4gSG93IGFi
-b3V0IHNpbXBsaWZ5aW5nIHRoZSBjb21taXQgbWVzc2FnZSB0byBvbmx5IGZvY3VzIG9uIHdoYXQg
-dGhpcw0KPiBwYXRjaCBpcyByZWFsbHkgZml4aW5nL2ltcHJvdmluZz8NCg0KDQpJIGFtIE9LIHRv
-IHJld29yZCB0aGUgZ2l0LWxvZywNCmJ1dCBjYW4geW91IHJlYWQgdGhlIHJlZmVyZW5jZXMgSSBz
-dWdnZXN0ZWQgZmlyc3Q/DQoNClBsZWFzZSBsZXQgbWUga25vdyBpZiB5b3Ugc3VzcGljaW91cyBz
-b21ldGhpbmcuDQoNCk1hc2FoaXJvDQoNCg0KDQoNCg0KPiAiDQo+IFNvbWUgTkFORCBjb250cm9s
-bGVycyBhcmUgdXNpbmcgRE1BIGVuZ2luZSByZXF1aXJpbmcgYSBzcGVjaWZpYyBidWZmZXINCj4g
-YWxpZ25tZW50LiBUaGUgY29yZSBwcm92aWRlcyBubyBndWFyYW50ZWUgb24gdGhlIG5hbmRfYnVm
-ZmVycyBwb2ludGVycywNCj4gd2hpY2ggZm9yY2VzIHNvbWUgZHJpdmVycyB0byBhbGxvY2F0ZSB0
-aGVpciBvd24gYnVmZmVycyBhbmQgcGFzcyB0aGUNCj4gTkFORF9PV05fQlVGRkVSUyBmbGFnLg0K
-PiANCj4gUmV3b3JrIHRoZSBuYW5kX2J1ZmZlcnMgYWxsb2NhdGlvbiBsb2dpYyB0byBhbGxvY2F0
-ZSBlYWNoIGJ1ZmZlcg0KPiBpbmRlcGVuZGVudGx5LiBUaGlzIHNob3VsZCBtYWtlIG1vc3QgTkFO
-RCBjb250cm9sbGVycy9ETUEgZW5naW5lDQo+IGhhcHB5LCBhbmQgYWxsb3cgdXMgdG8gZ2V0IHJp
-ZCBvZiB0aGVzZSBjdXN0b20gYnVmIGFsbG9jYXRpb24gaW4gTkFORA0KPiBjb250cm9sbGVyIGRy
-aXZlcnMuDQo+ICINCj4gDQo+ID4gVGhpcyBpcyBlbm91Z2ggZm9yIG1vc3QgZHJpdmVycyBiZWNh
-dXNlDQo+ID4gaXQgaXMgcmFyZSB0aGF0IERNQSBlbmdpbmVzIHJlcXVpcmUgbGFyZ2VyIGFsaWdu
-bWVudCB0aGFuIENQVSdzDQo+ID4gY2FjaGUgbGluZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
-IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5jb20+DQo+ID4gLS0t
-DQo+ID4NCj4gPiBDaGFuZ2VzIGluIHYyOg0KPiA+ICAgLSBOZXdseSBhZGRlZA0KPiA+DQo+ID4g
-IGRyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMgfCAzNCArKysrKysrKysrKysrKysrKysrKysr
-KysrKystLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyNyBpbnNlcnRpb25zKCspLCA3IGRl
-bGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9i
-YXNlLmMNCj4gYi9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jDQo+ID4gaW5kZXggZTEzZjk1
-OS4uNmZjMDQyMiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5j
-DQo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYw0KPiA+IEBAIC00NjE0LDEz
-ICs0NjE0LDI1IEBAIGludCBuYW5kX3NjYW5fdGFpbChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkNCj4g
-PiAgCX0NCj4gPg0KPiA+ICAJaWYgKCEoY2hpcC0+b3B0aW9ucyAmIE5BTkRfT1dOX0JVRkZFUlMp
-KSB7DQo+ID4gLQkJbmJ1ZiA9IGt6YWxsb2Moc2l6ZW9mKCpuYnVmKSArIG10ZC0+d3JpdGVzaXpl
-DQo+ID4gLQkJCQkrIG10ZC0+b29ic2l6ZSAqIDMsIEdGUF9LRVJORUwpOw0KPiA+ICsJCW5idWYg
-PSBremFsbG9jKHNpemVvZigqbmJ1ZiksIEdGUF9LRVJORUwpOw0KPiA+ICAJCWlmICghbmJ1ZikN
-Cj4gPiAgCQkJcmV0dXJuIC1FTk9NRU07DQo+ID4gLQkJbmJ1Zi0+ZWNjY2FsYyA9ICh1aW50OF90
-ICopKG5idWYgKyAxKTsNCj4gPiAtCQluYnVmLT5lY2Njb2RlID0gbmJ1Zi0+ZWNjY2FsYyArIG10
-ZC0+b29ic2l6ZTsNCj4gPiAtCQluYnVmLT5kYXRhYnVmID0gbmJ1Zi0+ZWNjY29kZSArIG10ZC0+
-b29ic2l6ZTsNCj4gPiArCQluYnVmLT5lY2NjYWxjID0ga21hbGxvYyhtdGQtPm9vYnNpemUsIEdG
-UF9LRVJORUwpOw0KPiA+ICsJCWlmICghbmJ1Zi0+ZWNjY2FsYykgew0KPiA+ICsJCQlyZXQgPSAt
-RUlOVkFMOw0KPiA+ICsJCQlnb3RvIGVycl9mcmVlOw0KPiA+ICsJCX0NCj4gPiArCQluYnVmLT5l
-Y2Njb2RlID0ga21hbGxvYyhtdGQtPm9vYnNpemUsIEdGUF9LRVJORUwpOw0KPiA+ICsJCWlmICgh
-bmJ1Zi0+ZWNjY29kZSkgew0KPiA+ICsJCQlyZXQgPSAtRUlOVkFMOw0KPiA+ICsJCQlnb3RvIGVy
-cl9mcmVlOw0KPiA+ICsJCX0NCj4gPiArCQluYnVmLT5kYXRhYnVmID0ga21hbGxvYyhtdGQtPndy
-aXRlc2l6ZSArIG10ZC0+b29ic2l6ZSwNCj4gPiArCQkJCQlHRlBfS0VSTkVMKTsNCj4gPiArCQlp
-ZiAoIW5idWYtPmRhdGFidWYpIHsNCj4gPiArCQkJcmV0ID0gLUVJTlZBTDsNCj4gPiArCQkJZ290
-byBlcnJfZnJlZTsNCj4gPiArCQl9DQo+ID4NCj4gPiAgCQljaGlwLT5idWZmZXJzID0gbmJ1ZjsN
-Cj4gPiAgCX0gZWxzZSB7DQo+ID4gQEAgLTQ4NjMsOCArNDg3NSwxMiBAQCBpbnQgbmFuZF9zY2Fu
-X3RhaWwoc3RydWN0IG10ZF9pbmZvICptdGQpDQo+ID4gIAkvKiBCdWlsZCBiYWQgYmxvY2sgdGFi
-bGUgKi8NCj4gPiAgCXJldHVybiBjaGlwLT5zY2FuX2JidChtdGQpOw0KPiA+ICBlcnJfZnJlZToN
-Cj4gPiAtCWlmICghKGNoaXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSkNCj4gPiArCWlm
-ICghKGNoaXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSkgew0KPiA+ICsJCWtmcmVlKGNo
-aXAtPmJ1ZmZlcnMtPmRhdGFidWYpOw0KPiA+ICsJCWtmcmVlKGNoaXAtPmJ1ZmZlcnMtPmVjY2Nv
-ZGUpOw0KPiA+ICsJCWtmcmVlKGNoaXAtPmJ1ZmZlcnMtPmVjY2NhbGMpOw0KPiA+ICAJCWtmcmVl
-KGNoaXAtPmJ1ZmZlcnMpOw0KPiA+ICsJfQ0KPiA+ICAJcmV0dXJuIHJldDsNCj4gPiAgfQ0KPiA+
-ICBFWFBPUlRfU1lNQk9MKG5hbmRfc2Nhbl90YWlsKTsNCj4gPiBAQCAtNDkxNSw4ICs0OTMxLDEy
-IEBAIHZvaWQgbmFuZF9jbGVhbnVwKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApDQo+ID4NCj4gPiAg
-CS8qIEZyZWUgYmFkIGJsb2NrIHRhYmxlIG1lbW9yeSAqLw0KPiA+ICAJa2ZyZWUoY2hpcC0+YmJ0
-KTsNCj4gPiAtCWlmICghKGNoaXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSkNCj4gPiAr
-CWlmICghKGNoaXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSkgew0KPiA+ICsJCWtmcmVl
-KGNoaXAtPmJ1ZmZlcnMtPmRhdGFidWYpOw0KPiA+ICsJCWtmcmVlKGNoaXAtPmJ1ZmZlcnMtPmVj
-Y2NvZGUpOw0KPiA+ICsJCWtmcmVlKGNoaXAtPmJ1ZmZlcnMtPmVjY2NhbGMpOw0KPiA+ICAJCWtm
-cmVlKGNoaXAtPmJ1ZmZlcnMpOw0KPiA+ICsJfQ0KPiA+DQo+ID4gIAkvKiBGcmVlIGJhZCBibG9j
-ayBkZXNjcmlwdG9yIG1lbW9yeSAqLw0KPiA+ICAJaWYgKGNoaXAtPmJhZGJsb2NrX3BhdHRlcm4g
-JiYgY2hpcC0+YmFkYmxvY2tfcGF0dGVybi0+b3B0aW9ucw0KDQo=
+Hi Marek,
+
+
+On Thu, Mar 23, 2017 at 7:13 PM, Marek Vasut <marex@denx.de> wrote:
+> On 03/23/2017 10:43 AM, Peter Pan wrote:
+>> Iterate nand pages by both page and oob operation.
+>>
+>> Signed-off-by: Peter Pan <peterpandong@micron.com>
+>> ---
+>>  include/linux/mtd/nand.h | 38 +++++++++++++++++++++++++++++++-------
+>>  1 file changed, 31 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+>> index c2197b4..54ded4c 100644
+>> --- a/include/linux/mtd/nand.h
+>> +++ b/include/linux/mtd/nand.h
+>> @@ -84,9 +84,12 @@ struct nand_device {
+>>   * @pageoffset: the offset within a page
+>>   */
+>>  struct nand_page_iter {
+>> -     loff_t offs;
+>>       int page;
+>>       int pageoffs;
+>> +     size_t dataleft;
+>> +     int ooboffs;
+>> +     int oobsize;
+>> +     size_t oobleft;
+>>  };
+>>
+>>  /**
+>> @@ -193,14 +196,19 @@ static inline int nand_per_page_oobsize(struct nand_device *nand)
+>>   * @offs: absolute offset
+>>   * @iter: page iterator
+>>   */
+>> -static inline void nand_page_iter_init(struct nand_device *nand, loff_t offs,
+>> +static inline void nand_page_iter_init(struct nand_device *nand,
+>> +                                    loff_t offs, size_t len, u32 ooboffs,
+>> +                                    size_t ooblen, u32 oobsize,
+>>                                      struct nand_page_iter *iter)
+>>  {
+>>       u64 page = offs;
+>>
+>>       iter->pageoffs = do_div(page, nand->memorg.pagesize);
+>>       iter->page = page;
+>> -     iter->offs = offs;
+>> +     iter->dataleft = len;
+>> +     iter->ooboffs = ooboffs;
+>> +     iter->oobsize = oobsize;
+>> +     iter->oobleft = ooblen;
+>>  }
+>>
+>>  /**
+>> @@ -212,13 +220,29 @@ static inline void nand_page_iter_next(struct nand_device *nand,
+>>                                      struct nand_page_iter *iter)
+>>  {
+>>       iter->page++;
+>> -     iter->offs += nand_page_size(nand) - iter->pageoffs;
+>>       iter->pageoffs = 0;
+>> +     if (iter->dataleft)
+>> +             iter->dataleft -= min_t (int,
+>                                          ^^^
+>                                          shouldn't this be size_t ?
+
+Yes, you are right, Fix this in v5
+
+>
+>> +                                      nand_page_size(nand) - iter->pageoffs,
+>> +                                      iter->dataleft);
+>> +     if (iter->oobleft)
+>> +             iter->oobleft -= min_t(int, iter->oobsize - iter->ooboffs,
+>
+> DTTO here ?
+
+Fix this in v5
+
+>
+>> +                                    iter->oobleft);
+>> +}
+>> +
+>> +static inline bool nand_page_iter_end(struct nand_device *nand,
+>> +                                   struct nand_page_iter *iter)
+>> +{
+>> +     if (iter->dataleft || iter->oobleft)
+>> +             return false;
+>> +     return true;
+>>  }
+>>
+>> -#define nand_for_each_page(nand, start, len, iter)           \
+>> -     for (nand_page_iter_init(nand, start, iter);            \
+>> -          (iter)->offs < (start) + (len);                    \
+>> +#define nand_for_each_page(nand, start, len, ooboffs, ooblen,        \
+>> +                        oobsize, iter)       \
+>
+> What's the difference between ooblen and oobsize ? That is totally
+> confusing , so add a comment explaining that ...
+
+Yes, A comment is needed. Fix this in v5
+
+Thanks
+Peter Pan
+
+>
+>> +     for (nand_page_iter_init(nand, start, len, ooboffs,     \
+>> +                              ooblen, oobsize, iter);        \
+>> +          !nand_page_iter_end(nand, iter);           \
+>>            nand_page_iter_next(nand, iter))
+>>
+>>  /**
+>>
+>
+>
+> --
+> Best regards,
+> Marek Vasut
