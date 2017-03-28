@@ -1,21 +1,15 @@
-Received: from secvs02.rockwellcollins.com ([205.175.225.241])
+Received: from mail-pg0-x231.google.com ([2607:f8b0:400e:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1csrdj-0008DV-St
- for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 13:58:31 +0000
-Received: by mail-it0-f72.google.com with SMTP id 133so15173480itu.17
- for <linux-mtd@lists.infradead.org>; Tue, 28 Mar 2017 06:58:02 -0700 (PDT)
+ id 1cstHH-0004XY-4B
+ for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 15:43:25 +0000
+Received: by mail-pg0-x231.google.com with SMTP id 81so61787689pgh.2
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Mar 2017 08:43:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c9b139cc-7bf0-836d-69cf-4889a6c35ec2@nod.at>
-References: <CADFuHZ6xb=M_zRkktnq2b8QBOhq-WDsqgzViPHU1g8Gj9M3E-g@mail.gmail.com>
- <CAFLxGvx6S8V7c8YYR2-G7+hDDcRi-0Cnk+EWeWWN9i2oy-DVvQ@mail.gmail.com>
- <CADFuHZ54cG32S1-3PA5q_5P1od1rBa5=3YeB1jLhB+Jzm2f0Ng@mail.gmail.com>
- <c9b139cc-7bf0-836d-69cf-4889a6c35ec2@nod.at>
-From: Ronak Desai <ronak.desai@rockwellcollins.com>
-Date: Tue, 28 Mar 2017 08:58:01 -0500
-Message-ID: <CADFuHZ6oRRKFnbvJqQDywaLO=P=WR+q33AAve=y5AmdVkeUKPQ@mail.gmail.com>
-Subject: Re: Regarding UBI fastmap data CRC failure
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Adam Ford <aford173@gmail.com>
+Date: Tue, 28 Mar 2017 10:43:01 -0500
+Message-ID: <CAHCN7xJoVF+3HjHwaS_U=jDqmU_Yv201KJSQ2s8N0gSNVR8pdQ@mail.gmail.com>
+Subject: Passing NAND mtdparts to OMAP2+ Kernel
+To: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,70 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 22, 2017 at 5:49 PM, Richard Weinberger <richard@nod.at> wrote:
-> Ronak Desai,
->
-> Am 21.03.2017 um 17:31 schrieb Ronak Desai:
->> On Mon, Mar 20, 2017 at 5:56 PM, Richard Weinberger
->> <richard.weinberger@gmail.com> wrote:
->>> On Mon, Mar 20, 2017 at 10:47 PM, Ronak Desai
->>> <ronak.desai@rockwellcollins.com> wrote:
->>>> Hi All,
->>>>
->>>> In one of the products with MLC NAND flash, we are using UBI
->>>> filesystem with kernel 3.12.
->>>
->>> MLC NAND is currently not supported.
->>
->> First of all, thanks for your response and your truly amazing
->> contribution in UBI.
->
-> Thanks. :-)
->
->> I know that UBIFS requires a whole lot of changes to handle "program
->> disturb", "read distrurb" and "paired pages" problem on MLC NANDs.
->> But, apart from this, we have makesure that we use 256 wear-leveling
->> threshold.
->
-> How do you handle paired pages?
-> A powercut can still damage UBI and UBIFS.
->
-We received patch-sets from Micron for paired page issue.
-> [...]
->
->> That is true that our kernel is old but at this point and time it's
->> not a viable options for us to upgrade the kernel version. And agree
->> with your point about MLC but in months of use, we have seen this
->> continuous fastmap failure issue only once and apart from that UBIFS
->> works without any other issues.
->>
->> I see your changes on base fastmap implementation, which I am planning
->> to backport but it will be really difficult to backport the whole UBI
->> subsystem. So, if you can point to specific patches/changes to avoid
->> "fastmap data CRC failure" issue then it will be a great help.
->
-> I fear it is not that easy. Fastmap saw many fixes and improvements
-> other the time. The first version was rather buggy.
-> And we made a stupid mistake at the beginning, we did not mark fixes
-> for stable processing since Fastmap was considered
-> as experimental. That's why you can't just backport all patches that
-> have a stable tag.
-> On the other hand, backporting the whole UBI subsystem is not that
-> complicated. It has very few dependencies.
-> U-Boot folks do this on a regular basis.
->
-So, I found out a way to reproduce and fix it. If I powercycle around
-the time when UBI performs recovery then it ends up with the CRC
-failure issue and it can not recover from it. This behavior is with
-3.12 kernel. Then I started patching UBI with the fixes related to
-fastmap and fastmap WL, and got a state where UBI encounters the same
-problem but on subsequent boot it recovers from it.
+I posted this on the linux-omap list, and I was asked to post this on
+the linux-mtd list:
 
-I need to perform more testing to finalize the changes though. I
-appreciate your time for answering my questions.
 
-Thanks,
-Ronak
+I tried to remove the MTD partitions from the Linux device tree, and I
+noticed that there was no partition information being pushed anymore
+unless I changed the mtdparts name in U-Boot.
 
-> HTH,
-> //richard
+It appears as if the MTD drivers have changed a bit.  I found a few
+e-mails floating around that attempt to fix this
+
+Commit f7a8e38f07a17be907585 ("mtd: nand: assign reasonable default
+name for NAND drivers") attempts to address this, and someone over at
+https://patchwork.ozlabs.org/patch/707065/ attempted to address it as
+well in a slightly different way.
+
+Both of them refer to the same commit: 853f1c58c4b2 ("mtd: nand:
+omap2: show parent device structure in sysfs") as the source for the
+issue.
+
+It now appears as if the name "omap2-nand.0" was replaced with
+"30000000.nand"  Is this intentional? It seems like a lot of people
+will have to update their bootloaders if they want to pass 'mtdparts'
+from the bootloader to the kernel.
+
+I am not a member of the MTD mailing list, so maybe this is more
+properly sent over there, but since it's an OMAP related thing, I
+thought I'd post it here.  My other ARM boards don't appear to be
+impacted.  If the trend is to not pass the partition info from U-boot,
+I can live with that too.  I was just more curious to know what the
+long term plan is and what solution is recommended.
+
+I have verified this in 4.11-RC4 and 4.9.18
+
+adam
