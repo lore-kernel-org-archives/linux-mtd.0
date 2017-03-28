@@ -1,21 +1,30 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1csm4L-0001Df-ER
- for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 08:01:35 +0000
-Received: by mail-lf0-x244.google.com with SMTP id r36so9680434lfi.0
- for <linux-mtd@lists.infradead.org>; Tue, 28 Mar 2017 01:01:12 -0700 (PDT)
-Date: Tue, 28 Mar 2017 10:01:07 +0200
-From: Ralph Sennhauser <ralph.sennhauser@gmail.com>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- regressions@leemhuis.info
-Subject: [REGRESSION 4.11] Commit d8514d8edb5b ("ovl: copy up regular file
- using O_TMPFILE") breaks ubifs
-Message-ID: <20170328100107.25095af6@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1csmAK-0003wB-P9
+ for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 08:07:51 +0000
+Date: Tue, 28 Mar 2017 10:07:21 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: <yamada.masahiro@socionext.com>
+Cc: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
+ <marek.vasut@gmail.com>, <computersforpeace@gmail.com>,
+ <thorsten.christiansson@idquantique.com>, <laurent.monat@idquantique.com>,
+ <dinguyen@kernel.org>, <artem.bityutskiy@linux.intel.com>,
+ <grmoore@opensource.altera.com>, <ejo@pengutronix.de>,
+ <chuanxiao.dong@intel.com>, <mhiramat@kernel.org>,
+ <jaswinder.singh@linaro.org>, <robh@kernel.org>, Russell King - ARM Linux
+ <linux@armlinux.org.uk>
+Subject: Re: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+Message-ID: <20170328100721.0918dbda@bbrezillon>
+In-Reply-To: <20170328095907.76d02ce9@bbrezillon>
+References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
+ <20170327100039.480b8d8d@bbrezillon>
+ <831da313d194457db7bd02fd8ea5b291@SOC-EX02V.e01.socionext.com>
+ <20170328095907.76d02ce9@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +34,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Amir
+On Tue, 28 Mar 2017 09:59:07 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-Commit d8514d8edb5b ("ovl: copy up regular file using O_TMPFILE")
-breaks squashfs with an ubifs overlay (both ubi volumes of the same
-container).
+> +Russell to correct me if I'm wrong or give further information.
+>=20
+> On Tue, 28 Mar 2017 01:13:10 +0000
+> <yamada.masahiro@socionext.com> wrote:
+>=20
+> > Hi Boris,
+> >=20
+> >  =20
+> > > -----Original Message-----
+> > > From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> > > Sent: Monday, March 27, 2017 5:01 PM
+> > > To: Yamada, Masahiro/=E5=B1=B1=E7=94=B0 =E7=9C=9F=E5=BC=98 <yamada.ma=
+sahiro@socionext.com>
+> > > Cc: linux-mtd@lists.infradead.org; David Woodhouse
+> > > <dwmw2@infradead.org>; Marek Vasut <marek.vasut@gmail.com>; Brian Nor=
+ris
+> > > <computersforpeace@gmail.com>; thorsten.christiansson@idquantique.com;
+> > > laurent.monat@idquantique.com; Dinh Nguyen <dinguyen@kernel.org>; Art=
+em
+> > > Bityutskiy <artem.bityutskiy@linux.intel.com>; Graham Moore
+> > > <grmoore@opensource.altera.com>; Enrico Jorns <ejo@pengutronix.de>;
+> > > Chuanxiao Dong <chuanxiao.dong@intel.com>; Masami Hiramatsu
+> > > <mhiramat@kernel.org>; Jassi Brar <jaswinder.singh@linaro.org>; Rob
+> > > Herring <robh@kernel.org>
+> > > Subject: Re: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buff=
+ers
+> > > if NAND_OWN_BUFFERS is unset
+> > >=20
+> > > Hi Masahiro,
+> > >=20
+> > > On Thu, 23 Mar 2017 09:17:59 +0900
+> > > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> > >    =20
+> > > > Commit 66507c7bc889 ("mtd: nand: Add support to use nand_base poi
+> > > > databuf as bounce buffer") fixed the issue that drivers can be
+> > > > passed with a kmap()'d buffer.  This addressed the use_bufpoi =3D 0
+> > > > case.
+> > > >
+> > > > When use_bufpoi =3D 1, chip->buffers->databuf is used.  The databuf
+> > > > allocated by nand_scan_tail() is not suitable for DMA due to the
+> > > > offset, sizeof(*chip->buffers).   =20
+> > >=20
+> > > As said earlier, I'm fine with the patch content, but I'm not sure
+> > > about your explanation. Alignment requirements are DMA controller
+> > > dependent so you're not exactly fixing a bug for all NAND controller
+> > > drivers, just those that require >4 bytes alignment.   =20
+> >=20
+> >=20
+> > We have two contexts when we talk about alignment for DMA:
+> >=20
+> > [A] Requirement by CPU architecture  (cache alignment)
+> > [B] Requirement by the controller's DMA engine
+> >=20
+> >=20
+> > As I will state below, having sizeof(*chip->buffers) in the same cache
+> > line is no good.  This is the same reason as devm_* is not recommended =
+for DMA.
+> > (https://lkml.org/lkml/2017/3/8/693) =20
+>=20
+> Having non-cache line aligned buffers is definitely more dangerous,
+> but, AFAIU, it's not impossible.
+>=20
+> Let's consider this case:
+>=20
+>=20
+> |        cache line        |        cache line        | ... |
+> -------------------------------------------------------------
+> | nand_buffers size |                    data               |
+>=20
+>=20
+> If you call dma_map_single(dev, data, size, DMA_TO_DEVICE), the first
+> cache line will be flushed (content written back to memory), and
+> assuming you don't touch nand_buffers content between dma_map_single()
+> and dma_unmap_single() you shouldn't have any problem (the cache line
+> cannot magically turn dirty and thus cannot be flushed in the
+> background).
+>=20
+> For the DMA_FROM_DEVICE direction, the cache line is invalidated when
+> dma_unmap_single() is called, which means your nand_buffers content
+> might be updated with what is present in SDRAM, but it shouldn't have
+> changed since nand_buffers is only touched at initialization time (when
+> the buffer is created).
+>=20
+> So, for our use case where nand_buffers is never modified between
+> dma_map_single() and dma_unmap_single(), it should be safe to have
+> non-cache line aligned buffers.
+>=20
+> Russell, please let me know if my reasoning is incorrect.
+> Note that I'm not arguing against the new approach where we allocate
+> each buffer independently using kmalloc (having cache line aligned
+> buffers is definitely safer and does not imply any significant
+> overhead), I just want to make sure I understand things correctly.
+>=20
+> >=20
+> >=20
+> > The current situation violates [A]. =20
+>=20
+> Do you have a real failure that is proven to be caused by mis cache
+> line alignment, or are you just speculating?
+>=20
+> >=20
+> > Usually [B] is less than [A]. =20
+>=20
+> Yep, it's likely the case.
+>=20
+> > So, if we meet [A] (by using kmalloc), [B] will be met as well. =20
+>=20
+> Sure.
+>=20
+> >=20
+> >=20
+> >  =20
+> > > Regarding the cache line alignment issue, in this case it shouldn't be
+> > > a problem, because the driver and the core shouldn't touch the
+> > > chip->buffers object during a DMA transfer, so dma_map/unmap_single()
+> > > should work fine (they may flush/invalidate one cache line entry that
+> > > contains non-payload data, but that's not a problem as long as nothing
+> > > is modified during the DMA transfer).   =20
+> >=20
+> >=20
+> > This is related to 52/53:
+> > http://patchwork.ozlabs.org/patch/742409/
+> >=20
+> > Can you also read this?
+> > https://lkml.org/lkml/2017/3/8/693
+> >=20
+> > Your comment is very similar to what was discussed in the thread. =20
+>=20
+> I read it.
+>=20
+> >=20
+> >=20
+> >  =20
+> > > >
+> > > > So, drivers using DMA are very likely to end up with setting the
+> > > > NAND_OWN_BUFFERS flag and allocate buffers by themselves.  Drivers
+> > > > tend to use devm_k*alloc to simplify the probe failure path, but
+> > > > devm_k*alloc() does not return a cache line aligned buffer.   =20
+> > >=20
+> > > Oh, I didn't know that. I had a closer look at the code, and indeed,
+> > > devm_kmalloc() does not guarantee any alignment.
+> > >    =20
+> > > >
+> > > > If used, it could violate the DMA-API requirement stated in
+> > > > Documentation/DMA-API.txt:
+> > > >   Warnings:  Memory coherency operates at a granularity called the
+> > > >   cache line width.  In order for memory mapped by this API to
+> > > >   operate correctly, the mapped region must begin exactly on a cache
+> > > >   line boundary and end exactly on one (to prevent two separately
+> > > >   mapped regions from sharing a single cache line).
+> > > >
+> > > > To sum up, NAND_OWN_BUFFERS is not very convenient for drivers.
+> > > > nand_scan_tail() can give a separate buffer for each of ecccalc,
+> > > > ecccode, databuf.  It is guaranteed kmalloc'ed memory is aligned
+> > > > with ARCH_DMA_MINALIGN.   =20
+> > >=20
+> > > Maybe I'm wrong, but AFAIU, kmalloc&co do not guarantee cache line
+> > > alignment for small buffers (< cache line), so even kmalloc can return
+> > > a buffer that is not cache line aligned.
+> > > This being said, we should be good because most NAND controllers are
+> > > only manipulating the page buffer (->databuf) which is large enough to
+> > > be cache line aligned.   =20
+> >=20
+> >=20
+> > In my understanding kmalloc() returns cache aligned address even for 1 =
+byte memory. =20
+>=20
+> After digging into the SLAB code I found the calculate_alignment()
+> function [1] which is used to calculate the required alignment of
+> objects provided by a SLAB cache. For kmalloc caches SLAB_HWCACHE_ALIGN
+> is set, but if you look at the code, if the object size is smaller
+> than half a cache line the alignment constraint is relaxed, meaning that
+> elements smaller than cache_line/2 are not guaranteed to be aligned on
+> a cache line.
 
-Renaming a file results in an error "UBIFS error (ubi0:1 pid 1394):
-ubifs_add_orphan: orphaned twice". This corrupts the the filesystem and
-the next attempt to mount the overlay will fail.
-
-Regards
-Ralph
-
-
-Bisect log:
-
-  git bisect start
-  # bad: [c02ed2e75ef4c74e41e421acb4ef1494671585e8] Linux 4.11-rc4
-  git bisect bad c02ed2e75ef4c74e41e421acb4ef1494671585e8
-  # good: [c470abd4fde40ea6a0846a2beab642a578c0b8cd] Linux 4.10
-  git bisect good c470abd4fde40ea6a0846a2beab642a578c0b8cd
-  # good: [bc49a7831b1137ce1c2dda1c57e3631655f5d2ae] Merge branch 'akpm' (patches from Andrew)
-  git bisect good bc49a7831b1137ce1c2dda1c57e3631655f5d2ae
-  # good: [738bc38d49e017fe7acb3596712518e22c225816] kernel/ksysfs.c: add __ro_after_init to bin_attribute structure
-  git bisect good 738bc38d49e017fe7acb3596712518e22c225816
-  # good: [3f80dd67c367878aaad16e458eebc3c8980bb841] Merge tag 'acpi-extra-4.11-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-  git bisect good 3f80dd67c367878aaad16e458eebc3c8980bb841
-  # bad: [4495c08e84729385774601b5146d51d9e5849f81] Linux 4.11-rc2
-  git bisect bad 4495c08e84729385774601b5146d51d9e5849f81
-  # bad: [2d62e0768d3c28536d4cfe4c40ba1e5e8e442a93] Merge tag 'kvm-4.11-2' of git://git.kernel.org/pub/scm/virt/kvm/kvm
-  git bisect bad 2d62e0768d3c28536d4cfe4c40ba1e5e8e442a93
-  # good: [1827adb11ad26b2290dc9fe2aaf54976b2439865] Merge branch 'WIP.sched-core-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-  git bisect good 1827adb11ad26b2290dc9fe2aaf54976b2439865
-  # bad: [0b94da8dfc26ec2eb3e6640726e434abf8c53e49] Merge branch 'libnvdimm-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
-  git bisect bad 0b94da8dfc26ec2eb3e6640726e434abf8c53e49
-  # bad: [0a040b2113ec226bcf56fcbe02d035bb5b30c35e] Merge branch 'for-next' of git://git.samba.org/sfrench/cifs-2.6
-  git bisect bad 0a040b2113ec226bcf56fcbe02d035bb5b30c35e
-  # good: [590dce2d4934fb909b112cd80c80486362337744] Merge branch 'rebased-statx' of git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs
-  git bisect good 590dce2d4934fb909b112cd80c80486362337744
-  # bad: [4e66c42c60fdf9be81837857454a41b39bf1b773] Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse
-  git bisect bad 4e66c42c60fdf9be81837857454a41b39bf1b773
-  # bad: [e593b2bf513dd4d3fbfa0f435392eea2c7f776f0] ovl: properly implement sync_filesystem()
-  git bisect bad e593b2bf513dd4d3fbfa0f435392eea2c7f776f0
-  # bad: [d8514d8edb5b045cf7f708e14f888ce760d60f0b] ovl: copy up regular file using O_TMPFILE
-  git bisect bad d8514d8edb5b045cf7f708e14f888ce760d60f0b
-  # good: [42f269b925405d9dd45014823e5057786d6ca452] ovl: rearrange code in ovl_copy_up_locked()
-  git bisect good 42f269b925405d9dd45014823e5057786d6ca452
-  # first bad commit: [d8514d8edb5b045cf7f708e14f888ce760d60f0b] ovl: copy up regular file using O_TMPFILE
+Hm, it seems that alignment for kmalloc SLAB caches is set to
+ARCH_KMALLOC_MINALIGN which is set to ARCH_DMA_MINALIGN by default and
+ARCH_DMA_MINALIGN is usually equal to the L1 cache line size, so I was
+wrong here.
