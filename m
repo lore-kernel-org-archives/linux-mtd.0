@@ -1,28 +1,29 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1csg6D-0007qW-GT
- for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 01:39:07 +0000
-Received: by mail-lf0-x242.google.com with SMTP id v2so9035987lfi.2
- for <linux-mtd@lists.infradead.org>; Mon, 27 Mar 2017 18:38:44 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1csm2M-00082Y-8j
+ for linux-mtd@lists.infradead.org; Tue, 28 Mar 2017 07:59:33 +0000
+Date: Tue, 28 Mar 2017 09:59:07 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: <yamada.masahiro@socionext.com>
+Cc: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
+ <marek.vasut@gmail.com>, <computersforpeace@gmail.com>,
+ <thorsten.christiansson@idquantique.com>, <laurent.monat@idquantique.com>,
+ <dinguyen@kernel.org>, <artem.bityutskiy@linux.intel.com>,
+ <grmoore@opensource.altera.com>, <ejo@pengutronix.de>,
+ <chuanxiao.dong@intel.com>, <mhiramat@kernel.org>,
+ <jaswinder.singh@linaro.org>, <robh@kernel.org>, Russell King - ARM Linux
+ <linux@armlinux.org.uk>
+Subject: Re: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+Message-ID: <20170328095907.76d02ce9@bbrezillon>
+In-Reply-To: <831da313d194457db7bd02fd8ea5b291@SOC-EX02V.e01.socionext.com>
+References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
+ <20170327100039.480b8d8d@bbrezillon>
+ <831da313d194457db7bd02fd8ea5b291@SOC-EX02V.e01.socionext.com>
 MIME-Version: 1.0
-In-Reply-To: <ec582e0d-8aa3-0694-12ed-12173a436bcc@denx.de>
-References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
- <1490262226-29092-9-git-send-email-peterpandong@micron.com>
- <ec582e0d-8aa3-0694-12ed-12173a436bcc@denx.de>
-From: Peter Pan <peterpansjtu@gmail.com>
-Date: Tue, 28 Mar 2017 09:38:43 +0800
-Message-ID: <CAAyFORJdzH4fMXSR1ByTztdh38GFui9bxDqtQyK5K73netDXMg@mail.gmail.com>
-Subject: Re: [PATCH v4 8/9] nand: spi: Add generic SPI controller support
-To: Marek Vasut <marex@denx.de>
-Cc: Peter Pan <peterpandong@micron.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- Arnaud Mouiche <arnaud.mouiche@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- "linshunquan (A)" <linshunquan1@hisilicon.com>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,112 +33,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
++Russell to correct me if I'm wrong or give further information.
 
-On Thu, Mar 23, 2017 at 7:33 PM, Marek Vasut <marex@denx.de> wrote:
-> On 03/23/2017 10:43 AM, Peter Pan wrote:
->> This commit supports to use generic spi controller
->> as spi nand controller.
->>
->> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> [...]
->> +static int gen_spi_spinand_probe(struct spi_device *spi)
->> +{
->> +     struct spinand_device *chip;
->> +     struct gen_spi_spinand_controller *controller;
->> +     struct spinand_controller *spinand_controller;
->> +     int ret;
->> +     u32 max_speed_hz = spi->max_speed_hz;
->> +
->> +     chip = spinand_alloc(&spi->dev);
->> +     if (IS_ERR(chip)) {
->> +             ret = PTR_ERR(chip);
->> +             goto err1;
->> +     }
->> +     controller = kzalloc(sizeof(*controller), GFP_KERNEL);
->> +     if (!controller) {
->> +             ret = -ENOMEM;
->> +             goto err2;
->> +     }
->> +     controller->spi = spi;
->> +     spinand_controller = &controller->ctrl;
->> +     spinand_controller->ops = &gen_spi_spinand_ops;
->> +     spinand_controller->caps = SPINAND_CAP_RD_X1 | SPINAND_CAP_WR_X1;
->> +     if (spi->mode & SPI_RX_QUAD)
->> +             spinand_controller->caps |= SPINAND_CAP_RD_QUAD |
->> +                                         SPINAND_CAP_RD_X4;
->> +     if (spi->mode & SPI_RX_DUAL)
->> +             spinand_controller->caps |= SPINAND_CAP_RD_DUAL |
->> +                                         SPINAND_CAP_RD_X2;
->> +     if (spi->mode & SPI_TX_QUAD)
->> +             spinand_controller->caps |= SPINAND_CAP_WR_QUAD |
->> +                                         SPINAND_CAP_WR_X4;
->> +     if (spi->mode & SPI_TX_DUAL)
->> +             spinand_controller->caps |= SPINAND_CAP_WR_DUAL |
->> +                                         SPINAND_CAP_WR_X2;
->> +     chip->controller.controller = spinand_controller;
->> +     spi_set_drvdata(spi, chip);
->> +     spi->max_speed_hz = min_t(int, 25000000, max_speed_hz);
->
-> Please avoid hard-coding random numbers, make the 25 MHz into a macro
-> and add a comment explaining why you use 25 MHz
+On Tue, 28 Mar 2017 01:13:10 +0000
+<yamada.masahiro@socionext.com> wrote:
 
-Yes, I forgot the comment. Fix this in v5
+> Hi Boris,
+>=20
+>=20
+> > -----Original Message-----
+> > From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> > Sent: Monday, March 27, 2017 5:01 PM
+> > To: Yamada, Masahiro/=E5=B1=B1=E7=94=B0 =E7=9C=9F=E5=BC=98 <yamada.masa=
+hiro@socionext.com>
+> > Cc: linux-mtd@lists.infradead.org; David Woodhouse
+> > <dwmw2@infradead.org>; Marek Vasut <marek.vasut@gmail.com>; Brian Norris
+> > <computersforpeace@gmail.com>; thorsten.christiansson@idquantique.com;
+> > laurent.monat@idquantique.com; Dinh Nguyen <dinguyen@kernel.org>; Artem
+> > Bityutskiy <artem.bityutskiy@linux.intel.com>; Graham Moore
+> > <grmoore@opensource.altera.com>; Enrico Jorns <ejo@pengutronix.de>;
+> > Chuanxiao Dong <chuanxiao.dong@intel.com>; Masami Hiramatsu
+> > <mhiramat@kernel.org>; Jassi Brar <jaswinder.singh@linaro.org>; Rob
+> > Herring <robh@kernel.org>
+> > Subject: Re: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers
+> > if NAND_OWN_BUFFERS is unset
+> >=20
+> > Hi Masahiro,
+> >=20
+> > On Thu, 23 Mar 2017 09:17:59 +0900
+> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> >  =20
+> > > Commit 66507c7bc889 ("mtd: nand: Add support to use nand_base poi
+> > > databuf as bounce buffer") fixed the issue that drivers can be
+> > > passed with a kmap()'d buffer.  This addressed the use_bufpoi =3D 0
+> > > case.
+> > >
+> > > When use_bufpoi =3D 1, chip->buffers->databuf is used.  The databuf
+> > > allocated by nand_scan_tail() is not suitable for DMA due to the
+> > > offset, sizeof(*chip->buffers). =20
+> >=20
+> > As said earlier, I'm fine with the patch content, but I'm not sure
+> > about your explanation. Alignment requirements are DMA controller
+> > dependent so you're not exactly fixing a bug for all NAND controller
+> > drivers, just those that require >4 bytes alignment. =20
+>=20
+>=20
+> We have two contexts when we talk about alignment for DMA:
+>=20
+> [A] Requirement by CPU architecture  (cache alignment)
+> [B] Requirement by the controller's DMA engine
+>=20
+>=20
+> As I will state below, having sizeof(*chip->buffers) in the same cache
+> line is no good.  This is the same reason as devm_* is not recommended fo=
+r DMA.
+> (https://lkml.org/lkml/2017/3/8/693)
 
->
->> +
->> +     ret = spinand_register(chip);
->> +     if (ret)
->> +             goto err3;
->> +
->> +     spi->max_speed_hz = max_speed_hz;
->> +
->> +     return 0;
->> +
->> +err3:
->> +     kfree(controller);
->> +err2:
->> +     spinand_free(chip);
->> +err1:
->> +     return ret;
->> +}
->> +
->> +static int gen_spi_spinand_remove(struct spi_device *spi)
->> +{
->> +     struct spinand_device *chip = spi_get_drvdata(spi);
->> +
->> +     spinand_unregister(chip);
->> +     kfree(to_gen_spi_spinand_controller(chip->controller.controller));
->
-> This looks pretty awful, introduce a variable maybe ?
+Having non-cache line aligned buffers is definitely more dangerous,
+but, AFAIU, it's not impossible.
 
-Fix this in v5
+Let's consider this case:
 
-Thanks,
-Peter Pan
 
->
->> +     spinand_free(chip);
->> +
->> +     return 0;
->> +}
->> +
->> +static struct spi_driver gen_spi_spinand_driver = {
->> +     .driver = {
->> +             .name   = "generic_spinand",
->> +             .owner  = THIS_MODULE,
->> +     },
->> +     .probe  = gen_spi_spinand_probe,
->> +     .remove = gen_spi_spinand_remove,
->> +};
->> +module_spi_driver(gen_spi_spinand_driver);
->> +
->> +MODULE_DESCRIPTION("Generic SPI controller to support SPI NAND");
->> +MODULE_AUTHOR("Peter Pan<peterpandong@micron.com>");
->> +MODULE_LICENSE("GPL v2");
->>
->
->
-> --
-> Best regards,
-> Marek Vasut
+|        cache line        |        cache line        | ... |
+-------------------------------------------------------------
+| nand_buffers size |                    data               |
+
+
+If you call dma_map_single(dev, data, size, DMA_TO_DEVICE), the first
+cache line will be flushed (content written back to memory), and
+assuming you don't touch nand_buffers content between dma_map_single()
+and dma_unmap_single() you shouldn't have any problem (the cache line
+cannot magically turn dirty and thus cannot be flushed in the
+background).
+
+For the DMA_FROM_DEVICE direction, the cache line is invalidated when
+dma_unmap_single() is called, which means your nand_buffers content
+might be updated with what is present in SDRAM, but it shouldn't have
+changed since nand_buffers is only touched at initialization time (when
+the buffer is created).
+
+So, for our use case where nand_buffers is never modified between
+dma_map_single() and dma_unmap_single(), it should be safe to have
+non-cache line aligned buffers.
+
+Russell, please let me know if my reasoning is incorrect.
+Note that I'm not arguing against the new approach where we allocate
+each buffer independently using kmalloc (having cache line aligned
+buffers is definitely safer and does not imply any significant
+overhead), I just want to make sure I understand things correctly.
+
+>=20
+>=20
+> The current situation violates [A].
+
+Do you have a real failure that is proven to be caused by mis cache
+line alignment, or are you just speculating?
+
+>=20
+> Usually [B] is less than [A].
+
+Yep, it's likely the case.
+
+> So, if we meet [A] (by using kmalloc), [B] will be met as well.
+
+Sure.
+
+>=20
+>=20
+>=20
+> > Regarding the cache line alignment issue, in this case it shouldn't be
+> > a problem, because the driver and the core shouldn't touch the
+> > chip->buffers object during a DMA transfer, so dma_map/unmap_single()
+> > should work fine (they may flush/invalidate one cache line entry that
+> > contains non-payload data, but that's not a problem as long as nothing
+> > is modified during the DMA transfer). =20
+>=20
+>=20
+> This is related to 52/53:
+> http://patchwork.ozlabs.org/patch/742409/
+>=20
+> Can you also read this?
+> https://lkml.org/lkml/2017/3/8/693
+>=20
+> Your comment is very similar to what was discussed in the thread.
+
+I read it.
+
+>=20
+>=20
+>=20
+> > >
+> > > So, drivers using DMA are very likely to end up with setting the
+> > > NAND_OWN_BUFFERS flag and allocate buffers by themselves.  Drivers
+> > > tend to use devm_k*alloc to simplify the probe failure path, but
+> > > devm_k*alloc() does not return a cache line aligned buffer. =20
+> >=20
+> > Oh, I didn't know that. I had a closer look at the code, and indeed,
+> > devm_kmalloc() does not guarantee any alignment.
+> >  =20
+> > >
+> > > If used, it could violate the DMA-API requirement stated in
+> > > Documentation/DMA-API.txt:
+> > >   Warnings:  Memory coherency operates at a granularity called the
+> > >   cache line width.  In order for memory mapped by this API to
+> > >   operate correctly, the mapped region must begin exactly on a cache
+> > >   line boundary and end exactly on one (to prevent two separately
+> > >   mapped regions from sharing a single cache line).
+> > >
+> > > To sum up, NAND_OWN_BUFFERS is not very convenient for drivers.
+> > > nand_scan_tail() can give a separate buffer for each of ecccalc,
+> > > ecccode, databuf.  It is guaranteed kmalloc'ed memory is aligned
+> > > with ARCH_DMA_MINALIGN. =20
+> >=20
+> > Maybe I'm wrong, but AFAIU, kmalloc&co do not guarantee cache line
+> > alignment for small buffers (< cache line), so even kmalloc can return
+> > a buffer that is not cache line aligned.
+> > This being said, we should be good because most NAND controllers are
+> > only manipulating the page buffer (->databuf) which is large enough to
+> > be cache line aligned. =20
+>=20
+>=20
+> In my understanding kmalloc() returns cache aligned address even for 1 by=
+te memory.
+
+After digging into the SLAB code I found the calculate_alignment()
+function [1] which is used to calculate the required alignment of
+objects provided by a SLAB cache. For kmalloc caches SLAB_HWCACHE_ALIGN
+is set, but if you look at the code, if the object size is smaller
+than half a cache line the alignment constraint is relaxed, meaning that
+elements smaller than cache_line/2 are not guaranteed to be aligned on
+a cache line.
+
+I didn't test, but that should be pretty easy to verify (kmalloc a
+bunch of 1byte bufs and check their alignment).
+
+[1]http://lxr.free-electrons.com/source/mm/slab_common.c#L301
