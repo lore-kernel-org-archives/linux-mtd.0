@@ -1,15 +1,16 @@
 Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctBHa-0002NI-VZ
+ id 1ctBHa-0002NK-VK
  for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 10:56:58 +0000
 From: Jan Kara <jack@suse.cz>
 To: <linux-fsdevel@vger.kernel.org>
 Cc: linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
- Jan Kara <jack@suse.cz>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 13/25] mtd: Convert to dynamically allocated bdi infrastructure
-Date: Wed, 29 Mar 2017 12:56:11 +0200
-Message-Id: <20170329105623.18241-14-jack@suse.cz>
+ Jan Kara <jack@suse.cz>, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 22/25] ubifs: Convert to separately allocated bdi
+Date: Wed, 29 Mar 2017 12:56:20 +0200
+Message-Id: <20170329105623.18241-23-jack@suse.cz>
 In-Reply-To: <20170329105623.18241-1-jack@suse.cz>
 References: <20170329105623.18241-1-jack@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,138 +22,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD already allocates backing_dev_info dynamically. Convert it to use
-generic infrastructure for this including proper refcounting. We drop
-mtd->backing_dev_info as its only use was to pass mtd_bdi pointer from
-one file into another and if we wanted to keep that in a clean way, we'd
-have to make mtd hold and drop bdi reference as needed which seems
-pointless for passing one global pointer...
+Allocate struct backing_dev_info separately instead of embedding it
+inside the superblock. This unifies handling of bdi among users.
 
-CC: David Woodhouse <dwmw2@infradead.org>
-CC: Brian Norris <computersforpeace@gmail.com>
+CC: Richard Weinberger <richard@nod.at>
+CC: Artem Bityutskiy <dedekind1@gmail.com>
+CC: Adrian Hunter <adrian.hunter@intel.com>
 CC: linux-mtd@lists.infradead.org
+Acked-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- drivers/mtd/mtdcore.c   | 23 ++++++++++++-----------
- drivers/mtd/mtdsuper.c  |  7 ++++++-
- include/linux/mtd/mtd.h |  5 -----
- 3 files changed, 18 insertions(+), 17 deletions(-)
+ fs/ubifs/super.c | 25 +++++++++----------------
+ fs/ubifs/ubifs.h |  3 ---
+ 2 files changed, 9 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 66a9dedd1062..23e2e56ca54e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -46,7 +46,7 @@
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index b73811bd7676..cf4cc99b75b5 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1827,7 +1827,6 @@ static void ubifs_put_super(struct super_block *sb)
+ 	}
  
- #include "mtdcore.h"
+ 	ubifs_umount(c);
+-	bdi_destroy(&c->bdi);
+ 	ubi_close_volume(c->ubi);
+ 	mutex_unlock(&c->umount_mutex);
+ }
+@@ -2019,29 +2018,25 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto out;
+ 	}
  
--static struct backing_dev_info *mtd_bdi;
-+struct backing_dev_info *mtd_bdi;
- 
- #ifdef CONFIG_PM_SLEEP
- 
-@@ -496,11 +496,9 @@ int add_mtd_device(struct mtd_info *mtd)
- 	 * mtd_device_parse_register() multiple times on the same master MTD,
- 	 * especially with CONFIG_MTD_PARTITIONED_MASTER=y.
++	err = ubifs_parse_options(c, data, 0);
++	if (err)
++		goto out_close;
++
+ 	/*
+ 	 * UBIFS provides 'backing_dev_info' in order to disable read-ahead. For
+ 	 * UBIFS, I/O is not deferred, it is done immediately in readpage,
+ 	 * which means the user would have to wait not just for their own I/O
+ 	 * but the read-ahead I/O as well i.e. completely pointless.
+ 	 *
+-	 * Read-ahead will be disabled because @c->bdi.ra_pages is 0.
++	 * Read-ahead will be disabled because @sb->s_bdi->ra_pages is 0. Also
++	 * @sb->s_bdi->capabilities are initialized to 0 so there won't be any
++	 * writeback happening.
  	 */
--	if (WARN_ONCE(mtd->backing_dev_info, "MTD already registered\n"))
-+	if (WARN_ONCE(mtd->dev.type, "MTD already registered\n"))
- 		return -EEXIST;
- 
--	mtd->backing_dev_info = mtd_bdi;
+-	c->bdi.name = "ubifs",
+-	c->bdi.capabilities = 0;
+-	err  = bdi_init(&c->bdi);
++	err = super_setup_bdi_name(sb, "ubifs_%d_%d", c->vi.ubi_num,
++				   c->vi.vol_id);
+ 	if (err)
+ 		goto out_close;
+-	err = bdi_register(&c->bdi, NULL, "ubifs_%d_%d",
+-			   c->vi.ubi_num, c->vi.vol_id);
+-	if (err)
+-		goto out_bdi;
 -
- 	BUG_ON(mtd->writesize == 0);
- 	mutex_lock(&mtd_table_mutex);
+-	err = ubifs_parse_options(c, data, 0);
+-	if (err)
+-		goto out_bdi;
  
-@@ -1775,13 +1773,18 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
- 	struct backing_dev_info *bdi;
- 	int ret;
+-	sb->s_bdi = &c->bdi;
+ 	sb->s_fs_info = c;
+ 	sb->s_magic = UBIFS_SUPER_MAGIC;
+ 	sb->s_blocksize = UBIFS_BLOCK_SIZE;
+@@ -2080,8 +2075,6 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 	ubifs_umount(c);
+ out_unlock:
+ 	mutex_unlock(&c->umount_mutex);
+-out_bdi:
+-	bdi_destroy(&c->bdi);
+ out_close:
+ 	ubi_close_volume(c->ubi);
+ out:
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 4d57e488038e..4da10a6d702a 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -972,7 +972,6 @@ struct ubifs_debug_info;
+  * struct ubifs_info - UBIFS file-system description data structure
+  * (per-superblock).
+  * @vfs_sb: VFS @struct super_block object
+- * @bdi: backing device info object to make VFS happy and disable read-ahead
+  *
+  * @highest_inum: highest used inode number
+  * @max_sqnum: current global sequence number
+@@ -1220,7 +1219,6 @@ struct ubifs_debug_info;
+  */
+ struct ubifs_info {
+ 	struct super_block *vfs_sb;
+-	struct backing_dev_info bdi;
  
--	bdi = kzalloc(sizeof(*bdi), GFP_KERNEL);
-+	bdi = bdi_alloc(GFP_KERNEL);
- 	if (!bdi)
- 		return ERR_PTR(-ENOMEM);
+ 	ino_t highest_inum;
+ 	unsigned long long max_sqnum;
+@@ -1461,7 +1459,6 @@ extern const struct inode_operations ubifs_file_inode_operations;
+ extern const struct file_operations ubifs_dir_operations;
+ extern const struct inode_operations ubifs_dir_inode_operations;
+ extern const struct inode_operations ubifs_symlink_inode_operations;
+-extern struct backing_dev_info ubifs_backing_dev_info;
+ extern struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
  
--	ret = bdi_setup_and_register(bdi, name);
-+	bdi->name = name;
-+	/*
-+	 * We put '-0' suffix to the name to get the same name format as we
-+	 * used to get. Since this is called only once, we get a unique name. 
-+	 */
-+	ret = bdi_register(bdi, NULL, "%.28s-0", name);
- 	if (ret)
--		kfree(bdi);
-+		bdi_put(bdi);
- 
- 	return ret ? ERR_PTR(ret) : bdi;
- }
-@@ -1813,8 +1816,7 @@ static int __init init_mtd(void)
- out_procfs:
- 	if (proc_mtd)
- 		remove_proc_entry("mtd", NULL);
--	bdi_destroy(mtd_bdi);
--	kfree(mtd_bdi);
-+	bdi_put(mtd_bdi);
- err_bdi:
- 	class_unregister(&mtd_class);
- err_reg:
-@@ -1828,8 +1830,7 @@ static void __exit cleanup_mtd(void)
- 	if (proc_mtd)
- 		remove_proc_entry("mtd", NULL);
- 	class_unregister(&mtd_class);
--	bdi_destroy(mtd_bdi);
--	kfree(mtd_bdi);
-+	bdi_put(mtd_bdi);
- 	idr_destroy(&mtd_idr);
- }
- 
-diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-index 20c02a3b7417..e69e7855e31f 100644
---- a/drivers/mtd/mtdsuper.c
-+++ b/drivers/mtd/mtdsuper.c
-@@ -18,6 +18,7 @@
- #include <linux/ctype.h>
- #include <linux/slab.h>
- #include <linux/major.h>
-+#include <linux/backing-dev.h>
- 
- /*
-  * compare superblocks to see if they're equivalent
-@@ -38,6 +39,8 @@ static int get_sb_mtd_compare(struct super_block *sb, void *_mtd)
- 	return 0;
- }
- 
-+extern struct backing_dev_info *mtd_bdi;
-+
- /*
-  * mark the superblock by the MTD device it is using
-  * - set the device number to be the correct MTD block device for pesuperstence
-@@ -49,7 +52,9 @@ static int get_sb_mtd_set(struct super_block *sb, void *_mtd)
- 
- 	sb->s_mtd = mtd;
- 	sb->s_dev = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
--	sb->s_bdi = mtd->backing_dev_info;
-+	sb->s_bdi = bdi_get(mtd_bdi);
-+	sb->s_iflags |= SB_I_DYNBDI;
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index eebdc63cf6af..79b176eca04a 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -334,11 +334,6 @@ struct mtd_info {
- 	int (*_get_device) (struct mtd_info *mtd);
- 	void (*_put_device) (struct mtd_info *mtd);
- 
--	/* Backing device capabilities for this device
--	 * - provides mmap capabilities
--	 */
--	struct backing_dev_info *backing_dev_info;
--
- 	struct notifier_block reboot_notifier;  /* default mode before reboot */
- 
- 	/* ECC status information */
+ /* io.c */
 -- 
 2.10.2
