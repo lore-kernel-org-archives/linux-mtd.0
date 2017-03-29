@@ -1,25 +1,27 @@
-Received: from 5.mo179.mail-out.ovh.net ([46.105.43.140])
+Received: from mail-wr0-x230.google.com ([2a00:1450:400c:c0c::230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctLIU-0005i5-Ra
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 21:38:33 +0000
-Received: from player690.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo179.mail-out.ovh.net (Postfix) with ESMTP id 5668433408
- for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 23:38:02 +0200 (CEST)
-Subject: Re: [PATCH v4 8/9] nand: spi: Add generic SPI controller support
-To: Peter Pan <peterpandong@micron.com>, boris.brezillon@free-electrons.com,
- richard@nod.at, computersforpeace@gmail.com, arnaud.mouiche@gmail.com,
- thomas.petazzoni@free-electrons.com, marex@denx.de,
- cyrille.pitchen@atmel.com, linux-mtd@lists.infradead.org
-References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
- <1490262226-29092-9-git-send-email-peterpandong@micron.com>
-Cc: peterpansjtu@gmail.com, linshunquan1@hisilicon.com
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <1ef02557-0729-b122-4fe7-2e1298ab73f1@wedev4u.fr>
-Date: Wed, 29 Mar 2017 23:37:50 +0200
+ id 1ctLaA-0005EZ-EC
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 21:56:49 +0000
+Received: by mail-wr0-x230.google.com with SMTP id k6so28442935wre.2
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 14:56:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1490262226-29092-9-git-send-email-peterpandong@micron.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <9fb078be-29a7-84e5-da5f-cb88beb05601@sigma-star.at>
+References: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
+ <20170322161323.22b7489c@free-electrons.com>
+ <1b4bbd29-c93e-3e75-b01d-7b7b2ac93385@sigma-star.at>
+ <20170323104556.185f92e0@free-electrons.com>
+ <CAAQYJAub6XGjsSg4Ri6qk6xkrGdrRfzAGqfqf6EJ7UVU_H_RpQ@mail.gmail.com>
+ <9fb078be-29a7-84e5-da5f-cb88beb05601@sigma-star.at>
+From: Andrea Adami <andrea.adami@gmail.com>
+Date: Wed, 29 Mar 2017 23:56:23 +0200
+Message-ID: <CAAQYJAtwmqMGzcR_qEDZf6WBjyHZxO5hMvPcN9GCa7N2jmy_Dg@mail.gmail.com>
+Subject: Re: mtd-utils: various fixes, apply OpenEmbedded patches
+To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Yuanjie.Huang@windriver.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Khem Raj <raj.khem@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,270 +31,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter,
-
-Le 23/03/2017 à 10:43, Peter Pan a écrit :
-> This commit supports to use generic spi controller
-> as spi nand controller.
-> 
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> ---
->  drivers/mtd/nand/spi/Kconfig                   |   2 +
->  drivers/mtd/nand/spi/Makefile                  |   1 +
->  drivers/mtd/nand/spi/controllers/Kconfig       |   5 +
->  drivers/mtd/nand/spi/controllers/Makefile      |   1 +
->  drivers/mtd/nand/spi/controllers/generic-spi.c | 150 +++++++++++++++++++++++++
->  5 files changed, 159 insertions(+)
->  create mode 100644 drivers/mtd/nand/spi/controllers/Kconfig
->  create mode 100644 drivers/mtd/nand/spi/controllers/Makefile
->  create mode 100644 drivers/mtd/nand/spi/controllers/generic-spi.c
-> 
-> diff --git a/drivers/mtd/nand/spi/Kconfig b/drivers/mtd/nand/spi/Kconfig
-> index d77c46e..6bd1c65 100644
-> --- a/drivers/mtd/nand/spi/Kconfig
-> +++ b/drivers/mtd/nand/spi/Kconfig
-> @@ -3,3 +3,5 @@ menuconfig MTD_SPI_NAND
->  	depends on MTD_NAND
->  	help
->  	  This is the framework for the SPI NAND device drivers.
-> +
-> +source "drivers/mtd/nand/spi/controllers/Kconfig"
-> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-> index db0b91b..6ad5f24 100644
-> --- a/drivers/mtd/nand/spi/Makefile
-> +++ b/drivers/mtd/nand/spi/Makefile
-> @@ -1,3 +1,4 @@
->  obj-$(CONFIG_MTD_SPI_NAND) += core.o
->  obj-$(CONFIG_MTD_SPI_NAND) += manufactures.o
->  obj-$(CONFIG_MTD_SPI_NAND) += micron.o
-> +obj-$(CONFIG_MTD_SPI_NAND) += controllers/
-> diff --git a/drivers/mtd/nand/spi/controllers/Kconfig b/drivers/mtd/nand/spi/controllers/Kconfig
-> new file mode 100644
-> index 0000000..8ab7023
-> --- /dev/null
-> +++ b/drivers/mtd/nand/spi/controllers/Kconfig
-> @@ -0,0 +1,5 @@
-> +config GENERIC_SPI_NAND
-> +	tristate "SPI NAND with generic SPI bus Support"
-> +	depends on MTD_SPI_NAND && SPI
-> +	help
-> +	  This is to support SPI NAND device with generic SPI bus.
-> diff --git a/drivers/mtd/nand/spi/controllers/Makefile b/drivers/mtd/nand/spi/controllers/Makefile
-> new file mode 100644
-> index 0000000..46cbf29
-> --- /dev/null
-> +++ b/drivers/mtd/nand/spi/controllers/Makefile
-> @@ -0,0 +1 @@
-> +obj-$(CONFIG_GENERIC_SPI_NAND) += generic-spi.o
-> diff --git a/drivers/mtd/nand/spi/controllers/generic-spi.c b/drivers/mtd/nand/spi/controllers/generic-spi.c
-> new file mode 100644
-> index 0000000..da1f224
-> --- /dev/null
-> +++ b/drivers/mtd/nand/spi/controllers/generic-spi.c
-> @@ -0,0 +1,150 @@
-> +/*
-> + * Copyright (c) 2009-2017 Micron Technology, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * as published by the Free Software Foundation; either version 2
-> + * of the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + */
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/mtd/spinand.h>
-> +
-> +struct gen_spi_spinand_controller {
-> +	struct spinand_controller ctrl;
-> +	struct spi_device *spi;
-> +};
-> +
-> +#define to_gen_spi_spinand_controller(c) \
-> +	container_of(c, struct gen_spi_spinand_controller, ctrl)
-> +
-> +/*
-> + * gen_spi_spinand_exec_op - to process a command to send to the
-> + * SPI NAND by generic SPI bus
-> + * @chip: SPI NAND device structure
-> + * @op: SPI NAND operation descriptor
-> + */
-> +static int gen_spi_spinand_exec_op(struct spinand_device *chip,
-> +				   struct spinand_op *op)
-> +{
-> +	struct spi_message message;
-> +	struct spi_transfer x[3];
-> +	struct spinand_controller *scontroller = chip->controller.controller;
-> +	struct gen_spi_spinand_controller *controller;
-> +
-> +	controller = to_gen_spi_spinand_controller(scontroller);
-> +	spi_message_init(&message);
-> +	memset(x, 0, sizeof(x));
-> +	x[0].len = 1;
-> +	x[0].tx_nbits = 1;
-> +	x[0].tx_buf = &op->cmd;
-> +	spi_message_add_tail(&x[0], &message);
-> +
-> +	if (op->n_addr + op->dummy_bytes) {
-> +		x[1].len = op->n_addr + op->dummy_bytes;
-> +		x[1].tx_nbits = op->addr_nbits;
-> +		x[1].tx_buf = op->addr;
-> +		spi_message_add_tail(&x[1], &message);
-> +	}
-> +	if (op->n_tx) {
-> +		x[2].len = op->n_tx;
-> +		x[2].tx_nbits = op->data_nbits;
-> +		x[2].tx_buf = op->tx_buf;
-> +		spi_message_add_tail(&x[2], &message);
-> +	} else if (op->n_rx) {
-> +		x[2].len = op->n_rx;
-> +		x[2].rx_nbits = op->data_nbits;
-> +		x[2].rx_buf = op->rx_buf;
-> +		spi_message_add_tail(&x[2], &message);
-> +	}
-> +	return spi_sync(controller->spi, &message);
-> +}
-
-2 comments:
-
-1/
-maybe you can merge 'struct spi_transfer' in some cases:
-
-for instance with SPI x-x-z protocols, you can carry both the
-instruction and address/dummy bytes in a single spi_transfer structure.
-
-Also for Read operations (not applicable for Write/Page Program), with
-SPI x-z-z, you can merge both the address/dummy and data bytes in a
-single spi_transfer structure.
-
-This could speed-up the operation with some SPI controller drivers.
-However this is just an optimization otherwise it should work as is.
-
-2/
-Some spi controller drivers, like the TI QSPI controller driver, may
-want to use something similar to the spi_flash_read() function used from
-drivers/mtd/spi-nor/m25p80.c.
-
-Indeed, some QSPI controllers can speed up read operations by mapping
-the flash data array into the system memory. In such a case, the regular
-SPI API (spi_message and spi_transfer structures) is no longer used.
-That's why spi_flash_read() was introduced.
-
-However unlike SPI-NOR memories, SPI-NAND memories require to read data
-in 2 steps: internal data array -> internal cache then internal cache ->
-SPI bus. Hence using a mapping in the system memory only for "read from
-cache" operations is likely less interesting than reading the whole data
-array like regular memory as we can do with SPI NOR.
-
-This is another optimization, so not mandatory at all, but I just wanted
-to warn you about that so be prepared to be queried about that ;)
+On Wed, Mar 29, 2017 at 3:12 PM, David Oberhollenzer
+<david.oberhollenzer@sigma-star.at> wrote:
+> As there were no complaints about the patches I posted last week, I
+> applied them to mtd-utils.git.
+>
+>
+> On 03/23/2017 11:57 AM, Andrea Adami wrote:
+>> Hi,
+>> while you're reviewing old patches please note there are some little
+>> klibc fixes for 1.52 here:
+>>
+>> http://cgit.openembedded.org/meta-openembedded/tree/meta-initramfs/recipes-devtools/mtd/ubi-utils-klibc
+>>
+>> Probably you could consider the fixes for rpmatch() and getline(). Unsure about
+>> iniparser_getdouble.
+>>
+>> Thanks
+>> Andrea
+>>
+>
+> I took a look at those. The Makefile patches aren't really relevant
+> anymore, after the switch to Autotools (also, as noted in the patch,
+> the first one is very specific for your use case).
+>
+> The PRIxoff_t/PRIdoff_t patch (number 4) doesn't apply anymore. From a
+> brief look at the log it appears that the format specifies have been
+> fixed at least 3 times after the date of your patch. The current
+> version uses autoconf to determine the sizeof off_t and loff_t. The
+> header sets the format specifers based on the size only, so this
+> _should_ make magic libc vendor/feature checks obsolete.
+>
+> As for the prompt() patch (number 5), the use of rpmatch() has recently
+> been removed. I would hesitate removing the use of getline() as proposed
+> in the patch, first of all the proposed patch would alter the behavior
+> of prompt() if more than one character was entered and second, getline
+> has actually been accepted into the standard some ~9 years ago.[1]
+>
+>
+> If there are no objections, I'll apply the libubi ioctl and
+> libiniparser patches (number 3 and 6 respectively).
+>
+>
+> Thanks,
+>
+> David
+>
+> [1] http://pubs.opengroup.org/onlinepubs/9699919799/functions/getdelim.html
 
 
+David,
 
-> +
-> +static struct spinand_controller_ops gen_spi_spinand_ops = {
-> +	.exec_op = gen_spi_spinand_exec_op,
-> +};
-> +
-> +static int gen_spi_spinand_probe(struct spi_device *spi)
-> +{
-> +	struct spinand_device *chip;
-> +	struct gen_spi_spinand_controller *controller;
-> +	struct spinand_controller *spinand_controller;
-> +	int ret;
-> +	u32 max_speed_hz = spi->max_speed_hz;
-> +
-> +	chip = spinand_alloc(&spi->dev);
-> +	if (IS_ERR(chip)) {
-> +		ret = PTR_ERR(chip);
-> +		goto err1;
-> +	}
-> +	controller = kzalloc(sizeof(*controller), GFP_KERNEL);
-> +	if (!controller) {
-> +		ret = -ENOMEM;
-> +		goto err2;
-> +	}
-> +	controller->spi = spi;
-> +	spinand_controller = &controller->ctrl;
-> +	spinand_controller->ops = &gen_spi_spinand_ops;
-> +	spinand_controller->caps = SPINAND_CAP_RD_X1 | SPINAND_CAP_WR_X1;
-> +	if (spi->mode & SPI_RX_QUAD)
-> +		spinand_controller->caps |= SPINAND_CAP_RD_QUAD |
-> +					    SPINAND_CAP_RD_X4;
-> +	if (spi->mode & SPI_RX_DUAL)
-> +		spinand_controller->caps |= SPINAND_CAP_RD_DUAL |
-> +					    SPINAND_CAP_RD_X2;
-> +	if (spi->mode & SPI_TX_QUAD)
-> +		spinand_controller->caps |= SPINAND_CAP_WR_QUAD |
-> +					    SPINAND_CAP_WR_X4;
-> +	if (spi->mode & SPI_TX_DUAL)
-> +		spinand_controller->caps |= SPINAND_CAP_WR_DUAL |
-> +					    SPINAND_CAP_WR_X2;
+thanks for your attention.
 
-I think this is wrong:
-the SPI_RX_QUAD means the controller can receive data on 4 I/O line
-hence it allows SPINAND_CAP_RD_X4 (1-1-4) but not necessarily
-SPINAND_CAP_QUAD (1-4-4).
+I've just pointed these old patches to the attention of the list
+because there were other references to mtd 1.5x.
+There isn't anything urgent with these klibc specific fixes, just FYI
 
-To add SPINAND_CAP_QUAD (1-4-4), SPINAND_CAP_WR_X4 (1-1-4) and
-SPINAND_CAP_WR_QUAD (1-4-4) you need both SPI_RX_QUAD and SPI_TX_QUAD.
+I'll try to catch up with 2.x, at least the ubi-utils.
+For our project we need just kexec-static and for binary size of the
+executable klibc is still the best.
 
-So with Dual SPI protocols:
+To be honest, I have yet to try the static approach with a recent musl
+libc like Khem suggested.
 
-at least SPI_RX_DUAL: caps = RD_X2
-both SPI_RX_DUAL and SPI_TX_DUAL: caps |= (RD_DUAL | WR_X2 | WR_DUAL);
-
-SPI masters (controllers) are not aware of SPI x-y-z flash protocols,
-they just claim they can use more than 1 I/O line to read data and/or
-more than 1 I/0 line to write data.
-
-> +	chip->controller.controller = spinand_controller;
-> +	spi_set_drvdata(spi, chip);
-> +	spi->max_speed_hz = min_t(int, 25000000, max_speed_hz);
-> +
-> +	ret = spinand_register(chip);
-> +	if (ret)
-> +		goto err3;
-> +
-> +	spi->max_speed_hz = max_speed_hz;
-> +
-> +	return 0;
-> +
-> +err3:
-> +	kfree(controller);
-> +err2:
-> +	spinand_free(chip);
-> +err1:
-> +	return ret;
-> +}
-> +
-> +static int gen_spi_spinand_remove(struct spi_device *spi)
-> +{
-> +	struct spinand_device *chip = spi_get_drvdata(spi);
-> +
-> +	spinand_unregister(chip);
-> +	kfree(to_gen_spi_spinand_controller(chip->controller.controller));
-> +	spinand_free(chip);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct spi_driver gen_spi_spinand_driver = {
-> +	.driver = {
-> +		.name	= "generic_spinand",
-> +		.owner	= THIS_MODULE,
-> +	},
-> +	.probe	= gen_spi_spinand_probe,
-> +	.remove	= gen_spi_spinand_remove,
-> +};
-> +module_spi_driver(gen_spi_spinand_driver);
-> +
-> +MODULE_DESCRIPTION("Generic SPI controller to support SPI NAND");
-> +MODULE_AUTHOR("Peter Pan<peterpandong@micron.com>");
-> +MODULE_LICENSE("GPL v2");
-> 
+Regards
+Andrea
