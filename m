@@ -1,26 +1,29 @@
-Received: from mail-by2nam03on0076.outbound.protection.outlook.com
- ([104.47.42.76] helo=NAM03-BY2-obe.outbound.protection.outlook.com)
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctARw-0007pa-0H
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 10:03:34 +0000
-Date: Wed, 29 Mar 2017 12:02:56 +0200
-From: Jan Glauber <jan.glauber@caviumnetworks.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
+ id 1ctBFR-0000mL-PF
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 10:54:43 +0000
+Received: by mail-wr0-x241.google.com with SMTP id u18so1837008wrc.0
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 03:54:19 -0700 (PDT)
+Subject: Re: [PATCH 2/2] mtd: spi-nor: add driver for STM32 quad spi flash
+ controller
+To: Ludovic Barre <ludovic.Barre@st.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [RFC PATCH 2/2] nand: cavium: Nand flash controller for Cavium
- ARM64 SOCs
-Message-ID: <20170329100256.GA3819@hardcore>
-References: <20170327160524.29019-1-jglauber@cavium.com>
- <20170327160524.29019-3-jglauber@cavium.com>
- <20170329112932.267b3059@bbrezillon>
+References: <1490619296-8168-1-git-send-email-ludovic.Barre@st.com>
+ <1490619296-8168-3-git-send-email-ludovic.Barre@st.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Alexandre Torgue <alexandre.torgue@st.com>, Rob Herring
+ <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <1be39452-83b0-5c32-39fe-d6dd5134d1ef@gmail.com>
+Date: Wed, 29 Mar 2017 12:54:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170329112932.267b3059@bbrezillon>
+In-Reply-To: <1490619296-8168-3-git-send-email-ludovic.Barre@st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,631 +33,298 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 29, 2017 at 11:29:32AM +0200, Boris Brezillon wrote:
-> Hi Jan,
+On 03/27/2017 02:54 PM, Ludovic Barre wrote:
+> From: Ludovic Barre <ludovic.barre@st.com>
 > 
-> This is a preliminary review, I might come up with additional comments
-> later on.
+> The quadspi is a specialized communication interface targeting single,
+> dual or quad SPI Flash memories.
+> 
+> It can operate in any of the following modes:
+> -indirect mode: all the operations are performed using the quadspi
+>  registers
+> -read memory-mapped mode: the external Flash memory is mapped to the
+>  microcontroller address space and is seen by the system as if it was
+>  an internal memory
+> 
+> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
 
-Hi Boris,
+Hi! I presume this is not compatible with the Cadence QSPI or any other
+QSPI controller, huh ?
 
-thanks for reviewing the driver. I'm exactly looking for comments about
-the design and fundamental things I need to change. I didn't even bother
-to run checkpatch on the RFC :).
+Mostly minor nits below ...
 
-> On Mon, 27 Mar 2017 18:05:24 +0200
-> Jan Glauber <jglauber@cavium.com> wrote:
-> 
-> > Add a driver for the nand flash controller as found on Cavium's
-> > ARM64 SOCs.
-> > 
-> > The nand flash controller can support up to 8 chips and is presented
-> > as a PCI device. It uses a DMA engine to transfer data between the nand
-> > and L2/DRAM and a programmable command queue to issue multiple
-> > nand flash commands together.
-> > 
-> > Signed-off-by: Jan Glauber <jglauber@cavium.com>
-> > ---
-> >  drivers/mtd/nand/Kconfig       |    6 +
-> >  drivers/mtd/nand/Makefile      |    1 +
-> >  drivers/mtd/nand/cavium_nand.c | 1160 ++++++++++++++++++++++++++++++++++++++++
-> >  drivers/mtd/nand/cavium_nand.h |  231 ++++++++
-> >  4 files changed, 1398 insertions(+)
-> >  create mode 100644 drivers/mtd/nand/cavium_nand.c
-> >  create mode 100644 drivers/mtd/nand/cavium_nand.h
-> > 
-> 
-> [...]
-> 
-> > +
-> > +/* default parameters used for probing chips */
-> > +static int default_onfi_timing = 0;
-> > +static int default_width = 1; /* 8 bit */
-> > +static int default_page_size = 2048;
-> > +static struct ndf_set_tm_par_cmd default_timing_parms;
-> 
-> Hm, I don't think this is a good idea to have default parameters. The
-> NAND core should provide anything you need in term of NAND chip
-> detection, so selection the timings, bus width and page size should not
-> be a problem.
+> ---
+>  drivers/mtd/spi-nor/Kconfig         |   7 +
+>  drivers/mtd/spi-nor/Makefile        |   1 +
+>  drivers/mtd/spi-nor/stm32-quadspi.c | 679 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 687 insertions(+)
+>  create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
 
-If the ONFI information can be parsed without these default I'm fine
-with removing them.
+[...]
 
-> > +
-> > +/*
-> > + * Get the number of bits required to encode the column bits. This
-> > + * does not include bits required for the OOB area.
-> > + */
-> > +static int ndf_get_column_bits(struct nand_chip *nand)
-> > +{
-> > +	int page_size;
-> > +
-> > +	if (!nand)
-> > +		page_size = default_page_size;
-> > +	else
-> > +		page_size = nand->onfi_params.byte_per_page;
-> > +	return get_bitmask_order(page_size - 1);
-> > +}
-> 
-> Please drop this helper, the page size is already exposed in
-> mtd->writesize.
+> +struct stm32_qspi_cmd {
+> +	struct {
+> +		u32 addr_width:8;
+> +		u32 dummy:8;
+> +		u32 data:1;
+> +	} conf;
 
-OK.
+This could all be u8 ? Why this awful construct ?
 
-> > +
-> > +irqreturn_t cvm_nfc_isr(int irq, void *dev_id)
-> > +{
-> > +	struct cvm_nfc *tn = dev_id;
-> > +
-> > +	wake_up(&tn->controller.wq);
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> > +/*
-> > + * Read a single byte from the temporary buffer. Used after READID
-> > + * to get the NAND information and for STATUS.
-> > + */
-> > +static u8 cvm_nand_read_byte(struct mtd_info *mtd)
-> > +{
-> > +	struct nand_chip *nand = mtd_to_nand(mtd);
-> > +	struct cvm_nfc *tn = to_cvm_nfc(nand->controller);
-> > +
-> > +	if (tn->use_status)
-> > +		return *tn->stat;
-> > +
-> > +	if (tn->buf.data_index < tn->buf.data_len)
-> > +		return tn->buf.dmabuf[tn->buf.data_index++];
-> > +	else
-> > +		dev_err(tn->dev, "No data to read\n");
-> > +
-> > +	return 0xff;
-> > +}
-> > +
-> > +/*
-> > + * Read a number of pending bytes from the temporary buffer. Used
-> > + * to get page and OOB data.
-> > + */
-> > +static void cvm_nand_read_buf(struct mtd_info *mtd, u8 *buf, int len)
-> > +{
-> > +	struct nand_chip *nand = mtd_to_nand(mtd);
-> > +	struct cvm_nfc *tn = to_cvm_nfc(nand->controller);
-> > +
-> > +	if (len > tn->buf.data_len - tn->buf.data_index) {
-> > +		dev_err(tn->dev, "Not enough data for read of %d bytes\n", len);
-> > +		return;
-> > +	}
-> > +
-> > +	memcpy(buf, tn->buf.dmabuf + tn->buf.data_index, len);
-> > +	tn->buf.data_index += len;
-> > +}
-> > +
-> > +static void cvm_nand_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-> > +{
-> > +	struct nand_chip *nand = mtd_to_nand(mtd);
-> > +	struct cvm_nfc *tn = to_cvm_nfc(nand->controller);
-> > +
-> > +	memcpy(tn->buf.dmabuf + tn->buf.data_len, buf, len);
-> > +	tn->buf.data_len += len;
-> > +}
-> 
-> It seems that cvm_nand_read/write_byte/buf() are returning data that
-> have already been retrieved (problably during the ->cmdfunc() phase).
+> +	u8 opcode;
+> +	u32 framemode;
+> +	u32 qspimode;
+> +	u32 addr;
+> +	size_t len;
+> +	void *buf;
+> +};
+> +
+> +static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
+> +{
+> +	u32 cr;
+> +	int err = 0;
 
-Yes.
+Can readl_poll_timeout() or somesuch replace this function ?
 
-> That's not how it's supposed to work. The core is expecting the data
-> transfer to be done when ->read/write_buf() is called. Doing that in
-> ->cmdfunc() is risky, because when you're there you have no clue about
-> how much bytes the core expect.
+> +	if (readl_relaxed(qspi->io_base + QUADSPI_SR) & SR_TCF)
+> +		return 0;
+> +
+> +	reinit_completion(&qspi->cmd_completion);
+> +	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
+> +	writel_relaxed(cr | CR_TCIE, qspi->io_base + QUADSPI_CR);
+> +
+> +	if (!wait_for_completion_interruptible_timeout(&qspi->cmd_completion,
+> +						       msecs_to_jiffies(1000)))
+> +		err = -ETIMEDOUT;
+> +
+> +	writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
+> +	return err;
+> +}
+> +
+> +static int stm32_qspi_wait_nobusy(struct stm32_qspi *qspi)
+> +{
+> +	u32 sr;
+> +
+> +	return readl_relaxed_poll_timeout(qspi->io_base + QUADSPI_SR, sr,
+> +					  !(sr & SR_BUSY), 10, 100000);
+> +}
+> +
+> +static void stm32_qspi_set_framemode(struct spi_nor *nor,
+> +				     struct stm32_qspi_cmd *cmd, bool read)
+> +{
+> +	u32 dmode = CCR_DMODE_1;
+> +
+> +	cmd->framemode = CCR_IMODE_1;
+> +
+> +	if (read) {
+> +		switch (nor->flash_read) {
+> +		case SPI_NOR_NORMAL:
+> +		case SPI_NOR_FAST:
+> +			dmode = CCR_DMODE_1;
+> +			break;
+> +		case SPI_NOR_DUAL:
+> +			dmode = CCR_DMODE_2;
+> +			break;
+> +		case SPI_NOR_QUAD:
+> +			dmode = CCR_DMODE_4;
+> +			break;
+> +		}
+> +	}
+> +
+> +	cmd->framemode |= cmd->conf.data ? dmode : 0;
+> +	cmd->framemode |= cmd->conf.addr_width ? CCR_ADMODE_1 : 0;
+> +}
+> +
+> +static void stm32_qspi_read_fifo(u8 *val, void __iomem *addr)
+> +{
+> +	*val = readb_relaxed(addr);
+> +}
+> +
+> +static void stm32_qspi_write_fifo(u8 *val, void __iomem *addr)
+> +{
+> +	writeb_relaxed(*val, addr);
+> +}
+> +
+> +static int stm32_qspi_tx_poll(struct stm32_qspi *qspi,
+> +			      const struct stm32_qspi_cmd *cmd)
+> +{
+> +	void (*tx_fifo)(u8 *, void __iomem *);
+> +	u32 len = cmd->len, sr;
+> +	u8 *buf = cmd->buf;
+> +	int ret;
+> +
+> +	if (cmd->qspimode == CCR_FMODE_INDW)
+> +		tx_fifo = stm32_qspi_write_fifo;
+> +	else
+> +		tx_fifo = stm32_qspi_read_fifo;
+> +
+> +	while (len--) {
+> +		ret = readl_relaxed_poll_timeout(qspi->io_base + QUADSPI_SR,
+> +						 sr, (sr & SR_FTF),
+> +						 10, 30000);
 
-It seems to work fine, I've never seen the core trying to do more bytes in
-the read/write_buf() then requested in ->cmdfunc().
+Add macros for those ad-hoc timeouts.
 
-> [...]
-> 
-> > +static int cvm_nand_set_features(struct mtd_info *mtd,
-> > +				      struct nand_chip *chip, int feature_addr,
-> > +				      u8 *subfeature_para)
-> 
-> Do you really need you own implementation of ->set_feature()?
-> 
-> > +{
-> > +	struct nand_chip *nand = mtd_to_nand(mtd);
-> > +	struct cvm_nfc *tn = to_cvm_nfc(nand->controller);
-> > +	int rc;
-> > +
-> > +	rc = ndf_build_pre_cmd(tn, NAND_CMD_SET_FEATURES, 1, feature_addr, 0);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	memcpy(tn->buf.dmabuf, subfeature_para, 4);
-> > +	memset(tn->buf.dmabuf + 4, 0, 4);
-> > +
-> > +	rc = ndf_queue_cmd_write(tn, 8);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	ndf_setup_dma(tn, 0, tn->buf.dmaaddr, 8);
-> > +
-> > +	rc = ndf_wait_for_busy_done(tn);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	rc = ndf_build_post_cmd(tn);
-> > +	if (rc)
-> > +		return rc;
-> > +	return 0;
-> > +}
-> > +
-> 
-> [...]
-> 
-> > +
-> > +/*
-> > + * Read a page from NAND. If the buffer has room, the out of band
-> > + * data will be included.
-> > + */
-> > +int ndf_page_read(struct cvm_nfc *tn, u64 addr, int len)
-> > +{
-> > +	int rc;
-> > +
-> > +	memset(tn->buf.dmabuf, 0xff, len);
-> > +	rc = ndf_read(tn, NAND_CMD_READ0, 4, addr, NAND_CMD_READSTART, len);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	return rc;
-> > +}
-> > +
-> > +/* Erase a NAND block */
-> > +static int ndf_block_erase(struct cvm_nfc *tn, u64 addr)
-> 
-> Ditto.
-> 
-> > +{
-> > +	struct nand_chip *nand = tn->controller.active;
-> > +	int row, rc;
-> > +
-> > +	row = addr >> ndf_get_column_bits(nand);
-> > +	rc = ndf_build_pre_cmd(tn, NAND_CMD_ERASE1, 2, row, NAND_CMD_ERASE2);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	/* Wait for R_B to signal erase is complete  */
-> > +        rc = ndf_wait_for_busy_done(tn);
-> > +        if (rc)
-> > +                return rc;
-> > +
-> > +        rc = ndf_build_post_cmd(tn);
-> > +        if (rc)
-> > +                return rc;
-> 
-> Use tabs and not spaces for indentation (you can run checkpatch to
-> identify these coding style issues).
+> +		if (ret) {
+> +			dev_err(qspi->dev, "fifo timeout (stat:%#x)\n", sr);
+> +			break;
+> +		}
+> +		tx_fifo(buf++, qspi->io_base + QUADSPI_DR);
+> +	}
+> +
+> +	return ret;
+> +}
 
-I'll fix these in the next version.
 
-> > +
-> > +        /* Wait until the command queue is idle */
-> > +	return ndf_wait_idle(tn);
-> > +}
-> > +
-> 
-> [...]
-> 
-> 
-> > +
-> > +static void cvm_nand_cmdfunc(struct mtd_info *mtd, unsigned int command,
-> > +				  int column, int page_addr)
-> 
-> Did you try implementing ->cmd_ctrl() instead of ->cmdfunc(). Your
-> controller seems to be highly configurable and, at first glance, I think
-> you can simplify the driver by implementing ->cmd_ctrl() and relying on
-> the default ->cmdfunc() implementation.
-> 
+[...]
 
-I've looked at the sunxi_nand driver but ->cmd_ctrl() is very different
-from ->cmdfunc() and the later looks like a better match for our controller.
+> +static int stm32_qspi_send(struct stm32_qspi_flash *flash,
+> +			   const struct stm32_qspi_cmd *cmd)
+> +{
+> +	struct stm32_qspi *qspi = flash->qspi;
+> +	u32 ccr, dcr, cr;
+> +	int err;
+> +
+> +	err = stm32_qspi_wait_nobusy(qspi);
+> +	if (err)
+> +		goto abort;
+> +
+> +	dcr = readl_relaxed(qspi->io_base + QUADSPI_DCR) & ~DCR_FSIZE_MASK;
+> +	dcr |= DCR_FSIZE(flash->fsize);
+> +	writel_relaxed(dcr, qspi->io_base + QUADSPI_DCR);
+> +
+> +	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
+> +	cr &= ~CR_PRESC_MASK & ~CR_FSEL;
+> +	cr |= CR_PRESC(flash->presc);
+> +	cr |= flash->cs ? CR_FSEL : 0;
+> +	writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
+> +
+> +	if (cmd->conf.data)
+> +		writel_relaxed(cmd->len - 1, qspi->io_base + QUADSPI_DLR);
+> +
+> +	ccr = cmd->framemode | cmd->qspimode;
+> +
+> +	if (cmd->conf.dummy)
+> +		ccr |= CCR_DCYC(cmd->conf.dummy);
+> +
+> +	if (cmd->conf.addr_width)
+> +		ccr |= CCR_ADSIZE(cmd->conf.addr_width - 1);
+> +
+> +	ccr |= CCR_INST(cmd->opcode);
+> +	writel_relaxed(ccr, qspi->io_base + QUADSPI_CCR);
+> +
+> +	if (cmd->conf.addr_width && cmd->qspimode != CCR_FMODE_MM)
+> +		writel_relaxed(cmd->addr, qspi->io_base + QUADSPI_AR);
+> +
+> +	err = stm32_qspi_tx(qspi, cmd);
+> +	if (err)
+> +		goto abort;
+> +
+> +	if (cmd->qspimode != CCR_FMODE_MM) {
+> +		err = stm32_qspi_wait_cmd(qspi);
+> +		if (err)
+> +			goto abort;
+> +		writel_relaxed(FCR_CTCF, qspi->io_base + QUADSPI_FCR);
+> +	}
+> +
+> +	return err;
+> +
+> +abort:
+> +	writel_relaxed(readl_relaxed(qspi->io_base + QUADSPI_CR)
+> +		       | CR_ABORT, qspi->io_base + QUADSPI_CR);
 
-The Cavium controller needs to write the commands (NAND_CMD_READ0, etc.)
-into its pseudo instructions (see ndf_queue_cmd_cle()).
-So how can I do this low-level stuff with ->cmd_ctrl()?
+Use a helper variable here too.
 
-For instance for reading data I have ndf_page_read() that is used for
-both NAND_CMD_READ0 and NAND_CMD_READOOB. Without hacking into ->cmdfunc(),
-how would I differentiate between the two commands in read_buf()?
+> +	dev_err(qspi->dev, "%s abort err:%d\n", __func__, err);
+> +	return err;
+> +}
 
-> > +{
-> > +	struct nand_chip *nand = mtd_to_nand(mtd);
-> > +	struct cvm_nand_chip *cvm_nand = to_cvm_nand(nand);
-> > +	struct cvm_nfc *tn = to_cvm_nfc(nand->controller);
-> > +	int rc;
-> > +
-> > +	tn->selected_chip = cvm_nand->cs;
-> > +	if (tn->selected_chip < 0 || tn->selected_chip >= NAND_MAX_CHIPS) {
-> > +		dev_err(tn->dev, "invalid chip select\n");
-> > +		return;
-> > +	}
-> > +
-> > +	tn->use_status = false;
-> > +	cvm_nand->oob_access = false;
-> > +
-> > +	switch (command) {
-> > +	case NAND_CMD_READID:
-> > +		tn->buf.data_index = 0;
-> > +		memset(tn->buf.dmabuf, 0xff, 8);
-> > +		rc = ndf_read(tn, command, 1, column, 0, 8);
-> > +		if (rc < 0)
-> > +			dev_err(tn->dev, "READID failed with %d\n", rc);
-> > +		else
-> > +			tn->buf.data_len = rc;
-> > +		break;
-> > +
-> > +	case NAND_CMD_READOOB:
-> > +		cvm_nand->oob_access = true;
-> > +		tn->buf.data_index = 0;
-> > +		tn->buf.data_len = ndf_page_read(tn,
-> > +				(page_addr << nand->page_shift) + 0x800,
-> > +				mtd->oobsize);
-> > +
-> > +		if (tn->buf.data_len < mtd->oobsize) {
-> > +			dev_err(tn->dev, "READOOB failed with %d\n",
-> > +				tn->buf.data_len);
-> > +			tn->buf.data_len = 0;
-> > +		}
-> > +		break;
-> > +
-> > +	case NAND_CMD_READ0:
-> > +		tn->buf.data_index = 0;
-> > +		tn->buf.data_len = ndf_page_read(tn,
-> > +				column + (page_addr << nand->page_shift),
-> > +				(1 << nand->page_shift) + mtd->oobsize);
-> > +		if (tn->buf.data_len < (1 << nand->page_shift) + mtd->oobsize) {
-> > +			dev_err(tn->dev, "READ0 failed with %d\n",
-> > +				tn->buf.data_len);
-> > +			tn->buf.data_len = 0;
-> > +		}
-> > +		break;
-> > +
-> > +	case NAND_CMD_STATUS:
-> > +		tn->use_status = true;
-> > +		memset(tn->stat, 0xff, 8);
-> > +		rc = ndf_read(tn, command, 0, 0, 0, 8);
-> > +		if (rc < 0)
-> > +			dev_err(tn->dev, "STATUS failed with %d\n", rc);
-> > +		break;
-> > +
-> > +	case NAND_CMD_RESET:
-> > +		tn->buf.data_index = 0;
-> > +		tn->buf.data_len = 0;
-> > +		memset(tn->buf.dmabuf, 0xff, tn->buf.dmabuflen);
-> > +		rc = cvm_nand_reset(tn);
-> > +		if (rc < 0)
-> > +			dev_err(tn->dev, "RESET failed with %d\n", rc);
-> > +                break;
-> > +
-> > +	case NAND_CMD_PARAM:
-> > +		tn->buf.data_index = column;
-> > +		memset(tn->buf.dmabuf, 0xff, tn->buf.dmabuflen);
-> > +		rc = ndf_read(tn, command, 1, 0, 0, 2048);
-> > +		if (rc < 0)
-> > +			dev_err(tn->dev, "PARAM failed with %d\n", rc);
-> > +		else
-> > +			tn->buf.data_len = rc;
-> > +                break;
-> > +
-> > +	case NAND_CMD_RNDOUT:
-> > +		tn->buf.data_index = column;
-> > +		break;
-> > +
-> > +	case NAND_CMD_ERASE1:
-> > +		if (ndf_block_erase(tn, page_addr << nand->page_shift))
-> > +			dev_err(tn->dev, "ERASE1 failed\n");
-> > +		break;
-> > +
-> > +	case NAND_CMD_ERASE2:
-> > +		/* We do all erase processing in the first command, so ignore
-> > +		 * this one.
-> > +		 */
-> > +		break;
-> > +
-> > +	case NAND_CMD_SEQIN:
-> > +		if (column == mtd->writesize)
-> > +			cvm_nand->oob_access = true;
-> > +		tn->buf.data_index = column;
-> > +		tn->buf.data_len = column;
-> > +		cvm_nand->selected_page = page_addr;
-> > +		break;
-> > +
-> > +	case NAND_CMD_PAGEPROG:
-> > +		rc = ndf_page_write(tn,
-> > +			cvm_nand->selected_page << nand->page_shift);
-> > +		if (rc)
-> > +			dev_err(tn->dev, "PAGEPROG failed with %d\n", rc);
-> > +		break;
-> > +
-> > +	default:
-> > +		WARN_ON_ONCE(1);
-> > +		dev_err(tn->dev, "unhandled nand cmd: %x\n", command);
-> > +	}
-> > +}
-> > +
-> > +static int cvm_nfc_chip_init_timings(struct cvm_nand_chip *chip,
-> > +					   struct device_node *np)
-> > +{
-> > +	const struct nand_sdr_timings *timings;
-> > +	int ret, mode;
-> > +
-> > +	mode = onfi_get_async_timing_mode(&chip->nand);
-> > +	if (mode == ONFI_TIMING_MODE_UNKNOWN) {
-> > +		mode = chip->nand.onfi_timing_mode_default;
-> > +	} else {
-> > +		u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {};
-> > +
-> > +		mode = fls(mode) - 1;
-> > +		if (mode < 0)
-> > +			mode = 0;
-> > +
-> > +		feature[0] = mode;
-> > +		ret = chip->nand.onfi_set_features(&chip->nand.mtd, &chip->nand,
-> > +						ONFI_FEATURE_ADDR_TIMING_MODE,
-> > +						feature);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> > +	timings = onfi_async_timing_mode_to_sdr_timings(mode);
-> > +	if (IS_ERR(timings))
-> > +		return PTR_ERR(timings);
-> > +
-> > +	return cvm_nfc_chip_set_timings(chip, timings);
-> > +}
-> 
-> 
-> Please have a look at the ->setup_data_interface() hook [1] instead of
-> initializing the timings at probe/init time.
+[...]
 
-OK.
+> +static int stm32_qspi_flash_setup(struct stm32_qspi *qspi,
+> +				  struct device_node *np)
+> +{
+> +	u32 width, flash_read, presc, cs_num, max_rate = 0;
+> +	struct stm32_qspi_flash *flash;
+> +	struct mtd_info *mtd;
+> +	int ret;
+> +
+> +	of_property_read_u32(np, "reg", &cs_num);
+> +	if (cs_num >= STM32_MAX_NORCHIP)
+> +		return -EINVAL;
+> +
+> +	of_property_read_u32(np, "spi-max-frequency", &max_rate);
+> +	if (!max_rate)
+> +		return -EINVAL;
+> +
+> +	presc = DIV_ROUND_UP(qspi->clk_rate, max_rate) - 1;
+> +
+> +	if (of_property_read_u32(np, "spi-rx-bus-width", &width))
+> +		width = 1;
+> +
+> +	if (width == 4)
+> +		flash_read = SPI_NOR_QUAD;
+> +	else if (width == 2)
+> +		flash_read = SPI_NOR_DUAL;
+> +	else if (width == 1)
+> +		flash_read = SPI_NOR_NORMAL;
+> +	else
+> +		return -EINVAL;
+> +
+> +	flash = &qspi->flash[cs_num];
+> +	flash->qspi = qspi;
+> +	flash->cs = cs_num;
+> +	flash->presc = presc;
+> +
+> +	flash->nor.dev = qspi->dev;
+> +	spi_nor_set_flash_node(&flash->nor, np);
+> +	flash->nor.priv = flash;
+> +	mtd = &flash->nor.mtd;
+> +	mtd->priv = &flash->nor;
+> +
+> +	flash->nor.read = stm32_qspi_read;
+> +	flash->nor.write = stm32_qspi_write;
+> +	flash->nor.erase = stm32_qspi_erase;
+> +	flash->nor.read_reg = stm32_qspi_read_reg;
+> +	flash->nor.write_reg = stm32_qspi_write_reg;
+> +	flash->nor.prepare = stm32_qspi_prep;
+> +	flash->nor.unprepare = stm32_qspi_unprep;
+> +
+> +	writel_relaxed(LPTR_DFT_TIMEOUT, qspi->io_base + QUADSPI_LPTR);
+> +
+> +	writel_relaxed(CR_PRESC(presc) | CR_FTHRES(3) | CR_TCEN | CR_SSHIFT
+> +		       | CR_EN, qspi->io_base + QUADSPI_CR);
+> +
+> +	/* a minimum fsize must be set to sent the command id */
+> +	flash->fsize = 25;
 
-> [...]
-> 
-> > diff --git a/drivers/mtd/nand/cavium_nand.h b/drivers/mtd/nand/cavium_nand.h
-> > new file mode 100644
-> > index 0000000..7030c57
-> > --- /dev/null
-> > +++ b/drivers/mtd/nand/cavium_nand.h
-> > @@ -0,0 +1,231 @@
-> > +#ifndef _CAVIUM_NAND_H
-> > +#define _CAVIUM_NAND_H
-> > +
-> > +#include <linux/bitops.h>
-> > +
-> > +/*
-> > + * The NDF_CMD queue takes commands between 16 - 128 bit.
-> > + * All commands must be 16 bit aligned and are little endian.
-> > + * WAIT_STATUS commands must be 64 bit aligned.
-> > + * Commands are selected by the 4 bit opcode.
-> > + *
-> > + * Available Commands:
-> > + *
-> > + * 16 Bit:
-> > + *   NOP
-> > + *   WAIT
-> > + *   BUS_ACQ, BUS_REL
-> > + *   CHIP_EN, CHIP_DIS
-> > + *
-> > + * 32 Bit:
-> > + *   CLE_CMD
-> > + *   RD_CMD, RD_EDO_CMD
-> > + *   WR_CMD
-> > + *
-> > + * 64 Bit:
-> > + *   SET_TM_PAR
-> > + *
-> > + * 96 Bit:
-> > + *   ALE_CMD
-> > + *
-> > + * 128 Bit:
-> > + *   WAIT_STATUS, WAIT_STATUS_ALE
-> > + */
-> > +
-> > +/* NDF Register offsets */
-> > +#define NDF_CMD			0x0
-> > +#define NDF_MISC		0x8
-> > +#define NDF_ECC_CNT		0x10
-> > +#define NDF_DRBELL		0x30
-> > +#define NDF_ST_REG		0x38	/* status */
-> > +#define NDF_INT			0x40
-> > +#define NDF_INT_W1S		0x48
-> > +#define NDF_DMA_CFG		0x50
-> > +#define NDF_DMA_ADR		0x58
-> > +#define NDF_INT_ENA_W1C		0x60
-> > +#define NDF_INT_ENA_W1S		0x68
-> > +
-> > +/* NDF command opcodes */
-> > +#define NDF_OP_NOP		0x0
-> > +#define NDF_OP_SET_TM_PAR	0x1
-> > +#define NDF_OP_WAIT		0x2
-> > +#define NDF_OP_CHIP_EN_DIS	0x3
-> > +#define NDF_OP_CLE_CMD		0x4
-> > +#define NDF_OP_ALE_CMD		0x5
-> > +#define NDF_OP_WR_CMD		0x8
-> > +#define NDF_OP_RD_CMD		0x9
-> > +#define NDF_OP_RD_EDO_CMD	0xa
-> > +#define NDF_OP_WAIT_STATUS	0xb	/* same opcode for WAIT_STATUS_ALE */
-> > +#define NDF_OP_BUS_ACQ_REL	0xf
-> > +
-> > +#define NDF_BUS_ACQUIRE		1
-> > +#define NDF_BUS_RELEASE		0
-> > +
-> > +struct ndf_nop_cmd {
-> > +	u16 opcode	: 4;
-> > +	u16 nop		: 12;
-> > +};
-> > +
-> > +struct ndf_wait_cmd {
-> > +	u16 opcode	: 4;
-> > +	u16 r_b		: 1;	/* wait for one cycle or PBUS_WAIT deassert */
-> > +	u16		: 3;
-> > +	u16 wlen	: 3;	/* timing parameter select */
-> > +	u16		: 5;
-> > +};
-> > +
-> > +struct ndf_bus_cmd {
-> > +	u16 opcode	: 4;
-> > +	u16 direction	: 4;	/* 1 = acquire, 0 = release */
-> > +	u16		: 8;
-> > +};
-> > +
-> > +struct ndf_chip_cmd {
-> > +	u16 opcode	: 4;
-> > +	u16 chip	: 3;	/* select chip, 0 = disable */
-> > +	u16 enable	: 1;	/* 1 = enable, 0 = disable */
-> > +	u16 bus_width	: 2;	/* 10 = 16 bit, 01 = 8 bit */
-> > +	u16		: 6;
-> > +};
-> > +
-> > +struct ndf_cle_cmd {
-> > +	u32 opcode	: 4;
-> > +	u32		: 4;
-> > +	u32 cmd_data	: 8;	/* command sent to the PBUS AD pins */
-> > +	u32 clen1	: 3;	/* time between PBUS CLE and WE asserts */
-> > +	u32 clen2	: 3;	/* time WE remains asserted */
-> > +	u32 clen3	: 3;	/* time between WE deassert and CLE */
-> > +	u32		: 7;
-> > +};
-> > +
-> > +/* RD_EDO_CMD uses the same layout as RD_CMD */
-> > +struct ndf_rd_cmd {
-> > +	u32 opcode	: 4;
-> > +	u32 data	: 16;	/* data bytes */
-> > +	u32 rlen1	: 3;
-> > +	u32 rlen2	: 3;
-> > +	u32 rlen3	: 3;
-> > +	u32 rlen4	: 3;
-> > +};
-> > +
-> > +struct ndf_wr_cmd {
-> > +	u32 opcode	: 4;
-> > +	u32 data	: 16;	/* data bytes */
-> > +	u32		: 4;
-> > +	u32 wlen1	: 3;
-> > +	u32 wlen2	: 3;
-> > +	u32		: 3;
-> > +};
-> > +
-> > +struct ndf_set_tm_par_cmd {
-> > +	u64 opcode	: 4;
-> > +	u64 tim_mult	: 4;	/* multiplier for the seven paramters */
-> > +	u64 tm_par1	: 8;	/* --> Following are the 7 timing parameters that */
-> > +	u64 tm_par2	: 8;	/*     specify the number of coprocessor cycles.  */
-> > +	u64 tm_par3	: 8;	/*     A value of zero means one cycle.		  */
-> > +	u64 tm_par4	: 8;	/*     All values are scaled by tim_mult	  */
-> > +	u64 tm_par5	: 8;	/*     using tim_par * (2 ^ tim_mult).		  */
-> > +	u64 tm_par6	: 8;
-> > +	u64 tm_par7	: 8;
-> > +};
-> > +
-> > +struct ndf_ale_cmd {
-> > +	u32 opcode	: 4;
-> > +	u32		: 4;
-> > +	u32 adr_byte_num: 4;	/* number of address bytes to be sent */
-> > +	u32		: 4;
-> > +	u32 alen1	: 3;
-> > +	u32 alen2	: 3;
-> > +	u32 alen3	: 3;
-> > +	u32 alen4	: 3;
-> > +	u32		: 4;
-> > +	u8 adr_byt1;
-> > +	u8 adr_byt2;
-> > +	u8 adr_byt3;
-> > +	u8 adr_byt4;
-> > +	u8 adr_byt5;
-> > +	u8 adr_byt6;
-> > +	u8 adr_byt7;
-> > +	u8 adr_byt8;
-> > +};
-> > +
-> > +struct ndf_wait_status_cmd {
-> > +	u32 opcode	: 4;
-> > +	u32		: 4;
-> > +	u32 data	: 8;	/* data */
-> > +	u32 clen1	: 3;
-> > +	u32 clen2	: 3;
-> > +	u32 clen3	: 3;
-> > +	u32		: 8;
-> > +	u32 ale_ind	: 8;	/* set to 5 to select WAIT_STATUS_ALE command */
-> > +	u32 adr_byte_num: 4;	/* ALE only: number of address bytes to be sent */
-> > +	u32		: 4;
-> > +	u32 alen1	: 3;	/* ALE only */
-> > +	u32 alen2	: 3;	/* ALE only */
-> > +	u32 alen3	: 3;	/* ALE only */
-> > +	u32 alen4	: 3;	/* ALE only */
-> > +	u32		: 4;
-> > +	u8 adr_byt[4];		/* ALE only */
-> > +	u32 nine	: 4;	/* set to 9 */
-> > +	u32 and_mask	: 8;
-> > +	u32 comp_byte	: 8;
-> > +	u32 rlen1	: 3;
-> > +	u32 rlen2	: 3;
-> > +	u32 rlen3	: 3;
-> > +	u32 rlen4	: 3;
-> > +};
-> > +
-> > +union ndf_cmd {
-> > +	u64 val[2];
-> > +	union {
-> > +		struct ndf_nop_cmd		nop;
-> > +		struct ndf_wait_cmd		wait;
-> > +		struct ndf_bus_cmd		bus_acq_rel;
-> > +		struct ndf_chip_cmd		chip_en_dis;
-> > +		struct ndf_cle_cmd		cle_cmd;
-> > +		struct ndf_rd_cmd		rd_cmd;
-> > +		struct ndf_wr_cmd		wr_cmd;
-> > +		struct ndf_set_tm_par_cmd	set_tm_par;
-> > +		struct ndf_ale_cmd		ale_cmd;
-> > +		struct ndf_wait_status_cmd	wait_status;
-> > +	} u;
-> > +};
-> 
-> I need some time to process all these information, but your controller
-> seems to be a complex/highly-configurable beast. That's really
-> interesting :-).
-> I'll come up with more comments/question after reviewing more carefully
-> the command creation logic.
+I don't understand why this is needed and the comment doesn't make
+sense. Please fix.
 
-Great. I'm afraid out controller is quite different from existing
-hardware, at least I didn't find a driver that does things simalar (like
-the command building and queueing).
+> +	ret = spi_nor_scan(&flash->nor, NULL, flash_read);
+> +	if (ret) {
+> +		dev_err(qspi->dev, "device scan failed\n");
+> +		return ret;
+> +	}
+> +
+> +	flash->fsize = __fls(mtd->size) - 1;
+> +
+> +	writel_relaxed(DCR_CSHT(1), qspi->io_base + QUADSPI_DCR);
+> +
+> +	ret = mtd_device_register(mtd, NULL, 0);
+> +	if (ret) {
+> +		dev_err(qspi->dev, "mtd device parse failed\n");
+> +		return ret;
+> +	}
+> +
+> +	dev_dbg(qspi->dev, "read mm:%s cs:%d bus:%d\n",
+> +		qspi->read_mode == CCR_FMODE_MM ? "yes" : "no", cs_num, width);
+> +
+> +	return 0;
+> +}
 
-I'm happy to help with any more information you need about our hardware.
+[...]
 
-Thanks!
-Jan
-
-> Thanks,
-> 
-> Boris
-> 
-> [1]http://lxr.free-electrons.com/source/include/linux/mtd/nand.h#L854
+-- 
+Best regards,
+Marek Vasut
