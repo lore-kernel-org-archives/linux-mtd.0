@@ -1,25 +1,24 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctDPa-00005d-Fm
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 13:13:21 +0000
-Subject: Re: mtd-utils: various fixes, apply OpenEmbedded patches
-To: Andrea Adami <andrea.adami@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-References: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
- <20170322161323.22b7489c@free-electrons.com>
- <1b4bbd29-c93e-3e75-b01d-7b7b2ac93385@sigma-star.at>
- <20170323104556.185f92e0@free-electrons.com>
- <CAAQYJAub6XGjsSg4Ri6qk6xkrGdrRfzAGqfqf6EJ7UVU_H_RpQ@mail.gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Yuanjie.Huang@windriver.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Khem Raj <raj.khem@gmail.com>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <9fb078be-29a7-84e5-da5f-cb88beb05601@sigma-star.at>
-Date: Wed, 29 Mar 2017 15:12:53 +0200
+ id 1ctDVH-0003Kj-Ti
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 13:19:16 +0000
+Date: Wed, 29 Mar 2017 15:18:37 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: Adam Ford <aford173@gmail.com>, "Leto, Enrico"
+ <enrico.leto@siemens.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: Passing NAND mtdparts to OMAP2+ Kernel
+Message-ID: <20170329151837.509c15c6@bbrezillon>
+In-Reply-To: <20170329151002.26203f2c@bbrezillon>
+References: <CAHCN7xJoVF+3HjHwaS_U=jDqmU_Yv201KJSQ2s8N0gSNVR8pdQ@mail.gmail.com>
+ <20170328215705.438d7af8@bbrezillon>
+ <CAHCN7xKhRub4k8BpkPPjPFhjJU5c2xRd_VKPMfVOc88ZaTUmGQ@mail.gmail.com>
+ <04afe149-24b2-daec-5ef0-2d662ed79040@ti.com>
+ <20170329151002.26203f2c@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <CAAQYJAub6XGjsSg4Ri6qk6xkrGdrRfzAGqfqf6EJ7UVU_H_RpQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,48 +28,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As there were no complaints about the patches I posted last week, I
-applied them to mtd-utils.git.
+On Wed, 29 Mar 2017 15:10:02 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
+> On Wed, 29 Mar 2017 15:41:07 +0300
+> Roger Quadros <rogerq@ti.com> wrote:
+>=20
+> > Adam,
+> >=20
+> > On 29/03/17 14:39, Adam Ford wrote: =20
+> > > On Tue, Mar 28, 2017 at 2:57 PM, Boris Brezillon
+> > > <boris.brezillon@free-electrons.com> wrote:   =20
+> > >> +Roger and Enrico
+> > >>
+> > >> On Tue, 28 Mar 2017 10:43:01 -0500
+> > >> Adam Ford <aford173@gmail.com> wrote:
+> > >>   =20
+> > >>> I posted this on the linux-omap list, and I was asked to post this =
+on
+> > >>> the linux-mtd list:
+> > >>>
+> > >>>
+> > >>> I tried to remove the MTD partitions from the Linux device tree, an=
+d I
+> > >>> noticed that there was no partition information being pushed anymore
+> > >>> unless I changed the mtdparts name in U-Boot.
+> > >>>
+> > >>> It appears as if the MTD drivers have changed a bit.  I found a few
+> > >>> e-mails floating around that attempt to fix this
+> > >>>
+> > >>> Commit f7a8e38f07a17be907585 ("mtd: nand: assign reasonable default
+> > >>> name for NAND drivers") attempts to address this, and someone over =
+at
+> > >>> https://patchwork.ozlabs.org/patch/707065/ attempted to address it =
+as
+> > >>> well in a slightly different way.   =20
+> > >>
+> > >> Can you test the patch and let me know if solves the problem. If it
+> > >> does, I'll send a clean version of the patch and queue it for 4.12.
+> > >>   =20
+> > >=20
+> > > I tried to apply the patch directly, but it failed.  I then manually
+> > > copy-pasted it into the proper place, but it fails to compile.
+> > >=20
+> > > drivers/mtd/nand/omap2.c: In function =E2=80=98omap_nand_probe=E2=80=
+=99:
+> > > drivers/mtd/nand/omap2.c:1859:14: error: implicit declaration of
+> > > function =E2=80=98devm_kasprinf=E2=80=99 [-Werror=3Dimplicit-function=
+-declaration]
+> > >   mtd->name =3D devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc=
+_cs);
+> > >               ^~~~~~~~~~~~~
+> > > drivers/mtd/nand/omap2.c:1859:12: warning: assignment makes pointer
+> > > from integer without a cast [-Wint-conversion]
+> > >   mtd->name =3D devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc=
+_cs);
+> > >             ^
+> > > cc1: some warnings being treated as errors
+> > >=20
+> > > I use buildroot to build my toolchain and I am using gcc version 6.3.0
+> > > with glibc 2.24.  Is there supposed to be an include somewhere?  I am
+> > > not familiar with devm_kasprinf. =20
+>=20
+> It's a typo: s/devm_kasprinf/devm_kasprintf/.
+>=20
+> > >=20
+> > >    =20
+> >=20
+> > Does the below patch work for you? =20
+>=20
+> Should work indeed.
+>=20
+> I had a closer look and it seems that the bug was actually introduced
+> by c9711ec5250b mtd: nand: omap: Clean up device tree
+> support.
+> The parent device name has changed when switching to the new DT
+> representation: omap2-nand.0 (where 0 is the controller instance) became
+> 30000000.nand (where 30000000 is the base reg address in the physical
+> address space). Which means my proposal was incorrect (0 is not the CS
+> line, it's the NAND controller instance number), so we'd better
+> statically set it to "omap2-nand.0".
 
-On 03/23/2017 11:57 AM, Andrea Adami wrote:
-> Hi,
-> while you're reviewing old patches please note there are some little
-> klibc fixes for 1.52 here:
-> 
-> http://cgit.openembedded.org/meta-openembedded/tree/meta-initramfs/recipes-devtools/mtd/ubi-utils-klibc
-> 
-> Probably you could consider the fixes for rpmatch() and getline(). Unsure about
-> iniparser_getdouble.
-> 
-> Thanks
-> Andrea
-> 
+Changing my mind (again :)). According to [1], the instance id is
+related to the CS line, so devm_kasprintf() is the right solution.
 
-I took a look at those. The Makefile patches aren't really relevant
-anymore, after the switch to Autotools (also, as noted in the patch,
-the first one is very specific for your use case).
+Sorry for the noise.
 
-The PRIxoff_t/PRIdoff_t patch (number 4) doesn't apply anymore. From a
-brief look at the log it appears that the format specifies have been
-fixed at least 3 times after the date of your patch. The current
-version uses autoconf to determine the sizeof off_t and loff_t. The
-header sets the format specifers based on the size only, so this
-_should_ make magic libc vendor/feature checks obsolete.
+>=20
+> >=20
+> > cheers,
+> > -roger
+> >=20
+> > ---
+> >  drivers/mtd/nand/omap2.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >=20
+> > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> > index 2a52101..f693b8d 100644
+> > --- a/drivers/mtd/nand/omap2.c
+> > +++ b/drivers/mtd/nand/omap2.c
+> > @@ -1856,6 +1856,13 @@ static int omap_nand_probe(struct platform_devic=
+e *pdev)
+> >  	nand_chip->ecc.priv	=3D NULL;
+> >  	nand_set_flash_node(nand_chip, dev->of_node);
+> >   =20
+>=20
+> nand_set_flash_node() is now taking the "label" DT property into account
+> and assigning mtd->name to this value if present. I'd recommend doing
+>=20
+> 	if (!mtd->name)
+> 		mtd->name =3D "omap2-nand.0";
 
-As for the prompt() patch (number 5), the use of rpmatch() has recently
-been removed. I would hesitate removing the use of getline() as proposed
-in the patch, first of all the proposed patch would alter the behavior
-of prompt() if more than one character was entered and second, getline
-has actually been accepted into the standard some ~9 years ago.[1]
+This comment still stands, except it should be:
 
+	if (!mtd->name)
+		mtd->name =3D devm_kasprintf(&pdev->dev, GFP_KERNEL,
+					   "omap2-nand.%d", info->gpmc_cs);
 
-If there are no objections, I'll apply the libubi ioctl and
-libiniparser patches (number 3 and 6 respectively).
+	if (!mtd->name) {
+		dev_err(&pdev->dev, "Failed to set MTD name\n");
+		return -ENOMEM;
+	}
 
+Regards,
 
-Thanks,
+Boris
 
-David
-
-[1] http://pubs.opengroup.org/onlinepubs/9699919799/functions/getdelim.html
+[1]http://lxr.free-electrons.com/source/arch/arm/mach-omap2/gpmc-nand.c?v=
+=3D4.6#L133
