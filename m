@@ -1,30 +1,23 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from 4.mo179.mail-out.ovh.net ([46.105.36.149])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctLsj-0002tM-41
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 22:15:59 +0000
-Subject: Re: [REGRESSION 4.11] Commit d8514d8edb5b ("ovl: copy up regular file
- using O_TMPFILE") breaks ubifs
-To: Ralph Sennhauser <ralph.sennhauser@gmail.com>,
- Amir Goldstein <amir73il@gmail.com>
-References: <20170328100107.25095af6@gmail.com>
- <CAOQ4uxisw5vWYsdMTNemw=MqNyS2nxfAUkg+UfoGmbE3-he1Ug@mail.gmail.com>
- <20170328124545.3c4b87ff@gmail.com>
- <CAOQ4uxgNfuLN93owdCUJ=9VcU4DKGVEKkEGT7siiem8quVwCsQ@mail.gmail.com>
- <20170328132818.05871b73@gmail.com>
- <CAOQ4uxiC=RXPwSy7NGt+Ri=Eie4-_WsUPk7Sy-sh9RdrGQuesw@mail.gmail.com>
- <20170328141621.6bb2d639@gmail.com>
- <CAOQ4uxg0xRchsNOh1jtbyEdyDDqV3ToCvo=+QuCsD6duGJU_ZQ@mail.gmail.com>
- <20170329232648.0b5bc1e9@gmail.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
- linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- regressions@leemhuis.info, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- David Oberhollenzer <goliath@sigma-star.at>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <33155efb-2c42-a7e9-b867-06760b1e1495@nod.at>
-Date: Thu, 30 Mar 2017 00:15:31 +0200
+ id 1ctM5W-00077g-F1
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 22:29:13 +0000
+Received: from player690.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo179.mail-out.ovh.net (Postfix) with ESMTP id 6918033419
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 00:28:46 +0200 (CEST)
+Subject: Re: [PATCH v4 4/9] nand: spi: add basic blocks for infrastructure
+To: Peter Pan <peterpandong@micron.com>, boris.brezillon@free-electrons.com,
+ richard@nod.at, computersforpeace@gmail.com, arnaud.mouiche@gmail.com,
+ thomas.petazzoni@free-electrons.com, marex@denx.de,
+ cyrille.pitchen@atmel.com, linux-mtd@lists.infradead.org
+References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
+ <1490262226-29092-5-git-send-email-peterpandong@micron.com>
+Cc: peterpansjtu@gmail.com, linshunquan1@hisilicon.com
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <2a5aa496-447c-83fc-55ff-c345bb3b5151@wedev4u.fr>
+Date: Thu, 30 Mar 2017 00:28:32 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170329232648.0b5bc1e9@gmail.com>
+In-Reply-To: <1490262226-29092-5-git-send-email-peterpandong@micron.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,41 +29,911 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ralph,
-
-Am 29.03.2017 um 23:26 schrieb Ralph Sennhauser:
->> # create and link a tmpfile - then remove it
->> sudo rm -rf foo; sudo xfs_io -T -c "flink foo" . ; ls -l foo; sudo rm
->> foo
+Le 23/03/2017 à 10:43, Peter Pan a écrit :
+> This is the first commit for spi nand framkework.
+> This commit is to add add basic building blocks
+> for the SPI NAND infrastructure.
 > 
-> next-20170328, obviously without your patch:
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> ---
+>  drivers/mtd/nand/Kconfig            |   1 +
+>  drivers/mtd/nand/Makefile           |   1 +
+>  drivers/mtd/nand/spi/Kconfig        |   5 +
+>  drivers/mtd/nand/spi/Makefile       |   2 +
+>  drivers/mtd/nand/spi/core.c         | 464 ++++++++++++++++++++++++++++++++++++
+>  drivers/mtd/nand/spi/manufactures.c |  24 ++
+>  include/linux/mtd/spinand.h         | 270 +++++++++++++++++++++
+>  7 files changed, 767 insertions(+)
+>  create mode 100644 drivers/mtd/nand/spi/Kconfig
+>  create mode 100644 drivers/mtd/nand/spi/Makefile
+>  create mode 100644 drivers/mtd/nand/spi/core.c
+>  create mode 100644 drivers/mtd/nand/spi/manufactures.c
+>  create mode 100644 include/linux/mtd/spinand.h
 > 
->   # xfs_io -T -c "flink foo" .
->   .: Not supported
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 1c1a1f4..7695fd8 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -2,3 +2,4 @@ config MTD_NAND_CORE
+>  	tristate
+>  
+>  source "drivers/mtd/nand/raw/Kconfig"
+> +source "drivers/mtd/nand/spi/Kconfig"
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index fe430d9..6221958 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -3,3 +3,4 @@ obj-$(CONFIG_MTD_NAND_CORE) += nandcore.o
+>  nandcore-objs :=  bbt.o
+>  
+>  obj-y	+= raw/
+> +obj-$(CONFIG_MTD_SPI_NAND)	+= spi/
+> diff --git a/drivers/mtd/nand/spi/Kconfig b/drivers/mtd/nand/spi/Kconfig
+> new file mode 100644
+> index 0000000..d77c46e
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/Kconfig
+> @@ -0,0 +1,5 @@
+> +menuconfig MTD_SPI_NAND
+> +	tristate "SPI NAND device Support"
+> +	depends on MTD_NAND
+> +	help
+> +	  This is the framework for the SPI NAND device drivers.
+> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+> new file mode 100644
+> index 0000000..eabdb81
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/Makefile
+> @@ -0,0 +1,2 @@
+> +obj-$(CONFIG_MTD_SPI_NAND) += core.o
+> +obj-$(CONFIG_MTD_SPI_NAND) += manufactures.o
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> new file mode 100644
+> index 0000000..d1ac522
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -0,0 +1,464 @@
+> +/*
+> + *
+> + * Copyright (c) 2009-2017 Micron Technology, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * as published by the Free Software Foundation; either version 2
+> + * of the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
+> +
+> +#define pr_fmt(fmt) "SPI NAND: " fmt
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/mtd/spinand.h>
+> +#include <linux/slab.h>
+> +
+> +/*
+> + * spinand_exec_op - execute SPI NAND operation by controller ->exec_op() hook
+> + * @chip: SPI NAND device structure
+> + * @op: pointer to spinand_op struct
+> + */
+> +static inline int spinand_exec_op(struct spinand_device *chip,
+> +				  struct spinand_op *op)
+> +{
+> +	return chip->controller.controller->ops->exec_op(chip, op);
+> +}
+> +
+> +/*
+> + * spinand_op_init - initialize spinand_op struct
+> + * @op: pointer to spinand_op struct
+> + */
+> +static inline void spinand_op_init(struct spinand_op *op)
+> +{
+> +	memset(op, 0, sizeof(struct spinand_op));
+> +	op->addr_nbits = 1;
+> +	op->data_nbits = 1;
+> +}
+> +
+> +/*
+> + * spinand_read_reg - send command 0Fh to read register
+> + * @chip: SPI NAND device structure
+> + * @reg; register to read
+> + * @buf: buffer to store value
+> + */
+> +static int spinand_read_reg(struct spinand_device *chip, u8 reg, u8 *buf)
+> +{
+> +	struct spinand_op op;
+> +	int ret;
+> +
+> +	spinand_op_init(&op);
+> +	op.cmd = SPINAND_CMD_GET_FEATURE;
+> +	op.n_addr = 1;
+> +	op.addr[0] = reg;
+> +	op.n_rx = 1;
+> +	op.rx_buf = buf;
+> +
+> +	ret = spinand_exec_op(chip, &op);
+> +	if (ret < 0)
+> +		pr_err("err: %d read register %d\n", ret, reg);
+> +
+> +	return ret;
+> +}
+> +
+> +/*
+> + * spinand_write_reg - send command 1Fh to write register
+> + * @chip: SPI NAND device structure
+> + * @reg; register to write
+> + * @buf: buffer stored value
+> + */
+> +static int spinand_write_reg(struct spinand_device *chip, u8 reg, u8 *buf)
+> +{
+> +	struct spinand_op op;
+> +	int ret;
+> +
+> +	spinand_op_init(&op);
+> +	op.cmd = SPINAND_CMD_SET_FEATURE;
+> +	op.n_addr = 1;
+> +	op.addr[0] = reg;
+> +	op.n_tx = 1,
+> +	op.tx_buf = buf,
+> +
+> +	ret = spinand_exec_op(chip, &op);
+> +	if (ret < 0)
+> +		pr_err("err: %d write register %d\n", ret, reg);
+> +
+> +	return ret;
+> +}
+> +
+> +/*
+> + * spinand_read_status - get status register value
+> + * @chip: SPI NAND device structure
+> + * @status: buffer to store value
+> + * Description:
+> + *   After read, write, or erase, the NAND device is expected to set the
+> + *   busy status.
+> + *   This function is to allow reading the status of the command: read,
+> + *   write, and erase.
+> + */
+> +static int spinand_read_status(struct spinand_device *chip, uint8_t *status)
+> +{
+> +	return spinand_read_reg(chip, REG_STATUS, status);
+> +}
+> +
+> +/*
+> + * spinand_wait - wait until the command is done
+> + * @chip: SPI NAND device structure
+> + * @s: buffer to store status register value (can be NULL)
+> + */
+> +static int spinand_wait(struct spinand_device *chip, u8 *s)
+> +{
+> +	unsigned long timeo = msecs_to_jiffies(400);
+> +	u8 status;
+> +
+> +	do {
+> +		spinand_read_status(chip, &status);
+> +		if ((status & STATUS_OIP_MASK) == STATUS_READY)
+> +			goto out;
+> +	} while (time_before(jiffies, timeo));
+> +
+> +	/*
+> +	 * Extra read, just in case the STATUS_READY bit has changed
+> +	 * since our last check
+> +	 */
+> +	spinand_read_status(chip, &status);
+> +out:
+> +	if (s)
+> +		*s = status;
+> +
+> +	return (status & STATUS_OIP_MASK) == STATUS_READY ? 0 :	-ETIMEDOUT;
+> +}
+> +
+> +/*
+> + * spinand_read_id - send 9Fh command to get ID
+> + * @chip: SPI NAND device structure
+> + * @buf: buffer to store id
+> + * Description:
+> + *   Manufacturers' read ID method is not unique. Some need a dummy before
+> + *   reading, some's ID has three byte.
+> + *   This function send one byte opcode (9Fh) and then read
+> + *   SPINAND_MAX_ID_LEN (4 currently) bytes. Manufacturer's detect function
+> + *   need to filter out real ID from the 4 bytes.
+> + */
+> +static int spinand_read_id(struct spinand_device *chip, u8 *buf)
+> +{
+> +	struct spinand_op op;
+> +
+> +	spinand_op_init(&op);
+> +	op.cmd = SPINAND_CMD_READ_ID;
+> +	op.n_rx = SPINAND_MAX_ID_LEN;
+> +	op.rx_buf = buf;
+> +
+> +	return spinand_exec_op(chip, &op);
+> +}
+> +
+> +/*
+> + * spinand_reset - reset device by FFh command.
+> + * @chip: SPI NAND device structure
+> + */
+> +static int spinand_reset(struct spinand_device *chip)
+> +{
+> +	struct spinand_op op;
+> +	int ret;
+> +
+> +	spinand_op_init(&op);
+> +	op.cmd = SPINAND_CMD_RESET;
+> +
+> +	ret = spinand_exec_op(chip, &op);
+> +	if (ret < 0) {
+> +		pr_err("spinand reset failed!\n");
+> +		goto out;
+> +	}
+> +	ret = spinand_wait(chip, NULL);
+> +
+> +out:
+> +	return ret;
+> +}
+> +
+> +/*
+> + * spinand_lock_block - write block lock register to lock/unlock device
+> + * @chip: SPI NAND device structure
+> + * @lock: value to set to block lock register
+> + */
+> +static int spinand_lock_block(struct spinand_device *chip, u8 lock)
+> +{
+> +	return spinand_write_reg(chip, REG_BLOCK_LOCK, &lock);
+> +}
+> +
+> +/*
+> + * spinand_set_rd_wr_op - choose the best read write command
+> + * @chip: SPI NAND device structure
+> + * Description:
+> + *   Chose the fastest r/w command according to spi controller's and
+> + *   device's ability.
+> + */
+> +static void spinand_set_rd_wr_op(struct spinand_device *chip)
+> +{
+> +	u32 controller_cap = chip->controller.controller->caps;
+> +	u32 rw_mode = chip->rw_mode;
+> +
+> +	if ((controller_cap & SPINAND_CAP_RD_QUAD) &&
+> +	    (rw_mode & SPINAND_RD_QUAD))
+> +		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_QUAD_IO;
+> +	else if ((controller_cap & SPINAND_CAP_RD_X4) &&
+> +		 (rw_mode & SPINAND_RD_X4))
+> +		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_X4;
+> +	else if ((controller_cap & SPINAND_CAP_RD_DUAL) &&
+> +		 (rw_mode & SPINAND_RD_DUAL))
+> +		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_DUAL_IO;
+> +	else if ((controller_cap & SPINAND_CAP_RD_X2) &&
+> +		 (rw_mode & SPINAND_RD_X2))
+> +		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_X2;
+> +	else
+> +		chip->read_cache_op = SPINAND_CMD_READ_FROM_CACHE_FAST;
+> +
+> +	if ((controller_cap & SPINAND_CAP_WR_X4) &&
+> +	    (rw_mode & SPINAND_WR_X4))
+> +		chip->write_cache_op = SPINAND_CMD_PROG_LOAD_X4;
+> +	else
+> +		chip->write_cache_op = SPINAND_CMD_PROG_LOAD;
+> +}
+> +
+> +/*
+> + * spinand_manufacturer_detect - detect SPI NAND device by each manufacturer
+> + * @chip: SPI NAND device structure
+> + *
+> + * ->detect() should decode raw id in chip->id.data and initialize device
+> + * related part in spinand_device structure if it is the right device.
+> + * ->detect() can not be NULL.
+> + */
+> +static int spinand_manufacturer_detect(struct spinand_device *chip)
+> +{
+> +	int i = 0;
+> +
+> +	for (; spinand_manufacturers[i]->id != 0x0; i++) {
+> +		if (!spinand_manufacturers[i]->ops ||
+> +		    !spinand_manufacturers[i]->ops->detect) {
+> +			pr_err("%s's ops or ops->detect() is be NULL!\n",
+> +			       spinand_manufacturers[i]->name);
+> +			return -EINVAL;
+> +		}
+> +		if (spinand_manufacturers[i]->ops->detect(chip)) {
+> +			chip->manufacturer.manu = spinand_manufacturers[i];
+> +			return 0;
+> +		}
 
--T tells xfs_io to create a tmpfile but you have it disabled in UBIFS.
+As discussed with Boris on IRC, you don't check the manufacturer ID
+(first byte of the JEDEC ID) before calling ops->dectect() because of
+the variable number of dummy clock cycles between the instruction cycles
+and the data cycles, fine.
 
-Anyway, can you please test the attached patch?
-Amir was right, UBIFS misses a corner case in ubifs_link(). ;-\
+Indeed it would have been a good thing to call ops->dectect() only for
+the right manufacturer base one the JEDEC ID. Anyways, instead be sure
+that the op->detect() implementation for manufacturer A never sends any
+manufacturer specific SPI command to a SPI NAND from manufacturer B,
+otherwise unwanted side effects may occur!
 
-I think I understand also why we never noticed this in xfstests, UBIFS prints
-only a non-fatal error while umounting the filesystem in this case.
-But will test tomorrow in more detail, need some sleep now.
+You could add a comment to enforce this requirement.
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 30825d882aa9..95e348a2da29 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -748,6 +748,9 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 		goto out_fname;
+I warn you about that, because with Micron QSPI NOR memories in 4-4-4
+mode, I noticed side effects when sending the regular Read JEDEC ID
+command (9Fh). I know that with Micron memories, once in their 4-4-4
+mode, they no longer support the regular 9Fh command and the AFh command
+should be used instead. However with Winbond memories, even in 4-4-4
+mode, we have to use the 9Fh command, the AFh op code being not supported...
 
- 	lock_2_inodes(dir, inode);
-+	if (inode->i_nlink == 0)
-+		ubifs_delete_orphan(c, inode->i_ino);
-+
- 	inc_nlink(inode);
- 	ihold(inode);
- 	inode->i_ctime = ubifs_current_time(inode);
+Since you don't know which Read JEDEC ID command to send before knowing
+the actual manufuctarer and since we use the Read JEDEC ID command to
+dynamically guess the manufacturer... no solution to dynamically probe
+the QSPI memory if already in 4-4-4 mode!
 
-Thanks,
-//richard
+> +	}
+> +
+> +	return -ENODEV;
+> +}
+> +
+> +/*
+> + * spinand_manufacturer_init - manufacturer initialization function.
+> + * @chip: SPI NAND device structure
+> + *
+> + * Manufacturer drivers should put all their specific initialization code in
+> + * their ->init() hook.
+> + */
+> +static int spinand_manufacturer_init(struct spinand_device *chip)
+> +{
+> +	if (chip->manufacturer.manu->ops->init)
+> +		return chip->manufacturer.manu->ops->init(chip);
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * spinand_manufacturer_cleanup - manufacturer cleanup function.
+> + * @chip: SPI NAND device structure
+> + *
+> + * Manufacturer drivers should put all their specific cleanup code in their
+> + * ->cleanup() hook.
+> + */
+> +static void spinand_manufacturer_cleanup(struct spinand_device *chip)
+> +{
+> +	/* Release manufacturer private data */
+> +	if (chip->manufacturer.manu->ops->cleanup)
+> +		return chip->manufacturer.manu->ops->cleanup(chip);
+> +}
+> +
+> +/*
+> + * spinand_dt_init - Initialize SPI NAND by device tree node
+> + * @chip: SPI NAND device structure
+> + *
+> + * TODO: put ecc_mode, ecc_strength, ecc_step, bbt, etc in here
+> + * and move it in generic NAND core.
+> + */
+> +static void spinand_dt_init(struct spinand_device *chip)
+> +{
+> +}
+> +
+> +/*
+> + * spinand_detect - detect the SPI NAND device
+> + * @chip: SPI NAND device structure
+> + */
+> +static int spinand_detect(struct spinand_device *chip)
+> +{
+> +	struct nand_device *nand = &chip->base;
+> +	int ret;
+> +
+> +	spinand_reset(chip);
+> +	spinand_read_id(chip, chip->id.data);
+> +	chip->id.len = SPINAND_MAX_ID_LEN;
+> +
+> +	ret = spinand_manufacturer_detect(chip);
+> +	if (ret) {
+> +		pr_err("SPI NAND: unknown raw ID %*phN\n",
+> +		       SPINAND_MAX_ID_LEN, chip->id.data);
+> +		goto out;
+> +	}
+> +
+> +	pr_info("%s (%s) is found.\n",
+> +		chip->name, chip->manufacturer.manu->name);
+> +	pr_info("%d MiB, block size: %d KiB, page size: %d, OOB size: %d\n",
+> +		(int)(nand_size(nand) >> 20), nand_eraseblock_size(nand) >> 10,
+> +		nand_page_size(nand), nand_per_page_oobsize(nand));
+> +
+> +out:
+> +	return ret;
+> +}
+> +
+> +/*
+> + * spinand_init - initialize the SPI NAND device
+> + * @chip: SPI NAND device structure
+> + */
+> +static int spinand_init(struct spinand_device *chip)
+> +{
+> +	struct mtd_info *mtd = spinand_to_mtd(chip);
+> +	struct nand_device *nand = mtd_to_nand(mtd);
+> +	struct spinand_ecc_engine *ecc_engine;
+> +	int ret;
+> +
+> +	spinand_dt_init(chip);
+> +	spinand_set_rd_wr_op(chip);
+> +
+> +	chip->buf = kzalloc(nand_page_size(nand) + nand_per_page_oobsize(nand),
+> +			    GFP_KERNEL);
+> +	if (!chip->buf) {
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	chip->oobbuf = chip->buf + nand_page_size(nand);
+> +
+> +	spinand_manufacturer_init(chip);
+> +
+> +	mtd->name = chip->name;
+> +	mtd->size = nand_size(nand);
+> +	mtd->erasesize = nand_eraseblock_size(nand);
+> +	mtd->writesize = nand_page_size(nand);
+> +	mtd->writebufsize = mtd->writesize;
+> +	mtd->owner = THIS_MODULE;
+> +	mtd->type = MTD_NANDFLASH;
+> +	mtd->flags = MTD_CAP_NANDFLASH;
+> +	if (!mtd->ecc_strength)
+> +		mtd->ecc_strength = ecc_engine->strength ?
+> +				    ecc_engine->strength : 1;
+> +
+> +	mtd->oobsize = nand_per_page_oobsize(nand);
+> +	ret = mtd_ooblayout_count_freebytes(mtd);
+> +	if (ret < 0)
+> +		ret = 0;
+> +	mtd->oobavail = ret;
+> +
+> +	if (!mtd->bitflip_threshold)
+> +		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3,
+> +						      4);
+> +	/* After power up, all blocks are locked, so unlock it here. */
+> +	spinand_lock_block(chip, BL_ALL_UNLOCKED);
+> +
+> +	return nand_register(nand);
+> +
+> +err:
+> +	return ret;
+> +}
+> +
+> +/*
+> + * spinand_alloc - [SPI NAND Interface] allocate SPI NAND device instance
+> + * @dev: pointer to device model structure
+> + */
+> +struct spinand_device *spinand_alloc(struct device *dev)
+> +{
+> +	struct spinand_device *chip;
+> +	struct spinand_ecc_engine *ecc_engine;
+> +
+> +	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+> +	if (!chip)
+> +		goto err1;
+> +
+> +	ecc_engine = kzalloc(sizeof(*ecc_engine), GFP_KERNEL);
+> +	if (!ecc_engine)
+> +		goto err2;
+> +
+> +	ecc_engine->mode = SPINAND_ECC_ONDIE;
+> +	chip->ecc.engine = ecc_engine;
+> +	spinand_set_of_node(chip, dev->of_node);
+> +	mutex_init(&chip->lock);
+> +
+> +	return chip;
+> +
+> +err2:
+> +	kfree(chip);
+> +err1:
+> +	return ERR_PTR(-ENOMEM);
+> +}
+> +EXPORT_SYMBOL_GPL(spinand_alloc);
+> +
+> +/*
+> + * spinand_free - [SPI NAND Interface] free SPI NAND device instance
+> + * @chip: SPI NAND device structure
+> + */
+> +void spinand_free(struct spinand_device *chip)
+> +{
+> +	kfree(chip->ecc.engine);
+> +	kfree(chip);
+> +}
+> +EXPORT_SYMBOL_GPL(spinand_free);
+> +
+> +/*
+> + * spinand_register - [SPI NAND Interface] register SPI NAND device
+> + * @chip: SPI NAND device structure
+> + */
+> +int spinand_register(struct spinand_device *chip)
+> +{
+> +	int ret;
+> +
+> +	ret = spinand_detect(chip);
+> +	if (ret) {
+> +		pr_err("Detect SPI NAND failed with error %d.\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = spinand_init(chip);
+> +	if (ret)
+> +		pr_err("Init SPI NAND failed with error %d.\n", ret);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(spinand_register);
+> +
+> +/*
+> + * spinand_unregister - [SPI NAND Interface] unregister SPI NAND device
+> + * @chip: SPI NAND device structure
+> + */
+> +int spinand_unregister(struct spinand_device *chip)
+> +{
+> +	struct nand_device *nand = &chip->base;
+> +
+> +	nand_unregister(nand);
+> +	spinand_manufacturer_cleanup(chip);
+> +	kfree(chip->buf);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(spinand_unregister);
+> +
+> +MODULE_DESCRIPTION("SPI NAND framework");
+> +MODULE_AUTHOR("Peter Pan<peterpandong@micron.com>");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/mtd/nand/spi/manufactures.c b/drivers/mtd/nand/spi/manufactures.c
+> new file mode 100644
+> index 0000000..7e0b42d
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/manufactures.c
+> @@ -0,0 +1,24 @@
+> +/**
+> + *
+> + * Copyright (c) 2009-2017 Micron Technology, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * as published by the Free Software Foundation; either version 2
+> + * of the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/mtd/spinand.h>
+> +
+> +struct spinand_manufacturer spinand_manufacturer_end = {0x0, "Unknown", NULL};
+> +
+> +struct spinand_manufacturer *spinand_manufacturers[] = {
+> +	&spinand_manufacturer_end,
+> +};
+> +EXPORT_SYMBOL(spinand_manufacturers);
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> new file mode 100644
+> index 0000000..44748b4
+> --- /dev/null
+> +++ b/include/linux/mtd/spinand.h
+> @@ -0,0 +1,270 @@
+> +/**
+> + *
+> + * Copyright (c) 2009-2017 Micron Technology, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * as published by the Free Software Foundation; either version 2
+> + * of the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
+> +#ifndef __LINUX_MTD_SPINAND_H
+> +#define __LINUX_MTD_SPINAND_H
+> +
+> +#include <linux/mutex.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
+> +
+> +/*
+> + * Standard SPI-NAND flash commands
+> + */
+> +#define SPINAND_CMD_RESET			0xff
+> +#define SPINAND_CMD_GET_FEATURE			0x0f
+> +#define SPINAND_CMD_SET_FEATURE			0x1f
+> +#define SPINAND_CMD_PAGE_READ			0x13
+> +#define SPINAND_CMD_READ_PAGE_CACHE_RDM		0x30
+> +#define SPINAND_CMD_READ_PAGE_CACHE_LAST	0x3f
+> +#define SPINAND_CMD_READ_FROM_CACHE		0x03
+> +#define SPINAND_CMD_READ_FROM_CACHE_FAST	0x0b
+> +#define SPINAND_CMD_READ_FROM_CACHE_X2		0x3b
+> +#define SPINAND_CMD_READ_FROM_CACHE_DUAL_IO	0xbb
+> +#define SPINAND_CMD_READ_FROM_CACHE_X4		0x6b
+> +#define SPINAND_CMD_READ_FROM_CACHE_QUAD_IO	0xeb
+> +#define SPINAND_CMD_BLK_ERASE			0xd8
+> +#define SPINAND_CMD_PROG_EXC			0x10
+> +#define SPINAND_CMD_PROG_LOAD			0x02
+> +#define SPINAND_CMD_PROG_LOAD_RDM_DATA		0x84
+> +#define SPINAND_CMD_PROG_LOAD_X4		0x32
+> +#define SPINAND_CMD_PROG_LOAD_RDM_DATA_X4	0x34
+> +#define SPINAND_CMD_READ_ID			0x9f
+> +#define SPINAND_CMD_WR_DISABLE			0x04
+> +#define SPINAND_CMD_WR_ENABLE			0x06
+> +
+
+Reading a Macronix datasheet, I see that they also use the "* X2" and "*
+X4" for operations names. If all manufacturers have agreed on those
+names and it has become the standard, ok,  why not... but personally, I
+think names like READ_FROM_CACHE_1_1_4 and READ_FROM_CACHE_1_4_4 would
+be more explicit about knowing the actual number of I/O lines for
+instruction, address/dummy then data clock cycles.
+
+Anyway, you'd better follow the standard, if it exists, rather than my
+personal taste :)
+
+> +/* feature registers */
+> +#define REG_BLOCK_LOCK		0xa0
+> +#define REG_CFG			0xb0
+> +#define REG_STATUS		0xc0
+> +#define REG_DIE_SELECT		0xd0
+> +
+> +/* status */
+> +#define STATUS_OIP_MASK		0x01
+> +#define STATUS_CRBSY_MASK	0x80
+> +#define STATUS_READY		(0 << 0)
+> +#define STATUS_BUSY		(1 << 0)
+> +
+> +#define STATUS_E_FAIL_MASK	0x04
+> +#define STATUS_E_FAIL		(1 << 2)
+> +
+> +#define STATUS_P_FAIL_MASK	0x08
+> +#define STATUS_P_FAIL		(1 << 3)
+> +
+> +/*Configuration register defines*/
+> +#define CFG_QE_MASK		0x01
+> +#define CFG_QE_ENABLE		0x01
+> +#define CFG_ECC_MASK		0x10
+> +#define CFG_ECC_ENABLE		0x10
+> +#define CFG_LOT_MASK		0x20
+> +#define CFG_LOT_ENABLE		0x20
+> +#define CFG_OTP_MASK		0xc2
+> +#define CFG_OTP_ENTER		0x40
+> +#define CFG_OTP_EXIT		0x00
+
+Marek has already told you to use the BIT() macro, so +1 :)
+
+Anyways, I will add that I think that some of those bits are not generic
+but vendor specific. For instance, I'm reading a Macronix MX35LF2GE4AB
+datasheet: BIT(5) 0x20 is reserved, not "LOT".
+BIT(1) 0x02 is reserved as well, hence not belonging to OTP bits.
+
+You should separate standardized bits from those which are vendor
+specific, IMHO.
+
+Also, some SPI NAND memories, like SPI NOR, require their Quad Enable
+(QE) bit to be set before using any Quad SPI command:
+
+Write Protect and Reset/Hold pins are then reassigned to function IO2
+and IO3.
+
+I guess Micron memories don't have such a requirement but for almost all
+other vendors, if I understand your series correctly, they need to set
+this QE bit from the chip->manufacturer.manu->ops->init(), right?
+
+Just after the choice of the read/write op codes with the associated SPI
+1-y-z protocols, so .manu->ops->init() knows whether or not it needs to
+set the QE bit.
+
+> +
+> +/* block lock */
+> +#define BL_ALL_LOCKED		0x7c
+> +#define BL_U_1_1024_LOCKED	0x08
+> +#define BL_U_1_512_LOCKED	0x10
+> +#define BL_U_1_256_LOCKED	0x18
+> +#define BL_U_1_128_LOCKED	0x20
+> +#define BL_U_1_64_LOCKED	0x28
+> +#define BL_U_1_32_LOCKED	0x30
+> +#define BL_U_1_16_LOCKED	0x38
+> +#define BL_U_1_8_LOCKED		0x40
+> +#define BL_U_1_4_LOCKED		0x48
+> +#define BL_U_1_2_LOCKED		0x50
+> +#define BL_L_1_1024_LOCKED	0x0c
+> +#define BL_L_1_512_LOCKED	0x14
+> +#define BL_L_1_256_LOCKED	0x1c
+> +#define BL_L_1_128_LOCKED	0x24
+> +#define BL_L_1_64_LOCKED	0x2c
+> +#define BL_L_1_32_LOCKED	0x34
+> +#define BL_L_1_16_LOCKED	0x3c
+> +#define BL_L_1_8_LOCKED		0x44
+> +#define BL_L_1_4_LOCKED		0x4c
+> +#define BL_L_1_2_LOCKED		0x54
+> +#define BL_ALL_UNLOCKED		0X00
+> +
+> +/* die select */
+> +#define DIE_SELECT_MASK		0x40
+> +#define DIE_SELECT_DS0		0x00
+> +#define DIE_SELECT_DS1		0x40
+> +
+> +struct spinand_op;
+> +struct spinand_device;
+> +
+> +#define SPINAND_MAX_ID_LEN	4
+> +
+> +/**
+> + * struct nand_id - NAND id structure
+> + * @data: buffer containing the id bytes. Currently 8 bytes large, but can
+                                                       ^
+
+SPINAND_MAX_ID_LEN is defined as 4, not 8. Maybe someone else has
+already commented on that, if so, sorry for the noise!
+
+> + *	  be extended if required.
+> + * @len: ID length.
+> + */
+> +struct spinand_id {
+> +	u8 data[SPINAND_MAX_ID_LEN];
+> +	int len;
+> +};
+> +
+> +struct spinand_controller_ops {
+> +	int (*exec_op)(struct spinand_device *chip,
+> +		       struct spinand_op *op);
+> +};
+> +
+> +struct spinand_manufacturer_ops {
+> +	bool (*detect)(struct spinand_device *chip);
+> +	int (*init)(struct spinand_device *chip);
+> +	void (*cleanup)(struct spinand_device *chip);
+> +};
+> +
+> +struct spinand_manufacturer {
+> +	u8 id;
+> +	char *name;
+> +	const struct spinand_manufacturer_ops *ops;
+> +};
+> +
+> +extern struct spinand_manufacturer *spinand_manufacturers[];
+> +
+> +struct spinand_ecc_engine_ops {
+> +	void (*get_ecc_status)(struct spinand_device *chip,
+> +			       unsigned int status, unsigned int *corrected,
+> +			       unsigned int *ecc_errors);
+> +	void (*disable_ecc)(struct spinand_device *chip);
+> +	void (*enable_ecc)(struct spinand_device *chip);
+> +};
+> +
+> +enum spinand_ecc_mode {
+> +	SPINAND_ECC_ONDIE,
+> +	SPINAND_ECC_HW,
+> +};
+> +
+> +struct spinand_ecc_engine {
+> +	enum spinand_ecc_mode mode;
+> +	u32 strength;
+> +	u32 steps;
+> +	struct spinand_ecc_engine_ops *ops;
+> +};
+> +
+> +#define SPINAND_CAP_RD_X1 BIT(0)
+> +#define SPINAND_CAP_RD_X2 BIT(1)
+> +#define SPINAND_CAP_RD_X4 BIT(2)
+> +#define SPINAND_CAP_RD_DUAL BIT(3)
+> +#define SPINAND_CAP_RD_QUAD BIT(4)
+> +#define SPINAND_CAP_WR_X1 BIT(5)
+> +#define SPINAND_CAP_WR_X2 BIT(6)
+> +#define SPINAND_CAP_WR_X4 BIT(7)
+> +#define SPINAND_CAP_WR_DUAL BIT(8)
+> +#define SPINAND_CAP_WR_QUAD BIT(9)
+> +#define SPINAND_CAP_HW_ECC BIT(10)
+> +
+> +struct spinand_controller {
+> +	struct spinand_controller_ops *ops;
+> +	u32 caps;
+> +};
+> +
+> +/**
+> + * struct spinand_device - SPI-NAND Private Flash Chip Data
+> + * @base: NAND device instance
+> + * @lock: protection lock
+> + * @name: name of the chip
+> + * @id: ID structure
+> + * @read_cache_op: Opcode of read from cache
+> + * @write_cache_op: Opcode of program load
+> + * @buf: buffer for read/write data
+> + * @oobbuf: buffer for read/write oob
+> + * @rw_mode: read/write mode of SPI NAND chip
+> + * @controller: SPI NAND controller instance
+> + * @manufacturer: SPI NAND manufacturer instance, describe
+> + *                manufacturer related objects
+> + * @ecc_engine: SPI NAND ECC engine instance
+> + */
+> +struct spinand_device {
+> +	struct nand_device base;
+> +	struct mutex lock;
+> +	char *name;
+> +	struct spinand_id id;
+> +	u8 read_cache_op;
+> +	u8 write_cache_op;
+> +	u8 *buf;
+> +	u8 *oobbuf;
+> +	u32 rw_mode;
+> +	struct {
+> +		struct spinand_controller *controller;
+> +		void *priv;
+> +	} controller;
+> +	struct {
+> +		const struct spinand_manufacturer *manu;
+> +		void *priv;
+> +	} manufacturer;
+> +	struct {
+> +		struct spinand_ecc_engine *engine;
+> +		void *context;
+> +	} ecc;
+> +};
+> +
+> +static inline struct spinand_device *mtd_to_spinand(struct mtd_info *mtd)
+> +{
+> +	return container_of(mtd_to_nand(mtd), struct spinand_device, base);
+> +}
+> +
+> +static inline struct mtd_info *spinand_to_mtd(struct spinand_device *chip)
+> +{
+> +	return nand_to_mtd(&chip->base);
+> +}
+> +
+> +static inline void spinand_set_of_node(struct spinand_device *chip,
+> +				       struct device_node *np)
+> +{
+> +	nand_set_of_node(&chip->base, np);
+> +}
+> +
+> +#define SPINAND_MAX_ADDR_LEN	4
+> +
+> +struct spinand_op {
+> +	u8 cmd;
+> +	u8 n_addr;
+> +	u8 addr_nbits;
+> +	u8 dummy_bytes;
+> +	u8 addr[SPINAND_MAX_ADDR_LEN];
+> +	u32 n_tx;
+> +	const u8 *tx_buf;
+> +	u32 n_rx;
+> +	u8 *rx_buf;
+> +	u8 data_nbits;
+> +};
+
+You should add a comment like you did with the 'struct spinand_device'
+describing each member. I guess it can be understood for those who often
+work with (Q)SPI flash memories but for others I think some comments
+could help!
+
+> +
+> +/* SPI NAND supported OP mode */
+> +#define SPINAND_RD_X1		0x00000001
+> +#define SPINAND_RD_X2		0x00000002
+> +#define SPINAND_RD_X4		0x00000004
+> +#define SPINAND_RD_DUAL		0x00000008
+> +#define SPINAND_RD_QUAD		0x00000010
+> +#define SPINAND_WR_X1		0x00000020
+> +#define SPINAND_WR_X2		0x00000040
+> +#define SPINAND_WR_X4		0x00000080
+> +#define SPINAND_WR_DUAL		0x00000100
+> +#define SPINAND_WR_QUAD		0x00000200
+> +
+> +#define SPINAND_RD_COMMON	(SPINAND_RD_X1 | SPINAND_RD_X2 | \
+> +				 SPINAND_RD_X4 | SPINAND_RD_DUAL | \
+> +				 SPINAND_RD_QUAD)
+> +#define SPINAND_WR_COMMON	(SPINAND_WR_X1 | SPINAND_WR_X4)
+> +#define SPINAND_OP_COMMON	(SPINAND_RD_COMMON | SPINAND_WR_COMMON)
+> +
+> +struct spinand_device *spinand_alloc(struct device *dev);
+> +void spinand_free(struct spinand_device *chip);
+> +int spinand_register(struct spinand_device *chip);
+> +int spinand_unregister(struct spinand_device *chip);
+> +#endif /* __LINUX_MTD_SPINAND_H */
+> 
