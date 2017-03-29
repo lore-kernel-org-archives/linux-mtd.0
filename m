@@ -1,16 +1,23 @@
-Date: Wed, 29 Mar 2017 22:03:36 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Simon Baatz <gmbnomis@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- u.kleine-koenig@pengutronix.de, richard@nod.at, jason@lakedaemon.net,
- andrew@lunn.ch, dan.carpenter@oracle.com
-Subject: Re: [PATCH v2 1/2] mtd: nand: orion: fix clk handling
-Message-ID: <20170329220336.2b8bf0df@bbrezillon>
-In-Reply-To: <20170327180208.13414-1-gmbnomis@gmail.com>
-References: <20170327180208.13414-1-gmbnomis@gmail.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctJpS-0006tp-D7
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 20:04:31 +0000
+Subject: Re: [RFC][PATCH] UBI: Make MTD_UBI_FASTMAP non-experimental
+To: Jesper Nilsson <jesper.nilsson@axis.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20170329153836.GB29118@axis.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <434195d8-d638-240d-8d63-50d033ea453a@nod.at>
+Date: Wed, 29 Mar 2017 22:04:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170329153836.GB29118@axis.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,132 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 27 Mar 2017 20:02:07 +0200
-Simon Baatz <gmbnomis@gmail.com> wrote:
+Jesper,
 
-> The clk handling in orion_nand.c had two problems:
+Am 29.03.2017 um 17:38 schrieb Jesper Nilsson:
+> MTD_UBI_FASTMAP has been set as experimental since it
+> was merged back in 2012.
 > 
-> - In the probe function, clk_put() was called for an enabled clock,
->   which violates the API (see documentation for clk_put() in
->   include/linux/clk.h)
+> There hasn't been much change in the format,
+> so we can consider the feature stable and start
+> being careful about breaking the format.
+> (This is somewhat of a pre-requisite for anyone actually
+> using the feature in the real world and depending on it)
 > 
-> - In the error path of the probe function, clk_put() could be called
->   twice for the same clock.
-> 
-> In order to clean this up, use the managed function devm_clk_get() and
-> store the pointer to the clk in the driver data.
-> 
-> Fixes: baffab28b13120694fa3ebab08d3e99667a851d2 ('ARM: Orion: fix driver probe error handling with respect to clk')
-> Cc: <stable@vger.kernel.org> # v4.5+
-> Signed-off-by: Simon Baatz <gmbnomis@gmail.com>
+> Drop the experimental note and the warning text about
+> the on-flash format not being finalized.
 
-Applied both.
+I fully agree, we can drop this note. But we have to add another
+one.
+While Fastmap is a nice feature to speed-up the attach time it
+comes with a cost. It makes UBI less robust. I saw issues
+on NAND chips which misbehaved slightly where UBI was able to
+recover when using a full scan but not when Fastmap was used.
+The UBI full scan code is paranoid and can sort out problems
+very early, with Fastmap enabled you lose this valuable property.
+
+So, users should enable Fastmap only when they absolutely need
+a very fast attach time and be very sure that the NAND works as
+expected.
 
 Thanks,
-
-Boris
-
-> ---
-> 
-> Changes in v2:
-> * changed whitespace alignment in orion_nand_info struct definition
-> 
->  drivers/mtd/nand/orion_nand.c | 42 +++++++++++++++++++++---------------------
->  1 file changed, 21 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> index 4a91c5d000be..3acdc20485f1 100644
-> --- a/drivers/mtd/nand/orion_nand.c
-> +++ b/drivers/mtd/nand/orion_nand.c
-> @@ -23,6 +23,11 @@
->  #include <asm/sizes.h>
->  #include <linux/platform_data/mtd-orion_nand.h>
->  
-> +struct orion_nand_info {
-> +	struct nand_chip chip;
-> +	struct clk *clk;
-> +};
-> +
->  static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
->  {
->  	struct nand_chip *nc = mtd_to_nand(mtd);
-> @@ -75,20 +80,21 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
->  
->  static int __init orion_nand_probe(struct platform_device *pdev)
->  {
-> +	struct orion_nand_info *info;
->  	struct mtd_info *mtd;
->  	struct nand_chip *nc;
->  	struct orion_nand_data *board;
->  	struct resource *res;
-> -	struct clk *clk;
->  	void __iomem *io_base;
->  	int ret = 0;
->  	u32 val = 0;
->  
-> -	nc = devm_kzalloc(&pdev->dev,
-> -			sizeof(struct nand_chip),
-> +	info = devm_kzalloc(&pdev->dev,
-> +			sizeof(struct orion_nand_info),
->  			GFP_KERNEL);
-> -	if (!nc)
-> +	if (!info)
->  		return -ENOMEM;
-> +	nc = &info->chip;
->  	mtd = nand_to_mtd(nc);
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> @@ -145,15 +151,13 @@ static int __init orion_nand_probe(struct platform_device *pdev)
->  	if (board->dev_ready)
->  		nc->dev_ready = board->dev_ready;
->  
-> -	platform_set_drvdata(pdev, mtd);
-> +	platform_set_drvdata(pdev, info);
->  
->  	/* Not all platforms can gate the clock, so it is not
->  	   an error if the clock does not exists. */
-> -	clk = clk_get(&pdev->dev, NULL);
-> -	if (!IS_ERR(clk)) {
-> -		clk_prepare_enable(clk);
-> -		clk_put(clk);
-> -	}
-> +	info->clk = devm_clk_get(&pdev->dev, NULL);
-> +	if (!IS_ERR(info->clk))
-> +		clk_prepare_enable(info->clk);
->  
->  	ret = nand_scan(mtd, 1);
->  	if (ret)
-> @@ -169,26 +173,22 @@ static int __init orion_nand_probe(struct platform_device *pdev)
->  	return 0;
->  
->  no_dev:
-> -	if (!IS_ERR(clk)) {
-> -		clk_disable_unprepare(clk);
-> -		clk_put(clk);
-> -	}
-> +	if (!IS_ERR(info->clk))
-> +		clk_disable_unprepare(info->clk);
->  
->  	return ret;
->  }
->  
->  static int orion_nand_remove(struct platform_device *pdev)
->  {
-> -	struct mtd_info *mtd = platform_get_drvdata(pdev);
-> -	struct clk *clk;
-> +	struct orion_nand_info *info = platform_get_drvdata(pdev);
-> +	struct nand_chip *chip = &info->chip;
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
->  
->  	nand_release(mtd);
->  
-> -	clk = clk_get(&pdev->dev, NULL);
-> -	if (!IS_ERR(clk)) {
-> -		clk_disable_unprepare(clk);
-> -		clk_put(clk);
-> -	}
-> +	if (!IS_ERR(info->clk))
-> +		clk_disable_unprepare(info->clk);
->  
->  	return 0;
->  }
+//richard
