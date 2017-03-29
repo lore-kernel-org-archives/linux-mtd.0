@@ -1,36 +1,31 @@
-Received: from mail-oi0-f68.google.com ([209.85.218.68])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ct2vI-0000lJ-Tj
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 02:01:22 +0000
-Received: by mail-oi0-f68.google.com with SMTP id t7so171892oig.2
- for <linux-mtd@lists.infradead.org>; Tue, 28 Mar 2017 19:01:00 -0700 (PDT)
-Date: Tue, 28 Mar 2017 21:00:58 -0500
-From: Rob Herring <robh@kernel.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, laurent.monat@idquantique.com,
- thorsten.christiansson@idquantique.com, Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Graham Moore <grmoore@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [RESEND PATCH v2 13/53] mtd: nand: denali_dt: enable
- HW_ECC_FIXUP for Altera SOCFPGA variant
-Message-ID: <20170329020058.twiqhpghloxh32pj@rob-hp-laptop>
-References: <1490213273-8571-1-git-send-email-yamada.masahiro@socionext.com>
- <1490213273-8571-14-git-send-email-yamada.masahiro@socionext.com>
+Received: from mx.socionext.com ([202.248.49.38])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ct4Bm-0000xk-D2
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 03:22:28 +0000
+From: <yamada.masahiro@socionext.com>
+To: <boris.brezillon@free-electrons.com>
+CC: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
+ <marek.vasut@gmail.com>, <computersforpeace@gmail.com>,
+ <thorsten.christiansson@idquantique.com>, <laurent.monat@idquantique.com>,
+ <dinguyen@kernel.org>, <artem.bityutskiy@linux.intel.com>,
+ <grmoore@opensource.altera.com>, <ejo@pengutronix.de>,
+ <chuanxiao.dong@intel.com>, <mhiramat@kernel.org>,
+ <jaswinder.singh@linaro.org>, <robh@kernel.org>, <linux@armlinux.org.uk>,
+ <masahiroy@kernel.org>
+Subject: RE: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+Date: Wed, 29 Mar 2017 03:22:01 +0000
+Message-ID: <bafe698596034dee9c48b19e832c143b@SOC-EX02V.e01.socionext.com>
+References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
+ <20170327100039.480b8d8d@bbrezillon>
+ <831da313d194457db7bd02fd8ea5b291@SOC-EX02V.e01.socionext.com>
+ <20170328095907.76d02ce9@bbrezillon>
+In-Reply-To: <20170328095907.76d02ce9@bbrezillon>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1490213273-8571-14-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,31 +35,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 23, 2017 at 05:07:12AM +0900, Masahiro Yamada wrote:
-> There are various customizable parameters, so several variants for
-> this IP.  A generic compatible like "denali,denali-nand-dt" is
-> useless.  Moreover, there are multiple things wrong with this string.
-> (Refer to Rob's comment [1])
-> 
-> The denali_dt.c was split out and this compatible was added by Altera
-> for the SOCFPGA port.  So, replace it with a more specific string.
-> 
-> The Denali IP on SOCFPGA incorporates the hardware ECC fixup feature.
-> So, this capability should be associated with the compatible string.
-> 
-> [1] https://lkml.org/lkml/2016/12/1/450
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
-> Changes in v2:
->   - Add caps flag to of_device_id data, not hard-code in driver code
->   - Add Altera-specific compatible.
-> 
->  Documentation/devicetree/bindings/mtd/denali-nand.txt |  5 +++--
->  drivers/mtd/nand/denali_dt.c                          | 14 ++++++++++----
->  2 files changed, 13 insertions(+), 6 deletions(-)
-
-You should also mention there are no users (in-tree) of the old string.
-
-Acked-by: Rob Herring <robh@kernel.org>
+SGkgQm9yaXMNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IFRoZSBjdXJyZW50
+IHNpdHVhdGlvbiB2aW9sYXRlcyBbQV0uDQo+IA0KPiBEbyB5b3UgaGF2ZSBhIHJlYWwgZmFpbHVy
+ZSB0aGF0IGlzIHByb3ZlbiB0byBiZSBjYXVzZWQgYnkgbWlzIGNhY2hlDQo+IGxpbmUgYWxpZ25t
+ZW50LCBvciBhcmUgeW91IGp1c3Qgc3BlY3VsYXRpbmc/DQoNCk5vIHJlYWwgcHJvYmxlbS4NClJh
+dGhlciwgSSBhbSBmb2xsb3dpbmcgdGhlIGxpbmUgMjI2IG9mIERNQS1BUEkudHh0DQoiV2Fybmlu
+Z3M6IE1lbW9yeSBjb2hlcmVuY3kgLi4uIi4NCg0KDQpJbiBteSBjYXNlLCB0aGUgY2FjaGUgbGlu
+ZSBpcyA2NCBieXRlIChmb3IgQVJNKSwNCkJ1dCB0aGlzIGRvZXMgbm90IHJlYWxseSBtYXR0ZXIg
+Zm9yIHRoZSByZWFzb24NCm5hbmRfYnVmZmVycyBpcyBvbmx5IHRvdWNoZWQgYXQgaW5pdGlhbGl6
+YXRpb24gYXMgeW91IG1lbnRpb25lZC4NCg0KDQpbQl0gaXMgYSByZWFsIHByb2JsZW0gZm9yIG1l
+DQpiZWNhdXNlIERlbmFsaSBETUEgZW5naW5lIHJlcXVpcmVzID40Ynl0ZSBhbGlnbm1lbnQuDQoN
+Cg0KDQoNClNvLCBJIGNhbiByZXBsYWNlIHRoZSBnaXQtbG9nIGluIHRoZSBuZXh0IHZlcnNpb246
+DQoNCiINClNvbWUgTkFORCBjb250cm9sbGVycyBhcmUgdXNpbmcgRE1BIGVuZ2luZSByZXF1aXJp
+bmcgYSBzcGVjaWZpYyBidWZmZXINCmFsaWdubWVudC4gVGhlIGNvcmUgcHJvdmlkZXMgbm8gZ3Vh
+cmFudGVlIG9uIHRoZSBuYW5kX2J1ZmZlcnMgcG9pbnRlcnMsDQp3aGljaCBmb3JjZXMgc29tZSBk
+cml2ZXJzIHRvIGFsbG9jYXRlIHRoZWlyIG93biBidWZmZXJzIGFuZCBwYXNzIHRoZQ0KTkFORF9P
+V05fQlVGRkVSUyBmbGFnLg0KDQpSZXdvcmsgdGhlIG5hbmRfYnVmZmVycyBhbGxvY2F0aW9uIGxv
+Z2ljIHRvIGFsbG9jYXRlIGVhY2ggYnVmZmVyDQppbmRlcGVuZGVudGx5LiBUaGlzIHNob3VsZCBt
+YWtlIG1vc3QgTkFORCBjb250cm9sbGVycy9ETUEgZW5naW5lDQpoYXBweSwgYW5kIGFsbG93IHVz
+IHRvIGdldCByaWQgb2YgdGhlc2UgY3VzdG9tIGJ1ZiBhbGxvY2F0aW9uIGluIE5BTkQNCmNvbnRy
+b2xsZXIgZHJpdmVycy4NCiINCg0KTWFzYWhpcm8NCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0K
+PiA+DQo+ID4gVXN1YWxseSBbQl0gaXMgbGVzcyB0aGFuIFtBXS4NCj4gDQo+IFllcCwgaXQncyBs
+aWtlbHkgdGhlIGNhc2UuDQo+IA0KPiA+IFNvLCBpZiB3ZSBtZWV0IFtBXSAoYnkgdXNpbmcga21h
+bGxvYyksIFtCXSB3aWxsIGJlIG1ldCBhcyB3ZWxsLg0KPiANCj4gU3VyZS4NCj4gDQo+ID4NCj4g
+Pg0KPiA+DQo+ID4gPiBSZWdhcmRpbmcgdGhlIGNhY2hlIGxpbmUgYWxpZ25tZW50IGlzc3VlLCBp
+biB0aGlzIGNhc2UgaXQgc2hvdWxkbid0DQo+IGJlDQo+ID4gPiBhIHByb2JsZW0sIGJlY2F1c2Ug
+dGhlIGRyaXZlciBhbmQgdGhlIGNvcmUgc2hvdWxkbid0IHRvdWNoIHRoZQ0KPiA+ID4gY2hpcC0+
+YnVmZmVycyBvYmplY3QgZHVyaW5nIGEgRE1BIHRyYW5zZmVyLCBzbyBkbWFfbWFwL3VubWFwX3Np
+bmdsZSgpDQo+ID4gPiBzaG91bGQgd29yayBmaW5lICh0aGV5IG1heSBmbHVzaC9pbnZhbGlkYXRl
+IG9uZSBjYWNoZSBsaW5lIGVudHJ5IHRoYXQNCj4gPiA+IGNvbnRhaW5zIG5vbi1wYXlsb2FkIGRh
+dGEsIGJ1dCB0aGF0J3Mgbm90IGEgcHJvYmxlbSBhcyBsb25nIGFzIG5vdGhpbmcNCj4gPiA+IGlz
+IG1vZGlmaWVkIGR1cmluZyB0aGUgRE1BIHRyYW5zZmVyKS4NCj4gPg0KPiA+DQo+ID4gVGhpcyBp
+cyByZWxhdGVkIHRvIDUyLzUzOg0KPiA+IGh0dHA6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wYXRj
+aC83NDI0MDkvDQo+ID4NCj4gPiBDYW4geW91IGFsc28gcmVhZCB0aGlzPw0KPiA+IGh0dHBzOi8v
+bGttbC5vcmcvbGttbC8yMDE3LzMvOC82OTMNCj4gPg0KPiA+IFlvdXIgY29tbWVudCBpcyB2ZXJ5
+IHNpbWlsYXIgdG8gd2hhdCB3YXMgZGlzY3Vzc2VkIGluIHRoZSB0aHJlYWQuDQo+IA0KPiBJIHJl
+YWQgaXQuDQo+IA0KPiA+DQo+ID4NCj4gPg0KPiA+ID4gPg0KPiA+ID4gPiBTbywgZHJpdmVycyB1
+c2luZyBETUEgYXJlIHZlcnkgbGlrZWx5IHRvIGVuZCB1cCB3aXRoIHNldHRpbmcgdGhlDQo+ID4g
+PiA+IE5BTkRfT1dOX0JVRkZFUlMgZmxhZyBhbmQgYWxsb2NhdGUgYnVmZmVycyBieSB0aGVtc2Vs
+dmVzLiAgRHJpdmVycw0KPiA+ID4gPiB0ZW5kIHRvIHVzZSBkZXZtX2sqYWxsb2MgdG8gc2ltcGxp
+ZnkgdGhlIHByb2JlIGZhaWx1cmUgcGF0aCwgYnV0DQo+ID4gPiA+IGRldm1fayphbGxvYygpIGRv
+ZXMgbm90IHJldHVybiBhIGNhY2hlIGxpbmUgYWxpZ25lZCBidWZmZXIuDQo+ID4gPg0KPiA+ID4g
+T2gsIEkgZGlkbid0IGtub3cgdGhhdC4gSSBoYWQgYSBjbG9zZXIgbG9vayBhdCB0aGUgY29kZSwg
+YW5kIGluZGVlZCwNCj4gPiA+IGRldm1fa21hbGxvYygpIGRvZXMgbm90IGd1YXJhbnRlZSBhbnkg
+YWxpZ25tZW50Lg0KPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gSWYgdXNlZCwgaXQgY291bGQgdmlv
+bGF0ZSB0aGUgRE1BLUFQSSByZXF1aXJlbWVudCBzdGF0ZWQgaW4NCj4gPiA+ID4gRG9jdW1lbnRh
+dGlvbi9ETUEtQVBJLnR4dDoNCj4gPiA+ID4gICBXYXJuaW5nczogIE1lbW9yeSBjb2hlcmVuY3kg
+b3BlcmF0ZXMgYXQgYSBncmFudWxhcml0eSBjYWxsZWQgdGhlDQo+ID4gPiA+ICAgY2FjaGUgbGlu
+ZSB3aWR0aC4gIEluIG9yZGVyIGZvciBtZW1vcnkgbWFwcGVkIGJ5IHRoaXMgQVBJIHRvDQo+ID4g
+PiA+ICAgb3BlcmF0ZSBjb3JyZWN0bHksIHRoZSBtYXBwZWQgcmVnaW9uIG11c3QgYmVnaW4gZXhh
+Y3RseSBvbiBhIGNhY2hlDQo+ID4gPiA+ICAgbGluZSBib3VuZGFyeSBhbmQgZW5kIGV4YWN0bHkg
+b24gb25lICh0byBwcmV2ZW50IHR3byBzZXBhcmF0ZWx5DQo+ID4gPiA+ICAgbWFwcGVkIHJlZ2lv
+bnMgZnJvbSBzaGFyaW5nIGEgc2luZ2xlIGNhY2hlIGxpbmUpLg0KPiA+ID4gPg0KPiA+ID4gPiBU
+byBzdW0gdXAsIE5BTkRfT1dOX0JVRkZFUlMgaXMgbm90IHZlcnkgY29udmVuaWVudCBmb3IgZHJp
+dmVycy4NCj4gPiA+ID4gbmFuZF9zY2FuX3RhaWwoKSBjYW4gZ2l2ZSBhIHNlcGFyYXRlIGJ1ZmZl
+ciBmb3IgZWFjaCBvZiBlY2NjYWxjLA0KPiA+ID4gPiBlY2Njb2RlLCBkYXRhYnVmLiAgSXQgaXMg
+Z3VhcmFudGVlZCBrbWFsbG9jJ2VkIG1lbW9yeSBpcyBhbGlnbmVkDQo+ID4gPiA+IHdpdGggQVJD
+SF9ETUFfTUlOQUxJR04uDQo+ID4gPg0KPiA+ID4gTWF5YmUgSSdtIHdyb25nLCBidXQgQUZBSVUs
+IGttYWxsb2MmY28gZG8gbm90IGd1YXJhbnRlZSBjYWNoZSBsaW5lDQo+ID4gPiBhbGlnbm1lbnQg
+Zm9yIHNtYWxsIGJ1ZmZlcnMgKDwgY2FjaGUgbGluZSksIHNvIGV2ZW4ga21hbGxvYyBjYW4gcmV0
+dXJuDQo+ID4gPiBhIGJ1ZmZlciB0aGF0IGlzIG5vdCBjYWNoZSBsaW5lIGFsaWduZWQuDQo+ID4g
+PiBUaGlzIGJlaW5nIHNhaWQsIHdlIHNob3VsZCBiZSBnb29kIGJlY2F1c2UgbW9zdCBOQU5EIGNv
+bnRyb2xsZXJzIGFyZQ0KPiA+ID4gb25seSBtYW5pcHVsYXRpbmcgdGhlIHBhZ2UgYnVmZmVyICgt
+PmRhdGFidWYpIHdoaWNoIGlzIGxhcmdlIGVub3VnaA0KPiB0bw0KPiA+ID4gYmUgY2FjaGUgbGlu
+ZSBhbGlnbmVkLg0KPiA+DQo+ID4NCj4gPiBJbiBteSB1bmRlcnN0YW5kaW5nIGttYWxsb2MoKSBy
+ZXR1cm5zIGNhY2hlIGFsaWduZWQgYWRkcmVzcyBldmVuIGZvciAxDQo+IGJ5dGUgbWVtb3J5Lg0K
+PiANCj4gQWZ0ZXIgZGlnZ2luZyBpbnRvIHRoZSBTTEFCIGNvZGUgSSBmb3VuZCB0aGUgY2FsY3Vs
+YXRlX2FsaWdubWVudCgpDQo+IGZ1bmN0aW9uIFsxXSB3aGljaCBpcyB1c2VkIHRvIGNhbGN1bGF0
+ZSB0aGUgcmVxdWlyZWQgYWxpZ25tZW50IG9mDQo+IG9iamVjdHMgcHJvdmlkZWQgYnkgYSBTTEFC
+IGNhY2hlLiBGb3Iga21hbGxvYyBjYWNoZXMgU0xBQl9IV0NBQ0hFX0FMSUdODQo+IGlzIHNldCwg
+YnV0IGlmIHlvdSBsb29rIGF0IHRoZSBjb2RlLCBpZiB0aGUgb2JqZWN0IHNpemUgaXMgc21hbGxl
+cg0KPiB0aGFuIGhhbGYgYSBjYWNoZSBsaW5lIHRoZSBhbGlnbm1lbnQgY29uc3RyYWludCBpcyBy
+ZWxheGVkLCBtZWFuaW5nIHRoYXQNCj4gZWxlbWVudHMgc21hbGxlciB0aGFuIGNhY2hlX2xpbmUv
+MiBhcmUgbm90IGd1YXJhbnRlZWQgdG8gYmUgYWxpZ25lZCBvbg0KPiBhIGNhY2hlIGxpbmUuDQo+
+IA0KPiBJIGRpZG4ndCB0ZXN0LCBidXQgdGhhdCBzaG91bGQgYmUgcHJldHR5IGVhc3kgdG8gdmVy
+aWZ5IChrbWFsbG9jIGENCj4gYnVuY2ggb2YgMWJ5dGUgYnVmcyBhbmQgY2hlY2sgdGhlaXIgYWxp
+Z25tZW50KS4NCj4gDQo+IFsxXWh0dHA6Ly9seHIuZnJlZS1lbGVjdHJvbnMuY29tL3NvdXJjZS9t
+bS9zbGFiX2NvbW1vbi5jI0wzMDENCg==
