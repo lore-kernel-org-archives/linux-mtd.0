@@ -1,16 +1,18 @@
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctBHa-0002NK-VK
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 10:56:58 +0000
 From: Jan Kara <jack@suse.cz>
 To: <linux-fsdevel@vger.kernel.org>
 Cc: linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
- Jan Kara <jack@suse.cz>, Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 22/25] ubifs: Convert to separately allocated bdi
-Date: Wed, 29 Mar 2017 12:56:20 +0200
-Message-Id: <20170329105623.18241-23-jack@suse.cz>
+ Jan Kara <jack@suse.cz>, linux-mtd@lists.infradead.org,
+ linux-nfs@vger.kernel.org, Petr Vandrovec <petr@vandrovec.name>,
+ linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+ osd-dev@open-osd.org, codalist@coda.cs.cmu.edu,
+ linux-afs@lists.infradead.org, ecryptfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+ lustre-devel@lists.lustre.org
+Subject: [PATCH 04/25] fs: Provide infrastructure for dynamic BDIs in
+ filesystems
+Date: Wed, 29 Mar 2017 12:56:02 +0200
+Message-Id: <20170329105623.18241-5-jack@suse.cz>
 In-Reply-To: <20170329105623.18241-1-jack@suse.cz>
 References: <20170329105623.18241-1-jack@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,107 +24,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Allocate struct backing_dev_info separately instead of embedding it
-inside the superblock. This unifies handling of bdi among users.
+Provide helper functions for setting up dynamically allocated
+backing_dev_info structures for filesystems and cleaning them up on
+superblock destruction.
 
-CC: Richard Weinberger <richard@nod.at>
-CC: Artem Bityutskiy <dedekind1@gmail.com>
-CC: Adrian Hunter <adrian.hunter@intel.com>
 CC: linux-mtd@lists.infradead.org
-Acked-by: Richard Weinberger <richard@nod.at>
+CC: linux-nfs@vger.kernel.org
+CC: Petr Vandrovec <petr@vandrovec.name>
+CC: linux-nilfs@vger.kernel.org
+CC: cluster-devel@redhat.com
+CC: osd-dev@open-osd.org
+CC: codalist@coda.cs.cmu.edu
+CC: linux-afs@lists.infradead.org
+CC: ecryptfs@vger.kernel.org
+CC: linux-cifs@vger.kernel.org
+CC: ceph-devel@vger.kernel.org
+CC: linux-btrfs@vger.kernel.org
+CC: v9fs-developer@lists.sourceforge.net
+CC: lustre-devel@lists.lustre.org
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ubifs/super.c | 25 +++++++++----------------
- fs/ubifs/ubifs.h |  3 ---
- 2 files changed, 9 insertions(+), 19 deletions(-)
+ fs/super.c                       | 49 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/backing-dev-defs.h |  2 +-
+ include/linux/fs.h               |  6 +++++
+ 3 files changed, 56 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index b73811bd7676..cf4cc99b75b5 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1827,7 +1827,6 @@ static void ubifs_put_super(struct super_block *sb)
- 	}
- 
- 	ubifs_umount(c);
--	bdi_destroy(&c->bdi);
- 	ubi_close_volume(c->ubi);
- 	mutex_unlock(&c->umount_mutex);
+diff --git a/fs/super.c b/fs/super.c
+index b8b6a086c03b..0f51a437c269 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -446,6 +446,11 @@ void generic_shutdown_super(struct super_block *sb)
+ 	hlist_del_init(&sb->s_instances);
+ 	spin_unlock(&sb_lock);
+ 	up_write(&sb->s_umount);
++	if (sb->s_iflags & SB_I_DYNBDI) {
++		bdi_put(sb->s_bdi);
++		sb->s_bdi = &noop_backing_dev_info;
++		sb->s_iflags &= ~SB_I_DYNBDI;
++	}
  }
-@@ -2019,29 +2018,25 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 		goto out;
- 	}
  
-+	err = ubifs_parse_options(c, data, 0);
-+	if (err)
-+		goto out_close;
+ EXPORT_SYMBOL(generic_shutdown_super);
+@@ -1256,6 +1261,50 @@ mount_fs(struct file_system_type *type, int flags, const char *name, void *data)
+ }
+ 
+ /*
++ * Setup private BDI for given superblock. It gets automatically cleaned up
++ * in generic_shutdown_super().
++ */
++int super_setup_bdi_name(struct super_block *sb, char *fmt, ...)
++{
++	struct backing_dev_info *bdi;
++	int err;
++	va_list args;
 +
- 	/*
- 	 * UBIFS provides 'backing_dev_info' in order to disable read-ahead. For
- 	 * UBIFS, I/O is not deferred, it is done immediately in readpage,
- 	 * which means the user would have to wait not just for their own I/O
- 	 * but the read-ahead I/O as well i.e. completely pointless.
- 	 *
--	 * Read-ahead will be disabled because @c->bdi.ra_pages is 0.
-+	 * Read-ahead will be disabled because @sb->s_bdi->ra_pages is 0. Also
-+	 * @sb->s_bdi->capabilities are initialized to 0 so there won't be any
-+	 * writeback happening.
- 	 */
--	c->bdi.name = "ubifs",
--	c->bdi.capabilities = 0;
--	err  = bdi_init(&c->bdi);
-+	err = super_setup_bdi_name(sb, "ubifs_%d_%d", c->vi.ubi_num,
-+				   c->vi.vol_id);
- 	if (err)
- 		goto out_close;
--	err = bdi_register(&c->bdi, NULL, "ubifs_%d_%d",
--			   c->vi.ubi_num, c->vi.vol_id);
--	if (err)
--		goto out_bdi;
--
--	err = ubifs_parse_options(c, data, 0);
--	if (err)
--		goto out_bdi;
- 
--	sb->s_bdi = &c->bdi;
- 	sb->s_fs_info = c;
- 	sb->s_magic = UBIFS_SUPER_MAGIC;
- 	sb->s_blocksize = UBIFS_BLOCK_SIZE;
-@@ -2080,8 +2075,6 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 	ubifs_umount(c);
- out_unlock:
- 	mutex_unlock(&c->umount_mutex);
--out_bdi:
--	bdi_destroy(&c->bdi);
- out_close:
- 	ubi_close_volume(c->ubi);
- out:
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 4d57e488038e..4da10a6d702a 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -972,7 +972,6 @@ struct ubifs_debug_info;
-  * struct ubifs_info - UBIFS file-system description data structure
-  * (per-superblock).
-  * @vfs_sb: VFS @struct super_block object
-- * @bdi: backing device info object to make VFS happy and disable read-ahead
-  *
-  * @highest_inum: highest used inode number
-  * @max_sqnum: current global sequence number
-@@ -1220,7 +1219,6 @@ struct ubifs_debug_info;
++	bdi = bdi_alloc(GFP_KERNEL);
++	if (!bdi)
++		return -ENOMEM;
++
++	bdi->name = sb->s_type->name;
++
++	va_start(args, fmt);
++	err = bdi_register_va(bdi, NULL, fmt, args);
++	va_end(args);
++	if (err) {
++		bdi_put(bdi);
++		return err;
++	}
++	WARN_ON(sb->s_bdi != &noop_backing_dev_info);
++	sb->s_bdi = bdi;
++	sb->s_iflags |= SB_I_DYNBDI;
++
++	return 0;
++}
++EXPORT_SYMBOL(super_setup_bdi_name);
++
++/*
++ * Setup private BDI for given superblock. I gets automatically cleaned up
++ * in generic_shutdown_super().
++ */
++int super_setup_bdi(struct super_block *sb)
++{
++	static atomic_long_t bdi_seq = ATOMIC_LONG_INIT(0);
++
++	return super_setup_bdi_name(sb, "%.28s-%ld", sb->s_type->name,
++				    atomic_long_inc_return(&bdi_seq));
++}
++EXPORT_SYMBOL(super_setup_bdi);
++
++/*
+  * This is an internal function, please use sb_end_{write,pagefault,intwrite}
+  * instead.
   */
- struct ubifs_info {
- 	struct super_block *vfs_sb;
--	struct backing_dev_info bdi;
+diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
+index e66d4722db8e..866c433e7d32 100644
+--- a/include/linux/backing-dev-defs.h
++++ b/include/linux/backing-dev-defs.h
+@@ -146,7 +146,7 @@ struct backing_dev_info {
+ 	congested_fn *congested_fn; /* Function pointer if device is md/dm */
+ 	void *congested_data;	/* Pointer to aux data for congested func */
  
- 	ino_t highest_inum;
- 	unsigned long long max_sqnum;
-@@ -1461,7 +1459,6 @@ extern const struct inode_operations ubifs_file_inode_operations;
- extern const struct file_operations ubifs_dir_operations;
- extern const struct inode_operations ubifs_dir_inode_operations;
- extern const struct inode_operations ubifs_symlink_inode_operations;
--extern struct backing_dev_info ubifs_backing_dev_info;
- extern struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
+-	char *name;
++	const char *name;
  
- /* io.c */
+ 	struct kref refcnt;	/* Reference counter for the structure */
+ 	unsigned int capabilities; /* Device capabilities */
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 7251f7bb45e8..98cf14ea78c0 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1272,6 +1272,9 @@ struct mm_struct;
+ /* sb->s_iflags to limit user namespace mounts */
+ #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
+ 
++/* Temporary flag until all filesystems are converted to dynamic bdis */
++#define SB_I_DYNBDI	0x00000100
++
+ /* Possible states of 'frozen' field */
+ enum {
+ 	SB_UNFROZEN = 0,		/* FS is unfrozen */
+@@ -2121,6 +2124,9 @@ extern int vfs_ustat(dev_t, struct kstatfs *);
+ extern int freeze_super(struct super_block *super);
+ extern int thaw_super(struct super_block *super);
+ extern bool our_mnt(struct vfsmount *mnt);
++extern __printf(2, 3)
++int super_setup_bdi_name(struct super_block *sb, char *fmt, ...);
++extern int super_setup_bdi(struct super_block *sb);
+ 
+ extern int current_umask(void);
+ 
 -- 
 2.10.2
