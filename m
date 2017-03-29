@@ -1,26 +1,25 @@
-Date: Wed, 29 Mar 2017 22:05:22 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, Nicolas Ferre
- <nicolas.ferre@atmel.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Haavard Skinnemoen
- <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- linux-kernel@vger.kernel.org, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu
- <rainyfeeling@outlook.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel
- Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, Marek Vasut
- <marek.vasut@gmail.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Rob
- Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 0/3] mtd: nand: Rework/cleanup the Atmel NAND driver
-Message-ID: <20170329220522.5398179a@bbrezillon>
-In-Reply-To: <1489651362-17077-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1489651362-17077-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctKnl-0008Td-R8
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 21:06:48 +0000
+Subject: Re: [REGRESSION 4.11] Commit d8514d8edb5b ("ovl: copy up regular file
+ using O_TMPFILE") breaks ubifs
+To: Amir Goldstein <amir73il@gmail.com>,
+ Ralph Sennhauser <ralph.sennhauser@gmail.com>
+References: <20170328100107.25095af6@gmail.com>
+ <CAOQ4uxisw5vWYsdMTNemw=MqNyS2nxfAUkg+UfoGmbE3-he1Ug@mail.gmail.com>
+ <CAOQ4uxgpFBFEk9h9eowQmeaC60xTFno0RsvA7MhkN9a=AeHhCg@mail.gmail.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
+ linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ regressions@leemhuis.info, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ David Oberhollenzer <goliath@sigma-star.at>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <79fe8302-0b16-3596-bfce-4aa02d4c48a4@nod.at>
+Date: Wed, 29 Mar 2017 23:06:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAOQ4uxgpFBFEk9h9eowQmeaC60xTFno0RsvA7MhkN9a=AeHhCg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,82 +30,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 16 Mar 2017 09:02:39 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Amir,
 
-> This is a complete rewrite of the driver whose main purpose is to
-> support the new DT representation where the NAND controller node is now
-> really visible in the DT and appears under the EBI bus. With this new
-> representation, we can add other devices under the EBI bus without
-> risking pinmuxing conflicts (the NAND controller is under the EBI
-> bus logic and as such, share some of its pins with other devices
-> connected on this bus).
+Am 28.03.2017 um 12:43 schrieb Amir Goldstein:
+> On Tue, Mar 28, 2017 at 5:27 AM, Amir Goldstein <amir73il@gmail.com> wrote:
+>> On Tue, Mar 28, 2017 at 4:01 AM, Ralph Sennhauser
+>> <ralph.sennhauser@gmail.com> wrote:
+>>> Hi Amir
+>>>
+>>> Commit d8514d8edb5b ("ovl: copy up regular file using O_TMPFILE")
+>>> breaks squashfs with an ubifs overlay (both ubi volumes of the same
+>>> container).
+>>>
+>>
+>> Hi Ralph,
+>>
+>> I am confused by the description above. Which are the 'both ubi volumes'?
+>>
+>> Can you provide exact command of overlayfs mount, preferably
+>> also a script to generate the lower/upper images and mount them
+>> to remove any mkfs option doubts from test setup.
+>>
+>>> Renaming a file results in an error "UBIFS error (ubi0:1 pid 1394):
+>>> ubifs_add_orphan: orphaned twice". This corrupts the the filesystem and
+>>> the next attempt to mount the overlay will fail.
+>>>
 > 
-> Even though the goal of this rework was not necessarily to add new
-> features, the new driver has been designed with this in mind. With a
-> clearer separation between the different blocks and different IP
-> revisions, adding new functionalities should be easier (we already
-> have plans to support SMC timing configuration so that we no longer
-> have to rely on the configuration done by the bootloader/bootstrap).
-> 
-> Also note that we no longer have a custom ->cmdfunc() implementation,
-> which means we can now benefit from new features added in the core
-> implementation for free (support for new NAND operations for example).
-> 
-> The last thing that we gain with this rework is support for multi-chips
-> and multi-dies chips, thanks to the clean NAND controller <-> NAND
-> devices representation.
-> 
-> This new driver has been tested on several platforms (at91sam9261,
-> at91sam9g45, at91sam9x5, sama5d3 and sama5d4) to make sure it did not
-> introduce regressions, and it's worth mentioning that old bindings are
-> still supported (which partly explain the positive diffstat).
+> Looking at the ubifs code, it does not appear that ubifs_link() ever calls
+> ubifs_delete_orphan() for the case of linking a temp file (nlink == 0),
+> so this looks like a ubifs bug.
 
-Applied the whole series.
+Thanks for the heads up, I'll look into this.
 
-> 
-> Regards,
-> 
-> Boris
-> 
-> Changes since v2:
-> - add error messages when the NFC reports an error
-> - drop AVR32 compat code
-> - add acks
-> - minor coding style fixes
-> 
-> Changes since v1:
-> - change function/structure prefixes (asked by Nicolas)
-> - drop applied patches
-> - use new GPIO helpers
-> - set ->chip_delay to 40 as done in the old driver (reported by Nicolas)
-> - rework read_page to improve perfs
-> - add a better commit message to patch 2
-> 
-> Boris Brezillon (3):
->   mtd: nand: Cleanup/rework the atmel_nand driver
->   mtd: nand: atmel: Document the new DT bindings
->   mtd: nand: Remove unused chip->write_page() hook
-> 
->  .../devicetree/bindings/mtd/atmel-nand.txt         |  107 +-
->  MAINTAINERS                                        |    2 +-
->  drivers/mtd/nand/Kconfig                           |    6 +-
->  drivers/mtd/nand/Makefile                          |    2 +-
->  drivers/mtd/nand/atmel/Makefile                    |    4 +
->  drivers/mtd/nand/atmel/nand-controller.c           | 2198 +++++++++++++++++
->  drivers/mtd/nand/atmel/pmecc.c                     | 1020 ++++++++
->  drivers/mtd/nand/atmel/pmecc.h                     |   73 +
->  drivers/mtd/nand/atmel_nand.c                      | 2479 --------------------
->  drivers/mtd/nand/atmel_nand_ecc.h                  |  163 --
->  drivers/mtd/nand/atmel_nand_nfc.h                  |  103 -
->  drivers/mtd/nand/nand_base.c                       |   12 +-
->  include/linux/mtd/nand.h                           |    4 -
->  13 files changed, 3411 insertions(+), 2762 deletions(-)
->  create mode 100644 drivers/mtd/nand/atmel/Makefile
->  create mode 100644 drivers/mtd/nand/atmel/nand-controller.c
->  create mode 100644 drivers/mtd/nand/atmel/pmecc.c
->  create mode 100644 drivers/mtd/nand/atmel/pmecc.h
->  delete mode 100644 drivers/mtd/nand/atmel_nand.c
->  delete mode 100644 drivers/mtd/nand/atmel_nand_ecc.h
->  delete mode 100644 drivers/mtd/nand/atmel_nand_nfc.h
-> 
+> Is ubifs being tested with xfstests? This should have been caught by test
+> generic/004 (link tempfile then delete it).
+
+Yes, it is.
+David, can you please double-check wrt. test generic/004?
+
+Thanks,
+//richard
