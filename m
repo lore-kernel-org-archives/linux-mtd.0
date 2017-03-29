@@ -1,28 +1,31 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ct7eL-0006r0-E9
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 07:04:11 +0000
-Date: Wed, 29 Mar 2017 09:03:40 +0200
+ id 1ct7tp-0005UV-7z
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 07:20:11 +0000
+Date: Wed, 29 Mar 2017 09:19:47 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: <yamada.masahiro@socionext.com>
-Cc: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
- <marek.vasut@gmail.com>, <computersforpeace@gmail.com>,
- <thorsten.christiansson@idquantique.com>, <laurent.monat@idquantique.com>,
- <dinguyen@kernel.org>, <artem.bityutskiy@linux.intel.com>,
- <grmoore@opensource.altera.com>, <ejo@pengutronix.de>,
- <chuanxiao.dong@intel.com>, <mhiramat@kernel.org>,
- <jaswinder.singh@linaro.org>, <robh@kernel.org>, <linux@armlinux.org.uk>,
- <masahiroy@kernel.org>
-Subject: Re: [RESEND PATCH v2 50/53] mtd: nand: allocate aligned buffers if
- NAND_OWN_BUFFERS is unset
-Message-ID: <20170329090340.4a9bc2b9@bbrezillon>
-In-Reply-To: <bafe698596034dee9c48b19e832c143b@SOC-EX02V.e01.socionext.com>
-References: <1490228282-10805-1-git-send-email-yamada.masahiro@socionext.com>
- <1490228282-10805-24-git-send-email-yamada.masahiro@socionext.com>
- <20170327100039.480b8d8d@bbrezillon>
- <831da313d194457db7bd02fd8ea5b291@SOC-EX02V.e01.socionext.com>
- <20170328095907.76d02ce9@bbrezillon>
- <bafe698596034dee9c48b19e832c143b@SOC-EX02V.e01.socionext.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Laurent Monat
+ <laurent.monat@idquantique.com>, thorsten.christiansson@idquantique.com,
+ Enrico Jorns <ejo@pengutronix.de>, Jason Roberts
+ <jason.e.roberts@intel.com>, Artem Bityutskiy
+ <artem.bityutskiy@linux.intel.com>, Dinh Nguyen <dinguyen@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Richard Weinberger
+ <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH v2 20/53] mtd: nand: denali: do not set mtd->name
+Message-ID: <20170329091947.3619fd81@bbrezillon>
+In-Reply-To: <CAK7LNATbpQuouRLQJqixpFMqxByQs9dNjB3yFssf9RJpzLpAoQ@mail.gmail.com>
+References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490191680-14481-21-git-send-email-yamada.masahiro@socionext.com>
+ <20170327173146.655f090f@bbrezillon>
+ <CAK7LNARNng6WuuF9OEfJmPkzR=-f1dmM0Q-ypdrAFNxRarATTw@mail.gmail.com>
+ <20170328234023.0c887a51@bbrezillon>
+ <CAK7LNATbpQuouRLQJqixpFMqxByQs9dNjB3yFssf9RJpzLpAoQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -35,49 +38,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 29 Mar 2017 03:22:01 +0000
-<yamada.masahiro@socionext.com> wrote:
+On Wed, 29 Mar 2017 10:19:02 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Hi Boris
+> Hi Boris,
 > 
-> > -----Original Message-----  
-> > > The current situation violates [A].  
-> > 
-> > Do you have a real failure that is proven to be caused by mis cache
-> > line alignment, or are you just speculating?  
+> 2017-03-29 6:40 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> > On Wed, 29 Mar 2017 06:32:24 +0900
+> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> >  
+> >> Hi Boris,
+> >>
+> >> 2017-03-28 0:31 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:  
+> >> > On Wed, 22 Mar 2017 23:07:27 +0900
+> >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> >> >  
+> >> >> This will be filled by nand_scan_ident() later.
+> >> >>
+> >> >> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> >> >> ---
+> >> >>
+> >> >> Changes in v2: None
+> >> >>
+> >> >>  drivers/mtd/nand/denali.c | 1 -
+> >> >>  1 file changed, 1 deletion(-)
+> >> >>
+> >> >> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+> >> >> index 3badb1d..1706975 100644
+> >> >> --- a/drivers/mtd/nand/denali.c
+> >> >> +++ b/drivers/mtd/nand/denali.c
+> >> >> @@ -1495,7 +1495,6 @@ int denali_init(struct denali_nand_info *denali)
+> >> >>
+> >> >>       /* now that our ISR is registered, we can enable interrupts */
+> >> >>       denali_set_intr_modes(denali, true);
+> >> >> -     mtd->name = "denali-nand";  
+> >> >
+> >> > Are you sure this is safe to do that? When mtd->name is NULL, the core
+> >> > takes the parent name, and in the denali_dt case it's not "denali-nand",
+> >> > which means you're breaking mtdparts compat.  
+> >>
+> >> How big impact is this?  
+> >
+> > Breaking boot on some platforms (those defining partitions through
+> > mtdparts= cmdline parameter), which is not negligible :P.
+> >  
+> >>
+> >> I think a bootloader could give mtdparts=denali-nand:...
+> >> but, now we are able to have partitions in DT nodes.  
+> >
+> > Just because you have a new way to describe partitions (using DT) does
+> > not mean people are not using the old one (mtdparts= parameter).  
 > 
-> No real problem.
-> Rather, I am following the line 226 of DMA-API.txt
-> "Warnings: Memory coherency ...".
 > 
+> I thought DT-node derived name can identify the hardware
+> even if multiple Denali controllers exist on an SoC.
 > 
-> In my case, the cache line is 64 byte (for ARM),
-> But this does not really matter for the reason
-> nand_buffers is only touched at initialization as you mentioned.
+> Anyway, I admit this is a kind of breakage.
 > 
+> If this one is reject, I will drop it drop v3.
 > 
-> [B] is a real problem for me
-> because Denali DMA engine requires >4byte alignment.
-> 
-> 
-> 
-> 
-> So, I can replace the git-log in the next version:
-> 
-> "
-> Some NAND controllers are using DMA engine requiring a specific buffer
-> alignment. The core provides no guarantee on the nand_buffers pointers,
-> which forces some drivers to allocate their own buffers and pass the
-> NAND_OWN_BUFFERS flag.
-> 
-> Rework the nand_buffers allocation logic to allocate each buffer
-> independently. This should make most NAND controllers/DMA engine
-> happy, and allow us to get rid of these custom buf allocation in NAND
-> controller drivers.
-> "
 
-Yep, sounds better to me.
+Yes, please keep the existing name, changing that without extra
+precautions has proven to be a bad idea [1].
 
-Thanks,
+Note that we now have a way to give user-friendly names to MTD devices
+through DT definitions [2]. So, if you ever want to assing a specific
+name to your NAND, all you have to do is add a label property to the
+NAND device node, and then, in the driver:
 
-Boris
+	nand_set_flash_node(chip, denali->dev->of_node);
+
+	/*
+	 * Fallback to the default name if no label property was
+	 * defined.
+	 */
+	if (!mtd->name)
+		mtd->name = "denali-nand";
+		
+
+[1]https://patchwork.ozlabs.org/patch/707065/
+[2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/mtd/mtd.h?id=refs/tags/v4.11-rc4#n386
