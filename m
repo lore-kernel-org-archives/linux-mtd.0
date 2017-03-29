@@ -1,28 +1,29 @@
-Received: from 9.mo179.mail-out.ovh.net ([46.105.76.148])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctGp2-0001Qq-AM
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 16:51:49 +0000
-Received: from player690.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo179.mail-out.ovh.net (Postfix) with ESMTP id CD4B53318C
- for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 18:51:17 +0200 (CEST)
-Subject: Re: [PATCH 0/2] mtd: spi-nor: add stm32 qspi driver
-To: Ludovic Barre <ludovic.Barre@st.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marek.vasut@gmail.com>
-References: <1490619296-8168-1-git-send-email-ludovic.Barre@st.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Alexandre Torgue <alexandre.torgue@st.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <5224f3cd-a128-9e72-c0c8-62a137ceeb79@wedev4u.fr>
-Date: Wed, 29 Mar 2017 18:51:05 +0200
+Received: from mail-ot0-x241.google.com ([2607:f8b0:4003:c0f::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctJ57-0006RJ-0I
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 19:16:34 +0000
+Received: by mail-ot0-x241.google.com with SMTP id y88so2456966ota.1
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 12:16:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1490619296-8168-1-git-send-email-ludovic.Barre@st.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170328141621.6bb2d639@gmail.com>
+References: <20170328100107.25095af6@gmail.com>
+ <CAOQ4uxisw5vWYsdMTNemw=MqNyS2nxfAUkg+UfoGmbE3-he1Ug@mail.gmail.com>
+ <20170328124545.3c4b87ff@gmail.com>
+ <CAOQ4uxgNfuLN93owdCUJ=9VcU4DKGVEKkEGT7siiem8quVwCsQ@mail.gmail.com>
+ <20170328132818.05871b73@gmail.com>
+ <CAOQ4uxiC=RXPwSy7NGt+Ri=Eie4-_WsUPk7Sy-sh9RdrGQuesw@mail.gmail.com>
+ <20170328141621.6bb2d639@gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 29 Mar 2017 22:16:10 +0300
+Message-ID: <CAOQ4uxg0xRchsNOh1jtbyEdyDDqV3ToCvo=+QuCsD6duGJU_ZQ@mail.gmail.com>
+Subject: Re: [REGRESSION 4.11] Commit d8514d8edb5b ("ovl: copy up regular file
+ using O_TMPFILE") breaks ubifs
+To: Ralph Sennhauser <ralph.sennhauser@gmail.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
+ linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ regressions@leemhuis.info, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,41 +33,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ludovic,
+On Tue, Mar 28, 2017 at 3:16 PM, Ralph Sennhauser
+<ralph.sennhauser@gmail.com> wrote:
+> On Tue, 28 Mar 2017 08:08:51 -0400
+> Amir Goldstein <amir73il@gmail.com> wrote:
+>
+>> On Tue, Mar 28, 2017 at 7:28 AM, Ralph Sennhauser
+>> <ralph.sennhauser@gmail.com> wrote:
+>> > Hi Amir,
+>> >
+>> > On Tue, 28 Mar 2017 07:03:11 -0400
+>> > Amir Goldstein <amir73il@gmail.com> wrote:
+>> >
+>> >> Overlayfs now uses O_TMPFILE for copy up and it works fine with all
+>> >> the file systems I tested (tmpfs, xfs, ext4).
+>> >> If I am right and O_TMPFILE is broken in ubifs, you are most likely
+>> >> the first person to test it (indirectly by overlayfs).
+>> >>
+>> >> Please try to reproduce the bug with following patch to disable
+>> >> ubifs O_TMPFILE support:
+>> >>
+>> >> --- a/fs/ubifs/dir.c
+>> >> +++ b/fs/ubifs/dir.c
+>> >> @@ -1685,7 +1685,7 @@ const struct inode_operations
+>> >> ubifs_dir_inode_operations = {
+>> >>  #ifdef CONFIG_UBIFS_ATIME_SUPPORT
+>> >>         .update_time = ubifs_update_time,
+>> >>  #endif
+>> >> -       .tmpfile     = ubifs_tmpfile,
+>> >> +       //.tmpfile     = ubifs_tmpfile,
+>> >>  };
+>> >
+>> > Get a unused warning during build but all seems to be working fine
+>> > now.
+>>
+>> OK. I'll wait for ubifs developers to fix the bug.
+>> Otherwise, I'll send a proper patch to disable ubifs O_TMPFILE
+>> support. Will add tested-by you.
+>
+> Sounds like a good plan, there is still time for 4.11-rc5. Fine with
+> you adding my tested-by in case it will come to this.
+>
 
-Le 27/03/2017 à 14:54, Ludovic Barre a écrit :
-> From: Ludovic Barre <ludovic.barre@st.com>
-> 
-> This patch set adds a SPI-NOR driver for stm32 QSPI controller.
-> It is a specialized SPI interface for serial Flash devices.
-> It supports 1 or 2 Flash device with single, dual and quad SPI Flash memories.
-> 
-> It can operate in any of the following modes:
-> -indirect mode: all the operations are performed using the quadspi
->  registers
-> -read memory-mapped mode: the external Flash memory is mapped to the
->  microcontroller address space and is seen by the system as if it was
->  an internal memory
-> 
-> Ludovic Barre (2):
->   dt-bindings: Document the STM32 QSPI bindings
->   mtd: spi-nor: add driver for STM32 quad spi flash controller
-> 
->  .../devicetree/bindings/mtd/stm32-quadspi.txt      |  45 ++
->  drivers/mtd/spi-nor/Kconfig                        |   7 +
->  drivers/mtd/spi-nor/Makefile                       |   1 +
->  drivers/mtd/spi-nor/stm32-quadspi.c                | 679 +++++++++++++++++++++
->  4 files changed, 732 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
->  create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
-> 
 
-Just a small word to warn you that I'm likely to ask you to rebase this
-series onto the patch "mtd: spi-nor: introduce more SPI protocols and
-the Dual Transfer Mode". Indeed, I need to synchronize with Marek first
-but I plan to merge this patch within few days.
+Ralph,
 
+Can you please try to reproduce the problem with this command
+on ubifs:
 
-Best regards,
+# create and link a tmpfile - then remove it
+sudo rm -rf foo; sudo xfs_io -T -c "flink foo" . ; ls -l foo; sudo rm foo
 
-Cyrille
+That's the gist of xfstest generic/004.
+
+You should expect the same behavior of corrupted fs after boot.
+
+This issue should be reproduced since kernel 4.9 when ubifs tmpfile
+support was added.
+
+I hope this info can help the ubifs developers fix the problem
+independently from overlayfs setup.
+
+Thanks,
+Amir.
