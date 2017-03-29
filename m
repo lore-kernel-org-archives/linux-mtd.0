@@ -1,22 +1,43 @@
-Received: from mail-pf0-x22f.google.com ([2607:f8b0:400e:c00::22f])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctBwg-00059v-3E
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 11:39:23 +0000
-Received: by mail-pf0-x22f.google.com with SMTP id o126so6500719pfb.3
- for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 04:39:01 -0700 (PDT)
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctBpK-00023B-QN
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 11:31:49 +0000
+Received: from mail-yw0-f182.google.com (mail-yw0-f182.google.com
+ [209.85.161.182]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id v2TBUtf9004707
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 20:30:56 +0900
+Received: by mail-yw0-f182.google.com with SMTP id d191so8233495ywe.2
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 04:30:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170328215705.438d7af8@bbrezillon>
-References: <CAHCN7xJoVF+3HjHwaS_U=jDqmU_Yv201KJSQ2s8N0gSNVR8pdQ@mail.gmail.com>
- <20170328215705.438d7af8@bbrezillon>
-From: Adam Ford <aford173@gmail.com>
-Date: Wed, 29 Mar 2017 06:39:00 -0500
-Message-ID: <CAHCN7xKhRub4k8BpkPPjPFhjJU5c2xRd_VKPMfVOc88ZaTUmGQ@mail.gmail.com>
-Subject: Re: Passing NAND mtdparts to OMAP2+ Kernel
+In-Reply-To: <20170329091947.3619fd81@bbrezillon>
+References: <1490191680-14481-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490191680-14481-21-git-send-email-yamada.masahiro@socionext.com>
+ <20170327173146.655f090f@bbrezillon>
+ <CAK7LNARNng6WuuF9OEfJmPkzR=-f1dmM0Q-ypdrAFNxRarATTw@mail.gmail.com>
+ <20170328234023.0c887a51@bbrezillon>
+ <CAK7LNATbpQuouRLQJqixpFMqxByQs9dNjB3yFssf9RJpzLpAoQ@mail.gmail.com>
+ <20170329091947.3619fd81@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 29 Mar 2017 20:30:54 +0900
+Message-ID: <CAK7LNAR9M2vYra_EnUBEPAD4ruxF6GMSXz2NJ2cHPACL0k5Q=Q@mail.gmail.com>
+Subject: Re: [PATCH v2 20/53] mtd: nand: denali: do not set mtd->name
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
- Roger Quadros <rogerq@ti.com>, "Leto, Enrico" <enrico.leto@siemens.com>
+Cc: linux-mtd@lists.infradead.org,
+ Laurent Monat <laurent.monat@idquantique.com>,
+ thorsten.christiansson@idquantique.com, Enrico Jorns <ejo@pengutronix.de>,
+ Jason Roberts <jason.e.roberts@intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,57 +47,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 28, 2017 at 2:57 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> +Roger and Enrico
+Hi Boris,
+
+
+2017-03-29 16:19 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Wed, 29 Mar 2017 10:19:02 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 >
-> On Tue, 28 Mar 2017 10:43:01 -0500
-> Adam Ford <aford173@gmail.com> wrote:
->
->> I posted this on the linux-omap list, and I was asked to post this on
->> the linux-mtd list:
+>> Hi Boris,
+>>
+>> 2017-03-29 6:40 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+>> > On Wed, 29 Mar 2017 06:32:24 +0900
+>> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>> >
+>> >> Hi Boris,
+>> >>
+>> >> 2017-03-28 0:31 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+>> >> > On Wed, 22 Mar 2017 23:07:27 +0900
+>> >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>> >> >
+>> >> >> This will be filled by nand_scan_ident() later.
+>> >> >>
+>> >> >> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> >> >> ---
+>> >> >>
+>> >> >> Changes in v2: None
+>> >> >>
+>> >> >>  drivers/mtd/nand/denali.c | 1 -
+>> >> >>  1 file changed, 1 deletion(-)
+>> >> >>
+>> >> >> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+>> >> >> index 3badb1d..1706975 100644
+>> >> >> --- a/drivers/mtd/nand/denali.c
+>> >> >> +++ b/drivers/mtd/nand/denali.c
+>> >> >> @@ -1495,7 +1495,6 @@ int denali_init(struct denali_nand_info *denali)
+>> >> >>
+>> >> >>       /* now that our ISR is registered, we can enable interrupts */
+>> >> >>       denali_set_intr_modes(denali, true);
+>> >> >> -     mtd->name = "denali-nand";
+>> >> >
+>> >> > Are you sure this is safe to do that? When mtd->name is NULL, the core
+>> >> > takes the parent name, and in the denali_dt case it's not "denali-nand",
+>> >> > which means you're breaking mtdparts compat.
+>> >>
+>> >> How big impact is this?
+>> >
+>> > Breaking boot on some platforms (those defining partitions through
+>> > mtdparts= cmdline parameter), which is not negligible :P.
+>> >
+>> >>
+>> >> I think a bootloader could give mtdparts=denali-nand:...
+>> >> but, now we are able to have partitions in DT nodes.
+>> >
+>> > Just because you have a new way to describe partitions (using DT) does
+>> > not mean people are not using the old one (mtdparts= parameter).
 >>
 >>
->> I tried to remove the MTD partitions from the Linux device tree, and I
->> noticed that there was no partition information being pushed anymore
->> unless I changed the mtdparts name in U-Boot.
+>> I thought DT-node derived name can identify the hardware
+>> even if multiple Denali controllers exist on an SoC.
 >>
->> It appears as if the MTD drivers have changed a bit.  I found a few
->> e-mails floating around that attempt to fix this
+>> Anyway, I admit this is a kind of breakage.
 >>
->> Commit f7a8e38f07a17be907585 ("mtd: nand: assign reasonable default
->> name for NAND drivers") attempts to address this, and someone over at
->> https://patchwork.ozlabs.org/patch/707065/ attempted to address it as
->> well in a slightly different way.
+>> If this one is reject, I will drop it drop v3.
+>>
 >
-> Can you test the patch and let me know if solves the problem. If it
-> does, I'll send a clean version of the patch and queue it for 4.12.
+> Yes, please keep the existing name, changing that without extra
+> precautions has proven to be a bad idea [1].
 >
-
-I tried to apply the patch directly, but it failed.  I then manually
-copy-pasted it into the proper place, but it fails to compile.
-
-drivers/mtd/nand/omap2.c: In function =E2=80=98omap_nand_probe=E2=80=99:
-drivers/mtd/nand/omap2.c:1859:14: error: implicit declaration of
-function =E2=80=98devm_kasprinf=E2=80=99 [-Werror=3Dimplicit-function-decla=
-ration]
-  mtd->name =3D devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc_cs);
-              ^~~~~~~~~~~~~
-drivers/mtd/nand/omap2.c:1859:12: warning: assignment makes pointer
-from integer without a cast [-Wint-conversion]
-  mtd->name =3D devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc_cs);
-            ^
-cc1: some warnings being treated as errors
-
-I use buildroot to build my toolchain and I am using gcc version 6.3.0
-with glibc 2.24.  Is there supposed to be an include somewhere?  I am
-not familiar with devm_kasprinf.
-
-
-> Thanks,
-
-Thank you
-
-adam
+> Note that we now have a way to give user-friendly names to MTD devices
+> through DT definitions [2]. So, if you ever want to assing a specific
+> name to your NAND, all you have to do is add a label property to the
+> NAND device node, and then, in the driver:
 >
-> Boris
+>         nand_set_flash_node(chip, denali->dev->of_node);
+>
+>         /*
+>          * Fallback to the default name if no label property was
+>          * defined.
+>          */
+>         if (!mtd->name)
+>                 mtd->name = "denali-nand";
+>
+>
+> [1]https://patchwork.ozlabs.org/patch/707065/
+
+I will replace it with this solution.
+Thanks for the tip!
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
