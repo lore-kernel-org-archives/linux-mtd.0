@@ -1,27 +1,32 @@
-Received: from mail-wr0-x230.google.com ([2a00:1450:400c:c0c::230])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctLaA-0005EZ-EC
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 21:56:49 +0000
-Received: by mail-wr0-x230.google.com with SMTP id k6so28442935wre.2
- for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 14:56:25 -0700 (PDT)
+ id 1ctLsj-0002tM-41
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 22:15:59 +0000
+Subject: Re: [REGRESSION 4.11] Commit d8514d8edb5b ("ovl: copy up regular file
+ using O_TMPFILE") breaks ubifs
+To: Ralph Sennhauser <ralph.sennhauser@gmail.com>,
+ Amir Goldstein <amir73il@gmail.com>
+References: <20170328100107.25095af6@gmail.com>
+ <CAOQ4uxisw5vWYsdMTNemw=MqNyS2nxfAUkg+UfoGmbE3-he1Ug@mail.gmail.com>
+ <20170328124545.3c4b87ff@gmail.com>
+ <CAOQ4uxgNfuLN93owdCUJ=9VcU4DKGVEKkEGT7siiem8quVwCsQ@mail.gmail.com>
+ <20170328132818.05871b73@gmail.com>
+ <CAOQ4uxiC=RXPwSy7NGt+Ri=Eie4-_WsUPk7Sy-sh9RdrGQuesw@mail.gmail.com>
+ <20170328141621.6bb2d639@gmail.com>
+ <CAOQ4uxg0xRchsNOh1jtbyEdyDDqV3ToCvo=+QuCsD6duGJU_ZQ@mail.gmail.com>
+ <20170329232648.0b5bc1e9@gmail.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
+ linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ regressions@leemhuis.info, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ David Oberhollenzer <goliath@sigma-star.at>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <33155efb-2c42-a7e9-b867-06760b1e1495@nod.at>
+Date: Thu, 30 Mar 2017 00:15:31 +0200
 MIME-Version: 1.0
-In-Reply-To: <9fb078be-29a7-84e5-da5f-cb88beb05601@sigma-star.at>
-References: <20170322102257.7605-1-david.oberhollenzer@sigma-star.at>
- <20170322161323.22b7489c@free-electrons.com>
- <1b4bbd29-c93e-3e75-b01d-7b7b2ac93385@sigma-star.at>
- <20170323104556.185f92e0@free-electrons.com>
- <CAAQYJAub6XGjsSg4Ri6qk6xkrGdrRfzAGqfqf6EJ7UVU_H_RpQ@mail.gmail.com>
- <9fb078be-29a7-84e5-da5f-cb88beb05601@sigma-star.at>
-From: Andrea Adami <andrea.adami@gmail.com>
-Date: Wed, 29 Mar 2017 23:56:23 +0200
-Message-ID: <CAAQYJAtwmqMGzcR_qEDZf6WBjyHZxO5hMvPcN9GCa7N2jmy_Dg@mail.gmail.com>
-Subject: Re: mtd-utils: various fixes, apply OpenEmbedded patches
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Yuanjie.Huang@windriver.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Khem Raj <raj.khem@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20170329232648.0b5bc1e9@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,69 +36,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 29, 2017 at 3:12 PM, David Oberhollenzer
-<david.oberhollenzer@sigma-star.at> wrote:
-> As there were no complaints about the patches I posted last week, I
-> applied them to mtd-utils.git.
->
->
-> On 03/23/2017 11:57 AM, Andrea Adami wrote:
->> Hi,
->> while you're reviewing old patches please note there are some little
->> klibc fixes for 1.52 here:
->>
->> http://cgit.openembedded.org/meta-openembedded/tree/meta-initramfs/recipes-devtools/mtd/ubi-utils-klibc
->>
->> Probably you could consider the fixes for rpmatch() and getline(). Unsure about
->> iniparser_getdouble.
->>
->> Thanks
->> Andrea
->>
->
-> I took a look at those. The Makefile patches aren't really relevant
-> anymore, after the switch to Autotools (also, as noted in the patch,
-> the first one is very specific for your use case).
->
-> The PRIxoff_t/PRIdoff_t patch (number 4) doesn't apply anymore. From a
-> brief look at the log it appears that the format specifies have been
-> fixed at least 3 times after the date of your patch. The current
-> version uses autoconf to determine the sizeof off_t and loff_t. The
-> header sets the format specifers based on the size only, so this
-> _should_ make magic libc vendor/feature checks obsolete.
->
-> As for the prompt() patch (number 5), the use of rpmatch() has recently
-> been removed. I would hesitate removing the use of getline() as proposed
-> in the patch, first of all the proposed patch would alter the behavior
-> of prompt() if more than one character was entered and second, getline
-> has actually been accepted into the standard some ~9 years ago.[1]
->
->
-> If there are no objections, I'll apply the libubi ioctl and
-> libiniparser patches (number 3 and 6 respectively).
->
->
-> Thanks,
->
-> David
->
-> [1] http://pubs.opengroup.org/onlinepubs/9699919799/functions/getdelim.html
+Ralph,
 
+Am 29.03.2017 um 23:26 schrieb Ralph Sennhauser:
+>> # create and link a tmpfile - then remove it
+>> sudo rm -rf foo; sudo xfs_io -T -c "flink foo" . ; ls -l foo; sudo rm
+>> foo
+> 
+> next-20170328, obviously without your patch:
+> 
+>   # xfs_io -T -c "flink foo" .
+>   .: Not supported
 
-David,
+-T tells xfs_io to create a tmpfile but you have it disabled in UBIFS.
 
-thanks for your attention.
+Anyway, can you please test the attached patch?
+Amir was right, UBIFS misses a corner case in ubifs_link(). ;-\
 
-I've just pointed these old patches to the attention of the list
-because there were other references to mtd 1.5x.
-There isn't anything urgent with these klibc specific fixes, just FYI
+I think I understand also why we never noticed this in xfstests, UBIFS prints
+only a non-fatal error while umounting the filesystem in this case.
+But will test tomorrow in more detail, need some sleep now.
 
-I'll try to catch up with 2.x, at least the ubi-utils.
-For our project we need just kexec-static and for binary size of the
-executable klibc is still the best.
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 30825d882aa9..95e348a2da29 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -748,6 +748,9 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+ 		goto out_fname;
 
-To be honest, I have yet to try the static approach with a recent musl
-libc like Khem suggested.
+ 	lock_2_inodes(dir, inode);
++	if (inode->i_nlink == 0)
++		ubifs_delete_orphan(c, inode->i_ino);
++
+ 	inc_nlink(inode);
+ 	ihold(inode);
+ 	inode->i_ctime = ubifs_current_time(inode);
 
-Regards
-Andrea
+Thanks,
+//richard
