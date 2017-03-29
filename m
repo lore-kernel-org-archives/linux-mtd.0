@@ -1,16 +1,20 @@
-Date: Wed, 29 Mar 2017 21:40:20 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctJaF-0004NZ-HV
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 19:48:45 +0000
+Date: Wed, 29 Mar 2017 21:48:11 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Simon Baatz <gmbnomis@gmail.com>
-Cc: Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- richard@nod.at, jason@lakedaemon.net, andrew@lunn.ch,
- dan.carpenter@oracle.com
-Subject: Re: [PATCH v2 1/2] mtd: nand: orion: fix clk handling
-Message-ID: <20170329214020.3e4112e5@bbrezillon>
-In-Reply-To: <20170329193607.GA24737@gandalf>
-References: <20170327180208.13414-1-gmbnomis@gmail.com>
- <20170327181949.isafnqsnxkzed5nv@pengutronix.de>
- <20170329193607.GA24737@gandalf>
+To: Peter Pan <peterpandong@micron.com>
+Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
+ <arnaud.mouiche@gmail.com>, <thomas.petazzoni@free-electrons.com>,
+ <marex@denx.de>, <cyrille.pitchen@atmel.com>,
+ <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
+ <linshunquan1@hisilicon.com>
+Subject: Re: [PATCH v4 2/9] mtd: nand: make sure mtd_oob_ops consistent in bbt
+Message-ID: <20170329214811.00a4a314@bbrezillon>
+In-Reply-To: <1490262226-29092-3-git-send-email-peterpandong@micron.com>
+References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
+ <1490262226-29092-3-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,53 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 29 Mar 2017 21:36:08 +0200
-Simon Baatz <gmbnomis@gmail.com> wrote:
+On Thu, 23 Mar 2017 17:43:39 +0800
+Peter Pan <peterpandong@micron.com> wrote:
 
-> Hello Uwe,
+> This commit makes sure struct mtd_oob_ops passed to mtd_read/write_ops()
+> is consistent, which means .datbuf = NULL and .len = 0 when not reading
+> page; .oobbuf = NULL and .ooblen = 0 when not reading oob. If no, (ie.
+> ops.datbuf = NULL, while ops.len != 0.), nand_for_each_page() will run
+> forever.
 > 
-> On Mon, Mar 27, 2017 at 08:19:49PM +0200, Uwe Kleine-K?nig wrote:
-> > Hello,
-> >   
-> > > @@ -145,15 +151,13 @@ static int __init orion_nand_probe(struct platform_device *pdev)
-> > >  	if (board->dev_ready)
-> > >  		nc->dev_ready = board->dev_ready;
-> > >  
-> > > -	platform_set_drvdata(pdev, mtd);
-> > > +	platform_set_drvdata(pdev, info);
-> > >  
-> > >  	/* Not all platforms can gate the clock, so it is not
-> > >  	   an error if the clock does not exists. */
-> > > -	clk = clk_get(&pdev->dev, NULL);
-> > > -	if (!IS_ERR(clk)) {
-> > > -		clk_prepare_enable(clk);
-> > > -		clk_put(clk);
-> > > -	}
-> > > +	info->clk = devm_clk_get(&pdev->dev, NULL);
-> > > +	if (!IS_ERR(info->clk))
-> > > +		clk_prepare_enable(info->clk);  
-> > 
-> > you could to the following here instead:
-> > 
-> > 	info->clk = devm_clk_get(&pdev->dev, NULL);
-> > 	if (IS_ERR(info->clk))
-> > 		/*
-> > 		 * We ignore all errors here, that's wrong but only for
-> > 		 * one commit.
-> > 		 */
-> > 		info->clk = NULL;
-> > 
-> > 	ret = clk_prepare_enable(info->clk);
-> > 	if (ret) ...
-> >   
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> ---
+>  drivers/mtd/nand/bbt.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
 > 
-> Makes sense.  I don't think we should have such a comment, though. 
-> The patch description states what it fixes and the patch fixes
-> exactly that.  Moreover, I tagged this patch for stable (because of
-> the double free it fixes) and there might be no other commit.  (I
-> think the error handling problem is not severe enough for stable.  It
-> has been this way a couple of years and nobody seems to have
-> noticed.)
+> diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
+> index 94cd3e5..c35a6e8 100644
+> --- a/drivers/mtd/nand/bbt.c
+> +++ b/drivers/mtd/nand/bbt.c
+> @@ -328,7 +328,7 @@ static int scan_read_oob(struct nand_device *this, uint8_t *buf, loff_t offs,
+>  			 size_t len)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(this);
+> -	struct mtd_oob_ops ops;
+> +	struct mtd_oob_ops ops = {0};
 
-No need to resend a new version, I'm fine with this one (actually I
-already applied it and am about to push it on nand/next).
+	struct mtd_oob_ops ops = { };
+
+>  	int res, ret = 0;
+>  
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+> @@ -369,11 +369,12 @@ static int scan_write_bbt(struct nand_device *this, loff_t offs, size_t len,
+>  			  uint8_t *buf, uint8_t *oob)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(this);
+> -	struct mtd_oob_ops ops;
+> +	struct mtd_oob_ops ops = {0};
+>  
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+>  	ops.ooboffs = 0;
+> -	ops.ooblen = nand_per_page_oobsize(this);
+> +	/* oob from caller may be NULL */
+> +	ops.ooblen = oob ? nand_per_page_oobsize(this) : 0;
+>  	ops.datbuf = buf;
+>  	ops.oobbuf = oob;
+>  	ops.len = len;
+> @@ -428,13 +429,12 @@ static int scan_block_fast(struct nand_device *this, struct nand_bbt_descr *bd,
+>  			   loff_t offs, uint8_t *buf, int numpages)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(this);
+> -	struct mtd_oob_ops ops;
+> +	struct mtd_oob_ops ops = {0};
+>  	int j, ret;
+>  
+>  	ops.ooblen = nand_per_page_oobsize(this);
+>  	ops.oobbuf = buf;
+>  	ops.ooboffs = 0;
+> -	ops.datbuf = NULL;
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+>  
+>  	for (j = 0; j < numpages; j++) {
+> @@ -734,11 +734,10 @@ static int write_bbt(struct nand_device *this, uint8_t *buf,
+>  	uint8_t rcode = td->reserved_block_code;
+>  	size_t retlen, len = 0;
+>  	loff_t to;
+> -	struct mtd_oob_ops ops;
+> +	struct mtd_oob_ops ops = {0};
+>  
+>  	ops.ooblen = nand_per_page_oobsize(this);
+>  	ops.ooboffs = 0;
+> -	ops.datbuf = NULL;
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+>  
+>  	if (!rcode)
