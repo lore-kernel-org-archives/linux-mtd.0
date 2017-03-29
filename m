@@ -1,25 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctE8q-0006wf-Vj
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 14:00:08 +0000
-Date: Wed, 29 Mar 2017 15:59:33 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jan Glauber <jan.glauber@caviumnetworks.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [RFC PATCH 2/2] nand: cavium: Nand flash controller for Cavium
- ARM64 SOCs
-Message-ID: <20170329155933.7494c243@bbrezillon>
-In-Reply-To: <20170329100256.GA3819@hardcore>
-References: <20170327160524.29019-1-jglauber@cavium.com>
- <20170327160524.29019-3-jglauber@cavium.com>
- <20170329112932.267b3059@bbrezillon>
- <20170329100256.GA3819@hardcore>
+Received: from fllnx210.ext.ti.com ([198.47.19.17])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctEFx-0002Nx-C3
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 14:07:27 +0000
+Subject: Re: Passing NAND mtdparts to OMAP2+ Kernel
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Adam Ford
+ <aford173@gmail.com>
+References: <CAHCN7xJoVF+3HjHwaS_U=jDqmU_Yv201KJSQ2s8N0gSNVR8pdQ@mail.gmail.com>
+ <20170328215705.438d7af8@bbrezillon>
+ <CAHCN7xKhRub4k8BpkPPjPFhjJU5c2xRd_VKPMfVOc88ZaTUmGQ@mail.gmail.com>
+ <04afe149-24b2-daec-5ef0-2d662ed79040@ti.com>
+ <20170329151002.26203f2c@bbrezillon> <20170329151837.509c15c6@bbrezillon>
+CC: "Leto, Enrico" <enrico.leto@siemens.com>, <linux-omap@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <89e42bf8-4a69-1e99-59e8-94dc44889849@ti.com>
+Date: Wed, 29 Mar 2017 17:06:58 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170329151837.509c15c6@bbrezillon>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,126 +28,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 29 Mar 2017 12:02:56 +0200
-Jan Glauber <jan.glauber@caviumnetworks.com> wrote:
-
-> > > +static void cvm_nand_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-> > > +{
-> > > +	struct nand_chip *nand = mtd_to_nand(mtd);
-> > > +	struct cvm_nfc *tn = to_cvm_nfc(nand->controller);
-> > > +
-> > > +	memcpy(tn->buf.dmabuf + tn->buf.data_len, buf, len);
-> > > +	tn->buf.data_len += len;
-> > > +}  
-> > 
-> > It seems that cvm_nand_read/write_byte/buf() are returning data that
-> > have already been retrieved (problably during the ->cmdfunc() phase).  
+On 29/03/17 16:18, Boris Brezillon wrote:
+> On Wed, 29 Mar 2017 15:10:02 +0200
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 > 
-> Yes.
+>> On Wed, 29 Mar 2017 15:41:07 +0300
+>> Roger Quadros <rogerq@ti.com> wrote:
+>>
+>>> Adam,
+>>>
+>>> On 29/03/17 14:39, Adam Ford wrote:  
+>>>> On Tue, Mar 28, 2017 at 2:57 PM, Boris Brezillon
+>>>> <boris.brezillon@free-electrons.com> wrote:    
+>>>>> +Roger and Enrico
+>>>>>
+>>>>> On Tue, 28 Mar 2017 10:43:01 -0500
+>>>>> Adam Ford <aford173@gmail.com> wrote:
+>>>>>    
+>>>>>> I posted this on the linux-omap list, and I was asked to post this on
+>>>>>> the linux-mtd list:
+>>>>>>
+>>>>>>
+>>>>>> I tried to remove the MTD partitions from the Linux device tree, and I
+>>>>>> noticed that there was no partition information being pushed anymore
+>>>>>> unless I changed the mtdparts name in U-Boot.
+>>>>>>
+>>>>>> It appears as if the MTD drivers have changed a bit.  I found a few
+>>>>>> e-mails floating around that attempt to fix this
+>>>>>>
+>>>>>> Commit f7a8e38f07a17be907585 ("mtd: nand: assign reasonable default
+>>>>>> name for NAND drivers") attempts to address this, and someone over at
+>>>>>> https://patchwork.ozlabs.org/patch/707065/ attempted to address it as
+>>>>>> well in a slightly different way.    
+>>>>>
+>>>>> Can you test the patch and let me know if solves the problem. If it
+>>>>> does, I'll send a clean version of the patch and queue it for 4.12.
+>>>>>    
+>>>>
+>>>> I tried to apply the patch directly, but it failed.  I then manually
+>>>> copy-pasted it into the proper place, but it fails to compile.
+>>>>
+>>>> drivers/mtd/nand/omap2.c: In function ‘omap_nand_probe’:
+>>>> drivers/mtd/nand/omap2.c:1859:14: error: implicit declaration of
+>>>> function ‘devm_kasprinf’ [-Werror=implicit-function-declaration]
+>>>>   mtd->name = devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc_cs);
+>>>>               ^~~~~~~~~~~~~
+>>>> drivers/mtd/nand/omap2.c:1859:12: warning: assignment makes pointer
+>>>> from integer without a cast [-Wint-conversion]
+>>>>   mtd->name = devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc_cs);
+>>>>             ^
+>>>> cc1: some warnings being treated as errors
+>>>>
+>>>> I use buildroot to build my toolchain and I am using gcc version 6.3.0
+>>>> with glibc 2.24.  Is there supposed to be an include somewhere?  I am
+>>>> not familiar with devm_kasprinf.  
+>>
+>> It's a typo: s/devm_kasprinf/devm_kasprintf/.
+>>
+>>>>
+>>>>     
+>>>
+>>> Does the below patch work for you?  
+>>
+>> Should work indeed.
+>>
+>> I had a closer look and it seems that the bug was actually introduced
+>> by c9711ec5250b mtd: nand: omap: Clean up device tree
+>> support.
+>> The parent device name has changed when switching to the new DT
+>> representation: omap2-nand.0 (where 0 is the controller instance) became
+>> 30000000.nand (where 30000000 is the base reg address in the physical
+>> address space). Which means my proposal was incorrect (0 is not the CS
+>> line, it's the NAND controller instance number), so we'd better
+>> statically set it to "omap2-nand.0".
 > 
-> > That's not how it's supposed to work. The core is expecting the data
-> > transfer to be done when ->read/write_buf() is called. Doing that in  
-> > ->cmdfunc() is risky, because when you're there you have no clue about  
-> > how much bytes the core expect.  
+> Changing my mind (again :)). According to [1], the instance id is
+> related to the CS line, so devm_kasprintf() is the right solution.
 > 
-> It seems to work fine, I've never seen the core trying to do more bytes in
-> the read/write_buf() then requested in ->cmdfunc().
-
-We already had problems in the past: when the core evolves to handle
-new NAND chips it might decide to read a bit more data than it used to
-be, and assuming that your driver will always take the right decision
-based on the information passed to ->cmdfunc() is a bit risky.
-
-I still have the plan to provide a better interface allowing drivers to
-execute the whole operation sequence (cmd+addr+data cycles), but it's
-not there yet (see [1] for more details).
-If you're okay to volunteer, I can help you with design this new hook
-which should probably make your life easier for the rest of the driver
-code (and also help me improve existing drivers ;-)).
-
-Otherwise, you should try to implement ->cmd_ctrl() and try to transfer
-data on the bus only when ->read/write_buf() are called (sometime it's
-not possible).
-
-
-> >   
-> > > +
-> > > +static void cvm_nand_cmdfunc(struct mtd_info *mtd, unsigned int command,
-> > > +				  int column, int page_addr)  
-> > 
-> > Did you try implementing ->cmd_ctrl() instead of ->cmdfunc(). Your
-> > controller seems to be highly configurable and, at first glance, I think
-> > you can simplify the driver by implementing ->cmd_ctrl() and relying on
-> > the default ->cmdfunc() implementation.
-> >   
+> Sorry for the noise.
 > 
-> I've looked at the sunxi_nand driver but ->cmd_ctrl() is very different
-> from ->cmdfunc() and the later looks like a better match for our controller.
+>>
+>>>
+>>> cheers,
+>>> -roger
+>>>
+>>> ---
+>>>  drivers/mtd/nand/omap2.c | 7 +++++++
+>>>  1 file changed, 7 insertions(+)
+>>>
+>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>>> index 2a52101..f693b8d 100644
+>>> --- a/drivers/mtd/nand/omap2.c
+>>> +++ b/drivers/mtd/nand/omap2.c
+>>> @@ -1856,6 +1856,13 @@ static int omap_nand_probe(struct platform_device *pdev)
+>>>  	nand_chip->ecc.priv	= NULL;
+>>>  	nand_set_flash_node(nand_chip, dev->of_node);
+>>>    
+>>
+>> nand_set_flash_node() is now taking the "label" DT property into account
+>> and assigning mtd->name to this value if present. I'd recommend doing
+>>
+>> 	if (!mtd->name)
+>> 		mtd->name = "omap2-nand.0";
 > 
-> The Cavium controller needs to write the commands (NAND_CMD_READ0, etc.)
-> into its pseudo instructions (see ndf_queue_cmd_cle()).
-> So how can I do this low-level stuff with ->cmd_ctrl()?
-
-I'd say that it's actually matching pretty well what is passed to
-->cmd_ctrl().
-For each call to ->cmd_ctrl() you have the information about the type
-of access that is made on the bus:
-- if the NAND_CLE flag is set in ctrl (the 3rd argument) you have a CLE
-  cycle
-- if NAND_ALE is set in ctrl you have an ALE cycle
-- if NAND_CMD_NONE is passed in cmd (2nd argument), you should issue
-  the whole operation
-
-You can update your cavium command each time NAND_CLE or NAND_ALE is
-passed (update the command information after each call), and then issue
-the command when NAND_CMD_NONE is passed.
-The only missing part in ->cmd_ctrl() are the data transfer cycles
-which are handled in ->read/write_buf().
-
+> This comment still stands, except it should be:
 > 
-> For instance for reading data I have ndf_page_read() that is used for
-> both NAND_CMD_READ0 and NAND_CMD_READOOB. Without hacking into ->cmdfunc(),
-> how would I differentiate between the two commands in read_buf()?
-
-Do you have to? Can't you just issue a command that is solely doing
-data transfer cycles without the CMD and ADDR ones?
-
-[...]
-> > > +union ndf_cmd {
-> > > +	u64 val[2];
-> > > +	union {
-> > > +		struct ndf_nop_cmd		nop;
-> > > +		struct ndf_wait_cmd		wait;
-> > > +		struct ndf_bus_cmd		bus_acq_rel;
-> > > +		struct ndf_chip_cmd		chip_en_dis;
-> > > +		struct ndf_cle_cmd		cle_cmd;
-> > > +		struct ndf_rd_cmd		rd_cmd;
-> > > +		struct ndf_wr_cmd		wr_cmd;
-> > > +		struct ndf_set_tm_par_cmd	set_tm_par;
-> > > +		struct ndf_ale_cmd		ale_cmd;
-> > > +		struct ndf_wait_status_cmd	wait_status;
-> > > +	} u;
-> > > +};  
-> > 
-> > I need some time to process all these information, but your controller
-> > seems to be a complex/highly-configurable beast. That's really
-> > interesting :-).
-> > I'll come up with more comments/question after reviewing more carefully
-> > the command creation logic.  
+> 	if (!mtd->name)
+> 		mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+> 					   "omap2-nand.%d", info->gpmc_cs);
 > 
-> Great. I'm afraid out controller is quite different from existing
-> hardware, at least I didn't find a driver that does things simalar (like
-> the command building and queueing).
-
-Hm, not so different actually, except you seem to have fine grained
-control on the sequencing, which is a really good thing because your
-driver can evolve with new NAND chip requirements.
-
+> 	if (!mtd->name) {
+> 		dev_err(&pdev->dev, "Failed to set MTD name\n");
+> 		return -ENOMEM;
+> 	}
 > 
-> I'm happy to help with any more information you need about our hardware.
+> Regards,
+> 
+> Boris
+> 
+> [1]http://lxr.free-electrons.com/source/arch/arm/mach-omap2/gpmc-nand.c?v=4.6#L133
+> 
 
-Thanks,
+OK. Here is the updated patch. I'll send an proper patch by tomorrow.
 
-Boris
+Adam, please test it on your board if possible. Thanks.
 
-[1]http://free-electrons.com/pub/conferences/2016/elc/brezillon-nand-framework/brezillon-nand-framework.pdf
+---
+ drivers/mtd/nand/omap2.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 2a52101..1b3d7cc 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1856,6 +1856,15 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	nand_chip->ecc.priv	= NULL;
+ 	nand_set_flash_node(nand_chip, dev->of_node);
+ 
++	if (!mtd->name) {
++		mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "omap2-nand.%d",
++					   info->gpmc_cs);
++		if (!mtd->name) {
++			dev_err(&pdev->dev, "Failed to set MTD name\n");
++			return -ENOMEM;
++		}
++	}
++
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	nand_chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(nand_chip->IO_ADDR_R))
+-- 
+2.7.4
