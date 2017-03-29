@@ -1,29 +1,17 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctBFR-0000mL-PF
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 10:54:43 +0000
-Received: by mail-wr0-x241.google.com with SMTP id u18so1837008wrc.0
- for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 03:54:19 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add driver for STM32 quad spi flash
- controller
-To: Ludovic Barre <ludovic.Barre@st.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <1490619296-8168-1-git-send-email-ludovic.Barre@st.com>
- <1490619296-8168-3-git-send-email-ludovic.Barre@st.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Alexandre Torgue <alexandre.torgue@st.com>, Rob Herring
- <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <1be39452-83b0-5c32-39fe-d6dd5134d1ef@gmail.com>
-Date: Wed, 29 Mar 2017 12:54:16 +0200
-MIME-Version: 1.0
-In-Reply-To: <1490619296-8168-3-git-send-email-ludovic.Barre@st.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: Jan Kara <jack@suse.cz>
+To: <linux-fsdevel@vger.kernel.org>
+Cc: linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+ Jan Kara <jack@suse.cz>, linux-mtd@lists.infradead.org,
+ linux-nfs@vger.kernel.org, Petr Vandrovec <petr@vandrovec.name>,
+ linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+ osd-dev@open-osd.org, codalist@coda.cs.cmu.edu,
+ linux-afs@lists.infradead.org, ecryptfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+ lustre-devel@lists.lustre.org
+Subject: [PATCH 0/25 v2] fs: Convert all embedded bdis into separate ones
+Date: Wed, 29 Mar 2017 12:55:58 +0200
+Message-Id: <20170329105623.18241-1-jack@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,298 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/27/2017 02:54 PM, Ludovic Barre wrote:
-> From: Ludovic Barre <ludovic.barre@st.com>
-> 
-> The quadspi is a specialized communication interface targeting single,
-> dual or quad SPI Flash memories.
-> 
-> It can operate in any of the following modes:
-> -indirect mode: all the operations are performed using the quadspi
->  registers
-> -read memory-mapped mode: the external Flash memory is mapped to the
->  microcontroller address space and is seen by the system as if it was
->  an internal memory
-> 
-> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+Hello,
 
-Hi! I presume this is not compatible with the Cadence QSPI or any other
-QSPI controller, huh ?
+this is the second revision of the patch series which converts all embedded
+occurences of struct backing_dev_info to use standalone dynamically allocated
+structures. This makes bdi handling unified across all bdi users and generally
+removes some boilerplate code from filesystems setting up their own bdi. It
+also allows us to remove some code from generic bdi implementation.
 
-Mostly minor nits below ...
+The patches were only compile-tested for most filesystems (I've tested
+mounting only for NFS & btrfs) so fs maintainers please have a look whether
+the changes look sound to you.
 
-> ---
->  drivers/mtd/spi-nor/Kconfig         |   7 +
->  drivers/mtd/spi-nor/Makefile        |   1 +
->  drivers/mtd/spi-nor/stm32-quadspi.c | 679 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 687 insertions(+)
->  create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
+This series is based on top of bdi fixes that were merged into linux-block
+git tree into for-next branch. I have pushed out the result as a branch to
 
-[...]
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdi
 
-> +struct stm32_qspi_cmd {
-> +	struct {
-> +		u32 addr_width:8;
-> +		u32 dummy:8;
-> +		u32 data:1;
-> +	} conf;
+Changes since v1:
+* Added some acks
+* Added further FUSE cleanup patch
+* Added removal of unused argument to bdi_register()
+* Fixed up some compilation failures spotted by 0-day testing
 
-This could all be u8 ? Why this awful construct ?
-
-> +	u8 opcode;
-> +	u32 framemode;
-> +	u32 qspimode;
-> +	u32 addr;
-> +	size_t len;
-> +	void *buf;
-> +};
-> +
-> +static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
-> +{
-> +	u32 cr;
-> +	int err = 0;
-
-Can readl_poll_timeout() or somesuch replace this function ?
-
-> +	if (readl_relaxed(qspi->io_base + QUADSPI_SR) & SR_TCF)
-> +		return 0;
-> +
-> +	reinit_completion(&qspi->cmd_completion);
-> +	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
-> +	writel_relaxed(cr | CR_TCIE, qspi->io_base + QUADSPI_CR);
-> +
-> +	if (!wait_for_completion_interruptible_timeout(&qspi->cmd_completion,
-> +						       msecs_to_jiffies(1000)))
-> +		err = -ETIMEDOUT;
-> +
-> +	writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
-> +	return err;
-> +}
-> +
-> +static int stm32_qspi_wait_nobusy(struct stm32_qspi *qspi)
-> +{
-> +	u32 sr;
-> +
-> +	return readl_relaxed_poll_timeout(qspi->io_base + QUADSPI_SR, sr,
-> +					  !(sr & SR_BUSY), 10, 100000);
-> +}
-> +
-> +static void stm32_qspi_set_framemode(struct spi_nor *nor,
-> +				     struct stm32_qspi_cmd *cmd, bool read)
-> +{
-> +	u32 dmode = CCR_DMODE_1;
-> +
-> +	cmd->framemode = CCR_IMODE_1;
-> +
-> +	if (read) {
-> +		switch (nor->flash_read) {
-> +		case SPI_NOR_NORMAL:
-> +		case SPI_NOR_FAST:
-> +			dmode = CCR_DMODE_1;
-> +			break;
-> +		case SPI_NOR_DUAL:
-> +			dmode = CCR_DMODE_2;
-> +			break;
-> +		case SPI_NOR_QUAD:
-> +			dmode = CCR_DMODE_4;
-> +			break;
-> +		}
-> +	}
-> +
-> +	cmd->framemode |= cmd->conf.data ? dmode : 0;
-> +	cmd->framemode |= cmd->conf.addr_width ? CCR_ADMODE_1 : 0;
-> +}
-> +
-> +static void stm32_qspi_read_fifo(u8 *val, void __iomem *addr)
-> +{
-> +	*val = readb_relaxed(addr);
-> +}
-> +
-> +static void stm32_qspi_write_fifo(u8 *val, void __iomem *addr)
-> +{
-> +	writeb_relaxed(*val, addr);
-> +}
-> +
-> +static int stm32_qspi_tx_poll(struct stm32_qspi *qspi,
-> +			      const struct stm32_qspi_cmd *cmd)
-> +{
-> +	void (*tx_fifo)(u8 *, void __iomem *);
-> +	u32 len = cmd->len, sr;
-> +	u8 *buf = cmd->buf;
-> +	int ret;
-> +
-> +	if (cmd->qspimode == CCR_FMODE_INDW)
-> +		tx_fifo = stm32_qspi_write_fifo;
-> +	else
-> +		tx_fifo = stm32_qspi_read_fifo;
-> +
-> +	while (len--) {
-> +		ret = readl_relaxed_poll_timeout(qspi->io_base + QUADSPI_SR,
-> +						 sr, (sr & SR_FTF),
-> +						 10, 30000);
-
-Add macros for those ad-hoc timeouts.
-
-> +		if (ret) {
-> +			dev_err(qspi->dev, "fifo timeout (stat:%#x)\n", sr);
-> +			break;
-> +		}
-> +		tx_fifo(buf++, qspi->io_base + QUADSPI_DR);
-> +	}
-> +
-> +	return ret;
-> +}
-
-
-[...]
-
-> +static int stm32_qspi_send(struct stm32_qspi_flash *flash,
-> +			   const struct stm32_qspi_cmd *cmd)
-> +{
-> +	struct stm32_qspi *qspi = flash->qspi;
-> +	u32 ccr, dcr, cr;
-> +	int err;
-> +
-> +	err = stm32_qspi_wait_nobusy(qspi);
-> +	if (err)
-> +		goto abort;
-> +
-> +	dcr = readl_relaxed(qspi->io_base + QUADSPI_DCR) & ~DCR_FSIZE_MASK;
-> +	dcr |= DCR_FSIZE(flash->fsize);
-> +	writel_relaxed(dcr, qspi->io_base + QUADSPI_DCR);
-> +
-> +	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
-> +	cr &= ~CR_PRESC_MASK & ~CR_FSEL;
-> +	cr |= CR_PRESC(flash->presc);
-> +	cr |= flash->cs ? CR_FSEL : 0;
-> +	writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
-> +
-> +	if (cmd->conf.data)
-> +		writel_relaxed(cmd->len - 1, qspi->io_base + QUADSPI_DLR);
-> +
-> +	ccr = cmd->framemode | cmd->qspimode;
-> +
-> +	if (cmd->conf.dummy)
-> +		ccr |= CCR_DCYC(cmd->conf.dummy);
-> +
-> +	if (cmd->conf.addr_width)
-> +		ccr |= CCR_ADSIZE(cmd->conf.addr_width - 1);
-> +
-> +	ccr |= CCR_INST(cmd->opcode);
-> +	writel_relaxed(ccr, qspi->io_base + QUADSPI_CCR);
-> +
-> +	if (cmd->conf.addr_width && cmd->qspimode != CCR_FMODE_MM)
-> +		writel_relaxed(cmd->addr, qspi->io_base + QUADSPI_AR);
-> +
-> +	err = stm32_qspi_tx(qspi, cmd);
-> +	if (err)
-> +		goto abort;
-> +
-> +	if (cmd->qspimode != CCR_FMODE_MM) {
-> +		err = stm32_qspi_wait_cmd(qspi);
-> +		if (err)
-> +			goto abort;
-> +		writel_relaxed(FCR_CTCF, qspi->io_base + QUADSPI_FCR);
-> +	}
-> +
-> +	return err;
-> +
-> +abort:
-> +	writel_relaxed(readl_relaxed(qspi->io_base + QUADSPI_CR)
-> +		       | CR_ABORT, qspi->io_base + QUADSPI_CR);
-
-Use a helper variable here too.
-
-> +	dev_err(qspi->dev, "%s abort err:%d\n", __func__, err);
-> +	return err;
-> +}
-
-[...]
-
-> +static int stm32_qspi_flash_setup(struct stm32_qspi *qspi,
-> +				  struct device_node *np)
-> +{
-> +	u32 width, flash_read, presc, cs_num, max_rate = 0;
-> +	struct stm32_qspi_flash *flash;
-> +	struct mtd_info *mtd;
-> +	int ret;
-> +
-> +	of_property_read_u32(np, "reg", &cs_num);
-> +	if (cs_num >= STM32_MAX_NORCHIP)
-> +		return -EINVAL;
-> +
-> +	of_property_read_u32(np, "spi-max-frequency", &max_rate);
-> +	if (!max_rate)
-> +		return -EINVAL;
-> +
-> +	presc = DIV_ROUND_UP(qspi->clk_rate, max_rate) - 1;
-> +
-> +	if (of_property_read_u32(np, "spi-rx-bus-width", &width))
-> +		width = 1;
-> +
-> +	if (width == 4)
-> +		flash_read = SPI_NOR_QUAD;
-> +	else if (width == 2)
-> +		flash_read = SPI_NOR_DUAL;
-> +	else if (width == 1)
-> +		flash_read = SPI_NOR_NORMAL;
-> +	else
-> +		return -EINVAL;
-> +
-> +	flash = &qspi->flash[cs_num];
-> +	flash->qspi = qspi;
-> +	flash->cs = cs_num;
-> +	flash->presc = presc;
-> +
-> +	flash->nor.dev = qspi->dev;
-> +	spi_nor_set_flash_node(&flash->nor, np);
-> +	flash->nor.priv = flash;
-> +	mtd = &flash->nor.mtd;
-> +	mtd->priv = &flash->nor;
-> +
-> +	flash->nor.read = stm32_qspi_read;
-> +	flash->nor.write = stm32_qspi_write;
-> +	flash->nor.erase = stm32_qspi_erase;
-> +	flash->nor.read_reg = stm32_qspi_read_reg;
-> +	flash->nor.write_reg = stm32_qspi_write_reg;
-> +	flash->nor.prepare = stm32_qspi_prep;
-> +	flash->nor.unprepare = stm32_qspi_unprep;
-> +
-> +	writel_relaxed(LPTR_DFT_TIMEOUT, qspi->io_base + QUADSPI_LPTR);
-> +
-> +	writel_relaxed(CR_PRESC(presc) | CR_FTHRES(3) | CR_TCEN | CR_SSHIFT
-> +		       | CR_EN, qspi->io_base + QUADSPI_CR);
-> +
-> +	/* a minimum fsize must be set to sent the command id */
-> +	flash->fsize = 25;
-
-I don't understand why this is needed and the comment doesn't make
-sense. Please fix.
-
-> +	ret = spi_nor_scan(&flash->nor, NULL, flash_read);
-> +	if (ret) {
-> +		dev_err(qspi->dev, "device scan failed\n");
-> +		return ret;
-> +	}
-> +
-> +	flash->fsize = __fls(mtd->size) - 1;
-> +
-> +	writel_relaxed(DCR_CSHT(1), qspi->io_base + QUADSPI_DCR);
-> +
-> +	ret = mtd_device_register(mtd, NULL, 0);
-> +	if (ret) {
-> +		dev_err(qspi->dev, "mtd device parse failed\n");
-> +		return ret;
-> +	}
-> +
-> +	dev_dbg(qspi->dev, "read mm:%s cs:%d bus:%d\n",
-> +		qspi->read_mode == CCR_FMODE_MM ? "yes" : "no", cs_num, width);
-> +
-> +	return 0;
-> +}
-
-[...]
-
--- 
-Best regards,
-Marek Vasut
+								Honza
