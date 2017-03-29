@@ -1,28 +1,16 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctJkr-0004QM-3u
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 19:59:43 +0000
-Received: by mail-pg0-x244.google.com with SMTP id o123so4347497pga.1
- for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 12:59:20 -0700 (PDT)
+Date: Wed, 29 Mar 2017 22:03:36 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Simon Baatz <gmbnomis@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ u.kleine-koenig@pengutronix.de, richard@nod.at, jason@lakedaemon.net,
+ andrew@lunn.ch, dan.carpenter@oracle.com
+Subject: Re: [PATCH v2 1/2] mtd: nand: orion: fix clk handling
+Message-ID: <20170329220336.2b8bf0df@bbrezillon>
+In-Reply-To: <20170327180208.13414-1-gmbnomis@gmail.com>
+References: <20170327180208.13414-1-gmbnomis@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <89e42bf8-4a69-1e99-59e8-94dc44889849@ti.com>
-References: <CAHCN7xJoVF+3HjHwaS_U=jDqmU_Yv201KJSQ2s8N0gSNVR8pdQ@mail.gmail.com>
- <20170328215705.438d7af8@bbrezillon>
- <CAHCN7xKhRub4k8BpkPPjPFhjJU5c2xRd_VKPMfVOc88ZaTUmGQ@mail.gmail.com>
- <04afe149-24b2-daec-5ef0-2d662ed79040@ti.com>
- <20170329151002.26203f2c@bbrezillon>
- <20170329151837.509c15c6@bbrezillon>
- <89e42bf8-4a69-1e99-59e8-94dc44889849@ti.com>
-From: Adam Ford <aford173@gmail.com>
-Date: Wed, 29 Mar 2017 14:59:19 -0500
-Message-ID: <CAHCN7x+CfRnt4WAA_vYt0+Z_zrXOSUfvPGHVq9qbXR7J7udDPw@mail.gmail.com>
-Subject: Re: Passing NAND mtdparts to OMAP2+ Kernel
-To: Roger Quadros <rogerq@ti.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "Leto, Enrico" <enrico.leto@siemens.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,180 +20,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 29, 2017 at 9:06 AM, Roger Quadros <rogerq@ti.com> wrote:
-> On 29/03/17 16:18, Boris Brezillon wrote:
->> On Wed, 29 Mar 2017 15:10:02 +0200
->> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->>
->>> On Wed, 29 Mar 2017 15:41:07 +0300
->>> Roger Quadros <rogerq@ti.com> wrote:
->>>
->>>> Adam,
->>>>
->>>> On 29/03/17 14:39, Adam Ford wrote:
->>>>> On Tue, Mar 28, 2017 at 2:57 PM, Boris Brezillon
->>>>> <boris.brezillon@free-electrons.com> wrote:
->>>>>> +Roger and Enrico
->>>>>>
->>>>>> On Tue, 28 Mar 2017 10:43:01 -0500
->>>>>> Adam Ford <aford173@gmail.com> wrote:
->>>>>>
->>>>>>> I posted this on the linux-omap list, and I was asked to post this =
-on
->>>>>>> the linux-mtd list:
->>>>>>>
->>>>>>>
->>>>>>> I tried to remove the MTD partitions from the Linux device tree, an=
-d I
->>>>>>> noticed that there was no partition information being pushed anymor=
-e
->>>>>>> unless I changed the mtdparts name in U-Boot.
->>>>>>>
->>>>>>> It appears as if the MTD drivers have changed a bit.  I found a few
->>>>>>> e-mails floating around that attempt to fix this
->>>>>>>
->>>>>>> Commit f7a8e38f07a17be907585 ("mtd: nand: assign reasonable default
->>>>>>> name for NAND drivers") attempts to address this, and someone over =
-at
->>>>>>> https://patchwork.ozlabs.org/patch/707065/ attempted to address it =
-as
->>>>>>> well in a slightly different way.
->>>>>>
->>>>>> Can you test the patch and let me know if solves the problem. If it
->>>>>> does, I'll send a clean version of the patch and queue it for 4.12.
->>>>>>
->>>>>
->>>>> I tried to apply the patch directly, but it failed.  I then manually
->>>>> copy-pasted it into the proper place, but it fails to compile.
->>>>>
->>>>> drivers/mtd/nand/omap2.c: In function =E2=80=98omap_nand_probe=E2=80=
-=99:
->>>>> drivers/mtd/nand/omap2.c:1859:14: error: implicit declaration of
->>>>> function =E2=80=98devm_kasprinf=E2=80=99 [-Werror=3Dimplicit-function=
--declaration]
->>>>>   mtd->name =3D devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc=
-_cs);
->>>>>               ^~~~~~~~~~~~~
->>>>> drivers/mtd/nand/omap2.c:1859:12: warning: assignment makes pointer
->>>>> from integer without a cast [-Wint-conversion]
->>>>>   mtd->name =3D devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc=
-_cs);
->>>>>             ^
->>>>> cc1: some warnings being treated as errors
->>>>>
->>>>> I use buildroot to build my toolchain and I am using gcc version 6.3.=
-0
->>>>> with glibc 2.24.  Is there supposed to be an include somewhere?  I am
->>>>> not familiar with devm_kasprinf.
->>>
->>> It's a typo: s/devm_kasprinf/devm_kasprintf/.
->>>
->>>>>
->>>>>
->>>>
->>>> Does the below patch work for you?
->>>
->>> Should work indeed.
->>>
->>> I had a closer look and it seems that the bug was actually introduced
->>> by c9711ec5250b mtd: nand: omap: Clean up device tree
->>> support.
->>> The parent device name has changed when switching to the new DT
->>> representation: omap2-nand.0 (where 0 is the controller instance) becam=
-e
->>> 30000000.nand (where 30000000 is the base reg address in the physical
->>> address space). Which means my proposal was incorrect (0 is not the CS
->>> line, it's the NAND controller instance number), so we'd better
->>> statically set it to "omap2-nand.0".
->>
->> Changing my mind (again :)). According to [1], the instance id is
->> related to the CS line, so devm_kasprintf() is the right solution.
->>
->> Sorry for the noise.
->>
->>>
->>>>
->>>> cheers,
->>>> -roger
->>>>
->>>> ---
->>>>  drivers/mtd/nand/omap2.c | 7 +++++++
->>>>  1 file changed, 7 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
->>>> index 2a52101..f693b8d 100644
->>>> --- a/drivers/mtd/nand/omap2.c
->>>> +++ b/drivers/mtd/nand/omap2.c
->>>> @@ -1856,6 +1856,13 @@ static int omap_nand_probe(struct platform_devi=
-ce *pdev)
->>>>     nand_chip->ecc.priv     =3D NULL;
->>>>     nand_set_flash_node(nand_chip, dev->of_node);
->>>>
->>>
->>> nand_set_flash_node() is now taking the "label" DT property into accoun=
-t
->>> and assigning mtd->name to this value if present. I'd recommend doing
->>>
->>>      if (!mtd->name)
->>>              mtd->name =3D "omap2-nand.0";
->>
->> This comment still stands, except it should be:
->>
->>       if (!mtd->name)
->>               mtd->name =3D devm_kasprintf(&pdev->dev, GFP_KERNEL,
->>                                          "omap2-nand.%d", info->gpmc_cs)=
-;
->>
->>       if (!mtd->name) {
->>               dev_err(&pdev->dev, "Failed to set MTD name\n");
->>               return -ENOMEM;
->>       }
->>
->> Regards,
->>
->> Boris
->>
->> [1]http://lxr.free-electrons.com/source/arch/arm/mach-omap2/gpmc-nand.c?=
-v=3D4.6#L133
->>
->
-> OK. Here is the updated patch. I'll send an proper patch by tomorrow.
->
-> Adam, please test it on your board if possible. Thanks.
+On Mon, 27 Mar 2017 20:02:07 +0200
+Simon Baatz <gmbnomis@gmail.com> wrote:
 
-I tested this against Linux master (4.11.0-rc4) and it works for me.
-Thank you.  Go ahead and add me as 'tested-by' when you do you final
-patch submission.
+> The clk handling in orion_nand.c had two problems:
+> 
+> - In the probe function, clk_put() was called for an enabled clock,
+>   which violates the API (see documentation for clk_put() in
+>   include/linux/clk.h)
+> 
+> - In the error path of the probe function, clk_put() could be called
+>   twice for the same clock.
+> 
+> In order to clean this up, use the managed function devm_clk_get() and
+> store the pointer to the clk in the driver data.
+> 
+> Fixes: baffab28b13120694fa3ebab08d3e99667a851d2 ('ARM: Orion: fix driver probe error handling with respect to clk')
+> Cc: <stable@vger.kernel.org> # v4.5+
+> Signed-off-by: Simon Baatz <gmbnomis@gmail.com>
 
+Applied both.
 
-adam
->
+Thanks,
+
+Boris
+
 > ---
->  drivers/mtd/nand/omap2.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 2a52101..1b3d7cc 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1856,6 +1856,15 @@ static int omap_nand_probe(struct platform_device =
-*pdev)
->         nand_chip->ecc.priv     =3D NULL;
->         nand_set_flash_node(nand_chip, dev->of_node);
->
-> +       if (!mtd->name) {
-> +               mtd->name =3D devm_kasprintf(&pdev->dev, GFP_KERNEL, "oma=
-p2-nand.%d",
-> +                                          info->gpmc_cs);
-> +               if (!mtd->name) {
-> +                       dev_err(&pdev->dev, "Failed to set MTD name\n");
-> +                       return -ENOMEM;
-> +               }
-> +       }
+> 
+> Changes in v2:
+> * changed whitespace alignment in orion_nand_info struct definition
+> 
+>  drivers/mtd/nand/orion_nand.c | 42 +++++++++++++++++++++---------------------
+>  1 file changed, 21 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+> index 4a91c5d000be..3acdc20485f1 100644
+> --- a/drivers/mtd/nand/orion_nand.c
+> +++ b/drivers/mtd/nand/orion_nand.c
+> @@ -23,6 +23,11 @@
+>  #include <asm/sizes.h>
+>  #include <linux/platform_data/mtd-orion_nand.h>
+>  
+> +struct orion_nand_info {
+> +	struct nand_chip chip;
+> +	struct clk *clk;
+> +};
 > +
->         res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
->         nand_chip->IO_ADDR_R =3D devm_ioremap_resource(&pdev->dev, res);
->         if (IS_ERR(nand_chip->IO_ADDR_R))
-> --
-> 2.7.4
->
+>  static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  {
+>  	struct nand_chip *nc = mtd_to_nand(mtd);
+> @@ -75,20 +80,21 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+>  
+>  static int __init orion_nand_probe(struct platform_device *pdev)
+>  {
+> +	struct orion_nand_info *info;
+>  	struct mtd_info *mtd;
+>  	struct nand_chip *nc;
+>  	struct orion_nand_data *board;
+>  	struct resource *res;
+> -	struct clk *clk;
+>  	void __iomem *io_base;
+>  	int ret = 0;
+>  	u32 val = 0;
+>  
+> -	nc = devm_kzalloc(&pdev->dev,
+> -			sizeof(struct nand_chip),
+> +	info = devm_kzalloc(&pdev->dev,
+> +			sizeof(struct orion_nand_info),
+>  			GFP_KERNEL);
+> -	if (!nc)
+> +	if (!info)
+>  		return -ENOMEM;
+> +	nc = &info->chip;
+>  	mtd = nand_to_mtd(nc);
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> @@ -145,15 +151,13 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+>  	if (board->dev_ready)
+>  		nc->dev_ready = board->dev_ready;
+>  
+> -	platform_set_drvdata(pdev, mtd);
+> +	platform_set_drvdata(pdev, info);
+>  
+>  	/* Not all platforms can gate the clock, so it is not
+>  	   an error if the clock does not exists. */
+> -	clk = clk_get(&pdev->dev, NULL);
+> -	if (!IS_ERR(clk)) {
+> -		clk_prepare_enable(clk);
+> -		clk_put(clk);
+> -	}
+> +	info->clk = devm_clk_get(&pdev->dev, NULL);
+> +	if (!IS_ERR(info->clk))
+> +		clk_prepare_enable(info->clk);
+>  
+>  	ret = nand_scan(mtd, 1);
+>  	if (ret)
+> @@ -169,26 +173,22 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+>  	return 0;
+>  
+>  no_dev:
+> -	if (!IS_ERR(clk)) {
+> -		clk_disable_unprepare(clk);
+> -		clk_put(clk);
+> -	}
+> +	if (!IS_ERR(info->clk))
+> +		clk_disable_unprepare(info->clk);
+>  
+>  	return ret;
+>  }
+>  
+>  static int orion_nand_remove(struct platform_device *pdev)
+>  {
+> -	struct mtd_info *mtd = platform_get_drvdata(pdev);
+> -	struct clk *clk;
+> +	struct orion_nand_info *info = platform_get_drvdata(pdev);
+> +	struct nand_chip *chip = &info->chip;
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+>  
+>  	nand_release(mtd);
+>  
+> -	clk = clk_get(&pdev->dev, NULL);
+> -	if (!IS_ERR(clk)) {
+> -		clk_disable_unprepare(clk);
+> -		clk_put(clk);
+> -	}
+> +	if (!IS_ERR(info->clk))
+> +		clk_disable_unprepare(info->clk);
+>  
+>  	return 0;
+>  }
