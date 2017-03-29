@@ -1,24 +1,29 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctDVH-0003Kj-Ti
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 13:19:16 +0000
-Date: Wed, 29 Mar 2017 15:18:37 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: Adam Ford <aford173@gmail.com>, "Leto, Enrico"
- <enrico.leto@siemens.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: Passing NAND mtdparts to OMAP2+ Kernel
-Message-ID: <20170329151837.509c15c6@bbrezillon>
-In-Reply-To: <20170329151002.26203f2c@bbrezillon>
-References: <CAHCN7xJoVF+3HjHwaS_U=jDqmU_Yv201KJSQ2s8N0gSNVR8pdQ@mail.gmail.com>
- <20170328215705.438d7af8@bbrezillon>
- <CAHCN7xKhRub4k8BpkPPjPFhjJU5c2xRd_VKPMfVOc88ZaTUmGQ@mail.gmail.com>
- <04afe149-24b2-daec-5ef0-2d662ed79040@ti.com>
- <20170329151002.26203f2c@bbrezillon>
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctDmJ-0007xt-A1
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 13:36:49 +0000
+Subject: Re: [PATCH 2/2] mtd: spi-nor: add driver for STM32 quad spi flash
+ controller
+To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+References: <1490619296-8168-1-git-send-email-ludovic.Barre@st.com>
+ <1490619296-8168-3-git-send-email-ludovic.Barre@st.com>
+ <1be39452-83b0-5c32-39fe-d6dd5134d1ef@gmail.com>
+ <2c364b99-512c-8eb6-7044-7989ba21d53b@st.com>
+ <28454969-0f56-7752-b087-5e02a1a20c23@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+From: Ludovic BARRE <ludovic.barre@st.com>
+Message-ID: <2410fcde-1d1d-57b5-01ee-bd6bc3bc863b@st.com>
+Date: Wed, 29 Mar 2017 15:35:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <28454969-0f56-7752-b087-5e02a1a20c23@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,131 +33,332 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 29 Mar 2017 15:10:02 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On 03/29/2017 03:09 PM, Marek Vasut wrote:
+> On 03/29/2017 02:24 PM, Ludovic BARRE wrote:
+>> hi Marek
+> Hi!
+>
+>> thanks for review
+>> comment below
+>>
+>> On 03/29/2017 12:54 PM, Marek Vasut wrote:
+>>> On 03/27/2017 02:54 PM, Ludovic Barre wrote:
+>>>> From: Ludovic Barre <ludovic.barre@st.com>
+>>>>
+>>>> The quadspi is a specialized communication interface targeting single,
+>>>> dual or quad SPI Flash memories.
+>>>>
+>>>> It can operate in any of the following modes:
+>>>> -indirect mode: all the operations are performed using the quadspi
+>>>>    registers
+>>>> -read memory-mapped mode: the external Flash memory is mapped to the
+>>>>    microcontroller address space and is seen by the system as if it was
+>>>>    an internal memory
+>>>>
+>>>> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+>>> Hi! I presume this is not compatible with the Cadence QSPI or any other
+>>> QSPI controller, huh ?
+>> it's not a cadence QSPI, it's specific for stm32 platform
+> OK, got it. Didn't ST use Cadence IP somewhere too though ?
+> That's probably what confused me, oh well ...
+>
+>>> Mostly minor nits below ...
+>>>
+>>>> ---
+>>>>    drivers/mtd/spi-nor/Kconfig         |   7 +
+>>>>    drivers/mtd/spi-nor/Makefile        |   1 +
+>>>>    drivers/mtd/spi-nor/stm32-quadspi.c | 679
+>>>> ++++++++++++++++++++++++++++++++++++
+>>>>    3 files changed, 687 insertions(+)
+>>>>    create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
+>>> [...]
+>>>
+>>>> +struct stm32_qspi_cmd {
+>>>> +    struct {
+>>>> +        u32 addr_width:8;
+>>>> +        u32 dummy:8;
+>>>> +        u32 data:1;
+>>>> +    } conf;
+>>> This could all be u8 ? Why this awful construct ?
+>> yes I could replace each u32 by u8
+> Yeah, please do .
+>
+>>>> +    u8 opcode;
+>>>> +    u32 framemode;
+>>>> +    u32 qspimode;
+>>>> +    u32 addr;
+>>>> +    size_t len;
+>>>> +    void *buf;
+>>>> +};
+>>>> +
+>>>> +static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
+>>>> +{
+>>>> +    u32 cr;
+>>>> +    int err = 0;
+>>> Can readl_poll_timeout() or somesuch replace this function ?
+>> in fact stm32_qspi_wait_cmd test if the transfer has been complete (TCF
+>> flag)
+>> else initialize an interrupt completion.
+>> like the time may be long I prefer keep the interrupt wait, if you agree.
+> I don't really mind if it fits the hardware better and I agree with you
+> it does here.
+>
+>>>> +    if (readl_relaxed(qspi->io_base + QUADSPI_SR) & SR_TCF)
+>>>> +        return 0;
+>>>> +
+>>>> +    reinit_completion(&qspi->cmd_completion);
+>>>> +    cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
+>>>> +    writel_relaxed(cr | CR_TCIE, qspi->io_base + QUADSPI_CR);
+>>>> +
+>>>> +    if
+>>>> (!wait_for_completion_interruptible_timeout(&qspi->cmd_completion,
+>>>> +                               msecs_to_jiffies(1000)))
+>>>> +        err = -ETIMEDOUT;
+>>>> +
+>>>> +    writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
+>>>> +    return err;
+>>>> +}
+>>>> +
+>>>> +static int stm32_qspi_wait_nobusy(struct stm32_qspi *qspi)
+>>>> +{
+>>>> +    u32 sr;
+>>>> +
+>>>> +    return readl_relaxed_poll_timeout(qspi->io_base + QUADSPI_SR, sr,
+>>>> +                      !(sr & SR_BUSY), 10, 100000);
+>>>> +}
+>>>> +
+>>>> +static void stm32_qspi_set_framemode(struct spi_nor *nor,
+>>>> +                     struct stm32_qspi_cmd *cmd, bool read)
+>>>> +{
+>>>> +    u32 dmode = CCR_DMODE_1;
+>>>> +
+>>>> +    cmd->framemode = CCR_IMODE_1;
+>>>> +
+>>>> +    if (read) {
+>>>> +        switch (nor->flash_read) {
+>>>> +        case SPI_NOR_NORMAL:
+>>>> +        case SPI_NOR_FAST:
+>>>> +            dmode = CCR_DMODE_1;
+>>>> +            break;
+>>>> +        case SPI_NOR_DUAL:
+>>>> +            dmode = CCR_DMODE_2;
+>>>> +            break;
+>>>> +        case SPI_NOR_QUAD:
+>>>> +            dmode = CCR_DMODE_4;
+>>>> +            break;
+>>>> +        }
+>>>> +    }
+>>>> +
+>>>> +    cmd->framemode |= cmd->conf.data ? dmode : 0;
+>>>> +    cmd->framemode |= cmd->conf.addr_width ? CCR_ADMODE_1 : 0;
+>>>> +}
+>>>> +
+>>>> +static void stm32_qspi_read_fifo(u8 *val, void __iomem *addr)
+>>>> +{
+>>>> +    *val = readb_relaxed(addr);
+>>>> +}
+>>>> +
+>>>> +static void stm32_qspi_write_fifo(u8 *val, void __iomem *addr)
+>>>> +{
+>>>> +    writeb_relaxed(*val, addr);
+>>>> +}
+>>>> +
+>>>> +static int stm32_qspi_tx_poll(struct stm32_qspi *qspi,
+>>>> +                  const struct stm32_qspi_cmd *cmd)
+>>>> +{
+>>>> +    void (*tx_fifo)(u8 *, void __iomem *);
+>>>> +    u32 len = cmd->len, sr;
+>>>> +    u8 *buf = cmd->buf;
+>>>> +    int ret;
+>>>> +
+>>>> +    if (cmd->qspimode == CCR_FMODE_INDW)
+>>>> +        tx_fifo = stm32_qspi_write_fifo;
+>>>> +    else
+>>>> +        tx_fifo = stm32_qspi_read_fifo;
+>>>> +
+>>>> +    while (len--) {
+>>>> +        ret = readl_relaxed_poll_timeout(qspi->io_base + QUADSPI_SR,
+>>>> +                         sr, (sr & SR_FTF),
+>>>> +                         10, 30000);
+>>> Add macros for those ad-hoc timeouts.
+>> I will add 2 defines (for stm32_qspi_wait_nobusy, stm32_qspi_tx_poll)
+>> #define STM32_QSPI_FIFO_TIMEOUT_US 30000
+>> #define STM32_QSPI_BUSY_TIMEOUT_US 100000
+> Super
+>
+>>>> +        if (ret) {
+>>>> +            dev_err(qspi->dev, "fifo timeout (stat:%#x)\n", sr);
+>>>> +            break;
+>>>> +        }
+>>>> +        tx_fifo(buf++, qspi->io_base + QUADSPI_DR);
+>>>> +    }
+>>>> +
+>>>> +    return ret;
+>>>> +}
+>>> [...]
+>>>
+>>>> +static int stm32_qspi_send(struct stm32_qspi_flash *flash,
+>>>> +               const struct stm32_qspi_cmd *cmd)
+>>>> +{
+>>>> +    struct stm32_qspi *qspi = flash->qspi;
+>>>> +    u32 ccr, dcr, cr;
+>>>> +    int err;
+>>>> +
+>>>> +    err = stm32_qspi_wait_nobusy(qspi);
+>>>> +    if (err)
+>>>> +        goto abort;
+>>>> +
+>>>> +    dcr = readl_relaxed(qspi->io_base + QUADSPI_DCR) & ~DCR_FSIZE_MASK;
+>>>> +    dcr |= DCR_FSIZE(flash->fsize);
+>>>> +    writel_relaxed(dcr, qspi->io_base + QUADSPI_DCR);
+>>>> +
+>>>> +    cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
+>>>> +    cr &= ~CR_PRESC_MASK & ~CR_FSEL;
+>>>> +    cr |= CR_PRESC(flash->presc);
+>>>> +    cr |= flash->cs ? CR_FSEL : 0;
+>>>> +    writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
+>>>> +
+>>>> +    if (cmd->conf.data)
+>>>> +        writel_relaxed(cmd->len - 1, qspi->io_base + QUADSPI_DLR);
+>>>> +
+>>>> +    ccr = cmd->framemode | cmd->qspimode;
+>>>> +
+>>>> +    if (cmd->conf.dummy)
+>>>> +        ccr |= CCR_DCYC(cmd->conf.dummy);
+>>>> +
+>>>> +    if (cmd->conf.addr_width)
+>>>> +        ccr |= CCR_ADSIZE(cmd->conf.addr_width - 1);
+>>>> +
+>>>> +    ccr |= CCR_INST(cmd->opcode);
+>>>> +    writel_relaxed(ccr, qspi->io_base + QUADSPI_CCR);
+>>>> +
+>>>> +    if (cmd->conf.addr_width && cmd->qspimode != CCR_FMODE_MM)
+>>>> +        writel_relaxed(cmd->addr, qspi->io_base + QUADSPI_AR);
+>>>> +
+>>>> +    err = stm32_qspi_tx(qspi, cmd);
+>>>> +    if (err)
+>>>> +        goto abort;
+>>>> +
+>>>> +    if (cmd->qspimode != CCR_FMODE_MM) {
+>>>> +        err = stm32_qspi_wait_cmd(qspi);
+>>>> +        if (err)
+>>>> +            goto abort;
+>>>> +        writel_relaxed(FCR_CTCF, qspi->io_base + QUADSPI_FCR);
+>>>> +    }
+>>>> +
+>>>> +    return err;
+>>>> +
+>>>> +abort:
+>>>> +    writel_relaxed(readl_relaxed(qspi->io_base + QUADSPI_CR)
+>>>> +               | CR_ABORT, qspi->io_base + QUADSPI_CR);
+>>> Use a helper variable here too.
+>> ok
+>>>> +    dev_err(qspi->dev, "%s abort err:%d\n", __func__, err);
+>>>> +    return err;
+>>>> +}
+>>> [...]
+>>>
+>>>> +static int stm32_qspi_flash_setup(struct stm32_qspi *qspi,
+>>>> +                  struct device_node *np)
+>>>> +{
+>>>> +    u32 width, flash_read, presc, cs_num, max_rate = 0;
+>>>> +    struct stm32_qspi_flash *flash;
+>>>> +    struct mtd_info *mtd;
+>>>> +    int ret;
+>>>> +
+>>>> +    of_property_read_u32(np, "reg", &cs_num);
+>>>> +    if (cs_num >= STM32_MAX_NORCHIP)
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    of_property_read_u32(np, "spi-max-frequency", &max_rate);
+>>>> +    if (!max_rate)
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    presc = DIV_ROUND_UP(qspi->clk_rate, max_rate) - 1;
+>>>> +
+>>>> +    if (of_property_read_u32(np, "spi-rx-bus-width", &width))
+>>>> +        width = 1;
+>>>> +
+>>>> +    if (width == 4)
+>>>> +        flash_read = SPI_NOR_QUAD;
+>>>> +    else if (width == 2)
+>>>> +        flash_read = SPI_NOR_DUAL;
+>>>> +    else if (width == 1)
+>>>> +        flash_read = SPI_NOR_NORMAL;
+>>>> +    else
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    flash = &qspi->flash[cs_num];
+>>>> +    flash->qspi = qspi;
+>>>> +    flash->cs = cs_num;
+>>>> +    flash->presc = presc;
+>>>> +
+>>>> +    flash->nor.dev = qspi->dev;
+>>>> +    spi_nor_set_flash_node(&flash->nor, np);
+>>>> +    flash->nor.priv = flash;
+>>>> +    mtd = &flash->nor.mtd;
+>>>> +    mtd->priv = &flash->nor;
+>>>> +
+>>>> +    flash->nor.read = stm32_qspi_read;
+>>>> +    flash->nor.write = stm32_qspi_write;
+>>>> +    flash->nor.erase = stm32_qspi_erase;
+>>>> +    flash->nor.read_reg = stm32_qspi_read_reg;
+>>>> +    flash->nor.write_reg = stm32_qspi_write_reg;
+>>>> +    flash->nor.prepare = stm32_qspi_prep;
+>>>> +    flash->nor.unprepare = stm32_qspi_unprep;
+>>>> +
+>>>> +    writel_relaxed(LPTR_DFT_TIMEOUT, qspi->io_base + QUADSPI_LPTR);
+>>>> +
+>>>> +    writel_relaxed(CR_PRESC(presc) | CR_FTHRES(3) | CR_TCEN | CR_SSHIFT
+>>>> +               | CR_EN, qspi->io_base + QUADSPI_CR);
+>>>> +
+>>>> +    /* a minimum fsize must be set to sent the command id */
+>>>> +    flash->fsize = 25;
+>>> I don't understand why this is needed and the comment doesn't make
+>>> sense. Please fix.
+>> fsize field defines the size of external memory.
+> What external memory ? Unclear
+oops, fsize field defined the size of "flash memory" in stm32 qspi 
+controller.
+Number of bytes in Flash memory = 2 ^[FSIZE+1].
+To sent a nor cmd this field must be set (hardware issue),
+but before "spi_nor_scan" the size of flash nor is not know.
+So I set a temporary value (workaround).
 
-> On Wed, 29 Mar 2017 15:41:07 +0300
-> Roger Quadros <rogerq@ti.com> wrote:
->=20
-> > Adam,
-> >=20
-> > On 29/03/17 14:39, Adam Ford wrote: =20
-> > > On Tue, Mar 28, 2017 at 2:57 PM, Boris Brezillon
-> > > <boris.brezillon@free-electrons.com> wrote:   =20
-> > >> +Roger and Enrico
-> > >>
-> > >> On Tue, 28 Mar 2017 10:43:01 -0500
-> > >> Adam Ford <aford173@gmail.com> wrote:
-> > >>   =20
-> > >>> I posted this on the linux-omap list, and I was asked to post this =
-on
-> > >>> the linux-mtd list:
-> > >>>
-> > >>>
-> > >>> I tried to remove the MTD partitions from the Linux device tree, an=
-d I
-> > >>> noticed that there was no partition information being pushed anymore
-> > >>> unless I changed the mtdparts name in U-Boot.
-> > >>>
-> > >>> It appears as if the MTD drivers have changed a bit.  I found a few
-> > >>> e-mails floating around that attempt to fix this
-> > >>>
-> > >>> Commit f7a8e38f07a17be907585 ("mtd: nand: assign reasonable default
-> > >>> name for NAND drivers") attempts to address this, and someone over =
-at
-> > >>> https://patchwork.ozlabs.org/patch/707065/ attempted to address it =
-as
-> > >>> well in a slightly different way.   =20
-> > >>
-> > >> Can you test the patch and let me know if solves the problem. If it
-> > >> does, I'll send a clean version of the patch and queue it for 4.12.
-> > >>   =20
-> > >=20
-> > > I tried to apply the patch directly, but it failed.  I then manually
-> > > copy-pasted it into the proper place, but it fails to compile.
-> > >=20
-> > > drivers/mtd/nand/omap2.c: In function =E2=80=98omap_nand_probe=E2=80=
-=99:
-> > > drivers/mtd/nand/omap2.c:1859:14: error: implicit declaration of
-> > > function =E2=80=98devm_kasprinf=E2=80=99 [-Werror=3Dimplicit-function=
--declaration]
-> > >   mtd->name =3D devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc=
-_cs);
-> > >               ^~~~~~~~~~~~~
-> > > drivers/mtd/nand/omap2.c:1859:12: warning: assignment makes pointer
-> > > from integer without a cast [-Wint-conversion]
-> > >   mtd->name =3D devm_kasprinf(&pdev->dev, "omap2-nand.%d", info->gpmc=
-_cs);
-> > >             ^
-> > > cc1: some warnings being treated as errors
-> > >=20
-> > > I use buildroot to build my toolchain and I am using gcc version 6.3.0
-> > > with glibc 2.24.  Is there supposed to be an include somewhere?  I am
-> > > not familiar with devm_kasprinf. =20
->=20
-> It's a typo: s/devm_kasprinf/devm_kasprintf/.
->=20
-> > >=20
-> > >    =20
-> >=20
-> > Does the below patch work for you? =20
->=20
-> Should work indeed.
->=20
-> I had a closer look and it seems that the bug was actually introduced
-> by c9711ec5250b mtd: nand: omap: Clean up device tree
-> support.
-> The parent device name has changed when switching to the new DT
-> representation: omap2-nand.0 (where 0 is the controller instance) became
-> 30000000.nand (where 30000000 is the base reg address in the physical
-> address space). Which means my proposal was incorrect (0 is not the CS
-> line, it's the NAND controller instance number), so we'd better
-> statically set it to "omap2-nand.0".
-
-Changing my mind (again :)). According to [1], the instance id is
-related to the CS line, so devm_kasprintf() is the right solution.
-
-Sorry for the noise.
-
->=20
-> >=20
-> > cheers,
-> > -roger
-> >=20
-> > ---
-> >  drivers/mtd/nand/omap2.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >=20
-> > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> > index 2a52101..f693b8d 100644
-> > --- a/drivers/mtd/nand/omap2.c
-> > +++ b/drivers/mtd/nand/omap2.c
-> > @@ -1856,6 +1856,13 @@ static int omap_nand_probe(struct platform_devic=
-e *pdev)
-> >  	nand_chip->ecc.priv	=3D NULL;
-> >  	nand_set_flash_node(nand_chip, dev->of_node);
-> >   =20
->=20
-> nand_set_flash_node() is now taking the "label" DT property into account
-> and assigning mtd->name to this value if present. I'd recommend doing
->=20
-> 	if (!mtd->name)
-> 		mtd->name =3D "omap2-nand.0";
-
-This comment still stands, except it should be:
-
-	if (!mtd->name)
-		mtd->name =3D devm_kasprintf(&pdev->dev, GFP_KERNEL,
-					   "omap2-nand.%d", info->gpmc_cs);
-
-	if (!mtd->name) {
-		dev_err(&pdev->dev, "Failed to set MTD name\n");
-		return -ENOMEM;
-	}
-
-Regards,
-
-Boris
-
-[1]http://lxr.free-electrons.com/source/arch/arm/mach-omap2/gpmc-nand.c?v=
-=3D4.6#L133
+After "spi_nor_scan" the fsize is overwritten by the right value
+flash->fsize = __fls(mtd->size) - 1;
+>> Normaly, this field is used only for memory map mode,
+>> but in fact is check in indirect mode.
+>> So while flash scan "spi_nor_scan":
+>> -I can't let 0.
+>> -I not know yet the size of flash.
+>> So I fix a temporary value
+>>
+>> I will update my comment
+> Please do, also please consider that I'm reading the comment and I
+> barely have any clue about this hardware , so make sure I can understand it.
+>
+>>>> +    ret = spi_nor_scan(&flash->nor, NULL, flash_read);
+>>>> +    if (ret) {
+>>>> +        dev_err(qspi->dev, "device scan failed\n");
+>>>> +        return ret;
+>>>> +    }
+>>>> +
+>>>> +    flash->fsize = __fls(mtd->size) - 1;
+>>>> +
+>>>> +    writel_relaxed(DCR_CSHT(1), qspi->io_base + QUADSPI_DCR);
+>>>> +
+>>>> +    ret = mtd_device_register(mtd, NULL, 0);
+>>>> +    if (ret) {
+>>>> +        dev_err(qspi->dev, "mtd device parse failed\n");
+>>>> +        return ret;
+>>>> +    }
+>>>> +
+>>>> +    dev_dbg(qspi->dev, "read mm:%s cs:%d bus:%d\n",
+>>>> +        qspi->read_mode == CCR_FMODE_MM ? "yes" : "no", cs_num, width);
+>>>> +
+>>>> +    return 0;
+>>>> +}
+>>> [...]
+>>>
+>
