@@ -1,19 +1,21 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctFUf-0002yG-06
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 15:26:43 +0000
-Subject: Re: [PATCH] ubifs: fix RENAME_WHITEOUT support
-To: Felix Fietkau <nbd@nbd.name>, linux-mtd@lists.infradead.org
-References: <20170306090425.61855-1-nbd@nbd.name>
- <ed7c16ef-108a-bf57-2df5-f988d52fefa3@nod.at>
- <86811ecd-d8d1-2d3f-a895-dc1cb2f2abba@nbd.name>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <3ba8e801-ef93-9784-ba01-ddcbdd30c6aa@nod.at>
-Date: Wed, 29 Mar 2017 17:26:12 +0200
+Received: from bes.se.axis.com ([195.60.68.10])
+ by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctFgZ-00057Y-Jq
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 15:39:02 +0000
+Date: Wed, 29 Mar 2017 17:38:36 +0200
+From: Jesper Nilsson <jesper.nilsson@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC][PATCH] UBI: Make MTD_UBI_FASTMAP non-experimental
+Message-ID: <20170329153836.GB29118@axis.com>
 MIME-Version: 1.0
-In-Reply-To: <86811ecd-d8d1-2d3f-a895-dc1cb2f2abba@nbd.name>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Felix,
+MTD_UBI_FASTMAP has been set as experimental since it
+was merged back in 2012.
 
-Am 06.03.2017 um 10:46 schrieb Felix Fietkau:
-> On 2017-03-06 10:35, Richard Weinberger wrote:
->> Am 06.03.2017 um 10:04 schrieb Felix Fietkau:
->>> Remove faulty leftover check in do_rename(), apparently introduced in a
->>> merge that combined whiteout support changes with commit f03b8ad8d386
->>> ("fs: support RENAME_NOREPLACE for local filesystems")
->>
->> Good find, thank you Felix.
->>
->>> Fixes: 9e0a1fff8db5 ("ubifs: Implement RENAME_WHITEOUT")
->>
->> Why not f03b8ad8d386?
->> This commit adds the check and I oversaw that. ;-\
-> It seems that the merge of both commits is at fault. When I checked git
-> log, f03b8ad8d386 came before 9e0a1fff8db5.
+There hasn't been much change in the format,
+so we can consider the feature stable and start
+being careful about breaking the format.
+(This is somewhat of a pre-requisite for anyone actually
+using the feature in the real world and depending on it)
 
-Yeah, the combination of both breaks it.
-Let's get this into -rcX.
+Drop the experimental note and the warning text about
+the on-flash format not being finalized.
 
-Thanks,
-//richard
+Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
+---
+ drivers/mtd/ubi/Kconfig | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index f0855ce..019e261 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -57,12 +57,9 @@ config MTD_UBI_BEB_LIMIT
+ 	  Leave the default value if unsure.
+ 
+ config MTD_UBI_FASTMAP
+-	bool "UBI Fastmap (Experimental feature)"
++	bool "UBI Fastmap"
+ 	default n
+ 	help
+-	   Important: this feature is experimental so far and the on-flash
+-	   format for fastmap may change in the next kernel versions
+-
+ 	   Fastmap is a mechanism which allows attaching an UBI device
+ 	   in nearly constant time. Instead of scanning the whole MTD device it
+ 	   only has to locate a checkpoint (called fastmap) on the device.
+-- 
+2.1.4
+
+
+/^JN - Jesper Nilsson
+-- 
+               Jesper Nilsson -- jesper.nilsson@axis.com
