@@ -1,32 +1,24 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctE6r-0006Jh-Ba
- for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 13:58:03 +0000
-Received: by mail-wr0-x243.google.com with SMTP id u18so3262677wrc.0
- for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 06:57:41 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add driver for STM32 quad spi flash
- controller
-To: Ludovic BARRE <ludovic.barre@st.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <1490619296-8168-1-git-send-email-ludovic.Barre@st.com>
- <1490619296-8168-3-git-send-email-ludovic.Barre@st.com>
- <1be39452-83b0-5c32-39fe-d6dd5134d1ef@gmail.com>
- <2c364b99-512c-8eb6-7044-7989ba21d53b@st.com>
- <28454969-0f56-7752-b087-5e02a1a20c23@gmail.com>
- <2410fcde-1d1d-57b5-01ee-bd6bc3bc863b@st.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Alexandre Torgue <alexandre.torgue@st.com>, Rob Herring
- <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <0e7da44f-c41b-de15-62c3-7509e556f623@gmail.com>
-Date: Wed, 29 Mar 2017 15:57:38 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctE8q-0006wf-Vj
+ for linux-mtd@lists.infradead.org; Wed, 29 Mar 2017 14:00:08 +0000
+Date: Wed, 29 Mar 2017 15:59:33 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Jan Glauber <jan.glauber@caviumnetworks.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [RFC PATCH 2/2] nand: cavium: Nand flash controller for Cavium
+ ARM64 SOCs
+Message-ID: <20170329155933.7494c243@bbrezillon>
+In-Reply-To: <20170329100256.GA3819@hardcore>
+References: <20170327160524.29019-1-jglauber@cavium.com>
+ <20170327160524.29019-3-jglauber@cavium.com>
+ <20170329112932.267b3059@bbrezillon>
+ <20170329100256.GA3819@hardcore>
 MIME-Version: 1.0
-In-Reply-To: <2410fcde-1d1d-57b5-01ee-bd6bc3bc863b@st.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,75 +29,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/29/2017 03:35 PM, Ludovic BARRE wrote:
+On Wed, 29 Mar 2017 12:02:56 +0200
+Jan Glauber <jan.glauber@caviumnetworks.com> wrote:
+
+> > > +static void cvm_nand_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
+> > > +{
+> > > +	struct nand_chip *nand = mtd_to_nand(mtd);
+> > > +	struct cvm_nfc *tn = to_cvm_nfc(nand->controller);
+> > > +
+> > > +	memcpy(tn->buf.dmabuf + tn->buf.data_len, buf, len);
+> > > +	tn->buf.data_len += len;
+> > > +}  
+> > 
+> > It seems that cvm_nand_read/write_byte/buf() are returning data that
+> > have already been retrieved (problably during the ->cmdfunc() phase).  
+> 
+> Yes.
+> 
+> > That's not how it's supposed to work. The core is expecting the data
+> > transfer to be done when ->read/write_buf() is called. Doing that in  
+> > ->cmdfunc() is risky, because when you're there you have no clue about  
+> > how much bytes the core expect.  
+> 
+> It seems to work fine, I've never seen the core trying to do more bytes in
+> the read/write_buf() then requested in ->cmdfunc().
+
+We already had problems in the past: when the core evolves to handle
+new NAND chips it might decide to read a bit more data than it used to
+be, and assuming that your driver will always take the right decision
+based on the information passed to ->cmdfunc() is a bit risky.
+
+I still have the plan to provide a better interface allowing drivers to
+execute the whole operation sequence (cmd+addr+data cycles), but it's
+not there yet (see [1] for more details).
+If you're okay to volunteer, I can help you with design this new hook
+which should probably make your life easier for the rest of the driver
+code (and also help me improve existing drivers ;-)).
+
+Otherwise, you should try to implement ->cmd_ctrl() and try to transfer
+data on the bus only when ->read/write_buf() are called (sometime it's
+not possible).
+
+
+> >   
+> > > +
+> > > +static void cvm_nand_cmdfunc(struct mtd_info *mtd, unsigned int command,
+> > > +				  int column, int page_addr)  
+> > 
+> > Did you try implementing ->cmd_ctrl() instead of ->cmdfunc(). Your
+> > controller seems to be highly configurable and, at first glance, I think
+> > you can simplify the driver by implementing ->cmd_ctrl() and relying on
+> > the default ->cmdfunc() implementation.
+> >   
+> 
+> I've looked at the sunxi_nand driver but ->cmd_ctrl() is very different
+> from ->cmdfunc() and the later looks like a better match for our controller.
+> 
+> The Cavium controller needs to write the commands (NAND_CMD_READ0, etc.)
+> into its pseudo instructions (see ndf_queue_cmd_cle()).
+> So how can I do this low-level stuff with ->cmd_ctrl()?
+
+I'd say that it's actually matching pretty well what is passed to
+->cmd_ctrl().
+For each call to ->cmd_ctrl() you have the information about the type
+of access that is made on the bus:
+- if the NAND_CLE flag is set in ctrl (the 3rd argument) you have a CLE
+  cycle
+- if NAND_ALE is set in ctrl you have an ALE cycle
+- if NAND_CMD_NONE is passed in cmd (2nd argument), you should issue
+  the whole operation
+
+You can update your cavium command each time NAND_CLE or NAND_ALE is
+passed (update the command information after each call), and then issue
+the command when NAND_CMD_NONE is passed.
+The only missing part in ->cmd_ctrl() are the data transfer cycles
+which are handled in ->read/write_buf().
+
+> 
+> For instance for reading data I have ndf_page_read() that is used for
+> both NAND_CMD_READ0 and NAND_CMD_READOOB. Without hacking into ->cmdfunc(),
+> how would I differentiate between the two commands in read_buf()?
+
+Do you have to? Can't you just issue a command that is solely doing
+data transfer cycles without the CMD and ADDR ones?
 
 [...]
-
->>>>> +    writel_relaxed(CR_PRESC(presc) | CR_FTHRES(3) | CR_TCEN |
->>>>> CR_SSHIFT
->>>>> +               | CR_EN, qspi->io_base + QUADSPI_CR);
->>>>> +
->>>>> +    /* a minimum fsize must be set to sent the command id */
->>>>> +    flash->fsize = 25;
->>>> I don't understand why this is needed and the comment doesn't make
->>>> sense. Please fix.
->>> fsize field defines the size of external memory.
->> What external memory ? Unclear
-> oops, fsize field defined the size of "flash memory" in stm32 qspi
-> controller.
-
-Errr, now I am totally lost :) Is that some internal SPI NOR ? Shouldn't
-the size be coming from DT or something ?
-
-> Number of bytes in Flash memory = 2 ^[FSIZE+1].
-> To sent a nor cmd this field must be set (hardware issue),
-> but before "spi_nor_scan" the size of flash nor is not know.
-> So I set a temporary value (workaround).
-
-Is it needed before the scan ?
-
-> After "spi_nor_scan" the fsize is overwritten by the right value
-> flash->fsize = __fls(mtd->size) - 1;
->>> Normaly, this field is used only for memory map mode,
->>> but in fact is check in indirect mode.
->>> So while flash scan "spi_nor_scan":
->>> -I can't let 0.
->>> -I not know yet the size of flash.
->>> So I fix a temporary value
->>>
->>> I will update my comment
->> Please do, also please consider that I'm reading the comment and I
->> barely have any clue about this hardware , so make sure I can
->> understand it.
->>
->>>>> +    ret = spi_nor_scan(&flash->nor, NULL, flash_read);
->>>>> +    if (ret) {
->>>>> +        dev_err(qspi->dev, "device scan failed\n");
->>>>> +        return ret;
->>>>> +    }
->>>>> +
->>>>> +    flash->fsize = __fls(mtd->size) - 1;
->>>>> +
->>>>> +    writel_relaxed(DCR_CSHT(1), qspi->io_base + QUADSPI_DCR);
->>>>> +
->>>>> +    ret = mtd_device_register(mtd, NULL, 0);
->>>>> +    if (ret) {
->>>>> +        dev_err(qspi->dev, "mtd device parse failed\n");
->>>>> +        return ret;
->>>>> +    }
->>>>> +
->>>>> +    dev_dbg(qspi->dev, "read mm:%s cs:%d bus:%d\n",
->>>>> +        qspi->read_mode == CCR_FMODE_MM ? "yes" : "no", cs_num,
->>>>> width);
->>>>> +
->>>>> +    return 0;
->>>>> +}
->>>> [...]
->>>>
->>
+> > > +union ndf_cmd {
+> > > +	u64 val[2];
+> > > +	union {
+> > > +		struct ndf_nop_cmd		nop;
+> > > +		struct ndf_wait_cmd		wait;
+> > > +		struct ndf_bus_cmd		bus_acq_rel;
+> > > +		struct ndf_chip_cmd		chip_en_dis;
+> > > +		struct ndf_cle_cmd		cle_cmd;
+> > > +		struct ndf_rd_cmd		rd_cmd;
+> > > +		struct ndf_wr_cmd		wr_cmd;
+> > > +		struct ndf_set_tm_par_cmd	set_tm_par;
+> > > +		struct ndf_ale_cmd		ale_cmd;
+> > > +		struct ndf_wait_status_cmd	wait_status;
+> > > +	} u;
+> > > +};  
+> > 
+> > I need some time to process all these information, but your controller
+> > seems to be a complex/highly-configurable beast. That's really
+> > interesting :-).
+> > I'll come up with more comments/question after reviewing more carefully
+> > the command creation logic.  
 > 
+> Great. I'm afraid out controller is quite different from existing
+> hardware, at least I didn't find a driver that does things simalar (like
+> the command building and queueing).
 
+Hm, not so different actually, except you seem to have fine grained
+control on the sequencing, which is a really good thing because your
+driver can evolve with new NAND chip requirements.
 
--- 
-Best regards,
-Marek Vasut
+> 
+> I'm happy to help with any more information you need about our hardware.
+
+Thanks,
+
+Boris
+
+[1]http://free-electrons.com/pub/conferences/2016/elc/brezillon-nand-framework/brezillon-nand-framework.pdf
