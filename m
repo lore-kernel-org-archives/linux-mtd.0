@@ -1,24 +1,23 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctckf-0007r6-9C
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 16:16:47 +0000
-Date: Thu, 30 Mar 2017 18:16:23 +0200
+ id 1ctcyK-0006wn-0Z
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 16:30:54 +0000
+Date: Thu, 30 Mar 2017 18:30:30 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
- <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
- <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH v3 26/37] mtd: nand: denali: fix bank reset function
-Message-ID: <20170330181623.5b595827@bbrezillon>
-In-Reply-To: <1490856383-31560-27-git-send-email-yamada.masahiro@socionext.com>
-References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
- <1490856383-31560-27-git-send-email-yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, David
+ Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Dinh
+ Nguyen <dinguyen@kernel.org>, Artem Bityutskiy
+ <artem.bityutskiy@linux.intel.com>, Graham Moore
+ <grmoore@opensource.altera.com>, Enrico Jorns <ejo@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Jassi Brar <jaswinder.singh@linaro.org>
+Subject: Re: [PATCH v3 32/37] mtd: nand: denali: support hardware-assisted
+ erased page detection
+Message-ID: <20170330183030.14acbb47@bbrezillon>
+In-Reply-To: <1490861708-27813-2-git-send-email-yamada.masahiro@socionext.com>
+References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490861708-27813-2-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -31,52 +30,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Mar 2017 15:46:12 +0900
+On Thu, 30 Mar 2017 17:15:03 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> The function denali_nand_reset() is called during the driver probe,
-> and polls the INTR__RST_COMP and INTR__TIME_OUT bits.  However,
-> INTR__RST_COMP is set anyway even if no NAND device is connected to
-> that bank.
+> Recent versions of this IP support automatic erased page detection.
+> If an erased page is detected on reads, the controller does not set
+> INTR__ECC_UNCOR_ERR, but INTR__ERASED_PAGE.  If this feature is
+> supported, the driver can use this information instead of calling
+> nand_check_erased_ecc_chunk().
 > 
-> This can be a problem for ONFi devices.  The nand_scan_ident()
-> iterates over maxchips, and calls nand_reset() for each chip.
-
-Actually, maxchips is a bad name. What should be passed in argument to
-nand_scan_ident() is not the maximum number of CS-line the controller
-has, it's the expected number of CS-lines provided by a chip.
-
-If you're using DT, this information should be retrieved from the DT. If
-you look at this binding doc [1] you'll see that each NAND chip has a
-reg property encoding the CS line. When a chip exposes more than one
-CS-line, the reg property should contain 2 entries describing which
-controller-side CS lines are connected to the chip CS-lines.
-
-For non-DT cases, this should be exposed by some other means (for
-example pdata, but I'm not sure it works well with PCI where everything
-is discoverable).
-
-So normally, you shouldn't have a timeout, or something is wrong with
-the DT/board description.
-
-Note that you might have different NAND models connected to the same
-NAND controller. If you call nand_scan_ident() only once and pass
-controllers->max_cs_lines to it, you will only have one chip detected,
-which is not what you expect.
-
-
-> Now, this driver implements ->setup_data_interface() method, so
-> nand_setup_data_interface() issues Set Features (0xEF) command to
-> each chip.  This can cause time-out error since denali_nand_reset()
-> did not check the chip existence.  If no chip there, the controller
-> will wait long for R/B# response, which we know never happens.
-> (The timeout error is correctly handled in this driver, so the
-> driver will be successfully probed anyway, but it will take longer
-> than needed.)
+> The detection of erased page is based on the number of zeros in the
+> page; if the number of zeros is less than the value in the field
+> ERASED_THRESHOLD, the page is assumed as erased.
 > 
-> The Reset (0xFF) command also toggles the R/B# pin, and it sets
-> INTR__INT_ACT bit.  The driver should check this bit to see if the
-> chip has responded, then it can update denali->max_banks.
+> Set the ERASED_THRESHOLD to (chip->ecc.strength + 1).  This is the
+> worst case where all the bitflips come from the same ECC sector.
+> This field is Reserved for older IP versions, so this commit has
+> no impact on them.
+
+Do you have a way to know the actual number of bitflips in an erased
+ECC block? BTW, is the threshold a per-page information or a per ECC
+block information.
+
+If you can't know the real number of bitflips I don't think it's safe
+to set the threshold to chip->ecc.strength + 1.
+
+You can still use the feature to detect erased pages without any
+bitflips (set ERASED_THRESHOLD to 1), which should be the case most of
+the time, but for cases where you have bitflips I'd recommend using
+nand_check_erased_ecc_chunk() if you can't know the actual number of
+bitflips in the page.
+
+> 
+> One thing worth mentioning is the driver still needs to fill the
+> buffer with 0xff in the case because the ECC correction engine has
+> already manipulated the data in the buffer.
 > 
 > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 > ---
@@ -85,83 +73,65 @@ which is not what you expect.
 > Changes in v2:
 >   - Newly added
 > 
->  drivers/mtd/nand/denali.c | 52 +++++++++++++++++++++--------------------------
->  1 file changed, 23 insertions(+), 29 deletions(-)
+>  drivers/mtd/nand/denali.c | 10 +++++++++-
+>  drivers/mtd/nand/denali.h |  5 +++++
+>  2 files changed, 14 insertions(+), 1 deletion(-)
 > 
 > diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 86b7c75..e4f2699 100644
+> index 51e8a9a..9ee0f30 100644
 > --- a/drivers/mtd/nand/denali.c
 > +++ b/drivers/mtd/nand/denali.c
-> @@ -85,33 +85,6 @@ static void index_addr(struct denali_nand_info *denali,
->  	iowrite32(data, denali->flash_mem + 0x10);
+> @@ -604,6 +604,9 @@ static int denali_pio_read(struct denali_nand_info *denali, void *buf,
+>  	if (!(irq_status & INTR__PAGE_XFER_INC))
+>  		return -EIO;
+>  
+> +	if (irq_status & INTR__ERASED_PAGE)
+> +		memset(buf, 0xff, size);
+> +
+>  	return irq_status & ecc_err_mask ? -EBADMSG : 0;
 >  }
 >  
-> -/* Reset the flash controller */
-> -static uint16_t denali_nand_reset(struct denali_nand_info *denali)
-> -{
-> -	int i;
-> -
-> -	for (i = 0; i < denali->max_banks; i++)
-> -		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
-> -		denali->flash_reg + INTR_STATUS(i));
-> -
-> -	for (i = 0; i < denali->max_banks; i++) {
-> -		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
-> -		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
-> -			(INTR__RST_COMP | INTR__TIME_OUT)))
-> -			cpu_relax();
-> -		if (ioread32(denali->flash_reg + INTR_STATUS(i)) &
-> -			INTR__TIME_OUT)
-> -			dev_dbg(denali->dev,
-> -			"NAND Reset operation timed out on bank %d\n", i);
-> -	}
-> -
-> -	for (i = 0; i < denali->max_banks; i++)
-> -		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
-> -			  denali->flash_reg + INTR_STATUS(i));
-> -
-> -	return PASS;
-> -}
-> -
->  /*
->   * Use the configuration feature register to determine the maximum number of
->   * banks that the hardware supports.
-> @@ -999,7 +972,28 @@ static int denali_setup_data_interface(struct mtd_info *mtd,
->  	return 0;
+> @@ -676,6 +679,9 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
+>  	denali_enable_dma(denali, false);
+>  	dma_sync_single_for_cpu(denali->dev, dma_addr, size, dir);
+>  
+> +	if (irq_status & INTR__ERASED_PAGE)
+> +		memset(buf, 0xff, size);
+> +
+>  	return ret;
 >  }
 >  
-> -/* Initialization code to bring the device up to a known good state */
-> +static void denali_reset_banks(struct denali_nand_info *denali)
-> +{
-> +	int i;
-> +
-> +	denali_clear_irq_all(denali);
-> +
-> +	for (i = 0; i < denali->max_banks; i++) {
-> +		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
-> +		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
-> +			(INTR__RST_COMP | INTR__TIME_OUT)))
-> +			cpu_relax();
-> +		if (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
-> +		      INTR__INT_ACT))
-> +			break;
-> +	}
-> +
-> +	dev_dbg(denali->dev, "%d chips connected\n", i);
-> +	denali->max_banks = i;
-> +
-> +	denali_clear_irq_all(denali);
-> +}
-> +
->  static void denali_hw_init(struct denali_nand_info *denali)
->  {
->  	/*
-> @@ -1019,7 +1013,7 @@ static void denali_hw_init(struct denali_nand_info *denali)
->  	denali->bbtskipbytes = ioread32(denali->flash_reg +
->  						SPARE_AREA_SKIP_BYTES);
->  	detect_max_banks(denali);
-> -	denali_nand_reset(denali);
-> +	denali_reset_banks(denali);
->  	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
->  	iowrite32(CHIP_EN_DONT_CARE__FLAG,
->  			denali->flash_reg + CHIP_ENABLE_DONT_CARE);
+> @@ -1475,7 +1481,9 @@ int denali_init(struct denali_nand_info *denali)
+>  	chip->ecc.bytes = denali_calc_ecc_bytes(chip->ecc.size,
+>  						chip->ecc.strength);
+>  
+> -	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
+> +	iowrite32(MAKE_ECC_CORRECTION(chip->ecc.strength,
+> +				      chip->ecc.strength + 1),
+> +		  denali->flash_reg + ECC_CORRECTION);
+>  	iowrite32(mtd->erasesize / mtd->writesize,
+>  		  denali->flash_reg + PAGES_PER_BLOCK);
+>  	iowrite32(denali->nand.options & NAND_BUSWIDTH_16 ? 1 : 0,
+> diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+> index f92b9db..b5ea8d7 100644
+> --- a/drivers/mtd/nand/denali.h
+> +++ b/drivers/mtd/nand/denali.h
+> @@ -110,6 +110,10 @@
+>  
+>  #define ECC_CORRECTION				0x1b0
+>  #define     ECC_CORRECTION__VALUE			GENMASK(4, 0)
+> +#define     ECC_CORRECTION__ERASE_THRESHOLD		GENMASK(31, 16)
+> +#define     MAKE_ECC_CORRECTION(val, thresh)		\
+> +			(((val) & (ECC_CORRECTION__VALUE)) | \
+> +			(((thresh) << 16) & (ECC_CORRECTION__ERASE_THRESHOLD)))
+>  
+>  #define READ_MODE				0x1c0
+>  #define     READ_MODE__VALUE				GENMASK(3, 0)
+> @@ -233,6 +237,7 @@
+>  #define     INTR__RST_COMP				BIT(13)
+>  #define     INTR__PIPE_CMD_ERR				BIT(14)
+>  #define     INTR__PAGE_XFER_INC				BIT(15)
+> +#define     INTR__ERASED_PAGE				BIT(16)
+>  
+>  #define PAGE_CNT(bank)				(0x430 + (bank) * 0x50)
+>  #define ERR_PAGE_ADDR(bank)			(0x440 + (bank) * 0x50)
