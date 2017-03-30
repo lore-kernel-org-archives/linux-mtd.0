@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTs2-0007E4-HH
+ id 1ctTs2-0007E1-HK
  for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:51 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -18,10 +18,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 13/37] mtd: nand: denali: avoid hard-coding ecc.strength
- and ecc.bytes
-Date: Thu, 30 Mar 2017 15:45:59 +0900
-Message-Id: <1490856383-31560-14-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 06/37] mtd: nand: denali: support HW_ECC_FIXUP capability
+Date: Thu, 30 Mar 2017 15:45:52 +0900
+Message-Id: <1490856383-31560-7-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,187 +32,187 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Another problem of this driver is hard-coded ecc.strength and
-ecc.bytes.  Currently ecc.bytes is defined as follows:
+Some old versions of the Denali IP (perhaps used only for Intel?)
+detects ECC errors and provides correct data via a register, but
+does not touch the transferred data.  So, the software must fixup
+the data in the buffer according to the provided ECC correction
+information.
 
-  #define ECC_8BITS	14
-  #define ECC_15BITS	26
+Newer versions perform ECC correction before transferring the data.
+No more software intervention is needed.  The ECC_ERROR_ADDRESS and
+ECC_CORRECTION_INFO registers were deprecated.  Instead, the number
+of corrected bit-flips are reported via the ECC_COR_INFO register.
+When an uncorrectable ECC error happens, a status flag is set to the
+INTR_STATUS and ECC_COR_INFO registers.
 
-The parameters were hard-coded because only the following two cases
-are possible on Intel platforms:
+As is often the case with this IP, the register view of INTR_STATUS
+had broken compatibility.
 
- - ecc.size = 512, ecc.strength = 8    --> ecc.bytes = 14
- - ecc.size = 512, ecc.strength = 15   --> ecc.bytes = 26
+For older versions (SW ECC fixup):
+  bit 0:  ECC_TRANSACTION_DONE
+  bit 1:  ECC_ERR
 
-However, they are actually customizable parameters, for example,
-UniPhier platform supports the following:
+For newer versions (HW ECC fixup):
+  bit 0:  ECC_UNCOR_ERR
+  bit 1:  Reserved
 
- - ecc.size = 1024, ecc.strength = 8   --> ecc.bytes = 14
- - ecc.size = 1024, ecc.strength = 16  --> ecc.bytes = 28
- - ecc.size = 1024, ecc.strength = 24  --> ecc.bytes = 42
+Due to this difference, the irq_mask must be fixed too.
 
-So, we need to handle these parameters in a more generic manner.
-Fortunately, the Denali User's Guide explains how to calculate the
-ecc.bytes.  The formula is:
+The existing handle_ecc() has been renamed to denali_sw_ecc_fixup()
+for clarification.
 
-  ecc.bytes = 2 * CEIL(13 * ecc.strength / 16)  (for ecc.size = 512)
-  ecc.bytes = 2 * CEIL(14 * ecc.strength / 16)  (for ecc.size = 1024)
-
-This commit allows platforms to specify denali->ecc_strength_avail,
-each bit of which represents supported ECC strength.
+What is unfortunate with this feature is we can not know the total
+number of corrected/uncorrected errors in a page.  The register
+ECC_COR_INFO reports the maximum of per-sector bitflips.  This is
+useful for ->read_page return value, but ecc_stats.{corrected,failed}
+increments may not be precise.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v3: None
-Changes in v2: None
+Changes in v3:
+  - Adjusted for the correct erased page check.
+  - Move DENALI_CAP_ define out of struct denali_nand_info
 
- drivers/mtd/nand/denali.c     | 73 +++++++++++++++++++++++++++----------------
- drivers/mtd/nand/denali.h     |  1 +
- drivers/mtd/nand/denali_dt.c  |  3 ++
- drivers/mtd/nand/denali_pci.c |  1 +
- 4 files changed, 51 insertions(+), 27 deletions(-)
+Changes in v2:
+  - Change the capability prefix DENALI_CAPS_ -> DENALI_CAP_
+
+ drivers/mtd/nand/denali.c | 52 ++++++++++++++++++++++++++++++++++++++++-------
+ drivers/mtd/nand/denali.h | 14 +++++++++++--
+ 2 files changed, 57 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 78d3b18..ce87b95 100644
+index 64a3bdc..b95e33a 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1344,13 +1344,45 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 	denali_irq_init(denali);
+@@ -856,6 +856,41 @@ static int denali_check_erased_page(struct mtd_info *mtd,
+ 	return max_bitflips;
  }
  
--/*
-- * Althogh controller spec said SLC ECC is forceb to be 4bit,
-- * but denali controller in MRST only support 15bit and 8bit ECC
-- * correction
-- */
--#define ECC_8BITS	14
--#define ECC_15BITS	26
-+static int denali_calc_ecc_bytes(int ecc_size, int ecc_strength)
++static int denali_hw_ecc_fixup(struct mtd_info *mtd,
++			       struct denali_nand_info *denali,
++			       unsigned long *uncor_ecc_flags)
 +{
-+	WARN_ON(ecc_size != 512 && ecc_size != 1024);
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	int bank = denali->flash_bank;
++	uint32_t ecc_cor;
++	unsigned int max_bitflips;
 +
-+	return DIV_ROUND_UP(ecc_strength * (ecc_size == 512 ? 13 : 14), 16) * 2;
-+}
++	ecc_cor = ioread32(denali->flash_reg + ECC_COR_INFO(bank));
++	ecc_cor >>= ECC_COR_INFO__SHIFT(bank);
 +
-+static int denali_set_max_ecc_strength(struct denali_nand_info *denali)
-+{
-+	struct nand_chip *chip = &denali->nand;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int oobsize = mtd->oobsize;
-+	int ecc_size = chip->ecc.size;
-+	int ecc_steps = mtd->writesize / chip->ecc.size;
-+	int ecc_strength, ecc_bytes;
-+	int max_strength = 0;
-+
-+	/* carve out the BBM area */
-+	oobsize -= denali->bbtskipbytes;
-+
-+	for_each_set_bit(ecc_strength, &denali->ecc_strength_avail,
-+			 sizeof(denali->ecc_strength_avail) * BITS_PER_BYTE) {
-+		ecc_bytes = denali_calc_ecc_bytes(ecc_size, ecc_strength);
-+		if (ecc_bytes * ecc_steps > oobsize)
-+			break;
-+
-+		max_strength = ecc_strength;
++	if (ecc_cor & ECC_COR_INFO__UNCOR_ERR) {
++		/*
++		 * This flag is set when uncorrectable error occurs at least in
++		 * one ECC sector.  We can not know "how many sectors", or
++		 * "which sector(s)".  We need erase-page check for all sectors.
++		 */
++		*uncor_ecc_flags = GENMASK(chip->ecc.steps - 1, 0);
++		return 0;
 +	}
 +
-+	if (!max_strength) {
-+		dev_err(denali->dev,
-+			"Your NAND chip OOB is too small. No available ECC strength.\n");
-+		return -EINVAL;
-+	}
++	max_bitflips = ecc_cor & ECC_COR_INFO__MAX_ERRORS;
 +
-+	chip->ecc.strength = max_strength;
++	/*
++	 * The register holds the maximum of per-sector corrected bitflips.
++	 * This is suitable for the return value of the ->read_page() callback.
++	 * Unfortunately, we can not know the total number of corrected bits in
++	 * the page.  Increase the stats by max_bitflips. (compromised solution)
++	 */
++	mtd->ecc_stats.corrected += max_bitflips;
 +
-+	return 0;
++	return max_bitflips;
 +}
- 
- static int denali_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				struct mtd_oob_region *oobregion)
-@@ -1609,27 +1641,14 @@ int denali_init(struct denali_nand_info *denali)
- 		goto failed_req_irq;
- 	}
- 
--	/*
--	 * Denali Controller only support 15bit and 8bit ECC in MRST,
--	 * so just let controller do 15bit ECC for MLC and 8bit ECC for
--	 * SLC if possible.
--	 * */
--	if (!nand_is_slc(chip) &&
--			mtd->oobsize > denali->bbtskipbytes +
--			ECC_15BITS * (mtd->writesize / chip->ecc.size)) {
--		/* if MLC OOB size is large enough, use 15bit ECC*/
--		chip->ecc.strength = 15;
--		chip->ecc.bytes = ECC_15BITS;
--		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
--	} else if (mtd->oobsize <
--		   denali->bbtskipbytes + ECC_8BITS * (mtd->writesize / chip->ecc.size)) {
--		pr_err("Your NAND chip OOB is not large enough to contain 8bit ECC correction codes");
-+	ret = denali_set_max_ecc_strength(denali);
-+	if (ret)
- 		goto failed_req_irq;
--	} else {
--		chip->ecc.strength = 8;
--		chip->ecc.bytes = ECC_8BITS;
--		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
--	}
 +
-+	chip->ecc.bytes = denali_calc_ecc_bytes(chip->ecc.size,
-+						chip->ecc.strength);
-+
-+	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
+ #define ECC_SECTOR_SIZE 512
  
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
+ #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
+@@ -865,8 +900,9 @@ static int denali_check_erased_page(struct mtd_info *mtd,
+ #define ECC_ERR_DEVICE(x)	(((x) & ERR_CORRECTION_INFO__DEVICE_NR) >> 8)
+ #define ECC_LAST_ERR(x)		((x) & ERR_CORRECTION_INFO__LAST_ERR_INFO)
+ 
+-static int handle_ecc(struct mtd_info *mtd, struct denali_nand_info *denali,
+-		      uint8_t *buf, unsigned long *uncor_ecc_flags)
++static int denali_sw_ecc_fixup(struct mtd_info *mtd,
++			       struct denali_nand_info *denali,
++			       unsigned long *uncor_ecc_flags, uint8_t *buf)
+ {
+ 	unsigned int bitflips = 0;
+ 	unsigned int max_bitflips = 0;
+@@ -1070,12 +1106,12 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 			    uint8_t *buf, int oob_required, int page)
+ {
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+-
+ 	dma_addr_t addr = denali->buf.dma_buf;
+ 	size_t size = mtd->writesize + mtd->oobsize;
+-
+ 	uint32_t irq_status;
+-	uint32_t irq_mask = INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
++	uint32_t irq_mask = denali->caps & DENALI_CAP_HW_ECC_FIXUP ?
++				INTR__DMA_CMD_COMP | INTR__ECC_UNCOR_ERR :
++				INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
+ 	unsigned long uncor_ecc_flags = 0;
+ 	int stat = 0;
+ 
+@@ -1101,8 +1137,10 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 	memcpy(buf, denali->buf.buf, mtd->writesize);
+ 
+-	if (irq_status & INTR__ECC_ERR)
+-		stat = handle_ecc(mtd, denali, buf, &uncor_ecc_flags);
++	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
++		stat = denali_hw_ecc_fixup(mtd, denali, &uncor_ecc_flags);
++	else if (irq_status & INTR__ECC_ERR)
++		stat = denali_sw_ecc_fixup(mtd, denali, &uncor_ecc_flags, buf);
+ 	denali_enable_dma(denali, false);
+ 
+ 	if (stat < 0)
 diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 7c24d82..00ce04e 100644
+index 483c0e9..e532956 100644
 --- a/drivers/mtd/nand/denali.h
 +++ b/drivers/mtd/nand/denali.h
-@@ -348,6 +348,7 @@ struct denali_nand_info {
- 	int bbtskipbytes;
- 	int max_banks;
- 	unsigned int revision;
-+	unsigned long ecc_strength_avail;
+@@ -20,6 +20,7 @@
+ #ifndef __DENALI_H__
+ #define __DENALI_H__
+ 
++#include <linux/bitops.h>
+ #include <linux/mtd/nand.h>
+ 
+ #define DEVICE_RESET				0x0
+@@ -218,8 +219,10 @@
+ 
+ #define INTR_STATUS(__bank)	(0x410 + ((__bank) * 0x50))
+ #define INTR_EN(__bank)		(0x420 + ((__bank) * 0x50))
+-#define     INTR__ECC_TRANSACTION_DONE			0x0001
+-#define     INTR__ECC_ERR				0x0002
++/* bit[1:0] is used differently depending on IP version */
++#define     INTR__ECC_UNCOR_ERR				0x0001	/* new IP */
++#define     INTR__ECC_TRANSACTION_DONE			0x0001	/* old IP */
++#define     INTR__ECC_ERR				0x0002	/* old IP */
+ #define     INTR__DMA_CMD_COMP				0x0004
+ #define     INTR__TIME_OUT				0x0008
+ #define     INTR__PROGRAM_FAIL				0x0010
+@@ -259,6 +262,11 @@
+ #define     ERR_CORRECTION_INFO__ERROR_TYPE		0x4000
+ #define     ERR_CORRECTION_INFO__LAST_ERR_INFO		0x8000
+ 
++#define ECC_COR_INFO(bank)			(0x650 + (bank) / 2 * 0x10)
++#define     ECC_COR_INFO__SHIFT(bank)			((bank) % 2 * 8)
++#define     ECC_COR_INFO__MAX_ERRORS			0x007f
++#define     ECC_COR_INFO__UNCOR_ERR			0x0080
++
+ #define DMA_ENABLE				0x700
+ #define     DMA_ENABLE__FLAG				0x0001
+ 
+@@ -338,6 +346,8 @@ struct denali_nand_info {
  	unsigned int caps;
  };
  
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 1681a30..c3bc333 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -31,10 +31,12 @@ struct denali_dt {
++#define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
++
+ extern int denali_init(struct denali_nand_info *denali);
+ extern void denali_remove(struct denali_nand_info *denali);
  
- struct denali_dt_data {
- 	unsigned int revision;
-+	unsigned long ecc_strength_avail;
- 	unsigned int caps;
- };
- 
- static const struct denali_dt_data denali_socfpga_data = {
-+	.ecc_strength_avail = BIT(15) | BIT(8),
- 	.caps = DENALI_CAP_HW_ECC_FIXUP |
- 		DENALI_CAP_ECC_SIZE_512,
- };
-@@ -64,6 +66,7 @@ static int denali_dt_probe(struct platform_device *pdev)
- 	data = of_device_get_match_data(&pdev->dev);
- 	if (data) {
- 		denali->revision = data->revision;
-+		denali->ecc_strength_avail = data->ecc_strength_avail;
- 		denali->caps = data->caps;
- 	}
- 
-diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-index 5202a11..a1ee9f8 100644
---- a/drivers/mtd/nand/denali_pci.c
-+++ b/drivers/mtd/nand/denali_pci.c
-@@ -85,6 +85,7 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 		goto failed_remap_reg;
- 	}
- 
-+	denali->ecc_strength_avail = BIT(15) | BIT(8);
- 	denali->caps |= DENALI_CAP_ECC_SIZE_512;
- 
- 	ret = denali_init(denali);
 -- 
 2.7.4
