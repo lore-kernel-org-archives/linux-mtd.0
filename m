@@ -1,26 +1,27 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctXmi-0004vR-QU
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 10:58:34 +0000
-Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
-To: Amir Goldstein <amir73il@gmail.com>
-References: <1490864181-2192-1-git-send-email-richard@nod.at>
- <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
- <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
- <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
- <CAOQ4uxi0sJrZX22nNW23PnJ9AgzC=EeBOjOp=wb1taXSySYUrA@mail.gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "stable [v4.9]" <stable@vger.kernel.org>,
- Ralph Sennhauser <ralph.sennhauser@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <54320a7a-5022-732f-5a5d-5ec4ca5a4d9e@nod.at>
-Date: Thu, 30 Mar 2017 12:51:27 +0200
+ id 1ctY1X-0003BW-Ak
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 11:13:53 +0000
+Received: by mail-wr0-x243.google.com with SMTP id p52so11118515wrc.2
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 04:13:30 -0700 (PDT)
+Subject: Re: [PATCH V3 1/2] mtd: add support for partition parsers
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <20170221124002.585-1-zajec5@gmail.com>
+ <20170227130633.4020-1-zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <b86ce15d-54fc-27c5-00d5-7ed392f29cd7@gmail.com>
+Date: Thu, 30 Mar 2017 13:13:28 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAOQ4uxi0sJrZX22nNW23PnJ9AgzC=EeBOjOp=wb1taXSySYUrA@mail.gmail.com>
+In-Reply-To: <20170227130633.4020-1-zajec5@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,25 +31,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Amir,
-
-Am 30.03.2017 um 12:35 schrieb Amir Goldstein:
->> Reading deeper into the proved that I was wrong.
->> AFAIKT UBIFS' journal has currently no way to revive a deleted inode.
->> So, we have to think about a new solution.
->>
+On 02/27/2017 02:06 PM, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> Not that I know anything about ubifs, but why do you need the deleted
-> inode record in the first place for an O_TMPFILE.
-> vfs ensures you that you can only link back an O_TMPFILE, not a deleted
-> inode.
+> Some devices have partitions that are kind of containers with extra
+> subpartitions / volumes instead of e.g. simple filesystem data. To
+> support such cases we need to first create normal flash partitions and
+> then take care of these special ones.
 > 
-> It does not appear to be the right thing to do to pass deletion=1 to
-> ubifs_jnl_update(), but deletion=0 doesn't look right as well..
+> It's very common case for home routers. Depending on the vendor there
+> are formats like TRX, Seama, TP-Link, WRGG & more. All of them are used
+> to embed few partitions into a single one / single firmware file.
+> 
+> Ideally all vendors would use some well documented / standardized format
+> like UBI (and some probably start doing so), but there are still
+> countless devices on the market using these poor vendor specific
+> formats.
+> 
+> This patch extends MTD subsystem by allowing to specify partition format
+> and trying to use a proper parser when needed. Supporting such poor
+> formats is highly unlikely to be the top priority so these changes try
+> to minimize maintenance cost to the minimum. It reuses existing code for
+> these new parsers and just adds a one property and one new function.
+> 
+> This implementation requires setting partition format in a flash parser.
+> A proper change of bcm47xxpart will follow and in the future we will
+> hopefully also find a solution for doing it with ofpart
+> ("fixed-partitions").
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> V2: A totally rebased & refreshed version.
+> V3: Don't mention uImage in commit message, it was a mistake.
+> ---
+>  drivers/mtd/mtdpart.c          | 38 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/partitions.h |  7 +++++++
+>  2 files changed, 45 insertions(+)
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index ea5e5307f667..6d47ce6058c7 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -363,6 +363,42 @@ static inline void free_partition(struct mtd_part *p)
+>  	kfree(p);
+>  }
+>  
+> +/**
+> + * mtd_parse_part - parse MTD partition with a matching parser
 
-We need to think of a new case.
-I choose deletion=1 to ensure that after a power-cut written data of the
-tmpfile gets removed.
+It'd be useful to document the parameters as per kerneldoc style.
 
-Thanks,
-//richard
+Otherwise
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+
+> + * Some partitions use a specific format to describe contained subpartitions
+> + * (volumes). This function tries to use a proper parser for a given format and
+> + * registers found (sub)partitions.
+> + */
+> +static int mtd_parse_part(struct mtd_part *slave, const char *format)
+> +{
+> +	struct mtd_partitions parsed;
+> +	const char *probes[2];
+> +	int i;
+> +	int err;
+> +
+> +	probes[0] = format; /* Use parser with name matching the format */
+> +	probes[1] = NULL; /* End of parsers */
+> +	err = parse_mtd_partitions(&slave->mtd, probes, &parsed, NULL);
+> +	if (err)
+> +		return err;
+> +	else if (!parsed.nr_parts)
+> +		return -ENOENT;
+> +
+> +	for (i = 0; i < parsed.nr_parts; i++) {
+> +		struct mtd_partition *part;
+> +
+> +		part = (struct mtd_partition *)&parsed.parts[i];
+> +		part->offset += slave->offset;
+> +	}
+> +
+> +	err = add_mtd_partitions(slave->master, parsed.parts, parsed.nr_parts);
+> +
+> +	mtd_part_parser_cleanup(&parsed);
+> +
+> +	return err;
+> +}
+> +
+>  /*
+>   * This function unregisters and destroy all slave MTD objects which are
+>   * attached to the given master MTD object.
+> @@ -724,6 +760,8 @@ int add_mtd_partitions(struct mtd_info *master,
+>  
+>  		add_mtd_device(&slave->mtd);
+>  		mtd_add_partition_attrs(slave);
+> +		if (parts[i].format)
+> +			mtd_parse_part(slave, parts[i].format);
+>  
+>  		cur_offset = slave->offset + slave->mtd.size;
+>  	}
+> diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+> index 06df1e06b6e0..2787e76c030f 100644
+> --- a/include/linux/mtd/partitions.h
+> +++ b/include/linux/mtd/partitions.h
+> @@ -20,6 +20,12 @@
+>   *
+>   * For each partition, these fields are available:
+>   * name: string that will be used to label the partition's MTD device.
+> + * format: some partitions can be containers using specific format to describe
+> + *	embedded subpartitions / volumes. E.g. many home routers use "firmware"
+> + *	partition that contains at least kernel and rootfs. In such case an
+> + *	extra parser is needed that will detect these dynamic partitions and
+> + *	report them to the MTD subsystem. This property describes partition
+> + *	format and allows MTD core to call a proper parser.
+>   * size: the partition size; if defined as MTDPART_SIZ_FULL, the partition
+>   * 	will extend to the end of the master MTD device.
+>   * offset: absolute starting position within the master MTD device; if
+> @@ -38,6 +44,7 @@
+>  
+>  struct mtd_partition {
+>  	const char *name;		/* identifier string */
+> +	const char *format;		/* partition format */
+>  	uint64_t size;			/* partition size */
+>  	uint64_t offset;		/* offset within the master MTD space */
+>  	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
