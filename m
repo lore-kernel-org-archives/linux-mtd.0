@@ -1,20 +1,18 @@
-Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctcEt-0004dO-9E
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 15:43:57 +0000
-Received: by mail-lf0-x22f.google.com with SMTP id j90so30113329lfk.2
- for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 08:43:34 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org,
- Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v3] mtd: physmap_of: really fix the physmap add-ons
-Date: Thu, 30 Mar 2017 17:36:39 +0200
-Message-Id: <20170330153639.26819-1-linus.walleij@linaro.org>
+Date: Thu, 30 Mar 2017 17:39:27 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>,
+ kernel-build-reports@lists.linaro.org, linaro-kernel@lists.linaro.org,
+ linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: next-20170330 build: 2 failures 8 warnings (next-20170330)
+Message-ID: <20170330173927.5665a0da@bbrezillon>
+In-Reply-To: <20170330150742.wflswzqhg53mozx2@sirena.org.uk>
+References: <E1ctZXC-0008DB-4g@optimist>
+ <20170330150742.wflswzqhg53mozx2@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current way of building the of_physmap add-ons result in just
-the add-on being in the object code, and not the actual core
-implementation and regress the Gemini and Versatile.
+Hi Mark,
 
-Bake the physmap_of.o object by baking physmap_of_core.o and
-adding the Versatile and/or Gemini add-ons to the final object.
-Rename the source file physmap_of_core.c to get the desired
-build components.
+On Thu, 30 Mar 2017 16:07:42 +0100
+Mark Brown <broonie@kernel.org> wrote:
 
-Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Fixes: 4f04f68e1598 ("mtd: physmap_of: fixup gemini/versatile dependencies")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v2->v3:
-- Build and bake the final object in an elegant way suggested
-  by Boris.
----
- drivers/mtd/maps/Makefile                            | 10 ++++------
- drivers/mtd/maps/{physmap_of.c => physmap_of_core.c} |  0
- 2 files changed, 4 insertions(+), 6 deletions(-)
- rename drivers/mtd/maps/{physmap_of.c => physmap_of_core.c} (100%)
+> On Thu, Mar 30, 2017 at 01:50:39PM +0100, Build bot for Mark Brown wrote:
+> 
+> Today's -next fails to build an ARM allmodconfig due to:
+> 
+> > 	arm-allmodconfig
+> > ../drivers/mtd/nand/atmel/nand-controller.c:2126:25: error: 'atmel_nc_id_table' undeclared here (not in a function)
+> > ../include/linux/module.h:212:27: error: '__mod_of__atmel_nc_id_table_device_table' aliased to undefined symbol 'atmel_nc_id_table'  
+> 
+> caused by d09703f9459c94c78e029 (mtd: nand: Cleanup/rework the
+> atmel_nand driver), it tries to export atmel_nc_id_table as the DT ID
+> table but the variable is called atmel_nand_controller_of_ids. 
 
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index aef1846b4de2..5a09a72ab112 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -17,12 +17,10 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
- obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
- obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
- obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
--ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
--physmap_of-objs += physmap_of_versatile.o
--endif
--ifdef CONFIG_MTD_PHYSMAP_OF_GEMINI
--physmap_of-objs += physmap_of_gemini.o
--endif
-+physmap_of-objs-y		+= physmap_of_core.o
-+physmap_of-objs-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
-+physmap_of-objs-$(CONFIG_MTD_PHYSMAP_OF_GEMINI) += physmap_of_gemini.o
-+physmap_of-objs			:= $(physmap_of-objs-y)
- obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
- obj-$(CONFIG_MTD_PISMO)		+= pismo.o
- obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of_core.c
-similarity index 100%
-rename from drivers/mtd/maps/physmap_of.c
-rename to drivers/mtd/maps/physmap_of_core.c
--- 
-2.9.3
+Pushed a fixed version to nand/next.
+
+Thanks for the report.
+
+Boris
