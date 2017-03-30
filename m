@@ -1,28 +1,34 @@
-Received: from conuserg-07.nifty.com ([210.131.2.74])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTsJ-0000Ns-SU
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:48:06 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Graham Moore <grmoore@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 23/37] mtd: nand: denali: fix NAND_CMD_STATUS handling
-Date: Thu, 30 Mar 2017 15:46:09 +0900
-Message-Id: <1490856383-31560-24-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctULy-0007Nx-C3
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 07:18:44 +0000
+Subject: Re: [REGRESSION 4.11] Commit d8514d8edb5b ("ovl: copy up regular file
+ using O_TMPFILE") breaks ubifs
+To: Ralph Sennhauser <ralph.sennhauser@gmail.com>
+References: <20170328100107.25095af6@gmail.com>
+ <CAOQ4uxisw5vWYsdMTNemw=MqNyS2nxfAUkg+UfoGmbE3-he1Ug@mail.gmail.com>
+ <20170328124545.3c4b87ff@gmail.com>
+ <CAOQ4uxgNfuLN93owdCUJ=9VcU4DKGVEKkEGT7siiem8quVwCsQ@mail.gmail.com>
+ <20170328132818.05871b73@gmail.com>
+ <CAOQ4uxiC=RXPwSy7NGt+Ri=Eie4-_WsUPk7Sy-sh9RdrGQuesw@mail.gmail.com>
+ <20170328141621.6bb2d639@gmail.com>
+ <CAOQ4uxg0xRchsNOh1jtbyEdyDDqV3ToCvo=+QuCsD6duGJU_ZQ@mail.gmail.com>
+ <20170329232648.0b5bc1e9@gmail.com>
+ <33155efb-2c42-a7e9-b867-06760b1e1495@nod.at>
+ <20170330075337.2ab52f3d@gmail.com>
+Cc: Amir Goldstein <amir73il@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ linux-unionfs@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, regressions@leemhuis.info,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ David Oberhollenzer <goliath@sigma-star.at>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <fd48872f-cd40-c236-37c4-0ed7d445380a@nod.at>
+Date: Thu, 30 Mar 2017 09:18:17 +0200
+MIME-Version: 1.0
+In-Reply-To: <20170330075337.2ab52f3d@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,60 +38,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current NAND_CMD_STATUS handling is weird; it just reads the
-WRITE_PROTECT register, and returns NAND_STATUS_WP if it is set.
+Ralph,
 
-It does not send Read Status (0x70) command, so it is not helpful
-for checking the current device status.
+Am 30.03.2017 um 07:53 schrieb Ralph Sennhauser:
+> With this patch I'm no longer able to reproduce _this_ issue, however,
+> rename no longer works either:
+> 
+>   # mv /etc/config/wireless /etc/config/wireless.back
+>   mv: can't rename '/etc/config/wireless': Invalid argument
+>   # ls /etc/config/wireless
+>   /etc/config/wireless
+>   # rm /etc/config/wireless
+>   # ls /etc/config/wireless
+>   ls: /etc/config/wireless: No such file or directory
+> 
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+Please apply this one too:
+http://lists.infradead.org/pipermail/linux-mtd/2017-March/072613.html
 
-Changes in v3: None
-Changes in v2:
-  - Newly added
-
- drivers/mtd/nand/denali.c | 21 +++++----------------
- 1 file changed, 5 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 75b045e0..bca4fcd 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -107,21 +107,6 @@ static void write_byte_to_buf(struct denali_nand_info *denali, uint8_t byte)
- 	denali->buf.buf[denali->buf.tail++] = byte;
- }
- 
--/* reads the status of the device */
--static void read_status(struct denali_nand_info *denali)
--{
--	uint32_t cmd;
--
--	/* initialize the data buffer to store status */
--	reset_buf(denali);
--
--	cmd = ioread32(denali->flash_reg + WRITE_PROTECT);
--	if (cmd)
--		write_byte_to_buf(denali, NAND_STATUS_WP);
--	else
--		write_byte_to_buf(denali, 0);
--}
--
- /* Reset the flash controller */
- static uint16_t denali_nand_reset(struct denali_nand_info *denali)
- {
-@@ -893,7 +878,11 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 
- 	switch (cmd) {
- 	case NAND_CMD_STATUS:
--		read_status(denali);
-+		reset_buf(denali);
-+		addr = MODE_11 | BANK(denali->flash_bank);
-+		index_addr(denali, addr | 0, cmd);
-+		index_addr_read_data(denali, addr | 2, &id);
-+		write_byte_to_buf(denali, id);
- 		break;
- 	case NAND_CMD_READID:
- 	case NAND_CMD_PARAM:
--- 
-2.7.4
+Thanks,
+//richard
