@@ -1,10 +1,7 @@
-Received: from condef-01.nifty.com ([202.248.20.66])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTyJ-0005LW-St
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:54:17 +0000
-Received: from conuserg-07.nifty.com ([10.126.8.70])by condef-01.nifty.com
- with ESMTP id v2U6mGZ3001455
- for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 15:48:16 +0900
+Received: from conuserg-07.nifty.com ([210.131.2.74])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctTsJ-0000Nu-SS
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:48:09 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -18,13 +15,14 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 29/37] mtd: nand: denali: merge struct nand_buf into struct
- denali_nand_info
-Date: Thu, 30 Mar 2017 15:46:15 +0900
-Message-Id: <1490856383-31560-30-git-send-email-yamada.masahiro@socionext.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v3 12/37] mtd: nand: denali: support 1024 byte ECC step size
+Date: Thu, 30 Mar 2017 15:45:58 +0900
+Message-Id: <1490856383-31560-13-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,150 +34,250 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now struct nand_buf has only two members, so I see no reason for the
-separation.
+This driver was originally written for the Intel MRST platform with
+several platform specific parameters hard-coded.  Another thing we
+need to fix is the hard-coded ECC step size.  Currently, it is
+defined as follows:
+
+  #define ECC_SECTOR_SIZE 512
+
+(somehow, it is defined in both denali.c and denali.h)
+
+This must be avoided because the Denali IP supports 1024B ECC size
+as well.  The Denali User's Guide also says supporting both 512B and
+1024B ECC sectors is possible, though it would require instantiation
+of two different ECC circuits.  So, possible cases are:
+
+ [1] only 512B ECC size is supported
+ [2] only 1024B ECC size is supported
+ [3] both 512B and 1024B ECC sizes are supported
+
+Newer versions of this IP need ecc.size and ecc.steps explicitly
+set up via the following registers:
+  CFG_DATA_BLOCK_SIZE       (0x6b0)
+  CFG_LAST_DATA_BLOCK_SIZE  (0x6c0)
+  CFG_NUM_DATA_BLOCKS       (0x6d0)
+
+Older versions do not have such registers (they were reserved), so
+write accesses are safely ignored.
+
+This commit adds new flags DENALI_CAP_ECC_SIZE_{512,1024}.
+
+The DT property "nand-ecc-step-size" is still optional; a reasonable
+default will be chosen for [1] and [2].  For case [3], users can
+force ECC size via DT in case firmware hard-codes ECC settings.
+If not specified, the driver will use chip's ECC requirement as a
+hint to decide the ECC size.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
 
-Changes in v3: None
+Changes in v3:
+  - Move DENALI_CAP_ define out of struct denali_nand_info
+  - Use chip->ecc_step_ds as a hint to choose chip->ecc.size
+    where possible
+
 Changes in v2:
-  - Newly added
+  - Change the capability prefix DENALI_CAPS_ -> DENALI_CAP_
+  - Make ECC 512 cap and ECC 1024 cap independent
+  - Set up three CFG_... registers
 
- drivers/mtd/nand/denali.c | 29 ++++++++++++++---------------
- drivers/mtd/nand/denali.h |  8 ++------
- 2 files changed, 16 insertions(+), 21 deletions(-)
+ .../devicetree/bindings/mtd/denali-nand.txt        |  5 +++
+ drivers/mtd/nand/denali.c                          | 51 ++++++++++++++++------
+ drivers/mtd/nand/denali.h                          | 12 ++++-
+ drivers/mtd/nand/denali_dt.c                       |  3 +-
+ drivers/mtd/nand/denali_pci.c                      |  2 +
+ 5 files changed, 57 insertions(+), 16 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index e593bbe..25313c7 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -7,6 +7,11 @@ Required properties:
+   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
+   - interrupts : The interrupt number.
+ 
++Optional properties:
++  - nand-ecc-step-size: must be 512 or 1024.  If not specified, default to:
++      512   for "altr,socfpga-denali-nand"
++    see nand.txt for details.
++
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+ 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 00d0e9d..5feeaf5 100644
+index 16634df..78d3b18 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -640,7 +640,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			const uint8_t *buf, int page, bool raw_xfer)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	dma_addr_t addr = denali->buf.dma_buf;
-+	dma_addr_t addr = denali->dma_addr;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
-@@ -654,11 +654,11 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	setup_ecc_for_xfer(denali, !raw_xfer, raw_xfer);
- 
- 	/* copy buffer into DMA buffer */
--	memcpy(denali->buf.buf, buf, mtd->writesize);
-+	memcpy(denali->buf, buf, mtd->writesize);
- 
- 	if (raw_xfer) {
- 		/* transfer the data to the spare area */
--		memcpy(denali->buf.buf + mtd->writesize,
-+		memcpy(denali->buf + mtd->writesize,
- 			chip->oob_poi,
- 			mtd->oobsize);
- 	}
-@@ -735,7 +735,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			    uint8_t *buf, int oob_required, int page)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	dma_addr_t addr = denali->buf.dma_buf;
-+	dma_addr_t addr = denali->dma_addr;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = denali->caps & DENALI_CAP_HW_ECC_FIXUP ?
-@@ -757,7 +757,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
--	memcpy(buf, denali->buf.buf, mtd->writesize);
-+	memcpy(buf, denali->buf, mtd->writesize);
- 
- 	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
- 		stat = denali_hw_ecc_fixup(mtd, denali, &uncor_ecc_flags);
-@@ -782,7 +782,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	dma_addr_t addr = denali->buf.dma_buf;
-+	dma_addr_t addr = denali->dma_addr;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
- 	uint32_t irq_status;
-@@ -804,8 +804,8 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	denali_enable_dma(denali, false);
- 
--	memcpy(buf, denali->buf.buf, mtd->writesize);
--	memcpy(chip->oob_poi, denali->buf.buf + mtd->writesize, mtd->oobsize);
-+	memcpy(buf, denali->buf, mtd->writesize);
-+	memcpy(chip->oob_poi, denali->buf + mtd->writesize, mtd->oobsize);
- 
- 	return 0;
+@@ -886,8 +886,6 @@ static int denali_hw_ecc_fixup(struct mtd_info *mtd,
+ 	return max_bitflips;
  }
-@@ -1230,10 +1230,9 @@ int denali_init(struct denali_nand_info *denali)
- 	if (ret)
- 		goto disable_irq;
  
--	denali->buf.buf = devm_kzalloc(denali->dev,
--			     mtd->writesize + mtd->oobsize,
--			     GFP_KERNEL);
--	if (!denali->buf.buf) {
-+	denali->buf = devm_kzalloc(denali->dev, mtd->writesize + mtd->oobsize,
-+				   GFP_KERNEL);
-+	if (!denali->buf) {
- 		ret = -ENOMEM;
- 		goto disable_irq;
+-#define ECC_SECTOR_SIZE 512
+-
+ #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
+ #define ECC_BYTE(x)	(((x) & ECC_ERROR_ADDRESS__OFFSET))
+ #define ECC_CORRECTION_VALUE(x) ((x) & ERR_CORRECTION_INFO__BYTEMASK)
+@@ -899,6 +897,7 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
+ 			       struct denali_nand_info *denali,
+ 			       unsigned long *uncor_ecc_flags, uint8_t *buf)
+ {
++	unsigned int ecc_size = denali->nand.ecc.size;
+ 	unsigned int bitflips = 0;
+ 	unsigned int max_bitflips = 0;
+ 	uint32_t err_addr, err_cor_info;
+@@ -928,9 +927,9 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
+ 			 * an erased sector.
+ 			 */
+ 			*uncor_ecc_flags |= BIT(err_sector);
+-		} else if (err_byte < ECC_SECTOR_SIZE) {
++		} else if (err_byte < ecc_size) {
+ 			/*
+-			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
++			 * If err_byte is larger than ecc_size, means error
+ 			 * happened in OOB, so we ignore it. It's no need for
+ 			 * us to correct it err_device is represented the NAND
+ 			 * error bits are happened in if there are more than
+@@ -939,7 +938,7 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
+ 			int offset;
+ 			unsigned int flips_in_byte;
+ 
+-			offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
++			offset = (err_sector * ecc_size + err_byte) *
+ 						denali->devnum + err_device;
+ 
+ 			/* correct the ECC error */
+@@ -1587,21 +1586,43 @@ int denali_init(struct denali_nand_info *denali)
+ 	chip->options |= NAND_NO_SUBPAGE_WRITE;
+ 
+ 	/*
++	 * If the controller supports both 512B and 1024B ECC, and DT does not
++	 * specify "nand-ecc-step-size", use the chip's requirement for a hint
++	 * to choose ECC size.
++	 */
++	if (!chip->ecc.size &&
++	    denali->caps & DENALI_CAP_ECC_SIZE_512 &&
++	    denali->caps & DENALI_CAP_ECC_SIZE_1024)
++		chip->ecc.size = chip->ecc_step_ds;
++
++	if (!chip->ecc.size) {
++		if (denali->caps & DENALI_CAP_ECC_SIZE_512)
++			chip->ecc.size = 512;
++		if (denali->caps & DENALI_CAP_ECC_SIZE_1024)
++			chip->ecc.size = 1024;
++	}
++
++	if (!(chip->ecc.size == 512 && denali->caps & DENALI_CAP_ECC_SIZE_512) &&
++	    !(chip->ecc.size == 1024 && denali->caps & DENALI_CAP_ECC_SIZE_1024)) {
++		dev_err(denali->dev, "ECC size %d is not supported on this controller",
++			chip->ecc.size);
++		goto failed_req_irq;
++	}
++
++	/*
+ 	 * Denali Controller only support 15bit and 8bit ECC in MRST,
+ 	 * so just let controller do 15bit ECC for MLC and 8bit ECC for
+ 	 * SLC if possible.
+ 	 * */
+ 	if (!nand_is_slc(chip) &&
+-			(mtd->oobsize > (denali->bbtskipbytes +
+-			ECC_15BITS * (mtd->writesize /
+-			ECC_SECTOR_SIZE)))) {
++			mtd->oobsize > denali->bbtskipbytes +
++			ECC_15BITS * (mtd->writesize / chip->ecc.size)) {
+ 		/* if MLC OOB size is large enough, use 15bit ECC*/
+ 		chip->ecc.strength = 15;
+ 		chip->ecc.bytes = ECC_15BITS;
+ 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
+-	} else if (mtd->oobsize < (denali->bbtskipbytes +
+-			ECC_8BITS * (mtd->writesize /
+-			ECC_SECTOR_SIZE))) {
++	} else if (mtd->oobsize <
++		   denali->bbtskipbytes + ECC_8BITS * (mtd->writesize / chip->ecc.size)) {
+ 		pr_err("Your NAND chip OOB is not large enough to contain 8bit ECC correction codes");
+ 		goto failed_req_irq;
+ 	} else {
+@@ -1610,10 +1631,14 @@ int denali_init(struct denali_nand_info *denali)
+ 		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
  	}
-@@ -1246,10 +1245,10 @@ int denali_init(struct denali_nand_info *denali)
- 		goto disable_irq;
- 	}
  
--	denali->buf.dma_buf = dma_map_single(denali->dev, denali->buf.buf,
-+	denali->dma_addr = dma_map_single(denali->dev, denali->buf,
- 			     mtd->writesize + mtd->oobsize,
- 			     DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(denali->dev, denali->buf.dma_buf)) {
-+	if (dma_mapping_error(denali->dev, denali->dma_addr)) {
- 		dev_err(denali->dev, "Failed to map DMA buffer\n");
- 		ret = -EIO;
- 		goto disable_irq;
-@@ -1378,7 +1377,7 @@ void denali_remove(struct denali_nand_info *denali)
++	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
++	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
++	/* chip->ecc.steps is set by nand_scan_tail(); not available here */
++	iowrite32(mtd->writesize / chip->ecc.size,
++		  denali->flash_reg + CFG_NUM_DATA_BLOCKS);
++
+ 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
  
- 	nand_release(mtd);
- 	denali_disable_irq(denali);
--	dma_unmap_single(denali->dev, denali->buf.dma_buf, bufsize,
-+	dma_unmap_single(denali->dev, denali->dma_addr, bufsize,
- 			 DMA_BIDIRECTIONAL);
- }
- EXPORT_SYMBOL(denali_remove);
+-	/* override the default read operations */
+-	chip->ecc.size = ECC_SECTOR_SIZE;
+ 	chip->ecc.read_page = denali_read_page;
+ 	chip->ecc.read_page_raw = denali_read_page_raw;
+ 	chip->ecc.write_page = denali_write_page;
 diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 5f917a0..3ca6218 100644
+index ec00485..7c24d82 100644
 --- a/drivers/mtd/nand/denali.h
 +++ b/drivers/mtd/nand/denali.h
-@@ -306,16 +306,10 @@
+@@ -265,6 +265,14 @@
+ #define     ECC_COR_INFO__MAX_ERRORS			0x007f
+ #define     ECC_COR_INFO__UNCOR_ERR			0x0080
+ 
++#define CFG_DATA_BLOCK_SIZE			0x6b0
++
++#define CFG_LAST_DATA_BLOCK_SIZE		0x6c0
++
++#define CFG_NUM_DATA_BLOCKS			0x6d0
++
++#define CFG_META_DATA_SIZE			0x6e0
++
+ #define DMA_ENABLE				0x700
+ #define     DMA_ENABLE__FLAG				0x0001
+ 
+@@ -307,8 +315,6 @@
  #define MODE_10    0x08000000
  #define MODE_11    0x0C000000
  
--struct nand_buf {
--	uint8_t *buf;
--	dma_addr_t dma_buf;
--};
+-#define ECC_SECTOR_SIZE     512
 -
- struct denali_nand_info {
- 	struct nand_chip nand;
- 	unsigned long clk_x_rate;	/* bus interface clock rate */
- 	int flash_bank; /* currently selected chip */
--	struct nand_buf buf;
- 	struct device *dev;
- 	void __iomem *flash_reg;	/* Register Interface */
- 	void __iomem *flash_mem;	/* Host Data/Command Interface */
-@@ -327,6 +321,8 @@ struct denali_nand_info {
- 	uint32_t irq_status;
- 	int irq;
+ struct nand_buf {
+ 	int head;
+ 	int tail;
+@@ -347,6 +353,8 @@ struct denali_nand_info {
  
-+	void *buf;
-+	dma_addr_t dma_addr;
- 	int devnum;	/* represent how many nands connected */
- 	int bbtskipbytes;
- 	int max_banks;
+ #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
+ #define DENALI_CAP_DMA_64BIT			BIT(1)
++#define DENALI_CAP_ECC_SIZE_512			BIT(2)
++#define DENALI_CAP_ECC_SIZE_1024		BIT(3)
+ 
+ extern int denali_init(struct denali_nand_info *denali);
+ extern void denali_remove(struct denali_nand_info *denali);
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index df9ef36..1681a30 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -35,7 +35,8 @@ struct denali_dt_data {
+ };
+ 
+ static const struct denali_dt_data denali_socfpga_data = {
+-	.caps = DENALI_CAP_HW_ECC_FIXUP,
++	.caps = DENALI_CAP_HW_ECC_FIXUP |
++		DENALI_CAP_ECC_SIZE_512,
+ };
+ 
+ static const struct of_device_id denali_nand_dt_ids[] = {
+diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
+index ac84323..5202a11 100644
+--- a/drivers/mtd/nand/denali_pci.c
++++ b/drivers/mtd/nand/denali_pci.c
+@@ -85,6 +85,8 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 		goto failed_remap_reg;
+ 	}
+ 
++	denali->caps |= DENALI_CAP_ECC_SIZE_512;
++
+ 	ret = denali_init(denali);
+ 	if (ret)
+ 		goto failed_remap_mem;
 -- 
 2.7.4
