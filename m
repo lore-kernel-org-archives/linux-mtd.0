@@ -1,31 +1,18 @@
-Received: from conuserg-07.nifty.com ([210.131.2.74])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTsM-0002JH-3q
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:48:07 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Graham Moore <grmoore@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v3 16/37] mtd: nand: denali_dt: add compatible strings for
- UniPhier SoC variants
-Date: Thu, 30 Mar 2017 15:46:02 +0900
-Message-Id: <1490856383-31560-17-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from lelnx193.ext.ti.com ([198.47.27.77])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctUfF-0000z6-7l
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 07:38:39 +0000
+From: Roger Quadros <rogerq@ti.com>
+To: <boris.brezillon@free-electrons.com>
+CC: <richard@nod.at>, <aford173@gmail.com>, <enrico.leto@siemens.com>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>, "# 4 . 7+"
+ <stable@vger.kernel.org>
+Subject: [PATCH] mtd: nand: omap2: Fix partition creation via cmdline mtdparts
+Date: Thu, 30 Mar 2017 10:37:50 +0300
+Message-ID: <1490859470-7973-1-git-send-email-rogerq@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,92 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add two compatible strings for UniPhier SoCs.
+commit c9711ec5250b ("mtd: nand: omap: Clean up device tree support")
+caused the parent device name to be changed from "omap2-nand.0"
+to "<base address>.nand"  (e.g. 30000000.nand on omap3 platforms).
+This caused mtd->name to be changed as well. This breaks partition
+creation via mtdparts passed by u-boot as it uses "omap2-nand.0"
+for the mtd-id.
 
-"socionext,uniphier-denali-nand-v5a" is used on UniPhier sLD3, LD4,
-Pro4, sLD8 SoCs.
+Fix this by explicitly setting the mtd->name to "omap2-nand.<CS number>"
+if it isn't already set by nand_set_flash_node(). CS number is the
+NAND controller instance ID.
 
-"socionext,uniphier-denali-nand-v5b" is used on UniPhier Pro5, PXs2,
-LD6b, LD11, LD20 SoCs.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Fixes: c9711ec5250b ("mtd: nand: omap: Clean up device tree support")
+Cc: <stable@vger.kernel.org> # 4.7+
+Reported-by: Leto Enrico <enrico.leto@siemens.com>
+Reported-by: Adam Ford <aford173@gmail.com>
+Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Tested-by: Adam Ford <aford173@gmail.com>
+Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
+ drivers/mtd/nand/omap2.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Changes in v3: None
-Changes in v2:
-  - Change the compatible strings
-  - Fix the ecc_strength_capability
-  - Override revision number for the newer one
-
- .../devicetree/bindings/mtd/denali-nand.txt        |  6 ++++++
- drivers/mtd/nand/denali_dt.c                       | 23 ++++++++++++++++++++++
- 2 files changed, 29 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-index 647618e..0b08ea5 100644
---- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-@@ -3,6 +3,8 @@
- Required properties:
-   - compatible : should be one of the following:
-       "altr,socfpga-denali-nand"            - for Altera SOCFPGA
-+      "socionext,uniphier-denali-nand-v5a"  - for Socionext UniPhier (v5a)
-+      "socionext,uniphier-denali-nand-v5b"  - for Socionext UniPhier (v5b)
-   - reg : should contain registers location and length for data and reg.
-   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
-   - interrupts : The interrupt number.
-@@ -10,9 +12,13 @@ Required properties:
- Optional properties:
-   - nand-ecc-step-size: must be 512 or 1024.  If not specified, default to:
-       512   for "altr,socfpga-denali-nand"
-+      1024  for "socionext,uniphier-denali-nand-v5a"
-+      1024  for "socionext,uniphier-denali-nand-v5b"
-     see nand.txt for details.
-   - nand-ecc-strength: see nand.txt for details.  Available values are:
-       8, 15      for "altr,socfpga-denali-nand"
-+      8, 16, 24  for "socionext,uniphier-denali-nand-v5a"
-+      8, 16      for "socionext,uniphier-denali-nand-v5b"
-   - nand-ecc-maximize: see nand.txt for details
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 2a52101..084934a 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1856,6 +1856,15 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	nand_chip->ecc.priv	= NULL;
+ 	nand_set_flash_node(nand_chip, dev->of_node);
  
- Note:
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index c3bc333..1f2f68a 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -41,11 +41,34 @@ static const struct denali_dt_data denali_socfpga_data = {
- 		DENALI_CAP_ECC_SIZE_512,
- };
- 
-+static const struct denali_dt_data denali_uniphier_v5a_data = {
-+	.ecc_strength_avail = BIT(24) | BIT(16) | BIT(8),
-+	.caps = DENALI_CAP_HW_ECC_FIXUP |
-+		DENALI_CAP_DMA_64BIT |
-+		DENALI_CAP_ECC_SIZE_1024,
-+};
++	if (!mtd->name) {
++		mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
++					   "omap2-nand.%d", info->gpmc_cs);
++		if (!mtd->name) {
++			dev_err(&pdev->dev, "Failed to set MTD name\n");
++			return -ENOMEM;
++		}
++	}
 +
-+static const struct denali_dt_data denali_uniphier_v5b_data = {
-+	.revision = 0x0501,
-+	.ecc_strength_avail = BIT(16) | BIT(8),
-+	.caps = DENALI_CAP_HW_ECC_FIXUP |
-+		DENALI_CAP_DMA_64BIT |
-+		DENALI_CAP_ECC_SIZE_1024,
-+};
-+
- static const struct of_device_id denali_nand_dt_ids[] = {
- 	{
- 		.compatible = "altr,socfpga-denali-nand",
- 		.data = &denali_socfpga_data,
- 	},
-+	{
-+		.compatible = "socionext,uniphier-denali-nand-v5a",
-+		.data = &denali_uniphier_v5a_data,
-+	},
-+	{
-+		.compatible = "socionext,uniphier-denali-nand-v5b",
-+		.data = &denali_uniphier_v5b_data,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	nand_chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(nand_chip->IO_ADDR_R))
 -- 
 2.7.4
