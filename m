@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTs2-0007ED-HM
+ id 1ctTs2-0007EB-HE
  for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:54 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -18,10 +18,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 15/37] mtd: nand: denali: remove Toshiba and Hynix specific
- fixup code
-Date: Thu, 30 Mar 2017 15:46:01 +0900
-Message-Id: <1490856383-31560-16-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 03/37] mtd: nand: denali: remove meaningless pipeline
+ read-ahead operation
+Date: Thu, 30 Mar 2017 15:45:49 +0900
+Message-Id: <1490856383-31560-4-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,99 +33,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Denali IP can automatically detect device parameters such as
-page size, oob size, device width, etc. and this driver currently
-relies on it.  However, this hardware function is known to be
-problematic.
+The pipeline read-ahead function of the Denali IP enables continuous
+reading from the device; while data is being read out by a CPU, the
+controller maintains additional commands for streaming data from the
+device.  This will reduce the latency of the second page or later.
 
-[1] Due to a hardware bug, various misdetected cases were reported.
-    That is why get_toshiba_nand_para() and get_hynix_nand_para()
-    exist to fix-up the misdetected parameters.  It is not realistic
-    to add a new NAND device to the *black list* every time we are
-    hit by a misdetected case.  We would never be able to guarantee
-    that all cases are covered.
+This feature is obviously no help for per-page accessors of Linux
+NAND driver interface.
 
-[2] Because this feature is unreliable, it is disabled on some
-    platforms.
-
-The nand_scan_ident() detects device parameters in a more tested
-way.  The hardware should not set the device parameter registers in
-a different, unreliable way.  Instead, set the parameters from the
-nand_scan_ident() back to the registers.
+In the current implementation, the pipeline command is issued to
+load a single page, then data are read out immediately.  The use of
+the pipeline operation is not adding any advantage, but just adding
+complexity to the code.  Remove.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v3: None
-Changes in v2: None
+Changes in v2:
+  - Newly added
 
- drivers/mtd/nand/denali.c | 40 ++++++----------------------------------
- 1 file changed, 6 insertions(+), 34 deletions(-)
+ drivers/mtd/nand/denali.c | 42 +++---------------------------------------
+ 1 file changed, 3 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 2f796e3..2b20232 100644
+index 4e6d03d..65cf7cc 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -337,36 +337,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
+@@ -84,7 +84,6 @@ static inline struct denali_nand_info *mtd_to_denali(struct mtd_info *mtd)
+ #define SPARE_ACCESS		0x41
+ #define MAIN_ACCESS		0x42
+ #define MAIN_SPARE_ACCESS	0x43
+-#define PIPELINE_ACCESS		0x2000
+ 
+ #define DENALI_READ	0
+ #define DENALI_WRITE	0x100
+@@ -683,15 +682,7 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
+ 				    int access_type, int op)
+ {
+ 	int status = PASS;
+-	uint32_t page_count = 1;
+-	uint32_t addr, cmd, irq_status, irq_mask;
+-
+-	if (op == DENALI_READ)
+-		irq_mask = INTR__LOAD_COMP;
+-	else if (op == DENALI_WRITE)
+-		irq_mask = 0;
+-	else
+-		BUG();
++	uint32_t addr, cmd;
+ 
+ 	setup_ecc_for_xfer(denali, ecc_en, transfer_spare);
+ 
+@@ -714,35 +705,8 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
+ 		cmd = MODE_10 | addr;
+ 		index_addr(denali, cmd, access_type);
+ 
+-		/*
+-		 * page 33 of the NAND controller spec indicates we should not
+-		 * use the pipeline commands in Spare area only mode.
+-		 * So we don't.
+-		 */
+-		if (access_type == SPARE_ACCESS) {
+-			cmd = MODE_01 | addr;
+-			iowrite32(cmd, denali->flash_mem);
+-		} else {
+-			index_addr(denali, cmd,
+-					PIPELINE_ACCESS | op | page_count);
+-
+-			/*
+-			 * wait for command to be accepted
+-			 * can always use status0 bit as the
+-			 * mask is identical for each bank.
+-			 */
+-			irq_status = wait_for_irq(denali, irq_mask);
+-
+-			if (irq_status == 0) {
+-				dev_err(denali->dev,
+-					"cmd, page, addr on timeout (0x%x, 0x%x, 0x%x)\n",
+-					cmd, denali->page, addr);
+-				status = FAIL;
+-			} else {
+-				cmd = MODE_01 | addr;
+-				iowrite32(cmd, denali->flash_mem);
+-			}
+-		}
++		cmd = MODE_01 | addr;
++		iowrite32(cmd, denali->flash_mem);
  	}
+ 	return status;
  }
- 
--static void get_toshiba_nand_para(struct denali_nand_info *denali)
--{
--	/*
--	 * Workaround to fix a controller bug which reports a wrong
--	 * spare area size for some kind of Toshiba NAND device
--	 */
--	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
--		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
--		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--}
--
--static void get_hynix_nand_para(struct denali_nand_info *denali,
--							uint8_t device_id)
--{
--	switch (device_id) {
--	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
--	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
--		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
--		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
--		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
--		break;
--	default:
--		dev_warn(denali->dev,
--			 "Unknown Hynix NAND (Device ID: 0x%x).\n"
--			 "Will use default parameter values instead.\n",
--			 device_id);
--	}
--}
--
- /*
-  * determines how many NAND chips are connected to the controller. Note for
-  * Intel CE4100 devices we don't support more than one device.
-@@ -453,10 +423,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
- 			return FAIL;
- 	} else if (maf_id == 0xEC) { /* Samsung NAND */
- 		get_samsung_nand_para(denali, device_id);
--	} else if (maf_id == 0x98) { /* Toshiba NAND */
--		get_toshiba_nand_para(denali);
--	} else if (maf_id == 0xAD) { /* Hynix NAND */
--		get_hynix_nand_para(denali, device_id);
- 	}
- 
- 	dev_info(denali->dev,
-@@ -1663,6 +1629,12 @@ int denali_init(struct denali_nand_info *denali)
- 						chip->ecc.strength);
- 
- 	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
-+	iowrite32(mtd->erasesize / mtd->writesize,
-+		  denali->flash_reg + PAGES_PER_BLOCK);
-+	iowrite32(denali->nand.options & NAND_BUSWIDTH_16 ? 1 : 0,
-+		  denali->flash_reg + DEVICE_WIDTH);
-+	iowrite32(mtd->writesize, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
-+	iowrite32(mtd->oobsize, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
- 
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
 -- 
 2.7.4
