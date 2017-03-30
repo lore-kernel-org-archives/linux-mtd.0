@@ -1,18 +1,28 @@
-Date: Thu, 30 Mar 2017 16:07:42 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: kernel-build-reports@lists.linaro.org, linaro-kernel@lists.linaro.org,
- linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Message-ID: <20170330150742.wflswzqhg53mozx2@sirena.org.uk>
-References: <E1ctZXC-0008DB-4g@optimist>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctbpq-0001Dq-Rj
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 15:18:05 +0000
+Date: Thu, 30 Mar 2017 17:17:01 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
+ linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH v3 18/37] mtd: nand: denali: do not propagate
+ NAND_STATUS_FAIL to waitfunc()
+Message-ID: <20170330171701.7c7d0ee2@bbrezillon>
+In-Reply-To: <1490856383-31560-19-git-send-email-yamada.masahiro@socionext.com>
+References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490856383-31560-19-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="hk4orzs4jlqwphpi"
-Content-Disposition: inline
-In-Reply-To: <E1ctZXC-0008DB-4g@optimist>
-Subject: Re: next-20170330 build: 2 failures 8 warnings (next-20170330)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +32,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 30 Mar 2017 15:46:04 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
---hk4orzs4jlqwphpi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Currently, the error handling of denali_write_page(_raw) is a bit
+> complicated.  If the program command fails, NAND_STATUS_FAIL is set
+> to the driver internal denali->status, then read out later by
+> denali_waitfunc().
+> 
+> We can avoid it by exploiting the nand_write_page() implementation.
+> If chip->ecc.write_page(_raw) returns negative code (i.e. -EIO), it
+> errors out immediately.  This gives the same result as returning
+> NAND_STATUS_FAIL from chip->waitfunc.  In either way, -EIO is
+> returned to the upper MTD layer.
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
+> 
+> Changes in v3: None
+> Changes in v2:
+>   - Newly added
+> 
+>  drivers/mtd/nand/denali.c | 12 ++++--------
+>  drivers/mtd/nand/denali.h |  1 -
+>  2 files changed, 4 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+> index 79851ca..5da8156 100644
+> --- a/drivers/mtd/nand/denali.c
+> +++ b/drivers/mtd/nand/denali.c
+> @@ -1005,6 +1005,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	size_t size = mtd->writesize + mtd->oobsize;
+>  	uint32_t irq_status;
+>  	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
+> +	int ret = 0;
+>  
+>  	denali->page = page;
+>  
+> @@ -1038,13 +1039,13 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	if (irq_status == 0) {
+>  		dev_err(denali->dev, "timeout on write_page (type = %d)\n",
+>  			raw_xfer);
+> -		denali->status = NAND_STATUS_FAIL;
+> +		ret = -EIO;
+>  	}
+>  
+>  	denali_enable_dma(denali, false);
+>  	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_TO_DEVICE);
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  /* NAND core entry points */
+> @@ -1196,12 +1197,7 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
+>  
+>  static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
+>  {
+> -	struct denali_nand_info *denali = mtd_to_denali(mtd);
+> -	int status = denali->status;
+> -
+> -	denali->status = 0;
+> -
+> -	return status;
+> +	return 0;
 
-On Thu, Mar 30, 2017 at 01:50:39PM +0100, Build bot for Mark Brown wrote:
+I know it's not your fault, and the existing denali_waitfunc() is
+already buggy, but it's definitely wrong to return 0 here without
+checking the NAND status.
 
-Today's -next fails to build an ARM allmodconfig due to:
+->waitfunc() is not only used to wait for a page-program operation,
+it's used every time the NAND enters the busy state (lock, unlock,
+set_features, ...).
 
-> 	arm-allmodconfig
-> ../drivers/mtd/nand/atmel/nand-controller.c:2126:25: error: 'atmel_nc_id_=
-table' undeclared here (not in a function)
-> ../include/linux/module.h:212:27: error: '__mod_of__atmel_nc_id_table_dev=
-ice_table' aliased to undefined symbol 'atmel_nc_id_table'
+Anyway, I'll review the remaining patches before taking a decision.
 
-caused by d09703f9459c94c78e029 (mtd: nand: Cleanup/rework the
-atmel_nand driver), it tries to export atmel_nc_id_table as the DT ID
-table but the variable is called atmel_nand_controller_of_ids.=20
-
---hk4orzs4jlqwphpi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljdHz0ACgkQJNaLcl1U
-h9DnyQf/SVMfg7/3Gq/sUge70caQaZF2EnyJA0cY9OKzTS8610B/k9xe+/3Q7RvK
-h1QKSuMM2V96ko6K4YmQZRPD34ElYQ9KPmIGCdxGMl9nZ1VnjUoQISI57YRF2jZX
-45ew1B+vNkx3NBm0clz9OlGI7cJ/S6SMEoJVYSYfFvALAYGju1I+/D9w4I9EGIpe
-wqR1x109AIR/5F8FE/6rLvFlbKnK4HMoT4y3N6UH9f+JcIiPGcz69hwmxuSlgmlD
-B2K0yqAlwhfFgNF+PFN+Box6Pbz4ZHVGYhVe6KOQ3N6rBeoRaphGTqTr4HusEO65
-OwMu8UK4RuOjitCCMkQhqOgrI9lfPw==
-=OdWn
------END PGP SIGNATURE-----
-
---hk4orzs4jlqwphpi--
+>  }
+>  
+>  static int denali_erase(struct mtd_info *mtd, int page)
+> diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+> index 00ce04e..9e2b787 100644
+> --- a/drivers/mtd/nand/denali.h
+> +++ b/drivers/mtd/nand/denali.h
+> @@ -329,7 +329,6 @@ struct nand_buf {
+>  struct denali_nand_info {
+>  	struct nand_chip nand;
+>  	int flash_bank; /* currently selected chip */
+> -	int status;
+>  	int platform;
+>  	struct nand_buf buf;
+>  	struct device *dev;
