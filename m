@@ -1,23 +1,25 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctcyK-0006wn-0Z
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 16:30:54 +0000
-Date: Thu, 30 Mar 2017 18:30:30 +0200
+ id 1ctd5e-0001XX-RZ
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 16:38:28 +0000
+Date: Thu, 30 Mar 2017 18:38:05 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, David
- Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Dinh
- Nguyen <dinguyen@kernel.org>, Artem Bityutskiy
- <artem.bityutskiy@linux.intel.com>, Graham Moore
- <grmoore@opensource.altera.com>, Enrico Jorns <ejo@pengutronix.de>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, Jassi Brar <jaswinder.singh@linaro.org>
-Subject: Re: [PATCH v3 32/37] mtd: nand: denali: support hardware-assisted
- erased page detection
-Message-ID: <20170330183030.14acbb47@bbrezillon>
-In-Reply-To: <1490861708-27813-2-git-send-email-yamada.masahiro@socionext.com>
-References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
- <1490861708-27813-2-git-send-email-yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v3 00/37] mtd: nand: denali: 2nd round of Denali NAND IP
+ patch bomb
+Message-ID: <20170330183805.1c29504f@bbrezillon>
+In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,108 +32,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Mar 2017 17:15:03 +0900
+On Thu, 30 Mar 2017 15:45:46 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Recent versions of this IP support automatic erased page detection.
-> If an erased page is detected on reads, the controller does not set
-> INTR__ECC_UNCOR_ERR, but INTR__ERASED_PAGE.  If this feature is
-> supported, the driver can use this information instead of calling
-> nand_check_erased_ecc_chunk().
+> This driver includes many problems.
 > 
-> The detection of erased page is based on the number of zeros in the
-> page; if the number of zeros is less than the value in the field
-> ERASED_THRESHOLD, the page is assumed as erased.
+> One of the biggest one is a bunch of hard-coded parameters.  This IP
+> has many parameters that can be customized when a delivery RTL is
+> generated.  However, this driver was upstreamed by Intel, with
+> Intel parameters hard-coded.  Later, Altera added denali_dt.c to use
+> this driver for embedded boards, but they did not fix the code in
+> denali.c  So, this driver has never worked.  Even some DT bindings
+> actually turned out wrong.
 > 
-> Set the ERASED_THRESHOLD to (chip->ecc.strength + 1).  This is the
-> worst case where all the bitflips come from the same ECC sector.
-> This field is Reserved for older IP versions, so this commit has
-> no impact on them.
+> There are more problems: [1] The driver just retrieves the OOB area as-is
+> whereas the controller uses syndrome page layout. [2] Many NAND chip
+> specific parameters are hard-coded in the driver. [3] ONFi devices are
+> not working  [4] It can not read Bad Block Marker
+> 
+> This patch series intends to solve those problems.
+> 
+> Outstanding changes are:
+> - Fix raw/oob callbacks for syndrome page layout
+> - Implement setup_data_interface() callback
+> - Fix/implement more commands for ONFi devices
+> - Allow to skip the driver internal bounce buffer
+> - Support PIO in case DMA is not supported
+> - Switch from ->cmdfunc over to ->cmd_ctrl
+> 
+> 18 patches were merged at v2.
+> Here is the rest of the series.
+> 
+> v1: https://lkml.org/lkml/2016/11/26/144
+> v2: https://lkml.org/lkml/2017/3/22/804
+> 
+> 
+> Masahiro Yamada (37):
+>   mtd: nand: relax ecc.read_page() return value for uncorrectable ECC
+>   mtd: nand: denali: allow to override mtd->name from label DT property
+>   mtd: nand: denali: remove meaningless pipeline read-ahead operation
+>   mtd: nand: denali: fix bitflips calculation in handle_ecc()
+>   mtd: nand: denali: fix erased page checking
+>   mtd: nand: denali: support HW_ECC_FIXUP capability
+>   mtd: nand: denali_dt: enable HW_ECC_FIXUP for Altera SOCFPGA variant
+>   mtd: nand: denali: support 64bit capable DMA engine
+>   mtd: nand: denali_dt: remove dma-mask DT property
+>   mtd: nand: denali_dt: use pdev instead of ofdev for platform_device
+>   mtd: nand: denali: allow to override revision number
 
-Do you have a way to know the actual number of bitflips in an erased
-ECC block? BTW, is the threshold a per-page information or a per ECC
-block information.
+Applied patches 1 to 11.
 
-If you can't know the real number of bitflips I don't think it's safe
-to set the threshold to chip->ecc.strength + 1.
+>   mtd: nand: denali: support 1024 byte ECC step size
+>   mtd: nand: denali: avoid hard-coding ecc.strength and ecc.bytes
+>   mtd: nand: denali: support "nand-ecc-strength" DT property
+>   mtd: nand: denali: remove Toshiba and Hynix specific fixup code
+>   mtd: nand: denali_dt: add compatible strings for UniPhier SoC variants
+>   mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
+>   mtd: nand: denali: do not propagate NAND_STATUS_FAIL to waitfunc()
+>   mtd: nand: denali: use BIT() and GENMASK() for register macros
+>   mtd: nand: denali: remove unneeded find_valid_banks()
+>   mtd: nand: denali: handle timing parameters by setup_data_interface()
+>   mtd: nand: denali: rework interrupt handling
+>   mtd: nand: denali: fix NAND_CMD_STATUS handling
+>   mtd: nand: denali: fix NAND_CMD_PARAM handling
+>   mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
+>   mtd: nand: denali: fix bank reset function
+>   mtd: nand: denali: use interrupt instead of polling for bank reset
+>   mtd: nand: denali: propagate page to helpers via function argument
+>   mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
+>   mtd: nand: denali: use flag instead of register macro for direction
+>   mtd: nand: denali: fix raw and oob accessors for syndrome page layout
+>   mtd: nand: denali: support hardware-assisted erased page detection
+>   mtd: nand: allocate aligned buffers if NAND_OWN_BUFFERS is unset
+>   mtd: nand: allow drivers to request minimum alignment for passed
+>     buffer
+>   mtd: nand: denali: skip driver internal bounce buffer when possible
+>   mtd: nand: denali: use non-managed kmalloc() for DMA buffer
+>   mtd: nand: denali: enable bad block table scan
 
-You can still use the feature to detect erased pages without any
-bitflips (set ERASED_THRESHOLD to 1), which should be the case most of
-the time, but for cases where you have bitflips I'd recommend using
-nand_check_erased_ecc_chunk() if you can't know the actual number of
-bitflips in the page.
+The rest looks almost good, except for a few comments I had on patch
+14, 18, 25, 26 and 32.
+
+I'll probably apply 33 and 34 soon.
 
 > 
-> One thing worth mentioning is the driver still needs to fill the
-> buffer with 0xff in the case because the ECC correction engine has
-> already manipulated the data in the buffer.
+>  .../devicetree/bindings/mtd/denali-nand.txt        |   24 +-
+>  drivers/mtd/nand/denali.c                          | 1971 ++++++++++----------
+>  drivers/mtd/nand/denali.h                          |  308 +--
+>  drivers/mtd/nand/denali_dt.c                       |   90 +-
+>  drivers/mtd/nand/denali_pci.c                      |   10 +-
+>  drivers/mtd/nand/nand_base.c                       |   49 +-
+>  include/linux/mtd/nand.h                           |    4 +-
+>  7 files changed, 1234 insertions(+), 1222 deletions(-)
 > 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
-> Changes in v3: None
-> Changes in v2:
->   - Newly added
-> 
->  drivers/mtd/nand/denali.c | 10 +++++++++-
->  drivers/mtd/nand/denali.h |  5 +++++
->  2 files changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 51e8a9a..9ee0f30 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -604,6 +604,9 @@ static int denali_pio_read(struct denali_nand_info *denali, void *buf,
->  	if (!(irq_status & INTR__PAGE_XFER_INC))
->  		return -EIO;
->  
-> +	if (irq_status & INTR__ERASED_PAGE)
-> +		memset(buf, 0xff, size);
-> +
->  	return irq_status & ecc_err_mask ? -EBADMSG : 0;
->  }
->  
-> @@ -676,6 +679,9 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
->  	denali_enable_dma(denali, false);
->  	dma_sync_single_for_cpu(denali->dev, dma_addr, size, dir);
->  
-> +	if (irq_status & INTR__ERASED_PAGE)
-> +		memset(buf, 0xff, size);
-> +
->  	return ret;
->  }
->  
-> @@ -1475,7 +1481,9 @@ int denali_init(struct denali_nand_info *denali)
->  	chip->ecc.bytes = denali_calc_ecc_bytes(chip->ecc.size,
->  						chip->ecc.strength);
->  
-> -	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
-> +	iowrite32(MAKE_ECC_CORRECTION(chip->ecc.strength,
-> +				      chip->ecc.strength + 1),
-> +		  denali->flash_reg + ECC_CORRECTION);
->  	iowrite32(mtd->erasesize / mtd->writesize,
->  		  denali->flash_reg + PAGES_PER_BLOCK);
->  	iowrite32(denali->nand.options & NAND_BUSWIDTH_16 ? 1 : 0,
-> diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-> index f92b9db..b5ea8d7 100644
-> --- a/drivers/mtd/nand/denali.h
-> +++ b/drivers/mtd/nand/denali.h
-> @@ -110,6 +110,10 @@
->  
->  #define ECC_CORRECTION				0x1b0
->  #define     ECC_CORRECTION__VALUE			GENMASK(4, 0)
-> +#define     ECC_CORRECTION__ERASE_THRESHOLD		GENMASK(31, 16)
-> +#define     MAKE_ECC_CORRECTION(val, thresh)		\
-> +			(((val) & (ECC_CORRECTION__VALUE)) | \
-> +			(((thresh) << 16) & (ECC_CORRECTION__ERASE_THRESHOLD)))
->  
->  #define READ_MODE				0x1c0
->  #define     READ_MODE__VALUE				GENMASK(3, 0)
-> @@ -233,6 +237,7 @@
->  #define     INTR__RST_COMP				BIT(13)
->  #define     INTR__PIPE_CMD_ERR				BIT(14)
->  #define     INTR__PAGE_XFER_INC				BIT(15)
-> +#define     INTR__ERASED_PAGE				BIT(16)
->  
->  #define PAGE_CNT(bank)				(0x430 + (bank) * 0x50)
->  #define ERR_PAGE_ADDR(bank)			(0x440 + (bank) * 0x50)
