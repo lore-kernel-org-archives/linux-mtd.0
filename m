@@ -1,22 +1,25 @@
-Subject: Re: [PATCH V1 1/1] mtd: mtk-nor: set controller to 4B mode with large
- capacity flash
-To: Guochun Mao <guochun.mao@mediatek.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1490862222-723-1-git-send-email-guochun.mao@mediatek.com>
- <1490862222-723-2-git-send-email-guochun.mao@mediatek.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
- <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctWu3-0007Qw-UK
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 10:02:06 +0000
+Received: by mail-lf0-x242.google.com with SMTP id x137so4098588lff.1
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 03:01:44 -0700 (PDT)
+Subject: Re: [RFC][PATCH] UBI: Make MTD_UBI_FASTMAP non-experimental
+To: Richard Weinberger <richard@nod.at>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20170329153836.GB29118@axis.com>
+ <434195d8-d638-240d-8d63-50d033ea453a@nod.at>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <9d3a292b-8298-81ec-a049-b021616f1ddf@gmail.com>
-Date: Thu, 30 Mar 2017 12:00:27 +0200
+Message-ID: <3f8d0417-5e7d-b7c8-ba83-9a87e774f97f@gmail.com>
+Date: Thu, 30 Mar 2017 12:01:41 +0200
 MIME-Version: 1.0
-In-Reply-To: <1490862222-723-2-git-send-email-guochun.mao@mediatek.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <434195d8-d638-240d-8d63-50d033ea453a@nod.at>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,40 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/30/2017 10:23 AM, Guochun Mao wrote:
-> when nor's size larger than 16MByte, nor and controller should
-> enter 4Byte mode simultaneously.
+On 03/29/2017 10:04 PM, Richard Weinberger wrote:
+> Jesper,
 > 
-> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> ---
->  drivers/mtd/spi-nor/mtk-quadspi.c |    7 +++++++
->  1 file changed, 7 insertions(+)
+> Am 29.03.2017 um 17:38 schrieb Jesper Nilsson:
+>> MTD_UBI_FASTMAP has been set as experimental since it
+>> was merged back in 2012.
+>>
+>> There hasn't been much change in the format,
+>> so we can consider the feature stable and start
+>> being careful about breaking the format.
+>> (This is somewhat of a pre-requisite for anyone actually
+>> using the feature in the real world and depending on it)
+>>
+>> Drop the experimental note and the warning text about
+>> the on-flash format not being finalized.
 > 
-> diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-> index e661877..05cd8a8 100644
-> --- a/drivers/mtd/spi-nor/mtk-quadspi.c
-> +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-> @@ -369,6 +369,13 @@ static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
->  		/* We only handle 1 byte */
->  		ret = mt8173_nor_wr_sr(mt8173_nor, *buf);
->  		break;
-> +	case SPINOR_OP_EN4B:
-> +		/* Set nor controller to 4-byte address mode,
-> +		 * and simultaneously set nor flash.
-> +		 * This case should cooperate with default operation.
-> +		 */
-> +		writeb(readb(mt8173_nor->base + MTK_NOR_DUAL_REG) | 0x10,
-> +				mt8173_nor->base + MTK_NOR_DUAL_REG);
-
-And what happens on READ then ? Who clears that bit when protocol
-changes ? You probably want something like cqspi_set_protocol()
-instead, which is invoked from {read,write}{,_reg}() and erase().
-
->  	default:
->  		ret = mt8173_nor_do_tx_rx(mt8173_nor, opcode, buf, len, NULL, 0);
->  		if (ret)
+> I fully agree, we can drop this note. But we have to add another
+> one.
+> While Fastmap is a nice feature to speed-up the attach time it
+> comes with a cost. It makes UBI less robust. I saw issues
+> on NAND chips which misbehaved slightly where UBI was able to
+> recover when using a full scan but not when Fastmap was used.
+> The UBI full scan code is paranoid and can sort out problems
+> very early, with Fastmap enabled you lose this valuable property.
 > 
+> So, users should enable Fastmap only when they absolutely need
+> a very fast attach time and be very sure that the NAND works as
+> expected.
 
+So we should document this with a big fat warning and set fastmap to
+default=n ?
 
 -- 
 Best regards,
