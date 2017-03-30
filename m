@@ -1,20 +1,18 @@
-Received: from fllnx210.ext.ti.com ([198.47.19.17])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctbFU-0006Qq-R9
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 14:40:30 +0000
-From: Sekhar Nori <nsekhar@ti.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- Sekhar Nori <nsekhar@ti.com>
-Subject: [PATCH] mtd: nand: davinci: add comment on NAND subpage write status
- on keystone
-Date: Thu, 30 Mar 2017 20:09:30 +0530
-Message-ID: <079de6bbc3285ab09e4ac25e78b947286080cee5.1490884624.git.nsekhar@ti.com>
+Date: Thu, 30 Mar 2017 16:07:42 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: kernel-build-reports@lists.linaro.org, linaro-kernel@lists.linaro.org,
+ linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Message-ID: <20170330150742.wflswzqhg53mozx2@sirena.org.uk>
+References: <E1ctZXC-0008DB-4g@optimist>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="hk4orzs4jlqwphpi"
+Content-Disposition: inline
+In-Reply-To: <E1ctZXC-0008DB-4g@optimist>
+Subject: Re: next-20170330 build: 2 failures 8 warnings (next-20170330)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a comment clarifying that NAND subpage write on keystone works,
-but is not being enabled in the interest of backward compatibility.
 
-Signed-off-by: Sekhar Nori <nsekhar@ti.com>
----
- drivers/mtd/nand/davinci_nand.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+--hk4orzs4jlqwphpi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 27fa8b87cd5f..531c51991e57 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -581,6 +581,17 @@ static struct davinci_nand_pdata
- 			"ti,davinci-nand-use-bbt"))
- 			pdata->bbt_options = NAND_BBT_USE_FLASH;
- 
-+		/*
-+		 * Since kernel v4.8, this driver has been fixed to enable
-+		 * use of 4-bit hardware ECC with subpages and verified on
-+		 * TI's keystone EVMs (K2L, K2HK and K2E).
-+		 * However, in the interest of not breaking systems using
-+		 * existing UBI partitions, sub-page writes are not being
-+		 * (re)enabled. If you want to use subpage writes on Keystone
-+		 * platforms (i.e. do not have any existing UBI partitions),
-+		 * then use "ti,davinci-nand" as the compatible in your
-+		 * device-tree file.
-+		 */
- 		if (of_device_is_compatible(pdev->dev.of_node,
- 					    "ti,keystone-nand")) {
- 			pdata->options |= NAND_NO_SUBPAGE_WRITE;
--- 
-2.9.0
+On Thu, Mar 30, 2017 at 01:50:39PM +0100, Build bot for Mark Brown wrote:
+
+Today's -next fails to build an ARM allmodconfig due to:
+
+> 	arm-allmodconfig
+> ../drivers/mtd/nand/atmel/nand-controller.c:2126:25: error: 'atmel_nc_id_=
+table' undeclared here (not in a function)
+> ../include/linux/module.h:212:27: error: '__mod_of__atmel_nc_id_table_dev=
+ice_table' aliased to undefined symbol 'atmel_nc_id_table'
+
+caused by d09703f9459c94c78e029 (mtd: nand: Cleanup/rework the
+atmel_nand driver), it tries to export atmel_nc_id_table as the DT ID
+table but the variable is called atmel_nand_controller_of_ids.=20
+
+--hk4orzs4jlqwphpi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljdHz0ACgkQJNaLcl1U
+h9DnyQf/SVMfg7/3Gq/sUge70caQaZF2EnyJA0cY9OKzTS8610B/k9xe+/3Q7RvK
+h1QKSuMM2V96ko6K4YmQZRPD34ElYQ9KPmIGCdxGMl9nZ1VnjUoQISI57YRF2jZX
+45ew1B+vNkx3NBm0clz9OlGI7cJ/S6SMEoJVYSYfFvALAYGju1I+/D9w4I9EGIpe
+wqR1x109AIR/5F8FE/6rLvFlbKnK4HMoT4y3N6UH9f+JcIiPGcz69hwmxuSlgmlD
+B2K0yqAlwhfFgNF+PFN+Box6Pbz4ZHVGYhVe6KOQ3N6rBeoRaphGTqTr4HusEO65
+OwMu8UK4RuOjitCCMkQhqOgrI9lfPw==
+=OdWn
+-----END PGP SIGNATURE-----
+
+--hk4orzs4jlqwphpi--
