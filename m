@@ -1,22 +1,26 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctXEk-0001UC-Vr
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 10:23:29 +0000
-Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
-To: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
-References: <1490864181-2192-1-git-send-email-richard@nod.at>
- <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
- <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
-Cc: linux-kernel@vger.kernel.org, dedekind1@gmail.com,
- stable@vger.kernel.org, Ralph Sennhauser <ralph.sennhauser@gmail.com>,
- Amir Goldstein <amir73il@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
-Date: Thu, 30 Mar 2017 12:23:01 +0200
+ id 1ctXND-0005cN-3J
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 10:32:12 +0000
+Received: by mail-lf0-x244.google.com with SMTP id v2so4160176lfi.2
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 03:31:50 -0700 (PDT)
+Subject: Re: [PATCH V3 1/2] mtd: add support for partition parsers
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <20170221124002.585-1-zajec5@gmail.com>
+ <20170227130633.4020-1-zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <5242215d-9230-82b1-13cf-5db6ee0a70e9@gmail.com>
+Date: Thu, 30 Mar 2017 12:31:45 +0200
 MIME-Version: 1.0
-In-Reply-To: <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170227130633.4020-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 30.03.2017 um 11:49 schrieb Richard Weinberger:
-> Am 30.03.2017 um 11:32 schrieb Adrian Hunter:
->>> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
->>> index 0858213a4e63..0139155045fe 100644
->>> --- a/fs/ubifs/dir.c
->>> +++ b/fs/ubifs/dir.c
->>> @@ -748,6 +748,11 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
->>>  		goto out_fname;
->>>  
->>>  	lock_2_inodes(dir, inode);
->>> +
->>> +	/* Handle O_TMPFILE corner case, it is allowed to link a O_TMPFILE. */
->>> +	if (inode->i_nlink == 0)
->>> +		ubifs_delete_orphan(c, inode->i_ino);
->>
->> Isn't there also a deletion inode in the journal?  If the recovery sees that
->> won't it delete the file data?
-> 
-> Yes, but ubifs_link() adds a new journal entry which revives the inode.
-> This should cancel out the deletion, right?
-> You know the UBIFS journal better than I do. :-)
+On 02/27/2017 02:06 PM, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+>
+> Some devices have partitions that are kind of containers with extra
+> subpartitions / volumes instead of e.g. simple filesystem data. To
+> support such cases we need to first create normal flash partitions and
+> then take care of these special ones.
+>
+> It's very common case for home routers. Depending on the vendor there
+> are formats like TRX, Seama, TP-Link, WRGG & more. All of them are used
+> to embed few partitions into a single one / single firmware file.
+>
+> Ideally all vendors would use some well documented / standardized format
+> like UBI (and some probably start doing so), but there are still
+> countless devices on the market using these poor vendor specific
+> formats.
+>
+> This patch extends MTD subsystem by allowing to specify partition format
+> and trying to use a proper parser when needed. Supporting such poor
+> formats is highly unlikely to be the top priority so these changes try
+> to minimize maintenance cost to the minimum. It reuses existing code for
+> these new parsers and just adds a one property and one new function.
+>
+> This implementation requires setting partition format in a flash parser.
+> A proper change of bcm47xxpart will follow and in the future we will
+> hopefully also find a solution for doing it with ofpart
+> ("fixed-partitions").
+>
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> V2: A totally rebased & refreshed version.
+> V3: Don't mention uImage in commit message, it was a mistake.
 
-Reading deeper into the proved that I was wrong.
-AFAIKT UBIFS' journal has currently no way to revive a deleted inode.
-So, we have to think about a new solution.
+Marek: I updated commit message as you suggested.
 
-Thanks,
-//richard
+Can I ask for your Reviewed/Acked tag, please?
