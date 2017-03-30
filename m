@@ -1,21 +1,26 @@
-Received: from lgeamrelo11.lge.com ([156.147.23.51])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctXPb-00067Y-20
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 10:34:41 +0000
-Date: Thu, 30 Mar 2017 19:34:12 +0900
-From: Hyunchul Lee <hyc.lee@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com,
- Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, adrian.hunter@intel.com,
- Ralph Sennhauser <ralph.sennhauser@gmail.com>, kernel-team@lge.com
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctXmi-0004vR-QU
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 10:58:34 +0000
 Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
-Message-ID: <20170330103412.GA12014@sebu>
+To: Amir Goldstein <amir73il@gmail.com>
 References: <1490864181-2192-1-git-send-email-richard@nod.at>
+ <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
+ <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
+ <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
+ <CAOQ4uxi0sJrZX22nNW23PnJ9AgzC=EeBOjOp=wb1taXSySYUrA@mail.gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "stable [v4.9]" <stable@vger.kernel.org>,
+ Ralph Sennhauser <ralph.sennhauser@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <54320a7a-5022-732f-5a5d-5ec4ca5a4d9e@nod.at>
+Date: Thu, 30 Mar 2017 12:51:27 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="yrj/dFKFPuw6o+aM"
-Content-Disposition: inline
-In-Reply-To: <1490864181-2192-1-git-send-email-richard@nod.at>
+In-Reply-To: <CAOQ4uxi0sJrZX22nNW23PnJ9AgzC=EeBOjOp=wb1taXSySYUrA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,74 +30,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Amir,
 
---yrj/dFKFPuw6o+aM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Richard,
-
-On Thu, Mar 30, 2017 at 10:56:21AM +0200, Richard Weinberger wrote:
-> It is perfectly fine to link a tmpfile back using linkat().
-> Since tmpfiles are created with a link count of 0 they appear
-> on the orphan list, upon re-linking the inode has to be removed
-> from the orphan list again.
+Am 30.03.2017 um 12:35 schrieb Amir Goldstein:
+>> Reading deeper into the proved that I was wrong.
+>> AFAIKT UBIFS' journal has currently no way to revive a deleted inode.
+>> So, we have to think about a new solution.
+>>
 > 
-> Cc: <stable@vger.kernel.org>
-> Cc: Ralph Sennhauser <ralph.sennhauser@gmail.com>
-> Cc: Amir Goldstein <amir73il@gmail.com
-> Reported-by: Ralph Sennhauser <ralph.sennhauser@gmail.com>
-> Tested-by: Ralph Sennhauser <ralph.sennhauser@gmail.com>
-> Reported-by: Amir Goldstein <amir73il@gmail.com
-> Fixes: 474b93704f321 ("ubifs: Implement O_TMPFILE")
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  fs/ubifs/dir.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> Not that I know anything about ubifs, but why do you need the deleted
+> inode record in the first place for an O_TMPFILE.
+> vfs ensures you that you can only link back an O_TMPFILE, not a deleted
+> inode.
 > 
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 0858213a4e63..0139155045fe 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -748,6 +748,11 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
->  		goto out_fname;
->  
->  	lock_2_inodes(dir, inode);
-> +
-> +	/* Handle O_TMPFILE corner case, it is allowed to link a O_TMPFILE. */
-> +	if (inode->i_nlink == 0)
-> +		ubifs_delete_orphan(c, inode->i_ino);
-> +
-I guess that ubifs_delete_orphan should be called if ubifs_jnl_update
-succeeds.
+> It does not appear to be the right thing to do to pass deletion=1 to
+> ubifs_jnl_update(), but deletion=0 doesn't look right as well..
 
->  	inc_nlink(inode);
->  	ihold(inode);
->  	inode->i_ctime = ubifs_current_time(inode);
-> -- 
-> 2.7.3
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+We need to think of a new case.
+I choose deletion=1 to ensure that after a power-cut written data of the
+tmpfile gets removed.
 
---yrj/dFKFPuw6o+aM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline; filename=fix-unlink
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 528369f..a2e4a4b 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -757,6 +757,8 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
- 	if (err)
- 		goto out_cancel;
-+	if (inode->i_nlink == 1)
-+		ubifs_delete_orphan(c, inode->i_ino);
- 	unlock_2_inodes(dir, inode);
- 
- 	ubifs_release_budget(c, &req);
-
---yrj/dFKFPuw6o+aM--
+Thanks,
+//richard
