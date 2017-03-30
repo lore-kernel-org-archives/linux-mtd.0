@@ -1,15 +1,25 @@
-Date: Thu, 30 Mar 2017 17:39:27 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctcQg-0005VK-8e
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 15:56:07 +0000
+Date: Thu, 30 Mar 2017 17:55:44 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>,
- kernel-build-reports@lists.linaro.org, linaro-kernel@lists.linaro.org,
- linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: next-20170330 build: 2 failures 8 warnings (next-20170330)
-Message-ID: <20170330173927.5665a0da@bbrezillon>
-In-Reply-To: <20170330150742.wflswzqhg53mozx2@sirena.org.uk>
-References: <E1ctZXC-0008DB-4g@optimist>
- <20170330150742.wflswzqhg53mozx2@sirena.org.uk>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
+ linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH v3 25/37] mtd: nand: denali: switch over to cmd_ctrl
+ instead of cmdfunc
+Message-ID: <20170330175544.4459007f@bbrezillon>
+In-Reply-To: <1490856383-31560-26-git-send-email-yamada.masahiro@socionext.com>
+References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490856383-31560-26-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,25 +32,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+On Thu, 30 Mar 2017 15:46:11 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-On Thu, 30 Mar 2017 16:07:42 +0100
-Mark Brown <broonie@kernel.org> wrote:
 
-> On Thu, Mar 30, 2017 at 01:50:39PM +0100, Build bot for Mark Brown wrote:
-> 
-> Today's -next fails to build an ARM allmodconfig due to:
-> 
-> > 	arm-allmodconfig
-> > ../drivers/mtd/nand/atmel/nand-controller.c:2126:25: error: 'atmel_nc_id_table' undeclared here (not in a function)
-> > ../include/linux/module.h:212:27: error: '__mod_of__atmel_nc_id_table_device_table' aliased to undefined symbol 'atmel_nc_id_table'  
-> 
-> caused by d09703f9459c94c78e029 (mtd: nand: Cleanup/rework the
-> atmel_nand driver), it tries to export atmel_nc_id_table as the DT ID
-> table but the variable is called atmel_nand_controller_of_ids. 
+>  /*
+>   * sends a pipeline command operation to the controller. See the Denali NAND
+>   * controller's user guide for more information (section 4.2.3.6).
+> @@ -824,7 +856,13 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
+>  
+>  static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
+>  {
+> -	return 0;
+> +	struct denali_nand_info *denali = mtd_to_denali(mtd);
+> +	uint32_t irq_status;
+> +
+> +	/* R/B# pin transitioned from low to high? */
+> +	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
+> +
+> +	return irq_status & INTR__INT_ACT ? 0 : NAND_STATUS_FAIL;
 
-Pushed a fixed version to nand/next.
+Okay, you fix the ->waitfunc() implementation here. Great! Then I'm
+fine with patch 18.
 
-Thanks for the report.
-
-Boris
+>  }
