@@ -1,24 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctWso-00068z-Bl
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 10:00:48 +0000
-Date: Thu, 30 Mar 2017 12:00:12 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sekhar Nori <nsekhar@ti.com>, Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, Muralidharan Karicheri
- <m-karicheri2@ti.com>, Franklin S Cooper Jr <fcooper@ti.com>
-Subject: Re: [PATCH] Revert "mtd: davinci-nand: disable subpage write for
- keystone-nand"
-Message-ID: <20170330120012.081310fa@bbrezillon>
-In-Reply-To: <7e06e416-8c4a-46dd-5223-2da522daba08@ti.com>
-References: <9d21903d38de6685c9bf45d6eb8e32ab0e8c65c5.1490609415.git.nsekhar@ti.com>
- <20170329170352.2d6c0721@bbrezillon>
- <7e06e416-8c4a-46dd-5223-2da522daba08@ti.com>
+Subject: Re: [PATCH V1 1/1] mtd: mtk-nor: set controller to 4B mode with large
+ capacity flash
+To: Guochun Mao <guochun.mao@mediatek.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1490862222-723-1-git-send-email-guochun.mao@mediatek.com>
+ <1490862222-723-2-git-send-email-guochun.mao@mediatek.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
+ <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <9d3a292b-8298-81ec-a049-b021616f1ddf@gmail.com>
+Date: Thu, 30 Mar 2017 12:00:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1490862222-723-2-git-send-email-guochun.mao@mediatek.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,88 +27,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Mar 2017 13:13:58 +0530
-Sekhar Nori <nsekhar@ti.com> wrote:
-
-> Hi Boris,
+On 03/30/2017 10:23 AM, Guochun Mao wrote:
+> when nor's size larger than 16MByte, nor and controller should
+> enter 4Byte mode simultaneously.
 > 
-> On Wednesday 29 March 2017 08:33 PM, Boris Brezillon wrote:
-> > On Mon, 27 Mar 2017 15:56:55 +0530
-> > Sekhar Nori <nsekhar@ti.com> wrote:
-> >   
-> >> This partly reverts commit 28c015a9daabe4ed3aeb0ccf669a3f1c2b8b81d5.
-> >>
-> >> Since f6d7c1b5598b ("mtd: nand: davinci: Reinitialize the HW ECC
-> >> engine in 4bit hwctl") using subpage and 4bit HWECC works.
-> >>
-> >> Revert the original workaround made for this. Tested with
-> >> mtd_subpagetest and UBIFS on K2E, K2HK, K2L EVMs.
-> >>
-> >> The addition of keystone specific compatible to davinci_nand_of_match[]
-> >> contained in original commit is retained.  
-> > 
-> > Hm, it sounds like a bad idea to re-enable sub-page writes afterwards.
-> > You might break existing systems using UBI, because UBI detects the
-> > sub-page write feature and decides to place the VID header at a
-> > different position depending on that.
-> > To sum-up, you're likely to break users that have already flashed a UBI
-> > image with the old driver.  
-> 
-> Okay, I didn't realize that.
-> 
-> > If you want to re-enable sub-page writes, just switch back to the
-> > "ti,davinci-nand" compatible.  
-> 
-> How about a comment on top of the disable subpage write code explaining 
-> that its not really needed anymore ? Something like this patch:
-> 
-> ---8<---
-> From: Sekhar Nori <nsekhar@ti.com>
-> Date: Thu, 30 Mar 2017 13:08:30 +0530
-> Subject: [PATCH] mtd: nand: davinci: add comment on NAND subpage write status
->  on keystone
-> 
-> Add a comment clarifying that NAND subpage write on keystone works,
-> but is not being enabled in the interest of backward compatibility.
-> 
-> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
 > ---
->  drivers/mtd/nand/davinci_nand.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+>  drivers/mtd/spi-nor/mtk-quadspi.c |    7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index 27fa8b87cd5f..5bf8be1cfc8c 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -581,6 +581,17 @@ static struct davinci_nand_pdata
->  			"ti,davinci-nand-use-bbt"))
->  			pdata->bbt_options = NAND_BBT_USE_FLASH;
->  
-> +		/*
-> +		 * Since kernel v4.8, this driver has been fixed to enable
-> +		 * use of 4-bit hardware ECC with subpages and verified on
-> +		 * TI's keystone EVMs (K2L, K2HK and K2E).
-> +		 * However, in the interest of not breaking systems using
-> +		 * existing UBI partitions, sub-page writes are not being
-> +		 * (re)enabled. If you want to use subpage writes on Keystone
-> +		 * platforms (i.e. do not have any existing UBI partitions),
-> +		 * then remove the if() block below or pass "ti,davinci-nand"
-> +		 * as the compatible in your device-tree file.
-
-Hm, I'm not sure we should suggest to remove these lines from the code.
-Just suggest to use "ti,davinci-nand" compatible.
-If you're okay with that, no need to resend, I can rework the comment
-accordingly before applying the patch.
-
-Another long term solution: if UBI is the only MTD user to be
-incompatible when sub-page write is activated/deactivated, maybe we can
-relax the checks in UBI to allow it to attach a partition where VID
-header offset is at mtd->writesize instead of
-mtd->writesize >> mtd->subpage_sft.
-
-I'll let Richard comment on that solution though.
-
+> diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+> index e661877..05cd8a8 100644
+> --- a/drivers/mtd/spi-nor/mtk-quadspi.c
+> +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+> @@ -369,6 +369,13 @@ static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
+>  		/* We only handle 1 byte */
+>  		ret = mt8173_nor_wr_sr(mt8173_nor, *buf);
+>  		break;
+> +	case SPINOR_OP_EN4B:
+> +		/* Set nor controller to 4-byte address mode,
+> +		 * and simultaneously set nor flash.
+> +		 * This case should cooperate with default operation.
 > +		 */
->  		if (of_device_is_compatible(pdev->dev.of_node,
->  					    "ti,keystone-nand")) {
->  			pdata->options |= NAND_NO_SUBPAGE_WRITE;
+> +		writeb(readb(mt8173_nor->base + MTK_NOR_DUAL_REG) | 0x10,
+> +				mt8173_nor->base + MTK_NOR_DUAL_REG);
+
+And what happens on READ then ? Who clears that bit when protocol
+changes ? You probably want something like cqspi_set_protocol()
+instead, which is invoked from {read,write}{,_reg}() and erase().
+
+>  	default:
+>  		ret = mt8173_nor_do_tx_rx(mt8173_nor, opcode, buf, len, NULL, 0);
+>  		if (ret)
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
