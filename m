@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctVG5-0003tL-Cc
+ id 1ctVG5-0003tP-Cb
  for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 08:16:43 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -15,9 +15,10 @@ Cc: linux-kernel@vger.kernel.org,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH v3 37/37] mtd: nand: denali: enable bad block table scan
-Date: Thu, 30 Mar 2017 17:15:08 +0900
-Message-Id: <1490861708-27813-7-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 34/37] mtd: nand: allow drivers to request minimum
+ alignment for passed buffer
+Date: Thu, 30 Mar 2017 17:15:05 +0900
+Message-Id: <1490861708-27813-4-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,75 +30,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now this driver is ready to remove NAND_SKIP_BBTSCAN.
+In some cases, nand_do_{read,write}_ops is passed with unaligned
+ops->datbuf.  Drivers using DMA will be unhappy about unaligned
+buffer.
 
-The BBT descriptors in denali.c are equivalent to the ones in
-nand_bbt.c.  There is no need to duplicate the equivalent structures.
-The with-oob decriptors do not work for this driver anyway.
-
-The bbt_pattern (offs = 8) and the version (veroffs = 12) area
-overlaps the ECC area.  Set NAND_BBT_NO_OOB flag to use the no_oob
-variant of the BBT descriptors.
+The new struct member, buf_align, represents the minimum alignment
+the driver require for the buffer.  If the buffer passed from the
+upper MTD layer does not have enough alignment, nand_do_*_ops will
+use bufpoi.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v3: None
-Changes in v2:
+I was hit by this problem when I ran
+  # mount -t jffs2 /dev/mtdblock*  /mnt
+
+The buffer passed to nand_do_*_ops has 4 byte offset.
+The Denali IP cannot do DMA to/from this buffer because it
+requires 16 byte alignment for DMA.
+
+
+Changes in v3:
   - Newly added
 
- drivers/mtd/nand/denali.c | 31 ++-----------------------------
- 1 file changed, 2 insertions(+), 29 deletions(-)
+Changes in v2: None
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index d10702d..de27c73 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1249,29 +1249,6 @@ static const struct mtd_ooblayout_ops denali_ooblayout_ops = {
- 	.free = denali_ooblayout_free,
- };
+ drivers/mtd/nand/nand_base.c | 12 ++++++++----
+ include/linux/mtd/nand.h     |  2 ++
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index e9d3195..b528ffa 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1953,9 +1953,10 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
  
--static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
--static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
--
--static struct nand_bbt_descr bbt_main_descr = {
--	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
--		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
--	.offs =	8,
--	.len = 4,
--	.veroffs = 12,
--	.maxblocks = 4,
--	.pattern = bbt_pattern,
--};
--
--static struct nand_bbt_descr bbt_mirror_descr = {
--	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
--		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
--	.offs =	8,
--	.len = 4,
--	.veroffs = 12,
--	.maxblocks = 4,
--	.pattern = mirror_pattern,
--};
--
- /* initialize driver data structures */
- static void denali_drv_init(struct denali_nand_info *denali)
- {
-@@ -1413,13 +1390,9 @@ int denali_init(struct denali_nand_info *denali)
- 	 * bad block management.
- 	 */
+ 		if (!aligned)
+ 			use_bufpoi = 1;
+-		else if (chip->options & NAND_USE_BOUNCE_BUFFER)
+-			use_bufpoi = !virt_addr_valid(buf);
+-		else
++		else if (chip->options & NAND_USE_BOUNCE_BUFFER) {
++			use_bufpoi = !virt_addr_valid(buf) ||
++			       !IS_ALIGNED((unsigned long)buf, chip->buf_align);
++		} else
+ 			use_bufpoi = 0;
  
--	/* Bad block management */
--	chip->bbt_td = &bbt_main_descr;
--	chip->bbt_md = &bbt_mirror_descr;
--
--	/* skip the scan for now until we have OOB read and write support */
- 	chip->bbt_options |= NAND_BBT_USE_FLASH;
--	chip->options |= NAND_SKIP_BBTSCAN;
-+	chip->bbt_options |= NAND_BBT_NO_OOB;
-+
- 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
+ 		/* Is the current page in the buffer? */
+@@ -2810,7 +2811,8 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 		if (part_pagewr)
+ 			use_bufpoi = 1;
+ 		else if (chip->options & NAND_USE_BOUNCE_BUFFER)
+-			use_bufpoi = !virt_addr_valid(buf);
++			use_bufpoi = !virt_addr_valid(buf) ||
++			      !IS_ALIGNED((unsigned long)buf, chip->buf_align);
+ 		else
+ 			use_bufpoi = 0;
  
- 	/* no subpage writes on denali */
+@@ -3426,6 +3428,8 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
+ 		nand_hw_control_init(chip->controller);
+ 	}
+ 
++	if (!chip->buf_align)
++		chip->buf_align = 1;
+ }
+ 
+ /* Sanitize ONFI strings so we can safely print them */
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 69cccd1..2ae781e 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -750,6 +750,7 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+  *			setting the read-retry mode. Mostly needed for MLC NAND.
+  * @ecc:		[BOARDSPECIFIC] ECC control structure
+  * @buffers:		buffer structure for read/write
++ * @buf_align:		minimum buffer alignment required by a platform
+  * @hwcontrol:		platform-specific hardware control structure
+  * @erase:		[REPLACEABLE] erase function
+  * @scan_bbt:		[REPLACEABLE] function to scan bad block table
+@@ -901,6 +902,7 @@ struct nand_chip {
+ 
+ 	struct nand_ecc_ctrl ecc;
+ 	struct nand_buffers *buffers;
++	unsigned long buf_align;
+ 	struct nand_hw_control hwcontrol;
+ 
+ 	uint8_t *bbt;
 -- 
 2.7.4
