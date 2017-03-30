@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctVFd-0003og-PW
+ id 1ctVFd-0003of-PX
  for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 08:16:15 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -15,10 +15,10 @@ Cc: linux-kernel@vger.kernel.org,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH v3 33/37] mtd: nand: allocate aligned buffers if
- NAND_OWN_BUFFERS is unset
-Date: Thu, 30 Mar 2017 17:15:04 +0900
-Message-Id: <1490861708-27813-3-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 32/37] mtd: nand: denali: support hardware-assisted erased
+ page detection
+Date: Thu, 30 Mar 2017 17:15:03 +0900
+Message-Id: <1490861708-27813-2-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,90 +30,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some NAND controllers are using DMA engine requiring a specific
-buffer alignment.  The core provides no guarantee on the nand_buffers
-pointers, which forces some drivers to allocate their own buffers
-and pass the NAND_OWN_BUFFERS flag.
+Recent versions of this IP support automatic erased page detection.
+If an erased page is detected on reads, the controller does not set
+INTR__ECC_UNCOR_ERR, but INTR__ERASED_PAGE.  If this feature is
+supported, the driver can use this information instead of calling
+nand_check_erased_ecc_chunk().
 
-Rework the nand_buffers allocation logic to allocate each buffer
-independently.  This should make most NAND controllers/DMA engine
-happy, and allow us to get rid of these custom buf allocation in
-NAND controller drivers.
+The detection of erased page is based on the number of zeros in the
+page; if the number of zeros is less than the value in the field
+ERASED_THRESHOLD, the page is assumed as erased.
+
+Set the ERASED_THRESHOLD to (chip->ecc.strength + 1).  This is the
+worst case where all the bitflips come from the same ECC sector.
+This field is Reserved for older IP versions, so this commit has
+no impact on them.
+
+One thing worth mentioning is the driver still needs to fill the
+buffer with 0xff in the case because the ECC correction engine has
+already manipulated the data in the buffer.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v3:
-  - Reword git-log
-
+Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/nand_base.c | 34 +++++++++++++++++++++++++++-------
- 1 file changed, 27 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/denali.c | 10 +++++++++-
+ drivers/mtd/nand/denali.h |  5 +++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index f828ad7..e9d3195 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4613,13 +4613,25 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	}
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 51e8a9a..9ee0f30 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -604,6 +604,9 @@ static int denali_pio_read(struct denali_nand_info *denali, void *buf,
+ 	if (!(irq_status & INTR__PAGE_XFER_INC))
+ 		return -EIO;
  
- 	if (!(chip->options & NAND_OWN_BUFFERS)) {
--		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
--				+ mtd->oobsize * 3, GFP_KERNEL);
-+		nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
- 		if (!nbuf)
- 			return -ENOMEM;
--		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
--		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
--		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
-+		nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
-+		if (!nbuf->ecccalc) {
-+			ret = -EINVAL;
-+			goto err_free;
-+		}
-+		nbuf->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
-+		if (!nbuf->ecccode) {
-+			ret = -EINVAL;
-+			goto err_free;
-+		}
-+		nbuf->databuf = kmalloc(mtd->writesize + mtd->oobsize,
-+					GFP_KERNEL);
-+		if (!nbuf->databuf) {
-+			ret = -EINVAL;
-+			goto err_free;
-+		}
++	if (irq_status & INTR__ERASED_PAGE)
++		memset(buf, 0xff, size);
++
+ 	return irq_status & ecc_err_mask ? -EBADMSG : 0;
+ }
  
- 		chip->buffers = nbuf;
- 	} else {
-@@ -4862,8 +4874,12 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	/* Build bad block table */
- 	return chip->scan_bbt(mtd);
- err_free:
--	if (!(chip->options & NAND_OWN_BUFFERS))
-+	if (!(chip->options & NAND_OWN_BUFFERS)) {
-+		kfree(chip->buffers->databuf);
-+		kfree(chip->buffers->ecccode);
-+		kfree(chip->buffers->ecccalc);
- 		kfree(chip->buffers);
-+	}
+@@ -676,6 +679,9 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
+ 	denali_enable_dma(denali, false);
+ 	dma_sync_single_for_cpu(denali->dev, dma_addr, size, dir);
+ 
++	if (irq_status & INTR__ERASED_PAGE)
++		memset(buf, 0xff, size);
++
  	return ret;
  }
- EXPORT_SYMBOL(nand_scan_tail);
-@@ -4914,8 +4930,12 @@ void nand_cleanup(struct nand_chip *chip)
  
- 	/* Free bad block table memory */
- 	kfree(chip->bbt);
--	if (!(chip->options & NAND_OWN_BUFFERS))
-+	if (!(chip->options & NAND_OWN_BUFFERS)) {
-+		kfree(chip->buffers->databuf);
-+		kfree(chip->buffers->ecccode);
-+		kfree(chip->buffers->ecccalc);
- 		kfree(chip->buffers);
-+	}
+@@ -1475,7 +1481,9 @@ int denali_init(struct denali_nand_info *denali)
+ 	chip->ecc.bytes = denali_calc_ecc_bytes(chip->ecc.size,
+ 						chip->ecc.strength);
  
- 	/* Free bad block descriptor memory */
- 	if (chip->badblock_pattern && chip->badblock_pattern->options
+-	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
++	iowrite32(MAKE_ECC_CORRECTION(chip->ecc.strength,
++				      chip->ecc.strength + 1),
++		  denali->flash_reg + ECC_CORRECTION);
+ 	iowrite32(mtd->erasesize / mtd->writesize,
+ 		  denali->flash_reg + PAGES_PER_BLOCK);
+ 	iowrite32(denali->nand.options & NAND_BUSWIDTH_16 ? 1 : 0,
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index f92b9db..b5ea8d7 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -110,6 +110,10 @@
+ 
+ #define ECC_CORRECTION				0x1b0
+ #define     ECC_CORRECTION__VALUE			GENMASK(4, 0)
++#define     ECC_CORRECTION__ERASE_THRESHOLD		GENMASK(31, 16)
++#define     MAKE_ECC_CORRECTION(val, thresh)		\
++			(((val) & (ECC_CORRECTION__VALUE)) | \
++			(((thresh) << 16) & (ECC_CORRECTION__ERASE_THRESHOLD)))
+ 
+ #define READ_MODE				0x1c0
+ #define     READ_MODE__VALUE				GENMASK(3, 0)
+@@ -233,6 +237,7 @@
+ #define     INTR__RST_COMP				BIT(13)
+ #define     INTR__PIPE_CMD_ERR				BIT(14)
+ #define     INTR__PAGE_XFER_INC				BIT(15)
++#define     INTR__ERASED_PAGE				BIT(16)
+ 
+ #define PAGE_CNT(bank)				(0x430 + (bank) * 0x50)
+ #define ERR_PAGE_ADDR(bank)			(0x440 + (bank) * 0x50)
 -- 
 2.7.4
