@@ -1,26 +1,28 @@
-Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctXQO-0006LX-TW
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 10:35:29 +0000
-Received: by mail-oi0-x242.google.com with SMTP id b187so3945466oif.3
- for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 03:35:08 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctYXW-00016O-5Q
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 11:46:57 +0000
+Date: Thu, 30 Mar 2017 13:46:22 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Sekhar Nori <nsekhar@ti.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Muralidharan Karicheri <m-karicheri2@ti.com>, Franklin S Cooper Jr
+ <fcooper@ti.com>
+Subject: Re: [PATCH] Revert "mtd: davinci-nand: disable subpage write for
+ keystone-nand"
+Message-ID: <20170330134622.22ffa45a@bbrezillon>
+In-Reply-To: <0c648fbb-bb73-30e3-21bb-2875fa8c281d@ti.com>
+References: <9d21903d38de6685c9bf45d6eb8e32ab0e8c65c5.1490609415.git.nsekhar@ti.com>
+ <20170329170352.2d6c0721@bbrezillon>
+ <7e06e416-8c4a-46dd-5223-2da522daba08@ti.com>
+ <20170330120012.081310fa@bbrezillon>
+ <0c648fbb-bb73-30e3-21bb-2875fa8c281d@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
-References: <1490864181-2192-1-git-send-email-richard@nod.at>
- <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
- <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
- <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 30 Mar 2017 13:35:06 +0300
-Message-ID: <CAOQ4uxi0sJrZX22nNW23PnJ9AgzC=EeBOjOp=wb1taXSySYUrA@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
-To: Richard Weinberger <richard@nod.at>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "stable [v4.9]" <stable@vger.kernel.org>,
- Ralph Sennhauser <ralph.sennhauser@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,38 +32,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 30, 2017 at 1:23 PM, Richard Weinberger <richard@nod.at> wrote:
-> Am 30.03.2017 um 11:49 schrieb Richard Weinberger:
->> Am 30.03.2017 um 11:32 schrieb Adrian Hunter:
->>>> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
->>>> index 0858213a4e63..0139155045fe 100644
->>>> --- a/fs/ubifs/dir.c
->>>> +++ b/fs/ubifs/dir.c
->>>> @@ -748,6 +748,11 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
->>>>             goto out_fname;
->>>>
->>>>     lock_2_inodes(dir, inode);
->>>> +
->>>> +   /* Handle O_TMPFILE corner case, it is allowed to link a O_TMPFILE. */
->>>> +   if (inode->i_nlink == 0)
->>>> +           ubifs_delete_orphan(c, inode->i_ino);
->>>
->>> Isn't there also a deletion inode in the journal?  If the recovery sees that
->>> won't it delete the file data?
->>
->> Yes, but ubifs_link() adds a new journal entry which revives the inode.
->> This should cancel out the deletion, right?
->> You know the UBIFS journal better than I do. :-)
->
-> Reading deeper into the proved that I was wrong.
-> AFAIKT UBIFS' journal has currently no way to revive a deleted inode.
-> So, we have to think about a new solution.
->
+On Thu, 30 Mar 2017 15:38:54 +0530
+Sekhar Nori <nsekhar@ti.com> wrote:
 
-Not that I know anything about ubifs, but why do you need the deleted
-inode record in the first place for an O_TMPFILE.
-vfs ensures you that you can only link back an O_TMPFILE, not a deleted
-inode.
+> On Thursday 30 March 2017 03:30 PM, Boris Brezillon wrote:
+> > On Thu, 30 Mar 2017 13:13:58 +0530
+> > Sekhar Nori <nsekhar@ti.com> wrote:
+> >   
+> >> Hi Boris,
+> >>
+> >> On Wednesday 29 March 2017 08:33 PM, Boris Brezillon wrote:  
+> >>> On Mon, 27 Mar 2017 15:56:55 +0530
+> >>> Sekhar Nori <nsekhar@ti.com> wrote:
+> >>>     
+> >>>> This partly reverts commit 28c015a9daabe4ed3aeb0ccf669a3f1c2b8b81d5.
+> >>>>
+> >>>> Since f6d7c1b5598b ("mtd: nand: davinci: Reinitialize the HW ECC
+> >>>> engine in 4bit hwctl") using subpage and 4bit HWECC works.
+> >>>>
+> >>>> Revert the original workaround made for this. Tested with
+> >>>> mtd_subpagetest and UBIFS on K2E, K2HK, K2L EVMs.
+> >>>>
+> >>>> The addition of keystone specific compatible to davinci_nand_of_match[]
+> >>>> contained in original commit is retained.    
+> >>>
+> >>> Hm, it sounds like a bad idea to re-enable sub-page writes afterwards.
+> >>> You might break existing systems using UBI, because UBI detects the
+> >>> sub-page write feature and decides to place the VID header at a
+> >>> different position depending on that.
+> >>> To sum-up, you're likely to break users that have already flashed a UBI
+> >>> image with the old driver.    
+> >>
+> >> Okay, I didn't realize that.
+> >>  
+> >>> If you want to re-enable sub-page writes, just switch back to the
+> >>> "ti,davinci-nand" compatible.    
+> >>
+> >> How about a comment on top of the disable subpage write code explaining 
+> >> that its not really needed anymore ? Something like this patch:
+> >>
+> >> ---8<---
+> >> From: Sekhar Nori <nsekhar@ti.com>
+> >> Date: Thu, 30 Mar 2017 13:08:30 +0530
+> >> Subject: [PATCH] mtd: nand: davinci: add comment on NAND subpage write status
+> >>  on keystone
+> >>
+> >> Add a comment clarifying that NAND subpage write on keystone works,
+> >> but is not being enabled in the interest of backward compatibility.
+> >>
+> >> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> >> ---
+> >>  drivers/mtd/nand/davinci_nand.c | 11 +++++++++++
+> >>  1 file changed, 11 insertions(+)
+> >>
+> >> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+> >> index 27fa8b87cd5f..5bf8be1cfc8c 100644
+> >> --- a/drivers/mtd/nand/davinci_nand.c
+> >> +++ b/drivers/mtd/nand/davinci_nand.c
+> >> @@ -581,6 +581,17 @@ static struct davinci_nand_pdata
+> >>  			"ti,davinci-nand-use-bbt"))
+> >>  			pdata->bbt_options = NAND_BBT_USE_FLASH;
+> >>  
+> >> +		/*
+> >> +		 * Since kernel v4.8, this driver has been fixed to enable
+> >> +		 * use of 4-bit hardware ECC with subpages and verified on
+> >> +		 * TI's keystone EVMs (K2L, K2HK and K2E).
+> >> +		 * However, in the interest of not breaking systems using
+> >> +		 * existing UBI partitions, sub-page writes are not being
+> >> +		 * (re)enabled. If you want to use subpage writes on Keystone
+> >> +		 * platforms (i.e. do not have any existing UBI partitions),
+> >> +		 * then remove the if() block below or pass "ti,davinci-nand"
+> >> +		 * as the compatible in your device-tree file.  
+> > 
+> > Hm, I'm not sure we should suggest to remove these lines from the code.
+> > Just suggest to use "ti,davinci-nand" compatible.  
 
-It does not appear to be the right thing to do to pass deletion=1 to
-ubifs_jnl_update(), but deletion=0 doesn't look right as well..
+Can you send a separate patch so that it appears on its own in
+patchwork?
