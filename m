@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTs2-0007E1-HK
+ id 1ctTs2-0007Dr-HR
  for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:51 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -18,9 +18,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 06/37] mtd: nand: denali: support HW_ECC_FIXUP capability
-Date: Thu, 30 Mar 2017 15:45:52 +0900
-Message-Id: <1490856383-31560-7-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 05/37] mtd: nand: denali: fix erased page checking
+Date: Thu, 30 Mar 2017 15:45:51 +0900
+Message-Id: <1490856383-31560-6-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,187 +32,180 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some old versions of the Denali IP (perhaps used only for Intel?)
-detects ECC errors and provides correct data via a register, but
-does not touch the transferred data.  So, the software must fixup
-the data in the buffer according to the provided ECC correction
-information.
+This part is wrong in multiple ways:
 
-Newer versions perform ECC correction before transferring the data.
-No more software intervention is needed.  The ECC_ERROR_ADDRESS and
-ECC_CORRECTION_INFO registers were deprecated.  Instead, the number
-of corrected bit-flips are reported via the ECC_COR_INFO register.
-When an uncorrectable ECC error happens, a status flag is set to the
-INTR_STATUS and ECC_COR_INFO registers.
+[1] is_erased() is called against "buf" twice, so the OOB area is
+not checked at all.  The second call should check chip->oob_poi.
 
-As is often the case with this IP, the register view of INTR_STATUS
-had broken compatibility.
+[2] This code block is nested by double "if (check_erase_page)".
+The inner one is redundant.
 
-For older versions (SW ECC fixup):
-  bit 0:  ECC_TRANSACTION_DONE
-  bit 1:  ECC_ERR
+[3] The ECC_ERROR_ADDRESS register reports which sector(s) had
+uncorrectable ECC errors.  It is pointless to check the whole page
+if only one sector contains errors.
 
-For newer versions (HW ECC fixup):
-  bit 0:  ECC_UNCOR_ERR
-  bit 1:  Reserved
+[4] Unfortunately, the Denali ECC correction engine has already
+manipulated the data buffer before it decides the bitflips are
+uncorrectable.  That is, not all of the data are 0xFF after an
+erased page is processed by the ECC engine.  The current is_erased()
+helper could report false-positive ECC errors.  Actually, a certain
+mount of bitflips are allowed in an erased page.  The core framework
+provides nand_check_erased_ecc_chunk() that takes the threshold into
+account.  Let's use this.
 
-Due to this difference, the irq_mask must be fixed too.
+This commit reworks the code to solve those problems.
 
-The existing handle_ecc() has been renamed to denali_sw_ecc_fixup()
-for clarification.
-
-What is unfortunate with this feature is we can not know the total
-number of corrected/uncorrected errors in a page.  The register
-ECC_COR_INFO reports the maximum of per-sector bitflips.  This is
-useful for ->read_page return value, but ecc_stats.{corrected,failed}
-increments may not be precise.
+Please note the erased page checking is implemented as a separate
+helper function instead of embedding it in the loop in handle_ecc().
+The reason is that OOB data are needed for the erased page checking,
+but the controller can not start a new transaction until all ECC
+error information is read out from the registers.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v3:
-  - Adjusted for the correct erased page check.
-  - Move DENALI_CAP_ define out of struct denali_nand_info
+  - Fix nand_check_erased_ecc_chunk call logic.
+    Iterate over only needed ECC chunks.
 
 Changes in v2:
-  - Change the capability prefix DENALI_CAPS_ -> DENALI_CAP_
+  - Squash some patches into one.
+  - Use nand_check_erased_ecc_chunk() with threshold
 
- drivers/mtd/nand/denali.c | 52 ++++++++++++++++++++++++++++++++++++++++-------
- drivers/mtd/nand/denali.h | 14 +++++++++++--
- 2 files changed, 57 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/denali.c | 77 ++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 50 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 64a3bdc..b95e33a 100644
+index c5c150a..64a3bdc 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -856,6 +856,41 @@ static int denali_check_erased_page(struct mtd_info *mtd,
- 	return max_bitflips;
+@@ -818,19 +818,44 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ 	}
  }
  
-+static int denali_hw_ecc_fixup(struct mtd_info *mtd,
-+			       struct denali_nand_info *denali,
-+			       unsigned long *uncor_ecc_flags)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int bank = denali->flash_bank;
-+	uint32_t ecc_cor;
-+	unsigned int max_bitflips;
+-/*
+- * this function examines buffers to see if they contain data that
+- * indicate that the buffer is part of an erased region of flash.
+- */
+-static bool is_erased(uint8_t *buf, int len)
++static int denali_check_erased_page(struct mtd_info *mtd,
++				    struct nand_chip *chip, uint8_t *buf,
++				    unsigned long uncor_ecc_flags,
++				    unsigned int max_bitflips)
+ {
+-	int i;
++	uint8_t *ecc_code = chip->buffers->ecccode;
++	int ecc_steps = chip->ecc.steps;
++	int ecc_size = chip->ecc.size;
++	int ecc_bytes = chip->ecc.bytes;
++	int i, ret, stat;
 +
-+	ecc_cor = ioread32(denali->flash_reg + ECC_COR_INFO(bank));
-+	ecc_cor >>= ECC_COR_INFO__SHIFT(bank);
++	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
++					 chip->ecc.total);
++	if (ret)
++		return ret;
 +
-+	if (ecc_cor & ECC_COR_INFO__UNCOR_ERR) {
-+		/*
-+		 * This flag is set when uncorrectable error occurs at least in
-+		 * one ECC sector.  We can not know "how many sectors", or
-+		 * "which sector(s)".  We need erase-page check for all sectors.
-+		 */
-+		*uncor_ecc_flags = GENMASK(chip->ecc.steps - 1, 0);
-+		return 0;
++	for (i = 0; i < ecc_steps; i++) {
++		if (!(uncor_ecc_flags & BIT(i)))
++			continue;
++
++		stat = nand_check_erased_ecc_chunk(buf, ecc_size,
++						  ecc_code, ecc_bytes,
++						  NULL, 0,
++						  chip->ecc.strength);
++		if (stat < 0) {
++			mtd->ecc_stats.failed++;
++		} else {
++			mtd->ecc_stats.corrected += stat;
++			max_bitflips = max_t(unsigned int, max_bitflips, stat);
++		}
+ 
+-	for (i = 0; i < len; i++)
+-		if (buf[i] != 0xFF)
+-			return false;
+-	return true;
++		buf += ecc_size;
++		ecc_code += ecc_bytes;
 +	}
 +
-+	max_bitflips = ecc_cor & ECC_COR_INFO__MAX_ERRORS;
-+
-+	/*
-+	 * The register holds the maximum of per-sector corrected bitflips.
-+	 * This is suitable for the return value of the ->read_page() callback.
-+	 * Unfortunately, we can not know the total number of corrected bits in
-+	 * the page.  Increase the stats by max_bitflips. (compromised solution)
-+	 */
-+	mtd->ecc_stats.corrected += max_bitflips;
-+
 +	return max_bitflips;
-+}
+ }
 +
  #define ECC_SECTOR_SIZE 512
  
  #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
-@@ -865,8 +900,9 @@ static int denali_check_erased_page(struct mtd_info *mtd,
- #define ECC_ERR_DEVICE(x)	(((x) & ERR_CORRECTION_INFO__DEVICE_NR) >> 8)
+@@ -841,7 +866,7 @@ static bool is_erased(uint8_t *buf, int len)
  #define ECC_LAST_ERR(x)		((x) & ERR_CORRECTION_INFO__LAST_ERR_INFO)
  
--static int handle_ecc(struct mtd_info *mtd, struct denali_nand_info *denali,
--		      uint8_t *buf, unsigned long *uncor_ecc_flags)
-+static int denali_sw_ecc_fixup(struct mtd_info *mtd,
-+			       struct denali_nand_info *denali,
-+			       unsigned long *uncor_ecc_flags, uint8_t *buf)
+ static int handle_ecc(struct mtd_info *mtd, struct denali_nand_info *denali,
+-		      uint8_t *buf, bool *check_erased_page)
++		      uint8_t *buf, unsigned long *uncor_ecc_flags)
  {
  	unsigned int bitflips = 0;
  	unsigned int max_bitflips = 0;
-@@ -1070,12 +1106,12 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -868,11 +893,10 @@ static int handle_ecc(struct mtd_info *mtd, struct denali_nand_info *denali,
+ 
+ 		if (ECC_ERROR_UNCORRECTABLE(err_cor_info)) {
+ 			/*
+-			 * if the error is not correctable, need to look at the
+-			 * page to see if it is an erased page. if so, then
+-			 * it's not a real ECC error
++			 * Check later if this is a real ECC error, or
++			 * an erased sector.
+ 			 */
+-			*check_erased_page = true;
++			*uncor_ecc_flags |= BIT(err_sector);
+ 		} else if (err_byte < ECC_SECTOR_SIZE) {
+ 			/*
+ 			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
+@@ -1045,7 +1069,6 @@ static int denali_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
  			    uint8_t *buf, int oob_required, int page)
  {
+-	unsigned int max_bitflips = 0;
  	struct denali_nand_info *denali = mtd_to_denali(mtd);
--
+ 
  	dma_addr_t addr = denali->buf.dma_buf;
- 	size_t size = mtd->writesize + mtd->oobsize;
--
+@@ -1053,7 +1076,8 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 
  	uint32_t irq_status;
--	uint32_t irq_mask = INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
-+	uint32_t irq_mask = denali->caps & DENALI_CAP_HW_ECC_FIXUP ?
-+				INTR__DMA_CMD_COMP | INTR__ECC_UNCOR_ERR :
-+				INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
- 	unsigned long uncor_ecc_flags = 0;
- 	int stat = 0;
+ 	uint32_t irq_mask = INTR__ECC_TRANSACTION_DONE | INTR__ECC_ERR;
+-	bool check_erased_page = false;
++	unsigned long uncor_ecc_flags = 0;
++	int stat = 0;
  
-@@ -1101,8 +1137,10 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
+ 	if (page != denali->page) {
+ 		dev_err(denali->dev,
+@@ -1078,21 +1102,20 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
  	memcpy(buf, denali->buf.buf, mtd->writesize);
  
--	if (irq_status & INTR__ECC_ERR)
--		stat = handle_ecc(mtd, denali, buf, &uncor_ecc_flags);
-+	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
-+		stat = denali_hw_ecc_fixup(mtd, denali, &uncor_ecc_flags);
-+	else if (irq_status & INTR__ECC_ERR)
-+		stat = denali_sw_ecc_fixup(mtd, denali, &uncor_ecc_flags, buf);
+ 	if (irq_status & INTR__ECC_ERR)
+-		max_bitflips = handle_ecc(mtd, denali, buf, &check_erased_page);
++		stat = handle_ecc(mtd, denali, buf, &uncor_ecc_flags);
  	denali_enable_dma(denali, false);
  
- 	if (stat < 0)
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 483c0e9..e532956 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -20,6 +20,7 @@
- #ifndef __DENALI_H__
- #define __DENALI_H__
- 
-+#include <linux/bitops.h>
- #include <linux/mtd/nand.h>
- 
- #define DEVICE_RESET				0x0
-@@ -218,8 +219,10 @@
- 
- #define INTR_STATUS(__bank)	(0x410 + ((__bank) * 0x50))
- #define INTR_EN(__bank)		(0x420 + ((__bank) * 0x50))
--#define     INTR__ECC_TRANSACTION_DONE			0x0001
--#define     INTR__ECC_ERR				0x0002
-+/* bit[1:0] is used differently depending on IP version */
-+#define     INTR__ECC_UNCOR_ERR				0x0001	/* new IP */
-+#define     INTR__ECC_TRANSACTION_DONE			0x0001	/* old IP */
-+#define     INTR__ECC_ERR				0x0002	/* old IP */
- #define     INTR__DMA_CMD_COMP				0x0004
- #define     INTR__TIME_OUT				0x0008
- #define     INTR__PROGRAM_FAIL				0x0010
-@@ -259,6 +262,11 @@
- #define     ERR_CORRECTION_INFO__ERROR_TYPE		0x4000
- #define     ERR_CORRECTION_INFO__LAST_ERR_INFO		0x8000
- 
-+#define ECC_COR_INFO(bank)			(0x650 + (bank) / 2 * 0x10)
-+#define     ECC_COR_INFO__SHIFT(bank)			((bank) % 2 * 8)
-+#define     ECC_COR_INFO__MAX_ERRORS			0x007f
-+#define     ECC_COR_INFO__UNCOR_ERR			0x0080
+-	if (check_erased_page) {
++	if (stat < 0)
++		return stat;
 +
- #define DMA_ENABLE				0x700
- #define     DMA_ENABLE__FLAG				0x0001
++	if (uncor_ecc_flags) {
+ 		read_oob_data(mtd, chip->oob_poi, denali->page);
  
-@@ -338,6 +346,8 @@ struct denali_nand_info {
- 	unsigned int caps;
- };
- 
-+#define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
+-		/* check ECC failures that may have occurred on erased pages */
+-		if (check_erased_page) {
+-			if (!is_erased(buf, mtd->writesize))
+-				mtd->ecc_stats.failed++;
+-			if (!is_erased(buf, mtd->oobsize))
+-				mtd->ecc_stats.failed++;
+-		}
++		stat = denali_check_erased_page(mtd, chip, buf,
++						uncor_ecc_flags, stat);
+ 	}
+-	return max_bitflips;
 +
- extern int denali_init(struct denali_nand_info *denali);
- extern void denali_remove(struct denali_nand_info *denali);
++	return stat;
+ }
  
+ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
 -- 
 2.7.4
