@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTs2-0007E6-HB
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:54 +0000
+ id 1ctTs2-0007Dv-HJ
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:55 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -18,9 +18,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 20/37] mtd: nand: denali: remove unneeded find_valid_banks()
-Date: Thu, 30 Mar 2017 15:46:06 +0900
-Message-Id: <1490856383-31560-21-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 08/37] mtd: nand: denali: support 64bit capable DMA engine
+Date: Thu, 30 Mar 2017 15:45:54 +0900
+Message-Id: <1490856383-31560-9-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,105 +32,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The function find_valid_banks() issues the Read ID (0x90) command,
-then compares the first byte (Manufacturer ID) of each bank with
-the one of bank0.
+The current driver only supports the DMA engine up to 32 bit
+physical address, but there also exists 64 bit capable DMA engine
+for this IP.
 
-This is equivalent to what nand_scan_ident() does.  The number of
-chips is detected there, so this is unneeded.
-
-What is worse for find_valid_banks() is that, if multiple chips are
-connected to INTEL_CE4100 platform, it crashes the kernel by BUG().
-This is what we should avoid.  This function is just harmful and
-unneeded.
+The data DMA setup sequence is completely different, so I added the
+64 bit DMA code as a new function denali_setup_dma64().  The 32 bit
+one has been renamed to denali_setup_dma32().
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v3: None
-Changes in v2:
-  - Newly added
+Changes in v3:
+  - Move DENALI_CAP_ define out of struct denali_nand_info
 
- drivers/mtd/nand/denali.c | 47 -----------------------------------------------
- drivers/mtd/nand/denali.h |  1 -
- 2 files changed, 48 deletions(-)
+Changes in v2:
+  - Change the capability prefix DENALI_CAPS_ -> DENALI_CAP_
+
+ drivers/mtd/nand/denali.c | 39 +++++++++++++++++++++++++++++++++++----
+ drivers/mtd/nand/denali.h |  1 +
+ 2 files changed, 36 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 5da8156..0c93a07 100644
+index b95e33a..417a895 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -338,51 +338,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
+@@ -979,8 +979,30 @@ static void denali_enable_dma(struct denali_nand_info *denali, bool en)
+ 	ioread32(denali->flash_reg + DMA_ENABLE);
  }
  
- /*
-- * determines how many NAND chips are connected to the controller. Note for
-- * Intel CE4100 devices we don't support more than one device.
-- */
--static void find_valid_banks(struct denali_nand_info *denali)
--{
--	uint32_t id[denali->max_banks];
--	int i;
--
--	denali->total_used_banks = 1;
--	for (i = 0; i < denali->max_banks; i++) {
--		index_addr(denali, MODE_11 | (i << 24) | 0, 0x90);
--		index_addr(denali, MODE_11 | (i << 24) | 1, 0);
--		index_addr_read_data(denali, MODE_11 | (i << 24) | 2, &id[i]);
--
--		dev_dbg(denali->dev,
--			"Return 1st ID for bank[%d]: %x\n", i, id[i]);
--
--		if (i == 0) {
--			if (!(id[i] & 0x0ff))
--				break; /* WTF? */
--		} else {
--			if ((id[i] & 0x0ff) == (id[0] & 0x0ff))
--				denali->total_used_banks++;
--			else
--				break;
--		}
--	}
--
--	if (denali->platform == INTEL_CE4100) {
--		/*
--		 * Platform limitations of the CE4100 device limit
--		 * users to a single chip solution for NAND.
--		 * Multichip support is not enabled.
--		 */
--		if (denali->total_used_banks != 1) {
--			dev_err(denali->dev,
--				"Sorry, Intel CE4100 only supports a single NAND device.\n");
--			BUG();
--		}
--	}
--	dev_dbg(denali->dev,
--		"denali->total_used_banks: %d\n", denali->total_used_banks);
--}
--
--/*
-  * Use the configuration feature register to determine the maximum number of
-  * banks that the hardware supports.
-  */
-@@ -439,8 +394,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
- 			ioread32(denali->flash_reg + RDWR_EN_HI_CNT),
- 			ioread32(denali->flash_reg + CS_SETUP_CNT));
+-/* setups the HW to perform the data DMA */
+-static void denali_setup_dma(struct denali_nand_info *denali, int op)
++static void denali_setup_dma64(struct denali_nand_info *denali, int op)
++{
++	uint32_t mode;
++	const int page_count = 1;
++	uint64_t addr = denali->buf.dma_buf;
++
++	mode = MODE_10 | BANK(denali->flash_bank) | denali->page;
++
++	/* DMA is a three step process */
++
++	/*
++	 * 1. setup transfer type, interrupt when complete,
++	 *    burst len = 64 bytes, the number of pages
++	 */
++	index_addr(denali, mode, 0x01002000 | (64 << 16) | op | page_count);
++
++	/* 2. set memory low address */
++	index_addr(denali, mode, addr);
++
++	/* 3. set memory high address */
++	index_addr(denali, mode, addr >> 32);
++}
++
++static void denali_setup_dma32(struct denali_nand_info *denali, int op)
+ {
+ 	uint32_t mode;
+ 	const int page_count = 1;
+@@ -1003,6 +1025,14 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
+ 	index_addr(denali, mode | 0x14000, 0x2400);
+ }
  
--	find_valid_banks(denali);
--
- 	/*
- 	 * If the user specified to override the default timings
- 	 * with a specific ONFI mode, we apply those changes here.
++static void denali_setup_dma(struct denali_nand_info *denali, int op)
++{
++	if (denali->caps & DENALI_CAP_DMA_64BIT)
++		denali_setup_dma64(denali, op);
++	else
++		denali_setup_dma32(denali, op);
++}
++
+ /*
+  * writes a page. user specifies type, and this function handles the
+  * configuration details.
+@@ -1518,8 +1548,9 @@ int denali_init(struct denali_nand_info *denali)
+ 		goto failed_req_irq;
+ 	}
+ 
+-	/* Is 32-bit DMA supported? */
+-	ret = dma_set_mask(denali->dev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(denali->dev,
++			   DMA_BIT_MASK(denali->caps & DENALI_CAP_DMA_64BIT ?
++					64 : 32));
+ 	if (ret) {
+ 		dev_err(denali->dev, "No usable DMA configuration\n");
+ 		goto failed_req_irq;
 diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 610b013..1f0a85a 100644
+index e532956..1f413d0 100644
 --- a/drivers/mtd/nand/denali.h
 +++ b/drivers/mtd/nand/denali.h
-@@ -326,7 +326,6 @@ struct denali_nand_info {
- 	int platform;
- 	struct nand_buf buf;
- 	struct device *dev;
--	int total_used_banks;
- 	int page;
- 	void __iomem *flash_reg;	/* Register Interface */
- 	void __iomem *flash_mem;	/* Host Data/Command Interface */
+@@ -347,6 +347,7 @@ struct denali_nand_info {
+ };
+ 
+ #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
++#define DENALI_CAP_DMA_64BIT			BIT(1)
+ 
+ extern int denali_init(struct denali_nand_info *denali);
+ extern void denali_remove(struct denali_nand_info *denali);
 -- 
 2.7.4
