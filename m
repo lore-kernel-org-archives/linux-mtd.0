@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTs2-0007E0-HO
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:51 +0000
+ id 1ctTs2-0007De-Gz
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:53 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -18,10 +18,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 18/37] mtd: nand: denali: do not propagate NAND_STATUS_FAIL
- to waitfunc()
-Date: Thu, 30 Mar 2017 15:46:04 +0900
-Message-Id: <1490856383-31560-19-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 02/37] mtd: nand: denali: allow to override mtd->name from
+ label DT property
+Date: Thu, 30 Mar 2017 15:45:48 +0900
+Message-Id: <1490856383-31560-3-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,81 +33,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, the error handling of denali_write_page(_raw) is a bit
-complicated.  If the program command fails, NAND_STATUS_FAIL is set
-to the driver internal denali->status, then read out later by
-denali_waitfunc().
+Commit 28309572aac4 ("mtd: name the mtd device with an optional
+label property") allow us to identify a chip in a user-friendly way.
 
-We can avoid it by exploiting the nand_write_page() implementation.
-If chip->ecc.write_page(_raw) returns negative code (i.e. -EIO), it
-errors out immediately.  This gives the same result as returning
-NAND_STATUS_FAIL from chip->waitfunc.  In either way, -EIO is
-returned to the upper MTD layer.
+If nand_set_flash_node() picks up the "label" from DT, let's respect
+it.  Otherwise, let it fallback to the current name "denali-nand".
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
 
-Changes in v3: None
-Changes in v2:
-  - Newly added
+Changes in v3:
+  - Replaced "mtd: nand: denali: do not set mtd->name" in v2
 
- drivers/mtd/nand/denali.c | 12 ++++--------
- drivers/mtd/nand/denali.h |  1 -
- 2 files changed, 4 insertions(+), 9 deletions(-)
+Changes in v2: None
+
+ drivers/mtd/nand/denali.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 79851ca..5da8156 100644
+index 4ca75d3..4e6d03d 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1005,6 +1005,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
-+	int ret = 0;
+@@ -1462,8 +1462,10 @@ int denali_init(struct denali_nand_info *denali)
  
- 	denali->page = page;
+ 	/* now that our ISR is registered, we can enable interrupts */
+ 	denali_set_intr_modes(denali, true);
+-	mtd->name = "denali-nand";
+ 	nand_set_flash_node(chip, denali->dev->of_node);
++	/* Fallback to the default name if DT did not give "label" property */
++	if (!mtd->name)
++		mtd->name = "denali-nand";
  
-@@ -1038,13 +1039,13 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (irq_status == 0) {
- 		dev_err(denali->dev, "timeout on write_page (type = %d)\n",
- 			raw_xfer);
--		denali->status = NAND_STATUS_FAIL;
-+		ret = -EIO;
- 	}
- 
- 	denali_enable_dma(denali, false);
- 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_TO_DEVICE);
- 
--	return 0;
-+	return ret;
- }
- 
- /* NAND core entry points */
-@@ -1196,12 +1197,7 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
- 
- static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
- {
--	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	int status = denali->status;
--
--	denali->status = 0;
--
--	return status;
-+	return 0;
- }
- 
- static int denali_erase(struct mtd_info *mtd, int page)
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 00ce04e..9e2b787 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -329,7 +329,6 @@ struct nand_buf {
- struct denali_nand_info {
- 	struct nand_chip nand;
- 	int flash_bank; /* currently selected chip */
--	int status;
- 	int platform;
- 	struct nand_buf buf;
- 	struct device *dev;
+ 	/* register the driver with the NAND core subsystem */
+ 	chip->select_chip = denali_select_chip;
 -- 
 2.7.4
