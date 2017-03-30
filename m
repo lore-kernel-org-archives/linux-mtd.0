@@ -1,7 +1,7 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTs2-0007De-Gz
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:53 +0000
+ id 1ctTs2-0007ED-HM
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:54 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -18,10 +18,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 02/37] mtd: nand: denali: allow to override mtd->name from
- label DT property
-Date: Thu, 30 Mar 2017 15:45:48 +0900
-Message-Id: <1490856383-31560-3-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 15/37] mtd: nand: denali: remove Toshiba and Hynix specific
+ fixup code
+Date: Thu, 30 Mar 2017 15:46:01 +0900
+Message-Id: <1490856383-31560-16-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,39 +33,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 28309572aac4 ("mtd: name the mtd device with an optional
-label property") allow us to identify a chip in a user-friendly way.
+The Denali IP can automatically detect device parameters such as
+page size, oob size, device width, etc. and this driver currently
+relies on it.  However, this hardware function is known to be
+problematic.
 
-If nand_set_flash_node() picks up the "label" from DT, let's respect
-it.  Otherwise, let it fallback to the current name "denali-nand".
+[1] Due to a hardware bug, various misdetected cases were reported.
+    That is why get_toshiba_nand_para() and get_hynix_nand_para()
+    exist to fix-up the misdetected parameters.  It is not realistic
+    to add a new NAND device to the *black list* every time we are
+    hit by a misdetected case.  We would never be able to guarantee
+    that all cases are covered.
+
+[2] Because this feature is unreliable, it is disabled on some
+    platforms.
+
+The nand_scan_ident() detects device parameters in a more tested
+way.  The hardware should not set the device parameter registers in
+a different, unreliable way.  Instead, set the parameters from the
+nand_scan_ident() back to the registers.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
 
-Changes in v3:
-  - Replaced "mtd: nand: denali: do not set mtd->name" in v2
-
+Changes in v3: None
 Changes in v2: None
 
- drivers/mtd/nand/denali.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/denali.c | 40 ++++++----------------------------------
+ 1 file changed, 6 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 4ca75d3..4e6d03d 100644
+index 2f796e3..2b20232 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1462,8 +1462,10 @@ int denali_init(struct denali_nand_info *denali)
+@@ -337,36 +337,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
+ 	}
+ }
  
- 	/* now that our ISR is registered, we can enable interrupts */
- 	denali_set_intr_modes(denali, true);
--	mtd->name = "denali-nand";
- 	nand_set_flash_node(chip, denali->dev->of_node);
-+	/* Fallback to the default name if DT did not give "label" property */
-+	if (!mtd->name)
-+		mtd->name = "denali-nand";
+-static void get_toshiba_nand_para(struct denali_nand_info *denali)
+-{
+-	/*
+-	 * Workaround to fix a controller bug which reports a wrong
+-	 * spare area size for some kind of Toshiba NAND device
+-	 */
+-	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
+-		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
+-		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+-}
+-
+-static void get_hynix_nand_para(struct denali_nand_info *denali,
+-							uint8_t device_id)
+-{
+-	switch (device_id) {
+-	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
+-	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
+-		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
+-		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
+-		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+-		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
+-		break;
+-	default:
+-		dev_warn(denali->dev,
+-			 "Unknown Hynix NAND (Device ID: 0x%x).\n"
+-			 "Will use default parameter values instead.\n",
+-			 device_id);
+-	}
+-}
+-
+ /*
+  * determines how many NAND chips are connected to the controller. Note for
+  * Intel CE4100 devices we don't support more than one device.
+@@ -453,10 +423,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ 			return FAIL;
+ 	} else if (maf_id == 0xEC) { /* Samsung NAND */
+ 		get_samsung_nand_para(denali, device_id);
+-	} else if (maf_id == 0x98) { /* Toshiba NAND */
+-		get_toshiba_nand_para(denali);
+-	} else if (maf_id == 0xAD) { /* Hynix NAND */
+-		get_hynix_nand_para(denali, device_id);
+ 	}
  
- 	/* register the driver with the NAND core subsystem */
- 	chip->select_chip = denali_select_chip;
+ 	dev_info(denali->dev,
+@@ -1663,6 +1629,12 @@ int denali_init(struct denali_nand_info *denali)
+ 						chip->ecc.strength);
+ 
+ 	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
++	iowrite32(mtd->erasesize / mtd->writesize,
++		  denali->flash_reg + PAGES_PER_BLOCK);
++	iowrite32(denali->nand.options & NAND_BUSWIDTH_16 ? 1 : 0,
++		  denali->flash_reg + DEVICE_WIDTH);
++	iowrite32(mtd->writesize, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
++	iowrite32(mtd->oobsize, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+ 
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
 -- 
 2.7.4
