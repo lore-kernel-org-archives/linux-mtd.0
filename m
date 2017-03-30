@@ -1,18 +1,18 @@
 Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctV1M-0004d0-Iu
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 08:01:31 +0000
-Received: by mail-lf0-x244.google.com with SMTP id n78so3820742lfi.3
- for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 01:01:06 -0700 (PDT)
+ id 1ctV4s-0005Ix-Ce
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 08:05:08 +0000
+Received: by mail-lf0-x244.google.com with SMTP id n78so3830120lfi.3
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 01:04:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170329213427.280c26bb@bbrezillon>
+In-Reply-To: <20170329215749.1c35f780@bbrezillon>
 References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
- <1490262226-29092-2-git-send-email-peterpandong@micron.com>
- <20170329213427.280c26bb@bbrezillon>
+ <1490262226-29092-4-git-send-email-peterpandong@micron.com>
+ <20170329215749.1c35f780@bbrezillon>
 From: Peter Pan <peterpansjtu@gmail.com>
-Date: Thu, 30 Mar 2017 16:01:04 +0800
-Message-ID: <CAAyFORKmW2EXvSFyJM+Yg1OQaoN9EaMMw440117-Xwr2sExwUA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/9] mtd: nand: add oob iterator in nand_for_each_page
+Date: Thu, 30 Mar 2017 16:04:44 +0800
+Message-ID: <CAAyFORLydLDvTXTbHz8p4a7qA4rK+v5qS+gcwGc3frEjmO8Y7A@mail.gmail.com>
+Subject: Re: [PATCH v4 3/9] mtd: nand: add more helpers in nand.h
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -33,131 +33,117 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-On Thu, Mar 30, 2017 at 3:34 AM, Boris Brezillon
+On Thu, Mar 30, 2017 at 3:57 AM, Boris Brezillon
 <boris.brezillon@free-electrons.com> wrote:
-> On Thu, 23 Mar 2017 17:43:38 +0800
+> On Thu, 23 Mar 2017 17:43:40 +0800
 > Peter Pan <peterpandong@micron.com> wrote:
 >
->> Iterate nand pages by both page and oob operation.
->
-> For the next version, can you merge my initial commit [1] into this one
-> (you can keep the authorship)?
-
-OK. I will merge it. But I'd like to keep you as author since it's your idea:)
-
->
+>> This commit adds some helpers in nand.h
+>>     nand_size()
+>>     nand_check_address()
+>>     nand_check_oob_ops()
+>>     nand_oob_ops_across_page()
+>>     nand_check_erase_ops()
 >>
 >> Signed-off-by: Peter Pan <peterpandong@micron.com>
 >> ---
->>  include/linux/mtd/nand.h | 38 +++++++++++++++++++++++++++++++-------
->>  1 file changed, 31 insertions(+), 7 deletions(-)
+>>  include/linux/mtd/nand.h | 62 ++++++++++++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 62 insertions(+)
 >>
 >> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
->> index c2197b4..54ded4c 100644
+>> index 54ded4c..0c52401 100644
 >> --- a/include/linux/mtd/nand.h
 >> +++ b/include/linux/mtd/nand.h
->> @@ -84,9 +84,12 @@ struct nand_device {
->>   * @pageoffset: the offset within a page
->
-> Update the documentation.
-
-Fix this in v5
-
->
->>   */
->>  struct nand_page_iter {
->> -     loff_t offs;
->>       int page;
->>       int pageoffs;
->> +     size_t dataleft;
->> +     int ooboffs;
->> +     int oobsize;
->
-> oobsize can be extracted from nand_device, and since a nand_device
-> object it passed to all nand_page_iter_xxx() functions you don't need it
-> here.
-
-Er.. I think we can not get oobsize from nand_device, since oobsize is
-determined
-by mtd_oob_ops.mode, it can be mtd->oobavail or mtd->oobsize. What do
-you think Boris?
-
->
->> +     size_t oobleft;
->>  };
->>
->>  /**
->> @@ -193,14 +196,19 @@ static inline int nand_per_page_oobsize(struct nand_device *nand)
->>   * @offs: absolute offset
->>   * @iter: page iterator
->
-> Update the documentation.
-
-Fix this in v5
-
->
->>   */
->> -static inline void nand_page_iter_init(struct nand_device *nand, loff_t offs,
->> +static inline void nand_page_iter_init(struct nand_device *nand,
->> +                                    loff_t offs, size_t len, u32 ooboffs,
->> +                                    size_t ooblen, u32 oobsize,
->>                                      struct nand_page_iter *iter)
->>  {
->>       u64 page = offs;
->>
->>       iter->pageoffs = do_div(page, nand->memorg.pagesize);
->>       iter->page = page;
->> -     iter->offs = offs;
->> +     iter->dataleft = len;
->> +     iter->ooboffs = ooboffs;
->> +     iter->oobsize = oobsize;
->> +     iter->oobleft = ooblen;
+>> @@ -434,6 +434,68 @@ static inline int nand_neraseblocks(struct nand_device *nand)
 >>  }
 >>
 >>  /**
->> @@ -212,13 +220,29 @@ static inline void nand_page_iter_next(struct nand_device *nand,
->>                                      struct nand_page_iter *iter)
->>  {
->>       iter->page++;
->> -     iter->offs += nand_page_size(nand) - iter->pageoffs;
->>       iter->pageoffs = 0;
->> +     if (iter->dataleft)
->> +             iter->dataleft -= min_t (int,
->> +                                      nand_page_size(nand) - iter->pageoffs,
->> +                                      iter->dataleft);
->> +     if (iter->oobleft)
->> +             iter->oobleft -= min_t(int, iter->oobsize - iter->ooboffs,
->> +                                    iter->oobleft);
+>> + * nand_size - Get NAND size
+>> + * @nand: NAND device
+>> + *
+>> + * Returns the total size exposed by @nand.
+>> + */
+>> +static inline u64 nand_size(struct nand_device *nand)
+>> +{
+>> +     return nand->memorg.ndies * nand->memorg.diesize;
 >> +}
 >> +
 >
-> Document the function.
+> The nand_size() function should probably go in the commit introducing
+> the interface-agnostic NAND layer (in my own series).
+>
+> Since you'll be the first one to use the generic NAND layer, I propose
+> that you start maintaining my patch-set along with your SPI NAND
+> patches.
 
-Fix this in v5
-
+You mean that I send your patch-set with SPI NAND patches? If so, you want
+me to do this in v5 or when SPI NAND patches is ready to merge?
 
 Thanks,
 Peter Pan
 
 >
->> +static inline bool nand_page_iter_end(struct nand_device *nand,
->> +                                   struct nand_page_iter *iter)
+>> +static inline int nand_check_address(struct nand_device *nand, loff_t addr)
 >> +{
->> +     if (iter->dataleft || iter->oobleft)
->> +             return false;
->> +     return true;
->>  }
->>
->> -#define nand_for_each_page(nand, start, len, iter)           \
->> -     for (nand_page_iter_init(nand, start, iter);            \
->> -          (iter)->offs < (start) + (len);                    \
->> +#define nand_for_each_page(nand, start, len, ooboffs, ooblen,        \
->> +                        oobsize, iter)       \
->> +     for (nand_page_iter_init(nand, start, len, ooboffs,     \
->> +                              ooblen, oobsize, iter);        \
->> +          !nand_page_iter_end(nand, iter);           \
->>            nand_page_iter_next(nand, iter))
->>
->>  /**
+>> +     return addr < nand_size(nand) ? 0 : -EINVAL;
+>> +}
+>> +
+>> +static inline int nand_check_oob_ops(struct nand_device *nand, loff_t start,
+>> +                                  struct mtd_oob_ops *ops)
+>> +{
+>> +     struct mtd_info *mtd = nand_to_mtd(nand);
+>> +     int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
+>> +             mtd->oobavail : mtd->oobsize;
+>> +
+>> +     if ((!!ops->datbuf != !!ops->len) ||
+>> +         (!!ops->oobbuf != !!ops->ooblen))
+>> +             return -EINVAL;
+>> +     if (ops->ooboffs >= ooblen)
+>> +             return -EINVAL;
+>> +     if (ops->ooboffs + ops->ooblen >
+>> +         (nand_len_to_pages(nand, nand_size(nand)) -
+>> +                            nand_offs_to_page(nand, start)) * ooblen)
+>> +             return -EINVAL;
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static inline bool nand_oob_ops_across_page(struct nand_device *nand,
+>> +                                         struct mtd_oob_ops *ops)
+>> +{
+>> +     struct mtd_info *mtd = nand_to_mtd(nand);
+>> +     int ooblen = ops->mode == MTD_OPS_AUTO_OOB ?
+>> +                  mtd->oobavail : mtd->oobsize;
+>> +
+>> +     return (ops->ooboffs + ops->ooblen) > ooblen;
+>> +}
+>> +
+>> +static inline int nand_check_erase_ops(struct nand_device *nand,
+>> +                                    struct erase_info *einfo)
+>> +{
+>> +     /* check address align on block boundary */
+>> +     if (einfo->addr & (nand_eraseblock_size(nand) - 1))
+>> +             return -EINVAL;
+>> +     /* check lendth align on block boundary */
+>> +     if (einfo->len & (nand_eraseblock_size(nand) - 1))
+>> +             return -EINVAL;
+>> +     /* Do not allow erase past end of device */
+>> +     if ((einfo->addr + einfo->len) > nand_size(nand))
+>> +             return -EINVAL;
+>> +
+>> +     return 0;
+>> +}
 >
-> [1]https://github.com/bbrezillon/linux-0day/commit/f02767a662ec02a0206a0b6c5a410a38d7b7b313
+> Hm, looking at these functions and the tests already done in mtdcore.c
+> I'm not sure this is the best location.
+> AFAICS, all these tests can be done (or are already done) at the MTD
+> level, and that's where they are the most useful. The only exception I
+> see where it could be useful is when the BBT code directly calls nand
+> functions instead of mtd ones, but this should not happen that much.
+>
+>> +
+>> +/**
+>>   * nand_register - Register a NAND device
+>>   * @nand: NAND device
+>>   *
+>
