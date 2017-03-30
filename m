@@ -1,31 +1,27 @@
-Received: from 2.mo4.mail-out.ovh.net ([46.105.72.36])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cte44-0001yU-J0
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 17:40:54 +0000
-Received: from player159.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo4.mail-out.ovh.net (Postfix) with ESMTP id 4A0315A72B
- for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 19:40:29 +0200 (CEST)
-Subject: Re: [PATCH V1 1/1] mtd: mtk-nor: set controller to 4B mode with large
- capacity flash
-To: Guochun Mao <guochun.mao@mediatek.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
+ id 1cthdX-0005Fh-Pe
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 21:29:45 +0000
+Subject: Re: [RFC][PATCH] UBI: Make MTD_UBI_FASTMAP non-experimental
+To: Jesper Nilsson <jesper.nilsson@axis.com>,
  Marek Vasut <marek.vasut@gmail.com>
-References: <1490862222-723-1-git-send-email-guochun.mao@mediatek.com>
- <1490862222-723-2-git-send-email-guochun.mao@mediatek.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
- linux-mediatek@lists.infradead.org,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <24d60072-4124-7ec4-6cd3-fd70f4f6b10a@wedev4u.fr>
-Date: Thu, 30 Mar 2017 19:40:09 +0200
+References: <20170329153836.GB29118@axis.com>
+ <434195d8-d638-240d-8d63-50d033ea453a@nod.at>
+ <3f8d0417-5e7d-b7c8-ba83-9a87e774f97f@gmail.com>
+ <20170330173944.GJ29118@axis.com>
+Cc: Jesper Nilsson <jespern@axis.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <a85d3308-e9c9-b292-b2ad-0005a55d2e6d@nod.at>
+Date: Thu, 30 Mar 2017 23:29:15 +0200
 MIME-Version: 1.0
-In-Reply-To: <1490862222-723-2-git-send-email-guochun.mao@mediatek.com>
+In-Reply-To: <20170330173944.GJ29118@axis.com>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,59 +31,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Guochun,
+Jesper,
 
-Le 30/03/2017 à 10:23, Guochun Mao a écrit :
-> when nor's size larger than 16MByte, nor and controller should
-> enter 4Byte mode simultaneously.
+Am 30.03.2017 um 19:39 schrieb Jesper Nilsson:
+>> So we should document this with a big fat warning and set fastmap to
+>> default=n ?
 > 
-> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> ---
->  drivers/mtd/spi-nor/mtk-quadspi.c |    7 +++++++
->  1 file changed, 7 insertions(+)
+> Does this sound reasonable?
 > 
-> diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-> index e661877..05cd8a8 100644
-> --- a/drivers/mtd/spi-nor/mtk-quadspi.c
-> +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-> @@ -369,6 +369,13 @@ static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
->  		/* We only handle 1 byte */
->  		ret = mt8173_nor_wr_sr(mt8173_nor, *buf);
->  		break;
-> +	case SPINOR_OP_EN4B:
-> +		/* Set nor controller to 4-byte address mode,
-> +		 * and simultaneously set nor flash.
-> +		 * This case should cooperate with default operation.
-> +		 */
-> +		writeb(readb(mt8173_nor->base + MTK_NOR_DUAL_REG) | 0x10,
-> +				mt8173_nor->base + MTK_NOR_DUAL_REG);
+> Note that this feature makes UBI less robust, since Fastmap does not scan
+> the full flash, which might lead to problems on misbehaving NAND chips.
+> Only enable this if the speedup in attach is really important and
 
-This is not good: you should check in both mt8173_nor_read() and
-mt8173_nor_write() whether nor->addr_width is either 3 or 4.
+I'm not a native English speaker, but shouldn't this be
+"...if speedup of the attach time is important ..."
 
-from include/linux/mtd/spi-nor.h:
- * @addr_width:		number of address bytes
+> you can be sure that the NAND works as expected.
 
-Besides SPI commands using an op code from 4-byte address instruction
-set always carry a 4-byte address. They can be used directly, without
-sending the SPINOR_OP_EN4B before. So you cannot assume that addresses
-will be 4-byte long only if your SPI controller driver has seen a
-SPINOR_OP_EN4B command before. This assumption is wrong.
+Looks fine!
 
-SPI controller driver should never check SPINOR_OP_* op codes like this.
-
-Then, testing SPINOR_OP_RDSR from mt8173_nor_read_reg() or
-SPINOR_OP_WRSR from mt8173_nor_write_reg() is not a good practice too:
-op codes may change depending on the memory manufacturer. So testing op
-code values like you do can work with some memories but maybe not all.
-
-Finally, don't use 0x10, please define a macro instead.
-
-Best regards,
-
-Cyrille
-
->  	default:
->  		ret = mt8173_nor_do_tx_rx(mt8173_nor, opcode, buf, len, NULL, 0);
->  		if (ret)
-> 
+Thanks,
+//richard
