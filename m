@@ -1,6 +1,6 @@
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTs2-0007Ds-HM
+ id 1ctTs2-0007Dn-Gy
  for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:48:00 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -18,9 +18,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v3 17/37] mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
-Date: Thu, 30 Mar 2017 15:46:03 +0900
-Message-Id: <1490856383-31560-18-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 04/37] mtd: nand: denali: fix bitflips calculation in
+ handle_ecc()
+Date: Thu, 30 Mar 2017 15:45:50 +0900
+Message-Id: <1490856383-31560-5-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,125 +33,219 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The denali_cmdfunc() actually does nothing valuable for
-NAND_CMD_{PAGEPROG,READ0,SEQIN}.
+This function is wrong in multiple ways:
 
-For NAND_CMD_{READ0,SEQIN}, it copies "page" to "denali->page", then
-denali_read_page() and denali_read_page_raw() compare them to check
-if the NAND framework called the callbacks in correct order.
-(Inconsistently, this check is missing from the denali_write_page()
-and denali_write_page_raw().)
+[1] Counting corrected bytes instead of corrected bits.
 
-The framework is widely tested by many drivers, so this kind of
-sanity check is unneeded.  The Denali controller is equipped with
-high level interface for read/write, so let's skip unneeded call
-of cmdfunc().
+The following code is counting the number of corrected _bytes_.
+
+    /* correct the ECC error */
+    buf[offset] ^= err_cor_value;
+    mtd->ecc_stats.corrected++;
+    bitflips++;
+
+What the core framework expects is the number of corrected _bits_.
+They can be different if multiple bitflips occur within one byte.
+
+[2] total number of errors instead of max of per-sector errors
+
+The core framework expects that corrected errors are counted per
+sector, then the max value should be taken.  The current code simply
+iterates over the whole page, i.e. counts the total number of
+correction in the page.  This means "too many bitflips" is triggered
+earlier than it should be, i.e. the NAND device is worn out sooner.
+
+Besides those bugs, this function is unreadable due to the deep
+nesting.  Notice the whole code in this function is wrapped in
+if (irq_status & INTR__ECC_ERR), so this conditional can be moved
+out of the function.  Also, use shorter names for local variables.
+
+Re-work the function to fix all the issues.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v3: None
-Changes in v2:
-  - Newly added
+Changes in v3:
+  - Adjust function arguments for the next commit
 
- drivers/mtd/nand/denali.c | 29 ++++++++---------------------
- 1 file changed, 8 insertions(+), 21 deletions(-)
+Changes in v2:
+  - Use shorter names for local variables.
+  - Fix bugs addressed by [1], [2]
+
+ drivers/mtd/nand/denali.c | 141 +++++++++++++++++++++++-----------------------
+ 1 file changed, 71 insertions(+), 70 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 2b20232..79851ca 100644
+index 65cf7cc..c5c150a 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -998,7 +998,7 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
-  * configuration details.
-  */
- static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
--			const uint8_t *buf, bool raw_xfer)
-+			const uint8_t *buf, int page, bool raw_xfer)
+@@ -836,80 +836,80 @@ static bool is_erased(uint8_t *buf, int len)
+ #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
+ #define ECC_BYTE(x)	(((x) & ECC_ERROR_ADDRESS__OFFSET))
+ #define ECC_CORRECTION_VALUE(x) ((x) & ERR_CORRECTION_INFO__BYTEMASK)
+-#define ECC_ERROR_CORRECTABLE(x) (!((x) & ERR_CORRECTION_INFO__ERROR_TYPE))
++#define ECC_ERROR_UNCORRECTABLE(x) ((x) & ERR_CORRECTION_INFO__ERROR_TYPE)
+ #define ECC_ERR_DEVICE(x)	(((x) & ERR_CORRECTION_INFO__DEVICE_NR) >> 8)
+ #define ECC_LAST_ERR(x)		((x) & ERR_CORRECTION_INFO__LAST_ERR_INFO)
+ 
+-static bool handle_ecc(struct denali_nand_info *denali, uint8_t *buf,
+-		       uint32_t irq_status, unsigned int *max_bitflips)
++static int handle_ecc(struct mtd_info *mtd, struct denali_nand_info *denali,
++		      uint8_t *buf, bool *check_erased_page)
  {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
- 	dma_addr_t addr = denali->buf.dma_buf;
-@@ -1006,6 +1006,8 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
+-	bool check_erased_page = false;
+ 	unsigned int bitflips = 0;
++	unsigned int max_bitflips = 0;
++	uint32_t err_addr, err_cor_info;
++	unsigned int err_byte, err_sector, err_device;
++	uint8_t err_cor_value;
++	unsigned int prev_sector = 0;
  
-+	denali->page = page;
+-	if (irq_status & INTR__ECC_ERR) {
+-		/* read the ECC errors. we'll ignore them for now */
+-		uint32_t err_address, err_correction_info, err_byte,
+-			 err_sector, err_device, err_correction_value;
+-		denali_set_intr_modes(denali, false);
+-
+-		do {
+-			err_address = ioread32(denali->flash_reg +
+-						ECC_ERROR_ADDRESS);
+-			err_sector = ECC_SECTOR(err_address);
+-			err_byte = ECC_BYTE(err_address);
+-
+-			err_correction_info = ioread32(denali->flash_reg +
+-						ERR_CORRECTION_INFO);
+-			err_correction_value =
+-				ECC_CORRECTION_VALUE(err_correction_info);
+-			err_device = ECC_ERR_DEVICE(err_correction_info);
+-
+-			if (ECC_ERROR_CORRECTABLE(err_correction_info)) {
+-				/*
+-				 * If err_byte is larger than ECC_SECTOR_SIZE,
+-				 * means error happened in OOB, so we ignore
+-				 * it. It's no need for us to correct it
+-				 * err_device is represented the NAND error
+-				 * bits are happened in if there are more
+-				 * than one NAND connected.
+-				 */
+-				if (err_byte < ECC_SECTOR_SIZE) {
+-					struct mtd_info *mtd =
+-						nand_to_mtd(&denali->nand);
+-					int offset;
+-
+-					offset = (err_sector *
+-							ECC_SECTOR_SIZE +
+-							err_byte) *
+-							denali->devnum +
+-							err_device;
+-					/* correct the ECC error */
+-					buf[offset] ^= err_correction_value;
+-					mtd->ecc_stats.corrected++;
+-					bitflips++;
+-				}
+-			} else {
+-				/*
+-				 * if the error is not correctable, need to
+-				 * look at the page to see if it is an erased
+-				 * page. if so, then it's not a real ECC error
+-				 */
+-				check_erased_page = true;
+-			}
+-		} while (!ECC_LAST_ERR(err_correction_info));
+-		/*
+-		 * Once handle all ecc errors, controller will triger
+-		 * a ECC_TRANSACTION_DONE interrupt, so here just wait
+-		 * for a while for this interrupt
+-		 */
+-		while (!(read_interrupt_status(denali) &
+-				INTR__ECC_TRANSACTION_DONE))
+-			cpu_relax();
+-		clear_interrupts(denali);
+-		denali_set_intr_modes(denali, true);
+-	}
+-	*max_bitflips = bitflips;
+-	return check_erased_page;
++	/* read the ECC errors. we'll ignore them for now */
++	denali_set_intr_modes(denali, false);
 +
- 	/*
- 	 * if it is a raw xfer, we want to disable ecc and send the spare area.
- 	 * !raw_xfer - enable ecc
-@@ -1059,7 +1061,7 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	 * for regular page writes, we let HW handle all the ECC
- 	 * data written to the device.
- 	 */
--	return write_page(mtd, chip, buf, false);
-+	return write_page(mtd, chip, buf, page, false);
++	do {
++		err_addr = ioread32(denali->flash_reg + ECC_ERROR_ADDRESS);
++		err_sector = ECC_SECTOR(err_addr);
++		err_byte = ECC_BYTE(err_addr);
++
++		err_cor_info = ioread32(denali->flash_reg + ERR_CORRECTION_INFO);
++		err_cor_value = ECC_CORRECTION_VALUE(err_cor_info);
++		err_device = ECC_ERR_DEVICE(err_cor_info);
++
++		/* reset the bitflip counter when crossing ECC sector */
++		if (err_sector != prev_sector)
++			bitflips = 0;
++
++		if (ECC_ERROR_UNCORRECTABLE(err_cor_info)) {
++			/*
++			 * if the error is not correctable, need to look at the
++			 * page to see if it is an erased page. if so, then
++			 * it's not a real ECC error
++			 */
++			*check_erased_page = true;
++		} else if (err_byte < ECC_SECTOR_SIZE) {
++			/*
++			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
++			 * happened in OOB, so we ignore it. It's no need for
++			 * us to correct it err_device is represented the NAND
++			 * error bits are happened in if there are more than
++			 * one NAND connected.
++			 */
++			int offset;
++			unsigned int flips_in_byte;
++
++			offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
++						denali->devnum + err_device;
++
++			/* correct the ECC error */
++			flips_in_byte = hweight8(buf[offset] ^ err_cor_value);
++			buf[offset] ^= err_cor_value;
++			mtd->ecc_stats.corrected += flips_in_byte;
++			bitflips += flips_in_byte;
++
++			max_bitflips = max(max_bitflips, bitflips);
++		}
++
++		prev_sector = err_sector;
++	} while (!ECC_LAST_ERR(err_cor_info));
++
++	/*
++	 * Once handle all ecc errors, controller will trigger a
++	 * ECC_TRANSACTION_DONE interrupt, so here just wait for
++	 * a while for this interrupt
++	 */
++	while (!(read_interrupt_status(denali) & INTR__ECC_TRANSACTION_DONE))
++		cpu_relax();
++	clear_interrupts(denali);
++	denali_set_intr_modes(denali, true);
++
++	return max_bitflips;
  }
  
- /*
-@@ -1075,7 +1077,7 @@ static int denali_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	 * for raw page writes, we want to disable ECC and simply write
- 	 * whatever data is in the buffer.
- 	 */
--	return write_page(mtd, chip, buf, true);
-+	return write_page(mtd, chip, buf, page, true);
- }
+ /* programs the controller to either enable/disable DMA transfers */
+@@ -1045,7 +1045,7 @@ static int denali_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 			    uint8_t *buf, int oob_required, int page)
+ {
+-	unsigned int max_bitflips;
++	unsigned int max_bitflips = 0;
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
  
- static int denali_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
-@@ -1105,12 +1107,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	unsigned long uncor_ecc_flags = 0;
- 	int stat = 0;
+ 	dma_addr_t addr = denali->buf.dma_buf;
+@@ -1077,7 +1077,8 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
  
--	if (page != denali->page) {
--		dev_err(denali->dev,
--			"IN %s: page %d is not equal to denali->page %d",
--			__func__, page, denali->page);
--		BUG();
--	}
-+	denali->page = page;
+ 	memcpy(buf, denali->buf.buf, mtd->writesize);
  
- 	setup_ecc_for_xfer(denali, true, false);
+-	check_erased_page = handle_ecc(denali, buf, irq_status, &max_bitflips);
++	if (irq_status & INTR__ECC_ERR)
++		max_bitflips = handle_ecc(mtd, denali, buf, &check_erased_page);
+ 	denali_enable_dma(denali, false);
  
-@@ -1154,12 +1151,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
- 
--	if (page != denali->page) {
--		dev_err(denali->dev,
--			"IN %s: page %d is not equal to denali->page %d",
--			__func__, page, denali->page);
--		BUG();
--	}
-+	denali->page = page;
- 
- 	setup_ecc_for_xfer(denali, false, true);
- 	denali_enable_dma(denali, true);
-@@ -1238,8 +1230,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 	int i;
- 
- 	switch (cmd) {
--	case NAND_CMD_PAGEPROG:
--		break;
- 	case NAND_CMD_STATUS:
- 		read_status(denali);
- 		break;
-@@ -1259,10 +1249,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 			write_byte_to_buf(denali, id);
- 		}
- 		break;
--	case NAND_CMD_READ0:
--	case NAND_CMD_SEQIN:
--		denali->page = page;
--		break;
- 	case NAND_CMD_RESET:
- 		reset_bank(denali);
- 		break;
-@@ -1644,6 +1630,7 @@ int denali_init(struct denali_nand_info *denali)
- 
- 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
- 
-+	chip->ecc.options |= NAND_ECC_CUSTOM_PAGE_ACCESS;
- 	chip->ecc.read_page = denali_read_page;
- 	chip->ecc.read_page_raw = denali_read_page_raw;
- 	chip->ecc.write_page = denali_write_page;
+ 	if (check_erased_page) {
 -- 
 2.7.4
