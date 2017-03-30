@@ -1,26 +1,24 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctZKH-0006dq-Id
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 12:37:20 +0000
-Received: by mail-lf0-x242.google.com with SMTP id x137so4460648lff.1
- for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 05:36:57 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V4 2/2] mtd: extract TRX parser out of bcm47xxpart into a
- separated module
-Date: Thu, 30 Mar 2017 14:35:27 +0200
-Message-Id: <20170330123527.30181-2-zajec5@gmail.com>
-In-Reply-To: <20170330123527.30181-1-zajec5@gmail.com>
-References: <20170227130633.4020-1-zajec5@gmail.com>
- <20170330123527.30181-1-zajec5@gmail.com>
+ id 1ctZLO-0007HZ-7Y
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 12:38:28 +0000
+Received: by mail-wr0-x243.google.com with SMTP id u18so11766370wrc.0
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 05:38:03 -0700 (PDT)
+Subject: Re: [PATCH v4 4/9] nand: spi: add basic blocks for infrastructure
+To: Peter Pan <peterpandong@micron.com>, boris.brezillon@free-electrons.com,
+ richard@nod.at, computersforpeace@gmail.com,
+ thomas.petazzoni@free-electrons.com, marex@denx.de,
+ cyrille.pitchen@atmel.com, linux-mtd@lists.infradead.org
+References: <1490262226-29092-1-git-send-email-peterpandong@micron.com>
+ <1490262226-29092-5-git-send-email-peterpandong@micron.com>
+Cc: peterpansjtu@gmail.com, linshunquan1@hisilicon.com
+From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
+Message-ID: <30ff4192-26d8-0046-0fa7-ab04d662c52a@gmail.com>
+Date: Thu, 30 Mar 2017 14:38:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1490262226-29092-5-git-send-email-peterpandong@micron.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,325 +28,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
 
-This makes TRX parsing code reusable with other platforms and parsers.
 
-Please note this patch doesn't really change anything in the existing
-code, just moves it. There is still some place for improvement (e.g.
-working on non-hacky method of checking rootfs format) but it's not
-really a subject of this change.
+On 23/03/2017 10:43, Peter Pan wrote:
+> This is the first commit for spi nand framkework.
+> This commit is to add add basic building blocks
+> for the SPI NAND infrastructure.
+>
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> ---
+>   drivers/mtd/nand/Kconfig            |   1 +
+>   drivers/mtd/nand/Makefile           |   1 +
+>   drivers/mtd/nand/spi/Kconfig        |   5 +
+>   drivers/mtd/nand/spi/Makefile       |   2 +
+>   drivers/mtd/nand/spi/core.c         | 464 ++++++++++++++++++++++++++++++++++++
+>   drivers/mtd/nand/spi/manufactures.c |  24 ++
+>   include/linux/mtd/spinand.h         | 270 +++++++++++++++++++++
+>   7 files changed, 767 insertions(+)
+>   create mode 100644 drivers/mtd/nand/spi/Kconfig
+>   create mode 100644 drivers/mtd/nand/spi/Makefile
+>   create mode 100644 drivers/mtd/nand/spi/core.c
+>   create mode 100644 drivers/mtd/nand/spi/manufactures.c
+>   create mode 100644 include/linux/mtd/spinand.h
+[...]
+> diff --git a/drivers/mtd/nand/spi/manufactures.c b/drivers/mtd/nand/spi/manufactures.c
+> new file mode 100644
+> index 0000000..7e0b42d
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/manufactures.c
+> @@ -0,0 +1,24 @@
+> +/**
+> + *
+> + * Copyright (c) 2009-2017 Micron Technology, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * as published by the Free Software Foundation; either version 2
+> + * of the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/mtd/spinand.h>
+> +
+> +struct spinand_manufacturer spinand_manufacturer_end = {0x0, "Unknown", NULL};
+> +
+> +struct spinand_manufacturer *spinand_manufacturers[] = {
+> +	&spinand_manufacturer_end,
+> +};
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-V2: A totally rebased & refreshed version.
----
- drivers/mtd/Kconfig              |   4 ++
- drivers/mtd/Makefile             |   1 +
- drivers/mtd/bcm47xxpart.c        |  97 +------------------------------
- drivers/mtd/parsers/Kconfig      |   8 +++
- drivers/mtd/parsers/Makefile     |   1 +
- drivers/mtd/parsers/parser_trx.c | 119 +++++++++++++++++++++++++++++++++++++++
- 6 files changed, 136 insertions(+), 94 deletions(-)
- create mode 100644 drivers/mtd/parsers/Kconfig
- create mode 100644 drivers/mtd/parsers/Makefile
- create mode 100644 drivers/mtd/parsers/parser_trx.c
+*const* struct spinand_manufacturer *spinand_manufacturers[]  ?
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index e83a279f1217..5a2d71729b9a 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -155,6 +155,10 @@ config MTD_BCM47XX_PARTS
- 	  This provides partitions parser for devices based on BCM47xx
- 	  boards.
- 
-+menu "Partition parsers"
-+source "drivers/mtd/parsers/Kconfig"
-+endmenu
-+
- comment "User Modules And Translation Layers"
- 
- #
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 99bb9a1f6e16..151d60df303a 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
- obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
- obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
- obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
-+obj-y				+= parsers/
- 
- # 'Users' - code which presents functionality to userspace.
- obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index d10fa6c8f074..66ce72fd1426 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -43,7 +43,6 @@
- #define ML_MAGIC2			0x26594131
- #define TRX_MAGIC			0x30524448
- #define SHSQ_MAGIC			0x71736873	/* shsq (weird ZTE H218N endianness) */
--#define UBI_EC_MAGIC			0x23494255	/* UBI# */
- 
- struct trx_header {
- 	uint32_t magic;
-@@ -62,89 +61,6 @@ static void bcm47xxpart_add_part(struct mtd_partition *part, const char *name,
- 	part->mask_flags = mask_flags;
- }
- 
--static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
--						  size_t offset)
--{
--	uint32_t buf;
--	size_t bytes_read;
--	int err;
--
--	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
--			(uint8_t *)&buf);
--	if (err && !mtd_is_bitflip(err)) {
--		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
--			offset, err);
--		goto out_default;
--	}
--
--	if (buf == UBI_EC_MAGIC)
--		return "ubi";
--
--out_default:
--	return "rootfs";
--}
--
--static int bcm47xxpart_parse_trx(struct mtd_info *master,
--				 struct mtd_partition *trx,
--				 struct mtd_partition *parts,
--				 size_t parts_len)
--{
--	struct trx_header header;
--	size_t bytes_read;
--	int curr_part = 0;
--	int i, err;
--
--	if (parts_len < 3) {
--		pr_warn("No enough space to add TRX partitions!\n");
--		return -ENOMEM;
--	}
--
--	err = mtd_read(master, trx->offset, sizeof(header), &bytes_read,
--		       (uint8_t *)&header);
--	if (err && !mtd_is_bitflip(err)) {
--		pr_err("mtd_read error while reading TRX header: %d\n", err);
--		return err;
--	}
--
--	i = 0;
--
--	/* We have LZMA loader if offset[2] points to sth */
--	if (header.offset[2]) {
--		bcm47xxpart_add_part(&parts[curr_part++], "loader",
--				     trx->offset + header.offset[i], 0);
--		i++;
--	}
--
--	if (header.offset[i]) {
--		bcm47xxpart_add_part(&parts[curr_part++], "linux",
--				     trx->offset + header.offset[i], 0);
--		i++;
--	}
--
--	if (header.offset[i]) {
--		size_t offset = trx->offset + header.offset[i];
--		const char *name = bcm47xxpart_trx_data_part_name(master,
--								  offset);
--
--		bcm47xxpart_add_part(&parts[curr_part++], name, offset, 0);
--		i++;
--	}
--
--	/*
--	 * Assume that every partition ends at the beginning of the one it is
--	 * followed by.
--	 */
--	for (i = 0; i < curr_part; i++) {
--		u64 next_part_offset = (i < curr_part - 1) ?
--					parts[i + 1].offset :
--					trx->offset + trx->size;
--
--		parts[i].size = next_part_offset - parts[i].offset;
--	}
--
--	return curr_part;
--}
--
- /**
-  * bcm47xxpart_bootpartition - gets index of TRX partition used by bootloader
-  *
-@@ -362,17 +278,10 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	for (i = 0; i < trx_num; i++) {
- 		struct mtd_partition *trx = &parts[trx_parts[i]];
- 
--		if (i == bcm47xxpart_bootpartition()) {
--			int num_parts;
--
--			num_parts = bcm47xxpart_parse_trx(master, trx,
--							  parts + curr_part,
--							  BCM47XXPART_MAX_PARTS - curr_part);
--			if (num_parts > 0)
--				curr_part += num_parts;
--		} else {
-+		if (i == bcm47xxpart_bootpartition())
-+			trx->format = "trx";
-+		else
- 			trx->name = "failsafe";
--		}
- 	}
- 
- 	*pparts = parts;
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-new file mode 100644
-index 000000000000..ebb697a52698
---- /dev/null
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -0,0 +1,8 @@
-+config MTD_PARSER_TRX
-+	tristate "Parser for TRX format partitions"
-+	depends on MTD && (BCM47XX || ARCH_BCM_5301X)
-+	help
-+	  TRX is a firmware format used by Broadcom on their devices. It
-+	  may contain up to 3/4 partitions (depending on the version).
-+	  This driver will parse TRX header and report at least two partitions:
-+	  kernel and rootfs.
-diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-new file mode 100644
-index 000000000000..4d9024e0be3b
---- /dev/null
-+++ b/drivers/mtd/parsers/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
-diff --git a/drivers/mtd/parsers/parser_trx.c b/drivers/mtd/parsers/parser_trx.c
-new file mode 100644
-index 000000000000..f35e28148808
---- /dev/null
-+++ b/drivers/mtd/parsers/parser_trx.c
-@@ -0,0 +1,119 @@
-+/*
-+ * Parser for TRX format partitions
-+ *
-+ * Copyright (C) 2012 - 2017 Rafał Miłecki <rafal@milecki.pl>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+
-+#define TRX_PARSER_MAX_PARTS		4
-+
-+/* Magics */
-+#define UBI_EC_MAGIC			0x23494255	/* UBI# */
-+
-+struct trx_header {
-+	uint32_t magic;
-+	uint32_t length;
-+	uint32_t crc32;
-+	uint16_t flags;
-+	uint16_t version;
-+	uint32_t offset[3];
-+} __packed;
-+
-+static const char *parser_trx_data_part_name(struct mtd_info *master,
-+					     size_t offset)
-+{
-+	uint32_t buf;
-+	size_t bytes_read;
-+	int err;
-+
-+	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
-+			(uint8_t *)&buf);
-+	if (err && !mtd_is_bitflip(err)) {
-+		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
-+			offset, err);
-+		goto out_default;
-+	}
-+
-+	if (buf == UBI_EC_MAGIC)
-+		return "ubi";
-+
-+out_default:
-+	return "rootfs";
-+}
-+
-+static int parser_trx_parse(struct mtd_info *mtd,
-+			    const struct mtd_partition **pparts,
-+			    struct mtd_part_parser_data *data)
-+{
-+	struct mtd_partition *parts;
-+	struct mtd_partition *part;
-+	struct trx_header trx;
-+	size_t bytes_read;
-+	uint8_t curr_part = 0, i = 0;
-+	int err;
-+
-+	parts = kzalloc(sizeof(struct mtd_partition) * TRX_PARSER_MAX_PARTS,
-+			GFP_KERNEL);
-+	if (!parts)
-+		return -ENOMEM;
-+
-+	err = mtd_read(mtd, 0, sizeof(trx), &bytes_read, (uint8_t *)&trx);
-+	if (err) {
-+		pr_err("MTD reading error: %d\n", err);
-+		return err;
-+	}
-+
-+	/* We have LZMA loader if offset[2] points to sth */
-+	if (trx.offset[2]) {
-+		part = &parts[curr_part++];
-+		part->name = "loader";
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	if (trx.offset[i]) {
-+		part = &parts[curr_part++];
-+		part->name = "linux";
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	if (trx.offset[i]) {
-+		part = &parts[curr_part++];
-+		part->name = parser_trx_data_part_name(mtd, trx.offset[i]);
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	/*
-+	 * Assume that every partition ends at the beginning of the one it is
-+	 * followed by.
-+	 */
-+	for (i = 0; i < curr_part; i++) {
-+		u64 next_part_offset = (i < curr_part - 1) ?
-+				       parts[i + 1].offset : mtd->size;
-+
-+		parts[i].size = next_part_offset - parts[i].offset;
-+	}
-+
-+	*pparts = parts;
-+	return i;
-+};
-+
-+static struct mtd_part_parser mtd_parser_trx = {
-+	.parse_fn = parser_trx_parse,
-+	.name = "trx",
-+};
-+module_mtd_part_parser(mtd_parser_trx);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Parser for TRX format partitions");
--- 
-2.11.0
+> +EXPORT_SYMBOL(spinand_manufacturers);
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> new file mode 100644
+> index 0000000..44748b4
+> --- /dev/null
+> +++ b/include/linux/mtd/spinand.h
+> @@ -0,0 +1,270 @@
+> +/**
+> + *
+> + * Copyright (c) 2009-2017 Micron Technology, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * as published by the Free Software Foundation; either version 2
+> + * of the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
+> +#ifndef __LINUX_MTD_SPINAND_H
+> +#define __LINUX_MTD_SPINAND_H
+> +
+> +#include <linux/mutex.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
+> +
+
+[...]
+
+> +
+> +enum spinand_ecc_mode {
+> +	SPINAND_ECC_ONDIE,
+> +	SPINAND_ECC_HW,
+> +};
+> +
+> +struct spinand_ecc_engine {
+> +	enum spinand_ecc_mode mode;
+> +	u32 strength;
+> +	u32 steps;
+> +	struct spinand_ecc_engine_ops *ops;
+
+const struct spinand_ecc_engine_ops ?
