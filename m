@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctVG5-0003tP-Cb
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 08:16:43 +0000
+ id 1ctVG5-0003uH-CW
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 08:16:44 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org,
@@ -14,11 +14,13 @@ Cc: linux-kernel@vger.kernel.org,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Masami Hiramatsu <mhiramat@kernel.org>,
  Jassi Brar <jaswinder.singh@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH v3 34/37] mtd: nand: allow drivers to request minimum
- alignment for passed buffer
-Date: Thu, 30 Mar 2017 17:15:05 +0900
-Message-Id: <1490861708-27813-4-git-send-email-yamada.masahiro@socionext.com>
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Russell King <rmk+kernel@armlinux.org.uk>,
+ Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH v3 36/37] mtd: nand: denali: use non-managed kmalloc() for DMA
+ buffer
+Date: Thu, 30 Mar 2017 17:15:07 +0900
+Message-Id: <1490861708-27813-6-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,91 +32,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In some cases, nand_do_{read,write}_ops is passed with unaligned
-ops->datbuf.  Drivers using DMA will be unhappy about unaligned
-buffer.
+As Russell and Lars stated in the discussion [1], using
+devm_k*alloc() with DMA is not a good idea.
 
-The new struct member, buf_align, represents the minimum alignment
-the driver require for the buffer.  If the buffer passed from the
-upper MTD layer does not have enough alignment, nand_do_*_ops will
-use bufpoi.
+Let's use kmalloc (not kzalloc because no need for zero-out).
+Also, allocate the buffer as late as possible because it must be
+freed for any error that follows.
+
+[1] https://lkml.org/lkml/2017/3/8/693
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Robin Murphy <robin.murphy@arm.com>
 ---
 
-I was hit by this problem when I ran
-  # mount -t jffs2 /dev/mtdblock*  /mnt
-
-The buffer passed to nand_do_*_ops has 4 byte offset.
-The Denali IP cannot do DMA to/from this buffer because it
-requires 16 byte alignment for DMA.
-
-
-Changes in v3:
+Changes in v3: None
+Changes in v2:
   - Newly added
 
-Changes in v2: None
+ drivers/mtd/nand/denali.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
- drivers/mtd/nand/nand_base.c | 12 ++++++++----
- include/linux/mtd/nand.h     |  2 ++
- 2 files changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index e9d3195..b528ffa 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1953,9 +1953,10 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 87e5f0f..d10702d 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -23,6 +23,7 @@
+ #include <linux/mutex.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/module.h>
++#include <linux/slab.h>
  
- 		if (!aligned)
- 			use_bufpoi = 1;
--		else if (chip->options & NAND_USE_BOUNCE_BUFFER)
--			use_bufpoi = !virt_addr_valid(buf);
--		else
-+		else if (chip->options & NAND_USE_BOUNCE_BUFFER) {
-+			use_bufpoi = !virt_addr_valid(buf) ||
-+			       !IS_ALIGNED((unsigned long)buf, chip->buf_align);
-+		} else
- 			use_bufpoi = 0;
+ #include "denali.h"
  
- 		/* Is the current page in the buffer? */
-@@ -2810,7 +2811,8 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- 		if (part_pagewr)
- 			use_bufpoi = 1;
- 		else if (chip->options & NAND_USE_BOUNCE_BUFFER)
--			use_bufpoi = !virt_addr_valid(buf);
-+			use_bufpoi = !virt_addr_valid(buf) ||
-+			      !IS_ALIGNED((unsigned long)buf, chip->buf_align);
- 		else
- 			use_bufpoi = 0;
+@@ -1388,13 +1389,6 @@ int denali_init(struct denali_nand_info *denali)
+ 	if (ret)
+ 		goto disable_irq;
  
-@@ -3426,6 +3428,8 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
- 		nand_hw_control_init(chip->controller);
+-	denali->buf = devm_kzalloc(denali->dev, mtd->writesize + mtd->oobsize,
+-				   GFP_KERNEL);
+-	if (!denali->buf) {
+-		ret = -ENOMEM;
+-		goto disable_irq;
+-	}
+-
+ 	if (ioread32(denali->flash_reg + FEATURES) & FEATURES__DMA)
+ 		denali->dma_avail = 1;
+ 
+@@ -1514,17 +1508,30 @@ int denali_init(struct denali_nand_info *denali)
+ 	if (ret)
+ 		goto disable_irq;
+ 
++	/*
++	 * This buffer is DMA-mapped by denali_{read,write}_page_raw.  Do not
++	 * use devm_kmalloc() because the memory allocated by devm_ does not
++	 * guarantee DMA-safe alignment.
++	 */
++	denali->buf = kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
++	if (!denali->buf) {
++		ret = -ENOMEM;
++		goto disable_irq;
++	}
++
+ 	ret = nand_scan_tail(mtd);
+ 	if (ret)
+-		goto disable_irq;
++		goto free_buf;
+ 
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(denali->dev, "Failed to register MTD: %d\n", ret);
+-		goto disable_irq;
++		goto free_buf;
  	}
+ 	return 0;
  
-+	if (!chip->buf_align)
-+		chip->buf_align = 1;
- }
++free_buf:
++	kfree(denali->buf);
+ disable_irq:
+ 	denali_disable_irq(denali);
  
- /* Sanitize ONFI strings so we can safely print them */
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 69cccd1..2ae781e 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -750,6 +750,7 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
-  *			setting the read-retry mode. Mostly needed for MLC NAND.
-  * @ecc:		[BOARDSPECIFIC] ECC control structure
-  * @buffers:		buffer structure for read/write
-+ * @buf_align:		minimum buffer alignment required by a platform
-  * @hwcontrol:		platform-specific hardware control structure
-  * @erase:		[REPLACEABLE] erase function
-  * @scan_bbt:		[REPLACEABLE] function to scan bad block table
-@@ -901,6 +902,7 @@ struct nand_chip {
+@@ -1544,6 +1551,7 @@ void denali_remove(struct denali_nand_info *denali)
+ 	int bufsize = mtd->writesize + mtd->oobsize;
  
- 	struct nand_ecc_ctrl ecc;
- 	struct nand_buffers *buffers;
-+	unsigned long buf_align;
- 	struct nand_hw_control hwcontrol;
- 
- 	uint8_t *bbt;
+ 	nand_release(mtd);
++	kfree(denali->buf);
+ 	denali_disable_irq(denali);
+ 	dma_unmap_single(denali->dev, denali->dma_addr, bufsize,
+ 			 DMA_BIDIRECTIONAL);
 -- 
 2.7.4
