@@ -1,35 +1,29 @@
-Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
+Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctTfK-0001YG-4S
- for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:34:39 +0000
-Received: by mail-oi0-x242.google.com with SMTP id b187so3133743oif.3
- for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2017 23:34:16 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20170330075337.2ab52f3d@gmail.com>
-References: <20170328100107.25095af6@gmail.com>
- <CAOQ4uxisw5vWYsdMTNemw=MqNyS2nxfAUkg+UfoGmbE3-he1Ug@mail.gmail.com>
- <20170328124545.3c4b87ff@gmail.com>
- <CAOQ4uxgNfuLN93owdCUJ=9VcU4DKGVEKkEGT7siiem8quVwCsQ@mail.gmail.com>
- <20170328132818.05871b73@gmail.com>
- <CAOQ4uxiC=RXPwSy7NGt+Ri=Eie4-_WsUPk7Sy-sh9RdrGQuesw@mail.gmail.com>
- <20170328141621.6bb2d639@gmail.com>
- <CAOQ4uxg0xRchsNOh1jtbyEdyDDqV3ToCvo=+QuCsD6duGJU_ZQ@mail.gmail.com>
- <20170329232648.0b5bc1e9@gmail.com>
- <33155efb-2c42-a7e9-b867-06760b1e1495@nod.at>
- <20170330075337.2ab52f3d@gmail.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 30 Mar 2017 09:34:15 +0300
-Message-ID: <CAOQ4uxjKTdK5MiiEysBSGRSb6NYyu079COBLj5zpWjmJGxM7cQ@mail.gmail.com>
-Subject: Re: [REGRESSION 4.11] Commit d8514d8edb5b ("ovl: copy up regular file
- using O_TMPFILE") breaks ubifs
-To: Ralph Sennhauser <ralph.sennhauser@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Miklos Szeredi <miklos@szeredi.hu>,
- linux-unionfs@vger.kernel.org,
- linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- regressions@leemhuis.info, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- David Oberhollenzer <goliath@sigma-star.at>
-Content-Type: text/plain; charset=UTF-8
+ id 1ctTri-00070I-4v
+ for linux-mtd@lists.infradead.org; Thu, 30 Mar 2017 06:47:29 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Enrico Jorns <ejo@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v3 01/37] mtd: nand: relax ecc.read_page() return value for
+ uncorrectable ECC
+Date: Thu, 30 Mar 2017 15:45:47 +0900
+Message-Id: <1490856383-31560-2-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,80 +33,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 30, 2017 at 8:53 AM, Ralph Sennhauser
-<ralph.sennhauser@gmail.com> wrote:
-> Hi Richard,
->
-> On Thu, 30 Mar 2017 00:15:31 +0200
-> Richard Weinberger <richard@nod.at> wrote:
->
->> Ralph,
->>
->> Am 29.03.2017 um 23:26 schrieb Ralph Sennhauser:
->> >> # create and link a tmpfile - then remove it
->> >> sudo rm -rf foo; sudo xfs_io -T -c "flink foo" . ; ls -l foo; sudo
->> >> rm foo
->> >
->> > next-20170328, obviously without your patch:
->> >
->> >   # xfs_io -T -c "flink foo" .
->> >   .: Not supported
->>
->> -T tells xfs_io to create a tmpfile but you have it disabled in UBIFS.
->
-> Bash history says I booted the other partition than I flashed (uname
-> just happened to match), the downside of the dual boot layout. :)
->
->   # rm -rf foo
->   # xfs_io -T -c "flink foo" .
->   # ls -l foo
->   -rw-------    1 root     root             0 Mar 30 02:00 foo
->   # rm foo
->   [  305.001436] UBIFS error (ubi0:0 pid 2493): ubifs_add_orphan: orphaned twice
->
-> However, unlike with the overlay setup the filesystem can be mounted
-> just fine without imediatly visible side effects.
->
+The comment for ecc.read_page() requires that it should return
+"0 if bitflips uncorrectable".
 
-Maybe try to rename instead of rm . that's how you reproduces with overlayfs.
+Actually, drivers could return positive values when uncorrectable
+bitflips occur.  For example, nand_read_page_swecc() is the case.
+If ecc.correct() returns -EBADMSG for the first ECC sector, and
+a positive value for the second one, nand_read_page_swecc() returns
+a positive max_bitflips and increments ecc_stats.failed for the same
+page.
 
->>
->> Anyway, can you please test the attached patch?
->> Amir was right, UBIFS misses a corner case in ubifs_link(). ;-\
->>
->> I think I understand also why we never noticed this in xfstests,
->> UBIFS prints only a non-fatal error while umounting the filesystem in
->> this case. But will test tomorrow in more detail, need some sleep now.
->>
->> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
->> index 30825d882aa9..95e348a2da29 100644
->> --- a/fs/ubifs/dir.c
->> +++ b/fs/ubifs/dir.c
->> @@ -748,6 +748,9 @@ static int ubifs_link(struct dentry *old_dentry,
->> struct inode *dir, goto out_fname;
->>
->>       lock_2_inodes(dir, inode);
->> +     if (inode->i_nlink == 0)
->> +             ubifs_delete_orphan(c, inode->i_ino);
->> +
->>       inc_nlink(inode);
->>       ihold(inode);
->>       inode->i_ctime = ubifs_current_time(inode);
->>
->> Thanks,
->> //richard
->
-> With this patch I'm no longer able to reproduce _this_ issue, however,
-> rename no longer works either:
->
->   # mv /etc/config/wireless /etc/config/wireless.back
->   mv: can't rename '/etc/config/wireless': Invalid argument
->   # ls /etc/config/wireless
->   /etc/config/wireless
->   # rm /etc/config/wireless
->   # ls /etc/config/wireless
->   ls: /etc/config/wireless: No such file or directory
->
->
-> Thanks
-> Ralph
+The requirement can be relaxed by tweaking nand_do_read_ops().
+Move the max_bitflips calculation below the retry.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+
+Changes in v3:
+ - Newly added
+
+Changes in v2: None
+
+ drivers/mtd/nand/nand_base.c | 3 +--
+ include/linux/mtd/nand.h     | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index e13f959..f828ad7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1993,8 +1993,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 				break;
+ 			}
+ 
+-			max_bitflips = max_t(unsigned int, max_bitflips, ret);
+-
+ 			/* Transfer not aligned data */
+ 			if (use_bufpoi) {
+ 				if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
+@@ -2045,6 +2043,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			}
+ 
+ 			buf += bytes;
++			max_bitflips = max_t(unsigned int, max_bitflips, ret);
+ 		} else {
+ 			memcpy(buf, chip->buffers->databuf + col, bytes);
+ 			buf += bytes;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 9591e0f..69cccd1 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -525,7 +525,7 @@ static inline void nand_hw_control_init(struct nand_hw_control *nfc)
+  *			out-of-band data).
+  * @read_page:	function to read a page according to the ECC generator
+  *		requirements; returns maximum number of bitflips corrected in
+- *		any single ECC step, 0 if bitflips uncorrectable, -EIO hw error
++ *		any single ECC step, -EIO hw error
+  * @read_subpage:	function to read parts of the page covered by ECC;
+  *			returns same as read_page()
+  * @write_subpage:	function to write parts of the page covered by ECC.
+-- 
+2.7.4
