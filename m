@@ -1,29 +1,32 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctstL-0002vU-V1
- for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 09:30:49 +0000
-Received: by mail-lf0-x243.google.com with SMTP id r36so6812347lfi.0
- for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2017 02:30:26 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2 1/2] mtd: move code reading DT specified part probes to the
- core
-Date: Fri, 31 Mar 2017 11:30:12 +0200
-Message-Id: <20170331093013.29123-1-zajec5@gmail.com>
-In-Reply-To: <20170330215332.32699-1-zajec5@gmail.com>
-References: <20170330215332.32699-1-zajec5@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctt9M-00014M-Oh
+ for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 09:47:22 +0000
+Date: Fri, 31 Mar 2017 11:46:59 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
+ devicetree@vger.kernel.org, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>
+Subject: Re: [PATCH v3 14/37] mtd: nand: denali: support "nand-ecc-strength"
+ DT property
+Message-ID: <20170331114659.4964be35@bbrezillon>
+In-Reply-To: <CAK7LNARUKwMHd79ALDx_SDY9XKcHPY96xTAOMQx6XarFgwb-AA@mail.gmail.com>
+References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490856383-31560-15-git-send-email-yamada.masahiro@socionext.com>
+ <20170330160238.59e5a2c1@bbrezillon>
+ <CAK7LNARUKwMHd79ALDx_SDY9XKcHPY96xTAOMQx6XarFgwb-AA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,149 +36,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Fri, 31 Mar 2017 14:06:32 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-Handling (creating) partitions for flash devices requires using a proper
-driver that will read partition table (out of somewhere). We can't
-simply try all existing drivers one by one, so MTD subsystem allows
-drivers to specify a list of applicable part probes.
+> Hi Boris,
+>=20
+>=20
+> 2017-03-30 23:02 GMT+09:00 Boris Brezillon <boris.brezillon@free-electron=
+s.com>:
+> > On Thu, 30 Mar 2017 15:46:00 +0900
+> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> > =20
+> >> Historically, this driver tried to choose as big ECC strength as
+> >> possible, but it would be reasonable to allow DT to set a particular
+> >> ECC strength with "nand-ecc-strength" property.  This is useful
+> >> when a particular ECC setting is hard-coded by firmware (or hard-
+> >> wired by boot ROM).
+> >>
+> >> If no ECC strength is specified in DT, "nand-ecc-maximize" is implied
+> >> since this was the original behavior. =20
+> >
+> > You said there is currently no DT users, =20
+>=20
+> Right.  No DT users ever in upstream.
+>=20
+>=20
+> > so how about changing the
+> > "fallback to ECC maximization" behavior for DT users, and instead of
+> > maximizing the ECC strength take the NAND requirements into account
+> > (chip->ecc_strength_ds). =20
+>=20
+> This is difficult to judge in some cases.
+>=20
+> As I said before, 4/512 and 8/1024 are not equivalent.
+>=20
+> If chip's requirement  chip->ecc_step_ds matches
+> to the ecc->size supported by the controller,
+> this is easy.
+>=20
+>=20
+> If a chip requests 1024B, then the controller can only support 512B chunk
+> (or vice versa), it is difficult to simply compare
+> ecc strength.
 
-So far physmap_of was the only driver with support for linux,part-probe
-DT property. Other ones had list or probes hardcoded which wasn't making
-them really flexible. It prevented using common flash drivers on
-platforms that required some specific partition table access.
+You can try something like that when no explicit ecc.strength and
+ecc.size has been set in the DT and when ECC_MAXIMIZE was not passed.
 
-This commit moves support for mentioned DT property to the MTD core
-file. Thanks to calling it on device parse registration (as suggested by
-Boris) all drivers gain support for it for free.
+static int
+denali_get_closest_ecc_strength(struct denali_nand_info *denali,
+				int strength)
+{
+	/*
+	 * Whatever you need to select a strength that is greater than
+	 * or equal to strength.
+	 */
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- drivers/mtd/maps/physmap_of.c | 36 +-----------------------------------
- drivers/mtd/mtdcore.c         | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 35 deletions(-)
+	return X;
+}
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 62fa6836f218..49dbb7235848 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -114,37 +114,9 @@ static struct mtd_info *obsolete_probe(struct platform_device *dev,
- static const char * const part_probe_types_def[] = {
- 	"cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
- 
--static const char * const *of_get_probes(struct device_node *dp)
--{
--	const char **res;
--	int count;
--
--	count = of_property_count_strings(dp, "linux,part-probe");
--	if (count < 0)
--		return part_probe_types_def;
--
--	res = kzalloc((count + 1) * sizeof(*res), GFP_KERNEL);
--	if (!res)
--		return NULL;
--
--	count = of_property_read_string_array(dp, "linux,part-probe", res,
--					      count);
--	if (count < 0)
--		return NULL;
--
--	return res;
--}
--
--static void of_free_probes(const char * const *probes)
--{
--	if (probes != part_probe_types_def)
--		kfree(probes);
--}
--
- static const struct of_device_id of_flash_match[];
- static int of_flash_probe(struct platform_device *dev)
- {
--	const char * const *part_probe_types;
- 	const struct of_device_id *match;
- 	struct device_node *dp = dev->dev.of_node;
- 	struct resource res;
-@@ -310,14 +282,8 @@ static int of_flash_probe(struct platform_device *dev)
- 
- 	info->cmtd->dev.parent = &dev->dev;
- 	mtd_set_of_node(info->cmtd, dp);
--	part_probe_types = of_get_probes(dp);
--	if (!part_probe_types) {
--		err = -ENOMEM;
--		goto err_out;
--	}
--	mtd_device_parse_register(info->cmtd, part_probe_types, NULL,
-+	mtd_device_parse_register(info->cmtd, part_probe_types_def, NULL,
- 			NULL, 0);
--	of_free_probes(part_probe_types);
- 
- 	kfree(mtd_list);
- 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 66a9dedd1062..a7ab0a24ba1e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -664,6 +664,32 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
- 	}
- }
- 
-+static const char * const *mtd_of_get_probes(struct device_node *np)
-+{
-+	const char **res;
-+	int count;
-+
-+	count = of_property_count_strings(np, "linux,part-probe");
-+	if (count < 0)
-+		return NULL;
-+
-+	res = kzalloc((count + 1) * sizeof(*res), GFP_KERNEL);
-+	if (!res)
-+		return NULL;
-+
-+	count = of_property_read_string_array(np, "linux,part-probe", res,
-+					      count);
-+	if (count < 0)
-+		return NULL;
-+
-+	return res;
-+}
-+
-+static inline void mtd_of_free_probes(const char * const *probes)
-+{
-+	kfree(probes);
-+}
-+
- /**
-  * mtd_device_parse_register - parse partitions and register an MTD device.
-  *
-@@ -698,11 +724,16 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 			      const struct mtd_partition *parts,
- 			      int nr_parts)
- {
-+	const char * const *part_probe_types;
- 	struct mtd_partitions parsed;
- 	int ret;
- 
- 	mtd_set_dev_defaults(mtd);
- 
-+	part_probe_types = mtd_of_get_probes(mtd_get_of_node(mtd));
-+	if (!part_probe_types)
-+		part_probe_types = types;
-+
- 	memset(&parsed, 0, sizeof(parsed));
- 
- 	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
-@@ -720,6 +751,9 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 		memset(&parsed, 0, sizeof(parsed));
- 	}
- 
-+	if (part_probe_types != types)
-+		mtd_of_free_probes(part_probe_types);
-+
- 	ret = mtd_add_device_partitions(mtd, &parsed);
- 	if (ret)
- 		goto out;
--- 
-2.11.0
+static int denali_try_to_match_ecc_req(struct denali_nand_info *denali)
+{
+	struct nand_chip *chip =3D &denali->nand;
+	struct mtd_info *mtd =3D nand_to_mtd(chip);
+	int max_ecc_bytes =3D mtd->oobsize - denali->bbtskipbytes;
+	int ecc_steps, ecc_strength, ecc_bytes;
+	int ecc_size =3D chip->ecc_step_ds;
+	int ecc_strength =3D chip->ecc_strength_ds;
+
+	/*
+	 * No information provided by the NAND chip, let the core
+	 * maximize the strength.
+	 */
+	if (!ecc_size ||=C2=A0!ecc_strength)
+		return -ENOTSUPP;
+
+	if (ecc_size > 512)
+		ecc_size =3D 1024;
+	else
+		ecc_size =3D 512;
+
+	/* Adjust ECC step size based on hardware support. */
+	if (ecc_size =3D=3D 1024 &&
+	    !(denali->caps & DENALI_CAP_ECC_SIZE_1024))
+		ecc_size =3D 512;
+	else if(ecc_size =3D=3D 512 &&
+		!(denali->caps & DENALI_CAP_ECC_SIZE_512))
+		ecc_size =3D 1024;
+
+	if (ecc_size < chip->ecc_size_ds) {
+		/*
+		 * When the selected size if smaller than the expected
+		 * one we try to use the same strength but on 512 blocks
+		 * so that we can still fix the same number of errors
+		 * even if they are concentrated in the first 512bytes
+		 * of a 1024bytes portion.
+		 */
+		ecc_strength =3D chip->ecc_strength_ds;
+		ecc_strength =3D denali_get_closest_ecc_strength(denali,
+							       ecc_strength);
+	} else {
+		/* Always prefer 1024bytes ECC blocks when possible. */
+		if (ecc_size !=3D 1024 &&
+		    (denali->caps & DENALI_CAP_ECC_SIZE_1024) &&
+		    mtd->writesize > 1024)
+			ecc_size =3D 1024;
+
+		/*
+		 * Adjust the strength based on the selected ECC step
+		 * size.
+		 */
+		ecc_strength =3D DIV_ROUND_UP(ecc_size,
+					    chip->ecc_step_ds) *
+			       chip->ecc_strength_ds;
+	}
+
+	ecc_bytes =3D denali_calc_ecc_bytes(ecc_size,
+					  ecc_strength);
+	ecc_bytes *=3D mtd->writesize / ecc_size;
+
+	/*
+	 * If we don't have enough space, let the core maximize
+	 * the strength.
+	 */
+	if (ecc_bytes > max_ecc_bytes)
+		return -ENOTSUPP;
+
+	chip->ecc.strength =3D ecc_strength;
+	chip->ecc.size =3D ecc_size;
+=09
+	return 0;
+}
+
+>=20
+> Is it a bad thing if we use too strong ECC strength?
+>=20
+> The disadvantage I see is we will have less OOB-free bytes,
+> but this will not be fatal, I guess.
+
+Not a bad thing in general, but I'd prefer to leave the choice to the
+user. If one doesn't need the extra-safety brought by ECC strength
+maximization and wants to have more OOB bytes it's better to follow
+NAND requirements.
