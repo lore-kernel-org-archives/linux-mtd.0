@@ -1,28 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctsZH-0000eA-AS
- for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 09:10:05 +0000
-Date: Fri, 31 Mar 2017 11:09:38 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
- <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
- <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH v3 13/37] mtd: nand: denali: avoid hard-coding
- ecc.strength and ecc.bytes
-Message-ID: <20170331110938.071cd993@bbrezillon>
-In-Reply-To: <1490856383-31560-14-git-send-email-yamada.masahiro@socionext.com>
-References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
- <1490856383-31560-14-git-send-email-yamada.masahiro@socionext.com>
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctsbf-0002Ta-2C
+ for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 09:12:32 +0000
+Received: by mail-lf0-x242.google.com with SMTP id v2so6750207lfi.2
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2017 02:12:10 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH] mtd: use dev_of_node helper in mtd_get_of_node
+Date: Fri, 31 Mar 2017 11:11:48 +0200
+Message-Id: <20170331091148.19816-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Mar 2017 15:45:59 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+From: Rafał Miłecki <rafal@milecki.pl>
 
->  
-> diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-> index 1681a30..c3bc333 100644
-> --- a/drivers/mtd/nand/denali_dt.c
-> +++ b/drivers/mtd/nand/denali_dt.c
-> @@ -31,10 +31,12 @@ struct denali_dt {
->  
->  struct denali_dt_data {
->  	unsigned int revision;
-> +	unsigned long ecc_strength_avail;
+This allows better compile-time optimizations with CONFIG_OF disabled.
 
-Shouldn't you directly make sure that your driver will support
-strengths > BITS_PER_LONG?
-I would store the supported strength in a table to make it more
-future-proof:
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ include/linux/mtd/mtd.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	int *ecc_strength_avail;
-	int num_ecc_strengths;
-
-
->  	unsigned int caps;
->  };
->  
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index eebdc63cf6af..f8db5b2e4028 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -393,7 +393,7 @@ static inline void mtd_set_of_node(struct mtd_info *mtd,
+ 
+ static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
+ {
+-	return mtd->dev.of_node;
++	return dev_of_node(&mtd->dev);
+ }
+ 
+ static inline int mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
+-- 
+2.11.0
