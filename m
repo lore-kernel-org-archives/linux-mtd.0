@@ -1,14 +1,28 @@
-Date: Fri, 31 Mar 2017 10:04:51 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctru1-0003BX-CO
+ for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 08:27:27 +0000
+Date: Fri, 31 Mar 2017 10:27:03 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3] mtd: physmap_of: really fix the physmap add-ons
-Message-ID: <20170331100451.069a76ab@bbrezillon>
-In-Reply-To: <20170330153639.26819-1-linus.walleij@linaro.org>
-References: <20170330153639.26819-1-linus.walleij@linaro.org>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
+ devicetree@vger.kernel.org, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>
+Subject: Re: [PATCH v3 00/37] mtd: nand: denali: 2nd round of Denali NAND IP
+ patch bomb
+Message-ID: <20170331102703.00d8ca83@bbrezillon>
+In-Reply-To: <CAK7LNATUyc821uQTECkkQj2SDKkbrioFfHVsttnsnc8QuT1P-A@mail.gmail.com>
+References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+ <20170330183805.1c29504f@bbrezillon>
+ <CAK7LNATUyc821uQTECkkQj2SDKkbrioFfHVsttnsnc8QuT1P-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -21,56 +35,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Mar 2017 17:36:39 +0200
-Linus Walleij <linus.walleij@linaro.org> wrote:
+On Fri, 31 Mar 2017 13:05:20 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> The current way of building the of_physmap add-ons result in just
-> the add-on being in the object code, and not the actual core
-> implementation and regress the Gemini and Versatile.
+> Hi Boris,
 > 
-> Bake the physmap_of.o object by baking physmap_of_core.o and
-> adding the Versatile and/or Gemini add-ons to the final object.
-> Rename the source file physmap_of_core.c to get the desired
-> build components.
 > 
-> Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Fixes: 4f04f68e1598 ("mtd: physmap_of: fixup gemini/versatile dependencies")
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> 2017-03-31 1:38 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> 
+> > The rest looks almost good, except for a few comments I had on patch
+> > 14, 18, 25, 26 and 32.
+> >
+> > I'll probably apply 33 and 34 soon.
+> >  
+> 
+> Thank you!
+> Please note I left a minor comment on 34.
+> (Accidental addition of braces.)
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Yep, I noticed. Applied both after fixing the alignment and removing
+unneeded braces in patch 34.
 
-> ---
-> ChangeLog v2->v3:
-> - Build and bake the final object in an elegant way suggested
->   by Boris.
-> ---
->  drivers/mtd/maps/Makefile                            | 10 ++++------
->  drivers/mtd/maps/{physmap_of.c => physmap_of_core.c} |  0
->  2 files changed, 4 insertions(+), 6 deletions(-)
->  rename drivers/mtd/maps/{physmap_of.c => physmap_of_core.c} (100%)
-> 
-> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-> index aef1846b4de2..5a09a72ab112 100644
-> --- a/drivers/mtd/maps/Makefile
-> +++ b/drivers/mtd/maps/Makefile
-> @@ -17,12 +17,10 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
->  obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
->  obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
->  obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
-> -ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
-> -physmap_of-objs += physmap_of_versatile.o
-> -endif
-> -ifdef CONFIG_MTD_PHYSMAP_OF_GEMINI
-> -physmap_of-objs += physmap_of_gemini.o
-> -endif
-> +physmap_of-objs-y		+= physmap_of_core.o
-> +physmap_of-objs-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
-> +physmap_of-objs-$(CONFIG_MTD_PHYSMAP_OF_GEMINI) += physmap_of_gemini.o
-> +physmap_of-objs			:= $(physmap_of-objs-y)
->  obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
->  obj-$(CONFIG_MTD_PISMO)		+= pismo.o
->  obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of_core.c
-> similarity index 100%
-> rename from drivers/mtd/maps/physmap_of.c
-> rename to drivers/mtd/maps/physmap_of_core.c
+Thanks,
+
+Boris
