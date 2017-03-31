@@ -1,33 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctvef-0002R6-VM
- for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 12:27:55 +0000
-Date: Fri, 31 Mar 2017 14:27:28 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>, Linus Walleij
- <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-Subject: Re: [PATCH V2 1/2] mtd: move code reading DT specified part probes
- to the core
-Message-ID: <20170331142728.7e9cfbb2@bbrezillon>
-In-Reply-To: <8d0b5b57-db3e-290e-4fa0-7ff28644ae86@gmail.com>
-References: <20170330215332.32699-1-zajec5@gmail.com>
- <20170331093013.29123-1-zajec5@gmail.com>
- <20170331115654.41592eba@bbrezillon>
- <40a0f980-c849-30de-c906-a708e4d90be5@gmail.com>
- <20170331123153.038e3ada@bbrezillon>
- <99d4944c-3eb9-5bbd-efd0-2ac6862ab1fb@gmail.com>
- <20170331134151.1f08376f@bbrezillon>
- <8d0b5b57-db3e-290e-4fa0-7ff28644ae86@gmail.com>
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]
+ helo=mx07-00178001.pphosted.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctzxE-000830-L3
+ for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 17:03:18 +0000
+From: Ludovic Barre <ludovic.Barre@st.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut
+ <marek.vasut@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v2 1/2] dt-bindings: Document the STM32 QSPI bindings
+Date: Fri, 31 Mar 2017 19:02:03 +0200
+Message-ID: <1490979724-10905-2-git-send-email-ludovic.Barre@st.com>
+In-Reply-To: <1490979724-10905-1-git-send-email-ludovic.Barre@st.com>
+References: <1490979724-10905-1-git-send-email-ludovic.Barre@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,61 +28,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 31 Mar 2017 14:23:11 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+From: Ludovic Barre <ludovic.barre@st.com>
 
-> On 03/31/2017 01:41 PM, Boris Brezillon wrote:
-> > Rafal,
-> >
-> > On Fri, 31 Mar 2017 12:46:38 +0200
-> > Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
-> > =20
-> >>>>> BTW, not sure the intermediate "mtd: physmap_of: use OF helpers
-> >>>>> for reading strings" patch is really useful, since you move to the
-> >>>>> common infrastructure here.
-> >>>>> By following my suggestion you get rid of the dependency you have
-> >>>>> between this series and patch "mtd: physmap_of: use OF helpers for
-> >>>>> reading strings". =20
-> >>>>
-> >>>> I learned (the very hard way) MTD people can be really nitpicking so=
- I'm
-> >>>> sending as simple patches as I can. I see it as the only way for som=
-eone from
-> >>>> OpenWrt/LEDE project to get patch through your review. =20
-> >>>
-> >>> And I learned the hard way that OpenWRT/LEDE developers tend to not
-> >>> listen to our advices and keep arguing on things that have been proven
-> >>> to be existing because of bad decision they made at some point in the
-> >>> project life. So I think we're even :-P. =20
-> >>
-> >> I wish you could sometimes forget what you've learned and review/discu=
-ss things
-> >> without all that negative approach I keep seeing. =20
-> >
-> > I try to stay objective, and if you look back at my review, you'll see
-> > that I actually agree with most of your changes. So if one person is
-> > taking it personally it's you, not me.
-> >
-> > Now, regarding other contributions, like support for the TRX format, I
-> > keep thinking that it's badly designed and should not be supported in
-> > mainline. I clearly expressed my opinion, and I also said I wouldn't
-> > block the patches if other MTD maintainers were okay to take them (which
-> > is already a good thing, don't you think?). But don't expect me to say
-> > "Youhou, let's merge this awesome feature!".
-> >
-> > More generally, if you look back at all the contributions OpenWRT/LEDE
-> > devs made, all uncontroversial features were merged rather quickly. For
-> > the other ones, each time we tried to come up with alternative
-> > solutions, but if you don't want to follow these suggestions (or at
-> > least try them before saying it's impossible), then I think there's
-> > nothing we can do on our side. =20
->=20
-> Sounds fair from you, thanks. Please note I'm actually following your
-> suggestions, just recently I sent RFC init for initramfs which should han=
-dle
-> some of OpenWrt/LEDE hacks in user space as you told us to do this.
->=20
-> https://patchwork.ozlabs.org/patch/744093/
+This patch adds documentation of device tree bindings for the STM32
+QSPI controller.
 
-Yep, I followed the discussion you had with Richard on IRC. That's good
-news.
+Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+---
+ .../devicetree/bindings/mtd/stm32-quadspi.txt      | 45 ++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+
+diff --git a/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt b/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+new file mode 100644
+index 0000000..95a8ebd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+@@ -0,0 +1,45 @@
++* STMicroelectronics Quad Serial Peripheral Interface(QuadSPI)
++
++Required properties:
++- compatible: should be "st,stm32f469-qspi"
++- reg: contains the register location and length.
++  (optional) the memory mapping address and length
++- reg-names: list of the names corresponding to the previous register
++  Should contain "qspi" to register location
++  (optional) "qspi_mm" if read in memory map mode (improve read throughput)
++- interrupts: should contain the interrupt for the device
++- clocks: the phandle of the clock needed by the QSPI controller
++- A pinctrl must be defined to set pins in mode of operation for QSPI transfer
++
++Optional properties:
++- resets: must contain the phandle to the reset controller.
++
++A spi flash must be a child of the nor_flash node and could have some
++properties. Also see jedec,spi-nor.txt.
++
++Required properties:
++- reg: chip-Select number (QSPI controller may connect 2 nor flashes)
++- spi-max-frequency: max frequency of spi bus
++
++Optional property:
++- spi-rx-bus-width: the bus width (number of data wires)
++
++Example:
++
++qspi: qspi@a0001000 {
++	compatible = "st,stm32f469-qspi";
++	reg = <0xa0001000 0x1000>, <0x90000000 0x10000000>;
++	reg-names = "qspi", "qspi_mm";
++	interrupts = <91>;
++	resets = <&rcc STM32F4_AHB3_RESET(QSPI)>;
++	clocks = <&rcc 0 STM32F4_AHB3_CLOCK(QSPI)>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_qspi0>;
++
++	flash@0 {
++		reg = <0>;
++		spi-rx-bus-width = <4>;
++		spi-max-frequency = <108000000>;
++		...
++	};
++};
+-- 
+2.7.4
