@@ -1,34 +1,36 @@
-Received: from conssluserg-01.nifty.com ([210.131.2.80])
+Received: from conssluserg-02.nifty.com ([210.131.2.81])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctnkr-0000wG-GG
- for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 04:01:43 +0000
-Received: from mail-yw0-f181.google.com (mail-yw0-f181.google.com
- [209.85.161.181]) (authenticated)
- by conssluserg-01.nifty.com with ESMTP id v2V414MA006841
- for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2017 13:01:05 +0900
-Received: by mail-yw0-f181.google.com with SMTP id d191so33324534ywe.2
- for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 21:01:04 -0700 (PDT)
+ id 1ctnpD-0002o0-OB
+ for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 04:06:13 +0000
+Received: from mail-yw0-f180.google.com (mail-yw0-f180.google.com
+ [209.85.161.180]) (authenticated)
+ by conssluserg-02.nifty.com with ESMTP id v2V45KDZ005226
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2017 13:05:21 +0900
+Received: by mail-yw0-f180.google.com with SMTP id i203so33406296ywc.3
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 21:05:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1490861708-27813-4-git-send-email-yamada.masahiro@socionext.com>
-References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
- <1490861708-27813-4-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <20170330183805.1c29504f@bbrezillon>
+References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+ <20170330183805.1c29504f@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Fri, 31 Mar 2017 13:01:03 +0900
-Message-ID: <CAK7LNATdSKsF7KH8Pgs9Vf6XMVCAZUwHFzaPJRhFjLmjLXAVsg@mail.gmail.com>
-Subject: Re: [PATCH v3 34/37] mtd: nand: allow drivers to request minimum
- alignment for passed buffer
-To: linux-mtd@lists.infradead.org
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Marek Vasut <marek.vasut@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>,
+Date: Fri, 31 Mar 2017 13:05:20 +0900
+Message-ID: <CAK7LNATUyc821uQTECkkQj2SDKkbrioFfHVsttnsnc8QuT1P-A@mail.gmail.com>
+Subject: Re: [PATCH v3 00/37] mtd: nand: denali: 2nd round of Denali NAND IP
+ patch bomb
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
  Graham Moore <grmoore@opensource.altera.com>,
- Enrico Jorns <ejo@pengutronix.de>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Masami Hiramatsu <mhiramat@kernel.org>,
- Jassi Brar <jaswinder.singh@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>, devicetree@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -42,64 +44,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hi Boris,
 
 
-2017-03-30 17:15 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
-> In some cases, nand_do_{read,write}_ops is passed with unaligned
-> ops->datbuf.  Drivers using DMA will be unhappy about unaligned
-> buffer.
->
-> The new struct member, buf_align, represents the minimum alignment
-> the driver require for the buffer.  If the buffer passed from the
-> upper MTD layer does not have enough alignment, nand_do_*_ops will
-> use bufpoi.
->
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
->
-> I was hit by this problem when I ran
->   # mount -t jffs2 /dev/mtdblock*  /mnt
->
-> The buffer passed to nand_do_*_ops has 4 byte offset.
-> The Denali IP cannot do DMA to/from this buffer because it
-> requires 16 byte alignment for DMA.
->
->
-> Changes in v3:
->   - Newly added
->
-> Changes in v2: None
->
->  drivers/mtd/nand/nand_base.c | 12 ++++++++----
->  include/linux/mtd/nand.h     |  2 ++
->  2 files changed, 10 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index e9d3195..b528ffa 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1953,9 +1953,10 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->
->                 if (!aligned)
->                         use_bufpoi = 1;
-> -               else if (chip->options & NAND_USE_BOUNCE_BUFFER)
-> -                       use_bufpoi = !virt_addr_valid(buf);
-> -               else
-> +               else if (chip->options & NAND_USE_BOUNCE_BUFFER) {
-> +                       use_bufpoi = !virt_addr_valid(buf) ||
-> +                              !IS_ALIGNED((unsigned long)buf, chip->buf_align);
-> +               } else
->                         use_bufpoi = 0;
+2017-03-31 1:38 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
 
+> The rest looks almost good, except for a few comments I had on patch
+> 14, 18, 25, 26 and 32.
+>
+> I'll probably apply 33 and 34 soon.
+>
 
-I noticed I added unneeded braces here by mistake.
-(When I was testing this part, I inserted printk here,
-then I forgot to remove the {} . )
-
-Can you fix-up it?
-
-If requested, I can re-send it.
-
-
-
+Thank you!
+Please note I left a minor comment on 34.
+(Accidental addition of braces.)
 
 
 -- 
