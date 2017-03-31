@@ -1,20 +1,26 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctsbf-0002Ta-2C
- for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 09:12:32 +0000
-Received: by mail-lf0-x242.google.com with SMTP id v2so6750207lfi.2
- for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2017 02:12:10 -0700 (PDT)
+ id 1ctstL-0002vr-V1
+ for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 09:30:49 +0000
+Received: by mail-lf0-x243.google.com with SMTP id r36so6812401lfi.0
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2017 02:30:28 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Frank Rowand <frowand.list@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
  devicetree@vger.kernel.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] mtd: use dev_of_node helper in mtd_get_of_node
-Date: Fri, 31 Mar 2017 11:11:48 +0200
-Message-Id: <20170331091148.19816-1-zajec5@gmail.com>
+Subject: [PATCH V2 2/2] dt-bindings: mtd: document linux,part-probe property
+Date: Fri, 31 Mar 2017 11:30:13 +0200
+Message-Id: <20170331093013.29123-2-zajec5@gmail.com>
+In-Reply-To: <20170331093013.29123-1-zajec5@gmail.com>
+References: <20170330215332.32699-1-zajec5@gmail.com>
+ <20170331093013.29123-1-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -29,25 +35,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-This allows better compile-time optimizations with CONFIG_OF disabled.
+Support for this property has been introduced in 2010 with commit
+9d5da3a9b849 ("mtd: extend physmap_of to let the device tree specify the
+parition probe") but it was never documented. Fix this by adding a
+proper description and example.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
- include/linux/mtd/mtd.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/mtd/common.txt | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index eebdc63cf6af..f8db5b2e4028 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -393,7 +393,7 @@ static inline void mtd_set_of_node(struct mtd_info *mtd,
+diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documentation/devicetree/bindings/mtd/common.txt
+index fc068b923d7a..1ada70e718b2 100644
+--- a/Documentation/devicetree/bindings/mtd/common.txt
++++ b/Documentation/devicetree/bindings/mtd/common.txt
+@@ -6,10 +6,17 @@ Optional properties:
+   controller based name) in order to ease flash device identification
+   and/or describe what they are used for.
  
- static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
- {
--	return mtd->dev.of_node;
-+	return dev_of_node(&mtd->dev);
- }
++- linux,part-probe: if present, this property should contain a list of strings
++  with partition probes to be used for the flash device. A role of partition
++  probe (parser) is to read/construct partition table and register found
++  partitions. Getting partition table may be platform or device specific so
++  various devices may use various Linux drivers for this purpose.
++
+ Example:
  
- static inline int mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
+ 	flash@0 {
+ 		label = "System-firmware";
++		linux,part-probe = "cmdlinepart", "ofpart";
+ 
+ 		/* flash type specific properties */
+ 	};
 -- 
 2.11.0
