@@ -1,24 +1,17 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ctrWO-0000NU-Qv
- for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 08:03:02 +0000
-Date: Fri, 31 Mar 2017 10:02:39 +0200
+Date: Fri, 31 Mar 2017 10:04:51 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
  Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Linus Walleij <linus.walleij@linaro.org>, Jason Gunthorpe
- <jgunthorpe@obsidianresearch.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-Subject: Re: [PATCH] mtd: physmap_of: use OF helpers for reading strings
-Message-ID: <20170331100239.37a14f37@bbrezillon>
-In-Reply-To: <20170330155853.30349-1-zajec5@gmail.com>
-References: <20170330155853.30349-1-zajec5@gmail.com>
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3] mtd: physmap_of: really fix the physmap add-ons
+Message-ID: <20170331100451.069a76ab@bbrezillon>
+In-Reply-To: <20170330153639.26819-1-linus.walleij@linaro.org>
+References: <20170330153639.26819-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +21,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Mar 2017 17:58:53 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+On Thu, 30 Mar 2017 17:36:39 +0200
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->=20
-> OF core code provides helpers for counting strings and reading them so
-> use them instead of doing this manually. This simplifies the code a bit.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> The current way of building the of_physmap add-ons result in just
+> the add-on being in the object code, and not the actual core
+> implementation and regress the Gemini and Versatile.
+> 
+> Bake the physmap_of.o object by baking physmap_of_core.o and
+> adding the Versatile and/or Gemini add-ons to the final object.
+> Rename the source file physmap_of_core.c to get the desired
+> build components.
+> 
+> Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Fixes: 4f04f68e1598 ("mtd: physmap_of: fixup gemini/versatile dependencies")
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
 > ---
->  drivers/mtd/maps/physmap_of.c | 30 ++++++++++--------------------
->  1 file changed, 10 insertions(+), 20 deletions(-)
->=20
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-> index 14e8909c9955..62fa6836f218 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -116,32 +116,22 @@ static const char * const part_probe_types_def[] =
-=3D {
-> =20
->  static const char * const *of_get_probes(struct device_node *dp)
->  {
-> -	const char *cp;
-> -	int cplen;
-> -	unsigned int l;
-> -	unsigned int count;
->  	const char **res;
-> +	int count;
-> =20
-> -	cp =3D of_get_property(dp, "linux,part-probe", &cplen);
-> -	if (cp =3D=3D NULL)
-> +	count =3D of_property_count_strings(dp, "linux,part-probe");
-> +	if (count < 0)
->  		return part_probe_types_def;
-> =20
-> -	count =3D 0;
-> -	for (l =3D 0; l !=3D cplen; l++)
-> -		if (cp[l] =3D=3D 0)
-> -			count++;
-> -
-> -	res =3D kzalloc((count + 1)*sizeof(*res), GFP_KERNEL);
-> +	res =3D kzalloc((count + 1) * sizeof(*res), GFP_KERNEL);
->  	if (!res)
->  		return NULL;
-> -	count =3D 0;
-> -	while (cplen > 0) {
-> -		res[count] =3D cp;
-> -		l =3D strlen(cp) + 1;
-> -		cp +=3D l;
-> -		cplen -=3D l;
-> -		count++;
-> -	}
-> +
-> +	count =3D of_property_read_string_array(dp, "linux,part-probe", res,
-> +					      count);
-> +	if (count < 0)
-> +		return NULL;
-> +
->  	return res;
->  }
-> =20
+> ChangeLog v2->v3:
+> - Build and bake the final object in an elegant way suggested
+>   by Boris.
+> ---
+>  drivers/mtd/maps/Makefile                            | 10 ++++------
+>  drivers/mtd/maps/{physmap_of.c => physmap_of_core.c} |  0
+>  2 files changed, 4 insertions(+), 6 deletions(-)
+>  rename drivers/mtd/maps/{physmap_of.c => physmap_of_core.c} (100%)
+> 
+> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+> index aef1846b4de2..5a09a72ab112 100644
+> --- a/drivers/mtd/maps/Makefile
+> +++ b/drivers/mtd/maps/Makefile
+> @@ -17,12 +17,10 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
+>  obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+>  obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+>  obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+> -ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
+> -physmap_of-objs += physmap_of_versatile.o
+> -endif
+> -ifdef CONFIG_MTD_PHYSMAP_OF_GEMINI
+> -physmap_of-objs += physmap_of_gemini.o
+> -endif
+> +physmap_of-objs-y		+= physmap_of_core.o
+> +physmap_of-objs-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
+> +physmap_of-objs-$(CONFIG_MTD_PHYSMAP_OF_GEMINI) += physmap_of_gemini.o
+> +physmap_of-objs			:= $(physmap_of-objs-y)
+>  obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
+>  obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+>  obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of_core.c
+> similarity index 100%
+> rename from drivers/mtd/maps/physmap_of.c
+> rename to drivers/mtd/maps/physmap_of_core.c
