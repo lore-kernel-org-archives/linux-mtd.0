@@ -1,38 +1,26 @@
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctomc-0005sa-3I
- for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 05:07:36 +0000
-Received: from mail-yb0-f174.google.com (mail-yb0-f174.google.com
- [209.85.213.174]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id v2V56XcK016632
- for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2017 14:06:34 +0900
-Received: by mail-yb0-f174.google.com with SMTP id f204so13390614ybc.2
- for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 22:06:34 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctrCd-0006HG-5F
+ for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 07:42:37 +0000
+Date: Fri, 31 Mar 2017 09:42:13 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Frank Rowand <frowand.list@gmail.com>, Linus Walleij
+ <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH 1/2] mtd: move code reading DT specified part probes to
+ the common place
+Message-ID: <20170331094213.055149e1@bbrezillon>
+In-Reply-To: <20170330215332.32699-1-zajec5@gmail.com>
+References: <20170330215332.32699-1-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20170330160238.59e5a2c1@bbrezillon>
-References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
- <1490856383-31560-15-git-send-email-yamada.masahiro@socionext.com>
- <20170330160238.59e5a2c1@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Fri, 31 Mar 2017 14:06:32 +0900
-Message-ID: <CAK7LNARUKwMHd79ALDx_SDY9XKcHPY96xTAOMQx6XarFgwb-AA@mail.gmail.com>
-Subject: Re: [PATCH v3 14/37] mtd: nand: denali: support "nand-ecc-strength"
- DT property
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- Graham Moore <grmoore@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>, devicetree@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,53 +30,237 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Rafal,
 
+On Thu, 30 Mar 2017 23:53:31 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-2017-03-30 23:02 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Thu, 30 Mar 2017 15:46:00 +0900
-> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->
->> Historically, this driver tried to choose as big ECC strength as
->> possible, but it would be reasonable to allow DT to set a particular
->> ECC strength with "nand-ecc-strength" property.  This is useful
->> when a particular ECC setting is hard-coded by firmware (or hard-
->> wired by boot ROM).
->>
->> If no ECC strength is specified in DT, "nand-ecc-maximize" is implied
->> since this was the original behavior.
->
-> You said there is currently no DT users,
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> Handling (creating) partitions for flash devices requires using a proper
+> driver that will read partition table (out of somewhere). We can't
+> simply try all existing drivers one by one, so MTD subsystem allows
+> drivers to specify a list of applicable part probes.
+>=20
+> So far physmap_of was the only driver with support for linux,part-probe
+> DT property. Other ones had list or probes hardcoded which wasn't making
+> them really flexible. It prevented using common flash drivers on
+> platforms that required some specific partition table access.
 
-Right.  No DT users ever in upstream.
+I agree that having each flash device driver specify the set of
+partition parsers it supports is a bad idea (most of the time,
+partition table format are devicetype agnostic). On the other hand, I'm
+not a big fan of this property, and I would prefer a solution where all
+parsers are tested on each MTD device.
+But testing all parsers sequentially is not a perfect solution either
+because it increases boot-time and you can't really define the order in
+which partition parsers are tested (which means that if you have 2
+different partition table in 2 different format, you can't choose the
+one that has precedence on the other).
 
+I guess I can live with this "linux,part-probe" property, even if,
+as the names implies, it's not really describing hardware, and as
+such, does not have its place in DT :-P.
 
-> so how about changing the
-> "fallback to ECC maximization" behavior for DT users, and instead of
-> maximizing the ECC strength take the NAND requirements into account
-> (chip->ecc_strength_ds).
+>=20
+> This commit moves support for mentioned DT property to the common place
+> so it can be reused by other drivers.
 
-This is difficult to judge in some cases.
+This property does not seem to be documented. Can you add a patch
+documenting it in Documentation/devicetree/bindings/mtd/common.txt and
+Cc the DT maintainers. Only then we'll see if this property is
+acceptable for them.
 
-As I said before, 4/512 and 8/1024 are not equivalent.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> ---
+> This patch is based on top of
+> [PATCH] mtd: physmap_of: use OF helpers for reading strings
+> ---
+>  drivers/mtd/maps/physmap_of.c | 39 ++++++-------------------------------=
+--
+>  drivers/of/Kconfig            |  6 ++++++
+>  drivers/of/Makefile           |  1 +
+>  drivers/of/of_mtd.c           | 30 ++++++++++++++++++++++++++++++
+>  include/linux/of_mtd.h        | 25 +++++++++++++++++++++++++
 
-If chip's requirement  chip->ecc_step_ds matches
-to the ecc->size supported by the controller,
-this is easy.
+No please, don't add these files back. If you need specific OF helpers
+for the MTD subsystem, put them in drivers/mtd/mtdcore.c or
+drivers/mtd/of.c if you think it really deserves a dedicated file (but
+given the number of lines you add, I'm not sure it's the case).
 
+>  5 files changed, 68 insertions(+), 33 deletions(-)
+>  create mode 100644 drivers/of/of_mtd.c
+>  create mode 100644 include/linux/of_mtd.h
+>=20
+> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+> index 62fa6836f218..fa54c07eb118 100644
+> --- a/drivers/mtd/maps/physmap_of.c
+> +++ b/drivers/mtd/maps/physmap_of.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/mtd/concat.h>
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+> +#include <linux/of_mtd.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/slab.h>
+>  #include "physmap_of_gemini.h"
+> @@ -114,33 +115,6 @@ static struct mtd_info *obsolete_probe(struct platfo=
+rm_device *dev,
+>  static const char * const part_probe_types_def[] =3D {
+>  	"cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
+> =20
+> -static const char * const *of_get_probes(struct device_node *dp)
+> -{
+> -	const char **res;
+> -	int count;
+> -
+> -	count =3D of_property_count_strings(dp, "linux,part-probe");
+> -	if (count < 0)
+> -		return part_probe_types_def;
+> -
+> -	res =3D kzalloc((count + 1) * sizeof(*res), GFP_KERNEL);
+> -	if (!res)
+> -		return NULL;
+> -
+> -	count =3D of_property_read_string_array(dp, "linux,part-probe", res,
+> -					      count);
+> -	if (count < 0)
+> -		return NULL;
+> -
+> -	return res;
+> -}
+> -
+> -static void of_free_probes(const char * const *probes)
+> -{
+> -	if (probes !=3D part_probe_types_def)
+> -		kfree(probes);
+> -}
+> -
+>  static const struct of_device_id of_flash_match[];
+>  static int of_flash_probe(struct platform_device *dev)
+>  {
+> @@ -310,14 +284,13 @@ static int of_flash_probe(struct platform_device *d=
+ev)
+> =20
+>  	info->cmtd->dev.parent =3D &dev->dev;
+>  	mtd_set_of_node(info->cmtd, dp);
+> -	part_probe_types =3D of_get_probes(dp);
+> -	if (!part_probe_types) {
+> -		err =3D -ENOMEM;
+> -		goto err_out;
+> -	}
+> +	part_probe_types =3D of_mtd_get_probes(dp);
+> +	if (!part_probe_types)
+> +		part_probe_types =3D part_probe_types_def;
 
-If a chip requests 1024B, then the controller can only support 512B chunk
-(or vice versa), it is difficult to simply compare
-ecc strength.
+Let's automate that a bit. The OF node is attached to the MTD device
+when you call mtd_set_of_node(), so you have everything you need to
+extract the partition parser list in mtd_device_parse_register().
+If you do that, all MTD drivers would gain "linux,part-probe" support
+for free.
 
-Is it a bad thing if we use too strong ECC strength?
-
-The disadvantage I see is we will have less OOB-free bytes,
-but this will not be fatal, I guess.
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+>  	mtd_device_parse_register(info->cmtd, part_probe_types, NULL,
+>  			NULL, 0);
+> -	of_free_probes(part_probe_types);
+> +	if (part_probe_types !=3D part_probe_types_def)
+> +		of_mtd_free_probes(part_probe_types);
+> =20
+>  	kfree(mtd_list);
+> =20
+> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+> index ba7b034b2b91..18ac835a1ce4 100644
+> --- a/drivers/of/Kconfig
+> +++ b/drivers/of/Kconfig
+> @@ -78,6 +78,12 @@ config OF_MDIO
+>  	help
+>  	  OpenFirmware MDIO bus (Ethernet PHY) accessors
+> =20
+> +config OF_MTD
+> +	def_tristate MTD
+> +	depends on MTD
+> +	help
+> +	  OpenFirmware MTD accessors
+> +
+>  config OF_PCI
+>  	def_tristate PCI
+>  	depends on PCI
+> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+> index d7efd9d458aa..965c2a691337 100644
+> --- a/drivers/of/Makefile
+> +++ b/drivers/of/Makefile
+> @@ -8,6 +8,7 @@ obj-$(CONFIG_OF_IRQ)    +=3D irq.o
+>  obj-$(CONFIG_OF_NET)	+=3D of_net.o
+>  obj-$(CONFIG_OF_UNITTEST) +=3D unittest.o
+>  obj-$(CONFIG_OF_MDIO)	+=3D of_mdio.o
+> +obj-$(CONFIG_OF_MTD)	+=3D of_mtd.o
+>  obj-$(CONFIG_OF_PCI)	+=3D of_pci.o
+>  obj-$(CONFIG_OF_PCI_IRQ)  +=3D of_pci_irq.o
+>  obj-$(CONFIG_OF_RESERVED_MEM) +=3D of_reserved_mem.o
+> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+> new file mode 100644
+> index 000000000000..ff851d7742d5
+> --- /dev/null
+> +++ b/drivers/of/of_mtd.c
+> @@ -0,0 +1,30 @@
+> +/*
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#include <linux/of.h>
+> +#include <linux/of_mtd.h>
+> +
+> +const char * const *of_mtd_get_probes(struct device_node *np)
+> +{
+> +	const char **res;
+> +	int count;
+> +
+> +	count =3D of_property_count_strings(np, "linux,part-probe");
+> +	if (count < 0)
+> +		return NULL;
+> +
+> +	res =3D kzalloc((count + 1) * sizeof(*res), GFP_KERNEL);
+> +	if (!res)
+> +		return NULL;
+> +
+> +	count =3D of_property_read_string_array(np, "linux,part-probe", res,
+> +					      count);
+> +	if (count < 0)
+> +		return NULL;
+> +
+> +	return res;
+> +}
+> +EXPORT_SYMBOL(of_mtd_get_probes);
+> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+> new file mode 100644
+> index 000000000000..d55f4aa684c5
+> --- /dev/null
+> +++ b/include/linux/of_mtd.h
+> @@ -0,0 +1,25 @@
+> +#ifndef __OF_MTD_H
+> +#define __OF_MTD_H
+> +
+> +#include <linux/slab.h>
+> +
+> +struct device_node;
+> +
+> +#ifdef CONFIG_OF_MTD
+> +const char * const *of_mtd_get_probes(struct device_node *np);
+> +static inline void of_mtd_free_probes(const char * const *probes)
+> +{
+> +	kfree(probes);
+> +}
+> +#else
+> +const char * const *of_mtd_get_probes(struct device_node *np)
+> +{
+> +	return NULL;
+> +}
+> +
+> +static inline void of_mtd_free_probes(const char * const *probes)
+> +{
+> +}
+> +#endif
+> +
+> +#endif
