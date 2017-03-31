@@ -1,25 +1,35 @@
-Message-ID: <1490927207.7262.7.camel@mhfsdcap03>
-Subject: Re: [PATCH V1 1/1] mtd: mtk-nor: set controller to 4B mode with
- large capacity flash
-From: Guochun Mao <guochun.mao@mediatek.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
- <marek.vasut@gmail.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Mark Rutland
- <mark.rutland@arm.com>, <devicetree@vger.kernel.org>, Richard Weinberger
- <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- <linux-mtd@lists.infradead.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- <linux-mediatek@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>
-Date: Fri, 31 Mar 2017 10:26:47 +0800
-In-Reply-To: <24d60072-4124-7ec4-6cd3-fd70f4f6b10a@wedev4u.fr>
-References: <1490862222-723-1-git-send-email-guochun.mao@mediatek.com>
- <1490862222-723-2-git-send-email-guochun.mao@mediatek.com>
- <24d60072-4124-7ec4-6cd3-fd70f4f6b10a@wedev4u.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctnkr-0000wG-GG
+ for linux-mtd@lists.infradead.org; Fri, 31 Mar 2017 04:01:43 +0000
+Received: from mail-yw0-f181.google.com (mail-yw0-f181.google.com
+ [209.85.161.181]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id v2V414MA006841
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2017 13:01:05 +0900
+Received: by mail-yw0-f181.google.com with SMTP id d191so33324534ywe.2
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2017 21:01:04 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1490861708-27813-4-git-send-email-yamada.masahiro@socionext.com>
+References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490861708-27813-4-git-send-email-yamada.masahiro@socionext.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Fri, 31 Mar 2017 13:01:03 +0900
+Message-ID: <CAK7LNATdSKsF7KH8Pgs9Vf6XMVCAZUwHFzaPJRhFjLmjLXAVsg@mail.gmail.com>
+Subject: Re: [PATCH v3 34/37] mtd: nand: allow drivers to request minimum
+ alignment for passed buffer
+To: linux-mtd@lists.infradead.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Enrico Jorns <ejo@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,77 +39,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille, Marek,
+Hi Boris,
 
-Thanks for your suggestions.
 
-On Thu, 2017-03-30 at 19:40 +0200, Cyrille Pitchen wrote:
-> Hi Guochun,
-> 
-> Le 30/03/2017 à 10:23, Guochun Mao a écrit :
-> > when nor's size larger than 16MByte, nor and controller should
-> > enter 4Byte mode simultaneously.
-> > 
-> > Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> > ---
-> >  drivers/mtd/spi-nor/mtk-quadspi.c |    7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-> > index e661877..05cd8a8 100644
-> > --- a/drivers/mtd/spi-nor/mtk-quadspi.c
-> > +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-> > @@ -369,6 +369,13 @@ static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-> >  		/* We only handle 1 byte */
-> >  		ret = mt8173_nor_wr_sr(mt8173_nor, *buf);
-> >  		break;
-> > +	case SPINOR_OP_EN4B:
-> > +		/* Set nor controller to 4-byte address mode,
-> > +		 * and simultaneously set nor flash.
-> > +		 * This case should cooperate with default operation.
-> > +		 */
-> > +		writeb(readb(mt8173_nor->base + MTK_NOR_DUAL_REG) | 0x10,
-> > +				mt8173_nor->base + MTK_NOR_DUAL_REG);
-> 
-> This is not good: you should check in both mt8173_nor_read() and
-> mt8173_nor_write() whether nor->addr_width is either 3 or 4.
-> 
-> from include/linux/mtd/spi-nor.h:
->  * @addr_width:		number of address bytes
-> 
-> Besides SPI commands using an op code from 4-byte address instruction
-> set always carry a 4-byte address. They can be used directly, without
-> sending the SPINOR_OP_EN4B before. So you cannot assume that addresses
-> will be 4-byte long only if your SPI controller driver has seen a
-> SPINOR_OP_EN4B command before. This assumption is wrong.
-Nor->addr_width is assigned in spi_nor_scan in spi-nor.c, and it's not
-modified in later process.
-Does it means that we will not switch nor between 3Byte address and
-4Byte?
-So, is it better to check nor->addr_width when do nor initialization?
+2017-03-30 17:15 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
+> In some cases, nand_do_{read,write}_ops is passed with unaligned
+> ops->datbuf.  Drivers using DMA will be unhappy about unaligned
+> buffer.
+>
+> The new struct member, buf_align, represents the minimum alignment
+> the driver require for the buffer.  If the buffer passed from the
+> upper MTD layer does not have enough alignment, nand_do_*_ops will
+> use bufpoi.
+>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
+>
+> I was hit by this problem when I ran
+>   # mount -t jffs2 /dev/mtdblock*  /mnt
+>
+> The buffer passed to nand_do_*_ops has 4 byte offset.
+> The Denali IP cannot do DMA to/from this buffer because it
+> requires 16 byte alignment for DMA.
+>
+>
+> Changes in v3:
+>   - Newly added
+>
+> Changes in v2: None
+>
+>  drivers/mtd/nand/nand_base.c | 12 ++++++++----
+>  include/linux/mtd/nand.h     |  2 ++
+>  2 files changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index e9d3195..b528ffa 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1953,9 +1953,10 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+>
+>                 if (!aligned)
+>                         use_bufpoi = 1;
+> -               else if (chip->options & NAND_USE_BOUNCE_BUFFER)
+> -                       use_bufpoi = !virt_addr_valid(buf);
+> -               else
+> +               else if (chip->options & NAND_USE_BOUNCE_BUFFER) {
+> +                       use_bufpoi = !virt_addr_valid(buf) ||
+> +                              !IS_ALIGNED((unsigned long)buf, chip->buf_align);
+> +               } else
+>                         use_bufpoi = 0;
 
-> 
-> SPI controller driver should never check SPINOR_OP_* op codes like this.
-I agree that SPI controller driver should not check SPINOR_OP_* op codes
-like what I do.
-I will correct it next version.
 
-Best Regards,
-Guochun
-> 
-> Then, testing SPINOR_OP_RDSR from mt8173_nor_read_reg() or
-> SPINOR_OP_WRSR from mt8173_nor_write_reg() is not a good practice too:
-> op codes may change depending on the memory manufacturer. So testing op
-> code values like you do can work with some memories but maybe not all.
-> 
-> Finally, don't use 0x10, please define a macro instead.
-> 
-> Best regards,
-> 
-> Cyrille
-> 
-> >  	default:
-> >  		ret = mt8173_nor_do_tx_rx(mt8173_nor, opcode, buf, len, NULL, 0);
-> >  		if (ret)
-> > 
-> 
+I noticed I added unneeded braces here by mistake.
+(When I was testing this part, I inserted printk here,
+then I forgot to remove the {} . )
+
+Can you fix-up it?
+
+If requested, I can re-send it.
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
