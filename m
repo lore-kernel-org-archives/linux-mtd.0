@@ -1,24 +1,21 @@
-Received: from 9.mo69.mail-out.ovh.net ([46.105.56.78])
+Received: from 10.mo69.mail-out.ovh.net ([46.105.73.241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cuiyT-0005J4-0H
- for linux-mtd@lists.infradead.org; Sun, 02 Apr 2017 17:07:34 +0000
+ id 1cujJo-0004cZ-Pe
+ for linux-mtd@lists.infradead.org; Sun, 02 Apr 2017 17:29:39 +0000
 Received: from player738.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo69.mail-out.ovh.net (Postfix) with ESMTP id BAA431BD5F
- for <linux-mtd@lists.infradead.org>; Sun,  2 Apr 2017 19:07:11 +0200 (CEST)
-Subject: Re: [PATCH v5 3/6] mtd: spi-nor: add spi_nor_init() function
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, jartur@cadence.com, kdasu.kdev@gmail.com,
- mar.krzeminski@gmail.com
-References: <cover.1490220411.git.cyrille.pitchen@atmel.com>
- <8d88fd247815979bee2a6d3be50fa57a80c2f229.1490220411.git.cyrille.pitchen@atmel.com>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at,
- nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
+ by mo69.mail-out.ovh.net (Postfix) with ESMTP id 8FEF91CB61
+ for <linux-mtd@lists.infradead.org>; Sun,  2 Apr 2017 19:29:12 +0200 (CEST)
+Subject: Re: [PATCH v4] mtd: spi-nor: Add support for N25Q256A11
+To: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>,
+ linux-mtd@lists.infradead.org
+References: <1490223854-6936-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Jagan Teki <jagan@openedev.com>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <8648b581-d279-3d89-2a28-271e76cdbf73@wedev4u.fr>
-Date: Sun, 2 Apr 2017 19:06:58 +0200
+Message-ID: <3c21f57c-326c-59a9-4628-5c2e96abc651@wedev4u.fr>
+Date: Sun, 2 Apr 2017 19:29:07 +0200
 MIME-Version: 1.0
-In-Reply-To: <8d88fd247815979bee2a6d3be50fa57a80c2f229.1490220411.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <1490223854-6936-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,24 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 23/03/2017 à 00:33, Cyrille Pitchen a écrit :
-> This patch extracts some chunks from spi_nor_scan() and moves them into
-> a new spi_nor_init() function.
-> 
-> Indeed, spi_nor_init() regroups all the required SPI flash commands to be
-> sent to the SPI flash memory before performing any runtime operations
-> (Fast Read, Page Program, Sector Erase, ...). Hence spi_nor_init():
-> 1) removes the flash protection if applicable for certain vendors.
-> 2) sets the Quad Enable bit, if needed, before using Quad SPI protocols.
-> 3) makes the memory enter its (stateful) 4-byte address mode, if needed,
->    for SPI flash memory > 128Mbits not supporting the 4-byte address
->    instruction set.
-> 
-> spi_nor_scan() now ends by calling spi_nor_init() once the probe phase has
-> completed. Further patches could also use spi_nor_init() to implement the
-> mtd->_resume() handler for the spi-nor framework.
-> 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Hi Nobuhiro,
 
-Applied to github/spi-nor
+Le 23/03/2017 à 00:04, Nobuhiro Iwamatsu a écrit :
+> Add new Micron N25Q256A (N25Q256A11) 256Mbit NOR Flash in the list
+> of supported devices. This chip has the same structure as the N25Q256A
+> but ID and voltage (1V8) to use is different. Therefore, this adds
+> N25Q256A11 as n25q256ax1.
+> 
+> In the future, for new Micron memories we could use the patterns
+> "n25q*ax1" for 1V8 and "n25q*ax3" for 3V3 memories.
+> 
+> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
+
+I've fixed your commit message then I've applied your patch to
+github/spi-nor.
+
+Indeed, the lines below must be placed after the "---" line otherwise
+they would appear in the commit message.
+
+> 
+> v4: Update description and fix typo.
+> v3: Use new name space.
+>     n25q*ax1" for 1V8 and "n25q*ax3" for 3V3 memories.
+> v2: Set 0x20bb1b as n25q256a, and 0x20bb1b as n25q256.
+> 
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 1ae872bfc3ba..2e02991d93aa 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1031,6 +1031,7 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+> +	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+> 
+
+Best regards,
+
+Cyrille
