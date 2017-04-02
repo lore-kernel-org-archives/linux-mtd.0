@@ -1,25 +1,24 @@
-Received: from 5.mo69.mail-out.ovh.net ([46.105.43.105])
+Received: from 9.mo69.mail-out.ovh.net ([46.105.56.78])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cuixV-0004p6-F0
- for linux-mtd@lists.infradead.org; Sun, 02 Apr 2017 17:06:35 +0000
+ id 1cuiyT-0005J4-0H
+ for linux-mtd@lists.infradead.org; Sun, 02 Apr 2017 17:07:34 +0000
 Received: from player738.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo69.mail-out.ovh.net (Postfix) with ESMTP id 2C2DF1D4C2
- for <linux-mtd@lists.infradead.org>; Sun,  2 Apr 2017 19:06:11 +0200 (CEST)
-Subject: Re: [PATCH v5 2/6] mtd: m25p80: add support of SPI 1-2-2 and 1-4-4
- protocols
+ by mo69.mail-out.ovh.net (Postfix) with ESMTP id BAA431BD5F
+ for <linux-mtd@lists.infradead.org>; Sun,  2 Apr 2017 19:07:11 +0200 (CEST)
+Subject: Re: [PATCH v5 3/6] mtd: spi-nor: add spi_nor_init() function
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, marek.vasut@gmail.com,
  linux-mtd@lists.infradead.org, jartur@cadence.com, kdasu.kdev@gmail.com,
  mar.krzeminski@gmail.com
 References: <cover.1490220411.git.cyrille.pitchen@atmel.com>
- <3426fd033830e2df15eae27c1b5284983961fa8e.1490220411.git.cyrille.pitchen@atmel.com>
+ <8d88fd247815979bee2a6d3be50fa57a80c2f229.1490220411.git.cyrille.pitchen@atmel.com>
 Cc: boris.brezillon@free-electrons.com, richard@nod.at,
  nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org,
  computersforpeace@gmail.com, dwmw2@infradead.org
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <278ef3b6-599a-5254-932d-33ceb1b73a88@wedev4u.fr>
-Date: Sun, 2 Apr 2017 19:05:58 +0200
+Message-ID: <8648b581-d279-3d89-2a28-271e76cdbf73@wedev4u.fr>
+Date: Sun, 2 Apr 2017 19:06:58 +0200
 MIME-Version: 1.0
-In-Reply-To: <3426fd033830e2df15eae27c1b5284983961fa8e.1490220411.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <8d88fd247815979bee2a6d3be50fa57a80c2f229.1490220411.git.cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,30 +31,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Le 23/03/2017 à 00:33, Cyrille Pitchen a écrit :
-> Before this patch, m25p80_read() supported few SPI protocols:
-> - regular SPI 1-1-1
-> - SPI Dual Output 1-1-2
-> - SPI Quad Output 1-1-4
-> On the other hand, m25p80_write() only supported SPI 1-1-1.
+> This patch extracts some chunks from spi_nor_scan() and moves them into
+> a new spi_nor_init() function.
 > 
-> This patch updates both m25p80_read() and m25p80_write() functions to let
-> them support SPI 1-2-2 and SPI 1-4-4 protocols for Fast Read and Page
-> Program SPI commands.
+> Indeed, spi_nor_init() regroups all the required SPI flash commands to be
+> sent to the SPI flash memory before performing any runtime operations
+> (Fast Read, Page Program, Sector Erase, ...). Hence spi_nor_init():
+> 1) removes the flash protection if applicable for certain vendors.
+> 2) sets the Quad Enable bit, if needed, before using Quad SPI protocols.
+> 3) makes the memory enter its (stateful) 4-byte address mode, if needed,
+>    for SPI flash memory > 128Mbits not supporting the 4-byte address
+>    instruction set.
 > 
-> It adopts a conservative approach to avoid regressions. Hence the new
-> implementations try to be as close as possible to the old implementations,
-> so the main differences are:
-> - the tx_nbits values now being set properly for the spi_transfer
->   structures carrying the (op code + address/dummy) bytes
-> - and the spi_transfer structure being split into 2 spi_transfer
->   structures when the numbers of I/O lines are different for op code and
->   for address/dummy byte transfers on the SPI bus.
+> spi_nor_scan() now ends by calling spi_nor_init() once the probe phase has
+> completed. Further patches could also use spi_nor_init() to implement the
+> mtd->_resume() handler for the spi-nor framework.
 > 
-> Besides, the current spi-nor framework supports neither the SPI 2-2-2 nor
-> the SPI 4-4-4 protocols. So, for now, we don't need to update the
-> m25p80_{read|write}_reg() functions as SPI 1-1-1 is the only one possible
-> protocol.
-> 
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
 Applied to github/spi-nor
