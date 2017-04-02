@@ -1,25 +1,25 @@
-Received: from 9.mo69.mail-out.ovh.net ([46.105.56.78])
+Received: from 5.mo69.mail-out.ovh.net ([46.105.43.105])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cuix5-0004l3-Gp
- for linux-mtd@lists.infradead.org; Sun, 02 Apr 2017 17:06:09 +0000
+ id 1cuixV-0004p6-F0
+ for linux-mtd@lists.infradead.org; Sun, 02 Apr 2017 17:06:35 +0000
 Received: from player738.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo69.mail-out.ovh.net (Postfix) with ESMTP id 173321CA5C
- for <linux-mtd@lists.infradead.org>; Sun,  2 Apr 2017 19:05:40 +0200 (CEST)
-Subject: Re: [PATCH v5 1/6] mtd: spi-nor: introduce more SPI protocols and the
- Dual Transfer Mode
+ by mo69.mail-out.ovh.net (Postfix) with ESMTP id 2C2DF1D4C2
+ for <linux-mtd@lists.infradead.org>; Sun,  2 Apr 2017 19:06:11 +0200 (CEST)
+Subject: Re: [PATCH v5 2/6] mtd: m25p80: add support of SPI 1-2-2 and 1-4-4
+ protocols
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, marek.vasut@gmail.com,
  linux-mtd@lists.infradead.org, jartur@cadence.com, kdasu.kdev@gmail.com,
  mar.krzeminski@gmail.com
 References: <cover.1490220411.git.cyrille.pitchen@atmel.com>
- <65619c23078469af03e4d53d781a8cffa92d5a61.1490220411.git.cyrille.pitchen@atmel.com>
+ <3426fd033830e2df15eae27c1b5284983961fa8e.1490220411.git.cyrille.pitchen@atmel.com>
 Cc: boris.brezillon@free-electrons.com, richard@nod.at,
  nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org,
  computersforpeace@gmail.com, dwmw2@infradead.org
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <321615f2-4779-40ef-a647-ad78daa79ac3@wedev4u.fr>
-Date: Sun, 2 Apr 2017 19:05:25 +0200
+Message-ID: <278ef3b6-599a-5254-932d-33ceb1b73a88@wedev4u.fr>
+Date: Sun, 2 Apr 2017 19:05:58 +0200
 MIME-Version: 1.0
-In-Reply-To: <65619c23078469af03e4d53d781a8cffa92d5a61.1490220411.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <3426fd033830e2df15eae27c1b5284983961fa8e.1490220411.git.cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,34 +32,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Le 23/03/2017 à 00:33, Cyrille Pitchen a écrit :
-> This patch changes the prototype of spi_nor_scan(): its 3rd parameter
-> is replaced by a 'struct spi_nor_hwcaps' pointer, which tells the spi-nor
-> framework about the actual hardware capabilities supported by the SPI
-> controller and its driver.
+> Before this patch, m25p80_read() supported few SPI protocols:
+> - regular SPI 1-1-1
+> - SPI Dual Output 1-1-2
+> - SPI Quad Output 1-1-4
+> On the other hand, m25p80_write() only supported SPI 1-1-1.
 > 
-> Besides, this patch also introduces a new 'struct spi_nor_flash_parameter'
-> telling the spi-nor framework about the hardware capabilities supported by
-> the SPI flash memory and the associated settings required to use those
-> hardware caps.
+> This patch updates both m25p80_read() and m25p80_write() functions to let
+> them support SPI 1-2-2 and SPI 1-4-4 protocols for Fast Read and Page
+> Program SPI commands.
 > 
-> Currently the 'struct spi_nor_flash_parameter' is filled with legacy
-> values but a later patch will allow to fill it dynamically by reading the
-> JESD216 Serial Flash Discoverable Parameter (SFDP) tables from the SPI
-> memory.
+> It adopts a conservative approach to avoid regressions. Hence the new
+> implementations try to be as close as possible to the old implementations,
+> so the main differences are:
+> - the tx_nbits values now being set properly for the spi_transfer
+>   structures carrying the (op code + address/dummy) bytes
+> - and the spi_transfer structure being split into 2 spi_transfer
+>   structures when the numbers of I/O lines are different for op code and
+>   for address/dummy byte transfers on the SPI bus.
 > 
-> With both structures, the spi-nor framework can now compute the best
-> match between hardware caps supported by both the (Q)SPI memory and
-> controller hence selecting the relevant SPI protocols and op codes for
-> (Fast) Read, Page Program and Sector Erase operations.
-> 
-> The 'struct spi_nor_flash_parameter' also provides the spi-nor framework
-> with the number of dummy cycles to be used with each Fast Read commands
-> and the erase block size associated to the erase block op codes.
-> 
-> Finally the 'struct spi_nor_flash_parameter', through the optional
-> .enable_quad_io() hook, tells the spi-nor framework how to set the Quad
-> Enable (QE) bit of the QSPI memory to enable its Quad SPI features.
+> Besides, the current spi-nor framework supports neither the SPI 2-2-2 nor
+> the SPI 4-4-4 protocols. So, for now, we don't need to update the
+> m25p80_{read|write}_reg() functions as SPI 1-1-1 is the only one possible
+> protocol.
 > 
 > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
-Applied to github/spi-nor.
+Applied to github/spi-nor
