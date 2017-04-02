@@ -1,21 +1,24 @@
-Received: from 10.mo69.mail-out.ovh.net ([46.105.73.241])
+Received: from mail-wr0-x22b.google.com ([2a00:1450:400c:c0c::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cujJo-0004cZ-Pe
- for linux-mtd@lists.infradead.org; Sun, 02 Apr 2017 17:29:39 +0000
-Received: from player738.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo69.mail-out.ovh.net (Postfix) with ESMTP id 8FEF91CB61
- for <linux-mtd@lists.infradead.org>; Sun,  2 Apr 2017 19:29:12 +0200 (CEST)
-Subject: Re: [PATCH v4] mtd: spi-nor: Add support for N25Q256A11
-To: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>,
- linux-mtd@lists.infradead.org
-References: <1490223854-6936-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Jagan Teki <jagan@openedev.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <3c21f57c-326c-59a9-4628-5c2e96abc651@wedev4u.fr>
-Date: Sun, 2 Apr 2017 19:29:07 +0200
+ id 1cukIk-0001Cm-SM
+ for linux-mtd@lists.infradead.org; Sun, 02 Apr 2017 18:32:36 +0000
+Received: by mail-wr0-x22b.google.com with SMTP id w11so139775981wrc.3
+ for <linux-mtd@lists.infradead.org>; Sun, 02 Apr 2017 11:32:11 -0700 (PDT)
+Subject: Re: [PATCH v5 0/6] mtd: spi-nor: parse SFDP tables to setup (Q)SPI
+ memories
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ jartur@cadence.com, kdasu.kdev@gmail.com, mar.krzeminski@gmail.com
+References: <cover.1490220411.git.cyrille.pitchen@atmel.com>
+ <ed497188-b50a-8212-a04b-1f25e8b3e260@wedev4u.fr>
+Cc: boris.brezillon@free-electrons.com, richard@nod.at,
+ nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <07c1286d-3061-196a-d57d-db5d3619d4d2@gmail.com>
+Date: Sun, 2 Apr 2017 20:32:08 +0200
 MIME-Version: 1.0
-In-Reply-To: <1490223854-6936-1-git-send-email-nobuhiro.iwamatsu.kw@hitachi.com>
+In-Reply-To: <ed497188-b50a-8212-a04b-1f25e8b3e260@wedev4u.fr>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,49 +30,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nobuhiro,
+On 03/29/2017 06:45 PM, Cyrille Pitchen wrote:
+> Hi all,
+> 
+> Le 23/03/2017 à 00:33, Cyrille Pitchen a écrit :
+>> Hi all,
+>>
+>> based on git-hub/spi-nor and likely applicable on linux-next within the
+>> next few days.
+>>
+>>
+>> This new series of patchs aims to upgrade to spi-nor framework. We need to
+>> take into account latest SPI memories which cannot be handled correctly by
+>> the current implementation.
+>>
+>> For instance, SPI NOR memories like Spansion S25FS512S or Macronix
+>> MX25U4035 support only the Fast Read 1-4-4 (EBh) command but not the
+>> Fast Read 1-1-4 (6Bh) command. However the current spi-nor framework
+>> supports only Fast Read 1-1-4 (6Bh).
+>>
+>> Also the Spansion S25FS512S memory (and others) may use a non-uniform
+>> sector erase map, whereas the spi-nor framework assumes that a single
+>> sector erase size and opcode can be used anywhere inside the data array.
+>> This assumption is no longer valid.
+>>
+>> Then parsing SFDP tables is an attempt to solve many of those issues by
+>> discovering dynamically most of the parameters and settings of the SPI NOR
+>> memory:
+>> - the flash size
+>> - the page size for Page Program commands
+>> - the supported Fast Read commands with the associated opcodes and number
+>>   of mode/wait-state (dummy) cycles.
+>> - the supported Sector/Block Erase commands with the associated opcodes
+>>   and sizes.
+>> - the erase sector map (for non-uniform memory).
+>>
+>>
+>> Besides, most QSPI controllers from the different vendors are capable to
+>> support the SPI 1-2-2 and 1-4-4 protocols but the spi-nor framework was
+>> not ready to use them. This series also fixes this issue and computes the
+>> best match between the hardware capabilies of both the SPI memory and the
+>> SPI controler (master) to select the right opcodes and dummy cycles for
+>> Fast Read and Page Program operations.
+>>
+>> The new 'struct spi_nor_hwcaps' uses a bitmask to describe all the
+>> supported hardware capabilies and makes the difference between Fast Read
+>> and Page Program operations and also between the different SPI protocols
+>> (SPI 1-1-2 vs SPI 1-2-2 or SPI 1-1-4 vs SPI 1-4-4).
+>>
+>>
+>> IMHO, the first 3 patches of this series are ready to be merged into the
+>> github/spi-nor tree. Marek, do you agree with that?
+> 
+> Marek, if you have no comment on them, I will merge patches 1, 2, 3 in
+> the spi-nor tree within the next few days. Hence, people like Cédric
+> waiting for the series to merged could base their work on these patches.
 
-Le 23/03/2017 à 00:04, Nobuhiro Iwamatsu a écrit :
-> Add new Micron N25Q256A (N25Q256A11) 256Mbit NOR Flash in the list
-> of supported devices. This chip has the same structure as the N25Q256A
-> but ID and voltage (1V8) to use is different. Therefore, this adds
-> N25Q256A11 as n25q256ax1.
-> 
-> In the future, for new Micron memories we could use the patterns
-> "n25q*ax1" for 1V8 and "n25q*ax3" for 3V3 memories.
-> 
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro.iwamatsu.kw@hitachi.com>
+Hm well, you could've at least poked me about this, I was so snowed
+under that I didn't have any chance to take a look :(
 
-I've fixed your commit message then I've applied your patch to
-github/spi-nor.
-
-Indeed, the lines below must be placed after the "---" line otherwise
-they would appear in the commit message.
-
-> 
-> v4: Update description and fix typo.
-> v3: Use new name space.
->     n25q*ax1" for 1V8 and "n25q*ax3" for 3V3 memories.
-> v2: Set 0x20bb1b as n25q256a, and 0x20bb1b as n25q256.
-> 
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 1ae872bfc3ba..2e02991d93aa 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1031,6 +1031,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
-> +	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> 
-
+-- 
 Best regards,
-
-Cyrille
+Marek Vasut
