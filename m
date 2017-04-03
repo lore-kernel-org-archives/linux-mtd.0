@@ -1,35 +1,30 @@
-Received: from mail-oi0-f65.google.com ([209.85.218.65])
+Received: from mail-by2nam03on0055.outbound.protection.outlook.com
+ ([104.47.42.55] helo=NAM03-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cv4CH-0002It-RU
- for linux-mtd@lists.infradead.org; Mon, 03 Apr 2017 15:47:15 +0000
-Received: by mail-oi0-f65.google.com with SMTP id s11so4128243oie.1
- for <linux-mtd@lists.infradead.org>; Mon, 03 Apr 2017 08:46:53 -0700 (PDT)
-Date: Mon, 3 Apr 2017 10:46:52 -0500
-From: Rob Herring <robh@kernel.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
+ id 1cv4hR-0000km-Cu
+ for linux-mtd@lists.infradead.org; Mon, 03 Apr 2017 16:19:27 +0000
+Date: Mon, 3 Apr 2017 18:18:49 +0200
+From: Jan Glauber <jan.glauber@caviumnetworks.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
- Graham Moore <grmoore@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v3 16/37] mtd: nand: denali_dt: add compatible strings
- for UniPhier SoC variants
-Message-ID: <20170403154652.tzfgy4l2m33pqvzd@rob-hp-laptop>
-References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
- <1490856383-31560-17-git-send-email-yamada.masahiro@socionext.com>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/2] dt-bindings: mtd: Add Cavium SOCs NAND bindings
+Message-ID: <20170403161849.GA2845@hardcore>
+References: <20170327160524.29019-1-jglauber@cavium.com>
+ <20170327160524.29019-2-jglauber@cavium.com>
+ <20170403132937.z5mxksabo6kmo4jy@rob-hp-laptop>
+ <20170403143840.GA23698@hardcore>
+ <CAL_JsqJ2VgF_Lp-vpdn6VL71K4z6Mu7DWYSaLZ_N0U+jaTuPsQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1490856383-31560-17-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <CAL_JsqJ2VgF_Lp-vpdn6VL71K4z6Mu7DWYSaLZ_N0U+jaTuPsQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,26 +34,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 30, 2017 at 03:46:02PM +0900, Masahiro Yamada wrote:
-> Add two compatible strings for UniPhier SoCs.
+On Mon, Apr 03, 2017 at 09:47:05AM -0500, Rob Herring wrote:
+> On Mon, Apr 3, 2017 at 9:38 AM, Jan Glauber
+> <jan.glauber@caviumnetworks.com> wrote:
+> > On Mon, Apr 03, 2017 at 08:29:37AM -0500, Rob Herring wrote:
+> >> On Mon, Mar 27, 2017 at 06:05:23PM +0200, Jan Glauber wrote:
+> >> > Add device tree binding description for Cavium SOC nand flash controller.
+> >> >
+> >> > CC: Rob Herring <robh+dt@kernel.org>
+> >> > CC: Mark Rutland <mark.rutland@arm.com>
+> >> > CC: devicetree@vger.kernel.org
+> >> >
+> >> > Signed-off-by: Jan Glauber <jglauber@cavium.com>
+> >> > ---
+> >> >  .../devicetree/bindings/mtd/cavium_nand.txt        | 32 ++++++++++++++++++++++
+> >> >  1 file changed, 32 insertions(+)
+> >> >  create mode 100644 Documentation/devicetree/bindings/mtd/cavium_nand.txt
+> >> >
+> >> > diff --git a/Documentation/devicetree/bindings/mtd/cavium_nand.txt b/Documentation/devicetree/bindings/mtd/cavium_nand.txt
+> >> > new file mode 100644
+> >> > index 0000000..4698d1f
+> >> > --- /dev/null
+> >> > +++ b/Documentation/devicetree/bindings/mtd/cavium_nand.txt
+> >> > @@ -0,0 +1,32 @@
+> >> > +* Cavium NAND controller
+> >> > +
+> >> > +Required properties:
+> >> > +
+> >> > +- compatible:              should be "cavium,cn8xxx-nand"
+> >>
+> >> Don't use wildcards in compatible strings. For PCI devices, this should
+> >> be based on the PCI vendor and device IDs.
+> >>
+> >
+> > Is there a syntax for compatible PCI devices? I'm afraid I've not seen
+> > this yet, can you give an example?
 > 
-> "socionext,uniphier-denali-nand-v5a" is used on UniPhier sLD3, LD4,
-> Pro4, sLD8 SoCs.
-> 
-> "socionext,uniphier-denali-nand-v5b" is used on UniPhier Pro5, PXs2,
-> LD6b, LD11, LD20 SoCs.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
-> Changes in v3: None
-> Changes in v2:
->   - Change the compatible strings
->   - Fix the ecc_strength_capability
->   - Override revision number for the newer one
-> 
->  .../devicetree/bindings/mtd/denali-nand.txt        |  6 ++++++
->  drivers/mtd/nand/denali_dt.c                       | 23 ++++++++++++++++++++++
->  2 files changed, 29 insertions(+)
+> www.o3one.org/hwdocs/openfirmware/pci_supplement_2_1.pdf
 
-Acked-by: Rob Herring <robh@kernel.org> 
+Thanks, I probably should have read this before...
+
+So it will be something like:
+compatible = "pci177d,a04f"
+
+A bit unreadable, but it solves the wildcard issue.
+
+> > Most of Cavium's devices are PCI devices, we just added the compatible
+> > as convenience and usually it is not parsed.
+> 
+> Linux doesn't parse it, but it's still required in the binding.
+
+OK.
+
+--Jan
+
+> Rob
