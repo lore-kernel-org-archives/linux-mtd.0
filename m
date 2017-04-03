@@ -1,30 +1,28 @@
-Received: from mail-oi0-f68.google.com ([209.85.218.68])
+Received: from mail-oi0-f67.google.com ([209.85.218.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cv521-0003MT-IU
- for linux-mtd@lists.infradead.org; Mon, 03 Apr 2017 16:40:43 +0000
-Received: by mail-oi0-f68.google.com with SMTP id b187so20559320oif.3
- for <linux-mtd@lists.infradead.org>; Mon, 03 Apr 2017 09:40:21 -0700 (PDT)
-Date: Mon, 3 Apr 2017 11:40:19 -0500
+ id 1cv5Ij-0003dr-RZ
+ for linux-mtd@lists.infradead.org; Mon, 03 Apr 2017 16:57:59 +0000
+Received: by mail-oi0-f67.google.com with SMTP id f193so20649837oib.0
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Apr 2017 09:57:37 -0700 (PDT)
+Date: Mon, 3 Apr 2017 11:57:35 -0500
 From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+To: Ludovic Barre <ludovic.Barre@st.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V3 1/3] dt-bindings: mtd: document linux,part-probe
- property
-Message-ID: <20170403164019.pttxt52huuu6z2nq@rob-hp-laptop>
-References: <20170331114016.26858-1-zajec5@gmail.com>
+ Richard Weinberger <richard@nod.at>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: Document the STM32 QSPI bindings
+Message-ID: <20170403165735.sopfhlxzefkzrbfh@rob-hp-laptop>
+References: <1490979724-10905-1-git-send-email-ludovic.Barre@st.com>
+ <1490979724-10905-2-git-send-email-ludovic.Barre@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170331114016.26858-1-zajec5@gmail.com>
+In-Reply-To: <1490979724-10905-2-git-send-email-ludovic.Barre@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,17 +32,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 31, 2017 at 01:40:14PM +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Fri, Mar 31, 2017 at 07:02:03PM +0200, Ludovic Barre wrote:
+> From: Ludovic Barre <ludovic.barre@st.com>
 > 
-> Support for this property has been introduced in 2010 with commit
-> 9d5da3a9b849 ("mtd: extend physmap_of to let the device tree specify the
-> parition probe") but it was never documented. Fix this by adding a
-> proper description and example.
+> This patch adds documentation of device tree bindings for the STM32
+> QSPI controller.
 > 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
 > ---
->  Documentation/devicetree/bindings/mtd/common.txt | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  .../devicetree/bindings/mtd/stm32-quadspi.txt      | 45 ++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt b/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+> new file mode 100644
+> index 0000000..95a8ebd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+> @@ -0,0 +1,45 @@
+> +* STMicroelectronics Quad Serial Peripheral Interface(QuadSPI)
+> +
+> +Required properties:
+> +- compatible: should be "st,stm32f469-qspi"
+> +- reg: contains the register location and length.
+> +  (optional) the memory mapping address and length
 
-Acked-by: Rob Herring <robh@kernel.org> 
+Why optional? Either the h/w has it or doesn't. If some chips don't, 
+they should have a different compatible string.
+
+> +- reg-names: list of the names corresponding to the previous register
+> +  Should contain "qspi" to register location
+> +  (optional) "qspi_mm" if read in memory map mode (improve read throughput)
+> +- interrupts: should contain the interrupt for the device
+> +- clocks: the phandle of the clock needed by the QSPI controller
+> +- A pinctrl must be defined to set pins in mode of operation for QSPI transfer
+> +
+> +Optional properties:
+> +- resets: must contain the phandle to the reset controller.
+> +
+> +A spi flash must be a child of the nor_flash node and could have some
+> +properties. Also see jedec,spi-nor.txt.
+> +
+> +Required properties:
+> +- reg: chip-Select number (QSPI controller may connect 2 nor flashes)
+> +- spi-max-frequency: max frequency of spi bus
+> +
+> +Optional property:
+> +- spi-rx-bus-width: the bus width (number of data wires)
+
+Just "see ../spi/spi-bus.txt" for the description
+
+> +
+> +Example:
+> +
+> +qspi: qspi@a0001000 {
+
+spi@...
+
+> +	compatible = "st,stm32f469-qspi";
+> +	reg = <0xa0001000 0x1000>, <0x90000000 0x10000000>;
+> +	reg-names = "qspi", "qspi_mm";
+> +	interrupts = <91>;
+> +	resets = <&rcc STM32F4_AHB3_RESET(QSPI)>;
+> +	clocks = <&rcc 0 STM32F4_AHB3_CLOCK(QSPI)>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_qspi0>;
+> +
+> +	flash@0 {
+> +		reg = <0>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-max-frequency = <108000000>;
+> +		...
+> +	};
+> +};
+> -- 
+> 2.7.4
+> 
