@@ -1,37 +1,28 @@
-Received: from mail-lf0-x22b.google.com ([2a00:1450:4010:c07::22b])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cuzIM-0002bu-C8
- for linux-mtd@lists.infradead.org; Mon, 03 Apr 2017 10:33:12 +0000
-Received: by mail-lf0-x22b.google.com with SMTP id x137so70269788lff.3
- for <linux-mtd@lists.infradead.org>; Mon, 03 Apr 2017 03:32:49 -0700 (PDT)
-Subject: Re: [PATCH v4 06/14] MIPS: jz4740: DTS: Add nodes for ingenic pinctrl
- and gpio drivers
-To: Paul Cercueil <paul@crapouillou.net>
-References: <20170125185207.23902-2-paul@crapouillou.net>
- <20170402204244.14216-1-paul@crapouillou.net>
- <20170402204244.14216-7-paul@crapouillou.net>
- <48f7f4ee-b8e3-0096-ddea-2fbe0b399b40@cogentembedded.com>
- <cf809000718514ba612b4f7b477586a9@crapouillou.net>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>,
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cuzzm-0000fb-Hf
+ for linux-mtd@lists.infradead.org; Mon, 03 Apr 2017 11:18:06 +0000
+Date: Mon, 3 Apr 2017 13:17:36 +0200
+From: Jesper Nilsson <jesper.nilsson@axis.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Jesper Nilsson <jespern@axis.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
- james.hogan@imgtec.com, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@linux-mips.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
- linux-fbdev@vger.kernel.org
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <b5d195a9-ec3d-1b92-b17c-e87bd6d990cf@cogentembedded.com>
-Date: Mon, 3 Apr 2017 13:32:46 +0300
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH] UBI: Make MTD_UBI_FASTMAP non-experimental
+Message-ID: <20170403111735.GV29118@axis.com>
+References: <20170329153836.GB29118@axis.com>
+ <434195d8-d638-240d-8d63-50d033ea453a@nod.at>
+ <3f8d0417-5e7d-b7c8-ba83-9a87e774f97f@gmail.com>
+ <20170330173944.GJ29118@axis.com>
+ <a85d3308-e9c9-b292-b2ad-0005a55d2e6d@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <cf809000718514ba612b4f7b477586a9@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a85d3308-e9c9-b292-b2ad-0005a55d2e6d@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,56 +32,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/3/2017 1:20 PM, Paul Cercueil wrote:
+Hi Richard,
 
->>> For a description of the pinctrl devicetree node, please read
->>> Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt
->>>
->>> For a description of the gpio devicetree nodes, please read
->>> Documentation/devicetree/bindings/gpio/ingenic,gpio.txt
->>>
->>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->> [...]
->>
->>> diff --git a/arch/mips/boot/dts/ingenic/jz4740.dtsi
->>> b/arch/mips/boot/dts/ingenic/jz4740.dtsi
->>> index 3e1587f1f77a..9c23c877fc34 100644
->>> --- a/arch/mips/boot/dts/ingenic/jz4740.dtsi
->>> +++ b/arch/mips/boot/dts/ingenic/jz4740.dtsi
->>> @@ -55,6 +55,67 @@
->>>          clock-names = "rtc";
->>>      };
->>>
->>> +    pinctrl: ingenic-pinctrl@10010000 {
->>
->>    The node name should be generic, so please rename it to something
->> like "pin-controller@..."
->
-> OK.
->
->>> +        compatible = "ingenic,jz4740-pinctrl";
->>> +        reg = <0x10010000 0x400>;
->>> +
->>> +        gpa: gpio-controller@0 {
->>
->>    The name should be just "gpio@0", according to ePAPR and its
->> successor spec. Although, using the <unit-address> without the "reg"
->> prop isn't allowed either...
->
-> ePAPR says: "If the node has no reg property, the unit-address may be
+On Thu, Mar 30, 2017 at 11:29:15PM +0200, Richard Weinberger wrote:
+> Jesper,
+> 
+> Am 30.03.2017 um 19:39 schrieb Jesper Nilsson:
+> >> So we should document this with a big fat warning and set fastmap to
+> >> default=n ?
+> > 
+> > Does this sound reasonable?
+> > 
+> > Note that this feature makes UBI less robust, since Fastmap does not scan
+> > the full flash, which might lead to problems on misbehaving NAND chips.
+> > Only enable this if the speedup in attach is really important and
+> 
+> I'm not a native English speaker, but shouldn't this be
+> "...if speedup of the attach time is important ..."
+> 
+> > you can be sure that the NAND works as expected.
+> 
+> Looks fine!
 
-    My copy of ePAPR 1.1 says "must be omitted". :-)
+As you saw I resent the patch with this formulation added.
 
-> omitted if the node name alone differentiates the node from other nodes at
-> the same level in the tree."
+However, after thinking about it (and with input from some coworkers),
+could we pinpoint the failure case a bit more here?
 
-> I could use 'gpio@bank-a', it is allowed by the spec. Or do you prefer 'gpio@0'?
+What is the exact problem behaviour on NAND chips that we're
+worried about, and in which case will UBI be less robust if
+we don't scan the full flash?
 
-    Hm... maybe you should just use the "reg" prop.
+My first reaction was that this was a natural conclusion,
+but if the NAND flash is failing, we should either be in the
+case that the FASTMAP is corrupted or that the original data
+is corrupted. Both should be found by current implementation.
+Or am I missing additional failure cases here?
 
-> I'll wait from some feedback on the other patches then send a v5.
->
+I getting a bit worried about using the feature at all,
+even if it seems to work right now...
+
 > Thanks,
-> -Paul
+> //richard
 
-MBR, Sergei
+/^JN - Jesper Nilsson
+-- 
+               Jesper Nilsson -- jesper.nilsson@axis.com
