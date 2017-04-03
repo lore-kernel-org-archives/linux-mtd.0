@@ -1,15 +1,27 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cv0Py-0004sf-MQ
- for linux-mtd@lists.infradead.org; Mon, 03 Apr 2017 11:45:09 +0000
-From: Rabin Vincent <rabin.vincent@axis.com>
-To: dedekind1@gmail.com,
-	richard@nod.at
-Cc: linux-mtd@lists.infradead.org,
-	Rabin Vincent <rabinv@axis.com>
-Subject: [PATCHv2] ubi: fastmap: fix slab corruption
-Date: Mon,  3 Apr 2017 13:44:11 +0200
-Message-Id: <1491219851-10424-1-git-send-email-rabin.vincent@axis.com>
+Received: from mail-oi0-f66.google.com ([209.85.218.66])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cv23T-0001By-Oi
+ for linux-mtd@lists.infradead.org; Mon, 03 Apr 2017 13:30:01 +0000
+Received: by mail-oi0-f66.google.com with SMTP id d2so12246546oig.2
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Apr 2017 06:29:39 -0700 (PDT)
+Date: Mon, 3 Apr 2017 08:29:37 -0500
+From: Rob Herring <robh@kernel.org>
+To: Jan Glauber <jglauber@cavium.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] dt-bindings: mtd: Add Cavium SOCs NAND bindings
+Message-ID: <20170403132937.z5mxksabo6kmo4jy@rob-hp-laptop>
+References: <20170327160524.29019-1-jglauber@cavium.com>
+ <20170327160524.29019-2-jglauber@cavium.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170327160524.29019-2-jglauber@cavium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,183 +31,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rabin Vincent <rabinv@axis.com>
+On Mon, Mar 27, 2017 at 06:05:23PM +0200, Jan Glauber wrote:
+> Add device tree binding description for Cavium SOC nand flash controller.
+> 
+> CC: Rob Herring <robh+dt@kernel.org>
+> CC: Mark Rutland <mark.rutland@arm.com>
+> CC: devicetree@vger.kernel.org
+> 
+> Signed-off-by: Jan Glauber <jglauber@cavium.com>
+> ---
+>  .../devicetree/bindings/mtd/cavium_nand.txt        | 32 ++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/cavium_nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/cavium_nand.txt b/Documentation/devicetree/bindings/mtd/cavium_nand.txt
+> new file mode 100644
+> index 0000000..4698d1f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/cavium_nand.txt
+> @@ -0,0 +1,32 @@
+> +* Cavium NAND controller
+> +
+> +Required properties:
+> +
+> +- compatible:		should be "cavium,cn8xxx-nand"
 
-Booting with UBI fastmap and SLUB debugging enabled results in the
-following splats.  The problem is that ubi_scan_fastmap() moves the
-fastmap blocks from the scan_ai (allocated in scan_fast()) to the ai
-allocated in ubi_attach().  This results in two problems:
+Don't use wildcards in compatible strings. For PCI devices, this should 
+be based on the PCI vendor and device IDs.
 
- - When the scan_ai is freed, aebs which were allocated from its slab
-   cache are still in use.
-
- - When the other ai is being destroyed in destroy_ai(), the
-   arguments to kmem_cache_free() call are incorrect since aebs on its
-   ->fastmap list were allocated with a slab cache from a differnt ai.
-
-Fix this by making a copy of the aebs in ubi_scan_fastmap() instead of
-moving them.
-
- =============================================================================
- BUG ubi_aeb_slab_cache (Not tainted): Objects remaining in ubi_aeb_slab_cache on __kmem_cache_shutdown()
- -----------------------------------------------------------------------------
-
- INFO: Slab 0xbfd2da3c objects=17 used=1 fp=0xb33d7748 flags=0x40000080
- CPU: 1 PID: 118 Comm: ubiattach Tainted: G    B           4.9.15 #3
- [<80111910>] (unwind_backtrace) from [<8010d498>] (show_stack+0x18/0x1c)
- [<8010d498>] (show_stack) from [<804a3274>] (dump_stack+0xb4/0xe0)
- [<804a3274>] (dump_stack) from [<8026c47c>] (slab_err+0x78/0x88)
- [<8026c47c>] (slab_err) from [<802735bc>] (__kmem_cache_shutdown+0x180/0x3e0)
- [<802735bc>] (__kmem_cache_shutdown) from [<8024e13c>] (shutdown_cache+0x1c/0x60)
- [<8024e13c>] (shutdown_cache) from [<8024ed64>] (kmem_cache_destroy+0x19c/0x20c)
- [<8024ed64>] (kmem_cache_destroy) from [<8057cc14>] (destroy_ai+0x1dc/0x1e8)
- [<8057cc14>] (destroy_ai) from [<8057f04c>] (ubi_attach+0x3f4/0x450)
- [<8057f04c>] (ubi_attach) from [<8056fe70>] (ubi_attach_mtd_dev+0x60c/0xff8)
- [<8056fe70>] (ubi_attach_mtd_dev) from [<80571d78>] (ctrl_cdev_ioctl+0x110/0x2b8)
- [<80571d78>] (ctrl_cdev_ioctl) from [<8029c77c>] (do_vfs_ioctl+0xac/0xa00)
- [<8029c77c>] (do_vfs_ioctl) from [<8029d10c>] (SyS_ioctl+0x3c/0x64)
- [<8029d10c>] (SyS_ioctl) from [<80108860>] (ret_fast_syscall+0x0/0x1c)
- INFO: Object 0xb33d7e88 @offset=3720
- INFO: Allocated in scan_peb+0x608/0x81c age=72 cpu=1 pid=118
- 	kmem_cache_alloc+0x3b0/0x43c
- 	scan_peb+0x608/0x81c
- 	ubi_attach+0x124/0x450
- 	ubi_attach_mtd_dev+0x60c/0xff8
- 	ctrl_cdev_ioctl+0x110/0x2b8
- 	do_vfs_ioctl+0xac/0xa00
- 	SyS_ioctl+0x3c/0x64
- 	ret_fast_syscall+0x0/0x1c
- kmem_cache_destroy ubi_aeb_slab_cache: Slab cache still has objects
- CPU: 1 PID: 118 Comm: ubiattach Tainted: G    B           4.9.15 #3
- [<80111910>] (unwind_backtrace) from [<8010d498>] (show_stack+0x18/0x1c)
- [<8010d498>] (show_stack) from [<804a3274>] (dump_stack+0xb4/0xe0)
- [<804a3274>] (dump_stack) from [<8024ed80>] (kmem_cache_destroy+0x1b8/0x20c)
- [<8024ed80>] (kmem_cache_destroy) from [<8057cc14>] (destroy_ai+0x1dc/0x1e8)
- [<8057cc14>] (destroy_ai) from [<8057f04c>] (ubi_attach+0x3f4/0x450)
- [<8057f04c>] (ubi_attach) from [<8056fe70>] (ubi_attach_mtd_dev+0x60c/0xff8)
- [<8056fe70>] (ubi_attach_mtd_dev) from [<80571d78>] (ctrl_cdev_ioctl+0x110/0x2b8)
- [<80571d78>] (ctrl_cdev_ioctl) from [<8029c77c>] (do_vfs_ioctl+0xac/0xa00)
- [<8029c77c>] (do_vfs_ioctl) from [<8029d10c>] (SyS_ioctl+0x3c/0x64)
- [<8029d10c>] (SyS_ioctl) from [<80108860>] (ret_fast_syscall+0x0/0x1c)
- cache_from_obj: Wrong slab cache. ubi_aeb_slab_cache but object is from ubi_aeb_slab_cache
- ------------[ cut here ]------------
- WARNING: CPU: 1 PID: 118 at mm/slab.h:354 kmem_cache_free+0x39c/0x450
- Modules linked in:
- CPU: 1 PID: 118 Comm: ubiattach Tainted: G    B           4.9.15 #3
- [<80111910>] (unwind_backtrace) from [<8010d498>] (show_stack+0x18/0x1c)
- [<8010d498>] (show_stack) from [<804a3274>] (dump_stack+0xb4/0xe0)
- [<804a3274>] (dump_stack) from [<80120e40>] (__warn+0xf4/0x10c)
- [<80120e40>] (__warn) from [<80120f20>] (warn_slowpath_null+0x28/0x30)
- [<80120f20>] (warn_slowpath_null) from [<80271fe0>] (kmem_cache_free+0x39c/0x450)
- [<80271fe0>] (kmem_cache_free) from [<8057cb88>] (destroy_ai+0x150/0x1e8)
- [<8057cb88>] (destroy_ai) from [<8057ef1c>] (ubi_attach+0x2c4/0x450)
- [<8057ef1c>] (ubi_attach) from [<8056fe70>] (ubi_attach_mtd_dev+0x60c/0xff8)
- [<8056fe70>] (ubi_attach_mtd_dev) from [<80571d78>] (ctrl_cdev_ioctl+0x110/0x2b8)
- [<80571d78>] (ctrl_cdev_ioctl) from [<8029c77c>] (do_vfs_ioctl+0xac/0xa00)
- [<8029c77c>] (do_vfs_ioctl) from [<8029d10c>] (SyS_ioctl+0x3c/0x64)
- [<8029d10c>] (SyS_ioctl) from [<80108860>] (ret_fast_syscall+0x0/0x1c)
- ---[ end trace 2bd8396277fd0a0b ]---
- =============================================================================
- BUG ubi_aeb_slab_cache (Tainted: G    B   W      ): page slab pointer corrupt.
- -----------------------------------------------------------------------------
-
- INFO: Allocated in scan_peb+0x608/0x81c age=104 cpu=1 pid=118
- 	kmem_cache_alloc+0x3b0/0x43c
- 	scan_peb+0x608/0x81c
- 	ubi_attach+0x124/0x450
- 	ubi_attach_mtd_dev+0x60c/0xff8
- 	ctrl_cdev_ioctl+0x110/0x2b8
- 	do_vfs_ioctl+0xac/0xa00
- 	SyS_ioctl+0x3c/0x64
- 	ret_fast_syscall+0x0/0x1c
- INFO: Slab 0xbfd2da3c objects=17 used=1 fp=0xb33d7748 flags=0x40000081
- INFO: Object 0xb33d7e88 @offset=3720 fp=0xb33d7da0
-
- Redzone b33d7e80: cc cc cc cc cc cc cc cc                          ........
- Object b33d7e88: 02 00 00 00 01 00 00 00 00 f0 ff 7f ff ff ff ff  ................
- Object b33d7e98: 00 00 00 00 00 00 00 00 bd 16 00 00 00 00 00 00  ................
- Object b33d7ea8: 00 01 00 00 00 02 00 00 00 00 00 00 00 00 00 00  ................
- Redzone b33d7eb8: cc cc cc cc                                      ....
- Padding b33d7f60: 5a 5a 5a 5a 5a 5a 5a 5a                          ZZZZZZZZ
- CPU: 1 PID: 118 Comm: ubiattach Tainted: G    B   W       4.9.15 #3
- [<80111910>] (unwind_backtrace) from [<8010d498>] (show_stack+0x18/0x1c)
- [<8010d498>] (show_stack) from [<804a3274>] (dump_stack+0xb4/0xe0)
- [<804a3274>] (dump_stack) from [<80271770>] (free_debug_processing+0x320/0x3c4)
- [<80271770>] (free_debug_processing) from [<80271ad0>] (__slab_free+0x2bc/0x430)
- [<80271ad0>] (__slab_free) from [<80272024>] (kmem_cache_free+0x3e0/0x450)
- [<80272024>] (kmem_cache_free) from [<8057cb88>] (destroy_ai+0x150/0x1e8)
- [<8057cb88>] (destroy_ai) from [<8057ef1c>] (ubi_attach+0x2c4/0x450)
- [<8057ef1c>] (ubi_attach) from [<8056fe70>] (ubi_attach_mtd_dev+0x60c/0xff8)
- [<8056fe70>] (ubi_attach_mtd_dev) from [<80571d78>] (ctrl_cdev_ioctl+0x110/0x2b8)
- [<80571d78>] (ctrl_cdev_ioctl) from [<8029c77c>] (do_vfs_ioctl+0xac/0xa00)
- [<8029c77c>] (do_vfs_ioctl) from [<8029d10c>] (SyS_ioctl+0x3c/0x64)
- [<8029d10c>] (SyS_ioctl) from [<80108860>] (ret_fast_syscall+0x0/0x1c)
- FIX ubi_aeb_slab_cache: Object at 0xb33d7e88 not freed
-
-Signed-off-by: Rabin Vincent <rabinv@axis.com>
----
-v2: replace wrong goto with return
-
- drivers/mtd/ubi/fastmap.c | 33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index c1f5c29..b44c8d3 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -828,6 +828,24 @@ static int find_fm_anchor(struct ubi_attach_info *ai)
- 	return ret;
- }
- 
-+static struct ubi_ainf_peb *clone_aeb(struct ubi_attach_info *ai,
-+				      struct ubi_ainf_peb *old)
-+{
-+	struct ubi_ainf_peb *new;
-+
-+	new = ubi_alloc_aeb(ai, old->pnum, old->ec);
-+	if (!new)
-+		return NULL;
-+
-+	new->vol_id = old->vol_id;
-+	new->sqnum = old->sqnum;
-+	new->lnum = old->lnum;
-+	new->scrub = old->scrub;
-+	new->copy_flag = old->copy_flag;
-+
-+	return new;
-+}
-+
- /**
-  * ubi_scan_fastmap - scan the fastmap.
-  * @ubi: UBI device object
-@@ -847,7 +865,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	struct ubi_vid_hdr *vh;
- 	struct ubi_ec_hdr *ech;
- 	struct ubi_fastmap_layout *fm;
--	struct ubi_ainf_peb *tmp_aeb, *aeb;
-+	struct ubi_ainf_peb *aeb;
- 	int i, used_blocks, pnum, fm_anchor, ret = 0;
- 	size_t fm_size;
- 	__be32 crc, tmp_crc;
-@@ -857,9 +875,16 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	if (fm_anchor < 0)
- 		return UBI_NO_FASTMAP;
- 
--	/* Move all (possible) fastmap blocks into our new attach structure. */
--	list_for_each_entry_safe(aeb, tmp_aeb, &scan_ai->fastmap, u.list)
--		list_move_tail(&aeb->u.list, &ai->fastmap);
-+	/* Copy all (possible) fastmap blocks into our new attach structure. */
-+	list_for_each_entry(aeb, &scan_ai->fastmap, u.list) {
-+		struct ubi_ainf_peb *new;
-+
-+		new = clone_aeb(ai, aeb);
-+		if (!new)
-+			return -ENOMEM;
-+
-+		list_add(&new->u.list, &ai->fastmap);
-+	}
- 
- 	down_write(&ubi->fm_protect);
- 	memset(ubi->fm_buf, 0, ubi->fm_size);
--- 
-2.7.0
+> +- reg:			PCI devfn
+> +- clocks:		must contain system clock
+> +- #address-cells:	<1>
+> +- #size-cells:		<0>
+> +
+> +The nand flash controller may contain up to 8 subnodes representing
+> +NAND flash chips. Their properties are as follows.
+> +
+> +Required properties:
+> +- compatible:		should be "cavium,nandcs"
+> +- reg:			a single integer representing the chip-select number
+> +- nand-ecc-mode:	see nand.txt
+> +
+> +Example:
+> +
+> +nfc: nand@b,0 {
+> +	compatible = "cavium,cn8xxx-nand";
+> +	reg = <0x5800 0 0 0 0>;
+> +	clocks = <&sclk>;
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	nand@1 {
+> +		compatible = "cavium,nandcs";
+> +		reg = <1>;
+> +		nand-ecc-mode = "on-die";
+> +};
+> -- 
+> 2.9.0.rc0.21.g7777322
+> 
