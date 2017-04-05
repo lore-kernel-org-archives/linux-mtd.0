@@ -1,14 +1,30 @@
-Received: from smtp.transmode.se ([31.15.61.139])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cvjbL-0005SI-3N
- for linux-mtd@lists.infradead.org; Wed, 05 Apr 2017 11:59:55 +0000
-From: Mathias Thore <mathias.thore@infinera.com>
-To: linux-mtd@lists.infradead.org
-Cc: Mathias Thore <mathias.thore@infinera.com>
-Subject: [PATCH] mtd: cfi_cmdset_0002: PPB locking support for larger capacity
- devices
-Date: Wed,  5 Apr 2017 13:57:43 +0200
-Message-Id: <20170405115743.27441-1-mathias.thore@infinera.com>
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]
+ helo=mx07-00178001.pphosted.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cvnNm-00007T-Be
+ for linux-mtd@lists.infradead.org; Wed, 05 Apr 2017 16:02:08 +0000
+Subject: Re: [PATCH v2 1/2] dt-bindings: Document the STM32 QSPI bindings
+To: Rob Herring <robh@kernel.org>
+References: <1490979724-10905-1-git-send-email-ludovic.Barre@st.com>
+ <1490979724-10905-2-git-send-email-ludovic.Barre@st.com>
+ <20170403165735.sopfhlxzefkzrbfh@rob-hp-laptop>
+ <bd7cf1f8-e3b6-5752-47ef-2f54d56f81cc@st.com>
+ <CAL_JsqK5mZojW1fVRrg=TfO3sXd7Eqa6gS9NS9aDjXwn4_26_w@mail.gmail.com>
+CC: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut
+ <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Alexandre Torgue <alexandre.torgue@st.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+From: Ludovic BARRE <ludovic.barre@st.com>
+Message-ID: <87299c6e-a107-c833-a102-a33a7b517291@st.com>
+Date: Wed, 5 Apr 2017 18:00:39 +0200
+MIME-Version: 1.0
+In-Reply-To: <CAL_JsqK5mZojW1fVRrg=TfO3sXd7Eqa6gS9NS9aDjXwn4_26_w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,27 +34,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently cfi_cmdset_0002.c supports advanced sector protection scheme
-for devices with 512 or fewer sectors. This patch increases the limit
-to enable advanced sector protection on devices with larger capacity.
 
-Signed-off-by: Mathias Thore <mathias.thore@infinera.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 9dca881..4966f12 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -2532,7 +2532,7 @@ struct ppb_lock {
- 	int locked;
- };
- 
--#define MAX_SECTORS			512
-+#define MAX_SECTORS			1024
- 
- #define DO_XXLOCK_ONEBLOCK_LOCK		((void *)1)
- #define DO_XXLOCK_ONEBLOCK_UNLOCK	((void *)2)
--- 
-2.10.2
+On 04/04/2017 02:20 PM, Rob Herring wrote:
+> On Tue, Apr 4, 2017 at 2:28 AM, Ludovic BARRE <ludovic.barre@st.com> wrote:
+>> Hi Rob
+>>
+>> thanks for review
+>> my comments below
+>>
+>> br
+>> Ludo
+>>
+>> On 04/03/2017 06:57 PM, Rob Herring wrote:
+>>> On Fri, Mar 31, 2017 at 07:02:03PM +0200, Ludovic Barre wrote:
+>>>> From: Ludovic Barre <ludovic.barre@st.com>
+>>>>
+>>>> This patch adds documentation of device tree bindings for the STM32
+>>>> QSPI controller.
+>>>>
+>>>> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+>>>> ---
+>>>>    .../devicetree/bindings/mtd/stm32-quadspi.txt      | 45
+>>>> ++++++++++++++++++++++
+>>>>    1 file changed, 45 insertions(+)
+>>>>    create mode 100644
+>>>> Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+>>>> b/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+>>>> new file mode 100644
+>>>> index 0000000..95a8ebd
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+>>>> @@ -0,0 +1,45 @@
+>>>> +* STMicroelectronics Quad Serial Peripheral Interface(QuadSPI)
+>>>> +
+>>>> +Required properties:
+>>>> +- compatible: should be "st,stm32f469-qspi"
+>>>> +- reg: contains the register location and length.
+>>>> +  (optional) the memory mapping address and length
+>>> Why optional? Either the h/w has it or doesn't. If some chips don't,
+>>> they should have a different compatible string.
+>> in fact, the stm32 qspi controller can operate in any of the following
+>> modes:
+>> -indirect mode: all the operations are performed using the qspi registers
+>> with read/write.
+>> -read memory-mapped mode: the external Flash memory is mapped to the
+>>   microcontroller address space and is seen by the system as if it was
+>>   an internal memory (use memcpy_fromio). this mode improve read throughput
+>>
+>> if qspi_mm is defined the qspi controller use read memory-mapped mode
+>> else the controller transfers in indirect mode.
+> You should always have the memory region defined because that's what
+> the h/w has. If you want another property to select the mode, then
+> perhaps that's fine. But why? Can't the OS figure out which to use?
+> Why would you ever not use memory mapped mode unless the driver
+> doesn't yet support it?
+ok, I always map the memory region (qspi_mm is now required).
+if the nor-flash is more bigger than "qspi memory region", I force to use
+the indirect mode.
+> Rob
