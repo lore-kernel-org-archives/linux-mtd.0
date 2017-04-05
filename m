@@ -1,34 +1,26 @@
-Received: from mail-oi0-f68.google.com ([209.85.218.68])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cvPpO-00039m-Sx
- for linux-mtd@lists.infradead.org; Tue, 04 Apr 2017 14:53:04 +0000
-Received: by mail-oi0-f68.google.com with SMTP id b187so25145251oif.3
- for <linux-mtd@lists.infradead.org>; Tue, 04 Apr 2017 07:52:42 -0700 (PDT)
-Date: Tue, 4 Apr 2017 09:52:40 -0500
-From: Rob Herring <robh@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- Ralf Baechle <ralf@linux-mips.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Paul Burton <paul.burton@imgtec.com>, james.hogan@imgtec.com,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@linux-mips.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pwm@vger.kernel.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v4 02/14] dt/bindings: Document gpio-ingenic
-Message-ID: <20170404145240.z3vx24svh4dduo2o@rob-hp-laptop>
-References: <20170125185207.23902-2-paul@crapouillou.net>
- <20170402204244.14216-1-paul@crapouillou.net>
- <20170402204244.14216-3-paul@crapouillou.net>
+Message-ID: <1491363274.7262.10.camel@mhfsdcap03>
+Subject: Re: [PATCH V1 1/1] mtd: mtk-nor: set controller to 4B mode with
+ large capacity flash
+From: Guochun Mao <guochun.mao@mediatek.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+CC: Marek Vasut <marek.vasut@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Mark Rutland <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>, "Russell
+ King" <linux@armlinux.org.uk>, <linux-kernel@vger.kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, <linux-mediatek@lists.infradead.org>, "Cyrille
+ Pitchen" <cyrille.pitchen@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>
+Date: Wed, 5 Apr 2017 11:34:34 +0800
+In-Reply-To: <873a3dac-7d3a-0723-4c7d-c786d3398278@wedev4u.fr>
+References: <1490862222-723-1-git-send-email-guochun.mao@mediatek.com>
+ <1490862222-723-2-git-send-email-guochun.mao@mediatek.com>
+ <24d60072-4124-7ec4-6cd3-fd70f4f6b10a@wedev4u.fr>
+ <1490927207.7262.7.camel@mhfsdcap03>
+ <873a3dac-7d3a-0723-4c7d-c786d3398278@wedev4u.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170402204244.14216-3-paul@crapouillou.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,82 +30,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Apr 02, 2017 at 10:42:32PM +0200, Paul Cercueil wrote:
-> This commit adds documentation for the devicetree bindings of the
-> gpio-ingenic driver, which handles GPIOs of the Ingenic SoCs
-> currently supported by the Linux kernel.
+Hi Cyrille,
+
+Thank you for so detailed explanation.
+I'll check nor->addr_width in both mt8173_nor_read() and
+mt8173_nor_write().
+
+Best regards,
+Guochun
+
+On Fri, 2017-03-31 at 10:56 +0200, Cyrille Pitchen wrote:
+> Le 31/03/2017 à 04:26, Guochun Mao a écrit :
+> > Hi Cyrille, Marek,
+> > 
+> > Thanks for your suggestions.
+> > 
+> > On Thu, 2017-03-30 at 19:40 +0200, Cyrille Pitchen wrote:
+> >> Hi Guochun,
+> >>
+> >> Le 30/03/2017 à 10:23, Guochun Mao a écrit :
+> >>> when nor's size larger than 16MByte, nor and controller should
+> >>> enter 4Byte mode simultaneously.
+> >>>
+> >>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> >>> ---
+> >>>  drivers/mtd/spi-nor/mtk-quadspi.c |    7 +++++++
+> >>>  1 file changed, 7 insertions(+)
+> >>>
+> >>> diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+> >>> index e661877..05cd8a8 100644
+> >>> --- a/drivers/mtd/spi-nor/mtk-quadspi.c
+> >>> +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+> >>> @@ -369,6 +369,13 @@ static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
+> >>>  		/* We only handle 1 byte */
+> >>>  		ret = mt8173_nor_wr_sr(mt8173_nor, *buf);
+> >>>  		break;
+> >>> +	case SPINOR_OP_EN4B:
+> >>> +		/* Set nor controller to 4-byte address mode,
+> >>> +		 * and simultaneously set nor flash.
+> >>> +		 * This case should cooperate with default operation.
+> >>> +		 */
+> >>> +		writeb(readb(mt8173_nor->base + MTK_NOR_DUAL_REG) | 0x10,
+> >>> +				mt8173_nor->base + MTK_NOR_DUAL_REG);
+> >>
+> >> This is not good: you should check in both mt8173_nor_read() and
+> >> mt8173_nor_write() whether nor->addr_width is either 3 or 4.
+> >>
+> >> from include/linux/mtd/spi-nor.h:
+> >>  * @addr_width:		number of address bytes
+> >>
+> >> Besides SPI commands using an op code from 4-byte address instruction
+> >> set always carry a 4-byte address. They can be used directly, without
+> >> sending the SPINOR_OP_EN4B before. So you cannot assume that addresses
+> >> will be 4-byte long only if your SPI controller driver has seen a
+> >> SPINOR_OP_EN4B command before. This assumption is wrong.
+> > Nor->addr_width is assigned in spi_nor_scan in spi-nor.c, and it's not
+> > modified in later process.
+> > Does it means that we will not switch nor between 3Byte address and
+> > 4Byte?
+> > So, is it better to check nor->addr_width when do nor initialization?
+> >
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  .../devicetree/bindings/gpio/ingenic,gpio.txt      | 48 ++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/ingenic,gpio.txt
+> Currently yes, nor->addr_width, nor->read_opcode, nor->read_dummy, and
+> nor->program_opcode are set once for all in spi_nor_scan().
 > 
->  v2: New patch
->  v3: No changes
->  v4: Update for the v4 version of the gpio-ingenic driver
+> However, nor->read() is likely to be called soon from spi_nor_scan()
+> with values of nor->addr_width, nor->read_opcode and nor->read_dummy
+> different from those selected when exiting spi_nor_scan().
 > 
-> diff --git a/Documentation/devicetree/bindings/gpio/ingenic,gpio.txt b/Documentation/devicetree/bindings/gpio/ingenic,gpio.txt
-> new file mode 100644
-> index 000000000000..f54af444f7c3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/ingenic,gpio.txt
-> @@ -0,0 +1,48 @@
-> +Ingenic jz47xx GPIO controller
-> +
-> +That the Ingenic GPIO driver node must be a sub-node of the Ingenic pinctrl
-> +driver node.
-> +
-> +Required properties:
-> +--------------------
-> +
-> + - compatible: Must contain one of:
-> +    - "ingenic,jz4740-gpio"
-> +    - "ingenic,jz4770-gpio"
-> +    - "ingenic,jz4780-gpio"
-> +	And one of:
-> +	- "ingenic,gpio-bank-a"
-> +	- "ingenic,gpio-bank-b"
-> +	- "ingenic,gpio-bank-c"
-> +	- "ingenic,gpio-bank-d"
-> +	- "ingenic,gpio-bank-e" (for SoC version > jz4740)
-> +	- "ingenic,gpio-bank-f" (for SoC version > jz4740)
-
-This is quite strange. Why do you need the bank? Doesn't gpio-ranges 
-give you that info? Maybe use reg property here instead.
-
-> + - interrupt-controller: Marks the device node as an interrupt controller.
-> + - interrupts: Interrupt specifier for the controllers interrupt.
-> + - #interrupt-cells: Should be 2. Refer to
-> +   ../interrupt-controller/interrupts.txt for more details.
-> + - gpio-controller: Marks the device node as a GPIO controller.
-> + - #gpio-cells: Should be 2. The first cell is the GPIO number and the second
-> +    cell specifies GPIO flags, as defined in <dt-bindings/gpio/gpio.h>. Only the
-> +    GPIO_ACTIVE_HIGH and GPIO_ACTIVE_LOW flags are supported.
-> + - gpio-ranges: Range of pins managed by the GPIO controller. Refer to
-> +   'gpio.txt' in this directory for more details.
-> +
-> +Example:
-> +--------
-> +
-> +&pinctrl {
-> +	gpa: gpio-controller@0 {
-
-gpio@...
-
-> +		compatible = "ingenic,gpio-bank-a", "ingenic,jz4740-gpio";
-> +
-> +		gpio-controller;
-> +		gpio-ranges = <&pinctrl 0 0 32>;
-> +		#gpio-cells = <2>;
-> +
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <28>;
-> +	};
-> +};
-> -- 
-> 2.11.0
+> So nor->read() / mt8173_nor_read should check nor->addr_width,
+> nor->read_opcode and nor->read_dummy at each call.
+> 
+> More precisely, I plan to use nor->read() from spi_nor_scan() to read
+> SFDP (Serial Flash Discoverable Parameters) data.
+> 
+> Whatever op code, numbers of address bytes and dummy cycles used for
+> (Fast) Read commands, the Read SFDP command uses fixed settings
+> standardized for all manufacturers and all memory parts:
+> - op code: 5Ah
+> - number of bytes for the address: 3 (even for memory > 128Mbits)
+> - number of dummy clock cycles: 8 clocks
+> 
+> https://patchwork.ozlabs.org/patch/742380/
+> 
+> Please have a look at the spi_nor_read_sfdp().
+> 
+> spi_nor_read_sfdp() is likely to be called from and only from
+> spi_nor_scan().
+> 
+> Best regards,
+> 
+> Cyrille
+> 
+> >>
+> >> SPI controller driver should never check SPINOR_OP_* op codes like this.
+> > I agree that SPI controller driver should not check SPINOR_OP_* op codes
+> > like what I do.
+> > I will correct it next version.
+> > 
+> > Best Regards,
+> > Guochun
+> >>
+> >> Then, testing SPINOR_OP_RDSR from mt8173_nor_read_reg() or
+> >> SPINOR_OP_WRSR from mt8173_nor_write_reg() is not a good practice too:
+> >> op codes may change depending on the memory manufacturer. So testing op
+> >> code values like you do can work with some memories but maybe not all.
+> >>
+> >> Finally, don't use 0x10, please define a macro instead.
+> >>
+> >> Best regards,
+> >>
+> >> Cyrille
+> >>
+> >>>  	default:
+> >>>  		ret = mt8173_nor_do_tx_rx(mt8173_nor, opcode, buf, len, NULL, 0);
+> >>>  		if (ret)
+> >>>
+> >>
+> > 
+> > 
+> > 
 > 
