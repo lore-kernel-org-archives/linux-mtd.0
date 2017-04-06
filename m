@@ -1,35 +1,25 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cw8ap-0004BF-8s
- for linux-mtd@lists.infradead.org; Thu, 06 Apr 2017 14:41:01 +0000
-Received: by mail-wr0-x242.google.com with SMTP id t20so12028900wra.2
- for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2017 07:40:37 -0700 (PDT)
-Date: Thu, 6 Apr 2017 16:40:34 +0200
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>,
+Received: from 2.mo2.mail-out.ovh.net ([188.165.53.149])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cwAix-0005QA-28
+ for linux-mtd@lists.infradead.org; Thu, 06 Apr 2017 16:57:33 +0000
+Received: from player731.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo2.mail-out.ovh.net (Postfix) with ESMTP id B171F7A2D6
+ for <linux-mtd@lists.infradead.org>; Thu,  6 Apr 2017 18:57:05 +0200 (CEST)
+From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+To: linux-mtd@lists.infradead.org
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Paul Burton <paul.burton@imgtec.com>, james.hogan@imgtec.com,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@linux-mips.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pwm@vger.kernel.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v4 13/14] pwm: jz4740: Let the pinctrl driver configure
- the pins
-Message-ID: <20170406144034.GE8438@ulmo.ba.sec>
-References: <20170125185207.23902-2-paul@crapouillou.net>
- <20170402204244.14216-1-paul@crapouillou.net>
- <20170402204244.14216-14-paul@crapouillou.net>
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>,
+ =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+Subject: [PATCH 00/10] mtd: spi-nor: aspeed: support extensions
+Date: Thu,  6 Apr 2017 18:56:38 +0200
+Message-Id: <1491497808-25487-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="brEuL7wsLY8+TuWz"
-Content-Disposition: inline
-In-Reply-To: <20170402204244.14216-14-paul@crapouillou.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,62 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
---brEuL7wsLY8+TuWz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here is a series extending the support for the Aspeed AST2500 and
+AST2400 SMC driver. First is a couple of simple fixes, then comes
+support for :
 
-On Sun, Apr 02, 2017 at 10:42:43PM +0200, Paul Cercueil wrote:
-> Now that the JZ4740 and similar SoCs have a pinctrl driver, we rely on
-> the pins being properly configured before the driver probes.
->=20
-> One inherent problem of this new approach is that the pinctrl framework
-> does not allow us to configure each pin on demand, when the various PWM
-> channels are requested or released. For instance, the PWM channels can
-> be configured from sysfs, which would require all PWM pins to be configur=
-ed
-> properly beforehand for the PWM function, eventually causing conflicts
-> with other platform or board drivers.
->=20
-> The proper solution here would be to modify the pwm-jz4740 driver to
-> handle only one PWM channel, and create an instance of this driver
-> for each one of the 8 PWM channels. Then, it could use the pinctrl
-> framework to dynamically configure the PWM pin it controls.
->=20
-> Until this can be done, the only jz4740 board supported upstream
-> (Qi lb60) can configure all of its connected PWM pins in PWM function
-> mode, since those are not used by other drivers nor by GPIOs on the
-> board.
->=20
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/pwm/pwm-jz4740.c | 29 -----------------------------
->  1 file changed, 29 deletions(-)
+ - DMA which applies to the FMC (BMC Firmware) controller only.
+ - Dual Data (Quad is not supported by the controller). The spi-nor
+   table of chips is modified to activate DUAL mode on the chips used
+   on OpenPOWER systems. 
+ - Configuration of the segment registers defining the mapping windows
+   of the chips on the AHB bus.
+ - Command mode for reads. Reads are performed directly on the mapping
+   windows of the chip on the AHB Bus.
+ - Read mode optimization, calculating the best settings for a given
+   chip (for the SPI controllers only)
 
-Assuming that you want to take this through the pinctrl tree along with
-the remainder of the series:
+Tested on:
 
-Acked-by: Thierry Reding <thierry.reding@gmail.com>
+ * OpenPOWER Palmetto (AST2400)
+ * Evaluation board (AST2500) 
+ * OpenPOWER Witherspoon (AST2500)
+ * OpenPOWER Romulus (AST2500)
+ * OpenPOWER Zaius (AST2500)
 
---brEuL7wsLY8+TuWz
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
+C.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAljmU2EACgkQ3SOs138+
-s6HGABAApLsMiPuePBh0cJc9OAijswAsVlj72HCTmH1JA3qrEfhOVWZxltlReNwi
-z9upRVFfXOAux8PGiJT+0N/z5Zrkwu/haho/al14XxloMx4DSW4UWkeBAVyqBkba
-N6btN6WY2TLAMi7gav0GWbXFhspUJCncB+HqK2wmXyAhQJfBjMQ2Et1OpniwQ5fe
-v60TCWUjBY7dZtgtZ5I80tQKjYnZC6hLQoXZcBwTNvQbeIM3sl9cymdPbMXVIJH4
-dzxud0NQLfx1flI0KlEI35gpRAAfinGr5XqUYipP1JtsegR51uvpQdQ6l2WdGcBV
-9mICw0SZnFuELmPzAYXFjKEYvmOFLB9kMgVHISOgCCwFtJfIH4slY27lZLLvmUkg
-y/erHU6r8KQfjkVdxNiMcktqMOoAoHaUpWfgsBL/kE3Am0aoXXL3AFEsKY8WXbDg
-qjN3dsSIdafpEngfpz6tyxbZfPeUkpYubI4+D9T4ov5SC9JeKuPLd6TTXnGtAntx
-FNhSfWilbcbkYG1r37LpNkW8xWo904JQ7G0pn7opGScBH92xGhV3+g0MBTlTfs/8
-t1fqhL3r7+z576vncJwup/hFZq2XrjqCWjizIHKwp2q7vj8JFyN1NXrwRp0CwfJt
-IwPgbk9MEqstyCKhNIpM4qoJvvmSTQS/SC3k2JvQVGkwjWiytNM=
-=QxS9
------END PGP SIGNATURE-----
+Cédric Le Goater (9):
+  mtd: spi-nor: aspeed: fix the AST2400 SMC window size
+  mtd: spi-nor: aspeed: remove dummies from keep mask
+  mtd: spi-nor: aspeed: add DMA support
+  mtd: spi-nor: Add support for Macronix mx66l1g45g spi flash
+  mtd: spi-nor: add SPI_NOR_DUAL_READ to some flash devices
+  mtd: spi-nor: aspeed: configure chip window on AHB bus
+  mtd: spi-nor: aspeed: use command mode for reads
+  mtd: spi-nor: aspeed: link controller with the ahb clock
+  mtd: spi-nor: aspeed: optimize read mode
 
---brEuL7wsLY8+TuWz--
+Robert Lippert (1):
+  mtd: spi-nor: aspeed: add support for SPI dual IO read mode
+
+ drivers/mtd/spi-nor/aspeed-smc.c | 604 ++++++++++++++++++++++++++++++++++++++-
+ drivers/mtd/spi-nor/spi-nor.c    |   9 +-
+ 2 files changed, 595 insertions(+), 18 deletions(-)
+
+-- 
+2.7.4
