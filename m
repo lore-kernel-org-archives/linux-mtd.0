@@ -1,27 +1,28 @@
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cvngf-00018e-UU
- for linux-mtd@lists.infradead.org; Wed, 05 Apr 2017 16:21:39 +0000
-Subject: Re: [PATCH 0/2] mtd: spi-nor: add stm32 qspi driver
-To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <1490619296-8168-1-git-send-email-ludovic.Barre@st.com>
- <5224f3cd-a128-9e72-c0c8-62a137ceeb79@wedev4u.fr>
- <d1c2f0a9-302d-ea7c-5d1b-ad32b9950ed4@st.com>
- <e04fa293-63d4-7a7e-a998-37aab31167e5@gmail.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Alexandre Torgue
- <alexandre.torgue@st.com>, <devicetree@vger.kernel.org>, Richard Weinberger
- <richard@nod.at>, <linux-kernel@vger.kernel.org>, Rob Herring
- <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-From: Ludovic BARRE <ludovic.barre@st.com>
-Message-ID: <19157469-9fcd-27aa-f870-21e46f7ffcab@st.com>
-Date: Wed, 5 Apr 2017 18:20:23 +0200
+ id 1cw6Bt-0004fO-Ep
+ for linux-mtd@lists.infradead.org; Thu, 06 Apr 2017 12:07:09 +0000
+Received: by mail-oi0-x22b.google.com with SMTP id b187so48588775oif.0
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2017 05:06:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e04fa293-63d4-7a7e-a998-37aab31167e5@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <cbaff214-7431-2cd1-2453-156d716c0d8a@nod.at>
+References: <1490864181-2192-1-git-send-email-richard@nod.at>
+ <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
+ <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
+ <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
+ <646ae733-5037-3072-7151-b055a8fa1521@intel.com>
+ <cbaff214-7431-2cd1-2453-156d716c0d8a@nod.at>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 6 Apr 2017 15:06:43 +0300
+Message-ID: <CAOQ4uxh5mZ8gCk1U=oV9b+j3k0RFcT3LozATfa3qHoYy+OMVsg@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
+To: Richard Weinberger <richard@nod.at>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "stable [v4.9]" <stable@vger.kernel.org>,
+ Ralph Sennhauser <ralph.sennhauser@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +32,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi Cyrille, Marek
-
-I've re-based and tested my patchset onto
-
-"mtd: spi-nor: introduce more SPI protocols and the Dual Transfer Mode"
-
-So I can deliver my patchset before or after Cyrille patchset
-
-How do you wish process? what version do you want for the v3?
-
-
-BR
-
-Ludo
-
-On 03/30/2017 12:15 PM, Marek Vasut wrote:
-> On 03/30/2017 09:31 AM, Ludovic BARRE wrote:
->> hi Cyrille
+On Thu, Mar 30, 2017 at 3:27 PM, Richard Weinberger <richard@nod.at> wrote:
+> Am 30.03.2017 um 13:57 schrieb Adrian Hunter:
+>>> Reading deeper into the proved that I was wrong.
+>>> AFAIKT UBIFS' journal has currently no way to revive a deleted inode.
+>>> So, we have to think about a new solution.
 >>
->> I see your patch series
->>
->> [PATCH v5 0/6] mtd: spi-nor: parse SFDP tables to setup (Q)SPI memories
->>
->> No problem, I rebase my V2 onto your patch
-> I still didn't review that, so it might take a bit until it hits
-> mainline. I think the stm32 stuff looks pretty OK, so we can take that
-> before the SFDP stuff, no?
+>> Deleting the orphan looks right.  Just need to understand whether the
+>> recovery would do the right thing - actually it looks like O_TMPFILE might
+>> be OK and in other case we might be failing to remove nodes with sequence
+>> numbers greater than the deletion inode.
 >
+> Sadly it does not the right thing.
+> I'm currently investigating why and how to deal with it.
+>
+> I also managed to trigger that case. :(
+>
+
+Richard,
+
+Were you able to make any progress? still working on this?
+If this is too complicated to get in for this cycle, better send a patch
+to disable O_TMPFILE support for ubifs and fix the problem properly on
+followup merge cycle.
+Because right now ubifs O_TMPFILE support is broken and breaks overlayfs mount.
+
+Amir.
