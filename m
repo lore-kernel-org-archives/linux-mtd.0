@@ -1,24 +1,27 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cwHcD-0004Ks-8p
- for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 00:19:03 +0000
-Received: by mail-wr0-x244.google.com with SMTP id g19so15626594wrb.0
- for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2017 17:18:40 -0700 (PDT)
-Subject: Re: [PATCH v5 2/6] mtd: m25p80: add support of SPI 1-2-2 and 1-4-4
- protocols
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, jartur@cadence.com, kdasu.kdev@gmail.com,
- mar.krzeminski@gmail.com
-References: <cover.1490220411.git.cyrille.pitchen@atmel.com>
- <3426fd033830e2df15eae27c1b5284983961fa8e.1490220411.git.cyrille.pitchen@atmel.com>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com
+ id 1cwHcE-0004Kw-Iw
+ for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 00:19:04 +0000
+Received: by mail-wr0-x243.google.com with SMTP id u18so7585658wrc.1
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2017 17:18:41 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add driver for STM32 quad spi flash
+ controller
+To: Ludovic Barre <ludovic.Barre@st.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <1490979724-10905-1-git-send-email-ludovic.Barre@st.com>
+ <1490979724-10905-3-git-send-email-ludovic.Barre@st.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Alexandre Torgue <alexandre.torgue@st.com>, Rob Herring
+ <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <49375a87-5eca-a1c3-26f9-81075dd9c7f9@gmail.com>
-Date: Fri, 7 Apr 2017 01:37:04 +0200
+Message-ID: <5ec38e39-661d-8a83-4168-b9f3d986bcd1@gmail.com>
+Date: Fri, 7 Apr 2017 01:55:47 +0200
 MIME-Version: 1.0
-In-Reply-To: <3426fd033830e2df15eae27c1b5284983961fa8e.1490220411.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <1490979724-10905-3-git-send-email-ludovic.Barre@st.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,250 +33,223 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/23/2017 12:33 AM, Cyrille Pitchen wrote:
-> Before this patch, m25p80_read() supported few SPI protocols:
-> - regular SPI 1-1-1
-> - SPI Dual Output 1-1-2
-> - SPI Quad Output 1-1-4
-> On the other hand, m25p80_write() only supported SPI 1-1-1.
+On 03/31/2017 07:02 PM, Ludovic Barre wrote:
+> From: Ludovic Barre <ludovic.barre@st.com>
 > 
-> This patch updates both m25p80_read() and m25p80_write() functions to let
-> them support SPI 1-2-2 and SPI 1-4-4 protocols for Fast Read and Page
-> Program SPI commands.
+> The quadspi is a specialized communication interface targeting single,
+> dual or quad SPI Flash memories.
 > 
-> It adopts a conservative approach to avoid regressions. Hence the new
-                                             ^ FYI, regression != bug
-
-> implementations try to be as close as possible to the old implementations,
-> so the main differences are:
-> - the tx_nbits values now being set properly for the spi_transfer
->   structures carrying the (op code + address/dummy) bytes
-> - and the spi_transfer structure being split into 2 spi_transfer
->   structures when the numbers of I/O lines are different for op code and
->   for address/dummy byte transfers on the SPI bus.
+> It can operate in any of the following modes:
+> -indirect mode: all the operations are performed using the quadspi
+>  registers
+> -read memory-mapped mode: the external Flash memory is mapped to the
+>  microcontroller address space and is seen by the system as if it was
+>  an internal memory
 > 
-> Besides, the current spi-nor framework supports neither the SPI 2-2-2 nor
-> the SPI 4-4-4 protocols. So, for now, we don't need to update the
-> m25p80_{read|write}_reg() functions as SPI 1-1-1 is the only one possible
-> protocol.
-> 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
 > ---
->  drivers/mtd/devices/m25p80.c | 120 ++++++++++++++++++++++++++++++++-----------
->  1 file changed, 90 insertions(+), 30 deletions(-)
+>  drivers/mtd/spi-nor/Kconfig         |   7 +
+>  drivers/mtd/spi-nor/Makefile        |   1 +
+>  drivers/mtd/spi-nor/stm32-quadspi.c | 690 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 698 insertions(+)
+>  create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
 > 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 68986a26c8fe..64d562efc25d 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -34,6 +34,19 @@ struct m25p {
->  	u8			command[MAX_CMD_SIZE];
->  };
->  
-> +static inline void m25p80_proto2nbits(enum spi_nor_protocol proto,
-> +				      unsigned int *inst_nbits,
-> +				      unsigned int *addr_nbits,
-> +				      unsigned int *data_nbits)
+
+[...]
+
+> +struct stm32_qspi_flash {
+> +	struct spi_nor nor;
+> +	u32 cs;
+> +	u32 fsize;
+> +	u32 presc;
+> +	struct stm32_qspi *qspi;
+> +};
+
+[...]
+
+> +struct stm32_qspi_cmd {
+> +	struct {
+> +		u8 addr_width;
+> +		u8 dummy;
+> +		u8 data;
+> +	} conf;
+
+Is there any benefit in having this structure here or could you just
+make the struct stm32_qspi_cmd flat ?
+
+> +	u8 opcode;
+> +	u32 framemode;
+> +	u32 qspimode;
+> +	u32 addr;
+> +	size_t len;
+> +	void *buf;
+> +};
+
+[...]
+
+> +static ssize_t stm32_qspi_read(struct spi_nor *nor, loff_t from, size_t len,
+> +			       u_char *buf)
 > +{
+> +	struct stm32_qspi_flash *flash = nor->priv;
+> +	struct stm32_qspi *qspi = flash->qspi;
+> +	struct stm32_qspi_cmd cmd;
+> +	int err;
+> +
+> +	dev_dbg(qspi->dev, "read(%#.2x): buf:%p from:%#.8x len:%#x\n",
+> +		nor->read_opcode, buf, (u32)from, len);
+> +
+> +	memset(&cmd, 0, sizeof(cmd));
+> +	cmd.opcode = nor->read_opcode;
+> +	cmd.conf.addr_width = nor->addr_width;
+> +	cmd.addr = (u32)from;
 
-Why don't we just have some generic macros to extract the number of bits
-from $proto ?
+loff_t (from) can be 64bit ... how do we handle this ?
 
-> +	if (inst_nbits)
-> +		*inst_nbits = spi_nor_get_protocol_inst_width(proto);
-> +	if (addr_nbits)
-> +		*addr_nbits = spi_nor_get_protocol_addr_width(proto);
-> +	if (data_nbits)
-> +		*data_nbits = spi_nor_get_protocol_data_width(proto);
+> +	cmd.conf.data = 1;
+> +	cmd.conf.dummy = nor->read_dummy;
+> +	cmd.len = len;
+> +	cmd.buf = buf;
+> +	cmd.qspimode = qspi->read_mode;
+> +
+> +	stm32_qspi_set_framemode(nor, &cmd, true);
+> +	err = stm32_qspi_send(flash, &cmd);
+> +
+> +	return err ? err : len;
+> +}
+
+[...]
+
+> +static irqreturn_t stm32_qspi_irq(int irq, void *dev_id)
+> +{
+> +	struct stm32_qspi *qspi = (struct stm32_qspi *)dev_id;
+> +	u32 cr, sr, fcr = 0;
+> +
+> +	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
+> +	sr = readl_relaxed(qspi->io_base + QUADSPI_SR);
+> +
+> +	if ((cr & CR_TCIE) && (sr & SR_TCF)) {
+> +		/* tx complete */
+> +		fcr |= FCR_CTCF;
+> +		complete(&qspi->cmd_completion);
+> +	} else {
+> +		dev_info(qspi->dev, "spurious interrupt\n");
+
+You probably want to ratelimit this one ...
+
+> +	}
+> +
+> +	writel_relaxed(fcr, qspi->io_base + QUADSPI_FCR);
+> +
+> +	return IRQ_HANDLED;
 > +}
 > +
->  static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
->  {
->  	struct m25p *flash = nor->priv;
-> @@ -78,11 +91,16 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
->  {
->  	struct m25p *flash = nor->priv;
->  	struct spi_device *spi = flash->spi;
-> -	struct spi_transfer t[2] = {};
-> +	unsigned int inst_nbits, addr_nbits, data_nbits, data_idx;
-> +	struct spi_transfer t[3] = {};
->  	struct spi_message m;
->  	int cmd_sz = m25p_cmdsz(nor);
->  	ssize_t ret;
->  
-> +	/* get transfer protocols. */
-> +	m25p80_proto2nbits(nor->write_proto, &inst_nbits,
-> +			   &addr_nbits, &data_nbits);
+> +static int stm32_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+> +{
+> +	struct stm32_qspi_flash *flash = nor->priv;
+> +	struct stm32_qspi *qspi = flash->qspi;
 > +
->  	spi_message_init(&m);
->  
->  	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
-> @@ -92,12 +110,27 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
->  	m25p_addr2cmd(nor, to, flash->command);
->  
->  	t[0].tx_buf = flash->command;
-> +	t[0].tx_nbits = inst_nbits;
->  	t[0].len = cmd_sz;
->  	spi_message_add_tail(&t[0], &m);
->  
-> -	t[1].tx_buf = buf;
-> -	t[1].len = len;
-> -	spi_message_add_tail(&t[1], &m);
-> +	/* split the op code and address bytes into two transfers if needed. */
-> +	data_idx = 1;
-> +	if (addr_nbits != inst_nbits) {
-> +		t[0].len = 1;
+> +	mutex_lock(&qspi->lock);
+> +	return 0;
+> +}
 > +
-> +		t[1].tx_buf = &flash->command[1];
-> +		t[1].tx_nbits = addr_nbits;
-> +		t[1].len = cmd_sz - 1;
-> +		spi_message_add_tail(&t[1], &m);
+> +static void stm32_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+> +{
+> +	struct stm32_qspi_flash *flash = nor->priv;
+> +	struct stm32_qspi *qspi = flash->qspi;
 > +
-> +		data_idx = 2;
-> +	}
+> +	mutex_unlock(&qspi->lock);
+> +}
 > +
-> +	t[data_idx].tx_buf = buf;
-> +	t[data_idx].tx_nbits = data_nbits;
-> +	t[data_idx].len = len;
-> +	spi_message_add_tail(&t[data_idx], &m);
->  
->  	ret = spi_sync(spi, &m);
->  	if (ret)
-> @@ -109,18 +142,6 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
->  	return ret;
->  }
->  
-> -static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
-> -{
-> -	switch (nor->read_proto) {
-> -	case SNOR_PROTO_1_1_2:
-> -		return 2;
-> -	case SNOR_PROTO_1_1_4:
-> -		return 4;
-> -	default:
-> -		return 0;
-> -	}
-> -}
-> -
->  /*
->   * Read an address range from the nor chip.  The address range
->   * may be any size provided it is within the physical boundaries.
-> @@ -130,13 +151,19 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  {
->  	struct m25p *flash = nor->priv;
->  	struct spi_device *spi = flash->spi;
-> -	struct spi_transfer t[2];
-> +	unsigned int inst_nbits, addr_nbits, data_nbits, data_idx;
-> +	struct spi_transfer t[3];
->  	struct spi_message m;
->  	unsigned int dummy = nor->read_dummy;
->  	ssize_t ret;
-> +	int cmd_sz;
+> +static int stm32_qspi_flash_setup(struct stm32_qspi *qspi,
+> +				  struct device_node *np)
+> +{
+> +	u32 width, flash_read, presc, cs_num, max_rate = 0;
+> +	struct stm32_qspi_flash *flash;
+> +	struct mtd_info *mtd;
+> +	int ret;
 > +
-> +	/* get transfer protocols. */
-> +	m25p80_proto2nbits(nor->read_proto, &inst_nbits,
-> +			   &addr_nbits, &data_nbits);
->  
->  	/* convert the dummy cycles to the number of bytes */
-> -	dummy /= 8;
-> +	dummy = (dummy * addr_nbits) / 8;
->  
->  	if (spi_flash_read_supported(spi)) {
->  		struct spi_flash_read_message msg;
-> @@ -149,10 +176,9 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  		msg.read_opcode = nor->read_opcode;
->  		msg.addr_width = nor->addr_width;
->  		msg.dummy_bytes = dummy;
-> -		/* TODO: Support other combinations */
-> -		msg.opcode_nbits = SPI_NBITS_SINGLE;
-> -		msg.addr_nbits = SPI_NBITS_SINGLE;
-> -		msg.data_nbits = m25p80_rx_nbits(nor);
-> +		msg.opcode_nbits = inst_nbits;
-> +		msg.addr_nbits = addr_nbits;
-> +		msg.data_nbits = data_nbits;
->  
->  		ret = spi_flash_read(spi, &msg);
->  		if (ret < 0)
-> @@ -167,20 +193,45 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  	m25p_addr2cmd(nor, from, flash->command);
->  
->  	t[0].tx_buf = flash->command;
-> +	t[0].tx_nbits = inst_nbits;
->  	t[0].len = m25p_cmdsz(nor) + dummy;
->  	spi_message_add_tail(&t[0], &m);
->  
-> -	t[1].rx_buf = buf;
-> -	t[1].rx_nbits = m25p80_rx_nbits(nor);
-> -	t[1].len = min3(len, spi_max_transfer_size(spi),
-> -			spi_max_message_size(spi) - t[0].len);
-> -	spi_message_add_tail(&t[1], &m);
+> +	of_property_read_u32(np, "reg", &cs_num);
+> +	if (cs_num >= STM32_MAX_NORCHIP)
+> +		return -EINVAL;
+> +
+> +	of_property_read_u32(np, "spi-max-frequency", &max_rate);
+> +	if (!max_rate)
+> +		return -EINVAL;
+> +
+> +	presc = DIV_ROUND_UP(qspi->clk_rate, max_rate) - 1;
+> +
+> +	if (of_property_read_u32(np, "spi-rx-bus-width", &width))
+> +		width = 1;
+> +
+> +	if (width == 4)
+> +		flash_read = SPI_NOR_QUAD;
+> +	else if (width == 2)
+> +		flash_read = SPI_NOR_DUAL;
+> +	else if (width == 1)
+> +		flash_read = SPI_NOR_NORMAL;
+> +	else
+> +		return -EINVAL;
+> +
+> +	flash = &qspi->flash[cs_num];
+> +	flash->qspi = qspi;
+> +	flash->cs = cs_num;
+> +	flash->presc = presc;
+> +
+> +	flash->nor.dev = qspi->dev;
+> +	spi_nor_set_flash_node(&flash->nor, np);
+> +	flash->nor.priv = flash;
+> +	mtd = &flash->nor.mtd;
+> +	mtd->priv = &flash->nor;
+> +
+> +	flash->nor.read = stm32_qspi_read;
+> +	flash->nor.write = stm32_qspi_write;
+> +	flash->nor.erase = stm32_qspi_erase;
+> +	flash->nor.read_reg = stm32_qspi_read_reg;
+> +	flash->nor.write_reg = stm32_qspi_write_reg;
+> +	flash->nor.prepare = stm32_qspi_prep;
+> +	flash->nor.unprepare = stm32_qspi_unprep;
+> +
+> +	writel_relaxed(LPTR_DFT_TIMEOUT, qspi->io_base + QUADSPI_LPTR);
+> +
+> +	writel_relaxed(CR_PRESC(presc) | CR_FTHRES(3) | CR_TCEN | CR_SSHIFT
+> +		       | CR_EN, qspi->io_base + QUADSPI_CR);
+> +
 > +	/*
-> +	 * Set all dummy/mode cycle bits to avoid sending some manufacturer
-> +	 * specific pattern, which might make the memory enter its Continuous
-> +	 * Read mode by mistake.
-> +	 * Based on the different mode cycle bit patterns listed and described
-> +	 * in the JESD216B speficication, the 0xff value works for all memories
-                           ^
-                           specification, typo
-
-> +	 * and all manufacturers.
+> +	 * in stm32 qspi controller, QUADSPI_DCR register has a fsize field
+> +	 * which define the size of nor flash.
+> +	 * if fsize is NULL, the controller can't sent spi-nor command.
+> +	 * set a temporary value just to discover the nor flash with
+> +	 * "spi_nor_scan". After, the right value (mtd->size) can be set.
 > +	 */
-> +	cmd_sz = t[0].len;
-> +	memset(flash->command + cmd_sz - dummy, 0xff, dummy);
-> +
-> +	/* split the op code and address bytes into two transfers if needed. */
-> +	data_idx = 1;
-> +	if (addr_nbits != inst_nbits) {
-> +		t[0].len = 1;
-> +
-> +		t[1].tx_buf = &flash->command[1];
-> +		t[1].tx_nbits = addr_nbits;
-> +		t[1].len = cmd_sz - 1;
-> +		spi_message_add_tail(&t[1], &m);
-> +
-> +		data_idx = 2;
-> +	}
-> +
-> +	t[data_idx].rx_buf = buf;
-> +	t[data_idx].rx_nbits = data_nbits;
-> +	t[data_idx].len = min3(len, spi_max_transfer_size(spi),
-> +			       spi_max_message_size(spi) - cmd_sz);
-> +	spi_message_add_tail(&t[data_idx], &m);
->  
->  	ret = spi_sync(spi, &m);
->  	if (ret)
->  		return ret;
->  
-> -	ret = m.actual_length - m25p_cmdsz(nor) - dummy;
-> +	ret = m.actual_length - cmd_sz;
->  	if (ret < 0)
->  		return -EIO;
->  	return ret;
-> @@ -223,11 +274,20 @@ static int m25p_probe(struct spi_device *spi)
->  	spi_set_drvdata(spi, flash);
->  	flash->spi = spi;
->  
-> -	if (spi->mode & SPI_RX_QUAD)
-> +	if (spi->mode & SPI_RX_QUAD) {
->  		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
-> -	else if (spi->mode & SPI_RX_DUAL)
-> +
-> +		if (spi->mode & SPI_TX_QUAD)
-> +			hwcaps.mask |= (SNOR_HWCAPS_READ_1_4_4 |
-> +					SNOR_HWCAPS_PP_1_1_4 |
-> +					SNOR_HWCAPS_PP_1_4_4);
-> +	} else if (spi->mode & SPI_RX_DUAL) {
->  		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
->  
-> +		if (spi->mode & SPI_TX_DUAL)
-> +			hwcaps.mask |= SNOR_HWCAPS_READ_1_2_2;
-> +	}
-> +
->  	if (data && data->name)
->  		nor->mtd.name = data->name;
->  
-> 
 
+Is 25 the smallest value ? Use a macro for this ...
+
+> +	flash->fsize = 25;
+> +
+> +	ret = spi_nor_scan(&flash->nor, NULL, flash_read);
+> +	if (ret) {
+> +		dev_err(qspi->dev, "device scan failed\n");
+> +		return ret;
+> +	}
+> +
+> +	/* number of bytes in Flash memory = 2^[FSIZE+1] */
+> +	flash->fsize = __fls(mtd->size) - 1;
+> +
+> +	writel_relaxed(DCR_CSHT(1), qspi->io_base + QUADSPI_DCR);
+> +
+> +	ret = mtd_device_register(mtd, NULL, 0);
+> +	if (ret) {
+> +		dev_err(qspi->dev, "mtd device parse failed\n");
+> +		return ret;
+> +	}
+> +
+> +	dev_dbg(qspi->dev, "read mm:%s cs:%d bus:%d\n",
+> +		qspi->read_mode == CCR_FMODE_MM ? "yes" : "no", cs_num, width);
+> +
+> +	return 0;
+> +}
+
+[...]
 
 -- 
 Best regards,
