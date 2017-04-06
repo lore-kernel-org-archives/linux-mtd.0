@@ -1,10 +1,10 @@
-Received: from 8.mo2.mail-out.ovh.net ([188.165.52.147])
+Received: from 5.mo2.mail-out.ovh.net ([87.98.181.248])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cwAj2-0005Qd-Hd
- for linux-mtd@lists.infradead.org; Thu, 06 Apr 2017 16:57:38 +0000
+ id 1cwAjC-0005R9-2q
+ for linux-mtd@lists.infradead.org; Thu, 06 Apr 2017 16:57:48 +0000
 Received: from player731.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo2.mail-out.ovh.net (Postfix) with ESMTP id 313107A414
- for <linux-mtd@lists.infradead.org>; Thu,  6 Apr 2017 18:57:14 +0200 (CEST)
+ by mo2.mail-out.ovh.net (Postfix) with ESMTP id 646437A4E7
+ for <linux-mtd@lists.infradead.org>; Thu,  6 Apr 2017 18:57:23 +0200 (CEST)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
@@ -14,9 +14,9 @@ Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH 01/10] mtd: spi-nor: aspeed: fix the AST2400 SMC window size
-Date: Thu,  6 Apr 2017 18:56:39 +0200
-Message-Id: <1491497808-25487-2-git-send-email-clg@kaod.org>
+Subject: [PATCH 02/10] mtd: spi-nor: aspeed: remove dummies from keep mask
+Date: Thu,  6 Apr 2017 18:56:40 +0200
+Message-Id: <1491497808-25487-3-git-send-email-clg@kaod.org>
 In-Reply-To: <1491497808-25487-1-git-send-email-clg@kaod.org>
 References: <1491497808-25487-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
@@ -31,27 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The window of the Aspeed AST2400 SMC Controller to map chips on the
-AHB Bus has a 256MB size. 64MB is the default size for the first chip
-select and not the full window range: [ 0x20000000 - 0x2FFFFFFF ].
+There is no need to keep the dummy bytes in the control register if
+the command mode is not kept also. This could lead to an inconsistent
+setting : normal read mode (command 0x3) and dummy bytes. It is to be
+noted that the HW allows such a configuration.
 
 Signed-off-by: Cédric Le Goater <clg@kaod.org>
 ---
- drivers/mtd/spi-nor/aspeed-smc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/spi-nor/aspeed-smc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-index 56051d30f000..aa2c647c8507 100644
+index aa2c647c8507..a98d454d07ed 100644
 --- a/drivers/mtd/spi-nor/aspeed-smc.c
 +++ b/drivers/mtd/spi-nor/aspeed-smc.c
-@@ -48,7 +48,7 @@ static void aspeed_smc_chip_set_4b_spi_2400(struct aspeed_smc_chip *chip);
- static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip);
+@@ -180,8 +180,7 @@ struct aspeed_smc_controller {
  
- static const struct aspeed_smc_info fmc_2400_info = {
--	.maxsize = 64 * 1024 * 1024,
-+	.maxsize = 256 * 1024 * 1024,
- 	.nce = 5,
- 	.hastype = true,
- 	.we0 = 16,
+ #define CONTROL_KEEP_MASK						\
+ 	(CONTROL_AAF_MODE | CONTROL_CE_INACTIVE_MASK | CONTROL_CLK_DIV4 | \
+-	 CONTROL_IO_DUMMY_MASK | CONTROL_CLOCK_FREQ_SEL_MASK |		\
+-	 CONTROL_LSB_FIRST | CONTROL_CLOCK_MODE_3)
++	 CONTROL_CLOCK_FREQ_SEL_MASK | CONTROL_LSB_FIRST | CONTROL_CLOCK_MODE_3)
+ 
+ /*
+  * The Segment Register uses a 8MB unit to encode the start address
 -- 
 2.7.4
