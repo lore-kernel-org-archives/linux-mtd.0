@@ -1,24 +1,24 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cwHcB-0004Ko-9V
- for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 00:19:02 +0000
-Received: by mail-wr0-x242.google.com with SMTP id o21so10483793wrb.3
- for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2017 17:18:38 -0700 (PDT)
-Subject: Re: [PATCH v5 1/6] mtd: spi-nor: introduce more SPI protocols and the
- Dual Transfer Mode
+ id 1cwHcD-0004Ks-8p
+ for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 00:19:03 +0000
+Received: by mail-wr0-x244.google.com with SMTP id g19so15626594wrb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2017 17:18:40 -0700 (PDT)
+Subject: Re: [PATCH v5 2/6] mtd: m25p80: add support of SPI 1-2-2 and 1-4-4
+ protocols
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  linux-mtd@lists.infradead.org, jartur@cadence.com, kdasu.kdev@gmail.com,
  mar.krzeminski@gmail.com
 References: <cover.1490220411.git.cyrille.pitchen@atmel.com>
- <65619c23078469af03e4d53d781a8cffa92d5a61.1490220411.git.cyrille.pitchen@atmel.com>
+ <3426fd033830e2df15eae27c1b5284983961fa8e.1490220411.git.cyrille.pitchen@atmel.com>
 Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
  boris.brezillon@free-electrons.com, richard@nod.at,
  linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <df606e17-4819-d605-8f76-260ab49628af@gmail.com>
-Date: Fri, 7 Apr 2017 01:30:59 +0200
+Message-ID: <49375a87-5eca-a1c3-26f9-81075dd9c7f9@gmail.com>
+Date: Fri, 7 Apr 2017 01:37:04 +0200
 MIME-Version: 1.0
-In-Reply-To: <65619c23078469af03e4d53d781a8cffa92d5a61.1490220411.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <3426fd033830e2df15eae27c1b5284983961fa8e.1490220411.git.cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,477 +31,249 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 03/23/2017 12:33 AM, Cyrille Pitchen wrote:
-> This patch changes the prototype of spi_nor_scan(): its 3rd parameter
-> is replaced by a 'struct spi_nor_hwcaps' pointer, which tells the spi-nor
-> framework about the actual hardware capabilities supported by the SPI
-> controller and its driver.
+> Before this patch, m25p80_read() supported few SPI protocols:
+> - regular SPI 1-1-1
+> - SPI Dual Output 1-1-2
+> - SPI Quad Output 1-1-4
+> On the other hand, m25p80_write() only supported SPI 1-1-1.
 > 
-> Besides, this patch also introduces a new 'struct spi_nor_flash_parameter'
-> telling the spi-nor framework about the hardware capabilities supported by
-> the SPI flash memory and the associated settings required to use those
-> hardware caps.
+> This patch updates both m25p80_read() and m25p80_write() functions to let
+> them support SPI 1-2-2 and SPI 1-4-4 protocols for Fast Read and Page
+> Program SPI commands.
 > 
-> Currently the 'struct spi_nor_flash_parameter' is filled with legacy
-> values but a later patch will allow to fill it dynamically by reading the
-> JESD216 Serial Flash Discoverable Parameter (SFDP) tables from the SPI
-> memory.
+> It adopts a conservative approach to avoid regressions. Hence the new
+                                             ^ FYI, regression != bug
+
+> implementations try to be as close as possible to the old implementations,
+> so the main differences are:
+> - the tx_nbits values now being set properly for the spi_transfer
+>   structures carrying the (op code + address/dummy) bytes
+> - and the spi_transfer structure being split into 2 spi_transfer
+>   structures when the numbers of I/O lines are different for op code and
+>   for address/dummy byte transfers on the SPI bus.
 > 
-> With both structures, the spi-nor framework can now compute the best
-> match between hardware caps supported by both the (Q)SPI memory and
-> controller hence selecting the relevant SPI protocols and op codes for
-> (Fast) Read, Page Program and Sector Erase operations.
-> 
-> The 'struct spi_nor_flash_parameter' also provides the spi-nor framework
-> with the number of dummy cycles to be used with each Fast Read commands
-> and the erase block size associated to the erase block op codes.
-> 
-> Finally the 'struct spi_nor_flash_parameter', through the optional
-> .enable_quad_io() hook, tells the spi-nor framework how to set the Quad
-> Enable (QE) bit of the QSPI memory to enable its Quad SPI features.
+> Besides, the current spi-nor framework supports neither the SPI 2-2-2 nor
+> the SPI 4-4-4 protocols. So, for now, we don't need to update the
+> m25p80_{read|write}_reg() functions as SPI 1-1-1 is the only one possible
+> protocol.
 > 
 > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 > ---
->  drivers/mtd/devices/m25p80.c          |  16 +-
->  drivers/mtd/spi-nor/aspeed-smc.c      |  23 +-
->  drivers/mtd/spi-nor/atmel-quadspi.c   |  80 +++---
->  drivers/mtd/spi-nor/cadence-quadspi.c |  18 +-
->  drivers/mtd/spi-nor/fsl-quadspi.c     |   8 +-
->  drivers/mtd/spi-nor/hisi-sfc.c        |  31 ++-
->  drivers/mtd/spi-nor/intel-spi.c       |   7 +-
->  drivers/mtd/spi-nor/mtk-quadspi.c     |  16 +-
->  drivers/mtd/spi-nor/nxp-spifi.c       |  22 +-
->  drivers/mtd/spi-nor/spi-nor.c         | 441 +++++++++++++++++++++++++++-------
->  include/linux/mtd/spi-nor.h           | 158 +++++++++++-
->  11 files changed, 643 insertions(+), 177 deletions(-)
+>  drivers/mtd/devices/m25p80.c | 120 ++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 90 insertions(+), 30 deletions(-)
 > 
 > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index c4df3b1bded0..68986a26c8fe 100644
+> index 68986a26c8fe..64d562efc25d 100644
 > --- a/drivers/mtd/devices/m25p80.c
 > +++ b/drivers/mtd/devices/m25p80.c
-> @@ -111,10 +111,10 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+> @@ -34,6 +34,19 @@ struct m25p {
+>  	u8			command[MAX_CMD_SIZE];
+>  };
 >  
->  static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+> +static inline void m25p80_proto2nbits(enum spi_nor_protocol proto,
+> +				      unsigned int *inst_nbits,
+> +				      unsigned int *addr_nbits,
+> +				      unsigned int *data_nbits)
+> +{
+
+Why don't we just have some generic macros to extract the number of bits
+from $proto ?
+
+> +	if (inst_nbits)
+> +		*inst_nbits = spi_nor_get_protocol_inst_width(proto);
+> +	if (addr_nbits)
+> +		*addr_nbits = spi_nor_get_protocol_addr_width(proto);
+> +	if (data_nbits)
+> +		*data_nbits = spi_nor_get_protocol_data_width(proto);
+> +}
+> +
+>  static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
 >  {
-> -	switch (nor->flash_read) {
-> -	case SPI_NOR_DUAL:
-> +	switch (nor->read_proto) {
-> +	case SNOR_PROTO_1_1_2:
->  		return 2;
-> -	case SPI_NOR_QUAD:
-> +	case SNOR_PROTO_1_1_4:
->  		return 4;
->  	default:
->  		return 0;
-> @@ -196,7 +196,9 @@ static int m25p_probe(struct spi_device *spi)
->  	struct flash_platform_data	*data;
->  	struct m25p *flash;
->  	struct spi_nor *nor;
-> -	enum read_mode mode = SPI_NOR_NORMAL;
-> +	struct spi_nor_hwcaps hwcaps = {
-> +		.mask = (SNOR_HWCAPS_READ | SNOR_HWCAPS_PP),
-
-Drop the unneeded parenthesis.
-
-> +	};
->  	char *flash_name;
->  	int ret;
+>  	struct m25p *flash = nor->priv;
+> @@ -78,11 +91,16 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+>  {
+>  	struct m25p *flash = nor->priv;
+>  	struct spi_device *spi = flash->spi;
+> -	struct spi_transfer t[2] = {};
+> +	unsigned int inst_nbits, addr_nbits, data_nbits, data_idx;
+> +	struct spi_transfer t[3] = {};
+>  	struct spi_message m;
+>  	int cmd_sz = m25p_cmdsz(nor);
+>  	ssize_t ret;
 >  
-> @@ -222,9 +224,9 @@ static int m25p_probe(struct spi_device *spi)
+> +	/* get transfer protocols. */
+> +	m25p80_proto2nbits(nor->write_proto, &inst_nbits,
+> +			   &addr_nbits, &data_nbits);
+> +
+>  	spi_message_init(&m);
+>  
+>  	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+> @@ -92,12 +110,27 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+>  	m25p_addr2cmd(nor, to, flash->command);
+>  
+>  	t[0].tx_buf = flash->command;
+> +	t[0].tx_nbits = inst_nbits;
+>  	t[0].len = cmd_sz;
+>  	spi_message_add_tail(&t[0], &m);
+>  
+> -	t[1].tx_buf = buf;
+> -	t[1].len = len;
+> -	spi_message_add_tail(&t[1], &m);
+> +	/* split the op code and address bytes into two transfers if needed. */
+> +	data_idx = 1;
+> +	if (addr_nbits != inst_nbits) {
+> +		t[0].len = 1;
+> +
+> +		t[1].tx_buf = &flash->command[1];
+> +		t[1].tx_nbits = addr_nbits;
+> +		t[1].len = cmd_sz - 1;
+> +		spi_message_add_tail(&t[1], &m);
+> +
+> +		data_idx = 2;
+> +	}
+> +
+> +	t[data_idx].tx_buf = buf;
+> +	t[data_idx].tx_nbits = data_nbits;
+> +	t[data_idx].len = len;
+> +	spi_message_add_tail(&t[data_idx], &m);
+>  
+>  	ret = spi_sync(spi, &m);
+>  	if (ret)
+> @@ -109,18 +142,6 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+>  	return ret;
+>  }
+>  
+> -static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+> -{
+> -	switch (nor->read_proto) {
+> -	case SNOR_PROTO_1_1_2:
+> -		return 2;
+> -	case SNOR_PROTO_1_1_4:
+> -		return 4;
+> -	default:
+> -		return 0;
+> -	}
+> -}
+> -
+>  /*
+>   * Read an address range from the nor chip.  The address range
+>   * may be any size provided it is within the physical boundaries.
+> @@ -130,13 +151,19 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  {
+>  	struct m25p *flash = nor->priv;
+>  	struct spi_device *spi = flash->spi;
+> -	struct spi_transfer t[2];
+> +	unsigned int inst_nbits, addr_nbits, data_nbits, data_idx;
+> +	struct spi_transfer t[3];
+>  	struct spi_message m;
+>  	unsigned int dummy = nor->read_dummy;
+>  	ssize_t ret;
+> +	int cmd_sz;
+> +
+> +	/* get transfer protocols. */
+> +	m25p80_proto2nbits(nor->read_proto, &inst_nbits,
+> +			   &addr_nbits, &data_nbits);
+>  
+>  	/* convert the dummy cycles to the number of bytes */
+> -	dummy /= 8;
+> +	dummy = (dummy * addr_nbits) / 8;
+>  
+>  	if (spi_flash_read_supported(spi)) {
+>  		struct spi_flash_read_message msg;
+> @@ -149,10 +176,9 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  		msg.read_opcode = nor->read_opcode;
+>  		msg.addr_width = nor->addr_width;
+>  		msg.dummy_bytes = dummy;
+> -		/* TODO: Support other combinations */
+> -		msg.opcode_nbits = SPI_NBITS_SINGLE;
+> -		msg.addr_nbits = SPI_NBITS_SINGLE;
+> -		msg.data_nbits = m25p80_rx_nbits(nor);
+> +		msg.opcode_nbits = inst_nbits;
+> +		msg.addr_nbits = addr_nbits;
+> +		msg.data_nbits = data_nbits;
+>  
+>  		ret = spi_flash_read(spi, &msg);
+>  		if (ret < 0)
+> @@ -167,20 +193,45 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  	m25p_addr2cmd(nor, from, flash->command);
+>  
+>  	t[0].tx_buf = flash->command;
+> +	t[0].tx_nbits = inst_nbits;
+>  	t[0].len = m25p_cmdsz(nor) + dummy;
+>  	spi_message_add_tail(&t[0], &m);
+>  
+> -	t[1].rx_buf = buf;
+> -	t[1].rx_nbits = m25p80_rx_nbits(nor);
+> -	t[1].len = min3(len, spi_max_transfer_size(spi),
+> -			spi_max_message_size(spi) - t[0].len);
+> -	spi_message_add_tail(&t[1], &m);
+> +	/*
+> +	 * Set all dummy/mode cycle bits to avoid sending some manufacturer
+> +	 * specific pattern, which might make the memory enter its Continuous
+> +	 * Read mode by mistake.
+> +	 * Based on the different mode cycle bit patterns listed and described
+> +	 * in the JESD216B speficication, the 0xff value works for all memories
+                           ^
+                           specification, typo
+
+> +	 * and all manufacturers.
+> +	 */
+> +	cmd_sz = t[0].len;
+> +	memset(flash->command + cmd_sz - dummy, 0xff, dummy);
+> +
+> +	/* split the op code and address bytes into two transfers if needed. */
+> +	data_idx = 1;
+> +	if (addr_nbits != inst_nbits) {
+> +		t[0].len = 1;
+> +
+> +		t[1].tx_buf = &flash->command[1];
+> +		t[1].tx_nbits = addr_nbits;
+> +		t[1].len = cmd_sz - 1;
+> +		spi_message_add_tail(&t[1], &m);
+> +
+> +		data_idx = 2;
+> +	}
+> +
+> +	t[data_idx].rx_buf = buf;
+> +	t[data_idx].rx_nbits = data_nbits;
+> +	t[data_idx].len = min3(len, spi_max_transfer_size(spi),
+> +			       spi_max_message_size(spi) - cmd_sz);
+> +	spi_message_add_tail(&t[data_idx], &m);
+>  
+>  	ret = spi_sync(spi, &m);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = m.actual_length - m25p_cmdsz(nor) - dummy;
+> +	ret = m.actual_length - cmd_sz;
+>  	if (ret < 0)
+>  		return -EIO;
+>  	return ret;
+> @@ -223,11 +274,20 @@ static int m25p_probe(struct spi_device *spi)
+>  	spi_set_drvdata(spi, flash);
 >  	flash->spi = spi;
 >  
->  	if (spi->mode & SPI_RX_QUAD)
-> -		mode = SPI_NOR_QUAD;
-> +		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
->  	else if (spi->mode & SPI_RX_DUAL)
-> -		mode = SPI_NOR_DUAL;
-> +		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
+> -	if (spi->mode & SPI_RX_QUAD)
+> +	if (spi->mode & SPI_RX_QUAD) {
+>  		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
+> -	else if (spi->mode & SPI_RX_DUAL)
+> +
+> +		if (spi->mode & SPI_TX_QUAD)
+> +			hwcaps.mask |= (SNOR_HWCAPS_READ_1_4_4 |
+> +					SNOR_HWCAPS_PP_1_1_4 |
+> +					SNOR_HWCAPS_PP_1_4_4);
+> +	} else if (spi->mode & SPI_RX_DUAL) {
+>  		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
 >  
+> +		if (spi->mode & SPI_TX_DUAL)
+> +			hwcaps.mask |= SNOR_HWCAPS_READ_1_2_2;
+> +	}
+> +
 >  	if (data && data->name)
 >  		nor->mtd.name = data->name;
-> @@ -241,7 +243,7 @@ static int m25p_probe(struct spi_device *spi)
->  	else
->  		flash_name = spi->modalias;
 >  
-> -	ret = spi_nor_scan(nor, flash_name, mode);
-> +	ret = spi_nor_scan(nor, flash_name, &hwcaps);
->  	if (ret)
->  		return ret;
->  
-> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-> index 56051d30f000..723026d9cf0c 100644
-> --- a/drivers/mtd/spi-nor/aspeed-smc.c
-> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
-> @@ -585,14 +585,12 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
->  	 * TODO: Adjust clocks if fast read is supported and interpret
->  	 * SPI-NOR flags to adjust controller settings.
->  	 */
-> -	switch (chip->nor.flash_read) {
-> -	case SPI_NOR_NORMAL:
-> -		cmd = CONTROL_COMMAND_MODE_NORMAL;
-> -		break;
-> -	case SPI_NOR_FAST:
-> -		cmd = CONTROL_COMMAND_MODE_FREAD;
-> -		break;
-> -	default:
-> +	if (chip->nor.read_proto == SNOR_PROTO_1_1_1) {
-> +		if (chip->nor.read_dummy == 0)
-> +			cmd = CONTROL_COMMAND_MODE_NORMAL;
-> +		else
-> +			cmd = CONTROL_COMMAND_MODE_FREAD;
-> +	} else {
->  		dev_err(chip->nor.dev, "unsupported SPI read mode\n");
->  		return -EINVAL;
->  	}
-> @@ -608,6 +606,11 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
->  static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
->  				  struct device_node *np, struct resource *r)
->  {
-> +	struct spi_nor_hwcaps hwcaps = {
-> +		.mask = (SNOR_HWCAPS_READ |
-> +			 SNOR_HWCAPS_READ_FAST |
-> +			 SNOR_HWCAPS_PP),
+> 
 
-Drop the extra parenthesis ... shouldn't the structure be const ?
-
-> +	};
->  	const struct aspeed_smc_info *info = controller->info;
->  	struct device *dev = controller->dev;
->  	struct device_node *child;
-> @@ -671,11 +674,11 @@ static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
->  			break;
->  
->  		/*
-> -		 * TODO: Add support for SPI_NOR_QUAD and SPI_NOR_DUAL
-> +		 * TODO: Add support for Dual and Quad SPI protocols
->  		 * attach when board support is present as determined
->  		 * by of property.
->  		 */
-> -		ret = spi_nor_scan(nor, NULL, SPI_NOR_NORMAL);
-> +		ret = spi_nor_scan(nor, NULL, &hwcaps);
->  		if (ret)
->  			break;
-
-
-[...]
-
-> +struct spi_nor_flash_parameter {
-> +	u64				size;
-> +	u32				page_size;
-> +
-> +	struct spi_nor_hwcaps		hwcaps;
-> +	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
-> +	struct spi_nor_pp_command	page_programs[SNOR_CMD_PP_MAX];
-> +
-> +	int (*quad_enable)(struct spi_nor *nor);
-
-This callback should be added by a separate patch, there's WAY too much
-crap in this patch.
-
-> +};
-> +
-> +
-> +static inline void
-> +spi_nor_set_read_settings(struct spi_nor_read_command *read,
-> +			  u8 num_mode_clocks,
-> +			  u8 num_wait_states,
-> +			  u8 opcode,
-> +			  enum spi_nor_protocol proto)
-> +{
-> +	read->num_mode_clocks = num_mode_clocks;
-> +	read->num_wait_states = num_wait_states;
-> +	read->opcode = opcode;
-> +	read->proto = proto;
-> +}
-> +
-> +static inline void
-
-Drop the inline , the compiler will decide. Fix globally.
-
-> +spi_nor_set_pp_settings(struct spi_nor_pp_command *pp,
-> +			u8 opcode,
-> +			enum spi_nor_protocol proto)
-> +{
-> +	pp->opcode = opcode;
-> +	pp->proto = proto;
-> +}
-> +
-> +static int spi_nor_init_params(struct spi_nor *nor,
-> +			       const struct flash_info *info,
-> +			       struct spi_nor_flash_parameter *params)
-> +{
-> +	/* Set legacy flash parameters as default. */
-> +	memset(params, 0, sizeof(*params));
-> +
-> +	/* Set SPI NOR sizes. */
-> +	params->size = info->sector_size * info->n_sectors;
-> +	params->page_size = info->page_size;
-> +
-> +	/* (Fast) Read settings. */
-> +	params->hwcaps.mask |= SNOR_HWCAPS_READ;
-> +	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
-> +				  0, 0, SPINOR_OP_READ,
-> +				  SNOR_PROTO_1_1_1);
-
-Newline
-
-> +	if (!(info->flags & SPI_NOR_NO_FR)) {
-> +		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
-> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
-> +					  0, 8, SPINOR_OP_READ_FAST,
-> +					  SNOR_PROTO_1_1_1);
-> +	}
-
-Newline
-
-> +	if (info->flags & SPI_NOR_DUAL_READ) {
-> +		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
-> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_2],
-> +					  0, 8, SPINOR_OP_READ_1_1_2,
-> +					  SNOR_PROTO_1_1_2);
-> +	}
-
-Newline ... this is really hard to read as it is.
-
-> +	if (info->flags & SPI_NOR_QUAD_READ) {
-> +		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
-> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_4],
-> +					  0, 8, SPINOR_OP_READ_1_1_4,
-> +					  SNOR_PROTO_1_1_4);
-> +	}
-> +
-> +	/* Page Program settings. */
-> +	params->hwcaps.mask |= SNOR_HWCAPS_PP;
-> +	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
-> +				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
-> +
-> +	/* Select the procedure to set the Quad Enable bit. */
-> +	if (params->hwcaps.mask & (SNOR_HWCAPS_READ_QUAD |
-> +				   SNOR_HWCAPS_PP_QUAD)) {
-> +		switch (JEDEC_MFR(info)) {
-> +		case SNOR_MFR_MACRONIX:
-> +			params->quad_enable = macronix_quad_enable;
-> +			break;
-> +
-> +		case SNOR_MFR_MICRON:
-> +			break;
-> +
-> +		default:
-
-Are you sure this is a good idea ?
-
-> +			params->quad_enable = spansion_quad_enable;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_hwcaps2cmd(u32 hwcaps)
-
-const u32 hwcaps ...
-
->  {
-> +	switch (hwcaps) {
-> +	case SNOR_HWCAPS_READ:			return SNOR_CMD_READ;
-
-You can do this as a table lookup or array indexing and it would be
-checkpatch clean.
-
-> +	case SNOR_HWCAPS_READ_FAST:		return SNOR_CMD_READ_FAST;
-> +	case SNOR_HWCAPS_READ_1_1_1_DTR:	return SNOR_CMD_READ_1_1_1_DTR;
-> +	case SNOR_HWCAPS_READ_1_1_2:		return SNOR_CMD_READ_1_1_2;
-> +	case SNOR_HWCAPS_READ_1_2_2:		return SNOR_CMD_READ_1_2_2;
-> +	case SNOR_HWCAPS_READ_2_2_2:		return SNOR_CMD_READ_2_2_2;
-> +	case SNOR_HWCAPS_READ_1_2_2_DTR:	return SNOR_CMD_READ_1_2_2_DTR;
-> +	case SNOR_HWCAPS_READ_1_1_4:		return SNOR_CMD_READ_1_1_4;
-> +	case SNOR_HWCAPS_READ_1_4_4:		return SNOR_CMD_READ_1_4_4;
-> +	case SNOR_HWCAPS_READ_4_4_4:		return SNOR_CMD_READ_4_4_4;
-> +	case SNOR_HWCAPS_READ_1_4_4_DTR:	return SNOR_CMD_READ_1_4_4_DTR;
-> +	case SNOR_HWCAPS_READ_1_1_8:		return SNOR_CMD_READ_1_1_8;
-> +	case SNOR_HWCAPS_READ_1_8_8:		return SNOR_CMD_READ_1_8_8;
-> +	case SNOR_HWCAPS_READ_8_8_8:		return SNOR_CMD_READ_8_8_8;
-> +	case SNOR_HWCAPS_READ_1_8_8_DTR:	return SNOR_CMD_READ_1_8_8_DTR;
-> +
-> +	case SNOR_HWCAPS_PP:			return SNOR_CMD_PP;
-> +	case SNOR_HWCAPS_PP_1_1_4:		return SNOR_CMD_PP_1_1_4;
-> +	case SNOR_HWCAPS_PP_1_4_4:		return SNOR_CMD_PP_1_4_4;
-> +	case SNOR_HWCAPS_PP_4_4_4:		return SNOR_CMD_PP_4_4_4;
-> +	case SNOR_HWCAPS_PP_1_1_8:		return SNOR_CMD_PP_1_1_8;
-> +	case SNOR_HWCAPS_PP_1_8_8:		return SNOR_CMD_PP_1_8_8;
-> +	case SNOR_HWCAPS_PP_8_8_8:		return SNOR_CMD_PP_8_8_8;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static int spi_nor_select_read(struct spi_nor *nor,
-> +			       const struct spi_nor_flash_parameter *params,
-> +			       u32 shared_hwcaps)
-> +{
-> +	int cmd, best_match = fls(shared_hwcaps & SNOR_HWCAPS_READ_MASK) - 1;
-> +	const struct spi_nor_read_command *read;
-> +
-> +	if (best_match < 0)
-> +		return -EINVAL;
-> +
-> +	cmd = spi_nor_hwcaps2cmd(BIT(best_match));
-
-How does this work? Do we assume that hwcaps2cmd is always given a value
-with 1-bit set ? That's quite wasteful IMO.
-
-> +	if (cmd < 0)
-> +		return -EINVAL;
-> +
-> +	read = &params->reads[cmd];
-> +	nor->read_opcode = read->opcode;
-> +	nor->read_proto = read->proto;
-> +
-> +	/*
-> +	 * In the spi-nor framework, we don't need to make the difference
-> +	 * between mode clock cycles and wait state clock cycles.
-> +	 * Indeed, the value of the mode clock cycles is used by a QSPI
-> +	 * flash memory to know whether it should enter or leave its 0-4-4
-> +	 * (Continuous Read / XIP) mode.
-
-0-4-4 ?
-
-> +	 * eXecution In Place is out of the scope of the mtd sub-system.
-> +	 * Hence we choose to merge both mode and wait state clock cycles
-> +	 * into the so called dummy clock cycles.
-> +	 */
-> +	nor->read_dummy = read->num_mode_clocks + read->num_wait_states;
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_select_pp(struct spi_nor *nor,
-> +			     const struct spi_nor_flash_parameter *params,
-> +			     u32 shared_hwcaps)
-> +{
-> +	int cmd, best_match = fls(shared_hwcaps & SNOR_HWCAPS_PP_MASK) - 1;
-> +	const struct spi_nor_pp_command *pp;
-> +
-> +	if (best_match < 0)
-> +		return -EINVAL;
-> +
-> +	cmd = spi_nor_hwcaps2cmd(BIT(best_match));
-> +	if (cmd < 0)
-> +		return -EINVAL;
-> +
-> +	pp = &params->page_programs[cmd];
-> +	nor->program_opcode = pp->opcode;
-> +	nor->write_proto = pp->proto;
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_select_erase(struct spi_nor *nor,
-> +				const struct flash_info *info)
-> +{
-> +	struct mtd_info *mtd = &nor->mtd;
-> +
-> +#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
-> +	/* prefer "small sector" erase if possible */
-> +	if (info->flags & SECT_4K) {
-> +		nor->erase_opcode = SPINOR_OP_BE_4K;
-> +		mtd->erasesize = 4096;
-> +	} else if (info->flags & SECT_4K_PMC) {
-> +		nor->erase_opcode = SPINOR_OP_BE_4K_PMC;
-> +		mtd->erasesize = 4096;
-> +	} else
-> +#endif
-> +	{
-> +		nor->erase_opcode = SPINOR_OP_SE;
-> +		mtd->erasesize = info->sector_size;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
-> +			 const struct spi_nor_flash_parameter *params,
-> +			 const struct spi_nor_hwcaps *hwcaps)
-> +{
-> +	u32 ignored_mask, shared_mask;
-> +	bool enable_quad_io;
-> +	int err;
-> +
-> +	/*
-> +	 * Keep only the hardware capabilities supported by both the SPI
-> +	 * controller and the SPI flash memory.
-> +	 */
-> +	shared_mask = hwcaps->mask & params->hwcaps.mask;
-> +
-> +	/* SPI protocol classes N-N-N are not supported yet. */
-> +	ignored_mask = (SNOR_HWCAPS_READ_2_2_2 |
-> +			SNOR_HWCAPS_READ_4_4_4 |
-> +			SNOR_HWCAPS_READ_8_8_8 |
-> +			SNOR_HWCAPS_PP_4_4_4 |
-> +			SNOR_HWCAPS_PP_8_8_8);
-> +	if (shared_mask & ignored_mask) {
-> +		dev_dbg(nor->dev,
-> +			"SPI protocol classes N-N-N are not supported yet.\n");
-> +		shared_mask &= ~ignored_mask;
-> +	}
-> +
-> +	/* Select the (Fast) Read command. */
-> +	err = spi_nor_select_read(nor, params, shared_mask);
-> +	if (err) {
-> +		dev_err(nor->dev, "invalid (fast) read\n");
-
-What does this information tell me, as an end user ? If I see this error
-message, what sort of conclusion can I derive from it ? I have
-no idea ...
-
-> +		return err;
-> +	}
-> +
-> +	/* Select the Page Program command. */
-> +	err = spi_nor_select_pp(nor, params, shared_mask);
-> +	if (err) {
-> +		dev_err(nor->dev, "invalid page program\n");
-> +		return err;
-> +	}
-> +
-> +	/* Select the Sector Erase command. */
-> +	err = spi_nor_select_erase(nor, info);
-> +	if (err) {
-> +		dev_err(nor->dev, "invalid sector/block erase\n");
-> +		return err;
-> +	}
-> +
-> +	/* Enable Quad I/O if needed. */
-> +	enable_quad_io = (spi_nor_get_protocol_width(nor->read_proto) == 4 ||
-> +			  spi_nor_get_protocol_width(nor->write_proto) == 4);
-
-What if read_proto != write_proto ? Also, this is awful code ... fix it.
-
-> +	if (enable_quad_io && params->quad_enable)
-> +		nor->flash_quad_enable = params->quad_enable;
-> +	else
-> +		nor->flash_quad_enable = NULL;
-> +
-> +	return 0;
-> +}
-> +
-> +int spi_nor_scan(struct spi_nor *nor, const char *name,
-> +		 const struct spi_nor_hwcaps *hwcaps)
-> +{
-> +	struct spi_nor_flash_parameter params;
->  	const struct flash_info *info = NULL;
->  	struct device *dev = nor->dev;
->  	struct mtd_info *mtd = &nor->mtd;
-> @@ -1548,6 +1824,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  	if (ret)
->  		return ret;
->  
-> +	/* Reset SPI protocol for all commands */
-> +	nor->reg_proto = SNOR_PROTO_1_1_1;
-> +	nor->read_proto = SNOR_PROTO_1_1_1;
-> +	nor->write_proto = SNOR_PROTO_1_1_1;
-> +
->  	if (name)
->  		info = spi_nor_match_id(name);
->  	/* Try to auto-detect if chip name wasn't specified or not found */
-[...]
 
 -- 
 Best regards,
