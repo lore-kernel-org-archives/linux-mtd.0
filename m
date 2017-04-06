@@ -1,10 +1,10 @@
-Received: from 5.mo2.mail-out.ovh.net ([87.98.181.248])
+Received: from 6.mo2.mail-out.ovh.net ([87.98.165.38])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cwAjj-0005bo-Ak
- for linux-mtd@lists.infradead.org; Thu, 06 Apr 2017 16:58:20 +0000
+ id 1cwAjw-0005iX-OW
+ for linux-mtd@lists.infradead.org; Thu, 06 Apr 2017 16:58:48 +0000
 Received: from player731.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo2.mail-out.ovh.net (Postfix) with ESMTP id 4C28D7A54A
- for <linux-mtd@lists.infradead.org>; Thu,  6 Apr 2017 18:58:02 +0200 (CEST)
+ by mo2.mail-out.ovh.net (Postfix) with ESMTP id 7CF587A4E7
+ for <linux-mtd@lists.infradead.org>; Thu,  6 Apr 2017 18:58:11 +0200 (CEST)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
@@ -14,10 +14,9 @@ Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH 06/10] mtd: spi-nor: add SPI_NOR_DUAL_READ to some flash
- devices
-Date: Thu,  6 Apr 2017 18:56:44 +0200
-Message-Id: <1491497808-25487-7-git-send-email-clg@kaod.org>
+Subject: [PATCH 07/10] mtd: spi-nor: aspeed: configure chip window on AHB bus
+Date: Thu,  6 Apr 2017 18:56:45 +0200
+Message-Id: <1491497808-25487-8-git-send-email-clg@kaod.org>
 In-Reply-To: <1491497808-25487-1-git-send-email-clg@kaod.org>
 References: <1491497808-25487-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
@@ -32,49 +31,194 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These devices are used on OpenPOWER systems.
+The segment registers of the SMC controller provide a way to configure
+the mapping windows of the chips on the AHB bus. The settings are
+required to be correct when the controller operates in Command mode,
+which is the case for DMAs and the LPC mapping.
+
+This tries to set the segment registers of each chip depending on the
+size of the flash device and depending on the previous segment
+settings, in order to have a contiguous window across multiple chip.
+
+Unfortunately, the AST2500 SPI controller has a bug and it is not
+possible to configure a full 128MB window for a chip of the same
+size. The window size needs to be restricted to 120MB. This issue only
+applies to CE0.
 
 Signed-off-by: Cédric Le Goater <clg@kaod.org>
 ---
- The lines are over 80 characters but it looks better.
+ drivers/mtd/spi-nor/aspeed-smc.c | 124 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 121 insertions(+), 3 deletions(-)
 
- drivers/mtd/spi-nor/spi-nor.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index ee777df4466c..0821e3211867 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1016,10 +1016,10 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
- 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
--	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
-+	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ) },
- 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
--	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
-+	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+index b3c8cfe29765..336a1ddd100b 100644
+--- a/drivers/mtd/spi-nor/aspeed-smc.c
++++ b/drivers/mtd/spi-nor/aspeed-smc.c
+@@ -104,6 +104,7 @@ struct aspeed_smc_chip {
+ 	struct aspeed_smc_controller *controller;
+ 	void __iomem *ctl;			/* control register */
+ 	void __iomem *ahb_base;			/* base of chip window */
++	u32 ahb_window_size;			/* chip window size */
+ 	unsigned long phys_base;		/* physical address of window */
+ 	u32 ctl_val[smc_max];			/* control settings */
+ 	enum aspeed_smc_flash_type type;	/* what type of flash */
+@@ -218,6 +219,10 @@ struct aspeed_smc_controller {
+ #define SEGMENT_ADDR_REG0		0x30
+ #define SEGMENT_ADDR_START(_r)		((((_r) >> 16) & 0xFF) << 23)
+ #define SEGMENT_ADDR_END(_r)		((((_r) >> 24) & 0xFF) << 23)
++#define SEGMENT_ADDR_VALUE(start, end)					\
++	(((((start) >> 23) & 0xFF) << 16) | ((((end) >> 23) & 0xFF) << 24))
++#define SEGMENT_ADDR_REG(controller, cs)	\
++	((controller)->regs + SEGMENT_ADDR_REG0 + (cs) * 4)
  
-@@ -1031,7 +1031,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
--	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
-+	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
- 	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
- 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-@@ -1150,7 +1150,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
--	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
-+	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ) },
+ /* DMA Registers */
+ #define DMA_CONTROL_REG			0x80
+@@ -604,8 +609,7 @@ static void __iomem *aspeed_smc_chip_base(struct aspeed_smc_chip *chip,
+ 	u32 reg;
  
- 	/* Catalyst / On Semiconductor -- non-JEDEC */
- 	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+ 	if (controller->info->nce > 1) {
+-		reg = readl(controller->regs + SEGMENT_ADDR_REG0 +
+-			    chip->cs * 4);
++		reg = readl(SEGMENT_ADDR_REG(controller, chip->cs));
+ 
+ 		if (SEGMENT_ADDR_START(reg) >= SEGMENT_ADDR_END(reg))
+ 			return NULL;
+@@ -616,6 +620,111 @@ static void __iomem *aspeed_smc_chip_base(struct aspeed_smc_chip *chip,
+ 	return controller->ahb_base + offset;
+ }
+ 
++static u32 chip_set_segment(struct aspeed_smc_chip *chip, u32 cs, u32 start,
++			    u32 size)
++{
++	struct aspeed_smc_controller *controller = chip->controller;
++	void __iomem *seg_reg;
++	u32 oldval, newval, val0, start0, end;
++
++	val0 = readl(SEGMENT_ADDR_REG(controller, 0));
++	start0 = SEGMENT_ADDR_START(val0);
++
++	seg_reg = SEGMENT_ADDR_REG(controller, cs);
++	oldval = readl(seg_reg);
++
++	/* If the chip size is not specified, use the default segment
++	 * size, but take into account the possible overlap with the
++	 * previous segment
++	 */
++	if (!size)
++		size = SEGMENT_ADDR_END(oldval) - start;
++
++	/* The segment cannot exceed the maximum window size of the
++	 * controller.
++	 */
++	if (start + size > start0 + controller->info->maxsize) {
++		size = start0 + controller->info->maxsize - start;
++		dev_warn(chip->nor.dev, "CE%d window resized to %dMB",
++			 cs, size >> 20);
++	}
++
++	end = start + size;
++	newval = SEGMENT_ADDR_VALUE(start, end);
++	writel(newval, seg_reg);
++
++	/* Restore default value if something goes wrong. The chip
++	 * might have set some bogus value and we would loose access
++	 * to the chip.
++	 */
++	if (newval != readl(seg_reg)) {
++		dev_err(chip->nor.dev, "CE%d window invalid", cs);
++		writel(oldval, seg_reg);
++		start = SEGMENT_ADDR_START(oldval);
++		end = SEGMENT_ADDR_END(oldval);
++		size = end - start;
++	}
++
++	dev_info(chip->nor.dev, "CE%d window [ 0x%.8x- 0x%.8x ] %dMB",
++		 cs, start, end, size >> 20);
++
++	return size;
++}
++
++/*
++ * This is expected to be called in increasing CE order
++ */
++static u32 aspeed_smc_chip_set_segment(struct aspeed_smc_chip *chip)
++{
++	struct aspeed_smc_controller *controller = chip->controller;
++	u32  val0, start0, start;
++	u32 size = chip->nor.mtd.size;
++
++	/* The AST2500 SPI controller has a bug when the CE0 chip size
++	 * exceeds 120MB.
++	 */
++	if (chip->cs == 0 && controller->info == &spi_2500_info &&
++	    size == (128 << 20)) {
++		size = 120 << 20;
++		dev_info(chip->nor.dev,
++			 "CE%d window resized to %dMB (AST2500 HW quirk)",
++			 chip->cs, size >> 20);
++	}
++
++	val0 = readl(SEGMENT_ADDR_REG(controller, 0));
++	start0 = SEGMENT_ADDR_START(val0);
++
++	/* As a start address for the current segment, use the default
++	 * start address if we are handling CE0 or use the previous
++	 * segment ending address
++	 */
++	if (chip->cs) {
++		u32 prev = readl(SEGMENT_ADDR_REG(controller, chip->cs - 1));
++
++		start = SEGMENT_ADDR_END(prev);
++	} else
++		start = start0;
++
++	size = chip_set_segment(chip, chip->cs, start, size);
++
++	/* Update chip base address on the AHB bus */
++	chip->ahb_base = controller->ahb_base + (start - start0);
++
++	if (size < chip->nor.mtd.size)
++		dev_warn(chip->nor.dev,
++			 "CE%d window too small for chip %dMB",
++			 chip->cs, (u32) chip->nor.mtd.size >> 20);
++
++	/* Make sure the next segment does not overlap with the
++	 * current one we just configured even if there is no
++	 * available chip. That could break access in Command Mode.
++	 */
++	if (chip->cs < controller->info->nce - 1)
++		chip_set_segment(chip, chip->cs + 1, start + size, 0);
++
++	return size;
++}
++
+ static void aspeed_smc_chip_enable_write(struct aspeed_smc_chip *chip)
+ {
+ 	struct aspeed_smc_controller *controller = chip->controller;
+@@ -689,7 +798,7 @@ static int aspeed_smc_chip_setup_init(struct aspeed_smc_chip *chip,
+ 	 */
+ 	chip->ahb_base = aspeed_smc_chip_base(chip, res);
+ 	if (!chip->ahb_base) {
+-		dev_warn(chip->nor.dev, "CE segment window closed.\n");
++		dev_warn(chip->nor.dev, "CE%d window closed", chip->cs);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -738,6 +847,15 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
+ 	if (chip->nor.addr_width == 4 && info->set_4b)
+ 		info->set_4b(chip);
+ 
++	/* This is for direct AHB access when using Command Mode. For
++	 * the AST2400 SPI controller which only handles one chip,
++	 * let's use the full window.
++	 */
++	if (controller->info->nce == 1)
++		chip->ahb_window_size = info->maxsize;
++	else
++		chip->ahb_window_size = aspeed_smc_chip_set_segment(chip);
++
+ 	/*
+ 	 * base mode has not been optimized yet. use it for writes.
+ 	 */
 -- 
 2.7.4
