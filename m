@@ -1,29 +1,29 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-dm3nam03on0085.outbound.protection.outlook.com
+ ([104.47.41.85] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cw6Uc-0008Vw-2s
- for linux-mtd@lists.infradead.org; Thu, 06 Apr 2017 12:26:27 +0000
-Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
-To: Amir Goldstein <amir73il@gmail.com>
-References: <1490864181-2192-1-git-send-email-richard@nod.at>
- <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
- <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
- <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
- <646ae733-5037-3072-7151-b055a8fa1521@intel.com>
- <cbaff214-7431-2cd1-2453-156d716c0d8a@nod.at>
- <CAOQ4uxh5mZ8gCk1U=oV9b+j3k0RFcT3LozATfa3qHoYy+OMVsg@mail.gmail.com>
- <92bbb4d1-afe7-14f2-763b-051c7b12ff9e@nod.at>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "stable [v4.9]" <stable@vger.kernel.org>,
- Ralph Sennhauser <ralph.sennhauser@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <ae2f884b-17dc-cd24-f2a5-34c6c2aa7e8c@nod.at>
-Date: Thu, 6 Apr 2017 14:26:01 +0200
+ id 1cw864-0003fs-K8
+ for linux-mtd@lists.infradead.org; Thu, 06 Apr 2017 14:09:16 +0000
+Message-ID: <1491487722.4829.11.camel@nxp.com>
+Subject: Re: [PATCH v3 33/37] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+From: Leonard Crestez <leonard.crestez@nxp.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Boris
+ Brezillon" <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Graham Moore <grmoore@opensource.altera.com>, Enrico Jorns
+ <ejo@pengutronix.de>, Chuanxiao Dong <chuanxiao.dong@intel.com>, "Masami
+ Hiramatsu" <mhiramat@kernel.org>, Jassi Brar <jaswinder.singh@linaro.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>, Octavian Purdila
+ <octavian.purdila@nxp.com>
+Date: Thu, 6 Apr 2017 17:08:42 +0300
+In-Reply-To: <1490861708-27813-3-git-send-email-yamada.masahiro@socionext.com>
+References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490861708-27813-3-git-send-email-yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-In-Reply-To: <92bbb4d1-afe7-14f2-763b-051c7b12ff9e@nod.at>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,17 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 06.04.2017 um 14:09 schrieb Richard Weinberger:
->> Were you able to make any progress? still working on this?
->> If this is too complicated to get in for this cycle, better send a patch
->> to disable O_TMPFILE support for ubifs and fix the problem properly on
->> followup merge cycle.
->> Because right now ubifs O_TMPFILE support is broken and breaks overlayfs mount.
+On Thu, Mar 30, 2017 at 11:15 AM, Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 > 
-> I have a test and currently testing it. As it looks the situation is less worse
-> than I thought first. :-)
+> Some NAND controllers are using DMA engine requiring a specific
+> buffer alignment.  The core provides no guarantee on the nand_buffers
+> pointers, which forces some drivers to allocate their own buffers
+> and pass the NAND_OWN_BUFFERS flag.
+> 
+> Rework the nand_buffers allocation logic to allocate each buffer
+> independently.  This should make most NAND controllers/DMA engine
+> happy, and allow us to get rid of these custom buf allocation in
+> NAND controller drivers.
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-s/test/patch :)
+> @@ -4914,8 +4930,12 @@ void nand_cleanup(struct nand_chip *chip)
+> >         /* Free bad block table memory */
+>         kfree(chip->bbt);
+> -       if (!(chip->options & NAND_OWN_BUFFERS))
+> +       if (!(chip->options & NAND_OWN_BUFFERS)) {
+> +               kfree(chip->buffers->databuf);
+> +               kfree(chip->buffers->ecccode);
+> +               kfree(chip->buffers->ecccalc);
+>                 kfree(chip->buffers);
+> +       }
 
-Thanks,
-//richard
+It seems that chip->buffers might not be allocated at this point, for
+example if nand_cleanup is called during a failed probe. You should
+check if (chip->buffers != NULL) before freeing stuff inside it.
+
+When attempting to run linux-next on various imx6qdl-sabreauto boards
+they now panic on boot. This happens because they have nand chips in
+devicetree which are not physically populated on the board. This
+normally fails in nand_scan_ident but now crashes later in
+nand_cleanup.
+
+--
+Regards,
+Leonard
