@@ -1,29 +1,38 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cwHcE-0004Kw-Iw
- for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 00:19:04 +0000
-Received: by mail-wr0-x243.google.com with SMTP id u18so7585658wrc.1
- for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2017 17:18:41 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add driver for STM32 quad spi flash
- controller
-To: Ludovic Barre <ludovic.Barre@st.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <1490979724-10905-1-git-send-email-ludovic.Barre@st.com>
- <1490979724-10905-3-git-send-email-ludovic.Barre@st.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Alexandre Torgue <alexandre.torgue@st.com>, Rob Herring
- <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <5ec38e39-661d-8a83-4168-b9f3d986bcd1@gmail.com>
-Date: Fri, 7 Apr 2017 01:55:47 +0200
+ id 1cwNie-0000zE-Gj
+ for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 06:50:06 +0000
+Received: from mail-yb0-f177.google.com (mail-yb0-f177.google.com
+ [209.85.213.177]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id v376nOqF024895
+ for <linux-mtd@lists.infradead.org>; Fri, 7 Apr 2017 15:49:24 +0900
+Received: by mail-yb0-f177.google.com with SMTP id f204so15039057ybc.2
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2017 23:49:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1490979724-10905-3-git-send-email-ludovic.Barre@st.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1491487722.4829.11.camel@nxp.com>
+References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490861708-27813-3-git-send-email-yamada.masahiro@socionext.com>
+ <1491487722.4829.11.camel@nxp.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Fri, 7 Apr 2017 15:49:23 +0900
+Message-ID: <CAK7LNAQiO0Jx-qp=-pGWeknAbcTsf9VBPDdR65BP-5f3c4hXEA@mail.gmail.com>
+Subject: Re: [PATCH v3 33/37] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+To: Leonard Crestez <leonard.crestez@nxp.com>
+Cc: linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Enrico Jorns <ejo@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ Octavian Purdila <octavian.purdila@nxp.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,224 +42,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/31/2017 07:02 PM, Ludovic Barre wrote:
-> From: Ludovic Barre <ludovic.barre@st.com>
-> 
-> The quadspi is a specialized communication interface targeting single,
-> dual or quad SPI Flash memories.
-> 
-> It can operate in any of the following modes:
-> -indirect mode: all the operations are performed using the quadspi
->  registers
-> -read memory-mapped mode: the external Flash memory is mapped to the
->  microcontroller address space and is seen by the system as if it was
->  an internal memory
-> 
-> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-> ---
->  drivers/mtd/spi-nor/Kconfig         |   7 +
->  drivers/mtd/spi-nor/Makefile        |   1 +
->  drivers/mtd/spi-nor/stm32-quadspi.c | 690 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 698 insertions(+)
->  create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
-> 
+Hi Leonard,
 
-[...]
+2017-04-06 23:08 GMT+09:00 Leonard Crestez <leonard.crestez@nxp.com>:
+> On Thu, Mar 30, 2017 at 11:15 AM, Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>>
+>> Some NAND controllers are using DMA engine requiring a specific
+>> buffer alignment.  The core provides no guarantee on the nand_buffers
+>> pointers, which forces some drivers to allocate their own buffers
+>> and pass the NAND_OWN_BUFFERS flag.
+>>
+>> Rework the nand_buffers allocation logic to allocate each buffer
+>> independently.  This should make most NAND controllers/DMA engine
+>> happy, and allow us to get rid of these custom buf allocation in
+>> NAND controller drivers.
+>>
+>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>
+>> @@ -4914,8 +4930,12 @@ void nand_cleanup(struct nand_chip *chip)
+>> >         /* Free bad block table memory */
+>>         kfree(chip->bbt);
+>> -       if (!(chip->options & NAND_OWN_BUFFERS))
+>> +       if (!(chip->options & NAND_OWN_BUFFERS)) {
+>> +               kfree(chip->buffers->databuf);
+>> +               kfree(chip->buffers->ecccode);
+>> +               kfree(chip->buffers->ecccalc);
+>>                 kfree(chip->buffers);
+>> +       }
+>
+> It seems that chip->buffers might not be allocated at this point, for
+> example if nand_cleanup is called during a failed probe. You should
+> check if (chip->buffers != NULL) before freeing stuff inside it.
 
-> +struct stm32_qspi_flash {
-> +	struct spi_nor nor;
-> +	u32 cs;
-> +	u32 fsize;
-> +	u32 presc;
-> +	struct stm32_qspi *qspi;
-> +};
+You are right.
 
-[...]
+The failure path in NAND drivers is messy.   :-(
+nand_cleanup() may be called before nand_scan_tail()
+finishes successfully...
 
-> +struct stm32_qspi_cmd {
-> +	struct {
-> +		u8 addr_width;
-> +		u8 dummy;
-> +		u8 data;
-> +	} conf;
+I will send a fixup patch.  Thanks!
 
-Is there any benefit in having this structure here or could you just
-make the struct stm32_qspi_cmd flat ?
 
-> +	u8 opcode;
-> +	u32 framemode;
-> +	u32 qspimode;
-> +	u32 addr;
-> +	size_t len;
-> +	void *buf;
-> +};
-
-[...]
-
-> +static ssize_t stm32_qspi_read(struct spi_nor *nor, loff_t from, size_t len,
-> +			       u_char *buf)
-> +{
-> +	struct stm32_qspi_flash *flash = nor->priv;
-> +	struct stm32_qspi *qspi = flash->qspi;
-> +	struct stm32_qspi_cmd cmd;
-> +	int err;
-> +
-> +	dev_dbg(qspi->dev, "read(%#.2x): buf:%p from:%#.8x len:%#x\n",
-> +		nor->read_opcode, buf, (u32)from, len);
-> +
-> +	memset(&cmd, 0, sizeof(cmd));
-> +	cmd.opcode = nor->read_opcode;
-> +	cmd.conf.addr_width = nor->addr_width;
-> +	cmd.addr = (u32)from;
-
-loff_t (from) can be 64bit ... how do we handle this ?
-
-> +	cmd.conf.data = 1;
-> +	cmd.conf.dummy = nor->read_dummy;
-> +	cmd.len = len;
-> +	cmd.buf = buf;
-> +	cmd.qspimode = qspi->read_mode;
-> +
-> +	stm32_qspi_set_framemode(nor, &cmd, true);
-> +	err = stm32_qspi_send(flash, &cmd);
-> +
-> +	return err ? err : len;
-> +}
-
-[...]
-
-> +static irqreturn_t stm32_qspi_irq(int irq, void *dev_id)
-> +{
-> +	struct stm32_qspi *qspi = (struct stm32_qspi *)dev_id;
-> +	u32 cr, sr, fcr = 0;
-> +
-> +	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
-> +	sr = readl_relaxed(qspi->io_base + QUADSPI_SR);
-> +
-> +	if ((cr & CR_TCIE) && (sr & SR_TCF)) {
-> +		/* tx complete */
-> +		fcr |= FCR_CTCF;
-> +		complete(&qspi->cmd_completion);
-> +	} else {
-> +		dev_info(qspi->dev, "spurious interrupt\n");
-
-You probably want to ratelimit this one ...
-
-> +	}
-> +
-> +	writel_relaxed(fcr, qspi->io_base + QUADSPI_FCR);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int stm32_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-> +{
-> +	struct stm32_qspi_flash *flash = nor->priv;
-> +	struct stm32_qspi *qspi = flash->qspi;
-> +
-> +	mutex_lock(&qspi->lock);
-> +	return 0;
-> +}
-> +
-> +static void stm32_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
-> +{
-> +	struct stm32_qspi_flash *flash = nor->priv;
-> +	struct stm32_qspi *qspi = flash->qspi;
-> +
-> +	mutex_unlock(&qspi->lock);
-> +}
-> +
-> +static int stm32_qspi_flash_setup(struct stm32_qspi *qspi,
-> +				  struct device_node *np)
-> +{
-> +	u32 width, flash_read, presc, cs_num, max_rate = 0;
-> +	struct stm32_qspi_flash *flash;
-> +	struct mtd_info *mtd;
-> +	int ret;
-> +
-> +	of_property_read_u32(np, "reg", &cs_num);
-> +	if (cs_num >= STM32_MAX_NORCHIP)
-> +		return -EINVAL;
-> +
-> +	of_property_read_u32(np, "spi-max-frequency", &max_rate);
-> +	if (!max_rate)
-> +		return -EINVAL;
-> +
-> +	presc = DIV_ROUND_UP(qspi->clk_rate, max_rate) - 1;
-> +
-> +	if (of_property_read_u32(np, "spi-rx-bus-width", &width))
-> +		width = 1;
-> +
-> +	if (width == 4)
-> +		flash_read = SPI_NOR_QUAD;
-> +	else if (width == 2)
-> +		flash_read = SPI_NOR_DUAL;
-> +	else if (width == 1)
-> +		flash_read = SPI_NOR_NORMAL;
-> +	else
-> +		return -EINVAL;
-> +
-> +	flash = &qspi->flash[cs_num];
-> +	flash->qspi = qspi;
-> +	flash->cs = cs_num;
-> +	flash->presc = presc;
-> +
-> +	flash->nor.dev = qspi->dev;
-> +	spi_nor_set_flash_node(&flash->nor, np);
-> +	flash->nor.priv = flash;
-> +	mtd = &flash->nor.mtd;
-> +	mtd->priv = &flash->nor;
-> +
-> +	flash->nor.read = stm32_qspi_read;
-> +	flash->nor.write = stm32_qspi_write;
-> +	flash->nor.erase = stm32_qspi_erase;
-> +	flash->nor.read_reg = stm32_qspi_read_reg;
-> +	flash->nor.write_reg = stm32_qspi_write_reg;
-> +	flash->nor.prepare = stm32_qspi_prep;
-> +	flash->nor.unprepare = stm32_qspi_unprep;
-> +
-> +	writel_relaxed(LPTR_DFT_TIMEOUT, qspi->io_base + QUADSPI_LPTR);
-> +
-> +	writel_relaxed(CR_PRESC(presc) | CR_FTHRES(3) | CR_TCEN | CR_SSHIFT
-> +		       | CR_EN, qspi->io_base + QUADSPI_CR);
-> +
-> +	/*
-> +	 * in stm32 qspi controller, QUADSPI_DCR register has a fsize field
-> +	 * which define the size of nor flash.
-> +	 * if fsize is NULL, the controller can't sent spi-nor command.
-> +	 * set a temporary value just to discover the nor flash with
-> +	 * "spi_nor_scan". After, the right value (mtd->size) can be set.
-> +	 */
-
-Is 25 the smallest value ? Use a macro for this ...
-
-> +	flash->fsize = 25;
-> +
-> +	ret = spi_nor_scan(&flash->nor, NULL, flash_read);
-> +	if (ret) {
-> +		dev_err(qspi->dev, "device scan failed\n");
-> +		return ret;
-> +	}
-> +
-> +	/* number of bytes in Flash memory = 2^[FSIZE+1] */
-> +	flash->fsize = __fls(mtd->size) - 1;
-> +
-> +	writel_relaxed(DCR_CSHT(1), qspi->io_base + QUADSPI_DCR);
-> +
-> +	ret = mtd_device_register(mtd, NULL, 0);
-> +	if (ret) {
-> +		dev_err(qspi->dev, "mtd device parse failed\n");
-> +		return ret;
-> +	}
-> +
-> +	dev_dbg(qspi->dev, "read mm:%s cs:%d bus:%d\n",
-> +		qspi->read_mode == CCR_FMODE_MM ? "yes" : "no", cs_num, width);
-> +
-> +	return 0;
-> +}
-
-[...]
 
 -- 
-Best regards,
-Marek Vasut
+Best Regards
+Masahiro Yamada
