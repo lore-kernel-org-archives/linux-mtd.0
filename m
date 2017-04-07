@@ -1,20 +1,20 @@
-Received: from mail-it0-x235.google.com ([2607:f8b0:4001:c0b::235])
+Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cwQP8-0004A6-Dx
- for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 09:42:07 +0000
-Received: by mail-it0-x235.google.com with SMTP id y18so40064355itc.1
- for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 02:41:45 -0700 (PDT)
+ id 1cwQRp-0005Ed-75
+ for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 09:44:54 +0000
+Received: by mail-io0-x232.google.com with SMTP id b140so46315683iof.1
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 02:44:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170402204244.14216-4-paul@crapouillou.net>
+In-Reply-To: <20170402204244.14216-7-paul@crapouillou.net>
 References: <20170125185207.23902-2-paul@crapouillou.net>
  <20170402204244.14216-1-paul@crapouillou.net>
- <20170402204244.14216-4-paul@crapouillou.net>
+ <20170402204244.14216-7-paul@crapouillou.net>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 7 Apr 2017 11:41:44 +0200
-Message-ID: <CACRpkdbeudhXDE8KEgB_kZSAUUwS4Sd3=+GyR0YZ2-PQnEa9zw@mail.gmail.com>
-Subject: Re: [PATCH v4 03/14] pinctrl-ingenic: add a pinctrl driver for the
- Ingenic jz47xx SoCs
-To: Paul Cercueil <paul@crapouillou.net>, Lee Jones <lee.jones@linaro.org>
+Date: Fri, 7 Apr 2017 11:44:31 +0200
+Message-ID: <CACRpkdbXe1Xxk93jqLXBdEDwWOnWD+CkZrqvok-PcmWxzBbSZA@mail.gmail.com>
+Subject: Re: [PATCH v4 06/14] MIPS: jz4740: DTS: Add nodes for ingenic pinctrl
+ and gpio drivers
+To: Paul Cercueil <paul@crapouillou.net>
 Cc: Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -43,64 +43,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Sun, Apr 2, 2017 at 10:42 PM, Paul Cercueil <paul@crapouillou.net> wrote:
 
-> This driver handles pin configuration and pin muxing for the
-> JZ4740 and JZ4780 SoCs from Ingenic.
+> For a description of the pinctrl devicetree node, please read
+> Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt
+>
+> For a description of the gpio devicetree nodes, please read
+> Documentation/devicetree/bindings/gpio/ingenic,gpio.txt
 >
 > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  arch/mips/boot/dts/ingenic/jz4740.dtsi | 61 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+>
+>  v2: Changed the devicetree bindings to match the new driver
+>  v3: No changes
+>  v4: Update the bindings for the v4 version of the drivers
 (...)
-> +       select MFD_CORE
-(...)
-> +#include <linux/mfd/core.h>
 
-That's unorthodox. Still quite pretty!
-I would nee Lee Jones to say something about this, as it is
-essentially hijacking MFD into the pinctrl subsystem.
+> +       pinctrl: ingenic-pinctrl@10010000 {
+> +               compatible = "ingenic,jz4740-pinctrl";
+> +               reg = <0x10010000 0x400>;
+> +
+> +               gpa: gpio-controller@0 {
+> +                       compatible = "ingenic,gpio-bank-a", "ingenic,jz4740-gpio";
 
-> +static struct mfd_cell ingenic_pinctrl_mfd_cells[] = {
-> +       {
-> +               .id = 0,
-> +               .name = "GPIOA",
-> +               .of_compatible = "ingenic,gpio-bank-a",
-> +       },
-> +       {
-> +               .id = 1,
-> +               .name = "GPIOB",
-> +               .of_compatible = "ingenic,gpio-bank-b",
-> +       },
-> +       {
-> +               .id = 2,
-> +               .name = "GPIOC",
-> +               .of_compatible = "ingenic,gpio-bank-c",
-> +       },
-> +       {
-> +               .id = 3,
-> +               .name = "GPIOD",
-> +               .of_compatible = "ingenic,gpio-bank-d",
-> +       },
-> +       {
-> +               .id = 4,
-> +               .name = "GPIOE",
-> +               .of_compatible = "ingenic,gpio-bank-e",
-> +       },
-> +       {
-> +               .id = 5,
-> +               .name = "GPIOF",
-> +               .of_compatible = "ingenic,gpio-bank-f",
-> +       },
-> +};
-(...)
-> +       err = devm_mfd_add_devices(dev, 0, ingenic_pinctrl_mfd_cells,
-> +                       ARRAY_SIZE(ingenic_pinctrl_mfd_cells), NULL, 0, NULL);
-> +       if (err) {
-> +               dev_err(dev, "Failed to add MFD devices\n");
-> +               return err;
-> +       }
+As Sergei and Rob notes, the bank compatible properties look
+a bit strange. Especially if they are all the same essentially.
 
-I guess the alternative would be to reimplement the MFD structure.
-
-Did you check the approach to use "simple-mfd" and just let the subnodes
-spawn as devices that way? I guess you did and this adds something
-necessary.
+I like Sergei's idea to simply use the reg property if what you want
+is really a unique ID number. What do you think about this?
 
 Yours,
 Linus Walleij
