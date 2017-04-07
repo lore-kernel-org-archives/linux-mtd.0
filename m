@@ -1,19 +1,20 @@
-Received: from mail-it0-x232.google.com ([2607:f8b0:4001:c0b::232])
+Received: from mail-it0-x235.google.com ([2607:f8b0:4001:c0b::235])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cwQIH-00088f-8s
- for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 09:35:03 +0000
-Received: by mail-it0-x232.google.com with SMTP id y18so3254342itc.1
- for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 02:34:40 -0700 (PDT)
+ id 1cwQP8-0004A6-Dx
+ for linux-mtd@lists.infradead.org; Fri, 07 Apr 2017 09:42:07 +0000
+Received: by mail-it0-x235.google.com with SMTP id y18so40064355itc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 02:41:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170402204244.14216-5-paul@crapouillou.net>
+In-Reply-To: <20170402204244.14216-4-paul@crapouillou.net>
 References: <20170125185207.23902-2-paul@crapouillou.net>
  <20170402204244.14216-1-paul@crapouillou.net>
- <20170402204244.14216-5-paul@crapouillou.net>
+ <20170402204244.14216-4-paul@crapouillou.net>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 7 Apr 2017 11:34:38 +0200
-Message-ID: <CACRpkdaH1J8J6y9cBEfspiAUYTB+NXcoOK1j4Uzud943TgVsow@mail.gmail.com>
-Subject: Re: [PATCH v4 04/14] GPIO: Add gpio-ingenic driver
-To: Paul Cercueil <paul@crapouillou.net>
+Date: Fri, 7 Apr 2017 11:41:44 +0200
+Message-ID: <CACRpkdbeudhXDE8KEgB_kZSAUUwS4Sd3=+GyR0YZ2-PQnEa9zw@mail.gmail.com>
+Subject: Re: [PATCH v4 03/14] pinctrl-ingenic: add a pinctrl driver for the
+ Ingenic jz47xx SoCs
+To: Paul Cercueil <paul@crapouillou.net>, Lee Jones <lee.jones@linaro.org>
 Cc: Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -42,36 +43,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Sun, Apr 2, 2017 at 10:42 PM, Paul Cercueil <paul@crapouillou.net> wrote:
 
-> This driver handles the GPIOs of all the Ingenic JZ47xx SoCs
-> currently supported by the upsteam Linux kernel.
+> This driver handles pin configuration and pin muxing for the
+> JZ4740 and JZ4780 SoCs from Ingenic.
 >
 > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+(...)
+> +       select MFD_CORE
+(...)
+> +#include <linux/mfd/core.h>
 
-I guess you saw the Kconfig complaint from the build robot, please fix that
-so we get silent builds.
+That's unorthodox. Still quite pretty!
+I would nee Lee Jones to say something about this, as it is
+essentially hijacking MFD into the pinctrl subsystem.
 
->  v2: Consider it's a new patch. Completely rewritten from v1.
->  v3: Add missing include <linux/pinctrl/consumer.h> and drop semicolon after }
->  v4: Completely rewritten from v3.
+> +static struct mfd_cell ingenic_pinctrl_mfd_cells[] = {
+> +       {
+> +               .id = 0,
+> +               .name = "GPIOA",
+> +               .of_compatible = "ingenic,gpio-bank-a",
+> +       },
+> +       {
+> +               .id = 1,
+> +               .name = "GPIOB",
+> +               .of_compatible = "ingenic,gpio-bank-b",
+> +       },
+> +       {
+> +               .id = 2,
+> +               .name = "GPIOC",
+> +               .of_compatible = "ingenic,gpio-bank-c",
+> +       },
+> +       {
+> +               .id = 3,
+> +               .name = "GPIOD",
+> +               .of_compatible = "ingenic,gpio-bank-d",
+> +       },
+> +       {
+> +               .id = 4,
+> +               .name = "GPIOE",
+> +               .of_compatible = "ingenic,gpio-bank-e",
+> +       },
+> +       {
+> +               .id = 5,
+> +               .name = "GPIOF",
+> +               .of_compatible = "ingenic,gpio-bank-f",
+> +       },
+> +};
+(...)
+> +       err = devm_mfd_add_devices(dev, 0, ingenic_pinctrl_mfd_cells,
+> +                       ARRAY_SIZE(ingenic_pinctrl_mfd_cells), NULL, 0, NULL);
+> +       if (err) {
+> +               dev_err(dev, "Failed to add MFD devices\n");
+> +               return err;
+> +       }
 
-I really like v4 :)
+I guess the alternative would be to reimplement the MFD structure.
 
-> +static inline bool gpio_get_value(struct ingenic_gpio_chip *jzgc, u8 offset)
-
-Actually the return value should be an int.
-
-I know, it is a historical artifact, if we change it we need to change
-it everywhere.
-
-> +       /* DO NOT EXPAND THIS: FOR BACKWARD GPIO NUMBERSPACE COMPATIBIBILITY
-> +        * ONLY: WORK TO TRANSITION CONSUMERS TO USE THE GPIO DESCRIPTOR API IN
-> +        * <linux/gpio/consumer.h> INSTEAD.
-> +        */
-> +       jzgc->gc.base = cell->id * 32;
-
-OK then :)
-
-This is merge material.
+Did you check the approach to use "simple-mfd" and just let the subnodes
+spawn as devices that way? I guess you did and this adds something
+necessary.
 
 Yours,
 Linus Walleij
