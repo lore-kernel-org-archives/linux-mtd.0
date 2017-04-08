@@ -1,9 +1,9 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cweiL-0008Tk-4o
- for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:58:54 +0000
-Received: by mail-pg0-x244.google.com with SMTP id 81so18668848pgh.3
- for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:34 -0700 (PDT)
+ id 1cweiP-0008U9-4w
+ for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:58:58 +0000
+Received: by mail-pg0-x242.google.com with SMTP id g2so18621135pge.2
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:36 -0700 (PDT)
 From: Deepa Dinamani <deepa.kernel@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
@@ -20,9 +20,9 @@ Cc: tglx@linutronix.de, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
  linux-mtd@lists.infradead.org, linux-security-module@vger.kernel.org,
  lustre-devel@lists.lustre.org, netdev@vger.kernel.org,
  samba-technical@lists.samba.org, y2038@lists.linaro.org
-Subject: [PATCH 03/12] fs: cifs: Replace CURRENT_TIME by other appropriate apis
-Date: Fri,  7 Apr 2017 17:57:01 -0700
-Message-Id: <1491613030-11599-4-git-send-email-deepa.kernel@gmail.com>
+Subject: [PATCH 04/12] fs: ceph: CURRENT_TIME with ktime_get_real_ts()
+Date: Fri,  7 Apr 2017 17:57:02 -0700
+Message-Id: <1491613030-11599-5-git-send-email-deepa.kernel@gmail.com>
 In-Reply-To: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,185 +34,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CURRENT_TIME macro is not y2038 safe on 32 bit systems.
+CURRENT_TIME is not y2038 safe.
+The macro will be deleted and all the references to it
+will be replaced by ktime_get_* apis.
 
-The patch replaces all the uses of CURRENT_TIME by
-current_time() for filesystem times, and ktime_get_*
-functions for authentication timestamps and timezone
-calculations.
+struct timespec is also not y2038 safe.
+Retain timespec for timestamp representation here as ceph
+uses it internally everywhere.
+These references will be changed to use struct timespec64
+in a separate patch.
 
-This is also in preparation for the patch that transitions
-vfs timestamps to use 64 bit time and hence make them
-y2038 safe.
+The current_fs_time() api is being changed to use vfs
+struct inode* as an argument instead of struct super_block*.
 
-CURRENT_TIME macro will be deleted before merging the
-aforementioned change.
+Set the new mds client request r_stamp field using
+ktime_get_real_ts() instead of using current_fs_time().
 
-The inode timestamps read from the server are assumed
-to have correct granularity and range.
+Also, since r_stamp is used as mtime on the server, use
+timespec_trunc() to truncate the timestamp, using the right
+granularity from the superblock.
 
-The patch also assumes that the difference between server and
-client times lie in the range INT_MIN..INT_MAX. This is valid
-because this is the difference between current times between
-server and client, and the largest timezone difference is in the
-range of one day.
-
-All cifs timestamps currently use timespec representation internally.
-Authentication and timezone timestamps can also be transitioned into
-using timespec64 when all other timestamps for cifs is transitioned
-to use timespec64.
+This api will be transitioned to be y2038 safe along
+with vfs.
 
 Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/cifs/cifsencrypt.c |  4 +++-
- fs/cifs/cifssmb.c     | 10 +++++-----
- fs/cifs/inode.c       | 28 +++++++++++++++-------------
- 3 files changed, 23 insertions(+), 19 deletions(-)
+ drivers/block/rbd.c   | 2 +-
+ fs/ceph/mds_client.c  | 4 +++-
+ net/ceph/messenger.c  | 6 ++++--
+ net/ceph/osd_client.c | 4 ++--
+ 4 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/fs/cifs/cifsencrypt.c b/fs/cifs/cifsencrypt.c
-index 058ac9b..68abbb0 100644
---- a/fs/cifs/cifsencrypt.c
-+++ b/fs/cifs/cifsencrypt.c
-@@ -478,6 +478,7 @@ find_timestamp(struct cifs_ses *ses)
- 	unsigned char *blobptr;
- 	unsigned char *blobend;
- 	struct ntlmssp2_name *attrptr;
+diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+index 517838b..77204da 100644
+--- a/drivers/block/rbd.c
++++ b/drivers/block/rbd.c
+@@ -1922,7 +1922,7 @@ static void rbd_osd_req_format_write(struct rbd_obj_request *obj_request)
+ {
+ 	struct ceph_osd_request *osd_req = obj_request->osd_req;
+ 
+-	osd_req->r_mtime = CURRENT_TIME;
++	ktime_get_real_ts(&osd_req->r_mtime);
+ 	osd_req->r_data_offset = obj_request->offset;
+ }
+ 
+diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+index c681762..1d3fa90 100644
+--- a/fs/ceph/mds_client.c
++++ b/fs/ceph/mds_client.c
+@@ -1666,6 +1666,7 @@ struct ceph_mds_request *
+ ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
+ {
+ 	struct ceph_mds_request *req = kzalloc(sizeof(*req), GFP_NOFS);
 +	struct timespec ts;
  
- 	if (!ses->auth_key.len || !ses->auth_key.response)
- 		return 0;
-@@ -502,7 +503,8 @@ find_timestamp(struct cifs_ses *ses)
- 		blobptr += attrsize; /* advance attr value */
- 	}
+ 	if (!req)
+ 		return ERR_PTR(-ENOMEM);
+@@ -1684,7 +1685,8 @@ ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
+ 	init_completion(&req->r_safe_completion);
+ 	INIT_LIST_HEAD(&req->r_unsafe_item);
  
--	return cpu_to_le64(cifs_UnixTimeToNT(CURRENT_TIME));
+-	req->r_stamp = current_fs_time(mdsc->fsc->sb);
 +	ktime_get_real_ts(&ts);
-+	return cpu_to_le64(cifs_UnixTimeToNT(ts));
- }
++	req->r_stamp = timespec_trunc(ts, mdsc->fsc->sb->s_time_gran);
  
- static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
-diff --git a/fs/cifs/cifssmb.c b/fs/cifs/cifssmb.c
-index 0669506..2f279b7 100644
---- a/fs/cifs/cifssmb.c
-+++ b/fs/cifs/cifssmb.c
-@@ -478,14 +478,14 @@ decode_lanman_negprot_rsp(struct TCP_Server_Info *server, NEGOTIATE_RSP *pSMBr)
- 		 * this requirement.
- 		 */
- 		int val, seconds, remain, result;
--		struct timespec ts, utc;
--		utc = CURRENT_TIME;
-+		struct timespec ts;
-+		unsigned long utc = ktime_get_real_seconds();
- 		ts = cnvrtDosUnixTm(rsp->SrvTime.Date,
- 				    rsp->SrvTime.Time, 0);
- 		cifs_dbg(FYI, "SrvTime %d sec since 1970 (utc: %d) diff: %d\n",
--			 (int)ts.tv_sec, (int)utc.tv_sec,
--			 (int)(utc.tv_sec - ts.tv_sec));
--		val = (int)(utc.tv_sec - ts.tv_sec);
-+			 (int)ts.tv_sec, (int)utc,
-+			 (int)(utc - ts.tv_sec));
-+		val = (int)(utc - ts.tv_sec);
- 		seconds = abs(val);
- 		result = (seconds / MIN_TZ_ADJ) * MIN_TZ_ADJ;
- 		remain = seconds % MIN_TZ_ADJ;
-diff --git a/fs/cifs/inode.c b/fs/cifs/inode.c
-index b261db3..c3b2fa0 100644
---- a/fs/cifs/inode.c
-+++ b/fs/cifs/inode.c
-@@ -322,9 +322,9 @@ cifs_create_dfs_fattr(struct cifs_fattr *fattr, struct super_block *sb)
- 	fattr->cf_mode = S_IFDIR | S_IXUGO | S_IRWXU;
- 	fattr->cf_uid = cifs_sb->mnt_uid;
- 	fattr->cf_gid = cifs_sb->mnt_gid;
--	fattr->cf_atime = CURRENT_TIME;
--	fattr->cf_ctime = CURRENT_TIME;
--	fattr->cf_mtime = CURRENT_TIME;
-+	ktime_get_real_ts(&fattr->cf_mtime);
-+	fattr->cf_mtime = timespec_trunc(fattr->cf_mtime, sb->s_time_gran);
-+	fattr->cf_atime = fattr->cf_ctime = fattr->cf_mtime;
- 	fattr->cf_nlink = 2;
- 	fattr->cf_flags |= CIFS_FATTR_DFS_REFERRAL;
- }
-@@ -586,9 +586,10 @@ static int cifs_sfu_mode(struct cifs_fattr *fattr, const unsigned char *path,
- /* Fill a cifs_fattr struct with info from FILE_ALL_INFO */
- static void
- cifs_all_info_to_fattr(struct cifs_fattr *fattr, FILE_ALL_INFO *info,
--		       struct cifs_sb_info *cifs_sb, bool adjust_tz,
-+		       struct super_block *sb, bool adjust_tz,
- 		       bool symlink)
+ 	req->r_op = op;
+ 	req->r_direct_mode = mode;
+diff --git a/net/ceph/messenger.c b/net/ceph/messenger.c
+index f76bb33..5766a6c 100644
+--- a/net/ceph/messenger.c
++++ b/net/ceph/messenger.c
+@@ -1386,8 +1386,9 @@ static void prepare_write_keepalive(struct ceph_connection *con)
+ 	dout("prepare_write_keepalive %p\n", con);
+ 	con_out_kvec_reset(con);
+ 	if (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2) {
+-		struct timespec now = CURRENT_TIME;
++		struct timespec now;
+ 
++		ktime_get_real_ts(&now);
+ 		con_out_kvec_add(con, sizeof(tag_keepalive2), &tag_keepalive2);
+ 		ceph_encode_timespec(&con->out_temp_keepalive2, &now);
+ 		con_out_kvec_add(con, sizeof(con->out_temp_keepalive2),
+@@ -3176,8 +3177,9 @@ bool ceph_con_keepalive_expired(struct ceph_connection *con,
  {
-+	struct cifs_sb_info *cifs_sb = CIFS_SB(sb);
- 	struct cifs_tcon *tcon = cifs_sb_master_tcon(cifs_sb);
+ 	if (interval > 0 &&
+ 	    (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2)) {
+-		struct timespec now = CURRENT_TIME;
++		struct timespec now;
+ 		struct timespec ts;
++		ktime_get_real_ts(&now);
+ 		jiffies_to_timespec(interval, &ts);
+ 		ts = timespec_add(con->last_keepalive_ack, ts);
+ 		return timespec_compare(&now, &ts) >= 0;
+diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
+index e15ea9e..242d7c0 100644
+--- a/net/ceph/osd_client.c
++++ b/net/ceph/osd_client.c
+@@ -3574,7 +3574,7 @@ ceph_osdc_watch(struct ceph_osd_client *osdc,
+ 	ceph_oid_copy(&lreq->t.base_oid, oid);
+ 	ceph_oloc_copy(&lreq->t.base_oloc, oloc);
+ 	lreq->t.flags = CEPH_OSD_FLAG_WRITE;
+-	lreq->mtime = CURRENT_TIME;
++	ktime_get_real_ts(&lreq->mtime);
  
- 	memset(fattr, 0, sizeof(*fattr));
-@@ -598,8 +599,10 @@ cifs_all_info_to_fattr(struct cifs_fattr *fattr, FILE_ALL_INFO *info,
+ 	lreq->reg_req = alloc_linger_request(lreq);
+ 	if (!lreq->reg_req) {
+@@ -3632,7 +3632,7 @@ int ceph_osdc_unwatch(struct ceph_osd_client *osdc,
+ 	ceph_oid_copy(&req->r_base_oid, &lreq->t.base_oid);
+ 	ceph_oloc_copy(&req->r_base_oloc, &lreq->t.base_oloc);
+ 	req->r_flags = CEPH_OSD_FLAG_WRITE;
+-	req->r_mtime = CURRENT_TIME;
++	ktime_get_real_ts(&req->r_mtime);
+ 	osd_req_op_watch_init(req, 0, lreq->linger_id,
+ 			      CEPH_OSD_WATCH_OP_UNWATCH);
  
- 	if (info->LastAccessTime)
- 		fattr->cf_atime = cifs_NTtimeToUnix(info->LastAccessTime);
--	else
--		fattr->cf_atime = CURRENT_TIME;
-+	else {
-+		ktime_get_real_ts(&fattr->cf_atime);
-+		fattr->cf_atime = timespec_trunc(fattr->cf_atime, sb->s_time_gran);
-+	}
- 
- 	fattr->cf_ctime = cifs_NTtimeToUnix(info->ChangeTime);
- 	fattr->cf_mtime = cifs_NTtimeToUnix(info->LastWriteTime);
-@@ -659,7 +662,6 @@ cifs_get_file_info(struct file *filp)
- 	FILE_ALL_INFO find_data;
- 	struct cifs_fattr fattr;
- 	struct inode *inode = file_inode(filp);
--	struct cifs_sb_info *cifs_sb = CIFS_SB(inode->i_sb);
- 	struct cifsFileInfo *cfile = filp->private_data;
- 	struct cifs_tcon *tcon = tlink_tcon(cfile->tlink);
- 	struct TCP_Server_Info *server = tcon->ses->server;
-@@ -671,7 +673,7 @@ cifs_get_file_info(struct file *filp)
- 	rc = server->ops->query_file_info(xid, tcon, &cfile->fid, &find_data);
- 	switch (rc) {
- 	case 0:
--		cifs_all_info_to_fattr(&fattr, &find_data, cifs_sb, false,
-+		cifs_all_info_to_fattr(&fattr, &find_data, inode->i_sb, false,
- 				       false);
- 		break;
- 	case -EREMOTE:
-@@ -753,7 +755,7 @@ cifs_get_inode_info(struct inode **inode, const char *full_path,
- 	}
- 
- 	if (!rc) {
--		cifs_all_info_to_fattr(&fattr, data, cifs_sb, adjust_tz,
-+		cifs_all_info_to_fattr(&fattr, data, sb, adjust_tz,
- 				       symlink);
- 	} else if (rc == -EREMOTE) {
- 		cifs_create_dfs_fattr(&fattr, sb);
-@@ -1363,9 +1365,9 @@ int cifs_unlink(struct inode *dir, struct dentry *dentry)
- 		cifs_inode = CIFS_I(inode);
- 		cifs_inode->time = 0;	/* will force revalidate to get info
- 					   when needed */
--		inode->i_ctime = current_fs_time(sb);
-+		inode->i_ctime = current_time(inode);
- 	}
--	dir->i_ctime = dir->i_mtime = current_fs_time(sb);
-+	dir->i_ctime = dir->i_mtime = current_time(dir);
- 	cifs_inode = CIFS_I(dir);
- 	CIFS_I(dir)->time = 0;	/* force revalidate of dir as well */
- unlink_out:
-@@ -1633,7 +1635,7 @@ int cifs_rmdir(struct inode *inode, struct dentry *direntry)
- 	cifsInode->time = 0;
- 
- 	d_inode(direntry)->i_ctime = inode->i_ctime = inode->i_mtime =
--		current_fs_time(inode->i_sb);
-+		current_time(inode);
- 
- rmdir_exit:
- 	kfree(full_path);
-@@ -1806,7 +1808,7 @@ cifs_rename2(struct inode *source_dir, struct dentry *source_dentry,
- 	CIFS_I(source_dir)->time = CIFS_I(target_dir)->time = 0;
- 
- 	source_dir->i_ctime = source_dir->i_mtime = target_dir->i_ctime =
--		target_dir->i_mtime = current_fs_time(source_dir->i_sb);
-+		target_dir->i_mtime = current_time(source_dir);
- 
- cifs_rename_exit:
- 	kfree(info_buf_source);
 -- 
 2.7.4
