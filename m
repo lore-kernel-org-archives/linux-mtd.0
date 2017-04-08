@@ -1,9 +1,9 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cweiU-0008V5-NK
- for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:59:09 +0000
-Received: by mail-pg0-x243.google.com with SMTP id g2so18621422pge.2
- for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:41 -0700 (PDT)
+ id 1cweiZ-0008WC-N7
+ for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:59:10 +0000
+Received: by mail-pg0-x244.google.com with SMTP id 79so18686153pgf.0
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:47 -0700 (PDT)
 From: Deepa Dinamani <deepa.kernel@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
@@ -20,9 +20,9 @@ Cc: tglx@linutronix.de, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
  linux-mtd@lists.infradead.org, linux-security-module@vger.kernel.org,
  lustre-devel@lists.lustre.org, netdev@vger.kernel.org,
  samba-technical@lists.samba.org, y2038@lists.linaro.org
-Subject: [PATCH 06/12] audit: Use timespec64 to represent audit timestamps
-Date: Fri,  7 Apr 2017 17:57:04 -0700
-Message-Id: <1491613030-11599-7-git-send-email-deepa.kernel@gmail.com>
+Subject: [PATCH 09/12] lustre: Replace CURRENT_TIME macro
+Date: Fri,  7 Apr 2017 17:57:07 -0700
+Message-Id: <1491613030-11599-10-git-send-email-deepa.kernel@gmail.com>
 In-Reply-To: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,125 +34,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-struct timespec is not y2038 safe.
-Audit timestamps are recorded in string format into
-an audit buffer for a given context.
-These mark the entry timestamps for the syscalls.
-Use y2038 safe struct timespec64 to represent the times.
-The log strings can handle this transition as strings can
-hold upto 1024 characters.
+CURRENT_TIME macro is not y2038 safe on 32 bit systems.
+
+The patch replaces all the uses of CURRENT_TIME by
+current_time() for filesystem times, and ktime_get_*
+functions for others.
+
+struct timespec is also not y2038 safe.
+Retain timespec for timestamp representation here as lustre
+uses it internally everywhere.
+These references will be changed to use struct timespec64
+in a separate patch.
+
+This is also in preparation for the patch that transitions
+vfs timestamps to use 64 bit time and hence make them
+y2038 safe. current_time() is also planned to be transitioned
+to y2038 safe behavior along with this change.
+
+CURRENT_TIME macro will be deleted before merging the
+aforementioned change.
 
 Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Paul Moore <paul@paul-moore.com>
-Acked-by: Richard Guy Briggs <rgb@redhat.com>
 ---
- include/linux/audit.h |  4 ++--
- kernel/audit.c        | 10 +++++-----
- kernel/audit.h        |  2 +-
- kernel/auditsc.c      |  6 +++---
- 4 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/staging/lustre/lustre/llite/llite_lib.c | 6 +++---
+ drivers/staging/lustre/lustre/osc/osc_io.c      | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/audit.h b/include/linux/audit.h
-index 6fdfefc..f830508 100644
---- a/include/linux/audit.h
-+++ b/include/linux/audit.h
-@@ -332,7 +332,7 @@ static inline void audit_ptrace(struct task_struct *t)
- 				/* Private API (for audit.c only) */
- extern unsigned int audit_serial(void);
- extern int auditsc_get_stamp(struct audit_context *ctx,
--			      struct timespec *t, unsigned int *serial);
-+			      struct timespec64 *t, unsigned int *serial);
- extern int audit_set_loginuid(kuid_t loginuid);
+diff --git a/drivers/staging/lustre/lustre/llite/llite_lib.c b/drivers/staging/lustre/lustre/llite/llite_lib.c
+index 7b80040..2b4b6b9 100644
+--- a/drivers/staging/lustre/lustre/llite/llite_lib.c
++++ b/drivers/staging/lustre/lustre/llite/llite_lib.c
+@@ -1472,17 +1472,17 @@ int ll_setattr_raw(struct dentry *dentry, struct iattr *attr, bool hsm_import)
  
- static inline kuid_t audit_get_loginuid(struct task_struct *tsk)
-@@ -511,7 +511,7 @@ static inline void __audit_seccomp(unsigned long syscall, long signr, int code)
- static inline void audit_seccomp(unsigned long syscall, long signr, int code)
- { }
- static inline int auditsc_get_stamp(struct audit_context *ctx,
--			      struct timespec *t, unsigned int *serial)
-+			      struct timespec64 *t, unsigned int *serial)
- {
- 	return 0;
- }
-diff --git a/kernel/audit.c b/kernel/audit.c
-index 2f4964c..fcbf377 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -1625,10 +1625,10 @@ unsigned int audit_serial(void)
- }
- 
- static inline void audit_get_stamp(struct audit_context *ctx,
--				   struct timespec *t, unsigned int *serial)
-+				   struct timespec64 *t, unsigned int *serial)
- {
- 	if (!ctx || !auditsc_get_stamp(ctx, t, serial)) {
--		*t = CURRENT_TIME;
-+		ktime_get_real_ts64(t);
- 		*serial = audit_serial();
+ 	/* We mark all of the fields "set" so MDS/OST does not re-set them */
+ 	if (attr->ia_valid & ATTR_CTIME) {
+-		attr->ia_ctime = CURRENT_TIME;
++		attr->ia_ctime = current_time(inode);
+ 		attr->ia_valid |= ATTR_CTIME_SET;
  	}
- }
-@@ -1652,7 +1652,7 @@ struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask,
- 				     int type)
- {
- 	struct audit_buffer *ab;
--	struct timespec t;
-+	struct timespec64 t;
- 	unsigned int uninitialized_var(serial);
- 
- 	if (audit_initialized != AUDIT_INITIALIZED)
-@@ -1705,8 +1705,8 @@ struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask,
+ 	if (!(attr->ia_valid & ATTR_ATIME_SET) &&
+ 	    (attr->ia_valid & ATTR_ATIME)) {
+-		attr->ia_atime = CURRENT_TIME;
++		attr->ia_atime = current_time(inode);
+ 		attr->ia_valid |= ATTR_ATIME_SET;
+ 	}
+ 	if (!(attr->ia_valid & ATTR_MTIME_SET) &&
+ 	    (attr->ia_valid & ATTR_MTIME)) {
+-		attr->ia_mtime = CURRENT_TIME;
++		attr->ia_mtime = current_time(inode);
+ 		attr->ia_valid |= ATTR_MTIME_SET;
  	}
  
- 	audit_get_stamp(ab->ctx, &t, &serial);
--	audit_log_format(ab, "audit(%lu.%03lu:%u): ",
--			 t.tv_sec, t.tv_nsec/1000000, serial);
-+	audit_log_format(ab, "audit(%llu.%03lu:%u): ",
-+			 (unsigned long long)t.tv_sec, t.tv_nsec/1000000, serial);
+diff --git a/drivers/staging/lustre/lustre/osc/osc_io.c b/drivers/staging/lustre/lustre/osc/osc_io.c
+index f991bee..cbab800 100644
+--- a/drivers/staging/lustre/lustre/osc/osc_io.c
++++ b/drivers/staging/lustre/lustre/osc/osc_io.c
+@@ -216,7 +216,7 @@ static int osc_io_submit(const struct lu_env *env,
+ 		struct cl_object *obj = ios->cis_obj;
  
- 	return ab;
- }
-diff --git a/kernel/audit.h b/kernel/audit.h
-index 0f1cf6d..cdf96f4 100644
---- a/kernel/audit.h
-+++ b/kernel/audit.h
-@@ -112,7 +112,7 @@ struct audit_context {
- 	enum audit_state    state, current_state;
- 	unsigned int	    serial;     /* serial number for record */
- 	int		    major;      /* syscall number */
--	struct timespec	    ctime;      /* time of syscall entry */
-+	struct timespec64   ctime;      /* time of syscall entry */
- 	unsigned long	    argv[4];    /* syscall arguments */
- 	long		    return_code;/* syscall return code */
- 	u64		    prio;
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index e59ffc7..a2d9217 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -1532,7 +1532,7 @@ void __audit_syscall_entry(int major, unsigned long a1, unsigned long a2,
- 		return;
+ 		cl_object_attr_lock(obj);
+-		attr->cat_mtime = LTIME_S(CURRENT_TIME);
++		attr->cat_mtime = ktime_get_real_seconds();
+ 		attr->cat_ctime = attr->cat_mtime;
+ 		cl_object_attr_update(env, obj, attr, CAT_MTIME | CAT_CTIME);
+ 		cl_object_attr_unlock(obj);
+@@ -256,7 +256,7 @@ static void osc_page_touch_at(const struct lu_env *env,
+ 	       kms > loi->loi_kms ? "" : "not ", loi->loi_kms, kms,
+ 	       loi->loi_lvb.lvb_size);
  
- 	context->serial     = 0;
--	context->ctime      = CURRENT_TIME;
-+	ktime_get_real_ts64(&context->ctime);
- 	context->in_syscall = 1;
- 	context->current_state  = state;
- 	context->ppid       = 0;
-@@ -1941,13 +1941,13 @@ EXPORT_SYMBOL_GPL(__audit_inode_child);
- /**
-  * auditsc_get_stamp - get local copies of audit_context values
-  * @ctx: audit_context for the task
-- * @t: timespec to store time recorded in the audit_context
-+ * @t: timespec64 to store time recorded in the audit_context
-  * @serial: serial value that is recorded in the audit_context
-  *
-  * Also sets the context as auditable.
-  */
- int auditsc_get_stamp(struct audit_context *ctx,
--		       struct timespec *t, unsigned int *serial)
-+		       struct timespec64 *t, unsigned int *serial)
- {
- 	if (!ctx->in_syscall)
- 		return 0;
+-	attr->cat_ctime = LTIME_S(CURRENT_TIME);
++	attr->cat_ctime = ktime_get_real_seconds();
+ 	attr->cat_mtime = attr->cat_ctime;
+ 	valid = CAT_MTIME | CAT_CTIME;
+ 	if (kms > loi->loi_kms) {
 -- 
 2.7.4
