@@ -1,9 +1,9 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cweiF-0008St-OR
- for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:58:49 +0000
-Received: by mail-pg0-x241.google.com with SMTP id o123so18678157pga.1
- for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:30 -0700 (PDT)
+ id 1cweiL-0008TE-4l
+ for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:58:54 +0000
+Received: by mail-pg0-x244.google.com with SMTP id g2so18620735pge.2
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:32 -0700 (PDT)
 From: Deepa Dinamani <deepa.kernel@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
@@ -20,9 +20,9 @@ Cc: tglx@linutronix.de, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
  linux-mtd@lists.infradead.org, linux-security-module@vger.kernel.org,
  lustre-devel@lists.lustre.org, netdev@vger.kernel.org,
  samba-technical@lists.samba.org, y2038@lists.linaro.org
-Subject: [PATCH 01/12] fs: f2fs: Use ktime_get_real_seconds for sit_info times
-Date: Fri,  7 Apr 2017 17:56:59 -0700
-Message-Id: <1491613030-11599-2-git-send-email-deepa.kernel@gmail.com>
+Subject: [PATCH 02/12] trace: Make trace_hwlat timestamp y2038 safe
+Date: Fri,  7 Apr 2017 17:57:00 -0700
+Message-Id: <1491613030-11599-3-git-send-email-deepa.kernel@gmail.com>
 In-Reply-To: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,47 +34,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CURRENT_TIME_SEC is not y2038 safe.
+struct timespec is not y2038 safe on 32 bit machines
+and needs to be replaced by struct timespec64
+in order to represent times beyond year 2038 on such
+machines.
 
-Replace use of CURRENT_TIME_SEC with ktime_get_real_seconds
-in segment timestamps used by GC algorithm including the
-segment mtime timestamps.
+Fix all the timestamp representation in struct trace_hwlat
+and all the corresponding implementations.
 
 Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/f2fs/segment.c | 2 +-
- fs/f2fs/segment.h | 5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ kernel/trace/trace_entries.h |  6 +++---
+ kernel/trace/trace_hwlat.c   | 14 +++++++-------
+ kernel/trace/trace_output.c  |  9 ++++-----
+ 3 files changed, 14 insertions(+), 15 deletions(-)
 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 010324c..0531500 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2678,7 +2678,7 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
- 	sit_i->dirty_sentries = 0;
- 	sit_i->sents_per_block = SIT_ENTRY_PER_BLOCK;
- 	sit_i->elapsed_time = le64_to_cpu(sbi->ckpt->elapsed_time);
--	sit_i->mounted_time = CURRENT_TIME_SEC.tv_sec;
-+	sit_i->mounted_time = ktime_get_real_seconds();
- 	mutex_init(&sit_i->sentry_lock);
- 	return 0;
- }
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index 57e36c1..156afc3 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -692,8 +692,9 @@ static inline void set_to_next_sit(struct sit_info *sit_i, unsigned int start)
- static inline unsigned long long get_mtime(struct f2fs_sb_info *sbi)
- {
- 	struct sit_info *sit_i = SIT_I(sbi);
--	return sit_i->elapsed_time + CURRENT_TIME_SEC.tv_sec -
--						sit_i->mounted_time;
-+	time64_t now = ktime_get_real_seconds();
-+
-+	return sit_i->elapsed_time + now - sit_i->mounted_time;
- }
+diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+index c203ac4..adcdbbe 100644
+--- a/kernel/trace/trace_entries.h
++++ b/kernel/trace/trace_entries.h
+@@ -348,14 +348,14 @@ FTRACE_ENTRY(hwlat, hwlat_entry,
+ 		__field(	u64,			duration	)
+ 		__field(	u64,			outer_duration	)
+ 		__field(	u64,			nmi_total_ts	)
+-		__field_struct( struct timespec,	timestamp	)
+-		__field_desc(	long,	timestamp,	tv_sec		)
++		__field_struct( struct timespec64,	timestamp	)
++		__field_desc(	s64,	timestamp,	tv_sec		)
+ 		__field_desc(	long,	timestamp,	tv_nsec		)
+ 		__field(	unsigned int,		nmi_count	)
+ 		__field(	unsigned int,		seqnum		)
+ 	),
  
- static inline void set_summary(struct f2fs_summary *sum, nid_t nid,
+-	F_printk("cnt:%u\tts:%010lu.%010lu\tinner:%llu\touter:%llunmi-ts:%llu\tnmi-count:%u\n",
++	F_printk("cnt:%u\tts:%010llu.%010lu\tinner:%llu\touter:%llunmi-ts:%llu\tnmi-count:%u\n",
+ 		 __entry->seqnum,
+ 		 __entry->tv_sec,
+ 		 __entry->tv_nsec,
+diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
+index 21ea6ae..d7c8e4e 100644
+--- a/kernel/trace/trace_hwlat.c
++++ b/kernel/trace/trace_hwlat.c
+@@ -79,12 +79,12 @@ static u64 last_tracing_thresh = DEFAULT_LAT_THRESHOLD * NSEC_PER_USEC;
+ 
+ /* Individual latency samples are stored here when detected. */
+ struct hwlat_sample {
+-	u64		seqnum;		/* unique sequence */
+-	u64		duration;	/* delta */
+-	u64		outer_duration;	/* delta (outer loop) */
+-	u64		nmi_total_ts;	/* Total time spent in NMIs */
+-	struct timespec	timestamp;	/* wall time */
+-	int		nmi_count;	/* # NMIs during this sample */
++	u64			seqnum;		/* unique sequence */
++	u64			duration;	/* delta */
++	u64			outer_duration;	/* delta (outer loop) */
++	u64			nmi_total_ts;	/* Total time spent in NMIs */
++	struct timespec64	timestamp;	/* wall time */
++	int			nmi_count;	/* # NMIs during this sample */
+ };
+ 
+ /* keep the global state somewhere. */
+@@ -250,7 +250,7 @@ static int get_sample(void)
+ 		s.seqnum = hwlat_data.count;
+ 		s.duration = sample;
+ 		s.outer_duration = outer_sample;
+-		s.timestamp = CURRENT_TIME;
++		ktime_get_real_ts64(&s.timestamp);
+ 		s.nmi_total_ts = nmi_total_ts;
+ 		s.nmi_count = nmi_count;
+ 		trace_hwlat_sample(&s);
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 02a4aeb..08f9bab 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -4,7 +4,6 @@
+  * Copyright (C) 2008 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  *
+  */
+-
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/ftrace.h>
+@@ -1161,11 +1160,11 @@ trace_hwlat_print(struct trace_iterator *iter, int flags,
+ 
+ 	trace_assign_type(field, entry);
+ 
+-	trace_seq_printf(s, "#%-5u inner/outer(us): %4llu/%-5llu ts:%ld.%09ld",
++	trace_seq_printf(s, "#%-5u inner/outer(us): %4llu/%-5llu ts:%lld.%09ld",
+ 			 field->seqnum,
+ 			 field->duration,
+ 			 field->outer_duration,
+-			 field->timestamp.tv_sec,
++			 (long long)field->timestamp.tv_sec,
+ 			 field->timestamp.tv_nsec);
+ 
+ 	if (field->nmi_count) {
+@@ -1195,10 +1194,10 @@ trace_hwlat_raw(struct trace_iterator *iter, int flags,
+ 
+ 	trace_assign_type(field, iter->ent);
+ 
+-	trace_seq_printf(s, "%llu %lld %ld %09ld %u\n",
++	trace_seq_printf(s, "%llu %lld %lld %09ld %u\n",
+ 			 field->duration,
+ 			 field->outer_duration,
+-			 field->timestamp.tv_sec,
++			 (long long)field->timestamp.tv_sec,
+ 			 field->timestamp.tv_nsec,
+ 			 field->seqnum);
+ 
 -- 
 2.7.4
