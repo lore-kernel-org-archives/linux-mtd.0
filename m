@@ -1,9 +1,9 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cweiU-0008VF-NE
- for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:59:08 +0000
-Received: by mail-pg0-x244.google.com with SMTP id o123so18679102pga.1
- for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:43 -0700 (PDT)
+ id 1cweiU-0008V5-NK
+ for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:59:09 +0000
+Received: by mail-pg0-x243.google.com with SMTP id g2so18621422pge.2
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:41 -0700 (PDT)
 From: Deepa Dinamani <deepa.kernel@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
@@ -20,9 +20,9 @@ Cc: tglx@linutronix.de, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
  linux-mtd@lists.infradead.org, linux-security-module@vger.kernel.org,
  lustre-devel@lists.lustre.org, netdev@vger.kernel.org,
  samba-technical@lists.samba.org, y2038@lists.linaro.org
-Subject: [PATCH 07/12] fs: btrfs: Use ktime_get_real_ts for root ctime
-Date: Fri,  7 Apr 2017 17:57:05 -0700
-Message-Id: <1491613030-11599-8-git-send-email-deepa.kernel@gmail.com>
+Subject: [PATCH 06/12] audit: Use timespec64 to represent audit timestamps
+Date: Fri,  7 Apr 2017 17:57:04 -0700
+Message-Id: <1491613030-11599-7-git-send-email-deepa.kernel@gmail.com>
 In-Reply-To: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,42 +34,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-btrfs_root_item maintains the ctime for root updates.
-This is not part of vfs_inode.
-
-Since current_time() uses struct inode* as an argument
-as Linus suggested, this cannot be used to update root
-times unless, we modify the signature to use inode.
-
-Since btrfs uses nanosecond time granularity, it can also
-use ktime_get_real_ts directly to obtain timestamp for
-the root. It is necessary to use the timespec time api
-here because the same btrfs_set_stack_timespec_*() apis
-are used for vfs inode times as well. These can be
-transitioned to using timespec64 when btrfs internally
-changes to use timespec64 as well.
+struct timespec is not y2038 safe.
+Audit timestamps are recorded in string format into
+an audit buffer for a given context.
+These mark the entry timestamps for the syscalls.
+Use y2038 safe struct timespec64 to represent the times.
+The log strings can handle this transition as strings can
+hold upto 1024 characters.
 
 Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
-Acked-by: David Sterba <dsterba@suse.com>
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Paul Moore <paul@paul-moore.com>
+Acked-by: Richard Guy Briggs <rgb@redhat.com>
 ---
- fs/btrfs/root-tree.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/audit.h |  4 ++--
+ kernel/audit.c        | 10 +++++-----
+ kernel/audit.h        |  2 +-
+ kernel/auditsc.c      |  6 +++---
+ 4 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
-index a08224e..7d6bc30 100644
---- a/fs/btrfs/root-tree.c
-+++ b/fs/btrfs/root-tree.c
-@@ -501,8 +501,9 @@ void btrfs_update_root_times(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *root)
- {
- 	struct btrfs_root_item *item = &root->root_item;
--	struct timespec ct = current_fs_time(root->fs_info->sb);
-+	struct timespec ct;
+diff --git a/include/linux/audit.h b/include/linux/audit.h
+index 6fdfefc..f830508 100644
+--- a/include/linux/audit.h
++++ b/include/linux/audit.h
+@@ -332,7 +332,7 @@ static inline void audit_ptrace(struct task_struct *t)
+ 				/* Private API (for audit.c only) */
+ extern unsigned int audit_serial(void);
+ extern int auditsc_get_stamp(struct audit_context *ctx,
+-			      struct timespec *t, unsigned int *serial);
++			      struct timespec64 *t, unsigned int *serial);
+ extern int audit_set_loginuid(kuid_t loginuid);
  
-+	ktime_get_real_ts(&ct);
- 	spin_lock(&root->root_item_lock);
- 	btrfs_set_root_ctransid(item, trans->transid);
- 	btrfs_set_stack_timespec_sec(&item->ctime, ct.tv_sec);
+ static inline kuid_t audit_get_loginuid(struct task_struct *tsk)
+@@ -511,7 +511,7 @@ static inline void __audit_seccomp(unsigned long syscall, long signr, int code)
+ static inline void audit_seccomp(unsigned long syscall, long signr, int code)
+ { }
+ static inline int auditsc_get_stamp(struct audit_context *ctx,
+-			      struct timespec *t, unsigned int *serial)
++			      struct timespec64 *t, unsigned int *serial)
+ {
+ 	return 0;
+ }
+diff --git a/kernel/audit.c b/kernel/audit.c
+index 2f4964c..fcbf377 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -1625,10 +1625,10 @@ unsigned int audit_serial(void)
+ }
+ 
+ static inline void audit_get_stamp(struct audit_context *ctx,
+-				   struct timespec *t, unsigned int *serial)
++				   struct timespec64 *t, unsigned int *serial)
+ {
+ 	if (!ctx || !auditsc_get_stamp(ctx, t, serial)) {
+-		*t = CURRENT_TIME;
++		ktime_get_real_ts64(t);
+ 		*serial = audit_serial();
+ 	}
+ }
+@@ -1652,7 +1652,7 @@ struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask,
+ 				     int type)
+ {
+ 	struct audit_buffer *ab;
+-	struct timespec t;
++	struct timespec64 t;
+ 	unsigned int uninitialized_var(serial);
+ 
+ 	if (audit_initialized != AUDIT_INITIALIZED)
+@@ -1705,8 +1705,8 @@ struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask,
+ 	}
+ 
+ 	audit_get_stamp(ab->ctx, &t, &serial);
+-	audit_log_format(ab, "audit(%lu.%03lu:%u): ",
+-			 t.tv_sec, t.tv_nsec/1000000, serial);
++	audit_log_format(ab, "audit(%llu.%03lu:%u): ",
++			 (unsigned long long)t.tv_sec, t.tv_nsec/1000000, serial);
+ 
+ 	return ab;
+ }
+diff --git a/kernel/audit.h b/kernel/audit.h
+index 0f1cf6d..cdf96f4 100644
+--- a/kernel/audit.h
++++ b/kernel/audit.h
+@@ -112,7 +112,7 @@ struct audit_context {
+ 	enum audit_state    state, current_state;
+ 	unsigned int	    serial;     /* serial number for record */
+ 	int		    major;      /* syscall number */
+-	struct timespec	    ctime;      /* time of syscall entry */
++	struct timespec64   ctime;      /* time of syscall entry */
+ 	unsigned long	    argv[4];    /* syscall arguments */
+ 	long		    return_code;/* syscall return code */
+ 	u64		    prio;
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index e59ffc7..a2d9217 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -1532,7 +1532,7 @@ void __audit_syscall_entry(int major, unsigned long a1, unsigned long a2,
+ 		return;
+ 
+ 	context->serial     = 0;
+-	context->ctime      = CURRENT_TIME;
++	ktime_get_real_ts64(&context->ctime);
+ 	context->in_syscall = 1;
+ 	context->current_state  = state;
+ 	context->ppid       = 0;
+@@ -1941,13 +1941,13 @@ EXPORT_SYMBOL_GPL(__audit_inode_child);
+ /**
+  * auditsc_get_stamp - get local copies of audit_context values
+  * @ctx: audit_context for the task
+- * @t: timespec to store time recorded in the audit_context
++ * @t: timespec64 to store time recorded in the audit_context
+  * @serial: serial value that is recorded in the audit_context
+  *
+  * Also sets the context as auditable.
+  */
+ int auditsc_get_stamp(struct audit_context *ctx,
+-		       struct timespec *t, unsigned int *serial)
++		       struct timespec64 *t, unsigned int *serial)
+ {
+ 	if (!ctx->in_syscall)
+ 		return 0;
 -- 
 2.7.4
