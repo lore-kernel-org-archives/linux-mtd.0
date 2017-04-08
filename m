@@ -1,9 +1,9 @@
 Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cweid-000052-Hz
+ id 1cweid-00005f-I8
  for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:59:13 +0000
-Received: by mail-pg0-x243.google.com with SMTP id 81so18670147pgh.3
- for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:51 -0700 (PDT)
+Received: by mail-pg0-x243.google.com with SMTP id o123so18679808pga.1
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:53 -0700 (PDT)
 From: Deepa Dinamani <deepa.kernel@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
@@ -20,9 +20,9 @@ Cc: tglx@linutronix.de, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
  linux-mtd@lists.infradead.org, linux-security-module@vger.kernel.org,
  lustre-devel@lists.lustre.org, netdev@vger.kernel.org,
  samba-technical@lists.samba.org, y2038@lists.linaro.org
-Subject: [PATCH 11/12] time: Delete CURRENT_TIME_SEC and CURRENT_TIME
-Date: Fri,  7 Apr 2017 17:57:09 -0700
-Message-Id: <1491613030-11599-12-git-send-email-deepa.kernel@gmail.com>
+Subject: [PATCH 12/12] time: Delete current_fs_time() function
+Date: Fri,  7 Apr 2017 17:57:10 -0700
+Message-Id: <1491613030-11599-13-git-send-email-deepa.kernel@gmail.com>
 In-Reply-To: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,32 +34,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All uses of CURRENT_TIME_SEC and CURRENT_TIME macros have
-been replaced by other time functions. These macros are
-also not y2038 safe.
-And, all their use cases can be fulfilled by y2038 safe
-ktime_get_* variants.
+All uses of the current_fs_time() function have been
+replaced by other time interfaces.
+
+And, its use cases can be fulfilled by current_time()
+or ktime_get_* variants.
 
 Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
-Acked-by: John Stultz <john.stultz@linaro.org>
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/time.h | 3 ---
- 1 file changed, 3 deletions(-)
+ include/linux/fs.h |  1 -
+ kernel/time/time.c | 14 --------------
+ 2 files changed, 15 deletions(-)
 
-diff --git a/include/linux/time.h b/include/linux/time.h
-index 23f0f5c..c0543f5 100644
---- a/include/linux/time.h
-+++ b/include/linux/time.h
-@@ -151,9 +151,6 @@ static inline bool timespec_inject_offset_valid(const struct timespec *ts)
- 	return true;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index f1d7347..cce6c57 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1430,7 +1430,6 @@ static inline void i_gid_write(struct inode *inode, gid_t gid)
+ 	inode->i_gid = make_kgid(inode->i_sb->s_user_ns, gid);
  }
  
--#define CURRENT_TIME		(current_kernel_time())
--#define CURRENT_TIME_SEC	((struct timespec) { get_seconds(), 0 })
+-extern struct timespec current_fs_time(struct super_block *sb);
+ extern struct timespec current_time(struct inode *inode);
+ 
+ /*
+diff --git a/kernel/time/time.c b/kernel/time/time.c
+index 25bdd25..cf69cca 100644
+--- a/kernel/time/time.c
++++ b/kernel/time/time.c
+@@ -230,20 +230,6 @@ SYSCALL_DEFINE1(adjtimex, struct timex __user *, txc_p)
+ 	return copy_to_user(txc_p, &txc, sizeof(struct timex)) ? -EFAULT : ret;
+ }
+ 
+-/**
+- * current_fs_time - Return FS time
+- * @sb: Superblock.
+- *
+- * Return the current time truncated to the time granularity supported by
+- * the fs.
+- */
+-struct timespec current_fs_time(struct super_block *sb)
+-{
+-	struct timespec now = current_kernel_time();
+-	return timespec_trunc(now, sb->s_time_gran);
+-}
+-EXPORT_SYMBOL(current_fs_time);
 -
- /* Some architectures do not supply their own clocksource.
-  * This is mainly the case in architectures that get their
-  * inter-tick times by reading the counter on their interval
+ /*
+  * Convert jiffies to milliseconds and back.
+  *
 -- 
 2.7.4
