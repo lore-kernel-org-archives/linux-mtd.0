@@ -1,9 +1,9 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cweiP-0008Uh-OT
- for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:58:59 +0000
-Received: by mail-pg0-x241.google.com with SMTP id 81so18669251pgh.3
- for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:38 -0700 (PDT)
+ id 1cweiU-0008VF-NE
+ for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 00:59:08 +0000
+Received: by mail-pg0-x244.google.com with SMTP id o123so18679102pga.1
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2017 17:58:43 -0700 (PDT)
 From: Deepa Dinamani <deepa.kernel@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
@@ -20,9 +20,9 @@ Cc: tglx@linutronix.de, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
  linux-mtd@lists.infradead.org, linux-security-module@vger.kernel.org,
  lustre-devel@lists.lustre.org, netdev@vger.kernel.org,
  samba-technical@lists.samba.org, y2038@lists.linaro.org
-Subject: [PATCH 05/12] fs: ufs: Use ktime_get_real_ts64() for birthtime
-Date: Fri,  7 Apr 2017 17:57:03 -0700
-Message-Id: <1491613030-11599-6-git-send-email-deepa.kernel@gmail.com>
+Subject: [PATCH 07/12] fs: btrfs: Use ktime_get_real_ts for root ctime
+Date: Fri,  7 Apr 2017 17:57:05 -0700
+Message-Id: <1491613030-11599-8-git-send-email-deepa.kernel@gmail.com>
 In-Reply-To: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,39 +34,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CURRENT_TIME is not y2038 safe.
-Replace it with ktime_get_real_ts64().
-Inode time formats are already 64 bit long and
-accommodates time64_t.
+btrfs_root_item maintains the ctime for root updates.
+This is not part of vfs_inode.
+
+Since current_time() uses struct inode* as an argument
+as Linus suggested, this cannot be used to update root
+times unless, we modify the signature to use inode.
+
+Since btrfs uses nanosecond time granularity, it can also
+use ktime_get_real_ts directly to obtain timestamp for
+the root. It is necessary to use the timespec time api
+here because the same btrfs_set_stack_timespec_*() apis
+are used for vfs inode times as well. These can be
+transitioned to using timespec64 when btrfs internally
+changes to use timespec64 as well.
 
 Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
+Acked-by: David Sterba <dsterba@suse.com>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/ufs/ialloc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/btrfs/root-tree.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ufs/ialloc.c b/fs/ufs/ialloc.c
-index 9774555..d1dd8cc 100644
---- a/fs/ufs/ialloc.c
-+++ b/fs/ufs/ialloc.c
-@@ -176,6 +176,7 @@ struct inode *ufs_new_inode(struct inode *dir, umode_t mode)
- 	struct ufs_cg_private_info * ucpi;
- 	struct ufs_cylinder_group * ucg;
- 	struct inode * inode;
-+	struct timespec64 ts;
- 	unsigned cg, bit, i, j, start;
- 	struct ufs_inode_info *ufsi;
- 	int err = -ENOSPC;
-@@ -323,8 +324,9 @@ struct inode *ufs_new_inode(struct inode *dir, umode_t mode)
- 		lock_buffer(bh);
- 		ufs2_inode = (struct ufs2_inode *)bh->b_data;
- 		ufs2_inode += ufs_inotofsbo(inode->i_ino);
--		ufs2_inode->ui_birthtime = cpu_to_fs64(sb, CURRENT_TIME.tv_sec);
--		ufs2_inode->ui_birthnsec = cpu_to_fs32(sb, CURRENT_TIME.tv_nsec);
-+		ktime_get_real_ts64(&ts);
-+		ufs2_inode->ui_birthtime = cpu_to_fs64(sb, ts.tv_sec);
-+		ufs2_inode->ui_birthnsec = cpu_to_fs32(sb, ts.tv_nsec);
- 		mark_buffer_dirty(bh);
- 		unlock_buffer(bh);
- 		if (sb->s_flags & MS_SYNCHRONOUS)
+diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+index a08224e..7d6bc30 100644
+--- a/fs/btrfs/root-tree.c
++++ b/fs/btrfs/root-tree.c
+@@ -501,8 +501,9 @@ void btrfs_update_root_times(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root)
+ {
+ 	struct btrfs_root_item *item = &root->root_item;
+-	struct timespec ct = current_fs_time(root->fs_info->sb);
++	struct timespec ct;
+ 
++	ktime_get_real_ts(&ct);
+ 	spin_lock(&root->root_item_lock);
+ 	btrfs_set_root_ctransid(item, trans->transid);
+ 	btrfs_set_stack_timespec_sec(&item->ctime, ct.tv_sec);
 -- 
 2.7.4
