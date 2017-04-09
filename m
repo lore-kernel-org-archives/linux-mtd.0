@@ -1,19 +1,31 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cxDuS-0006NY-Kr
- for linux-mtd@lists.infradead.org; Sun, 09 Apr 2017 14:33:48 +0000
-Date: Sun, 9 Apr 2017 16:33:22 +0200
+ id 1cxFmG-0003vR-BE
+ for linux-mtd@lists.infradead.org; Sun, 09 Apr 2017 16:33:26 +0000
+Date: Sun, 9 Apr 2017 18:33:01 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: Re: [patch] mtd: nand: Fix a couple error codes
-Message-ID: <20170409163322.3da06acd@bbrezillon>
-In-Reply-To: <20170404081545.GA25533@mwanda>
-References: <20170404081545.GA25533@mwanda>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
+ <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
+ <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
+ devicetree@vger.kernel.org, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>
+Subject: Re: [PATCH v3 14/37] mtd: nand: denali: support "nand-ecc-strength"
+ DT property
+Message-ID: <20170409183301.037d3f95@bbrezillon>
+In-Reply-To: <CAK7LNAToTmirpkhNmPCLhcTXG_SFqS762mEGK3mjyqLKXuWa1Q@mail.gmail.com>
+References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490856383-31560-15-git-send-email-yamada.masahiro@socionext.com>
+ <20170330160238.59e5a2c1@bbrezillon>
+ <CAK7LNARUKwMHd79ALDx_SDY9XKcHPY96xTAOMQx6XarFgwb-AA@mail.gmail.com>
+ <20170331114659.4964be35@bbrezillon>
+ <CAK7LNAToTmirpkhNmPCLhcTXG_SFqS762mEGK3mjyqLKXuWa1Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,45 +38,188 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Dan,
+On Mon, 3 Apr 2017 12:16:34 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-On Tue, 4 Apr 2017 11:15:46 +0300
-Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> Hi Boris,
+> 
+> 
+> 
+> 2017-03-31 18:46 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> 
+> > You can try something like that when no explicit ecc.strength and
+> > ecc.size has been set in the DT and when ECC_MAXIMIZE was not passed.
+> >
+> > static int
+> > denali_get_closest_ecc_strength(struct denali_nand_info *denali,
+> >                                 int strength)
+> > {
+> >         /*
+> >          * Whatever you need to select a strength that is greater than
+> >          * or equal to strength.
+> >          */
+> >
+> >         return X;
+> > }  
+> 
+> 
+> Is here anything specific to Denali?
 
-> We accidentally return 1 on error instead of proper error codes.
-
-These bugs have not reached Linus' tree yet and I'll have to force push
-my nand/next branch because of regressions introduced by other patches
-(not related to the Atmel NAND driver rework). Do you mind if I squash
-the changes in the original commit?
-
-Thanks,
-
-Boris
+Well, only the denali driver knows what the hardware supports, though
+having a generic function that takes a table of supported strengths
+would work.
 
 > 
-> Fixes: 07b23e3db9ed ("mtd: nand: Cleanup/rework the atmel_nand driver")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
-> diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-> index 27301603f394..b8d17a024dbd 100644
-> --- a/drivers/mtd/nand/atmel/nand-controller.c
-> +++ b/drivers/mtd/nand/atmel/nand-controller.c
-> @@ -1686,7 +1686,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
->  	nc->smc = syscon_node_to_regmap(np);
->  	of_node_put(np);
->  	if (IS_ERR(nc->smc)) {
-> -		ret = IS_ERR(nc->smc);
-> +		ret = PTR_ERR(nc->smc);
->  		dev_err(dev, "Could not get SMC regmap (err = %d)\n", ret);
->  		return ret;
->  	}
-> @@ -1719,7 +1719,7 @@ atmel_smc_nand_controller_init(struct atmel_smc_nand_controller *nc)
->  	nc->matrix = syscon_node_to_regmap(np);
->  	of_node_put(np);
->  	if (IS_ERR(nc->matrix)) {
-> -		ret = IS_ERR(nc->matrix);
-> +		ret = PTR_ERR(nc->matrix);
->  		dev_err(dev, "Could not get Matrix regmap (err = %d)\n", ret);
->  		return ret;
->  	}
+> > static int denali_try_to_match_ecc_req(struct denali_nand_info *denali)
+> > {
+> >         struct nand_chip *chip = &denali->nand;
+> >         struct mtd_info *mtd = nand_to_mtd(chip);
+> >         int max_ecc_bytes = mtd->oobsize - denali->bbtskipbytes;
+> >         int ecc_steps, ecc_strength, ecc_bytes;
+> >         int ecc_size = chip->ecc_step_ds;
+> >         int ecc_strength = chip->ecc_strength_ds;
+> >
+> >         /*
+> >          * No information provided by the NAND chip, let the core
+> >          * maximize the strength.
+> >          */
+> >         if (!ecc_size || !ecc_strength)
+> >                 return -ENOTSUPP;
+> >
+> >         if (ecc_size > 512)
+> >                 ecc_size = 1024;
+> >         else
+> >                 ecc_size = 512;
+> >
+> >         /* Adjust ECC step size based on hardware support. */
+> >         if (ecc_size == 1024 &&
+> >             !(denali->caps & DENALI_CAP_ECC_SIZE_1024))
+> >                 ecc_size = 512;
+> >         else if(ecc_size == 512 &&
+> >                 !(denali->caps & DENALI_CAP_ECC_SIZE_512))
+> >                 ecc_size = 1024;
+> >
+> >         if (ecc_size < chip->ecc_size_ds) {
+> >                 /*
+> >                  * When the selected size if smaller than the expected
+> >                  * one we try to use the same strength but on 512 blocks
+> >                  * so that we can still fix the same number of errors
+> >                  * even if they are concentrated in the first 512bytes
+> >                  * of a 1024bytes portion.
+> >                  */
+> >                 ecc_strength = chip->ecc_strength_ds;
+> >                 ecc_strength = denali_get_closest_ecc_strength(denali,
+> >                                                                ecc_strength);
+> >         } else {
+> >                 /* Always prefer 1024bytes ECC blocks when possible. */
+> >                 if (ecc_size != 1024 &&
+> >                     (denali->caps & DENALI_CAP_ECC_SIZE_1024) &&
+> >                     mtd->writesize > 1024)
+> >                         ecc_size = 1024;
+> >
+> >                 /*
+> >                  * Adjust the strength based on the selected ECC step
+> >                  * size.
+> >                  */
+> >                 ecc_strength = DIV_ROUND_UP(ecc_size,
+> >                                             chip->ecc_step_ds) *
+> >                                chip->ecc_strength_ds;
+> >         }
+> >
+> >         ecc_bytes = denali_calc_ecc_bytes(ecc_size,
+> >                                           ecc_strength);
+> >         ecc_bytes *= mtd->writesize / ecc_size;
+> >
+> >         /*
+> >          * If we don't have enough space, let the core maximize
+> >          * the strength.
+> >          */
+> >         if (ecc_bytes > max_ecc_bytes)
+> >                 return -ENOTSUPP;
+> >
+> >         chip->ecc.strength = ecc_strength;
+> >         chip->ecc.size = ecc_size;
+> >
+> >         return 0;
+> > }  
+> 
+> 
+> As a whole, this does not seem to driver-specific.
+
+It's almost controller-agnostic, except for the denali_calc_ecc_bytes()
+function, but I guess we could ask drivers to implement a hook that is
+passed the ECC step size and strength and returns the associated
+number of ECC bytes.
+
+> 
+> 
+> [1] A driver provides some pairs of (ecc_strength, ecc_size)
+>     it can support.
+> 
+> [2] The core framework knows the chip's requirement
+>     (ecc_strength_ds, ecc_size_ds).
+> 
+> 
+> Then, the core framework provides a function
+> to return a most recommended (ecc_strength, ecc_size).
+> 
+> 
+> 
+> struct nand_ecc_spec {
+>        int ecc_strength;
+>        int ecc_size;
+> };
+> 
+> /*
+>  * This function choose the most recommented (ecc_str, ecc_size)
+>  * "recommended" means: minimum ecc stregth that meets
+>  * the chip's requirment.
+>  *
+>  *
+>  * @chip   - nand_chip
+>  * @controller_ecc_spec - Array of (ecc_str, ecc_size) supported by the
+>                           controller. (terminated by NULL as sentinel)
+>  */
+> struct nand_ecc_spec * nand_try_to_match_ecc_req(struct nand_chip *chip,
+>                                                  struct nand_ecc_spec
+> *controller_ecc_spec)
+> {
+>       /*
+>        * Return the pointer to the most recommended
+>        * struct nand_ecc_spec.
+>        * If nothing suitable found, return NULL.
+>        */
+> }
+>
+
+I like the idea, except I would do this slightly differently to avoid
+declaring all combinations of stepsize and strengths
+
+struct nand_ecc_stepsize_info {
+	int stepsize;
+	int nstrengths;
+	int *strengths;
+};
+
+struct nand_ecc_engine_caps {
+	int nstepsizes;
+	struct nand_ecc_stepsize_info *stepsizes;
+	int (*calc_ecc_bytes)(int stepsize, int strength);
+};
+
+int nand_try_to_match_ecc_req(struct nand_chip *chip,
+			      const struct nand_ecc_engine_caps *caps,
+			      struct nand_ecc_spec *spec)
+{
+	/*
+	 * Find the most appropriate setting based on the ECC engine
+	 * caps and fill the spec object accordingly.
+	 * Returns 0 in case of success and a negative error code
+	 * otherwise.
+	 */
+}
+
+Note that nand_try_to_match_ecc_req() has to be more generic than
+denali_try_to_match_ecc_req() WRT step sizes, which will probably
+complexify the logic.
