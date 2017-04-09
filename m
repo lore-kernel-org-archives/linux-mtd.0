@@ -1,31 +1,26 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cx7MA-0001KL-Ls
- for linux-mtd@lists.infradead.org; Sun, 09 Apr 2017 07:33:57 +0000
-Date: Sun, 9 Apr 2017 09:33:23 +0200
+ id 1cxAGv-0000EJ-Ja
+ for linux-mtd@lists.infradead.org; Sun, 09 Apr 2017 10:40:43 +0000
+Date: Sun, 9 Apr 2017 12:40:08 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Leonard Crestez <leonard.crestez@nxp.com>,
- linux-mtd@lists.infradead.org, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Marek Vasut <marek.vasut@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, Graham Moore
- <grmoore@opensource.altera.com>, Enrico Jorns <ejo@pengutronix.de>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, Jassi Brar <jaswinder.singh@linaro.org>, Stephen
- Rothwell <sfr@canb.auug.org.au>, Octavian Purdila
- <octavian.purdila@nxp.com>
-Subject: Re: [PATCH v3 33/37] mtd: nand: allocate aligned buffers if
- NAND_OWN_BUFFERS is unset
-Message-ID: <20170409093323.4b122af1@bbrezillon>
-In-Reply-To: <CAK7LNAQiO0Jx-qp=-pGWeknAbcTsf9VBPDdR65BP-5f3c4hXEA@mail.gmail.com>
-References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
- <1490861708-27813-3-git-send-email-yamada.masahiro@socionext.com>
- <1491487722.4829.11.camel@nxp.com>
- <CAK7LNAQiO0Jx-qp=-pGWeknAbcTsf9VBPDdR65BP-5f3c4hXEA@mail.gmail.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Frank Rowand <frowand.list@gmail.com>, Linus Walleij
+ <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH V3 1/3] dt-bindings: mtd: document linux,part-probe
+ property
+Message-ID: <20170409124008.532fb063@bbrezillon>
+In-Reply-To: <20170331114016.26858-1-zajec5@gmail.com>
+References: <20170331114016.26858-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,65 +30,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 7 Apr 2017 15:49:23 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+Hi Rafal,
 
-> Hi Leonard,
-> 
-> 2017-04-06 23:08 GMT+09:00 Leonard Crestez <leonard.crestez@nxp.com>:
-> > On Thu, Mar 30, 2017 at 11:15 AM, Masahiro Yamada <yamada.masahiro@socionext.com> wrote:  
-> >>
-> >> Some NAND controllers are using DMA engine requiring a specific
-> >> buffer alignment.  The core provides no guarantee on the nand_buffers
-> >> pointers, which forces some drivers to allocate their own buffers
-> >> and pass the NAND_OWN_BUFFERS flag.
-> >>
-> >> Rework the nand_buffers allocation logic to allocate each buffer
-> >> independently.  This should make most NAND controllers/DMA engine
-> >> happy, and allow us to get rid of these custom buf allocation in
-> >> NAND controller drivers.
-> >>
-> >> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>  
-> >  
-> >> @@ -4914,8 +4930,12 @@ void nand_cleanup(struct nand_chip *chip)  
-> >> >         /* Free bad block table memory */  
-> >>         kfree(chip->bbt);
-> >> -       if (!(chip->options & NAND_OWN_BUFFERS))
-> >> +       if (!(chip->options & NAND_OWN_BUFFERS)) {
-> >> +               kfree(chip->buffers->databuf);
-> >> +               kfree(chip->buffers->ecccode);
-> >> +               kfree(chip->buffers->ecccalc);
-> >>                 kfree(chip->buffers);
-> >> +       }  
-> >
-> > It seems that chip->buffers might not be allocated at this point, for
-> > example if nand_cleanup is called during a failed probe. You should
-> > check if (chip->buffers != NULL) before freeing stuff inside it.  
-> 
-> You are right.
-> 
-> The failure path in NAND drivers is messy.   :-(
+On Fri, 31 Mar 2017 13:40:14 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-Totally agree, and that's partly because of the complex/non-trivial
-NAND APIs :-/.
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> Support for this property has been introduced in 2010 with commit
+> 9d5da3a9b849 ("mtd: extend physmap_of to let the device tree specify the
+> parition probe") but it was never documented. Fix this by adding a
+> proper description and example.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 
-> nand_cleanup() may be called before nand_scan_tail()
-> finishes successfully...
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Actually, I think the real bug is in the GPMI driver which is not using
-nand_release() appropriately. nand_release() is supposed to be called
-on a registered NAND device, so it's wrong to call it before
-mtd_register() has been called and returned 0.
-
-Note that nand_cleanup() can only be called after nand_scan_tail() has
-returned 0 (which unfortunately is not obvious :-/).
-
-I still plan to take Masahiro's fixup patch because the more
-precautions we take the better it is, but I still think the real bug is
-in the GPMI driver.
-
-One last comment: a bug still exists in the GPMI driver when
-nand_scan_ident() fails after NAND buffers allocation because it never
-sets chip->buffers back to NULL (see [1]).
-
-[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/nand_base.c#L4834
+> ---
+>  Documentation/devicetree/bindings/mtd/common.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documenta=
+tion/devicetree/bindings/mtd/common.txt
+> index fc068b923d7a..1ada70e718b2 100644
+> --- a/Documentation/devicetree/bindings/mtd/common.txt
+> +++ b/Documentation/devicetree/bindings/mtd/common.txt
+> @@ -6,10 +6,17 @@ Optional properties:
+>    controller based name) in order to ease flash device identification
+>    and/or describe what they are used for.
+> =20
+> +- linux,part-probe: if present, this property should contain a list of s=
+trings
+> +  with partition probes to be used for the flash device. A role of parti=
+tion
+> +  probe (parser) is to read/construct partition table and register found
+> +  partitions. Getting partition table may be platform or device specific=
+ so
+> +  various devices may use various Linux drivers for this purpose.
+> +
+>  Example:
+> =20
+>  	flash@0 {
+>  		label =3D "System-firmware";
+> +		linux,part-probe =3D "cmdlinepart", "ofpart";
+> =20
+>  		/* flash type specific properties */
+>  	};
