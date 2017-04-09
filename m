@@ -1,43 +1,19 @@
-Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cwud1-0004Sy-Rd
- for linux-mtd@lists.infradead.org; Sat, 08 Apr 2017 17:58:29 +0000
-Received: by mail-it0-x242.google.com with SMTP id a140so1768908ita.3
- for <linux-mtd@lists.infradead.org>; Sat, 08 Apr 2017 10:58:07 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cx6zP-0000sj-0j
+ for linux-mtd@lists.infradead.org; Sun, 09 Apr 2017 07:10:25 +0000
+Date: Sun, 9 Apr 2017 09:09:47 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Leonard Crestez <leonard.crestez@nxp.com>
+Subject: Re: [PATCH] fixup! mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+Message-ID: <20170409090947.7331df0b@bbrezillon>
+In-Reply-To: <1491548798-28051-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1491548798-28051-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHC9VhTYWeKL+BAb6F3tfwzs7OKUEA8ANM=V05sfoiahNNX=9w@mail.gmail.com>
-References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
- <1491613030-11599-7-git-send-email-deepa.kernel@gmail.com>
- <CAHC9VhTYWeKL+BAb6F3tfwzs7OKUEA8ANM=V05sfoiahNNX=9w@mail.gmail.com>
-From: Deepa Dinamani <deepa.kernel@gmail.com>
-Date: Sat, 8 Apr 2017 10:58:05 -0700
-Message-ID: <CABeXuvoKmvbo_n3XQ0Y+iWGz88Jr3TwbPA7GiR3pia9407ANLw@mail.gmail.com>
-Subject: Re: [PATCH 06/12] audit: Use timespec64 to represent audit timestamps
-To: Paul Moore <paul@paul-moore.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Greg KH <gregkh@linuxfoundation.org>, andreas.dilger@intel.com,
- Arnd Bergmann <arnd@arndb.de>, "J. Bruce Fields" <bfields@fieldses.org>,
- Chris Mason <clm@fb.com>,
- "David S. Miller" <davem@davemloft.net>, David Sterba <dsterba@suse.com>,
- Evgeniy Dushistov <dushistov@mail.ru>, Eric Paris <eparis@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>,
- Josef Bacik <jbacik@fb.com>, Jeff Layton <jlayton@poochiereds.net>,
- John Stultz <john.stultz@linaro.org>, James Simmons <jsimmons@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, oleg.drokin@intel.com,
- Steven Rostedt <rostedt@goodmis.org>, yuchao0@huawei.com,
- ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
- linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-cifs@vger.kernel.org,
- "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- LSM List <linux-security-module@vger.kernel.org>, lustre-devel@lists.lustre.org,
- Linux Network Devel Mailing List <netdev@vger.kernel.org>,
- samba-technical@lists.samba.org,
- y2038 Mailman List <y2038@lists.linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,15 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I have no problem merging this patch into audit/next for v4.12, would
-> you prefer me to do that so at least this patch is merged?
+On Fri,  7 Apr 2017 16:06:38 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-This would be fine.
-But, I think whoever takes the last 2 deletion patches should also take them.
-I'm not sure how that part works out.
+> ---
+> 
+> Bug port: http://patchwork.ozlabs.org/patch/745136/
+> Please squash into commit f6614d1b.
+> (Currently, only once patch on top of that.)
+> If impossible, I can re-send this with detailed log.
+> 
+> 
+>  drivers/mtd/nand/nand_base.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 8a2e5ff..903a678 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4936,7 +4936,7 @@ void nand_cleanup(struct nand_chip *chip)
+>  
+>  	/* Free bad block table memory */
+>  	kfree(chip->bbt);
+> -	if (!(chip->options & NAND_OWN_BUFFERS)) {
+> +	if (!(chip->options & NAND_OWN_BUFFERS) && !chip->buffers) {
 
-> It would probably make life a small bit easier for us in the audit
-> world too as it would reduce the potential merge conflict.  However,
-> that's a relatively small thing to worry about.
+You mean
 
--Deepa
+	if (!(chip->options & NAND_OWN_BUFFERS) && chip->buffers) {
+
+right?
+
+I'll squash this change in you initial commit, but I have a comment on
+where the real bug lies IMO (see my reply to "mtd: nand: allocate
+aligned buffers if NAND_OWN_BUFFERS is unset").
+
+>  		kfree(chip->buffers->databuf);
+>  		kfree(chip->buffers->ecccode);
+>  		kfree(chip->buffers->ecccalc);
