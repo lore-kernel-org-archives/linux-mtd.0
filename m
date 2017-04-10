@@ -1,7 +1,7 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cxTw2-0001qN-Lc
- for linux-mtd@lists.infradead.org; Mon, 10 Apr 2017 07:40:36 +0000
+ id 1cxTw2-0001qS-Ld
+ for linux-mtd@lists.infradead.org; Mon, 10 Apr 2017 07:40:43 +0000
 From: Peter Pan <peterpandong@micron.com>
 To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <computersforpeace@gmail.com>, <arnaud.mouiche@gmail.com>,
@@ -9,9 +9,9 @@ To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <cyrille.pitchen@atmel.com>, <linux-mtd@lists.infradead.org>
 CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: [PATCH v5 4/6] nand: spi: add Micron spi nand support
-Date: Mon, 10 Apr 2017 15:51:51 +0800
-Message-ID: <1491810713-27795-5-git-send-email-peterpandong@micron.com>
+Subject: [PATCH v5 3/6] nand: spi: Add bad block support
+Date: Mon, 10 Apr 2017 15:51:50 +0800
+Message-ID: <1491810713-27795-4-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
 References: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
@@ -25,312 +25,442 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit is to add support for Micron MT29F2G01ABAGD
-spi nand chip.
+Add isbad and markbad support for SPI NAND. And do not
+erase bad blocks in spi_nand_erase. BBT is also enabled
+in this patch.
 
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- drivers/mtd/nand/spi/Makefile |   1 +
- drivers/mtd/nand/spi/core.c   |   4 +-
- drivers/mtd/nand/spi/micron.c | 254 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h   |   2 +
- 4 files changed, 260 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/micron.c
+ drivers/mtd/nand/spi/core.c | 329 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 322 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index a677a4d..df6c2ea 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1 +1,2 @@
- obj-$(CONFIG_MTD_SPI_NAND) += core.o
-+obj-$(CONFIG_MTD_SPI_NAND) += micron.o
 diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 52113fc..b2530fa 100644
+index eb7af9d..52113fc 100644
 --- a/drivers/mtd/nand/spi/core.c
 +++ b/drivers/mtd/nand/spi/core.c
-@@ -1252,7 +1252,9 @@ static int spinand_scan_bbt(struct spinand_device *chip)
- 	return nand_scan_bbt(nand);
- }
- 
--static const struct spinand_manufacturer *spinand_manufacturers[] = {};
-+static const struct spinand_manufacturer *spinand_manufacturers[] = {
-+	&micron_spinand_manufacture
-+};
+@@ -19,6 +19,10 @@
+ #include <linux/jiffies.h>
+ #include <linux/mtd/spinand.h>
+ #include <linux/slab.h>
++#include <linux/of.h>
++
++static int spinand_erase_skip_bbt(struct mtd_info *mtd,
++				  struct erase_info *einfo);
  
  /*
-  * spinand_manufacturer_detect - detect SPI NAND device by each manufacturer
-diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-new file mode 100644
-index 0000000..f134194
---- /dev/null
-+++ b/drivers/mtd/nand/spi/micron.c
-@@ -0,0 +1,254 @@
-+/*
-+ *
-+ * Copyright (c) 2009-2017 Micron Technology, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * as published by the Free Software Foundation; either version 2
-+ * of the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
+  * spinand_exec_op - execute SPI NAND operation by controller ->exec_op() hook
+@@ -878,11 +882,154 @@ static int spinand_write_oob(struct mtd_info *mtd, loff_t to,
+ }
+ 
+ /*
+- * spinand_erase - [MTD Interface] erase block(s)
++ * spinand_block_bad - check if block at offset is bad by bad block marker
++ * @mtd: MTD device structure
++ * @offs: offset from device start
 + */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_MICRON		0x2C
-+
-+#define SPI_NAND_M7XA_ECC_MASK		0x70
-+#define SPI_NAND_M7XA_ECC_0_BIT		0x00
-+#define SPI_NAND_M7XA_ECC_1_3_BIT	0x10
-+#define SPI_NAND_M7XA_ECC_4_6_BIT	0x30
-+#define SPI_NAND_M7XA_ECC_7_8_BIT	0x50
-+#define SPI_NAND_M7XA_ECC_UNCORR	0x20
-+
-+struct micron_spinand_info {
-+	char *name;
-+	u8 dev_id;
-+	u32 page_size;
-+	u32 oob_size;
-+	u32 pages_per_blk;
-+	u32 blks_per_lun;
-+	u32 luns_per_chip;
-+	u32 ecc_strength;
-+	u32 ecc_steps;
-+	u32 rw_mode;
-+	const struct mtd_ooblayout_ops *ooblayout_ops;
-+	const struct spinand_ecc_engine_ops *ecc_engine_ops;
-+};
-+
-+#define MICRON_SPI_NAND_INFO(nm, did, pagesz, oobsz, pg_per_blk,	\
-+			     blk_per_lun, lun_per_chip, ecc_stren,	\
-+			     ecc_stps, rwmode, ooblayoutops,		\
-+			     ecc_ops)		\
-+	{	\
-+		.name = (nm), .dev_id = (did),		\
-+		.page_size = (pagesz), .oob_size = (oobsz),		\
-+		.pages_per_blk = (pg_per_blk),		\
-+		.blks_per_lun = (blk_per_lun),		\
-+		.luns_per_chip = (lun_per_chip),	\
-+		.ecc_strength = (ecc_stren),	\
-+		.ecc_steps = (ecc_stps),	\
-+		.rw_mode = (rwmode),		\
-+		.ooblayout_ops = (ooblayoutops),	\
-+		.ecc_engine_ops = (ecc_ops)	\
-+	}
-+
-+static int m7xa_ooblayout_ecc(struct mtd_info *mtd, int section,
-+			      struct mtd_oob_region *oobregion)
++static int spinand_block_bad(struct mtd_info *mtd, loff_t offs)
 +{
-+	if (section)
-+		return -ERANGE;
-+
-+	oobregion->length = 64;
-+	oobregion->offset = 64;
-+
-+	return 0;
-+}
-+
-+static int m7xa_ooblayout_free(struct mtd_info *mtd, int section,
-+			       struct mtd_oob_region *oobregion)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	oobregion->length = 62;
-+	oobregion->offset = 2;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops m7xa_ooblayout_ops = {
-+	.ecc = m7xa_ooblayout_ecc,
-+	.free = m7xa_ooblayout_free,
-+};
-+
-+/*
-+ * m7xa_get_ecc_status - get M7XA ecc correction info from status register
-+ * @chip: SPI NAND device structure
-+ * @status: status register value
-+ * @corrected: corrected bit flip number
-+ * @ecc_error: ecc correction error or not
-+ */
-+static void m7xa_get_ecc_status(struct spinand_device *chip,
-+				unsigned int status, unsigned int *corrected,
-+				unsigned int *ecc_error)
-+{
-+	unsigned int ecc_status = status & SPI_NAND_M7XA_ECC_MASK;
-+
-+	*ecc_error = (ecc_status == SPI_NAND_M7XA_ECC_UNCORR);
-+	switch (ecc_status) {
-+	case SPI_NAND_M7XA_ECC_0_BIT:
-+		*corrected = 0;
-+		break;
-+	case SPI_NAND_M7XA_ECC_1_3_BIT:
-+		*corrected = 3;
-+		break;
-+	case SPI_NAND_M7XA_ECC_4_6_BIT:
-+		*corrected = 6;
-+		break;
-+	case SPI_NAND_M7XA_ECC_7_8_BIT:
-+		*corrected = 8;
-+		break;
-+	}
-+}
-+
-+static const struct spinand_ecc_engine_ops m7xa_ecc_engine_ops = {
-+	.get_ecc_status = m7xa_get_ecc_status,
-+};
-+
-+static const struct micron_spinand_info micron_spinand_table[] = {
-+	MICRON_SPI_NAND_INFO("MT29F2G01ABAGD", 0x24, 2048, 128, 64, 2048, 1,
-+			     8, 512, SPINAND_OP_COMMON, &m7xa_ooblayout_ops,
-+			     &m7xa_ecc_engine_ops),
-+};
-+
-+static int micron_spinand_get_dummy(struct spinand_device *chip,
-+				    struct spinand_op *op)
-+{
-+	u8 opcode = op->cmd;
-+
-+	switch (opcode) {
-+	case SPINAND_CMD_READ_FROM_CACHE:
-+	case SPINAND_CMD_READ_FROM_CACHE_FAST:
-+	case SPINAND_CMD_READ_FROM_CACHE_X2:
-+	case SPINAND_CMD_READ_FROM_CACHE_DUAL_IO:
-+	case SPINAND_CMD_READ_FROM_CACHE_X4:
-+	case SPINAND_CMD_READ_ID:
-+		return 1;
-+	case SPINAND_CMD_READ_FROM_CACHE_QUAD_IO:
-+		return 2;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+/*
-+ * micron_spinand_scan_id_table - scan chip info in id table
-+ * @chip: SPI-NAND device structure
-+ * @id: point to manufacture id and device id
-+ * Description:
-+ *   If found in id table, config chip with table information.
-+ */
-+static bool micron_spinand_scan_id_table(struct spinand_device *chip, u8 dev_id)
-+{
-+	struct mtd_info *mtd = spinand_to_mtd(chip);
 +	struct nand_device *nand = mtd_to_nand(mtd);
-+	struct micron_spinand_info *item = NULL;
-+	struct nand_memory_organization *memorg = &nand->memorg;
-+	struct spinand_ecc_engine *ecc_engine = NULL;
-+	int i = 0;
++	struct mtd_oob_ops ops = {0};
++	u32 block_addr;
++	u8 bad[2] = {0, 0};
++	u8 ret = 0;
++	unsigned int max_bitflips;
 +
-+	for (; i < ARRAY_SIZE(micron_spinand_table); i++) {
-+		item = (struct micron_spinand_info *)micron_spinand_table + i;
-+		if (dev_id != item->dev_id)
-+			continue;
-+		chip->name = item->name;
-+		memorg->eraseblocksize = item->page_size * item->pages_per_blk;
-+		memorg->pagesize = item->page_size;
-+		memorg->oobsize = item->oob_size;
-+		memorg->diesize = memorg->eraseblocksize * item->blks_per_lun;
-+		memorg->ndies = item->luns_per_chip;
-+		if (chip->ecc.type == SPINAND_ECC_ONDIE) {
-+			ecc_engine = devm_kzalloc(chip->dev,
-+						  sizeof(*ecc_engine),
-+						  GFP_KERNEL);
-+			if (!ecc_engine) {
-+				dev_err(chip->dev,
-+					"fail to allocate ecc engine.\n");
-+				return false;
-+			}
-+			ecc_engine->ops = item->ecc_engine_ops;
-+			ecc_engine->strength = item->ecc_strength;
-+			ecc_engine->steps = item->ecc_steps;
-+			mtd_set_ooblayout(mtd, item->ooblayout_ops);
-+			chip->ecc.engine = ecc_engine;
-+		}
-+		chip->rw_mode = item->rw_mode;
++	block_addr = nand_offs_to_eraseblock(nand, offs);
++	ops.mode = MTD_OPS_PLACE_OOB;
++	ops.ooblen = 2;
++	ops.oobbuf = bad;
++	spinand_read_pages(mtd, nand_eraseblock_to_offs(nand, block_addr),
++			   &ops, &max_bitflips);
++	if (bad[0] != 0xFF || bad[1] != 0xFF)
++		ret =  1;
 +
-+		return true;
-+	}
-+
-+	return false;
++	return ret;
 +}
 +
 +/*
-+ * micron_spinand_detect - initialize device related part in spinand_device
-+ * struct if it is Micron device.
++ * spinand_block_checkbad - check if a block is marked bad
++ * @mtd: MTD device structure
++ * @offs: offset from device start
++ * @allowbbt: 1, if allowe to access the bbt area
++ * Description:
++ *   Check, if the block is bad. Either by reading the bad block table or
++ *   reading bad block marker.
++ */
++static int spinand_block_checkbad(struct mtd_info *mtd, loff_t offs,
++				  int allowbbt)
++{
++	struct nand_device *nand = mtd_to_nand(mtd);
++	int ret;
++
++	if (nand_bbt_is_initialized(nand))
++		ret = nand_isbad_bbt(nand, offs, allowbbt);
++	else
++		ret = spinand_block_bad(mtd, offs);
++
++	return ret;
++}
++
++/*
++ * spinand_block_isbad - [MTD Interface] check if block at offset is bad
++ * @mtd: MTD device structure
++ * @offs: offset from device start
++ */
++static int spinand_block_isbad(struct mtd_info *mtd, loff_t offs)
++{
++	struct spinand_device *chip = mtd_to_spinand(mtd);
++	int ret;
++
++	mutex_lock(&chip->lock);
++	ret = spinand_block_checkbad(mtd, offs, 0);
++	mutex_unlock(&chip->lock);
++
++	return ret;
++}
++
++/*
++ * spinand_block_markbad_lowlevel - mark a block bad
++ * @mtd: MTD device structure
++ * @offs: offset from device start
++ *
++ * This function performs the generic bad block marking steps (i.e., bad
++ * block table(s) and/or marker(s)).
++ *
++ * We try operations in the following order:
++ *  (1) erase the affected block, to allow OOB marker to be written cleanly
++ *  (2) write bad block marker to OOB area of affected block (unless flag
++ *      NAND_BBT_NO_OOB_BBM is present)
++ *  (3) update the BBT
++ */
++static int spinand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t offs)
++{
++	struct nand_device *nand = mtd_to_nand(mtd);
++	struct mtd_oob_ops ops = {0};
++	struct erase_info einfo = {0};
++	u32 block_addr;
++	u8 buf[2] = {0, 0};
++	int res, ret = 0;
++
++	if (!nand_bbt_is_initialized(nand) ||
++	    !(nand->bbt.options & NAND_BBT_NO_OOB_BBM)) {
++		/*erase bad block before mark bad block*/
++		einfo.mtd = mtd;
++		einfo.addr = offs;
++		einfo.len = nand_eraseblock_size(nand);
++		spinand_erase_skip_bbt(mtd, &einfo);
++
++		block_addr = nand_offs_to_eraseblock(nand, offs);
++		ops.mode = MTD_OPS_PLACE_OOB;
++		ops.ooblen = 2;
++		ops.oobbuf = buf;
++		ret = spinand_do_write_ops(mtd,
++					   nand_eraseblock_to_offs(nand,
++								   block_addr),
++					   &ops);
++	}
++
++	/* Mark block bad in BBT */
++	if (nand_bbt_is_initialized(nand)) {
++		res = nand_markbad_bbt(nand, offs);
++		if (!ret)
++			ret = res;
++	}
++
++	if (!ret)
++		mtd->ecc_stats.badblocks++;
++
++	return ret;
++}
++
++/*
++ * spinand_block_markbad - [MTD Interface] mark block at the given offset
++ * as bad
++ * @mtd: MTD device structure
++ * @offs: offset relative to mtd start
++ */
++static int spinand_block_markbad(struct mtd_info *mtd, loff_t offs)
++{
++	int ret;
++
++	ret = spinand_block_isbad(mtd, offs);
++	if (ret) {
++		/* If it was bad already, return success and do nothing */
++		if (ret > 0)
++			return 0;
++		return ret;
++	}
++
++	return spinand_block_markbad_lowlevel(mtd, offs);
++}
++
++/*
++ * spinand_erase - erase block(s)
+  * @mtd: MTD device structure
+  * @einfo: erase instruction
++ * @allowbbt: allow to access bbt
+  */
+-static int spinand_erase(struct mtd_info *mtd, struct erase_info *einfo)
++static int spinand_erase(struct mtd_info *mtd, struct erase_info *einfo,
++			 int allowbbt)
+ {
+ 	struct spinand_device *chip = mtd_to_spinand(mtd);
+ 	struct nand_device *nand = mtd_to_nand(mtd);
+@@ -901,6 +1048,14 @@ static int spinand_erase(struct mtd_info *mtd, struct erase_info *einfo)
+ 	einfo->state = MTD_ERASING;
+ 
+ 	while (len) {
++		/* Check if we have a bad block, we do not erase bad blocks! */
++		if (spinand_block_checkbad(mtd, offs, allowbbt)) {
++			dev_warn(chip->dev,
++				"attempt to erase a bad block at 0x%012llx\n",
++				 offs);
++			einfo->state = MTD_ERASE_FAILED;
++			goto erase_exit;
++		}
+ 		spinand_write_enable(chip);
+ 		spinand_erase_block(chip, nand_offs_to_page(nand, offs));
+ 		ret = spinand_wait(chip, &status);
+@@ -937,6 +1092,33 @@ static int spinand_erase(struct mtd_info *mtd, struct erase_info *einfo)
+ }
+ 
+ /*
++ * spinand_erase_skip_bbt - [MTD Interface] erase block(s) except BBT
++ * @mtd: MTD device structure
++ * @einfo: erase instruction
++ */
++static int spinand_erase_skip_bbt(struct mtd_info *mtd,
++				  struct erase_info *einfo)
++{
++	return spinand_erase(mtd, einfo, 0);
++}
++
++/*
++ * spinand_block_isreserved - [MTD Interface] check if a block is
++ * marked reserved.
++ * @mtd: MTD device structure
++ * @offs: offset from device start
++ */
++static int spinand_block_isreserved(struct mtd_info *mtd, loff_t offs)
++{
++	struct nand_device *nand = mtd_to_nand(mtd);
++
++	if (!nand_bbt_is_initialized(nand))
++		return 0;
++	/* Return info from the table */
++	return nand_isreserved_bbt(nand, offs);
++}
++
++/*
+  * spinand_set_rd_wr_op - choose the best read write command
+  * @chip: SPI NAND device structure
+  * Description:
+@@ -970,6 +1152,106 @@ static void spinand_set_rd_wr_op(struct spinand_device *chip)
+ 		chip->write_cache_op = SPINAND_CMD_PROG_LOAD;
+ }
+ 
++/*
++ * spinand_erase_bbt - erase block(s) including BBT
++ * @nand: nand device structure
++ * @einfo: erase instruction
++ */
++static int spinand_erase_bbt(struct nand_device *nand,
++			     struct erase_info *einfo)
++{
++	return spinand_erase(nand_to_mtd(nand), einfo, 1);
++}
++
++/*
++ * spinand_erase_bbt - write bad block marker to certain block
++ * @nand: nand device structure
++ * @block: block to mark bad
++ */
++static int spinand_markbad(struct nand_device *nand, int block)
++{
++	struct mtd_oob_ops ops = {0};
++	u8 buf[2] = {0, 0};
++
++	ops.mode = MTD_OPS_PLACE_OOB;
++	ops.ooboffs = 0;
++	ops.ooblen = 2;
++	ops.oobbuf = buf;
++
++	return spinand_do_write_ops(nand_to_mtd(nand),
++				    nand_eraseblock_to_offs(nand, block),
++				    &ops);
++}
++
++static const struct nand_ops spinand_ops = {
++	.erase = spinand_erase_bbt,
++	.markbad = spinand_markbad,
++};
++
++/*
++ * Define some generic bad/good block scan pattern which are used
++ * while scanning a device for factory marked good/bad blocks.
++ */
++static u8 scan_ff_pattern[] = { 0xff, 0xff };
++
++#define BADBLOCK_SCAN_MASK (~NAND_BBT_NO_OOB)
++
++/*
++ * spinand_create_badblock_pattern - creates a BBT descriptor structure
++ * @chip: SPI NAND device structure
++ *
++ * This function allocates and initializes a nand_bbt_descr for BBM detection.
++ * The new descriptor is stored in nand->bbt.bbp. Thus, nand->bbt.bbp should
++ * be NULL when passed to this function.
++ */
++static int spinand_create_badblock_pattern(struct spinand_device *chip)
++{
++	struct nand_device *nand = &chip->base;
++	struct nand_bbt_descr *bd;
++
++	if (nand->bbt.bbp) {
++		dev_err(chip->dev,
++			"Bad block pattern already allocated; not replacing\n");
++		return -EINVAL;
++	}
++	bd = devm_kzalloc(chip->dev, sizeof(*bd), GFP_KERNEL);
++	if (!bd)
++		return -ENOMEM;
++	bd->options = nand->bbt.options & BADBLOCK_SCAN_MASK;
++	bd->offs = 0;
++	bd->len = 2;
++	bd->pattern = scan_ff_pattern;
++	bd->options |= NAND_BBT_DYNAMICSTRUCT;
++	nand->bbt.bbp = bd;
++
++	return 0;
++}
++
++/*
++ * spinand_scan_bbt - scan BBT in SPI NAND device
 + * @chip: SPI NAND device structure
 + */
-+static bool micron_spinand_detect(struct spinand_device *chip)
++static int spinand_scan_bbt(struct spinand_device *chip)
 +{
-+	u8 *id = chip->id.data;
++	struct nand_device *nand = &chip->base;
++	int ret;
 +
 +	/*
-+	 * Micron SPI NAND read ID need a dummy byte,
-+	 * so the first byte in raw_id is dummy.
++	 * It's better to put BBT marker in-band, since some oob area
++	 * is not ecc protected by internal(on-die) ECC
 +	 */
-+	if (id[1] != SPINAND_MFR_MICRON)
-+		return false;
++	if (nand->bbt.options & NAND_BBT_USE_FLASH)
++		nand->bbt.options |= NAND_BBT_NO_OOB;
++	nand->bbt.td = NULL;
++	nand->bbt.md = NULL;
 +
-+	return micron_spinand_scan_id_table(chip, id[2]);
++	ret = spinand_create_badblock_pattern(chip);
++	if (ret)
++		return ret;
++
++	return nand_scan_bbt(nand);
 +}
 +
-+/*
-+ * micron_spinand_cleanup -  free manufacutre related resources
-+ * @chip: SPI NAND device structure
-+ */
-+static void micron_spinand_cleanup(struct spinand_device *chip)
-+{
-+	if (chip->ecc.type == SPINAND_ECC_ONDIE)
-+		devm_kfree(chip->dev, chip->ecc.engine);
-+}
-+
-+/*
-+ * micron_spinand_prepare_op - Fix address for cache operation.
-+ * @chip: SPI NAND device structure
-+ * @op: pointer to spinand_op struct
-+ * @page: page address
-+ * @column: column address
-+ */
-+static void micron_spinand_prepare_op(struct spinand_device *chip,
-+				      struct spinand_op *op, u32 page,
-+				      u32 column)
-+{
-+	op->addr[0] |= (u8)((nand_page_to_eraseblock(&chip->base, page)
-+			     & 0x1) << 4);
-+	op->n_addr += micron_spinand_get_dummy(chip, op);
-+}
-+
-+static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
-+	.detect = micron_spinand_detect,
-+	.cleanup = micron_spinand_cleanup,
-+	.prepare_op = micron_spinand_prepare_op,
-+};
-+
-+const struct spinand_manufacturer micron_spinand_manufacture = {
-+	.id = SPINAND_MFR_MICRON,
-+	.name = "Micron",
-+	.ops = &micron_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 5c8bb70..3c6dd48 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -111,6 +111,8 @@ struct spinand_manufacturer {
- 	const struct spinand_manufacturer_ops *ops;
- };
+ static const struct spinand_manufacturer *spinand_manufacturers[] = {};
  
-+extern const struct spinand_manufacturer micron_spinand_manufacture;
+ /*
+@@ -1024,14 +1306,30 @@ static void spinand_manufacturer_cleanup(struct spinand_device *chip)
+ }
+ 
+ /*
++ * TODO: move of_get_nand_on_flash_bbt() to generic NAND core
++ */
++static bool of_get_nand_on_flash_bbt(struct device_node *np)
++{
++	return of_property_read_bool(np, "nand-on-flash-bbt");
++}
 +
- struct spinand_ecc_engine_ops {
- 	void (*get_ecc_status)(struct spinand_device *chip,
- 			       unsigned int status, unsigned int *corrected,
++/*
+  * spinand_dt_init - Initialize SPI NAND by device tree node
+  * @chip: SPI NAND device structure
+  *
+- * TODO: put ecc_mode, ecc_strength, ecc_step, bbt, etc in here
+- * and move it in generic NAND core.
++ * TODO: put ecc_mode, ecc_strength, ecc_step, etc in here and move
++ * it in generic NAND core.
+  */
+ static void spinand_dt_init(struct spinand_device *chip)
+ {
++	struct nand_device *nand = &chip->base;
++	struct device_node *dn = nand_get_of_node(nand);
++
++	if (!dn)
++		return;
++
++	if (of_get_nand_on_flash_bbt(dn))
++		nand->bbt.options |= NAND_BBT_USE_FLASH;
+ }
+ 
+ /*
+@@ -1085,13 +1383,14 @@ static int spinand_init(struct spinand_device *chip)
+ 				 GFP_KERNEL);
+ 	if (!chip->buf) {
+ 		ret = -ENOMEM;
+-		goto err;
++		goto err1;
+ 	}
+ 
+ 	chip->oobbuf = chip->buf + nand_page_size(nand);
+ 
+ 	spinand_manufacturer_init(chip);
+ 
++	nand->ops = &spinand_ops;
+ 	mtd->name = chip->name;
+ 	mtd->size = nand_size(nand);
+ 	mtd->erasesize = nand_eraseblock_size(nand);
+@@ -1109,11 +1408,14 @@ static int spinand_init(struct spinand_device *chip)
+ 	if (ret < 0)
+ 		ret = 0;
+ 	mtd->oobavail = ret;
+-	mtd->_erase = spinand_erase;
++	mtd->_erase = spinand_erase_skip_bbt;
+ 	mtd->_read = spinand_read;
+ 	mtd->_write = spinand_write;
+ 	mtd->_read_oob = spinand_read_oob;
+ 	mtd->_write_oob = spinand_write_oob;
++	mtd->_block_isbad = spinand_block_isbad;
++	mtd->_block_markbad = spinand_block_markbad;
++	mtd->_block_isreserved = spinand_block_isreserved;
+ 
+ 	if (!mtd->bitflip_threshold)
+ 		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3,
+@@ -1121,9 +1423,18 @@ static int spinand_init(struct spinand_device *chip)
+ 	/* After power up, all blocks are locked, so unlock it here. */
+ 	spinand_lock_block(chip, BL_ALL_UNLOCKED);
+ 
++	/* Build bad block table */
++	ret = spinand_scan_bbt(chip);
++	if (ret) {
++		dev_err(chip->dev, "Scan Bad Block Table failed.\n");
++		goto err2;
++	}
++
+ 	return nand_register(nand);
+ 
+-err:
++err2:
++	devm_kfree(chip->dev, chip->buf);
++err1:
+ 	return ret;
+ }
+ 
+@@ -1191,10 +1502,14 @@ int spinand_register(struct spinand_device *chip)
+ int spinand_unregister(struct spinand_device *chip)
+ {
+ 	struct nand_device *nand = &chip->base;
++	struct nand_bbt_descr *bd = nand->bbt.bbp;
+ 
+ 	nand_unregister(nand);
+ 	spinand_manufacturer_cleanup(chip);
+ 	devm_kfree(chip->dev, chip->buf);
++	kfree(nand->bbt.bbt);
++	if (bd->options & NAND_BBT_DYNAMICSTRUCT)
++		devm_kfree(chip->dev, bd);
+ 
+ 	return 0;
+ }
 -- 
 1.9.1
