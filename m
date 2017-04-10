@@ -1,30 +1,35 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cxKfO-0001VP-0c
- for linux-mtd@lists.infradead.org; Sun, 09 Apr 2017 21:46:40 +0000
-Received: by mail-wm0-x244.google.com with SMTP id o81so6703570wmb.0
- for <linux-mtd@lists.infradead.org>; Sun, 09 Apr 2017 14:46:17 -0700 (PDT)
-Subject: Re: [PATCH v5 2/6] mtd: m25p80: add support of SPI 1-2-2 and 1-4-4
- protocols
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- jartur@cadence.com, kdasu.kdev@gmail.com, mar.krzeminski@gmail.com
-References: <cover.1490220411.git.cyrille.pitchen@atmel.com>
- <3426fd033830e2df15eae27c1b5284983961fa8e.1490220411.git.cyrille.pitchen@atmel.com>
- <49375a87-5eca-a1c3-26f9-81075dd9c7f9@gmail.com>
- <af1c3082-534c-befb-4e05-b8d94a6da5d6@wedev4u.fr>
- <10463831-9caf-f9df-ea15-2b77e01bd4b5@gmail.com>
- <c2c357ab-8dc3-6ae8-6806-335beeb67be1@wedev4u.fr>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at,
- nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <87d64978-62f6-1524-41b0-0ef45c4c370b@gmail.com>
-Date: Sun, 9 Apr 2017 23:46:13 +0200
+ id 1cxN4t-0002Gz-3r
+ for linux-mtd@lists.infradead.org; Mon, 10 Apr 2017 00:21:09 +0000
+Received: from mail-yb0-f173.google.com (mail-yb0-f173.google.com
+ [209.85.213.173]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id v3A0KJG4000838
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Apr 2017 09:20:20 +0900
+Received: by mail-yb0-f173.google.com with SMTP id m133so27531578ybb.1
+ for <linux-mtd@lists.infradead.org>; Sun, 09 Apr 2017 17:20:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c2c357ab-8dc3-6ae8-6806-335beeb67be1@wedev4u.fr>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170409161717.0f59bc9d@bbrezillon>
+References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490861708-27813-3-git-send-email-yamada.masahiro@socionext.com>
+ <20170409161717.0f59bc9d@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Mon, 10 Apr 2017 09:20:18 +0900
+Message-ID: <CAK7LNARd8F+E+9ej6Ndw2Y+W1uy9zy_PEczSUzrxt2_Nrn+vqw@mail.gmail.com>
+Subject: Re: [PATCH v3 33/37] mtd: nand: allocate aligned buffers if
+ NAND_OWN_BUFFERS is unset
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Enrico Jorns <ejo@pengutronix.de>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Jassi Brar <jaswinder.singh@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,116 +39,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/09/2017 11:30 PM, Cyrille Pitchen wrote:
-> Le 09/04/2017 à 22:46, Marek Vasut a écrit :
->> On 04/09/2017 09:37 PM, Cyrille Pitchen wrote:
->>> Hi Marek,
->>>
->>> Le 07/04/2017 à 01:37, Marek Vasut a écrit :
->>>> On 03/23/2017 12:33 AM, Cyrille Pitchen wrote:
->>>>> Before this patch, m25p80_read() supported few SPI protocols:
->>>>> - regular SPI 1-1-1
->>>>> - SPI Dual Output 1-1-2
->>>>> - SPI Quad Output 1-1-4
->>>>> On the other hand, m25p80_write() only supported SPI 1-1-1.
->>>>>
->>>>> This patch updates both m25p80_read() and m25p80_write() functions to let
->>>>> them support SPI 1-2-2 and SPI 1-4-4 protocols for Fast Read and Page
->>>>> Program SPI commands.
->>>>>
->>>>> It adopts a conservative approach to avoid regressions. Hence the new
->>>>                                              ^ FYI, regression != bug
->>>>
->>>>> implementations try to be as close as possible to the old implementations,
->>>>> so the main differences are:
->>>>> - the tx_nbits values now being set properly for the spi_transfer
->>>>>   structures carrying the (op code + address/dummy) bytes
->>>>> - and the spi_transfer structure being split into 2 spi_transfer
->>>>>   structures when the numbers of I/O lines are different for op code and
->>>>>   for address/dummy byte transfers on the SPI bus.
->>>>>
->>>>> Besides, the current spi-nor framework supports neither the SPI 2-2-2 nor
->>>>> the SPI 4-4-4 protocols. So, for now, we don't need to update the
->>>>> m25p80_{read|write}_reg() functions as SPI 1-1-1 is the only one possible
->>>>> protocol.
->>>>>
->>>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>>>> ---
->>>>>  drivers/mtd/devices/m25p80.c | 120 ++++++++++++++++++++++++++++++++-----------
->>>>>  1 file changed, 90 insertions(+), 30 deletions(-)
->>>>>
->>>>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->>>>> index 68986a26c8fe..64d562efc25d 100644
->>>>> --- a/drivers/mtd/devices/m25p80.c
->>>>> +++ b/drivers/mtd/devices/m25p80.c
->>>>> @@ -34,6 +34,19 @@ struct m25p {
->>>>>  	u8			command[MAX_CMD_SIZE];
->>>>>  };
->>>>>  
->>>>> +static inline void m25p80_proto2nbits(enum spi_nor_protocol proto,
->>>>> +				      unsigned int *inst_nbits,
->>>>> +				      unsigned int *addr_nbits,
->>>>> +				      unsigned int *data_nbits)
->>>>> +{
->>>>
->>>> Why don't we just have some generic macros to extract the number of bits
->>>> from $proto ?
->>>>
->>>
->>> from Documentation/process/coding-style.rst:
->>> "Generally, inline functions are preferable to macros resembling functions."
->>>
->>> inline functions provide better type checking of their arguments and/or
->>> returned value than macros.
->>>
->>> Type checking is also the reason I have chosen to create the 'enum
->>> spi_nor_protocol' rather than using constant macros.
->>
->> That part I get (no, not really [1], inline is compiler _hint_ and for
->> static function, the compiler is smart enough to figure out it should
->> inline it, so drop it. Also cf. __always_inline).
->>
->> What I don't quite get is why don't we just encode the proto as ie.
->>
->> #define PROTO_1_1_4 0x00010204 /* (== BIT(16) | BIT(8) | BIT(2)) */
->>
-> 
-> This is what I did in former versions of the patch: the scheme you
-> propose requires more bits to encode the number of I/O lines for
-> instruction, address and data: there would be less bits available for
-> future extensions.
+Hi Boris,
 
-Are we ever gonna reach 128bit SPI ? I don't think so. Yes, it requires
-more bits, but it also makes it easier to extract information from it
-without some elaborate loops.
 
-> Also using the notion of protocol class (1-1-N, 1-N-N, N-N-N) in the
-> encoding scheme prevents from setting impossible combinations like
-> 4-1-4, 1-2-4, ...
+2017-04-09 23:17 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Thu, 30 Mar 2017 17:15:04 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> Some NAND controllers are using DMA engine requiring a specific
+>> buffer alignment.  The core provides no guarantee on the nand_buffers
+>> pointers, which forces some drivers to allocate their own buffers
+>> and pass the NAND_OWN_BUFFERS flag.
+>>
+>> Rework the nand_buffers allocation logic to allocate each buffer
+>> independently.  This should make most NAND controllers/DMA engine
+>> happy, and allow us to get rid of these custom buf allocation in
+>> NAND controller drivers.
+>>
+>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> ---
+>>
+>> Changes in v3:
+>>   - Reword git-log
+>>
+>> Changes in v2:
+>>   - Newly added
+>>
+>>  drivers/mtd/nand/nand_base.c | 34 +++++++++++++++++++++++++++-------
+>>  1 file changed, 27 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index f828ad7..e9d3195 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -4613,13 +4613,25 @@ int nand_scan_tail(struct mtd_info *mtd)
+>>       }
+>>
+>>       if (!(chip->options & NAND_OWN_BUFFERS)) {
+>> -             nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
+>> -                             + mtd->oobsize * 3, GFP_KERNEL);
+>> +             nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
+>>               if (!nbuf)
+>>                       return -ENOMEM;
+>> -             nbuf->ecccalc = (uint8_t *)(nbuf + 1);
+>> -             nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
+>> -             nbuf->databuf = nbuf->ecccode + mtd->oobsize;
+>> +             nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
+>> +             if (!nbuf->ecccalc) {
+>> +                     ret = -EINVAL;
+>> +                     goto err_free;
+>
+> You have a memory leak here, because chip->buffers = nbuf is only done
+> after all allocations have succeeded.
 
-I'd suspect that the review process would catch this.
 
->> in which case this whole function would turn into constant-time
->>
->> return (proto >> (n * 8)) & 0xff;
->>
->> where n is 0 for data, 1 for address , 2 for command .
->>
->> [1] https://lwn.net/Articles/166172/
->>
->>>>> +	if (inst_nbits)
->>>>> +		*inst_nbits = spi_nor_get_protocol_inst_width(proto);
->>>>> +	if (addr_nbits)
->>>>> +		*addr_nbits = spi_nor_get_protocol_addr_width(proto);
->>>>> +	if (data_nbits)
->>>>> +		*data_nbits = spi_nor_get_protocol_data_width(proto);
->>>>> +}
->>>>> +
->> [...]
->>
-> 
+Indeed.
+
+
+>> +             }
+>> +             nbuf->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
+>> +             if (!nbuf->ecccode) {
+>> +                     ret = -EINVAL;
+>
+>                         ret = -ENOMEM;
+>
+> I have the following fixup patch, let me know if you're okay with it
+> and I'll squash it in the original commit.
+
+
+Thank you for your fixup patch.  The code-diff looks all good.
+Please squash this.
+
+Sorry for my many mistakes.
+
+
+
+
+
 
 
 -- 
-Best regards,
-Marek Vasut
+Best Regards
+Masahiro Yamada
