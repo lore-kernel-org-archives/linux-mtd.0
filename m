@@ -1,15 +1,24 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cxTDS-000647-Qd
- for linux-mtd@lists.infradead.org; Mon, 10 Apr 2017 06:54:25 +0000
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>,
- Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH v1 1/3] UBIFS: parse iversion mount option
-Date: Mon, 10 Apr 2017 08:53:44 +0200
-Message-Id: <20170410065346.1992-1-o.rempel@pengutronix.de>
+ id 1cxTUG-00069D-CA
+ for linux-mtd@lists.infradead.org; Mon, 10 Apr 2017 07:11:45 +0000
+Date: Mon, 10 Apr 2017 10:09:43 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: Re: [patch] mtd: nand: Fix a couple error codes
+Message-ID: <20170410070943.GA4366@mwanda>
+References: <20170404081545.GA25533@mwanda>
+ <20170409163322.3da06acd@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170409163322.3da06acd@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,57 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+On Sun, Apr 09, 2017 at 04:33:22PM +0200, Boris Brezillon wrote:
+> Hi Dan,
+> 
+> On Tue, 4 Apr 2017 11:15:46 +0300
+> Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> 
+> > We accidentally return 1 on error instead of proper error codes.
+> 
+> These bugs have not reached Linus' tree yet and I'll have to force push
+> my nand/next branch because of regressions introduced by other patches
+> (not related to the Atmel NAND driver rework). Do you mind if I squash
+> the changes in the original commit?
+> 
 
-Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- fs/ubifs/super.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+No problem.  I'm lobying for a Fixes-from: tag for this, (which would
+not cover style issues), but it's not an official tag yet.
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index b73811bd7676..61180bee38b4 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -931,6 +931,7 @@ enum {
- 	Opt_chk_data_crc,
- 	Opt_no_chk_data_crc,
- 	Opt_override_compr,
-+	Opt_i_version,
- 	Opt_err,
- };
- 
-@@ -942,6 +943,7 @@ static const match_table_t tokens = {
- 	{Opt_chk_data_crc, "chk_data_crc"},
- 	{Opt_no_chk_data_crc, "no_chk_data_crc"},
- 	{Opt_override_compr, "compr=%s"},
-+	{Opt_i_version, "iversion"},
- 	{Opt_err, NULL},
- };
- 
-@@ -986,6 +988,8 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
- 		return 0;
- 
- 	while ((p = strsep(&options, ","))) {
-+		struct super_block *sb = c->vfs_sb;
-+		unsigned long flag;
- 		int token;
- 
- 		if (!*p)
-@@ -1042,11 +1046,11 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
- 			c->default_compr = c->mount_opts.compr_type;
- 			break;
- 		}
-+		case Opt_i_version:
-+			sb->s_flags |= MS_I_VERSION;
-+			break;
- 		default:
- 		{
--			unsigned long flag;
--			struct super_block *sb = c->vfs_sb;
--
- 			flag = parse_standard_option(p);
- 			if (!flag) {
- 				ubifs_err(c, "unrecognized mount option \"%s\" or missing value",
--- 
-2.11.0
+regards,
+dan carpenter
