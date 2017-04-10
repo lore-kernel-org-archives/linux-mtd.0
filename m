@@ -1,23 +1,22 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cxUhL-00086T-AF
- for linux-mtd@lists.infradead.org; Mon, 10 Apr 2017 08:29:21 +0000
-Date: Mon, 10 Apr 2017 10:28:56 +0200
+ id 1cxUnV-0004Yy-7t
+ for linux-mtd@lists.infradead.org; Mon, 10 Apr 2017 08:35:43 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpandong@micron.com>
-Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
- <arnaud.mouiche@gmail.com>, <thomas.petazzoni@free-electrons.com>,
- <marex@denx.de>, <cyrille.pitchen@atmel.com>,
- <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
- <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH v5 1/6] nand: spi: add basic blocks for infrastructure
-Message-ID: <20170410102856.6c9f7608@bbrezillon>
-In-Reply-To: <1491810713-27795-2-git-send-email-peterpandong@micron.com>
-References: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
- <1491810713-27795-2-git-send-email-peterpandong@micron.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Han Xu <han.xu@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Leonard Crestez <leonard.crestez@nxp.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 2/2] mtd: nand: gpmi: Kill gpmi_nand_exit()
+Date: Mon, 10 Apr 2017 10:35:18 +0200
+Message-Id: <1491813318-4417-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1491813318-4417-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1491813318-4417-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,115 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter,
+The only user of gpmi_nand_exit() is gpmi_nand_remove(). Move its content
+to the caller.
 
-On Mon, 10 Apr 2017 15:51:48 +0800
-Peter Pan <peterpandong@micron.com> wrote:
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-> +
-> +/*
-> + * spinand_free - [SPI NAND Interface] free SPI NAND device instance
-> + * @chip: SPI NAND device structure
-> + */
-> +void spinand_free(struct spinand_device *chip)
-> +{
-> +	devm_kfree(chip->dev, chip);
-
-This is unneeded. Everything allocated with devm_kmalloc() should be
-automatically freed when the underlying device is released.
-
-> +}
-> +EXPORT_SYMBOL_GPL(spinand_free);
-> +
-> +/*
-> + * spinand_register - [SPI NAND Interface] register SPI NAND device
-> + * @chip: SPI NAND device structure
-> + */
-> +int spinand_register(struct spinand_device *chip)
-> +{
-> +	int ret;
-> +
-> +	ret = spinand_detect(chip);
-> +	if (ret) {
-> +		dev_err(chip->dev,
-> +			"Detect SPI NAND failed with error %d.\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = spinand_init(chip);
-> +	if (ret)
-> +		dev_err(chip->dev,
-> +			"Init SPI NAND failed with error %d.\n", ret);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(spinand_register);
-> +
-> +/*
-> + * spinand_unregister - [SPI NAND Interface] unregister SPI NAND device
-> + * @chip: SPI NAND device structure
-> + */
-> +int spinand_unregister(struct spinand_device *chip)
-> +{
-> +	struct nand_device *nand = &chip->base;
-> +
-> +	nand_unregister(nand);
-
-I realize nand_unregister() is not propagating the error returned by
-mtd_device_unregister(), which is wrong. Can you fix that and make sure
-you propagate the error here?
-
-> +	spinand_manufacturer_cleanup(chip);
-> +	devm_kfree(chip->dev, chip->buf);
-
-Why calling devm_kfree() on something that will anyway be freed
-automatically.
-
-BTW, you should not allocate the buffer with devm_kzalloc(), just in
-case some drivers want to use it for DMA accesses (see [1] for a
-better explanation).
-
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(spinand_unregister);
-
-Sorry, I didn't have time to properly review your v4, and I realize
-I'm not happy with these new spinand_register/unregister() functions.
-
-I initially suggested to have a model where you register a SPI NAND
-controller (spinand_controller_register()) and the core takes care of
-populating the devices connected to this controller for you, I don't
-think I suggested to add the spinand_register/unregister() helpers.
-As initially replied to Arnaud, the introduction of
-spinand_controller_register() is not a hard requirement, so let's keep
-that for later.
-
-Back to your spinand_register/unregister() functions. The main problem
-I see is the fact that these functions are asymmetric:
-spinand_unregister() path is calling nand_unregister() while
-spinand_register() is not calling nand_register(). This kind of
-asymmetry is disturbing and usually leads to bugs in drivers.
-
-This leaves 2 solutions:
-
-1/ only expose spinand_init/cleanup() functions (spinand_init() should
-   call spinand_detect() in this case) and let the driver call
-   mtd_device_register/unregister() manually
-2/ call mtd_device_register() from spinand_register() even if this
-   implies hardcoding advanced parameters like the default partitions
-   of the part probe types
-
-#1 is probably safer for now since SPI NAND controller drivers might
-want to tweak the config set in spinand_init() (for example to pass
-controller side ECC engine ops).
-
-I still need to review the rest of the series carefully, so please don't
-send a new version until this is done. Just ping me if you don't have
-any news from me after 2 weeks ;).
-
-Regards,
-
-Boris
-
-[1]https://lkml.org/lkml/2017/3/30/168
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 92279a0d52f1..f22eeedc728f 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1929,12 +1929,6 @@ static int gpmi_set_geometry(struct gpmi_nand_data *this)
+ 	return gpmi_alloc_dma_buffer(this);
+ }
+ 
+-static void gpmi_nand_exit(struct gpmi_nand_data *this)
+-{
+-	nand_release(nand_to_mtd(&this->nand));
+-	gpmi_free_dma_buffer(this);
+-}
+-
+ static int gpmi_init_last(struct gpmi_nand_data *this)
+ {
+ 	struct nand_chip *chip = &this->nand;
+@@ -2131,7 +2125,8 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+ {
+ 	struct gpmi_nand_data *this = platform_get_drvdata(pdev);
+ 
+-	gpmi_nand_exit(this);
++	nand_release(nand_to_mtd(&this->nand));
++	gpmi_free_dma_buffer(this);
+ 	release_resources(this);
+ 	return 0;
+ }
+-- 
+2.7.4
