@@ -1,21 +1,17 @@
-Received: from mx.socionext.com ([202.248.49.38])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cxN60-0002b1-8r
- for linux-mtd@lists.infradead.org; Mon, 10 Apr 2017 00:22:18 +0000
-From: <yamada.masahiro@socionext.com>
-To: <boris.brezillon@free-electrons.com>
-CC: <linux-mtd@lists.infradead.org>, <leonard.crestez@nxp.com>
-Subject: RE: [PATCH] fixup! mtd: nand: allocate aligned buffers if
- NAND_OWN_BUFFERS is unset
-Date: Mon, 10 Apr 2017 00:21:52 +0000
-Message-ID: <8e08a035da08487ba31a601e97a6da00@SOC-EX02V.e01.socionext.com>
-References: <1491548798-28051-1-git-send-email-yamada.masahiro@socionext.com>
- <20170409090947.7331df0b@bbrezillon>
-In-Reply-To: <20170409090947.7331df0b@bbrezillon>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cxTDS-00064H-QZ
+ for linux-mtd@lists.infradead.org; Mon, 10 Apr 2017 06:54:24 +0000
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+ Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: [PATCH v1 3/3] fs: ubifs: set s_uuid in super block
+Date: Mon, 10 Apr 2017 08:53:46 +0200
+Message-Id: <20170410065346.1992-3-o.rempel@pengutronix.de>
+In-Reply-To: <20170410065346.1992-1-o.rempel@pengutronix.de>
+References: <20170410065346.1992-1-o.rempel@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQm9yaXMsDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCb3Jp
-cyBCcmV6aWxsb24gW21haWx0bzpib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tXQ0K
-PiBTZW50OiBTdW5kYXksIEFwcmlsIDA5LCAyMDE3IDQ6MTAgUE0NCj4gVG86IFlhbWFkYSwgTWFz
-YWhpcm8vGyRCOzNFRBsoQiAbJEI/PzkwGyhCIDx5YW1hZGEubWFzYWhpcm9Ac29jaW9uZXh0LmNv
-bT4NCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBMZW9uYXJkIENyZXN0ZXoN
-Cj4gPGxlb25hcmQuY3Jlc3RlekBueHAuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBmaXh1
-cCEgbXRkOiBuYW5kOiBhbGxvY2F0ZSBhbGlnbmVkIGJ1ZmZlcnMgaWYNCj4gTkFORF9PV05fQlVG
-RkVSUyBpcyB1bnNldA0KPiANCj4gT24gRnJpLCAgNyBBcHIgMjAxNyAxNjowNjozOCArMDkwMA0K
-PiBNYXNhaGlybyBZYW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQuY29tPiB3cm90ZToN
-Cj4gDQo+ID4gLS0tDQo+ID4NCj4gPiBCdWcgcG9ydDogaHR0cDovL3BhdGNod29yay5vemxhYnMu
-b3JnL3BhdGNoLzc0NTEzNi8NCj4gPiBQbGVhc2Ugc3F1YXNoIGludG8gY29tbWl0IGY2NjE0ZDFi
-Lg0KPiA+IChDdXJyZW50bHksIG9ubHkgb25jZSBwYXRjaCBvbiB0b3Agb2YgdGhhdC4pDQo+ID4g
-SWYgaW1wb3NzaWJsZSwgSSBjYW4gcmUtc2VuZCB0aGlzIHdpdGggZGV0YWlsZWQgbG9nLg0KPiA+
-DQo+ID4NCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYyB8IDIgKy0NCj4gPiAgMSBm
-aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4NCj4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYw0KPiBiL2RyaXZlcnMvbXRkL25h
-bmQvbmFuZF9iYXNlLmMNCj4gPiBpbmRleCA4YTJlNWZmLi45MDNhNjc4IDEwMDY0NA0KPiA+IC0t
-LSBhL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMNCj4gPiArKysgYi9kcml2ZXJzL210ZC9u
-YW5kL25hbmRfYmFzZS5jDQo+ID4gQEAgLTQ5MzYsNyArNDkzNiw3IEBAIHZvaWQgbmFuZF9jbGVh
-bnVwKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApDQo+ID4NCj4gPiAgCS8qIEZyZWUgYmFkIGJsb2Nr
-IHRhYmxlIG1lbW9yeSAqLw0KPiA+ICAJa2ZyZWUoY2hpcC0+YmJ0KTsNCj4gPiAtCWlmICghKGNo
-aXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSkgew0KPiA+ICsJaWYgKCEoY2hpcC0+b3B0
-aW9ucyAmIE5BTkRfT1dOX0JVRkZFUlMpICYmICFjaGlwLT5idWZmZXJzKSB7DQo+IA0KPiBZb3Ug
-bWVhbg0KPiANCj4gCWlmICghKGNoaXAtPm9wdGlvbnMgJiBOQU5EX09XTl9CVUZGRVJTKSAmJiBj
-aGlwLT5idWZmZXJzKSB7DQo+IA0KPiByaWdodD8NCg0KUmlnaHQuDQoNCg0KDQo+IEknbGwgc3F1
-YXNoIHRoaXMgY2hhbmdlIGluIHlvdSBpbml0aWFsIGNvbW1pdCwgYnV0IEkgaGF2ZSBhIGNvbW1l
-bnQgb24NCj4gd2hlcmUgdGhlIHJlYWwgYnVnIGxpZXMgSU1PIChzZWUgbXkgcmVwbHkgdG8gIm10
-ZDogbmFuZDogYWxsb2NhdGUNCj4gYWxpZ25lZCBidWZmZXJzIGlmIE5BTkRfT1dOX0JVRkZFUlMg
-aXMgdW5zZXQiKS4NCg0KDQpZb3VycyBpcyBjb3JyZWN0LiAgVGhhbmtzIQ0KDQoNCk1hc2FoaXJv
-DQoNCg==
+From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+
+Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ fs/ubifs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 76e44ab88065..3cf2e0347595 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -2075,6 +2075,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 		err = -ENOMEM;
+ 		goto out_umount;
+ 	}
++	memcpy(&sb->s_uuid, &c->uuid, sizeof(c->uuid));
+ 
+ 	mutex_unlock(&c->umount_mutex);
+ 	return 0;
+-- 
+2.11.0
