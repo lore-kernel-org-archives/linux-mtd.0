@@ -1,29 +1,31 @@
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cxtJu-0006qr-Tg
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 10:46:47 +0000
-Received: by mail-wm0-x235.google.com with SMTP id t189so57894361wmt.1
- for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 03:46:26 -0700 (PDT)
-Subject: Re: [PATCH 07/10] mtd: spi-nor: aspeed: configure chip window on AHB
- bus
-To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- linux-mtd@lists.infradead.org
-References: <1491497808-25487-1-git-send-email-clg@kaod.org>
- <1491497808-25487-8-git-send-email-clg@kaod.org>
- <35014889-064a-3162-d23b-69e8441e31b5@gmail.com>
- <a6efce0e-2265-b7bf-d572-0098687a7f0d@kaod.org>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <41412164-6652-885d-c6a0-b72d4a40c32c@gmail.com>
-Date: Tue, 11 Apr 2017 12:44:22 +0200
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cxtNc-00049R-BQ
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 10:50:38 +0000
+Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
+To: Amir Goldstein <amir73il@gmail.com>
+References: <1490864181-2192-1-git-send-email-richard@nod.at>
+ <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
+ <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
+ <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
+ <646ae733-5037-3072-7151-b055a8fa1521@intel.com>
+ <cbaff214-7431-2cd1-2453-156d716c0d8a@nod.at>
+ <CAOQ4uxh5mZ8gCk1U=oV9b+j3k0RFcT3LozATfa3qHoYy+OMVsg@mail.gmail.com>
+ <92bbb4d1-afe7-14f2-763b-051c7b12ff9e@nod.at>
+ <ae2f884b-17dc-cd24-f2a5-34c6c2aa7e8c@nod.at>
+ <CAOQ4uxhaYfO3m6kQ1agDg2Bm-6Xh9yxoPh93m=xpTz39gXjpAQ@mail.gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "stable [v4.9]" <stable@vger.kernel.org>,
+ Ralph Sennhauser <ralph.sennhauser@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <2a2eebef-ed37-7829-b08f-482039306a6e@nod.at>
+Date: Tue, 11 Apr 2017 12:50:04 +0200
 MIME-Version: 1.0
-In-Reply-To: <a6efce0e-2265-b7bf-d572-0098687a7f0d@kaod.org>
+In-Reply-To: <CAOQ4uxhaYfO3m6kQ1agDg2Bm-6Xh9yxoPh93m=xpTz39gXjpAQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,24 +35,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/11/2017 12:20 PM, Cédric Le Goater wrote:
-[...]
->>> +static u32 aspeed_smc_chip_set_segment(struct aspeed_smc_chip *chip)
->>> +{
->>> +	struct aspeed_smc_controller *controller = chip->controller;
->>> +	u32  val0, start0, start;
->>> +	u32 size = chip->nor.mtd.size;
->>> +
->>> +	/* The AST2500 SPI controller has a bug when the CE0 chip size
->>> +	 * exceeds 120MB.
+Hi!
+
+Am 11.04.2017 um 12:20 schrieb Amir Goldstein:
+> On Thu, Apr 6, 2017 at 3:26 PM, Richard Weinberger <richard@nod.at> wrote:
+>> Am 06.04.2017 um 14:09 schrieb Richard Weinberger:
+>>>> Were you able to make any progress? still working on this?
+>>>> If this is too complicated to get in for this cycle, better send a patch
+>>>> to disable O_TMPFILE support for ubifs and fix the problem properly on
+>>>> followup merge cycle.
+>>>> Because right now ubifs O_TMPFILE support is broken and breaks overlayfs mount.
+>>>
+>>> I have a test and currently testing it. As it looks the situation is less worse
+>>> than I thought first. :-)
 >>
->> 120 or 128 ?
+>> s/test/patch :)
+>>
 > 
-> 120. This is a HW bug.
+> Richard,
 > 
-Please note that in the comment then .
+> Maybe it's not my business to interfere with ubifs development and I
+> haven't seen your patch.
+> 
+> But on the face of it, it doesn't sound like fixing O_TMPFILE is a
+> trivial fix, so not sure
+> it is wise to send a patch for -rc7?...
+> 
+> How about sending the patch to disable O_TMPFILE for -rc7 and queuing
+> your fix for v4.12?
+> Without any patch, v4.11 is going to have a regression with overlayfs+ubifs.
 
+No need to panic.
+I verified some stuff and my first patch does the right thing but not in a nice way,
+except in oneerror patch. In will land in -rc7.
 
--- 
-Best regards,
-Marek Vasut
+For the next merge window I prepare patches that introduce a new journal function
+for handling tmpfiles.
+
+Thanks,
+//richard
