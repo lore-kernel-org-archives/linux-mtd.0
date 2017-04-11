@@ -1,18 +1,29 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cxu8r-000800-KC
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 11:39:28 +0000
-Date: Tue, 11 Apr 2017 13:39:09 +0200
+ id 1cxvGk-0004w3-Hl
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 12:51:40 +0000
+Date: Tue, 11 Apr 2017 14:51:02 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: <richard@nod.at>, <aford173@gmail.com>, <enrico.leto@siemens.com>,
- <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, "# 4 . 7+" <stable@vger.kernel.org>
-Subject: Re: [PATCH] mtd: nand: omap2: Fix partition creation via cmdline
- mtdparts
-Message-ID: <20170411133909.3b25a054@bbrezillon>
-In-Reply-To: <1490859470-7973-1-git-send-email-rogerq@ti.com>
-References: <1490859470-7973-1-git-send-email-rogerq@ti.com>
+To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "pawel.moll@arm.com" <pawel.moll@arm.com>, Campbell
+ <ijc+devicetree@hellion.org.uk>, "richard@nod.at" <richard@nod.at>, Mark
+ Rutland <mark.rutland@arm.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "galak@codeaurora.org" <galak@codeaurora.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Subject: Re: [PATCH 4/5] mtd: nand: add support for Micron on-die ECC
+Message-ID: <20170411145102.563fa388@bbrezillon>
+In-Reply-To: <414dd35931814ce38381a251917ad79f@SIWEX5A.sing.micron.com>
+References: <538805ebf8e64015a8b833de755652b3@SIWEX5A.sing.micron.com>
+ <8a171dacd20c45bd8285ecc5dbe8854a@SIWEX5A.sing.micron.com>
+ <20170322144507.4d80d2cc@bbrezillon>
+ <0dccc0abcf234e98be6d340027cf1a30@SIWEX5A.sing.micron.com>
+ <20170322155216.319efc3e@bbrezillon>
+ <414dd35931814ce38381a251917ad79f@SIWEX5A.sing.micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,55 +36,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Mar 2017 10:37:50 +0300
-Roger Quadros <rogerq@ti.com> wrote:
+Hi Bean,
 
-> commit c9711ec5250b ("mtd: nand: omap: Clean up device tree support")
-> caused the parent device name to be changed from "omap2-nand.0"
-> to "<base address>.nand"  (e.g. 30000000.nand on omap3 platforms).
-> This caused mtd->name to be changed as well. This breaks partition
-> creation via mtdparts passed by u-boot as it uses "omap2-nand.0"
-> for the mtd-id.
+On Mon, 3 Apr 2017 11:31:05 +0000
+"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote:
+
+> Hi, Boris and Thomas
 > 
-> Fix this by explicitly setting the mtd->name to "omap2-nand.<CS number>"
-> if it isn't already set by nand_set_flash_node(). CS number is the
-> NAND controller instance ID.
+> >>
+> >> Ok, but I recommend that 70s should be the first choice on this single
+> >> solution, it doesn't need to read twice to detect its bitflips count.  
+> >
+> >That's exactly why we need to differentiate the 2 chips.  
 > 
+> Sorry for later this response. 
+> Below is the pseudo codes about how to differentiate these 2 series parallel
+> NAND with on-die ECC:
+> 
+> if (NAND == SLC ) { // on-die ECC only exists in SLC
+> //check device ID byte 4
+>      if ((ID.byte4 & 0x02) == 0x02) {// internal ECC level ==10b
 
-Applied.
+So here the MT29F1G08ABADAWP datasheet says 0x2 <=> 4bit/512bytes ECC.
 
-Thanks,
+> 	if (ID.byte4 & 0x80) {//on-Die ECC enabled
+
+Did you read my last reply?
+Thomas discovered that ID[4].bit7 is actually reflecting the ECC engine
+state (1 if the engine is enabled, 0 if it's disabled), not whether the
+NAND supports on-die ECC or not, so no this test is not reliable.
+
+>                     if (ONFI.byte112 == 4)
+> 		 60s SLC NAND with on-die ECC
+> 	    else if (ONFI.byte112 == 8)
+>      	              70s SLC NAND with on-die ECC
+
+This is completely fucked up! Now the ONFI param page says the NAND
+requires 8bits/512bytes, while the ID bytes advertised an on-die ECC
+providing 4bits/512bytes correctability.
+So either your algorithm is wrong, or the ID and ONFI param page are
+contracting (not sure what solution I'd prefer...).
+
+> 	    else
+>                           Doesn't support on-die ECC
+
+Sorry to say that, but I find it worrisome that even someone from Micron
+is not able to get it right.
+
+I think we'll stick to the model name to detect whether on-die ECC is
+supported.
+
+Regards,
 
 Boris
-
-> Fixes: c9711ec5250b ("mtd: nand: omap: Clean up device tree support")
-> Cc: <stable@vger.kernel.org> # 4.7+
-> Reported-by: Leto Enrico <enrico.leto@siemens.com>
-> Reported-by: Adam Ford <aford173@gmail.com>
-> Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Tested-by: Adam Ford <aford173@gmail.com>
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> ---
->  drivers/mtd/nand/omap2.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 2a52101..084934a 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1856,6 +1856,15 @@ static int omap_nand_probe(struct platform_device *pdev)
->  	nand_chip->ecc.priv	= NULL;
->  	nand_set_flash_node(nand_chip, dev->of_node);
->  
-> +	if (!mtd->name) {
-> +		mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> +					   "omap2-nand.%d", info->gpmc_cs);
-> +		if (!mtd->name) {
-> +			dev_err(&pdev->dev, "Failed to set MTD name\n");
-> +			return -ENOMEM;
-> +		}
-> +	}
-> +
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	nand_chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
->  	if (IS_ERR(nand_chip->IO_ADDR_R))
