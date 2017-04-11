@@ -1,32 +1,22 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cy0Zj-0006uv-Bs
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 18:31:37 +0000
-Received: by mail-wm0-x244.google.com with SMTP id o81so1932068wmb.0
- for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 11:31:14 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add driver for STM32 quad spi flash
- controller
-To: Ludovic BARRE <ludovic.barre@st.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <1490979724-10905-1-git-send-email-ludovic.Barre@st.com>
- <1490979724-10905-3-git-send-email-ludovic.Barre@st.com>
- <5ec38e39-661d-8a83-4168-b9f3d986bcd1@gmail.com>
- <601e2aa5-7cd3-34fb-660e-359f2a016b65@st.com>
- <9a0c5f8e-01dc-3d2b-5ebb-069752594e8e@gmail.com>
- <f9b4b8b0-4987-7f67-df3b-d32d6c130818@st.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Alexandre Torgue <alexandre.torgue@st.com>, Rob Herring
- <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <d87ee748-4d53-4e1d-4bb9-3a0c860a138e@gmail.com>
-Date: Tue, 11 Apr 2017 20:31:10 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cy1fL-00058f-Kk
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 19:41:29 +0000
+Date: Tue, 11 Apr 2017 21:41:06 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@atmel.com
+Subject: Re: [PATCH V6, 1/1] mtd: nand: brcmnand: Check flash #WP pin status
+ before nand erase/program
+Message-ID: <20170411214106.36b94f34@bbrezillon>
+In-Reply-To: <1488575813-12660-2-git-send-email-kdasu.kdev@gmail.com>
+References: <1488575813-12660-1-git-send-email-kdasu.kdev@gmail.com>
+ <1488575813-12660-2-git-send-email-kdasu.kdev@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f9b4b8b0-4987-7f67-df3b-d32d6c130818@st.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,232 +27,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/10/2017 06:52 PM, Ludovic BARRE wrote:
-> hi Marek
-> 
-> tomorrow, I send a v3 with your/Rob reviews.
+On Fri,  3 Mar 2017 16:16:53 -0500
+Kamal Dasu <kdasu.kdev@gmail.com> wrote:
 
-Super, thanks! I'll be pretty busy till Friday, so please keep in mind
-the final review might take a bit.
+> On brcmnand controller v6.x and v7.x, the #WP pin is controlled through
+> the NAND_WP bit in CS_SELECT register.
+> 
+> The driver currently assumes that toggling the #WP pin is
+> instantaneously enabling/disabling write-protection, but it actually
+> takes some time to propagate the new state to the internal NAND chip
+> logic. This behavior is sometime causing data corruptions when an
+> erase/program operation is executed before write-protection has really
+> been disabled.
 
-> BR
-> 
-> Ludo
-> 
-> 
-> On 04/10/2017 06:15 PM, Marek Vasut wrote:
->> On 04/10/2017 11:08 AM, Ludovic BARRE wrote:
->>> On 04/07/2017 01:55 AM, Marek Vasut wrote:
->>>> On 03/31/2017 07:02 PM, Ludovic Barre wrote:
->>>>> From: Ludovic Barre <ludovic.barre@st.com>
->>>>>
->>>>> The quadspi is a specialized communication interface targeting single,
->>>>> dual or quad SPI Flash memories.
->>>>>
->>>>> It can operate in any of the following modes:
->>>>> -indirect mode: all the operations are performed using the quadspi
->>>>>    registers
->>>>> -read memory-mapped mode: the external Flash memory is mapped to the
->>>>>    microcontroller address space and is seen by the system as if it
->>>>> was
->>>>>    an internal memory
->>>>>
->>>>> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
->>>>> ---
->>>>>    drivers/mtd/spi-nor/Kconfig         |   7 +
->>>>>    drivers/mtd/spi-nor/Makefile        |   1 +
->>>>>    drivers/mtd/spi-nor/stm32-quadspi.c | 690
->>>>> ++++++++++++++++++++++++++++++++++++
->>>>>    3 files changed, 698 insertions(+)
->>>>>    create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
->>>>>
->>>> [...]
->>>>
->>>>> +struct stm32_qspi_flash {
->>>>> +    struct spi_nor nor;
->>>>> +    u32 cs;
->>>>> +    u32 fsize;
->>>>> +    u32 presc;
->>>>> +    struct stm32_qspi *qspi;
->>>>> +};
->>>> [...]
->>>>
->>>>> +struct stm32_qspi_cmd {
->>>>> +    struct {
->>>>> +        u8 addr_width;
->>>>> +        u8 dummy;
->>>>> +        u8 data;
->>>>> +    } conf;
->>>> Is there any benefit in having this structure here or could you just
->>>> make the struct stm32_qspi_cmd flat ?
->>> no benefit, it was just to regroup,  so I can do a flat structure
->> Well, as you like, but I think it does make sense to just make it flat.
->>
->>>>> +    u8 opcode;
->>>>> +    u32 framemode;
->>>>> +    u32 qspimode;
->>>>> +    u32 addr;
->>>>> +    size_t len;
->>>>> +    void *buf;
->>>>> +};
->>>> [...]
->>>>
->>>>> +static ssize_t stm32_qspi_read(struct spi_nor *nor, loff_t from,
->>>>> size_t len,
->>>>> +                   u_char *buf)
->>>>> +{
->>>>> +    struct stm32_qspi_flash *flash = nor->priv;
->>>>> +    struct stm32_qspi *qspi = flash->qspi;
->>>>> +    struct stm32_qspi_cmd cmd;
->>>>> +    int err;
->>>>> +
->>>>> +    dev_dbg(qspi->dev, "read(%#.2x): buf:%p from:%#.8x len:%#x\n",
->>>>> +        nor->read_opcode, buf, (u32)from, len);
->>>>> +
->>>>> +    memset(&cmd, 0, sizeof(cmd));
->>>>> +    cmd.opcode = nor->read_opcode;
->>>>> +    cmd.conf.addr_width = nor->addr_width;
->>>>> +    cmd.addr = (u32)from;
->>>> loff_t (from) can be 64bit ... how do we handle this ?
->>> I'm surprise by the question,
->>> the SPI NOR device uses 3 Bytes or 4 bytes address mode.
->>> So, the stm32 qspi controller has a 32 bit register for NOR address.
->>> On the other hand the framework and other drivers used this variable
->>> (from) like
->>> a 32 bits.
->> Hmmm, (rhetorical question) then why do we even use loff_t in the
->> framework ?
->>
->> Anyway, this is no problem then.
-> In fact, the loff_t 64 bit come from mtd interface
-> (needed to address biggest device constraint) but not needed for spi-nor
-> devices.
->>>>> +    cmd.conf.data = 1;
->>>>> +    cmd.conf.dummy = nor->read_dummy;
->>>>> +    cmd.len = len;
->>>>> +    cmd.buf = buf;
->>>>> +    cmd.qspimode = qspi->read_mode;
->>>>> +
->>>>> +    stm32_qspi_set_framemode(nor, &cmd, true);
->>>>> +    err = stm32_qspi_send(flash, &cmd);
->>>>> +
->>>>> +    return err ? err : len;
->>>>> +}
->>>> [...]
->>>>
->>>>> +static irqreturn_t stm32_qspi_irq(int irq, void *dev_id)
->>>>> +{
->>>>> +    struct stm32_qspi *qspi = (struct stm32_qspi *)dev_id;
->>>>> +    u32 cr, sr, fcr = 0;
->>>>> +
->>>>> +    cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
->>>>> +    sr = readl_relaxed(qspi->io_base + QUADSPI_SR);
->>>>> +
->>>>> +    if ((cr & CR_TCIE) && (sr & SR_TCF)) {
->>>>> +        /* tx complete */
->>>>> +        fcr |= FCR_CTCF;
->>>>> +        complete(&qspi->cmd_completion);
->>>>> +    } else {
->>>>> +        dev_info(qspi->dev, "spurious interrupt\n");
->>>> You probably want to ratelimit this one ...
->>> yes it's better if there is an issue.
->> Yep
->>
->>>>> +    }
->>>>> +
->>>>> +    writel_relaxed(fcr, qspi->io_base + QUADSPI_FCR);
->>>>> +
->>>>> +    return IRQ_HANDLED;
->>>>> +}
->>>>> +
->>>>> +static int stm32_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->>>>> +{
->>>>> +    struct stm32_qspi_flash *flash = nor->priv;
->>>>> +    struct stm32_qspi *qspi = flash->qspi;
->>>>> +
->>>>> +    mutex_lock(&qspi->lock);
->>>>> +    return 0;
->>>>> +}
->>>>> +
->>>>> +static void stm32_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops
->>>>> ops)
->>>>> +{
->>>>> +    struct stm32_qspi_flash *flash = nor->priv;
->>>>> +    struct stm32_qspi *qspi = flash->qspi;
->>>>> +
->>>>> +    mutex_unlock(&qspi->lock);
->>>>> +}
->>>>> +
->>>>> +static int stm32_qspi_flash_setup(struct stm32_qspi *qspi,
->>>>> +                  struct device_node *np)
->>>>> +{
->>>>> +    u32 width, flash_read, presc, cs_num, max_rate = 0;
->>>>> +    struct stm32_qspi_flash *flash;
->>>>> +    struct mtd_info *mtd;
->>>>> +    int ret;
->>>>> +
->>>>> +    of_property_read_u32(np, "reg", &cs_num);
->>>>> +    if (cs_num >= STM32_MAX_NORCHIP)
->>>>> +        return -EINVAL;
->>>>> +
->>>>> +    of_property_read_u32(np, "spi-max-frequency", &max_rate);
->>>>> +    if (!max_rate)
->>>>> +        return -EINVAL;
->>>>> +
->>>>> +    presc = DIV_ROUND_UP(qspi->clk_rate, max_rate) - 1;
->>>>> +
->>>>> +    if (of_property_read_u32(np, "spi-rx-bus-width", &width))
->>>>> +        width = 1;
->>>>> +
->>>>> +    if (width == 4)
->>>>> +        flash_read = SPI_NOR_QUAD;
->>>>> +    else if (width == 2)
->>>>> +        flash_read = SPI_NOR_DUAL;
->>>>> +    else if (width == 1)
->>>>> +        flash_read = SPI_NOR_NORMAL;
->>>>> +    else
->>>>> +        return -EINVAL;
->>>>> +
->>>>> +    flash = &qspi->flash[cs_num];
->>>>> +    flash->qspi = qspi;
->>>>> +    flash->cs = cs_num;
->>>>> +    flash->presc = presc;
->>>>> +
->>>>> +    flash->nor.dev = qspi->dev;
->>>>> +    spi_nor_set_flash_node(&flash->nor, np);
->>>>> +    flash->nor.priv = flash;
->>>>> +    mtd = &flash->nor.mtd;
->>>>> +    mtd->priv = &flash->nor;
->>>>> +
->>>>> +    flash->nor.read = stm32_qspi_read;
->>>>> +    flash->nor.write = stm32_qspi_write;
->>>>> +    flash->nor.erase = stm32_qspi_erase;
->>>>> +    flash->nor.read_reg = stm32_qspi_read_reg;
->>>>> +    flash->nor.write_reg = stm32_qspi_write_reg;
->>>>> +    flash->nor.prepare = stm32_qspi_prep;
->>>>> +    flash->nor.unprepare = stm32_qspi_unprep;
->>>>> +
->>>>> +    writel_relaxed(LPTR_DFT_TIMEOUT, qspi->io_base + QUADSPI_LPTR);
->>>>> +
->>>>> +    writel_relaxed(CR_PRESC(presc) | CR_FTHRES(3) | CR_TCEN |
->>>>> CR_SSHIFT
->>>>> +               | CR_EN, qspi->io_base + QUADSPI_CR);
->>>>> +
->>>>> +    /*
->>>>> +     * in stm32 qspi controller, QUADSPI_DCR register has a fsize
->>>>> field
->>>>> +     * which define the size of nor flash.
->>>>> +     * if fsize is NULL, the controller can't sent spi-nor command.
->>>>> +     * set a temporary value just to discover the nor flash with
->>>>> +     * "spi_nor_scan". After, the right value (mtd->size) can be set.
->>>>> +     */
->>>> Is 25 the smallest value ? Use a macro for this ...
->>> 25 is an arbitrary choice, I will define a smallest value
->> Cool, thanks!
->>
-> 
+Applied.
 
+Thanks,
 
--- 
-Best regards,
-Marek Vasut
+Boris
+
+> 
+> Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++--
+>  1 file changed, 58 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index 42ebd73..7419c5c 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -101,6 +101,9 @@ struct brcm_nand_dma_desc {
+>  #define BRCMNAND_MIN_BLOCKSIZE	(8 * 1024)
+>  #define BRCMNAND_MIN_DEVSIZE	(4ULL * 1024 * 1024)
+>  
+> +#define NAND_CTRL_RDY			(INTFC_CTLR_READY | INTFC_FLASH_READY)
+> +#define NAND_POLL_STATUS_TIMEOUT_MS	100
+> +
+>  /* Controller feature flags */
+>  enum {
+>  	BRCMNAND_HAS_1K_SECTORS			= BIT(0),
+> @@ -765,6 +768,31 @@ enum {
+>  	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+>  };
+>  
+> +static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
+> +				    u32 mask, u32 expected_val,
+> +				    unsigned long timeout_ms)
+> +{
+> +	unsigned long limit;
+> +	u32 val;
+> +
+> +	if (!timeout_ms)
+> +		timeout_ms = NAND_POLL_STATUS_TIMEOUT_MS;
+> +
+> +	limit = jiffies + msecs_to_jiffies(timeout_ms);
+> +	do {
+> +		val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+> +		if ((val & mask) == expected_val)
+> +			return 0;
+> +
+> +		cpu_relax();
+> +	} while (time_after(limit, jiffies));
+> +
+> +	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
+> +		 expected_val, val & mask);
+> +
+> +	return -ETIMEDOUT;
+> +}
+> +
+>  static inline void brcmnand_set_wp(struct brcmnand_controller *ctrl, bool en)
+>  {
+>  	u32 val = en ? CS_SELECT_NAND_WP : 0;
+> @@ -1024,12 +1052,39 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
+>  
+>  	if ((ctrl->features & BRCMNAND_HAS_WP) && wp_on == 1) {
+>  		static int old_wp = -1;
+> +		int ret;
+>  
+>  		if (old_wp != wp) {
+>  			dev_dbg(ctrl->dev, "WP %s\n", wp ? "on" : "off");
+>  			old_wp = wp;
+>  		}
+> +
+> +		/*
+> +		 * make sure ctrl/flash ready before and after
+> +		 * changing state of #WP pin
+> +		 */
+> +		ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY |
+> +					       NAND_STATUS_READY,
+> +					       NAND_CTRL_RDY |
+> +					       NAND_STATUS_READY, 0);
+> +		if (ret)
+> +			return;
+> +
+>  		brcmnand_set_wp(ctrl, wp);
+> +		chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+> +		/* NAND_STATUS_WP 0x00 = protected, 0x80 = not protected */
+> +		ret = bcmnand_ctrl_poll_status(ctrl,
+> +					       NAND_CTRL_RDY |
+> +					       NAND_STATUS_READY |
+> +					       NAND_STATUS_WP,
+> +					       NAND_CTRL_RDY |
+> +					       NAND_STATUS_READY |
+> +					       (wp ? 0 : NAND_STATUS_WP), 0);
+> +
+> +		if (ret)
+> +			dev_err_ratelimited(&host->pdev->dev,
+> +					    "nand #WP expected %s\n",
+> +					    wp ? "on" : "off");
+>  	}
+>  }
+>  
+> @@ -1157,15 +1212,15 @@ static irqreturn_t brcmnand_dma_irq(int irq, void *data)
+>  static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
+>  {
+>  	struct brcmnand_controller *ctrl = host->ctrl;
+> -	u32 intfc;
+> +	int ret;
+>  
+>  	dev_dbg(ctrl->dev, "send native cmd %d addr_lo 0x%x\n", cmd,
+>  		brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS));
+>  	BUG_ON(ctrl->cmd_pending != 0);
+>  	ctrl->cmd_pending = cmd;
+>  
+> -	intfc = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
+> -	WARN_ON(!(intfc & INTFC_CTLR_READY));
+> +	ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
+> +	WARN_ON(ret);
+>  
+>  	mb(); /* flush previous writes */
+>  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_START,
