@@ -1,26 +1,27 @@
-Received: from 4.mo179.mail-out.ovh.net ([46.105.36.149])
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cxsuv-0006Q4-6U
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 10:21:00 +0000
-Received: from player690.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo179.mail-out.ovh.net (Postfix) with ESMTP id BC22A35AAA
- for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 12:20:34 +0200 (CEST)
-Subject: Re: [PATCH 07/10] mtd: spi-nor: aspeed: configure chip window on AHB
- bus
-To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+ id 1cxtFo-0008Ml-MN
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 10:42:34 +0000
+Received: by mail-wr0-x241.google.com with SMTP id o21so27439242wrb.3
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 03:42:11 -0700 (PDT)
+Subject: Re: [PATCH 01/10] mtd: spi-nor: aspeed: fix the AST2400 SMC window
+ size
+To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+ linux-mtd@lists.infradead.org
 References: <1491497808-25487-1-git-send-email-clg@kaod.org>
- <1491497808-25487-8-git-send-email-clg@kaod.org>
- <35014889-064a-3162-d23b-69e8441e31b5@gmail.com>
+ <1491497808-25487-2-git-send-email-clg@kaod.org>
+ <1031c587-4d69-d8a0-921a-40886fbb1575@gmail.com>
+ <b791c4ae-3a12-0c6d-805d-49601a3e72b4@kaod.org>
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <a6efce0e-2265-b7bf-d572-0098687a7f0d@kaod.org>
-Date: Tue, 11 Apr 2017 12:20:26 +0200
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <352c3fc5-cdf6-12d6-f263-ddc026bd7f5d@gmail.com>
+Date: Tue, 11 Apr 2017 12:42:09 +0200
 MIME-Version: 1.0
-In-Reply-To: <35014889-064a-3162-d23b-69e8441e31b5@gmail.com>
+In-Reply-To: <b791c4ae-3a12-0c6d-805d-49601a3e72b4@kaod.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,241 +33,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/06/2017 09:25 PM, Marek Vasut wrote:
-> On 04/06/2017 06:56 PM, Cédric Le Goater wrote:
->> The segment registers of the SMC controller provide a way to configure
->> the mapping windows of the chips on the AHB bus. The settings are
->> required to be correct when the controller operates in Command mode,
->> which is the case for DMAs and the LPC mapping.
+On 04/11/2017 12:18 PM, Cédric Le Goater wrote:
+> On 04/06/2017 09:17 PM, Marek Vasut wrote:
+>> On 04/06/2017 06:56 PM, Cédric Le Goater wrote:
+>>> The window of the Aspeed AST2400 SMC Controller to map chips on the
+>>> AHB Bus has a 256MB size. 64MB is the default size for the first chip
+>>> select and not the full window range: [ 0x20000000 - 0x2FFFFFFF ].
+>>>
+>>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+>>> ---
+>>>  drivers/mtd/spi-nor/aspeed-smc.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+>>> index 56051d30f000..aa2c647c8507 100644
+>>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+>>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+>>> @@ -48,7 +48,7 @@ static void aspeed_smc_chip_set_4b_spi_2400(struct aspeed_smc_chip *chip);
+>>>  static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip);
+>>>  
+>>>  static const struct aspeed_smc_info fmc_2400_info = {
+>>> -	.maxsize = 64 * 1024 * 1024,
+>>> +	.maxsize = 256 * 1024 * 1024,
 >>
->> This tries to set the segment registers of each chip depending on the
->> size of the flash device and depending on the previous segment
->> settings, in order to have a contiguous window across multiple chip.
->>
->> Unfortunately, the AST2500 SPI controller has a bug and it is not
->> possible to configure a full 128MB window for a chip of the same
->> size. The window size needs to be restricted to 120MB. This issue only
->> applies to CE0.
->>
->> Signed-off-by: Cédric Le Goater <clg@kaod.org>
->> ---
->>  drivers/mtd/spi-nor/aspeed-smc.c | 124 ++++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 121 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
->> index b3c8cfe29765..336a1ddd100b 100644
->> --- a/drivers/mtd/spi-nor/aspeed-smc.c
->> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
->> @@ -104,6 +104,7 @@ struct aspeed_smc_chip {
->>  	struct aspeed_smc_controller *controller;
->>  	void __iomem *ctl;			/* control register */
->>  	void __iomem *ahb_base;			/* base of chip window */
->> +	u32 ahb_window_size;			/* chip window size */
->>  	unsigned long phys_base;		/* physical address of window */
->>  	u32 ctl_val[smc_max];			/* control settings */
->>  	enum aspeed_smc_flash_type type;	/* what type of flash */
->> @@ -218,6 +219,10 @@ struct aspeed_smc_controller {
->>  #define SEGMENT_ADDR_REG0		0x30
->>  #define SEGMENT_ADDR_START(_r)		((((_r) >> 16) & 0xFF) << 23)
->>  #define SEGMENT_ADDR_END(_r)		((((_r) >> 24) & 0xFF) << 23)
->> +#define SEGMENT_ADDR_VALUE(start, end)					\
->> +	(((((start) >> 23) & 0xFF) << 16) | ((((end) >> 23) & 0xFF) << 24))
->> +#define SEGMENT_ADDR_REG(controller, cs)	\
->> +	((controller)->regs + SEGMENT_ADDR_REG0 + (cs) * 4)
->>  
->>  /* DMA Registers */
->>  #define DMA_CONTROL_REG			0x80
->> @@ -604,8 +609,7 @@ static void __iomem *aspeed_smc_chip_base(struct aspeed_smc_chip *chip,
->>  	u32 reg;
->>  
->>  	if (controller->info->nce > 1) {
->> -		reg = readl(controller->regs + SEGMENT_ADDR_REG0 +
->> -			    chip->cs * 4);
->> +		reg = readl(SEGMENT_ADDR_REG(controller, chip->cs));
->>  
->>  		if (SEGMENT_ADDR_START(reg) >= SEGMENT_ADDR_END(reg))
->>  			return NULL;
->> @@ -616,6 +620,111 @@ static void __iomem *aspeed_smc_chip_base(struct aspeed_smc_chip *chip,
->>  	return controller->ahb_base + offset;
->>  }
->>  
->> +static u32 chip_set_segment(struct aspeed_smc_chip *chip, u32 cs, u32 start,
->> +			    u32 size)
->> +{
->> +	struct aspeed_smc_controller *controller = chip->controller;
->> +	void __iomem *seg_reg;
->> +	u32 oldval, newval, val0, start0, end;
+>> How does the second part of reg property in DT relate to this ?
+>> DT binding example has it set to 0x02000000 = 32 MiB ...
 > 
-> The naming of variables could use some improvement, it's really inobvious.
-
-OK. I agree. I first tried to have less but the algo is a little
-complex.
-
+> Thanks for pointing this out. There is an inconsistency and
+> a redundancy here ... The patch is wrong as I am mixing up 
+> different limits. Anyhow, there are some concerns to discuss. 
 > 
->> +	val0 = readl(SEGMENT_ADDR_REG(controller, 0));
->> +	start0 = SEGMENT_ADDR_START(val0);
->> +
->> +	seg_reg = SEGMENT_ADDR_REG(controller, cs);
->> +	oldval = readl(seg_reg);
->> +
->> +	/* If the chip size is not specified, use the default segment
+> The DT binding is the size of the overall AHB window in which 
+> a controller can directly memory access the chips bound to 
+> itself. This is for the Command mode.
 > 
-> Doesn't checkpatch warn about this broken multi-line comment style ?
-
-no. It didn't.
-
-> Anyway, please fix.
-
-Sure.
-
->> +	 * size, but take into account the possible overlap with the
->> +	 * previous segment
->> +	 */
->> +	if (!size)
->> +		size = SEGMENT_ADDR_END(oldval) - start;
->> +
->> +	/* The segment cannot exceed the maximum window size of the
->> +	 * controller.
->> +	 */
->> +	if (start + size > start0 + controller->info->maxsize) {
->> +		size = start0 + controller->info->maxsize - start;
->> +		dev_warn(chip->nor.dev, "CE%d window resized to %dMB",
->> +			 cs, size >> 20);
->> +	}
->> +
->> +	end = start + size;
->> +	newval = SEGMENT_ADDR_VALUE(start, end);
->> +	writel(newval, seg_reg);
->> +
->> +	/* Restore default value if something goes wrong. The chip
->> +	 * might have set some bogus value and we would loose access
->> +	 * to the chip.
->> +	 */
->> +	if (newval != readl(seg_reg)) {
->> +		dev_err(chip->nor.dev, "CE%d window invalid", cs);
->> +		writel(oldval, seg_reg);
->> +		start = SEGMENT_ADDR_START(oldval);
->> +		end = SEGMENT_ADDR_END(oldval);
->> +		size = end - start;
->> +	}
->> +
->> +	dev_info(chip->nor.dev, "CE%d window [ 0x%.8x- 0x%.8x ] %dMB",
->> +		 cs, start, end, size >> 20);
->> +
->> +	return size;
->> +}
->> +
->> +/*
->> + * This is expected to be called in increasing CE order
->> + */
->> +static u32 aspeed_smc_chip_set_segment(struct aspeed_smc_chip *chip)
->> +{
->> +	struct aspeed_smc_controller *controller = chip->controller;
->> +	u32  val0, start0, start;
->> +	u32 size = chip->nor.mtd.size;
->> +
->> +	/* The AST2500 SPI controller has a bug when the CE0 chip size
->> +	 * exceeds 120MB.
+> The .maxsize attribute, not being used until this patchset, 
+> holds the size limit of a chip that the controller supports 
+> to do direct memory access. This limit is 64MB on the AST2400 
+> and 256MB (full window) on the AST2500. 
 > 
-> 120 or 128 ?
+> I think that this value should be moved in the DT also ? 
 
-120. This is a HW bug.
+No, I don't think so, this is a chip property which can be derived from
+the compatible string, right ?
 
+> The second thing to do is to retrieve the size of the overall 
+> AHB window from the DT and stop using the .maxsize attribute 
+> in the subsequent patches configuring the segment registers 
+> and introducing the command mode.
 > 
->> +	 */
->> +	if (chip->cs == 0 && controller->info == &spi_2500_info &&
->> +	    size == (128 << 20)) {
+> But the SPI controller window on the AST2400 is :
 > 
-> I guess you can use SZ_128M for more clarity.
-
-OK.
-
-
+> 	 [ 0x30000000 - 0x3FFFFFFF ] 
 > 
->> +		size = 120 << 20;
->> +		dev_info(chip->nor.dev,
->> +			 "CE%d window resized to %dMB (AST2500 HW quirk)",
->> +			 chip->cs, size >> 20);
->> +	}
->> +
->> +	val0 = readl(SEGMENT_ADDR_REG(controller, 0));
->> +	start0 = SEGMENT_ADDR_START(val0);
->> +
->> +	/* As a start address for the current segment, use the default
->> +	 * start address if we are handling CE0 or use the previous
->> +	 * segment ending address
->> +	 */
->> +	if (chip->cs) {
->> +		u32 prev = readl(SEGMENT_ADDR_REG(controller, chip->cs - 1));
->> +
->> +		start = SEGMENT_ADDR_END(prev);
->> +	} else
->> +		start = start0;
->> +
->> +	size = chip_set_segment(chip, chip->cs, start, size);
->> +
->> +	/* Update chip base address on the AHB bus */
->> +	chip->ahb_base = controller->ahb_base + (start - start0);
->> +
->> +	if (size < chip->nor.mtd.size)
->> +		dev_warn(chip->nor.dev,
->> +			 "CE%d window too small for chip %dMB",
->> +			 chip->cs, (u32) chip->nor.mtd.size >> 20);
->> +
->> +	/* Make sure the next segment does not overlap with the
->> +	 * current one we just configured even if there is no
->> +	 * available chip. That could break access in Command Mode.
->> +	 */
->> +	if (chip->cs < controller->info->nce - 1)
->> +		chip_set_segment(chip, chip->cs + 1, start + size, 0);
->> +
->> +	return size;
->> +}
->> +
->>  static void aspeed_smc_chip_enable_write(struct aspeed_smc_chip *chip)
->>  {
->>  	struct aspeed_smc_controller *controller = chip->controller;
->> @@ -689,7 +798,7 @@ static int aspeed_smc_chip_setup_init(struct aspeed_smc_chip *chip,
->>  	 */
->>  	chip->ahb_base = aspeed_smc_chip_base(chip, res);
->>  	if (!chip->ahb_base) {
->> -		dev_warn(chip->nor.dev, "CE segment window closed.\n");
->> +		dev_warn(chip->nor.dev, "CE%d window closed", chip->cs);
->>  		return -EINVAL;
->>  	}
->>  
->> @@ -738,6 +847,15 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
->>  	if (chip->nor.addr_width == 4 && info->set_4b)
->>  		info->set_4b(chip);
->>  
->> +	/* This is for direct AHB access when using Command Mode. For
-> 
-> Fix the comments please
-> 
-> /*
->  * foo
->  * bar
->  * baz
->  */
-
-yes.
-
-
-Thanks,
-
-C. 
-
->> +	 * the AST2400 SPI controller which only handles one chip,
->> +	 * let's use the full window.
->> +	 */
->> +	if (controller->info->nce == 1)
->> +		chip->ahb_window_size = info->maxsize;
->> +	else
->> +		chip->ahb_window_size = aspeed_smc_chip_set_segment(chip);
->> +
->>  	/*
->>  	 * base mode has not been optimized yet. use it for writes.
->>  	 */
->>
+> which is a problem because, if I remember well, it requires us 
+> to configure CONFIG_VMSPLIT_2G to reserve space for the iomap.
+> I am not sure how to correctly handle that case, today we are 
+> just defining a small 32MB window.
 > 
 > 
+> Thanks,
+> 
+> C. 
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
