@@ -1,44 +1,21 @@
-Received: from mail-ua0-x22e.google.com ([2607:f8b0:400c:c08::22e])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cy29K-0007Wv-Te
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 20:12:28 +0000
-Received: by mail-ua0-x22e.google.com with SMTP id u103so5059231uau.1
- for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 13:12:05 -0700 (PDT)
+ id 1cy2do-0003qK-4C
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 20:43:58 +0000
+Subject: Re: [PATCH v2 3/3] fs: ubifs: set s_uuid in super block
+To: Oleksij Rempel <o.rempel@pengutronix.de>, dedekind1@gmail.com,
+ adrian.hunter@intel.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20170411095055.26328-1-o.rempel@pengutronix.de>
+ <20170411095055.26328-4-o.rempel@pengutronix.de>
+Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5d7d0f21-d87f-0835-c2f6-b6c9e07f73a8@nod.at>
+Date: Tue, 11 Apr 2017 22:43:26 +0200
 MIME-Version: 1.0
-In-Reply-To: <CABeXuvoKmvbo_n3XQ0Y+iWGz88Jr3TwbPA7GiR3pia9407ANLw@mail.gmail.com>
-References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
- <1491613030-11599-7-git-send-email-deepa.kernel@gmail.com>
- <CAHC9VhTYWeKL+BAb6F3tfwzs7OKUEA8ANM=V05sfoiahNNX=9w@mail.gmail.com>
- <CABeXuvoKmvbo_n3XQ0Y+iWGz88Jr3TwbPA7GiR3pia9407ANLw@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 11 Apr 2017 16:12:02 -0400
-Message-ID: <CAHC9VhTMU7cEJD2rffxOshEnL18i597GBsvHZm-Y8hCE9SJCAA@mail.gmail.com>
-Subject: Re: [PATCH 06/12] audit: Use timespec64 to represent audit timestamps
-To: Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Greg KH <gregkh@linuxfoundation.org>, andreas.dilger@intel.com,
- Arnd Bergmann <arnd@arndb.de>, "J. Bruce Fields" <bfields@fieldses.org>,
- Chris Mason <clm@fb.com>,
- "David S. Miller" <davem@davemloft.net>, David Sterba <dsterba@suse.com>,
- Evgeniy Dushistov <dushistov@mail.ru>, Eric Paris <eparis@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>,
- Josef Bacik <jbacik@fb.com>, Jeff Layton <jlayton@poochiereds.net>,
- John Stultz <john.stultz@linaro.org>, James Simmons <jsimmons@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, oleg.drokin@intel.com,
- Steven Rostedt <rostedt@goodmis.org>, yuchao0@huawei.com,
- ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
- linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-cifs@vger.kernel.org,
- "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- LSM List <linux-security-module@vger.kernel.org>, lustre-devel@lists.lustre.org,
- Linux Network Devel Mailing List <netdev@vger.kernel.org>,
- samba-technical@lists.samba.org,
- y2038 Mailman List <y2038@lists.linaro.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20170411095055.26328-4-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,21 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Apr 8, 2017 at 1:58 PM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
->> I have no problem merging this patch into audit/next for v4.12, would
->> you prefer me to do that so at least this patch is merged?
->
-> This would be fine.
-> But, I think whoever takes the last 2 deletion patches should also take them.
-> I'm not sure how that part works out.
+Oleksij,
 
-FWIW, I just merged this into the audit/next branch so at least this
-will go into v4.12.
+Am 11.04.2017 um 11:50 schrieb Oleksij Rempel:
+> From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+> 
+> This is need to provide uuid based integrity functionlity for:
+> imy_policy (fsuuid option) and  evmctl (--uuid option).
+> 
+> Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  fs/ubifs/super.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> index bff1e8d6f7bd..a584b2f2b11d 100644
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -2077,6 +2077,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+>  		err = -ENOMEM;
+>  		goto out_umount;
+>  	}
+> +	memcpy(&sb->s_uuid, &c->uuid, sizeof(c->uuid));
 
->> It would probably make life a small bit easier for us in the audit
->> world too as it would reduce the potential merge conflict.  However,
->> that's a relatively small thing to worry about.
+Makes sense.
 
--- 
-paul moore
-www.paul-moore.com
+Artem, do you remember why UBIFS didn't set s_uuid in first place?
+
+Thanks,
+//richard
