@@ -1,26 +1,26 @@
 Received: from 3.mo179.mail-out.ovh.net ([178.33.251.175])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cxqwL-0000Y2-Ku
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 08:14:19 +0000
+ id 1cxqxc-0002Ie-By
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 08:15:38 +0000
 Received: from player690.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo179.mail-out.ovh.net (Postfix) with ESMTP id ACD3B35972
- for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 10:13:53 +0200 (CEST)
-Subject: Re: [PATCH 10/10] mtd: spi-nor: aspeed: optimize read mode
+ by mo179.mail-out.ovh.net (Postfix) with ESMTP id E769C35963
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 10:15:14 +0200 (CEST)
+Subject: Re: [PATCH 06/10] mtd: spi-nor: add SPI_NOR_DUAL_READ to some flash
+ devices
 To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
 References: <1491497808-25487-1-git-send-email-clg@kaod.org>
- <1491497808-25487-11-git-send-email-clg@kaod.org>
- <7d80fbb3-81d9-3ac0-6bb9-47d2d4cf0855@gmail.com>
+ <1491497808-25487-7-git-send-email-clg@kaod.org>
+ <225a40b9-8682-fcd7-87ee-57b273d5ffeb@gmail.com>
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>
+ Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>
 From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <e27b9f19-947f-ab72-056d-d71812e69356@kaod.org>
-Date: Tue, 11 Apr 2017 10:13:40 +0200
+Message-ID: <c9c3c263-591e-ad91-68a0-bbdc02baaba9@kaod.org>
+Date: Tue, 11 Apr 2017 10:15:07 +0200
 MIME-Version: 1.0
-In-Reply-To: <7d80fbb3-81d9-3ac0-6bb9-47d2d4cf0855@gmail.com>
+In-Reply-To: <225a40b9-8682-fcd7-87ee-57b273d5ffeb@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,49 +32,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Marek,
-
-On 04/06/2017 09:28 PM, Marek Vasut wrote:
+On 04/06/2017 09:22 PM, Marek Vasut wrote:
 > On 04/06/2017 06:56 PM, Cédric Le Goater wrote:
->> This is only for SPI controllers as U-Boot should have done it already
->> for the FMC controller using DMAs.
+>> These devices are used on OpenPOWER systems.
 >>
->> The algo is based on the one found in the OpenPOWER pflash tool. It
->> first reads a golden buffer at low speed and then performs reads with
->> different clocks and delay cycles settings to find the fastest
->> configuration for the chip.
+>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+>> ---
+>>  The lines are over 80 characters but it looks better.
 >>
->> It can be deactivated at boot time with the kernel parameter :
+>>  drivers/mtd/spi-nor/spi-nor.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index ee777df4466c..0821e3211867 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1016,10 +1016,10 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
+>>  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+>>  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>> -	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+>> +	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ) },
+>>  	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
+>>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>> -	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+>> +	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+>>  
+>> @@ -1031,7 +1031,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+>> -	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+>> +	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>> @@ -1150,7 +1150,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
+>>  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+>>  	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+>> -	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
+>> +	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ) },
 > 
-> Something tells me this is likely gonna be pretty flaky and might lead
-> to unreliable configurations. The hardware manufacturer should be able
-> to determine the limits of the hardware and those should be put into DT
-> at manufacturing time IMO.
+> All of them probably support quad too ... also unrelated to this series,
+> separate patch please.
 
-It is not a common method but we have been using it on many OpenPOWER
-platforms (P8) using the AST2400 (palmetto, habanero, firestone, 
-garrison, etc) and also on the newer P9 platforms using the AST2500
-(romulus, zaius, witherspoon). So I would say that experience 'proves' 
-that it works. We didn't invent the SPI Timing Calibration algo, it is
-described in the specs of the manufacturer.
+ok. I will check for quad support and resend patch 5 and 6 in a separate patchset.
 
-Also, all these platforms use sockets to hold the different flash 
-modules of the system. We don't know in advance what we will find 
-and so it makes difficult to put any timing in the DT.    
+Thanks
 
-And the values of the "data input delay cycle" (REG94) depend on the 
-chip model and on the length of the wires of the board. If we were to 
-hard-code such values in the DT, we would need to put only safe and slow 
-settings known to work in all configurations. which is a bit what we 
-do in the current driver using really slow ones.
+C. 
 
-Here is a proposal. We could activate this algo using a property such
-as :
- 
-	"speed-mode" = "freq" or "auto-adjust"
-
-How's that ? 
-
-Thanks,
-
-C.
+> 
+>>  	/* Catalyst / On Semiconductor -- non-JEDEC */
+>>  	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+>>
+> 
+> 
