@@ -1,31 +1,28 @@
-Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+Received: from 4.mo179.mail-out.ovh.net ([46.105.36.149])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cxsuZ-0006OG-94
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 10:20:37 +0000
-Received: by mail-oi0-x22a.google.com with SMTP id r203so177698559oib.3
- for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 03:20:14 -0700 (PDT)
+ id 1cxsuv-0006Q4-6U
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 10:21:00 +0000
+Received: from player690.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo179.mail-out.ovh.net (Postfix) with ESMTP id BC22A35AAA
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 12:20:34 +0200 (CEST)
+Subject: Re: [PATCH 07/10] mtd: spi-nor: aspeed: configure chip window on AHB
+ bus
+To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+References: <1491497808-25487-1-git-send-email-clg@kaod.org>
+ <1491497808-25487-8-git-send-email-clg@kaod.org>
+ <35014889-064a-3162-d23b-69e8441e31b5@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>
+From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <a6efce0e-2265-b7bf-d572-0098687a7f0d@kaod.org>
+Date: Tue, 11 Apr 2017 12:20:26 +0200
 MIME-Version: 1.0
-In-Reply-To: <ae2f884b-17dc-cd24-f2a5-34c6c2aa7e8c@nod.at>
-References: <1490864181-2192-1-git-send-email-richard@nod.at>
- <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
- <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
- <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
- <646ae733-5037-3072-7151-b055a8fa1521@intel.com>
- <cbaff214-7431-2cd1-2453-156d716c0d8a@nod.at>
- <CAOQ4uxh5mZ8gCk1U=oV9b+j3k0RFcT3LozATfa3qHoYy+OMVsg@mail.gmail.com>
- <92bbb4d1-afe7-14f2-763b-051c7b12ff9e@nod.at>
- <ae2f884b-17dc-cd24-f2a5-34c6c2aa7e8c@nod.at>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 11 Apr 2017 13:20:13 +0300
-Message-ID: <CAOQ4uxhaYfO3m6kQ1agDg2Bm-6Xh9yxoPh93m=xpTz39gXjpAQ@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
-To: Richard Weinberger <richard@nod.at>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "stable [v4.9]" <stable@vger.kernel.org>,
- Ralph Sennhauser <ralph.sennhauser@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <35014889-064a-3162-d23b-69e8441e31b5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,31 +32,241 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 6, 2017 at 3:26 PM, Richard Weinberger <richard@nod.at> wrote:
-> Am 06.04.2017 um 14:09 schrieb Richard Weinberger:
->>> Were you able to make any progress? still working on this?
->>> If this is too complicated to get in for this cycle, better send a patch
->>> to disable O_TMPFILE support for ubifs and fix the problem properly on
->>> followup merge cycle.
->>> Because right now ubifs O_TMPFILE support is broken and breaks overlayfs mount.
+On 04/06/2017 09:25 PM, Marek Vasut wrote:
+> On 04/06/2017 06:56 PM, Cédric Le Goater wrote:
+>> The segment registers of the SMC controller provide a way to configure
+>> the mapping windows of the chips on the AHB bus. The settings are
+>> required to be correct when the controller operates in Command mode,
+>> which is the case for DMAs and the LPC mapping.
 >>
->> I have a test and currently testing it. As it looks the situation is less worse
->> than I thought first. :-)
->
-> s/test/patch :)
->
+>> This tries to set the segment registers of each chip depending on the
+>> size of the flash device and depending on the previous segment
+>> settings, in order to have a contiguous window across multiple chip.
+>>
+>> Unfortunately, the AST2500 SPI controller has a bug and it is not
+>> possible to configure a full 128MB window for a chip of the same
+>> size. The window size needs to be restricted to 120MB. This issue only
+>> applies to CE0.
+>>
+>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+>> ---
+>>  drivers/mtd/spi-nor/aspeed-smc.c | 124 ++++++++++++++++++++++++++++++++++++++-
+>>  1 file changed, 121 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+>> index b3c8cfe29765..336a1ddd100b 100644
+>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+>> @@ -104,6 +104,7 @@ struct aspeed_smc_chip {
+>>  	struct aspeed_smc_controller *controller;
+>>  	void __iomem *ctl;			/* control register */
+>>  	void __iomem *ahb_base;			/* base of chip window */
+>> +	u32 ahb_window_size;			/* chip window size */
+>>  	unsigned long phys_base;		/* physical address of window */
+>>  	u32 ctl_val[smc_max];			/* control settings */
+>>  	enum aspeed_smc_flash_type type;	/* what type of flash */
+>> @@ -218,6 +219,10 @@ struct aspeed_smc_controller {
+>>  #define SEGMENT_ADDR_REG0		0x30
+>>  #define SEGMENT_ADDR_START(_r)		((((_r) >> 16) & 0xFF) << 23)
+>>  #define SEGMENT_ADDR_END(_r)		((((_r) >> 24) & 0xFF) << 23)
+>> +#define SEGMENT_ADDR_VALUE(start, end)					\
+>> +	(((((start) >> 23) & 0xFF) << 16) | ((((end) >> 23) & 0xFF) << 24))
+>> +#define SEGMENT_ADDR_REG(controller, cs)	\
+>> +	((controller)->regs + SEGMENT_ADDR_REG0 + (cs) * 4)
+>>  
+>>  /* DMA Registers */
+>>  #define DMA_CONTROL_REG			0x80
+>> @@ -604,8 +609,7 @@ static void __iomem *aspeed_smc_chip_base(struct aspeed_smc_chip *chip,
+>>  	u32 reg;
+>>  
+>>  	if (controller->info->nce > 1) {
+>> -		reg = readl(controller->regs + SEGMENT_ADDR_REG0 +
+>> -			    chip->cs * 4);
+>> +		reg = readl(SEGMENT_ADDR_REG(controller, chip->cs));
+>>  
+>>  		if (SEGMENT_ADDR_START(reg) >= SEGMENT_ADDR_END(reg))
+>>  			return NULL;
+>> @@ -616,6 +620,111 @@ static void __iomem *aspeed_smc_chip_base(struct aspeed_smc_chip *chip,
+>>  	return controller->ahb_base + offset;
+>>  }
+>>  
+>> +static u32 chip_set_segment(struct aspeed_smc_chip *chip, u32 cs, u32 start,
+>> +			    u32 size)
+>> +{
+>> +	struct aspeed_smc_controller *controller = chip->controller;
+>> +	void __iomem *seg_reg;
+>> +	u32 oldval, newval, val0, start0, end;
+> 
+> The naming of variables could use some improvement, it's really inobvious.
 
-Richard,
+OK. I agree. I first tried to have less but the algo is a little
+complex.
 
-Maybe it's not my business to interfere with ubifs development and I
-haven't seen your patch.
+> 
+>> +	val0 = readl(SEGMENT_ADDR_REG(controller, 0));
+>> +	start0 = SEGMENT_ADDR_START(val0);
+>> +
+>> +	seg_reg = SEGMENT_ADDR_REG(controller, cs);
+>> +	oldval = readl(seg_reg);
+>> +
+>> +	/* If the chip size is not specified, use the default segment
+> 
+> Doesn't checkpatch warn about this broken multi-line comment style ?
 
-But on the face of it, it doesn't sound like fixing O_TMPFILE is a
-trivial fix, so not sure
-it is wise to send a patch for -rc7?...
+no. It didn't.
 
-How about sending the patch to disable O_TMPFILE for -rc7 and queuing
-your fix for v4.12?
-Without any patch, v4.11 is going to have a regression with overlayfs+ubifs.
+> Anyway, please fix.
 
-Amir.
+Sure.
+
+>> +	 * size, but take into account the possible overlap with the
+>> +	 * previous segment
+>> +	 */
+>> +	if (!size)
+>> +		size = SEGMENT_ADDR_END(oldval) - start;
+>> +
+>> +	/* The segment cannot exceed the maximum window size of the
+>> +	 * controller.
+>> +	 */
+>> +	if (start + size > start0 + controller->info->maxsize) {
+>> +		size = start0 + controller->info->maxsize - start;
+>> +		dev_warn(chip->nor.dev, "CE%d window resized to %dMB",
+>> +			 cs, size >> 20);
+>> +	}
+>> +
+>> +	end = start + size;
+>> +	newval = SEGMENT_ADDR_VALUE(start, end);
+>> +	writel(newval, seg_reg);
+>> +
+>> +	/* Restore default value if something goes wrong. The chip
+>> +	 * might have set some bogus value and we would loose access
+>> +	 * to the chip.
+>> +	 */
+>> +	if (newval != readl(seg_reg)) {
+>> +		dev_err(chip->nor.dev, "CE%d window invalid", cs);
+>> +		writel(oldval, seg_reg);
+>> +		start = SEGMENT_ADDR_START(oldval);
+>> +		end = SEGMENT_ADDR_END(oldval);
+>> +		size = end - start;
+>> +	}
+>> +
+>> +	dev_info(chip->nor.dev, "CE%d window [ 0x%.8x- 0x%.8x ] %dMB",
+>> +		 cs, start, end, size >> 20);
+>> +
+>> +	return size;
+>> +}
+>> +
+>> +/*
+>> + * This is expected to be called in increasing CE order
+>> + */
+>> +static u32 aspeed_smc_chip_set_segment(struct aspeed_smc_chip *chip)
+>> +{
+>> +	struct aspeed_smc_controller *controller = chip->controller;
+>> +	u32  val0, start0, start;
+>> +	u32 size = chip->nor.mtd.size;
+>> +
+>> +	/* The AST2500 SPI controller has a bug when the CE0 chip size
+>> +	 * exceeds 120MB.
+> 
+> 120 or 128 ?
+
+120. This is a HW bug.
+
+> 
+>> +	 */
+>> +	if (chip->cs == 0 && controller->info == &spi_2500_info &&
+>> +	    size == (128 << 20)) {
+> 
+> I guess you can use SZ_128M for more clarity.
+
+OK.
+
+
+> 
+>> +		size = 120 << 20;
+>> +		dev_info(chip->nor.dev,
+>> +			 "CE%d window resized to %dMB (AST2500 HW quirk)",
+>> +			 chip->cs, size >> 20);
+>> +	}
+>> +
+>> +	val0 = readl(SEGMENT_ADDR_REG(controller, 0));
+>> +	start0 = SEGMENT_ADDR_START(val0);
+>> +
+>> +	/* As a start address for the current segment, use the default
+>> +	 * start address if we are handling CE0 or use the previous
+>> +	 * segment ending address
+>> +	 */
+>> +	if (chip->cs) {
+>> +		u32 prev = readl(SEGMENT_ADDR_REG(controller, chip->cs - 1));
+>> +
+>> +		start = SEGMENT_ADDR_END(prev);
+>> +	} else
+>> +		start = start0;
+>> +
+>> +	size = chip_set_segment(chip, chip->cs, start, size);
+>> +
+>> +	/* Update chip base address on the AHB bus */
+>> +	chip->ahb_base = controller->ahb_base + (start - start0);
+>> +
+>> +	if (size < chip->nor.mtd.size)
+>> +		dev_warn(chip->nor.dev,
+>> +			 "CE%d window too small for chip %dMB",
+>> +			 chip->cs, (u32) chip->nor.mtd.size >> 20);
+>> +
+>> +	/* Make sure the next segment does not overlap with the
+>> +	 * current one we just configured even if there is no
+>> +	 * available chip. That could break access in Command Mode.
+>> +	 */
+>> +	if (chip->cs < controller->info->nce - 1)
+>> +		chip_set_segment(chip, chip->cs + 1, start + size, 0);
+>> +
+>> +	return size;
+>> +}
+>> +
+>>  static void aspeed_smc_chip_enable_write(struct aspeed_smc_chip *chip)
+>>  {
+>>  	struct aspeed_smc_controller *controller = chip->controller;
+>> @@ -689,7 +798,7 @@ static int aspeed_smc_chip_setup_init(struct aspeed_smc_chip *chip,
+>>  	 */
+>>  	chip->ahb_base = aspeed_smc_chip_base(chip, res);
+>>  	if (!chip->ahb_base) {
+>> -		dev_warn(chip->nor.dev, "CE segment window closed.\n");
+>> +		dev_warn(chip->nor.dev, "CE%d window closed", chip->cs);
+>>  		return -EINVAL;
+>>  	}
+>>  
+>> @@ -738,6 +847,15 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
+>>  	if (chip->nor.addr_width == 4 && info->set_4b)
+>>  		info->set_4b(chip);
+>>  
+>> +	/* This is for direct AHB access when using Command Mode. For
+> 
+> Fix the comments please
+> 
+> /*
+>  * foo
+>  * bar
+>  * baz
+>  */
+
+yes.
+
+
+Thanks,
+
+C. 
+
+>> +	 * the AST2400 SPI controller which only handles one chip,
+>> +	 * let's use the full window.
+>> +	 */
+>> +	if (controller->info->nce == 1)
+>> +		chip->ahb_window_size = info->maxsize;
+>> +	else
+>> +		chip->ahb_window_size = aspeed_smc_chip_set_segment(chip);
+>> +
+>>  	/*
+>>  	 * base mode has not been optimized yet. use it for writes.
+>>  	 */
+>>
+> 
+> 
