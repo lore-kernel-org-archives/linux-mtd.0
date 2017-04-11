@@ -1,19 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cxu8h-0007yC-KC
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 11:39:17 +0000
-Date: Tue, 11 Apr 2017 13:38:54 +0200
+ id 1cxu8r-000800-KC
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 11:39:28 +0000
+Date: Tue, 11 Apr 2017 13:39:09 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sekhar Nori <nsekhar@ti.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: nand: davinci: add comment on NAND subpage write
- status on keystone
-Message-ID: <20170411133854.0d3e870c@bbrezillon>
-In-Reply-To: <079de6bbc3285ab09e4ac25e78b947286080cee5.1490884624.git.nsekhar@ti.com>
-References: <079de6bbc3285ab09e4ac25e78b947286080cee5.1490884624.git.nsekhar@ti.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: <richard@nod.at>, <aford173@gmail.com>, <enrico.leto@siemens.com>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, "# 4 . 7+" <stable@vger.kernel.org>
+Subject: Re: [PATCH] mtd: nand: omap2: Fix partition creation via cmdline
+ mtdparts
+Message-ID: <20170411133909.3b25a054@bbrezillon>
+In-Reply-To: <1490859470-7973-1-git-send-email-rogerq@ti.com>
+References: <1490859470-7973-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,11 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Mar 2017 20:09:30 +0530
-Sekhar Nori <nsekhar@ti.com> wrote:
+On Thu, 30 Mar 2017 10:37:50 +0300
+Roger Quadros <rogerq@ti.com> wrote:
 
-> Add a comment clarifying that NAND subpage write on keystone works,
-> but is not being enabled in the interest of backward compatibility.
+> commit c9711ec5250b ("mtd: nand: omap: Clean up device tree support")
+> caused the parent device name to be changed from "omap2-nand.0"
+> to "<base address>.nand"  (e.g. 30000000.nand on omap3 platforms).
+> This caused mtd->name to be changed as well. This breaks partition
+> creation via mtdparts passed by u-boot as it uses "omap2-nand.0"
+> for the mtd-id.
+> 
+> Fix this by explicitly setting the mtd->name to "omap2-nand.<CS number>"
+> if it isn't already set by nand_set_flash_node(). CS number is the
+> NAND controller instance ID.
+> 
 
 Applied.
 
@@ -38,31 +46,34 @@ Thanks,
 
 Boris
 
-> 
-> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> Fixes: c9711ec5250b ("mtd: nand: omap: Clean up device tree support")
+> Cc: <stable@vger.kernel.org> # 4.7+
+> Reported-by: Leto Enrico <enrico.leto@siemens.com>
+> Reported-by: Adam Ford <aford173@gmail.com>
+> Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Tested-by: Adam Ford <aford173@gmail.com>
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
 > ---
->  drivers/mtd/nand/davinci_nand.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+>  drivers/mtd/nand/omap2.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index 27fa8b87cd5f..531c51991e57 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -581,6 +581,17 @@ static struct davinci_nand_pdata
->  			"ti,davinci-nand-use-bbt"))
->  			pdata->bbt_options = NAND_BBT_USE_FLASH;
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 2a52101..084934a 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1856,6 +1856,15 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  	nand_chip->ecc.priv	= NULL;
+>  	nand_set_flash_node(nand_chip, dev->of_node);
 >  
-> +		/*
-> +		 * Since kernel v4.8, this driver has been fixed to enable
-> +		 * use of 4-bit hardware ECC with subpages and verified on
-> +		 * TI's keystone EVMs (K2L, K2HK and K2E).
-> +		 * However, in the interest of not breaking systems using
-> +		 * existing UBI partitions, sub-page writes are not being
-> +		 * (re)enabled. If you want to use subpage writes on Keystone
-> +		 * platforms (i.e. do not have any existing UBI partitions),
-> +		 * then use "ti,davinci-nand" as the compatible in your
-> +		 * device-tree file.
-> +		 */
->  		if (of_device_is_compatible(pdev->dev.of_node,
->  					    "ti,keystone-nand")) {
->  			pdata->options |= NAND_NO_SUBPAGE_WRITE;
+> +	if (!mtd->name) {
+> +		mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+> +					   "omap2-nand.%d", info->gpmc_cs);
+> +		if (!mtd->name) {
+> +			dev_err(&pdev->dev, "Failed to set MTD name\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	nand_chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
+>  	if (IS_ERR(nand_chip->IO_ADDR_R))
