@@ -1,23 +1,31 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cy0Y9-0005IU-Pf
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 18:29:59 +0000
-Received: by mail-wr0-x243.google.com with SMTP id l28so831068wre.0
- for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 11:29:36 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mtd: dataflash: Make use of "extened device
- information"
-To: Andrey Smirnov <andrew.smirnov@gmail.com>, linux-mtd@lists.infradead.org
-References: <20170411161722.11164-1-andrew.smirnov@gmail.com>
-Cc: cphealy@gmail.com, David Woodhouse <dwmw2@infradead.org>,
+ id 1cy0Zj-0006uv-Bs
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 18:31:37 +0000
+Received: by mail-wm0-x244.google.com with SMTP id o81so1932068wmb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 11:31:14 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add driver for STM32 quad spi flash
+ controller
+To: Ludovic BARRE <ludovic.barre@st.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <1490979724-10905-1-git-send-email-ludovic.Barre@st.com>
+ <1490979724-10905-3-git-send-email-ludovic.Barre@st.com>
+ <5ec38e39-661d-8a83-4168-b9f3d986bcd1@gmail.com>
+ <601e2aa5-7cd3-34fb-660e-359f2a016b65@st.com>
+ <9a0c5f8e-01dc-3d2b-5ebb-069752594e8e@gmail.com>
+ <f9b4b8b0-4987-7f67-df3b-d32d6c130818@st.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org
+ Alexandre Torgue <alexandre.torgue@st.com>, Rob Herring
+ <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <7a1ea2db-eda8-ceec-3ad2-45146bb43a53@gmail.com>
-Date: Tue, 11 Apr 2017 20:29:28 +0200
+Message-ID: <d87ee748-4d53-4e1d-4bb9-3a0c860a138e@gmail.com>
+Date: Tue, 11 Apr 2017 20:31:10 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170411161722.11164-1-andrew.smirnov@gmail.com>
+In-Reply-To: <f9b4b8b0-4987-7f67-df3b-d32d6c130818@st.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,207 +37,229 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/11/2017 06:17 PM, Andrey Smirnov wrote:
-> In anticipation of supporting chips that need it, extend the size of
-> struct flash_info's 'jedec_id' field to make room 2 byte of extended
-> device information as well as add code to fetch this data during
-> jedec_probe().
+On 04/10/2017 06:52 PM, Ludovic BARRE wrote:
+> hi Marek
 > 
-> Cc: cphealy@gmail.com
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-> ---
->  drivers/mtd/devices/mtd_dataflash.c | 113 +++++++++++++++++++++---------------
->  1 file changed, 66 insertions(+), 47 deletions(-)
+> tomorrow, I send a v3 with your/Rob reviews.
+
+Super, thanks! I'll be pretty busy till Friday, so please keep in mind
+the final review might take a bit.
+
+> BR
 > 
-> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> index f9e9bd1..9a98cdc 100644
-> --- a/drivers/mtd/devices/mtd_dataflash.c
-> +++ b/drivers/mtd/devices/mtd_dataflash.c
-> @@ -689,7 +689,7 @@ struct flash_info {
->  	/* JEDEC id has a high byte of zero plus three data bytes:
->  	 * the manufacturer id, then a two byte device id.
->  	 */
-> -	uint32_t	jedec_id;
-> +	uint64_t	jedec_id;
->  
->  	/* The size listed here is what works with OP_ERASE_PAGE. */
->  	unsigned	nr_pages;
-> @@ -712,61 +712,35 @@ static struct flash_info dataflash_data[] = {
->  	 * These newer chips also support 128-byte security registers (with
->  	 * 64 bytes one-time-programmable) and software write-protection.
->  	 */
-> -	{ "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS},
-> -	{ "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB011B",  0x1f22000000, 512, 264, 9, SUP_POW2PS},
-> +	{ "at45db011d",  0x1f22000000, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
-> -	{ "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB021B",  0x1f23000000, 1024, 264, 9, SUP_POW2PS},
-> +	{ "at45db021d",  0x1f23000000, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
-> -	{ "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB041x",  0x1f24000000, 2048, 264, 9, SUP_POW2PS},
-> +	{ "at45db041d",  0x1f24000000, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
-> -	{ "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB081B",  0x1f25000000, 4096, 264, 9, SUP_POW2PS},
-> +	{ "at45db081d",  0x1f25000000, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
-> -	{ "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB161x",  0x1f26000000, 4096, 528, 10, SUP_POW2PS},
-> +	{ "at45db161d",  0x1f26000000, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB321x",  0x1f2700, 8192, 528, 10, 0},		/* rev C */
-> +	{ "AT45DB321x",  0x1f27000000, 8192, 528, 10, 0},	/* rev C */
->  
-> -	{ "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
-> -	{ "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB321x",  0x1f27010000, 8192, 528, 10, SUP_POW2PS},
-> +	{ "at45db321d",  0x1f27010000, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
-> -	{ "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB642x",  0x1f28000000, 8192, 1056, 11, SUP_POW2PS},
-> +	{ "at45db642d",  0x1f28000000, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->  };
->  
-> -static struct flash_info *jedec_probe(struct spi_device *spi)
-> +static struct flash_info *jedec_lookup(struct spi_device *spi,
-> +				       uint64_t jedec)
-
-const u64 (not uint64_t , this is NOT userspace). Fix globally.
-
->  {
-> -	int			tmp;
-> -	uint8_t			code = OP_READ_ID;
-> -	uint8_t			id[3];
-> -	uint32_t		jedec;
-> -	struct flash_info	*info;
-> -	int status;
-> -
-> -	/* JEDEC also defines an optional "extended device information"
-> -	 * string for after vendor-specific data, after the three bytes
-> -	 * we use here.  Supporting some chips might require using it.
-> -	 *
-> -	 * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
-> -	 * That's not an error; only rev C and newer chips handle it, and
-> -	 * only Atmel sells these chips.
-> -	 */
-> -	tmp = spi_write_then_read(spi, &code, 1, id, 3);
-> -	if (tmp < 0) {
-> -		pr_debug("%s: error %d reading JEDEC ID\n",
-> -			dev_name(&spi->dev), tmp);
-> -		return ERR_PTR(tmp);
-> -	}
-> -	if (id[0] != 0x1f)
-> -		return NULL;
-> -
-> -	jedec = id[0];
-> -	jedec = jedec << 8;
-> -	jedec |= id[1];
-> -	jedec = jedec << 8;
-> -	jedec |= id[2];
-> +	int tmp, status;
-> +	struct flash_info *info;
->  
->  	for (tmp = 0, info = dataflash_data;
->  			tmp < ARRAY_SIZE(dataflash_data);
-> @@ -796,12 +770,57 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
->  		}
->  	}
->  
-> +	return NULL;
-> +}
-> +
-> +static struct flash_info *jedec_probe(struct spi_device *spi)
-> +{
-> +	int			tmp;
-> +	uint8_t			code = OP_READ_ID;
-> +	uint8_t			id[8] = {0};
-> +	const unsigned int	id_size = 5;
-> +	const unsigned int	first_byte = sizeof(id) - id_size;
-> +	const uint64_t		eid_mask = GENMASK_ULL(63, 16);
-
-Can we have some macro, like DATAFLASH_ID_BYTES and derive all the masks
-and crap from it instead of having this stack of variables ?
-
-> +	uint64_t		jedec;
-> +	struct flash_info	*info;
-
-Replace the tab after the type with space please.
-
-> +	/* JEDEC also defines an optional "extended device information"
-
-Multi-line comment format:
-
-/*
- * foo
- * bar
- */
-
-> +	 * string for after vendor-specific data, after the three bytes
-> +	 * we use here.  Supporting some chips might require using it.
-> +	 *
-> +	 * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
-> +	 * That's not an error; only rev C and newer chips handle it, and
-> +	 * only Atmel sells these chips.
-> +	 */
-> +	tmp = spi_write_then_read(spi, &code, 1, &id[first_byte], id_size);
-> +	if (tmp < 0) {
-
-Use ret instead of tmp.
-
-> +		pr_debug("%s: error %d reading JEDEC ID\n",
-> +			dev_name(&spi->dev), tmp);
-> +		return ERR_PTR(tmp);
-> +	}
-
-newline
-
-> +	if (id[first_byte] != 0x1f)
-
-Use a macro, like CFI_MFR_ATMEL ?
-
-> +		return NULL;
-> +
-> +	jedec = be64_to_cpup((__be64 *)id);
-> +
-> +	info = jedec_lookup(spi, jedec);
-> +	if (info)
-> +		return info;
-> +	/*
-> +	 * Clear extended id bits and try to find a match again
-> +	 */
-
-This could be a single-line comment.
-
-> +	jedec &= eid_mask;
-> +
-> +	info = jedec_lookup(spi, jedec);
-> +	if (info)
-> +		return info;
-> +
->  	/*
->  	 * Treat other chips as errors ... we won't know the right page
->  	 * size (it might be binary) even when we can tell which density
->  	 * class is involved (legacy chip id scheme).
->  	 */
-> -	dev_warn(&spi->dev, "JEDEC id %06x not handled\n", jedec);
-> +	dev_warn(&spi->dev, "JEDEC id %010llx not handled\n", jedec);
->  	return ERR_PTR(-ENODEV);
->  }
->  
+> Ludo
+> 
+> 
+> On 04/10/2017 06:15 PM, Marek Vasut wrote:
+>> On 04/10/2017 11:08 AM, Ludovic BARRE wrote:
+>>> On 04/07/2017 01:55 AM, Marek Vasut wrote:
+>>>> On 03/31/2017 07:02 PM, Ludovic Barre wrote:
+>>>>> From: Ludovic Barre <ludovic.barre@st.com>
+>>>>>
+>>>>> The quadspi is a specialized communication interface targeting single,
+>>>>> dual or quad SPI Flash memories.
+>>>>>
+>>>>> It can operate in any of the following modes:
+>>>>> -indirect mode: all the operations are performed using the quadspi
+>>>>>    registers
+>>>>> -read memory-mapped mode: the external Flash memory is mapped to the
+>>>>>    microcontroller address space and is seen by the system as if it
+>>>>> was
+>>>>>    an internal memory
+>>>>>
+>>>>> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+>>>>> ---
+>>>>>    drivers/mtd/spi-nor/Kconfig         |   7 +
+>>>>>    drivers/mtd/spi-nor/Makefile        |   1 +
+>>>>>    drivers/mtd/spi-nor/stm32-quadspi.c | 690
+>>>>> ++++++++++++++++++++++++++++++++++++
+>>>>>    3 files changed, 698 insertions(+)
+>>>>>    create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
+>>>>>
+>>>> [...]
+>>>>
+>>>>> +struct stm32_qspi_flash {
+>>>>> +    struct spi_nor nor;
+>>>>> +    u32 cs;
+>>>>> +    u32 fsize;
+>>>>> +    u32 presc;
+>>>>> +    struct stm32_qspi *qspi;
+>>>>> +};
+>>>> [...]
+>>>>
+>>>>> +struct stm32_qspi_cmd {
+>>>>> +    struct {
+>>>>> +        u8 addr_width;
+>>>>> +        u8 dummy;
+>>>>> +        u8 data;
+>>>>> +    } conf;
+>>>> Is there any benefit in having this structure here or could you just
+>>>> make the struct stm32_qspi_cmd flat ?
+>>> no benefit, it was just to regroup,  so I can do a flat structure
+>> Well, as you like, but I think it does make sense to just make it flat.
+>>
+>>>>> +    u8 opcode;
+>>>>> +    u32 framemode;
+>>>>> +    u32 qspimode;
+>>>>> +    u32 addr;
+>>>>> +    size_t len;
+>>>>> +    void *buf;
+>>>>> +};
+>>>> [...]
+>>>>
+>>>>> +static ssize_t stm32_qspi_read(struct spi_nor *nor, loff_t from,
+>>>>> size_t len,
+>>>>> +                   u_char *buf)
+>>>>> +{
+>>>>> +    struct stm32_qspi_flash *flash = nor->priv;
+>>>>> +    struct stm32_qspi *qspi = flash->qspi;
+>>>>> +    struct stm32_qspi_cmd cmd;
+>>>>> +    int err;
+>>>>> +
+>>>>> +    dev_dbg(qspi->dev, "read(%#.2x): buf:%p from:%#.8x len:%#x\n",
+>>>>> +        nor->read_opcode, buf, (u32)from, len);
+>>>>> +
+>>>>> +    memset(&cmd, 0, sizeof(cmd));
+>>>>> +    cmd.opcode = nor->read_opcode;
+>>>>> +    cmd.conf.addr_width = nor->addr_width;
+>>>>> +    cmd.addr = (u32)from;
+>>>> loff_t (from) can be 64bit ... how do we handle this ?
+>>> I'm surprise by the question,
+>>> the SPI NOR device uses 3 Bytes or 4 bytes address mode.
+>>> So, the stm32 qspi controller has a 32 bit register for NOR address.
+>>> On the other hand the framework and other drivers used this variable
+>>> (from) like
+>>> a 32 bits.
+>> Hmmm, (rhetorical question) then why do we even use loff_t in the
+>> framework ?
+>>
+>> Anyway, this is no problem then.
+> In fact, the loff_t 64 bit come from mtd interface
+> (needed to address biggest device constraint) but not needed for spi-nor
+> devices.
+>>>>> +    cmd.conf.data = 1;
+>>>>> +    cmd.conf.dummy = nor->read_dummy;
+>>>>> +    cmd.len = len;
+>>>>> +    cmd.buf = buf;
+>>>>> +    cmd.qspimode = qspi->read_mode;
+>>>>> +
+>>>>> +    stm32_qspi_set_framemode(nor, &cmd, true);
+>>>>> +    err = stm32_qspi_send(flash, &cmd);
+>>>>> +
+>>>>> +    return err ? err : len;
+>>>>> +}
+>>>> [...]
+>>>>
+>>>>> +static irqreturn_t stm32_qspi_irq(int irq, void *dev_id)
+>>>>> +{
+>>>>> +    struct stm32_qspi *qspi = (struct stm32_qspi *)dev_id;
+>>>>> +    u32 cr, sr, fcr = 0;
+>>>>> +
+>>>>> +    cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
+>>>>> +    sr = readl_relaxed(qspi->io_base + QUADSPI_SR);
+>>>>> +
+>>>>> +    if ((cr & CR_TCIE) && (sr & SR_TCF)) {
+>>>>> +        /* tx complete */
+>>>>> +        fcr |= FCR_CTCF;
+>>>>> +        complete(&qspi->cmd_completion);
+>>>>> +    } else {
+>>>>> +        dev_info(qspi->dev, "spurious interrupt\n");
+>>>> You probably want to ratelimit this one ...
+>>> yes it's better if there is an issue.
+>> Yep
+>>
+>>>>> +    }
+>>>>> +
+>>>>> +    writel_relaxed(fcr, qspi->io_base + QUADSPI_FCR);
+>>>>> +
+>>>>> +    return IRQ_HANDLED;
+>>>>> +}
+>>>>> +
+>>>>> +static int stm32_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+>>>>> +{
+>>>>> +    struct stm32_qspi_flash *flash = nor->priv;
+>>>>> +    struct stm32_qspi *qspi = flash->qspi;
+>>>>> +
+>>>>> +    mutex_lock(&qspi->lock);
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +
+>>>>> +static void stm32_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops
+>>>>> ops)
+>>>>> +{
+>>>>> +    struct stm32_qspi_flash *flash = nor->priv;
+>>>>> +    struct stm32_qspi *qspi = flash->qspi;
+>>>>> +
+>>>>> +    mutex_unlock(&qspi->lock);
+>>>>> +}
+>>>>> +
+>>>>> +static int stm32_qspi_flash_setup(struct stm32_qspi *qspi,
+>>>>> +                  struct device_node *np)
+>>>>> +{
+>>>>> +    u32 width, flash_read, presc, cs_num, max_rate = 0;
+>>>>> +    struct stm32_qspi_flash *flash;
+>>>>> +    struct mtd_info *mtd;
+>>>>> +    int ret;
+>>>>> +
+>>>>> +    of_property_read_u32(np, "reg", &cs_num);
+>>>>> +    if (cs_num >= STM32_MAX_NORCHIP)
+>>>>> +        return -EINVAL;
+>>>>> +
+>>>>> +    of_property_read_u32(np, "spi-max-frequency", &max_rate);
+>>>>> +    if (!max_rate)
+>>>>> +        return -EINVAL;
+>>>>> +
+>>>>> +    presc = DIV_ROUND_UP(qspi->clk_rate, max_rate) - 1;
+>>>>> +
+>>>>> +    if (of_property_read_u32(np, "spi-rx-bus-width", &width))
+>>>>> +        width = 1;
+>>>>> +
+>>>>> +    if (width == 4)
+>>>>> +        flash_read = SPI_NOR_QUAD;
+>>>>> +    else if (width == 2)
+>>>>> +        flash_read = SPI_NOR_DUAL;
+>>>>> +    else if (width == 1)
+>>>>> +        flash_read = SPI_NOR_NORMAL;
+>>>>> +    else
+>>>>> +        return -EINVAL;
+>>>>> +
+>>>>> +    flash = &qspi->flash[cs_num];
+>>>>> +    flash->qspi = qspi;
+>>>>> +    flash->cs = cs_num;
+>>>>> +    flash->presc = presc;
+>>>>> +
+>>>>> +    flash->nor.dev = qspi->dev;
+>>>>> +    spi_nor_set_flash_node(&flash->nor, np);
+>>>>> +    flash->nor.priv = flash;
+>>>>> +    mtd = &flash->nor.mtd;
+>>>>> +    mtd->priv = &flash->nor;
+>>>>> +
+>>>>> +    flash->nor.read = stm32_qspi_read;
+>>>>> +    flash->nor.write = stm32_qspi_write;
+>>>>> +    flash->nor.erase = stm32_qspi_erase;
+>>>>> +    flash->nor.read_reg = stm32_qspi_read_reg;
+>>>>> +    flash->nor.write_reg = stm32_qspi_write_reg;
+>>>>> +    flash->nor.prepare = stm32_qspi_prep;
+>>>>> +    flash->nor.unprepare = stm32_qspi_unprep;
+>>>>> +
+>>>>> +    writel_relaxed(LPTR_DFT_TIMEOUT, qspi->io_base + QUADSPI_LPTR);
+>>>>> +
+>>>>> +    writel_relaxed(CR_PRESC(presc) | CR_FTHRES(3) | CR_TCEN |
+>>>>> CR_SSHIFT
+>>>>> +               | CR_EN, qspi->io_base + QUADSPI_CR);
+>>>>> +
+>>>>> +    /*
+>>>>> +     * in stm32 qspi controller, QUADSPI_DCR register has a fsize
+>>>>> field
+>>>>> +     * which define the size of nor flash.
+>>>>> +     * if fsize is NULL, the controller can't sent spi-nor command.
+>>>>> +     * set a temporary value just to discover the nor flash with
+>>>>> +     * "spi_nor_scan". After, the right value (mtd->size) can be set.
+>>>>> +     */
+>>>> Is 25 the smallest value ? Use a macro for this ...
+>>> 25 is an arbitrary choice, I will define a smallest value
+>> Cool, thanks!
+>>
 > 
 
 
