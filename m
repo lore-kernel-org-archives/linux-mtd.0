@@ -1,17 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cxu6r-00078J-5l
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 11:37:23 +0000
-Date: Tue, 11 Apr 2017 13:36:59 +0200
+ id 1cxu75-00079f-Qq
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 11:37:37 +0000
+Date: Tue, 11 Apr 2017 13:37:19 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: richard@nod.at, nicolas.ferre@microchip.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: NULL terminate a of_device_id table
-Message-ID: <20170411133659.7312a443@bbrezillon>
-In-Reply-To: <20170411052252.20656-1-christophe.jaillet@wanadoo.fr>
-References: <20170411052252.20656-1-christophe.jaillet@wanadoo.fr>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: Re: [patch] mtd: nand: Fix a couple error codes
+Message-ID: <20170411133719.49543703@bbrezillon>
+In-Reply-To: <20170404081545.GA25533@mwanda>
+References: <20170404081545.GA25533@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,12 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 11 Apr 2017 07:22:52 +0200
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+On Tue, 4 Apr 2017 11:15:46 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-> of_device_id tables should be NULL terminated.
+> We accidentally return 1 on error instead of proper error codes.
 > 
-> Fixes: 07b23e3db9ed ("mtd: nand: Cleanup/rework the atmel_nand driver")
 
 Applied.
 
@@ -37,21 +38,28 @@ Thanks,
 
 Boris
 
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/mtd/nand/atmel/nand-controller.c | 1 +
->  1 file changed, 1 insertion(+)
+> Fixes: 07b23e3db9ed ("mtd: nand: Cleanup/rework the atmel_nand driver")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
 > diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-> index 27301603f394..af9dd0e04261 100644
+> index 27301603f394..b8d17a024dbd 100644
 > --- a/drivers/mtd/nand/atmel/nand-controller.c
 > +++ b/drivers/mtd/nand/atmel/nand-controller.c
-> @@ -1636,6 +1636,7 @@ static const struct of_device_id atmel_matrix_of_ids[] = {
->  		.compatible = "atmel,at91sam9x5-matrix",
->  		.data = (void *)AT91SAM9X5_MATRIX_EBICSA,
->  	},
-> +	{ /* sentinel */ },
->  };
->  
->  static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+> @@ -1686,7 +1686,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+>  	nc->smc = syscon_node_to_regmap(np);
+>  	of_node_put(np);
+>  	if (IS_ERR(nc->smc)) {
+> -		ret = IS_ERR(nc->smc);
+> +		ret = PTR_ERR(nc->smc);
+>  		dev_err(dev, "Could not get SMC regmap (err = %d)\n", ret);
+>  		return ret;
+>  	}
+> @@ -1719,7 +1719,7 @@ atmel_smc_nand_controller_init(struct atmel_smc_nand_controller *nc)
+>  	nc->matrix = syscon_node_to_regmap(np);
+>  	of_node_put(np);
+>  	if (IS_ERR(nc->matrix)) {
+> -		ret = IS_ERR(nc->matrix);
+> +		ret = PTR_ERR(nc->matrix);
+>  		dev_err(dev, "Could not get Matrix regmap (err = %d)\n", ret);
+>  		return ret;
+>  	}
