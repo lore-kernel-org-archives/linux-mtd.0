@@ -1,31 +1,30 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cxtNc-00049R-BQ
- for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 10:50:38 +0000
-Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
-To: Amir Goldstein <amir73il@gmail.com>
-References: <1490864181-2192-1-git-send-email-richard@nod.at>
- <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
- <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
- <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
- <646ae733-5037-3072-7151-b055a8fa1521@intel.com>
- <cbaff214-7431-2cd1-2453-156d716c0d8a@nod.at>
- <CAOQ4uxh5mZ8gCk1U=oV9b+j3k0RFcT3LozATfa3qHoYy+OMVsg@mail.gmail.com>
- <92bbb4d1-afe7-14f2-763b-051c7b12ff9e@nod.at>
- <ae2f884b-17dc-cd24-f2a5-34c6c2aa7e8c@nod.at>
- <CAOQ4uxhaYfO3m6kQ1agDg2Bm-6Xh9yxoPh93m=xpTz39gXjpAQ@mail.gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "stable [v4.9]" <stable@vger.kernel.org>,
- Ralph Sennhauser <ralph.sennhauser@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <2a2eebef-ed37-7829-b08f-482039306a6e@nod.at>
-Date: Tue, 11 Apr 2017 12:50:04 +0200
+ id 1cxtuf-0000aK-2n
+ for linux-mtd@lists.infradead.org; Tue, 11 Apr 2017 11:24:46 +0000
+Received: by mail-wm0-x241.google.com with SMTP id q125so14306317wmd.3
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2017 04:24:23 -0700 (PDT)
+Subject: Re: [PATCH 04/10] mtd: spi-nor: aspeed: add support for SPI dual IO
+ read mode
+To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+ linux-mtd@lists.infradead.org
+References: <1491497808-25487-1-git-send-email-clg@kaod.org>
+ <1491497808-25487-5-git-send-email-clg@kaod.org>
+ <97d155e5-f0c2-8a78-ab00-d8823aea031d@gmail.com>
+ <a304378c-d2f1-5008-6a09-3a617e514271@kaod.org>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>,
+ Robert Lippert <roblip@gmail.com>, Robert Lippert <rlippert@google.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <0d43e491-3c56-9ceb-f8d7-6d3bea87a61c@gmail.com>
+Date: Tue, 11 Apr 2017 12:43:44 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAOQ4uxhaYfO3m6kQ1agDg2Bm-6Xh9yxoPh93m=xpTz39gXjpAQ@mail.gmail.com>
+In-Reply-To: <a304378c-d2f1-5008-6a09-3a617e514271@kaod.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,42 +34,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-
-Am 11.04.2017 um 12:20 schrieb Amir Goldstein:
-> On Thu, Apr 6, 2017 at 3:26 PM, Richard Weinberger <richard@nod.at> wrote:
->> Am 06.04.2017 um 14:09 schrieb Richard Weinberger:
->>>> Were you able to make any progress? still working on this?
->>>> If this is too complicated to get in for this cycle, better send a patch
->>>> to disable O_TMPFILE support for ubifs and fix the problem properly on
->>>> followup merge cycle.
->>>> Because right now ubifs O_TMPFILE support is broken and breaks overlayfs mount.
+On 04/11/2017 10:53 AM, Cédric Le Goater wrote:
+> On 04/06/2017 09:21 PM, Marek Vasut wrote:
+>> On 04/06/2017 06:56 PM, Cédric Le Goater wrote:
+>>> From: Robert Lippert <roblip@gmail.com>
 >>>
->>> I have a test and currently testing it. As it looks the situation is less worse
->>> than I thought first. :-)
->>
->> s/test/patch :)
->>
+>>> Implements support for the dual IO read mode on aspeed SMC/FMC
+>>> controllers which uses both MISO and MOSI lines for data during a read
+>>> to double the read bandwidth.
+>>>
+>>> Signed-off-by: Robert Lippert <rlippert@google.com>
+>>> [clg: adapted to mainline driver ]
+>>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+>>> ---
+>>>  drivers/mtd/spi-nor/aspeed-smc.c | 20 +++++++++++++-------
+>>>  1 file changed, 13 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+>>> index 7dfa1ea0a787..b3c8cfe29765 100644
+>>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+>>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+>>> @@ -512,6 +512,7 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
+>>>  	int i;
+>>>  	u8 dummy = 0xFF;
+>>>  	int ret;
+>>> +	u32 ctl;
+>>>  
+>>>  	if (aspeed_smc_dma_check(chip, from, len)) {
+>>>  		ret = aspeed_smc_dma_start(chip, from, read_buf, len, 0);
+>>> @@ -525,6 +526,13 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
+>>>  	for (i = 0; i < chip->nor.read_dummy / 8; i++)
+>>>  		aspeed_smc_write_to_ahb(chip->ahb_base, &dummy, sizeof(dummy));
+>>>  
+>>> +	if (chip->nor.flash_read == SPI_NOR_DUAL) {
+>>> +		/* Switch to dual I/O mode for data cycle */
+>>> +		ctl = readl(chip->ctl) & ~CONTROL_IO_MODE_MASK;
+>>> +		ctl |= CONTROL_IO_DUAL_DATA;
+>>> +		writel(ctl, chip->ctl);
+>>> +	}
+>>> +
+>> Can't you switch the mode at runtime ? If you do, who'll clear the
+>> CONTROL_IO_DUAL_DATA in this ctl register if you switch to SINGLE
+>> mode for some command ?
 > 
-> Richard,
+> This is the read routine in User mode. When the read is completed,
+> the previous (and default) setting of the control register is restored 
+> with a call to aspeed_smc_stop_user() but you don't see it in the diff 
+> hunk above.
 > 
-> Maybe it's not my business to interfere with ubifs development and I
-> haven't seen your patch.
-> 
-> But on the face of it, it doesn't sound like fixing O_TMPFILE is a
-> trivial fix, so not sure
-> it is wise to send a patch for -rc7?...
-> 
-> How about sending the patch to disable O_TMPFILE for -rc7 and queuing
-> your fix for v4.12?
-> Without any patch, v4.11 is going to have a regression with overlayfs+ubifs.
+> The default setting of the control register is used when the controller 
+> is in Command mode. That is when reads are performed 'automatically' 
+> from the AHB bus. 
 
-No need to panic.
-I verified some stuff and my first patch does the right thing but not in a nice way,
-except in oneerror patch. In will land in -rc7.
+Ah, OK, thanks for clarifying.
 
-For the next merge window I prepare patches that introduce a new journal function
-for handling tmpfiles.
-
-Thanks,
-//richard
+-- 
+Best regards,
+Marek Vasut
