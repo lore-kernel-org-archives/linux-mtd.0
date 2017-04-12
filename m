@@ -1,23 +1,17 @@
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cyEoJ-0000zX-KA
- for linux-mtd@lists.infradead.org; Wed, 12 Apr 2017 09:43:37 +0000
-Date: Wed, 12 Apr 2017 11:43:11 +0200
 From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
- linux-block@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 13/25] mtd: Convert to dynamically allocated bdi
- infrastructure
-Message-ID: <20170412094311.GB11138@quack2.suse.cz>
-References: <20170329105623.18241-1-jack@suse.cz>
- <20170329105623.18241-14-jack@suse.cz>
- <20170412081406.GM9830@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170412081406.GM9830@infradead.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: <linux-block@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+ Jan Kara <jack@suse.cz>, linux-mtd@lists.infradead.org,
+ linux-nfs@vger.kernel.org, Petr Vandrovec <petr@vandrovec.name>,
+ linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+ osd-dev@open-osd.org, codalist@coda.cs.cmu.edu,
+ linux-afs@lists.infradead.org, ecryptfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+ lustre-devel@lists.lustre.org
+Subject: [PATCH 0/25 v3] fs: Convert all embedded bdis into separate ones
+Date: Wed, 12 Apr 2017 12:24:24 +0200
+Message-Id: <20170412102449.16901-1-jack@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 12-04-17 01:14:06, Christoph Hellwig wrote:
-> > +	sb->s_bdi = bdi_get(mtd_bdi);
-> > +	sb->s_iflags |= SB_I_DYNBDI;
-> 
-> FTI, while I think this is a faithful conversion of the existing code,
-> the single bdi for all MTD devices looks rather bogus to me..
+Hello,
 
-Yeah, I don't understand why they don't allocate backing_dev_info per
-superblock as other places do but I didn't dare to change that since there
-are user visible consequences of that. I suspect they don't really want
-anything from the bdi and allocate it only so that other parts of the
-kernel are happy.
+this is the third revision of the patch series which converts all embedded
+occurences of struct backing_dev_info to use standalone dynamically allocated
+structures. This makes bdi handling unified across all bdi users and generally
+removes some boilerplate code from filesystems setting up their own bdi. It
+also allows us to remove some code from generic bdi implementation.
 
-> Otherwise this looks good:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+The patches were only compile-tested for most filesystems (I've tested
+mounting only for NFS & btrfs) so fs maintainers please have a look whether
+the changes look sound to you.
 
-Thanks.
+This series is based on top of bdi fixes that were merged into linux-block
+git tree into for-next branch. I have pushed out the result as a branch to
+
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdi
+
+Since all patches got reviewed by Christoph, can you please pick them up Jens?
+Thanks!
+
+Changes since v2:
+* Added Reviewed-by tags from Christoph
+
+Changes since v1:
+* Added some acks
+* Added further FUSE cleanup patch
+* Added removal of unused argument to bdi_register()
+* Fixed up some compilation failures spotted by 0-day testing
 
 								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
