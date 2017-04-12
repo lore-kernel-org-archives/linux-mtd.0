@@ -1,17 +1,18 @@
+Received: from mx2.suse.de ([195.135.220.15])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cyFSn-0001GS-5p
+ for linux-mtd@lists.infradead.org; Wed, 12 Apr 2017 10:25:29 +0000
 From: Jan Kara <jack@suse.cz>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: <linux-block@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
- Jan Kara <jack@suse.cz>, linux-mtd@lists.infradead.org,
- linux-nfs@vger.kernel.org, Petr Vandrovec <petr@vandrovec.name>,
- linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
- osd-dev@open-osd.org, codalist@coda.cs.cmu.edu,
- linux-afs@lists.infradead.org, ecryptfs@vger.kernel.org,
- linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
- lustre-devel@lists.lustre.org
-Subject: [PATCH 0/25 v3] fs: Convert all embedded bdis into separate ones
-Date: Wed, 12 Apr 2017 12:24:24 +0200
-Message-Id: <20170412102449.16901-1-jack@suse.cz>
+ Jan Kara <jack@suse.cz>, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 22/25] ubifs: Convert to separately allocated bdi
+Date: Wed, 12 Apr 2017 12:24:46 +0200
+Message-Id: <20170412102449.16901-23-jack@suse.cz>
+In-Reply-To: <20170412102449.16901-1-jack@suse.cz>
+References: <20170412102449.16901-1-jack@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +22,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Allocate struct backing_dev_info separately instead of embedding it
+inside the superblock. This unifies handling of bdi among users.
 
-this is the third revision of the patch series which converts all embedded
-occurences of struct backing_dev_info to use standalone dynamically allocated
-structures. This makes bdi handling unified across all bdi users and generally
-removes some boilerplate code from filesystems setting up their own bdi. It
-also allows us to remove some code from generic bdi implementation.
+CC: Richard Weinberger <richard@nod.at>
+CC: Artem Bityutskiy <dedekind1@gmail.com>
+CC: Adrian Hunter <adrian.hunter@intel.com>
+CC: linux-mtd@lists.infradead.org
+Acked-by: Richard Weinberger <richard@nod.at>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ubifs/super.c | 25 +++++++++----------------
+ fs/ubifs/ubifs.h |  3 ---
+ 2 files changed, 9 insertions(+), 19 deletions(-)
 
-The patches were only compile-tested for most filesystems (I've tested
-mounting only for NFS & btrfs) so fs maintainers please have a look whether
-the changes look sound to you.
-
-This series is based on top of bdi fixes that were merged into linux-block
-git tree into for-next branch. I have pushed out the result as a branch to
-
-git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdi
-
-Since all patches got reviewed by Christoph, can you please pick them up Jens?
-Thanks!
-
-Changes since v2:
-* Added Reviewed-by tags from Christoph
-
-Changes since v1:
-* Added some acks
-* Added further FUSE cleanup patch
-* Added removal of unused argument to bdi_register()
-* Fixed up some compilation failures spotted by 0-day testing
-
-								Honza
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index b73811bd7676..cf4cc99b75b5 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1827,7 +1827,6 @@ static void ubifs_put_super(struct super_block *sb)
+ 	}
+ 
+ 	ubifs_umount(c);
+-	bdi_destroy(&c->bdi);
+ 	ubi_close_volume(c->ubi);
+ 	mutex_unlock(&c->umount_mutex);
+ }
+@@ -2019,29 +2018,25 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto out;
+ 	}
+ 
++	err = ubifs_parse_options(c, data, 0);
++	if (err)
++		goto out_close;
++
+ 	/*
+ 	 * UBIFS provides 'backing_dev_info' in order to disable read-ahead. For
+ 	 * UBIFS, I/O is not deferred, it is done immediately in readpage,
+ 	 * which means the user would have to wait not just for their own I/O
+ 	 * but the read-ahead I/O as well i.e. completely pointless.
+ 	 *
+-	 * Read-ahead will be disabled because @c->bdi.ra_pages is 0.
++	 * Read-ahead will be disabled because @sb->s_bdi->ra_pages is 0. Also
++	 * @sb->s_bdi->capabilities are initialized to 0 so there won't be any
++	 * writeback happening.
+ 	 */
+-	c->bdi.name = "ubifs",
+-	c->bdi.capabilities = 0;
+-	err  = bdi_init(&c->bdi);
++	err = super_setup_bdi_name(sb, "ubifs_%d_%d", c->vi.ubi_num,
++				   c->vi.vol_id);
+ 	if (err)
+ 		goto out_close;
+-	err = bdi_register(&c->bdi, NULL, "ubifs_%d_%d",
+-			   c->vi.ubi_num, c->vi.vol_id);
+-	if (err)
+-		goto out_bdi;
+-
+-	err = ubifs_parse_options(c, data, 0);
+-	if (err)
+-		goto out_bdi;
+ 
+-	sb->s_bdi = &c->bdi;
+ 	sb->s_fs_info = c;
+ 	sb->s_magic = UBIFS_SUPER_MAGIC;
+ 	sb->s_blocksize = UBIFS_BLOCK_SIZE;
+@@ -2080,8 +2075,6 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 	ubifs_umount(c);
+ out_unlock:
+ 	mutex_unlock(&c->umount_mutex);
+-out_bdi:
+-	bdi_destroy(&c->bdi);
+ out_close:
+ 	ubi_close_volume(c->ubi);
+ out:
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 4d57e488038e..4da10a6d702a 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -972,7 +972,6 @@ struct ubifs_debug_info;
+  * struct ubifs_info - UBIFS file-system description data structure
+  * (per-superblock).
+  * @vfs_sb: VFS @struct super_block object
+- * @bdi: backing device info object to make VFS happy and disable read-ahead
+  *
+  * @highest_inum: highest used inode number
+  * @max_sqnum: current global sequence number
+@@ -1220,7 +1219,6 @@ struct ubifs_debug_info;
+  */
+ struct ubifs_info {
+ 	struct super_block *vfs_sb;
+-	struct backing_dev_info bdi;
+ 
+ 	ino_t highest_inum;
+ 	unsigned long long max_sqnum;
+@@ -1461,7 +1459,6 @@ extern const struct inode_operations ubifs_file_inode_operations;
+ extern const struct file_operations ubifs_dir_operations;
+ extern const struct inode_operations ubifs_dir_inode_operations;
+ extern const struct inode_operations ubifs_symlink_inode_operations;
+-extern struct backing_dev_info ubifs_backing_dev_info;
+ extern struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
+ 
+ /* io.c */
+-- 
+2.12.0
