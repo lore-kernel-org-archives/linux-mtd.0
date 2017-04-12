@@ -1,15 +1,18 @@
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cyFSn-00016l-5n
- for linux-mtd@lists.infradead.org; Wed, 12 Apr 2017 10:25:28 +0000
 From: Jan Kara <jack@suse.cz>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: <linux-block@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
- Jan Kara <jack@suse.cz>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 13/25] mtd: Convert to dynamically allocated bdi infrastructure
-Date: Wed, 12 Apr 2017 12:24:37 +0200
-Message-Id: <20170412102449.16901-14-jack@suse.cz>
+ Jan Kara <jack@suse.cz>, linux-mtd@lists.infradead.org,
+ linux-nfs@vger.kernel.org, Petr Vandrovec <petr@vandrovec.name>,
+ linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+ osd-dev@open-osd.org, codalist@coda.cs.cmu.edu,
+ linux-afs@lists.infradead.org, ecryptfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+ lustre-devel@lists.lustre.org
+Subject: [PATCH 04/25] fs: Provide infrastructure for dynamic BDIs in
+ filesystems
+Date: Wed, 12 Apr 2017 12:24:28 +0200
+Message-Id: <20170412102449.16901-5-jack@suse.cz>
 In-Reply-To: <20170412102449.16901-1-jack@suse.cz>
 References: <20170412102449.16901-1-jack@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,139 +24,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD already allocates backing_dev_info dynamically. Convert it to use
-generic infrastructure for this including proper refcounting. We drop
-mtd->backing_dev_info as its only use was to pass mtd_bdi pointer from
-one file into another and if we wanted to keep that in a clean way, we'd
-have to make mtd hold and drop bdi reference as needed which seems
-pointless for passing one global pointer...
+Provide helper functions for setting up dynamically allocated
+backing_dev_info structures for filesystems and cleaning them up on
+superblock destruction.
 
-CC: David Woodhouse <dwmw2@infradead.org>
-CC: Brian Norris <computersforpeace@gmail.com>
 CC: linux-mtd@lists.infradead.org
+CC: linux-nfs@vger.kernel.org
+CC: Petr Vandrovec <petr@vandrovec.name>
+CC: linux-nilfs@vger.kernel.org
+CC: cluster-devel@redhat.com
+CC: osd-dev@open-osd.org
+CC: codalist@coda.cs.cmu.edu
+CC: linux-afs@lists.infradead.org
+CC: ecryptfs@vger.kernel.org
+CC: linux-cifs@vger.kernel.org
+CC: ceph-devel@vger.kernel.org
+CC: linux-btrfs@vger.kernel.org
+CC: v9fs-developer@lists.sourceforge.net
+CC: lustre-devel@lists.lustre.org
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- drivers/mtd/mtdcore.c   | 23 ++++++++++++-----------
- drivers/mtd/mtdsuper.c  |  7 ++++++-
- include/linux/mtd/mtd.h |  5 -----
- 3 files changed, 18 insertions(+), 17 deletions(-)
+ fs/super.c                       | 49 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/backing-dev-defs.h |  2 +-
+ include/linux/fs.h               |  6 +++++
+ 3 files changed, 56 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 66a9dedd1062..23e2e56ca54e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -46,7 +46,7 @@
- 
- #include "mtdcore.h"
- 
--static struct backing_dev_info *mtd_bdi;
-+struct backing_dev_info *mtd_bdi;
- 
- #ifdef CONFIG_PM_SLEEP
- 
-@@ -496,11 +496,9 @@ int add_mtd_device(struct mtd_info *mtd)
- 	 * mtd_device_parse_register() multiple times on the same master MTD,
- 	 * especially with CONFIG_MTD_PARTITIONED_MASTER=y.
- 	 */
--	if (WARN_ONCE(mtd->backing_dev_info, "MTD already registered\n"))
-+	if (WARN_ONCE(mtd->dev.type, "MTD already registered\n"))
- 		return -EEXIST;
- 
--	mtd->backing_dev_info = mtd_bdi;
--
- 	BUG_ON(mtd->writesize == 0);
- 	mutex_lock(&mtd_table_mutex);
- 
-@@ -1775,13 +1773,18 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
- 	struct backing_dev_info *bdi;
- 	int ret;
- 
--	bdi = kzalloc(sizeof(*bdi), GFP_KERNEL);
-+	bdi = bdi_alloc(GFP_KERNEL);
- 	if (!bdi)
- 		return ERR_PTR(-ENOMEM);
- 
--	ret = bdi_setup_and_register(bdi, name);
-+	bdi->name = name;
-+	/*
-+	 * We put '-0' suffix to the name to get the same name format as we
-+	 * used to get. Since this is called only once, we get a unique name. 
-+	 */
-+	ret = bdi_register(bdi, NULL, "%.28s-0", name);
- 	if (ret)
--		kfree(bdi);
-+		bdi_put(bdi);
- 
- 	return ret ? ERR_PTR(ret) : bdi;
- }
-@@ -1813,8 +1816,7 @@ static int __init init_mtd(void)
- out_procfs:
- 	if (proc_mtd)
- 		remove_proc_entry("mtd", NULL);
--	bdi_destroy(mtd_bdi);
--	kfree(mtd_bdi);
-+	bdi_put(mtd_bdi);
- err_bdi:
- 	class_unregister(&mtd_class);
- err_reg:
-@@ -1828,8 +1830,7 @@ static void __exit cleanup_mtd(void)
- 	if (proc_mtd)
- 		remove_proc_entry("mtd", NULL);
- 	class_unregister(&mtd_class);
--	bdi_destroy(mtd_bdi);
--	kfree(mtd_bdi);
-+	bdi_put(mtd_bdi);
- 	idr_destroy(&mtd_idr);
+diff --git a/fs/super.c b/fs/super.c
+index b8b6a086c03b..0f51a437c269 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -446,6 +446,11 @@ void generic_shutdown_super(struct super_block *sb)
+ 	hlist_del_init(&sb->s_instances);
+ 	spin_unlock(&sb_lock);
+ 	up_write(&sb->s_umount);
++	if (sb->s_iflags & SB_I_DYNBDI) {
++		bdi_put(sb->s_bdi);
++		sb->s_bdi = &noop_backing_dev_info;
++		sb->s_iflags &= ~SB_I_DYNBDI;
++	}
  }
  
-diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-index 20c02a3b7417..e69e7855e31f 100644
---- a/drivers/mtd/mtdsuper.c
-+++ b/drivers/mtd/mtdsuper.c
-@@ -18,6 +18,7 @@
- #include <linux/ctype.h>
- #include <linux/slab.h>
- #include <linux/major.h>
-+#include <linux/backing-dev.h>
+ EXPORT_SYMBOL(generic_shutdown_super);
+@@ -1256,6 +1261,50 @@ mount_fs(struct file_system_type *type, int flags, const char *name, void *data)
+ }
  
  /*
-  * compare superblocks to see if they're equivalent
-@@ -38,6 +39,8 @@ static int get_sb_mtd_compare(struct super_block *sb, void *_mtd)
- 	return 0;
- }
- 
-+extern struct backing_dev_info *mtd_bdi;
++ * Setup private BDI for given superblock. It gets automatically cleaned up
++ * in generic_shutdown_super().
++ */
++int super_setup_bdi_name(struct super_block *sb, char *fmt, ...)
++{
++	struct backing_dev_info *bdi;
++	int err;
++	va_list args;
 +
- /*
-  * mark the superblock by the MTD device it is using
-  * - set the device number to be the correct MTD block device for pesuperstence
-@@ -49,7 +52,9 @@ static int get_sb_mtd_set(struct super_block *sb, void *_mtd)
- 
- 	sb->s_mtd = mtd;
- 	sb->s_dev = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
--	sb->s_bdi = mtd->backing_dev_info;
-+	sb->s_bdi = bdi_get(mtd_bdi);
++	bdi = bdi_alloc(GFP_KERNEL);
++	if (!bdi)
++		return -ENOMEM;
++
++	bdi->name = sb->s_type->name;
++
++	va_start(args, fmt);
++	err = bdi_register_va(bdi, NULL, fmt, args);
++	va_end(args);
++	if (err) {
++		bdi_put(bdi);
++		return err;
++	}
++	WARN_ON(sb->s_bdi != &noop_backing_dev_info);
++	sb->s_bdi = bdi;
 +	sb->s_iflags |= SB_I_DYNBDI;
 +
- 	return 0;
- }
++	return 0;
++}
++EXPORT_SYMBOL(super_setup_bdi_name);
++
++/*
++ * Setup private BDI for given superblock. I gets automatically cleaned up
++ * in generic_shutdown_super().
++ */
++int super_setup_bdi(struct super_block *sb)
++{
++	static atomic_long_t bdi_seq = ATOMIC_LONG_INIT(0);
++
++	return super_setup_bdi_name(sb, "%.28s-%ld", sb->s_type->name,
++				    atomic_long_inc_return(&bdi_seq));
++}
++EXPORT_SYMBOL(super_setup_bdi);
++
++/*
+  * This is an internal function, please use sb_end_{write,pagefault,intwrite}
+  * instead.
+  */
+diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
+index e66d4722db8e..866c433e7d32 100644
+--- a/include/linux/backing-dev-defs.h
++++ b/include/linux/backing-dev-defs.h
+@@ -146,7 +146,7 @@ struct backing_dev_info {
+ 	congested_fn *congested_fn; /* Function pointer if device is md/dm */
+ 	void *congested_data;	/* Pointer to aux data for congested func */
  
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index eebdc63cf6af..79b176eca04a 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -334,11 +334,6 @@ struct mtd_info {
- 	int (*_get_device) (struct mtd_info *mtd);
- 	void (*_put_device) (struct mtd_info *mtd);
+-	char *name;
++	const char *name;
  
--	/* Backing device capabilities for this device
--	 * - provides mmap capabilities
--	 */
--	struct backing_dev_info *backing_dev_info;
--
- 	struct notifier_block reboot_notifier;  /* default mode before reboot */
+ 	struct kref refcnt;	/* Reference counter for the structure */
+ 	unsigned int capabilities; /* Device capabilities */
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 7251f7bb45e8..98cf14ea78c0 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1272,6 +1272,9 @@ struct mm_struct;
+ /* sb->s_iflags to limit user namespace mounts */
+ #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
  
- 	/* ECC status information */
++/* Temporary flag until all filesystems are converted to dynamic bdis */
++#define SB_I_DYNBDI	0x00000100
++
+ /* Possible states of 'frozen' field */
+ enum {
+ 	SB_UNFROZEN = 0,		/* FS is unfrozen */
+@@ -2121,6 +2124,9 @@ extern int vfs_ustat(dev_t, struct kstatfs *);
+ extern int freeze_super(struct super_block *super);
+ extern int thaw_super(struct super_block *super);
+ extern bool our_mnt(struct vfsmount *mnt);
++extern __printf(2, 3)
++int super_setup_bdi_name(struct super_block *sb, char *fmt, ...);
++extern int super_setup_bdi(struct super_block *sb);
+ 
+ extern int current_umask(void);
+ 
 -- 
 2.12.0
