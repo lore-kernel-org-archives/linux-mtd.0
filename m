@@ -1,31 +1,38 @@
-Received: from 9.mo178.mail-out.ovh.net ([46.105.75.45])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cya4O-0006WF-J5
- for linux-mtd@lists.infradead.org; Thu, 13 Apr 2017 08:25:38 +0000
-Received: from player793.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo178.mail-out.ovh.net (Postfix) with ESMTP id E413531666
- for <linux-mtd@lists.infradead.org>; Thu, 13 Apr 2017 10:25:12 +0200 (CEST)
-Subject: Re: [PATCH v1 1/1] mtd: mtk-nor: set controller's address width
- according to nor flash
-To: Guochun Mao <guochun.mao@mediatek.com>
-References: <1491381462-21893-1-git-send-email-guochun.mao@mediatek.com>
- <1491381462-21893-2-git-send-email-guochun.mao@mediatek.com>
- <e9eafca3-41a0-7e88-996b-9d1c51f0c132@wedev4u.fr>
- <1492051237.2866.36.camel@mhfsdcap03>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
- linux-mediatek@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <3cf1c63e-c56f-2f07-9d16-7ec346758dfa@wedev4u.fr>
-Date: Thu, 13 Apr 2017 10:24:58 +0200
+ id 1cyfQk-0002WA-7O
+ for linux-mtd@lists.infradead.org; Thu, 13 Apr 2017 14:09:04 +0000
+From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "pawel.moll@arm.com" <pawel.moll@arm.com>, Campbell
+ <ijc+devicetree@hellion.org.uk>, "richard@nod.at" <richard@nod.at>, "Mark
+ Rutland" <mark.rutland@arm.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "galak@codeaurora.org" <galak@codeaurora.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Subject: RE: [PATCH 4/5] mtd: nand: add support for Micron on-die ECC
+Date: Thu, 13 Apr 2017 14:08:17 +0000
+Message-ID: <e8e5fb5458e04c07896598baae1420da@SIWEX5A.sing.micron.com>
+References: <538805ebf8e64015a8b833de755652b3@SIWEX5A.sing.micron.com>
+ <8a171dacd20c45bd8285ecc5dbe8854a@SIWEX5A.sing.micron.com>
+ <20170322144507.4d80d2cc@bbrezillon>
+ <0dccc0abcf234e98be6d340027cf1a30@SIWEX5A.sing.micron.com>
+ <20170322155216.319efc3e@bbrezillon>
+ <414dd35931814ce38381a251917ad79f@SIWEX5A.sing.micron.com>
+ <20170411145102.563fa388@bbrezillon>
+ <90300f14cd2a4ae6967d8be0f7dff4e9@SIWEX5A.sing.micron.com>
+ <20170411173051.7aafb717@bbrezillon>
+ <5a96e73ef951414a82c01b67088b24d3@SIWEX5A.sing.micron.com>
+ <20170412090313.539f81b2@bbrezillon>
+In-Reply-To: <20170412090313.539f81b2@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1492051237.2866.36.camel@mhfsdcap03>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,126 +42,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Guochun,
+Hi, Boris
 
-Le 13/04/2017 à 04:40, Guochun Mao a écrit :
-> Hi Cyrille,
-> 
-> On Wed, 2017-04-12 at 22:57 +0200, Cyrille Pitchen wrote:
->> Hi Guochun,
->>
->> Le 05/04/2017 à 10:37, Guochun Mao a écrit :
->>> When nor's size larger than 16MByte, nor's address width maybe
->>> set to 3 or 4, and controller should change address width according
->>> to nor's setting.
->>>
->>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>st
+>One last question. Is it dangerous to call
+>SET_FEATURE(disable/enable-ECC) on a NAND that has ECC enabled by default?
+>We could use that to detect whether on-die ECC can be turned off or not an=
+d
+>adjust the chip->ecc init steps accordingly.
+>
+No any danger exist, NAND just gives response that set feature failed.
+Also, it is a good solution to detect whether on-die ECC support or not thr=
+ough
+SET_FEATURE(disable/enable-ECC) successful or not.
 
-Acked-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>Thanks,
+>
+>Boris
 
->>> ---
->>>  drivers/mtd/spi-nor/mtk-quadspi.c |   27 +++++++++++++++++++++++++++
->>>  1 file changed, 27 insertions(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
->>> index e661877..b637770 100644
->>> --- a/drivers/mtd/spi-nor/mtk-quadspi.c
->>> +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
->>> @@ -104,6 +104,8 @@
->>>  #define MTK_NOR_MAX_RX_TX_SHIFT		6
->>>  /* can shift up to 56 bits (7 bytes) transfer by MTK_NOR_PRG_CMD */
->>>  #define MTK_NOR_MAX_SHIFT		7
->>> +/* nor controller 4-byte address mode enable bit */
->>> +#define MTK_NOR_4B_ADDR_EN		BIT(4)
->>>  
->>>  /* Helpers for accessing the program data / shift data registers */
->>>  #define MTK_NOR_PRG_REG(n)		(MTK_NOR_PRGDATA0_REG + 4 * (n))
->>> @@ -230,10 +232,35 @@ static int mt8173_nor_write_buffer_disable(struct mt8173_nor *mt8173_nor)
->>>  				  10000);
->>>  }
->>>  
->>> +static void mt8173_nor_set_addr_width(struct mt8173_nor *mt8173_nor)
->>> +{
->>> +	u8 val;
->>> +	struct spi_nor *nor = &mt8173_nor->nor;
->>> +
->>> +	val = readb(mt8173_nor->base + MTK_NOR_DUAL_REG);
->>> +
->>> +	switch (nor->addr_width) {
->>> +	case 3:
->>> +		val &= ~MTK_NOR_4B_ADDR_EN;
->>> +		break;
->>> +	case 4:
->>> +		val |= MTK_NOR_4B_ADDR_EN;
->>> +		break;
->>> +	default:
->>> +		dev_warn(mt8173_nor->dev, "Unexpected address width %u.\n",
->>> +			 nor->addr_width);
->>> +		break;
->>> +	}
->>> +
->>> +	writeb(val, mt8173_nor->base + MTK_NOR_DUAL_REG);
->>> +}
->>> +
->>>  static void mt8173_nor_set_addr(struct mt8173_nor *mt8173_nor, u32 addr)
->>>  {
->>>  	int i;
->>>  
->>> +	mt8173_nor_set_addr_width(mt8173_nor);
->>> +
->>>  	for (i = 0; i < 3; i++) {
->>
->> Should it be 'i < nor->addr_width' instead of 'i < 3' ?
->> Does it work when accessing data after 128Mbit ?
-> 
-> Yes, it can work.
-> 
-> Let's see the whole function,
-> 
-> static void mt8173_nor_set_addr(struct mt8173_nor *mt8173_nor, u32 addr)
-> {
->         int i;
-> 
->         mt8173_nor_set_addr_width(mt8173_nor);
-> 
->         for (i = 0; i < 3; i++) {
->                 writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR0_REG
-> + i * 4);
->                 addr >>= 8;
->         }
->         /* Last register is non-contiguous */
->         writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR3_REG);
-> }
-> 
-> The nor controller has 4 registers for address.
-> This '3' indicates the number of contiguous address' registers
-> base + MTK_NOR_RADR0_REG(0x10)
-> base + MTK_NOR_RADR1_REG(0x14)
-> base + MTK_NOR_RADR2_REG(0x18),
-> but the last address register is non-contiguous,
-> it's base + MTK_NOR_RADR3_REG(0xc8)
-> 
-> mt8173_nor_set_addr will set addr into these 4 registers by Byte.
-> The bit MTK_NOR_4B_ADDR_EN will decide whether 3-byte(0x10,0x14,0x18)
-> or 4-byte(0x10,0x14,x018,0xc8) been sent to nor device.
-> and, it can access data after 128Mbit when sent 4-byte address.
-
-Indeed, you're right. Sorry for the noise!
-
-> 
-> Best regards,
-> 
-> Guochun
-> 
->>
->> Best regards,
->>
->> Cyrille
->>
->>>  		writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR0_REG + i * 4);
->>>  		addr >>= 8;
->>>
->>
-> 
-> 
-> 
+Happy Easter!
+//Bean
