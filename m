@@ -1,38 +1,21 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cyfQk-0002WA-7O
- for linux-mtd@lists.infradead.org; Thu, 13 Apr 2017 14:09:04 +0000
-From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>, Campbell
- <ijc+devicetree@hellion.org.uk>, "richard@nod.at" <richard@nod.at>, "Mark
- Rutland" <mark.rutland@arm.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "galak@codeaurora.org" <galak@codeaurora.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH 4/5] mtd: nand: add support for Micron on-die ECC
-Date: Thu, 13 Apr 2017 14:08:17 +0000
-Message-ID: <e8e5fb5458e04c07896598baae1420da@SIWEX5A.sing.micron.com>
-References: <538805ebf8e64015a8b833de755652b3@SIWEX5A.sing.micron.com>
- <8a171dacd20c45bd8285ecc5dbe8854a@SIWEX5A.sing.micron.com>
- <20170322144507.4d80d2cc@bbrezillon>
- <0dccc0abcf234e98be6d340027cf1a30@SIWEX5A.sing.micron.com>
- <20170322155216.319efc3e@bbrezillon>
- <414dd35931814ce38381a251917ad79f@SIWEX5A.sing.micron.com>
- <20170411145102.563fa388@bbrezillon>
- <90300f14cd2a4ae6967d8be0f7dff4e9@SIWEX5A.sing.micron.com>
- <20170411173051.7aafb717@bbrezillon>
- <5a96e73ef951414a82c01b67088b24d3@SIWEX5A.sing.micron.com>
- <20170412090313.539f81b2@bbrezillon>
-In-Reply-To: <20170412090313.539f81b2@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1cyiMk-0004lZ-D9
+ for linux-mtd@lists.infradead.org; Thu, 13 Apr 2017 17:17:08 +0000
+From: Ludovic Barre <ludovic.Barre@st.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut
+ <marek.vasut@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v4 0/2] mtd: spi-nor: add stm32 qspi driver
+Date: Thu, 13 Apr 2017 19:15:55 +0200
+Message-ID: <1492103757-22375-1-git-send-email-ludovic.Barre@st.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,22 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Boris
+From: Ludovic Barre <ludovic.barre@st.com>
 
->One last question. Is it dangerous to call
->SET_FEATURE(disable/enable-ECC) on a NAND that has ECC enabled by default?
->We could use that to detect whether on-die ECC can be turned off or not an=
-d
->adjust the chip->ecc init steps accordingly.
->
-No any danger exist, NAND just gives response that set feature failed.
-Also, it is a good solution to detect whether on-die ECC support or not thr=
-ough
-SET_FEATURE(disable/enable-ECC) successful or not.
+This patch set adds a SPI-NOR driver for stm32 QSPI controller.
+It is a specialized SPI interface for serial Flash devices.
+It supports 1 or 2 Flash device with single, dual and quad SPI Flash memories.
 
->Thanks,
->
->Boris
+It can operate in any of the following modes:
+-indirect mode: all the operations are performed using the quadspi
+  registers
+-read memory-mapped mode: the external Flash memory is mapped to the
+  microcontroller address space and is seen by the system as if it was
+  an internal memory
 
-Happy Easter!
-//Bean
+Changes in v4:
+-unsigned bitfields: (1U << 8)
+-remove "mtd->priv"
+-error management: issue on no mtd device registered
+-remove braces in stm32_qspi_mtd_free 
+
+Changes in v3:
+-dt-bindings: qspi_mm not optional
+-dt-bindings: see ../spi/spi-bus.txt
+-dt-bindings: spi@...
+-cmd flat struct
+-ratelimit
+-macro to avoid hard value "25"
+
+Changes in v2:
+-awful construct: s/u32/u8
+-add define for timeout
+-Use a helper variable
+-add comment on "stm32 qspi controller fsize issue
+
+Ludovic Barre (2):
+  dt-bindings: Document the STM32 QSPI bindings
+  mtd: spi-nor: add driver for STM32 quad spi flash controller
+
+ .../devicetree/bindings/mtd/stm32-quadspi.txt      |  43 ++
+ drivers/mtd/spi-nor/Kconfig                        |   7 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/stm32-quadspi.c                | 694 +++++++++++++++++++++
+ 4 files changed, 745 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
+
+-- 
+2.7.4
