@@ -1,23 +1,16 @@
-Message-ID: <1492051237.2866.36.camel@mhfsdcap03>
-Subject: Re: [PATCH v1 1/1] mtd: mtk-nor: set controller's address width
- according to nor flash
-From: Guochun Mao <guochun.mao@mediatek.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-CC: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Mark Rutland
- <mark.rutland@arm.com>, <devicetree@vger.kernel.org>, Richard Weinberger
- <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- <linux-mtd@lists.infradead.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- <linux-mediatek@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>
-Date: Thu, 13 Apr 2017 10:40:37 +0800
-In-Reply-To: <e9eafca3-41a0-7e88-996b-9d1c51f0c132@wedev4u.fr>
-References: <1491381462-21893-1-git-send-email-guochun.mao@mediatek.com>
- <1491381462-21893-2-git-send-email-guochun.mao@mediatek.com>
- <e9eafca3-41a0-7e88-996b-9d1c51f0c132@wedev4u.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cyZ7M-0004UQ-H7
+ for linux-mtd@lists.infradead.org; Thu, 13 Apr 2017 07:24:38 +0000
+Received: by mail-wm0-x241.google.com with SMTP id d79so10789820wmi.2
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Apr 2017 00:24:15 -0700 (PDT)
+From: Mathias Kresin <dev@kresin.me>
+To: linux-mtd@lists.infradead.org
+Cc: cyrille.pitchen@atmel.com,
+	marek.vasut@gmail.com
+Subject: [PATCH] mtd: spi-nor: enable stateless 4b op codes for mx25u25635f
+Date: Thu, 13 Apr 2017 09:23:54 +0200
+Message-Id: <1492068234-9509-1-git-send-email-dev@kresin.me>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,114 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille,
+All required stateless 4-byte op codes are supported by this flash
+chip. The stateless 4-byte support can't be autodetected due to a
+missing 4-byte Address Instruction Table in SFDP.
 
-On Wed, 2017-04-12 at 22:57 +0200, Cyrille Pitchen wrote:
-> Hi Guochun,
-> 
-> Le 05/04/2017 à 10:37, Guochun Mao a écrit :
-> > When nor's size larger than 16MByte, nor's address width maybe
-> > set to 3 or 4, and controller should change address width according
-> > to nor's setting.
-> > 
-> > Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>st
-> > ---
-> >  drivers/mtd/spi-nor/mtk-quadspi.c |   27 +++++++++++++++++++++++++++
-> >  1 file changed, 27 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-> > index e661877..b637770 100644
-> > --- a/drivers/mtd/spi-nor/mtk-quadspi.c
-> > +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-> > @@ -104,6 +104,8 @@
-> >  #define MTK_NOR_MAX_RX_TX_SHIFT		6
-> >  /* can shift up to 56 bits (7 bytes) transfer by MTK_NOR_PRG_CMD */
-> >  #define MTK_NOR_MAX_SHIFT		7
-> > +/* nor controller 4-byte address mode enable bit */
-> > +#define MTK_NOR_4B_ADDR_EN		BIT(4)
-> >  
-> >  /* Helpers for accessing the program data / shift data registers */
-> >  #define MTK_NOR_PRG_REG(n)		(MTK_NOR_PRGDATA0_REG + 4 * (n))
-> > @@ -230,10 +232,35 @@ static int mt8173_nor_write_buffer_disable(struct mt8173_nor *mt8173_nor)
-> >  				  10000);
-> >  }
-> >  
-> > +static void mt8173_nor_set_addr_width(struct mt8173_nor *mt8173_nor)
-> > +{
-> > +	u8 val;
-> > +	struct spi_nor *nor = &mt8173_nor->nor;
-> > +
-> > +	val = readb(mt8173_nor->base + MTK_NOR_DUAL_REG);
-> > +
-> > +	switch (nor->addr_width) {
-> > +	case 3:
-> > +		val &= ~MTK_NOR_4B_ADDR_EN;
-> > +		break;
-> > +	case 4:
-> > +		val |= MTK_NOR_4B_ADDR_EN;
-> > +		break;
-> > +	default:
-> > +		dev_warn(mt8173_nor->dev, "Unexpected address width %u.\n",
-> > +			 nor->addr_width);
-> > +		break;
-> > +	}
-> > +
-> > +	writeb(val, mt8173_nor->base + MTK_NOR_DUAL_REG);
-> > +}
-> > +
-> >  static void mt8173_nor_set_addr(struct mt8173_nor *mt8173_nor, u32 addr)
-> >  {
-> >  	int i;
-> >  
-> > +	mt8173_nor_set_addr_width(mt8173_nor);
-> > +
-> >  	for (i = 0; i < 3; i++) {
-> 
-> Should it be 'i < nor->addr_width' instead of 'i < 3' ?
-> Does it work when accessing data after 128Mbit ?
+Fixes hangs on reboot for SoCs expecting the flash chip in 3byte mode.
 
-Yes, it can work.
+Signed-off-by: Mathias Kresin <dev@kresin.me>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Let's see the whole function,
-
-static void mt8173_nor_set_addr(struct mt8173_nor *mt8173_nor, u32 addr)
-{
-        int i;
-
-        mt8173_nor_set_addr_width(mt8173_nor);
-
-        for (i = 0; i < 3; i++) {
-                writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR0_REG
-+ i * 4);
-                addr >>= 8;
-        }
-        /* Last register is non-contiguous */
-        writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR3_REG);
-}
-
-The nor controller has 4 registers for address.
-This '3' indicates the number of contiguous address' registers
-base + MTK_NOR_RADR0_REG(0x10)
-base + MTK_NOR_RADR1_REG(0x14)
-base + MTK_NOR_RADR2_REG(0x18),
-but the last address register is non-contiguous,
-it's base + MTK_NOR_RADR3_REG(0xc8)
-
-mt8173_nor_set_addr will set addr into these 4 registers by Byte.
-The bit MTK_NOR_4B_ADDR_EN will decide whether 3-byte(0x10,0x14,0x18)
-or 4-byte(0x10,0x14,x018,0xc8) been sent to nor device.
-and, it can access data after 128Mbit when sent 4-byte address.
-
-Best regards,
-
-Guochun
-
-> 
-> Best regards,
-> 
-> Cyrille
-> 
-> >  		writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR0_REG + i * 4);
-> >  		addr >>= 8;
-> > 
-> 
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 1ae872b..4b496d8 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1017,7 +1017,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+-	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
++	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+ 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+-- 
+2.7.4
