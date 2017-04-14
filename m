@@ -1,13 +1,19 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from gate.crashing.org ([63.228.1.57])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cz9fR-0001B2-HX
- for linux-mtd@lists.infradead.org; Fri, 14 Apr 2017 22:26:15 +0000
-Received: by mail-wm0-x243.google.com with SMTP id d79so538553wmi.2
- for <linux-mtd@lists.infradead.org>; Fri, 14 Apr 2017 15:25:52 -0700 (PDT)
+ id 1cz9wi-0006mq-NX
+ for linux-mtd@lists.infradead.org; Fri, 14 Apr 2017 22:44:08 +0000
+Message-ID: <1492209763.25766.27.camel@kernel.crashing.org>
 Subject: Re: [PATCH 10/10] mtd: spi-nor: aspeed: optimize read mode
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- linux-mtd@lists.infradead.org
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: Marek Vasut <marek.vasut@gmail.com>, =?ISO-8859-1?Q?C=E9dric?= Le Goater
+ <clg@kaod.org>, linux-mtd@lists.infradead.org
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>, Rob Herring
+ <robh+dt@kernel.org>
+Date: Sat, 15 Apr 2017 08:42:43 +1000
+In-Reply-To: <c5d30733-20c8-275a-03b1-9b446b5bcc71@gmail.com>
 References: <1491497808-25487-1-git-send-email-clg@kaod.org>
  <1491497808-25487-11-git-send-email-clg@kaod.org>
  <7d80fbb3-81d9-3ac0-6bb9-47d2d4cf0855@gmail.com>
@@ -16,18 +22,9 @@ References: <1491497808-25487-1-git-send-email-clg@kaod.org>
  <1492206032.25766.7.camel@kernel.crashing.org>
  <26f0d520-bfe3-cc26-d3d5-3185813b7ffb@gmail.com>
  <1492207894.25766.20.camel@kernel.crashing.org>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>,
- Rob Herring <robh+dt@kernel.org>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <c5d30733-20c8-275a-03b1-9b446b5bcc71@gmail.com>
-Date: Sat, 15 Apr 2017 00:25:49 +0200
-MIME-Version: 1.0
-In-Reply-To: <1492207894.25766.20.camel@kernel.crashing.org>
-Content-Type: text/plain; charset=utf-8
+ <c5d30733-20c8-275a-03b1-9b446b5bcc71@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -38,78 +35,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/15/2017 12:11 AM, Benjamin Herrenschmidt wrote:
-> On Fri, 2017-04-14 at 23:51 +0200, Marek Vasut wrote:
->> On 04/14/2017 11:40 PM, Benjamin Herrenschmidt wrote:
->>>
->>> Strong disagreement here :-)
->>>
->>> DT is not *strictly* HW properties. Never was despite what some
->>> fanatics around might say :-) Its also platform properties and can
->>> include policies.
->>
->> /me grabs popcorn ... :-)
+On Sat, 2017-04-15 at 00:25 +0200, Marek Vasut wrote:
+> That sounds like a good option, yes. And if it's just forcing fixed
+> speed, that's awesome, but I think there are more values that might need
+> to be passed ... I think that's what Cedric can answer.
+
+Yes, fixed and delay. Not a huge deal.
+
+Also a module parameter makes it hard to specify different settings for
+different instances of the device/flash. IE, there can be multiple
+flash controllers and each of them can have multiple chip selects.
+
+The DT is the only sane way for that.
+
+> > That becomes akin to what we do with Ethernet PHYs for example :)
 > 
-> Be my guest ! I only invented the bloody thing in the first place after
-> all ;-) (Well, the FDT format rather, and its use in Linux, the DT
-> itself dates back from Open Firmware).
+> Even better, I recall seeing some speed DT props in the SPI binding
+> docs, so we already have those in place.
 
-:-)
+Right though the gate delay is rather IP block specific but that's
+not a huge issue.
 
->>> We put things like UART speeds in there, MAC addresses, etc...
->>
->> UART speeds or UART max/allowed speeds ? That's basically HW property
->> since flaky HW might not allow all sorts of UART speed options. MAC
->> address is a HW property.
-> 
-> Both. The point is that there is no hard lines. Every time people come
-> up with hard lines, we end up with inflexible horror shows that fail to
-> solve practical issues on the field.
-
-True
-
-> There is no good reason to forbid passing such a simple policy argument
-> that way. None. Other than ideological that is.
->
->>> it makes
->>> sense to put calibration info and in this case, request to perform
->>> SW
->>> calibration.
->>
->> That's a hard question and I don't have the right answer to this.
-> 
-> I do, and it's fine :-)
-> 
->>> Module parameters are crap. They are a major pain to use, they are
->>> in
->>> practice only good for tweaking/experimenting.
->>
->> That's correct, but then turning the calibration off would probably
->> be only used in such experimental setups or during HW bringup (if at
->> all).
->> Based on the discussion thus far, my impression is that thepreferred
->> and mostly used default is calibration enabled.
-> 
-> Probably yes. So we could reverse the problem and say that we have
-> the calibration enabled by default, and an optional device-tree
-> property to force a fixed speed.
-
-That sounds like a good option, yes. And if it's just forcing fixed
-speed, that's awesome, but I think there are more values that might need
-to be passed ... I think that's what Cedric can answer.
-
-> That becomes akin to what we do with Ethernet PHYs for example :)
-
-Even better, I recall seeing some speed DT props in the SPI binding
-docs, so we already have those in place.
-
-> Cheers,
-> Ben.
-> 
->>
->>
-
-
--- 
-Best regards,
-Marek Vasut
+Cheers,
+Ben.
