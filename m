@@ -1,38 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cywSW-0006JU-JH
- for linux-mtd@lists.infradead.org; Fri, 14 Apr 2017 08:20:03 +0000
-Date: Fri, 14 Apr 2017 10:19:28 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
- <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
- <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- devicetree@vger.kernel.org, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>
-Subject: Re: [PATCH v3 14/37] mtd: nand: denali: support "nand-ecc-strength"
- DT property
-Message-ID: <20170414101928.5255736e@bbrezillon>
-In-Reply-To: <CAK7LNARJU2PB8UPTRMrLsbZaQdEaQMAr6zOOHUozVoPWpESxgw@mail.gmail.com>
-References: <1490856383-31560-1-git-send-email-yamada.masahiro@socionext.com>
- <1490856383-31560-15-git-send-email-yamada.masahiro@socionext.com>
- <20170330160238.59e5a2c1@bbrezillon>
- <CAK7LNARUKwMHd79ALDx_SDY9XKcHPY96xTAOMQx6XarFgwb-AA@mail.gmail.com>
- <20170331114659.4964be35@bbrezillon>
- <CAK7LNAToTmirpkhNmPCLhcTXG_SFqS762mEGK3mjyqLKXuWa1Q@mail.gmail.com>
- <20170409183301.037d3f95@bbrezillon>
- <CAK7LNARxR722uRE9SnJPuOqictrpnbFmcKBsW_g=f1OnNgvpRA@mail.gmail.com>
- <20170411095637.5aa87cf6@bbrezillon>
- <CAK7LNARJU2PB8UPTRMrLsbZaQdEaQMAr6zOOHUozVoPWpESxgw@mail.gmail.com>
+Received: from 3.mo68.mail-out.ovh.net ([46.105.58.60])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cz0iw-0005CU-NV
+ for linux-mtd@lists.infradead.org; Fri, 14 Apr 2017 12:53:17 +0000
+Received: from player776.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo68.mail-out.ovh.net (Postfix) with ESMTP id 1995B48D93
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Apr 2017 14:52:51 +0200 (CEST)
+Subject: Re: [patchv4] mtd: mchp23k256: Add driver for this SPI SRAM device
+To: Andrew Lunn <andrew@lunn.ch>, dwmw2@infradead.org,
+ boris.brezillon@free-electrons.com
+References: <1492011271-15099-1-git-send-email-andrew@lunn.ch>
+Cc: zajec5@gmail.com, linux-mtd@lists.infradead.org
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <231d9be0-9843-1649-c34c-c44fab9c73fc@wedev4u.fr>
+Date: Fri, 14 Apr 2017 14:52:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1492011271-15099-1-git-send-email-andrew@lunn.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,327 +26,245 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 14 Apr 2017 16:57:23 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+Le 12/04/2017 à 17:34, Andrew Lunn a écrit :
+> The Microchip 23k256 is a 32K Byte SRAM connected via SPI.
+> 
+> Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> Hi Boris,
->=20
->=20
-> 2017-04-11 16:56 GMT+09:00 Boris Brezillon <boris.brezillon@free-electron=
-s.com>:
-> > Hi Masahiro,
-> >
-> > On Tue, 11 Apr 2017 15:19:21 +0900
-> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> > =20
-> >> Hi Boris,
-> >>
-> >>
-> >>
-> >> 2017-04-10 1:33 GMT+09:00 Boris Brezillon <boris.brezillon@free-electr=
-ons.com>: =20
-> >> > On Mon, 3 Apr 2017 12:16:34 +0900
-> >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> >> > =20
-> >> >> Hi Boris,
-> >> >>
-> >> >>
-> >> >>
-> >> >> 2017-03-31 18:46 GMT+09:00 Boris Brezillon <boris.brezillon@free-el=
-ectrons.com>:
-> >> >> =20
-> >> >> > You can try something like that when no explicit ecc.strength and
-> >> >> > ecc.size has been set in the DT and when ECC_MAXIMIZE was not pas=
-sed.
-> >> >> >
-> >> >> > static int
-> >> >> > denali_get_closest_ecc_strength(struct denali_nand_info *denali,
-> >> >> >                                 int strength)
-> >> >> > {
-> >> >> >         /*
-> >> >> >          * Whatever you need to select a strength that is greater=
- than
-> >> >> >          * or equal to strength.
-> >> >> >          */
-> >> >> >
-> >> >> >         return X;
-> >> >> > } =20
-> >> >>
-> >> >>
-> >> >> Is here anything specific to Denali? =20
-> >> >
-> >> > Well, only the denali driver knows what the hardware supports, though
-> >> > having a generic function that takes a table of supported strengths
-> >> > would work.
-> >> > =20
-> >> >>
-> >> >> =20
-> >> >> > static int denali_try_to_match_ecc_req(struct denali_nand_info *d=
-enali)
-> >> >> > {
-> >> >> >         struct nand_chip *chip =3D &denali->nand;
-> >> >> >         struct mtd_info *mtd =3D nand_to_mtd(chip);
-> >> >> >         int max_ecc_bytes =3D mtd->oobsize - denali->bbtskipbytes;
-> >> >> >         int ecc_steps, ecc_strength, ecc_bytes;
-> >> >> >         int ecc_size =3D chip->ecc_step_ds;
-> >> >> >         int ecc_strength =3D chip->ecc_strength_ds;
-> >> >> >
-> >> >> >         /*
-> >> >> >          * No information provided by the NAND chip, let the core
-> >> >> >          * maximize the strength.
-> >> >> >          */
-> >> >> >         if (!ecc_size || !ecc_strength)
-> >> >> >                 return -ENOTSUPP;
-> >> >> >
-> >> >> >         if (ecc_size > 512)
-> >> >> >                 ecc_size =3D 1024;
-> >> >> >         else
-> >> >> >                 ecc_size =3D 512;
-> >> >> >
-> >> >> >         /* Adjust ECC step size based on hardware support. */
-> >> >> >         if (ecc_size =3D=3D 1024 &&
-> >> >> >             !(denali->caps & DENALI_CAP_ECC_SIZE_1024))
-> >> >> >                 ecc_size =3D 512;
-> >> >> >         else if(ecc_size =3D=3D 512 &&
-> >> >> >                 !(denali->caps & DENALI_CAP_ECC_SIZE_512))
-> >> >> >                 ecc_size =3D 1024;
-> >> >> >
-> >> >> >         if (ecc_size < chip->ecc_size_ds) {
-> >> >> >                 /*
-> >> >> >                  * When the selected size if smaller than the exp=
-ected
-> >> >> >                  * one we try to use the same strength but on 512=
- blocks
-> >> >> >                  * so that we can still fix the same number of er=
-rors
-> >> >> >                  * even if they are concentrated in the first 512=
-bytes
-> >> >> >                  * of a 1024bytes portion.
-> >> >> >                  */
-> >> >> >                 ecc_strength =3D chip->ecc_strength_ds;
-> >> >> >                 ecc_strength =3D denali_get_closest_ecc_strength(=
-denali,
-> >> >> >                                                                ec=
-c_strength);
-> >> >> >         } else {
-> >> >> >                 /* Always prefer 1024bytes ECC blocks when possib=
-le. */
-> >> >> >                 if (ecc_size !=3D 1024 &&
-> >> >> >                     (denali->caps & DENALI_CAP_ECC_SIZE_1024) &&
-> >> >> >                     mtd->writesize > 1024)
-> >> >> >                         ecc_size =3D 1024;
-> >> >> >
-> >> >> >                 /*
-> >> >> >                  * Adjust the strength based on the selected ECC =
-step
-> >> >> >                  * size.
-> >> >> >                  */
-> >> >> >                 ecc_strength =3D DIV_ROUND_UP(ecc_size,
-> >> >> >                                             chip->ecc_step_ds) *
-> >> >> >                                chip->ecc_strength_ds;
-> >> >> >         }
-> >> >> >
-> >> >> >         ecc_bytes =3D denali_calc_ecc_bytes(ecc_size,
-> >> >> >                                           ecc_strength);
-> >> >> >         ecc_bytes *=3D mtd->writesize / ecc_size;
-> >> >> >
-> >> >> >         /*
-> >> >> >          * If we don't have enough space, let the core maximize
-> >> >> >          * the strength.
-> >> >> >          */
-> >> >> >         if (ecc_bytes > max_ecc_bytes)
-> >> >> >                 return -ENOTSUPP;
-> >> >> >
-> >> >> >         chip->ecc.strength =3D ecc_strength;
-> >> >> >         chip->ecc.size =3D ecc_size;
-> >> >> >
-> >> >> >         return 0;
-> >> >> > } =20
-> >> >>
-> >> >>
-> >> >> As a whole, this does not seem to driver-specific. =20
-> >> >
-> >> > It's almost controller-agnostic, except for the denali_calc_ecc_byte=
-s()
-> >> > function, but I guess we could ask drivers to implement a hook that =
-is
-> >> > passed the ECC step size and strength and returns the associated
-> >> > number of ECC bytes.
-> >> > =20
-> >> >>
-> >> >>
-> >> >> [1] A driver provides some pairs of (ecc_strength, ecc_size)
-> >> >>     it can support.
-> >> >>
-> >> >> [2] The core framework knows the chip's requirement
-> >> >>     (ecc_strength_ds, ecc_size_ds).
-> >> >>
-> >> >>
-> >> >> Then, the core framework provides a function
-> >> >> to return a most recommended (ecc_strength, ecc_size).
-> >> >>
-> >> >>
-> >> >>
-> >> >> struct nand_ecc_spec {
-> >> >>        int ecc_strength;
-> >> >>        int ecc_size;
-> >> >> };
-> >> >>
-> >> >> /*
-> >> >>  * This function choose the most recommented (ecc_str, ecc_size)
-> >> >>  * "recommended" means: minimum ecc stregth that meets
-> >> >>  * the chip's requirment.
-> >> >>  *
-> >> >>  *
-> >> >>  * @chip   - nand_chip
-> >> >>  * @controller_ecc_spec - Array of (ecc_str, ecc_size) supported by=
- the
-> >> >>                           controller. (terminated by NULL as sentin=
-el)
-> >> >>  */
-> >> >> struct nand_ecc_spec * nand_try_to_match_ecc_req(struct nand_chip *=
-chip,
-> >> >>                                                  struct nand_ecc_sp=
-ec
-> >> >> *controller_ecc_spec)
-> >> >> {
-> >> >>       /*
-> >> >>        * Return the pointer to the most recommended
-> >> >>        * struct nand_ecc_spec.
-> >> >>        * If nothing suitable found, return NULL.
-> >> >>        */
-> >> >> }
-> >> >> =20
-> >> >
-> >> > I like the idea, except I would do this slightly differently to avoid
-> >> > declaring all combinations of stepsize and strengths
-> >> >
-> >> > struct nand_ecc_stepsize_info {
-> >> >         int stepsize;
-> >> >         int nstrengths;
-> >> >         int *strengths;
-> >> > };
-> >> >
-> >> > struct nand_ecc_engine_caps {
-> >> >         int nstepsizes;
-> >> >         struct nand_ecc_stepsize_info *stepsizes;
-> >> >         int (*calc_ecc_bytes)(int stepsize, int strength);
-> >> > };
-> >> >
-> >> > int nand_try_to_match_ecc_req(struct nand_chip *chip,
-> >> >                               const struct nand_ecc_engine_caps *cap=
-s,
-> >> >                               struct nand_ecc_spec *spec)
-> >> > {
-> >> >         /*
-> >> >          * Find the most appropriate setting based on the ECC engine
-> >> >          * caps and fill the spec object accordingly.
-> >> >          * Returns 0 in case of success and a negative error code
-> >> >          * otherwise.
-> >> >          */
-> >> > }
-> >> >
-> >> > Note that nand_try_to_match_ecc_req() has to be more generic than
-> >> > denali_try_to_match_ecc_req() WRT step sizes, which will probably
-> >> > complexify the logic. =20
-> >>
-> >>
-> >> After I fiddle with this generic approach for a while,
-> >> I started to feel like giving up. =20
-> >
-> > I don't get it. What was the problem with my initial suggestion (the
-> > denali specific one, not the generic approach)? You proposed to make it
-> > generic, which, I agree, is a bit more complicated.
-> > =20
-> >>
-> >> I wonder if we really want over-implementation
-> >> for covering _theoretically_ possible cases. =20
-> >
-> > Okay, one more theoretical case I'd like to expose: you have board
-> > design with different NAND parts which have different ECC requirements.
-> > If you were about to describe the exact ECC strength you want for each
-> > board you'll have to have different DTs. =20
->=20
-> In this case, fixed ecc-strength in DT is not feasible.
->=20
-> > Maximizing the ECC strength
-> > would still work, but what if the MTD user needs some OOB bytes (like
-> > is the case with JFFS2) and ECC maximization reserved all of the
-> > available bytes? =20
->=20
-> JFFS2 needs some bytes in oob-free area for the clean marker.
-> You are right.
-> This implies NAND_ECC_MAXIMIZE is not very useful.
-> We do not know whether we have enough space left in oob, or not.
->=20
->=20
->=20
-> > The other reason I prefer to have the drivers automatically guessing
-> > what's appropriate is because then you don't have to care when writing
-> > your DT.
-> > =20
-> >>
-> >> In practice, there are not so many ECC settings possible
-> >> on a single controller.
-> >>
-> >> As for Denali IP, it would be theoretically possible to instantiate
-> >> multiple ECC engines.  However, in practice, there is no sensible
-> >> reason to do so.  At least, I do not know any real chip to support tha=
-t.
-> >>
-> >> So, I'd like to simplify the logic for Denali.
-> >>
-> >>   - Support either 512 or 1024 ECC size.
-> >>     If there is (ever) a controller that supports both,
-> >>     1024 should be chosen.
-> >>
-> >>   - ECC strength is not specified via DT, it is simply maximized.
-> >>
-> >> This simplifies the logic much and I believe this is enough.
-> >>
-> >> One more reason is, as we talked before,
-> >> we need to match ECC setting between Linux and firmware (boot-loader),=
- =20
-> >
-> > If the bootloader implements the same logic it should match.
-> > =20
-> >> so anyway we end up with using a fixed setting specified by DT.
-> >> =20
-> >
-> > Really, I don't see what's the problem with the function I proposed,
-> > but I'm willing to make a concession.
-> > Make the nand-ecc-strength+nand-ecc-step-size or nand-ecc-maximize
-> > mandatory so that if someone ever needs to support the 'match NAND
-> > requirements' feature we won't have to add a vendor specific property
-> > like this one [1].
-> >
-> > Are you fine with that? =20
->=20
-> No.  This requirement seems too strong.
+Reviewed-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
-Hm, can you give more details? All I want is a solution where we can
-later support the feature I'm asking without adding a extra DT
-property, and, in order to do that we must make sure the case you want
-to support as a first step are explicitly requested in the DT.
-
-It's as simple as:
-
-	if ((!ecc->strength ||=C2=A0!ecc->size) &&
-	    !(ecc->options & NAND_ECC_MAXIMIZE))
-		return -ENOTSUPP;
-
-> At least, it is a problem for non-DT platforms.
-
-Well, for non-DT platforms you have to keep ECC maximization anyway,
-otherwise you're not backward compatible.
-
->=20
->=20
-> If a driver provides ECC engine caps info,
-> perhaps ECC maximizing could be a generalized helper function as well.
-
-I don't get it. I thought the generic helper was too hard to implement.
-Now you want to add a new functionality.
-
-I'm not against this idea, but maybe it's easier to provide a denali
-specific implementation before tackling the generic one.
+> ---
+> v4:
+> Fix block comment format
+> Fix parameter indentation
+> Remove double blank line
+> ---
+>  drivers/mtd/devices/Kconfig      |  10 +++
+>  drivers/mtd/devices/Makefile     |   1 +
+>  drivers/mtd/devices/mchp23k256.c | 182 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 193 insertions(+)
+>  create mode 100644 drivers/mtd/devices/mchp23k256.c
+> 
+> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+> index 58329d2dacd1..6def5445e03e 100644
+> --- a/drivers/mtd/devices/Kconfig
+> +++ b/drivers/mtd/devices/Kconfig
+> @@ -95,6 +95,16 @@ config MTD_M25P80
+>  	  if you want to specify device partitioning or to use a device which
+>  	  doesn't support the JEDEC ID instruction.
+>  
+> +config MTD_MCHP23K256
+> +	tristate "Microchip 23K256 SRAM"
+> +	depends on SPI_MASTER
+> +	help
+> +	  This enables access to Microchip 23K256 SRAM chips, using SPI.
+> +
+> +	  Set up your spi devices with the right board-specific
+> +	  platform data, or a device tree description if you want to
+> +	  specify device partitioning
+> +
+>  config MTD_SPEAR_SMI
+>  	tristate "SPEAR MTD NOR Support through SMI controller"
+>  	depends on PLAT_SPEAR
+> diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+> index 7912d3a0ee34..f0f767624cc6 100644
+> --- a/drivers/mtd/devices/Makefile
+> +++ b/drivers/mtd/devices/Makefile
+> @@ -12,6 +12,7 @@ obj-$(CONFIG_MTD_LART)		+= lart.o
+>  obj-$(CONFIG_MTD_BLOCK2MTD)	+= block2mtd.o
+>  obj-$(CONFIG_MTD_DATAFLASH)	+= mtd_dataflash.o
+>  obj-$(CONFIG_MTD_M25P80)	+= m25p80.o
+> +obj-$(CONFIG_MTD_MCHP23K256)	+= mchp23k256.o
+>  obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
+>  obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
+>  obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
+> diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
+> new file mode 100644
+> index 000000000000..ed3d1724e5de
+> --- /dev/null
+> +++ b/drivers/mtd/devices/mchp23k256.c
+> @@ -0,0 +1,182 @@
+> +/*
+> + * mchp23k256.c
+> + *
+> + * Driver for Microchip 23k256 SPI RAM chips
+> + *
+> + * Copyright © 20016 Andrew Lunn <andrew@lunn.ch>
+> + *
+> + * This code is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + */
+> +#include <linux/device.h>
+> +#include <linux/module.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/mutex.h>
+> +#include <linux/sched.h>
+> +#include <linux/sizes.h>
+> +#include <linux/spi/flash.h>
+> +#include <linux/spi/spi.h>
+> +
+> +struct mchp23k256_flash {
+> +	struct spi_device	*spi;
+> +	struct mutex		lock;
+> +	struct mtd_info		mtd;
+> +};
+> +
+> +#define MCHP23K256_CMD_WRITE_STATUS	0x01
+> +#define MCHP23K256_CMD_WRITE		0x02
+> +#define MCHP23K256_CMD_READ		0x03
+> +#define MCHP23K256_MODE_SEQ		BIT(6)
+> +
+> +#define to_mchp23k256_flash(x) container_of(x, struct mchp23k256_flash, mtd)
+> +
+> +static int mchp23k256_write(struct mtd_info *mtd, loff_t to, size_t len,
+> +			    size_t *retlen, const unsigned char *buf)
+> +{
+> +	struct mchp23k256_flash *flash = to_mchp23k256_flash(mtd);
+> +	struct spi_transfer transfer[2] = {};
+> +	struct spi_message message;
+> +	unsigned char command[3];
+> +
+> +	spi_message_init(&message);
+> +
+> +	command[0] = MCHP23K256_CMD_WRITE;
+> +	command[1] = to >> 8;
+> +	command[2] = to;
+> +
+> +	transfer[0].tx_buf = command;
+> +	transfer[0].len = sizeof(command);
+> +	spi_message_add_tail(&transfer[0], &message);
+> +
+> +	transfer[1].tx_buf = buf;
+> +	transfer[1].len = len;
+> +	spi_message_add_tail(&transfer[1], &message);
+> +
+> +	mutex_lock(&flash->lock);
+> +
+> +	spi_sync(flash->spi, &message);
+> +
+> +	if (retlen && message.actual_length > sizeof(command))
+> +		*retlen += message.actual_length - sizeof(command);
+> +
+> +	mutex_unlock(&flash->lock);
+> +	return 0;
+> +}
+> +
+> +static int mchp23k256_read(struct mtd_info *mtd, loff_t from, size_t len,
+> +			   size_t *retlen, unsigned char *buf)
+> +{
+> +	struct mchp23k256_flash *flash = to_mchp23k256_flash(mtd);
+> +	struct spi_transfer transfer[2] = {};
+> +	struct spi_message message;
+> +	unsigned char command[3];
+> +
+> +	spi_message_init(&message);
+> +
+> +	memset(&transfer, 0, sizeof(transfer));
+> +	command[0] = MCHP23K256_CMD_READ;
+> +	command[1] = from >> 8;
+> +	command[2] = from;
+> +
+> +	transfer[0].tx_buf = command;
+> +	transfer[0].len = sizeof(command);
+> +	spi_message_add_tail(&transfer[0], &message);
+> +
+> +	transfer[1].rx_buf = buf;
+> +	transfer[1].len = len;
+> +	spi_message_add_tail(&transfer[1], &message);
+> +
+> +	mutex_lock(&flash->lock);
+> +
+> +	spi_sync(flash->spi, &message);
+> +
+> +	if (retlen && message.actual_length > sizeof(command))
+> +		*retlen += message.actual_length - sizeof(command);
+> +
+> +	mutex_unlock(&flash->lock);
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Set the device into sequential mode. This allows read/writes to the
+> + * entire SRAM in a single operation
+> + */
+> +static int mchp23k256_set_mode(struct spi_device *spi)
+> +{
+> +	struct spi_transfer transfer = {};
+> +	struct spi_message message;
+> +	unsigned char command[2];
+> +
+> +	spi_message_init(&message);
+> +
+> +	command[0] = MCHP23K256_CMD_WRITE_STATUS;
+> +	command[1] = MCHP23K256_MODE_SEQ;
+> +
+> +	transfer.tx_buf = command;
+> +	transfer.len = sizeof(command);
+> +	spi_message_add_tail(&transfer, &message);
+> +
+> +	return spi_sync(spi, &message);
+> +}
+> +
+> +static int mchp23k256_probe(struct spi_device *spi)
+> +{
+> +	struct mchp23k256_flash *flash;
+> +	struct flash_platform_data *data;
+> +	int err;
+> +
+> +	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
+> +	if (!flash)
+> +		return -ENOMEM;
+> +
+> +	flash->spi = spi;
+> +	mutex_init(&flash->lock);
+> +	spi_set_drvdata(spi, flash);
+> +
+> +	err = mchp23k256_set_mode(spi);
+> +	if (err)
+> +		return err;
+> +
+> +	data = dev_get_platdata(&spi->dev);
+> +
+> +	flash->mtd.dev.parent	= &spi->dev;
+> +	flash->mtd.type		= MTD_RAM;
+> +	flash->mtd.flags	= MTD_CAP_RAM;
+> +	flash->mtd.writesize	= 1;
+> +	flash->mtd.size		= SZ_32K;
+> +	flash->mtd._read	= mchp23k256_read;
+> +	flash->mtd._write	= mchp23k256_write;
+> +
+> +	err = mtd_device_parse_register(&flash->mtd, NULL, NULL,
+> +					data ? data->parts : NULL,
+> +					data ? data->nr_parts : 0);
+> +	if (err)
+> +		return err;
+> +
+> +	return 0;
+> +}
+> +
+> +static int mchp23k256_remove(struct spi_device *spi)
+> +{
+> +	struct mchp23k256_flash *flash = spi_get_drvdata(spi);
+> +
+> +	return mtd_device_unregister(&flash->mtd);
+> +}
+> +
+> +static struct spi_driver mchp23k256_driver = {
+> +	.driver = {
+> +		.name	= "mchp23k256",
+> +	},
+> +	.probe		= mchp23k256_probe,
+> +	.remove		= mchp23k256_remove,
+> +};
+> +
+> +module_spi_driver(mchp23k256_driver);
+> +
+> +MODULE_DESCRIPTION("MTD SPI driver for MCHP23K256 RAM chips");
+> +MODULE_AUTHOR("Andrew Lunn <andre@lunn.ch>");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("spi:mchp23k256");
+> 
