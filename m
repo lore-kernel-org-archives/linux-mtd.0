@@ -1,28 +1,21 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cz24p-000860-KR
- for linux-mtd@lists.infradead.org; Fri, 14 Apr 2017 14:19:58 +0000
-Received: by mail-wr0-x244.google.com with SMTP id o21so12645119wrb.3
- for <linux-mtd@lists.infradead.org>; Fri, 14 Apr 2017 07:19:35 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mtd: dataflash: Make use of "extened device
- information"
-To: Andrey Smirnov <andrew.smirnov@gmail.com>
-References: <20170411161722.11164-1-andrew.smirnov@gmail.com>
- <7a1ea2db-eda8-ceec-3ad2-45146bb43a53@gmail.com>
- <CAHQ1cqGD70eDGsKTU3ZSZtqm6-1VDkro+kFRgkHGszejTucDBg@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Chris Healy <cphealy@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <053c4282-23a2-54ff-235a-26ff090dc831@gmail.com>
-Date: Fri, 14 Apr 2017 16:19:32 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cz37X-0002JD-St
+ for linux-mtd@lists.infradead.org; Fri, 14 Apr 2017 15:26:51 +0000
+Date: Fri, 14 Apr 2017 17:26:25 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Masahiro Yamada
+ <yamada.masahiro@socionext.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PULL] mtd: nand: changes for 4.12
+Message-ID: <20170414172625.25094366@bbrezillon>
+In-Reply-To: <20170414094915.17098db3@bbrezillon>
+References: <20170414094915.17098db3@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <CAHQ1cqGD70eDGsKTU3ZSZtqm6-1VDkro+kFRgkHGszejTucDBg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,254 +26,211 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/12/2017 04:58 PM, Andrey Smirnov wrote:
-> On Tue, Apr 11, 2017 at 11:29 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
->> On 04/11/2017 06:17 PM, Andrey Smirnov wrote:
->>> In anticipation of supporting chips that need it, extend the size of
->>> struct flash_info's 'jedec_id' field to make room 2 byte of extended
->>> device information as well as add code to fetch this data during
->>> jedec_probe().
->>>
->>> Cc: cphealy@gmail.com
->>> Cc: David Woodhouse <dwmw2@infradead.org>
->>> Cc: Brian Norris <computersforpeace@gmail.com>
->>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
->>> Cc: Marek Vasut <marek.vasut@gmail.com>
->>> Cc: Richard Weinberger <richard@nod.at>
->>> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>> Cc: linux-kernel@vger.kernel.org
->>> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
->>> ---
->>>  drivers/mtd/devices/mtd_dataflash.c | 113 +++++++++++++++++++++---------------
->>>  1 file changed, 66 insertions(+), 47 deletions(-)
->>>
->>> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
->>> index f9e9bd1..9a98cdc 100644
->>> --- a/drivers/mtd/devices/mtd_dataflash.c
->>> +++ b/drivers/mtd/devices/mtd_dataflash.c
->>> @@ -689,7 +689,7 @@ struct flash_info {
->>>       /* JEDEC id has a high byte of zero plus three data bytes:
->>>        * the manufacturer id, then a two byte device id.
->>>        */
->>> -     uint32_t        jedec_id;
->>> +     uint64_t        jedec_id;
->>>
->>>       /* The size listed here is what works with OP_ERASE_PAGE. */
->>>       unsigned        nr_pages;
->>> @@ -712,61 +712,35 @@ static struct flash_info dataflash_data[] = {
->>>        * These newer chips also support 128-byte security registers (with
->>>        * 64 bytes one-time-programmable) and software write-protection.
->>>        */
->>> -     { "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS},
->>> -     { "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB011B",  0x1f22000000, 512, 264, 9, SUP_POW2PS},
->>> +     { "at45db011d",  0x1f22000000, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
->>> -     { "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB021B",  0x1f23000000, 1024, 264, 9, SUP_POW2PS},
->>> +     { "at45db021d",  0x1f23000000, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
->>> -     { "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB041x",  0x1f24000000, 2048, 264, 9, SUP_POW2PS},
->>> +     { "at45db041d",  0x1f24000000, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
->>> -     { "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB081B",  0x1f25000000, 4096, 264, 9, SUP_POW2PS},
->>> +     { "at45db081d",  0x1f25000000, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
->>> -     { "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB161x",  0x1f26000000, 4096, 528, 10, SUP_POW2PS},
->>> +     { "at45db161d",  0x1f26000000, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB321x",  0x1f2700, 8192, 528, 10, 0},           /* rev C */
->>> +     { "AT45DB321x",  0x1f27000000, 8192, 528, 10, 0},       /* rev C */
->>>
->>> -     { "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
->>> -     { "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB321x",  0x1f27010000, 8192, 528, 10, SUP_POW2PS},
->>> +     { "at45db321d",  0x1f27010000, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
->>> -     { "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB642x",  0x1f28000000, 8192, 1056, 11, SUP_POW2PS},
->>> +     { "at45db642d",  0x1f28000000, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->>>  };
->>>
->>> -static struct flash_info *jedec_probe(struct spi_device *spi)
->>> +static struct flash_info *jedec_lookup(struct spi_device *spi,
->>> +                                    uint64_t jedec)
->>
->> const u64 (not uint64_t , this is NOT userspace). Fix globally.
->>
+On Fri, 14 Apr 2017 09:49:15 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+
+> Hi Brian,
 > 
-> I am not sure what this has to do with userspace. There's plenty of
-> kernel code that uses standard C99 types, coding style guide calls
-> them out as being OK
+> Here is my PR for 4.12. As you can see, it's a pretty big one compared
+> to 4.11, and it's mainly due to the Denali driver rework/cleanup (which
+> I'd like to thank Masahiro for), the addition of the per-vendor
+> initialization infrastructure and the complete rewrite of the Atmel
+> driver.
+
+Can you hold this PR back. We just found another bug in the new Atmel
+driver and I'd like to fix the offending commit to avoid breaking
+bisectability. I'll send a new PR during the week-end or early next
+week.
+
+Thanks,
+
+Boris
+
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst?id=refs/tags/v4.11-rc6#n364
+> The rest of the commits are just simple fixes/improvements to existing
+> driver or to the core.
 > 
-> but more to the point, the rest of this file uses nothing but C99
-> types. Why should this function be any different?
-
-This is explained in Linus's rant [1],
-Re: [RFC] Splitting kernel headers and deprecating __KERNEL__
-
-[1] https://lwn.net/Articles/113367/
-
-It'd be nice if you could clean the file up, it should be trivial sed
-replacement, ie sed -i "s/uint\([0-9]\+\)_t/u\1/g" ; git add ; git
-commit -sm ; git send-email , done .
-
->>>  {
->>> -     int                     tmp;
->>> -     uint8_t                 code = OP_READ_ID;
->>> -     uint8_t                 id[3];
->>> -     uint32_t                jedec;
->>> -     struct flash_info       *info;
->>> -     int status;
->>> -
->>> -     /* JEDEC also defines an optional "extended device information"
->>> -      * string for after vendor-specific data, after the three bytes
->>> -      * we use here.  Supporting some chips might require using it.
->>> -      *
->>> -      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
->>> -      * That's not an error; only rev C and newer chips handle it, and
->>> -      * only Atmel sells these chips.
->>> -      */
->>> -     tmp = spi_write_then_read(spi, &code, 1, id, 3);
->>> -     if (tmp < 0) {
->>> -             pr_debug("%s: error %d reading JEDEC ID\n",
->>> -                     dev_name(&spi->dev), tmp);
->>> -             return ERR_PTR(tmp);
->>> -     }
->>> -     if (id[0] != 0x1f)
->>> -             return NULL;
->>> -
->>> -     jedec = id[0];
->>> -     jedec = jedec << 8;
->>> -     jedec |= id[1];
->>> -     jedec = jedec << 8;
->>> -     jedec |= id[2];
->>> +     int tmp, status;
->>> +     struct flash_info *info;
->>>
->>>       for (tmp = 0, info = dataflash_data;
->>>                       tmp < ARRAY_SIZE(dataflash_data);
->>> @@ -796,12 +770,57 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
->>>               }
->>>       }
->>>
->>> +     return NULL;
->>> +}
->>> +
->>> +static struct flash_info *jedec_probe(struct spi_device *spi)
->>> +{
->>> +     int                     tmp;
->>> +     uint8_t                 code = OP_READ_ID;
->>> +     uint8_t                 id[8] = {0};
->>> +     const unsigned int      id_size = 5;
->>> +     const unsigned int      first_byte = sizeof(id) - id_size;
->>> +     const uint64_t          eid_mask = GENMASK_ULL(63, 16);
->>
->> Can we have some macro, like DATAFLASH_ID_BYTES and derive all the masks
->> and crap from it instead of having this stack of variables ?
->>
-> 
-> Can you give me an example of what you have in mind? A macro that
-> would simplify this code is not very obvious to me.
-
-If there is nothing obvious, then we have to live with this.
-It just feels like there are way too many ad-hoc numbers which
-might be somehow interdependent and thus could be inferred one
-from the other.
-
->>> +     uint64_t                jedec;
->>> +     struct flash_info       *info;
->>
->> Replace the tab after the type with space please.
-> 
-> Why? This code was originally using tabs, the only thing I changed was
-> type of 'jedec' variable from uint32_t to uint64_t.
-
-Admittedly, I didn't look at the removal part and the patch makes it
-look like you rewrote half of the function. And since you're adding new
-stuff, you might as well fix the minor warts of the old code while at it.
-
->>
->>> +     /* JEDEC also defines an optional "extended device information"
->>
->> Multi-line comment format:
->>
->> /*
->>  * foo
->>  * bar
->>  */
->>
-> 
-> This is how the code was before my patch. I just moved this block
-> without changing it, so I'd prefer to not make that fact less clear by
-> doing re-formatting.
-
-See above, you might as well fix this .
-
-
->>> +      * string for after vendor-specific data, after the three bytes
->>> +      * we use here.  Supporting some chips might require using it.
->>> +      *
->>> +      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
->>> +      * That's not an error; only rev C and newer chips handle it, and
->>> +      * only Atmel sells these chips.
->>> +      */
->>> +     tmp = spi_write_then_read(spi, &code, 1, &id[first_byte], id_size);
->>> +     if (tmp < 0) {
->>
->> Use ret instead of tmp.
-> 
-> Ditto.
-
-See my comment above.
-
->>> +             pr_debug("%s: error %d reading JEDEC ID\n",
->>> +                     dev_name(&spi->dev), tmp);
->>> +             return ERR_PTR(tmp);
->>> +     }
->>
->> newline
-> 
-> Ditto.
-> 
->>
->>> +     if (id[first_byte] != 0x1f)
->>
->> Use a macro, like CFI_MFR_ATMEL ?
->>
-> 
-> Ditto.
-> 
->>> +             return NULL;
->>> +
->>> +     jedec = be64_to_cpup((__be64 *)id);
->>> +
->>> +     info = jedec_lookup(spi, jedec);
->>> +     if (info)
->>> +             return info;
->>> +     /*
->>> +      * Clear extended id bits and try to find a match again
->>> +      */
->>
->> This could be a single-line comment.
-> 
-> OK, I'll change that.
+> Let me know if you see any problem.
 > 
 > Thanks,
-> Andrey Smirnov
 > 
-
-
--- 
-Best regards,
-Marek Vasut
+> Boris
+> 
+> The following changes since commit c1ae3cfa0e89fa1a7ecc4c99031f5e9ae99d9201:
+> 
+>   Linux 4.11-rc1 (2017-03-05 12:59:56 -0800)
+> 
+> are available in the git repository at:
+> 
+>   git@github.com:linux-nand/linux.git tags/nand/for-4.12
+> 
+> for you to fetch changes up to 2b12c057cc2837312001f4fc3a4d89498fb6f463:
+> 
+>   mtd: nand: brcmnand: Check flash #WP pin status before nand erase/program (2017-04-11 13:46:55 +0200)
+> 
+> ----------------------------------------------------------------
+> This pull request contains:
+> 
+>  - some minor fixes/improvements on existing drivers (fsmc, gpio, ifc,
+>    davinci, brcmnand, omap)
+>  - a huge cleanup/rework of the denali driver accompanied with core
+>    fixes/improvements to simplify the driver code
+>  - a complete rewrite of the atmel driver to support new DT bindings
+>    make future evolution easier
+>  - the addition of per-vendor detection/initialization steps to avoid
+>    extending the nand_ids table with more extended-id entries
+> 
+> ----------------------------------------------------------------
+> Alison Wang (2):
+>       memory: ifc: Update dependency of IFC for LS1021A
+>       mtd: nand: Update dependency of IFC for LS1021A
+> 
+> Boris Brezillon (20):
+>       mtd: nand: Get rid of the mtd parameter in all auto-detection functions
+>       mtd: nand: Store nand ID in struct nand_chip
+>       mtd: nand: Get rid of busw parameter
+>       mtd: nand: Rename nand_get_flash_type() into nand_detect()
+>       mtd: nand: Rename the nand_manufacturers struct
+>       mtd: nand: Kill the MTD_NAND_IDS Kconfig option
+>       mtd: nand: Do not expose the NAND manufacturer table directly
+>       mtd: nand: Add manufacturer specific initialization/detection steps
+>       mtd: nand: Move Samsung specific init/detection logic in nand_samsung.c
+>       mtd: nand: Move Hynix specific init/detection logic in nand_hynix.c
+>       mtd: nand: Move Toshiba specific init/detection logic in nand_toshiba.c
+>       mtd: nand: Move Micron specific init logic in nand_micron.c
+>       mtd: nand: Move AMD/Spansion specific init/detection logic in nand_amd.c
+>       mtd: nand: Move Macronix specific initialization in nand_macronix.c
+>       mtd: nand: hynix: Rework NAND ID decoding to extract more information
+>       mtd: nand: hynix: Add read-retry support for 1x nm MLC NANDs
+>       mtd: nand: tango: Enforce DMA direction type
+>       mtd: nand: Cleanup/rework the atmel_nand driver
+>       mtd: nand: atmel: Document the new DT bindings
+>       mtd: nand: Remove unused chip->write_page() hook
+> 
+> Christophe Jaillet (1):
+>       mtd: nand: NULL terminate a of_device_id table
+> 
+> Christophe Leroy (1):
+>       mtd: nand: gpio: make nCE GPIO optional
+> 
+> Colin Ian King (1):
+>       mtd: nand: nandsim: fix spelling mistake: "weakpagess" -> "weakpages"
+> 
+> Dan Carpenter (2):
+>       mtd: nand: hynix: Fix an error code in init
+>       mtd: nand: Fix a couple error codes
+> 
+> Hans de Goede (1):
+>       mtd: nand: samsung: Retrieve ECC requirements from extended ID
+> 
+> Kamal Dasu (1):
+>       mtd: nand: brcmnand: Check flash #WP pin status before nand erase/program
+> 
+> Masahiro Yamada (31):
+>       mtd: nand: allow to set only one of ECC size and ECC strength from DT
+>       mtd: nand: use read_oob() instead of cmdfunc() for bad block check
+>       mtd: nand: denali: remove unused CONFIG option and macros
+>       mtd: nand: denali: remove redundant define of BANK(x)
+>       mtd: nand: denali: remove more unused struct members
+>       mtd: nand: denali: fix comment of denali_nand_info::flash_mem
+>       mtd: nand: denali: consolidate INTR_STATUS__* and INTR_EN__* macros
+>       mtd: nand: denali: introduce capability flag
+>       mtd: nand: denali: use int where no reason to use fixed width variable
+>       mtd: nand: do not check R/B# for CMD_READID in nand_command(_lp)
+>       mtd: nand: do not check R/B# for CMD_SET_FEATURES in nand_command(_lp)
+>       mtd: nand: denali: use nand_chip to hold frequently accessed data
+>       mtd: nand: denali: call nand_set_flash_node() to set DT node
+>       mtd: nand: denali: move multi device fixup code to a helper function
+>       mtd: nand: denali: simplify multi device fixup code
+>       mtd: nand: denali: set DEVICES_CONNECTED 1 if not set
+>       mtd: nand: denali: remove meaningless writes to read-only registers
+>       mtd: nand: denali: remove unnecessary writes to ECC_CORRECTION
+>       mtd: nand: relax ecc.read_page() return value for uncorrectable ECC
+>       mtd: nand: denali: allow to override mtd->name from label DT property
+>       mtd: nand: denali: remove meaningless pipeline read-ahead operation
+>       mtd: nand: denali: fix bitflips calculation in handle_ecc()
+>       mtd: nand: denali: fix erased page checking
+>       mtd: nand: denali: support HW_ECC_FIXUP capability
+>       mtd: nand: denali_dt: enable HW_ECC_FIXUP for Altera SOCFPGA variant
+>       mtd: nand: denali: support 64bit capable DMA engine
+>       mtd: nand: denali_dt: remove dma-mask DT property
+>       mtd: nand: denali_dt: use pdev instead of ofdev for platform_device
+>       mtd: nand: denali: allow to override revision number
+>       mtd: nand: allocate aligned buffers if NAND_OWN_BUFFERS is unset
+>       mtd: nand: allow drivers to request minimum alignment for passed buffer
+> 
+> Philipp Zabel (1):
+>       mtd: nand: sunxi: simplify optional reset handling
+> 
+> Roger Quadros (1):
+>       mtd: nand: omap2: Fix partition creation via cmdline mtdparts
+> 
+> Sekhar Nori (1):
+>       mtd: nand: davinci: add comment on NAND subpage write status on keystone
+> 
+> Simon Baatz (2):
+>       mtd: nand: orion: fix clk handling
+>       mtd: nand: orion: improve handling of optional clock
+> 
+> Thomas Petazzoni (11):
+>       mtd: nand: fsmc: fix NAND width handling
+>       mtd: nand: fsmc: move fsmc_nand_data definition
+>       mtd: nand: fsmc: remove ->select_bank() from fsmc_nand_platform_data
+>       mtd: nand: fsmc: remove fsmc_select_chip()
+>       mtd: nand: fmsc: kill {read, write}_dma_priv from fsmc_nand_platform_data
+>       mtd: nand: fsmc: kill {nr_, }partitions structure fields
+>       mtd: nand: fsmc: remove duplicate nand_set_flash_node()
+>       mtd: nand: fsmc: finally remove fsmc_nand_platform_data
+>       mtd: nand: fsmc: use devm_clk_get()
+>       mtd: nand: fsmc: remove unused definitions
+>       mtd: nand: fsmc: remove CONFIG_OF conditional
+> 
+>  Documentation/devicetree/bindings/mtd/atmel-nand.txt  |  107 ++-
+>  Documentation/devicetree/bindings/mtd/denali-nand.txt |    7 +-
+>  MAINTAINERS                                           |    2 +-
+>  arch/cris/arch-v32/drivers/Kconfig                    |    1 -
+>  drivers/memory/Kconfig                                |    2 +-
+>  drivers/mtd/nand/Kconfig                              |   23 +-
+>  drivers/mtd/nand/Makefile                             |   11 +-
+>  drivers/mtd/nand/atmel/Makefile                       |    4 +
+>  drivers/mtd/nand/atmel/nand-controller.c              | 2199 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/mtd/nand/atmel/pmecc.c                        | 1020 ++++++++++++++++++++++
+>  drivers/mtd/nand/atmel/pmecc.h                        |   73 ++
+>  drivers/mtd/nand/atmel_nand.c                         | 2479 ------------------------------------------------------
+>  drivers/mtd/nand/atmel_nand_ecc.h                     |  163 ----
+>  drivers/mtd/nand/atmel_nand_nfc.h                     |  103 ---
+>  drivers/mtd/nand/brcmnand/brcmnand.c                  |   61 +-
+>  drivers/mtd/nand/davinci_nand.c                       |   11 +
+>  drivers/mtd/nand/denali.c                             |  567 +++++++------
+>  drivers/mtd/nand/denali.h                             |  192 +----
+>  drivers/mtd/nand/denali_dt.c                          |   74 +-
+>  drivers/mtd/nand/fsmc_nand.c                          |  236 ++----
+>  drivers/mtd/nand/gpio.c                               |   18 +-
+>  drivers/mtd/nand/nand_amd.c                           |   51 ++
+>  drivers/mtd/nand/nand_base.c                          |  518 +++++-------
+>  drivers/mtd/nand/nand_hynix.c                         |  631 ++++++++++++++
+>  drivers/mtd/nand/nand_ids.c                           |   39 +-
+>  drivers/mtd/nand/nand_macronix.c                      |   30 +
+>  drivers/mtd/nand/nand_micron.c                        |   86 ++
+>  drivers/mtd/nand/nand_samsung.c                       |  112 +++
+>  drivers/mtd/nand/nand_toshiba.c                       |   51 ++
+>  drivers/mtd/nand/nandsim.c                            |    2 +-
+>  drivers/mtd/nand/omap2.c                              |    9 +
+>  drivers/mtd/nand/orion_nand.c                         |   48 +-
+>  drivers/mtd/nand/sunxi_nand.c                         |   20 +-
+>  drivers/mtd/nand/tango_nand.c                         |    8 +-
+>  include/linux/mtd/nand.h                              |   96 ++-
+>  35 files changed, 5275 insertions(+), 3779 deletions(-)
+>  create mode 100644 drivers/mtd/nand/atmel/Makefile
+>  create mode 100644 drivers/mtd/nand/atmel/nand-controller.c
+>  create mode 100644 drivers/mtd/nand/atmel/pmecc.c
+>  create mode 100644 drivers/mtd/nand/atmel/pmecc.h
+>  delete mode 100644 drivers/mtd/nand/atmel_nand.c
+>  delete mode 100644 drivers/mtd/nand/atmel_nand_ecc.h
+>  delete mode 100644 drivers/mtd/nand/atmel_nand_nfc.h
+>  create mode 100644 drivers/mtd/nand/nand_amd.c
+>  create mode 100644 drivers/mtd/nand/nand_hynix.c
+>  create mode 100644 drivers/mtd/nand/nand_macronix.c
+>  create mode 100644 drivers/mtd/nand/nand_micron.c
+>  create mode 100644 drivers/mtd/nand/nand_samsung.c
+>  create mode 100644 drivers/mtd/nand/nand_toshiba.c
