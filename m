@@ -1,20 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cz1O5-0007No-IT
- for linux-mtd@lists.infradead.org; Fri, 14 Apr 2017 13:35:50 +0000
-Subject: Re: [PATCH v5 5/6] nand: spi: Add generic SPI controller support
-To: Peter Pan <peterpandong@micron.com>, boris.brezillon@free-electrons.com,
- richard@nod.at, computersforpeace@gmail.com, arnaud.mouiche@gmail.com,
- thomas.petazzoni@free-electrons.com, cyrille.pitchen@atmel.com,
- linux-mtd@lists.infradead.org
-References: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
- <1491810713-27795-6-git-send-email-peterpandong@micron.com>
-Cc: peterpansjtu@gmail.com, linshunquan1@hisilicon.com
-From: Marek Vasut <marex@denx.de>
-Message-ID: <93510c4d-9d48-f37b-21de-5fd532072b4c@denx.de>
-Date: Fri, 14 Apr 2017 15:26:24 +0200
+ id 1cz1s3-0002tq-AI
+ for linux-mtd@lists.infradead.org; Fri, 14 Apr 2017 14:06:44 +0000
+Received: by mail-wm0-x242.google.com with SMTP id o81so17977957wmb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Apr 2017 07:06:22 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: enable stateless 4b op codes for mx25u25635f
+To: Mathias Kresin <dev@kresin.me>, linux-mtd@lists.infradead.org
+References: <1492068234-9509-1-git-send-email-dev@kresin.me>
+Cc: cyrille.pitchen@atmel.com
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <5a292873-3f53-2c54-4963-f312cf2d96d1@gmail.com>
+Date: Fri, 14 Apr 2017 16:06:19 +0200
 MIME-Version: 1.0
-In-Reply-To: <1491810713-27795-6-git-send-email-peterpandong@micron.com>
+In-Reply-To: <1492068234-9509-1-git-send-email-dev@kresin.me>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,115 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/10/2017 09:51 AM, Peter Pan wrote:
-> This commit supports to use generic spi controller
-> as spi nand controller.
+On 04/13/2017 09:23 AM, Mathias Kresin wrote:
+> All required stateless 4-byte op codes are supported by this flash
+> chip. The stateless 4-byte support can't be autodetected due to a
+> missing 4-byte Address Instruction Table in SFDP.
 > 
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> Fixes hangs on reboot for SoCs expecting the flash chip in 3byte mode.
+
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+
+Thanks!
+
+> Signed-off-by: Mathias Kresin <dev@kresin.me>
 > ---
->  drivers/mtd/nand/spi/Kconfig                   |   2 +
->  drivers/mtd/nand/spi/Makefile                  |   1 +
->  drivers/mtd/nand/spi/controllers/Kconfig       |   5 +
->  drivers/mtd/nand/spi/controllers/Makefile      |   1 +
->  drivers/mtd/nand/spi/controllers/generic-spi.c | 159 +++++++++++++++++++++++++
->  5 files changed, 168 insertions(+)
->  create mode 100644 drivers/mtd/nand/spi/controllers/Kconfig
->  create mode 100644 drivers/mtd/nand/spi/controllers/Makefile
->  create mode 100644 drivers/mtd/nand/spi/controllers/generic-spi.c
-
-[...]
-
-> +static int gen_spi_spinand_probe(struct spi_device *spi)
-> +{
-> +	struct spinand_device *chip;
-> +	struct gen_spi_spinand_controller *controller;
-> +	struct spinand_controller *spinand_controller;
-> +	struct device *dev = &spi->dev;
-> +	u16 mode = spi->mode;
-> +	int ret;
-> +
-> +	chip = spinand_alloc(dev);
-> +	if (IS_ERR(chip)) {
-> +		ret = PTR_ERR(chip);
-> +		goto err1;
-> +	}
-
-Would it make sense to embed the struct spinand_device into struct
-gen_spi_nand_controller , so you'd get rid of one allocation ?
-
-> +	controller = devm_kzalloc(dev, sizeof(*controller), GFP_KERNEL);
-> +	if (!controller) {
-> +		ret = -ENOMEM;
-> +		goto err2;
-> +	}
-> +	controller->spi = spi;
-> +	spinand_controller = &controller->ctrl;
-> +	spinand_controller->ops = &gen_spi_spinand_ops;
-> +	spinand_controller->caps = SPINAND_CAP_RD_X1 | SPINAND_CAP_WR_X1;
-> +
-> +	if ((mode & SPI_RX_QUAD) && (mode & SPI_TX_QUAD))
-> +		spinand_controller->caps |= SPINAND_CAP_RD_QUAD;
-> +	if ((mode & SPI_RX_DUAL) && (mode & SPI_TX_DUAL))
-> +		spinand_controller->caps |= SPINAND_CAP_RD_DUAL;
-> +	if (mode & SPI_RX_QUAD)
-> +		spinand_controller->caps |= SPINAND_CAP_RD_X4;
-> +	if (mode & SPI_RX_DUAL)
-> +		spinand_controller->caps |= SPINAND_CAP_RD_X2;
-> +	if (mode & SPI_TX_QUAD)
-> +		spinand_controller->caps |= SPINAND_CAP_WR_QUAD |
-> +					    SPINAND_CAP_WR_X4;
-> +	if (mode & SPI_TX_DUAL)
-> +		spinand_controller->caps |= SPINAND_CAP_WR_DUAL |
-> +					    SPINAND_CAP_WR_X2;
-> +	chip->controller.controller = spinand_controller;
-> +	/*
-> +	 * generic spi controller doesn't have ecc capability,
-> +	 * so use on-die ecc.
-> +	 */
-> +	chip->ecc.type = SPINAND_ECC_ONDIE;
-> +	spi_set_drvdata(spi, chip);
-> +
-> +	ret = spinand_register(chip);
-> +	if (ret)
-> +		goto err3;
-> +
-> +	return 0;
-> +
-> +err3:
-> +	devm_kfree(dev, controller);
-> +err2:
-> +	spinand_free(chip);
-> +err1:
-> +	return ret;
-> +}
-> +
-> +static int gen_spi_spinand_remove(struct spi_device *spi)
-> +{
-> +	struct spinand_device *chip = spi_get_drvdata(spi);
-> +	struct spinand_controller *scontroller = chip->controller.controller;
-> +	struct gen_spi_spinand_controller *controller;
-> +
-> +	spinand_unregister(chip);
-> +	controller = to_gen_spi_spinand_controller(scontroller);
-> +	devm_kfree(&spi->dev, controller);
-> +	spinand_free(chip);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct spi_driver gen_spi_spinand_driver = {
-> +	.driver = {
-> +		.name	= "generic_spinand",
-> +		.owner	= THIS_MODULE,
-> +	},
-> +	.probe	= gen_spi_spinand_probe,
-> +	.remove	= gen_spi_spinand_remove,
-> +};
-> +module_spi_driver(gen_spi_spinand_driver);
-> +
-> +MODULE_DESCRIPTION("Generic SPI controller to support SPI NAND");
-> +MODULE_AUTHOR("Peter Pan<peterpandong@micron.com>");
-> +MODULE_LICENSE("GPL v2");
+>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 1ae872b..4b496d8 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1017,7 +1017,7 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+>  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+> -	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
+> +	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
+>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
 > 
 
 
