@@ -1,47 +1,26 @@
-Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1czKxG-00046w-BY
- for linux-mtd@lists.infradead.org; Sat, 15 Apr 2017 10:29:24 +0000
-Received: by mail-oi0-x242.google.com with SMTP id t63so20685982oih.0
- for <linux-mtd@lists.infradead.org>; Sat, 15 Apr 2017 03:29:01 -0700 (PDT)
+ id 1czPAS-0004PA-DY
+ for linux-mtd@lists.infradead.org; Sat, 15 Apr 2017 14:59:18 +0000
+Received: by mail-wr0-x242.google.com with SMTP id u18so15522126wrc.1
+ for <linux-mtd@lists.infradead.org>; Sat, 15 Apr 2017 07:58:55 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mtd: nand: gpmi: Fix gpmi_nand_init() error path
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+References: <1491813318-4417-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Han Xu <han.xu@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Leonard Crestez <leonard.crestez@nxp.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <92f29571-c6e3-1860-804e-0635624b65fa@gmail.com>
+Date: Sat, 15 Apr 2017 16:58:31 +0200
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <CABeXuvoKmvbo_n3XQ0Y+iWGz88Jr3TwbPA7GiR3pia9407ANLw@mail.gmail.com>
-References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
- <1491613030-11599-7-git-send-email-deepa.kernel@gmail.com>
- <CAHC9VhTYWeKL+BAb6F3tfwzs7OKUEA8ANM=V05sfoiahNNX=9w@mail.gmail.com>
- <CABeXuvoKmvbo_n3XQ0Y+iWGz88Jr3TwbPA7GiR3pia9407ANLw@mail.gmail.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Sat, 15 Apr 2017 10:29:00 +0000
-Message-ID: <CAK8P3a3w_3JKxW6kz-V9roxzf9RwbVgHaK8XjO5OOktVvZ_Sog@mail.gmail.com>
-Subject: Re: [PATCH 06/12] audit: Use timespec64 to represent audit timestamps
-To: Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: Paul Moore <paul@paul-moore.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Greg KH <gregkh@linuxfoundation.org>, "Dilger,
- Andreas" <andreas.dilger@intel.com>,
- "J. Bruce Fields" <bfields@fieldses.org>, Chris Mason <clm@fb.com>,
- "David S. Miller" <davem@davemloft.net>, David Sterba <dsterba@suse.com>,
- Evgeniy Dushistov <dushistov@mail.ru>, Eric Paris <eparis@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>,
- Josef Bacik <jbacik@fb.com>, Jeff Layton <jlayton@poochiereds.net>,
- John Stultz <john.stultz@linaro.org>, James Simmons <jsimmons@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, "Drokin, Oleg" <oleg.drokin@intel.com>,
- Steven Rostedt <rostedt@goodmis.org>, yuchao0@huawei.com,
- ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
- linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-cifs@vger.kernel.org,
- "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- LSM List <linux-security-module@vger.kernel.org>,
- Lustre Development List <lustre-devel@lists.lustre.org>,
- Linux Network Devel Mailing List <netdev@vger.kernel.org>,
- samba-technical@lists.samba.org,
- y2038 Mailman List <y2038@lists.linaro.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1491813318-4417-1-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,21 +30,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Apr 8, 2017 at 5:58 PM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
->> I have no problem merging this patch into audit/next for v4.12, would
->> you prefer me to do that so at least this patch is merged?
->
-> This would be fine.
-> But, I think whoever takes the last 2 deletion patches should also take them.
-> I'm not sure how that part works out.
->
->> It would probably make life a small bit easier for us in the audit
->> world too as it would reduce the potential merge conflict.  However,
->> that's a relatively small thing to worry about.
+On 04/10/2017 10:35 AM, Boris Brezillon wrote:
+> The GPMI driver is wrongly assuming that nand_release() can safely be
+> called on an uninitialized/unregistered NAND device.
+> 
+> Add a new err_nand_cleanup label in the error path and only execute if
+> nand_scan_tail() succeeded.
+> 
+> Note that we now call nand_cleanup() instead of nand_release()
+> (nand_release() is actually grouping the mtd_device_unregister() and
+> nand_cleanup() in one call) because there's no point in trying to
+> unregister a device that has never been registered.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-As Andrew has picked the remaining patches up into -mm, this will work
-out fine: any patches picked up by the respective maintainers for v4.12
-should arrive as git pull requests before the -mm patches get applied
-at a later stage of the merge window.
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
-     Arnd
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index d52139635b67..92279a0d52f1 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -2048,18 +2048,20 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+>  
+>  	ret = nand_boot_init(this);
+>  	if (ret)
+> -		goto err_out;
+> +		goto err_nand_cleanup;
+>  	ret = chip->scan_bbt(mtd);
+>  	if (ret)
+> -		goto err_out;
+> +		goto err_nand_cleanup;
+>  
+>  	ret = mtd_device_register(mtd, NULL, 0);
+>  	if (ret)
+> -		goto err_out;
+> +		goto err_nand_cleanup;
+>  	return 0;
+>  
+> +err_nand_cleanup:
+> +	nand_cleanup(chip);
+>  err_out:
+> -	gpmi_nand_exit(this);
+> +	gpmi_free_dma_buffer(this);
+>  	return ret;
+>  }
+>  
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
