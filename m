@@ -1,24 +1,24 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1czPjH-0008Nv-E2
- for linux-mtd@lists.infradead.org; Sat, 15 Apr 2017 15:35:17 +0000
-Received: by mail-wr0-x241.google.com with SMTP id l44so15530102wrc.2
- for <linux-mtd@lists.infradead.org>; Sat, 15 Apr 2017 08:34:52 -0700 (PDT)
-Subject: Re: [RFC PATCH v5 4/6] mtd: spi-nor: add support to non-uniform SPI
- NOR flash memories
+ id 1czPky-0001qQ-Ip
+ for linux-mtd@lists.infradead.org; Sat, 15 Apr 2017 15:37:02 +0000
+Received: by mail-wr0-x244.google.com with SMTP id u18so15601384wrc.1
+ for <linux-mtd@lists.infradead.org>; Sat, 15 Apr 2017 08:36:40 -0700 (PDT)
+Subject: Re: [RFC PATCH v5 6/6] mtd: spi-nor: parse SFDP 4-byte Address
+ Instruction Table
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  linux-mtd@lists.infradead.org, jartur@cadence.com, kdasu.kdev@gmail.com,
  mar.krzeminski@gmail.com
 References: <cover.1490220411.git.cyrille.pitchen@atmel.com>
- <fa832746dedee8d1b6ea97b0418f22da81031606.1490220411.git.cyrille.pitchen@atmel.com>
+ <a8ec3a70dc9c49ced1a1191a65c177048143e3c3.1490220411.git.cyrille.pitchen@atmel.com>
 Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
  boris.brezillon@free-electrons.com, richard@nod.at,
  linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <5cb3f0f1-b932-7d79-7aaf-2e08952b3a2c@gmail.com>
-Date: Sat, 15 Apr 2017 17:24:45 +0200
+Message-ID: <ec3fea03-1eb8-6ad9-bae7-20a81c6f9af9@gmail.com>
+Date: Sat, 15 Apr 2017 17:36:37 +0200
 MIME-Version: 1.0
-In-Reply-To: <fa832746dedee8d1b6ea97b0418f22da81031606.1490220411.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <a8ec3a70dc9c49ced1a1191a65c177048143e3c3.1490220411.git.cyrille.pitchen@atmel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,149 +31,221 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 03/23/2017 12:33 AM, Cyrille Pitchen wrote:
-
-Hrmmmm, sigh, took me almost month to review this one, sorry :(
-
-> This patch is a first step in introducing  the support of SPI memories
-> with non-uniform erase sizes like Spansion s25fs512s.
-> 
-> It introduces the memory erase map which splits the memory array into one
-> or many erase regions. Each erase region supports up to 4 erase commands,
-> as defined by the JEDEC JESD216B (SFDP) specification.
-> In turn, an erase command is defined by an op code and a sector size.
-> 
-> To be backward compatible, the erase map of uniform SPI NOR flash memories
-> is initialized so it contains only one erase region and this erase region
-> supports only one erase command. Hence a single size is used to erase any
-> sector/block of the memory.
-> 
-> Besides, since the algorithm used to erase sectors on non-uniform SPI NOR
-> flash memories is quite expensive, when possible, the erase map is tuned
-> to come back to the uniform case.
-> 
-> This is a transitional patch: non-uniform erase maps will be used later
-> when initialized based on the SFDP data.
+> This patch adds supports for SFDP (JESD216B) 4-byte Address Instruction
+> Table. This table is optional but when available, we parse it to get the
+> 4-byte address op codes supported by the memory.
+> Using these op codes is stateless as opposed to entering the 4-byte
+> address mode or setting the Base Address Register (BAR).
 > 
 > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-
-[...]
-
-Before I dive into the code, I have two questions:
-
-1) On ie. 128 MiB part, how many struct spi_nor_erase_region {}
-   instances would be allocated in total (consider you support
-   4k, 64k and 32M erase opcodes) ? Three ?
-
-2) Would it make sense to represent the erase regions as a tree instead?
-   For example
-
-      [ region with 32MiB die erase opcode , start=0 , count=4 ]
-            |
-            V
-[ region with 64k erase opcode ][ region with 64k erase opcode ]
-[       start=0, count=1       ][      start=0, count=511      ]
-            |
-            V
-[ region with 4k erase opcode ]
-[      start=0, count=16      ]
-
-I think it'd make the lookup for the best-fitting opcode combination
-faster if the user decides to erase some arbitrarily-aligned block of
-the flash.
-
-What do you think ?
-
-Note this tree-based approach does not handle the cases where erase
-regions would overlap, although I doubt that could be a problem .
-
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index d270788f5ab6..c12cafe99bee 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -216,6 +216,55 @@ enum spi_nor_option_flags {
->  };
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 166 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 165 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index ce8722055a9c..ea044efc4e6d 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1899,6 +1899,7 @@ struct sfdp_parameter_header {
 >  
->  /**
-> + * struct spi_nor_erase_command - Structure to describe a SPI NOR erase command
-> + * @size:		the size of the sector/block erased by the command.
-> + * @size_shift:		the size shift: if @size is a power of 2 then the shift
-> + *			is stored in @size_shift, otherwise @size_shift is zero.
-> + * @size_mask:		the size mask based on @size_shift.
-> + * @opcode:		the SPI command op code to erase the sector/block.
-> + */
-> +struct spi_nor_erase_command {
-> +	u32	size;
-> +	u32	size_shift;
-> +	u32	size_mask;
-> +	u8	opcode;
+>  
+>  #define SFDP_BFPT_ID		0xff00u	/* Basic Flash Parameter Table */
+> +#define SFDP_4BAIT_ID		0xff84u	/* 4-byte Address Instruction Table */
+>  
+>  #define SFDP_SIGNATURE		0x50444653u
+>  #define SFDP_JESD216_MAJOR	1
+> @@ -2241,6 +2242,149 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  	return 0;
+>  }
+>  
+> +struct sfdp_4bait {
+> +	/* The hardware capability. */
+> +	u32		hwcaps;
+> +
+> +	/*
+> +	 * The <supported_bit> bit in DWORD1 of the 4BAIT tells us whether
+> +	 * the associated 4-byte address op code is supported.
+> +	 */
+> +	u32		supported_bit;
 > +};
 > +
-> +/**
-> + * struct spi_nor_erase_region - Structure to describe a SPI NOR erase region
-> + * @offset:		the offset in the data array of erase region start.
-> + *			LSB bits are used as a bitmask encoding the erase
-> + *			commands supported inside this erase region.
-> + * @size:		the size of the region in bytes.
-> + */
-> +struct spi_nor_erase_region {
-> +	u64		offset;
-> +	u64		size;
-> +};
-> +
-> +#define SNOR_CMD_ERASE_MAX	4
-> +#define SNOR_CMD_ERASE_MASK	GENMASK_ULL(SNOR_CMD_ERASE_MAX - 1, 0)
-> +#define SNOR_CMD_ERASE_OFFSET(_cmd_mask, _offset)	\
-> +	((((u64)(_offset)) & ~SNOR_CMD_ERASE_MASK) |	\
-> +	 (((u64)(_cmd_mask)) & SNOR_CMD_ERASE_MASK))
-> +
-> +/**
-> + * struct spi_nor_erase_map - Structure to describe the SPI NOR erase map
-> + * @commands:		an array of erase commands shared by all the regions.
-> + * @uniform_region:	a pre-allocated erase region for SPI NOR with a uniform
-> + *			sector size (legacy implementation).
-> + * @regions:		point to an array describing the boundaries of the erase
-> + *			regions.
-> + * @num_regions:	the number of elements in the @regions array.
-> + */
-> +struct spi_nor_erase_map {
-> +	struct spi_nor_erase_command	commands[SNOR_CMD_ERASE_MAX];
-> +	struct spi_nor_erase_region	uniform_region;
-> +	struct spi_nor_erase_region	*regions;
-> +	u32				num_regions;
-> +};
-> +
-> +/**
->   * struct flash_info -	Forward declaration of a structure used internally by
->   *			spi_nor_scan() and spi_nor_init().
->   */
-> @@ -238,6 +287,7 @@ struct flash_info;
->   * @write_proto:	the SPI protocol for write operations
->   * @reg_proto		the SPI protocol for read_reg/write_reg/erase operations
->   * @cmd_buf:		used by the write_reg
-> + * @erase_map:		the erase map of the SPI NOR
->   * @prepare:		[OPTIONAL] do some preparations for the
->   *			read/write/erase/lock/unlock operations
->   * @unprepare:		[OPTIONAL] do some post work after the
-> @@ -273,6 +323,7 @@ struct spi_nor {
->  	bool			sst_write_second;
->  	u32			flags;
->  	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
-> +	struct spi_nor_erase_map	erase_map;
->  
->  	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
->  	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
-> @@ -293,6 +344,11 @@ struct spi_nor {
->  	void *priv;
->  };
->  
-> +static inline bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+> +static int spi_nor_parse_4bait(struct spi_nor *nor,
+> +			       const struct sfdp_parameter_header *param_header,
+> +			       struct spi_nor_flash_parameter *params)
 > +{
-> +	return (nor->erase_map.regions == &nor->erase_map.uniform_region);
+> +	static const struct sfdp_4bait reads[] = {
+> +		{ SNOR_HWCAPS_READ,		BIT(0) },
+> +		{ SNOR_HWCAPS_READ_FAST,	BIT(1) },
+> +		{ SNOR_HWCAPS_READ_1_1_2,	BIT(2) },
+> +		{ SNOR_HWCAPS_READ_1_2_2,	BIT(3) },
+> +		{ SNOR_HWCAPS_READ_1_1_4,	BIT(4) },
+> +		{ SNOR_HWCAPS_READ_1_4_4,	BIT(5) },
+> +		{ SNOR_HWCAPS_READ_1_1_1_DTR,	BIT(13) },
+> +		{ SNOR_HWCAPS_READ_1_2_2_DTR,	BIT(14) },
+> +		{ SNOR_HWCAPS_READ_1_4_4_DTR,	BIT(15) },
+> +	};
+> +	static const struct sfdp_4bait programs[] = {
+> +		{ SNOR_HWCAPS_PP,		BIT(6) },
+> +		{ SNOR_HWCAPS_PP_1_1_4,		BIT(7) },
+> +		{ SNOR_HWCAPS_PP_1_4_4,		BIT(8) },
+> +	};
+> +	static const struct sfdp_4bait erases[SNOR_CMD_ERASE_MAX] = {
+> +		{ 0u /* not used */,		BIT(9) },
+> +		{ 0u /* not used */,		BIT(10) },
+> +		{ 0u /* not used */,		BIT(11) },
+> +		{ 0u /* not used */,		BIT(12) },
+> +	};
+> +	u32 dwords[2], addr, discard_hwcaps, read_hwcaps, pp_hwcaps, erase_mask;
+> +	struct spi_nor_erase_map *map = &nor->erase_map;
+> +	int i, err;
+> +
+> +	if (param_header->major != SFDP_JESD216_MAJOR ||
+> +	    param_header->length < ARRAY_SIZE(dwords))
+> +		return -EINVAL;
+> +
+> +	/* Read the 4-byte Address Instruction Table. */
+> +	addr = SFDP_PARAM_HEADER_PTP(param_header);
+> +	err = spi_nor_read_sfdp(nor, addr, sizeof(dwords), dwords);
+> +	if (err)
+> +		return err;
+> +
+> +	/* Fix endianness of the 4BAIT DWORDs. */
+> +	for (i = 0; i < ARRAY_SIZE(dwords); i++)
+> +		dwords[i] = le32_to_cpu(dwords[i]);
+> +
+> +	/*
+> +	 * Compute the subset of (Fast) Read commands for which the 4-byte
+> +	 * version is supported.
+> +	 */
+> +	discard_hwcaps = 0;
+> +	read_hwcaps = 0;
+> +	for (i = 0; i < ARRAY_SIZE(reads); i++) {
+> +		const struct sfdp_4bait *read = &reads[i];
+> +
+> +		discard_hwcaps |= read->hwcaps;
+> +		if ((params->hwcaps.mask & read->hwcaps) &&
+> +		    (dwords[0] & read->supported_bit))
+> +			read_hwcaps |= read->hwcaps;
+> +	}
+
+Looks like there is a bit of repeated stuff here, maybe this can be
+pulled out ?
+
+> +	/*
+> +	 * Compute the subset of Page Program commands for which the 4-byte
+> +	 * version is supported.
+> +	 */
+> +	pp_hwcaps = 0;
+> +	for (i = 0; i < ARRAY_SIZE(programs); i++) {
+> +		const struct sfdp_4bait *program = &programs[i];
+> +
+> +		discard_hwcaps |= program->hwcaps;
+> +		if ((params->hwcaps.mask & program->hwcaps) &&
+> +		    (dwords[0] & program->supported_bit))
+> +			pp_hwcaps |= program->hwcaps;
+> +	}
+> +
+> +	/*
+> +	 * Compute the subet of Sector Erase commands for which the 4-byte
+> +	 * version is supported.
+> +	 */
+> +	erase_mask = 0;
+> +	for (i = 0; i < SNOR_CMD_ERASE_MAX; i++) {
+> +		const struct sfdp_4bait *erase = &erases[i];
+> +
+> +		if ((map->commands[i].size > 0) &&
+> +		    (dwords[0] & erase->supported_bit))
+> +			erase_mask |= BIT(i);
+> +	}
+> +
+> +	/*
+> +	 * We need at least one 4-byte op code per read, program and erase
+> +	 * operation; the .read(), .write() and .erase() hooks share the
+> +	 * nor->addr_width value.
+> +	 */
+> +	if (!read_hwcaps || !pp_hwcaps || !erase_mask)
+> +		return 0;
+> +
+> +	/*
+> +	 * Discard all operations from the 4-byte instruction set which are
+> +	 * not supported by this memory.
+> +	 */
+> +	params->hwcaps.mask &= ~discard_hwcaps;
+> +	params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
+> +
+> +	/* Use the 4-byte address instruction set. */
+> +	for (i = 0; i < SNOR_CMD_READ_MAX; i++) {
+> +		struct spi_nor_read_command *read_cmd = &params->reads[i];
+> +
+> +		read_cmd->opcode = spi_nor_convert_3to4_read(read_cmd->opcode);
+> +	}
+> +	for (i = 0; i < SNOR_CMD_PP_MAX; i++) {
+> +		struct spi_nor_pp_command *pp_cmd = &params->page_programs[i];
+> +
+> +		pp_cmd->opcode = spi_nor_convert_3to4_program(pp_cmd->opcode);
+> +	}
+> +	for (i = 0; i < SNOR_CMD_ERASE_MAX; i++) {
+> +		struct spi_nor_erase_command *erase_cmd = &map->commands[i];
+> +
+> +		if (erase_mask & BIT(i))
+> +			erase_cmd->opcode = (dwords[1] >> (i * 8)) & 0xFF;
+> +		else
+> +			spi_nor_set_erase_command(erase_cmd, 0u, 0xFF);
+> +	}
+> +
+> +	/*
+> +	 * We set nor->addr_width here to skip spi_nor_set_4byte_opcodes()
+> +	 * later because this latest function implements a legacy quirk for
+> +	 * the erase size of Spansion memory. However this quirk is no longer
+> +	 * needed with new SFDP compliant memories.
+> +	 */
+> +	nor->addr_width = 4;
+> +	nor->flags |= SNOR_F_4B_OPCODES;
+> +	return 0;
 > +}
 > +
->  static inline void spi_nor_set_flash_node(struct spi_nor *nor,
->  					  struct device_node *np)
+>  static int spi_nor_parse_sfdp(struct spi_nor *nor,
+>  			      struct spi_nor_flash_parameter *params)
 >  {
+> @@ -2308,6 +2452,23 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
+>  	if (err)
+>  		goto exit;
+>  
+> +	/* Parse other parameter headers. */
+> +	for (i = 0; i < header.nph; i++) {
+> +		param_header = &param_headers[i];
+> +
+> +		switch (SFDP_PARAM_HEADER_ID(param_header)) {
+> +		case SFDP_4BAIT_ID:
+> +			err = spi_nor_parse_4bait(nor, param_header, params);
+> +			break;
+> +
+> +		default:
+> +			break;
+> +		}
+> +
+> +		if (err)
+> +			goto exit;
+> +	}
+> +
+>  exit:
+>  	kfree(param_headers);
+>  	return err;
+> @@ -2885,7 +3046,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (info->addr_width)
+> +	if (nor->addr_width)
+> +		/* already configured by spi_nor_setup() */
+> +		;
+
+I think you can drop this part.
+
+> +	else if (info->addr_width)
+>  		nor->addr_width = info->addr_width;
+>  	else if (mtd->size > 0x1000000) {
+>  		/* enable 4-byte addressing if the device exceeds 16MiB */
 > 
 
 
