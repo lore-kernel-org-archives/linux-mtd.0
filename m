@@ -1,21 +1,27 @@
-Received: from 7.mo177.mail-out.ovh.net ([46.105.61.149])
+Received: from 2.mo177.mail-out.ovh.net ([178.33.109.80])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cznEX-0001Mh-Ud
- for linux-mtd@lists.infradead.org; Sun, 16 Apr 2017 16:41:08 +0000
+ id 1cznQu-00058Y-1k
+ for linux-mtd@lists.infradead.org; Sun, 16 Apr 2017 16:53:54 +0000
 Received: from player714.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo177.mail-out.ovh.net (Postfix) with ESMTP id C837151164
- for <linux-mtd@lists.infradead.org>; Sun, 16 Apr 2017 18:40:31 +0200 (CEST)
-Subject: Re: [PATCH] mtd: spi-nor: enable stateless 4b op codes for mx25u25635f
-To: Marek Vasut <marek.vasut@gmail.com>, Mathias Kresin <dev@kresin.me>,
- linux-mtd@lists.infradead.org
-References: <1492068234-9509-1-git-send-email-dev@kresin.me>
- <5a292873-3f53-2c54-4963-f312cf2d96d1@gmail.com>
-Cc: cyrille.pitchen@atmel.com
+ by mo177.mail-out.ovh.net (Postfix) with ESMTP id 5EA6F511E2
+ for <linux-mtd@lists.infradead.org>; Sun, 16 Apr 2017 18:53:22 +0200 (CEST)
+Subject: Re: [PATCH v4 1/2] dt-bindings: Document the STM32 QSPI bindings
+To: Ludovic Barre <ludovic.Barre@st.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+References: <1492103757-22375-1-git-send-email-ludovic.Barre@st.com>
+ <1492103757-22375-2-git-send-email-ludovic.Barre@st.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>, devicetree@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <7d8ded9f-7995-bdd9-f80c-dd738015cad5@wedev4u.fr>
-Date: Sun, 16 Apr 2017 18:40:24 +0200
+Message-ID: <b62272c9-027c-9c9b-42f0-1056d88aac7c@wedev4u.fr>
+Date: Sun, 16 Apr 2017 18:53:06 +0200
 MIME-Version: 1.0
-In-Reply-To: <5a292873-3f53-2c54-4963-f312cf2d96d1@gmail.com>
+In-Reply-To: <1492103757-22375-2-git-send-email-ludovic.Barre@st.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,40 +33,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 14/04/2017 à 16:06, Marek Vasut a écrit :
-> On 04/13/2017 09:23 AM, Mathias Kresin wrote:
->> All required stateless 4-byte op codes are supported by this flash
->> chip. The stateless 4-byte support can't be autodetected due to a
->> missing 4-byte Address Instruction Table in SFDP.
->>
->> Fixes hangs on reboot for SoCs expecting the flash chip in 3byte mode.
-> 
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> 
-> Thanks!
+Hi all,
 
-Applied to github/spi-nor
+Rob, is this version ok for you? If so, I can take it into the
+github/spi-nor tree.
 
-Thanks!
+Best regards,
+
+Cyrille
+
+Le 13/04/2017 à 19:15, Ludovic Barre a écrit :
+> From: Ludovic Barre <ludovic.barre@st.com>
 > 
->> Signed-off-by: Mathias Kresin <dev@kresin.me>
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 1ae872b..4b496d8 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -1017,7 +1017,7 @@ static const struct flash_info spi_nor_ids[] = {
->>  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
->>  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
->>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
->> -	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
->> +	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
->>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
->>  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
->>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
->>
+> This patch adds documentation of device tree bindings for the STM32
+> QSPI controller.
 > 
+> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+> ---
+>  .../devicetree/bindings/mtd/stm32-quadspi.txt      | 43 ++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt b/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+> new file mode 100644
+> index 0000000..ddd18c1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/stm32-quadspi.txt
+> @@ -0,0 +1,43 @@
+> +* STMicroelectronics Quad Serial Peripheral Interface(QuadSPI)
+> +
+> +Required properties:
+> +- compatible: should be "st,stm32f469-qspi"
+> +- reg: the first contains the register location and length.
+> +       the second contains the memory mapping address and length
+> +- reg-names: should contain the reg names "qspi" "qspi_mm"
+> +- interrupts: should contain the interrupt for the device
+> +- clocks: the phandle of the clock needed by the QSPI controller
+> +- A pinctrl must be defined to set pins in mode of operation for QSPI transfer
+> +
+> +Optional properties:
+> +- resets: must contain the phandle to the reset controller.
+> +
+> +A spi flash must be a child of the nor_flash node and could have some
+> +properties. Also see jedec,spi-nor.txt.
+> +
+> +Required properties:
+> +- reg: chip-Select number (QSPI controller may connect 2 nor flashes)
+> +- spi-max-frequency: max frequency of spi bus
+> +
+> +Optional property:
+> +- spi-rx-bus-width: see ../spi/spi-bus.txt for the description
+> +
+> +Example:
+> +
+> +qspi: spi@a0001000 {
+> +	compatible = "st,stm32f469-qspi";
+> +	reg = <0xa0001000 0x1000>, <0x90000000 0x10000000>;
+> +	reg-names = "qspi", "qspi_mm";
+> +	interrupts = <91>;
+> +	resets = <&rcc STM32F4_AHB3_RESET(QSPI)>;
+> +	clocks = <&rcc 0 STM32F4_AHB3_CLOCK(QSPI)>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_qspi0>;
+> +
+> +	flash@0 {
+> +		reg = <0>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-max-frequency = <108000000>;
+> +		...
+> +	};
+> +};
 > 
