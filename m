@@ -1,21 +1,19 @@
-Received: from 5.mo177.mail-out.ovh.net ([46.105.39.154])
+Received: from 10.mo177.mail-out.ovh.net ([46.105.73.133])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1czrwt-0006Th-Rf
- for linux-mtd@lists.infradead.org; Sun, 16 Apr 2017 21:43:14 +0000
+ id 1czs1c-0000l3-Mc
+ for linux-mtd@lists.infradead.org; Sun, 16 Apr 2017 21:48:06 +0000
 Received: from player714.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo177.mail-out.ovh.net (Postfix) with ESMTP id B166251788
- for <linux-mtd@lists.infradead.org>; Sun, 16 Apr 2017 23:42:49 +0200 (CEST)
+ by mo177.mail-out.ovh.net (Postfix) with ESMTP id 49FD051040
+ for <linux-mtd@lists.infradead.org>; Sun, 16 Apr 2017 23:47:41 +0200 (CEST)
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 To: marek.vasut@gmail.com, linux-mtd@lists.infradead.org, kdasu.kdev@gmail.com
 Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
  boris.brezillon@free-electrons.com, richard@nod.at,
  linux-kernel@vger.kernel.org, jartur@cadence.com, mar.krzeminski@gmail.com,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [RFC PATCH v6 3/4] mtd: spi-nor: transitional patch
-Date: Sun, 16 Apr 2017 23:41:57 +0200
-Message-Id: <df4bdab3eb9507ea708544962aaff8a09eb81a3b.1492374675.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1492374675.git.cyrille.pitchen@atmel.com>
-References: <cover.1492374675.git.cyrille.pitchen@atmel.com>
+Subject: [RFC PATCH v6 4/4] mtd: spi-nor: add spi_nor_init() function
+Date: Sun, 16 Apr 2017 23:47:27 +0200
+Message-Id: <c1284f6bbb0284fccd1254066e1daeae6f95dc12.1492374675.git.cyrille.pitchen@atmel.com>
 In-Reply-To: <cover.1492374675.git.cyrille.pitchen@atmel.com>
 References: <cover.1492374675.git.cyrille.pitchen@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,38 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch extracts some chunks from spi_nor_scan() and moves them into
+a new spi_nor_init() function.
+
+Indeed, spi_nor_init() regroups all the required SPI flash commands to be
+sent to the SPI flash memory before performing any runtime operations
+(Fast Read, Page Program, Sector Erase, ...). Hence spi_nor_init():
+1) removes the flash protection if applicable for certain vendors.
+2) sets the Quad Enable bit, if needed, before using Quad SPI protocols.
+3) makes the memory enter its (stateful) 4-byte address mode, if needed,
+   for SPI flash memory > 128Mbits not supporting the 4-byte address
+   instruction set.
+
+spi_nor_scan() now ends by calling spi_nor_init() once the probe phase has
+completed. Further patches could also use spi_nor_init() to implement the
+mtd->_resume() handler for the spi-nor framework.
+
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 19 ++++++++++++-------
- include/linux/mtd/spi-nor.h   |  2 ++
- 2 files changed, 14 insertions(+), 7 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 71 ++++++++++++++++++++++++++++---------------
+ include/linux/mtd/spi-nor.h   |  8 +++++
+ 2 files changed, 55 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 3bb2adff306b..2377fe54f8b9 100644
+index 2377fe54f8b9..523fd9d85f57 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1828,13 +1828,10 @@ static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
- 	/* Enable Quad I/O if needed. */
- 	enable_quad_io = (spi_nor_get_protocol_width(nor->read_proto) == 4 ||
- 			  spi_nor_get_protocol_width(nor->write_proto) == 4);
--	if (enable_quad_io && params->quad_enable) {
--		err = params->quad_enable(nor);
--		if (err) {
--			dev_err(nor->dev, "quad mode not supported\n");
--			return err;
--		}
--	}
-+	if (enable_quad_io && params->quad_enable)
-+		nor->flash_quad_enable = params->quad_enable;
-+	else
-+		nor->flash_quad_enable = NULL;
+@@ -255,6 +255,8 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
+ 	nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
+ 	nor->program_opcode = spi_nor_convert_3to4_program(nor->program_opcode);
+ 	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
++
++	nor->flags |= SNOR_F_4B_OPCODES;
+ }
  
+ /* Enable/disable 4-byte addressing mode. */
+@@ -1836,6 +1838,45 @@ static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
  	return 0;
  }
-@@ -1990,6 +1987,14 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	if (ret)
- 		return ret;
  
++static int spi_nor_init(struct spi_nor *nor)
++{
++	const struct flash_info *info = nor->info;
++	struct device *dev = nor->dev;
++	int ret;
++
++	/*
++	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
++	 * with the software protection bits set
++	 */
++
++	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
++	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
++	    JEDEC_MFR(info) == SNOR_MFR_SST ||
++	    info->flags & SPI_NOR_HAS_LOCK) {
++		write_enable(nor);
++		write_sr(nor, 0);
++		spi_nor_wait_till_ready(nor);
++	}
++
++	/* Set the Quad Enable bit, if needed. */
 +	if (nor->flash_quad_enable) {
 +		ret = nor->flash_quad_enable(nor);
 +		if (ret) {
@@ -67,28 +94,105 @@ index 3bb2adff306b..2377fe54f8b9 100644
 +		}
 +	}
 +
++	/*
++	 * For SPI flash memories above 128Mib, enter the 4-byte address mode
++	 * only if the 4-byte address instruction set is not supported.
++	 */
++	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES))
++		set_4byte(nor, info, 1);
++
++	return 0;
++}
++
+ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		 const struct spi_nor_hwcaps *hwcaps)
+ {
+@@ -1903,20 +1944,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	if (ret)
+ 		return ret;
+ 
+-	/*
+-	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
+-	 * with the software protection bits set
+-	 */
+-
+-	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
+-	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
+-	    JEDEC_MFR(info) == SNOR_MFR_SST ||
+-	    info->flags & SPI_NOR_HAS_LOCK) {
+-		write_enable(nor);
+-		write_sr(nor, 0);
+-		spi_nor_wait_till_ready(nor);
+-	}
+-
+ 	if (!mtd->name)
+ 		mtd->name = dev_name(dev);
+ 	mtd->priv = nor;
+@@ -1987,14 +2014,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (nor->flash_quad_enable) {
+-		ret = nor->flash_quad_enable(nor);
+-		if (ret) {
+-			dev_err(dev, "quad mode not supported\n");
+-			return ret;
+-		}
+-	}
+-
  	if (info->addr_width)
  		nor->addr_width = info->addr_width;
  	else if (mtd->size > 0x1000000) {
+@@ -2003,8 +2022,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+ 		    info->flags & SPI_NOR_4B_OPCODES)
+ 			spi_nor_set_4byte_opcodes(nor, info);
+-		else
+-			set_4byte(nor, info, 1);
+ 	} else {
+ 		nor->addr_width = 3;
+ 	}
+@@ -2021,6 +2038,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 			return ret;
+ 	}
+ 
++	/* Send all the required SPI flash commands to initialize the memory. */
++	nor->info = info;
++	ret = spi_nor_init(nor);
++	if (ret)
++		return ret;
++
+ 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+ 			(long long)mtd->size >> 10);
+ 
 diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 73b50efc4fc9..e0c58d9d9286 100644
+index e0c58d9d9286..618ecac9337a 100644
 --- a/include/linux/mtd/spi-nor.h
 +++ b/include/linux/mtd/spi-nor.h
-@@ -248,6 +248,7 @@ enum spi_nor_option_flags {
-  * @flash_unlock:	[FLASH-SPECIFIC] unlock a region of the SPI NOR
-  * @flash_is_locked:	[FLASH-SPECIFIC] check if a region of the SPI NOR is
-  *			completely locked
-+ * @flash_quad_enable:	[FLASH-SPECIFIC] set the Quad Enable bit of the SPI NOR
-  * @priv:		the private data
-  */
- struct spi_nor {
-@@ -281,6 +282,7 @@ struct spi_nor {
- 	int (*flash_lock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
- 	int (*flash_unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
- 	int (*flash_is_locked)(struct spi_nor *nor, loff_t ofs, uint64_t len);
-+	int (*flash_quad_enable)(struct spi_nor *nor);
- 
- 	void *priv;
+@@ -214,9 +214,16 @@ enum spi_nor_option_flags {
+ 	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
+ 	SNOR_F_S3AN_ADDR_DEFAULT = BIT(3),
+ 	SNOR_F_READY_XSR_RDY	= BIT(4),
++	SNOR_F_4B_OPCODES	= BIT(5),
  };
+ 
+ /**
++ * struct flash_info -	Forward declaration of a structure used internally by
++ *			spi_nor_scan() and spi_nor_init().
++ */
++struct flash_info;
++
++/**
+  * struct spi_nor - Structure for defining a the SPI NOR layer
+  * @mtd:		point to a mtd_info structure
+  * @lock:		the lock for the read/write/erase/lock/unlock operations
+@@ -255,6 +262,7 @@ struct spi_nor {
+ 	struct mtd_info		mtd;
+ 	struct mutex		lock;
+ 	struct device		*dev;
++	const struct flash_info	*info;
+ 	u32			page_size;
+ 	u8			addr_width;
+ 	u8			erase_opcode;
 -- 
 2.9.3
