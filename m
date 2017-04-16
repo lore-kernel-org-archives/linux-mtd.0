@@ -1,29 +1,31 @@
-Received: from 5.mo177.mail-out.ovh.net ([46.105.39.154])
+Received: from 6.mo177.mail-out.ovh.net ([46.105.51.249])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cznj2-0003lm-JV
- for linux-mtd@lists.infradead.org; Sun, 16 Apr 2017 17:12:38 +0000
+ id 1cznpA-0005iF-SM
+ for linux-mtd@lists.infradead.org; Sun, 16 Apr 2017 17:19:01 +0000
 Received: from player714.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo177.mail-out.ovh.net (Postfix) with ESMTP id B9C7050CBE
- for <linux-mtd@lists.infradead.org>; Sun, 16 Apr 2017 19:12:12 +0200 (CEST)
-Subject: Re: [PATCH v4 2/2] mtd: spi-nor: add driver for STM32 quad spi flash
- controller
-To: Marek Vasut <marek.vasut@gmail.com>, Ludovic Barre
- <ludovic.Barre@st.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <1492103757-22375-1-git-send-email-ludovic.Barre@st.com>
- <1492103757-22375-3-git-send-email-ludovic.Barre@st.com>
- <b0238aad-38a1-3b06-ac2e-45f658041661@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Alexandre Torgue <alexandre.torgue@st.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ by mo177.mail-out.ovh.net (Postfix) with ESMTP id 0B3E150D1C
+ for <linux-mtd@lists.infradead.org>; Sun, 16 Apr 2017 19:18:33 +0200 (CEST)
+Subject: Re: [PATCH v1 1/1] mtd: mtk-nor: set controller's address width
+ according to nor flash
+To: Guochun Mao <guochun.mao@mediatek.com>
+References: <1491381462-21893-1-git-send-email-guochun.mao@mediatek.com>
+ <1491381462-21893-2-git-send-email-guochun.mao@mediatek.com>
+ <e9eafca3-41a0-7e88-996b-9d1c51f0c132@wedev4u.fr>
+ <1492051237.2866.36.camel@mhfsdcap03>
+ <3cf1c63e-c56f-2f07-9d16-7ec346758dfa@wedev4u.fr>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-mediatek@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <dfa45902-29e6-067c-ada6-59f9a312690f@wedev4u.fr>
-Date: Sun, 16 Apr 2017 19:11:58 +0200
+Message-ID: <e78dba15-80d0-f2c3-c963-a7eb033af58d@wedev4u.fr>
+Date: Sun, 16 Apr 2017 19:18:18 +0200
 MIME-Version: 1.0
-In-Reply-To: <b0238aad-38a1-3b06-ac2e-45f658041661@gmail.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <3cf1c63e-c56f-2f07-9d16-7ec346758dfa@wedev4u.fr>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,39 +36,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Le 13/04/2017 à 10:24, Cyrille Pitchen a écrit :
+> Hi Guochun,
+> 
+> Le 13/04/2017 à 04:40, Guochun Mao a écrit :
+>> Hi Cyrille,
+>>
+>> On Wed, 2017-04-12 at 22:57 +0200, Cyrille Pitchen wrote:
+>>> Hi Guochun,
+>>>
+>>> Le 05/04/2017 à 10:37, Guochun Mao a écrit :
+>>>> When nor's size larger than 16MByte, nor's address width maybe
+>>>> set to 3 or 4, and controller should change address width according
+>>>> to nor's setting.
+>>>>
+>>>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>st
+> 
+> Acked-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> 
 
-Le 14/04/2017 � 18:15, Marek Vasut a �crit :
-> On 04/13/2017 07:15 PM, Ludovic Barre wrote:
->> From: Ludovic Barre <ludovic.barre@st.com>
->>
->> The quadspi is a specialized communication interface targeting single,
->> dual or quad SPI Flash memories.
->>
->> It can operate in any of the following modes:
->> -indirect mode: all the operations are performed using the quadspi
->>  registers
->> -read memory-mapped mode: the external Flash memory is mapped to the
->>  microcontroller address space and is seen by the system as if it was
->>  an internal memory
->>
->> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-> 
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-> 
 Applied to github/spi-nor
 
-About patch 1, I wait for Rob's acknowledgement before merging it into
-the next branch of github/spi-nor but I'd rather take patch 2 now since
-it has been reviewed by Marek and integration issues would be detected
-sooner with linux-next so we would have more time to adapt this patch,
-if needed.
-I've already compile this patch inside the next branch of github/spi-nor
-and no warning was risen so I think there should be any issue.
+Thanks!
 
-Hence if no integration issue is detected, I'll try to add it into the
-next spi-nor PR for 4.12.
 
-Best regards,
-
-Cyrille
+>>>> ---
+>>>>  drivers/mtd/spi-nor/mtk-quadspi.c |   27 +++++++++++++++++++++++++++
+>>>>  1 file changed, 27 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+>>>> index e661877..b637770 100644
+>>>> --- a/drivers/mtd/spi-nor/mtk-quadspi.c
+>>>> +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+>>>> @@ -104,6 +104,8 @@
+>>>>  #define MTK_NOR_MAX_RX_TX_SHIFT		6
+>>>>  /* can shift up to 56 bits (7 bytes) transfer by MTK_NOR_PRG_CMD */
+>>>>  #define MTK_NOR_MAX_SHIFT		7
+>>>> +/* nor controller 4-byte address mode enable bit */
+>>>> +#define MTK_NOR_4B_ADDR_EN		BIT(4)
+>>>>  
+>>>>  /* Helpers for accessing the program data / shift data registers */
+>>>>  #define MTK_NOR_PRG_REG(n)		(MTK_NOR_PRGDATA0_REG + 4 * (n))
+>>>> @@ -230,10 +232,35 @@ static int mt8173_nor_write_buffer_disable(struct mt8173_nor *mt8173_nor)
+>>>>  				  10000);
+>>>>  }
+>>>>  
+>>>> +static void mt8173_nor_set_addr_width(struct mt8173_nor *mt8173_nor)
+>>>> +{
+>>>> +	u8 val;
+>>>> +	struct spi_nor *nor = &mt8173_nor->nor;
+>>>> +
+>>>> +	val = readb(mt8173_nor->base + MTK_NOR_DUAL_REG);
+>>>> +
+>>>> +	switch (nor->addr_width) {
+>>>> +	case 3:
+>>>> +		val &= ~MTK_NOR_4B_ADDR_EN;
+>>>> +		break;
+>>>> +	case 4:
+>>>> +		val |= MTK_NOR_4B_ADDR_EN;
+>>>> +		break;
+>>>> +	default:
+>>>> +		dev_warn(mt8173_nor->dev, "Unexpected address width %u.\n",
+>>>> +			 nor->addr_width);
+>>>> +		break;
+>>>> +	}
+>>>> +
+>>>> +	writeb(val, mt8173_nor->base + MTK_NOR_DUAL_REG);
+>>>> +}
+>>>> +
+>>>>  static void mt8173_nor_set_addr(struct mt8173_nor *mt8173_nor, u32 addr)
+>>>>  {
+>>>>  	int i;
+>>>>  
+>>>> +	mt8173_nor_set_addr_width(mt8173_nor);
+>>>> +
+>>>>  	for (i = 0; i < 3; i++) {
+>>>
+>>> Should it be 'i < nor->addr_width' instead of 'i < 3' ?
+>>> Does it work when accessing data after 128Mbit ?
+>>
+>> Yes, it can work.
+>>
+>> Let's see the whole function,
+>>
+>> static void mt8173_nor_set_addr(struct mt8173_nor *mt8173_nor, u32 addr)
+>> {
+>>         int i;
+>>
+>>         mt8173_nor_set_addr_width(mt8173_nor);
+>>
+>>         for (i = 0; i < 3; i++) {
+>>                 writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR0_REG
+>> + i * 4);
+>>                 addr >>= 8;
+>>         }
+>>         /* Last register is non-contiguous */
+>>         writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR3_REG);
+>> }
+>>
+>> The nor controller has 4 registers for address.
+>> This '3' indicates the number of contiguous address' registers
+>> base + MTK_NOR_RADR0_REG(0x10)
+>> base + MTK_NOR_RADR1_REG(0x14)
+>> base + MTK_NOR_RADR2_REG(0x18),
+>> but the last address register is non-contiguous,
+>> it's base + MTK_NOR_RADR3_REG(0xc8)
+>>
+>> mt8173_nor_set_addr will set addr into these 4 registers by Byte.
+>> The bit MTK_NOR_4B_ADDR_EN will decide whether 3-byte(0x10,0x14,0x18)
+>> or 4-byte(0x10,0x14,x018,0xc8) been sent to nor device.
+>> and, it can access data after 128Mbit when sent 4-byte address.
+> 
+> Indeed, you're right. Sorry for the noise!
+> 
+>>
+>> Best regards,
+>>
+>> Guochun
+>>
+>>>
+>>> Best regards,
+>>>
+>>> Cyrille
+>>>
+>>>>  		writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR0_REG + i * 4);
+>>>>  		addr >>= 8;
+>>>>
+>>>
+>>
+>>
+>>
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
