@@ -1,20 +1,28 @@
-Received: from hauke-m.de ([2001:41d0:8:b27b::1] helo=mail.hauke-m.de)
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0CM9-0003LJ-3q
- for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 19:30:38 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- martin.blumenstingl@googlemail.com, john@phrozen.org,
- linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
- Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH 12/13] Documentation: DT: MIPS: lantiq: Add docs for the RCU
- bindings
-Date: Mon, 17 Apr 2017 21:29:41 +0200
-Message-Id: <20170417192942.32219-13-hauke@hauke-m.de>
-In-Reply-To: <20170417192942.32219-1-hauke@hauke-m.de>
-References: <20170417192942.32219-1-hauke@hauke-m.de>
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0CdI-0007wY-9d
+ for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 19:48:21 +0000
+Received: by mail-lf0-x242.google.com with SMTP id 75so17255033lfs.3
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Apr 2017 12:47:59 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Frank Rowand <frowand.list@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V5 1/3] dt-bindings: mtd: document linux,part-probe property
+Date: Mon, 17 Apr 2017 21:47:44 +0200
+Message-Id: <20170417194746.10697-1-zajec5@gmail.com>
+In-Reply-To: <20170417182853.24281-1-zajec5@gmail.com>
+References: <20170417182853.24281-1-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,104 +32,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-This adds the initial documentation for the RCU module (a MFD device
-which provides USB PHYs, reset controllers and more).
+Support for this property has been introduced in 2010 with commit
+9d5da3a9b849 ("mtd: extend physmap_of to let the device tree specify the
+parition probe") but it was never documented. Fix this by adding a
+proper description and example.
 
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- .../devicetree/bindings/mips/lantiq/rcu.txt        | 82 ++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+ Documentation/devicetree/bindings/mtd/common.txt | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mips/lantiq/rcu.txt b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
-new file mode 100644
-index 000000000000..9e5b1e7493e4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
-@@ -0,0 +1,82 @@
-+Lantiq XWAY SoC RCU binding
-+===========================
+diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documentation/devicetree/bindings/mtd/common.txt
+index fc068b923d7a..1ada70e718b2 100644
+--- a/Documentation/devicetree/bindings/mtd/common.txt
++++ b/Documentation/devicetree/bindings/mtd/common.txt
+@@ -6,10 +6,17 @@ Optional properties:
+   controller based name) in order to ease flash device identification
+   and/or describe what they are used for.
+ 
++- linux,part-probe: if present, this property should contain a list of strings
++  with partition probes to be used for the flash device. A role of partition
++  probe (parser) is to read/construct partition table and register found
++  partitions. Getting partition table may be platform or device specific so
++  various devices may use various Linux drivers for this purpose.
 +
-+This binding describes the RCU (reset controller unit) multifunction device,
-+where each sub-device has it's own set of registers.
-+
-+
-+-------------------------------------------------------------------------------
-+Required properties:
-+- compatible	: The first and second values must be: "simple-mfd", "syscon"
-+- reg		: The address and length of the system control registers
-+
-+
-+-------------------------------------------------------------------------------
-+Example of the RCU bindings on a xRX200 SoC:
-+	rcu0: rcu@203000 {
-+		compatible = "simple-mfd", "syscon";
-+		reg = <0x203000 0x100>;
-+		big-endian;
-+
-+		gphy0: rcu_gphy@0 {
-+			compatible = "lantiq,xrx200a2x-rcu-gphy";
-+			lantiq,rcu-syscon = <&rcu0 0x20>;
-+			resets = <&rcu_reset0 31>;
-+			reset-names = "gphy";
-+			lantiq,gphy-mode = <GPHY_MODE_GE>;
-+			clocks = <&pmu0 XRX200_PMU_GATE_GPHY>;
-+			clock-names = "gphy";
-+		};
-+
-+		gphy1: rcu_gphy@1 {
-+			compatible = "lantiq,xrx200a2x-rcu-gphy";
-+			lantiq,rcu-syscon = <&rcu0 0x68>;
-+			resets = <&rcu_reset0 29>;
-+			reset-names = "gphy";
-+			lantiq,gphy-mode = <GPHY_MODE_FE>;
-+			clocks = <&pmu0 XRX200_PMU_GATE_GPHY>;
-+			clock-names = "gphy";
-+		};
-+
-+		rcu_reset0: rcu_reset@0 {
-+			compatible = "lantiq,rcu-reset";
-+			lantiq,rcu-syscon = <&rcu0 0x10 0x14>;
-+			#reset-cells = <1>;
-+			reset-request = <31>, <29>, <21>, <19>, <16>, <12>;
-+			reset-status  = <30>, <28>, <16>, <25>, <5>,  <24>;
-+		};
-+
-+		rcu_reset1: rcu_reset@1 {
-+			compatible = "lantiq,rcu-reset";
-+			lantiq,rcu-syscon = <&rcu0 0x48 0x24>;
-+			#reset-cells = <1>;
-+		};
-+
-+		usb_phys0: rcu-usb2-phy@0 {
-+			compatible = "lantiq,xrx200-rcu-usb2-phy";
-+
-+			lantiq,rcu-syscon = <&rcu0 0x18 0x38>;
-+			resets = <&rcu_reset1 4>, <&rcu_reset0 4>;
-+			reset-names = "phy", "ctrl";
-+			#phy-cells = <0>;
-+		};
-+
-+		usb_phys1: rcu-usb2-phy@1 {
-+			compatible = "lantiq,xrx200-rcu-usb2-phy";
-+
-+			lantiq,rcu-syscon = <&rcu0 0x34 0x3C>;
-+			resets = <&rcu_reset1 5>, <&rcu_reset0 4>;
-+			reset-names = "phy", "ctrl";
-+			#phy-cells = <0>;
-+		};
-+
-+		reboot {
-+			compatible = "syscon-reboot";
-+			regmap = <&rcu0>;
-+			offset = <0x10>;
-+			mask = <0x40000000>;
-+		};
-+
-+		/* more sub-device nodes (USB PHY, etc.) */
-+	};
-+
+ Example:
+ 
+ 	flash@0 {
+ 		label = "System-firmware";
++		linux,part-probe = "cmdlinepart", "ofpart";
+ 
+ 		/* flash type specific properties */
+ 	};
 -- 
 2.11.0
