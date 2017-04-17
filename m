@@ -1,7 +1,7 @@
 Received: from hauke-m.de ([2001:41d0:8:b27b::1] helo=mail.hauke-m.de)
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0CM9-0003KB-3r
- for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 19:30:39 +0000
+ id 1d0CM9-0003LJ-3q
+ for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 19:30:38 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: ralf@linux-mips.org
 Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
@@ -9,10 +9,10 @@ Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  martin.blumenstingl@googlemail.com, john@phrozen.org,
  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH 07/13] MIPS: lantiq: remove ltq_reset_cause() and
- ltq_boot_select()
-Date: Mon, 17 Apr 2017 21:29:36 +0200
-Message-Id: <20170417192942.32219-8-hauke@hauke-m.de>
+Subject: [PATCH 12/13] Documentation: DT: MIPS: lantiq: Add docs for the RCU
+ bindings
+Date: Mon, 17 Apr 2017 21:29:41 +0200
+Message-Id: <20170417192942.32219-13-hauke@hauke-m.de>
 In-Reply-To: <20170417192942.32219-1-hauke@hauke-m.de>
 References: <20170417192942.32219-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,99 +26,102 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-Do not export the ltq_reset_cause() and ltq_boot_select() function any
-more. ltq_reset_cause() was accessed by the watchdog driver before to
-see why the last reset happened, this is now done through direct access
-of the register over regmap. The bits in this register are anyway
-different between the xrx200 and the falcon SoC.
-ltq_boot_select() is not used any more and was used by the flash
-drivers to check if the system was booted from this flash type, now the
-drivers should depend on the device tree only.
+This adds the initial documentation for the RCU module (a MFD device
+which provides USB PHYs, reset controllers and more).
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- arch/mips/include/asm/mach-lantiq/lantiq.h |  4 ----
- arch/mips/lantiq/falcon/reset.c            | 22 ----------------------
- arch/mips/lantiq/xway/reset.c              | 19 -------------------
- 3 files changed, 45 deletions(-)
+ .../devicetree/bindings/mips/lantiq/rcu.txt        | 82 ++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mips/lantiq/rcu.txt
 
-diff --git a/arch/mips/include/asm/mach-lantiq/lantiq.h b/arch/mips/include/asm/mach-lantiq/lantiq.h
-index 8064d7a4b33d..fa045b4c0cdd 100644
---- a/arch/mips/include/asm/mach-lantiq/lantiq.h
-+++ b/arch/mips/include/asm/mach-lantiq/lantiq.h
-@@ -44,10 +44,6 @@ extern struct clk *clk_get_fpi(void);
- extern struct clk *clk_get_io(void);
- extern struct clk *clk_get_ppe(void);
- 
--/* find out what bootsource we have */
--extern unsigned char ltq_boot_select(void);
--/* find out what caused the last cpu reset */
--extern int ltq_reset_cause(void);
- /* find out the soc type */
- extern int ltq_soc_type(void);
- 
-diff --git a/arch/mips/lantiq/falcon/reset.c b/arch/mips/lantiq/falcon/reset.c
-index 7a535d72f541..722114d7409d 100644
---- a/arch/mips/lantiq/falcon/reset.c
-+++ b/arch/mips/lantiq/falcon/reset.c
-@@ -15,28 +15,6 @@
- 
- #include <lantiq_soc.h>
- 
--/* CPU0 Reset Source Register */
--#define SYS1_CPU0RS		0x0040
--/* reset cause mask */
--#define CPU0RS_MASK		0x0003
--/* CPU0 Boot Mode Register */
--#define SYS1_BM			0x00a0
--/* boot mode mask */
--#define BM_MASK			0x0005
--
--/* allow platform code to find out what surce we booted from */
--unsigned char ltq_boot_select(void)
--{
--	return ltq_sys1_r32(SYS1_BM) & BM_MASK;
--}
--
--/* allow the watchdog driver to find out what the boot reason was */
--int ltq_reset_cause(void)
--{
--	return ltq_sys1_r32(SYS1_CPU0RS) & CPU0RS_MASK;
--}
--EXPORT_SYMBOL_GPL(ltq_reset_cause);
--
- #define BOOT_REG_BASE	(KSEG1 | 0x1F200000)
- #define BOOT_PW1_REG	(BOOT_REG_BASE | 0x20)
- #define BOOT_PW2_REG	(BOOT_REG_BASE | 0x24)
-diff --git a/arch/mips/lantiq/xway/reset.c b/arch/mips/lantiq/xway/reset.c
-index b6752c95a600..2dedcf939901 100644
---- a/arch/mips/lantiq/xway/reset.c
-+++ b/arch/mips/lantiq/xway/reset.c
-@@ -119,25 +119,6 @@ static void ltq_rcu_w32_mask(uint32_t clr, uint32_t set, uint32_t reg_off)
- 	spin_unlock_irqrestore(&ltq_rcu_lock, flags);
- }
- 
--/* This function is used by the watchdog driver */
--int ltq_reset_cause(void)
--{
--	u32 val = ltq_rcu_r32(RCU_RST_STAT);
--	return val >> RCU_STAT_SHIFT;
--}
--EXPORT_SYMBOL_GPL(ltq_reset_cause);
--
--/* allow platform code to find out what source we booted from */
--unsigned char ltq_boot_select(void)
--{
--	u32 val = ltq_rcu_r32(RCU_RST_STAT);
--
--	if (of_device_is_compatible(ltq_rcu_np, "lantiq,rcu-xrx200"))
--		return RCU_BOOT_SEL_XRX200(val);
--
--	return RCU_BOOT_SEL(val);
--}
--
- struct ltq_gphy_reset {
- 	u32 rd;
- 	u32 addr;
+diff --git a/Documentation/devicetree/bindings/mips/lantiq/rcu.txt b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+new file mode 100644
+index 000000000000..9e5b1e7493e4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+@@ -0,0 +1,82 @@
++Lantiq XWAY SoC RCU binding
++===========================
++
++This binding describes the RCU (reset controller unit) multifunction device,
++where each sub-device has it's own set of registers.
++
++
++-------------------------------------------------------------------------------
++Required properties:
++- compatible	: The first and second values must be: "simple-mfd", "syscon"
++- reg		: The address and length of the system control registers
++
++
++-------------------------------------------------------------------------------
++Example of the RCU bindings on a xRX200 SoC:
++	rcu0: rcu@203000 {
++		compatible = "simple-mfd", "syscon";
++		reg = <0x203000 0x100>;
++		big-endian;
++
++		gphy0: rcu_gphy@0 {
++			compatible = "lantiq,xrx200a2x-rcu-gphy";
++			lantiq,rcu-syscon = <&rcu0 0x20>;
++			resets = <&rcu_reset0 31>;
++			reset-names = "gphy";
++			lantiq,gphy-mode = <GPHY_MODE_GE>;
++			clocks = <&pmu0 XRX200_PMU_GATE_GPHY>;
++			clock-names = "gphy";
++		};
++
++		gphy1: rcu_gphy@1 {
++			compatible = "lantiq,xrx200a2x-rcu-gphy";
++			lantiq,rcu-syscon = <&rcu0 0x68>;
++			resets = <&rcu_reset0 29>;
++			reset-names = "gphy";
++			lantiq,gphy-mode = <GPHY_MODE_FE>;
++			clocks = <&pmu0 XRX200_PMU_GATE_GPHY>;
++			clock-names = "gphy";
++		};
++
++		rcu_reset0: rcu_reset@0 {
++			compatible = "lantiq,rcu-reset";
++			lantiq,rcu-syscon = <&rcu0 0x10 0x14>;
++			#reset-cells = <1>;
++			reset-request = <31>, <29>, <21>, <19>, <16>, <12>;
++			reset-status  = <30>, <28>, <16>, <25>, <5>,  <24>;
++		};
++
++		rcu_reset1: rcu_reset@1 {
++			compatible = "lantiq,rcu-reset";
++			lantiq,rcu-syscon = <&rcu0 0x48 0x24>;
++			#reset-cells = <1>;
++		};
++
++		usb_phys0: rcu-usb2-phy@0 {
++			compatible = "lantiq,xrx200-rcu-usb2-phy";
++
++			lantiq,rcu-syscon = <&rcu0 0x18 0x38>;
++			resets = <&rcu_reset1 4>, <&rcu_reset0 4>;
++			reset-names = "phy", "ctrl";
++			#phy-cells = <0>;
++		};
++
++		usb_phys1: rcu-usb2-phy@1 {
++			compatible = "lantiq,xrx200-rcu-usb2-phy";
++
++			lantiq,rcu-syscon = <&rcu0 0x34 0x3C>;
++			resets = <&rcu_reset1 5>, <&rcu_reset0 4>;
++			reset-names = "phy", "ctrl";
++			#phy-cells = <0>;
++		};
++
++		reboot {
++			compatible = "syscon-reboot";
++			regmap = <&rcu0>;
++			offset = <0x10>;
++			mask = <0x40000000>;
++		};
++
++		/* more sub-device nodes (USB PHY, etc.) */
++	};
++
 -- 
 2.11.0
