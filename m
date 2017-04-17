@@ -1,22 +1,30 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d07tZ-0002vl-88
- for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 14:44:51 +0000
-Date: Mon, 17 Apr 2017 16:44:12 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marek Vasut <marek.vasut@gmail.com>, Andrea Adami
- <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, Robert Jarzmik
- <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mtd: sharpsl: add sharpslpart MTD partition parser
-Message-ID: <20170417164412.3dc5b457@bbrezillon>
-In-Reply-To: <d9ef9878-932c-955a-5ba6-c0f0ec03731c@gmail.com>
-References: <1492287078-22369-1-git-send-email-andrea.adami@gmail.com>
- <1492287078-22369-2-git-send-email-andrea.adami@gmail.com>
- <d9ef9878-932c-955a-5ba6-c0f0ec03731c@gmail.com>
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d08ZP-00047Z-WB
+ for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 15:28:05 +0000
+Received: by mail-wr0-x241.google.com with SMTP id l28so20714216wre.0
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Apr 2017 08:27:42 -0700 (PDT)
+Date: Mon, 17 Apr 2017 17:27:38 +0200
+From: Ralph Sennhauser <ralph.sennhauser@gmail.com>
+To: Amir Goldstein <amir73il@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel <linux-kernel@vger.kernel.org>, Artem Bityutskiy
+ <dedekind1@gmail.com>, "stable [v4.9]" <stable@vger.kernel.org>
+Subject: Re: [PATCH] ubifs: Fix O_TMPFILE corner case in ubifs_link()
+Message-ID: <20170417172738.199803f5@gmail.com>
+In-Reply-To: <CAOQ4uxivNMjZJ3T_NmPHXNveXbs+QX=PxUkHagu9VH5Ev5Uecg@mail.gmail.com>
+References: <1490864181-2192-1-git-send-email-richard@nod.at>
+ <cd165532-9425-bc93-a28e-b7d383508b62@intel.com>
+ <ab0a0797-7074-d53b-5863-38a84ca2a594@nod.at>
+ <4c7a176b-6132-7936-a04f-d4def5e56320@nod.at>
+ <646ae733-5037-3072-7151-b055a8fa1521@intel.com>
+ <cbaff214-7431-2cd1-2453-156d716c0d8a@nod.at>
+ <CAOQ4uxh5mZ8gCk1U=oV9b+j3k0RFcT3LozATfa3qHoYy+OMVsg@mail.gmail.com>
+ <92bbb4d1-afe7-14f2-763b-051c7b12ff9e@nod.at>
+ <ae2f884b-17dc-cd24-f2a5-34c6c2aa7e8c@nod.at>
+ <CAOQ4uxhaYfO3m6kQ1agDg2Bm-6Xh9yxoPh93m=xpTz39gXjpAQ@mail.gmail.com>
+ <2a2eebef-ed37-7829-b08f-482039306a6e@nod.at>
+ <CAOQ4uxivNMjZJ3T_NmPHXNveXbs+QX=PxUkHagu9VH5Ev5Uecg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,126 +37,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Marek, Andrea,
+On Tue, 11 Apr 2017 18:04:50 +0300
+Amir Goldstein <amir73il@gmail.com> wrote:
 
-Before we even start discussing minor improvements (like coding style),
-I'd like to discuss the sharp FTL and partition table format, and
-decide whether we want to have such an old FTL included in the kernel.
+> On Tue, Apr 11, 2017 at 1:50 PM, Richard Weinberger <richard@nod.at>
+> wrote:
+> > Hi!
+> >
+> > Am 11.04.2017 um 12:20 schrieb Amir Goldstein:  
+> >> On Thu, Apr 6, 2017 at 3:26 PM, Richard Weinberger
+> >> <richard@nod.at> wrote:  
+> >>> Am 06.04.2017 um 14:09 schrieb Richard Weinberger:  
+> >>>>> Were you able to make any progress? still working on this?
+> >>>>> If this is too complicated to get in for this cycle, better
+> >>>>> send a patch to disable O_TMPFILE support for ubifs and fix the
+> >>>>> problem properly on followup merge cycle.
+> >>>>> Because right now ubifs O_TMPFILE support is broken and breaks
+> >>>>> overlayfs mount.  
+> >>>>
+> >>>> I have a test and currently testing it. As it looks the
+> >>>> situation is less worse than I thought first. :-)  
+> >>>
+> >>> s/test/patch :)
+> >>>  
+> >>
+> >> Richard,
+> >>
+> >> Maybe it's not my business to interfere with ubifs development and
+> >> I haven't seen your patch.
+> >>
+> >> But on the face of it, it doesn't sound like fixing O_TMPFILE is a
+> >> trivial fix, so not sure
+> >> it is wise to send a patch for -rc7?...
+> >>
+> >> How about sending the patch to disable O_TMPFILE for -rc7 and
+> >> queuing your fix for v4.12?
+> >> Without any patch, v4.11 is going to have a regression with
+> >> overlayfs+ubifs.  
+> >
+> > No need to panic.  
+> 
+> Who? me?  ;-)
+> 
+> > I verified some stuff and my first patch does the right thing but
+> > not in a nice way, except in oneerror patch. In will land in -rc7.
+> >  
 
-Actually, that's the very reason I asked Andrea to post his series as
-soon as possible even if some things were not perfect.
+Hi Amir, Richard
 
-I'll try to document myself on the on-flash format of the FTL and
-partition table before giving a definitive opinion, but I have the
-feeling this ancient FTL is not 100% safe, and by accepting an old
-(maybe unreliable?) FTL we are setting a precedent, and refusing other
-(broken) proprietary/vendor FTLs will be almost impossible after that.
+Looks like the fix didn't make it into 4.11-rc7 either, isn't it time
+to just disable O_TMPFILE support in ubifs for now? Giving plenty
+time for the proper fix.
 
-Maybe I'm wrong, and this FTL is really safe and can be used on other
-devices, that's why I'd like to understand how it works before giving
-my opinion.
+Thanks
+Ralph
 
-
-On Sun, 16 Apr 2017 18:07:47 +0200
-Marek Vasut <marek.vasut@gmail.com> wrote:
-
-> On 04/15/2017 10:11 PM, Andrea Adami wrote:
-> > The Sharp SL Series (Zaurus) PXA handhelds have 16/64/128M of NAND flash
-> > and share the same layout of the first 7M partition, managed by Sharp FTL.
-> > 
-> > The purpose of this self-contained patch is to add a common parser and
-> > remove the hardcoded sizes in the board files (these devices are not yet
-> > converted to devicetree).
-> > Users will have benefits because the mtdparts= tag will not be necessary
-> > anymore and they will be free to repartition the little sized flash.
-> > 
-> > The obsolete bootloader can not pass the partitioning info to modern
-> > kernels anymore so it has to be read from flash at known logical addresses.
-> > (see http://www.h5.dion.ne.jp/~rimemoon/zaurus/memo_006.htm )
-
-
-Okay, IMO that's not really a good argument to support this partition
-parser. As Richard and I already mentioned several times, if your
-bootloader is not capable of passing valid mtdparts= you can hardcode
-it in the kernel using a default CMDLINE.
-
-Now, I understand that you want to support multiple devices with the
-same kernel, and having this partition parser would simplify your job.
-I also know you are developing a 2nd stage bootloader (based on
-kexec+a minimal initramfs) to address the limitations of the
-non-upgradable 1st stage bootloader.
-
-According to the rest of the description, you already have user-space
-tools to manipulate the partition-table and those are aware of the FTL
-layer, so I think you have all the basic blocks to get rid of this
-in-kernel implementation.
-
-All you need is a way to extract the partitions from the 2nd stage
-bootloader (using some tools you have in your initramfs) and build the
-according mtdparts= parameter to pass to kexec when booting the real
-kernel (the one used by the system).
-
-You tried to explain why it was not doable, but I still don't see
-why.
-You first said that not all systems had CONFIG_MTD_CMDLINE_PARTS
-enabled and that some people were booting distro kernels. Honestly, I
-think you have more chances to have CONFIG_MTD_CMDLINE_PARTS in those
-distro kernels than having your custom FTL enabled.
-Then you tried to explain that with the user-space only solution you
-wouldn't be able to support systems where the user had resized the
-partitions with the nandlogical tool, and I still don't see why. Maybe
-you can give more details to explain why this is impossible.
-
-Just going through all these details to say that, IMO, we should only
-consider inclusion of this feature if we think it's safe, because I
-think all that is done here can be done from user-space.
-
-One last thing I was wondering. You said you want to keep existing
-partitioning unchanged, but I'd recommend to just drop the existing
-partitioning and have a single 121MB partition with UBI on it.
-This way you get support for UBI volumes, which is doing exactly what
-this FTL+partition-table is doing but in a standard/safe way.
-What is forcing you to keep the existing partitioning exactly?
-
-> > 
-> > In kernel, under arch/arm/mach-pxa we have already 8 machines:
-> > MACH_POODLE, MACH_CORGI, MACH_SHEPERD, MACH_HUSKY, MACH_AKITA, MACH_SPITZ,
-> > MACH_BORZOI, MACH_TOSA.
-> > Lost after the 2.4 vendor kernel are MACH_BOXER and MACH_TERRIER.
-> > 
-> > Almost every model has different factory partitioning: add to this the
-> > units can be repartitioned by users with userspace tools (nandlogical)
-> > and installers for popular (back then) linux distributions.
-> > 
-> > The Parameter Area in the first (boot) partition extends from 0x00040000 to
-> > 0x0007bfff (176k) and contains two copies of the partition table:
-> > ...
-> > 0x00060000: Partition Info1	16k
-> > 0x00064000: Partition Info2	16k
-> > 0x00668000: Model		16k
-> > ...
-> > 
-> > The first 7M partition is managed by the Sharp FTL reserving 5% + 1 blocks
-> > for wear-leveling: some blocks are remapped and one layer of translation
-> > (logical to physical) is necessary.
-> > 
-> > There isn't much documentation about this FTL in the 2.4 sources, just the
-> > MTD methods for reading and writing using logical addresses and the block
-> > management (wear-leveling, use counter).
-> > For the purpose of the MTD parser only the read part of the code was taken.
-> > 
-> > The NAND drivers that can use this parser are sharpsl.c and tmio_nand.c.
-> > 
-> > Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
-
-I'll comment on the FTL and partition-table format later, after I had
-time to review it properly.
-
-In the meantime, I'd like other MTD maintainers to comment on my
-reply. Maybe I'm the only one to think that supporting
-old/unmaintainerd FTLs is a bad idea, and in this case I'll have to
-accept the situation ;-).
-
-Regards,
-
-Boris
+> 
+> That patch looks simple enough.
+> I though you had a more complex patch in mind.
+> 
+> > For the next merge window I prepare patches that introduce a new
+> > journal function for handling tmpfiles.
+> >  
+> 
+> Thanks for the update.
+> Cheers,
+> Amir.
