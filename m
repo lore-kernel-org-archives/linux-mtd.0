@@ -1,18 +1,18 @@
-Received: from mail-oi0-x230.google.com ([2607:f8b0:4003:c06::230])
+Received: from mail-io0-x233.google.com ([2607:f8b0:4001:c06::233])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0CwC-0007hP-8K
- for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 20:07:54 +0000
-Received: by mail-oi0-x230.google.com with SMTP id x184so66217869oia.1
- for <linux-mtd@lists.infradead.org>; Mon, 17 Apr 2017 13:07:31 -0700 (PDT)
+ id 1d0D0y-0001rf-LZ
+ for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 20:12:50 +0000
+Received: by mail-io0-x233.google.com with SMTP id o22so44532875iod.3
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Apr 2017 13:12:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAAN9NvfwjBaHWBo=5P=s9+ivPy_r-peSEdHK7UwJaOz4-8R9Pw@mail.gmail.com>
+In-Reply-To: <CAL-1w2uGkEi4zy-ukqba8j2NgT+WnFoD2NCMSYz-AVG6LoK0Lg@mail.gmail.com>
 References: <CAAN9NvfwjBaHWBo=5P=s9+ivPy_r-peSEdHK7UwJaOz4-8R9Pw@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Mon, 17 Apr 2017 22:07:30 +0200
-Message-ID: <CAFLxGvyYKeNTgRdeBn5qsthw0LSMpxgjjM0SssX4cwCOqV11Yw@mail.gmail.com>
+ <CAL-1w2uGkEi4zy-ukqba8j2NgT+WnFoD2NCMSYz-AVG6LoK0Lg@mail.gmail.com>
+From: Raphael Pereira <raphaelpereira@gmail.com>
+Date: Mon, 17 Apr 2017 17:12:27 -0300
+Message-ID: <CAAN9Nvdg0YcihWw7F2=oRuk4kOKFf6P5k6_gU4NxOY6RAe6S2g@mail.gmail.com>
 Subject: Re: UBIFS replay journal failure on power cuts
-To: Raphael Pereira <raphaelpereira@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,26 +23,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 17, 2017 at 1:29 AM, Raphael Pereira
-<raphaelpereira@gmail.com> wrote:
-> Hello,
->
-> I have been using UBIFS on a device and have been getting some
-> unrecoverable errors on journal replay after some power cuts.
->
-> I have not stablished the specific way to reproduce the problem, but
-> it is happening with some repeatability.
->
-> The error seems quite like both threads:
->
-> http://lists.infradead.org/pipermail/linux-mtd/2014-July/054620.html
-> http://lists.infradead.org/pipermail/linux-mtd/2016-June/068339.html
->
-> And before you ask, I do indeed use fastmap.
+Thanks!
 
-Did you backport all fastmap related fixes/improvements?
-The kernel you are using is very old.
+I think that is exactly what I needed. Anyway I just updated to
+4.10.10 and all seems to work fine. The partition got mounted
+correctly.
+
+2017-04-16 22:12 GMT-03:00 Rock Lee <rockdotlee@gmail.com>:
+> On Mon, Apr 17, 2017 at 7:29 AM, Raphael Pereira
+> <raphaelpereira@gmail.com> wrote:
+>> Hello,
+>>
+>> I have been using UBIFS on a device and have been getting some
+>> unrecoverable errors on journal replay after some power cuts.
+>>
+>> I have not stablished the specific way to reproduce the problem, but
+>> it is happening with some repeatability.
+>>
+>> The error seems quite like both threads:
+>>
+>> http://lists.infradead.org/pipermail/linux-mtd/2014-July/054620.html
+>> http://lists.infradead.org/pipermail/linux-mtd/2016-June/068339.html
+>>
+>> And before you ask, I do indeed use fastmap.
+>>
+>> I understand that it seems the journal is trying to reproduce an inode
+>> removal that has been interrupted by a power cut, so the block on NAND
+>> seems to be in an intermediary state.
+>>
+>> Wouldn't be enough to just erase the block instead of reading it
+>> (which is where it seems to fail)?
+>>
+>> The error log is below:
+>>
+>> kernel: UBI: default fastmap pool size: 190
+>> kernel: UBI: default fastmap WL pool size: 25
+>> kernel: UBI: attaching mtd2 to ubi0
+>> kernel: UBI: attached by fastmap
+>> kernel: UBI: fastmap pool size: 190
+>> kernel: UBI: fastmap WL pool size: 25
+>> kernel: UBI: attached mtd2 (name "besav2rx_rootfs", size 476 MiB) to ubi0
+>> kernel: UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+>> kernel: UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+>> kernel: UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+>> kernel: UBI: good PEBs: 3804, bad PEBs: 4, corrupted PEBs: 0
+>> kernel: UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+>> kernel: UBI: max/mean erase counter: 63062/239, WL threshold: 4096,
+>> image sequence number: 377102491
+>> kernel: UBI: available PEBs: 2, total reserved PEBs: 3802, PEBs
+>> reserved for bad PEB handling: 76
+>> kernel: UBI: background thread "ubi_bgt0d" started, PID 459
+>> kernel: UBIFS: recovery needed
+>> kernel: UBIFS error (pid 460): ubifs_read_node: bad node type (0 but expected 3)
+>> kernel: UBIFS error (pid 460): ubifs_read_node: bad node at LEB
+>> 3246:96960, LEB mapping status 1
+>> kernel: Not a node, first 24 bytes:
+>> kernel: 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>> 00 00 00 00 00 00 00                          ........................
+>> kernel: CPU: 0 PID: 460 Comm: mount Not tainted 3.18.48 #15
+>> kernel: [<c001491c>] (unwind_backtrace) from [<c0011fe4>] (show_stack+0x10/0x14)
+>> kernel: [<c0011fe4>] (show_stack) from [<bf158c50>]
+>> (ubifs_read_node+0x260/0x2f0 [ubifs])
+>> kernel: [<bf158c50>] (ubifs_read_node [ubifs]) from [<bf176300>]
+>> (ubifs_tnc_read_node+0x4c/0x140 [ubifs])
+>> kernel: [<bf176300>] (ubifs_tnc_read_node [ubifs]) from [<bf159e70>]
+>> (tnc_read_node_nm+0xbc/0x1dc [ubifs])
+>> kernel: [<bf159e70>] (tnc_read_node_nm [ubifs]) from [<bf15d610>]
+>> (ubifs_tnc_next_ent+0x138/0x1a0 [ubifs])
+>> kernel: [<bf15d610>] (ubifs_tnc_next_ent [ubifs]) from [<bf15d748>]
+>> (ubifs_tnc_remove_ino+0xd0/0x150 [ubifs])
+>> kernel: [<bf15d748>] (ubifs_tnc_remove_ino [ubifs]) from [<bf1607d4>]
+>> (ubifs_replay_journal+0xf88/0x1510 [ubifs])
+>> kernel: [<bf1607d4>] (ubifs_replay_journal [ubifs]) from [<bf154aa0>]
+>> (ubifs_mount+0x1194/0x1750 [ubifs])
+>> kernel: [<bf154aa0>] (ubifs_mount [ubifs]) from [<c00e6b84>]
+>> (mount_fs+0x14/0xd0)
+>> kernel: [<c00e6b84>] (mount_fs) from [<c0101e94>] (vfs_kern_mount+0x54/0x12c)
+>> kernel: [<c0101e94>] (vfs_kern_mount) from [<c01054b4>] (do_mount+0x18c/0xbe8)
+>> kernel: [<c01054b4>] (do_mount) from [<c0106230>] (SyS_mount+0x74/0xa0)
+>> kernel: [<c0106230>] (SyS_mount) from [<c000ed60>] (ret_fast_syscall+0x0/0x4c)
+>>
+>> --
+>> Raphael Derosso Pereira
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+> Hi:
+>
+> It looks like the problem I've been experienced. Maybe this patch is helpfull.
+> https://patchwork.kernel.org/patch/9534489/
+>
+> --
+> Cheers,
+> Rock
+
+
 
 -- 
-Thanks,
-//richard
+Raphael Derosso Pereira
