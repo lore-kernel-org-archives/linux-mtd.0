@@ -1,29 +1,19 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0BP1-0005nq-3L
- for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 18:29:42 +0000
-Received: by mail-lf0-x244.google.com with SMTP id 88so6002236lfr.0
- for <linux-mtd@lists.infradead.org>; Mon, 17 Apr 2017 11:29:10 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V4 2/3] mtd: add core code reading DT specified part probes
-Date: Mon, 17 Apr 2017 20:28:52 +0200
-Message-Id: <20170417182853.24281-2-zajec5@gmail.com>
-In-Reply-To: <20170417182853.24281-1-zajec5@gmail.com>
-References: <20170331114016.26858-1-zajec5@gmail.com>
- <20170417182853.24281-1-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+ id 1d0CLk-00060y-Qy
+ for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 19:30:15 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH 03/13] mtd: spi-falcon: drop check of boot select
+Date: Mon, 17 Apr 2017 21:29:32 +0200
+Message-Id: <20170417192942.32219-4-hauke@hauke-m.de>
+In-Reply-To: <20170417192942.32219-1-hauke@hauke-m.de>
+References: <20170417192942.32219-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,101 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Do not check which flash type the SoC was booted from before
+using this driver. Assume that the device tree is correct and use this
+driver when it was added to device tree. This also removes a build
+dependency to the SoC code.
 
-Handling (creating) partitions for flash devices requires using a proper
-driver that will read partition table (out of somewhere). We can't
-simply try all existing drivers one by one:
-1) It would increase boot time
-2) The order could be a problem
-3) In some corner cases parsers could misinterpret some data as a table
-Due to this MTD subsystem allows drivers to specify a list of applicable
-part probes.
-
-So far physmap_of was the only driver with support for linux,part-probe
-DT property. Other ones had list or probes hardcoded which wasn't making
-them really flexible. It prevented using common flash drivers on
-platforms that required some specific partition table access.
-
-This commit adds support for mentioned DT property directly to the MTD
-core. It's a rewritten implementation of physmap_of's code and it makes
-original code obsolete. Thanks to calling it on device parse
-registration (as suggested by Boris) all drivers gain support for it for
-free.
-
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
-V4: Rename of functions
-    Add comment to the of_get_mtd_part_probes
-    Simplify mtd_device_parse_register changes
-    Thanks Boris for help on all above!
----
- drivers/mtd/mtdcore.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ drivers/spi/spi-falcon.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 66a9dedd1062..07b07de7e080 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -664,6 +664,33 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
- 	}
- }
- 
-+static const char * const *of_get_mtd_part_probes(struct device_node *np)
-+{
-+	const char **res;
-+	int count;
-+
-+	count = of_property_count_strings(np, "linux,part-probe");
-+	if (count < 0)
-+		return NULL;
-+
-+	/* This looks common: consider helper function if copying */
-+	res = kzalloc((count + 1) * sizeof(*res), GFP_KERNEL);
-+	if (!res)
-+		return NULL;
-+
-+	count = of_property_read_string_array(np, "linux,part-probe", res,
-+					      count);
-+	if (count < 0)
-+		return NULL;
-+
-+	return res;
-+}
-+
-+static void of_free_mtd_part_probes(const char * const *probes)
-+{
-+	kfree(probes);
-+}
-+
- /**
-  * mtd_device_parse_register - parse partitions and register an MTD device.
-  *
-@@ -698,11 +725,16 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 			      const struct mtd_partition *parts,
- 			      int nr_parts)
- {
-+	const char * const *part_probe_types;
- 	struct mtd_partitions parsed;
+diff --git a/drivers/spi/spi-falcon.c b/drivers/spi/spi-falcon.c
+index 286b2c81fc6b..f8638e82e5db 100644
+--- a/drivers/spi/spi-falcon.c
++++ b/drivers/spi/spi-falcon.c
+@@ -395,11 +395,6 @@ static int falcon_sflash_probe(struct platform_device *pdev)
+ 	struct spi_master *master;
  	int ret;
  
- 	mtd_set_dev_defaults(mtd);
- 
-+	part_probe_types = of_get_mtd_part_probes(mtd_get_of_node(mtd));
-+	if (part_probe_types)
-+		types = part_probe_types;
-+
- 	memset(&parsed, 0, sizeof(parsed));
- 
- 	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
-@@ -720,6 +752,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 		memset(&parsed, 0, sizeof(parsed));
- 	}
- 
-+	of_free_mtd_part_probes(part_probe_types);
-+
- 	ret = mtd_add_device_partitions(mtd, &parsed);
- 	if (ret)
- 		goto out;
+-	if (ltq_boot_select() != BS_SPI) {
+-		dev_err(&pdev->dev, "invalid bootstrap options\n");
+-		return -ENODEV;
+-	}
+-
+ 	master = spi_alloc_master(&pdev->dev, sizeof(*priv));
+ 	if (!master)
+ 		return -ENOMEM;
 -- 
 2.11.0
