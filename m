@@ -1,19 +1,23 @@
-Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0D33-0002S9-TK
- for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 20:15:00 +0000
-Received: by mail-io0-x22c.google.com with SMTP id o22so44603689iod.3
- for <linux-mtd@lists.infradead.org>; Mon, 17 Apr 2017 13:14:35 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0DM7-0000go-TB
+ for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 20:34:43 +0000
+Date: Mon, 17 Apr 2017 22:34:04 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpandong@micron.com>
+Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
+ <arnaud.mouiche@gmail.com>, <thomas.petazzoni@free-electrons.com>,
+ <marex@denx.de>, <cyrille.pitchen@atmel.com>,
+ <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
+ <linshunquan1@hisilicon.com>
+Subject: Re: [PATCH v5 1/6] nand: spi: add basic blocks for infrastructure
+Message-ID: <20170417223404.195a0812@bbrezillon>
+In-Reply-To: <1491810713-27795-2-git-send-email-peterpandong@micron.com>
+References: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
+ <1491810713-27795-2-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvyYKeNTgRdeBn5qsthw0LSMpxgjjM0SssX4cwCOqV11Yw@mail.gmail.com>
-References: <CAAN9NvfwjBaHWBo=5P=s9+ivPy_r-peSEdHK7UwJaOz4-8R9Pw@mail.gmail.com>
- <CAFLxGvyYKeNTgRdeBn5qsthw0LSMpxgjjM0SssX4cwCOqV11Yw@mail.gmail.com>
-From: Raphael Pereira <raphaelpereira@gmail.com>
-Date: Mon, 17 Apr 2017 17:14:34 -0300
-Message-ID: <CAAN9Nvf_3TDV-HcpmmUoYUPw7ECDzRcfLQshDiutQg7QYAkTcg@mail.gmail.com>
-Subject: Re: UBIFS replay journal failure on power cuts
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +27,187 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thank you. I updated to 4.10.10 and the problem is solved. I had a
-problem with GPMI that kept me on below 3.18 kernels, but that seems
-to be corrected too after some point beyond 4.4
+On Mon, 10 Apr 2017 15:51:48 +0800
+Peter Pan <peterpandong@micron.com> wrote:
 
+> +/*
+> + * spinand_dt_init - Initialize SPI NAND by device tree node
+> + * @chip: SPI NAND device structure
+> + *
+> + * TODO: put ecc_mode, ecc_strength, ecc_step, bbt, etc in here
+> + * and move it in generic NAND core.
+> + */
+> +static void spinand_dt_init(struct spinand_device *chip)
+> +{
+> +}
 
-2017-04-17 17:07 GMT-03:00 Richard Weinberger <richard.weinberger@gmail.com>:
-> On Mon, Apr 17, 2017 at 1:29 AM, Raphael Pereira
-> <raphaelpereira@gmail.com> wrote:
->> Hello,
->>
->> I have been using UBIFS on a device and have been getting some
->> unrecoverable errors on journal replay after some power cuts.
->>
->> I have not stablished the specific way to reproduce the problem, but
->> it is happening with some repeatability.
->>
->> The error seems quite like both threads:
->>
->> http://lists.infradead.org/pipermail/linux-mtd/2014-July/054620.html
->> http://lists.infradead.org/pipermail/linux-mtd/2016-June/068339.html
->>
->> And before you ask, I do indeed use fastmap.
->
-> Did you backport all fastmap related fixes/improvements?
-> The kernel you are using is very old.
->
-> --
-> Thanks,
-> //richard
+Please drop this function until you really have something to put in
+there.
 
+> +
+> +/*
+> + * spinand_detect - detect the SPI NAND device
+> + * @chip: SPI NAND device structure
+> + */
+> +static int spinand_detect(struct spinand_device *chip)
+> +{
+> +	struct nand_device *nand = &chip->base;
+> +	int ret;
+> +
+> +	spinand_reset(chip);
+> +	spinand_read_id(chip, chip->id.data);
+> +	chip->id.len = SPINAND_MAX_ID_LEN;
+> +
+> +	ret = spinand_manufacturer_detect(chip);
+> +	if (ret) {
+> +		dev_err(chip->dev, "unknown raw ID %*phN\n",
+> +			SPINAND_MAX_ID_LEN, chip->id.data);
+> +		goto out;
+> +	}
+> +
+> +	dev_info(chip->dev, "%s (%s) is found.\n", chip->name,
+> +		 chip->manufacturer.manu->name);
+> +	dev_info(chip->dev,
+> +		 "%d MiB, block size: %d KiB, page size: %d, OOB size: %d\n",
+> +		 (int)(nand_size(nand) >> 20), nand_eraseblock_size(nand) >> 10,
+> +		 nand_page_size(nand), nand_per_page_oobsize(nand));
+> +
+> +out:
+> +	return ret;
+> +}
+> +
+> +/*
+> + * spinand_init - initialize the SPI NAND device
+> + * @chip: SPI NAND device structure
+> + */
+> +static int spinand_init(struct spinand_device *chip)
+> +{
+> +	struct mtd_info *mtd = spinand_to_mtd(chip);
+> +	struct nand_device *nand = mtd_to_nand(mtd);
+> +	struct spinand_ecc_engine *ecc_engine;
+> +	int ret;
+> +
+> +	spinand_dt_init(chip);
+> +	spinand_set_rd_wr_op(chip);
+> +
+> +	chip->buf = devm_kzalloc(chip->dev,
+> +				 nand_page_size(nand) +
+> +				 nand_per_page_oobsize(nand),
+> +				 GFP_KERNEL);
+> +	if (!chip->buf) {
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	chip->oobbuf = chip->buf + nand_page_size(nand);
+> +
+> +	spinand_manufacturer_init(chip);
+> +
+> +	mtd->name = chip->name;
+> +	mtd->size = nand_size(nand);
+> +	mtd->erasesize = nand_eraseblock_size(nand);
+> +	mtd->writesize = nand_page_size(nand);
+> +	mtd->writebufsize = mtd->writesize;
+> +	mtd->owner = THIS_MODULE;
+> +	mtd->type = MTD_NANDFLASH;
+> +	mtd->flags = MTD_CAP_NANDFLASH;
+> +	if (!mtd->ecc_strength)
+> +		mtd->ecc_strength = ecc_engine->strength ?
+> +				    ecc_engine->strength : 1;
 
+Why 1 if the engine strength is 0?
 
--- 
-Raphael Derosso Pereira
+> +
+> +	mtd->oobsize = nand_per_page_oobsize(nand);
+> +	ret = mtd_ooblayout_count_freebytes(mtd);
+> +	if (ret < 0)
+> +		ret = 0;
+> +	mtd->oobavail = ret;
+> +
+> +	if (!mtd->bitflip_threshold)
+> +		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3,
+> +						      4);
+> +	/* After power up, all blocks are locked, so unlock it here. */
+> +	spinand_lock_block(chip, BL_ALL_UNLOCKED);
+> +
+> +	return nand_register(nand);
+> +
+> +err:
+> +	return ret;
+> +}
+> +
+
+[...]
+
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> new file mode 100644
+> index 0000000..78ea9a6
+> --- /dev/null
+> +++ b/include/linux/mtd/spinand.h
+> @@ -0,0 +1,257 @@
+
+[...]
+
+> +
+> +struct spinand_controller_ops {
+> +	int (*exec_op)(struct spinand_device *chip,
+> +		       struct spinand_op *op);
+> +};
+> +
+> +struct spinand_manufacturer_ops {
+> +	/*
+> +	 * Firstly, ->detect() should not be NULL.
+> +	 * ->detect() implementation for manufacturer A never sends
+> +	 * any manufacturer specific SPI command to a SPI NAND from
+> +	 * manufacturer B, so the proper way is to decode the raw id
+> +	 * data in chip->id.data first, if manufacture ID dismatch,
+> +	 * return directly and let others to detect.
+> +	 */
+> +	bool (*detect)(struct spinand_device *chip);
+> +	int (*init)(struct spinand_device *chip);
+> +	void (*cleanup)(struct spinand_device *chip);
+> +};
+> +
+> +struct spinand_manufacturer {
+> +	u8 id;
+> +	char *name;
+> +	const struct spinand_manufacturer_ops *ops;
+> +};
+> +
+> +struct spinand_ecc_engine_ops {
+> +	void (*get_ecc_status)(struct spinand_device *chip,
+> +			       unsigned int status, unsigned int *corrected,
+> +			       unsigned int *ecc_errors);
+> +	void (*disable_ecc)(struct spinand_device *chip);
+> +	void (*enable_ecc)(struct spinand_device *chip);
+> +};
+> +
+> +enum spinand_ecc_type {
+> +	SPINAND_ECC_ONDIE,
+> +	SPINAND_ECC_HW,
+> +};
+> +
+> +struct spinand_ecc_engine {
+> +	u32 strength;
+> +	u32 steps;
+> +	const struct spinand_ecc_engine_ops *ops;
+> +};
+> +
+> +#define SPINAND_CAP_RD_X1	BIT(0)
+> +#define SPINAND_CAP_RD_X2	BIT(1)
+> +#define SPINAND_CAP_RD_X4	BIT(2)
+> +#define SPINAND_CAP_RD_DUAL	BIT(3)
+> +#define SPINAND_CAP_RD_QUAD	BIT(4)
+> +#define SPINAND_CAP_WR_X1	BIT(5)
+> +#define SPINAND_CAP_WR_X2	BIT(6)
+> +#define SPINAND_CAP_WR_X4	BIT(7)
+> +#define SPINAND_CAP_WR_DUAL	BIT(8)
+> +#define SPINAND_CAP_WR_QUAD	BIT(9)
+> +#define SPINAND_CAP_HW_ECC	BIT(10)
+> +
+> +struct spinand_controller {
+> +	struct spinand_controller_ops *ops;
+> +	u32 caps;
+> +};
+
+Can you please document all structures using kernel-doc headers?
