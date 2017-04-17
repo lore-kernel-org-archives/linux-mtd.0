@@ -1,26 +1,25 @@
-Message-ID: <1492400072.2866.39.camel@mhfsdcap03>
-Subject: Re: [PATCH v1 1/1] mtd: mtk-nor: set controller's address width
- according to nor flash
-From: Guochun Mao <guochun.mao@mediatek.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-CC: Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>,
- "Richard Weinberger" <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- <linux-mtd@lists.infradead.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- <linux-mediatek@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>
-Date: Mon, 17 Apr 2017 11:34:32 +0800
-In-Reply-To: <e78dba15-80d0-f2c3-c963-a7eb033af58d@wedev4u.fr>
-References: <1491381462-21893-1-git-send-email-guochun.mao@mediatek.com>
- <1491381462-21893-2-git-send-email-guochun.mao@mediatek.com>
- <e9eafca3-41a0-7e88-996b-9d1c51f0c132@wedev4u.fr>
- <1492051237.2866.36.camel@mhfsdcap03>
- <3cf1c63e-c56f-2f07-9d16-7ec346758dfa@wedev4u.fr>
- <e78dba15-80d0-f2c3-c963-a7eb033af58d@wedev4u.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d07tZ-0002vl-88
+ for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 14:44:51 +0000
+Date: Mon, 17 Apr 2017 16:44:12 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Marek Vasut <marek.vasut@gmail.com>, Andrea Adami
+ <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, Robert Jarzmik
+ <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mtd: sharpsl: add sharpslpart MTD partition parser
+Message-ID: <20170417164412.3dc5b457@bbrezillon>
+In-Reply-To: <d9ef9878-932c-955a-5ba6-c0f0ec03731c@gmail.com>
+References: <1492287078-22369-1-git-send-email-andrea.adami@gmail.com>
+ <1492287078-22369-2-git-send-email-andrea.adami@gmail.com>
+ <d9ef9878-932c-955a-5ba6-c0f0ec03731c@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,31 +29,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille,
+Marek, Andrea,
 
-On Sun, 2017-04-16 at 19:18 +0200, Cyrille Pitchen wrote:
-> Le 13/04/2017 à 10:24, Cyrille Pitchen a écrit :
-> > Hi Guochun,
-> > 
-> > Le 13/04/2017 à 04:40, Guochun Mao a écrit :
-> >> Hi Cyrille,
-> >>
-> >> On Wed, 2017-04-12 at 22:57 +0200, Cyrille Pitchen wrote:
-> >>> Hi Guochun,
-> >>>
-> >>> Le 05/04/2017 à 10:37, Guochun Mao a écrit :
-> >>>> When nor's size larger than 16MByte, nor's address width maybe
-> >>>> set to 3 or 4, and controller should change address width according
-> >>>> to nor's setting.
-> >>>>
-> >>>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>st
-> > 
-> > Acked-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> > 
-> 
-> Applied to github/spi-nor
+Before we even start discussing minor improvements (like coding style),
+I'd like to discuss the sharp FTL and partition table format, and
+decide whether we want to have such an old FTL included in the kernel.
 
-Thank you very much!
+Actually, that's the very reason I asked Andrea to post his series as
+soon as possible even if some things were not perfect.
 
-Best regards,
-Guochun
+I'll try to document myself on the on-flash format of the FTL and
+partition table before giving a definitive opinion, but I have the
+feeling this ancient FTL is not 100% safe, and by accepting an old
+(maybe unreliable?) FTL we are setting a precedent, and refusing other
+(broken) proprietary/vendor FTLs will be almost impossible after that.
+
+Maybe I'm wrong, and this FTL is really safe and can be used on other
+devices, that's why I'd like to understand how it works before giving
+my opinion.
+
+
+On Sun, 16 Apr 2017 18:07:47 +0200
+Marek Vasut <marek.vasut@gmail.com> wrote:
+
+> On 04/15/2017 10:11 PM, Andrea Adami wrote:
+> > The Sharp SL Series (Zaurus) PXA handhelds have 16/64/128M of NAND flash
+> > and share the same layout of the first 7M partition, managed by Sharp FTL.
+> > 
+> > The purpose of this self-contained patch is to add a common parser and
+> > remove the hardcoded sizes in the board files (these devices are not yet
+> > converted to devicetree).
+> > Users will have benefits because the mtdparts= tag will not be necessary
+> > anymore and they will be free to repartition the little sized flash.
+> > 
+> > The obsolete bootloader can not pass the partitioning info to modern
+> > kernels anymore so it has to be read from flash at known logical addresses.
+> > (see http://www.h5.dion.ne.jp/~rimemoon/zaurus/memo_006.htm )
+
+
+Okay, IMO that's not really a good argument to support this partition
+parser. As Richard and I already mentioned several times, if your
+bootloader is not capable of passing valid mtdparts= you can hardcode
+it in the kernel using a default CMDLINE.
+
+Now, I understand that you want to support multiple devices with the
+same kernel, and having this partition parser would simplify your job.
+I also know you are developing a 2nd stage bootloader (based on
+kexec+a minimal initramfs) to address the limitations of the
+non-upgradable 1st stage bootloader.
+
+According to the rest of the description, you already have user-space
+tools to manipulate the partition-table and those are aware of the FTL
+layer, so I think you have all the basic blocks to get rid of this
+in-kernel implementation.
+
+All you need is a way to extract the partitions from the 2nd stage
+bootloader (using some tools you have in your initramfs) and build the
+according mtdparts= parameter to pass to kexec when booting the real
+kernel (the one used by the system).
+
+You tried to explain why it was not doable, but I still don't see
+why.
+You first said that not all systems had CONFIG_MTD_CMDLINE_PARTS
+enabled and that some people were booting distro kernels. Honestly, I
+think you have more chances to have CONFIG_MTD_CMDLINE_PARTS in those
+distro kernels than having your custom FTL enabled.
+Then you tried to explain that with the user-space only solution you
+wouldn't be able to support systems where the user had resized the
+partitions with the nandlogical tool, and I still don't see why. Maybe
+you can give more details to explain why this is impossible.
+
+Just going through all these details to say that, IMO, we should only
+consider inclusion of this feature if we think it's safe, because I
+think all that is done here can be done from user-space.
+
+One last thing I was wondering. You said you want to keep existing
+partitioning unchanged, but I'd recommend to just drop the existing
+partitioning and have a single 121MB partition with UBI on it.
+This way you get support for UBI volumes, which is doing exactly what
+this FTL+partition-table is doing but in a standard/safe way.
+What is forcing you to keep the existing partitioning exactly?
+
+> > 
+> > In kernel, under arch/arm/mach-pxa we have already 8 machines:
+> > MACH_POODLE, MACH_CORGI, MACH_SHEPERD, MACH_HUSKY, MACH_AKITA, MACH_SPITZ,
+> > MACH_BORZOI, MACH_TOSA.
+> > Lost after the 2.4 vendor kernel are MACH_BOXER and MACH_TERRIER.
+> > 
+> > Almost every model has different factory partitioning: add to this the
+> > units can be repartitioned by users with userspace tools (nandlogical)
+> > and installers for popular (back then) linux distributions.
+> > 
+> > The Parameter Area in the first (boot) partition extends from 0x00040000 to
+> > 0x0007bfff (176k) and contains two copies of the partition table:
+> > ...
+> > 0x00060000: Partition Info1	16k
+> > 0x00064000: Partition Info2	16k
+> > 0x00668000: Model		16k
+> > ...
+> > 
+> > The first 7M partition is managed by the Sharp FTL reserving 5% + 1 blocks
+> > for wear-leveling: some blocks are remapped and one layer of translation
+> > (logical to physical) is necessary.
+> > 
+> > There isn't much documentation about this FTL in the 2.4 sources, just the
+> > MTD methods for reading and writing using logical addresses and the block
+> > management (wear-leveling, use counter).
+> > For the purpose of the MTD parser only the read part of the code was taken.
+> > 
+> > The NAND drivers that can use this parser are sharpsl.c and tmio_nand.c.
+> > 
+> > Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+
+I'll comment on the FTL and partition-table format later, after I had
+time to review it properly.
+
+In the meantime, I'd like other MTD maintainers to comment on my
+reply. Maybe I'm the only one to think that supporting
+old/unmaintainerd FTLs is a bad idea, and in this case I'll have to
+accept the situation ;-).
+
+Regards,
+
+Boris
