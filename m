@@ -1,27 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d0CO1-0001il-E8
- for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 19:32:36 +0000
-Date: Mon, 17 Apr 2017 21:31:28 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>, Linus Walleij
- <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-Subject: Re: [PATCH V4 2/3] mtd: add core code reading DT specified part probes
-Message-ID: <20170417213128.0d56f033@bbrezillon>
-In-Reply-To: <20170417182853.24281-2-zajec5@gmail.com>
-References: <20170331114016.26858-1-zajec5@gmail.com>
- <20170417182853.24281-1-zajec5@gmail.com>
- <20170417182853.24281-2-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0CMA-0003LS-M4
+ for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 19:30:40 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH 13/13] MIPS: lantiq: Remove the arch/mips/lantiq/xway/reset.c
+ implementation
+Date: Mon, 17 Apr 2017 21:29:42 +0200
+Message-Id: <20170417192942.32219-14-hauke@hauke-m.de>
+In-Reply-To: <20170417192942.32219-1-hauke@hauke-m.de>
+References: <20170417192942.32219-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,117 +24,202 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 17 Apr 2017 20:28:52 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->=20
-> Handling (creating) partitions for flash devices requires using a proper
-> driver that will read partition table (out of somewhere). We can't
-> simply try all existing drivers one by one:
-> 1) It would increase boot time
-> 2) The order could be a problem
-> 3) In some corner cases parsers could misinterpret some data as a table
-> Due to this MTD subsystem allows drivers to specify a list of applicable
-> part probes.
->=20
-> So far physmap_of was the only driver with support for linux,part-probe
-> DT property. Other ones had list or probes hardcoded which wasn't making
-> them really flexible. It prevented using common flash drivers on
-> platforms that required some specific partition table access.
->=20
-> This commit adds support for mentioned DT property directly to the MTD
-> core. It's a rewritten implementation of physmap_of's code and it makes
-> original code obsolete. Thanks to calling it on device parse
-> registration (as suggested by Boris) all drivers gain support for it for
-> free.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> ---
-> V4: Rename of functions
->     Add comment to the of_get_mtd_part_probes
->     Simplify mtd_device_parse_register changes
->     Thanks Boris for help on all above!
-> ---
->  drivers/mtd/mtdcore.c | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
->=20
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 66a9dedd1062..07b07de7e080 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -664,6 +664,33 @@ static void mtd_set_dev_defaults(struct mtd_info *mt=
-d)
->  	}
->  }
-> =20
-> +static const char * const *of_get_mtd_part_probes(struct device_node *np)
-> +{
-> +	const char **res;
-> +	int count;
-> +
-> +	count =3D of_property_count_strings(np, "linux,part-probe");
-> +	if (count < 0)
-> +		return NULL;
-> +
-> +	/* This looks common: consider helper function if copying */
-> +	res =3D kzalloc((count + 1) * sizeof(*res), GFP_KERNEL);
-> +	if (!res)
-> +		return NULL;
-> +
-> +	count =3D of_property_read_string_array(np, "linux,part-probe", res,
-> +					      count);
-> +	if (count < 0)
-> +		return NULL;
-> +
-> +	return res;
-> +}
-> +
-> +static void of_free_mtd_part_probes(const char * const *probes)
-> +{
-> +	kfree(probes);
-> +}
-> +
->  /**
->   * mtd_device_parse_register - parse partitions and register an MTD devi=
-ce.
->   *
-> @@ -698,11 +725,16 @@ int mtd_device_parse_register(struct mtd_info *mtd,=
- const char * const *types,
->  			      const struct mtd_partition *parts,
->  			      int nr_parts)
->  {
-> +	const char * const *part_probe_types;
+The RCU register are now access through separates drivers. remove the
+last peaces of the old implementation.
 
-One last thing: can we rename this variable of_part_probe_types?
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+---
+ arch/mips/lantiq/Kconfig       |   1 +
+ arch/mips/lantiq/xway/Makefile |   2 +-
+ arch/mips/lantiq/xway/reset.c  | 157 -----------------------------------------
+ 3 files changed, 2 insertions(+), 158 deletions(-)
+ delete mode 100644 arch/mips/lantiq/xway/reset.c
 
-With this addressed,
-
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-Thanks,
-
-Boris
-
->  	struct mtd_partitions parsed;
->  	int ret;
-> =20
->  	mtd_set_dev_defaults(mtd);
-> =20
-> +	part_probe_types =3D of_get_mtd_part_probes(mtd_get_of_node(mtd));
-> +	if (part_probe_types)
-> +		types =3D part_probe_types;
-> +
->  	memset(&parsed, 0, sizeof(parsed));
-> =20
->  	ret =3D parse_mtd_partitions(mtd, types, &parsed, parser_data);
-> @@ -720,6 +752,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, c=
-onst char * const *types,
->  		memset(&parsed, 0, sizeof(parsed));
->  	}
-> =20
-> +	of_free_mtd_part_probes(part_probe_types);
-> +
->  	ret =3D mtd_add_device_partitions(mtd, &parsed);
->  	if (ret)
->  		goto out;
+diff --git a/arch/mips/lantiq/Kconfig b/arch/mips/lantiq/Kconfig
+index f5db4a426568..35bc69b78268 100644
+--- a/arch/mips/lantiq/Kconfig
++++ b/arch/mips/lantiq/Kconfig
+@@ -18,6 +18,7 @@ config SOC_XWAY
+ 	select SOC_TYPE_XWAY
+ 	select HW_HAS_PCI
+ 	select MFD_SYSCON
++	select MFD_CORE
+ 
+ config SOC_FALCON
+ 	bool "FALCON"
+diff --git a/arch/mips/lantiq/xway/Makefile b/arch/mips/lantiq/xway/Makefile
+index 6daf3149e7ca..fbb0747c70b7 100644
+--- a/arch/mips/lantiq/xway/Makefile
++++ b/arch/mips/lantiq/xway/Makefile
+@@ -1,3 +1,3 @@
+-obj-y := prom.o sysctrl.o clk.o reset.o dma.o gptu.o dcdc.o
++obj-y := prom.o sysctrl.o clk.o dma.o gptu.o dcdc.o
+ 
+ obj-y += vmmc.o
+diff --git a/arch/mips/lantiq/xway/reset.c b/arch/mips/lantiq/xway/reset.c
+deleted file mode 100644
+index 5aec1f54275b..000000000000
+--- a/arch/mips/lantiq/xway/reset.c
++++ /dev/null
+@@ -1,157 +0,0 @@
+-/*
+- *  This program is free software; you can redistribute it and/or modify it
+- *  under the terms of the GNU General Public License version 2 as published
+- *  by the Free Software Foundation.
+- *
+- *  Copyright (C) 2010 John Crispin <john@phrozen.org>
+- *  Copyright (C) 2013-2015 Lantiq Beteiligungs-GmbH & Co.KG
+- */
+-
+-#include <linux/init.h>
+-#include <linux/io.h>
+-#include <linux/ioport.h>
+-#include <linux/pm.h>
+-#include <linux/export.h>
+-#include <linux/delay.h>
+-#include <linux/of_address.h>
+-#include <linux/of_platform.h>
+-#include <linux/reset-controller.h>
+-
+-#include <asm/reboot.h>
+-
+-#include <lantiq_soc.h>
+-
+-#include "../prom.h"
+-
+-/* reset request register */
+-#define RCU_RST_REQ		0x0010
+-/* reset status register */
+-#define RCU_RST_STAT		0x0014
+-
+-/* xbar BE flag */
+-#define RCU_AHB_ENDIAN          0x004C
+-#define RCU_VR9_BE_AHB1S        0x00000008
+-
+-/* reboot bit */
+-#define RCU_RD_GPHY0_XRX200	BIT(31)
+-#define RCU_RD_SRST		BIT(30)
+-#define RCU_RD_GPHY1_XRX200	BIT(29)
+-
+-/* reset cause */
+-#define RCU_STAT_SHIFT		26
+-/* boot selection */
+-#define RCU_BOOT_SEL(x)		((x >> 18) & 0x7)
+-#define RCU_BOOT_SEL_XRX200(x)	(((x >> 17) & 0xf) | ((x >> 8) & 0x10))
+-
+-/* dwc2 USB configuration registers */
+-#define RCU_USB1CFG		0x0018
+-#define RCU_USB2CFG		0x0034
+-
+-/* USB DMA endianness bits */
+-#define RCU_USBCFG_HDSEL_BIT	BIT(11)
+-#define RCU_USBCFG_HOST_END_BIT	BIT(10)
+-#define RCU_USBCFG_SLV_END_BIT	BIT(9)
+-
+-/* USB reset bits */
+-#define RCU_USBRESET		0x0010
+-
+-#define USBRESET_BIT		BIT(4)
+-
+-#define RCU_USBRESET2		0x0048
+-
+-#define USB1RESET_BIT		BIT(4)
+-#define USB2RESET_BIT		BIT(5)
+-
+-#define RCU_CFG1A		0x0038
+-#define RCU_CFG1B		0x003C
+-
+-/* USB PMU devices */
+-#define PMU_AHBM		BIT(15)
+-#define PMU_USB0		BIT(6)
+-#define PMU_USB1		BIT(27)
+-
+-/* USB PHY PMU devices */
+-#define PMU_USB0_P		BIT(0)
+-#define PMU_USB1_P		BIT(26)
+-
+-/* remapped base addr of the reset control unit */
+-static void __iomem *ltq_rcu_membase;
+-static struct device_node *ltq_rcu_np;
+-static DEFINE_SPINLOCK(ltq_rcu_lock);
+-
+-static void ltq_rcu_w32(uint32_t val, uint32_t reg_off)
+-{
+-	ltq_w32(val, ltq_rcu_membase + reg_off);
+-}
+-
+-static uint32_t ltq_rcu_r32(uint32_t reg_off)
+-{
+-	return ltq_r32(ltq_rcu_membase + reg_off);
+-}
+-
+-static void ltq_rcu_w32_mask(uint32_t clr, uint32_t set, uint32_t reg_off)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ltq_rcu_lock, flags);
+-	ltq_rcu_w32((ltq_rcu_r32(reg_off) & ~(clr)) | (set), reg_off);
+-	spin_unlock_irqrestore(&ltq_rcu_lock, flags);
+-}
+-
+-static void ltq_machine_restart(char *command)
+-{
+-	u32 val = ltq_rcu_r32(RCU_RST_REQ);
+-
+-	if (of_device_is_compatible(ltq_rcu_np, "lantiq,rcu-xrx200"))
+-		val |= RCU_RD_GPHY1_XRX200 | RCU_RD_GPHY0_XRX200;
+-
+-	val |= RCU_RD_SRST;
+-
+-	local_irq_disable();
+-	ltq_rcu_w32(val, RCU_RST_REQ);
+-	unreachable();
+-}
+-
+-static void ltq_machine_halt(void)
+-{
+-	local_irq_disable();
+-	unreachable();
+-}
+-
+-static void ltq_machine_power_off(void)
+-{
+-	local_irq_disable();
+-	unreachable();
+-}
+-
+-static int __init mips_reboot_setup(void)
+-{
+-	struct resource res;
+-
+-	ltq_rcu_np = of_find_compatible_node(NULL, NULL, "lantiq,rcu-xway");
+-	if (!ltq_rcu_np)
+-		ltq_rcu_np = of_find_compatible_node(NULL, NULL,
+-							"lantiq,rcu-xrx200");
+-
+-	/* check if all the reset register range is available */
+-	if (!ltq_rcu_np)
+-		panic("Failed to load reset resources from devicetree");
+-
+-	if (of_address_to_resource(ltq_rcu_np, 0, &res))
+-		panic("Failed to get rcu memory range");
+-
+-	if (!request_mem_region(res.start, resource_size(&res), res.name))
+-		pr_err("Failed to request rcu memory");
+-
+-	ltq_rcu_membase = ioremap_nocache(res.start, resource_size(&res));
+-	if (!ltq_rcu_membase)
+-		panic("Failed to remap core memory");
+-
+-	_machine_restart = ltq_machine_restart;
+-	_machine_halt = ltq_machine_halt;
+-	pm_power_off = ltq_machine_power_off;
+-
+-	return 0;
+-}
+-
+-arch_initcall(mips_reboot_setup);
+-- 
+2.11.0
