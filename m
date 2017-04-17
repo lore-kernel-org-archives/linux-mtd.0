@@ -1,7 +1,7 @@
-Received: from hauke-m.de ([2001:41d0:8:b27b::1] helo=mail.hauke-m.de)
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0CLm-00060j-3r
- for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 19:30:17 +0000
+ id 1d0CM8-0007aA-QN
+ for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 19:30:40 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: ralf@linux-mips.org
 Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
@@ -9,10 +9,10 @@ Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  martin.blumenstingl@googlemail.com, john@phrozen.org,
  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH 01/13] MIPS: lantiq: Use of_platform_populate instead of
- __dt_register_buses
-Date: Mon, 17 Apr 2017 21:29:30 +0200
-Message-Id: <20170417192942.32219-2-hauke@hauke-m.de>
+Subject: [PATCH 05/13] MIPS: lantiq: Enable MFD_SYSCON to be able to use it
+ for the RCU MFD
+Date: Mon, 17 Apr 2017 21:29:34 +0200
+Message-Id: <20170417192942.32219-6-hauke@hauke-m.de>
 In-Reply-To: <20170417192942.32219-1-hauke@hauke-m.de>
 References: <20170417192942.32219-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,27 +26,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-This allows populating syscon devices which are using "simple-mfd"
-instead of "simple-bus".
-
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- arch/mips/lantiq/prom.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/mips/lantiq/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
-index 96773bed8a8a..72cc12f1b6a5 100644
---- a/arch/mips/lantiq/prom.c
-+++ b/arch/mips/lantiq/prom.c
-@@ -117,7 +117,8 @@ void __init prom_init(void)
+diff --git a/arch/mips/lantiq/Kconfig b/arch/mips/lantiq/Kconfig
+index 177769dbb0e8..f5db4a426568 100644
+--- a/arch/mips/lantiq/Kconfig
++++ b/arch/mips/lantiq/Kconfig
+@@ -17,6 +17,7 @@ config SOC_XWAY
+ 	bool "XWAY"
+ 	select SOC_TYPE_XWAY
+ 	select HW_HAS_PCI
++	select MFD_SYSCON
  
- int __init plat_of_setup(void)
- {
--	return __dt_register_buses(soc_info.compatible, "simple-bus");
-+	return of_platform_populate(NULL, of_default_bus_match_table, NULL,
-+				    NULL);
- }
- 
- arch_initcall(plat_of_setup);
+ config SOC_FALCON
+ 	bool "FALCON"
 -- 
 2.11.0
