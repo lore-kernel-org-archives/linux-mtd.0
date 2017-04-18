@@ -1,29 +1,33 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from gate.crashing.org ([63.228.1.57])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0blr-0000FU-PF
- for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 22:38:53 +0000
-Received: by mail-wr0-x243.google.com with SMTP id u18so918561wrc.1
- for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2017 15:38:31 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] mtd: dataflash: Improve coding style in
- jedec_probe()
-To: Joe Perches <joe@perches.com>, Andrey Smirnov <andrew.smirnov@gmail.com>,
- linux-mtd@lists.infradead.org
-References: <20170418142127.23301-1-andrew.smirnov@gmail.com>
- <20170418142127.23301-2-andrew.smirnov@gmail.com>
- <32615ada-eddc-3911-17bf-32f6897c77e1@gmail.com>
- <1492554972.8661.51.camel@perches.com>
-Cc: cphealy@gmail.com, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <dd25e04b-ecb8-f53a-23b0-bfeb85a4a226@gmail.com>
-Date: Wed, 19 Apr 2017 00:38:28 +0200
-MIME-Version: 1.0
-In-Reply-To: <1492554972.8661.51.camel@perches.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1d0bpw-0002g9-3m
+ for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 22:43:05 +0000
+Message-ID: <1492555307.25766.95.camel@kernel.crashing.org>
+Subject: Re: [PATCH 10/10] mtd: spi-nor: aspeed: optimize read mode
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: =?ISO-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>, Rob Herring
+ <robh+dt@kernel.org>
+Date: Wed, 19 Apr 2017 08:41:47 +1000
+In-Reply-To: <a99e6d1e-2dd2-5672-3ff5-adaea69bee75@kaod.org>
+References: <1491497808-25487-1-git-send-email-clg@kaod.org>
+ <1491497808-25487-11-git-send-email-clg@kaod.org>
+ <7d80fbb3-81d9-3ac0-6bb9-47d2d4cf0855@gmail.com>
+ <e27b9f19-947f-ab72-056d-d71812e69356@kaod.org>
+ <6f7f424c-2a3f-4b6d-f7aa-bfae749de0b3@gmail.com>
+ <1492206032.25766.7.camel@kernel.crashing.org>
+ <26f0d520-bfe3-cc26-d3d5-3185813b7ffb@gmail.com>
+ <1492207894.25766.20.camel@kernel.crashing.org>
+ <c5d30733-20c8-275a-03b1-9b446b5bcc71@gmail.com>
+ <1492209763.25766.27.camel@kernel.crashing.org>
+ <a99e6d1e-2dd2-5672-3ff5-adaea69bee75@kaod.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,54 +37,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/19/2017 12:36 AM, Joe Perches wrote:
-> On Tue, 2017-04-18 at 20:25 +0200, Marek Vasut wrote:
->> On 04/18/2017 04:21 PM, Andrey Smirnov wrote:
->>> As per request from Marek Vasut, change the following:
->>
->> Does that really have to be in the commit message ? ^_^'
->>
->>>    - Replace indentation between type and name of local variable from
->>>      tabs to spaces
->>>
->>>    - Replace magic number 0x1F with CFI_MFR_ATMEL macro
->>>
->>>    - Replace variable 'tmp' with 'ret' and 'i' where appropriate
->>>
->>>    - Reformat multi-line comments and add newlines where appropriate
->>>
->>> No functional change intended.
->>
->> Appreciated, thanks!
+On Tue, 2017-04-18 at 17:46 +0200, Cédric Le Goater wrote:
+> On 04/15/2017 12:42 AM, Benjamin Herrenschmidt wrote:
+> > On Sat, 2017-04-15 at 00:25 +0200, Marek Vasut wrote:
+> > > That sounds like a good option, yes. And if it's just forcing
+> > > fixed
+> > > speed, that's awesome, but I think there are more values that
+> > > might need
+> > > to be passed ... I think that's what Cedric can answer.
+> > 
+> > Yes, fixed and delay. Not a huge deal.
 > 
-> trivia:
+> Do we really need to specify the delays in the DT ? As we loop on 
+> the different delay settings, if a setting is bogus, we can just 
+> pick the following HCLK divider. No ? I don't think it is worth 
+> adding black magic properties like this in the DT. We never had to 
+> tune it manually AFAICT and anyway, we can always add that later 
+> if needed. 
 > 
->>> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> []
->>> @@ -768,9 +771,9 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
->>>  	jedec = jedec << 8;
->>>  	jedec |= id[2];
->>>  
->>> -	for (tmp = 0, info = dataflash_data;
->>> -			tmp < ARRAY_SIZE(dataflash_data);
->>> -			tmp++, info++) {
->>> +	for (i = 0, info = dataflash_data;
->>> +			i < ARRAY_SIZE(dataflash_data);
->>> +			i++, info++) {
->>>  		if (info->jedec_id == jedec) {
->>>  			pr_debug("%s: OTP, sector protect%s\n",
->>>  				dev_name(&spi->dev),
+> So, that would leave two properties :
 > 
-> This loop could be written without the i variable.
-> 
-> 	for (info = dataflash_data;
-> 	     info < dataflash_data + ARRAY_SIZE(dataflash_data);
-> 	     info++) {
-> 
+>   - safe divider for "normal/write/erase" commands
+>   - speedy divider for "read" commands
 
-But in a separate patch please, so it's bisectable. I don't want to slap
-such change into this patch.
+When the properties are present, we don't calibrate. So we need the
+delay being specified. There's no "black magic" about it, it's about
+specifying the appropriate configuration of the controller for the
+given motherboard layout/flashchip/speed.
 
--- 
-Best regards,
-Marek Vasut
+> If the property is not present, we would keep the low HW default, 
+> which is /16. 
+
+No misunderstood. The default is to calibrate. The properties allow you
+to specify a fixed speed/delay combination in case the system has been
+fully calibrated in the factory.
+
+> If there is such a property, the divider value would be considered 
+> as a max. The range should be 1..5. Let's introduce "literal" values 
+> like "min" and "max" for 1 and 5 ?  
+> 
+> Do we care for the other HCLK settings < 5 for which we can not set
+> any delay ?  
+
+> > Also a module parameter makes it hard to specify different settings
+> > for
+> > different instances of the device/flash. IE, there can be multiple
+> > flash controllers and each of them can have multiple chip selects.
+> > 
+> > The DT is the only sane way for that.
+> 
+> Yes. Can we keep the global module parameter as a global chicken 
+> switch to deactivate the algo ? It could be useful, some chips tend
+> to freak out when hammered on a bit too much. 
+
+Yes, that's useful for diagnosis when things go wrong.
+
+Cheers,
+Ben.
+
+> Thanks,
+> 
+> C.
+> 
+> 
+> > > > That becomes akin to what we do with Ethernet PHYs for example
+> > > > :)
+> > > 
+> > > Even better, I recall seeing some speed DT props in the SPI
+> > > binding
+> > > docs, so we already have those in place.
+> > 
+> > Right though the gate delay is rather IP block specific but that's
+> > not a huge issue.
+> > 
+> > Cheers,
+> > Ben.
+> > 
