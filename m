@@ -1,21 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d0Nm0-00026i-4U
- for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 07:42:06 +0000
-Date: Tue, 18 Apr 2017 09:41:42 +0200
+ id 1d0Nmb-0002PO-Aa
+ for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 07:42:42 +0000
+Date: Tue, 18 Apr 2017 09:42:20 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marek Vasut <marex@denx.de>
-Cc: Peter Pan <peterpandong@micron.com>, richard@nod.at,
- computersforpeace@gmail.com, arnaud.mouiche@gmail.com,
- thomas.petazzoni@free-electrons.com, cyrille.pitchen@atmel.com,
- linux-mtd@lists.infradead.org, peterpansjtu@gmail.com,
- linshunquan1@hisilicon.com
-Subject: Re: [PATCH v5 5/6] nand: spi: Add generic SPI controller support
-Message-ID: <20170418094142.5d4d38b6@bbrezillon>
-In-Reply-To: <93510c4d-9d48-f37b-21de-5fd532072b4c@denx.de>
+To: Peter Pan <peterpandong@micron.com>
+Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
+ <arnaud.mouiche@gmail.com>, <thomas.petazzoni@free-electrons.com>,
+ <marex@denx.de>, <cyrille.pitchen@atmel.com>,
+ <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
+ <linshunquan1@hisilicon.com>
+Subject: Re: [PATCH v5 0/6] Introduction to SPI NAND framework
+Message-ID: <20170418094220.290fb27f@bbrezillon>
+In-Reply-To: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
 References: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
- <1491810713-27795-6-git-send-email-peterpandong@micron.com>
- <93510c4d-9d48-f37b-21de-5fd532072b4c@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,131 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 14 Apr 2017 15:26:24 +0200
-Marek Vasut <marex@denx.de> wrote:
+Hi Peter,
 
-> On 04/10/2017 09:51 AM, Peter Pan wrote:
-> > This commit supports to use generic spi controller
-> > as spi nand controller.
-> > 
-> > Signed-off-by: Peter Pan <peterpandong@micron.com>
-> > ---
-> >  drivers/mtd/nand/spi/Kconfig                   |   2 +
-> >  drivers/mtd/nand/spi/Makefile                  |   1 +
-> >  drivers/mtd/nand/spi/controllers/Kconfig       |   5 +
-> >  drivers/mtd/nand/spi/controllers/Makefile      |   1 +
-> >  drivers/mtd/nand/spi/controllers/generic-spi.c | 159 +++++++++++++++++++++++++
-> >  5 files changed, 168 insertions(+)
-> >  create mode 100644 drivers/mtd/nand/spi/controllers/Kconfig
-> >  create mode 100644 drivers/mtd/nand/spi/controllers/Makefile
-> >  create mode 100644 drivers/mtd/nand/spi/controllers/generic-spi.c  
-> 
-> [...]
-> 
-> > +static int gen_spi_spinand_probe(struct spi_device *spi)
-> > +{
-> > +	struct spinand_device *chip;
-> > +	struct gen_spi_spinand_controller *controller;
-> > +	struct spinand_controller *spinand_controller;
-> > +	struct device *dev = &spi->dev;
-> > +	u16 mode = spi->mode;
-> > +	int ret;
-> > +
-> > +	chip = spinand_alloc(dev);
-> > +	if (IS_ERR(chip)) {
-> > +		ret = PTR_ERR(chip);
-> > +		goto err1;
-> > +	}  
-> 
-> Would it make sense to embed the struct spinand_device into struct
-> gen_spi_nand_controller , so you'd get rid of one allocation ?
+On Mon, 10 Apr 2017 15:51:47 +0800
+Peter Pan <peterpandong@micron.com> wrote:
 
-I have other plans. I'd like drivers to only register their
-SPI NAND controller, and let the core parse the DT (or board info) to
-create the spinand devices and inform the controller that a new device
-is being added (using a ->add() hook).
-
-With this model, the core does not know anything about driver-specific
-private data, and thus has to allocate a spinand device no matter what.
-
-Even if we're not here yet, I'd like to keep that in mind, and already
-force SPI NAND controller drivers to use spinand_alloc instead of
-embedding the struct.
-
+> First of all, thank Boris, Marek and Cyrille for your comments
+> on v4 and thank Arnaud for your testing on v4. Since I'm quite
+> busy last week, I failed to reply all the comments, I'm really
+> sorry for that.
 > 
-> > +	controller = devm_kzalloc(dev, sizeof(*controller), GFP_KERNEL);
-> > +	if (!controller) {
-> > +		ret = -ENOMEM;
-> > +		goto err2;
-> > +	}
-> > +	controller->spi = spi;
-> > +	spinand_controller = &controller->ctrl;
-> > +	spinand_controller->ops = &gen_spi_spinand_ops;
-> > +	spinand_controller->caps = SPINAND_CAP_RD_X1 | SPINAND_CAP_WR_X1;
-> > +
-> > +	if ((mode & SPI_RX_QUAD) && (mode & SPI_TX_QUAD))
-> > +		spinand_controller->caps |= SPINAND_CAP_RD_QUAD;
-> > +	if ((mode & SPI_RX_DUAL) && (mode & SPI_TX_DUAL))
-> > +		spinand_controller->caps |= SPINAND_CAP_RD_DUAL;
-> > +	if (mode & SPI_RX_QUAD)
-> > +		spinand_controller->caps |= SPINAND_CAP_RD_X4;
-> > +	if (mode & SPI_RX_DUAL)
-> > +		spinand_controller->caps |= SPINAND_CAP_RD_X2;
-> > +	if (mode & SPI_TX_QUAD)
-> > +		spinand_controller->caps |= SPINAND_CAP_WR_QUAD |
-> > +					    SPINAND_CAP_WR_X4;
-> > +	if (mode & SPI_TX_DUAL)
-> > +		spinand_controller->caps |= SPINAND_CAP_WR_DUAL |
-> > +					    SPINAND_CAP_WR_X2;
-> > +	chip->controller.controller = spinand_controller;
-> > +	/*
-> > +	 * generic spi controller doesn't have ecc capability,
-> > +	 * so use on-die ecc.
-> > +	 */
-> > +	chip->ecc.type = SPINAND_ECC_ONDIE;
-> > +	spi_set_drvdata(spi, chip);
-> > +
-> > +	ret = spinand_register(chip);
-> > +	if (ret)
-> > +		goto err3;
-> > +
-> > +	return 0;
-> > +
-> > +err3:
-> > +	devm_kfree(dev, controller);
-> > +err2:
-> > +	spinand_free(chip);
-> > +err1:
-> > +	return ret;
-> > +}
-> > +
-> > +static int gen_spi_spinand_remove(struct spi_device *spi)
-> > +{
-> > +	struct spinand_device *chip = spi_get_drvdata(spi);
-> > +	struct spinand_controller *scontroller = chip->controller.controller;
-> > +	struct gen_spi_spinand_controller *controller;
-> > +
-> > +	spinand_unregister(chip);
-> > +	controller = to_gen_spi_spinand_controller(scontroller);
-> > +	devm_kfree(&spi->dev, controller);
-> > +	spinand_free(chip);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static struct spi_driver gen_spi_spinand_driver = {
-> > +	.driver = {
-> > +		.name	= "generic_spinand",
-> > +		.owner	= THIS_MODULE,
-> > +	},
-> > +	.probe	= gen_spi_spinand_probe,
-> > +	.remove	= gen_spi_spinand_remove,
-> > +};
-> > +module_spi_driver(gen_spi_spinand_driver);
-> > +
-> > +MODULE_DESCRIPTION("Generic SPI controller to support SPI NAND");
-> > +MODULE_AUTHOR("Peter Pan<peterpandong@micron.com>");
-> > +MODULE_LICENSE("GPL v2");
-> >   
+> According to Boris's suggestion, I rebased my patches on nand/next
+> branch with Boris's generic NAND patches. This time I only send
+> my SPI NAND patches out since it's the focus.
 > 
+> I created my own branch for convenience[3]. You can find both
+> my SPI NAND patches and Boris's generic NAND framework patches.
 > 
+> This series introductes a SPI NAND framework.
+> SPI NAND is a new NAND family device with SPI protocol as
+> its interface. And its command set is totally different
+> with parallel NAND.
+> 
+> Our first attempt was more than 2 years ago[1]. At that
+> time, I didn't make BBT shareable and there were too many
+> duplicate code with parallel NAND, so that serie stoped.
+> But the discussion never stops. Now Boris has a plan to
+> make a generic NAND framework which can be shared with
+> both parallel and SPI NAND. Now the first step of the
+> new generic NAND framework is finished. And it is waiting
+> for a user. After discussion with Boris. We both think it's
+> time to rebuild SPI NAND framework based on the new NAND
+> framework and send out for reviewing.
+> 
+> This series is based on Boris's nand/generic branch[2], which
+> is on 4.11-rc1. In this serie, BBT code is totally shared.
+> Of course SPI NAND can share more code with parallel, this
+> requires to put more in new NAND core (now only BBT included).
+> I'd like to send this serie out first, then we can decide
+> which part should be in new NAND core.
+> 
+> This series only supports basic SPI NAND features and uses
+> generic spi controller for data transfer, on-die ECC for data
+> correction. Support advanced features and specific SPI NAND
+> controller with hardware ECC is the next step.
+> 
+> This series is tested on Xilinx Zedboard with Micron
+> MT29F2G01ABAGDSF SPI NAND chip.
+
+I think we're almost good here. Just need to address the comments made
+by Marek an I and you can send a v6 containing all the materials
+(including my generic-NAND layer).
+
+If you don't mind, I'd recommend that we keep ECC support for later, or
+at least separate the code in different patches so I can take
+everything expect that if I'm not happy with the code.
+
+Hopefully, everything should be ready for 4.13 (finally :-)).
+
+Thanks for your patience.
+
+Boris
