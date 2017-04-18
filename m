@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d0NRP-0006YG-Es
- for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 07:20:49 +0000
-Date: Tue, 18 Apr 2017 09:20:22 +0200
+ id 1d0NXd-0001NU-2D
+ for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 07:27:15 +0000
+Date: Tue, 18 Apr 2017 09:26:51 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Peter Pan <peterpandong@micron.com>
 Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
@@ -10,11 +10,11 @@ Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
  <marex@denx.de>, <cyrille.pitchen@atmel.com>,
  <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH v5 4/6] nand: spi: add Micron spi nand support
-Message-ID: <20170418092022.5bd26861@bbrezillon>
-In-Reply-To: <1491810713-27795-5-git-send-email-peterpandong@micron.com>
+Subject: Re: [PATCH v5 5/6] nand: spi: Add generic SPI controller support
+Message-ID: <20170418092651.308c58f9@bbrezillon>
+In-Reply-To: <1491810713-27795-6-git-send-email-peterpandong@micron.com>
 References: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
- <1491810713-27795-5-git-send-email-peterpandong@micron.com>
+ <1491810713-27795-6-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,173 +27,244 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 10 Apr 2017 15:51:51 +0800
+On Mon, 10 Apr 2017 15:51:52 +0800
 Peter Pan <peterpandong@micron.com> wrote:
 
-> This commit is to add support for Micron MT29F2G01ABAGD
-> spi nand chip.
+> This commit supports to use generic spi controller
+> as spi nand controller.
 > 
 > Signed-off-by: Peter Pan <peterpandong@micron.com>
 > ---
->  drivers/mtd/nand/spi/Makefile |   1 +
->  drivers/mtd/nand/spi/core.c   |   4 +-
->  drivers/mtd/nand/spi/micron.c | 254 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/spinand.h   |   2 +
->  4 files changed, 260 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/nand/spi/micron.c
+>  drivers/mtd/nand/spi/Kconfig                   |   2 +
+>  drivers/mtd/nand/spi/Makefile                  |   1 +
+>  drivers/mtd/nand/spi/controllers/Kconfig       |   5 +
+>  drivers/mtd/nand/spi/controllers/Makefile      |   1 +
+>  drivers/mtd/nand/spi/controllers/generic-spi.c | 159 +++++++++++++++++++++++++
+>  5 files changed, 168 insertions(+)
+>  create mode 100644 drivers/mtd/nand/spi/controllers/Kconfig
+>  create mode 100644 drivers/mtd/nand/spi/controllers/Makefile
+>  create mode 100644 drivers/mtd/nand/spi/controllers/generic-spi.c
 > 
+> diff --git a/drivers/mtd/nand/spi/Kconfig b/drivers/mtd/nand/spi/Kconfig
+> index d77c46e..6bd1c65 100644
+> --- a/drivers/mtd/nand/spi/Kconfig
+> +++ b/drivers/mtd/nand/spi/Kconfig
+> @@ -3,3 +3,5 @@ menuconfig MTD_SPI_NAND
+>  	depends on MTD_NAND
+>  	help
+>  	  This is the framework for the SPI NAND device drivers.
+> +
+> +source "drivers/mtd/nand/spi/controllers/Kconfig"
 > diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-> index a677a4d..df6c2ea 100644
+> index df6c2ea..822e48d 100644
 > --- a/drivers/mtd/nand/spi/Makefile
 > +++ b/drivers/mtd/nand/spi/Makefile
-> @@ -1 +1,2 @@
+> @@ -1,2 +1,3 @@
 >  obj-$(CONFIG_MTD_SPI_NAND) += core.o
-> +obj-$(CONFIG_MTD_SPI_NAND) += micron.o
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 52113fc..b2530fa 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -1252,7 +1252,9 @@ static int spinand_scan_bbt(struct spinand_device *chip)
->  	return nand_scan_bbt(nand);
->  }
->  
-> -static const struct spinand_manufacturer *spinand_manufacturers[] = {};
-> +static const struct spinand_manufacturer *spinand_manufacturers[] = {
-> +	&micron_spinand_manufacture
-
-			^ manufacturer
-
+>  obj-$(CONFIG_MTD_SPI_NAND) += micron.o
+> +obj-$(CONFIG_MTD_SPI_NAND) += controllers/
+> diff --git a/drivers/mtd/nand/spi/controllers/Kconfig b/drivers/mtd/nand/spi/controllers/Kconfig
+> new file mode 100644
+> index 0000000..8ab7023
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/controllers/Kconfig
+> @@ -0,0 +1,5 @@
+> +config GENERIC_SPI_NAND
+> +	tristate "SPI NAND with generic SPI bus Support"
+> +	depends on MTD_SPI_NAND && SPI
+> +	help
+> +	  This is to support SPI NAND device with generic SPI bus.
+> diff --git a/drivers/mtd/nand/spi/controllers/Makefile b/drivers/mtd/nand/spi/controllers/Makefile
+> new file mode 100644
+> index 0000000..46cbf29
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/controllers/Makefile
+> @@ -0,0 +1 @@
+> +obj-$(CONFIG_GENERIC_SPI_NAND) += generic-spi.o
+> diff --git a/drivers/mtd/nand/spi/controllers/generic-spi.c b/drivers/mtd/nand/spi/controllers/generic-spi.c
+> new file mode 100644
+> index 0000000..d354874
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/controllers/generic-spi.c
+> @@ -0,0 +1,159 @@
+> +/*
+> + * Copyright (c) 2009-2017 Micron Technology, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * as published by the Free Software Foundation; either version 2
+> + * of the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/mtd/spinand.h>
+> +
+> +struct gen_spi_spinand_controller {
+> +	struct spinand_controller ctrl;
+> +	struct spi_device *spi;
 > +};
->  
-
-[...]
-
+> +
+> +#define to_gen_spi_spinand_controller(c) \
+> +	container_of(c, struct gen_spi_spinand_controller, ctrl)
 > +
 > +/*
-> + * micron_spinand_scan_id_table - scan chip info in id table
-> + * @chip: SPI-NAND device structure
-> + * @id: point to manufacture id and device id
-> + * Description:
-> + *   If found in id table, config chip with table information.
+> + * gen_spi_spinand_exec_op - to process a command to send to the
+> + * SPI NAND by generic SPI bus
+> + * @chip: SPI NAND device structure
+> + * @op: SPI NAND operation descriptor
 > + */
-> +static bool micron_spinand_scan_id_table(struct spinand_device *chip, u8 dev_id)
+> +static int gen_spi_spinand_exec_op(struct spinand_device *chip,
+> +				   struct spinand_op *op)
 > +{
-> +	struct mtd_info *mtd = spinand_to_mtd(chip);
-> +	struct nand_device *nand = mtd_to_nand(mtd);
-> +	struct micron_spinand_info *item = NULL;
-> +	struct nand_memory_organization *memorg = &nand->memorg;
-> +	struct spinand_ecc_engine *ecc_engine = NULL;
-> +	int i = 0;
+> +	struct spi_message message;
+> +	struct spi_transfer x[3];
+> +	struct spinand_controller *scontroller = chip->controller.controller;
+> +	struct gen_spi_spinand_controller *controller;
 > +
-> +	for (; i < ARRAY_SIZE(micron_spinand_table); i++) {
-> +		item = (struct micron_spinand_info *)micron_spinand_table + i;
-> +		if (dev_id != item->dev_id)
-> +			continue;
-> +		chip->name = item->name;
-> +		memorg->eraseblocksize = item->page_size * item->pages_per_blk;
-> +		memorg->pagesize = item->page_size;
-> +		memorg->oobsize = item->oob_size;
-> +		memorg->diesize = memorg->eraseblocksize * item->blks_per_lun;
-> +		memorg->ndies = item->luns_per_chip;
-> +		if (chip->ecc.type == SPINAND_ECC_ONDIE) {
-> +			ecc_engine = devm_kzalloc(chip->dev,
-> +						  sizeof(*ecc_engine),
-> +						  GFP_KERNEL);
-> +			if (!ecc_engine) {
-> +				dev_err(chip->dev,
-> +					"fail to allocate ecc engine.\n");
-> +				return false;
-> +			}
-> +			ecc_engine->ops = item->ecc_engine_ops;
-> +			ecc_engine->strength = item->ecc_strength;
-> +			ecc_engine->steps = item->ecc_steps;
-> +			mtd_set_ooblayout(mtd, item->ooblayout_ops);
-> +			chip->ecc.engine = ecc_engine;
-> +		}
-
-I'd prefer to have the ECC initialization done in ->init().
-
-> +		chip->rw_mode = item->rw_mode;
+> +	controller = to_gen_spi_spinand_controller(scontroller);
+> +	spi_message_init(&message);
+> +	memset(x, 0, sizeof(x));
+> +	x[0].len = 1;
+> +	x[0].tx_nbits = 1;
+> +	x[0].tx_buf = &op->cmd;
+> +	spi_message_add_tail(&x[0], &message);
 > +
-> +		return true;
+> +	if (op->n_addr + op->dummy_bytes) {
+> +		x[1].len = op->n_addr + op->dummy_bytes;
+> +		x[1].tx_nbits = op->addr_nbits;
+> +		x[1].tx_buf = op->addr;
+> +		spi_message_add_tail(&x[1], &message);
 > +	}
-> +
-> +	return false;
+
+Can you add empty lines to separate each block of code (this comment
+applies to the whole contribution).
+
+> +	if (op->n_tx) {
+> +		x[2].len = op->n_tx;
+> +		x[2].tx_nbits = op->data_nbits;
+> +		x[2].tx_buf = op->tx_buf;
+> +		spi_message_add_tail(&x[2], &message);
+> +	} else if (op->n_rx) {
+> +		x[2].len = op->n_rx;
+> +		x[2].rx_nbits = op->data_nbits;
+> +		x[2].rx_buf = op->rx_buf;
+> +		spi_message_add_tail(&x[2], &message);
+> +	}
+
+Empty line here too.
+
+> +	return spi_sync(controller->spi, &message);
 > +}
 > +
-> +/*
-> + * micron_spinand_detect - initialize device related part in spinand_device
-> + * struct if it is Micron device.
-> + * @chip: SPI NAND device structure
-> + */
-> +static bool micron_spinand_detect(struct spinand_device *chip)
-> +{
-> +	u8 *id = chip->id.data;
+> +static struct spinand_controller_ops gen_spi_spinand_ops = {
+> +	.exec_op = gen_spi_spinand_exec_op,
+> +};
 > +
+> +static int gen_spi_spinand_probe(struct spi_device *spi)
+> +{
+> +	struct spinand_device *chip;
+> +	struct gen_spi_spinand_controller *controller;
+> +	struct spinand_controller *spinand_controller;
+> +	struct device *dev = &spi->dev;
+> +	u16 mode = spi->mode;
+> +	int ret;
+> +
+> +	chip = spinand_alloc(dev);
+> +	if (IS_ERR(chip)) {
+> +		ret = PTR_ERR(chip);
+> +		goto err1;
+> +	}
+
+Ditto.
+
+> +	controller = devm_kzalloc(dev, sizeof(*controller), GFP_KERNEL);
+> +	if (!controller) {
+> +		ret = -ENOMEM;
+> +		goto err2;
+> +	}
+
+Ditto (I think you got it now, so I'll stop here ;)).
+
+> +	controller->spi = spi;
+> +	spinand_controller = &controller->ctrl;
+> +	spinand_controller->ops = &gen_spi_spinand_ops;
+> +	spinand_controller->caps = SPINAND_CAP_RD_X1 | SPINAND_CAP_WR_X1;
+> +
+> +	if ((mode & SPI_RX_QUAD) && (mode & SPI_TX_QUAD))
+> +		spinand_controller->caps |= SPINAND_CAP_RD_QUAD;
+> +	if ((mode & SPI_RX_DUAL) && (mode & SPI_TX_DUAL))
+> +		spinand_controller->caps |= SPINAND_CAP_RD_DUAL;
+> +	if (mode & SPI_RX_QUAD)
+> +		spinand_controller->caps |= SPINAND_CAP_RD_X4;
+> +	if (mode & SPI_RX_DUAL)
+> +		spinand_controller->caps |= SPINAND_CAP_RD_X2;
+> +	if (mode & SPI_TX_QUAD)
+> +		spinand_controller->caps |= SPINAND_CAP_WR_QUAD |
+> +					    SPINAND_CAP_WR_X4;
+> +	if (mode & SPI_TX_DUAL)
+> +		spinand_controller->caps |= SPINAND_CAP_WR_DUAL |
+> +					    SPINAND_CAP_WR_X2;
+> +	chip->controller.controller = spinand_controller;
 > +	/*
-> +	 * Micron SPI NAND read ID need a dummy byte,
-> +	 * so the first byte in raw_id is dummy.
+> +	 * generic spi controller doesn't have ecc capability,
+> +	 * so use on-die ecc.
 > +	 */
-> +	if (id[1] != SPINAND_MFR_MICRON)
-> +		return false;
+> +	chip->ecc.type = SPINAND_ECC_ONDIE;
+
+Hm, can't we use the DT property to select that? It seems a bit weird
+to have on-die ECC enabled by default.
+
+> +	spi_set_drvdata(spi, chip);
 > +
-> +	return micron_spinand_scan_id_table(chip, id[2]);
+> +	ret = spinand_register(chip);
+> +	if (ret)
+> +		goto err3;
+> +
+> +	return 0;
+> +
+> +err3:
+> +	devm_kfree(dev, controller);
+> +err2:
+
+Already said that earlier, try to find better names for your labels.
+Here, err_free_spinand. But anyway, since everything is allocated with
+devm_, I think you can just skip these steps.
+
+> +	spinand_free(chip);
+> +err1:
+> +	return ret;
 > +}
 > +
-> +/*
-> + * micron_spinand_cleanup -  free manufacutre related resources
-> + * @chip: SPI NAND device structure
-> + */
-> +static void micron_spinand_cleanup(struct spinand_device *chip)
+> +static int gen_spi_spinand_remove(struct spi_device *spi)
 > +{
-> +	if (chip->ecc.type == SPINAND_ECC_ONDIE)
-> +		devm_kfree(chip->dev, chip->ecc.engine);
-
-Not needed.
-
+> +	struct spinand_device *chip = spi_get_drvdata(spi);
+> +	struct spinand_controller *scontroller = chip->controller.controller;
+> +	struct gen_spi_spinand_controller *controller;
+> +
+> +	spinand_unregister(chip);
+> +	controller = to_gen_spi_spinand_controller(scontroller);
+> +	devm_kfree(&spi->dev, controller);
+> +	spinand_free(chip);
+> +
+> +	return 0;
 > +}
 > +
-> +/*
-> + * micron_spinand_prepare_op - Fix address for cache operation.
-> + * @chip: SPI NAND device structure
-> + * @op: pointer to spinand_op struct
-> + * @page: page address
-> + * @column: column address
-> + */
-> +static void micron_spinand_prepare_op(struct spinand_device *chip,
-> +				      struct spinand_op *op, u32 page,
-> +				      u32 column)
-> +{
-> +	op->addr[0] |= (u8)((nand_page_to_eraseblock(&chip->base, page)
-> +			     & 0x1) << 4);
-> +	op->n_addr += micron_spinand_get_dummy(chip, op);
-> +}
-> +
-> +static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
-> +	.detect = micron_spinand_detect,
-> +	.cleanup = micron_spinand_cleanup,
-> +	.prepare_op = micron_spinand_prepare_op,
+> +static struct spi_driver gen_spi_spinand_driver = {
+> +	.driver = {
+> +		.name	= "generic_spinand",
+> +		.owner	= THIS_MODULE,
+> +	},
+> +	.probe	= gen_spi_spinand_probe,
+> +	.remove	= gen_spi_spinand_remove,
 > +};
+> +module_spi_driver(gen_spi_spinand_driver);
 > +
-> +const struct spinand_manufacturer micron_spinand_manufacture = {
-> +	.id = SPINAND_MFR_MICRON,
-> +	.name = "Micron",
-> +	.ops = &micron_spinand_manuf_ops,
-> +};
-> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index 5c8bb70..3c6dd48 100644
-> --- a/include/linux/mtd/spinand.h
-> +++ b/include/linux/mtd/spinand.h
-> @@ -111,6 +111,8 @@ struct spinand_manufacturer {
->  	const struct spinand_manufacturer_ops *ops;
->  };
->  
-> +extern const struct spinand_manufacturer micron_spinand_manufacture;
-
-Same typo here:
-s/micron_spinand_manufacture/micron_spinand_manufacturer/
-
-> +
->  struct spinand_ecc_engine_ops {
->  	void (*get_ecc_status)(struct spinand_device *chip,
->  			       unsigned int status, unsigned int *corrected,
+> +MODULE_DESCRIPTION("Generic SPI controller to support SPI NAND");
+> +MODULE_AUTHOR("Peter Pan<peterpandong@micron.com>");
+> +MODULE_LICENSE("GPL v2");
