@@ -1,24 +1,24 @@
 Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0YRx-0005dM-QF
+ id 1d0YRx-0005dF-QG
  for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 19:06:08 +0000
-Received: by mail-wr0-x244.google.com with SMTP id o21so277552wrb.3
- for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2017 12:05:47 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] mtd: dataflash: Make use of "extened device
- information"
+Received: by mail-wr0-x244.google.com with SMTP id l28so290404wre.0
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2017 12:05:45 -0700 (PDT)
+Subject: Re: [PATCH v2 2/3] mtd: dataflash: Improve coding style in
+ jedec_probe()
 To: Andrey Smirnov <andrew.smirnov@gmail.com>, linux-mtd@lists.infradead.org
 References: <20170418142127.23301-1-andrew.smirnov@gmail.com>
- <20170418142127.23301-3-andrew.smirnov@gmail.com>
+ <20170418142127.23301-2-andrew.smirnov@gmail.com>
 Cc: cphealy@gmail.com, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <47e7cefa-b4b8-4557-0e95-f43c7431c4de@gmail.com>
-Date: Tue, 18 Apr 2017 20:31:27 +0200
+Message-ID: <32615ada-eddc-3911-17bf-32f6897c77e1@gmail.com>
+Date: Tue, 18 Apr 2017 20:25:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170418142127.23301-3-andrew.smirnov@gmail.com>
+In-Reply-To: <20170418142127.23301-2-andrew.smirnov@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,11 +31,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 04/18/2017 04:21 PM, Andrey Smirnov wrote:
-> In anticipation of supporting chips that need it, extend the size of
-> struct flash_info's 'jedec_id' field to make room 2 byte of extended
-> device information as well as add code to fetch this data during
-> jedec_probe().
+> As per request from Marek Vasut, change the following:
+
+Does that really have to be in the commit message ? ^_^'
+
+>    - Replace indentation between type and name of local variable from
+>      tabs to spaces
 > 
+>    - Replace magic number 0x1F with CFI_MFR_ATMEL macro
+> 
+>    - Replace variable 'tmp' with 'ret' and 'i' where appropriate
+> 
+>    - Reformat multi-line comments and add newlines where appropriate
+> 
+> No functional change intended.
+
+Appreciated, thanks!
+
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+
 > Cc: cphealy@gmail.com
 > Cc: David Woodhouse <dwmw2@infradead.org>
 > Cc: Brian Norris <computersforpeace@gmail.com>
@@ -46,183 +60,76 @@ On 04/18/2017 04:21 PM, Andrey Smirnov wrote:
 > Cc: linux-kernel@vger.kernel.org
 > Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
 > ---
-> 
-> Changes since [v1]:
-> 
-> 	- Formatting
-> 
-> [v1] http://lkml.kernel.org/r/20170411161722.11164-1-andrew.smirnov@gmail.com
-> 
-> 
->  drivers/mtd/devices/mtd_dataflash.c | 113 +++++++++++++++++++++---------------
->  1 file changed, 65 insertions(+), 48 deletions(-)
+>  drivers/mtd/devices/mtd_dataflash.c | 31 +++++++++++++++++--------------
+>  1 file changed, 17 insertions(+), 14 deletions(-)
 > 
 > diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> index 5b7a8c3..5d694a4 100644
+> index a566231..5b7a8c3 100644
 > --- a/drivers/mtd/devices/mtd_dataflash.c
 > +++ b/drivers/mtd/devices/mtd_dataflash.c
-> @@ -690,7 +690,7 @@ struct flash_info {
->  	/* JEDEC id has a high byte of zero plus three data bytes:
->  	 * the manufacturer id, then a two byte device id.
->  	 */
-> -	u32		jedec_id;
-> +	u64		jedec_id;
+> @@ -82,6 +82,7 @@
+>  #define OP_WRITE_SECURITY_REVC	0x9A
+>  #define OP_WRITE_SECURITY	0x9B	/* revision D */
 >  
->  	/* The size listed here is what works with OP_ERASE_PAGE. */
->  	unsigned	nr_pages;
-> @@ -713,63 +713,34 @@ static struct flash_info dataflash_data[] = {
->  	 * These newer chips also support 128-byte security registers (with
->  	 * 64 bytes one-time-programmable) and software write-protection.
->  	 */
-> -	{ "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS},
-> -	{ "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB011B",  0x1f22000000, 512, 264, 9, SUP_POW2PS},
-> +	{ "at45db011d",  0x1f22000000, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
+> +#define CFI_MFR_ATMEL		0x1F
 >  
-> -	{ "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
-> -	{ "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB021B",  0x1f23000000, 1024, 264, 9, SUP_POW2PS},
-> +	{ "at45db021d",  0x1f23000000, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
+>  struct dataflash {
+>  	u8			command[4];
+> @@ -738,14 +739,15 @@ static struct flash_info dataflash_data[] = {
 >  
-> -	{ "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
-> -	{ "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB041x",  0x1f24000000, 2048, 264, 9, SUP_POW2PS},
-> +	{ "at45db041d",  0x1f24000000, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
-> -	{ "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB081B",  0x1f25000000, 4096, 264, 9, SUP_POW2PS},
-> +	{ "at45db081d",  0x1f25000000, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
-> -	{ "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB161x",  0x1f26000000, 4096, 528, 10, SUP_POW2PS},
-> +	{ "at45db161d",  0x1f26000000, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB321x",  0x1f2700, 8192, 528, 10, 0},		/* rev C */
-> +	{ "AT45DB321x",  0x1f27000000, 8192, 528, 10, 0},	/* rev C */
->  
-> -	{ "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
-> -	{ "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB321x",  0x1f27010000, 8192, 528, 10, SUP_POW2PS},
-> +	{ "at45db321d",  0x1f27010000, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
-> -	{ "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB642x",  0x1f28000000, 8192, 1056, 11, SUP_POW2PS},
-> +	{ "at45db642d",  0x1f28000000, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->  };
->  
-> -static struct flash_info *jedec_probe(struct spi_device *spi)
-> +static struct flash_info *jedec_lookup(struct spi_device *spi, u64 jedec)
+>  static struct flash_info *jedec_probe(struct spi_device *spi)
 >  {
-> -	int ret, i;
-> -	u8 code = OP_READ_ID;
-> -	u8 id[3];
-> -	u32 jedec;
-> +	int status, i;
->  	struct flash_info *info;
-> -	int status;
-> -
-> -	/*
-> -	 * JEDEC also defines an optional "extended device information"
-> -	 * string for after vendor-specific data, after the three bytes
-> -	 * we use here.  Supporting some chips might require using it.
-> -	 *
-> -	 * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
-> -	 * That's not an error; only rev C and newer chips handle it, and
-> -	 * only Atmel sells these chips.
-> -	 */
-> -	ret = spi_write_then_read(spi, &code, 1, id, 3);
-> -	if (ret < 0) {
-> -		pr_debug("%s: error %d reading JEDEC ID\n",
-> -			dev_name(&spi->dev), ret);
-> -		return ERR_PTR(ret);
-> -	}
-> -
-> -	if (id[0] != CFI_MFR_ATMEL)
-> -		return NULL;
-> -
-> -	jedec = id[0];
-> -	jedec = jedec << 8;
-> -	jedec |= id[1];
-> -	jedec = jedec << 8;
-> -	jedec |= id[2];
-
-Hm, the diff again screwed this up, oh well ...
-
->  	for (i = 0, info = dataflash_data;
->  			i < ARRAY_SIZE(dataflash_data);
-> @@ -799,12 +770,58 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
->  		}
->  	}
->  
-> +	return NULL;
-> +}
-> +
-> +static struct flash_info *jedec_probe(struct spi_device *spi)
-> +{
-> +	int ret;
+> -	int			tmp;
+> -	u8			code = OP_READ_ID;
+> -	u8			id[3];
+> -	u32			jedec;
+> -	struct flash_info	*info;
+> +	int ret, i;
 > +	u8 code = OP_READ_ID;
-> +	u8 id[8] = {0};
-> +	const unsigned int id_size = 5;
-> +	const unsigned int first_byte = sizeof(id) - id_size;
-> +	const u64 eid_mask = GENMASK_ULL(63, 16);
-> +	u64 jedec;
+> +	u8 id[3];
+> +	u32 jedec;
 > +	struct flash_info *info;
-> +
+>  	int status;
+>  
+> -	/* JEDEC also defines an optional "extended device information"
 > +	/*
 > +	 * JEDEC also defines an optional "extended device information"
-> +	 * string for after vendor-specific data, after the three bytes
-> +	 * we use here.  Supporting some chips might require using it.
-> +	 *
-> +	 * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
-> +	 * That's not an error; only rev C and newer chips handle it, and
-> +	 * only Atmel sells these chips.
-> +	 */
-> +	ret = spi_write_then_read(spi, &code, 1, &id[first_byte], id_size);
-> +	if (ret < 0) {
-> +		pr_debug("%s: error %d reading JEDEC ID\n",
-> +			dev_name(&spi->dev), ret);
-
-I think you can turn this into:
-
-dev_err(&spi->dev, "error %d reading JEDEC ID\n", ret);
-
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	if (id[first_byte] != CFI_MFR_ATMEL)
-> +		return NULL;
-> +
-> +	jedec = be64_to_cpup((__be64 *)id);
-> +
-> +	info = jedec_lookup(spi, jedec);
-> +	if (info)
-> +		return info;
-> +
-> +	/* Clear extended id bits and try to find a match again */
-> +	jedec &= eid_mask;
-
-Wouldn't that be jedec &= ~eid_mask; (with a tilde) if you want to clear
-them ?
-
-Except for those two nits, looks fine, thanks!
-
-> +	info = jedec_lookup(spi, jedec);
-> +	if (info)
-> +		return info;
-> +
->  	/*
->  	 * Treat other chips as errors ... we won't know the right page
->  	 * size (it might be binary) even when we can tell which density
->  	 * class is involved (legacy chip id scheme).
+>  	 * string for after vendor-specific data, after the three bytes
+>  	 * we use here.  Supporting some chips might require using it.
+>  	 *
+> @@ -753,13 +755,14 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
+>  	 * That's not an error; only rev C and newer chips handle it, and
+>  	 * only Atmel sells these chips.
 >  	 */
-> -	dev_warn(&spi->dev, "JEDEC id %06x not handled\n", jedec);
-> +	dev_warn(&spi->dev, "JEDEC id %010llx not handled\n", jedec);
->  	return ERR_PTR(-ENODEV);
->  }
+> -	tmp = spi_write_then_read(spi, &code, 1, id, 3);
+> -	if (tmp < 0) {
+> +	ret = spi_write_then_read(spi, &code, 1, id, 3);
+> +	if (ret < 0) {
+>  		pr_debug("%s: error %d reading JEDEC ID\n",
+> -			dev_name(&spi->dev), tmp);
+> -		return ERR_PTR(tmp);
+> +			dev_name(&spi->dev), ret);
+> +		return ERR_PTR(ret);
+>  	}
+> -	if (id[0] != 0x1f)
+> +
+> +	if (id[0] != CFI_MFR_ATMEL)
+>  		return NULL;
 >  
+>  	jedec = id[0];
+> @@ -768,9 +771,9 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
+>  	jedec = jedec << 8;
+>  	jedec |= id[2];
+>  
+> -	for (tmp = 0, info = dataflash_data;
+> -			tmp < ARRAY_SIZE(dataflash_data);
+> -			tmp++, info++) {
+> +	for (i = 0, info = dataflash_data;
+> +			i < ARRAY_SIZE(dataflash_data);
+> +			i++, info++) {
+>  		if (info->jedec_id == jedec) {
+>  			pr_debug("%s: OTP, sector protect%s\n",
+>  				dev_name(&spi->dev),
 > 
 
 
