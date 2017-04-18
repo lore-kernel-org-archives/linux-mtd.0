@@ -1,24 +1,23 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0EDF-0006gk-9p
- for linux-mtd@lists.infradead.org; Mon, 17 Apr 2017 21:29:35 +0000
-Received: by mail-wr0-x244.google.com with SMTP id l44so22083511wrc.2
- for <linux-mtd@lists.infradead.org>; Mon, 17 Apr 2017 14:29:12 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0NRP-0006YG-Es
+ for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 07:20:49 +0000
+Date: Tue, 18 Apr 2017 09:20:22 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpandong@micron.com>
+Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
+ <arnaud.mouiche@gmail.com>, <thomas.petazzoni@free-electrons.com>,
+ <marex@denx.de>, <cyrille.pitchen@atmel.com>,
+ <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
+ <linshunquan1@hisilicon.com>
+Subject: Re: [PATCH v5 4/6] nand: spi: add Micron spi nand support
+Message-ID: <20170418092022.5bd26861@bbrezillon>
+In-Reply-To: <1491810713-27795-5-git-send-email-peterpandong@micron.com>
+References: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
+ <1491810713-27795-5-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
-In-Reply-To: <20170417192942.32219-14-hauke@hauke-m.de>
-References: <20170417192942.32219-1-hauke@hauke-m.de>
- <20170417192942.32219-14-hauke@hauke-m.de>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Mon, 17 Apr 2017 23:28:50 +0200
-Message-ID: <CAFBinCDwbrBBov6UV00O2tBwMTimTW=LY+n1AD92Yz-ugthavA@mail.gmail.com>
-Subject: Re: [PATCH 13/13] MIPS: lantiq: Remove the
- arch/mips/lantiq/xway/reset.c implementation
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- devicetree@vger.kernel.org, john@phrozen.org, linux-spi@vger.kernel.org,
- hauke.mehrtens@intel.com
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,212 +27,173 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 17, 2017 at 9:29 PM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
-> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
->
-> The RCU register are now access through separates drivers. remove the
-> last peaces of the old implementation.
-s/peaces/pieces/
+On Mon, 10 Apr 2017 15:51:51 +0800
+Peter Pan <peterpandong@micron.com> wrote:
 
-you should probably mention that arch/mips/kernel/reset.c handles the
-ltq_machine_halt and ltq_machine_power_off code, while
-ltq_machine_restart (setting some reset bits) can be replaced with
-"syscon-reboot"
-
-apart from that: great to see that this gets some love! :)
-
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> This commit is to add support for Micron MT29F2G01ABAGD
+> spi nand chip.
+> 
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
 > ---
->  arch/mips/lantiq/Kconfig       |   1 +
->  arch/mips/lantiq/xway/Makefile |   2 +-
->  arch/mips/lantiq/xway/reset.c  | 157 -----------------------------------------
->  3 files changed, 2 insertions(+), 158 deletions(-)
->  delete mode 100644 arch/mips/lantiq/xway/reset.c
->
-> diff --git a/arch/mips/lantiq/Kconfig b/arch/mips/lantiq/Kconfig
-> index f5db4a426568..35bc69b78268 100644
-> --- a/arch/mips/lantiq/Kconfig
-> +++ b/arch/mips/lantiq/Kconfig
-> @@ -18,6 +18,7 @@ config SOC_XWAY
->         select SOC_TYPE_XWAY
->         select HW_HAS_PCI
->         select MFD_SYSCON
-> +       select MFD_CORE
->
->  config SOC_FALCON
->         bool "FALCON"
-> diff --git a/arch/mips/lantiq/xway/Makefile b/arch/mips/lantiq/xway/Makefile
-> index 6daf3149e7ca..fbb0747c70b7 100644
-> --- a/arch/mips/lantiq/xway/Makefile
-> +++ b/arch/mips/lantiq/xway/Makefile
-> @@ -1,3 +1,3 @@
-> -obj-y := prom.o sysctrl.o clk.o reset.o dma.o gptu.o dcdc.o
-> +obj-y := prom.o sysctrl.o clk.o dma.o gptu.o dcdc.o
->
->  obj-y += vmmc.o
-> diff --git a/arch/mips/lantiq/xway/reset.c b/arch/mips/lantiq/xway/reset.c
-> deleted file mode 100644
-> index 5aec1f54275b..000000000000
-> --- a/arch/mips/lantiq/xway/reset.c
-> +++ /dev/null
-> @@ -1,157 +0,0 @@
-> -/*
-> - *  This program is free software; you can redistribute it and/or modify it
-> - *  under the terms of the GNU General Public License version 2 as published
-> - *  by the Free Software Foundation.
-> - *
-> - *  Copyright (C) 2010 John Crispin <john@phrozen.org>
-> - *  Copyright (C) 2013-2015 Lantiq Beteiligungs-GmbH & Co.KG
-> - */
-> -
-> -#include <linux/init.h>
-> -#include <linux/io.h>
-> -#include <linux/ioport.h>
-> -#include <linux/pm.h>
-> -#include <linux/export.h>
-> -#include <linux/delay.h>
-> -#include <linux/of_address.h>
-> -#include <linux/of_platform.h>
-> -#include <linux/reset-controller.h>
-> -
-> -#include <asm/reboot.h>
-> -
-> -#include <lantiq_soc.h>
-> -
-> -#include "../prom.h"
-> -
-> -/* reset request register */
-> -#define RCU_RST_REQ            0x0010
-> -/* reset status register */
-> -#define RCU_RST_STAT           0x0014
-> -
-> -/* xbar BE flag */
-> -#define RCU_AHB_ENDIAN          0x004C
-> -#define RCU_VR9_BE_AHB1S        0x00000008
-> -
-> -/* reboot bit */
-> -#define RCU_RD_GPHY0_XRX200    BIT(31)
-> -#define RCU_RD_SRST            BIT(30)
-> -#define RCU_RD_GPHY1_XRX200    BIT(29)
-> -
-> -/* reset cause */
-> -#define RCU_STAT_SHIFT         26
-> -/* boot selection */
-> -#define RCU_BOOT_SEL(x)                ((x >> 18) & 0x7)
-> -#define RCU_BOOT_SEL_XRX200(x) (((x >> 17) & 0xf) | ((x >> 8) & 0x10))
-> -
-> -/* dwc2 USB configuration registers */
-> -#define RCU_USB1CFG            0x0018
-> -#define RCU_USB2CFG            0x0034
-> -
-> -/* USB DMA endianness bits */
-> -#define RCU_USBCFG_HDSEL_BIT   BIT(11)
-> -#define RCU_USBCFG_HOST_END_BIT        BIT(10)
-> -#define RCU_USBCFG_SLV_END_BIT BIT(9)
-> -
-> -/* USB reset bits */
-> -#define RCU_USBRESET           0x0010
-> -
-> -#define USBRESET_BIT           BIT(4)
-> -
-> -#define RCU_USBRESET2          0x0048
-> -
-> -#define USB1RESET_BIT          BIT(4)
-> -#define USB2RESET_BIT          BIT(5)
-> -
-> -#define RCU_CFG1A              0x0038
-> -#define RCU_CFG1B              0x003C
-> -
-> -/* USB PMU devices */
-> -#define PMU_AHBM               BIT(15)
-> -#define PMU_USB0               BIT(6)
-> -#define PMU_USB1               BIT(27)
-> -
-> -/* USB PHY PMU devices */
-> -#define PMU_USB0_P             BIT(0)
-> -#define PMU_USB1_P             BIT(26)
-> -
-> -/* remapped base addr of the reset control unit */
-> -static void __iomem *ltq_rcu_membase;
-> -static struct device_node *ltq_rcu_np;
-> -static DEFINE_SPINLOCK(ltq_rcu_lock);
-> -
-> -static void ltq_rcu_w32(uint32_t val, uint32_t reg_off)
-> -{
-> -       ltq_w32(val, ltq_rcu_membase + reg_off);
-> -}
-> -
-> -static uint32_t ltq_rcu_r32(uint32_t reg_off)
-> -{
-> -       return ltq_r32(ltq_rcu_membase + reg_off);
-> -}
-> -
-> -static void ltq_rcu_w32_mask(uint32_t clr, uint32_t set, uint32_t reg_off)
-> -{
-> -       unsigned long flags;
-> -
-> -       spin_lock_irqsave(&ltq_rcu_lock, flags);
-> -       ltq_rcu_w32((ltq_rcu_r32(reg_off) & ~(clr)) | (set), reg_off);
-> -       spin_unlock_irqrestore(&ltq_rcu_lock, flags);
-> -}
-> -
-> -static void ltq_machine_restart(char *command)
-> -{
-> -       u32 val = ltq_rcu_r32(RCU_RST_REQ);
-> -
-> -       if (of_device_is_compatible(ltq_rcu_np, "lantiq,rcu-xrx200"))
-> -               val |= RCU_RD_GPHY1_XRX200 | RCU_RD_GPHY0_XRX200;
-> -
-> -       val |= RCU_RD_SRST;
-> -
-> -       local_irq_disable();
-> -       ltq_rcu_w32(val, RCU_RST_REQ);
-> -       unreachable();
-> -}
-> -
-> -static void ltq_machine_halt(void)
-> -{
-> -       local_irq_disable();
-> -       unreachable();
-> -}
-> -
-> -static void ltq_machine_power_off(void)
-> -{
-> -       local_irq_disable();
-> -       unreachable();
-> -}
-> -
-> -static int __init mips_reboot_setup(void)
-> -{
-> -       struct resource res;
-> -
-> -       ltq_rcu_np = of_find_compatible_node(NULL, NULL, "lantiq,rcu-xway");
-> -       if (!ltq_rcu_np)
-> -               ltq_rcu_np = of_find_compatible_node(NULL, NULL,
-> -                                                       "lantiq,rcu-xrx200");
-> -
-> -       /* check if all the reset register range is available */
-> -       if (!ltq_rcu_np)
-> -               panic("Failed to load reset resources from devicetree");
-> -
-> -       if (of_address_to_resource(ltq_rcu_np, 0, &res))
-> -               panic("Failed to get rcu memory range");
-> -
-> -       if (!request_mem_region(res.start, resource_size(&res), res.name))
-> -               pr_err("Failed to request rcu memory");
-> -
-> -       ltq_rcu_membase = ioremap_nocache(res.start, resource_size(&res));
-> -       if (!ltq_rcu_membase)
-> -               panic("Failed to remap core memory");
-> -
-> -       _machine_restart = ltq_machine_restart;
-> -       _machine_halt = ltq_machine_halt;
-> -       pm_power_off = ltq_machine_power_off;
-> -
-> -       return 0;
-> -}
-> -
-> -arch_initcall(mips_reboot_setup);
-> --
-> 2.11.0
->
+>  drivers/mtd/nand/spi/Makefile |   1 +
+>  drivers/mtd/nand/spi/core.c   |   4 +-
+>  drivers/mtd/nand/spi/micron.c | 254 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spinand.h   |   2 +
+>  4 files changed, 260 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/mtd/nand/spi/micron.c
+> 
+> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+> index a677a4d..df6c2ea 100644
+> --- a/drivers/mtd/nand/spi/Makefile
+> +++ b/drivers/mtd/nand/spi/Makefile
+> @@ -1 +1,2 @@
+>  obj-$(CONFIG_MTD_SPI_NAND) += core.o
+> +obj-$(CONFIG_MTD_SPI_NAND) += micron.o
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index 52113fc..b2530fa 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -1252,7 +1252,9 @@ static int spinand_scan_bbt(struct spinand_device *chip)
+>  	return nand_scan_bbt(nand);
+>  }
+>  
+> -static const struct spinand_manufacturer *spinand_manufacturers[] = {};
+> +static const struct spinand_manufacturer *spinand_manufacturers[] = {
+> +	&micron_spinand_manufacture
+
+			^ manufacturer
+
+> +};
+>  
+
+[...]
+
+> +
+> +/*
+> + * micron_spinand_scan_id_table - scan chip info in id table
+> + * @chip: SPI-NAND device structure
+> + * @id: point to manufacture id and device id
+> + * Description:
+> + *   If found in id table, config chip with table information.
+> + */
+> +static bool micron_spinand_scan_id_table(struct spinand_device *chip, u8 dev_id)
+> +{
+> +	struct mtd_info *mtd = spinand_to_mtd(chip);
+> +	struct nand_device *nand = mtd_to_nand(mtd);
+> +	struct micron_spinand_info *item = NULL;
+> +	struct nand_memory_organization *memorg = &nand->memorg;
+> +	struct spinand_ecc_engine *ecc_engine = NULL;
+> +	int i = 0;
+> +
+> +	for (; i < ARRAY_SIZE(micron_spinand_table); i++) {
+> +		item = (struct micron_spinand_info *)micron_spinand_table + i;
+> +		if (dev_id != item->dev_id)
+> +			continue;
+> +		chip->name = item->name;
+> +		memorg->eraseblocksize = item->page_size * item->pages_per_blk;
+> +		memorg->pagesize = item->page_size;
+> +		memorg->oobsize = item->oob_size;
+> +		memorg->diesize = memorg->eraseblocksize * item->blks_per_lun;
+> +		memorg->ndies = item->luns_per_chip;
+> +		if (chip->ecc.type == SPINAND_ECC_ONDIE) {
+> +			ecc_engine = devm_kzalloc(chip->dev,
+> +						  sizeof(*ecc_engine),
+> +						  GFP_KERNEL);
+> +			if (!ecc_engine) {
+> +				dev_err(chip->dev,
+> +					"fail to allocate ecc engine.\n");
+> +				return false;
+> +			}
+> +			ecc_engine->ops = item->ecc_engine_ops;
+> +			ecc_engine->strength = item->ecc_strength;
+> +			ecc_engine->steps = item->ecc_steps;
+> +			mtd_set_ooblayout(mtd, item->ooblayout_ops);
+> +			chip->ecc.engine = ecc_engine;
+> +		}
+
+I'd prefer to have the ECC initialization done in ->init().
+
+> +		chip->rw_mode = item->rw_mode;
+> +
+> +		return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +/*
+> + * micron_spinand_detect - initialize device related part in spinand_device
+> + * struct if it is Micron device.
+> + * @chip: SPI NAND device structure
+> + */
+> +static bool micron_spinand_detect(struct spinand_device *chip)
+> +{
+> +	u8 *id = chip->id.data;
+> +
+> +	/*
+> +	 * Micron SPI NAND read ID need a dummy byte,
+> +	 * so the first byte in raw_id is dummy.
+> +	 */
+> +	if (id[1] != SPINAND_MFR_MICRON)
+> +		return false;
+> +
+> +	return micron_spinand_scan_id_table(chip, id[2]);
+> +}
+> +
+> +/*
+> + * micron_spinand_cleanup -  free manufacutre related resources
+> + * @chip: SPI NAND device structure
+> + */
+> +static void micron_spinand_cleanup(struct spinand_device *chip)
+> +{
+> +	if (chip->ecc.type == SPINAND_ECC_ONDIE)
+> +		devm_kfree(chip->dev, chip->ecc.engine);
+
+Not needed.
+
+> +}
+> +
+> +/*
+> + * micron_spinand_prepare_op - Fix address for cache operation.
+> + * @chip: SPI NAND device structure
+> + * @op: pointer to spinand_op struct
+> + * @page: page address
+> + * @column: column address
+> + */
+> +static void micron_spinand_prepare_op(struct spinand_device *chip,
+> +				      struct spinand_op *op, u32 page,
+> +				      u32 column)
+> +{
+> +	op->addr[0] |= (u8)((nand_page_to_eraseblock(&chip->base, page)
+> +			     & 0x1) << 4);
+> +	op->n_addr += micron_spinand_get_dummy(chip, op);
+> +}
+> +
+> +static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
+> +	.detect = micron_spinand_detect,
+> +	.cleanup = micron_spinand_cleanup,
+> +	.prepare_op = micron_spinand_prepare_op,
+> +};
+> +
+> +const struct spinand_manufacturer micron_spinand_manufacture = {
+> +	.id = SPINAND_MFR_MICRON,
+> +	.name = "Micron",
+> +	.ops = &micron_spinand_manuf_ops,
+> +};
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index 5c8bb70..3c6dd48 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -111,6 +111,8 @@ struct spinand_manufacturer {
+>  	const struct spinand_manufacturer_ops *ops;
+>  };
+>  
+> +extern const struct spinand_manufacturer micron_spinand_manufacture;
+
+Same typo here:
+s/micron_spinand_manufacture/micron_spinand_manufacturer/
+
+> +
+>  struct spinand_ecc_engine_ops {
+>  	void (*get_ecc_status)(struct spinand_device *chip,
+>  			       unsigned int status, unsigned int *corrected,
