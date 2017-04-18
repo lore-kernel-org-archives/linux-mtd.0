@@ -1,23 +1,24 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0c8J-0004nK-6T
- for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 23:02:07 +0000
-Received: by mail-pf0-x243.google.com with SMTP id i5so995573pfc.3
- for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2017 16:01:39 -0700 (PDT)
-Date: Tue, 18 Apr 2017 16:01:36 -0700
-From: Eric Biggers <ebiggers3@gmail.com>
-To: Gwendal Grignou <gwendal@chromium.org>
-Cc: tytso@mit.edu, ebiggers@google.com, linux-ext4@vger.kernel.org,
- linux-fscrypt@vger.kernel.org, kinaba@chromium.org,
- hashimoto@chromium.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] fscrypt: use 32 bytes of encrypted filename
-Message-ID: <20170418230136.GA96152@gmail.com>
-References: <20170418210642.6039-1-gwendal@chromium.org>
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0cDq-0005AM-I3
+ for linux-mtd@lists.infradead.org; Tue, 18 Apr 2017 23:07:57 +0000
+Received: by mail-wm0-x244.google.com with SMTP id q125so2002252wmd.3
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2017 16:07:27 -0700 (PDT)
+Subject: Re: [PATCH v7 3/4] mtd: spi-nor: introduce Double Transfer Rate (DTR)
+ SPI protocols
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+References: <cover.1492554665.git.cyrille.pitchen@atmel.com>
+ <be585167c61f5c057041b2079d477e0106e9be64.1492554665.git.cyrille.pitchen@atmel.com>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <73d701a3-cd56-70b2-cf15-ec16e6734481@gmail.com>
+Date: Wed, 19 Apr 2017 01:05:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170418210642.6039-1-gwendal@chromium.org>
+In-Reply-To: <be585167c61f5c057041b2079d477e0106e9be64.1492554665.git.cyrille.pitchen@atmel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,89 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Cc linux-f2fs-devel@lists.sourceforge.net
-+Cc linux-mtd@lists.infradead.org (for ubifs)
-
-Hi Gwendal,
-
-On Tue, Apr 18, 2017 at 02:06:42PM -0700, Gwendal Grignou wrote:
-> If we use only 16 bytes, due to how CBC works, if the names have the
-> same beginning, their last ciphertext block (16 bytes) may be identical.
+On 04/19/2017 12:51 AM, Cyrille Pitchen wrote:
+> This patch introduces support to Double Transfer Rate (DTR) SPI protocols.
+> DTR is used only for Fast Read operations.
 > 
-> It happens when two file names share the first 16k bytes and both have
-> length withn 16 * n + 13 and 16 * n + 16.
+> According to manufacturer datasheets, whatever the number of I/O lines
+> used during instruction (x) and address/mode/dummy (y) clock cycles, DTR
+> is used only during data (z) clock cycles of SPI x-y-z protocols.
 > 
-> Instead use 32 bytes to build the filenames from encrypted data when
-> directory is scrambled.
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
-Just some background for people who may be unfamiliar with what's going on here
-(and it may be useful to include some of this in the patch description):
+[...]
 
-When accessing files without access to the key, userspace needs to operate on a
-filename derived from the ciphertext filename, which contains arbitrary bytes. 
+> @@ -282,19 +305,22 @@ struct spi_nor_hwcaps {
+>   * As a matter of performances, it is relevant to use Quad SPI protocols first,
+>   * then Dual SPI protocols before Fast Read and lastly (Slow) Read.
+>   */
+> -#define SNOR_HWCAPS_READ_MASK		GENMASK(7, 0)
+> +#define SNOR_HWCAPS_READ_MASK		GENMASK(10, 0)
+>  #define SNOR_HWCAPS_READ		BIT(0)
+>  #define SNOR_HWCAPS_READ_FAST		BIT(1)
+> -
+> -#define SNOR_HWCAPS_READ_DUAL		GENMASK(4, 2)
+> -#define SNOR_HWCAPS_READ_1_1_2		BIT(2)
+> -#define SNOR_HWCAPS_READ_1_2_2		BIT(3)
+> -#define SNOR_HWCAPS_READ_2_2_2		BIT(4)
+> -
+> -#define SNOR_HWCAPS_READ_QUAD		GENMASK(7, 5)
+> -#define SNOR_HWCAPS_READ_1_1_4		BIT(5)
+> -#define SNOR_HWCAPS_READ_1_4_4		BIT(6)
+> -#define SNOR_HWCAPS_READ_4_4_4		BIT(7)
+> +#define SNOR_HWCAPS_READ_1_1_1_DTR	BIT(2)
+> +
+> +#define SNOR_HWCAPS_READ_DUAL		GENMASK(6, 3)
+> +#define SNOR_HWCAPS_READ_1_1_2		BIT(3)
+> +#define SNOR_HWCAPS_READ_1_2_2		BIT(4)
+> +#define SNOR_HWCAPS_READ_2_2_2		BIT(5)
+> +#define SNOR_HWCAPS_READ_1_2_2_DTR	BIT(6)
+> +
+> +#define SNOR_HWCAPS_READ_QUAD		GENMASK(10, 7)
+> +#define SNOR_HWCAPS_READ_1_1_4		BIT(7)
+> +#define SNOR_HWCAPS_READ_1_4_4		BIT(8)
+> +#define SNOR_HWCAPS_READ_4_4_4		BIT(9)
+> +#define SNOR_HWCAPS_READ_1_4_4_DTR	BIT(10)
 
-But since it's supported to use filenames up to FILENAME_MAX (255 bytes) in
-length when using encryption, we can't always base-64 encode the filename, since
-that may make it too long.
+I can't say I'm a big fan on this re-numeration when you add a new
+entry. But unless you have a better idea, we'll have to live with this ...
 
-The way this is solved currently is that for filenames with ciphertext length
-greater than 32 bytes, the filesystem provides an 8-byte "cookie" (split into
-'hash' and 'minor_hash'), which along with the last 16 bytes of the filename
-ciphertext is base-64 encoded into a fixed-length name.  The filesystem returns
-this on readdir.  Then, when a lookup is done, the filesystem translates this
-info back into a specific directory entry.
-
-Since ext4 directory entries do not contain a hash field, ext4 relies only on
-the 16 bytes of ciphertext to distinguish collisions within a directory block.
-Unfortunately, this is broken because with the encryption mode used for
-filenames (CTS), the ciphertext of the last 16-byte block depends only on the
-plaintext up to and including the *second to last* block, not up to the last
-block.  This causes long filenames that differ just near the end to collide.
-
-We could fix this by using the second to last block of ciphertext rather than
-the last one.  However, using the last *two* blocks as you're proposing should
-be fine too.
-
-Of course we could also hash the filename's ciphertext with SHA-256 or
-something, but it's nice to take advantage of the encryption mode, and not have
-to do yet another hash.
-
-I am not too worried about changing the way encrypted filenames are presented,
-since applications are not supposed to rely on this.  (Though we probably should
-be doing something to catch broken applications, like encoding the filenames
-slightly differently after each reboot...)
-
-Strangely, f2fs and ubifs do not use the bytes from the filename at all when
-trying to find a specific directory entry in this case.  So this patch doesn't
-really affect them.  This seems unreliable; perhaps we should introduce a
-function like "fscrypt_name_matches()" which all the filesystems could call?
-Can any of the f2fs and ubifs developers explain why they don't look at any
-bytes from the filename?
-
-Anyway, a couple nits on this patch:
-
-> +	oname->len = 1 + digest_encode(
-> +			buf,
-> +			FS_FNAME_CRYPTO_DIGEST_SIZE + sizeof(u64),
-> +			oname->name + 1);
->  	return 0;
->  }
-
-Use 'sizeof(buf)'
-
->  
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index c4a389a6027b..14b2a2335a32 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -1257,8 +1257,8 @@ static inline int ext4_match(struct ext4_filename *fname,
->  			int ret;
-
->  			if (de->name_len < 16)
->  				return 0;
-
-de->name_len < 32
-
-(or replace 32 with FS_FNAME_CRYPTO_DIGEST_SIZE, here and below)
-
-- Eric
+-- 
+Best regards,
+Marek Vasut
