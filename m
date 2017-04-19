@@ -1,32 +1,22 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from twosheds.infradead.org ([2001:8b0:10b:1:21d:7dff:fe04:dbe2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0rbC-00084p-Ps
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 15:32:58 +0000
-Received: by mail-wm0-x241.google.com with SMTP id o81so5618686wmb.0
- for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 08:32:34 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] mtd: dataflash: Make use of "extened device
- information"
-To: Andrey Smirnov <andrew.smirnov@gmail.com>
-References: <20170418142127.23301-1-andrew.smirnov@gmail.com>
- <20170418142127.23301-3-andrew.smirnov@gmail.com>
- <47e7cefa-b4b8-4557-0e95-f43c7431c4de@gmail.com>
- <CAHQ1cqETHoXeuiz7BUmMjoy9U4Koy65V=guppCt7bensKSPk8w@mail.gmail.com>
- <1ce8f0b6-d225-3c60-433f-7e67cc7ab0ec@gmail.com>
- <CAHQ1cqG7JhGA5F0MFp5AoQYRMo7vvOnr4SD084YMwf_pb2WFzw@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Chris Healy <cphealy@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <a96bb112-2361-1af1-7189-b7c5cbbdbf1e@gmail.com>
-Date: Wed, 19 Apr 2017 17:32:31 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAHQ1cqG7JhGA5F0MFp5AoQYRMo7vvOnr4SD084YMwf_pb2WFzw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ id 1d0rdU-0002Du-GU
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 15:35:16 +0000
+Message-ID: <1492616112.17682.266.camel@infradead.org>
+Subject: Re: [PATCH v3 1/6] mtd: dataflash: Replace C99 types with their
+ kernel counterparts
+From: David Woodhouse <dwmw2@infradead.org>
+To: Andrey Smirnov <andrew.smirnov@gmail.com>, linux-mtd@lists.infradead.org
+Cc: cphealy@gmail.com, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20170419152305.17226-1-andrew.smirnov@gmail.com>
+References: <20170419152305.17226-1-andrew.smirnov@gmail.com>
+Content-Type: multipart/signed; micalg="sha-256";
+ protocol="application/x-pkcs7-signature"; boundary="=-yWy6MRY1EgkqyZEnT500"
+Date: Wed, 19 Apr 2017 16:35:12 +0100
+Mime-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,208 +26,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/19/2017 05:07 PM, Andrey Smirnov wrote:
-> On Wed, Apr 19, 2017 at 1:47 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
->> On 04/19/2017 04:58 AM, Andrey Smirnov wrote:
->>> On Tue, Apr 18, 2017 at 11:31 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
->>>> On 04/18/2017 04:21 PM, Andrey Smirnov wrote:
->>>>> In anticipation of supporting chips that need it, extend the size of
->>>>> struct flash_info's 'jedec_id' field to make room 2 byte of extended
->>>>> device information as well as add code to fetch this data during
->>>>> jedec_probe().
->>>>>
->>>>> Cc: cphealy@gmail.com
->>>>> Cc: David Woodhouse <dwmw2@infradead.org>
->>>>> Cc: Brian Norris <computersforpeace@gmail.com>
->>>>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
->>>>> Cc: Marek Vasut <marek.vasut@gmail.com>
->>>>> Cc: Richard Weinberger <richard@nod.at>
->>>>> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>>>> Cc: linux-kernel@vger.kernel.org
->>>>> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
->>>>> ---
->>>>>
->>>>> Changes since [v1]:
->>>>>
->>>>>       - Formatting
->>>>>
->>>>> [v1] http://lkml.kernel.org/r/20170411161722.11164-1-andrew.smirnov@gmail.com
->>>>>
->>>>>
->>>>>  drivers/mtd/devices/mtd_dataflash.c | 113 +++++++++++++++++++++---------------
->>>>>  1 file changed, 65 insertions(+), 48 deletions(-)
->>>>>
->>>>> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
->>>>> index 5b7a8c3..5d694a4 100644
->>>>> --- a/drivers/mtd/devices/mtd_dataflash.c
->>>>> +++ b/drivers/mtd/devices/mtd_dataflash.c
->>>>> @@ -690,7 +690,7 @@ struct flash_info {
->>>>>       /* JEDEC id has a high byte of zero plus three data bytes:
->>>>>        * the manufacturer id, then a two byte device id.
->>>>>        */
->>>>> -     u32             jedec_id;
->>>>> +     u64             jedec_id;
->>>>>
->>>>>       /* The size listed here is what works with OP_ERASE_PAGE. */
->>>>>       unsigned        nr_pages;
->>>>> @@ -713,63 +713,34 @@ static struct flash_info dataflash_data[] = {
->>>>>        * These newer chips also support 128-byte security registers (with
->>>>>        * 64 bytes one-time-programmable) and software write-protection.
->>>>>        */
->>>>> -     { "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS},
->>>>> -     { "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>> +     { "AT45DB011B",  0x1f22000000, 512, 264, 9, SUP_POW2PS},
->>>>> +     { "at45db011d",  0x1f22000000, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>>
->>>>> -     { "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
->>>>> -     { "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>> +     { "AT45DB021B",  0x1f23000000, 1024, 264, 9, SUP_POW2PS},
->>>>> +     { "at45db021d",  0x1f23000000, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>>
->>>>> -     { "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
->>>>> -     { "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>> +     { "AT45DB041x",  0x1f24000000, 2048, 264, 9, SUP_POW2PS},
->>>>> +     { "at45db041d",  0x1f24000000, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>>
->>>>> -     { "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
->>>>> -     { "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>> +     { "AT45DB081B",  0x1f25000000, 4096, 264, 9, SUP_POW2PS},
->>>>> +     { "at45db081d",  0x1f25000000, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>>
->>>>> -     { "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
->>>>> -     { "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>>> +     { "AT45DB161x",  0x1f26000000, 4096, 528, 10, SUP_POW2PS},
->>>>> +     { "at45db161d",  0x1f26000000, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>>>
->>>>> -     { "AT45DB321x",  0x1f2700, 8192, 528, 10, 0},           /* rev C */
->>>>> +     { "AT45DB321x",  0x1f27000000, 8192, 528, 10, 0},       /* rev C */
->>>>>
->>>>> -     { "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
->>>>> -     { "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>>> +     { "AT45DB321x",  0x1f27010000, 8192, 528, 10, SUP_POW2PS},
->>>>> +     { "at45db321d",  0x1f27010000, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>>>
->>>>> -     { "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
->>>>> -     { "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->>>>> +     { "AT45DB642x",  0x1f28000000, 8192, 1056, 11, SUP_POW2PS},
->>>>> +     { "at45db642d",  0x1f28000000, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->>>>>  };
->>>>>
->>>>> -static struct flash_info *jedec_probe(struct spi_device *spi)
->>>>> +static struct flash_info *jedec_lookup(struct spi_device *spi, u64 jedec)
->>>>>  {
->>>>> -     int ret, i;
->>>>> -     u8 code = OP_READ_ID;
->>>>> -     u8 id[3];
->>>>> -     u32 jedec;
->>>>> +     int status, i;
->>>>>       struct flash_info *info;
->>>>> -     int status;
->>>>> -
->>>>> -     /*
->>>>> -      * JEDEC also defines an optional "extended device information"
->>>>> -      * string for after vendor-specific data, after the three bytes
->>>>> -      * we use here.  Supporting some chips might require using it.
->>>>> -      *
->>>>> -      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
->>>>> -      * That's not an error; only rev C and newer chips handle it, and
->>>>> -      * only Atmel sells these chips.
->>>>> -      */
->>>>> -     ret = spi_write_then_read(spi, &code, 1, id, 3);
->>>>> -     if (ret < 0) {
->>>>> -             pr_debug("%s: error %d reading JEDEC ID\n",
->>>>> -                     dev_name(&spi->dev), ret);
->>>>> -             return ERR_PTR(ret);
->>>>> -     }
->>>>> -
->>>>> -     if (id[0] != CFI_MFR_ATMEL)
->>>>> -             return NULL;
->>>>> -
->>>>> -     jedec = id[0];
->>>>> -     jedec = jedec << 8;
->>>>> -     jedec |= id[1];
->>>>> -     jedec = jedec << 8;
->>>>> -     jedec |= id[2];
->>>>
->>>> Hm, the diff again screwed this up, oh well ...
->>>>
->>>>>       for (i = 0, info = dataflash_data;
->>>>>                       i < ARRAY_SIZE(dataflash_data);
->>>>> @@ -799,12 +770,58 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
->>>>>               }
->>>>>       }
->>>>>
->>>>> +     return NULL;
->>>>> +}
->>>>> +
->>>>> +static struct flash_info *jedec_probe(struct spi_device *spi)
->>>>> +{
->>>>> +     int ret;
->>>>> +     u8 code = OP_READ_ID;
->>>>> +     u8 id[8] = {0};
->>>>> +     const unsigned int id_size = 5;
->>>>> +     const unsigned int first_byte = sizeof(id) - id_size;
->>>>> +     const u64 eid_mask = GENMASK_ULL(63, 16);
->>>>> +     u64 jedec;
->>>>> +     struct flash_info *info;
->>>>> +
->>>>> +     /*
->>>>> +      * JEDEC also defines an optional "extended device information"
->>>>> +      * string for after vendor-specific data, after the three bytes
->>>>> +      * we use here.  Supporting some chips might require using it.
->>>>> +      *
->>>>> +      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
->>>>> +      * That's not an error; only rev C and newer chips handle it, and
->>>>> +      * only Atmel sells these chips.
->>>>> +      */
->>>>> +     ret = spi_write_then_read(spi, &code, 1, &id[first_byte], id_size);
->>>>> +     if (ret < 0) {
->>>>> +             pr_debug("%s: error %d reading JEDEC ID\n",
->>>>> +                     dev_name(&spi->dev), ret);
->>>>
->>>> I think you can turn this into:
->>>>
->>>> dev_err(&spi->dev, "error %d reading JEDEC ID\n", ret);
->>>
->>> OK, will do it in a separate patch, since this is original code.
->>
->> OK
->>
->>>>> +             return ERR_PTR(ret);
->>>>> +     }
->>>>> +
->>>>> +     if (id[first_byte] != CFI_MFR_ATMEL)
->>>>> +             return NULL;
->>>>> +
->>>>> +     jedec = be64_to_cpup((__be64 *)id);
->>>>> +
->>>>> +     info = jedec_lookup(spi, jedec);
->>>>> +     if (info)
->>>>> +             return info;
->>>>> +
->>>>> +     /* Clear extended id bits and try to find a match again */
->>>>> +     jedec &= eid_mask;
->>>>
->>>> Wouldn't that be jedec &= ~eid_mask; (with a tilde) if you want to clear
->>>> them ?
->>>
->>> eid_mask is generated as bits 63 to 16 with GENMASK_ULL, so bits 15 to
->>> 0 should already be zeroed out. I can rename it to eid_mask_inverted
->>> so it's less confusing.
->>
->> I think that's a good idea and you can make the mask u32 instead of u64.
->> But isn't eid_mask_inverted the same as id_mask ?
-> 
-> I just realized that "eid_mask" is used only in one place and I don't
-> gain anything by having that variable, so I think what I'd do is use
-> GENMASK in-place, then it should be clear why there's no bit inversion
-> and there's no dilemma on how to name the variable.
 
-The upside of defining mask as a macro is that you can derive the
-meaning of the macro from it's name . If you use ad-hoc constant in the
-code, you cannot do that. And there might be spots in the code which
-will re-use that macro in the future.
+--=-yWy6MRY1EgkqyZEnT500
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Best regards,
-Marek Vasut
+On Wed, 2017-04-19 at 08:23 -0700, Andrey Smirnov wrote:
+> No functional change intended.
+
+FWIW I *deliberately* used the proper C datatypes throughout all of the
+MTD code instead of the silly kernel-speshul datatypes. To the extent
+of *fixing* submissions to be written in C when they were using the
+silly kernel types instead.
+
+There is a reason for the __u32 type in userspace APIs. There is
+basically no reason for 'u32' et al, just to save a trivial few
+characters in the type name. We might as well be using the proper
+language types.
+
+I appreciate that not everyone agrees with that, but at least it used
+to be consistent throughout the code I was maintaining. I'll defer to
+the currently active maintainers though...
+--=-yWy6MRY1EgkqyZEnT500
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCDzUw
+ggSvMIIDl6ADAgECAhEA4CPLFRKDU4mtYW56VGdrITANBgkqhkiG9w0BAQsFADBvMQswCQYDVQQG
+EwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxJjAkBgNVBAsTHUFkZFRydXN0IEV4dGVybmFsIFRU
+UCBOZXR3b3JrMSIwIAYDVQQDExlBZGRUcnVzdCBFeHRlcm5hbCBDQSBSb290MB4XDTE0MTIyMjAw
+MDAwMFoXDTIwMDUzMDEwNDgzOFowgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1h
+bmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEw
+PwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
+bWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAImxDdp6UxlOcFIdvFamBia3
+uEngludRq/HwWhNJFaO0jBtgvHpRQqd5jKQi3xdhTpHVdiMKFNNKAn+2HQmAbqUEPdm6uxb+oYep
+LkNSQxZ8rzJQyKZPWukI2M+TJZx7iOgwZOak+FaA/SokFDMXmaxE5WmLo0YGS8Iz1OlAnwawsayT
+QLm1CJM6nCpToxDbPSBhPFUDjtlOdiUCISn6o3xxdk/u4V+B6ftUgNvDezVSt4TeIj0sMC0xf1m9
+UjewM2ktQ+v61qXxl3dnUYzZ7ifrvKUHOHaMpKk4/9+M9QOsSb7K93OZOg8yq5yVOhM9DkY6V3Rh
+UL7GQD/L5OKfoiECAwEAAaOCARcwggETMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1Qa
+MB0GA1UdDgQWBBSSYWuC4aKgqk/sZ/HCo/e0gADB7DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/
+BAgwBgEB/wIBADAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYDVR0gBAowCDAGBgRV
+HSAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9BZGRUcnVzdEV4
+dGVybmFsQ0FSb290LmNybDA1BggrBgEFBQcBAQQpMCcwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3Nw
+LnVzZXJ0cnVzdC5jb20wDQYJKoZIhvcNAQELBQADggEBABsqbqxVwTqriMXY7c1V86prYSvACRAj
+mQ/FZmpvsfW0tXdeDwJhAN99Bf4Ss6SAgAD8+x1banICCkG8BbrBWNUmwurVTYT7/oKYz1gb4yJj
+nFL4uwU2q31Ypd6rO2Pl2tVz7+zg+3vio//wQiOcyraNTT7kSxgDsqgt1Ni7QkuQaYUQ26Y3NOh7
+4AEQpZzKOsefT4g0bopl0BqKu6ncyso20fT8wmQpNa/WsadxEdIDQ7GPPprsnjJT9HaSyoY0B7ks
+yuYcStiZDcGG4pCS+1pCaiMhEOllx/XVu37qjIUgAmLq0ToHLFnFmTPyOInltukWeh95FPZKEBom
++nyK+5swggU9MIIEJaADAgECAhBqC1BYlVMtBFBN4igR/howMA0GCSqGSIb3DQEBCwUAMIGbMQsw
+CQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3Jk
+MRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDFBMD8GA1UEAxM4Q09NT0RPIFNIQS0yNTYgQ2xp
+ZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTYxMjIwMDAwMDAwWhcN
+MTcxMjIwMjM1OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjAN
+BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwbTrFaiGdvN2pThnR9q+4eaXB2wQZQNqhter5ZrJ
+pPO47e87bZ+f1tmYoh6+rB90G/XN24NErPRfvU4zVzNT9pCtCzSSVnBlZQBpaEYMKhcXo5PGKNsm
+An8BoGwNXjlxwbBNRaNO+ky0wNCaMNd1JLxEuvqg9J7rrcpHhWmnpXD5IKa8gv9GyVAJgOpiBOts
+p91sShc2kHvWJ5waPEWPCHDH9J+twGGKqKIIU7fdbURLUgUL1wlDSAHf/lgIAVCSj2H2HpoGqHpy
+HgOAClX9iRSLNa0Znj8HTaqfOwxXevsz1KkLFY+Ahm426GIEqdfkK2iT6Hhgc7tjNO3f8i5ALQID
+AQABo4IB8TCCAe0wHwYDVR0jBBgwFoAUkmFrguGioKpP7GfxwqP3tIAAwewwHQYDVR0OBBYEFILE
+dmHLtK6oxmFJZvBhTQhvqrS0MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZ
+MBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMFAjARBglghkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7
+BgwrBgEEAbIxAQIBAQEwKzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9D
+UFMwXQYDVR0fBFYwVDBSoFCgToZMaHR0cDovL2NybC5jb21vZG9jYS5jb20vQ09NT0RPU0hBMjU2
+Q2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNybDCBkAYIKwYBBQUHAQEEgYMw
+gYAwWAYIKwYBBQUHMAKGTGh0dHA6Ly9jcnQuY29tb2RvY2EuY29tL0NPTU9ET1NIQTI1NkNsaWVu
+dEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYIKwYBBQUHMAGGGGh0dHA6Ly9v
+Y3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRlYWQub3JnMA0GCSqGSIb3
+DQEBCwUAA4IBAQA+AfvNhFwtapF5Lzjapgul3zYuEnMfR538Ya1vhP8wuOkcoJeT2gEFXzVO2WUu
+eWM0g0/DumnRB53htV/Qq/+vsL0i6a2+iOO7kHi5O7bZkgbdNv0t2lzonDUHi6LTa7NUj+tv+j6y
+hW+iNquC3ACP1dIZH8gJmicHblW63qRgp6wxhn315MLBeavi3uiSag2eeKFePiTIwJjN2UYq6kWg
+PL5G/Ycf9x/xN1XBTfJiURc0FsXhrA98VMWnt52C5Lo4txhGjzTI+IZg40b3YDs6E7mTYb5KKmbc
+QZA9priOFDdj1z5W9BdWhU6I/D0P9y8Z4Tr6+ZscMUVD0RqWy2LeMIIFPTCCBCWgAwIBAgIQagtQ
+WJVTLQRQTeIoEf4aMDANBgkqhkiG9w0BAQsFADCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdy
+ZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExp
+bWl0ZWQxQTA/BgNVBAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQg
+U2VjdXJlIEVtYWlsIENBMB4XDTE2MTIyMDAwMDAwMFoXDTE3MTIyMDIzNTk1OVowJDEiMCAGCSqG
+SIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAMG06xWohnbzdqU4Z0favuHmlwdsEGUDaobXq+WayaTzuO3vO22fn9bZmKIevqwfdBv1zduD
+RKz0X71OM1czU/aQrQs0klZwZWUAaWhGDCoXF6OTxijbJgJ/AaBsDV45ccGwTUWjTvpMtMDQmjDX
+dSS8RLr6oPSe663KR4Vpp6Vw+SCmvIL/RslQCYDqYgTrbKfdbEoXNpB71iecGjxFjwhwx/SfrcBh
+iqiiCFO33W1ES1IFC9cJQ0gB3/5YCAFQko9h9h6aBqh6ch4DgApV/YkUizWtGZ4/B02qnzsMV3r7
+M9SpCxWPgIZuNuhiBKnX5Ctok+h4YHO7YzTt3/IuQC0CAwEAAaOCAfEwggHtMB8GA1UdIwQYMBaA
+FJJha4LhoqCqT+xn8cKj97SAAMHsMB0GA1UdDgQWBBSCxHZhy7SuqMZhSWbwYU0Ib6q0tDAOBgNV
+HQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAgBgNVHSUEGTAXBggrBgEFBQcDBAYLKwYBBAGyMQED
+BQIwEQYJYIZIAYb4QgEBBAQDAgUgMEYGA1UdIAQ/MD0wOwYMKwYBBAGyMQECAQEBMCswKQYIKwYB
+BQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9kby5uZXQvQ1BTMF0GA1UdHwRWMFQwUqBQoE6GTGh0
+dHA6Ly9jcmwuY29tb2RvY2EuY29tL0NPTU9ET1NIQTI1NkNsaWVudEF1dGhlbnRpY2F0aW9uYW5k
+U2VjdXJlRW1haWxDQS5jcmwwgZAGCCsGAQUFBwEBBIGDMIGAMFgGCCsGAQUFBzAChkxodHRwOi8v
+Y3J0LmNvbW9kb2NhLmNvbS9DT01PRE9TSEEyNTZDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3Vy
+ZUVtYWlsQ0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0R
+BBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAPgH7zYRcLWqReS84
+2qYLpd82LhJzH0ed/GGtb4T/MLjpHKCXk9oBBV81TtllLnljNINPw7pp0Qed4bVf0Kv/r7C9Iumt
+vojju5B4uTu22ZIG3Tb9Ldpc6Jw1B4ui02uzVI/rb/o+soVvojargtwAj9XSGR/ICZonB25Vut6k
+YKesMYZ99eTCwXmr4t7okmoNnnihXj4kyMCYzdlGKupFoDy+Rv2HH/cf8TdVwU3yYlEXNBbF4awP
+fFTFp7edguS6OLcYRo80yPiGYONG92A7OhO5k2G+Sipm3EGQPaa4jhQ3Y9c+VvQXVoVOiPw9D/cv
+GeE6+vmbHDFFQ9Ealsti3jGCA9MwggPPAgEBMIGwMIGbMQswCQYDVQQGEwJHQjEbMBkGA1UECBMS
+R3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0Eg
+TGltaXRlZDFBMD8GA1UEAxM4Q09NT0RPIFNIQS0yNTYgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFu
+ZCBTZWN1cmUgRW1haWwgQ0ECEGoLUFiVUy0EUE3iKBH+GjAwDQYJYIZIAWUDBAIBBQCgggHzMBgG
+CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE3MDQxOTE1MzUxMlowLwYJ
+KoZIhvcNAQkEMSIEIFR8d7K96wOGmmTw+VoFSE2Q2xDquzP64CnNjXewAo9cMIHBBgkrBgEEAYI3
+EAQxgbMwgbAwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAO
+BgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01P
+RE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQagtQ
+WJVTLQRQTeIoEf4aMDCBwwYLKoZIhvcNAQkQAgsxgbOggbAwgZsxCzAJBgNVBAYTAkdCMRswGQYD
+VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
+TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRp
+b24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQagtQWJVTLQRQTeIoEf4aMDANBgkqhkiG9w0BAQEFAASC
+AQB7AyIgE/sHvVbyRWbiwnB3DZr2vSKw1dGNwzqHu/ofS7PYPqHRtLBlWoKPhDs+dKRx3Gu+DeuU
+DyasrLyCWhvq9aP/n8S2bZ9zCTNjVo/24KTWGtUOGztEIZScWHeOcDqCSl1jGQq9WjFmbux9bwjv
+ZiM75RLyYs9sE+qII8Njwl5T4U+QRNxp3Czuur5KzS1XKORRldS6gheIb9w0N/aCahT/9kNoLUg7
+VyF9p1oE5MxpIUsPWWvtZEjdBYT3mmsxpK22ImynTBrktKWk6AJkJW0OpdW4dOngdp38fgHY8FH3
+Hpkwi7MVVqhi+2J+zWwm5UHm8kuCVL90sH82sne5AAAAAAAA
+
+
+--=-yWy6MRY1EgkqyZEnT500--
