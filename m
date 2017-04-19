@@ -1,26 +1,28 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from mail-it0-x232.google.com ([2607:f8b0:4001:c0b::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0rlS-0005H4-6i
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 15:43:34 +0000
-Received: by mail-wr0-x243.google.com with SMTP id l28so3741785wre.0
- for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 08:43:09 -0700 (PDT)
-Subject: Re: [PATCH v3 5/6] mtd: dataflash: Make use of "extened device
- information"
-To: Andrey Smirnov <andrew.smirnov@gmail.com>, linux-mtd@lists.infradead.org
+ id 1d0ru7-0001n5-3v
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 15:52:28 +0000
+Received: by mail-it0-x232.google.com with SMTP id e132so17976122ite.1
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 08:52:06 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <2033d520-c908-0d89-e17f-b55f7210b69d@gmail.com>
 References: <20170419152305.17226-1-andrew.smirnov@gmail.com>
- <20170419152305.17226-5-andrew.smirnov@gmail.com>
-Cc: cphealy@gmail.com, David Woodhouse <dwmw2@infradead.org>,
+ <20170419152305.17226-3-andrew.smirnov@gmail.com>
+ <2033d520-c908-0d89-e17f-b55f7210b69d@gmail.com>
+From: Andrey Smirnov <andrew.smirnov@gmail.com>
+Date: Wed, 19 Apr 2017 08:50:46 -0700
+Message-ID: <CAHQ1cqHeKYVzQEoCXGWsnEpimXt+RyCyTj2xhit77sxgRJxkSA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] mtd: dataflash: Replace pr_debug, printk with
+ dev_* functions
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Chris Healy <cphealy@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <a7345f5a-a8c6-b971-b11b-c65433d504fa@gmail.com>
-Date: Wed, 19 Apr 2017 17:42:43 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170419152305.17226-5-andrew.smirnov@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-kernel <linux-kernel@vger.kernel.or>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,218 +32,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/19/2017 05:23 PM, Andrey Smirnov wrote:
-> In anticipation of supporting chips that need it, extend the size of
-> struct flash_info's 'jedec_id' field to make room 2 byte of extended
-> device information as well as add code to fetch this data during
-> jedec_probe().
-> 
-> Cc: cphealy@gmail.com
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
-> ---
-> 
-> Changes since [v2]:
-> 
-> 	- Make 'id' have same size as 'jedec'
-> 
-> 	- Get rid of eid_mask variable in favour of using GENMASK
->           in-place
-> 
-> Changes since [v1]:
-> 
-> 	- Formatting
-> 
-> [v1] http://lkml.kernel.org/r/20170411161722.11164-1-andrew.smirnov@gmail.com
-> [v2] http://lkml.kernel.org/r/20170418142127.23301-3-andrew.smirnov@gmail.com
-> 
->  drivers/mtd/devices/mtd_dataflash.c | 115 +++++++++++++++++++++---------------
->  1 file changed, 68 insertions(+), 47 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> index 2d3e403..941e8b7 100644
-> --- a/drivers/mtd/devices/mtd_dataflash.c
-> +++ b/drivers/mtd/devices/mtd_dataflash.c
-> @@ -687,7 +687,7 @@ struct flash_info {
->  	/* JEDEC id has a high byte of zero plus three data bytes:
->  	 * the manufacturer id, then a two byte device id.
->  	 */
-> -	u32		jedec_id;
-> +	u64		jedec_id;
->  
->  	/* The size listed here is what works with OP_ERASE_PAGE. */
->  	unsigned	nr_pages;
-> @@ -710,62 +710,34 @@ static struct flash_info dataflash_data[] = {
->  	 * These newer chips also support 128-byte security registers (with
->  	 * 64 bytes one-time-programmable) and software write-protection.
->  	 */
-> -	{ "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS},
-> -	{ "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB011B",  0x1f22000000, 512, 264, 9, SUP_POW2PS},
-> +	{ "at45db011d",  0x1f22000000, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
-> -	{ "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB021B",  0x1f23000000, 1024, 264, 9, SUP_POW2PS},
-> +	{ "at45db021d",  0x1f23000000, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
-> -	{ "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB041x",  0x1f24000000, 2048, 264, 9, SUP_POW2PS},
-> +	{ "at45db041d",  0x1f24000000, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
-> -	{ "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB081B",  0x1f25000000, 4096, 264, 9, SUP_POW2PS},
-> +	{ "at45db081d",  0x1f25000000, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
-> -	{ "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB161x",  0x1f26000000, 4096, 528, 10, SUP_POW2PS},
-> +	{ "at45db161d",  0x1f26000000, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB321x",  0x1f2700, 8192, 528, 10, 0},		/* rev C */
-> +	{ "AT45DB321x",  0x1f27000000, 8192, 528, 10, 0},	/* rev C */
->  
-> -	{ "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
-> -	{ "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB321x",  0x1f27010000, 8192, 528, 10, SUP_POW2PS},
-> +	{ "at45db321d",  0x1f27010000, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->  
-> -	{ "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
-> -	{ "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
-> +	{ "AT45DB642x",  0x1f28000000, 8192, 1056, 11, SUP_POW2PS},
-> +	{ "at45db642d",  0x1f28000000, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->  };
->  
-> -static struct flash_info *jedec_probe(struct spi_device *spi)
-> +static struct flash_info *jedec_lookup(struct spi_device *spi, u64 jedec)
->  {
-> -	int ret;
-> -	u8 code = OP_READ_ID;
-> -	u8 id[3];
-> -	u32 jedec;
-> -	struct flash_info *info;
->  	int status;
-> -
-> -	/*
-> -	 * JEDEC also defines an optional "extended device information"
-> -	 * string for after vendor-specific data, after the three bytes
-> -	 * we use here.  Supporting some chips might require using it.
-> -	 *
-> -	 * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
-> -	 * That's not an error; only rev C and newer chips handle it, and
-> -	 * only Atmel sells these chips.
-> -	 */
-> -	ret = spi_write_then_read(spi, &code, 1, id, 3);
-> -	if (ret < 0) {
-> -		dev_dbg(&spi->dev, "error %d reading JEDEC ID\n", ret);
-> -		return ERR_PTR(ret);
-> -	}
-> -
-> -	if (id[0] != CFI_MFR_ATMEL)
-> -		return NULL;
-> -
-> -	jedec = id[0];
-> -	jedec = jedec << 8;
-> -	jedec |= id[1];
-> -	jedec = jedec << 8;
-> -	jedec |= id[2];
-> +	struct flash_info *info;
->  
->  	for (info = dataflash_data;
->  	     info < dataflash_data + ARRAY_SIZE(dataflash_data);
-> @@ -793,12 +765,61 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
->  		}
->  	}
->  
-> +	return NULL;
-> +}
-> +
-> +static struct flash_info *jedec_probe(struct spi_device *spi)
-> +{
-> +	int ret;
-> +	u8 code = OP_READ_ID;
-> +	u64 jedec;
-> +	u8 id[sizeof(jedec)] = {0};
-> +	const unsigned int id_size = 5;
-> +	const unsigned int first_byte = sizeof(id) - id_size;
-> +	struct flash_info *info;
-> +
-> +	/*
-> +	 * JEDEC also defines an optional "extended device information"
-> +	 * string for after vendor-specific data, after the three bytes
-> +	 * we use here.  Supporting some chips might require using it.
-> +	 *
-> +	 * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
-> +	 * That's not an error; only rev C and newer chips handle it, and
-> +	 * only Atmel sells these chips.
-> +	 */
-> +	ret = spi_write_then_read(spi, &code, 1, &id[first_byte], id_size);
+On Wed, Apr 19, 2017 at 8:33 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
+> On 04/19/2017 05:23 PM, Andrey Smirnov wrote:
+>> Lion's share of calls to pr_debug in this driver follow the pattern of
+>> pr_debug("%s <message>", dev_name(<dev>), <arguments>), which should
+>> be semantically identical to dev_dbg(<dev>, "<message>", <arguments>),
+>> so replace such occurencies to simplify the code.
+>>
+>> Convert the small minority of pr_debug that do not follow pattern from
+>> above to use dev_dbg as well, for the sake of consistency.
+>>
+>> Convert similar patter of printk(KERN_ERR, "%s: ...", dev_name(...),
+>> ...) to use dev_err instead.
+>>
+>> No functional change intended.
+>>
+>> Cc: cphealy@gmail.com
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Cc: Brian Norris <computersforpeace@gmail.com>
+>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> Cc: Marek Vasut <marek.vasut@gmail.com>
+>> Cc: Richard Weinberger <richard@nod.at>
+>> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> Cc: linux-kernel@vger.kernel.or
+>> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+>> ---
+>
+> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+>
+> btw where is 1/6 and 2/6 ?
 
-Hm, looking at this again, what prevents you from reading these bytes
-into &id[0] ? Might be easier, ie.
+Sorry, looks like git send-mail didn't pick up Acked-by tag to be
+added to CC list. They are here:
 
-ret = spi_write_then_read(spi, &code, 1, id, id_size);
+https://marc.info/?l=linux-kernel&m=149261547916625
+https://marc.info/?l=linux-kernel&m=149261543416614
 
-> +	if (ret < 0) {
-> +		pr_debug("%s: error %d reading JEDEC ID\n",
-> +			dev_name(&spi->dev), ret);
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	if (id[first_byte] != CFI_MFR_ATMEL)
-
-if (id[0] != CFI_MFR_ATMEL)
-
-> +		return NULL;
-> +
-> +	jedec = be64_to_cpup((__be64 *)id);
-> +
-> +	info = jedec_lookup(spi, jedec);
-
-... define these somewhere at the beginning of the dataflash code ...
-#define DATAFLASH_MASK_STD	GENMASK(63, 40)
-#define DATAFLASH_MASK_EXT	GENMASK(63, 16)
-
-... then ...
-info = jedec_lookup(spi, jedec & DATAFLASH_MASK_EXT);
-
-> +	if (info)
-> +		return info;
-> +
-> +	/*
-> +	 * Clear extended id bits (bits 0 through 15) and try to find
-> +	 * a match again in case our chip does not support returning
-> +	 * extended ID information and we got invalid bits instead
-> +	 */
-> +	jedec &= GENMASK_ULL(63, 16);
-
-info = jedec_lookup(spi, jedec & DATAFLASH_MASK_STD);
-
-> +	info = jedec_lookup(spi, jedec);
-> +	if (info)
-> +		return info;
-> +
->  	/*
->  	 * Treat other chips as errors ... we won't know the right page
->  	 * size (it might be binary) even when we can tell which density
->  	 * class is involved (legacy chip id scheme).
->  	 */
-> -	dev_warn(&spi->dev, "JEDEC id %06x not handled\n", jedec);
-> +	dev_warn(&spi->dev, "JEDEC id %010llx not handled\n", jedec);
->  	return ERR_PTR(-ENODEV);
->  }
->  
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+>
+> --
+> Best regards,
+> Marek Vasut
