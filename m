@@ -1,30 +1,20 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0lHI-0006CK-FA
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 08:47:58 +0000
-Received: by mail-wm0-x244.google.com with SMTP id q125so3661524wmd.3
- for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 01:47:36 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] mtd: dataflash: Make use of "extened device
- information"
-To: Andrey Smirnov <andrew.smirnov@gmail.com>
-References: <20170418142127.23301-1-andrew.smirnov@gmail.com>
- <20170418142127.23301-3-andrew.smirnov@gmail.com>
- <47e7cefa-b4b8-4557-0e95-f43c7431c4de@gmail.com>
- <CAHQ1cqETHoXeuiz7BUmMjoy9U4Koy65V=guppCt7bensKSPk8w@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Chris Healy <cphealy@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <1ce8f0b6-d225-3c60-433f-7e67cc7ab0ec@gmail.com>
-Date: Wed, 19 Apr 2017 10:47:31 +0200
+ id 1d0oUg-0002gE-8b
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 12:14:00 +0000
+Date: Wed, 19 Apr 2017 14:13:32 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ cyrille.pitchen@atmel.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, mark.marshall@omicronenergy.com,
+ b44839@freescale.com, prabhakar@freescale.com
+Subject: fsl_ifc_nand: are blank pages protected by ECC?
+Message-ID: <20170419121332.GA26979@amd>
 MIME-Version: 1.0
-In-Reply-To: <CAHQ1cqETHoXeuiz7BUmMjoy9U4Koy65V=guppCt7bensKSPk8w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="rwEMma7ioTxnRzrJ"
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,196 +24,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/19/2017 04:58 AM, Andrey Smirnov wrote:
-> On Tue, Apr 18, 2017 at 11:31 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
->> On 04/18/2017 04:21 PM, Andrey Smirnov wrote:
->>> In anticipation of supporting chips that need it, extend the size of
->>> struct flash_info's 'jedec_id' field to make room 2 byte of extended
->>> device information as well as add code to fetch this data during
->>> jedec_probe().
->>>
->>> Cc: cphealy@gmail.com
->>> Cc: David Woodhouse <dwmw2@infradead.org>
->>> Cc: Brian Norris <computersforpeace@gmail.com>
->>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
->>> Cc: Marek Vasut <marek.vasut@gmail.com>
->>> Cc: Richard Weinberger <richard@nod.at>
->>> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>> Cc: linux-kernel@vger.kernel.org
->>> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
->>> ---
->>>
->>> Changes since [v1]:
->>>
->>>       - Formatting
->>>
->>> [v1] http://lkml.kernel.org/r/20170411161722.11164-1-andrew.smirnov@gmail.com
->>>
->>>
->>>  drivers/mtd/devices/mtd_dataflash.c | 113 +++++++++++++++++++++---------------
->>>  1 file changed, 65 insertions(+), 48 deletions(-)
->>>
->>> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
->>> index 5b7a8c3..5d694a4 100644
->>> --- a/drivers/mtd/devices/mtd_dataflash.c
->>> +++ b/drivers/mtd/devices/mtd_dataflash.c
->>> @@ -690,7 +690,7 @@ struct flash_info {
->>>       /* JEDEC id has a high byte of zero plus three data bytes:
->>>        * the manufacturer id, then a two byte device id.
->>>        */
->>> -     u32             jedec_id;
->>> +     u64             jedec_id;
->>>
->>>       /* The size listed here is what works with OP_ERASE_PAGE. */
->>>       unsigned        nr_pages;
->>> @@ -713,63 +713,34 @@ static struct flash_info dataflash_data[] = {
->>>        * These newer chips also support 128-byte security registers (with
->>>        * 64 bytes one-time-programmable) and software write-protection.
->>>        */
->>> -     { "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS},
->>> -     { "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB011B",  0x1f22000000, 512, 264, 9, SUP_POW2PS},
->>> +     { "at45db011d",  0x1f22000000, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
->>> -     { "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB021B",  0x1f23000000, 1024, 264, 9, SUP_POW2PS},
->>> +     { "at45db021d",  0x1f23000000, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
->>> -     { "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB041x",  0x1f24000000, 2048, 264, 9, SUP_POW2PS},
->>> +     { "at45db041d",  0x1f24000000, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
->>> -     { "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB081B",  0x1f25000000, 4096, 264, 9, SUP_POW2PS},
->>> +     { "at45db081d",  0x1f25000000, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
->>> -     { "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB161x",  0x1f26000000, 4096, 528, 10, SUP_POW2PS},
->>> +     { "at45db161d",  0x1f26000000, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB321x",  0x1f2700, 8192, 528, 10, 0},           /* rev C */
->>> +     { "AT45DB321x",  0x1f27000000, 8192, 528, 10, 0},       /* rev C */
->>>
->>> -     { "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
->>> -     { "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB321x",  0x1f27010000, 8192, 528, 10, SUP_POW2PS},
->>> +     { "at45db321d",  0x1f27010000, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>
->>> -     { "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
->>> -     { "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->>> +     { "AT45DB642x",  0x1f28000000, 8192, 1056, 11, SUP_POW2PS},
->>> +     { "at45db642d",  0x1f28000000, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->>>  };
->>>
->>> -static struct flash_info *jedec_probe(struct spi_device *spi)
->>> +static struct flash_info *jedec_lookup(struct spi_device *spi, u64 jedec)
->>>  {
->>> -     int ret, i;
->>> -     u8 code = OP_READ_ID;
->>> -     u8 id[3];
->>> -     u32 jedec;
->>> +     int status, i;
->>>       struct flash_info *info;
->>> -     int status;
->>> -
->>> -     /*
->>> -      * JEDEC also defines an optional "extended device information"
->>> -      * string for after vendor-specific data, after the three bytes
->>> -      * we use here.  Supporting some chips might require using it.
->>> -      *
->>> -      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
->>> -      * That's not an error; only rev C and newer chips handle it, and
->>> -      * only Atmel sells these chips.
->>> -      */
->>> -     ret = spi_write_then_read(spi, &code, 1, id, 3);
->>> -     if (ret < 0) {
->>> -             pr_debug("%s: error %d reading JEDEC ID\n",
->>> -                     dev_name(&spi->dev), ret);
->>> -             return ERR_PTR(ret);
->>> -     }
->>> -
->>> -     if (id[0] != CFI_MFR_ATMEL)
->>> -             return NULL;
->>> -
->>> -     jedec = id[0];
->>> -     jedec = jedec << 8;
->>> -     jedec |= id[1];
->>> -     jedec = jedec << 8;
->>> -     jedec |= id[2];
->>
->> Hm, the diff again screwed this up, oh well ...
->>
->>>       for (i = 0, info = dataflash_data;
->>>                       i < ARRAY_SIZE(dataflash_data);
->>> @@ -799,12 +770,58 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
->>>               }
->>>       }
->>>
->>> +     return NULL;
->>> +}
->>> +
->>> +static struct flash_info *jedec_probe(struct spi_device *spi)
->>> +{
->>> +     int ret;
->>> +     u8 code = OP_READ_ID;
->>> +     u8 id[8] = {0};
->>> +     const unsigned int id_size = 5;
->>> +     const unsigned int first_byte = sizeof(id) - id_size;
->>> +     const u64 eid_mask = GENMASK_ULL(63, 16);
->>> +     u64 jedec;
->>> +     struct flash_info *info;
->>> +
->>> +     /*
->>> +      * JEDEC also defines an optional "extended device information"
->>> +      * string for after vendor-specific data, after the three bytes
->>> +      * we use here.  Supporting some chips might require using it.
->>> +      *
->>> +      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
->>> +      * That's not an error; only rev C and newer chips handle it, and
->>> +      * only Atmel sells these chips.
->>> +      */
->>> +     ret = spi_write_then_read(spi, &code, 1, &id[first_byte], id_size);
->>> +     if (ret < 0) {
->>> +             pr_debug("%s: error %d reading JEDEC ID\n",
->>> +                     dev_name(&spi->dev), ret);
->>
->> I think you can turn this into:
->>
->> dev_err(&spi->dev, "error %d reading JEDEC ID\n", ret);
-> 
-> OK, will do it in a separate patch, since this is original code.
 
-OK
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->>> +             return ERR_PTR(ret);
->>> +     }
->>> +
->>> +     if (id[first_byte] != CFI_MFR_ATMEL)
->>> +             return NULL;
->>> +
->>> +     jedec = be64_to_cpup((__be64 *)id);
->>> +
->>> +     info = jedec_lookup(spi, jedec);
->>> +     if (info)
->>> +             return info;
->>> +
->>> +     /* Clear extended id bits and try to find a match again */
->>> +     jedec &= eid_mask;
->>
->> Wouldn't that be jedec &= ~eid_mask; (with a tilde) if you want to clear
->> them ?
-> 
-> eid_mask is generated as bits 63 to 16 with GENMASK_ULL, so bits 15 to
-> 0 should already be zeroed out. I can rename it to eid_mask_inverted
-> so it's less confusing.
+Hi!
 
-I think that's a good idea and you can make the mask u32 instead of u64.
-But isn't eid_mask_inverted the same as id_mask ?
+We have some problems with fsl_ifc_nand ... in the old kernels, but
+this one does not seem to be fixed in v4.11, either.
 
--- 
-Best regards,
-Marek Vasut
+UBIFS complains:
+
+UBIFS error (pid 931): ubifs_scan: corrupt empty space at LEB 282:252630
+UBIFS error (pid 931): ubifs_scanned_corruption: corruption at LEB 282:252630
+UBIFS error (pid 931): ubifs_scanned_corruption: first 1322 bytes from LEB 282:252630
+UBIFS error (pid 931): ubifs_scan: LEB 282 scanning failed
+
+Possible explanation is here:
+
+https://e2e.ti.com/support/dsp/davinci_digital_media_processors/f/716/t/289605
+
+# I see on the forum that this issue has been raised before - my
+# understanding is that the omap2 nand driver does not perform ECC
+# detection/correction on empty pages so when UBIFS checks the empty
+# space data and doesn't read all 0xFF then it fails and mounts
+# read-only. I didn't find any good solution - only a workaround to
+# remove the UBIFS check..
+
+So I checked fsl_ifc_nand.c in v4.11-rc, and yes, it seems to have the
+same problem:
+
+			if (errors == 15) {
+	                        /*
+                                 * Uncorrectable error.
+                                 * OK only if the whole page is blank.
+                                 *
+                                 * We disable ECCER reporting due to...
+                                 * erratum IFC-A002770 -- so report it now if we
+                                 * see an uncorrectable error in ECCSTAT.
+                                 */
+                                if (!is_blank(mtd, bufnum))
+                                        ctrl->nand_stat |=
+                                                IFC_NAND_EVTER_STAT_ECCER;
+                                break;
+                        }
+
+is_blank() checks for all 0xff's, so single-bit 0xfe in the data will
+result in_blank() == 0 and uncorrectable error being signaled.
+
+Should the driver be modified somehow?
+
+Thanks,
+									Pavel
+
+--
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+
+--rwEMma7ioTxnRzrJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlj3VGwACgkQMOfwapXb+vKGzACgnx3tKXhpFJ76rCDJBQ+xWKk9
+yocAni3o2lhs0GWEe8pISrcmKUoOUYjO
+=4p9S
+-----END PGP SIGNATURE-----
+
+--rwEMma7ioTxnRzrJ--
