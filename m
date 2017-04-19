@@ -1,26 +1,26 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-lf0-x22a.google.com ([2a00:1450:4010:c07::22a])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0goe-0004nG-AM
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 04:02:05 +0000
-Received: by mail-pg0-x243.google.com with SMTP id o123so2093662pga.1
- for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2017 21:01:41 -0700 (PDT)
-Date: Tue, 18 Apr 2017 21:01:38 -0700
-From: Eric Biggers <ebiggers3@gmail.com>
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Gwendal Grignou <gwendal@chromium.org>, hashimoto@chromium.org,
- ebiggers@google.com, linux-f2fs-devel@lists.sourceforge.net,
- linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
- tytso@mit.edu, linux-ext4@vger.kernel.org, kinaba@chromium.org
-Subject: Re: [f2fs-dev] [PATCH] fscrypt: use 32 bytes of encrypted filename
-Message-ID: <20170419040138.GA563@zzz>
-References: <20170418210642.6039-1-gwendal@chromium.org>
- <20170418230136.GA96152@gmail.com>
- <20170419001005.GA143911@gmail.com>
- <20170419014209.GB12215@jaegeuk.local>
+ id 1d0igL-0000eW-4G
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 06:01:39 +0000
+Received: by mail-lf0-x22a.google.com with SMTP id 75so6659675lfs.2
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2017 23:01:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170419014209.GB12215@jaegeuk.local>
+In-Reply-To: <20170418094220.290fb27f@bbrezillon>
+References: <1491810713-27795-1-git-send-email-peterpandong@micron.com>
+ <20170418094220.290fb27f@bbrezillon>
+From: Peter Pan <peterpansjtu@gmail.com>
+Date: Wed, 19 Apr 2017 14:01:13 +0800
+Message-ID: <CAAyFORKcPEv-23zxy=bo8gfGA1tTZHpZVhG2Eiy5Vn8Pa=2Ktg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] Introduction to SPI NAND framework
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marex@denx.de>
+Cc: Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Arnaud Mouiche <arnaud.mouiche@gmail.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ "linshunquan (A)" <linshunquan1@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,93 +30,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 18, 2017 at 06:42:09PM -0700, Jaegeuk Kim wrote:
-> Hi Eric,
-> 
-> On 04/18, Eric Biggers wrote:
-> > On Tue, Apr 18, 2017 at 04:01:36PM -0700, Eric Biggers wrote:
-> > > 
-> > > Strangely, f2fs and ubifs do not use the bytes from the filename at all when
-> > > trying to find a specific directory entry in this case.  So this patch doesn't
-> > > really affect them.  This seems unreliable; perhaps we should introduce a
-> > > function like "fscrypt_name_matches()" which all the filesystems could call?
-> > > Can any of the f2fs and ubifs developers explain why they don't look at any
-> > > bytes from the filename?
-> > > 
-> 
-> The fscrypt_setup_filename sets fname->hash in the bigname case, but doesn't
-> give fname->disk_name. If it's not such the bigname case, we check its name
-> since fname->hash is zero.
-> 
+Hi Boris and Marek,
 
-Yes, that's what it does now.  The question is, in the "bigname" case why
-doesn't f2fs check the 16 bytes of ciphertext in fname->crypto_buf too?  f2fs
-doesn't even use 'minor_hash'; it can't possibly be the case that there are
-never any collisions of a 32-bit hash in a directory, can it?
+On Tue, Apr 18, 2017 at 3:42 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> Hi Peter,
+>
+> On Mon, 10 Apr 2017 15:51:47 +0800
+> Peter Pan <peterpandong@micron.com> wrote:
+>
+>> First of all, thank Boris, Marek and Cyrille for your comments
+>> on v4 and thank Arnaud for your testing on v4. Since I'm quite
+>> busy last week, I failed to reply all the comments, I'm really
+>> sorry for that.
+>>
+>> According to Boris's suggestion, I rebased my patches on nand/next
+>> branch with Boris's generic NAND patches. This time I only send
+>> my SPI NAND patches out since it's the focus.
+>>
+>> I created my own branch for convenience[3]. You can find both
+>> my SPI NAND patches and Boris's generic NAND framework patches.
+>>
+>> This series introductes a SPI NAND framework.
+>> SPI NAND is a new NAND family device with SPI protocol as
+>> its interface. And its command set is totally different
+>> with parallel NAND.
+>>
+>> Our first attempt was more than 2 years ago[1]. At that
+>> time, I didn't make BBT shareable and there were too many
+>> duplicate code with parallel NAND, so that serie stoped.
+>> But the discussion never stops. Now Boris has a plan to
+>> make a generic NAND framework which can be shared with
+>> both parallel and SPI NAND. Now the first step of the
+>> new generic NAND framework is finished. And it is waiting
+>> for a user. After discussion with Boris. We both think it's
+>> time to rebuild SPI NAND framework based on the new NAND
+>> framework and send out for reviewing.
+>>
+>> This series is based on Boris's nand/generic branch[2], which
+>> is on 4.11-rc1. In this serie, BBT code is totally shared.
+>> Of course SPI NAND can share more code with parallel, this
+>> requires to put more in new NAND core (now only BBT included).
+>> I'd like to send this serie out first, then we can decide
+>> which part should be in new NAND core.
+>>
+>> This series only supports basic SPI NAND features and uses
+>> generic spi controller for data transfer, on-die ECC for data
+>> correction. Support advanced features and specific SPI NAND
+>> controller with hardware ECC is the next step.
+>>
+>> This series is tested on Xilinx Zedboard with Micron
+>> MT29F2G01ABAGDSF SPI NAND chip.
+>
+> I think we're almost good here. Just need to address the comments made
+> by Marek an I and you can send a v6 containing all the materials
+> (including my generic-NAND layer).
+>
+> If you don't mind, I'd recommend that we keep ECC support for later, or
+> at least separate the code in different patches so I can take
+> everything expect that if I'm not happy with the code.
+>
+> Hopefully, everything should be ready for 4.13 (finally :-)).
+>
+> Thanks for your patience.
 
-I actually tested it, and it definitely happens if you put a lot of files in an
-encrypted directory on f2fs.  An example with 100000 files:
+Right now I'm busy with other affairs and cannot go deep in your comments.
+I hope I can return to SPI NAND soon. I will try to reply the comments
+and send v6 out next month. Thanks for your effort on this series.
 
-# seq -f "edir/abcdefghijklmnopqrstuvwxyz012345%.0f" 100000 | xargs touch
-# find edir -type f | xargs stat -c %i | sort | uniq | wc -l
-100000
-# sync
-# echo 3 > /proc/sys/vm/drop_caches
-# keyctl new_session
-# find edir -type f | xargs stat -c %i | sort | uniq | wc -l
-99999
-
-So when I tried accessing the encrypted directory without the key, two dentries
-showed the same inode, due to a hash collision.
-
-Actually, checking the last 16 bytes of ciphertext currently wouldn't even help
-for those filenames since it's all the same, as they share a long common prefix:
-
-# ls -1  edir | head -n 4
-_++09VCAAAAgsQQf6Q5YgLgoO4f3PPSfb
-_++1UWDAAAAgsQQf6Q5YgLgoO4f3PPSfb
-_++2HAAAAAAgsQQf6Q5YgLgoO4f3PPSfb
-_++4UxBAAAAgsQQf6Q5YgLgoO4f3PPSfb
-
-But that's the bug, since the last two AES blocks are swapped when using
-ciphertext stealing.  We should at least be using the second-to-last block in
-which case we'd see:
-
-# ls -1  edir | head -n 4
-_++09VCAAAAw9VONwQEXOVv3RR,kOAKwB
-_++1UWDAAAAAHDi7c3QZxbiltjOo1m0,F
-_++2HAAAAAAAfd1Vx0oC31SmhzYpaYfwz
-_++4UxBAAAAwZxcWjzORdAef50FB9sKY4
-
-(In either case there are still a few A's at the beginning since f2fs doesn't
-set 'minor_hash'.  That's okay, but only if collisions are ruled out by other
-means.)
-
-> > -		/* encrypted case */
-> > -		de_name.name = d->filename[bit_pos];
-> > -		de_name.len = le16_to_cpu(de->name_len);
-> > -
-> > -		/* show encrypted name */
-> > -		if (fname->hash) {
-> > -			if (de->hash_code == cpu_to_le32(fname->hash))
-> > -				goto found;
-> > -		} else if (de_name.len == name->len &&
-> > -			de->hash_code == namehash &&
-> > -			!memcmp(de_name.name, name->name, name->len))
-> > +		if ((fname->hash == 0 ||
-> > +		     fname->hash == le32_to_cpu(de->hash_code)) &&
-> > +		    fscrypt_name_matches(fname, d->filename[bit_pos],
-> > +					 le16_to_cpu(de->name_len)))
-> 
-> BTW, this slips checking namehash?
-> 
-
-Yes that's a mistake.  Actually it seems that 'namehash' is the same as
-'fname->hash' when 'fname->hash' is nonzero, so the code should just be:
-
-	if (de->hash_code == namehash &&
-	    fscrypt_name_matches(fname, d->filename[bit_pos],
-				 le16_to_cpu(de->name_len)))
-		goto found;
-
-- Eric
+Peter Pan
