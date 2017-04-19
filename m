@@ -1,10 +1,10 @@
-Received: from 7.mo177.mail-out.ovh.net ([46.105.61.149])
+Received: from 6.mo177.mail-out.ovh.net ([46.105.51.249])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0qAJ-000503-Ka
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 14:01:09 +0000
+ id 1d0qAR-000515-4l
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 14:01:13 +0000
 Received: from player779.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo177.mail-out.ovh.net (Postfix) with ESMTP id 960E04E139
- for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 16:00:40 +0200 (CEST)
+ by mo177.mail-out.ovh.net (Postfix) with ESMTP id CB29D530C5
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 16:00:48 +0200 (CEST)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
@@ -14,9 +14,12 @@ Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH 0/2] mtd: spi-nor: add new definitions to chip table
-Date: Wed, 19 Apr 2017 16:00:18 +0200
-Message-Id: <1492610420-12397-1-git-send-email-clg@kaod.org>
+Subject: [PATCH 1/2] mtd: spi-nor: Add support for Macronix mx66l1g45g spi
+ flash
+Date: Wed, 19 Apr 2017 16:00:19 +0200
+Message-Id: <1492610420-12397-2-git-send-email-clg@kaod.org>
+In-Reply-To: <1492610420-12397-1-git-send-email-clg@kaod.org>
+References: <1492610420-12397-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -29,22 +32,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+These modules are used on the OpenPOWER Witherspoon systems to hold
+the POWER9 host firmware image. The SPI_NOR_DUAL_READ flags is added
+for the Aspeed SoCs which do not support QUAD reads.
 
-Here are a couple of patches adding new definitions to the spi-nor
-chip table.
+Signed-off-by: Cédric Le Goater <clg@kaod.org>
+---
 
-Thanks,
+ The line is over 80 characters but it looks better.
 
-C.
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Cédric Le Goater (2):
-  mtd: spi-nor: Add support for Macronix mx66l1g45g spi flash
-  mtd: spi-nor: add Dual and Quad read mode support to some flash
-    devices
-
- drivers/mtd/spi-nor/spi-nor.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 747645c74134..ee777df4466c 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1020,6 +1020,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+ 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
++	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+ 
+ 	/* Micron */
 -- 
 2.7.4
