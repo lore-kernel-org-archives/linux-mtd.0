@@ -1,26 +1,21 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0tIH-00079l-Rs
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 17:21:32 +0000
-Subject: Re: [PATCH] fscrypt: use 32 bytes of encrypted filename
-To: Eric Biggers <ebiggers3@gmail.com>
-References: <20170418210642.6039-1-gwendal@chromium.org>
- <20170418230136.GA96152@gmail.com>
- <CAFLxGvwtFQW=NL3NrNHx-vWR3wSUtewnBRy1XzMqRNTV8f5vwQ@mail.gmail.com>
- <20170419171633.GB89688@gmail.com>
-Cc: Gwendal Grignou <gwendal@chromium.org>, hashimoto@chromium.org,
- Eric Biggers <ebiggers@google.com>, linux-f2fs-devel@lists.sourceforge.net,
- linux-fscrypt@vger.kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
- kinaba@chromium.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <f415bfef-12d9-6444-9e94-9ae3e3363cfb@nod.at>
-Date: Wed, 19 Apr 2017 19:21:05 +0200
+ id 1d0uTK-0004mM-Up
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 18:37:01 +0000
+Received: by mail-io0-x243.google.com with SMTP id d203so6067535iof.2
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 11:36:37 -0700 (PDT)
+Date: Wed, 19 Apr 2017 11:36:34 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Colin King <colin.king@canonical.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] jffs2: fix spelling mistake: "requestied" -> "requested"
+Message-ID: <20170419183634.GA20555@google.com>
+References: <20170223003400.9617-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20170419171633.GB89688@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170223003400.9617-1-colin.king@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,32 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 19.04.2017 um 19:16 schrieb Eric Biggers:
-> On Wed, Apr 19, 2017 at 03:40:13PM +0200, Richard Weinberger wrote:
->>> Strangely, f2fs and ubifs do not use the bytes from the filename at all when
->>> trying to find a specific directory entry in this case.  So this patch doesn't
->>> really affect them.  This seems unreliable; perhaps we should introduce a
->>> function like "fscrypt_name_matches()" which all the filesystems could call?
->>> Can any of the f2fs and ubifs developers explain why they don't look at any
->>> bytes from the filename?
->>
->> Not sure if I understand you correctly, but for long filenames UBIFS
->> does a lookup
->> by hash/cookie, not by filename.
->>
+On Thu, Feb 23, 2017 at 12:34:00AM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Well, like I said to Jaegeuk for F2FS, that's what the code does, but _why_?
-> Like F2FS, it's probably not the case that the hash is sufficient to reliably
-> identify a directory entry.  Granted, UBIFS does it a lot better than F2FS since
-> UBIFS uses two 32-bit hashes rather than just one, but it seems the second hash
-> may be neither necessary nor sufficient to identify a specific directory entry,
-> and it should be looking at the bytes of ciphertext from the filename instead,
-> like what ext4 does.  (Provided that is fixed to account for how CTS mode
-> encryption works.)
+> trivial fix to spelling mistake in JFFS2_ERROR message
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  fs/jffs2/readinode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+> index 06a71db..40f3fd4 100644
+> --- a/fs/jffs2/readinode.c
+> +++ b/fs/jffs2/readinode.c
+> @@ -1366,7 +1366,7 @@ int jffs2_do_read_inode(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+>  		jffs2_add_ino_cache(c, f->inocache);
+>  	}
+>  	if (!f->inocache) {
+> -		JFFS2_ERROR("requestied to read an nonexistent ino %u\n", ino);
+> +		JFFS2_ERROR("requested to read an nonexistent ino %u\n", ino);
 
-Let me dig into this, maybe I made a boo boo.
-The idea was looking up by the filename hash and resolving
-possible collisions using the secondary hash.
+Also:
 
-Thanks,
-//richard
+s/an nonexistent/a nonexisten/
+
+Made that fixup and pushed to l2-mtd.git. Thanks.
+
+Brian
+
+>  		return -ENOENT;
+>  	}
+>  
+> -- 
+> 2.10.2
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
