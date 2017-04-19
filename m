@@ -1,31 +1,19 @@
-Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
+Received: from 14.mo3.mail-out.ovh.net ([188.165.43.98])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0wLx-000796-I9
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 20:37:31 +0000
-Received: by mail-io0-x243.google.com with SMTP id x86so7200935ioe.3
- for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 13:37:09 -0700 (PDT)
-Date: Wed, 19 Apr 2017 13:37:05 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V5 1/3] dt-bindings: mtd: document linux,part-probe
- property
-Message-ID: <20170419203705.GF20555@google.com>
-References: <20170417182853.24281-1-zajec5@gmail.com>
- <20170417194746.10697-1-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170417194746.10697-1-zajec5@gmail.com>
+ id 1d0wSh-0001F6-Mr
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 20:44:30 +0000
+Received: from player771.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo3.mail-out.ovh.net (Postfix) with ESMTP id 3C070CAD4A
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 22:44:04 +0200 (CEST)
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+To: computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH] MAINTAINERS: change email address from atmel.com to wedev4u.fr
+Date: Wed, 19 Apr 2017 22:43:52 +0200
+Message-Id: <20170419204352.6485-1-cyrille.pitchen@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,67 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 
-On Mon, Apr 17, 2017 at 09:47:44PM +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> Support for this property has been introduced in 2010 with commit
-> 9d5da3a9b849 ("mtd: extend physmap_of to let the device tree specify the
-> parition probe") but it was never documented. Fix this by adding a
-> proper description and example.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  Documentation/devicetree/bindings/mtd/common.txt | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documentation/devicetree/bindings/mtd/common.txt
-> index fc068b923d7a..1ada70e718b2 100644
-> --- a/Documentation/devicetree/bindings/mtd/common.txt
-> +++ b/Documentation/devicetree/bindings/mtd/common.txt
-> @@ -6,10 +6,17 @@ Optional properties:
->    controller based name) in order to ease flash device identification
->    and/or describe what they are used for.
->  
-> +- linux,part-probe: if present, this property should contain a list of strings
-> +  with partition probes to be used for the flash device. A role of partition
-> +  probe (parser) is to read/construct partition table and register found
-> +  partitions. Getting partition table may be platform or device specific so
-> +  various devices may use various Linux drivers for this purpose.
+Switch to my alternative address as primary address.
 
-Have you reviewed the old threads about this? I thought I already
-discouraged extending this binding to be generic. Particularly, we do
-*not* want to codify things like 'linux,part-probe = "bcm47xxpart"',
-which doesn't follow any accepted practice about naming. And you've also
-failed to document any actual strings to put here, which hides the fact
-that you're opening a can of worms.
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+---
 
-Piece of a previous thread:
-http://lists.infradead.org/pipermail/linux-mtd/2015-October/062613.html
-[PATCH] mtd: document linux-specific partition parser DT binding
+Hi all,
 
-I attempted to resolve that here, but never made time to address the few
-not-so-constructive comments I received:
+I still work at Atmel/Microchip at least for few more months but currently
+my Atmel account is broken for few weeks now. I thought it would have been
+fix quickly but apparently it is not.
 
-https://mail-archive.com/linux-kernel@vger.kernel.org/msg1035539.html
-[RFC PATCH 0/7] mtd: partitions: add of_match_table support
+I'd planned to move my alternative email anyway, so this can be done now.
 
-I'd still prefer that approach to supporting this shortcut for all MTDs.
+My appologies!
 
-Brian
+Best regards,
 
-> +
->  Example:
->  
->  	flash@0 {
->  		label = "System-firmware";
-> +		linux,part-probe = "cmdlinepart", "ofpart";
->  
->  		/* flash type specific properties */
->  	};
-> -- 
-> 2.11.0
-> 
+Cyrille
+
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c265a5fe4848..cea31977d401 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8224,7 +8224,7 @@ M:	Brian Norris <computersforpeace@gmail.com>
+ M:	Boris Brezillon <boris.brezillon@free-electrons.com>
+ M:	Marek Vasut <marek.vasut@gmail.com>
+ M:	Richard Weinberger <richard@nod.at>
+-M:	Cyrille Pitchen <cyrille.pitchen@atmel.com>
++M:	Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+@@ -11876,7 +11876,7 @@ S:	Maintained
+ F:	drivers/clk/spear/
+ 
+ SPI NOR SUBSYSTEM
+-M:	Cyrille Pitchen <cyrille.pitchen@atmel.com>
++M:	Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+ M:	Marek Vasut <marek.vasut@gmail.com>
+ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
+-- 
+2.9.3
