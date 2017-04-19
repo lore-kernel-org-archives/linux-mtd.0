@@ -1,29 +1,22 @@
-Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0rDL-0001gZ-Vj
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 15:08:18 +0000
-Received: by mail-it0-x242.google.com with SMTP id e132so3560190ite.2
- for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 08:07:55 -0700 (PDT)
+Received: from da1vs01.rockwellcollins.com ([205.175.227.27])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0rFs-0001TF-Qp
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 15:10:55 +0000
+Received: by mail-io0-f197.google.com with SMTP id l196so17168227ioe.19
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 08:10:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1ce8f0b6-d225-3c60-433f-7e67cc7ab0ec@gmail.com>
-References: <20170418142127.23301-1-andrew.smirnov@gmail.com>
- <20170418142127.23301-3-andrew.smirnov@gmail.com>
- <47e7cefa-b4b8-4557-0e95-f43c7431c4de@gmail.com>
- <CAHQ1cqETHoXeuiz7BUmMjoy9U4Koy65V=guppCt7bensKSPk8w@mail.gmail.com>
- <1ce8f0b6-d225-3c60-433f-7e67cc7ab0ec@gmail.com>
-From: Andrey Smirnov <andrew.smirnov@gmail.com>
-Date: Wed, 19 Apr 2017 08:07:53 -0700
-Message-ID: <CAHQ1cqG7JhGA5F0MFp5AoQYRMo7vvOnr4SD084YMwf_pb2WFzw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] mtd: dataflash: Make use of "extened device
- information"
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Chris Healy <cphealy@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <CADFuHZ6oRRKFnbvJqQDywaLO=P=WR+q33AAve=y5AmdVkeUKPQ@mail.gmail.com>
+References: <CADFuHZ6xb=M_zRkktnq2b8QBOhq-WDsqgzViPHU1g8Gj9M3E-g@mail.gmail.com>
+ <CAFLxGvx6S8V7c8YYR2-G7+hDDcRi-0Cnk+EWeWWN9i2oy-DVvQ@mail.gmail.com>
+ <CADFuHZ54cG32S1-3PA5q_5P1od1rBa5=3YeB1jLhB+Jzm2f0Ng@mail.gmail.com>
+ <c9b139cc-7bf0-836d-69cf-4889a6c35ec2@nod.at>
+ <CADFuHZ6oRRKFnbvJqQDywaLO=P=WR+q33AAve=y5AmdVkeUKPQ@mail.gmail.com>
+From: Ronak Desai <ronak.desai@rockwellcollins.com>
+Date: Wed, 19 Apr 2017 10:10:19 -0500
+Message-ID: <CADFuHZ7PC8AOeS6ojiPZD_6OCteCF32igpjTzYdpWff56LofeQ@mail.gmail.com>
+Subject: Re: Regarding UBI fastmap data CRC failure
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,201 +27,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 19, 2017 at 1:47 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
-> On 04/19/2017 04:58 AM, Andrey Smirnov wrote:
->> On Tue, Apr 18, 2017 at 11:31 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
->>> On 04/18/2017 04:21 PM, Andrey Smirnov wrote:
->>>> In anticipation of supporting chips that need it, extend the size of
->>>> struct flash_info's 'jedec_id' field to make room 2 byte of extended
->>>> device information as well as add code to fetch this data during
->>>> jedec_probe().
->>>>
->>>> Cc: cphealy@gmail.com
->>>> Cc: David Woodhouse <dwmw2@infradead.org>
->>>> Cc: Brian Norris <computersforpeace@gmail.com>
->>>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
->>>> Cc: Marek Vasut <marek.vasut@gmail.com>
->>>> Cc: Richard Weinberger <richard@nod.at>
->>>> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>>> Cc: linux-kernel@vger.kernel.org
->>>> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
->>>> ---
->>>>
->>>> Changes since [v1]:
->>>>
->>>>       - Formatting
->>>>
->>>> [v1] http://lkml.kernel.org/r/20170411161722.11164-1-andrew.smirnov@gmail.com
->>>>
->>>>
->>>>  drivers/mtd/devices/mtd_dataflash.c | 113 +++++++++++++++++++++---------------
->>>>  1 file changed, 65 insertions(+), 48 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
->>>> index 5b7a8c3..5d694a4 100644
->>>> --- a/drivers/mtd/devices/mtd_dataflash.c
->>>> +++ b/drivers/mtd/devices/mtd_dataflash.c
->>>> @@ -690,7 +690,7 @@ struct flash_info {
->>>>       /* JEDEC id has a high byte of zero plus three data bytes:
->>>>        * the manufacturer id, then a two byte device id.
->>>>        */
->>>> -     u32             jedec_id;
->>>> +     u64             jedec_id;
->>>>
->>>>       /* The size listed here is what works with OP_ERASE_PAGE. */
->>>>       unsigned        nr_pages;
->>>> @@ -713,63 +713,34 @@ static struct flash_info dataflash_data[] = {
->>>>        * These newer chips also support 128-byte security registers (with
->>>>        * 64 bytes one-time-programmable) and software write-protection.
->>>>        */
->>>> -     { "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS},
->>>> -     { "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>> +     { "AT45DB011B",  0x1f22000000, 512, 264, 9, SUP_POW2PS},
->>>> +     { "at45db011d",  0x1f22000000, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>
->>>> -     { "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
->>>> -     { "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>> +     { "AT45DB021B",  0x1f23000000, 1024, 264, 9, SUP_POW2PS},
->>>> +     { "at45db021d",  0x1f23000000, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>
->>>> -     { "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
->>>> -     { "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>> +     { "AT45DB041x",  0x1f24000000, 2048, 264, 9, SUP_POW2PS},
->>>> +     { "at45db041d",  0x1f24000000, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>
->>>> -     { "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
->>>> -     { "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>> +     { "AT45DB081B",  0x1f25000000, 4096, 264, 9, SUP_POW2PS},
->>>> +     { "at45db081d",  0x1f25000000, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
->>>>
->>>> -     { "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
->>>> -     { "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>> +     { "AT45DB161x",  0x1f26000000, 4096, 528, 10, SUP_POW2PS},
->>>> +     { "at45db161d",  0x1f26000000, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>>
->>>> -     { "AT45DB321x",  0x1f2700, 8192, 528, 10, 0},           /* rev C */
->>>> +     { "AT45DB321x",  0x1f27000000, 8192, 528, 10, 0},       /* rev C */
->>>>
->>>> -     { "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
->>>> -     { "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>> +     { "AT45DB321x",  0x1f27010000, 8192, 528, 10, SUP_POW2PS},
->>>> +     { "at45db321d",  0x1f27010000, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
->>>>
->>>> -     { "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
->>>> -     { "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->>>> +     { "AT45DB642x",  0x1f28000000, 8192, 1056, 11, SUP_POW2PS},
->>>> +     { "at45db642d",  0x1f28000000, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
->>>>  };
->>>>
->>>> -static struct flash_info *jedec_probe(struct spi_device *spi)
->>>> +static struct flash_info *jedec_lookup(struct spi_device *spi, u64 jedec)
->>>>  {
->>>> -     int ret, i;
->>>> -     u8 code = OP_READ_ID;
->>>> -     u8 id[3];
->>>> -     u32 jedec;
->>>> +     int status, i;
->>>>       struct flash_info *info;
->>>> -     int status;
->>>> -
->>>> -     /*
->>>> -      * JEDEC also defines an optional "extended device information"
->>>> -      * string for after vendor-specific data, after the three bytes
->>>> -      * we use here.  Supporting some chips might require using it.
->>>> -      *
->>>> -      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
->>>> -      * That's not an error; only rev C and newer chips handle it, and
->>>> -      * only Atmel sells these chips.
->>>> -      */
->>>> -     ret = spi_write_then_read(spi, &code, 1, id, 3);
->>>> -     if (ret < 0) {
->>>> -             pr_debug("%s: error %d reading JEDEC ID\n",
->>>> -                     dev_name(&spi->dev), ret);
->>>> -             return ERR_PTR(ret);
->>>> -     }
->>>> -
->>>> -     if (id[0] != CFI_MFR_ATMEL)
->>>> -             return NULL;
->>>> -
->>>> -     jedec = id[0];
->>>> -     jedec = jedec << 8;
->>>> -     jedec |= id[1];
->>>> -     jedec = jedec << 8;
->>>> -     jedec |= id[2];
->>>
->>> Hm, the diff again screwed this up, oh well ...
->>>
->>>>       for (i = 0, info = dataflash_data;
->>>>                       i < ARRAY_SIZE(dataflash_data);
->>>> @@ -799,12 +770,58 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
->>>>               }
->>>>       }
->>>>
->>>> +     return NULL;
->>>> +}
->>>> +
->>>> +static struct flash_info *jedec_probe(struct spi_device *spi)
->>>> +{
->>>> +     int ret;
->>>> +     u8 code = OP_READ_ID;
->>>> +     u8 id[8] = {0};
->>>> +     const unsigned int id_size = 5;
->>>> +     const unsigned int first_byte = sizeof(id) - id_size;
->>>> +     const u64 eid_mask = GENMASK_ULL(63, 16);
->>>> +     u64 jedec;
->>>> +     struct flash_info *info;
->>>> +
->>>> +     /*
->>>> +      * JEDEC also defines an optional "extended device information"
->>>> +      * string for after vendor-specific data, after the three bytes
->>>> +      * we use here.  Supporting some chips might require using it.
->>>> +      *
->>>> +      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
->>>> +      * That's not an error; only rev C and newer chips handle it, and
->>>> +      * only Atmel sells these chips.
->>>> +      */
->>>> +     ret = spi_write_then_read(spi, &code, 1, &id[first_byte], id_size);
->>>> +     if (ret < 0) {
->>>> +             pr_debug("%s: error %d reading JEDEC ID\n",
->>>> +                     dev_name(&spi->dev), ret);
->>>
->>> I think you can turn this into:
->>>
->>> dev_err(&spi->dev, "error %d reading JEDEC ID\n", ret);
->>
->> OK, will do it in a separate patch, since this is original code.
->
-> OK
->
->>>> +             return ERR_PTR(ret);
->>>> +     }
->>>> +
->>>> +     if (id[first_byte] != CFI_MFR_ATMEL)
->>>> +             return NULL;
->>>> +
->>>> +     jedec = be64_to_cpup((__be64 *)id);
->>>> +
->>>> +     info = jedec_lookup(spi, jedec);
->>>> +     if (info)
->>>> +             return info;
->>>> +
->>>> +     /* Clear extended id bits and try to find a match again */
->>>> +     jedec &= eid_mask;
->>>
->>> Wouldn't that be jedec &= ~eid_mask; (with a tilde) if you want to clear
->>> them ?
->>
->> eid_mask is generated as bits 63 to 16 with GENMASK_ULL, so bits 15 to
->> 0 should already be zeroed out. I can rename it to eid_mask_inverted
->> so it's less confusing.
->
-> I think that's a good idea and you can make the mask u32 instead of u64.
-> But isn't eid_mask_inverted the same as id_mask ?
+Best Regards,
+Ronak Desai
 
-I just realized that "eid_mask" is used only in one place and I don't
-gain anything by having that variable, so I think what I'd do is use
-GENMASK in-place, then it should be clear why there's no bit inversion
-and there's no dilemma on how to name the variable.
 
-Thanks,
-Andrey Smirnov
+
+On Tue, Mar 28, 2017 at 8:58 AM, Ronak Desai
+<ronak.desai@rockwellcollins.com> wrote:
+> On Wed, Mar 22, 2017 at 5:49 PM, Richard Weinberger <richard@nod.at> wrote:
+>> Ronak Desai,
+>>
+>> Am 21.03.2017 um 17:31 schrieb Ronak Desai:
+>>> On Mon, Mar 20, 2017 at 5:56 PM, Richard Weinberger
+>>> <richard.weinberger@gmail.com> wrote:
+>>>> On Mon, Mar 20, 2017 at 10:47 PM, Ronak Desai
+>>>> <ronak.desai@rockwellcollins.com> wrote:
+>>>>> Hi All,
+>>>>>
+>>>>> In one of the products with MLC NAND flash, we are using UBI
+>>>>> filesystem with kernel 3.12.
+>>>>
+>>>> MLC NAND is currently not supported.
+>>>
+>>> First of all, thanks for your response and your truly amazing
+>>> contribution in UBI.
+>>
+>> Thanks. :-)
+>>
+>>> I know that UBIFS requires a whole lot of changes to handle "program
+>>> disturb", "read distrurb" and "paired pages" problem on MLC NANDs.
+>>> But, apart from this, we have makesure that we use 256 wear-leveling
+>>> threshold.
+>>
+>> How do you handle paired pages?
+>> A powercut can still damage UBI and UBIFS.
+>>
+> We received patch-sets from Micron for paired page issue.
+>> [...]
+>>
+>>> That is true that our kernel is old but at this point and time it's
+>>> not a viable options for us to upgrade the kernel version. And agree
+>>> with your point about MLC but in months of use, we have seen this
+>>> continuous fastmap failure issue only once and apart from that UBIFS
+>>> works without any other issues.
+>>>
+>>> I see your changes on base fastmap implementation, which I am planning
+>>> to backport but it will be really difficult to backport the whole UBI
+>>> subsystem. So, if you can point to specific patches/changes to avoid
+>>> "fastmap data CRC failure" issue then it will be a great help.
+>>
+>> I fear it is not that easy. Fastmap saw many fixes and improvements
+>> other the time. The first version was rather buggy.
+>> And we made a stupid mistake at the beginning, we did not mark fixes
+>> for stable processing since Fastmap was considered
+>> as experimental. That's why you can't just backport all patches that
+>> have a stable tag.
+>> On the other hand, backporting the whole UBI subsystem is not that
+>> complicated. It has very few dependencies.
+>> U-Boot folks do this on a regular basis.
+>>
+> So, I found out a way to reproduce and fix it. If I powercycle around
+> the time when UBI performs recovery then it ends up with the CRC
+> failure issue and it can not recover from it. This behavior is with
+> 3.12 kernel. Then I started patching UBI with the fixes related to
+> fastmap and fastmap WL, and got a state where UBI encounters the same
+> problem but on subsequent boot it recovers from it.
+>
+> I need to perform more testing to finalize the changes though. I
+> appreciate your time for answering my questions.
+
+So, I confirm that after doing a regression with back-ported UBI
+subsystem I don't see this issue anymore on kernel 3.12.
+
+Also, I wanted to test whether the wear leveling is working correctly
+or not. Is there any tests/utility which I can cross compile and run
+to test these algorithms ?
+
+>
+> Thanks,
+> Ronak
+>
+>> HTH,
+>> //richard
