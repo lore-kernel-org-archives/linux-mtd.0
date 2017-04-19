@@ -1,28 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d0wdl-0002lz-JS
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 20:55:56 +0000
-Date: Wed, 19 Apr 2017 22:55:30 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>, Linus Walleij
- <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-Subject: Re: [PATCH V5 1/3] dt-bindings: mtd: document linux,part-probe
- property
-Message-ID: <20170419225530.1ca228f7@bbrezillon>
-In-Reply-To: <20170419203705.GF20555@google.com>
-References: <20170417182853.24281-1-zajec5@gmail.com>
- <20170417194746.10697-1-zajec5@gmail.com>
- <20170419203705.GF20555@google.com>
+Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0wZq-0001wa-Uh
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 20:51:53 +0000
+Received: by mail-io0-x241.google.com with SMTP id d203so7370983iof.2
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 13:51:30 -0700 (PDT)
+Date: Wed, 19 Apr 2017 13:51:26 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: dwmw2@infradead.org, richard@nod.at, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH] MAINTAINERS: change email address from atmel.com to
+ wedev4u.fr
+Message-ID: <20170419205126.GG20555@google.com>
+References: <20170419204352.6485-1-cyrille.pitchen@wedev4u.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170419204352.6485-1-cyrille.pitchen@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,61 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Apr 2017 13:37:05 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+On Wed, Apr 19, 2017 at 10:43:52PM +0200, Cyrille Pitchen wrote:
+> From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> 
+> Switch to my alternative address as primary address.
+> 
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> ---
+> 
+> Hi all,
+> 
+> I still work at Atmel/Microchip at least for few more months but currently
+> my Atmel account is broken for few weeks now. I thought it would have been
+> fix quickly but apparently it is not.
+> 
+> I'd planned to move my alternative email anyway, so this can be done now.
+> 
+> My appologies!
+> 
+> Best regards,
+> 
+> Cyrille
 
-> Hi,
->=20
-> On Mon, Apr 17, 2017 at 09:47:44PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
-> > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> >=20
-> > Support for this property has been introduced in 2010 with commit
-> > 9d5da3a9b849 ("mtd: extend physmap_of to let the device tree specify the
-> > parition probe") but it was never documented. Fix this by adding a
-> > proper description and example.
-> >=20
-> > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >  Documentation/devicetree/bindings/mtd/common.txt | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/mtd/common.txt b/Documen=
-tation/devicetree/bindings/mtd/common.txt
-> > index fc068b923d7a..1ada70e718b2 100644
-> > --- a/Documentation/devicetree/bindings/mtd/common.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/common.txt
-> > @@ -6,10 +6,17 @@ Optional properties:
-> >    controller based name) in order to ease flash device identification
-> >    and/or describe what they are used for.
-> > =20
-> > +- linux,part-probe: if present, this property should contain a list of=
- strings
-> > +  with partition probes to be used for the flash device. A role of par=
-tition
-> > +  probe (parser) is to read/construct partition table and register fou=
-nd
-> > +  partitions. Getting partition table may be platform or device specif=
-ic so
-> > +  various devices may use various Linux drivers for this purpose. =20
->=20
-> Have you reviewed the old threads about this? I thought I already
-> discouraged extending this binding to be generic. Particularly, we do
-> *not* want to codify things like 'linux,part-probe =3D "bcm47xxpart"',
-> which doesn't follow any accepted practice about naming. And you've also
-> failed to document any actual strings to put here, which hides the fact
-> that you're opening a can of worms.
->=20
-> Piece of a previous thread:
-> http://lists.infradead.org/pipermail/linux-mtd/2015-October/062613.html
-> [PATCH] mtd: document linux-specific partition parser DT binding
->=20
-> I attempted to resolve that here, but never made time to address the few
-> not-so-constructive comments I received:
->=20
-> https://mail-archive.com/linux-kernel@vger.kernel.org/msg1035539.html
-> [RFC PATCH 0/7] mtd: partitions: add of_match_table support
-
-Oops, completely forgot you had proposed an alternative solution. Sorry
-about that.
+Applied to l2-mtd.git
