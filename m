@@ -1,30 +1,27 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
+Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0sEm-00051W-Bx
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 16:13:51 +0000
-Received: by mail-wr0-x241.google.com with SMTP id l44so3846468wrc.2
- for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 09:13:27 -0700 (PDT)
-Subject: Re: [PATCH v3 3/6] mtd: dataflash: Replace pr_debug, printk with
- dev_* functions
-To: Andrey Smirnov <andrew.smirnov@gmail.com>
-References: <20170419152305.17226-1-andrew.smirnov@gmail.com>
- <20170419152305.17226-3-andrew.smirnov@gmail.com>
- <2033d520-c908-0d89-e17f-b55f7210b69d@gmail.com>
- <CAHQ1cqHeKYVzQEoCXGWsnEpimXt+RyCyTj2xhit77sxgRJxkSA@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Chris Healy <cphealy@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-kernel <linux-kernel@vger.kernel.or>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <e22628d5-faeb-7e2d-abe8-906d708d3e8c@gmail.com>
-Date: Wed, 19 Apr 2017 18:13:25 +0200
+ id 1d0tDt-0002ey-HH
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 17:16:59 +0000
+Received: by mail-io0-x241.google.com with SMTP id x86so5326624ioe.3
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 10:16:37 -0700 (PDT)
+Date: Wed, 19 Apr 2017 10:16:33 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Gwendal Grignou <gwendal@chromium.org>, hashimoto@chromium.org,
+ Eric Biggers <ebiggers@google.com>, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fscrypt@vger.kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+ kinaba@chromium.org
+Subject: Re: [PATCH] fscrypt: use 32 bytes of encrypted filename
+Message-ID: <20170419171633.GB89688@gmail.com>
+References: <20170418210642.6039-1-gwendal@chromium.org>
+ <20170418230136.GA96152@gmail.com>
+ <CAFLxGvwtFQW=NL3NrNHx-vWR3wSUtewnBRy1XzMqRNTV8f5vwQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHQ1cqHeKYVzQEoCXGWsnEpimXt+RyCyTj2xhit77sxgRJxkSA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvwtFQW=NL3NrNHx-vWR3wSUtewnBRy1XzMqRNTV8f5vwQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,52 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/19/2017 05:50 PM, Andrey Smirnov wrote:
-> On Wed, Apr 19, 2017 at 8:33 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
->> On 04/19/2017 05:23 PM, Andrey Smirnov wrote:
->>> Lion's share of calls to pr_debug in this driver follow the pattern of
->>> pr_debug("%s <message>", dev_name(<dev>), <arguments>), which should
->>> be semantically identical to dev_dbg(<dev>, "<message>", <arguments>),
->>> so replace such occurencies to simplify the code.
->>>
->>> Convert the small minority of pr_debug that do not follow pattern from
->>> above to use dev_dbg as well, for the sake of consistency.
->>>
->>> Convert similar patter of printk(KERN_ERR, "%s: ...", dev_name(...),
->>> ...) to use dev_err instead.
->>>
->>> No functional change intended.
->>>
->>> Cc: cphealy@gmail.com
->>> Cc: David Woodhouse <dwmw2@infradead.org>
->>> Cc: Brian Norris <computersforpeace@gmail.com>
->>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
->>> Cc: Marek Vasut <marek.vasut@gmail.com>
->>> Cc: Richard Weinberger <richard@nod.at>
->>> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>> Cc: linux-kernel@vger.kernel.or
->>> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
->>> ---
->>
->> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
->>
->> btw where is 1/6 and 2/6 ?
+On Wed, Apr 19, 2017 at 03:40:13PM +0200, Richard Weinberger wrote:
+> > Strangely, f2fs and ubifs do not use the bytes from the filename at all when
+> > trying to find a specific directory entry in this case.  So this patch doesn't
+> > really affect them.  This seems unreliable; perhaps we should introduce a
+> > function like "fscrypt_name_matches()" which all the filesystems could call?
+> > Can any of the f2fs and ubifs developers explain why they don't look at any
+> > bytes from the filename?
 > 
-> Sorry, looks like git send-mail didn't pick up Acked-by tag to be
-> added to CC list. They are here:
-
-Yeah, git send-email doesn't CC people in the Ack list. Keep the CC: tag
-please.
-
-> https://marc.info/?l=linux-kernel&m=149261547916625
-> https://marc.info/?l=linux-kernel&m=149261543416614
+> Not sure if I understand you correctly, but for long filenames UBIFS
+> does a lookup
+> by hash/cookie, not by filename.
 > 
->>
->> --
->> Best regards,
->> Marek Vasut
 
+Well, like I said to Jaegeuk for F2FS, that's what the code does, but _why_?
+Like F2FS, it's probably not the case that the hash is sufficient to reliably
+identify a directory entry.  Granted, UBIFS does it a lot better than F2FS since
+UBIFS uses two 32-bit hashes rather than just one, but it seems the second hash
+may be neither necessary nor sufficient to identify a specific directory entry,
+and it should be looking at the bytes of ciphertext from the filename instead,
+like what ext4 does.  (Provided that is fixed to account for how CTS mode
+encryption works.)
 
--- 
-Best regards,
-Marek Vasut
+- Eric
