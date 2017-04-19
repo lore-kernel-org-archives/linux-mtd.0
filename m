@@ -1,23 +1,21 @@
-Received: from da1vs01.rockwellcollins.com ([205.175.227.27])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0rFs-0001TF-Qp
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 15:10:55 +0000
-Received: by mail-io0-f197.google.com with SMTP id l196so17168227ioe.19
- for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 08:10:20 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CADFuHZ6oRRKFnbvJqQDywaLO=P=WR+q33AAve=y5AmdVkeUKPQ@mail.gmail.com>
-References: <CADFuHZ6xb=M_zRkktnq2b8QBOhq-WDsqgzViPHU1g8Gj9M3E-g@mail.gmail.com>
- <CAFLxGvx6S8V7c8YYR2-G7+hDDcRi-0Cnk+EWeWWN9i2oy-DVvQ@mail.gmail.com>
- <CADFuHZ54cG32S1-3PA5q_5P1od1rBa5=3YeB1jLhB+Jzm2f0Ng@mail.gmail.com>
- <c9b139cc-7bf0-836d-69cf-4889a6c35ec2@nod.at>
- <CADFuHZ6oRRKFnbvJqQDywaLO=P=WR+q33AAve=y5AmdVkeUKPQ@mail.gmail.com>
-From: Ronak Desai <ronak.desai@rockwellcollins.com>
-Date: Wed, 19 Apr 2017 10:10:19 -0500
-Message-ID: <CADFuHZ7PC8AOeS6ojiPZD_6OCteCF32igpjTzYdpWff56LofeQ@mail.gmail.com>
-Subject: Re: Regarding UBI fastmap data CRC failure
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0rSP-0003Jy-5W
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 15:23:51 +0000
+Received: by mail-it0-x244.google.com with SMTP id e132so3686019ite.2
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 08:23:28 -0700 (PDT)
+From: Andrey Smirnov <andrew.smirnov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Andrey Smirnov <andrew.smirnov@gmail.com>, cphealy@gmail.com,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/6] mtd: dataflash: Replace C99 types with their kernel
+ counterparts
+Date: Wed, 19 Apr 2017 08:23:00 -0700
+Message-Id: <20170419152305.17226-1-andrew.smirnov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,85 +25,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Best Regards,
-Ronak Desai
+No functional change intended.
+
+Cc: cphealy@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-kernel@vger.kernel.org
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+---
+
+Changes since [v2]:
+
+	- Re-worded commit message
+
+	- Collected Acked-by from Marek
+
+Not present in v1
+
+[v2]: http://lkml.kernel.org/r/20170418142127.23301-1-andrew.smirnov@gmail.com
 
 
+ drivers/mtd/devices/mtd_dataflash.c | 40 ++++++++++++++++++-------------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
 
-On Tue, Mar 28, 2017 at 8:58 AM, Ronak Desai
-<ronak.desai@rockwellcollins.com> wrote:
-> On Wed, Mar 22, 2017 at 5:49 PM, Richard Weinberger <richard@nod.at> wrote:
->> Ronak Desai,
->>
->> Am 21.03.2017 um 17:31 schrieb Ronak Desai:
->>> On Mon, Mar 20, 2017 at 5:56 PM, Richard Weinberger
->>> <richard.weinberger@gmail.com> wrote:
->>>> On Mon, Mar 20, 2017 at 10:47 PM, Ronak Desai
->>>> <ronak.desai@rockwellcollins.com> wrote:
->>>>> Hi All,
->>>>>
->>>>> In one of the products with MLC NAND flash, we are using UBI
->>>>> filesystem with kernel 3.12.
->>>>
->>>> MLC NAND is currently not supported.
->>>
->>> First of all, thanks for your response and your truly amazing
->>> contribution in UBI.
->>
->> Thanks. :-)
->>
->>> I know that UBIFS requires a whole lot of changes to handle "program
->>> disturb", "read distrurb" and "paired pages" problem on MLC NANDs.
->>> But, apart from this, we have makesure that we use 256 wear-leveling
->>> threshold.
->>
->> How do you handle paired pages?
->> A powercut can still damage UBI and UBIFS.
->>
-> We received patch-sets from Micron for paired page issue.
->> [...]
->>
->>> That is true that our kernel is old but at this point and time it's
->>> not a viable options for us to upgrade the kernel version. And agree
->>> with your point about MLC but in months of use, we have seen this
->>> continuous fastmap failure issue only once and apart from that UBIFS
->>> works without any other issues.
->>>
->>> I see your changes on base fastmap implementation, which I am planning
->>> to backport but it will be really difficult to backport the whole UBI
->>> subsystem. So, if you can point to specific patches/changes to avoid
->>> "fastmap data CRC failure" issue then it will be a great help.
->>
->> I fear it is not that easy. Fastmap saw many fixes and improvements
->> other the time. The first version was rather buggy.
->> And we made a stupid mistake at the beginning, we did not mark fixes
->> for stable processing since Fastmap was considered
->> as experimental. That's why you can't just backport all patches that
->> have a stable tag.
->> On the other hand, backporting the whole UBI subsystem is not that
->> complicated. It has very few dependencies.
->> U-Boot folks do this on a regular basis.
->>
-> So, I found out a way to reproduce and fix it. If I powercycle around
-> the time when UBI performs recovery then it ends up with the CRC
-> failure issue and it can not recover from it. This behavior is with
-> 3.12 kernel. Then I started patching UBI with the fixes related to
-> fastmap and fastmap WL, and got a state where UBI encounters the same
-> problem but on subsequent boot it recovers from it.
->
-> I need to perform more testing to finalize the changes though. I
-> appreciate your time for answering my questions.
-
-So, I confirm that after doing a regression with back-ported UBI
-subsystem I don't see this issue anymore on kernel 3.12.
-
-Also, I wanted to test whether the wear leveling is working correctly
-or not. Is there any tests/utility which I can cross compile and run
-to test these algorithms ?
-
->
-> Thanks,
-> Ronak
->
->> HTH,
->> //richard
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index f9e9bd1..a566231 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -84,7 +84,7 @@
+ 
+ 
+ struct dataflash {
+-	uint8_t			command[4];
++	u8			command[4];
+ 	char			name[24];
+ 
+ 	unsigned short		page_offset;	/* offset in flash address */
+@@ -153,8 +153,8 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	struct spi_transfer	x = { };
+ 	struct spi_message	msg;
+ 	unsigned		blocksize = priv->page_size << 3;
+-	uint8_t			*command;
+-	uint32_t		rem;
++	u8			*command;
++	u32			rem;
+ 
+ 	pr_debug("%s: erase addr=0x%llx len 0x%llx\n",
+ 	      dev_name(&spi->dev), (long long)instr->addr,
+@@ -187,8 +187,8 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		pageaddr = pageaddr << priv->page_offset;
+ 
+ 		command[0] = do_block ? OP_ERASE_BLOCK : OP_ERASE_PAGE;
+-		command[1] = (uint8_t)(pageaddr >> 16);
+-		command[2] = (uint8_t)(pageaddr >> 8);
++		command[1] = (u8)(pageaddr >> 16);
++		command[2] = (u8)(pageaddr >> 8);
+ 		command[3] = 0;
+ 
+ 		pr_debug("ERASE %s: (%x) %x %x %x [%i]\n",
+@@ -239,7 +239,7 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	struct spi_transfer	x[2] = { };
+ 	struct spi_message	msg;
+ 	unsigned int		addr;
+-	uint8_t			*command;
++	u8			*command;
+ 	int			status;
+ 
+ 	pr_debug("%s: read 0x%x..0x%x\n", dev_name(&priv->spi->dev),
+@@ -271,9 +271,9 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	 * fewer "don't care" bytes.  Both buffers stay unchanged.
+ 	 */
+ 	command[0] = OP_READ_CONTINUOUS;
+-	command[1] = (uint8_t)(addr >> 16);
+-	command[2] = (uint8_t)(addr >> 8);
+-	command[3] = (uint8_t)(addr >> 0);
++	command[1] = (u8)(addr >> 16);
++	command[2] = (u8)(addr >> 8);
++	command[3] = (u8)(addr >> 0);
+ 	/* plus 4 "don't care" bytes */
+ 
+ 	status = spi_sync(priv->spi, &msg);
+@@ -308,7 +308,7 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	size_t			remaining = len;
+ 	u_char			*writebuf = (u_char *) buf;
+ 	int			status = -EINVAL;
+-	uint8_t			*command;
++	u8			*command;
+ 
+ 	pr_debug("%s: write 0x%x..0x%x\n",
+ 		dev_name(&spi->dev), (unsigned)to, (unsigned)(to + len));
+@@ -455,11 +455,11 @@ static int dataflash_get_otp_info(struct mtd_info *mtd, size_t len,
+ }
+ 
+ static ssize_t otp_read(struct spi_device *spi, unsigned base,
+-		uint8_t *buf, loff_t off, size_t len)
++		u8 *buf, loff_t off, size_t len)
+ {
+ 	struct spi_message	m;
+ 	size_t			l;
+-	uint8_t			*scratch;
++	u8			*scratch;
+ 	struct spi_transfer	t;
+ 	int			status;
+ 
+@@ -538,7 +538,7 @@ static int dataflash_write_user_otp(struct mtd_info *mtd,
+ {
+ 	struct spi_message	m;
+ 	const size_t		l = 4 + 64;
+-	uint8_t			*scratch;
++	u8			*scratch;
+ 	struct spi_transfer	t;
+ 	struct dataflash	*priv = mtd->priv;
+ 	int			status;
+@@ -689,14 +689,14 @@ struct flash_info {
+ 	/* JEDEC id has a high byte of zero plus three data bytes:
+ 	 * the manufacturer id, then a two byte device id.
+ 	 */
+-	uint32_t	jedec_id;
++	u32		jedec_id;
+ 
+ 	/* The size listed here is what works with OP_ERASE_PAGE. */
+ 	unsigned	nr_pages;
+-	uint16_t	pagesize;
+-	uint16_t	pageoffset;
++	u16		pagesize;
++	u16		pageoffset;
+ 
+-	uint16_t	flags;
++	u16		flags;
+ #define SUP_POW2PS	0x0002		/* supports 2^N byte pages */
+ #define IS_POW2PS	0x0001		/* uses 2^N byte pages */
+ };
+@@ -739,9 +739,9 @@ static struct flash_info dataflash_data[] = {
+ static struct flash_info *jedec_probe(struct spi_device *spi)
+ {
+ 	int			tmp;
+-	uint8_t			code = OP_READ_ID;
+-	uint8_t			id[3];
+-	uint32_t		jedec;
++	u8			code = OP_READ_ID;
++	u8			id[3];
++	u32			jedec;
+ 	struct flash_info	*info;
+ 	int status;
+ 
+-- 
+2.9.3
