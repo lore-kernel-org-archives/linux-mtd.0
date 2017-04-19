@@ -1,27 +1,30 @@
-Received: from 7.mo177.mail-out.ovh.net ([46.105.61.149])
+Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0qjg-0002WY-Si
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 14:37:48 +0000
-Received: from player779.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo177.mail-out.ovh.net (Postfix) with ESMTP id DB7C853175
- for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 16:37:14 +0200 (CEST)
-Subject: Re: [PATCH 03/10] mtd: spi-nor: aspeed: add DMA support
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-References: <1491497808-25487-1-git-send-email-clg@kaod.org>
- <1491497808-25487-4-git-send-email-clg@kaod.org>
- <c9542192-6bbf-0778-95fb-2da167884012@wedev4u.fr>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Joel Stanley <joel@jms.id.au>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <699a518c-ab28-230f-250e-b0bdaf40968c@kaod.org>
-Date: Wed, 19 Apr 2017 16:36:59 +0200
+ id 1d0rDL-0001gZ-Vj
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 15:08:18 +0000
+Received: by mail-it0-x242.google.com with SMTP id e132so3560190ite.2
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 08:07:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c9542192-6bbf-0778-95fb-2da167884012@wedev4u.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1ce8f0b6-d225-3c60-433f-7e67cc7ab0ec@gmail.com>
+References: <20170418142127.23301-1-andrew.smirnov@gmail.com>
+ <20170418142127.23301-3-andrew.smirnov@gmail.com>
+ <47e7cefa-b4b8-4557-0e95-f43c7431c4de@gmail.com>
+ <CAHQ1cqETHoXeuiz7BUmMjoy9U4Koy65V=guppCt7bensKSPk8w@mail.gmail.com>
+ <1ce8f0b6-d225-3c60-433f-7e67cc7ab0ec@gmail.com>
+From: Andrey Smirnov <andrew.smirnov@gmail.com>
+Date: Wed, 19 Apr 2017 08:07:53 -0700
+Message-ID: <CAHQ1cqG7JhGA5F0MFp5AoQYRMo7vvOnr4SD084YMwf_pb2WFzw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] mtd: dataflash: Make use of "extened device
+ information"
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Chris Healy <cphealy@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,489 +34,201 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/06/2017 09:07 PM, Cyrille Pitchen wrote:
-> Hi Cédric,
-> 
-> Le 06/04/2017 à 18:56, Cédric Le Goater a écrit :
->> The Aspeed FMC controller can handle transfers to the flash modules
->> using DMAs. A couple of registers first need to be programmed with the
->> DRAM and flash addresses and the length of the transfer. The transfer
->> is then initiated using a DMA control register and an interrupt
->> notifies the completion.
+On Wed, Apr 19, 2017 at 1:47 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
+> On 04/19/2017 04:58 AM, Andrey Smirnov wrote:
+>> On Tue, Apr 18, 2017 at 11:31 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
+>>> On 04/18/2017 04:21 PM, Andrey Smirnov wrote:
+>>>> In anticipation of supporting chips that need it, extend the size of
+>>>> struct flash_info's 'jedec_id' field to make room 2 byte of extended
+>>>> device information as well as add code to fetch this data during
+>>>> jedec_probe().
+>>>>
+>>>> Cc: cphealy@gmail.com
+>>>> Cc: David Woodhouse <dwmw2@infradead.org>
+>>>> Cc: Brian Norris <computersforpeace@gmail.com>
+>>>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+>>>> Cc: Marek Vasut <marek.vasut@gmail.com>
+>>>> Cc: Richard Weinberger <richard@nod.at>
+>>>> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+>>>> ---
+>>>>
+>>>> Changes since [v1]:
+>>>>
+>>>>       - Formatting
+>>>>
+>>>> [v1] http://lkml.kernel.org/r/20170411161722.11164-1-andrew.smirnov@gmail.com
+>>>>
+>>>>
+>>>>  drivers/mtd/devices/mtd_dataflash.c | 113 +++++++++++++++++++++---------------
+>>>>  1 file changed, 65 insertions(+), 48 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+>>>> index 5b7a8c3..5d694a4 100644
+>>>> --- a/drivers/mtd/devices/mtd_dataflash.c
+>>>> +++ b/drivers/mtd/devices/mtd_dataflash.c
+>>>> @@ -690,7 +690,7 @@ struct flash_info {
+>>>>       /* JEDEC id has a high byte of zero plus three data bytes:
+>>>>        * the manufacturer id, then a two byte device id.
+>>>>        */
+>>>> -     u32             jedec_id;
+>>>> +     u64             jedec_id;
+>>>>
+>>>>       /* The size listed here is what works with OP_ERASE_PAGE. */
+>>>>       unsigned        nr_pages;
+>>>> @@ -713,63 +713,34 @@ static struct flash_info dataflash_data[] = {
+>>>>        * These newer chips also support 128-byte security registers (with
+>>>>        * 64 bytes one-time-programmable) and software write-protection.
+>>>>        */
+>>>> -     { "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS},
+>>>> -     { "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>>> +     { "AT45DB011B",  0x1f22000000, 512, 264, 9, SUP_POW2PS},
+>>>> +     { "at45db011d",  0x1f22000000, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>>>
+>>>> -     { "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
+>>>> -     { "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>>> +     { "AT45DB021B",  0x1f23000000, 1024, 264, 9, SUP_POW2PS},
+>>>> +     { "at45db021d",  0x1f23000000, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>>>
+>>>> -     { "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
+>>>> -     { "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>>> +     { "AT45DB041x",  0x1f24000000, 2048, 264, 9, SUP_POW2PS},
+>>>> +     { "at45db041d",  0x1f24000000, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>>>
+>>>> -     { "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
+>>>> -     { "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>>> +     { "AT45DB081B",  0x1f25000000, 4096, 264, 9, SUP_POW2PS},
+>>>> +     { "at45db081d",  0x1f25000000, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>>>
+>>>> -     { "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
+>>>> -     { "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
+>>>> +     { "AT45DB161x",  0x1f26000000, 4096, 528, 10, SUP_POW2PS},
+>>>> +     { "at45db161d",  0x1f26000000, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
+>>>>
+>>>> -     { "AT45DB321x",  0x1f2700, 8192, 528, 10, 0},           /* rev C */
+>>>> +     { "AT45DB321x",  0x1f27000000, 8192, 528, 10, 0},       /* rev C */
+>>>>
+>>>> -     { "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
+>>>> -     { "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
+>>>> +     { "AT45DB321x",  0x1f27010000, 8192, 528, 10, SUP_POW2PS},
+>>>> +     { "at45db321d",  0x1f27010000, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
+>>>>
+>>>> -     { "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
+>>>> -     { "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
+>>>> +     { "AT45DB642x",  0x1f28000000, 8192, 1056, 11, SUP_POW2PS},
+>>>> +     { "at45db642d",  0x1f28000000, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
+>>>>  };
+>>>>
+>>>> -static struct flash_info *jedec_probe(struct spi_device *spi)
+>>>> +static struct flash_info *jedec_lookup(struct spi_device *spi, u64 jedec)
+>>>>  {
+>>>> -     int ret, i;
+>>>> -     u8 code = OP_READ_ID;
+>>>> -     u8 id[3];
+>>>> -     u32 jedec;
+>>>> +     int status, i;
+>>>>       struct flash_info *info;
+>>>> -     int status;
+>>>> -
+>>>> -     /*
+>>>> -      * JEDEC also defines an optional "extended device information"
+>>>> -      * string for after vendor-specific data, after the three bytes
+>>>> -      * we use here.  Supporting some chips might require using it.
+>>>> -      *
+>>>> -      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
+>>>> -      * That's not an error; only rev C and newer chips handle it, and
+>>>> -      * only Atmel sells these chips.
+>>>> -      */
+>>>> -     ret = spi_write_then_read(spi, &code, 1, id, 3);
+>>>> -     if (ret < 0) {
+>>>> -             pr_debug("%s: error %d reading JEDEC ID\n",
+>>>> -                     dev_name(&spi->dev), ret);
+>>>> -             return ERR_PTR(ret);
+>>>> -     }
+>>>> -
+>>>> -     if (id[0] != CFI_MFR_ATMEL)
+>>>> -             return NULL;
+>>>> -
+>>>> -     jedec = id[0];
+>>>> -     jedec = jedec << 8;
+>>>> -     jedec |= id[1];
+>>>> -     jedec = jedec << 8;
+>>>> -     jedec |= id[2];
+>>>
+>>> Hm, the diff again screwed this up, oh well ...
+>>>
+>>>>       for (i = 0, info = dataflash_data;
+>>>>                       i < ARRAY_SIZE(dataflash_data);
+>>>> @@ -799,12 +770,58 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
+>>>>               }
+>>>>       }
+>>>>
+>>>> +     return NULL;
+>>>> +}
+>>>> +
+>>>> +static struct flash_info *jedec_probe(struct spi_device *spi)
+>>>> +{
+>>>> +     int ret;
+>>>> +     u8 code = OP_READ_ID;
+>>>> +     u8 id[8] = {0};
+>>>> +     const unsigned int id_size = 5;
+>>>> +     const unsigned int first_byte = sizeof(id) - id_size;
+>>>> +     const u64 eid_mask = GENMASK_ULL(63, 16);
+>>>> +     u64 jedec;
+>>>> +     struct flash_info *info;
+>>>> +
+>>>> +     /*
+>>>> +      * JEDEC also defines an optional "extended device information"
+>>>> +      * string for after vendor-specific data, after the three bytes
+>>>> +      * we use here.  Supporting some chips might require using it.
+>>>> +      *
+>>>> +      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
+>>>> +      * That's not an error; only rev C and newer chips handle it, and
+>>>> +      * only Atmel sells these chips.
+>>>> +      */
+>>>> +     ret = spi_write_then_read(spi, &code, 1, &id[first_byte], id_size);
+>>>> +     if (ret < 0) {
+>>>> +             pr_debug("%s: error %d reading JEDEC ID\n",
+>>>> +                     dev_name(&spi->dev), ret);
+>>>
+>>> I think you can turn this into:
+>>>
+>>> dev_err(&spi->dev, "error %d reading JEDEC ID\n", ret);
 >>
->> Such transfers can replace the current IO mode in the read/write ops
->> when some conditions are met on the size and the alignment. In case of
->> failure, a timeout for instance, the operation is restarted using the
->> IO mode.
+>> OK, will do it in a separate patch, since this is original code.
+>
+> OK
+>
+>>>> +             return ERR_PTR(ret);
+>>>> +     }
+>>>> +
+>>>> +     if (id[first_byte] != CFI_MFR_ATMEL)
+>>>> +             return NULL;
+>>>> +
+>>>> +     jedec = be64_to_cpup((__be64 *)id);
+>>>> +
+>>>> +     info = jedec_lookup(spi, jedec);
+>>>> +     if (info)
+>>>> +             return info;
+>>>> +
+>>>> +     /* Clear extended id bits and try to find a match again */
+>>>> +     jedec &= eid_mask;
+>>>
+>>> Wouldn't that be jedec &= ~eid_mask; (with a tilde) if you want to clear
+>>> them ?
 >>
->> DMA support does not seem to be that efficient. So we provide some
->> sysfs files for tuning and to switch it on and off (default is off)
->>
->> Signed-off-by: Cédric Le Goater <clg@kaod.org>
->> ---
->>  drivers/mtd/spi-nor/aspeed-smc.c | 231 +++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 231 insertions(+)
->>
->> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
->> index a98d454d07ed..7dfa1ea0a787 100644
->> --- a/drivers/mtd/spi-nor/aspeed-smc.c
->> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
->> @@ -11,6 +11,8 @@
->>  
->>  #include <linux/bug.h>
->>  #include <linux/device.h>
->> +#include <linux/dma-direction.h>
->> +#include <linux/dma-mapping.h>
->>  #include <linux/io.h>
->>  #include <linux/module.h>
->>  #include <linux/mutex.h>
->> @@ -40,6 +42,7 @@ struct aspeed_smc_info {
->>  	bool hastype;		/* flash type field exists in config reg */
->>  	u8 we0;			/* shift for write enable bit for CE0 */
->>  	u8 ctl0;		/* offset in regs of ctl for CE0 */
->> +	bool has_dma;
->>  
->>  	void (*set_4b)(struct aspeed_smc_chip *chip);
->>  };
->> @@ -53,6 +56,7 @@ static const struct aspeed_smc_info fmc_2400_info = {
->>  	.hastype = true,
->>  	.we0 = 16,
->>  	.ctl0 = 0x10,
->> +	.has_dma = true,
->>  	.set_4b = aspeed_smc_chip_set_4b,
->>  };
->>  
->> @@ -62,6 +66,7 @@ static const struct aspeed_smc_info spi_2400_info = {
->>  	.hastype = false,
->>  	.we0 = 0,
->>  	.ctl0 = 0x04,
->> +	.has_dma = false,
->>  	.set_4b = aspeed_smc_chip_set_4b_spi_2400,
->>  };
->>  
->> @@ -71,6 +76,7 @@ static const struct aspeed_smc_info fmc_2500_info = {
->>  	.hastype = true,
->>  	.we0 = 16,
->>  	.ctl0 = 0x10,
->> +	.has_dma = true,
->>  	.set_4b = aspeed_smc_chip_set_4b,
->>  };
->>  
->> @@ -80,6 +86,7 @@ static const struct aspeed_smc_info spi_2500_info = {
->>  	.hastype = false,
->>  	.we0 = 16,
->>  	.ctl0 = 0x10,
->> +	.has_dma = false,
->>  	.set_4b = aspeed_smc_chip_set_4b,
->>  };
->>  
->> @@ -97,6 +104,7 @@ struct aspeed_smc_chip {
->>  	struct aspeed_smc_controller *controller;
->>  	void __iomem *ctl;			/* control register */
->>  	void __iomem *ahb_base;			/* base of chip window */
->> +	unsigned long phys_base;		/* physical address of window */
->>  	u32 ctl_val[smc_max];			/* control settings */
->>  	enum aspeed_smc_flash_type type;	/* what type of flash */
->>  	struct spi_nor nor;
->> @@ -110,6 +118,18 @@ struct aspeed_smc_controller {
->>  	void __iomem *regs;			/* controller registers */
->>  	void __iomem *ahb_base;			/* per-chip windows resource */
->>  
->> +	/* interrupt handling */
->> +	int irq;
->> +
->> +	/* dma */
->> +	bool dma_enabled;
->> +	struct completion dma_done;
->> +
->> +	/* dma logging */
->> +	size_t dma_length;
->> +	dma_addr_t dma_addr;			/* bus address of buffer */
->> +	dma_addr_t flash_addr;			/* flash address */
->> +
->>  	struct aspeed_smc_chip *chips[0];	/* pointers to attached chips */
->>  };
->>  
->> @@ -182,6 +202,11 @@ struct aspeed_smc_controller {
->>  	(CONTROL_AAF_MODE | CONTROL_CE_INACTIVE_MASK | CONTROL_CLK_DIV4 | \
->>  	 CONTROL_CLOCK_FREQ_SEL_MASK | CONTROL_LSB_FIRST | CONTROL_CLOCK_MODE_3)
->>  
->> +/* Interrupt Control and Status Register */
->> +#define INTERRUPT_STATUS_REG		0x08
->> +#define     INTERRUPT_DMA_ENABLE	BIT(3)
->> +#define     INTERRUPT_DMA_STATUS	BIT(11)
->> +
->>  /*
->>   * The Segment Register uses a 8MB unit to encode the start address
->>   * and the end address of the mapping window of a flash SPI slave :
->> @@ -194,6 +219,108 @@ struct aspeed_smc_controller {
->>  #define SEGMENT_ADDR_START(_r)		((((_r) >> 16) & 0xFF) << 23)
->>  #define SEGMENT_ADDR_END(_r)		((((_r) >> 24) & 0xFF) << 23)
->>  
->> +/* DMA Registers */
->> +#define DMA_CONTROL_REG			0x80
->> +#define     DMA_ENABLE			BIT(0)
->> +#define     DMA_WRITE			BIT(1)
->> +
->> +#define DMA_FLASH_BASE_REG		0x84
->> +#define DMA_DRAM_BASE_REG		0x88
->> +#define DMA_LENGTH_REG			0x8c
->> +
->> +/*
->> + * DMAs do not seem to be that fast, so disable by default
->> + */
->> +static bool use_dma;
->> +module_param(use_dma, bool, 0644);
->> +
->> +static unsigned int min_dma_size = 256;
->> +module_param(min_dma_size, uint, 0644);
->> +
->> +/* with 100ms we had a couple of timeouts */
->> +static unsigned int dma_timeout = 200;
->> +module_param(dma_timeout, uint, 0644);
->> +
->> +static void aspeed_smc_dma_done(struct aspeed_smc_controller *controller)
->> +{
->> +	writel(0, controller->regs + INTERRUPT_STATUS_REG);
->> +	writel(0, controller->regs + DMA_CONTROL_REG);
->> +}
->> +
->> +#define DMA_LENGTH(x) (((x) - 4) & ~0xFE000003)
->> +#define DMA_ADDR(x) ((x) & ~0x00000003)
->> +
->> +static inline void aspeed_smc_chip_configure(struct aspeed_smc_chip *chip,
->> +					     u32 ctl)
->> +{
->> +	ctl |= CONTROL_CE_STOP_ACTIVE_CONTROL;
->> +	writel(ctl, chip->ctl);
->> +
->> +	ctl &= ~CONTROL_CE_STOP_ACTIVE_CONTROL;
->> +	writel(ctl, chip->ctl);
->> +}
->> +
->> +static int aspeed_smc_dma_start(struct aspeed_smc_chip *chip,
->> +				u32 offset, void *buf, size_t length,
->> +				int is_write)
->> +{
->> +	struct aspeed_smc_controller *controller = chip->controller;
->> +	dma_addr_t dma_addr, flash_addr;
->> +	int ret = 0;
->> +
->> +	aspeed_smc_chip_configure(chip, is_write ? chip->ctl_val[smc_write] :
->> +		chip->ctl_val[smc_read]);
->> +
->> +	dev_dbg(chip->nor.dev, "DMA %s to=0x%08x len=0x%08x\n",
->> +		is_write ? "write" : "read", offset, length);
->> +
->> +	dma_addr = dma_map_single(chip->nor.dev, buf, length,
->> +				  (is_write ? DMA_TO_DEVICE : DMA_FROM_DEVICE));
-> 
-> big mistake! Don't worry, your not the first one to fall into this trap
-> and I did this mistake too in earlier versions of the Atmel QSPI
-> controller driver (not mainlined) ;)
-> 
-> So please, let me explain:
-> 
-> You can use dma_map_single() if 'buf' is allocated with kmalloc() for
-> instance because kmalloc'ed memory pages are guaranteed to be contiguous
-> in physical space too (not only in virtual space).
-> Also kmalloc'ed memory can be (un)mapped for DMA usages: when cleaning
-> and/or invalidating the data cache lines, the cache aliasing issue
-> should be avoided, hence it's safe.
-> 
-> On the other hand, vmalloc'ed memory pages are not guaranteed to be
-> contiguous in physical space and often they aren't. So just for this
-> only reason, you cannot use dma_map_single().
-> 
-> 
-> More technical explanations but you can skip the following section if
-> you want:
-> 
-> ####################################################################
-> Then you could think of using dma_map_sg() instead. This is what the
-> __spi_map_sg() / spi_map_buf() functions do in the SPI sub-system: in
-> the case of vmalloc'ed memory, spi_map_buf() first build a
-> scatter-gather list from the allocated pages before calling dma_map_sg().
-> 
-> However the vmalloc'ed memory area is not safe about the cache alias
-> issue. Depending on model of the data cache it may be safe or not:
-> 
-> - PIPT (Physically Indexed / Physically Tagged): should be safe in any
-> case (data cache of ARM Cortex A5 for instance).
-> 
-> - VIPT (Virtually Indexed / Physically Tagged): if the size of the data
-> cache is "small" enough so the number of (index + offset) bits in the
-> virtual address is less are equal to the number of offset bits for the
-> smallest page size in the MMU (likely 12 bits for a 4KB MMU page size),
-> the cache alias issue should be avoided. Otherwise this issue may occur
-> so KO.
-> 
-> - VIVT (Virtually Indexed / Virtually Tagged): this is the worst case.
-> Even the tag part comes from the virtual address so OK (ARM 926 I guess).
-> 
-> e.g. for a 32bit address:
-> 
-> Depending on the cache model, the virtual and/or physical is used to
-> extract the TAG, INDEX and OFFSET.
-> 
-> 31                         Y                   0
-> +--------------------------+--------+----------+
-> |           TAG            |  INDEX |   OFFSET |
-> +--------------------------+--------+----------+
-> 
-> The INDEX part is used the select the right set in the N-way set
-> associated cache. Then the TAG part is used to find the right cache line
-> within the selected set.
-> 
-> For a minimum MMU page size of 4096 (== 2^12) bytes, if (Y < 12),
-> whatever you use the physical of virtual address, the (INDEX + OFFSET)
-> bits are the same. Then if the TAG comes from the physical address, no
-> problem: even if a given physical page is mapped twice (or more) in the
-> virtual address space through the MMU, all those virtual addresses are
-> cached in the very same cache lines.
-> So for a VIPT cache model, it depends on the geometry (cache size, cache
-> line size, number of ways) of your cache.
-> 
-> SPI controller drivers should not rely on this "trick": it may not work
-> later if the same controller IP is integrated in another SoC using a
-> different core with a different cache model or different cache geometry.
-> ####################################################################
-> 
-> 
-> All that to say, other parts of the kernel, like the ubifs layer,
-> allocates buffer with vmalloc() instead of kmalloc().
-> So you may test your code programming a UBI file-system on your SPI
-> flash memory and your kernel is likely to crash.
+>> eid_mask is generated as bits 63 to 16 with GENMASK_ULL, so bits 15 to
+>> 0 should already be zeroed out. I can rename it to eid_mask_inverted
+>> so it's less confusing.
+>
+> I think that's a good idea and you can make the mask u32 instead of u64.
+> But isn't eid_mask_inverted the same as id_mask ?
 
-Yes I completely overlooked the vmalloc buffers :/ What would you 
-recommend ? a intermediate kmalloc buffer ? DMA are not that fast 
-already so I guess that would be even worse. We might just as well 
-drop the support.
+I just realized that "eid_mask" is used only in one place and I don't
+gain anything by having that variable, so I think what I'd do is use
+GENMASK in-place, then it should be clear why there's no bit inversion
+and there's no dilemma on how to name the variable.
 
-Thanks for the detailed explanation,
-
-C.
-
-
->> +
->> +	if (unlikely(dma_mapping_error(chip->nor.dev, dma_addr))) {
->> +		dev_err(chip->nor.dev, "Failed to dma_map_single()\n");
->> +		ret = -ENOMEM;
->> +		goto out;
->> +	}
->> +	flash_addr = chip->phys_base + offset;
->> +
->> +	controller->dma_length = length;
->> +	controller->dma_addr = dma_addr;
->> +	controller->flash_addr = flash_addr;
->> +
->> +	reinit_completion(&controller->dma_done);
->> +
->> +	writel(0, controller->regs + DMA_CONTROL_REG);
->> +	writel(DMA_ADDR(flash_addr), controller->regs +
->> +	       DMA_FLASH_BASE_REG);
->> +	writel(DMA_ADDR(dma_addr), controller->regs + DMA_DRAM_BASE_REG);
->> +	writel(DMA_LENGTH(length), controller->regs + DMA_LENGTH_REG);
->> +
->> +	writel(INTERRUPT_DMA_ENABLE,
->> +	       controller->regs + INTERRUPT_STATUS_REG);
->> +
->> +	writel(DMA_ENABLE | (is_write << 1),
->> +	       controller->regs + DMA_CONTROL_REG);
->> +
->> +	if (!wait_for_completion_timeout(&controller->dma_done,
->> +					 msecs_to_jiffies(dma_timeout))) {
->> +		dev_err(chip->nor.dev,
->> +			"DMA timeout addr@%.8x faddr@%.8x size=%x\n",
->> +			controller->dma_addr,
->> +			controller->flash_addr,
->> +			controller->dma_length);
->> +		ret = -ETIMEDOUT;
->> +		aspeed_smc_dma_done(controller);
->> +	}
->> +
->> +	dma_unmap_single(chip->nor.dev,
->> +			 controller->dma_addr, controller->dma_length,
->> +			 (is_write ? DMA_TO_DEVICE : DMA_FROM_DEVICE));
->> +out:
->> +	aspeed_smc_chip_configure(chip, chip->ctl_val[smc_read]);
->> +	return ret;
->> +}
->> +
->>  /*
->>   * In user mode all data bytes read or written to the chip decode address
->>   * range are transferred to or from the SPI bus. The range is treated as a
->> @@ -366,12 +493,32 @@ static void aspeed_smc_send_cmd_addr(struct spi_nor *nor, u8 cmd, u32 addr)
->>  	}
->>  }
->>  
->> +/*
->> + * Try DMA transfer when size and alignment are correct. In case
->> + * of failure, just restart using the IO mode.
->> + */
->> +static int aspeed_smc_dma_check(struct aspeed_smc_chip *chip, loff_t off,
->> +				size_t len)
->> +{
->> +	return (IS_ALIGNED(off, 4) && IS_ALIGNED(len, 4) &&
->> +		len >= min_dma_size && chip->controller->dma_enabled &&
->> +		use_dma);
->> +}
->> +
-> 
-> vmalloc'ed memory or other high memory regions (not DMA capable) can
-> still pass this check.
-> 
-> Best regards,
-> 
-> Cyrille
-> 
->>  static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
->>  				    size_t len, u_char *read_buf)
->>  {
->>  	struct aspeed_smc_chip *chip = nor->priv;
->>  	int i;
->>  	u8 dummy = 0xFF;
->> +	int ret;
->> +
->> +	if (aspeed_smc_dma_check(chip, from, len)) {
->> +		ret = aspeed_smc_dma_start(chip, from, read_buf, len, 0);
->> +		if (!ret)
->> +			goto out;
->> +		dev_err(chip->nor.dev, "DMA read failed: %d", ret);
->> +	}
->>  
->>  	aspeed_smc_start_user(nor);
->>  	aspeed_smc_send_cmd_addr(nor, nor->read_opcode, from);
->> @@ -380,6 +527,7 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
->>  
->>  	aspeed_smc_read_from_ahb(read_buf, chip->ahb_base, len);
->>  	aspeed_smc_stop_user(nor);
->> +out:
->>  	return len;
->>  }
->>  
->> @@ -387,11 +535,21 @@ static ssize_t aspeed_smc_write_user(struct spi_nor *nor, loff_t to,
->>  				     size_t len, const u_char *write_buf)
->>  {
->>  	struct aspeed_smc_chip *chip = nor->priv;
->> +	int ret;
->> +
->> +	if (aspeed_smc_dma_check(chip, to, len)) {
->> +		ret = aspeed_smc_dma_start(chip, to, (void *)write_buf,
->> +					   len, 1);
->> +		if (!ret)
->> +			goto out;
->> +		dev_err(chip->nor.dev, "DMA write failed: %d", ret);
->> +	}
->>  
->>  	aspeed_smc_start_user(nor);
->>  	aspeed_smc_send_cmd_addr(nor, nor->program_opcode, to);
->>  	aspeed_smc_write_to_ahb(chip->ahb_base, write_buf, len);
->>  	aspeed_smc_stop_user(nor);
->> +out:
->>  	return len;
->>  }
->>  
->> @@ -527,6 +685,8 @@ static int aspeed_smc_chip_setup_init(struct aspeed_smc_chip *chip,
->>  		return -EINVAL;
->>  	}
->>  
->> +	chip->phys_base = res->start + (chip->ahb_base - controller->ahb_base);
->> +
->>  	/*
->>  	 * Get value of the inherited control register. U-Boot usually
->>  	 * does some timing calibration on the FMC chip, so it's good
->> @@ -597,6 +757,7 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
->>  	}
->>  
->>  	chip->ctl_val[smc_read] |= cmd |
->> +		chip->nor.read_opcode << CONTROL_COMMAND_SHIFT |
->>  		CONTROL_IO_DUMMY_SET(chip->nor.read_dummy / 8);
->>  
->>  	dev_dbg(controller->dev, "base control register: %08x\n",
->> @@ -695,6 +856,74 @@ static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
->>  	return ret;
->>  }
->>  
->> +static irqreturn_t aspeed_smc_irq(int irq, void *arg)
->> +{
->> +	struct aspeed_smc_controller *controller = arg;
->> +	struct device *dev = controller->dev;
->> +	irqreturn_t ret = IRQ_NONE;
->> +	u32 dma_ctl = readl(controller->regs + DMA_CONTROL_REG);
->> +	u32 status = readl(controller->regs + INTERRUPT_STATUS_REG);
->> +
->> +	dev_dbg(dev, "received IRQ. status: %x", status);
->> +
->> +	if (!(status & INTERRUPT_DMA_ENABLE) || !(dma_ctl & DMA_ENABLE)) {
->> +		dev_err(dev, "No DMA. bad IRQ status: %x", status);
->> +		goto out;
->> +	}
->> +
->> +	if (!(status & INTERRUPT_DMA_STATUS)) {
->> +		dev_err(dev, "DMA still in progress. length %d\n",
->> +			readl(controller->regs + DMA_LENGTH_REG));
->> +		goto out;
->> +	}
->> +
->> +	ret = IRQ_HANDLED;
->> +	aspeed_smc_dma_done(controller);
->> +	complete(&controller->dma_done);
->> +
->> +out:
->> +	return ret;
->> +}
->> +
->> +static int aspeed_smc_config_irq(struct aspeed_smc_controller *controller,
->> +				 struct platform_device *pdev)
->> +{
->> +	struct device *dev = &pdev->dev;
->> +	int rc;
->> +
->> +	controller->irq = platform_get_irq(pdev, 0);
->> +	if (!controller->irq)
->> +		return -ENODEV;
->> +
->> +	rc = devm_request_irq(dev, controller->irq, aspeed_smc_irq, IRQF_SHARED,
->> +			      DEVICE_NAME, controller);
->> +	if (rc < 0) {
->> +		dev_warn(dev, "Unable to request IRQ %d\n", controller->irq);
->> +		controller->irq = 0;
->> +		return rc;
->> +	}
->> +
->> +	dev_info(dev, "Using IRQ %d\n", controller->irq);
->> +	return 0;
->> +}
->> +
->> +static void aspeed_smc_dma_setup(struct aspeed_smc_controller *controller,
->> +				 struct platform_device *pdev)
->> +{
->> +	const struct aspeed_smc_info *info = controller->info;
->> +
->> +	init_completion(&controller->dma_done);
->> +
->> +	controller->dma_enabled = false;
->> +	if (info->has_dma)
->> +		controller->dma_enabled = !aspeed_smc_config_irq(controller,
->> +								 pdev);
->> +
->> +	if (controller->dma_enabled)
->> +		dev_info(controller->dev, "DMA support %s.\n",
->> +			 use_dma ? "enabled" : "disabled");
->> +}
->> +
->>  static int aspeed_smc_probe(struct platform_device *pdev)
->>  {
->>  	struct device_node *np = pdev->dev.of_node;
->> @@ -730,6 +959,8 @@ static int aspeed_smc_probe(struct platform_device *pdev)
->>  	if (IS_ERR(controller->ahb_base))
->>  		return PTR_ERR(controller->ahb_base);
->>  
->> +	aspeed_smc_dma_setup(controller, pdev);
->> +
->>  	ret = aspeed_smc_setup_flash(controller, np, res);
->>  	if (ret)
->>  		dev_err(dev, "Aspeed SMC probe failed %d\n", ret);
->>
-> 
+Thanks,
+Andrey Smirnov
